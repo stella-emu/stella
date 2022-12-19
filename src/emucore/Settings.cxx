@@ -804,7 +804,7 @@ void Settings::usage()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const Variant& Settings::value(const string& key) const
+const Variant& Settings::value(string_view key) const
 {
   // Try to find the named setting and answer its value
   auto it = myPermanentSettings.find(key);
@@ -820,7 +820,7 @@ const Variant& Settings::value(const string& key) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Settings::setValue(const string& key, const Variant& value, bool persist)
+void Settings::setValue(string_view key, const Variant& value, bool persist)
 {
   const auto it = myPermanentSettings.find(key);
 
@@ -830,19 +830,19 @@ void Settings::setValue(const string& key, const Variant& value, bool persist)
     it->second = value;
   }
   else
-    myTemporarySettings[key] = value;
+    myTemporarySettings[string{key}] = value;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Settings::setPermanent(const string& key, const Variant& value)
+void Settings::setPermanent(string_view key, const Variant& value)
 {
-  myPermanentSettings[key] = value;
+  myPermanentSettings[string{key}] = value;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Settings::setTemporary(const string& key, const Variant& value)
+void Settings::setTemporary(string_view key, const Variant& value)
 {
-  myTemporarySettings[key] = value;
+  myTemporarySettings[string{key}] = value;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

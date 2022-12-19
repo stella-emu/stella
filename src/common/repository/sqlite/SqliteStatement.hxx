@@ -25,16 +25,16 @@
 class SqliteStatement {
   public:
 
-    SqliteStatement(sqlite3* handle, const string& sql);
+    SqliteStatement(sqlite3* handle, string_view sql);
 
     template<class T, class ...Ts>
-    SqliteStatement(sqlite3* handle, const string& sql, T arg1, Ts... args);
+    SqliteStatement(sqlite3* handle, string_view sql, T arg1, Ts... args);
 
     ~SqliteStatement();
 
     operator sqlite3_stmt*() const { return myStmt; }
 
-    SqliteStatement& bind(int index, const string& value);
+    SqliteStatement& bind(int index, string_view value);
     SqliteStatement& bind(int index, Int32 value);
 
     bool step();
@@ -47,7 +47,7 @@ class SqliteStatement {
 
   private:
 
-    void initialize(const string& sql);
+    void initialize(string_view sql);
 
   private:
 
@@ -74,12 +74,12 @@ class SqliteStatement {
 #endif
 
 template<class T, class ...Ts>
-SqliteStatement::SqliteStatement(sqlite3* handle, const string& sql, T arg1, Ts... args)
+SqliteStatement::SqliteStatement(sqlite3* handle, string_view sql, T arg1, Ts... args)
   : myHandle{handle}
 {
   char buffer[512];
 
-  if (snprintf(buffer, 512, sql.c_str(), arg1, args...) >= 512)
+  if (snprintf(buffer, 512, string{sql}.c_str(), arg1, args...) >= 512)
     throw runtime_error("SQL statement too long");
 
   initialize(buffer);

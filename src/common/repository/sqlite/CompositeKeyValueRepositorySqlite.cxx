@@ -23,10 +23,10 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CompositeKeyValueRepositorySqlite::CompositeKeyValueRepositorySqlite(
   SqliteDatabase& db,
-  const string& tableName,
-  const string& colKey1,
-  const string& colKey2,
-  const string& colValue
+  string_view tableName,
+  string_view colKey1,
+  string_view colKey2,
+  string_view colValue
 )
   : myDb{db}, myTableName{tableName},
     myColKey1{colKey1}, myColKey2{colKey2}, myColValue{colValue}
@@ -34,13 +34,14 @@ CompositeKeyValueRepositorySqlite::CompositeKeyValueRepositorySqlite(
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-shared_ptr<KeyValueRepository> CompositeKeyValueRepositorySqlite::get(const string& key)
+shared_ptr<KeyValueRepository> CompositeKeyValueRepositorySqlite::get(
+    string_view key)
 {
   return make_shared<ProxyRepository>(*this, key);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool CompositeKeyValueRepositorySqlite::has(const string& key)
+bool CompositeKeyValueRepositorySqlite::has(string_view key)
 {
   try {
     (*myStmtCountSet)
@@ -63,7 +64,7 @@ bool CompositeKeyValueRepositorySqlite::has(const string& key)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CompositeKeyValueRepositorySqlite::remove(const string& key)
+void CompositeKeyValueRepositorySqlite::remove(string_view key)
 {
   try {
     (*myStmtDeleteSet)
@@ -143,13 +144,13 @@ void CompositeKeyValueRepositorySqlite::initialize()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CompositeKeyValueRepositorySqlite::ProxyRepository::ProxyRepository(
   const CompositeKeyValueRepositorySqlite& repo,
-  const string& key
+  string_view key
 ) : myRepo(repo), myKey(key)
 {}
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 SqliteStatement& CompositeKeyValueRepositorySqlite::ProxyRepository::stmtInsert(
-  const string& key, const string& value
+  string_view key, string_view value
 ) {
   return (*myRepo.myStmtInsert)
     .reset()
@@ -167,7 +168,7 @@ SqliteStatement& CompositeKeyValueRepositorySqlite::ProxyRepository::stmtSelect(
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-SqliteStatement& CompositeKeyValueRepositorySqlite::ProxyRepository::stmtDelete(const string& key)
+SqliteStatement& CompositeKeyValueRepositorySqlite::ProxyRepository::stmtDelete(string_view key)
 {
   myRepo.myStmtDelete->reset();
 
@@ -177,7 +178,7 @@ SqliteStatement& CompositeKeyValueRepositorySqlite::ProxyRepository::stmtDelete(
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-SqliteStatement& CompositeKeyValueRepositorySqlite::ProxyRepository::stmtSelectOne(const string& key)
+SqliteStatement& CompositeKeyValueRepositorySqlite::ProxyRepository::stmtSelectOne(string_view key)
 {
   return (*myRepo.myStmtSelectOne)
     .reset()
@@ -186,7 +187,7 @@ SqliteStatement& CompositeKeyValueRepositorySqlite::ProxyRepository::stmtSelectO
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-SqliteStatement& CompositeKeyValueRepositorySqlite::ProxyRepository::stmtCount(const string& key)
+SqliteStatement& CompositeKeyValueRepositorySqlite::ProxyRepository::stmtCount(string_view key)
 {
   return (*myRepo.myStmtCount)
     .reset()

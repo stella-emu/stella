@@ -32,17 +32,17 @@ class CompositeKeyValueRepositorySqlite : public CompositeKeyValueRepositoryAtom
 
     CompositeKeyValueRepositorySqlite(
       SqliteDatabase& db,
-      const string& tableName,
-      const string& colKey1,
-      const string& colKey2,
-      const string& colValue
+      string_view tableName,
+      string_view colKey1,
+      string_view colKey2,
+      string_view colValue
     );
 
-    shared_ptr<KeyValueRepository> get(const string& key) override;
+    shared_ptr<KeyValueRepository> get(string_view key) override;
 
-    bool has(const string& key) override;
+    bool has(string_view key) override;
 
-    void remove(const string& key) override;
+    void remove(string_view key) override;
 
     void initialize();
 
@@ -51,15 +51,16 @@ class CompositeKeyValueRepositorySqlite : public CompositeKeyValueRepositoryAtom
     class ProxyRepository : public AbstractKeyValueRepositorySqlite {
       public:
 
-        ProxyRepository(const CompositeKeyValueRepositorySqlite& repo, const string& key);
+        ProxyRepository(const CompositeKeyValueRepositorySqlite& repo,
+                        string_view key);
 
       protected:
 
-        SqliteStatement& stmtInsert(const string& key, const string& value) override;
+        SqliteStatement& stmtInsert(string_view key, string_view value) override;
         SqliteStatement& stmtSelect() override;
-        SqliteStatement& stmtDelete(const string& key) override;
-        SqliteStatement& stmtCount(const string& key) override;
-        SqliteStatement& stmtSelectOne(const string& key) override;
+        SqliteStatement& stmtDelete(string_view key) override;
+        SqliteStatement& stmtCount(string_view key) override;
+        SqliteStatement& stmtSelectOne(string_view key) override;
         SqliteDatabase& database() override;
 
       private:

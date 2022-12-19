@@ -47,7 +47,7 @@ void Properties::load(KeyValueRepository& repo)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool Properties::save(KeyValueRepository& repo) const
 {
-  std::map<string, Variant> props;
+  KVRMap props;
 
   for (size_t i = 0; i < static_cast<size_t>(PropType::NumTypes); i++) {
     if (myProperties[i] == ourDefaultProperties[i]) {

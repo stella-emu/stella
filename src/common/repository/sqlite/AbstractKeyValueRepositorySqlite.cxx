@@ -21,9 +21,9 @@
 #include "SqliteTransaction.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-std::map<string, Variant> AbstractKeyValueRepositorySqlite::load()
+KVRMap AbstractKeyValueRepositorySqlite::load()
 {
-  std::map<string, Variant> values;
+  KVRMap values;
 
   try {
     SqliteStatement& stmt{stmtSelect()};
@@ -41,7 +41,7 @@ std::map<string, Variant> AbstractKeyValueRepositorySqlite::load()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool AbstractKeyValueRepositorySqlite::has(const string& key)
+bool AbstractKeyValueRepositorySqlite::has(string_view key)
 {
   try {
     SqliteStatement& stmt{stmtCount(key)};
@@ -61,7 +61,7 @@ bool AbstractKeyValueRepositorySqlite::has(const string& key)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool AbstractKeyValueRepositorySqlite::get(const string& key, Variant& value)
+bool AbstractKeyValueRepositorySqlite::get(string_view key, Variant& value)
 {
   try {
     SqliteStatement& stmt{stmtSelectOne(key)};
@@ -81,7 +81,7 @@ bool AbstractKeyValueRepositorySqlite::get(const string& key, Variant& value)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool AbstractKeyValueRepositorySqlite::save(const std::map<string, Variant>& values)
+bool AbstractKeyValueRepositorySqlite::save(const KVRMap& values)
 {
   try {
     SqliteTransaction tx{database()};
@@ -105,7 +105,7 @@ bool AbstractKeyValueRepositorySqlite::save(const std::map<string, Variant>& val
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool AbstractKeyValueRepositorySqlite::save(const string& key, const Variant& value)
+bool AbstractKeyValueRepositorySqlite::save(string_view key, const Variant& value)
 {
   try {
     SqliteStatement& stmt{stmtInsert(key, value.toString())};
@@ -123,7 +123,7 @@ bool AbstractKeyValueRepositorySqlite::save(const string& key, const Variant& va
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void AbstractKeyValueRepositorySqlite::remove(const string& key)
+void AbstractKeyValueRepositorySqlite::remove(string_view key)
 {
   try {
     SqliteStatement& stmt{stmtDelete(key)};

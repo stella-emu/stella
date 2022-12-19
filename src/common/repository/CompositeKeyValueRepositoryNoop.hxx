@@ -29,13 +29,13 @@ class CompositeKeyValueRepositoryNoop : public CompositeKeyValueRepositoryAtomic
     using CompositeKeyValueRepositoryAtomic::remove;
     using CompositeKeyValueRepositoryAtomic::get;
 
-    shared_ptr<KeyValueRepository> get(const string& key) override {
+    shared_ptr<KeyValueRepository> get(string_view key) override {
       return make_shared<KeyValueRepositoryNoop>();
     }
 
-    bool has(const string& key) override { return false; }
+    bool has(string_view key) override { return false; }
 
-    void remove(const string& key) override {}
+    void remove(string_view key) override {}
 };
 
 #endif // COMPOSITE_KEY_VALUE_REPOSITORY_NOOP_HXX

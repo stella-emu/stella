@@ -29,9 +29,9 @@ class KeyValueRepositoryConfigfile : public KeyValueRepositoryFile<KeyValueRepos
 
     explicit KeyValueRepositoryConfigfile(const FSNode& file);
 
-    static std::map<string, Variant> load(istream& in);
+    static KVRMap load(istream& in);
 
-    static bool save(ostream& out, const std::map<string, Variant>& values);
+    static bool save(ostream& out, const KVRMap& values);
 };
 
 #endif // KEY_VALUE_REPOSITORY_CONFIGFILE_HXX

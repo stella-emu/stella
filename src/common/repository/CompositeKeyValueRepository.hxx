@@ -32,11 +32,11 @@ class CompositeKeyValueRepository
 
     virtual ~CompositeKeyValueRepository() = default;
 
-    virtual shared_ptr<KeyValueRepository> get(const string& key) = 0;
+    virtual shared_ptr<KeyValueRepository> get(string_view key) = 0;
 
-    virtual bool has(const string& key) = 0;
+    virtual bool has(string_view key) = 0;
 
-    virtual void remove(const string& key) = 0;
+    virtual void remove(string_view key) = 0;
 
     virtual CompositeKeyValueRepositoryAtomic* atomic() { return nullptr; }
 
@@ -55,15 +55,15 @@ class CompositeKeyValueRepositoryAtomic : public CompositeKeyValueRepository
     using CompositeKeyValueRepository::remove;
     using CompositeKeyValueRepository::has;
 
-    virtual bool get(const string& key1, const string& key2, Variant& value);
+    virtual bool get(string_view key1, string_view key2, Variant& value);
 
-    virtual shared_ptr<KeyValueRepositoryAtomic> getAtomic(const string& key);
+    virtual shared_ptr<KeyValueRepositoryAtomic> getAtomic(string_view key);
 
-    virtual bool save(const string& key1, const string& key2, const Variant& value);
+    virtual bool save(string_view key1, string_view key2, const Variant& value);
 
-    virtual bool has(const string& key1, const string& key2);
+    virtual bool has(string_view key1, string_view key2);
 
-    virtual void remove(const string& key1, const string& key2);
+    virtual void remove(string_view key1, string_view key2);
 
     CompositeKeyValueRepositoryAtomic* atomic() override { return this; }
 };

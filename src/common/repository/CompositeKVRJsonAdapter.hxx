@@ -27,11 +27,11 @@ class CompositeKVRJsonAdapter : public CompositeKeyValueRepository {
 
     explicit CompositeKVRJsonAdapter(KeyValueRepositoryAtomic& kvr);
 
-    shared_ptr<KeyValueRepository> get(const string& key) override;
+    shared_ptr<KeyValueRepository> get(string_view key) override;
 
-    bool has(const string& key) override;
+    bool has(string_view key) override;
 
-    void remove(const string& key) override;
+    void remove(string_view key) override;
 
   private:
 

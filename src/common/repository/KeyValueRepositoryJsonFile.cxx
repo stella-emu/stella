@@ -22,7 +22,7 @@
 using nlohmann::json;
 
 namespace {
-  json jsonIfValid(const string& s) {
+  json jsonIfValid(string_view s) {
     const json parsed = json::parse(s, nullptr, false);
 
     return parsed.is_discarded() ? json(s) : parsed;
@@ -36,10 +36,10 @@ KeyValueRepositoryJsonFile::KeyValueRepositoryJsonFile(const FSNode& node)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-std::map<string, Variant> KeyValueRepositoryJsonFile::load(istream& in)
+KVRMap KeyValueRepositoryJsonFile::load(istream& in)
 {
   try {
-    std::map<string, Variant> map;
+    KVRMap map;
 
     json deserialized = json::parse(in);
 
@@ -63,8 +63,7 @@ std::map<string, Variant> KeyValueRepositoryJsonFile::load(istream& in)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool KeyValueRepositoryJsonFile::save(ostream& out,
-    const std::map<string, Variant>& values)
+bool KeyValueRepositoryJsonFile::save(ostream& out, const KVRMap& values)
 {
   try {
     json serializedJson = json::object();

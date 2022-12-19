@@ -24,19 +24,17 @@ class KeyValueRepositoryNoop : public KeyValueRepositoryAtomic
 {
   public:
 
-    std::map<string, Variant> load() override {
-      return std::map<string, Variant>();
-    }
+    KVRMap load() override { return KVRMap{}; }
 
-    bool has(const string& key) override { return false; }
+    bool has(string_view key) override { return false; }
 
-    bool get(const string& key, Variant& value) override { return false; }
+    bool get(string_view key, Variant& value) override { return false; }
 
-    bool save(const std::map<string, Variant>& values) override { return false; }
+    bool save(const KVRMap& values) override { return false; }
 
-    bool save(const string& key, const Variant& value) override { return false; }
+    bool save(string_view key, const Variant& value) override { return false; }
 
-    void remove(const string& key) override {}
+    void remove(string_view key) override {}
 };
 
 #endif // KEY_VALUE_REPOSITORY_NOOP_HXX

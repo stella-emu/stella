@@ -25,9 +25,9 @@ KeyValueRepositoryConfigfile::KeyValueRepositoryConfigfile(const FSNode& file)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-std::map<string, Variant> KeyValueRepositoryConfigfile::load(istream& in)
+KVRMap KeyValueRepositoryConfigfile::load(istream& in)
 {
-  std::map<string, Variant> values;
+  KVRMap values;
 
   string line, key, value;
   string::size_type equalPos = 0, garbage = 0;
@@ -61,7 +61,7 @@ std::map<string, Variant> KeyValueRepositoryConfigfile::load(istream& in)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool KeyValueRepositoryConfigfile::save(ostream& out, const std::map<string, Variant>& values)
+bool KeyValueRepositoryConfigfile::save(ostream& out, const KVRMap& values)
 {
   out << ";  Stella configuration file" << endl
       << ";" << endl

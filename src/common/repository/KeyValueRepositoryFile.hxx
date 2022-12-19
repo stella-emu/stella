@@ -30,9 +30,9 @@ class KeyValueRepositoryFile : public KeyValueRepository {
   public:
     explicit KeyValueRepositoryFile(const FSNode& node);
 
-    std::map<string, Variant> load() override;
+    KVRMap load() override;
 
-    bool save(const std::map<string, Variant>& values) override;
+    bool save(const KVRMap& values) override;
 
   protected:
 
@@ -51,9 +51,9 @@ KeyValueRepositoryFile<T>::KeyValueRepositoryFile(const FSNode& node)
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 template<class T>
-std::map<string, Variant> KeyValueRepositoryFile<T>::load()
+KVRMap KeyValueRepositoryFile<T>::load()
 {
-  if (!myNode.exists()) return std::map<string, Variant>();
+  if (!myNode.exists()) return KVRMap();
 
   stringstream in;
 
@@ -64,16 +64,16 @@ std::map<string, Variant> KeyValueRepositoryFile<T>::load()
   catch (const runtime_error& err) {
     Logger::error(err.what());
 
-    return std::map<string, Variant>();
+    return KVRMap();
   }
   catch (...) {
-    return std::map<string, Variant>();
+    return KVRMap();
   }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 template<class T>
-bool KeyValueRepositoryFile<T>::save(const std::map<string, Variant>& values)
+bool KeyValueRepositoryFile<T>::save(const KVRMap& values)
 {
   if (values.size() == 0) return true;
 

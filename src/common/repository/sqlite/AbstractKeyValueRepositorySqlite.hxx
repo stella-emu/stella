@@ -27,25 +27,25 @@ class AbstractKeyValueRepositorySqlite : public KeyValueRepositoryAtomic
 {
   public:
 
-    bool has(const string& key) override;
+    bool has(string_view key) override;
 
-    bool get(const string& key, Variant& value) override;
+    bool get(string_view key, Variant& value) override;
 
-    std::map<string, Variant> load() override;
+    KVRMap load() override;
 
-    bool save(const std::map<string, Variant>& values) override;
+    bool save(const KVRMap& values) override;
 
-    bool save(const string& key, const Variant& value) override;
+    bool save(string_view key, const Variant& value) override;
 
-    void remove(const string& key) override;
+    void remove(string_view key) override;
 
   protected:
 
-    virtual SqliteStatement& stmtInsert(const string& key, const string& value) = 0;
+    virtual SqliteStatement& stmtInsert(string_view key, string_view value) = 0;
     virtual SqliteStatement& stmtSelect() = 0;
-    virtual SqliteStatement& stmtDelete(const string& key) = 0;
-    virtual SqliteStatement& stmtCount(const string& key) = 0;
-    virtual SqliteStatement& stmtSelectOne(const string& key) = 0;
+    virtual SqliteStatement& stmtDelete(string_view key) = 0;
+    virtual SqliteStatement& stmtCount(string_view key) = 0;
+    virtual SqliteStatement& stmtSelectOne(string_view key) = 0;
     virtual SqliteDatabase& database() = 0;
 };
 
