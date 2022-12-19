@@ -14,27 +14,31 @@
 
 6.7 to 7.0 (XXXXX XX, 202X)
 
-  * Enhanced ROM launcher to allow multiple images per ROM
+  * Enhanced ROM launcher to allow multiple images per ROM.
 
-  * Made heaps of additional images available for the ROM launcher
+  * Made heaps of additional images available for the ROM launcher.
 
-  * Added searching by filename for ROM launcher images
+  * Added searching by filename for ROM launcher images.
 
-  * Enhanced Game Properties dialog for multigame ROMs
+  * Enhanced Game Properties dialog for multigame ROMs.
 
-  * Added optional type format detection based on colors used
+  * Added optional type format detection based on colors used.
 
-  * Added Joy2B+ controller support
+  * Added Joy2B+ controller support.
 
-  * Enhanced Kid Vid support to play tape audio
+  * Enhanced Kid Vid support to play tape audio.
 
   * Acclerated emulation up to ~15% (ARM).
 
-  * Added BUS bankswitching support for some older demos
+  * Added BUS bankswitching support for some older demos.
 
-  * Fixed broken 7800 pause key support
+  * Fixed broken 7800 pause key support.
 
-  * Added user defined CPU cycle timers to debugger
+  * Added user defined CPU cycle timers to debugger.
+
+  * For UNIX systems: Now defaults to using system-installed libsqlite3
+    when available, and fixes delay on exiting app experienced on some
+    systems.
 
 -Have fun!
 
