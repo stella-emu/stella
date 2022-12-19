@@ -32,16 +32,6 @@ class System;
   Kind of a combination of 3F and 3E, with better switchability.
   B.Watson's Cart3E was used as a template for building this implementation.
 
-  The destination bank (0-3) is held in the top bits of the value written to
-  $3E (for RAM switching) or $3F (for ROM switching). The low 6 bits give
-  the actual bank number (0-63) corresponding to 512 byte blocks for RAM and
-  1024 byte blocks for ROM. The maximum size is therefore 32K RAM and 64K ROM.
-
-  D7D6         indicate the bank number (0-3)
-  D5D4D3D2D1D0 indicate the actual # (0-63) from the image/ram
-
-  ROM:
-
   Note: In descriptions $F000 is equivalent to $1000 -- that is, we only deal
   with the low 13 bits of addressing. Stella code uses $1000, I'm used to $F000
   So, mask with top bits clear :) when reading this document.
@@ -49,17 +39,27 @@ class System;
   In this scheme, the 4K address space is broken into four 1K ROM/512b RAM segments
   living at 0x1000, 0x1400, 0x1800, 0x1C00 (or, same thing, 0xF000... etc.),
 
+  The destination segment (0-3) is held in the top bits of the value written to
+  $3E (for RAM switching) or $3F (for ROM switching). The low 6 bits give
+  the actual bank number (0-63) corresponding to 512 byte blocks for RAM and
+  1024 byte blocks for ROM. The maximum size is therefore 32K RAM and 64K ROM.
+
+  D7D6         indicate the segment number (0-3)
+  D5D4D3D2D1D0 indicate the actual # (0-63) from the image/ram
+
+  ROM:
   The last 1K ROM ($FC00-$FFFF) segment in the 6502 address space (ie: $1C00-$1FFF)
   is initialised to point to the FIRST 1K of the ROM image, so the reset vectors
   must be placed at the end of the first 1K in the ROM image.
 
-  Note: This is DIFFERENT to 3E which switches in the UPPER bank and this bank is
-  fixed.  This allows variable sized ROM without having to detect size.
+  Note: This is DIFFERENT to 3E which switches in the UPPER segment and this
+  segment is fixed.  This allows variable sized ROM without having to detect size.
 
-  ROM switching (write of block+bank number to $3F) D7D6 upper 2 bits of bank #
+  ROM switching (write of segment+bank number to $3F) D7D6 upper 2 bits of bank #
   indicates the destination segment (0-3, corresponding to $F000, $F400, $F800,
-  $FC00), and lower 6 bits indicate the 1K bank to switch in.  Can handle 64
-  x 1K ROM banks (64K total).
+  $FC00), and lower 6 bits indicate the 1K bank to switch in.
+
+  Can handle 64 x 1K ROM banks (64K total).
 
   D7 D6 D5D4D3D2D1D0
   0  0   x x x x x x   switch a 1K ROM bank xxxxxx to $F000

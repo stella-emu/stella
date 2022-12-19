@@ -1105,7 +1105,8 @@ void TiaWidget::loadConfig()
   // M0 register info
   ////////////////////////////
   // enaM0
-  myEnaM0->setColor(state.coluRegs[0]);
+  myEnaM0->setColor(tia.resMP0() ? kBGColorLo : state.coluRegs[0]);
+  myEnaM0->setCrossed(tia.resMP0());
   myEnaM0->setIntState(tia.enaM0() ? 1 : 0, false);
 
   // posM0
@@ -1127,7 +1128,8 @@ void TiaWidget::loadConfig()
   // M1 register info
   ////////////////////////////
   // enaM1
-  myEnaM1->setColor(state.coluRegs[1]);
+  myEnaM1->setColor(tia.resMP1() ? kBGColorLo : state.coluRegs[1]);
+  myEnaM1->setCrossed(tia.resMP1());
   myEnaM1->setIntState(tia.enaM1() ? 1 : 0, false);
 
   // posM1
