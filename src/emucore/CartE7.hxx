@@ -75,7 +75,7 @@ class CartridgeE7 : public Cartridge
       @param md5       The md5sum of the ROM image
       @param settings  A reference to the various settings (read-only)
     */
-    CartridgeE7(const ByteBuffer& image, size_t size, const string& md5,
+    CartridgeE7(const ByteBuffer& image, size_t size, string_view md5,
                 const Settings& settings);
     ~CartridgeE7() override = default;
 

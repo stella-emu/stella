@@ -231,7 +231,7 @@ void RomWidget::disassemble(int disasm_line)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void RomWidget::patchROM(int disasm_line, const string& bytes,
+void RomWidget::patchROM(int disasm_line, string_view bytes,
                          Common::Base::Fmt base)
 {
   const uInt16 address = getAddress(disasm_line);

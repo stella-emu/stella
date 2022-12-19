@@ -20,7 +20,7 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Cartridge2K::Cartridge2K(const ByteBuffer& image, size_t size,
-                         const string& md5, const Settings& settings,
+                         string_view md5, const Settings& settings,
                          size_t bsSize)
   : CartridgeEnhanced(image, size, md5, settings, bsSize)
 {

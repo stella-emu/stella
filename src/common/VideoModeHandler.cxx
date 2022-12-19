@@ -95,7 +95,7 @@ VideoModeHandler::buildMode(const Settings& settings, bool inTIAMode)
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 VideoModeHandler::Mode::Mode(uInt32 iw, uInt32 ih, Stretch smode,
-                             Int32 fsindex, const string& desc,
+                             Int32 fsindex, string_view desc,
                              float zoomLevel)
   : Mode(iw, ih, iw, ih, smode, fsindex, desc, zoomLevel)
 {
@@ -103,13 +103,13 @@ VideoModeHandler::Mode::Mode(uInt32 iw, uInt32 ih, Stretch smode,
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 VideoModeHandler::Mode::Mode(uInt32 iw, uInt32 ih, uInt32 sw, uInt32 sh,
-                             Stretch smode, Int32 fsindex, const string& desc,
+                             Stretch smode, Int32 fsindex, string_view desc,
                              float zoomLevel, float overscan)
-  : screenS(sw, sh),
-    stretch(smode),
-    description(desc),
-    zoom(zoomLevel),
-    fsIndex(fsindex)
+  : screenS{sw, sh},
+    stretch{smode},
+    description{desc},
+    zoom{zoomLevel},
+    fsIndex{fsindex}
 {
   // Now resize based on windowed/fullscreen mode and stretch factor
   if(fsIndex != -1)  // fullscreen mode

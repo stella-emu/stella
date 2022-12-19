@@ -47,7 +47,7 @@ class CartridgeDF : public CartridgeEnhanced
       @param settings  A reference to the various settings (read-only)
       @param bsSize    The size specified by the bankswitching scheme
     */
-    CartridgeDF(const ByteBuffer& image, size_t size, const string& md5,
+    CartridgeDF(const ByteBuffer& image, size_t size, string_view md5,
                 const Settings& settings, size_t bsSize = 128_KB);
     ~CartridgeDF() override = default;
 

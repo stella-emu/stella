@@ -63,7 +63,7 @@ class BrowserDialog : public Dialog
       @param namefilter Filter files/directories in browser display
     */
     static void show(GuiObject* parent, const GUI::Font& font,
-                     const string& title, const string& startpath,
+                     string_view title,string_view startpath,
                      BrowserDialog::Mode mode,
                      const Command& command,
                      const FSNode::NameFilter& namefilter = {
@@ -80,7 +80,7 @@ class BrowserDialog : public Dialog
       @param namefilter Filter files/directories in browser display
     */
     static void show(GuiObject* parent,
-                     const string& title, const string& startpath,
+                     string_view title, string_view startpath,
                      BrowserDialog::Mode mode,
                      const Command& command,
                      const FSNode::NameFilter& namefilter = {
@@ -96,7 +96,7 @@ class BrowserDialog : public Dialog
 
   private:
     /** Place the browser window onscreen, using the given attributes */
-    void show(const string& startpath,
+    void show(string_view startpath,
               BrowserDialog::Mode mode,
               const Command& command,
               const FSNode::NameFilter& namefilter);

@@ -47,7 +47,7 @@ class CartCreator
     */
     static unique_ptr<Cartridge> create(const FSNode& file,
                  const ByteBuffer& image, size_t size, string& md5,
-                 const string& dtype, Settings& settings);
+                 string_view dtype, Settings& settings);
 
   private:
     /**
@@ -82,7 +82,7 @@ class CartCreator
     */
     static unique_ptr<Cartridge>
       createFromImage(const ByteBuffer& image, size_t size, Bankswitch::Type type,
-                      const string& md5, Settings& settings);
+                      string_view md5, Settings& settings);
 
   private:
     // Following constructors and assignment operators not supported

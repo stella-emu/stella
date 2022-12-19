@@ -23,11 +23,11 @@
 class FatalEmulationError : public std::exception
 {
   public:
-    explicit FatalEmulationError(const string& message) : myMessage{message} { }
+    explicit FatalEmulationError(string_view message) : myMessage{message} { }
 
     const char* what() const noexcept override { return myMessage.c_str(); }
 
-    [[noreturn]] static void raise(const string& message) {
+    [[noreturn]] static void raise(string_view message) {
       throw FatalEmulationError(message);
     }
 

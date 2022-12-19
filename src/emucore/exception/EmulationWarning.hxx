@@ -23,11 +23,11 @@
 class EmulationWarning : public std::exception
 {
   public:
-    explicit EmulationWarning(const string& message) : myMessage{message} { }
+    explicit EmulationWarning(string_view message) : myMessage{message} { }
 
     const char* what() const noexcept override { return myMessage.c_str(); }
 
-    [[noreturn]] static void raise(const string& message) {
+    [[noreturn]] static void raise(string_view message) {
       throw EmulationWarning(message);
     }
 

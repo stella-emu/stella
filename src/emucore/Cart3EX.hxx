@@ -41,7 +41,7 @@ class Cartridge3EX : public Cartridge3E
       @param md5       The md5sum of the ROM image
       @param settings  A reference to the various settings (read-only)
     */
-    Cartridge3EX(const ByteBuffer& image, size_t size, const string& md5,
+    Cartridge3EX(const ByteBuffer& image, size_t size, string_view md5,
                  const Settings& settings);
     ~Cartridge3EX() override = default;
 

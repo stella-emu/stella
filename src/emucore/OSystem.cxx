@@ -652,9 +652,9 @@ unique_ptr<Console> OSystem::openConsole(const FSNode& romfile, string& md5)
     myPropSet->getMD5(md5, props);
 
     // Local helper method
-    const auto CMDLINE_PROPS_UPDATE = [&](const string& name, PropType prop)
+    const auto CMDLINE_PROPS_UPDATE = [&](string_view name, PropType prop)
     {
-      const string& s = mySettings->getString(name);
+      const string_view s = mySettings->getString(name);
       if(!s.empty()) props.set(prop, s);
     };
 

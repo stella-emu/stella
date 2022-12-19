@@ -48,7 +48,7 @@ class CartridgeDPC : public CartridgeF8
       @param settings  A reference to the various settings (read-only)
       @param bsSize    The size specified by the bankswitching scheme
     */
-    CartridgeDPC(const ByteBuffer& image, size_t size, const string& md5,
+    CartridgeDPC(const ByteBuffer& image, size_t size, string_view md5,
                  const Settings& settings, size_t bsSize = 10_KB);
     ~CartridgeDPC() override = default;
 

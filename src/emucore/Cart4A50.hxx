@@ -65,7 +65,7 @@ class Cartridge4A50 : public Cartridge
       @param md5       The md5sum of the ROM image
       @param settings  A reference to the various settings (read-only)
     */
-    Cartridge4A50(const ByteBuffer& image, size_t size, const string& md5,
+    Cartridge4A50(const ByteBuffer& image, size_t size, string_view md5,
                   const Settings& settings);
     ~Cartridge4A50() override = default;
 

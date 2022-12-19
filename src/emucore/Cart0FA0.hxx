@@ -47,7 +47,7 @@ class Cartridge0FA0 : public CartridgeEnhanced
       @param md5           The md5sum of the ROM image
       @param settings      A reference to the various settings (read-only)
     */
-    Cartridge0FA0(const ByteBuffer& image, size_t size, const string& md5,
+    Cartridge0FA0(const ByteBuffer& image, size_t size, string_view md5,
       const Settings& settings);
     ~Cartridge0FA0() override = default;
 

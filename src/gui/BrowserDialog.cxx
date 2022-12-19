@@ -112,7 +112,7 @@ BrowserDialog::BrowserDialog(GuiObject* boss, const GUI::Font& font,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // static
 void BrowserDialog::show(GuiObject* parent, const GUI::Font& font,
-                         const string& title, const string& startpath,
+                         string_view title, string_view startpath,
                          BrowserDialog::Mode mode,
                          const Command& command,
                          const FSNode::NameFilter& namefilter)
@@ -133,7 +133,7 @@ void BrowserDialog::show(GuiObject* parent, const GUI::Font& font,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // static
 void BrowserDialog::show(GuiObject* parent,
-                         const string& title, const string& startpath,
+                         string_view title, string_view startpath,
                          BrowserDialog::Mode mode,
                          const Command& command,
                          const FSNode::NameFilter& namefilter)
@@ -150,7 +150,7 @@ void BrowserDialog::hide()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void BrowserDialog::show(const string& startpath,
+void BrowserDialog::show(string_view startpath,
                          BrowserDialog::Mode mode,
                          const Command& command,
                          const FSNode::NameFilter& namefilter)

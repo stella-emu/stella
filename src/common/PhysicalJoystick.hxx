@@ -48,14 +48,15 @@ class PhysicalJoystick
     nlohmann::json getMap() const;
     bool setMap(const nlohmann::json& map);
 
-    static nlohmann::json convertLegacyMapping(const string& mapping, const string& name);
+    static nlohmann::json convertLegacyMapping(string_view mapping,
+                                               string_view name);
 
     void eraseMap(EventMode mode);
     void eraseEvent(Event::Type event, EventMode mode);
     string about() const;
 
   protected:
-    void initialize(int index, const string& desc,
+    void initialize(int index, string_view desc,
                     int axes, int buttons, int hats, int balls);
 
   private:
@@ -76,7 +77,7 @@ class PhysicalJoystick
     JoyMap joyMap;
 
   private:
-    static void getValues(const string& list, IntArray& map);
+    static void getValues(string_view list, IntArray& map);
 
     friend ostream& operator<<(ostream& os, const PhysicalJoystick& s) {
       os << "  ID: " << s.ID << ", name: " << s.name << ", numaxis: " << s.numAxes

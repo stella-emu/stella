@@ -38,8 +38,8 @@ class CartDebugWidget : public Widget, public CommandSender
     ~CartDebugWidget() override = default;
 
   public:
-    int addBaseInformation(size_t bytes, const string& manufacturer,
-        const string& desc, const uInt16 maxlines = 10);
+    int addBaseInformation(size_t bytes, string_view manufacturer,
+        string_view desc, const uInt16 maxlines = 10);
 
     // Inform the ROM Widget that the underlying cart has somehow changed
     void invalidate();

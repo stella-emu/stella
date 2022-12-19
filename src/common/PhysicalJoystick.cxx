@@ -32,7 +32,7 @@ namespace {
     return json(eventMode).get<string>();
   }
 
-  EventMode eventModeFromJsonName(const string& name) {
+  EventMode eventModeFromJsonName(string_view name) {
     EventMode result{};
 
     from_json(json(name), result);
@@ -42,7 +42,7 @@ namespace {
 } // namespace
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PhysicalJoystick::initialize(int index, const string& desc,
+void PhysicalJoystick::initialize(int index, string_view desc,
             int axes, int buttons, int hats, int /*balls*/)
 {
   ID = index;
@@ -108,9 +108,9 @@ bool PhysicalJoystick::setMap(const json& map)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-json PhysicalJoystick::convertLegacyMapping(const string& mapping, const string& name)
+json PhysicalJoystick::convertLegacyMapping(string_view mapping, string_view name)
 {
-  istringstream buf(mapping);
+  istringstream buf(string{mapping});  // TODO: fixed in C++20
   json convertedMapping = json::object();
   string map;
 
@@ -152,10 +152,10 @@ void PhysicalJoystick::eraseEvent(Event::Type event, EventMode mode)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PhysicalJoystick::getValues(const string& list, IntArray& map)
+void PhysicalJoystick::getValues(string_view list, IntArray& map)
 {
   map.clear();
-  istringstream buf(list);
+  istringstream buf(string{list});  // TODO: fixed in C++20
 
   int value{0};
   buf >> value;  // we don't need to know the # of items at this point

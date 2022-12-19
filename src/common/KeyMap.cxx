@@ -286,12 +286,13 @@ int KeyMap::loadMapping(const json& mappings, const EventMode mode) {
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-json KeyMap::convertLegacyMapping(string list)
+json KeyMap::convertLegacyMapping(string_view lm)
 {
   json convertedMapping = json::array();
 
   // Since istringstream swallows whitespace, we have to make the
   // delimiters be spaces
+  string list{lm};
   std::replace(list.begin(), list.end(), '|', ' ');
   std::replace(list.begin(), list.end(), ':', ' ');
   std::replace(list.begin(), list.end(), ',', ' ');

@@ -118,7 +118,7 @@ class CartridgeCTY : public Cartridge
       @param md5       The md5sum of the ROM image
       @param settings  A reference to the settings object
     */
-    CartridgeCTY(const ByteBuffer& image, size_t size, const string& md5,
+    CartridgeCTY(const ByteBuffer& image, size_t size, string_view md5,
                  const Settings& settings);
     ~CartridgeCTY() override = default;
 

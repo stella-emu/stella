@@ -46,7 +46,7 @@ class Cartridge4K : public CartridgeEnhanced
       @param settings  A reference to the various settings (read-only)
       @param bsSize    The size specified by the bankswitching scheme
     */
-    Cartridge4K(const ByteBuffer& image, size_t size, const string& md5,
+    Cartridge4K(const ByteBuffer& image, size_t size, string_view md5,
                 const Settings& settings, size_t bsSize = 4_KB);
     ~Cartridge4K() override = default;
 

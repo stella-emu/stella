@@ -24,8 +24,9 @@ string Bankswitch::typeToName(Bankswitch::Type type)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Bankswitch::Type Bankswitch::nameToType(const string& name)
+Bankswitch::Type Bankswitch::nameToType(string_view n)  // FIXME: name
 {
+  string name{n};
   const auto it = ourNameToTypes.find(name);
   if(it != ourNameToTypes.end())
     return it->second;

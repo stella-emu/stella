@@ -72,7 +72,7 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 unique_ptr<Cartridge> CartCreator::create(const FSNode& file,
     const ByteBuffer& image, size_t size, string& md5,
-    const string& dtype, Settings& settings)
+    string_view dtype, Settings& settings)
 {
   unique_ptr<Cartridge> cartridge;
   Bankswitch::Type type = Bankswitch::nameToType(dtype),
@@ -224,8 +224,9 @@ CartCreator::createFromMultiCart(const ByteBuffer& image, size_t& size,
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 unique_ptr<Cartridge>
-CartCreator::createFromImage(const ByteBuffer& image, size_t size, Bankswitch::Type type,
-                             const string& md5, Settings& settings)
+CartCreator::createFromImage(const ByteBuffer& image, size_t size,
+                             Bankswitch::Type type, string_view md5,
+                             Settings& settings)
 {
   // We should know the cart's type by now so let's create it
   switch(type)
