@@ -207,7 +207,6 @@ Optional Features:
   --disable-png
   --enable-zip           enable/disable ZIP file support [enabled]
   --disable-zip
-  --use-system-sqlite    use libsqlite3 installed on system [disabled]
   --enable-windowed      enable/disable windowed rendering modes [enabled]
   --disable-windowed
   --enable-shared        build shared binary [enabled]
@@ -254,7 +253,6 @@ for ac_option in $@; do
       --disable-png)            _build_png=no        ;;
       --enable-zip)             _build_zip=yes       ;;
       --disable-zip)            _build_zip=no        ;;
-      --use-system-sqlite)      _build_sqlite3=no    ;;
       --enable-windowed)        _build_windowed=yes  ;;
       --disable-windowed)       _build_windowed=no   ;;
       --enable-shared)          _build_static=no     ;;
@@ -662,9 +660,9 @@ fi
 #
 # Check for sqlite3
 #
-_libsqlite3=no
 echocheck "libsqlite3"
-if test "$_build_sqlite3" = no ; then
+if test "$_build_sqlite3" = yes ; then
+  _libsqlite3=no
   cat > $TMPC << EOF
 #include <stdio.h>
 #include <sqlite3.h>
@@ -673,7 +671,7 @@ EOF
   cc_check $LDFLAGS $CXXFLAGS `pkg-config --libs sqlite3` && _libsqlite3=yes
 
   if test "$_libsqlite3" = yes ; then
-    echo "$_libsqlite3 (WIP, not complete)"
+    echo "$_libsqlite3"
   else
     echo "built-in"
     _build_sqlite3=yes
