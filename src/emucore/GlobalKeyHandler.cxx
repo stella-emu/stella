@@ -169,6 +169,7 @@ bool GlobalKeyHandler::isJoystick(const Controller& controller)
   return controller.type() == Controller::Type::Joystick
     || controller.type() == Controller::Type::BoosterGrip
     || controller.type() == Controller::Type::Genesis
+    || controller.type() == Controller::Type::Joy2BPlus
     || (controller.type() == Controller::Type::QuadTari
       && (isJoystick(static_cast<const QuadTari*>(&controller)->firstController())
       || isJoystick(static_cast<const QuadTari*>(&controller)->secondController())));

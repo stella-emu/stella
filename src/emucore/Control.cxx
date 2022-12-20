@@ -127,7 +127,7 @@ string Controller::getPropName(const Type type)
     "AMIGAMOUSE", "ATARIMOUSE", "ATARIVOX", "BOOSTERGRIP", "COMPUMATE",
     "DRIVING", "GENESIS", "JOYSTICK", "KEYBOARD", "KIDVID", "MINDLINK",
     "PADDLES", "PADDLES_IAXIS", "PADDLES_IAXDR", "SAVEKEY", "TRAKBALL",
-    "LIGHTGUN", "QUADTARI", "JOY2B+"
+    "LIGHTGUN", "QUADTARI", "JOY_2B+"
   };
 
   return PROP_NAMES[static_cast<int>(type)];
