@@ -40,11 +40,10 @@ void PNGLibrary::loadImage(const string& filename, FBSurface& surface, VariantLi
   png_uint_32 iwidth{0}, iheight{0};
   int bit_depth{0}, color_type{0}, interlace_type{0};
 
-  const auto loadImageERROR = [&](const char* s) {
+  const auto loadImageERROR = [&](string_view s) {
     if(png_ptr)
       png_destroy_read_struct(&png_ptr, info_ptr ? &info_ptr : nullptr, nullptr);
-    if(s)
-      throw runtime_error(s);
+    throw runtime_error(string{s});
   };
 
   std::ifstream in(filename, std::ios_base::binary);
@@ -186,11 +185,10 @@ void PNGLibrary::saveImageToDisk(std::ofstream& out, const vector<png_bytep>& ro
   png_structp png_ptr{nullptr};
   png_infop info_ptr{nullptr};
 
-  const auto saveImageERROR = [&](const char* s) {
+  const auto saveImageERROR = [&](string_view s) {
     if(png_ptr)
       png_destroy_write_struct(&png_ptr, &info_ptr);
-    if(s)
-      throw runtime_error(s);
+    throw runtime_error(string{s});
   };
 
   // Create the PNG saving context structure

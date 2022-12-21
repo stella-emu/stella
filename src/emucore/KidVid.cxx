@@ -71,7 +71,8 @@ void KidVid::update()
     const uInt32 songLength = ourSongStart[temp + 1] - ourSongStart[temp] - (262 * ClickFrames);
 
     // Play the remaining WAV file
-    const string& fileName = myOSystem.baseDir().getPath() + ((temp < 10) ? "KVSHARED.WAV" : getFileName());
+    const string& fileName = myOSystem.baseDir().getPath() +
+      ((temp < 10) ? "KVSHARED.WAV": getFileName());
     myOSystem.sound().playWav(fileName, ourSongStart[temp] + (songLength - mySongLength), mySongLength);
 
     myContinueSong = false;
@@ -118,7 +119,7 @@ void KidVid::update()
     if(myTape)
     {
       static constexpr uInt32 gameNumber[4] = { 3, 1, 2, 3 };
-      static constexpr const char* const gameName[6] = {
+      static constexpr string_view gameName[6] = {
         "Harmony Smurf", "Handy Smurf", "Greedy Smurf",
         "Big Number Hunt", "Great Letter Roundup", "Spooky Spelling Bee"
       };

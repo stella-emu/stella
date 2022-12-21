@@ -195,13 +195,11 @@ class DiStella
       Enumeration of the 6502 read/write mode
       (if the opcode is reading or writing its operand)
     */
-    enum class RWMode : uInt8
-    {
-      READ, WRITE, NONE
-    };
+    enum class RWMode : uInt8 { READ, WRITE, NONE };
 
-    struct Instruction_tag {
-      const char* const mnemonic{nullptr};
+    struct Instruction_tag
+    {
+      string_view    mnemonic;
       AddressingMode addr_mode{AddressingMode::IMPLIED};
       AccessMode     source{AccessMode::NONE};
       RWMode         rw_mode{RWMode::NONE};

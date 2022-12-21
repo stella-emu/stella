@@ -257,7 +257,8 @@ void TIASurface::changeScanlineIntensity(int direction)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 TIASurface::ScanlineMask TIASurface::scanlineMaskType(int direction)
 {
-  const string Masks[static_cast<int>(ScanlineMask::NumMasks)] = {
+  static constexpr
+  std::array<string_view, static_cast<int>(ScanlineMask::NumMasks)> Masks = {
     SETTING_STANDARD,
     SETTING_THIN,
     SETTING_PIXELS,
@@ -286,7 +287,8 @@ TIASurface::ScanlineMask TIASurface::scanlineMaskType(int direction)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TIASurface::cycleScanlineMask(int direction)
 {
-  const string Names[static_cast<int>(ScanlineMask::NumMasks)] = {
+  static constexpr
+  std::array<string_view, static_cast<int>(ScanlineMask::NumMasks)> Names = {
     "Standard",
     "Thin lines",
     "Pixelated",

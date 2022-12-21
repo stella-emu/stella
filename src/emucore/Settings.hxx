@@ -52,7 +52,7 @@ class Settings
     using Options = std::map<string, Variant, std::less<>>;
 
     static constexpr int SETTINGS_VERSION = 1;
-    static constexpr const char* SETTINGS_VERSION_KEY = "settings.version";
+    static constexpr string_view SETTINGS_VERSION_KEY = "settings.version";
 
   public:
     /**

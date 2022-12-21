@@ -46,11 +46,11 @@ class TIASurface
 {
   public:
     // Setting names of palette types
-    static constexpr const char* SETTING_STANDARD = "standard";
-    static constexpr const char* SETTING_THIN     = "thin";
-    static constexpr const char* SETTING_PIXELS   = "pixels";
-    static constexpr const char* SETTING_APERTURE = "aperture";
-    static constexpr const char* SETTING_MAME     = "mame";
+    static constexpr string_view SETTING_STANDARD = "standard";
+    static constexpr string_view SETTING_THIN     = "thin";
+    static constexpr string_view SETTING_PIXELS   = "pixels";
+    static constexpr string_view SETTING_APERTURE = "aperture";
+    static constexpr string_view SETTING_MAME     = "mame";
 
     /**
       Creates a new TIASurface object

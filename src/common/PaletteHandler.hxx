@@ -27,10 +27,10 @@ class PaletteHandler
 {
   public:
     // Setting names of palette types
-    static constexpr const char* SETTING_STANDARD = "standard";
-    static constexpr const char* SETTING_Z26 = "z26";
-    static constexpr const char* SETTING_USER = "user";
-    static constexpr const char* SETTING_CUSTOM = "custom";
+    static constexpr string_view SETTING_STANDARD = "standard";
+    static constexpr string_view SETTING_Z26 = "z26";
+    static constexpr string_view SETTING_USER = "user";
+    static constexpr string_view SETTING_CUSTOM = "custom";
 
     // Phase shift default and limits
     static constexpr float DEF_NTSC_SHIFT = 26.2F;
@@ -187,7 +187,7 @@ class PaletteHandler
 
       @return  The palette's settings name
     */
-    static string toPaletteName(PaletteType type);
+    static string_view toPaletteName(PaletteType type);
 
     /**
       Display current adjustable with gauge bar message
@@ -260,7 +260,7 @@ class PaletteHandler
     uInt32 myCurrentAdjustable{0};
 
     struct AdjustableTag {
-      const char* const name{nullptr};
+      string_view name;
       float* value{nullptr};
     };
     const std::array<AdjustableTag, NUM_ADJUSTABLES> myAdjustables =
