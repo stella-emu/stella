@@ -24,8 +24,8 @@
 #include "LauncherFileListWidget.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-LauncherFileListWidget::LauncherFileListWidget(GuiObject* boss, const GUI::Font& font,
-  int x, int y, int w, int h)
+LauncherFileListWidget::LauncherFileListWidget(GuiObject* boss,
+    const GUI::Font& font, int x, int y, int w, int h)
   : FileListWidget(boss, font, x, y, w, h)
 {
   // This widget is special, in that it catches signals and redirects them

@@ -498,24 +498,31 @@ class AbstractFSNode
      */
     virtual size_t write(const stringstream& buffer) const { return 0; }
 
+  protected:
     /**
      * Returns the last component of a given path.
      *
-     * @param str  String containing the path.
-     * @return  Pointer to the first char of the last component inside str.
+     * @param s  String containing the path.
+     * @return   View of the last component inside s.
      */
-    static const char* lastPathComponent(string_view str)
+    static constexpr string_view lastPathComponent(string_view s)
     {
-      if(str.empty())
-        return "";
+      if(s.empty())  return EmptyString;
+      const auto pos = s.find_last_of("/\\", s.size() - 2);
+      return s.substr(pos + 1);
+    }
 
-      const char* const start = str.data();
-      const char* cur = start + str.size() - 2;
-
-      while (cur >= start && !(*cur == '/' || *cur == '\\'))
-        --cur;
-
-      return cur + 1;
+    /**
+     * Returns the part *before* the last component of a given path.
+     *
+     * @param s  String containing the path.
+     * @return   View of the preceding (before the last) component inside s.
+     */
+    static constexpr string_view stemPathComponent(string_view s)
+    {
+      if(s.empty())  return EmptyString;
+      const auto pos = s.find_last_of("/\\", s.size() - 2);
+      return s.substr(0, pos + 1);
     }
 };
 

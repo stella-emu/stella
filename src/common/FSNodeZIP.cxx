@@ -281,11 +281,8 @@ cerr << "\n\n\n";
     return _realNode ? _realNode->getParent() : nullptr;
   }
 
-  const char* const start = _path.c_str();
-  const char* const end = lastPathComponent(_path);
-
-cerr << "new zip: " << string(start, end - start - 1) << "\n\n\n";
-  return make_unique<FSNodeZIP>(string(start, end - start - 1));
+cerr << "new zip: " << stemPathComponent(_path) << "\n\n\n";
+  return make_unique<FSNodeZIP>(stemPathComponent(_path));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
