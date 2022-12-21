@@ -20,13 +20,12 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string Bankswitch::typeToName(Bankswitch::Type type)
 {
-  return BSList[static_cast<int>(type)].name;
+  return string{BSList[static_cast<int>(type)].name};
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Bankswitch::Type Bankswitch::nameToType(string_view n)  // FIXME: name
+Bankswitch::Type Bankswitch::nameToType(string_view name)
 {
-  string name{n};
   const auto it = ourNameToTypes.find(name);
   if(it != ourNameToTypes.end())
     return it->second;
@@ -37,17 +36,17 @@ Bankswitch::Type Bankswitch::nameToType(string_view n)  // FIXME: name
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string Bankswitch::typeToDesc(Bankswitch::Type type)
 {
-  return BSList[static_cast<int>(type)].desc;
+  return string{BSList[static_cast<int>(type)].desc};
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Bankswitch::Type Bankswitch::typeFromExtension(const FSNode& file)
 {
-  const string& name = file.getPath();
-  const string::size_type idx = name.find_last_of('.');
-  if(idx != string::npos)
+  const string_view name = file.getPath();
+  const auto idx = name.find_last_of('.');
+  if(idx != string_view::npos)
   {
-    const auto it = ourExtensions.find(name.c_str() + idx + 1);
+    const auto it = ourExtensions.find(name.substr(idx + 1));
     if(it != ourExtensions.end())
       return it->second;
   }
@@ -56,12 +55,12 @@ Bankswitch::Type Bankswitch::typeFromExtension(const FSNode& file)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool Bankswitch::isValidRomName(const string& name, string& ext)
+bool Bankswitch::isValidRomName(string_view name, string& ext)
 {
-  const string::size_type idx = name.find_last_of('.');
-  if(idx != string::npos)
+  const auto idx = name.find_last_of('.');
+  if(idx != string_view::npos)
   {
-    const char* const e = name.c_str() + idx + 1;
+    const auto e = name.substr(idx + 1);
     const auto it = ourExtensions.find(e);
     if(it != ourExtensions.end())
     {
@@ -73,27 +72,7 @@ bool Bankswitch::isValidRomName(const string& name, string& ext)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool Bankswitch::isValidRomName(const FSNode& name, string& ext)
-{
-  return isValidRomName(name.getPath(), ext);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool Bankswitch::isValidRomName(const FSNode& name)
-{
-  string ext;  // extension not used
-  return isValidRomName(name.getPath(), ext);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool Bankswitch::isValidRomName(const string& name)
-{
-  string ext;  // extension not used
-  return isValidRomName(name, ext);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-constexpr std::array<Bankswitch::Description, static_cast<int>(Bankswitch::Type::NumSchemes)>
+constexpr std::array<Bankswitch::Description, static_cast<uInt32>(Bankswitch::Type::NumSchemes)>
 Bankswitch::BSList = {{
   { "AUTO"    , "Auto-detect"                 },
   { "0840"    , "0840 (8K EconoBanking)"      },
@@ -154,8 +133,8 @@ Bankswitch::BSList = {{
 #endif
 }};
 
-#if defined(GUI_SUPPORT)
-const std::array<Bankswitch::SizesType, static_cast<int>(Bankswitch::Type::NumSchemes)>
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+const std::array<Bankswitch::SizesType, static_cast<uInt32>(Bankswitch::Type::NumSchemes)>
 Bankswitch::Sizes = {{
   { Bankswitch::any_KB, Bankswitch::any_KB }, // _AUTO
   {    8_KB,   8_KB }, // _0840
@@ -215,7 +194,6 @@ Bankswitch::Sizes = {{
   { Bankswitch::any_KB, Bankswitch::any_KB }
 #endif
 }};
-#endif  // GUI_SUPPORT
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Bankswitch::ExtensionMap Bankswitch::ourExtensions = {
