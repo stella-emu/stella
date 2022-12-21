@@ -42,8 +42,13 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
   const int fontWidth  = lfont.getMaxCharWidth(),
             fontHeight = lfont.getFontHeight(),
             lineHeight = lfont.getLineHeight(),
-            buttonW = 7 * fontWidth;
-  int xpos = 10, ypos = 10, buttonX = 0, buttonY = 0;
+            buttonW = 7 * fontWidth,
+            buttonH = lineHeight,
+            hGap = fontWidth,
+            vGap = fontHeight / 2,
+            hBorder = 10,
+            vBorder = 10;
+  int xpos = hBorder, ypos = vBorder, buttonX, buttonY;
   StaticTextWidget* t = nullptr;
   ButtonWidget* b = nullptr;
 
@@ -56,51 +61,48 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
   myVSync->setTarget(this);
   addFocusWidget(myVSync);
 
-  buttonX += myVSync->getRight() + 15;
+  buttonX += myVSync->getRight() + hGap * 2;
   myVBlank = new CheckboxWidget(boss, lfont, buttonX, buttonY, "VBlank", kVBlankCmd);
   myVBlank->setTarget(this);
   addFocusWidget(myVBlank);
 
-  ypos += lineHeight * 2 + 6;
-
   // Color registers
+  ypos = vBorder + lineHeight * 2 + vGap / 2;
   static constexpr std::array<const char*, 4> regNames = {
     "COLUP0", "COLUP1", "COLUPF", "COLUBK"
   };
   for(int row = 0; row < 4; ++row)
-  {
-    new StaticTextWidget(boss, lfont, xpos, ypos + row*lineHeight + 2,
-                         6*fontWidth, fontHeight, regNames[row], TextAlign::Left);
-  }
-  xpos += 6*fontWidth + 8;
+    new StaticTextWidget(boss, lfont, xpos, ypos + row * lineHeight + 2,
+                         regNames[row]);
+  xpos += 6 * fontWidth + hGap;
   myColorRegs = new DataGridWidget(boss, nfont, xpos, ypos,
                                    1, 4, 2, 8, Common::Base::Fmt::_16);
   myColorRegs->setTarget(this);
   myColorRegs->setID(kColorRegsID);
   addFocusWidget(myColorRegs);
 
-  xpos += myColorRegs->colWidth() + 5;
-  myCOLUP0Color = new ColorWidget(boss, nfont, xpos, ypos+2,
-    static_cast<uInt32>(1.5*lineHeight), lineHeight - 4);
+  xpos += myColorRegs->colWidth() + hGap / 2;
+  myCOLUP0Color = new ColorWidget(boss, nfont, xpos, ypos + 2,
+                                  static_cast<uInt32>(1.5 * lineHeight), lineHeight - 4);
   myCOLUP0Color->setTarget(this);
 
   ypos += lineHeight;
-  myCOLUP1Color = new ColorWidget(boss, nfont, xpos, ypos+2,
-    static_cast<uInt32>(1.5*lineHeight), lineHeight - 4);
+  myCOLUP1Color = new ColorWidget(boss, nfont, xpos, ypos + 2,
+                                  static_cast<uInt32>(1.5 * lineHeight), lineHeight - 4);
   myCOLUP1Color->setTarget(this);
 
   ypos += lineHeight;
-  myCOLUPFColor = new ColorWidget(boss, nfont, xpos, ypos+2,
-    static_cast<uInt32>(1.5*lineHeight), lineHeight - 4);
+  myCOLUPFColor = new ColorWidget(boss, nfont, xpos, ypos + 2,
+                                  static_cast<uInt32>(1.5 * lineHeight), lineHeight - 4);
   myCOLUPFColor->setTarget(this);
 
   ypos += lineHeight;
-  myCOLUBKColor = new ColorWidget(boss, nfont, xpos, ypos+2,
-    static_cast<uInt32>(1.5*lineHeight), lineHeight - 4);
+  myCOLUBKColor = new ColorWidget(boss, nfont, xpos, ypos + 2,
+                                  static_cast<uInt32>(1.5 * lineHeight), lineHeight - 4);
   myCOLUBKColor->setTarget(this);
 
   // Fixed debug colors
-  xpos += myCOLUP0Color->getWidth() + 30;  ypos = 10 + lineHeight + 6;
+  xpos = myCOLUP0Color->getRight() + hGap * 4;  ypos = vBorder + lineHeight + vGap / 2;
   myFixedEnabled = new CheckboxWidget(boss, lfont, xpos, ypos, "Debug Colors", kDbgClCmd);
   myFixedEnabled->setToolTip("Enable fixed debug colors", Event::ToggleFixedColors);
   myFixedEnabled->setTarget(this);
@@ -112,74 +114,58 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
   for(uInt32 row = 0; row <= 3; ++row)
   {
     ypos += lineHeight;
-    t = new StaticTextWidget(boss, lfont, xpos, ypos + 2, 2*fontWidth, fontHeight,
-                             dbgLabels[row], TextAlign::Left);
-    myFixedColors[row] = new ColorWidget(boss, nfont, xpos + 2 + t->getWidth() + 4,
-        ypos + 2, static_cast<uInt32>(1.5*lineHeight), lineHeight - 4);
+    t = new StaticTextWidget(boss, lfont, xpos, ypos + 2, dbgLabels[row]);
+    myFixedColors[row] = new ColorWidget(boss, nfont, t->getRight() + hGap,
+                                         ypos + 2, static_cast<uInt32>(1.5 * lineHeight), lineHeight - 4);
     myFixedColors[row]->setTarget(this);
   }
-  xpos += t->getWidth() + myFixedColors[0]->getWidth() + 24;
-  ypos = 10 + lineHeight + 6;
+  xpos = myFixedColors[0]->getRight() + hGap * 2;
+  ypos = vBorder + lineHeight + vGap / 2;
   for(uInt32 row = 4; row <= 7; ++row)
   {
     ypos += lineHeight;
-    t = new StaticTextWidget(boss, lfont, xpos, ypos + 2, 2*fontWidth, fontHeight,
-                             dbgLabels[row], TextAlign::Left);
-    myFixedColors[row] = new ColorWidget(boss, nfont, xpos + 2 + t->getWidth() + 4,
-        ypos + 2, static_cast<uInt32>(1.5*lineHeight), lineHeight - 4);
+    t = new StaticTextWidget(boss, lfont, xpos, ypos + 2, dbgLabels[row]);
+    myFixedColors[row] = new ColorWidget(boss, nfont, t->getRight() + hGap,
+                                         ypos + 2, static_cast<uInt32>(1.5 * lineHeight), lineHeight - 4);
     myFixedColors[row]->setTarget(this);
   }
 
   ////////////////////////////
   // Collision register bits
   ////////////////////////////
-  xpos += myFixedColors[0]->getWidth() + 2*fontWidth + 60;  ypos = 10;
+  xpos = myFixedColors[4]->getRight() + 6 * hGap;  ypos = vBorder + lineHeight;
 
   // Add all 15 collision bits (with labels)
-  uInt32 cxclrY = 0;
-  xpos -= 2*fontWidth + 5;  ypos += lineHeight;
   static constexpr std::array<const char*, 5> rowLabel = { "P0", "P1", "M0", "M1", "BL" };
   static constexpr std::array<const char*, 5> colLabel = { "PF", "BL", "M1", "M0", "P1" };
-  const uInt32 lwidth = 2 * fontWidth;
-  int collX = xpos + lwidth + 5, collY = ypos, idx = 0;
+  int idx = 0;
   for(uInt32 row = 0; row < 5; ++row)
   {
     // Add vertical label
-    new StaticTextWidget(boss, lfont, xpos, ypos + row*(lineHeight+3),
-                         2*fontWidth, fontHeight,
-                         rowLabel[row], TextAlign::Left);
+    t = new StaticTextWidget(boss, lfont, xpos, ypos, rowLabel[row]);
+    int collX = t->getRight() + hGap;
 
     for(uInt32 col = 0; col < 5 - row; ++col, ++idx)
     {
-      myCollision[idx] = new CheckboxWidget(boss, lfont, collX, collY, "", CheckboxWidget::kCheckActionCmd);
+      myCollision[idx] = new CheckboxWidget(boss, lfont, collX, ypos, "", CheckboxWidget::kCheckActionCmd);
       myCollision[idx]->setTarget(this);
       myCollision[idx]->setID(idx);
 
-      // We need to know where the PF_BL register is, to properly position
-      // the CXCLR button
-      if(idx == kBL_PFID)
-        cxclrY = collY;
-
-      // Add horizontal label
-      uInt32 labelx = collX;
-      if(lwidth > static_cast<uInt32>(myCollision[idx]->getWidth()))
-        labelx -= (lwidth - myCollision[idx]->getWidth()) / 2;
-      else
-        labelx += (myCollision[idx]->getWidth() - lwidth) / 2;
-
-      new StaticTextWidget(boss, lfont, labelx, ypos-lineHeight, lwidth, fontHeight,
-                           colLabel[col], TextAlign::Left);
-
-      collX += myCollision[idx]->getWidth() + 10;
+      if(row == 0)
+      {
+        // Add centered horizontal label
+        int labelx = collX - (2 * fontWidth - myCollision[idx]->getWidth()) / 2;
+        new StaticTextWidget(boss, lfont, labelx, ypos - lineHeight, colLabel[col]);
+      }
+      collX += fontWidth * 2 + hGap;
     }
-    collX = xpos + lwidth + 5;
-    collY += lineHeight+3;
+    ypos += lineHeight + 3; // constant gap for all font sizes because checkboxes have the same size too
   }
 
   // Clear all collision bits
-  buttonX = collX + 5*(myCollision[0]->getWidth() + 10) - buttonW - 10;
-  buttonY = lineHeight == 15 ? cxclrY : cxclrY - 4;
-  b = new ButtonWidget(boss, lfont, buttonX, buttonY, buttonW, lineHeight,
+  buttonX = myCollision[kP0_P1ID]->getRight() - buttonW;
+  buttonY = myCollision[kBL_PFID]->getBottom() - buttonH;
+  b = new ButtonWidget(boss, lfont, buttonX, buttonY, buttonW, buttonH,
                        "CXCLR", kCxclrCmd);
   b->setTarget(this);
   addFocusWidget(b);
@@ -188,22 +174,17 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
   // P0 register info
   ////////////////////////////
   // grP0 (new)
-  xpos = 10;  ypos = collY + 4;
-  new StaticTextWidget(boss, lfont, xpos, ypos+2, 2*fontWidth, fontHeight,
-                       "P0", TextAlign::Left);
-  xpos += 2*fontWidth + 5;
-  myGRP0 = new TogglePixelWidget(boss, nfont, xpos, ypos+1, 8, 1);
+  ypos = std::max(myFixedColors[3]->getBottom(), b->getBottom()) + vGap * 1.5;
+  t = new StaticTextWidget(boss, lfont, hBorder, ypos + 2, "P0");
+  myGRP0 = new TogglePixelWidget(boss, nfont, t->getRight() + hGap, ypos + 1, 8, 1);
   myGRP0->setTarget(this);
   myGRP0->setID(kGRP0ID);
   myGRP0->clearBackgroundColor();
   addFocusWidget(myGRP0);
 
   // posP0
-  xpos += myGRP0->getWidth() + 12;
-  t = new StaticTextWidget(boss, lfont, xpos, ypos+2, 4*fontWidth, fontHeight,
-                           "Pos#", TextAlign::Left);
-  xpos += t->getWidth() + 2;
-  myPosP0 = new DataGridWidget(boss, nfont, xpos, ypos,
+  t = new StaticTextWidget(boss, lfont, myGRP0->getRight() + hGap * 1.5, ypos + 2, "Pos#");
+  myPosP0 = new DataGridWidget(boss, nfont, t->getRight() + hGap / 2, ypos,
                                1, 1, 3, 8, Common::Base::Fmt::_10);
   myPosP0->setTarget(this);
   myPosP0->setID(kPosP0ID);
@@ -211,84 +192,69 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
   addFocusWidget(myPosP0);
 
   // hmP0
-  xpos += myPosP0->getWidth() + fontWidth + 12;
-  new StaticTextWidget(boss, lfont, xpos, ypos+2, 2*fontWidth, fontHeight,
-                       "HM", TextAlign::Left);
-  xpos += 2*fontWidth + 5;
-  myHMP0 = new DataGridWidget(boss, nfont, xpos, ypos,
+  t = new StaticTextWidget(boss, lfont, myPosP0->getRight() + hGap * 3, ypos + 2, "HM");
+  myHMP0 = new DataGridWidget(boss, nfont, t->getRight() + hGap / 2, ypos,
                               1, 1, 1, 4, Common::Base::Fmt::_16_1);
   myHMP0->setTarget(this);
   myHMP0->setID(kHMP0ID);
   addFocusWidget(myHMP0);
 
   // P0 reflect
-  xpos += myHMP0->getWidth() + 15;
-  myRefP0 = new CheckboxWidget(boss, lfont, xpos, ypos+1,
+  myRefP0 = new CheckboxWidget(boss, lfont, myHMP0->getRight() + hGap * 2, ypos + 1,
                                "Reflect", CheckboxWidget::kCheckActionCmd);
   myRefP0->setTarget(this);
   myRefP0->setID(kRefP0ID);
   addFocusWidget(myRefP0);
 
   // P0 reset
-  xpos += myRefP0->getWidth() + 12;
-  buttonX = xpos;
-  b = new ButtonWidget(boss, lfont, xpos, ypos, buttonW, lineHeight,
+  buttonX = myRefP0->getRight() + hGap * 2;
+  b = new ButtonWidget(boss, lfont, buttonX, ypos, buttonW, buttonH,
                        "RESP0", kResP0Cmd);
   b->setTarget(this);
   addFocusWidget(b);
 
   // grP0 (old)
-  xpos = 10 + 2*fontWidth + 5;  ypos += myGRP0->getHeight() + 5;
-  myGRP0Old = new TogglePixelWidget(boss, nfont, xpos, ypos+1, 8, 1);
+  ypos += myGRP0->getHeight() + vGap / 2;
+  myGRP0Old = new TogglePixelWidget(boss, nfont, myGRP0->getLeft(), ypos + 1, 8, 1);
   myGRP0Old->setTarget(this);
   myGRP0Old->setID(kGRP0OldID);
   myGRP0Old->clearBackgroundColor();
   addFocusWidget(myGRP0Old);
 
   // P0 delay
-  xpos += myGRP0Old->getWidth() + 12;
-  myDelP0 = new CheckboxWidget(boss, lfont, xpos, ypos+1,
+  myDelP0 = new CheckboxWidget(boss, lfont, myGRP0Old->getRight() + hGap * 1.5, ypos + 2,
                                "VDel", CheckboxWidget::kCheckActionCmd);
   myDelP0->setTarget(this);
   myDelP0->setID(kDelP0ID);
   addFocusWidget(myDelP0);
 
   // NUSIZ0 (player portion)
-  xpos += myDelP0->getWidth() + 12;
-  new StaticTextWidget(boss, lfont, xpos, ypos+2, 5*fontWidth, fontHeight,
-                       "NuSiz", TextAlign::Left);
-  xpos += 5*fontWidth + 5;
-  myNusizP0 = new DataGridWidget(boss, nfont, xpos, ypos,
+  new StaticTextWidget(boss, lfont, myHMP0->getLeft() - fontWidth * 5 - hGap / 2, ypos + 2, "NuSiz");
+  myNusizP0 = new DataGridWidget(boss, nfont, myHMP0->getLeft(), ypos,
                                  1, 1, 1, 3, Common::Base::Fmt::_16_1);
   myNusizP0->setTarget(this);
   myNusizP0->setID(kNusizP0ID);
   addFocusWidget(myNusizP0);
 
-  xpos += myNusizP0->getWidth() + 5;
-  myNusizP0Text = new EditTextWidget(boss, nfont, xpos, ypos, 21*fontWidth,
-                                     lineHeight, "");
+  myNusizP0Text = new EditTextWidget(boss, nfont, myNusizP0->getRight() + hGap / 2, ypos,
+                                     21 * fontWidth, lineHeight);
   myNusizP0Text->setEditable(false, true);
 
   ////////////////////////////
   // P1 register info
   ////////////////////////////
   // grP1 (new)
-  xpos = 10;  ypos += lineHeight + 12;
-  new StaticTextWidget(boss, lfont, xpos, ypos+2, 2*fontWidth, fontHeight,
-                       "P1", TextAlign::Left);
-  xpos += 2*fontWidth + 5;
-  myGRP1 = new TogglePixelWidget(boss, nfont, xpos, ypos+1, 8, 1);
+  ypos += lineHeight + vGap * 1.5;
+  t = new StaticTextWidget(boss, lfont, hBorder, ypos + 2, "P1");
+  myGRP1 = new TogglePixelWidget(boss, nfont, t->getRight() + hGap, ypos + 1, 8, 1);
   myGRP1->setTarget(this);
   myGRP1->setID(kGRP1ID);
   myGRP1->clearBackgroundColor();
   addFocusWidget(myGRP1);
 
   // posP1
-  xpos += myGRP1->getWidth() + 12;
-  t = new StaticTextWidget(boss, lfont, xpos, ypos+2, 4*fontWidth, fontHeight,
-                           "Pos#", TextAlign::Left);
-  xpos += t->getWidth() + 2;
-  myPosP1 = new DataGridWidget(boss, nfont, xpos, ypos,
+  t = new StaticTextWidget(boss, lfont, myGRP1->getRight() + hGap * 1.5, ypos + 2, "Pos#");
+  myPosP1 = new DataGridWidget(boss, nfont, t->getRight() + hGap / 2, ypos,
                                1, 1, 3, 8, Common::Base::Fmt::_10);
   myPosP1->setTarget(this);
   myPosP1->setID(kPosP1ID);
@@ -296,83 +262,68 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
   addFocusWidget(myPosP1);
 
   // hmP1
-  xpos += myPosP1->getWidth() + fontWidth + 12;
-  new StaticTextWidget(boss, lfont, xpos, ypos+2, 2*fontWidth, fontHeight,
-                       "HM", TextAlign::Left);
-  xpos += 2*fontWidth + 5;
-  myHMP1 = new DataGridWidget(boss, nfont, xpos, ypos,
+  t = new StaticTextWidget(boss, lfont, myPosP1->getRight() + hGap * 3, ypos + 2, "HM");
+  myHMP1 = new DataGridWidget(boss, nfont, t->getRight() + hGap / 2, ypos,
                               1, 1, 1, 4, Common::Base::Fmt::_16_1);
   myHMP1->setTarget(this);
   myHMP1->setID(kHMP1ID);
   addFocusWidget(myHMP1);
 
   // P1 reflect
-  xpos += myHMP1->getWidth() + 15;
-  myRefP1 = new CheckboxWidget(boss, lfont, xpos, ypos+1,
+  myRefP1 = new CheckboxWidget(boss, lfont, myHMP1->getRight() + hGap * 2, ypos + 1,
                                "Reflect", CheckboxWidget::kCheckActionCmd);
   myRefP1->setTarget(this);
   myRefP1->setID(kRefP1ID);
   addFocusWidget(myRefP1);
 
   // P1 reset
-  xpos += myRefP1->getWidth() + 12;
-  b = new ButtonWidget(boss, lfont, xpos, ypos, buttonW, lineHeight,
-                       "RESP1", kResP1Cmd);
+  b = new ButtonWidget(boss, lfont, myRefP1->getRight() + hGap * 2, ypos,
+                       buttonW, buttonH, "RESP1", kResP1Cmd);
   b->setTarget(this);
   addFocusWidget(b);
 
   // grP1 (old)
-  xpos = 10 + 2*fontWidth + 5;  ypos += myGRP1->getHeight() + 5;
-  myGRP1Old = new TogglePixelWidget(boss, nfont, xpos, ypos+1, 8, 1);
+  ypos += myGRP1->getHeight() + vGap / 2;
+  myGRP1Old = new TogglePixelWidget(boss, nfont, myGRP1->getLeft(), ypos + 1, 8, 1);
   myGRP1Old->setTarget(this);
   myGRP1Old->setID(kGRP1OldID);
   myGRP1Old->clearBackgroundColor();
   addFocusWidget(myGRP1Old);
 
   // P1 delay
-  xpos += myGRP1Old->getWidth() + 12;
-  myDelP1 = new CheckboxWidget(boss, lfont, xpos, ypos+1,
+  myDelP1 = new CheckboxWidget(boss, lfont, myGRP1Old->getRight() + hGap * 1.5, ypos + 2,
                                "VDel", CheckboxWidget::kCheckActionCmd);
   myDelP1->setTarget(this);
   myDelP1->setID(kDelP1ID);
   addFocusWidget(myDelP1);
 
   // NUSIZ1 (player portion)
-  xpos += myDelP1->getWidth() + 12;
-  new StaticTextWidget(boss, lfont, xpos, ypos+2, 5*fontWidth, fontHeight,
-                       "NuSiz", TextAlign::Left);
-  xpos += 5*fontWidth + 5;
-  myNusizP1 = new DataGridWidget(boss, nfont, xpos, ypos,
+  new StaticTextWidget(boss, lfont, myHMP1->getLeft() - fontWidth * 5 - hGap / 2, ypos + 2, "NuSiz");
+  myNusizP1 = new DataGridWidget(boss, nfont, myHMP1->getLeft(), ypos,
                                  1, 1, 1, 3, Common::Base::Fmt::_16_1);
   myNusizP1->setTarget(this);
   myNusizP1->setID(kNusizP1ID);
   addFocusWidget(myNusizP1);
 
-  xpos += myNusizP1->getWidth() + 5;
-  myNusizP1Text = new EditTextWidget(boss, nfont, xpos, ypos, 21*fontWidth,
-                                     lineHeight, "");
+  myNusizP1Text = new EditTextWidget(boss, nfont, myNusizP1->getRight() + hGap / 2, ypos,
+                                     21 * fontWidth, lineHeight);
   myNusizP1Text->setEditable(false, true);
 
   ////////////////////////////
   // M0 register info
   ////////////////////////////
   // enaM0
-  xpos = 10;  ypos += lineHeight + 12;
-  new StaticTextWidget(boss, lfont, xpos, ypos+2, 2*fontWidth, fontHeight,
-                       "M0", TextAlign::Left);
-  xpos += 2*fontWidth + 5;
-  myEnaM0 = new TogglePixelWidget(boss, nfont, xpos, ypos+1, 1, 1);
+  ypos += lineHeight + vGap * 1.5;
+  t = new StaticTextWidget(boss, lfont, hBorder, ypos + 2, "M0");
+  myEnaM0 = new TogglePixelWidget(boss, nfont, t->getRight() + hGap, ypos + 1, 1, 1);
   myEnaM0->setTarget(this);
   myEnaM0->setID(kEnaM0ID);
   myEnaM0->clearBackgroundColor();
   addFocusWidget(myEnaM0);
 
   // posM0
-  xpos += myEnaM0->getWidth() + 12;
-  t = new StaticTextWidget(boss, lfont, xpos, ypos+2, 4*fontWidth, fontHeight,
-                           "Pos#", TextAlign::Left);
-  xpos += t->getWidth() + 2;
-  myPosM0 = new DataGridWidget(boss, nfont, xpos, ypos,
+  t = new StaticTextWidget(boss, lfont, myEnaM0->getRight() + hGap * 1.5, ypos + 2, "Pos#");
+  myPosM0 = new DataGridWidget(boss, nfont, t->getRight() + hGap / 2, ypos,
                                1, 1, 3, 8, Common::Base::Fmt::_10);
   myPosM0->setTarget(this);
   myPosM0->setID(kPosM0ID);
@@ -380,38 +331,30 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
   addFocusWidget(myPosM0);
 
   // hmM0
-  xpos += myPosM0->getWidth() + 12;
-  new StaticTextWidget(boss, lfont, xpos, ypos+2, 2*fontWidth, fontHeight,
-                       "HM", TextAlign::Left);
-  xpos += 2*fontWidth + 5;
-  myHMM0 = new DataGridWidget(boss, nfont, xpos, ypos,
+  t = new StaticTextWidget(boss, lfont, myPosM0->getRight() + hGap * 1.5, ypos + 2, "HM");
+  myHMM0 = new DataGridWidget(boss, nfont, t->getRight() + hGap / 2, ypos,
                               1, 1, 1, 4, Common::Base::Fmt::_16_1);
   myHMM0->setTarget(this);
   myHMM0->setID(kHMM0ID);
   addFocusWidget(myHMM0);
 
   // NUSIZ0 (missile portion)
-  xpos += myHMM0->getWidth() + 12;
-  new StaticTextWidget(boss, lfont, xpos, ypos+2, 4*fontWidth, fontHeight,
-                       "Size", TextAlign::Left);
-  xpos += 4*fontWidth + 5;
-  myNusizM0 = new DataGridWidget(boss, nfont, xpos, ypos,
+  t = new StaticTextWidget(boss, lfont, myHMM0->getRight() + hGap * 1.5, ypos + 2, "Size");
+  myNusizM0 = new DataGridWidget(boss, nfont, t->getRight() + hGap / 2, ypos,
                                  1, 1, 1, 2, Common::Base::Fmt::_16_1);
   myNusizM0->setTarget(this);
   myNusizM0->setID(kNusizM0ID);
   addFocusWidget(myNusizM0);
 
   // M0 reset to player 0
-  xpos += myNusizM0->getWidth() + 15;
-  myResMP0 = new CheckboxWidget(boss, lfont, xpos, ypos+1,
+  myResMP0 = new CheckboxWidget(boss, lfont, myNusizM0->getRight() + hGap * 2, ypos + 1,
                                 "Reset to P0", CheckboxWidget::kCheckActionCmd);
   myResMP0->setTarget(this);
   myResMP0->setID(kResMP0ID);
   addFocusWidget(myResMP0);
 
   // M0 reset
-  xpos = buttonX;
-  b = new ButtonWidget(boss, lfont, xpos, ypos, buttonW, lineHeight,
+  b = new ButtonWidget(boss, lfont, buttonX, ypos, buttonW, buttonH,
                        "RESM0", kResM0Cmd);
   b->setTarget(this);
   addFocusWidget(b);
@@ -420,22 +363,17 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
   // M1 register info
   ////////////////////////////
   // enaM1
-  xpos = 10;  ypos += lineHeight + 4;
-  new StaticTextWidget(boss, lfont, xpos, ypos+2, 2*fontWidth, fontHeight,
-                       "M1", TextAlign::Left);
-  xpos += 2*fontWidth + 5;
-  myEnaM1 = new TogglePixelWidget(boss, nfont, xpos, ypos+1, 1, 1);
+  ypos += lineHeight + vGap / 2;
+  t = new StaticTextWidget(boss, lfont, hBorder, ypos + 2, "M1");
+  myEnaM1 = new TogglePixelWidget(boss, nfont, t->getRight() + hGap, ypos + 1, 1, 1);
   myEnaM1->setTarget(this);
   myEnaM1->setID(kEnaM1ID);
   myEnaM1->clearBackgroundColor();
   addFocusWidget(myEnaM1);
 
   // posM0
-  xpos += myEnaM1->getWidth() + 12;
-  t = new StaticTextWidget(boss, lfont, xpos, ypos+2, 4*fontWidth, fontHeight,
-                           "Pos#", TextAlign::Left);
-  xpos += t->getWidth() + 2;
-  myPosM1 = new DataGridWidget(boss, nfont, xpos, ypos,
+  t = new StaticTextWidget(boss, lfont, myEnaM1->getRight() + hGap * 1.5, ypos + 2, "Pos#");
+  myPosM1 = new DataGridWidget(boss, nfont, t->getRight() + hGap / 2, ypos,
                                1, 1, 3, 8, Common::Base::Fmt::_10);
   myPosM1->setTarget(this);
   myPosM1->setID(kPosM1ID);
@@ -443,38 +381,30 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
   addFocusWidget(myPosM1);
 
   // hmM0
-  xpos += myPosM1->getWidth() + 12;
-  new StaticTextWidget(boss, lfont, xpos, ypos+2, 2*fontWidth, fontHeight,
-                       "HM", TextAlign::Left);
-  xpos += 2*fontWidth + 5;
-  myHMM1 = new DataGridWidget(boss, nfont, xpos, ypos,
+  t = new StaticTextWidget(boss, lfont, myPosM1->getRight() + hGap * 1.5, ypos + 2, "HM");
+  myHMM1 = new DataGridWidget(boss, nfont, t->getRight() + hGap / 2, ypos,
                               1, 1, 1, 4, Common::Base::Fmt::_16_1);
   myHMM1->setTarget(this);
   myHMM1->setID(kHMM1ID);
   addFocusWidget(myHMM1);
 
   // NUSIZ1 (missile portion)
-  xpos += myHMM1->getWidth() + 12;
-  new StaticTextWidget(boss, lfont, xpos, ypos+2, 4*fontWidth, fontHeight,
-                       "Size", TextAlign::Left);
-  xpos += 4*fontWidth + 5;
-  myNusizM1 = new DataGridWidget(boss, nfont, xpos, ypos,
+  t = new StaticTextWidget(boss, lfont, myHMM1->getRight() + hGap * 1.5, ypos + 2, "Size");
+  myNusizM1 = new DataGridWidget(boss, nfont, t->getRight() + hGap / 2, ypos,
                                  1, 1, 1, 2, Common::Base::Fmt::_16_1);
   myNusizM1->setTarget(this);
   myNusizM1->setID(kNusizM1ID);
   addFocusWidget(myNusizM1);
 
   // M1 reset to player 0
-  xpos += myNusizM1->getWidth() + 15;
-  myResMP1 = new CheckboxWidget(boss, lfont, xpos, ypos+1,
+  myResMP1 = new CheckboxWidget(boss, lfont, myNusizM1->getRight() + hGap * 2, ypos + 1,
                                 "Reset to P1", CheckboxWidget::kCheckActionCmd);
   myResMP1->setTarget(this);
   myResMP1->setID(kResMP1ID);
   addFocusWidget(myResMP1);
 
   // M1 reset
-  xpos = buttonX;
-  b = new ButtonWidget(boss, lfont, xpos, ypos, buttonW, lineHeight,
+  b = new ButtonWidget(boss, lfont, buttonX, ypos, buttonW, buttonH,
                        "RESM1", kResM1Cmd);
   b->setTarget(this);
   addFocusWidget(b);
@@ -483,22 +413,17 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
   // BL register info
   ////////////////////////////
   // enaBL
-  xpos = 10;  ypos += lineHeight + 4;
-  new StaticTextWidget(boss, lfont, xpos, ypos+2, 2*fontWidth, fontHeight,
-                       "BL", TextAlign::Left);
-  xpos += 2*fontWidth + 5;
-  myEnaBL = new TogglePixelWidget(boss, nfont, xpos, ypos+1, 1, 1);
+  ypos += lineHeight + vGap / 2;
+  t = new StaticTextWidget(boss, lfont, hBorder, ypos + 2, "BL");
+  myEnaBL = new TogglePixelWidget(boss, nfont, t->getRight() + hGap, ypos + 1, 1, 1);
   myEnaBL->setTarget(this);
   myEnaBL->setID(kEnaBLID);
   myEnaBL->clearBackgroundColor();
   addFocusWidget(myEnaBL);
 
   // posBL
-  xpos += myEnaBL->getWidth() + 12;
-  t = new StaticTextWidget(boss, lfont, xpos, ypos+2, 4*fontWidth, fontHeight,
-                           "Pos#", TextAlign::Left);
-  xpos += t->getWidth() + 2;
-  myPosBL = new DataGridWidget(boss, nfont, xpos, ypos,
+  t = new StaticTextWidget(boss, lfont, myEnaBL->getRight() + hGap * 1.5, ypos + 2, "Pos#");
+  myPosBL = new DataGridWidget(boss, nfont, t->getRight() + hGap / 2, ypos,
                                1, 1, 3, 8, Common::Base::Fmt::_10);
   myPosBL->setTarget(this);
   myPosBL->setID(kPosBLID);
@@ -506,45 +431,37 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
   addFocusWidget(myPosBL);
 
   // hmBL
-  xpos += myPosBL->getWidth() + 12;
-  new StaticTextWidget(boss, lfont, xpos, ypos+2, 2*fontWidth, fontHeight,
-                       "HM", TextAlign::Left);
-  xpos += 2*fontWidth + 5;
-  myHMBL = new DataGridWidget(boss, nfont, xpos, ypos,
+  t = new StaticTextWidget(boss, lfont, myPosBL->getRight() + hGap * 1.5, ypos + 2, "HM");
+  myHMBL = new DataGridWidget(boss, nfont, t->getRight() + hGap / 2, ypos,
                               1, 1, 1, 4, Common::Base::Fmt::_16_1);
   myHMBL->setTarget(this);
   myHMBL->setID(kHMBLID);
   addFocusWidget(myHMBL);
 
   // CTRLPF (size portion)
-  xpos += myHMBL->getWidth() + 12;
-  new StaticTextWidget(boss, lfont, xpos, ypos+2, 4*fontWidth, fontHeight,
-                       "Size", TextAlign::Left);
-  xpos += 4*fontWidth + 5;
-  mySizeBL = new DataGridWidget(boss, nfont, xpos, ypos,
+  t = new StaticTextWidget(boss, lfont, myHMBL->getRight() + hGap * 1.5, ypos + 2, "Size");
+  mySizeBL = new DataGridWidget(boss, nfont, t->getRight() + hGap / 2, ypos,
                                 1, 1, 1, 2, Common::Base::Fmt::_16_1);
   mySizeBL->setTarget(this);
   mySizeBL->setID(kSizeBLID);
   addFocusWidget(mySizeBL);
 
   // Reset ball
-  xpos = buttonX;
-  b = new ButtonWidget(boss, lfont, xpos, ypos, buttonW, lineHeight,
+  b = new ButtonWidget(boss, lfont, buttonX, ypos, buttonW, buttonH,
                        "RESBL", kResBLCmd);
   b->setTarget(this);
   addFocusWidget(b);
 
   // Ball (old)
-  xpos = 10 + 2*fontWidth + 5;  ypos += myEnaBL->getHeight() + 5;
-  myEnaBLOld = new TogglePixelWidget(boss, nfont, xpos, ypos+1, 1, 1);
+  ypos += lineHeight + hGap / 2;
+  myEnaBLOld = new TogglePixelWidget(boss, nfont, myEnaBL->getLeft(), ypos + 1, 1, 1);
   myEnaBLOld->setTarget(this);
   myEnaBLOld->setID(kEnaBLOldID);
   myEnaBLOld->clearBackgroundColor();
   addFocusWidget(myEnaBLOld);
 
   // Ball delay
-  xpos += myEnaBLOld->getWidth() + 12;
-  myDelBL = new CheckboxWidget(boss, lfont, xpos, ypos+1,
+  myDelBL = new CheckboxWidget(boss, lfont, myEnaBLOld->getRight() + hGap * 1.5, ypos + 2,
                                "VDel", CheckboxWidget::kCheckActionCmd);
   myDelBL->setTarget(this);
   myDelBL->setID(kDelBLID);
@@ -561,111 +478,97 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
   };
 
   // PF0
-  xpos = 10;  ypos += lineHeight + sfHeight + 6;
-  new StaticTextWidget(boss, lfont, xpos, ypos+2, 2*fontWidth, fontHeight,
-                       "PF", TextAlign::Left);
-  xpos += 2*fontWidth + 5;
-  myPF[0] = new TogglePixelWidget(boss, nfont, xpos, ypos+1, 4, 1, 4);
+  ypos += lineHeight + sfHeight + vGap * 1.5;
+  t = new StaticTextWidget(boss, lfont, hBorder, ypos + 2, "PF");
+  myPF[0] = new TogglePixelWidget(boss, nfont, t->getRight() + hGap, ypos + 1, 4, 1, 4);
   myPF[0]->setTarget(this);
   myPF[0]->setID(kPF0ID);
   addFocusWidget(myPF[0]);
 
   // PF1
-  xpos += myPF[0]->getWidth() + 2;
-  myPF[1] = new TogglePixelWidget(boss, nfont, xpos, ypos+1, 8, 1);
+  myPF[1] = new TogglePixelWidget(boss, nfont, myPF[0]->getRight() + hGap / 2, ypos + 1, 8, 1);
   myPF[1]->setTarget(this);
   myPF[1]->setID(kPF1ID);
   addFocusWidget(myPF[1]);
 
   // PF2
-  xpos += myPF[1]->getWidth() + 2;
-  myPF[2] = new TogglePixelWidget(boss, nfont, xpos, ypos+1, 8, 1);
+  myPF[2] = new TogglePixelWidget(boss, nfont, myPF[1]->getRight() + hGap / 2, ypos + 1, 8, 1);
   myPF[2]->setTarget(this);
   myPF[2]->setID(kPF2ID);
   addFocusWidget(myPF[2]);
 
   // PFx bit labels
-  const auto start = [&](int sw) { return (sw - sfWidth) / 2; };
+  const auto start = [&](int sw) { return (sw - sfWidth + 2) / 2; };
   const int colw = myPF[0]->getWidth() / 4;
-  xpos = 10 + 2*fontWidth + 5 + start(colw);
+  xpos = myPF[0]->getLeft() + start(colw);
   const int _ypos = ypos - sfHeight;
   for(int i = 4; i <= 7; ++i)
   {
-    new StaticTextWidget(boss, sf, xpos, _ypos, sfWidth, sfHeight,
-                         bitNames[i], TextAlign::Left);
+    new StaticTextWidget(boss, sf, xpos, _ypos, bitNames[i]);
     xpos += colw;
   }
-  xpos = 10 + 2*fontWidth + 5 + myPF[0]->getWidth() + 2 + start(colw);
+  xpos = myPF[1]->getLeft() + start(colw);
   for(int i = 7; i >= 0; --i)
   {
-    new StaticTextWidget(boss, sf, xpos, _ypos, sfWidth, sfHeight,
-                         bitNames[i], TextAlign::Left);
+    new StaticTextWidget(boss, sf, xpos, _ypos, bitNames[i]);
     xpos += colw;
   }
-  xpos = 10 + 2*fontWidth + 5 + myPF[0]->getWidth() + 2 +
-         myPF[1]->getWidth() + 2 + start(colw);
+  xpos = myPF[2]->getLeft() + start(colw);
   for(int i = 0; i <= 7; ++i)
   {
-    new StaticTextWidget(boss, sf, xpos, _ypos, sfWidth, sfHeight,
-                         bitNames[i], TextAlign::Left);
+    new StaticTextWidget(boss, sf, xpos, _ypos, bitNames[i]);
     xpos += colw;
   }
 
   // PF reflect, score, priority
-  xpos = 10 + 4*fontWidth;  ypos += lineHeight + 6;
-  myRefPF = new CheckboxWidget(boss, lfont, xpos, ypos+1,
+  ypos = myPF[0]->getBottom() + vGap / 2;
+  myRefPF = new CheckboxWidget(boss, lfont, myPF[0]->getLeft(), ypos + 1,
                                "Reflect", CheckboxWidget::kCheckActionCmd);
   myRefPF->setTarget(this);
   myRefPF->setID(kRefPFID);
   addFocusWidget(myRefPF);
 
-  xpos += myRefPF->getWidth() + 15;
-  myScorePF = new CheckboxWidget(boss, lfont, xpos, ypos+1,
+  myScorePF = new CheckboxWidget(boss, lfont, myRefPF->getRight() + hGap * 2, ypos + 1,
                                  "Score", CheckboxWidget::kCheckActionCmd);
   myScorePF->setTarget(this);
   myScorePF->setID(kScorePFID);
   addFocusWidget(myScorePF);
 
-  xpos += myScorePF->getWidth() + 15;
-  myPriorityPF = new CheckboxWidget(boss, lfont, xpos, ypos+1,
+  myPriorityPF = new CheckboxWidget(boss, lfont, myScorePF->getRight() + hGap * 2, ypos + 1,
                                     "Priority", CheckboxWidget::kCheckActionCmd);
   myPriorityPF->setTarget(this);
   myPriorityPF->setID(kPriorityPFID);
   addFocusWidget(myPriorityPF);
 
-  xpos = 10;
-  ypos += lineHeight + 10;
-  t = new StaticTextWidget(boss, lfont, xpos, ypos, 13*fontWidth, fontHeight,
-    "Queued Writes", TextAlign::Left);
-
-  xpos += t->getWidth() + 10;
-  myDelayQueueWidget = new DelayQueueWidget(boss, lfont, xpos, ypos);
+  ypos += lineHeight + vGap * 1.5;
+  t = new StaticTextWidget(boss, lfont, hBorder, ypos + 1, "Queued Writes");
+  myDelayQueueWidget = new DelayQueueWidget(boss, lfont, t->getRight() + hGap, ypos);
 
   ////////////////////////////
   // Strobe buttons
   ////////////////////////////
-  buttonX = xpos + myDelayQueueWidget->getWidth() + 20;
+  buttonX = myDelayQueueWidget->getRight() + hGap * 2;
   buttonY = ypos;
-  b = new ButtonWidget(boss, lfont, buttonX, buttonY, buttonW, lineHeight,
+  b = new ButtonWidget(boss, lfont, buttonX, buttonY, buttonW, buttonH,
                        "WSYNC", kWsyncCmd);
   b->setTarget(this);
   addFocusWidget(b);
 
-  buttonY += lineHeight + 3;
-  b = new ButtonWidget(boss, lfont, buttonX, buttonY, buttonW, lineHeight,
+  buttonY += lineHeight + vGap;
+  b = new ButtonWidget(boss, lfont, buttonX, buttonY, buttonW, buttonH,
                        "RSYNC", kRsyncCmd);
   b->setTarget(this);
   addFocusWidget(b);
 
-  buttonX = b->getRight() + 20;
+  buttonX = b->getRight() + hGap * 2;
   buttonY = ypos;
-  b = new ButtonWidget(boss, lfont, buttonX, buttonY, buttonW, lineHeight,
+  b = new ButtonWidget(boss, lfont, buttonX, buttonY, buttonW, buttonH,
                        "HMOVE", kHmoveCmd);
   b->setTarget(this);
   addFocusWidget(b);
 
-  buttonY += lineHeight + 3;
-  b = new ButtonWidget(boss, lfont, buttonX, buttonY, buttonW, lineHeight,
+  buttonY += lineHeight + vGap;
+  b = new ButtonWidget(boss, lfont, buttonX, buttonY, buttonW, buttonH,
                        "HMCLR", kHmclrCmd);
   b->setTarget(this);
   addFocusWidget(b);
@@ -1046,7 +949,7 @@ void TiaWidget::loadConfig()
     myGRP0Old->setCrossed(true);
   }
   myGRP0->setIntState(state.gr[TiaState::P0], state.ref[TiaState::P0]);
-  myGRP0Old->setIntState(state.gr[TiaState::P0+2], state.ref[TiaState::P0]);
+  myGRP0Old->setIntState(state.gr[TiaState::P0 + 2], state.ref[TiaState::P0]);
 
   // posP0
   myPosP0->setList(0, state.pos[TiaState::P0],
@@ -1082,7 +985,7 @@ void TiaWidget::loadConfig()
     myGRP1Old->setCrossed(true);
   }
   myGRP1->setIntState(state.gr[TiaState::P1], state.ref[TiaState::P1]);
-  myGRP1Old->setIntState(state.gr[TiaState::P1+2], state.ref[TiaState::P1]);
+  myGRP1Old->setIntState(state.gr[TiaState::P1 + 2], state.ref[TiaState::P1]);
 
   // posP1
   myPosP1->setList(0, state.pos[TiaState::P1],
