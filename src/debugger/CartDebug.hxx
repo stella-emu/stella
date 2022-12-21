@@ -376,10 +376,10 @@ class CartDebug : public DebuggerSystem
     uInt16 myLabelLength{8};  // longest pre-defined label
 
     /// Table of instruction mnemonics
-    static std::array<const char*, 16>  ourTIAMnemonicR; // read mode
-    static std::array<const char*, 64>  ourTIAMnemonicW; // write mode
-    static std::array<const char*, 32>  ourIOMnemonic;
-    static std::array<const char*, 128> ourZPMnemonic;
+    static std::array<string_view, 16>  ourTIAMnemonicR; // read mode
+    static std::array<string_view, 64>  ourTIAMnemonicW; // write mode
+    static std::array<string_view, 32>  ourIOMnemonic;
+    static std::array<string_view, 128> ourZPMnemonic;
 
   private:
     // Following constructors and assignment operators not supported

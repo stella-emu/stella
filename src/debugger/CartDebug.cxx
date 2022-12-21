@@ -92,25 +92,22 @@ CartDebug::CartDebug(Debugger& dbg, Console& console, const OSystem& osystem)
   // We know the address for the startup bank right now
   myBankInfo[myConsole.cartridge().startBank()].addressList.push_front(
     myDebugger.dpeek(0xfffc));
-  addLabel("Start", myDebugger.dpeek(0xfffc, Device::DATA)); // TOOD: ::CODE???
+  addLabel("Start", myDebugger.dpeek(0xfffc, Device::DATA)); // TODO: ::CODE???
 
   // Add system equates
   for(uInt16 addr = 0x00; addr <= 0x0F; ++addr)
   {
-    if(ourTIAMnemonicR[addr])
-      mySystemAddresses.emplace(ourTIAMnemonicR[addr], addr);
+    mySystemAddresses.emplace(ourTIAMnemonicR[addr], addr);
     myReserved.TIARead[addr] = false;
   }
   for(uInt16 addr = 0x00; addr <= 0x3F; ++addr)
   {
-    if(ourTIAMnemonicW[addr])
-      mySystemAddresses.emplace(ourTIAMnemonicW[addr], addr);
+    mySystemAddresses.emplace(ourTIAMnemonicW[addr], addr);
     myReserved.TIAWrite[addr] = false;
   }
   for(uInt16 addr = 0x280; addr <= 0x29F; ++addr)
   {
-    if(ourIOMnemonic[addr-0x280])
-      mySystemAddresses.emplace(ourIOMnemonic[addr-0x280], addr);
+    mySystemAddresses.emplace(ourIOMnemonic[addr-0x280], addr);
     myReserved.IOReadWrite[addr-0x280] = false;
   }
   for(uInt16 addr = 0x80; addr <= 0xFF; ++addr)
@@ -662,26 +659,16 @@ bool CartDebug::getLabel(ostream& buf, uInt16 addr, bool isRead,
       if(isRead)
       {
         const uInt16 a = addr & 0x0F, offset = addr & 0xFFF0;
-        if(ourTIAMnemonicR[a])
-        {
-          buf << ourTIAMnemonicR[a];
-          if(offset > 0)
-            buf << "|$" << Base::HEX2 << offset;
-        }
-        else
-          buf << "$" << Base::HEX2 << addr;
+        buf << ourTIAMnemonicR[a];
+        if(offset > 0)
+          buf << "|$" << Base::HEX2 << offset;
       }
       else
       {
         const uInt16 a = addr & 0x3F, offset = addr & 0xFFC0;
-        if(ourTIAMnemonicW[a])
-        {
-          buf << ourTIAMnemonicW[a];
-          if(offset > 0)
-            buf << "|$" << Base::HEX2 << offset;
-        }
-        else
-          buf << "$" << Base::HEX2 << addr;
+        buf << ourTIAMnemonicW[a];
+        if(offset > 0)
+          buf << "|$" << Base::HEX2 << offset;
       }
       return true;
     }
@@ -691,14 +678,9 @@ bool CartDebug::getLabel(ostream& buf, uInt16 addr, bool isRead,
       const uInt16 a = addr & 0xFF, offset = addr & 0xFD00;
       if(a <= 0x9F)
       {
-        if(ourIOMnemonic[a - 0x80])
-        {
-            buf << ourIOMnemonic[a - 0x80];
-            if(offset > 0)
-              buf << "|$" << Base::HEX2 << offset;
-        }
-        else
-          buf << "$" << Base::HEX2 << addr;
+        buf << ourIOMnemonic[a - 0x80];
+        if(offset > 0)
+          buf << "|$" << Base::HEX2 << offset;
       }
       else
         buf << "$" << Base::HEX2 << addr;
@@ -1303,7 +1285,7 @@ string CartDebug::saveDisassembly(string path)
 
     // TIA read access
     for(uInt16 addr = 0x00; addr <= 0x0F; ++addr)
-      if(myReserved.TIARead[addr] && ourTIAMnemonicR[addr])
+      if(myReserved.TIARead[addr])
         out << ALIGN(16) << ourTIAMnemonicR[addr] << "= $"
             << Base::HEX2 << right << addr << "  ; (R)\n";
       else if (mySystem.getAccessFlags(addr) & Device::DATA)
@@ -1313,7 +1295,7 @@ string CartDebug::saveDisassembly(string path)
 
     // TIA write access
     for(uInt16 addr = 0x00; addr <= 0x3F; ++addr)
-      if(myReserved.TIAWrite[addr] && ourTIAMnemonicW[addr])
+      if(myReserved.TIAWrite[addr])
         out << ALIGN(16) << ourTIAMnemonicW[addr] << "= $"
             << Base::HEX2 << right << addr << "  ; (W)\n";
       else if (mySystem.getAccessFlags(addr) & Device::WRITE)
@@ -1323,7 +1305,7 @@ string CartDebug::saveDisassembly(string path)
 
     // RIOT IO access
     for(uInt16 addr = 0x00; addr <= 0x1F; ++addr)
-      if(myReserved.IOReadWrite[addr] && ourIOMnemonic[addr])
+      if(myReserved.IOReadWrite[addr])
         out << ALIGN(16) << ourIOMnemonic[addr] << "= $"
             << Base::HEX4 << right << (addr+0x280) << "\n";
   }
@@ -1535,16 +1517,16 @@ void CartDebug::getCompletions(const char* in, StringList& completions) const
 {
   // First scan system equates
   for(uInt16 addr = 0x00; addr <= 0x0F; ++addr)
-    if(ourTIAMnemonicR[addr] && BSPF::matchesIgnoreCase(ourTIAMnemonicR[addr], in))
+    if(BSPF::matchesIgnoreCase(ourTIAMnemonicR[addr], in))
       completions.emplace_back(ourTIAMnemonicR[addr]);
   for(uInt16 addr = 0x00; addr <= 0x3F; ++addr)
-    if(ourTIAMnemonicW[addr] && BSPF::matchesIgnoreCase(ourTIAMnemonicW[addr], in))
+    if(BSPF::matchesIgnoreCase(ourTIAMnemonicW[addr], in))
       completions.emplace_back(ourTIAMnemonicW[addr]);
   for(uInt16 addr = 0; addr <= 0x29F-0x280; ++addr)
-    if(ourIOMnemonic[addr] && BSPF::matchesIgnoreCase(ourIOMnemonic[addr], in))
+    if(BSPF::matchesIgnoreCase(ourIOMnemonic[addr], in))
       completions.emplace_back(ourIOMnemonic[addr]);
   for(uInt16 addr = 0; addr <= 0x7F; ++addr)
-    if(ourZPMnemonic[addr] && BSPF::matchesIgnoreCase(ourZPMnemonic[addr], in))
+    if(BSPF::matchesIgnoreCase(ourZPMnemonic[addr], in))
       completions.emplace_back(ourZPMnemonic[addr]);
 
   // Now scan user-defined labels
@@ -1719,13 +1701,13 @@ void CartDebug::AccessTypeAsString(ostream& buf, Device::AccessFlags flags)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-std::array<const char*, 16> CartDebug::ourTIAMnemonicR = {
+std::array<string_view, 16> CartDebug::ourTIAMnemonicR = {
   "CXM0P", "CXM1P", "CXP0FB", "CXP1FB", "CXM0FB", "CXM1FB", "CXBLPF", "CXPPMM",
   "INPT0", "INPT1", "INPT2", "INPT3", "INPT4", "INPT5", "$1e", "$1f"
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-std::array<const char*, 64> CartDebug::ourTIAMnemonicW = {
+std::array<string_view, 64> CartDebug::ourTIAMnemonicW = {
   "VSYNC", "VBLANK", "WSYNC", "RSYNC", "NUSIZ0", "NUSIZ1", "COLUP0", "COLUP1",
   "COLUPF", "COLUBK", "CTRLPF", "REFP0", "REFP1", "PF0", "PF1", "PF2",
   "RESP0", "RESP1", "RESM0", "RESM1", "RESBL", "AUDC0", "AUDC1", "AUDF0",
@@ -1737,7 +1719,7 @@ std::array<const char*, 64> CartDebug::ourTIAMnemonicW = {
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-std::array<const char*, 32> CartDebug::ourIOMnemonic = {
+std::array<string_view, 32> CartDebug::ourIOMnemonic = {
   "SWCHA", "SWACNT", "SWCHB", "SWBCNT", "INTIM", "TIMINT",
   "$286", "$287", "$288", "$289", "$28a", "$28b", "$28c",
   "$28d", "$28e", "$28f", "$290", "$291", "$292", "$293",
@@ -1747,7 +1729,7 @@ std::array<const char*, 32> CartDebug::ourIOMnemonic = {
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-std::array<const char*, 128> CartDebug::ourZPMnemonic = {
+std::array<string_view, 128> CartDebug::ourZPMnemonic = {
   "ram_80", "ram_81", "ram_82", "ram_83", "ram_84", "ram_85", "ram_86", "ram_87",
   "ram_88", "ram_89", "ram_8A", "ram_8B", "ram_8C", "ram_8D", "ram_8E", "ram_8F",
   "ram_90", "ram_91", "ram_92", "ram_93", "ram_94", "ram_95", "ram_96", "ram_97",
