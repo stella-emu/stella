@@ -52,23 +52,23 @@ class Bankswitch
       NumMulti = _128IN1 - _2IN1 + 1,
     };
 
-#ifdef GUI_SUPPORT
     struct SizesType {
       size_t minSize{0};
       size_t maxSize{0};
     };
     static constexpr size_t any_KB = 0;
 
-    static const std::array<SizesType, static_cast<uInt32>(Type::NumSchemes)> Sizes;
-#endif
+    static const std::array<SizesType,
+                            static_cast<uInt32>(Type::NumSchemes)> Sizes;
 
     // Info about the various bankswitch schemes, useful for displaying
     // in GUI dropdown boxes, etc
     struct Description {
-      const char* const name{nullptr};
-      const char* const desc{nullptr};
+      string_view name;
+      string_view desc;
     };
-    static const std::array<Description, static_cast<int>(Type::NumSchemes)> BSList;
+    static const std::array<Description,
+                            static_cast<uInt32>(Type::NumSchemes)> BSList;
 
   public:
     // Convert BSType enum to string
@@ -90,14 +90,22 @@ class Bankswitch
       @param name  Filename of potential ROM file
       @param ext   The extension extracted from the given file
      */
-    static bool isValidRomName(const string& name, string& ext);
+    static bool isValidRomName(string_view name, string& ext);
 
     /**
       Convenience functions for different parameter types.
      */
-    static bool isValidRomName(const FSNode& name, string& ext);
-    static bool isValidRomName(const FSNode& name);
-    static bool isValidRomName(const string& name);
+    static inline bool isValidRomName(const FSNode& name, string& ext) {
+      return isValidRomName(name.getPath(), ext);
+    }
+    static inline bool isValidRomName(const FSNode& name) {
+      string ext;  // extension not used
+      return isValidRomName(name.getPath(), ext);
+    }
+    static inline bool isValidRomName(string_view name) {
+      string ext;  // extension not used
+      return isValidRomName(name, ext);
+    }
 
     // Output operator
     friend ostream& operator<<(ostream& os, const Bankswitch::Type& t) {
@@ -106,14 +114,16 @@ class Bankswitch
 
   private:
     struct TypeComparator {
-      bool operator() (const string& a, const string& b) const {
+      bool operator() (string_view a, string_view b) const {
         return BSPF::compareIgnoreCase(a, b) < 0;
       }
     };
-    using ExtensionMap = const std::map<string, Bankswitch::Type, TypeComparator>;
+    using ExtensionMap = const std::map<string_view, Bankswitch::Type,
+                                        TypeComparator>;
     static ExtensionMap ourExtensions;
 
-    using NameToTypeMap = const std::map<string, Bankswitch::Type, TypeComparator>;
+    using NameToTypeMap = const std::map<string_view, Bankswitch::Type,
+                                         TypeComparator>;
     static NameToTypeMap ourNameToTypes;
 
   private:
