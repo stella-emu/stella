@@ -44,9 +44,9 @@ PaletteHandler::PaletteType PaletteHandler::toPaletteType(string_view name) cons
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string PaletteHandler::toPaletteName(PaletteType type)
+string_view PaletteHandler::toPaletteName(PaletteType type)
 {
-  const string SETTING_NAMES[static_cast<int>(PaletteType::NumTypes)] = {
+  static constexpr std::array<string_view, PaletteType::NumTypes> SETTING_NAMES = {
     SETTING_STANDARD, SETTING_Z26, SETTING_USER, SETTING_CUSTOM
   };
 
@@ -56,7 +56,7 @@ string PaletteHandler::toPaletteName(PaletteType type)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PaletteHandler::cyclePalette(int direction)
 {
-  const string MESSAGES[PaletteType::NumTypes] = {
+  static constexpr std::array<string_view, PaletteType::NumTypes> MESSAGES = {
     "Standard Stella", "Z26", "User-defined", "Custom"
   };
   int type = toPaletteType(myOSystem.settings().getString("palette"));
@@ -66,8 +66,8 @@ void PaletteHandler::cyclePalette(int direction)
         static_cast<int>(PaletteType::MinType), static_cast<int>(PaletteType::MaxType));
   } while(type == PaletteType::User && !myUserPaletteDefined);
 
-  const string palette = toPaletteName(static_cast<PaletteType>(type));
-  const string message = MESSAGES[type] + " palette";
+  const string_view palette = toPaletteName(static_cast<PaletteType>(type));
+  const string message = string{MESSAGES[type]} + " palette";
 
   myOSystem.frameBuffer().showTextMessage(message);
 
@@ -138,7 +138,8 @@ void PaletteHandler::showAdjustableMessage()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PaletteHandler::cycleAdjustable(int direction)
 {
-  const bool isCustomPalette = SETTING_CUSTOM == myOSystem.settings().getString("palette");
+  const bool isCustomPalette =
+      SETTING_CUSTOM == myOSystem.settings().getString("palette");
   bool isCustomAdj = false;
 
   do {

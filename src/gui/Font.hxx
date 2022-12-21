@@ -35,7 +35,7 @@ struct BBX
 /* based on The Microwindows Project http://microwindows.org */
 struct FontDesc
 {
-  const char* const name;               /* font name */
+  string_view   name;                   /* font name */
   int           maxwidth;               /* max width in pixels */
   int           height;                 /* height in pixels */
   int           fbbw, fbbh, fbbx, fbby;	/* max bounding box */

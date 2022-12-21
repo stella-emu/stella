@@ -144,7 +144,7 @@ class NTSCFilter
     Preset myPreset{Preset::OFF};
 
     struct AdjustableTag {
-      const char* const type{nullptr};
+      string_view type;
       float* value{nullptr};
     };
     uInt32 myCurrentAdjustable{0};

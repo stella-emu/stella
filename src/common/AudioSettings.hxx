@@ -40,17 +40,17 @@ class AudioSettings
       lanczos_3           = 3
     };
 
-    static constexpr const char* SETTING_PRESET              = "audio.preset";
-    static constexpr const char* SETTING_SAMPLE_RATE         = "audio.sample_rate";
-    static constexpr const char* SETTING_FRAGMENT_SIZE       = "audio.fragment_size";
-    static constexpr const char* SETTING_BUFFER_SIZE         = "audio.buffer_size";
-    static constexpr const char* SETTING_HEADROOM            = "audio.headroom";
-    static constexpr const char* SETTING_RESAMPLING_QUALITY  = "audio.resampling_quality";
-    static constexpr const char* SETTING_STEREO              = "audio.stereo";
-    static constexpr const char* SETTING_VOLUME              = "audio.volume";
-    static constexpr const char* SETTING_DEVICE              = "audio.device";
-    static constexpr const char* SETTING_ENABLED             = "audio.enabled";
-    static constexpr const char* SETTING_DPC_PITCH           = "audio.dpc_pitch";
+    static constexpr string_view SETTING_PRESET              = "audio.preset";
+    static constexpr string_view SETTING_SAMPLE_RATE         = "audio.sample_rate";
+    static constexpr string_view SETTING_FRAGMENT_SIZE       = "audio.fragment_size";
+    static constexpr string_view SETTING_BUFFER_SIZE         = "audio.buffer_size";
+    static constexpr string_view SETTING_HEADROOM            = "audio.headroom";
+    static constexpr string_view SETTING_RESAMPLING_QUALITY  = "audio.resampling_quality";
+    static constexpr string_view SETTING_STEREO              = "audio.stereo";
+    static constexpr string_view SETTING_VOLUME              = "audio.volume";
+    static constexpr string_view SETTING_DEVICE              = "audio.device";
+    static constexpr string_view SETTING_ENABLED             = "audio.enabled";
+    static constexpr string_view SETTING_DPC_PITCH           = "audio.dpc_pitch";
 
     static constexpr Preset DEFAULT_PRESET                          = Preset::highQualityMediumLag;
     static constexpr uInt32 DEFAULT_SAMPLE_RATE                     = 44100;
