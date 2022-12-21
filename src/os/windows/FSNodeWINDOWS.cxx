@@ -102,14 +102,8 @@ AbstractFSNodePtr FSNodeWINDOWS::getParent() const
 {
   if (_isPseudoRoot)
     return nullptr;
-
-  if (_path.size() > 3)
-  {
-    const char* const start = _path.c_str();
-    const char* const end = lastPathComponent(_path);
-
-    return make_unique<FSNodeWINDOWS>(string(start, static_cast<size_t>(end - start)));
-  }
+  else if (_path.size() > 3)
+    return make_unique<FSNodeWINDOWS>(stemPathComponent(_path));
   else
     return make_unique<FSNodeWINDOWS>();
 }
@@ -123,11 +117,11 @@ bool FSNodeWINDOWS::getChildren(AbstractFSList& myList, ListMode mode) const
     TCHAR drive_buffer[100];
     GetLogicalDriveStrings(sizeof(drive_buffer) / sizeof(TCHAR), drive_buffer);
 
+    char drive_name[2] = { '\0', '\0' };
     for (TCHAR *current_drive = drive_buffer; *current_drive;
          current_drive += _tcslen(current_drive) + 1)
     {
       FSNodeWINDOWS entry;
-      char drive_name[2] = { '\0', '\0' };
 
       drive_name[0] = current_drive[0];
       entry._displayName = drive_name;

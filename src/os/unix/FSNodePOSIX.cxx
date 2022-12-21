@@ -121,10 +121,7 @@ AbstractFSNodePtr FSNodePOSIX::getParent() const
   if (_path == ROOT_DIR)
     return nullptr;
 
-  const char* const start = _path.c_str();
-  const char* const end = lastPathComponent(_path);
-
-  return make_unique<FSNodePOSIX>(string(start, static_cast<size_t>(end - start)));
+  return make_unique<FSNodePOSIX>(stemPathComponent(_path));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
