@@ -145,7 +145,7 @@ void DeveloperDialog::addEmulationTab(const GUI::Font& font)
   myConsoleWidget = new PopUpWidget(myTab, font, HBORDER + INDENT * 1, ypos, pwidth, lineHeight, items,
                                     "Console ", lwidth, kConsole);
   myConsoleWidget->setToolTip("Emulate Color/B&W/Pause key and zero\n"
-                              "page RAM initialization differenly.");
+                              "page RAM initialization differently.");
   wid.push_back(myConsoleWidget);
   ypos += lineHeight + VGAP;
 

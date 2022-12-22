@@ -17,10 +17,10 @@
 
 #include "Settings.hxx"
 #include "DataGridWidget.hxx"
-#include "EditTextWidget.hxx"
 #include "FrameBuffer.hxx"
 #include "GuiObject.hxx"
 #include "OSystem.hxx"
+#include "EventHandler.hxx"
 #include "Debugger.hxx"
 #include "RiotDebug.hxx"
 #include "PopUpWidget.hxx"
@@ -51,10 +51,13 @@ RiotWidget::RiotWidget(GuiObject* boss, const GUI::Font& lfont,
   : Widget(boss, lfont, x, y, w, h),
     CommandSender(boss)
 {
-  const int fontWidth  = lfont.getMaxCharWidth(),
-            fontHeight = lfont.getFontHeight(),
-            lineHeight = lfont.getLineHeight();
-  int xpos = 10, ypos = 25, lwidth = 8 * fontWidth, col = 0;
+  const int fontHeight = lfont.getFontHeight(),
+            hGap = _fontWidth,
+            vGap = fontHeight / 2,
+            hBorder = 10,
+            vBorder = 10;
+  int xpos = hBorder, ypos = vBorder + _lineHeight,
+    lwidth = _fontWidth * 8 + hGap;
   StaticTextWidget* t = nullptr;
   VariantList items;
 
@@ -70,9 +73,8 @@ RiotWidget::RiotWidget(GuiObject* boss, const GUI::Font& lfont,
   StringList labels;
 
 #define CREATE_IO_REGS(desc, bits, bitsID, editable)                      \
-  t = new StaticTextWidget(boss, lfont, xpos, ypos+2, lwidth, fontHeight, \
-                           desc);                                         \
-  xpos += t->getWidth() + 5;                                              \
+  new StaticTextWidget(boss, lfont, xpos, ypos + 2, desc);                \
+  xpos = hBorder + lwidth;                                                \
   (bits) = new ToggleBitWidget(boss, nfont, xpos, ypos, 8, 1, 1, labels); \
   (bits)->setTarget(this);                                                \
   (bits)->setID(bitsID);                                                  \
@@ -82,14 +84,13 @@ RiotWidget::RiotWidget(GuiObject* boss, const GUI::Font& lfont,
   // SWCHA bits in 'poke' mode
   labels.clear();
   CREATE_IO_REGS("SWCHA(W)", mySWCHAWriteBits, kSWCHABitsID, true)
-  col = xpos + mySWCHAWriteBits->getWidth() + 25;  // remember this for adding widgets to the second column
 
   // SWACNT bits
-  xpos = 10;  ypos += lineHeight + 5;
+  xpos = hBorder;  ypos += _lineHeight + vGap / 2;
   CREATE_IO_REGS("SWACNT", mySWACNTBits, kSWACNTBitsID, true)
 
   // SWCHA bits in 'peek' mode
-  xpos = 10;  ypos += lineHeight + 5;
+  xpos = hBorder;  ypos += _lineHeight + vGap / 2;
   labels.clear();
   labels.emplace_back("Left right");
   labels.emplace_back("Left left");
@@ -102,16 +103,16 @@ RiotWidget::RiotWidget(GuiObject* boss, const GUI::Font& lfont,
   CREATE_IO_REGS("SWCHA(R)", mySWCHAReadBits, kSWCHARBitsID, true)
 
   // SWCHB bits in 'poke' mode
-  xpos = 10;  ypos += 2 * lineHeight;
+  xpos = hBorder;  ypos = mySWCHAReadBits->getBottom() + vGap * 2;
   labels.clear();
   CREATE_IO_REGS("SWCHB(W)", mySWCHBWriteBits, kSWCHBBitsID, true)
 
   // SWBCNT bits
-  xpos = 10;  ypos += lineHeight + 5;
+  xpos = hBorder;  ypos += _lineHeight + vGap / 2;
   CREATE_IO_REGS("SWBCNT", mySWBCNTBits, kSWBCNTBitsID, true)
 
   // SWCHB bits in 'peek' mode
-  xpos = 10;  ypos += lineHeight + 5;
+  xpos = hBorder;  ypos += _lineHeight + vGap / 2;
   labels.clear();
   labels.emplace_back("Right difficulty");
   labels.emplace_back("Left difficulty");
@@ -127,53 +128,65 @@ RiotWidget::RiotWidget(GuiObject* boss, const GUI::Font& lfont,
   static constexpr std::array<const char*, 4> writeNames = {
     "TIM1T", "TIM8T", "TIM64T", "T1024T"
   };
-  xpos = 10;  ypos += 2*lineHeight;
+  ypos += _lineHeight + vGap * 4;
   for(int row = 0; row < 4; ++row)
   {
-    t = new StaticTextWidget(boss, lfont, xpos, ypos + row*lineHeight + 2,
-                             lwidth, fontHeight, writeNames[row], TextAlign::Left);
+    myTimWriteLabel[row] = new StaticTextWidget(boss, lfont, hBorder, ypos + row * _lineHeight + 2,
+                                                writeNames[row]);
   }
-  xpos += t->getWidth() + 5;
+  xpos = hBorder + lwidth;
   myTimWrite = new DataGridWidget(boss, nfont, xpos, ypos, 1, 4, 2, 8, Common::Base::Fmt::_16);
   myTimWrite->setTarget(this);
   myTimWrite->setID(kTimWriteID);
   addFocusWidget(myTimWrite);
 
-  t = new StaticTextWidget(boss, lfont, myTimWrite->getRight() + _fontWidth, ypos + 2 , "#");
-  myTimClocks = new DataGridWidget(boss, nfont, t->getRight() + _fontWidth / 2, ypos,
+  t = new StaticTextWidget(boss, lfont,
+                           myTimWrite->getRight() + hGap * 2,
+                           ypos + _lineHeight * 1.5 + 2 , "#");
+  myTimAvail = new DataGridWidget(boss, nfont, t->getRight() + hGap / 2, t->getTop() - 2,
                                    1, 1, 6, 30, Common::Base::Fmt::_10_6);
-  myTimClocks->setToolTip("Number of CPU cycles available for current timer interval.\n");
-  myTimClocks->setTarget(this);
-  myTimClocks->setEditable(false);
+  myTimAvail->setToolTip("Number of CPU cycles available for current timer interval.\n");
+  myTimAvail->setTarget(this);
+  myTimAvail->setEditable(false);
 
   // Timer registers (RO)
-  static constexpr std::array<const char*, 5> readNames = {
-    "INTIM", "TIMINT", "Total Clks", "INTIM Clks", "Divider  #"
+  static constexpr std::array<const char*, 3> readNames = {
+    "INTIM", " Clocks", "TIMINT"
   };
-  xpos = 10;  ypos += myTimWrite->getHeight() + lineHeight / 2;
-  for(int row = 0; row < 5; ++row)
+  ypos = myTimWrite->getBottom() + _lineHeight / 2;
+  for(int row = 0; row < 3; ++row)
   {
-    t = new StaticTextWidget(boss, lfont, xpos, ypos + row * lineHeight + 2,
+    t = new StaticTextWidget(boss, lfont, hBorder, ypos + row * _lineHeight + 2,
                              readNames[row]);
   }
-  xpos += t->getWidth() + _fontWidth / 2;
-  myTimRead = new DataGridWidget(boss, nfont, xpos, ypos, 1, 4, 4, 30, Common::Base::Fmt::_16);
-  myTimRead->setToolTip(0, 1, "Timer interrupt flag in bit 7.\n");
-  myTimRead->setToolTip(0, 2, "Number of CPU cycles since last TIMxxT write.\n");
+  xpos = hBorder + lwidth;
+  myTimRead = new DataGridWidget(boss, nfont, xpos, ypos, 1, 3, 2, 30, Common::Base::Fmt::_16);
+  myTimRead->setToolTip(0, 1, "Remaining timer interval clocks.\n");
+  myTimRead->setToolTip(0, 2, "Timer interrupt flag in bit 7.\n");
   myTimRead->setTarget(this);
   myTimRead->setEditable(false);
 
-  ypos += myTimRead->getHeight() - 1;
-  myTimDivider = new DataGridWidget(boss, nfont, xpos, ypos, 1, 1, 4, 12, Common::Base::Fmt::_10_4);
-  myTimDivider->setTarget(this);
-  myTimDivider->setEditable(false);
+  t = new StaticTextWidget(boss, lfont,
+                           myTimWrite->getRight() + hGap * 2,
+                           ypos + _lineHeight * 0.5 + 2 , "#");
+  new StaticTextWidget(boss, lfont,
+                       myTimWrite->getRight() + hGap * 2,
+                       ypos + _lineHeight * 1.5 + 2 , "#");
+  myTimTotal = new DataGridWidget(boss, nfont, t->getRight() + hGap / 2, t->getTop() - 2,
+                                  1, 2, 6, 30, Common::Base::Fmt::_10_6);
+  myTimTotal->setToolTip(0, 0, "Number of CPU cycles since last TIMxxT write.\n");
+  myTimTotal->setToolTip(0, 1, "Number of CPU cycles remaining.\n");
+  myTimTotal->setTarget(this);
+  myTimTotal->setEditable(false);
+
 
   // Controller ports
-  xpos = col;  ypos = 10;
+  int col = mySWCHAWriteBits->getRight() + hGap * 2.5;
+  xpos = col;  ypos = vBorder;
   myLeftControl = addControlWidget(boss, lfont, xpos, ypos,
       instance().console().leftController());
   addToFocusList(myLeftControl->getFocusList());
-  xpos += myLeftControl->getWidth() + 15;
+  xpos = myLeftControl->getRight() + hGap * 1.5;
   myRightControl = addControlWidget(boss, lfont, xpos, ypos,
       instance().console().rightController());
   addToFocusList(myRightControl->getFocusList());
@@ -182,13 +195,13 @@ RiotWidget::RiotWidget(GuiObject* boss, const GUI::Font& lfont,
   static constexpr std::array<const char*, 3> contLeftReadNames = {
     "INPT0", "INPT1", "INPT4"
   };
-  xpos = col;  ypos += myLeftControl->getHeight() + 2 * lineHeight;
+  xpos = myLeftControl->getLeft();  ypos += myLeftControl->getHeight() + 2 * _lineHeight;
   for(int row = 0; row < 3; ++row)
   {
-    new StaticTextWidget(boss, lfont, xpos, ypos + row*lineHeight + 2,
-                         5*fontWidth, fontHeight, contLeftReadNames[row], TextAlign::Left);
+    t = new StaticTextWidget(boss, lfont, xpos, ypos + row * _lineHeight + 2,
+                         contLeftReadNames[row]);
   }
-  xpos += 5*fontWidth + 5;
+  xpos = t->getRight() + hGap;
   myLeftINPT = new DataGridWidget(boss, nfont, xpos, ypos, 1, 3, 2, 8, Common::Base::Fmt::_16);
   myLeftINPT->setTarget(this);
   myLeftINPT->setEditable(false);
@@ -197,23 +210,23 @@ RiotWidget::RiotWidget(GuiObject* boss, const GUI::Font& lfont,
   static constexpr std::array<const char*, 3> contRightReadNames = {
     "INPT2", "INPT3", "INPT5"
   };
-  xpos = col + myLeftControl->getWidth() + 15;
+  xpos = myRightControl->getLeft();
   for(int row = 0; row < 3; ++row)
   {
-    new StaticTextWidget(boss, lfont, xpos, ypos + row*lineHeight + 2,
-                         5*fontWidth, fontHeight, contRightReadNames[row], TextAlign::Left);
+    t = new StaticTextWidget(boss, lfont, xpos, ypos + row*_lineHeight + 2,
+                         contRightReadNames[row]);
   }
-  xpos += 5*fontWidth + 5;
+  xpos = t->getRight() + hGap;
   myRightINPT = new DataGridWidget(boss, nfont, xpos, ypos, 1, 3, 2, 8, Common::Base::Fmt::_16);
   myRightINPT->setTarget(this);
   myRightINPT->setEditable(false);
 
   // TIA INPTx VBLANK bits (D6-latch, D7-dump) (R)
-  xpos = col + 20;  ypos += myLeftINPT->getHeight() + lineHeight;
+  xpos = col + hGap * 2;  ypos = myLeftINPT->getBottom() + vGap;
   myINPTLatch = new CheckboxWidget(boss, lfont, xpos, ypos, "INPT latch (VBlank D6)");
   myINPTLatch->setTarget(this);
   myINPTLatch->setEditable(false);
-  ypos += lineHeight + 5;
+  ypos += _lineHeight + vGap / 2;
   myINPTDump = new CheckboxWidget(boss, lfont, xpos, ypos, "INPT dump to gnd (VBlank D7)");
   myINPTDump->setTarget(this);
   myINPTDump->setEditable(false);
@@ -221,57 +234,63 @@ RiotWidget::RiotWidget(GuiObject* boss, const GUI::Font& lfont,
   // PO & P1 difficulty switches
   int pwidth = lfont.getStringWidth("B/easy");
   lwidth = lfont.getStringWidth("Right Diff ");
-  xpos = col;  ypos += 2 * lineHeight;
-  const int col2_ypos = ypos;
+  xpos = col;  ypos = myINPTDump->getBottom() + vGap * 4;
   items.clear();
   VarList::push_back(items, "B/easy", "b");
   VarList::push_back(items, "A/hard", "a");
-  myP0Diff = new PopUpWidget(boss, lfont, xpos, ypos, pwidth, lineHeight, items,
+  myP0Diff = new PopUpWidget(boss, lfont, xpos, ypos, pwidth, _lineHeight, items,
                              "Left Diff ", lwidth, kP0DiffChanged);
   myP0Diff->setTarget(this);
   addFocusWidget(myP0Diff);
-  ypos += myP0Diff->getHeight() + 5;
-  myP1Diff = new PopUpWidget(boss, lfont, xpos, ypos, pwidth, lineHeight, items,
+  ypos = myP0Diff->getBottom() + vGap / 2;
+  myP1Diff = new PopUpWidget(boss, lfont, xpos, ypos, pwidth, _lineHeight, items,
                              "Right Diff ", lwidth, kP1DiffChanged);
   myP1Diff->setTarget(this);
   addFocusWidget(myP1Diff);
 
   // TV Type
-  ypos += myP1Diff->getHeight() + 5;
+  ypos = myP1Diff->getBottom() + vGap / 2;
   items.clear();
   VarList::push_back(items, "B&W", "bw");
   VarList::push_back(items, "Color", "color");
-  myTVType = new PopUpWidget(boss, lfont, xpos, ypos, pwidth, lineHeight, items,
+  myTVType = new PopUpWidget(boss, lfont, xpos, ypos, pwidth, _lineHeight, items,
                              "TV Type ", lwidth, kTVTypeChanged);
+  myTVType->setToolTip("Atari 2600 Color/B&W switch.");
   myTVType->setTarget(this);
   addFocusWidget(myTVType);
 
   // 2600/7800 mode
-  lwidth = lfont.getStringWidth("Console") + 29;
-  pwidth = lfont.getStringWidth("Atari 2600") + 6;
-  new StaticTextWidget(boss, lfont, 10, ypos+1, "Console");
-  myConsole = new EditTextWidget(boss, lfont, 10 + lwidth, ypos - 1, pwidth, lineHeight);
-  myConsole->setEditable(false, true);
+  pwidth = lfont.getStringWidth("Atari 2600");
+  items.clear();
+  VarList::push_back(items, "Atari 2600", "2600");
+  VarList::push_back(items, "Atari 7800", "7800");
+
+  new StaticTextWidget(boss, lfont, hBorder, ypos + 1, "Console");
+  myConsole = new PopUpWidget(boss, lfont, mySWCHBReadBits->getLeft(), ypos - 1,
+                              pwidth, _lineHeight, items, "", 0, kConsoleID);
+  myConsole->setTarget(this);
+  myConsole->setToolTip("Emulated console.");
   addFocusWidget(myConsole);
 
-  // Select and Reset
-  xpos += myP0Diff->getWidth() + 20;  ypos = col2_ypos + 1;
+  // Select, Reset and Pause
+  xpos = myP0Diff->getRight() + hGap * 2;  ypos = myP0Diff->getTop() + 1;
   mySelect = new CheckboxWidget(boss, lfont, xpos, ypos, "Select",
                                 CheckboxWidget::kCheckActionCmd);
   mySelect->setID(kSelectID);
   mySelect->setTarget(this);
   addFocusWidget(mySelect);
 
-  ypos += myP0Diff->getHeight() + 5;
+  ypos = myP1Diff->getTop() + 1;
   myReset = new CheckboxWidget(boss, lfont, xpos, ypos, "Reset",
                                CheckboxWidget::kCheckActionCmd);
   myReset->setID(kResetID);
   myReset->setTarget(this);
   addFocusWidget(myReset);
 
-  ypos += myP0Diff->getHeight() + 5;
+  ypos = myTVType->getTop() + 1;
   myPause = new CheckboxWidget(boss, lfont, xpos, ypos, "Pause",
                                CheckboxWidget::kCheckActionCmd);
+  myPause->setToolTip("Atari 7800 pause switch.");
   myPause->setID(kPauseID);
   myPause->setTarget(this);
   addFocusWidget(myPause);
@@ -349,41 +368,45 @@ void RiotWidget::loadConfig()
   alist.push_back(kTim1024TID);  vlist.push_back(state.T1024T);
     changed.push_back(state.T1024T != oldstate.T1024T);
   myTimWrite->setList(alist, vlist, changed);
+  myTimWriteLabel[0]->setEnabled(state.TIM1T);
+  myTimWriteLabel[1]->setEnabled(state.TIM8T);
+  myTimWriteLabel[2]->setEnabled(state.TIM64T);
+  myTimWriteLabel[3]->setEnabled(state.T1024T);
 
   alist.clear();  vlist.clear();  changed.clear();
   alist.push_back(0);
+  Int32 avail = 0;
   if(state.TIM1T)
-    vlist.push_back((state.TIM1T  - 1) * 1);
+    avail = (state.TIM1T  - 1) * 1;
   else if(state.TIM8T)
-    vlist.push_back((state.TIM8T  - 1) * 8);
+    avail = (state.TIM8T  - 1) * 8;
   else if(state.TIM64T)
-    vlist.push_back((state.TIM64T - 1) * 64);
+    avail = (state.TIM64T - 1) * 64;
   else if(state.T1024T)
-    vlist.push_back((state.T1024T - 1) * 1024);
-  else
-    vlist.push_back(0);
+    avail = (state.T1024T - 1) * 1024;
+  vlist.push_back(avail);
   changed.push_back(state.TIM1T != oldstate.TIM1T ||
                     state.TIM8T != oldstate.TIM8T ||
                     state.TIM64T != oldstate.TIM64T ||
                     state.T1024T != oldstate.T1024T);
-  myTimClocks->setList(alist, vlist, changed);
+  myTimAvail->setList(alist, vlist, changed);
 
   // Update timer read registers
   alist.clear();  vlist.clear();  changed.clear();
   alist.push_back(0);  vlist.push_back(state.INTIM);
     changed.push_back(state.INTIM != oldstate.INTIM);
-  alist.push_back(0);  vlist.push_back(state.TIMINT);
-    changed.push_back(state.TIMINT != oldstate.TIMINT);
-  alist.push_back(0);  vlist.push_back(state.TIMCLKS);
-    changed.push_back(state.TIMCLKS != oldstate.TIMCLKS);
   alist.push_back(0);  vlist.push_back(state.INTIMCLKS);
     changed.push_back(state.INTIMCLKS != oldstate.INTIMCLKS);
+  alist.push_back(0);  vlist.push_back(state.TIMINT);
+    changed.push_back(state.TIMINT != oldstate.TIMINT);
   myTimRead->setList(alist, vlist, changed);
 
   alist.clear();  vlist.clear();  changed.clear();
-  alist.push_back(0);  vlist.push_back(state.TIMDIV);
-    changed.push_back(state.TIMDIV != oldstate.TIMDIV);
-  myTimDivider->setList(alist, vlist, changed);
+  alist.push_back(0);  vlist.push_back(state.TIMCLKS);
+    changed.push_back(state.TIMCLKS != oldstate.TIMCLKS);
+  alist.push_back(0);  vlist.push_back(avail - state.TIMCLKS);
+    changed.push_back(state.TIMCLKS != oldstate.TIMCLKS);
+  myTimTotal->setList(alist, vlist, changed);
 
   // Console switches (inverted, since 'selected' in the UI
   // means 'grounded' in the system)
@@ -391,8 +414,7 @@ void RiotWidget::loadConfig()
   myP1Diff->setSelectedIndex(riot.diffP1(), state.swchbReadBits[0] != oldstate.swchbReadBits[0]);
 
   const bool devSettings = instance().settings().getBool("dev.settings");
-  myConsole->setText(instance().settings().getString(devSettings ? "dev.console" : "plr.console") == "7800" ? "Atari 7800" : "Atari 2600");
-  myConsole->setEditable(false, true);
+  myConsole->setSelected(instance().settings().getString(devSettings ? "dev.console" : "plr.console"));
 
   myTVType->setSelectedIndex(riot.tvType(), state.swchbReadBits[4] != oldstate.swchbReadBits[4]);
   myPause->setState(!riot.tvType(), state.swchbReadBits[4] != oldstate.swchbReadBits[4]);
@@ -485,6 +507,16 @@ void RiotWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
           break;
       }
       break;
+
+    case kConsoleID:
+    {
+      Settings& settings = instance().settings();
+      const string& prefix = settings.getBool("dev.settings") ? "dev." : "plr.";
+
+      settings.setValue(prefix + "console", myConsole->getSelectedTag());
+      instance().eventHandler().set7800Mode();
+      break;
+    }
 
     case CheckboxWidget::kCheckActionCmd:
       switch(id)
