@@ -243,7 +243,7 @@ string Thumbulator::run(uInt32& cycles, bool irqDrivenAudio)
 
 #ifndef UNSAFE_OPTIMIZATIONS
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int Thumbulator::fatalError(const char* opcode, uInt32 v1, const char* msg)
+int Thumbulator::fatalError(string_view opcode, uInt32 v1, string_view msg)
 {
   statusMsg << "Thumb ARM emulation fatal error: " << endl
             << opcode << "(" << Base::HEX8 << v1 << "), " << msg << endl;
@@ -254,11 +254,12 @@ int Thumbulator::fatalError(const char* opcode, uInt32 v1, const char* msg)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int Thumbulator::fatalError(const char* opcode, uInt32 v1, uInt32 v2,
-                                   const char* msg)
+int Thumbulator::fatalError(string_view opcode, uInt32 v1, uInt32 v2,
+                            string_view msg)
 {
   statusMsg << "Thumb ARM emulation fatal error: " << endl
-            << opcode << "(" << Base::HEX8 << v1 << "," << v2 << "), " << msg << endl;
+            << opcode << "(" << Base::HEX8 << v1 << "," << v2 << "), " << msg
+            << endl;
   dump_regs();
   if(trapOnFatal)
     throw runtime_error(statusMsg.str());

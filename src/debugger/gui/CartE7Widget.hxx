@@ -54,8 +54,8 @@ class CartridgeE7Widget : public CartDebugWidget
   protected:
     void initialize(GuiObject* boss, const CartridgeE7& cart,
                     const ostringstream& info);
-    const char* getSpotLower(int idx);
-    static const char* getSpotUpper(int idx);
+    string_view getSpotLower(int idx) const;
+    string_view getSpotUpper(int idx) const;
 
   private:
     void saveOldState() override;
