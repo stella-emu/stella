@@ -202,16 +202,16 @@ uInt8 CartridgeE7Widget::internalRamGetValue(int addr)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const char* CartridgeE7Widget::getSpotLower(int idx)
+string_view CartridgeE7Widget::getSpotLower(int idx) const
 {
-  static constexpr std::array<const char*, 4> spot_lower_8K = {
+  static constexpr std::array<string_view, 4> spot_lower_8K = {
     "#0 - ROM ($FFE4)", "#1 - ROM ($FFE5)", "#2 - ROM ($FFE6)", "#3 - RAM ($FFE7)"
   };
-  static constexpr std::array<const char*, 6> spot_lower_12K = {
+  static constexpr std::array<string_view, 6> spot_lower_12K = {
     "#0 - ROM ($FFE0)", "#1 - ROM ($FFE1)",
     "#2 - ROM ($FFE4)", "#3 - ROM ($FFE5)", "#4 - ROM ($FFE6)", "#5 - RAM ($FFE7)"
   };
-  static constexpr std::array<const char*, 8> spot_lower_16K = {
+  static constexpr std::array<string_view, 8> spot_lower_16K = {
     "#0 - ROM ($FFE0)", "#1 - ROM ($FFE1)", "#2 - ROM ($FFE2)", "#3 - ROM ($FFE3)",
     "#4 - ROM ($FFE4)", "#5 - ROM ($FFE5)", "#6 - ROM ($FFE6)", "#7 - RAM ($FFE7)"
   };
@@ -225,12 +225,11 @@ const char* CartridgeE7Widget::getSpotLower(int idx)
 
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const char* CartridgeE7Widget::getSpotUpper(int idx)
+string_view CartridgeE7Widget::getSpotUpper(int idx) const
 {
-  static constexpr std::array<const char*, 4> spot_upper = {
+  static constexpr std::array<string_view, 4> spot_upper = {
     "#0 - RAM ($FFE8)", "#1 - RAM ($FFE9)", "#2 - RAM ($FFEA)", "#3 - RAM ($FFEB)"
   };
 
   return spot_upper[idx];
 }
-

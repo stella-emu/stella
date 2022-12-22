@@ -77,7 +77,7 @@ string FSNodeWINDOWS::getShortPath() const
   if (home != "" && BSPF::startsWithIgnoreCase(_path, home))
   {
     string path = "~";
-    const char* const offset = _path.c_str() + home.length();
+    const char* const offset = _path.c_str() + home.size();
     if (*offset != FSNode::PATH_SEPARATOR)
       path += FSNode::PATH_SEPARATOR;
     path += offset;

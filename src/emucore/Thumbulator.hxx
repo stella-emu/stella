@@ -239,8 +239,8 @@ class Thumbulator
     // Throw a runtime_error exception containing an error referencing the
     // given message and variables
     // Note that the return value is never used in these methods
-    int fatalError(const char* opcode, uInt32 v1, const char* msg);
-    int fatalError(const char* opcode, uInt32 v1, uInt32 v2, const char* msg);
+    int fatalError(string_view opcode, uInt32 v1, string_view msg);
+    int fatalError(string_view opcode, uInt32 v1, uInt32 v2, string_view msg);
 
     void dump_counters() const;
     void dump_regs();
