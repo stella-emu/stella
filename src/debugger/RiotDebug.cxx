@@ -393,13 +393,13 @@ string RiotDebug::toString()
       << " 295/TIM8T=" << Debugger::invIfChanged(state.TIM8T, oldstate.TIM8T)
       << " 296/TIM64T=" << Debugger::invIfChanged(state.TIM64T, oldstate.TIM64T)
       << " 297/T1024T=" << Debugger::invIfChanged(state.T1024T, oldstate.T1024T)
+      << " Divider=" << Debugger::invIfChanged(state.TIMDIV, oldstate.TIMDIV)
       << endl
 
       << "0x284/INTIM=" << Debugger::invIfChanged(state.INTIM, oldstate.INTIM)
       << " 285/TIMINT=" << Debugger::invIfChanged(state.TIMINT, oldstate.TIMINT)
       << " Timer_Clocks=" << Debugger::invIfChanged(state.TIMCLKS, oldstate.TIMCLKS)
       << " INTIM_Clocks=" << Debugger::invIfChanged(state.INTIMCLKS, oldstate.INTIMCLKS)
-      << " Divider=" << Debugger::invIfChanged(state.TIMDIV, oldstate.TIMDIV)
       << endl
 
       << "Left/P0diff: " << diffP0String() << "   Right/P1diff: " << diffP1String()

@@ -19,6 +19,7 @@
 #define RIOT_WIDGET_HXX
 
 class GuiObject;
+class StaticTextWidget;
 class ButtonWidget;
 class DataGridWidget;
 class PopUpWidget;
@@ -26,7 +27,6 @@ class ToggleBitWidget;
 class ControllerWidget;
 class Controller;
 
-#include "Widget.hxx"
 #include "Command.hxx"
 
 class RiotWidget : public Widget, public CommandSender
@@ -58,10 +58,11 @@ class RiotWidget : public Widget, public CommandSender
     CheckboxWidget* myINPTLatch{nullptr};
     CheckboxWidget* myINPTDump{nullptr};
 
+    std::array<StaticTextWidget*, 4> myTimWriteLabel{nullptr};
     DataGridWidget* myTimWrite{nullptr};
-    DataGridWidget* myTimClocks{nullptr};
+    DataGridWidget* myTimAvail{nullptr};
     DataGridWidget* myTimRead{nullptr};
-    DataGridWidget* myTimDivider{nullptr};
+    DataGridWidget* myTimTotal{nullptr};
 
     ControllerWidget *myLeftControl{nullptr}, *myRightControl{nullptr};
     PopUpWidget *myP0Diff{nullptr}, *myP1Diff{nullptr};
@@ -70,7 +71,7 @@ class RiotWidget : public Widget, public CommandSender
     CheckboxWidget* myReset{nullptr};
     CheckboxWidget* myPause{nullptr};
 
-    EditTextWidget* myConsole{nullptr};
+    PopUpWidget *myConsole{nullptr};
 
     // ID's for the various widgets
     // We need ID's, since there are more than one of several types of widgets
@@ -78,7 +79,7 @@ class RiotWidget : public Widget, public CommandSender
       kTim1TID, kTim8TID, kTim64TID, kTim1024TID, kTimWriteID,
       kSWCHABitsID, kSWACNTBitsID, kSWCHBBitsID, kSWBCNTBitsID,
       kP0DiffChanged, kP1DiffChanged, kTVTypeChanged, kSelectID, kResetID,
-      kSWCHARBitsID, kSWCHBRBitsID, kPauseID
+      kSWCHARBitsID, kSWCHBRBitsID, kPauseID, kConsoleID
     };
 
   private:
