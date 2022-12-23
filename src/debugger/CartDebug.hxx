@@ -260,7 +260,7 @@ class CartDebug : public DebuggerSystem
       Methods used by the command parser for tab-completion
       In this case, return completions from the equate list(s)
     */
-    void getCompletions(const char* in, StringList& completions) const;
+    void getCompletions(string_view in, StringList& completions) const;
 
     // Convert given address to corresponding access type and append to buf
     void accessTypeAsString(ostream& buf, uInt16 addr) const;

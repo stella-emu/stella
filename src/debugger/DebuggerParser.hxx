@@ -42,7 +42,7 @@ class DebuggerParser
 
     /** Given a substring, determine matching substrings from the list
         of available commands.  Used in the debugger prompt for tab-completion */
-    static void getCompletions(const char* in, StringList& completions);
+    static void getCompletions(string_view in, StringList& completions);
 
     /** Evaluate the given expression using operators, current base, etc */
     int decipher_arg(string_view str);

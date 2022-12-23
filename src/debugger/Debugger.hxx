@@ -123,7 +123,7 @@ class Debugger : public DialogContainer
       Methods used by the command parser for tab-completion
       In this case, return completions from the function list
     */
-    void getCompletions(const char* in, StringList& list) const;
+    void getCompletions(string_view in, StringList& list) const;
 
     /**
       The dialog/GUI associated with the debugger

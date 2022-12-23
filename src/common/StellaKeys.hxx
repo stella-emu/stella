@@ -439,12 +439,12 @@ namespace StellaModTest
 
 namespace StellaKeyName
 {
-  inline const char* forKey(StellaKey key)
+  inline string_view forKey(StellaKey key)
   {
   #ifdef SDL_SUPPORT
     return SDL_GetScancodeName(SDL_Scancode(key));
   #else
-    return "";
+    return string_view{};
   #endif
   }
 }
