@@ -796,10 +796,10 @@ void GameInfoDialog::loadEmulationProperties(const Properties& props)
     myPhosphor->setLabel("Phosphor");
 
   const string& blend = props.get(PropType::Display_PPBlend);
-  myPPBlend->setValue(stringToInt(blend));
+  myPPBlend->setValue(BSPF::stoi(blend));
 
   // set vertical center
-  const Int32 vcenter = stringToInt(props.get(PropType::Display_VCenter));
+  const Int32 vcenter = BSPF::stoi(props.get(PropType::Display_VCenter));
   myVCenter->setValueLabel(vcenter);
   myVCenter->setValue(vcenter);
   myVCenter->setValueUnit(vcenter ? "px" : "");
@@ -827,8 +827,8 @@ void GameInfoDialog::loadControllerProperties(const Properties& props)
   mySwapPaddles->setState(props.get(PropType::Controller_SwapPaddles) == "YES");
 
   // Paddle centers
-  myPaddleXCenter->setValue(BSPF::stringToInt(props.get(PropType::Controller_PaddlesXCenter)));
-  myPaddleYCenter->setValue(BSPF::stringToInt(props.get(PropType::Controller_PaddlesYCenter)));
+  myPaddleXCenter->setValue(BSPF::stoi(props.get(PropType::Controller_PaddlesXCenter)));
+  myPaddleYCenter->setValue(BSPF::stoi(props.get(PropType::Controller_PaddlesYCenter)));
 
   // MouseAxis property (potentially contains 'range' information)
   istringstream m_axis(props.get(PropType::Controller_MouseAxis));
@@ -850,7 +850,7 @@ void GameInfoDialog::loadControllerProperties(const Properties& props)
   myMouseY->setEnabled(!autoAxis);
   if(m_axis >> m_range)
   {
-    myMouseRange->setValue(stringToInt(m_range));
+    myMouseRange->setValue(BSPF::stoi(m_range));
   }
   else
   {
@@ -1061,19 +1061,19 @@ void GameInfoDialog::saveHighScoresProperties()
     string strAddr;
 
     strAddr = myVarAddress->getText();
-    info.varsAddr = stringToIntBase16(strAddr, HSM::DEFAULT_ADDRESS);
+    info.varsAddr = BSPF::stoi_16(strAddr, HSM::DEFAULT_ADDRESS);
     strAddr = mySpecialAddress->getText();
-    info.specialAddr = stringToIntBase16(strAddr, HSM::DEFAULT_ADDRESS);
+    info.specialAddr = BSPF::stoi_16(strAddr, HSM::DEFAULT_ADDRESS);
 
     for (uInt32 a = 0; a < HSM::MAX_SCORE_ADDR; ++a)
     {
       strAddr = myScoreAddress[a]->getText();
-      info.scoreAddr[a] = stringToIntBase16(strAddr, HSM::DEFAULT_ADDRESS);
+      info.scoreAddr[a] = BSPF::stoi_16(strAddr, HSM::DEFAULT_ADDRESS);
     }
 
     const string strVars = myVariations->getText();
 
-    HighScoresManager::set(myGameProperties, stringToInt(strVars,
+    HighScoresManager::set(myGameProperties, BSPF::stoi(strVars,
       HSM::DEFAULT_VARIATION), info);
   }
   else
@@ -1347,7 +1347,7 @@ void GameInfoDialog::updateHighScoresWidgets()
   myVarAddress->setEnabled(enableVars);
   myVarAddress->setEditable(enableVars);
   myVarAddressVal->setEnabled(enableVars && enableConsole);
-  myVarsBCD->setEnabled(enableVars && stringToInt(myVariations->getText(), 1) >= 10);
+  myVarsBCD->setEnabled(enableVars && BSPF::stoi(myVariations->getText(), 1) >= 10);
   myVarsZeroBased->setEnabled(enableVars);
 
   myScoreLabel->setEnabled(enable);
@@ -1386,7 +1386,7 @@ void GameInfoDialog::updateHighScoresWidgets()
 
   // update variations RAM value
   setAddressVal(myVarAddress, myVarAddressVal, myVarsBCD->getState(),
-                myVarsZeroBased->getState(), stringToInt(myVariations->getText(), 1));
+                myVarsZeroBased->getState(), BSPF::stoi(myVariations->getText(), 1));
 
   setAddressVal(mySpecialAddress, mySpecialAddressVal, mySpecialBCD->getState(),
                 mySpecialZeroBased->getState());
@@ -1400,7 +1400,7 @@ void GameInfoDialog::updateHighScoresWidgets()
     {
       setAddressVal(myScoreAddress[a], myScoreAddressVal[a]);
       const string strAddr = myScoreAddress[a]->getText();
-      scoreAddr[a] = stringToIntBase16(strAddr, HSM::DEFAULT_ADDRESS);
+      scoreAddr[a] = BSPF::stoi_16(strAddr, HSM::DEFAULT_ADDRESS);
     }
     else
       myScoreAddressVal[a]->setText("");
@@ -1427,7 +1427,7 @@ void GameInfoDialog::setAddressVal(const EditTextWidget* addressWidget, EditText
     ostringstream ss;
 
     // convert to number and read from memory
-    const uInt16 addr = stringToIntBase16(strAddr, HSM::DEFAULT_ADDRESS);
+    const uInt16 addr = BSPF::stoi_16(strAddr, HSM::DEFAULT_ADDRESS);
     uInt8 val = instance().highScores().peek(addr);
     val = HighScoresManager::convert(val, maxVal, isBCD, zeroBased);
 

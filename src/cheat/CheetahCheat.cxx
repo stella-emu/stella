@@ -23,9 +23,9 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CheetahCheat::CheetahCheat(OSystem& os, string_view name, string_view code)
   : Cheat(os, name, code),
-    address{static_cast<uInt16>(0xf000 + unhex(code.substr(0, 3)))},
-    value{static_cast<uInt8>(unhex(code.substr(3, 2)))},
-    count{static_cast<uInt8>(unhex(code.substr(5, 1)) + 1)}
+    address{static_cast<uInt16>(0xf000 + BSPF::stoi_16(code.substr(0, 3)))},
+    value{static_cast<uInt8>(BSPF::stoi_16(code.substr(3, 2)))},
+    count{static_cast<uInt8>(BSPF::stoi_16(code.substr(5, 1)) + 1)}
 {
   // Back up original data; we need this if the cheat is ever disabled
   for(int i = 0; i < count; ++i)

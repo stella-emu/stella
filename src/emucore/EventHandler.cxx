@@ -2345,7 +2345,7 @@ void EventHandler::setComboListForEvent(Event::Type event, const StringList& eve
     const int combo = event - Event::Combo1;
     for(uInt32 i = 0; i < EVENTS_PER_COMBO; ++i)
     {
-      const uInt32 idx = BSPF::stringToInt(events[i]);
+      const uInt32 idx = BSPF::stoi(events[i]);
       if(idx < ourEmulActionList.size())
         myComboTable[combo][i] = EventHandler::ourEmulActionList[idx].event;
       else
