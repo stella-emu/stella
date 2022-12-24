@@ -67,7 +67,7 @@ ProfilingRunner::ProfilingRunner(int argc, char* argv[])
 
     if (splitPoint == string::npos) run.runtime = RUNTIME_DEFAULT;
     else  {
-      const int runtime = BSPF::stringToInt(arg.substr(splitPoint+1, string::npos));
+      const int runtime = BSPF::stoi(arg.substr(splitPoint+1, string::npos));
       run.runtime = runtime > 0 ? runtime : RUNTIME_DEFAULT;
     }
   }
