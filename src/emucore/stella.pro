@@ -133,6 +133,7 @@
 "Cart.Manufacturer" "Atari, Mimi Nyden, Scott Smith, Robert Vieira"
 "Cart.ModelNo" "CX26127"
 "Cart.Name" "Gremlins (1984) (Atari)"
+"Cart.Highscore" "{\"score_addresses\":[\"0xa4\",\"0xa5\",\"0xa6\"],\"score_digits\":6,\"special_address\":\"0xbe\",\"special_label\":\"level\",\"special_zero_based\":true,\"variations_count\":1}"
 ""
 
 "Cart.MD5" "01e5c81258860dd82f77339d58bc5f5c"
@@ -640,6 +641,7 @@
 "Cart.Manufacturer" "Cody Pittman"
 "Cart.Name" "Blob (Cody Pittman) (Hack)"
 "Cart.Note" "Hack of Halloween"
+"Cart.Highscore" "{\"score_addresses\":[\"0xd8\",\"0xd9\",\"0xda\"],\"score_digits\":6,\"variations_count\":1}"
 "Cart.Rarity" "Hack"
 ""
 
@@ -834,6 +836,7 @@
 
 "Cart.MD5" "0945081a6bd00345ff3d58eb7a07330a"
 "Cart.Name" "Stampede (Unknown) (PAL) (4K)"
+"Cart.Highscore" "{\"score_addresses\":[\"0xbc\",\"0xb8\"],\"variations_address\":\"0x99\",\"variations_count\":8,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "0956285e24a18efa10c68a33846ca84d"
@@ -1896,6 +1899,7 @@
 "Cart.Manufacturer" "CCE"
 "Cart.ModelNo" "C-857"
 "Cart.Name" "Superman (1983) (CCE)"
+"Cart.Highscore" "{\"score_addresses\":[\"0xe3\",\"0xe2\"],\"variations_count\":1}"
 ""
 
 "Cart.MD5" "14a56b493a8d9d10e94a3e100362e3a2"
@@ -2062,6 +2066,7 @@
 
 "Cart.MD5" "169d4c7bd3a4d09e184a3b993823d048"
 "Cart.Name" "Superman (Unknown) (PAL) [a]"
+"Cart.Highscore" "{\"score_addresses\":[\"0xe3\",\"0xe2\"],\"variations_count\":1}"
 ""
 
 "Cart.MD5" "16baafb06c06aa475aa671f234399e05"
@@ -2378,6 +2383,7 @@
 "Cart.Manufacturer" "Parker Brothers, David Lamkins, Laura Nikolich"
 "Cart.ModelNo" "PB5900"
 "Cart.Name" "Spider-Man (1982) (Parker Bros)"
+"Cart.Highscore" "{\"score_addresses\":[\"0xec\",\"0xed\"],\"variations_address\":\"0xf5\",\"variations_count\":6}"
 ""
 
 "Cart.MD5" "19a9d3f9fa1b1358fb53009444247aaf"
@@ -2567,6 +2573,7 @@
 "Cart.Manufacturer" "PlayAround - JHM"
 "Cart.ModelNo" "205"
 "Cart.Name" "Gigolo (1982) (PlayAround)"
+"Cart.Highscore" "{\"score_addresses\":[\"0xd4\",\"0xd5\"],\"variations_count\":1}"
 "Display.Phosphor" "YES"
 ""
 
@@ -3044,6 +3051,7 @@
 "Cart.Manufacturer" "Activision, Bob Whitehead"
 "Cart.ModelNo" "AG-011"
 "Cart.Name" "Stampede (1981) (Activision)"
+"Cart.Highscore" "{\"score_addresses\":[\"0xbc\",\"0xb8\"],\"variations_address\":\"0x99\",\"variations_count\":8,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "2228c67d25e507603d4873d3934f0757"
@@ -4354,6 +4362,7 @@
 "Cart.Manufacturer" "Wizard Video Games - VSS - MicroGraphic Image, Robert Barber, Tim Martin"
 "Cart.ModelNo" "007"
 "Cart.Name" "Halloween (1983) (Wizard Video Games)"
+"Cart.Highscore" "{\"score_addresses\":[\"0xd8\",\"0xd9\",\"0xda\"],\"score_digits\":6,\"variations_count\":1}"
 ""
 
 "Cart.MD5" "3051b6071cb26377cd428af155e1bfc4"
@@ -4883,6 +4892,7 @@
 "Cart.Manufacturer" "Atari, John Dunn - Sears"
 "Cart.ModelNo" "CX2631 - 49-75152"
 "Cart.Name" "Superman (1979) (Atari) (8K)"
+"Cart.Highscore" "{\"score_addresses\":[\"0xe3\",\"0xe2\"],\"variations_count\":1}"
 ""
 
 "Cart.MD5" "3624e5568368929fabb55d7f9df1022e"
@@ -5786,6 +5796,7 @@
 "Cart.ModelNo" "PGP218"
 "Cart.Name" "Rodeo Champ (4 Game in One Dark Green) (1983) (BitCorp) (PAL)"
 "Cart.Note" "AKA Stampede"
+"Cart.Highscore" "{\"score_addresses\":[\"0xbc\",\"0xb8\"],\"variations_address\":\"0x99\",\"variations_count\":8,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "3f9cb1aba8ec20e2c243ae642f9942bf"
@@ -6089,6 +6100,7 @@
 "Cart.Manufacturer" "Jone Yuan Telephonic Enterprise Co"
 "Cart.Name" "Stampede (Jone Yuan)"
 "Cart.Note" "2600 Screen Search Console"
+"Cart.Highscore" "{\"score_addresses\":[\"0xbc\",\"0xb8\"],\"variations_address\":\"0x99\",\"variations_count\":8,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "43c6cfffeddab6b3787357fed9d44529"
@@ -7581,6 +7593,7 @@
 "Cart.Manufacturer" "Activision, Bob Whitehead"
 "Cart.ModelNo" "AG-011"
 "Cart.Name" "Stampede (1981) (Activision) (8K)"
+"Cart.Highscore" "{\"score_addresses\":[\"0xbc\",\"0xb8\"],\"variations_address\":\"0x99\",\"variations_count\":8,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "540075f657d4b244a1f74da1b9e4bf92"
@@ -8417,6 +8430,7 @@
 "Cart.Manufacturer" "Atari, John Dunn - Sears"
 "Cart.ModelNo" "CX2631 - 49-75152"
 "Cart.Name" "Superman (1979) (Atari) [fixed]"
+"Cart.Highscore" "{\"score_addresses\":[\"0xe3\",\"0xe2\"],\"variations_count\":1}"
 ""
 
 "Cart.MD5" "5df32450b9fbcaf43f9d83bd66bd5a81"
@@ -8899,6 +8913,7 @@
 "Cart.Manufacturer" "Parker Brothers, Wilfredo Aguilar, Michael Becker, Neil McKenzie, Bob Smith, Brad Stewart"
 "Cart.ModelNo" "PB5540"
 "Cart.Name" "Star Wars - The Arcade Game (1984) (Parker Bros)"
+"Cart.Highscore" "{\"score_addresses\":[\"0xd4\",\"0xd5\",\"0xd6\"],\"score_digits\":6,\"variations_count\":1}"
 "Display.Phosphor" "YES"
 ""
 
@@ -9970,6 +9985,7 @@
 "Cart.Manufacturer" "Parker Brothers, Wilfredo Aguilar, Michael Becker, Neil McKenzie, Bob Smith, Brad Stewart"
 "Cart.ModelNo" "PB5540"
 "Cart.Name" "Star Wars - The Arcade Game (1984) (Parker Bros) (PAL)"
+"Cart.Highscore" "{\"score_addresses\":[\"0xd4\",\"0xd5\",\"0xd6\"],\"score_digits\":6,\"variations_count\":1}"
 "Display.Phosphor" "YES"
 ""
 
@@ -10145,6 +10161,7 @@
 
 "Cart.MD5" "6fac680fc9a72e0e54255567c72afe34"
 "Cart.Name" "Superman (Unknown) (PAL)"
+"Cart.Highscore" "{\"score_addresses\":[\"0xe3\",\"0xe2\"],\"variations_count\":1}"
 ""
 
 "Cart.MD5" "6fbd05b0ad65b2a261fa154b34328a7f"
@@ -10672,6 +10689,7 @@
 "Cart.Manufacturer" "Activision, Bob Whitehead - Ariola"
 "Cart.ModelNo" "EAG-011, PAG-011 - 711 011-715"
 "Cart.Name" "Stampede (1981) (Activision) (PAL)"
+"Cart.Highscore" "{\"score_addresses\":[\"0xbc\",\"0xb8\"],\"variations_address\":\"0x99\",\"variations_count\":8,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "755fed16b48e81de05130708a905d00d"
@@ -11593,6 +11611,7 @@
 "Cart.Manufacturer" "Atari, Mark R. Hahn"
 "Cart.Name" "Elk Attack (1987) (Atari) (Prototype)"
 "Cart.Rarity" "Prototype"
+"Cart.Highscore" "{\"score_addresses\":[\"0x87\",\"0x88\",\"0x89\"],\"score_digits\":6,\"special_zero_based\":true,\"variations_count\":1}"
 "Cart.Url" "http://www.atariprotos.com/2600/software/elkattack/elkattack.htm"
 ""
 
@@ -12317,10 +12336,12 @@
 "Cart.MD5" "866e5150c995c4ae5172e5207ba948c7"
 "Cart.Manufacturer" "Canal 3 - Intellivision"
 "Cart.Name" "Stampede (Canal 3) (16K)"
+"Cart.Highscore" "{\"score_addresses\":[\"0xbc\",\"0xb8\"],\"variations_address\":\"0x99\",\"variations_count\":8,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "869abe0426e6e9fcb6d75a3c2d6e05d1"
 "Cart.Name" "Stampede (Unknown) (PAL)"
+"Cart.Highscore" "{\"score_addresses\":[\"0xbc\",\"0xb8\"],\"variations_address\":\"0x99\",\"variations_count\":8,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "86b4aa76bbeb70e1a4f9211a9880ba8e"
@@ -13111,6 +13132,7 @@
 "Cart.Manufacturer" "Activision, Bob Whitehead"
 "Cart.ModelNo" "AG-011"
 "Cart.Name" "Stampede (1981) (Activision) (16K)"
+"Cart.Highscore" "{\"score_addresses\":[\"0xbc\",\"0xb8\"],\"variations_address\":\"0x99\",\"variations_count\":8,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "90578a63441de4520be5324e8f015352"
@@ -14175,6 +14197,7 @@
 "Cart.Manufacturer" "PlayAround - JHM"
 "Cart.ModelNo" "201"
 "Cart.Name" "Cathouse Blues (1982) (PlayAround)"
+"Cart.Highscore" "{\"score_addresses\":[\"0xd4\",\"0xd5\"],\"variations_count\":1}"
 "Display.Phosphor" "YES"
 ""
 
@@ -15144,6 +15167,7 @@
 "Cart.Manufacturer" "Atari, John Dunn - Sears"
 "Cart.ModelNo" "CX2631 - 49-75152"
 "Cart.Name" "Superman (1979) (Atari)"
+"Cart.Highscore" "{\"score_addresses\":[\"0xe3\",\"0xe2\"],\"variations_count\":1}"
 ""
 
 "Cart.MD5" "a957dbe7d85ea89133346ad56fbda03f"
@@ -16779,6 +16803,7 @@
 "Cart.ModelNo" "874.254 6"
 "Cart.Name" "Super-Cowboy beim Rodeo (1983) (Quelle) (PAL)"
 "Cart.Note" "AKA Stampede"
+"Cart.Highscore" "{\"score_addresses\":[\"0xbc\",\"0xb8\"],\"variations_address\":\"0x99\",\"variations_count\":8,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "bdf1996e2dd64baf8eff5511811ca6ca"
@@ -17332,6 +17357,7 @@
 "Cart.Manufacturer" "Wizard Video Games"
 "Cart.ModelNo" "007"
 "Cart.Name" "Halloween (1983) (Wizard Video Games) [a]"
+"Cart.Highscore" "{\"score_addresses\":[\"0xd8\",\"0xd9\",\"0xda\"],\"score_digits\":6,\"variations_count\":1}"
 ""
 
 "Cart.MD5" "c469151655e333793472777052013f4f"
@@ -17806,6 +17832,7 @@
 "Cart.Manufacturer" "Atari"
 "Cart.ModelNo" "CX26163P"
 "Cart.Name" "Stampede (32 in 1) (1988) (Atari) (PAL)"
+"Cart.Highscore" "{\"score_addresses\":[\"0xbc\",\"0xb8\"],\"variations_address\":\"0x99\",\"variations_count\":8,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "c92cfa54b5d022637fdcbdc1ef640d82"
@@ -18059,6 +18086,7 @@
 "Cart.ModelNo" "874.254 6"
 "Cart.Name" "Super-Cowboy beim Rodeo (1983) (Quelle) (PAL) (4K)"
 "Cart.Note" "AKA Stampede"
+"Cart.Highscore" "{\"score_addresses\":[\"0xbc\",\"0xb8\"],\"variations_address\":\"0x99\",\"variations_count\":8,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "cc3d942c6958bd16b1c602623f59e6e1"
@@ -18118,6 +18146,7 @@
 "Cart.Name" "Superman (Stunt_Cycle_Rules!) (Hack)"
 "Cart.Note" "Hack of Superman"
 "Cart.Rarity" "Hack"
+"Cart.Highscore" "{\"score_addresses\":[\"0xe3\",\"0xe2\"],\"variations_count\":1}"
 ""
 
 "Cart.MD5" "ccbd36746ed4525821a8083b0d6d2c2c"
@@ -18688,6 +18717,7 @@
 "Cart.Name" "Stampede (Jone Yuan) (4K) (Hack)"
 "Cart.Note" "2600 Screen Search Console"
 "Cart.Rarity" "Hack"
+"Cart.Highscore" "{\"score_addresses\":[\"0xbc\",\"0xb8\"],\"variations_address\":\"0x99\",\"variations_count\":8,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "d175258b2973b917a05b46df4e1cf15d"
@@ -19521,6 +19551,7 @@
 "Cart.Manufacturer" "Atari, John Dunn"
 "Cart.ModelNo" "CX2631, CX2631P"
 "Cart.Name" "Superman (1979) (Atari) (PAL)"
+"Cart.Highscore" "{\"score_addresses\":[\"0xe3\",\"0xe2\"],\"variations_count\":1}"
 ""
 
 "Cart.MD5" "dbba14a0f69f0e13fdccb3fde3baedca"
@@ -20657,6 +20688,7 @@
 "Cart.Manufacturer" "Activision, Bob Whitehead"
 "Cart.ModelNo" "AG-011"
 "Cart.Name" "Stampede (1981) (Activision) (4K)"
+"Cart.Highscore" "{\"score_addresses\":[\"0xbc\",\"0xb8\"],\"variations_address\":\"0x99\",\"variations_count\":8,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "e67b0ed32fd9d28d12ab3775d52e8c3a"
@@ -20736,6 +20768,7 @@
 "Cart.Manufacturer" "Parker Brothers, David Lamkins, Laura Nikolich"
 "Cart.ModelNo" "931503"
 "Cart.Name" "Spider-Man (1982) (Parker Bros) (PAL)"
+"Cart.Highscore" "{\"score_addresses\":[\"0xec\",\"0xed\"],\"variations_address\":\"0xf5\",\"variations_count\":6}"
 ""
 
 "Cart.MD5" "e77f332b71f13884c84771e7a121182d"
@@ -21703,6 +21736,7 @@
 "Cart.Manufacturer" "Atari"
 "Cart.ModelNo" "CX26163P"
 "Cart.Name" "Stampede (32 in 1) (1988) (Atari) (PAL) (4K)"
+"Cart.Highscore" "{\"score_addresses\":[\"0xbc\",\"0xb8\"],\"variations_address\":\"0x99\",\"variations_count\":8,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "f20bd756f3990e06c492f53cd0168e68"
@@ -21991,6 +22025,7 @@
 "Cart.Manufacturer" "Activision, Bob Whitehead - Ariola"
 "Cart.ModelNo" "EAG-011, PAG-011 - 711 011-715"
 "Cart.Name" "Stampede (1981) (Activision) (PAL) (4K)"
+"Cart.Highscore" "{\"score_addresses\":[\"0xbc\",\"0xb8\"],\"variations_address\":\"0x99\",\"variations_count\":8,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "f539e32bf6ce39c8ca47cb0cdd2c5cb8"
@@ -22218,6 +22253,7 @@
 "Cart.MD5" "f77f5fc3893da5d00198e4cd96544aad"
 "Cart.Manufacturer" "Canal 3 - Intellivision"
 "Cart.Name" "Stampede (Canal 3)"
+"Cart.Highscore" "{\"score_addresses\":[\"0xbc\",\"0xb8\"],\"variations_address\":\"0x99\",\"variations_count\":8,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "f7856e324bc56f45b9c8e6ff062ec033"
@@ -22252,6 +22288,7 @@
 "Cart.ModelNo" "495.663 7"
 "Cart.Name" "Spiderman (1983) (Quelle) (PAL)"
 "Cart.Note" "AKA Spider-Man"
+"Cart.Highscore" "{\"score_addresses\":[\"0xec\",\"0xed\"],\"variations_address\":\"0xf5\",\"variations_count\":6}"
 ""
 
 "Cart.MD5" "f7d6592dcb773c81c278140ed4d01669"
@@ -22834,6 +22871,7 @@
 "Cart.Manufacturer" "Atari, John Dunn"
 "Cart.ModelNo" "CX2631, CX2631P"
 "Cart.Name" "Superman (1979) (Atari) (PAL) [a]"
+"Cart.Highscore" "{\"score_addresses\":[\"0xe3\",\"0xe2\"],\"variations_count\":1}"
 ""
 
 "Cart.MD5" "fd16949913aaab5beaefed73bf2ca67c"
@@ -23171,6 +23209,7 @@
 
 "Cart.MD5" "6bc89b25d541a6da465d2e2c0b527941"
 "Cart.Name" "Stampede (Unknown) (PAL) (4K)"
+"Cart.Highscore" "{\"score_addresses\":[\"0xbc\",\"0xb8\"],\"variations_address\":\"0x99\",\"variations_count\":8,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "7095858d35ca36e7a8f46bea46bb46da"
@@ -23191,10 +23230,12 @@
 
 "Cart.MD5" "76226fa2eb33e796d1e7c7bb8f22a91e"
 "Cart.Name" "Spider-Man (Unknown) (PAL)"
+"Cart.Highscore" "{\"score_addresses\":[\"0xec\",\"0xed\"],\"variations_address\":\"0xf5\",\"variations_count\":6}"
 ""
 
 "Cart.MD5" "81e44e968a4b3cd85b4a0f9a60d25dcd"
 "Cart.Name" "Stampede (Unknown)"
+"Cart.Highscore" "{\"score_addresses\":[\"0xbc\",\"0xb8\"],\"variations_address\":\"0x99\",\"variations_count\":8,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "83531415b25531b47d23cf205961e51f"
