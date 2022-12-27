@@ -28,6 +28,7 @@ _build_static=no
 _build_profile=no
 _build_debug=no
 _build_release=no
+_build_mold=no
 
 # more defaults
 _ranlib=ranlib
@@ -218,6 +219,7 @@ Optional Features:
   --disable-debug
   --enable-release       build with all optimizations, for final release [disabled]
   --disable-release
+  --use-mold-linker      use mold linker (experimental) [disabled]
 
 Optional Libraries:
   --with-sdl-prefix=DIR    Prefix where the sdl2-config script is installed (optional)
@@ -264,6 +266,7 @@ for ac_option in $@; do
       --disable-debug)          _build_debug=no      ;;
       --enable-release)         _build_release=yes   ;;
       --disable-release)        _build_release=no    ;;
+      --use-mold-linker)        _build_mold=yes      ;;
       --with-sdl-prefix=*)
         arg=`echo $ac_option | cut -d '=' -f 2`
         _sdlpath="$arg:$arg/bin"
@@ -930,6 +933,10 @@ fi
 
 if test "$_build_release" = no ; then
 	_build_release=
+fi
+
+if test "$_build_mold" = yes ; then
+	LDFLAGS="-fuse-ld=mold"
 fi
 
 # Workaround until we deal with autodetection of C compiler properly
