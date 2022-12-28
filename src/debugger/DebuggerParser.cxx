@@ -175,7 +175,7 @@ void DebuggerParser::outputCommandError(string_view errorMsg, int command)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // Completion-related stuff:
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void DebuggerParser::getCompletions(const char* in, StringList& completions)
+void DebuggerParser::getCompletions(string_view in, StringList& completions)
 {
   // cerr << "Attempting to complete \"" << in << "\"" << endl;
   for(const auto& c: commands)

@@ -367,7 +367,10 @@ bool FileListWidget::handleText(char text)
   const bool firstShift = StellaModTest::isShift(_firstMod);
 
   if(StellaModTest::isShift(_lastMod))
-    text = *StellaKeyName::forKey(_lastKey);
+  {
+    const string_view key = StellaKeyName::forKey(_lastKey);
+    text = !key.empty() ? key.front() : '\0';
+  }
 
   if(_quickSelectTime < time)
     _quickSelectStr = text;

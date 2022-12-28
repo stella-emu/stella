@@ -151,7 +151,7 @@ Console::Console(OSystem& osystem, unique_ptr<Cartridge>& cart,
   myCart->setStartBankFromPropsFunc([this]() {
     const string_view startbank = myProperties.get(PropType::Cart_StartBank);
     return (startbank == EmptyString || BSPF::equalsIgnoreCase(startbank, "AUTO"))
-        ? -1 : BSPF::stringToInt(startbank);
+        ? -1 : BSPF::stoi(startbank);
   });
 
   // We can only initialize after all the devices/components have been created
@@ -636,7 +636,7 @@ void Console::togglePhosphor()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Console::changePhosphor(int direction)
 {
-  int blend = BSPF::stringToInt(myProperties.get(PropType::Display_PPBlend));
+  int blend = BSPF::stoi(myProperties.get(PropType::Display_PPBlend));
 
   if(direction)
   {
@@ -801,7 +801,7 @@ void Console::toggleCorrectAspectRatio(bool toggle)
 void Console::setTIAProperties()
 {
   const Int32 vcenter = BSPF::clamp(
-    static_cast<Int32>(BSPF::stringToInt(myProperties.get(PropType::Display_VCenter))), TIAConstants::minVcenter, TIAConstants::maxVcenter
+    static_cast<Int32>(BSPF::stoi(myProperties.get(PropType::Display_VCenter))), TIAConstants::minVcenter, TIAConstants::maxVcenter
   );
 
   if(gameRefreshRate() == 60)
@@ -976,8 +976,8 @@ unique_ptr<Controller> Console::getControllerPort(
       else if(type == Controller::Type::PaddlesIAxDr)
         swapAxis = swapDir = true;
 
-      Paddles::setAnalogXCenter(BSPF::stringToInt(myProperties.get(PropType::Controller_PaddlesXCenter)));
-      Paddles::setAnalogYCenter(BSPF::stringToInt(myProperties.get(PropType::Controller_PaddlesYCenter)));
+      Paddles::setAnalogXCenter(BSPF::stoi(myProperties.get(PropType::Controller_PaddlesXCenter)));
+      Paddles::setAnalogYCenter(BSPF::stoi(myProperties.get(PropType::Controller_PaddlesYCenter)));
       Paddles::setAnalogSensitivity(myOSystem.settings().getInt("psense"));
 
       controller = make_unique<Paddles>(port, myEvent, *mySystem,
@@ -1108,7 +1108,7 @@ void Console::toggleSwapPaddles(bool toggle)
 void Console::changePaddleCenterX(int direction)
 {
   const int center =
-    BSPF::clamp(BSPF::stringToInt(myProperties.get(PropType::Controller_PaddlesXCenter)) + direction,
+    BSPF::clamp(BSPF::stoi(myProperties.get(PropType::Controller_PaddlesXCenter)) + direction,
                 Paddles::MIN_ANALOG_CENTER, Paddles::MAX_ANALOG_CENTER);
   myProperties.set(PropType::Controller_PaddlesXCenter, std::to_string(center));
   Paddles::setAnalogXCenter(center);
@@ -1123,7 +1123,7 @@ void Console::changePaddleCenterX(int direction)
 void Console::changePaddleCenterY(int direction)
 {
   const int center =
-    BSPF::clamp(BSPF::stringToInt(myProperties.get(PropType::Controller_PaddlesYCenter)) + direction,
+    BSPF::clamp(BSPF::stoi(myProperties.get(PropType::Controller_PaddlesYCenter)) + direction,
                 Paddles::MIN_ANALOG_CENTER, Paddles::MAX_ANALOG_CENTER);
   myProperties.set(PropType::Controller_PaddlesYCenter, std::to_string(center));
   Paddles::setAnalogYCenter(center);
