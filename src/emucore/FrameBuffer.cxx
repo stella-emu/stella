@@ -332,7 +332,7 @@ FBInitStatus FrameBuffer::createDisplay(string_view title, BufferType type,
     }
     else
     {
-      p_blend = BSPF::stringToInt(myOSystem.console().properties().get(PropType::Display_PPBlend));
+      p_blend = BSPF::stoi(myOSystem.console().properties().get(PropType::Display_PPBlend));
       enable = myOSystem.console().properties().get(PropType::Display_Phosphor) == "YES";
     }
     myTIASurface->enablePhosphor(enable, p_blend);

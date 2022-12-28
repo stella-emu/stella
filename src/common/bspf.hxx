@@ -193,20 +193,26 @@ namespace BSPF
   }
 
   // Convert string to integer, using default value on any error
-  inline int stringToInt(string_view s, const int defaultValue = 0)
+  // TODO: reimplement stoi so only 'string_view' version is needed
+  inline int stoi(string_view s, const int defaultValue = 0)
   {
     try        { return std::stoi(string{s}); }
     catch(...) { return defaultValue; }
   }
-  // TODO: remove this once we reimplement stoi
-  inline int stringToInt(const string& s, const int defaultValue = 0)
+  inline int stoi(const string& s, const int defaultValue = 0)
   {
     try        { return std::stoi(s); }
     catch(...) { return defaultValue; }
   }
 
   // Convert string with base 16 to integer, using default value on any error
-  inline int stringToIntBase16(const string& s, const int defaultValue = 0)
+  // TODO: reimplement stoi so only 'string_view' version is needed
+  inline int stoi_16(string_view s, const int defaultValue = 0)
+  {
+    try        { return std::stoi(string{s}, nullptr, 16); }
+    catch(...) { return defaultValue; }
+  }
+  inline int stoi_16(const string& s, const int defaultValue = 0)
   {
     try        { return std::stoi(s, nullptr, 16); }
     catch(...) { return defaultValue; }

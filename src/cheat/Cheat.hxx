@@ -41,23 +41,6 @@ class Cheat
     virtual void evaluate() = 0;
 
   protected:
-    static uInt16 unhex(string_view hex)
-    {
-      int ret = 0;
-      for(const auto c: hex)
-      {
-        ret *= 16;
-        if(c >= '0' && c <= '9')
-          ret += c - '0';
-        else if(c >= 'A' && c <= 'F')
-          ret += c - 'A' + 10;
-        else
-          ret += c - 'a' + 10;
-      }
-      return ret;
-    }
-
-  protected:
     OSystem& myOSystem;
 
     string myName;

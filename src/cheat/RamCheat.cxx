@@ -25,8 +25,8 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 RamCheat::RamCheat(OSystem& os, string_view name, string_view code)
   : Cheat(os, name, code),
-    address{static_cast<uInt16>(unhex(myCode.substr(0, 2)))},
-    value{static_cast<uInt8>(unhex(myCode.substr(2, 2)))}
+    address{static_cast<uInt16>(BSPF::stoi_16(myCode.substr(0, 2)))},
+    value{static_cast<uInt8>(BSPF::stoi_16(myCode.substr(2, 2)))}
 {
 }
 

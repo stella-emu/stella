@@ -539,12 +539,13 @@ HSM::ScoreAddresses HighScoresManager::getPropScoreAddr(const json& jprops)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt16 HighScoresManager::fromHexStr(string_view addr)
 {
+  // TODO: convert away from using string
   string naked{addr};
 
-  if(const int pos = naked.find("0x") != std::string::npos)
+  if(const auto pos = naked.find("0x") != std::string::npos)
     naked = naked.substr(pos + 1);
 
-  return stringToIntBase16(naked);
+  return static_cast<uInt16>(BSPF::stoi_16(naked));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

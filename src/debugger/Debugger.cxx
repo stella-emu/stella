@@ -892,14 +892,14 @@ string Debugger::builtinHelp()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Debugger::getCompletions(const char* in, StringList& list) const
+void Debugger::getCompletions(string_view in, StringList& list) const
 {
   // skip if filter equals "_" only
   if(!BSPF::equalsIgnoreCase(in, "_"))
   {
-    for(const auto& iter : myFunctions)
+    for(const auto& iter: myFunctions)
     {
-      const char* const l = iter.first.c_str();
+      const string_view l = iter.first;
       if(BSPF::matchesCamelCase(l, in))
         list.emplace_back(l);
     }

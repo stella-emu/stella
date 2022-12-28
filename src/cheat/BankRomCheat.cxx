@@ -27,10 +27,10 @@ BankRomCheat::BankRomCheat(OSystem& os, string_view name, string_view code)
   if(myCode.length() == 7)
     myCode = "0" + string{code};
 
-  bank = unhex(myCode.substr(0, 2));
-  address = 0xf000 + unhex(myCode.substr(2, 3));
-  value = static_cast<uInt8>(unhex(myCode.substr(5, 2)));
-  count = static_cast<uInt8>(unhex(myCode.substr(7, 1)) + 1);
+  bank = BSPF::stoi_16(myCode.substr(0, 2));
+  address = 0xf000 + BSPF::stoi_16(myCode.substr(2, 3));
+  value = static_cast<uInt8>(BSPF::stoi_16(myCode.substr(5, 2)));
+  count = static_cast<uInt8>(BSPF::stoi_16(myCode.substr(7, 1)) + 1);
 
   // Back up original data; we need this if the cheat is ever disabled
   for(int i = 0; i < count; ++i)
