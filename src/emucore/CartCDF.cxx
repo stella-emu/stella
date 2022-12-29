@@ -28,17 +28,17 @@
 #include "TIA.hxx"
 #include "exception/FatalEmulationError.hxx"
 
-static constexpr bool FAST_FETCH_ON(uInt8 mode)    { return (mode & 0x0F) == 0; }
-static constexpr bool DIGITAL_AUDIO_ON(uInt8 mode) { return (mode & 0xF0) == 0; }
-
-static constexpr uInt32 getUInt32(const uInt8* _array, size_t _address) {
-  return static_cast<uInt32>((_array)[(_address) + 0]        +
-                            ((_array)[(_address) + 1] << 8)  +
-                            ((_array)[(_address) + 2] << 16) +
-                            ((_array)[(_address) + 3] << 24));
-}
-
 namespace {
+  constexpr bool FAST_FETCH_ON(uInt8 mode)    { return (mode & 0x0F) == 0; }
+  constexpr bool DIGITAL_AUDIO_ON(uInt8 mode) { return (mode & 0xF0) == 0; }
+
+  constexpr uInt32 getUInt32(const uInt8* _array, size_t _address) {
+    return static_cast<uInt32>((_array)[(_address) + 0]        +
+                              ((_array)[(_address) + 1] << 8)  +
+                              ((_array)[(_address) + 2] << 16) +
+                              ((_array)[(_address) + 3] << 24));
+  }
+
   Thumbulator::ConfigureFor thumulatorConfiguration(CartridgeCDF::CDFSubtype subtype)
   {
     switch (subtype) {

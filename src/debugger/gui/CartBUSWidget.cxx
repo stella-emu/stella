@@ -453,7 +453,7 @@ string CartridgeBUSWidget::bankState()
 
   if (myCart.myBUSSubtype == CartridgeBUS::BUSSubtype::BUS0)
   {
-    static constexpr std::array<const char*, 6> spot = {
+    static constexpr std::array<string_view, 6> spot = {
       "$FFF6", "$FFF7", "$FFF8", "$FFF9", "$FFFA", "$FFFB"
     };
     buf << "Bank = " << std::dec << myCart.getBank()
@@ -461,7 +461,7 @@ string CartridgeBUSWidget::bankState()
   }
   else
   {
-    static constexpr std::array<const char*, 7> spot = {
+    static constexpr std::array<string_view, 7> spot = {
       "$FFF5", "$FFF6", "$FFF7", "$FFF8", "$FFF9", "$FFFA", "$FFFB"
     };
     buf << "Bank = " << std::dec << myCart.getBank()

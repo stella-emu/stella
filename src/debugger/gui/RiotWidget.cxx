@@ -125,14 +125,14 @@ RiotWidget::RiotWidget(GuiObject* boss, const GUI::Font& lfont,
   CREATE_IO_REGS("SWCHB(R)", mySWCHBReadBits, kSWCHBRBitsID, true)
 
   // Timer registers (R/W)
-  static constexpr std::array<const char*, 4> writeNames = {
+  static constexpr std::array<string_view, 4> writeNames = {
     "TIM1T", "TIM8T", "TIM64T", "T1024T"
   };
   ypos += _lineHeight + vGap * 4;
   for(int row = 0; row < 4; ++row)
   {
-    myTimWriteLabel[row] = new StaticTextWidget(boss, lfont, hBorder, ypos + row * _lineHeight + 2,
-                                                writeNames[row]);
+    myTimWriteLabel[row] = new StaticTextWidget(boss, lfont, hBorder,
+        ypos + row * _lineHeight + 2, writeNames[row]);
   }
   xpos = hBorder + lwidth;
   myTimWrite = new DataGridWidget(boss, nfont, xpos, ypos, 1, 4, 2, 8, Common::Base::Fmt::_16);
@@ -150,14 +150,14 @@ RiotWidget::RiotWidget(GuiObject* boss, const GUI::Font& lfont,
   myTimAvail->setEditable(false);
 
   // Timer registers (RO)
-  static constexpr std::array<const char*, 3> readNames = {
+  static constexpr std::array<string_view, 3> readNames = {
     "INTIM", " Clocks", "TIMINT"
   };
   ypos = myTimWrite->getBottom() + _lineHeight / 2;
   for(int row = 0; row < 3; ++row)
   {
-    t = new StaticTextWidget(boss, lfont, hBorder, ypos + row * _lineHeight + 2,
-                             readNames[row]);
+    new StaticTextWidget(boss, lfont, hBorder, ypos + row * _lineHeight + 2,
+                         readNames[row]);
   }
   xpos = hBorder + lwidth;
   myTimRead = new DataGridWidget(boss, nfont, xpos, ypos, 1, 3, 2, 30, Common::Base::Fmt::_16);
@@ -181,7 +181,7 @@ RiotWidget::RiotWidget(GuiObject* boss, const GUI::Font& lfont,
 
 
   // Controller ports
-  int col = mySWCHAWriteBits->getRight() + hGap * 2.5;
+  const int col = mySWCHAWriteBits->getRight() + hGap * 2.5;
   xpos = col;  ypos = vBorder;
   myLeftControl = addControlWidget(boss, lfont, xpos, ypos,
       instance().console().leftController());
@@ -192,14 +192,14 @@ RiotWidget::RiotWidget(GuiObject* boss, const GUI::Font& lfont,
   addToFocusList(myRightControl->getFocusList());
 
   // TIA INPTx registers (R), left port
-  static constexpr std::array<const char*, 3> contLeftReadNames = {
+  static constexpr std::array<string_view, 3> contLeftReadNames = {
     "INPT0", "INPT1", "INPT4"
   };
   xpos = myLeftControl->getLeft();  ypos += myLeftControl->getHeight() + 2 * _lineHeight;
   for(int row = 0; row < 3; ++row)
   {
     t = new StaticTextWidget(boss, lfont, xpos, ypos + row * _lineHeight + 2,
-                         contLeftReadNames[row]);
+                             contLeftReadNames[row]);
   }
   xpos = t->getRight() + hGap;
   myLeftINPT = new DataGridWidget(boss, nfont, xpos, ypos, 1, 3, 2, 8, Common::Base::Fmt::_16);
@@ -207,14 +207,14 @@ RiotWidget::RiotWidget(GuiObject* boss, const GUI::Font& lfont,
   myLeftINPT->setEditable(false);
 
   // TIA INPTx registers (R), right port
-  static constexpr std::array<const char*, 3> contRightReadNames = {
+  static constexpr std::array<string_view, 3> contRightReadNames = {
     "INPT2", "INPT3", "INPT5"
   };
   xpos = myRightControl->getLeft();
   for(int row = 0; row < 3; ++row)
   {
     t = new StaticTextWidget(boss, lfont, xpos, ypos + row*_lineHeight + 2,
-                         contRightReadNames[row]);
+                             contRightReadNames[row]);
   }
   xpos = t->getRight() + hGap;
   myRightINPT = new DataGridWidget(boss, nfont, xpos, ypos, 1, 3, 2, 8, Common::Base::Fmt::_16);

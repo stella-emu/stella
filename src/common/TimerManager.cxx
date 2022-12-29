@@ -106,7 +106,7 @@ std::size_t TimerManager::size() const noexcept
 bool TimerManager::empty() const noexcept
 {
   const ScopedLock lock(sync);
-  return active.empty();
+  return active.empty();  // NOLINT: bugprone-standalone-empty
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -241,7 +241,7 @@ TimerManager::Timer::Timer(Timer&& r) noexcept
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 TimerManager::Timer::Timer(TimerId tid, Timestamp tnext, Duration tperiod,
                            const TFunction& func) noexcept
-  : id{tid },
+  : id{tid},
     next{tnext},
     period{tperiod},
     handler{func}

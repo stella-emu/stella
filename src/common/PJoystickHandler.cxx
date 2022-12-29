@@ -47,7 +47,7 @@ PhysicalJoystickHandler::PhysicalJoystickHandler(
   }
 
   json mappings;
-  string_view serializedMapping = myOSystem.settings().getString("joymap");
+  const string_view serializedMapping = myOSystem.settings().getString("joymap");
 
   try {
     mappings = json::parse(serializedMapping);

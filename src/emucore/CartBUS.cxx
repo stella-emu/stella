@@ -28,21 +28,22 @@
 #include "CartBUS.hxx"
 #include "exception/FatalEmulationError.hxx"
 
-// Location of data within the RAM copy of the BUS Driver.
-static constexpr int
+namespace {
+  // Location of data within the RAM copy of the BUS Driver.
+  constexpr int
     COMMSTREAM = 0x10,
     JUMPSTREAM = 0x11;
 
-static constexpr bool BUS_STUFF_ON(uInt8 mode) { return (mode & 0x0F) == 0; }
-static constexpr bool DIGITAL_AUDIO_ON(uInt8 mode) { return (mode & 0xF0) == 0; }
+  constexpr bool BUS_STUFF_ON(uInt8 mode) { return (mode & 0x0F) == 0; }
+  constexpr bool DIGITAL_AUDIO_ON(uInt8 mode) { return (mode & 0xF0) == 0; }
 
-static constexpr uInt32 getUInt32(const uInt8* _array, size_t _address) {
-  return static_cast<uInt32>((_array)[(_address) + 0]        +
-                            ((_array)[(_address) + 1] << 8)  +
-                            ((_array)[(_address) + 2] << 16) +
-                            ((_array)[(_address) + 3] << 24));
-}
-
+  constexpr uInt32 getUInt32(const uInt8* _array, size_t _address) {
+    return static_cast<uInt32>((_array)[(_address) + 0]        +
+                              ((_array)[(_address) + 1] << 8)  +
+                              ((_array)[(_address) + 2] << 16) +
+                              ((_array)[(_address) + 3] << 24));
+  }
+} // namespace
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartridgeBUS::CartridgeBUS(const ByteBuffer& image, size_t size,

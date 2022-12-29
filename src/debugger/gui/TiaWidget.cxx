@@ -48,7 +48,7 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
             vGap = fontHeight / 2,
             hBorder = 10,
             vBorder = 10;
-  int xpos = hBorder, ypos = vBorder, buttonX, buttonY;
+  int xpos = hBorder, ypos = vBorder;
   StaticTextWidget* t = nullptr;
   ButtonWidget* b = nullptr;
 
@@ -56,7 +56,7 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
   ////////////////////////////
   // VSync/VBlank
   ////////////////////////////
-  buttonX = xpos;  buttonY = ypos;
+  int buttonX = xpos, buttonY = ypos;
   myVSync = new CheckboxWidget(boss, lfont, buttonX, buttonY, "VSync", kVSyncCmd);
   myVSync->setTarget(this);
   addFocusWidget(myVSync);
@@ -68,7 +68,7 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
 
   // Color registers
   ypos = vBorder + lineHeight * 2 + vGap / 2;
-  static constexpr std::array<const char*, 4> regNames = {
+  static constexpr std::array<string_view, 4> regNames = {
     "COLUP0", "COLUP1", "COLUPF", "COLUBK"
   };
   for(int row = 0; row < 4; ++row)
@@ -108,7 +108,7 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
   myFixedEnabled->setTarget(this);
   addFocusWidget(myFixedEnabled);
 
-  static constexpr std::array<const char*, 8> dbgLabels = {
+  static constexpr std::array<string_view, 8> dbgLabels = {
     "P0", "P1", "PF", "BK", "M0", "M1", "BL", "HM"
   };
   for(uInt32 row = 0; row <= 3; ++row)
@@ -136,8 +136,8 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
   xpos = myFixedColors[4]->getRight() + 6 * hGap;  ypos = vBorder + lineHeight;
 
   // Add all 15 collision bits (with labels)
-  static constexpr std::array<const char*, 5> rowLabel = { "P0", "P1", "M0", "M1", "BL" };
-  static constexpr std::array<const char*, 5> colLabel = { "PF", "BL", "M1", "M0", "P1" };
+  static constexpr std::array<string_view, 5> rowLabel = { "P0", "P1", "M0", "M1", "BL" };
+  static constexpr std::array<string_view, 5> colLabel = { "PF", "BL", "M1", "M0", "P1" };
   int idx = 0;
   for(uInt32 row = 0; row < 5; ++row)
   {
@@ -154,7 +154,7 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
       if(row == 0)
       {
         // Add centered horizontal label
-        int labelx = collX - (2 * fontWidth - myCollision[idx]->getWidth()) / 2;
+        const int labelx = collX - (2 * fontWidth - myCollision[idx]->getWidth()) / 2;
         new StaticTextWidget(boss, lfont, labelx, ypos - lineHeight, colLabel[col]);
       }
       collX += fontWidth * 2 + hGap;
@@ -473,7 +473,7 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
   const GUI::Font& sf = instance().frameBuffer().smallFont();
   const int sfWidth = sf.getMaxCharWidth(),
             sfHeight = sf.getFontHeight();
-  static constexpr std::array<const char*, 8> bitNames = {
+  static constexpr std::array<string_view, 8> bitNames = {
     "0", "1", "2", "3", "4", "5", "6", "7"
   };
 

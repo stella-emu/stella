@@ -378,7 +378,7 @@ static constexpr uInt8 scale9[16] = {
 static constexpr uInt8 scale10[16] = {
   0,  0,  0,  0,  0,  1,  3,  6,  9, 12, 14, 15, 15, 15, 15, 15   /* 2.7778 */
 };
-static const uInt8* scales[11] = {
+static constexpr const uInt8* const scales[11] = {
   scale0, scale1, scale2, scale3, scale4, scale5,
   scale6, scale7, scale8, scale9, scale10
 };

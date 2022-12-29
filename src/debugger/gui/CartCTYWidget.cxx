@@ -93,7 +93,7 @@ string CartridgeCTYWidget::bankState()
 {
   ostringstream& buf = buffer();
 
-  static constexpr std::array<const char*, 8> spot = {
+  static constexpr std::array<string_view, 8> spot = {
     "", "$FFF5", "$FFF6", "$FFF7", "$FFF8", "$FFF9", "$FFFA", "$FFFB"
   };
   const uInt16 bank = myCart.getBank();
