@@ -27,7 +27,7 @@
 
 static constexpr uInt32 DEF_PROPS_SIZE = 3637;
 
-static constexpr BSPF::array2D<const char*, DEF_PROPS_SIZE, 29> DefProps = {{
+static constexpr BSPF::array2D<string_view, DEF_PROPS_SIZE, 29> DefProps = {{
   { "000509d1ed2b8d30a9d94be1b3b5febb", "Greg Zumwalt", "", "Jungle Jane (2003) (Greg Zumwalt) (Hack)", "Hack of Pitfall!", "Hack", "", "", "", "{\"score_addresses\":[\"0xd5\",\"0xd6\",\"0xd7\"],\"score_digits\":6,\"variations_count\":1}", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "0060a89b4c956b9c703a59b181cb3018", "CommaVid, Irwin Gaines - Ariola", "CM-008 - 712 008-720", "Cakewalk (1983) (CommaVid) (PAL)", "AKA Alarm in der Backstube", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "007d18dedc1f0565f09c42aa61a6f585", "CCE", "C-843", "Worm War I (1983) (CCE)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },

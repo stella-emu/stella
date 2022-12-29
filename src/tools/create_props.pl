@@ -68,7 +68,7 @@ print OUTFILE "  regenerated and the application recompiled.\n";
 print OUTFILE "*/\n";
 print OUTFILE "\nstatic constexpr uInt32 DEF_PROPS_SIZE = " . $setsize . ";";
 print OUTFILE "\n\n";
-print OUTFILE "static constexpr BSPF::array2D<const char*, DEF_PROPS_SIZE, " . $typesize . "> DefProps = {{\n";
+print OUTFILE "static constexpr BSPF::array2D<string_view, DEF_PROPS_SIZE, " . $typesize . "> DefProps = {{\n";
 
 # Walk the hash map and print each item in order of md5sum
 my $idx = 0;
