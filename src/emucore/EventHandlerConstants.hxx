@@ -68,7 +68,6 @@ enum class JoyHatDir {
   CENTER = 4
 };
 
-// TODO - add bitmask class for 'enum class' and convert this
 enum JoyHatMask {
   EVENT_HATUP_M     = 1<<0,
   EVENT_HATDOWN_M   = 1<<1,

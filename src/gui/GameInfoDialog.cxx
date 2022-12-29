@@ -1061,14 +1061,14 @@ void GameInfoDialog::saveHighScoresProperties()
     string strAddr;
 
     strAddr = myVarAddress->getText();
-    info.varsAddr = BSPF::stoi_16(strAddr, HSM::DEFAULT_ADDRESS);
+    info.varsAddr = BSPF::stoi<16>(strAddr, HSM::DEFAULT_ADDRESS);
     strAddr = mySpecialAddress->getText();
-    info.specialAddr = BSPF::stoi_16(strAddr, HSM::DEFAULT_ADDRESS);
+    info.specialAddr = BSPF::stoi<16>(strAddr, HSM::DEFAULT_ADDRESS);
 
     for (uInt32 a = 0; a < HSM::MAX_SCORE_ADDR; ++a)
     {
       strAddr = myScoreAddress[a]->getText();
-      info.scoreAddr[a] = BSPF::stoi_16(strAddr, HSM::DEFAULT_ADDRESS);
+      info.scoreAddr[a] = BSPF::stoi<16>(strAddr, HSM::DEFAULT_ADDRESS);
     }
 
     const string strVars = myVariations->getText();
@@ -1400,7 +1400,7 @@ void GameInfoDialog::updateHighScoresWidgets()
     {
       setAddressVal(myScoreAddress[a], myScoreAddressVal[a]);
       const string strAddr = myScoreAddress[a]->getText();
-      scoreAddr[a] = BSPF::stoi_16(strAddr, HSM::DEFAULT_ADDRESS);
+      scoreAddr[a] = BSPF::stoi<16>(strAddr, HSM::DEFAULT_ADDRESS);
     }
     else
       myScoreAddressVal[a]->setText("");
@@ -1427,7 +1427,7 @@ void GameInfoDialog::setAddressVal(const EditTextWidget* addressWidget, EditText
     ostringstream ss;
 
     // convert to number and read from memory
-    const uInt16 addr = BSPF::stoi_16(strAddr, HSM::DEFAULT_ADDRESS);
+    const uInt16 addr = BSPF::stoi<16>(strAddr, HSM::DEFAULT_ADDRESS);
     uInt8 val = instance().highScores().peek(addr);
     val = HighScoresManager::convert(val, maxVal, isBCD, zeroBased);
 
