@@ -25,8 +25,21 @@ namespace YaccParser {
 #include <cctype>
 
 #include "y.tab.h"
-static YYSTYPE result;
-static string errMsg;
+
+enum class State {
+  DEFAULT,
+  IDENTIFIER,
+  OPERATOR,
+  SPACE
+};
+
+namespace {
+  YYSTYPE result;
+  string errMsg;
+
+  State state = State::DEFAULT;
+  const char *input, *c;
+} // namespace
 
 void yyerror(const char* e);
 
@@ -41,15 +54,6 @@ void yyerror(const char* e);
   #include "y.tab.c"
 #endif
 
-enum class State {
-  DEFAULT,
-  IDENTIFIER,
-  OPERATOR,
-  SPACE
-};
-
-static State state = State::DEFAULT;
-static const char *input, *c;
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const string& errorMessage()

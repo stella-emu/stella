@@ -70,7 +70,7 @@ void CartridgeE7Widget::initialize(GuiObject* boss,
 
   VariantList items0, items1;
   for(int i = 0; i < cart.romBankCount(); ++i)
-    VarList::push_back(items0, getSpotLower(i));
+    VarList::push_back(items0, getSpotLower(i, myCart.romBankCount()));
   for(int i = 0; i < 4; ++i)
     VarList::push_back(items1, getSpotUpper(i));
 
@@ -139,7 +139,7 @@ string CartridgeE7Widget::bankState()
   ostringstream& buf = buffer();
 
   buf << "Segments: " << std::dec
-    << getSpotLower(myCart.myCurrentBank[0]) << " / "
+    << getSpotLower(myCart.myCurrentBank[0], myCart.romBankCount()) << " / "
     << getSpotUpper(myCart.myCurrentRAM);
 
   return buf.str();
@@ -202,7 +202,7 @@ uInt8 CartridgeE7Widget::internalRamGetValue(int addr)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string_view CartridgeE7Widget::getSpotLower(int idx) const
+string_view CartridgeE7Widget::getSpotLower(int idx, int bankcount)
 {
   static constexpr std::array<string_view, 4> spot_lower_8K = {
     "#0 - ROM ($FFE4)", "#1 - ROM ($FFE5)", "#2 - ROM ($FFE6)", "#3 - RAM ($FFE7)"
@@ -216,16 +216,16 @@ string_view CartridgeE7Widget::getSpotLower(int idx) const
     "#4 - ROM ($FFE4)", "#5 - ROM ($FFE5)", "#6 - ROM ($FFE6)", "#7 - RAM ($FFE7)"
   };
 
-  return myCart.romBankCount() == 4
+  return bankcount == 4
     ? spot_lower_8K[idx]
-    : myCart.romBankCount() == 6
+    : bankcount == 6
       ? spot_lower_12K[idx]
       : spot_lower_16K[idx];
 }
 
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string_view CartridgeE7Widget::getSpotUpper(int idx) const
+string_view CartridgeE7Widget::getSpotUpper(int idx)
 {
   static constexpr std::array<string_view, 4> spot_upper = {
     "#0 - RAM ($FFE8)", "#1 - RAM ($FFE9)", "#2 - RAM ($FFEA)", "#3 - RAM ($FFEB)"

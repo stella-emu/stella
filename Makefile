@@ -66,7 +66,7 @@ ifdef CLANG_WARNINGS
     -Wno-inconsistent-missing-destructor-override -Wno-float-equal \
     -Wno-exit-time-destructors -Wno-global-constructors -Wno-weak-vtables \
     -Wno-four-char-constants -Wno-padded -Wno-reserved-identifier \
-    -Wno-duplicate-enum
+    -Wno-duplicate-enum -Wno-unsafe-buffer-usage
 
   CXXFLAGS+= $(EXTRA_WARN)
   CFLAGS+= $(EXTRA_WARN)

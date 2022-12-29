@@ -90,7 +90,7 @@ class KeyMap
     nlohmann::json saveMapping(const EventMode mode) const;
     int loadMapping(const nlohmann::json& mapping, const EventMode mode);
 
-    static nlohmann::json convertLegacyMapping(string_view list);
+    static nlohmann::json convertLegacyMapping(string_view lm);
 
     /** Erase all mappings for given mode */
     void eraseMode(const EventMode mode);

@@ -54,8 +54,6 @@ class CartridgeE7Widget : public CartDebugWidget
   protected:
     void initialize(GuiObject* boss, const CartridgeE7& cart,
                     const ostringstream& info);
-    string_view getSpotLower(int idx) const;
-    string_view getSpotUpper(int idx) const;
 
   private:
     void saveOldState() override;
@@ -71,6 +69,9 @@ class CartridgeE7Widget : public CartDebugWidget
     void internalRamSetValue(int addr, uInt8 value) override;
     uInt8 internalRamGetValue(int addr) override;
     // end of functions for Cartridge RAM tab
+
+    static string_view getSpotLower(int idx, int bankcount);
+    static string_view getSpotUpper(int idx);
 
   private:
     // Following constructors and assignment operators not supported

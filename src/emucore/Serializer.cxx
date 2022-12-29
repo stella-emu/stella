@@ -49,7 +49,7 @@ Serializer::Serializer(string_view filename, Mode m)
     // So we open in write and append mode - the write creates the file
     // when necessary, and the append doesn't delete any data if it
     // already exists
-    string f{filename};
+    const string f{filename};
     fstream temp(f, ios::out | ios::app);
     temp.close();
 

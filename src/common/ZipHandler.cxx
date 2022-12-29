@@ -131,7 +131,7 @@ uInt64 ZipHandler::decompress(ByteBuffer& image)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string ZipHandler::errorMessage(ZipError err)
 {
-  static constexpr std::array<const char*, 10> zip_error_s = {
+  static constexpr std::array<string_view, 10> zip_error_s = {
     "ZIP NONE",
     "ZIP OUT_OF_MEMORY",
     "ZIP FILE_ERROR",
@@ -143,7 +143,7 @@ string ZipHandler::errorMessage(ZipError err)
     "ZIP LZMA_UNSUPPORTED",
     "ZIP BUFFER_TOO_SMALL"
   };
-  return zip_error_s[static_cast<int>(err)];
+  return string{zip_error_s[static_cast<int>(err)]};
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
