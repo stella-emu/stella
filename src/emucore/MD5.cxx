@@ -12,7 +12,7 @@
 // and the Stella Team
 //
 // This file is derived from the RSA Data Security, Inc. MD5 Message-Digest
-// Algorithm.  See the header below for copyright information.
+// Algorithm.  See the header file for copyright information.
 //
 // See the file "License.txt" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
@@ -220,7 +220,8 @@ void MD5::finalize()
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
   };
 
-  if (!finalized) {
+  if (!finalized)
+  {
     // Save number of bits
     std::array<uInt8, 8> bits;
     encode(bits.data(), count.data(), 8);
@@ -253,7 +254,7 @@ string MD5::hexdigest() const
 
   static constexpr char hex[] = "0123456789abcdef";
   string result;
-  for(auto c: digest)
+  for (auto c: digest)
   {
     result += hex[(c >> 4) & 0x0f];
     result += hex[c & 0x0f];
