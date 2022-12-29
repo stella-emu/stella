@@ -11,6 +11,9 @@
 // Copyright (c) 1995-2022 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
+// This file is derived from the RSA Data Security, Inc. MD5 Message-Digest
+// Algorithm.  See the header below for copyright information.
+//
 // See the file "License.txt" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
