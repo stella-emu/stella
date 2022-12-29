@@ -823,7 +823,7 @@ string CartDebug::loadListFile()
       if(addr_s.length() == 0)
         continue;
 
-      addr = BSPF::stoi_16(addr_s[0] == 'U' ? addr_s.substr(1) : addr_s);
+      addr = BSPF::stoi<16>(addr_s[0] == 'U' ? addr_s.substr(1) : addr_s);
 
       // For now, completely ignore ROM addresses
       if(!(addr & 0x1000))

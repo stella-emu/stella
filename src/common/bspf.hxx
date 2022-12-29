@@ -48,6 +48,7 @@ using uInt64 = uint64_t;
 #include <memory>
 #include <string>
 #include <string_view>
+#include <charconv>
 #include <sstream>
 #include <cstring>
 #include <cctype>
@@ -193,29 +194,13 @@ namespace BSPF
   }
 
   // Convert string to integer, using default value on any error
-  // TODO: reimplement stoi so only 'string_view' version is needed
+  template<int BASE = 10>
   inline int stoi(string_view s, const int defaultValue = 0)
   {
-    try        { return std::stoi(string{s}); }
-    catch(...) { return defaultValue; }
-  }
-  inline int stoi(const string& s, const int defaultValue = 0)
-  {
-    try        { return std::stoi(s); }
-    catch(...) { return defaultValue; }
-  }
-
-  // Convert string with base 16 to integer, using default value on any error
-  // TODO: reimplement stoi so only 'string_view' version is needed
-  inline int stoi_16(string_view s, const int defaultValue = 0)
-  {
-    try        { return std::stoi(string{s}, nullptr, 16); }
-    catch(...) { return defaultValue; }
-  }
-  inline int stoi_16(const string& s, const int defaultValue = 0)
-  {
-    try        { return std::stoi(s, nullptr, 16); }
-    catch(...) { return defaultValue; }
+    int i{};
+    s = s.substr(s.find_first_not_of(" "));
+    auto result = std::from_chars(s.data(), s.data() + s.size(), i, BASE);
+    return result.ec == std::errc() ? i : defaultValue;
   }
 
   // Compare two strings (case insensitive)
