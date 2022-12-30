@@ -1,7 +1,7 @@
 
 /* pngset.c - storage of image information into info struct
  *
- * Copyright (c) 2018-2023 Cosmin Truta
+ * Copyright (c) 2018-2022 Cosmin Truta
  * Copyright (c) 1998-2018 Glenn Randers-Pehrson
  * Copyright (c) 1996-1997 Andreas Dilger
  * Copyright (c) 1995-1996 Guy Eric Schalnat, Group 42, Inc.
