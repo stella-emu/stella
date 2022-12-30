@@ -411,7 +411,8 @@ class FBSurface
       @return       True if whitespace character
     */
     static bool isWhiteSpace(const char c) {
-      return string(" ,.;:+-*/\\'([\n").find(c) != string::npos;
+      static constexpr string_view spaces{" ,.;:+-*/\\'([\n"};
+      return spaces.find(c) != string_view::npos;
     }
 
   protected:
