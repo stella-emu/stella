@@ -57,7 +57,7 @@ BEGIN
             VALUE "FileDescription", "Stella"
             VALUE "FileVersion", "6.7"
             VALUE "InternalName", "Stella"
-            VALUE "LegalCopyright", "Copyright (c) 1995-2022 The Stella Team"
+            VALUE "LegalCopyright", "Copyright (c) 1995-2023 The Stella Team"
             VALUE "OriginalFilename", "Stella.exe"
             VALUE "ProductName", "Stella"
             VALUE "ProductVersion", "6.7"

@@ -1,7 +1,7 @@
 /* zlib.h -- interface of the 'zlib' general purpose compression library
   version 1.2.13, October 13th, 2022
 
-  Copyright (C) 1995-2022 Jean-loup Gailly and Mark Adler
+  Copyright (C) 1995-2023 Jean-loup Gailly and Mark Adler
 
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
