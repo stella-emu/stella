@@ -427,7 +427,8 @@ namespace BSPF
 
   inline bool isWhiteSpace(const char c)
   {
-    return string(" ,.;:+-*&/\\'").find(c) != string::npos;
+    static constexpr string_view spaces{" ,.;:+-*&/\\'"};
+    return spaces.find(c) != string_view::npos;
   }
 } // namespace BSPF
 
