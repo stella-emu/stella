@@ -30,12 +30,10 @@
 Cartridge::Cartridge(const Settings& settings, string_view md5)
   : mySettings{settings}
 {
-  const auto to_uInt32 = [](string_view s, uInt32 pos) {
-    return static_cast<uInt32>(std::stoul(string{s.substr(pos, 8)}, nullptr, 16));
-  };  // FIXME: convert to string_view by replacing std::stoul
+  const uInt32 seed =
+    BSPF::stoi<16>(md5.substr(0, 8))  ^ BSPF::stoi<16>(md5.substr(8, 8)) ^
+    BSPF::stoi<16>(md5.substr(16, 8)) ^ BSPF::stoi<16>(md5.substr(24, 8));
 
-  const uInt32 seed = to_uInt32(md5, 0)  ^ to_uInt32(md5, 8) ^
-                      to_uInt32(md5, 16) ^ to_uInt32(md5, 24);
   const Random rand(seed);
   for(uInt32 i = 0; i < 256; ++i)
     myRWPRandomValues[i] = rand.next();
