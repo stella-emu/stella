@@ -1,18 +1,18 @@
 Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0
 Upstream-Name: stella
 Source: https://stella-emu.github.io
-Copyright: 1995-2022 Bradford W. Mott, Stephen Anthony and the Stella Team
+Copyright: 1995-2023 Bradford W. Mott, Stephen Anthony and the Stella Team
 License: GPL-2+
 
 Files: *
-Copyright: 1995-2022 Bradford W. Mott, Stephen Anthony and the Stella
+Copyright: 1995-2023 Bradford W. Mott, Stephen Anthony and the Stella
 		     Team
 License: GPL-2+
 
 Files: debian/*
 Copyright: 1998-2004 Tom Lear <tom@trap.mtview.ca.us>
 	   2006 Mario Iseli <admin@marioiseli.com>
-	   2010-2022 Stephen Kitt <skitt@debian.org>
+	   2010-2023 Stephen Kitt <skitt@debian.org>
 License: GPL-2+
 
 Files:
