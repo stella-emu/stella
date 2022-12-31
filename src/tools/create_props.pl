@@ -68,7 +68,16 @@ print OUTFILE "  regenerated and the application recompiled.\n";
 print OUTFILE "*/\n";
 print OUTFILE "\nstatic constexpr uInt32 DEF_PROPS_SIZE = " . $setsize . ";";
 print OUTFILE "\n\n";
-print OUTFILE "static constexpr BSPF::array2D<string_view, DEF_PROPS_SIZE, " . $typesize . "> DefProps = {{\n";
+print OUTFILE "/**\n";
+# FIXME: Remove this once clang properly supports constexpr string_view
+print OUTFILE "  FIXME\n";
+print OUTFILE "  We need to use 'const char*' instead of 'string_view' here,\n";
+print OUTFILE "  since clang is not optimized to create so many constexpr\n";
+print OUTFILE "  'string_view's.  It *can* do it by using\n";
+print OUTFILE "  -fconstexpr-steps=2710000, which increases binary size.\n";
+print OUTFILE "*/\n";
+#######################################################################
+print OUTFILE "static constexpr BSPF::array2D<const char*, DEF_PROPS_SIZE, " . $typesize . "> DefProps = {{\n";
 
 # Walk the hash map and print each item in order of md5sum
 my $idx = 0;
