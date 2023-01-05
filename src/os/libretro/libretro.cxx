@@ -80,14 +80,11 @@ static void update_input()
   GET_BITMASK(pad)
   switch(input_type[0])
   {
+    case Controller::Type::Joy2BPlus:
     case Controller::Type::BoosterGrip:
       MASK_EVENT(Event::LeftJoystickFire9, pad, RETRO_DEVICE_ID_JOYPAD_Y);
       [[fallthrough]];
     case Controller::Type::Genesis:
-      MASK_EVENT(Event::LeftJoystickFire5, pad, RETRO_DEVICE_ID_JOYPAD_A);
-      [[fallthrough]];
-    case Controller::Type::Joy2BPlus:
-      MASK_EVENT(Event::LeftJoystickFire9, pad, RETRO_DEVICE_ID_JOYPAD_Y);
       MASK_EVENT(Event::LeftJoystickFire5, pad, RETRO_DEVICE_ID_JOYPAD_A);
       [[fallthrough]];
     case Controller::Type::Joystick:
@@ -140,15 +137,12 @@ static void update_input()
 
   switch(input_type[1])
   {
+    case Controller::Type::Joy2BPlus:
     case Controller::Type::BoosterGrip:
       MASK_EVENT(Event::RightJoystickFire9, pad, RETRO_DEVICE_ID_JOYPAD_Y);
       [[fallthrough]];
     case Controller::Type::Genesis:
       MASK_EVENT(Event::RightJoystickFire5, pad, RETRO_DEVICE_ID_JOYPAD_A);
-      [[fallthrough]];
-    case Controller::Type::Joy2BPlus:
-      MASK_EVENT(Event::LeftJoystickFire9, pad, RETRO_DEVICE_ID_JOYPAD_Y);
-      MASK_EVENT(Event::LeftJoystickFire5, pad, RETRO_DEVICE_ID_JOYPAD_A);
       [[fallthrough]];
     case Controller::Type::Joystick:
       MASK_EVENT(Event::RightJoystickLeft, pad, RETRO_DEVICE_ID_JOYPAD_LEFT);
