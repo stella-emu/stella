@@ -113,6 +113,7 @@ Settings::Settings()
   setPermanent("keymap_emu", "");
   setPermanent("keymap_joy", "");
   setPermanent("keymap_pad", "");
+  setPermanent("keymap_drv", "");
   setPermanent("keymap_key", "");
   setPermanent("keymap_ui", "");
   setPermanent("joymap", "");
