@@ -115,21 +115,28 @@ void Driving::updateControllerAxes()
   // Digital events (from keyboard or joystick hats & buttons)
   const int d_axis = myEvent.get(myXAxisValue);
 
-  if(myEvent.get(myCCWEvent) != 0 || d_axis < -16384)
+  if(myEvent.get(myCCWEvent) != 0 && myLastCCWEvent == 0)
+    myCounterHires = ((myGrayIndex + 4) * 256.0F) / SENSITIVITY - 1; // set to end of previous counter interval
+  else if(myEvent.get(myCWEvent) != 0 && myLastCWEvent == 0)
+    myCounterHires = ((myGrayIndex + 1) * 256.0F) / SENSITIVITY;     // set to begin of next counter interval
+  else if(myEvent.get(myCCWEvent) != 0 || d_axis < -16384)
     myCounterHires -= 64;
   else if(myEvent.get(myCWEvent) != 0 || d_axis > 16384)
     myCounterHires += 64;
+  myLastCCWEvent = myEvent.get(myCCWEvent);
+  myLastCWEvent = myEvent.get(myCWEvent);
 
   // Analog events (from joystick axes)
   const int a_axis = myEvent.get(myAnalogEvent);
 
-  if( abs(a_axis) > Controller::analogDeadZone())
+  if(abs(a_axis) > Controller::analogDeadZone())
   {
     /* a_axis is in -2^15 to +2^15-1; adding 1 when non-negative and
        dividing by 2^9 gives us -2^6 to +2^6, which gives us the same
        range as digital inputs.
     */
     myCounterHires += (a_axis/512) + (a_axis >= 0);
+    cerr << "! ";
   }
 
   // Only consider the lower-most bits (corresponding to pins 1 & 2)
