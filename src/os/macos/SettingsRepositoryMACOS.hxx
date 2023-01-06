@@ -23,9 +23,9 @@
 class SettingsRepositoryMACOS : public KeyValueRepository
 {
   public:
-    std::map<string, Variant> load() override;
+    KVRMap load() override;
 
-    bool save(const std::map<string, Variant>& values) override;
+    bool save(const KVRMap& values) override;
 };
 
 #endif // SETTINGS_REPOSITORY_MACOS_HXX
