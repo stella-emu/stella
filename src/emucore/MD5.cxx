@@ -168,8 +168,8 @@ void MD5::transform(const uInt8* const block)
   state[2] += c;
   state[3] += d;
 
-  // Zeroize sensitive information.
-  x.fill(0);
+  // Zeroize sensitive information (not required for Stella)
+  // x.fill(0);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -237,9 +237,9 @@ void MD5::finalize()
     // Store state in digest
     encode(digest.data(), state.data(), 16);
 
-    // Zeroize sensitive information
-    buffer.fill(0);
-    count.fill(0);
+    // Zeroize sensitive information (not required for Stella)
+    // buffer.fill(0);
+    // count.fill(0);
 
     finalized = true;
   }
