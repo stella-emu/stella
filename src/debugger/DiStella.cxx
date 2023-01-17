@@ -755,7 +755,7 @@ void DiStella::disasmFromAddress(uInt32 distart)
     // abort when we reach non-code areas
     if (checkBits(myPC, Device::Device::DATA | Device::GFX | Device::PGFX |
                         Device::COL | Device::PCOL | Device::BCOL |
-                        Device::AUD | Device::ROW,
+                        Device::AUD,
                   Device::CODE)) {
       myPCEnd = (myPC - 1) + myOffset;
       return;
@@ -804,7 +804,7 @@ void DiStella::disasmFromAddress(uInt32 distart)
         // handle JMP/JSR
         if (ourLookup[opcode].source == AccessMode::ADDR) {
           // do NOT use flags set by debugger, else known CODE will not analyzed statically.
-          if (!checkBit(ad & myAppData.end, Device::CODE, false)) {
+          if (!checkBit(ad & myAppData.end, Device::CODE | Device::ROW, false)) {
             if (ad > 0xfff)
               myAddressQueue.push((ad & myAppData.end) + myOffset);
             mark(ad, Device::CODE);
@@ -858,7 +858,7 @@ void DiStella::disasmFromAddress(uInt32 distart)
         ad = ((myPC + static_cast<Int8>(d1)) & 0xfff) + myOffset;
         mark(ad, Device::REFERENCED);
         // do NOT use flags set by debugger, else known CODE will not analyzed statically.
-        if (!checkBit(ad - myOffset, Device::CODE, false)) {
+        if (!checkBit(ad - myOffset, Device::CODE | Device::ROW, false)) {
           myAddressQueue.push(ad);
           mark(ad, Device::CODE);
         }
