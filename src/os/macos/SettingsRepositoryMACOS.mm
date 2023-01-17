@@ -20,9 +20,9 @@
 #include "SettingsRepositoryMACOS.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-std::map<string, Variant> SettingsRepositoryMACOS::load()
+KVRMap SettingsRepositoryMACOS::load()
 {
-  std::map<string, Variant> values;
+  KVRMap values;
 
   @autoreleasepool {
     NSString* bundleId = [[NSBundle mainBundle] bundleIdentifier];
@@ -40,7 +40,7 @@ std::map<string, Variant> SettingsRepositoryMACOS::load()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool SettingsRepositoryMACOS::save(const std::map<string, Variant>& values)
+bool SettingsRepositoryMACOS::save(const KVRMap& values)
 {
   @autoreleasepool {
     NSUserDefaults* defaults = [NSUserDefaults standardUserDefaults];
