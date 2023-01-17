@@ -754,8 +754,9 @@ void DiStella::disasmFromAddress(uInt32 distart)
 
     // abort when we reach non-code areas
     if (checkBits(myPC, Device::Device::DATA | Device::GFX | Device::PGFX |
-        Device::COL | Device::PCOL | Device::BCOL | Device::AUD,
-        Device::CODE)) {
+                        Device::COL | Device::PCOL | Device::BCOL |
+                        Device::AUD | Device::ROW,
+                  Device::CODE)) {
       myPCEnd = (myPC - 1) + myOffset;
       return;
     }
