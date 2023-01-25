@@ -114,7 +114,7 @@ void Driving::updateControllerAxes()
 {
   // Digital events (from keyboard or joystick hats & buttons)
   const int d_axis = myEvent.get(myXAxisValue);
-  uInt32 oldCounterHires = myCounterHires;
+  const Int32 oldCounterHires = myCounterHires;
 
   if(myEvent.get(myCCWEvent) != 0 && myLastCCWEvent == 0)
     myCounterHires = ((myGrayIndex + 4) * 256.0F) / SENSITIVITY - 1; // set to end of previous counter interval
