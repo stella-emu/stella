@@ -95,7 +95,7 @@ class Driving : public Controller
     Int32 myCounter{0};
 
     // Higher resolution counter for analog (non-Stelladaptor) inputs
-    uInt32 myCounterHires{0};
+    Int32 myCounterHires{0};
 
     // Previous digital CCW event
     Int32 myLastCCWEvent{0};
