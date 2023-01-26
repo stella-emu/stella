@@ -56,12 +56,11 @@ bool FSNodeWINDOWS::setFlags()
   }
   else
   {
-    _isDirectory = ((fileAttribs & FILE_ATTRIBUTE_DIRECTORY) != 0);
-    _isFile = !_isDirectory;//((fileAttribs & FILE_ATTRIBUTE_NORMAL) != 0);
+    _isDirectory = static_cast<bool>(fileAttribs & FILE_ATTRIBUTE_DIRECTORY);
+    _isFile = !_isDirectory;
 
     // Add a trailing backslash, if necessary
-    if (_isDirectory && _path.length() > 0 &&
-        _path[_path.length()-1] != FSNode::PATH_SEPARATOR)
+    if (_isDirectory && _path.length() > 0 && _path.back() != FSNode::PATH_SEPARATOR)
       _path += FSNode::PATH_SEPARATOR;
   }
   _isPseudoRoot = false;
