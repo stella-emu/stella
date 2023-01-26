@@ -77,18 +77,6 @@ class FSNodeWINDOWS : public AbstractFSNode
      */
     bool setFlags();
 
-    /**
-     * Adds a single FSNodeWINDOWS to a given list.
-     * This method is used by getChildren() to populate the directory entries list.
-     *
-     * @param list       List to put the file entry node in.
-     * @param mode       Mode to use while adding the file entry to the list.
-     * @param base       String with the directory being listed.
-     * @param find_data  Describes a file that the FindFirstFile, FindFirstFileEx, or FindNextFile functions find.
-     */
-    static void addFile(AbstractFSList& list, ListMode mode,
-                        const string& base, const WIN32_FIND_DATA& find_data);
-
   private:
     string _displayName, _path;
     bool _isPseudoRoot{false}, _isDirectory{false}, _isFile{false};

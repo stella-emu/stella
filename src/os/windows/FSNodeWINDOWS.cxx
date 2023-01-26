@@ -141,46 +141,39 @@ bool FSNodeWINDOWS::getChildren(AbstractFSList& myList, ListMode mode) const
     if (handle == INVALID_HANDLE_VALUE)
       return false;
 
-    addFile(myList, mode, _path, desc);
+    do {
+      const char* const asciiName = desc.cFileName;
 
-    while (FindNextFile(handle, &desc))
-      addFile(myList, mode, _path, desc);
+      // Skip files starting with '.' (we assume empty filenames never occur)
+      if (asciiName[0] == '.')
+        continue;
+
+      const bool isDirectory = static_cast<bool>(desc.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY);
+      const bool isFile = !isDirectory;
+
+      if ((isFile && mode == FSNode::ListMode::DirectoriesOnly) ||
+        (isDirectory && mode == FSNode::ListMode::FilesOnly))
+        continue;
+
+      FSNodeWINDOWS entry;
+      entry._isDirectory = isDirectory;
+      entry._isFile = isFile;
+      entry._displayName = asciiName;
+      entry._path = _path;
+      entry._path += asciiName;
+      if (entry._isDirectory)
+        entry._path += FSNode::PATH_SEPARATOR;
+      entry._isPseudoRoot = false;
+      entry._size = desc.nFileSizeHigh * (static_cast<size_t>(MAXDWORD) + 1) + desc.nFileSizeLow;
+
+      myList.emplace_back(make_unique<FSNodeWINDOWS>(entry));
+    }
+    while (FindNextFile(handle, &desc));
 
     FindClose(handle);
   }
 
   return true;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FSNodeWINDOWS::addFile(AbstractFSList& list, ListMode mode,
-                            const string& base, const WIN32_FIND_DATA& find_data)
-{
-  const char* const asciiName = find_data.cFileName;
-
-  // Skip files starting with '.' (we assume empty filenames never occur)
-  if (asciiName[0] == '.')
-    return;
-
-  const bool isDirectory = static_cast<bool>(find_data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY);
-  const bool isFile = !isDirectory;//(find_data->dwFileAttributes & FILE_ATTRIBUTE_NORMAL ? true : false);
-
-  if ((isFile && mode == FSNode::ListMode::DirectoriesOnly) ||
-      (isDirectory && mode == FSNode::ListMode::FilesOnly))
-    return;
-
-  FSNodeWINDOWS entry;
-  entry._isDirectory = isDirectory;
-  entry._isFile = isFile;
-  entry._displayName = asciiName;
-  entry._path = base;
-  entry._path += asciiName;
-  if (entry._isDirectory)
-    entry._path += FSNode::PATH_SEPARATOR;
-  entry._isPseudoRoot = false;
-  entry._size = find_data.nFileSizeHigh * (static_cast<size_t>(MAXDWORD) + 1) + find_data.nFileSizeLow;
-
-  list.emplace_back(make_unique<FSNodeWINDOWS>(entry));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
