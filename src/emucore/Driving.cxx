@@ -147,7 +147,7 @@ void Driving::updateControllerAxes()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Driving::updateMouseAxes()
 {
-  Int32 oldCounter = myCounter;
+  const Int32 oldCounter = myCounter;
   static constexpr int MJ_Threshold = 2;
 
   // Mouse motion and button events
