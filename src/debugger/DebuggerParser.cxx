@@ -1817,7 +1817,11 @@ void DebuggerParser::executePalette()
 // "pc"
 void DebuggerParser::executePc()
 {
+  ostringstream msg;
+
   debugger.cpuDebug().setPC(args[0]);
+  msg << "Set PC @ " << Base::HEX4 << args[0];
+  debugger.addState(msg.str());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -2018,9 +2022,15 @@ void DebuggerParser::executeRunToPc()
   progress.close();
 
   if(done)
+  {
+    ostringstream msg;
+
     commandResult
       << "Set PC to $" << Base::HEX4 << args[0] << " in "
       << dec << count << " instructions";
+    msg << "RunTo PC @ " << Base::HEX4 << args[0];
+    debugger.addState(msg.str());
+  }
   else
     commandResult
       << "PC $" << Base::HEX4 << args[0] << " not reached or found in "
