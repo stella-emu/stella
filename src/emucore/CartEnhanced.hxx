@@ -100,7 +100,7 @@ class CartridgeEnhanced : public Cartridge
     uInt16 ramBankCount() const override;
 
     /**
-      Query wether the current PC allows code execution.
+      Query whether the current PC allows code execution.
 
       @return  true, if code execution is allowed
     */
@@ -109,7 +109,7 @@ class CartridgeEnhanced : public Cartridge
     }
 
     /**
-      Query wether the cart RAM allows code execution.
+      Query whether the cart RAM allows code execution.
 
       @return  true, if code execution is allowed
     */

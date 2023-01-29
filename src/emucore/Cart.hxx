@@ -255,7 +255,7 @@ class Cartridge : public Device
     virtual uInt16 ramBankCount() const { return 0; }
 
     /**
-      Query wether the current PC allows code execution.
+      Query whether the current PC allows code execution.
 
       @return  true, if code execution is allowed
     */

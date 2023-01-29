@@ -50,7 +50,7 @@ class CartridgeF4SC : public CartridgeF4
 
   public:
     /**
-      Query wether the cart RAM allows code execution.
+      Query whether the cart RAM allows code execution.
 
       @return  true, if code execution is allowed
     */
