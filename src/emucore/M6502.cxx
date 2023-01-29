@@ -339,6 +339,10 @@ inline void M6502::_execute(uInt64 cycles, DispatchResult& result)
         icycles = 0;
     #ifdef DEBUGGER_SUPPORT
         const uInt16 oldPC = PC;
+
+        // Only check for code in RAM execution if we have debugger support
+        if(!mySystem->cart().canExecute(PC))
+          FatalEmulationError::raise("cannot run code from cart RAM");
     #endif
 
         // Fetch instruction at the program counter

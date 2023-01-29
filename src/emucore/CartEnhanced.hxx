@@ -100,6 +100,22 @@ class CartridgeEnhanced : public Cartridge
     uInt16 ramBankCount() const override;
 
     /**
+      Query wether the current PC allows code execution.
+
+      @return  true, if code execution is allowed
+    */
+    bool canExecute(uInt16 PC) const override {
+      return !(PC & 0x1000) || (PC & ROM_MASK) >= myRomOffset || executableCartRam();
+    }
+
+    /**
+      Query wether the cart RAM allows code execution.
+
+      @return  true, if code execution is allowed
+    */
+    virtual bool executableCartRam() const { return true; }
+
+    /**
       Get the number of segments supported by the cartridge.
     */
     uInt16 segmentCount() const override { return myBankSegs; }
