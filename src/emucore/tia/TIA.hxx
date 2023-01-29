@@ -447,63 +447,63 @@ class TIA : public Device
     /**
       Enables/disables delayed playfield bits values.
 
-      @param delayed   Wether to enable delayed playfield delays
+      @param delayed   Whether to enable delayed playfield delays
     */
     void setPFBitsDelay(bool delayed);
 
     /**
       Enables/disables delayed playfield colors.
 
-      @param delayed   Wether to enable delayed playfield colors
+      @param delayed   Whether to enable delayed playfield colors
     */
     void setPFColorDelay(bool delayed);
 
     /**
       Enables/disables score mode playfield color glitch
 
-      @param enable   Wether to enable color glitch
+      @param enable   Whether to enable color glitch
     */
     void setPFScoreGlitch(bool enable);
 
     /**
       Enables/disables delayed background colors.
 
-      @param delayed   Wether to enable delayed background colors
+      @param delayed   Whether to enable delayed background colors
     */
     void setBKColorDelay(bool delayed);
 
     /**
       Enables/disables delayed player swapping.
 
-      @param delayed   Wether to enable delayed player swapping
+      @param delayed   Whether to enable delayed player swapping
     */
     void setPlSwapDelay(bool delayed);
 
     /**
       Enables/disables delayed ball swapping.
 
-      @param delayed   Wether to enable delayed ball swapping
+      @param delayed   Whether to enable delayed ball swapping
     */
     void setBlSwapDelay(bool delayed);
 
     /**
       Enables/disables inverted HMOVE phase clock for players.
 
-      @param enable   Wether to enable inverted HMOVE phase clock for players
+      @param enable   Whether to enable inverted HMOVE phase clock for players
     */
     void setPlInvertedPhaseClock(bool enable);
 
     /**
       Enables/disables inverted HMOVE phase clock for missiles.
 
-      @param enable   Wether to enable inverted HMOVE phase clock for missiles
+      @param enable   Whether to enable inverted HMOVE phase clock for missiles
     */
     void setMsInvertedPhaseClock(bool enable);
 
     /**
       Enables/disables inverted HMOVE phase clock for ball.
 
-      @param enable   Wether to enable inverted HMOVE phase clock for ball
+      @param enable   Whether to enable inverted HMOVE phase clock for ball
     */
     void setBlInvertedPhaseClock(bool enable);
 
