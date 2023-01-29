@@ -255,6 +255,13 @@ class Cartridge : public Device
     virtual uInt16 ramBankCount() const { return 0; }
 
     /**
+      Query wether the current PC allows code execution.
+
+      @return  true, if code execution is allowed
+    */
+    virtual bool canExecute(uInt16 PC) const { return true; }
+
+    /**
       Get the number of segments supported by the cartridge.
     */
     virtual uInt16 segmentCount() const { return 1; }

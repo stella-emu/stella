@@ -50,6 +50,13 @@ class CartridgeF6SC : public CartridgeF6
 
   public:
     /**
+      Query wether the cart RAM allows code execution.
+
+      @return  true, if code execution is allowed
+    */
+    bool executableCartRam() const override { return false; }
+
+    /**
       Get a descriptor for the device name (used in error checking).
 
       @return The name of the object
