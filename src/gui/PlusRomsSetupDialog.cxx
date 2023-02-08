@@ -21,24 +21,34 @@
 #include "PlusRomsSetupDialog.hxx"
 
 static constexpr int MAX_NICK_LEN = 16;
+static constexpr int ID_LEN = 32;
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 PlusRomsSetupDialog::PlusRomsSetupDialog(OSystem& osystem, DialogContainer& parent,
                                          const GUI::Font& font)
-  : InputTextDialog(osystem, parent, font, "Nickname", "PlusROM backends setup", MAX_NICK_LEN)
+  : InputTextDialog(osystem, parent, font, StringList { "Nickname", "Device-ID" },
+                    "PlusROM backends setup",
+                    static_cast<int>(string("Device-ID").length()) + ID_LEN + 2)
 {
   const EditableWidget::TextFilter filter = [](char c) {
     return isalnum(c) || (c == ' ') || (c == '_') || (c == '.');
   };
 
-  setTextFilter(filter);
-  setToolTip("Enter your PlusROM backends nickname here.");
+  // setup "Nickname":
+  setTextFilter(filter, 0);
+  setMaxLen(MAX_NICK_LEN, 0);
+  setToolTip("Enter your PlusROM backends nickname here.", 0);
+  // setup "Device-ID":
+  setMaxLen(ID_LEN, 1);
+  setEditable(false, 1);
+  setToolTip("PlusROM Device-ID/hash", 1);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PlusRomsSetupDialog::loadConfig()
 {
-  setText(instance().settings().getString("plusroms.nick"));
+  setText(instance().settings().getString("plusroms.nick"), 0);
+  setText(instance().settings().getString("plusroms.fixedid"), 1);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
