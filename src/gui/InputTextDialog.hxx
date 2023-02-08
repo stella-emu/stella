@@ -35,8 +35,8 @@ class InputTextDialog : public Dialog, public CommandSender
                     const GUI::Font& nfont, const StringList& labels,
                     string_view title = "");
     InputTextDialog(OSystem& osystem, DialogContainer& parent,
-                    const GUI::Font& font, string_view label, string_view title,
-                    int numInput = 0);
+                    const GUI::Font& font, const StringList& labels,
+                    string_view title, int widthChars);
 
     ~InputTextDialog() override = default;
 
@@ -50,17 +50,18 @@ class InputTextDialog : public Dialog, public CommandSender
 
     void setText(string_view str, int idx = 0);
     void setTextFilter(const EditableWidget::TextFilter& f, int idx = 0);
+    void setMaxLen(int len, int idx = 0);
     void setToolTip(string_view str, int idx = 0);
 
     void setEmitSignal(int cmd) { myCmd = cmd; }
     void setMessage(string_view title);
 
     void setFocus(int idx = 0);
+    void setEditable(bool editable, int idx = 0);
 
   protected:
     void initialize(const GUI::Font& lfont, const GUI::Font& nfont,
-                    const StringList& labels, int widthChars = 39,
-                    int numInput = 0);
+                    const StringList& labels, int widthChars = 39);
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 
     /** This dialog uses its own positioning, so we override Dialog::center() */

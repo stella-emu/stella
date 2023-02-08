@@ -48,24 +48,18 @@ InputTextDialog::InputTextDialog(GuiObject* boss, const GUI::Font& lfont,
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 InputTextDialog::InputTextDialog(OSystem& osystem, DialogContainer& parent,
-                                 const GUI::Font& font, string_view label,
-                                 string_view title, int numInput)
+                                 const GUI::Font& font, const StringList& labels,
+                                 string_view title, int widthChars)
   : Dialog(osystem, parent, font, title),
     CommandSender(nullptr)
 {
-  StringList labels;
-
   clear();
-  labels.emplace_back(label);
-  initialize(font, font, labels,
-             static_cast<int>(label.length()) + (numInput ? numInput : 24) + 2,
-             numInput);
+  initialize(font, font, labels, widthChars);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void InputTextDialog::initialize(const GUI::Font& lfont, const GUI::Font& nfont,
-                                 const StringList& labels, int widthChars,
-                                 int numInput)
+                                 const StringList& labels, int widthChars)
 {
   const int lineHeight   = Dialog::lineHeight(),
             fontHeight   = Dialog::fontHeight(),
@@ -79,7 +73,9 @@ void InputTextDialog::initialize(const GUI::Font& lfont, const GUI::Font& nfont,
 
   // Calculate real dimensions
   _w = HBORDER * 2 + fontWidth * widthChars;
-  _h = buttonHeight + lineHeight + VGAP + static_cast<int>(labels.size()) * (lineHeight + VGAP) + _th + VBORDER * 2;
+  _h = buttonHeight + lineHeight + VGAP
+    + static_cast<int>(labels.size()) * (lineHeight + VGAP)
+    + _th + VBORDER * 2;
 
   // Determine longest label
   size_t maxIdx = 0;
@@ -105,9 +101,7 @@ void InputTextDialog::initialize(const GUI::Font& lfont, const GUI::Font& nfont,
 
     xpos += lwidth + fontWidth;
     auto* w = new EditTextWidget(this, nfont, xpos, ypos,
-                                 _w - xpos - HBORDER, lineHeight, "");
-    if(numInput)
-      w->setMaxLen(numInput);
+                                 _w - xpos - HBORDER, lineHeight);
     wid.push_back(w);
 
     myInput.push_back(w);
@@ -115,8 +109,7 @@ void InputTextDialog::initialize(const GUI::Font& lfont, const GUI::Font& nfont,
   }
 
   xpos = HBORDER; ypos += VGAP;
-  myMessage = new StaticTextWidget(this, lfont, xpos, ypos, _w - 2 * xpos, fontHeight,
-                                 "", TextAlign::Left);
+  myMessage = new StaticTextWidget(this, lfont, xpos, ypos, _w - 2 * xpos, fontHeight);
   myMessage->setTextColor(kTextColorEm);
 
   addToFocusList(wid);
@@ -198,6 +191,13 @@ void InputTextDialog::setTextFilter(const EditableWidget::TextFilter& f, int idx
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void InputTextDialog::setMaxLen(int len, int idx)
+{
+  myInput[idx]->setMaxLen(len);
+  myInput[idx]->setWidth((len + 1) * Dialog::fontWidth());
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void InputTextDialog::setToolTip(string_view str, int idx)
 {
   if(static_cast<uInt32>(idx) < myLabel.size())
@@ -209,6 +209,12 @@ void InputTextDialog::setFocus(int idx)
 {
   if(static_cast<uInt32>(idx) < myInput.size())
     Dialog::setFocus(getFocusList()[idx]);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void InputTextDialog::setEditable(bool editable, int idx)
+{
+  myInput[idx]->setEditable(editable);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
