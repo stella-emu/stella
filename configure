@@ -841,6 +841,7 @@ case $_host_os in
 			if test "$have_clang" == yes; then
 				CXXFLAGS="$CXXFLAGS -Wno-poison-system-directories"
 			fi
+			_libsqlite3=no
 			;;
     retron77)
       DEFINES="$DEFINES -DBSPF_UNIX -DRETRON77"
