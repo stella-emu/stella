@@ -534,14 +534,14 @@ bool ControllerDetector::usesPaddle(const ByteBuffer& image, size_t size,
   else if(port == Controller::Jack::Right)
   {
     // check for INPT2 and indexed INPT0 access
-    static constexpr int NUM_SIGS_0 = 18;
+    static constexpr int NUM_SIGS_0 = 17;
     static constexpr int SIG_SIZE_0 = 3;
     static constexpr uInt8 signature_0[NUM_SIGS_0][SIG_SIZE_0] = {
       { 0x24, 0x0a, 0x10 }, // bit INPT2; bpl (no joystick games)
       { 0x24, 0x0a, 0x30 }, // bit INPT2; bmi (no joystick games)
       { 0xa5, 0x0a, 0x10 }, // lda INPT2; bpl (no joystick games)
       { 0xa5, 0x0a, 0x30 }, // lda INPT2; bmi
-      { 0xb5, 0x0a, 0x10 }, // lda INPT2,x; bpl
+      //{ 0xb5, 0x0a, 0x10 }, // lda INPT2,x; bpl (no paddle games, but Maze Craze)
       { 0xb5, 0x0a, 0x30 }, // lda INPT2,x; bmi
       { 0xb5, 0x08, 0x10 }, // lda INPT0,x; bpl (no joystick games)
       { 0xb5, 0x08, 0x30 }, // lda INPT0,x; bmi (no joystick games)
