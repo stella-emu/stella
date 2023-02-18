@@ -62,9 +62,9 @@ class TimerMap
     {
       TimerPoint from{};
       TimerPoint to{};
-      bool       mirrors{false};
-      bool       anyBank{false};
-      bool       isPartial{false};
+      bool   mirrors{false};
+      bool   anyBank{false};
+      bool   isPartial{false};
 
       uInt64 execs{0};
       uInt64 lastCycles{0};
@@ -84,20 +84,18 @@ class TimerMap
               c_mirrors, c_anyBank);
       }
 
-      Timer(const TimerPoint& tp, bool c_mirrors = false, bool c_anyBank = false)
-      {
-        from = tp;
-        mirrors = c_mirrors;
-        anyBank = c_anyBank;
-        isPartial = true;
-      }
+      explicit Timer(const TimerPoint& tp, bool c_mirrors = false,
+                     bool c_anyBank = false)
+        : from{tp}, mirrors{c_mirrors}, anyBank{c_anyBank}, isPartial{true} {}
 
-      Timer(uInt16 addr, uInt8 bank, bool c_mirrors = false, bool c_anyBank = false)
+      Timer(uInt16 addr, uInt8 bank, bool c_mirrors = false,
+            bool c_anyBank = false)
       {
         Timer(TimerPoint(addr, bank), c_mirrors, c_anyBank);
       }
 
-      void setTo(const TimerPoint& tp, bool c_mirrors = false, bool c_anyBank = false)
+      void setTo(const TimerPoint& tp, bool c_mirrors = false,
+                 bool c_anyBank = false)
       {
         to = tp;
         mirrors |= c_mirrors;

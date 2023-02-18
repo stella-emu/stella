@@ -44,9 +44,8 @@ void ZipHandler::open(const string& filename)
   else
   {
     // Allocate memory for the ZipFile structure
-    ptr = make_unique<ZipFile>(filename);
-    if(ptr == nullptr)
-      throw runtime_error(errorMessage(ZipError::OUT_OF_MEMORY));
+    try        { ptr = make_unique<ZipFile>(filename); }
+    catch(...) { throw runtime_error(errorMessage(ZipError::OUT_OF_MEMORY)); }
 
     // Open the file and initialize it
     if(!ptr->open())
@@ -109,19 +108,21 @@ uInt64 ZipHandler::decompress(ByteBuffer& image)
 {
   if(myZip && myZip->myHeader.uncompressedLength > 0)
   {
-    const uInt64 length = myZip->myHeader.uncompressedLength;
-    image = make_unique<uInt8[]>(length);
-    if(image == nullptr)
-      throw runtime_error(errorMessage(ZipError::OUT_OF_MEMORY));
-
     try
     {
+      const uInt64 length = myZip->myHeader.uncompressedLength;
+      image = make_unique<uInt8[]>(length);
+
       myZip->decompress(image, length);
       return length;
     }
     catch(const ZipError& err)
     {
       throw runtime_error(errorMessage(err));
+    }
+    catch(...)
+    {
+      throw runtime_error(errorMessage(ZipError::OUT_OF_MEMORY));
     }
   }
   else
@@ -235,9 +236,8 @@ void ZipHandler::ZipFile::initialize()
     throw runtime_error(errorMessage(ZipError::UNSUPPORTED));
 
   // Allocate memory for the central directory
-  myCd = make_unique<uInt8[]>(myEcd.cdSize + 1);
-  if(myCd == nullptr)
-    throw runtime_error(errorMessage(ZipError::OUT_OF_MEMORY));
+  try        { myCd = make_unique<uInt8[]>(myEcd.cdSize + 1); }
+  catch(...) { throw runtime_error(errorMessage(ZipError::OUT_OF_MEMORY)); }
 
   // Read the central directory
   uInt64 read_length = 0;

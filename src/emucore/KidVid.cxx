@@ -255,6 +255,7 @@ const char* KidVid::getFileName() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void KidVid::openSampleFiles()
 {
+#ifdef SOUND_SUPPORT
   static constexpr uInt32 firstSongPointer[6] = {
     44 + 38,
     0,
@@ -264,7 +265,6 @@ void KidVid::openSampleFiles()
     44 + 38 + 42 + 62
   };
 
-#ifdef SOUND_SUPPORT
   if(!myFilesFound)
   {
     int i = myGame == Game::Smurfs ? myTape - 1 : myTape + 2;
@@ -280,11 +280,11 @@ void KidVid::openSampleFiles()
            << "found file: " << "KVSHARED.WAV" << endl;
   #endif
 
-#endif
     mySongLength = 0;
     mySongPointer = firstSongPointer[i];
   }
   myTapeBusy = false;
+#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
