@@ -1481,9 +1481,9 @@ bool MovieCart::save(Serializer& out) const
     out.putByte(myDrawLevelBars);
     out.putByte(myDrawTimeCode);
 
-    if(!myStream.save(out)) throw;
-    if(!myInputs.save(out)) throw;
-    if(!myLastInputs.save(out)) throw;
+    if(!myStream.save(out)) return false;
+    if(!myInputs.save(out)) return false;
+    if(!myLastInputs.save(out)) return false;
 
     out.putByte(mySpeed);
     out.putByte(myJoyRepeat);
@@ -1535,9 +1535,9 @@ bool MovieCart::load(Serializer& in)
     myDrawLevelBars = in.getByte();
     myDrawTimeCode = in.getByte();
 
-    if(!myStream.load(in)) throw;
-    if(!myInputs.load(in)) throw;
-    if(!myLastInputs.load(in)) throw;
+    if(!myStream.load(in)) return false;
+    if(!myInputs.load(in)) return false;
+    if(!myLastInputs.load(in)) return false;
 
     mySpeed = in.getByte();
     myJoyRepeat = in.getByte();
@@ -1621,29 +1621,11 @@ bool CartridgeMVC::poke(uInt16 address, uInt8 value)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CartridgeMVC::save(Serializer& out) const
 {
-  try
-  {
-    if(!myMovie->save(out)) throw;
-  }
-  catch(...)
-  {
-    return false;
-  }
-
-  return true;
+  return myMovie->save(out);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CartridgeMVC::load(Serializer& in)
 {
-  try
-  {
-    if(!myMovie->load(in)) throw;
-  }
-  catch(...)
-  {
-    return false;
-  }
-
-  return true;
+  return myMovie->load(in);
 }

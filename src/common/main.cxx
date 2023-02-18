@@ -51,7 +51,7 @@
   Some keys are used only by the main function; these are placed in localOpts.
   The rest are needed globally, and are placed in globalOpts.
 */
-void parseCommandLine(int ac, char* av[],
+void parseCommandLine(int ac, const char* const av[],
     Settings::Options& globalOpts, Settings::Options& localOpts);
 
 /**
@@ -84,7 +84,7 @@ void freeConsole();
 
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void parseCommandLine(int ac, char* av[],
+void parseCommandLine(int ac, const char* const av[],
     Settings::Options& globalOpts, Settings::Options& localOpts)
 {
   localOpts["ROMFILE"] = "";  // make sure we have an entry for this
