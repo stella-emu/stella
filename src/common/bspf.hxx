@@ -197,10 +197,13 @@ namespace BSPF
   template<int BASE = 10>
   inline int stoi(string_view s, const int defaultValue = 0)
   {
-    int i{};
-    s = s.substr(s.find_first_not_of(" "));
-    auto result = std::from_chars(s.data(), s.data() + s.size(), i, BASE);
-    return result.ec == std::errc() ? i : defaultValue;
+    try {
+      int i{};
+      s = s.substr(s.find_first_not_of(" "));
+      auto result = std::from_chars(s.data(), s.data() + s.size(), i, BASE);
+      return result.ec == std::errc() ? i : defaultValue;
+    }
+    catch(...) { return defaultValue; }
   }
 
   // Compare two strings (case insensitive)
