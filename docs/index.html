@@ -2035,6 +2035,11 @@
       <td>Cmd + Return</td>
     </tr>
     <tr>
+      <td>Toggle UI theme</td>
+      <td>Alt + T</td>
+      <td>Cmd + T</td>
+    </tr>
+    <tr>
       <td>Exit Stella</td>
       <td>Control + Q</td>
       <td>Cmd + Q</td>
@@ -3149,7 +3154,17 @@
 
     <tr>
       <td><pre>-uipalette &lt;standard|classic|light|dark&gt;</pre></td>
-      <td>Use the specified palette for UI elements.</td>
+      <td>Define default palette/theme for UI elements.</td>
+    </tr>
+
+    <tr>
+      <td><pre>-uipalette2 &lt;standard|classic|light|dark&gt;</pre></td>
+      <td>Define alternative palette/theme for UI elements.</td>
+    </tr>
+
+    <tr>
+      <td><pre>-altpalette &lt;1|0&gt;</pre></td>
+      <td>Use alternative palette/theme for UI elements.</td>
     </tr>
 
     <tr>
@@ -3850,7 +3865,8 @@
       <td valign="top">
         <table border="1" cellpadding="4">
           <tr><th>Item</th><th>Brief description</th><th>For more information,<br>see <a href="#CommandLine">Command Line</a></th></tr>
-          <tr><td>Theme</td><td>Theme to use for UI elements (see examples)</td><td>-uipalette</td></tr>
+          <tr><td>Theme #1</td><td>Default theme to use for UI elements (see examples)</td><td>-uipalette</td></tr>
+          <tr><td>Theme #2</td><td>Alternative theme to use for UI elements (see examples)</td><td>-uipalette2</td></tr>
           <tr><td>Dialogs font</td><td>The font used in the dialogs</td><td>-dialogfont</td></tr>
           <tr><td>HiDPI mode</td><td>Scale the UI by a factor of two when enabled</td><td>-hidpi</td></tr>
           <tr><td>Dialogs position</td><td>Position of dialogs with Stella window</td><td>-dialogpos</td></tr>

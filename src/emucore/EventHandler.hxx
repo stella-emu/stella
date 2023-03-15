@@ -99,6 +99,11 @@ class EventHandler
     void set7800Mode();
 
     /**
+      Toggle between UI theme #1 and #2.
+    */
+    void toggleUIPalette();
+
+    /**
       Collects and dispatches any pending events.  This method should be
       called regularly (at X times per second, where X is the game framerate).
 
@@ -527,7 +532,7 @@ class EventHandler
       REFRESH_SIZE         = 0,
     #endif
       EMUL_ACTIONLIST_SIZE = 232 + PNG_SIZE + COMBO_SIZE + REFRESH_SIZE,
-      MENU_ACTIONLIST_SIZE = 19
+      MENU_ACTIONLIST_SIZE = 20
     ;
 
     // The event(s) assigned to each combination event

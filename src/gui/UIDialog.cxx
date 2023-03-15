@@ -83,9 +83,16 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
   VarList::push_back(items, "Classic", "classic");
   VarList::push_back(items, "Light", "light");
   VarList::push_back(items, "Dark", "dark");
-  myPalettePopup = new PopUpWidget(myTab, font, xpos, ypos, pwidth, lineHeight,
-                                   items, "Theme      ", lwidth);
-  wid.push_back(myPalettePopup);
+  myPalette1Popup = new PopUpWidget(myTab, font, xpos, ypos, pwidth, lineHeight,
+                                    items, "Theme #1   ", lwidth);
+  myPalette1Popup->setToolTip("Primary theme.", Event::ToggleUIPalette, EventMode::kMenuMode);
+  wid.push_back(myPalette1Popup);
+  ypos += lineHeight + VGAP;
+
+  myPalette2Popup = new PopUpWidget(myTab, font, xpos, ypos, pwidth, lineHeight,
+                                    items, "Theme #2   ", lwidth);
+  myPalette2Popup->setToolTip("Alternative theme.", Event::ToggleUIPalette, EventMode::kMenuMode);
+  wid.push_back(myPalette2Popup);
   ypos += lineHeight + VGAP;
 
   // Dialog font
@@ -128,8 +135,8 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
   wid.push_back(myCenter);
 
   // Delay between quick-selecting characters in ListWidget
-  xpos = HBORDER; ypos += lineHeight + VGAP * 4;
-  const int swidth = myPalettePopup->getWidth() - lwidth;
+  xpos = HBORDER; ypos += lineHeight + VGAP * 3;
+  const int swidth = myPalette1Popup->getWidth() - lwidth;
   myListDelaySlider = new SliderWidget(myTab, font, xpos, ypos, swidth, lineHeight,
                                       "List input delay        ", 0, kListDelay,
                                       font.getStringWidth("1 second"));
@@ -388,8 +395,10 @@ void UIDialog::loadConfig()
   myLauncherExitWidget->setState(exitlauncher);
 
   // UI palette
-  const string& pal = settings.getString("uipalette");
-  myPalettePopup->setSelected(pal, "standard");
+  const string& pal1 = settings.getString("uipalette");
+  myPalette1Popup->setSelected(pal1, "standard");
+  const string& pal2 = settings.getString("uipalette2");
+  myPalette2Popup->setSelected(pal2, "dark");
 
   // Dialog font
   const string& dialogFont = settings.getString("dialogfont");
@@ -478,7 +487,9 @@ void UIDialog::saveConfig()
 
   // UI palette
   settings.setValue("uipalette",
-    myPalettePopup->getSelectedTag().toString());
+                    myPalette1Popup->getSelectedTag().toString());
+  settings.setValue("uipalette2",
+                    myPalette2Popup->getSelectedTag().toString());
   instance().frameBuffer().setUIPalette();
   instance().frameBuffer().update(FrameBuffer::UpdateMode::REDRAW);
 
@@ -526,7 +537,8 @@ void UIDialog::setDefaults()
   switch(myTab->getActiveTab())
   {
     case 0:  // Misc. options
-      myPalettePopup->setSelected("standard");
+      myPalette1Popup->setSelected("standard");
+      myPalette2Popup->setSelected("dark");
       myDialogFontPopup->setSelected("medium", "");
       myHidpiWidget->setState(false);
       myPositionPopup->setSelected("0");

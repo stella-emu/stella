@@ -181,6 +181,8 @@ Settings::Settings()
   setPermanent("dbg.display", 0);
 #endif
   setPermanent("uipalette", "standard");
+  setPermanent("uipalette2", "dark");
+  setPermanent("altuipalette", "false");
   setPermanent("hidpi", "false");
   setPermanent("listdelay", "300");
   setPermanent("mwheel", "4");
@@ -648,9 +650,13 @@ void Settings::usage()
     << "  -lastrom            <name>   Last played ROM, automatically selected in\n"
     << "                                launcher\n"
     << "  -romloadcount <number>       Number of ROM to load next from multicard\n"
-    << "  -uipalette    <standard|     Selects GUI theme\n"
+    << "  -uipalette    <standard|     Set GUI theme\n"
     << "                 classic|\n"
     << "                 light|dark>\n"
+    << "  -uipalette2   <standard|     Set alternative GUI theme\n"
+    << "                 classic|\n"
+    << "                 light|dark>\n"
+    << "  -altuipalette <0|1>          Enable alternative GUI theme\n"
     << "  -hidpi        <0|1>          Enable HiDPI mode\n"
     << "  -dialogfont   <small|        Use the specified font in the dialogs\n"
     << "                 low_medium|\n"

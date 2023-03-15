@@ -989,11 +989,13 @@ void FrameBuffer::setTIAPalette(const PaletteArray& rgb_palette)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBuffer::setUIPalette()
 {
+  const Settings& settings = myOSystem.settings();
+  const string& key = settings.getBool("altuipalette") ? "uipalette2" : "uipalette";
   // Set palette for UI (upper area of full palette)
   const UIPaletteArray& ui_palette =
-     (myOSystem.settings().getString("uipalette") == "classic") ? ourClassicUIPalette :
-     (myOSystem.settings().getString("uipalette") == "light")   ? ourLightUIPalette :
-     (myOSystem.settings().getString("uipalette") == "dark")    ? ourDarkUIPalette :
+     (settings.getString(key) == "classic") ? ourClassicUIPalette :
+     (settings.getString(key) == "light")   ? ourLightUIPalette :
+     (settings.getString(key) == "dark")    ? ourDarkUIPalette :
       ourStandardUIPalette;
 
   for(size_t i = 0, j = myFullPalette.size() - ui_palette.size();

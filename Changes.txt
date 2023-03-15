@@ -22,6 +22,8 @@
 
   * Enhanced Game Properties dialog for multigame ROMs.
 
+  * Added 2nd UI theme and hotkey for toggling UI theme.
+
   * Added optional type format detection based on colors used.
 
   * Added Joy2B+ controller support.
@@ -33,6 +35,8 @@
   * Added BUS bankswitching support for some older demos.
 
   * Fixed broken 7800 pause key support.
+
+  * Fixed broken mouse and Stelladaptor input for Driving Controller.
 
   * Added user defined CPU cycle timers to debugger.
 
