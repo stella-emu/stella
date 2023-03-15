@@ -133,6 +133,12 @@ class Cartridge3EPlus: public Cartridge3E
 
     bool checkSwitchBank(uInt16 address, uInt8 value) override;
 
+    /**
+      Get the number of segments supported by the cartridge.
+    */
+    uInt16 calcNumSegments() const override { return 4; }
+
+
   private:
     // log(ROM bank segment size) / log(2)
     static constexpr uInt16 BANK_SHIFT = 10; // = 1K = 0x0400

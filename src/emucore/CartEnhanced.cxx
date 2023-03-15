@@ -37,11 +37,11 @@ CartridgeEnhanced::CartridgeEnhanced(const ByteBuffer& image, size_t size,
         << "), truncating " << (size - bsSize) << " bytes\n";
     Logger::info(buf.str());
   }
-  else if(size < mySize)
+  else if(size < bsSize)
   {
     ostringstream buf;
-    buf << "ROM smaller than expected (" << mySize << " > " << size
-        << "), appending " << (mySize - size) << " bytes\n";
+    buf << "ROM smaller than expected (" << bsSize << " > " << size
+        << "), appending " << (bsSize - size) << " bytes\n";
     Logger::info(buf.str());
   }
 
@@ -72,10 +72,7 @@ void CartridgeEnhanced::install(System& system)
   // calculate bank switching and RAM sizes and masks
   myBankSize = 1 << myBankShift;                    // e.g. = 2 ^ 12 = 4K = 0x1000
   myBankMask = myBankSize - 1;                      // e.g. = 0x0FFF
-  // Either the bankswitching supports multiple segments
-  //  or the ROM is < 4K (-> 1 segment)
-  myBankSegs = std::min(1 << (MAX_BANK_SHIFT - myBankShift),
-                        static_cast<int>(mySize) / myBankSize);  // e.g. = 1
+  myBankSegs = calcNumSegments();
   // ROM has an offset if RAM inside a bank (e.g. for F8SC)
   myRomOffset = myRamBankCount > 0U ? 0U : static_cast<uInt16>(myRamSize * 2);
   myRamMask = ramSize - 1;                          // e.g. = 0xFFFF (doesn't matter for RAM size 0)
@@ -337,6 +334,16 @@ uInt16 CartridgeEnhanced::romBankCount() const
 uInt16 CartridgeEnhanced::ramBankCount() const
 {
   return myRamBankCount;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt16 CartridgeEnhanced::calcNumSegments() const
+{
+
+  // Either the bankswitching supports multiple segments
+  //  or the ROM is < 4K (-> 1 segment)
+  return std::min(1 << (MAX_BANK_SHIFT - myBankShift),
+                  static_cast<int>(mySize) / myBankSize);  // e.g. = 1
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
