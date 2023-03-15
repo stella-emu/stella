@@ -213,7 +213,7 @@ class CartridgeE7 : public Cartridge
   private:
     // Size of RAM in the cart
     static constexpr uInt32 RAM_SIZE = 0x800; // 1K + 4 * 256B = 2K
-    // Number of segment within the 4K address space
+    // Number of segments within the 4K address space
     static constexpr uInt32 NUM_SEGMENTS = 2;
 
     /**
