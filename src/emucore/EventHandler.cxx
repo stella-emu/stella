@@ -238,6 +238,14 @@ void EventHandler::set7800Mode()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void EventHandler::toggleUIPalette()
+{
+  myOSystem.settings().setValue("altuipalette", !myOSystem.settings().getBool("altuipalette"));
+  myOSystem.frameBuffer().setUIPalette();
+  myOSystem.frameBuffer().update(FrameBuffer::UpdateMode::REDRAW);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventHandler::changeMouseControl(int direction)
 {
   if(myMouseControl)
@@ -528,6 +536,13 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
         myGlobalKeyHandler->setSetting(GlobalKeyHandler::Setting::ZOOM);
       }
       return;
+
+    case Event::ToggleUIPalette:
+      if(pressed && !repeated)
+      {
+        toggleUIPalette();
+      }
+      break;
 
     case Event::ToggleFullScreen:
       if(pressed && !repeated)
@@ -3109,6 +3124,7 @@ EventHandler::MenuActionList EventHandler::ourMenuActionList = { {
 
   { Event::UIPrevDir,               "Parent directory"                      },
   { Event::ToggleFullScreen,        "Toggle fullscreen"                     },
+  { Event::ToggleUIPalette,         "Toggle UI theme"                       },
   { Event::Quit,                    "Quit"                                  }
 } };
 

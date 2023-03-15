@@ -148,7 +148,7 @@ class Event
       SelectHome, SelectEnd, SelectAll,
       Delete, DeleteLeftWord, DeleteRightWord, DeleteHome, DeleteEnd, Backspace,
       Cut, Copy, Paste, Undo, Redo,
-      AbortEdit, EndEdit,
+      AbortEdit, EndEdit, ToggleUIPalette,
 
       HighScoresMenuMode,
       // Input settings

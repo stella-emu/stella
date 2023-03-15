@@ -836,6 +836,7 @@ PhysicalKeyboardHandler::DefaultMenuMapping = {
   {Event::UITabPrev,                KBDK_TAB, KBDM_SHIFT | KBDM_CTRL},
   {Event::UITabNext,                KBDK_TAB, KBDM_CTRL},
 
+  {Event::ToggleUIPalette,          KBDK_T, MOD3},
   {Event::ToggleFullScreen,         KBDK_RETURN, MOD3},
 
 #ifdef BSPF_MACOS
