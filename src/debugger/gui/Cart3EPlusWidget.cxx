@@ -39,7 +39,7 @@ string Cartridge3EPlusWidget::description()
   const uInt16 numRomBanks = myCart.romBankCount();
   const uInt16 numRamBanks = myCart.ramBankCount();
 
-  info << "3E+ cartridge - (4" << ELLIPSIS << "64K ROM + RAM)\n"
+  info << "3E+ cartridge - (1" << ELLIPSIS << "64K ROM + RAM)\n"
     << "  " << numRomBanks << " 1K ROM banks + " << numRamBanks << " 512b RAM banks\n"
     << "  mapped into four segments\n"
        "ROM bank & segment selected by writing to $3F\n"
