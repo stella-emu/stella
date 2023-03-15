@@ -304,6 +304,11 @@ class CartridgeEnhanced : public Cartridge
     */
     virtual bool checkSwitchBank(uInt16 address, uInt8 value) = 0;
 
+    /**
+      Calculate the number of segments supported by the cartridge.
+    */
+    virtual uInt16 calcNumSegments() const;
+
   private:
     /**
       Get the ROM's startup bank.
