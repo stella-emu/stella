@@ -170,6 +170,7 @@ void attachConsole()
   AttachConsole(ATTACH_PARENT_PROCESS);
   FILE* fDummy;
   freopen_s(&fDummy, "CONOUT$", "w", stdout);
+  //freopen_s(&fDummy, "CONIN$", "r", stdin); // doesn't work as expected
 
   // Windows displays a new prompt immediately after starting the app.
   // This code tries to hide it before the new output is generated.

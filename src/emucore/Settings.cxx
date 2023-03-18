@@ -16,7 +16,6 @@
 //============================================================================
 
 #include "bspf.hxx"
-
 #include "OSystem.hxx"
 #include "Version.hxx"
 #include "Logger.hxx"
@@ -31,6 +30,16 @@
 
 #ifdef DEBUGGER_SUPPORT
   #include "DebuggerDialog.hxx"
+#endif
+
+//#if defined(BSPF_WINDOWS)
+//#include <windows.hxx>
+//#endif
+
+#if defined(BSPF_UNIX) || defined(BSPF_MACOS)
+#include <sys/ioctl.h>
+#include <stdio.h>
+#include <unistd.h>
 #endif
 
 #include "Settings.hxx"
@@ -481,7 +490,8 @@ void Settings::validate()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Settings::usage()
 {
-  cout << endl
+  stringstream buf;
+  buf << endl
     << "Stella version " << STELLA_VERSION << endl
     << endl
     << "Usage: stella [options ...] romfile" << endl
@@ -807,7 +817,40 @@ void Settings::usage()
     << "  -dev.tia.delaybkcolor  <1|0>      Enable extra delay cycle for background color\n"
     << "  -dev.tia.delayplswap   <1|0>      Enable extra delay cycle for VDELP0/1 swap\n"
     << "  -dev.tia.delayblswap   <1|0>      Enable extra delay cycle for VDELBL swap\n"
-    << endl << std::flush;
+    << endl;
+
+#ifdef BSPF_WINDOWS
+//  int height = 25;
+//  CONSOLE_SCREEN_BUFFER_INFO csbi;
+//
+//  if(NULL != GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &csbi))
+//    height = csbi.srWindow.Bottom - csbi.srWindow.Top + 1;
+  cout << buf.str() << std::flush;
+#endif
+
+#if defined(BSPF_UNIX) || defined(BSPF_MACOS)
+  int height = 25;
+  struct winsize ws;
+
+  ioctl(STDOUT_FILENO, TIOCGWINSZ, &ws);
+
+  height = ws.ws_row;
+
+  int row = 0;
+  while(buf.good())
+  {
+    if(++row == height - 1)
+    {
+      row = 0;
+      cout << "Press \"Enter\"" << std::flush;
+      getchar();
+      cout << endl;
+    }
+    string substr;
+    getline(buf, substr, '\n');
+    cout << substr << endl;
+  }
+#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
