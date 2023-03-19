@@ -894,7 +894,7 @@ void PromptWidget::putcharIntern(int c)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PromptWidget::print(string_view str)
 {
-  // limit scolling of long text output
+  // limit scrolling of long text output
   _scrollStopLine = _currentPos / _lineWidth + _linesPerPage - 1;
   for(const auto c : str)
     putcharIntern(c);

@@ -17088,6 +17088,7 @@
 "Cart.ModelNo" "CX2660"
 "Cart.Name" "Star Raiders (1982) (Atari) (PAL)"
 "Cart.Note" "Uses Joystick (left) and Keyboard (right) Controllers"
+"Controller.Right" "KEYBOARD"
 ""
 
 "Cart.MD5" "c1b038ce5cb6d85e956c5509b0e0d0d8"
@@ -18045,7 +18046,8 @@
 "Cart.Manufacturer" "Atari, Carla Meninsky - Sears"
 "Cart.ModelNo" "CX2660 - 49-75187"
 "Cart.Name" "Star Raiders (1982) (Atari)"
-"Cart.Note" "Uses Joystick (left) and Keyboard (right) Controllers"
+"Cart.Note" "Uses Joystick (left) and Keyboard (right) Controllers"r
+"Controller.Right" "KEYBOARD"
 ""
 
 "Cart.MD5" "cbe5a166550a8129a5e6d374901dffad"
