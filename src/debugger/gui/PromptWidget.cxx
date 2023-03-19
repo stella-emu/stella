@@ -61,6 +61,7 @@ PromptWidget::PromptWidget(GuiObject* boss, const GUI::Font& font,
   _scrollBar = new ScrollBarWidget(boss, font, _x + _w, _y,
                                    ScrollBarWidget::scrollBarWidth(_font), _h);
   _scrollBar->setTarget(this);
+  _scrollStopLine = INT_MAX;
 
   clearScreen();
 
@@ -167,9 +168,17 @@ bool PromptWidget::handleKeyDown(StellaKey key, StellaMod mod)
   {
     case Event::EndEdit:
     {
+      if(_scrollLine < _currentPos / _lineWidth)
+      {
+        // Scroll page by page when not at cursor position:
+        _scrollLine += _linesPerPage;
+        if(_scrollLine > _promptEndPos / _lineWidth)
+          _scrollLine = _promptEndPos / _lineWidth;
+        updateScrollBuffer();
+        break;
+      }
       if(execute())
         return true;
-
       printPrompt();
       break;
     }
@@ -798,7 +807,7 @@ void PromptWidget::nextLine()
   _inverse = false;
 
   const int line = _currentPos / _lineWidth;
-  if (line == _scrollLine)
+  if (line == _scrollLine && _scrollLine < _scrollStopLine)
     _scrollLine++;
 
   _currentPos = (line + 1) * _lineWidth;
@@ -868,11 +877,12 @@ void PromptWidget::putcharIntern(int c)
   else if(c == 0x7f) { // toggle inverse video (DEL char)
     _inverse = !_inverse;
   }
-  else if(isprint(c))
+  else if(isprint(c) || c == 0x1e || c == 0x1f) // graphic bits chars
   {
     buffer(_currentPos) = c | (_textcolor << 8) | (_inverse << 17);
     _currentPos++;
-    if ((_scrollLine + 1) * _lineWidth == _currentPos)
+    if ((_scrollLine + 1) * _lineWidth == _currentPos
+        && _scrollLine < _scrollStopLine)
     {
       _scrollLine++;
       updateScrollBuffer();
@@ -884,8 +894,11 @@ void PromptWidget::putcharIntern(int c)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PromptWidget::print(string_view str)
 {
-  for(const auto c: str)
+  // limit scolling of long text output
+  _scrollStopLine = _currentPos / _lineWidth + _linesPerPage - 1;
+  for(const auto c : str)
     putcharIntern(c);
+  _scrollStopLine = INT_MAX;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

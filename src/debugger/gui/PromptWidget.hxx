@@ -115,6 +115,7 @@ class PromptWidget : public Widget, public CommandSender
     int  _currentPos;
     int  _scrollLine;
     int  _firstLineInBuffer;
+    int  _scrollStopLine;
 
     int  _promptStartPos;
     int  _promptEndPos;
