@@ -25,9 +25,9 @@
 #include "repository/CompositeKeyValueRepositoryNoop.hxx"
 
 #ifdef _WIN32
-  const string slash = "\\";
+  const string SLASH = "\\";
 #else
-  const string slash = "/";
+  const string SLASH = "/";
 #endif
 
 /**
@@ -59,7 +59,7 @@ class OSystemLIBRETRO : public OSystem
     void getBaseDirectories(string& basedir, string& homedir,
                             bool useappdir, string_view usedir) override
     {
-      basedir = homedir = "." + slash;
+      basedir = homedir = "." + SLASH;
     }
 
     shared_ptr<KeyValueRepository>
