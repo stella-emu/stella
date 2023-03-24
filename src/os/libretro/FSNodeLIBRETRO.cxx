@@ -20,15 +20,15 @@
 #include "FSNodeLIBRETRO.hxx"
 
 #ifdef _WIN32
-  const string slash = "\\";
+  const string SLASH = "\\";
 #else
-  const string slash = "/";
+  const string SLASH = "/";
 #endif
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FSNodeLIBRETRO::FSNodeLIBRETRO()
   : _name{"rom"},
-    _path{"." + slash}
+    _path{"." + SLASH}
 {
 }
 
@@ -38,8 +38,8 @@ FSNodeLIBRETRO::FSNodeLIBRETRO(string_view p)
     _path{p}
 {
   // TODO: use retro_vfs_mkdir_t (file) or RETRO_MEMORY_SAVE_RAM (stream) or libretro save path
-  if(p == "." + slash + "nvram")
-    _path = "." + slash;
+  if(p == "." + SLASH + "nvram")
+    _path = "." + SLASH;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

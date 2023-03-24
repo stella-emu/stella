@@ -1892,17 +1892,17 @@ typedef int (RETRO_CALLCONV *retro_vfs_closedir_t)(struct retro_vfs_dir_handle *
 struct retro_vfs_interface
 {
    /* VFS API v1 */
-	retro_vfs_get_path_t get_path;
-	retro_vfs_open_t open;
-	retro_vfs_close_t close;
-	retro_vfs_size_t size;
-	retro_vfs_tell_t tell;
-	retro_vfs_seek_t seek;
-	retro_vfs_read_t read;
-	retro_vfs_write_t write;
-	retro_vfs_flush_t flush;
-	retro_vfs_remove_t remove;
-	retro_vfs_rename_t rename;
+  retro_vfs_get_path_t get_path;
+  retro_vfs_open_t open;
+  retro_vfs_close_t close;
+  retro_vfs_size_t size;
+  retro_vfs_tell_t tell;
+  retro_vfs_seek_t seek;
+  retro_vfs_read_t read;
+  retro_vfs_write_t write;
+  retro_vfs_flush_t flush;
+  retro_vfs_remove_t remove;
+  retro_vfs_rename_t rename;
    /* VFS API v2 */
    retro_vfs_truncate_t truncate;
    /* VFS API v3 */
@@ -1930,11 +1930,11 @@ struct retro_vfs_interface_info
 
 enum retro_hw_render_interface_type
 {
-	RETRO_HW_RENDER_INTERFACE_VULKAN = 0,
-	RETRO_HW_RENDER_INTERFACE_D3D9   = 1,
-	RETRO_HW_RENDER_INTERFACE_D3D10  = 2,
-	RETRO_HW_RENDER_INTERFACE_D3D11  = 3,
-	RETRO_HW_RENDER_INTERFACE_D3D12  = 4,
+  RETRO_HW_RENDER_INTERFACE_VULKAN = 0,
+  RETRO_HW_RENDER_INTERFACE_D3D9   = 1,
+  RETRO_HW_RENDER_INTERFACE_D3D10  = 2,
+  RETRO_HW_RENDER_INTERFACE_D3D11  = 3,
+  RETRO_HW_RENDER_INTERFACE_D3D12  = 4,
    RETRO_HW_RENDER_INTERFACE_GSKIT_PS2  = 5,
    RETRO_HW_RENDER_INTERFACE_DUMMY  = INT_MAX
 };
@@ -2811,7 +2811,7 @@ struct retro_hw_render_callback
  * character is the text character of the pressed key. (UTF-32).
  * key_modifiers is a set of RETROKMOD values or'ed together.
  *
- * The pressed/keycode state can be indepedent of the character.
+ * The pressed/ keycode state can be indepedent of the character.
  * It is also possible that multiple characters are generated from a
  * single keypress.
  * Keycode events should be treated separately from character events.

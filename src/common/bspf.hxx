@@ -135,7 +135,7 @@ namespace BSPF
     static const string ARCH = "NOARCH";
   #endif
 
-  #if defined(BSPF_WINDOWS)
+  #if defined(BSPF_WINDOWS) || defined(__LIB_RETRO__)
     #define FORCE_INLINE __forceinline
   #else
     #define FORCE_INLINE inline __attribute__((always_inline))
