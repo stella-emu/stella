@@ -394,7 +394,6 @@ bool CartridgeEnhanced::save(Serializer& out) const
 
     if(myPlusROM->isValid() && !myPlusROM->save(out))
       return false;
-
   }
   catch(...)
   {

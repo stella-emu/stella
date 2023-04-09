@@ -22,6 +22,7 @@
 #include "System.hxx"
 #include "bspf.hxx"
 #include "Cart.hxx"
+#include "PlusROM.hxx"
 #ifdef DEBUGGER_SUPPORT
   #include "CartE7Widget.hxx"
 #endif
@@ -177,6 +178,24 @@ class CartridgeE7 : public Cartridge
     */
     string name() const override { return "CartridgeE7"; }
 
+    /**
+      Answer whether this is a PlusROM cart.  Note that until the
+      initialize method has been called, this will always return false.
+
+      @return  Whether this is actually a PlusROM cart
+    */
+    bool isPlusROM() const override { return myPlusROM->isValid(); }
+
+    /**
+      Set the callback for displaying messages
+    */
+    void setMessageCallback(const messageCallback& callback) override
+    {
+        Cartridge::setMessageCallback(callback);
+        if (myPlusROM->isValid())
+            myPlusROM->setMessageCallback(myMsgCallback);
+    }
+
   #ifdef DEBUGGER_SUPPORT
     /**
       Get debugger widget responsible for accessing the inner workings
@@ -243,6 +262,9 @@ class CartridgeE7 : public Cartridge
 
     // The number of the RAM bank (== bankCount() - 1)
     uInt32 myRAMBank{0};
+
+    // Handle PlusROM functionality, if available
+    unique_ptr<PlusROM> myPlusROM;
 
   private:
     // Following constructors and assignment operators not supported
