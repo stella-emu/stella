@@ -41,6 +41,11 @@ void CartridgeE7::initialize(const ByteBuffer& image, size_t size)
   myCurrentBank.fill(0);
 
   myRAMBank = romBankCount() - 1;  // NOLINT
+
+  myPlusROM = make_unique<PlusROM>(mySettings, *this);
+
+  // Determine whether we have a PlusROM cart
+  myPlusROM->initialize(myImage, mySize);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -57,6 +62,9 @@ void CartridgeE7::reset()
   bank(startBank());
 
   myBankChanged = true;
+
+  if (myPlusROM->isValid())
+      myPlusROM->reset();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -142,6 +150,15 @@ void CartridgeE7::checkSwitchBank(uInt16 address)
 uInt8 CartridgeE7::peek(uInt16 address)
 {
   const uInt16 peekAddress = address;
+
+  // Is this a PlusROM?
+  if (myPlusROM->isValid())
+  {
+      uInt8 value = 0;
+      if (myPlusROM->peekHotspot(address, value))
+          return value;
+  }
+
   address &= 0x0FFF;
 
   // Switch banks if necessary
@@ -164,6 +181,10 @@ uInt8 CartridgeE7::peek(uInt16 address)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CartridgeE7::poke(uInt16 address, uInt8 value)
 {
+  // Is this a PlusROM?
+  if (myPlusROM->isValid() && myPlusROM->pokeHotspot(address, value))
+    return true;
+
   const uInt16 pokeAddress = address;
   address &= 0x0FFF;
 
@@ -309,6 +330,8 @@ bool CartridgeE7::save(Serializer& out) const
     out.putShortArray(myCurrentBank.data(), myCurrentBank.size());
     out.putShort(myCurrentRAM);
     out.putByteArray(myRAM.data(), myRAM.size());
+    if (myPlusROM->isValid() && !myPlusROM->save(out))
+        return false;
   }
   catch(...)
   {
@@ -327,6 +350,8 @@ bool CartridgeE7::load(Serializer& in)
     in.getShortArray(myCurrentBank.data(), myCurrentBank.size());
     myCurrentRAM = in.getShort();
     in.getByteArray(myRAM.data(), myRAM.size());
+    if (myPlusROM->isValid() && !myPlusROM->load(in))
+        return false;
   }
   catch(...)
   {

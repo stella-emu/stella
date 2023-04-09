@@ -30,6 +30,8 @@
 
   * Enhanced Kid Vid support to play tape audio.
 
+  * Added missing PlusROM support for E7 bankswitching.
+
   * Acclerated emulation up to ~15% (ARM).
 
   * Added BUS bankswitching support for some older demos.
