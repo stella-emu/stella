@@ -37,8 +37,8 @@
 //#endif
 
 #if defined(BSPF_UNIX) || defined(BSPF_MACOS)
+#include <cstdio>
 #include <sys/ioctl.h>
-#include <stdio.h>
 #include <unistd.h>
 #endif
 
@@ -843,7 +843,7 @@ void Settings::usage()
     {
       row = 0;
       cout << "Press \"Enter\"" << std::flush;
-      getchar();
+      std::ignore = getchar();
       cout << endl;
     }
     string substr;
