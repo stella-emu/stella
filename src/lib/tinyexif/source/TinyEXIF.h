@@ -9,31 +9,32 @@
   Based on the easyexif library (2013 version)
     https://github.com/mayanklahiri/easyexif
   of Mayank Lahiri (mlahiri@gmail.com).
-  
-  Redistribution and use in source and binary forms, with or without 
+
+  Redistribution and use in source and binary forms, with or without
   modification, are permitted provided that the following conditions are met:
 
-   - Redistributions of source code must retain the above copyright notice, 
+   - Redistributions of source code must retain the above copyright notice,
      this list of conditions and the following disclaimer.
-   - Redistributions in binary form must reproduce the above copyright notice, 
-     this list of conditions and the following disclaimer in the documentation 
+   - Redistributions in binary form must reproduce the above copyright notice,
+     this list of conditions and the following disclaimer in the documentation
    and/or other materials provided with the distribution.
 
-  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS ``AS IS'' AND ANY EXPRESS 
-  OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES 
-  OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN 
-  NO EVENT SHALL THE FREEBSD PROJECT OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, 
-  INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, 
-  BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, 
-  DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY 
-  OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING 
-  NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, 
+  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS ``AS IS'' AND ANY EXPRESS
+  OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+  OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN
+  NO EVENT SHALL THE FREEBSD PROJECT OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+  INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+  BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+  DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
+  OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+  NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
   EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 #ifndef __TINYEXIF_H__
 #define __TINYEXIF_H__
 
+#include <cstdlib>  // Added by SA (2023-05-05), needed for gcc-13
 #include <string>
 #include <vector>
 
@@ -115,13 +116,13 @@ public:
 	int parseFrom(const uint8_t* data, unsigned length);
 
 	// Parsing function for an EXIF segment. This is used internally by parseFrom()
-	// but can be called for special cases where only the EXIF section is 
+	// but can be called for special cases where only the EXIF section is
 	// available (i.e., a blob starting with the bytes "Exif\0\0").
 	int parseFromEXIFSegment(const uint8_t* buf, unsigned len);
 
 #ifndef TINYEXIF_NO_XMP_SUPPORT
 	// Parsing function for an XMP segment. This is used internally by parseFrom()
-	// but can be called for special cases where only the XMP section is 
+	// but can be called for special cases where only the XMP section is
 	// available (i.e., a blob starting with the bytes "http://ns.adobe.com/xap/1.0/\0").
 	int parseFromXMPSegment(const uint8_t* buf, unsigned len);
 	int parseFromXMPSegmentXML(const char* szXML, unsigned len);
@@ -285,7 +286,7 @@ public:
 		double GPSDOP;                  // GPS DOP (data degree of precision)
 		uint16_t GPSDifferential;       // Differential correction applied to the GPS receiver (may not exist)
 										// 0: measurement without differential correction
-										// 1: differential correction applied 
+										// 1: differential correction applied
 		std::string GPSMapDatum;        // Geodetic survey data (may not exist)
 		std::string GPSTimeStamp;       // Time as UTC (Coordinated Universal Time) (may not exist)
 		std::string GPSDateStamp;       // A character string recording date and time information relative to UTC (Coordinated Universal Time) YYYY:MM:DD (may not exist)
