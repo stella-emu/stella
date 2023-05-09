@@ -40,7 +40,7 @@ CartridgeEnhanced::CartridgeEnhanced(const ByteBuffer& image, size_t size,
   else if(size < bsSize)
   {
     ostringstream buf;
-    buf << "ROM smaller than expected (" << bsSize << " > " << size
+    buf << "ROM smaller than expected (" << size << " < " << bsSize
         << "), appending " << (bsSize - size) << " bytes\n";
     Logger::info(buf.str());
   }
