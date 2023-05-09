@@ -24,11 +24,16 @@ CartridgeCV::CartridgeCV(const ByteBuffer& image, size_t size,
                          size_t bsSize)
   : CartridgeEnhanced(image, size, md5, settings, bsSize)
 {
-  myBankShift = BANK_SHIFT;
   myRamSize = RAM_SIZE;
   myRamWpHigh = RAM_HIGH_WP;
 
-  if(size == 4_KB)
+  if (size == 2_KB)
+  {
+    // Move the ROM of 2K files to the 2nd half of the 4K ROM
+    // The 1st half is used for RAM
+    std::copy_n(image.get(), 2_KB, myImage.get() + 2_KB);
+  }
+  else if(size == 4_KB)
   {
     // The game has something saved in the RAM
     // Useful for MagiCard program listings

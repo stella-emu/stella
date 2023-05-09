@@ -50,7 +50,7 @@ class CartridgeCV : public CartridgeEnhanced
       @param bsSize    The size specified by the bankswitching scheme
     */
     CartridgeCV(const ByteBuffer& image, size_t size, string_view md5,
-                const Settings& settings, size_t bsSize = 2_KB);
+                const Settings& settings, size_t bsSize = 4_KB);
     ~CartridgeCV() override = default;
 
   public:
@@ -86,9 +86,6 @@ class CartridgeCV : public CartridgeEnhanced
     ByteBuffer myInitialRAM{nullptr};
 
   private:
-    // Calculated as: log(ROM bank segment size) / log(2)
-    static constexpr uInt16 BANK_SHIFT = 11;  // 2K
-
     // RAM size
     static constexpr uInt32 RAM_SIZE = 0x400; // 1K
 
