@@ -27,9 +27,12 @@ Bankswitch::Type CartDetector::autodetectType(const ByteBuffer& image, size_t si
   // Guess type based on size
   Bankswitch::Type type = Bankswitch::Type::_AUTO;
 
-  if((size % 8448) == 0 || size == 6144)
+  if((size % 8448) == 0 || size == 6_KB)
   {
-    type = Bankswitch::Type::_AR;
+    if(size == 6_KB && isProbablyGL(image, size))
+      type = Bankswitch::Type::_GL;
+    else
+      type = Bankswitch::Type::_AR;
   }
   else if(size < 2_KB)  // Sub2K images
   {
@@ -48,6 +51,8 @@ Bankswitch::Type CartDetector::autodetectType(const ByteBuffer& image, size_t si
       type = Bankswitch::Type::_4KSC;
     else if (isProbablyFC(image, size))
       type = Bankswitch::Type::_FC;
+    else if (isProbablyGL(image, size))
+      type = Bankswitch::Type::_GL;
     else
       type = Bankswitch::Type::_4K;
   }
@@ -704,6 +709,14 @@ bool CartDetector::isProbablyFE(const ByteBuffer& image, size_t size)
       return true;
 
   return false;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool CartDetector::isProbablyGL(const ByteBuffer& image, size_t size)
+{
+  static constexpr uInt8 signature[] = { 0xad, 0xb8, 0x0c };  // LDA $0CB8
+
+  return searchForBytes(image, size, signature, 3);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

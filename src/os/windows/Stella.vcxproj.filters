@@ -1197,6 +1197,12 @@
     <ClCompile Include="..\..\debugger\TimerMap.cxx">
       <Filter>Source Files\debugger</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\emucore\CartGL.cxx">
+      <Filter>Source Files\emucore</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\debugger\gui\CartGLWidget.cxx">
+      <Filter>Source Files\debugger\gui</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\common\bspf.hxx">
@@ -2440,6 +2446,12 @@
     </ClInclude>
     <ClInclude Include="..\..\debugger\TimerMap.hxx">
       <Filter>Header Files\debugger</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\emucore\CartGL.hxx">
+      <Filter>Header Files\emucore</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\debugger\gui\CartGLWidget.hxx">
+      <Filter>Header Files\debugger\gui</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

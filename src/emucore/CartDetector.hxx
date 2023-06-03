@@ -202,6 +202,11 @@ class CartDetector
     static bool isProbablyFE(const ByteBuffer& image, size_t size);
 
     /**
+      Returns true if the image is probably a GameLine cartridge
+    */
+    static bool isProbablyGL(const ByteBuffer& image, size_t size);
+
+    /**
       Returns true if the image is probably a MDM bankswitching cartridge
     */
     static bool isProbablyMDM(const ByteBuffer& image, size_t size);

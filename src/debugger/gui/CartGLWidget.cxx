@@ -15,26 +15,36 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#include "Cart4K.hxx"
-#include "Cart4KWidget.hxx"
+#include "CartGL.hxx"
+#include "CartGLWidget.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Cartridge4KWidget::Cartridge4KWidget(
-      GuiObject* boss, const GUI::Font& lfont, const GUI::Font& nfont,
-      int x, int y, int w, int h, Cartridge4K& cart)
+CartridgeGLWidget::CartridgeGLWidget(
+    GuiObject* boss, const GUI::Font& lfont, const GUI::Font& nfont,
+    int x, int y, int w, int h, CartridgeGL& cart)
   : CartridgeEnhancedWidget(boss, lfont, nfont, x, y, w, h, cart)
 {
   initialize();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string Cartridge4KWidget::description()
+string CartridgeGLWidget::description()
 {
   ostringstream info;
 
-  info << "Standard 4K cartridge, non-bankswitched\n"
-       << CartridgeEnhancedWidget::description();
+  info << "GameLine Master Module cartridge, 4K ROM, 10/12K RAM\n"
+    << "mapped into four 1K segments\n"
+    << "THIS SCHEME IS NOT FULLY IMPLEMENTED OR TESTED";
 
   return info.str();
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+string CartridgeGLWidget::internalRamDescription()
+{
+  ostringstream desc;
+
+  desc << "Accessible 1K" << " at a time";
+
+  return desc.str();
+}
