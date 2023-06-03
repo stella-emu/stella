@@ -214,6 +214,9 @@ class CartridgeEnhanced : public Cartridge
     // The mask for a bank segment
     uInt16 myBankMask{ROM_MASK};
 
+    // Usually myBankShift - 1
+    uInt16 myRamBankShift{0};
+
   protected:
     // The extra RAM size
     size_t myRamSize{RAM_SIZE};                 // default 0
@@ -318,7 +321,7 @@ class CartridgeEnhanced : public Cartridge
     virtual uInt16 getStartBank() const { return 0; }
 
     /**
-      Get the ROM offset of the segment of the given address
+      Get the ROM offset of the segment of the given address.
 
       @param address  The address to get the offset for
       @return  The calculated offset
@@ -328,14 +331,16 @@ class CartridgeEnhanced : public Cartridge
     }
 
     /**
-      Get the RAM offset of the segment of the given address
+      Get the RAM offset of the segment of the given address.
+      The RAM banks are half the size of a ROM bank.
 
       @param address  The address to get the offset for
       @return  The calculated offset
     */
     uInt16 ramAddressSegmentOffset(uInt16 address) const {
-      return static_cast<uInt16>((myCurrentSegOffset[
-        ((address & ROM_MASK) >> myBankShift) % myBankSegs] - mySize) >> 1);
+      return static_cast<uInt16>(
+        (myCurrentSegOffset[((address & ROM_MASK) >> myBankShift) % myBankSegs] - mySize) 
+        >> (myBankShift - myRamBankShift));
     }
 
   private:

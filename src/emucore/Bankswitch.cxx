@@ -119,6 +119,7 @@ Bankswitch::BSList = {{
   { "FA2"     , "FA2 (CBS RAM Plus 24-32K)"   },
   { "FC"      , "FC (32K Amiga)"              },
   { "FE"      , "FE (8K Activision)"          },
+  { "GL"      , "GL (GameLine Master Module)" },
   { "MDM"     , "MDM (Menu Driven Megacart)"  },
   { "MVC"     , "MVC (Movie Cart)"            },
   { "SB"      , "SB (128-256K SUPERbank)"     },
@@ -129,7 +130,7 @@ Bankswitch::BSList = {{
   { "WDSW"    , "WDSW (Pink Panther, bad)"    },
   { "X07"     , "X07 (64K AtariAge)"          },
 #if defined(CUSTOM_ARM)
-  { "CUSTOM"  ,   "CUSTOM (ARM)"                  }
+  { "CUSTOM"  ,   "CUSTOM (ARM)"              }
 #endif
 }};
 
@@ -181,6 +182,7 @@ Bankswitch::Sizes = {{
   {   24_KB,  32_KB }, // _FA2
   {   32_KB,  32_KB }, // _FC
   {    8_KB,   8_KB }, // _FE
+  {    4_KB,   4_KB }, // _GL
   {    8_KB, Bankswitch::any_KB }, // _MDM
   { 1024_KB, Bankswitch::any_KB }, // _MVC
   {  128_KB, 256_KB }, // _SB
@@ -270,6 +272,7 @@ Bankswitch::ExtensionMap Bankswitch::ourExtensions = {
   { "FA2"   , Bankswitch::Type::_FA2    },
   { "FC"    , Bankswitch::Type::_FC     },
   { "FE"    , Bankswitch::Type::_FE     },
+  { "GL"    , Bankswitch::Type::_GL     },
   { "MDM"   , Bankswitch::Type::_MDM    },
   { "MVC"   , Bankswitch::Type::_MVC    },
   { "SB"    , Bankswitch::Type::_SB     },
@@ -329,6 +332,7 @@ Bankswitch::NameToTypeMap Bankswitch::ourNameToTypes = {
   { "FA2"     , Bankswitch::Type::_FA2    },
   { "FC"      , Bankswitch::Type::_FC     },
   { "FE"      , Bankswitch::Type::_FE     },
+  { "GL"      , Bankswitch::Type::_GL     },
   { "MDM"     , Bankswitch::Type::_MDM    },
   { "MVC"     , Bankswitch::Type::_MVC    },
   { "SB"      , Bankswitch::Type::_SB     },

@@ -34,6 +34,8 @@
 
   * Acclerated emulation up to ~15% (ARM).
 
+  * Added limited GameLine Master Module bankswitching support.
+
   * Added BUS bankswitching support for some older demos.
 
   * Fixed broken 7800 pause key support.

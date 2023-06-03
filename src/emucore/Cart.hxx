@@ -434,6 +434,9 @@ class Cartridge : public Device
     // Callback to output messages
     messageCallback myMsgCallback{nullptr};
 
+    // Semi-random values to use when a read from write port occurs
+    std::array<uInt8, 256> myRWPRandomValues;
+
   private:
     // The startup bank to use (where to look for the reset vector address)
     uInt16 myStartBank{0};
@@ -441,9 +444,6 @@ class Cartridge : public Device
     // If myHotspotsLocked is true, ignore attempts at bankswitching. This is used
     // by the debugger, when disassembling/dumping ROM.
     bool myHotspotsLocked{false};
-
-    // Semi-random values to use when a read from write port occurs
-    std::array<uInt8, 256> myRWPRandomValues;
 
     // Contains various info about this cartridge
     // This needs to be stored separately from child classes, since

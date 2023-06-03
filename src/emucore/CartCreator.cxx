@@ -54,6 +54,7 @@
 #include "CartFA2.hxx"
 #include "CartFC.hxx"
 #include "CartFE.hxx"
+#include "CartGL.hxx"
 #include "CartMDM.hxx"
 #include "CartMVC.hxx"
 #include "CartSB.hxx"
@@ -305,6 +306,8 @@ CartCreator::createFromImage(const ByteBuffer& image, size_t size,
       return make_unique<CartridgeFC>(image, size, md5, settings);
     case Bankswitch::Type::_FE:
       return make_unique<CartridgeFE>(image, size, md5, settings);
+    case Bankswitch::Type::_GL:
+      return make_unique<CartridgeGL>(image, size, md5, settings);
     case Bankswitch::Type::_MDM:
       return make_unique<CartridgeMDM>(image, size, md5, settings);
     case Bankswitch::Type::_UA:

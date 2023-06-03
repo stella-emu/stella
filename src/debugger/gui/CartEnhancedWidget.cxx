@@ -181,11 +181,20 @@ void CartridgeEnhancedWidget::bankList(uInt16 bankCount, int seg, VariantList& i
 {
   width = 0;
 
+  const bool hasRamBanks = myCart.myRamBankCount > 0;
+
   for(int bank = 0; bank < bankCount; ++bank)
   {
     ostringstream buf;
+    const bool isRamBank = (bank >= myCart.romBankCount());
+    const int bankNum = (bank - (isRamBank ? myCart.romBankCount() : 0));
 
-    buf << std::setw(bank < 10 ? 2 : 1) << "#" << std::dec << bank;
+    buf << std::setw(bankNum < 10 ? 2 : 1) << "#" << std::dec << bankNum;
+    if(isRamBank) // was RAM mapped here?
+      buf << " RAM";
+    else if (hasRamBanks)
+      buf << " ROM";
+
     if(myCart.hotspot() != 0 && myHotspotDelta > 0)
       buf << " " << hotspotStr(bank, seg);
     VarList::push_back(items, buf.str());
@@ -196,7 +205,7 @@ void CartridgeEnhancedWidget::bankList(uInt16 bankCount, int seg, VariantList& i
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeEnhancedWidget::bankSelect(int& ypos)
 {
-  if(myCart.romBankCount() > 1)
+  if(myCart.romBankCount() + myCart.ramBankCount() > 1)
   {
     constexpr int xpos = 2;
 
@@ -208,7 +217,7 @@ void CartridgeEnhancedWidget::bankSelect(int& ypos)
       VariantList items;
       int pw = 0;
 
-      bankList(myCart.romBankCount(), seg, items, pw);
+      bankList(myCart.romBankCount() + myCart.ramBankCount(), seg, items, pw);
 
       // create widgets
       ostringstream buf;
@@ -248,7 +257,6 @@ string CartridgeEnhancedWidget::bankState()
       {
         const int bank = myCart.getSegmentBank(seg);
         const bool isRamBank = (bank >= myCart.romBankCount());
-
 
         if(seg > 0)
           buf << " / ";
