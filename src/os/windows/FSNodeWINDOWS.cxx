@@ -151,7 +151,7 @@ bool FSNodeWINDOWS::getChildren(AbstractFSList& myList, ListMode mode) const
       const bool isFile = !isDirectory;
 
       if ((isFile && mode == FSNode::ListMode::DirectoriesOnly) ||
-        (isDirectory && mode == FSNode::ListMode::FilesOnly))
+          (isDirectory && mode == FSNode::ListMode::FilesOnly))
         continue;
 
       FSNodeWINDOWS entry;
