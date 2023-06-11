@@ -35,6 +35,8 @@
 #define __TINYEXIF_H__
 
 #include <cstdlib>  // Added by SA (2023-05-05), needed for gcc-13
+#include <cstdint>
+
 #include <string>
 #include <vector>
 

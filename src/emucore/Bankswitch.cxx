@@ -182,7 +182,7 @@ Bankswitch::Sizes = {{
   {   24_KB,  32_KB }, // _FA2
   {   32_KB,  32_KB }, // _FC
   {    8_KB,   8_KB }, // _FE
-  {    4_KB,   4_KB }, // _GL
+  {    4_KB,   6_KB }, // _GL
   {    8_KB, Bankswitch::any_KB }, // _MDM
   { 1024_KB, Bankswitch::any_KB }, // _MVC
   {  128_KB, 256_KB }, // _SB
