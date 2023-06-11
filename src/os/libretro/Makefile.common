@@ -81,6 +81,7 @@ SOURCES_CXX := \
 	$(CORE_DIR)/emucore/CartFA.cxx \
 	$(CORE_DIR)/emucore/CartFC.cxx \
 	$(CORE_DIR)/emucore/CartFE.cxx \
+	$(CORE_DIR)/emucore/CartGL.cxx \
 	$(CORE_DIR)/emucore/CartMDM.cxx \
 	$(CORE_DIR)/emucore/CartMVC.cxx \
 	$(CORE_DIR)/emucore/CartSB.cxx \

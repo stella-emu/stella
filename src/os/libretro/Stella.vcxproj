@@ -243,6 +243,7 @@
     <ClCompile Include="..\..\emucore\CartF8SC.cxx" />
     <ClCompile Include="..\..\emucore\CartFA.cxx" />
     <ClCompile Include="..\..\emucore\CartFE.cxx" />
+    <ClCompile Include="..\..\emucore\CartGL.cxx" />
     <ClCompile Include="..\..\emucore\CartSB.cxx" />
     <ClCompile Include="..\..\emucore\CartUA.cxx" />
     <ClCompile Include="..\..\emucore\CartX07.cxx" />
