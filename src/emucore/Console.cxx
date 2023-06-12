@@ -856,7 +856,7 @@ void Console::setControllers(string_view romMd5)
     myOSystem.eventHandler().defineKeyControllerMappings(
         Controller::Type::CompuMate, Controller::Jack::Left, myProperties);
     myOSystem.eventHandler().defineJoyControllerMappings(
-        Controller::Type::CompuMate, Controller::Jack::Left);
+        Controller::Type::CompuMate, Controller::Jack::Left, myProperties);
   }
   else
   {
@@ -947,7 +947,7 @@ unique_ptr<Controller> Console::getControllerPort(
   unique_ptr<Controller> controller;
 
   myOSystem.eventHandler().defineKeyControllerMappings(type, port, myProperties);
-  myOSystem.eventHandler().defineJoyControllerMappings(type, port);
+  myOSystem.eventHandler().defineJoyControllerMappings(type, port, myProperties);
 
   switch(type)
   {

@@ -79,9 +79,15 @@ class PhysicalJoystickHandler
     void setDefaultMapping(Event::Type event, EventMode mode);
 
     /** define mappings for current controllers */
-    void defineControllerMappings(const Controller::Type type, Controller::Jack port);
+    void defineControllerMappings(const Controller::Type type, Controller::Jack port, 
+                                  const Properties& properties);
     /** enable mappings for emulation mode */
     void enableEmulationMappings();
+
+    /** return event mode for given property */
+    EventMode getMode(const Properties& properties, const PropType propType);
+    /** return event mode for given controller type */
+    EventMode getMode(const Controller::Type type);
 
     void eraseMapping(Event::Type event, EventMode mode);
     void saveMapping();
@@ -196,6 +202,9 @@ class PhysicalJoystickHandler
   private:
     EventMode myLeftMode{EventMode::kEmulationMode};
     EventMode myRightMode{EventMode::kEmulationMode};
+    // Additional modes for QuadTari controller
+    EventMode myLeft2ndMode{EventMode::kEmulationMode};
+    EventMode myRight2ndMode{EventMode::kEmulationMode};
 
     // Controller menu and common emulation mappings
     static EventMappingArray DefaultMenuMapping;

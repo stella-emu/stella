@@ -221,31 +221,27 @@ void PhysicalKeyboardHandler::defineControllerMappings(
     const Controller::Type type, Controller::Jack port, const Properties& properties)
 {
   // Determine controller events to use
-  switch(type)  // NOLINT (could be written as IF/ELSE)
+  if(type == Controller::Type::QuadTari) 
   {
-    case Controller::Type::QuadTari:
-      if(port == Controller::Jack::Left)
-      {
-        myLeftMode = getMode(properties, PropType::Controller_Left1);
-        myLeft2ndMode = getMode(properties, PropType::Controller_Left2);
-      }
-      else
-      {
-        myRightMode = getMode(properties, PropType::Controller_Right1);
-        myRight2ndMode = getMode(properties, PropType::Controller_Right2);
-      }
-      break;
-
-    default:
+    if(port == Controller::Jack::Left)
     {
-      const EventMode mode = getMode(type);
-
-      if(port == Controller::Jack::Left)
-        myLeftMode = mode;
-      else
-        myRightMode = mode;
-      break;
+      myLeftMode = getMode(properties, PropType::Controller_Left1);
+      myLeft2ndMode = getMode(properties, PropType::Controller_Left2);
     }
+    else
+    {
+      myRightMode = getMode(properties, PropType::Controller_Right1);
+      myRight2ndMode = getMode(properties, PropType::Controller_Right2);
+    }
+  }   
+  else
+  {
+    const EventMode mode = getMode(type);
+
+    if(port == Controller::Jack::Left)
+      myLeftMode = mode;
+    else
+      myRightMode = mode;
   }
 }
 
@@ -258,7 +254,7 @@ EventMode PhysicalKeyboardHandler::getMode(const Properties& properties,
   if(!propName.empty())
     return getMode(Controller::getType(propName));
 
-  return getMode(Controller::Type::Joystick);
+  return EventMode::kJoystickMode;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -447,13 +443,6 @@ bool PhysicalKeyboardHandler::isPaddleEvent(const Event::Type event)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool PhysicalKeyboardHandler::isDrivingEvent(const Event::Type event)
-{
-  return LeftDrivingEvents.find(event) != LeftDrivingEvents.end()
-    || RightDrivingEvents.find(event) != RightDrivingEvents.end();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool PhysicalKeyboardHandler::isKeyboardEvent(const Event::Type event)
 {
   return LeftKeyboardEvents.find(event) != LeftKeyboardEvents.end()
@@ -461,9 +450,17 @@ bool PhysicalKeyboardHandler::isKeyboardEvent(const Event::Type event)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool PhysicalKeyboardHandler::isDrivingEvent(const Event::Type event)
+{
+  return LeftDrivingEvents.find(event) != LeftDrivingEvents.end()
+    || RightDrivingEvents.find(event) != RightDrivingEvents.end();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool PhysicalKeyboardHandler::isCommonEvent(const Event::Type event)
 {
-  return !(isJoystickEvent(event) || isPaddleEvent(event) || isKeyboardEvent(event));
+  return !(isJoystickEvent(event) || isPaddleEvent(event) 
+    || isKeyboardEvent(event) || isDrivingEvent(event));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
