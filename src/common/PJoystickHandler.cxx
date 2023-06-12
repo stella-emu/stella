@@ -485,45 +485,69 @@ void PhysicalJoystickHandler::setDefaultMapping(Event::Type event, EventMode mod
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PhysicalJoystickHandler::defineControllerMappings(const Controller::Type type, Controller::Jack port)
+void PhysicalJoystickHandler::defineControllerMappings(const Controller::Type type, Controller::Jack port,
+                                                       const Properties& properties)
 {
-  // determine controller events to use
+  // Determine controller events to use
+  if(type == Controller::Type::QuadTari) 
+  {
+    if(port == Controller::Jack::Left)
+    {
+      myLeftMode = getMode(properties, PropType::Controller_Left1);
+      myLeft2ndMode = getMode(properties, PropType::Controller_Left2);
+    }
+    else
+    {
+      myRightMode = getMode(properties, PropType::Controller_Right1);
+      myRight2ndMode = getMode(properties, PropType::Controller_Right2);
+    }
+  }   
+  else
+  {
+    const EventMode mode = getMode(type);
+
+    if(port == Controller::Jack::Left)
+      myLeftMode = mode;
+    else
+      myRightMode = mode;
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+EventMode PhysicalJoystickHandler::getMode(const Properties& properties,
+                                           const PropType propType)
+{
+  const string& propName = properties.get(propType);
+
+  if(!propName.empty())
+    return getMode(Controller::getType(propName));
+
+  return EventMode::kJoystickMode;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+EventMode PhysicalJoystickHandler::getMode(const Controller::Type type)
+{
   switch(type)
   {
     case Controller::Type::Keyboard:
     case Controller::Type::KidVid:
-      if(port == Controller::Jack::Left)
-        myLeftMode = EventMode::kKeyboardMode;
-      else
-        myRightMode = EventMode::kKeyboardMode;
-      break;
+      return EventMode::kKeyboardMode;
 
     case Controller::Type::Paddles:
     case Controller::Type::PaddlesIAxDr:
     case Controller::Type::PaddlesIAxis:
-      if(port == Controller::Jack::Left)
-        myLeftMode = EventMode::kPaddlesMode;
-      else
-        myRightMode = EventMode::kPaddlesMode;
-      break;
+      return EventMode::kPaddlesMode;
 
     case Controller::Type::CompuMate:
-      myLeftMode = myRightMode = EventMode::kCompuMateMode;
-      break;
+      return EventMode::kCompuMateMode;
 
     case Controller::Type::Driving:
-      if(port == Controller::Jack::Left)
-        myLeftMode = EventMode::kDrivingMode;
-      else
-        myRightMode = EventMode::kDrivingMode;
-      break;
+      return EventMode::kDrivingMode;
 
     default:
       // let's use joystick then
-      if(port == Controller::Jack::Left)
-        myLeftMode = EventMode::kJoystickMode;
-      else
-        myRightMode = EventMode::kJoystickMode;
+      return EventMode::kJoystickMode;
   }
 }
 
@@ -539,6 +563,36 @@ void PhysicalJoystickHandler::enableEmulationMappings()
   }
 
   enableCommonMappings();
+
+  // Process in increasing priority order, so that in case of mapping clashes
+  //  the higher priority controller has preference
+  switch(myRight2ndMode)
+  {
+    case EventMode::kPaddlesMode:
+      enableMappings(QTPaddles4Events, EventMode::kPaddlesMode);
+      break;
+
+    case EventMode::kEmulationMode: // no QuadTari
+      break;
+
+    default:
+      enableMappings(QTJoystick4Events, EventMode::kJoystickMode);
+      break;
+  }
+
+  switch(myLeft2ndMode)
+  {
+    case EventMode::kPaddlesMode:
+      enableMappings(QTPaddles3Events, EventMode::kPaddlesMode);
+      break;
+
+    case EventMode::kEmulationMode: // no QuadTari
+      break;
+
+    default:
+      enableMappings(QTJoystick3Events, EventMode::kJoystickMode);
+      break;
+  }
 
   // enable right mode first, so that in case of mapping clashes the left controller has preference
   switch (myRightMode)
@@ -644,14 +698,18 @@ EventMode PhysicalJoystickHandler::getEventMode(const Event::Type event,
 bool PhysicalJoystickHandler::isJoystickEvent(const Event::Type event)
 {
   return LeftJoystickEvents.find(event) != LeftJoystickEvents.end()
-    || RightJoystickEvents.find(event) != RightJoystickEvents.end();
+    || QTJoystick3Events.find(event) != QTJoystick3Events.end()
+    || RightJoystickEvents.find(event) != RightJoystickEvents.end()
+    || QTJoystick4Events.find(event) != QTJoystick4Events.end();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool PhysicalJoystickHandler::isPaddleEvent(const Event::Type event)
 {
   return LeftPaddlesEvents.find(event) != LeftPaddlesEvents.end()
-    || RightPaddlesEvents.find(event) != RightPaddlesEvents.end();
+    || QTPaddles3Events.find(event) != QTPaddles3Events.end()
+    || RightPaddlesEvents.find(event) != RightPaddlesEvents.end()
+    || QTPaddles4Events.find(event) != QTPaddles4Events.end();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -671,7 +729,8 @@ bool PhysicalJoystickHandler::isDrivingEvent(const Event::Type event)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool PhysicalJoystickHandler::isCommonEvent(const Event::Type event)
 {
-  return !(isJoystickEvent(event) || isPaddleEvent(event) || isKeyboardEvent(event) || isDrivingEvent(event));
+  return !(isJoystickEvent(event) || isPaddleEvent(event) 
+    || isKeyboardEvent(event) || isDrivingEvent(event));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
