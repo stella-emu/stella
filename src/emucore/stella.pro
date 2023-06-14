@@ -412,6 +412,7 @@
 "Cart.Rarity" "Uncommon"
 "Console.LeftDiff" "A"
 "Console.RightDiff" "A"
+"Display.Phosphor" "YES"
 ""
 
 "Cart.MD5" "056ff67dd9715fafa91fb8b0ddcc4a46"
@@ -8926,6 +8927,7 @@
 "Cart.Name" "Amidar DS (2003) (Thomas Jentzsch) (Hack)"
 "Cart.Note" "Hack of Amidar"
 "Cart.Rarity" "Hack"
+"Display.Phosphor" "YES"
 ""
 
 "Cart.MD5" "6358f7f8bf0483402a080efccf250d61"
@@ -10263,6 +10265,7 @@
 "Cart.ModelNo" "SS-006"
 "Cart.Name" "Netmaker (1983) (Rainbow Vision) (PAL)"
 "Cart.Note" "AKA Amidar"
+"Display.Phosphor" "YES"
 ""
 
 "Cart.MD5" "70a43fbdb1c039283ee5048d99842469"
@@ -11822,6 +11825,7 @@
 "Cart.Manufacturer" "Bit Corporation"
 "Cart.ModelNo" "R320"
 "Cart.Name" "Amidar (32 in 1) (BitCorp) (Hack)"
+"Display.Phosphor" "YES"
 ""
 
 "Cart.MD5" "80e1410ec98089e0733cc09e584dba4b"
@@ -12157,6 +12161,7 @@
 "Cart.ModelNo" "FG1002"
 "Cart.Name" "Spiderdroid (1987) (Froggo)"
 "Cart.Note" "AKA Amidar"
+"Display.Phosphor" "YES"
 ""
 
 "Cart.MD5" "8490e1014c2baa0d3a3a08854e5d68b3"
@@ -13392,6 +13397,7 @@
 "Cart.Name" "Amidar DS (Fast Enemies) (2003) (Thomas Jentzsch) (Hack)"
 "Cart.Note" "Hack of Amidar"
 "Cart.Rarity" "Hack"
+"Display.Phosphor" "YES"
 ""
 
 "Cart.MD5" "93c4b910f7649b3e998bb6d8527c6f4a"
@@ -15466,6 +15472,7 @@
 "Cart.Rarity" "Uncommon"
 "Console.LeftDiff" "A"
 "Console.RightDiff" "A"
+"Display.Phosphor" "YES"
 ""
 
 "Cart.MD5" "acb962473185d7a652f90ed6591ae13b"
