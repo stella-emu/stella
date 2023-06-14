@@ -63,7 +63,7 @@ void CartridgeGL::install(System& system)
 {
   CartridgeEnhanced::install(system);
 
-  System::PageAccess access(this, System::PageAccessType::READ);
+  const System::PageAccess access(this, System::PageAccessType::READ);
 
   mySystem->setPageAccess(0x480, access);
   mySystem->setPageAccess(0x580, access);
