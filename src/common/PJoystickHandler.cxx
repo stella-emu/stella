@@ -489,7 +489,7 @@ void PhysicalJoystickHandler::defineControllerMappings(const Controller::Type ty
                                                        const Properties& properties)
 {
   // Determine controller events to use
-  if(type == Controller::Type::QuadTari) 
+  if(type == Controller::Type::QuadTari)
   {
     if(port == Controller::Jack::Left)
     {
@@ -501,7 +501,7 @@ void PhysicalJoystickHandler::defineControllerMappings(const Controller::Type ty
       myRightMode = getMode(properties, PropType::Controller_Right1);
       myRight2ndMode = getMode(properties, PropType::Controller_Right2);
     }
-  }   
+  }
   else
   {
     const EventMode mode = getMode(type);
@@ -729,7 +729,7 @@ bool PhysicalJoystickHandler::isDrivingEvent(const Event::Type event)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool PhysicalJoystickHandler::isCommonEvent(const Event::Type event)
 {
-  return !(isJoystickEvent(event) || isPaddleEvent(event) 
+  return !(isJoystickEvent(event) || isPaddleEvent(event)
     || isKeyboardEvent(event) || isDrivingEvent(event));
 }
 

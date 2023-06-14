@@ -1333,13 +1333,13 @@ string CartDebug::saveDisassembly(string path)
           out << "\n";
         out << ALIGN(16) << ourZPMnemonic[addr - 0x80] << "= $"
           << Base::HEX2 << right << (addr)
-          << ((stackUsed|codeUsed) ? "; (" : "")
+          << ((stackUsed || codeUsed) ? "; (" : "")
           << (codeUsed ? "c" : "")
           << (stackUsed ? "s" : "")
-          << ((stackUsed | codeUsed) ? ")" : "")
+          << ((stackUsed || codeUsed) ? ")" : "")
           << "\n";
         addLine = false;
-      } else if (ramUsed|codeUsed|stackUsed) {
+      } else if (ramUsed || codeUsed || stackUsed) {
         if (addLine)
           out << "\n";
         out << ALIGN(18) << ";" << "$"
