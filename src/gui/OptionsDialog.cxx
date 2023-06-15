@@ -78,56 +78,72 @@ OptionsDialog::OptionsDialog(OSystem& osystem, DialogContainer& parent,
     _h += rowHeight + VGAP * 2;
   }
 
-  const auto ADD_OD_BUTTON = [&](string_view label, int cmd)
+  const auto ADD_OD_BUTTON = [&](string_view label, int cmd, string_view toolTip = EmptyString)
   {
     auto* bw = new ButtonWidget(this, _font, xoffset, yoffset,
                                 buttonWidth, buttonHeight, label, cmd);
+    bw->setToolTip(toolTip);
     yoffset += rowHeight;
     return bw;
   };
 
-  b = ADD_OD_BUTTON("Video & Audio" + ELLIPSIS, kVidCmd);
+  b = ADD_OD_BUTTON("Video & Audio" + ELLIPSIS, kVidCmd,
+    "Change display modes, colors, TV effects,\n"
+    "volume, stereo mode" + ELLIPSIS);
   wid.push_back(b);
 
-  b = ADD_OD_BUTTON("Emulation" + ELLIPSIS, kEmuCmd);
+  b = ADD_OD_BUTTON("Emulation" + ELLIPSIS, kEmuCmd,
+    "Change emulation speed, save state settings" + ELLIPSIS);
   wid.push_back(b);
 
-  b = ADD_OD_BUTTON("Input" + ELLIPSIS, kInptCmd);
+  b = ADD_OD_BUTTON("Input" + ELLIPSIS, kInptCmd,
+    "Map and configure keyboard, mouse and controllers.");
   wid.push_back(b);
 
-  b = ADD_OD_BUTTON("User Interface" + ELLIPSIS, kUsrIfaceCmd);
+  b = ADD_OD_BUTTON("User Interface" + ELLIPSIS, kUsrIfaceCmd,
+    "Change themes, fonts, launcher layout\n"
+    "and paths for ROMs and images.");
   wid.push_back(b);
 
-  b = ADD_OD_BUTTON("Snapshots" + ELLIPSIS, kSnapCmd);
+  b = ADD_OD_BUTTON("Snapshots" + ELLIPSIS, kSnapCmd,
+    "Define snapshot save location, format" + ELLIPSIS);
   wid.push_back(b);
 
   //yoffset += rowHeight;
-  b = ADD_OD_BUTTON("Developer" + ELLIPSIS, kDevelopCmd);
+  b = ADD_OD_BUTTON("Developer" + ELLIPSIS, kDevelopCmd,
+    "Change options which support programming Atari 2600 games.");
   wid.push_back(b);
 
   // Move to second column
   xoffset += buttonWidth + HGAP;
   yoffset = minSettings ? VBORDER + _th + rowHeight + VGAP * 2 : VBORDER + _th;
 
-  myGameInfoButton = ADD_OD_BUTTON("Game Properties" + ELLIPSIS, kInfoCmd);
+  myGameInfoButton = ADD_OD_BUTTON("Game Properties" + ELLIPSIS, kInfoCmd,
+    "Change game-specific info and options (TV format,\n"
+    "console switches, controllers" + ELLIPSIS + ")");
   wid.push_back(myGameInfoButton);
 
-  myCheatCodeButton = ADD_OD_BUTTON("Cheat Codes" + ELLIPSIS, kCheatCmd);
+  myCheatCodeButton = ADD_OD_BUTTON("Cheat Codes" + ELLIPSIS, kCheatCmd,
+    "Use and manage cheat codes.");
 #ifndef CHEATCODE_SUPPORT
   myCheatCodeButton->clearFlags(Widget::FLAG_ENABLED);
 #endif
   wid.push_back(myCheatCodeButton);
 
-  myRomAuditButton = ADD_OD_BUTTON("Audit ROMs" + ELLIPSIS, kAuditCmd);
+  myRomAuditButton = ADD_OD_BUTTON("Audit ROMs" + ELLIPSIS, kAuditCmd,
+    "Rename your ROMs according to Stella's internal database.");
   wid.push_back(myRomAuditButton);
 
-  b = ADD_OD_BUTTON("System Logs" + ELLIPSIS, kLoggerCmd);
+  b = ADD_OD_BUTTON("System Logs" + ELLIPSIS, kLoggerCmd,
+    "Configure, view and save Stella's system log.");
   wid.push_back(b);
 
-  b = ADD_OD_BUTTON("Help" + ELLIPSIS, kHelpCmd);
+  b = ADD_OD_BUTTON("Help" + ELLIPSIS, kHelpCmd,
+    "Display Stella's essential keyboard commands.");
   wid.push_back(b);
 
-  b = ADD_OD_BUTTON("About" + ELLIPSIS, kAboutCmd);
+  b = ADD_OD_BUTTON("About" + ELLIPSIS, kAboutCmd,
+    "Display info about the installed Stella version.");
   wid.push_back(b);
 
   buttonWidth = Dialog::buttonWidth("   Close   ");
