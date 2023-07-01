@@ -88,7 +88,7 @@ string FSNodeWINDOWS::getShortPath() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 size_t FSNodeWINDOWS::getSize() const
 {
-  if (_size == 0)
+  if (_size == 0 && _isFile)
   {
     struct _stat st;
     _size = _stat(_path.c_str(), &st) == 0 ? st.st_size : 0;
