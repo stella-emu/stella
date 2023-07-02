@@ -39,9 +39,11 @@
 #endif
 
 /*
- * Implementation of the Stella file system API based on POSIX (for Linux and macOS)
+ * Implementation of the Stella file system API based on POSIX (for Linux
+ * and macOS)
  *
- * Parts of this class are documented in the base interface class, AbstractFSNode.
+ * Parts of this class are documented in the base interface class,
+ * AbstractFSNode.
  */
 class FSNodePOSIX : public AbstractFSNode
 {
@@ -91,6 +93,7 @@ class FSNodePOSIX : public AbstractFSNode
     mutable size_t _size{0};
 
     static const char* const ourHomeDir;
+    static std::array<char, MAXPATHLEN> ourBuf;
 };
 
 #endif
