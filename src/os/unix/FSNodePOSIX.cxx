@@ -43,9 +43,8 @@ FSNodePOSIX::FSNodePOSIX(string_view path, bool verify)
   // Get absolute path (only used for relative directories)
   else if (_path[0] == '.')
   {
-    std::array<char, MAXPATHLEN> buf;
-    if(realpath(_path.c_str(), buf.data()))
-      _path = buf.data();
+    if(realpath(_path.c_str(), ourBuf.data()))
+      _path = ourBuf.data();
   }
 
   _displayName = lastPathComponent(_path);
@@ -66,7 +65,7 @@ bool FSNodePOSIX::setFlags()
 
     // Add a trailing slash, if necessary
     if (_isDirectory && _path.length() > 0 &&
-        _path[_path.length()-1] != FSNode::PATH_SEPARATOR)
+        _path.back() != FSNode::PATH_SEPARATOR)
       _path += FSNode::PATH_SEPARATOR;
 
     return true;
@@ -101,7 +100,7 @@ string FSNodePOSIX::getShortPath() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 size_t FSNodePOSIX::getSize() const
 {
-  if (_size == 0)
+  if (_size == 0 && _isFile)
   {
     struct stat st;
     _size = (stat(_path.c_str(), &st) == 0) ? st.st_size : 0;
@@ -143,8 +142,7 @@ bool FSNodePOSIX::getChildren(AbstractFSList& myList, ListMode mode) const
       continue;
 
     string newPath(_path);
-    if (newPath.length() > 0 &&
-        newPath[newPath.length()-1] != FSNode::PATH_SEPARATOR)
+    if (newPath.length() > 0 && newPath.back() != FSNode::PATH_SEPARATOR)
       newPath += FSNode::PATH_SEPARATOR;
     newPath += dp->d_name;
 
@@ -189,9 +187,8 @@ bool FSNodePOSIX::makeDir()
   if (mkdir(_path.c_str(), 0777) == 0)
   {
     // Get absolute path
-    std::array<char, MAXPATHLEN> buf;
-    if (realpath(_path.c_str(), buf.data()))
-      _path = buf.data();
+    if (realpath(_path.c_str(), ourBuf.data()))
+      _path = ourBuf.data();
 
     _displayName = lastPathComponent(_path);
     return setFlags();
@@ -207,9 +204,8 @@ bool FSNodePOSIX::rename(string_view newfile)
     _path = newfile;
 
     // Get absolute path
-    std::array<char, MAXPATHLEN> buf;
-    if (realpath(_path.c_str(), buf.data()))
-      _path = buf.data();
+    if (realpath(_path.c_str(), ourBuf.data()))
+      _path = ourBuf.data();
 
     _displayName = lastPathComponent(_path);
     return setFlags();
@@ -219,3 +215,4 @@ bool FSNodePOSIX::rename(string_view newfile)
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const char* const FSNodePOSIX::ourHomeDir = std::getenv("HOME"); // NOLINT (not thread safe)
+std::array<char, MAXPATHLEN> FSNodePOSIX::ourBuf = { 0 };
