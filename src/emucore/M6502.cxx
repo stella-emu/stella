@@ -83,7 +83,8 @@ void M6502::reset()
   // Load PC from the reset vector
   PC = static_cast<uInt16>(mySystem->peek(0xfffc)) | (static_cast<uInt16>(mySystem->peek(0xfffd)) << 8);
 
-  myLastAddress = myLastPeekAddress = myLastPokeAddress = myLastPeekBaseAddress = myLastPokeBaseAddress;
+  myLastAddress = myLastPeekAddress = myLastPokeAddress =
+    myLastPeekBaseAddress = myLastPokeBaseAddress = 0;
   myLastSrcAddressS = myLastSrcAddressA =
     myLastSrcAddressX = myLastSrcAddressY = -1;
   myDataAddressForPoke = 0;
@@ -489,7 +490,7 @@ bool M6502::save(Serializer& out) const
 
     // Indicates the number of distinct memory accesses
     out.putInt(myNumberOfDistinctAccesses);
-    // Indicates the last address(es) which was accessed
+    // Indicates the last addresses which were accessed
     out.putShort(myLastAddress);
     out.putShort(myLastPeekAddress);
     out.putShort(myLastPokeAddress);
@@ -536,7 +537,7 @@ bool M6502::load(Serializer& in)
 
     // Indicates the number of distinct memory accesses
     myNumberOfDistinctAccesses = in.getInt();
-    // Indicates the last address(es) which was accessed
+    // Indicates the last addresses which were accessed
     myLastAddress = in.getShort();
     myLastPeekAddress = in.getShort();
     myLastPokeAddress = in.getShort();
