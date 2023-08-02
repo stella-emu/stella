@@ -426,6 +426,18 @@ void DialogContainer::handleJoyHatEvent(int stick, int hat, JoyHatDir hdir, int 
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void DialogContainer::handleEvent(Event::Type event)
+{
+  if(myDialogStack.empty())
+    return;
+
+  // Send the event to the dialog box on the top of the stack
+  Dialog* activeDialog = myDialogStack.top();
+
+  activeDialog->handleEvent(event);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DialogContainer::reset()
 {
   myCurrentMouseDown  = { 0, 0, MouseButton::NONE };

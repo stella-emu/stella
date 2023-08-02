@@ -333,11 +333,10 @@ class EventHandler
     bool hasOverlay() const { return myOverlay != nullptr; }
 
     /**
-      Return a list of all physical joysticks currently in the internal database
-      (first part of variant) and its internal ID (second part of variant).
+      Return a simple list of all physical joysticks currently in the internal database
     */
-    VariantList physicalJoystickDatabase() const {
-      return myPJoyHandler->database();
+    PhysicalJoystickHandler::MinStrickInfoList physicalJoystickList() const {
+      return myPJoyHandler->minStickList();
     }
 
     /**
@@ -345,6 +344,12 @@ class EventHandler
       database, only if it is not currently active.
     */
     void removePhysicalJoystickFromDatabase(string_view name);
+
+    /**
+      Change the port of the physical joystick identified by 'name' in
+      the joystick database, only if it is not currently active.
+    */
+    void setPhysicalJoystickPortInDatabase(string_view name, PhysicalJoystick::Port port);
 
     /**
       Enable/disable text events (distinct from single-key events).

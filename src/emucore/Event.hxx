@@ -84,7 +84,7 @@ class Event
 
       UIUp, UIDown, UILeft, UIRight, UIHome, UIEnd, UIPgUp, UIPgDown,
       UISelect, UINavPrev, UINavNext, UIOK, UICancel, UIPrevDir,
-      UITabPrev, UITabNext,
+      UITabPrev, UITabNext, UIReload,
 
       NextMouseControl, ToggleGrabMouse,
       MouseAxisXMove, MouseAxisYMove, MouseAxisXValue, MouseAxisYValue,
