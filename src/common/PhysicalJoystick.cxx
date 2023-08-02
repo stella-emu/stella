@@ -89,7 +89,7 @@ bool PhysicalJoystick::setMap(const json& map)
       continue;
     if(entry.key() == "port")
     {
-      port = getPort(entry.value());
+      port = getPort(string{entry.value()});  // json doesn't support string_view
       continue;
     }
 
@@ -126,7 +126,7 @@ string PhysicalJoystick::getName(const PhysicalJoystick::Port _port) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-PhysicalJoystick::Port PhysicalJoystick::getPort(const string& portName) const
+PhysicalJoystick::Port PhysicalJoystick::getPort(string_view portName) const
 {
   static constexpr std::array<string_view,
     static_cast<int>(PhysicalJoystick::Port::NUM_PORTS)> NAMES =
