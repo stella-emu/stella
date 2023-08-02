@@ -168,7 +168,6 @@ Settings::Settings()
   setPermanent("launcherdisplay", 0);
   setPermanent("launcherres", Common::Size(900, 600));
   setPermanent("launcherfont", "medium");
-  setPermanent("launcherroms", "true");
   setPermanent("launchersubdirs", "false");
   setPermanent("launcherextensions", "false");
   setPermanent("launcherbuttons", "false");
@@ -646,7 +645,6 @@ void Settings::usage()
     << "                 large16>\n"
     << "  -romviewer    <float>        Show ROM info viewer at given zoom level in ROM\n"
     << "                                launcher (use 0 for off)\n"
-    << "  -launcherroms       <1|0>    Show only ROMs in the launcher (vs. all files)\n"
     << "  -launchersubdirs    <0|1>    Show files from subdirectories too\n"
     << "  -launcherextensions <0|1>    Display file extensions in launcher\n"
     << "  -launcherbuttons    <0|1>    Display bottom buttons in launcher\n"

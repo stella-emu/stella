@@ -155,8 +155,6 @@ class LauncherDialog : public Dialog, CommandSender
     void openGlobalProps();
     void openHighScores();
     void openWhatsNew();
-    void showOnlyROMs(bool state);
-    void toggleShowAll(bool toggle = true);
     void toggleSubDirs(bool toggle = true);
     void handleContextMenu();
     void handleQuit();
@@ -179,7 +177,6 @@ class LauncherDialog : public Dialog, CommandSender
 
     ButtonWidget*     mySettingsButton{nullptr};
     EditTextWidget*   myPattern{nullptr};
-    ButtonWidget*     myOnlyRomsButton{nullptr};
     ButtonWidget*     mySubDirsButton{nullptr};
     StaticTextWidget* myRomCount{nullptr};
     ButtonWidget*     myHelpButton{nullptr};
@@ -204,7 +201,6 @@ class LauncherDialog : public Dialog, CommandSender
 
     int mySelectedItem{0};
 
-    bool myShowOnlyROMs{false};
     bool myUseMinimalUI{false};
     bool myEventHandled{false};
     bool myShortCount{false};
@@ -214,7 +210,6 @@ class LauncherDialog : public Dialog, CommandSender
     uInt64 myRomInfoTime{0};
 
     enum {
-      kAllfilesCmd   = 'lalf',  // show all files (or ROMs only)
       kSubDirsCmd    = 'lred',
       kOptionsCmd    = 'OPTI',
       kQuitCmd       = 'QUIT',
