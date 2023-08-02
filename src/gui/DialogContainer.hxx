@@ -23,6 +23,7 @@ class OSystem;
 class EventHandler;
 
 #include "EventHandlerConstants.hxx"
+#include "Event.hxx"
 #include "StellaKeys.hxx"
 #include "Stack.hxx"
 #include "bspf.hxx"
@@ -118,6 +119,13 @@ class DialogContainer
       @param hdir   Direction of the given hat
     */
     void handleJoyHatEvent(int stick, int hat, JoyHatDir hdir, int button);
+
+    /**
+      Handle an arbitray dialog event.
+
+      @param event  The send event
+    */
+    void handleEvent(Event::Type event);
 
     /**
       Tick the dialog and all its widgets.

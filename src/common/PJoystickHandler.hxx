@@ -46,6 +46,18 @@ using PhysicalJoystickPtr = shared_ptr<PhysicalJoystick>;
 */
 class PhysicalJoystickHandler
 {
+  public:
+    struct MinStrickInfo
+    {
+      string                    name;
+      int                       ID;
+      PhysicalJoystick::Port    port;
+
+      explicit MinStrickInfo(string _name, int _id, PhysicalJoystick::Port _port)
+        : name{_name}, ID{_id}, port{_port} {}
+    };
+    using MinStrickInfoList = std::vector<MinStrickInfo>;
+
   private:
     struct StickInfo
     {
@@ -74,6 +86,7 @@ class PhysicalJoystickHandler
     int add(const PhysicalJoystickPtr& stick);
     bool remove(int id);
     bool remove(string_view name);
+    void setPort(string_view name, PhysicalJoystick::Port port);
     bool mapStelladaptors(string_view saport, int ID = -1);
     bool hasStelladaptors() const;
     void setDefaultMapping(Event::Type event, EventMode mode);
@@ -112,8 +125,8 @@ class PhysicalJoystickHandler
       return j->joyMap.get(mode, button, hat, hatDir);
     }
 
-    /** Returns a list of pairs consisting of joystick name and associated ID. */
-    VariantList database() const;
+    /** Returns a list containing minimal controller info (name, ID, port). */
+    MinStrickInfoList minStickList() const;
 
     void changeDigitalDeadZone(int direction = +1);
     void changeAnalogPaddleDeadZone(int direction = +1);

@@ -168,6 +168,7 @@ class Dialog : public GuiObject
     virtual void handleJoyUp(int stick, int button);
     virtual void handleJoyAxis(int stick, JoyAxis axis, JoyDir adir, int button = JOY_CTRL_NONE);
     virtual bool handleJoyHat(int stick, int hat, JoyHatDir hdir, int button = JOY_CTRL_NONE);
+    virtual void handleEvent(Event::Type event) {};
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
     virtual Event::Type getJoyAxisEvent(int stick, JoyAxis axis, JoyDir adir, int button);
 

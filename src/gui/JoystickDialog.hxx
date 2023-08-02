@@ -22,6 +22,7 @@ class CommandSender;
 class GuiObject;
 class ButtonWidget;
 class EditTextWidgetWidget;
+class PopUpWidget;
 class StringListWidget;
 
 #include "Dialog.hxx"
@@ -43,17 +44,23 @@ class JoystickDialog : public Dialog
   private:
     void loadConfig() override;
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+    void handleEvent(Event::Type event) override;
 
   private:
     StringListWidget* myJoyList{nullptr};
     EditTextWidget*   myJoyText{nullptr};
+    PopUpWidget*      myJoyPort{nullptr};
 
     ButtonWidget* myRemoveBtn{nullptr};
     ButtonWidget* myCloseBtn{nullptr};
 
     IntArray myJoyIDs;
+    IntArray myJoyPorts;
 
-    enum { kRemoveCmd = 'JDrm' };
+    enum {
+      kRemoveCmd = 'JDrm',
+      kPortCmd   = 'JDpt'
+    };
 
   private:
     // Following constructors and assignment operators not supported

@@ -43,10 +43,18 @@ class PhysicalJoystick
   static constexpr char MODE_DELIM = '>'; // must not be '^', '|' or '#'
 
   public:
+    enum class Port {
+      AUTO,
+      LEFT,
+      RIGHT,
+      NUM_PORTS
+    };
+
     PhysicalJoystick() = default;
 
     nlohmann::json getMap() const;
     bool setMap(const nlohmann::json& map);
+    void setPort(const Port _port) { port = _port; }
 
     static nlohmann::json convertLegacyMapping(string_view mapping,
                                                string_view name);
@@ -69,6 +77,7 @@ class PhysicalJoystick
     Type type{Type::REGULAR};
     int ID{-1};
     string name{"None"};
+    Port port{Port::AUTO};
     int numAxes{0}, numButtons{0}, numHats{0};
     IntArray axisLastValue;
     IntArray buttonLast;
@@ -78,6 +87,10 @@ class PhysicalJoystick
 
   private:
     static void getValues(string_view list, IntArray& map);
+
+    // Convert from string to Port type and vice versa
+    string getName(const Port _port) const;
+    Port getPort(string_view portName) const;
 
     friend ostream& operator<<(ostream& os, const PhysicalJoystick& s) {
       os << "  ID: " << s.ID << ", name: " << s.name << ", numaxis: " << s.numAxes

@@ -20,6 +20,7 @@
 #include "Widget.hxx"
 #include "Font.hxx"
 #include "EditTextWidget.hxx"
+#include "PopUpWidget.hxx"
 #include "StringListWidget.hxx"
 #include "Variant.hxx"
 #include "JoystickDialog.hxx"
@@ -47,11 +48,22 @@ JoystickDialog::JoystickDialog(GuiObject* boss, const GUI::Font& font,
 
   // Joystick ID
   ypos = _h - VBORDER - (buttonHeight + lineHeight) / 2;
-  auto* t = new StaticTextWidget(this, font, xpos, ypos+2, "Controller ID ");
+  auto* t = new StaticTextWidget(this, font, xpos, ypos, "Controller ID ");
   xpos += t->getWidth();
-  myJoyText = new EditTextWidget(this, font, xpos, ypos,
-      font.getStringWidth("Unplugged "), font.getLineHeight(), "");
+  myJoyText = new EditTextWidget(this, font, xpos, ypos - 2,
+      font.getStringWidth("Unplugged "), lineHeight, "");
   myJoyText->setEditable(false);
+
+  // Port
+  VariantList ports;
+  VarList::push_back(ports, "Auto",  static_cast<Int32>(PhysicalJoystick::Port::AUTO));
+  VarList::push_back(ports, "Left",  static_cast<Int32>(PhysicalJoystick::Port::LEFT));
+  VarList::push_back(ports, "Right", static_cast<Int32>(PhysicalJoystick::Port::RIGHT));
+
+  myJoyPort = new PopUpWidget(this, font, myJoyText->getRight() + fontWidth * 2, ypos - 1,
+    font.getStringWidth("Right"), lineHeight, ports, "Port ", 0, kPortCmd);
+  myJoyPort->setToolTip("Define default mapping port.");
+  wid.push_back(myJoyPort);
 
   // Add buttons at bottom
   xpos = _w - buttonWidth - HBORDER;
@@ -77,10 +89,11 @@ void JoystickDialog::loadConfig()
   myJoyIDs.clear();
 
   StringList sticks;
-  for(const auto& [_name, _id]: instance().eventHandler().physicalJoystickDatabase())
+  for(const auto& _entry : instance().eventHandler().physicalJoystickList())
   {
-    sticks.push_back(_name);
-    myJoyIDs.push_back(_id.toInt());
+    sticks.push_back(_entry.name);
+    myJoyIDs.push_back(_entry.ID);
+    myJoyPorts.push_back(static_cast<int>(_entry.port));
   }
   myJoyList->setList(sticks);
   myJoyList->setSelected(0);
@@ -92,12 +105,26 @@ void JoystickDialog::loadConfig()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void JoystickDialog::handleEvent(Event::Type event)
+{
+  if(event == Event::Type::UIReload)
+    loadConfig();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void JoystickDialog::handleCommand(CommandSender* sender, int cmd, int data, int id)
 {
   switch(cmd)
   {
     case GuiObject::kOKCmd:
       close();
+      break;
+
+    case kPortCmd:
+      myJoyPorts[myJoyList->getSelected()] = myJoyPort->getSelected();
+      instance().eventHandler().setPhysicalJoystickPortInDatabase(
+          myJoyList->getSelectedString(),
+          static_cast<PhysicalJoystick::Port>(myJoyPort->getSelected()));
       break;
 
     case kRemoveCmd:
@@ -107,20 +134,24 @@ void JoystickDialog::handleCommand(CommandSender* sender, int cmd, int data, int
       break;
 
     case ListWidget::kSelectionChangedCmd:
-      if(myJoyIDs[data] >= 0)
+    {
+      const bool isPlugged = myJoyIDs[data] >= 0;
+      if(isPlugged)
       {
-        myRemoveBtn->setEnabled(false);
         ostringstream buf;
         buf << "C" << myJoyIDs[data];
         myJoyText->setText(buf.str());
+        myJoyPort->setSelected(myJoyPorts[data]);
       }
       else
       {
-        myRemoveBtn->setEnabled(true);
         myJoyText->setText("Unplugged");
+        myJoyPort->setText("");
       }
+      myJoyPort->setEnabled(isPlugged);
+      myRemoveBtn->setEnabled(!isPlugged);
       break;
-
+    }
     default:
       Dialog::handleCommand(sender, cmd, data, id);
       break;

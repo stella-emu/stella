@@ -229,6 +229,17 @@ bool PhysicalJoystickHandler::remove(string_view name)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void PhysicalJoystickHandler::setPort(string_view name, PhysicalJoystick::Port port)
+{
+  const auto it = myDatabase.find(name);
+  if(it != myDatabase.end() && it->second.joy != nullptr)
+  {
+    it->second.joy->setPort(port);
+    // TODO: update mappings
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool PhysicalJoystickHandler::mapStelladaptors(string_view saport, int ID)
 {
   bool erased = false;
@@ -359,35 +370,42 @@ void PhysicalJoystickHandler::setStickDefaultMapping(
 
   if(j)
   {
-    switch (mode)
+    switch(mode)
     {
       case EventMode::kEmulationMode:
       {
-        // A regular joystick defaults to left or right based on the
-        // stick number being even or odd; 'daptor joysticks request a
-        // specific port
-        const bool useLeftMappings =
-            j->type == PhysicalJoystick::Type::REGULAR ? ((stick % 2) == 0) :
-            (j->type == PhysicalJoystick::Type::LEFT_STELLADAPTOR ||
-             j->type == PhysicalJoystick::Type::LEFT_2600DAPTOR);
+        // A regular joystick defaults to left or right based on
+        // the defined port or stick number being even or odd;
+        // 'daptor' joysticks request a specific port
+        bool useLeftMappings;
+        if(j->type == PhysicalJoystick::Type::REGULAR)
+        {
+          useLeftMappings = j->port == PhysicalJoystick::Port::LEFT
+            || (j->port == PhysicalJoystick::Port::AUTO && (stick % 2) == 0);
+        }
+        else
+          useLeftMappings =
+            j->type == PhysicalJoystick::Type::LEFT_STELLADAPTOR ||
+            j->type == PhysicalJoystick::Type::LEFT_2600DAPTOR;
+
         if(useLeftMappings)
         {
           // put all controller events into their own mode's mappings
-          for (const auto& item : DefaultLeftJoystickMapping)
+          for(const auto& item : DefaultLeftJoystickMapping)
             setDefaultAction(stick, item, event, EventMode::kJoystickMode, updateDefaults);
-          for (const auto& item : DefaultLeftKeyboardMapping)
+          for(const auto& item : DefaultLeftKeyboardMapping)
             setDefaultAction(stick, item, event, EventMode::kKeyboardMode, updateDefaults);
-          for (const auto& item : DefaultLeftDrivingMapping)
+          for(const auto& item : DefaultLeftDrivingMapping)
             setDefaultAction(stick, item, event, EventMode::kDrivingMode, updateDefaults);
         }
         else
         {
           // put all controller events into their own mode's mappings
-          for (const auto& item : DefaultRightJoystickMapping)
+          for(const auto& item : DefaultRightJoystickMapping)
             setDefaultAction(stick, item, event, EventMode::kJoystickMode, updateDefaults);
-          for (const auto& item : DefaultRightKeyboardMapping)
+          for(const auto& item : DefaultRightKeyboardMapping)
             setDefaultAction(stick, item, event, EventMode::kKeyboardMode, updateDefaults);
-          for (const auto& item : DefaultRightDrivingMapping)
+          for(const auto& item : DefaultRightDrivingMapping)
             setDefaultAction(stick, item, event, EventMode::kDrivingMode, updateDefaults);
         }
 
@@ -404,16 +422,16 @@ void PhysicalJoystickHandler::setStickDefaultMapping(
         // and 2600-daptors support two players natively.
         const int paddlesPerJoystick = (j->type == PhysicalJoystick::Type::REGULAR && !retron77) ? 1 : 2;
 
-        if( paddlesPerJoystick == 2 )
+        if(paddlesPerJoystick == 2)
         {
-          if( useLeftMappings )
+          if(useLeftMappings)
           {
-            for (const auto& item : DefaultLeftPaddlesMapping)
+            for(const auto& item : DefaultLeftPaddlesMapping)
               setDefaultAction(stick, item, event, EventMode::kPaddlesMode, updateDefaults);
           }
           else
           {
-            for (const auto& item : DefaultRightPaddlesMapping)
+            for(const auto& item : DefaultRightPaddlesMapping)
               setDefaultAction(stick, item, event, EventMode::kPaddlesMode, updateDefaults);
           }
         }
@@ -430,29 +448,29 @@ void PhysicalJoystickHandler::setStickDefaultMapping(
           const bool useLeftPaddleMappings = (stick % 4) < 2;
           const bool useAPaddleMappings = (stick % 2) == 0;
 
-          if( useLeftPaddleMappings )
+          if(useLeftPaddleMappings)
           {
-            if( useAPaddleMappings )
+            if(useAPaddleMappings)
             {
-              for (const auto& item : DefaultLeftAPaddlesMapping)
+              for(const auto& item : DefaultLeftAPaddlesMapping)
                 setDefaultAction(stick, item, event, EventMode::kPaddlesMode, updateDefaults);
             }
             else
             {
-              for (const auto& item : DefaultLeftBPaddlesMapping)
+              for(const auto& item : DefaultLeftBPaddlesMapping)
                 setDefaultAction(stick, item, event, EventMode::kPaddlesMode, updateDefaults);
             }
           }
           else
           {
-            if( useAPaddleMappings )
+            if(useAPaddleMappings)
             {
-              for (const auto& item : DefaultRightAPaddlesMapping)
+              for(const auto& item : DefaultRightAPaddlesMapping)
                 setDefaultAction(stick, item, event, EventMode::kPaddlesMode, updateDefaults);
             }
             else
             {
-              for (const auto& item : DefaultRightBPaddlesMapping)
+              for(const auto& item : DefaultRightBPaddlesMapping)
                 setDefaultAction(stick, item, event, EventMode::kPaddlesMode, updateDefaults);
             }
           }
@@ -466,7 +484,7 @@ void PhysicalJoystickHandler::setStickDefaultMapping(
       }
 
       case EventMode::kMenuMode:
-        for (const auto& item : DefaultMenuMapping)
+        for(const auto& item : DefaultMenuMapping)
           setDefaultAction(stick, item, event, EventMode::kMenuMode, updateDefaults);
         break;
 
@@ -1071,13 +1089,19 @@ void PhysicalJoystickHandler::handleHatEvent(int stick, int hat, int value)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-VariantList PhysicalJoystickHandler::database() const
+PhysicalJoystickHandler::MinStrickInfoList PhysicalJoystickHandler::minStickList() const
 {
-  VariantList db;
-  for(const auto& [_name, _info]: myDatabase)
-    VarList::push_back(db, _name, _info.joy ? _info.joy->ID : -1);
+  MinStrickInfoList list;
 
-  return db;
+  for(const auto& [_name, _info] : myDatabase)
+  {
+    MinStrickInfo stick(_name,
+      _info.joy ? _info.joy->ID : -1,
+      _info.joy ? _info.joy->port : PhysicalJoystick::Port::AUTO);
+
+    list.push_back(stick);
+  }
+  return list;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
