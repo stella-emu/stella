@@ -97,7 +97,7 @@ class ContextMenu : public Dialog, public CommandSender
     void handleJoyUp(int stick, int button) override;
     void handleJoyAxis(int stick, JoyAxis axis, JoyDir adir, int button) override;
     bool handleJoyHat(int stick, int hat, JoyHatDir hdir, int button) override;
-    void handleEvent(Event::Type e);
+    void handleEvent(Event::Type e) override;
 
     void setArrows();
     void drawDialog() override;
