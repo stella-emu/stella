@@ -126,7 +126,7 @@ string PhysicalJoystick::getName(const PhysicalJoystick::Port _port) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-PhysicalJoystick::Port PhysicalJoystick::getPort(string_view portName) const
+PhysicalJoystick::Port PhysicalJoystick::getPort(const string& portName) const
 {
   static constexpr std::array<string_view,
     static_cast<int>(PhysicalJoystick::Port::NUM_PORTS)> NAMES =

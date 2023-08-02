@@ -90,7 +90,7 @@ class PhysicalJoystick
 
     // Convert from string to Port type and vice versa
     string getName(const Port _port) const;
-    Port getPort(string_view portName) const;
+    Port getPort(const string& portName) const;  // FIXME: allow string_view
 
     friend ostream& operator<<(ostream& os, const PhysicalJoystick& s) {
       os << "  ID: " << s.ID << ", name: " << s.name << ", numaxis: " << s.numAxes
