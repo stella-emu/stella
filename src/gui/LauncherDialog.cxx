@@ -92,12 +92,8 @@ LauncherDialog::LauncherDialog(OSystem& osystem, DialogContainer& parent,
 
   if(myUseMinimalUI) // Highlight 'Rom Listing'
     mySelectedItem = 0; // skip nothing
-  else
-    mySelectedItem = 10; // skip filter items and 6 navigation/help buttons
-
-  // Do we show only ROMs or all files?
-  toggleShowAll(false);
-
+    mySelectedItem = 9; // skip filter items and 6 navigation/help buttons
+                        // FIXME: MAGIC NUMBER HERE!!!
   applyFiltering();
   setHelpAnchor("ROMInfo");
 }
@@ -200,13 +196,6 @@ void LauncherDialog::addFilteringWidgets(int& ypos)
       "Use '*' and '?' as wildcards.");
     wid.push_back(myPattern);
     xpos = myPattern->getRight() + btnGap;
-
-    // Show the button for all files
-    myOnlyRomsButton = new ButtonWidget(this, _font, xpos, ypos - btnYOfs,
-                                        iconButtonWidth, buttonHeight, dummyIcon, kAllfilesCmd);
-    myOnlyRomsButton->setToolTip("Toggle file type filter (Ctrl+A)");
-    wid.push_back(myOnlyRomsButton);
-    xpos = myOnlyRomsButton->getRight() + btnGap;
 
     // Show the subdirectories button
     mySubDirsButton = new ButtonWidget(this, _font, xpos, ypos - btnYOfs,
@@ -584,11 +573,10 @@ void LauncherDialog::applyFiltering()
       myList->incProgress();
       if(!node.isDirectory())
       {
-        // Do we want to show only ROMs or all files?
+        // Only show valid ROMs
         string ext;
-        if(myShowOnlyROMs &&
-            (!Bankswitch::isValidRomName(node, ext)
-              || BSPF::compareIgnoreCase(ext, "zip") == 0)) // exclude ZIPs without any valid ROMs
+        if(!Bankswitch::isValidRomName(node, ext) ||
+           BSPF::compareIgnoreCase(ext, "zip") == 0) // exclude ZIPs without any valid ROMs
           return false;
 
         // Skip over files that don't match the pattern in the 'pattern' textbox
@@ -769,8 +757,6 @@ void LauncherDialog::handleContextMenu()
     toggleExtensions();
   else if(cmd == "sorting")
     toggleSorting();
-  else if(cmd == "showall")
-    sendCommand(kAllfilesCmd, 0, 0);
   else if(cmd == "subdirs")
     sendCommand(kSubDirsCmd, 0, 0);
   else if(cmd == "homedir")
@@ -794,13 +780,6 @@ ContextMenu& LauncherDialog::contextMenu()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void LauncherDialog::showOnlyROMs(bool state)
-{
-  myShowOnlyROMs = state;
-  instance().settings().setValue("launcherroms", state);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void LauncherDialog::handleKeyDown(StellaKey key, StellaMod mod, bool repeated)
 {
   // Grab the key before passing it to the actual dialog and check for
@@ -814,10 +793,6 @@ void LauncherDialog::handleKeyDown(StellaKey key, StellaMod mod, bool repeated)
     handled = true;
     switch(key)
     {
-      case KBDK_A:
-        sendCommand(kAllfilesCmd, 0, 0);
-        break;
-
       case KBDK_D:
         sendCommand(kSubDirsCmd, 0, 0);
         break;
@@ -988,10 +963,6 @@ void LauncherDialog::handleCommand(CommandSender* sender, int cmd,
 {
   switch(cmd)
   {
-    case kAllfilesCmd:
-      toggleShowAll();
-      break;
-
     case kSubDirsCmd:
       toggleSubDirs();
       break;
@@ -1195,9 +1166,6 @@ void LauncherDialog::openContextMenu(int x, int y)
     items.emplace_back(instance().settings().getBool("launchersubdirs")
       ? "Exclude subdirectories"
       : "Include subdirectories", "subdirs");
-    items.emplace_back(instance().settings().getBool("launcherroms")
-      ? "Show all files"
-      : "Show only ROMs", "showall");
   #endif
     items.emplace_back("Go to initial directory", "homedir");
     items.emplace_back("Go to parent directory", "prevdir");
@@ -1302,31 +1270,6 @@ void LauncherDialog::openWhatsNew()
 {
   myDialog = make_unique<WhatsNewDialog>(instance(), parent(), _w, _h);
   myDialog->open();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void LauncherDialog::toggleShowAll(bool toggle)
-{
-  myShowOnlyROMs = instance().settings().getBool("launcherroms");
-
-  if(toggle)
-  {
-    myShowOnlyROMs = !myShowOnlyROMs;
-    instance().settings().setValue("launcherroms", myShowOnlyROMs);
-    //myAllFilesButton->setBitmap();
-  }
-
-  if(myOnlyRomsButton)
-  {
-    const bool smallIcon = Dialog::lineHeight() < 26;
-    const GUI::Icon& onlyromsIcon = myShowOnlyROMs
-      ? smallIcon ? GUI::icon_onlyroms_small_on : GUI::icon_onlyroms_large_on
-      : smallIcon ? GUI::icon_onlyroms_small_off : GUI::icon_onlyroms_large_off;
-
-    myOnlyRomsButton->setIcon(onlyromsIcon);
-  }
-  if(toggle)
-    reload();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

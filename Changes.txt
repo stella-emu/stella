@@ -30,11 +30,11 @@
 
   * Enhanced Kid Vid support to play tape audio.
 
-  * Added port selection, used for controller default mapping
+  * Added port selection, used for controller default mapping.
 
   * Added missing PlusROM support for E7 bankswitching.
 
-  * Acclerated emulation up to ~15% (ARM).
+  * Accelerated emulation up to ~15% (ARM).
 
   * Added limited GameLine Master Module bankswitching support.
 
@@ -45,6 +45,8 @@
   * Fixed broken mouse and Stelladaptor input for Driving Controller.
 
   * Added user defined CPU cycle timers to debugger.
+
+  * Removed 'launcherroms' option, since it was causing some issues.
 
   * For UNIX systems: Now defaults to using system-installed libsqlite3
     when available, and fixes delay on exiting app experienced on some
