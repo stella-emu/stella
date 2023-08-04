@@ -83,17 +83,13 @@ LauncherDialog::LauncherDialog(OSystem& osystem, DialogContainer& parent,
     addPathWidgets(ypos);
     addFilteringWidgets(ypos);  //-- filtering widget line has file count
   }
-  addRomWidgets(ypos);
+  mySelectedItem = addRomWidgets(ypos) - 1;  // Highlight 'Rom Listing'
   if(!myUseMinimalUI && bottomButtons)
     addButtonWidgets(ypos);
   myNavigationBar->setList(myList);
 
   tooltip().setFont(_font);
 
-  if(myUseMinimalUI) // Highlight 'Rom Listing'
-    mySelectedItem = 0; // skip nothing
-    mySelectedItem = 9; // skip filter items and 6 navigation/help buttons
-                        // FIXME: MAGIC NUMBER HERE!!!
   applyFiltering();
   setHelpAnchor("ROMInfo");
 }
@@ -276,7 +272,7 @@ void LauncherDialog::addPathWidgets(int& ypos)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void LauncherDialog::addRomWidgets(int ypos)
+int LauncherDialog::addRomWidgets(int ypos)
 {
   const bool bottomButtons = instance().settings().getBool("launcherbuttons");
   const int fontWidth    = Dialog::fontWidth(),
@@ -333,7 +329,7 @@ void LauncherDialog::addRomWidgets(int ypos)
     myRomInfoWidget = new RomInfoWidget(this, *myROMInfoFont,
       xpos, ypos + yofs, imageWidth, myList->getHeight() - yofs);
   }
-  addToFocusList(wid);
+  return addToFocusList(wid);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
