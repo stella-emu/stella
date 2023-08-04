@@ -88,8 +88,9 @@ class Widget : public GuiObject
     void receivedFocus();
     void lostFocus();
     void addFocusWidget(Widget* w) override { _focusList.push_back(w); }
-    void addToFocusList(const WidgetArray& list) override {
+    int addToFocusList(const WidgetArray& list) override {
       Vec::append(_focusList, list);
+      return static_cast<int>(_focusList.size());
     }
 
     /** Set/clear FLAG_ENABLED */

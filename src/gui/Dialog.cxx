@@ -404,7 +404,7 @@ void Dialog::addFocusWidget(Widget* w)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Dialog::addToFocusList(const WidgetArray& list)
+int Dialog::addToFocusList(const WidgetArray& list)
 {
   // All focusable widgets should retain focus
   for(const auto& w: list)
@@ -415,14 +415,16 @@ void Dialog::addToFocusList(const WidgetArray& list)
 
   if(!list.empty())
     _myFocus.widget = list[0];
+
+  return static_cast<int>(_focusList.size());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Dialog::addToFocusList(const WidgetArray& list, const TabWidget* w, int tabId)
+int Dialog::addToFocusList(const WidgetArray& list, const TabWidget* w, int tabId)
 {
   // Only add the list if the tab actually exists
   if(!w || w->getID() >= _myTabList.size())
-    return;
+    return 0;
 
   assert(w == _myTabList[w->getID()].widget);
 
@@ -448,6 +450,8 @@ void Dialog::addToFocusList(const WidgetArray& list, const TabWidget* w, int tab
 
   if(!list.empty())
     focus[id].widget = list[0];
+
+  return static_cast<int>(focus.size());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -130,7 +130,7 @@ class GuiObject : public CommandReceiver
 
     /** Add given widget(s) to the focus list */
     virtual void addFocusWidget(Widget* w) = 0;
-    virtual void addToFocusList(const WidgetArray& list) = 0;
+    virtual int addToFocusList(const WidgetArray& list) = 0;
 
     /** Return focus list for this object */
     WidgetArray& getFocusList() { return _focusList; }
