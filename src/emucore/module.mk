@@ -9,6 +9,7 @@ MODULE_OBJS := \
 	src/emucore/CartCreator.o \
 	src/emucore/CartDetector.o \
 	src/emucore/CartEnhanced.o \
+	src/emucore/Cart03E0.o \
 	src/emucore/Cart0840.o \
 	src/emucore/Cart0FA0.o \
 	src/emucore/Cart2K.o \

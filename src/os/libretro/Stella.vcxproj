@@ -219,6 +219,7 @@
     <ClCompile Include="..\..\emucore\AtariVox.cxx" />
     <ClCompile Include="..\..\emucore\Booster.cxx" />
     <ClCompile Include="..\..\emucore\Cart.cxx" />
+    <ClCompile Include="..\..\emucore\Cart03E0.cxx" />
     <ClCompile Include="..\..\emucore\Cart0840.cxx" />
     <ClCompile Include="..\..\emucore\Cart0FA0.cxx" />
     <ClCompile Include="..\..\emucore\Cart2K.cxx" />
@@ -382,6 +383,7 @@
     <ClInclude Include="..\..\emucore\AtariVox.hxx" />
     <ClInclude Include="..\..\emucore\Booster.hxx" />
     <ClInclude Include="..\..\emucore\Cart.hxx" />
+    <ClInclude Include="..\..\emucore\Cart03E0.hxx" />
     <ClInclude Include="..\..\emucore\Cart0840.hxx" />
     <ClInclude Include="..\..\emucore\Cart0FA0.hxx" />
     <ClInclude Include="..\..\emucore\Cart2K.hxx" />

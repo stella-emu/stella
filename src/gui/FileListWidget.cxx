@@ -353,7 +353,7 @@ bool FileListWidget::handleKeyDown(StellaKey key, StellaMod mod)
   _lastKey = key; _lastMod = mod;
   if(_quickSelectTime < TimerManager::getTicks() / 1000)
     _firstMod = mod;
-  else if(key == KBDK_SPACE) // allow seaching strings with a space without selecting/starting
+  else if(key == KBDK_SPACE) // allow searching ROMs with a space without selecting/starting
     handled = true;
 
   return handled;

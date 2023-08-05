@@ -38,6 +38,8 @@
 
   * Added limited GameLine Master Module bankswitching support.
 
+  * Added 03E0 bankswitching for Brazilian Parker Bros ROMs.
+
   * Added BUS bankswitching support for some older demos.
 
   * Fixed broken 7800 pause key support.

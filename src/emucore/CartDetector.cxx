@@ -92,6 +92,8 @@ Bankswitch::Type CartDetector::autodetectType(const ByteBuffer& image, size_t si
       type = Bankswitch::Type::_WD;
     else if (isProbablyFC(image, size))
       type = Bankswitch::Type::_FC;
+    else if(isProbably03E0(image, size))
+      type = Bankswitch::Type::_03E0;
     else
       type = Bankswitch::Type::_F8;
   }
@@ -322,6 +324,22 @@ bool CartDetector::isProbablyARM(const ByteBuffer& image, size_t size)
     return true;
   else
     return searchForBytes(image, std::min<size_t>(size, 1_KB), signature[1], 4);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool CartDetector::isProbably03E0(const ByteBuffer& image, size_t size)
+{
+  // 03E0 cart bankswitching for Brazilian Parker Bros ROMs, switches segment
+  // 0 into bank 0 by accessing address 0x3E0 using 'LDA $3E0' or 'ORA $3E0'.
+  static constexpr uInt8 signature[2][4] = {
+    { 0x0D, 0xE0, 0x03, 0x0D },  // ORA $3E0, ORA (Popeye)
+    { 0xAD, 0xE0, 0x03, 0xAD }   // LDA $3E0, ORA (Montezuma's Revenge)
+  };
+  for(const auto* const sig: signature)
+    if(searchForBytes(image, size, sig, 4))
+      return true;
+
+  return false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

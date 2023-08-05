@@ -6,6 +6,7 @@ MODULE_OBJS := \
         src/debugger/gui/AtariVoxWidget.o \
         src/debugger/gui/AudioWidget.o \
         src/debugger/gui/BoosterWidget.o \
+	src/debugger/gui/Cart03E0Widget.o \
         src/debugger/gui/Cart0840Widget.o \
 	src/debugger/gui/Cart0FA0Widget.o \
         src/debugger/gui/Cart2KWidget.o \
