@@ -22,7 +22,7 @@
 #include "CartEnhanced.hxx"
 #include "System.hxx"
 #ifdef DEBUGGER_SUPPORT
-  #include "Cart03e0Widget.hxx"
+  #include "Cart03E0Widget.hxx"
 #endif
 
 /**
