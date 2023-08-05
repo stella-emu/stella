@@ -1203,6 +1203,12 @@
     <ClCompile Include="..\..\debugger\gui\CartGLWidget.cxx">
       <Filter>Source Files\debugger\gui</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\emucore\Cart03E0.cxx">
+      <Filter>Source Files\emucore</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\debugger\gui\Cart03E0Widget.cxx">
+      <Filter>Source Files\debugger\gui</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\common\bspf.hxx">
@@ -2451,6 +2457,12 @@
       <Filter>Header Files\emucore</Filter>
     </ClInclude>
     <ClInclude Include="..\..\debugger\gui\CartGLWidget.hxx">
+      <Filter>Header Files\debugger\gui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\emucore\Cart03E0.hxx">
+      <Filter>Header Files\emucore</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\debugger\gui\Cart03E0Widget.hxx">
       <Filter>Header Files\debugger\gui</Filter>
     </ClInclude>
   </ItemGroup>

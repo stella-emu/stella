@@ -270,7 +270,7 @@ string CartridgeEnhancedWidget::bankState()
 
         //if(hotspot >= 0x100)
         if(hotspot != 0 && myHotspotDelta > 0)
-          buf << " " << hotspotStr(bank, 0, bankSegs() < 3);
+          buf << " " << hotspotStr(bank, seg, bankSegs() < 3);
       }
     }
     else

@@ -75,6 +75,7 @@ bool Bankswitch::isValidRomName(string_view name, string& ext)
 constexpr std::array<Bankswitch::Description, static_cast<uInt32>(Bankswitch::Type::NumSchemes)>
 Bankswitch::BSList = {{
   { "AUTO"    , "Auto-detect"                 },
+  { "03E0"    , "03E0 (8K Braz. Parker Bros)" },
   { "0840"    , "0840 (8K EconoBanking)"      },
   { "0FA0"    , "0FA0 (8K Fotomania)"         },
   { "2IN1"    , "2in1 Multicart (4-64K)"      },
@@ -138,6 +139,7 @@ Bankswitch::BSList = {{
 const std::array<Bankswitch::SizesType, static_cast<uInt32>(Bankswitch::Type::NumSchemes)>
 Bankswitch::Sizes = {{
   { Bankswitch::any_KB, Bankswitch::any_KB }, // _AUTO
+  {    8_KB,   8_KB }, // _03E0
   {    8_KB,   8_KB }, // _0840
   {    8_KB,   8_KB }, // _0FA0
   {    4_KB,  64_KB }, // _2IN1
@@ -210,6 +212,8 @@ Bankswitch::ExtensionMap Bankswitch::ourExtensions = {
   { "cu"    , Bankswitch::Type::_AUTO   },
 
   // All bankswitch types (those that UnoCart and HarmonyCart support have the same name)
+  { "03E"   , Bankswitch::Type::_03E0   },
+  { "03E0"  , Bankswitch::Type::_03E0   },
   { "084"   , Bankswitch::Type::_0840   },
   { "0840"  , Bankswitch::Type::_0840   },
   { "0FA"   , Bankswitch::Type::_0FA0   },
@@ -288,6 +292,7 @@ Bankswitch::ExtensionMap Bankswitch::ourExtensions = {
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Bankswitch::NameToTypeMap Bankswitch::ourNameToTypes = {
   { "AUTO"    , Bankswitch::Type::_AUTO   },
+  { "03E0"    , Bankswitch::Type::_03E0   },
   { "0840"    , Bankswitch::Type::_0840   },
   { "0FA0"    , Bankswitch::Type::_0FA0   },
   { "2IN1"    , Bankswitch::Type::_2IN1   },

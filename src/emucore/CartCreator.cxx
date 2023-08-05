@@ -17,6 +17,7 @@
 
 #include "bspf.hxx"
 #include "Cart.hxx"
+#include "Cart03E0.hxx"
 #include "Cart0840.hxx"
 #include "Cart0FA0.hxx"
 #include "Cart2K.hxx"
@@ -232,6 +233,8 @@ CartCreator::createFromImage(const ByteBuffer& image, size_t size,
   // We should know the cart's type by now so let's create it
   switch(type)
   {
+    case Bankswitch::Type::_03E0:
+      return make_unique<Cartridge03E0>(image, size, md5, settings);
     case Bankswitch::Type::_0840:
       return make_unique<Cartridge0840>(image, size, md5, settings);
     case Bankswitch::Type::_0FA0:

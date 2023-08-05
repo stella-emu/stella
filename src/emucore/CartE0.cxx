@@ -67,5 +67,6 @@ bool CartridgeE0::checkSwitchBank(uInt16 address, uInt8)
     bank(address & 0x0007, 2);
     return true;
   }
+
   return false;
 }
