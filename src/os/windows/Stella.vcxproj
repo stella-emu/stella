@@ -797,7 +797,9 @@
     <ClCompile Include="..\..\debugger\gui\Cart0840Widget.cxx">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="..\..\debugger\gui\Cart0FA0Widget.cxx" />
+    <ClCompile Include="..\..\debugger\gui\Cart0FA0Widget.cxx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\..\debugger\gui\Cart2KWidget.cxx">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
     </ClCompile>
@@ -831,7 +833,9 @@
     <ClCompile Include="..\..\debugger\gui\CartBFWidget.cxx">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="..\..\debugger\gui\CartBUSInfoWidget.cxx" />
+    <ClCompile Include="..\..\debugger\gui\CartBUSInfoWidget.cxx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\..\debugger\gui\CartBUSWidget.cxx">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
     </ClCompile>
@@ -868,7 +872,9 @@
     <ClCompile Include="..\..\debugger\gui\CartE0Widget.cxx">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="..\..\debugger\gui\CartE7Widget.cxx" />
+    <ClCompile Include="..\..\debugger\gui\CartE7Widget.cxx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\..\debugger\gui\CartEFSCWidget.cxx">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
     </ClCompile>
@@ -911,14 +917,18 @@
     <ClCompile Include="..\..\debugger\gui\CartFEWidget.cxx">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="..\..\debugger\gui\CartGLWidget.cxx" />
+    <ClCompile Include="..\..\debugger\gui\CartGLWidget.cxx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\..\debugger\gui\CartMDMWidget.cxx">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\debugger\gui\CartRamWidget.cxx">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="..\..\debugger\gui\Cart03E0Widget.cxx" />
+    <ClCompile Include="..\..\debugger\gui\Cart03E0Widget.cxx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\..\debugger\gui\CartTVBoyWidget.cxx">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
     </ClCompile>
@@ -949,7 +959,9 @@
     <ClCompile Include="..\..\debugger\gui\GenesisWidget.cxx">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="..\..\debugger\gui\Joy2BPlusWidget.cxx" />
+    <ClCompile Include="..\..\debugger\gui\Joy2BPlusWidget.cxx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\..\debugger\gui\JoystickWidget.cxx">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
     </ClCompile>
@@ -977,7 +989,9 @@
     <ClCompile Include="..\..\debugger\gui\TrakBallWidget.cxx">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="..\..\debugger\TimerMap.cxx" />
+    <ClCompile Include="..\..\debugger\TimerMap.cxx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\..\emucore\Bankswitch.cxx" />
     <ClCompile Include="..\..\emucore\Cart03E0.cxx" />
     <ClCompile Include="..\..\emucore\Cart3EPlus.cxx" />
