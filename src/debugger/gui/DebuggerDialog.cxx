@@ -137,90 +137,93 @@ void DebuggerDialog::handleKeyDown(StellaKey key, StellaMod mod, bool repeated)
     }
   }
 
-  // handle emulation keys second (can be remapped)
-  const Event::Type event = instance().eventHandler().eventForKey(EventMode::kEmulationMode, key, mod);
-  switch (event)
+  // Do not handle emulation events which have the same mapping as menu events
+  if(instance().eventHandler().eventForKey(EventMode::kMenuMode, key, mod) == Event::NoType)
   {
-    case Event::ExitMode:
-      // make consistent, exit debugger on key UP
-      if(!repeated)
-        myExitPressed = true;
-      return;
+  // handle emulation keys second (can be remapped)
+    const Event::Type event = instance().eventHandler().eventForKey(EventMode::kEmulationMode, key, mod);
+    switch(event)
+    {
+      case Event::ExitMode:
+        // make consistent, exit debugger on key UP
+        if(!repeated)
+          myExitPressed = true;
+        return;
 
-    // events which can be handled 1:1
-    case Event::ToggleP0Collision:
-    case Event::ToggleP0Bit:
-    case Event::ToggleP1Collision:
-    case Event::ToggleP1Bit:
-    case Event::ToggleM0Collision:
-    case Event::ToggleM0Bit:
-    case Event::ToggleM1Collision:
-    case Event::ToggleM1Bit:
-    case Event::ToggleBLCollision:
-    case Event::ToggleBLBit:
-    case Event::TogglePFCollision:
-    case Event::TogglePFBit:
-    case Event::ToggleFixedColors:
-    case Event::ToggleCollisions:
-    case Event::ToggleBits:
+        // events which can be handled 1:1
+      case Event::ToggleP0Collision:
+      case Event::ToggleP0Bit:
+      case Event::ToggleP1Collision:
+      case Event::ToggleP1Bit:
+      case Event::ToggleM0Collision:
+      case Event::ToggleM0Bit:
+      case Event::ToggleM1Collision:
+      case Event::ToggleM1Bit:
+      case Event::ToggleBLCollision:
+      case Event::ToggleBLBit:
+      case Event::TogglePFCollision:
+      case Event::TogglePFBit:
+      case Event::ToggleFixedColors:
+      case Event::ToggleCollisions:
+      case Event::ToggleBits:
 
-    case Event::ToggleTimeMachine:
+      case Event::ToggleTimeMachine:
 
-    case Event::SaveState:
-    case Event::SaveAllStates:
-    case Event::PreviousState :
-    case Event::NextState:
-    case Event::LoadState:
-    case Event::LoadAllStates:
+      case Event::SaveState:
+      case Event::SaveAllStates:
+      case Event::PreviousState:
+      case Event::NextState:
+      case Event::LoadState:
+      case Event::LoadAllStates:
 
-    case Event::ConsoleColor:
-    case Event::ConsoleBlackWhite:
-    case Event::ConsoleColorToggle:
-    case Event::Console7800Pause:
-    case Event::ConsoleLeftDiffA:
-    case Event::ConsoleLeftDiffB:
-    case Event::ConsoleLeftDiffToggle:
-    case Event::ConsoleRightDiffA:
-    case Event::ConsoleRightDiffB:
-    case Event::ConsoleRightDiffToggle:
-      if(!repeated)
-        instance().eventHandler().handleEvent(event);
-      return;
+      case Event::ConsoleColor:
+      case Event::ConsoleBlackWhite:
+      case Event::ConsoleColorToggle:
+      case Event::Console7800Pause:
+      case Event::ConsoleLeftDiffA:
+      case Event::ConsoleLeftDiffB:
+      case Event::ConsoleLeftDiffToggle:
+      case Event::ConsoleRightDiffA:
+      case Event::ConsoleRightDiffB:
+      case Event::ConsoleRightDiffToggle:
+        if(!repeated)
+          instance().eventHandler().handleEvent(event);
+        return;
 
-    // events which need special handling in debugger
-    case Event::TakeSnapshot:
-      if(!repeated)
-        instance().debugger().parser().run("saveSnap");
-      return;
+        // events which need special handling in debugger
+      case Event::TakeSnapshot:
+        if(!repeated)
+          instance().debugger().parser().run("saveSnap");
+        return;
 
-    case Event::Rewind1Menu:
-      doRewind();
-      return;
+      case Event::Rewind1Menu:
+        doRewind();
+        return;
 
-    case Event::Rewind10Menu:
-      doRewind10();
-      return;
+      case Event::Rewind10Menu:
+        doRewind10();
+        return;
 
-    case Event::RewindAllMenu:
-      doRewindAll();
-      return;
+      case Event::RewindAllMenu:
+        doRewindAll();
+        return;
 
-    case Event::Unwind1Menu:
-      doUnwind();
-      return;
+      case Event::Unwind1Menu:
+        doUnwind();
+        return;
 
-    case Event::Unwind10Menu:
-      doUnwind10();
-      return;
+      case Event::Unwind10Menu:
+        doUnwind10();
+        return;
 
-    case Event::UnwindAllMenu:
-      doUnwindAll();
-      return;
+      case Event::UnwindAllMenu:
+        doUnwindAll();
+        return;
 
-    default:
-      break;
+      default:
+        break;
+    }
   }
-
   Dialog::handleKeyDown(key, mod);
 }
 
