@@ -111,6 +111,11 @@ class FBBackendSDL2 : public FBBackend
     inline uInt32 mapRGB(uInt8 r, uInt8 g, uInt8 b) const override
       { return SDL_MapRGB(myPixelFormat, r, g, b); }
 
+    inline uInt32 mapRGBA(uInt8 r, uInt8 g, uInt8 b, uInt8 a) const override
+    {
+      return SDL_MapRGBA(myPixelFormat, r, g, b, a);
+    }
+
     /**
       This method is called to get a copy of the specified ARGB data from the
       viewable FrameBuffer area.  Note that this isn't the same as any
