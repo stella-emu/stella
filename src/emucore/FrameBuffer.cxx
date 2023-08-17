@@ -1320,8 +1320,8 @@ FBInitStatus FrameBuffer::applyVideoMode()
       const string& path = myOSystem.snapshotLoadDir().getPath();
 
       //loadBezel(path + "Atari-2600.png");
-      //loadBezel(path + "Combat.png");
-      loadBezel(path + "Asteroids (USA).png");
+      loadBezel(path + "Combat (USA).png");
+      //loadBezel(path + "Asteroids (USA).png");
     }
 
     resetSurfaces();

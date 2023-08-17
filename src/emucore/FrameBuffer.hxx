@@ -361,6 +361,17 @@ class FrameBuffer
     }
 
     /**
+    This method is called to map a given R/G/B triple to the screen palette.
+
+    @param r  The red component of the color.
+    @param g  The green component of the color.
+    @param b  The blue component of the color.
+    */
+    uInt32 mapRGBA(uInt8 r, uInt8 g, uInt8 b, uInt8 a) const {
+      return myBackend->mapRGBA(r, g, b, a);
+    }
+
+    /**
       This method is called to get the specified ARGB data from the viewable
       FrameBuffer area.  Note that this isn't the same as any internal
       surfaces that may be in use; it should return the actual data as it
