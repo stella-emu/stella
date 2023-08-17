@@ -268,6 +268,9 @@ class FBBackendSDL2 : public FBBackend
     // Center setting of current window
     bool myCenter{false};
 
+    // Flag for bezel mode
+    bool myShowBezel{false};
+
     // Does the renderer support render targets?
     bool myRenderTargetSupport{false};
 

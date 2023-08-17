@@ -62,6 +62,7 @@ Settings::Settings()
   setPermanent("display", 0);
   setPermanent("uimessages", "true");
   setPermanent("pausedim", "true");
+  setPermanent("showbezel", "true");
   // TIA specific options
   setPermanent("tia.inter", "false");
   setPermanent("tia.zoom", "3");

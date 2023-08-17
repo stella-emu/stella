@@ -50,9 +50,9 @@ class VideoModeHandler
       Mode() = default;
       Mode(uInt32 iw, uInt32 ih, uInt32 sw, uInt32 sh, Stretch smode,
            Int32 fsindex = -1, string_view desc = "",
-           float zoomLevel = 1.F, float overscan = 1.F);
+           float zoomLevel = 1.F, float overscan = 1.F, bool showBezel = false);
       Mode(uInt32 iw, uInt32 ih, Stretch smode, Int32 fsindex = -1,
-           string_view desc = "", float zoomLevel = 1.F);
+           string_view desc = "", float zoomLevel = 1.F, bool showBezel = false);
 
       friend ostream& operator<<(ostream& os, const Mode& vm)
       {

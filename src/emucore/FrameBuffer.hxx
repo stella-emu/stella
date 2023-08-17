@@ -444,6 +444,11 @@ class FrameBuffer
     FBInitStatus applyVideoMode();
 
     /**
+      Load the bezel for the given ROM filename.
+    */
+    bool loadBezel(const string& romFileName);
+
+    /**
       Calculate the maximum level by which the base window can be zoomed and
       still fit in the desktop screen.
     */
@@ -519,7 +524,10 @@ class FrameBuffer
   #endif
 
     // The TIASurface class takes responsibility for TIA rendering
-    unique_ptr<TIASurface> myTIASurface;
+    shared_ptr<TIASurface> myTIASurface;
+
+    // The BezelSurface class takes responsibility for TIA rendering
+    shared_ptr<FBSurface> myBezelSurface;
 
     // Used for onscreen messages and frame statistics
     // (scanline count and framerate)

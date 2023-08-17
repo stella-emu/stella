@@ -27,6 +27,7 @@
 #include "Sound.hxx"
 #include "AudioSettings.hxx"
 #include "MediaFactory.hxx"
+#include "PNGLibrary.hxx"
 
 #include "FBSurface.hxx"
 #include "TIASurface.hxx"
@@ -70,6 +71,8 @@ FrameBuffer::FrameBuffer(OSystem& osystem)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FrameBuffer::~FrameBuffer()  // NOLINT (we need an empty d'tor)
 {
+  if(myBezelSurface)
+    deallocateSurface(myBezelSurface);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -605,6 +608,7 @@ void FrameBuffer::updateInEmulationMode(float framesPerSecond)
   if(myMsg.enabled)
     drawMessage();
 
+  myBezelSurface->render();
   // Push buffers to screen
   myBackend->renderToScreen();
 }
@@ -1303,6 +1307,23 @@ FBInitStatus FrameBuffer::applyVideoMode()
         myOSystem.settings().setValue("tia.zoom", myActiveVidMode.zoom);
     }
 
+    if(inTIAMode)
+    {
+      if(myBezelSurface)
+        deallocateSurface(myBezelSurface);
+
+      myBezelSurface = allocateSurface(
+        myActiveVidMode.screenS.w,
+        myActiveVidMode.screenS.h);
+
+      // Get a valid filename representing a snapshot file for this rom and load the snapshot
+      const string& path = myOSystem.snapshotLoadDir().getPath();
+
+      //loadBezel(path + "Atari-2600.png");
+      //loadBezel(path + "Combat.png");
+      loadBezel(path + "Asteroids (USA).png");
+    }
+
     resetSurfaces();
     setCursorState();
     myPendingRender = true;
@@ -1317,15 +1338,60 @@ FBInitStatus FrameBuffer::applyVideoMode()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool FrameBuffer::loadBezel(const string& fileName)
+{
+  try
+  {
+    VariantList metaData;
+    myOSystem.png().loadImage(fileName, *myBezelSurface, metaData);
+
+    // Scale surface to available image area
+    const Common::Rect& src = myBezelSurface->srcRect();
+    const float scale = std::min(
+        static_cast<float>(myActiveVidMode.screenS.w) / src.w(),
+        static_cast<float>(myActiveVidMode.screenS.h) / src.h()
+      ) * myOSystem.frameBuffer().hidpiScaleFactor();
+    myBezelSurface->setDstSize(
+      static_cast<uInt32>(std::round(src.w() * scale)),
+      static_cast<uInt32>(round(src.h() * scale)));
+      //myActiveVidMode.screenS.w,
+      //myActiveVidMode.screenS.h);
+    myBezelSurface->setScalingInterpolation(ScalingInterpolation::sharp);
+
+    //Int32 w = round(src.w() * scale);
+    //Int32 h = round(src.h() * scale);
+    //cerr << scale << ": " << w << " x " << h << endl;
+
+    //// temp workaround:
+    //FBSurface::Attributes& attr = myBezelSurface->attributes();
+    //attr.blendalpha = 50; // 0..100
+    //attr.blending = true;
+    //myBezelSurface->applyAttributes();
+    ////SDL_SetSurfaceBlendMode(myBezelSurface, SDL_BLENDMODE_BLEND);
+
+    if(myBezelSurface)
+      myBezelSurface->setVisible(true);
+  }
+  catch(const runtime_error&)
+  {
+    return false;
+  }
+  return true;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 float FrameBuffer::maxWindowZoom() const
 {
   const int display = displayId(BufferType::Emulator);
   float multiplier = 1;
 
+  const bool showBezel = myOSystem.settings().getBool("showbezel");
+  const double scaleW = showBezel ? (16. / 9.) / (4. / 3.) : 1; // = 1.333
+
   for(;;)
   {
     // Figure out the zoomed size of the window
-    const uInt32 width  = TIAConstants::viewableWidth * multiplier;
+    const uInt32 width  = TIAConstants::viewableWidth * multiplier * scaleW;
     const uInt32 height = TIAConstants::viewableHeight * multiplier;
 
     if((width > myAbsDesktopSize[display].w) || (height > myAbsDesktopSize[display].h))
