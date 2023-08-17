@@ -33,9 +33,10 @@ void VideoModeHandler::setDisplaySize(const Common::Size& display, Int32 fsIndex
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const VideoModeHandler::Mode&
-VideoModeHandler::buildMode(const Settings& settings, bool inTIAMode)
+  VideoModeHandler::buildMode(const Settings& settings, bool inTIAMode)
 {
   const bool windowedRequested = myFSIndex == -1;
+  const bool showBezel = inTIAMode&& settings.getBool("showbezel");
 
   // TIA mode allows zooming at non-integral factors in most cases
   if(inTIAMode)
@@ -49,14 +50,14 @@ VideoModeHandler::buildMode(const Settings& settings, bool inTIAMode)
       // Image and screen (aka window) dimensions are the same
       // Overscan is not applicable in this mode
       myMode = Mode(myImage.w * zoom, myImage.h * zoom, Mode::Stretch::Fill,
-                    myFSIndex, desc.str(), zoom);
+                    myFSIndex, desc.str(), zoom, showBezel);
     }
     else
     {
       const float overscan = 1 - settings.getInt("tia.fs_overscan") / 100.0;
 
       // First calculate maximum zoom that keeps aspect ratio
-      const float scaleX = static_cast<float>(myImage.w) / myDisplay.w,
+      const float scaleX = myImage.w / myDisplay.w,
                   scaleY = static_cast<float>(myImage.h) / myDisplay.h;
       float zoom = 1.F / std::max(scaleX, scaleY);
 
@@ -67,17 +68,19 @@ VideoModeHandler::buildMode(const Settings& settings, bool inTIAMode)
 
       if(!settings.getBool("tia.fs_stretch"))  // preserve aspect, use all space
       {
-        myMode = Mode(myImage.w * zoom, myImage.h * zoom,
+        myMode = Mode(myImage.w  * zoom, myImage.h * zoom,
                       myDisplay.w, myDisplay.h,
                       Mode::Stretch::Preserve, myFSIndex,
-                      "Fullscreen: Preserve aspect, no stretch", zoom, overscan);
+                      "Fullscreen: Preserve aspect, no stretch",
+                      zoom, overscan, showBezel);
       }
       else  // ignore aspect, use all space
       {
         myMode = Mode(myImage.w * zoom, myImage.h * zoom,
                       myDisplay.w, myDisplay.h,
                       Mode::Stretch::Fill, myFSIndex,
-                      "Fullscreen: Ignore aspect, full stretch", zoom, overscan);
+                      "Fullscreen: Ignore aspect, full stretch",
+                      zoom, overscan, showBezel);
       }
     }
   }
@@ -96,38 +99,41 @@ VideoModeHandler::buildMode(const Settings& settings, bool inTIAMode)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 VideoModeHandler::Mode::Mode(uInt32 iw, uInt32 ih, Stretch smode,
                              Int32 fsindex, string_view desc,
-                             float zoomLevel)
-  : Mode(iw, ih, iw, ih, smode, fsindex, desc, zoomLevel)
+                             float zoomLevel, bool showBezel)
+  : Mode(iw, ih, iw, ih, smode, fsindex, desc, zoomLevel, 1.F, showBezel)
 {
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 VideoModeHandler::Mode::Mode(uInt32 iw, uInt32 ih, uInt32 sw, uInt32 sh,
                              Stretch smode, Int32 fsindex, string_view desc,
-                             float zoomLevel, float overscan)
+                             float zoomLevel, float overscan, bool showBezel)
   : screenS{sw, sh},
     stretch{smode},
     description{desc},
     zoom{zoomLevel},
     fsIndex{fsindex}
 {
+  const float scaleW = showBezel ? (16.F / 9.F) / (4.F / 3.F) : 1;
+  //const Int32 imageW = iw * scaleW;
+  //screenS.w = screenS.w * scaleW;
   // Now resize based on windowed/fullscreen mode and stretch factor
   if(fsIndex != -1)  // fullscreen mode
   {
     switch(stretch)
     {
       case Stretch::Preserve:
-        iw *= overscan;
+        iw *= overscan / scaleW;
         ih *= overscan;
         break;
 
       case Stretch::Fill:
         // Scale to all available space
-        iw = screenS.w * overscan;
+        iw = screenS.w * (overscan / scaleW);
         ih = screenS.h * overscan;
         break;
 
-      case Stretch::None:
+      case Stretch::None: // UI Mode
         // Don't do any scaling at all
         iw = std::min(iw, screenS.w) * overscan;
         ih = std::min(ih, screenS.h) * overscan;
@@ -142,11 +148,11 @@ VideoModeHandler::Mode::Mode(uInt32 iw, uInt32 ih, uInt32 sw, uInt32 sh,
     {
       case Stretch::Preserve:
       case Stretch::Fill:
-        screenS.w = iw;
+        screenS.w = iw * scaleW;
         screenS.h = ih;
         break;
 
-      case Stretch::None:
+      case Stretch::None: // UI Mode
         break;  // Do not change image or screen rects whatsoever
     }
   }

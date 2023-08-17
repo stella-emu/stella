@@ -48,6 +48,7 @@ FBSurfaceSDL2::FBSurfaceSDL2(FBBackendSDL2& backend,
   : myBackend{backend},
     myInterpolationMode{inter}
 {
+  //cerr << width << " x " << height << endl;
   createSurface(width, height, staticData);
 }
 
@@ -233,6 +234,7 @@ void FBSurfaceSDL2::createSurface(uInt32 width, uInt32 height,
 
   mySurface = SDL_CreateRGBSurface(0, width, height,
       pf.BitsPerPixel, pf.Rmask, pf.Gmask, pf.Bmask, pf.Amask);
+  //SDL_SetSurfaceBlendMode(mySurface, SDL_BLENDMODE_ADD); // default: SDL_BLENDMODE_BLEND
 
   // We start out with the src and dst rectangles containing the same
   // dimensions, indicating no scaling or re-positioning
