@@ -1301,20 +1301,21 @@ FBInitStatus FrameBuffer::applyVideoMode()
     // Inform TIA surface about new mode, and update TIA settings
     if(inTIAMode)
     {
-      myTIASurface->initialize(myOSystem.console(), myActiveVidMode);
+#ifdef IMAGE_SUPPORT
+    if(myBezelSurface)
+      deallocateSurface(myBezelSurface);
+    myBezelSurface = nullptr;
+    if(showBezel)
+      loadBezel();
+#endif
+
+    myTIASurface->initialize(myOSystem.console(), myActiveVidMode);
       if(fullScreen())
         myOSystem.settings().setValue("tia.fs_stretch",
           myActiveVidMode.stretch == VideoModeHandler::Mode::Stretch::Fill);
       else
         myOSystem.settings().setValue("tia.zoom", myActiveVidMode.zoom);
     }
-
-#ifdef IMAGE_SUPPORT
-    if(myBezelSurface)
-      deallocateSurface(myBezelSurface);
-    if(showBezel)
-      loadBezel();
-#endif
 
     resetSurfaces();
     setCursorState();
@@ -1376,8 +1377,11 @@ bool FrameBuffer::loadBezel()
     // Scale bezel to fullscreen (preserve or stretch) or window size
     const uInt32 bezelH = std::min(myActiveVidMode.screenS.h,
                                    myActiveVidMode.imageR.h());
-    myBezelSurface->setDstSize(myActiveVidMode.screenS.w, bezelH);
-    myBezelSurface->setDstPos(0, (myActiveVidMode.screenS.h - bezelH) / 2); // center vertically
+    const uInt32 bezelW = std::min(myActiveVidMode.screenS.w,
+                                   static_cast<uInt32>(bezelH * (16.F / 9.F)));
+    myBezelSurface->setDstSize(bezelW, bezelH);
+    myBezelSurface->setDstPos((myActiveVidMode.screenS.w - bezelW) / 2,
+                              (myActiveVidMode.screenS.h - bezelH) / 2); // center
     myBezelSurface->setScalingInterpolation(ScalingInterpolation::sharp);
   }
   if(myBezelSurface)
