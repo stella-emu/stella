@@ -161,6 +161,7 @@ Settings::Settings()
   setPermanent("romdir", "");
   setPermanent("userdir", "");
   setPermanent("saveuserdir", "false");
+  setPermanent("bezeldir", "");
 
   // ROM browser options
   setPermanent("exitlauncher", "false");
@@ -539,6 +540,7 @@ void Settings::usage()
     << "  -turbo        <1|0>          Enable 'Turbo' mode for maximum emulation speed\n"
     << "  -uimessages   <1|0>          Show onscreen UI messages for different events\n"
     << "  -pausedim     <1|0>          Enable emulation dimming in pause mode\n"
+    << "  -showbezel    <1|0>          Show bezel left and right of emulation\n"
     << endl
   #ifdef SOUND_SUPPORT
     << "  -audio.enabled            <1|0>      Enable audio\n"
@@ -656,6 +658,7 @@ void Settings::usage()
     << "  -followlauncher     <0|1>    Default ROM path follows launcher navigation\n"
     << "  -userdir            <dir>    Set the path to save user files to\n"
     << "  -saveuserdir        <0|1>    Update user path when navigating in browser\n"
+    << "  -bezeldir           <dir>    Set the path to load bezels from\n"
     << "  -lastrom            <name>   Last played ROM, automatically selected in\n"
     << "                                launcher\n"
     << "  -romloadcount <number>       Number of ROM to load next from multicard\n"

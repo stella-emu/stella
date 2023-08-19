@@ -78,19 +78,25 @@ void PNGLibrary::loadImage(const string& filename, FBSurface& surface, VariantLi
   // byte into separate bytes (useful for paletted and grayscale images).
   png_set_packing(png_ptr);
 
-  // Only normal RBG(A) images are supported (without the alpha channel)
+  // Alpha channel is supported
   if(color_type == PNG_COLOR_TYPE_RGBA)
   {
     hasAlpha = true;
-    //png_set_strip_alpha(png_ptr);
   }
   else if(color_type == PNG_COLOR_TYPE_GRAY || color_type == PNG_COLOR_TYPE_GRAY_ALPHA)
   {
+    // TODO: preserve alpha
     png_set_gray_to_rgb(png_ptr);
   }
   else if(color_type == PNG_COLOR_TYPE_PALETTE)
   {
-    png_set_palette_to_rgb(png_ptr);
+    if(png_get_valid(png_ptr, info_ptr, PNG_INFO_tRNS))
+    {
+      png_set_tRNS_to_alpha(png_ptr);
+      hasAlpha = true;
+    }
+    else
+      png_set_palette_to_rgb(png_ptr);
   }
   else if(color_type != PNG_COLOR_TYPE_RGB)
   {
@@ -385,7 +391,7 @@ void PNGLibrary::takeSnapshot(uInt32 number)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool PNGLibrary::allocateStorage(size_t width, size_t height, bool hasAlpha)
 {
-  // Create space for the entire image (3 bytes per pixel in RGB format)
+  // Create space for the entire image (3(4) bytes per pixel in RGB(A) format)
   const size_t req_buffer_size = width * height * (hasAlpha ? 4 : 3);
   if(req_buffer_size > ReadInfo.buffer.capacity())
     ReadInfo.buffer.reserve(req_buffer_size * 1.5);
@@ -427,7 +433,7 @@ void PNGLibrary::loadImagetoSurface(FBSurface& surface, bool hasAlpha)
     uInt32* s_ptr = s_buf;
     if(hasAlpha)
       for(uInt32 icol = 0; icol < ReadInfo.width; ++icol, i_ptr += 4)
-        *s_ptr++ = fb.mapRGBA(*i_ptr, *(i_ptr+1), *(i_ptr+2), 85/* *(i_ptr+3)*/);
+        *s_ptr++ = fb.mapRGBA(*i_ptr, *(i_ptr+1), *(i_ptr+2), *(i_ptr+3));
     else
       for(uInt32 icol = 0; icol < ReadInfo.width; ++icol, i_ptr += 3)
         *s_ptr++ = fb.mapRGB(*i_ptr, *(i_ptr+1), *(i_ptr+2));

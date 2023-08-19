@@ -308,6 +308,14 @@ void OSystem::setConfigPaths()
     mySnapshotLoadDir = FSNode(ssLoadDir);
   if(!mySnapshotLoadDir.isDirectory())
     mySnapshotLoadDir.makeDir();
+
+  const string_view bezelDir = mySettings->getString("bezeldir");
+  if(bezelDir == EmptyString)
+    myBezelDir = userDir();
+  else
+    myBezelDir = FSNode(bezelDir);
+  if(!myBezelDir.isDirectory())
+    myBezelDir.makeDir();
 #endif
 
   myCheatFile = myBaseDir;  myCheatFile /= "stella.cht";

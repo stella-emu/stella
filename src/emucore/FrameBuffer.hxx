@@ -410,6 +410,14 @@ class FrameBuffer
     */
     void resetSurfaces();
 
+    /**
+      Renders TIA and overlaying, optional bezel surface
+
+      @param shade    Shade the TIA surface after rendering
+      @param doClear  Clear the framebuffer before rendering
+    */
+    void renderTIA(bool shade = false, bool doClear = true);
+
   #ifdef GUI_SUPPORT
     /**
       Helps to create a basic message onscreen.
@@ -454,10 +462,21 @@ class FrameBuffer
     */
     FBInitStatus applyVideoMode();
 
+  #ifdef IMAGE_SUPPORT
     /**
-      Load the bezel for the given ROM filename.
+      Check if a bezel for the current ROM name exists.
+
+      @return  Whether the bezel was found or not
     */
-    bool loadBezel(const string& romFileName);
+    bool checkBezel();
+
+    /**
+      Load the bezel for the current ROM.
+
+      @return  Whether the bezel was loaded or not
+    */
+    bool loadBezel();
+  #endif
 
     /**
       Calculate the maximum level by which the base window can be zoomed and
@@ -537,7 +556,7 @@ class FrameBuffer
     // The TIASurface class takes responsibility for TIA rendering
     shared_ptr<TIASurface> myTIASurface;
 
-    // The BezelSurface class takes responsibility for TIA rendering
+    // The BezelSurface which blends over the TIA surface
     shared_ptr<FBSurface> myBezelSurface;
 
     // Used for onscreen messages and frame statistics
