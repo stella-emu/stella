@@ -33,10 +33,9 @@ void VideoModeHandler::setDisplaySize(const Common::Size& display, Int32 fsIndex
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const VideoModeHandler::Mode&
-  VideoModeHandler::buildMode(const Settings& settings, bool inTIAMode)
+  VideoModeHandler::buildMode(const Settings& settings, bool inTIAMode, bool showBezel)
 {
   const bool windowedRequested = myFSIndex == -1;
-  const bool showBezel = inTIAMode&& settings.getBool("showbezel");
 
   // TIA mode allows zooming at non-integral factors in most cases
   if(inTIAMode)
@@ -57,7 +56,9 @@ const VideoModeHandler::Mode&
       const float overscan = 1 - settings.getInt("tia.fs_overscan") / 100.0;
 
       // First calculate maximum zoom that keeps aspect ratio
-      const float scaleX = myImage.w / myDisplay.w,
+      // Note: We are assuming a 16:9 bezel image here
+      const float bezelScaleW = showBezel ? (16.F / 9.F) / (4.F / 3.F) : 1;
+      const float scaleX = myImage.w / (myDisplay.w / bezelScaleW),
                   scaleY = static_cast<float>(myImage.h) / myDisplay.h;
       float zoom = 1.F / std::max(scaleX, scaleY);
 
@@ -114,22 +115,21 @@ VideoModeHandler::Mode::Mode(uInt32 iw, uInt32 ih, uInt32 sw, uInt32 sh,
     zoom{zoomLevel},
     fsIndex{fsindex}
 {
-  const float scaleW = showBezel ? (16.F / 9.F) / (4.F / 3.F) : 1;
-  //const Int32 imageW = iw * scaleW;
-  //screenS.w = screenS.w * scaleW;
+  // Note: We are assuming a 16:9 bezel image here
+  const float bezelScaleW = showBezel ? (16.F / 9.F) / (4.F / 3.F) : 1;
   // Now resize based on windowed/fullscreen mode and stretch factor
   if(fsIndex != -1)  // fullscreen mode
   {
     switch(stretch)
     {
       case Stretch::Preserve:
-        iw *= overscan / scaleW;
+        iw *= overscan;
         ih *= overscan;
         break;
 
       case Stretch::Fill:
         // Scale to all available space
-        iw = screenS.w * (overscan / scaleW);
+        iw = screenS.w * (overscan / bezelScaleW);
         ih = screenS.h * overscan;
         break;
 
@@ -148,7 +148,7 @@ VideoModeHandler::Mode::Mode(uInt32 iw, uInt32 ih, uInt32 sw, uInt32 sh,
     {
       case Stretch::Preserve:
       case Stretch::Fill:
-        screenS.w = iw * scaleW;
+        screenS.w = iw * bezelScaleW;
         screenS.h = ih;
         break;
 

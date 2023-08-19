@@ -299,7 +299,7 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
   bwidth = font.getStringWidth("Image path" + ELLIPSIS) + fontWidth * 2 + 1;
   myOpenBrowserButton = new ButtonWidget(myTab, font, xpos, ypos, bwidth, buttonHeight,
                                          "Image path" + ELLIPSIS, kChooseSnapLoadDirCmd);
-  myOpenBrowserButton->setToolTip("Select path for snapshot images used in Launcher.");
+  myOpenBrowserButton->setToolTip("Select path for images used in Launcher.");
   wid.push_back(myOpenBrowserButton);
 
   mySnapLoadPath = new EditTextWidget(myTab, font, HBORDER + lwidth,

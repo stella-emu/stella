@@ -95,7 +95,7 @@ class VideoModeHandler
       @return  A video mode based on the given criteria
     */
     const VideoModeHandler::Mode& buildMode(const Settings& settings,
-                                            bool inTIAMode);
+                                            bool inTIAMode, bool showBezel);
 
   private:
     Common::Size myImage, myDisplay;

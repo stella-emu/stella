@@ -71,8 +71,6 @@ FrameBuffer::FrameBuffer(OSystem& osystem)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FrameBuffer::~FrameBuffer()  // NOLINT (we need an empty d'tor)
 {
-  if(myBezelSurface)
-    deallocateSurface(myBezelSurface);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -396,10 +394,10 @@ void FrameBuffer::update(UpdateMode mode)
       {
         myPausedCount = static_cast<uInt32>(7 * myOSystem.frameRate());
         showTextMessage("Paused", MessagePosition::MiddleCenter);
-        myTIASurface->render(shade);
+        renderTIA(shade, false);
       }
       if(rerender)
-        myTIASurface->render(shade);
+        renderTIA(shade, false);
       break;  // EventHandlerState::PAUSE
     }
 
@@ -410,14 +408,12 @@ void FrameBuffer::update(UpdateMode mode)
       redraw |= myOSystem.optionsMenu().needsRedraw();
       if(redraw)
       {
-        clear();
-        myTIASurface->render(true);
+        renderTIA(true);
         myOSystem.optionsMenu().draw(forceRedraw);
       }
       else if(rerender)
       {
-        clear();
-        myTIASurface->render(true);
+        renderTIA(true);
         myOSystem.optionsMenu().render();
       }
       break;  // EventHandlerState::OPTIONSMENU
@@ -429,14 +425,12 @@ void FrameBuffer::update(UpdateMode mode)
       redraw |= myOSystem.commandMenu().needsRedraw();
       if(redraw)
       {
-        clear();
-        myTIASurface->render(true);
+        renderTIA(true);
         myOSystem.commandMenu().draw(forceRedraw);
       }
       else if(rerender)
       {
-        clear();
-        myTIASurface->render(true);
+        renderTIA(true);
         myOSystem.commandMenu().render();
       }
       break;  // EventHandlerState::CMDMENU
@@ -448,14 +442,12 @@ void FrameBuffer::update(UpdateMode mode)
       redraw |= myOSystem.highscoresMenu().needsRedraw();
       if(redraw)
       {
-        clear();
-        myTIASurface->render(true);
+        renderTIA(true);
         myOSystem.highscoresMenu().draw(forceRedraw);
       }
       else if(rerender)
       {
-        clear();
-        myTIASurface->render(true);
+        renderTIA(true);
         myOSystem.highscoresMenu().render();
       }
       break;  // EventHandlerState::HIGHSCORESMENU
@@ -467,8 +459,7 @@ void FrameBuffer::update(UpdateMode mode)
       redraw |= myOSystem.messageMenu().needsRedraw();
       if(redraw)
       {
-        clear();
-        myTIASurface->render(true);
+        renderTIA(true);
         myOSystem.messageMenu().draw(forceRedraw);
       }
       break;  // EventHandlerState::MESSAGEMENU
@@ -480,8 +471,7 @@ void FrameBuffer::update(UpdateMode mode)
       redraw |= myOSystem.plusRomsMenu().needsRedraw();
       if(redraw)
       {
-        clear();
-        myTIASurface->render(true);
+        renderTIA(true);
         myOSystem.plusRomsMenu().draw(forceRedraw);
       }
       break;  // EventHandlerState::PLUSROMSMENU
@@ -493,14 +483,12 @@ void FrameBuffer::update(UpdateMode mode)
       redraw |= myOSystem.timeMachine().needsRedraw();
       if(redraw)
       {
-        clear();
-        myTIASurface->render();
+        renderTIA();
         myOSystem.timeMachine().draw(forceRedraw);
       }
       else if(rerender)
       {
-        clear();
-        myTIASurface->render();
+        renderTIA();
         myOSystem.timeMachine().render();
       }
       break;  // EventHandlerState::TIMEMACHINE
@@ -532,7 +520,7 @@ void FrameBuffer::update(UpdateMode mode)
       }
       redraw |= success;
       if(redraw)
-        myTIASurface->render();
+        renderTIA(false, false);
 
       // Stop playback mode at the end of the state buffer
       // and switch to Time Machine or Pause mode
@@ -594,8 +582,7 @@ void FrameBuffer::updateInEmulationMode(float framesPerSecond)
   // We don't worry about selective rendering here; the rendering
   // always happens at the full framerate
 
-  clear();  // TODO - test this: it may cause slowdowns on older systems
-  myTIASurface->render();
+  renderTIA();
 
   // Show frame statistics
   if(myStatsMsg.enabled)
@@ -608,7 +595,6 @@ void FrameBuffer::updateInEmulationMode(float framesPerSecond)
   if(myMsg.enabled)
     drawMessage();
 
-  myBezelSurface->render();
   // Push buffers to screen
   myBackend->renderToScreen();
 }
@@ -967,6 +953,17 @@ void FrameBuffer::resetSurfaces()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FrameBuffer::renderTIA(bool shade, bool doClear)
+{
+  if(doClear)
+    clear();  // TODO - test this: it may cause slowdowns on older systems
+
+  myTIASurface->render(shade);
+  if(myBezelSurface)
+    myBezelSurface->render();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBuffer::setTIAPalette(const PaletteArray& rgb_palette)
 {
   // Create a TIA palette from the raw RGB data
@@ -1273,9 +1270,14 @@ FBInitStatus FrameBuffer::applyVideoMode()
     myVidModeHandler.setDisplaySize(myAbsDesktopSize[display]);
 
   const bool inTIAMode = myOSystem.eventHandler().inTIAMode();
+#ifdef IMAGE_SUPPORT
+  const bool showBezel = inTIAMode && myOSystem.settings().getBool("showbezel") && checkBezel();
+#else
+  const bool showBezel = false;
+#endif
 
   // Build the new mode based on current settings
-  const VideoModeHandler::Mode& mode = myVidModeHandler.buildMode(s, inTIAMode);
+  const VideoModeHandler::Mode& mode = myVidModeHandler.buildMode(s, inTIAMode, showBezel);
   if(mode.imageR.size() > mode.screenS)
     return FBInitStatus::FailTooLarge;
 
@@ -1307,22 +1309,12 @@ FBInitStatus FrameBuffer::applyVideoMode()
         myOSystem.settings().setValue("tia.zoom", myActiveVidMode.zoom);
     }
 
-    if(inTIAMode)
-    {
-      if(myBezelSurface)
-        deallocateSurface(myBezelSurface);
-
-      myBezelSurface = allocateSurface(
-        myActiveVidMode.screenS.w,
-        myActiveVidMode.screenS.h);
-
-      // Get a valid filename representing a snapshot file for this rom and load the snapshot
-      const string& path = myOSystem.snapshotLoadDir().getPath();
-
-      //loadBezel(path + "Atari-2600.png");
-      loadBezel(path + "Combat (USA).png");
-      //loadBezel(path + "Asteroids (USA).png");
-    }
+#ifdef IMAGE_SUPPORT
+    if(myBezelSurface)
+      deallocateSurface(myBezelSurface);
+    if(showBezel)
+      loadBezel();
+#endif
 
     resetSurfaces();
     setCursorState();
@@ -1337,47 +1329,62 @@ FBInitStatus FrameBuffer::applyVideoMode()
   return status;
 }
 
+#ifdef IMAGE_SUPPORT
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool FrameBuffer::loadBezel(const string& fileName)
+bool FrameBuffer::checkBezel()
 {
-  try
+  const string& path = myOSystem.bezelDir().getPath();
+  const string& cartName = myOSystem.console().properties().get(PropType::Cart_Name);
+  FSNode node(path + cartName + ".png");
+
+  if(!node.exists())
   {
-    VariantList metaData;
-    myOSystem.png().loadImage(fileName, *myBezelSurface, metaData);
-
-    // Scale surface to available image area
-    const Common::Rect& src = myBezelSurface->srcRect();
-    const float scale = std::min(
-        static_cast<float>(myActiveVidMode.screenS.w) / src.w(),
-        static_cast<float>(myActiveVidMode.screenS.h) / src.h()
-      ) * myOSystem.frameBuffer().hidpiScaleFactor();
-    myBezelSurface->setDstSize(
-      static_cast<uInt32>(std::round(src.w() * scale)),
-      static_cast<uInt32>(round(src.h() * scale)));
-      //myActiveVidMode.screenS.w,
-      //myActiveVidMode.screenS.h);
-    myBezelSurface->setScalingInterpolation(ScalingInterpolation::sharp);
-
-    //Int32 w = round(src.w() * scale);
-    //Int32 h = round(src.h() * scale);
-    //cerr << scale << ": " << w << " x " << h << endl;
-
-    //// temp workaround:
-    //FBSurface::Attributes& attr = myBezelSurface->attributes();
-    //attr.blendalpha = 50; // 0..100
-    //attr.blending = true;
-    //myBezelSurface->applyAttributes();
-    ////SDL_SetSurfaceBlendMode(myBezelSurface, SDL_BLENDMODE_BLEND);
-
-    if(myBezelSurface)
-      myBezelSurface->setVisible(true);
-  }
-  catch(const runtime_error&)
-  {
-    return false;
+    FSNode defaultNode(path + "default.png");
+    return defaultNode.exists();
   }
   return true;
 }
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool FrameBuffer::loadBezel()
+{
+  const string& path = myOSystem.bezelDir().getPath();
+  const string& cartName = myOSystem.console().properties().get(PropType::Cart_Name);
+  bool isValid = true;
+
+  myBezelSurface = allocateSurface(myActiveVidMode.screenS.w, myActiveVidMode.screenS.h);
+  try
+  {
+    VariantList metaData;
+    myOSystem.png().loadImage(path + cartName + ".png", *myBezelSurface, metaData);
+  }
+  catch(const runtime_error&)
+  {
+    try
+    {
+      VariantList metaData;
+      myOSystem.png().loadImage(path + "default.png", *myBezelSurface, metaData);
+    }
+    catch(const runtime_error&)
+    {
+      isValid = false;
+    }
+  }
+
+  if(isValid)
+  {
+    // Scale bezel to fullscreen (preserve or stretch) or window size
+    const uInt32 bezelH = std::min(myActiveVidMode.screenS.h,
+                                   myActiveVidMode.imageR.h());
+    myBezelSurface->setDstSize(myActiveVidMode.screenS.w, bezelH);
+    myBezelSurface->setDstPos(0, (myActiveVidMode.screenS.h - bezelH) / 2); // center vertically
+    myBezelSurface->setScalingInterpolation(ScalingInterpolation::sharp);
+  }
+  if(myBezelSurface)
+    myBezelSurface->setVisible(isValid);
+  return isValid;
+}
+#endif
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 float FrameBuffer::maxWindowZoom() const
