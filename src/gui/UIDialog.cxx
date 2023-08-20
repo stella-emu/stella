@@ -316,10 +316,10 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
   // Add message concerning usage
   xpos = HBORDER;
   ypos = myTab->getHeight() - fontHeight - ifont.getFontHeight() - VGAP - VBORDER;
-  lwidth = ifont.getStringWidth("(*) Changes require an application restart");
+  lwidth = ifont.getStringWidth("(*) Changes may require an application restart");
   new StaticTextWidget(myTab, ifont, xpos, ypos,
                        std::min(lwidth, _w - HBORDER * 2), ifont.getFontHeight(),
-                       "(*) Changes require an application restart");
+                       "(*) Changes may require an application restart");
 
   // Add items for tab 1
   addToFocusList(wid, myTab, tabID);
