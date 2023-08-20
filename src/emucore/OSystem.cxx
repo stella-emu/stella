@@ -292,32 +292,6 @@ void OSystem::setConfigPaths()
   buildDirIfRequired(myCfgDir, myBaseDir, "cfg");
 #endif
 
-#ifdef IMAGE_SUPPORT
-  const string_view ssSaveDir = mySettings->getString("snapsavedir");
-  if(ssSaveDir == EmptyString)
-    mySnapshotSaveDir = userDir();
-  else
-    mySnapshotSaveDir = FSNode(ssSaveDir);
-  if(!mySnapshotSaveDir.isDirectory())
-    mySnapshotSaveDir.makeDir();
-
-  const string_view ssLoadDir = mySettings->getString("snaploaddir");
-  if(ssLoadDir == EmptyString)
-    mySnapshotLoadDir = userDir();
-  else
-    mySnapshotLoadDir = FSNode(ssLoadDir);
-  if(!mySnapshotLoadDir.isDirectory())
-    mySnapshotLoadDir.makeDir();
-
-  const string_view bezelDir = mySettings->getString("bezeldir");
-  if(bezelDir == EmptyString)
-    myBezelDir = userDir();
-  else
-    myBezelDir = FSNode(bezelDir);
-  if(!myBezelDir.isDirectory())
-    myBezelDir.makeDir();
-#endif
-
   myCheatFile = myBaseDir;  myCheatFile /= "stella.cht";
   myPaletteFile = myBaseDir;  myPaletteFile /= "stella.pal";
 
@@ -333,10 +307,55 @@ void OSystem::setConfigPaths()
   dbgPath("cfg dir   ", myCfgDir);
   dbgPath("ssave dir ", mySnapshotSaveDir);
   dbgPath("sload dir ", mySnapshotLoadDir);
+  dbgPath("bezel dir ", myBezelDir);
   dbgPath("cheat file", myCheatFile);
   dbgPath("pal file  ", myPaletteFile);
 #endif
 }
+
+#ifdef IMAGE_SUPPORT
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+const FSNode& OSystem::snapshotSaveDir()
+{
+  const string_view ssSaveDir = mySettings->getString("snapsavedir");
+  if(ssSaveDir == EmptyString)
+    mySnapshotSaveDir = userDir();
+  else
+    mySnapshotSaveDir = FSNode(ssSaveDir);
+  if(!mySnapshotSaveDir.isDirectory())
+    mySnapshotSaveDir.makeDir();
+
+  return mySnapshotSaveDir;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+const FSNode& OSystem::snapshotLoadDir()
+{
+  const string_view ssLoadDir = mySettings->getString("snaploaddir");
+  if(ssLoadDir == EmptyString)
+    mySnapshotLoadDir = userDir();
+  else
+    mySnapshotLoadDir = FSNode(ssLoadDir);
+  if(!mySnapshotLoadDir.isDirectory())
+    mySnapshotLoadDir.makeDir();
+
+  return mySnapshotLoadDir;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+const FSNode& OSystem::bezelDir()
+{
+  const string_view bezelDir = mySettings->getString("bezeldir");
+  if(bezelDir == EmptyString)
+    myBezelDir = userDir();
+  else
+    myBezelDir = FSNode(bezelDir);
+  if(!myBezelDir.isDirectory())
+    myBezelDir.makeDir();
+
+  return myBezelDir;
+}
+#endif
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void OSystem::setUserDir(string_view path)

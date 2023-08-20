@@ -748,7 +748,8 @@ void FrameBuffer::drawFrameStats(float framesPerSecond)
         myStatsMsg.w, color, TextAlign::Left, 0, true, kBGColor);
   }
 
-  myStatsMsg.surface->setDstPos(imageRect().x() + 10, imageRect().y() + 8);
+  myStatsMsg.surface->setDstPos(imageRect().x() + imageRect().w() / 64,
+                                imageRect().y() + imageRect().h() / 64);
   myStatsMsg.surface->setDstSize(myStatsMsg.w * hidpiScaleFactor(),
                                  myStatsMsg.h * hidpiScaleFactor());
   myStatsMsg.surface->render();
@@ -822,7 +823,7 @@ inline bool FrameBuffer::drawMessage()
     // Draw the bounded box and text
     const Common::Rect& dst = myMsg.surface->dstRect();
     const int fontWidth = font().getMaxCharWidth(),
-      fontHeight = font().getFontHeight();
+              fontHeight = font().getFontHeight();
     const int VBORDER = fontHeight / 4;
     const int HBORDER = fontWidth * 1.25 / 2.0;
     constexpr int BORDER = 1;

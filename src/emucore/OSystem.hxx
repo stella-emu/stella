@@ -306,9 +306,9 @@ class OSystem
       Return the full/complete path name for saving snapshots, loading
       launcher images and loading bezels.
     */
-    const FSNode& snapshotSaveDir() const { return mySnapshotSaveDir; }
-    const FSNode& snapshotLoadDir() const { return mySnapshotLoadDir; }
-    const FSNode& bezelDir() const { return myBezelDir; }
+    const FSNode& snapshotSaveDir();
+    const FSNode& snapshotLoadDir();
+    const FSNode& bezelDir();
   #endif
 
     /**
