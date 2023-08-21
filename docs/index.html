@@ -313,6 +313,7 @@
     <li>Tracking of user favorites and popular or recently played ROMs.</li>
     <li>High scores saving (internal or via PlusROM High Score Club)</li>
     <li>Cross-platform UI including a built-in ROM launcher frontend</li>
+	<li>Supports bezel display</li>
     <li>Built-in extensive debugger, including static analysis with the Distella disassembler
       and dynamic analysis at runtime by tracking code/graphics/data sections, and
       generation of DASM-compatible disassembly files</li>
@@ -1178,8 +1179,8 @@
     </tr>
     <tr>
       <td>Toggle aspect ratio correct scaling</td>
-      <td>Control + C</td>
-      <td>Control + C</td>
+      <td>Shift-Control + C</td>
+      <td>Shift-Control + C</td>
     </tr>
     <tr>
       <td><i>Decrease</i> vertical display size</td>
@@ -2689,6 +2690,15 @@
     </tr>
 
     <tr>
+      <td><pre>-showbezel &lt;1|0&gt;</pre></td>
+      <td>Enable or disable bezel display.</td>
+    </tr>
+    <tr>
+      <td><pre>-bezeldir &lt;path&gt;</pre></td>
+      <td>Specifies from where bezel images are loaded..</td>
+    </tr>
+
+    <tr>
       <td><pre>-audio.enabled &lt;1|0&gt;</pre></td>
       <td>Enable or disable sound generation.</td>
     </tr>
@@ -3744,6 +3754,23 @@
           <tr><td>Clone Composite</td><td>Copy 'Composite' attributes to 'Custom' TV mode sliders</td><td>&nbsp;</td></tr>
           <tr><td>Clone Bad adjust</td><td>Copy 'Bad Adjust' attributes to 'Custom' TV mode sliders</td><td>&nbsp;</td></tr>
           <tr><td>Revert</td><td>Revert attribute sliders to previously saved 'Custom' TV mode settings</td><td>&nbsp;</td></tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <p><b>Video & Audio Settings</b> dialog <a name="VideoAudioEffects">(Bezels)</a>:</p>
+  <table style="border:hidden">
+    <tr>
+	  <td valign="top"><img src="graphics/options_bezels.png"></td>
+      <td style="border:hidden">&nbsp;&nbsp;&nbsp;&nbsp;</td>
+      <td valign="top">
+        <table border="1" cellpadding="4">
+	  	  <tr><th>Item</th><th>Brief description</th><th>For more information,<br>see <a href="#CommandLine">Command Line</a></th></tr>
+          <tr><td>Enable bezels</td><td>Enables the bezel display if a ROM name matching bezel image or a
+          	default image (named 'default.png') can be found using the bezel path.</td><td>-showbezel</td></tr>
+          <tr><td>Bezel path</td><td>Specifies the path from where bezel images are loaded.</td><td>-bezeldir</td></tr>
         </table>
       </td>
     </tr>
