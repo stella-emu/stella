@@ -1376,14 +1376,21 @@ bool FrameBuffer::loadBezel()
   if(isValid)
   {
     // Scale bezel to fullscreen (preserve or stretch) or window size
-    const uInt32 bezelH = std::min(myActiveVidMode.screenS.h,
-                                   myActiveVidMode.imageR.h());
-    const uInt32 bezelW = std::min(myActiveVidMode.screenS.w,
-                                   static_cast<uInt32>(bezelH * (16.F / 9.F)));
+    const uInt32 bezelW = std::min(
+      myActiveVidMode.screenS.w,
+      static_cast<uInt32>(myActiveVidMode.imageR.w() * (16.F / 9.F) / (4.F / 3.F)));
+    const uInt32 bezelH = std::min(
+      myActiveVidMode.screenS.h,
+      myActiveVidMode.imageR.h());
+    cerr << bezelW << " x " << bezelH << endl;
     myBezelSurface->setDstSize(bezelW, bezelH);
     myBezelSurface->setDstPos((myActiveVidMode.screenS.w - bezelW) / 2,
                               (myActiveVidMode.screenS.h - bezelH) / 2); // center
     myBezelSurface->setScalingInterpolation(ScalingInterpolation::sharp);
+
+    myBezelSurface->attributes().blending = true;
+    myBezelSurface->attributes().blendalpha = 100;
+    myBezelSurface->applyAttributes();
   }
   if(myBezelSurface)
     myBezelSurface->setVisible(isValid);
