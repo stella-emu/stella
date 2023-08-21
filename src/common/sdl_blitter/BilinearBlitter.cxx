@@ -125,12 +125,12 @@ void BilinearBlitter::recreateTexturesIfNecessary()
     SDL_UpdateTexture(myTexture, nullptr, myStaticData->pixels, myStaticData->pitch);
   }
 
-  const std::array<SDL_Texture*, 2> textures = { myTexture, mySecondaryTexture };
-  for (SDL_Texture* texture: textures) {
-    if (!texture) continue;
+  if (myAttributes.blending) {
+    const std::array<SDL_Texture*, 2> textures = { myTexture, mySecondaryTexture };
+    for (SDL_Texture* texture: textures) {
+      if (!texture) continue;
 
-    SDL_SetTextureBlendMode(texture, SDL_BLENDMODE_BLEND);
-    if (myAttributes.blending) {
+      SDL_SetTextureBlendMode(texture, SDL_BLENDMODE_BLEND);
       const auto blendAlpha = static_cast<uInt8>(myAttributes.blendalpha * 2.55);
       SDL_SetTextureAlphaMod(texture, blendAlpha);
     }
