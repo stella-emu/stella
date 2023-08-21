@@ -181,7 +181,8 @@ void Properties::print() const
        << get(PropType::Display_Format)         << "|"
        << get(PropType::Display_VCenter)        << "|"
        << get(PropType::Display_Phosphor)       << "|"
-       << get(PropType::Display_PPBlend)
+       << get(PropType::Display_PPBlend)        << "|"
+       << get(PropType::Bezel_Name)
        << endl;
 }
 
@@ -241,7 +242,8 @@ void Properties::printHeader()
        << "Display_Format|"
        << "Display_VCenter|"
        << "Display_Phosphor|"
-       << "Display_PPBlend"
+       << "Display_PPBlend|"
+       << "Bezel_Name"
        << endl;
 }
 
@@ -276,7 +278,8 @@ std::array<string, Properties::NUM_PROPS> Properties::ourDefaultProperties =
   "AUTO",   // Display.Format
   "0",      // Display.VCenter
   "NO",     // Display.Phosphor
-  "0"       // Display.PPBlend
+  "0",      // Display.PPBlend
+  "default" // Bezel.Name
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -310,5 +313,6 @@ std::array<string, Properties::NUM_PROPS> Properties::ourPropertyNames =
   "Display.Format",
   "Display.VCenter",
   "Display.Phosphor",
-  "Display.PPBlend"
+  "Display.PPBlend",
+  "Bezel.Name"
 };

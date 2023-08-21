@@ -51,6 +51,7 @@ enum class PropType : uInt8 {
   Display_VCenter,
   Display_Phosphor,
   Display_PPBlend,
+  Bezel_Name,
   NumTypes
 };
 

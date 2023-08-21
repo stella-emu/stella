@@ -75,6 +75,7 @@
 "Cart.Name" "AStar (NTSC)"
 "Cart.Rarity" "Homebrew"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=821"
+"Bezel.Name" "AStar (USA) (Unl)"
 ""
 
 "Cart.MD5" "012020625a3227815e47b37fd025e480"
@@ -233,6 +234,7 @@
 "Cart.ModelNo" "931502"
 "Cart.Name" "Frogger (1982) (Parker Bros) (PAL)"
 "Cart.Highscore" "{\"score_addresses\":[\"0xcc\",\"0xce\"],\"variations_address\":\"0xdd\",\"variations_count\":6}"
+"Bezel.Name" "Frogger (USA)"
 ""
 
 "Cart.MD5" "02cee0b140d2f1a1efcfb1d482a5c392"
@@ -325,6 +327,7 @@
 "Cart.Manufacturer" "Thomas Jentzsch"
 "Cart.Name" "Thrust (V1.0) (2000) (Thomas Jentzsch)"
 "Cart.Rarity" "New Release"
+"Bezel.Name" "Thrust+ DC Edition (USA) (Unl)"
 ""
 
 "Cart.MD5" "043f165f384fbea3ea89393597951512"
@@ -378,6 +381,7 @@
 "Cart.Manufacturer" "Thomas Jentzsch"
 "Cart.Name" "Jammed (2001) (XYPE)"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=98"
+"Bezel.Name" "Jammed (USA) (Unl)"
 ""
 
 "Cart.MD5" "04e737c9d53cd84bfd5ee679954e4706"
@@ -436,6 +440,7 @@
 "Cart.ModelNo" "AG-019"
 "Cart.Name" "Sky Jinks (1982) (Activision) (16K)"
 "Cart.Highscore" "{\"score_addresses\":[\"0x9e\",\"0xa6\",\"0xa2\"],\"score_digits\":6,\"score_inverted\":true,\"variations_address\":\"0x99\",\"variations_count\":4,\"variations_zero_based\":true}"
+"Bezel.Name" "Sky Jinks (USA)"
 ""
 
 "Cart.MD5" "05b45ba09c05befa75ac70476829eda0"
@@ -507,6 +512,7 @@
 "Cart.Highscore" "{\"notes\":\"Variations cannot be defined\",\"score_addresses\":[\"0xe0\",\"0xe1\",\"0xe2\"],\"score_digits\":6,\"variations_count\":1}"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1188"
 "Display.Format" "PAL60"
+"Bezel.Name" "Millipede (USA)"
 ""
 
 "Cart.MD5" "0651216c4a4a9c9ac5ada3013a317c72"
@@ -693,6 +699,7 @@
 "Cart.ModelNo" "PB5300"
 "Cart.Name" "Frogger (1982) (Parker Bros)"
 "Cart.Highscore" "{\"score_addresses\":[\"0xcc\",\"0xce\"],\"variations_address\":\"0xdd\",\"variations_count\":6}"
+"Bezel.Name" "Frogger (USA)"
 ""
 
 "Cart.MD5" "082fdc8bd47fef01482ce5883c4ffdb8"
@@ -737,6 +744,7 @@
 "Cart.Note" "Uses Atari Trak-Ball Controller"
 "Cart.Highscore" "{\"notes\":\"Variations cannot be defined\",\"score_addresses\":[\"0xf4\",\"0xf5\",\"0xf6\"],\"score_digits\":6,\"variations_count\":1}"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1180"
+"Bezel.Name" "Centipede (USA)"
 ""
 
 "Cart.MD5" "0894aa7be77521f9df562be8d9555fe6"
@@ -1291,6 +1299,7 @@
 "Cart.Note" "Uses Amiga Mouse Controller"
 "Cart.Highscore" "{\"notes\":\"Variations cannot be defined\",\"score_addresses\":[\"0xf4\",\"0xf5\",\"0xf6\"],\"score_digits\":6,\"variations_count\":1}"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1180"
+"Bezel.Name" "Centipede (USA)"
 ""
 
 "Cart.MD5" "0e4b2b6e014a93ef8be896823da0d4ec"
@@ -1351,6 +1360,7 @@
 "Cart.Manufacturer" "Atari, Joe Decuir, Larry Caplan, Steve Mayer, Larry Wagner"
 "Cart.ModelNo" "CX26163P"
 "Cart.Name" "Combat (32 in 1) (1988) (Atari) (PAL)"
+"Bezel.Name" "Combat (USA)"
 ""
 
 "Cart.MD5" "0efc91e45f61023cda9d086a7d3c402f"
@@ -2223,6 +2233,7 @@
 "Cart.ModelNo" "CX2676"
 "Cart.Name" "Centipede (1983) (Atari) (PAL)"
 "Cart.Highscore" "{\"notes\":\"Variations cannot be defined\",\"score_addresses\":[\"0xf4\",\"0xf5\",\"0xf6\"],\"score_digits\":6,\"variations_count\":1}"
+"Bezel.Name" "Centipede (USA)"
 ""
 
 "Cart.MD5" "17ee158d15e4a34f57a837bc1ce2b0ce"
@@ -2257,6 +2268,7 @@
 "Cart.Highscore" "{\"score_addresses\":[\"0xf3\",\"0xf1\",\"0xef\"],\"score_digits\":6,\"variations_address\":\"0xe9\",\"variations_count\":34}"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1183"
 "Display.Phosphor" "YES"
+"Bezel.Name" "Missile Command (USA)"
 ""
 
 "Cart.MD5" "1862fca4f98e66f363308b859b5863af"
@@ -2399,6 +2411,7 @@
 "Cart.Name" "Asteroids (1981) (Atari) (PAL) [a2]"
 "Cart.Highscore" "{\"notes\":\"Variations > 32 differ by 1\",\"score_addresses\":[\"0xbd\",\"0xbe\"],\"score_bcd\":false,\"score_digits\":5,\"score_inverted\":true,\"score_trailing_zeroes\":1,\"variations_address\":\"0x80\",\"variations_bcd\":false,\"variations_count\":66}"
 "Display.Phosphor" "YES"
+"Bezel.Name" "Asteroids (USA)"
 ""
 
 "Cart.MD5" "19b3b807507653516985ba95da92499d"
@@ -3014,6 +3027,7 @@
 "Cart.Note" "Uses Atari Trak-Ball Controller"
 "Cart.Highscore" "{\"notes\":\"Variations cannot be defined\",\"score_addresses\":[\"0xf4\",\"0xf5\",\"0xf6\"],\"score_digits\":6,\"variations_count\":1}"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1180"
+"Bezel.Name" "Centipede (USA)"
 ""
 
 "Cart.MD5" "218b76f5a4142dc2ea9051a768583d70"
@@ -3148,6 +3162,7 @@
 "Controller.Left" "ATARIMOUSE"
 "Controller.Right" "ATARIMOUSE"
 "Display.Phosphor" "YES"
+"Bezel.Name" "Missile Command (USA)"
 ""
 
 "Cart.MD5" "23d445ea19a18fb78d5035878d9fb649"
@@ -3294,6 +3309,7 @@
 "Cart.Manufacturer" "Activision, Larry Miller"
 "Cart.ModelNo" "AX-021"
 "Cart.Name" "Spider Fighter (1983) (Activision)"
+"Bezel.Name" "Spider Fighter (USA)"
 ""
 
 "Cart.MD5" "24d9a55d8f0633e886a1b33ee1e0e797"
@@ -3543,6 +3559,7 @@
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=329"
 "Controller.PaddlesXCenter" "7"
 "Controller.MouseAxis" "28"
+"Bezel.Name" "SWOOPS! (USA) (Unl)"
 ""
 
 "Cart.MD5" "27a5d2d0c74c8e4b2c05b94c9f098eea"
@@ -3696,6 +3713,7 @@
 "Cart.Manufacturer" "Activision, Carol Shaw"
 "Cart.ModelNo" "AX-020, AX-020-04"
 "Cart.Name" "River Raid (1982) (Activision) (16K)"
+"Bezel.Name" "River Raid (USA)"
 ""
 
 "Cart.MD5" "291dd47588b9158beebe4accc3a093a6"
@@ -3795,6 +3813,7 @@
 "Cart.ModelNo" "AG-019"
 "Cart.Name" "Sky Jinks (1982) (Activision)"
 "Cart.Highscore" "{\"score_addresses\":[\"0x9e\",\"0xa6\",\"0xa2\"],\"score_digits\":6,\"score_inverted\":true,\"variations_address\":\"0x99\",\"variations_count\":4,\"variations_zero_based\":true}"
+"Bezel.Name" "Sky Jinks (USA)"
 ""
 
 "Cart.MD5" "2a10053fd08664c7cfbbb104386ed77f"
@@ -4175,6 +4194,7 @@
 "Controller.Right" "DRIVING"
 "Controller.MouseAxis" "58"
 "Display.Phosphor" "YES"
+"Bezel.Name" "Asteroids (USA)"
 ""
 
 "Cart.MD5" "2dcf9ce486393cd36ca0928cd53b96cb"
@@ -4571,6 +4591,7 @@
 "Cart.Name" "Climber 5 (01-05-2003) (Dennis Debro)"
 "Cart.Rarity" "Homebrew"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=261"
+"Bezel.Name" "Climber 5 (USA)"
 ""
 
 "Cart.MD5" "327468d6c19697e65ab702f06502c7ed"
@@ -4661,6 +4682,7 @@
 "Cart.ModelNo" "PB5760"
 "Cart.Name" "Montezuma's Revenge (1984) (Parker Bros)"
 "Cart.Note" "Featuring Panama Joe"
+"Bezel.Name" "Montezuma's Revenge - Featuring Panama Joe (USA)"
 ""
 
 "Cart.MD5" "335793736cbf6fc99c9359ed2a32a49d"
@@ -4756,6 +4778,7 @@
 "Cart.Name" "StarMaster (1982) (Activision) (PAL) [fixed]"
 "Cart.Note" "Use Color/BW switch to change between galactic chart and front views"
 "Cart.Highscore" "{\"notes\":\"Score only calculated when game is over\",\"score_addresses\":[\"0xc1\",\"0xc2\"],\"variations_address\":\"0x80\",\"variations_count\":4,\"variations_zero_based\":true}"
+"Bezel.Name" "StarMaster (USA)" 
 ""
 
 "Cart.MD5" "34b269387fa1aa5a396636f5ecdd63dd"
@@ -5170,6 +5193,7 @@
 "Cart.Manufacturer" "Activision, Carol Shaw"
 "Cart.ModelNo" "AX-020, AX-020-04"
 "Cart.Name" "River Raid (1982) (Activision)"
+"Bezel.Name" "River Raid (USA)"
 ""
 
 "Cart.MD5" "393e41ca8bdd35b52bf6256a968a9b89"
@@ -5261,6 +5285,7 @@
 "Cart.Name" "Missile Command (1981) (Atari)"
 "Cart.Highscore" "{\"score_addresses\":[\"0xf3\",\"0xf1\",\"0xef\"],\"score_digits\":6,\"variations_address\":\"0xe9\",\"variations_count\":34}"
 "Display.Phosphor" "YES"
+"Bezel.Name" "Missile Command (USA)"
 ""
 
 "Cart.MD5" "3a35d7f1dc2a33565c8dca52baa86bc4"
@@ -5279,6 +5304,7 @@
 "Cart.Note" "Uses Atari Mouse Controller"
 "Cart.Highscore" "{\"notes\":\"Variations cannot be defined\",\"score_addresses\":[\"0xf4\",\"0xf5\",\"0xf6\"],\"score_digits\":6,\"variations_count\":1}"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1180"
+"Bezel.Name" "Centipede (USA)"
 ""
 
 "Cart.MD5" "3a526e6a1f9fe918af0f2ce997dfea73"
@@ -5455,6 +5481,7 @@
 "Cart.ModelNo" "CX26118"
 "Cart.Name" "Millipede (1984) (Atari)"
 "Cart.Highscore" "{\"notes\":\"Variations cannot be defined\",\"score_addresses\":[\"0xe0\",\"0xe1\",\"0xe2\"],\"score_digits\":6,\"variations_count\":1}"
+"Bezel.Name" "Millipede (USA)"
 ""
 
 "Cart.MD5" "3c72ddaf41158fdd66e4f1cb90d4fd29"
@@ -5644,6 +5671,7 @@
 "Cart.Rarity" "Hack of Asteroids"
 "Cart.Highscore" "{\"notes\":\"Variations > 32 differ by 1\",\"score_addresses\":[\"0xbd\",\"0xbe\"],\"score_bcd\":false,\"score_digits\":5,\"score_inverted\":true,\"score_trailing_zeroes\":1,\"variations_address\":\"0x80\",\"variations_bcd\":false,\"variations_count\":66}"
 "Display.Phosphor" "YES"
+"Bezel.Name" "Asteroids (USA)"
 ""
 
 "Cart.MD5" "3e5ca1afaa27c5da3c54c9942fec528b"
@@ -5683,6 +5711,7 @@
 "Cart.Name" "Pitfall! (1982) (Activision)"
 "Cart.Note" "Pitfall Harry's Jungle Adventure (Jungle Runner)"
 "Cart.Highscore" "{\"score_addresses\":[\"0xd5\",\"0xd6\",\"0xd7\"],\"score_digits\":6,\"variations_count\":1}"
+"Bezel.Name" "Pitfall! - Pitfall Harry's Jungle Adventure (USA)"
 ""
 
 "Cart.MD5" "3eae062a9b722bda1255d474a87eca5c"
@@ -5809,6 +5838,7 @@
 "Cart.Name" "AStar (PAL)"
 "Cart.Rarity" "Homebrew"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=821"
+"Bezel.Name" "AStar (USA) (Unl)"
 ""
 
 "Cart.MD5" "3fd53bfeee39064c945a769f17815a7f"
@@ -6373,6 +6403,7 @@
 "Cart.Note" "Uses Atari Mouse Controller"
 "Cart.Highscore" "{\"notes\":\"Variations cannot be defined\",\"score_addresses\":[\"0xe0\",\"0xe1\",\"0xe2\"],\"score_digits\":6,\"variations_count\":1}"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1188"
+"Bezel.Name" "Millipede (USA)"
 ""
 
 "Cart.MD5" "47464694e9cce07fdbfd096605bf39d4"
@@ -6475,6 +6506,7 @@
 "Cart.Manufacturer" "Nukey Shay"
 "Cart.Name" "Montezuma's Revenge (Genesis) (F6_Conversion)"
 "Cart.Note" "Genesis controller"
+"Bezel.Name" "Montezuma's Revenge - Featuring Panama Joe (USA)"
 ""
 
 "Cart.MD5" "48411c9ef7e2cef1d6b2bee0e6055c27"
@@ -6558,6 +6590,7 @@
 "Cart.Name" "Demon Attack (1982) (Imagic) (PAL)"
 "Cart.Note" "AKA Death from Above"
 "Cart.Highscore" "{\"score_addresses\":[\"0x81\",\"0x83\",\"0x85\"],\"score_digits\":6,\"special_address\":\"0x80\",\"special_label\":\"Wave\",\"special_zero_based\":true,\"variations_address\":\"0xea\",\"variations_count\":10}"
+"Bezel.Name" "Demon Attack (USA)"
 ""
 
 "Cart.MD5" "4904a2550759b9b4570e886374f9d092"
@@ -6707,6 +6740,7 @@
 "Cart.Name" "Montezuma's Revenge (PAL) (Genesis)"
 "Cart.Note" "Genesis controller (B jumps left, C jumps right)"
 "Cart.Rarity" "Homebrew"
+"Bezel.Name" "Montezuma's Revenge - Featuring Panama Joe (USA)"
 ""
 
 "Cart.MD5" "4ab4af3adcdae8cdacc3d06084fc8d6a"
@@ -6846,6 +6880,7 @@
 "Cart.Highscore" "{\"notes\":\"Variations cannot be defined\",\"score_addresses\":[\"0xe0\",\"0xe1\",\"0xe2\"],\"score_digits\":6,\"variations_count\":1}"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1188"
 "Display.Format" "PAL60"
+"Bezel.Name" "Millipede (USA)"
 ""
 
 "Cart.MD5" "4c030667d07d1438f0e5c458a90978d8"
@@ -6899,6 +6934,7 @@
 "Cart.Manufacturer" "Atari, Joe Decuir, Steve Mayer, Larry Wagner - Sears"
 "Cart.ModelNo" "CX2601 - 99801, 6-99801, 49-75124"
 "Cart.Name" "Combat (1977) (Atari)"
+"Bezel.Name" "Combat (USA)"
 ""
 
 "Cart.MD5" "4c8970f6c294a0a54c9c45e5e8445f93"
@@ -7233,6 +7269,7 @@
 "Cart.ModelNo" "EAG-019, EAG-019-04I - 711 019-715"
 "Cart.Name" "Sky Jinks (1982) (Activision) (PAL) (4K)"
 "Cart.Highscore" "{\"score_addresses\":[\"0x9e\",\"0xa6\",\"0xa2\"],\"score_digits\":6,\"score_inverted\":true,\"variations_address\":\"0x99\",\"variations_count\":4,\"variations_zero_based\":true}"
+"Bezel.Name" "Sky Jinks (USA)"
 ""
 
 "Cart.MD5" "504688d49a41bf03d8a955512609f3f2"
@@ -7244,6 +7281,7 @@
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=329"
 "Controller.PaddlesXCenter" "7"
 "Controller.MouseAxis" "28"
+"Bezel.Name" "SWOOPS! (USA) (Unl)"
 ""
 
 "Cart.MD5" "50568c80ac61cab789d9923c9b05b68e"
@@ -7273,6 +7311,7 @@
 "Cart.ModelNo" "EAG-019, EAG-019-04I - 711 019-715"
 "Cart.Name" "Sky Jinks (1982) (Activision) (PAL)"
 "Cart.Highscore" "{\"score_addresses\":[\"0x9e\",\"0xa6\",\"0xa2\"],\"score_digits\":6,\"score_inverted\":true,\"variations_address\":\"0x99\",\"variations_count\":4,\"variations_zero_based\":true}"
+"Bezel.Name" "Sky Jinks (USA)"
 ""
 
 "Cart.MD5" "50c7edc9f9dc0369abcdab3b4efeb5e9"
@@ -7387,6 +7426,7 @@
 "Cart.Note" "Uses Amiga Mouse Controller"
 "Cart.Highscore" "{\"notes\":\"Variations cannot be defined\",\"score_addresses\":[\"0xe0\",\"0xe1\",\"0xe2\"],\"score_digits\":6,\"variations_count\":1}"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1188"
+"Bezel.Name" "Millipede (USA)"
 ""
 
 "Cart.MD5" "522c9cf684ecd72db2f85053e6f6f720"
@@ -7588,6 +7628,7 @@
 "Cart.Note" "Uses Atari Trak-Ball Controller"
 "Cart.Highscore" "{\"notes\":\"Variations cannot be defined\",\"score_addresses\":[\"0xf4\",\"0xf5\",\"0xf6\"],\"score_digits\":6,\"variations_count\":1}"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1180"
+"Bezel.Name" "Centipede (USA)"
 ""
 
 "Cart.MD5" "53f147b9746fdc997c62f3dd67888ee5"
@@ -8069,6 +8110,7 @@
 "Cart.Note" "Uses Amiga Mouse Controller"
 "Cart.Highscore" "{\"notes\":\"Variations cannot be defined\",\"score_addresses\":[\"0xf4\",\"0xf5\",\"0xf6\"],\"score_digits\":6,\"variations_count\":1}"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1180"
+"Bezel.Name" "Centipede (USA)"
 ""
 
 "Cart.MD5" "5a5390f91437af9951a5f8455b61cd43"
@@ -8226,6 +8268,7 @@
 "Cart.MD5" "5bbab3f3e4b47e3e23f9820765dbb45c"
 "Cart.Name" "Pitfall! (says 1985) [h1]"
 "Cart.Highscore" "{\"score_addresses\":[\"0xd5\",\"0xd6\",\"0xd7\"],\"score_digits\":6,\"variations_count\":1}"
+"Bezel.Name" "Pitfall! - Pitfall Harry's Jungle Adventure (USA)"
 ""
 
 "Cart.MD5" "5bbb75b49b2bccef9c91ff84bb249c80"
@@ -8384,6 +8427,7 @@
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=329"
 "Controller.PaddlesXCenter" "7"
 "Controller.MouseAxis" "28"
+"Bezel.Name" "SWOOPS! (USA) (Unl)"
 ""
 
 "Cart.MD5" "5d8fb14860c2f198472b233874f6b0c9"
@@ -8492,6 +8536,7 @@
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=37"
 "Controller.Left" "BOOSTERGRIP"
 "Controller.Right" "DRIVING"
+"Bezel.Name" "Thrust+ Platinum (USA) (Unl)" 
 ""
 
 "Cart.MD5" "5e99aa93d0acc741dcda8752c4e813ce"
@@ -9458,6 +9503,7 @@
 "Cart.Note" "Uses Atari Mouse Controller"
 "Cart.Highscore" "{\"notes\":\"Variations cannot be defined\",\"score_addresses\":[\"0xf4\",\"0xf5\",\"0xf6\"],\"score_digits\":6,\"variations_count\":1}"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1180"
+"Bezel.Name" "Centipede (USA)"
 ""
 
 "Cart.MD5" "683bb0d0f0c5df58557fba9dffc32c40"
@@ -9601,6 +9647,7 @@
 "Cart.Note" "Uses Atari Trak-Ball Controller"
 "Cart.Highscore" "{\"notes\":\"Variations cannot be defined\",\"score_addresses\":[\"0xf4\",\"0xf5\",\"0xf6\"],\"score_digits\":6,\"variations_count\":1}"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1180"
+"Bezel.Name" "Centipede (USA)"
 ""
 
 "Cart.MD5" "6979f30204149be3e227558cffe21c1d"
@@ -9664,6 +9711,7 @@
 "Cart.Highscore" "{\"score_addresses\":[\"0xf3\",\"0xf1\",\"0xef\"],\"score_digits\":6,\"variations_address\":\"0xe9\",\"variations_count\":34}"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1183"
 "Display.Phosphor" "YES"
+"Bezel.Name" "Missile Command (USA)"
 ""
 
 "Cart.MD5" "69fac82cd2312dd9ce5d90e22e2f070a"
@@ -10196,6 +10244,7 @@
 "Cart.ModelNo" "AX-018, AX-018-04"
 "Cart.Name" "Pitfall! (1982) (Activision) (16K)"
 "Cart.Highscore" "{\"score_addresses\":[\"0xd5\",\"0xd6\",\"0xd7\"],\"score_digits\":6,\"variations_count\":1}"
+"Bezel.Name" "Pitfall! - Pitfall Harry's Jungle Adventure (USA)"
 ""
 
 "Cart.MD5" "6fe67f525c39200a798985e419431805"
@@ -10535,6 +10584,7 @@
 "Cart.Name" "StarMaster (1982) (Activision) (PAL)"
 "Cart.Note" "Use Color/BW switch to change between galactic chart and front views"
 "Cart.Highscore" "{\"notes\":\"Score only calculated when game is over\",\"score_addresses\":[\"0xc1\",\"0xc2\"],\"variations_address\":\"0x80\",\"variations_count\":4,\"variations_zero_based\":true}"
+"Bezel.Name" "StarMaster (USA)" 
 ""
 
 "Cart.MD5" "73cb1f1666f3fd30b52b4f3d760c928f"
@@ -11015,6 +11065,7 @@
 "Cart.Name" "Pitfall! (1982) (Activision) (PAL)"
 "Cart.Note" "Abenteuer im Urwald (Jungle Runner)"
 "Cart.Highscore" "{\"score_addresses\":[\"0xd5\",\"0xd6\",\"0xd7\"],\"score_digits\":6,\"variations_count\":1}"
+"Bezel.Name" "Pitfall! - Pitfall Harry's Jungle Adventure (USA)"
 ""
 
 "Cart.MD5" "791c88eca9836af8c34bf32b07cb58a7"
@@ -11118,6 +11169,7 @@
 "Cart.ModelNo" "CX2673, CX2673P"
 "Cart.Name" "Phoenix (1983) (Atari) (PAL)"
 "Cart.Highscore" "{\"score_addresses\":[\"0xc9\",\"0xc8\",\"0xc7\"],\"score_digits\":6,\"variations_count\":1}"
+"Bezel.Name" "Phoenix (USA)"
 ""
 
 "Cart.MD5" "7a09299f473105ae1ef3ad6f9f2cd807"
@@ -11405,6 +11457,7 @@
 "Cart.Note" "Uses Atari Mouse Controller"
 "Cart.Highscore" "{\"notes\":\"Variations cannot be defined\",\"score_addresses\":[\"0xf4\",\"0xf5\",\"0xf6\"],\"score_digits\":6,\"variations_count\":1}"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1180"
+"Bezel.Name" "Centipede (USA)"
 ""
 
 "Cart.MD5" "7d0b49ea4fe3a5f1e119a6d14843db17"
@@ -11520,6 +11573,7 @@
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=37"
 "Controller.Left" "BOOSTERGRIP"
 "Controller.Right" "DRIVING"
+"Bezel.Name" "Thrust+ Platinum (USA) (Unl)" 
 ""
 
 "Cart.MD5" "7dfd100bda9abb0f3744361bc7112681"
@@ -11560,6 +11614,7 @@
 "Cart.ModelNo" "CX2673"
 "Cart.Name" "Phoenix (1983) (Atari)"
 "Cart.Highscore" "{\"score_addresses\":[\"0xc9\",\"0xc8\",\"0xc7\"],\"score_digits\":6,\"variations_count\":1}"
+"Bezel.Name" "Phoenix (USA)"
 ""
 
 "Cart.MD5" "7e7c4c59d55494e66eef5e04ec1c6157"
@@ -12421,6 +12476,7 @@
 "Cart.Manufacturer" "Activision, Larry Miller - Ariola"
 "Cart.ModelNo" "EAX-021, EAX-021-04I - 711 021-720"
 "Cart.Name" "Spider Fighter (1983) (Activision) (PAL)"
+"Bezel.Name" "Spider Fighter (USA)"
 ""
 
 "Cart.MD5" "8786f4609a66fbea2cd9aa48ca7aa11c"
@@ -12436,6 +12492,7 @@
 "Cart.Name" "Climber 5 (20-03-2003) (Dennis Debro)"
 "Cart.Rarity" "Homebrew"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=261"
+"Bezel.Name" "Climber 5 (USA)"
 ""
 
 "Cart.MD5" "87b6a17132fc32f576bc49ea18729506"
@@ -12770,6 +12827,7 @@
 "Cart.ModelNo" "AG-019"
 "Cart.Name" "Sky Jinks (1982) (Activision) (4K)"
 "Cart.Highscore" "{\"score_addresses\":[\"0x9e\",\"0xa6\",\"0xa2\"],\"score_digits\":6,\"score_inverted\":true,\"variations_address\":\"0x99\",\"variations_count\":4,\"variations_zero_based\":true}"
+"Bezel.Name" "Sky Jinks (USA)"
 ""
 
 "Cart.MD5" "8bebac614571135933116045204f0f00"
@@ -12781,6 +12839,7 @@
 "Controller.Left" "TRAKBALL"
 "Controller.Right" "TRAKBALL"
 "Display.Phosphor" "YES"
+"Bezel.Name" "Missile Command (USA)"
 ""
 
 "Cart.MD5" "8c103a79b007a2fd5af602334937b4e1"
@@ -12860,6 +12919,7 @@
 "Cart.Note" "Uses Amiga Mouse Controller"
 "Cart.Highscore" "{\"notes\":\"Variations cannot be defined\",\"score_addresses\":[\"0xf4\",\"0xf5\",\"0xf6\"],\"score_digits\":6,\"variations_count\":1}"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1180"
+"Bezel.Name" "Centipede (USA)"
 ""
 
 "Cart.MD5" "8cd26dcf249456fe4aeb8db42d49df74"
@@ -12878,6 +12938,7 @@
 "Controller.Left" "TRAKBALL"
 "Controller.Right" "TRAKBALL"
 "Display.Phosphor" "YES"
+"Bezel.Name" "Missile Command (USA)"
 ""
 
 "Cart.MD5" "8cf0d333bbe85b9549b1e6b1e2390b8d"
@@ -12887,6 +12948,7 @@
 "Cart.Rarity" "Common"
 "Cart.Highscore" "{\"notes\":\"Variations > 32 differ by 1\",\"score_addresses\":[\"0xbd\",\"0xbe\"],\"score_bcd\":false,\"score_digits\":5,\"score_inverted\":true,\"score_trailing_zeroes\":1,\"variations_address\":\"0x80\",\"variations_bcd\":false,\"variations_count\":66}"
 "Display.Phosphor" "YES"
+"Bezel.Name" "Asteroids (USA)"
 ""
 
 "Cart.MD5" "8d00a38f4c8f8800f1c237215ac243fc"
@@ -12900,6 +12962,7 @@
 "Cart.Rarity" "Homebrew"
 "Cart.Highscore" "{\"score_addresses\":[\"0xf3\",\"0xf1\",\"0xef\"],\"score_digits\":6,\"variations_address\":\"0xe9\",\"variations_count\":34}"
 "Display.Phosphor" "YES"
+"Bezel.Name" "Missile Command (USA)"
 ""
 
 "Cart.MD5" "8d2a818e0255c66040802defe32c341a"
@@ -13243,6 +13306,7 @@
 "Cart.ModelNo" "CX2676"
 "Cart.Name" "Centipede (1983) (Atari)"
 "Cart.Highscore" "{\"notes\":\"Variations cannot be defined\",\"score_addresses\":[\"0xf4\",\"0xf5\",\"0xf6\"],\"score_digits\":6,\"variations_count\":1}"
+"Bezel.Name" "Centipede (USA)"
 ""
 
 "Cart.MD5" "91d1c82ceaf8af2add3973a3c34bc0cb"
@@ -13278,6 +13342,7 @@
 "Cart.Manufacturer" "Activision, Carol Shaw - Ariola"
 "Cart.ModelNo" "EAX-020, EAX-020-04B, EAX-020-04I - 711 020-720"
 "Cart.Name" "River Raid (1982) (Activision) (PAL)"
+"Bezel.Name" "River Raid (USA)"
 ""
 
 "Cart.MD5" "9281eccd7f6ef4b3ebdcfd2204c9763a"
@@ -13356,6 +13421,7 @@
 "Cart.Name" "Missile Command (1981) (Atari) (PAL)"
 "Cart.Highscore" "{\"score_addresses\":[\"0xf3\",\"0xf1\",\"0xef\"],\"score_digits\":6,\"variations_address\":\"0xe9\",\"variations_count\":34}"
 "Display.Phosphor" "YES"
+"Bezel.Name" "Missile Command (USA)"
 ""
 
 "Cart.MD5" "936ef1d6f8a57b9ff575dc195ee36b80"
@@ -13479,6 +13545,7 @@
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=37"
 "Controller.Left" "JOYSTICK"
 "Controller.Right" "DRIVING"
+"Bezel.Name" "Thrust+ Platinum (USA) (Unl)" 
 ""
 
 "Cart.MD5" "9446940866c9417f210f8552cf6c3078"
@@ -13635,6 +13702,7 @@
 "Cart.Manufacturer" "Andrew Davie & Thomas Jentzsch"
 "Cart.Name" "Boulder Dash - Demo (2011)"
 "Cart.Rarity" "New Release"
+"Bezel.Name" "Boulder Dash (USA) (Unl)"
 ""
 
 "Cart.MD5" "96670d0bf3610da2afcabd8e21d8eabf"
@@ -13654,6 +13722,7 @@
 "Cart.Note" "Uses Atari Mouse Controller"
 "Cart.Highscore" "{\"notes\":\"Variations cannot be defined\",\"score_addresses\":[\"0xf4\",\"0xf5\",\"0xf6\"],\"score_digits\":6,\"variations_count\":1}"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1180"
+"Bezel.Name" "Centipede (USA)"
 ""
 
 "Cart.MD5" "9671b658286e276cc4a3d02aa25931d2"
@@ -13700,6 +13769,7 @@
 "Controller.Left" "ATARIMOUSE"
 "Controller.Right" "ATARIMOUSE"
 "Display.Phosphor" "YES"
+"Bezel.Name" "Missile Command (USA)"
 ""
 
 "Cart.MD5" "96f806fc62005205d851e758d050dfca"
@@ -13875,6 +13945,7 @@
 "Cart.ModelNo" "AX-018, AX-018-04"
 "Cart.Name" "Pitfall! (1982) (Activision) (8K)"
 "Cart.Highscore" "{\"score_addresses\":[\"0xd5\",\"0xd6\",\"0xd7\"],\"score_digits\":6,\"variations_count\":1}"
+"Bezel.Name" "Pitfall! - Pitfall Harry's Jungle Adventure (USA)"
 ""
 
 "Cart.MD5" "98ef1593624b409b9fb83a1c272a0aa7"
@@ -13893,6 +13964,7 @@
 "Cart.MD5" "98fa3ad778a668a79449350de4b3b95b"
 "Cart.Manufacturer" "Thomas Jentzsch"
 "Cart.Name" "Thrust (V1.1) (2000) (Thomas Jentzsch)"
+"Bezel.Name" "Thrust+ DC Edition (USA) (Unl)"
 ""
 
 "Cart.MD5" "9905f9f4706223dadee84f6867ede8e3"
@@ -14155,6 +14227,7 @@
 "Cart.Name" "Climber 5 (16-04-2003) (Dennis Debro)"
 "Cart.Note" "For Philly Classic 4"
 "Cart.Rarity" "Homebrew"
+"Bezel.Name" "Climber 5 (USA)"
 ""
 
 "Cart.MD5" "9d522a3759aa855668e75962c84546f7"
@@ -14320,6 +14393,7 @@
 "Cart.Name" "Montezuma's Revenge (Thomas Jentzsch) (PAL60)"
 "Cart.Note" "NTSC Conversion"
 "Cart.Rarity" "Homebrew"
+"Bezel.Name" "Montezuma's Revenge - Featuring Panama Joe (USA)"
 ""
 
 "Cart.MD5" "9f8fad4badcd7be61bbd2bcaeef3c58f"
@@ -14635,6 +14709,7 @@
 "Cart.Manufacturer" "Nukey Shay"
 "Cart.Name" "Montezuma's Revenge (Genesis) (PAL60) (F6_Conversion)"
 "Cart.Note" "Genesis controller"
+"Bezel.Name" "Montezuma's Revenge - Featuring Panama Joe (USA)"
 ""
 
 "Cart.MD5" "a302b922a8dbec47743f28b7f91d4cd8"
@@ -14722,6 +14797,7 @@
 "Cart.Name" "AStar (PAL60)"
 "Cart.Rarity" "Homebrew"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=821"
+"Bezel.Name" "AStar (USA) (Unl)"
 ""
 
 "Cart.MD5" "a406d2f6d84e61d842f4cb13b2b1cfa7"
@@ -14762,6 +14838,7 @@
 "Cart.ModelNo" "AG-019"
 "Cart.Name" "Sky Jinks (1982) (Activision) (8K)"
 "Cart.Highscore" "{\"score_addresses\":[\"0x9e\",\"0xa6\",\"0xa2\"],\"score_digits\":6,\"score_inverted\":true,\"variations_address\":\"0x99\",\"variations_count\":4,\"variations_zero_based\":true}"
+"Bezel.Name" "Sky Jinks (USA)"
 ""
 
 "Cart.MD5" "a47e26096de6f6487bf5dd2d1cced294"
@@ -14964,6 +15041,7 @@
 "Cart.ModelNo" "CX26118, CX26118P"
 "Cart.Name" "Millipede (1984) (Atari) (PAL)"
 "Cart.Highscore" "{\"notes\":\"Variations cannot be defined\",\"score_addresses\":[\"0xe0\",\"0xe1\",\"0xe2\"],\"score_digits\":6,\"variations_count\":1}"
+"Bezel.Name" "Millipede (USA)"
 ""
 
 "Cart.MD5" "a779b9fa02c62d00d7c31ed51268f18a"
@@ -15182,6 +15260,7 @@
 "Cart.Name" "Asteroids (1981) (Atari) (PAL) [a1]"
 "Cart.Highscore" "{\"notes\":\"Variations > 32 differ by 1\",\"score_addresses\":[\"0xbd\",\"0xbe\"],\"score_bcd\":false,\"score_digits\":5,\"score_inverted\":true,\"score_trailing_zeroes\":1,\"variations_address\":\"0x80\",\"variations_bcd\":false,\"variations_count\":66}"
 "Display.Phosphor" "YES"
+"Bezel.Name" "Asteroids (USA)"
 ""
 
 "Cart.MD5" "a97733b0852ee3096300102cb0689175"
@@ -15340,6 +15419,7 @@
 "Cart.Manufacturer" "Andrew Davie & Thomas Jentzsch"
 "Cart.Name" "Boulder Dash - Demo V2 (2014)"
 "Cart.Rarity" "New Release"
+"Bezel.Name" "Boulder Dash (USA) (Unl)"
 ""
 
 "Cart.MD5" "ab4ac994865fb16ebb85738316309457"
@@ -15355,6 +15435,7 @@
 "Cart.Manufacturer" "Activision - Imagineering, Dan Kitchen, David Lubar"
 "Cart.ModelNo" "AK-048-04"
 "Cart.Name" "River Raid II (1988) (Activision)"
+"Bezel.Name" "River Raid (USA)"
 ""
 
 "Cart.MD5" "ab5bf1ef5e463ad1cbb11b6a33797228"
@@ -15401,6 +15482,7 @@
 "Cart.Manufacturer" "Atari, Joe Decuir, Steve Mayer, Larry Wagner - Sears"
 "Cart.ModelNo" "CX2601 - 99801, 6-99801, 49-75124"
 "Cart.Name" "Combat (1977) (Atari) (4K)"
+"Bezel.Name" "Combat (USA)"
 ""
 
 "Cart.MD5" "ac0ddbcff34d064009591607746e33b8"
@@ -15543,6 +15625,7 @@
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=829"
 "Console.RightDiff" "A"
 "Display.Phosphor" "YES"
+"Bezel.Name" "Lady Bug (USA) (Unl)"
 ""
 
 "Cart.MD5" "ae047e9468bda961d8e9e9d8ff52980f"
@@ -15820,6 +15903,7 @@
 "Cart.Name" "Demon Attack (1982) (Imagic) [fixed]"
 "Cart.Note" "AKA Death from Above"
 "Cart.Highscore" "{\"score_addresses\":[\"0x81\",\"0x83\",\"0x85\"],\"score_digits\":6,\"special_address\":\"0x80\",\"special_label\":\"Wave\",\"special_zero_based\":true,\"variations_address\":\"0xea\",\"variations_count\":10}"
+"Bezel.Name" "Demon Attack (USA)"
 ""
 
 "Cart.MD5" "b1339c56a9ea63122232fe4328373ac5"
@@ -15904,6 +15988,7 @@
 "Cart.Rarity" "Common"
 "Cart.Highscore" "{\"notes\":\"Variations > 32 differ by 1\",\"score_addresses\":[\"0xbd\",\"0xbe\"],\"score_bcd\":false,\"score_digits\":5,\"score_inverted\":true,\"score_trailing_zeroes\":1,\"variations_address\":\"0x80\",\"variations_bcd\":false,\"variations_count\":66}"
 "Display.Phosphor" "YES"
+"Bezel.Name" "Asteroids (USA)"
 ""
 
 "Cart.MD5" "b23ebf427713dd0198b7ef47dbd07ef4"
@@ -16544,12 +16629,14 @@
 "Cart.MD5" "ba317f83cdfcd58cbc65aac1ccb87bc5"
 "Cart.Manufacturer" "Thomas Jentzsch"
 "Cart.Name" "Jammed (2001) (XYPE) [a1]"
+"Bezel.Name" "Jammed (USA) (Unl)"
 ""
 
 "Cart.MD5" "ba3a17efd26db8b4f09c0cf7afdf84d1"
 "Cart.Manufacturer" "Activision, Larry Miller"
 "Cart.ModelNo" "AX-021"
 "Cart.Name" "Spider Fighter (1983) (Activision) (16K)"
+"Bezel.Name" "Spider Fighter (USA)"
 ""
 
 "Cart.MD5" "ba3b0eebccc7b791107de5b4abb671b4"
@@ -16614,6 +16701,7 @@
 "Cart.Name" "Asteroids (1981) (Atari) (PAL) [no copyright]"
 "Cart.Highscore" "{\"notes\":\"Variations > 32 differ by 1\",\"score_addresses\":[\"0xbd\",\"0xbe\"],\"score_bcd\":false,\"score_digits\":5,\"score_inverted\":true,\"score_trailing_zeroes\":1,\"variations_address\":\"0x80\",\"variations_bcd\":false,\"variations_count\":66}"
 "Display.Phosphor" "YES"
+"Bezel.Name" "Asteroids (USA)"
 ""
 
 "Cart.MD5" "bb579404924c40ca378b4aff6ccf302d"
@@ -16721,6 +16809,7 @@
 "Cart.Manufacturer" "Activision, Carol Shaw"
 "Cart.ModelNo" "AX-020, AX-020-04"
 "Cart.Name" "River Raid (1982) (Activision) (8K)"
+"Bezel.Name" "River Raid (USA)"
 ""
 
 "Cart.MD5" "bce4c291d0007f16997faa5c4db0a6b8"
@@ -16841,6 +16930,7 @@
 "Cart.Manufacturer" "Atari, Joe Decuir, Steve Mayer, Larry Wagner - Sears"
 "Cart.ModelNo" "CX2601 - 99801, 6-99801, 49-75124"
 "Cart.Name" "Combat (1977) (Atari) (4K) [a]"
+"Bezel.Name" "Combat (USA)"
 ""
 
 "Cart.MD5" "be3f0e827e2f748819dac2a22d6ac823"
@@ -17067,6 +17157,7 @@
 "Cart.Note" "Uses Atari Trak-Ball Controller"
 "Cart.Highscore" "{\"notes\":\"Variations cannot be defined\",\"score_addresses\":[\"0xe0\",\"0xe1\",\"0xe2\"],\"score_digits\":6,\"variations_count\":1}"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1188"
+"Bezel.Name" "Millipede (USA)"
 ""
 
 "Cart.MD5" "c150c76cbde2c9b5a97eb5399d46c64f"
@@ -17261,6 +17352,7 @@
 "Cart.Highscore" "{\"score_addresses\":[\"0xf3\",\"0xf1\",\"0xef\"],\"score_digits\":6,\"variations_address\":\"0xe9\",\"variations_count\":34}"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1183"
 "Display.Phosphor" "YES"
+"Bezel.Name" "Missile Command (USA)"
 ""
 
 "Cart.MD5" "c2fbef02b6eea37d8df3e91107f89950"
@@ -17604,6 +17696,7 @@
 "Cart.Note" "Uses Atari Trak-Ball Controller"
 "Cart.Highscore" "{\"notes\":\"Variations cannot be defined\",\"score_addresses\":[\"0xf4\",\"0xf5\",\"0xf6\"],\"score_digits\":6,\"variations_count\":1}"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1180"
+"Bezel.Name" "Centipede (USA)"
 ""
 
 "Cart.MD5" "c5fe45f2734afd47e27ca3b04a90213c"
@@ -18165,6 +18258,7 @@
 "Cart.Rarity" "Common"
 "Cart.Highscore" "{\"notes\":\"Variations > 32 differ by 1\",\"score_addresses\":[\"0xbd\",\"0xbe\"],\"score_bcd\":false,\"score_digits\":5,\"score_inverted\":true,\"score_trailing_zeroes\":1,\"variations_address\":\"0x80\",\"variations_bcd\":false,\"variations_count\":66}"
 "Display.Phosphor" "YES"
+"Bezel.Name" "Asteroids (USA)"
 ""
 
 "Cart.MD5" "cccfe9e9a11b1dad04beba46eefb7351"
@@ -18281,6 +18375,7 @@
 "Cart.Note" "Uses Amiga Mouse Controller"
 "Cart.Highscore" "{\"notes\":\"Variations cannot be defined\",\"score_addresses\":[\"0xf4\",\"0xf5\",\"0xf6\"],\"score_digits\":6,\"variations_count\":1}"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1180"
+"Bezel.Name" "Centipede (USA)"
 ""
 
 "Cart.MD5" "cdb81bf33d830ee4ee0606ee99e84dba"
@@ -18687,6 +18782,7 @@
 "Cart.Note" "Uses Atari Mouse Controller"
 "Cart.Highscore" "{\"notes\":\"Variations cannot be defined\",\"score_addresses\":[\"0xf4\",\"0xf5\",\"0xf6\"],\"score_digits\":6,\"variations_count\":1}"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1180"
+"Bezel.Name" "Centipede (USA)"
 ""
 
 "Cart.MD5" "d0e15a3ce322c5af60f07343594392af"
@@ -18814,6 +18910,7 @@
 "Cart.Manufacturer" "Activision, Larry Miller"
 "Cart.ModelNo" "AX-021"
 "Cart.Name" "Spider Fighter (1983) (Activision) (8K)"
+"Bezel.Name" "Spider Fighter (USA)"
 ""
 
 "Cart.MD5" "d28afe0517a046265c418181fa9dd9a1"
@@ -19026,6 +19123,7 @@
 "Cart.Name" "Asteroids (1981) (Atari) [a2]"
 "Cart.Highscore" "{\"notes\":\"Variations > 32 differ by 1\",\"score_addresses\":[\"0xbd\",\"0xbe\"],\"score_bcd\":false,\"score_digits\":5,\"score_inverted\":true,\"score_trailing_zeroes\":1,\"variations_address\":\"0x80\",\"variations_bcd\":false,\"variations_count\":66}"
 "Display.Phosphor" "YES"
+"Bezel.Name" "Asteroids (USA)"
 ""
 
 "Cart.MD5" "d573089534ca596e64efef474be7b6bc"
@@ -19074,6 +19172,7 @@
 "Cart.Manufacturer" "Activision, Carol Shaw"
 "Cart.ModelNo" "EAX-020"
 "Cart.Name" "River Raid (1982) (Activision) (SECAM)"
+"Bezel.Name" "River Raid (USA)"
 ""
 
 "Cart.MD5" "d5e27051512c1e7445a9bf91501bda09"
@@ -19139,6 +19238,7 @@
 "Cart.Name" "StarMaster (1982) (Activision)"
 "Cart.Note" "Use Color/BW switch to change between galactic chart and front views"
 "Cart.Highscore" "{\"notes\":\"Score only calculated when game is over\",\"score_addresses\":[\"0xc1\",\"0xc2\"],\"variations_address\":\"0x80\",\"variations_count\":4,\"variations_zero_based\":true}"
+"Bezel.Name" "StarMaster (USA)" 
 ""
 
 "Cart.MD5" "d6a44277c3eb4f9d039185e0ecf7bfa6"
@@ -19341,6 +19441,7 @@
 "Cart.Note" "Uses Amiga Mouse Controller"
 "Cart.Highscore" "{\"notes\":\"Variations cannot be defined\",\"score_addresses\":[\"0xf4\",\"0xf5\",\"0xf6\"],\"score_digits\":6,\"variations_count\":1}"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1180"
+"Bezel.Name" "Centipede (USA)"
 ""
 
 "Cart.MD5" "d97e3d0b4575ce0b9a6132e19cfeac6e"
@@ -19739,6 +19840,7 @@
 "Cart.Name" "Asteroids (1981) (Atari)"
 "Cart.Highscore" "{\"notes\":\"Variations > 32 differ by 1\",\"score_addresses\":[\"0xbd\",\"0xbe\"],\"score_bcd\":false,\"score_digits\":5,\"score_inverted\":true,\"score_trailing_zeroes\":1,\"variations_address\":\"0x80\",\"variations_bcd\":false,\"variations_count\":66}"
 "Display.Phosphor" "YES"
+"Bezel.Name" "Asteroids (USA)"
 ""
 
 "Cart.MD5" "dd8a2124d4eda200df715c698a6ea887"
@@ -19856,6 +19958,7 @@
 "Cart.Note" "Supports BoosterGrip"
 "Cart.Rarity" "New Release"
 "Controller.Left" "BOOSTERGRIP"
+"Bezel.Name" "Thrust+ DC Edition (USA) (Unl)"
 ""
 
 "Cart.MD5" "de8443ff47283e7b274a7838cb071fb6"
@@ -19875,6 +19978,7 @@
 "Cart.Manufacturer" "Activision, David Lubar"
 "Cart.ModelNo" "AK-048-04"
 "Cart.Name" "River Raid II (1988) (Activision) [a]"
+"Bezel.Name" "River Raid (USA)"
 ""
 
 "Cart.MD5" "ded26e1cb17f875a9c17515c900f9933"
@@ -20205,6 +20309,7 @@
 "Cart.Note" "Bugfixed"
 "Cart.Rarity" "New Release"
 "Controller.Left" "BOOSTERGRIP"
+"Bezel.Name" "Thrust+ DC Edition (USA) (Unl)"
 ""
 
 "Cart.MD5" "e1efe2ef7664bb6758b1a22ff8ea16a1"
@@ -20273,6 +20378,7 @@
 "Cart.Rarity" "Homebrew"
 "Cart.Highscore" "{\"score_addresses\":[\"0x81\",\"0x82\",\"0x83\"],\"score_digits\":6,\"special_address\":\"0x84\",\"special_label\":\"Wave\",\"special_zero_based\":true,\"variations_count\":1}"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=229"
+"Bezel.Name" "Star Fire (USA)"
 ""
 
 "Cart.MD5" "e28113d10c0c14cc3b5f430b0d142fcb"
@@ -20335,6 +20441,7 @@
 "Cart.Manufacturer" "Atari, Joe Decuir, Steve Mayer, Larry Wagner"
 "Cart.ModelNo" "CX26163P"
 "Cart.Name" "Combat (32 in 1) (1988) (Atari) (PAL) (4K)"
+"Bezel.Name" "Combat (USA)"
 ""
 
 "Cart.MD5" "e30f3a37032da52d7815b5a409f6d4b4"
@@ -20445,6 +20552,7 @@
 "Cart.Note" "Uses Atari Trak-Ball Controller"
 "Cart.Highscore" "{\"notes\":\"Variations cannot be defined\",\"score_addresses\":[\"0xf4\",\"0xf5\",\"0xf6\"],\"score_digits\":6,\"variations_count\":1}"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1180"
+"Bezel.Name" "Centipede (USA)"
 ""
 
 "Cart.MD5" "e49ac0ec879a0d7820bc2598fc2cfcd4"
@@ -20864,6 +20972,7 @@
 "Cart.Manufacturer" "Atari, Joe Decuir, Larry Caplan, Steve Mayer, Larry Wagner"
 "Cart.ModelNo" "CX2601, CX2601P"
 "Cart.Name" "Combat (1977) (Atari) (PAL)"
+"Bezel.Name" "Combat (USA)"
 ""
 
 "Cart.MD5" "e8e7b9bdf4bf04930c2bcaa0278ee637"
@@ -20961,6 +21070,7 @@
 "Cart.Highscore" "{\"notes\":\"Variations cannot be defined\",\"score_addresses\":[\"0xe0\",\"0xe1\",\"0xe2\"],\"score_digits\":6,\"variations_count\":1}"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1188"
 "Display.Format" "PAL60"
+"Bezel.Name" "Millipede (USA)"
 ""
 
 "Cart.MD5" "e9e646f730b8400cd5da08c849ef3e3b"
@@ -21152,6 +21262,7 @@
 "Cart.Note" "Uses Amiga Mouse Controller"
 "Cart.Highscore" "{\"notes\":\"Variations cannot be defined\",\"score_addresses\":[\"0xf4\",\"0xf5\",\"0xf6\"],\"score_digits\":6,\"variations_count\":1}"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1180"
+"Bezel.Name" "Centipede (USA)"
 ""
 
 "Cart.MD5" "ebf2dff78a08733251bf3838f02f7938"
@@ -21479,6 +21590,7 @@
 "Cart.Note" "Uses Atari Mouse Controller"
 "Cart.Highscore" "{\"notes\":\"Variations cannot be defined\",\"score_addresses\":[\"0xf4\",\"0xf5\",\"0xf6\"],\"score_digits\":6,\"variations_count\":1}"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1180"
+"Bezel.Name" "Centipede (USA)"
 ""
 
 "Cart.MD5" "efffafc17b7cb01b9ca35324aa767364"
@@ -21599,6 +21711,7 @@
 "Cart.Name" "Demon Attack (1982) (Imagic)"
 "Cart.Note" "AKA Death from Above"
 "Cart.Highscore" "{\"score_addresses\":[\"0x81\",\"0x83\",\"0x85\"],\"score_digits\":6,\"special_address\":\"0x80\",\"special_label\":\"Wave\",\"special_zero_based\":true,\"variations_address\":\"0xea\",\"variations_count\":10}"
+"Bezel.Name" "Demon Attack (USA)"
 ""
 
 "Cart.MD5" "f0ef9a1e5d4027a157636d7f19952bb5"
@@ -21649,6 +21762,7 @@
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=829"
 "Console.RightDiff" "A"
 "Display.Phosphor" "YES"
+"Bezel.Name" "Lady Bug (USA) (Unl)"
 ""
 
 "Cart.MD5" "f14d5e96ec3380aef57a4b70132c6677"
@@ -21888,6 +22002,7 @@
 "Cart.Name" "Toyshop Trouble (AtariAge)"
 "Cart.Note" "F8 Emulator Release"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=873"
+"Bezel.Name" "Toyshop Trouble (USA) (Unl)"
 ""
 
 "Cart.MD5" "f3c431930e035a457fe370ed4d230659"
@@ -22223,6 +22338,7 @@
 "Cart.Name" "Pitfall (1983) (CCE)"
 "Cart.Note" "AKA Pitfall!"
 "Cart.Highscore" "{\"score_addresses\":[\"0xd5\",\"0xd6\",\"0xd7\"],\"score_digits\":6,\"variations_count\":1}"
+"Bezel.Name" "Pitfall! - Pitfall Harry's Jungle Adventure (USA)"
 ""
 
 "Cart.MD5" "f7424985bac41067502b4a05b64cb75a"
@@ -22734,6 +22850,7 @@
 "Cart.Rarity" "Homebrew"
 "Cart.Highscore" "{\"score_addresses\":[\"0x81\",\"0x82\",\"0x83\"],\"score_digits\":6,\"special_address\":\"0x84\",\"special_label\":\"Wave\",\"special_zero_based\":true,\"variations_count\":1}"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=229"
+"Bezel.Name" "Star Fire (USA)"
 ""
 
 "Cart.MD5" "fb88c400d602fe759ae74ef1716ee84e"
@@ -22822,6 +22939,7 @@
 "Cart.MD5" "fc668a2251dd79cbd903d4fa0e558f96"
 "Cart.Manufacturer" "Thomas Jentzsch"
 "Cart.Name" "Thrust (V1.1) (2000) (Thomas Jentzsch) [a1]"
+"Bezel.Name" "Thrust+ DC Edition (USA) (Unl)"
 ""
 
 "Cart.MD5" "fc92d74f073a44bc6e46a3b3fa8256a2"
@@ -22922,6 +23040,7 @@
 "Cart.ModelNo" "CX2673, CX2673P"
 "Cart.Name" "Phoenix (1982) (Atari) (PAL) [a]"
 "Cart.Highscore" "{\"score_addresses\":[\"0xc9\",\"0xc8\",\"0xc7\"],\"score_digits\":6,\"variations_count\":1}"
+"Bezel.Name" "Phoenix (USA)"
 ""
 
 "Cart.MD5" "fd9b321cee5fbb32c39ba3ca5d9ec7cf"

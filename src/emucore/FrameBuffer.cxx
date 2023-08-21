@@ -1336,41 +1336,29 @@ FBInitStatus FrameBuffer::applyVideoMode()
 bool FrameBuffer::checkBezel()
 {
   const string& path = myOSystem.bezelDir().getPath();
-  const string& cartName = myOSystem.console().properties().get(PropType::Cart_Name);
-  FSNode node(path + cartName + ".png");
+  const string& bezelName = myOSystem.console().properties().get(PropType::Bezel_Name);
+  FSNode node(path + bezelName + ".png");
 
-  if(!node.exists())
-  {
-    FSNode defaultNode(path + "default.png");
-    return defaultNode.exists();
-  }
-  return true;
+  return node.exists();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool FrameBuffer::loadBezel()
 {
   const string& path = myOSystem.bezelDir().getPath();
-  const string& cartName = myOSystem.console().properties().get(PropType::Cart_Name);
+  const string& bezelName = myOSystem.console().properties().get(PropType::Bezel_Name);
   bool isValid = true;
+  double aspectRatio = 1;
 
   myBezelSurface = allocateSurface(myActiveVidMode.screenS.w, myActiveVidMode.screenS.h);
   try
   {
     VariantList metaData;
-    myOSystem.png().loadImage(path + cartName + ".png", *myBezelSurface, metaData);
+    myOSystem.png().loadImage(path + bezelName + ".png", *myBezelSurface, &aspectRatio, metaData);
   }
   catch(const runtime_error&)
   {
-    try
-    {
-      VariantList metaData;
-      myOSystem.png().loadImage(path + "default.png", *myBezelSurface, metaData);
-    }
-    catch(const runtime_error&)
-    {
-      isValid = false;
-    }
+    isValid = false;
   }
 
   if(isValid)

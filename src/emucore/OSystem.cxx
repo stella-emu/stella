@@ -753,6 +753,7 @@ unique_ptr<Console> OSystem::openConsole(const FSNode& romfile, string& md5)
     CMDLINE_PROPS_UPDATE("ppblend", PropType::Display_PPBlend);
     CMDLINE_PROPS_UPDATE("pxcenter", PropType::Controller_PaddlesXCenter);
     CMDLINE_PROPS_UPDATE("pycenter", PropType::Controller_PaddlesYCenter);
+    CMDLINE_PROPS_UPDATE("bezelname", PropType::Bezel_Name);
 
     // Finally, create the cart with the correct properties
     if(cart)

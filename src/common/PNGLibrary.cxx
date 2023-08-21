@@ -33,9 +33,9 @@ PNGLibrary::PNGLibrary(OSystem& osystem)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PNGLibrary::loadImage(const string& filename, FBSurface& surface, VariantList& metaData)
+void PNGLibrary::loadImage(const string& filename, FBSurface& surface,
+                           double* aspectRatio, VariantList& metaData)
 {
-
   png_structp png_ptr{nullptr};
   png_infop info_ptr{nullptr};
   png_uint_32 iwidth{0}, iheight{0};
@@ -122,6 +122,8 @@ void PNGLibrary::loadImage(const string& filename, FBSurface& surface, VariantLi
 
   // Load image into the surface, setting the correct dimensions
   loadImagetoSurface(surface, hasAlpha);
+
+  *aspectRatio = static_cast<double>(ReadInfo.width) / ReadInfo.height;
 
   // Cleanup
   if(png_ptr)
