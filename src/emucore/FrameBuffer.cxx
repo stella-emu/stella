@@ -1388,6 +1388,7 @@ bool FrameBuffer::loadBezel()
                               (myActiveVidMode.screenS.h - bezelH) / 2); // center
     myBezelSurface->setScalingInterpolation(ScalingInterpolation::sharp);
 
+    // Enable blending to allow overlaying the bezel over the TIA output
     myBezelSurface->attributes().blending = true;
     myBezelSurface->attributes().blendalpha = 100;
     myBezelSurface->applyAttributes();
