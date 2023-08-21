@@ -290,7 +290,8 @@ bool RomImageWidget::loadPng(const string& fileName)
   try
   {
     VariantList metaData;
-    instance().png().loadImage(fileName, *mySurface, metaData);
+    double aspectRatio = 1;
+    instance().png().loadImage(fileName, *mySurface, &aspectRatio, metaData);
 
     // Retrieve label for loaded image
     myLabel.clear();
