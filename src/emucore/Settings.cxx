@@ -750,6 +750,7 @@ void Settings::usage()
     << "   -vcenter     <arg>          Sets the 'Display.vcenter' property\n"
     << "   -pp          <arg>          Sets the 'Display.Phosphor' property\n"
     << "   -ppblend     <arg>          Sets the 'Display.PPBlend' property\n"
+    << "   -bezelname   <arg>          Sets the 'Bezel.Name' property\n"
     << endl
   #endif
 

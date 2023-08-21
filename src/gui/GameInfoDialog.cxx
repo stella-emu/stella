@@ -482,6 +482,13 @@ void GameInfoDialog::addCartridgeTab()
                                  buttonWidth(">>"), myUrl->getHeight(), ">>", kLinkPressed);
   wid.push_back(myUrl);
 
+  ypos += lineHeight + VGAP;
+  new StaticTextWidget(myTab, _font, xpos, ypos + 1, lwidth, fontHeight, "Bezelname");
+  myBezelName = new EditTextWidget(myTab, _font, xpos + lwidth, ypos - 1,
+                                   fwidth, lineHeight, "");
+  myBezelName->setToolTip("Define the name of the bezel file.");
+  wid.push_back(myBezelName);
+
   // Add items for tab 3
   addToFocusList(wid, myTab, tabID);
 
@@ -870,6 +877,7 @@ void GameInfoDialog::loadCartridgeProperties(const Properties& props)
   myRarity->setText(props.get(PropType::Cart_Rarity));
   myNote->setText(props.get(PropType::Cart_Note));
   myUrl->setText(props.get(PropType::Cart_Url));
+  myBezelName->setText(props.get(PropType::Bezel_Name));
 
   updateLink();
 }
@@ -986,6 +994,7 @@ void GameInfoDialog::saveProperties()
   myGameProperties.set(PropType::Cart_Rarity, myRarity->getText());
   myGameProperties.set(PropType::Cart_Note, myNote->getText());
   myGameProperties.set(PropType::Cart_Url, myUrl->getText());
+  myGameProperties.set(PropType::Bezel_Name, myBezelName->getText());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
