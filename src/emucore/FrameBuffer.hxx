@@ -464,6 +464,16 @@ class FrameBuffer
 
   #ifdef IMAGE_SUPPORT
     /**
+      Return bezel names, which are either read from the properties
+      or generated from the cart name.
+
+      @param   The index of the returned bezel name
+
+      @return  The bezel name for the given index
+    */
+    const string FrameBuffer::getBezelName(int& index) const;
+
+    /**
       Check if a bezel for the current ROM name exists.
 
       @return  Whether the bezel was found or not
