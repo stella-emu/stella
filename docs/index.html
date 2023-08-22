@@ -2690,12 +2690,16 @@
     </tr>
 
     <tr>
-      <td><pre>-showbezel &lt;1|0&gt;</pre></td>
+      <td><pre>-bezel.show &lt;1|0&gt;</pre></td>
       <td>Enable or disable bezel display.</td>
     </tr>
     <tr>
-      <td><pre>-bezeldir &lt;path&gt;</pre></td>
-      <td>Specifies from where bezel images are loaded..</td>
+      <td><pre>-bezel.dir &lt;path&gt;</pre></td>
+      <td>Specifies from where bezel images are loaded.</td>
+    </tr>
+    <tr>
+      <td><pre>-bezel.windowed &lt;path&gt;</pre></td>
+      <td>Disable to show bezels only in fullscreen modes.</td>
     </tr>
 
     <tr>
@@ -3769,8 +3773,9 @@
         <table border="1" cellpadding="4">
 	  	  <tr><th>Item</th><th>Brief description</th><th>For more information,<br>see <a href="#CommandLine">Command Line</a></th></tr>
           <tr><td>Enable bezels</td><td>Enables the bezel display if a ROM name matching bezel image or a
-          	default image (named 'default.png') can be found using the bezel path.</td><td>-showbezel</td></tr>
-          <tr><td>Bezel path</td><td>Specifies the path from where bezel images are loaded.</td><td>-bezeldir</td></tr>
+          	default image (named 'default.png') can be found using the bezel path.</td><td>-bezel.show</td></tr>
+          <tr><td>Bezel path</td><td>Specifies the path from where bezel images are loaded.</td><td>-bezel.dir</td></tr>
+		  <tr><td>Show in windowed modes</td><td>Disable to show bezels only in fullscreen modes.</td><td>-bezel.windowed</td></tr>
         </table>
       </td>
     </tr>

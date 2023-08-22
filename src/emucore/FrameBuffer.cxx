@@ -1272,7 +1272,10 @@ FBInitStatus FrameBuffer::applyVideoMode()
 
   const bool inTIAMode = myOSystem.eventHandler().inTIAMode();
 #ifdef IMAGE_SUPPORT
-  const bool showBezel = inTIAMode && myOSystem.settings().getBool("showbezel") && checkBezel();
+  const bool showBezel = inTIAMode &&
+                         myOSystem.settings().getBool("bezel.show") &&
+                         (fullScreen() || myOSystem.settings().getBool("bezel.windowed")) &&
+                         checkBezel();
 #else
   const bool showBezel = false;
 #endif
@@ -1333,28 +1336,84 @@ FBInitStatus FrameBuffer::applyVideoMode()
 
 #ifdef IMAGE_SUPPORT
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+const string FrameBuffer::getBezelName(int& index) const
+{
+  if(++index == 1)
+    return myOSystem.console().properties().get(PropType::Bezel_Name);
+
+  // Try to generate bezel name from cart name
+  const string& cartName = myOSystem.console().properties().get(PropType::Cart_Name);
+  const size_t pos = cartName.find_first_of("(");
+  if(index < 10 && pos != std::string::npos && pos > 0)
+  {
+    // The following suffixes are from "The Official No-Intro Convention",
+    // covering all used combinations by "The Bezel Project" (except single ones)
+    // (Unl) = unlicensed (Homebrews)
+    const std::array<string, 8> suffixes = {
+      " (USA)", " (USA) (Proto)", " (USA) (Unl)", " (USA) (Hack)",
+      " (Europe)", " (Germany)", " (France) (Unl)", " (Australia)"
+    };
+    return cartName.substr(0, pos - 1) + suffixes[index - 2];
+  }
+
+  if(index == 10)
+  {
+    index = -1;
+    return "default";
+  }
+  return "";
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool FrameBuffer::checkBezel()
 {
   const string& path = myOSystem.bezelDir().getPath();
-  const string& bezelName = myOSystem.console().properties().get(PropType::Bezel_Name);
-  FSNode node(path + bezelName + ".png");
+  int index = 0;
 
-  return node.exists();
+  do
+  {
+    const string& name = getBezelName(index);
+
+    if(name != EmptyString)
+    {
+      FSNode node(path + name + ".png");
+      if(node.exists())
+        return true;
+    }
+  } while (index != -1);
+  return false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool FrameBuffer::loadBezel()
 {
-  const string& path = myOSystem.bezelDir().getPath();
-  const string& bezelName = myOSystem.console().properties().get(PropType::Bezel_Name);
-  bool isValid = true;
+  bool isValid = false;
   double aspectRatio = 1;
 
   myBezelSurface = allocateSurface(myActiveVidMode.screenS.w, myActiveVidMode.screenS.h);
   try
   {
+    const string& path = myOSystem.bezelDir().getPath();
+    string imageName;
     VariantList metaData;
-    myOSystem.png().loadImage(path + bezelName + ".png", *myBezelSurface, &aspectRatio, metaData);
+    int index = 0;
+
+    do
+    {
+      const string& name = getBezelName(index);
+      if(name != EmptyString)
+      {
+        imageName = path + name + ".png";
+        FSNode node(imageName);
+        if(node.exists())
+        {
+          isValid = true;
+          break;
+        }
+      }
+    } while (index != -1);
+    if(isValid)
+      myOSystem.png().loadImage(imageName, *myBezelSurface, &aspectRatio, metaData);
   }
   catch(const runtime_error&)
   {
@@ -1370,7 +1429,7 @@ bool FrameBuffer::loadBezel()
     const uInt32 bezelH = std::min(
       myActiveVidMode.screenS.h,
       myActiveVidMode.imageR.h());
-    cerr << bezelW << " x " << bezelH << endl;
+    //cerr << bezelW << " x " << bezelH << endl;
     myBezelSurface->setDstSize(bezelW, bezelH);
     myBezelSurface->setDstPos((myActiveVidMode.screenS.w - bezelW) / 2,
                               (myActiveVidMode.screenS.h - bezelH) / 2); // center
@@ -1393,7 +1452,7 @@ float FrameBuffer::maxWindowZoom() const
   const int display = displayId(BufferType::Emulator);
   float multiplier = 1;
 
-  const bool showBezel = myOSystem.settings().getBool("showbezel");
+  const bool showBezel = myOSystem.settings().getBool("bezel.show");
   const double scaleW = showBezel ? (16. / 9.) / (4. / 3.) : 1; // = 1.333
 
   for(;;)

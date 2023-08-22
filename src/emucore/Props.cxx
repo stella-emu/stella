@@ -279,7 +279,7 @@ std::array<string, Properties::NUM_PROPS> Properties::ourDefaultProperties =
   "0",      // Display.VCenter
   "NO",     // Display.Phosphor
   "0",      // Display.PPBlend
-  "default" // Bezel.Name
+  ""        // Bezel.Name
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -345,7 +345,7 @@ const FSNode& OSystem::snapshotLoadDir()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const FSNode& OSystem::bezelDir()
 {
-  const string_view bezelDir = mySettings->getString("bezeldir");
+  const string_view bezelDir = mySettings->getString("bezel.dir");
   if(bezelDir == EmptyString)
     myBezelDir = userDir();
   else

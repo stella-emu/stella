@@ -75,7 +75,6 @@
 "Cart.Name" "AStar (NTSC)"
 "Cart.Rarity" "Homebrew"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=821"
-"Bezel.Name" "AStar (USA) (Unl)"
 ""
 
 "Cart.MD5" "012020625a3227815e47b37fd025e480"
@@ -234,7 +233,6 @@
 "Cart.ModelNo" "931502"
 "Cart.Name" "Frogger (1982) (Parker Bros) (PAL)"
 "Cart.Highscore" "{\"score_addresses\":[\"0xcc\",\"0xce\"],\"variations_address\":\"0xdd\",\"variations_count\":6}"
-"Bezel.Name" "Frogger (USA)"
 ""
 
 "Cart.MD5" "02cee0b140d2f1a1efcfb1d482a5c392"
@@ -381,7 +379,6 @@
 "Cart.Manufacturer" "Thomas Jentzsch"
 "Cart.Name" "Jammed (2001) (XYPE)"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=98"
-"Bezel.Name" "Jammed (USA) (Unl)"
 ""
 
 "Cart.MD5" "04e737c9d53cd84bfd5ee679954e4706"
@@ -440,7 +437,6 @@
 "Cart.ModelNo" "AG-019"
 "Cart.Name" "Sky Jinks (1982) (Activision) (16K)"
 "Cart.Highscore" "{\"score_addresses\":[\"0x9e\",\"0xa6\",\"0xa2\"],\"score_digits\":6,\"score_inverted\":true,\"variations_address\":\"0x99\",\"variations_count\":4,\"variations_zero_based\":true}"
-"Bezel.Name" "Sky Jinks (USA)"
 ""
 
 "Cart.MD5" "05b45ba09c05befa75ac70476829eda0"
@@ -512,7 +508,6 @@
 "Cart.Highscore" "{\"notes\":\"Variations cannot be defined\",\"score_addresses\":[\"0xe0\",\"0xe1\",\"0xe2\"],\"score_digits\":6,\"variations_count\":1}"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1188"
 "Display.Format" "PAL60"
-"Bezel.Name" "Millipede (USA)"
 ""
 
 "Cart.MD5" "0651216c4a4a9c9ac5ada3013a317c72"
@@ -699,7 +694,6 @@
 "Cart.ModelNo" "PB5300"
 "Cart.Name" "Frogger (1982) (Parker Bros)"
 "Cart.Highscore" "{\"score_addresses\":[\"0xcc\",\"0xce\"],\"variations_address\":\"0xdd\",\"variations_count\":6}"
-"Bezel.Name" "Frogger (USA)"
 ""
 
 "Cart.MD5" "082fdc8bd47fef01482ce5883c4ffdb8"
@@ -1071,6 +1065,7 @@
 "Cart.Manufacturer" "Arcadia Corporation, Stephen Harland Landrum"
 "Cart.ModelNo" "AR-4105"
 "Cart.Name" "Official Frogger (1983) (Arcadia) [a]"
+"Bezel.Name" "Official Frogger, The (USA)"
 ""
 
 "Cart.MD5" "0bfabf1e98bdb180643f35f2165995d0"
@@ -1360,7 +1355,6 @@
 "Cart.Manufacturer" "Atari, Joe Decuir, Larry Caplan, Steve Mayer, Larry Wagner"
 "Cart.ModelNo" "CX26163P"
 "Cart.Name" "Combat (32 in 1) (1988) (Atari) (PAL)"
-"Bezel.Name" "Combat (USA)"
 ""
 
 "Cart.MD5" "0efc91e45f61023cda9d086a7d3c402f"
@@ -2233,7 +2227,6 @@
 "Cart.ModelNo" "CX2676"
 "Cart.Name" "Centipede (1983) (Atari) (PAL)"
 "Cart.Highscore" "{\"notes\":\"Variations cannot be defined\",\"score_addresses\":[\"0xf4\",\"0xf5\",\"0xf6\"],\"score_digits\":6,\"variations_count\":1}"
-"Bezel.Name" "Centipede (USA)"
 ""
 
 "Cart.MD5" "17ee158d15e4a34f57a837bc1ce2b0ce"
@@ -2268,7 +2261,6 @@
 "Cart.Highscore" "{\"score_addresses\":[\"0xf3\",\"0xf1\",\"0xef\"],\"score_digits\":6,\"variations_address\":\"0xe9\",\"variations_count\":34}"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1183"
 "Display.Phosphor" "YES"
-"Bezel.Name" "Missile Command (USA)"
 ""
 
 "Cart.MD5" "1862fca4f98e66f363308b859b5863af"
@@ -2379,6 +2371,7 @@
 "Controller.PaddlesXCenter" "17"
 "Controller.PaddlesYCenter" "17"
 "Controller.MouseAxis" "AUTO 55"
+"Bezel.Name" "Super Breakout (USA)"
 ""
 
 "Cart.MD5" "1986f864e32e3e8d198b5becf3022257"
@@ -2411,7 +2404,6 @@
 "Cart.Name" "Asteroids (1981) (Atari) (PAL) [a2]"
 "Cart.Highscore" "{\"notes\":\"Variations > 32 differ by 1\",\"score_addresses\":[\"0xbd\",\"0xbe\"],\"score_bcd\":false,\"score_digits\":5,\"score_inverted\":true,\"score_trailing_zeroes\":1,\"variations_address\":\"0x80\",\"variations_bcd\":false,\"variations_count\":66}"
 "Display.Phosphor" "YES"
-"Bezel.Name" "Asteroids (USA)"
 ""
 
 "Cart.MD5" "19b3b807507653516985ba95da92499d"
@@ -2663,6 +2655,7 @@
 "Cart.Name" "Space Invaders Menu (2020) (Hack)"
 "Cart.Note" "Hack of Space Invaders"
 "Cart.Highscore" "{\"notes\":\"Only player 1 supported\",\"score_addresses\":[\"0xe6\",\"0xe8\"],\"variations_address\":\"0xdc\",\"variations_bcd\":false,\"variations_bcd_A\":false,\"variations_count\":112,\"variations_zero_based\":true}"
+"Bezel.Name" "Space Invaders (USA)"
 ""
 
 "Cart.MD5" "1da2da7974d2ca73a823523f82f517b3"
@@ -3162,7 +3155,6 @@
 "Controller.Left" "ATARIMOUSE"
 "Controller.Right" "ATARIMOUSE"
 "Display.Phosphor" "YES"
-"Bezel.Name" "Missile Command (USA)"
 ""
 
 "Cart.MD5" "23d445ea19a18fb78d5035878d9fb649"
@@ -3309,7 +3301,6 @@
 "Cart.Manufacturer" "Activision, Larry Miller"
 "Cart.ModelNo" "AX-021"
 "Cart.Name" "Spider Fighter (1983) (Activision)"
-"Bezel.Name" "Spider Fighter (USA)"
 ""
 
 "Cart.MD5" "24d9a55d8f0633e886a1b33ee1e0e797"
@@ -3559,7 +3550,6 @@
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=329"
 "Controller.PaddlesXCenter" "7"
 "Controller.MouseAxis" "28"
-"Bezel.Name" "SWOOPS! (USA) (Unl)"
 ""
 
 "Cart.MD5" "27a5d2d0c74c8e4b2c05b94c9f098eea"
@@ -3713,7 +3703,6 @@
 "Cart.Manufacturer" "Activision, Carol Shaw"
 "Cart.ModelNo" "AX-020, AX-020-04"
 "Cart.Name" "River Raid (1982) (Activision) (16K)"
-"Bezel.Name" "River Raid (USA)"
 ""
 
 "Cart.MD5" "291dd47588b9158beebe4accc3a093a6"
@@ -3813,7 +3802,6 @@
 "Cart.ModelNo" "AG-019"
 "Cart.Name" "Sky Jinks (1982) (Activision)"
 "Cart.Highscore" "{\"score_addresses\":[\"0x9e\",\"0xa6\",\"0xa2\"],\"score_digits\":6,\"score_inverted\":true,\"variations_address\":\"0x99\",\"variations_count\":4,\"variations_zero_based\":true}"
-"Bezel.Name" "Sky Jinks (USA)"
 ""
 
 "Cart.MD5" "2a10053fd08664c7cfbbb104386ed77f"
@@ -4499,6 +4487,7 @@
 "Cart.ModelNo" "AX-017, AX-017-04"
 "Cart.Name" "MegaMania (1982) (Activision)"
 "Cart.Highscore" "{\"score_addresses\":[\"0xdb\",\"0xdc\",\"0xdd\"],\"score_digits\":6,\"variations_address\":\"0x80\",\"variations_count\":4,\"variations_zero_based\":true}"
+"Bezel.Name" "MegaMania - A Space Nightmare (USA)"
 ""
 
 "Cart.MD5" "319a142aab6260842ab616382848c204"
@@ -4591,7 +4580,6 @@
 "Cart.Name" "Climber 5 (01-05-2003) (Dennis Debro)"
 "Cart.Rarity" "Homebrew"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=261"
-"Bezel.Name" "Climber 5 (USA)"
 ""
 
 "Cart.MD5" "327468d6c19697e65ab702f06502c7ed"
@@ -4778,7 +4766,6 @@
 "Cart.Name" "StarMaster (1982) (Activision) (PAL) [fixed]"
 "Cart.Note" "Use Color/BW switch to change between galactic chart and front views"
 "Cart.Highscore" "{\"notes\":\"Score only calculated when game is over\",\"score_addresses\":[\"0xc1\",\"0xc2\"],\"variations_address\":\"0x80\",\"variations_count\":4,\"variations_zero_based\":true}"
-"Bezel.Name" "StarMaster (USA)" 
 ""
 
 "Cart.MD5" "34b269387fa1aa5a396636f5ecdd63dd"
@@ -5193,7 +5180,6 @@
 "Cart.Manufacturer" "Activision, Carol Shaw"
 "Cart.ModelNo" "AX-020, AX-020-04"
 "Cart.Name" "River Raid (1982) (Activision)"
-"Bezel.Name" "River Raid (USA)"
 ""
 
 "Cart.MD5" "393e41ca8bdd35b52bf6256a968a9b89"
@@ -5285,7 +5271,6 @@
 "Cart.Name" "Missile Command (1981) (Atari)"
 "Cart.Highscore" "{\"score_addresses\":[\"0xf3\",\"0xf1\",\"0xef\"],\"score_digits\":6,\"variations_address\":\"0xe9\",\"variations_count\":34}"
 "Display.Phosphor" "YES"
-"Bezel.Name" "Missile Command (USA)"
 ""
 
 "Cart.MD5" "3a35d7f1dc2a33565c8dca52baa86bc4"
@@ -5324,6 +5309,7 @@
 "Cart.Name" "Defender II (1987) (Atari)"
 "Cart.Note" "AKA Stargate"
 "Cart.Highscore" "{\"score_addresses\":[\"0x8b\",\"0x8c\",\"0x8d\"],\"score_digits\":6,\"special_address\":\"0x89\",\"special_label\":\"Wave\",\"variations_count\":1}"
+"Bezel.Name" "Stargate (USA)"
 ""
 
 "Cart.MD5" "3a98b97b3df21715816b6ad62e843dad"
@@ -5481,7 +5467,6 @@
 "Cart.ModelNo" "CX26118"
 "Cart.Name" "Millipede (1984) (Atari)"
 "Cart.Highscore" "{\"notes\":\"Variations cannot be defined\",\"score_addresses\":[\"0xe0\",\"0xe1\",\"0xe2\"],\"score_digits\":6,\"variations_count\":1}"
-"Bezel.Name" "Millipede (USA)"
 ""
 
 "Cart.MD5" "3c72ddaf41158fdd66e4f1cb90d4fd29"
@@ -5616,6 +5601,7 @@
 "Cart.ModelNo" "EAX-017, EAX-017-04I - 711 017-720"
 "Cart.Name" "MegaMania (1982) (Activision) (PAL)"
 "Cart.Highscore" "{\"score_addresses\":[\"0xdb\",\"0xdc\",\"0xdd\"],\"score_digits\":6,\"variations_address\":\"0x80\",\"variations_count\":4,\"variations_zero_based\":true}"
+"Bezel.Name" "MegaMania - A Space Nightmare (USA)"
 ""
 
 "Cart.MD5" "3d9c2fccf8b11630762ff00811c19277"
@@ -5671,7 +5657,6 @@
 "Cart.Rarity" "Hack of Asteroids"
 "Cart.Highscore" "{\"notes\":\"Variations > 32 differ by 1\",\"score_addresses\":[\"0xbd\",\"0xbe\"],\"score_bcd\":false,\"score_digits\":5,\"score_inverted\":true,\"score_trailing_zeroes\":1,\"variations_address\":\"0x80\",\"variations_bcd\":false,\"variations_count\":66}"
 "Display.Phosphor" "YES"
-"Bezel.Name" "Asteroids (USA)"
 ""
 
 "Cart.MD5" "3e5ca1afaa27c5da3c54c9942fec528b"
@@ -5838,7 +5823,6 @@
 "Cart.Name" "AStar (PAL)"
 "Cart.Rarity" "Homebrew"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=821"
-"Bezel.Name" "AStar (USA) (Unl)"
 ""
 
 "Cart.MD5" "3fd53bfeee39064c945a769f17815a7f"
@@ -6403,7 +6387,6 @@
 "Cart.Note" "Uses Atari Mouse Controller"
 "Cart.Highscore" "{\"notes\":\"Variations cannot be defined\",\"score_addresses\":[\"0xe0\",\"0xe1\",\"0xe2\"],\"score_digits\":6,\"variations_count\":1}"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1188"
-"Bezel.Name" "Millipede (USA)"
 ""
 
 "Cart.MD5" "47464694e9cce07fdbfd096605bf39d4"
@@ -6590,7 +6573,6 @@
 "Cart.Name" "Demon Attack (1982) (Imagic) (PAL)"
 "Cart.Note" "AKA Death from Above"
 "Cart.Highscore" "{\"score_addresses\":[\"0x81\",\"0x83\",\"0x85\"],\"score_digits\":6,\"special_address\":\"0x80\",\"special_label\":\"Wave\",\"special_zero_based\":true,\"variations_address\":\"0xea\",\"variations_count\":10}"
-"Bezel.Name" "Demon Attack (USA)"
 ""
 
 "Cart.MD5" "4904a2550759b9b4570e886374f9d092"
@@ -6880,7 +6862,6 @@
 "Cart.Highscore" "{\"notes\":\"Variations cannot be defined\",\"score_addresses\":[\"0xe0\",\"0xe1\",\"0xe2\"],\"score_digits\":6,\"variations_count\":1}"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1188"
 "Display.Format" "PAL60"
-"Bezel.Name" "Millipede (USA)"
 ""
 
 "Cart.MD5" "4c030667d07d1438f0e5c458a90978d8"
@@ -6934,7 +6915,6 @@
 "Cart.Manufacturer" "Atari, Joe Decuir, Steve Mayer, Larry Wagner - Sears"
 "Cart.ModelNo" "CX2601 - 99801, 6-99801, 49-75124"
 "Cart.Name" "Combat (1977) (Atari)"
-"Bezel.Name" "Combat (USA)"
 ""
 
 "Cart.MD5" "4c8970f6c294a0a54c9c45e5e8445f93"
@@ -7269,7 +7249,6 @@
 "Cart.ModelNo" "EAG-019, EAG-019-04I - 711 019-715"
 "Cart.Name" "Sky Jinks (1982) (Activision) (PAL) (4K)"
 "Cart.Highscore" "{\"score_addresses\":[\"0x9e\",\"0xa6\",\"0xa2\"],\"score_digits\":6,\"score_inverted\":true,\"variations_address\":\"0x99\",\"variations_count\":4,\"variations_zero_based\":true}"
-"Bezel.Name" "Sky Jinks (USA)"
 ""
 
 "Cart.MD5" "504688d49a41bf03d8a955512609f3f2"
@@ -7281,7 +7260,6 @@
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=329"
 "Controller.PaddlesXCenter" "7"
 "Controller.MouseAxis" "28"
-"Bezel.Name" "SWOOPS! (USA) (Unl)"
 ""
 
 "Cart.MD5" "50568c80ac61cab789d9923c9b05b68e"
@@ -7311,7 +7289,6 @@
 "Cart.ModelNo" "EAG-019, EAG-019-04I - 711 019-715"
 "Cart.Name" "Sky Jinks (1982) (Activision) (PAL)"
 "Cart.Highscore" "{\"score_addresses\":[\"0x9e\",\"0xa6\",\"0xa2\"],\"score_digits\":6,\"score_inverted\":true,\"variations_address\":\"0x99\",\"variations_count\":4,\"variations_zero_based\":true}"
-"Bezel.Name" "Sky Jinks (USA)"
 ""
 
 "Cart.MD5" "50c7edc9f9dc0369abcdab3b4efeb5e9"
@@ -7426,7 +7403,6 @@
 "Cart.Note" "Uses Amiga Mouse Controller"
 "Cart.Highscore" "{\"notes\":\"Variations cannot be defined\",\"score_addresses\":[\"0xe0\",\"0xe1\",\"0xe2\"],\"score_digits\":6,\"variations_count\":1}"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1188"
-"Bezel.Name" "Millipede (USA)"
 ""
 
 "Cart.MD5" "522c9cf684ecd72db2f85053e6f6f720"
@@ -7477,6 +7453,7 @@
 "Cart.Name" "Decathlon (1983) (Activision) [fixed]"
 "Cart.Highscore" "{\"notes\":\"Decathlon & 100m dash share variation 1\",\"score_addresses\":[\"0x95\",\"0x96\"],\"variations_address\":\"0x80\",\"variations_bcd\":false,\"variations_count\":10,\"variations_zero_based\":true}"
 "Controller.Right" "PADDLES"
+"Bezel.Name" "Activision Decathlon, The (USA)"
 ""
 
 "Cart.MD5" "52615ae358a68de6e76467e95eb404c7"
@@ -8110,7 +8087,6 @@
 "Cart.Note" "Uses Amiga Mouse Controller"
 "Cart.Highscore" "{\"notes\":\"Variations cannot be defined\",\"score_addresses\":[\"0xf4\",\"0xf5\",\"0xf6\"],\"score_digits\":6,\"variations_count\":1}"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1180"
-"Bezel.Name" "Centipede (USA)"
 ""
 
 "Cart.MD5" "5a5390f91437af9951a5f8455b61cd43"
@@ -8427,7 +8403,6 @@
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=329"
 "Controller.PaddlesXCenter" "7"
 "Controller.MouseAxis" "28"
-"Bezel.Name" "SWOOPS! (USA) (Unl)"
 ""
 
 "Cart.MD5" "5d8fb14860c2f198472b233874f6b0c9"
@@ -8536,7 +8511,6 @@
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=37"
 "Controller.Left" "BOOSTERGRIP"
 "Controller.Right" "DRIVING"
-"Bezel.Name" "Thrust+ Platinum (USA) (Unl)" 
 ""
 
 "Cart.MD5" "5e99aa93d0acc741dcda8752c4e813ce"
@@ -8638,6 +8612,7 @@
 "Cart.Name" "Defender II (1987) (Atari) (PAL)"
 "Cart.Note" "AKA Stargate"
 "Cart.Highscore" "{\"score_addresses\":[\"0x8b\",\"0x8c\",\"0x8d\"],\"score_digits\":6,\"special_address\":\"0x89\",\"special_label\":\"Wave\",\"variations_count\":1}"
+"Bezel.Name" "Stargate (USA)"
 ""
 
 "Cart.MD5" "5f7ae9a7f8d79a3b37e8fc841f65643a"
@@ -8691,6 +8666,7 @@
 "Cart.Name" "Battlezone TC (Thomas Jentzsch) (Hack)"
 "Cart.Note" "Uses two simultaneous Joystick Controllers, Hack of Battlezone"
 "Cart.Rarity" "Hack"
+"Bezel.Name" "Battlezone (USA)"
 ""
 
 "Cart.MD5" "60358edf0c2cc76b1e549e031e50e130"
@@ -10584,7 +10560,6 @@
 "Cart.Name" "StarMaster (1982) (Activision) (PAL)"
 "Cart.Note" "Use Color/BW switch to change between galactic chart and front views"
 "Cart.Highscore" "{\"notes\":\"Score only calculated when game is over\",\"score_addresses\":[\"0xc1\",\"0xc2\"],\"variations_address\":\"0x80\",\"variations_count\":4,\"variations_zero_based\":true}"
-"Bezel.Name" "StarMaster (USA)" 
 ""
 
 "Cart.MD5" "73cb1f1666f3fd30b52b4f3d760c928f"
@@ -11169,7 +11144,6 @@
 "Cart.ModelNo" "CX2673, CX2673P"
 "Cart.Name" "Phoenix (1983) (Atari) (PAL)"
 "Cart.Highscore" "{\"score_addresses\":[\"0xc9\",\"0xc8\",\"0xc7\"],\"score_digits\":6,\"variations_count\":1}"
-"Bezel.Name" "Phoenix (USA)"
 ""
 
 "Cart.MD5" "7a09299f473105ae1ef3ad6f9f2cd807"
@@ -11573,7 +11547,6 @@
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=37"
 "Controller.Left" "BOOSTERGRIP"
 "Controller.Right" "DRIVING"
-"Bezel.Name" "Thrust+ Platinum (USA) (Unl)" 
 ""
 
 "Cart.MD5" "7dfd100bda9abb0f3744361bc7112681"
@@ -11614,7 +11587,6 @@
 "Cart.ModelNo" "CX2673"
 "Cart.Name" "Phoenix (1983) (Atari)"
 "Cart.Highscore" "{\"score_addresses\":[\"0xc9\",\"0xc8\",\"0xc7\"],\"score_digits\":6,\"variations_count\":1}"
-"Bezel.Name" "Phoenix (USA)"
 ""
 
 "Cart.MD5" "7e7c4c59d55494e66eef5e04ec1c6157"
@@ -12476,7 +12448,6 @@
 "Cart.Manufacturer" "Activision, Larry Miller - Ariola"
 "Cart.ModelNo" "EAX-021, EAX-021-04I - 711 021-720"
 "Cart.Name" "Spider Fighter (1983) (Activision) (PAL)"
-"Bezel.Name" "Spider Fighter (USA)"
 ""
 
 "Cart.MD5" "8786f4609a66fbea2cd9aa48ca7aa11c"
@@ -12492,7 +12463,6 @@
 "Cart.Name" "Climber 5 (20-03-2003) (Dennis Debro)"
 "Cart.Rarity" "Homebrew"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=261"
-"Bezel.Name" "Climber 5 (USA)"
 ""
 
 "Cart.MD5" "87b6a17132fc32f576bc49ea18729506"
@@ -12527,6 +12497,7 @@
 "Cart.Name" "Decathlon (1983) (Activision) (PAL)"
 "Cart.Rarity" "Rare"
 "Cart.Highscore" "{\"notes\":\"Decathlon & 100m dash share variation 1\",\"score_addresses\":[\"0x95\",\"0x96\"],\"variations_address\":\"0x80\",\"variations_bcd\":false,\"variations_count\":10,\"variations_zero_based\":true}"
+"Bezel.Name" "Activision Decathlon, The (USA)"
 ""
 
 "Cart.MD5" "8874b68751fd2ba6d3306a263ae57a7d"
@@ -12827,7 +12798,6 @@
 "Cart.ModelNo" "AG-019"
 "Cart.Name" "Sky Jinks (1982) (Activision) (4K)"
 "Cart.Highscore" "{\"score_addresses\":[\"0x9e\",\"0xa6\",\"0xa2\"],\"score_digits\":6,\"score_inverted\":true,\"variations_address\":\"0x99\",\"variations_count\":4,\"variations_zero_based\":true}"
-"Bezel.Name" "Sky Jinks (USA)"
 ""
 
 "Cart.MD5" "8bebac614571135933116045204f0f00"
@@ -12839,7 +12809,6 @@
 "Controller.Left" "TRAKBALL"
 "Controller.Right" "TRAKBALL"
 "Display.Phosphor" "YES"
-"Bezel.Name" "Missile Command (USA)"
 ""
 
 "Cart.MD5" "8c103a79b007a2fd5af602334937b4e1"
@@ -12868,6 +12837,7 @@
 "Controller.PaddlesXCenter" "17"
 "Controller.PaddlesYCenter" "17"
 "Controller.MouseAxis" "AUTO 45"
+"Bezel.Name" "Super Breakout (USA)"
 ""
 
 "Cart.MD5" "8c2fa33048f055f38358d51eefe417db"
@@ -12938,7 +12908,6 @@
 "Controller.Left" "TRAKBALL"
 "Controller.Right" "TRAKBALL"
 "Display.Phosphor" "YES"
-"Bezel.Name" "Missile Command (USA)"
 ""
 
 "Cart.MD5" "8cf0d333bbe85b9549b1e6b1e2390b8d"
@@ -12948,7 +12917,6 @@
 "Cart.Rarity" "Common"
 "Cart.Highscore" "{\"notes\":\"Variations > 32 differ by 1\",\"score_addresses\":[\"0xbd\",\"0xbe\"],\"score_bcd\":false,\"score_digits\":5,\"score_inverted\":true,\"score_trailing_zeroes\":1,\"variations_address\":\"0x80\",\"variations_bcd\":false,\"variations_count\":66}"
 "Display.Phosphor" "YES"
-"Bezel.Name" "Asteroids (USA)"
 ""
 
 "Cart.MD5" "8d00a38f4c8f8800f1c237215ac243fc"
@@ -12962,7 +12930,6 @@
 "Cart.Rarity" "Homebrew"
 "Cart.Highscore" "{\"score_addresses\":[\"0xf3\",\"0xf1\",\"0xef\"],\"score_digits\":6,\"variations_address\":\"0xe9\",\"variations_count\":34}"
 "Display.Phosphor" "YES"
-"Bezel.Name" "Missile Command (USA)"
 ""
 
 "Cart.MD5" "8d2a818e0255c66040802defe32c341a"
@@ -13306,7 +13273,6 @@
 "Cart.ModelNo" "CX2676"
 "Cart.Name" "Centipede (1983) (Atari)"
 "Cart.Highscore" "{\"notes\":\"Variations cannot be defined\",\"score_addresses\":[\"0xf4\",\"0xf5\",\"0xf6\"],\"score_digits\":6,\"variations_count\":1}"
-"Bezel.Name" "Centipede (USA)"
 ""
 
 "Cart.MD5" "91d1c82ceaf8af2add3973a3c34bc0cb"
@@ -13342,7 +13308,6 @@
 "Cart.Manufacturer" "Activision, Carol Shaw - Ariola"
 "Cart.ModelNo" "EAX-020, EAX-020-04B, EAX-020-04I - 711 020-720"
 "Cart.Name" "River Raid (1982) (Activision) (PAL)"
-"Bezel.Name" "River Raid (USA)"
 ""
 
 "Cart.MD5" "9281eccd7f6ef4b3ebdcfd2204c9763a"
@@ -13421,7 +13386,6 @@
 "Cart.Name" "Missile Command (1981) (Atari) (PAL)"
 "Cart.Highscore" "{\"score_addresses\":[\"0xf3\",\"0xf1\",\"0xef\"],\"score_digits\":6,\"variations_address\":\"0xe9\",\"variations_count\":34}"
 "Display.Phosphor" "YES"
-"Bezel.Name" "Missile Command (USA)"
 ""
 
 "Cart.MD5" "936ef1d6f8a57b9ff575dc195ee36b80"
@@ -13545,7 +13509,6 @@
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=37"
 "Controller.Left" "JOYSTICK"
 "Controller.Right" "DRIVING"
-"Bezel.Name" "Thrust+ Platinum (USA) (Unl)" 
 ""
 
 "Cart.MD5" "9446940866c9417f210f8552cf6c3078"
@@ -13722,7 +13685,6 @@
 "Cart.Note" "Uses Atari Mouse Controller"
 "Cart.Highscore" "{\"notes\":\"Variations cannot be defined\",\"score_addresses\":[\"0xf4\",\"0xf5\",\"0xf6\"],\"score_digits\":6,\"variations_count\":1}"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1180"
-"Bezel.Name" "Centipede (USA)"
 ""
 
 "Cart.MD5" "9671b658286e276cc4a3d02aa25931d2"
@@ -13769,7 +13731,6 @@
 "Controller.Left" "ATARIMOUSE"
 "Controller.Right" "ATARIMOUSE"
 "Display.Phosphor" "YES"
-"Bezel.Name" "Missile Command (USA)"
 ""
 
 "Cart.MD5" "96f806fc62005205d851e758d050dfca"
@@ -14227,7 +14188,6 @@
 "Cart.Name" "Climber 5 (16-04-2003) (Dennis Debro)"
 "Cart.Note" "For Philly Classic 4"
 "Cart.Rarity" "Homebrew"
-"Bezel.Name" "Climber 5 (USA)"
 ""
 
 "Cart.MD5" "9d522a3759aa855668e75962c84546f7"
@@ -14756,6 +14716,7 @@
 "Cart.ModelNo" "AX-017, AX-017-04"
 "Cart.Name" "MegaMania (1982) (Activision) (16K)"
 "Cart.Highscore" "{\"score_addresses\":[\"0xdb\",\"0xdc\",\"0xdd\"],\"score_digits\":6,\"variations_address\":\"0x80\",\"variations_count\":4,\"variations_zero_based\":true}"
+"Bezel.Name" "MegaMania - A Space Nightmare (USA)"
 ""
 
 "Cart.MD5" "a3873d7c544af459f40d58dfcfb78887"
@@ -14797,7 +14758,6 @@
 "Cart.Name" "AStar (PAL60)"
 "Cart.Rarity" "Homebrew"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=821"
-"Bezel.Name" "AStar (USA) (Unl)"
 ""
 
 "Cart.MD5" "a406d2f6d84e61d842f4cb13b2b1cfa7"
@@ -14838,7 +14798,6 @@
 "Cart.ModelNo" "AG-019"
 "Cart.Name" "Sky Jinks (1982) (Activision) (8K)"
 "Cart.Highscore" "{\"score_addresses\":[\"0x9e\",\"0xa6\",\"0xa2\"],\"score_digits\":6,\"score_inverted\":true,\"variations_address\":\"0x99\",\"variations_count\":4,\"variations_zero_based\":true}"
-"Bezel.Name" "Sky Jinks (USA)"
 ""
 
 "Cart.MD5" "a47e26096de6f6487bf5dd2d1cced294"
@@ -15041,7 +15000,6 @@
 "Cart.ModelNo" "CX26118, CX26118P"
 "Cart.Name" "Millipede (1984) (Atari) (PAL)"
 "Cart.Highscore" "{\"notes\":\"Variations cannot be defined\",\"score_addresses\":[\"0xe0\",\"0xe1\",\"0xe2\"],\"score_digits\":6,\"variations_count\":1}"
-"Bezel.Name" "Millipede (USA)"
 ""
 
 "Cart.MD5" "a779b9fa02c62d00d7c31ed51268f18a"
@@ -15260,7 +15218,6 @@
 "Cart.Name" "Asteroids (1981) (Atari) (PAL) [a1]"
 "Cart.Highscore" "{\"notes\":\"Variations > 32 differ by 1\",\"score_addresses\":[\"0xbd\",\"0xbe\"],\"score_bcd\":false,\"score_digits\":5,\"score_inverted\":true,\"score_trailing_zeroes\":1,\"variations_address\":\"0x80\",\"variations_bcd\":false,\"variations_count\":66}"
 "Display.Phosphor" "YES"
-"Bezel.Name" "Asteroids (USA)"
 ""
 
 "Cart.MD5" "a97733b0852ee3096300102cb0689175"
@@ -15321,6 +15278,7 @@
 "Cart.Rarity" "New Release"
 "Cart.Highscore" "{\"score_addresses\":[\"0xd4\",\"0xd3\"],\"score_digits\":5,\"score_trailing_zeroes\":1,\"variations_address\":\"0xe5\",\"variations_count\":3,\"variations_zero_based\":true}"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=134"
+"Bezel.Name" "Oystron (USA) (Unl)"
 ""
 
 "Cart.MD5" "aa5cfe3b20395aba1d479135943ad85c"
@@ -15435,7 +15393,6 @@
 "Cart.Manufacturer" "Activision - Imagineering, Dan Kitchen, David Lubar"
 "Cart.ModelNo" "AK-048-04"
 "Cart.Name" "River Raid II (1988) (Activision)"
-"Bezel.Name" "River Raid (USA)"
 ""
 
 "Cart.MD5" "ab5bf1ef5e463ad1cbb11b6a33797228"
@@ -15482,7 +15439,6 @@
 "Cart.Manufacturer" "Atari, Joe Decuir, Steve Mayer, Larry Wagner - Sears"
 "Cart.ModelNo" "CX2601 - 99801, 6-99801, 49-75124"
 "Cart.Name" "Combat (1977) (Atari) (4K)"
-"Bezel.Name" "Combat (USA)"
 ""
 
 "Cart.MD5" "ac0ddbcff34d064009591607746e33b8"
@@ -15525,6 +15481,7 @@
 "Cart.Rarity" "Rare"
 "Cart.Highscore" "{\"notes\":\"Decathlon & 100m dash share variation 1\",\"score_addresses\":[\"0x95\",\"0x96\"],\"variations_address\":\"0x80\",\"variations_bcd\":false,\"variations_count\":10,\"variations_zero_based\":true}"
 "Controller.Right" "PADDLES"
+"Bezel.Name" "Activision Decathlon, The (USA)"
 ""
 
 "Cart.MD5" "ac9adbd6de786a242e19d4bec527982b"
@@ -15625,7 +15582,6 @@
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=829"
 "Console.RightDiff" "A"
 "Display.Phosphor" "YES"
-"Bezel.Name" "Lady Bug (USA) (Unl)"
 ""
 
 "Cart.MD5" "ae047e9468bda961d8e9e9d8ff52980f"
@@ -15903,7 +15859,6 @@
 "Cart.Name" "Demon Attack (1982) (Imagic) [fixed]"
 "Cart.Note" "AKA Death from Above"
 "Cart.Highscore" "{\"score_addresses\":[\"0x81\",\"0x83\",\"0x85\"],\"score_digits\":6,\"special_address\":\"0x80\",\"special_label\":\"Wave\",\"special_zero_based\":true,\"variations_address\":\"0xea\",\"variations_count\":10}"
-"Bezel.Name" "Demon Attack (USA)"
 ""
 
 "Cart.MD5" "b1339c56a9ea63122232fe4328373ac5"
@@ -15988,7 +15943,6 @@
 "Cart.Rarity" "Common"
 "Cart.Highscore" "{\"notes\":\"Variations > 32 differ by 1\",\"score_addresses\":[\"0xbd\",\"0xbe\"],\"score_bcd\":false,\"score_digits\":5,\"score_inverted\":true,\"score_trailing_zeroes\":1,\"variations_address\":\"0x80\",\"variations_bcd\":false,\"variations_count\":66}"
 "Display.Phosphor" "YES"
-"Bezel.Name" "Asteroids (USA)"
 ""
 
 "Cart.MD5" "b23ebf427713dd0198b7ef47dbd07ef4"
@@ -16629,14 +16583,12 @@
 "Cart.MD5" "ba317f83cdfcd58cbc65aac1ccb87bc5"
 "Cart.Manufacturer" "Thomas Jentzsch"
 "Cart.Name" "Jammed (2001) (XYPE) [a1]"
-"Bezel.Name" "Jammed (USA) (Unl)"
 ""
 
 "Cart.MD5" "ba3a17efd26db8b4f09c0cf7afdf84d1"
 "Cart.Manufacturer" "Activision, Larry Miller"
 "Cart.ModelNo" "AX-021"
 "Cart.Name" "Spider Fighter (1983) (Activision) (16K)"
-"Bezel.Name" "Spider Fighter (USA)"
 ""
 
 "Cart.MD5" "ba3b0eebccc7b791107de5b4abb671b4"
@@ -16701,7 +16653,6 @@
 "Cart.Name" "Asteroids (1981) (Atari) (PAL) [no copyright]"
 "Cart.Highscore" "{\"notes\":\"Variations > 32 differ by 1\",\"score_addresses\":[\"0xbd\",\"0xbe\"],\"score_bcd\":false,\"score_digits\":5,\"score_inverted\":true,\"score_trailing_zeroes\":1,\"variations_address\":\"0x80\",\"variations_bcd\":false,\"variations_count\":66}"
 "Display.Phosphor" "YES"
-"Bezel.Name" "Asteroids (USA)"
 ""
 
 "Cart.MD5" "bb579404924c40ca378b4aff6ccf302d"
@@ -16809,7 +16760,6 @@
 "Cart.Manufacturer" "Activision, Carol Shaw"
 "Cart.ModelNo" "AX-020, AX-020-04"
 "Cart.Name" "River Raid (1982) (Activision) (8K)"
-"Bezel.Name" "River Raid (USA)"
 ""
 
 "Cart.MD5" "bce4c291d0007f16997faa5c4db0a6b8"
@@ -16930,7 +16880,6 @@
 "Cart.Manufacturer" "Atari, Joe Decuir, Steve Mayer, Larry Wagner - Sears"
 "Cart.ModelNo" "CX2601 - 99801, 6-99801, 49-75124"
 "Cart.Name" "Combat (1977) (Atari) (4K) [a]"
-"Bezel.Name" "Combat (USA)"
 ""
 
 "Cart.MD5" "be3f0e827e2f748819dac2a22d6ac823"
@@ -16990,6 +16939,7 @@
 "Cart.Name" "Decathlon (HES) (PAL) (16K)"
 "Cart.Note" "AKA Activision Decathlon"
 "Cart.Highscore" "{\"notes\":\"Decathlon & 100m dash share variation 1\",\"score_addresses\":[\"0x95\",\"0x96\"],\"variations_address\":\"0x80\",\"variations_bcd\":false,\"variations_count\":10,\"variations_zero_based\":true}"
+"Bezel.Name" "Activision Decathlon, The (USA)"
 ""
 
 "Cart.MD5" "bf84f528de44225dd733c0e6a8e400a0"
@@ -17157,7 +17107,6 @@
 "Cart.Note" "Uses Atari Trak-Ball Controller"
 "Cart.Highscore" "{\"notes\":\"Variations cannot be defined\",\"score_addresses\":[\"0xe0\",\"0xe1\",\"0xe2\"],\"score_digits\":6,\"variations_count\":1}"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1188"
-"Bezel.Name" "Millipede (USA)"
 ""
 
 "Cart.MD5" "c150c76cbde2c9b5a97eb5399d46c64f"
@@ -17903,6 +17852,7 @@
 "Cart.Name" "Space Invaders Menu (2020) (PAL) (Hack)"
 "Cart.Note" "Hack of Space Invaders"
 "Cart.Highscore" "{\"notes\":\"Only player 1 supported\",\"score_addresses\":[\"0xe6\",\"0xe8\"],\"variations_address\":\"0xdc\",\"variations_bcd\":false,\"variations_bcd_A\":false,\"variations_count\":112,\"variations_zero_based\":true}"
+"Bezel.Name" "Space Invaders (USA)"
 ""
 
 "Cart.MD5" "c8c7da12f087e8d16d3e6a21b371a5d3"
@@ -18258,7 +18208,6 @@
 "Cart.Rarity" "Common"
 "Cart.Highscore" "{\"notes\":\"Variations > 32 differ by 1\",\"score_addresses\":[\"0xbd\",\"0xbe\"],\"score_bcd\":false,\"score_digits\":5,\"score_inverted\":true,\"score_trailing_zeroes\":1,\"variations_address\":\"0x80\",\"variations_bcd\":false,\"variations_count\":66}"
 "Display.Phosphor" "YES"
-"Bezel.Name" "Asteroids (USA)"
 ""
 
 "Cart.MD5" "cccfe9e9a11b1dad04beba46eefb7351"
@@ -18910,7 +18859,6 @@
 "Cart.Manufacturer" "Activision, Larry Miller"
 "Cart.ModelNo" "AX-021"
 "Cart.Name" "Spider Fighter (1983) (Activision) (8K)"
-"Bezel.Name" "Spider Fighter (USA)"
 ""
 
 "Cart.MD5" "d28afe0517a046265c418181fa9dd9a1"
@@ -19039,6 +18987,7 @@
 "Cart.ModelNo" "AX-017, AX-017-04"
 "Cart.Name" "MegaMania (1982) (Activision) (8K)"
 "Cart.Highscore" "{\"score_addresses\":[\"0xdb\",\"0xdc\",\"0xdd\"],\"score_digits\":6,\"variations_address\":\"0x80\",\"variations_count\":4,\"variations_zero_based\":true}"
+"Bezel.Name" "MegaMania - A Space Nightmare (USA)"
 ""
 
 "Cart.MD5" "d45ebf130ed9070ea8ebd56176e48a38"
@@ -19123,7 +19072,6 @@
 "Cart.Name" "Asteroids (1981) (Atari) [a2]"
 "Cart.Highscore" "{\"notes\":\"Variations > 32 differ by 1\",\"score_addresses\":[\"0xbd\",\"0xbe\"],\"score_bcd\":false,\"score_digits\":5,\"score_inverted\":true,\"score_trailing_zeroes\":1,\"variations_address\":\"0x80\",\"variations_bcd\":false,\"variations_count\":66}"
 "Display.Phosphor" "YES"
-"Bezel.Name" "Asteroids (USA)"
 ""
 
 "Cart.MD5" "d573089534ca596e64efef474be7b6bc"
@@ -19172,7 +19120,6 @@
 "Cart.Manufacturer" "Activision, Carol Shaw"
 "Cart.ModelNo" "EAX-020"
 "Cart.Name" "River Raid (1982) (Activision) (SECAM)"
-"Bezel.Name" "River Raid (USA)"
 ""
 
 "Cart.MD5" "d5e27051512c1e7445a9bf91501bda09"
@@ -19238,7 +19185,6 @@
 "Cart.Name" "StarMaster (1982) (Activision)"
 "Cart.Note" "Use Color/BW switch to change between galactic chart and front views"
 "Cart.Highscore" "{\"notes\":\"Score only calculated when game is over\",\"score_addresses\":[\"0xc1\",\"0xc2\"],\"variations_address\":\"0x80\",\"variations_count\":4,\"variations_zero_based\":true}"
-"Bezel.Name" "StarMaster (USA)" 
 ""
 
 "Cart.MD5" "d6a44277c3eb4f9d039185e0ecf7bfa6"
@@ -19840,7 +19786,6 @@
 "Cart.Name" "Asteroids (1981) (Atari)"
 "Cart.Highscore" "{\"notes\":\"Variations > 32 differ by 1\",\"score_addresses\":[\"0xbd\",\"0xbe\"],\"score_bcd\":false,\"score_digits\":5,\"score_inverted\":true,\"score_trailing_zeroes\":1,\"variations_address\":\"0x80\",\"variations_bcd\":false,\"variations_count\":66}"
 "Display.Phosphor" "YES"
-"Bezel.Name" "Asteroids (USA)"
 ""
 
 "Cart.MD5" "dd8a2124d4eda200df715c698a6ea887"
@@ -19978,7 +19923,6 @@
 "Cart.Manufacturer" "Activision, David Lubar"
 "Cart.ModelNo" "AK-048-04"
 "Cart.Name" "River Raid II (1988) (Activision) [a]"
-"Bezel.Name" "River Raid (USA)"
 ""
 
 "Cart.MD5" "ded26e1cb17f875a9c17515c900f9933"
@@ -20100,6 +20044,7 @@
 "Cart.Manufacturer" "Atari, Robert C. Polaro, Alan J. Murphy - Sears"
 "Cart.ModelNo" "CX2609 - 49-75186"
 "Cart.Name" "Defender (11-XX-1981) (Atari) (Prototype)"
+"Cart.Url" "http://www.atariprotos.com/2600/software/defender/defender.htm"
 "Cart.Rarity" "Prototype"
 ""
 
@@ -20378,7 +20323,6 @@
 "Cart.Rarity" "Homebrew"
 "Cart.Highscore" "{\"score_addresses\":[\"0x81\",\"0x82\",\"0x83\"],\"score_digits\":6,\"special_address\":\"0x84\",\"special_label\":\"Wave\",\"special_zero_based\":true,\"variations_count\":1}"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=229"
-"Bezel.Name" "Star Fire (USA)"
 ""
 
 "Cart.MD5" "e28113d10c0c14cc3b5f430b0d142fcb"
@@ -20441,7 +20385,6 @@
 "Cart.Manufacturer" "Atari, Joe Decuir, Steve Mayer, Larry Wagner"
 "Cart.ModelNo" "CX26163P"
 "Cart.Name" "Combat (32 in 1) (1988) (Atari) (PAL) (4K)"
-"Bezel.Name" "Combat (USA)"
 ""
 
 "Cart.MD5" "e30f3a37032da52d7815b5a409f6d4b4"
@@ -20972,7 +20915,6 @@
 "Cart.Manufacturer" "Atari, Joe Decuir, Larry Caplan, Steve Mayer, Larry Wagner"
 "Cart.ModelNo" "CX2601, CX2601P"
 "Cart.Name" "Combat (1977) (Atari) (PAL)"
-"Bezel.Name" "Combat (USA)"
 ""
 
 "Cart.MD5" "e8e7b9bdf4bf04930c2bcaa0278ee637"
@@ -21070,7 +21012,6 @@
 "Cart.Highscore" "{\"notes\":\"Variations cannot be defined\",\"score_addresses\":[\"0xe0\",\"0xe1\",\"0xe2\"],\"score_digits\":6,\"variations_count\":1}"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1188"
 "Display.Format" "PAL60"
-"Bezel.Name" "Millipede (USA)"
 ""
 
 "Cart.MD5" "e9e646f730b8400cd5da08c849ef3e3b"
@@ -21412,6 +21353,7 @@
 "Cart.ModelNo" "EAZ-030"
 "Cart.Name" "Decathlon (1983) (Activision) (SECAM)"
 "Cart.Highscore" "{\"notes\":\"Decathlon & 100m dash share variation 1\",\"score_addresses\":[\"0x95\",\"0x96\"],\"variations_address\":\"0x80\",\"variations_bcd\":false,\"variations_count\":10,\"variations_zero_based\":true}"
+"Bezel.Name" "Activision Decathlon, The (USA)"
 ""
 
 "Cart.MD5" "ede7e8bf865b0afb4744f86d13624f9a"
@@ -21711,7 +21653,6 @@
 "Cart.Name" "Demon Attack (1982) (Imagic)"
 "Cart.Note" "AKA Death from Above"
 "Cart.Highscore" "{\"score_addresses\":[\"0x81\",\"0x83\",\"0x85\"],\"score_digits\":6,\"special_address\":\"0x80\",\"special_label\":\"Wave\",\"special_zero_based\":true,\"variations_address\":\"0xea\",\"variations_count\":10}"
-"Bezel.Name" "Demon Attack (USA)"
 ""
 
 "Cart.MD5" "f0ef9a1e5d4027a157636d7f19952bb5"
@@ -21762,7 +21703,6 @@
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=829"
 "Console.RightDiff" "A"
 "Display.Phosphor" "YES"
-"Bezel.Name" "Lady Bug (USA) (Unl)"
 ""
 
 "Cart.MD5" "f14d5e96ec3380aef57a4b70132c6677"
@@ -22002,7 +21942,6 @@
 "Cart.Name" "Toyshop Trouble (AtariAge)"
 "Cart.Note" "F8 Emulator Release"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=873"
-"Bezel.Name" "Toyshop Trouble (USA) (Unl)"
 ""
 
 "Cart.MD5" "f3c431930e035a457fe370ed4d230659"
@@ -22850,7 +22789,6 @@
 "Cart.Rarity" "Homebrew"
 "Cart.Highscore" "{\"score_addresses\":[\"0x81\",\"0x82\",\"0x83\"],\"score_digits\":6,\"special_address\":\"0x84\",\"special_label\":\"Wave\",\"special_zero_based\":true,\"variations_count\":1}"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=229"
-"Bezel.Name" "Star Fire (USA)"
 ""
 
 "Cart.MD5" "fb88c400d602fe759ae74ef1716ee84e"
@@ -22891,6 +22829,7 @@
 "Cart.Name" "Robot Tank TV (Thomas Jentzsch) (Hack)"
 "Cart.Note" "Uses two simultaneous Joystick Controllers, Hack of Robot Tank"
 "Cart.Rarity" "Hack"
+"Bezel.Name" "Robot Tank (USA)"
 ""
 
 "Cart.MD5" "fbb4f3debf48dc961b559384467f2057"
@@ -23040,7 +22979,6 @@
 "Cart.ModelNo" "CX2673, CX2673P"
 "Cart.Name" "Phoenix (1982) (Atari) (PAL) [a]"
 "Cart.Highscore" "{\"score_addresses\":[\"0xc9\",\"0xc8\",\"0xc7\"],\"score_digits\":6,\"variations_count\":1}"
-"Bezel.Name" "Phoenix (USA)"
 ""
 
 "Cart.MD5" "fd9b321cee5fbb32c39ba3ca5d9ec7cf"

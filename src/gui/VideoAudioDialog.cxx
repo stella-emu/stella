@@ -475,6 +475,12 @@ void VideoAudioDialog::addBezelTab()
                                    _w - xpos - bwidth - fontWidth - HBORDER - 2, lineHeight, "");
   wid.push_back(myBezelPath);
 
+  ypos += lineHeight + VGAP * 3;
+  myBezelShowWindowed = new CheckboxWidget(myTab, _font, xpos, ypos,
+                                           "Show in windowed modes");
+  //myBezelEnableCheckbox->setToolTip(Event::BezelToggle);
+  wid.push_back(myBezelShowWindowed);
+
   // Add items for tab 4
   addToFocusList(wid, myTab, tabID);
 
@@ -724,8 +730,9 @@ void VideoAudioDialog::loadConfig()
 
   /////////////////////////////////////////////////////////////////////////////
   // Bezel tab
-  myBezelEnableCheckbox->setState(settings.getBool("showbezel"));
-  myBezelPath->setText(settings.getString("bezeldir"));
+  myBezelEnableCheckbox->setState(settings.getBool("bezel.show"));
+  myBezelPath->setText(settings.getString("bezel.dir"));
+  myBezelShowWindowed->setState(settings.getBool("bezel.windowed"));
   handleBezelChange();
 
   /////////////////////////////////////////////////////////////////////////////
@@ -854,8 +861,9 @@ void VideoAudioDialog::saveConfig()
 
   /////////////////////////////////////////////////////////////////////////////
   // Bezel tab
-  settings.setValue("showbezel", myBezelEnableCheckbox->getState());
-  settings.setValue("bezeldir", myBezelPath->getText());
+  settings.setValue("bezel.show", myBezelEnableCheckbox->getState());
+  settings.setValue("bezel.dir", myBezelPath->getText());
+  settings.setValue("bezel.windowed", myBezelShowWindowed->getState());
 
   // Note: The following has to happen after all video related setting have been saved
   if(instance().hasConsole())
@@ -994,6 +1002,7 @@ void VideoAudioDialog::setDefaults()
     case 3: // Bezels
       myBezelEnableCheckbox->setState(true);
       myBezelPath->setText(instance().userDir().getShortPath());
+      myBezelShowWindowed->setState(false);
       handleBezelChange();
       break;
 
@@ -1164,6 +1173,7 @@ void VideoAudioDialog::handleBezelChange()
 {
   myOpenBrowserButton->setEnabled(myBezelEnableCheckbox->getState());
   myBezelPath->setEnabled(myBezelEnableCheckbox->getState());
+  myBezelShowWindowed->setEnabled(myBezelEnableCheckbox->getState());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
