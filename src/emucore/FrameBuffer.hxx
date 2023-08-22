@@ -471,7 +471,7 @@ class FrameBuffer
 
       @return  The bezel name for the given index
     */
-    const string FrameBuffer::getBezelName(int& index) const;
+    const string getBezelName(int& index) const;
 
     /**
       Check if a bezel for the current ROM name exists.
