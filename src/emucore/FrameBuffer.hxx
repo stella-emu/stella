@@ -485,7 +485,7 @@ class FrameBuffer
 
       @return  Whether the bezel was loaded or not
     */
-    bool loadBezel();
+    bool loadBezel(VideoModeHandler::Mode::BezelInfo& info);
   #endif
 
     /**

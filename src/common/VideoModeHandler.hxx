@@ -38,6 +38,23 @@ class VideoModeHandler
         Fill,       // Stretch to fill all available space
         None        // No stretching (1x zoom)
       };
+      struct BezelInfo
+      {
+        bool enabled{false};
+        bool windowedMode{false};
+        uInt32 topBorder{0};
+        uInt32 bottomBorder{0};
+
+        BezelInfo() = default;
+        BezelInfo(bool _enabled, bool _windowedMode, uInt32 _topBorder, uInt32 _bottomBorder)
+          : enabled{_enabled}, windowedMode{_windowedMode},
+            topBorder{_topBorder}, bottomBorder(_bottomBorder) { }
+
+        uInt32 vBorder() { return topBorder + bottomBorder; }
+        uInt32 hBorder() { return (topBorder + bottomBorder) * 4.F / 3.F; }
+        // Scale width from 4:3 into 16:9
+        float scaleW(float width = 1.F) { return width * (16.F / 9.F) / (4.F / 3.F); }
+      };
 
       Common::Rect imageR;
       Common::Rect screenR;
@@ -50,9 +67,13 @@ class VideoModeHandler
       Mode() = default;
       Mode(uInt32 iw, uInt32 ih, uInt32 sw, uInt32 sh, Stretch smode,
            Int32 fsindex = -1, string_view desc = "",
-           float zoomLevel = 1.F, float overscan = 1.F, bool showBezel = false);
+           float zoomLevel = 1.F, float overscan = 1.F,
+           BezelInfo bezelInfo = BezelInfo());
+           //bool showBezel = false, Int32 bezelBorder = 0);
       Mode(uInt32 iw, uInt32 ih, Stretch smode, Int32 fsindex = -1,
-           string_view desc = "", float zoomLevel = 1.F, bool showBezel = false);
+           string_view desc = "", float zoomLevel = 1.F,
+           BezelInfo bezelInfo = BezelInfo());
+           //bool showBezel = false, Int32 bezelBorder = 0);
 
       friend ostream& operator<<(ostream& os, const Mode& vm)
       {
@@ -94,8 +115,8 @@ class VideoModeHandler
 
       @return  A video mode based on the given criteria
     */
-    const VideoModeHandler::Mode& buildMode(const Settings& settings,
-                                            bool inTIAMode, bool showBezel);
+    const VideoModeHandler::Mode& buildMode(const Settings& settings, bool inTIAMode,
+                                            Mode::BezelInfo bezelInfo = Mode::BezelInfo());
 
   private:
     Common::Size myImage, myDisplay;
