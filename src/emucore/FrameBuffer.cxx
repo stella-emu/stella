@@ -1279,9 +1279,13 @@ FBInitStatus FrameBuffer::applyVideoMode()
 #else
   const bool showBezel = false;
 #endif
+  VideoModeHandler::Mode::BezelInfo bezelInfo(showBezel,
+                                              myOSystem.settings().getBool("bezel.windowed"),
+                                              myOSystem.settings().getInt("bezel.topborder"),
+                                              myOSystem.settings().getInt("bezel.bottomborder"));
 
   // Build the new mode based on current settings
-  const VideoModeHandler::Mode& mode = myVidModeHandler.buildMode(s, inTIAMode, showBezel);
+  const VideoModeHandler::Mode& mode = myVidModeHandler.buildMode(s, inTIAMode, bezelInfo);
   if(mode.imageR.size() > mode.screenS)
     return FBInitStatus::FailTooLarge;
 
@@ -1306,14 +1310,9 @@ FBInitStatus FrameBuffer::applyVideoMode()
     if(inTIAMode)
     {
 #ifdef IMAGE_SUPPORT
-    if(myBezelSurface)
-      deallocateSurface(myBezelSurface);
-    myBezelSurface = nullptr;
-    if(showBezel)
-      loadBezel();
+      loadBezel(bezelInfo);
 #endif
-
-    myTIASurface->initialize(myOSystem.console(), myActiveVidMode);
+      myTIASurface->initialize(myOSystem.console(), myActiveVidMode);
       if(fullScreen())
         myOSystem.settings().setValue("tia.fs_stretch",
           myActiveVidMode.stretch == VideoModeHandler::Mode::Stretch::Fill);
@@ -1385,63 +1384,87 @@ bool FrameBuffer::checkBezel()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool FrameBuffer::loadBezel()
+bool FrameBuffer::loadBezel(VideoModeHandler::Mode::BezelInfo& info)
 {
   bool isValid = false;
-  double aspectRatio = 1;
 
-  myBezelSurface = allocateSurface(myActiveVidMode.screenS.w, myActiveVidMode.screenS.h);
-  try
-  {
-    const string& path = myOSystem.bezelDir().getPath();
-    string imageName;
-    VariantList metaData;
-    int index = 0;
-
-    do
-    {
-      const string& name = getBezelName(index);
-      if(name != EmptyString)
-      {
-        imageName = path + name + ".png";
-        FSNode node(imageName);
-        if(node.exists())
-        {
-          isValid = true;
-          break;
-        }
-      }
-    } while (index != -1);
-    if(isValid)
-      myOSystem.png().loadImage(imageName, *myBezelSurface, &aspectRatio, metaData);
-  }
-  catch(const runtime_error&)
-  {
-    isValid = false;
-  }
-
-  if(isValid)
-  {
-    // Scale bezel to fullscreen (preserve or stretch) or window size
-    const uInt32 bezelW = std::min(
-      myActiveVidMode.screenS.w,
-      static_cast<uInt32>(myActiveVidMode.imageR.w() * (16.F / 9.F) / (4.F / 3.F)));
-    const uInt32 bezelH = std::min(
-      myActiveVidMode.screenS.h,
-      myActiveVidMode.imageR.h());
-    //cerr << bezelW << " x " << bezelH << endl;
-    myBezelSurface->setDstSize(bezelW, bezelH);
-    myBezelSurface->setDstPos((myActiveVidMode.screenS.w - bezelW) / 2,
-                              (myActiveVidMode.screenS.h - bezelH) / 2); // center
-    myBezelSurface->setScalingInterpolation(ScalingInterpolation::sharp);
-
-    // Enable blending to allow overlaying the bezel over the TIA output
-    myBezelSurface->attributes().blending = true;
-    myBezelSurface->attributes().blendalpha = 100;
-    myBezelSurface->applyAttributes();
-  }
   if(myBezelSurface)
-    myBezelSurface->setVisible(isValid);
+    deallocateSurface(myBezelSurface);
+  myBezelSurface = nullptr;
+
+  if(info.enabled)
+  {
+    double aspectRatio = 1;
+
+    myBezelSurface = allocateSurface(myActiveVidMode.screenS.w, myActiveVidMode.screenS.h);
+    try
+    {
+      const string& path = myOSystem.bezelDir().getPath();
+      string imageName;
+      VariantList metaData;
+      int index = 0;
+
+      do
+      {
+        const string& name = getBezelName(index);
+        if(name != EmptyString)
+        {
+          imageName = path + name + ".png";
+          FSNode node(imageName);
+          if(node.exists())
+          {
+            isValid = true;
+            break;
+          }
+        }
+      } while(index != -1);
+      if(isValid)
+        myOSystem.png().loadImage(imageName, *myBezelSurface, &aspectRatio, metaData);
+    }
+    catch(const runtime_error&)
+    {
+      isValid = false;
+    }
+
+    if(isValid)
+    {
+      const float overscan = 1 - myOSystem.settings().getInt("tia.fs_overscan") / 100.0;
+
+      uInt32 imageW, imageH;
+      if(fullScreen())
+      {
+        const float hBorder = info.hBorder() * overscan * myActiveVidMode.zoom;
+        const float vBorder = info.vBorder() * overscan * myActiveVidMode.zoom;
+        imageW = info.scaleW(myActiveVidMode.imageR.w() + hBorder);
+        imageH = myActiveVidMode.imageR.h() + vBorder;
+      }
+      else
+      {
+        imageW = info.scaleW(myActiveVidMode.imageR.w());
+        imageH = myActiveVidMode.imageR.h();
+      }
+
+      // Scale bezel to fullscreen (preserve or stretch) or window size
+      const uInt32 bezelW = std::min(
+        myActiveVidMode.screenS.w, imageW);
+      //static_cast<uInt32>(myActiveVidMode.imageR.w() * (16.F / 9.F) / (4.F / 3.F)) + static_cast<int>(40 * myActiveVidMode.zoom));
+      const uInt32 bezelH = std::min(
+        myActiveVidMode.screenS.h, imageH);
+      //myActiveVidMode.imageR.h() + static_cast<int>(30 * myActiveVidMode.zoom));
+    //cerr << bezelW << " x " << bezelH << endl;
+      myBezelSurface->setDstSize(bezelW, bezelH);
+      myBezelSurface->setDstPos((myActiveVidMode.screenS.w - bezelW) / 2,
+                                (myActiveVidMode.screenS.h - bezelH) / 2); // center
+      myBezelSurface->setScalingInterpolation(ScalingInterpolation::sharp);
+
+      // Enable blending to allow overlaying the bezel over the TIA output
+      myBezelSurface->attributes().blending = true;
+      myBezelSurface->attributes().blendalpha = 100;
+      myBezelSurface->applyAttributes();
+    }
+    if(myBezelSurface)
+      myBezelSurface->setVisible(isValid);
+  }
   return isValid;
 }
 #endif

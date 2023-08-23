@@ -481,6 +481,22 @@ void VideoAudioDialog::addBezelTab()
   //myBezelEnableCheckbox->setToolTip(Event::BezelToggle);
   wid.push_back(myBezelShowWindowed);
 
+  ypos += lineHeight + VGAP * 1;
+  myTopBorderSlider = new SliderWidget(myTab, _font, xpos, ypos,
+                                        "Top border    ", 0, 0, 6 * fontWidth, "px");
+  myTopBorderSlider->setMinValue(0); myTopBorderSlider->setMaxValue(50);
+  myTopBorderSlider->setTickmarkIntervals(5);
+  //myTopBorderSlider->setToolTip(Event::VolumeDecrease, Event::VolumeIncrease);
+  wid.push_back(myTopBorderSlider);
+
+  ypos += lineHeight + VGAP;
+  myBtmBorderSlider = new SliderWidget(myTab, _font, xpos, ypos,
+                                       "Bottom border ", 0, 0, 6 * fontWidth, "px");
+  myBtmBorderSlider->setMinValue(0); myBtmBorderSlider->setMaxValue(50);
+  myBtmBorderSlider->setTickmarkIntervals(5);
+  //myBtmBorderSlider->setToolTip(Event::VolumeDecrease, Event::VolumeIncrease);
+  wid.push_back(myBtmBorderSlider);
+
   // Add items for tab 4
   addToFocusList(wid, myTab, tabID);
 
@@ -679,7 +695,6 @@ void VideoAudioDialog::loadConfig()
     myPhaseShift->setTickmarkIntervals(4);
     myPhaseShift->setToolTip("Adjust PAL phase shift of 'Custom' palette.");
     myPhaseShift->setValue(myPaletteAdj.phasePal);
-
   }
   else
   {
@@ -733,6 +748,8 @@ void VideoAudioDialog::loadConfig()
   myBezelEnableCheckbox->setState(settings.getBool("bezel.show"));
   myBezelPath->setText(settings.getString("bezel.dir"));
   myBezelShowWindowed->setState(settings.getBool("bezel.windowed"));
+  myTopBorderSlider->setValue(settings.getInt("bezel.topborder"));
+  myBtmBorderSlider->setValue(settings.getInt("bezel.bottomborder"));
   handleBezelChange();
 
   /////////////////////////////////////////////////////////////////////////////
@@ -850,8 +867,7 @@ void VideoAudioDialog::saveConfig()
   NTSCFilter::saveConfig(settings);
 
   // TV phosphor mode & blend
-  settings.setValue("tv.phosphor",
-                                 myTVPhosphor->getState() ? "always" : "byrom");
+  settings.setValue("tv.phosphor", myTVPhosphor->getState() ? "always" : "byrom");
   settings.setValue("tv.phosblend", myTVPhosLevel->getValueLabel() == "Off"
                                  ? "0" : myTVPhosLevel->getValueLabel());
 
@@ -864,6 +880,9 @@ void VideoAudioDialog::saveConfig()
   settings.setValue("bezel.show", myBezelEnableCheckbox->getState());
   settings.setValue("bezel.dir", myBezelPath->getText());
   settings.setValue("bezel.windowed", myBezelShowWindowed->getState());
+  settings.setValue("bezel.topborder", myTopBorderSlider->getValueLabel());
+  settings.setValue("bezel.bottomborder", myBtmBorderSlider->getValueLabel());
+  cerr << myTopBorderSlider << endl;
 
   // Note: The following has to happen after all video related setting have been saved
   if(instance().hasConsole())
@@ -1003,6 +1022,8 @@ void VideoAudioDialog::setDefaults()
       myBezelEnableCheckbox->setState(true);
       myBezelPath->setText(instance().userDir().getShortPath());
       myBezelShowWindowed->setState(false);
+      myTopBorderSlider->setValue(0);
+      myBtmBorderSlider->setValue(0);
       handleBezelChange();
       break;
 
@@ -1171,9 +1192,13 @@ void VideoAudioDialog::handlePhosphorChange()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void VideoAudioDialog::handleBezelChange()
 {
-  myOpenBrowserButton->setEnabled(myBezelEnableCheckbox->getState());
-  myBezelPath->setEnabled(myBezelEnableCheckbox->getState());
-  myBezelShowWindowed->setEnabled(myBezelEnableCheckbox->getState());
+  const bool enable = myBezelEnableCheckbox->getState();
+
+  myOpenBrowserButton->setEnabled(enable);
+  myBezelPath->setEnabled(enable);
+  myBezelShowWindowed->setEnabled(enable);
+  myTopBorderSlider->setEnabled(enable);
+  myBtmBorderSlider->setEnabled(enable);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

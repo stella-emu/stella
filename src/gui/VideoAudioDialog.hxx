@@ -135,6 +135,8 @@ class VideoAudioDialog : public Dialog
     ButtonWidget*     myOpenBrowserButton{nullptr};
     EditTextWidget*   myBezelPath{nullptr};
     CheckboxWidget*   myBezelShowWindowed{nullptr};
+    SliderWidget*     myTopBorderSlider{nullptr};
+    SliderWidget*     myBtmBorderSlider{nullptr};
 
     // Audio
     CheckboxWidget*   mySoundEnableCheckbox{nullptr};
