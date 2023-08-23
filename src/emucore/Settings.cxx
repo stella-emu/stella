@@ -64,8 +64,7 @@ Settings::Settings()
   setPermanent("pausedim", "true");
   setPermanent("bezel.show", "true");
   setPermanent("bezel.windowed", "false");
-  setPermanent("bezel.topborder", "0");
-  setPermanent("bezel.bottomborder", "0");
+  setPermanent("bezel.border", "30");
   // TIA specific options
   setPermanent("tia.inter", "false");
   setPermanent("tia.zoom", "3");
