@@ -33,7 +33,7 @@ void VideoModeHandler::setDisplaySize(const Common::Size& display, Int32 fsIndex
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const VideoModeHandler::Mode&
-  VideoModeHandler::buildMode(const Settings& settings, bool inTIAMode, Mode::BezelInfo bezelInfo)
+  VideoModeHandler::buildMode(const Settings& settings, bool inTIAMode, bool showBezel)
 {
   const bool windowedRequested = myFSIndex == -1;
 
@@ -49,7 +49,7 @@ const VideoModeHandler::Mode&
       // Image and screen (aka window) dimensions are the same
       // Overscan is not applicable in this mode
       myMode = Mode(myImage.w * zoom, myImage.h * zoom, Mode::Stretch::Fill,
-                    myFSIndex, desc.str(), zoom, bezelInfo);
+                    myFSIndex, desc.str(), zoom, showBezel);
     }
     else
     {
@@ -57,7 +57,7 @@ const VideoModeHandler::Mode&
 
       // First calculate maximum zoom that keeps aspect ratio
       // Note: We are assuming a 16:9 bezel image here
-      const float bezelScaleW = bezelInfo.enabled ? bezelInfo.scaleW() : 1;
+      const float bezelScaleW = showBezel ? (16.F / 9.F) / (4.F / 3.F) : 1;
       const float scaleX = myImage.w / (myDisplay.w / bezelScaleW),
                   scaleY = static_cast<float>(myImage.h) / myDisplay.h;
       float zoom = 1.F / std::max(scaleX, scaleY);
@@ -73,7 +73,8 @@ const VideoModeHandler::Mode&
                       myDisplay.w, myDisplay.h,
                       Mode::Stretch::Preserve, myFSIndex,
                       "Fullscreen: Preserve aspect, no stretch",
-                      zoom, overscan, bezelInfo);
+                      zoom, overscan,
+                      showBezel, showBezel ? settings.getInt("bezel.border") : 0);
       }
       else  // ignore aspect, use all space
       {
@@ -81,7 +82,7 @@ const VideoModeHandler::Mode&
                       myDisplay.w, myDisplay.h,
                       Mode::Stretch::Fill, myFSIndex,
                       "Fullscreen: Ignore aspect, full stretch",
-                      zoom, overscan, bezelInfo);
+                      zoom, overscan, showBezel);
       }
     }
   }
@@ -100,15 +101,17 @@ const VideoModeHandler::Mode&
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 VideoModeHandler::Mode::Mode(uInt32 iw, uInt32 ih, Stretch smode,
                              Int32 fsindex, string_view desc,
-                             float zoomLevel, BezelInfo bezelInfo)
-  : Mode(iw, ih, iw, ih, smode, fsindex, desc, zoomLevel, 1.F, bezelInfo)
+                             float zoomLevel,
+                             bool showBezel, Int32 bezelBorder)
+  : Mode(iw, ih, iw, ih, smode, fsindex, desc, zoomLevel, 1.F, showBezel, bezelBorder)
 {
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 VideoModeHandler::Mode::Mode(uInt32 iw, uInt32 ih, uInt32 sw, uInt32 sh,
                              Stretch smode, Int32 fsindex, string_view desc,
-                             float zoomLevel, float overscan, BezelInfo bezelInfo)
+                             float zoomLevel, float overscan,
+                             bool showBezel, Int32 bezelBorder)
   : screenS{sw, sh},
     stretch{smode},
     description{desc},
@@ -116,15 +119,15 @@ VideoModeHandler::Mode::Mode(uInt32 iw, uInt32 ih, uInt32 sw, uInt32 sh,
     fsIndex{fsindex}
 {
   // Note: We are assuming a 16:9 bezel image here
-  const float bezelScaleW = bezelInfo.enabled ? bezelInfo.scaleW() : 1;
+  const float bezelScaleW = showBezel ? (16.F / 9.F) / (4.F / 3.F) : 1;
   // Now resize based on windowed/fullscreen mode and stretch factor
   if(fsIndex != -1)  // fullscreen mode
   {
     switch(stretch)
     {
       case Stretch::Preserve:
-        iw = (iw - bezelInfo.hBorder() * zoomLevel) * overscan;
-        ih = (ih - bezelInfo.vBorder() * zoomLevel) * overscan;
+        iw = (iw - bezelBorder * 4.F / 3.F * zoomLevel) * overscan;
+        ih = (ih - bezelBorder * zoomLevel) * overscan;
         //iw *= overscan;
         //ih *= overscan;
         break;
