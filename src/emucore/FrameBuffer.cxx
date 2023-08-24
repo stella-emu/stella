@@ -1422,8 +1422,7 @@ bool FrameBuffer::loadBezel()
 
   if(isValid)
   {
-    const float overscan = 1 - myOSystem.settings().getInt("tia.fs_overscan") / 100.0;
-    bool fs = fullScreen();
+    const float overscan = 1 - myOSystem.settings().getInt("tia.fs_overscan") / 100.F;
 
     uInt32 imageW, imageH;
     if(fullScreen())
@@ -1469,7 +1468,7 @@ float FrameBuffer::maxWindowZoom() const
   float multiplier = 1;
 
   const bool showBezel = myOSystem.settings().getBool("bezel.show");
-  const double scaleW = showBezel ? (16. / 9.) / (4. / 3.) : 1; // = 1.333
+  const float scaleW = showBezel ? (16.F / 9.F) / (4.F / 3.F) : 1.F; // = 1.333
 
   for(;;)
   {
@@ -1477,7 +1476,8 @@ float FrameBuffer::maxWindowZoom() const
     const uInt32 width  = TIAConstants::viewableWidth * multiplier * scaleW;
     const uInt32 height = TIAConstants::viewableHeight * multiplier;
 
-    if((width > myAbsDesktopSize[display].w) || (height > myAbsDesktopSize[display].h))
+    if((width > myAbsDesktopSize[display].w) ||
+       (height > myAbsDesktopSize[display].h))
       break;
 
     multiplier += ZOOM_STEPS;

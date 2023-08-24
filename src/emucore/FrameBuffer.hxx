@@ -467,7 +467,7 @@ class FrameBuffer
       Return bezel names, which are either read from the properties
       or generated from the cart name.
 
-      @param   The index of the returned bezel name
+      @param index  The index of the returned bezel name
 
       @return  The bezel name for the given index
     */

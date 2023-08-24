@@ -47,6 +47,9 @@ class FBBackendLIBRETRO : public FBBackend
     uInt32 mapRGB(uInt8 r, uInt8 g, uInt8 b) const override {
       return (r << 16) | (g << 8) | b;
     }
+    uInt32 mapRGBA(uInt8 r, uInt8 g, uInt8 b, uInt8 a) const override {
+      return (a << 24) | (r << 16) | (g << 8) | b;
+    }
 
     /**
       This method is called to query and initialize the video hardware
