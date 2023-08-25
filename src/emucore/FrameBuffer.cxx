@@ -31,6 +31,7 @@
 
 #include "FBSurface.hxx"
 #include "TIASurface.hxx"
+#include "Bezel.hxx"
 #include "FrameBuffer.hxx"
 #include "PaletteHandler.hxx"
 #include "StateManager.hxx"
@@ -126,6 +127,8 @@ void FrameBuffer::initialize()
 
   // Create a TIA surface; we need it for rendering TIA images
   myTIASurface = make_unique<TIASurface>(myOSystem);
+  // Create a bezel surface for TIA overlays
+  myBezel = make_unique<Bezel>(myOSystem);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -278,8 +281,10 @@ FBInitStatus FrameBuffer::createDisplay(string_view title, BufferType type,
 
   if(myBufferType == BufferType::Emulator)
   {
+    myBezel->load();
+
     // Determine possible TIA windowed zoom levels
-    const float currentTIAZoom = myOSystem.settings().getFloat("tia.zoom");
+    const double currentTIAZoom = myOSystem.settings().getFloat("tia.zoom");
     myOSystem.settings().setValue("tia.zoom",
       BSPF::clampw(currentTIAZoom, supportedTIAMinZoom(), supportedTIAMaxZoom()));
   }
@@ -960,8 +965,8 @@ void FrameBuffer::renderTIA(bool shade, bool doClear)
     clear();  // TODO - test this: it may cause slowdowns on older systems
 
   myTIASurface->render(shade);
-  if(myBezelSurface)
-    myBezelSurface->render();
+  if(myBezel)
+    myBezel->render();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1146,7 +1151,7 @@ void FrameBuffer::toggleFullscreen(bool toggle)
             msg << "enabled (" << myBackend->refreshRate() << " Hz, ";
           else
             msg << "disabled (";
-          msg << "Zoom " << myActiveVidMode.zoom * 100 << "%)";
+          msg << "Zoom " << round(myActiveVidMode.zoom * 100) << "%)";
         }
         else
         {
@@ -1228,7 +1233,7 @@ void FrameBuffer::switchVideoMode(int direction)
   if(!fullScreen())
   {
     // Windowed TIA modes support variable zoom levels
-    float zoom = myOSystem.settings().getFloat("tia.zoom");
+    double zoom = myOSystem.settings().getFloat("tia.zoom");
     if(direction == +1)       zoom += ZOOM_STEPS;
     else if(direction == -1)  zoom -= ZOOM_STEPS;
 
@@ -1271,17 +1276,10 @@ FBInitStatus FrameBuffer::applyVideoMode()
     myVidModeHandler.setDisplaySize(myAbsDesktopSize[display]);
 
   const bool inTIAMode = myOSystem.eventHandler().inTIAMode();
-#ifdef IMAGE_SUPPORT
-  const bool showBezel = inTIAMode &&
-                         myOSystem.settings().getBool("bezel.show") &&
-                         (fullScreen() || myOSystem.settings().getBool("bezel.windowed")) &&
-                         checkBezel();
-#else
-  const bool showBezel = false;
-#endif
 
   // Build the new mode based on current settings
-  const VideoModeHandler::Mode& mode = myVidModeHandler.buildMode(s, inTIAMode, showBezel);
+  const VideoModeHandler::Mode& mode
+    = myVidModeHandler.buildMode(s, inTIAMode, myBezel->info());
   if(mode.imageR.size() > mode.screenS)
     return FBInitStatus::FailTooLarge;
 
@@ -1306,11 +1304,7 @@ FBInitStatus FrameBuffer::applyVideoMode()
     if(inTIAMode)
     {
 #ifdef IMAGE_SUPPORT
-    if(myBezelSurface)
-      deallocateSurface(myBezelSurface);
-    myBezelSurface = nullptr;
-    if(showBezel)
-      loadBezel();
+      myBezel->apply();
 #endif
 
     myTIASurface->initialize(myOSystem.console(), myActiveVidMode);
@@ -1334,147 +1328,18 @@ FBInitStatus FrameBuffer::applyVideoMode()
   return status;
 }
 
-#ifdef IMAGE_SUPPORT
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const string FrameBuffer::getBezelName(int& index) const
-{
-  if(++index == 1)
-    return myOSystem.console().properties().get(PropType::Bezel_Name);
-
-  // Try to generate bezel name from cart name
-  const string& cartName = myOSystem.console().properties().get(PropType::Cart_Name);
-  const size_t pos = cartName.find_first_of("(");
-  if(index < 10 && pos != std::string::npos && pos > 0)
-  {
-    // The following suffixes are from "The Official No-Intro Convention",
-    // covering all used combinations by "The Bezel Project" (except single ones)
-    // (Unl) = unlicensed (Homebrews)
-    const std::array<string, 8> suffixes = {
-      " (USA)", " (USA) (Proto)", " (USA) (Unl)", " (USA) (Hack)",
-      " (Europe)", " (Germany)", " (France) (Unl)", " (Australia)"
-    };
-    return cartName.substr(0, pos - 1) + suffixes[index - 2];
-  }
-
-  if(index == 10)
-  {
-    index = -1;
-    return "default";
-  }
-  return "";
-}
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool FrameBuffer::checkBezel()
-{
-  const string& path = myOSystem.bezelDir().getPath();
-  int index = 0;
-
-  do
-  {
-    const string& name = getBezelName(index);
-
-    if(name != EmptyString)
-    {
-      FSNode node(path + name + ".png");
-      if(node.exists())
-        return true;
-    }
-  } while (index != -1);
-  return false;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool FrameBuffer::loadBezel()
-{
-  bool isValid = false;
-  double aspectRatio = 1;
-
-  myBezelSurface = allocateSurface(myActiveVidMode.screenS.w, myActiveVidMode.screenS.h);
-  try
-  {
-    const string& path = myOSystem.bezelDir().getPath();
-    string imageName;
-    VariantList metaData;
-    int index = 0;
-
-    do
-    {
-      const string& name = getBezelName(index);
-      if(name != EmptyString)
-      {
-        imageName = path + name + ".png";
-        FSNode node(imageName);
-        if(node.exists())
-        {
-          isValid = true;
-          break;
-        }
-      }
-    } while (index != -1);
-    if(isValid)
-      myOSystem.png().loadImage(imageName, *myBezelSurface, &aspectRatio, metaData);
-  }
-  catch(const runtime_error&)
-  {
-    isValid = false;
-  }
-
-  if(isValid)
-  {
-    const float overscan = 1 - myOSystem.settings().getInt("tia.fs_overscan") / 100.F;
-
-    uInt32 imageW, imageH;
-    if(fullScreen())
-    {
-      const float bezelBorder = myOSystem.settings().getInt("bezel.border") * overscan * myActiveVidMode.zoom;
-      imageW = (myActiveVidMode.imageR.w() + static_cast<int>(bezelBorder * 4.F / 3.F)) * (16.F / 9.F) / (4.F / 3.F);
-      imageH = myActiveVidMode.imageR.h() + static_cast<int>(bezelBorder);
-    }
-    else
-    {
-      imageW = static_cast<uInt32>(myActiveVidMode.imageR.w() * (16.F / 9.F) / (4.F / 3.F));
-      imageH = myActiveVidMode.imageR.h();
-    }
-
-    // Scale bezel to fullscreen (preserve or stretch) or window size
-    const uInt32 bezelW = std::min(
-      myActiveVidMode.screenS.w, imageW);
-      //static_cast<uInt32>(myActiveVidMode.imageR.w() * (16.F / 9.F) / (4.F / 3.F)) + static_cast<int>(40 * myActiveVidMode.zoom));
-    const uInt32 bezelH = std::min(
-      myActiveVidMode.screenS.h, imageH);
-      //myActiveVidMode.imageR.h() + static_cast<int>(30 * myActiveVidMode.zoom));
-    //cerr << bezelW << " x " << bezelH << endl;
-    myBezelSurface->setDstSize(bezelW, bezelH);
-    myBezelSurface->setDstPos((myActiveVidMode.screenS.w - bezelW) / 2,
-                              (myActiveVidMode.screenS.h - bezelH) / 2); // center
-    myBezelSurface->setScalingInterpolation(ScalingInterpolation::sharp);
-
-    // Enable blending to allow overlaying the bezel over the TIA output
-    myBezelSurface->attributes().blending = true;
-    myBezelSurface->attributes().blendalpha = 100;
-    myBezelSurface->applyAttributes();
-  }
-  if(myBezelSurface)
-    myBezelSurface->setVisible(isValid);
-  return isValid;
-}
-#endif
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-float FrameBuffer::maxWindowZoom() const
+double FrameBuffer::maxWindowZoom() const
 {
   const int display = displayId(BufferType::Emulator);
-  float multiplier = 1;
-
-  const bool showBezel = myOSystem.settings().getBool("bezel.show");
-  const float scaleW = showBezel ? (16.F / 9.F) / (4.F / 3.F) : 1.F; // = 1.333
+  double multiplier = 1;
 
   for(;;)
   {
-    // Figure out the zoomed size of the window
-    const uInt32 width  = TIAConstants::viewableWidth * multiplier * scaleW;
-    const uInt32 height = TIAConstants::viewableHeight * multiplier;
+    // Figure out the zoomed size of the window (incl. the bezel)
+    const uInt32 width  = static_cast<double>(TIAConstants::viewableWidth)  * myBezel->ratioW() * multiplier;
+    const uInt32 height = static_cast<double>(TIAConstants::viewableHeight) * myBezel->ratioH() * multiplier;
 
     if((width > myAbsDesktopSize[display].w) ||
        (height > myAbsDesktopSize[display].h))

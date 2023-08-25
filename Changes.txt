@@ -24,7 +24,7 @@
 
   * Added 2nd UI theme and hotkey for toggling UI theme.
 
-  * Adde bezel support.
+  * Added bezel support. (TODO: Doc)
 
   * Added optional type format detection based on colors used.
 

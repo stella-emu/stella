@@ -25,6 +25,7 @@ class Console;
 class Settings;
 class FBSurface;
 class TIASurface;
+class Bezel;
 
 #ifdef GUI_SUPPORT
   #include "Font.hxx"
@@ -53,7 +54,7 @@ class FrameBuffer
 {
   public:
     // Zoom level step interval
-    static constexpr float ZOOM_STEPS = 0.25;
+    static constexpr double ZOOM_STEPS = 0.25;
 
     enum UpdateMode {
       NONE = 0,
@@ -219,8 +220,8 @@ class FrameBuffer
       Get the minimum/maximum supported TIA zoom level (windowed mode)
       for the framebuffer.
     */
-    float supportedTIAMinZoom() const { return myTIAMinZoom * hidpiScaleFactor(); }
-    float supportedTIAMaxZoom() const { return maxWindowZoom(); }
+    double supportedTIAMinZoom() const { return myTIAMinZoom * hidpiScaleFactor(); }
+    double supportedTIAMaxZoom() const { return maxWindowZoom(); }
 
     /**
       Get the TIA surface associated with the framebuffer.
@@ -350,6 +351,19 @@ class FrameBuffer
     }
 
     /**
+      This method is called to retrieve the R/G/B/A data from the given pixel.
+
+      @param pixel  The pixel containing R/G/B data
+      @param r      The red component of the color
+      @param g      The green component of the color
+      @param b      The blue component of the color
+      @param a      The alpha component of the color.
+    */
+    void getRGBA(uInt32 pixel, uInt8* r, uInt8* g, uInt8* b, uInt8* a) const {
+      myBackend->getRGBA(pixel, r, g, b, a);
+    }
+
+    /**
       This method is called to map a given R/G/B triple to the screen palette.
 
       @param r  The red component of the color.
@@ -361,11 +375,12 @@ class FrameBuffer
     }
 
     /**
-    This method is called to map a given R/G/B triple to the screen palette.
+      This method is called to map a given R/G/B/A triple to the screen palette.
 
     @param r  The red component of the color.
     @param g  The green component of the color.
     @param b  The blue component of the color.
+      @param a  The alpha component of the color.
     */
     uInt32 mapRGBA(uInt8 r, uInt8 g, uInt8 b, uInt8 a) const {
       return myBackend->mapRGBA(r, g, b, a);
@@ -462,37 +477,11 @@ class FrameBuffer
     */
     FBInitStatus applyVideoMode();
 
-  #ifdef IMAGE_SUPPORT
-    /**
-      Return bezel names, which are either read from the properties
-      or generated from the cart name.
-
-      @param index  The index of the returned bezel name
-
-      @return  The bezel name for the given index
-    */
-    const string getBezelName(int& index) const;
-
-    /**
-      Check if a bezel for the current ROM name exists.
-
-      @return  Whether the bezel was found or not
-    */
-    bool checkBezel();
-
-    /**
-      Load the bezel for the current ROM.
-
-      @return  Whether the bezel was loaded or not
-    */
-    bool loadBezel();
-  #endif
-
     /**
       Calculate the maximum level by which the base window can be zoomed and
       still fit in the desktop screen.
     */
-    float maxWindowZoom() const;
+    double maxWindowZoom() const;
 
     /**
       Enables/disables fullscreen mode.
@@ -567,7 +556,7 @@ class FrameBuffer
     shared_ptr<TIASurface> myTIASurface;
 
     // The BezelSurface which blends over the TIA surface
-    shared_ptr<FBSurface> myBezelSurface;
+    unique_ptr<Bezel> myBezel;
 
     // Used for onscreen messages and frame statistics
     // (scanline count and framerate)
@@ -594,7 +583,7 @@ class FrameBuffer
     vector<bool> myHiDPIEnabled;
 
     // Minimum TIA zoom level that can be used for this framebuffer
-    float myTIAMinZoom{2.F};
+    double myTIAMinZoom{2.F};
 
     // Holds a reference to all the surfaces that have been created
     std::list<shared_ptr<FBSurface>> mySurfaceList;

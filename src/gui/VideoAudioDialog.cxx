@@ -478,21 +478,47 @@ void VideoAudioDialog::addBezelTab()
   ypos += lineHeight + VGAP * 3;
   myBezelShowWindowed = new CheckboxWidget(myTab, _font, xpos, ypos,
                                            "Show in windowed modes");
-  //myBezelEnableCheckbox->setToolTip(Event::BezelToggle);
+  //myBezelShowWindowed->setToolTip(Event::BezelToggle);
   wid.push_back(myBezelShowWindowed);
 
+  // Disable auto borders
   ypos += lineHeight + VGAP * 1;
-  myTopBorderSlider = new SliderWidget(myTab, _font, xpos, ypos,
-                                        "Top border    ", 0, 0, 6 * fontWidth, "px");
-  myTopBorderSlider->setMinValue(0); myTopBorderSlider->setMaxValue(50);
+  myManualBorders = new CheckboxWidget(myTab, _font, xpos, ypos,
+                                     "Manual borders", kAutoBordersChanged);
+  myManualBorders->setToolTip("Enable if automatic border detection fails.");
+  wid.push_back(myManualBorders);
+  xpos += INDENT;
+
+  const int lWidth = _font.getStringWidth("Bottom ");
+  const int sWidth = myBezelPath->getRight() - xpos - lWidth - 5.5 * fontWidth; // _w - HBORDER - xpos - lwidth;
+  ypos += lineHeight + VGAP * 1;
+  myLeftBorderSlider = new SliderWidget(myTab, _font, xpos, ypos, sWidth, lineHeight,
+                                        "Left   ", 0, 0, 5 * fontWidth, "px");
+  myLeftBorderSlider->setMinValue(0); myLeftBorderSlider->setMaxValue(500);
+  myLeftBorderSlider->setTickmarkIntervals(10);
+  //myLeftBorderSlider->setToolTip(Event::VolumeDecrease, Event::VolumeIncrease);
+  wid.push_back(myLeftBorderSlider);
+
+  ypos += lineHeight + VGAP * 1;
+  myRightBorderSlider = new SliderWidget(myTab, _font, xpos, ypos, sWidth, lineHeight,
+                                         "Right  ", 0, 0, 5 * fontWidth, "px");
+  myRightBorderSlider->setMinValue(0); myRightBorderSlider->setMaxValue(500);
+  myRightBorderSlider->setTickmarkIntervals(10);
+  //myRightBorderSlider->setToolTip(Event::VolumeDecrease, Event::VolumeIncrease);
+  wid.push_back(myRightBorderSlider);
+
+  ypos += lineHeight + VGAP * 1;
+  myTopBorderSlider = new SliderWidget(myTab, _font, xpos, ypos, sWidth, lineHeight,
+                                       "Top    ", 0, 0, 5 * fontWidth, "px");
+  myTopBorderSlider->setMinValue(0); myTopBorderSlider->setMaxValue(250);
   myTopBorderSlider->setTickmarkIntervals(5);
   //myTopBorderSlider->setToolTip(Event::VolumeDecrease, Event::VolumeIncrease);
   wid.push_back(myTopBorderSlider);
 
   ypos += lineHeight + VGAP;
-  myBtmBorderSlider = new SliderWidget(myTab, _font, xpos, ypos,
-                                       "Bottom border ", 0, 0, 6 * fontWidth, "px");
-  myBtmBorderSlider->setMinValue(0); myBtmBorderSlider->setMaxValue(50);
+  myBtmBorderSlider = new SliderWidget(myTab, _font, xpos, ypos, sWidth, lineHeight,
+                                       "Bottom ", 0, 0, 5 * fontWidth, "px");
+  myBtmBorderSlider->setMinValue(0); myBtmBorderSlider->setMaxValue(250);
   myBtmBorderSlider->setTickmarkIntervals(5);
   //myBtmBorderSlider->setToolTip(Event::VolumeDecrease, Event::VolumeIncrease);
   wid.push_back(myBtmBorderSlider);
@@ -748,6 +774,9 @@ void VideoAudioDialog::loadConfig()
   myBezelEnableCheckbox->setState(settings.getBool("bezel.show"));
   myBezelPath->setText(settings.getString("bezel.dir"));
   myBezelShowWindowed->setState(settings.getBool("bezel.windowed"));
+  myManualBorders->setState(!settings.getBool("bezel.autoborders"));
+  myLeftBorderSlider->setValue(settings.getInt("bezel.leftborder"));
+  myRightBorderSlider->setValue(settings.getInt("bezel.rightborder"));
   myTopBorderSlider->setValue(settings.getInt("bezel.topborder"));
   myBtmBorderSlider->setValue(settings.getInt("bezel.bottomborder"));
   handleBezelChange();
@@ -880,9 +909,11 @@ void VideoAudioDialog::saveConfig()
   settings.setValue("bezel.show", myBezelEnableCheckbox->getState());
   settings.setValue("bezel.dir", myBezelPath->getText());
   settings.setValue("bezel.windowed", myBezelShowWindowed->getState());
+  settings.setValue("bezel.autoborders", !myManualBorders->getState());
+  settings.setValue("bezel.leftborder", myLeftBorderSlider->getValueLabel());
+  settings.setValue("bezel.rightborder", myRightBorderSlider->getValueLabel());
   settings.setValue("bezel.topborder", myTopBorderSlider->getValueLabel());
   settings.setValue("bezel.bottomborder", myBtmBorderSlider->getValueLabel());
-  cerr << myTopBorderSlider << endl;
 
   // Note: The following has to happen after all video related setting have been saved
   if(instance().hasConsole())
@@ -1022,8 +1053,7 @@ void VideoAudioDialog::setDefaults()
       myBezelEnableCheckbox->setState(true);
       myBezelPath->setText(instance().userDir().getShortPath());
       myBezelShowWindowed->setState(false);
-      myTopBorderSlider->setValue(0);
-      myBtmBorderSlider->setValue(0);
+      myManualBorders->setState(false);
       handleBezelChange();
       break;
 
@@ -1193,12 +1223,15 @@ void VideoAudioDialog::handlePhosphorChange()
 void VideoAudioDialog::handleBezelChange()
 {
   const bool enable = myBezelEnableCheckbox->getState();
+  const bool nonAuto = myManualBorders->getState();
 
   myOpenBrowserButton->setEnabled(enable);
   myBezelPath->setEnabled(enable);
   myBezelShowWindowed->setEnabled(enable);
-  myTopBorderSlider->setEnabled(enable);
-  myBtmBorderSlider->setEnabled(enable);
+  myLeftBorderSlider->setEnabled(enable && nonAuto);
+  myRightBorderSlider->setEnabled(enable && nonAuto);
+  myTopBorderSlider->setEnabled(enable && nonAuto);
+  myBtmBorderSlider->setEnabled(enable && nonAuto);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1317,6 +1350,7 @@ void VideoAudioDialog::handleCommand(CommandSender* sender, int cmd,
       break;
 
     case kBezelEnableChanged:
+    case kAutoBordersChanged:
       handleBezelChange();
       break;
 
