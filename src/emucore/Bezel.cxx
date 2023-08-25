@@ -40,7 +40,9 @@ const string Bezel::getName(int& index) const
 
   // Try to generate bezel name from cart name
   const string& cartName = myOSystem.console().properties().get(PropType::Cart_Name);
-  const size_t pos = cartName.find_first_of("(");
+  size_t pos = cartName.find_first_of("(");
+  if(pos == std::string::npos)
+    pos = cartName.length() + 1;
   if(index < 10 && pos != std::string::npos && pos > 0)
   {
     // The following suffixes are from "The Official No-Intro Convention",

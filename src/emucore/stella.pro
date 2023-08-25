@@ -162,7 +162,7 @@
 "Cart.MD5" "021dbeb7417cac4e5f8e867393e742d6"
 "Cart.Manufacturer" "Simone Serra - AtariAge"
 "Cart.ModelNo" "RC 09.09.2008"
-"Cart.Name" "Lead "
+"Cart.Name" "Lead"
 "Cart.Rarity" "Homebrew"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=932"
 ""
@@ -539,6 +539,7 @@
 "Cart.Name" "Phantom II & Pirate (PAL60)"
 "Cart.Rarity" "Homebrew"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=843"
+"Bezel.Name" "Phantom II - Pirate (USA) (Unl)" 
 ""
 
 "Cart.MD5" "06b0194ce992584c365278e0d7323279"
@@ -752,6 +753,7 @@
 "Cart.Manufacturer" "Atari, Gary Palmer"
 "Cart.ModelNo" "CX26163P"
 "Cart.Name" "Fun with Numbers (32 in 1) (1988) (Atari) (PAL) (4K)"
+"Bezel.Name" "Basic Math (USA)"
 ""
 
 "Cart.MD5" "08bd4c1dcc843f6a0b563d9fd80b3b11"
@@ -1442,6 +1444,7 @@
 
 "Cart.MD5" "0fba7d8c3520bdb681f75494e498ec36"
 "Cart.Name" "Gunfight 2600 - Final Run (Manuel Rotschkar)"
+"Bezel.Name" "Gunfight (USA) (Unl)"
 ""
 
 "Cart.MD5" "0fbf618be43d4396856d4244126fe7dc"
@@ -2279,6 +2282,7 @@
 "Cart.Name" "Gunfight 2600 (Manuel Rotschkar) (PAL)"
 "Cart.Rarity" "New Release"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=124"
+"Bezel.Name" "Gunfight (USA) (Unl)"
 ""
 
 "Cart.MD5" "18b476a34ce5e6db2c032029873ac39b"
@@ -2793,6 +2797,7 @@
 "Cart.Manufacturer" "K-Tel Vision"
 "Cart.Name" "Vulture Attack (1982) (K-Tel Vision)"
 "Cart.Note" "AKA Condor Attack"
+"Bezel.Name" "Condor Attack (USA)"
 ""
 
 "Cart.MD5" "1f2ae0c70a04c980c838c2cdc412cf45"
@@ -2829,6 +2834,7 @@
 "Cart.Rarity" "New Release"
 "Controller.Left" "PADDLES_IAXDR"
 "Controller.MouseAxis" "01"
+"Bezel.Name" "Mondo Pong (USA) (Unl)"
 ""
 
 "Cart.MD5" "1f773a94d919b2a3c647172bbb97f6b4"
@@ -2853,6 +2859,7 @@
 "Cart.Note" "Adventures in the Park"
 "Cart.Rarity" "Prototype"
 "Cart.Url" "http://www.atariprotos.com/2600/software/cpk/cpk.htm"
+"Bezel.Name" "Cabbage Patch Kids - Adventures in the Park (USA) (Proto)" 
 ""
 
 "Cart.MD5" "1fa86282403fa35d103ab88a9d603c31"
@@ -5775,6 +5782,7 @@
 "Cart.ModelNo" "6082 A145"
 "Cart.Name" "Kung Fu Superkicks (1988) (Telegames)"
 "Cart.Note" "AKA Chuck Norris Superkicks"
+"Bezel.Name" "Chuck Norris Superkicks (USA)" 
 ""
 
 "Cart.MD5" "3f5a43602f960ede330cd2f43a25139e"
@@ -6183,6 +6191,7 @@
 "Cart.Name" "Pitfall II (1983) (Activision) [a2]"
 "Cart.Rarity" "Rare"
 "Cart.Highscore" "{\"score_addresses\":[\"0xc7\",\"0xc8\",\"0xc9\"],\"score_digits\":6,\"variations_count\":1}"
+"Bezel.Name" "Pitfall! - Pitfall Harry's Jungle Adventure (USA)"
 ""
 
 "Cart.MD5" "44e9c4a047c348dbeb7ace60f45484b4"
@@ -6285,6 +6294,7 @@
 "Cart.Note" "Adventures in the Park"
 "Cart.Rarity" "Prototype"
 "Cart.Url" "http://www.atariprotos.com/2600/software/cpk/cpk.htm"
+"Bezel.Name" "Cabbage Patch Kids - Adventures in the Park (USA) (Proto)" 
 ""
 
 "Cart.MD5" "461029ab23800833e9645be3e472d470"
@@ -6592,6 +6602,7 @@
 "Cart.ModelNo" "AB-035-04"
 "Cart.Name" "Pitfall II (1983) (Activision) [a]"
 "Cart.Highscore" "{\"score_addresses\":[\"0xc7\",\"0xc8\",\"0xc9\"],\"score_digits\":6,\"variations_count\":1}"
+"Bezel.Name" "Pitfall! - Pitfall Harry's Jungle Adventure (USA)"
 ""
 
 "Cart.MD5" "49366f41aa7a54baf263426e99ce4312"
@@ -7267,6 +7278,7 @@
 "Cart.Name" "Merlin's Walls - Standard Edition (1999) (Ebivision)"
 "Cart.Note" "Image rotated 90 degrees CW"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=302"
+"Bezel.Name" "Merlin's Walls (France) (Unl)"
 ""
 
 "Cart.MD5" "5069fecbe4706371f17737b0357cfa68"
@@ -8356,6 +8368,7 @@
 "Cart.Note" "Adventures in the Park"
 "Cart.Rarity" "Prototype"
 "Cart.Url" "http://www.atariprotos.com/2600/software/cpk/cpk.htm"
+"Bezel.Name" "Cabbage Patch Kids - Adventures in the Park (USA) (Proto)" 
 ""
 
 "Cart.MD5" "5d132d121aabc5235dd039dfc46aa024"
@@ -8566,6 +8579,7 @@
 "Cart.Name" "Fun with Numbers (1980) (Atari) (PAL)"
 "Cart.Note" "AKA Basic Math"
 "Cart.Rarity" "Uncommon"
+"Bezel.Name" "Basic Math (USA)"
 ""
 
 "Cart.MD5" "5f4ebf8a1e5f5f7b9ff3e3c6affff3e6"
@@ -8633,6 +8647,7 @@
 "Cart.Rarity" "Prototype"
 "Cart.Url" "http://www.atariprotos.com/2600/software/unknown3/unknown3.htm"
 "Display.Phosphor" "YES"
+"Bezel.Name" "Unknown 20th Century Fox Game (USA) (Proto)" 
 ""
 
 "Cart.MD5" "5f9b62350b31be8bd270d9a241cbd50e"
@@ -8963,6 +8978,7 @@
 
 "Cart.MD5" "635cc7a0db33773959d739d04eff96c2"
 "Cart.Name" "Minesweeper (V.90) (Soren Gust) (PD)"
+"Bezel.Name" "Mine Sweeper (USA) (Unl)"
 ""
 
 "Cart.MD5" "6362396c8344eec3e86731a700b13abf"
@@ -9357,6 +9373,7 @@
 "Cart.Note" "Adventures in the Park"
 "Cart.Rarity" "Prototype"
 "Cart.Url" "http://www.atariprotos.com/2600/software/cpk/cpk.htm"
+"Bezel.Name" "Cabbage Patch Kids - Adventures in the Park (USA) (Proto)" 
 ""
 
 "Cart.MD5" "6706a00f9635508cfeda20639156e66e"
@@ -9496,6 +9513,7 @@
 "Cart.Manufacturer" "Ed Federmeyer"
 "Cart.Name" "Edtris (1995) (Ed Federmeyer)"
 "Cart.Rarity" "Extremely Rare"
+"Bezel.Name" "Edtris 2600 (USA) (Unl)"
 ""
 
 "Cart.MD5" "68449e4aaba677abcd7cde4264e02168"
@@ -9893,6 +9911,7 @@
 "Cart.Rarity" "New Release"
 "Controller.Left" "PADDLES_IAXDR"
 "Controller.MouseAxis" "01"
+"Bezel.Name" "Mondo Pong (USA) (Unl)"
 ""
 
 "Cart.MD5" "6c128bc950fcbdbcaf0d99935da70156"
@@ -10036,6 +10055,7 @@
 "Cart.ModelNo" "AB-035-04"
 "Cart.Name" "Pitfall II (1984) (Activision)"
 "Cart.Highscore" "{\"score_addresses\":[\"0xc7\",\"0xc8\",\"0xc9\"],\"score_digits\":6,\"variations_count\":1}"
+"Bezel.Name" "Pitfall! - Pitfall Harry's Jungle Adventure (USA)"
 ""
 
 "Cart.MD5" "6d8a04ee15951480cb7c466e5951eee0"
@@ -11151,6 +11171,7 @@
 "Cart.ModelNo" "CX2616P"
 "Cart.Name" "Pele's Soccer (1981) (Atari) (PAL)"
 "Cart.Note" "AKA Pele's Championship Soccer"
+"Bezel.Name" "Championship Soccer (USA)"  
 ""
 
 "Cart.MD5" "7a2af383014f5d810ad26d322823549d"
@@ -11475,6 +11496,7 @@
 "Cart.Note" "Adventures in the Park"
 "Cart.Rarity" "Prototype"
 "Cart.Url" "http://www.atariprotos.com/2600/software/cpk/cpk.htm"
+"Bezel.Name" "Cabbage Patch Kids - Adventures in the Park (USA) (Proto)" 
 ""
 
 "Cart.MD5" "7d8287e8423a56d4f8cef10435d97179"
@@ -11872,6 +11894,7 @@
 "Cart.Note" "Adventures in the Park"
 "Cart.Rarity" "Prototype"
 "Cart.Url" "http://www.atariprotos.com/2600/software/cpk/cpk.htm"
+"Bezel.Name" "Cabbage Patch Kids - Adventures in the Park (USA) (Proto)" 
 ""
 
 "Cart.MD5" "80f7bf7418a462e8687ecefeaf6eb9c2"
@@ -11966,6 +11989,7 @@
 "Cart.Name" "Fun with Numbers (1980) (Atari)"
 "Cart.Note" "AKA Basic Math"
 "Cart.Rarity" "Uncommon"
+"Bezel.Name" "Basic Math (USA)"
 ""
 
 "Cart.MD5" "81a010abdba1a640f7adf7f84e13d307"
@@ -12570,6 +12594,7 @@
 "Cart.Note" "Adventures in the Park"
 "Cart.Rarity" "Prototype"
 "Cart.Url" "http://www.atariprotos.com/2600/software/cpk/cpk.htm"
+"Bezel.Name" "Cabbage Patch Kids - Adventures in the Park (USA) (Proto)" 
 ""
 
 "Cart.MD5" "890c13590e0d8d5d6149737d930e4d95"
@@ -13002,6 +13027,7 @@
 "Cart.ModelNo" "CX26114"
 "Cart.Name" "Pigs in Space (1983) (Atari)"
 "Cart.Note" "Starring Miss Piggy"
+"Bezel.Name" "Pigs in Space - Starring Miss Piggy (USA)"
 ""
 
 "Cart.MD5" "8e512ad4506800458f99dec084fc2c64"
@@ -13634,6 +13660,7 @@
 "Cart.ModelNo" "CX26114"
 "Cart.Name" "Pigs in Space (1983) (Atari) (PAL)"
 "Cart.Note" "Starring Miss Piggy"
+"Bezel.Name" "Pigs in Space - Starring Miss Piggy (USA)"
 ""
 
 "Cart.MD5" "95e542a7467c94b1e4ab24a3ebe907f1"
@@ -15472,6 +15499,7 @@
 
 "Cart.MD5" "ac5f78bae0638cf3f2a0c8d07eb4df69"
 "Cart.Name" "Minesweeper (V.99) (Soren Gust) (PD)"
+"Bezel.Name" "Mine Sweeper (USA) (Unl)"
 ""
 
 "Cart.MD5" "ac7c2260378975614192ca2bc3d20e0b"
@@ -15528,6 +15556,7 @@
 "Cart.ModelNo" "CX2616"
 "Cart.Name" "Pele's Soccer (1981) (Atari)"
 "Cart.Note" "AKA Pele's Championship Soccer"
+"Bezel.Name" "Championship Soccer (USA)"  
 ""
 
 "Cart.MD5" "ad2e6bfb3b9b9b36ba8bf493ce764c49"
@@ -15753,6 +15782,7 @@
 "Cart.Manufacturer" "K-Tel Vision"
 "Cart.Name" "Vulture Attack (1982) (K-Tel Vision) (PAL)"
 "Cart.Note" "AKA Condor Attack"
+"Bezel.Name" "Condor Attack (USA)"
 ""
 
 "Cart.MD5" "b00e8217633e870bf39d948662a52aac"
@@ -15839,6 +15869,7 @@
 "Cart.Name" "Tetris 2600 (Colin Hughes)"
 "Cart.Rarity" "New Release"
 "Display.Phosphor" "YES"
+"Bezel.Name" "Tetris 26 (USA) (Unl)"
 ""
 
 "Cart.MD5" "b1276417fb0f79bc52e741bb8f4d8360"
@@ -17166,6 +17197,7 @@
 "Cart.ModelNo" "CA283"
 "Cart.Name" "Z-Tack (1983) (Bomb)"
 "Cart.Note" "AKA Base Attack"
+"Bezel.Name" "Base Attack (Europe)"
 ""
 
 "Cart.MD5" "c1f209d80f0624dada5866ce05dd3399"
@@ -17716,6 +17748,7 @@
 "Cart.Manufacturer" "Ed Federmeyer"
 "Cart.Name" "Edtris (1994) (Ed Federmeyer)"
 "Cart.Rarity" "Extremely Rare"
+"Bezel.Name" "Edtris 2600 (USA) (Unl)"
 ""
 
 "Cart.MD5" "c6d7fe7a46dc46f962fe8413c6f53fc9"
@@ -18145,6 +18178,7 @@
 "Cart.Manufacturer" "Atari, Bill Aspromonte, John Russell, Michael Sierchio, Robert Zdybel"
 "Cart.ModelNo" "CX26114"
 "Cart.Name" "Pigs in Space (1983) (Atari) (PAL) [a]"
+"Bezel.Name" "Pigs in Space - Starring Miss Piggy (USA)"
 ""
 
 "Cart.MD5" "cc7138202cd8f6776212ebfc3a820ecc"
@@ -18546,6 +18580,7 @@
 
 "Cart.MD5" "cfdb4d0427a1ea8085c6bc6eb90259d8"
 "Cart.Name" "Gunfight 2600 - Release Candidate (2001) (Manuel Rotschkar)"
+"Bezel.Name" "Gunfight (USA) (Unl)"
 ""
 
 "Cart.MD5" "cfe2185f84ce8501933beb5c5e1fd053"
@@ -18717,6 +18752,7 @@
 "Cart.ModelNo" "CX2661P"
 "Cart.Name" "Fun with Numbers (1980) (Atari) (PAL) (4K)"
 "Cart.Note" "AKA Basic Math"
+"Bezel.Name" "Basic Math (USA)"
 ""
 
 "Cart.MD5" "d0cdafcb000b9ae04ac465f17788ad11"
@@ -19289,6 +19325,7 @@
 "Cart.Manufacturer" "Atari, Gary Palmer"
 "Cart.ModelNo" "CX26163P"
 "Cart.Name" "Fun with Numbers (32 in 1) (1988) (Atari) (PAL)"
+"Bezel.Name" "Basic Math (USA)"
 ""
 
 "Cart.MD5" "d81bb6965e6c99b3be99ffd8978740e4"
@@ -19542,6 +19579,7 @@
 "Cart.Note" "Hack of Dark Mage"
 "Cart.Rarity" "Hack"
 "Display.Phosphor" "YES"
+"Bezel.Name" "Lord of the Rings, The - Fellowship of the Ring (USA) (Unl)"
 ""
 
 "Cart.MD5" "dafc3945677ccc322ce323d1e9930beb"
@@ -20020,6 +20058,7 @@
 "Cart.ModelNo" "CX2661"
 "Cart.Name" "Fun with Numbers (1980) (Atari) (4K)"
 "Cart.Note" "AKA Basic Math"
+"Bezel.Name" "Basic Math (USA)"
 ""
 
 "Cart.MD5" "dfc3dbbb39f05d7dd8ee3ac987478970"
@@ -20176,6 +20215,7 @@
 "Cart.Note" "Adventures in the Park"
 "Cart.Rarity" "Prototype"
 "Cart.Url" "http://www.atariprotos.com/2600/software/cpk/cpk.htm"
+"Bezel.Name" "Cabbage Patch Kids - Adventures in the Park (USA) (Proto)" 
 ""
 
 "Cart.MD5" "e14dc36b24fe22c04fa076e298f2e15f"
@@ -20228,6 +20268,7 @@
 "Cart.Name" "Alligator People (1983) (20th Century Fox) (Prototype)"
 "Cart.Rarity" "Prototype"
 "Cart.Url" "http://www.atariprotos.com/2600/software/alligator/alligatorpeople.htm"
+"Bezel.Name" "Alligator People, The (USA) (Proto)"
 ""
 
 "Cart.MD5" "e1b90f1e01b1a316d7bbf141525cc00e"
@@ -20404,6 +20445,7 @@
 "Cart.Name" "Pitfall II (1984) (Activision) (PAL)"
 "Cart.Note" "Lost Caverns"
 "Cart.Highscore" "{\"score_addresses\":[\"0xc7\",\"0xc8\",\"0xc9\"],\"score_digits\":6,\"variations_count\":1}"
+"Bezel.Name" "Pitfall! - Pitfall Harry's Jungle Adventure (USA)"
 ""
 
 "Cart.MD5" "e3533684a7ef930a7fbd0c4dd8ec4847"
@@ -20652,6 +20694,7 @@
 "Cart.ModelNo" "6082 A145"
 "Cart.Name" "Kung Fu Superkicks (1988) (Telegames) (PAL)"
 "Cart.Note" "AKA Chuck Norris Superkicks"
+"Bezel.Name" "Chuck Norris Superkicks (USA)" 
 ""
 
 "Cart.MD5" "e5ecd78edd24326a968809decbc7b916"
@@ -21566,6 +21609,7 @@
 "Cart.Note" "Starring Miss Piggy"
 "Cart.Rarity" "Prototype"
 "Cart.Url" "http://www.atariprotos.com/2600/software/pigsinspace/pigsinspace.htm"
+"Bezel.Name" "Pigs in Space - Starring Miss Piggy (USA)"
 ""
 
 "Cart.MD5" "f0510abbfbe24ead552e92e3841f63f3"
@@ -22076,6 +22120,7 @@
 "Cart.Note" "Adventures in the Park"
 "Cart.Rarity" "Prototype"
 "Cart.Url" "http://www.atariprotos.com/2600/software/cpk/cpk.htm"
+"Bezel.Name" "Cabbage Patch Kids - Adventures in the Park (USA) (Proto)" 
 ""
 
 "Cart.MD5" "f526d0c519f5001adb1fc7948bfbb3ce"
@@ -22206,6 +22251,7 @@
 "Cart.Note" "Adventures in the Park"
 "Cart.Rarity" "Prototype"
 "Cart.Url" "http://www.atariprotos.com/2600/software/cpk/cpk.htm"
+"Bezel.Name" "Cabbage Patch Kids - Adventures in the Park (USA) (Proto)" 
 ""
 
 "Cart.MD5" "f6c13e816e58c8c62f82b2c8b91a2d67"
@@ -22299,6 +22345,7 @@
 "Cart.Manufacturer" "Manuel Polik"
 "Cart.Name" "Gunfight 2600 (Manuel Rotschkar)"
 "Cart.Rarity" "New Release"
+"Bezel.Name" "Gunfight (USA) (Unl)"
 ""
 
 "Cart.MD5" "f75872946e82ad74d48eae5bc28f5f0e"
