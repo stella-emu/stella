@@ -2,7 +2,7 @@ MODULE := src/emucore
 
 MODULE_OBJS := \
 	src/emucore/AtariVox.o \
-	src/emucore/Bezel.o 
+	src/emucore/Bezel.o \
 	src/emucore/Bankswitch.o \
 	src/emucore/Booster.o \
 	src/emucore/Cart.o \
