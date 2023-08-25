@@ -80,7 +80,7 @@ uInt32 Bezel::borderSize(uInt32 x, uInt32 y, uInt32 size, Int32 step) const
     if(a < 255)
       return i;
   }
-  return size;
+  return size - 1;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -99,8 +99,6 @@ bool Bezel::load()
 
   if(isShown)
   {
-    double aspectRatio = 1;
-
     mySurface = myFB.allocateSurface(1, 1); // dummy size
     try
     {
@@ -114,17 +112,17 @@ bool Bezel::load()
         const string& name = getName(index);
         if(name != EmptyString)
         {
+          // Note: JPG does not support transparency
           imageName = path + name + ".png";
           FSNode node(imageName);
           if(node.exists())
           {
             isValid = true;
+            myOSystem.png().loadImage(imageName, *mySurface, metaData);
             break;
           }
         }
       } while(index != -1);
-      if(isValid)
-        myOSystem.png().loadImage(imageName, *mySurface, &aspectRatio, metaData);
     }
     catch(const runtime_error&)
     {
@@ -154,9 +152,15 @@ bool Bezel::load()
       top = std::min(h, settings.getInt("bezel.topborder"));
       bottom = h - 1 - std::min(h, settings.getInt("bezel.bottomborder"));
     }
-    //cerr << right - left + 1 << " x " << bottom - top + 1 << " = "
-    //  << double(right - left + 1) / double(bottom - top + 1);
-    myInfo = Info(Common::Size(w, h), Common::Rect(left, top, right, bottom));
+
+    cerr << (int)(right - left + 1) << " x " << (int)(bottom - top + 1) << " = "
+      << double((int)(right - left + 1)) / double((int)(bottom - top + 1));
+
+    // Disable bezel is no transparent window was found
+    if (left < right && top < bottom)
+      myInfo = Info(Common::Size(w, h), Common::Rect(left, top, right, bottom));
+    else
+      myInfo = Info();
   }
   else
     myInfo = Info();

@@ -50,7 +50,7 @@ class PNGLibrary
              error message.
     */
     void loadImage(const string& filename, FBSurface& surface,
-                   double* aspectRatio, VariantList& metaData);
+                   VariantList& metaData);
 
     /**
       Save the current FrameBuffer image to a PNG file.  Note that in most
