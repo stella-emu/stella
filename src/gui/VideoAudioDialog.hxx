@@ -135,6 +135,9 @@ class VideoAudioDialog : public Dialog
     ButtonWidget*     myOpenBrowserButton{nullptr};
     EditTextWidget*   myBezelPath{nullptr};
     CheckboxWidget*   myBezelShowWindowed{nullptr};
+    CheckboxWidget*   myManualBorders{nullptr};
+    SliderWidget*     myLeftBorderSlider{nullptr};
+    SliderWidget*     myRightBorderSlider{nullptr};
     SliderWidget*     myTopBorderSlider{nullptr};
     SliderWidget*     myBtmBorderSlider{nullptr};
 
@@ -180,6 +183,7 @@ class VideoAudioDialog : public Dialog
 
       kBezelEnableChanged = 'BZen',
       kChooseBezelDirCmd  = 'BZsl',
+      kAutoBordersChanged = 'BZab',
 
       kSoundEnableChanged = 'ADse',
       kDeviceChanged      = 'ADdc',

@@ -129,6 +129,17 @@ class FBBackend
     virtual void getRGB(uInt32 pixel, uInt8* r, uInt8* g, uInt8* b) const = 0;
 
     /**
+      This method is called to retrieve the R/G/B/A data from the given pixel.
+
+      @param pixel  The pixel containing R/G/B data
+      @param r      The red component of the color
+      @param g      The green component of the color
+      @param b      The blue component of the color
+      @param a      The alpha component of the color.
+    */
+    virtual void getRGBA(uInt32 pixel, uInt8* r, uInt8* g, uInt8* b, uInt8* a) const = 0;
+
+    /**
       This method is called to map a given R/G/B triple to the screen palette.
 
       @param r  The red component of the color.
@@ -143,6 +154,7 @@ class FBBackend
       @param r  The red component of the color.
       @param g  The green component of the color.
       @param b  The blue component of the color.
+      @param a  The alpha component of the color.
     */
     virtual uInt32 mapRGBA(uInt8 r, uInt8 g, uInt8 b, uInt8 a) const = 0;
 

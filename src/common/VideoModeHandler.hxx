@@ -22,6 +22,7 @@ class Settings;
 
 #include "Rect.hxx"
 #include "bspf.hxx"
+#include "Bezel.hxx"
 
 class VideoModeHandler
 {
@@ -38,35 +39,23 @@ class VideoModeHandler
         Fill,       // Stretch to fill all available space
         None        // No stretching (1x zoom)
       };
-      struct BezelInfo
-      {
-        bool enabled{false};
-        bool windowedMode{false};
-        uInt32 topBorder{0};
-        uInt32 bottomBorder{0};
-
-        BezelInfo() = default;
-        BezelInfo(bool _enabled, bool _windowedMode, uInt32 _topBorder, uInt32 _bottomBorder)
-          : enabled{_enabled}, windowedMode{_windowedMode},
-            topBorder{_topBorder}, bottomBorder(_bottomBorder) { }
-      };
 
       Common::Rect imageR;
       Common::Rect screenR;
       Common::Size screenS;
       Stretch stretch{Mode::Stretch::None};
       string description;
-      float zoom{1.F};
+      double zoom{1.};
       Int32 fsIndex{-1};  // -1 indicates windowed mode
 
       Mode() = default;
       Mode(uInt32 iw, uInt32 ih, uInt32 sw, uInt32 sh, Stretch smode,
            Int32 fsindex = -1, string_view desc = "",
-           float zoomLevel = 1.F, float overscan = 1.F,
-           bool showBezel = false, Int32 bezelBorder = 0);
+           double zoomLevel = 1., double overscan = 1.,
+           Bezel::Info bezelInfo = Bezel::Info());
       Mode(uInt32 iw, uInt32 ih, Stretch smode, Int32 fsindex = -1,
-           string_view desc = "", float zoomLevel = 1.F,
-           bool showBezel = false, Int32 bezelBorder = 0);
+           string_view desc = "", double zoomLevel = 1.,
+           Bezel::Info bezelInfo = Bezel::Info());
 
       friend ostream& operator<<(ostream& os, const Mode& vm)
       {
@@ -108,8 +97,8 @@ class VideoModeHandler
 
       @return  A video mode based on the given criteria
     */
-    const VideoModeHandler::Mode& buildMode(const Settings& settings,
-                                            bool inTIAMode, bool showBezel);
+    const VideoModeHandler::Mode& buildMode(const Settings& settings, bool inTIAMode,
+                                            Bezel::Info bezelInfo = Bezel::Info());
 
   private:
     Common::Size myImage, myDisplay;
