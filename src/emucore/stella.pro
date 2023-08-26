@@ -361,6 +361,7 @@
 "Cart.MD5" "049626cbfb1a5f7a5dc885a0c4bb758e"
 "Cart.Name" "MegaMania (Unknown) (PAL) [a]"
 "Cart.Highscore" "{\"score_addresses\":[\"0xdb\",\"0xdc\",\"0xdd\"],\"score_digits\":6,\"variations_address\":\"0x80\",\"variations_count\":4,\"variations_zero_based\":true}"
+"Bezel.Name" "MegaMania - A Space Nightmare (USA)"
 ""
 
 "Cart.MD5" "04b488d4eef622d022a0021375e7e339"
@@ -1718,6 +1719,7 @@
 "Cart.Manufacturer" "Digitel"
 "Cart.Name" "Megamania (1983) (Digitel)"
 "Cart.Highscore" "{\"score_addresses\":[\"0xdb\",\"0xdc\",\"0xdd\"],\"score_digits\":6,\"variations_address\":\"0x80\",\"variations_count\":4,\"variations_zero_based\":true}"
+"Bezel.Name" "MegaMania - A Space Nightmare (USA)"
 ""
 
 "Cart.MD5" "12bca8305d5ab8ea51fe1cfd95d7ab0e"
@@ -1976,6 +1978,7 @@
 "Cart.Manufacturer" "Skyworks"
 "Cart.Name" "Tomcat (2002) (Skyworks) (PAL)"
 "Cart.Note" "AKA The F-14 Flight Simulator"
+"Bezel.Name" "Tomcat - The F-14 Fighter Simulator (USA)"
 ""
 
 "Cart.MD5" "157356f80c709ab675961d8b8b207e20"
@@ -2999,6 +3002,7 @@
 "Cart.MD5" "212d0b200ed8b45d8795ad899734d7d7"
 "Cart.Manufacturer" "Atari, Richard Maurer, Christopher H. Omarzu - Coca Cola"
 "Cart.Name" "Pepsi Invaders (1983) (Atari)"
+"Bezel.Name" "Pepsi Invaders - Coke Wins (USA)"
 ""
 
 "Cart.MD5" "213e5e82ecb42af237cfed8612c128ac"
@@ -3184,6 +3188,7 @@
 "Console.RightDiff" "A"
 "Console.SwapPorts" "YES"
 "Display.Phosphor" "YES"
+"Bezel.Name" "Stone Age (Brazil)"
 ""
 
 "Cart.MD5" "240bfbac5163af4df5ae713985386f92"
@@ -3589,6 +3594,7 @@
 "Cart.ModelNo" "PB5590"
 "Cart.Name" "Frogger II (1984) (Parker Bros)"
 "Display.Phosphor" "YES"
+"Bezel.Name" "Frogger II - Threeedeep! (USA)"
 ""
 
 "Cart.MD5" "27f9e2e1b92af9dc17c6155605c38e49"
@@ -3872,6 +3878,7 @@
 "Cart.ModelNo" "EAK-046-04B"
 "Cart.Name" "Fighter Pilot (1988) (Activision) (PAL)"
 "Cart.Note" "AKA Tomcat - The F-14 Fighter Simulator"
+"Bezel.Name" "Tomcat - The F-14 Fighter Simulator (USA)"
 ""
 
 "Cart.MD5" "2ae700c9dba843a68dfdca40d7d86bd6"
@@ -4168,6 +4175,7 @@
 "Cart.ModelNo" "87"
 "Cart.Name" "Glib (1983) (QDI)"
 "Cart.Note" "AKA Video Word Game"
+"Bezel.Name" "Glib - Video Word Game (USA)"
 ""
 
 "Cart.MD5" "2d9e65959808a6098c16c82a59c9d9dc"
@@ -4349,6 +4357,7 @@
 "Cart.Manufacturer" "Sancho - Tang's Electronic Co."
 "Cart.Name" "Words-Attack (1983) (Sancho) (PAL)"
 "Display.Phosphor" "YES"
+"Bezel.Name" "Words-Attack (Europe) (Proto)"
 ""
 
 "Cart.MD5" "3025bdc30b5aec9fb40668787f67d24c"
@@ -4534,6 +4543,7 @@
 "Cart.Note" "Solaris Beta"
 "Cart.Rarity" "Prototype"
 "Cart.Url" "http://www.atariprotos.com/2600/software/tlsf/tlsf.htm"
+"Bezel.Name" "Last Starfighter, The (USA) (Proto)"
 ""
 
 "Cart.MD5" "31f4692ee2ca07a7ce1f7a6a1dab4ac9"
@@ -4609,6 +4619,7 @@
 "Cart.Manufacturer" "Dactari - Milmar"
 "Cart.Name" "Megamania (Dactari)"
 "Cart.Highscore" "{\"score_addresses\":[\"0xdb\",\"0xdc\",\"0xdd\"],\"score_digits\":6,\"variations_address\":\"0x80\",\"variations_count\":4,\"variations_zero_based\":true}"
+"Bezel.Name" "MegaMania - A Space Nightmare (USA)"
 ""
 
 "Cart.MD5" "327fe8cf94f3a45c35a840a453df1235"
@@ -5339,6 +5350,7 @@
 "Cart.Manufacturer" "Absolute Entertainment, Dan Kitchen"
 "Cart.ModelNo" "AK-046-04"
 "Cart.Name" "Tomcat (1988) (Absolute)"
+"Bezel.Name" "Tomcat - The F-14 Fighter Simulator (USA)"
 ""
 
 "Cart.MD5" "3ad3dc799211ccd424d7c6d454401436"
@@ -5358,6 +5370,7 @@
 "Cart.Manufacturer" "Tigervision"
 "Cart.ModelNo" "7-008"
 "Cart.Name" "Miner 2049er (1983) (Tigervision) [fixed]"
+"Bezel.Name" "Miner 2049er - Starring Bounty Bob (USA)"
 ""
 
 "Cart.MD5" "3b097a7ed5bd2a84dc3d3ed361e9c31c"
@@ -5424,6 +5437,7 @@
 "Cart.Manufacturer" "Atari, Tod Frye - Sears"
 "Cart.ModelNo" "CX2646 - 49-75185"
 "Cart.Name" "Pac-Man (1981) (Atari) (8K)"
+"Bezel.Name" "Pac-Man (Atari) (USA)"
 ""
 
 "Cart.MD5" "3b91c347d8e6427edbe942a7a405290d"
@@ -5960,9 +5974,9 @@
 ""
 
 "Cart.MD5" "41810dd94bd0de1110bedc5092bef5b0"
-"Cart.Manufacturer" "Funvision - Fund. International Co."
-"Cart.Name" "Dragon Treasure (Funvision)"
-"Cart.Note" "AKA Dragonfire"
+"Cart.Manufacturer" "Imagic, Bob Smith"
+"Cart.Name" "Dragonfire"
+"Cart.Note" "AKA Dragon Treasure (Funvision)"
 "Display.Phosphor" "YES"
 ""
 
@@ -7191,6 +7205,7 @@
 "Cart.ModelNo" "EAZ-033 - 711 033-725"
 "Cart.Name" "Space Shuttle (1983) (Activision) (PAL)"
 "Cart.Note" "A Journey Into Space, Eine Reise ins All"
+"Bezel.Name" "Space Shuttle - A Journey Into Space (USA)"
 ""
 
 "Cart.MD5" "4f781f0476493c50dc578336f1132a67"
@@ -7945,6 +7960,7 @@
 "Cart.ModelNo" "AZ-033, AZ-033-04"
 "Cart.Name" "Space Shuttle (1983) (Activision)"
 "Cart.Note" "A Journey Into Space"
+"Bezel.Name" "Space Shuttle - A Journey Into Space (USA)"
 ""
 
 "Cart.MD5" "589c73bbcd77db798cb92a992b4c06c3"
@@ -8021,6 +8037,7 @@
 "Cart.Name" "Miner 2049er (1983) (Tigervision) (Prototype)"
 "Cart.Rarity" "Prototype"
 "Cart.Url" "http://www.atariprotos.com/2600/software/miner/miner.htm"
+"Bezel.Name" "Miner 2049er - Starring Bounty Bob (USA)"
 ""
 
 "Cart.MD5" "599cbf919d47a05af975ad447df29497"
@@ -8034,6 +8051,7 @@
 "Cart.Name" "Surfer's Paradise (Thomas Jentzsch)"
 "Cart.Note" "NTSC Conversion"
 "Cart.Rarity" "Homebrew"
+"Bezel.Name" "Surfer's Paradise - But Danger Below! (Europe)"
 ""
 
 "Cart.MD5" "59d33e00c07665395209c1e55da0b139"
@@ -8384,6 +8402,7 @@
 "Cart.Name" "Space Shuttle (1983) (Activision) (SECAM)"
 "Cart.Note" "A Journey Into Space"
 "Cart.Type" "FE"
+"Bezel.Name" "Space Shuttle - A Journey Into Space (USA)"
 ""
 
 "Cart.MD5" "5d2cc33ca798783dee435eb29debf6d6"
@@ -9137,6 +9156,7 @@
 "Cart.ModelNo" "C-812"
 "Cart.Name" "Pac Man (1983) (CCE) [a]"
 "Cart.Note" "AKA Pac-Man"
+"Bezel.Name" "Pac-Man (Atari) (USA)"
 ""
 
 "Cart.MD5" "6522717cfd75d1dba252cbde76992090"
@@ -10107,6 +10127,7 @@
 "Cart.Manufacturer" "Atari, Tod Frye - Sears"
 "Cart.ModelNo" "CX2646 - 49-75185"
 "Cart.Name" "Pac-Man (1982) (Atari)"
+"Bezel.Name" "Pac-Man (Atari) (USA)"
 ""
 
 "Cart.MD5" "6e59dd52f88c00d5060eac56c1a0b0d3"
@@ -10591,6 +10612,7 @@
 "Cart.Manufacturer" "Jone Yuan Telephonic Enterprise Co"
 "Cart.Name" "Unknown Datatech Game (Jone Yuan)"
 "Cart.Note" "2600 Screen Search Console"
+"Bezel.Name" "Unknown Datatech Game #2 - AKA Mazy Match (Mexico)"
 ""
 
 "Cart.MD5" "73efa9f3cbe197f26e0fb87132829232"
@@ -10695,6 +10717,7 @@
 "Cart.Name" "Snow White (02-09-1983) (Atari) (Prototype)"
 "Cart.Rarity" "Prototype"
 "Cart.Url" "http://www.atariprotos.com/2600/software/snowwhite/snowwhite.htm"
+"Bezel.Name" "Snow White and the Seven Dwarfs (USA) (Proto)"
 ""
 
 "Cart.MD5" "7511c34518a9a124ea773f5b0b5c9a48"
@@ -10832,6 +10855,7 @@
 "Cart.Rarity" "Prototype"
 "Cart.StartBank" "0"
 "Cart.Url" "http://www.atariprotos.com/2600/software/snowwhite/snowwhite.htm"
+"Bezel.Name" "Snow White and the Seven Dwarfs (USA) (Proto)"
 ""
 
 "Cart.MD5" "7608abdfd9b26f4a0ecec18b232bea54"
@@ -11931,6 +11955,7 @@
 "Cart.MD5" "8108ad2679bd055afec0a35a1dca46a4"
 "Cart.Name" "Maze Craze (Unknown)"
 "Display.Format" "NTSC"
+"Bezel.Name" "Maze Craze - A Game of Cops 'n Robbers (USA)"
 ""
 
 "Cart.MD5" "810d8952af5a6036fca8d0c4e1b23db6"
@@ -12633,6 +12658,7 @@
 "Cart.ModelNo" "AZ-033, AZ-033-04"
 "Cart.Name" "Space Shuttle (1983) (Activision) [FE]"
 "Cart.Note" "A Journey Into Space"
+"Bezel.Name" "Space Shuttle - A Journey Into Space (USA)"
 ""
 
 "Cart.MD5" "898748d5eaac3164b0391a64ae1e0e32"
@@ -13385,6 +13411,7 @@
 "Cart.MD5" "93096a1038cd558ed0b48741bbf17c64"
 "Cart.Manufacturer" "Fotomania"
 "Cart.Name" "Pac-Man (Fotomania)"
+"Bezel.Name" "Pac-Man (Atari) (USA)"
 ""
 
 "Cart.MD5" "931b91a8ea2d39fe4dca1a23832b591a"
@@ -15187,6 +15214,7 @@
 
 "Cart.MD5" "a8d0a4a77cd71ac601bd71df5a060e4c"
 "Cart.Name" "Space Shuttle (1983) (Activision) [t2] (Fuel)"
+"Bezel.Name" "Space Shuttle - A Journey Into Space (USA)"
 ""
 
 "Cart.MD5" "a8d4a9500b18b0a067a1f272f869e094"
@@ -16120,6 +16148,7 @@
 "Cart.Manufacturer" "Digitel"
 "Cart.Name" "Pac Man (1983) (Digitel)"
 "Cart.Note" "AKA Pac-Man"
+"Bezel.Name" "Pac-Man (Atari) (USA)"
 ""
 
 "Cart.MD5" "b37f0fe822b92ca8f5e330bf62d56ea9"
@@ -16299,6 +16328,7 @@
 "Cart.MD5" "b65d4a38d6047735824ee99684f3515e"
 "Cart.Manufacturer" "Dynacom"
 "Cart.Name" "MegaBoy (Dynacom)"
+"Bezel.Name" "MegaBoy (Brazil)"
 ""
 
 "Cart.MD5" "b676a9b7094e0345a76ef027091d916b"
@@ -17179,7 +17209,7 @@
 
 "Cart.MD5" "c1b7aeabc3ec41556d924c8372a9ba5b"
 "Cart.Manufacturer" "Atari, Robert C. Polaro"
-"Cart.Name" "Dukes of Hazard (1980) (Atari) (Prototype)"
+"Cart.Name" "Dukes of Hazzard (1980) (Atari) (Prototype)"
 "Cart.Note" "AKA Stunt Cycle"
 "Cart.Rarity" "Prototype"
 "Cart.Url" "http://www.atariprotos.com/2600/software/dukes/dukes.htm"
@@ -17526,6 +17556,7 @@
 "Cart.Manufacturer" "Tigervision - Teldec"
 "Cart.ModelNo" "7-008 - 3.60006 VG"
 "Cart.Name" "Miner 2049er (1983) (Tigervision) (PAL)"
+"Bezel.Name" "Miner 2049er - Starring Bounty Bob (USA)"
 ""
 
 "Cart.MD5" "c529e63013698064149b9e0468afd941"
@@ -17758,6 +17789,7 @@
 "Cart.Note" "Journey to Rivendell (The Lord of the Rings I)"
 "Cart.Rarity" "Prototype"
 "Cart.Url" "http://www.atariprotos.com/2600/software/lotr/lotr.htm"
+"Bezel.Name" "Lord of the Rings, The - Journey to Rivendell (USA) (Proto)"
 ""
 
 "Cart.MD5" "c6db733e0b108c2580a1d65211f06dbf"
@@ -17993,6 +18025,7 @@
 "Cart.ModelNo" "C-812"
 "Cart.Name" "Pac Man (1983) (CCE)"
 "Cart.Note" "AKA Pac-Man"
+"Bezel.Name" "Pac-Man (Atari) (USA)"
 ""
 
 "Cart.MD5" "ca54de69f7cdf4d7996e86f347129892"
@@ -19100,6 +19133,7 @@
 "Cart.ModelNo" "C-829"
 "Cart.Name" "Megamania (1983) (CCE)"
 "Cart.Highscore" "{\"score_addresses\":[\"0xdb\",\"0xdc\",\"0xdd\"],\"score_digits\":6,\"variations_address\":\"0x80\",\"variations_count\":4,\"variations_zero_based\":true}"
+"Bezel.Name" "MegaMania - A Space Nightmare (USA)"
 ""
 
 "Cart.MD5" "d563ba38151b8204c9f5c9f58e781455"
@@ -21238,6 +21272,7 @@
 "Cart.Name" "Extra Terrestrials (1984) (SSG)"
 "Cart.Note" "The only Canadian-designed and manufactured Atari 2600 game from the 1980's"
 "Cart.Rarity" "Extremely Rare"
+"Bezel.Name" "Extra Terrestrials (Canada)"
 ""
 
 "Cart.MD5" "ebdc5716b85c4ff44fa357cb697d6cef"
@@ -21362,6 +21397,7 @@
 "Cart.ModelNo" "CX2635, CX2635P"
 "Cart.Name" "Maze Craze (1980) (Atari) (PAL)"
 "Cart.Note" "AKA A Game of Cops 'n Robbers"
+"Bezel.Name" "Maze Craze - A Game of Cops 'n Robbers (USA)"
 ""
 
 "Cart.MD5" "ed5ccfc93ad4561075436ee42a15438a"
@@ -22469,6 +22505,7 @@
 "Cart.Name" "Maze Craze (1980) (Atari)"
 "Cart.Note" "AKA A Game of Cops 'n Robbers"
 "Display.Format" "NTSC"
+"Bezel.Name" "Maze Craze - A Game of Cops 'n Robbers (USA)"
 ""
 
 "Cart.MD5" "f844f4c6f3baaaf5322657442d6f29eb"
@@ -22668,6 +22705,7 @@
 "Cart.Manufacturer" "Tigervision"
 "Cart.ModelNo" "7-008"
 "Cart.Name" "Miner 2049er (1983) (Tigervision)"
+"Bezel.Name" "Miner 2049er - Starring Bounty Bob (USA)"
 ""
 
 "Cart.MD5" "fa1b060fd8e0bca0c2a097dcffce93d3"
@@ -22854,6 +22892,7 @@
 "Cart.ModelNo" "PB5590"
 "Cart.Name" "Frogger II (1984) (Parker Bros) (PAL)"
 "Display.Phosphor" "YES"
+"Bezel.Name" "Frogger II - Threeedeep! (USA)"
 ""
 
 "Cart.MD5" "fb978f1c053e8061cc37a726639f43f7"
@@ -22908,6 +22947,7 @@
 "Cart.Manufacturer" "Atari, Tod Frye"
 "Cart.ModelNo" "CX2646"
 "Cart.Name" "Pac-Man (1982) (Atari) (PAL)"
+"Bezel.Name" "Pac-Man (Atari) (USA)"
 ""
 
 "Cart.MD5" "fc24a94d4371c69bc58f5245ada43c44"
@@ -23166,6 +23206,7 @@
 
 "Cart.MD5" "ff5a9e340d96df6f5a5b6eb038e923bd"
 "Cart.Name" "Space Shuttle (1983) (Activision) [t1]"
+"Bezel.Name" "Space Shuttle - A Journey Into Space (USA)"
 ""
 
 "Cart.MD5" "ff7627207e8aa03730c35c735a82c26c"
