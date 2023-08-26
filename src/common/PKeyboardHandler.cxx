@@ -623,6 +623,7 @@ PhysicalKeyboardHandler::DefaultCommonMapping = {
   #endif
   { Event::OptionsMenuMode,          KBDK_TAB },
   { Event::CmdMenuMode,              KBDK_BACKSLASH },
+  { Event::ToggleBezel,              KBDK_B, KBDM_CTRL },
   { Event::TimeMachineMode,          KBDK_T, KBDM_SHIFT },
   { Event::DebuggerMode,             KBDK_GRAVE },
   { Event::PlusRomsSetupMode,        KBDK_P, KBDM_SHIFT | KBDM_CTRL | MOD3 },

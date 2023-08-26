@@ -1264,6 +1264,25 @@ void FrameBuffer::switchVideoMode(int direction)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FrameBuffer::toggleBezel(bool toggle)
+{
+  bool enabled = myOSystem.settings().getBool("bezel.show");
+
+  if(toggle)
+  {
+    if(myBufferType == BufferType::Emulator &&
+      (fullScreen() || myOSystem.settings().getBool("bezel.windowed")))
+    {
+      enabled = !enabled;
+      myOSystem.settings().setValue("bezel.show", enabled);
+      myBezel->load();
+      applyVideoMode();
+    }
+  }
+  myOSystem.frameBuffer().showTextMessage(enabled ? "Bezel enabled" : "Bezel disabled");
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FBInitStatus FrameBuffer::applyVideoMode()
 {
   // Update display size, in case windowed/fullscreen mode has changed
@@ -1327,7 +1346,6 @@ FBInitStatus FrameBuffer::applyVideoMode()
 
   return status;
 }
-
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 double FrameBuffer::maxWindowZoom() const

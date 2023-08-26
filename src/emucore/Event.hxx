@@ -126,7 +126,7 @@ class Event
       ToggleBLCollision, ToggleBLBit, TogglePFCollision, TogglePFBit,
       ToggleCollisions, ToggleBits, ToggleFixedColors,
 
-      ToggleFrameStats, ToggleSAPortOrder, ExitGame,
+      ToggleFrameStats, ToggleBezel, ToggleSAPortOrder, ExitGame,
       SettingDecrease, SettingIncrease, PreviousSetting, NextSetting,
       ToggleAdaptRefresh, PreviousMultiCartRom,
       // add new (after Version 4) events from here to avoid that user remapped events get overwritten

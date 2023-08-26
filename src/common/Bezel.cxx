@@ -137,24 +137,32 @@ bool Bezel::load()
     const Int32 h = mySurface->height();
     uInt32 top, bottom, left, right;
 
-    if(settings.getBool("bezel.autoborders"))
+    if(settings.getBool("bezel.win.auto"))
     {
       // Determine transparent window inside bezel image
-      top = borderSize(w >> 1, 0, h, w);
-      bottom = h - 1 - borderSize(w >> 1, h - 1, h, -w);
-      left = borderSize(0, (bottom + top) >> 1, w, 1);
-      right = w - 1 - borderSize(w - 1, (bottom + top) >> 1, w, -1);
+      uInt32 xCenter, yCenter;
+
+      xCenter = w >> 1;
+      top = borderSize(xCenter, 0, h, w);
+      bottom = h - 1 - borderSize(xCenter, h - 1, h, -w);
+      yCenter = (bottom + top) >> 1;
+      left = borderSize(0, yCenter, w, 1);
+      right = w - 1 - borderSize(w - 1, yCenter, w, -1);
     }
     else
     {
-      left = std::min(w, settings.getInt("bezel.leftborder"));
-      right = w - 1 - std::min(w, settings.getInt("bezel.rightborder"));
-      top = std::min(h, settings.getInt("bezel.topborder"));
-      bottom = h - 1 - std::min(h, settings.getInt("bezel.bottomborder"));
+      // BP: 13, 13,  0,  0%
+      // HY: 12, 12,  0,  0%
+      // P1: 25, 25, 11, 22%
+      // P2: 23, 23,  7, 20%
+      left   = std::min(w - 1,         static_cast<Int32>(w * settings.getInt("bezel.win.left")   / 100. + .5));
+      right  = w - 1 - std::min(w - 1, static_cast<Int32>(w * settings.getInt("bezel.win.right")  / 100. + .5));
+      top    = std::min(h - 1,         static_cast<Int32>(h * settings.getInt("bezel.win.top")    / 100. + .5));
+      bottom = h - 1 - std::min(h - 1, static_cast<Int32>(h * settings.getInt("bezel.win.bottom") / 100. + .5));
     }
 
-    cerr << (int)(right - left + 1) << " x " << (int)(bottom - top + 1) << " = "
-      << double((int)(right - left + 1)) / double((int)(bottom - top + 1));
+    //cerr << (int)(right - left + 1) << " x " << (int)(bottom - top + 1) << " = "
+    //  << double((int)(right - left + 1)) / double((int)(bottom - top + 1));
 
     // Disable bezel is no transparent window was found
     if (left < right && top < bottom)

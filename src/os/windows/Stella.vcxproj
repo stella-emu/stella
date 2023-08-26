@@ -734,6 +734,7 @@
     <ClCompile Include="..\..\common\audio\LanczosResampler.cxx" />
     <ClCompile Include="..\..\common\audio\SimpleResampler.cxx" />
     <ClCompile Include="..\..\common\Base.cxx" />
+    <ClCompile Include="..\..\common\Bezel.cxx" />
     <ClCompile Include="..\..\common\DevSettingsHandler.cxx" />
     <ClCompile Include="..\..\common\EventHandlerSDL2.cxx" />
     <ClCompile Include="..\..\common\FBBackendSDL2.cxx" />
@@ -993,7 +994,6 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\emucore\Bankswitch.cxx" />
-    <ClCompile Include="..\..\emucore\Bezel.cxx" />
     <ClCompile Include="..\..\emucore\Cart03E0.cxx" />
     <ClCompile Include="..\..\emucore\Cart3EPlus.cxx" />
     <ClCompile Include="..\..\emucore\Cart3EX.cxx" />
@@ -2051,6 +2051,7 @@
     <ClInclude Include="..\..\common\audio\Resampler.hxx" />
     <ClInclude Include="..\..\common\audio\SimpleResampler.hxx" />
     <ClInclude Include="..\..\common\Base.hxx" />
+    <ClInclude Include="..\..\common\Bezel.hxx" />
     <ClInclude Include="..\..\common\bspf.hxx" />
     <ClInclude Include="..\..\common\DevSettingsHandler.hxx" />
     <ClInclude Include="..\..\common\EventHandlerSDL2.hxx" />
@@ -2321,7 +2322,6 @@
     <ClInclude Include="..\..\emucore\AmigaMouse.hxx" />
     <ClInclude Include="..\..\emucore\AtariMouse.hxx" />
     <ClInclude Include="..\..\emucore\Bankswitch.hxx" />
-    <ClInclude Include="..\..\emucore\Bezel.hxx" />
     <ClInclude Include="..\..\emucore\Cart03E0.hxx" />
     <ClInclude Include="..\..\emucore\Cart3EPlus.hxx" />
     <ClInclude Include="..\..\emucore\Cart3EX.hxx" />

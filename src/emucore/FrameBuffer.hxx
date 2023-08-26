@@ -258,6 +258,11 @@ class FrameBuffer
     void switchVideoMode(int direction = +1);
 
     /**
+      Toggles the bezel display.
+    */
+    void toggleBezel(bool toggle = true);
+
+    /**
       Sets the state of the cursor (hidden or grabbed) based on the
       current mode.
     */
