@@ -1517,6 +1517,14 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed && !repeated) myOSystem.toggleTimeMachine();
       return;
 
+    case Event::ToggleBezel:
+      if(pressed && !repeated)
+      {
+        myOSystem.frameBuffer().toggleBezel();
+        myGlobalKeyHandler->setSetting(GlobalKeyHandler::Setting::BEZEL);
+      }
+      return;
+
   #ifdef IMAGE_SUPPORT
     case Event::ToggleContSnapshots:
       if(pressed && !repeated) myOSystem.png().toggleContinuousSnapshots(false);
@@ -2827,6 +2835,7 @@ EventHandler::EmulActionList EventHandler::ourEmulActionList = { {
   { Event::ExitMode,                "Exit current Stella menu/mode"         },
   { Event::OptionsMenuMode,         "Enter Options menu UI"                 },
   { Event::CmdMenuMode,             "Toggle Commands menu UI"               },
+  { Event::ToggleBezel,             "Toggle bezel display"                  },
   { Event::HighScoresMenuMode,      "Toggle High Scores UI"                 },
   { Event::PlusRomsSetupMode,       "Toggle PlusROMs setup UI"              },
   { Event::TogglePauseMode,         "Toggle Pause mode"                     },
@@ -3148,7 +3157,7 @@ EventHandler::MenuActionList EventHandler::ourMenuActionList = { {
 const Event::EventSet EventHandler::MiscEvents = {
   Event::Quit, Event::ReloadConsole, Event::Fry, Event::StartPauseMode,
   Event::TogglePauseMode, Event::OptionsMenuMode, Event::CmdMenuMode,
-  Event::PlusRomsSetupMode, Event::ExitMode,
+  Event::ToggleBezel, Event::PlusRomsSetupMode, Event::ExitMode,
   Event::ToggleTurbo, Event::DecreaseSpeed, Event::IncreaseSpeed,
   Event::TakeSnapshot, Event::ToggleContSnapshots, Event::ToggleContSnapshotsFrame,
   // Event::MouseAxisXMove, Event::MouseAxisYMove,

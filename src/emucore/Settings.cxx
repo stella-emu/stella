@@ -64,11 +64,11 @@ Settings::Settings()
   setPermanent("pausedim", "true");
   setPermanent("bezel.show", "true");
   setPermanent("bezel.windowed", "false");
-  setPermanent("bezel.autoborders", "true");
-  setPermanent("bezel.leftborder", "0");
-  setPermanent("bezel.rightborder", "0");
-  setPermanent("bezel.topborder", "0");
-  setPermanent("bezel.bottomborder", "0");
+  setPermanent("bezel.win.auto", "true");
+  setPermanent("bezel.win.left", "12");
+  setPermanent("bezel.win.right", "12");
+  setPermanent("bezel.win.top", "0");
+  setPermanent("bezel.win.bottom", "0");
   // TIA specific options
   setPermanent("tia.inter", "false");
   setPermanent("tia.zoom", "3");
@@ -546,13 +546,14 @@ void Settings::usage()
     << "  -turbo           <1|0>         Enable 'Turbo' mode for maximum emulation speed\n"
     << "  -uimessages      <1|0>         Show onscreen UI messages for different events\n"
     << "  -pausedim        <1|0>         Enable emulation dimming in pause mode\n"
-    << "  -bezel.show         <1|0>      Show bezel left and right of emulation\n"
-    << "  -bezel.windowed     <1|0>      Show bezel in windowed modes\n"
-    << "  -bezel.autoborders  <1|0>      Automatically set bezel window borders\n"
-    << "  -bezel.leftborder   <number>   Set left bezel window border\n"
-    << "  -bezel.rightborder  <number>   Set right bezel window border\n"
-    << "  -bezel.topborder    <number>   Set top bezel window border\n"
-    << "  -bezel.bottomborder <number>   Set bottom bezel window border\n"
+    << endl
+    << "  -bezel.show        <1|0>       Show bezel around emulation window\n"
+    << "  -bezel.windowed    <1|0>       Show bezel in windowed modes\n"
+    << "  -bezel.win.auto    <1|0>       Automatically set bezel window position\n"
+    << "  -bezel.win.left    <0-40>      Set left bezel window position [%]\n"
+    << "  -bezel.win.right   <0-40>      Set right bezel window position [%]\n"
+    << "  -bezel.win.top     <0-40>      Set top bezel window position [%]\n"
+    << "  -bezel.win.bottom  <0-40>      Set bottom bezel window position [%]\n"
     << endl
   #ifdef SOUND_SUPPORT
     << "  -audio.enabled            <1|0>      Enable audio\n"
