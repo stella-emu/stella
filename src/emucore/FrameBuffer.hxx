@@ -575,7 +575,7 @@ class FrameBuffer
       bool enabled{false};
       bool dirty{false};
       bool showGauge{false};
-      float value{0.0F};
+      float value{0.F};
       string valueText;
     };
     Message myMsg;
@@ -588,7 +588,7 @@ class FrameBuffer
     vector<bool> myHiDPIEnabled;
 
     // Minimum TIA zoom level that can be used for this framebuffer
-    double myTIAMinZoom{2.F};
+    double myTIAMinZoom{2.};
 
     // Holds a reference to all the surfaces that have been created
     std::list<shared_ptr<FBSurface>> mySurfaceList;

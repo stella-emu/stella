@@ -1410,7 +1410,7 @@ void DeveloperDialog::handleDebugColours(int idx, int color)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DeveloperDialog::handleDebugColours(string_view colors)
 {
-  for(int i = 0; i < DEBUG_COLORS && i < colors.length(); ++i)
+  for(int i = 0; i < DEBUG_COLORS && i < static_cast<int>(colors.length()); ++i)
   {
     switch(colors[i])
     {
