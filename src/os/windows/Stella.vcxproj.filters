@@ -43,26 +43,8 @@
     <Filter Include="Source Files\emucore\tia">
       <UniqueIdentifier>{ffa3642d-aa8a-43a5-8ac5-acd8878dd091}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\audio">
-      <UniqueIdentifier>{49d8ea64-20c1-45f1-9dc9-b39c17d7cabd}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\audio">
-      <UniqueIdentifier>{000e4a6b-8cd6-43db-8253-8255c7efa706}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\emucore\exception">
       <UniqueIdentifier>{fb5429b5-4ffb-4574-a98d-54ba865e4199}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\repository">
-      <UniqueIdentifier>{6960ed3f-a5e0-4af6-af20-e9308167ae63}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\repository">
-      <UniqueIdentifier>{1aab46fa-ee39-415d-9e41-d5ad3ee14ce7}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\repository\sqlite">
-      <UniqueIdentifier>{21af5583-5f53-4c1d-96d1-05ceaa2d6bae}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\repository\sqlite">
-      <UniqueIdentifier>{47b68040-eac2-4f3c-82d1-eceb7a6e6b7b}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\lib">
       <UniqueIdentifier>{456bc377-aa1c-4601-894a-2385d91f83c4}</UniqueIdentifier>
@@ -121,38 +103,50 @@
     <Filter Include="Source Files\debugger\gui">
       <UniqueIdentifier>{f379898f-6732-4ffd-ab68-28b275790ca8}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\sdl_blitter">
+    <Filter Include="Header Files\common">
+      <UniqueIdentifier>{8a7dec13-c8df-4d73-b633-2eb91f498580}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\common">
+      <UniqueIdentifier>{5cf38693-725a-47bb-9d44-8227d5e842da}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\common\audio">
+      <UniqueIdentifier>{000e4a6b-8cd6-43db-8253-8255c7efa706}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\common\audio">
+      <UniqueIdentifier>{49d8ea64-20c1-45f1-9dc9-b39c17d7cabd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\common\repository">
+      <UniqueIdentifier>{1aab46fa-ee39-415d-9e41-d5ad3ee14ce7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\common\repository\sqlite">
+      <UniqueIdentifier>{47b68040-eac2-4f3c-82d1-eceb7a6e6b7b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\common\repository">
+      <UniqueIdentifier>{6960ed3f-a5e0-4af6-af20-e9308167ae63}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\common\repository\sqlite">
+      <UniqueIdentifier>{21af5583-5f53-4c1d-96d1-05ceaa2d6bae}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\common\sdl_blitter">
       <UniqueIdentifier>{ee0eac0c-bfb9-4009-bfe2-1da3c7392a3b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\tv_filters">
+    <Filter Include="Header Files\common\tv_filters">
       <UniqueIdentifier>{5825497d-8a3a-4d66-8f1a-b8f381d22204}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\sdl_blitter">
+    <Filter Include="Source Files\common\sdl_blitter">
       <UniqueIdentifier>{ea74c030-5085-43da-9800-64525764ad3b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\tv_filters">
+    <Filter Include="Source Files\common\tv_filters">
       <UniqueIdentifier>{30c7f8db-f036-4f42-8edf-88d7773a05b0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\os">
+      <UniqueIdentifier>{a9d4d5d2-ca26-4636-a96d-fb7f2d22cd2f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\os">
+      <UniqueIdentifier>{c79f0972-e9dc-49af-90f2-39505bbdef05}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\common\FBBackendSDL2.cxx">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="FSNodeWINDOWS.cxx">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="OSystemWINDOWS.cxx">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\common\PNGLibrary.cxx">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="SerialPortWINDOWS.cxx">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\common\SoundSDL2.cxx">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\emucore\AtariVox.cxx">
       <Filter>Source Files\emucore</Filter>
     </ClCompile>
@@ -537,9 +531,6 @@
     <ClCompile Include="..\..\gui\LoggerDialog.cxx">
       <Filter>Source Files\gui</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\common\FBSurfaceSDL2.cxx">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\emucore\CompuMate.cxx">
       <Filter>Source Files\emucore</Filter>
     </ClCompile>
@@ -552,26 +543,14 @@
     <ClCompile Include="..\..\emucore\CartFA2.cxx">
       <Filter>Source Files\emucore</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\common\MouseControl.cxx">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\emucore\CartCTY.cxx">
       <Filter>Source Files\emucore</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\common\FSNodeZIP.cxx">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\common\ZipHandler.cxx">
-      <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\gui\FileListWidget.cxx">
       <Filter>Source Files\gui</Filter>
     </ClCompile>
     <ClCompile Include="..\..\gui\SnapshotDialog.cxx">
       <Filter>Source Files\gui</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\common\Base.cxx">
-      <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\emucore\Cart4KSC.cxx">
       <Filter>Source Files\emucore</Filter>
@@ -588,9 +567,6 @@
     <ClCompile Include="..\..\emucore\CartDFSC.cxx">
       <Filter>Source Files\emucore</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\common\EventHandlerSDL2.cxx">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\emucore\FBSurface.cxx">
       <Filter>Source Files\emucore</Filter>
     </ClCompile>
@@ -599,9 +575,6 @@
     </ClCompile>
     <ClCompile Include="..\..\emucore\CartMDM.cxx">
       <Filter>Source Files\emucore</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\common\main.cxx">
-      <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\emucore\CartWD.cxx">
       <Filter>Source Files\emucore</Filter>
@@ -654,12 +627,6 @@
     <ClCompile Include="..\..\emucore\PointingDevice.cxx">
       <Filter>Source Files\emucore</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\common\RewindManager.cxx">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\common\StateManager.cxx">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\gui\DeveloperDialog.cxx">
       <Filter>Source Files\gui</Filter>
     </ClCompile>
@@ -687,38 +654,23 @@
     <ClCompile Include="..\..\gui\TimeLineWidget.cxx">
       <Filter>Source Files\gui</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\common\PhysicalJoystick.cxx">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\common\PJoystickHandler.cxx">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\common\PKeyboardHandler.cxx">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\common\KeyMap.cxx">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\emucore\tia\Audio.cxx">
       <Filter>Source Files\emucore\tia</Filter>
     </ClCompile>
     <ClCompile Include="..\..\emucore\tia\AudioChannel.cxx">
       <Filter>Source Files\emucore\tia</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\common\AudioQueue.cxx">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\emucore\EmulationTiming.cxx">
       <Filter>Source Files\emucore</Filter>
     </ClCompile>
     <ClCompile Include="..\..\common\audio\SimpleResampler.cxx">
-      <Filter>Source Files\audio</Filter>
+      <Filter>Source Files\common\audio</Filter>
     </ClCompile>
     <ClCompile Include="..\..\common\audio\ConvolutionBuffer.cxx">
-      <Filter>Source Files\audio</Filter>
+      <Filter>Source Files\common\audio</Filter>
     </ClCompile>
     <ClCompile Include="..\..\common\audio\LanczosResampler.cxx">
-      <Filter>Source Files\audio</Filter>
+      <Filter>Source Files\common\audio</Filter>
     </ClCompile>
     <ClCompile Include="..\..\emucore\DispatchResult.cxx">
       <Filter>Source Files\emucore</Filter>
@@ -726,26 +678,11 @@
     <ClCompile Include="..\..\emucore\EmulationWorker.cxx">
       <Filter>Source Files\emucore</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\common\AudioSettings.cxx">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\common\FpsMeter.cxx">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\common\audio\HighPass.cxx">
-      <Filter>Source Files\audio</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\common\TimerManager.cxx">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\common\audio</Filter>
     </ClCompile>
     <ClCompile Include="..\..\emucore\Bankswitch.cxx">
       <Filter>Source Files\emucore</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\common\ThreadDebugging.cxx">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\common\StaggeredLogger.cxx">
-      <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\emucore\ControllerDetector.cxx">
       <Filter>Source Files\emucore</Filter>
@@ -759,23 +696,14 @@
     <ClCompile Include="..\..\gui\MinUICommandDialog.cxx">
       <Filter>Source Files\gui</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\common\Logger.cxx">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\gui\R77HelpDialog.cxx">
       <Filter>Source Files\gui</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\common\JoyMap.cxx">
-      <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\debugger\BreakpointMap.cxx">
       <Filter>Source Files\debugger</Filter>
     </ClCompile>
     <ClCompile Include="..\..\emucore\CartFC.cxx">
       <Filter>Source Files\emucore</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\common\PhosphorHandler.cxx">
-      <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\emucore\Lightgun.cxx">
       <Filter>Source Files\emucore</Filter>
@@ -785,9 +713,6 @@
     </ClCompile>
     <ClCompile Include="..\..\gui\MessageDialog.cxx">
       <Filter>Source Files\gui</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\common\HighScoresManager.cxx">
-      <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\gui\HighScoresMenu.cxx">
       <Filter>Source Files\gui</Filter>
@@ -800,9 +725,6 @@
     </ClCompile>
     <ClCompile Include="..\..\emucore\Cart3EX.cxx">
       <Filter>Source Files\emucore</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\common\PaletteHandler.cxx">
-      <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\gui\EmulationDialog.cxx">
       <Filter>Source Files\gui</Filter>
@@ -825,9 +747,6 @@
     <ClCompile Include="..\..\gui\QuadTariDialog.cxx">
       <Filter>Source Files\gui</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\common\VideoModeHandler.cxx">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\gui\UndoHandler.cxx">
       <Filter>Source Files\gui</Filter>
     </ClCompile>
@@ -838,46 +757,46 @@
       <Filter>Source Files\emucore</Filter>
     </ClCompile>
     <ClCompile Include="..\..\common\repository\sqlite\KeyValueRepositorySqlite.cxx">
-      <Filter>Source Files\repository\sqlite</Filter>
+      <Filter>Source Files\common\repository\sqlite</Filter>
     </ClCompile>
     <ClCompile Include="..\..\common\repository\sqlite\SqliteDatabase.cxx">
-      <Filter>Source Files\repository\sqlite</Filter>
+      <Filter>Source Files\common\repository\sqlite</Filter>
     </ClCompile>
     <ClCompile Include="..\..\common\repository\sqlite\SqliteStatement.cxx">
-      <Filter>Source Files\repository\sqlite</Filter>
+      <Filter>Source Files\common\repository\sqlite</Filter>
     </ClCompile>
     <ClCompile Include="..\..\common\repository\sqlite\SqliteTransaction.cxx">
-      <Filter>Source Files\repository\sqlite</Filter>
+      <Filter>Source Files\common\repository\sqlite</Filter>
     </ClCompile>
     <ClCompile Include="..\..\lib\sqlite\source\sqlite3.c">
       <Filter>Source Files\lib\sqlite\source</Filter>
     </ClCompile>
     <ClCompile Include="..\..\common\repository\sqlite\AbstractKeyValueRepositorySqlite.cxx">
-      <Filter>Source Files\repository\sqlite</Filter>
+      <Filter>Source Files\common\repository\sqlite</Filter>
     </ClCompile>
     <ClCompile Include="..\..\common\repository\sqlite\CompositeKeyValueRepositorySqlite.cxx">
-      <Filter>Source Files\repository\sqlite</Filter>
+      <Filter>Source Files\common\repository\sqlite</Filter>
     </ClCompile>
     <ClCompile Include="..\..\common\repository\KeyValueRepositoryPropertyFile.cxx">
-      <Filter>Source Files\repository</Filter>
+      <Filter>Source Files\common\repository</Filter>
     </ClCompile>
     <ClCompile Include="..\..\common\repository\CompositeKVRJsonAdapter.cxx">
-      <Filter>Source Files\repository</Filter>
+      <Filter>Source Files\common\repository</Filter>
     </ClCompile>
     <ClCompile Include="..\..\common\repository\KeyValueRepositoryConfigfile.cxx">
-      <Filter>Source Files\repository</Filter>
+      <Filter>Source Files\common\repository</Filter>
     </ClCompile>
     <ClCompile Include="..\..\common\repository\KeyValueRepositoryJsonFile.cxx">
-      <Filter>Source Files\repository</Filter>
+      <Filter>Source Files\common\repository</Filter>
     </ClCompile>
     <ClCompile Include="..\..\common\repository\sqlite\StellaDb.cxx">
-      <Filter>Source Files\repository\sqlite</Filter>
+      <Filter>Source Files\common\repository\sqlite</Filter>
     </ClCompile>
     <ClCompile Include="..\..\emucore\OSystemStandalone.cxx">
       <Filter>Source Files\emucore</Filter>
     </ClCompile>
     <ClCompile Include="..\..\common\repository\CompositeKeyValueRepository.cxx">
-      <Filter>Source Files\repository</Filter>
+      <Filter>Source Files\common\repository</Filter>
     </ClCompile>
     <ClCompile Include="..\..\emucore\CartMVC.cxx">
       <Filter>Source Files\emucore</Filter>
@@ -897,9 +816,6 @@
     <ClCompile Include="..\..\emucore\GlobalKeyHandler.cxx">
       <Filter>Source Files\emucore</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\common\DevSettingsHandler.cxx">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\gui\LauncherFileListWidget.cxx">
       <Filter>Source Files\gui</Filter>
     </ClCompile>
@@ -917,9 +833,6 @@
     </ClCompile>
     <ClCompile Include="..\..\gui\RomImageWidget.cxx">
       <Filter>Source Files\gui</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\common\JPGLibrary.cxx">
-      <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\lib\tinyexif\tinyexif.cxx">
       <Filter>Source Files\lib\tinyexif</Filter>
@@ -1180,19 +1093,19 @@
       <Filter>Source Files\debugger\gui</Filter>
     </ClCompile>
     <ClCompile Include="..\..\common\tv_filters\AtariNTSC.cxx">
-      <Filter>Source Files\tv_filters</Filter>
+      <Filter>Source Files\common\tv_filters</Filter>
     </ClCompile>
     <ClCompile Include="..\..\common\tv_filters\NTSCFilter.cxx">
-      <Filter>Source Files\tv_filters</Filter>
+      <Filter>Source Files\common\tv_filters</Filter>
     </ClCompile>
     <ClCompile Include="..\..\common\sdl_blitter\BilinearBlitter.cxx">
-      <Filter>Source Files\sdl_blitter</Filter>
+      <Filter>Source Files\common\sdl_blitter</Filter>
     </ClCompile>
     <ClCompile Include="..\..\common\sdl_blitter\BlitterFactory.cxx">
-      <Filter>Source Files\sdl_blitter</Filter>
+      <Filter>Source Files\common\sdl_blitter</Filter>
     </ClCompile>
     <ClCompile Include="..\..\common\sdl_blitter\QisBlitter.cxx">
-      <Filter>Source Files\sdl_blitter</Filter>
+      <Filter>Source Files\common\sdl_blitter</Filter>
     </ClCompile>
     <ClCompile Include="..\..\debugger\TimerMap.cxx">
       <Filter>Source Files\debugger</Filter>
@@ -1209,38 +1122,110 @@
     <ClCompile Include="..\..\debugger\gui\Cart03E0Widget.cxx">
       <Filter>Source Files\debugger\gui</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\common\AudioQueue.cxx">
+      <Filter>Source Files\common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\common\AudioSettings.cxx">
+      <Filter>Source Files\common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\common\Base.cxx">
+      <Filter>Source Files\common</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\common\Bezel.cxx">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\common\DevSettingsHandler.cxx">
+      <Filter>Source Files\common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\common\EventHandlerSDL2.cxx">
+      <Filter>Source Files\common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\common\FBBackendSDL2.cxx">
+      <Filter>Source Files\common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\common\FBSurfaceSDL2.cxx">
+      <Filter>Source Files\common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\common\FpsMeter.cxx">
+      <Filter>Source Files\common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\common\FSNodeZIP.cxx">
+      <Filter>Source Files\common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\common\HighScoresManager.cxx">
+      <Filter>Source Files\common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\common\JoyMap.cxx">
+      <Filter>Source Files\common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\common\JPGLibrary.cxx">
+      <Filter>Source Files\common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\common\KeyMap.cxx">
+      <Filter>Source Files\common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\common\Logger.cxx">
+      <Filter>Source Files\common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\common\main.cxx">
+      <Filter>Source Files\common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\common\MouseControl.cxx">
+      <Filter>Source Files\common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\common\PaletteHandler.cxx">
+      <Filter>Source Files\common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\common\PhosphorHandler.cxx">
+      <Filter>Source Files\common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\common\PhysicalJoystick.cxx">
+      <Filter>Source Files\common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\common\PJoystickHandler.cxx">
+      <Filter>Source Files\common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\common\PKeyboardHandler.cxx">
+      <Filter>Source Files\common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\common\PNGLibrary.cxx">
+      <Filter>Source Files\common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\common\RewindManager.cxx">
+      <Filter>Source Files\common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\common\SoundSDL2.cxx">
+      <Filter>Source Files\common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\common\StaggeredLogger.cxx">
+      <Filter>Source Files\common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\common\StateManager.cxx">
+      <Filter>Source Files\common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\common\ThreadDebugging.cxx">
+      <Filter>Source Files\common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\common\TimerManager.cxx">
+      <Filter>Source Files\common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\common\VideoModeHandler.cxx">
+      <Filter>Source Files\common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\common\ZipHandler.cxx">
+      <Filter>Source Files\common</Filter>
+    </ClCompile>
+    <ClCompile Include="FSNodeWINDOWS.cxx">
+      <Filter>Source Files\os</Filter>
+    </ClCompile>
+    <ClCompile Include="OSystemWINDOWS.cxx">
+      <Filter>Source Files\os</Filter>
+    </ClCompile>
+    <ClCompile Include="SerialPortWINDOWS.cxx">
+      <Filter>Source Files\os</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\common\bspf.hxx">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\common\FBBackendSDL2.hxx">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="HomeFinder.hxx">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="OSystemWINDOWS.hxx">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\common\PNGLibrary.hxx">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="SerialPortWINDOWS.hxx">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\common\SoundSDL2.hxx">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\common\Stack.hxx">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\common\Version.hxx">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\emucore\AtariVox.hxx">
       <Filter>Header Files\emucore</Filter>
     </ClInclude>
@@ -1634,14 +1619,8 @@
     <ClInclude Include="..\..\lib\libpng\pngstruct.h">
       <Filter>Header Files\lib\libpng</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\common\StringParser.hxx">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\gui\LoggerDialog.hxx">
       <Filter>Header Files\gui</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\common\FBSurfaceSDL2.hxx">
-      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\emucore\CompuMate.hxx">
       <Filter>Header Files\emucore</Filter>
@@ -1652,41 +1631,17 @@
     <ClInclude Include="..\..\emucore\CartCM.hxx">
       <Filter>Header Files\emucore</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\common\StellaKeys.hxx">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\emucore\CartFA2.hxx">
       <Filter>Header Files\emucore</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\common\MouseControl.hxx">
-      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\emucore\CartCTY.hxx">
       <Filter>Header Files\emucore</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\common\FSNodeFactory.hxx">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\common\FSNodeZIP.hxx">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="FSNodeWINDOWS.hxx">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\common\ZipHandler.hxx">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\gui\FileListWidget.hxx">
       <Filter>Header Files\gui</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\common\Variant.hxx">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\gui\SnapshotDialog.hxx">
       <Filter>Header Files\gui</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\common\Base.hxx">
-      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\gui\ConsoleMediumFont.hxx">
       <Filter>Header Files\gui</Filter>
@@ -1712,9 +1667,6 @@
     <ClInclude Include="..\..\emucore\CartDFSC.hxx">
       <Filter>Header Files\emucore</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\common\EventHandlerSDL2.hxx">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\emucore\FBSurface.hxx">
       <Filter>Header Files\emucore</Filter>
     </ClInclude>
@@ -1723,12 +1675,6 @@
     </ClInclude>
     <ClInclude Include="..\..\emucore\CartMDM.hxx">
       <Filter>Header Files\emucore</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\common\Vec.hxx">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\common\MediaFactory.hxx">
-      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\emucore\CartWD.hxx">
       <Filter>Header Files\emucore</Filter>
@@ -1805,17 +1751,8 @@
     <ClInclude Include="..\..\emucore\PointingDevice.hxx">
       <Filter>Header Files\emucore</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\common\RewindManager.hxx">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\common\StateManager.hxx">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\debugger\TrapArray.hxx">
       <Filter>Header Files\debugger</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\common\LinkedObjectPool.hxx">
-      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\gui\RadioButtonWidget.hxx">
       <Filter>Header Files\gui</Filter>
@@ -1853,38 +1790,26 @@
     <ClInclude Include="..\..\gui\TimeLineWidget.hxx">
       <Filter>Header Files\gui</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\common\PhysicalJoystick.hxx">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\common\PJoystickHandler.hxx">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\common\PKeyboardHandler.hxx">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\emucore\tia\Audio.hxx">
       <Filter>Header Files\emucore\tia</Filter>
     </ClInclude>
     <ClInclude Include="..\..\emucore\tia\AudioChannel.hxx">
       <Filter>Header Files\emucore\tia</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\common\AudioQueue.hxx">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\emucore\EmulationTiming.hxx">
       <Filter>Header Files\emucore</Filter>
     </ClInclude>
     <ClInclude Include="..\..\common\audio\Resampler.hxx">
-      <Filter>Header Files\audio</Filter>
+      <Filter>Header Files\common\audio</Filter>
     </ClInclude>
     <ClInclude Include="..\..\common\audio\SimpleResampler.hxx">
-      <Filter>Header Files\audio</Filter>
+      <Filter>Header Files\common\audio</Filter>
     </ClInclude>
     <ClInclude Include="..\..\common\audio\ConvolutionBuffer.hxx">
-      <Filter>Header Files\audio</Filter>
+      <Filter>Header Files\common\audio</Filter>
     </ClInclude>
     <ClInclude Include="..\..\common\audio\LanczosResampler.hxx">
-      <Filter>Header Files\audio</Filter>
+      <Filter>Header Files\common\audio</Filter>
     </ClInclude>
     <ClInclude Include="..\..\emucore\DispatchResult.hxx">
       <Filter>Header Files\emucore</Filter>
@@ -1892,17 +1817,8 @@
     <ClInclude Include="..\..\emucore\EmulationWorker.hxx">
       <Filter>Header Files\emucore</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\common\AudioSettings.hxx">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\common\FpsMeter.hxx">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\common\audio\HighPass.hxx">
-      <Filter>Header Files\audio</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\common\TimerManager.hxx">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\common\audio</Filter>
     </ClInclude>
     <ClInclude Include="..\..\emucore\Bankswitch.hxx">
       <Filter>Header Files\emucore</Filter>
@@ -1910,14 +1826,8 @@
     <ClInclude Include="..\..\emucore\exception\FatalEmulationError.hxx">
       <Filter>Header Files\emucore\exception</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\common\ThreadDebugging.hxx">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\emucore\exception\EmulationWarning.hxx">
       <Filter>Header Files\emucore\exception</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\common\StaggeredLogger.hxx">
-      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\emucore\ControllerDetector.hxx">
       <Filter>Header Files\emucore</Filter>
@@ -1935,34 +1845,19 @@
       <Filter>Header Files\gui</Filter>
     </ClInclude>
     <ClInclude Include="..\..\common\repository\KeyValueRepository.hxx">
-      <Filter>Header Files\repository</Filter>
+      <Filter>Header Files\common\repository</Filter>
     </ClInclude>
     <ClInclude Include="..\..\common\repository\KeyValueRepositoryNoop.hxx">
-      <Filter>Header Files\repository</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\common\Logger.hxx">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\common\Rect.hxx">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\common\repository</Filter>
     </ClInclude>
     <ClInclude Include="..\..\gui\R77HelpDialog.hxx">
       <Filter>Header Files\gui</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\common\KeyMap.hxx">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\common\JoyMap.hxx">
-      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\debugger\BreakpointMap.hxx">
       <Filter>Header Files\debugger</Filter>
     </ClInclude>
     <ClInclude Include="..\..\emucore\CartFC.hxx">
       <Filter>Header Files\emucore</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\common\PhosphorHandler.hxx">
-      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\emucore\Lightgun.hxx">
       <Filter>Header Files\emucore</Filter>
@@ -1972,9 +1867,6 @@
     </ClInclude>
     <ClInclude Include="..\..\gui\MessageDialog.hxx">
       <Filter>Header Files\gui</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\common\HighScoresManager.hxx">
-      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\gui\HighScoresMenu.hxx">
       <Filter>Header Files\gui</Filter>
@@ -1996,9 +1888,6 @@
     </ClInclude>
     <ClInclude Include="..\..\emucore\Cart3EX.hxx">
       <Filter>Header Files\emucore</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\common\PaletteHandler.hxx">
-      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\gui\EmulationDialog.hxx">
       <Filter>Header Files\gui</Filter>
@@ -2024,12 +1913,6 @@
     <ClInclude Include="..\..\gui\QuadTariDialog.hxx">
       <Filter>Header Files\gui</Filter>
     </ClInclude>
-    <ClInclude Include="Windows.hxx">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\common\VideoModeHandler.hxx">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\emucore\FBBackend.hxx">
       <Filter>Header Files\emucore</Filter>
     </ClInclude>
@@ -2045,26 +1928,23 @@
     <ClInclude Include="..\..\lib\json\json_lib.hxx">
       <Filter>Header Files\lib\json</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\common\jsonDefinitions.hxx">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\emucore\PlusROM.hxx">
       <Filter>Header Files\emucore</Filter>
     </ClInclude>
     <ClInclude Include="..\..\common\repository\sqlite\KeyValueRepositorySqlite.hxx">
-      <Filter>Header Files\repository\sqlite</Filter>
+      <Filter>Header Files\common\repository\sqlite</Filter>
     </ClInclude>
     <ClInclude Include="..\..\common\repository\sqlite\SqliteDatabase.hxx">
-      <Filter>Header Files\repository\sqlite</Filter>
+      <Filter>Header Files\common\repository\sqlite</Filter>
     </ClInclude>
     <ClInclude Include="..\..\common\repository\sqlite\SqliteError.hxx">
-      <Filter>Header Files\repository\sqlite</Filter>
+      <Filter>Header Files\common\repository\sqlite</Filter>
     </ClInclude>
     <ClInclude Include="..\..\common\repository\sqlite\SqliteStatement.hxx">
-      <Filter>Header Files\repository\sqlite</Filter>
+      <Filter>Header Files\common\repository\sqlite</Filter>
     </ClInclude>
     <ClInclude Include="..\..\common\repository\sqlite\SqliteTransaction.hxx">
-      <Filter>Header Files\repository\sqlite</Filter>
+      <Filter>Header Files\common\repository\sqlite</Filter>
     </ClInclude>
     <ClInclude Include="..\..\lib\sqlite\sqlite3.h">
       <Filter>Header Files\lib\sqlite</Filter>
@@ -2073,37 +1953,37 @@
       <Filter>Header Files\lib\sqlite\source</Filter>
     </ClInclude>
     <ClInclude Include="..\..\common\repository\CompositeKeyValueRepository.hxx">
-      <Filter>Header Files\repository</Filter>
+      <Filter>Header Files\common\repository</Filter>
     </ClInclude>
     <ClInclude Include="..\..\common\repository\sqlite\AbstractKeyValueRepositorySqlite.hxx">
-      <Filter>Header Files\repository\sqlite</Filter>
+      <Filter>Header Files\common\repository\sqlite</Filter>
     </ClInclude>
     <ClInclude Include="..\..\common\repository\sqlite\CompositeKeyValueRepositorySqlite.hxx">
-      <Filter>Header Files\repository\sqlite</Filter>
+      <Filter>Header Files\common\repository\sqlite</Filter>
     </ClInclude>
     <ClInclude Include="..\..\common\repository\KeyValueRepositoryPropertyFile.hxx">
-      <Filter>Header Files\repository</Filter>
+      <Filter>Header Files\common\repository</Filter>
     </ClInclude>
     <ClInclude Include="..\..\common\repository\CompositeKVRJsonAdapter.hxx">
-      <Filter>Header Files\repository</Filter>
+      <Filter>Header Files\common\repository</Filter>
     </ClInclude>
     <ClInclude Include="..\..\common\repository\KeyValueRepositoryConfigfile.hxx">
-      <Filter>Header Files\repository</Filter>
+      <Filter>Header Files\common\repository</Filter>
     </ClInclude>
     <ClInclude Include="..\..\common\repository\KeyValueRepositoryFile.hxx">
-      <Filter>Header Files\repository</Filter>
+      <Filter>Header Files\common\repository</Filter>
     </ClInclude>
     <ClInclude Include="..\..\common\repository\KeyValueRepositoryJsonFile.hxx">
-      <Filter>Header Files\repository</Filter>
+      <Filter>Header Files\common\repository</Filter>
     </ClInclude>
     <ClInclude Include="..\..\common\repository\CompositeKeyValueRepositoryNoop.hxx">
-      <Filter>Header Files\repository</Filter>
+      <Filter>Header Files\common\repository</Filter>
     </ClInclude>
     <ClInclude Include="..\..\lib\sqlite\sqlite_options.h">
       <Filter>Header Files\lib\sqlite</Filter>
     </ClInclude>
     <ClInclude Include="..\..\common\repository\sqlite\StellaDb.hxx">
-      <Filter>Header Files\repository\sqlite</Filter>
+      <Filter>Header Files\common\repository\sqlite</Filter>
     </ClInclude>
     <ClInclude Include="..\..\emucore\OSystemStandalone.hxx">
       <Filter>Header Files\emucore</Filter>
@@ -2126,9 +2006,6 @@
     <ClInclude Include="..\..\emucore\GlobalKeyHandler.hxx">
       <Filter>Header Files\emucore</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\common\DevSettingsHandler.hxx">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\gui\LauncherFileListWidget.hxx">
       <Filter>Header Files\gui</Filter>
     </ClInclude>
@@ -2150,9 +2027,6 @@
     <ClInclude Include="..\..\lib\httplib\httplib.h">
       <Filter>Header Files\lib\httplib</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\common\SDL_lib.hxx">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\emucore\ConsoleIO.hxx">
       <Filter>Header Files\emucore</Filter>
     </ClInclude>
@@ -2167,9 +2041,6 @@
     </ClInclude>
     <ClInclude Include="..\..\gui\RomImageWidget.hxx">
       <Filter>Header Files\gui</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\common\JPGLibrary.hxx">
-      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\lib\nanojpeg\nanojpeg_lib.hxx">
       <Filter>Header Files\lib\nanojpeg</Filter>
@@ -2433,25 +2304,22 @@
       <Filter>Header Files\debugger\gui</Filter>
     </ClInclude>
     <ClInclude Include="..\..\common\tv_filters\AtariNTSC.hxx">
-      <Filter>Header Files\tv_filters</Filter>
+      <Filter>Header Files\common\tv_filters</Filter>
     </ClInclude>
     <ClInclude Include="..\..\common\tv_filters\NTSCFilter.hxx">
-      <Filter>Header Files\tv_filters</Filter>
+      <Filter>Header Files\common\tv_filters</Filter>
     </ClInclude>
     <ClInclude Include="..\..\common\sdl_blitter\BilinearBlitter.hxx">
-      <Filter>Header Files\sdl_blitter</Filter>
+      <Filter>Header Files\common\sdl_blitter</Filter>
     </ClInclude>
     <ClInclude Include="..\..\common\sdl_blitter\Blitter.hxx">
-      <Filter>Header Files\sdl_blitter</Filter>
+      <Filter>Header Files\common\sdl_blitter</Filter>
     </ClInclude>
     <ClInclude Include="..\..\common\sdl_blitter\BlitterFactory.hxx">
-      <Filter>Header Files\sdl_blitter</Filter>
+      <Filter>Header Files\common\sdl_blitter</Filter>
     </ClInclude>
     <ClInclude Include="..\..\common\sdl_blitter\QisBlitter.hxx">
-      <Filter>Header Files\sdl_blitter</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\common\smartmod.hxx">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\common\sdl_blitter</Filter>
     </ClInclude>
     <ClInclude Include="..\..\debugger\TimerMap.hxx">
       <Filter>Header Files\debugger</Filter>
@@ -2468,8 +2336,152 @@
     <ClInclude Include="..\..\debugger\gui\Cart03E0Widget.hxx">
       <Filter>Header Files\debugger\gui</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\common\AudioQueue.hxx">
+      <Filter>Header Files\common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\common\AudioSettings.hxx">
+      <Filter>Header Files\common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\common\Base.hxx">
+      <Filter>Header Files\common</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\common\Bezel.hxx">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\common\bspf.hxx">
+      <Filter>Header Files\common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\common\DevSettingsHandler.hxx">
+      <Filter>Header Files\common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\common\EventHandlerSDL2.hxx">
+      <Filter>Header Files\common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\common\FBBackendSDL2.hxx">
+      <Filter>Header Files\common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\common\FBSurfaceSDL2.hxx">
+      <Filter>Header Files\common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\common\FpsMeter.hxx">
+      <Filter>Header Files\common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\common\FSNodeFactory.hxx">
+      <Filter>Header Files\common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\common\FSNodeZIP.hxx">
+      <Filter>Header Files\common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\common\HighScoresManager.hxx">
+      <Filter>Header Files\common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\common\JoyMap.hxx">
+      <Filter>Header Files\common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\common\JPGLibrary.hxx">
+      <Filter>Header Files\common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\common\jsonDefinitions.hxx">
+      <Filter>Header Files\common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\common\KeyMap.hxx">
+      <Filter>Header Files\common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\common\LinkedObjectPool.hxx">
+      <Filter>Header Files\common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\common\Logger.hxx">
+      <Filter>Header Files\common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\common\MediaFactory.hxx">
+      <Filter>Header Files\common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\common\MouseControl.hxx">
+      <Filter>Header Files\common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\common\PaletteHandler.hxx">
+      <Filter>Header Files\common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\common\PhosphorHandler.hxx">
+      <Filter>Header Files\common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\common\PhysicalJoystick.hxx">
+      <Filter>Header Files\common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\common\PJoystickHandler.hxx">
+      <Filter>Header Files\common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\common\PKeyboardHandler.hxx">
+      <Filter>Header Files\common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\common\PNGLibrary.hxx">
+      <Filter>Header Files\common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\common\Rect.hxx">
+      <Filter>Header Files\common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\common\RewindManager.hxx">
+      <Filter>Header Files\common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\common\SDL_lib.hxx">
+      <Filter>Header Files\common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\common\smartmod.hxx">
+      <Filter>Header Files\common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\common\SoundSDL2.hxx">
+      <Filter>Header Files\common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\common\Stack.hxx">
+      <Filter>Header Files\common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\common\StaggeredLogger.hxx">
+      <Filter>Header Files\common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\common\StateManager.hxx">
+      <Filter>Header Files\common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\common\StellaKeys.hxx">
+      <Filter>Header Files\common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\common\StringParser.hxx">
+      <Filter>Header Files\common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\common\ThreadDebugging.hxx">
+      <Filter>Header Files\common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\common\TimerManager.hxx">
+      <Filter>Header Files\common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\common\Variant.hxx">
+      <Filter>Header Files\common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\common\Vec.hxx">
+      <Filter>Header Files\common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\common\Version.hxx">
+      <Filter>Header Files\common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\common\VideoModeHandler.hxx">
+      <Filter>Header Files\common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\common\ZipHandler.hxx">
+      <Filter>Header Files\common</Filter>
+    </ClInclude>
+    <ClInclude Include="FSNodeWINDOWS.hxx">
+      <Filter>Header Files\os</Filter>
+    </ClInclude>
+    <ClInclude Include="HomeFinder.hxx">
+      <Filter>Header Files\os</Filter>
+    </ClInclude>
+    <ClInclude Include="OSystemWINDOWS.hxx">
+      <Filter>Header Files\os</Filter>
+    </ClInclude>
+    <ClInclude Include="SerialPortWINDOWS.hxx">
+      <Filter>Header Files\os</Filter>
+    </ClInclude>
+    <ClInclude Include="Windows.hxx">
+      <Filter>Header Files\os</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
