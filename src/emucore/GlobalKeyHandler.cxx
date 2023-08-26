@@ -208,6 +208,8 @@ bool GlobalKeyHandler::skipAVSetting() const
     myOSystem.settings().getInt("tv.scanlines") > 0;
   const bool isSoftwareRenderer =
     myOSystem.settings().getString("video") == "software";
+  const bool allowBezel =
+    myOSystem.settings().getBool("bezel.windowed") || isFullScreen;
 
   return (mySetting == Setting::OVERSCAN && !isFullScreen)
     || (mySetting == Setting::ZOOM && isFullScreen)
@@ -223,7 +225,8 @@ bool GlobalKeyHandler::skipAVSetting() const
       && mySetting <= Setting::NTSC_BLEEDING
       && !isCustomFilter)
     || (mySetting == Setting::SCANLINE_MASK && !hasScanlines)
-    || (mySetting == Setting::INTERPOLATION && isSoftwareRenderer);
+    || (mySetting == Setting::INTERPOLATION && isSoftwareRenderer)
+    || (mySetting == Setting::BEZEL && !allowBezel);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -391,6 +394,7 @@ GlobalKeyHandler::SettingData GlobalKeyHandler::getSettingData(const Setting set
     {Setting::SCANLINES,              {true,  std::bind(&TIASurface::changeScanlineIntensity, &myOSystem.frameBuffer().tiaSurface(), _1)}},
     {Setting::SCANLINE_MASK,          {false, std::bind(&TIASurface::cycleScanlineMask, &myOSystem.frameBuffer().tiaSurface(), _1)}},
     {Setting::INTERPOLATION,          {false, std::bind(&Console::toggleInter, &myOSystem.console(), _1)}},
+    {Setting::BEZEL,                  {false, std::bind(&FrameBuffer::toggleBezel, &myOSystem.frameBuffer(), _1)}},
     // *** Input group ***
     {Setting::DIGITAL_DEADZONE,       {true,  std::bind(&PhysicalJoystickHandler::changeDigitalDeadZone, &joyHandler(), _1)}},
     {Setting::ANALOG_DEADZONE,        {true,  std::bind(&PhysicalJoystickHandler::changeAnalogPaddleDeadZone, &joyHandler(), _1)}},

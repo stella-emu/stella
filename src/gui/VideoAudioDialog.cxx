@@ -23,6 +23,7 @@
 #include "Cart.hxx"
 #include "CartDPC.hxx"
 #include "Dialog.hxx"
+#include "BrowserDialog.hxx"
 #include "OSystem.hxx"
 #include "EditTextWidget.hxx"
 #include "PopUpWidget.hxx"
@@ -79,6 +80,7 @@ VideoAudioDialog::VideoAudioDialog(OSystem& osystem, DialogContainer& parent,
   addDisplayTab();
   addPaletteTab();
   addTVEffectsTab();
+  addBezelTab();
   addAudioTab();
 
   // Add Defaults, OK and Cancel buttons
@@ -351,7 +353,7 @@ void VideoAudioDialog::addTVEffectsTab()
   int pwidth = _font.getStringWidth("Bad adjust  ");
   WidgetArray wid;
   VariantList items;
-  const int tabID = myTab->addTab(" TV Effects ", TabWidget::AUTO_WIDTH);
+  const int tabID = myTab->addTab("TV Effects", TabWidget::AUTO_WIDTH);
 
   items.clear();
   VarList::push_back(items, "Disabled", static_cast<uInt32>(NTSCFilter::Preset::OFF));
@@ -439,6 +441,91 @@ void VideoAudioDialog::addTVEffectsTab()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void VideoAudioDialog::addBezelTab()
+{
+  const int lineHeight = Dialog::lineHeight(),
+            buttonHeight = Dialog::buttonHeight(),
+            fontWidth = Dialog::fontWidth(),
+            VBORDER = Dialog::vBorder(),
+            HBORDER = Dialog::hBorder(),
+            VGAP = Dialog::vGap();
+  const int INDENT = CheckboxWidget::prefixSize(_font);
+  int xpos = HBORDER,
+      ypos = VBORDER;
+  WidgetArray wid;
+  const int tabID = myTab->addTab(" Bezels ", TabWidget::AUTO_WIDTH);
+
+  // Enable bezels
+  myBezelEnableCheckbox = new CheckboxWidget(myTab, _font, xpos, ypos,
+                                             "Enable bezels", kBezelEnableChanged);
+  //myBezelEnableCheckbox->setToolTip(Event::BezelToggle);
+  wid.push_back(myBezelEnableCheckbox);
+  xpos += INDENT;
+  ypos += lineHeight + VGAP;
+
+  // Bezel path
+  int bwidth = _font.getStringWidth("Bezel path" + ELLIPSIS) + fontWidth * 2 + 1;
+  myOpenBrowserButton = new ButtonWidget(myTab, _font, xpos, ypos, bwidth, buttonHeight,
+                                         "Bezel path" + ELLIPSIS, kChooseBezelDirCmd);
+  myOpenBrowserButton->setToolTip("Select path for bezels.");
+  wid.push_back(myOpenBrowserButton);
+
+  myBezelPath = new EditTextWidget(myTab, _font, xpos + bwidth + fontWidth,
+                                   ypos + (buttonHeight - lineHeight) / 2 - 1,
+                                   _w - xpos - bwidth - fontWidth - HBORDER - 2, lineHeight, "");
+  wid.push_back(myBezelPath);
+
+  ypos += lineHeight + VGAP * 3;
+  myBezelShowWindowed = new CheckboxWidget(myTab, _font, xpos, ypos,
+                                           "Windowed modes");
+  myBezelShowWindowed->setToolTip("Enable bezels in windowed modes as well.");
+  wid.push_back(myBezelShowWindowed);
+
+  // Disable auto borders
+  ypos += lineHeight + VGAP * 1;
+  myManualWindow = new CheckboxWidget(myTab, _font, xpos, ypos,
+                                      "Manual emulation window", kAutoWindowChanged);
+  myManualWindow->setToolTip("Enable if automatic window detection fails.");
+  wid.push_back(myManualWindow);
+  xpos += INDENT;
+
+  const int lWidth = _font.getStringWidth("Bottom ");
+  const int sWidth = myBezelPath->getRight() - xpos - lWidth - 4.5 * fontWidth; // _w - HBORDER - xpos - lwidth;
+  ypos += lineHeight + VGAP * 1;
+  myWinLeftSlider = new SliderWidget(myTab, _font, xpos, ypos, sWidth, lineHeight,
+                                     "Left   ", 0, 0, 4 * fontWidth, "%");
+  myWinLeftSlider->setMinValue(0); myWinLeftSlider->setMaxValue(40);
+  myWinLeftSlider->setTickmarkIntervals(4);
+  wid.push_back(myWinLeftSlider);
+
+  ypos += lineHeight + VGAP * 1;
+  myWinRightSlider = new SliderWidget(myTab, _font, xpos, ypos, sWidth, lineHeight,
+                                      "Right  ", 0, 0, 4 * fontWidth, "%");
+  myWinRightSlider->setMinValue(0); myWinRightSlider->setMaxValue(40);
+  myWinRightSlider->setTickmarkIntervals(4);
+  wid.push_back(myWinRightSlider);
+
+  ypos += lineHeight + VGAP * 1;
+  myWinTopSlider = new SliderWidget(myTab, _font, xpos, ypos, sWidth, lineHeight,
+                                    "Top    ", 0, 0, 4 * fontWidth, "%");
+  myWinTopSlider->setMinValue(0); myWinTopSlider->setMaxValue(40);
+  myWinTopSlider->setTickmarkIntervals(4);
+  wid.push_back(myWinTopSlider);
+
+  ypos += lineHeight + VGAP;
+  myWinBottomSlider = new SliderWidget(myTab, _font, xpos, ypos, sWidth, lineHeight,
+                                       "Bottom ", 0, 0, 4 * fontWidth, "%");
+  myWinBottomSlider->setMinValue(0); myWinBottomSlider->setMaxValue(40);
+  myWinBottomSlider->setTickmarkIntervals(4);
+  wid.push_back(myWinBottomSlider);
+
+  // Add items for tab 4
+  addToFocusList(wid, myTab, tabID);
+
+  myTab->parentWidget(tabID)->setHelpAnchor("TODO???");
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void VideoAudioDialog::addAudioTab()
 {
   const int lineHeight = Dialog::lineHeight(),
@@ -450,7 +537,7 @@ void VideoAudioDialog::addAudioTab()
   int lwidth = _font.getStringWidth("Volume "), pwidth = 0;
   WidgetArray wid;
   VariantList items;
-  const int tabID = myTab->addTab("  Audio  ", TabWidget::AUTO_WIDTH);
+  const int tabID = myTab->addTab(" Audio ", TabWidget::AUTO_WIDTH);
 
   int xpos = HBORDER, ypos = VBORDER;
 
@@ -460,7 +547,7 @@ void VideoAudioDialog::addAudioTab()
   mySoundEnableCheckbox->setToolTip(Event::SoundToggle);
   wid.push_back(mySoundEnableCheckbox);
   ypos += lineHeight + VGAP;
-  xpos += CheckboxWidget::prefixSize(_font);
+  xpos += INDENT;
 
   // Volume
   myVolumeSlider = new SliderWidget(myTab, _font, xpos, ypos,
@@ -563,7 +650,7 @@ void VideoAudioDialog::addAudioTab()
   myDpcPitch->setTickmarkIntervals(2);
   wid.push_back(myDpcPitch);
 
-  // Add items for tab 4
+  // Add items for tab 5
   addToFocusList(wid, myTab, tabID);
 
   myTab->parentWidget(tabID)->setHelpAnchor("VideoAudioAudio");
@@ -630,7 +717,6 @@ void VideoAudioDialog::loadConfig()
     myPhaseShift->setTickmarkIntervals(4);
     myPhaseShift->setToolTip("Adjust PAL phase shift of 'Custom' palette.");
     myPhaseShift->setValue(myPaletteAdj.phasePal);
-
   }
   else
   {
@@ -680,6 +766,18 @@ void VideoAudioDialog::loadConfig()
   myTVScanMask->setSelected(settings.getString("tv.scanmask"), TIASurface::SETTING_STANDARD);
 
   /////////////////////////////////////////////////////////////////////////////
+  // Bezel tab
+  myBezelEnableCheckbox->setState(settings.getBool("bezel.show"));
+  myBezelPath->setText(settings.getString("bezel.dir"));
+  myBezelShowWindowed->setState(settings.getBool("bezel.windowed"));
+  myManualWindow->setState(!settings.getBool("bezel.win.auto"));
+  myWinLeftSlider->setValue(settings.getInt("bezel.win.left"));
+  myWinRightSlider->setValue(settings.getInt("bezel.win.right"));
+  myWinTopSlider->setValue(settings.getInt("bezel.win.top"));
+  myWinBottomSlider->setValue(settings.getInt("bezel.win.bottom"));
+  handleBezelChange();
+
+  /////////////////////////////////////////////////////////////////////////////
   // Audio tab
   AudioSettings& audioSettings = instance().audioSettings();
 
@@ -709,7 +807,7 @@ void VideoAudioDialog::loadConfig()
 
   updateSettingsWithPreset(instance().audioSettings());
 
-  updateEnabledState();
+  updateAudioEnabledState();
 
   myTab->loadConfig();
 }
@@ -794,8 +892,7 @@ void VideoAudioDialog::saveConfig()
   NTSCFilter::saveConfig(settings);
 
   // TV phosphor mode & blend
-  settings.setValue("tv.phosphor",
-                                 myTVPhosphor->getState() ? "always" : "byrom");
+  settings.setValue("tv.phosphor", myTVPhosphor->getState() ? "always" : "byrom");
   settings.setValue("tv.phosblend", myTVPhosLevel->getValueLabel() == "Off"
                                  ? "0" : myTVPhosLevel->getValueLabel());
 
@@ -803,6 +900,18 @@ void VideoAudioDialog::saveConfig()
   settings.setValue("tv.scanlines", myTVScanIntense->getValueLabel());
   settings.setValue("tv.scanmask", myTVScanMask->getSelectedTag());
 
+  /////////////////////////////////////////////////////////////////////////////
+  // Bezel tab
+  settings.setValue("bezel.show", myBezelEnableCheckbox->getState());
+  settings.setValue("bezel.dir", myBezelPath->getText());
+  settings.setValue("bezel.windowed", myBezelShowWindowed->getState());
+  settings.setValue("bezel.win.auto", !myManualWindow->getState());
+  settings.setValue("bezel.win.left", myWinLeftSlider->getValueLabel());
+  settings.setValue("bezel.win.right", myWinRightSlider->getValueLabel());
+  settings.setValue("bezel.win.top", myWinTopSlider->getValueLabel());
+  settings.setValue("bezel.win.bottom", myWinBottomSlider->getValueLabel());
+
+  // Note: The following has to happen after all video related setting have been saved
   if(instance().hasConsole())
   {
     instance().console().setTIAProperties();
@@ -936,7 +1045,15 @@ void VideoAudioDialog::setDefaults()
       loadTVAdjustables(NTSCFilter::Preset::CUSTOM);
       break;
     }
-    case 3:  // Audio
+    case 3: // Bezels
+      myBezelEnableCheckbox->setState(true);
+      myBezelPath->setText(instance().userDir().getShortPath());
+      myBezelShowWindowed->setState(false);
+      myManualWindow->setState(false);
+      handleBezelChange();
+      break;
+
+    case 4:  // Audio
       mySoundEnableCheckbox->setState(AudioSettings::DEFAULT_ENABLED);
       myVolumeSlider->setValue(AudioSettings::DEFAULT_VOLUME);
       myDevicePopup->setSelected(AudioSettings::DEFAULT_DEVICE);
@@ -953,7 +1070,7 @@ void VideoAudioDialog::setDefaults()
       }
       else updatePreset();
 
-      updateEnabledState();
+      updateAudioEnabledState();
       break;
 
     default:  // satisfy compiler
@@ -1099,6 +1216,21 @@ void VideoAudioDialog::handlePhosphorChange()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void VideoAudioDialog::handleBezelChange()
+{
+  const bool enable = myBezelEnableCheckbox->getState();
+  const bool nonAuto = myManualWindow->getState();
+
+  myOpenBrowserButton->setEnabled(enable);
+  myBezelPath->setEnabled(enable);
+  myBezelShowWindowed->setEnabled(enable);
+  myWinLeftSlider->setEnabled(enable && nonAuto);
+  myWinRightSlider->setEnabled(enable && nonAuto);
+  myWinTopSlider->setEnabled(enable && nonAuto);
+  myWinBottomSlider->setEnabled(enable && nonAuto);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void VideoAudioDialog::handleCommand(CommandSender* sender, int cmd,
                                 int data, int id)
 {
@@ -1213,13 +1345,27 @@ void VideoAudioDialog::handleCommand(CommandSender* sender, int cmd,
         myTVPhosLevel->setValueUnit("%");
       break;
 
+    case kBezelEnableChanged:
+    case kAutoWindowChanged:
+      handleBezelChange();
+      break;
+
+    case kChooseBezelDirCmd:
+      BrowserDialog::show(this, _font, "Select Bezel Directory",
+                          myBezelPath->getText(),
+                          BrowserDialog::Mode::Directories,
+                          [this](bool OK, const FSNode& node) {
+                            if(OK) myBezelPath->setText(node.getShortPath());
+                          });
+      break;
+
     case kSoundEnableChanged:
-      updateEnabledState();
+      updateAudioEnabledState();
       break;
 
     case kModeChanged:
       updatePreset();
-      updateEnabledState();
+      updateAudioEnabledState();
       break;
 
     case kHeadroomChanged:
@@ -1300,7 +1446,7 @@ void VideoAudioDialog::colorPalette()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void VideoAudioDialog::updateEnabledState()
+void VideoAudioDialog::updateAudioEnabledState()
 {
   const bool active = mySoundEnableCheckbox->getState();
   const auto preset = static_cast<AudioSettings::Preset>

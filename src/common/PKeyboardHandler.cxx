@@ -623,6 +623,7 @@ PhysicalKeyboardHandler::DefaultCommonMapping = {
   #endif
   { Event::OptionsMenuMode,          KBDK_TAB },
   { Event::CmdMenuMode,              KBDK_BACKSLASH },
+  { Event::ToggleBezel,              KBDK_B, KBDM_CTRL },
   { Event::TimeMachineMode,          KBDK_T, KBDM_SHIFT },
   { Event::DebuggerMode,             KBDK_GRAVE },
   { Event::PlusRomsSetupMode,        KBDK_P, KBDM_SHIFT | KBDM_CTRL | MOD3 },
@@ -641,7 +642,7 @@ PhysicalKeyboardHandler::DefaultCommonMapping = {
   { Event::VCenterIncrease,          KBDK_PAGEDOWN, MOD3 },
   { Event::VSizeAdjustDecrease,      KBDK_PAGEDOWN, KBDM_SHIFT | MOD3 },
   { Event::VSizeAdjustIncrease,      KBDK_PAGEUP, KBDM_SHIFT | MOD3 },
-  { Event::ToggleCorrectAspectRatio, KBDK_C, KBDM_CTRL },
+  { Event::ToggleCorrectAspectRatio, KBDK_C, KBDM_SHIFT | KBDM_CTRL },
   { Event::VolumeDecrease,           KBDK_LEFTBRACKET, MOD3 },
   { Event::VolumeIncrease,           KBDK_RIGHTBRACKET, MOD3 },
   { Event::SoundToggle,              KBDK_RIGHTBRACKET, KBDM_CTRL },

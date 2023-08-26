@@ -386,6 +386,7 @@ NLOHMANN_JSON_SERIALIZE_ENUM(Event::Type, {
   {Event::ToggleBits, "ToggleBits"},
   {Event::ToggleFixedColors, "ToggleFixedColors"},
   {Event::ToggleFrameStats, "ToggleFrameStats"},
+  {Event::ToggleBezel, "ToggleBezel"},
   {Event::ExitGame, "ExitGame"},
   {Event::SettingDecrease, "SettingDecrease"},
   {Event::SettingIncrease, "SettingIncrease"},

@@ -153,7 +153,7 @@ class PNGLibrary
       @param width   The width of the PNG image
       @param height  The height of the PNG image
     */
-    static bool allocateStorage(size_t width, size_t height);
+    static bool allocateStorage(size_t width, size_t height, bool hasAlpha);
 
     /** The actual method which saves a PNG image.
 
@@ -173,7 +173,7 @@ class PNGLibrary
 
       @param surface  The FBSurface into which to place the PNG data
     */
-    void loadImagetoSurface(FBSurface& surface);
+    void loadImagetoSurface(FBSurface& surface, bool hasAlpha);
 
     /**
       Write PNG tEXt chunks to the image.

@@ -432,7 +432,7 @@ void TIASurface::createScanlineSurface()
   mySLineSurface = myFB.allocateSurface(width, height,
     interpolationModeFromSettings(myOSystem.settings()), data.data());
 
-  mySLineSurface->setSrcSize(mySLineSurface->width(), height);
+  //mySLineSurface->setSrcSize(mySLineSurface->width(), height);
   mySLineSurface->setDstRect(myTiaSurface->dstRect());
   updateSurfaceSettings();
 

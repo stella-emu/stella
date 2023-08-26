@@ -26,6 +26,7 @@ class PopUpWidget;
 class RadioButtonGroup;
 class SliderWidget;
 class StaticTextWidget;
+class EditTextWidget;
 class TabWidget;
 class OSystem;
 
@@ -49,7 +50,9 @@ class VideoAudioDialog : public Dialog
     void addDisplayTab();
     void addPaletteTab();
     void addTVEffectsTab();
+    void addBezelTab();
     void addAudioTab();
+
     void handleTVModeChange(NTSCFilter::Preset);
     void loadTVAdjustables(NTSCFilter::Preset preset);
     void handleRendererChanged();
@@ -59,11 +62,15 @@ class VideoAudioDialog : public Dialog
     void handleFullScreenChange();
     void handleOverscanChange();
     void handlePhosphorChange();
+    void handleBezelChange();
+
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+
     void addPalette(int x, int y, int w, int h);
     void colorPalette();
+
     void updatePreset();
-    void updateEnabledState();
+    void updateAudioEnabledState();
     void updateSettingsWithPreset(AudioSettings&);
 
   private:
@@ -123,6 +130,17 @@ class VideoAudioDialog : public Dialog
     std::array<StaticTextWidget*, 16> myColorLbl{nullptr};
     ColorWidget*      myColor[16][8]{{nullptr}};
 
+    // Bezels
+    CheckboxWidget*   myBezelEnableCheckbox{nullptr};
+    ButtonWidget*     myOpenBrowserButton{nullptr};
+    EditTextWidget*   myBezelPath{nullptr};
+    CheckboxWidget*   myBezelShowWindowed{nullptr};
+    CheckboxWidget*   myManualWindow{nullptr};
+    SliderWidget*     myWinLeftSlider{nullptr};
+    SliderWidget*     myWinRightSlider{nullptr};
+    SliderWidget*     myWinTopSlider{nullptr};
+    SliderWidget*     myWinBottomSlider{nullptr};
+
     // Audio
     CheckboxWidget*   mySoundEnableCheckbox{nullptr};
     SliderWidget*     myVolumeSlider{nullptr};
@@ -162,6 +180,10 @@ class VideoAudioDialog : public Dialog
       kPhosphorChanged    = 'VDph',
       kPhosBlendChanged   = 'VDbl',
       kScanlinesChanged   = 'VDsc',
+
+      kBezelEnableChanged = 'BZen',
+      kChooseBezelDirCmd  = 'BZsl',
+      kAutoWindowChanged = 'BZab',
 
       kSoundEnableChanged = 'ADse',
       kDeviceChanged      = 'ADdc',

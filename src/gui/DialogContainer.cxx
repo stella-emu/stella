@@ -269,7 +269,7 @@ void DialogContainer::handleMouseButtonEvent(MouseButton b, bool pressed,
 
         if(b == MouseButton::MIDDLE)
         {
-          // Middle mouse button emulates lef mouse button double click
+          // Middle mouse button emulates left mouse button double click
           myLastClick.count = 2;
           b = MouseButton::LEFT;
         }
