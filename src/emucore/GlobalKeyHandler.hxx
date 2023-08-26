@@ -73,6 +73,7 @@ class GlobalKeyHandler
       SCANLINES,
       SCANLINE_MASK,
       INTERPOLATION,
+      BEZEL,
       // *** Input group ***
       DIGITAL_DEADZONE,
       ANALOG_DEADZONE,
@@ -128,7 +129,7 @@ class GlobalKeyHandler
       // *** Ranges ***
       NUM_ADJ,
       START_AV_ADJ = VOLUME,
-      END_AV_ADJ = INTERPOLATION,
+      END_AV_ADJ = BEZEL,
       START_INPUT_ADJ = DIGITAL_DEADZONE,
       END_INPUT_ADJ = MOUSE_RANGE,
       START_DEBUG_ADJ = DEVELOPER,

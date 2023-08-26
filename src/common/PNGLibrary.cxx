@@ -33,12 +33,14 @@ PNGLibrary::PNGLibrary(OSystem& osystem)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PNGLibrary::loadImage(const string& filename, FBSurface& surface, VariantList& metaData)
+void PNGLibrary::loadImage(const string& filename, FBSurface& surface,
+                           VariantList& metaData)
 {
   png_structp png_ptr{nullptr};
   png_infop info_ptr{nullptr};
   png_uint_32 iwidth{0}, iheight{0};
   int bit_depth{0}, color_type{0}, interlace_type{0};
+  bool hasAlpha = false;
 
   const auto loadImageERROR = [&](string_view s) {
     if(png_ptr)
@@ -76,18 +78,25 @@ void PNGLibrary::loadImage(const string& filename, FBSurface& surface, VariantLi
   // byte into separate bytes (useful for paletted and grayscale images).
   png_set_packing(png_ptr);
 
-  // Only normal RBG(A) images are supported (without the alpha channel)
+  // Alpha channel is supported
   if(color_type == PNG_COLOR_TYPE_RGBA)
   {
-    png_set_strip_alpha(png_ptr);
+    hasAlpha = true;
   }
   else if(color_type == PNG_COLOR_TYPE_GRAY || color_type == PNG_COLOR_TYPE_GRAY_ALPHA)
   {
+    // TODO: preserve alpha
     png_set_gray_to_rgb(png_ptr);
   }
   else if(color_type == PNG_COLOR_TYPE_PALETTE)
   {
-    png_set_palette_to_rgb(png_ptr);
+    if(png_get_valid(png_ptr, info_ptr, PNG_INFO_tRNS))
+    {
+      png_set_tRNS_to_alpha(png_ptr);
+      hasAlpha = true;
+    }
+    else
+      png_set_palette_to_rgb(png_ptr);
   }
   else if(color_type != PNG_COLOR_TYPE_RGB)
   {
@@ -95,7 +104,7 @@ void PNGLibrary::loadImage(const string& filename, FBSurface& surface, VariantLi
   }
 
   // Create/initialize storage area for the current image
-  if(!allocateStorage(iwidth, iheight))
+  if(!allocateStorage(iwidth, iheight, hasAlpha))
     loadImageERROR("Not enough memory to read PNG image");
 
   // The PNG read function expects an array of rows, not a single 1-D array
@@ -112,7 +121,7 @@ void PNGLibrary::loadImage(const string& filename, FBSurface& surface, VariantLi
   readMetaData(png_ptr, info_ptr, metaData);
 
   // Load image into the surface, setting the correct dimensions
-  loadImagetoSurface(surface);
+  loadImagetoSurface(surface, hasAlpha);
 
   // Cleanup
   if(png_ptr)
@@ -380,10 +389,10 @@ void PNGLibrary::takeSnapshot(uInt32 number)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool PNGLibrary::allocateStorage(size_t width, size_t height)
+bool PNGLibrary::allocateStorage(size_t width, size_t height, bool hasAlpha)
 {
-  // Create space for the entire image (3 bytes per pixel in RGB format)
-  const size_t req_buffer_size = width * height * 3;
+  // Create space for the entire image (3(4) bytes per pixel in RGB(A) format)
+  const size_t req_buffer_size = width * height * (hasAlpha ? 4 : 3);
   if(req_buffer_size > ReadInfo.buffer.capacity())
     ReadInfo.buffer.reserve(req_buffer_size * 1.5);
 
@@ -393,13 +402,13 @@ bool PNGLibrary::allocateStorage(size_t width, size_t height)
 
   ReadInfo.width  = static_cast<png_uint_32>(width);
   ReadInfo.height = static_cast<png_uint_32>(height);
-  ReadInfo.pitch  = static_cast<png_uint_32>(width * 3);
+  ReadInfo.pitch  = static_cast<png_uint_32>(width * (hasAlpha ? 4 : 3));
 
   return true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PNGLibrary::loadImagetoSurface(FBSurface& surface)
+void PNGLibrary::loadImagetoSurface(FBSurface& surface, bool hasAlpha)
 {
   // First determine if we need to resize the surface
   const uInt32 iw = ReadInfo.width, ih = ReadInfo.height;
@@ -422,8 +431,12 @@ void PNGLibrary::loadImagetoSurface(FBSurface& surface)
   {
     const uInt8* i_ptr = i_buf;
     uInt32* s_ptr = s_buf;
-    for(uInt32 icol = 0; icol < ReadInfo.width; ++icol, i_ptr += 3)
-      *s_ptr++ = fb.mapRGB(*i_ptr, *(i_ptr+1), *(i_ptr+2));
+    if(hasAlpha)
+      for(uInt32 icol = 0; icol < ReadInfo.width; ++icol, i_ptr += 4)
+        *s_ptr++ = fb.mapRGBA(*i_ptr, *(i_ptr+1), *(i_ptr+2), *(i_ptr+3));
+    else
+      for(uInt32 icol = 0; icol < ReadInfo.width; ++icol, i_ptr += 3)
+        *s_ptr++ = fb.mapRGB(*i_ptr, *(i_ptr+1), *(i_ptr+2));
   }
 }
 

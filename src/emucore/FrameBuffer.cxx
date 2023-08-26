@@ -27,9 +27,11 @@
 #include "Sound.hxx"
 #include "AudioSettings.hxx"
 #include "MediaFactory.hxx"
+#include "PNGLibrary.hxx"
 
 #include "FBSurface.hxx"
 #include "TIASurface.hxx"
+#include "Bezel.hxx"
 #include "FrameBuffer.hxx"
 #include "PaletteHandler.hxx"
 #include "StateManager.hxx"
@@ -125,6 +127,8 @@ void FrameBuffer::initialize()
 
   // Create a TIA surface; we need it for rendering TIA images
   myTIASurface = make_unique<TIASurface>(myOSystem);
+  // Create a bezel surface for TIA overlays
+  myBezel = make_unique<Bezel>(myOSystem);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -277,8 +281,10 @@ FBInitStatus FrameBuffer::createDisplay(string_view title, BufferType type,
 
   if(myBufferType == BufferType::Emulator)
   {
+    myBezel->load();
+
     // Determine possible TIA windowed zoom levels
-    const float currentTIAZoom = myOSystem.settings().getFloat("tia.zoom");
+    const double currentTIAZoom = myOSystem.settings().getFloat("tia.zoom");
     myOSystem.settings().setValue("tia.zoom",
       BSPF::clampw(currentTIAZoom, supportedTIAMinZoom(), supportedTIAMaxZoom()));
   }
@@ -393,10 +399,10 @@ void FrameBuffer::update(UpdateMode mode)
       {
         myPausedCount = static_cast<uInt32>(7 * myOSystem.frameRate());
         showTextMessage("Paused", MessagePosition::MiddleCenter);
-        myTIASurface->render(shade);
+        renderTIA(shade, false);
       }
       if(rerender)
-        myTIASurface->render(shade);
+        renderTIA(shade, false);
       break;  // EventHandlerState::PAUSE
     }
 
@@ -407,14 +413,12 @@ void FrameBuffer::update(UpdateMode mode)
       redraw |= myOSystem.optionsMenu().needsRedraw();
       if(redraw)
       {
-        clear();
-        myTIASurface->render(true);
+        renderTIA(true);
         myOSystem.optionsMenu().draw(forceRedraw);
       }
       else if(rerender)
       {
-        clear();
-        myTIASurface->render(true);
+        renderTIA(true);
         myOSystem.optionsMenu().render();
       }
       break;  // EventHandlerState::OPTIONSMENU
@@ -426,14 +430,12 @@ void FrameBuffer::update(UpdateMode mode)
       redraw |= myOSystem.commandMenu().needsRedraw();
       if(redraw)
       {
-        clear();
-        myTIASurface->render(true);
+        renderTIA(true);
         myOSystem.commandMenu().draw(forceRedraw);
       }
       else if(rerender)
       {
-        clear();
-        myTIASurface->render(true);
+        renderTIA(true);
         myOSystem.commandMenu().render();
       }
       break;  // EventHandlerState::CMDMENU
@@ -445,14 +447,12 @@ void FrameBuffer::update(UpdateMode mode)
       redraw |= myOSystem.highscoresMenu().needsRedraw();
       if(redraw)
       {
-        clear();
-        myTIASurface->render(true);
+        renderTIA(true);
         myOSystem.highscoresMenu().draw(forceRedraw);
       }
       else if(rerender)
       {
-        clear();
-        myTIASurface->render(true);
+        renderTIA(true);
         myOSystem.highscoresMenu().render();
       }
       break;  // EventHandlerState::HIGHSCORESMENU
@@ -464,8 +464,7 @@ void FrameBuffer::update(UpdateMode mode)
       redraw |= myOSystem.messageMenu().needsRedraw();
       if(redraw)
       {
-        clear();
-        myTIASurface->render(true);
+        renderTIA(true);
         myOSystem.messageMenu().draw(forceRedraw);
       }
       break;  // EventHandlerState::MESSAGEMENU
@@ -477,8 +476,7 @@ void FrameBuffer::update(UpdateMode mode)
       redraw |= myOSystem.plusRomsMenu().needsRedraw();
       if(redraw)
       {
-        clear();
-        myTIASurface->render(true);
+        renderTIA(true);
         myOSystem.plusRomsMenu().draw(forceRedraw);
       }
       break;  // EventHandlerState::PLUSROMSMENU
@@ -490,14 +488,12 @@ void FrameBuffer::update(UpdateMode mode)
       redraw |= myOSystem.timeMachine().needsRedraw();
       if(redraw)
       {
-        clear();
-        myTIASurface->render();
+        renderTIA();
         myOSystem.timeMachine().draw(forceRedraw);
       }
       else if(rerender)
       {
-        clear();
-        myTIASurface->render();
+        renderTIA();
         myOSystem.timeMachine().render();
       }
       break;  // EventHandlerState::TIMEMACHINE
@@ -529,7 +525,7 @@ void FrameBuffer::update(UpdateMode mode)
       }
       redraw |= success;
       if(redraw)
-        myTIASurface->render();
+        renderTIA(false, false);
 
       // Stop playback mode at the end of the state buffer
       // and switch to Time Machine or Pause mode
@@ -591,8 +587,7 @@ void FrameBuffer::updateInEmulationMode(float framesPerSecond)
   // We don't worry about selective rendering here; the rendering
   // always happens at the full framerate
 
-  clear();  // TODO - test this: it may cause slowdowns on older systems
-  myTIASurface->render();
+  renderTIA();
 
   // Show frame statistics
   if(myStatsMsg.enabled)
@@ -758,7 +753,8 @@ void FrameBuffer::drawFrameStats(float framesPerSecond)
         myStatsMsg.w, color, TextAlign::Left, 0, true, kBGColor);
   }
 
-  myStatsMsg.surface->setDstPos(imageRect().x() + 10, imageRect().y() + 8);
+  myStatsMsg.surface->setDstPos(imageRect().x() + imageRect().w() / 64,
+                                imageRect().y() + imageRect().h() / 64);
   myStatsMsg.surface->setDstSize(myStatsMsg.w * hidpiScaleFactor(),
                                  myStatsMsg.h * hidpiScaleFactor());
   myStatsMsg.surface->render();
@@ -832,7 +828,7 @@ inline bool FrameBuffer::drawMessage()
     // Draw the bounded box and text
     const Common::Rect& dst = myMsg.surface->dstRect();
     const int fontWidth = font().getMaxCharWidth(),
-      fontHeight = font().getFontHeight();
+              fontHeight = font().getFontHeight();
     const int VBORDER = fontHeight / 4;
     const int HBORDER = fontWidth * 1.25 / 2.0;
     constexpr int BORDER = 1;
@@ -960,6 +956,17 @@ void FrameBuffer::resetSurfaces()
     surface->reload();
 
   update(UpdateMode::REDRAW); // force full update
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FrameBuffer::renderTIA(bool shade, bool doClear)
+{
+  if(doClear)
+    clear();  // TODO - test this: it may cause slowdowns on older systems
+
+  myTIASurface->render(shade);
+  if(myBezel)
+    myBezel->render();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1144,7 +1151,7 @@ void FrameBuffer::toggleFullscreen(bool toggle)
             msg << "enabled (" << myBackend->refreshRate() << " Hz, ";
           else
             msg << "disabled (";
-          msg << "Zoom " << myActiveVidMode.zoom * 100 << "%)";
+          msg << "Zoom " << round(myActiveVidMode.zoom * 100) << "%)";
         }
         else
         {
@@ -1226,7 +1233,7 @@ void FrameBuffer::switchVideoMode(int direction)
   if(!fullScreen())
   {
     // Windowed TIA modes support variable zoom levels
-    float zoom = myOSystem.settings().getFloat("tia.zoom");
+    double zoom = myOSystem.settings().getFloat("tia.zoom");
     if(direction == +1)       zoom += ZOOM_STEPS;
     else if(direction == -1)  zoom -= ZOOM_STEPS;
 
@@ -1257,6 +1264,25 @@ void FrameBuffer::switchVideoMode(int direction)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FrameBuffer::toggleBezel(bool toggle)
+{
+  bool enabled = myOSystem.settings().getBool("bezel.show");
+
+  if(toggle)
+  {
+    if(myBufferType == BufferType::Emulator &&
+      (fullScreen() || myOSystem.settings().getBool("bezel.windowed")))
+    {
+      enabled = !enabled;
+      myOSystem.settings().setValue("bezel.show", enabled);
+      myBezel->load();
+      applyVideoMode();
+    }
+  }
+  myOSystem.frameBuffer().showTextMessage(enabled ? "Bezel enabled" : "Bezel disabled");
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FBInitStatus FrameBuffer::applyVideoMode()
 {
   // Update display size, in case windowed/fullscreen mode has changed
@@ -1271,7 +1297,8 @@ FBInitStatus FrameBuffer::applyVideoMode()
   const bool inTIAMode = myOSystem.eventHandler().inTIAMode();
 
   // Build the new mode based on current settings
-  const VideoModeHandler::Mode& mode = myVidModeHandler.buildMode(s, inTIAMode);
+  const VideoModeHandler::Mode& mode
+    = myVidModeHandler.buildMode(s, inTIAMode, myBezel->info());
   if(mode.imageR.size() > mode.screenS)
     return FBInitStatus::FailTooLarge;
 
@@ -1295,7 +1322,11 @@ FBInitStatus FrameBuffer::applyVideoMode()
     // Inform TIA surface about new mode, and update TIA settings
     if(inTIAMode)
     {
-      myTIASurface->initialize(myOSystem.console(), myActiveVidMode);
+#ifdef IMAGE_SUPPORT
+      myBezel->apply();
+#endif
+
+    myTIASurface->initialize(myOSystem.console(), myActiveVidMode);
       if(fullScreen())
         myOSystem.settings().setValue("tia.fs_stretch",
           myActiveVidMode.stretch == VideoModeHandler::Mode::Stretch::Fill);
@@ -1317,18 +1348,19 @@ FBInitStatus FrameBuffer::applyVideoMode()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-float FrameBuffer::maxWindowZoom() const
+double FrameBuffer::maxWindowZoom() const
 {
   const int display = displayId(BufferType::Emulator);
-  float multiplier = 1;
+  double multiplier = 1;
 
   for(;;)
   {
-    // Figure out the zoomed size of the window
-    const uInt32 width  = TIAConstants::viewableWidth * multiplier;
-    const uInt32 height = TIAConstants::viewableHeight * multiplier;
+    // Figure out the zoomed size of the window (incl. the bezel)
+    const uInt32 width  = static_cast<double>(TIAConstants::viewableWidth)  * myBezel->ratioW() * multiplier;
+    const uInt32 height = static_cast<double>(TIAConstants::viewableHeight) * myBezel->ratioH() * multiplier;
 
-    if((width > myAbsDesktopSize[display].w) || (height > myAbsDesktopSize[display].h))
+    if((width > myAbsDesktopSize[display].w) ||
+       (height > myAbsDesktopSize[display].h))
       break;
 
     multiplier += ZOOM_STEPS;

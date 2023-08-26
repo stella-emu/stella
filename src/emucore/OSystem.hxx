@@ -303,11 +303,12 @@ class OSystem
 
   #ifdef IMAGE_SUPPORT
     /**
-      Return the full/complete path name for saving and loading
-      PNG snapshots.
+      Return the full/complete path name for saving snapshots, loading
+      launcher images and loading bezels.
     */
-    const FSNode& snapshotSaveDir() const { return mySnapshotSaveDir; }
-    const FSNode& snapshotLoadDir() const { return mySnapshotLoadDir; }
+    const FSNode& snapshotSaveDir();
+    const FSNode& snapshotLoadDir();
+    const FSNode& bezelDir();
   #endif
 
     /**
@@ -599,7 +600,7 @@ class OSystem
 
   private:
     FSNode myBaseDir, myStateDir, mySnapshotSaveDir, mySnapshotLoadDir,
-           myNVRamDir, myCfgDir, myHomeDir, myUserDir;
+           myNVRamDir, myCfgDir, myHomeDir, myUserDir, myBezelDir;
     FSNode myCheatFile, myPaletteFile;
     FSNode myRomFile;  string myRomMD5;
 

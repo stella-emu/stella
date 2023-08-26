@@ -62,6 +62,13 @@ Settings::Settings()
   setPermanent("display", 0);
   setPermanent("uimessages", "true");
   setPermanent("pausedim", "true");
+  setPermanent("bezel.show", "true");
+  setPermanent("bezel.windowed", "false");
+  setPermanent("bezel.win.auto", "true");
+  setPermanent("bezel.win.left", "12");
+  setPermanent("bezel.win.right", "12");
+  setPermanent("bezel.win.top", "0");
+  setPermanent("bezel.win.bottom", "0");
   // TIA specific options
   setPermanent("tia.inter", "false");
   setPermanent("tia.zoom", "3");
@@ -160,6 +167,7 @@ Settings::Settings()
   setPermanent("romdir", "");
   setPermanent("userdir", "");
   setPermanent("saveuserdir", "false");
+  setPermanent("bezel.dir", "");
 
   // ROM browser options
   setPermanent("exitlauncher", "false");
@@ -534,10 +542,18 @@ void Settings::usage()
     << "  -detectpal60     <1|0>         Enable PAL-60 autodetection\n"
     << "  -detectntsc50    <1|0>         Enable NTSC-50 autodetection\n"
     << endl
-    << "  -speed        <number>       Run emulation at the given speed\n"
-    << "  -turbo        <1|0>          Enable 'Turbo' mode for maximum emulation speed\n"
-    << "  -uimessages   <1|0>          Show onscreen UI messages for different events\n"
-    << "  -pausedim     <1|0>          Enable emulation dimming in pause mode\n"
+    << "  -speed           <number>      Run emulation at the given speed\n"
+    << "  -turbo           <1|0>         Enable 'Turbo' mode for maximum emulation speed\n"
+    << "  -uimessages      <1|0>         Show onscreen UI messages for different events\n"
+    << "  -pausedim        <1|0>         Enable emulation dimming in pause mode\n"
+    << endl
+    << "  -bezel.show        <1|0>       Show bezel around emulation window\n"
+    << "  -bezel.windowed    <1|0>       Show bezel in windowed modes\n"
+    << "  -bezel.win.auto    <1|0>       Automatically set bezel window position\n"
+    << "  -bezel.win.left    <0-40>      Set left bezel window position [%]\n"
+    << "  -bezel.win.right   <0-40>      Set right bezel window position [%]\n"
+    << "  -bezel.win.top     <0-40>      Set top bezel window position [%]\n"
+    << "  -bezel.win.bottom  <0-40>      Set bottom bezel window position [%]\n"
     << endl
   #ifdef SOUND_SUPPORT
     << "  -audio.enabled            <1|0>      Enable audio\n"
@@ -655,6 +671,7 @@ void Settings::usage()
     << "  -followlauncher     <0|1>    Default ROM path follows launcher navigation\n"
     << "  -userdir            <dir>    Set the path to save user files to\n"
     << "  -saveuserdir        <0|1>    Update user path when navigating in browser\n"
+    << "  -bezel.dir          <dir>    Set the path to load bezels from\n"
     << "  -lastrom            <name>   Last played ROM, automatically selected in\n"
     << "                                launcher\n"
     << "  -romloadcount <number>       Number of ROM to load next from multicard\n"
@@ -746,6 +763,7 @@ void Settings::usage()
     << "   -vcenter     <arg>          Sets the 'Display.vcenter' property\n"
     << "   -pp          <arg>          Sets the 'Display.Phosphor' property\n"
     << "   -ppblend     <arg>          Sets the 'Display.PPBlend' property\n"
+    << "   -bezelname   <arg>          Sets the 'Bezel.Name' property\n"
     << endl
   #endif
 

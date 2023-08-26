@@ -1,3 +1,4 @@
+
 "Cart.MD5" "000509d1ed2b8d30a9d94be1b3b5febb"
 "Cart.Manufacturer" "Greg Zumwalt"
 "Cart.Name" "Jungle Jane (2003) (Greg Zumwalt) (Hack)"
@@ -153,6 +154,7 @@
 "Cart.Manufacturer" "Arcadia Corporation, Dennis Caswell"
 "Cart.ModelNo" "5 AR-4200"
 "Cart.Name" "Labyrinth (Escape from the Mindmaster Beta) (1982) (Arcadia)"
+"Cart.Url" "http://www.atariprotos.com/2600/software/escape/escape.htm"
 ""
 
 "Cart.MD5" "02066b17f29082412c6754c1a2d6302e"
@@ -162,7 +164,7 @@
 "Cart.MD5" "021dbeb7417cac4e5f8e867393e742d6"
 "Cart.Manufacturer" "Simone Serra - AtariAge"
 "Cart.ModelNo" "RC 09.09.2008"
-"Cart.Name" "Lead "
+"Cart.Name" "Lead"
 "Cart.Rarity" "Homebrew"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=932"
 ""
@@ -325,6 +327,7 @@
 "Cart.Manufacturer" "Thomas Jentzsch"
 "Cart.Name" "Thrust (V1.0) (2000) (Thomas Jentzsch)"
 "Cart.Rarity" "New Release"
+"Bezel.Name" "Thrust+ DC Edition (USA) (Unl)"
 ""
 
 "Cart.MD5" "043f165f384fbea3ea89393597951512"
@@ -360,6 +363,7 @@
 "Cart.MD5" "049626cbfb1a5f7a5dc885a0c4bb758e"
 "Cart.Name" "MegaMania (Unknown) (PAL) [a]"
 "Cart.Highscore" "{\"score_addresses\":[\"0xdb\",\"0xdc\",\"0xdd\"],\"score_digits\":6,\"variations_address\":\"0x80\",\"variations_count\":4,\"variations_zero_based\":true}"
+"Bezel.Name" "MegaMania - A Space Nightmare (USA)"
 ""
 
 "Cart.MD5" "04b488d4eef622d022a0021375e7e339"
@@ -538,6 +542,7 @@
 "Cart.Name" "Phantom II & Pirate (PAL60)"
 "Cart.Rarity" "Homebrew"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=843"
+"Bezel.Name" "Phantom II - Pirate (USA) (Unl)" 
 ""
 
 "Cart.MD5" "06b0194ce992584c365278e0d7323279"
@@ -737,6 +742,7 @@
 "Cart.Note" "Uses Atari Trak-Ball Controller"
 "Cart.Highscore" "{\"notes\":\"Variations cannot be defined\",\"score_addresses\":[\"0xf4\",\"0xf5\",\"0xf6\"],\"score_digits\":6,\"variations_count\":1}"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1180"
+"Bezel.Name" "Centipede (USA)"
 ""
 
 "Cart.MD5" "0894aa7be77521f9df562be8d9555fe6"
@@ -750,6 +756,7 @@
 "Cart.Manufacturer" "Atari, Gary Palmer"
 "Cart.ModelNo" "CX26163P"
 "Cart.Name" "Fun with Numbers (32 in 1) (1988) (Atari) (PAL) (4K)"
+"Bezel.Name" "Basic Math (USA)"
 ""
 
 "Cart.MD5" "08bd4c1dcc843f6a0b563d9fd80b3b11"
@@ -1063,6 +1070,7 @@
 "Cart.Manufacturer" "Arcadia Corporation, Stephen Harland Landrum"
 "Cart.ModelNo" "AR-4105"
 "Cart.Name" "Official Frogger (1983) (Arcadia) [a]"
+"Bezel.Name" "Official Frogger, The (USA)"
 ""
 
 "Cart.MD5" "0bfabf1e98bdb180643f35f2165995d0"
@@ -1291,6 +1299,7 @@
 "Cart.Note" "Uses Amiga Mouse Controller"
 "Cart.Highscore" "{\"notes\":\"Variations cannot be defined\",\"score_addresses\":[\"0xf4\",\"0xf5\",\"0xf6\"],\"score_digits\":6,\"variations_count\":1}"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1180"
+"Bezel.Name" "Centipede (USA)"
 ""
 
 "Cart.MD5" "0e4b2b6e014a93ef8be896823da0d4ec"
@@ -1438,6 +1447,7 @@
 
 "Cart.MD5" "0fba7d8c3520bdb681f75494e498ec36"
 "Cart.Name" "Gunfight 2600 - Final Run (Manuel Rotschkar)"
+"Bezel.Name" "Gunfight (USA) (Unl)"
 ""
 
 "Cart.MD5" "0fbf618be43d4396856d4244126fe7dc"
@@ -1711,6 +1721,7 @@
 "Cart.Manufacturer" "Digitel"
 "Cart.Name" "Megamania (1983) (Digitel)"
 "Cart.Highscore" "{\"score_addresses\":[\"0xdb\",\"0xdc\",\"0xdd\"],\"score_digits\":6,\"variations_address\":\"0x80\",\"variations_count\":4,\"variations_zero_based\":true}"
+"Bezel.Name" "MegaMania - A Space Nightmare (USA)"
 ""
 
 "Cart.MD5" "12bca8305d5ab8ea51fe1cfd95d7ab0e"
@@ -1969,6 +1980,7 @@
 "Cart.Manufacturer" "Skyworks"
 "Cart.Name" "Tomcat (2002) (Skyworks) (PAL)"
 "Cart.Note" "AKA The F-14 Flight Simulator"
+"Bezel.Name" "Tomcat - The F-14 Fighter Simulator (USA)"
 ""
 
 "Cart.MD5" "157356f80c709ab675961d8b8b207e20"
@@ -2075,6 +2087,7 @@
 "Cart.ModelNo" "PB5080"
 "Cart.Name" "Gyruss (1983) (Parker Bros) (Prototype) [a1]"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/gyruss/gyruss.htm"
 "Display.Phosphor" "YES"
 ""
 
@@ -2275,6 +2288,7 @@
 "Cart.Name" "Gunfight 2600 (Manuel Rotschkar) (PAL)"
 "Cart.Rarity" "New Release"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=124"
+"Bezel.Name" "Gunfight (USA) (Unl)"
 ""
 
 "Cart.MD5" "18b476a34ce5e6db2c032029873ac39b"
@@ -2367,6 +2381,7 @@
 "Controller.PaddlesXCenter" "17"
 "Controller.PaddlesYCenter" "17"
 "Controller.MouseAxis" "AUTO 55"
+"Bezel.Name" "Super Breakout (USA)"
 ""
 
 "Cart.MD5" "1986f864e32e3e8d198b5becf3022257"
@@ -2650,6 +2665,7 @@
 "Cart.Name" "Space Invaders Menu (2020) (Hack)"
 "Cart.Note" "Hack of Space Invaders"
 "Cart.Highscore" "{\"notes\":\"Only player 1 supported\",\"score_addresses\":[\"0xe6\",\"0xe8\"],\"variations_address\":\"0xdc\",\"variations_bcd\":false,\"variations_bcd_A\":false,\"variations_count\":112,\"variations_zero_based\":true}"
+"Bezel.Name" "Space Invaders (USA)"
 ""
 
 "Cart.MD5" "1da2da7974d2ca73a823523f82f517b3"
@@ -2787,6 +2803,7 @@
 "Cart.Manufacturer" "K-Tel Vision"
 "Cart.Name" "Vulture Attack (1982) (K-Tel Vision)"
 "Cart.Note" "AKA Condor Attack"
+"Bezel.Name" "Condor Attack (USA)"
 ""
 
 "Cart.MD5" "1f2ae0c70a04c980c838c2cdc412cf45"
@@ -2823,6 +2840,7 @@
 "Cart.Rarity" "New Release"
 "Controller.Left" "PADDLES_IAXDR"
 "Controller.MouseAxis" "01"
+"Bezel.Name" "Mondo Pong (USA) (Unl)"
 ""
 
 "Cart.MD5" "1f773a94d919b2a3c647172bbb97f6b4"
@@ -2847,6 +2865,7 @@
 "Cart.Note" "Adventures in the Park"
 "Cart.Rarity" "Prototype"
 "Cart.Url" "http://www.atariprotos.com/2600/software/cpk/cpk.htm"
+"Bezel.Name" "Cabbage Patch Kids - Adventures in the Park (USA) (Proto)" 
 ""
 
 "Cart.MD5" "1fa86282403fa35d103ab88a9d603c31"
@@ -2986,6 +3005,7 @@
 "Cart.MD5" "212d0b200ed8b45d8795ad899734d7d7"
 "Cart.Manufacturer" "Atari, Richard Maurer, Christopher H. Omarzu - Coca Cola"
 "Cart.Name" "Pepsi Invaders (1983) (Atari)"
+"Bezel.Name" "Pepsi Invaders - Coke Wins (USA)"
 ""
 
 "Cart.MD5" "213e5e82ecb42af237cfed8612c128ac"
@@ -3014,6 +3034,7 @@
 "Cart.Note" "Uses Atari Trak-Ball Controller"
 "Cart.Highscore" "{\"notes\":\"Variations cannot be defined\",\"score_addresses\":[\"0xf4\",\"0xf5\",\"0xf6\"],\"score_digits\":6,\"variations_count\":1}"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1180"
+"Bezel.Name" "Centipede (USA)"
 ""
 
 "Cart.MD5" "218b76f5a4142dc2ea9051a768583d70"
@@ -3170,6 +3191,7 @@
 "Console.RightDiff" "A"
 "Console.SwapPorts" "YES"
 "Display.Phosphor" "YES"
+"Bezel.Name" "Stone Age (Brazil)"
 ""
 
 "Cart.MD5" "240bfbac5163af4df5ae713985386f92"
@@ -3575,6 +3597,7 @@
 "Cart.ModelNo" "PB5590"
 "Cart.Name" "Frogger II (1984) (Parker Bros)"
 "Display.Phosphor" "YES"
+"Bezel.Name" "Frogger II - Threeedeep! (USA)"
 ""
 
 "Cart.MD5" "27f9e2e1b92af9dc17c6155605c38e49"
@@ -3858,6 +3881,7 @@
 "Cart.ModelNo" "EAK-046-04B"
 "Cart.Name" "Fighter Pilot (1988) (Activision) (PAL)"
 "Cart.Note" "AKA Tomcat - The F-14 Fighter Simulator"
+"Bezel.Name" "Tomcat - The F-14 Fighter Simulator (USA)"
 ""
 
 "Cart.MD5" "2ae700c9dba843a68dfdca40d7d86bd6"
@@ -4079,6 +4103,8 @@
 "Cart.ModelNo" "PB5080"
 "Cart.Name" "Gyruss (1983) (Parker Bros) (Prototype) (PAL) [a]"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/gyruss/gyruss.htm"
+"Display.Phosphor" "YES"
 ""
 
 "Cart.MD5" "2d1cf85fbc732856bf76470cd4060f4a"
@@ -4154,6 +4180,7 @@
 "Cart.ModelNo" "87"
 "Cart.Name" "Glib (1983) (QDI)"
 "Cart.Note" "AKA Video Word Game"
+"Bezel.Name" "Glib - Video Word Game (USA)"
 ""
 
 "Cart.MD5" "2d9e65959808a6098c16c82a59c9d9dc"
@@ -4175,6 +4202,7 @@
 "Controller.Right" "DRIVING"
 "Controller.MouseAxis" "58"
 "Display.Phosphor" "YES"
+"Bezel.Name" "Asteroids (USA)"
 ""
 
 "Cart.MD5" "2dcf9ce486393cd36ca0928cd53b96cb"
@@ -4334,6 +4362,7 @@
 "Cart.Manufacturer" "Sancho - Tang's Electronic Co."
 "Cart.Name" "Words-Attack (1983) (Sancho) (PAL)"
 "Display.Phosphor" "YES"
+"Bezel.Name" "Words-Attack (Europe) (Proto)"
 ""
 
 "Cart.MD5" "3025bdc30b5aec9fb40668787f67d24c"
@@ -4479,6 +4508,7 @@
 "Cart.ModelNo" "AX-017, AX-017-04"
 "Cart.Name" "MegaMania (1982) (Activision)"
 "Cart.Highscore" "{\"score_addresses\":[\"0xdb\",\"0xdc\",\"0xdd\"],\"score_digits\":6,\"variations_address\":\"0x80\",\"variations_count\":4,\"variations_zero_based\":true}"
+"Bezel.Name" "MegaMania - A Space Nightmare (USA)"
 ""
 
 "Cart.MD5" "319a142aab6260842ab616382848c204"
@@ -4518,6 +4548,7 @@
 "Cart.Note" "Solaris Beta"
 "Cart.Rarity" "Prototype"
 "Cart.Url" "http://www.atariprotos.com/2600/software/tlsf/tlsf.htm"
+"Bezel.Name" "Last Starfighter, The (USA) (Proto)"
 ""
 
 "Cart.MD5" "31f4692ee2ca07a7ce1f7a6a1dab4ac9"
@@ -4593,6 +4624,7 @@
 "Cart.Manufacturer" "Dactari - Milmar"
 "Cart.Name" "Megamania (Dactari)"
 "Cart.Highscore" "{\"score_addresses\":[\"0xdb\",\"0xdc\",\"0xdd\"],\"score_digits\":6,\"variations_address\":\"0x80\",\"variations_count\":4,\"variations_zero_based\":true}"
+"Bezel.Name" "MegaMania - A Space Nightmare (USA)"
 ""
 
 "Cart.MD5" "327fe8cf94f3a45c35a840a453df1235"
@@ -4661,6 +4693,7 @@
 "Cart.ModelNo" "PB5760"
 "Cart.Name" "Montezuma's Revenge (1984) (Parker Bros)"
 "Cart.Note" "Featuring Panama Joe"
+"Bezel.Name" "Montezuma's Revenge - Featuring Panama Joe (USA)"
 ""
 
 "Cart.MD5" "335793736cbf6fc99c9359ed2a32a49d"
@@ -5279,6 +5312,7 @@
 "Cart.Note" "Uses Atari Mouse Controller"
 "Cart.Highscore" "{\"notes\":\"Variations cannot be defined\",\"score_addresses\":[\"0xf4\",\"0xf5\",\"0xf6\"],\"score_digits\":6,\"variations_count\":1}"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1180"
+"Bezel.Name" "Centipede (USA)"
 ""
 
 "Cart.MD5" "3a526e6a1f9fe918af0f2ce997dfea73"
@@ -5298,6 +5332,7 @@
 "Cart.Name" "Defender II (1987) (Atari)"
 "Cart.Note" "AKA Stargate"
 "Cart.Highscore" "{\"score_addresses\":[\"0x8b\",\"0x8c\",\"0x8d\"],\"score_digits\":6,\"special_address\":\"0x89\",\"special_label\":\"Wave\",\"variations_count\":1}"
+"Bezel.Name" "Stargate (USA)"
 ""
 
 "Cart.MD5" "3a98b97b3df21715816b6ad62e843dad"
@@ -5320,12 +5355,14 @@
 "Cart.Manufacturer" "Absolute Entertainment, Dan Kitchen"
 "Cart.ModelNo" "AK-046-04"
 "Cart.Name" "Tomcat (1988) (Absolute)"
+"Bezel.Name" "Tomcat - The F-14 Fighter Simulator (USA)"
 ""
 
 "Cart.MD5" "3ad3dc799211ccd424d7c6d454401436"
 "Cart.Manufacturer" "Probe 2000 - NAP"
 "Cart.Name" "Power Lords (1983) (Probe) (Prototype)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/powerlords/powerlords.htm"
 ""
 
 "Cart.MD5" "3ad58b53a1e972396890bd86c735e78d"
@@ -5339,6 +5376,7 @@
 "Cart.Manufacturer" "Tigervision"
 "Cart.ModelNo" "7-008"
 "Cart.Name" "Miner 2049er (1983) (Tigervision) [fixed]"
+"Bezel.Name" "Miner 2049er - Starring Bounty Bob (USA)"
 ""
 
 "Cart.MD5" "3b097a7ed5bd2a84dc3d3ed361e9c31c"
@@ -5405,6 +5443,7 @@
 "Cart.Manufacturer" "Atari, Tod Frye - Sears"
 "Cart.ModelNo" "CX2646 - 49-75185"
 "Cart.Name" "Pac-Man (1981) (Atari) (8K)"
+"Bezel.Name" "Pac-Man (Atari) (USA)"
 ""
 
 "Cart.MD5" "3b91c347d8e6427edbe942a7a405290d"
@@ -5589,6 +5628,7 @@
 "Cart.ModelNo" "EAX-017, EAX-017-04I - 711 017-720"
 "Cart.Name" "MegaMania (1982) (Activision) (PAL)"
 "Cart.Highscore" "{\"score_addresses\":[\"0xdb\",\"0xdc\",\"0xdd\"],\"score_digits\":6,\"variations_address\":\"0x80\",\"variations_count\":4,\"variations_zero_based\":true}"
+"Bezel.Name" "MegaMania - A Space Nightmare (USA)"
 ""
 
 "Cart.MD5" "3d9c2fccf8b11630762ff00811c19277"
@@ -5683,6 +5723,7 @@
 "Cart.Name" "Pitfall! (1982) (Activision)"
 "Cart.Note" "Pitfall Harry's Jungle Adventure (Jungle Runner)"
 "Cart.Highscore" "{\"score_addresses\":[\"0xd5\",\"0xd6\",\"0xd7\"],\"score_digits\":6,\"variations_count\":1}"
+"Bezel.Name" "Pitfall! - Pitfall Harry's Jungle Adventure (USA)"
 ""
 
 "Cart.MD5" "3eae062a9b722bda1255d474a87eca5c"
@@ -5761,6 +5802,7 @@
 "Cart.ModelNo" "6082 A145"
 "Cart.Name" "Kung Fu Superkicks (1988) (Telegames)"
 "Cart.Note" "AKA Chuck Norris Superkicks"
+"Bezel.Name" "Chuck Norris Superkicks (USA)" 
 ""
 
 "Cart.MD5" "3f5a43602f960ede330cd2f43a25139e"
@@ -5938,9 +5980,9 @@
 ""
 
 "Cart.MD5" "41810dd94bd0de1110bedc5092bef5b0"
-"Cart.Manufacturer" "Funvision - Fund. International Co."
-"Cart.Name" "Dragon Treasure (Funvision)"
-"Cart.Note" "AKA Dragonfire"
+"Cart.Manufacturer" "Imagic, Bob Smith"
+"Cart.Name" "Dragonfire"
+"Cart.Note" "AKA Dragon Treasure (Funvision)"
 "Display.Phosphor" "YES"
 ""
 
@@ -5964,6 +6006,7 @@
 "Cart.Name" "Iceman (07-27-1983) (Activision) (Prototype)"
 "Cart.Note" "Frostbite Beta"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/frostbite/frostbite.htm"
 ""
 
 "Cart.MD5" "4191b671bcd8237fc8e297b4947f2990"
@@ -6169,6 +6212,7 @@
 "Cart.Name" "Pitfall II (1983) (Activision) [a2]"
 "Cart.Rarity" "Rare"
 "Cart.Highscore" "{\"score_addresses\":[\"0xc7\",\"0xc8\",\"0xc9\"],\"score_digits\":6,\"variations_count\":1}"
+"Bezel.Name" "Pitfall! - Pitfall Harry's Jungle Adventure (USA)"
 ""
 
 "Cart.MD5" "44e9c4a047c348dbeb7ace60f45484b4"
@@ -6271,6 +6315,7 @@
 "Cart.Note" "Adventures in the Park"
 "Cart.Rarity" "Prototype"
 "Cart.Url" "http://www.atariprotos.com/2600/software/cpk/cpk.htm"
+"Bezel.Name" "Cabbage Patch Kids - Adventures in the Park (USA) (Proto)" 
 ""
 
 "Cart.MD5" "461029ab23800833e9645be3e472d470"
@@ -6475,6 +6520,7 @@
 "Cart.Manufacturer" "Nukey Shay"
 "Cart.Name" "Montezuma's Revenge (Genesis) (F6_Conversion)"
 "Cart.Note" "Genesis controller"
+"Bezel.Name" "Montezuma's Revenge - Featuring Panama Joe (USA)"
 ""
 
 "Cart.MD5" "48411c9ef7e2cef1d6b2bee0e6055c27"
@@ -6577,6 +6623,7 @@
 "Cart.ModelNo" "AB-035-04"
 "Cart.Name" "Pitfall II (1983) (Activision) [a]"
 "Cart.Highscore" "{\"score_addresses\":[\"0xc7\",\"0xc8\",\"0xc9\"],\"score_digits\":6,\"variations_count\":1}"
+"Bezel.Name" "Pitfall! - Pitfall Harry's Jungle Adventure (USA)"
 ""
 
 "Cart.MD5" "49366f41aa7a54baf263426e99ce4312"
@@ -6707,6 +6754,7 @@
 "Cart.Name" "Montezuma's Revenge (PAL) (Genesis)"
 "Cart.Note" "Genesis controller (B jumps left, C jumps right)"
 "Cart.Rarity" "Homebrew"
+"Bezel.Name" "Montezuma's Revenge - Featuring Panama Joe (USA)"
 ""
 
 "Cart.MD5" "4ab4af3adcdae8cdacc3d06084fc8d6a"
@@ -7137,6 +7185,7 @@
 "Cart.Manufacturer" "U.S. Games Corporation - JWDA, Todd Marshall"
 "Cart.Name" "3-D Zapper (12-15-82) (U.S. Games) (Prototype)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/zapper/zapper.htm"
 "Display.Phosphor" "YES"
 ""
 
@@ -7164,6 +7213,7 @@
 "Cart.ModelNo" "EAZ-033 - 711 033-725"
 "Cart.Name" "Space Shuttle (1983) (Activision) (PAL)"
 "Cart.Note" "A Journey Into Space, Eine Reise ins All"
+"Bezel.Name" "Space Shuttle - A Journey Into Space (USA)"
 ""
 
 "Cart.MD5" "4f781f0476493c50dc578336f1132a67"
@@ -7251,6 +7301,7 @@
 "Cart.Name" "Merlin's Walls - Standard Edition (1999) (Ebivision)"
 "Cart.Note" "Image rotated 90 degrees CW"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=302"
+"Bezel.Name" "Merlin's Walls (France) (Unl)"
 ""
 
 "Cart.MD5" "5069fecbe4706371f17737b0357cfa68"
@@ -7279,6 +7330,7 @@
 "Cart.Manufacturer" "U.S. Games Corporation - JWDA, Todd Marshall"
 "Cart.Name" "3-D Zapper (U.S. Games) (Prototype)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/zapper/zapper.htm"
 ""
 
 "Cart.MD5" "50ef88f9a5e0e1e6b86e175362a27fdb"
@@ -7437,6 +7489,7 @@
 "Cart.Name" "Decathlon (1983) (Activision) [fixed]"
 "Cart.Highscore" "{\"notes\":\"Decathlon & 100m dash share variation 1\",\"score_addresses\":[\"0x95\",\"0x96\"],\"variations_address\":\"0x80\",\"variations_bcd\":false,\"variations_count\":10,\"variations_zero_based\":true}"
 "Controller.Right" "PADDLES"
+"Bezel.Name" "Activision Decathlon, The (USA)"
 ""
 
 "Cart.MD5" "52615ae358a68de6e76467e95eb404c7"
@@ -7588,6 +7641,7 @@
 "Cart.Note" "Uses Atari Trak-Ball Controller"
 "Cart.Highscore" "{\"notes\":\"Variations cannot be defined\",\"score_addresses\":[\"0xf4\",\"0xf5\",\"0xf6\"],\"score_digits\":6,\"variations_count\":1}"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1180"
+"Bezel.Name" "Centipede (USA)"
 ""
 
 "Cart.MD5" "53f147b9746fdc997c62f3dd67888ee5"
@@ -7915,6 +7969,7 @@
 "Cart.ModelNo" "AZ-033, AZ-033-04"
 "Cart.Name" "Space Shuttle (1983) (Activision)"
 "Cart.Note" "A Journey Into Space"
+"Bezel.Name" "Space Shuttle - A Journey Into Space (USA)"
 ""
 
 "Cart.MD5" "589c73bbcd77db798cb92a992b4c06c3"
@@ -7991,6 +8046,7 @@
 "Cart.Name" "Miner 2049er (1983) (Tigervision) (Prototype)"
 "Cart.Rarity" "Prototype"
 "Cart.Url" "http://www.atariprotos.com/2600/software/miner/miner.htm"
+"Bezel.Name" "Miner 2049er - Starring Bounty Bob (USA)"
 ""
 
 "Cart.MD5" "599cbf919d47a05af975ad447df29497"
@@ -8004,6 +8060,7 @@
 "Cart.Name" "Surfer's Paradise (Thomas Jentzsch)"
 "Cart.Note" "NTSC Conversion"
 "Cart.Rarity" "Homebrew"
+"Bezel.Name" "Surfer's Paradise - But Danger Below! (Europe)"
 ""
 
 "Cart.MD5" "59d33e00c07665395209c1e55da0b139"
@@ -8226,6 +8283,7 @@
 "Cart.MD5" "5bbab3f3e4b47e3e23f9820765dbb45c"
 "Cart.Name" "Pitfall! (says 1985) [h1]"
 "Cart.Highscore" "{\"score_addresses\":[\"0xd5\",\"0xd6\",\"0xd7\"],\"score_digits\":6,\"variations_count\":1}"
+"Bezel.Name" "Pitfall! - Pitfall Harry's Jungle Adventure (USA)"
 ""
 
 "Cart.MD5" "5bbb75b49b2bccef9c91ff84bb249c80"
@@ -8337,6 +8395,7 @@
 "Cart.Note" "Adventures in the Park"
 "Cart.Rarity" "Prototype"
 "Cart.Url" "http://www.atariprotos.com/2600/software/cpk/cpk.htm"
+"Bezel.Name" "Cabbage Patch Kids - Adventures in the Park (USA) (Proto)" 
 ""
 
 "Cart.MD5" "5d132d121aabc5235dd039dfc46aa024"
@@ -8352,6 +8411,7 @@
 "Cart.Name" "Space Shuttle (1983) (Activision) (SECAM)"
 "Cart.Note" "A Journey Into Space"
 "Cart.Type" "FE"
+"Bezel.Name" "Space Shuttle - A Journey Into Space (USA)"
 ""
 
 "Cart.MD5" "5d2cc33ca798783dee435eb29debf6d6"
@@ -8547,6 +8607,7 @@
 "Cart.Name" "Fun with Numbers (1980) (Atari) (PAL)"
 "Cart.Note" "AKA Basic Math"
 "Cart.Rarity" "Uncommon"
+"Bezel.Name" "Basic Math (USA)"
 ""
 
 "Cart.MD5" "5f4ebf8a1e5f5f7b9ff3e3c6affff3e6"
@@ -8593,6 +8654,7 @@
 "Cart.Name" "Defender II (1987) (Atari) (PAL)"
 "Cart.Note" "AKA Stargate"
 "Cart.Highscore" "{\"score_addresses\":[\"0x8b\",\"0x8c\",\"0x8d\"],\"score_digits\":6,\"special_address\":\"0x89\",\"special_label\":\"Wave\",\"variations_count\":1}"
+"Bezel.Name" "Stargate (USA)"
 ""
 
 "Cart.MD5" "5f7ae9a7f8d79a3b37e8fc841f65643a"
@@ -8613,6 +8675,7 @@
 "Cart.Rarity" "Prototype"
 "Cart.Url" "http://www.atariprotos.com/2600/software/unknown3/unknown3.htm"
 "Display.Phosphor" "YES"
+"Bezel.Name" "Unknown 20th Century Fox Game (USA) (Proto)" 
 ""
 
 "Cart.MD5" "5f9b62350b31be8bd270d9a241cbd50e"
@@ -8646,6 +8709,7 @@
 "Cart.Name" "Battlezone TC (Thomas Jentzsch) (Hack)"
 "Cart.Note" "Uses two simultaneous Joystick Controllers, Hack of Battlezone"
 "Cart.Rarity" "Hack"
+"Bezel.Name" "Battlezone (USA)"
 ""
 
 "Cart.MD5" "60358edf0c2cc76b1e549e031e50e130"
@@ -8942,6 +9006,7 @@
 
 "Cart.MD5" "635cc7a0db33773959d739d04eff96c2"
 "Cart.Name" "Minesweeper (V.90) (Soren Gust) (PD)"
+"Bezel.Name" "Mine Sweeper (USA) (Unl)"
 ""
 
 "Cart.MD5" "6362396c8344eec3e86731a700b13abf"
@@ -9100,6 +9165,7 @@
 "Cart.ModelNo" "C-812"
 "Cart.Name" "Pac Man (1983) (CCE) [a]"
 "Cart.Note" "AKA Pac-Man"
+"Bezel.Name" "Pac-Man (Atari) (USA)"
 ""
 
 "Cart.MD5" "6522717cfd75d1dba252cbde76992090"
@@ -9156,6 +9222,7 @@
 "Cart.ModelNo" "PB5080"
 "Cart.Name" "Gyruss (1983) (Parker Bros) (Prototype) [a2]"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/gyruss/gyruss.htm"
 "Display.Phosphor" "YES"
 ""
 
@@ -9336,6 +9403,7 @@
 "Cart.Note" "Adventures in the Park"
 "Cart.Rarity" "Prototype"
 "Cart.Url" "http://www.atariprotos.com/2600/software/cpk/cpk.htm"
+"Bezel.Name" "Cabbage Patch Kids - Adventures in the Park (USA) (Proto)" 
 ""
 
 "Cart.MD5" "6706a00f9635508cfeda20639156e66e"
@@ -9458,6 +9526,7 @@
 "Cart.Note" "Uses Atari Mouse Controller"
 "Cart.Highscore" "{\"notes\":\"Variations cannot be defined\",\"score_addresses\":[\"0xf4\",\"0xf5\",\"0xf6\"],\"score_digits\":6,\"variations_count\":1}"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1180"
+"Bezel.Name" "Centipede (USA)"
 ""
 
 "Cart.MD5" "683bb0d0f0c5df58557fba9dffc32c40"
@@ -9474,6 +9543,7 @@
 "Cart.Manufacturer" "Ed Federmeyer"
 "Cart.Name" "Edtris (1995) (Ed Federmeyer)"
 "Cart.Rarity" "Extremely Rare"
+"Bezel.Name" "Edtris 2600 (USA) (Unl)"
 ""
 
 "Cart.MD5" "68449e4aaba677abcd7cde4264e02168"
@@ -9601,6 +9671,7 @@
 "Cart.Note" "Uses Atari Trak-Ball Controller"
 "Cart.Highscore" "{\"notes\":\"Variations cannot be defined\",\"score_addresses\":[\"0xf4\",\"0xf5\",\"0xf6\"],\"score_digits\":6,\"variations_count\":1}"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1180"
+"Bezel.Name" "Centipede (USA)"
 ""
 
 "Cart.MD5" "6979f30204149be3e227558cffe21c1d"
@@ -9664,6 +9735,7 @@
 "Cart.Highscore" "{\"score_addresses\":[\"0xf3\",\"0xf1\",\"0xef\"],\"score_digits\":6,\"variations_address\":\"0xe9\",\"variations_count\":34}"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1183"
 "Display.Phosphor" "YES"
+"Bezel.Name" "Missile Command (USA)"
 ""
 
 "Cart.MD5" "69fac82cd2312dd9ce5d90e22e2f070a"
@@ -9869,6 +9941,7 @@
 "Cart.Rarity" "New Release"
 "Controller.Left" "PADDLES_IAXDR"
 "Controller.MouseAxis" "01"
+"Bezel.Name" "Mondo Pong (USA) (Unl)"
 ""
 
 "Cart.MD5" "6c128bc950fcbdbcaf0d99935da70156"
@@ -9944,6 +10017,7 @@
 "Cart.Name" "Universal Chaos (1988) (Telegames) (Prototype)"
 "Cart.Note" "AKA Targ"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/targ/targ.htm"
 ""
 
 "Cart.MD5" "6cbe945e16d9f827d0d295546ac11b22"
@@ -10012,6 +10086,7 @@
 "Cart.ModelNo" "AB-035-04"
 "Cart.Name" "Pitfall II (1984) (Activision)"
 "Cart.Highscore" "{\"score_addresses\":[\"0xc7\",\"0xc8\",\"0xc9\"],\"score_digits\":6,\"variations_count\":1}"
+"Bezel.Name" "Pitfall! - Pitfall Harry's Jungle Adventure (USA)"
 ""
 
 "Cart.MD5" "6d8a04ee15951480cb7c466e5951eee0"
@@ -10063,6 +10138,7 @@
 "Cart.Manufacturer" "Atari, Tod Frye - Sears"
 "Cart.ModelNo" "CX2646 - 49-75185"
 "Cart.Name" "Pac-Man (1982) (Atari)"
+"Bezel.Name" "Pac-Man (Atari) (USA)"
 ""
 
 "Cart.MD5" "6e59dd52f88c00d5060eac56c1a0b0d3"
@@ -10196,6 +10272,7 @@
 "Cart.ModelNo" "AX-018, AX-018-04"
 "Cart.Name" "Pitfall! (1982) (Activision) (16K)"
 "Cart.Highscore" "{\"score_addresses\":[\"0xd5\",\"0xd6\",\"0xd7\"],\"score_digits\":6,\"variations_count\":1}"
+"Bezel.Name" "Pitfall! - Pitfall Harry's Jungle Adventure (USA)"
 ""
 
 "Cart.MD5" "6fe67f525c39200a798985e419431805"
@@ -10298,6 +10375,7 @@
 "Cart.Manufacturer" "Arcadia Corporation, Dennis Caswell"
 "Cart.ModelNo" "5 AR-4200"
 "Cart.Name" "Labyrinth (Escape from the Mindmaster Beta) (1982) (Arcadia) [a]"
+"Cart.Url" "http://www.atariprotos.com/2600/software/escape/escape.htm"
 ""
 
 "Cart.MD5" "713fde2af865b6ec464dfd72e2ebb83e"
@@ -10546,6 +10624,7 @@
 "Cart.Manufacturer" "Jone Yuan Telephonic Enterprise Co"
 "Cart.Name" "Unknown Datatech Game (Jone Yuan)"
 "Cart.Note" "2600 Screen Search Console"
+"Bezel.Name" "Unknown Datatech Game #2 - AKA Mazy Match (Mexico)"
 ""
 
 "Cart.MD5" "73efa9f3cbe197f26e0fb87132829232"
@@ -10650,6 +10729,7 @@
 "Cart.Name" "Snow White (02-09-1983) (Atari) (Prototype)"
 "Cart.Rarity" "Prototype"
 "Cart.Url" "http://www.atariprotos.com/2600/software/snowwhite/snowwhite.htm"
+"Bezel.Name" "Snow White and the Seven Dwarfs (USA) (Proto)"
 ""
 
 "Cart.MD5" "7511c34518a9a124ea773f5b0b5c9a48"
@@ -10787,6 +10867,7 @@
 "Cart.Rarity" "Prototype"
 "Cart.StartBank" "0"
 "Cart.Url" "http://www.atariprotos.com/2600/software/snowwhite/snowwhite.htm"
+"Bezel.Name" "Snow White and the Seven Dwarfs (USA) (Proto)"
 ""
 
 "Cart.MD5" "7608abdfd9b26f4a0ecec18b232bea54"
@@ -11015,6 +11096,7 @@
 "Cart.Name" "Pitfall! (1982) (Activision) (PAL)"
 "Cart.Note" "Abenteuer im Urwald (Jungle Runner)"
 "Cart.Highscore" "{\"score_addresses\":[\"0xd5\",\"0xd6\",\"0xd7\"],\"score_digits\":6,\"variations_count\":1}"
+"Bezel.Name" "Pitfall! - Pitfall Harry's Jungle Adventure (USA)"
 ""
 
 "Cart.MD5" "791c88eca9836af8c34bf32b07cb58a7"
@@ -11125,6 +11207,7 @@
 "Cart.ModelNo" "CX2616P"
 "Cart.Name" "Pele's Soccer (1981) (Atari) (PAL)"
 "Cart.Note" "AKA Pele's Championship Soccer"
+"Bezel.Name" "Championship Soccer (USA)"  
 ""
 
 "Cart.MD5" "7a2af383014f5d810ad26d322823549d"
@@ -11405,6 +11488,7 @@
 "Cart.Note" "Uses Atari Mouse Controller"
 "Cart.Highscore" "{\"notes\":\"Variations cannot be defined\",\"score_addresses\":[\"0xf4\",\"0xf5\",\"0xf6\"],\"score_digits\":6,\"variations_count\":1}"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1180"
+"Bezel.Name" "Centipede (USA)"
 ""
 
 "Cart.MD5" "7d0b49ea4fe3a5f1e119a6d14843db17"
@@ -11423,6 +11507,7 @@
 "Cart.Name" "Astro Chase (10-25-1983) (Parker Bros) (Prototype)"
 "Cart.Rarity" "Prototype"
 "Display.Phosphor" "YES"
+"Cart.Url" "http://www.atariprotos.com/2600/software/astrochase/astrochase.htm"
 ""
 
 "Cart.MD5" "7d3cdde63b16fa637c4484e716839c94"
@@ -11448,6 +11533,7 @@
 "Cart.Note" "Adventures in the Park"
 "Cart.Rarity" "Prototype"
 "Cart.Url" "http://www.atariprotos.com/2600/software/cpk/cpk.htm"
+"Bezel.Name" "Cabbage Patch Kids - Adventures in the Park (USA) (Proto)" 
 ""
 
 "Cart.MD5" "7d8287e8423a56d4f8cef10435d97179"
@@ -11693,6 +11779,7 @@
 "Cart.ModelNo" "PB5080"
 "Cart.Name" "Gyruss (1983) (Parker Bros) (Prototype)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/gyruss/gyruss.htm"
 "Display.Phosphor" "YES"
 ""
 
@@ -11845,6 +11932,7 @@
 "Cart.Note" "Adventures in the Park"
 "Cart.Rarity" "Prototype"
 "Cart.Url" "http://www.atariprotos.com/2600/software/cpk/cpk.htm"
+"Bezel.Name" "Cabbage Patch Kids - Adventures in the Park (USA) (Proto)" 
 ""
 
 "Cart.MD5" "80f7bf7418a462e8687ecefeaf6eb9c2"
@@ -11881,6 +11969,7 @@
 "Cart.MD5" "8108ad2679bd055afec0a35a1dca46a4"
 "Cart.Name" "Maze Craze (Unknown)"
 "Display.Format" "NTSC"
+"Bezel.Name" "Maze Craze - A Game of Cops 'n Robbers (USA)"
 ""
 
 "Cart.MD5" "810d8952af5a6036fca8d0c4e1b23db6"
@@ -11939,6 +12028,7 @@
 "Cart.Name" "Fun with Numbers (1980) (Atari)"
 "Cart.Note" "AKA Basic Math"
 "Cart.Rarity" "Uncommon"
+"Bezel.Name" "Basic Math (USA)"
 ""
 
 "Cart.MD5" "81a010abdba1a640f7adf7f84e13d307"
@@ -12020,6 +12110,7 @@
 "Cart.Name" "Venture (1982) (Coleco) (Prototype)"
 "Cart.Note" "2K"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/venture/venture.htm"
 ""
 
 "Cart.MD5" "82e7aab602c378cffdd8186a099e807e"
@@ -12470,6 +12561,7 @@
 "Cart.Name" "Decathlon (1983) (Activision) (PAL)"
 "Cart.Rarity" "Rare"
 "Cart.Highscore" "{\"notes\":\"Decathlon & 100m dash share variation 1\",\"score_addresses\":[\"0x95\",\"0x96\"],\"variations_address\":\"0x80\",\"variations_bcd\":false,\"variations_count\":10,\"variations_zero_based\":true}"
+"Bezel.Name" "Activision Decathlon, The (USA)"
 ""
 
 "Cart.MD5" "8874b68751fd2ba6d3306a263ae57a7d"
@@ -12542,6 +12634,7 @@
 "Cart.Note" "Adventures in the Park"
 "Cart.Rarity" "Prototype"
 "Cart.Url" "http://www.atariprotos.com/2600/software/cpk/cpk.htm"
+"Bezel.Name" "Cabbage Patch Kids - Adventures in the Park (USA) (Proto)" 
 ""
 
 "Cart.MD5" "890c13590e0d8d5d6149737d930e4d95"
@@ -12580,6 +12673,7 @@
 "Cart.ModelNo" "AZ-033, AZ-033-04"
 "Cart.Name" "Space Shuttle (1983) (Activision) [FE]"
 "Cart.Note" "A Journey Into Space"
+"Bezel.Name" "Space Shuttle - A Journey Into Space (USA)"
 ""
 
 "Cart.MD5" "898748d5eaac3164b0391a64ae1e0e32"
@@ -12748,6 +12842,7 @@
 "Cart.ModelNo" "AP-2006"
 "Cart.Name" "Infiltrate (1982) (Apollo) (Prototype) [a]"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/infiltrate/infiltrate.htm"
 ""
 
 "Cart.MD5" "8bbfd951c89cc09c148bfabdefa08bec"
@@ -12809,6 +12904,7 @@
 "Controller.PaddlesXCenter" "17"
 "Controller.PaddlesYCenter" "17"
 "Controller.MouseAxis" "AUTO 45"
+"Bezel.Name" "Super Breakout (USA)"
 ""
 
 "Cart.MD5" "8c2fa33048f055f38358d51eefe417db"
@@ -12860,6 +12956,7 @@
 "Cart.Note" "Uses Amiga Mouse Controller"
 "Cart.Highscore" "{\"notes\":\"Variations cannot be defined\",\"score_addresses\":[\"0xf4\",\"0xf5\",\"0xf6\"],\"score_digits\":6,\"variations_count\":1}"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1180"
+"Bezel.Name" "Centipede (USA)"
 ""
 
 "Cart.MD5" "8cd26dcf249456fe4aeb8db42d49df74"
@@ -12972,6 +13069,7 @@
 "Cart.ModelNo" "CX26114"
 "Cart.Name" "Pigs in Space (1983) (Atari)"
 "Cart.Note" "Starring Miss Piggy"
+"Bezel.Name" "Pigs in Space - Starring Miss Piggy (USA)"
 ""
 
 "Cart.MD5" "8e512ad4506800458f99dec084fc2c64"
@@ -13329,6 +13427,7 @@
 "Cart.MD5" "93096a1038cd558ed0b48741bbf17c64"
 "Cart.Manufacturer" "Fotomania"
 "Cart.Name" "Pac-Man (Fotomania)"
+"Bezel.Name" "Pac-Man (Atari) (USA)"
 ""
 
 "Cart.MD5" "931b91a8ea2d39fe4dca1a23832b591a"
@@ -13604,6 +13703,7 @@
 "Cart.ModelNo" "CX26114"
 "Cart.Name" "Pigs in Space (1983) (Atari) (PAL)"
 "Cart.Note" "Starring Miss Piggy"
+"Bezel.Name" "Pigs in Space - Starring Miss Piggy (USA)"
 ""
 
 "Cart.MD5" "95e542a7467c94b1e4ab24a3ebe907f1"
@@ -13635,6 +13735,7 @@
 "Cart.Manufacturer" "Andrew Davie & Thomas Jentzsch"
 "Cart.Name" "Boulder Dash - Demo (2011)"
 "Cart.Rarity" "New Release"
+"Bezel.Name" "Boulder Dash (USA) (Unl)"
 ""
 
 "Cart.MD5" "96670d0bf3610da2afcabd8e21d8eabf"
@@ -13875,6 +13976,7 @@
 "Cart.ModelNo" "AX-018, AX-018-04"
 "Cart.Name" "Pitfall! (1982) (Activision) (8K)"
 "Cart.Highscore" "{\"score_addresses\":[\"0xd5\",\"0xd6\",\"0xd7\"],\"score_digits\":6,\"variations_count\":1}"
+"Bezel.Name" "Pitfall! - Pitfall Harry's Jungle Adventure (USA)"
 ""
 
 "Cart.MD5" "98ef1593624b409b9fb83a1c272a0aa7"
@@ -13893,6 +13995,7 @@
 "Cart.MD5" "98fa3ad778a668a79449350de4b3b95b"
 "Cart.Manufacturer" "Thomas Jentzsch"
 "Cart.Name" "Thrust (V1.1) (2000) (Thomas Jentzsch)"
+"Bezel.Name" "Thrust+ DC Edition (USA) (Unl)"
 ""
 
 "Cart.MD5" "9905f9f4706223dadee84f6867ede8e3"
@@ -14320,6 +14423,7 @@
 "Cart.Name" "Montezuma's Revenge (Thomas Jentzsch) (PAL60)"
 "Cart.Note" "NTSC Conversion"
 "Cart.Rarity" "Homebrew"
+"Bezel.Name" "Montezuma's Revenge - Featuring Panama Joe (USA)"
 ""
 
 "Cart.MD5" "9f8fad4badcd7be61bbd2bcaeef3c58f"
@@ -14635,6 +14739,7 @@
 "Cart.Manufacturer" "Nukey Shay"
 "Cart.Name" "Montezuma's Revenge (Genesis) (PAL60) (F6_Conversion)"
 "Cart.Note" "Genesis controller"
+"Bezel.Name" "Montezuma's Revenge - Featuring Panama Joe (USA)"
 ""
 
 "Cart.MD5" "a302b922a8dbec47743f28b7f91d4cd8"
@@ -14681,6 +14786,7 @@
 "Cart.ModelNo" "AX-017, AX-017-04"
 "Cart.Name" "MegaMania (1982) (Activision) (16K)"
 "Cart.Highscore" "{\"score_addresses\":[\"0xdb\",\"0xdc\",\"0xdd\"],\"score_digits\":6,\"variations_address\":\"0x80\",\"variations_count\":4,\"variations_zero_based\":true}"
+"Bezel.Name" "MegaMania - A Space Nightmare (USA)"
 ""
 
 "Cart.MD5" "a3873d7c544af459f40d58dfcfb78887"
@@ -15124,6 +15230,7 @@
 
 "Cart.MD5" "a8d0a4a77cd71ac601bd71df5a060e4c"
 "Cart.Name" "Space Shuttle (1983) (Activision) [t2] (Fuel)"
+"Bezel.Name" "Space Shuttle - A Journey Into Space (USA)"
 ""
 
 "Cart.MD5" "a8d4a9500b18b0a067a1f272f869e094"
@@ -15242,6 +15349,7 @@
 "Cart.Rarity" "New Release"
 "Cart.Highscore" "{\"score_addresses\":[\"0xd4\",\"0xd3\"],\"score_digits\":5,\"score_trailing_zeroes\":1,\"variations_address\":\"0xe5\",\"variations_count\":3,\"variations_zero_based\":true}"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=134"
+"Bezel.Name" "Oystron (USA) (Unl)"
 ""
 
 "Cart.MD5" "aa5cfe3b20395aba1d479135943ad85c"
@@ -15340,6 +15448,7 @@
 "Cart.Manufacturer" "Andrew Davie & Thomas Jentzsch"
 "Cart.Name" "Boulder Dash - Demo V2 (2014)"
 "Cart.Rarity" "New Release"
+"Bezel.Name" "Boulder Dash (USA) (Unl)"
 ""
 
 "Cart.MD5" "ab4ac994865fb16ebb85738316309457"
@@ -15434,6 +15543,7 @@
 
 "Cart.MD5" "ac5f78bae0638cf3f2a0c8d07eb4df69"
 "Cart.Name" "Minesweeper (V.99) (Soren Gust) (PD)"
+"Bezel.Name" "Mine Sweeper (USA) (Unl)"
 ""
 
 "Cart.MD5" "ac7c2260378975614192ca2bc3d20e0b"
@@ -15443,6 +15553,7 @@
 "Cart.Rarity" "Rare"
 "Cart.Highscore" "{\"notes\":\"Decathlon & 100m dash share variation 1\",\"score_addresses\":[\"0x95\",\"0x96\"],\"variations_address\":\"0x80\",\"variations_bcd\":false,\"variations_count\":10,\"variations_zero_based\":true}"
 "Controller.Right" "PADDLES"
+"Bezel.Name" "Activision Decathlon, The (USA)"
 ""
 
 "Cart.MD5" "ac9adbd6de786a242e19d4bec527982b"
@@ -15489,6 +15600,7 @@
 "Cart.ModelNo" "CX2616"
 "Cart.Name" "Pele's Soccer (1981) (Atari)"
 "Cart.Note" "AKA Pele's Championship Soccer"
+"Bezel.Name" "Championship Soccer (USA)"  
 ""
 
 "Cart.MD5" "ad2e6bfb3b9b9b36ba8bf493ce764c49"
@@ -15714,6 +15826,7 @@
 "Cart.Manufacturer" "K-Tel Vision"
 "Cart.Name" "Vulture Attack (1982) (K-Tel Vision) (PAL)"
 "Cart.Note" "AKA Condor Attack"
+"Bezel.Name" "Condor Attack (USA)"
 ""
 
 "Cart.MD5" "b00e8217633e870bf39d948662a52aac"
@@ -15800,6 +15913,7 @@
 "Cart.Name" "Tetris 2600 (Colin Hughes)"
 "Cart.Rarity" "New Release"
 "Display.Phosphor" "YES"
+"Bezel.Name" "Tetris 26 (USA) (Unl)"
 ""
 
 "Cart.MD5" "b1276417fb0f79bc52e741bb8f4d8360"
@@ -16050,6 +16164,7 @@
 "Cart.Manufacturer" "Digitel"
 "Cart.Name" "Pac Man (1983) (Digitel)"
 "Cart.Note" "AKA Pac-Man"
+"Bezel.Name" "Pac-Man (Atari) (USA)"
 ""
 
 "Cart.MD5" "b37f0fe822b92ca8f5e330bf62d56ea9"
@@ -16229,6 +16344,7 @@
 "Cart.MD5" "b65d4a38d6047735824ee99684f3515e"
 "Cart.Manufacturer" "Dynacom"
 "Cart.Name" "MegaBoy (Dynacom)"
+"Bezel.Name" "MegaBoy (Brazil)"
 ""
 
 "Cart.MD5" "b676a9b7094e0345a76ef027091d916b"
@@ -16533,6 +16649,7 @@
 "Cart.Name" "Asterix (08-01-1983) (Atari) (Prototype) (PAL)"
 "Cart.Note" "AKA Taz"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/asterix/asterix.htm"
 ""
 
 "Cart.MD5" "ba257438f8a78862a9e014d831143690"
@@ -16900,6 +17017,7 @@
 "Cart.Name" "Decathlon (HES) (PAL) (16K)"
 "Cart.Note" "AKA Activision Decathlon"
 "Cart.Highscore" "{\"notes\":\"Decathlon & 100m dash share variation 1\",\"score_addresses\":[\"0x95\",\"0x96\"],\"variations_address\":\"0x80\",\"variations_bcd\":false,\"variations_count\":10,\"variations_zero_based\":true}"
+"Bezel.Name" "Activision Decathlon, The (USA)"
 ""
 
 "Cart.MD5" "bf84f528de44225dd733c0e6a8e400a0"
@@ -17108,7 +17226,7 @@
 
 "Cart.MD5" "c1b7aeabc3ec41556d924c8372a9ba5b"
 "Cart.Manufacturer" "Atari, Robert C. Polaro"
-"Cart.Name" "Dukes of Hazard (1980) (Atari) (Prototype)"
+"Cart.Name" "Dukes of Hazzard (1980) (Atari) (Prototype)"
 "Cart.Note" "AKA Stunt Cycle"
 "Cart.Rarity" "Prototype"
 "Cart.Url" "http://www.atariprotos.com/2600/software/dukes/dukes.htm"
@@ -17126,6 +17244,7 @@
 "Cart.ModelNo" "CA283"
 "Cart.Name" "Z-Tack (1983) (Bomb)"
 "Cart.Note" "AKA Base Attack"
+"Bezel.Name" "Base Attack (Europe)"
 ""
 
 "Cart.MD5" "c1f209d80f0624dada5866ce05dd3399"
@@ -17261,6 +17380,7 @@
 "Cart.Highscore" "{\"score_addresses\":[\"0xf3\",\"0xf1\",\"0xef\"],\"score_digits\":6,\"variations_address\":\"0xe9\",\"variations_count\":34}"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1183"
 "Display.Phosphor" "YES"
+"Bezel.Name" "Missile Command (USA)"
 ""
 
 "Cart.MD5" "c2fbef02b6eea37d8df3e91107f89950"
@@ -17428,6 +17548,7 @@
 "Cart.ModelNo" "112-008"
 "Cart.Name" "Frankenstein's Monster (1982) (Data Age) (Prototype)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/frankenstein/frankenstein.htm"
 ""
 
 "Cart.MD5" "c4d888bcf532e7c9c5fdeafbb145266a"
@@ -17453,6 +17574,7 @@
 "Cart.Manufacturer" "Tigervision - Teldec"
 "Cart.ModelNo" "7-008 - 3.60006 VG"
 "Cart.Name" "Miner 2049er (1983) (Tigervision) (PAL)"
+"Bezel.Name" "Miner 2049er - Starring Bounty Bob (USA)"
 ""
 
 "Cart.MD5" "c529e63013698064149b9e0468afd941"
@@ -17604,6 +17726,7 @@
 "Cart.Note" "Uses Atari Trak-Ball Controller"
 "Cart.Highscore" "{\"notes\":\"Variations cannot be defined\",\"score_addresses\":[\"0xf4\",\"0xf5\",\"0xf6\"],\"score_digits\":6,\"variations_count\":1}"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1180"
+"Bezel.Name" "Centipede (USA)"
 ""
 
 "Cart.MD5" "c5fe45f2734afd47e27ca3b04a90213c"
@@ -17674,6 +17797,7 @@
 "Cart.Manufacturer" "Ed Federmeyer"
 "Cart.Name" "Edtris (1994) (Ed Federmeyer)"
 "Cart.Rarity" "Extremely Rare"
+"Bezel.Name" "Edtris 2600 (USA) (Unl)"
 ""
 
 "Cart.MD5" "c6d7fe7a46dc46f962fe8413c6f53fc9"
@@ -17683,6 +17807,7 @@
 "Cart.Note" "Journey to Rivendell (The Lord of the Rings I)"
 "Cart.Rarity" "Prototype"
 "Cart.Url" "http://www.atariprotos.com/2600/software/lotr/lotr.htm"
+"Bezel.Name" "Lord of the Rings, The - Journey to Rivendell (USA) (Proto)"
 ""
 
 "Cart.MD5" "c6db733e0b108c2580a1d65211f06dbf"
@@ -17810,6 +17935,7 @@
 "Cart.Name" "Space Invaders Menu (2020) (PAL) (Hack)"
 "Cart.Note" "Hack of Space Invaders"
 "Cart.Highscore" "{\"notes\":\"Only player 1 supported\",\"score_addresses\":[\"0xe6\",\"0xe8\"],\"variations_address\":\"0xdc\",\"variations_bcd\":false,\"variations_bcd_A\":false,\"variations_count\":112,\"variations_zero_based\":true}"
+"Bezel.Name" "Space Invaders (USA)"
 ""
 
 "Cart.MD5" "c8c7da12f087e8d16d3e6a21b371a5d3"
@@ -17917,6 +18043,7 @@
 "Cart.ModelNo" "C-812"
 "Cart.Name" "Pac Man (1983) (CCE)"
 "Cart.Note" "AKA Pac-Man"
+"Bezel.Name" "Pac-Man (Atari) (USA)"
 ""
 
 "Cart.MD5" "ca54de69f7cdf4d7996e86f347129892"
@@ -18102,6 +18229,7 @@
 "Cart.Manufacturer" "Atari, Bill Aspromonte, John Russell, Michael Sierchio, Robert Zdybel"
 "Cart.ModelNo" "CX26114"
 "Cart.Name" "Pigs in Space (1983) (Atari) (PAL) [a]"
+"Bezel.Name" "Pigs in Space - Starring Miss Piggy (USA)"
 ""
 
 "Cart.MD5" "cc7138202cd8f6776212ebfc3a820ecc"
@@ -18281,6 +18409,7 @@
 "Cart.Note" "Uses Amiga Mouse Controller"
 "Cart.Highscore" "{\"notes\":\"Variations cannot be defined\",\"score_addresses\":[\"0xf4\",\"0xf5\",\"0xf6\"],\"score_digits\":6,\"variations_count\":1}"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1180"
+"Bezel.Name" "Centipede (USA)"
 ""
 
 "Cart.MD5" "cdb81bf33d830ee4ee0606ee99e84dba"
@@ -18502,6 +18631,7 @@
 
 "Cart.MD5" "cfdb4d0427a1ea8085c6bc6eb90259d8"
 "Cart.Name" "Gunfight 2600 - Release Candidate (2001) (Manuel Rotschkar)"
+"Bezel.Name" "Gunfight (USA) (Unl)"
 ""
 
 "Cart.MD5" "cfe2185f84ce8501933beb5c5e1fd053"
@@ -18673,6 +18803,7 @@
 "Cart.ModelNo" "CX2661P"
 "Cart.Name" "Fun with Numbers (1980) (Atari) (PAL) (4K)"
 "Cart.Note" "AKA Basic Math"
+"Bezel.Name" "Basic Math (USA)"
 ""
 
 "Cart.MD5" "d0cdafcb000b9ae04ac465f17788ad11"
@@ -18687,6 +18818,7 @@
 "Cart.Note" "Uses Atari Mouse Controller"
 "Cart.Highscore" "{\"notes\":\"Variations cannot be defined\",\"score_addresses\":[\"0xf4\",\"0xf5\",\"0xf6\"],\"score_digits\":6,\"variations_count\":1}"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1180"
+"Bezel.Name" "Centipede (USA)"
 ""
 
 "Cart.MD5" "d0e15a3ce322c5af60f07343594392af"
@@ -18719,6 +18851,7 @@
 "Cart.ModelNo" "CX2666"
 "Cart.Name" "RealSports Volleyball (05-11-1982) (Atari) (Prototype)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/rsvolleyball/rsvolleyball.htm"
 ""
 
 "Cart.MD5" "d170317ae4c7d997a989c7d6567c2840"
@@ -18942,6 +19075,7 @@
 "Cart.ModelNo" "AX-017, AX-017-04"
 "Cart.Name" "MegaMania (1982) (Activision) (8K)"
 "Cart.Highscore" "{\"score_addresses\":[\"0xdb\",\"0xdc\",\"0xdd\"],\"score_digits\":6,\"variations_address\":\"0x80\",\"variations_count\":4,\"variations_zero_based\":true}"
+"Bezel.Name" "MegaMania - A Space Nightmare (USA)"
 ""
 
 "Cart.MD5" "d45ebf130ed9070ea8ebd56176e48a38"
@@ -19018,6 +19152,7 @@
 "Cart.ModelNo" "C-829"
 "Cart.Name" "Megamania (1983) (CCE)"
 "Cart.Highscore" "{\"score_addresses\":[\"0xdb\",\"0xdc\",\"0xdd\"],\"score_digits\":6,\"variations_address\":\"0x80\",\"variations_count\":4,\"variations_zero_based\":true}"
+"Bezel.Name" "MegaMania - A Space Nightmare (USA)"
 ""
 
 "Cart.MD5" "d563ba38151b8204c9f5c9f58e781455"
@@ -19243,6 +19378,7 @@
 "Cart.Manufacturer" "Atari, Gary Palmer"
 "Cart.ModelNo" "CX26163P"
 "Cart.Name" "Fun with Numbers (32 in 1) (1988) (Atari) (PAL)"
+"Bezel.Name" "Basic Math (USA)"
 ""
 
 "Cart.MD5" "d81bb6965e6c99b3be99ffd8978740e4"
@@ -19341,6 +19477,7 @@
 "Cart.Note" "Uses Amiga Mouse Controller"
 "Cart.Highscore" "{\"notes\":\"Variations cannot be defined\",\"score_addresses\":[\"0xf4\",\"0xf5\",\"0xf6\"],\"score_digits\":6,\"variations_count\":1}"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1180"
+"Bezel.Name" "Centipede (USA)"
 ""
 
 "Cart.MD5" "d97e3d0b4575ce0b9a6132e19cfeac6e"
@@ -19377,6 +19514,7 @@
 "Cart.Note" "Genesis controller (C switches to map mode)"
 "Cart.Rarity" "Hack of Last Starfighter (Solaris prototype)"
 "Cart.Highscore" "{\"score_addresses\":[\"0xde\",\"0xdd\",\"0xdc\"],\"score_digits\":6,\"score_trailing_zeroes\":1,\"variations_count\":1}"
+"Cart.Url" "http://www.atariprotos.com/2600/software/tlsf/tlsf.htm"
 ""
 
 "Cart.MD5" "d9c9cece2e769c7985494b1403a25721"
@@ -19495,6 +19633,7 @@
 "Cart.Note" "Hack of Dark Mage"
 "Cart.Rarity" "Hack"
 "Display.Phosphor" "YES"
+"Bezel.Name" "Lord of the Rings, The - Fellowship of the Ring (USA) (Unl)"
 ""
 
 "Cart.MD5" "dafc3945677ccc322ce323d1e9930beb"
@@ -19856,6 +19995,7 @@
 "Cart.Note" "Supports BoosterGrip"
 "Cart.Rarity" "New Release"
 "Controller.Left" "BOOSTERGRIP"
+"Bezel.Name" "Thrust+ DC Edition (USA) (Unl)"
 ""
 
 "Cart.MD5" "de8443ff47283e7b274a7838cb071fb6"
@@ -19972,6 +20112,7 @@
 "Cart.ModelNo" "CX2661"
 "Cart.Name" "Fun with Numbers (1980) (Atari) (4K)"
 "Cart.Note" "AKA Basic Math"
+"Bezel.Name" "Basic Math (USA)"
 ""
 
 "Cart.MD5" "dfc3dbbb39f05d7dd8ee3ac987478970"
@@ -19996,6 +20137,7 @@
 "Cart.Manufacturer" "Atari, Robert C. Polaro, Alan J. Murphy - Sears"
 "Cart.ModelNo" "CX2609 - 49-75186"
 "Cart.Name" "Defender (11-XX-1981) (Atari) (Prototype)"
+"Cart.Url" "http://www.atariprotos.com/2600/software/defender/defender.htm"
 "Cart.Rarity" "Prototype"
 ""
 
@@ -20056,6 +20198,7 @@
 "Cart.ModelNo" "PB5080"
 "Cart.Name" "Gyruss (1983) (Parker Bros) (Prototype) (PAL)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/gyruss/gyruss.htm"
 "Display.Phosphor" "YES"
 ""
 
@@ -20127,6 +20270,7 @@
 "Cart.Note" "Adventures in the Park"
 "Cart.Rarity" "Prototype"
 "Cart.Url" "http://www.atariprotos.com/2600/software/cpk/cpk.htm"
+"Bezel.Name" "Cabbage Patch Kids - Adventures in the Park (USA) (Proto)" 
 ""
 
 "Cart.MD5" "e14dc36b24fe22c04fa076e298f2e15f"
@@ -20179,6 +20323,7 @@
 "Cart.Name" "Alligator People (1983) (20th Century Fox) (Prototype)"
 "Cart.Rarity" "Prototype"
 "Cart.Url" "http://www.atariprotos.com/2600/software/alligator/alligatorpeople.htm"
+"Bezel.Name" "Alligator People, The (USA) (Proto)"
 ""
 
 "Cart.MD5" "e1b90f1e01b1a316d7bbf141525cc00e"
@@ -20205,6 +20350,7 @@
 "Cart.Note" "Bugfixed"
 "Cart.Rarity" "New Release"
 "Controller.Left" "BOOSTERGRIP"
+"Bezel.Name" "Thrust+ DC Edition (USA) (Unl)"
 ""
 
 "Cart.MD5" "e1efe2ef7664bb6758b1a22ff8ea16a1"
@@ -20354,6 +20500,7 @@
 "Cart.Name" "Pitfall II (1984) (Activision) (PAL)"
 "Cart.Note" "Lost Caverns"
 "Cart.Highscore" "{\"score_addresses\":[\"0xc7\",\"0xc8\",\"0xc9\"],\"score_digits\":6,\"variations_count\":1}"
+"Bezel.Name" "Pitfall! - Pitfall Harry's Jungle Adventure (USA)"
 ""
 
 "Cart.MD5" "e3533684a7ef930a7fbd0c4dd8ec4847"
@@ -20445,6 +20592,7 @@
 "Cart.Note" "Uses Atari Trak-Ball Controller"
 "Cart.Highscore" "{\"notes\":\"Variations cannot be defined\",\"score_addresses\":[\"0xf4\",\"0xf5\",\"0xf6\"],\"score_digits\":6,\"variations_count\":1}"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1180"
+"Bezel.Name" "Centipede (USA)"
 ""
 
 "Cart.MD5" "e49ac0ec879a0d7820bc2598fc2cfcd4"
@@ -20601,6 +20749,7 @@
 "Cart.ModelNo" "6082 A145"
 "Cart.Name" "Kung Fu Superkicks (1988) (Telegames) (PAL)"
 "Cart.Note" "AKA Chuck Norris Superkicks"
+"Bezel.Name" "Chuck Norris Superkicks (USA)" 
 ""
 
 "Cart.MD5" "e5ecd78edd24326a968809decbc7b916"
@@ -21144,6 +21293,7 @@
 "Cart.Name" "Extra Terrestrials (1984) (SSG)"
 "Cart.Note" "The only Canadian-designed and manufactured Atari 2600 game from the 1980's"
 "Cart.Rarity" "Extremely Rare"
+"Bezel.Name" "Extra Terrestrials (Canada)"
 ""
 
 "Cart.MD5" "ebdc5716b85c4ff44fa357cb697d6cef"
@@ -21152,6 +21302,7 @@
 "Cart.Note" "Uses Amiga Mouse Controller"
 "Cart.Highscore" "{\"notes\":\"Variations cannot be defined\",\"score_addresses\":[\"0xf4\",\"0xf5\",\"0xf6\"],\"score_digits\":6,\"variations_count\":1}"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1180"
+"Bezel.Name" "Centipede (USA)"
 ""
 
 "Cart.MD5" "ebf2dff78a08733251bf3838f02f7938"
@@ -21267,6 +21418,7 @@
 "Cart.ModelNo" "CX2635, CX2635P"
 "Cart.Name" "Maze Craze (1980) (Atari) (PAL)"
 "Cart.Note" "AKA A Game of Cops 'n Robbers"
+"Bezel.Name" "Maze Craze - A Game of Cops 'n Robbers (USA)"
 ""
 
 "Cart.MD5" "ed5ccfc93ad4561075436ee42a15438a"
@@ -21301,6 +21453,7 @@
 "Cart.ModelNo" "EAZ-030"
 "Cart.Name" "Decathlon (1983) (Activision) (SECAM)"
 "Cart.Highscore" "{\"notes\":\"Decathlon & 100m dash share variation 1\",\"score_addresses\":[\"0x95\",\"0x96\"],\"variations_address\":\"0x80\",\"variations_bcd\":false,\"variations_count\":10,\"variations_zero_based\":true}"
+"Bezel.Name" "Activision Decathlon, The (USA)"
 ""
 
 "Cart.MD5" "ede7e8bf865b0afb4744f86d13624f9a"
@@ -21479,6 +21632,7 @@
 "Cart.Note" "Uses Atari Mouse Controller"
 "Cart.Highscore" "{\"notes\":\"Variations cannot be defined\",\"score_addresses\":[\"0xf4\",\"0xf5\",\"0xf6\"],\"score_digits\":6,\"variations_count\":1}"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1180"
+"Bezel.Name" "Centipede (USA)"
 ""
 
 "Cart.MD5" "efffafc17b7cb01b9ca35324aa767364"
@@ -21512,6 +21666,7 @@
 "Cart.Note" "Starring Miss Piggy"
 "Cart.Rarity" "Prototype"
 "Cart.Url" "http://www.atariprotos.com/2600/software/pigsinspace/pigsinspace.htm"
+"Bezel.Name" "Pigs in Space - Starring Miss Piggy (USA)"
 ""
 
 "Cart.MD5" "f0510abbfbe24ead552e92e3841f63f3"
@@ -22022,6 +22177,7 @@
 "Cart.Note" "Adventures in the Park"
 "Cart.Rarity" "Prototype"
 "Cart.Url" "http://www.atariprotos.com/2600/software/cpk/cpk.htm"
+"Bezel.Name" "Cabbage Patch Kids - Adventures in the Park (USA) (Proto)" 
 ""
 
 "Cart.MD5" "f526d0c519f5001adb1fc7948bfbb3ce"
@@ -22152,6 +22308,7 @@
 "Cart.Note" "Adventures in the Park"
 "Cart.Rarity" "Prototype"
 "Cart.Url" "http://www.atariprotos.com/2600/software/cpk/cpk.htm"
+"Bezel.Name" "Cabbage Patch Kids - Adventures in the Park (USA) (Proto)" 
 ""
 
 "Cart.MD5" "f6c13e816e58c8c62f82b2c8b91a2d67"
@@ -22223,6 +22380,7 @@
 "Cart.Name" "Pitfall (1983) (CCE)"
 "Cart.Note" "AKA Pitfall!"
 "Cart.Highscore" "{\"score_addresses\":[\"0xd5\",\"0xd6\",\"0xd7\"],\"score_digits\":6,\"variations_count\":1}"
+"Bezel.Name" "Pitfall! - Pitfall Harry's Jungle Adventure (USA)"
 ""
 
 "Cart.MD5" "f7424985bac41067502b4a05b64cb75a"
@@ -22244,6 +22402,7 @@
 "Cart.Manufacturer" "Manuel Polik"
 "Cart.Name" "Gunfight 2600 (Manuel Rotschkar)"
 "Cart.Rarity" "New Release"
+"Bezel.Name" "Gunfight (USA) (Unl)"
 ""
 
 "Cart.MD5" "f75872946e82ad74d48eae5bc28f5f0e"
@@ -22367,6 +22526,7 @@
 "Cart.Name" "Maze Craze (1980) (Atari)"
 "Cart.Note" "AKA A Game of Cops 'n Robbers"
 "Display.Format" "NTSC"
+"Bezel.Name" "Maze Craze - A Game of Cops 'n Robbers (USA)"
 ""
 
 "Cart.MD5" "f844f4c6f3baaaf5322657442d6f29eb"
@@ -22566,6 +22726,7 @@
 "Cart.Manufacturer" "Tigervision"
 "Cart.ModelNo" "7-008"
 "Cart.Name" "Miner 2049er (1983) (Tigervision)"
+"Bezel.Name" "Miner 2049er - Starring Bounty Bob (USA)"
 ""
 
 "Cart.MD5" "fa1b060fd8e0bca0c2a097dcffce93d3"
@@ -22752,6 +22913,7 @@
 "Cart.ModelNo" "PB5590"
 "Cart.Name" "Frogger II (1984) (Parker Bros) (PAL)"
 "Display.Phosphor" "YES"
+"Bezel.Name" "Frogger II - Threeedeep! (USA)"
 ""
 
 "Cart.MD5" "fb978f1c053e8061cc37a726639f43f7"
@@ -22774,6 +22936,7 @@
 "Cart.Name" "Robot Tank TV (Thomas Jentzsch) (Hack)"
 "Cart.Note" "Uses two simultaneous Joystick Controllers, Hack of Robot Tank"
 "Cart.Rarity" "Hack"
+"Bezel.Name" "Robot Tank (USA)"
 ""
 
 "Cart.MD5" "fbb4f3debf48dc961b559384467f2057"
@@ -22805,6 +22968,7 @@
 "Cart.Manufacturer" "Atari, Tod Frye"
 "Cart.ModelNo" "CX2646"
 "Cart.Name" "Pac-Man (1982) (Atari) (PAL)"
+"Bezel.Name" "Pac-Man (Atari) (USA)"
 ""
 
 "Cart.MD5" "fc24a94d4371c69bc58f5245ada43c44"
@@ -22822,6 +22986,7 @@
 "Cart.MD5" "fc668a2251dd79cbd903d4fa0e558f96"
 "Cart.Manufacturer" "Thomas Jentzsch"
 "Cart.Name" "Thrust (V1.1) (2000) (Thomas Jentzsch) [a1]"
+"Bezel.Name" "Thrust+ DC Edition (USA) (Unl)"
 ""
 
 "Cart.MD5" "fc92d74f073a44bc6e46a3b3fa8256a2"
@@ -23062,6 +23227,7 @@
 
 "Cart.MD5" "ff5a9e340d96df6f5a5b6eb038e923bd"
 "Cart.Name" "Space Shuttle (1983) (Activision) [t1]"
+"Bezel.Name" "Space Shuttle - A Journey Into Space (USA)"
 ""
 
 "Cart.MD5" "ff7627207e8aa03730c35c735a82c26c"
@@ -23168,6 +23334,7 @@
 "Cart.Name" "Solaris (1986) (Atari) (Prototype)"
 "Cart.Note" "AKA The Last Starfighter, Star Raiders II, Universe"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/tlsf/tlsf.htm"
 ""
 
 "Cart.MD5" "4e4a263ca1f7fd37b04b9c4d7416f151"

@@ -292,24 +292,6 @@ void OSystem::setConfigPaths()
   buildDirIfRequired(myCfgDir, myBaseDir, "cfg");
 #endif
 
-#ifdef IMAGE_SUPPORT
-  const string_view ssSaveDir = mySettings->getString("snapsavedir");
-  if(ssSaveDir == EmptyString)
-    mySnapshotSaveDir = userDir();
-  else
-    mySnapshotSaveDir = FSNode(ssSaveDir);
-  if(!mySnapshotSaveDir.isDirectory())
-    mySnapshotSaveDir.makeDir();
-
-  const string_view ssLoadDir = mySettings->getString("snaploaddir");
-  if(ssLoadDir == EmptyString)
-    mySnapshotLoadDir = userDir();
-  else
-    mySnapshotLoadDir = FSNode(ssLoadDir);
-  if(!mySnapshotLoadDir.isDirectory())
-    mySnapshotLoadDir.makeDir();
-#endif
-
   myCheatFile = myBaseDir;  myCheatFile /= "stella.cht";
   myPaletteFile = myBaseDir;  myPaletteFile /= "stella.pal";
 
@@ -325,10 +307,55 @@ void OSystem::setConfigPaths()
   dbgPath("cfg dir   ", myCfgDir);
   dbgPath("ssave dir ", mySnapshotSaveDir);
   dbgPath("sload dir ", mySnapshotLoadDir);
+  dbgPath("bezel dir ", myBezelDir);
   dbgPath("cheat file", myCheatFile);
   dbgPath("pal file  ", myPaletteFile);
 #endif
 }
+
+#ifdef IMAGE_SUPPORT
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+const FSNode& OSystem::snapshotSaveDir()
+{
+  const string_view ssSaveDir = mySettings->getString("snapsavedir");
+  if(ssSaveDir == EmptyString)
+    mySnapshotSaveDir = userDir();
+  else
+    mySnapshotSaveDir = FSNode(ssSaveDir);
+  if(!mySnapshotSaveDir.isDirectory())
+    mySnapshotSaveDir.makeDir();
+
+  return mySnapshotSaveDir;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+const FSNode& OSystem::snapshotLoadDir()
+{
+  const string_view ssLoadDir = mySettings->getString("snaploaddir");
+  if(ssLoadDir == EmptyString)
+    mySnapshotLoadDir = userDir();
+  else
+    mySnapshotLoadDir = FSNode(ssLoadDir);
+  if(!mySnapshotLoadDir.isDirectory())
+    mySnapshotLoadDir.makeDir();
+
+  return mySnapshotLoadDir;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+const FSNode& OSystem::bezelDir()
+{
+  const string_view bezelDir = mySettings->getString("bezel.dir");
+  if(bezelDir == EmptyString)
+    myBezelDir = userDir();
+  else
+    myBezelDir = FSNode(bezelDir);
+  if(!myBezelDir.isDirectory())
+    myBezelDir.makeDir();
+
+  return myBezelDir;
+}
+#endif
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void OSystem::setUserDir(string_view path)
@@ -726,6 +753,7 @@ unique_ptr<Console> OSystem::openConsole(const FSNode& romfile, string& md5)
     CMDLINE_PROPS_UPDATE("ppblend", PropType::Display_PPBlend);
     CMDLINE_PROPS_UPDATE("pxcenter", PropType::Controller_PaddlesXCenter);
     CMDLINE_PROPS_UPDATE("pycenter", PropType::Controller_PaddlesYCenter);
+    CMDLINE_PROPS_UPDATE("bezelname", PropType::Bezel_Name);
 
     // Finally, create the cart with the correct properties
     if(cart)

@@ -24,6 +24,8 @@
 
   * Added 2nd UI theme and hotkey for toggling UI theme.
 
+  * Added bezel support.
+
   * Added optional type format detection based on colors used.
 
   * Added Joy2B+ controller support.
