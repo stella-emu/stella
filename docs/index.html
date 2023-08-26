@@ -313,7 +313,6 @@
     <li>Tracking of user favorites and popular or recently played ROMs.</li>
     <li>High scores saving (internal or via PlusROM High Score Club)</li>
     <li>Cross-platform UI including a built-in ROM launcher frontend</li>
-	<li>Supports bezel display</li>
     <li>Built-in extensive debugger, including static analysis with the Distella disassembler
       and dynamic analysis at runtime by tracking code/graphics/data sections, and
       generation of DASM-compatible disassembly files</li>
@@ -321,6 +320,7 @@
       Blargg filtering</a>, including presets for several common TV outputs
       (Composite, S-Video, RGB, etc.), and ability to fully customize
       many attributes (contrast, brightness, saturation, gamma, etc.).</li>
+	<li>Bezel support</li>
     <li>Built-in ROM database with information partially compiled by
       <a href="http://www.atarimania.com/rom_collection_archive_atari_2600_roms.html">
       RomHunter</a></li>
@@ -1206,6 +1206,11 @@
       <td>Toggle display interpolation (not available for Software renderer)</td>
       <td>Control + I</td>
       <td>Control + I</td>
+    </tr>
+    <tr>
+      <td>Toggle bezel display</td>
+      <td>Control + B</td>
+      <td>Control + B</td>
     </tr>
     <tr>
       <td colspan="3"><center><font size="-1">
@@ -2698,8 +2703,28 @@
       <td>Specifies from where bezel images are loaded.</td>
     </tr>
     <tr>
-      <td><pre>-bezel.windowed &lt;path&gt;</pre></td>
-      <td>Disable to show bezels only in fullscreen modes.</td>
+      <td><pre>-bezel.windowed &lt;1|0&gt;</pre></td>
+      <td>Enable bezels in windowed modes as well.</td>
+    </tr>
+    <tr>
+      <td><pre>-bezel.win.auto&lt;1|0&gt;</pre></td>
+      <td>Enable manually set bezel's emulation window position.</td>
+    </tr>
+    <tr>
+      <td><pre>-bezel.win.left&lt;1|0&gt;</pre></td>
+      <td>Set left position of bezel's emulation window.</td>
+    </tr>
+    <tr>
+      <td><pre>-bezel.win.right&lt;1|0&gt;</pre></td>
+      <td>Set right position of bezel's emulation window.</td>
+    </tr>
+    <tr>
+      <td><pre>-bezel.win.top&lt;1|0&gt;</pre></td>
+      <td>Set top position of bezel's emulation window.</td>
+    </tr>
+    <tr>
+      <td><pre>-bezel.win.bottom&lt;1|0&gt;</pre></td>
+      <td>Set bottom position of bezel's emulation window.</td>
     </tr>
 
     <tr>
@@ -3772,10 +3797,15 @@
       <td valign="top">
         <table border="1" cellpadding="4">
 	  	  <tr><th>Item</th><th>Brief description</th><th>For more information,<br>see <a href="#CommandLine">Command Line</a></th></tr>
-          <tr><td>Enable bezels</td><td>Enables the bezel display if a ROM name matching bezel image or a
-          	default image (named 'default.png') can be found using the bezel path.</td><td>-bezel.show</td></tr>
+          <tr><td>Enable bezels</td><td>Enables the bezel display, if a matching bezel image or a
+          	default image (named 'default.png') can be found in the bezel path.</td><td>-bezel.show</td></tr>
           <tr><td>Bezel path</td><td>Specifies the path from where bezel images are loaded.</td><td>-bezel.dir</td></tr>
-		  <tr><td>Show in windowed modes</td><td>Disable to show bezels only in fullscreen modes.</td><td>-bezel.windowed</td></tr>
+		  <tr><td>Windowed modes</td><td>Enable bezels in windowed modes as well.</td><td>-bezel.windowed</td></tr>
+		  <tr><td>Manual emulation window</td><td>Enable manually set bezel's emulation window position.</td><td>-bezel.win.auto</td></tr>
+		  <tr><td>Left</td><td>Set left position of bezel's emulation window.</td><td>-bezel.win.left</td></tr>
+		  <tr><td>Right</td><td>Set right position of bezel's emulation window.</td><td>-bezel.win.right</td></tr>
+		  <tr><td>Top</td><td>Set top position of bezel's emulation window.</td><td>-bezel.win.top</td></tr>
+		  <tr><td>Bottom</td><td>Set bottom position of bezel's emulation window.</td><td>-bezel.win.bottom</td></tr>
         </table>
       </td>
     </tr>
@@ -5080,7 +5110,7 @@ Ms Pac-Man (Stella extended codes):
         <tr><td>Paddles </td><td>Standard paddle controllers for use with games such as Breakout and Warlords. One pair of controller per connector (allows for 4-player Warlords).</td></tr>
         <tr><td>Paddles_IAxis &#185</td><td>Same as Paddles, except the axes are inverted.</td></tr>
         <tr><td>Paddles_IAxDr &#185</td><td>Same as Paddles, except both the axes and direction of movement are inverted.</td></tr>
-        <tr><td>Driving &#185 </td><td>Looks like a paddle, but allows 360� movement. Only one unit per connector, unlike paddles which were sold in pairs.</td></tr>
+        <tr><td>Driving &#185 </td><td>Looks like a paddle, but allows 360° movement. Only one unit per connector, unlike paddles which were sold in pairs.</td></tr>
         <tr><td>Keyboard</td><td>Also known as the Star Raiders controller, functionally identical to the Kid's Controller and Keyboard Controller. Game included an overlay with commands, for use with Star Raiders.</td></tr>
         <tr><td>AmigaMouse</td><td>Commodore Amiga computer mouse.</td></tr>
         <tr><td>AtariMouse</td><td>Atari ST computer mouse.</td></tr>
@@ -5229,6 +5259,20 @@ Ms Pac-Man (Stella extended codes):
       <td>Contains any special notes about playing the game.</td>
     </tr>
 
+    <tr>
+      <td VALIGN="TOP"><i>Cart.Url</i></td>
+      <td>Defines a website link, e.g. for additional information or to the AtariAge store.
+        Click the ">>" button to open the website.</td>
+    </tr>
+
+    <tr>
+      <td VALIGN="TOP"><i>Bezel.Name</i></td>
+      <td>Defines the file name (without suffix) used for loading the bezel
+        image. If the name fails or is not defined, the cart name is used. If
+        that fails too, 'default.png' is tried. If no image can be found, no
+        bezel is displayed.
+        </br>Note: The bezel images should reside in their own directory, separate from the launcher images. </td>
+    </tr>
   </table>
 
   <h3><a name="HighScoreProps"><b>High Scores Properties</b></h3></a>
