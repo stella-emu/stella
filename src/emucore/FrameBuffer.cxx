@@ -204,7 +204,7 @@ void FrameBuffer::setupFonts()
     const int zoom_h = (fd.height * 4 * 2) / GUI::stellaMediumDesc.height;
     const int zoom_w = (fd.maxwidth * 4 * 2) / GUI::stellaMediumDesc.maxwidth;
     // round to 25% steps, >= 200%
-    myTIAMinZoom = std::max(std::max(zoom_w, zoom_h) / 4.F, 2.F);
+    myTIAMinZoom = std::max(std::max(zoom_w, zoom_h) / 4., 2.);
   }
 
   // The font used by the ROM launcher
@@ -284,7 +284,8 @@ FBInitStatus FrameBuffer::createDisplay(string_view title, BufferType type,
     myBezel->load();
 
     // Determine possible TIA windowed zoom levels
-    const double currentTIAZoom = myOSystem.settings().getFloat("tia.zoom");
+    const double currentTIAZoom =
+      static_cast<double>(myOSystem.settings().getFloat("tia.zoom"));
     myOSystem.settings().setValue("tia.zoom",
       BSPF::clampw(currentTIAZoom, supportedTIAMinZoom(), supportedTIAMaxZoom()));
   }
@@ -1233,7 +1234,7 @@ void FrameBuffer::switchVideoMode(int direction)
   if(!fullScreen())
   {
     // Windowed TIA modes support variable zoom levels
-    double zoom = myOSystem.settings().getFloat("tia.zoom");
+    double zoom = static_cast<double>(myOSystem.settings().getFloat("tia.zoom"));
     if(direction == +1)       zoom += ZOOM_STEPS;
     else if(direction == -1)  zoom -= ZOOM_STEPS;
 
