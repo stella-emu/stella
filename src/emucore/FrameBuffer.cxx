@@ -1277,6 +1277,14 @@ void FrameBuffer::toggleBezel(bool toggle)
       enabled = !enabled;
       myOSystem.settings().setValue("bezel.show", enabled);
       myBezel->load();
+
+      // Determine possible TIA windowed zoom levels
+      const double currentTIAZoom =
+        static_cast<double>(myOSystem.settings().getFloat("tia.zoom"));
+      myOSystem.settings().setValue("tia.zoom",
+        BSPF::clamp(currentTIAZoom, supportedTIAMinZoom(), supportedTIAMaxZoom()));
+
+      saveCurrentWindowPosition();
       applyVideoMode();
     }
   }

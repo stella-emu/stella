@@ -24,7 +24,7 @@
 
   * Added 2nd UI theme and hotkey for toggling UI theme.
 
-  * Added bezel support.
+  * Added bezel support (incl. Sinden Lightgun).
 
   * Added optional type format detection based on colors used.
 
