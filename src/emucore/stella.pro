@@ -1,3 +1,4 @@
+
 "Cart.MD5" "000509d1ed2b8d30a9d94be1b3b5febb"
 "Cart.Manufacturer" "Greg Zumwalt"
 "Cart.Name" "Jungle Jane (2003) (Greg Zumwalt) (Hack)"
@@ -153,6 +154,7 @@
 "Cart.Manufacturer" "Arcadia Corporation, Dennis Caswell"
 "Cart.ModelNo" "5 AR-4200"
 "Cart.Name" "Labyrinth (Escape from the Mindmaster Beta) (1982) (Arcadia)"
+"Cart.Url" "http://www.atariprotos.com/2600/software/escape/escape.htm"
 ""
 
 "Cart.MD5" "02066b17f29082412c6754c1a2d6302e"
@@ -2085,6 +2087,7 @@
 "Cart.ModelNo" "PB5080"
 "Cart.Name" "Gyruss (1983) (Parker Bros) (Prototype) [a1]"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/gyruss/gyruss.htm"
 "Display.Phosphor" "YES"
 ""
 
@@ -4100,6 +4103,8 @@
 "Cart.ModelNo" "PB5080"
 "Cart.Name" "Gyruss (1983) (Parker Bros) (Prototype) (PAL) [a]"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/gyruss/gyruss.htm"
+"Display.Phosphor" "YES"
 ""
 
 "Cart.MD5" "2d1cf85fbc732856bf76470cd4060f4a"
@@ -5357,6 +5362,7 @@
 "Cart.Manufacturer" "Probe 2000 - NAP"
 "Cart.Name" "Power Lords (1983) (Probe) (Prototype)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/powerlords/powerlords.htm"
 ""
 
 "Cart.MD5" "3ad58b53a1e972396890bd86c735e78d"
@@ -6000,6 +6006,7 @@
 "Cart.Name" "Iceman (07-27-1983) (Activision) (Prototype)"
 "Cart.Note" "Frostbite Beta"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/frostbite/frostbite.htm"
 ""
 
 "Cart.MD5" "4191b671bcd8237fc8e297b4947f2990"
@@ -7178,6 +7185,7 @@
 "Cart.Manufacturer" "U.S. Games Corporation - JWDA, Todd Marshall"
 "Cart.Name" "3-D Zapper (12-15-82) (U.S. Games) (Prototype)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/zapper/zapper.htm"
 "Display.Phosphor" "YES"
 ""
 
@@ -7322,6 +7330,7 @@
 "Cart.Manufacturer" "U.S. Games Corporation - JWDA, Todd Marshall"
 "Cart.Name" "3-D Zapper (U.S. Games) (Prototype)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/zapper/zapper.htm"
 ""
 
 "Cart.MD5" "50ef88f9a5e0e1e6b86e175362a27fdb"
@@ -9213,6 +9222,7 @@
 "Cart.ModelNo" "PB5080"
 "Cart.Name" "Gyruss (1983) (Parker Bros) (Prototype) [a2]"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/gyruss/gyruss.htm"
 "Display.Phosphor" "YES"
 ""
 
@@ -10007,6 +10017,7 @@
 "Cart.Name" "Universal Chaos (1988) (Telegames) (Prototype)"
 "Cart.Note" "AKA Targ"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/targ/targ.htm"
 ""
 
 "Cart.MD5" "6cbe945e16d9f827d0d295546ac11b22"
@@ -10364,6 +10375,7 @@
 "Cart.Manufacturer" "Arcadia Corporation, Dennis Caswell"
 "Cart.ModelNo" "5 AR-4200"
 "Cart.Name" "Labyrinth (Escape from the Mindmaster Beta) (1982) (Arcadia) [a]"
+"Cart.Url" "http://www.atariprotos.com/2600/software/escape/escape.htm"
 ""
 
 "Cart.MD5" "713fde2af865b6ec464dfd72e2ebb83e"
@@ -11495,6 +11507,7 @@
 "Cart.Name" "Astro Chase (10-25-1983) (Parker Bros) (Prototype)"
 "Cart.Rarity" "Prototype"
 "Display.Phosphor" "YES"
+"Cart.Url" "http://www.atariprotos.com/2600/software/astrochase/astrochase.htm"
 ""
 
 "Cart.MD5" "7d3cdde63b16fa637c4484e716839c94"
@@ -11766,6 +11779,7 @@
 "Cart.ModelNo" "PB5080"
 "Cart.Name" "Gyruss (1983) (Parker Bros) (Prototype)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/gyruss/gyruss.htm"
 "Display.Phosphor" "YES"
 ""
 
@@ -12096,6 +12110,7 @@
 "Cart.Name" "Venture (1982) (Coleco) (Prototype)"
 "Cart.Note" "2K"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/venture/venture.htm"
 ""
 
 "Cart.MD5" "82e7aab602c378cffdd8186a099e807e"
@@ -12827,6 +12842,7 @@
 "Cart.ModelNo" "AP-2006"
 "Cart.Name" "Infiltrate (1982) (Apollo) (Prototype) [a]"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/infiltrate/infiltrate.htm"
 ""
 
 "Cart.MD5" "8bbfd951c89cc09c148bfabdefa08bec"
@@ -16633,6 +16649,7 @@
 "Cart.Name" "Asterix (08-01-1983) (Atari) (Prototype) (PAL)"
 "Cart.Note" "AKA Taz"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/asterix/asterix.htm"
 ""
 
 "Cart.MD5" "ba257438f8a78862a9e014d831143690"
@@ -17531,6 +17548,7 @@
 "Cart.ModelNo" "112-008"
 "Cart.Name" "Frankenstein's Monster (1982) (Data Age) (Prototype)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/frankenstein/frankenstein.htm"
 ""
 
 "Cart.MD5" "c4d888bcf532e7c9c5fdeafbb145266a"
@@ -18833,6 +18851,7 @@
 "Cart.ModelNo" "CX2666"
 "Cart.Name" "RealSports Volleyball (05-11-1982) (Atari) (Prototype)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/rsvolleyball/rsvolleyball.htm"
 ""
 
 "Cart.MD5" "d170317ae4c7d997a989c7d6567c2840"
@@ -19495,6 +19514,7 @@
 "Cart.Note" "Genesis controller (C switches to map mode)"
 "Cart.Rarity" "Hack of Last Starfighter (Solaris prototype)"
 "Cart.Highscore" "{\"score_addresses\":[\"0xde\",\"0xdd\",\"0xdc\"],\"score_digits\":6,\"score_trailing_zeroes\":1,\"variations_count\":1}"
+"Cart.Url" "http://www.atariprotos.com/2600/software/tlsf/tlsf.htm"
 ""
 
 "Cart.MD5" "d9c9cece2e769c7985494b1403a25721"
@@ -20178,6 +20198,7 @@
 "Cart.ModelNo" "PB5080"
 "Cart.Name" "Gyruss (1983) (Parker Bros) (Prototype) (PAL)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/gyruss/gyruss.htm"
 "Display.Phosphor" "YES"
 ""
 
@@ -23313,6 +23334,7 @@
 "Cart.Name" "Solaris (1986) (Atari) (Prototype)"
 "Cart.Note" "AKA The Last Starfighter, Star Raiders II, Universe"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/tlsf/tlsf.htm"
 ""
 
 "Cart.MD5" "4e4a263ca1f7fd37b04b9c4d7416f151"
