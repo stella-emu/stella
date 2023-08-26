@@ -12,6 +12,7 @@ SOURCES_CXX := \
 	$(CORE_DIR)/common/AudioQueue.cxx \
 	$(CORE_DIR)/common/AudioSettings.cxx \
 	$(CORE_DIR)/common/Base.cxx \
+	$(CORE_DIR)/common/Bezel.cxx \
 	$(CORE_DIR)/common/DevSettingsHandler.cxx \
 	$(CORE_DIR)/common/FpsMeter.cxx \
 	$(CORE_DIR)/common/FSNodeZIP.cxx \
