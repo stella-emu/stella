@@ -60,7 +60,7 @@
 #include "StateManager.hxx"
 #include "TimerManager.hxx"
 #ifdef GUI_SUPPORT
-#include "HighScoresManager.hxx"
+  #include "HighScoresManager.hxx"
 #endif
 #include "Version.hxx"
 #include "TIA.hxx"
