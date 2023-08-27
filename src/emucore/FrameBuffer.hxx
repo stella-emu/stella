@@ -195,16 +195,6 @@ class FrameBuffer
     const Common::Rect& imageRect() const { return myActiveVidMode.imageR; }
 
     /**
-      Returns the current, non-rounde size of the framebuffer image.
-      Note that this will take into account the current scaling (if any)
-      as well as image 'centering'.
-    */
-    void imageSize(double* w, double* h) const {
-      *w = myActiveVidMode.imageW;
-      *h = myActiveVidMode.imageH;
-    }
-
-    /**
       Returns the current dimensions of the framebuffer window.
       This is the entire area containing the framebuffer image as well as any
       'unusable' area.
