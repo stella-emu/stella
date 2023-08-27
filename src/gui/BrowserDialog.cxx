@@ -123,9 +123,11 @@ void BrowserDialog::show(GuiObject* parent, const GUI::Font& font,
   if(w > static_cast<uInt32>(font.getMaxCharWidth() * 80))
     w = font.getMaxCharWidth() * 80;
 
-  if(ourBrowser == nullptr || &ourBrowser->parent() != &parent->parent())
+  if(ourBrowser == nullptr || &ourBrowser->parent() != &parent->parent()
+      || ourBrowser->_w > static_cast<int>(w) || ourBrowser->_h > static_cast<int>(h))
+  {
     ourBrowser = make_unique<BrowserDialog>(parent, font, w, h);
-
+  }
   ourBrowser->setTitle(title); // has to be always updated!
   ourBrowser->show(startpath, mode, command, namefilter);
 }
