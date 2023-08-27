@@ -588,7 +588,7 @@ void FrameBuffer::updateInEmulationMode(float framesPerSecond)
   // We don't worry about selective rendering here; the rendering
   // always happens at the full framerate
 
-  renderTIA();
+  renderTIA(false);
 
   // Show frame statistics
   if(myStatsMsg.enabled)
@@ -967,7 +967,7 @@ void FrameBuffer::renderTIA(bool doClear, bool shade)
 
   myTIASurface->render(shade);
   if(myBezel)
-    myBezel->render();
+    myBezel->render(doClear); // force rendering if framebuffer was cleared
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
