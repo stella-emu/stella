@@ -1239,7 +1239,7 @@ void FrameBuffer::switchVideoMode(int direction)
     else if(direction == -1)  zoom -= ZOOM_STEPS;
 
     // Make sure the level is within the allowable desktop size
-    zoom = BSPF::clampw(zoom, supportedTIAMinZoom(), supportedTIAMaxZoom());
+    zoom = BSPF::clamp(zoom, supportedTIAMinZoom(), supportedTIAMaxZoom());
     myOSystem.settings().setValue("tia.zoom", zoom);
   }
   else
