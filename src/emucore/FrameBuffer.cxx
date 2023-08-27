@@ -588,7 +588,7 @@ void FrameBuffer::updateInEmulationMode(float framesPerSecond)
   // We don't worry about selective rendering here; the rendering
   // always happens at the full framerate
 
-  renderTIA(false);
+  renderTIA(false); // do not clear screen in emulation mode
 
   // Show frame statistics
   if(myStatsMsg.enabled)
@@ -1269,23 +1269,34 @@ void FrameBuffer::toggleBezel(bool toggle)
 {
   bool enabled = myOSystem.settings().getBool("bezel.show");
 
-  if(toggle)
+  if(toggle && myBufferType == BufferType::Emulator)
   {
-    if(myBufferType == BufferType::Emulator &&
-      (fullScreen() || myOSystem.settings().getBool("bezel.windowed")))
+    if(!fullScreen() && !myOSystem.settings().getBool("bezel.windowed"))
+    {
+      myOSystem.frameBuffer().showTextMessage("Bezels in windowed mode are not enabled");
+      return;
+    }
+    else
     {
       enabled = !enabled;
       myOSystem.settings().setValue("bezel.show", enabled);
-      myBezel->load();
+      if(!myBezel->load() && enabled)
+      {
+        myOSystem.settings().setValue("bezel.show", !enabled);
+        myOSystem.frameBuffer().showTextMessage("No bezel image found");
+        return;
+      }
+      else
+      {
+        // Determine possible TIA windowed zoom levels
+        const double currentTIAZoom =
+          static_cast<double>(myOSystem.settings().getFloat("tia.zoom"));
+        myOSystem.settings().setValue("tia.zoom",
+          BSPF::clamp(currentTIAZoom, supportedTIAMinZoom(), supportedTIAMaxZoom()));
 
-      // Determine possible TIA windowed zoom levels
-      const double currentTIAZoom =
-        static_cast<double>(myOSystem.settings().getFloat("tia.zoom"));
-      myOSystem.settings().setValue("tia.zoom",
-        BSPF::clamp(currentTIAZoom, supportedTIAMinZoom(), supportedTIAMaxZoom()));
-
-      saveCurrentWindowPosition();
-      applyVideoMode();
+        saveCurrentWindowPosition();
+        applyVideoMode();
+      }
     }
   }
   myOSystem.frameBuffer().showTextMessage(enabled ? "Bezel enabled" : "Bezel disabled");
@@ -1297,6 +1308,11 @@ FBInitStatus FrameBuffer::applyVideoMode()
   // Update display size, in case windowed/fullscreen mode has changed
   const Settings& s = myOSystem.settings();
   const int display = displayId();
+
+  // Get rid of the previous output
+  myBackend->clear();
+  myBackend->renderToScreen();
+  myBackend->clear();
 
   if(s.getBool("fullscreen"))
     myVidModeHandler.setDisplaySize(myFullscreenDisplays[display], display);
@@ -1333,6 +1349,13 @@ FBInitStatus FrameBuffer::applyVideoMode()
     {
 #ifdef IMAGE_SUPPORT
       myBezel->apply();
+      if(!myBezel->info().isRounded())
+      {
+        // If the bezel window is not rounded, it has to be rendered only once for each buffer
+        myBezel->render(true);
+        myBackend->renderToScreen();
+        myBezel->render(true);
+      }
 #endif
 
     myTIASurface->initialize(myOSystem.console(), myActiveVidMode);
