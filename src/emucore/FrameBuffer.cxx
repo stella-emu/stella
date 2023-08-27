@@ -281,7 +281,7 @@ FBInitStatus FrameBuffer::createDisplay(string_view title, BufferType type,
 
   if(myBufferType == BufferType::Emulator)
   {
-    myBezel->load();
+//    myBezel->load();
 
     // Determine possible TIA windowed zoom levels
     const double currentTIAZoom =
@@ -588,7 +588,7 @@ void FrameBuffer::updateInEmulationMode(float framesPerSecond)
   // We don't worry about selective rendering here; the rendering
   // always happens at the full framerate
 
-  renderTIA(false); // do not clear screen in emulation mode
+  renderTIA();
 
   // Show frame statistics
   if(myStatsMsg.enabled)
@@ -967,7 +967,7 @@ void FrameBuffer::renderTIA(bool doClear, bool shade)
 
   myTIASurface->render(shade);
   if(myBezel)
-    myBezel->render(doClear); // force rendering if framebuffer was cleared
+    myBezel->render();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1309,17 +1309,17 @@ FBInitStatus FrameBuffer::applyVideoMode()
   const Settings& s = myOSystem.settings();
   const int display = displayId();
 
-  // Get rid of the previous output
-  myBackend->clear();
-  myBackend->renderToScreen();
-  myBackend->clear();
-
   if(s.getBool("fullscreen"))
     myVidModeHandler.setDisplaySize(myFullscreenDisplays[display], display);
   else
     myVidModeHandler.setDisplaySize(myAbsDesktopSize[display]);
 
   const bool inTIAMode = myOSystem.eventHandler().inTIAMode();
+
+#ifdef IMAGE_SUPPORT
+  if(inTIAMode)
+    myBezel->load();
+#endif
 
   // Build the new mode based on current settings
   const VideoModeHandler::Mode& mode
@@ -1347,23 +1347,14 @@ FBInitStatus FrameBuffer::applyVideoMode()
     // Inform TIA surface about new mode, and update TIA settings
     if(inTIAMode)
     {
-#ifdef IMAGE_SUPPORT
-      myBezel->apply();
-      if(!myBezel->info().isRounded())
-      {
-        // If the bezel window is not rounded, it has to be rendered only once for each buffer
-        myBezel->render(true);
-        myBackend->renderToScreen();
-        myBezel->render(true);
-      }
-#endif
-
-    myTIASurface->initialize(myOSystem.console(), myActiveVidMode);
+      myTIASurface->initialize(myOSystem.console(), myActiveVidMode);
       if(fullScreen())
         myOSystem.settings().setValue("tia.fs_stretch",
           myActiveVidMode.stretch == VideoModeHandler::Mode::Stretch::Fill);
       else
         myOSystem.settings().setValue("tia.zoom", myActiveVidMode.zoom);
+
+      myBezel->apply();
     }
 
     resetSurfaces();

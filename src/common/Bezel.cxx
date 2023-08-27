@@ -64,19 +64,6 @@ const string Bezel::getName(int& index) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool Bezel::checkPixel(uInt32 x, uInt32 y) const
-{
-  uInt32 *pixels{nullptr}, pitch;
-  uInt8 r, g, b, a;
-
-  mySurface->basePtr(pixels, pitch);
-  pixels += x + y * pitch;
-  myFB.getRGBA(*pixels, &r, &g, &b, &a);
-
-  return a != 0; // pixel is not fully transparent
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt32 Bezel::borderSize(uInt32 x, uInt32 y, uInt32 size, Int32 step) const
 {
   uInt32 *pixels{nullptr}, pitch;
@@ -102,17 +89,15 @@ bool Bezel::load()
   bool isValid = false;
 
 #ifdef IMAGE_SUPPORT
-  const bool isShown = myOSystem.eventHandler().inTIAMode() &&
-                       myOSystem.settings().getBool("bezel.show") &&
-                       (myFB.fullScreen() || myOSystem.settings().getBool("bezel.windowed"));
+  const bool show = myOSystem.eventHandler().inTIAMode() &&
+                    myOSystem.settings().getBool("bezel.show") &&
+                    (myOSystem.settings().getBool("fullscreen") ||
+                     myOSystem.settings().getBool("bezel.windowed"));
 
-  if(mySurface)
-    myFB.deallocateSurface(mySurface);
-  mySurface = nullptr;
-
-  if(isShown)
+  if(show)
   {
-    mySurface = myFB.allocateSurface(1, 1); // dummy size
+    if(!mySurface)
+      mySurface = myFB.allocateSurface(1, 1); // dummy size
     try
     {
       const string& path = myOSystem.bezelDir().getPath();
@@ -149,7 +134,6 @@ bool Bezel::load()
     const Int32 w = mySurface->width();
     const Int32 h = mySurface->height();
     uInt32 top, bottom, left, right;
-    bool isRounded;
 
     if(settings.getBool("bezel.win.auto"))
     {
@@ -162,12 +146,6 @@ bool Bezel::load()
       yCenter = (bottom + top) >> 1;
       left = borderSize(0, yCenter, w, 1);
       right = w - 1 - borderSize(w - 1, yCenter, w, -1);
-
-      // Check if pixels close to the borders are not fully transparent
-      isRounded = checkPixel(left + w / 100, top + h / 100)
-        || checkPixel(right - w / 100, top + h / 100)
-        || checkPixel(left + w / 100, bottom - h / 100)
-        || checkPixel(right - w / 100, bottom - h / 100);
     }
     else
     {
@@ -179,15 +157,14 @@ bool Bezel::load()
       right  = w - 1 - std::min(w - 1, static_cast<Int32>(w * settings.getInt("bezel.win.right")  / 100. + .5));
       top    = std::min(h - 1,         static_cast<Int32>(h * settings.getInt("bezel.win.top")    / 100. + .5));
       bottom = h - 1 - std::min(h - 1, static_cast<Int32>(h * settings.getInt("bezel.win.bottom") / 100. + .5));
-      isRounded = settings.getBool("bezel.win.rounded");
     }
 
     //cerr << (int)(right - left + 1) << " x " << (int)(bottom - top + 1) << " = "
-    //  << double((int)(right - left + 1)) / double((int)(bottom - top + 1)) << endl;
+    //  << double((int)(right - left + 1)) / double((int)(bottom - top + 1));
 
     // Disable bezel is no transparent window was found
     if (left < right && top < bottom)
-      myInfo = Info(Common::Size(w, h), Common::Rect(left, top, right + 1, bottom + 1), isRounded);
+      myInfo = Info(Common::Size(w, h), Common::Rect(left, top, right, bottom));
     else
       myInfo = Info();
   }
@@ -209,11 +186,6 @@ void Bezel::apply()
       std::min(myFB.screenSize().h,
       static_cast<uInt32>(std::round(myFB.imageRect().h() * myInfo.ratioH())));
 
-    //cerr << myInfo.ratioW() << ", " << myInfo.ratioH() << endl;
-    //cerr << myInfo.size() << "; " << myInfo.window() << endl;
-    //cerr << myFB.imageRect().size() << "; " << std::round(imageW * myInfo.ratioW()) << endl;
-    //cerr << "dbl: " << bezelW << " x " << bezelH << endl;
-
     // Position and scale bezel
     mySurface->setDstSize(bezelW, bezelH);
     mySurface->setDstPos((myFB.screenSize().w - bezelW) / 2, // center
@@ -227,12 +199,14 @@ void Bezel::apply()
     mySurface->applyAttributes();
     mySurface->setVisible(true);
   }
+  else
+    if(mySurface)
+      mySurface->setVisible(false);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Bezel::render(bool force)
+void Bezel::render()
 {
-  // Only bezels with rounded windows have to be rendered each frame
-  if(mySurface && (myInfo.isRounded() || force))
+  if(mySurface)
     mySurface->render();
 }

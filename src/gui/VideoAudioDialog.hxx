@@ -140,7 +140,6 @@ class VideoAudioDialog : public Dialog
     SliderWidget*     myWinRightSlider{nullptr};
     SliderWidget*     myWinTopSlider{nullptr};
     SliderWidget*     myWinBottomSlider{nullptr};
-    CheckboxWidget*   myBezelWinRounded{nullptr};
 
     // Audio
     CheckboxWidget*   mySoundEnableCheckbox{nullptr};

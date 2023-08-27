@@ -65,17 +65,15 @@ class Bezel
       bool _isShown{false};       // Is bezel shown?
       Common::Size _size{1, 1};   // Bezel size
       Common::Rect _window{1, 1}; // Area of transparent TIA window inside bezel
-      bool _isRounded{false};     // true, if the bezel window has rounded corners
 
   public:
       explicit Info() = default;
-      explicit Info(const Common::Size& size, const Common::Rect& window, bool isRounded)
-        : _isShown{true}, _size{size}, _window{window}, _isRounded{isRounded} { }
+      explicit Info(Common::Size size, Common::Rect window)
+        : _isShown{true}, _size{size}, _window{window} { }
 
       bool isShown() const { return _isShown; }
-      const Common::Size& size() const { return _size; }
-      const Common::Rect& window() const { return _window; }
-      bool isRounded() const { return _isRounded; }
+      Common::Size size() const { return _size; }
+      Common::Rect window() const { return _window; }
 
       // Ratios between bezel sizes and TIA window sizes
       double ratioW() const { return static_cast<double>(size().w) / window().w(); }
@@ -85,19 +83,11 @@ class Bezel
     // Structure access methods
     const Info& info() const { return myInfo; }
     bool isShown() const { return myInfo.isShown(); }
-    const Common::Size& size() const { return myInfo.size(); }
-    const Common::Rect& window() const { return myInfo.window(); }
-    bool isRounded() const { return myInfo.isRounded(); }
+    Common::Size size() const { return myInfo.size(); }
+    Common::Rect window() const { return myInfo.window(); }
     // Ratio between bezel size and TIA window size
     double ratioW() const { return myInfo.ratioW(); }
     double ratioH() const { return myInfo.ratioH(); }
-
-    /*
-      Check if a pixel is not fully transparent.
-
-      @return  true, if pixel is not fully transparent
-    */
-    bool checkPixel(uInt32 x, uInt32 y) const;
 
     /*
       Calculate size of a bezel border.
@@ -117,7 +107,7 @@ class Bezel
     /*
       Render bezel surface
     */
-    void render(bool force);
+    void render();
 
   private:
     /*

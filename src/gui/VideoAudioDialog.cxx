@@ -519,15 +519,7 @@ void VideoAudioDialog::addBezelTab()
   myWinBottomSlider->setTickmarkIntervals(4);
   wid.push_back(myWinBottomSlider);
 
-  // Mark bezel windows as rounded (requires rendering each frame)
-  ypos += lineHeight + VGAP;
-  myBezelWinRounded = new CheckboxWidget(myTab, _font, xpos, ypos,
-                                        "Rounded borders");
-  myBezelWinRounded->setToolTip("Enable if the bezel window has rounded borders");
-  wid.push_back(myBezelWinRounded);
-
   // Add items for tab 3
-  addToFocusList(wid, myTab, tabID);
 
   myTab->parentWidget(tabID)->setHelpAnchor("VideoAudioBezels");
 }
@@ -782,7 +774,6 @@ void VideoAudioDialog::loadConfig()
   myWinRightSlider->setValue(settings.getInt("bezel.win.right"));
   myWinTopSlider->setValue(settings.getInt("bezel.win.top"));
   myWinBottomSlider->setValue(settings.getInt("bezel.win.bottom"));
-  myBezelWinRounded->setState(settings.getBool("bezel.win.rounded"));
   handleBezelChange();
 
   /////////////////////////////////////////////////////////////////////////////
@@ -918,7 +909,6 @@ void VideoAudioDialog::saveConfig()
   settings.setValue("bezel.win.right", myWinRightSlider->getValueLabel());
   settings.setValue("bezel.win.top", myWinTopSlider->getValueLabel());
   settings.setValue("bezel.win.bottom", myWinBottomSlider->getValueLabel());
-  settings.setValue("bezel.win.rounded", myBezelWinRounded->getState());
 
   // Note: The following has to happen after all video related setting have been saved
   if(instance().hasConsole())
@@ -1237,7 +1227,6 @@ void VideoAudioDialog::handleBezelChange()
   myWinRightSlider->setEnabled(enable && nonAuto);
   myWinTopSlider->setEnabled(enable && nonAuto);
   myWinBottomSlider->setEnabled(enable && nonAuto);
-  myBezelWinRounded->setEnabled(enable && nonAuto);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
