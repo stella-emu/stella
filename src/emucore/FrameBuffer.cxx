@@ -287,7 +287,7 @@ FBInitStatus FrameBuffer::createDisplay(string_view title, BufferType type,
     const double currentTIAZoom =
       static_cast<double>(myOSystem.settings().getFloat("tia.zoom"));
     myOSystem.settings().setValue("tia.zoom",
-      BSPF::clampw(currentTIAZoom, supportedTIAMinZoom(), supportedTIAMaxZoom()));
+      BSPF::clamp(currentTIAZoom, supportedTIAMinZoom(), supportedTIAMaxZoom()));
   }
 
 #ifdef GUI_SUPPORT  // TODO: put message stuff in its own class
