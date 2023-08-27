@@ -330,7 +330,7 @@ void VideoAudioDialog::addPaletteTab()
   addPalette(xpos, VBORDER, _w - 2 * 2 - HBORDER - xpos,
              myTVGamma->getBottom() -  myTIAPalette->getTop());
 
-  // Add items for tab 2
+  // Add items for tab 1
   addToFocusList(wid, myTab, tabID);
 
   myTab->parentWidget(tabID)->setHelpAnchor("VideoAudioPalettes");
@@ -434,7 +434,7 @@ void VideoAudioDialog::addTVEffectsTab()
   CREATE_CLONE_BUTTON(Bad, "Clone Bad adjust")
   CREATE_CLONE_BUTTON(Custom, "Revert")
 
-  // Add items for tab 3
+  // Add items for tab 2
   addToFocusList(wid, myTab, tabID);
 
   myTab->parentWidget(tabID)->setHelpAnchor("VideoAudioEffects");
@@ -526,10 +526,10 @@ void VideoAudioDialog::addBezelTab()
   myBezelWinRounded->setToolTip("Enable if the bezel window has rounded borders");
   wid.push_back(myBezelWinRounded);
 
-  // Add items for tab 4
+  // Add items for tab 3
   addToFocusList(wid, myTab, tabID);
 
-  myTab->parentWidget(tabID)->setHelpAnchor("TODO???");
+  myTab->parentWidget(tabID)->setHelpAnchor("VideoAudioBezels");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -657,7 +657,7 @@ void VideoAudioDialog::addAudioTab()
   myDpcPitch->setTickmarkIntervals(2);
   wid.push_back(myDpcPitch);
 
-  // Add items for tab 5
+  // Add items for tab 4
   addToFocusList(wid, myTab, tabID);
 
   myTab->parentWidget(tabID)->setHelpAnchor("VideoAudioAudio");
@@ -1242,7 +1242,7 @@ void VideoAudioDialog::handleBezelChange()
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void VideoAudioDialog::handleCommand(CommandSender* sender, int cmd,
-                                int data, int id)
+                                     int data, int id)
 {
   switch (cmd)
   {
