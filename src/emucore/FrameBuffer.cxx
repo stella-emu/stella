@@ -400,10 +400,10 @@ void FrameBuffer::update(UpdateMode mode)
       {
         myPausedCount = static_cast<uInt32>(7 * myOSystem.frameRate());
         showTextMessage("Paused", MessagePosition::MiddleCenter);
-        renderTIA(shade, false);
+        renderTIA(false, shade);
       }
       if(rerender)
-        renderTIA(shade, false);
+        renderTIA(false, shade);
       break;  // EventHandlerState::PAUSE
     }
 
@@ -414,12 +414,12 @@ void FrameBuffer::update(UpdateMode mode)
       redraw |= myOSystem.optionsMenu().needsRedraw();
       if(redraw)
       {
-        renderTIA(true);
+        renderTIA(true, true);
         myOSystem.optionsMenu().draw(forceRedraw);
       }
       else if(rerender)
       {
-        renderTIA(true);
+        renderTIA(true, true);
         myOSystem.optionsMenu().render();
       }
       break;  // EventHandlerState::OPTIONSMENU
@@ -431,12 +431,12 @@ void FrameBuffer::update(UpdateMode mode)
       redraw |= myOSystem.commandMenu().needsRedraw();
       if(redraw)
       {
-        renderTIA(true);
+        renderTIA(true, true);
         myOSystem.commandMenu().draw(forceRedraw);
       }
       else if(rerender)
       {
-        renderTIA(true);
+        renderTIA(true, true);
         myOSystem.commandMenu().render();
       }
       break;  // EventHandlerState::CMDMENU
@@ -448,12 +448,12 @@ void FrameBuffer::update(UpdateMode mode)
       redraw |= myOSystem.highscoresMenu().needsRedraw();
       if(redraw)
       {
-        renderTIA(true);
+        renderTIA(true, true);
         myOSystem.highscoresMenu().draw(forceRedraw);
       }
       else if(rerender)
       {
-        renderTIA(true);
+        renderTIA(true, true);
         myOSystem.highscoresMenu().render();
       }
       break;  // EventHandlerState::HIGHSCORESMENU
@@ -465,7 +465,7 @@ void FrameBuffer::update(UpdateMode mode)
       redraw |= myOSystem.messageMenu().needsRedraw();
       if(redraw)
       {
-        renderTIA(true);
+        renderTIA(true, true);
         myOSystem.messageMenu().draw(forceRedraw);
       }
       break;  // EventHandlerState::MESSAGEMENU
@@ -477,7 +477,7 @@ void FrameBuffer::update(UpdateMode mode)
       redraw |= myOSystem.plusRomsMenu().needsRedraw();
       if(redraw)
       {
-        renderTIA(true);
+        renderTIA(true, true);
         myOSystem.plusRomsMenu().draw(forceRedraw);
       }
       break;  // EventHandlerState::PLUSROMSMENU
@@ -526,7 +526,7 @@ void FrameBuffer::update(UpdateMode mode)
       }
       redraw |= success;
       if(redraw)
-        renderTIA(false, false);
+        renderTIA(false);
 
       // Stop playback mode at the end of the state buffer
       // and switch to Time Machine or Pause mode
@@ -960,7 +960,7 @@ void FrameBuffer::resetSurfaces()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBuffer::renderTIA(bool shade, bool doClear)
+void FrameBuffer::renderTIA(bool doClear, bool shade)
 {
   if(doClear)
     clear();  // TODO - test this: it may cause slowdowns on older systems
