@@ -63,8 +63,6 @@ const VideoModeHandler::Mode&
       // First calculate maximum zoom that keeps aspect ratio
       const double scaleX = static_cast<double>(myImage.w) / (myDisplay.w / bezelInfo.ratioW()),
                    scaleY = static_cast<double>(myImage.h) / (myDisplay.h / bezelInfo.ratioH());
-      // Note: Since the scale value may differ, the bezel may not be scaled to fully size.
-      //       One value might be tiny bit smaller.
       double zoom = 1. / std::max(scaleX, scaleY);
 
       // When aspect ratio correction is off, we want pixel-exact images,
@@ -116,7 +114,7 @@ VideoModeHandler::Mode::Mode(uInt32 iw, uInt32 ih, uInt32 sw, uInt32 sh,
   : screenS{sw, sh},
     stretch{smode},
     description{desc},
-    zoom{zoomLevel},
+    zoom{zoomLevel}, //hZoom{zoomLevel}, vZoom{zoomLevel},
     fsIndex{fsindex}
 {
   // Now resize based on windowed/fullscreen mode and stretch factor
