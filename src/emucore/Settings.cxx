@@ -69,6 +69,7 @@ Settings::Settings()
   setPermanent("bezel.win.right", "12");
   setPermanent("bezel.win.top", "0");
   setPermanent("bezel.win.bottom", "0");
+  setPermanent("bezel.win.rounded", "false");
   // TIA specific options
   setPermanent("tia.inter", "false");
   setPermanent("tia.zoom", "3");
@@ -547,13 +548,14 @@ void Settings::usage()
     << "  -uimessages      <1|0>         Show onscreen UI messages for different events\n"
     << "  -pausedim        <1|0>         Enable emulation dimming in pause mode\n"
     << endl
-    << "  -bezel.show        <1|0>       Show bezel around emulation window\n"
-    << "  -bezel.windowed    <1|0>       Show bezel in windowed modes\n"
-    << "  -bezel.win.auto    <1|0>       Automatically set bezel window position\n"
-    << "  -bezel.win.left    <0-40>      Set left bezel window position [%]\n"
-    << "  -bezel.win.right   <0-40>      Set right bezel window position [%]\n"
-    << "  -bezel.win.top     <0-40>      Set top bezel window position [%]\n"
-    << "  -bezel.win.bottom  <0-40>      Set bottom bezel window position [%]\n"
+    << "  -bezel.show         <1|0>      Show bezel around emulation window\n"
+    << "  -bezel.windowed     <1|0>      Show bezel in windowed modes\n"
+    << "  -bezel.win.auto     <1|0>      Automatically set bezel window position\n"
+    << "  -bezel.win.left     <0-40>     Set left bezel window position [%]\n"
+    << "  -bezel.win.right    <0-40>     Set right bezel window position [%]\n"
+    << "  -bezel.win.top      <0-40>     Set top bezel window position [%]\n"
+    << "  -bezel.win.bottom   <0-40>     Set bottom bezel window position [%]\n"
+    << "  -bezel.win.rounded  <1|0>      Set if the bezel window has rounded borders\n"
     << endl
   #ifdef SOUND_SUPPORT
     << "  -audio.enabled            <1|0>      Enable audio\n"
