@@ -227,24 +227,11 @@ void Bezel::apply()
     mySurface->applyAttributes();
     mySurface->setVisible(true);
   }
-  else
-    if(mySurface)
-      mySurface->setVisible(false);
-
-  // If the bezel window is not rounded, it has to be rendered only once for each buffer
-  if(mySurface && !myInfo.isRounded())
-    myRenderCount = 2; // double buffering
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Bezel::render(bool force)
 {
-  if(myRenderCount)
-  {
-    force = true;
-    myRenderCount--;
-  }
-
   // Only bezels with rounded windows have to be rendered each frame
   if(mySurface && (myInfo.isRounded() || force))
     mySurface->render();

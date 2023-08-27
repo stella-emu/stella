@@ -135,8 +135,6 @@ class Bezel
     // The bezel surface which blends over the TIA surface
     shared_ptr<FBSurface> mySurface;
 
-    uInt32 myRenderCount{0};
-
     // Bezel info structure
     Info myInfo;
 
