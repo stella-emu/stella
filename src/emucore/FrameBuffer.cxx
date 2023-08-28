@@ -281,7 +281,7 @@ FBInitStatus FrameBuffer::createDisplay(string_view title, BufferType type,
 
   if(myBufferType == BufferType::Emulator)
   {
-//    myBezel->load();
+    myBezel->load(); // make sure we have the correct bezel size
 
     // Determine possible TIA windowed zoom levels
     const double currentTIAZoom =
@@ -1239,7 +1239,7 @@ void FrameBuffer::switchVideoMode(int direction)
     else if(direction == -1)  zoom -= ZOOM_STEPS;
 
     // Make sure the level is within the allowable desktop size
-    zoom = BSPF::clamp(zoom, supportedTIAMinZoom(), supportedTIAMaxZoom());
+    zoom = BSPF::clampw(zoom, supportedTIAMinZoom(), supportedTIAMaxZoom());
     myOSystem.settings().setValue("tia.zoom", zoom);
   }
   else
