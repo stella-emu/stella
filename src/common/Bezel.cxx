@@ -77,7 +77,7 @@ uInt32 Bezel::borderSize(uInt32 x, uInt32 y, uInt32 size, Int32 step) const
     uInt8 r, g, b, a;
 
     myFB.getRGBA(*pixels, &r, &g, &b, &a);
-    if(a < 255)
+    if(a < 255) // transparent pixel?
       return i;
   }
   return size - 1;
@@ -86,13 +86,14 @@ uInt32 Bezel::borderSize(uInt32 x, uInt32 y, uInt32 size, Int32 step) const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool Bezel::load()
 {
+  const Settings& settings = myOSystem.settings();
   bool isValid = false;
 
 #ifdef IMAGE_SUPPORT
   const bool show = myOSystem.eventHandler().inTIAMode() &&
-                    myOSystem.settings().getBool("bezel.show") &&
-                    (myOSystem.settings().getBool("fullscreen") ||
-                     myOSystem.settings().getBool("bezel.windowed"));
+                    settings.getBool("bezel.show") &&
+                    (settings.getBool("fullscreen") ||
+                     settings.getBool("bezel.windowed"));
 
   if(show)
   {
@@ -122,15 +123,11 @@ bool Bezel::load()
         }
       } while(index != -1);
     }
-    catch(const runtime_error&)
-    {
-      isValid = false;
-    }
+    catch(const runtime_error&) { }
   }
 #endif
   if(isValid)
   {
-    const Settings& settings = myOSystem.settings();
     const Int32 w = mySurface->width();
     const Int32 h = mySurface->height();
     uInt32 top, bottom, left, right;
