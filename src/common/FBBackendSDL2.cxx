@@ -156,13 +156,15 @@ void FBBackendSDL2::queryHardware(vector<Common::Size>& fullscreenRes,
     string stellaName;
   };
   // Create name map for all currently known SDL renderers
-  static const std::array<RenderName, 6> RENDERER_NAMES = {{
-    { "direct3d",  "Direct3D"  },
-    { "metal",     "Metal"     },
-    { "opengl",    "OpenGL"    },
-    { "opengles",  "OpenGLES"  },
-    { "opengles2", "OpenGLES2" },
-    { "software",  "Software"  }
+  static const std::array<RenderName, 8> RENDERER_NAMES = {{
+    { "direct3d",   "Direct3D"    },
+    { "direct3d11", "Direct3D 11" },
+    { "direct3d12", "Direct3D 12" },
+    { "metal",      "Metal"       },
+    { "opengl",     "OpenGL"      },
+    { "opengles",   "OpenGL ES"   },
+    { "opengles2",  "OpenGL ES 2" },
+    { "software",   "Software"    }
   }};
 
   const int numDrivers = SDL_GetNumRenderDrivers();

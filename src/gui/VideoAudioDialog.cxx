@@ -113,7 +113,7 @@ void VideoAudioDialog::addDisplayTab()
             VGAP       = Dialog::vGap();
   const int INDENT = CheckboxWidget::prefixSize(_font);
   const int lwidth = _font.getStringWidth("V-Size adjust "),
-            pwidth = _font.getStringWidth("OpenGLES2");
+            pwidth = _font.getStringWidth("Direct3D 12");
   const int xpos = HBORDER;
   int ypos = VBORDER;
   WidgetArray wid;
