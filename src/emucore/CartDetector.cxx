@@ -713,12 +713,13 @@ bool CartDetector::isProbablyFE(const ByteBuffer& image, size_t size)
 {
   // FE bankswitching is very weird, but always seems to include a
   // 'JSR $xxxx'
-  // These signatures are attributed to the MESS project
-  static constexpr uInt8 signature[4][5] = {
-    { 0x20, 0x00, 0xD0, 0xC6, 0xC5 },  // JSR $D000; DEC $C5
-    { 0x20, 0xC3, 0xF8, 0xA5, 0x82 },  // JSR $F8C3; LDA $82
-    { 0xD0, 0xFB, 0x20, 0x73, 0xFE },  // BNE $FB; JSR $FE73
-    { 0x20, 0x00, 0xF0, 0x84, 0xD6 }   // JSR $F000; $84, $D6
+  // These signatures are (mostly) attributed to the MESS project
+  static constexpr uInt8 signature[5][5] = {
+    { 0x20, 0x00, 0xD0, 0xC6, 0xC5 },  // JSR $D000; DEC $C5  Decathlon
+    { 0x20, 0xC3, 0xF8, 0xA5, 0x82 },  // JSR $F8C3; LDA $82  Robot Tank
+    { 0xD0, 0xFB, 0x20, 0x73, 0xFE },  // BNE $FB; JSR $FE73  Space Shuttle (NTSC/PAL)
+    { 0xD0, 0xFB, 0x20, 0x68, 0xFE },  // BNE $FB; JSR $FE73  Space Shuttle (SECAM)
+    { 0x20, 0x00, 0xF0, 0x84, 0xD6 }   // JSR $F000; $84, $D6 Thwocker
   };
   for(const auto* const sig: signature)
     if(searchForBytes(image, size, sig, 5))
