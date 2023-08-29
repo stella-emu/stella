@@ -3298,6 +3298,7 @@
 "Cart.Manufacturer" "CBS Electronics"
 "Cart.ModelNo" "4L1767, 4L1768, 4L1769, 4L1770"
 "Cart.Name" "Smurf (1982) (CBS Electronics) (PAL) [a]"
+"Bezel.Name" "Smurf - Rescue in Gargamel's Castle (USA)" 
 ""
 
 "Cart.MD5" "24b5f4bbdb853eca38ea0cae2dfe73a1"
@@ -5425,6 +5426,7 @@
 "Cart.Name" "Masters of the Universe (1983) (M Network)"
 "Console.RightDiff" "A"
 "Display.Phosphor" "YES"
+"Bezel.Name" ""Masters of the Universe - The Power of He-Man (USA)" 
 ""
 
 "Cart.MD5" "3b80b8f52a0939e16b5059f93a3fc19a"
@@ -6471,6 +6473,7 @@
 "Cart.MD5" "47abfb993ff14f502f88cf988092e055"
 "Cart.Manufacturer" "Zellers"
 "Cart.Name" "Inca Gold (Zellers)"
+"Bezel.Name" "Inca Gold - Spider Monster (Europe)" 
 ""
 
 "Cart.MD5" "47aef18509051bab493589cb2619170b"
@@ -9413,6 +9416,7 @@
 
 "Cart.MD5" "672012d40336b403edea4a98ce70c76d"
 "Cart.Name" "Inca Gold (Unknown) (PAL) [a]"
+"Bezel.Name" "Inca Gold - Spider Monster (Europe)" 
 ""
 
 "Cart.MD5" "673268cfaa8ff3f655b9e34d75e6a90c"
@@ -10602,6 +10606,7 @@
 "Cart.ModelNo" "4L1767, 4L1768, 4L1769, 4L1770"
 "Cart.Name" "Smurf - Schtroumpfs (1983) (CBS Electronics) (PAL)"
 "Cart.Note" "Pitufo"
+"Bezel.Name" "Smurf - Rescue in Gargamel's Castle (USA)" 
 ""
 
 "Cart.MD5" "73c839aff6a055643044d2ce16b3aaf7"
@@ -12593,6 +12598,7 @@
 "Cart.Manufacturer" "Funvision - Fund. Int'l Co."
 "Cart.Name" "Pac Kong (Funvision) (PAL)"
 "Cart.Note" "AKA Inca Gold"
+"Bezel.Name" "Inca Gold - Spider Monster (Europe)" 
 ""
 
 "Cart.MD5" "88d7b6b3967de0db24cdae1c7f7181bd"
@@ -13457,6 +13463,7 @@
 "Cart.MD5" "936ef1d6f8a57b9ff575dc195ee36b80"
 "Cart.Name" "Pac Kong (Unknown) [a]"
 "Cart.Note" "AKA Inca Gold"
+"Bezel.Name" "Inca Gold - Spider Monster (Europe)" 
 ""
 
 "Cart.MD5" "936f555b4b1a2cd061b659ff63f4f5f2"
@@ -15689,6 +15696,7 @@
 
 "Cart.MD5" "ae465044dfba287d344ba468820995d7"
 "Cart.Name" "Inca Gold (Unknown) (PAL)"
+"Bezel.Name" "Inca Gold - Spider Monster (Europe)" 
 ""
 
 "Cart.MD5" "ae4be3a36b285c1a1dff202157e2155d"
@@ -17272,6 +17280,7 @@
 "Cart.Manufacturer" "Video Gems"
 "Cart.ModelNo" "VG-02"
 "Cart.Name" "Surfer's Paradise (1983) (Video Gems) (PAL)"
+"Bezel.Name" "Surfer's Paradise - But Danger Below! (Europe)"
 ""
 
 "Cart.MD5" "c21450c21efb7715746e9fa87ad6f145"
@@ -18934,6 +18943,7 @@
 "Cart.ModelNo" "SS-003"
 "Cart.Name" "Pac-Kong (1983) (Rainbow Vision) (PAL)"
 "Cart.Note" "AKA Inca Gold"
+"Bezel.Name" "Inca Gold - Spider Monster (Europe)" 
 ""
 
 "Cart.MD5" "d245e2f27c84016041e9496b66b722fe"
@@ -19957,6 +19967,7 @@
 "Cart.MD5" "de5aab22e5aba5edcb29a3e7491ff319"
 "Cart.Name" "Pac Kong (Unknown)"
 "Cart.Note" "AKA Inca Gold"
+"Bezel.Name" "Inca Gold - Spider Monster (Europe)" 
 ""
 
 "Cart.MD5" "de61a0b171e909a5a4cfcf81d146dbcb"
@@ -21808,6 +21819,7 @@
 "Cart.ModelNo" "83-414"
 "Cart.Name" "Pac Kong (1983) (Goliath) (PAL)"
 "Cart.Note" "AKA Inca Gold"
+"Bezel.Name" "Inca Gold - Spider Monster (Europe)" 
 ""
 
 "Cart.MD5" "f1554569321dc933c87981cf5c239c43"
