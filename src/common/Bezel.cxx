@@ -130,6 +130,8 @@ bool Bezel::load()
     }
     catch(const runtime_error&) { }
   }
+#else
+  const bool show = false;
 #endif
   if(isValid)
   {
