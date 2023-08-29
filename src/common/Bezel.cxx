@@ -57,6 +57,11 @@ const string Bezel::getName(int& index) const
 
   if(index == 10)
   {
+    return "Atari-2600";
+  }
+
+  if(index == 11)
+  {
     index = -1;
     return "default";
   }
@@ -88,12 +93,13 @@ bool Bezel::load()
 {
   const Settings& settings = myOSystem.settings();
   bool isValid = false;
+  string imageName = "";
 
 #ifdef IMAGE_SUPPORT
   const bool show = myOSystem.eventHandler().inTIAMode() &&
-                    settings.getBool("bezel.show") &&
-                    (settings.getBool("fullscreen") ||
-                     settings.getBool("bezel.windowed"));
+    settings.getBool("bezel.show") &&
+    (settings.getBool("fullscreen") ||
+     settings.getBool("bezel.windowed"));
 
   if(show)
   {
@@ -102,22 +108,21 @@ bool Bezel::load()
     try
     {
       const string& path = myOSystem.bezelDir().getPath();
-      string imageName;
       VariantList metaData;
       int index = 0;
 
       do
       {
-        const string& name = getName(index);
-        if(name != EmptyString)
+        imageName = getName(index);
+        if(imageName != EmptyString)
         {
           // Note: JPG does not support transparency
-          imageName = path + name + ".png";
-          FSNode node(imageName);
+          const string imagePath = path + imageName + ".png";
+          FSNode node(imagePath);
           if(node.exists())
           {
             isValid = true;
-            myOSystem.png().loadImage(imageName, *mySurface, metaData);
+            myOSystem.png().loadImage(imagePath, *mySurface, metaData);
             break;
           }
         }
@@ -150,9 +155,9 @@ bool Bezel::load()
       // HY: 12, 12,  0,  0%
       // P1: 25, 25, 11, 22%
       // P2: 23, 23,  7, 20%
-      left   = std::min(w - 1,         static_cast<Int32>(w * settings.getInt("bezel.win.left")   / 100. + .5));
-      right  = w - 1 - std::min(w - 1, static_cast<Int32>(w * settings.getInt("bezel.win.right")  / 100. + .5));
-      top    = std::min(h - 1,         static_cast<Int32>(h * settings.getInt("bezel.win.top")    / 100. + .5));
+      left = std::min(w - 1, static_cast<Int32>(w * settings.getInt("bezel.win.left") / 100. + .5));
+      right = w - 1 - std::min(w - 1, static_cast<Int32>(w * settings.getInt("bezel.win.right") / 100. + .5));
+      top = std::min(h - 1, static_cast<Int32>(h * settings.getInt("bezel.win.top") / 100. + .5));
       bottom = h - 1 - std::min(h - 1, static_cast<Int32>(h * settings.getInt("bezel.win.bottom") / 100. + .5));
     }
 
@@ -160,14 +165,24 @@ bool Bezel::load()
     //  << double((int)(right - left + 1)) / double((int)(bottom - top + 1));
 
     // Disable bezel is no transparent window was found
-    if (left < right && top < bottom)
+    if(left < right && top < bottom)
       myInfo = Info(Common::Size(w, h), Common::Rect(left, top, right, bottom));
     else
+    {
+      if(mySurface)
+        myFB.deallocateSurface(mySurface);
+      mySurface = nullptr;
       myInfo = Info();
+      myFB.showTextMessage("Invalid bezel image ('" + imageName + "')!");
+      isValid = false;
+    }
   }
   else
+  {
     myInfo = Info();
-
+    if(show)
+      myFB.showTextMessage("No bezel image found");
+  }
   return isValid;
 }
 
