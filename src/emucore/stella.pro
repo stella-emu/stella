@@ -7507,7 +7507,6 @@
 "Cart.Manufacturer" "Atari, Alan Miller - Sears"
 "Cart.ModelNo" "CX2641 - 99807, 49-75105"
 "Cart.Name" "Surround (1977) (Atari) (4K) [a]"
-"Cart.Type" "2K"
 ""
 
 "Cart.MD5" "52a207c2ac6b4dc87d5650f1d7bf5dfa"
@@ -8306,7 +8305,6 @@
 "Cart.Manufacturer" "Activision, Alan Miller"
 "Cart.ModelNo" "AX-012, CAX-012, AX-012-04"
 "Cart.Name" "Ice Hockey (1981) (Activision) (16K)"
-"Cart.Type" "4K"
 ""
 
 "Cart.MD5" "5bd79139a0c03b63f6f2cf00a7d385d2"
@@ -8410,7 +8408,6 @@
 "Cart.ModelNo" "EAZ-033"
 "Cart.Name" "Space Shuttle (1983) (Activision) (SECAM)"
 "Cart.Note" "A Journey Into Space"
-"Cart.Type" "FE"
 "Bezel.Name" "Space Shuttle - A Journey Into Space (USA)"
 ""
 
