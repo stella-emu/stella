@@ -1283,7 +1283,6 @@ void FrameBuffer::toggleBezel(bool toggle)
       if(!myBezel->load() && enabled)
       {
         myOSystem.settings().setValue("bezel.show", !enabled);
-        myOSystem.frameBuffer().showTextMessage("No bezel image found");
         return;
       }
       else
@@ -1489,7 +1488,7 @@ void FrameBuffer::toggleGrabMouse(bool toggle)
     kBGColor          Normal background color (non-text)
     kBGColorLo        Disabled background color dark (non-text)
     kBGColorHi        Disabled background color light (non-text)
-    kShadowColor      Item is disabled
+    kShadowColor      Item is disabled (unused)
     *** Text colors ***
     kTextColor        Normal text color
     kTextColorHi      Highlighted text color
@@ -1577,6 +1576,6 @@ UIPaletteArray FrameBuffer::ourDarkUIPalette = {
     0x3c3c3c, 0x646464,                                         // scrollbar
     0x7f2020, 0xc0c0c0, 0xe00000, 0xc00000,                     // debugger
     0x989898, 0x0059a3, 0x3c3c3c, 0x000000, 0x3c3c3c,           // slider
-    0x000000, 0x989898, 0x202020                                // other
+    0x000000, 0x404040, 0xc0c0c0                                // other
   }
 };
