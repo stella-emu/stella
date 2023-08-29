@@ -5426,7 +5426,7 @@
 "Cart.Name" "Masters of the Universe (1983) (M Network)"
 "Console.RightDiff" "A"
 "Display.Phosphor" "YES"
-"Bezel.Name" ""Masters of the Universe - The Power of He-Man (USA)" 
+"Bezel.Name" "Masters of the Universe - The Power of He-Man (USA)" 
 ""
 
 "Cart.MD5" "3b80b8f52a0939e16b5059f93a3fc19a"
