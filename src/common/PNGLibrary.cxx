@@ -394,11 +394,11 @@ bool PNGLibrary::allocateStorage(size_t width, size_t height, bool hasAlpha)
   // Create space for the entire image (3(4) bytes per pixel in RGB(A) format)
   const size_t req_buffer_size = width * height * (hasAlpha ? 4 : 3);
   if(req_buffer_size > ReadInfo.buffer.capacity())
-    ReadInfo.buffer.reserve(req_buffer_size * 1.5);
+    ReadInfo.buffer.resize(req_buffer_size * 1.5);
 
   const size_t req_row_size = height;
   if(req_row_size > ReadInfo.row_pointers.capacity())
-    ReadInfo.row_pointers.reserve(req_row_size * 1.5);
+    ReadInfo.row_pointers.resize(req_row_size * 1.5);
 
   ReadInfo.width  = static_cast<png_uint_32>(width);
   ReadInfo.height = static_cast<png_uint_32>(height);
