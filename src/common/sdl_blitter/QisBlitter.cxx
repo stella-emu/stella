@@ -183,8 +183,8 @@ void QisBlitter::recreateTexturesIfNecessary()
   if (myAttributes.blending) {
     const auto blendAlpha = static_cast<uInt8>(myAttributes.blendalpha * 2.55);
 
-    const std::array<SDL_Texture*, 3> textures = {
-      mySrcTexture, myIntermediateTexture, mySecondaryIntermedateTexture
+    const std::array<SDL_Texture*, 2> textures = {
+      myIntermediateTexture, mySecondaryIntermedateTexture
     };
     for (SDL_Texture* texture: textures) {
       if (!texture) continue;
