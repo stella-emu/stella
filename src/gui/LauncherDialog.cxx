@@ -839,6 +839,10 @@ void LauncherDialog::handleKeyDown(StellaKey key, StellaMod mod, bool repeated)
         myRomImageWidget->changeImage(1);
         break;
 
+      case KBDK_RETURN:
+        myRomImageWidget->toggleImageZoom();
+        break;
+
       default:
         handled = false;
         break;
@@ -929,6 +933,11 @@ Event::Type LauncherDialog::getJoyAxisEvent(int stick, JoyAxis axis, JoyDir adir
 
     case Event::UITabNext:
       myRomImageWidget->changeImage(1);
+      myEventHandled = true;
+      break;
+
+    case Event::UIOK:
+      myRomImageWidget->toggleImageZoom();
       myEventHandled = true;
       break;
 

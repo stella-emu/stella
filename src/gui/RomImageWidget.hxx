@@ -40,6 +40,8 @@ class RomImageWidget : public Widget
     void clearProperties();
     void reloadProperties(const FSNode& node);
     bool changeImage(int direction = 1);
+    // Toggle zoom via keyboard
+    void toggleImageZoom();
 
     uInt64 pendingLoadTime() { return myMaxLoadTime * timeFactor; }
 
@@ -61,9 +63,9 @@ class RomImageWidget : public Widget
     bool loadPng(const string& fileName);
     bool loadJpg(const string& fileName);
 
-    void zoomSurface(bool zoomed, bool force = false);
+    void zoomSurfaces(bool zoomed, bool force = false);
+    void positionSurfaces();
   #endif
-    void posSurfaces();
 
   private:
     // Pending load time safety factor
@@ -102,6 +104,9 @@ class RomImageWidget : public Widget
 
     // Zoom icon rectangle
     Common::Rect myZoomRect;
+
+    // True for keyboard zooming
+    bool myZoomMode{false};
 
     // Surface zoom status
     bool myIsZoomed{false};
