@@ -42,6 +42,7 @@ class RomImageWidget : public Widget
     bool changeImage(int direction = 1);
     // Toggle zoom via keyboard
     void toggleImageZoom();
+    void disableImageZoom() { myZoomMode = false; };
 
     uInt64 pendingLoadTime() { return myMaxLoadTime * timeFactor; }
 
