@@ -44,11 +44,12 @@ class RomImageWidget : public Widget
     uInt64 pendingLoadTime() { return myMaxLoadTime * timeFactor; }
 
   protected:
-    void drawWidget(bool hilite) override;
 #ifdef IMAGE_SUPPORT
     void handleMouseUp(int x, int y, MouseButton b, int clickCount) override;
     void handleMouseMoved(int x, int y) override;
+    void tick() override;
 #endif
+    void drawWidget(bool hilite) override;
 
   private:
     void parseProperties(const FSNode& node, bool full = true);
@@ -59,13 +60,31 @@ class RomImageWidget : public Widget
     bool loadImage(const string& fileName);
     bool loadPng(const string& fileName);
     bool loadJpg(const string& fileName);
+
+    void zoomSurface(bool zoomed, bool force = false);
   #endif
+    void posSurfaces();
 
   private:
     // Pending load time safety factor
     static constexpr double timeFactor = 1.2;
 
   private:
+    // Navigation areas
+    enum class Area {
+      NONE,
+      LEFT,
+      RIGHT,
+      ZOOM
+    };
+
+    // Zoom delay [frames]
+    static constexpr uInt32 DELAY_TIME = 45;
+
+    // The zoom is faster requested than released, so that repeated zooms are
+    //  shown faster. This constant defines how much faster.
+    static constexpr uInt32 REQUEST_SPEED = 2;
+
     // Surface pointer holding the image
     shared_ptr<FBSurface> mySurface;
 
@@ -74,6 +93,30 @@ class RomImageWidget : public Widget
 
     // Whether the surface should be redrawn by drawWidget()
     bool mySurfaceIsValid{false};
+
+    // Surface pointer holding the frame around the zoomed image
+    shared_ptr<FBSurface> myFrameSurface;
+
+    // Rectangle holdering the original surface size
+    Common::Rect mySrcRect;
+
+    // Zoom icon rectangle
+    Common::Rect myZoomRect;
+
+    // Surface zoom status
+    bool myIsZoomed{false};
+
+    // Zoom delay timer
+    uInt32 myZoomTimer{0};
+
+    // Initial zoom position
+    Common::Point myZoomPos;
+
+    // Last mouse position, used for zooming
+    Common::Point myMousePos;
+
+    // Current navigation area of the mouse
+    Area myMouseArea{Area::NONE};
 
     // The properties for the currently selected ROM
     Properties myProperties;
@@ -92,9 +135,6 @@ class RomImageWidget : public Widget
 
     // Index of currently displayed image
     size_t myImageIdx{0};
-
-    // Current x-position of the mouse
-    bool myMouseLeft{true};
 
     // Label for the loaded image
     string myLabel;
