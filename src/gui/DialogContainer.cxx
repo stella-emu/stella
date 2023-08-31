@@ -355,11 +355,10 @@ void DialogContainer::handleJoyBtnEvent(int stick, int button, bool pressed)
       myCurrentButtonDown.stick = myCurrentButtonDown.button = -1;
       myButtonRepeatTime = myButtonLongPressTime = 0;
     }
-    if(myIgnoreButtonUp)
-      myIgnoreButtonUp = false;
-    else
+    if(!myIgnoreButtonUp)
       activeDialog->handleJoyUp(stick, button);
   }
+  myIgnoreButtonUp = false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
