@@ -476,7 +476,7 @@ void LauncherDialog::loadConfig()
   const string& version = settings.getString("stella.version");
 
   // Show "What's New" message when a new version of Stella is run for the first time
-  if(version != STELLA_VERSION)
+  if(version < STELLA_VERSION)
   {
     openWhatsNew();
     settings.setValue("stella.version", STELLA_VERSION);
@@ -918,26 +918,33 @@ Event::Type LauncherDialog::getJoyAxisEvent(int stick, JoyAxis axis, JoyDir adir
       if(myUseMinimalUI)
         // convert unused previous item event into page-up event
         e = Event::UIPgUp;
+      else
+        myRomImageWidget->disableImageZoom();
       break;
 
     case Event::UINavNext:
       if(myUseMinimalUI)
         // convert unused next item event into page-down event
         e = Event::UIPgDown;
+      else
+        myRomImageWidget->disableImageZoom();
       break;
 
     case Event::UITabPrev:
-      myRomImageWidget->changeImage(-1);
+      if(myList->isHighlighted())
+        myRomImageWidget->changeImage(-1);
       myEventHandled = true;
       break;
 
     case Event::UITabNext:
-      myRomImageWidget->changeImage(1);
+      if(myList->isHighlighted())
+        myRomImageWidget->changeImage(1);
       myEventHandled = true;
       break;
 
     case Event::UIOK:
-      myRomImageWidget->toggleImageZoom();
+      if(myList->isHighlighted())
+        myRomImageWidget->toggleImageZoom();
       myEventHandled = true;
       break;
 
