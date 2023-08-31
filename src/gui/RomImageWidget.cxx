@@ -26,6 +26,8 @@
 #include "Props.hxx"
 #include "PropsSet.hxx"
 #include "TimerManager.hxx"
+#include "FBSurfaceSDL2.hxx"
+
 #include "RomImageWidget.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -37,6 +39,9 @@ RomImageWidget::RomImageWidget(GuiObject* boss, const GUI::Font& font,
   _bgcolor = kDlgColor;
   _bgcolorlo = kBGColorLo;
   myImageHeight = _h - labelHeight(font);
+
+  myZoomRect = Common::Rect(_w * 7 / 16, myImageHeight * 7 / 16,
+                            _w * 9 / 16, myImageHeight * 9 / 16);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -90,18 +95,16 @@ void RomImageWidget::reloadProperties(const FSNode& node)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void RomImageWidget::parseProperties(const FSNode& node, bool full)
 {
+  FrameBuffer& fb = instance().frameBuffer();
   const uInt64 startTime = TimerManager::getTicks() / 1000;
 
   if(myNavSurface == nullptr)
   {
     // Create navigation surface
-    myNavSurface = instance().frameBuffer().allocateSurface(
-      _w, myImageHeight);
+    const uInt32 scale = fb.hidpiScaleFactor();
 
-    const uInt32 scale = instance().frameBuffer().hidpiScaleFactor();
-    myNavSurface->setDstRect(
-      Common::Rect(_x * scale, _y * scale,
-                   (_x + _w) * scale, (_y + myImageHeight) * scale));
+    myNavSurface = fb.allocateSurface(_w, myImageHeight);
+    myNavSurface->setDstSize(_w * scale, myImageHeight * scale);
 
     FBSurface::Attributes& attr = myNavSurface->attributes();
 
@@ -115,14 +118,21 @@ void RomImageWidget::parseProperties(const FSNode& node, bool full)
   // only draw certain parts of it
   if(mySurface == nullptr)
   {
-    mySurface = instance().frameBuffer().allocateSurface(
-        _w, myImageHeight, ScalingInterpolation::blur);
+    mySurface = fb.allocateSurface(_w, myImageHeight, ScalingInterpolation::blur);
     mySurface->applyAttributes();
+    myFrameSurface = fb.allocateSurface(1, 1, ScalingInterpolation::sharp);
+    myFrameSurface->applyAttributes();
+    myFrameSurface->setVisible(true);
 
     dialog().addRenderCallback([this]() {
       if(mySurfaceIsValid)
+      {
+        if(myIsZoomed)
+          myFrameSurface->render();
         mySurface->render();
-      if(isHighlighted())
+      }
+
+      if(isHighlighted() && !myIsZoomed)
         myNavSurface->render();
     });
   }
@@ -178,7 +188,10 @@ void RomImageWidget::parseProperties(const FSNode& node, bool full)
   setDirty();
 #endif
   if(mySurface)
+  {
     mySurface->setVisible(mySurfaceIsValid);
+    myFrameSurface->setVisible(mySurfaceIsValid);
+  }
 
   // Update maximum load time
   myMaxLoadTime = std::min(
@@ -268,18 +281,14 @@ bool RomImageWidget::loadImage(const string& fileName)
 
   if(mySurfaceIsValid)
   {
-    // Scale surface to available image area
-    const Common::Rect& src = mySurface->srcRect();
-    const float scale = std::min(
-      static_cast<float>(_w) / src.w(),
-      static_cast<float>(myImageHeight) / src.h()) *
-        instance().frameBuffer().hidpiScaleFactor();
-    mySurface->setDstSize(static_cast<uInt32>(src.w() * scale), static_cast<uInt32>(src.h() * scale));
+    mySrcRect = mySurface->srcRect();
+    zoomSurface(false, true);
   }
 
   if(mySurface)
     mySurface->setVisible(mySurfaceIsValid);
 
+  myZoomTimer = 0;
   setDirty();
   return mySurfaceIsValid;
 }
@@ -342,18 +351,153 @@ bool RomImageWidget::loadJpg(const string& fileName)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void RomImageWidget::zoomSurface(bool zoomed, bool force)
+{
+  if(zoomed != myIsZoomed || force)
+  {
+    const uInt32 scaleDpi = instance().frameBuffer().hidpiScaleFactor();
+
+    myIsZoomed = zoomed;
+
+    if(!zoomed)
+    {
+      // Scale surface to available image area
+      const float scale = std::min(
+        static_cast<float>(_w) / mySrcRect.w(),
+        static_cast<float>(myImageHeight) / mySrcRect.h()) * scaleDpi;
+      const uInt32 w = mySrcRect.w() * scale;
+      const uInt32 h = mySrcRect.h() * scale;
+
+      mySurface->setDstSize(w, h);
+    }
+    else
+    {
+      // display zoomed image centered over mouse position, considering launcher borders
+      myZoomPos = myMousePos;
+
+      const Int32 b = 3 * scaleDpi;
+      const Common::Size maxSize = instance().frameBuffer().fullScreen()
+        ? instance().frameBuffer().screenSize()
+        : dialog().surface().dstRect().size();
+      const Int32 lw = maxSize.w - b * 2;
+      const Int32 lh = maxSize.h - b * 2;
+      const Int32 iw = mySrcRect.w() * scaleDpi;
+      const Int32 ih = mySrcRect.h() * scaleDpi;
+      const float zoom = std::min(1.F,
+                                  std::min(static_cast<float>(lw) / iw,
+                                           static_cast<float>(lh) / ih));
+      const Int32 w = iw * zoom;
+      const Int32 h = ih * zoom;
+
+      mySurface->setDstSize(w, h);
+
+      myFrameSurface->resize(w + b * 2, h + b * 2);
+      myFrameSurface->setDstSize(w + b * 2, h + b * 2);
+      myFrameSurface->frameRect(0, 0, myFrameSurface->width(), myFrameSurface->height(), kColor);
+
+      myZoomTimer = DELAY_TIME * REQUEST_SPEED;
+    }
+    posSurfaces();
+    setDirty();
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void RomImageWidget::posSurfaces()
+{
+  // Make sure when positioning the image surface that we take
+  // the dialog surface position into account
+  const Common::Rect& s_dst = dialog().surface().dstRect();
+  const Int32 scaleDpi = instance().frameBuffer().hidpiScaleFactor();
+  const Int32 w = mySurface->dstRect().w();
+  const Int32 h = mySurface->dstRect().h();
+
+  if(!myIsZoomed)
+  {
+    // Position image and navigation surface
+    const uInt32 x = s_dst.x() + _x * scaleDpi;
+    const uInt32 y = s_dst.y() + _y * scaleDpi;
+
+    mySurface->setDstPos(x + ((_w * scaleDpi - w) >> 1),
+                         y + ((myImageHeight * scaleDpi - h) >> 1));
+    myNavSurface->setDstPos(x, y);
+  }
+  else
+  {
+    // Display zoomed image centered over mouse position, considering launcher borders
+    // Note: Using Int32 to avoid more casting
+    const Int32 zx = myZoomPos.x;
+    const Int32 zy = myZoomPos.y;
+    const Int32 b = 3 * scaleDpi;
+    const bool fs = instance().frameBuffer().fullScreen();
+    const Common::Size maxSize = fs
+      ? instance().frameBuffer().screenSize()
+      : dialog().surface().dstRect().size();
+    const Common::Point minPos = fs
+      ? Common::Point(0, 0)
+      : s_dst.point();
+    const Int32 lw = maxSize.w - b * 2;
+    const Int32 lh = maxSize.h - b * 2;
+    // Position at right top
+    const Int32 x = std::min(
+      static_cast<Int32>(s_dst.x()) + (_x + zx) * scaleDpi - w / 2 + b,
+      lw - w + b);
+    const Int32 y = std::min(
+      lh - h + b,
+      std::max(static_cast<Int32>(s_dst.y()) + (zy + _y) * scaleDpi - h / 2 + b, b));
+
+    mySurface->setDstPos(x, y);
+    myFrameSurface->setDstPos(x - b, y - b);
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void RomImageWidget::handleMouseUp(int x, int y, MouseButton b, int clickCount)
 {
   if(isEnabled() && x >= 0 && x < _w && y >= 0 && y < myImageHeight)
-    changeImage(x < _w / 2 ? -1 : 1);
+    if(myMouseArea == Area::LEFT)
+      changeImage(-1);
+    else if(myMouseArea == Area::RIGHT)
+      changeImage(1);
+    else
+      zoomSurface(true);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void RomImageWidget::handleMouseMoved(int x, int y)
 {
-  if((x < _w / 2) != myMouseLeft)
+  const Area oldArea = myMouseArea;
+
+  myMousePos = Common::Point(x, y);
+
+  if(myZoomRect.contains(x, y))
+    myMouseArea = Area::ZOOM;
+  else if(x < _w >> 1)
+    myMouseArea = Area::LEFT;
+  else
+    myMouseArea = Area::RIGHT;
+
+  if(myMouseArea != oldArea)
     setDirty();
-  myMouseLeft = x < _w / 2;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void RomImageWidget::tick()
+{
+  if(myMouseArea == Area::ZOOM)
+  {
+    myZoomTimer += REQUEST_SPEED;
+    if(myZoomTimer >= DELAY_TIME * REQUEST_SPEED)
+      zoomSurface(true);
+  }
+  else
+  {
+    zoomSurface(false);
+    if(myZoomTimer)
+      --myZoomTimer;
+  }
+
+  Widget::tick();
 }
 #endif
 
@@ -376,16 +520,8 @@ void RomImageWidget::drawWidget(bool hilite)
 
   if(mySurfaceIsValid)
   {
-    const Common::Rect& dst = mySurface->dstRect();
-    const uInt32 scale = instance().frameBuffer().hidpiScaleFactor();
-    const uInt32 x = _x * scale + ((_w * scale - dst.w()) >> 1);
-    const uInt32 y = _y * scale + ((myImageHeight * scale - dst.h()) >> 1);
-
     s.fillRect(_x, _y, _w, myImageHeight, 0);
-    // Make sure when positioning the snapshot surface that we take
-    // the dialog surface position into account
-    const Common::Rect& s_dst = s.dstRect();
-    mySurface->setDstPos(x + s_dst.x(), y + s_dst.y());
+    posSurfaces();
   }
   else if(!mySurfaceErrorMsg.empty())
   {
@@ -393,6 +529,7 @@ void RomImageWidget::drawWidget(bool hilite)
     const uInt32 y = _y + ((myImageHeight - _font.getLineHeight()) >> 1);
     s.drawString(_font, mySurfaceErrorMsg, x, y, _w - 10, _textcolor);
   }
+
   // Draw the image label and counter
   ostringstream buf;
   buf << myImageIdx + 1 << "/" << myImageList.size();
@@ -405,32 +542,75 @@ void RomImageWidget::drawWidget(bool hilite)
   if(!myImageList.empty())
     s.drawString(_font, buf.str(), _x + _w - wText, yText, wText, _textcolor);
 
-  // Draw the navigation arrows
+  // Draw the navigation icons
   myNavSurface->invalidate();
-  if(isHighlighted() &&
-    ((myMouseLeft && myImageIdx) || (!myMouseLeft && myImageIdx + 1 < myImageList.size())))
+  if(isHighlighted())
   {
-    const int w = _w / 64;
-    const int w2 = 1; // w / 2;
-    const int ax = myMouseLeft ? _w / 12 - w / 2 : _w - _w / 12 - w / 2;
-    const int ay = myImageHeight >> 1;
-    const int dx = (_w / 32) * (myMouseLeft ? 1 : -1);
-    const int dy = myImageHeight / 16;
+    // Draw arrows
+    for(int dir = 0; dir < 2; ++dir)
+    {
+      // Is direction arrow shown?
+      if((!dir && myImageIdx) || (dir && myImageIdx + 1 < myImageList.size()))
+      {
+        const bool highlight =
+          (!dir && myMouseArea == Area::LEFT) ||
+          (dir && myMouseArea == Area::RIGHT);
+        const int w = _w / 64;
+        const int w2 = 1; // w / 2;
+        const int ax = !dir ? _w / 12 - w / 2 : _w - _w / 12 - w / 2;
+        const int ay = myImageHeight >> 1;
+        const int dx = (_w / 32) * (!dir ? 1 : -1);
+        const int dy = myImageHeight / 16;
 
-    for(int i = 0; i < w; ++i)
+        // Draw dark arrow frame
+        for(int i = 0; i < w; ++i)
+        {
+          myNavSurface->line(ax + dx + i + w2, ay - dy, ax + i + w2, ay, kBGColor);
+          myNavSurface->line(ax + dx + i + w2, ay + dy, ax + i + w2, ay, kBGColor);
+          myNavSurface->line(ax + dx + i, ay - dy + w2, ax + i, ay + w2, kBGColor);
+          myNavSurface->line(ax + dx + i, ay + dy + w2, ax + i, ay + w2, kBGColor);
+          myNavSurface->line(ax + dx + i + w2, ay - dy + w2, ax + i + w2, ay + w2, kBGColor);
+          myNavSurface->line(ax + dx + i + w2, ay + dy + w2, ax + i + w2, ay + w2, kBGColor);
+        }
+        // Draw bright arrow
+        for(int i = 0; i < w; ++i)
+        {
+          myNavSurface->line(ax + dx + i, ay - dy, ax + i, ay, highlight ? kColorInfo : kColor);
+          myNavSurface->line(ax + dx + i, ay + dy, ax + i, ay, highlight ? kColorInfo : kColor);
+        }
+      }
+    } // arrows
+    if(myImageList.size())
     {
-      myNavSurface->line(ax + dx + i + w2, ay - dy, ax + i + w2, ay, kBGColor);
-      myNavSurface->line(ax + dx + i + w2, ay + dy, ax + i + w2, ay, kBGColor);
-      myNavSurface->line(ax + dx + i, ay - dy + w2, ax + i, ay + w2, kBGColor);
-      myNavSurface->line(ax + dx + i, ay + dy + w2, ax + i, ay + w2, kBGColor);
-      myNavSurface->line(ax + dx + i + w2, ay - dy + w2, ax + i + w2, ay + w2, kBGColor);
-      myNavSurface->line(ax + dx + i + w2, ay + dy + w2, ax + i + w2, ay + w2, kBGColor);
-    }
-    for(int i = 0; i < w; ++i)
-    {
-      myNavSurface->line(ax + dx + i, ay - dy, ax + i, ay, kColorInfo);
-      myNavSurface->line(ax + dx + i, ay + dy, ax + i, ay, kColorInfo);
-    }
+      // Draw zoom icon
+      const int dx = myZoomRect.w() / 2;
+      const int dy = myZoomRect.h() / 2;
+      const int w = dx * 2 / 3;
+      const int h = dy * 2 / 3;
+
+      for(int b = 1; b >= 0; --b) // First shadow, then bright
+      {
+        const ColorId color = b ? kBGColor : myMouseArea == Area::ZOOM ? kColorInfo : kColor;
+        const int ax = _w / 2 + b;
+        const int ay = myImageHeight / 2 + b;
+
+        for(int i = 0; i < myImageHeight / 80; ++i)
+        {
+          // Top left
+          myNavSurface->line(ax - dx, ay - dy + i, ax - dx + w, ay - dy + i, color);
+          myNavSurface->line(ax - dx + i, ay - dy, ax - dx + i, ay - dy + h, color);
+          // Top right
+          myNavSurface->line(ax + dx, ay - dy + i, ax + dx - w, ay - dy + i, color);
+          myNavSurface->line(ax + dx - i, ay - dy, ax + dx - i, ay - dy + h, color);
+          // Bottom left
+          myNavSurface->line(ax - dx, ay + dy - i, ax - dx + w, ay + dy - i, color);
+          myNavSurface->line(ax - dx + i, ay + dy, ax - dx + i, ay + dy - h, color);
+          // Bottom right
+          myNavSurface->line(ax + dx, ay + dy - i, ax + dx - w, ay + dy - i, color);
+          myNavSurface->line(ax + dx - i, ay + dy, ax + dx - i, ay + dy - h, color);
+        }
+      }
+    } // zoom icon
   }
   clearDirty();
 }
