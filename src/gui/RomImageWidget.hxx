@@ -81,8 +81,8 @@ class RomImageWidget : public Widget
     // Zoom delay [frames]
     static constexpr uInt32 DELAY_TIME = 45;
 
-    // The zoom is faster requested than released, so that repeated zooms are
-    //  shown faster. This constant defines how much faster.
+    // The zoom is faster requested than released, so that repeated zooms
+    //  are shown faster. This constant defines how much faster.
     static constexpr uInt32 REQUEST_SPEED = 2;
 
     // Surface pointer holding the image
@@ -91,11 +91,11 @@ class RomImageWidget : public Widget
     // Surface pointer holding the navigation elements
     shared_ptr<FBSurface> myNavSurface;
 
-    // Whether the surface should be redrawn by drawWidget()
-    bool mySurfaceIsValid{false};
-
     // Surface pointer holding the frame around the zoomed image
     shared_ptr<FBSurface> myFrameSurface;
+
+    // Whether the surface should be redrawn by drawWidget()
+    bool mySurfaceIsValid{false};
 
     // Rectangle holdering the original surface size
     Common::Rect mySrcRect;

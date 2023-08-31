@@ -361,7 +361,7 @@ void RomImageWidget::zoomSurface(bool zoomed, bool force)
 
     if(!zoomed)
     {
-      // Scale surface to available image area
+      // Scale surface to available widget area
       const float scale = std::min(
         static_cast<float>(_w) / mySrcRect.w(),
         static_cast<float>(myImageHeight) / mySrcRect.h()) * scaleDpi;
@@ -372,8 +372,8 @@ void RomImageWidget::zoomSurface(bool zoomed, bool force)
     }
     else
     {
-      // display zoomed image centered over mouse position, considering launcher borders
-      myZoomPos = myMousePos;
+      // Scale surface to available launcher area
+      myZoomPos = myMousePos; // remember initial zoom position
 
       const Int32 b = 3 * scaleDpi;
       const Common::Size maxSize = instance().frameBuffer().fullScreen()
@@ -383,7 +383,7 @@ void RomImageWidget::zoomSurface(bool zoomed, bool force)
       const Int32 lh = maxSize.h - b * 2;
       const Int32 iw = mySrcRect.w() * scaleDpi;
       const Int32 ih = mySrcRect.h() * scaleDpi;
-      const float zoom = std::min(1.F,
+      const float zoom = std::min(1.F, // do not zoom beyond original size
                                   std::min(static_cast<float>(lw) / iw,
                                            static_cast<float>(lh) / ih));
       const Int32 w = iw * zoom;
