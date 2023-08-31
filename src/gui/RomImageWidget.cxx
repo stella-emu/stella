@@ -137,6 +137,7 @@ void RomImageWidget::parseProperties(const FSNode& node, bool full)
     });
   }
 
+  myZoomMode = false;
 #ifdef IMAGE_SUPPORT
   if(!full)
   {
@@ -211,6 +212,17 @@ bool RomImageWidget::changeImage(int direction)
   return false;
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void RomImageWidget::toggleImageZoom()
+{
+#ifdef IMAGE_SUPPORT
+  myMousePos = Common::Point(_w >> 1, myImageHeight >> 1);
+  myZoomMode = !myIsZoomed;
+  myZoomTimer = myZoomMode ? DELAY_TIME * REQUEST_SPEED : 0;
+  zoomSurfaces(!myIsZoomed);
+#endif
+}
+
 #ifdef IMAGE_SUPPORT
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool RomImageWidget::getImageList(const string& propName, const string& romName,
@@ -282,13 +294,14 @@ bool RomImageWidget::loadImage(const string& fileName)
   if(mySurfaceIsValid)
   {
     mySrcRect = mySurface->srcRect();
-    zoomSurface(false, true);
+    zoomSurfaces(false, true);
   }
 
   if(mySurface)
     mySurface->setVisible(mySurfaceIsValid);
 
-  myZoomTimer = 0;
+  if (!myZoomMode)
+    myZoomTimer = 0;
   setDirty();
   return mySurfaceIsValid;
 }
@@ -351,7 +364,7 @@ bool RomImageWidget::loadJpg(const string& fileName)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void RomImageWidget::zoomSurface(bool zoomed, bool force)
+void RomImageWidget::zoomSurfaces(bool zoomed, bool force)
 {
   if(zoomed != myIsZoomed || force)
   {
@@ -395,15 +408,15 @@ void RomImageWidget::zoomSurface(bool zoomed, bool force)
       myFrameSurface->setDstSize(w + b * 2, h + b * 2);
       myFrameSurface->frameRect(0, 0, myFrameSurface->width(), myFrameSurface->height(), kColor);
 
-      myZoomTimer = DELAY_TIME * REQUEST_SPEED;
+      myZoomTimer = DELAY_TIME * REQUEST_SPEED; // zoom immediately
     }
-    posSurfaces();
+    positionSurfaces();
     setDirty();
   }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void RomImageWidget::posSurfaces()
+void RomImageWidget::positionSurfaces()
 {
   // Make sure when positioning the image surface that we take
   // the dialog surface position into account
@@ -460,7 +473,7 @@ void RomImageWidget::handleMouseUp(int x, int y, MouseButton b, int clickCount)
     else if(myMouseArea == Area::RIGHT)
       changeImage(1);
     else
-      zoomSurface(true);
+      zoomSurfaces(true);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -469,6 +482,7 @@ void RomImageWidget::handleMouseMoved(int x, int y)
   const Area oldArea = myMouseArea;
 
   myMousePos = Common::Point(x, y);
+  //myZoomMode = false;
 
   if(myZoomRect.contains(x, y))
     myMouseArea = Area::ZOOM;
@@ -484,15 +498,15 @@ void RomImageWidget::handleMouseMoved(int x, int y)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void RomImageWidget::tick()
 {
-  if(myMouseArea == Area::ZOOM)
+  if(myMouseArea == Area::ZOOM || myZoomMode)
   {
     myZoomTimer += REQUEST_SPEED;
     if(myZoomTimer >= DELAY_TIME * REQUEST_SPEED)
-      zoomSurface(true);
+      zoomSurfaces(true);
   }
   else
   {
-    zoomSurface(false);
+    zoomSurfaces(false);
     if(myZoomTimer)
       --myZoomTimer;
   }
@@ -521,7 +535,7 @@ void RomImageWidget::drawWidget(bool hilite)
   if(mySurfaceIsValid)
   {
     s.fillRect(_x, _y, _w, myImageHeight, 0);
-    posSurfaces();
+    positionSurfaces();
   }
   else if(!mySurfaceErrorMsg.empty())
   {

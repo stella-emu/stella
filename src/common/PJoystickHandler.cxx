@@ -1520,7 +1520,9 @@ PhysicalJoystickHandler::DefaultMenuMapping = {
   {Event::UINavNext,          JOY_CTRL_NONE, JoyAxis::X, JoyDir::POS},
   {Event::UITabNext,          0,             JoyAxis::X, JoyDir::POS},
   {Event::UIUp,               JOY_CTRL_NONE, JoyAxis::Y, JoyDir::NEG},
+  {Event::UIOK,               0            , JoyAxis::Y, JoyDir::NEG},
   {Event::UIDown,             JOY_CTRL_NONE, JoyAxis::Y, JoyDir::POS},
+  {Event::UICancel,           0            , JoyAxis::Y, JoyDir::POS},
 
   {Event::UINavPrev,          JOY_CTRL_NONE, JoyAxis::NONE, JoyDir::NONE, 0, JoyHatDir::LEFT},
   {Event::UINavNext,          JOY_CTRL_NONE, JoyAxis::NONE, JoyDir::NONE, 0, JoyHatDir::RIGHT},
