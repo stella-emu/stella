@@ -218,7 +218,7 @@ void NavigationWidget::PathWidget::setPath(string_view path)
       s->setID(static_cast<uInt32>(idx));
       s->setTarget(myTarget);
       myFolderList.push_back(s);
-      _boss->addFocusWidget(s);
+      //_boss->addFocusWidget(s); // TODO: allow adding/inserting focus dynamically
     }
     x += width;
   }

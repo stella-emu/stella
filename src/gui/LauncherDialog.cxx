@@ -83,7 +83,8 @@ LauncherDialog::LauncherDialog(OSystem& osystem, DialogContainer& parent,
     addPathWidgets(ypos);
     addFilteringWidgets(ypos);  //-- filtering widget line has file count
   }
-  mySelectedItem = addRomWidgets(ypos) - 1;  // Highlight 'Rom Listing'
+
+  mySelectedItem = addRomWidgets(ypos) - (myUseMinimalUI ? 1 : 2);  // Highlight 'Rom Listing'
   if(!myUseMinimalUI && bottomButtons)
     addButtonWidgets(ypos);
   myNavigationBar->setList(myList);
@@ -105,7 +106,7 @@ void LauncherDialog::addTitleWidget(int &ypos)
 #if defined(RETRON77)
   ver << " for RetroN 77";
 #endif
-  new StaticTextWidget(this, _font, 0, ypos, _w, fontHeight,
+  new StaticTextWidget(this, _font, 1, ypos, _w - 2, fontHeight,
                        ver.str(), TextAlign::Center);
   ypos += fontHeight + VGAP;
 }
@@ -250,11 +251,11 @@ void LauncherDialog::addPathWidgets(int& ypos)
     // Show the files counter
     myShortCount = true;
     xpos = _w - HBORDER - lwFound - LBL_GAP / 2;
-    myRomCount = new StaticTextWidget(this, _font, xpos, ypos,
+    myRomCount = new StaticTextWidget(this, _font, xpos, ypos - 1,
       lwFound, fontHeight, "", TextAlign::Right);
 
     auto* e = new EditTextWidget(this, _font, myNavigationBar->getRight() - 1,
-        ypos - btnYOfs, lwFound + LBL_GAP + 1, buttonHeight - 2, "");
+        ypos - btnYOfs, lwFound + LBL_GAP + 1, lineHeight, "");
     e->setEditable(false);
     e->setEnabled(false);
   } else {
@@ -324,6 +325,8 @@ int LauncherDialog::addRomWidgets(int ypos)
     imageHeight = imgSize.h + RomImageWidget::labelHeight(*myROMInfoFont);
     myRomImageWidget = new RomImageWidget(this, *myROMInfoFont,
       xpos, ypos, imageWidth, imageHeight);
+    if(!myUseMinimalUI)
+      wid.push_back(myRomImageWidget);
 
     const int yofs = imageHeight + myROMInfoFont->getFontHeight() / 2;
     myRomInfoWidget = new RomInfoWidget(this, *myROMInfoFont,
@@ -831,18 +834,6 @@ void LauncherDialog::handleKeyDown(StellaKey key, StellaMod mod, bool repeated)
         reload();
         break;
 
-      case KBDK_LEFT:
-        myRomImageWidget->changeImage(-1);
-        break;
-
-      case KBDK_RIGHT:
-        myRomImageWidget->changeImage(1);
-        break;
-
-      case KBDK_RETURN:
-        myRomImageWidget->toggleImageZoom();
-        break;
-
       default:
         handled = false;
         break;
@@ -909,50 +900,60 @@ void LauncherDialog::handleJoyUp(int stick, int button)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Event::Type LauncherDialog::getJoyAxisEvent(int stick, JoyAxis axis, JoyDir adir, int button)
 {
-  Event::Type e = instance().eventHandler().eventForJoyAxis(EventMode::kMenuMode, stick, axis, adir, button);
+  Event::Type event = instance().eventHandler().eventForJoyAxis(EventMode::kMenuMode, stick, axis, adir, button);
 
   // map axis events for launcher
-  switch(e)
+  if(myUseMinimalUI)
   {
-    case Event::UINavPrev:
-      if(myUseMinimalUI)
+    switch(event)
+    {
+      case Event::UINavPrev:
         // convert unused previous item event into page-up event
-        e = Event::UIPgUp;
-      else
-        myRomImageWidget->disableImageZoom();
-      break;
+        event = Event::UIPgUp;
+        break;
 
-    case Event::UINavNext:
-      if(myUseMinimalUI)
+      case Event::UINavNext:
         // convert unused next item event into page-down event
-        e = Event::UIPgDown;
-      else
-        myRomImageWidget->disableImageZoom();
-      break;
+        event = Event::UIPgDown;
+        break;
 
-    case Event::UITabPrev:
-      if(myList->isHighlighted())
+      case Event::UITabPrev:
         myRomImageWidget->changeImage(-1);
-      myEventHandled = true;
-      break;
+        myEventHandled = true;
+        break;
 
-    case Event::UITabNext:
-      if(myList->isHighlighted())
+      case Event::UITabNext:
         myRomImageWidget->changeImage(1);
-      myEventHandled = true;
-      break;
+        myEventHandled = true;
+        break;
 
-    case Event::UIOK:
-      if(myList->isHighlighted())
+      case Event::UIOK:
+      case Event::UICancel:
         myRomImageWidget->toggleImageZoom();
-      myEventHandled = true;
-      break;
+        myEventHandled = true;
+        break;
 
-    default:
-      break;
+      default:
+        break;
+    }
   }
+  else
+  {
+    switch(event)
+    {
+      case Event::UITabPrev:
+        event = Event::UIPgUp;
+        break;
 
-  return e;
+      case Event::UITabNext:
+        event = Event::UIPgDown;
+        break;
+
+      default:
+        break;
+    }
+  }
+  return event;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -35,7 +35,7 @@ RomImageWidget::RomImageWidget(GuiObject* boss, const GUI::Font& font,
                                int x, int y, int w, int h)
   : Widget(boss, font, x, y, w, h)
 {
-  _flags = Widget::FLAG_ENABLED | Widget::FLAG_TRACK_MOUSE;
+  _flags = Widget::FLAG_ENABLED | Widget::FLAG_TRACK_MOUSE; // | FLAG_WANTS_RAWDATA;
   _bgcolor = kDlgColor;
   _bgcolorlo = kBGColorLo;
   myImageHeight = _h - labelHeight(font);
@@ -462,6 +462,34 @@ void RomImageWidget::positionSurfaces()
     mySurface->setDstPos(x, y);
     myFrameSurface->setDstPos(x - b, y - b);
   }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool RomImageWidget::handleEvent(Event::Type event)
+{
+  switch(event)
+  {
+    case Event::UIPgUp:   // controller
+    case Event::UILeft:   // keyboard
+      changeImage(-1);
+      return true;
+
+    case Event::UIPgDown: // controller
+    case Event::UIRight:  // keyboard
+      changeImage(1);
+      return true;
+
+    case Event::UIOK:     // controller
+    case Event::UICancel: // controller
+    case Event::UISelect: // keyboard & controller
+      toggleImageZoom();
+      return true;
+
+    default:
+      break;
+  }
+
+  return Widget::handleEvent(event);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
