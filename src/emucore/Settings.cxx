@@ -53,6 +53,8 @@ Settings::Settings()
   setPermanent(SETTINGS_VERSION_KEY, 0);
   setPermanent("stella.version", "6.2.1");
 
+  //setTemporary("minimal_ui", 1); // enable for minimal UI testing only
+
   // Video-related options
   setPermanent("video", "");
   setPermanent("speed", "1.0");
