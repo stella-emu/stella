@@ -446,9 +446,6 @@ void RomImageWidget::positionSurfaces()
     const Common::Size maxSize = fs
       ? instance().frameBuffer().screenSize()
       : dialog().surface().dstRect().size();
-    const Common::Point minPos = fs
-      ? Common::Point(0, 0)
-      : s_dst.point();
     const Int32 lw = maxSize.w - b * 2;
     const Int32 lh = maxSize.h - b * 2;
     // Position at right top
@@ -496,12 +493,14 @@ bool RomImageWidget::handleEvent(Event::Type event)
 void RomImageWidget::handleMouseUp(int x, int y, MouseButton b, int clickCount)
 {
   if(isEnabled() && x >= 0 && x < _w && y >= 0 && y < myImageHeight)
+  {
     if(myMouseArea == Area::LEFT)
       changeImage(-1);
     else if(myMouseArea == Area::RIGHT)
       changeImage(1);
     else
       zoomSurfaces(true);
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
