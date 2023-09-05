@@ -677,6 +677,8 @@
 		DCE3BBFA0C95CEDC00A671DF /* RomInfoWidget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCE3BBF60C95CEDC00A671DF /* RomInfoWidget.hxx */; };
 		DCE5CDE31BA10024005CD08A /* RiotRamWidget.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCE5CDE11BA10024005CD08A /* RiotRamWidget.cxx */; };
 		DCE5CDE41BA10024005CD08A /* RiotRamWidget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCE5CDE21BA10024005CD08A /* RiotRamWidget.hxx */; };
+		DCE7161A2AA78BD700B870EA /* Bezel.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCE716182AA78BD700B870EA /* Bezel.cxx */; };
+		DCE7161B2AA78BD700B870EA /* Bezel.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCE716192AA78BD700B870EA /* Bezel.hxx */; };
 		DCE801E2236DC25600D43EDD /* CartFC.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCE801E0236DC25600D43EDD /* CartFC.cxx */; };
 		DCE801E3236DC25600D43EDD /* CartFC.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCE801E1236DC25600D43EDD /* CartFC.hxx */; };
 		DCE801E6236DC27500D43EDD /* CartFCWidget.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCE801E4236DC27400D43EDD /* CartFCWidget.cxx */; };
@@ -1530,6 +1532,8 @@
 		DCE3BBF60C95CEDC00A671DF /* RomInfoWidget.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; path = RomInfoWidget.hxx; sourceTree = "<group>"; };
 		DCE5CDE11BA10024005CD08A /* RiotRamWidget.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = RiotRamWidget.cxx; sourceTree = "<group>"; };
 		DCE5CDE21BA10024005CD08A /* RiotRamWidget.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = RiotRamWidget.hxx; sourceTree = "<group>"; };
+		DCE716182AA78BD700B870EA /* Bezel.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Bezel.cxx; sourceTree = "<group>"; };
+		DCE716192AA78BD700B870EA /* Bezel.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Bezel.hxx; sourceTree = "<group>"; };
 		DCE801E0236DC25600D43EDD /* CartFC.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CartFC.cxx; sourceTree = "<group>"; };
 		DCE801E1236DC25600D43EDD /* CartFC.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = CartFC.hxx; sourceTree = "<group>"; };
 		DCE801E4236DC27400D43EDD /* CartFCWidget.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CartFCWidget.cxx; sourceTree = "<group>"; };
@@ -1947,6 +1951,8 @@
 				E0FABEE920E9948000EB8E28 /* AudioSettings.hxx */,
 				DC79F81017A88D9E00288B91 /* Base.cxx */,
 				DC79F81117A88D9E00288B91 /* Base.hxx */,
+				DCE716182AA78BD700B870EA /* Bezel.cxx */,
+				DCE716192AA78BD700B870EA /* Bezel.hxx */,
 				DCC527D810B9DA6A005E1287 /* bspf.hxx */,
 				DC6DC5E9273C2C3A00F64413 /* DevSettingsHandler.cxx */,
 				DC6DC5EA273C2C3A00F64413 /* DevSettingsHandler.hxx */,
@@ -2785,6 +2791,7 @@
 				DC1B2EC81E50036100F62837 /* TrakBall.hxx in Headers */,
 				2D9173E709BA90380026E9FF /* M6532.hxx in Headers */,
 				E0893AF3211B9842008B170D /* HighPass.hxx in Headers */,
+				DCE7161B2AA78BD700B870EA /* Bezel.hxx in Headers */,
 				2D9173E809BA90380026E9FF /* MD5.hxx in Headers */,
 				2D9173EA09BA90380026E9FF /* Paddles.hxx in Headers */,
 				2D9173EB09BA90380026E9FF /* Props.hxx in Headers */,
@@ -3295,6 +3302,7 @@
 				2D91748309BA90380026E9FF /* CartF8.cxx in Sources */,
 				2D91748409BA90380026E9FF /* CartF8SC.cxx in Sources */,
 				DCF3A6FA1DFC75E3008A8AF3 /* Player.cxx in Sources */,
+				DCE7161A2AA78BD700B870EA /* Bezel.cxx in Sources */,
 				2D91748609BA90380026E9FF /* CartFE.cxx in Sources */,
 				2D91748909BA90380026E9FF /* Console.cxx in Sources */,
 				DC3C9BD32469C9A200CF2D47 /* CartEnhanced.cxx in Sources */,
