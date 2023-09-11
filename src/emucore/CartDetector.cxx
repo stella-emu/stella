@@ -34,11 +34,11 @@ Bankswitch::Type CartDetector::autodetectType(const ByteBuffer& image, size_t si
     else
       type = Bankswitch::Type::_AR;
   }
-  else if(size < 2_KB)  // Sub2K images
-  {
-    type = Bankswitch::Type::_2K;
-  }
-  else if((size == 2_KB) ||
+  //else if(size < 2_KB)  // Sub2K images
+  //{
+  //  type = isProbablyCV(image, size) ? Bankswitch::Type::_CV : Bankswitch::Type::_2K;
+  //}
+  else if((size <= 2_KB) ||
           (size == 4_KB && std::memcmp(image.get(), image.get() + 2_KB, 2_KB) == 0))
   {
     type = isProbablyCV(image, size) ? Bankswitch::Type::_CV : Bankswitch::Type::_2K;
@@ -516,8 +516,8 @@ bool CartDetector::isProbablyCV(const ByteBuffer& image, size_t size)
   // CV RAM access occurs at addresses $f3ff and $f400
   // These signatures are attributed to the MESS project
   static constexpr uInt8 signature[2][3] = {
-    { 0x9D, 0xFF, 0xF3 },  // STA $F3FF,X
-    { 0x99, 0x00, 0xF4 }   // STA $F400,Y
+    { 0x9D, 0xFF, 0xF3 },  // STA $F3FF,X  MagiCard
+    { 0x99, 0x00, 0xF4 }   // STA $F400,Y  Video Life
   };
   if(searchForBytes(image, size, signature[0], 3))
     return true;
