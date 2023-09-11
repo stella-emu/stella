@@ -27,11 +27,11 @@ CartridgeCV::CartridgeCV(const ByteBuffer& image, size_t size,
   myRamSize = RAM_SIZE;
   myRamWpHigh = RAM_HIGH_WP;
 
-  if (size == 2_KB)
+  if (size <= 2_KB)
   {
-    // Move the ROM of 2K files to the 2nd half of the 4K ROM
+    // Move the ROM of <=2K files to the 2nd half of the 4K ROM
     // The 1st half is used for RAM
-    std::copy_n(image.get(), 2_KB, myImage.get() + 2_KB);
+    std::copy_n(image.get(), size, myImage.get() + 4_KB - size);
   }
   else if(size == 4_KB)
   {
