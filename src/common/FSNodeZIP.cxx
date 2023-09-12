@@ -178,7 +178,6 @@ bool FSNodeZIP::getChildren(AbstractFSList& myList, ListMode mode) const
 
   std::set<string> dirs;
   myZipHandler->open(_zipFile);
-// cerr << "CHILDREN: --------------------------------\n";
   while(myZipHandler->hasNext())
   {
     // Only consider entries that start with '_virtualPath'
@@ -191,7 +190,7 @@ bool FSNodeZIP::getChildren(AbstractFSList& myList, ListMode mode) const
       // First strip off the leading directory
       const string& curr = name.substr(
           _virtualPath.empty() ? 0 : _virtualPath.size()+1);
-// cerr << "  curr: " << curr << endl;
+
       // Only add sub-directory entries once
       const auto pos = curr.find_first_of("/\\");
       if(pos != string::npos)
@@ -207,10 +206,6 @@ bool FSNodeZIP::getChildren(AbstractFSList& myList, ListMode mode) const
     myList.emplace_back(new FSNodeZIP(_zipFile, vpath, _realNode, 0, true));
   }
 
-// cerr << "list: \n";
-// for(auto& s: myList)
-//   cerr << s->getPath() << " : isdir: " << s->isDirectory() << endl;
-// cerr << "------------------------------------------\n";
   return true;
 }
 
@@ -267,22 +262,22 @@ size_t FSNodeZIP::write(const stringstream& buffer) const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 AbstractFSNodePtr FSNodeZIP::getParent() const
 {
-cerr << "zip : " << _zipFile << endl
-     << "vp  : " << _virtualPath << endl
-     << "path: " << _path << endl
-     << "name: " << _name << endl;
   if(_virtualPath.empty())
-  {
-if(_realNode)
-  cerr << "parent: " << _realNode->getParent()->getPath();
-else
-  cerr << "parent: nullptr";
-cerr << "\n\n\n";
     return _realNode ? _realNode->getParent() : nullptr;
-  }
 
-cerr << "new zip: " << stemPathComponent(_path) << "\n\n\n";
-  return make_unique<FSNodeZIP>(stemPathComponent(_path));
+  // TODO: For some reason, getting the stem for normal paths and zip paths
+  //       behaves differently.  For now, we'll use the old method here.
+  auto STEM_FOR_ZIP = [](string_view s) {
+    const char* const start = s.data();
+    const char* cur = start + s.size() - 2;
+
+    while (cur >= start && !(*cur == '/' || *cur == '\\'))
+      --cur;
+
+    return s.substr(0, (cur + 1) - start - 1);
+  };
+
+  return make_unique<FSNodeZIP>(STEM_FOR_ZIP(_path));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
