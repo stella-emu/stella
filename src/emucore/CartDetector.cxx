@@ -34,10 +34,6 @@ Bankswitch::Type CartDetector::autodetectType(const ByteBuffer& image, size_t si
     else
       type = Bankswitch::Type::_AR;
   }
-  //else if(size < 2_KB)  // Sub2K images
-  //{
-  //  type = isProbablyCV(image, size) ? Bankswitch::Type::_CV : Bankswitch::Type::_2K;
-  //}
   else if((size <= 2_KB) ||
           (size == 4_KB && std::memcmp(image.get(), image.get() + 2_KB, 2_KB) == 0))
   {
