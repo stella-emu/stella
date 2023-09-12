@@ -9899,8 +9899,8 @@
 
 "Cart.MD5" "6b75f8fa4fd011a6698c58315f83d2ac"
 "Cart.Manufacturer" "Thomas Jentzsch"
-"Cart.Name" "Sprintmaster DC (Thomas Jentzsch)"
-"Cart.Note" "Uses the Driving Controllers, Hack of Sprintmaster (Atari)"
+"Cart.Name" "Sprint Master DC (Thomas Jentzsch)"
+"Cart.Note" "Uses the Driving Controllers, Hack of Sprint Master (Atari)"
 "Cart.Rarity" "New Release (Hack)"
 "Controller.Left" "DRIVING"
 "Controller.Right" "DRIVING"
