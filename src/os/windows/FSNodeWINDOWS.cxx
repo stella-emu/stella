@@ -206,7 +206,13 @@ bool FSNodeWINDOWS::makeDir()
 bool FSNodeWINDOWS::rename(string_view newfile)
 {
   if (!_isPseudoRoot && MoveFile(_path.c_str(), string{newfile}.c_str()) != 0)
+  {
+    _path = newfile;
+    if (_path[0] == '~')
+      _path.replace(0, 1, HomeFinder::getHomePath());
+
     return setFlags();
+  }
 
   return false;
 }
