@@ -113,6 +113,7 @@ class RomImageWidget : public Widget
     // Surface zoom status
     bool myIsZoomed{false};
 
+  #ifdef IMAGE_SUPPORT
     // Zoom delay timer
     uInt32 myZoomTimer{0};
 
@@ -121,6 +122,7 @@ class RomImageWidget : public Widget
 
     // Last mouse position, used for zooming
     Common::Point myMousePos;
+  #endif
 
     // Current navigation area of the mouse
     Area myMouseArea{Area::NONE};
