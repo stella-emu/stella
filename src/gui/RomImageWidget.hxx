@@ -47,12 +47,12 @@ class RomImageWidget : public Widget
     uInt64 pendingLoadTime() { return myMaxLoadTime * timeFactor; }
 
   protected:
-#ifdef IMAGE_SUPPORT
+  #ifdef IMAGE_SUPPORT
     bool handleEvent(Event::Type event) override;
     void handleMouseUp(int x, int y, MouseButton b, int clickCount) override;
     void handleMouseMoved(int x, int y) override;
     void tick() override;
-#endif
+  #endif
     void drawWidget(bool hilite) override;
 
   private:
