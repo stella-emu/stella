@@ -384,6 +384,8 @@ static constexpr uInt16
   addr_set_vblank_size      = 0xab0,
   addr_pick_extra_lines     = 0xab9,
   addr_pick_transport       = 0xac6,
+  addr_title_gap1           = 0xb2c,
+  addr_title_gap2           = 0xb40,
   addr_title_loop           = 0xb50,
   addr_audio_bank           = 0xb80;
 
@@ -795,6 +797,8 @@ class MovieCart : public Serializable
       myROM[address & 1023] = data;
     }
 
+  void setConsoleTiming(ConsoleTiming timing);
+
   private:
     enum Mode : uInt8
     {
@@ -921,6 +925,33 @@ bool MovieCart::init(string_view path)
   myStream.swapField(true, myOdd);
 
   return true;
+}
+
+#define RAINBOW_HEIGHT 30
+#define TITLE_HEIGHT 12
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void MovieCart::setConsoleTiming(ConsoleTiming timing)
+{
+  uInt8 lines;
+
+  switch(timing)
+  {
+    case ConsoleTiming::ntsc:
+    default:
+      lines = 192;
+      break;
+
+    case ConsoleTiming::pal:
+    case ConsoleTiming::secam:
+      lines = 242;
+      break;
+  }
+
+  uInt8 val = (lines - RAINBOW_HEIGHT - RAINBOW_HEIGHT - TITLE_HEIGHT * 2) / 2;
+
+  writeROM(addr_title_gap1 + 1, val);
+  writeROM(addr_title_gap2 + 1, val);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1619,6 +1650,12 @@ void CartridgeMVC::install(System& system)
 void CartridgeMVC::reset()
 {
   myMovie->init(myPath);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void CartridgeMVC::consoleChanged(ConsoleTiming timing)
+{
+  myMovie->setConsoleTiming(timing);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -122,6 +122,16 @@ class CartridgeMVC : public Cartridge
     */
     bool load(Serializer& in) override;
 
+  protected:
+    /**
+      Notification method invoked by the system when the console type
+      has changed.  Simply used to change titlescreen format, content
+      still plays as encoded.
+
+      @param timing  Enum representing the new console type
+    */
+    void consoleChanged(ConsoleTiming timing) override;
+
   private:
     // Currently not used:
     // Pointer to a dynamically allocated ROM image of the cartridge
