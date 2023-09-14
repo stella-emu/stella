@@ -37,8 +37,7 @@ class CartridgeMVC : public Cartridge
 {
   public:
     static constexpr size_t
-      MVC_FIELD_SIZE     = 2560,  // round field to nearest 512 byte boundary
-      MVC_FIELD_PAD_SIZE = 4096;  // round to nearest 4K
+      MVC_FIELD_SIZE = 4096;
 
   public:
     /**

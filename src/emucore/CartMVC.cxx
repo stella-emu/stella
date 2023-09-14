@@ -65,7 +65,7 @@ class StreamReader : public Serializable
     }
 
     void blankPartialLines(bool index) {
-      constexpr int colorSize = 192 * 5;
+      int colorSize = myVisibleLines * 5;
       if (index)
       {
         // top line
@@ -91,13 +91,62 @@ class StreamReader : public Serializable
     void swapField(bool index, bool odd) {
       uInt8* offset = index ? myBuffer1.data() : myBuffer2.data();
 
-      myVersion  = offset + VERSION_DATA_OFFSET;
-      myFrame    = offset + FRAME_DATA_OFFSET;
-      myAudio    = offset + AUDIO_DATA_OFFSET;
-      myGraph    = offset + GRAPH_DATA_OFFSET;
-      myTimecode = offset + TIMECODE_DATA_OFFSET;
-      myColor    = offset + COLOR_DATA_OFFSET;
-      myColorBK  = offset + COLORBK_DATA_OFFSET;
+      class FrameFormat
+      {
+        public:
+
+          uInt8 version[4];   // ('M', 'V', 'C', 0)
+          uInt8 format;       // ( 1-------)
+          uInt8 timecode[4];  // (hour, minute, second, fame)
+          uInt8 vsync;        // eg 3
+          uInt8 vblank;       // eg 37
+          uInt8 overscan;     // eg 30
+          uInt8 visible;      // eg 192
+          uInt8 rate;         // eg 60
+          uInt8 dataStart;
+         
+          // sound[vsync+blank+overscan+visible]
+          // graph[5 * visible]
+          // color[5 * visible]
+          // bkcolor[1 * visible]
+          // timecode[60]
+          // padding
+      };
+
+      FrameFormat* ff = (FrameFormat* )offset;
+
+      if (ff->format & 0x80)
+      {
+        myVSyncLines = ff->vsync;
+        myBlankLines = ff->vblank;
+        myOverscanLines = ff->overscan;
+        myVisibleLines = ff->visible;
+        myEmbeddedFrame = ff->timecode[3] + 1;
+
+        int totalLines = myVSyncLines + myBlankLines + myOverscanLines + myVisibleLines;
+
+        myAudio    = (uInt8*)(&ff->dataStart);
+        myGraph    = myAudio + totalLines;
+        myColor    = ((uInt8*)myGraph) + 5 * myVisibleLines;
+        myColorBK  = myColor + 5 * myVisibleLines;
+        myTimecode = myColorBK + 1 * myVisibleLines;
+      }
+      else // previous format, ntsc assumed
+      {
+        myVSyncLines = 3;
+        myBlankLines = 37;
+        myOverscanLines = 30;
+        myVisibleLines = 192;
+        myEmbeddedFrame = offset[4 + 3 -1];
+
+        int totalLines = myVSyncLines + myBlankLines + myOverscanLines + myVisibleLines;
+
+        myAudio    = offset + 4 + 3;
+        myGraph    = myAudio + totalLines;
+        myTimecode = ((uInt8*)myGraph) + 5*myVisibleLines;
+        myColor    = ((uInt8*)myTimecode) + 60;
+        myColorBK  = myColor + 5*myVisibleLines;
+      }
 
       if (!odd)
           myColorBK++;
@@ -106,9 +155,9 @@ class StreamReader : public Serializable
     bool readField(uInt32 fnum, bool index) {
       if(myFile)
       {
-        const size_t offset = ((fnum + 0) * CartridgeMVC::MVC_FIELD_PAD_SIZE);
+        const size_t offset = ((fnum + 0) * CartridgeMVC::MVC_FIELD_SIZE);
 
-        if(offset + CartridgeMVC::MVC_FIELD_PAD_SIZE < myFileSize)
+        if(offset + CartridgeMVC::MVC_FIELD_SIZE < myFileSize)
         {
           myFile.setPosition(offset);
           if(index)
@@ -122,8 +171,6 @@ class StreamReader : public Serializable
       return false;
     }
 
-    uInt8 readVersion() { return *myVersion++; }
-    uInt8 readFrame()   { return *myFrame++;   }
     uInt8 readColor()   { return *myColor++;   }
     uInt8 readColorBK() { return *myColorBK++; }
 
@@ -134,6 +181,12 @@ class StreamReader : public Serializable
     void overrideGraph(const uInt8* p) { myGraphOverride = p; }
 
     uInt8 readAudio() { return *myAudio++; }
+
+    uInt8 getVisibleLines()  { return myVisibleLines; }
+    uInt8 getVSyncLines()    { return myVSyncLines; }
+    uInt8 getBlankLines()    { return myBlankLines; }
+    uInt8 getOverscanLines() { return myOverscanLines; }
+    uInt8 getEmbeddedFrame() { return myEmbeddedFrame; }
 
     [[nodiscard]] uInt8 peekAudio() const { return *myAudio; }
 
@@ -152,8 +205,6 @@ class StreamReader : public Serializable
         const uInt8*  myTimecode
         const uInt8*  myColor
         const uInt8*  myColorBK
-        const uInt8*  myVersion
-        const uInt8*  myFrame
       #endif
       }
       catch(...)
@@ -176,8 +227,6 @@ class StreamReader : public Serializable
         const uInt8*  myTimecode
         const uInt8*  myColor
         const uInt8*  myColorBK
-        const uInt8*  myVersion
-        const uInt8*  myFrame
       #endif
       }
       catch(...)
@@ -188,16 +237,6 @@ class StreamReader : public Serializable
     }
 
   private:
-    static constexpr int
-        VERSION_DATA_OFFSET = 0,
-        FRAME_DATA_OFFSET = 4,
-        AUDIO_DATA_OFFSET = 7,
-        GRAPH_DATA_OFFSET = 269,
-        TIMECODE_DATA_OFFSET = 1229,
-        COLOR_DATA_OFFSET = 1289,
-        COLORBK_DATA_OFFSET = 2249,
-        END_DATA_OFFSET = 2441;
-
     const uInt8*  myAudio{nullptr};
 
     const uInt8*  myGraph{nullptr};
@@ -206,11 +245,15 @@ class StreamReader : public Serializable
     const uInt8*  myTimecode{nullptr};
     uInt8*        myColor{nullptr};
     uInt8*        myColorBK{nullptr};
-    const uInt8*  myVersion{nullptr};
-    const uInt8*  myFrame{nullptr};
 
     std::array<uInt8, CartridgeMVC::MVC_FIELD_SIZE> myBuffer1;
     std::array<uInt8, CartridgeMVC::MVC_FIELD_SIZE> myBuffer2;
+
+    uInt8         myVisibleLines{192};
+    uInt8         myVSyncLines{3};
+    uInt8         myBlankLines{37};
+    uInt8         myOverscanLines{30};
+    uInt8         myEmbeddedFrame{0};
 
     Serializer myFile;
     size_t myFileSize{0};
@@ -301,8 +344,7 @@ class MovieInputs : public Serializable
 static constexpr uInt8
   TIMECODE_HEIGHT = 12,
   MAX_LEVEL       = 11,
-  DEFAULT_LEVEL   = 6,
-  BLANK_LINE_SIZE = (30+3+37-1); // 70-1
+  DEFAULT_LEVEL   = 6;
 
 // Automatically generated
 // Several not used
@@ -338,6 +380,7 @@ static constexpr uInt16
   addr_end_lines            = 0xa80,
   addr_set_aud_endlines     = 0xa80,
   addr_set_overscan_size    = 0xa9a,
+  addr_set_vsync_size       = 0xaa3,
   addr_set_vblank_size      = 0xab0,
   addr_pick_extra_lines     = 0xab9,
   addr_pick_transport       = 0xac6,
@@ -1192,17 +1235,19 @@ void MovieCart::fill_addr_end_lines()
   // keep at overscan=29, vblank=36
   //      or overscan=30, vblank=36 + 1 blank line
 
+  writeROM(addr_set_vsync_size + 1, myStream.getVSyncLines());
+
   if(myOdd)
   {
-    writeROM(addr_set_overscan_size + 1, 29);
-    writeROM(addr_set_vblank_size + 1, 36);
+    writeROM(addr_set_overscan_size + 1, myStream.getOverscanLines()-1);
+    writeROM(addr_set_vblank_size + 1, myStream.getBlankLines()-1);
 
     writeROM(addr_pick_extra_lines + 1, 0);
   }
   else
   {
-    writeROM(addr_set_overscan_size + 1, 30);
-    writeROM(addr_set_vblank_size + 1, 36);
+    writeROM(addr_set_overscan_size + 1, myStream.getOverscanLines());
+    writeROM(addr_set_vblank_size + 1, myStream.getBlankLines()-1);
 
     // extra line after vblank
     writeROM(addr_pick_extra_lines + 1, 1);
@@ -1223,33 +1268,19 @@ void MovieCart::fill_addr_end_lines()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void MovieCart::fill_addr_blank_lines()
 {
-  // version number
-  myStream.readVersion();
-  myStream.readVersion();
-  myStream.readVersion();
-  myStream.readVersion();
+  myOdd = (myStream.getEmbeddedFrame() & 1);
 
-  // frame number
-  myStream.readFrame();
-  myStream.readFrame();
-  const uInt8 v = myStream.readFrame();
-
-  // make sure we're in sync with frame data
-  myOdd = (v & 1);
-
-  // 30 overscan
-  // 3 vsync
-  // 37 vblank
+  uInt8 blankTotal = (myStream.getOverscanLines() + myStream.getVSyncLines() + myStream.getBlankLines()-1); // 70-1
 
   if(myOdd)
   {
     writeAudioData(addr_audio_bank + 0, myFirstAudioVal);
-    for(uInt8 i = 1; i < (BLANK_LINE_SIZE + 1); i++)
+    for(uInt8 i = 1; i < (blankTotal + 1); i++)
       writeAudio(addr_audio_bank + i);
   }
   else
   {
-    for(uInt8 i = 0; i < (BLANK_LINE_SIZE -1); i++)
+    for(uInt8 i = 0; i < (blankTotal -1); i++)
       writeAudio(addr_audio_bank + i);
   }
 }
@@ -1397,7 +1428,7 @@ void MovieCart::runStateMachine()
         }
 
         myForceColor = 0;
-        myLines = 191;
+        myLines = myStream.getVisibleLines() - 1;
         myState = 1;
       }
       break;
