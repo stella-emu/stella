@@ -559,17 +559,20 @@ void RomImageWidget::drawWidget(bool hilite)
     return;
   }
 
+#ifdef IMAGE_SUPPORT
   if(mySurfaceIsValid)
   {
     s.fillRect(_x, _y, _w, myImageHeight, 0);
     positionSurfaces();
   }
-  else if(!mySurfaceErrorMsg.empty())
-  {
-    const uInt32 x = _x + ((_w - _font.getStringWidth(mySurfaceErrorMsg)) >> 1);
-    const uInt32 y = _y + ((myImageHeight - _font.getLineHeight()) >> 1);
-    s.drawString(_font, mySurfaceErrorMsg, x, y, _w - 10, _textcolor);
-  }
+  else
+#endif
+    if(!mySurfaceErrorMsg.empty())
+    {
+      const uInt32 x = _x + ((_w - _font.getStringWidth(mySurfaceErrorMsg)) >> 1);
+      const uInt32 y = _y + ((myImageHeight - _font.getLineHeight()) >> 1);
+      s.drawString(_font, mySurfaceErrorMsg, x, y, _w - 10, _textcolor);
+    }
 
   // Draw the image label and counter
   ostringstream buf;
