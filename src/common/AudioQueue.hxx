@@ -23,6 +23,10 @@
 #include "bspf.hxx"
 #include "StaggeredLogger.hxx"
 
+#ifdef RTSTELLA
+#include "Spinlock.hxx"
+#endif
+
 /**
   This class implements an audio queue that acts both like a ring buffer
   and a pool of audio fragments. The TIA emulation core fills a fragment
@@ -36,6 +40,11 @@
 */
 class AudioQueue
 {
+  #ifdef RTSTELLA
+    using Lock = Spinlock;
+  #else
+    using Lock = std::Mutex;
+  #endif
   public:
 
     /**
@@ -120,7 +129,8 @@ class AudioQueue
     uInt32 myNextFragment{0};
 
     // We need a mutex for thread safety.
-    mutable std::mutex myMutex;
+    mutable Lock myLock;
+
 
     // The first (empty) enqueue call returns this fragment.
     Int16* myFirstFragmentForEnqueue{nullptr};

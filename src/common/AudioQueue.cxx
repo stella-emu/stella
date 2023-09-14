@@ -54,7 +54,7 @@ uInt32 AudioQueue::capacity() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt32 AudioQueue::size() const
 {
-  const lock_guard<mutex> guard(myMutex);
+  const lock_guard<Lock> guard(myLock);
 
   return mySize;
 }
@@ -74,7 +74,7 @@ uInt32 AudioQueue::fragmentSize() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Int16* AudioQueue::enqueue(Int16* fragment)
 {
-  const lock_guard<mutex> guard(myMutex);
+  const lock_guard<Lock> guard(myLock);
 
   Int16* newFragment = nullptr;
 
@@ -105,7 +105,7 @@ Int16* AudioQueue::enqueue(Int16* fragment)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Int16* AudioQueue::dequeue(Int16* fragment)
 {
-  const lock_guard<mutex> guard(myMutex);
+  const lock_guard<Lock> guard(myLock);
 
   if (mySize == 0) return nullptr;
 
@@ -128,7 +128,7 @@ Int16* AudioQueue::dequeue(Int16* fragment)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void AudioQueue::closeSink(Int16* fragment)
 {
-  const lock_guard<mutex> guard(myMutex);
+  const lock_guard<Lock> guard(myLock);
 
   if (myFirstFragmentForDequeue && fragment)
     throw runtime_error("attempt to return unknown buffer on closeSink");

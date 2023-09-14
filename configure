@@ -320,6 +320,9 @@ case $_host in
 retron77)
 	_host_os=retron77
 	;;
+rtstella)
+	_host_os=rtstella
+	;;
 mingw32-cross)
 	_host_os=mingw32msvc
 	_host_cpu=i386
@@ -543,6 +546,10 @@ if test -n "$_host"; then
       _build_cheats=no
       _build_httplib=no
       ;;
+		rtstella)
+			echo "Compiling rtstella"
+			DEFINES="$DEFINES -DRTSTELLA"
+			;;
 		mingw32-cross)
 			echo "Cross-compiling for Windows using MinGW."
 			DEFINES="$DEFINES -DWIN32"
@@ -567,7 +574,7 @@ else
 	echo_n "Checking hosttype... "
 	echo $_host_os
 	case $_host_os in
-		linux* | openbsd* | freebsd* | kfreebsd* | netbsd* | bsd* | gnu0.* | sunos* | hpux* | beos*)
+		linux* | openbsd* | freebsd* | kfreebsd* | netbsd* | bsd* | gnu0.* | sunos* | hpux* | beos* )
 			DEFINES="$DEFINES -DUNIX"
 			_host_os=unix
 			;;
@@ -833,6 +840,12 @@ case $_host_os in
 			DEFINES="$DEFINES -DBSPF_UNIX"
 			MODULES="$MODULES $SRC_OS/unix"
 			INCLUDES="$INCLUDES -I$SRC_OS/unix"
+			;;
+		rtstella)
+			DEFINES="$DEFINES -DBSPF_UNIX"
+			MODULES="$MODULES $SRC_OS/unix $SRC_OS/rtstella"
+			INCLUDES="$INCLUDES -I$SRC_OS/unix -I$SRC_OS/rtstella"
+			LIBS="$LIBS -lpthread"
 			;;
 		darwin)
 			DEFINES="$DEFINES -DBSPF_UNIX -DMACOS_KEYS"
