@@ -31,9 +31,8 @@ class System;
   Originally named SCABS (Subroutine Controlled Automatic Bank Switching)
 
   This scheme was originally designed to have up to 8 4K banks, and is
-  triggered by monitoring the address bus for address $01FE.  All released
-  carts had only two banks, and this implementation assumes that (ie, ROM
-  is always 8K, and there are two 4K banks).
+  triggered by monitoring the address bus for address $01FE. However, all
+  released carts had only two banks.
 
   The following is paraphrased from the original patent by David Crane,
   European Patent Application # 84300730.3, dated 06.02.84:
@@ -58,16 +57,12 @@ class System;
   ---------------------------------------------------------------------------
 
   Note that in the general scheme, we use D7, D6 and D5 for the bank number
-  (3 bits, so 8 possible banks).  However, the scheme as used historically
-  by Activision only uses two banks.  Furthermore, the two banks it uses
-  are actually indicated by binary 110 and 111, and translated as follows:
+  (3 bits, so 8 possible banks), translated as follows:
 
-    binary 110 -> decimal 6 -> Upper 4K ROM (bank 1) @ $D000 - $DFFF
-    binary 111 -> decimal 7 -> Lower 4K ROM (bank 0) @ $F000 - $FFFF
-
-  Since the actual bank numbers (0 and 1) do not map directly to their
-  respective bitstrings (7 and 6), we simply test for D5 being 0 or 1.
-  This is the significance of the test '(value & 0x20) ? 0 : 1' in the code.
+    binary 111 -> decimal 7 -> 1st 4K ROM (bank 0) @ $F000 - $FFFF
+    binary 110 -> decimal 6 -> 2nd 4K ROM (bank 1) @ $D000 - $DFFF
+    binary 101 -> decimal 5 -> 3rd 4K ROM (bank 2) @ $B000 - $BFFF
+    ...
 
   NOTE: Consult the patent application for more specific information, in
         particular *why* the address $01FE will be placed on the address
