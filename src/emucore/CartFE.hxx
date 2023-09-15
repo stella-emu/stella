@@ -91,7 +91,7 @@ class CartridgeFE : public CartridgeEnhanced
       @param bsSize    The size specified by the bankswitching scheme
     */
     CartridgeFE(const ByteBuffer& image, size_t size, string_view md5,
-                const Settings& settings, size_t bsSize = 8_KB);
+                const Settings& settings, size_t bsSize);
     ~CartridgeFE() override = default;
 
   public:
