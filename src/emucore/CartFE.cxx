@@ -42,9 +42,7 @@ void CartridgeFE::install(System& system)
 
   // The hotspot $01FE is in a mirror of zero-page RAM
   // We need to claim access to it here, and deal with it in peek/poke below
-  const System::PageAccess access(this, System::PageAccessType::READWRITE);
-  for(uInt16 addr = 0x180; addr < 0x200; addr += System::PAGE_SIZE)
-    mySystem->setPageAccess(addr, access);
+  mySystem->setPageAccess(0x1c0, System::PageAccess(this, System::PageAccessType::READWRITE));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
