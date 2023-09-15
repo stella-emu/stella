@@ -38,7 +38,7 @@ RomImageWidget::RomImageWidget(GuiObject* boss, const GUI::Font& font,
   _flags = Widget::FLAG_ENABLED | Widget::FLAG_TRACK_MOUSE; // | FLAG_WANTS_RAWDATA;
   _bgcolor = kDlgColor;
   _bgcolorlo = kBGColorLo;
-  myImageHeight = _h - labelHeight(font);
+  myImageHeight = _h - labelHeight(font) - font.getFontHeight() / 4 - 1;
 
   myZoomRect = Common::Rect(_w * 7 / 16, myImageHeight * 7 / 16,
                             _w * 9 / 16, myImageHeight * 9 / 16);
@@ -376,8 +376,8 @@ void RomImageWidget::zoomSurfaces(bool zoomed, bool force)
     {
       // Scale surface to available widget area
       const float scale = std::min(
-        static_cast<float>(_w) / mySrcRect.w(),
-        static_cast<float>(myImageHeight) / mySrcRect.h()) * scaleDpi;
+        static_cast<float>(_w - 2) / mySrcRect.w(),
+        static_cast<float>(myImageHeight - 1) / mySrcRect.h()) * scaleDpi;
       const uInt32 w = mySrcRect.w() * scale;
       const uInt32 h = mySrcRect.h() * scale;
 
@@ -429,7 +429,7 @@ void RomImageWidget::positionSurfaces()
   {
     // Position image and navigation surface
     const uInt32 x = s_dst.x() + _x * scaleDpi;
-    const uInt32 y = s_dst.y() + _y * scaleDpi;
+    const uInt32 y = s_dst.y() + _y * scaleDpi + 1;
 
     mySurface->setDstPos(x + ((_w * scaleDpi - w) >> 1),
                          y + ((myImageHeight * scaleDpi - h) >> 1));
@@ -476,8 +476,7 @@ bool RomImageWidget::handleEvent(Event::Type event)
       changeImage(1);
       return true;
 
-    case Event::UIOK:     // controller
-    case Event::UICancel: // controller
+    case Event::UIOK:     // keyboard & controller
     case Event::UISelect: // keyboard & controller
       toggleImageZoom();
       return true;
@@ -485,7 +484,6 @@ bool RomImageWidget::handleEvent(Event::Type event)
     default:
       break;
   }
-
   return Widget::handleEvent(event);
 }
 
@@ -509,7 +507,6 @@ void RomImageWidget::handleMouseMoved(int x, int y)
   const Area oldArea = myMouseArea;
 
   myMousePos = Common::Point(x, y);
-  //myZoomMode = false;
 
   if(myZoomRect.contains(x, y))
     myMouseArea = Area::ZOOM;
@@ -540,7 +537,7 @@ void RomImageWidget::tick()
 
   Widget::tick();
 }
-#endif
+#endif // IMAGE_SUPPORT
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void RomImageWidget::drawWidget(bool hilite)
@@ -577,12 +574,12 @@ void RomImageWidget::drawWidget(bool hilite)
   // Draw the image label and counter
   ostringstream buf;
   buf << myImageIdx + 1 << "/" << myImageList.size();
-  const int yText = _y + myImageHeight + _font.getFontHeight() / 8;
-  const int wText = _font.getStringWidth(buf.str());
+  const int yText = _y + _h - _font.getFontHeight() * 10 / 8;
+  const int wText = _font.getStringWidth(buf.str()) + 8;
 
   s.fillRect(_x, yText, _w, _font.getFontHeight(), _bgcolor);
   if(myLabel.length())
-    s.drawString(_font, myLabel, _x, yText, _w - wText - _font.getMaxCharWidth() * 2, _textcolor);
+    s.drawString(_font, myLabel, _x + 8, yText, _w - wText - 16 - _font.getMaxCharWidth() * 2, _textcolor);
   if(!myImageList.empty())
     s.drawString(_font, buf.str(), _x + _w - wText, yText, wText, _textcolor);
 
@@ -656,5 +653,6 @@ void RomImageWidget::drawWidget(bool hilite)
       }
     } // zoom icon
   }
+  s.frameRect(_x, _y, _w, _h, isHighlighted() ? kWidColorHi : kColor);
   clearDirty();
 }

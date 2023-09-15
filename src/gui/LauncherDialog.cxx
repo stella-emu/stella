@@ -887,11 +887,11 @@ void LauncherDialog::handleJoyUp(int stick, int button)
   // open power-up options and settings for 2nd and 4th button if not mapped otherwise
   const Event::Type e = instance().eventHandler().eventForJoyButton(EventMode::kMenuMode, stick, button);
 
-  if (button == 1 && (e == Event::UIOK || e == Event::NoType))
+  if(myList->isHighlighted() && button == 1 && (e == Event::UIOK || e == Event::NoType))
     openGlobalProps();
-  if (button == 3 && (e == Event::UITabPrev || e == Event::NoType))
+  if(myList->isHighlighted() && button == 3 && (e == Event::UITabPrev || e == Event::NoType))
     openSettings();
-  else if (!myEventHandled)
+  else if(!myEventHandled)
     Dialog::handleJoyUp(stick, button);
 
   myList->clearFlags(Widget::FLAG_WANTS_RAWDATA); // stop allowing to handle long button press
