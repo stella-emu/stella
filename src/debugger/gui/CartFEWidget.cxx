@@ -32,7 +32,7 @@ string CartridgeFEWidget::description()
 {
   ostringstream info;
 
-  info << "FE (aka SCABS) cartridge, two 4K banks\n"
+  info << "FE (aka SCABS) cartridge, up to eight 4K banks\n"
        << "Monitors access to hotspot $01FE, and uses "
        << "upper 3 bits of databus for bank number:\n"
        << CartridgeEnhancedWidget::description();
