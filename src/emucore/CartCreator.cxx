@@ -308,7 +308,7 @@ CartCreator::createFromImage(const ByteBuffer& image, size_t size,
     case Bankswitch::Type::_FC:
       return make_unique<CartridgeFC>(image, size, md5, settings);
     case Bankswitch::Type::_FE:
-      return make_unique<CartridgeFE>(image, size, md5, settings);
+      return make_unique<CartridgeFE>(image, size, md5, settings, size);
     case Bankswitch::Type::_GL:
       return make_unique<CartridgeGL>(image, size, md5, settings);
     case Bankswitch::Type::_MDM:

@@ -164,7 +164,7 @@ Bankswitch::Sizes = {{
   {   32_KB, 512_KB }, // _CDF
   {   16_KB,  16_KB }, // _CM
   {   32_KB,  32_KB }, // _CTY
-  {    2_KB,   4_KB }, // _CV
+  {    0_KB,   4_KB }, // _CV
   {  128_KB, 128_KB }, // _DF
   {  128_KB, 128_KB }, // _DFSC
   {   10_KB,  11_KB }, // _DPC
