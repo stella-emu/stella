@@ -37,8 +37,7 @@ class CartridgeMVC : public Cartridge
 {
   public:
     static constexpr size_t
-      MVC_FIELD_SIZE     = 2560,  // round field to nearest 512 byte boundary
-      MVC_FIELD_PAD_SIZE = 4096;  // round to nearest 4K
+      MVC_FIELD_SIZE = 4096;
 
   public:
     /**
@@ -122,6 +121,16 @@ class CartridgeMVC : public Cartridge
       @return  False on any errors, else true
     */
     bool load(Serializer& in) override;
+
+  protected:
+    /**
+      Notification method invoked by the system when the console type
+      has changed.  Simply used to change titlescreen format, content
+      still plays as encoded.
+
+      @param timing  Enum representing the new console type
+    */
+    void consoleChanged(ConsoleTiming timing) override;
 
   private:
     // Currently not used:
