@@ -22,7 +22,7 @@
 srcdir      ?= .
 
 DEFINES     := -DSDL_SUPPORT -D_GLIBCXX_USE_CXX11_ABI=1
-LDFLAGS     := -pthread
+LDFLAGS     := -pthread -latomic
 INCLUDES    :=
 LIBS	    :=
 OBJS	    :=

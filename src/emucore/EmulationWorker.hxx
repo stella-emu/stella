@@ -38,7 +38,6 @@
 #ifndef EMULATION_WORKER_HXX
 #define EMULATION_WORKER_HXX
 
-#include <atomic>
 #include <mutex>
 #include <condition_variable>
 #include <thread>
@@ -185,7 +184,7 @@ class EmulationWorker
     // Any pending signal (or Signal::none)
     Signal myPendingSignal{Signal::none};
     // The initial access to myState is not synchronized -> make this atomic
-    std::atomic<State> myState{State::initializing};
+    State myState{State::initializing};
 
     // Emulation parameters
     TIA* myTia{nullptr};

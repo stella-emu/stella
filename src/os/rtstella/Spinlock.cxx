@@ -18,21 +18,25 @@
 #include "bspf.hxx"
 #include "Spinlock.hxx"
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Spinlock::Spinlock()
 {
   pthread_spin_init(&mySpinlock, PTHREAD_PROCESS_PRIVATE);
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Spinlock::~Spinlock()
 {
   pthread_spin_destroy(&mySpinlock);
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Spinlock::lock()
 {
   pthread_spin_lock(&mySpinlock);
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Spinlock::unlock()
 {
   pthread_spin_unlock(&mySpinlock);
