@@ -34,7 +34,7 @@ namespace {
 
     const int cores = get_nprocs();
     if (cores < 2) {
-      Logger::error("failed to set scheduling affinity - not enough cores");
+      Logger::error("failed to set scheduling affinity on emulation worker - not enough cores");
       return;
     }
 
@@ -44,7 +44,7 @@ namespace {
 
     if (sched_setaffinity(0, sizeof(cpuset), &cpuset) < 0){
       ostringstream ss;
-      ss << "failed to pin thread: " << errno;
+      ss << "failed to pin worker thread: " << errno;
 
       Logger::error(ss.str());
     }

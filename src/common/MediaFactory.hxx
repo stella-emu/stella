@@ -31,6 +31,8 @@
   #if defined(RETRON77)
     #include "SettingsR77.hxx"
     #include "OSystemR77.hxx"
+  #elif defined(RTSTELLA)
+    #include "OSystemRTStella.hxx"
   #else
     #include "OSystemUNIX.hxx"
   #endif
@@ -92,6 +94,8 @@ class MediaFactory
     #if defined(BSPF_UNIX)
       #if defined(RETRON77)
         return make_unique<OSystemR77>();
+      #elif defined(RTSTELLA)
+        return make_unique<OSystemRTStella>();
       #else
         return make_unique<OSystemUNIX>();
       #endif
