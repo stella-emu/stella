@@ -19,9 +19,9 @@
 #define LOGGER_HXX
 
 #include <functional>
-#include <mutex>
 
 #include "bspf.hxx"
+#include "Lock.hxx"
 
 class Logger {
 
@@ -63,7 +63,7 @@ class Logger {
     // The list of log messages
     string myLogMessages;
 
-    std::mutex mutex;
+    MutexOrSpinlock mutex;
 
   private:
     void logMessage(string_view message, Level level);

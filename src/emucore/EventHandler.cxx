@@ -151,11 +151,14 @@ void EventHandler::reset(EventHandlerState state)
 #endif
   myFryingFlag = false;
 
+#ifndef RTSTELLA
   // Reset events almost immediately after starting emulation mode
   // We wait a little while (0.5s), since 'hold' events may be present,
   // and we want time for the ROM to process them
   if(state == EventHandlerState::EMULATION)
     myOSystem.timer().setTimeout([&ev = myEvent]() { ev.clear(); }, 500);
+#endif
+
   // Toggle 7800 mode
   set7800Mode();
 }

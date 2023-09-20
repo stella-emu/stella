@@ -45,6 +45,7 @@ StaggeredLogger::StaggeredLogger(string_view message, Logger::Level level)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 StaggeredLogger::~StaggeredLogger()
 {
+#ifndef RTSTELLA
   myTimer->clear(myTimerId);
 
   // make sure that the worker thread joins before continuing with the destruction
@@ -52,15 +53,22 @@ StaggeredLogger::~StaggeredLogger()
 
   // the worker thread has joined and there will be no more reentrant calls ->
   // continue with destruction
+#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void StaggeredLogger::log()
 {
+#ifdef RTSTELLA
+  Logger::log(myMessage, myLevel);
+#else
   const std::lock_guard<std::mutex> lock(myMutex);
 
   _log();
+#endif
 }
+
+#ifndef RTSTELLA
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void StaggeredLogger::_log()
@@ -143,3 +151,5 @@ void StaggeredLogger::onTimerExpired(uInt32 timerCallbackId)
 
   myLastIntervalEndTimestamp = high_resolution_clock::now();
 }
+
+#endif

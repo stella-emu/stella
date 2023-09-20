@@ -16,6 +16,7 @@
 //============================================================================
 
 #include "Logger.hxx"
+#include <mutex>
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Logger& Logger::instance()
@@ -51,7 +52,7 @@ void Logger::debug(string_view message)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Logger::logMessage(string_view message, Level level)
 {
-  const std::lock_guard<std::mutex> lock(mutex);
+  const std::lock_guard<MutexOrSpinlock> lock(mutex);
 
   if(level == Logger::Level::ERR)
   {

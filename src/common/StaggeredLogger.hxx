@@ -44,7 +44,7 @@ class StaggeredLogger
     void log();
 
   private:
-
+#ifndef RTSTELLA
     void _log();
 
     void onTimerExpired(uInt32 timerCallbackId);
@@ -56,9 +56,12 @@ class StaggeredLogger
     void decreaseInterval();
 
     void logLine();
+#endif
 
     string myMessage;
     Logger::Level myLevel;
+
+#ifndef RTSTELLA
 
     uInt32 myCurrentEventCount{0};
     bool myIsCurrentlyCollecting{false};
@@ -83,7 +86,7 @@ class StaggeredLogger
     // returns. This id is unique per timer and is used to return from the callback
     // early in case the time is stale.
     uInt32 myTimerCallbackId{0};
-
+#endif
   private:
     // Following constructors and assignment operators not supported
     StaggeredLogger(const StaggeredLogger&) = delete;

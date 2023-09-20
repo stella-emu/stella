@@ -22,6 +22,7 @@
 #include <set>
 
 #include "bspf.hxx"
+#include "Lock.hxx"
 
 /**
   @author  Stephen Anthony, Christian Speckner, Thomas Jentzsch
@@ -206,7 +207,7 @@ class Event
       Get the value associated with the event of the specified type.
     */
     Int32 get(Type type) const {
-      std::lock_guard<std::mutex> lock(myMutex);
+      std::lock_guard<MutexOrSpinlock> lock(myMutex);
 
       return myValues[type];
     }
@@ -215,7 +216,7 @@ class Event
       Set the value associated with the event of the specified type.
     */
     void set(Type type, Int32 value) {
-      std::lock_guard<std::mutex> lock(myMutex);
+      std::lock_guard<MutexOrSpinlock> lock(myMutex);
 
       myValues[type] = value;
     }
@@ -225,7 +226,7 @@ class Event
     */
     void clear()
     {
-      std::lock_guard<std::mutex> lock(myMutex);
+      std::lock_guard<MutexOrSpinlock> lock(myMutex);
 
       myValues.fill(Event::NoType);
     }
@@ -253,7 +254,7 @@ class Event
     // Array of values associated with each event type
     std::array<Int32, LastType> myValues;
 
-    mutable std::mutex myMutex;
+    mutable MutexOrSpinlock myMutex;
 
   private:
     // Following constructors and assignment operators not supported

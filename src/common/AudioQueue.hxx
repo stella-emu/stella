@@ -18,9 +18,8 @@
 #ifndef AUDIO_QUEUE_HXX
 #define AUDIO_QUEUE_HXX
 
-#include <mutex>
-
 #include "bspf.hxx"
+#include "Lock.hxx"
 #include "StaggeredLogger.hxx"
 
 #ifdef RTSTELLA
@@ -40,11 +39,6 @@
 */
 class AudioQueue
 {
-  #ifdef RTSTELLA
-    using Lock = Spinlock;
-  #else
-    using Lock = std::Mutex;
-  #endif
   public:
 
     /**
@@ -129,7 +123,7 @@ class AudioQueue
     uInt32 myNextFragment{0};
 
     // We need a mutex for thread safety.
-    mutable Lock myLock;
+    mutable MutexOrSpinlock myLock;
 
 
     // The first (empty) enqueue call returns this fragment.
