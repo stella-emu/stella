@@ -64,6 +64,16 @@ class RTEmulationWorker {
 
     void stop();
 
+    State state()
+    {
+      return myState;
+    }
+
+    bool isRunning()
+    {
+      return myState == State::running || myState == State::paused;
+    }
+
   private:
 
     void threadMain();

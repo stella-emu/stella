@@ -23,6 +23,8 @@
 class OSystemRTStella: public OSystemStandalone {
   public:
     bool initialize(const Settings::Options& options) override;
+
+    void mainLoop() override;
 };
 
 #endif // OSYSTEM_RTSTELLA_HXX

@@ -15,12 +15,15 @@
 #define TRACE_MSG(m) m " in " STRINGIFY(__FILE__) ":" STRINGIFY(__LINE__)
 
 namespace {
-  constexpr uint64_t TIMESLICE_NANOSECONDS = 100000;
-  constexpr uint64_t MAX_LAG_NANOSECONDS = 10 * TIMESLICE_NANOSECONDS;
+  constexpr uint64_t TIMESLICE_NANOSECONDS = 1000000;
+  constexpr uint64_t MAX_LAG_NANOSECONDS = 100000000;
 
   inline Int64 timeDifferenceNanoseconds(const struct timespec& from, const struct timespec& to)
   {
-    return (from.tv_sec - to.tv_sec) * 1000000000 + (from.tv_nsec - to.tv_nsec);
+    uInt64 deltaSec = from.tv_sec - to.tv_sec;
+    uInt64 deltaNsec = from.tv_nsec - to.tv_nsec;
+
+    return deltaSec * 1000000000 + deltaNsec;
   }
 
   void configureScheduler() {
@@ -119,6 +122,8 @@ void RTEmulationWorker::suspend()
 
   // the thread may transition to State::exception instead, so make sure that we rethrow
   while (myState != State::paused) rethrowPendingException();
+
+  __sync_synchronize();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -133,6 +138,8 @@ void RTEmulationWorker::resume()
 
   // the thread may transition to State::exception instead, so make sure that we rethrow
   while (myState != State::running) rethrowPendingException();
+
+  __sync_synchronize();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -207,6 +214,7 @@ void RTEmulationWorker::stop()
   }
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void RTEmulationWorker::threadMain()
 {
   configureScheduler();
@@ -259,6 +267,8 @@ void RTEmulationWorker::dispatchEmulation()
   double virtualTimeNanoseconds = 0;
 
   clock_gettime(CLOCK_MONOTONIC, &timeOffset);
+
+  myDispatchResult->setOk(0);
 
   myState = State::running;
   myPendingSignal = Signal::none;

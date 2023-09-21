@@ -598,6 +598,9 @@ class OSystem
     // Indicates whether to stop the main loop
     bool myQuitLoop{false};
 
+    static constexpr uInt32 FPS_METER_QUEUE_SIZE = 100;
+    FpsMeter myFpsMeter{FPS_METER_QUEUE_SIZE};
+
   private:
     FSNode myBaseDir, myStateDir, mySnapshotSaveDir, mySnapshotLoadDir,
            myNVRamDir, myCfgDir, myHomeDir, myUserDir, myBezelDir;
@@ -606,9 +609,6 @@ class OSystem
 
     string myFeatures;
     string myBuildInfo;
-
-    static constexpr uInt32 FPS_METER_QUEUE_SIZE = 100;
-    FpsMeter myFpsMeter{FPS_METER_QUEUE_SIZE};
 
     // If not empty, a hint for derived classes to use this as the
     // base directory (where all settings are stored)
