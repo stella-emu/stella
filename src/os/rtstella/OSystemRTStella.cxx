@@ -47,6 +47,8 @@ void OSystemRTStella::mainLoop()
   RTEmulationWorker worker;
   DispatchResult dispatchResult;
 
+  cout << "starting rtstella main loop..." << endl << std::flush;
+
   for (;;) {
     TIA& tia = myConsole->tia();
 
