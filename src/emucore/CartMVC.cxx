@@ -104,7 +104,7 @@ class StreamReader : public Serializable
           uInt8 visible;      // eg 192
           uInt8 rate;         // eg 60
           uInt8 dataStart;
-         
+
           // sound[vsync+blank+overscan+visible]
           // graph[5 * visible]
           // color[5 * visible]
@@ -113,7 +113,7 @@ class StreamReader : public Serializable
           // padding
       };
 
-      FrameFormat* ff = (FrameFormat* )offset;
+      const FrameFormat* ff = reinterpret_cast<FrameFormat*>(offset);
 
       if (ff->format & 0x80)
       {
@@ -125,9 +125,9 @@ class StreamReader : public Serializable
 
         int totalLines = myVSyncLines + myBlankLines + myOverscanLines + myVisibleLines;
 
-        myAudio    = (uInt8*)(&ff->dataStart);
+        myAudio    = const_cast<uInt8*>(&ff->dataStart);
         myGraph    = myAudio + totalLines;
-        myColor    = ((uInt8*)myGraph) + 5 * myVisibleLines;
+        myColor    = const_cast<uInt8*>(myGraph) + 5 * myVisibleLines;
         myColorBK  = myColor + 5 * myVisibleLines;
         myTimecode = myColorBK + 1 * myVisibleLines;
       }
@@ -143,8 +143,8 @@ class StreamReader : public Serializable
 
         myAudio    = offset + 4 + 3;
         myGraph    = myAudio + totalLines;
-        myTimecode = ((uInt8*)myGraph) + 5*myVisibleLines;
-        myColor    = ((uInt8*)myTimecode) + 60;
+        myTimecode = const_cast<uInt8*>(myGraph) + 5 * myVisibleLines;
+        myColor    = const_cast<uInt8*>(myTimecode) + 60;
         myColorBK  = myColor + 5*myVisibleLines;
       }
 
@@ -927,8 +927,7 @@ bool MovieCart::init(string_view path)
   return true;
 }
 
-#define RAINBOW_HEIGHT 30
-#define TITLE_HEIGHT 12
+static constexpr uInt8 RAINBOW_HEIGHT = 30, TITLE_HEIGHT = 12;
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void MovieCart::setConsoleTiming(ConsoleTiming timing)
