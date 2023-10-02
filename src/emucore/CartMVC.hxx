@@ -37,14 +37,14 @@ class CartridgeMVC : public Cartridge
 {
   public:
     static constexpr size_t
-      MVC_FIELD_SIZE = 4096;
+      MVC_FIELD_SIZE = 4_KB;
 
   public:
     /**
       Create a new cartridge using the specified image
 
       @param path      Path to the ROM image file
-      @param size      The size of the ROM image (<= 2048 bytes)
+      @param size      The size of the ROM image
       @param md5       The md5sum of the ROM image
       @param settings  A reference to the various settings (read-only)
       @param bsSize    The size specified by the bankswitching scheme

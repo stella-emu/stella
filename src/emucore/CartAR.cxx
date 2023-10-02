@@ -259,7 +259,7 @@ bool CartridgeAR::bankConfiguration(uInt8 configuration)
 void CartridgeAR::initializeROM()
 {
   // Note that the following offsets depend on the 'scrom.asm' file
-  // in src/emucore/misc.  If that file is ever recompiled (and its
+  // in src/tools.  If that file is ever recompiled (and its
   // contents placed in the ourDummyROMCode array), the offsets will
   // almost definitely change
 
