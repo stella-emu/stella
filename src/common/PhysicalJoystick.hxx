@@ -86,11 +86,28 @@ class PhysicalJoystick
     JoyMap joyMap;
 
   private:
-    static void getValues(string_view list, IntArray& map);
-
     // Convert from string to Port type and vice versa
-    string getName(const Port _port) const;
-    Port getPort(string_view portName) const;
+    static string getName(const Port _port) {
+      static constexpr std::array<string_view,
+      static_cast<int>(PhysicalJoystick::Port::NUM_PORTS)> NAMES = {
+        "Auto", "Left", "Right"
+      };
+
+      return string{NAMES[static_cast<int>(_port)]};
+    }
+
+    static Port getPort(string_view portName) {
+      static constexpr std::array<string_view,
+      static_cast<int>(PhysicalJoystick::Port::NUM_PORTS)> NAMES = {
+        "Auto", "Left", "Right"
+      };
+
+      for(int i = 0; i < static_cast<int>(PhysicalJoystick::Port::NUM_PORTS); ++i)
+        if (BSPF::equalsIgnoreCase(portName, NAMES[i]))
+          return PhysicalJoystick::Port{i};
+
+      return PhysicalJoystick::Port::AUTO;
+    }
 
     friend ostream& operator<<(ostream& os, const PhysicalJoystick& s) {
       os << "  ID: " << s.ID << ", name: " << s.name << ", numaxis: " << s.numAxes

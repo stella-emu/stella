@@ -33,14 +33,14 @@ Bezel::Bezel(OSystem& osystem)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const string Bezel::getName(int& index) const
+string Bezel::getName(int& index) const
 {
   if(++index == 1)
     return myOSystem.console().properties().get(PropType::Bezel_Name);
 
   // Try to generate bezel name from cart name
   const string& cartName = myOSystem.console().properties().get(PropType::Cart_Name);
-  size_t pos = cartName.find_first_of("(");
+  size_t pos = cartName.find_first_of('(');
   if(pos == std::string::npos)
     pos = cartName.length() + 1;
   if(index < 10 && pos != std::string::npos && pos > 0)
@@ -71,15 +71,14 @@ const string Bezel::getName(int& index) const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt32 Bezel::borderSize(uInt32 x, uInt32 y, uInt32 size, Int32 step) const
 {
-  uInt32 *pixels{nullptr}, pitch;
-  uInt32 i;
+  uInt32 *pixels{nullptr}, pitch{0};
 
   mySurface->basePtr(pixels, pitch);
   pixels += x + y * pitch;
 
-  for(i = 0; i < size; ++i, pixels += step)
+  for(uInt32 i = 0; i < size; ++i, pixels += step)
   {
-    uInt8 r, g, b, a;
+    uInt8 r{0}, g{0}, b{0}, a{0};
 
     myFB.getRGBA(*pixels, &r, &g, &b, &a);
     if(a < 255) // transparent pixel?
@@ -93,7 +92,7 @@ bool Bezel::load()
 {
   const Settings& settings = myOSystem.settings();
   bool isValid = false;
-  string imageName = "";
+  string imageName;
 
 #ifdef IMAGE_SUPPORT
   const bool show = myOSystem.eventHandler().inTIAMode() &&
@@ -118,7 +117,7 @@ bool Bezel::load()
         {
           // Note: JPG does not support transparency
           const string imagePath = path + imageName + ".png";
-          FSNode node(imagePath);
+          const FSNode node(imagePath);
           if(node.exists())
           {
             isValid = true;
@@ -137,17 +136,16 @@ bool Bezel::load()
   {
     const Int32 w = mySurface->width();
     const Int32 h = mySurface->height();
-    uInt32 top, bottom, left, right;
+    uInt32 top{0}, bottom{0}, left{0}, right{0};
 
     if(settings.getBool("bezel.win.auto"))
     {
       // Determine transparent window inside bezel image
-      uInt32 xCenter, yCenter;
 
-      xCenter = w >> 1;
+      const uInt32 xCenter = w >> 1;
       top = borderSize(xCenter, 0, h, w);
       bottom = h - 1 - borderSize(xCenter, h - 1, h, -w);
-      yCenter = (bottom + top) >> 1;
+      const uInt32 yCenter = (bottom + top) >> 1;
       left = borderSize(0, yCenter, w, 1);
       right = w - 1 - borderSize(w - 1, yCenter, w, -1);
     }
@@ -157,10 +155,10 @@ bool Bezel::load()
       // HY: 12, 12,  0,  0%
       // P1: 25, 25, 11, 22%
       // P2: 23, 23,  7, 20%
-      left = std::min(w - 1, static_cast<Int32>(w * settings.getInt("bezel.win.left") / 100. + .5));
-      right = w - 1 - std::min(w - 1, static_cast<Int32>(w * settings.getInt("bezel.win.right") / 100. + .5));
-      top = std::min(h - 1, static_cast<Int32>(h * settings.getInt("bezel.win.top") / 100. + .5));
-      bottom = h - 1 - std::min(h - 1, static_cast<Int32>(h * settings.getInt("bezel.win.bottom") / 100. + .5));
+      left = std::min(w - 1, static_cast<Int32>(w * settings.getInt("bezel.win.left") / 100. + .5)); // NOLINT
+      right = w - 1 - std::min(w - 1, static_cast<Int32>(w * settings.getInt("bezel.win.right") / 100. + .5)); // NOLINT
+      top = std::min(h - 1, static_cast<Int32>(h * settings.getInt("bezel.win.top") / 100. + .5)); // NOLINT
+      bottom = h - 1 - std::min(h - 1, static_cast<Int32>(h * settings.getInt("bezel.win.bottom") / 100. + .5)); // NOLINT
     }
 
     //cerr << (int)(right - left + 1) << " x " << (int)(bottom - top + 1) << " = "

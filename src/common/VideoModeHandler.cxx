@@ -46,7 +46,7 @@ const VideoModeHandler::Mode&
   {
     if(windowedRequested)
     {
-      const double zoom = static_cast<double>(settings.getFloat("tia.zoom"));
+      const auto zoom = static_cast<double>(settings.getFloat("tia.zoom"));
       ostringstream desc;
       desc << (zoom * 100) << "%";
 

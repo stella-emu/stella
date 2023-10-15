@@ -621,7 +621,7 @@ void RomImageWidget::drawWidget(bool hilite)
         }
       }
     } // arrows
-    if(myImageList.size())
+    if(!myImageList.empty())
     {
       // Draw zoom icon
       const int dx = myZoomRect.w() / 2;
