@@ -464,7 +464,7 @@ void VideoAudioDialog::addBezelTab()
   ypos += lineHeight + VGAP;
 
   // Bezel path
-  int bwidth = _font.getStringWidth("Bezel path" + ELLIPSIS) + fontWidth * 2 + 1;
+  const int bwidth = _font.getStringWidth("Bezel path" + ELLIPSIS) + fontWidth * 2 + 1;
   myOpenBrowserButton = new ButtonWidget(myTab, _font, xpos, ypos, bwidth, buttonHeight,
                                          "Bezel path" + ELLIPSIS, kChooseBezelDirCmd);
   myOpenBrowserButton->setToolTip("Select path for bezels.");
