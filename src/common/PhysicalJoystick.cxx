@@ -114,34 +114,6 @@ bool PhysicalJoystick::setMap(const json& map)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string PhysicalJoystick::getName(const PhysicalJoystick::Port _port) const
-{
-  static constexpr std::array<string_view,
-    static_cast<int>(PhysicalJoystick::Port::NUM_PORTS)> NAMES =
-  {
-    "Auto", "Left", "Right"
-  };
-
-  return string{NAMES[static_cast<int>(_port)]};
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-PhysicalJoystick::Port PhysicalJoystick::getPort(string_view portName) const
-{
-  static constexpr std::array<string_view,
-    static_cast<int>(PhysicalJoystick::Port::NUM_PORTS)> NAMES =
-  {
-    "Auto", "Left", "Right"
-  };
-
-  for(int i = 0; i < static_cast<int>(PhysicalJoystick::Port::NUM_PORTS); ++i)
-    if (BSPF::equalsIgnoreCase(portName, NAMES[i]))
-      return PhysicalJoystick::Port{i};
-
-  return PhysicalJoystick::Port::AUTO;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 json PhysicalJoystick::convertLegacyMapping(string_view mapping, string_view name)
 {
   istringstream buf(string{mapping});  // TODO: fixed in C++20
@@ -183,18 +155,6 @@ void PhysicalJoystick::eraseMap(EventMode mode)
 void PhysicalJoystick::eraseEvent(Event::Type event, EventMode mode)
 {
   joyMap.eraseEvent(event, mode);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PhysicalJoystick::getValues(string_view list, IntArray& map)
-{
-  map.clear();
-  istringstream buf(string{list});  // TODO: fixed in C++20
-
-  int value{0};
-  buf >> value;  // we don't need to know the # of items at this point
-  while(buf >> value)
-    map.push_back(value);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

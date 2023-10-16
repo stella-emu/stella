@@ -65,7 +65,7 @@ class StreamReader : public Serializable
     }
 
     void blankPartialLines(bool index) {
-      int colorSize = myVisibleLines * 5;
+      const int colorSize = myVisibleLines * 5;
       if (index)
       {
         // top line
@@ -123,13 +123,14 @@ class StreamReader : public Serializable
         myVisibleLines = ff->visible;
         myEmbeddedFrame = ff->timecode[3] + 1;
 
-        int totalLines = myVSyncLines + myBlankLines + myOverscanLines + myVisibleLines;
+        const int totalLines = myVSyncLines + myBlankLines + myOverscanLines + myVisibleLines;
 
         myAudio    = const_cast<uInt8*>(&ff->dataStart);
         myGraph    = myAudio + totalLines;
-        myColor    = const_cast<uInt8*>(myGraph) + 5 * myVisibleLines;
-        myColorBK  = myColor + 5 * myVisibleLines;
-        myTimecode = myColorBK + 1 * myVisibleLines;
+        myColor    = const_cast<uInt8*>(myGraph) +
+                     static_cast<ptrdiff_t>(5 * myVisibleLines);
+        myColorBK  = myColor + static_cast<ptrdiff_t>(5 * myVisibleLines);
+        myTimecode = myColorBK + static_cast<ptrdiff_t>(1 * myVisibleLines);
       }
       else // previous format, ntsc assumed
       {
@@ -139,13 +140,14 @@ class StreamReader : public Serializable
         myVisibleLines = 192;
         myEmbeddedFrame = offset[4 + 3 -1];
 
-        int totalLines = myVSyncLines + myBlankLines + myOverscanLines + myVisibleLines;
+        const int totalLines = myVSyncLines + myBlankLines + myOverscanLines + myVisibleLines;
 
         myAudio    = offset + 4 + 3;
         myGraph    = myAudio + totalLines;
-        myTimecode = const_cast<uInt8*>(myGraph) + 5 * myVisibleLines;
+        myTimecode = const_cast<uInt8*>(myGraph) +
+                     static_cast<ptrdiff_t>(5 * myVisibleLines);
         myColor    = const_cast<uInt8*>(myTimecode) + 60;
-        myColorBK  = myColor + 5*myVisibleLines;
+        myColorBK  = myColor + static_cast<ptrdiff_t>(5 * myVisibleLines);
       }
 
       if (!odd)
@@ -182,13 +184,12 @@ class StreamReader : public Serializable
 
     uInt8 readAudio() { return *myAudio++; }
 
-    uInt8 getVisibleLines()  { return myVisibleLines; }
-    uInt8 getVSyncLines()    { return myVSyncLines; }
-    uInt8 getBlankLines()    { return myBlankLines; }
-    uInt8 getOverscanLines() { return myOverscanLines; }
-    uInt8 getEmbeddedFrame() { return myEmbeddedFrame; }
-
-    [[nodiscard]] uInt8 peekAudio() const { return *myAudio; }
+    [[nodiscard]] uInt8 getVisibleLines() const  { return myVisibleLines; }
+    [[nodiscard]] uInt8 getVSyncLines() const    { return myVSyncLines; }
+    [[nodiscard]] uInt8 getBlankLines() const    { return myBlankLines; }
+    [[nodiscard]] uInt8 getOverscanLines() const { return myOverscanLines; }
+    [[nodiscard]] uInt8 getEmbeddedFrame() const { return myEmbeddedFrame; }
+    [[nodiscard]] uInt8 peekAudio() const        { return *myAudio; }
 
     void startTimeCode() { myGraph = myTimecode; }
 
@@ -932,7 +933,7 @@ static constexpr uInt8 RAINBOW_HEIGHT = 30, TITLE_HEIGHT = 12;
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void MovieCart::setConsoleTiming(ConsoleTiming timing)
 {
-  uInt8 lines;
+  uInt8 lines = 0;
 
   switch(timing)
   {
@@ -947,7 +948,7 @@ void MovieCart::setConsoleTiming(ConsoleTiming timing)
       break;
   }
 
-  uInt8 val = (lines - RAINBOW_HEIGHT - RAINBOW_HEIGHT - TITLE_HEIGHT * 2) / 2;
+  const uInt8 val = (lines - RAINBOW_HEIGHT - RAINBOW_HEIGHT - TITLE_HEIGHT * 2) / 2;
 
   writeROM(addr_title_gap1 + 1, val);
   writeROM(addr_title_gap2 + 1, val);
@@ -1300,7 +1301,8 @@ void MovieCart::fill_addr_blank_lines()
 {
   myOdd = (myStream.getEmbeddedFrame() & 1);
 
-  uInt8 blankTotal = (myStream.getOverscanLines() + myStream.getVSyncLines() + myStream.getBlankLines()-1); // 70-1
+  const uInt8 blankTotal = (myStream.getOverscanLines() +
+      myStream.getVSyncLines() + myStream.getBlankLines()-1); // 70-1
 
   if(myOdd)
   {

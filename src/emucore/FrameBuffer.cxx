@@ -284,7 +284,7 @@ FBInitStatus FrameBuffer::createDisplay(string_view title, BufferType type,
     myBezel->load(); // make sure we have the correct bezel size
 
     // Determine possible TIA windowed zoom levels
-    const double currentTIAZoom =
+    const auto currentTIAZoom =
       static_cast<double>(myOSystem.settings().getFloat("tia.zoom"));
     myOSystem.settings().setValue("tia.zoom",
       BSPF::clamp(currentTIAZoom, supportedTIAMinZoom(), supportedTIAMaxZoom()));
@@ -1234,7 +1234,7 @@ void FrameBuffer::switchVideoMode(int direction)
   if(!fullScreen())
   {
     // Windowed TIA modes support variable zoom levels
-    double zoom = static_cast<double>(myOSystem.settings().getFloat("tia.zoom"));
+    auto zoom = static_cast<double>(myOSystem.settings().getFloat("tia.zoom"));
     if(direction == +1)       zoom += ZOOM_STEPS;
     else if(direction == -1)  zoom -= ZOOM_STEPS;
 
@@ -1288,7 +1288,7 @@ void FrameBuffer::toggleBezel(bool toggle)
       else
       {
         // Determine possible TIA windowed zoom levels
-        const double currentTIAZoom =
+        const auto currentTIAZoom =
           static_cast<double>(myOSystem.settings().getFloat("tia.zoom"));
         myOSystem.settings().setValue("tia.zoom",
           BSPF::clamp(currentTIAZoom, supportedTIAMinZoom(), supportedTIAMaxZoom()));
