@@ -961,10 +961,8 @@ PhysicalKeyboardHandler::FixedPromptMapping = {
   {Event::UIDown,                   KBDK_DOWN, KBDM_SHIFT},
   {Event::UILeft,                   KBDK_DOWN},
   {Event::UIRight,                  KBDK_UP},
-
 };
 #endif // DEBUGGER_SUPPORT
-
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 PhysicalKeyboardHandler::EventMappingArray PhysicalKeyboardHandler::DefaultJoystickMapping = {
