@@ -113,7 +113,7 @@ class Bezel
     /*
       Generate bezel file name.
     */
-    const string getName(int& index) const;
+    string getName(int& index) const;
 
   private:
     // The parent system for the bezel

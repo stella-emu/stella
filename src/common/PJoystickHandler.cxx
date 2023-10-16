@@ -377,7 +377,7 @@ void PhysicalJoystickHandler::setStickDefaultMapping(
         // A regular joystick defaults to left or right based on
         // the defined port or stick number being even or odd;
         // 'daptor' joysticks request a specific port
-        bool useLeftMappings;
+        bool useLeftMappings = true;
         if(j->type == PhysicalJoystick::Type::REGULAR)
         {
           useLeftMappings = j->port == PhysicalJoystick::Port::LEFT
@@ -1095,7 +1095,7 @@ PhysicalJoystickHandler::MinStrickInfoList PhysicalJoystickHandler::minStickList
 
   for(const auto& [_name, _info] : myDatabase)
   {
-    MinStrickInfo stick(_name,
+    const MinStrickInfo stick(_name,
       _info.joy ? _info.joy->ID : -1,
       _info.joy ? _info.joy->port : PhysicalJoystick::Port::AUTO);
 
