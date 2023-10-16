@@ -75,6 +75,10 @@ class PhysicalKeyboardHandler
       return myKeyMap.get(mode, key, mod);
     }
 
+    bool checkEventForKey(EventMode mode, StellaKey key, StellaMod mod) const {
+      return myKeyMap.check(mode, key, mod);
+    }
+
   #ifdef BSPF_UNIX
     /** See comments on 'myAltKeyCounter' for more information. */
     uInt8& altKeyCount() { return myAltKeyCounter; }

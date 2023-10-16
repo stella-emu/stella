@@ -787,7 +787,7 @@ void LauncherDialog::handleKeyDown(StellaKey key, StellaMod mod, bool repeated)
 
   if(StellaModTest::isControl(mod) &&
     !(myPattern && myPattern->isHighlighted()
-      && instance().eventHandler().eventForKey(EventMode::kEditMode, key, mod) != Event::NoType))
+      && instance().eventHandler().checkEventForKey(EventMode::kEditMode, key, mod)))
   {
     handled = true;
     switch(key)

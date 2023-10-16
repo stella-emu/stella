@@ -138,9 +138,9 @@ void DebuggerDialog::handleKeyDown(StellaKey key, StellaMod mod, bool repeated)
   }
 
   // Do not handle emulation events which have the same mapping as menu events
-  if(instance().eventHandler().eventForKey(EventMode::kMenuMode, key, mod) == Event::NoType)
+  if(!instance().eventHandler().checkEventForKey(EventMode::kMenuMode, key, mod))
   {
-  // handle emulation keys second (can be remapped)
+    // handle emulation keys second (can be remapped)
     const Event::Type event = instance().eventHandler().eventForKey(EventMode::kEmulationMode, key, mod);
     switch(event)
     {
@@ -226,7 +226,6 @@ void DebuggerDialog::handleKeyDown(StellaKey key, StellaMod mod, bool repeated)
   }
   Dialog::handleKeyDown(key, mod);
 }
-
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DebuggerDialog::handleKeyUp(StellaKey key, StellaMod mod)
