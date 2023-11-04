@@ -530,22 +530,29 @@ string OSystem::createConsole(const FSNode& rom, string_view md5sum, bool newrom
     myEventHandler->handleConsoleStartupEvents();
     myConsole->riot().update();
 
-    #ifdef DEBUGGER_SUPPORT
-      if(mySettings->getBool("debug"))
-        myEventHandler->enterDebugMode();
-    #endif
+  #ifdef DEBUGGER_SUPPORT
+    if(mySettings->getBool("debug"))
+      myEventHandler->enterDebugMode();
+  #endif
 
-    if(!showmessage &&
-       settings().getBool(devSettings ? "dev.detectedinfo" : "plr.detectedinfo"))
-    {
-      ostringstream msg;
+    if(!showmessage)
+      if(settings().getBool(devSettings ? "dev.detectedinfo" : "plr.detectedinfo"))
+      {
+        ostringstream msg;
 
-      msg << myConsole->leftController().name() << "/" << myConsole->rightController().name()
-        << " - " << myConsole->cartridge().detectedType()
-        << (myConsole->cartridge().isPlusROM() ? " PlusROM " : "")
-        << " - " << myConsole->getFormatString();
-      myFrameBuffer->showTextMessage(msg.str());
-    }
+        msg << myConsole->leftController().name() << "/" << myConsole->rightController().name()
+          << " - " << myConsole->cartridge().detectedType()
+          << (myConsole->cartridge().isPlusROM() ? " PlusROM " : "")
+          << " - " << myConsole->getFormatString();
+        myFrameBuffer->showTextMessage(msg.str());
+      }
+      else if(!myLauncherUsed)
+      {
+        ostringstream msg;
+
+        msg << "Stella " << STELLA_VERSION;
+        myFrameBuffer->showTextMessage(msg.str());
+      }
     // Check for first PlusROM start
     if(myConsole->cartridge().isPlusROM())
     {
