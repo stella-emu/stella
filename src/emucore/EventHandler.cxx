@@ -1654,7 +1654,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
     ////////////////////////////////////////////////////////////////////////
     // Events which relate to switches()
     case Event::ConsoleColor:
-      if(pressed && !repeated && !checkUI())
+      if(pressed && !repeated)
       {
         myEvent.set(Event::ConsoleBlackWhite, 0);
         myEvent.set(Event::ConsoleColor, 1);
@@ -1663,7 +1663,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       }
       return;
     case Event::ConsoleBlackWhite:
-      if(pressed && !repeated && !checkUI())
+      if(pressed && !repeated)
       {
         myEvent.set(Event::ConsoleBlackWhite, 1);
         myEvent.set(Event::ConsoleColor, 0);
@@ -1672,7 +1672,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       }
       return;
     case Event::ConsoleColorToggle:
-      if(pressed && !repeated && !checkUI())
+      if(pressed && !repeated)
       {
         if(myOSystem.console().switches().tvColor())
         {
@@ -2820,30 +2820,6 @@ void EventHandler::exitEmulation(bool checkLauncher)
     else
       handleEvent(Event::Quit);
   }
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool EventHandler::checkUI()
-{
-  // Special entries to the UI
-  if(myEvent.get(Event::LeftJoystickFire) || myEvent.get(Event::RightJoystickFire))
-  {
-    if(myEvent.get(Event::LeftJoystickRight) || myEvent.get(Event::RightJoystickRight))
-      changeStateByEvent(Event::OptionsMenuMode);
-    else if(myEvent.get(Event::LeftJoystickLeft) || myEvent.get(Event::RightJoystickLeft))
-      changeStateByEvent(Event::TogglePauseMode);
-    else if(myEvent.get(Event::LeftJoystickUp) || myEvent.get(Event::RightJoystickUp))
-    {
-      myOSystem.createLauncher();
-      setState(EventHandlerState::LAUNCHER);
-    }
-    else if(myEvent.get(Event::LeftJoystickDown) || myEvent.get(Event::RightJoystickDown))
-      changeStateByEvent(Event::DebuggerMode);
-    else
-      changeStateByEvent(Event::CmdMenuMode);
-    return true;
-  }
-  return false;
 }
 
 #if defined(__clang__)
