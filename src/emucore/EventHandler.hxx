@@ -481,6 +481,13 @@ class EventHandler
     static int getEmulActionListIndex(int idx, const Event::EventSet& events);
     static int getActionListIndex(int idx, Event::Group group);
 
+    /**
+      Check if UI shall be entered.
+
+      @return  Whether the UI is entered or not
+    */
+    bool checkUI();
+
   private:
     // Structure used for action menu items
     struct ActionList {
