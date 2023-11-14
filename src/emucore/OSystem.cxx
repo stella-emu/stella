@@ -536,6 +536,7 @@ string OSystem::createConsole(const FSNode& rom, string_view md5sum, bool newrom
   #endif
 
     if(!showmessage)
+    {
       if(settings().getBool(devSettings ? "dev.detectedinfo" : "plr.detectedinfo"))
       {
         ostringstream msg;
@@ -553,6 +554,8 @@ string OSystem::createConsole(const FSNode& rom, string_view md5sum, bool newrom
         msg << "Stella " << STELLA_VERSION;
         myFrameBuffer->showTextMessage(msg.str());
       }
+    }
+
     // Check for first PlusROM start
     if(myConsole->cartridge().isPlusROM())
     {
