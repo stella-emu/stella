@@ -485,7 +485,6 @@ void Debugger::log(string_view triggerMsg)
       break;
   }
 
-  const CartDebug::DisassemblyTag& tag = disasm.list[pos];
   ostringstream msg;
 
   msg << std::left << std::setw(10) << std::setfill(' ') << triggerMsg;
@@ -515,13 +514,17 @@ void Debugger::log(string_view triggerMsg)
   else
     msg << " ";
 
-  msg << Base::HEX4 << pc << " "
-    << std::left << std::setw(8) << std::setfill(' ') << tag.bytes << " "
-    << tag.disasm.substr(0, 7);
+  if(disasm.list.size() > pos)
+  {
+    const CartDebug::DisassemblyTag& tag = disasm.list[pos];
 
-  if(tag.disasm.length() > 8)
-    msg << tag.disasm.substr(8);
+    msg << Base::HEX4 << pc << " "
+      << std::left << std::setw(8) << std::setfill(' ') << tag.bytes << " "
+      << tag.disasm.substr(0, 7);
 
+    if(tag.disasm.length() > 8)
+      msg << tag.disasm.substr(8);
+  }
   Logger::log(msg.str());
 }
 

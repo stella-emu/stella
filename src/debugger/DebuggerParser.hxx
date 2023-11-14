@@ -101,7 +101,7 @@ class DebuggerParser
       std::array<Parameters, 10> parms;
       std::function<void (DebuggerParser*)> executor;
     };
-    using CommandArray = std::array<Command, 110>;
+    using CommandArray = std::array<Command, 111>;
     static CommandArray commands;
 
     struct Trap
@@ -211,6 +211,7 @@ class DebuggerParser
     void executeLoadConfig();
     void executeLoadState();
     void executeLogBreaks();
+    void executeLogTrace();
     void executeN();
     void executePalette();
     void executePc();
