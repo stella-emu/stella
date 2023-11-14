@@ -411,6 +411,11 @@ void PromptWidget::loadConfig()
       print(DebuggerParser::inverse(" logBreaks enabled "));
       extra = true;
     }
+    if(instance().settings().getBool("dbg.logtrace"))
+    {
+      print(DebuggerParser::inverse(" logTrace enabled "));
+      extra = true;
+    }
     if(extra)
       print("\n");
 

@@ -268,6 +268,8 @@ class M6502 : public Serializable
     void setWriteToReadPortBreak(bool enable) { myWriteToReadPortBreak = enable; }
     void setLogBreaks(bool enable) { myLogBreaks = enable; }
     bool getLogBreaks() const { return myLogBreaks; }
+    void setLogTrace(bool enable) { myLogTrace = enable; }
+    bool getLogTrace() const { return myLogTrace; }
 #endif  // DEBUGGER_SUPPORT
 
   private:
@@ -486,6 +488,7 @@ class M6502 : public Serializable
     bool myWriteToReadPortBreak{false};    // trap on writes to read ports
     bool myStepStateByInstruction{false};
     bool myLogBreaks{false};               // log breaks/taps and continue emulation
+    bool myLogTrace{false};                // log emulation
 
   private:
     // Following constructors and assignment operators not supported

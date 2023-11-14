@@ -1797,6 +1797,16 @@ void DebuggerParser::executeLogBreaks()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void DebuggerParser::executeLogTrace()
+{
+  const bool enable = !debugger.mySystem.m6502().getLogTrace();
+
+  debugger.mySystem.m6502().setLogTrace(enable);
+  settings.setValue("dbg.logtrace", enable);
+  commandResult << "logTrace " << (enable ? "enabled" : "disabled");
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // "n"
 void DebuggerParser::executeN()
 {
@@ -3359,6 +3369,16 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
     true,
     { Parameters::ARG_END_ARGS },
     std::mem_fn(&DebuggerParser::executeLogBreaks)
+  },
+
+  {
+    "logTrace",
+    "Toggle emulation logging",
+    "Example: logBreaks",
+    false,
+    true,
+    { Parameters::ARG_END_ARGS },
+    std::mem_fn(&DebuggerParser::executeLogTrace)
   },
 
   {
