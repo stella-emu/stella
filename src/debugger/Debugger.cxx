@@ -467,7 +467,7 @@ void Debugger::log(string_view triggerMsg)
       else
         msg << "B/";
     }
-    msg << "Addr Code     Disam";
+    msg << "Addr Code     Disasm";
     Logger::log(msg.str());
     myFirstLog = false;
   }
