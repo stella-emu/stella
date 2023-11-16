@@ -27,7 +27,6 @@
 #include "MessageBox.hxx"
 #include "OSystem.hxx"
 #include "FrameBuffer.hxx"
-#include "MD5.hxx"
 #include "Props.hxx"
 #include "PropsSet.hxx"
 #include "Settings.hxx"

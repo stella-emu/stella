@@ -22,7 +22,6 @@ class OSystem;
 class GuiObject;
 class TabWidget;
 class CheckboxWidget;
-class EditTextWidget;
 class PopUpWidget;
 class RadioButtonGroup;
 class RadioButtonWidget;

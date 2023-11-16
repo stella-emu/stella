@@ -18,7 +18,6 @@
 #include "CartBUS.hxx"
 #include "DataGridWidget.hxx"
 #include "PopUpWidget.hxx"
-#include "EditTextWidget.hxx"
 #include "CartBUSWidget.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

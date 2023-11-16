@@ -15,9 +15,6 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#include <cassert>
-#include <functional>
-
 #include "bspf.hxx"
 #include "Logger.hxx"
 
@@ -39,7 +36,6 @@
   #include "PlusRomsMenu.hxx"
   #include "Launcher.hxx"
   #include "TimeMachine.hxx"
-  #include "Widget.hxx"
 #endif
 
 #include "FSNode.hxx"
@@ -67,8 +63,6 @@
 #include "DispatchResult.hxx"
 #include "EmulationWorker.hxx"
 #include "AudioSettings.hxx"
-#include "repository/KeyValueRepositoryNoop.hxx"
-#include "repository/CompositeKeyValueRepositoryNoop.hxx"
 #include "M6532.hxx"
 
 #include "OSystem.hxx"

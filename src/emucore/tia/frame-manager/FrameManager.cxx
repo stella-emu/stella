@@ -17,7 +17,6 @@
 
 // #define TIA_FRAMEMANAGER_DEBUG_LOG
 
-#include <algorithm>
 #include <cmath>
 
 #include "FrameManager.hxx"

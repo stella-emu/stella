@@ -21,7 +21,6 @@
 #include "YaccParser.hxx"
 
 namespace YaccParser {
-#include <cstdio>
 #include <cctype>
 
 #include "y.tab.h"

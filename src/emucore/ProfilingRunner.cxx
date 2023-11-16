@@ -16,7 +16,6 @@
 //============================================================================
 
 #include <chrono>
-#include <cmath>
 
 #include "ProfilingRunner.hxx"
 #include "FSNode.hxx"

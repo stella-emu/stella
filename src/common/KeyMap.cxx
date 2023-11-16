@@ -18,7 +18,6 @@
 #include "KeyMap.hxx"
 #include "Logger.hxx"
 #include "jsonDefinitions.hxx"
-#include <map>
 
 using json = nlohmann::json;
 

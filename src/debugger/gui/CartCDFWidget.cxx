@@ -15,10 +15,8 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#include "OSystem.hxx"
 #include "DataGridWidget.hxx"
 #include "PopUpWidget.hxx"
-#include "EditTextWidget.hxx"
 #include "CartCDFWidget.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

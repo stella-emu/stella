@@ -17,7 +17,6 @@
 
 #include "BlitterFactory.hxx"
 
-#include "SDL_lib.hxx"
 #include "BilinearBlitter.hxx"
 #include "QisBlitter.hxx"
 

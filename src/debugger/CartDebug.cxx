@@ -33,7 +33,6 @@
 #include "RomWidget.hxx"
 #include "Base.hxx"
 #include "Device.hxx"
-#include "exception/EmulationWarning.hxx"
 #include "TIA.hxx"
 #include "M6532.hxx"
 

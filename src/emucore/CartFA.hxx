@@ -18,8 +18,6 @@
 #ifndef CARTRIDGEFA_HXX
 #define CARTRIDGEFA_HXX
 
-class System;
-
 #include "bspf.hxx"
 #include "CartEnhanced.hxx"
 #ifdef DEBUGGER_SUPPORT

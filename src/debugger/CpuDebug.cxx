@@ -15,8 +15,6 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#include <sstream>
-
 #include "M6502.hxx"
 #include "System.hxx"
 #include "Debugger.hxx"

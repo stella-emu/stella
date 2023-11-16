@@ -15,9 +15,6 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#include <sstream>
-
-#include "StellaDb.hxx"
 #include "Logger.hxx"
 #include "SqliteError.hxx"
 #include "repository/KeyValueRepositoryNoop.hxx"
@@ -33,6 +30,8 @@
 #ifdef BSPF_MACOS
 #include "SettingsRepositoryMACOS.hxx"
 #endif
+
+#include "StellaDb.hxx"
 
 namespace {
   constexpr Int32 CURRENT_VERSION = 1;

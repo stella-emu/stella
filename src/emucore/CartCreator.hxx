@@ -19,7 +19,6 @@
 #define CARTRIDGE_CREATOR_HXX
 
 class Cartridge;
-class Properties;
 class Settings;
 
 #include "Bankswitch.hxx"

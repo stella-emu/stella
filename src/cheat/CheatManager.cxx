@@ -16,7 +16,6 @@
 //============================================================================
 
 #include "OSystem.hxx"
-#include "Console.hxx"
 #include "Cheat.hxx"
 #include "Settings.hxx"
 #include "CheetahCheat.hxx"

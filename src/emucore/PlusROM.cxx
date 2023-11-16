@@ -17,7 +17,6 @@
 
 #include <regex>
 #include <atomic>
-#include <sstream>
 #include <thread>
 
 #include "bspf.hxx"

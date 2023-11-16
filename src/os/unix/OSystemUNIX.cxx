@@ -18,7 +18,6 @@
 #include <cstdlib>
 
 #include "FSNode.hxx"
-#include "Version.hxx"
 #include "OSystemUNIX.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -21,8 +21,6 @@
 #include "Dialog.hxx"
 #include "DialogContainer.hxx"
 #include "Widget.hxx"
-#include "Font.hxx"
-#include "Control.hxx"
 #include "EmulationDialog.hxx"
 #include "VideoAudioDialog.hxx"
 #include "InputDialog.hxx"

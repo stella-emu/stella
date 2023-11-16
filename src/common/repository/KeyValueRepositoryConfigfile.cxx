@@ -16,7 +16,6 @@
 //============================================================================
 
 #include "KeyValueRepositoryConfigfile.hxx"
-#include "Logger.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 KeyValueRepositoryConfigfile::KeyValueRepositoryConfigfile(const FSNode& file)

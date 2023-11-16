@@ -15,8 +15,6 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#include <map>
-
 #include "bspf.hxx"
 
 #include "Version.hxx"
@@ -37,15 +35,11 @@
 #include "Cart.hxx"
 
 #include "CartDebug.hxx"
-#include "CartDebugWidget.hxx"
-#include "CartRamWidget.hxx"
 #include "CpuDebug.hxx"
 #include "RiotDebug.hxx"
 #include "TIADebug.hxx"
 
 #include "TiaInfoWidget.hxx"
-#include "TiaOutputWidget.hxx"
-#include "TiaZoomWidget.hxx"
 #include "EditTextWidget.hxx"
 
 #include "RomWidget.hxx"

@@ -22,7 +22,6 @@ class CartridgeDPCPlus;
 class PopUpWidget;
 class CheckboxWidget;
 class DataGridWidget;
-class EditTextWidget;
 
 #include "CartARMWidget.hxx"
 

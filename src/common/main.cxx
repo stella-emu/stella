@@ -15,13 +15,10 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#include <cstdlib>
-
 #include "bspf.hxx"
 #include "Logger.hxx"
 #include "MediaFactory.hxx"
 #include "Console.hxx"
-#include "Event.hxx"
 #include "EventHandler.hxx"
 #include "FrameBuffer.hxx"
 #include "PropsSet.hxx"
@@ -30,7 +27,6 @@
 #include "FSNode.hxx"
 #include "OSystem.hxx"
 #include "PNGLibrary.hxx"
-#include "System.hxx"
 #include "TIASurface.hxx"
 #include "ProfilingRunner.hxx"
 

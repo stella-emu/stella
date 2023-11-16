@@ -21,7 +21,6 @@
 #include "Debugger.hxx"
 #include "RiotDebug.hxx"
 #include "TIADebug.hxx"
-#include "TIA.hxx"
 #include "Widget.hxx"
 #include "EditTextWidget.hxx"
 #include "GuiObject.hxx"

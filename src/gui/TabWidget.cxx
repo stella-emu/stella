@@ -20,7 +20,6 @@
 #include "FBSurface.hxx"
 #include "Font.hxx"
 #include "GuiObject.hxx"
-#include "OSystem.hxx"
 #include "Widget.hxx"
 #include "TabWidget.hxx"
 

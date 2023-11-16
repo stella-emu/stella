@@ -15,7 +15,6 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#include <cassert>
 #include <iostream>
 
 #include "Device.hxx"
@@ -23,7 +22,6 @@
 #include "M6532.hxx"
 #include "TIA.hxx"
 #include "Cart.hxx"
-#include "TimerManager.hxx"
 #include "System.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

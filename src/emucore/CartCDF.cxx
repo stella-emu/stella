@@ -23,9 +23,9 @@
   #include "CartCDFInfoWidget.hxx"
 #endif
 
+#include "Settings.hxx"
 #include "System.hxx"
 #include "CartCDF.hxx"
-#include "TIA.hxx"
 #include "exception/FatalEmulationError.hxx"
 
 namespace {

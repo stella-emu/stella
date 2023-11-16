@@ -17,7 +17,6 @@
 
 #include "OSystem.hxx"
 #include "EventHandler.hxx"
-#include "Event.hxx"
 #include "Console.hxx"
 #include "System.hxx"
 #include "TIA.hxx"

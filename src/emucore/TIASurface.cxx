@@ -15,8 +15,6 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#include <cmath>
-
 #include "FBSurface.hxx"
 #include "Settings.hxx"
 #include "OSystem.hxx"

@@ -39,7 +39,6 @@
 #include "repository/KeyValueRepositoryPropertyFile.hxx"
 #include "FrameBuffer.hxx"
 #include "TIASurface.hxx"
-#include "TIA.hxx"
 #include "Switches.hxx"
 #include "AudioSettings.hxx"
 #include "bspf.hxx"

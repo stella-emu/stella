@@ -15,10 +15,7 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#include <sstream>
-
 #include "bspf.hxx"
-
 #include "OSystem.hxx"
 #include "GuiObject.hxx"
 #include "PopUpWidget.hxx"
@@ -31,6 +28,7 @@
 #include "Font.hxx"
 #include "ComboDialog.hxx"
 #include "Variant.hxx"
+
 #include "EventMappingWidget.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -21,7 +21,6 @@
 
 #include "bspf.hxx"
 #include "Bankswitch.hxx"
-#include "OSystem.hxx"
 #include "FSNodeFactory.hxx"
 #include "FSNodeZIP.hxx"
 
