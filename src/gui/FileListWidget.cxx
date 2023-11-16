@@ -15,16 +15,14 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#include <cctype>
-
+#include "bspf.hxx"
 #include "ScrollBarWidget.hxx"
-#include "FileListWidget.hxx"
 #include "TimerManager.hxx"
 #include "ProgressDialog.hxx"
 #include "FBSurface.hxx"
 #include "Bankswitch.hxx"
 
-#include "bspf.hxx"
+#include "FileListWidget.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FileListWidget::FileListWidget(GuiObject* boss, const GUI::Font& font,

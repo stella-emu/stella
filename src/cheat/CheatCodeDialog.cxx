@@ -25,7 +25,6 @@
 #include "Font.hxx"
 #include "InputTextDialog.hxx"
 #include "OSystem.hxx"
-#include "Props.hxx"
 #include "Widget.hxx"
 
 #include "CheatCodeDialog.hxx"

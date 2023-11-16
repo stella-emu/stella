@@ -20,7 +20,6 @@
 
 #include "Console.hxx"
 #include "EventHandler.hxx"
-#include "Event.hxx"
 #include "OSystem.hxx"
 #include "Settings.hxx"
 #include "TIA.hxx"
@@ -33,7 +32,6 @@
 #include "TIASurface.hxx"
 #include "Bezel.hxx"
 #include "FrameBuffer.hxx"
-#include "PaletteHandler.hxx"
 #include "StateManager.hxx"
 #include "RewindManager.hxx"
 
@@ -51,7 +49,6 @@
   #include "Stella14x28tFont.hxx"
   #include "Stella16x32tFont.hxx"
   #include "ConsoleFont.hxx"
-  #include "ConsoleBFont.hxx"
   #include "Launcher.hxx"
   #include "OptionsMenu.hxx"
   #include "CommandMenu.hxx"

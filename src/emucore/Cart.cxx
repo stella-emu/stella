@@ -18,7 +18,6 @@
 #include "FSNode.hxx"
 #include "Settings.hxx"
 #include "System.hxx"
-#include "MD5.hxx"
 #ifdef DEBUGGER_SUPPORT
   #include "Debugger.hxx"
   #include "Base.hxx"

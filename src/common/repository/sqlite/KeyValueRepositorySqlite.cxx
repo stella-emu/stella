@@ -16,7 +16,6 @@
 //============================================================================
 
 #include "KeyValueRepositorySqlite.hxx"
-#include "Logger.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 KeyValueRepositorySqlite::KeyValueRepositorySqlite(

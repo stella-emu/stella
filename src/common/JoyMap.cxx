@@ -16,8 +16,8 @@
 //============================================================================
 
 #include "JoyMap.hxx"
-#include "jsonDefinitions.hxx"
 #include "Logger.hxx"
+#include "jsonDefinitions.hxx"
 
 using json = nlohmann::json;
 

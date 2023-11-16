@@ -26,7 +26,6 @@
 #include "Props.hxx"
 #include "PropsSet.hxx"
 #include "TimerManager.hxx"
-#include "FBSurfaceSDL2.hxx"
 
 #include "RomImageWidget.hxx"
 

@@ -17,7 +17,6 @@
 
 #include <cmath>
 
-#include "SDL_lib.hxx"
 #include "bspf.hxx"
 #include "Logger.hxx"
 

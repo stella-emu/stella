@@ -15,7 +15,6 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#include "OSystem.hxx"
 #include "FBSurface.hxx"
 #include "Dialog.hxx"
 #include "ToolTip.hxx"

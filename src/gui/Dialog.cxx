@@ -29,13 +29,10 @@
 #include "TabWidget.hxx"
 #include "ToolTip.hxx"
 
-#include "ContextMenu.hxx"
-#include "PopUpWidget.hxx"
 #include "Settings.hxx"
 #include "Console.hxx"
 
 #include "Vec.hxx"
-#include "TIA.hxx"
 #include "MediaFactory.hxx"
 
 /*

@@ -19,7 +19,6 @@
 #define COMBO_DIALOG_HXX
 
 class PopUpWidget;
-class EditTextWidget;
 class StaticTextWidget;
 class OSystem;
 

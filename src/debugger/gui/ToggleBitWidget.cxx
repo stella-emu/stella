@@ -15,10 +15,8 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#include "OSystem.hxx"
 #include "Widget.hxx"
 #include "Dialog.hxx"
-#include "Debugger.hxx"
 #include "FBSurface.hxx"
 #include "Font.hxx"
 #include "ToggleBitWidget.hxx"

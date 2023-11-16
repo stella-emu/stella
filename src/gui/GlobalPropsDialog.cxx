@@ -17,7 +17,6 @@
 
 #include "bspf.hxx"
 #include "Bankswitch.hxx"
-#include "Control.hxx"
 #include "Dialog.hxx"
 #include "OSystem.hxx"
 #include "FrameBuffer.hxx"

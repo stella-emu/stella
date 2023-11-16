@@ -16,12 +16,10 @@
 //============================================================================
 
 #include "bspf.hxx"
-#include "Command.hxx"
 #include "Dialog.hxx"
 #include "Font.hxx"
 #include "FBSurface.hxx"
 #include "GuiObject.hxx"
-#include "OSystem.hxx"
 
 #include "TimeLineWidget.hxx"
 

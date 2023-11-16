@@ -20,7 +20,6 @@
 #include "Dialog.hxx"
 #include "EventHandler.hxx"
 #include "OSystem.hxx"
-#include "EditTextWidget.hxx"
 #include "PopUpWidget.hxx"
 #include "Widget.hxx"
 #include "Font.hxx"

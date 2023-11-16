@@ -21,7 +21,6 @@
 #include "Debugger.hxx"
 #include "CartDebug.hxx"
 #include "TIADebug.hxx"
-#include "TIAConstants.hxx"
 #include "FBSurface.hxx"
 #include "Font.hxx"
 #include "Base.hxx"

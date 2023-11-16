@@ -15,8 +15,6 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#include <cmath>
-
 #include "bspf.hxx"
 #include "Base.hxx"
 #include "Control.hxx"

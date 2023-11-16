@@ -22,7 +22,6 @@ class GuiObject;
 class ButtonWidget;
 class DataGridWidget;
 class StaticTextWidget;
-class ToggleBitWidget;
 class TogglePixelWidget;
 class EditTextWidget;
 class ColorWidget;

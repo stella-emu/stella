@@ -15,7 +15,6 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#include "TIASurface.hxx"
 #include "Settings.hxx"
 
 #include "NTSCFilter.hxx"

@@ -26,7 +26,6 @@
 #include "LauncherFileListWidget.hxx"
 #include "NavigationWidget.hxx"
 #include "FSNode.hxx"
-#include "MD5.hxx"
 #include "OptionsDialog.hxx"
 #include "GameInfoDialog.hxx"
 #include "HighScoresDialog.hxx"

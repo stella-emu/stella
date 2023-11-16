@@ -19,7 +19,6 @@
 
 #include "bspf.hxx"
 #include "FSNode.hxx"
-#include "Logger.hxx"
 #include "DefProps.hxx"
 #include "Props.hxx"
 #include "PropsSet.hxx"

@@ -19,10 +19,7 @@
 #include "Settings.hxx"
 #include "Console.hxx"
 #include "Cart.hxx"
-#include "Control.hxx"
 #include "Switches.hxx"
-#include "System.hxx"
-#include "Serializable.hxx"
 #include "RewindManager.hxx"
 
 #include "StateManager.hxx"

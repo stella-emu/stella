@@ -15,8 +15,6 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#include <cassert>
-
 #include "Console.hxx"
 #include "Settings.hxx"
 #include "Switches.hxx"

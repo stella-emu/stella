@@ -15,12 +15,10 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#include "bspf.hxx"
 #include "Command.hxx"
 #include "Dialog.hxx"
 #include "FBSurface.hxx"
 #include "GuiObject.hxx"
-#include "OSystem.hxx"
 #include "ColorWidget.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

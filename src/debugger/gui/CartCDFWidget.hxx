@@ -22,7 +22,6 @@ class PopUpWidget;
 class CheckboxWidget;
 class DataGridWidget;
 class StaticTextWidget;
-class EditTextWidget;
 class SliderWidget;
 
 #include "CartCDF.hxx"

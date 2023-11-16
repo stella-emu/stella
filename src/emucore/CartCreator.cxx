@@ -64,8 +64,6 @@
 #include "CartWD.hxx"
 #include "CartX07.hxx"
 #include "MD5.hxx"
-#include "Props.hxx"
-#include "Logger.hxx"
 #include "Settings.hxx"
 
 #include "CartDetector.hxx"

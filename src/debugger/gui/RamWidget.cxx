@@ -21,7 +21,6 @@
 #include "InputTextDialog.hxx"
 #include "OSystem.hxx"
 #include "Debugger.hxx"
-#include "CartDebug.hxx"
 #include "Font.hxx"
 #include "FBSurface.hxx"
 #include "Widget.hxx"

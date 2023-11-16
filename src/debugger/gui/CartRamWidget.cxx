@@ -17,7 +17,6 @@
 
 #include "EditTextWidget.hxx"
 #include "GuiObject.hxx"
-#include "OSystem.hxx"
 #include "CartDebug.hxx"
 #include "StringParser.hxx"
 #include "Widget.hxx"

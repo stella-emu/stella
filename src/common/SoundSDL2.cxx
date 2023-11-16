@@ -17,15 +17,11 @@
 
 #ifdef SOUND_SUPPORT
 
-#include <sstream>
-#include <cassert>
 #include <cmath>
 
 #include "SDL_lib.hxx"
 #include "Logger.hxx"
 #include "FrameBuffer.hxx"
-#include "Settings.hxx"
-#include "System.hxx"
 #include "OSystem.hxx"
 #include "Console.hxx"
 #include "AudioQueue.hxx"
@@ -33,7 +29,6 @@
 #include "AudioSettings.hxx"
 #include "audio/SimpleResampler.hxx"
 #include "audio/LanczosResampler.hxx"
-#include "StaggeredLogger.hxx"
 #include "ThreadDebugging.hxx"
 
 #include "SoundSDL2.hxx"

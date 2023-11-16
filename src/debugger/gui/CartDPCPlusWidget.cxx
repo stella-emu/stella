@@ -18,7 +18,6 @@
 #include "CartDPCPlus.hxx"
 #include "DataGridWidget.hxx"
 #include "PopUpWidget.hxx"
-#include "EditTextWidget.hxx"
 #include "CartDPCPlusWidget.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

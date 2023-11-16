@@ -17,7 +17,6 @@
 
 #include "MediaFactory.hxx"
 #include "System.hxx"
-#include "OSystem.hxx"
 #include "AtariVox.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

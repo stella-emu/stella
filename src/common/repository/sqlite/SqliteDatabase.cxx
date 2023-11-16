@@ -15,8 +15,6 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#include <cstdio>
-
 #include "FSNode.hxx"
 #include "SqliteDatabase.hxx"
 #include "Logger.hxx"

@@ -15,8 +15,6 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#include <sstream>
-
 #include "CompositeKVRJsonAdapter.hxx"
 #include "repository/KeyValueRepositoryJsonFile.hxx"
 

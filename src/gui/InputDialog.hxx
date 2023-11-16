@@ -23,7 +23,6 @@ class GuiObject;
 class TabWidget;
 class EventMappingWidget;
 class CheckboxWidget;
-class EditTextWidget;
 class JoystickDialog;
 class PopUpWidget;
 class SliderWidget;

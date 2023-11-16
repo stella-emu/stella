@@ -17,7 +17,6 @@
 
 #include "FSNodeFactory.hxx"
 #include "FSNode.hxx"
-#include "CartDetector.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FSNode::FSNode(const AbstractFSNodePtr& realNode)

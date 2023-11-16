@@ -19,9 +19,9 @@
   #include "Debugger.hxx"
 #endif
 #include "MD5.hxx"
+#include "Settings.hxx"
 #include "System.hxx"
 #include "CartDPCPlus.hxx"
-#include "TIA.hxx"
 #include "exception/FatalEmulationError.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

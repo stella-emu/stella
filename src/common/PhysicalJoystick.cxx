@@ -15,11 +15,6 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#include <map>
-
-#include "OSystem.hxx"
-#include "Settings.hxx"
-#include "Vec.hxx"
 #include "bspf.hxx"
 #include "PhysicalJoystick.hxx"
 #include "jsonDefinitions.hxx"

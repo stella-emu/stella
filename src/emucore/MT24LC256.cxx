@@ -15,8 +15,6 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#include <cstdio>
-
 #include "System.hxx"
 #include "MT24LC256.hxx"
 
