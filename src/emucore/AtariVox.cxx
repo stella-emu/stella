@@ -126,9 +126,9 @@ void AtariVox::clockDataIn(bool value)
       myShiftCount = 0;
       myShiftRegister >>= 6;
       if(!(myShiftRegister & (1<<9)))
-        cerr << "AtariVox: bad start bit" << endl;
+        cerr << "AtariVox: bad start bit\n";
       else if((myShiftRegister & 1))
-        cerr << "AtariVox: bad stop bit" << endl;
+        cerr << "AtariVox: bad stop bit\n";
       else
       {
         const uInt8 data = ((myShiftRegister >> 1) & 0xff);

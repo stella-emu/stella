@@ -169,7 +169,7 @@ void DebuggerParser::outputCommandError(string_view errorMsg, int command)
 
   commandResult << red(errorMsg);
   if(!example.empty())
-    commandResult << endl << example;
+    commandResult << '\n' << example;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -177,7 +177,7 @@ void DebuggerParser::outputCommandError(string_view errorMsg, int command)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DebuggerParser::getCompletions(string_view in, StringList& completions)
 {
-  // cerr << "Attempting to complete \"" << in << "\"" << endl;
+  // cerr << "Attempting to complete \"" << in << "\"\n";
   for(const auto& c: commands)
   {
     if(BSPF::matchesCamelCase(c.cmdString, in))
@@ -317,9 +317,9 @@ string DebuggerParser::showWatches()
       argStrings.push_back(myWatches[i]);
       args.push_back(decipher_arg(argStrings[0]));
       if(args[0] < 0)
-        buf << "BAD WATCH " << (i+1) << ": " << argStrings[0] << endl;
+        buf << "BAD WATCH " << (i+1) << ": " << argStrings[0] << '\n';
       else
-        buf << " watch #" << (i+1) << " (" << argStrings[0] << ") -> " << eval() << endl;
+        buf << " watch #" << (i+1) << " (" << argStrings[0] << ") -> " << eval() << '\n';
     }
   }
   return buf.str();
@@ -341,7 +341,7 @@ bool DebuggerParser::getArgs(string_view command, string& verb)
   argStrings.clear();
   args.clear();
 
-  // cerr << "Parsing \"" << command << "\"" << ", length = " << command.length() << endl;
+  // cerr << "Parsing \"" << command << "\"" << ", length = " << command.length() << '\n';
 
   // First, pick apart string into space-separated tokens.
   // The first token is the command verb, the rest go in an array
@@ -368,7 +368,7 @@ bool DebuggerParser::getArgs(string_view command, string& verb)
         if(c == '}') {
           state = ParseState::IN_SPACE;
           argStrings.push_back(curArg);
-          //  cerr << "{" << curArg << "}" << endl;
+          //  cerr << "{" << curArg << "}\n";
           curArg = "";
         } else {
           curArg += c;
@@ -410,7 +410,7 @@ bool DebuggerParser::getArgs(string_view command, string& verb)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool DebuggerParser::validateArgs(int cmd)
 {
-  // cerr << "entering validateArgs(" << cmd << ")" << endl;
+  // cerr << "entering validateArgs(" << cmd << ")\n";
   const bool required = commands[cmd].parmsRequired;
   Parameters* p = commands[cmd].parms.data();
 
@@ -512,9 +512,9 @@ bool DebuggerParser::validateArgs(int cmd)
   } while(*p != Parameters::ARG_END_ARGS && curCount < argRequiredCount);
 
 /*
-cerr << "curCount         = " << curCount << endl
-     << "argRequiredCount = " << argRequiredCount << endl
-     << "*p               = " << *p << endl << endl;
+cerr << "curCount         = " << curCount << '\n'
+     << "argRequiredCount = " << argRequiredCount << '\n'
+     << "*p               = " << *p << "\n\n";
 */
 
   if(curCount < argRequiredCount)
@@ -565,7 +565,7 @@ string DebuggerParser::eval()
 
     buf << " #" << static_cast<int>(args[i]);
     if(i != argCount - 1)
-      buf << endl;
+      buf << '\n';
   }
 
   return buf.str();
@@ -612,7 +612,7 @@ void DebuggerParser::printTimer(uInt32 idx, bool showHeader)
     else
       commandResult << " #|     From      |      To       | Execs| Avg. | Min. | Max. |";
   }
-  commandResult << endl << Base::toString(idx) << "|" << labelFrom;
+  commandResult << '\n' << Base::toString(idx) << "|" << labelFrom;
   if(banked)
   {
     commandResult << "/" << setw(2) << setfill(' ');
@@ -651,7 +651,7 @@ void DebuggerParser::printTimer(uInt32 idx, bool showHeader)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DebuggerParser::listTimers()
 {
-  commandResult << "timers:" << endl;
+  commandResult << "timers:\n";
 
   for(uInt32 i = 0; i < debugger.m6502().numTimers(); ++i)
     printTimer(i, i == 0);
@@ -662,7 +662,7 @@ void DebuggerParser::listTraps(bool listCond)
 {
   StringList names = debugger.m6502().getCondTrapNames();
 
-  commandResult << (listCond ? "trapifs:" : "traps:") << endl;
+  commandResult << (listCond ? "trapifs:" : "traps:") << '\n';
   for(uInt32 i = 0; i < names.size(); ++i)
   {
     const bool hasCond = !names[i].empty();
@@ -685,7 +685,7 @@ void DebuggerParser::listTraps(bool listCond)
         commandResult << " " << debugger.cartDebug().getLabel(myTraps[i]->end, true, 4);
       commandResult << trapStatus(*myTraps[i]);
       commandResult << " + mirrors";
-      if(i != (names.size() - 1)) commandResult << endl;
+      if(i != (names.size() - 1)) commandResult << '\n';
     }
   }
 }
@@ -726,21 +726,21 @@ string DebuggerParser::saveScriptFile(string file)
   const Debugger::FunctionDefMap funcs = debugger.getFunctionDefMap();
   for(const auto& [name, cmd]: funcs)
     if (!Debugger::isBuiltinFunction(name))
-      out << "function " << name << " {" << cmd << "}" << endl;
+      out << "function " << name << " {" << cmd << "}\n";
 
   for(const auto& w: myWatches)
-    out << "watch " << w << endl;
+    out << "watch " << w << '\n';
 
   for(const auto& bp: debugger.breakPoints().getBreakpoints())
-    out << "break " << Base::toString(bp.addr) << " " << Base::toString(bp.bank) << endl;
+    out << "break " << Base::toString(bp.addr) << " " << Base::toString(bp.bank) << '\n';
 
   StringList conds = debugger.m6502().getCondBreakNames();
   for(const auto& cond : conds)
-    out << "breakIf {" << cond << "}" << endl;
+    out << "breakIf {" << cond << "}\n";
 
   conds = debugger.m6502().getCondSaveStateNames();
   for(const auto& cond : conds)
-    out << "saveStateIf {" << cond << "}" << endl;
+    out << "saveStateIf {" << cond << "}\n";
 
   StringList names = debugger.m6502().getCondTrapNames();
   for(uInt32 i = 0; i < myTraps.size(); ++i)
@@ -760,7 +760,7 @@ string DebuggerParser::saveScriptFile(string file)
     out << " " << Base::toString(myTraps[i]->begin);
     if(myTraps[i]->begin != myTraps[i]->end)
       out << " " << Base::toString(myTraps[i]->end);
-    out << endl;
+    out << '\n';
   }
 
   // Append 'script' extension when necessary
@@ -933,7 +933,7 @@ void DebuggerParser::executeBreak()
       const bool set = debugger.toggleBreakPoint(addr, i);
 
       if(i)
-        commandResult << endl;
+        commandResult << '\n';
 
       if(set)
         commandResult << "set";
@@ -1009,9 +1009,9 @@ void DebuggerParser::executeCheat()
   {
     const string& cheat = argStrings[arg];
     if(debugger.myOSystem.cheat().add("DBG", cheat))
-      commandResult << "cheat code " << cheat << " enabled" << endl;
+      commandResult << "cheat code " << cheat << " enabled\n";
     else
-      commandResult << red("invalid cheat code ") << cheat << endl;
+      commandResult << red("invalid cheat code ") << cheat << '\n';
   }
 #else
   commandResult << red("Cheat support not enabled\n");
@@ -1253,7 +1253,7 @@ void DebuggerParser::executeDump()
         os << Base::toString(debugger.peek(j)) << " ";
         if(j == i+7 && j != end) os << "- ";
       }
-      os << endl;
+      os << '\n';
     }
   };
 
@@ -1328,7 +1328,7 @@ void DebuggerParser::executeDump()
         << Base::toString(cpu.z()) << " "    // Z (flag)
         << Base::toString(cpu.c()) << " "    // C (flag)
         << Base::toString(0) << " "    // unused
-        << endl;
+        << '\n';
       commandResult << "CPU state";
       if((args[2] & 0x04) != 0)
         commandResult << ", ";
@@ -1354,7 +1354,7 @@ void DebuggerParser::executeDump()
         << Base::toString(debugger.peek(TIARegister::INPT5)) << " "
         << Base::toString(0) << " "    // unused
         << Base::toString(0) << " "    // unused
-        << endl;
+        << '\n';
       commandResult << "switches and fire buttons";
     }
 
@@ -1483,7 +1483,7 @@ void DebuggerParser::executeHelp()
     commandResult << setfill(' ');
     for(const auto& c: commands)
       commandResult << setw(static_cast<int>(clen)) << right << c.cmdString
-                    << " - " << c.description << endl;
+                    << " - " << c.description << '\n';
 
     commandResult << Debugger::builtinHelp();
   }
@@ -1493,7 +1493,7 @@ void DebuggerParser::executeHelp()
     {
       if(argStrings[0] == c.cmdString)
       {
-        commandResult << "  " << red(c.description) << endl << c.extendedDesc;
+        commandResult << "  " << red(c.description) << '\n' << c.extendedDesc;
         break;
       }
     }
@@ -1645,7 +1645,7 @@ void DebuggerParser::executeListBreaks()
     if(romBankCount == 1)
     {
       buf << debugger.cartDebug().getLabel(bp.addr, true, 4) << " ";
-      if(!(++count % 8)) buf << endl;
+      if(!(++count % 8)) buf << '\n';
     }
     else
     {
@@ -1656,23 +1656,23 @@ void DebuggerParser::executeListBreaks()
         buf << " #" << static_cast<int>(bp.bank);
       else
         buf << " *";
-      if(!(++count % 6)) buf << endl;
+      if(!(++count % 6)) buf << '\n';
     }
   }
   if(count)
-    commandResult << "breaks:" << endl << buf.str();
+    commandResult << "breaks:\n" << buf.str();
 
   StringList conds = debugger.m6502().getCondBreakNames();
 
   if(!conds.empty())
   {
     if(count)
-      commandResult << endl;
-    commandResult << "BreakIfs:" << endl;
+      commandResult << '\n';
+    commandResult << "BreakIfs:\n";
     for(uInt32 i = 0; i < conds.size(); ++i)
     {
       commandResult << Base::toString(i) << ": " << conds[i];
-      if(i != (conds.size() - 1)) commandResult << endl;
+      if(i != (conds.size() - 1)) commandResult << '\n';
     }
   }
 
@@ -1698,7 +1698,7 @@ void DebuggerParser::executeListFunctions()
 
   if(!functions.empty())
     for(const auto& [name, cmd]: functions)
-      commandResult << name << " -> " << cmd << endl;
+      commandResult << name << " -> " << cmd << '\n';
   else
     commandResult << "no user-defined functions";
 }
@@ -1710,11 +1710,11 @@ void DebuggerParser::executeListSaveStateIfs()
   StringList conds = debugger.m6502().getCondSaveStateNames();
   if(!conds.empty())
   {
-    commandResult << "saveStateIf:" << endl;
+    commandResult << "saveStateIf:\n";
     for(uInt32 i = 0; i < conds.size(); ++i)
     {
       commandResult << Base::toString(i) << ": " << conds[i];
-      if(i != (conds.size() - 1)) commandResult << endl;
+      if(i != (conds.size() - 1)) commandResult << '\n';
     }
   }
 
@@ -2660,7 +2660,7 @@ void DebuggerParser::executeType()
   {
     commandResult << Base::HEX4 << i << ": ";
     debugger.cartDebug().accessTypeAsString(commandResult, i);
-    commandResult << endl;
+    commandResult << '\n';
   }
 }
 

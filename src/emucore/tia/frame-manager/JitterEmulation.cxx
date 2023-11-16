@@ -58,7 +58,7 @@ void JitterEmulation::frameComplete(Int32 scanlineCount, Int32 vsyncCycles)
 {
 //#ifdef DEBUG_BUILD
 //  const int  vsyncLines = round((vsyncCycles - 2) / 76.0);
-//  cerr << "TV jitter " << myJitter << " - " << scanlineCount << ", " << vsyncCycles << ", " << vsyncLines << endl;
+//  cerr << "TV jitter " << myJitter << " - " << scanlineCount << ", " << vsyncCycles << ", " << vsyncLines << '\n';
 //#endif
 
   // Check if current frame size is stable compared to previous frame
@@ -147,7 +147,7 @@ bool JitterEmulation::save(Serializer& out) const
   }
   catch(...)
   {
-    cerr << "ERROR: JitterEmulation::save" << endl;
+    cerr << "ERROR: JitterEmulation::save\n";
 
     return false;
   }
@@ -170,7 +170,7 @@ bool JitterEmulation::load(Serializer& in)
   }
   catch (...)
   {
-    cerr << "ERROR: JitterEmulation::load" << endl;
+    cerr << "ERROR: JitterEmulation::load\n";
 
     return false;
   }

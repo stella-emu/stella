@@ -77,12 +77,12 @@ class FSNodeZIP : public AbstractFSNode
 
     friend ostream& operator<<(ostream& os, const FSNodeZIP& node)
     {
-      os << "_zipFile:     " << node._zipFile << endl
-         << "_virtualPath: " << node._virtualPath << endl
-         << "_name:        " << node._name << endl
-         << "_path:        " << node._path << endl
-         << "_size:        " << node._size << endl
-         << "_shortPath:   " << node._shortPath << endl;
+      os << "_zipFile:     " << node._zipFile << '\n'
+         << "_virtualPath: " << node._virtualPath << '\n'
+         << "_name:        " << node._name << '\n'
+         << "_path:        " << node._path << '\n'
+         << "_size:        " << node._size << '\n'
+         << "_shortPath:   " << node._shortPath << '\n';
       return os;
     }
 

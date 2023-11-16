@@ -17,11 +17,9 @@ int main(int ac, char* av[])
 {
   if(ac < 2)
   {
-    cout << av[0] << " <INPUT_FILE> [values per line = 8] [startpos = 0]" << endl
-         << endl
-         << "  Read data from INPUT_FILE, and convert to unsigned char" << endl
-         << "  (in hex format), writing to standard output." << endl
-         << endl;
+    cout << av[0] << " <INPUT_FILE> [values per line = 8] [startpos = 0]\n\n"
+         << "  Read data from INPUT_FILE, and convert to unsigned char\n"
+         << "  (in hex format), writing to standard output.\n\n";
     return 0;
   }
 
@@ -39,7 +37,7 @@ int main(int ac, char* av[])
     in.read((char*)data.get(), len);
     in.close();
 
-    cout << "SIZE = " << len << endl << "  ";
+    cout << "SIZE = " << len << "\n  ";
 
     // Skip first 'offset' bytes; they shouldn't be used
     for(int t = offset; t < len; ++t)
@@ -48,8 +46,8 @@ int main(int ac, char* av[])
       if(t < len - 1)
         cout << ", ";
       if(((t-offset) % values_per_line) == (values_per_line-1))
-        cout << endl << "  ";
+        cout << "\n  ";
     }
-    cout << endl;
+    cout << '\n';
   }
 }

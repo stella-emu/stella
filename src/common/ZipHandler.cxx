@@ -194,8 +194,8 @@ void ZipHandler::addToCache()
   cerr << "\nCACHE contents:\n";
     for(cachenum = 0; cachenum < myZipCache.size(); ++cachenum)
       if(myZipCache[cachenum] != nullptr)
-        cerr << "  " << cachenum << " : " << myZipCache[cachenum]->filename << endl;
-  cerr << endl;
+        cerr << "  " << cachenum << " : " << myZipCache[cachenum]->filename << '\n';
+  cerr << '\n';
 #endif
 }
 

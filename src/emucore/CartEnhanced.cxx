@@ -404,7 +404,7 @@ bool CartridgeEnhanced::save(Serializer& out) const
   }
   catch(...)
   {
-    cerr << "ERROR: << " << name() << "::save" << endl;
+    cerr << "ERROR: << " << name() << "::save\n";
     return false;
   }
 
@@ -425,7 +425,7 @@ bool CartridgeEnhanced::load(Serializer& in)
   }
   catch(...)
   {
-    cerr << "ERROR: " << name() << "::load" << endl;
+    cerr << "ERROR: " << name() << "::load\n";
     return false;
   }
   // Restore bank segments

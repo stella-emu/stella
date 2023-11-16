@@ -126,7 +126,7 @@ bool AbstractFrameManager::save(Serializer& out) const
   }
   catch(...)
   {
-    cerr << "ERROR: AbstractFrameManager::save" << endl;
+    cerr << "ERROR: AbstractFrameManager::save\n";
     return false;
   }
 }
@@ -149,7 +149,7 @@ bool AbstractFrameManager::load(Serializer& in)
   }
   catch(...)
   {
-    cerr << "ERROR: AbstractFrameManager::load" << endl;
+    cerr << "ERROR: AbstractFrameManager::load\n";
     return false;
   }
 }

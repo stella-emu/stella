@@ -105,13 +105,11 @@ void TIASurface::initialize(const Console& console,
 #if 0
 cerr << "INITIALIZE:\n"
      << "TIA:\n"
-     << "src: " << myTiaSurface->srcRect() << endl
-     << "dst: " << myTiaSurface->dstRect() << endl
-     << endl;
-cerr << "SLine:\n"
-     << "src: " << mySLineSurface->srcRect() << endl
-     << "dst: " << mySLineSurface->dstRect() << endl
-     << endl;
+     << "src: " << myTiaSurface->srcRect() << '\n'
+     << "dst: " << myTiaSurface->dstRect() << "\n\n"
+     << "SLine:\n"
+     << "src: " << mySLineSurface->srcRect() << '\n'
+     << "dst: " << mySLineSurface->dstRect() << "\n\n";
 #endif
 }
 

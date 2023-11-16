@@ -120,7 +120,7 @@ bool Audio::save(Serializer& out) const
   }
   catch(...)
   {
-    cerr << "ERROR: TIA_Audio::save" << endl;
+    cerr << "ERROR: TIA_Audio::save\n";
     return false;
   }
 
@@ -157,7 +157,7 @@ bool Audio::load(Serializer& in)
   }
   catch(...)
   {
-    cerr << "ERROR: TIA_Audio::load" << endl;
+    cerr << "ERROR: TIA_Audio::load\n";
     return false;
   }
 

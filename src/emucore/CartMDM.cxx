@@ -112,7 +112,7 @@ bool CartridgeMDM::save(Serializer& out) const
   }
   catch(...)
   {
-    cerr << "ERROR: CartridgeMDM::save" << endl;
+    cerr << "ERROR: CartridgeMDM::save\n";
     return false;
   }
 
@@ -129,7 +129,7 @@ bool CartridgeMDM::load(Serializer& in)
   }
   catch(...)
   {
-    cerr << "ERROR: CartridgeMDM::load" << endl;
+    cerr << "ERROR: CartridgeMDM::load\n";
     return false;
   }
 

@@ -134,7 +134,7 @@ bool AnalogReadout::save(Serializer& out) const
   }
   catch(...)
   {
-    cerr << "ERROR: TIA_AnalogReadout::save" << endl;
+    cerr << "ERROR: TIA_AnalogReadout::save\n";
     return false;
   }
 
@@ -159,7 +159,7 @@ bool AnalogReadout::load(Serializer& in)
   }
   catch(...)
   {
-    cerr << "ERROR: TIA_AnalogReadout::load" << endl;
+    cerr << "ERROR: TIA_AnalogReadout::load\n";
     return false;
   }
 
@@ -176,7 +176,7 @@ bool AnalogReadout::Connection::save(Serializer& out) const
   }
   catch(...)
   {
-    cerr << "ERROR: AnalogReadout::Connection::save" << endl;
+    cerr << "ERROR: AnalogReadout::Connection::save\n";
     return false;
   }
 
@@ -193,7 +193,7 @@ bool AnalogReadout::Connection::load(const Serializer& in)
   }
   catch(...)
   {
-    cerr << "ERROR: AnalogReadout::Connection::load" << endl;
+    cerr << "ERROR: AnalogReadout::Connection::load\n";
     return false;
   }
 

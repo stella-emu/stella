@@ -77,10 +77,11 @@ ProfilingRunner::ProfilingRunner(int argc, char* argv[])
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool ProfilingRunner::run()
 {
-  cout << "Profiling Stella..." << endl;
+  cout << "Profiling Stella...\n";
 
   for (const ProfilingRun& run : profilingRuns) {
-    cout << endl << "running " << run.romFile << " for " << run.runtime << " seconds..." << endl;
+    cout << "\nrunning " << run.romFile << " for " << run.runtime
+         << " seconds...\n";
 
     if (!runOne(run)) return false;
   }
@@ -97,14 +98,14 @@ bool ProfilingRunner::runOne(const ProfilingRun& run)
   const FSNode imageFile(run.romFile);
 
   if (!imageFile.isFile()) {
-    cout << "ERROR: " << run.romFile << " is not a ROM image" << endl;
+    cout << "ERROR: " << run.romFile << " is not a ROM image\n";
     return false;
   }
 
   ByteBuffer image;
   const size_t size = imageFile.read(image);
   if (size == 0) {
-    cout << "ERROR: unable to read " << run.romFile << endl;
+    cout << "ERROR: unable to read " << run.romFile << '\n';
     return false;
   }
 
@@ -114,7 +115,7 @@ bool ProfilingRunner::runOne(const ProfilingRun& run)
       imageFile, image, size, md5, type, mySettings);
 
   if (!cartridge) {
-    cout << "ERROR: unable to determine cartridge type" << endl;
+    cout << "ERROR: unable to determine cartridge type\n";
     return false;
   }
 
@@ -160,7 +161,7 @@ bool ProfilingRunner::runOne(const ProfilingRun& run)
       break;
   }
 
-  (cout << endl).flush();
+  (cout << '\n').flush();
 
   FrameManager frameManager;
   tia.setFrameManager(&frameManager);
@@ -196,12 +197,12 @@ bool ProfilingRunner::runOne(const ProfilingRun& run)
   const double realtimeUsed = duration_cast<duration<double>>(high_resolution_clock::now () - tp).count();
 
   if (dispatchResult.getStatus() != DispatchResult::Status::ok) {
-    cout << endl << "ERROR: emulation failed after " << cycles << " cycles";
+    cout << "\nERROR: emulation failed after " << cycles << " cycles";
     return false;
   }
 
-  (cout << "100%" << endl).flush();
-  cout << "real time: " << realtimeUsed << " seconds" << endl;
+  (cout << "100%" << '\n').flush();
+  cout << "real time: " << realtimeUsed << " seconds\n";
 
   return true;
 }

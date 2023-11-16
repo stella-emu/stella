@@ -101,7 +101,7 @@ void Widget::draw()
   if(isDirty())
   {
   #ifdef DEBUG_BUILD
-    //cerr << "  *** draw widget " << typeid(*this).name() << " ***" << endl;
+    //cerr << "  *** draw widget " << typeid(*this).name() << " ***" << '\n';
     cerr << "w";
   #endif
 
@@ -518,7 +518,7 @@ void Widget::setDirtyInChain(Widget* start)
   while(start)
   {
   #ifdef DEBUG_BUILD
-    //cerr << "setDirtyInChain " << typeid(*start).name() << endl;
+    //cerr << "setDirtyInChain " << typeid(*start).name() << '\n';
   #endif
     start->setDirty();
     start = start->_next;

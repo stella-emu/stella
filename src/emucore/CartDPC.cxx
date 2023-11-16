@@ -380,7 +380,7 @@ bool CartridgeDPC::save(Serializer& out) const
   }
   catch(...)
   {
-    cerr << "ERROR: CartridgeDPC::save" << endl;
+    cerr << "ERROR: CartridgeDPC::save\n";
     return false;
   }
 
@@ -420,7 +420,7 @@ bool CartridgeDPC::load(Serializer& in)
   }
   catch(...)
   {
-    cerr << "ERROR: CartridgeDPC::load" << endl;
+    cerr << "ERROR: CartridgeDPC::load\n";
     return false;
   }
   return true;

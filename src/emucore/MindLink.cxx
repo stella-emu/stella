@@ -44,7 +44,7 @@ void MindLink::update()
     myMindlinkPos = myMindlinkPos | TRIGGER_VALUE; // starts game, calibration and reverse
 
 //#ifdef DEBUG_BUILD
-//  cerr << std::hex << myMindlinkPos << endl;
+//  cerr << std::hex << myMindlinkPos << '\n';
 //#endif
 
   myMindlinkShift = 1; // start transfer with least significant bit

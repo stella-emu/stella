@@ -137,7 +137,7 @@ uInt8 CartridgeFA2::ramReadWrite()
         catch(...)
         {
           // Maybe add logging here that save failed?
-          cerr << name() << ": ERROR saving score table" << endl;
+          cerr << name() << ": ERROR saving score table\n";
         }
         myRamAccessTimeout += 101000;  // Add 101 ms delay for write
       }
@@ -177,6 +177,8 @@ void CartridgeFA2::flash(uInt8 operation)
       }
       catch(...)
       {
+        // Maybe add logging here that erase failed?
+        cerr << name() << ": ERROR erasing score table\n";
       }
     }
     else if(operation == 1)  // read
@@ -199,7 +201,7 @@ void CartridgeFA2::flash(uInt8 operation)
       catch(...)
       {
         // Maybe add logging here that save failed?
-        cerr << name() << ": ERROR saving score table" << endl;
+        cerr << name() << ": ERROR saving score table\n";
       }
     }
   }

@@ -51,7 +51,7 @@ void RomInfoWidget::setProperties(const FSNode& node,
 #ifdef DEBUGGER_SUPPORT
   else
   {
-    cerr << "RomInfoWidget::setProperties: else!" << endl;
+    cerr << "RomInfoWidget::setProperties: else!\n";
     Logger::debug("RomInfoWidget::setProperties: else!");
   }
 #endif
@@ -68,7 +68,7 @@ void RomInfoWidget::clearProperties()
 #ifdef DEBUGGER_SUPPORT
   else
   {
-    cerr << "RomInfoWidget::clearProperties: else!" << endl;
+    cerr << "RomInfoWidget::clearProperties: else!\n";
     Logger::debug("RomInfoWidget::clearProperties: else!");
   }
 #endif

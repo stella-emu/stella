@@ -46,7 +46,7 @@ FrameLayout FrameLayoutDetector::detectedLayout(bool detectPal60,
     bool detectNtsc50, string_view name) const
 {
 #if 0 // debug
-  cerr << endl << name << endl;
+  cerr << '\n' << name << '\n';
   int i = 0;
   for(auto count : myColorCount)
   {
@@ -54,11 +54,11 @@ FrameLayout FrameLayoutDetector::detectedLayout(bool detectPal60,
       cerr << std::uppercase << std::setw(2) << std::hex << (i >> 3) << "x: ";
     cerr << std::setw(6) << std::dec << count;
     if(++i % 8 == 0)
-      cerr << endl;
+      cerr << '\n';
     else
       cerr << ", ";
   }
-  cerr << endl;
+  cerr << '\n';
 #endif
 #if 0 // save sampled color values
   std::ofstream file;
@@ -126,7 +126,7 @@ FrameLayout FrameLayoutDetector::detectedLayout(bool detectPal60,
       const double overRuleFactor = 1.0 + (OVERRULE_FACTOR - 1.0) * 2
         * (std::max(myNtscFrameSum, myPalFrameSum) / (myNtscFrameSum + myPalFrameSum) - 0.5); // 1.0 .. OVERRULE_FACTOR
 
-      //cerr << overRuleFactor << " * PAL:" << paCollSum << "/NTSC:" << ntscColSum << endl;
+      //cerr << overRuleFactor << " * PAL:" << paCollSum << "/NTSC:" << ntscColSum << '\n';
       if(detectPal60 && layout == FrameLayout::ntsc && ntscColSum * overRuleFactor < paCollSum)
       {
         layout = FrameLayout::pal60;
@@ -243,5 +243,5 @@ void FrameLayoutDetector::finalizeFrame()
     / static_cast<double>(frameLinesPAL - frameLinesNTSC), 0.0, 1.0);
   myPalFrameSum += palFrame;
   myNtscFrameSum += 1.0 - palFrame;
-  //cerr << myCurrentFrameFinalLines << ", " << palFrame << ", " << myPalFrameSum << ", " << myNtscFrameSum << endl;
+  //cerr << myCurrentFrameFinalLines << ", " << palFrame << ", " << myPalFrameSum << ", " << myNtscFrameSum << '\n';
 }

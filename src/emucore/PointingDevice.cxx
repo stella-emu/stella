@@ -81,7 +81,7 @@ void PointingDevice::update()
     return;
 
   // Update horizontal direction
-  //cerr << myEvent.get(Event::MouseAxisXMove) << ", " << myHCounterRemainder << endl;
+  //cerr << myEvent.get(Event::MouseAxisXMove) << ", " << myHCounterRemainder << '\n';
   updateDirection( myEvent.get(Event::MouseAxisXMove), myHCounterRemainder,
       myTrackBallLeft, myTrackBallLinesH, myScanCountH, myFirstScanOffsetH);
 

@@ -58,7 +58,7 @@ bool LatchedInput::save(Serializer& out) const
   }
   catch(...)
   {
-    cerr << "ERROR: TIA_LatchedInput::save" << endl;
+    cerr << "ERROR: TIA_LatchedInput::save\n";
     return false;
   }
 
@@ -75,7 +75,7 @@ bool LatchedInput::load(Serializer& in)
   }
   catch(...)
   {
-    cerr << "ERROR: TIA_LatchedInput::load" << endl;
+    cerr << "ERROR: TIA_LatchedInput::load\n";
     return false;
   }
 

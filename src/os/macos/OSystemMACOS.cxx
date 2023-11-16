@@ -27,7 +27,7 @@ void OSystemMACOS::getBaseDirectories(string& basedir, string& homedir,
 #if 0
   // Check to see if basedir overrides are active
   if(useappdir)
-    cout << "ERROR: base dir in app folder not supported" << endl;
+    cout << "ERROR: base dir in app folder not supported\n";
   else if(usedir != "")
     basedir = FSNode(usedir).getPath();
 #endif

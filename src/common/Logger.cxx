@@ -55,7 +55,7 @@ void Logger::logMessage(string_view message, Level level)
 
   if(level == Logger::Level::ERR)
   {
-    cout << message << endl << std::flush;
+    cout << message << '\n' << std::flush;
     myLogMessages += message;
     myLogMessages += "\n";
   }
@@ -63,7 +63,7 @@ void Logger::logMessage(string_view message, Level level)
           level == Logger::Level::ALWAYS)
   {
     if(myLogToConsole)
-      cout << message << endl << std::flush;
+      cout << message << '\n' << std::flush;
     myLogMessages += message;
     myLogMessages += "\n";
   }

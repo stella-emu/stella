@@ -60,7 +60,6 @@ using uInt64 = uint64_t;
 using std::cin;
 using std::cout;
 using std::cerr;
-using std::endl;
 using std::string;
 using std::string_view;
 using std::istream;

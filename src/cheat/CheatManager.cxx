@@ -255,7 +255,7 @@ void CheatManager::saveCheatDatabase()
 
   stringstream out;
   for(const auto& [md5, cheat]: myCheatMap)
-    out << "\"" << md5 << "\" " << "\"" << cheat << "\"" << endl;
+    out << "\"" << md5 << "\" " << "\"" << cheat << "\"\n";
 
   try         { myOSystem.cheatFile().write(out); }
   catch(...)  { return; }

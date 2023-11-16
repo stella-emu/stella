@@ -173,8 +173,8 @@ void PhysicalJoystickHandler::addToDatabase(const PhysicalJoystickPtr& stick)
   }
 
   ostringstream buf;
-  buf << "Added joystick " << stick->ID << ":" << endl
-    << "  " << stick->about() << endl;
+  buf << "Added joystick " << stick->ID << ":\n"
+    << "  " << stick->about() << '\n';
   Logger::info(buf.str());
 }
 
@@ -194,8 +194,8 @@ bool PhysicalJoystickHandler::remove(int id)
     if(it != myDatabase.end() && it->second.joy == stick)
     {
       ostringstream buf;
-      buf << "Removed joystick " << mySticks[id]->ID << ":" << endl
-          << "  " << mySticks[id]->about() << endl;
+      buf << "Removed joystick " << mySticks[id]->ID << ":\n"
+          << "  " << mySticks[id]->about() << '\n';
       Logger::info(buf.str());
 
       // Remove joystick, but remember mapping
@@ -263,8 +263,8 @@ bool PhysicalJoystickHandler::mapStelladaptors(string_view saport, int ID)
     {
       // Erase a previously added Stelladapter with a higher ID
       ostringstream buf;
-      buf << "Erased joystick " << _stick->ID << ":" << endl
-        << "  " << _stick->about() << endl;
+      buf << "Erased joystick " << _stick->ID << ":\n"
+        << "  " << _stick->about() << '\n';
       Logger::info(buf.str());
 
       _stick->name.erase(pos);
@@ -1105,17 +1105,17 @@ PhysicalJoystickHandler::MinStrickInfoList PhysicalJoystickHandler::minStickList
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ostream& operator<<(ostream& os, const PhysicalJoystickHandler& jh)
 {
-  os << "---------------------------------------------------------" << endl
-     << "joy database:"  << endl;
+  os << "---------------------------------------------------------\n"
+     << "joy database:\n";
   for(const auto& [_name, _info]: jh.myDatabase)
-    os << _name << endl << _info << endl << endl;
+    os << _name << '\n' << _info << '\n\n';
 
-  os << "---------------------" << endl
-     << "joy active:"  << endl;
+  os << "---------------------\n"
+     << "joy active:\n";
   for(const auto& [_id, _joyptr]: jh.mySticks)
-    os << _id << ": " << *_joyptr << endl;
+    os << _id << ": " << *_joyptr << '\n';
   os << "---------------------------------------------------------"
-     << endl << endl << endl;
+     << '\n\n\n';
 
   return os;
 }

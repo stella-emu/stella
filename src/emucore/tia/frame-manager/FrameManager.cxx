@@ -247,7 +247,7 @@ void FrameManager::recalculateMetrics() {
   // TODO: why "- 1" here: ???
   myMaxVcenter = BSPF::clamp<Int32>(ystartBase + (baseHeight - static_cast<Int32>(myHeight)) / 2 - 1, 0, TIAConstants::maxVcenter);
 
-  //cout << "myVSizeAdjust " << myVSizeAdjust << " " << myHeight << endl << std::flush;
+  //cout << "myVSizeAdjust " << myVSizeAdjust << " " << myHeight << '\n' << std::flush;
 
   myJitterEmulation.setYStart(myYStart);
 }

@@ -443,7 +443,7 @@ bool Player::save(Serializer& out) const
   }
   catch(...)
   {
-    cerr << "ERROR: TIA_Player::save" << endl;
+    cerr << "ERROR: TIA_Player::save\n";
     return false;
   }
 
@@ -493,7 +493,7 @@ bool Player::load(Serializer& in)
   }
   catch(...)
   {
-    cerr << "ERROR: TIA_Player::load" << endl;
+    cerr << "ERROR: TIA_Player::load\n";
     return false;
   }
 

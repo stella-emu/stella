@@ -959,15 +959,14 @@ string PromptWidget::saveBuffer(const FSNode& file)
     for(int j = start; j <= end; ++j)
       out << static_cast<char>(_buffer[j] & 0xff);
 
-    // add a \n
-    out << endl;
+    out << '\n';
   }
 
   try {
     if(file.write(out) > 0)
       return "saved " + file.getShortPath() + " OK";
   }
-  catch(...) { }
+  catch(...) { return "unable to save session"; }
 
   return "unable to save session";
 }

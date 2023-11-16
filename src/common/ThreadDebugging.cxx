@@ -28,7 +28,7 @@ ThreadDebuggingHelper& ThreadDebuggingHelper::instance()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ThreadDebuggingHelper::fail(const string& message)
 {
-  cerr << message << endl;
+  cerr << message << '\n';
 
   throw runtime_error(message);
 }

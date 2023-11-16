@@ -945,7 +945,7 @@ bool CartridgeBUS::save(Serializer& out) const
   }
   catch(...)
   {
-    cerr << "ERROR: CartridgeBUS::save" << endl;
+    cerr << "ERROR: CartridgeBUS::save\n";
     return false;
   }
 
@@ -988,7 +988,7 @@ bool CartridgeBUS::load(Serializer& in)
   }
   catch(...)
   {
-    cerr << "ERROR: CartridgeBUS::load" << endl;
+    cerr << "ERROR: CartridgeBUS::load\n";
     return false;
   }
 

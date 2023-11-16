@@ -113,7 +113,7 @@ void DataGridWidget::setList(const IntArray& alist, const IntArray& vlist,
   cerr << "alist.size() = "     << alist.size()
        << ", vlist.size() = "   << vlist.size()
        << ", changed.size() = " << changed.size()
-       << ", _rows*_cols = "    << _rows * _cols << endl << endl;
+       << ", _rows*_cols = "    << _rows * _cols << "\n\n";
   */
   const size_t size = vlist.size();  // assume the alist is the same size
 
@@ -141,7 +141,7 @@ void DataGridWidget::setList(const IntArray& alist, const IntArray& vlist,
        << ", _valueList.size() = "   << _valueList.size()
        << ", _changedList.size() = " << _changedList.size()
        << ", _valueStringList.size() = " << _valueStringList.size()
-       << ", _rows*_cols = "    << _rows * _cols << endl << endl;
+       << ", _rows*_cols = "    << _rows * _cols << "\n\n";
   */
   enableEditMode(false);
 

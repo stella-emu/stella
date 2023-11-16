@@ -48,7 +48,7 @@ FBSurfaceSDL2::FBSurfaceSDL2(FBBackendSDL2& backend,
   : myBackend{backend},
     myInterpolationMode{inter}
 {
-  //cerr << width << " x " << height << endl;
+  //cerr << width << " x " << height << '\n';
   createSurface(width, height, staticData);
 }
 

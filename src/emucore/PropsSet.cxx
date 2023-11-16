@@ -124,7 +124,7 @@ void PropertiesSet::insert(const Properties& properties, bool save)
     return;
   else if(getMD5(md5, defaultProps, true) && defaultProps == properties)
   {
-    cerr << "DELETE" << endl << std::flush;
+    cerr << "DELETE" << '\n' << std::flush;
     myRepository->remove(md5);
     return;
   }

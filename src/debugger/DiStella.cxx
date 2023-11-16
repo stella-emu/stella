@@ -1008,15 +1008,15 @@ bool DiStella::check_range(uInt16 start, uInt16 end) const
 {
   if (start > end) {
     cerr << "Beginning of range greater than end: start = " << std::hex << start
-      << ", end = " << std::hex << end << endl;
+      << ", end = " << std::hex << end << '\n';
     return false;
   } else if (start > myAppData.end + myOffset) {
     cerr << "Beginning of range out of range: start = " << std::hex << start
-      << ", range = " << std::hex << (myAppData.end + myOffset) << endl;
+      << ", range = " << std::hex << (myAppData.end + myOffset) << '\n';
     return false;
   } else if (start < myOffset) {
     cerr << "Beginning of range out of range: start = " << std::hex << start
-      << ", offset = " << std::hex << myOffset << endl;
+      << ", offset = " << std::hex << myOffset << '\n';
     return false;
   }
   return true;

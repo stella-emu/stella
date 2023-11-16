@@ -110,7 +110,7 @@ bool CartridgeARM::save(Serializer& out) const
   }
   catch(...)
   {
-    cerr << "ERROR: CartridgeARM::save" << endl;
+    cerr << "ERROR: CartridgeARM::save\n";
     return false;
   }
 #endif
@@ -133,7 +133,7 @@ bool CartridgeARM::load(Serializer& in)
   }
   catch(...)
   {
-    cerr << "ERROR: CartridgeARM::load" << endl;
+    cerr << "ERROR: CartridgeARM::load\n";
     return false;
   }
 #endif

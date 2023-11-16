@@ -331,7 +331,7 @@ bool PlusROM::save(Serializer& out) const
   }
   catch(...)
   {
-    cerr << "ERROR: PlusROM::save" << endl;
+    cerr << "ERROR: PlusROM::save\n";
     return false;
   }
 
@@ -353,7 +353,7 @@ bool PlusROM::load(Serializer& in)
   }
   catch(...)
   {
-    cerr << "ERROR: PlusROM::load" << endl;
+    cerr << "ERROR: PlusROM::load\n";
     return false;
   }
 
