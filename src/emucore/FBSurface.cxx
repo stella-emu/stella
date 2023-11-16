@@ -453,7 +453,7 @@ bool FBSurface::checkBounds(const uInt32 x, const uInt32 y) const
     return true;
 
   cerr << "FBSurface::checkBounds() failed: "
-    << x << ", " << y << " vs " << width() << ", " << height() << endl;
+       << x << ", " << y << " vs " << width() << ", " << height() << '\n';
   return false;
 }
 

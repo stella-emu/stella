@@ -135,7 +135,7 @@ bool CartridgeWD::save(Serializer& out) const
   }
   catch(...)
   {
-    cerr << "ERROR: CartridgeWD::save" << endl;
+    cerr << "ERROR: CartridgeWD::save\n";
     return false;
   }
 
@@ -156,7 +156,7 @@ bool CartridgeWD::load(Serializer& in)
   }
   catch(...)
   {
-    cerr << "ERROR: CartridgeWD::load" << endl;
+    cerr << "ERROR: CartridgeWD::load\n";
     return false;
   }
 

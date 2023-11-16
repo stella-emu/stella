@@ -381,7 +381,7 @@ bool Cartridge4A50::save(Serializer& out) const
   }
   catch(...)
   {
-    cerr << "ERROR: Cartridge4A40::save" << endl;
+    cerr << "ERROR: Cartridge4A40::save\n";
     return false;
   }
 
@@ -411,7 +411,7 @@ bool Cartridge4A50::load(Serializer& in)
   }
   catch(...)
   {
-    cerr << "ERROR: Cartridge4A50::load" << endl;
+    cerr << "ERROR: Cartridge4A50::load\n";
     return false;
   }
 

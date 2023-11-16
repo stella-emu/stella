@@ -339,7 +339,7 @@ bool StateManager::loadState(Serializer& in)
   }
   catch(...)
   {
-    cerr << "ERROR: StateManager::loadState(Serializer&)" << endl;
+    cerr << "ERROR: StateManager::loadState(Serializer&)\n";
   }
   return false;
 }
@@ -366,7 +366,7 @@ bool StateManager::saveState(Serializer& out)
   }
   catch(...)
   {
-    cerr << "ERROR: StateManager::saveState(Serializer&)" << endl;
+    cerr << "ERROR: StateManager::saveState(Serializer&)\n";
   }
   return false;
 }

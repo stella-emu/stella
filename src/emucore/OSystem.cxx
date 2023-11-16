@@ -123,21 +123,21 @@ bool OSystem::initialize(const Settings::Options& options)
   loadConfig(options);
 
   ostringstream buf;
-  buf << "Stella " << STELLA_VERSION << endl
-      << "  Features: " << myFeatures << endl
-      << "  " << myBuildInfo << endl << endl
+  buf << "Stella " << STELLA_VERSION << '\n'
+      << "  Features: " << myFeatures << '\n'
+      << "  " << myBuildInfo << '\n\n'
       << "Base directory:     '"
-      << myBaseDir.getShortPath() << "'" << endl
+      << myBaseDir.getShortPath() << "'\n"
       << "State directory:    '"
-      << myStateDir.getShortPath() << "'" << endl
+      << myStateDir.getShortPath() << "'\n"
       << "NVRam directory:    '"
-      << myNVRamDir.getShortPath() << "'" << endl
+      << myNVRamDir.getShortPath() << "'\n"
       << "Persistence:        '"
-      << describePresistence() << "'" << endl
+      << describePresistence() << "'\n"
       << "Cheat file:         '"
-      << myCheatFile.getShortPath() << "'" << endl
+      << myCheatFile.getShortPath() << "'\n"
       << "Palette file:       '"
-      << myPaletteFile.getShortPath() << "'" << endl;
+      << myPaletteFile.getShortPath() << "'\n";
   Logger::info(buf.str());
 
   // NOTE: The framebuffer MUST be created before any other object!!!
@@ -293,7 +293,7 @@ void OSystem::setConfigPaths()
   // Debug code
   auto dbgPath = [](string_view desc, const FSNode& location)
   {
-    cerr << desc << ": " << location << endl;
+    cerr << desc << ": " << location << '\n';
   };
   dbgPath("base dir  ", myBaseDir);
   dbgPath("state dir ", myStateDir);
@@ -373,7 +373,7 @@ bool OSystem::checkUserPalette(bool outputError) const
     if(size != 128 * 3 * 2 + 8 * 3)
     {
       if(outputError)
-        cerr << "ERROR: invalid palette file " << paletteFile() << endl;
+        cerr << "ERROR: invalid palette file " << paletteFile() << '\n';
 
       return false;
     }
@@ -511,12 +511,12 @@ string OSystem::createConsole(const FSNode& rom, string_view md5sum, bool newrom
         myFrameBuffer->showTextMessage("Multicart " +
           myConsole->cartridge().detectedType() + ", loading ROM" + id);
     }
-    buf << "Game console created:" << endl
-        << "  ROM file: " << myRomFile.getShortPath() << endl;
+    buf << "Game console created:\n"
+        << "  ROM file: " << myRomFile.getShortPath() << '\n';
     const FSNode propsFile(myRomFile.getPathWithExt(".pro"));
     if(propsFile.exists())
-      buf << "  PRO file: " << propsFile.getShortPath() << endl;
-    buf << endl << getROMInfo(*myConsole);
+      buf << "  PRO file: " << propsFile.getShortPath() << '\n';
+    buf << '\n' << getROMInfo(*myConsole);
     Logger::info(buf.str());
 
     myFrameBuffer->setCursorState();
@@ -861,12 +861,12 @@ string OSystem::getROMInfo(const Console& console)
   const ConsoleInfo& info = console.about();
   ostringstream buf;
 
-  buf << "  Cart Name:       " << info.CartName << endl
-      << "  Cart MD5:        " << info.CartMD5 << endl
-      << "  Controller 0:    " << info.Control0 << endl
-      << "  Controller 1:    " << info.Control1 << endl
-      << "  Display Format:  " << info.DisplayFormat << endl
-      << "  Bankswitch Type: " << info.BankSwitch << endl;
+  buf << "  Cart Name:       " << info.CartName << '\n'
+      << "  Cart MD5:        " << info.CartMD5 << '\n'
+      << "  Controller 0:    " << info.Control0 << '\n'
+      << "  Controller 1:    " << info.Control1 << '\n'
+      << "  Display Format:  " << info.DisplayFormat << '\n'
+      << "  Bankswitch Type: " << info.BankSwitch << '\n';
 
   return buf.str();
 }
@@ -933,7 +933,7 @@ double OSystem::dispatchEmulation(EmulationWorker& emulationWorker)
       #ifdef DEBUGGER_SUPPORT
         myDebugger->startWithFatalError(dispatchResult.getMessage());
       #else
-        cerr << dispatchResult.getMessage() << endl;
+        cerr << dispatchResult.getMessage() << '\n';
       #endif
         break;
 

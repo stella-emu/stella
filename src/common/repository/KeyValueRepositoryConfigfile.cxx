@@ -62,24 +62,24 @@ KVRMap KeyValueRepositoryConfigfile::load(istream& in)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool KeyValueRepositoryConfigfile::save(ostream& out, const KVRMap& values)
 {
-  out << ";  Stella configuration file" << endl
-      << ";" << endl
-      << ";  Lines starting with ';' are comments and are ignored." << endl
-      << ";  Spaces and tabs are ignored." << endl
-      << ";" << endl
-      << ";  Format MUST be as follows:" << endl
-      << ";    command = value" << endl
-      << ";" << endl
-      << ";  Commands are the same as those specified on the commandline," << endl
-      << ";  without the '-' character." << endl
-      << ";" << endl
-      << ";  Values are the same as those allowed on the commandline." << endl
-      << ";  Boolean values are specified as 1 (or true) and 0 (or false)" << endl
-      << ";" << endl;
+  out << ";  Stella configuration file\n"
+      << ";\n"
+      << ";  Lines starting with ';' are comments and are ignored.\n"
+      << ";  Spaces and tabs are ignored.\n"
+      << ";\n"
+      << ";  Format MUST be as follows:\n"
+      << ";    command = value\n"
+      << ";\n"
+      << ";  Commands are the same as those specified on the commandline,\n"
+      << ";  without the '-' character.\n"
+      << ";\n"
+      << ";  Values are the same as those allowed on the commandline.\n"
+      << ";  Boolean values are specified as 1 (or true) and 0 (or false)\n"
+      << ";\n";
 
   // Write out each of the key and value pairs
   for(const auto& [key, value]: values)
-    out << key << " = " << value << endl;
+    out << key << " = " << value << '\n';
 
   return true;
 }

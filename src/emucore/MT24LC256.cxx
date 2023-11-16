@@ -80,7 +80,7 @@ MT24LC256::~MT24LC256()
   if(myDataChanged)
   {
     try { myDataFile.write(myData, FLASH_SIZE); }
-    catch(...) { }
+    catch(...) { cerr << "ERROR writing MT24LC256 data file\n"; }
   }
 }
 
@@ -120,8 +120,8 @@ void MT24LC256::update()
   if(myCyclesWhenSDASet == myCyclesWhenSCLSet)
   {
 #ifdef DEBUG_EEPROM
-    cerr << endl << "  I2C_PIN_WRITE(SCL = " << mySCL
-         << ", SDA = " << mySDA << ")" << " @ " << mySystem.cycles() << endl;
+    cerr << "\n  I2C_PIN_WRITE(SCL = " << mySCL
+         << ", SDA = " << mySDA << ")" << " @ " << mySystem.cycles() << '\n';
 #endif
     jpee_clock(mySCL);
     jpee_data(mySDA);

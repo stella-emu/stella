@@ -191,7 +191,7 @@ string Thumbulator::doRun(uInt32& cycles, bool irqDrivenAudio)
 #endif
 #if defined(THUMB_DISS) || defined(THUMB_DBUG)
   dump_counters();
-  cout << statusMsg.str() << endl;
+  cout << statusMsg.str() << '\n';
   return statusMsg.str();
 #else
   return "";
@@ -245,8 +245,8 @@ string Thumbulator::run(uInt32& cycles, bool irqDrivenAudio)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 int Thumbulator::fatalError(string_view opcode, uInt32 v1, string_view msg)
 {
-  statusMsg << "Thumb ARM emulation fatal error: " << endl
-            << opcode << "(" << Base::HEX8 << v1 << "), " << msg << endl;
+  statusMsg << "Thumb ARM emulation fatal error:\n"
+            << opcode << "(" << Base::HEX8 << v1 << "), " << msg << '\n';
   dump_regs();
   if(trapOnFatal)
     throw runtime_error(statusMsg.str());
@@ -257,9 +257,9 @@ int Thumbulator::fatalError(string_view opcode, uInt32 v1, string_view msg)
 int Thumbulator::fatalError(string_view opcode, uInt32 v1, uInt32 v2,
                             string_view msg)
 {
-  statusMsg << "Thumb ARM emulation fatal error: " << endl
+  statusMsg << "Thumb ARM emulation fatal error:\n"
             << opcode << "(" << Base::HEX8 << v1 << "," << v2 << "), " << msg
-            << endl;
+            << '\n';
   dump_regs();
   if(trapOnFatal)
     throw runtime_error(statusMsg.str());
@@ -269,12 +269,11 @@ int Thumbulator::fatalError(string_view opcode, uInt32 v1, uInt32 v2,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Thumbulator::dump_counters() const
 {
-  cout << endl << endl
-       << "instructions " << _stats.instructions << endl;
+  cout << "\n\ninstructions " << _stats.instructions << '\n';
 #ifdef THUMB_STATS
-  cout << "reads        " << _stats.reads << endl
-       << "writes       " << _stats.writes << endl
-       << "memcycles    " << (_stats.instructions + _stats.reads + _stats.writes) << endl;
+  cout << "reads        " << _stats.reads << '\n'
+       << "writes       " << _stats.writes << '\n'
+       << "memcycles    " << (_stats.instructions + _stats.reads + _stats.writes) << '\n';
 #endif
 }
 
@@ -286,14 +285,13 @@ void Thumbulator::dump_regs()
     statusMsg << "R" << std::dec << std::setfill(' ') << std::setw(2) << std::left << cnt
       << "= " << Base::HEX8 << reg_norm[cnt];
     if((cnt + 1) % 4 == 0)
-      statusMsg << endl;
+      statusMsg << '\n';
     else
       statusMsg << "  ";
   }
-  statusMsg << endl
-            << "SP = " << Base::HEX8 << reg_norm[13] << "  "
+  statusMsg << "\nSP = " << Base::HEX8 << reg_norm[13] << "  "
             << "LR = " << Base::HEX8 << reg_norm[14] << "  "
-            << "PC = " << Base::HEX8 << reg_norm[15] << endl;
+            << "PC = " << Base::HEX8 << reg_norm[15] << '\n';
 }
 #endif
 
@@ -343,14 +341,14 @@ FORCE_INLINE uInt32 Thumbulator::fetch16(uInt32 addr)
         fatalError("fetch16", addr, "abort");
       addr >>= 1;
       data = CONV_RAMROM(rom[addr]);
-      DO_DBUG(statusMsg << "fetch16(" << Base::HEX8 << addr << ")=" << Base::HEX4 << data << endl);
+      DO_DBUG(statusMsg << "fetch16(" << Base::HEX8 << addr << ")=" << Base::HEX4 << data << '\n');
       return data;
 
     case 0x40000000: //RAM
       addr &= RAMADDMASK;
       addr >>= 1;
       data = CONV_RAMROM(ram[addr]);
-      DO_DBUG(statusMsg << "fetch16(" << Base::HEX8 << addr << ")=" << Base::HEX4 << data << endl);
+      DO_DBUG(statusMsg << "fetch16(" << Base::HEX8 << addr << ")=" << Base::HEX4 << data << '\n');
       return data;
 
     default:  // reserved
@@ -372,7 +370,7 @@ void Thumbulator::write16(uInt32 addr, uInt32 data)
     fatalError("write16", addr, "abort - misaligned");
 #endif
   THUMB_STAT(_stats.writes)
-  DO_DBUG(statusMsg << "write16(" << Base::HEX8 << addr << "," << Base::HEX8 << data << ")" << endl);
+  DO_DBUG(statusMsg << "write16(" << Base::HEX8 << addr << "," << Base::HEX8 << data << ")\n");
 
   switch(addr & 0xF0000000)
   {
@@ -395,7 +393,7 @@ void Thumbulator::write16(uInt32 addr, uInt32 data)
 #endif
       if(addr == 0xE01FC000)
       {
-        DO_DBUG(statusMsg << "write16(" << Base::HEX8 << "MAMCR" << "," << Base::HEX8 << data << ") *" << endl);
+        DO_DBUG(statusMsg << "write16(" << Base::HEX8 << "MAMCR" << "," << Base::HEX8 << data << ") *\n");
         if(!_lockMamcr)
           mamcr = static_cast<MamModeType>(data);
         return;
@@ -413,7 +411,7 @@ void Thumbulator::write32(uInt32 addr, uInt32 data)
   if(addr & 3)
     fatalError("write32", addr, "abort - misaligned");
 #endif
-  DO_DBUG(statusMsg << "write32(" << Base::HEX8 << addr << "," << Base::HEX8 << data << ")" << endl);
+  DO_DBUG(statusMsg << "write32(" << Base::HEX8 << addr << "," << Base::HEX8 << data << ")\n");
 
   switch(addr & 0xF0000000)
   {
@@ -428,7 +426,7 @@ void Thumbulator::write32(uInt32 addr, uInt32 data)
       {
 #ifndef UNSAFE_OPTIMIZATIONS
         case 0xE0000000:
-          DO_DISS(statusMsg << "uart: [" << char(data&0xFF) << "]" << endl);
+          DO_DISS(statusMsg << "uart: [" << char(data&0xFF) << "]\n");
           break;
 #endif
 #ifdef TIMER_0
@@ -507,7 +505,7 @@ void Thumbulator::write32(uInt32 addr, uInt32 data)
       #ifdef THUMB_CYCLE_COUNT
         case 0xE01FC000: //MAMCR
           DO_DBUG(statusMsg << "write32(" << Base::HEX8 << "MAMCR" << ","
-                  << Base::HEX8 << data << ") *" << endl);
+                  << Base::HEX8 << data << ") *\n");
           if(!_lockMamcr)
             mamcr = static_cast<MamModeType>(data);
           break;
@@ -524,15 +522,15 @@ void Thumbulator::write32(uInt32 addr, uInt32 data)
       {
         case 0x00:
           statusMsg << "[" << Base::HEX8 << read_register(14) << "]["
-                    << addr << "] " << data << endl;
+                    << addr << "] " << data << '\n';
           return;
 
         case 0x10:
-          statusMsg << Base::HEX8 << data << endl;
+          statusMsg << Base::HEX8 << data << '\n';
           return;
 
         case 0x20:
-          statusMsg << Base::HEX8 << data << endl;
+          statusMsg << Base::HEX8 << data << '\n';
           return;
 
         default:
@@ -638,7 +636,7 @@ uInt32 Thumbulator::read16(uInt32 addr)
       addr &= ROMADDMASK;
       addr >>= 1;
       data = CONV_RAMROM(rom[addr]);
-      DO_DBUG(statusMsg << "read16(" << Base::HEX8 << addr << ")=" << Base::HEX4 << data << endl);
+      DO_DBUG(statusMsg << "read16(" << Base::HEX8 << addr << ")=" << Base::HEX4 << data << '\n');
       return data;
 
     case 0x40000000: //RAM
@@ -649,7 +647,7 @@ uInt32 Thumbulator::read16(uInt32 addr)
       addr &= RAMADDMASK;
       addr >>= 1;
       data = CONV_RAMROM(ram[addr]);
-      DO_DBUG(statusMsg << "read16(" << Base::HEX8 << addr << ")=" << Base::HEX4 << data << endl);
+      DO_DBUG(statusMsg << "read16(" << Base::HEX8 << addr << ")=" << Base::HEX4 << data << '\n');
       return data;
 
     case 0xe0000000: //peripherals
@@ -687,7 +685,7 @@ uInt32 Thumbulator::read32(uInt32 addr)
 #endif
       data = read16(addr+0);
       data |= read16(addr+2) << 16;
-      DO_DBUG(statusMsg << "read32(" << Base::HEX8 << addr << ")=" << Base::HEX8 << data << endl);
+      DO_DBUG(statusMsg << "read32(" << Base::HEX8 << addr << ")=" << Base::HEX8 << data << '\n');
       return data;
 
     case 0x40000000: //RAM
@@ -697,7 +695,7 @@ uInt32 Thumbulator::read32(uInt32 addr)
 #endif
       data = read16(addr+0);
       data |= read16(addr+2) << 16;
-      DO_DBUG(statusMsg << "read32(" << Base::HEX8 << addr << ")=" << Base::HEX8 << data << endl);
+      DO_DBUG(statusMsg << "read32(" << Base::HEX8 << addr << ")=" << Base::HEX8 << data << '\n');
       return data;
 
 #ifndef UNSAFE_OPTIMIZATIONS
@@ -784,12 +782,12 @@ FORCE_INLINE uInt32 Thumbulator::read_register(uInt32 reg)
 {
   reg &= 0xF;
   uInt32 data = reg_norm[reg];
-  DO_DBUG(statusMsg << "read_register(" << dec << reg << ")=" << Base::HEX8 << data << endl);
+  DO_DBUG(statusMsg << "read_register(" << dec << reg << ")=" << Base::HEX8 << data << '\n');
   if(reg == 15)
   {
     if(data & 1)
     {
-      DO_DBUG(statusMsg << "pc has lsbit set 0x" << Base::HEX8 << data << endl);
+      DO_DBUG(statusMsg << "pc has lsbit set 0x" << Base::HEX8 << data << '\n');
       data &= ~1;
     }
   }
@@ -800,7 +798,7 @@ FORCE_INLINE uInt32 Thumbulator::read_register(uInt32 reg)
 FORCE_INLINE void Thumbulator::write_register(uInt32 reg, uInt32 data, bool isFlowBreak)
 {
   reg &= 0xF;
-  DO_DBUG(statusMsg << "write_register(" << dec << reg << "," << Base::HEX8 << data << ")" << endl);
+  DO_DBUG(statusMsg << "write_register(" << dec << reg << "," << Base::HEX8 << data << ")\n");
   if(reg == 15)
   {
     data &= ~1;
@@ -1183,7 +1181,7 @@ FORCE_INLINE int Thumbulator::execute()  // NOLINT (readability-function-size)
     case Op::adc: {
       rd = (inst >> 0) & 0x07;
       rm = (inst >> 3) & 0x07;
-      DO_DISS(statusMsg << "adc r" << dec << rd << ",r" << dec << rm << endl);
+      DO_DISS(statusMsg << "adc r" << dec << rd << ",r" << dec << rm << '\n');
       ra = read_register(rd);
       rb = read_register(rm);
       rc = ra + rb;
@@ -1204,7 +1202,7 @@ FORCE_INLINE int Thumbulator::execute()  // NOLINT (readability-function-size)
       if(rb)
       {
         DO_DISS(statusMsg << "adds r" << dec << rd << ",r" << dec << rn << ","
-                          << "#0x" << Base::HEX2 << rb << endl);
+                          << "#0x" << Base::HEX2 << rb << '\n');
         ra = read_register(rn);
         rc = ra + rb;
         //fprintf(stderr,"0x%08X = 0x%08X + 0x%08X\n",rc,ra,rb);
@@ -1224,7 +1222,7 @@ FORCE_INLINE int Thumbulator::execute()  // NOLINT (readability-function-size)
     case Op::add2: {
       rb = (inst >> 0) & 0xFF;
       rd = (inst >> 8) & 0x7;
-      DO_DISS(statusMsg << "adds r" << dec << rd << ",#0x" << Base::HEX2 << rb << endl);
+      DO_DISS(statusMsg << "adds r" << dec << rd << ",#0x" << Base::HEX2 << rb << '\n');
       ra = read_register(rd);
       rc = ra + rb;
       write_register(rd, rc);
@@ -1238,7 +1236,7 @@ FORCE_INLINE int Thumbulator::execute()  // NOLINT (readability-function-size)
       rd = (inst >> 0) & 0x7;
       rn = (inst >> 3) & 0x7;
       rm = (inst >> 6) & 0x7;
-      DO_DISS(statusMsg << "adds r" << dec << rd << ",r" << dec << rn << ",r" << rm << endl);
+      DO_DISS(statusMsg << "adds r" << dec << rd << ",r" << dec << rn << ",r" << rm << '\n');
       ra = read_register(rn);
       rb = read_register(rm);
       rc = ra + rb;
@@ -1257,7 +1255,7 @@ FORCE_INLINE int Thumbulator::execute()  // NOLINT (readability-function-size)
       rd  = (inst >> 0) & 0x7;
       rd |= (inst >> 4) & 0x8;
       rm  = (inst >> 3) & 0xF;
-      DO_DISS(statusMsg << "add r" << dec << rd << ",r" << dec << rm << endl);
+      DO_DISS(statusMsg << "add r" << dec << rd << ",r" << dec << rm << '\n');
       ra = read_register(rd);
       rb = read_register(rm);
       rc = ra + rb;
@@ -1280,7 +1278,7 @@ FORCE_INLINE int Thumbulator::execute()  // NOLINT (readability-function-size)
       rb = (inst >> 0) & 0xFF;
       rd = (inst >> 8) & 0x7;
       rb <<= 2;
-      DO_DISS(statusMsg << "add r" << dec << rd << ",PC,#0x" << Base::HEX2 << rb << endl);
+      DO_DISS(statusMsg << "add r" << dec << rd << ",PC,#0x" << Base::HEX2 << rb << '\n');
       ra = read_register(15);
       rc = (ra & (~3U)) + rb;
       write_register(rd, rc);
@@ -1292,7 +1290,7 @@ FORCE_INLINE int Thumbulator::execute()  // NOLINT (readability-function-size)
       rb = (inst >> 0) & 0xFF;
       rd = (inst >> 8) & 0x7;
       rb <<= 2;
-      DO_DISS(statusMsg << "add r" << dec << rd << ",SP,#0x" << Base::HEX2 << rb << endl);
+      DO_DISS(statusMsg << "add r" << dec << rd << ",SP,#0x" << Base::HEX2 << rb << '\n');
       ra = read_register(13);
       rc = ra + rb;
       write_register(rd, rc);
@@ -1303,7 +1301,7 @@ FORCE_INLINE int Thumbulator::execute()  // NOLINT (readability-function-size)
     case Op::add7: {
       rb = (inst >> 0) & 0x7F;
       rb <<= 2;
-      DO_DISS(statusMsg << "add SP,#0x" << Base::HEX2 << rb << endl);
+      DO_DISS(statusMsg << "add SP,#0x" << Base::HEX2 << rb << '\n');
       ra = read_register(13);
       rc = ra + rb;
       write_register(13, rc);
@@ -1314,7 +1312,7 @@ FORCE_INLINE int Thumbulator::execute()  // NOLINT (readability-function-size)
     case Op::and_: {
       rd = (inst >> 0) & 0x7;
       rm = (inst >> 3) & 0x7;
-      DO_DISS(statusMsg << "ands r" << dec << rd << ",r" << dec << rm << endl);
+      DO_DISS(statusMsg << "ands r" << dec << rd << ",r" << dec << rm << '\n');
       ra = read_register(rd);
       rb = read_register(rm);
       rc = ra & rb;
@@ -1328,7 +1326,7 @@ FORCE_INLINE int Thumbulator::execute()  // NOLINT (readability-function-size)
       rd = (inst >> 0) & 0x07;
       rm = (inst >> 3) & 0x07;
       rb = (inst >> 6) & 0x1F;
-      DO_DISS(statusMsg << "asrs r" << dec << rd << ",r" << dec << rm << ",#0x" << Base::HEX2 << rb << endl);
+      DO_DISS(statusMsg << "asrs r" << dec << rd << ",r" << dec << rm << ",#0x" << Base::HEX2 << rb << '\n');
       rc = read_register(rm);
       if(rb == 0)
       {
@@ -1361,7 +1359,7 @@ FORCE_INLINE int Thumbulator::execute()  // NOLINT (readability-function-size)
     case Op::asr2: {
       rd = (inst >> 0) & 0x07;
       rs = (inst >> 3) & 0x07;
-      DO_DISS(statusMsg << "asrs r" << dec << rd << ",r" << dec << rs << endl);
+      DO_DISS(statusMsg << "asrs r" << dec << rd << ",r" << dec << rs << '\n');
       rc = read_register(rd);
       rb = read_register(rs);
       rb &= 0xFF;
@@ -1515,7 +1513,7 @@ FORCE_INLINE int Thumbulator::execute()  // NOLINT (readability-function-size)
     case Op::bic: {
       rd = (inst >> 0) & 0x7;
       rm = (inst >> 3) & 0x7;
-      DO_DISS(statusMsg << "bics r" << dec << rd << ",r" << dec << rm << endl);
+      DO_DISS(statusMsg << "bics r" << dec << rd << ",r" << dec << rm << '\n');
       ra = read_register(rd);
       rb = read_register(rm);
       rc = ra & (~rb);
@@ -1528,7 +1526,7 @@ FORCE_INLINE int Thumbulator::execute()  // NOLINT (readability-function-size)
     //BKPT
     case Op::bkpt: {
       rb = (inst >> 0) & 0xFF;
-      statusMsg << "bkpt 0x" << Base::HEX2 << rb << endl;
+      statusMsg << "bkpt 0x" << Base::HEX2 << rb << '\n';
       return 1;
     }
 #endif
@@ -1537,7 +1535,7 @@ FORCE_INLINE int Thumbulator::execute()  // NOLINT (readability-function-size)
     // (bl, blx_thumb, blx_arm)
     case Op::bl: {
       // branch to label
-      DO_DISS(statusMsg << endl);
+      DO_DISS(statusMsg << '\n');
       rb = inst & ((1 << 11) - 1);
       if(rb & 1 << 10) rb |= (~((1 << 11) - 1)); //sign extend
       rb <<= 12;
@@ -1551,7 +1549,7 @@ FORCE_INLINE int Thumbulator::execute()  // NOLINT (readability-function-size)
       rb = read_register(14);
       rb += (inst & ((1 << 11) - 1)) << 1;
       rb += 2;
-      DO_DISS(statusMsg << "bl 0x" << Base::HEX8 << (rb-3) << endl);
+      DO_DISS(statusMsg << "bl 0x" << Base::HEX8 << (rb-3) << '\n');
       write_register(14, (pc-2) | 1);
       write_register(15, rb);
       return 0;
@@ -1566,7 +1564,7 @@ FORCE_INLINE int Thumbulator::execute()  // NOLINT (readability-function-size)
       rb += (inst & ((1 << 11) - 1)) << 1;
       rb &= 0xFFFFFFFC;
       rb += 2;
-      DO_DISS(statusMsg << "bl 0x" << Base::HEX8 << (rb-3) << endl);
+      DO_DISS(statusMsg << "bl 0x" << Base::HEX8 << (rb-3) << '\n');
       write_register(14, (pc-2) | 1);
       write_register(15, rb);
       return 0;
@@ -1575,7 +1573,7 @@ FORCE_INLINE int Thumbulator::execute()  // NOLINT (readability-function-size)
     //BLX(2)
     case Op::blx2: {
       rm = (inst >> 3) & 0xF;
-      DO_DISS(statusMsg << "blx r" << dec << rm << endl);
+      DO_DISS(statusMsg << "blx r" << dec << rm << '\n');
       rc = read_register(rm);
       //fprintf(stderr,"blx r%u 0x%X 0x%X\n",rm,rc,pc);
       rc += 2;
@@ -1599,7 +1597,7 @@ FORCE_INLINE int Thumbulator::execute()  // NOLINT (readability-function-size)
     //BX
     case Op::bx: {
       rm = (inst >> 3) & 0xF;
-      DO_DISS(statusMsg << "bx r" << dec << rm << endl);
+      DO_DISS(statusMsg << "bx r" << dec << rm << '\n');
       rc = read_register(rm);
       rc += 2;
       //fprintf(stderr,"bx r%u 0x%X 0x%X\n",rm,rc,pc);
@@ -1846,7 +1844,7 @@ FORCE_INLINE int Thumbulator::execute()  // NOLINT (readability-function-size)
     case Op::cmn: {
       rn = (inst >> 0) & 0x7;
       rm = (inst >> 3) & 0x7;
-      DO_DISS(statusMsg << "cmns r" << dec << rn << ",r" << dec << rm << endl);
+      DO_DISS(statusMsg << "cmns r" << dec << rn << ",r" << dec << rm << '\n');
       ra = read_register(rn);
       rb = read_register(rm);
       rc = ra + rb;
@@ -1859,7 +1857,7 @@ FORCE_INLINE int Thumbulator::execute()  // NOLINT (readability-function-size)
     case Op::cmp1: {
       rb = (inst >> 0) & 0xFF;
       rn = (inst >> 8) & 0x07;
-      DO_DISS(statusMsg << "cmp r" << dec << rn << ",#0x" << Base::HEX2 << rb << endl);
+      DO_DISS(statusMsg << "cmp r" << dec << rn << ",#0x" << Base::HEX2 << rb << '\n');
       ra = read_register(rn);
       rc = ra - rb;
       //fprintf(stderr,"0x%08X 0x%08X\n",ra,rb);
@@ -1872,7 +1870,7 @@ FORCE_INLINE int Thumbulator::execute()  // NOLINT (readability-function-size)
     case Op::cmp2: {
       rn = (inst >> 0) & 0x7;
       rm = (inst >> 3) & 0x7;
-      DO_DISS(statusMsg << "cmps r" << dec << rn << ",r" << dec << rm << endl);
+      DO_DISS(statusMsg << "cmps r" << dec << rn << ",r" << dec << rm << '\n');
       ra = read_register(rn);
       rb = read_register(rm);
       rc = ra - rb;
@@ -1895,7 +1893,7 @@ FORCE_INLINE int Thumbulator::execute()  // NOLINT (readability-function-size)
         //UNPREDICTABLE
       }
       rm = (inst >> 3) & 0xF;
-      DO_DISS(statusMsg << "cmps r" << dec << rn << ",r" << dec << rm << endl);
+      DO_DISS(statusMsg << "cmps r" << dec << rn << ",r" << dec << rm << '\n');
       ra = read_register(rn);
       rb = read_register(rm);
       rc = ra - rb;
@@ -1907,7 +1905,7 @@ FORCE_INLINE int Thumbulator::execute()  // NOLINT (readability-function-size)
 #ifndef UNSAFE_OPTIMIZATIONS
     //CPS
     case Op::cps: {
-      DO_DISS(statusMsg << "cps TODO" << endl);
+      DO_DISS(statusMsg << "cps TODO\n");
       return 1;
     }
 #endif
@@ -1918,7 +1916,7 @@ FORCE_INLINE int Thumbulator::execute()  // NOLINT (readability-function-size)
       //going to let mov handle high registers
       rd = (inst >> 0) & 0x7;
       rm = (inst >> 3) & 0x7;
-      DO_DISS(statusMsg << "cpy r" << dec << rd << ",r" << dec << rm << endl);
+      DO_DISS(statusMsg << "cpy r" << dec << rd << ",r" << dec << rm << '\n');
       rc = read_register(rm);
       write_register(rd, rc);
       return 0;
@@ -1928,7 +1926,7 @@ FORCE_INLINE int Thumbulator::execute()  // NOLINT (readability-function-size)
     case Op::eor: {
       rd = (inst >> 0) & 0x7;
       rm = (inst >> 3) & 0x7;
-      DO_DISS(statusMsg << "eors r" << dec << rd << ",r" << dec << rm << endl);
+      DO_DISS(statusMsg << "eors r" << dec << rd << ",r" << dec << rm << '\n');
       ra = read_register(rd);
       rb = read_register(rm);
       rc = ra ^ rb;
@@ -1951,7 +1949,7 @@ FORCE_INLINE int Thumbulator::execute()  // NOLINT (readability-function-size)
           rc++;
         }
       }
-      statusMsg << "}" << endl;
+      statusMsg << "}\n";
     #endif
       bool first = true;
 
@@ -1986,7 +1984,7 @@ FORCE_INLINE int Thumbulator::execute()  // NOLINT (readability-function-size)
       rn = (inst >> 3) & 0x07;
       rb = (inst >> 6) & 0x1F;
       rb <<= 2;
-      DO_DISS(statusMsg << "ldr r" << dec << rd << ",[r" << dec << rn << ",#0x" << Base::HEX2 << rb << "]" << endl);
+      DO_DISS(statusMsg << "ldr r" << dec << rd << ",[r" << dec << rn << ",#0x" << Base::HEX2 << rb << "]\n");
       rb = read_register(rn) + rb;
       rc = read32(rb);
       write_register(rd, rc);
@@ -1999,7 +1997,7 @@ FORCE_INLINE int Thumbulator::execute()  // NOLINT (readability-function-size)
       rd = (inst >> 0) & 0x7;
       rn = (inst >> 3) & 0x7;
       rm = (inst >> 6) & 0x7;
-      DO_DISS(statusMsg << "ldr r" << dec << rd << ",[r" << dec << rn << ",r" << dec << "]" << endl);
+      DO_DISS(statusMsg << "ldr r" << dec << rd << ",[r" << dec << rn << ",r" << dec << "]\n");
       rb = read_register(rn) + read_register(rm);
       rc = read32(rb);
       write_register(rd, rc);
@@ -2016,7 +2014,7 @@ FORCE_INLINE int Thumbulator::execute()  // NOLINT (readability-function-size)
       ra = read_register(15);
       ra &= ~3;
       rb += ra;
-      DO_DISS(statusMsg << ";@ 0x" << Base::HEX2 << rb << endl);
+      DO_DISS(statusMsg << ";@ 0x" << Base::HEX2 << rb << '\n');
       rc = read32(rb);
       write_register(rd, rc);
       INC_LDR_CYCLES;
@@ -2028,7 +2026,7 @@ FORCE_INLINE int Thumbulator::execute()  // NOLINT (readability-function-size)
       rb = (inst >> 0) & 0xFF;
       rd = (inst >> 8) & 0x07;
       rb <<= 2;
-      DO_DISS(statusMsg << "ldr r" << dec << rd << ",[SP+#0x" << Base::HEX2 << rb << "]" << endl);
+      DO_DISS(statusMsg << "ldr r" << dec << rd << ",[SP+#0x" << Base::HEX2 << rb << "]\n");
       ra = read_register(13);
       //ra&=~3;
       rb += ra;
@@ -2043,7 +2041,7 @@ FORCE_INLINE int Thumbulator::execute()  // NOLINT (readability-function-size)
       rd = (inst >> 0) & 0x07;
       rn = (inst >> 3) & 0x07;
       rb = (inst >> 6) & 0x1F;
-      DO_DISS(statusMsg << "ldrb r" << dec << rd << ",[r" << dec << rn << ",#0x" << Base::HEX2 << rb << "]" << endl);
+      DO_DISS(statusMsg << "ldrb r" << dec << rd << ",[r" << dec << rn << ",#0x" << Base::HEX2 << rb << "]\n");
       rb = read_register(rn) + rb;
 #ifndef UNSAFE_OPTIMIZATIONS
       rc = read16(rb & (~1U));
@@ -2067,7 +2065,7 @@ FORCE_INLINE int Thumbulator::execute()  // NOLINT (readability-function-size)
       rd = (inst >> 0) & 0x7;
       rn = (inst >> 3) & 0x7;
       rm = (inst >> 6) & 0x7;
-      DO_DISS(statusMsg << "ldrb r" << dec << rd << ",[r" << dec << rn << ",r" << dec << rm << "]" << endl);
+      DO_DISS(statusMsg << "ldrb r" << dec << rd << ",[r" << dec << rn << ",r" << dec << rm << "]\n");
       rb = read_register(rn) + read_register(rm);
 #ifndef UNSAFE_OPTIMIZATIONS
       rc = read16(rb & (~1U));
@@ -2089,7 +2087,7 @@ FORCE_INLINE int Thumbulator::execute()  // NOLINT (readability-function-size)
       rn = (inst >> 3) & 0x07;
       rb = (inst >> 6) & 0x1F;
       rb <<= 1;
-      DO_DISS(statusMsg << "ldrh r" << dec << rd << ",[r" << dec << rn << ",#0x" << Base::HEX2 << rb << "]" << endl);
+      DO_DISS(statusMsg << "ldrh r" << dec << rd << ",[r" << dec << rn << ",#0x" << Base::HEX2 << rb << "]\n");
       rb = read_register(rn) + rb;
       rc = read16(rb);
       write_register(rd, rc & 0xFFFF);
@@ -2102,7 +2100,7 @@ FORCE_INLINE int Thumbulator::execute()  // NOLINT (readability-function-size)
       rd = (inst >> 0) & 0x7;
       rn = (inst >> 3) & 0x7;
       rm = (inst >> 6) & 0x7;
-      DO_DISS(statusMsg << "ldrh r" << dec << rd << ",[r" << dec << rn << ",r" << dec << rm << "]" << endl);
+      DO_DISS(statusMsg << "ldrh r" << dec << rd << ",[r" << dec << rn << ",r" << dec << rm << "]\n");
       rb = read_register(rn) + read_register(rm);
       rc = read16(rb);
       write_register(rd, rc & 0xFFFF);
@@ -2115,7 +2113,7 @@ FORCE_INLINE int Thumbulator::execute()  // NOLINT (readability-function-size)
       rd = (inst >> 0) & 0x7;
       rn = (inst >> 3) & 0x7;
       rm = (inst >> 6) & 0x7;
-      DO_DISS(statusMsg << "ldrsb r" << dec << rd << ",[r" << dec << rn << ",r" << dec << rm << "]" << endl);
+      DO_DISS(statusMsg << "ldrsb r" << dec << rd << ",[r" << dec << rn << ",r" << dec << rm << "]\n");
       rb = read_register(rn) + read_register(rm);
 #ifndef UNSAFE_OPTIMIZATIONS
       rc = read16(rb & (~1U));
@@ -2139,7 +2137,7 @@ FORCE_INLINE int Thumbulator::execute()  // NOLINT (readability-function-size)
       rd = (inst >> 0) & 0x7;
       rn = (inst >> 3) & 0x7;
       rm = (inst >> 6) & 0x7;
-      DO_DISS(statusMsg << "ldrsh r" << dec << rd << ",[r" << dec << rn << ",r" << dec << rm << "]" << endl);
+      DO_DISS(statusMsg << "ldrsh r" << dec << rd << ",[r" << dec << rn << ",r" << dec << rm << "]\n");
       rb = read_register(rn) + read_register(rm);
       rc = read16(rb);
       rc &= 0xFFFF;
@@ -2155,7 +2153,7 @@ FORCE_INLINE int Thumbulator::execute()  // NOLINT (readability-function-size)
       rd = (inst >> 0) & 0x07;
       rm = (inst >> 3) & 0x07;
       rb = (inst >> 6) & 0x1F;
-      DO_DISS(statusMsg << "lsls r" << dec << rd << ",r" << dec << rm << ",#0x" << Base::HEX2 << rb << endl);
+      DO_DISS(statusMsg << "lsls r" << dec << rd << ",r" << dec << rm << ",#0x" << Base::HEX2 << rb << '\n');
       rc = read_register(rm);
       if(rb == 0)
       {
@@ -2179,7 +2177,7 @@ FORCE_INLINE int Thumbulator::execute()  // NOLINT (readability-function-size)
     case Op::lsl2: {
       rd = (inst >> 0) & 0x07;
       rs = (inst >> 3) & 0x07;
-      DO_DISS(statusMsg << "lsls r" << dec << rd << ",r" << dec << rs << endl);
+      DO_DISS(statusMsg << "lsls r" << dec << rd << ",r" << dec << rs << '\n');
       rc = read_register(rd);
       rb = read_register(rs);
       rb &= 0xFF;
@@ -2212,7 +2210,7 @@ FORCE_INLINE int Thumbulator::execute()  // NOLINT (readability-function-size)
       rd = (inst >> 0) & 0x07;
       rm = (inst >> 3) & 0x07;
       rb = (inst >> 6) & 0x1F;
-      DO_DISS(statusMsg << "lsrs r" << dec << rd << ",r" << dec << rm << ",#0x" << Base::HEX2 << rb << endl);
+      DO_DISS(statusMsg << "lsrs r" << dec << rd << ",r" << dec << rm << ",#0x" << Base::HEX2 << rb << '\n');
       rc = read_register(rm);
       if(rb == 0)
       {
@@ -2234,7 +2232,7 @@ FORCE_INLINE int Thumbulator::execute()  // NOLINT (readability-function-size)
     case Op::lsr2: {
       rd = (inst >> 0) & 0x07;
       rs = (inst >> 3) & 0x07;
-      DO_DISS(statusMsg << "lsrs r" << dec << rd << ",r" << dec << rs << endl);
+      DO_DISS(statusMsg << "lsrs r" << dec << rd << ",r" << dec << rs << '\n');
       rc = read_register(rd);
       rb = read_register(rs);
       rb &= 0xFF;
@@ -2266,7 +2264,7 @@ FORCE_INLINE int Thumbulator::execute()  // NOLINT (readability-function-size)
     case Op::mov1: {
       rb = (inst >> 0) & 0xFF;
       rd = (inst >> 8) & 0x07;
-      DO_DISS(statusMsg << "movs r" << dec << rd << ",#0x" << Base::HEX2 << rb << endl);
+      DO_DISS(statusMsg << "movs r" << dec << rd << ",#0x" << Base::HEX2 << rb << '\n');
       write_register(rd, rb);
       do_znflags(rb);
       return 0;
@@ -2276,7 +2274,7 @@ FORCE_INLINE int Thumbulator::execute()  // NOLINT (readability-function-size)
     case Op::mov2: {
       rd = (inst >> 0) & 7;
       rn = (inst >> 3) & 7;
-      DO_DISS(statusMsg << "movs r" << dec << rd << ",r" << dec << rn << endl);
+      DO_DISS(statusMsg << "movs r" << dec << rd << ",r" << dec << rn << '\n');
       rc = read_register(rn);
       //fprintf(stderr,"0x%08X\n",rc);
       write_register(rd, rc);
@@ -2291,7 +2289,7 @@ FORCE_INLINE int Thumbulator::execute()  // NOLINT (readability-function-size)
       rd  = (inst >> 0) & 0x7;
       rd |= (inst >> 4) & 0x8;
       rm  = (inst >> 3) & 0xF;
-      DO_DISS(statusMsg << "mov r" << dec << rd << ",r" << dec << rm << endl);
+      DO_DISS(statusMsg << "mov r" << dec << rd << ",r" << dec << rm << '\n');
       rc = read_register(rm);
       if((rd == 14) && (rm == 15))
       {
@@ -2311,7 +2309,7 @@ FORCE_INLINE int Thumbulator::execute()  // NOLINT (readability-function-size)
     case Op::mul: {
       rd = (inst >> 0) & 0x7;
       rm = (inst >> 3) & 0x7;
-      DO_DISS(statusMsg << "muls r" << dec << rd << ",r" << dec << rm << endl);
+      DO_DISS(statusMsg << "muls r" << dec << rd << ",r" << dec << rm << '\n');
       ra = read_register(rd);
       rb = read_register(rm);
     #ifdef DEBUGGER_SUPPORT
@@ -2342,7 +2340,7 @@ FORCE_INLINE int Thumbulator::execute()  // NOLINT (readability-function-size)
     case Op::mvn: {
       rd = (inst >> 0) & 0x7;
       rm = (inst >> 3) & 0x7;
-      DO_DISS(statusMsg << "mvns r" << dec << rd << ",r" << dec << rm << endl);
+      DO_DISS(statusMsg << "mvns r" << dec << rd << ",r" << dec << rm << '\n');
       ra = read_register(rm);
       rc = (~ra);
       write_register(rd, rc);
@@ -2354,7 +2352,7 @@ FORCE_INLINE int Thumbulator::execute()  // NOLINT (readability-function-size)
     case Op::neg: {
       rd = (inst >> 0) & 0x7;
       rm = (inst >> 3) & 0x7;
-      DO_DISS(statusMsg << "negs r" << dec << rd << ",r" << dec << rm << endl);
+      DO_DISS(statusMsg << "negs r" << dec << rd << ",r" << dec << rm << '\n');
       ra = read_register(rm);
       rc = 0 - ra;
       write_register(rd, rc);
@@ -2367,7 +2365,7 @@ FORCE_INLINE int Thumbulator::execute()  // NOLINT (readability-function-size)
     case Op::orr: {
       rd = (inst >> 0) & 0x7;
       rm = (inst >> 3) & 0x7;
-      DO_DISS(statusMsg << "orrs r" << dec << rd << ",r" << dec << rm << endl);
+      DO_DISS(statusMsg << "orrs r" << dec << rd << ",r" << dec << rm << '\n');
       ra = read_register(rd);
       rb = read_register(rm);
       rc = ra | rb;
@@ -2394,7 +2392,7 @@ FORCE_INLINE int Thumbulator::execute()  // NOLINT (readability-function-size)
         if(rc) statusMsg << ",";
         statusMsg << "pc";
       }
-      statusMsg << "}" << endl;
+      statusMsg << "}\n";
     #endif
       bool first = true;
 
@@ -2454,7 +2452,7 @@ FORCE_INLINE int Thumbulator::execute()  // NOLINT (readability-function-size)
         if(rc) statusMsg << ",";
         statusMsg << "lr";
       }
-      statusMsg << "}" << endl;
+      statusMsg << "}\n";
     #endif
 
       sp = read_register(13);
@@ -2515,7 +2513,7 @@ FORCE_INLINE int Thumbulator::execute()  // NOLINT (readability-function-size)
     case Op::rev: {
       rd = (inst >> 0) & 0x7;
       rn = (inst >> 3) & 0x7;
-      DO_DISS(statusMsg << "rev r" << dec << rd << ",r" << dec << rn << endl);
+      DO_DISS(statusMsg << "rev r" << dec << rd << ",r" << dec << rn << '\n');
       ra = read_register(rn);
       rc  = ((ra >>  0) & 0xFF) << 24;
       rc |= ((ra >>  8) & 0xFF) << 16;
@@ -2529,7 +2527,7 @@ FORCE_INLINE int Thumbulator::execute()  // NOLINT (readability-function-size)
     case Op::rev16: {
       rd = (inst >> 0) & 0x7;
       rn = (inst >> 3) & 0x7;
-      DO_DISS(statusMsg << "rev16 r" << dec << rd << ",r" << dec << rn << endl);
+      DO_DISS(statusMsg << "rev16 r" << dec << rd << ",r" << dec << rn << '\n');
       ra = read_register(rn);
       rc  = ((ra >>  0) & 0xFF) <<  8;
       rc |= ((ra >>  8) & 0xFF) <<  0;
@@ -2543,7 +2541,7 @@ FORCE_INLINE int Thumbulator::execute()  // NOLINT (readability-function-size)
     case Op::revsh: {
       rd = (inst >> 0) & 0x7;
       rn = (inst >> 3) & 0x7;
-      DO_DISS(statusMsg << "revsh r" << dec << rd << ",r" << dec << rn << endl);
+      DO_DISS(statusMsg << "revsh r" << dec << rd << ",r" << dec << rn << '\n');
       ra = read_register(rn);
       rc  = ((ra >> 0) & 0xFF) << 8;
       rc |= ((ra >> 8) & 0xFF) << 0;
@@ -2557,7 +2555,7 @@ FORCE_INLINE int Thumbulator::execute()  // NOLINT (readability-function-size)
     case Op::ror: {
       rd = (inst >> 0) & 0x7;
       rs = (inst >> 3) & 0x7;
-      DO_DISS(statusMsg << "rors r" << dec << rd << ",r" << dec << rs << endl);
+      DO_DISS(statusMsg << "rors r" << dec << rd << ",r" << dec << rs << '\n');
       rc = read_register(rd);
       ra = read_register(rs);
       ra &= 0xFF;
@@ -2589,7 +2587,7 @@ FORCE_INLINE int Thumbulator::execute()  // NOLINT (readability-function-size)
     case Op::sbc: {
       rd = (inst >> 0) & 0x7;
       rm = (inst >> 3) & 0x7;
-      DO_DISS(statusMsg << "sbc r" << dec << rd << ",r" << dec << rm << endl);
+      DO_DISS(statusMsg << "sbc r" << dec << rd << ",r" << dec << rm << '\n');
       ra = read_register(rd);
       rb = read_register(rm);
       rc = ra - rb;
@@ -2604,7 +2602,7 @@ FORCE_INLINE int Thumbulator::execute()  // NOLINT (readability-function-size)
 #ifndef UNSAFE_OPTIMIZATIONS
     //SETEND
     case Op::setend: {
-      statusMsg << "setend not implemented" << endl;
+      statusMsg << "setend not implemented\n";
       return 1;
     }
 #endif
@@ -2623,7 +2621,7 @@ FORCE_INLINE int Thumbulator::execute()  // NOLINT (readability-function-size)
           rc++;
         }
       }
-      statusMsg << "}" << endl;
+      statusMsg << "}\n";
     #endif
       bool first = true;
 
@@ -2656,7 +2654,7 @@ FORCE_INLINE int Thumbulator::execute()  // NOLINT (readability-function-size)
       rn = (inst >> 3) & 0x07;
       rb = (inst >> 6) & 0x1F;
       rb <<= 2;
-      DO_DISS(statusMsg << "str r" << dec << rd << ",[r" << dec << rn << ",#0x" << Base::HEX2 << rb << "]" << endl);
+      DO_DISS(statusMsg << "str r" << dec << rd << ",[r" << dec << rn << ",#0x" << Base::HEX2 << rb << "]\n");
       rb = read_register(rn) + rb;
       rc = read_register(rd);
       write32(rb, rc);
@@ -2669,7 +2667,7 @@ FORCE_INLINE int Thumbulator::execute()  // NOLINT (readability-function-size)
       rd = (inst >> 0) & 0x7;
       rn = (inst >> 3) & 0x7;
       rm = (inst >> 6) & 0x7;
-      DO_DISS(statusMsg << "str r" << dec << rd << ",[r" << dec << rn << ",r" << dec << rm << "]" << endl);
+      DO_DISS(statusMsg << "str r" << dec << rd << ",[r" << dec << rn << ",r" << dec << rm << "]\n");
       rb = read_register(rn) + read_register(rm);
       rc = read_register(rd);
       write32(rb, rc);
@@ -2682,7 +2680,7 @@ FORCE_INLINE int Thumbulator::execute()  // NOLINT (readability-function-size)
       rb = (inst >> 0) & 0xFF;
       rd = (inst >> 8) & 0x07;
       rb <<= 2;
-      DO_DISS(statusMsg << "str r" << dec << rd << ",[SP,#0x" << Base::HEX2 << rb << "]" << endl);
+      DO_DISS(statusMsg << "str r" << dec << rd << ",[SP,#0x" << Base::HEX2 << rb << "]\n");
       rb = read_register(13) + rb;
       //fprintf(stderr,"0x%08X\n",rb);
       rc = read_register(rd);
@@ -2696,7 +2694,7 @@ FORCE_INLINE int Thumbulator::execute()  // NOLINT (readability-function-size)
       rd = (inst >> 0) & 0x07;
       rn = (inst >> 3) & 0x07;
       rb = (inst >> 6) & 0x1F;
-      DO_DISS(statusMsg << "strb r" << dec << rd << ",[r" << dec << rn << ",#0x" << Base::HEX8 << rb << "]" << endl);
+      DO_DISS(statusMsg << "strb r" << dec << rd << ",[r" << dec << rn << ",#0x" << Base::HEX8 << rb << "]\n");
       rb = read_register(rn) + rb;
       rc = read_register(rd);
 #ifndef UNSAFE_OPTIMIZATIONS
@@ -2724,7 +2722,7 @@ FORCE_INLINE int Thumbulator::execute()  // NOLINT (readability-function-size)
       rd = (inst >> 0) & 0x7;
       rn = (inst >> 3) & 0x7;
       rm = (inst >> 6) & 0x7;
-      DO_DISS(statusMsg << "strb r" << dec << rd << ",[r" << dec << rn << ",r" << rm << "]" << endl);
+      DO_DISS(statusMsg << "strb r" << dec << rd << ",[r" << dec << rn << ",r" << rm << "]\n");
       rb = read_register(rn) + read_register(rm);
       rc = read_register(rd);
 #ifndef UNSAFE_OPTIMIZATIONS
@@ -2753,7 +2751,7 @@ FORCE_INLINE int Thumbulator::execute()  // NOLINT (readability-function-size)
       rn = (inst >> 3) & 0x07;
       rb = (inst >> 6) & 0x1F;
       rb <<= 1;
-      DO_DISS(statusMsg << "strh r" << dec << rd << ",[r" << dec << rn << ",#0x" << Base::HEX2 << rb << "]" << endl);
+      DO_DISS(statusMsg << "strh r" << dec << rd << ",[r" << dec << rn << ",#0x" << Base::HEX2 << rb << "]\n");
       rb = read_register(rn) + rb;
       rc=  read_register(rd);
       write16(rb, rc & 0xFFFF);
@@ -2766,7 +2764,7 @@ FORCE_INLINE int Thumbulator::execute()  // NOLINT (readability-function-size)
       rd = (inst >> 0) & 0x7;
       rn = (inst >> 3) & 0x7;
       rm = (inst >> 6) & 0x7;
-      DO_DISS(statusMsg << "strh r" << dec << rd << ",[r" << dec << rn << ",r" << dec << rm << "]" << endl);
+      DO_DISS(statusMsg << "strh r" << dec << rd << ",[r" << dec << rn << ",r" << dec << rm << "]\n");
       rb = read_register(rn) + read_register(rm);
       rc = read_register(rd);
       write16(rb, rc & 0xFFFF);
@@ -2779,7 +2777,7 @@ FORCE_INLINE int Thumbulator::execute()  // NOLINT (readability-function-size)
       rd = (inst >> 0) & 0x7;
       rn = (inst >> 3) & 0x7;
       rb = (inst >> 6) & 0x7;
-      DO_DISS(statusMsg << "subs r" << dec << rd << ",r" << dec << rn << ",#0x" << Base::HEX2 << rb << endl);
+      DO_DISS(statusMsg << "subs r" << dec << rd << ",r" << dec << rn << ",#0x" << Base::HEX2 << rb << '\n');
       ra = read_register(rn);
       rc = ra - rb;
       write_register(rd, rc);
@@ -2792,7 +2790,7 @@ FORCE_INLINE int Thumbulator::execute()  // NOLINT (readability-function-size)
     case Op::sub2: {
       rb = (inst >> 0) & 0xFF;
       rd = (inst >> 8) & 0x07;
-      DO_DISS(statusMsg << "subs r" << dec << rd << ",#0x" << Base::HEX2 << rb << endl);
+      DO_DISS(statusMsg << "subs r" << dec << rd << ",#0x" << Base::HEX2 << rb << '\n');
       ra = read_register(rd);
       rc = ra - rb;
       write_register(rd, rc);
@@ -2806,7 +2804,7 @@ FORCE_INLINE int Thumbulator::execute()  // NOLINT (readability-function-size)
       rd = (inst >> 0) & 0x7;
       rn = (inst >> 3) & 0x7;
       rm = (inst >> 6) & 0x7;
-      DO_DISS(statusMsg << "subs r" << dec << rd << ",r" << dec << rn << ",r" << dec << rm << endl);
+      DO_DISS(statusMsg << "subs r" << dec << rd << ",r" << dec << rn << ",r" << dec << rm << '\n');
       ra = read_register(rn);
       rb = read_register(rm);
       rc = ra - rb;
@@ -2820,7 +2818,7 @@ FORCE_INLINE int Thumbulator::execute()  // NOLINT (readability-function-size)
     case Op::sub4: {
       rb = inst & 0x7F;
       rb <<= 2;
-      DO_DISS(statusMsg << "sub SP,#0x" << Base::HEX2 << rb << endl);
+      DO_DISS(statusMsg << "sub SP,#0x" << Base::HEX2 << rb << '\n');
       ra = read_register(13);
       ra -= rb;
       write_register(13, ra);
@@ -2830,7 +2828,7 @@ FORCE_INLINE int Thumbulator::execute()  // NOLINT (readability-function-size)
     //SWI
     case Op::swi: { // never used
 //      rb = inst & 0xFF;  // NOLINT: clang-analyzer-deadcode.DeadStores
-//      DO_DISS(statusMsg << "swi 0x" << Base::HEX2 << rb << endl);
+//      DO_DISS(statusMsg << "swi 0x" << Base::HEX2 << rb << '\n');
 //
 //      if(rb == 0xCC)
 //      {
@@ -2840,7 +2838,7 @@ FORCE_INLINE int Thumbulator::execute()  // NOLINT (readability-function-size)
 //      else
 //      {
 //#if defined(THUMB_DISS)
-//        statusMsg << endl << endl << "swi 0x" << Base::HEX2 << rb << endl;
+//        statusMsg << "\n\nswi 0x" << Base::HEX2 << rb << '\n';
 //#endif
           return 1;
 //      }
@@ -2850,7 +2848,7 @@ FORCE_INLINE int Thumbulator::execute()  // NOLINT (readability-function-size)
     case Op::sxtb: {
       rd = (inst >> 0) & 0x7;
       rm = (inst >> 3) & 0x7;
-      DO_DISS(statusMsg << "sxtb r" << dec << rd << ",r" << dec << rm << endl);
+      DO_DISS(statusMsg << "sxtb r" << dec << rd << ",r" << dec << rm << '\n');
       ra = read_register(rm);
       rc = ra & 0xFF;
       if(rc & 0x80)
@@ -2863,7 +2861,7 @@ FORCE_INLINE int Thumbulator::execute()  // NOLINT (readability-function-size)
     case Op::sxth: {
       rd = (inst >> 0) & 0x7;
       rm = (inst >> 3) & 0x7;
-      DO_DISS(statusMsg << "sxth r" << dec << rd << ",r" << dec << rm << endl);
+      DO_DISS(statusMsg << "sxth r" << dec << rd << ",r" << dec << rm << '\n');
       ra = read_register(rm);
       rc = ra & 0xFFFF;
       if(rc & 0x8000)
@@ -2876,7 +2874,7 @@ FORCE_INLINE int Thumbulator::execute()  // NOLINT (readability-function-size)
     case Op::tst: {
       rn = (inst >> 0) & 0x7;
       rm = (inst >> 3) & 0x7;
-      DO_DISS(statusMsg << "tst r" << dec << rn << ",r" << dec << rm << endl);
+      DO_DISS(statusMsg << "tst r" << dec << rn << ",r" << dec << rm << '\n');
       ra = read_register(rn);
       rb = read_register(rm);
       rc = ra & rb;
@@ -2888,7 +2886,7 @@ FORCE_INLINE int Thumbulator::execute()  // NOLINT (readability-function-size)
     case Op::uxtb: {
       rd = (inst >> 0) & 0x7;
       rm = (inst >> 3) & 0x7;
-      DO_DISS(statusMsg << "uxtb r" << dec << rd << ",r" << dec << rm << endl);
+      DO_DISS(statusMsg << "uxtb r" << dec << rd << ",r" << dec << rm << '\n');
       ra = read_register(rm);
       rc = ra & 0xFF;
       write_register(rd, rc);
@@ -2899,7 +2897,7 @@ FORCE_INLINE int Thumbulator::execute()  // NOLINT (readability-function-size)
     case Op::uxth: {
       rd = (inst >> 0) & 0x7;
       rm = (inst >> 3) & 0x7;
-      DO_DISS(statusMsg << "uxth r" << dec << rd << ",r" << dec << rm << endl);
+      DO_DISS(statusMsg << "uxth r" << dec << rd << ",r" << dec << rm << '\n');
       ra = read_register(rm);
       rc = ra & 0xFFFF;
       write_register(rd, rc);
@@ -2920,7 +2918,8 @@ FORCE_INLINE int Thumbulator::execute()  // NOLINT (readability-function-size)
   }
 
 #ifndef UNSAFE_OPTIMIZATIONS
-  statusMsg << "invalid instruction " << Base::HEX8 << pc << " " << Base::HEX4 << inst << endl;
+  statusMsg << "invalid instruction " << Base::HEX8 << pc << " "
+            << Base::HEX4 << inst << '\n';
 #endif
   return 1;
 }

@@ -515,7 +515,7 @@ bool M6502::save(Serializer& out) const
   }
   catch(...)
   {
-    cerr << "ERROR: M6502::save" << endl;
+    cerr << "ERROR: M6502::save\n";
     return false;
   }
 
@@ -566,7 +566,7 @@ bool M6502::load(Serializer& in)
   }
   catch(...)
   {
-    cerr << "ERROR: M6502::load" << endl;
+    cerr << "ERROR: M6502::load\n";
     return false;
   }
 

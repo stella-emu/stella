@@ -96,7 +96,7 @@ unique_ptr<Cartridge> CartCreator::create(const FSNode& file,
     if(type != Bankswitch::Type::_AUTO && type != detectedType)
       cerr << "Auto-detection not consistent: "
            << Bankswitch::typeToName(type) << ", "
-           << Bankswitch::typeToName(detectedType) << endl;
+           << Bankswitch::typeToName(detectedType) << '\n';
 
     type = detectedType;
     buf << Bankswitch::typeToName(type) << "*";

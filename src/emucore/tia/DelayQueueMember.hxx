@@ -120,7 +120,7 @@ bool DelayQueueMember<capacity>::save(Serializer& out) const
   }
   catch(...)
   {
-    cerr << "ERROR: TIA_DelayQueueMember::save" << endl;
+    cerr << "ERROR: TIA_DelayQueueMember::save\n";
     return false;
   }
 
@@ -144,7 +144,7 @@ bool DelayQueueMember<capacity>::load(Serializer& in)
   }
   catch(...)
   {
-    cerr << "ERROR: TIA_DelayQueueMember::load" << endl;
+    cerr << "ERROR: TIA_DelayQueueMember::load\n";
     return false;
   }
 

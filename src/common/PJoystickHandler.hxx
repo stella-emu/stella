@@ -72,7 +72,7 @@ class PhysicalJoystickHandler
       PhysicalJoystickPtr joy;
 
       friend ostream& operator<<(ostream& os, const StickInfo& si) {
-        os << "  joy: " << si.joy << endl << "  map: " << si.mapping;
+        os << "  joy: " << si.joy << "\n  map: " << si.mapping;
         return os;
       }
     };

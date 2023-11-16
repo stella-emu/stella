@@ -380,11 +380,11 @@ string RiotDebug::toString()
   buf << "280/SWCHA(R)=" << Debugger::invIfChanged(state.SWCHA_R, oldstate.SWCHA_R)
       << " 280/SWCHA(W)=" << Debugger::invIfChanged(state.SWCHA_W, oldstate.SWCHA_W)
       << " 281/SWACNT=" << Debugger::invIfChanged(state.SWACNT, oldstate.SWACNT)
-      << endl
+      << '\n'
       << "282/SWCHB(R)=" << Debugger::invIfChanged(state.SWCHB_R, oldstate.SWCHB_R)
       << " 282/SWCHB(W)=" << Debugger::invIfChanged(state.SWCHB_W, oldstate.SWCHB_W)
       << " 283/SWBCNT=" << Debugger::invIfChanged(state.SWBCNT, oldstate.SWBCNT)
-      << endl
+      << '\n'
 
       // These are squirrely: some symbol files will define these as
       // 0x284-0x287. Doesn't actually matter, these registers repeat
@@ -394,24 +394,24 @@ string RiotDebug::toString()
       << " 296/TIM64T=" << Debugger::invIfChanged(state.TIM64T, oldstate.TIM64T)
       << " 297/T1024T=" << Debugger::invIfChanged(state.T1024T, oldstate.T1024T)
       << " Divider=" << Debugger::invIfChanged(state.TIMDIV, oldstate.TIMDIV)
-      << endl
+      << '\n'
 
       << "0x284/INTIM=" << Debugger::invIfChanged(state.INTIM, oldstate.INTIM)
       << " 285/TIMINT=" << Debugger::invIfChanged(state.TIMINT, oldstate.TIMINT)
       << " Timer_Clocks=" << Debugger::invIfChanged(state.TIMCLKS, oldstate.TIMCLKS)
       << " INTIM_Clocks=" << Debugger::invIfChanged(state.INTIMCLKS, oldstate.INTIMCLKS)
-      << endl
+      << '\n'
 
       << "Left/P0diff: " << diffP0String() << "   Right/P1diff: " << diffP1String()
-      << endl
+      << '\n'
       << "TVType: " << tvTypeString() << "   Switches: " << switchesString()
-      << endl
+      << '\n'
 
       // Yes, the fire buttons are in the TIA, but we might as well
       // show them here for convenience.
       << "Left/P0 stick:  " << dirP0String()
       << ((mySystem.peek(0x03c) & 0x80) ? "" : "(button) ")
-      << endl
+      << '\n'
       << "Right/P1 stick: " << dirP1String()
       << ((mySystem.peek(0x03d) & 0x80) ? "" : "(button) ");
 

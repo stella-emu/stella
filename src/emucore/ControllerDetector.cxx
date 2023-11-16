@@ -33,7 +33,7 @@ Controller::Type ControllerDetector::detectType(
     if(type != Controller::Type::Unknown && type != detectedType)
     {
       cerr << "Controller auto-detection not consistent: "
-        << Controller::getName(type) << ", " << Controller::getName(detectedType) << endl;
+        << Controller::getName(type) << ", " << Controller::getName(detectedType) << '\n';
     }
     Logger::debug("'" + Controller::getName(detectedType) + "' detected for " +
       (port == Controller::Jack::Left ? "left" : "right") + " port");

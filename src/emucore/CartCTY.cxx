@@ -322,7 +322,7 @@ bool CartridgeCTY::save(Serializer& out) const
   }
   catch(...)
   {
-    cerr << "ERROR: CartridgeCTY::save" << endl;
+    cerr << "ERROR: CartridgeCTY::save\n";
     return false;
   }
 
@@ -350,7 +350,7 @@ bool CartridgeCTY::load(Serializer& in)
   }
   catch(...)
   {
-    cerr << "ERROR: CartridgeCTY::load" << endl;
+    cerr << "ERROR: CartridgeCTY::load\n";
     return false;
   }
   return true;
@@ -559,7 +559,7 @@ void CartridgeCTY::saveScore(uInt8 index)
     catch(...)
     {
       // Maybe add logging here that save failed?
-      cerr << name() << ": ERROR saving score table " << static_cast<int>(index) << endl;
+      cerr << name() << ": ERROR saving score table " << static_cast<int>(index) << '\n';
     }
   }
 }
@@ -579,7 +579,7 @@ void CartridgeCTY::wipeAllScores()
     catch(...)
     {
       // Maybe add logging here that save failed?
-      cerr << name() << ": ERROR wiping score tables" << endl;
+      cerr << name() << ": ERROR wiping score tables\n";
     }
   }
 }

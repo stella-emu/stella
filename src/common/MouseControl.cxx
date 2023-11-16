@@ -134,7 +134,7 @@ MouseControl::MouseControl(Console& console, string_view mode)
 
 #if 0
   for(const auto& m: myModeList)
-    cerr << m << endl;
+    cerr << m << '\n';
 #endif
 }
 

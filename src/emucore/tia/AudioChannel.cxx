@@ -160,7 +160,7 @@ bool AudioChannel::save(Serializer& out) const
   }
   catch(...)
   {
-    cerr << "ERROR: TIA_AudioChannel::save" << endl;
+    cerr << "ERROR: TIA_AudioChannel::save\n";
     return false;
   }
 
@@ -187,7 +187,7 @@ bool AudioChannel::load(Serializer& in)
   }
   catch(...)
   {
-    cerr << "ERROR: TIA_AudioChannel::load" << endl;
+    cerr << "ERROR: TIA_AudioChannel::load\n";
     return false;
   }
 

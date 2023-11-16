@@ -241,7 +241,7 @@ bool System::save(Serializer& out) const
   }
   catch(...)
   {
-    cerr << "ERROR: System::save" << endl;
+    cerr << "ERROR: System::save\n";
     return false;
   }
 
@@ -270,7 +270,7 @@ bool System::load(Serializer& in)
   }
   catch(...)
   {
-    cerr << "ERROR: System::load" << endl;
+    cerr << "ERROR: System::load\n";
     return false;
   }
 

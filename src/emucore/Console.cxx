@@ -390,7 +390,7 @@ bool Console::save(Serializer& out) const
   }
   catch(...)
   {
-    cerr << "ERROR: Console::save" << endl;
+    cerr << "ERROR: Console::save\n";
     return false;
   }
 
@@ -413,7 +413,7 @@ bool Console::load(Serializer& in)
   }
   catch(...)
   {
-    cerr << "ERROR: Console::load" << endl;
+    cerr << "ERROR: Console::load\n";
     return false;
   }
 

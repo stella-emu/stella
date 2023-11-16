@@ -153,37 +153,37 @@ void Properties::copy(const Properties& properties)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Properties::print() const
 {
-  cout << get(PropType::Cart_MD5)               << "|"
-       << get(PropType::Cart_Name)              << "|"
-       << get(PropType::Cart_Manufacturer)      << "|"
-       << get(PropType::Cart_ModelNo)           << "|"
-       << get(PropType::Cart_Note)              << "|"
-       << get(PropType::Cart_Rarity)            << "|"
-       << get(PropType::Cart_Sound)             << "|"
-       << get(PropType::Cart_StartBank)         << "|"
-       << get(PropType::Cart_Type)              << "|"
-       << get(PropType::Cart_Highscore)         << "|"
-       << get(PropType::Cart_Url)               << "|"
-       << get(PropType::Console_LeftDiff)       << "|"
-       << get(PropType::Console_RightDiff)      << "|"
-       << get(PropType::Console_TVType)         << "|"
-       << get(PropType::Console_SwapPorts)      << "|"
-       << get(PropType::Controller_Left)        << "|"
-       << get(PropType::Controller_Left1)       << "|"
-       << get(PropType::Controller_Left2)       << "|"
-       << get(PropType::Controller_Right)       << "|"
-       << get(PropType::Controller_Right1)      << "|"
-       << get(PropType::Controller_Right2)      << "|"
-       << get(PropType::Controller_SwapPaddles) << "|"
+  cout << get(PropType::Cart_MD5)                  << "|"
+       << get(PropType::Cart_Name)                 << "|"
+       << get(PropType::Cart_Manufacturer)         << "|"
+       << get(PropType::Cart_ModelNo)              << "|"
+       << get(PropType::Cart_Note)                 << "|"
+       << get(PropType::Cart_Rarity)               << "|"
+       << get(PropType::Cart_Sound)                << "|"
+       << get(PropType::Cart_StartBank)            << "|"
+       << get(PropType::Cart_Type)                 << "|"
+       << get(PropType::Cart_Highscore)            << "|"
+       << get(PropType::Cart_Url)                  << "|"
+       << get(PropType::Console_LeftDiff)          << "|"
+       << get(PropType::Console_RightDiff)         << "|"
+       << get(PropType::Console_TVType)            << "|"
+       << get(PropType::Console_SwapPorts)         << "|"
+       << get(PropType::Controller_Left)           << "|"
+       << get(PropType::Controller_Left1)          << "|"
+       << get(PropType::Controller_Left2)          << "|"
+       << get(PropType::Controller_Right)          << "|"
+       << get(PropType::Controller_Right1)         << "|"
+       << get(PropType::Controller_Right2)         << "|"
+       << get(PropType::Controller_SwapPaddles)    << "|"
        << get(PropType::Controller_PaddlesXCenter) << "|"
        << get(PropType::Controller_PaddlesYCenter) << "|"
-       << get(PropType::Controller_MouseAxis)   << "|"
-       << get(PropType::Display_Format)         << "|"
-       << get(PropType::Display_VCenter)        << "|"
-       << get(PropType::Display_Phosphor)       << "|"
-       << get(PropType::Display_PPBlend)        << "|"
+       << get(PropType::Controller_MouseAxis)      << "|"
+       << get(PropType::Display_Format)            << "|"
+       << get(PropType::Display_VCenter)           << "|"
+       << get(PropType::Display_Phosphor)          << "|"
+       << get(PropType::Display_PPBlend)           << "|"
        << get(PropType::Bezel_Name)
-       << endl;
+       << '\n';
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -244,7 +244,7 @@ void Properties::printHeader()
        << "Display_Phosphor|"
        << "Display_PPBlend|"
        << "Bezel_Name"
-       << endl;
+       << '\n';
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

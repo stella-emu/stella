@@ -275,9 +275,8 @@ void KidVid::openSampleFiles()
 
   #ifdef DEBUG_BUILD
     if(myFilesFound)
-      cerr << endl
-           << "found file: " << getFileName() << endl
-           << "found file: " << "KVSHARED.WAV" << endl;
+      cerr << "\nfound file: " << getFileName() << '\n'
+           << "found file: " << "KVSHARED.WAV\n";
   #endif
 
     mySongLength = 0;
@@ -306,7 +305,7 @@ void KidVid::setNextSong()
     myCallback(msg.str(), false);
 
   #ifdef DEBUG_BUILD
-    cerr << fileName << ": " << (ourSongPositions[mySongPointer] & 0x7f) << endl;
+    cerr << fileName << ": " << (ourSongPositions[mySongPointer] & 0x7f) << '\n';
   #endif
 
     mySongPlaying = myTapeBusy = true;

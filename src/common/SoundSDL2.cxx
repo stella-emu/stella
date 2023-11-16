@@ -46,8 +46,8 @@ SoundSDL2::SoundSDL2(OSystem& osystem, AudioSettings& audioSettings)
   {
     ostringstream buf;
 
-    buf << "WARNING: Failed to initialize SDL audio system! " << endl
-        << "         " << SDL_GetError() << endl;
+    buf << "WARNING: Failed to initialize SDL audio system! \n"
+        << "         " << SDL_GetError() << '\n';
     Logger::error(buf.str());
     return;
   }
@@ -126,8 +126,8 @@ bool SoundSDL2::openDevice()
   {
     ostringstream buf;
 
-    buf << "WARNING: Couldn't open SDL audio device! " << endl
-        << "         " << SDL_GetError() << endl;
+    buf << "WARNING: Couldn't open SDL audio device! \n"
+        << "         " << SDL_GetError() << '\n';
     Logger::error(buf.str());
 
     return myIsInitializedFlag = false;
@@ -260,51 +260,51 @@ void SoundSDL2::adjustVolume(int direction)
 string SoundSDL2::about() const
 {
   ostringstream buf;
-  buf << "Sound enabled:"  << endl
-      << "  Volume:   " << myAudioSettings.volume() << "%" << endl
-      << "  Device:   " << myDevices.at(myDeviceId).first << endl
+  buf << "Sound enabled:\n"
+      << "  Volume:   " << myAudioSettings.volume() << "%\n"
+      << "  Device:   " << myDevices.at(myDeviceId).first << '\n'
       << "  Channels: " << static_cast<uInt32>(myHardwareSpec.channels)
-      << (myAudioQueue->isStereo() ? " (Stereo)" : " (Mono)") << endl
+      << (myAudioQueue->isStereo() ? " (Stereo)" : " (Mono)") << '\n'
       << "  Preset:   ";
   switch(myAudioSettings.preset())
   {
     case AudioSettings::Preset::custom:
-      buf << "Custom" << endl;
+      buf << "Custom\n";
       break;
     case AudioSettings::Preset::lowQualityMediumLag:
-      buf << "Low quality, medium lag" << endl;
+      buf << "Low quality, medium lag\n";
       break;
     case AudioSettings::Preset::highQualityMediumLag:
-      buf << "High quality, medium lag" << endl;
+      buf << "High quality, medium lag\n";
       break;
     case AudioSettings::Preset::highQualityLowLag:
-      buf << "High quality, low lag" << endl;
+      buf << "High quality, low lag\n";
       break;
     case AudioSettings::Preset::ultraQualityMinimalLag:
-      buf << "Ultra quality, minimal lag" << endl;
+      buf << "Ultra quality, minimal lag\n";
       break;
   }
   buf << "    Fragment size: " << static_cast<uInt32>(myHardwareSpec.samples)
-      << " bytes" << endl
+      << " bytes\n"
       << "    Sample rate:   " << static_cast<uInt32>(myHardwareSpec.freq)
-      << " Hz" << endl;
+      << " Hz\n";
   buf << "    Resampling:    ";
   switch(myAudioSettings.resamplingQuality())
   {
     case AudioSettings::ResamplingQuality::nearestNeightbour:
-      buf << "Quality 1, nearest neighbor" << endl;
+      buf << "Quality 1, nearest neighbor\n";
       break;
     case AudioSettings::ResamplingQuality::lanczos_2:
-      buf << "Quality 2, Lanczos (a = 2)" << endl;
+      buf << "Quality 2, Lanczos (a = 2)\n";
       break;
     case AudioSettings::ResamplingQuality::lanczos_3:
-      buf << "Quality 3, Lanczos (a = 3)" << endl;
+      buf << "Quality 3, Lanczos (a = 3)\n";
       break;
   }
   buf << "    Headroom:      " << std::fixed << std::setprecision(1)
-      << (0.5 * myAudioSettings.headroom()) << " frames" << endl
+      << (0.5 * myAudioSettings.headroom()) << " frames\n"
       << "    Buffer size:   " << std::fixed << std::setprecision(1)
-      << (0.5 * myAudioSettings.bufferSize()) << " frames" << endl;
+      << (0.5 * myAudioSettings.bufferSize()) << " frames\n";
   return buf.str();
 }
 

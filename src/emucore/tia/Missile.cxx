@@ -296,7 +296,7 @@ bool Missile::save(Serializer& out) const
   }
   catch(...)
   {
-    cerr << "ERROR: TIA_Missile::save" << endl;
+    cerr << "ERROR: TIA_Missile::save\n";
     return false;
   }
 
@@ -340,7 +340,7 @@ bool Missile::load(Serializer& in)
   }
   catch(...)
   {
-    cerr << "ERROR: TIA_Missile::load" << endl;
+    cerr << "ERROR: TIA_Missile::load\n";
     return false;
   }
 

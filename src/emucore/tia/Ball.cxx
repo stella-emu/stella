@@ -271,7 +271,7 @@ bool Ball::save(Serializer& out) const
   }
   catch(...)
   {
-    cerr << "ERROR: TIA_Ball::save" << endl;
+    cerr << "ERROR: TIA_Ball::save\n";
     return false;
   }
 
@@ -314,7 +314,7 @@ bool Ball::load(Serializer& in)
   }
   catch(...)
   {
-    cerr << "ERROR: TIA_Ball::load" << endl;
+    cerr << "ERROR: TIA_Ball::load\n";
     return false;
   }
 

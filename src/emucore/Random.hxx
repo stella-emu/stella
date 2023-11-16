@@ -78,7 +78,7 @@ class Random : public Serializable
       }
       catch(...)
       {
-        cerr << "ERROR: Random::save" << endl;
+        cerr << "ERROR: Random::save\n";
         return false;
       }
 
@@ -99,7 +99,7 @@ class Random : public Serializable
       }
       catch(...)
       {
-        cerr << "ERROR: Random::load" << endl;
+        cerr << "ERROR: Random::load\n";
         return false;
       }
 

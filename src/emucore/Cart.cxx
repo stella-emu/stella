@@ -57,7 +57,7 @@ bool Cartridge::saveROM(const FSNode& out) const
     const ByteBuffer& image = getImage(size);
     if(size == 0)
     {
-      cerr << "save not supported" << endl;
+      cerr << "save not supported\n";
       return false;
     }
     out.write(image, size);

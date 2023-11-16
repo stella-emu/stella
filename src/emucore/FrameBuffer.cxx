@@ -820,7 +820,7 @@ inline bool FrameBuffer::drawMessage()
   {
   #ifdef DEBUG_BUILD
     cerr << "m";
-    //cerr << "--- draw message ---" << endl;
+    //cerr << "--- draw message ---\n";
   #endif
 
     // Draw the bounded box and text

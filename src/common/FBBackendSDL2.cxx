@@ -394,7 +394,7 @@ bool FBBackendSDL2::adaptRefreshRate(Int32 displayIndex,
   //  cerr << "required (" << currentRefreshRate << " Hz -> " << adaptedSdlMode.refresh_rate << " Hz)";
   //else
   //  cerr << "not required/possible";
-  //cerr << endl;
+  //cerr << '\n';
 
   // Only change if the display supports a better refresh rate
   return adapt;
@@ -425,7 +425,7 @@ bool FBBackendSDL2::createRenderer()
 
   if(recreate)
   {
-    //cerr << "Create new renderer for buffer type #" << int(myBufferType) << endl;
+    //cerr << "Create new renderer for buffer type #" << int(myBufferType) << '\n';
     if(myRenderer)
       SDL_DestroyRenderer(myRenderer);
 
@@ -471,18 +471,18 @@ string FBBackendSDL2::about() const
   ASSERT_MAIN_THREAD;
 
   ostringstream out;
-  out << "Video system: " << SDL_GetCurrentVideoDriver() << endl;
+  out << "Video system: " << SDL_GetCurrentVideoDriver() << '\n';
   SDL_RendererInfo info;
   if(SDL_GetRendererInfo(myRenderer, &info) >= 0)
   {
-    out << "  Renderer: " << info.name << endl;
+    out << "  Renderer: " << info.name << '\n';
     if(info.max_texture_width > 0 && info.max_texture_height > 0)
       out << "  Max texture: " << info.max_texture_width << "x"
-                               << info.max_texture_height << endl;
+                               << info.max_texture_height << '\n';
     out << "  Flags: "
         << ((info.flags & SDL_RENDERER_PRESENTVSYNC) ? "+" : "-") << "vsync, "
         << ((info.flags & SDL_RENDERER_ACCELERATED) ? "+" : "-") << "accel"
-        << endl;
+        << '\n';
   }
   return out.str();
 }

@@ -98,7 +98,7 @@ void DialogContainer::draw(bool full)
   if(myDialogStack.empty())
     return;
 #ifdef DEBUG_BUILD
-  //cerr << "draw " << full << " " << typeid(*this).name() << endl;
+  //cerr << "draw " << full << " " << typeid(*this).name() << '\n';
 #endif
 
   // Draw and render all dirty dialogs
@@ -123,7 +123,7 @@ void DialogContainer::render()
   if(myDialogStack.empty())
     return;
 #ifdef DEBUG_BUILD
-  //cerr << "full re-render " << typeid(*this).name() << endl;
+  //cerr << "full re-render " << typeid(*this).name() << '\n';
 #endif
 
   // Make sure we start in a clean state (with zero'ed buffers)
@@ -178,7 +178,7 @@ void DialogContainer::removeDialog()
   if(!myDialogStack.empty())
   {
   #ifdef DEBUG_BUILD
-    //cerr << "remove dialog " << typeid(*myDialogStack.top()).name() << endl;
+    //cerr << "remove dialog " << typeid(*myDialogStack.top()).name() << '\n';
   #endif
     myDialogStack.pop();
 

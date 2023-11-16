@@ -501,15 +501,12 @@ void Settings::validate()
 void Settings::usage()
 {
   stringstream buf;
-  buf << endl
-    << "Stella version " << STELLA_VERSION << endl
-    << endl
-    << "Usage: stella [options ...] romfile" << endl
-    << "       Run without any options or romfile to use the ROM launcher" << endl
-    << "       Consult the manual for more in-depth information" << endl
-    << endl
-    << "Valid options are:" << endl
-    << endl
+  buf << "\nStella version " << STELLA_VERSION
+    << "\n\n"
+    << "Usage: stella [options ...] romfile\n"
+    << "       Run without any options or romfile to use the ROM launcher\n"
+    << "       Consult the manual for more in-depth information\n\n"
+    << "Valid options are:\n\n"
     << "  -video        <type>         Type is one of the following:\n"
   #ifdef BSPF_WINDOWS
     << "                 direct3d        Direct3D acceleration\n"
@@ -517,14 +514,12 @@ void Settings::usage()
     << "                 opengl          OpenGL acceleration\n"
     << "                 opengles2       OpenGLES 2 acceleration\n"
     << "                 opengles        OpenGLES 1 acceleration\n"
-    << "                 software        Software mode (no acceleration)\n"
-    << endl
+    << "                 software        Software mode (no acceleration)\n\n"
     << "  -vsync        <1|0>          Enable 'synchronize to vertical blank interrupt'\n"
     << "  -fullscreen   <1|0>          Enable fullscreen mode\n"
     << "  -center       <1|0>          Centers game window in windowed modes\n"
     << "  -windowedpos  <XxY>          Sets the window position in windowed emulator mode\n"
-    << "  -display      <number>       Sets the display for Stella's emulator\n"
-    << endl
+    << "  -display      <number>       Sets the display for Stella's emulator\n\n"
     << "  -palette        <standard|     Use the specified color palette\n"
     << "                   z26|user|\n"
     << "                   custom>\n"
@@ -540,24 +535,20 @@ void Settings::usage()
     << "  -pal.saturation  <-1.0 - 1.0>  Adjust saturation of current palette\n"
     << "  -pal.contrast    <-1.0 - 1.0>  Adjust contrast of current palette\n"
     << "  -pal.brightness  <-1.0 - 1.0>  Adjust brightness of current palette\n"
-    << "  -pal.gamma       <-1.0 - 1.0>  Adjust gamma of current palette\n"
-    << endl
+    << "  -pal.gamma       <-1.0 - 1.0>  Adjust gamma of current palette\n\n"
     << "  -detectpal60     <1|0>         Enable PAL-60 autodetection\n"
-    << "  -detectntsc50    <1|0>         Enable NTSC-50 autodetection\n"
-    << endl
+    << "  -detectntsc50    <1|0>         Enable NTSC-50 autodetection\n\n"
     << "  -speed           <number>      Run emulation at the given speed\n"
     << "  -turbo           <1|0>         Enable 'Turbo' mode for maximum emulation speed\n"
     << "  -uimessages      <1|0>         Show onscreen UI messages for different events\n"
-    << "  -pausedim        <1|0>         Enable emulation dimming in pause mode\n"
-    << endl
+    << "  -pausedim        <1|0>         Enable emulation dimming in pause mode\n\n"
     << "  -bezel.show        <1|0>       Show bezel around emulation window\n"
     << "  -bezel.windowed    <1|0>       Show bezel in windowed modes\n"
     << "  -bezel.win.auto    <1|0>       Automatically set bezel window position\n"
     << "  -bezel.win.left    <0-40>      Set left bezel window position [%]\n"
     << "  -bezel.win.right   <0-40>      Set right bezel window position [%]\n"
     << "  -bezel.win.top     <0-40>      Set top bezel window position [%]\n"
-    << "  -bezel.win.bottom  <0-40>      Set bottom bezel window position [%]\n"
-    << endl
+    << "  -bezel.win.bottom  <0-40>      Set bottom bezel window position [%]\n\n"
   #ifdef SOUND_SUPPORT
     << "  -audio.enabled            <1|0>      Enable audio\n"
     << "  -audio.volume             <0-100>    Volume\n"
@@ -570,8 +561,7 @@ void Settings::usage()
     << "  -audio.headroom           <0-20>     Additional half-frames to prebuffer\n"
     << "  -audio.buffer_size        <0-20>     Max. number of additional half-\n"
     << "                                        frames to buffer\n"
-    << "  -audio.stereo             <1|0>      Enable stereo mode for all ROMs\n"
-    << endl
+    << "  -audio.stereo             <1|0>      Enable stereo mode for all ROMs\n\n"
   #endif
     << "  -tia.zoom        <zoom>       Use the specified zoom level (windowed mode)\n"
     << "                                 for TIA image\n"
@@ -583,8 +573,7 @@ void Settings::usage()
     << "  -tia.fs_overscan <0-10>       Add overscan to TIA image in fullscreen mode\n"
     << "  -tia.dbgcolors   <string>     Debug colors to use for each object (see manual\n"
     << "                                 for description)\n"
-    << "  -tia.correct_aspect <1|0>     Enable aspect ratio correct scaling\n"
-    << endl
+    << "  -tia.correct_aspect <1|0>     Enable aspect ratio correct scaling\n\n"
     << "  -tv.filter    <0-5>           Set TV effects off (0) or to specified mode\n"
     << "                                 (1-5)\n"
     << "  -tv.phosphor  <always|byrom>  When to use phosphor mode\n"
@@ -598,12 +587,10 @@ void Settings::usage()
     << "  -tv.resolution  <-1.0 - 1.0>  Set TV effects custom resolution\n"
     << "  -tv.artifacts   <-1.0 - 1.0>  Set TV effects custom artifacts\n"
     << "  -tv.fringing    <-1.0 - 1.0>  Set TV effects custom fringing\n"
-    << "  -tv.bleed       <-1.0 - 1.0>  Set TV effects custom bleed\n"
-    << endl
+    << "  -tv.bleed       <-1.0 - 1.0>  Set TV effects custom bleed\n\n"
     << "  -cheat        <code>         Use the specified cheatcode (see manual for\n"
     << "                                description)\n"
-    << "  -loglevel     <0|1|2>        Set level of logging during application run\n"
-    << endl
+    << "  -loglevel     <0|1|2>        Set level of logging during application run\n\n"
     << "  -logtoconsole <1|0>          Log output to console/commandline\n"
     << "  -joydeadzone  <0-29>         Sets digital 'dead zone' area for analog joysticks\n"
     << "  -joyallow4    <1|0>          Allow all 4 directions on a joystick to be\n"
@@ -641,17 +628,14 @@ void Settings::usage()
     << "  -ss1x         <1|0>          Generate TIA snapshot in 1x mode (ignore\n"
     << "                                scaling/effects)\n"
     << "  -ssinterval   <number>       Number of seconds between snapshots in\n"
-    << "                                continuous snapshot mode\n"
-    << endl
+    << "                                continuous snapshot mode\n\n"
     << "  -saveonexit   <none|current| Automatically save state(s) when exiting\n"
     << "                 all>           emulation\n"
     << "  -autoslot     <0|1>          Automatically change to next save slot when\n"
-    << "                                state saving\n"
-    << endl
+    << "                                state saving\n\n"
     << "  -rominfo      <rom>          Display detailed information for the given ROM\n"
     << "  -listrominfo                 Display contents of stella.pro, one line per ROM\n"
-    << "                                entry\n"
-    << endl
+    << "                                entry\n\n"
     << "  -exitlauncher <0|1>          On exiting a ROM, go back to the ROM launcher\n"
     << "  -launcherpos  <XxY>          Sets the window position in windowed launcher\n"
     << "                                mode\n"
@@ -723,17 +707,14 @@ void Settings::usage()
     << "  -filterbstypes <0|1>         Filter bankswitch type list by ROM size.\n"
     << "  -help                        Show the text you're now reading\n"
   #ifdef DEBUGGER_SUPPORT
-    << endl
-    << " The following options are meant for developers\n"
-    << " Arguments are more fully explained in the manual\n"
-    << endl
+    << "\n The following options are meant for developers\n"
+    << " Arguments are more fully explained in the manual\n\n"
     << "   -dis.resolve   <1|0>        Attempt to resolve code sections in disassembler\n"
     << "   -dis.gfxformat <2|16>       Set base to use for displaying (P)GFX sections\n"
     << "                                in disassembler\n"
     << "   -dis.showaddr  <1|0>        Show opcode addresses in disassembler\n"
     << "   -dis.relocate  <1|0>        Relocate calls out of address range in\n"
-    << "                                disassembler\n"
-    << endl
+    << "                                disassembler\n\n"
     << "   -dbg.pos       <XxY>          Sets the window position in windowed debugger mode\n"
     << "   -dbg.display   <number>       Sets the display for the debugger\n"
     << "   -dbg.res       <WxH>          The resolution to use in debugger mode\n"
@@ -747,8 +728,7 @@ void Settings::usage()
     << "   -dbg.logtrace  <0|1>          Log emulation\n"
     << "   -dbg.autosave  <0|1>          Automatically save breaks, traps etc.\n"
     << "   -break         <address>      Set a breakpoint at 'address'\n"
-    << "   -debug                        Start in debugger mode\n"
-    << endl
+    << "   -debug                        Start in debugger mode\n\n"
     << "   -bs          <arg>          Sets the 'Cartridge.Type' (bankswitch) property\n"
     << "   -type        <arg>          Same as using -bs\n"
     << "   -startbank   <bank>         Sets the ROM's startup bank\n"
@@ -767,15 +747,12 @@ void Settings::usage()
     << "   -vcenter     <arg>          Sets the 'Display.vcenter' property\n"
     << "   -pp          <arg>          Sets the 'Display.Phosphor' property\n"
     << "   -ppblend     <arg>          Sets the 'Display.PPBlend' property\n"
-    << "   -bezelname   <arg>          Sets the 'Bezel.Name' property\n"
-    << endl
+    << "   -bezelname   <arg>          Sets the 'Bezel.Name' property\n\n"
   #endif
 
-    << " Various development related parameters for player settings mode\n"
-    << endl
+    << " Various development related parameters for player settings mode\n\n"
     << "  -dev.settings     <1|0>          Select developer (1) or player (0) settings\n"
-    << "                                    mode\n"
-    << endl
+    << "                                    mode\n\n"
     << "  -plr.stats        <1|0>          Overlay console info during emulation\n"
     << "  -plr.detectedinfo <1|0>          Enable initial detected settings info\n"
     << "  -plr.console      <2600|7800>    Select console for B/W and Pause key\n"
@@ -789,8 +766,7 @@ void Settings::usage()
     << "  -plr.tv.jitter    <1|0>          Enable TV jitter effect\n"
     << "  -plr.tv.jitter_sense <1-10>      Set TV jitter effect sensitivity\n"
     << "  -plr.tv.jitter_recovery <1-20>   Set recovery time for TV jitter effect\n"
-    << "  -plr.extaccess    <1|0>          Enable messages for external access\n"
-    << endl
+    << "  -plr.extaccess    <1|0>          Enable messages for external access\n\n"
     << " The same parameters but for developer settings mode\n"
     << "  -dev.stats        <1|0>          Overlay console info during emulation\n"
     << "  -dev.detectedinfo <1|0>          Enable initial detected settings info\n"
@@ -836,8 +812,7 @@ void Settings::usage()
     << "  -dev.tia.pfscoreglitch <1|0>      Enable PF score mode color glitch\n"
     << "  -dev.tia.delaybkcolor  <1|0>      Enable extra delay cycle for background color\n"
     << "  -dev.tia.delayplswap   <1|0>      Enable extra delay cycle for VDELP0/1 swap\n"
-    << "  -dev.tia.delayblswap   <1|0>      Enable extra delay cycle for VDELBL swap\n"
-    << endl;
+    << "  -dev.tia.delayblswap   <1|0>      Enable extra delay cycle for VDELBL swap\n\n";
 
 #ifdef BSPF_WINDOWS
 //  int height = 25;
@@ -864,11 +839,11 @@ void Settings::usage()
       row = 0;
       cout << "Press \"Enter\"" << std::flush;
       std::ignore = getchar();
-      cout << endl;
+      cout << '\n';
     }
     string substr;
     getline(buf, substr, '\n');
-    cout << substr << endl;
+    cout << substr << '\n';
   }
 #endif
 }

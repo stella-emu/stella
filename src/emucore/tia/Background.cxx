@@ -82,7 +82,7 @@ bool Background::save(Serializer& out) const
   }
   catch(...)
   {
-    cerr << "ERROR: TIA_BK::save" << endl;
+    cerr << "ERROR: TIA_BK::save\n";
     return false;
   }
 
@@ -103,7 +103,7 @@ bool Background::load(Serializer& in)
   }
   catch(...)
   {
-    cerr << "ERROR: TIA_BK::load" << endl;
+    cerr << "ERROR: TIA_BK::load\n";
     return false;
   }
 

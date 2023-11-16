@@ -396,7 +396,7 @@ void EventHandler::handleSystemEvent(SystemEvent e, int, int)
       break;
 
     default:  // handle other events as testing requires
-      // cerr << "handleSystemEvent: " << e << endl;
+      // cerr << "handleSystemEvent: " << e << '\n';
       break;
   }
 }

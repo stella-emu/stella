@@ -67,9 +67,9 @@ int main(int ac, char* av[])
   while(buf >> hex >> c)
   {
     sig[s_size++] = (uInt8)c;
-//    cerr << "character = " << hex << (int)sig[s_size-1] << endl;
+//    cerr << "character = " << hex << (int)sig[s_size-1] << '\n';
   }
-//  cerr << "sig size = " << hex << s_size << endl;
+//  cerr << "sig size = " << hex << s_size << '\n';
 
   list<int> locations;
   int result = searchForBytes(image.get()+offset, i_size-offset, sig.get(), s_size, locations);
@@ -78,7 +78,7 @@ int main(int ac, char* av[])
     cout << setw(3) << result << " hits:  \'" << av[2] << "\' - \"" << av[1] << "\" @";
     for(const auto& it: locations)
       cout << ' ' << hex << (it + offset);
-    cout << endl;
+    cout << '\n';
   }
 
   return 0;

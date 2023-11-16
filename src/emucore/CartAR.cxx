@@ -426,7 +426,7 @@ bool CartridgeAR::save(Serializer& out) const
   }
   catch(...)
   {
-    cerr << "ERROR: CartridgeAR::save" << endl;
+    cerr << "ERROR: CartridgeAR::save\n";
     return false;
   }
 
@@ -471,7 +471,7 @@ bool CartridgeAR::load(Serializer& in)
   }
   catch(...)
   {
-    cerr << "ERROR: CartridgeAR::load" << endl;
+    cerr << "ERROR: CartridgeAR::load\n";
     return false;
   }
 

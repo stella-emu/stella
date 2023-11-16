@@ -593,7 +593,7 @@ bool CartridgeCDF::save(Serializer& out) const
   }
   catch(...)
   {
-    cerr << "ERROR: CartridgeCDF::save" << endl;
+    cerr << "ERROR: CartridgeCDF::save\n";
     return false;
   }
 
@@ -635,7 +635,7 @@ bool CartridgeCDF::load(Serializer& in)
   }
   catch(...)
   {
-    cerr << "ERROR: CartridgeCDF::load" << endl;
+    cerr << "ERROR: CartridgeCDF::load\n";
     return false;
   }
 

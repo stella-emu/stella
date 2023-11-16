@@ -244,7 +244,7 @@ uInt8 M6532::peek(uInt16 addr)
     default:
     {
 #ifdef DEBUG_ACCESSES
-      cerr << "BAD M6532 Peek: " << hex << addr << endl;
+      cerr << "BAD M6532 Peek: " << hex << addr << '\n';
 #endif
       return 0;
     }
@@ -396,7 +396,7 @@ bool M6532::save(Serializer& out) const
   }
   catch(...)
   {
-    cerr << "ERROR: M6532::save" << endl;
+    cerr << "ERROR: M6532::save\n";
     return false;
   }
 
@@ -431,7 +431,7 @@ bool M6532::load(Serializer& in)
   }
   catch(...)
   {
-    cerr << "ERROR: M6532::load" << endl;
+    cerr << "ERROR: M6532::load\n";
     return false;
   }
 

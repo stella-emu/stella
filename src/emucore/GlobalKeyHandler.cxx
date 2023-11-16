@@ -455,7 +455,8 @@ GlobalKeyHandler::SettingData GlobalKeyHandler::getSettingData(const Setting set
     return result->second;
   else
   {
-    cerr << "Error: setting " << static_cast<int>(setting) << " missing in SettingMap!" << endl;
+    cerr << "Error: setting " << static_cast<int>(setting)
+         << " missing in SettingMap!\n";
     return SettingMap.find(Setting::VOLUME)->second; // default function!
   }
 }

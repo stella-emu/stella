@@ -306,7 +306,7 @@ bool Playfield::save(Serializer& out) const
   }
   catch(...)
   {
-    cerr << "ERROR: TIA_Playfield::save" << endl;
+    cerr << "ERROR: TIA_Playfield::save\n";
     return false;
   }
 
@@ -352,7 +352,7 @@ bool Playfield::load(Serializer& in)
   }
   catch(...)
   {
-    cerr << "ERROR: TIA_Playfield::load" << endl;
+    cerr << "ERROR: TIA_Playfield::load\n";
     return false;
   }
 

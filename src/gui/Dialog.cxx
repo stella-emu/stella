@@ -243,7 +243,7 @@ string Dialog::getHelpURL() const
 void Dialog::openHelp()
 {
   if(hasHelp() && !MediaFactory::openURL(getHelpURL()))
-    cerr << "error opening URL " << getHelpURL() << endl;
+    cerr << "error opening URL " << getHelpURL() << '\n';
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -336,7 +336,7 @@ void Dialog::redraw(bool force)
 void Dialog::render()
 {
 #ifdef DEBUG_BUILD
-  //cerr << "  render " << typeid(*this).name() << endl;
+  //cerr << "  render " << typeid(*this).name() << '\n';
 #endif
 
   // Update dialog surface; also render any extra surfaces
@@ -539,13 +539,13 @@ void Dialog::drawDialog()
   if(isDirty())
   {
   #ifdef DEBUG_BUILD
-    //cerr << "*** draw dialog " << typeid(*this).name() << " ***" << endl;
-    cerr << endl << "d";
+    //cerr << "*** draw dialog " << typeid(*this).name() << " ***\n";
+    cerr << "\nd";
   #endif
 
     if(clearsBackground())
     {
-      //    cerr << "Dialog::drawDialog(): w = " << _w << ", h = " << _h << " @ " << &s << endl << endl;
+      //    cerr << "Dialog::drawDialog(): w = " << _w << ", h = " << _h << " @ " << &s << "\n\n";
 
       if(hasBackground())
         s.fillRect(_x, _y + _th, _w, _h - _th, kDlgColor);
@@ -561,7 +561,7 @@ void Dialog::drawDialog()
     else {
       s.invalidate();
     #ifdef DEBUG_BUILD
-      //cerr << "invalidate " << typeid(*this).name() << endl;
+      //cerr << "invalidate " << typeid(*this).name() << '\n';
     #endif
     }
     if(hasBorder()) // currently only used by Dialog itself
@@ -574,7 +574,7 @@ void Dialog::drawDialog()
   }
 #ifdef DEBUG_BUILD
   else
-    cerr << endl;
+    cerr << '\n';
 #endif
 
   // Draw all children

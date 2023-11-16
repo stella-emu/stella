@@ -41,7 +41,8 @@ EventHandlerSDL2::EventHandlerSDL2(OSystem& osystem)
   if(SDL_InitSubSystem(SDL_INIT_JOYSTICK) < 0)
   {
     ostringstream buf;
-    buf << "ERROR: Couldn't initialize SDL joystick support: " << SDL_GetError() << endl;
+    buf << "ERROR: Couldn't initialize SDL joystick support: "
+        << SDL_GetError() << '\n';
     Logger::error(buf.str());
   }
   Logger::debug("EventHandlerSDL2::EventHandlerSDL2 SDL_INIT_JOYSTICK");

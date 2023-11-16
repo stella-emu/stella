@@ -232,7 +232,7 @@ string CartDebug::toString()
 
       if(j == 0x07) buf << " ";
     }
-    buf << endl;
+    buf << '\n';
   }
 
   return buf.str();
@@ -453,7 +453,7 @@ string CartDebug::disassembleLines(uInt16 start, uInt16 lines) const
 
     buffer << tag.disasm << std::setw(static_cast<int>(length - tag.disasm.length() + 2))
            << std::setfill(' ') << " "
-           << std::setw(4) << std::left << tag.ccount << "   " << tag.bytes << endl;
+           << std::setw(4) << std::left << tag.ccount << "   " << tag.bytes << '\n';
   }
 
   return buffer.str();
@@ -1037,12 +1037,11 @@ string CartDebug::saveConfigFile()
 
   // Store all bank information
   stringstream out;
-  out << "// Stella.pro: \"" << name << "\"" << endl
-      << "// MD5: " << md5 << endl
-      << endl;
+  out << "// Stella.pro: \"" << name << "\"\n"
+      << "// MD5: " << md5 << "\n\n";
   for(uInt32 b = 0; b < myConsole.cartridge().romBankCount(); ++b)
   {
-    out << "[" << b << "]" << endl;
+    out << "[" << b << "]\n";
     getBankDirectives(out, myBankInfo[b]);
   }
 
@@ -1462,25 +1461,25 @@ string CartDebug::listConfig(int bank)
   }
 
   ostringstream buf;
-  buf << "(items marked '*' are user-defined)" << endl;
+  buf << "(items marked '*' are user-defined)\n";
   for(uInt32 b = startbank; b < endbank; ++b)
   {
     const BankInfo& info = myBankInfo[b];
-    buf << "Bank [" << b << "]" << endl;
+    buf << "Bank [" << b << "]\n";
     for(const auto& i: info.directiveList)
     {
       if(i.type != Device::NONE)
       {
         buf << "(*) ";
         AccessTypeAsString(buf, i.type);
-        buf << " " << Base::HEX4 << i.start << " " << Base::HEX4 << i.end << endl;
+        buf << " " << Base::HEX4 << i.start << " " << Base::HEX4 << i.end << '\n';
       }
     }
     getBankDirectives(buf, info);
   }
 
   if(myConsole.cartridge().romBankCount() > 1)
-    buf << DebuggerParser::red("config file for multi-bank ROM not fully supported") << endl;
+    buf << DebuggerParser::red("config file for multi-bank ROM not fully supported") << '\n';
 
   return buf.str();
 }
@@ -1569,7 +1568,7 @@ CartDebug::AddrType CartDebug::addressType(uInt16 addr)
 void CartDebug::getBankDirectives(ostream& buf, const BankInfo& info) const
 {
   // Start with the offset for this bank
-  buf << "ORG " << Base::HEX4 << info.offset << endl;
+  buf << "ORG " << Base::HEX4 << info.offset << '\n';
 
   // Now consider each byte
   uInt32 prev = info.offset, addr = prev + 1;
@@ -1582,7 +1581,7 @@ void CartDebug::getBankDirectives(ostream& buf, const BankInfo& info) const
     if(currType != prevType)
     {
       AccessTypeAsString(buf, prevType);
-      buf << " " << Base::HEX4 << prev << " " << Base::HEX4 << (addr-1) << endl;
+      buf << " " << Base::HEX4 << prev << " " << Base::HEX4 << (addr-1) << '\n';
 
       prev = addr;
       prevType = currType;
@@ -1593,7 +1592,7 @@ void CartDebug::getBankDirectives(ostream& buf, const BankInfo& info) const
   if(prev != addr)
   {
     AccessTypeAsString(buf, prevType);
-    buf << " " << Base::HEX4 << prev << " " << Base::HEX4 << (addr-1) << endl;
+    buf << " " << Base::HEX4 << prev << " " << Base::HEX4 << (addr-1) << '\n';
   }
 }
 
@@ -1610,13 +1609,13 @@ void CartDebug::accessTypeAsString(ostream& buf, uInt16 addr) const
               debugger  = myDebugger.getAccessFlags(addr) & 0xFC,
               label     = myDisLabels[addr & 0xFFF];
 
-  buf << endl << "directive: " << Base::toString(directive, Base::Fmt::_2_8) << " ";
+  buf << "\ndirective: " << Base::toString(directive, Base::Fmt::_2_8) << " ";
   AccessTypeAsString(buf, directive);
-  buf << endl << "emulation: " << Base::toString(debugger, Base::Fmt::_2_8) << " ";
+  buf << "\nemulation: " << Base::toString(debugger, Base::Fmt::_2_8) << " ";
   AccessTypeAsString(buf, debugger);
-  buf << endl << "tentative: " << Base::toString(label, Base::Fmt::_2_8) << " ";
+  buf << "\ntentative: " << Base::toString(label, Base::Fmt::_2_8) << " ";
   AccessTypeAsString(buf, label);
-  buf << endl;
+  buf << '\n';
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
