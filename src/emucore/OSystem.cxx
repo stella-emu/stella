@@ -125,7 +125,7 @@ bool OSystem::initialize(const Settings::Options& options)
   ostringstream buf;
   buf << "Stella " << STELLA_VERSION << '\n'
       << "  Features: " << myFeatures << '\n'
-      << "  " << myBuildInfo << '\n\n'
+      << "  " << myBuildInfo << "\n\n"
       << "Base directory:     '"
       << myBaseDir.getShortPath() << "'\n"
       << "State directory:    '"

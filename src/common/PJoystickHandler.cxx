@@ -1108,14 +1108,14 @@ ostream& operator<<(ostream& os, const PhysicalJoystickHandler& jh)
   os << "---------------------------------------------------------\n"
      << "joy database:\n";
   for(const auto& [_name, _info]: jh.myDatabase)
-    os << _name << '\n' << _info << '\n\n';
+    os << _name << '\n' << _info << "\n\n";
 
   os << "---------------------\n"
      << "joy active:\n";
   for(const auto& [_id, _joyptr]: jh.mySticks)
     os << _id << ": " << *_joyptr << '\n';
   os << "---------------------------------------------------------"
-     << '\n\n\n';
+     << "\n\n\n";
 
   return os;
 }
