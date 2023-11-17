@@ -208,9 +208,8 @@ bool PhysicalJoystickHandler::remove(int id)
   }
   catch(const std::out_of_range&)
   {
-    // fall through to indicate remove failed
+    return false;
   }
-
   return false;
 }
 

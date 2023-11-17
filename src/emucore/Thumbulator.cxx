@@ -372,7 +372,7 @@ void Thumbulator::write16(uInt32 addr, uInt32 data)
   THUMB_STAT(_stats.writes)
   DO_DBUG(statusMsg << "write16(" << Base::HEX8 << addr << "," << Base::HEX8 << data << ")\n");
 
-  switch(addr & 0xF0000000)
+  switch(addr & 0xF0000000) // NOLINT (missing default for UNSAFE_OPTIMIZATIONS)
   {
     case 0x40000000: //RAM
 #ifndef UNSAFE_OPTIMIZATIONS
@@ -413,7 +413,7 @@ void Thumbulator::write32(uInt32 addr, uInt32 data)
 #endif
   DO_DBUG(statusMsg << "write32(" << Base::HEX8 << addr << "," << Base::HEX8 << data << ")\n");
 
-  switch(addr & 0xF0000000)
+  switch(addr & 0xF0000000) // NOLINT (missing default for UNSAFE_OPTIMIZATIONS)
   {
 #ifndef UNSAFE_OPTIMIZATIONS
     case 0xF0000000: //halt
@@ -626,7 +626,7 @@ uInt32 Thumbulator::read16(uInt32 addr)
 #endif
   THUMB_STAT(_stats.reads)
 
-  switch(addr & 0xF0000000)
+  switch(addr & 0xF0000000) // NOLINT (missing default for UNSAFE_OPTIMIZATIONS)
   {
     case 0x00000000: //ROM
 #ifndef UNSAFE_OPTIMIZATIONS
@@ -676,7 +676,7 @@ uInt32 Thumbulator::read32(uInt32 addr)
 #endif
 
   uInt32 data = 0;
-  switch(addr & 0xF0000000)
+  switch(addr & 0xF0000000) // NOLINT (missing default for UNSAFE_OPTIMIZATIONS)
   {
     case 0x00000000: //ROM
 #ifndef UNSAFE_OPTIMIZATIONS

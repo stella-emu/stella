@@ -965,10 +965,12 @@ string PromptWidget::saveBuffer(const FSNode& file)
   try {
     if(file.write(out) > 0)
       return "saved " + file.getShortPath() + " OK";
+    else
+      return "unable to save session";
   }
-  catch(...) { return "unable to save session"; }
-
-  return "unable to save session";
+  catch(...) {
+    return "unable to save session";
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
