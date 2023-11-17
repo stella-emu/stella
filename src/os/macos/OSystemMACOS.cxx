@@ -32,6 +32,6 @@ void OSystemMACOS::getBaseDirectories(string& basedir, string& homedir,
     basedir = FSNode(usedir).getPath();
 #endif
 
-  FSNode desktop("~/Desktop/");
+  const FSNode desktop("~/Desktop/");
   homedir = desktop.isDirectory() ? desktop.getShortPath() : "~/";
 }
