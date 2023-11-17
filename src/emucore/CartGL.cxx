@@ -100,6 +100,8 @@ bool CartridgeGL::checkSwitchBank(uInt16 address, uInt8)
     case 0xc80:
       control = true;
       break;
+    default:
+      break;  // satisfy compiler
   }
   if(slice >= 0)
   {

@@ -1446,8 +1446,8 @@ string CartDebug::saveAccessFile(string path)
   }
   catch(...)
   {
+    return DebuggerParser::red("failed to save access counters file");
   }
-  return DebuggerParser::red("failed to save access counters file");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

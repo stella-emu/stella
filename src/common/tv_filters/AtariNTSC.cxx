@@ -107,10 +107,13 @@ void AtariNTSC::render(const uInt8* atari_in, const uInt32 in_width,
   // Spawn the threads...
   for(uInt32 i = 0; i < myWorkerThreads; ++i)
   {
-    myThreads[i] = std::thread([=] {
-    rgb_in == nullptr ?
-      renderThread(atari_in, in_width, in_height, myTotalThreads, i+1, rgb_out, out_pitch) :
-      renderWithPhosphorThread(atari_in, in_width, in_height, myTotalThreads, i+1, rgb_in, rgb_out, out_pitch);
+    myThreads[i] = std::thread([=] // NOLINT (cppcoreguidelines-misleading-capture-default-by-value
+    {
+      rgb_in == nullptr ?
+        renderThread(atari_in, in_width, in_height, myTotalThreads,
+                     i+1, rgb_out, out_pitch) :
+        renderWithPhosphorThread(atari_in, in_width, in_height, myTotalThreads,
+                                 i+1, rgb_in, rgb_out, out_pitch);
     });
   }
   // Make the main thread busy too

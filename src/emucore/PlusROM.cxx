@@ -432,7 +432,8 @@ void PlusROM::send()
     // as the thread is running. Thus, the request can only be destructed once
     // the thread has finished, and we can safely evict it from the deque at
     // any time.
-    std::thread thread([=]() {
+    std::thread thread([=]() // NOLINT (cppcoreguidelines-misleading-capture-default-by-value)
+    {
       request->execute();
       switch(request->getState())
       {

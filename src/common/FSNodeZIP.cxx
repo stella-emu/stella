@@ -162,6 +162,7 @@ bool FSNodeZIP::exists() const
     catch(const runtime_error&)
     {
       // TODO: Actually present the error passed in back to the user
+      cerr << "ERROR: FSNodeZIP::exists()\n";
     }
   }
 

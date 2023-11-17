@@ -127,7 +127,7 @@ bool Bezel::load()
         }
       } while(index != -1);
     }
-    catch(const runtime_error&) { }
+    catch(const runtime_error&) { cerr << "ERROR: Bezel load\n"; }
   }
 #else
   const bool show = false;
