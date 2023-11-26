@@ -50,28 +50,24 @@ WhatsNewDialog::WhatsNewDialog(OSystem& osystem, DialogContainer& parent,
   add(ypos, "extensively redesigned and enhanced file launcher");
   add(ypos, "improved controller mappings for Paddles");
   add(ypos, "improved controller mappings for Driving controllers");
-  add(ypos, "enhanced support for CDFJ+ bankswitching type");
-  add(ypos, "added MovieCart support");
   add(ypos, "added keeping multiple dump files when dumping to SD");
   add(ypos, "removed deadzone from USB game controllers");
   add(ypos, "added opt-out for overclocking to the settings file");
+  add(ypos, "enhanced ROM launcher to allow multiple images per ROM (heaps of additional images are available for download)");
+  add(ypos, "added bezel support (incl. Sinden Lightgun)");
+  add(ypos, "accelerated ARM emulation by ~15%");
 #else
-  if(version < "6.6")
+  if(version < "6.7")
   {
-    add(ypos, "added tooltips to many UI items");
-    add(ypos, "added sound to Time Machine playback");
-    add(ypos, "moved settings, properties etc. to an SQLite database");
-    add(ypos, "added context-sensitive help");
-    add(ypos, "added PlusROMs support for saving high scores");
-    add(ypos, "added MovieCart support");
-    add(ypos, "added weblinks for many games");
+    add(ypos, "extensively redesigned and enhanced ROM launcher");
   }
-  add(ypos, "extensively redesigned and enhanced file launcher");
-  add(ypos, "added automatic emulation pause when focus is lost");
-  add(ypos, "added option to toggle autofire mode");
-  add(ypos, "improved controller mappings for Paddles and Driving controllers");
-  add(ypos, "added another oddball TIA glitch option for score mode color");
-  add(ypos, "enhanced support for CDFJ+ bankswitching type");
+  add(ypos, "enhanced ROM launcher to allow multiple images per ROM (heaps of additional images are available for download)");
+  add(ypos, "added bezel support (incl. Sinden Lightgun)");
+  add(ypos, "enhanced Kid Vid support to play tape audio");
+  add(ypos, "added Joy2B+ controller support");
+  add(ypos, "accelerated ARM emulation by ~15%");
+  add(ypos, "fixed broken mouse and Stelladaptor input for Driving Controller");
+  add(ypos, "added user defined CPU cycle timers to debugger");
   add(ypos, ELLIPSIS + " (for a complete list see 'docs/Changes.txt')");
 #endif
 

@@ -456,7 +456,7 @@ void VideoAudioDialog::addBezelTab()
   // Enable bezels
   myBezelEnableCheckbox = new CheckboxWidget(myTab, _font, xpos, ypos,
                                              "Enable bezels", kBezelEnableChanged);
-  //myBezelEnableCheckbox->setToolTip(Event::BezelToggle);
+  myBezelEnableCheckbox->setToolTip(Event::ToggleBezel);
   wid.push_back(myBezelEnableCheckbox);
   xpos += INDENT;
   ypos += lineHeight + VGAP;

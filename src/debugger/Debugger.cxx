@@ -446,7 +446,6 @@ bool Debugger::writeTrap(uInt16 t) const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Debugger::log(string_view triggerMsg)
 {
-  const CartDebug::Disassembly& disasm = myCartDebug->disassembly();
   const int pc = myCpuDebug->pc();
 
   if(myFirstLog)
@@ -466,27 +465,14 @@ void Debugger::log(string_view triggerMsg)
     myFirstLog = false;
   }
 
-  // First find the lines in the range, and determine the longest string
-  const uInt16 start = pc & 0xFFF;
-  const size_t list_size = disasm.list.size();
-  size_t pos = 0;
-
-  for(pos = 0; pos < list_size; ++pos)
-  {
-    const CartDebug::DisassemblyTag& tag = disasm.list[pos];
-
-    if((tag.address & 0xfff) >= start)
-      break;
-  }
-
   ostringstream msg;
 
-  msg << std::left << std::setw(10) << std::setfill(' ') << triggerMsg;
-  msg << Base::toString(myTiaDebug->frameCount(), Base::Fmt::_10_5) << " "
+  msg << std::left << std::setw(10) << std::setfill(' ') << triggerMsg
+    << Base::toString(myTiaDebug->frameCount(), Base::Fmt::_10_5) << " "
     << Base::toString(myTiaDebug->scanlines(), Base::Fmt::_10_3) << " "
     << Base::toString(myTiaDebug->clocksThisLine() / 3, Base::Fmt::_10_02) << " "
-    << Base::toString(myTiaDebug->clocksThisLine() - 68, Base::Fmt::_10_3) << " | ";
-  msg << (myCpuDebug->n() ? "N" : "n")
+    << Base::toString(myTiaDebug->clocksThisLine() - 68, Base::Fmt::_10_3) << " | "
+    << (myCpuDebug->n() ? "N" : "n")
     << (myCpuDebug->v() ? "V" : "v") << "-"
     << (myCpuDebug->b() ? "B" : "b")
     << (myCpuDebug->d() ? "D" : "d")
@@ -508,16 +494,26 @@ void Debugger::log(string_view triggerMsg)
   else
     msg << " ";
 
-  if(disasm.list.size() > pos)
+  // First find the lines in the range, and determine the longest string
+  const CartDebug::Disassembly& disasm = myCartDebug->disassembly();
+  const uInt16 start = pc & 0xFFF;
+  const size_t list_size = disasm.list.size();
+  size_t pos = 0;
+
+  for(pos = 0; pos < list_size; ++pos)
   {
     const CartDebug::DisassemblyTag& tag = disasm.list[pos];
 
-    msg << Base::HEX4 << pc << " "
-      << std::left << std::setw(8) << std::setfill(' ') << tag.bytes << " "
-      << tag.disasm.substr(0, 7);
+    if((tag.address & 0xfff) >= start)
+    {
+      msg << Base::HEX4 << pc << " "
+        << std::left << std::setw(8) << std::setfill(' ') << tag.bytes << " "
+        << tag.disasm.substr(0, 7);
 
-    if(tag.disasm.length() > 8)
-      msg << tag.disasm.substr(8);
+      if(tag.disasm.length() > 8)
+        msg << tag.disasm.substr(8);
+      break;
+    }
   }
   Logger::log(msg.str());
 }
