@@ -10457,6 +10457,15 @@
 "Cart.Note" "Uses Keyboard Controllers"
 ""
 
+"Cart.MD5" "71edab64f54783132536bef7c141a63f"
+"Cart.Manufacturer" "Coleco - Project Guild - GMA, Michael Green, Anthony R. Henderson, Gary Littleton"
+"Cart.ModelNo" "2455"
+"Cart.Name" "Turbo (1982) (Coleco) (Prototype)"
+"Cart.Note" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/turbo/turbo.htm"
+"Controller.Left" "JOYSTICK"
+""
+
 "Cart.MD5" "71f09f128e76eb14e244be8f44848759"
 "Cart.Manufacturer" "Funvision - Fund. International Co."
 "Cart.Name" "Time Race (Funvision) (PAL)"
@@ -11880,6 +11889,7 @@
 "Cart.Name" "Turbo (1982) (Coleco) (Prototype)"
 "Cart.Note" "Prototype"
 "Cart.Url" "http://www.atariprotos.com/2600/software/turbo/turbo.htm"
+"Controller.Left" "JOYSTICK"
 ""
 
 "Cart.MD5" "807a8ff6216b00d52aba2dfea5d8d860"
