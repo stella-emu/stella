@@ -25,7 +25,7 @@
   regenerated and the application recompiled.
 */
 
-static constexpr uInt32 DEF_PROPS_SIZE = 3637;
+static constexpr uInt32 DEF_PROPS_SIZE = 3638;
 
 /**
   FIXME
@@ -1666,6 +1666,7 @@ static constexpr BSPF::array2D<const char*, DEF_PROPS_SIZE, 30> DefProps = {{
   { "71b193f46c88fb234329855452dfac5b", "Digitel", "", "Atlantis (1983) (Digitel)", "", "", "", "", "", "{\"score_addresses\":[\"0xa3\",\"0xa2\"],\"score_digits\":6,\"score_trailing_zeroes\":2,\"variations_address\":\"0x8d\",\"variations_count\":4,\"variations_zero_based\":true}", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "71ba6aefca09424899441db9ae14ee04", "", "", "Oink! (Unknown)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "71d005b60cf6e608d04efb99a37362c3", "Atari, Larry Kaplan", "CX2643", "Codebreaker (1978) (Atari) (PAL) (4K) [a]", "Uses Keyboard Controllers", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
+  { "71edab64f54783132536bef7c141a63f", "Coleco - Project Guild - GMA, Michael Green, Anthony R. Henderson, Gary Littleton", "2455", "Turbo (1982) (Coleco) (Prototype)", "Prototype", "", "", "", "", "", "http://www.atariprotos.com/2600/software/turbo/turbo.htm", "", "", "", "", "JOYSTICK", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "71f09f128e76eb14e244be8f44848759", "Funvision - Fund. International Co.", "", "Time Race (Funvision) (PAL)", "AKA Time Warp", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "71f8bacfbdca019113f3f0801849057e", "Atari, Dan Hitchens", "CX26126", "Elevator Action (1983) (Atari) (Prototype)", "", "Prototype", "", "", "", "", "http://www.atariprotos.com/2600/software/elevator/elevator.htm", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "72097e9dc366900ba2da73a47e3e80f5", "", "", "Euchre (15-06-2001) (Eric Eid) (PD)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
@@ -1886,7 +1887,7 @@ static constexpr BSPF::array2D<const char*, DEF_PROPS_SIZE, 30> DefProps = {{
   { "8055b9c2622136fd91edfea6df642daf", "Activision", "", "Unknown Activision Game #1 (1983) (Activision) (Prototype) (PAL)", "", "Prototype", "", "", "", "", "http://www.atariprotos.com/2600/software/unknown1/unknown1.htm", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "805f9a32ef97ac25f999a25014dc5c23", "SnailSoft", "", "Balthazar (SnailSoft)", "AKA Babylon 5", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "YES", "", "" },
   { "8068e07b484dfd661158b3771d6621ca", "Epyx, Steven A. Baker, Peter Engelbrite", "80561-00286", "California Games (1987) (Epyx) (PAL)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
-  { "807841df228ee8aab0a06ee639ce5a8a", "Coleco - Project Guild - GMA, Michael Green, Anthony R. Henderson, Gary Littleton", "2455", "Turbo (1982) (Coleco) (Prototype)", "Prototype", "", "", "", "", "", "http://www.atariprotos.com/2600/software/turbo/turbo.htm", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
+  { "807841df228ee8aab0a06ee639ce5a8a", "Coleco - Project Guild - GMA, Michael Green, Anthony R. Henderson, Gary Littleton", "2455", "Turbo (1982) (Coleco) (Prototype)", "Prototype", "", "", "", "", "", "http://www.atariprotos.com/2600/software/turbo/turbo.htm", "", "", "", "", "JOYSTICK", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "807a8ff6216b00d52aba2dfea5d8d860", "John Payson", "", "Strat-O-Gems Deluxe (2005) (J. Payson)", "Uses the AtariVox controller", "Homebrew", "", "", "", "", "https://atariage.com/store/index.php?l=product_detail&p=337", "", "", "", "", "", "", "", "ATARIVOX", "", "", "", "", "", "", "", "", "", "", "" },
   { "808c3b1e60ee0e7c65205fa4bd772221", "CCE", "", "Defender (CCE)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "80cd42881e670e4b74a9ccd10d0d7b2e", "20th Century Fox Video Games - Sirius, Ed Hodapp", "11004", "Deadly Duck (1982) (20th Century Fox) [a]", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
