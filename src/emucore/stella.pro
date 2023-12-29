@@ -542,6 +542,7 @@
 "Cart.Name" "Phantom II & Pirate (PAL60)"
 "Cart.Rarity" "Homebrew"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=843"
+"Display.Format" "PAL60"
 "Bezel.Name" "Phantom II - Pirate (USA) (Unl)" 
 ""
 
@@ -742,6 +743,7 @@
 "Cart.Note" "Uses Atari Trak-Ball Controller"
 "Cart.Highscore" "{\"notes\":\"Variations cannot be defined\",\"score_addresses\":[\"0xf4\",\"0xf5\",\"0xf6\"],\"score_digits\":6,\"variations_count\":1}"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1180"
+"Display.Format" "PAL60"
 "Bezel.Name" "Centipede (USA)"
 ""
 
@@ -801,6 +803,7 @@
 "Cart.Name" "Challenge of... Nexar, The - Atari Trak-Ball Hack v1.2 (PAL60) (Thomas Jentzsch)"
 "Cart.Note" "Uses Atari Trak-Ball Controller"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1181"
+"Display.Format" "PAL60"
 ""
 
 "Cart.MD5" "08f4dc6f118f7c98e2406c180c08e78e"
@@ -1121,6 +1124,7 @@
 "Cart.Name" "Amoeba Jump (2018) (Dionoid) (PAL60)"
 "Cart.Rarity" "Homebrew"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1211"
+"Display.Format" "PAL60"
 ""
 
 "Cart.MD5" "0c7926d660f903a2d6910c254660c32c"
@@ -1177,6 +1181,7 @@
 "Cart.Name" "Challenge of... Nexar, The - Atari Mouse Hack v1.1 (PAL60) (Thomas Jentzsch)"
 "Cart.Note" "Uses Atari Mouse Controller"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1181"
+"Display.Format" "PAL60"
 ""
 
 "Cart.MD5" "0cfdd2f3b243cac21f38a0f09f54bead"
@@ -1299,6 +1304,7 @@
 "Cart.Note" "Uses Amiga Mouse Controller"
 "Cart.Highscore" "{\"notes\":\"Variations cannot be defined\",\"score_addresses\":[\"0xf4\",\"0xf5\",\"0xf6\"],\"score_digits\":6,\"variations_count\":1}"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1180"
+"Display.Format" "PAL60"
 "Bezel.Name" "Centipede (USA)"
 ""
 
@@ -1375,6 +1381,8 @@
 "Cart.Name" "Reactor - Atari Trak-Ball Hack v1.3 (PAL) (Full-Speed) (Thomas Jentzsch)"
 "Cart.Note" "Uses Atari Trak-Ball Controller"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1186"
+"Display.Phosphor" "YES"
+"Bezel.Name" "Reactor (USA)"
 ""
 
 "Cart.MD5" "0f14c03050b35d6b1d8850b07578722d"
@@ -2155,6 +2163,7 @@
 "Cart.Name" "Challenge of... Nexar, The - Amiga Mouse Hack v1.1 (PAL60) (Thomas Jentzsch)"
 "Cart.Note" "Uses Amiga Mouse Controller"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1181"
+"Display.Format" "PAL60"
 ""
 
 "Cart.MD5" "1733772165d7b886a94e2b4ed0f74ccd"
@@ -2307,6 +2316,7 @@
 "Cart.Name" "Missile Control - Amiga Mouse Hack v1.15 (PAL60) (Thomas Jentzsch)"
 "Cart.Note" "Uses Amiga Mouse Controller"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1184"
+"Display.Format" "PAL60"
 ""
 
 "Cart.MD5" "18bebbbd41c234f82b1717b1905e6027"
@@ -2389,6 +2399,8 @@
 "Cart.Name" "Reactor - Atari Trak-Ball Hack v1.3 (PAL) (Half-Speed) (Thomas Jentzsch)"
 "Cart.Note" "Uses Atari Trak-Ball Controller"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1186"
+"Display.Phosphor" "YES"
+"Bezel.Name" "Reactor (USA)"
 ""
 
 "Cart.MD5" "199985cae1c0123ab1aef921daace8be"
@@ -2874,6 +2886,7 @@
 "Cart.Note" "Part of Stella's Stocking 2007 Xmas compilation"
 "Cart.Rarity" "Homebrew"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=897"
+"Display.Format" "PAL60"
 "Display.Phosphor" "YES"
 ""
 
@@ -2939,6 +2952,9 @@
 "Cart.Name" "Reactor - Amiga Mouse Hack v1.3 (PAL60) (Full-Speed) (Thomas Jentzsch)"
 "Cart.Note" "Uses Amiga Mouse Controller"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1186"
+"Display.Format" "PAL60"
+"Display.Phosphor" "YES"
+"Bezel.Name" "Reactor (USA)"
 ""
 
 "Cart.MD5" "2091af29b4e7b86914d79d9aaa4cbd20"
@@ -3149,6 +3165,7 @@
 "Cart.Rarity" "Homebrew"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1093"
 "Controller.Left" "JOYSTICK"
+"Display.Format" "PAL60"
 "Display.Phosphor" "YES"
 ""
 
@@ -4145,6 +4162,8 @@
 "Cart.Name" "Reactor - Atari Mouse Hack v1.3 (NTSC) (Half-Speed) (Thomas Jentzsch)"
 "Cart.Note" "Uses Atari Mouse Controller"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1186"
+"Display.Phosphor" "YES"
+"Bezel.Name" "Reactor (USA)"
 ""
 
 "Cart.MD5" "2d63b452f897818c52b3fceeb080a4d0"
@@ -6022,6 +6041,8 @@
 "Cart.Name" "Reactor - Amiga Mouse Hack v1.3 (PAL) (Half-Speed) (Thomas Jentzsch)"
 "Cart.Note" "Uses Amiga Mouse Controller"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1186"
+"Display.Phosphor" "YES"
+"Bezel.Name" "Reactor (USA)"
 ""
 
 "Cart.MD5" "41c4e3d45a06df9d21b7aae6ae7e9912"
@@ -6433,6 +6454,7 @@
 "Cart.Name" "Star Wars Arcade (Atari Trak-Ball) v4 (PAL60) (Omegamatrix)"
 "Cart.Note" "Uses Atari Trak-Ball Controller"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1189"
+"Display.Format" "PAL60"
 ""
 
 "Cart.MD5" "4767356fa0ed3ebe21437b4473d4ee28"
@@ -6614,6 +6636,7 @@
 "Cart.ModelNo" "931506"
 "Cart.Name" "Reactor (1983) (Parker Bros) (PAL)"
 "Display.Phosphor" "YES"
+"Bezel.Name" "Reactor (USA)"
 ""
 
 "Cart.MD5" "490e3cc59d82f85fae817cdf767ea7a0"
@@ -6835,6 +6858,7 @@
 "Cart.Name" "SpaceMaster X-7 (Atari Mouse) (PAL60) (Omegamatrix)"
 "Cart.Note" "Uses Atari Mouse Controller"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1187"
+"Display.Format" "PAL60"
 ""
 
 "Cart.MD5" "4b71197153d651480830638cb6a03249"
@@ -7695,6 +7719,14 @@
 "Cart.Url" "http://www.atariprotos.com/2600/software/firespinner/firespinner.htm"
 ""
 
+"Cart.MD5" "5485d2da1341512840054ec02ac3b6a8"
+"Cart.Manufacturer" "Thomas Jentzsch - AtariAge"
+"Cart.Name" "Robot City (PAL-60)"
+"Cart.Rarity" "Homebrew"
+"Display.Format" "PAL60"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1233"
+""
+
 "Cart.MD5" "5438e84b90e50a5362f01cc843b358d4"
 "Cart.Manufacturer" "Arcadia Corporation, Scott Nelson"
 "Cart.ModelNo" "3 AR-4300"
@@ -7880,6 +7912,7 @@
 "Cart.Name" "Star Wars Arcade (Amiga Mouse) v4 (PAL60) (Omegamatrix)"
 "Cart.Note" "Uses Amiga Mouse Controller"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1189"
+"Display.Format" "PAL60"
 ""
 
 "Cart.MD5" "571c6d9bc71cb97617422851f787f8fe"
@@ -8100,6 +8133,7 @@
 "Cart.Rarity" "Homebrew"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1106"
 "Controller.Left" "JOYSTICK"
+"Display.Format" "PAL60"
 "Display.Phosphor" "YES"
 ""
 
@@ -8444,6 +8478,7 @@
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=329"
 "Controller.PaddlesXCenter" "7"
 "Controller.MouseAxis" "28"
+"Display.Format" "PAL60"
 ""
 
 "Cart.MD5" "5d8fb14860c2f198472b233874f6b0c9"
@@ -9502,6 +9537,7 @@
 "Cart.Name" "SpaceMaster X-7 (Atari Trak-Ball) (PAL60) (Omegamatrix)"
 "Cart.Note" "Uses Atari Trak-Ball Controller"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1187"
+"Display.Format" "PAL60"
 ""
 
 "Cart.MD5" "6803fa7c2c094b428b859a58dc1dd06a"
@@ -9527,6 +9563,7 @@
 "Cart.Note" "Uses Atari Mouse Controller"
 "Cart.Highscore" "{\"notes\":\"Variations cannot be defined\",\"score_addresses\":[\"0xf4\",\"0xf5\",\"0xf6\"],\"score_digits\":6,\"variations_count\":1}"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1180"
+"Display.Format" "PAL60"
 "Bezel.Name" "Centipede (USA)"
 ""
 
@@ -9602,6 +9639,7 @@
 "Cart.Name" "Aardvark (2019) (PAL60)"
 "Cart.Rarity" "Homebrew"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1212"
+"Display.Format" "PAL60"
 "Display.Phosphor" "YES"
 ""
 
@@ -10351,6 +10389,8 @@
 "Cart.Name" "Reactor - Atari Mouse Hack v1.3 (PAL) (Half-Speed) (Thomas Jentzsch)"
 "Cart.Note" "Uses Atari Mouse Controller"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1186"
+"Display.Phosphor" "YES"
+"Bezel.Name" "Reactor (USA)"
 ""
 
 "Cart.MD5" "70a8480cfaf08776e5420365732159d2"
@@ -10513,6 +10553,7 @@
 "Cart.Name" "Robot City RC8 (PAL-60)"
 "Cart.Rarity" "Homebrew"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1233"
+"Display.Format" "PAL60"
 "Display.Phosphor" "YES"
 ""
 
@@ -10544,6 +10585,21 @@
 "Cart.Name" "Missile Control - Atari Trak-Ball Hack v1.15 (PAL60) (Thomas Jentzsch)"
 "Cart.Note" "Uses Atari Trak-Ball Controller"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1184"
+"Display.Format" "PAL60"
+""
+
+"Cart.MD5" "72b342fbaacdb62f0fcf90e6e29c4920"
+"Cart.Manufacturer" "Thomas Jentzsch - AtariAge"
+"Cart.Name" "VROOM! (PAL-60)"
+"Cart.Note" "Supports up to 8 players simultaneously"
+"Cart.Rarity" "Homebrew"
+"Controller.Left1" "PADDLES"
+"Controller.Left2" "PADDLES"
+"Controller.Right" "QUADTARI"
+"Controller.Right1" "PADDLES"
+"Controller.Right2" "SAVEKEY"
+"Display.Format" "PAL60"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1279"
 ""
 
 "Cart.MD5" "72bda70c75dfa2365b3f8894bace9e6a"
@@ -10766,6 +10822,8 @@
 "Cart.Name" "Reactor - Atari Mouse Hack v1.3 (PAL) (Full-Speed) (Thomas Jentzsch)"
 "Cart.Note" "Uses Atari Mouse Controller"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1186"
+"Display.Phosphor" "YES"
+"Bezel.Name" "Reactor (USA)"
 ""
 
 "Cart.MD5" "753375d183c713cfa0aa7298d1f3067b"
@@ -11119,6 +11177,7 @@
 "Cart.Highscore" "{\"score_addresses\":[\"0x1cf7\",\"0x1cf6\",\"0x1cf5\",\"0x1cf4\"],\"score_digits\":8,\"special_address\":\"0x18ac\",\"special_bcd\":false,\"special_label\":\"Level\",\"special_zero_based\":true,\"variations_count\":1}"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1044"
 "Controller.Left" "JOYSTICK"
+"Display.Format" "PAL60"
 "Display.Phosphor" "YES"
 ""
 
@@ -11354,6 +11413,7 @@
 "Cart.Name" "Star Wars Arcade (Atari Trak-Ball) (Y Inverted) (PAL60) v4 (Omegamatrix)"
 "Cart.Note" "Uses Atari Trak-Ball Controller"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1189"
+"Display.Format" "PAL60"
 ""
 
 "Cart.MD5" "7b5207e68ee85b16998bea861987c690"
@@ -11367,6 +11427,8 @@
 "Cart.Name" "Reactor - Amiga Mouse Hack v1.3 (PAL) (Full-Speed) (Thomas Jentzsch)"
 "Cart.Note" "Uses Amiga Mouse Controller"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1186"
+"Display.Phosphor" "YES"
+"Bezel.Name" "Reactor (USA)"
 ""
 
 "Cart.MD5" "7b6f3348dbf71ada88db0fdaf7feefe0"
@@ -11499,6 +11561,7 @@
 "Cart.Note" "Uses Atari Mouse Controller"
 "Cart.Highscore" "{\"notes\":\"Variations cannot be defined\",\"score_addresses\":[\"0xf4\",\"0xf5\",\"0xf6\"],\"score_digits\":6,\"variations_count\":1}"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1180"
+"Display.Format" "PAL60"
 "Bezel.Name" "Centipede (USA)"
 ""
 
@@ -11952,6 +12015,8 @@
 "Cart.Name" "Reactor - Atari Trak-Ball Hack v1.3 (NTSC) (Half-Speed) (Thomas Jentzsch)"
 "Cart.Note" "Uses Atari Trak-Ball Controller"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1186"
+"Display.Phosphor" "YES"
+"Bezel.Name" "Reactor (USA)"
 ""
 
 "Cart.MD5" "8101efafcf0af32fedda4579c941e6f4"
@@ -11969,6 +12034,7 @@
 "Controller.PaddlesXCenter" "17"
 "Controller.PaddlesYCenter" "17"
 "Controller.MouseAxis" "01 50"
+"Display.Format" "PAL60"
 ""
 
 "Cart.MD5" "8108162bc88b5a14adc3e031cf4175ad"
@@ -12395,6 +12461,7 @@
 "Cart.Rarity" "Homebrew"
 "Cart.Highscore" "{\"score_addresses\":[\"0x92\",\"0x94\",\"0x96\"],\"score_digits\":6,\"special_address\":\"0x9a\",\"special_label\":\"Level\",\"special_zero_based\":true,\"variations_address\":\"0x89\",\"variations_count\":4,\"variations_zero_based\":true}"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=822"
+"Display.Format" "PAL60"
 ""
 
 "Cart.MD5" "85e48d68c8d802e3ba9d494a47d6e016"
@@ -12907,6 +12974,7 @@
 "Cart.Name" "Star Wars Arcade (Amiga Mouse) (Y Inverted) (PAL60) v4 (Omegamatrix)"
 "Cart.Note" "Uses Amiga Mouse Controller"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1189"
+"Display.Format" "PAL60"
 ""
 
 "Cart.MD5" "8c1cc284edba691139d6626d062c606f"
@@ -13121,6 +13189,7 @@
 "Cart.Name" "Cosmic Commuter (Thomas Jentzsch) (PAL60)"
 "Cart.Note" "NTSC Conversion"
 "Cart.Rarity" "Hack"
+"Display.Format" "PAL60"
 ""
 
 "Cart.MD5" "8e887d1ba5f3a71ae8a0ea16a4af9fc9"
@@ -13148,6 +13217,9 @@
 "Cart.Name" "Reactor - Amiga Mouse Hack v1.3 (PAL60) (Half-Speed) (Thomas Jentzsch)"
 "Cart.Note" "Uses Amiga Mouse Controller"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1186"
+"Display.Format" "PAL60"
+"Display.Phosphor" "YES"
+"Bezel.Name" "Reactor (USA)"
 ""
 
 "Cart.MD5" "8f08c777b424c3085eece73774335962"
@@ -13546,6 +13618,7 @@
 "Cart.Name" "Challenge of... Nexar, The - Atari Trak-Ball Hack v1.1 (PAL60) (Thomas Jentzsch)"
 "Cart.Note" "Uses Atari Trak-Ball Controller"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1181"
+"Display.Format" "PAL60"
 ""
 
 "Cart.MD5" "93dc15d15e77a7b23162467f95a5f22d"
@@ -13598,6 +13671,7 @@
 "Cart.Manufacturer" "Thomas Jentzsch"
 "Cart.Name" "Marble Craze - Amiga Mouse Hack v1.0 (PAL60) (Thomas Jentzsch)"
 "Cart.Note" "Uses Amiga Mouse Controllers"
+"Display.Format" "PAL60"
 ""
 
 "Cart.MD5" "94507dee401b0a072a481c00d7699ffe"
@@ -13736,6 +13810,19 @@
 "Cart.Manufacturer" "Activision, Alan Miller"
 "Cart.ModelNo" "AG-007, CAG-007"
 "Cart.Name" "Tennis (1981) (Activision) (16K)"
+""
+
+"Cart.MD5" "9628554ab40db73617a621a2266a1a7f"
+"Cart.Manufacturer" "Thomas Jentzsch - AtariAge"
+"Cart.Name" "VROOM!"
+"Cart.Note" "Supports up to 8 players simultaneously"
+"Cart.Rarity" "Homebrew"
+"Controller.Left1" "PADDLES"
+"Controller.Left2" "PADDLES"
+"Controller.Right" "QUADTARI"
+"Controller.Right1" "PADDLES"
+"Controller.Right2" "SAVEKEY"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1279"
 ""
 
 "Cart.MD5" "962ffd3eaf865230a7a312b80e6c5cfd"
@@ -14167,6 +14254,7 @@
 "Cart.Manufacturer" "Xonox - Beck-Tech"
 "Cart.ModelNo" "6210, 7210, 06003. 99001"
 "Cart.Name" "Spike's Peak (1983) (Xonox) (PAL) [a]"
+"Controller.Left" "JOYSTICK"
 ""
 
 "Cart.MD5" "9bd4e0d5f28ba6da417c26649171f8e4"
@@ -14437,6 +14525,7 @@
 "Cart.Name" "Montezuma's Revenge (Thomas Jentzsch) (PAL60)"
 "Cart.Note" "NTSC Conversion"
 "Cart.Rarity" "Homebrew"
+"Display.Format" "PAL60"
 "Bezel.Name" "Montezuma's Revenge - Featuring Panama Joe (USA)"
 ""
 
@@ -14445,6 +14534,7 @@
 "Cart.ModelNo" "PB5330"
 "Cart.Name" "Reactor (1983) (Parker Bros)"
 "Display.Phosphor" "YES"
+"Bezel.Name" "Reactor (USA)"
 ""
 
 "Cart.MD5" "9f901509f0474bf9760e6ebd80e629cd"
@@ -14731,6 +14821,7 @@
 "Cart.Name" "Star Wars Arcade (Atari Mouse) (Y Inverted) (PAL60) v4 (Omegamatrix)"
 "Cart.Note" "Uses Atari Mouse Controller"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1189"
+"Display.Format" "PAL60"
 ""
 
 "Cart.MD5" "a2de0fc85548871279ed2a3c1325c13e"
@@ -14842,6 +14933,7 @@
 "Cart.Name" "AStar (PAL60)"
 "Cart.Rarity" "Homebrew"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=821"
+"Display.Format" "PAL60"
 ""
 
 "Cart.MD5" "a406d2f6d84e61d842f4cb13b2b1cfa7"
@@ -14895,6 +14987,7 @@
 "Cart.Manufacturer" "Thomas Jentzsch"
 "Cart.Name" "Marble Craze - Atari Mouse Hack v1.0 (PAL60) (Thomas Jentzsch)"
 "Cart.Note" "Uses Atari Mouse Controllers"
+"Display.Format" "PAL60"
 ""
 
 "Cart.MD5" "a499d720e7ee35c62424de882a3351b6"
@@ -14945,6 +15038,7 @@
 "Cart.Manufacturer" "Xonox - K-Tel Software - Beck-Tech, Steve Beck"
 "Cart.ModelNo" "6210, 7210, 06003. 99001"
 "Cart.Name" "Spike's Peak (1983) (Xonox)"
+"Controller.Left" "JOYSTICK"
 ""
 
 "Cart.MD5" "a4ecb54f877cd94515527b11e698608c"
@@ -15341,6 +15435,7 @@
 "Cart.Name" "Zippy the Porcupine (2014) (Sprybug) (PAL60)"
 "Cart.Rarity" "Homebrew"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1052"
+"Display.Format" "PAL60"
 ""
 
 "Cart.MD5" "a9e3c23599c0d77151602f8e31daf879"
@@ -15632,6 +15727,9 @@
 "Cart.Name" "Reactor - Atari Trak-Ball Hack v1.3 (PAL60) (Full-Speed) (Thomas Jentzsch)"
 "Cart.Note" "Uses Atari Trak-Ball Controller"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1186"
+"Display.Format" "PAL60"
+"Display.Phosphor" "YES"
+"Bezel.Name" "Reactor (USA)"
 ""
 
 "Cart.MD5" "ad7e97c19bd25d5aa3999430845c755b"
@@ -15855,6 +15953,8 @@
 "Cart.Name" "Reactor - Amiga Mouse Hack v1.3 (NTSC) (Half-Speed) (Thomas Jentzsch)"
 "Cart.Note" "Uses Amiga Mouse Controller"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1186"
+"Display.Phosphor" "YES"
+"Bezel.Name" "Reactor (USA)"
 ""
 
 "Cart.MD5" "b049fc8ac50be7c2f28418817979c637"
@@ -15989,6 +16089,9 @@
 "Cart.Name" "Reactor - Atari Mouse Hack v1.3 (PAL60) (Half-Speed) (Thomas Jentzsch)"
 "Cart.Note" "Uses Atari Mouse Controller"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1186"
+"Display.Format" "PAL60"
+"Display.Phosphor" "YES"
+"Bezel.Name" "Reactor (USA)"
 ""
 
 "Cart.MD5" "b1a6c96e9093352106bc335e96caa154"
@@ -16089,6 +16192,13 @@
 "Cart.Name" "Phantom Tank (1983) (Goliath) (PAL)"
 ""
 
+"Cart.MD5" "b29f3cb4b393fccc4a225ec893f83317"
+"Cart.Manufacturer" "Thomas Jentzsch - AtariAge"
+"Cart.Name" "Robot City"
+"Cart.Rarity" "Homebrew"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1233"
+""
+                       
 "Cart.MD5" "b2a6f31636b699aeda900f07152bab6e"
 "Cart.Name" "Space Instigators (Public Release 2) (06-01-2003) (Christopher Tumber)"
 ""
@@ -16159,6 +16269,7 @@
 "Cart.Name" "Star Wars Arcade (Atari Mouse) v4 (PAL60) (Omegamatrix)"
 "Cart.Note" "Uses Atari Mouse Controller"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1189"
+"Display.Format" "PAL60"
 ""
 
 "Cart.MD5" "b31f178aa0d569cccac7959f84e0a724"
@@ -16186,6 +16297,7 @@
 "Cart.Manufacturer" "Xonox - K-Tel Software - Beck-Tech, Steve Beck"
 "Cart.ModelNo" "6210, 7210, 06003. 99001"
 "Cart.Name" "Spike's Peak (1983) (Xonox) (PAL)"
+"Controller.Left" "JOYSTICK"
 ""
 
 "Cart.MD5" "b392964e8b1c9c2bed12246f228011b2"
@@ -16445,6 +16557,7 @@
 "Cart.Name" "Cat Trax (Thomas Jentzsch) (PAL60)"
 "Cart.Note" "NTSC Conversion"
 "Cart.Rarity" "Hack"
+"Display.Format" "PAL60"
 "Display.Phosphor" "YES"
 ""
 
@@ -16482,6 +16595,7 @@
 "Cart.Name" "Flappy (2014) (AtariAge) (PAL60)"
 "Cart.Rarity" "Homebrew"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1038"
+"Display.Format" "PAL60"
 ""
 
 "Cart.MD5" "b7e459d5416eeb196aaa8e092db14463"
@@ -16738,6 +16852,7 @@
 "Cart.Name" "Missile Control - Atari Mouse Hack v1.15 (PAL60) (Thomas Jentzsch)"
 "Cart.Note" "Uses Atari Mouse Controller"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1184"
+"Display.Format" "PAL60"
 ""
 
 "Cart.MD5" "bb5049e4558daade0f87fed69a244c59"
@@ -16847,6 +16962,7 @@
 "Cart.Name" "Squish 'Em (2007) (PAL60)"
 "Cart.Rarity" "Homebrew"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=871"
+"Display.Format" "PAL60"
 ""
 
 "Cart.MD5" "bccb4e2cfad5efc93f6d55dc992118ce"
@@ -17024,6 +17140,8 @@
 "Cart.Name" "Reactor - Amiga Mouse Hack v1.3 (NTSC) (Full-Speed) (Thomas Jentzsch)"
 "Cart.Note" "Uses Amiga Mouse Controller"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1186"
+"Display.Phosphor" "YES"
+"Bezel.Name" "Reactor (USA)"
 ""
 
 "Cart.MD5" "bf52327c2197d9d2c4544be053caded1"
@@ -17976,6 +18094,7 @@
 "Cart.Manufacturer" "Thomas Jentzsch"
 "Cart.Name" "Marble Craze - Atari Trak-Ball Hack v1.0 (PAL60) (Thomas Jentzsch)"
 "Cart.Note" "Uses Atari Trak-Ball Controllers"
+"Display.Format" "PAL60"
 ""
 
 "Cart.MD5" "c9196e28367e46f8a55e04c27743148f"
@@ -18425,6 +18544,7 @@
 "Cart.Note" "Uses Amiga Mouse Controller"
 "Cart.Highscore" "{\"notes\":\"Variations cannot be defined\",\"score_addresses\":[\"0xf4\",\"0xf5\",\"0xf6\"],\"score_digits\":6,\"variations_count\":1}"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1180"
+"Display.Format" "PAL60"
 "Bezel.Name" "Centipede (USA)"
 ""
 
@@ -18542,6 +18662,9 @@
 "Cart.Name" "Reactor - Atari Trak-Ball Hack v1.3 (PAL60) (Half-Speed) (Thomas Jentzsch)"
 "Cart.Note" "Uses Atari Trak-Ball Controller"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1186"
+"Display.Format" "PAL60"
+"Display.Phosphor" "YES"
+"Bezel.Name" "Reactor (USA)"
 ""
 
 "Cart.MD5" "cedbd67d1ff321c996051eec843f8716"
@@ -19724,6 +19847,8 @@
 "Cart.Name" "Reactor - Atari Trak-Ball Hack v1.3 (NTSC) (Full-Speed) (Thomas Jentzsch)"
 "Cart.Note" "Uses Atari Trak-Ball Controller"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1186"
+"Display.Phosphor" "YES"
+"Bezel.Name" "Reactor (USA)"
 ""
 
 "Cart.MD5" "dbc7485ad5814d466de780a3e7ed3b46"
@@ -20610,6 +20735,7 @@
 "Cart.Note" "Uses Atari Trak-Ball Controller"
 "Cart.Highscore" "{\"notes\":\"Variations cannot be defined\",\"score_addresses\":[\"0xf4\",\"0xf5\",\"0xf6\"],\"score_digits\":6,\"variations_count\":1}"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1180"
+"Display.Format" "PAL60"
 "Bezel.Name" "Centipede (USA)"
 ""
 
@@ -21692,6 +21818,8 @@
 "Cart.Name" "Reactor - Atari Mouse Hack v1.3 (NTSC) (Full-Speed) (Thomas Jentzsch)"
 "Cart.Note" "Uses Atari Mouse Controller"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1186"
+"Display.Phosphor" "YES"
+"Bezel.Name" "Reactor (USA)"
 ""
 
 "Cart.MD5" "f0536303f49006806bac3aec15738336"
@@ -21764,6 +21892,9 @@
 "Cart.Name" "Reactor - Atari Mouse Hack v1.3 (PAL60) (Full-Speed) (Thomas Jentzsch)"
 "Cart.Note" "Uses Atari Mouse Controller"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1186"
+"Display.Format" "PAL60"
+"Display.Phosphor" "YES"
+"Bezel.Name" "Reactor (USA)"
 ""
 
 "Cart.MD5" "f0e0addc07971561ab80d9abe1b8d333"
@@ -21821,6 +21952,7 @@
 "Cart.Highscore" "{\"score_addresses\":[\"0x8e\",\"0x8d\",\"0x8c\"],\"score_digits\":6,\"special_address\":\"0x89\",\"special_bcd\":false,\"special_label\":\"Part\",\"special_zero_based\":true,\"variations_address\":\"0x8a\",\"variations_count\":3,\"variations_zero_based\":true}"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=829"
 "Console.RightDiff" "A"
+"Display.Format" "PAL60"
 "Display.Phosphor" "YES"
 ""
 
@@ -22810,6 +22942,7 @@
 "Cart.Rarity" "Homebrew"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=894"
 "Controller.Right" "ATARIVOX"
+"Display.Format" "PAL60"
 "Display.Phosphor" "YES"
 ""
 
