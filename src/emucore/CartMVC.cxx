@@ -159,7 +159,7 @@ class StreamReader : public Serializable
       {
         const size_t offset = ((fnum + 0) * CartridgeMVC::MVC_FIELD_SIZE);
 
-        if(offset + CartridgeMVC::MVC_FIELD_SIZE < myFileSize)
+        if(offset + CartridgeMVC::MVC_FIELD_SIZE <= myFileSize)
         {
           myFile.setPosition(offset);
           if(index)
@@ -856,11 +856,12 @@ class MovieCart : public Serializable
     // state machine info
     uInt8 myState{3};
     bool  myPlaying{true};
+    uInt8  myMute{0};
     bool  myOdd{true};
     bool  myBufferIndex{false};
 
     uInt8 myLines{0};
-    Int32 myFrameNumber{1};  // signed
+    Int32 myFrameNumber{0};  // signed
 
     uInt8 myMode{Mode::Volume};
     uInt8 myBright{DEFAULT_LEVEL};
@@ -898,9 +899,10 @@ bool MovieCart::init(string_view path)
 
   myState = 3;
   myPlaying = true;
+  myMute = 0;
   myOdd = true;
   myBufferIndex = false;
-  myFrameNumber = 1;
+  myFrameNumber = 0;
 
   myInputs.init();
   myLastInputs.init();
@@ -998,7 +1000,7 @@ void MovieCart::updateTransport()
 
   if(myInputs.reset)
   {
-    myFrameNumber = 1;
+    myFrameNumber = 0;
     myPlaying = true;
     myDrawTimeCode = OSD_FRAMES;
 
@@ -1083,7 +1085,7 @@ void MovieCart::updateTransport()
   if(myInputs.select && !myLastInputs.select)
   {
     myDrawTimeCode = OSD_FRAMES;
-    myFrameNumber -= 60 * BACK_SECONDS + 1;
+    myFrameNumber -= 60 * BACK_SECONDS;
     //goto update_stream;
     myLastInputs = myInputs;
     return;
@@ -1113,7 +1115,10 @@ void MovieCart::updateTransport()
   else
     myDrawLevelBars = 0;
 
-  if(myPlaying)
+  if (myMute)
+    myMute--;
+
+  if(myPlaying && !myMute)
     myVolumeScale = scales[myVolume];
   else
     myVolumeScale = scales[0];
@@ -1153,10 +1158,11 @@ void MovieCart::updateTransport()
   }
 
   myFrameNumber += step;
-  if(myFrameNumber < 1)
+  while(myFrameNumber < 0)
   {
-    myFrameNumber = 1;
+    myFrameNumber += 2;
     mySpeed = 1;
+    myMute = 4;
   }
 
   myLastInputs = myInputs;
@@ -1451,12 +1457,12 @@ void MovieCart::runStateMachine()
       if(myA7)
       {
         // hit end? rewind just before end
-        while (myFrameNumber >= 2 &&
+        while (myFrameNumber >= 0 &&
             !myStream.readField(myFrameNumber, myBufferIndex))
         {
           myFrameNumber -= 2;
-          myJoyRepeat = 0;
-          myPlaying = false;
+          mySpeed = 1;
+          myMute = 4;
         }
 
         myForceColor = 0;
