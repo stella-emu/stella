@@ -34,9 +34,10 @@ class BrowserDialog : public Dialog
 {
   public:
     enum class Mode {
-      FileLoad,   // File selector, no input from user
-      FileSave,   // File selector, filename changable by user
-      Directories // Directories only, no input from user
+      FileLoad,       // File selector, no input from user
+      FileLoadNoDirs, // File selector, no input from user, fixed directory
+      FileSave,       // File selector, filename changable by user
+      Directories     // Directories only, no input from user
     };
 
     /** Function which is run when the user clicks OK or Cancel.
@@ -125,6 +126,8 @@ class BrowserDialog : public Dialog
     StaticTextWidget* _name{nullptr};
     EditTextWidget*   _selected{nullptr};
     ButtonWidget*     _goUpButton{nullptr};
+    ButtonWidget*     _baseDirButton{nullptr};
+    ButtonWidget*     _homeDirButton{nullptr};
     CheckboxWidget*   _savePathBox{nullptr};
 
     BrowserDialog::Mode _mode{Mode::Directories};
