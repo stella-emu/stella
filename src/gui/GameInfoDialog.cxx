@@ -473,20 +473,27 @@ void GameInfoDialog::addCartridgeTab()
   wid.push_back(myNote);
 
   ypos += lineHeight + VGAP;
+  int bw = buttonWidth(">");
   new StaticTextWidget(myTab, _font, xpos, ypos + 1, lwidth, fontHeight, "Link");
   myUrl = new EditTextWidget(myTab, _font, xpos + lwidth, ypos - 1,
-                             fwidth - buttonWidth(">>") - HGAP, lineHeight, "");
+                             fwidth - bw - HGAP, lineHeight, "");
   myUrl->setID(kLinkId);
-  myUrlButton = new ButtonWidget(myTab, _font, _w - HBORDER - 2 - buttonWidth(">>"), ypos - 1,
-                                 buttonWidth(">>"), myUrl->getHeight(), ">>", kLinkPressed);
   wid.push_back(myUrl);
+
+  myUrlButton = new ButtonWidget(myTab, _font, _w - HBORDER - 2 - bw, ypos - 1,
+                                 bw, myUrl->getHeight(), ">>", kLinkPressed);
+  wid.push_back(myUrlButton);
 
   ypos += lineHeight + VGAP;
   new StaticTextWidget(myTab, _font, xpos, ypos + 1, lwidth, fontHeight, "Bezelname");
   myBezelName = new EditTextWidget(myTab, _font, xpos + lwidth, ypos - 1,
-                                   fwidth, lineHeight, "");
+                                   fwidth - bw - HGAP, lineHeight, "");
   myBezelName->setToolTip("Define the name of the bezel file.");
   wid.push_back(myBezelName);
+
+  myBezelButton = new ButtonWidget(myTab, _font, _w - HBORDER - 2 - bw, ypos - 1,
+                                   bw, myBezelName->getHeight(), ELLIPSIS, kBezelFilePressed);
+  wid.push_back(myBezelButton);
 
   // Add items for tab 3
   addToFocusList(wid, myTab, tabID);
@@ -1576,6 +1583,19 @@ void GameInfoDialog::handleCommand(CommandSender* sender, int cmd,
 
     case kLinkPressed:
       MediaFactory::openURL(myUrl->getText());
+      break;
+
+    case kBezelFilePressed:
+      BrowserDialog::show(this, _font, "Select bezel image",
+                          instance().bezelDir().getPath() + myBezelName->getText(),
+                          BrowserDialog::Mode::FileLoadNoDirs,
+                          [this](bool OK, const FSNode& node) {
+                            if(OK)
+                              myBezelName->setText(node.getNameWithExt(""));
+                          },
+                          [](const FSNode& node) {
+                            return BSPF::endsWithIgnoreCase(node.getName(), ".png");
+                          });
       break;
 
     case EditTextWidget::kChangedCmd:

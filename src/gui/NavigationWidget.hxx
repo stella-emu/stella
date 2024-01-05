@@ -91,6 +91,7 @@ class NavigationWidget : public Widget
 
     void setWidth(int w) override;
     void setList(FileListWidget* list);
+    void setVisible(bool isVisible);
     void updateUI();
 
   private:

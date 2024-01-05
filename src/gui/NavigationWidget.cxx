@@ -109,20 +109,60 @@ void NavigationWidget::setWidth(int w)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void NavigationWidget::updateUI()
+void NavigationWidget::setVisible(bool isVisible)
 {
-  // Only enable the navigation buttons if function is available
-  if(myUseMinimalUI)
+  if(isVisible)
   {
-    myDir->setText(myList->currentDir().getShortPath());
+    this->clearFlags(FLAG_INVISIBLE);
+    this->setEnabled(true);
+    myHomeButton->clearFlags(FLAG_INVISIBLE);
+    myHomeButton->setEnabled(true);
+    myPrevButton->clearFlags(FLAG_INVISIBLE);
+    myHomeButton->setEnabled(true);
+    myNextButton->clearFlags(FLAG_INVISIBLE);
+    myHomeButton->setEnabled(true);
+    myUpButton->clearFlags(FLAG_INVISIBLE);
+    myHomeButton->setEnabled(true);
+    myPath->clearFlags(FLAG_INVISIBLE);
+    myPath->setEnabled(true);
   }
   else
   {
-    myHomeButton->setEnabled(myList->hasPrevHistory());
-    myPrevButton->setEnabled(myList->hasPrevHistory());
-    myNextButton->setEnabled(myList->hasNextHistory());
-    myUpButton->setEnabled(myList->currentDir().hasParent());
-    myPath->setPath(myList->currentDir().getShortPath());
+    this->setFlags(FLAG_INVISIBLE);
+    this->setEnabled(false);
+    myHomeButton->setFlags(FLAG_INVISIBLE);
+    myHomeButton->setEnabled(false);
+    myPrevButton->setFlags(FLAG_INVISIBLE);
+    myPrevButton->setEnabled(false);
+    myNextButton->setFlags(FLAG_INVISIBLE);
+    myNextButton->setEnabled(false);
+    myUpButton->setFlags(FLAG_INVISIBLE);
+    myUpButton->setEnabled(false);
+
+    myPath->setFlags(FLAG_INVISIBLE);
+    myPath->setEnabled(false);
+    myPath->setPath("");
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void NavigationWidget::updateUI()
+{
+  if(isVisible())
+  {
+    // Only enable the navigation buttons if function is available
+    if(myUseMinimalUI)
+    {
+      myDir->setText(myList->currentDir().getShortPath());
+    }
+    else
+    {
+      myHomeButton->setEnabled(myList->hasPrevHistory());
+      myPrevButton->setEnabled(myList->hasPrevHistory());
+      myNextButton->setEnabled(myList->hasNextHistory());
+      myUpButton->setEnabled(myList->currentDir().hasParent());
+      myPath->setPath(myList->currentDir().getShortPath());
+    }
   }
 }
 

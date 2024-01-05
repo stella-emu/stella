@@ -75,15 +75,15 @@ BrowserDialog::BrowserDialog(GuiObject* boss, const GUI::Font& font,
                                  buttonWidth, buttonHeight, "Go up", kGoUpCmd);
   addFocusWidget(_goUpButton);
 
-  b = new ButtonWidget(this, font, _goUpButton->getRight() + BUTTON_GAP, _h - buttonHeight - VBORDER,
-                       buttonWidth, buttonHeight, "Base Dir", kBaseDirCmd);
-  b->setToolTip("Go to Stella's base directory.");
-  addFocusWidget(b);
+  _baseDirButton = new ButtonWidget(this, font, _goUpButton->getRight() + BUTTON_GAP, _h - buttonHeight - VBORDER,
+                                    buttonWidth, buttonHeight, "Base Dir", kBaseDirCmd);
+  _baseDirButton->setToolTip("Go to Stella's base directory.");
+  addFocusWidget(_baseDirButton);
 
-  b = new ButtonWidget(this, font, b->getRight() + BUTTON_GAP, _h - buttonHeight - VBORDER,
-                       buttonWidth, buttonHeight, "Home Dir", kHomeDirCmd);
-  b->setToolTip("Go to user's home directory.");
-  addFocusWidget(b);
+  _homeDirButton = new ButtonWidget(this, font, _baseDirButton->getRight() + BUTTON_GAP, _h - buttonHeight - VBORDER,
+                                    buttonWidth, buttonHeight, "Home Dir", kHomeDirCmd);
+  _homeDirButton->setToolTip("Go to user's home directory.");
+  addFocusWidget(_homeDirButton);
 
 #ifndef BSPF_MACOS
   b = new ButtonWidget(this, font, _w - (2 * buttonWidth + BUTTON_GAP + HBORDER), _h - buttonHeight - VBORDER,
@@ -174,6 +174,17 @@ void BrowserDialog::show(string_view startpath,
     directory = fs.isDirectory() ? "" : fs.getParent().getPath();
   }
 
+  // Default navigation settings:
+  _navigationBar->setVisible(true);
+  _fileList->setListMode(FSNode::ListMode::All);
+  _fileList->setShowFileExtensions(true);
+  _goUpButton->clearFlags(Widget::FLAG_INVISIBLE);
+  _goUpButton->setEnabled(true);
+  _baseDirButton->clearFlags(Widget::FLAG_INVISIBLE);
+  _baseDirButton->setEnabled(true);
+  _homeDirButton->clearFlags(Widget::FLAG_INVISIBLE);
+  _homeDirButton->setEnabled(true);
+
   switch(_mode)
   {
     case Mode::FileLoad:
@@ -191,6 +202,32 @@ void BrowserDialog::show(string_view startpath,
       _selected->setEditable(false);
       _selected->setEnabled(false);
       _okWidget->setLabel("Load");
+      break;
+
+    case Mode::FileLoadNoDirs:
+      _fileList->setListMode(FSNode::ListMode::FilesOnly);
+      _fileList->setNameFilter(namefilter);
+      _fileList->setHeight(_selected->getTop() - VGAP * 2 - _fileList->getTop());
+      _fileList->setShowFileExtensions(false);
+
+      _navigationBar->setVisible(false);
+      _navigationBar->setEnabled(false);
+      // Hide "save" checkbox
+      //_navigationBar->setWidth(_savePathBox->getRight() - _navigationBar->getLeft());
+      _savePathBox->setEnabled(false);
+      _savePathBox->setFlags(Widget::FLAG_INVISIBLE);
+
+      _name->clearFlags(Widget::FLAG_INVISIBLE);
+      _selected->clearFlags(Widget::FLAG_INVISIBLE);
+      _selected->setEditable(false);
+      _selected->setEnabled(false);
+      _goUpButton->setFlags(Widget::FLAG_INVISIBLE);
+      _goUpButton->setEnabled(false);
+      _baseDirButton->setFlags(Widget::FLAG_INVISIBLE);
+      _baseDirButton->setEnabled(false);
+      _homeDirButton->setFlags(Widget::FLAG_INVISIBLE);
+      _homeDirButton->setEnabled(false);
+      _okWidget->setLabel("Select");
       break;
 
     case Mode::FileSave:
@@ -240,12 +277,13 @@ void BrowserDialog::show(string_view startpath,
 
   // Finally, open the dialog after it has been fully updated
   open();
+  setFocus(_fileList);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const FSNode& BrowserDialog::getResult() const
 {
-  if(_mode == Mode::FileLoad || _mode == Mode::FileSave)
+  if(_mode != Mode::Directories)
   {
     static FSNode node;
 
@@ -324,7 +362,8 @@ void BrowserDialog::handleCommand(CommandSender* sender, int cmd,
 void BrowserDialog::updateUI(bool fileSelected)
 {
   // Only hilite the 'up' button if there's a parent directory
-  _goUpButton->setEnabled(_fileList->currentDir().hasParent());
+  _goUpButton->setEnabled(_goUpButton->isVisible()
+                          && _fileList->currentDir().hasParent());
 
   // Update the path display
   _navigationBar->updateUI();
