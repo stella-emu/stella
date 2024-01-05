@@ -73,7 +73,7 @@ bool FSNode::getAllChildren(FSList& fslist, ListMode mode,
                             bool includeParentDirectory,
                             const CancelCheck& isCancelled) const
 {
-  if(getChildren(fslist, mode, filter, includeParentDirectory, true, isCancelled))
+  if(getChildren(fslist, mode, filter, true, includeParentDirectory, isCancelled))
   {
     // Sort only once at the end
   #if defined(ZIP_SUPPORT)
@@ -165,7 +165,7 @@ bool FSNode::getChildren(FSList& fslist, ListMode mode,
   }
 
   // Add parent node, if it is valid to do so
-  if (includeParentDirectory && hasParent())
+  if (includeParentDirectory && hasParent() && mode != ListMode::FilesOnly)
   {
     FSNode parent = getParent();
     parent.setName("..");
