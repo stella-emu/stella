@@ -188,7 +188,7 @@ void FileListWidget::selectDirectory(const FSNode& node)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FileListWidget::selectParent()
 {
-  if(_node.hasParent())
+  if(_node.hasParent() && _fsmode != FSNode::ListMode::FilesOnly)
   {
     string name = _node.getName();
     const FSNode parent(_node.getParent());
