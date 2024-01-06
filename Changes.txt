@@ -12,6 +12,17 @@
                               Release History
 ===========================================================================
 
+6.7 to 6.7.1 (January 15, 2024)
+
+  * Fixed broken mouse and Stelladaptor input for Driving Controller.
+
+  * For UNIX systems: Now defaults to using system-installed libsqlite3
+    when available, and fixes delay on exiting app experienced on some
+    systems.
+
+-Have fun!
+
+
 6.6 to 6.7 (June 13, 2022)
 
   * IMPORTANT NOTES:
@@ -78,8 +89,6 @@
   * Updated internal ROM properties database to ROM-Hunter version 17
     (thanks go to RomHunter for his tireless research in this area).
     Related to this, updated the snapshot collection.
-
--Have fun!
 
 
 6.5.3 to 6.6 (November 16, 2021)
