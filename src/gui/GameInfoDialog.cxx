@@ -421,6 +421,7 @@ void GameInfoDialog::addControllersTab()
 void GameInfoDialog::addCartridgeTab()
 {
   // 4) Cartridge properties
+  const GUI::Font& ifont = instance().frameBuffer().infoFont();
   const int lineHeight = Dialog::lineHeight(),
             fontHeight = Dialog::fontHeight(),
             VBORDER    = Dialog::vBorder(),
@@ -494,6 +495,10 @@ void GameInfoDialog::addCartridgeTab()
   myBezelButton = new ButtonWidget(myTab, _font, _w - HBORDER - 2 - bw, ypos - 1,
                                    bw, myBezelName->getHeight(), ELLIPSIS, kBezelFilePressed);
   wid.push_back(myBezelButton);
+
+  ypos += lineHeight + VGAP;
+  myBezelDetected = new StaticTextWidget(myTab, ifont, xpos + lwidth, ypos,
+    "'1234567890123456789012345678901234567' selected");
 
   // Add items for tab 3
   addToFocusList(wid, myTab, tabID);
@@ -883,7 +888,23 @@ void GameInfoDialog::loadCartridgeProperties(const Properties& props)
   myRarity->setText(props.get(PropType::Cart_Rarity));
   myNote->setText(props.get(PropType::Cart_Note));
   myUrl->setText(props.get(PropType::Cart_Url));
-  myBezelName->setText(props.get(PropType::Bezel_Name));
+
+  bool autoSelected = false;
+  string bezelName = props.get(PropType::Bezel_Name);
+  if(bezelName.empty())
+  {
+    bezelName = Bezel::getName(instance().bezelDir().getPath(), props);
+    if(bezelName != "default")
+      autoSelected = true;
+    else
+      bezelName = "";
+  }
+  myBezelName->setText(bezelName);
+
+  if(autoSelected)
+    myBezelDetected->setLabel("auto-selected");
+  else
+    myBezelDetected->setLabel("");
 
   updateLink();
 }
@@ -1000,7 +1021,11 @@ void GameInfoDialog::saveProperties()
   myGameProperties.set(PropType::Cart_Rarity, myRarity->getText());
   myGameProperties.set(PropType::Cart_Note, myNote->getText());
   myGameProperties.set(PropType::Cart_Url, myUrl->getText());
-  myGameProperties.set(PropType::Bezel_Name, myBezelName->getText());
+  // avoid saving auto-selected bezel names:
+  if(myBezelName->getText() == Bezel::getName(instance().bezelDir().getPath(), myGameProperties))
+    myGameProperties.reset(PropType::Bezel_Name);
+  else
+    myGameProperties.set(PropType::Bezel_Name, myBezelName->getText());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1591,7 +1616,10 @@ void GameInfoDialog::handleCommand(CommandSender* sender, int cmd,
                           BrowserDialog::Mode::FileLoadNoDirs,
                           [this](bool OK, const FSNode& node) {
                             if(OK)
+                            {
                               myBezelName->setText(node.getNameWithExt(""));
+                              myBezelDetected->setLabel("");
+                            }
                           },
                           [](const FSNode& node) {
                             return BSPF::endsWithIgnoreCase(node.getName(), ".png");

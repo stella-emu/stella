@@ -21,6 +21,7 @@
 class OSystem;
 class FBSurface;
 class FrameBuffer;
+class Properties;
 
 #include "Rect.hxx"
 
@@ -109,7 +110,17 @@ class Bezel
     */
     void render();
 
+    /*
+      Generate bezel file name.
+    */
+    static string getName(const string& path, const Properties& props);
+
   private:
+    /*
+      Generate bezel file name.
+    */
+    static string getName(const Properties& props, int& index);
+
     /*
       Generate bezel file name.
     */
