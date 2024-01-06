@@ -12,7 +12,7 @@
                               Release History
 ===========================================================================
 
-6.7 to 7.0 (XXXXX XX, 2023)
+6.7 to 7.0 (XXXXX XX, 2024)
 
   * Enhanced ROM launcher to allow multiple images per ROM.
 
@@ -46,15 +46,9 @@
 
   * Fixed broken 7800 pause key support.
 
-  * Fixed broken mouse and Stelladaptor input for Driving Controller.
-
   * Added user defined CPU cycle timers to debugger.
 
   * Removed 'launcherroms' option, since it was causing some issues.
-
-  * For UNIX systems: Now defaults to using system-installed libsqlite3
-    when available, and fixes delay on exiting app experienced on some
-    systems.
 
 -Have fun!
 
