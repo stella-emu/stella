@@ -22,6 +22,7 @@
 #include "EventHandler.hxx"
 #include "FBSurface.hxx"
 #include "PNGLibrary.hxx"
+#include "PropsSet.hxx"
 
 #include "Bezel.hxx"
 
@@ -33,13 +34,35 @@ Bezel::Bezel(OSystem& osystem)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string Bezel::getName(int& index) const
+string Bezel::getName(const string& path, const Properties& props)
+{
+  string imageName;
+  int index = 1; // skip property name
+
+  do
+  {
+    imageName = getName(props, index);
+    if(imageName != EmptyString)
+    {
+      // Note: JPG does not support transparency
+      const string imagePath = path + imageName + ".png";
+      const FSNode node(imagePath);
+      if(node.exists())
+        break;
+    }
+  } while(index != -1);
+
+  return imageName;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+string Bezel::getName(const Properties& props, int& index)
 {
   if(++index == 1)
-    return myOSystem.console().properties().get(PropType::Bezel_Name);
+    return props.get(PropType::Bezel_Name);
 
   // Try to generate bezel name from cart name
-  const string& cartName = myOSystem.console().properties().get(PropType::Cart_Name);
+  const string& cartName = props.get(PropType::Cart_Name);
   size_t pos = cartName.find_first_of('(');
   if(pos == std::string::npos)
     pos = cartName.length() + 1;
@@ -66,6 +89,12 @@ string Bezel::getName(int& index) const
     return "default";
   }
   return "";
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+string Bezel::getName(int& index) const
+{
+  return getName(myOSystem.console().properties(), index);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -141,7 +170,6 @@ bool Bezel::load()
     if(settings.getBool("bezel.win.auto"))
     {
       // Determine transparent window inside bezel image
-
       const uInt32 xCenter = w >> 1;
       top = borderSize(xCenter, 0, h, w);
       bottom = h - 1 - borderSize(xCenter, h - 1, h, -w);

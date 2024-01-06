@@ -141,6 +141,7 @@ class GameInfoDialog : public Dialog, public CommandSender
     ButtonWidget*     myUrlButton{nullptr};
     EditTextWidget*   myBezelName{nullptr};
     ButtonWidget*     myBezelButton{nullptr};
+    StaticTextWidget* myBezelDetected{nullptr};
 
     // High Scores properties
     CheckboxWidget*   myHighScores{nullptr};
