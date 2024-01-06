@@ -8,7 +8,7 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2022 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2023 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
@@ -95,7 +95,13 @@ class Driving : public Controller
     Int32 myCounter{0};
 
     // Higher resolution counter for analog (non-Stelladaptor) inputs
-    uInt32 myCounterHires{0};
+    Int32 myCounterHires{0};
+
+    // Previous digital CCW event
+    Int32 myLastCCWEvent{0};
+
+    // Previous digital CW event
+    Int32 myLastCWEvent{0};
 
     // Index into the gray code table
     uInt32 myGrayIndex{0};
