@@ -1,9 +1,10 @@
-"Cart.MD5" "000509d1ed2b8d30a9d94be1b3b5febb"
+f"Cart.MD5" "000509d1ed2b8d30a9d94be1b3b5febb"
 "Cart.Manufacturer" "Greg Zumwalt"
 "Cart.Name" "Jungle Jane (2003) (Greg Zumwalt) (Hack)"
 "Cart.Note" "Hack of Pitfall!"
 "Cart.Rarity" "Hack"
 "Cart.Highscore" "{\"score_addresses\":[\"0xd5\",\"0xd6\",\"0xd7\"],\"score_digits\":6,\"variations_count\":1}"
+"Bezel.Name" "Pitfall! - Pitfall Harry's Jungle Adventure (USA)"
 ""
 
 "Cart.MD5" "0060a89b4c956b9c703a59b181cb3018"
@@ -45,6 +46,7 @@
 "Cart.Name" "Cosmic Avenger (4 Game in One) (1983) (BitCorp) (PAL)"
 "Cart.Note" "AKA StarMaster"
 "Cart.Highscore" "{\"notes\":\"Score only calculated when game is over\",\"score_addresses\":[\"0xc1\",\"0xc2\"],\"variations_address\":\"0x80\",\"variations_count\":4,\"variations_zero_based\":true}"
+"Bezel.Name" "StarMaster (USA)"
 ""
 
 "Cart.MD5" "00dc28b881989c39a6cf87a892bd3c6b"
@@ -68,6 +70,7 @@
 "Cart.ModelNo" "SS-001"
 "Cart.Name" "Time Race (1983) (Rainbow Vision) (PAL)"
 "Cart.Note" "AKA Space Jockey"
+"Bezel.Name" "Space Jockey (USA)"
 ""
 
 "Cart.MD5" "00f7985c20b8bdf3c557fac4d3f26775"
@@ -89,6 +92,7 @@
 "Cart.Manufacturer" "Century"
 "Cart.Name" "Snoopy (1983) (Century) (PAL)"
 "Cart.Note" "AKA Snoopy and the Red Baron"
+"Bezel.Name" "Snoopy and the Red Baron (USA)"
 ""
 
 "Cart.MD5" "01297d9b450455dd716db9658efb2fae"
@@ -140,6 +144,7 @@
 "Cart.Manufacturer" "CCE"
 "Cart.Name" "Corrida da Matematica (CCE)"
 "Cart.Note" "AKA Math Gran Prix"
+"Bezel.Name" "Math Gran Prix (USA)"
 ""
 
 "Cart.MD5" "01e60a109a6a67c70d3c0528381d0187"
@@ -147,6 +152,7 @@
 "Cart.ModelNo" "554-33 383"
 "Cart.Name" "Fire Birds (1983) (ITT Family Games) (PAL)"
 "Cart.Note" "AKA Sky Alien"
+"Bezel.Name" "Sky Alien (Europe)"
 ""
 
 "Cart.MD5" "01f584bf67b0e464014a8c8b5ea470e3"
@@ -264,6 +270,7 @@
 "Cart.ModelNo" "5665 A016"
 "Cart.Name" "Baseball (1988) (Telegames) (PAL)"
 "Cart.Note" "AKA Super Challenge Baseball"
+"Bezel.Name" "Super Challenge Baseball (USA)"
 ""
 
 "Cart.MD5" "0375f589f7da06d2d2be532e0d4d4b94"
@@ -314,6 +321,7 @@
 "Cart.ModelNo" "CA285"
 "Cart.Name" "Wall-Defender (1983) (Bomb)"
 "Cart.Note" "AKA Wall Break"
+"Bezel.Name" "Wall Break (Europe)"
 ""
 
 "Cart.MD5" "04014d563b094e79ac8974366f616308"
@@ -472,6 +480,7 @@
 "Cart.Name" "King Arthur (1983) (Otto Versand) (PAL)"
 "Cart.Note" "AKA Dragonfire (Double-Game Package)"
 "Display.Phosphor" "YES"
+"Bezel.Name" "Dragonfire (USA)"
 ""
 
 "Cart.MD5" "05d61b925d3d2474bab83f0a79bb5df1"
@@ -555,6 +564,7 @@
 "Cart.Name" "Unknown Activision Game #2 (Prototype) (PAL)"
 "Cart.Rarity" "Prototype"
 "Cart.Url" "http://www.atariprotos.com/2600/software/unknown2/unknown2.htm"
+"Bezel.Name" "Unknown Activision Game #2 (USA) (Proto)"
 ""
 
 "Cart.MD5" "06b6c5031b8353f3a424a5b86b8fe409"
@@ -569,6 +579,7 @@
 "Cart.ModelNo" "4317 A009"
 "Cart.Name" "Adventures on GX-12 (1988) (Telegames) (PAL)"
 "Cart.Note" "AKA Adventures of Tron"
+"Bezel.Name" "Adventures of TRON (USA)"
 ""
 
 "Cart.MD5" "06d2f7674cea977607f74c464ce600a2"
@@ -595,6 +606,7 @@
 "Cart.Name" "Curtiss (1983) (Rainbow Vision) (PAL)"
 "Cart.Note" "AKA Atlantis"
 "Cart.Highscore" "{\"score_addresses\":[\"0xa3\",\"0xa2\"],\"score_digits\":6,\"score_trailing_zeroes\":2,\"variations_address\":\"0x8d\",\"variations_count\":4,\"variations_zero_based\":true}"
+"Bezel.Name" "Atlantis (USA)"
 ""
 
 "Cart.MD5" "072a6ea2181ca0df88ac0dedc67b239d"
@@ -608,6 +620,7 @@
 "Cart.MD5" "073d7aff37b7601431e4f742c36c0dc1"
 "Cart.Name" "Bermuda (Unknown) (PAL)"
 "Cart.Note" "AKA River Raid"
+"Bezel.Name" "River Raid (USA)"
 ""
 
 "Cart.MD5" "074ec425ec20579e64a7ded592155d48"
@@ -627,6 +640,7 @@
 "Cart.Manufacturer" "Atari, Mimi Nyden, Joseph Tung"
 "Cart.ModelNo" "CX26152"
 "Cart.Name" "Super Baseball (1988) (Atari) (PAL)"
+"Bezel.Name" "RealSports Baseball (USA)"
 ""
 
 "Cart.MD5" "07973be3ecfd55235bf59aa56bdef28c"
@@ -635,6 +649,7 @@
 "Cart.Name" "Criminal Pursuit (1983) (Suntek) (PAL)"
 "Cart.Note" "AKA A Mysterious Thief"
 "Display.Phosphor" "YES"
+"Bezel.Name" "Mysterious Thief, A (USA) (Proto)"
 ""
 
 "Cart.MD5" "079fe9103515d15bc108577e234a484d"
@@ -661,6 +676,7 @@
 "Cart.Manufacturer" "Zellers"
 "Cart.Name" "Sea Hawk (Zellers)"
 "Cart.Note" "AKA Seahawk"
+"Bezel.Name" "Seahawk (Europe)"
 ""
 
 "Cart.MD5" "07f5004d26ea2b776169bbfc41cc05a8"
@@ -771,6 +787,7 @@
 "Cart.ModelNo" "343.273 9"
 "Cart.Name" "Phantompanzer II (1983) (Quelle) (PAL)"
 "Cart.Note" "AKA Thunderground"
+"Bezel.Name" "Thunderground (USA)"
 ""
 
 "Cart.MD5" "08bf437d012db07b05ff57a0c745c49e"
@@ -862,6 +879,7 @@
 "Cart.Manufacturer" "Dismac"
 "Cart.Name" "Viagem Espacial (Dismac)"
 "Cart.Note" "AKA Star Voyager"
+"Bezel.Name" "Star Voyager (USA)"
 ""
 
 "Cart.MD5" "0963aa9f7f6cf5a36ff700001583624e"
@@ -1046,6 +1064,7 @@
 "Cart.MD5" "0b4e793c9425175498f5a65a3e960086"
 "Cart.Manufacturer" "CCE"
 "Cart.Name" "Kung Fu Master (CCE)"
+"Bezel.Name" "Kung-Fu Master (USA)"
 ""
 
 "Cart.MD5" "0b55399cf640a2a00ba72dd155a0c140"
@@ -1061,6 +1080,7 @@
 "Cart.ModelNo" "PGP236"
 "Cart.Name" "Raketen-Angriff (Ariola) (PAL)"
 "Cart.Note" "AKA Missile Control"
+"Bezel.Name" "Missile Control (Europe)"
 ""
 
 "Cart.MD5" "0b8d3002d8f744a753ba434a4d39249a"
@@ -1111,6 +1131,7 @@
 "Cart.ModelNo" "FG1003"
 "Cart.Name" "Task Force (1987) (Froggo)"
 "Cart.Note" "AKA Gangster Alley"
+"Bezel.Name" "Gangster Alley (USA)"
 ""
 
 "Cart.MD5" "0c48e820301251fbb6bcdc89bd3555d9"
@@ -1152,6 +1173,7 @@
 "Cart.Note" "AKA Towering Inferno"
 "Console.SwapPorts" "YES"
 "Display.Phosphor" "YES"
+"Bezel.Name" "Towering Inferno (USA)"
 ""
 
 "Cart.MD5" "0c80751f6f7a3b370cc9e9f39ad533a7"
@@ -1287,6 +1309,7 @@
 "Cart.ModelNo" "806.174 9"
 "Cart.Name" "Fuchs & Schweinchen Schlau (1983) (Quelle) (PAL)"
 "Cart.Note" "AKA Oink!"
+"Bezel.Name" "Oink! (USA)"
 ""
 
 "Cart.MD5" "0dfbdadf8f1bc718e7e1bb3ccd5fef3d"
@@ -1339,6 +1362,7 @@
 "Cart.Note" "AKA RealSports Soccer"
 "Cart.Type" "F8"
 "Display.Phosphor" "YES"
+"Bezel.Name" "RealSports Soccer (USA)"
 ""
 
 "Cart.MD5" "0e86470791b26292abe1c64545c47985"
@@ -1462,6 +1486,7 @@
 "Cart.ModelNo" "684.733 9"
 "Cart.Name" "Robin Hood (1983) (Quelle) (PAL)"
 "Cart.Note" "AKA Save Our Ship"
+"Bezel.Name" "Robin Hood (USA)"
 ""
 
 "Cart.MD5" "0f95264089c99fc2a839a19872552004"
@@ -1480,6 +1505,7 @@
 "Cart.ModelNo" "805.784 6"
 "Cart.Name" "Labyrinth (1983) (Quelle) (PAL)"
 "Cart.Note" "AKA Maze Craze"
+"Bezel.Name" "Maze Craze - A Game of Cops 'n Robbers (USA)"
 ""
 
 "Cart.MD5" "0fc161704c46e16f7483f92b06c1558d"
@@ -1517,6 +1543,7 @@
 "Cart.ModelNo" "CX2642 - 6-99814"
 "Cart.Name" "Hunt & Score - Memory Match (1978) (Atari)"
 "Cart.Note" "Uses Keyboard Controllers"
+"Bezel.Name" "Hunt & Score (USA)"
 ""
 
 "Cart.MD5" "103e9d616328969f5d7b4e0a381b25d5"
@@ -1742,6 +1769,7 @@
 "Cart.ModelNo" "SS-013"
 "Cart.Name" "Bi! Bi! (Rainbow Vision) (PAL)"
 "Cart.Note" "AKA Skindiver"
+"Bezel.Name" "Skindiver (Europe)"
 ""
 
 "Cart.MD5" "1287535256bf5dff404839ac9e25c3e7"
@@ -1882,6 +1910,7 @@
 "Cart.Manufacturer" "Funvision - Fund. International Co."
 "Cart.Name" "Galactic (Funvision) (PAL)"
 "Cart.Note" "AKA Condor Attack"
+"Bezel.Name" "Condor Attack (USA)"
 ""
 
 "Cart.MD5" "13aa1f9ac4249947e4af61319d9a08f2"
@@ -2240,6 +2269,7 @@
 "Cart.Name" "Pitfall! (Steroids Hack)"
 "Cart.Note" "Hack of Pitfall! (Activision)"
 "Cart.Highscore" "{\"score_addresses\":[\"0xd5\",\"0xd6\",\"0xd7\"],\"score_digits\":6,\"variations_count\":1}"
+"Bezel.Name" "Pitfall! - Pitfall Harry's Jungle Adventure (USA)"
 ""
 
 "Cart.MD5" "1782929e1c214b70fb6884f77c207a55"
@@ -2249,6 +2279,7 @@
 "Cart.Note" "Pitfall Harry's Jungle Adventure (Jungle Runner)"
 "Cart.Rarity" "Prototype"
 "Cart.Url" "http://www.atariprotos.com/2600/software/pitfall/pitfall.htm"
+"Bezel.Name" "Pitfall! - Pitfall Harry's Jungle Adventure (USA)"
 ""
 
 "Cart.MD5" "17ba72433dd41383065d4aa6dedb3d91"
@@ -2266,6 +2297,7 @@
 "Cart.Name" "Pega Ladrao (Dismac)"
 "Cart.Note" "AKA Keystone Kapers"
 "Cart.Highscore" "{\"score_addresses\":[\"0x9a\",\"0x9b\",\"0x9c\"],\"score_digits\":6,\"variations_count\":1}"
+"Bezel.Name" "Keystone Kapers (USA)"
 ""
 
 "Cart.MD5" "17c0a63f9a680e7a61beba81692d9297"
@@ -2416,6 +2448,7 @@
 "Cart.Note" "AKA Track and Field (Uses Track & Field Controller)"
 "Cart.Rarity" "Prototype"
 "Cart.Url" "http://www.atariprotos.com/2600/software/track/track.htm"
+"Bezel.Name" "Track & Field (USA)"
 ""
 
 "Cart.MD5" "193f060553ba0a2a2676f91d9ec0c555"
@@ -2498,6 +2531,7 @@
 "Cart.ModelNo" "104"
 "Cart.Name" "Scuba Diver (1983) (Panda)"
 "Cart.Note" "AKA Skindiver"
+"Bezel.Name" "Skindiver (Europe)"
 ""
 
 "Cart.MD5" "1a23540d91f87584a04f184304a00648"
@@ -2509,12 +2543,14 @@
 "Cart.ModelNo" "VCS83135"
 "Cart.Name" "Tanks War (1983) (Home Vision) (PAL)"
 "Cart.Note" "AKA Phantom Tank"
+"Bezel.Name" "Phantom Tank (Europe)"
 ""
 
 "Cart.MD5" "1a624e236526c4c8f31175e9c89b2a22"
 "Cart.Name" "Space Raid (Unknown) (PAL)"
 "Cart.Note" "AKA MegaMania"
 "Cart.Highscore" "{\"score_addresses\":[\"0xdb\",\"0xdc\",\"0xdd\"],\"score_digits\":6,\"variations_address\":\"0x80\",\"variations_count\":4,\"variations_zero_based\":true}"
+"Bezel.Name" "MegaMania - A Space Nightmare (USA)"
 ""
 
 "Cart.MD5" "1a8204a2bcd793f539168773d9ad6230"
@@ -2575,6 +2611,7 @@
 "Cart.ModelNo" "176.764 9 - 781644"
 "Cart.Name" "Marineflieger (1983) (Quelle) (PAL)"
 "Cart.Note" "AKA Seahawk"
+"Bezel.Name" "Seahawk (Europe)"
 ""
 
 "Cart.MD5" "1bb91bae919ddbd655fa25c54ea6f532"
@@ -2621,6 +2658,7 @@
 "Cart.Name" "Hey! Stop! (1983) (Rainbow Vision) (PAL)"
 "Cart.Note" "AKA Keystone Kapers"
 "Cart.Highscore" "{\"score_addresses\":[\"0x9a\",\"0x9b\",\"0x9c\"],\"score_digits\":6,\"variations_count\":1}"
+"Bezel.Name" "Keystone Kapers (USA)"
 ""
 
 "Cart.MD5" "1c666ba5aac19b81671357e76062989b"
@@ -2639,6 +2677,7 @@
 "Cart.Manufacturer" "CCE"
 "Cart.Name" "Super Box (CCE)"
 "Cart.Note" "AKA RealSports Boxing"
+"Bezel.Name" "RealSports Boxing (USA)"
 ""
 
 "Cart.MD5" "1c8c42d1aee5010b30e7f1992d69216e"
@@ -2749,6 +2788,7 @@
 "Cart.Name" "Mein Weg (1983) (Quelle) (PAL)"
 "Cart.Note" "AKA Challenge"
 "Display.Phosphor" "YES"
+"Bezel.Name" "Challenge (Europe)"
 ""
 
 "Cart.MD5" "1e1290ea102e12d7ac52820961457e2b"
@@ -2867,6 +2907,7 @@
 "Cart.ModelNo" "CX2698"
 "Cart.Name" "Rubik's Cube (1984) (Atari)"
 "Cart.Note" "AKA Atari Video Cube"
+"Bezel.Name" "Atari Video Cube (USA)"
 ""
 
 "Cart.MD5" "1f349dd41c3f93c4214e5e308dccb056"
@@ -2985,6 +3026,7 @@
 "Cart.Name" "Teller-Jonglieren! (1983) (Quelle) (PAL)"
 "Cart.Note" "AKA Dancing Plate"
 "Display.Phosphor" "YES"
+"Bezel.Name" "Dancing Plate (Europe)"
 ""
 
 "Cart.MD5" "205070b6a0d454961dd9196a8e81d877"
@@ -3064,6 +3106,7 @@
 "Cart.Manufacturer" "K-Tel Vision"
 "Cart.Name" "Spider Maze (1982) (K-Tel Vision)"
 "Cart.Note" "AKA Spider Kong"
+"Bezel.Name" "Inca Gold - Spider Monster (Europe)"
 ""
 
 "Cart.MD5" "212d0b200ed8b45d8795ad899734d7d7"
@@ -3260,6 +3303,7 @@
 "Console.RightDiff" "A"
 "Console.SwapPorts" "YES"
 "Display.Phosphor" "YES"
+"Bezel.Name" "Stone Age (Brazil)"
 ""
 
 "Cart.MD5" "240bfbac5163af4df5ae713985386f92"
@@ -3304,6 +3348,7 @@
 "Cart.Name" "Super Futebol (CCE)"
 "Cart.Note" "AKA RealSports Soccer"
 "Display.Phosphor" "YES"
+"Bezel.Name" "RealSports Soccer (USA)"
 ""
 
 "Cart.MD5" "244c6de27faff527886fc7699a41c3be"
@@ -3345,6 +3390,7 @@
 "Cart.ModelNo" "C-867"
 "Cart.Name" "Radar (1983) (CCE)"
 "Cart.Note" "AKA Exocet"
+"Bezel.Name" "Exocet (Europe)"
 ""
 
 "Cart.MD5" "248668b364514de590382a7eda2c9834"
@@ -3381,6 +3427,7 @@
 "Cart.Name" "Space 2002 (Angelino) (Hack)"
 "Cart.Note" "Hack of Space Jockey"
 "Cart.Rarity" "Hack"
+"Bezel.Name" "Space Jockey (USA)"
 ""
 
 "Cart.MD5" "24d018c4a6de7e5bd19a36f2b879b335"
@@ -3413,6 +3460,7 @@
 "Cart.ModelNo" "701.134 9"
 "Cart.Name" "Schiessbude (1983) (Quelle) (PAL)"
 "Cart.Note" "AKA Carnival"
+"Bezel.Name" "Carnival (USA)"
 ""
 
 "Cart.MD5" "2517827950fee41a3b9de60275c8aa6a"
@@ -3420,6 +3468,7 @@
 "Cart.ModelNo" "CX26163P"
 "Cart.Name" "Fishing (32 in 1) (1988) (Atari) (PAL)"
 "Cart.Note" "AKA Fishing Derby"
+"Bezel.Name" "Fishing Derby (USA)"
 ""
 
 "Cart.MD5" "25265d0e7f88b3026003809f25ee025e"
@@ -3453,6 +3502,7 @@
 "Cart.Name" "Der kleine Baer (1983) (Quelle) (PAL)"
 "Cart.Note" "AKA Frostbite"
 "Cart.Highscore" "{\"score_addresses\":[\"0xc8\",\"0xc9\",\"0xca\"],\"score_digits\":6,\"special_address\":\"0xcb\",\"special_label\":\"Level\",\"special_zero_based\":true,\"variations_address\":\"0x80\",\"variations_count\":4,\"variations_zero_based\":true}"
+"Bezel.Name" "Frostbite (USA)"
 ""
 
 "Cart.MD5" "25b52bf8dd215bcbd59c9abdb55c44f8"
@@ -3499,6 +3549,7 @@
 "Cart.ModelNo" "EAX-025"
 "Cart.Name" "Keystone Kapers (1983) (Activision) (SECAM)"
 "Cart.Highscore" "{\"score_addresses\":[\"0x9a\",\"0x9b\",\"0x9c\"],\"score_digits\":6,\"variations_count\":1}"
+"Display.Format" "SECAM"
 ""
 
 "Cart.MD5" "25f9cf703575c5d63048c222f5463758"
@@ -3616,12 +3667,14 @@
 "Cart.Name" "Donkey Kong Junior (Unknown) (Hack)"
 "Cart.Note" "Hack of Donkey Kong Junior"
 "Cart.Rarity" "Hack"
+"Bezel.Name" "Donkey Kong Junior (USA)"
 ""
 
 "Cart.MD5" "2783006ee6519f15cbc96adae031c9a9"
 "Cart.Manufacturer" "Telegames"
 "Cart.Name" "Night Stalker (1989) (Telegames) (PAL) [a]"
 "Cart.Note" "AKA Dark Cavern"
+"Bezel.Name" "Dark Cavern (USA)"
 ""
 
 "Cart.MD5" "278531cc31915747018d22145823d2c9"
@@ -3712,6 +3765,7 @@
 "Cart.Name" "Boom Bang (Unknown) (PAL)"
 "Cart.Note" "AKA Crackpots"
 "Cart.Rarity" "Rare"
+"Bezel.Name" "Crackpots (USA)"
 ""
 
 "Cart.MD5" "282a77841cb3d33af5b56151acba770e"
@@ -3720,6 +3774,7 @@
 "Cart.Name" "Black Hole (1983) (Otto Versand) (PAL)"
 "Cart.Note" "AKA Cosmic Ark (Double-Game Package)"
 "Cart.Highscore" "{\"score_addresses\":[\"0xae\",\"0xb0\",\"0xb2\"],\"score_digits\":6,\"variations_address\":\"0xbc\",\"variations_count\":6}"
+"Bezel.Name" "Cosmic Ark (USA)"
 ""
 
 "Cart.MD5" "283cb03ee031c842beabdad1aa4e7dbc"
@@ -3755,6 +3810,7 @@
 "Cart.Manufacturer" "Tron"
 "Cart.Name" "Donkey Kong Jr. (Tron)"
 "Cart.Note" "AKA Donkey Kong Junior"
+"Bezel.Name" "Donkey Kong Junior (USA)"
 ""
 
 "Cart.MD5" "28a2bea8f84936cb2e063f857414cda0"
@@ -3763,6 +3819,7 @@
 "Cart.Note" "Hack of Megamania"
 "Cart.Rarity" "Hack"
 "Cart.Highscore" "{\"score_addresses\":[\"0xdb\",\"0xdc\",\"0xdd\"],\"score_digits\":6,\"variations_address\":\"0x80\",\"variations_count\":4,\"variations_zero_based\":true}"
+"Bezel.Name" "MegaMania - A Space Nightmare (USA)"
 ""
 
 "Cart.MD5" "28a4cd87fb9de4ee91693a38611cb53c"
@@ -3775,6 +3832,7 @@
 "Cart.Name" "Open, Sesame! (1983) (BitCorp) (PAL)"
 "Cart.Note" "AKA Sesam, Offne Dich"
 "Display.Phosphor" "YES"
+"Bezel.Name" "Open Sesame (Europe)"
 ""
 
 "Cart.MD5" "2903896d88a341511586d69fcfc20f7d"
@@ -3930,6 +3988,7 @@
 "Cart.Name" "Spy Vs. Spy (4 Game in One) (1983) (BitCorp) (PAL)"
 "Cart.Note" "AKA Chopper Command"
 "Cart.Highscore" "{\"score_addresses\":[\"0xec\",\"0xee\",\"0xf0\"],\"score_digits\":6,\"variations_address\":\"0xe0\",\"variations_count\":4,\"variations_zero_based\":true}"
+"Bezel.Name" "Chopper Command (USA)"
 ""
 
 "Cart.MD5" "2a9f9001540c55a302befd8e9d54b47b"
@@ -3997,6 +4056,7 @@
 "Cart.Name" "Super-Ferrari (1983) (Quelle) (PAL)"
 "Cart.Note" "AKA Enduro"
 "Cart.Highscore" "{\"score_addresses\":[\"0xaa\",\"0xa9\",\"0xa8\"],\"score_digits\":6,\"special_address\":\"0xad\",\"special_label\":\"Day\",\"variations_count\":1}"
+"Bezel.Name" "Enduro (USA)"
 ""
 
 "Cart.MD5" "2b42da79a682ed6e2d735facbf70107e"
@@ -4011,6 +4071,7 @@
 "Cart.Name" "Pitfall! (1982) (Activision) (Prototype)"
 "Cart.Rarity" "Prototype"
 "Cart.Url" "http://www.atariprotos.com/2600/software/pitfall/pitfall.htm"
+"Bezel.Name" "Pitfall! - Pitfall Harry's Jungle Adventure (USA)"
 ""
 
 "Cart.MD5" "2b71a59a53be5883399917bf582b7772"
@@ -4186,6 +4247,7 @@
 "Cart.ModelNo" "802.744 3"
 "Cart.Name" "Der Geheimkurier (1983) (Quelle) (PAL)"
 "Cart.Note" "AKA Mr. Postman"
+"Bezel.Name" "Mr. Postman (Europe)"
 ""
 
 "Cart.MD5" "2d1af6442d6d5f15de37e47dd5a78411"
@@ -4228,6 +4290,7 @@
 "Cart.Name" "Pitfall (Genus)"
 "Cart.Note" "AKA Pitfall!"
 "Cart.Highscore" "{\"score_addresses\":[\"0xd5\",\"0xd6\",\"0xd7\"],\"score_digits\":6,\"variations_count\":1}"
+"Bezel.Name" "Pitfall! - Pitfall Harry's Jungle Adventure (USA)"
 ""
 
 "Cart.MD5" "2d6388a8389f1d59108fd169c3356d79"
@@ -4330,6 +4393,7 @@
 "Cart.Name" "Star Wars - Ewok Adventure (1983) (Parker Bros) (Prototype) (16K)"
 "Cart.Rarity" "Prototype"
 "Cart.Url" "http://www.atariprotos.com/2600/software/ewok/ewok.htm"
+"Bezel.Name" "Star Wars - Return of the Jedi - Ewok Adventure (USA) (Proto)"
 ""
 
 "Cart.MD5" "2e3728f3086dc3e71047ffd6b2d9f015"
@@ -4407,6 +4471,7 @@
 "Cart.Name" "Super Futebol (CCE) [a]"
 "Cart.Note" "AKA RealSports Football"
 "Display.Phosphor" "YES"
+"Bezel.Name" "RealSports Football (USA)"
 ""
 
 "Cart.MD5" "2f11ba54609777e2c6a5da9b302c98e8"
@@ -4456,6 +4521,7 @@
 "Cart.Manufacturer" "Sancho - Tang's Electronic Co."
 "Cart.Name" "Words-Attack (1983) (Sancho) (PAL)"
 "Display.Phosphor" "YES"
+"Bezel.Name" "Words-Attack (Europe) (Proto)"
 ""
 
 "Cart.MD5" "3025bdc30b5aec9fb40668787f67d24c"
@@ -4592,6 +4658,7 @@
 "Cart.ModelNo" "SP-204"
 "Cart.Name" "Sternkrieg (1983) (Ariola) (PAL)"
 "Cart.Note" "AKA Astrowar"
+"Bezel.Name" "Astrowar (Europe)"
 ""
 
 "Cart.MD5" "318046ae3711c05fd16e479b298e5fcc"
@@ -4636,6 +4703,7 @@
 "Cart.ModelNo" "687.463 0"
 "Cart.Name" "Die Ratte und die Karotten (1983) (Quelle) (PAL)"
 "Cart.Note" "AKA Gopher"
+"Bezel.Name" "Gopher (USA)"
 ""
 
 "Cart.MD5" "31e518debba46df6226b535fa8bd2543"
@@ -4874,6 +4942,7 @@
 "Cart.Name" "Space Raid (1983) (Rainbow Vision) (PAL)"
 "Cart.Note" "AKA MegaMania"
 "Cart.Highscore" "{\"score_addresses\":[\"0xdb\",\"0xdc\",\"0xdd\"],\"score_digits\":6,\"variations_address\":\"0x80\",\"variations_count\":4,\"variations_zero_based\":true}"
+"Bezel.Name" "MegaMania - A Space Nightmare (USA)"
 ""
 
 "Cart.MD5" "346555779a2d51b48833463b5433472f"
@@ -4909,6 +4978,7 @@
 "Cart.Note" "AKA Stunt Cycle"
 "Cart.Rarity" "Prototype"
 "Cart.Url" "http://www.atariprotos.com/2600/software/dukes/dukes.htm"
+"Bezel.Name" "Stunt Cycle (USA) (Proto)"
 ""
 
 "Cart.MD5" "34e37eaffc0d34e05e40ed883f848b40"
@@ -5126,6 +5196,7 @@
 "Cart.ModelNo" "CA285"
 "Cart.Name" "Wall-Defender (1983) (Bomb) (PAL)"
 "Cart.Note" "AKA Wall Break"
+"Bezel.Name" "Wall Break (Europe)"
 ""
 
 "Cart.MD5" "373b8a081acd98a895db0cb02df35673"
@@ -5137,6 +5208,7 @@
 "Cart.Name" "Ases do Ar (Dismac)"
 "Cart.Note" "AKA Sky Jinks"
 "Cart.Highscore" "{\"score_addresses\":[\"0x9e\",\"0xa6\",\"0xa2\"],\"score_digits\":6,\"score_inverted\":true,\"variations_address\":\"0x99\",\"variations_count\":4,\"variations_zero_based\":true}"
+"Bezel.Name" "Sky Jinks (USA)"
 ""
 
 "Cart.MD5" "37527966823ee9243d34c7da8302774f"
@@ -5179,6 +5251,7 @@
 "Cart.ModelNo" "6"
 "Cart.Name" "Spider Maze (1982) (K-Tel Vision) (PAL)"
 "Cart.Note" "AKA Spider Kong"
+"Bezel.Name" "Inca Gold - Spider Monster (Europe)"
 ""
 
 "Cart.MD5" "37e828675d556775ae8285c0caf7d11c"
@@ -5197,6 +5270,7 @@
 "Cart.Name" "Pyramid War (Unknown) (PAL) [a]"
 "Cart.Note" "AKA Chopper Command"
 "Cart.Highscore" "{\"score_addresses\":[\"0xec\",\"0xee\",\"0xf0\"],\"score_digits\":6,\"variations_address\":\"0xe0\",\"variations_count\":4,\"variations_zero_based\":true}"
+"Bezel.Name" "Chopper Command (USA)"
 ""
 
 "Cart.MD5" "384db97670817103dd8c0bbdef132445"
@@ -5266,6 +5340,7 @@
 "Cart.Note" "Hack of Ms. Pac-Man"
 "Cart.Rarity" "Hack"
 "Cart.Highscore" "{\"notes\":\"Vars valid at game over; cherries = var #4\",\"score_addresses\":[\"0xfa\",\"0xf9\",\"0xf8\"],\"score_digits\":6,\"special_bcd\":false,\"special_zero_based\":true,\"variations_address\":\"0xf7\",\"variations_count\":4,\"variations_zero_based\":true}"
+"Bezel.Name" "Ms. Pac-Man (USA)"
 ""
 
 "Cart.MD5" "38de7b68379770b9bd3f7bf000136eb0"
@@ -5279,6 +5354,7 @@
 "Cart.Name" "Miss Pack Man (Video Game Program) (PAL)"
 "Cart.Note" "AKA Ms. Pac-Man"
 "Cart.Highscore" "{\"notes\":\"Vars valid at game over; cherries = var #4\",\"score_addresses\":[\"0xfa\",\"0xf9\",\"0xf8\"],\"score_digits\":6,\"special_bcd\":false,\"special_zero_based\":true,\"variations_address\":\"0xf7\",\"variations_count\":4,\"variations_zero_based\":true}"
+"Bezel.Name" "Ms. Pac-Man (USA)"
 ""
 
 "Cart.MD5" "392d34c0498075dd58df0ce7cd491ea2"
@@ -5375,6 +5451,7 @@
 "Cart.Note" "Hack of Megamania"
 "Cart.Rarity" "Hack"
 "Cart.Highscore" "{\"score_addresses\":[\"0xdb\",\"0xdc\",\"0xdd\"],\"score_digits\":6,\"variations_address\":\"0x80\",\"variations_count\":4,\"variations_zero_based\":true}"
+"Bezel.Name" "MegaMania - A Space Nightmare (USA)"
 ""
 
 "Cart.MD5" "39fe316952134b1277b6a81af8e05776"
@@ -5548,6 +5625,7 @@
 "Cart.Manufacturer" "Atari, Tod Frye - Sears"
 "Cart.ModelNo" "CX2646 - 49-75185"
 "Cart.Name" "Pac-Man (1981) (Atari) (8K)"
+"Bezel.Name" "Pac-Man (Atari) (USA)"
 ""
 
 "Cart.MD5" "3b91c347d8e6427edbe942a7a405290d"
@@ -5607,6 +5685,7 @@
 "Cart.Name" "Comando Suicida (Dismac)"
 "Cart.Note" "AKA Chopper Command"
 "Cart.Highscore" "{\"score_addresses\":[\"0xec\",\"0xee\",\"0xf0\"],\"score_digits\":6,\"variations_address\":\"0xe0\",\"variations_count\":4,\"variations_zero_based\":true}"
+"Bezel.Name" "Chopper Command (USA)"
 ""
 
 "Cart.MD5" "3c7a7b3a0a7e6319b2fa0f923ef6c9af"
@@ -5698,6 +5777,7 @@
 "Cart.ModelNo" "TP-606"
 "Cart.Name" "Hole Hunter (Video Game Cartridge)"
 "Cart.Note" "AKA Topy"
+"Bezel.Name" "Topy (Europe)"
 ""
 
 "Cart.MD5" "3d6fc7a19be76d808aa233415cb583fc"
@@ -5705,6 +5785,7 @@
 "Cart.ModelNo" "C-833"
 "Cart.Name" "Target Practice (1983) (CCE)"
 "Cart.Note" "AKA Carnival"
+"Bezel.Name" "Carnival (USA)"
 ""
 
 "Cart.MD5" "3d7749fb9c2f91a276dfe494495234c5"
@@ -5806,6 +5887,7 @@
 "Cart.Manufacturer" "VGS"
 "Cart.Name" "Super Tenis (VGS)"
 "Cart.Note" "AKA RealSports Tennis"
+"Bezel.Name" "RealSports Tennis (USA)"
 ""
 
 "Cart.MD5" "3e88cca5b860d0bd8947479e74c44284"
@@ -5928,6 +6010,7 @@
 "Cart.ModelNo" "5687 A279"
 "Cart.Name" "Soccer (1988) (Telegames)"
 "Cart.Note" "AKA International Soccer"
+"Bezel.Name" "International Soccer (USA)"
 ""
 
 "Cart.MD5" "3f75a5da3e40d486b21dfc1c8517adc0"
@@ -5946,6 +6029,7 @@
 "Cart.Name" "Rodeo Champ (4 Game in One Dark Green) (1983) (BitCorp) (PAL)"
 "Cart.Note" "AKA Stampede"
 "Cart.Highscore" "{\"score_addresses\":[\"0xbc\",\"0xb8\"],\"variations_address\":\"0x99\",\"variations_count\":8,\"variations_zero_based\":true}"
+"Bezel.Name" "Stampede (USA)"
 ""
 
 "Cart.MD5" "3f9cb1aba8ec20e2c243ae642f9942bf"
@@ -5963,6 +6047,7 @@
 "Cart.Manufacturer" "CCE"
 "Cart.Name" "Sea Hawk (CCE)"
 "Cart.Note" "AKA Seahawk"
+"Bezel.Name" "Seahawk (Europe)"
 ""
 
 "Cart.MD5" "3fe43915e5655cf69485364e9f464097"
@@ -5970,6 +6055,7 @@
 "Cart.ModelNo" "C-863"
 "Cart.Name" "Fisher Price (1983) (CCE)"
 "Cart.Note" "AKA Skindiver"
+"Bezel.Name" "Skindiver (Europe)"
 ""
 
 "Cart.MD5" "3ff5165378213dab531ffa4f1a41ae45"
@@ -5977,6 +6063,7 @@
 "Cart.ModelNo" "311377"
 "Cart.Name" "Pygmy (1983) (Otto Versand) (PAL)"
 "Cart.Note" "AKA Lock 'n' Chase (Double-Game Package)"
+"Bezel.Name" "Lock 'n' Chase (USA)"
 ""
 
 "Cart.MD5" "4026ad38ba5ce486e88383dc27d7a46f"
@@ -6156,6 +6243,7 @@
 "Cart.Name" "Resgate Espacial (CCE)"
 "Cart.Note" "AKA Moonsweeper"
 "Display.Phosphor" "YES"
+"Bezel.Name" "Moonsweeper (USA)"
 ""
 
 "Cart.MD5" "4233eb824c2b4811abef9b6d00355ae9"
@@ -6204,6 +6292,7 @@
 "Cart.Manufacturer" "Robby"
 "Cart.Name" "Volleyball (Robby)"
 "Cart.Note" "AKA RealSports Volleyball"
+"Bezel.Name" "RealSports Volleyball (USA)"
 ""
 
 "Cart.MD5" "42b5e3a35b032f033809afb0ea28802d"
@@ -6392,6 +6481,7 @@
 "Cart.Manufacturer" "Digivision"
 "Cart.Name" "Snoopy (Digivision)"
 "Cart.Note" "AKA Snoopy and the Red Baron"
+"Bezel.Name" "Snoopy and the Red Baron (USA)"
 ""
 
 "Cart.MD5" "45a4f55bb9a5083d470ad479afd8bca2"
@@ -6416,6 +6506,7 @@
 "Cart.ModelNo" "USC1007"
 "Cart.Name" "Octopus (1983) (Carrere Video) (PAL)"
 "Cart.Note" "AKA Name This Game"
+"Bezel.Name" "Name This Game (USA)"
 ""
 
 "Cart.MD5" "4605a00f5b44a9cbd5803a7a55de150e"
@@ -6585,6 +6676,7 @@
 "Cart.ModelNo" "SS-010"
 "Cart.Name" "Mafia (1983) (Rainbow Vision) (PAL)"
 "Cart.Note" "AKA Gangster Alley"
+"Bezel.Name" "Gangster Alley (USA)"
 ""
 
 "Cart.MD5" "47abfb993ff14f502f88cf988092e055"
@@ -6635,6 +6727,7 @@
 "Cart.Manufacturer" "Zellers"
 "Cart.Name" "Laser Volley (Zellers)"
 "Cart.Note" "AKA Innerspace"
+"Bezel.Name" "Laser Gates (USA)"
 ""
 
 "Cart.MD5" "4834b7b28ea862227ac7e40053fb52a5"
@@ -6712,6 +6805,7 @@
 "Cart.ModelNo" "476.774 5"
 "Cart.Name" "Bobby geht nach Hause (1983) (Quelle) (PAL)"
 "Cart.Note" "AKA Bobby Is Going Home"
+"Bezel.Name" "Bobby Is Going Home (Europe)"
 ""
 
 "Cart.MD5" "48f18d69799a5f5451a5f0d17876acef"
@@ -6805,6 +6899,7 @@
 "Cart.ModelNo" "VCS83136"
 "Cart.Name" "Cosmic War (1983) (Home Vision) (PAL)"
 "Cart.Note" "AKA Space Tunnel"
+"Bezel.Name" "Space Tunnel (Europe)"
 ""
 
 "Cart.MD5" "4999b45be0ab5a85bac1b7c0e551542b"
@@ -6973,6 +7068,8 @@
 "Cart.Manufacturer" "Edu Games - Edu Juegos"
 "Cart.Name" "Commando (1984) (Edu Games) (PAL)"
 "Cart.Note" "AKA Front Line"
+"Display.Format" "NTSC50"
+"Bezel.Name" "Front Line (USA)"
 ""
 
 "Cart.MD5" "4b94fd272785d7ec6c95fb7279d0f522"
@@ -7112,6 +7209,7 @@
 "Cart.Name" "Ocean City (Funvision)"
 "Cart.Note" "AKA Atlantis"
 "Cart.Highscore" "{\"score_addresses\":[\"0xa3\",\"0xa2\"],\"score_digits\":6,\"score_trailing_zeroes\":2,\"variations_address\":\"0x8d\",\"variations_count\":4,\"variations_zero_based\":true}"
+"Bezel.Name" "Atlantis (USA)"
 ""
 
 "Cart.MD5" "4cd796b5911ed3f1062e805a3df33d98"
@@ -7184,6 +7282,7 @@
 "Cart.ModelNo" "781698"
 "Cart.Name" "Volleyball (1983) (Otto Versand) (PAL)"
 "Cart.Note" "AKA RealSports Volleyball (Double-Game Package)"
+"Bezel.Name" "RealSports Volleyball (USA)"
 ""
 
 "Cart.MD5" "4dbd7e8b30e715efc8d71d215aec7fe7"
@@ -7276,6 +7375,7 @@
 "Cart.MD5" "4e86866d9cde738d1630e2e35d7288ce"
 "Cart.Name" "Bermuda (Unknown)"
 "Cart.Note" "AKA River Raid"
+"Bezel.Name" "River Raid (USA)"
 ""
 
 "Cart.MD5" "4e99ebd65a967cabf350db54405d577c"
@@ -7383,6 +7483,7 @@
 "Cart.Name" "Keystone Kappers (1983) (CCE)"
 "Cart.Note" "AKA Keystone Kapers"
 "Cart.Highscore" "{\"score_addresses\":[\"0x9a\",\"0x9b\",\"0x9c\"],\"score_digits\":6,\"variations_count\":1}"
+"Bezel.Name" "Keystone Kapers (USA)"
 ""
 
 "Cart.MD5" "4fc1b85b8074b4b9436d097900e34f29"
@@ -7435,6 +7536,7 @@
 "Cart.ModelNo" "AP-2005"
 "Cart.Name" "Shark Attack (1982) (Apollo) (PAL)"
 "Cart.Note" "AKA Lochjaw"
+"Bezel.Name" "Lochjaw (USA)"
 ""
 
 "Cart.MD5" "5079bfbc7b8f5770f84215ed2e3bdd1b"
@@ -7504,6 +7606,7 @@
 "Cart.Manufacturer" "Tron"
 "Cart.Name" "Super Tennis (1983) (Tron)"
 "Cart.Note" "AKA RealSports Tennis"
+"Bezel.Name" "RealSports Tennis (USA)"
 ""
 
 "Cart.MD5" "5188fee071d3c5ef0d66fb45c123e4a5"
@@ -7540,6 +7643,7 @@
 "Cart.Name" "Fire Bird (Video Game Program) (PAL)"
 "Cart.Note" "AKA Phoenix"
 "Cart.Highscore" "{\"score_addresses\":[\"0xc9\",\"0xc8\",\"0xc7\"],\"score_digits\":6,\"variations_count\":1}"
+"Bezel.Name" "Phoenix (USA)"
 ""
 
 "Cart.MD5" "51f15b39d9f502c2361b6ba6a73464d4"
@@ -7572,6 +7676,7 @@
 "Cart.ModelNo" "SS-008"
 "Cart.Name" "Year 1999, The (1983) (Rainbow Vision) (PAL)"
 "Cart.Note" "AKA Condor Attack"
+"Bezel.Name" "Condor Attack (USA)"
 ""
 
 "Cart.MD5" "52385334ac9e9b713e13ffa4cc5cb940"
@@ -7580,6 +7685,7 @@
 "Cart.Name" "Open, Sesame! (1983) (CCE)"
 "Cart.Note" "AKA Abre-te, Sesamo!"
 "Display.Phosphor" "YES"
+"Bezel.Name" "Open Sesame (Europe)"
 ""
 
 "Cart.MD5" "523f5cbb992f121e2d100f0f9965e33f"
@@ -7683,6 +7789,7 @@
 "Cart.ModelNo" "PB5060"
 "Cart.Name" "Star Wars - Death Star Battle (1983) (Parker Bros)"
 "Display.Phosphor" "YES"
+"Bezel.Name" "Star Wars - Return of the Jedi - Death Star Battle (USA)"
 ""
 
 "Cart.MD5" "534e23210dd1993c828d944c6ac4d9fb"
@@ -7748,6 +7855,7 @@
 "Cart.ModelNo" "C-1005"
 "Cart.Name" "Super Tennis (1983) (CCE)"
 "Cart.Note" "AKA RealSports Tennis"
+"Bezel.Name" "RealSports Tennis (USA)"
 ""
 
 "Cart.MD5" "53bd1c7c972ae634c912331a9276c6e3"
@@ -7783,6 +7891,7 @@
 "Cart.ModelNo" "PGP230"
 "Cart.Name" "Festival (4 Game in One Dark Green) (1983) (BitCorp) (PAL)"
 "Cart.Note" "AKA Carnival"
+"Bezel.Name" "Carnival (USA)"
 ""
 
 "Cart.MD5" "5409d20c1aea0b89c56993aec5dc5740"
@@ -7860,6 +7969,7 @@
 "Cart.Manufacturer" "Bit Corporation"
 "Cart.ModelNo" "PG204"
 "Cart.Name" "Open, Sesame! (1982) (BitCorp)"
+"Bezel.Name" "Open Sesame (Europe)"
 ""
 
 "Cart.MD5" "5494b9ee403d9757f0fd1f749e80214a"
@@ -7901,6 +8011,7 @@
 "Cart.ModelNo" "AP-2005"
 "Cart.Name" "Shark Attack (1982) (Apollo)"
 "Cart.Note" "AKA Lochjaw"
+"Bezel.Name" "Lochjaw (USA)"
 ""
 
 "Cart.MD5" "551a64a945d7d6ece81e9c1047acedbc"
@@ -7948,6 +8059,7 @@
 "Cart.ModelNo" "100"
 "Cart.Name" "Space Canyon (1983) (Panda)"
 "Cart.Note" "AKA Space Cavern"
+"Bezel.Name" "Space Cavern (USA)"
 ""
 
 "Cart.MD5" "55949cb7884f9db0f8dfcf8707c7e5cb"
@@ -7964,6 +8076,7 @@
 "Cart.Name" "Pitfall! (Unknown) (PAL)"
 "Cart.Note" "Pitfall Harry's Jungle Adventure"
 "Cart.Highscore" "{\"score_addresses\":[\"0xd5\",\"0xd6\",\"0xd7\"],\"score_digits\":6,\"variations_count\":1}"
+"Bezel.Name" "Pitfall! - Pitfall Harry's Jungle Adventure (USA)"
 ""
 
 "Cart.MD5" "55ef7b65066428367844342ed59f956c"
@@ -7991,6 +8104,7 @@
 "Cart.Manufacturer" "Joystik"
 "Cart.Name" "Motocross (Joystik)"
 "Cart.Note" "AKA Motocross Racer"
+"Bezel.Name" "Motocross Racer (USA)"
 ""
 
 "Cart.MD5" "5643ee916f7dc760148fca4db3aa7d10"
@@ -8031,6 +8145,7 @@
 "Cart.Name" "Busy Police (Funvision)"
 "Cart.Note" "AKA Keystone Kapers"
 "Cart.Highscore" "{\"score_addresses\":[\"0x9a\",\"0x9b\",\"0x9c\"],\"score_digits\":6,\"variations_count\":1}"
+"Bezel.Name" "Keystone Kapers (USA)"
 ""
 
 "Cart.MD5" "575c0fb61e66a31d982c95c9dea6865c"
@@ -8122,6 +8237,7 @@
 "Cart.Manufacturer" "CCE"
 "Cart.ModelNo" "C-824"
 "Cart.Name" "Jaw Breaker (1983) (CCE)"
+"Bezel.Name" "Jawbreaker (USA)"
 ""
 
 "Cart.MD5" "58af1e991b55710486a9868f75b15cf0"
@@ -8212,6 +8328,7 @@
 "Cart.Name" "Survival Run (1983) (Data Age) (Prototype)"
 "Cart.Rarity" "Prototype"
 "Cart.Url" "http://www.atariprotos.com/2600/software/survivalrun/survivalrun.htm"
+"Bezel.Name" "default"
 ""
 
 "Cart.MD5" "59e96de9628e8373d1c685f5e57dcf10"
@@ -8252,6 +8369,7 @@
 "Cart.Name" "Tom Boy (Unknown)"
 "Cart.Note" "AKA Pitfall!"
 "Cart.Highscore" "{\"score_addresses\":[\"0xd5\",\"0xd6\",\"0xd7\"],\"score_digits\":6,\"variations_count\":1}"
+"Bezel.Name" "Pitfall! - Pitfall Harry's Jungle Adventure (USA)"
 ""
 
 "Cart.MD5" "5a2f2dcd775207536d9299e768bcd2df"
@@ -8259,6 +8377,7 @@
 "Cart.ModelNo" "781698"
 "Cart.Name" "Flippern (Double-Game Package) (1983) (Otto Versand) (PAL)"
 "Cart.Note" "AKA Video Pinball"
+"Bezel.Name" "Video Pinball (USA)"
 ""
 
 "Cart.MD5" "5a4205aeedd3b0588f973f38bbd9dfd4"
@@ -8281,6 +8400,7 @@
 "Cart.ModelNo" "C-1003"
 "Cart.Name" "Donkey Kong Jr (1983) (CCE)"
 "Cart.Note" "AKA Donkey Kong Junior"
+"Bezel.Name" "Donkey Kong Junior (USA)"
 ""
 
 "Cart.MD5" "5a734779d797ccef25dc8acfa47244c7"
@@ -8462,6 +8582,7 @@
 "Cart.ModelNo" "CX2642"
 "Cart.Name" "Hunt & Score (1978) (Atari) (PAL)"
 "Cart.Note" "Uses Keyboard Controllers"
+"Bezel.Name" "Hunt & Score (USA)"
 ""
 
 "Cart.MD5" "5c0227ad63300670a647fcebf595ea37"
@@ -8470,12 +8591,14 @@
 "Cart.Note" "Hack of Atlantis"
 "Cart.Rarity" "Hack"
 "Cart.Highscore" "{\"score_addresses\":[\"0xa3\",\"0xa2\"],\"score_digits\":6,\"score_trailing_zeroes\":2,\"variations_address\":\"0x8d\",\"variations_count\":4,\"variations_zero_based\":true}"
+"Bezel.Name" "Atlantis (USA)"
 ""
 
 "Cart.MD5" "5c0520c00163915a4336e481ca4e7ef4"
 "Cart.Name" "Pyramid War (Unknown) (PAL)"
 "Cart.Note" "AKA Chopper Command"
 "Cart.Highscore" "{\"score_addresses\":[\"0xec\",\"0xee\",\"0xf0\"],\"score_digits\":6,\"variations_address\":\"0xe0\",\"variations_count\":4,\"variations_zero_based\":true}"
+"Bezel.Name" "Chopper Command (USA)"
 ""
 
 "Cart.MD5" "5c19f6da638c4c7c1f98d09e63df43e4"
@@ -8562,6 +8685,7 @@
 "Cart.Name" "Space Shuttle (1983) (Activision) (SECAM)"
 "Cart.Note" "A Journey Into Space"
 "Bezel.Name" "Space Shuttle - A Journey Into Space (USA)"
+"Display.Format" "SECAM"
 ""
 
 "Cart.MD5" "5d2cc33ca798783dee435eb29debf6d6"
@@ -8607,6 +8731,7 @@
 "Cart.ModelNo" "C-839"
 "Cart.Name" "Misterious Thief, A (1983) (CCE) [a]"
 "Cart.Note" "AKA A Mysterious Thief"
+"Bezel.Name" "Mysterious Thief, A (USA) (Proto)"
 ""
 
 "Cart.MD5" "5da8fd0b5ed33a360bff37f8b5d0cd58"
@@ -8624,6 +8749,7 @@
 "Cart.ModelNo" "83-212"
 "Cart.Name" "Time Race (1983) (Goliath) (PAL)"
 "Cart.Note" "AKA Space Jockey"
+"Bezel.Name" "Space Jockey (USA)"
 ""
 
 "Cart.MD5" "5dccf215fdb9bbf5d4a6d0139e5e8bcb"
@@ -8631,11 +8757,13 @@
 "Cart.ModelNo" "FG1009"
 "Cart.Name" "Sea Hunt (1987) (Froggo)"
 "Cart.Note" "AKA Skindiver"
+"Bezel.Name" "Skindiver (Europe)"
 ""
 
 "Cart.MD5" "5dd08e85fd7b928df16f59df92a9d983"
 "Cart.Name" "Boom Bang (Unknown) [a2]"
 "Cart.Note" "AKA Crackpots"
+"Bezel.Name" "Crackpots (USA)"
 ""
 
 "Cart.MD5" "5de8803a59c36725888346fdc6e7429d"
@@ -8836,12 +8964,14 @@
 "Cart.ModelNo" "5658 A088"
 "Cart.Name" "Football (1988) (Telegames) (PAL)"
 "Cart.Note" "AKA Super Challenge Football"
+"Bezel.Name" "Super Challenge Football (USA)"
 ""
 
 "Cart.MD5" "5faffe1c4c57430978dec5ced32b9f4a"
 "Cart.Manufacturer" "Dactari - Milmar"
 "Cart.Name" "Volleyball (Dactari)"
 "Cart.Note" "AKA RealSports Volleyball"
+"Bezel.Name" "RealSports Volleyball (USA)"
 ""
 
 "Cart.MD5" "5fb71cc60e293fe10a5023f11c734e55"
@@ -8969,6 +9099,7 @@
 "Cart.Name" "Mariana (1983) (Rainbow Vision) (PAL)"
 "Cart.Note" "AKA Seaquest"
 "Cart.Highscore" "{\"notes\":\"High score is from current player\",\"score_addresses\":[\"0xb8\",\"0xb9\",\"0xba\"],\"score_digits\":6,\"variations_count\":1}"
+"Bezel.Name" "Seaquest (USA)"
 ""
 
 "Cart.MD5" "61426cee013306e7f7367534ab124747"
@@ -9048,6 +9179,7 @@
 "Cart.ModelNo" "108"
 "Cart.Name" "Sea Hawk (1983) (Panda)"
 "Cart.Note" "AKA Seahawk"
+"Bezel.Name" "Seahawk (Europe)"
 ""
 
 "Cart.MD5" "626d67918f4b5e3f961e4b2af2f41f1d"
@@ -9186,6 +9318,7 @@
 "Cart.Name" "Super Ferrari (1983) (Rainbow Vision) (PAL)"
 "Cart.Note" "AKA Enduro"
 "Cart.Highscore" "{\"score_addresses\":[\"0xaa\",\"0xa9\",\"0xa8\"],\"score_digits\":6,\"special_address\":\"0xad\",\"special_label\":\"Day\",\"variations_count\":1}"
+"Bezel.Name" "Enduro (USA)"
 ""
 
 "Cart.MD5" "63a6eda1da30446569ac76211d0f861c"
@@ -9232,6 +9365,7 @@
 "Cart.Name" "Fat Albert (David Marli) (Hack)"
 "Cart.Note" "Hack of Fast Food"
 "Cart.Rarity" "Hack"
+"Bezel.Name" "Fast Food (USA)"
 ""
 
 "Cart.MD5" "63e9e612bbee31045f8d184a4e53f8ec"
@@ -9273,6 +9407,7 @@
 "Cart.ModelNo" "CX26163P"
 "Cart.Name" "Reversi (32 in 1) (1988) (Atari) (PAL)"
 "Cart.Note" "AKA Othello"
+"Bezel.Name" "Othello (USA)"
 ""
 
 "Cart.MD5" "647162cceb550fd49820e2206d9ee7e8"
@@ -9289,6 +9424,7 @@
 "Cart.Manufacturer" "CCE"
 "Cart.Name" "Cubo Magico (CCE)"
 "Cart.Note" "AKA Cubicolor"
+"Bezel.Name" "Cubicolor (USA) (Proto)"
 ""
 
 "Cart.MD5" "64d43859258dc8ca54949e9ff4174202"
@@ -9328,6 +9464,7 @@
 "Cart.ModelNo" "VCS83102"
 "Cart.Name" "War 2000 (1983) (Home Vision) (PAL)"
 "Cart.Note" "AKA Astrowar"
+"Bezel.Name" "Astrowar (Europe)"
 ""
 
 "Cart.MD5" "6538e454b0498ad2befe1ef0f87815c0"
@@ -9414,6 +9551,7 @@
 "Cart.ModelNo" "876.013 4"
 "Cart.Name" "Katastrophen-Einsatz (1983) (Quelle) (PAL)"
 "Cart.Note" "AKA M.A.S.H."
+"Bezel.Name" "M.A.S.H (USA)"
 ""
 
 "Cart.MD5" "65bd29e8ab1b847309775b0de6b2e4fe"
@@ -9491,6 +9629,7 @@
 "Cart.ModelNo" "PGP237"
 "Cart.Name" "Angeln I (Ariola) (PAL)"
 "Cart.Note" "AKA Fishing Derby"
+"Bezel.Name" "Fishing Derby (USA)"
 ""
 
 "Cart.MD5" "667a70b028f581d87648693b873bc962"
@@ -9638,6 +9777,7 @@
 "Cart.ModelNo" "CX26163P"
 "Cart.Name" "NFL Football (32 in 1) (1988) (Atari) (PAL) (4K)"
 "Cart.Note" "AKA Football"
+"Bezel.Name" "Football (USA)"
 ""
 
 "Cart.MD5" "67cdde4176e0447fc45a71e0a1cdd288"
@@ -9678,6 +9818,7 @@
 "Cart.ModelNo" "PGP229"
 "Cart.Name" "Kung Fu (4 Game in One Dark Green) (1983) (BitCorp) (PAL)"
 "Cart.Note" "AKA Karate"
+"Bezel.Name" "Karate (USA)"
 ""
 
 "Cart.MD5" "681206a6bde73e71c19743607e96c4bb"
@@ -9747,6 +9888,7 @@
 "Cart.ModelNo" "C-860"
 "Cart.Name" "Laser Gate (1983) (CCE)"
 "Cart.Note" "AKA Innerspace"
+"Bezel.Name" "Laser Gates (USA)"
 ""
 
 "Cart.MD5" "687c23224e26f81c56e431c24faea36d"
@@ -9759,6 +9901,7 @@
 "Cart.ModelNo" "C-809"
 "Cart.Name" "Squirrel (1983) (CCE)"
 "Cart.Note" "AKA Snail Against Squirrel"
+"Bezel.Name" "Snail Against Squirrel (Europe)"
 ""
 
 "Cart.MD5" "689f49e31cac68db8a2cf8f44fa7a01a"
@@ -9774,6 +9917,7 @@
 "Cart.Manufacturer" "Digivision"
 "Cart.Name" "Fathon (Digivision)"
 "Cart.Note" "AKA Fathom"
+"Bezel.Name" "Fathom (USA)"
 ""
 
 "Cart.MD5" "68c80e7e1d30df98a0cf67ecbf39cc67"
@@ -9847,12 +9991,14 @@
 "Cart.ModelNo" "CX26163P"
 "Cart.Name" "Miniaturer Golf (32 in 1) (1988) (Atari) (PAL) (4K)"
 "Cart.Note" "AKA Miniature Golf"
+"Bezel.Name" "Miniature Golf (USA)"
 ""
 
 "Cart.MD5" "6982854657a2cc87d712f718e402bf85"
 "Cart.Manufacturer" "Zellers"
 "Cart.Name" "Earth Attack (Zellers)"
 "Cart.Note" "AKA Defender"
+"Bezel.Name" "Defender (USA)"
 ""
 
 "Cart.MD5" "69877da5caded48315e3e45882a303d5"
@@ -9869,6 +10015,7 @@
 "Cart.Note" "Hack of Phoenix"
 "Cart.Rarity" "Hack"
 "Cart.Highscore" "{\"score_addresses\":[\"0xc9\",\"0xc8\",\"0xc7\"],\"score_digits\":6,\"variations_count\":1}"
+"Bezel.Name" "Phoenix (USA)"
 ""
 
 "Cart.MD5" "69974dd5d6420b90898cde50aec5ef39"
@@ -9986,6 +10133,7 @@
 "Cart.Name" "Eskimo Jump (4 Game in One) (1983) (BitCorp) (PAL)"
 "Cart.Note" "AKA Frostbite"
 "Cart.Highscore" "{\"score_addresses\":[\"0xc8\",\"0xc9\",\"0xca\"],\"score_digits\":6,\"special_address\":\"0xcb\",\"special_label\":\"Level\",\"special_zero_based\":true,\"variations_address\":\"0x80\",\"variations_count\":4,\"variations_zero_based\":true}"
+"Bezel.Name" "Frostbite (USA)"
 ""
 
 "Cart.MD5" "6a9e0c72fab92df70084eccd9061fdbd"
@@ -10021,6 +10169,7 @@
 "Cart.ModelNo" "CX26125, CX26127"
 "Cart.Name" "Track and Field (1984) (Atari)"
 "Cart.Note" "Uses the Track & Field Controller"
+"Bezel.Name" "Track & Field (USA)"
 ""
 
 "Cart.MD5" "6b01a519b413f8cfa2f399f4d2841b42"
@@ -10098,6 +10247,7 @@
 "Cart.ModelNo" "CX26163P"
 "Cart.Name" "UFO (32 in 1) (1988) (Atari) (PAL)"
 "Cart.Note" "AKA Space Jockey"
+"Bezel.Name" "Space Jockey (USA)"
 ""
 
 "Cart.MD5" "6bb22efa892b89b69b9bf5ea547e62b8"
@@ -10120,6 +10270,7 @@
 "Cart.Manufacturer" "Digitel"
 "Cart.Name" "Volleyball (1983) (Digitel)"
 "Cart.Note" "AKA RealSports Volleyball"
+"Bezel.Name" "RealSports Volleyball (USA)"
 ""
 
 "Cart.MD5" "6c1553ca90b413bf762dfc65f2b881c7"
@@ -10127,6 +10278,7 @@
 "Cart.ModelNo" "343.073 3"
 "Cart.Name" "Winterjagd (1983) (Quelle) (PAL)"
 "Cart.Note" "AKA Ski Hunt"
+"Bezel.Name" "Ski Hunt (Europe)"
 ""
 
 "Cart.MD5" "6c1f3f2e359dbf55df462ccbcdd2f6bf"
@@ -10178,6 +10330,7 @@
 "Cart.ModelNo" "554-33 375"
 "Cart.Name" "Cosmic Town (1983) (ITT Family Games) (PAL)"
 "Cart.Note" "AKA Base Attack (Perry Rhodan-Serie)"
+"Bezel.Name" "Base Attack (Europe)"
 ""
 
 "Cart.MD5" "6c9a32ad83bcfde3774536e52be1cce7"
@@ -10191,6 +10344,7 @@
 "Cart.Note" "AKA Targ"
 "Cart.Rarity" "Prototype"
 "Cart.Url" "http://www.atariprotos.com/2600/software/targ/targ.htm"
+"Bezel.Name" "Targ (USA) (Proto)"
 ""
 
 "Cart.MD5" "6cbe945e16d9f827d0d295546ac11b22"
@@ -10267,6 +10421,7 @@
 "Cart.Manufacturer" "Zirok"
 "Cart.Name" "Kanguru (1983) (Zirok)"
 "Cart.Note" "AKA Kangaroo"
+"Bezel.Name" "Kangaroo (USA)"
 ""
 
 "Cart.MD5" "6d9afd70e9369c2a6bff96c4964413b7"
@@ -10293,6 +10448,7 @@
 "Cart.Name" "Star Wars - Ewok Adventure (1983) (Parker Bros) (Prototype) (PAL)"
 "Cart.Rarity" "Prototype"
 "Cart.Url" "http://www.atariprotos.com/2600/software/ewok/ewok.htm"
+"Bezel.Name" "Star Wars - Return of the Jedi - Ewok Adventure (USA) (Proto)"
 ""
 
 "Cart.MD5" "6e179eee3d4631a7434d40cf7aeea6e8"
@@ -10312,6 +10468,7 @@
 "Cart.Manufacturer" "Atari, Tod Frye - Sears"
 "Cart.ModelNo" "CX2646 - 49-75185"
 "Cart.Name" "Pac-Man (1982) (Atari)"
+"Bezel.Name" "Pac-Man (Atari) (USA)"
 ""
 
 "Cart.MD5" "6e59dd52f88c00d5060eac56c1a0b0d3"
@@ -10427,6 +10584,7 @@
 "Cart.Name" "Pyramid War (1983) (Rainbow Vision) (PAL)"
 "Cart.Note" "AKA Chopper Command"
 "Cart.Highscore" "{\"score_addresses\":[\"0xec\",\"0xee\",\"0xf0\"],\"score_digits\":6,\"variations_address\":\"0xe0\",\"variations_count\":4,\"variations_zero_based\":true}"
+"Bezel.Name" "Chopper Command (USA)"
 ""
 
 "Cart.MD5" "6fc27a9233fc69d28d3f190b4ff80f03"
@@ -10447,6 +10605,7 @@
 "Cart.ModelNo" "AX-018, AX-018-04"
 "Cart.Name" "Pitfall! (1982) (Activision) (16K)"
 "Cart.Highscore" "{\"score_addresses\":[\"0xd5\",\"0xd6\",\"0xd7\"],\"score_digits\":6,\"variations_count\":1}"
+"Bezel.Name" "Pitfall! - Pitfall Harry's Jungle Adventure (USA)"
 ""
 
 "Cart.MD5" "6fe67f525c39200a798985e419431805"
@@ -10476,6 +10635,7 @@
 "Cart.Name" "Hard-Head (1983) (Activision) (Prototype)"
 "Cart.Rarity" "Prototype"
 "Cart.Url" "http://www.atariprotos.com/2600/software/unknown2/unknown2.htm"
+"Bezel.Name" "Unknown Activision Game #2 (USA) (Proto)"
 ""
 
 "Cart.MD5" "703d32062436e4c20c48313dff30e257"
@@ -10517,6 +10677,7 @@
 "Cart.Name" "Netmaker (1983) (Rainbow Vision) (PAL)"
 "Cart.Note" "AKA Amidar"
 "Display.Phosphor" "YES"
+"Bezel.Name" "Amidar (USA)"
 ""
 
 "Cart.MD5" "70a43fbdb1c039283ee5048d99842469"
@@ -10592,6 +10753,7 @@
 "Cart.Name" "Keystone Keypers (1983) (Zirok)"
 "Cart.Note" "AKA Keystone Kapers"
 "Cart.Highscore" "{\"score_addresses\":[\"0x9a\",\"0x9b\",\"0x9c\"],\"score_digits\":6,\"variations_count\":1}"
+"Bezel.Name" "Keystone Kapers (USA)"
 ""
 
 "Cart.MD5" "718ae62c70af4e5fd8e932fee216948a"
@@ -10645,6 +10807,7 @@
 "Cart.Manufacturer" "Funvision - Fund. International Co."
 "Cart.Name" "Time Race (Funvision) (PAL)"
 "Cart.Note" "AKA Time Warp"
+"Bezel.Name" "Time Warp (Europe)"
 ""
 
 "Cart.MD5" "71f8bacfbdca019113f3f0801849057e"
@@ -10681,6 +10844,7 @@
 "Cart.Name" "Super-Ferrari (Unknown)"
 "Cart.Note" "AKA Enduro"
 "Cart.Highscore" "{\"score_addresses\":[\"0xaa\",\"0xa9\",\"0xa8\"],\"score_digits\":6,\"special_address\":\"0xad\",\"special_label\":\"Day\",\"variations_count\":1}"
+"Bezel.Name" "Enduro (USA)"
 ""
 
 "Cart.MD5" "726af33d9acfc8616a8df05de4f560af"
@@ -10703,6 +10867,7 @@
 "Cart.ModelNo" "688.383 9"
 "Cart.Name" "Die Ente und der Wolf (1983) (Quelle) (PAL)"
 "Cart.Note" "AKA Pooyan"
+"Bezel.Name" "Pooyan (USA)"
 ""
 
 "Cart.MD5" "72a46e0c21f825518b7261c267ab886e"
@@ -10764,6 +10929,7 @@
 "Cart.Name" "Pac-Man (1981) (Atari) (Hack)"
 "Cart.Note" "Hack of Pac-Man"
 "Cart.Rarity" "Hack"
+"Bezel.Name" "Pac-Man (Atari) (USA)"
 ""
 
 "Cart.MD5" "72fd08deed1d6195942e0c6f392e9848"
@@ -10805,6 +10971,7 @@
 "Cart.ModelNo" "SS-016"
 "Cart.Name" "Boom Bang (1983) (Rainbow Vision) (PAL)"
 "Cart.Note" "AKA Crackpots"
+"Bezel.Name" "Crackpots (USA)"
 ""
 
 "Cart.MD5" "73b4e8f8b04515d91937510e680214bc"
@@ -10893,6 +11060,7 @@
 "Cart.ModelNo" "CP405"
 "Cart.Name" "Laser Blaser (4 Game in One) (1983) (BitCorp) (PAL)"
 "Cart.Note" "AKA The End of the World"
+"Bezel.Name" "World End (Europe)"
 ""
 
 "Cart.MD5" "7465b06b6e25a4a6c6d77d02242af6d6"
@@ -10934,6 +11102,7 @@
 "Cart.Manufacturer" "Zellers"
 "Cart.Name" "Radar (Zellers)"
 "Cart.Note" "AKA Exocet"
+"Bezel.Name" "Exocet (Europe)"
 ""
 
 "Cart.MD5" "75028162bfc4cc8e74b04e320f9e6a3f"
@@ -11012,6 +11181,7 @@
 "Cart.ModelNo" "83-112"
 "Cart.Name" "Time Machine (1983) (Goliath) (PAL)"
 "Cart.Note" "AKA Asteroid Fire"
+"Bezel.Name" "Asteroid Fire (Europe)"
 ""
 
 "Cart.MD5" "757f529026696e13838364dea382a4ed"
@@ -11090,6 +11260,7 @@
 "Cart.ModelNo" "CX26163P"
 "Cart.Name" "NFL Football (32 in 1) (1988) (Atari) (PAL)"
 "Cart.Note" "AKA Football"
+"Bezel.Name" "Football (USA)"
 ""
 
 "Cart.MD5" "7623a639a6fffdb246775fe2eabc8d01"
@@ -11153,6 +11324,7 @@
 "Cart.Note" "Hack of Pitfall!"
 "Cart.Rarity" "Hack"
 "Cart.Highscore" "{\"score_addresses\":[\"0xd5\",\"0xd6\",\"0xd7\"],\"score_digits\":6,\"variations_count\":1}"
+"Bezel.Name" "Pitfall! - Pitfall Harry's Jungle Adventure (USA)"
 ""
 
 "Cart.MD5" "76ee917d817ef9a654bc4783e0273ac4"
@@ -11160,6 +11332,7 @@
 "Cart.ModelNo" "311377"
 "Cart.Name" "Fox & Goat (Double-Game Package) (1983) (Otto Versand) (PAL)"
 "Cart.Note" "AKA Nuts"
+"Bezel.Name" "Nuts (Europe)"
 ""
 
 "Cart.MD5" "76f53abbbf39a0063f24036d6ee0968a"
@@ -11500,6 +11673,7 @@
 "Cart.ModelNo" "83-213"
 "Cart.Name" "Space Eagle (1983) (Goliath) (PAL)"
 "Cart.Note" "AKA Exocet"
+"Bezel.Name" "Exocet (Europe)"
 ""
 
 "Cart.MD5" "7ad257833190bc60277c1ca475057051"
@@ -11515,12 +11689,14 @@
 "Cart.Name" "Kwibble (1983) (Imagic) (Prototype)"
 "Cart.Note" "AKA Quick Step! Beta"
 "Cart.Url" "http://www.atariprotos.com/2600/software/quickstep/quickstep.htm"
+"Bezel.Name" "Quick Step! (USA)"
 ""
 
 "Cart.MD5" "7adbcf78399b19596671edbffc3d34aa"
 "Cart.Manufacturer" "Atari, Mimi Nyden, Joseph Tung"
 "Cart.ModelNo" "CX26152"
 "Cart.Name" "Super Baseball (1988) (Atari)"
+"Bezel.Name" "RealSports Baseball (USA)"
 ""
 
 "Cart.MD5" "7af40c1485ce9f29b1a7b069a2eb04a7"
@@ -11687,6 +11863,7 @@
 "Cart.Manufacturer" "Jone Yuan Telephonic Enterprise Co"
 "Cart.Name" "Bi! Bi! (Jone Yuan) (PAL)"
 "Cart.Note" "AKA Skindiver"
+"Bezel.Name" "Skindiver (Europe)"
 ""
 
 "Cart.MD5" "7ced6709f091e79a2ab9575d3516a4ac"
@@ -11822,6 +11999,7 @@
 "Cart.ModelNo" "C-833"
 "Cart.Name" "Target Practice (1983) (CCE) [a]"
 "Cart.Note" "AKA Carnival"
+"Bezel.Name" "Carnival (USA)"
 ""
 
 "Cart.MD5" "7ded20e88b17c8149b4de0d55c795d37"
@@ -11980,6 +12158,7 @@
 "Cart.ModelNo" "PGP234"
 "Cart.Name" "Boxen (Ariola) (PAL)"
 "Cart.Note" "AKA Boxing"
+"Bezel.Name" "Boxing (USA)"
 ""
 
 "Cart.MD5" "7f430c33044e0354815392b53a9a772d"
@@ -11999,6 +12178,7 @@
 "Cart.Manufacturer" "HES"
 "Cart.Name" "Boom Bang (HES) (PAL)"
 "Cart.Note" "AKA Crackpots"
+"Bezel.Name" "Crackpots (USA)"
 ""
 
 "Cart.MD5" "7f5da5dc44bb5e0b959507bb0ea31cd6"
@@ -12086,6 +12266,7 @@
 "Cart.Name" "Unknown Activision Game #1 (1983) (Activision) (Prototype) (PAL)"
 "Cart.Rarity" "Prototype"
 "Cart.Url" "http://www.atariprotos.com/2600/software/unknown1/unknown1.htm"
+"Bezel.Name" "Unknown Activision Game #1 (USA) (Proto)"
 ""
 
 "Cart.MD5" "805f9a32ef97ac25f999a25014dc5c23"
@@ -12150,6 +12331,7 @@
 "Cart.ModelNo" "DY-293005"
 "Cart.Name" "Jumping Jack (1983) (Dynamics) (PAL)"
 "Cart.Note" "AKA Bobby Is Going Home"
+"Bezel.Name" "Bobby Is Going Home (Europe)"
 ""
 
 "Cart.MD5" "80e52315919bd8a8b82a407ccd9bb13f"
@@ -12197,6 +12379,7 @@
 "Cart.ModelNo" "SS-030"
 "Cart.Name" "Skydiver (1983) (Suntek) (PAL)"
 "Cart.Note" "AKA Parachute"
+"Bezel.Name" "Parachute (Europe)"
 ""
 
 "Cart.MD5" "8108ad2679bd055afec0a35a1dca46a4"
@@ -12210,6 +12393,7 @@
 "Cart.Name" "Keystone (Tiger Vision)"
 "Cart.Note" "AKA Keystone Kapers"
 "Cart.Highscore" "{\"score_addresses\":[\"0x9a\",\"0x9b\",\"0x9c\"],\"score_digits\":6,\"variations_count\":1}"
+"Bezel.Name" "Keystone Kapers (USA)"
 ""
 
 "Cart.MD5" "81254ebce88fa46c4ff5a2f4d2bad538"
@@ -12319,6 +12503,7 @@
 "Cart.ModelNo" "SS-035"
 "Cart.Name" "Panda (1983) (Quest) (Suntek) (PAL)"
 "Cart.Note" "AKA Panda Chase"
+"Bezel.Name" "Panda Chase (Europe)"
 ""
 
 "Cart.MD5" "82c25d1c35e6ac6f893d1d7c2fc2f9c8"
@@ -12376,6 +12561,7 @@
 "Cart.ModelNo" "043.151 0, 874.382 5"
 "Cart.Name" "Die hungrigen Froesche (1983) (Quelle) (PAL)"
 "Cart.Note" "AKA Frogs and Flies"
+"Bezel.Name" "Frogs and Flies (USA)"
 ""
 
 "Cart.MD5" "835759ff95c2cdc2324d7c1e7c5fa237"
@@ -12463,6 +12649,7 @@
 "Cart.Name" "Unknown Activision Game (10-22-1982) (Activision) (Prototype)"
 "Cart.Rarity" "Prototype"
 "Cart.Url" "http://www.atariprotos.com/2600/software/unknown1/unknown1.htm"
+"Bezel.Name" "Unknown Activision Game #1 (USA) (Proto)"
 ""
 
 "Cart.MD5" "84290e333ff7567c2380f179430083b8"
@@ -12486,6 +12673,7 @@
 "Cart.Name" "Bingo (1983) (CCE) (PAL)"
 "Cart.Note" "AKA Dice Puzzle"
 "Display.Phosphor" "YES"
+"Bezel.Name" "Dice Puzzle (Europe)"
 ""
 
 "Cart.MD5" "8454ed9787c9d8211748ccddb673e920"
@@ -12494,6 +12682,7 @@
 "Cart.Name" "Spiderdroid (1987) (Froggo)"
 "Cart.Note" "AKA Amidar"
 "Display.Phosphor" "YES"
+"Bezel.Name" "Amidar (USA)"
 ""
 
 "Cart.MD5" "8490e1014c2baa0d3a3a08854e5d68b3"
@@ -12565,6 +12754,7 @@
 "Cart.Name" "Super-Ferrari (Jone Yuan)"
 "Cart.Note" "AKA Enduro"
 "Cart.Highscore" "{\"score_addresses\":[\"0xaa\",\"0xa9\",\"0xa8\"],\"score_digits\":6,\"special_address\":\"0xad\",\"special_label\":\"Day\",\"variations_count\":1}"
+"Bezel.Name" "Enduro (USA)"
 ""
 
 "Cart.MD5" "85564dd0665aa0a1359037aef1a48d58"
@@ -12573,6 +12763,7 @@
 "Cart.Name" "Laser Base (1983) (ITT Family Games) (PAL) [a]"
 "Cart.Note" "AKA The End of the World (Perry Rhodan-Serie)"
 "Display.Phosphor" "YES"
+"Bezel.Name" "World End (Europe)"
 ""
 
 "Cart.MD5" "8556b42aa05f94bc29ff39c39b11bff4"
@@ -12653,6 +12844,7 @@
 "Controller.Right" "DRIVING"
 "Display.Phosphor" "YES"
 "Display.PPBlend" "30"
+"Bezel.Name" "Asteroids (USA)"
 ""
 
 "Cart.MD5" "862cf669cbced78f9ed31a5d375b2ebe"
@@ -13027,6 +13219,7 @@
 "Cart.MD5" "8ad3b8e7436816db03e7824406bdc670"
 "Cart.Manufacturer" "Edu Games - Edu Juegos"
 "Cart.Name" "Galaxian (Edu Games) (PAL)"
+"Display.Format" "NTSC50"
 ""
 
 "Cart.MD5" "8af58a9b90b25907da0251ec0facf3b8"
@@ -13164,6 +13357,7 @@
 "Cart.Name" "Teddy Apple (1983) (Home Vision) (PAL)"
 "Cart.Note" "AKA Open, Sesame!"
 "Display.Phosphor" "YES"
+"Bezel.Name" "Open Sesame (Europe)"
 ""
 
 "Cart.MD5" "8c36ed2352801031516695d1eeefe617"
@@ -13280,6 +13474,7 @@
 "Cart.Manufacturer" "Artkaris Software"
 "Cart.Name" "Ms Pac-Man (1986) (Artkaris) (PAL)"
 "Cart.Note" "AKA Ms. Pac-Man"
+"Bezel.Name" "Ms. Pac-Man (USA)"
 ""
 
 "Cart.MD5" "8df4be9ddc54ac363b13dc57ceaf161a"
@@ -13348,6 +13543,7 @@
 "Cart.ModelNo" "343.173 1"
 "Cart.Name" "Feuerwehr im Einsatz (1983) (Quelle) (PAL)"
 "Cart.Note" "AKA Fire Fighter"
+"Bezel.Name" "Fire Fighter (USA)"
 ""
 
 "Cart.MD5" "8e822b39a71c84ac875f0107fb61d6f0"
@@ -13458,6 +13654,7 @@
 "Cart.Name" "Hili Ball (1983) (Quelle) (PAL)"
 "Cart.Note" "AKA Racquetball"
 "Display.Phosphor" "YES"
+"Bezel.Name" "Racquetball (USA)"
 ""
 
 "Cart.MD5" "8febdd9142960d084ab6eeb1d3e88969"
@@ -13479,6 +13676,7 @@
 "Cart.Note" "Pitfall Harry's Jungle Adventure (Jungle Runner)"
 "Cart.Rarity" "Prototype"
 "Cart.Url" "http://www.atariprotos.com/2600/software/pitfall/pitfall.htm"
+"Bezel.Name" "Pitfall! - Pitfall Harry's Jungle Adventure (USA)"
 ""
 
 "Cart.MD5" "9048ccb7e0802cd8fa5bfc2609f292d8"
@@ -13633,6 +13831,7 @@
 "Cart.ModelNo" "CA282"
 "Cart.Name" "Great Escape (1983) (Bomb)"
 "Cart.Note" "AKA Asteroid Fire"
+"Bezel.Name" "Asteroid Fire (Europe)"
 ""
 
 "Cart.MD5" "927d422d6335018da469a9a07cd80390"
@@ -13690,6 +13889,7 @@
 "Cart.MD5" "93096a1038cd558ed0b48741bbf17c64"
 "Cart.Manufacturer" "Fotomania"
 "Cart.Name" "Pac-Man (Fotomania)"
+"Bezel.Name" "Pac-Man (Atari) (USA)"
 ""
 
 "Cart.MD5" "931b91a8ea2d39fe4dca1a23832b591a"
@@ -13746,6 +13946,7 @@
 "Cart.Name" "Dishaster (1983) (ZiMAG)"
 "Cart.Note" "AKA Dancing Plate"
 "Display.Phosphor" "YES"
+"Bezel.Name" "Dancing Plate (Europe)"
 ""
 
 "Cart.MD5" "93acd5020ae8eb5673601e2edecbc158"
@@ -13761,6 +13962,7 @@
 "Cart.Note" "Hack of Amidar"
 "Cart.Rarity" "Hack"
 "Display.Phosphor" "YES"
+"Bezel.Name" "Amidar (USA)"
 ""
 
 "Cart.MD5" "93c4b910f7649b3e998bb6d8527c6f4a"
@@ -13789,6 +13991,7 @@
 "Cart.Name" "Billard (1983) (Quelle) (PAL)"
 "Cart.Note" "AKA Trick Shot"
 "Display.Phosphor" "YES"
+"Bezel.Name" "Trick Shot (USA)"
 ""
 
 "Cart.MD5" "93db185c3b3dc382f3aecd6a2fea7fd9"
@@ -14026,6 +14229,7 @@
 "Cart.Note" "Hack of Pitfall!"
 "Cart.Rarity" "Hack"
 "Cart.Highscore" "{\"score_addresses\":[\"0xd5\",\"0xd6\",\"0xd7\"],\"score_digits\":6,\"variations_count\":1}"
+"Bezel.Name" "Pitfall! - Pitfall Harry's Jungle Adventure (USA)"
 ""
 
 "Cart.MD5" "966b11d3c147d894dd9e4ebb971ea309"
@@ -14166,6 +14370,7 @@
 "Cart.Name" "Lunar Attack (2002) (Steve Engelhardt) (Hack)"
 "Cart.Note" "Hack of Z-Tack"
 "Cart.Rarity" "Hack"
+"Bezel.Name" "Base Attack (Europe)"
 ""
 
 "Cart.MD5" "97d079315c09796ff6d95a06e4b70171"
@@ -14578,6 +14783,7 @@
 "Cart.Name" "Star Wars - Ewok Adventure (1983) (Parker Bros) (Prototype) (PAL) (16K)"
 "Cart.Rarity" "Prototype"
 "Cart.Url" "http://www.atariprotos.com/2600/software/ewok/ewok.htm"
+"Bezel.Name" "Star Wars - Return of the Jedi - Ewok Adventure (USA) (Proto)"
 ""
 
 "Cart.MD5" "9de0d45731f90a0a922ab09228510393"
@@ -14606,6 +14812,7 @@
 "Cart.Name" "Space Treat Deluxe (2003)"
 "Cart.Rarity" "Homebrew"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=125"
+"Bezel.Name" "Space Treat Deluxe (USA) (Unl)"
 ""
 
 "Cart.MD5" "9e192601829f5f5c2d3b51f8ae25dbe5"
@@ -14628,6 +14835,7 @@
 "Cart.Name" "Grand Prize (Funvision)"
 "Cart.Note" "AKA Enduro"
 "Cart.Highscore" "{\"score_addresses\":[\"0xaa\",\"0xa9\",\"0xa8\"],\"score_digits\":6,\"special_address\":\"0xad\",\"special_label\":\"Day\",\"variations_count\":1}"
+"Bezel.Name" "Enduro (USA)"
 ""
 
 "Cart.MD5" "9e5007131695621d06902ab3c960622a"
@@ -14904,6 +15112,7 @@
 "Cart.Name" "Kaystone Kapers (1983) (Digitel)"
 "Cart.Note" "AKA Keystone Kapers"
 "Cart.Highscore" "{\"score_addresses\":[\"0x9a\",\"0x9b\",\"0x9c\"],\"score_digits\":6,\"variations_count\":1}"
+"Bezel.Name" "Keystone Kapers (USA)"
 ""
 
 "Cart.MD5" "a184846d8904396830951217b47d13d9"
@@ -14930,6 +15139,7 @@
 "Cart.ModelNo" "176.543 7"
 "Cart.Name" "Der Vielfrass (1983) (Quelle) (PAL)"
 "Cart.Note" "AKA Fast Food"
+"Bezel.Name" "Fast Food (USA)"
 ""
 
 "Cart.MD5" "a1ead9c181d67859aa93c44e40f1709c"
@@ -14942,6 +15152,7 @@
 "Cart.ModelNo" "700.223 1 - 781627"
 "Cart.Name" "Der moderne Ritter (1983) (Quelle) (PAL)"
 "Cart.Note" "AKA Fast Eddie"
+"Bezel.Name" "Fast Eddie (USA)"
 ""
 
 "Cart.MD5" "a204cd4fb1944c86e800120706512a64"
@@ -15022,6 +15233,7 @@
 "Cart.MD5" "a2aae759e4e76f85c8afec3b86529317"
 "Cart.Name" "Boom Bang (Unknown)"
 "Cart.Note" "AKA Crackpots"
+"Bezel.Name" "Crackpots (USA)"
 ""
 
 "Cart.MD5" "a2d7cc2e5419a9e4ab91fdb26339b726"
@@ -15068,6 +15280,7 @@
 "Cart.Highscore" "{\"score_addresses\":[\"0xaa\",\"0xab\"],\"variations_address\":\"0xa8\",\"variations_count\":8}"
 "Controller.Left" "JOYSTICK"
 "Controller.Right" "JOYSTICK"
+"Bezel.Name" "Circus Atari (USA)"
 ""
 
 "Cart.MD5" "a310494ad5ba2b5b221a30d7180a0336"
@@ -15129,6 +15342,7 @@
 "Cart.ModelNo" "873.790 0"
 "Cart.Name" "Eishockey-Fieber (1983) (Quelle) (PAL)"
 "Cart.Note" "AKA Ice Hockey"
+"Bezel.Name" "Ice Hockey (USA)"
 ""
 
 "Cart.MD5" "a3f8aebb38182749cb8da85cfbc63d7c"
@@ -15390,6 +15604,7 @@
 "Cart.ModelNo" "PGP238"
 "Cart.Name" "Gangster (Ariola) (PAL)"
 "Cart.Note" "AKA Outlaw"
+"Bezel.Name" "Outlaw (USA)"
 ""
 
 "Cart.MD5" "a7673809068062106db8e9d10b56a5b3"
@@ -15483,6 +15698,7 @@
 "Cart.Name" "Console Wars (Greg Thompson) (Hack)"
 "Cart.Note" "Hack of Space Jockey"
 "Cart.Rarity" "Hack"
+"Bezel.Name" "Space Jockey (USA)"
 ""
 
 "Cart.MD5" "a83b070b485cf1fb4d5a48da153fdf1a"
@@ -15663,6 +15879,7 @@
 "Cart.Note" "Genesis controller (C is extra kick modes)"
 "Cart.Rarity" "Hack of Kung Fu Master"
 "Controller.Left" "GENESIS"
+"Bezel.Name" "Kung-Fu Master (USA)"
 ""
 
 "Cart.MD5" "aa1c41f86ec44c0a44eb64c332ce08af"
@@ -15731,6 +15948,7 @@
 "Cart.Note" "Pitfall Harry's Jungle Adventure (Jungle Runner)"
 "Cart.Rarity" "Prototype"
 "Cart.Url" "http://www.atariprotos.com/2600/software/pitfall/pitfall.htm"
+"Bezel.Name" "Pitfall! - Pitfall Harry's Jungle Adventure (USA)"
 ""
 
 "Cart.MD5" "aaea37b65db9e492798f0105a6915e96"
@@ -15750,6 +15968,7 @@
 "Cart.Manufacturer" "ITT Family Games"
 "Cart.Name" "Wilma Wanderer (1983) (ITT Family Games) (PAL)"
 "Cart.Note" "AKA Lilly Adventure"
+"Bezel.Name" "Lilly Adventure (Europe)"
 ""
 
 "Cart.MD5" "ab2cfcaad3daaf673b2b14fdbb8dac33"
@@ -15849,6 +16068,7 @@
 "Cart.Note" "Hack of Atlantis"
 "Cart.Rarity" "Hack"
 "Cart.Highscore" "{\"score_addresses\":[\"0xa3\",\"0xa2\"],\"score_digits\":6,\"score_trailing_zeroes\":2,\"variations_address\":\"0x8d\",\"variations_count\":4,\"variations_zero_based\":true}"
+"Bezel.Name" "Atlantis (USA)"
 ""
 
 "Cart.MD5" "ac26d7d37248d1d8eac5eccacdbef8db"
@@ -15978,6 +16198,7 @@
 "Cart.ModelNo" "495.463 2 - 746381"
 "Cart.Name" "Angriff der Luftflotten (1983) (Quelle) (PAL)"
 "Cart.Note" "AKA Paris Attack, M.A.D."
+"Bezel.Name" "M.A.D. (Europe)"
 ""
 
 "Cart.MD5" "adfbd2e8a38f96e03751717f7422851d"
@@ -16131,6 +16352,7 @@
 "Cart.Name" "Ant Party (32 in 1) (1988) (Atari) (PAL)"
 "Cart.Note" "AKA Cosmic Swarm"
 "Display.Phosphor" "YES"
+"Bezel.Name" "Cosmic Swarm (USA)"
 ""
 
 "Cart.MD5" "afe776db50e3378cd6f29c7cdd79104a"
@@ -16280,6 +16502,7 @@
 "Cart.ModelNo" "83-215"
 "Cart.Name" "Dream Flight (1983) (Goliath) (PAL)"
 "Cart.Note" "AKA Nightmare"
+"Bezel.Name" "Nightmare (Europe)"
 ""
 
 "Cart.MD5" "b1486e12de717013376447ac6f7f3a80"
@@ -16307,6 +16530,7 @@
 "Cart.ModelNo" "377.943 6"
 "Cart.Name" "Stopp die Gangster (1983) (Quelle) (PAL)"
 "Cart.Note" "AKA Gangster Alley"
+"Bezel.Name" "Gangster Alley (USA)"
 ""
 
 "Cart.MD5" "b182d9708e00709830caab9cf8205ca0"
@@ -16341,6 +16565,7 @@
 "Cart.Name" "Mario's Bros. (1983) (CCE)"
 "Cart.Note" "AKA Mario Bros."
 "Cart.Highscore" "{\"score_addresses\":[\"0x89\",\"0x8a\"],\"score_digits\":6,\"score_trailing_zeroes\":2,\"variations_address\":\"0x80\",\"variations_count\":8,\"variations_zero_based\":true}"
+"Bezel.Name" "Mario Bros. (USA)"
 ""
 
 "Cart.MD5" "b1e2d5dc1353af6d56cd2fe7cfe75254"
@@ -16389,6 +16614,7 @@
 "Cart.ModelNo" "CX2642"
 "Cart.Name" "Hunt & Score (1978) (Atari) (PAL) (4K)"
 "Cart.Note" "Uses the Keyboard Controllers"
+"Bezel.Name" "Hunt & Score (USA)"
 ""
 
 "Cart.MD5" "b2737034f974535f5c0c6431ab8caf73"
@@ -16410,6 +16636,7 @@
 "Cart.ModelNo" "CX26163P"
 "Cart.Name" "UFO (32 in 1) (1988) (Atari) (PAL) (4K)"
 "Cart.Note" "AKA Space Jockey"
+"Bezel.Name" "Space Jockey (USA)"
 ""
 
 "Cart.MD5" "b29359f7de62fed6e6ad4c948f699df8"
@@ -16530,6 +16757,14 @@
 "Cart.Name" "Name This Game (Unknown) (PAL)"
 ""
 
+"Cart.MD5" "b3e1987b96318269b5ac9f06d22cd48d"
+"Cart.Manufacturer" "Edu Games - Edu Juegos"
+"Cart.Name" "River Raid I"
+"Cart.Note" "AKA River Raid"
+"Display.Format" "NTSC50"
+"Bezel.Name" "River Raid (USA)"
+""
+
 "Cart.MD5" "b4030c38a720dd84b84178b6ce1fc749"
 "Cart.Manufacturer" "M Network - APh Technological Consulting, Kevin Miller"
 "Cart.ModelNo" "MT5687"
@@ -16563,6 +16798,7 @@
 "Cart.Name" "Bogey Blaster (1988) (Telegames) (PAL)"
 "Cart.Note" "AKA Air Raiders"
 "Cart.Rarity" "Rare"
+"Bezel.Name" "Air Raiders (USA)"
 ""
 
 "Cart.MD5" "b451307b8b5e29f1c5f2cf064f6c7227"
@@ -16609,6 +16845,7 @@
 "Cart.Name" "Autorennen (Ariola) (PAL)"
 "Cart.Note" "AKA Grand Prix"
 "Cart.Highscore" "{\"notes\":\"Time/score shows extra digit\",\"score_addresses\":[\"0xeb\",\"0xec\",\"0xed\"],\"score_digits\":5,\"score_inverted\":true,\"variations_address\":\"0x80\",\"variations_count\":4,\"variations_zero_based\":true}"
+"Bezel.Name" "Grand Prix (USA)"
 ""
 
 "Cart.MD5" "b50ae55aac93fbed258bc5a873edd2cb"
@@ -16697,6 +16934,7 @@
 "Cart.MD5" "b65d4a38d6047735824ee99684f3515e"
 "Cart.Manufacturer" "Dynacom"
 "Cart.Name" "MegaBoy (Dynacom)"
+"Bezel.Name" "MegaBoy (Brazil)"
 ""
 
 "Cart.MD5" "b676a9b7094e0345a76ef027091d916b"
@@ -16758,6 +16996,7 @@
 "Cart.ModelNo" "176.433 1"
 "Cart.Name" "Landungskommando (1983) (Quelle) (PAL)"
 "Cart.Note" "AKA Strategy X"
+"Bezel.Name" "Strategy (USA)"
 ""
 
 "Cart.MD5" "b76fbadc8ffb1f83e2ca08b6fb4d6c9f"
@@ -16875,6 +17114,7 @@
 "Cart.Name" "Pitfall! (Unknown)"
 "Cart.Note" "Pitfall Harry's Jungle Adventure"
 "Cart.Highscore" "{\"score_addresses\":[\"0xd5\",\"0xd6\",\"0xd7\"],\"score_digits\":6,\"variations_count\":1}"
+"Bezel.Name" "Pitfall! - Pitfall Harry's Jungle Adventure (USA)"
 ""
 
 "Cart.MD5" "b879e13fd99382e09bcaf1d87ad84add"
@@ -16999,6 +17239,7 @@
 "Controller.PaddlesXCenter" "10"
 "Controller.PaddlesYCenter" "10"
 "Controller.MouseAxis" "01 55"
+"Bezel.Name" "G.I. Joe - Cobra Strike (USA)"
 ""
 
 "Cart.MD5" "b9f9c0fed0db08c34346317f3957a945"
@@ -17221,6 +17462,7 @@
 "Cart.ModelNo" "292.651 7"
 "Cart.Name" "Weltraumtunnel (1983) (Quelle) (PAL)"
 "Cart.Note" "AKA Innerspace"
+"Bezel.Name" "Laser Gates (USA)"
 ""
 
 "Cart.MD5" "bce93984b920e9b56cf24064f740fe78"
@@ -17234,6 +17476,7 @@
 "Cart.ModelNo" "SS-009"
 "Cart.Name" "Bermuda, The (1983) (Rainbow Vision) (PAL)"
 "Cart.Note" "AKA River Raid"
+"Bezel.Name" "River Raid (USA)"
 ""
 
 "Cart.MD5" "bd1bd6f6b928df17a702def0302f46f4"
@@ -17244,6 +17487,7 @@
 "Cart.Manufacturer" "Telegames"
 "Cart.Name" "Night Stalker (1988) (Telegames) (PAL)"
 "Cart.Note" "AKA Dark Cavern"
+"Bezel.Name" "Dark Cavern (USA)"
 ""
 
 "Cart.MD5" "bd430c2193045c68d1a20a018a976248"
@@ -17304,6 +17548,7 @@
 "Cart.Name" "Super-Cowboy beim Rodeo (1983) (Quelle) (PAL)"
 "Cart.Note" "AKA Stampede"
 "Cart.Highscore" "{\"score_addresses\":[\"0xbc\",\"0xb8\"],\"variations_address\":\"0x99\",\"variations_count\":8,\"variations_zero_based\":true}"
+"Bezel.Name" "Stampede (USA)"
 ""
 
 "Cart.MD5" "bdf1996e2dd64baf8eff5511811ca6ca"
@@ -17609,6 +17854,7 @@
 "Cart.Note" "AKA Stunt Cycle"
 "Cart.Rarity" "Prototype"
 "Cart.Url" "http://www.atariprotos.com/2600/software/dukes/dukes.htm"
+"Bezel.Name" "Stunt Cycle (USA) (Proto)"
 ""
 
 "Cart.MD5" "c1cb228470a87beb5f36e90ac745da26"
@@ -17630,6 +17876,7 @@
 "Cart.Manufacturer" "Telegames"
 "Cart.Name" "Deadly Discs (1988) (Telegames) (PAL)"
 "Cart.Note" "AKA TRON - Deadly Discs"
+"Bezel.Name" "TRON - Deadly Discs (USA)"
 ""
 
 "Cart.MD5" "c1f9f70ae527093b6af3b6531860e75d"
@@ -17698,6 +17945,7 @@
 "Cart.Name" "Star Wars - Ewok Adventure (Thomas Jentzsch) (Prototype)"
 "Cart.Note" "NTSC Conversion"
 "Cart.Rarity" "Homebrew"
+"Bezel.Name" "Star Wars - Return of the Jedi - Ewok Adventure (USA) (Proto)"
 ""
 
 "Cart.MD5" "c2778507b83d9540e9be5713758ff945"
@@ -17894,6 +18142,7 @@
 "Cart.Manufacturer" "Funvision - Fund. International Co."
 "Cart.Name" "Mighty Mouse (Funvision)"
 "Cart.Note" "AKA Gopher"
+"Bezel.Name" "Gopher (USA)"
 ""
 
 "Cart.MD5" "c482f8eebd45e0b8d479d9b71dd72bb8"
@@ -18053,6 +18302,7 @@
 "Cart.Name" "Bogey Blaster (1988) (Telegames)"
 "Cart.Note" "AKA Air Raiders"
 "Cart.Rarity" "Rare"
+"Bezel.Name" "Air Raiders (USA)"
 ""
 
 "Cart.MD5" "c5a76bafc4676edb76e0126fb9f0fb2d"
@@ -18156,6 +18406,7 @@
 "Cart.Name" "Space Raid (Jone Yuan)"
 "Cart.Note" "AKA MegaMania"
 "Cart.Highscore" "{\"score_addresses\":[\"0xdb\",\"0xdc\",\"0xdd\"],\"score_digits\":6,\"variations_address\":\"0x80\",\"variations_count\":4,\"variations_zero_based\":true}"
+"Bezel.Name" "MegaMania - A Space Nightmare (USA)"
 ""
 
 "Cart.MD5" "c68a6bafb667bad2f6d020f879be1d11"
@@ -18256,6 +18507,7 @@
 "Cart.ModelNo" "101"
 "Cart.Name" "Tank Brigade (1983) (Panda)"
 "Cart.Note" "AKA Phantom Tank"
+"Bezel.Name" "Phantom Tank (Europe)"
 ""
 
 "Cart.MD5" "c7900a7fe95a47eef3b325072ad2c232"
@@ -18432,6 +18684,7 @@
 "Cart.Name" "UFO Patrol (1983) (Suntek) (PAL)"
 "Cart.Note" "AKA X'Mission"
 "Display.Phosphor" "YES"
+"Bezel.Name" "X'Mission (Europe)"
 ""
 
 "Cart.MD5" "ca53fc8fd8b3c4a7df89ac86b222eba0"
@@ -18512,6 +18765,7 @@
 "Cart.ModelNo" "554-37 338"
 "Cart.Name" "Peter Penguin (1983) (ITT Family Games) (PAL)"
 "Cart.Note" "AKA Frisco (Pumuckl-Serie)"
+"Bezel.Name" "Frisco (Europe)"
 ""
 
 "Cart.MD5" "cb8399dc0d409ff1f531ef86b3b34953"
@@ -18538,6 +18792,7 @@
 "Cart.Manufacturer" "Parker Brothers - JWDA, Todd Marshall, Robin McDaniel, Ray Miller"
 "Cart.ModelNo" "931513"
 "Cart.Name" "Star Wars - Death Star Battle (1983) (Parker Bros) (PAL)"
+"Bezel.Name" "Star Wars - Return of the Jedi - Death Star Battle (USA)"
 ""
 
 "Cart.MD5" "cb9e924160a4df520456fbe745d61959"
@@ -18564,6 +18819,7 @@
 "Cart.Manufacturer" "CCE"
 "Cart.Name" "Super Voleyball (CCE)"
 "Cart.Note" "AKA RealSports Volleyball"
+"Bezel.Name" "RealSports Volleyball (USA)"
 ""
 
 "Cart.MD5" "cbced209dd0575a27212d3eee6aee3bc"
@@ -18620,6 +18876,7 @@
 "Cart.Name" "Super-Cowboy beim Rodeo (1983) (Quelle) (PAL) (4K)"
 "Cart.Note" "AKA Stampede"
 "Cart.Highscore" "{\"score_addresses\":[\"0xbc\",\"0xb8\"],\"variations_address\":\"0x99\",\"variations_count\":8,\"variations_zero_based\":true}"
+"Bezel.Name" "Stampede (USA)"
 ""
 
 "Cart.MD5" "cc3d942c6958bd16b1c602623f59e6e1"
@@ -18701,6 +18958,7 @@
 "Cart.ModelNo" "746422"
 "Cart.Name" "Hot Wave (Double-Game Package) (1983) (Otto Versand) (PAL)"
 "Cart.Note" "AKA Ram It"
+"Bezel.Name" "Ram It (USA)"
 ""
 
 "Cart.MD5" "ccd92a269a4c2bd64d58cf2c0114423c"
@@ -18760,6 +19018,7 @@
 "Cart.ModelNo" "PGP235"
 "Cart.Name" "Fussball (Ariola) (PAL)"
 "Cart.Note" "AKA International Soccer"
+"Bezel.Name" "International Soccer (USA)"
 ""
 
 "Cart.MD5" "cd5af682685cfecbc25a983e16b9d833"
@@ -18769,6 +19028,12 @@
 "Cart.Note" "AKA Saboteur"
 "Cart.Rarity" "Prototype"
 "Cart.Url" "http://www.atariprotos.com/2600/software/ateam/ateam.htm"
+""
+
+"Cart.MD5" "cd68a9f79d4822a2e8f694d551642213"
+"Cart.Manufacturer" "Edu Games - Edu Juegos"
+"Cart.Name" "Enduro"
+"Display.Format" "NTSC50"
 ""
 
 "Cart.MD5" "cd88ef1736497288c4533bcca339f881"
@@ -18860,6 +19125,7 @@
 "Cart.Manufacturer" "Home Vision - Gem International Corp. - VDI"
 "Cart.Name" "Jacky Jump (1983) (Home Vision) (PAL)"
 "Cart.Note" "AKA Bobby Is Going Home"
+"Bezel.Name" "Bobby Is Going Home (Europe)"
 ""
 
 "Cart.MD5" "ce4bbe11d682c15a490ae15a4a8716cf"
@@ -18963,6 +19229,7 @@
 "Cart.ModelNo" "SS-009"
 "Cart.Name" "Bermuda, The (1983) (Rainbow Vision) (PAL) [a]"
 "Cart.Note" "AKA River Raid"
+"Bezel.Name" "River Raid (USA)"
 ""
 
 "Cart.MD5" "cf507910d6e74568a68ac949537bccf9"
@@ -18978,6 +19245,7 @@
 "Cart.ModelNo" "C-859"
 "Cart.Name" "MASH (1983) (CCE)"
 "Cart.Note" "AKA M.A.S.H"
+"Bezel.Name" "M.A.S.H (USA)"
 ""
 
 "Cart.MD5" "cf9069f92a43f719974ee712c50cd932"
@@ -19327,6 +19595,7 @@
 "Cart.Name" "Pitfall (1984) (Supergame)"
 "Cart.Note" "AKA Pitfall!"
 "Cart.Highscore" "{\"score_addresses\":[\"0xd5\",\"0xd6\",\"0xd7\"],\"score_digits\":6,\"variations_count\":1}"
+"Bezel.Name" "Pitfall! - Pitfall Harry's Jungle Adventure (USA)"
 ""
 
 "Cart.MD5" "d214c7a734e133a5c18e93229435b57a"
@@ -19334,6 +19603,7 @@
 "Cart.Name" "Mickey (1984) (Digivision)"
 "Cart.Note" "AKA Sorcerer's Apprentice"
 "Cart.Type" "UASW"
+"Bezel.Name" "Sorcerer's Apprentice (USA)"
 ""
 
 "Cart.MD5" "d223bc6f13358642f02ddacfaf4a90c9"
@@ -19458,6 +19728,7 @@
 "Cart.Manufacturer" "Funvision - Fund. Int'l Co."
 "Cart.Name" "Spider Monster (1982) (Funvision) (PAL)"
 "Cart.Note" "AKA Spider Kong"
+"Bezel.Name" "Inca Gold - Spider Monster (Europe)"
 ""
 
 "Cart.MD5" "d3bb42228a6cd452c111c1932503cc03"
@@ -19474,6 +19745,7 @@
 "Cart.Name" "Star Wars - Ewok Adventure (1983) (Parker Bros) (Prototype)"
 "Cart.Rarity" "Prototype"
 "Cart.Url" "http://www.atariprotos.com/2600/software/ewok/ewok.htm"
+"Bezel.Name" "Star Wars - Return of the Jedi - Ewok Adventure (USA) (Proto)"
 ""
 
 "Cart.MD5" "d45bf71871b196022829aa3b96bfcfd4"
@@ -19502,6 +19774,7 @@
 "Cart.ModelNo" "206"
 "Cart.Name" "Westward Ho (1982) (PlayAround) (PAL)"
 "Cart.Note" "AKA Custer's Revenge"
+"Bezel.Name" "Custer's Revenge (USA)"
 ""
 
 "Cart.MD5" "d4806775693fcaaa24cf00fc00edcdf3"
@@ -19579,6 +19852,7 @@
 "Controller.PaddlesXCenter" "10"
 "Controller.PaddlesYCenter" "10"
 "Controller.MouseAxis" "01 55"
+"Bezel.Name" "G.I. Joe - Cobra Strike (USA)"
 ""
 
 "Cart.MD5" "d57913088e0c49ac3a716bf9837b284f"
@@ -19616,6 +19890,7 @@
 "Cart.Manufacturer" "Activision, Carol Shaw"
 "Cart.ModelNo" "EAX-020"
 "Cart.Name" "River Raid (1982) (Activision) (SECAM)"
+"Display.Format" "SECAM"
 ""
 
 "Cart.MD5" "d5e27051512c1e7445a9bf91501bda09"
@@ -19712,6 +19987,7 @@
 "Cart.ModelNo" "CA283"
 "Cart.Name" "Z-Tack (1983) (Bomb) (PAL)"
 "Cart.Note" "AKA Base Attack"
+"Bezel.Name" "Base Attack (Europe)"
 ""
 
 "Cart.MD5" "d726621c676552afa503b7942af5afa2"
@@ -19842,6 +20118,7 @@
 "Cart.Manufacturer" "CCE"
 "Cart.Name" "Sea Hunt (CCE)"
 "Cart.Note" "AKA Skindiver"
+"Bezel.Name" "Skindiver (Europe)"
 ""
 
 "Cart.MD5" "d8b2c81cea5af04f795eb3dc6573d72b"
@@ -20043,6 +20320,7 @@
 "Cart.Note" "Hack of Dark Mage"
 "Cart.Rarity" "Hack"
 "Display.Phosphor" "YES"
+"Bezel.Name" "Lord of the Rings, The - Fellowship of the Ring (USA) (Unl)"
 ""
 
 "Cart.MD5" "dafc3945677ccc322ce323d1e9930beb"
@@ -20125,6 +20403,7 @@
 "Cart.Name" "Pink Floyd (Kyle Pittman) (PD)"
 "Cart.Note" "Hack of Adventures of Tron (Mattel)"
 "Cart.Rarity" "New Release (Hack)"
+"Bezel.Name" "Adventures of TRON (USA)"
 ""
 
 "Cart.MD5" "dbc8829ef6f12db8f463e30f60af209f"
@@ -20165,6 +20444,7 @@
 "Cart.ModelNo" "SS-033"
 "Cart.Name" "I.Q. Memory Teaser (1983) (Suntek) (PAL)"
 "Cart.Note" "AKA IQ 180"
+"Bezel.Name" "IQ 180 (Europe)"
 ""
 
 "Cart.MD5" "dc81c4805bf23959fcf2c649700b82bf"
@@ -20382,6 +20662,7 @@
 "Cart.Name" "Tom Boy (1983) (Rainbow Vision) (PAL)"
 "Cart.Note" "AKA Pitfall!"
 "Cart.Highscore" "{\"score_addresses\":[\"0xd5\",\"0xd6\",\"0xd7\"],\"score_digits\":6,\"variations_count\":1}"
+"Bezel.Name" "Pitfall! - Pitfall Harry's Jungle Adventure (USA)"
 ""
 
 "Cart.MD5" "de62f8a30298e2325249fe112ecb5c10"
@@ -20397,6 +20678,7 @@
 "Cart.Name" "Assault (1983) (Bomb)"
 "Cart.Note" "AKA Sky Alien"
 "Cart.Rarity" "Extremely Rare"
+"Bezel.Name" "Sky Alien (Europe)"
 ""
 
 "Cart.MD5" "de7a64108074098ba333cc0c70eef18a"
@@ -20453,6 +20735,7 @@
 "Cart.MD5" "df3e6a9b6927cf59b7afb626f6fd7eea"
 "Cart.Name" "Tuby Bird (Unknown) (PAL)"
 "Cart.Note" "AKA Dolphin"
+"Bezel.Name" "Dolphin (USA)"
 ""
 
 "Cart.MD5" "df40af244a8d68b492bfba9e97dea4d6"
@@ -20621,6 +20904,7 @@
 "Cart.ModelNo" "626.502 9 - 746381"
 "Cart.Name" "Top Gun (1983) (Quelle) (PAL)"
 "Cart.Note" "AKA Air Raiders"
+"Bezel.Name" "Air Raiders (USA)"
 ""
 
 "Cart.MD5" "e0cbfc33f4926022ccaf6d0d0e920a0e"
@@ -20685,6 +20969,7 @@
 "Cart.Name" "Misterious Thief, A (1983) (CCE)"
 "Cart.Note" "AKA A Mysterious Thief"
 "Display.Phosphor" "YES"
+"Bezel.Name" "Mysterious Thief, A (USA) (Proto)"
 ""
 
 "Cart.MD5" "e13c7627b2e136b9c449d9e8925b4547"
@@ -20738,6 +21023,7 @@
 "Cart.ModelNo" "SS-020"
 "Cart.Name" "Tuby Bird (1983) (Rainbow Vision) (PAL)"
 "Cart.Note" "AKA Dolphin"
+"Bezel.Name" "Dolphin (USA)"
 ""
 
 "Cart.MD5" "e18abe87035379c56b435bfe8175077b"
@@ -20829,6 +21115,7 @@
 "Cart.Note" "Journey to Rivendell (The Lord of the Rings I)"
 "Cart.Rarity" "Prototype"
 "Cart.Url" "http://www.atariprotos.com/2600/software/lotr/lotr.htm"
+"Bezel.Name" "Lord of the Rings, The - Journey to Rivendell (USA) (Proto)"
 ""
 
 "Cart.MD5" "e25e173740f7ecc0e23025445c4591f3"
@@ -20857,6 +21144,7 @@
 "Cart.Name" "Keystone Kappers (1983) (CCE) [a]"
 "Cart.Note" "AKA Keystone Kapers"
 "Cart.Highscore" "{\"score_addresses\":[\"0x9a\",\"0x9b\",\"0x9c\"],\"score_digits\":6,\"variations_count\":1}"
+"Bezel.Name" "Keystone Kapers (USA)"
 ""
 
 "Cart.MD5" "e2846af3e4d172b251ab77cbdd01761e"
@@ -20872,6 +21160,7 @@
 "Cart.Manufacturer" "Jone Yuan Telephonic Enterprise Co"
 "Cart.Name" "Catch Time (Jone Yuan)"
 "Cart.Note" "AKA Plaque Attack"
+"Bezel.Name" "Plaque Attack (USA)"
 ""
 
 "Cart.MD5" "e2b36d0781d5a5be64dad87fe20e0de3"
@@ -21007,6 +21296,7 @@
 "Cart.MD5" "e42b937c30c617241ca9e01e4510c3f6"
 "Cart.Name" "Pitfall! (No Walls Hack)"
 "Cart.Highscore" "{\"score_addresses\":[\"0xd5\",\"0xd6\",\"0xd7\"],\"score_digits\":6,\"variations_count\":1}"
+"Bezel.Name" "Pitfall! - Pitfall Harry's Jungle Adventure (USA)"
 ""
 
 "Cart.MD5" "e434c0e161dd3c3fb435eb6bad2e182c"
@@ -21111,6 +21401,7 @@
 "Cart.Manufacturer" "Funvision - Fund. Int'l Co."
 "Cart.Name" "Space War (1982) (Funvision) (PAL)"
 "Cart.Note" "AKA Condor Attack"
+"Bezel.Name" "Condor Attack (USA)"
 ""
 
 "Cart.MD5" "e51030251e440cffaab1ac63438b44ae"
@@ -21134,6 +21425,7 @@
 "Cart.MD5" "e5359cbbbff9c6d7fe8aeff5fb471b46"
 "Cart.Name" "Boom Bang (Unknown) [a1]"
 "Cart.Note" "AKA Crackpots"
+"Bezel.Name" "Crackpots (USA)"
 ""
 
 "Cart.MD5" "e549f1178e038fa88dc6d657dc441146"
@@ -21201,6 +21493,7 @@
 "Cart.Rarity" "Prototype"
 "Cart.Url" "http://www.atariprotos.com/2600/software/dragonfire/dragonfire.htm"
 "Display.Phosphor" "YES"
+"Bezel.Name" "Dragonfire (USA)"
 ""
 
 "Cart.MD5" "e5f17b3e62a21d0df1ca9aee1aa8c7c5"
@@ -21361,6 +21654,7 @@
 "Cart.Name" "Apples and Dolls (CCE)"
 "Cart.Note" "AKA Open, Sesame!"
 "Display.Phosphor" "YES"
+"Bezel.Name" "Open Sesame (Europe)"
 ""
 
 "Cart.MD5" "e74022cfe31ec8908844718dfbdedf7a"
@@ -21379,6 +21673,7 @@
 "Cart.Name" "Hey! Stop! (Jone Yuan)"
 "Cart.Note" "AKA Keystone Kapers"
 "Cart.Highscore" "{\"score_addresses\":[\"0x9a\",\"0x9b\",\"0x9c\"],\"score_digits\":6,\"variations_count\":1}"
+"Bezel.Name" "Keystone Kapers (USA)"
 ""
 
 "Cart.MD5" "e784a9d26707cfcd170a4c1c60422a72"
@@ -21386,6 +21681,7 @@
 "Cart.ModelNo" "147.443 6"
 "Cart.Name" "Gefecht im All (1983) (Quelle) (PAL)"
 "Cart.Note" "AKA Space Jockey"
+"Bezel.Name" "Space Jockey (USA)"
 ""
 
 "Cart.MD5" "e7864caaf9ec49ed67b1904ce8602690"
@@ -21640,6 +21936,7 @@
 "Cart.Name" "Wall Defender (HES) (PAL)"
 "Cart.Note" "AKA Wall Break (Planet Patrol if right difficulty = 'A')"
 "Cart.StartBank" "0"
+"Bezel.Name" "Wall Break (Europe)"
 ""
 
 "Cart.MD5" "eaf744185d5e8def899950ba7c6e7bb5"
@@ -21673,6 +21970,7 @@
 "Cart.ModelNo" "83-113"
 "Cart.Name" "Ground Zero (1983) (Goliath) (PAL)"
 "Cart.Note" "AKA River Raid"
+"Bezel.Name" "River Raid (USA)"
 ""
 
 "Cart.MD5" "eb503cc64c3560cd78b7051188b7ba56"
@@ -21702,6 +22000,7 @@
 "Cart.ModelNo" "EAZ-036-04"
 "Cart.Name" "H.E.R.O. (1984) (Activision) (SECAM)"
 "Cart.Highscore" "{\"score_addresses\":[\"0xb7\",\"0xb8\",\"0xb9\"],\"score_digits\":6,\"special_address\":\"0xf5\",\"special_bcd\":false,\"special_label\":\"Level\",\"special_zero_based\":true,\"variations_address\":\"0x80\",\"variations_count\":5,\"variations_zero_based\":true}"
+"Display.Format" "SECAM"
 ""
 
 "Cart.MD5" "eb92193f06b645df0b2a15d077ce435f"
@@ -21726,6 +22025,7 @@
 "Cart.Manufacturer" "JVP"
 "Cart.Name" "Bob Is Going Home (JVP)"
 "Cart.Note" "AKA Bobby Is Going Home"
+"Bezel.Name" "Bobby Is Going Home (Europe)"
 ""
 
 "Cart.MD5" "ebcbc8a181a738e13df6216e5c329230"
@@ -21741,6 +22041,7 @@
 "Cart.Name" "Extra Terrestrials (1984) (SSG)"
 "Cart.Note" "The only Canadian-designed and manufactured Atari 2600 game from the 1980's"
 "Cart.Rarity" "Extremely Rare"
+"Bezel.Name" "Extra Terrestrials (Canada)"
 ""
 
 "Cart.MD5" "ebdc5716b85c4ff44fa357cb697d6cef"
@@ -21777,6 +22078,7 @@
 "Cart.ModelNo" "876.482 1"
 "Cart.Name" "Landung in der Normandie (1983) (Quelle) (PAL)"
 "Cart.Note" "AKA Commando Raid"
+"Bezel.Name" "Commando Raid (USA)"
 ""
 
 "Cart.MD5" "ec44dcf2ddb4319962fc43b725a902e8"
@@ -21809,6 +22111,7 @@
 "Cart.Name" "Tom Boy (Unknown) "
 "Cart.Note" "AKA Pitfall!"
 "Cart.Highscore" "{\"score_addresses\":[\"0xd5\",\"0xd6\",\"0xd7\"],\"score_digits\":6,\"variations_count\":1}"
+"Bezel.Name" "Pitfall! - Pitfall Harry's Jungle Adventure (USA)"
 ""
 
 "Cart.MD5" "ecf51385384b468834611d44a8429c03"
@@ -21840,6 +22143,7 @@
 "Cart.ModelNo" "105"
 "Cart.Name" "Stunt Man (1983) (Panda)"
 "Cart.Note" "AKA Nightmare"
+"Bezel.Name" "Nightmare (Europe)"
 ""
 
 "Cart.MD5" "ed1306436ce237afc5a7ed3f77134202"
@@ -21852,6 +22156,7 @@
 "Cart.Manufacturer" "CCE"
 "Cart.Name" "Video Cube (CCE)"
 "Cart.Note" "AKA Atari Video Cube"
+"Bezel.Name" "Atari Video Cube (USA)"
 ""
 
 "Cart.MD5" "ed1a784875538c7871d035b7a98c2433"
@@ -21901,6 +22206,7 @@
 "Cart.Name" "Decathlon (1983) (Activision) (SECAM)"
 "Cart.Highscore" "{\"notes\":\"Decathlon & 100m dash share variation 1\",\"score_addresses\":[\"0x95\",\"0x96\"],\"variations_address\":\"0x80\",\"variations_bcd\":false,\"variations_count\":10,\"variations_zero_based\":true}"
 "Bezel.Name" "Activision Decathlon, The (USA)"
+"Display.Format" "SECAM"
 ""
 
 "Cart.MD5" "ede7e8bf865b0afb4744f86d13624f9a"
@@ -21958,6 +22264,7 @@
 "Cart.Name" "Unknown Activision Game (10-29-1982) (Activision) (Prototype)"
 "Cart.Rarity" "Prototype"
 "Cart.Url" "http://www.atariprotos.com/2600/software/unknown1/unknown1.htm"
+"Bezel.Name" "Unknown Activision Game #1 (USA) (Proto)"
 ""
 
 "Cart.MD5" "ee6cbedf6c0aac90faa0a8dbc093ffbe"
@@ -22343,6 +22650,7 @@
 "Cart.Name" "Steeplechase (1983) (Video Gems) (PAL)"
 "Console.RightDiff" "A"
 "Display.Phosphor" "YES"
+"Bezel.Name" "Steeplechase (Europe)"
 ""
 
 "Cart.MD5" "f1fe06ebe2900eac4cdd17799389a102"
@@ -22382,6 +22690,7 @@
 "Cart.Name" "Strahlen der Teufelsvoegel (1983) (Quelle) (PAL)"
 "Cart.Note" "AKA Atlantis"
 "Cart.Highscore" "{\"score_addresses\":[\"0xa3\",\"0xa2\"],\"score_digits\":6,\"score_trailing_zeroes\":2,\"variations_address\":\"0x8d\",\"variations_count\":4,\"variations_zero_based\":true}"
+"Bezel.Name" "Atlantis (USA)"
 ""
 
 "Cart.MD5" "f280976d69d6e27a48506bd6bad11dcd"
@@ -22488,6 +22797,7 @@
 "Cart.ModelNo" "708-111 - GN-040"
 "Cart.Name" "Cosmic Corridor (1983) (ZiMAG)"
 "Cart.Note" "AKA Space Tunnel"
+"Bezel.Name" "Space Tunnel (Europe)"
 ""
 
 "Cart.MD5" "f38358cd8f5ecfedffd5aca1aa939f18"
@@ -22524,6 +22834,7 @@
 "Cart.Highscore" "{\"score_addresses\":[\"0xaa\",\"0xab\"],\"variations_address\":\"0xa8\",\"variations_count\":8}"
 "Controller.Left" "JOYSTICK"
 "Controller.Right" "JOYSTICK"
+"Bezel.Name" "Circus Atari (USA)"
 ""
 
 "Cart.MD5" "f3f5f72bfdd67f3d0e45d097e11b8091"
@@ -22754,6 +23065,7 @@
 "Cart.Name" "I Want My Mommy (1983) (ZiMAG)"
 "Cart.Note" "AKA Open, Sesame!"
 "Display.Phosphor" "YES"
+"Bezel.Name" "Open Sesame (Europe)"
 ""
 
 "Cart.MD5" "f6a9ea814d15b85bffe980c927df606b"
@@ -22794,12 +23106,15 @@
 "Cart.ModelNo" "SS-015"
 "Cart.Name" "Catch Time (1983) (Rainbow Vision) (PAL)"
 "Cart.Note" "AKA Plaque Attack"
+"Bezel.Name" "Plaque Attack (USA)"
 ""
 
 "Cart.MD5" "f7048fa1f96360123ddae93cb3600ea2"
 "Cart.Manufacturer" "Fotomania"
 "Cart.Name" "Pitfall (Fotomania)"
 "Cart.Note" "AKA Pitfall!"
+"Cart.Highscore" "{\"score_addresses\":[\"0xd5\",\"0xd6\",\"0xd7\"],\"score_digits\":6,\"variations_count\":1}"
+"Bezel.Name" "Pitfall! - Pitfall Harry's Jungle Adventure (USA)"
 ""
 
 "Cart.MD5" "f70e3f3bb2d19ec2aaec8f78dc43744f"
@@ -22819,6 +23134,7 @@
 "Bezel.Name" "Space Treat (USA) (Unl)"
 "Cart.Rarity" "Homebrew"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=125"
+"Bezel.Name" "Space Treat Deluxe (USA) (Unl)"
 ""
 
 "Cart.MD5" "f724d3dd2471ed4cf5f191dbb724b69f"
@@ -22918,6 +23234,7 @@
 "Cart.Name" "Spiderman (1983) (Quelle) (PAL)"
 "Cart.Note" "AKA Spider-Man"
 "Cart.Highscore" "{\"score_addresses\":[\"0xec\",\"0xed\"],\"variations_address\":\"0xf5\",\"variations_count\":6}"
+"Bezel.Name" "Spider-Man (USA)"
 ""
 
 "Cart.MD5" "f7d6592dcb773c81c278140ed4d01669"
@@ -22967,6 +23284,7 @@
 "Cart.ModelNo" "SS-023"
 "Cart.Name" "Mole Hunter (1983) (Suntek) (PAL)"
 "Cart.Note" "AKA Topy"
+"Bezel.Name" "Topy (Europe)"
 ""
 
 "Cart.MD5" "f80cf77164079d774b9b0fae33dffca9"
@@ -23149,6 +23467,7 @@
 "Cart.ModelNo" "CX26163P"
 "Cart.Name" "Fishing (32 in 1) (1988) (Atari) (PAL) (4K)"
 "Cart.Note" "AKA Fishing Derby"
+"Bezel.Name" "Fishing Derby (USA)"
 ""
 
 "Cart.MD5" "f9cef637ea8e905a10e324e582dd39c2"
@@ -23226,6 +23545,7 @@
 "Cart.ModelNo" "707-111 - GN-030"
 "Cart.Name" "Tanks But No Tanks (1983) (ZiMAG)"
 "Cart.Note" "AKA Phantom Tank"
+"Bezel.Name" "Phantom Tank (Europe)"
 ""
 
 "Cart.MD5" "fa7ce62e7fd77e02b3e2198d70742f80"
@@ -23243,6 +23563,7 @@
 "Cart.Note" "Hack of Megamania"
 "Cart.Rarity" "Hack"
 "Cart.Highscore" "{\"score_addresses\":[\"0xdb\",\"0xdc\",\"0xdd\"],\"score_digits\":6,\"variations_address\":\"0x80\",\"variations_count\":4,\"variations_zero_based\":true}"
+"Bezel.Name" "MegaMania - A Space Nightmare (USA)"
 ""
 
 "Cart.MD5" "fa98d48cd609c9babc819e0a1bd8d598"
@@ -23297,6 +23618,7 @@
 "Cart.Manufacturer" "CCE"
 "Cart.Name" "Super Baseball (CCE)"
 "Cart.Note" "AKA RealSports Baseball"
+"Bezel.Name" "RealSports Baseball (USA)"
 ""
 
 "Cart.MD5" "faffd84f3a8eceee2fa5ea5b0a3e6678"
@@ -23344,6 +23666,7 @@
 "Cart.Manufacturer" "ITT Family Games"
 "Cart.Name" "Pumuckl I (1983) (ITT Family Games) (PAL)"
 "Cart.Note" "AKA Pumuckl at the Zoo"
+"Bezel.Name" "Zoo Fun (Europe)"
 ""
 
 "Cart.MD5" "fb884ffd89013331a6f01ae3f6abd214"
@@ -23431,6 +23754,7 @@
 "Cart.Manufacturer" "Atari, Tod Frye"
 "Cart.ModelNo" "CX2646"
 "Cart.Name" "Pac-Man (1982) (Atari) (PAL)"
+"Bezel.Name" "Pac-Man (Atari) (USA)"
 ""
 
 "Cart.MD5" "fc24a94d4371c69bc58f5245ada43c44"
@@ -23647,6 +23971,7 @@
 "Cart.Highscore" "{\"score_addresses\":[\"0xaa\",\"0xab\"],\"variations_address\":\"0xa8\",\"variations_count\":8}"
 "Controller.Left" "JOYSTICK"
 "Controller.Right" "JOYSTICK"
+"Bezel.Name" "Circus Atari (USA)"
 ""
 
 "Cart.MD5" "fec0c2e2ab0588ed20c750b58cf3baa3"
@@ -23828,6 +24153,7 @@
 "Cart.ModelNo" "CP405"
 "Cart.Name" "Turtle Race (4 Game in One) (1983) (BitCorp) (PAL)"
 "Cart.Note" "AKA Freeway"
+"Bezel.Name" "Freeway (USA)"
 ""
 
 "Cart.MD5" "5061a82ea69e329a46b120cfac328fef"
@@ -23842,6 +24168,7 @@
 "Cart.MD5" "52ec33be79c05b9218c9b55f7ccc1bfa"
 "Cart.Manufacturer" "Edu Games - Edu Juegos"
 "Cart.Name" "Time Pilot (1983) (Edu Games) (PAL)"
+"Display.Format" "NTSC50"
 ""
 
 "Cart.MD5" "5b1e05ba56ad9345d39f261d4dadb88c"
@@ -23884,6 +24211,7 @@
 "Cart.ModelNo" "CP405"
 "Cart.Name" "Snow Hunter (4 Game in One) (1983) (BitCorp) (PAL)"
 "Cart.Note" "AKA Ski Hunt"
+"Bezel.Name" "Ski Hunt (Europe)"
 ""
 
 "Cart.MD5" "76226fa2eb33e796d1e7c7bb8f22a91e"
@@ -23954,6 +24282,7 @@
 "Cart.Manufacturer" "Fotomania"
 "Cart.Name" "Volleyball (Fotomania)"
 "Cart.Note" "AKA RealSports Volleyball"
+"Bezel.Name" "RealSports Volleyball (USA)"
 ""
 
 "Cart.MD5" "cee0177142b348b323877983d4ea38dc"
