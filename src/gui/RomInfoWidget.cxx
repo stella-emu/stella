@@ -166,6 +166,11 @@ void RomInfoWidget::parseProperties(const FSNode& node, bool full)
                           + (isPlusCart ? " - PlusROM" : "")
                           + buf.str());
     }
+    // Debug bezel properties:
+    //if(myProperties.get(PropType::Bezel_Name).empty())
+    //  myRomInfo.push_back("*Bezel: " + Bezel::getName(instance().bezelDir().getPath(), myProperties));
+    //else
+    //  myRomInfo.push_back(" Bezel: " + myProperties.get(PropType::Bezel_Name));
   }
 
   setDirty();
