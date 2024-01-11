@@ -149,6 +149,7 @@ class LauncherDialog : public Dialog, CommandSender
     void loadRom();
     void loadRomInfo();
     void loadPendingRomInfo();
+    void loadRandomRom();
     void openSettings();
     void openGameProperties();
     void openContextMenu(int x = -1, int y = -1);
@@ -178,6 +179,7 @@ class LauncherDialog : public Dialog, CommandSender
     ButtonWidget*     mySettingsButton{nullptr};
     EditTextWidget*   myPattern{nullptr};
     ButtonWidget*     mySubDirsButton{nullptr};
+    ButtonWidget*     myRandomRomButton{nullptr};
     StaticTextWidget* myRomCount{nullptr};
     ButtonWidget*     myHelpButton{nullptr};
 
@@ -211,6 +213,7 @@ class LauncherDialog : public Dialog, CommandSender
 
     enum {
       kSubDirsCmd    = 'lred',
+      kLoadRndRomCmd = 'lrnd',  // load random ROM
       kOptionsCmd    = 'OPTI',
       kQuitCmd       = 'QUIT',
       kReloadCmd     = 'relc',
