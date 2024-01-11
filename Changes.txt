@@ -20,6 +20,8 @@
 
   * Added searching by filename for ROM launcher images.
 
+  * Added option to start random ROM.
+
   * Enhanced Game Properties dialog for multigame ROMs.
 
   * Added 2nd UI theme and hotkey for toggling UI theme.
