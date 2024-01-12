@@ -12,7 +12,7 @@
                               Release History
 ===========================================================================
 
-6.7 to 7.0 (XXXXX XX, 2024)
+6.7.1 to 7.0 (XXXXX XX, 2024)
 
   * Enhanced ROM launcher to allow multiple images per ROM.
 
@@ -53,6 +53,15 @@
   * Removed 'launcherroms' option, since it was causing some issues.
 
 -Have fun!
+
+
+6.7 to 6.7.1 (January 15, 2024)
+
+  * Fixed broken mouse and Stelladaptor input for Driving Controller.
+
+  * For UNIX systems: Now defaults to using system-installed libsqlite3
+    when available, and fixes delay on exiting app experienced on some
+    systems.
 
 
 6.6 to 6.7 (June 13, 2022)
