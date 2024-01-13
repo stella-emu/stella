@@ -255,7 +255,7 @@
   your favorite 2600 games once again by emulating the 2600's hardware with
   software. Stella is written in C++, which allows it to be ported to other
   operating systems and architectures. Since its original release Stella has
-  been ported to AcornOS, AmigaOS, DOS, FreeBSD, Linux, MacOS, OpenStep, OS/2,
+  been ported to AcornOS, AmigaOS, DOS, FreeBSD, Linux, macOS, OpenStep, OS/2,
     Unix, and Windows, as well as consoles such as Sega Dreamcast, GP2X, Nintendo
   DS and Playstation Portable (among others).
   </p>
@@ -1153,7 +1153,7 @@
     </tr>
     <tr>
       <td>Toggle adapting display refresh rate to game frame rate
-      </br>Note: Not available for macOS</td>
+      </br>Note: Not available for macOS, also some renderers may not support this</td>
       <td>Alt + R</td>
       <td>-</td>
     </tr>
@@ -2861,7 +2861,7 @@
       <td><pre>-tia.fs_refresh &lt;1|0&gt;</pre></td>
       <td>While in fullscreen mode, adapt the display's refresh rate to the game's frame rate
         to minimize judder.
-        </br>Note: Not available for macOS</td>
+        </br>Note: Not available for macOS, also some renderers may not support this</br></td>
     </tr>
 
     <tr>
@@ -3773,7 +3773,7 @@
                   This depends on the OS and renderer used.</td><td>-fullscreen</td></tr>
           <tr><td>Stretch</td><td>In fullscreen mode, completely fill screen with the TIA image.</td><td>-tia.fs_stretch</td></tr>
           <tr><td>Adapt display...</td><td>In fullscreen mode, adapt the display's refresh rate to the game's frame rate to minimize judder.
-                  </br>Note: Not available for macOS</td><td>-tia.fs_refresh</td></tr>
+                  </br>Note: Not available for macOS, also some renderers may not support this</td><td>-tia.fs_refresh</td></tr>
           <tr><td>Overscan</td><td>In fullscreen mode, add overscan to the TIA image.</td><td>-tia.fs_overscan</td></tr>
           <tr><td>Correct aspect ratio</td><td>Enable aspect ratio correct scaling.
                   </br>Note: Creates a cleaner looking TIA image when disabled (like z26 and old versions of Stella) vs. a correctly emulated aspect ratio when enabled.</td><td>-tia.correct_aspect</td></tr>
