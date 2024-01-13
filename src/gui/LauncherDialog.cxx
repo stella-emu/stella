@@ -211,7 +211,11 @@ void LauncherDialog::addFilteringWidgets(int& ypos)
     // Show the random ROM button
     myRandomRomButton = new ButtonWidget(this, _font, xpos, ypos - btnYOfs,
                                          randomButtonWidth, buttonHeight, randomIcon, kLoadRndRomCmd);
-    myRandomRomButton->setToolTip("Load random ROM (Ctrl-Alt+R)");
+#ifndef BSPF_MACOS
+    myRandomRomButton->setToolTip("Load random ROM (Alt+R)");
+#else
+    myRandomRomButton->setToolTip("Load random ROM (Cmd+R)");
+#endif
     wid.push_back(myRandomRomButton);
 
     // Show the Settings / Options button (positioned from the right)
@@ -794,61 +798,65 @@ void LauncherDialog::handleKeyDown(StellaKey key, StellaMod mod, bool repeated)
   // context menu keys
   bool handled = false;
 
-  if(StellaModTest::isControl(mod) &&
-    !(myPattern && myPattern->isHighlighted()
+  if(!(myPattern && myPattern->isHighlighted()
       && instance().eventHandler().checkEventForKey(EventMode::kEditMode, key, mod)))
   {
-    handled = true;
-    switch(key)
+    if(StellaModTest::isControl(mod))
     {
-      case KBDK_D:
-        sendCommand(kSubDirsCmd, 0, 0);
-        break;
+      handled = true;
+      switch(key)
+      {
+        case KBDK_D:
+          sendCommand(kSubDirsCmd, 0, 0);
+          break;
 
-      case KBDK_E:
-        toggleExtensions();
-        break;
+        case KBDK_E:
+          toggleExtensions();
+          break;
 
-      case KBDK_F:
-        myList->toggleUserFavorite();
-        break;
+        case KBDK_F:
+          myList->toggleUserFavorite();
+          break;
 
-      case KBDK_G:
-        openGameProperties();
-        break;
+        case KBDK_G:
+          openGameProperties();
+          break;
 
-      case KBDK_H:
-        if(instance().highScores().enabled())
-          openHighScores();
-        break;
+        case KBDK_H:
+          if(instance().highScores().enabled())
+            openHighScores();
+          break;
 
-      case KBDK_O:
-        openSettings();
-        break;
+        case KBDK_O:
+          openSettings();
+          break;
 
-      case KBDK_P:
-        openGlobalProps();
-        break;
+        case KBDK_P:
+          openGlobalProps();
+          break;
 
-      case KBDK_R:
-        if(StellaModTest::isAlt(mod))
-          loadRandomRom();
-        else
+        case KBDK_R:
           reload();
-        break;
+          break;
 
-      case KBDK_S:
-        toggleSorting();
-        break;
+        case KBDK_S:
+          toggleSorting();
+          break;
 
-      case KBDK_X:
-        myList->removeFavorite();
-        reload();
-        break;
+        case KBDK_X:
+          myList->removeFavorite();
+          reload();
+          break;
 
-      default:
-        handled = false;
-        break;
+        default:
+          handled = false;
+          break;
+      }
+    }
+    else if(StellaModTest::isAlt(mod) && key == KBDK_R)
+    {
+      loadRandomRom();
+      handled = true;
     }
   }
   if(!handled)

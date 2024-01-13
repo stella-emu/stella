@@ -47,22 +47,28 @@ NavigationWidget::NavigationWidget(GuiObject* boss, const GUI::Font& font,
     const int iconWidth = homeIcon.width();
     const int buttonWidth = iconWidth + ((fontWidth + 1) & ~0b1) + 1; // round up to next odd
     const int buttonHeight = h;
+#ifndef BSPF_MACOS
+    const string altKey = "Alt";
+#else
+    const string altKey = "Cmd";
+#endif
+
 
     myHomeButton = new ButtonWidget(boss, _font, xpos, ypos,
       buttonWidth, buttonHeight, homeIcon, FileListWidget::kHomeDirCmd);
-    myHomeButton->setToolTip("Go back to initial directory. (Alt+Pos1)");
+    myHomeButton->setToolTip("Go back to initial directory. (" + altKey + "+Pos1)");
     boss->addFocusWidget(myHomeButton);
     xpos = myHomeButton->getRight() + BTN_GAP;
 
     myPrevButton = new ButtonWidget(boss, _font, xpos, ypos,
       buttonWidth, buttonHeight, prevIcon, FileListWidget::kPrevDirCmd);
-    myPrevButton->setToolTip("Go back in directory history. (Alt+Left)");
+    myPrevButton->setToolTip("Go back in directory history. (" + altKey + "+Left)");
     boss->addFocusWidget(myPrevButton);
     xpos = myPrevButton->getRight() + BTN_GAP;
 
     myNextButton = new ButtonWidget(boss, _font, xpos, ypos,
       buttonWidth, buttonHeight, nextIcon, FileListWidget::kNextDirCmd);
-    myNextButton->setToolTip("Go forward in directory history. (Alt+Right)");
+    myNextButton->setToolTip("Go forward in directory history. (" + altKey + "+Right)");
     boss->addFocusWidget(myNextButton);
     xpos = myNextButton->getRight() + BTN_GAP;
 
