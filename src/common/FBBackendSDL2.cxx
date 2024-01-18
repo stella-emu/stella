@@ -331,8 +331,12 @@ bool FBBackendSDL2::setVideoMode(const VideoModeHandler::Mode& mode,
       ostringstream msg;
 
       msg << "Display refresh rate changed to "
-          << adaptedSdlMode.refresh_rate << " Hz";
+          << adaptedSdlMode.refresh_rate << " Hz " << "(" << adaptedSdlMode.w << "x" << adaptedSdlMode.h << ")";
       Logger::info(msg.str());
+
+      SDL_DisplayMode setSdlMode;
+      SDL_GetWindowDisplayMode(myWindow, &setSdlMode);
+      cerr << setSdlMode.refresh_rate << "Hz\n";
     }
   }
 #endif

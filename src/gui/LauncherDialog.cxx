@@ -207,6 +207,7 @@ void LauncherDialog::addFilteringWidgets(int& ypos)
     myRomCount = new StaticTextWidget(this, _font, xpos, ypos,
                                       lwFound, fontHeight, "", TextAlign::Right);
     xpos = myRomCount->getRight() + LBL_GAP;
+    xpos = _w - HBORDER - bwSettings - randomButtonWidth - btnGap;
 
     // Show the random ROM button
     myRandomRomButton = new ButtonWidget(this, _font, xpos, ypos - btnYOfs,

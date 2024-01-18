@@ -53,7 +53,8 @@ WhatsNewDialog::WhatsNewDialog(OSystem& osystem, DialogContainer& parent,
   add(ypos, "added keeping multiple dump files when dumping to SD");
   add(ypos, "removed deadzone from USB game controllers");
   add(ypos, "added opt-out for overclocking to the settings file");
-  add(ypos, "enhanced ROM launcher to allow multiple images per ROM (heaps of additional images are available for download)");
+  add(ypos, "enhanced ROM launcher to allow multiple images per ROM");
+  add(ypos, "made heaps of additional images and bezels available for download");
   add(ypos, "added bezel support (incl. Sinden Lightgun)");
   add(ypos, "accelerated ARM emulation by ~15%");
 #else
@@ -61,12 +62,16 @@ WhatsNewDialog::WhatsNewDialog(OSystem& osystem, DialogContainer& parent,
   {
     add(ypos, "extensively redesigned and enhanced ROM launcher");
   }
-  add(ypos, "enhanced ROM launcher to allow multiple images per ROM (heaps of additional images are available for download)");
+  add(ypos, "enhanced ROM launcher to allow multiple images per ROM");
   add(ypos, "added bezel support (incl. Sinden Lightgun)");
+  add(ypos, "made heaps of additional images and bezels available for download");
   add(ypos, "enhanced Kid Vid support to play tape audio");
   add(ypos, "added Joy2B+ controller support");
+  if(version < "6.7.1")
+  {
+    add(ypos, "fixed broken mouse and Stelladaptor input for Driving Controller");
+  }
   add(ypos, "accelerated ARM emulation by ~15%");
-  add(ypos, "fixed broken mouse and Stelladaptor input for Driving Controller");
   add(ypos, "added user defined CPU cycle timers to debugger");
   add(ypos, ELLIPSIS + " (for a complete list see 'docs/Changes.txt')");
 #endif
