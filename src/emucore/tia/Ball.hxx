@@ -345,19 +345,20 @@ void Ball::movementTick(uInt32 clock, bool hblank)
 {
   myLastMovementTick = myCounter;
 
-  // Stop movement once the number of clocks according to HMBL is reached
-  if (clock == myHmmClocks)
-    isMoving = false;
-
   if(isMoving)
   {
-    // Process the tick if we are in hblank. Otherwise, the tick is either masked
-    // by an ordinary tick or merges two consecutive ticks into a single tick (inverted
-    // movement clock phase mode).
-    if (hblank) tick(false);
-
-    // Track a tick outside hblank for later processing
-    myInvertedPhaseClock = !hblank;
+    // Stop movement once the number of clocks according to HMBL is reached
+    if (clock == myHmmClocks)
+      isMoving = false;
+    else
+    {
+      // Process the tick if we are in hblank. Otherwise, the tick is either masked
+      // by an ordinary tick or merges two consecutive ticks into a single tick (inverted
+      // movement clock phase mode).
+      if(hblank) tick(false);
+      // Track a tick outside hblank for later processing
+      myInvertedPhaseClock = !hblank;
+    }
   }
 }
 
