@@ -143,18 +143,28 @@ class Missile : public Serializable
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Missile::movementTick(uInt8 clock, uInt8 hclock, bool hblank)
 {
-  if(clock == myHmmClocks) isMoving = false;
-
-  if (isMoving)
+  if(isMoving)
   {
-    if (hblank) tick(hclock, false);
-    myInvertedPhaseClock = !hblank;
+    // Stop movement once the number of clocks according to HMMx is reached
+    if(clock == myHmmClocks)
+      isMoving = false;
+    else
+    {
+      // Process the tick if we are in hblank. Otherwise, the tick is either masked
+      // by an ordinary tick or merges two consecutive ticks into a single tick (inverted
+      // movement clock phase mode).
+      if(hblank) tick(hclock, false);
+      // Track a tick outside hblank for later processing
+      myInvertedPhaseClock = !hblank;
+    }
   }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Missile::tick(uInt8 hclock, bool isReceivingMclock)
 {
+  // If we are in inverted movement clock phase mode and a movement tick occurred, it
+  // will supress the tick.
   if(myUseInvertedPhaseClock && myInvertedPhaseClock)
   {
     myInvertedPhaseClock = false;
@@ -165,6 +175,8 @@ void Missile::tick(uInt8 hclock, bool isReceivingMclock)
     myIsRendering &&
     (myRenderCounter >= 0 || (isMoving && isReceivingMclock && myRenderCounter == -1 && myWidth < 4 && ((hclock + 1) % 4 == 3)));
 
+  // Consider enabled status and the signal to determine visibility (as represented
+  // by the collision mask)
   collision = (myIsVisible && myIsEnabled) ? myCollisionMaskEnabled : myCollisionMaskDisabled;
 
   if (myDecodes[myCounter] && !myResmp) {
@@ -174,6 +186,7 @@ void Missile::tick(uInt8 hclock, bool isReceivingMclock)
   } else if (myIsRendering) {
 
       if (myRenderCounter == -1) {
+        // Regular clock pulse during movement -> starfield mode
         if (isMoving && isReceivingMclock) {
           switch ((hclock + 1) % 4) {
             case 3:

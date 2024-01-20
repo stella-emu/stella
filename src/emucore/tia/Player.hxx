@@ -159,19 +159,28 @@ class Player : public Serializable
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Player::movementTick(uInt32 clock, bool hblank)
 {
-  if (clock == myHmmClocks)
-    isMoving = false;
-
   if(isMoving)
   {
-    if (hblank) tick();
-    myInvertedPhaseClock = !hblank;
+    // Stop movement once the number of clocks according to HMPx is reached
+    if (clock == myHmmClocks)
+      isMoving = false;
+    else
+    {
+      // Process the tick if we are in hblank. Otherwise, the tick is either masked
+      // by an ordinary tick or merges two consecutive ticks into a single tick (inverted
+      // movement clock phase mode).
+      if(hblank) tick();
+      // Track a tick outside hblank for later processing
+      myInvertedPhaseClock = !hblank;
+    }
   }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Player::tick()
 {
+  // If we are in inverted movement clock phase mode and a movement tick occurred, it
+  // will supress the tick.
   if(myUseInvertedPhaseClock && myInvertedPhaseClock)
   {
     myInvertedPhaseClock = false;
