@@ -1310,6 +1310,11 @@
       <td>Cmd + 3</td>
     </tr>
     <tr>
+      <td><i>Increase</i> 'phosphor' enabling mode</td>
+      <td>Ctrl-Alt + P</td>
+      <td>Ctrl-Cmd + P</td>
+    </tr>
+    <tr>
       <td>Toggle 'phosphor' mode</td>
       <td>Alt + P</td>
       <td>Cmd + P</td>
@@ -2921,11 +2926,11 @@
     </tr>
 
     <tr>
-      <td><pre>-tv.phosphor &lt;always|byrom&gt;</pre></td>
-      <td>Determine how phosphor mode is enabled. If 'always', then the
-        ROM properties entry is ignored, and phosphor mode is always turned
-        on. Otherwise, the ROM properties determine whether phosphor mode
-        is used for each ROM.
+      <td><pre>-tv.phosphor &lt;always|auto|byrom&gt;</pre></td>
+      <td>Determine how phosphor mode is enabled. If 'always' or 'auto', then
+        the ROM properties entry is ignored, and phosphor mode is either always
+        turned on or automatic. Otherwise, the ROM properties determine whether
+        phosphor mode is used for each ROM.
       </td>
     </tr>
 
@@ -3820,8 +3825,8 @@
           <tr><th>Item</th><th>Brief description</th><th>For more information,<br>see <a href="#CommandLine">Command Line</a></th></tr>
           <tr><td>TV mode</td><td>Disable TV effects, or select TV preset</td><td>-tv.filter</td></tr>
           <tr><td>Adjustable sliders</td><td>Set specific attribute in 'Custom' TV mode</td><td>-tv.sharpness<br/>-tv.resolution, etc.</td></tr>
-          <tr><td>Phosphor for all ROMs</td><td>Enable phosphor mode for all ROMs</td><td>-tv.phosphor</td></tr>
-          <tr><td>Blend (phosphor)</td><td>Blend level to use in phosphor mode for all ROMs
+          <tr><td>Phosphor</td><td>Select mode for enabling phosphor</td><td>-tv.phosphor</td></tr>
+          <tr><td>Blend (phosphor)</td><td>Blend level to use in phosphor modes for all ROMs and automatic
                 (needs to be manually adjusted for your particular hardware)</td><td>-tv.phosblend</td></tr>
           <tr><td>(Scanlines) Intensity</td><td>Sets scanlines black-level intensity.</br>
                   Note: No scanlines in 1x mode snapshots</td><td>-tv.scanlines</td></tr>

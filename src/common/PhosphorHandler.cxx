@@ -24,23 +24,24 @@ bool PhosphorHandler::initialize(bool enable, int blend)
     return false;
 
   myUsePhosphor = enable;
-  if(blend >= 0 && blend <= 100)
-    myPhosphorPercent = blend / 100.F;
-
-  // Used to calculate an averaged color for the 'phosphor' effect
-  const auto getPhosphor = [&] (const uInt8 c1, uInt8 c2) -> uInt8 {
-    // Use maximum of current and decayed previous values
-    c2 = static_cast<uInt8>(c2 * myPhosphorPercent);
-    if(c1 > c2)  return c1; // raise (assumed immediate)
-    else         return c2; // decay
-  };
 
   // Precalculate the average colors for the 'phosphor' effect
-  if(myUsePhosphor)
+  if((myUsePhosphor && blend != -1 && blend / 100.F != myPhosphorPercent) || !myLUTInitialized)
   {
+    if(blend >= 0 && blend <= 100)
+      myPhosphorPercent = blend / 100.F;
+
+    // Used to calculate an averaged color for the 'phosphor' effect
+    const auto getPhosphor = [&] (const uInt8 c1, uInt8 c2) -> uInt8 {
+      // Use maximum of current and decayed previous values
+      c2 = static_cast<uInt8>(c2 * myPhosphorPercent);
+      if(c1 > c2)  return c1; // raise (assumed immediate)
+      else         return c2; // decay
+    };
     for(int c = 255; c >= 0; --c)
       for(int p = 255; p >= 0; --p)
         ourPhosphorLUT[c][p] = getPhosphor(static_cast<uInt8>(c), static_cast<uInt8>(p));
+    myLUTInitialized = true;
   }
   return true;
 }

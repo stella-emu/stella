@@ -160,7 +160,7 @@ void GameInfoDialog::addEmulationTab()
   // Phosphor
   ypos += lineHeight + VGAP;
   myPhosphor = new CheckboxWidget(myTab, _font, HBORDER, ypos + 1,
-                                  "Phosphor (enabled for all ROMs)", kPhosphorChanged);
+                                  "Phosphor (auto-enabled for all ROMs)", kPhosphorChanged);
   myPhosphor->setToolTip(Event::TogglePhosphor);
   wid.push_back(myPhosphor);
 
@@ -770,7 +770,6 @@ void GameInfoDialog::loadEmulationProperties(const Properties& props)
     }
   }
   myTypeDetected->setLabel(bsDetected);
-  updateMultiCart();
 
   // Start bank
   VarList::push_back(items, "Auto", "AUTO");
@@ -806,10 +805,13 @@ void GameInfoDialog::loadEmulationProperties(const Properties& props)
 
   // if phosphor is always enabled, disable game specific phosphor settings
   const bool alwaysPhosphor = instance().settings().getString("tv.phosphor") == "always";
+  const bool autoPhosphor = instance().settings().getString("tv.phosphor") == "auto";
   const bool usePhosphor = props.get(PropType::Display_Phosphor) == "YES";
   myPhosphor->setState(usePhosphor);
   if (alwaysPhosphor)
-    myPhosphor->setLabel("Phosphor (enabled for all ROMs)");
+    myPhosphor->setLabel("Phosphor (enabled for all ROMs");
+  else if (autoPhosphor)
+    myPhosphor->setLabel("Phosphor (auto-enabled for all ROMs)");
   else
     myPhosphor->setLabel("Phosphor");
 
@@ -823,6 +825,8 @@ void GameInfoDialog::loadEmulationProperties(const Properties& props)
   myVCenter->setValueUnit(vcenter ? "px" : "");
 
   mySound->setState(props.get(PropType::Cart_Sound) == "STEREO");
+
+  updateMultiCart();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1191,9 +1195,9 @@ void GameInfoDialog::updateMultiCart()
   myFormat->setEnabled(!isMulti);
 
   // if phosphor is always enabled, disable game specific phosphor settings
-  const bool alwaysPhosphor = isMulti || instance().settings().getString("tv.phosphor") == "always";
-  myPhosphor->setEnabled(!alwaysPhosphor);
-  myPPBlend->setEnabled(!alwaysPhosphor && myPhosphor->getState());
+  const bool globalPhosphor = isMulti || instance().settings().getString("tv.phosphor") != "byrom";
+  myPhosphor->setEnabled(!globalPhosphor);
+  myPPBlend->setEnabled(!globalPhosphor && myPhosphor->getState());
 
   myVCenter->setEnabled(!isMulti);
   // if stereo is always enabled, disable game specific stereo setting
