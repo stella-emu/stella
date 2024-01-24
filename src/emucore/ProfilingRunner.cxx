@@ -125,7 +125,10 @@ bool ProfilingRunner::runOne(const ProfilingRun& run)
 
   M6502 cpu(mySettings);
   M6532 riot(consoleIO, mySettings);
-  TIA tia(consoleIO, []() { return ConsoleTiming::ntsc; }, mySettings);
+
+  const TIA::onPhosphorCallback callback = [] (bool enable) {};
+
+  TIA tia(consoleIO, []() { return ConsoleTiming::ntsc; }, mySettings, callback);
   System system(rng, cpu, riot, tia, *cartridge);
 
   consoleIO.myLeftControl = make_unique<Joystick>(Controller::Jack::Left, event, system);

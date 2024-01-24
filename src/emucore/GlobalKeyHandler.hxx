@@ -69,6 +69,7 @@ class GlobalKeyHandler
       NTSC_FRINGING,
       NTSC_BLEEDING,
       // Other TV effects adjustables
+      PHOSPHOR_MODE,
       PHOSPHOR,
       SCANLINES,
       SCANLINE_MASK,

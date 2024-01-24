@@ -362,7 +362,7 @@ void Settings::validate()
   if(s != "bgopry")  setValue("tia.dbgcolors", "roygpb");
 
   s = getString("tv.phosphor");
-  if(s != "always" && s != "byrom")  setValue("tv.phosphor", "byrom");
+  if(s != "always" && s != "byrom" && s != "auto")  setValue("tv.phosphor", "byrom");
 
   i = getInt("tv.phosblend");
   if(i < 0 || i > 100)  setValue("tv.phosblend", "50");
@@ -576,7 +576,8 @@ void Settings::usage()
     << "  -tia.correct_aspect <1|0>     Enable aspect ratio correct scaling\n\n"
     << "  -tv.filter    <0-5>           Set TV effects off (0) or to specified mode\n"
     << "                                 (1-5)\n"
-    << "  -tv.phosphor  <always|byrom>  When to use phosphor mode\n"
+    << "  -tv.phosphor  <always|auto|>  When to use phosphor mode\n"
+    << "                 byrom\n"
     << "  -tv.phosblend <0-100>         Set default blend level in phosphor mode\n"
     << "  -tv.scanlines <0-100>         Set scanline intensity to percentage\n"
     << "                                 (0 disables completely)\n"

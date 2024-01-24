@@ -115,7 +115,8 @@ class Event
       PreviousAttribute, NextAttribute, DecreaseAttribute, IncreaseAttribute,
       ScanlinesDecrease, ScanlinesIncrease,
       PreviousScanlineMask, NextScanlineMask,
-      PhosphorDecrease, PhosphorIncrease, TogglePhosphor, ToggleInter,
+      PhosphorDecrease, PhosphorIncrease, TogglePhosphor,
+      PhosphorModeDecrease, PhosphorModeIncrease, ToggleInter,
       ToggleDeveloperSet, JitterRecDecrease, JitterRecIncrease,
       JitterSenseDecrease, JitterSenseIncrease, ToggleJitter,
 

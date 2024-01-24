@@ -377,11 +377,17 @@ void VideoAudioDialog::addTVEffectsTab()
   CREATE_CUSTOM_SLIDERS(Bleed, "Bleeding ", 0)
 
   ypos += VGAP * 3;
-
   xpos = HBORDER;
 
   // TV Phosphor effect
-  myTVPhosphor = new CheckboxWidget(myTab, _font, xpos, ypos + 1, "Phosphor for all ROMs", kPhosphorChanged);
+  items.clear();
+  VarList::push_back(items, "by ROM", "byrom");
+  VarList::push_back(items, "always", "always");
+  VarList::push_back(items, "auto", "auto");
+  myTVPhosphor = new PopUpWidget(myTab, _font, xpos, ypos,
+                                 _font.getStringWidth("by ROM"), lineHeight,
+                                 items, "Phosphor ", 0, kPhosphorChanged);
+  myTVPhosphor->setToolTip(Event::PhosphorModeDecrease, Event::PhosphorModeIncrease);
   wid.push_back(myTVPhosphor);
   ypos += lineHeight + VGAP / 2;
 
@@ -754,7 +760,7 @@ void VideoAudioDialog::loadConfig()
   loadTVAdjustables(NTSCFilter::Preset::CUSTOM);
 
   // TV phosphor mode & blend
-  myTVPhosphor->setState(settings.getString("tv.phosphor") == "always");
+  myTVPhosphor->setSelected(settings.getString("tv.phosphor"), "byrom");
   myTVPhosLevel->setValue(settings.getInt("tv.phosblend"));
   handlePhosphorChange();
 
@@ -889,7 +895,7 @@ void VideoAudioDialog::saveConfig()
   NTSCFilter::saveConfig(settings);
 
   // TV phosphor mode & blend
-  settings.setValue("tv.phosphor", myTVPhosphor->getState() ? "always" : "byrom");
+  settings.setValue("tv.phosphor", myTVPhosphor->getSelectedTag());
   settings.setValue("tv.phosblend", myTVPhosLevel->getValueLabel() == "Off"
                                  ? "0" : myTVPhosLevel->getValueLabel());
 
@@ -1029,7 +1035,7 @@ void VideoAudioDialog::setDefaults()
       myTVMode->setSelected("0", "0");
 
       // TV phosphor mode & blend
-      myTVPhosphor->setState(false);
+      myTVPhosphor->setSelected("byrom");
       myTVPhosLevel->setValue(50);
 
       // TV scanline intensity & mask
@@ -1209,7 +1215,7 @@ void VideoAudioDialog::handleOverscanChange()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void VideoAudioDialog::handlePhosphorChange()
 {
-  myTVPhosLevel->setEnabled(myTVPhosphor->getState());
+  myTVPhosLevel->setEnabled(myTVPhosphor->getSelectedTag() != "byrom");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

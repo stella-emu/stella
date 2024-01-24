@@ -390,6 +390,7 @@ GlobalKeyHandler::SettingData GlobalKeyHandler::getSettingData(const Setting set
     {Setting::NTSC_BLEEDING,          {true,  std::bind(&TIASurface::changeNTSCAdjustable, &myOSystem.frameBuffer().tiaSurface(),
                                               static_cast<int>(NTSCFilter::Adjustables::BLEEDING), _1)}},
     // Other TV effects adjustables
+    {Setting::PHOSPHOR_MODE,          {true,  std::bind(&Console::cyclePhosphorMode, &myOSystem.console(), _1)}},
     {Setting::PHOSPHOR,               {true,  std::bind(&Console::changePhosphor, &myOSystem.console(), _1)}},
     {Setting::SCANLINES,              {true,  std::bind(&TIASurface::changeScanlineIntensity, &myOSystem.frameBuffer().tiaSurface(), _1)}},
     {Setting::SCANLINE_MASK,          {false, std::bind(&TIASurface::cycleScanlineMask, &myOSystem.frameBuffer().tiaSurface(), _1)}},

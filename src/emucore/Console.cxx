@@ -123,7 +123,17 @@ Console::Console(OSystem& osystem, unique_ptr<Cartridge>& cart,
   // Create subsystems for the console
   my6502 = make_unique<M6502>(myOSystem.settings());
   myRiot = make_unique<M6532>(*this, myOSystem.settings());
-  myTIA  = make_unique<TIA>(*this, [this]() { return timing(); },  myOSystem.settings());
+
+  const TIA::onPhosphorCallback callback = [&frameBuffer = this->myOSystem.frameBuffer()](bool enable)
+  {
+    frameBuffer.tiaSurface().enablePhosphor(enable);
+#if DEBUG_BUILD
+    ostringstream msg;
+    msg << "Phosphor effect automatically " << (enable ? "enabled" : "disabled");
+    frameBuffer.showTextMessage(msg.str());
+#endif
+  };
+  myTIA  = make_unique<TIA>(*this, [this]() { return timing(); }, myOSystem.settings(), callback);
   myFrameManager = make_unique<FrameManager>();
   mySwitches = make_unique<Switches>(myEvent, myProperties, myOSystem.settings());
 
@@ -615,18 +625,65 @@ void Console::changeSpeed(int direction)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Console::togglePhosphor()
 {
-  if(myOSystem.frameBuffer().tiaSurface().phosphorEnabled())
-  {
+  const bool enable = !myOSystem.frameBuffer().tiaSurface().phosphorEnabled();
+  if(!enable)
     myProperties.set(PropType::Display_Phosphor, "NO");
-    myOSystem.frameBuffer().tiaSurface().enablePhosphor(false);
-    myOSystem.frameBuffer().showTextMessage("Phosphor effect disabled");
-  }
   else
-  {
     myProperties.set(PropType::Display_Phosphor, "YES");
-    myOSystem.frameBuffer().tiaSurface().enablePhosphor(true);
-    myOSystem.frameBuffer().showTextMessage("Phosphor effect enabled");
+  myOSystem.frameBuffer().tiaSurface().enablePhosphor(enable);
+
+  // disable auto-phosphor
+  if(myTIA->autoPhosphorEnabled())
+    myTIA->enableAutoPhosphor(false);
+
+  ostringstream msg;
+  msg << "Phosphor effect " << (enable ? "enabled" : "disabled");
+  myOSystem.frameBuffer().showTextMessage(msg.str());
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Console::cyclePhosphorMode(int direction)
+{
+  static constexpr std::array<string_view, 3> MESSAGES = {
+    "by ROM", "always on", "auto-enabled"
+  };
+  static constexpr std::array<string_view, 3> VALUE = {
+    "byrom", "always", "auto"
+  };
+  const string value = myOSystem.settings().getString("tv.phosphor");
+  int mode;
+
+  for(mode = 2; mode > 0; --mode)
+    if(value == VALUE[mode])
+      break;
+
+  if(direction)
+  {
+    mode = BSPF::clampw(mode + direction, 0, 2);
+    if(mode == 0)
+    {
+      myOSystem.frameBuffer().tiaSurface().enablePhosphor(
+        myProperties.get(PropType::Display_Phosphor) == "YES",
+        BSPF::stoi(myProperties.get(PropType::Display_PPBlend)));
+      myTIA->enableAutoPhosphor(false);
+    }
+    else if(mode == 1)
+    {
+      myOSystem.frameBuffer().tiaSurface().enablePhosphor(
+        true, myOSystem.settings().getInt("tv.phosblend"));
+      myTIA->enableAutoPhosphor(false);
+    }
+    else
+    {
+      myOSystem.frameBuffer().tiaSurface().enablePhosphor(
+        false, myOSystem.settings().getInt("tv.phosblend"));
+      myTIA->enableAutoPhosphor(true);
+    }
+    myOSystem.settings().setValue("tv.phosphor", VALUE[mode]);
   }
+  ostringstream msg;
+  msg << "Phosphor mode " << MESSAGES[mode];
+  myOSystem.frameBuffer().showTextMessage(msg.str());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -693,7 +750,7 @@ void Console::initializeAudio()
     .updateAudioQueueExtraFragments(myAudioSettings.bufferSize())
     .updateAudioQueueHeadroom(myAudioSettings.headroom())
     .updateSpeedFactor(myOSystem.settings().getBool("turbo")
-      ? 20.0F
+      ? 50.0F
       : myOSystem.settings().getFloat("speed"));
 
   createAudioQueue();

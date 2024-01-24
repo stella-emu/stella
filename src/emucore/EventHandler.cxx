@@ -738,6 +738,22 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       }
       return;
 
+    case Event::PhosphorModeDecrease:
+      if(pressed && !repeated)
+      {
+        myOSystem.console().cyclePhosphorMode(-1);
+        myGlobalKeyHandler->setSetting(GlobalKeyHandler::Setting::PHOSPHOR_MODE);
+      }
+      return;
+
+    case Event::PhosphorModeIncrease:
+      if(pressed && !repeated)
+      {
+        myOSystem.console().cyclePhosphorMode(+1);
+        myGlobalKeyHandler->setSetting(GlobalKeyHandler::Setting::PHOSPHOR_MODE);
+      }
+      return;
+
     case Event::ScanlinesDecrease:
       if(pressed)
       {
@@ -3004,6 +3020,8 @@ EventHandler::EmulActionList EventHandler::ourEmulActionList = { {
   { Event::IncreaseAttribute,       "Increase selected 'Custom' attribute"  },
   // Other TV effects
   { Event::TogglePhosphor,          "Toggle 'phosphor' effect"              },
+  { Event::PhosphorModeDecrease,    "Decrease 'phosphor' enabling mode"     },
+  { Event::PhosphorModeIncrease,    "Increase 'phosphor' enabling mode"     },
   { Event::PhosphorDecrease,        "Decrease 'phosphor' blend"             },
   { Event::PhosphorIncrease,        "Increase 'phosphor' blend"             },
   { Event::ScanlinesDecrease,       "Decrease scanlines"                    },
@@ -3181,6 +3199,7 @@ const Event::EventSet EventHandler::AudioVideoEvents = {
   Event::PreviousVideoMode, Event::NextVideoMode,
   Event::PreviousAttribute, Event::NextAttribute, Event::DecreaseAttribute, Event::IncreaseAttribute,
   Event::PhosphorDecrease, Event::PhosphorIncrease, Event::TogglePhosphor,
+  Event::PhosphorModeDecrease, Event::PhosphorModeIncrease,
   Event::ScanlinesDecrease, Event::ScanlinesIncrease,
   Event::PreviousScanlineMask, Event::NextScanlineMask,
   Event::ToggleInter,

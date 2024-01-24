@@ -328,11 +328,19 @@ FBInitStatus FrameBuffer::createDisplay(string_view title, BufferType type,
     // Phosphor mode can be enabled either globally or per-ROM
     int p_blend = 0;
     bool enable = false;
+    const string phosphor = myOSystem.settings().getString("tv.phosphor");
 
-    if(myOSystem.settings().getString("tv.phosphor") == "always")
+    myOSystem.console().tia().enableAutoPhosphor(phosphor == "auto");
+
+    if(phosphor == "always")
     {
       p_blend = myOSystem.settings().getInt("tv.phosblend");
       enable = true;
+    }
+    else if(phosphor == "auto")
+    {
+      p_blend = myOSystem.settings().getInt("tv.phosblend");
+      enable = false;
     }
     else
     {
@@ -719,7 +727,7 @@ void FrameBuffer::drawFrameStats(float framesPerSecond)
     << "fps @ "
     << std::fixed << std::setprecision(0) << 100 *
       (myOSystem.settings().getBool("turbo")
-        ? 20.0F
+        ? 50.0F
         : myOSystem.settings().getFloat("speed"))
     << "% speed";
 

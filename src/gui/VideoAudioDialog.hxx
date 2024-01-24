@@ -96,7 +96,7 @@ class VideoAudioDialog : public Dialog
     SliderWidget*     myTVBleed{nullptr};
 
     // TV phosphor effect
-    CheckboxWidget*   myTVPhosphor{nullptr};
+    PopUpWidget*      myTVPhosphor{nullptr};
     SliderWidget*     myTVPhosLevel{nullptr};
 
     // TV scanline intensity and interpolation

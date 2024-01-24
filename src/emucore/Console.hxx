@@ -253,6 +253,11 @@ class Console : public Serializable, public ConsoleIO
     void togglePhosphor();
 
     /**
+      Toggles auto-phosphor.
+    */
+    void cyclePhosphorMode(int direction = +1);
+
+    /**
       Change the "Display.PPBlend" variable.
 
       @param direction  +1 indicates increase, -1 indicates decrease.
