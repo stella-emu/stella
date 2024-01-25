@@ -326,26 +326,31 @@ FBInitStatus FrameBuffer::createDisplay(string_view title, BufferType type,
   if(myOSystem.eventHandler().inTIAMode())
   {
     // Phosphor mode can be enabled either globally or per-ROM
-    int p_blend = 0;
-    bool enable = false;
-    const string phosphor = myOSystem.settings().getString("tv.phosphor");
+    int p_blend;
+    bool enable;
+    const int phosphorMode = PhosphorHandler::toPhosphorMode(
+      myOSystem.settings().getString(PhosphorHandler::SETTING_MODE));
 
-    myOSystem.console().tia().enableAutoPhosphor(phosphor == "auto");
+    switch(phosphorMode)
+    {
+      case PhosphorHandler::Always:
+        enable = true;
+        p_blend = myOSystem.settings().getInt(PhosphorHandler::SETTING_BLEND);
+        myOSystem.console().tia().enableAutoPhosphor(false);
+        break;
 
-    if(phosphor == "always")
-    {
-      p_blend = myOSystem.settings().getInt("tv.phosblend");
-      enable = true;
-    }
-    else if(phosphor == "auto")
-    {
-      p_blend = myOSystem.settings().getInt("tv.phosblend");
-      enable = false;
-    }
-    else
-    {
-      p_blend = BSPF::stoi(myOSystem.console().properties().get(PropType::Display_PPBlend));
-      enable = myOSystem.console().properties().get(PropType::Display_Phosphor) == "YES";
+      case PhosphorHandler::Auto_on:
+      case PhosphorHandler::Auto:
+        enable = false;
+        p_blend = myOSystem.settings().getInt(PhosphorHandler::SETTING_BLEND);
+        myOSystem.console().tia().enableAutoPhosphor(true, phosphorMode == PhosphorHandler::Auto_on);
+        break;
+
+      default: // PhosphorHandler::ByRom
+        enable = myOSystem.console().properties().get(PropType::Display_Phosphor) == "YES";
+        p_blend = BSPF::stoi(myOSystem.console().properties().get(PropType::Display_PPBlend));
+        myOSystem.console().tia().enableAutoPhosphor(false);
+        break;
     }
     myTIASurface->enablePhosphor(enable, p_blend);
   }

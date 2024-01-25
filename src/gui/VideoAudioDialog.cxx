@@ -381,11 +381,12 @@ void VideoAudioDialog::addTVEffectsTab()
 
   // TV Phosphor effect
   items.clear();
-  VarList::push_back(items, "by ROM", "byrom");
-  VarList::push_back(items, "always", "always");
-  VarList::push_back(items, "auto", "auto");
+  VarList::push_back(items, "by ROM", PhosphorHandler::VALUE_BYROM);
+  VarList::push_back(items, "always", PhosphorHandler::VALUE_ALWAYS);
+  VarList::push_back(items, "auto on", PhosphorHandler::VALUE_AUTO_ON);
+  VarList::push_back(items, "auto on/off", PhosphorHandler::VALUE_AUTO);
   myTVPhosphor = new PopUpWidget(myTab, _font, xpos, ypos,
-                                 _font.getStringWidth("by ROM"), lineHeight,
+                                 _font.getStringWidth("auto on/off"), lineHeight,
                                  items, "Phosphor ", 0, kPhosphorChanged);
   myTVPhosphor->setToolTip(Event::PhosphorModeDecrease, Event::PhosphorModeIncrease);
   wid.push_back(myTVPhosphor);
@@ -760,8 +761,8 @@ void VideoAudioDialog::loadConfig()
   loadTVAdjustables(NTSCFilter::Preset::CUSTOM);
 
   // TV phosphor mode & blend
-  myTVPhosphor->setSelected(settings.getString("tv.phosphor"), "byrom");
-  myTVPhosLevel->setValue(settings.getInt("tv.phosblend"));
+  myTVPhosphor->setSelected(settings.getString(PhosphorHandler::SETTING_MODE), PhosphorHandler::VALUE_BYROM);
+  myTVPhosLevel->setValue(settings.getInt(PhosphorHandler::SETTING_BLEND));
   handlePhosphorChange();
 
   // TV scanline intensity & mask
@@ -895,9 +896,9 @@ void VideoAudioDialog::saveConfig()
   NTSCFilter::saveConfig(settings);
 
   // TV phosphor mode & blend
-  settings.setValue("tv.phosphor", myTVPhosphor->getSelectedTag());
-  settings.setValue("tv.phosblend", myTVPhosLevel->getValueLabel() == "Off"
-                                 ? "0" : myTVPhosLevel->getValueLabel());
+  settings.setValue(PhosphorHandler::SETTING_MODE, myTVPhosphor->getSelectedTag());
+  settings.setValue(PhosphorHandler::SETTING_BLEND, myTVPhosLevel->getValueLabel() == "Off"
+                    ? "0" : myTVPhosLevel->getValueLabel());
 
   // TV scanline intensity & mask
   settings.setValue("tv.scanlines", myTVScanIntense->getValueLabel());
@@ -1035,7 +1036,7 @@ void VideoAudioDialog::setDefaults()
       myTVMode->setSelected("0", "0");
 
       // TV phosphor mode & blend
-      myTVPhosphor->setSelected("byrom");
+      myTVPhosphor->setSelected(PhosphorHandler::VALUE_BYROM);
       myTVPhosLevel->setValue(50);
 
       // TV scanline intensity & mask
@@ -1215,7 +1216,7 @@ void VideoAudioDialog::handleOverscanChange()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void VideoAudioDialog::handlePhosphorChange()
 {
-  myTVPhosLevel->setEnabled(myTVPhosphor->getSelectedTag() != "byrom");
+  myTVPhosLevel->setEnabled(myTVPhosphor->getSelectedTag() != PhosphorHandler::VALUE_BYROM);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

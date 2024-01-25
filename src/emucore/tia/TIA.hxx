@@ -301,28 +301,15 @@ class TIA : public Device
     /**
       Enables/disables auto-phosphor.
 
-      @param enabled  Whether to enable or disable auto-phosphor mode
+      @param enabled  Whether to use auto-phosphor mode
+      @param autoOn  Whether to only ENABLE phosphor mode
     */
-    void enableAutoPhosphor(bool enabled)
+    void enableAutoPhosphor(bool enabled, bool autoOn = false)
     {
       myAutoPhosphorEnabled = enabled;
-      if(!enabled)
-        myAutoPhosphorActive = false;
+      myAutoPhosphorAutoOn = autoOn;
+      myAutoPhosphorActive = false;
     }
-
-    /**
-      Answers whether auto-phosphor is enabled.
-
-      @return  Auto-phosphor is enabled
-    */
-    bool autoPhosphorEnabled() const { return myAutoPhosphorEnabled; }
-
-    /**
-      Answers whether auto-phosphor is active.
-
-      @return  Auto-phosphor is acitve
-    */
-    bool autoPhosphorActive() const { return myAutoPhosphorActive; }
 
     /**
       Answers the current color clock we've gotten to on this scanline.
@@ -998,13 +985,17 @@ class TIA : public Device
     /**
     * Auto-phosphor detection variables.
     */
-    bool myAutoPhosphorEnabled{true};
-    bool myAutoPhosphorActive{true};
     static constexpr int FLICKER_FRAMES = 1 + 4; // compare current frame with previous 4 frames
     using ObjectPos = BSPF::array2D<uInt8, TIAConstants::frameBufferHeight, FLICKER_FRAMES>;
+    using ObjectGfx = BSPF::array2D<uInt32, TIAConstants::frameBufferHeight, FLICKER_FRAMES>;
+
+    bool myAutoPhosphorEnabled{false};
+    bool myAutoPhosphorAutoOn{false};
+    bool myAutoPhosphorActive{false};
     ObjectPos myPosP0, myPosP1, myPosM0, myPosM1, myPosBL;
-    int myFlickerFrame{0};
-    int myFlickerCount{0};
+    ObjectGfx myPatPF;
+    int myFlickerFrame{0}, myFlickerCount{0};
+    uInt32 myFrameEnd{0};
     onPhosphorCallback myPhosphorCallback;
 
   #ifdef DEBUGGER_SUPPORT

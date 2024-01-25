@@ -22,7 +22,7 @@
 
   * Added option to start random ROM.
 
-  * Added option for automatic phosphor.
+  * Added automatically enabled phosphor modes.
 
   * Enhanced Game Properties dialog for multigame ROMs.
 

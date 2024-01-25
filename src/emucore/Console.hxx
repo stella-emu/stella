@@ -214,7 +214,7 @@ class Console : public Serializable, public ConsoleIO
 
   public:
     /**
-      Toggle between NTSC/PAL/SECAM (and variants) display format.
+      Switch between NTSC/PAL/SECAM (and variants) display format.
 
       @param direction  +1 indicates increase, -1 indicates decrease.
     */
@@ -250,7 +250,7 @@ class Console : public Serializable, public ConsoleIO
     /**
       Toggles phosphor effect.
     */
-    void togglePhosphor();
+    void togglePhosphor(bool toggle = true);
 
     /**
       Toggles auto-phosphor.
