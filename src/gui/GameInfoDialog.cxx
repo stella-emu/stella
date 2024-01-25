@@ -160,7 +160,7 @@ void GameInfoDialog::addEmulationTab()
   // Phosphor
   ypos += lineHeight + VGAP;
   myPhosphor = new CheckboxWidget(myTab, _font, HBORDER, ypos + 1,
-                                  "Phosphor (auto-enabled for all ROMs)", kPhosphorChanged);
+                                  "Phosphor (auto-enabled/disabled for all ROMs)", kPhosphorChanged);
   myPhosphor->setToolTip(Event::TogglePhosphor);
   wid.push_back(myPhosphor);
 
@@ -804,13 +804,14 @@ void GameInfoDialog::loadEmulationProperties(const Properties& props)
     myFormatDetected->setLabel("");
 
   // if phosphor is always enabled, disable game specific phosphor settings
-  const bool alwaysPhosphor = instance().settings().getString("tv.phosphor") == "always";
-  const bool autoPhosphor = instance().settings().getString("tv.phosphor") == "auto";
+  const string mode = instance().settings().getString(PhosphorHandler::SETTING_MODE);
   const bool usePhosphor = props.get(PropType::Display_Phosphor) == "YES";
   myPhosphor->setState(usePhosphor);
-  if (alwaysPhosphor)
+  if (mode == PhosphorHandler::VALUE_ALWAYS)
     myPhosphor->setLabel("Phosphor (enabled for all ROMs");
-  else if (autoPhosphor)
+  else if (mode == PhosphorHandler::VALUE_AUTO)
+    myPhosphor->setLabel("Phosphor (auto-enabled/disabled for all ROMs)");
+  else if (mode == PhosphorHandler::VALUE_AUTO_ON)
     myPhosphor->setLabel("Phosphor (auto-enabled for all ROMs)");
   else
     myPhosphor->setLabel("Phosphor");
@@ -1195,7 +1196,8 @@ void GameInfoDialog::updateMultiCart()
   myFormat->setEnabled(!isMulti);
 
   // if phosphor is always enabled, disable game specific phosphor settings
-  const bool globalPhosphor = isMulti || instance().settings().getString("tv.phosphor") != "byrom";
+  const bool globalPhosphor = isMulti
+    || instance().settings().getString(PhosphorHandler::SETTING_MODE) != PhosphorHandler::VALUE_BYROM;
   myPhosphor->setEnabled(!globalPhosphor);
   myPPBlend->setEnabled(!globalPhosphor && myPhosphor->getState());
 

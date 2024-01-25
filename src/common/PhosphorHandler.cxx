@@ -47,4 +47,29 @@ bool PhosphorHandler::initialize(bool enable, int blend)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+PhosphorHandler::PhosphorMode PhosphorHandler::toPhosphorMode(string_view name)
+{
+  if(name == VALUE_ALWAYS)
+    return PhosphorMode::Always;
+
+  if(name == VALUE_AUTO_ON)
+    return PhosphorMode::Auto_on;
+
+  if(name == VALUE_AUTO)
+    return PhosphorMode::Auto;
+
+  return PhosphorMode::ByRom;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+string_view PhosphorHandler::toPhosphorName(PhosphorMode type)
+{
+  static constexpr std::array<string_view, PhosphorMode::NumTypes> SETTING_NAMES = {
+    VALUE_BYROM, VALUE_ALWAYS, VALUE_AUTO_ON, VALUE_AUTO
+  };
+
+  return SETTING_NAMES[type];
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 PhosphorHandler::PhosphorLUT PhosphorHandler::ourPhosphorLUT;

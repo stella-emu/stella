@@ -24,11 +24,33 @@
 class PhosphorHandler
 {
   public:
+    // Phosphor settings names
+    static constexpr string_view SETTING_MODE = "tv.phosphor";
+    static constexpr string_view SETTING_BLEND = "tv.phosblend";
+    // Setting values of phosphor modes
+    static constexpr string_view VALUE_BYROM = "byrom";
+    static constexpr string_view VALUE_ALWAYS = "always";
+    static constexpr string_view VALUE_AUTO_ON = "autoon";
+    static constexpr string_view VALUE_AUTO = "auto";
+
+    enum PhosphorMode {
+      ByRom,
+      Always,
+      Auto_on,
+      Auto,
+      NumTypes
+    };
+
+    static constexpr string_view DEFAULT_BLEND = "50"; // align with myPhosphorPercent!
+
     PhosphorHandler() = default;
 
     bool initialize(bool enable, int blend);
 
     bool phosphorEnabled() const { return myUsePhosphor; }
+
+    static PhosphorMode toPhosphorMode(string_view name);
+    static string_view toPhosphorName(PhosphorMode type);
 
     /**
       Used to calculate an averaged color pixel for the 'phosphor' effect.

@@ -99,8 +99,8 @@ Settings::Settings()
   setPermanent("pal.gamma", "0.0");
   // TV filtering options
   setPermanent("tv.filter", "0");
-  setPermanent("tv.phosphor", "byrom");
-  setPermanent("tv.phosblend", "50");
+  setPermanent(PhosphorHandler::SETTING_MODE, PhosphorHandler::VALUE_BYROM);
+  setPermanent(PhosphorHandler::SETTING_BLEND, PhosphorHandler::DEFAULT_BLEND);
   setPermanent("tv.scanlines", "0");
   setPermanent("tv.scanmask", TIASurface::SETTING_STANDARD);
   // TV options when using 'custom' mode
@@ -361,11 +361,12 @@ void Settings::validate()
   sort(s.begin(), s.end());
   if(s != "bgopry")  setValue("tia.dbgcolors", "roygpb");
 
-  s = getString("tv.phosphor");
-  if(s != "always" && s != "byrom" && s != "auto")  setValue("tv.phosphor", "byrom");
+  if(PhosphorHandler::toPhosphorMode(getString(PhosphorHandler::SETTING_MODE)) == PhosphorHandler::ByRom)
+    setValue(PhosphorHandler::SETTING_MODE, PhosphorHandler::VALUE_BYROM);
 
-  i = getInt("tv.phosblend");
-  if(i < 0 || i > 100)  setValue("tv.phosblend", "50");
+  i = getInt(PhosphorHandler::SETTING_BLEND);
+  if(i < 0 || i > 100)
+    setValue(PhosphorHandler::SETTING_BLEND, PhosphorHandler::DEFAULT_BLEND);
 
   s = getString("tv.scanmask");
   if(s != TIASurface::SETTING_STANDARD
@@ -576,8 +577,8 @@ void Settings::usage()
     << "  -tia.correct_aspect <1|0>     Enable aspect ratio correct scaling\n\n"
     << "  -tv.filter    <0-5>           Set TV effects off (0) or to specified mode\n"
     << "                                 (1-5)\n"
-    << "  -tv.phosphor  <always|auto|>  When to use phosphor mode\n"
-    << "                 byrom\n"
+    << "  -tv.phosphor  <byrom|always|> When to use phosphor mode\n"
+    << "                 autoon|auto\n"
     << "  -tv.phosblend <0-100>         Set default blend level in phosphor mode\n"
     << "  -tv.scanlines <0-100>         Set scanline intensity to percentage\n"
     << "                                 (0 disables completely)\n"

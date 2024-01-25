@@ -314,7 +314,7 @@ string Widget::getToolTip(const Common::Point& pos) const
   const string hotkey2 = instance().eventHandler().keyHandler().getMappingDesc(
     _toolTipEvent2, _toolTipMode);
 
-  if(hotkey2 != EmptyString)
+  if(hotkey != EmptyString && hotkey2 != EmptyString)
   {
     // Merge hotkeys if they only differ by "-Shift"
     const string mod = "-Shift";
@@ -333,6 +333,8 @@ string Widget::getToolTip(const Common::Point& pos) const
     else
       hotkey += ", " + hotkey2;
   }
+  else
+    hotkey += hotkey2;
 
   if(hotkey == EmptyString)
     return _toolTipText;

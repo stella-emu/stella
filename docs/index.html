@@ -1310,7 +1310,12 @@
       <td>Cmd + 3</td>
     </tr>
     <tr>
-      <td><i>Increase</i> 'phosphor' enabling mode</td>
+      <td>Select <i>previous</i> 'phosphor' enabling mode</td>
+      <td>-</td>
+      <td>-</td>
+    </tr>
+    <tr>
+      <td>Select <i>next</i> 'phosphor' enabling mode</td>
       <td>Ctrl-Alt + P</td>
       <td>Ctrl-Cmd + P</td>
     </tr>
@@ -1356,7 +1361,7 @@
     </tr>
     <tr>
       <td colspan="3"><center><font size="-1">
-      Items marked as (*) will also switch to 'Custom' mode</font></center></td>
+      Items marked as (*) will also switch to 'Custom' TV effects mode</font></center></td>
     </tr>
   </table>
 
@@ -2926,11 +2931,13 @@
     </tr>
 
     <tr>
-      <td><pre>-tv.phosphor &lt;always|auto|byrom&gt;</pre></td>
-      <td>Determine how phosphor mode is enabled. If 'always' or 'auto', then
-        the ROM properties entry is ignored, and phosphor mode is either always
-        turned on or automatic. Otherwise, the ROM properties determine whether
-        phosphor mode is used for each ROM.
+      <td><pre>-tv.phosphor &lt;byrom|always|autoon|auto&gt;</pre></td>
+      <td>Determine how phosphor mode is enabled. If 'byrom', then the ROM
+        properties determine whether phosphor mode is used for each ROM.
+      	Else the ROM properties entry is ignored. If 'always', then the
+      	phosphor mode is always enabled. If 'autoon', then the phosphor
+        mode is enabled automatically. If 'auto', then the phosphor mode
+        is enabled/disabled on automatically.
       </td>
     </tr>
 
@@ -3826,8 +3833,8 @@
           <tr><td>TV mode</td><td>Disable TV effects, or select TV preset</td><td>-tv.filter</td></tr>
           <tr><td>Adjustable sliders</td><td>Set specific attribute in 'Custom' TV mode</td><td>-tv.sharpness<br/>-tv.resolution, etc.</td></tr>
           <tr><td>Phosphor</td><td>Select mode for enabling phosphor</td><td>-tv.phosphor</td></tr>
-          <tr><td>Blend (phosphor)</td><td>Blend level to use in phosphor modes for all ROMs and automatic
-                (needs to be manually adjusted for your particular hardware)</td><td>-tv.phosblend</td></tr>
+          <tr><td>Blend (phosphor)</td><td>Blend level to use in phosphor modes for all ROMs and automatic ones
+                (level needs to be manually adjusted for your particular hardware)</td><td>-tv.phosblend</td></tr>
           <tr><td>(Scanlines) Intensity</td><td>Sets scanlines black-level intensity.</br>
                   Note: No scanlines in 1x mode snapshots</td><td>-tv.scanlines</td></tr>
           <tr><td>(Scanlines) Mask</td><td>Sets the scanlines mask.</br>

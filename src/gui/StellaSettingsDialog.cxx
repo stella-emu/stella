@@ -235,7 +235,7 @@ void StellaSettingsDialog::loadConfig()
   myTVScanIntense->setValue(valueToLevel(settings.getInt("tv.scanlines")));
 
   // TV phosphor blend
-  myTVPhosLevel->setValue(valueToLevel(settings.getInt("tv.phosblend")));
+  myTVPhosLevel->setValue(valueToLevel(settings.getInt(PhosphorHandler::SETTING_BLEND)));
 
   // TV overscan
   myTVOverscan->setValue(settings.getInt("tia.fs_overscan"));
@@ -274,10 +274,10 @@ void StellaSettingsDialog::saveConfig()
     myTVMode->getSelectedTag().toString());
 
   // TV phosphor mode
-  instance().settings().setValue("tv.phosphor",
-    myTVPhosLevel->getValue() > 0 ? "always" : "byrom");
+  instance().settings().setValue(PhosphorHandler::SETTING_MODE,
+    myTVPhosLevel->getValue() > 0 ? PhosphorHandler::VALUE_ALWAYS : PhosphorHandler::VALUE_BYROM);
   // TV phosphor blend
-  instance().settings().setValue("tv.phosblend",
+  instance().settings().setValue(PhosphorHandler::SETTING_BLEND,
     levelToValue(myTVPhosLevel->getValue()));
 
   // TV scanline intensity and interpolation

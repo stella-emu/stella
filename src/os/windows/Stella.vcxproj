@@ -98,6 +98,7 @@
     <CharacterSet>MultiByte</CharacterSet>
     <PlatformToolset>v143</PlatformToolset>
     <EnableASAN>false</EnableASAN>
+    <WholeProgramOptimization>PGOptimize</WholeProgramOptimization>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release-Sanitize|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
@@ -486,6 +487,8 @@
       <CompileAs>CompileAsCpp</CompileAs>
       <AssemblerOutput>NoListing</AssemblerOutput>
       <AssemblerListingLocation>$(IntDir)asm\windows\%(RelativeDir)</AssemblerListingLocation>
+      <Optimization>MaxSpeed</Optimization>
+      <InlineFunctionExpansion>Default</InlineFunctionExpansion>
     </ClCompile>
     <Link>
       <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2main.lib;%(AdditionalDependencies)</AdditionalDependencies>
