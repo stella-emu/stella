@@ -127,7 +127,7 @@ Console::Console(OSystem& osystem, unique_ptr<Cartridge>& cart,
   const TIA::onPhosphorCallback callback = [&frameBuffer = this->myOSystem.frameBuffer()](bool enable)
   {
     frameBuffer.tiaSurface().enablePhosphor(enable);
-#if DEBUG_BUILD
+#ifdef DEBUG_BUILD
     ostringstream msg;
     msg << "Phosphor effect automatically " << (enable ? "enabled" : "disabled");
     frameBuffer.showTextMessage(msg.str());
