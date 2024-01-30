@@ -31,7 +31,6 @@ LauncherFileListWidget::LauncherFileListWidget(GuiObject* boss,
   // This widget is special, in that it catches signals and redirects them
   setTarget(this);
   myFavorites = make_unique<FavoritesManager>(instance().settings());
-  myRomDir = startRomDir();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -118,29 +117,30 @@ void LauncherFileListWidget::addFolder(StringList& list, int& offset,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string LauncherFileListWidget::startRomDir()
+FSNode LauncherFileListWidget::startRomNode() const
 {
-  const string romDir = instance().settings().getString("startromdir");
-  const FSNode node(romDir);
-  return node.getPath();
+  return FSNode(instance().settings().getString("startromdir"));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void LauncherFileListWidget::extendLists(StringList& list)
 {
-  // Only show virtual dirs in "romdir". Except if
-  //  "romdir" is virtual or "romdir" is a ZIP
-  //  Then show virtual dirs in parent dir of "romdir".
-  if(_node.getPath() == startRomDir()
+  FSNode romNode = startRomNode();
+
+  // Only show virtual dirs in "romNode". Except if
+  //  "romNode" is virtual or "romNode" is a ZIP
+  //  Then show virtual dirs in parent of "romNode".
+  if(_node == romNode
       && (myInVirtualDir || BSPF::endsWithIgnoreCase(_node.getPath(), ".zip")))
   {
-    myRomDir = _node.getParent().getPath();
-    instance().settings().setValue("startromdir", myRomDir);
+    romNode = _node.getParent();
+    instance().settings().setValue("startromdir", romNode.getPath());
   }
-  else
-    myRomDir = startRomDir();
+  else if(!romNode.isDirectory() && romNode.getParent() == _node)
+    // If launcher started in virtual dir, add virtual folders to parent dir
+    romNode = _node;
 
-  if(instance().settings().getBool("favorites") && _node.getPath() == myRomDir)
+  if(instance().settings().getBool("favorites") && _node == romNode)
   {
     // Add virtual directories behind ".."
     int offset = _fileList.begin()->getName() == ".." ? 1 : 0;

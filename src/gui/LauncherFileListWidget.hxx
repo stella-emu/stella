@@ -67,10 +67,9 @@ class LauncherFileListWidget : public FileListWidget
     unique_ptr<FavoritesManager> myFavorites;
     bool myInVirtualDir{false};
     string myVirtualDir;
-    string myRomDir;
 
   private:
-    string startRomDir();
+    FSNode startRomNode() const;
     void getChildren(const FSNode::CancelCheck& isCancelled) override;
     void userFavor(string_view path);
     void addFolder(StringList& list, int& offset, string_view name, IconType icon);
