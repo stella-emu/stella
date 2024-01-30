@@ -56,7 +56,7 @@ DeveloperDialog::DeveloperDialog(OSystem& osystem, DialogContainer& parent,
 
   // Set real dimensions
   setSize(53 * fontWidth + HBORDER * 2,
-          _th + VGAP * 3 + lineHeight + 13 * (lineHeight + VGAP) + buttonHeight + VBORDER * 3,
+          _th + VGAP * 3 + lineHeight + 14 * (lineHeight + VGAP) + buttonHeight + VBORDER * 3,
           max_w, max_h);
 
   // The tab widget
@@ -181,6 +181,12 @@ void DeveloperDialog::addEmulationTab(const GUI::Font& font)
     wid.push_back(myRandomizeCPUWidget[i]);
     xpos += CheckboxWidget::boxSize(font) + font.getStringWidth("XX") + fontWidth * 2.5;
   }
+  ypos += lineHeight + VGAP;
+
+  // How to handle undriven TIA pins
+  myRandomHotspotsWidget = new CheckboxWidget(myTab, font, HBORDER + INDENT * 1, ypos + 1,
+                                              "Random hotspot peek values");
+  wid.push_back(myRandomHotspotsWidget);
   ypos += lineHeight + VGAP;
 
   // How to handle undriven TIA pins
@@ -711,6 +717,8 @@ void DeveloperDialog::getWidgetStates(SettingsSet set)
     if(myRandomizeCPUWidget[i]->getState())
       cpurandom += cpuregs[i];
   myRandomizeCPU[set] = cpurandom;
+  // Random hotspot peeks
+  myRandomHotspots[set] = myRandomHotspotsWidget->getState();
   // Undriven TIA pins
   myUndrivenPins[set] = myUndrivenPinsWidget->getState();
 #ifdef DEBUGGER_SUPPORT
@@ -768,6 +776,8 @@ void DeveloperDialog::setWidgetStates(SettingsSet set)
 
   for(int i = 0; i < 5; ++i)
     myRandomizeCPUWidget[i]->setState(BSPF::containsIgnoreCase(cpurandom, cpuregs[i]));
+  // Random hotspot peeks
+  myRandomHotspotsWidget->setState(myRandomHotspots[set]);
   // Undriven TIA pins
   myUndrivenPinsWidget->setState(myUndrivenPins[set]);
 #ifdef DEBUGGER_SUPPORT
@@ -915,6 +925,8 @@ void DeveloperDialog::setDefaults()
       myRandomizeTIA[set] = devSettings;
       myRandomizeRAM[set] = true;
       myRandomizeCPU[set] = devSettings ? "SAXYP" : "AXYP";
+      // Random hotspot peeks
+      myRandomHotspots[set] = devSettings;
       // Undriven TIA pins
       myUndrivenPins[set] = devSettings;
     #ifdef DEBUGGER_SUPPORT
@@ -1091,6 +1103,7 @@ void DeveloperDialog::handleCommand(CommandSender* sender, int cmd, int data, in
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DeveloperDialog::handleSettings(bool devSettings)
 {
+  myRandomHotspotsWidget->setEnabled(devSettings);
   myUndrivenPinsWidget->setEnabled(devSettings);
 #ifdef DEBUGGER_SUPPORT
   myRWPortBreakWidget->setEnabled(devSettings);

@@ -93,8 +93,9 @@ class DeveloperDialog : public Dialog, DevSettingsHandler
     CheckboxWidget*     myRandomizeTIAWidget{nullptr};
     CheckboxWidget*     myRandomizeRAMWidget{nullptr};
     StaticTextWidget*   myRandomizeCPULabel{nullptr};
-    CheckboxWidget*     myUndrivenPinsWidget{nullptr};
     std::array<CheckboxWidget*, 5> myRandomizeCPUWidget{nullptr};
+    CheckboxWidget*     myRandomHotspotsWidget{nullptr};
+    CheckboxWidget*     myUndrivenPinsWidget{nullptr};
 #ifdef DEBUGGER_SUPPORT
     CheckboxWidget*     myRWPortBreakWidget{nullptr};
     CheckboxWidget*     myWRPortBreakWidget{nullptr};

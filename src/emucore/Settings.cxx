@@ -278,6 +278,7 @@ Settings::Settings()
   setPermanent("dev.ramrandom", "true");
   setPermanent("dev.cpurandom", "SAXYP");
   setPermanent("dev.tiarandom", "true");
+  setPermanent("dev.hsrandom", "true");
   setPermanent("dev.colorloss", "true");
 #ifdef GUI_SUPPORT
   setPermanent("dev.tv.jitter", "true");
@@ -784,6 +785,7 @@ void Settings::usage()
     << "  -dev.tv.jitter    <1|0>          Enable TV jitter effect\n"
     << "  -dev.tv.jitter_sense <1-10>      Set TV jitter effect sensitivity\n"
     << "  -dev.tv.jitter_recovery <1-20>   Set recovery time for TV jitter effect\n"
+    << "  -dev.hsrandom     <1|0>          Randomize the hotspot peek values\n"
     << "  -dev.tiadriven    <1|0>          Drive unqused TIA pins randomly on a\n"
     << "                                    read/peek\n"
 #ifdef DEBUGGER_SUPPORT

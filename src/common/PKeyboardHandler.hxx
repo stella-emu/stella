@@ -124,6 +124,11 @@ class PhysicalKeyboardHandler
     /** return event mode for given controller type */
     static EventMode getMode(const Controller::Type type);
 
+#ifdef DEBUG_BUILD
+    void verifyDefaultMapping(PhysicalKeyboardHandler::EventMappingArray mapping,
+      EventMode mode, string_view name);
+#endif
+
   private:
     OSystem& myOSystem;
     EventHandler& myHandler;

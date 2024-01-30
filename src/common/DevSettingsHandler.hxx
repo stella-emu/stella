@@ -58,6 +58,7 @@ class DevSettingsHandler
     std::array<int, numSets>    myTVJitterSense;
     std::array<int, numSets>    myTVJitterRec;
     std::array<bool, numSets>   myDebugColors;
+    std::array<bool, numSets>   myRandomHotspots;
     std::array<bool, numSets>   myUndrivenPins;
   #ifdef DEBUGGER_SUPPORT
     std::array<bool, numSets>   myRWPortBreak;

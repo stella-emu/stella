@@ -90,6 +90,8 @@ class Cartridge : public Device
     void unlockHotspots() { myHotspotsLocked = false; }
     bool hotspotsLocked() const { return myHotspotsLocked; }
 
+    void enableRandomHotspots(bool enable) { myRandomHotspots = enable; }
+
     /**
       Get the default startup bank for a cart.  This is the bank where
       the system will look at address 0xFFFC to determine where to
@@ -436,6 +438,9 @@ class Cartridge : public Device
 
     // Semi-random values to use when a read from write port occurs
     std::array<uInt8, 256> myRWPRandomValues;
+
+    // If myRandomHotspots is true, peeks to hotspots return semi-random values.
+    bool myRandomHotspots{false};
 
   private:
     // The startup bank to use (where to look for the reset vector address)

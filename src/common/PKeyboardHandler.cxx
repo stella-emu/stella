@@ -70,7 +70,24 @@ PhysicalKeyboardHandler::PhysicalKeyboardHandler(OSystem& system, EventHandler& 
 #ifdef DEBUGGER_SUPPORT
   setDefaultMapping(Event::NoType, EventMode::kPromptMode, updateDefaults);
 #endif
+#ifdef DEBUG_BUILD
+  verifyDefaultMapping(DefaultCommonMapping, EventMode::kEmulationMode, "EmulationMode");
+  verifyDefaultMapping(DefaultMenuMapping, EventMode::kMenuMode, "MenuMode");
+#endif
 }
+
+#ifdef DEBUG_BUILD
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void PhysicalKeyboardHandler::verifyDefaultMapping(
+  PhysicalKeyboardHandler::EventMappingArray mapping, EventMode mode, string_view name)
+{
+  for(const auto& item1 : mapping)
+    for(const auto& item2 : mapping)
+      if(item1.event != item2.event && item1.key == item2.key && item1.mod == item2.mod)
+        cerr << "ERROR! Duplicate hotkey mapping found: " << name << ", "
+          << myKeyMap.getDesc(KeyMap::Mapping(mode, item1.key, item1.mod)) << "\n";
+}
+#endif
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PhysicalKeyboardHandler::loadSerializedMappings(
@@ -660,6 +677,7 @@ PhysicalKeyboardHandler::DefaultCommonMapping = {
   { Event::PhosphorDecrease,         KBDK_4, KBDM_SHIFT | MOD3 },
   { Event::PhosphorIncrease,         KBDK_4, MOD3 },
   { Event::TogglePhosphor,           KBDK_P, MOD3 },
+  //{ Event::PhosphorModeDecrease,     KBDK_P, KBDM_SHIFT | KBDM_CTRL | MOD3 },
   { Event::PhosphorModeIncrease,     KBDK_P, KBDM_CTRL | MOD3 },
   { Event::ScanlinesDecrease,        KBDK_5, KBDM_SHIFT | MOD3 },
   { Event::ScanlinesIncrease,        KBDK_5, MOD3 },

@@ -15,6 +15,7 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
+#include "System.hxx"
 #include "CartFA.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -30,8 +31,10 @@ CartridgeFA::CartridgeFA(const ByteBuffer& image, size_t size,
 bool CartridgeFA::checkSwitchBank(uInt16 address, uInt8)
 {
   // Switch banks if necessary
-  if((address >= 0x1FF8) && (address <= 0x1FFA))
+  if((address >= 0x1FF8) && (address <= 0x1FFA)/* && (mySystem->getDataBusState() & 1) */)
   {
+    //if((mySystem->getDataBusState() & 1) == 0)
+    //cerr << std::hex << address << ": " << (mySystem->getDataBusState() & 1) << ", ";
     bank(address - 0x1FF8);
     return true;
   }
