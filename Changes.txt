@@ -50,6 +50,8 @@
 
   * Fixed broken 7800 pause key support.
 
+  * Added developer option for random hotspot peek values.
+
   * Added user defined CPU cycle timers to debugger.
 
   * Removed 'launcherroms' option, since it was causing some issues.

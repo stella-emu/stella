@@ -23,6 +23,7 @@
 #include "Settings.hxx"
 #include "StateManager.hxx"
 #include "TIA.hxx"
+#include "Cart.hxx"
 
 #include "DevSettingsHandler.hxx"
 
@@ -47,6 +48,8 @@ void DevSettingsHandler::loadSettings(SettingsSet set)
   myRandomizeTIA[set] = settings.getBool(prefix + "tiarandom");
   myRandomizeRAM[set] = settings.getBool(prefix + "ramrandom");
   myRandomizeCPU[set] = settings.getString(prefix + "cpurandom");
+  // Random hotspot peeks
+  myRandomHotspots[set] = devSettings ? settings.getBool("dev.hsrandom") : false;
   // Undriven TIA pins
   myUndrivenPins[set] = devSettings ? settings.getBool("dev.tiadriven") : false;
 #ifdef DEBUGGER_SUPPORT
@@ -110,6 +113,7 @@ void DevSettingsHandler::saveSettings(SettingsSet set)
 
   if(devSettings)
   {
+    settings.setValue("dev.hsrandom", myRandomHotspots[set]);
     // Undriven TIA pins
     settings.setValue("dev.tiadriven", myUndrivenPins[set]);
   #ifdef DEBUGGER_SUPPORT
@@ -168,6 +172,7 @@ void DevSettingsHandler::applySettings(SettingsSet set)
 
   if(myOSystem.hasConsole())
   {
+    myOSystem.console().cartridge().enableRandomHotspots(myRandomHotspots[set]);
     myOSystem.console().tia().driveUnusedPinsRandom(myUndrivenPins[set]);
     // Notes:
     // - thumb exceptions not updated, because set in cart constructor

@@ -161,7 +161,7 @@ uInt8 CartridgeEnhanced::peek(uInt16 address)
 
   // hotspots in TIA range are reacting to pokes only
   if(hotspot() >= 0x80)
-    if(checkSwitchBank(address & ADDR_MASK, 0))
+    if(checkSwitchBank(address & ADDR_MASK, 0) && myRandomHotspots)
       return myRWPRandomValues[address & 0xFF];
 
   if(isRamBank(address))

@@ -37,6 +37,8 @@ Cartridge::Cartridge(const Settings& settings, string_view md5)
   for(uInt32 i = 0; i < 256; ++i)
     myRWPRandomValues[i] = rand.next();
 
+  const bool devSettings = mySettings.getBool("dev.settings");
+  myRandomHotspots = devSettings ? mySettings.getBool("dev.randomhs") : false;
   myRamReadAccesses.reserve(5);
 }
 

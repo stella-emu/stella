@@ -3641,6 +3641,9 @@
       <td><pre>-&lt;plr.|dev.&gt;cpurandom &lt;S,A,X,Y,P&gt;</pre></td>
       <td>On reset, randomize the content of the specified CPU registers.</td>
     </tr><tr>
+      <td><pre>-dev.hsrandom &lt;1|0&gt;</pre></td>
+      <td>When this option is enabled, peeks to hotspots return semi-random values.</td>
+    </tr><tr>
       <td><pre>-dev.tiadriven &lt;1|0&gt;</pre></td>
       <td>Set unused TIA pins to be randomly driven high or low on a read/peek.
           If disabled, use the last databus value for those pins instead.</td>
@@ -4566,6 +4569,11 @@
             <td>Randomize CPU</td>
             <td>When loading a ROM, randomize the content of the specified CPU registers</td>
             <td>-plr.cpurandom<br/>-dev.cpurandom</td>
+          </tr>
+          <tr>
+            <td>Random hotspot peek values</td>
+            <td>Peeks to hotspots return semi-random values</td>
+            <td>-dev.hsrandom</td>
           </tr>
           <tr>
             <td>Drive unused TIA pins ...</td>
