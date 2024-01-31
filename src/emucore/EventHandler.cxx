@@ -2847,7 +2847,9 @@ EventHandler::EmulActionList EventHandler::ourEmulActionList = { {
   { Event::ExitMode,                "Exit current Stella menu/mode"         },
   { Event::OptionsMenuMode,         "Enter Options menu UI"                 },
   { Event::CmdMenuMode,             "Toggle Commands menu UI"               },
+#ifdef IMAGE_SUPPORT
   { Event::ToggleBezel,             "Toggle bezel display"                  },
+#endif
   { Event::HighScoresMenuMode,      "Toggle High Scores UI"                 },
   { Event::PlusRomsSetupMode,       "Toggle PlusROMs setup UI"              },
   { Event::TogglePauseMode,         "Toggle Pause mode"                     },

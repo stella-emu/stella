@@ -531,7 +531,7 @@ class EventHandler
       COMBO_SIZE           = 16,
       EVENTS_PER_COMBO     = 8,
     #ifdef IMAGE_SUPPORT
-      PNG_SIZE             = 3,
+      PNG_SIZE             = 4,
     #else
       PNG_SIZE             = 0,
     #endif
@@ -540,7 +540,7 @@ class EventHandler
     #else
       REFRESH_SIZE         = 0,
     #endif
-      EMUL_ACTIONLIST_SIZE = 235 + PNG_SIZE + COMBO_SIZE + REFRESH_SIZE,
+      EMUL_ACTIONLIST_SIZE = 234 + PNG_SIZE + COMBO_SIZE + REFRESH_SIZE,
       MENU_ACTIONLIST_SIZE = 20
     ;
 
