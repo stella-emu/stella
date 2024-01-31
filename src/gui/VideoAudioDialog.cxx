@@ -78,7 +78,9 @@ VideoAudioDialog::VideoAudioDialog(OSystem& osystem, DialogContainer& parent,
   addDisplayTab();
   addPaletteTab();
   addTVEffectsTab();
+#ifdef IMAGE_SUPPORT
   addBezelTab();
+#endif
   addAudioTab();
 
   // Add Defaults, OK and Cancel buttons
@@ -770,6 +772,7 @@ void VideoAudioDialog::loadConfig()
   myTVScanMask->setSelected(settings.getString("tv.scanmask"), TIASurface::SETTING_STANDARD);
 
   /////////////////////////////////////////////////////////////////////////////
+#ifdef IMAGE_SUPPORT
   // Bezel tab
   myBezelEnableCheckbox->setState(settings.getBool("bezel.show"));
   myBezelPath->setText(settings.getString("bezel.dir"));
@@ -780,6 +783,7 @@ void VideoAudioDialog::loadConfig()
   myWinTopSlider->setValue(settings.getInt("bezel.win.top"));
   myWinBottomSlider->setValue(settings.getInt("bezel.win.bottom"));
   handleBezelChange();
+#endif
 
   /////////////////////////////////////////////////////////////////////////////
   // Audio tab
@@ -905,6 +909,7 @@ void VideoAudioDialog::saveConfig()
   settings.setValue("tv.scanmask", myTVScanMask->getSelectedTag());
 
   /////////////////////////////////////////////////////////////////////////////
+#ifdef IMAGE_SUPPORT
   // Bezel tab
   settings.setValue("bezel.show", myBezelEnableCheckbox->getState());
   settings.setValue("bezel.dir", myBezelPath->getText());
@@ -914,6 +919,7 @@ void VideoAudioDialog::saveConfig()
   settings.setValue("bezel.win.right", myWinRightSlider->getValueLabel());
   settings.setValue("bezel.win.top", myWinTopSlider->getValueLabel());
   settings.setValue("bezel.win.bottom", myWinBottomSlider->getValueLabel());
+#endif
 
   // Note: The following has to happen after all video related setting have been saved
   if(instance().hasConsole())
@@ -1050,6 +1056,7 @@ void VideoAudioDialog::setDefaults()
       break;
     }
     case 3: // Bezels
+#ifdef IMAGE_SUPPORT
       myBezelEnableCheckbox->setState(true);
       myBezelPath->setText(instance().userDir().getShortPath());
       myBezelShowWindowed->setState(false);
@@ -1058,6 +1065,7 @@ void VideoAudioDialog::setDefaults()
       break;
 
     case 4:  // Audio
+#endif
       mySoundEnableCheckbox->setState(AudioSettings::DEFAULT_ENABLED);
       myVolumeSlider->setValue(AudioSettings::DEFAULT_VOLUME);
       myDevicePopup->setSelected(AudioSettings::DEFAULT_DEVICE);
