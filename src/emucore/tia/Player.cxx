@@ -94,6 +94,15 @@ void Player::nusiz(uInt8 value, bool hblank)
 
   myDecodes = DrawCounterDecodes::get().playerDecodes()[myDecodesOffset];
 
+  // Changing NUSIZ can trigger a decode in the same cycle
+  // (https://github.com/stella-emu/stella/issues/1012)
+  if (!myIsRendering && myDecodes[(myCounter + TIAConstants::H_PIXEL - 1) % TIAConstants::H_PIXEL]) {
+    myIsRendering = true;
+    mySampleCounter = 0;
+    myRenderCounter = renderCounterOffset;
+    myCopy = myDecodes[myCounter - 1];
+  }
+
   if (
     myDecodes != oldDecodes &&
     myIsRendering &&
