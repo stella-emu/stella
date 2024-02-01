@@ -166,7 +166,7 @@ void RomInfoWidget::parseProperties(const FSNode& node, bool full)
                           + (isPlusCart ? " - PlusROM" : "")
                           + buf.str());
     }
-#if DEBUG_BUILD && IMAGE_SUPPORT
+#if defined(DEBUG_BUILD) && defined(IMAGE_SUPPORT)
     // Debug bezel properties:
     if(myProperties.get(PropType::Bezel_Name).empty())
       myRomInfo.push_back("*Bezel: " + Bezel::getName(instance().bezelDir().getPath(), myProperties));
