@@ -302,9 +302,9 @@ void AboutDialog::handleCommand(CommandSender* sender, int cmd, int data, int id
 
     case StaticTextWidget::kOpenUrlCmd:
     {
-      const string url = myDesc[id]->getUrl();
+      const string& url = myDesc[id]->getUrl();
 
-      if(url != EmptyString)
+      if(url != EmptyString && MediaFactory::supportsURL())
         MediaFactory::openURL(url);
       break;
     }

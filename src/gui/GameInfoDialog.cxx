@@ -1373,12 +1373,12 @@ void GameInfoDialog::eraseEEPROM()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void GameInfoDialog::updateLink()
 {
-  const string link = myUrl->getText();
+  const string& link = myUrl->getText();
   const bool enable = startsWithIgnoreCase(link, "http://")
     || startsWithIgnoreCase(link, "https://")
     || startsWithIgnoreCase(link, "www.");
 
-  myUrlButton->setEnabled(enable);
+  myUrlButton->setEnabled(enable && MediaFactory::supportsURL());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
