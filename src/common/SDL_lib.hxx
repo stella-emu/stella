@@ -60,6 +60,11 @@ static inline string SDLVersion()
   return buf.str();
 }
 
+static inline bool SDLSupportsURL()
+{
+  return static_cast<bool>(SDL_VERSION_ATLEAST(2,0,14));
+}
+
 static inline bool SDLOpenURL(const string& url)
 {
 #if SDL_VERSION_ATLEAST(2,0,14)
