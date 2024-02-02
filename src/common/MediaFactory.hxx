@@ -181,9 +181,18 @@ class MediaFactory
     #endif
     }
 
+    static bool supportsURL()
+    {
+    #if defined(SDL_SUPPORT) && SDL_VERSION_ATLEAST(2, 0, 14)
+      return true;
+    #else
+      return false;
+    #endif
+    }
+
     static bool openURL(const string& url)
     {
-    #if defined(SDL_SUPPORT)
+    #if defined(SDL_SUPPORT) && SDL_VERSION_ATLEAST(2, 0, 14)
       return SDLOpenURL(url);
     #else
       return false;

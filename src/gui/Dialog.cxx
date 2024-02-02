@@ -176,7 +176,7 @@ void Dialog::initHelp()
       _helpWidget->setToolTip("Click or press " + key + " for help.");
     }
 
-    if(hasHelp())
+    if(hasHelp() && MediaFactory::supportsURL())
       _helpWidget->clearFlags(Widget::FLAG_INVISIBLE);
     else
       _helpWidget->setFlags(Widget::FLAG_INVISIBLE);

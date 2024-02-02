@@ -279,6 +279,7 @@ void LauncherDialog::addPathWidgets(int& ypos)
                                     buttonWidth, buttonHeight, helpIcon, kHelpCmd);
     const string key = instance().eventHandler().getMappingDesc(Event::UIHelp, EventMode::kMenuMode);
     myHelpButton->setToolTip("Click for help. (" + key + ")");
+    myHelpButton->setEnabled(MediaFactory::supportsURL());
     wid.push_back(myHelpButton);
   }
   ypos += lineHeight + Dialog::vGap() * 2;
@@ -1108,7 +1109,7 @@ void LauncherDialog::handleCommand(CommandSender* sender, int cmd,
 
     case RomInfoWidget::kClickedCmd:
     {
-      const string url = myRomInfoWidget->getUrl();
+      const string& url = myRomInfoWidget->getUrl();
 
       if(url != EmptyString)
         MediaFactory::openURL(url);
