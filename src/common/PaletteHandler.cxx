@@ -338,8 +338,7 @@ void PaletteHandler::setPalette()
     if(paletteType == PaletteType::Custom)
       generateCustomPalette(timing);
 
-    //myOSystem.frameBuffer().setTIAPalette(adjustedPalette(*palette));
-    myOSystem.frameBuffer().setTIAPalette(*palette);
+    myOSystem.frameBuffer().setTIAPalette(adjustedPalette(*palette));
   }
 }
 
