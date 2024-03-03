@@ -126,10 +126,11 @@ class DiStella
         else
           myReserved.TIAWrite[addr & 0x3F] = true;
       }
-      else if (labfound == AddressType::RIOT)
-        myReserved.IOReadWrite[(addr & 0xFF) - 0x80] = true;
+      else if(labfound == AddressType::RIOT) {
+        myReserved.IOReadWrite[addr & 0x1F] = true;
+      }
       else if (labfound == AddressType::ZP_RAM)
-        myReserved.ZPRAM[(addr & 0xFF) - 0x80] = true;
+        myReserved.ZPRAM[addr & 0x7F] = true;
     }
 
   private:
