@@ -300,7 +300,7 @@ class CartDebug : public DebuggerSystem
     struct ReservedEquates {
       std::array<bool, 16>  TIARead{false};
       std::array<bool, 64>  TIAWrite{false};
-      std::array<bool, 128>  IOReadWrite{false};
+      std::array<bool, 32>  IOReadWrite{false};
       std::array<bool, 128> ZPRAM{false};
       AddrToLabel Label{};
       bool breakFound{false};
