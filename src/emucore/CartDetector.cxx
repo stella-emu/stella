@@ -849,7 +849,7 @@ bool CartDetector::isProbablyX07(const ByteBuffer& image, size_t size)
 bool CartDetector::isProbablyPlusROM(const ByteBuffer& image, size_t size)
 {
   // PlusCart uses this pattern to detect a PlusROM
-  static constexpr uInt8 signature[3] = { 0x8d, 0xf0, 0x1f };  // STA $1FF0
+  static constexpr uInt8 signature[3] = { 0x8d, 0xf1, 0x1f };  // STA $1FF1
 
   return searchForBytes(image, size, signature, 3);
 }

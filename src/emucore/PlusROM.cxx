@@ -24,6 +24,7 @@
 #include "Logger.hxx"
 #include "Version.hxx"
 #include "Settings.hxx"
+#include "CartDetector.hxx"
 
 #if defined(HTTP_LIB_SUPPORT)
   #include "http_lib.hxx"
@@ -238,7 +239,7 @@ bool PlusROM::initialize(const ByteBuffer& image, size_t size)
 
   reset();
 
-  return myIsPlusROM = true;
+  return myIsPlusROM = CartDetector::isProbablyPlusROM(image, size);
 #else
   return myIsPlusROM = false;
 #endif
