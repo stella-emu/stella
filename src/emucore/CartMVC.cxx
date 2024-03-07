@@ -1635,6 +1635,7 @@ CartridgeMVC::CartridgeMVC(string_view path, size_t size,
     myMovie{make_unique<MovieCart>()},
     myPath{path}
 {
+    createRomAccessArrays(size);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
