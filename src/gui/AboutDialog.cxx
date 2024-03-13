@@ -1,20 +1,3 @@
-//============================================================================
-//
-//   SSSS    tt          lll  lll
-//  SS  SS   tt           ll   ll
-//  SS     tttttt  eeee   ll   ll   aaaa
-//   SSSS    tt   ee  ee  ll   ll      aa
-//      SS   tt   eeeeee  ll   ll   aaaaa  --  "An Atari 2600 VCS Emulator"
-//  SS  SS   tt   ee      ll   ll  aa  aa
-//   SSSS     ttt  eeeee llll llll  aaaaa
-//
-// Copyright (c) 1995-2024 by Bradford W. Mott, Stephen Anthony
-// and the Stella Team
-//
-// See the file "License.txt" for information on usage and redistribution of
-// this file, and for a DISCLAIMER OF ALL WARRANTIES.
-//============================================================================
-
 #include "Dialog.hxx"
 #include "OSystem.hxx"
 #include "Version.hxx"
@@ -28,7 +11,7 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 AboutDialog::AboutDialog(OSystem& osystem, DialogContainer& parent,
                          const GUI::Font& font)
-  : Dialog(osystem, parent, font, "About Stella")
+  : Dialog(osystem, parent, font, "About Akella")
 {
   const int lineHeight   = Dialog::lineHeight(),
             fontHeight   = Dialog::fontHeight(),
@@ -91,7 +74,7 @@ AboutDialog::AboutDialog(OSystem& osystem, DialogContainer& parent,
 
   addToFocusList(wid);
 
-  setHelpURL("https://stella-emu.github.io/index.html");
+  setHelpURL("https://github.com/sapbotgit/akella");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -118,59 +101,17 @@ void AboutDialog::updateStrings(int page, int lines, string& title)
   switch(page)
   {
     case 1:
-      title = string("Stella ") + STELLA_VERSION;
+      title = string("Akella ") + STELLA_VERSION;
       ADD_ATEXT("\\CA multi-platform Atari 2600 VCS emulator");
       ADD_ATEXT(string("\\C\\c2Features: ") + instance().features());
       ADD_ATEXT(string("\\C\\c2") + instance().buildInfo());
       ADD_ALINE();
-      ADD_ATEXT("\\CCopyright (c) 1995-2024 The Stella Team");
-      ADD_ATEXT("\\C(https://stella-emu.github.io)");
+      ADD_ATEXT("\\CCopyright (c) 2024-2024 SAPBOT");
+      ADD_ATEXT("\\C(https://sapbotgit.github.io/akella)");
       ADD_ALINE();
-      ADD_ATEXT("\\CStella is now DonationWare!");
-      ADD_ATEXT("\\C(https://stella-emu.github.io/donations.html)");
-      ADD_ALINE();
-      ADD_ATEXT("\\CStella is free software released under the GNU GPL.");
+      ADD_ATEXT("\\CAkella is free software released under the GNU GPL.");
       ADD_ATEXT("\\CSee manual for further details.");
       break;
-
-    case 2:
-      title = "The Stella Team";
-      ADD_ATEXT("\\L\\c0""Stephen Anthony");
-      ADD_ATEXT("\\L\\c2""  Lead developer, current maintainer for the");
-      ADD_ATEXT("\\L\\c2""  Linux, macOS and Windows ports ");
-      ADD_ATEXT("\\L\\c0""Christian Speckner");
-      ADD_ATEXT("\\L\\c2""  Emulation core development, TIA core");
-      ADD_ATEXT("\\L\\c0""Eckhard Stolberg");
-      ADD_ATEXT("\\L\\c2""  Emulation core development");
-      ADD_ATEXT("\\L\\c0""Thomas Jentzsch");
-      ADD_ATEXT("\\L\\c2""  Emulation core development, jack-of-all-trades");
-      ADD_ATEXT("\\L\\c0""Brian Watson");
-      ADD_ATEXT("\\L\\c2""  Emulation core enhancement, debugger support");
-      ADD_ATEXT("\\L\\c0""Bradford W. Mott");
-      ADD_ATEXT("\\L\\c2""  Original author of Stella");
-      break;
-
-    case 3:
-      title = "Contributors";
-      ADD_ATEXT("\\L\\c0""See https://stella-emu.github.io/credits.html for");
-      ADD_ATEXT("\\L\\c0""people that have contributed to Stella.");
-      ADD_ALINE();
-      ADD_ATEXT("\\L\\c0""Thanks to the ScummVM project for the GUI code.");
-      ADD_ALINE();
-      ADD_ATEXT("\\L\\c0""Thanks to Ian Bogost and the Georgia Tech Atari Team");
-      ADD_ATEXT("\\L\\c0""for the CRT Simulation effects.");
-      break;
-
-    case 4:
-      title = "Cast of thousands";
-      ADD_ATEXT("\\L\\c0""Special thanks to <AtariAge> for introducing the");
-      ADD_ATEXT("\\L\\c0""Atari 2600 to a whole new generation.");
-      ADD_ALINE();
-      ADD_ATEXT("\\L\\c0""Finally, a huge thanks to the original Atari 2600");
-      ADD_ATEXT("\\L\\c0""VCS team for giving us the magic, and to the");
-      ADD_ATEXT("\\L\\c0""homebrew developers for keeping the magic alive.");
-      break;
-
     default:
       return;
   }
