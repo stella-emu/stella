@@ -58,10 +58,13 @@ class StreamReader : public Serializable
 
     bool open(string_view path) {
       myFile = Serializer(path, Serializer::Mode::ReadOnly);
-      if(myFile)
-        myFileSize = myFile.size();
+      myFileSize = myFile ? myFile.size() : 0;
 
       return static_cast<bool>(myFile);
+    }
+
+    bool isValid() {
+      return (myFileSize > 0) ? true:false;
     }
 
     void blankPartialLines(bool index) {
@@ -1495,7 +1498,8 @@ bool MovieCart::process(uInt16 address)
   switch(myTitleState)
   {
     case TitleState::Display:
-      myTitleCycles++;
+      if (myStream.isValid()) 
+        myTitleCycles++;
       if(myTitleCycles == TITLE_CYCLES)
       {
         stopTitleScreen();
