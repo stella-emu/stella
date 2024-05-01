@@ -25,7 +25,7 @@ namespace YaccParser {
 
 #include "y.tab.h"
 
-enum class State {
+enum class State : uInt8 {
   DEFAULT,
   IDENTIFIER,
   OPERATOR,
@@ -85,12 +85,12 @@ int parse(const string& in)
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // hand-rolled lexer. Hopefully faster than flex...
-inline constexpr bool is_base_prefix(char x)
+constexpr bool is_base_prefix(char x)
 {
   return ( (x=='\\' || x=='$' || x=='#') );
 }
 
-inline constexpr bool is_identifier(char x)
+constexpr bool is_identifier(char x)
 {
   return ( (x>='0' && x<='9') ||
            (x>='a' && x<='z') ||
@@ -98,7 +98,7 @@ inline constexpr bool is_identifier(char x)
             x=='.' || x=='_'  );
 }
 
-inline constexpr bool is_operator(char x)
+constexpr bool is_operator(char x)
 {
   return ( (x=='+' || x=='-' || x=='*' ||
             x=='/' || x=='<' || x=='>' ||

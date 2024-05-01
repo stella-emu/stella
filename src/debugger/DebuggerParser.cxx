@@ -773,7 +773,7 @@ string DebuggerParser::saveScriptFile(string file)
 
   const FSNode node(file);
 
-  if(node.exists() || out.str().length())
+  if(node.exists() || !out.str().empty())
   {
     try
     {
@@ -1375,7 +1375,7 @@ void DebuggerParser::executeDump()
       {
         if(OK)
         {
-          const stringstream  localOut(outStr);
+          const stringstream localOut(outStr);
           ostringstream localResult(resultStr, std::ios_base::app);
 
           saveDump(node, localOut, localResult);

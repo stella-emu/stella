@@ -38,7 +38,7 @@ KVRMap KeyValueRepositoryConfigfile::load(istream& in)
       line.erase(garbage, 1);
 
     // Ignore commented and empty lines
-    if((line.length() == 0) || (line[0] == ';'))
+    if(line.empty() || (line[0] == ';'))
       continue;
 
     // Search for the equal sign and discard the line if its not found
@@ -50,7 +50,7 @@ KVRMap KeyValueRepositoryConfigfile::load(istream& in)
     value = BSPF::trim(line.substr(equalPos + 1, line.length() - key.length() - 1));
 
     // Skip absent key
-    if(key.length() == 0)
+    if(key.empty())
       continue;
 
     values[key] = value;

@@ -26,7 +26,7 @@
 #include "PhosphorHandler.hxx"
 #include "Base.hxx"
 
-enum CollisionMask: uInt32 {
+enum CollisionMask: uInt16 {
   player0   = 0b0111110000000000,
   player1   = 0b0100001111000000,
   missile0  = 0b0010001000111000,
@@ -1121,9 +1121,9 @@ bool TIA::toggleBit(TIABit b, uInt8 mode)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool TIA::toggleBits(bool toggle)
 {
-  toggleBit(static_cast<TIABit>(0xFF), toggle
-                          ? mySpriteEnabledBits > 0 ? 0 : 1
-                          : mySpriteEnabledBits);
+  toggleBit(TIABit::AllBits, toggle
+    ? mySpriteEnabledBits > 0 ? 0 : 1
+    : mySpriteEnabledBits);
 
   return mySpriteEnabledBits;
 }
@@ -1166,9 +1166,9 @@ bool TIA::toggleCollision(TIABit b, uInt8 mode)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool TIA::toggleCollisions(bool toggle)
 {
-  toggleCollision(static_cast<TIABit>(0xFF), toggle
-                                ? myCollisionsEnabledBits > 0 ? 0 : 1
-                                : myCollisionsEnabledBits);
+  toggleCollision(TIABit::AllBits, toggle
+    ? myCollisionsEnabledBits > 0 ? 0 : 1
+    : myCollisionsEnabledBits);
 
   return myCollisionsEnabledBits;
 }
@@ -1433,8 +1433,7 @@ void TIA::onFrameComplete()
       int count = 0;
       for(uInt32 y = 0; y <= myFrameEnd; ++y)
       {
-        int delta;
-        delta = std::abs(myPosP0[y][myFlickerFrame] - myPosP0[y][otherFrame]);
+        int delta = std::abs(myPosP0[y][myFlickerFrame] - myPosP0[y][otherFrame]);
         if(delta >= MIN_FLICKER_DELTA && delta <= MAX_FLICKER_DELTA)
           ++count;
         delta = std::abs(myPosP1[y][myFlickerFrame] - myPosP1[y][otherFrame]);
@@ -1684,8 +1683,10 @@ FORCE_INLINE void TIA::nextLine()
       if(myBall.isOn())
         myPosBL[y][myFlickerFrame] = myBall.getPosition();
       // Note: code checks only right side of playfield
-      myPatPF[y][myFlickerFrame] = (uInt32(registerValue(PF0))) << 16
-        | (uInt32(registerValue(PF1))) << 8 | uInt32(registerValue(PF2));
+      myPatPF[y][myFlickerFrame] =
+          (static_cast<uInt32>(registerValue(PF0))) << 16
+        | (static_cast<uInt32>(registerValue(PF1))) << 8
+        | (static_cast<uInt32>(registerValue(PF2)));
       // Define end of frame for faster auto-phosphor calculation
       if(!cloned)
         myFrameEnd = y;

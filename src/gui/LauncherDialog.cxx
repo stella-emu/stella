@@ -206,7 +206,6 @@ void LauncherDialog::addFilteringWidgets(int& ypos)
     // Show the files counter
     myRomCount = new StaticTextWidget(this, _font, xpos, ypos,
                                       lwFound, fontHeight, "", TextAlign::Right);
-    xpos = myRomCount->getRight() + LBL_GAP;
     xpos = _w - HBORDER - bwSettings - randomButtonWidth - btnGap;
 
     // Show the random ROM button

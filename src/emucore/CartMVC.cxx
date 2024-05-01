@@ -63,7 +63,7 @@ class StreamReader : public Serializable
       return static_cast<bool>(myFile);
     }
 
-    bool isValid() const {
+    [[nodiscard]] bool isValid() const {
       return myFileSize > 0;
     }
 
@@ -812,7 +812,7 @@ class MovieCart : public Serializable
       Last = Time
     };
 
-    enum class TitleState
+    enum class TitleState : uInt8
     {
       Display,
       Exiting,
