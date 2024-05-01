@@ -819,7 +819,7 @@ string CartDebug::loadListFile()
       // We need to read the address as a string, since it may contain 'U'
       int addr = -1;
       buf >> addr >> addr_s;
-      if(addr_s.length() == 0)
+      if(addr_s.empty())
         continue;
 
       addr = BSPF::stoi<16>(addr_s[0] == 'U' ? addr_s.substr(1) : addr_s);
@@ -877,7 +877,7 @@ string CartDebug::loadSymbolFile()
     stringstream buf(label);
     buf >> label >> hex >> value;
 
-    if(label.length() > 0 && label[0] != '-' && value >= 0)
+    if(!label.empty() && label[0] != '-' && value >= 0)
     {
       // Make sure the value doesn't represent a constant
       // For now, we simply ignore constants completely

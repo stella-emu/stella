@@ -104,7 +104,7 @@ void WhatsNewDialog::add(int& ypos, string_view text)
   {
     int i = MAX_CHARS;
 
-    while(--i && txt[i] != ' ');
+    while(--i && txt[i] != ' ');  // NOLINT: bugprone-inc-dec-in-conditions
     new StaticTextWidget(this, _font, HBORDER, ypos, txt.substr(0, i));
     txt = " " + txt.substr(i);
     ypos += fontHeight;

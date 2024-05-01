@@ -137,9 +137,9 @@ bool QuadTari::read(DigitalPin pin)
 void QuadTari::write(DigitalPin pin, bool value)
 {
   if(isFirst())
-    return myFirstController->write(pin, value);
+    myFirstController->write(pin, value);
   else
-    return mySecondController->write(pin, value);
+    mySecondController->write(pin, value);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

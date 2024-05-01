@@ -124,7 +124,7 @@ void PromptWidget::handleMouseWheel(int x, int y, int direction)
 void PromptWidget::printPrompt()
 {
   const string watches = instance().debugger().showWatches();
-  if(watches.length() > 0)
+  if(!watches.empty())
     print(watches);
 
   print(PROMPT);

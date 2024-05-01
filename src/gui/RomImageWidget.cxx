@@ -577,7 +577,7 @@ void RomImageWidget::drawWidget(bool hilite)
   const int wText = _font.getStringWidth(buf.str()) + 8;
 
   s.fillRect(_x, yText, _w, _font.getFontHeight(), _bgcolor);
-  if(myLabel.length())
+  if(!myLabel.empty())
     s.drawString(_font, myLabel, _x + 8, yText, _w - wText - 16 - _font.getMaxCharWidth() * 2, _textcolor);
   if(!myImageList.empty())
     s.drawString(_font, buf.str(), _x + _w - wText, yText, wText, _textcolor);

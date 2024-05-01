@@ -73,5 +73,5 @@ bool CompositeKVRJsonAdapter::has(string_view key)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CompositeKVRJsonAdapter::remove(string_view key)
 {
-  return myKvr.remove(key);
+  myKvr.remove(key);
 }

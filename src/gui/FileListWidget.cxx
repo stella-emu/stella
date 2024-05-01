@@ -243,7 +243,7 @@ bool FileListWidget::hasNextHistory()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string& FileListWidget::fixPath(string& path)
 {
-  if(path.length() > 0 && path.back() == FSNode::PATH_SEPARATOR)
+  if(!path.empty() && path.back() == FSNode::PATH_SEPARATOR)
   {
     path.pop_back();
     if(path.length() == 2 && path.back() == ':')
@@ -255,7 +255,8 @@ string& FileListWidget::fixPath(string& path)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FileListWidget::addHistory(const FSNode& node)
 {
-  if (!_history.empty()) {
+  if(!_history.empty())
+  {
     while(_currentHistory != std::prev(_history.end(), 1))
       _history.pop_back();
 

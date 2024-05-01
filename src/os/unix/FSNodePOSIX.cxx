@@ -32,7 +32,7 @@ FSNodePOSIX::FSNodePOSIX()
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FSNodePOSIX::FSNodePOSIX(string_view path, bool verify)
-  : _path{path.length() > 0 ? path : "~"}  // Default to home directory
+  : _path{!path.empty() ? path : "~"}  // Default to home directory
 {
   // Expand '~' to the HOME environment variable
   if (_path[0] == '~')
@@ -64,7 +64,7 @@ bool FSNodePOSIX::setFlags()
     _size = st.st_size;
 
     // Add a trailing slash, if necessary
-    if (_isDirectory && _path.length() > 0 &&
+    if (_isDirectory && !_path.empty() &&
         _path.back() != FSNode::PATH_SEPARATOR)
       _path += FSNode::PATH_SEPARATOR;
 
@@ -142,7 +142,7 @@ bool FSNodePOSIX::getChildren(AbstractFSList& myList, ListMode mode) const
       continue;
 
     string newPath(_path);
-    if (newPath.length() > 0 && newPath.back() != FSNode::PATH_SEPARATOR)
+    if (!newPath.empty() && newPath.back() != FSNode::PATH_SEPARATOR)
       newPath += FSNode::PATH_SEPARATOR;
     newPath += dp->d_name;
 

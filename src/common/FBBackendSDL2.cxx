@@ -443,8 +443,8 @@ bool FBBackendSDL2::createRenderer()
 
     if(myRenderer == nullptr)
     {
-      const string msg = "ERROR: Unable to create SDL renderer: " + string(SDL_GetError());
-      Logger::error(msg);
+      Logger::error("ERROR: Unable to create SDL renderer: " +
+                    string{SDL_GetError()});
       return false;
     }
   }

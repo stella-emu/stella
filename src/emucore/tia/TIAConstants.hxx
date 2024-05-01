@@ -36,7 +36,7 @@ namespace TIAConstants {
     H_BLANK_CLOCKS = H_CLOCKS - H_PIXEL;  // = 68
 }
 
-enum TIABit {
+enum TIABit: uInt8 {
   P0Bit       = 0x01,  // Bit for Player 0
   M0Bit       = 0x02,  // Bit for Missle 0
   P1Bit       = 0x04,  // Bit for Player 1
@@ -44,7 +44,8 @@ enum TIABit {
   BLBit       = 0x10,  // Bit for Ball
   PFBit       = 0x20,  // Bit for Playfield
   ScoreBit    = 0x40,  // Bit for Playfield score mode
-  PriorityBit = 0x80   // Bit for Playfield priority
+  PriorityBit = 0x80,  // Bit for Playfield priority
+  AllBits     = 0xff
 };
 
 enum TIAColor {
