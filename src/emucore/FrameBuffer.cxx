@@ -326,8 +326,8 @@ FBInitStatus FrameBuffer::createDisplay(string_view title, BufferType type,
   if(myOSystem.eventHandler().inTIAMode())
   {
     // Phosphor mode can be enabled either globally or per-ROM
-    int p_blend;
-    bool enable;
+    int p_blend = 0;
+    bool enable = false;
     const int phosphorMode = PhosphorHandler::toPhosphorMode(
       myOSystem.settings().getString(PhosphorHandler::SETTING_MODE));
 

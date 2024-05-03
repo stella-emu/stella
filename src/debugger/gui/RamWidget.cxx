@@ -396,7 +396,7 @@ string RamWidget::doSearch(string_view str)
 {
   bool comparisonSearch = true;
 
-  if(str.length() == 0)
+  if(str.empty())
   {
     // An empty field means return all memory locations
     comparisonSearch = false;
@@ -454,7 +454,7 @@ string RamWidget::doCompare(string_view str)
   bool comparativeSearch = false;
   int searchVal = 0, offset = 0;
 
-  if(str.length() == 0)
+  if(str.empty())
     return "Enter an absolute or comparative value";
 
   // Do some pre-processing on the string

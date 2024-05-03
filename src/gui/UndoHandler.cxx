@@ -102,5 +102,5 @@ uInt32 UndoHandler::lastDiff(string_view text, string_view oldText)
       break;
     pos--;
   }
-  return static_cast<uInt32>(pos);
+  return pos;
 }

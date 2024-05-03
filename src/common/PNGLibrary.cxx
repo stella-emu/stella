@@ -359,8 +359,9 @@ void PNGLibrary::takeSnapshot(uInt32 number)
     try
     {
       Common::Rect rect;
-      const FBSurface& surface = myOSystem.frameBuffer().tiaSurface().baseSurface(rect);
-      myOSystem.png().saveImage(filename, surface, rect, metaData);
+      const FBSurface& surface =
+        myOSystem.frameBuffer().tiaSurface().baseSurface(rect);
+      PNGLibrary::saveImage(filename, surface, rect, metaData);
     }
     catch(const runtime_error& e)
     {
@@ -375,7 +376,7 @@ void PNGLibrary::takeSnapshot(uInt32 number)
 
     try
     {
-      myOSystem.png().saveImage(filename, metaData);
+      PNGLibrary::saveImage(filename, metaData);
     }
     catch(const runtime_error& e)
     {
