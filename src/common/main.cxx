@@ -333,7 +333,8 @@ int main(int ac, char* av[])
     if(!localOpts["break"].toString().empty())
     {
       Debugger& dbg = theOSystem->debugger();
-      const uInt16 bp = uInt16(dbg.stringToValue(localOpts["break"].toString()));
+      const uInt16 bp =
+        static_cast<uInt16>(dbg.stringToValue(localOpts["break"].toString()));
       dbg.setBreakPoint(bp);
     }
 #endif

@@ -106,9 +106,9 @@ void HelpDialog::updateStrings(uInt8 page, uInt8 lines, string& title)
   const auto ADD_EVENT = [&](const Event::Type e, const string & d)
   {
     string desc = instance().eventHandler().getMappingDesc(e, EventMode::kEmulationMode);
-    if(!desc.length())
+    if(desc.empty())
       desc = instance().eventHandler().getMappingDesc(e, EventMode::kMenuMode);
-    ADD_BIND(desc.length() ? desc : "None", d);
+    ADD_BIND(!desc.empty() ? desc : "None", d);
   };
   const auto ADD_TEXT = [&](string_view d) { ADD_BIND("", d); };
   const auto ADD_LINE = [&]() { ADD_BIND("", ""); };

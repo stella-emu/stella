@@ -224,7 +224,7 @@ void CheatManager::loadCheatDatabase()
   // Loop reading cheats
   while(getline(in, line))
   {
-    if(line.length() == 0)
+    if(line.empty())
       continue;
 
     const string::size_type one = line.find('\"', 0);

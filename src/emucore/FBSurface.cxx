@@ -347,7 +347,7 @@ int FBSurface::drawString(const GUI::Font& font, string_view s,
   string inStr{s};
 
   // draw multiline string
-  while(inStr.length() && h >= font.getFontHeight() * 2)
+  while(!inStr.empty() && h >= font.getFontHeight() * 2)
   {
     // String is too wide.
     string leftStr, rightStr;
@@ -363,7 +363,7 @@ int FBSurface::drawString(const GUI::Font& font, string_view s,
     inStr = rightStr;
     lines++;
   }
-  if(inStr.length())
+  if(!inStr.empty())
   {
     drawString(font, inStr, x, y, w, color, align, deltax, useEllipsis, shadowColor,
                linkStart, linkLen, underline);

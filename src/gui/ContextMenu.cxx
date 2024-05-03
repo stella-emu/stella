@@ -369,9 +369,13 @@ void ContextMenu::sendSelection()
   if(_showScroll)
   {
     if(_selectedOffset == 0)  // scroll up
-      return scrollUp();
+    {
+      scrollUp();  return;
+    }
     else if(_selectedOffset == _numEntries+1) // scroll down
-      return scrollDown();
+    {
+      scrollDown();  return;
+    }
     else if(_isScrolling)
       return;
     else

@@ -473,7 +473,7 @@ void GameInfoDialog::addCartridgeTab()
   wid.push_back(myNote);
 
   ypos += lineHeight + VGAP;
-  int bw = buttonWidth(">");
+  const int bw = buttonWidth(">");
   new StaticTextWidget(myTab, _font, xpos, ypos + 1, lwidth, fontHeight, "Link");
   myUrl = new EditTextWidget(myTab, _font, xpos + lwidth, ypos - 1,
                              fwidth - bw - HGAP, lineHeight, "");
