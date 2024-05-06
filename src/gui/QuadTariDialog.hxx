@@ -44,7 +44,7 @@ class QuadTariDialog: public Dialog
     void setDefaults() override;
 
     void loadControllerProperties(const Properties& props);
-    void QuadTariDialog::defineController(const Properties& props, PropType key,
+    void defineController(const Properties& props, PropType key,
       Controller::Jack jack, PopUpWidget* popup, StaticTextWidget* label, bool first = true);
 
   private:
