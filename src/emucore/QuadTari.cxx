@@ -21,6 +21,8 @@
 #include "System.hxx"
 #include "TIA.hxx"
 #include "FrameBuffer.hxx"
+#include "ControllerDetector.hxx"
+#include "Cart.hxx"
 #include "AtariVox.hxx"
 #include "Driving.hxx"
 #include "Joystick.hxx"
@@ -30,14 +32,13 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 QuadTari::QuadTari(Jack jack, const OSystem& osystem, const System& system,
-                   const Properties& properties)
+                   const Properties& properties, Cartridge& cart)
   : Controller(jack, osystem.eventHandler().event(), system,
                Controller::Type::QuadTari),
     myOSystem{osystem},
     myProperties{properties}
 {
-  Controller::Type firstType = Controller::Type::Joystick,
-    secondType = Controller::Type::Joystick;
+  Controller::Type firstType, secondType;
   string first, second;
 
   if(jack == Controller::Jack::Left)
@@ -50,11 +51,28 @@ QuadTari::QuadTari(Jack jack, const OSystem& osystem, const System& system,
     first = properties.get(PropType::Controller_Right1);
     second = properties.get(PropType::Controller_Right2);
   }
+  firstType = Controller::getType(first);
+  secondType = Controller::getType(second);
 
-  if(!first.empty())
-    firstType = Controller::getType(first);
-  if(!second.empty())
-    secondType = Controller::getType(second);
+  // Autodetect QuadTari controllers:
+  // This will detect the same controller for 1st and 2nd controller
+  size_t size = 0;
+  const ByteBuffer& image = cart.getImage(size);
+
+  if(image != nullptr && size != 0)
+  {
+    if(firstType == Controller::Type::Unknown || secondType == Controller::Type::Unknown)
+    {
+      Controller::Type autodetected = Controller::Type::Unknown;
+      autodetected = ControllerDetector::detectType(image, size, autodetected,
+        jack, myOSystem.settings(), true);
+
+      if(firstType == Controller::Type::Unknown)
+        firstType = autodetected;
+      if(secondType == Controller::Type::Unknown)
+        secondType = autodetected;
+    }
+  }
 
   myFirstController = addController(firstType, false);
   mySecondController = addController(secondType, true);

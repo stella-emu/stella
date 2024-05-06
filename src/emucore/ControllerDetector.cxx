@@ -24,11 +24,12 @@
 Controller::Type ControllerDetector::detectType(
     const ByteBuffer& image, size_t size,
     const Controller::Type type, const Controller::Jack port,
-    const Settings& settings)
+    const Settings& settings, bool isQuadTari)
 {
   if(type == Controller::Type::Unknown || settings.getBool("rominfo"))
   {
-    const Controller::Type detectedType = autodetectPort(image, size, port, settings);
+    const Controller::Type detectedType
+      = autodetectPort(image, size, port, settings, isQuadTari);
 
     if(type != Controller::Type::Unknown && type != detectedType)
     {
@@ -46,22 +47,22 @@ Controller::Type ControllerDetector::detectType(
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string ControllerDetector::detectName(const ByteBuffer& image, size_t size,
     const Controller::Type type, const Controller::Jack port,
-    const Settings& settings)
+    const Settings& settings, bool isQuadTari)
 {
-  return Controller::getName(detectType(image, size, type, port, settings));
+  return Controller::getName(detectType(image, size, type, port, settings, isQuadTari));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Controller::Type ControllerDetector::autodetectPort(
     const ByteBuffer& image, size_t size,
-    Controller::Jack port, const Settings& settings)
+    Controller::Jack port, const Settings& settings, bool isQuadTari)
 {
   // default type joystick
   Controller::Type type = Controller::Type::Joystick;
 
   if(isProbablySaveKey(image, size, port))
     type = Controller::Type::SaveKey;
-  else if(isProbablyQuadTari(image, size, port))
+  else if(!isQuadTari && isProbablyQuadTari(image, size, port))
     type = Controller::Type::QuadTari;
   else if(usesJoystickButton(image, size, port))
   {
@@ -89,6 +90,8 @@ Controller::Type ControllerDetector::autodetectPort(
       type = Controller::Type::Paddles;
     else if(isProbablyKidVid(image, size, port))
       type = Controller::Type::KidVid;
+    else if (isQuadTari) // currently most likely assumption
+      type = Controller::Type::Paddles;
   }
   // TODO: BOOSTERGRIP, DRIVING, COMPUMATE, MINDLINK, ATARIVOX
   // not detectable: PADDLES_IAXIS, PADDLES_IAXDR
@@ -126,7 +129,7 @@ bool ControllerDetector::usesJoystickButton(const ByteBuffer& image, size_t size
   if(port == Controller::Jack::Left)
   {
     // check for INPT4 access
-    static constexpr int NUM_SIGS_0 = 24;
+    static constexpr int NUM_SIGS_0 = 25;
     static constexpr int SIG_SIZE_0 = 3;
     static constexpr uInt8 signature_0[NUM_SIGS_0][SIG_SIZE_0] = {
       { 0x24, 0x0c, 0x10 }, // bit INPT4; bpl (joystick games only)
@@ -152,9 +155,10 @@ bool ControllerDetector::usesJoystickButton(const ByteBuffer& image, size_t size
       { 0xa5, 0x0c, 0x25 }, // lda INPT4; and (joystick games only)
       { 0xa6, 0x3c, 0x30 }, // ldx INPT4|$30; bmi (joystick games only)
       { 0xa6, 0x0c, 0x30 }, // ldx INPT4; bmi
-      { 0xa5, 0x0c, 0x0a }  // lda INPT4; asl (joystick games only)
+      { 0xa5, 0x0c, 0x0a }, // lda INPT4; asl (joystick games only)
+      { 0xb5, 0x0c, 0x4a }  // lda INPT4,x; lsr (joystick games only)
     };
-    static constexpr int NUM_SIGS_1 = 9;
+    static constexpr int NUM_SIGS_1 = 11;
     static constexpr int SIG_SIZE_1 = 4;
     static constexpr uInt8 signature_1[NUM_SIGS_1][SIG_SIZE_1] = {
       { 0xb9, 0x0c, 0x00, 0x10 }, // lda INPT4,y; bpl (joystick games only)
@@ -165,9 +169,11 @@ bool ControllerDetector::usesJoystickButton(const ByteBuffer& image, size_t size
       { 0xb5, 0x0c, 0x29, 0x80 }, // lda INPT4,x; and #$80 (joystick games only)
       { 0xb5, 0x3c, 0x29, 0x80 }, // lda INPT4|$30,x; and #$80 (joystick games only)
       { 0xa5, 0x0c, 0x29, 0x80 }, // lda INPT4; and #$80 (joystick games only)
-      { 0xa5, 0x3c, 0x29, 0x80 }  // lda INPT4|$30; and #$80 (joystick games only)
+      { 0xa5, 0x3c, 0x29, 0x80 }, // lda INPT4|$30; and #$80 (joystick games only)
+      { 0xa5, 0x0c, 0x49, 0x80 }, // lda INPT4; eor #$80 (Lady Bug Arcade only)
+      { 0xb9, 0x0c, 0x00, 0x4a }  // lda INPT4,y; lsr (Wizard of Wor Arcade only)
     };
-    static constexpr int NUM_SIGS_2 = 9;
+    static constexpr int NUM_SIGS_2 = 10;
     static constexpr int SIG_SIZE_2 = 5;
     static constexpr uInt8 signature_2[NUM_SIGS_2][SIG_SIZE_2] = {
       { 0xa5, 0x0c, 0x25, 0x0d, 0x10 }, // lda INPT4; and INPT5; bpl (joystick games only)
@@ -178,7 +184,8 @@ bool ControllerDetector::usesJoystickButton(const ByteBuffer& image, size_t size
       { 0xa9, 0x80, 0x24, 0x0c, 0xd0 }, // lda #$80; bit INPT4; bne (bBasic)
       { 0xa5, 0x0c, 0x29, 0x80, 0xd0 }, // lda INPT4; and #$80; bne (joystick games only)
       { 0xa5, 0x3c, 0x29, 0x80, 0xd0 }, // lda INPT4|$30; and #$80; bne (joystick games only)
-      { 0xad, 0x0c, 0x00, 0x29, 0x80 }  // lda.w INPT4|$30; and #$80 (joystick games only)
+      { 0xad, 0x0c, 0x00, 0x29, 0x80 }, // lda.w INPT4; and #$80 (joystick games only)
+      { 0xb9, 0x0c, 0x00, 0x29, 0x80 }  // lda.w INPT4,y; and #$80 (joystick games only)
     };
 
     for(const auto* const sig: signature_0)

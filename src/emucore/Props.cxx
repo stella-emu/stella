@@ -266,11 +266,11 @@ std::array<string, Properties::NUM_PROPS> Properties::ourDefaultProperties =
   "COLOR",  // Console.TVType
   "NO",     // Console.SwapPorts
   "AUTO",   // Controller.Left
-  "",       // Controller.Left1
-  "",       // Controller.Left2
+  "AUTO",   // Controller.Left1
+  "AUTO",   // Controller.Left2
   "AUTO",   // Controller.Right
-  "",       // Controller.Right1
-  "",       // Controller.Right2
+  "AUTO",   // Controller.Right1
+  "AUTO",   // Controller.Right2
   "NO",     // Controller.SwapPaddles
   "12",     // Controller.PaddlesXCenter
   "12",     // Controller.PaddlesYCenter

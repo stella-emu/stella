@@ -1559,7 +1559,7 @@ void GameInfoDialog::handleCommand(CommandSender* sender, int cmd,
 
       if(!myQuadTariDialog)
         myQuadTariDialog = make_unique<QuadTariDialog>
-          (this, _font, _font.getMaxCharWidth() * 37, _font.getFontHeight() * 8,
+          (this, _font, _font.getMaxCharWidth() * 42, _font.getFontHeight() * 10,
            myGameProperties);
       myQuadTariDialog->show(enableLeft, enableRight);
       break;
