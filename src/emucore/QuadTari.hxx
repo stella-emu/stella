@@ -20,6 +20,7 @@
 
 class Controller;
 class Event;
+class Cartridge;
 
 /**
   The QuadTari controller.
@@ -45,7 +46,8 @@ class QuadTari : public Controller
       @param system     The system using this controller
       @param properties The properties to use for the current ROM
     */
-    QuadTari(Jack jack, const OSystem& osystem, const System& system, const Properties& properties);
+    QuadTari(Jack jack, const OSystem& osystem, const System& system,
+      const Properties& properties, Cartridge& cart);
     ~QuadTari() override = default;
 
   public:

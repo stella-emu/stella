@@ -16,6 +16,7 @@
 //============================================================================
 
 #include "OSystem.hxx"
+#include "Console.hxx"
 #include "EventHandler.hxx"
 #include "Widget.hxx"
 #include "PopUpWidget.hxx"
@@ -23,6 +24,9 @@
 #include "Variant.hxx"
 #include "Props.hxx"
 #include "PropsSet.hxx"
+#include "Launcher.hxx"
+#include "ControllerDetector.hxx"
+#include "QuadTari.hxx"
 #include "QuadTariDialog.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -31,7 +35,9 @@ QuadTariDialog::QuadTariDialog(GuiObject* boss, const GUI::Font& font, int max_w
   : Dialog(boss->instance(), boss->parent(), font, "QuadTari controllers", 0, 0, max_w, max_h),
     myGameProperties{properties}
 {
+  const GUI::Font& ifont = instance().frameBuffer().infoFont();
   const int lineHeight = Dialog::lineHeight(),
+            fontWidth    = Dialog::fontWidth(),
             VBORDER    = Dialog::vBorder(),
             HBORDER    = Dialog::hBorder(),
             VGAP       = Dialog::vGap();
@@ -41,7 +47,7 @@ QuadTariDialog::QuadTariDialog(GuiObject* boss, const GUI::Font& font, int max_w
   int xpos = HBORDER, ypos = VBORDER + _th;
 
   ctrls.clear();
-  //VarList::push_back(ctrls, "Auto-detect", "AUTO");
+  VarList::push_back(ctrls, "Auto-detect", "AUTO");
   VarList::push_back(ctrls, "Joystick", "JOYSTICK");
   VarList::push_back(ctrls, "Paddles", "PADDLES");
   //VarList::push_back(ctrls, "Paddles_IAxis", "PADDLES_IAXIS");
@@ -61,7 +67,7 @@ QuadTariDialog::QuadTariDialog(GuiObject* boss, const GUI::Font& font, int max_w
   //VarList::push_back(ctrls, "MindLink", "MINDLINK");
   //VarList::push_back(ctrls, "QuadTari", "QUADTARI");
 
-  const int pwidth = font.getStringWidth("Joystick12"); // a bit wider looks better overall
+  const int pwidth = font.getStringWidth("Auto-detect  "); // a bit wider looks better overall
 
   myLeftPortLabel = new StaticTextWidget(this, font, xpos, ypos + 1, "Left port");
 
@@ -69,11 +75,19 @@ QuadTariDialog::QuadTariDialog(GuiObject* boss, const GUI::Font& font, int max_w
   myLeft1Port = new PopUpWidget(this, font, xpos, ypos,
                                pwidth, lineHeight, ctrls, "P1 ");
   wid.push_back(myLeft1Port);
+  ypos += lineHeight + VGAP;
 
-  ypos += lineHeight + VGAP * 2;
+  myLeft1PortDetected = new StaticTextWidget(this, ifont,
+    myLeft1Port->getLeft() + fontWidth * 3, ypos, "AtariVox detected");
+  ypos += lineHeight + VGAP;
+
   myLeft2Port = new PopUpWidget(this, font, xpos, ypos,
                                pwidth, lineHeight, ctrls, "P3 ");
   wid.push_back(myLeft2Port);
+  ypos += lineHeight + VGAP;
+
+  myLeft2PortDetected = new StaticTextWidget(this, ifont,
+    myLeft2Port->getLeft() + fontWidth * 3, ypos, "AtariVox detected");
 
   xpos = _w - HBORDER - myLeft1Port->getWidth(); // aligned right
   ypos = myLeftPortLabel->getTop() - 1;
@@ -83,11 +97,20 @@ QuadTariDialog::QuadTariDialog(GuiObject* boss, const GUI::Font& font, int max_w
   myRight1Port = new PopUpWidget(this, font, xpos, ypos,
                                 pwidth, lineHeight, ctrls, "P2 ");
   wid.push_back(myRight1Port);
+  ypos += lineHeight + VGAP;
 
-  ypos += lineHeight + VGAP * 2;
+  myRight1PortDetected = new StaticTextWidget(this, ifont,
+    myRight1Port->getLeft() + fontWidth * 3, ypos, "AtariVox detected");
+  ypos += lineHeight + VGAP;
+
+  //ypos += lineHeight + VGAP * 2;
   myRight2Port = new PopUpWidget(this, font, xpos, ypos,
                                 pwidth, lineHeight, ctrls, "P4 ");
   wid.push_back(myRight2Port);
+  ypos += lineHeight + VGAP;
+
+  myRight2PortDetected = new StaticTextWidget(this, ifont,
+    myRight2Port->getLeft() + fontWidth * 3, ypos, "AtariVox detected");
 
   addDefaultsOKCancelBGroup(wid, _font);
   addBGroupToFocusList(wid);
@@ -115,19 +138,64 @@ void QuadTariDialog::loadControllerProperties(const Properties& props)
 
   if(myLeftPortLabel->isEnabled())
   {
-    controller = props.get(PropType::Controller_Left1);
-    myLeft1Port->setSelected(controller, "Joystick");
-    controller = props.get(PropType::Controller_Left2);
-    myLeft2Port->setSelected(controller, "Joystick");
+    defineController(props, PropType::Controller_Left1, Controller::Jack::Left,
+      myLeft1Port, myLeft1PortDetected);
+    defineController(props, PropType::Controller_Left2, Controller::Jack::Left,
+      myLeft2Port, myLeft2PortDetected, false);
   }
 
   if(myRightPortLabel->isEnabled())
   {
-    controller = props.get(PropType::Controller_Right1);
-    myRight1Port->setSelected(controller, "Joystick");
-    controller = props.get(PropType::Controller_Right2);
-    myRight2Port->setSelected(controller, "Joystick");
+    defineController(props, PropType::Controller_Right1, Controller::Jack::Right,
+      myRight1Port, myRight1PortDetected);
+    defineController(props, PropType::Controller_Right2, Controller::Jack::Right,
+      myRight2Port, myRight2PortDetected, false);
   }
+}
+
+void QuadTariDialog::defineController(const Properties& props, PropType key,
+  Controller::Jack jack, PopUpWidget* popupWidget, StaticTextWidget* labelWidget, bool first)
+{
+  bool autoDetect = false;
+  ByteBuffer image;
+  size_t size = 0;
+
+  string controller = props.get(key);
+  popupWidget->setSelected(controller, "AUTO");
+
+  // try to load the image for auto detection
+  if(!instance().hasConsole())
+  {
+    const FSNode& node = FSNode(instance().launcher().selectedRom());
+    string md5 = myGameProperties.get(PropType::Cart_MD5);
+
+    autoDetect = node.exists() && !node.isDirectory()
+      && (image = instance().openROM(node, md5, size)) != nullptr;
+  }
+  string label;
+  Controller::Type type = Controller::getType(popupWidget->getSelectedTag().toString());
+
+  if(type == Controller::Type::Unknown)
+  {
+    if(instance().hasConsole())
+    {
+      const QuadTari* qt = dynamic_cast<QuadTari*>(
+        jack == Controller::Jack::Left
+          ? &instance().console().leftController()
+          : &instance().console().rightController());
+      if(qt != nullptr)
+        label = (first
+          ? qt->firstController().name()
+          : qt->secondController().name())
+          + " detected";
+      else
+        label = "nothing detected";
+    }
+    else if(autoDetect)
+      label = ControllerDetector::detectName(
+        image, size, type, jack, instance().settings(), true) + " detected";
+  }
+  labelWidget->setLabel(label);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

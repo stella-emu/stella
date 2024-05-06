@@ -44,15 +44,21 @@ class QuadTariDialog: public Dialog
     void setDefaults() override;
 
     void loadControllerProperties(const Properties& props);
+    void QuadTariDialog::defineController(const Properties& props, PropType key,
+      Controller::Jack jack, PopUpWidget* popup, StaticTextWidget* label, bool first = true);
 
   private:
     StaticTextWidget* myLeftPortLabel{nullptr};
     PopUpWidget*      myLeft1Port{nullptr};
+    StaticTextWidget* myLeft1PortDetected{nullptr};
     PopUpWidget*      myLeft2Port{nullptr};
+    StaticTextWidget* myLeft2PortDetected{nullptr};
 
     StaticTextWidget* myRightPortLabel{nullptr};
     PopUpWidget*      myRight1Port{nullptr};
+    StaticTextWidget* myRight1PortDetected{nullptr};
     PopUpWidget*      myRight2Port{nullptr};
+    StaticTextWidget* myRight2PortDetected{nullptr};
 
     // Game properties for currently loaded ROM
     Properties& myGameProperties;

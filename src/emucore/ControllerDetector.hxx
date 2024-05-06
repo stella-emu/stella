@@ -34,46 +34,49 @@ class ControllerDetector
     /**
       Detects the controller type at the given port if no controller is provided.
 
-      @param image     A reference to the ROM image
-      @param size      The size of the ROM image
-      @param type      The provided controller type of the ROM image
-      @param port      The port to be checked
-      @param settings  A reference to the various settings (read-only)
+      @param image       A reference to the ROM image
+      @param size        The size of the ROM image
+      @param type        The provided controller type of the ROM image
+      @param port        The port to be checked
+      @param settings    A reference to the various settings (read-only)
+      @param isQuadTari  If true, try to detect the QuadTari's controllers
       @return   The detected controller type
     */
     static Controller::Type detectType(const ByteBuffer& image, size_t size,
         const Controller::Type type, const Controller::Jack port,
-        const Settings& settings);
+        const Settings& settings, bool isQuadTari = false);
 
     /**
       Detects the controller type at the given port if no controller is provided
       and returns its name.
 
-      @param image      A reference to the ROM image
-      @param size       The size of the ROM image
-      @param type       The provided controller type of the ROM image
-      @param port       The port to be checked
-      @param settings   A reference to the various settings (read-only)
+      @param image       A reference to the ROM image
+      @param size        The size of the ROM image
+      @param type        The provided controller type of the ROM image
+      @param port        The port to be checked
+      @param settings    A reference to the various settings (read-only)
+      @param isQuadTari  If true, try to detect the QuadTari's controllers
 
       @return   The (detected) controller name
     */
     static string detectName(const ByteBuffer& image, size_t size,
         const Controller::Type type, const Controller::Jack port,
-        const Settings& settings);
+        const Settings& settings, bool isQuadTari = false);
 
   private:
     /**
       Detects the controller type at the given port.
 
-      @param image      A reference to the ROM image
-      @param size       The size of the ROM image
-      @param port       The port to be checked
-      @param settings   A reference to the various settings (read-only)
+      @param image       A reference to the ROM image
+      @param size        The size of the ROM image
+      @param port        The port to be checked
+      @param settings    A reference to the various settings (read-only)
+      @param isQuadTari  If true, try to detect the QuadTari's controllers
 
       @return   The detected controller type
     */
     static Controller::Type autodetectPort(const ByteBuffer& image, size_t size,
-        Controller::Jack port, const Settings& settings);
+        Controller::Jack port, const Settings& settings, bool isQuadTari);
 
     /**
       Search the image for the specified byte signature.

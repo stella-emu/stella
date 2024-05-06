@@ -1111,7 +1111,7 @@ unique_ptr<Controller> Console::getControllerPort(
       break;
 
     case Controller::Type::QuadTari:
-      controller = make_unique<QuadTari>(port, myOSystem, *mySystem, myProperties);
+      controller = make_unique<QuadTari>(port, myOSystem, *mySystem, myProperties, *myCart);
       break;
 
     case Controller::Type::Joy2BPlus:
