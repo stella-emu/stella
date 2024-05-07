@@ -34,11 +34,15 @@
 
   * Added Joy2B+ controller support.
 
+  * Added auto detection for QuadTari attached controllers 
+
   * Enhanced Kid Vid support to play tape audio.
 
   * Added port selection, used for controller default mapping.
 
   * Added missing PlusROM support for E7 bankswitching.
+
+  * Enhanced movie cart (MVC) support
 
   * Accelerated emulation up to ~15% (ARM).
 

@@ -231,8 +231,10 @@ class EventHandler
       Enable controller specific keyboard event mappings.
     */
     void defineKeyControllerMappings(const Controller::Type type, Controller::Jack port,
-                                     const Properties& properties) {
-      myPKeyHandler->defineControllerMappings(type, port, properties);
+                                     const Properties& properties,
+                                     Controller::Type qtType1 = Controller::Type::Unknown,
+                                     Controller::Type qtType2 = Controller::Type::Unknown) {
+      myPKeyHandler->defineControllerMappings(type, port, properties, qtType1, qtType2);
     }
 
     /**
@@ -283,8 +285,10 @@ class EventHandler
       Enable controller specific keyboard event mappings.
     */
     void defineJoyControllerMappings(const Controller::Type type, Controller::Jack port,
-                                     const Properties& properties) {
-      myPJoyHandler->defineControllerMappings(type, port, properties);
+                                     const Properties& properties,
+                                     Controller::Type qtType1 = Controller::Type::Unknown,
+                                     Controller::Type qtType2 = Controller::Type::Unknown) {
+      myPJoyHandler->defineControllerMappings(type, port, properties, qtType1, qtType2);
     }
 
     /**

@@ -1005,8 +1005,11 @@ unique_ptr<Controller> Console::getControllerPort(
 {
   unique_ptr<Controller> controller;
 
-  myOSystem.eventHandler().defineKeyControllerMappings(type, port, myProperties);
-  myOSystem.eventHandler().defineJoyControllerMappings(type, port, myProperties);
+  if(type != Controller::Type::QuadTari)
+  {
+    myOSystem.eventHandler().defineKeyControllerMappings(type, port, myProperties);
+    myOSystem.eventHandler().defineJoyControllerMappings(type, port, myProperties);
+  }
 
   switch(type)
   {
@@ -1061,11 +1064,11 @@ unique_ptr<Controller> Console::getControllerPort(
       nvramfile /= "atarivox_eeprom.dat";
       const Controller::onMessageCallback callback = [&os = myOSystem]
       (string_view msg)
-      {
-        const bool devSettings = os.settings().getBool("dev.settings");
-        if(os.settings().getBool(devSettings ? "dev.extaccess" : "plr.extaccess"))
-          os.frameBuffer().showTextMessage(msg);
-      };
+        {
+          const bool devSettings = os.settings().getBool("dev.settings");
+          if(os.settings().getBool(devSettings ? "dev.extaccess" : "plr.extaccess"))
+            os.frameBuffer().showTextMessage(msg);
+        };
       controller = make_unique<AtariVox>(port, myEvent, *mySystem,
           myOSystem.settings().getString("avoxport"), nvramfile, callback);
       break;
@@ -1076,11 +1079,11 @@ unique_ptr<Controller> Console::getControllerPort(
       nvramfile /= "savekey_eeprom.dat";
       const Controller::onMessageCallback callback = [&os = myOSystem]
       (string_view msg)
-      {
-        const bool devSettings = os.settings().getBool("dev.settings");
-        if(os.settings().getBool(devSettings ? "dev.extaccess" : "plr.extaccess"))
-          os.frameBuffer().showTextMessage(msg);
-      };
+        {
+          const bool devSettings = os.settings().getBool("dev.settings");
+          if(os.settings().getBool(devSettings ? "dev.extaccess" : "plr.extaccess"))
+            os.frameBuffer().showTextMessage(msg);
+        };
       controller = make_unique<SaveKey>(port, myEvent, *mySystem, nvramfile, callback);
       break;
     }
@@ -1095,7 +1098,7 @@ unique_ptr<Controller> Console::getControllerPort(
         const bool devSettings = os.settings().getBool("dev.settings");
         if(force || os.settings().getBool(devSettings ? "dev.extaccess" : "plr.extaccess"))
           os.frameBuffer().showTextMessage(msg);
-      };
+        };
       controller = make_unique<KidVid>
         (port, myEvent, myOSystem, *mySystem, romMd5, callback);
       break;
@@ -1111,9 +1114,16 @@ unique_ptr<Controller> Console::getControllerPort(
       break;
 
     case Controller::Type::QuadTari:
-      controller = make_unique<QuadTari>(port, myOSystem, *mySystem, myProperties, *myCart);
-      break;
+    {
+      unique_ptr<QuadTari> quadTari = make_unique<QuadTari>(port, myOSystem, *mySystem, myProperties, *myCart);
 
+      myOSystem.eventHandler().defineKeyControllerMappings(type, port, myProperties,
+        quadTari->firstController().type(), quadTari->secondController().type());
+      myOSystem.eventHandler().defineJoyControllerMappings(type, port, myProperties,
+        quadTari->firstController().type(), quadTari->secondController().type());
+      controller = std::move(quadTari);
+      break;
+    }
     case Controller::Type::Joy2BPlus:
       controller = make_unique<Joy2BPlus>(port, myEvent, *mySystem);
       break;

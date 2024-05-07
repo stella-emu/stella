@@ -500,21 +500,22 @@ void PhysicalJoystickHandler::setDefaultMapping(Event::Type event, EventMode mod
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PhysicalJoystickHandler::defineControllerMappings(const Controller::Type type, Controller::Jack port,
-                                                       const Properties& properties)
+void PhysicalJoystickHandler::defineControllerMappings(
+  const Controller::Type type, Controller::Jack port, const Properties& properties,
+  Controller::Type qtType1, Controller::Type qtType2)
 {
   // Determine controller events to use
   if(type == Controller::Type::QuadTari)
   {
     if(port == Controller::Jack::Left)
     {
-      myLeftMode = getMode(properties, PropType::Controller_Left1);
-      myLeft2ndMode = getMode(properties, PropType::Controller_Left2);
+      myLeftMode = getMode(qtType1);
+      myLeft2ndMode = getMode(qtType2);
     }
     else
     {
-      myRightMode = getMode(properties, PropType::Controller_Right1);
-      myRight2ndMode = getMode(properties, PropType::Controller_Right2);
+      myRightMode = getMode(qtType1);
+      myRight2ndMode = getMode(qtType2);
     }
   }
   else

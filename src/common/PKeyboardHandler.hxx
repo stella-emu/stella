@@ -54,7 +54,9 @@ class PhysicalKeyboardHandler
     /** define mappings for current controllers */
     void defineControllerMappings(const Controller::Type type,
                                   Controller::Jack port,
-                                  const Properties& properties);
+                                  const Properties& properties,
+                                  Controller::Type qtType1 = Controller::Type::Unknown,
+                                  Controller::Type qtType2 = Controller::Type::Unknown);
     /** enable mappings for emulation mode */
     void enableEmulationMappings();
 

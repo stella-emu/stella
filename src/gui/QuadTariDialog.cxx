@@ -78,7 +78,7 @@ QuadTariDialog::QuadTariDialog(GuiObject* boss, const GUI::Font& font, int max_w
   ypos += lineHeight + VGAP;
 
   myLeft1PortDetected = new StaticTextWidget(this, ifont,
-    myLeft1Port->getLeft() + fontWidth * 3, ypos, "AtariVox detected");
+    myLeft1Port->getLeft() + fontWidth * 3, ypos, "                 ");
   ypos += lineHeight + VGAP;
 
   myLeft2Port = new PopUpWidget(this, font, xpos, ypos,
@@ -87,7 +87,7 @@ QuadTariDialog::QuadTariDialog(GuiObject* boss, const GUI::Font& font, int max_w
   ypos += lineHeight + VGAP;
 
   myLeft2PortDetected = new StaticTextWidget(this, ifont,
-    myLeft2Port->getLeft() + fontWidth * 3, ypos, "AtariVox detected");
+    myLeft2Port->getLeft() + fontWidth * 3, ypos, "                 ");
 
   xpos = _w - HBORDER - myLeft1Port->getWidth(); // aligned right
   ypos = myLeftPortLabel->getTop() - 1;
@@ -100,7 +100,7 @@ QuadTariDialog::QuadTariDialog(GuiObject* boss, const GUI::Font& font, int max_w
   ypos += lineHeight + VGAP;
 
   myRight1PortDetected = new StaticTextWidget(this, ifont,
-    myRight1Port->getLeft() + fontWidth * 3, ypos, "AtariVox detected");
+    myRight1Port->getLeft() + fontWidth * 3, ypos, "                 ");
   ypos += lineHeight + VGAP;
 
   //ypos += lineHeight + VGAP * 2;
@@ -110,7 +110,7 @@ QuadTariDialog::QuadTariDialog(GuiObject* boss, const GUI::Font& font, int max_w
   ypos += lineHeight + VGAP;
 
   myRight2PortDetected = new StaticTextWidget(this, ifont,
-    myRight2Port->getLeft() + fontWidth * 3, ypos, "AtariVox detected");
+    myRight2Port->getLeft() + fontWidth * 3, ypos, "                 ");
 
   addDefaultsOKCancelBGroup(wid, _font);
   addBGroupToFocusList(wid);
@@ -160,8 +160,8 @@ void QuadTariDialog::defineController(const Properties& props, PropType key,
   ByteBuffer image;
   size_t size = 0;
 
-  string controller = props.get(key);
-  popupWidget->setSelected(controller, "AUTO");
+  string controllerName = props.get(key);
+  popupWidget->setSelected(controllerName, "AUTO");
 
   // try to load the image for auto detection
   if(!instance().hasConsole())
@@ -179,15 +179,18 @@ void QuadTariDialog::defineController(const Properties& props, PropType key,
   {
     if(instance().hasConsole())
     {
-      const QuadTari* qt = dynamic_cast<QuadTari*>(
-        jack == Controller::Jack::Left
-          ? &instance().console().leftController()
-          : &instance().console().rightController());
-      if(qt != nullptr)
+      Controller& controller = (jack == Controller::Jack::Left
+        ? instance().console().leftController()
+        : instance().console().rightController());
+
+      if(BSPF::startsWithIgnoreCase(controller.name(), "QT"))
+      {
+        const QuadTari* qt = static_cast<QuadTari*>(&controller);
         label = (first
           ? qt->firstController().name()
           : qt->secondController().name())
-          + " detected";
+        + " detected";
+      }
       else
         label = "nothing detected";
     }
