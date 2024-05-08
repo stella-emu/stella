@@ -10,14 +10,12 @@ AppSupportURL=https://stella-emu.github.io
 AppUpdatesURL=https://stella-emu.github.io
 DefaultDirName={pf}\Stella
 DefaultGroupName=Stella
-OutputBaseFilename="Stella-{#STELLA_VER}-{#STELLA_ARCH}"
+OutputBaseFilename="Stella-{#STELLA_VER}-x64"
 Compression=lzma
 SolidCompression=yes
 UninstallDisplayIcon={app}\Stella.exe
-#if STELLA_ARCH == "x64"
 ArchitecturesInstallIn64BitMode=x64
 ArchitecturesAllowed=x64
-#endif
 
 [Languages]
 Name: "eng"; MessagesFile: "compiler:Default.isl"
