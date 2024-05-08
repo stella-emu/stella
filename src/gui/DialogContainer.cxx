@@ -320,6 +320,7 @@ void DialogContainer::handleMouseButtonEvent(MouseButton b, bool pressed,
       break;
 
     case MouseButton::NONE:  // should never get here
+    default:
       break;
   }
 }

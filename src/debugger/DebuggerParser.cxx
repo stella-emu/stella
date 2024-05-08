@@ -383,6 +383,8 @@ bool DebuggerParser::getArgs(string_view command, string& verb)
           curArg += c;
         }
         break;
+      default:
+        break;  // Not supposed to get here
     }  // switch(state)
   }
   while(i < length);
@@ -505,6 +507,9 @@ bool DebuggerParser::validateArgs(int cmd)
 
       case Parameters::ARG_END_ARGS:
         break;
+
+      default:
+        break;  // Not supposed to get here
     }
     ++curCount;
     ++p;
@@ -2645,6 +2650,8 @@ void DebuggerParser::executeTrapRW(uInt32 addr, bool read, bool write, bool add)
       }
       break;
     }
+    default:
+      break;  // Not supposed to get here
   }
 }
 

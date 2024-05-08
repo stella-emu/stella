@@ -1516,6 +1516,9 @@ bool MovieCart::process(uInt16 address)
     case TitleState::Stream:
       runStateMachine();
       break;
+
+    default:
+      break;  // Not supposed to get here
   }
 
   return a12;

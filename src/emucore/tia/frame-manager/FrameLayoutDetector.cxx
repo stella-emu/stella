@@ -239,7 +239,7 @@ void FrameLayoutDetector::finalizeFrame()
   // 1.0 (>=312) and added to PAL and (inverted) NTSC sums.
   constexpr double ODD_PENALTY = 0.5; // guessed value :)
   const double palFrame = BSPF::clamp(((myCurrentFrameFinalLines % 2) ? ODD_PENALTY : 1.0)
-    * (static_cast<double>(myCurrentFrameFinalLines) - frameLinesNTSC)
+    * static_cast<double>(myCurrentFrameFinalLines - frameLinesNTSC)
     / static_cast<double>(frameLinesPAL - frameLinesNTSC), 0.0, 1.0);
   myPalFrameSum += palFrame;
   myNtscFrameSum += 1.0 - palFrame;

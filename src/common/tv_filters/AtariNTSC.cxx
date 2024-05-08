@@ -107,7 +107,7 @@ void AtariNTSC::render(const uInt8* atari_in, const uInt32 in_width,
   // Spawn the threads...
   for(uInt32 i = 0; i < myWorkerThreads; ++i)
   {
-    myThreads[i] = std::thread([=] // NOLINT (cppcoreguidelines-misleading-capture-default-by-value
+    myThreads[i] = std::thread([=, this]
     {
       rgb_in == nullptr ?
         renderThread(atari_in, in_width, in_height, myTotalThreads,

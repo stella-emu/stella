@@ -293,6 +293,9 @@ void FBSurface::frameRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h,
         vLine(x + w - 1, i, i, color);
       }
       break;
+
+    default:
+      break;  // Not supposed to get here
   }
 }
 

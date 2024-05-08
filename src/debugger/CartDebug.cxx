@@ -741,6 +741,9 @@ bool CartDebug::getLabel(ostream& buf, uInt16 addr, bool isRead,
       }
       break;
     }
+
+    default:
+      break;  // Not supposed to get here
   }
 
   switch(places)

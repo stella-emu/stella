@@ -34,7 +34,7 @@
 
   * Added Joy2B+ controller support.
 
-  * Added auto detection for QuadTari attached controllers 
+  * Added auto detection for QuadTari attached controllers.
 
   * Enhanced Kid Vid support to play tape audio.
 
@@ -42,7 +42,7 @@
 
   * Added missing PlusROM support for E7 bankswitching.
 
-  * Enhanced movie cart (MVC) support
+  * Enhanced movie cart (MVC) support.
 
   * Accelerated emulation up to ~15% (ARM).
 
@@ -59,6 +59,9 @@
   * Added user defined CPU cycle timers to debugger.
 
   * Removed 'launcherroms' option, since it was causing some issues.
+
+  * Codebase now uses C++20 features, which means a minimum of gcc-11
+    or clang-10 for Linux/Mac, and Visual Studio 2022 for Windows.
 
 -Have fun!
 
