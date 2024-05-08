@@ -62,8 +62,9 @@ class FSNodeFactory
           return make_unique<FSNodeZIP>(path);
         #endif
           break;
+        default:
+          return nullptr;
       }
-      return nullptr;
     }
 
   private:

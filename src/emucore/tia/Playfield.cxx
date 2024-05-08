@@ -224,6 +224,9 @@ void Playfield::applyColors()
           myColorRight = myColorP1 &= 0xfe;
         }
         break;
+
+      default:
+        break;  // Not supposed to get here
     }
   }
 }

@@ -505,8 +505,10 @@ bool TIADebug::collision(CollisionBit id, bool toggle) const
       if(toggle)
         myTIA.toggleCollM0M1();
       return myTIA.collCXPPMM() & 0x40;
+
+    default:
+      return false;  // Not supposed to get here
   }
-  return false;  // make compiler happy
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

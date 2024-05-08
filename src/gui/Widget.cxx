@@ -968,6 +968,8 @@ void CheckboxWidget::setFill(FillType type)
       _img = checked_img_circle.data();
       _drawBox = false;
       break;
+    default:
+      break;  // Not supposed to get here
   }
   setDirty();
 }

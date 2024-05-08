@@ -218,6 +218,7 @@ size_t FSNodeZIP::read(ByteBuffer& buffer, size_t) const
     case zip_error::NOT_A_FILE:   throw runtime_error("ZIP file contains errors/not found");
     case zip_error::NOT_READABLE: throw runtime_error("ZIP file not readable");
     case zip_error::NO_ROMS:      throw runtime_error("ZIP file doesn't contain any ROMs");
+    default: throw runtime_error("FSNodeZIP::read default case hit");
   }
 
   myZipHandler->open(_zipFile);

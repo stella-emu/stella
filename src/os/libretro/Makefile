@@ -46,7 +46,7 @@ TARGET_NAME = stella
 
 
 ifeq (,$(findstring msvc,$(platform)))
-   CXXFLAGS += -std=c++17 -fno-rtti
+   CXXFLAGS += -std=c++20 -fno-rtti
    LIBS := -lm
 else
    LIBS :=
@@ -305,8 +305,8 @@ else ifneq (,$(filter $(platform), ngc wii wiiu))
 else ifeq ($(platform), emscripten)
    TARGET := $(TARGET_NAME)_libretro_$(platform).bc
    STATIC_LINKING = 1
-   CXXFLAGS += $(PTHREAD_FLAGS) -std=c++17
-   LDFLAGS += $(PTHREAD_FLAGS) -std=c++17
+   CXXFLAGS += $(PTHREAD_FLAGS) -std=c++20
+   LDFLAGS += $(PTHREAD_FLAGS) -std=c++20
 
 # Genode
 else ifeq ($(platform), genode)
@@ -370,7 +370,7 @@ else ifneq (,$(findstring windows_msvc2017,$(platform)))
    endif
 
    # Specific to this core
-   MSVC2017CompileFlags += -D__WIN32__ /std:c++17
+   MSVC2017CompileFlags += -D__WIN32__ /std:c++20
 
    CXX = cl.exe
    CXXFLAGS += $(MSVC2017CompileFlags)

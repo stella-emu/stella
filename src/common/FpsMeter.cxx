@@ -46,32 +46,27 @@ void FpsMeter::render(uInt32 frameCount)
   }
 
   const size_t queueSize = myQueue.capacity();
-  entry first, last;
+  entry e_first, e_last;
 
-  last.frames = frameCount;
-  last.timestamp = high_resolution_clock::now();
+  e_last.frames = frameCount;
+  e_last.timestamp = high_resolution_clock::now();
 
   if (myQueue.size() < queueSize) {
-    myQueue.push_back(last);
+    myQueue.push_back(e_last);
     myFrameCount += frameCount;
 
-    first = myQueue.at(myQueueOffset);
+    e_first = myQueue.at(myQueueOffset);
   } else {
     myFrameCount = myFrameCount - myQueue.at(myQueueOffset).frames + frameCount;
-    myQueue.at(myQueueOffset) = last;
+    myQueue.at(myQueueOffset) = e_last;
 
     myQueueOffset = (myQueueOffset + 1) % queueSize;
-    first = myQueue.at(myQueueOffset);
+    e_first = myQueue.at(myQueueOffset);
   }
 
   const float myTimeInterval =
-    duration_cast<duration<float>>(last.timestamp - first.timestamp).count();
+    duration_cast<duration<float>>(e_last.timestamp - e_first.timestamp).count();
 
-  if (myTimeInterval > 0) myFps = (myFrameCount - first.frames) / myTimeInterval;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-float FpsMeter::fps() const
-{
-  return myFps;
+  if (myTimeInterval > 0)
+    myFps = (myFrameCount - e_first.frames) / myTimeInterval;
 }

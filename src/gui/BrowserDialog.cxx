@@ -265,6 +265,9 @@ void BrowserDialog::show(string_view startpath,
       _selected->setEnabled(false);
       _okWidget->setLabel("OK");
       break;
+
+    default:
+      break;  // Not supposed to get here
   }
 
   // Set start path

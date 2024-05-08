@@ -32,7 +32,7 @@ class FpsMeter
 
     void render(uInt32 frameCount);
 
-    float fps() const;
+    float fps() const { return myFps; }
 
   private:
 

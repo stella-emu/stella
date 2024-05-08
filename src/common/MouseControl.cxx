@@ -96,6 +96,8 @@ MouseControl::MouseControl(Console& console, string_view mode)
           id = 1;
           msg << "Right MindLink";
           break;
+        default:
+          break;  // Not supposed to get here
       }
     };
 

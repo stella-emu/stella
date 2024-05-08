@@ -399,6 +399,9 @@ int yylex() {
           return yylval.val;
         }
         break;
+
+      default:
+        break;  // Not supposed to get here
     }
   }
 

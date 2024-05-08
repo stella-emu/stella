@@ -51,12 +51,12 @@ CXXFLAGS+= -Wall -Wextra -Wno-unused-parameter
 CFLAGS+= -Wall -Wextra -Wno-unused-parameter
 
 ifdef HAVE_GCC
-  CXXFLAGS+= -Wno-multichar -Wunused -Woverloaded-virtual -Wnon-virtual-dtor -std=c++17
+  CXXFLAGS+= -Wno-multichar -Wunused -Woverloaded-virtual -Wnon-virtual-dtor -std=c++20
   CFLAGS+= -Wno-multichar -Wunused
 endif
 
 ifdef HAVE_CLANG
-  CXXFLAGS+= -Wno-multichar -Wunused -Woverloaded-virtual -Wnon-virtual-dtor -std=c++17
+  CXXFLAGS+= -Wno-multichar -Wunused -Woverloaded-virtual -Wnon-virtual-dtor -std=c++20
   CFLAGS+= -Wno-multichar -Wunused
 endif
 

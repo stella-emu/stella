@@ -104,7 +104,7 @@ class FSNode
 
     /**
      * Append the given path to the node, adding a directory separator
-     * when necessary.  Modelled on the C++17 fs::path API.
+     * when necessary.
      */
     FSNode& operator/=(string_view path);
 

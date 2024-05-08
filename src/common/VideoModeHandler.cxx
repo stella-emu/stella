@@ -139,6 +139,8 @@ VideoModeHandler::Mode::Mode(uInt32 iw, uInt32 ih, uInt32 sw, uInt32 sh,
         iw = std::min(static_cast<uInt32>(iw * zoomLevel), screenS.w) * overscan;
         ih = std::min(static_cast<uInt32>(ih * zoomLevel), screenS.h) * overscan;
         break;
+      default:
+        break;  // Not supposed to get here
     }
   }
   else
@@ -157,6 +159,9 @@ VideoModeHandler::Mode::Mode(uInt32 iw, uInt32 ih, uInt32 sw, uInt32 sh,
 
       case Stretch::None: // UI Mode
         break;  // Do not change image or screen rects whatsoever
+
+      default:
+        break;  // Not supposed to get here
     }
   }
 

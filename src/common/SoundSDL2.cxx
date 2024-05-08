@@ -283,6 +283,8 @@ string SoundSDL2::about() const
     case AudioSettings::Preset::ultraQualityMinimalLag:
       buf << "Ultra quality, minimal lag\n";
       break;
+    default:
+      break;  // Not supposed to get here
   }
   buf << "    Fragment size: " << static_cast<uInt32>(myHardwareSpec.samples)
       << " bytes\n"
@@ -300,6 +302,8 @@ string SoundSDL2::about() const
     case AudioSettings::ResamplingQuality::lanczos_3:
       buf << "Quality 3, Lanczos (a = 3)\n";
       break;
+    default:
+      break;  // Not supposed to get here
   }
   buf << "    Headroom:      " << std::fixed << std::setprecision(1)
       << (0.5 * myAudioSettings.headroom()) << " frames\n"

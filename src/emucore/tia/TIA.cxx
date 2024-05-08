@@ -436,6 +436,9 @@ void TIA::bindToControllers()
         case Controller::AnalogPin::Nine:
           updateAnalogReadout(0);
           break;
+
+        default:
+          break;  // Not supposed to get here
       }
     }
   );
@@ -452,6 +455,9 @@ void TIA::bindToControllers()
         case Controller::AnalogPin::Nine:
           updateAnalogReadout(2);
           break;
+
+        default:
+          break;  // Not supposed to get here
       }
     }
   );
@@ -1797,6 +1803,9 @@ FORCE_INLINE void TIA::renderPixel(uInt32 x, uInt32 y)
         else if (myBall.isOn())       color = myBall.getColor();
         else                          color = myBackground.getColor();
         break;
+
+      default:
+        break;  // Not supposed to get here
     }
   }
 

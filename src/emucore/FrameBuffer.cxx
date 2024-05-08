@@ -890,6 +890,9 @@ inline bool FrameBuffer::drawMessage()
         myMsg.x = imageRect().w() - dst.w() - 5;
         myMsg.y = imageRect().h() - dst.h() - 5;
         break;
+
+      default:
+        break;  // Not supposed to get here
     }
 
     myMsg.surface->setDstPos(myMsg.x + imageRect().x(), myMsg.y + imageRect().y());
