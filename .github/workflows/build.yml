@@ -43,7 +43,7 @@ jobs:
     runs-on: windows-latest
     strategy:
       matrix:
-        platform: [x64, Win32]
+        platform: [x64]
     env:
       Platform: ${{ matrix.platform }}
       SDL2_version: 2.26.0
@@ -59,7 +59,7 @@ jobs:
           7z x "C:\SDL2-devel.zip" -o"C:\"
           xcopy /S "C:\SDL2-%SDL2_version%\include" src\common
           if %Platform%==x64 xcopy /S "C:\SDL2-%SDL2_version%\lib\x64" src\os\windows
-          if %Platform%==Win32 xcopy /S "C:\SDL2-%SDL2_version%\lib\x86" src\os\windows
+
       - name: Build Stella
         run: |
           msbuild src\os\windows\Stella.sln
