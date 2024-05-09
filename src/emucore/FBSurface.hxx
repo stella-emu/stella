@@ -285,6 +285,10 @@ class FBSurface
     struct Attributes {
       bool blending{false};    // Blending is enabled
       uInt32 blendalpha{100};  // Alpha to use in blending mode (0-100%)
+
+      bool operator==(const Attributes& other) const {
+        return blendalpha == other.blendalpha && blending == other.blending;
+      }
     };
 
     /**
