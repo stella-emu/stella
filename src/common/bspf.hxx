@@ -41,6 +41,7 @@ using uInt64 = uint64_t;
 // types: cout, cerr, string, ostream, istream, etc.
 #include <array>
 #include <algorithm>
+#include <compare>
 #include <iostream>
 #include <fstream>
 #include <functional>

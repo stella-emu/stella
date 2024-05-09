@@ -39,13 +39,12 @@ struct Point
   explicit constexpr Point(Int32 x1, Int32 y1) : x{x1}, y{y1} { }
   explicit Point(string_view p) {
     char c = '\0';
-    istringstream buf(string{p});  // TODO: fixed in C++20
+    istringstream buf(string{p});  // TODO: fixed in C++23
     buf >> x >> c >> y;
     if(c != 'x')
       x = y = 0;
   }
-  bool operator==(const Point& p) const { return x == p.x && y == p.y; }
-  bool operator!=(const Point& p) const { return !(*this == p);        }
+  std::strong_ordering operator<=>(const Point& p) const = default;
 
   friend ostream& operator<<(ostream& os, const Point& p) {
     os << p.x << "x" << p.y;
@@ -62,7 +61,7 @@ struct Size
   explicit constexpr Size(uInt32 w1, uInt32 h1) : w{w1}, h{h1} { }
   explicit Size(string_view s) {
     char c = '\0';
-    istringstream buf(string{s});  // TODO: fixed in C++20
+    istringstream buf(string{s});  // TODO: fixed in C++23
     buf >> w >> c >> h;
     if(c != 'x')
       w = h = 0;
@@ -74,6 +73,7 @@ struct Size
     h = BSPF::clamp(h, lower_h, upper_h);
   }
 
+  // TODO: can this be replaced by <=> operator?
   bool operator==(const Size& s) const { return w == s.w && h == s.h; }
   bool operator< (const Size& s) const { return w <  s.w && h <  s.h; }
   bool operator> (const Size& s) const { return w >  s.w || h >  s.h; }
@@ -175,10 +175,7 @@ public:
     return r.left != x || r.top != y;
   }
 
-  bool operator==(const Rect& r) const {
-    return top == r.top && left == r.left && bottom == r.bottom && right == r.right;
-  }
-  bool operator!=(const Rect& r) const { return !(*this == r); }
+  std::strong_ordering operator<=>(const Rect& r) const = default;
 
   friend ostream& operator<<(ostream& os, const Rect& r) {
     os << r.point() << "," << r.size();
