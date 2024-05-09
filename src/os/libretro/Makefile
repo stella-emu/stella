@@ -60,6 +60,13 @@ endif
 GET_STATIC_ARG=$(if $(filter $(shell $(CXX) -print-file-name=$1.a),$1.a),,-static-$1)
 # Unix
 ifneq (,$(findstring unix,$(platform)))
+   GPP_MAJOR := $(shell $(CXX) -dumpversion | cut -d '.' -f 1)
+   ifeq ($(GPP_MAJOR),)
+      $(error Unable to determine $(CXX) version)
+   endif
+   ifeq "$(shell [ $(GPP_MAJOR) -lt 10 ]; echo $$?)" "0"
+      CXXFLAGS := $(subst -std=c++20,-std=c++2a,$(CXXFLAGS))
+   endif
    CXXFLAGS += $(LTO)
    LDFLAGS += $(LTO) $(PTHREAD_FLAGS) $(call GET_STATIC_ARG,libgcc) $(call GET_STATIC_ARG,libstdc++)
    TARGET := $(TARGET_NAME)_libretro.so
@@ -81,6 +88,13 @@ ifneq (,$(findstring unix,$(platform)))
 
 # OS X
 else ifeq ($(platform), osx)
+   XCODE_MAJOR := $(shell xcodebuild -version | grep -oE 'Xcode ([0-9]+)' | cut -d ' ' -f 2)
+   ifeq ($(XCODE_MAJOR),)
+      $(error Unable to determine Xcode version)
+   endif
+   ifeq "$(shell [ $(XCODE_MAJOR) -lt 14 ]; echo $$?)" "0"
+      CXXFLAGS := $(subst -std=c++20,-std=c++2a,$(CXXFLAGS))
+   endif
    CXXFLAGS += $(LTO) -stdlib=libc++
    LDFLAGS += $(LTO) $(PTHREAD_FLAGS) -stdlib=libc++
    TARGET := $(TARGET_NAME)_libretro.dylib
@@ -116,6 +130,13 @@ else ifeq ($(platform), osx)
 
 # iOS
 else ifneq (,$(findstring ios,$(platform)))
+   XCODE_MAJOR := $(shell xcodebuild -version | grep -oE 'Xcode ([0-9]+)' | cut -d ' ' -f 2)
+   ifeq ($(XCODE_MAJOR),)
+      $(error Unable to determine Xcode version)
+   endif
+   ifeq "$(shell [ $(XCODE_MAJOR) -lt 14 ]; echo $$?)" "0"
+      CXXFLAGS := $(subst -std=c++20,-std=c++2a,$(CXXFLAGS))
+   endif
    CXXFLAGS += $(LTO) -stdlib=libc++
    LDFLAGS += $(LTO) $(PTHREAD_FLAGS) -stdlib=libc++
    TARGET := $(TARGET_NAME)_libretro_ios.dylib
@@ -142,6 +163,13 @@ else ifneq (,$(findstring ios,$(platform)))
 
 # tvOS
 else ifeq ($(platform), tvos-arm64)
+   XCODE_MAJOR := $(shell xcodebuild -version | grep -oE 'Xcode ([0-9]+)' | cut -d ' ' -f 2)
+   ifeq ($(XCODE_MAJOR),)
+      $(error Unable to determine Xcode version)
+   endif
+   ifeq "$(shell [ $(XCODE_MAJOR) -lt 14 ]; echo $$?)" "0"
+      CXXFLAGS := $(subst -std=c++20,-std=c++2a,$(CXXFLAGS))
+   endif
    CXXFLAGS += $(LTO) $(PTHREAD_FLAGS) -stdlib=libc++
    LDFLAGS += $(LTO) $(PTHREAD_FLAGS) -stdlib=libc++
    TARGET := $(TARGET_NAME)_libretro_tvos.dylib
