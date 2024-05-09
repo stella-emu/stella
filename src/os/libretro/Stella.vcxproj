@@ -14,7 +14,7 @@
     <ProjectGuid>{D7FCEC7F-33E1-49DD-A4B0-D5FC222250AD}</ProjectGuid>
     <RootNamespace>stella_libretro</RootNamespace>
     <Keyword>Win32Proj</Keyword>
-    <WindowsTargetPlatformVersion>7.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
@@ -25,7 +25,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <CharacterSet>MultiByte</CharacterSet>
-    <PlatformToolset>v141_xp</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup>
     <XPDeprecationWarning>false</XPDeprecationWarning>
@@ -116,7 +116,7 @@
       <WarningLevel>Level4</WarningLevel>
       <DebugInformationFormat>None</DebugInformationFormat>
       <ObjectFileName>$(IntDir)obj\libretro\%(RelativeDir)</ObjectFileName>
-      <LanguageStandard>stdcpp17</LanguageStandard>
+      <LanguageStandard>stdcpp20</LanguageStandard>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <DisableSpecificWarnings>4100;4127;4146;4244;%(DisableSpecificWarnings)</DisableSpecificWarnings>
       <CompileAs>CompileAsCpp</CompileAs>
@@ -137,6 +137,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\common\Bezel.cxx" />
     <ClCompile Include="..\..\common\JoyMap.cxx" />
     <ClCompile Include="..\..\common\KeyMap.cxx" />
     <ClCompile Include="..\..\common\Logger.cxx" />
@@ -279,6 +280,7 @@
     <ClInclude Include="..\..\common\AudioQueue.hxx" />
     <ClInclude Include="..\..\common\AudioSettings.hxx" />
     <ClInclude Include="..\..\common\Base.hxx" />
+    <ClInclude Include="..\..\common\Bezel.hxx" />
     <ClInclude Include="..\..\common\bspf.hxx" />
     <ClInclude Include="..\..\common\FpsMeter.hxx" />
     <ClInclude Include="..\..\common\FSNodeFactory.hxx" />
