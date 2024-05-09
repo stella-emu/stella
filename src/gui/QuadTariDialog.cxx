@@ -134,8 +134,6 @@ void QuadTariDialog::show(bool enableLeft, bool enableRight)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void QuadTariDialog::loadControllerProperties(const Properties& props)
 {
-  string controller;
-
   if(myLeftPortLabel->isEnabled())
   {
     defineController(props, PropType::Controller_Left1, Controller::Jack::Left,
@@ -160,7 +158,7 @@ void QuadTariDialog::defineController(const Properties& props, PropType key,
   ByteBuffer image;
   size_t size = 0;
 
-  string controllerName = props.get(key);
+  const string& controllerName = props.get(key);
   popupWidget->setSelected(controllerName, "AUTO");
 
   // try to load the image for auto detection
@@ -173,7 +171,7 @@ void QuadTariDialog::defineController(const Properties& props, PropType key,
       && (image = instance().openROM(node, md5, size)) != nullptr;
   }
   string label;
-  Controller::Type type = Controller::getType(popupWidget->getSelectedTag().toString());
+  const Controller::Type type = Controller::getType(popupWidget->getSelectedTag().toString());
 
   if(type == Controller::Type::Unknown)
   {

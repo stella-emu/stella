@@ -60,26 +60,17 @@ class Variant
     const string& toString() const { return data; }
     const char* toCString() const { return data.c_str(); }
     Int32 toInt() const {
-      istringstream ss(data);
-      Int32 parsed;
-      ss >> parsed;
-
-      return parsed;
+      try { return std::stoi(data); } catch(...) { return 0; }
     }
     float toFloat() const {
-      istringstream ss(data);
-      float parsed;
-      ss >> parsed;
-
-      return parsed;
+      try { return std::stof(data); } catch(...) { return 0.F; }
     }
-    bool toBool() const         { return data == "1" || data == "true"; }
+    bool toBool() const { return data == "1" || data == "true"; }
     Common::Size toSize() const { return Common::Size(data); }
     Common::Point toPoint() const { return Common::Point(data); }
 
     // Comparison
-    bool operator==(const Variant& v) const { return data == v.data; }
-    bool operator!=(const Variant& v) const { return data != v.data; }
+    bool operator<=>(const Variant& v) const = default;
 
     friend ostream& operator<<(ostream& os, const Variant& v) {
       return os << v.data;

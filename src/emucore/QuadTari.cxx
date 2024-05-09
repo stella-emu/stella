@@ -38,7 +38,6 @@ QuadTari::QuadTari(Jack jack, const OSystem& osystem, const System& system,
     myOSystem{osystem},
     myProperties{properties}
 {
-  Controller::Type firstType, secondType;
   string first, second;
 
   if(jack == Controller::Jack::Left)
@@ -51,8 +50,8 @@ QuadTari::QuadTari(Jack jack, const OSystem& osystem, const System& system,
     first = properties.get(PropType::Controller_Right1);
     second = properties.get(PropType::Controller_Right2);
   }
-  firstType = Controller::getType(first);
-  secondType = Controller::getType(second);
+  Controller::Type firstType = Controller::getType(first),
+                   secondType = Controller::getType(second);
 
   // Autodetect QuadTari controllers:
   // This will detect the same controller for 1st and 2nd controller
