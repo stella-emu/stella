@@ -70,7 +70,7 @@ class Variant
     Common::Point toPoint() const { return Common::Point(data); }
 
     // Comparison
-    bool operator<=>(const Variant& v) const = default;
+    std::strong_ordering operator<=>(const Variant& v) const = default;
 
     friend ostream& operator<<(ostream& os, const Variant& v) {
       return os << v.data;
