@@ -41,6 +41,7 @@
 */
 
 #include <cmath>
+#include <numbers>
 
 #include "OSystem.hxx"
 #include "PropsSet.hxx"
