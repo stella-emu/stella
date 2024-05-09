@@ -462,8 +462,8 @@ Int32 HighScoresManager::convert(Int32 val, uInt32 maxVal, bool isBCD,
   //maxVal += zeroBased ? 0 : 1;
   maxVal -= zeroBased ? 1 : 0;
   const Int32 bits = isBCD
-    ? ceil(log(maxVal) / log(10) * 4)
-    : ceil(log(maxVal) / log(2));
+    ? ceil(log(maxVal) / std::numbers::ln10 * 4)
+    : ceil(log(maxVal) / std::numbers::ln2);
 
   // limit to maxVal's bits
   val %= 1 << bits;

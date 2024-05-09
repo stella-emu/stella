@@ -323,7 +323,7 @@ bool RomImageWidget::loadPng(const string& fileName)
         break;
       }
       if(data.first == "Software"
-          && data.second.toString().find("Stella") == 0)
+          && data.second.toString().starts_with("Stella"))
         myLabel = "Snapshot"; // default for Stella snapshots with missing "Title" meta data
     }
     return true;
