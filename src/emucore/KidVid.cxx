@@ -241,7 +241,7 @@ bool KidVid::load(Serializer& in)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string KidVid::getFileName() const
 {
-  static constexpr std::array<string, 6> fileNames = {
+  static constexpr std::array<string_view, 6> fileNames = {
     "KVS3.WAV", "KVS1.WAV", "KVS2.WAV",
     "KVB3.WAV", "KVB1.WAV", "KVB2.WAV"
   };
@@ -249,7 +249,7 @@ string KidVid::getFileName() const
   int i = myGame == Game::Smurfs ? myTape - 1 : myTape + 2;
   if(myTape == 4) i = 3;
 
-  return fileNames[i];
+  return string{fileNames[i]};
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
