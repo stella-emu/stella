@@ -35,9 +35,9 @@ class AudioSettings
     };
 
     enum class ResamplingQuality {
-      nearestNeightbour   = 1,
-      lanczos_2           = 2,
-      lanczos_3           = 3
+      nearestNeighbour   = 1,
+      lanczos_2          = 2,
+      lanczos_3          = 3
     };
 
     static constexpr string_view SETTING_PRESET              = "audio.preset";
@@ -135,7 +135,7 @@ class AudioSettings
     uInt32 myPresetFragmentSize{0};
     uInt32 myPresetBufferSize{0};
     uInt32 myPresetHeadroom{0};
-    ResamplingQuality myPresetResamplingQuality{ResamplingQuality::nearestNeightbour};
+    ResamplingQuality myPresetResamplingQuality{ResamplingQuality::nearestNeighbour};
 
     bool myIsPersistent{true};
 };

@@ -546,19 +546,20 @@ EventMode PhysicalJoystickHandler::getMode(const Controller::Type type)
 {
   switch(type)
   {
-    case Controller::Type::Keyboard:
-    case Controller::Type::KidVid:
+    using enum Controller::Type;
+    case Keyboard:
+    case KidVid:
       return EventMode::kKeyboardMode;
 
-    case Controller::Type::Paddles:
-    case Controller::Type::PaddlesIAxDr:
-    case Controller::Type::PaddlesIAxis:
+    case Paddles:
+    case PaddlesIAxDr:
+    case PaddlesIAxis:
       return EventMode::kPaddlesMode;
 
-    case Controller::Type::CompuMate:
+    case CompuMate:
       return EventMode::kCompuMateMode;
 
-    case Controller::Type::Driving:
+    case Driving:
       return EventMode::kDrivingMode;
 
     default:
@@ -611,7 +612,7 @@ void PhysicalJoystickHandler::enableEmulationMappings()
   }
 
   // enable right mode first, so that in case of mapping clashes the left controller has preference
-  switch (myRightMode)
+  switch(myRightMode)
   {
     case EventMode::kPaddlesMode:
       enableMappings(RightPaddlesEvents, EventMode::kPaddlesMode);
@@ -630,7 +631,7 @@ void PhysicalJoystickHandler::enableEmulationMappings()
       break;
   }
 
-  switch (myLeftMode)
+  switch(myLeftMode)
   {
     case EventMode::kPaddlesMode:
       enableMappings(LeftPaddlesEvents, EventMode::kPaddlesMode);
@@ -906,13 +907,14 @@ void PhysicalJoystickHandler::handleAxisEvent(int stick, int axis, int value)
 
     switch(j->type)
     {
+      using enum PhysicalJoystick::Type;
       // Since the various controller classes deal with Stelladaptor
       // devices differently, we send the raw X and Y axis data directly,
       // and let the controller handle it
       // These events don't have to pass through handleEvent, since
       // they can never be remapped
-      case PhysicalJoystick::Type::LEFT_STELLADAPTOR:
-      case PhysicalJoystick::Type::LEFT_2600DAPTOR:
+      case LEFT_STELLADAPTOR:
+      case LEFT_2600DAPTOR:
         if(myOSystem.hasConsole()
            && myOSystem.console().leftController().type() == Controller::Type::Driving)
         {
@@ -923,8 +925,8 @@ void PhysicalJoystickHandler::handleAxisEvent(int stick, int axis, int value)
           handleRegularAxisEvent(j, stick, axis, value);
         break;  // axis on left controller (0)
 
-      case PhysicalJoystick::Type::RIGHT_STELLADAPTOR:
-      case PhysicalJoystick::Type::RIGHT_2600DAPTOR:
+      case RIGHT_STELLADAPTOR:
+      case RIGHT_2600DAPTOR:
         if(myOSystem.hasConsole()
            && myOSystem.console().rightController().type() == Controller::Type::Driving)
         {

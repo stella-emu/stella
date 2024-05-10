@@ -35,7 +35,7 @@ namespace {
   constexpr AudioSettings::ResamplingQuality normalizeResamplingQuality(int numericResamplingQuality)
   {
     return (
-      numericResamplingQuality >= static_cast<int>(AudioSettings::ResamplingQuality::nearestNeightbour) &&
+      numericResamplingQuality >= static_cast<int>(AudioSettings::ResamplingQuality::nearestNeighbour) &&
       numericResamplingQuality <= static_cast<int>(AudioSettings::ResamplingQuality::lanczos_3)
     ) ? static_cast<AudioSettings::ResamplingQuality>(numericResamplingQuality) : AudioSettings::DEFAULT_RESAMPLING_QUALITY;
   }
@@ -53,7 +53,8 @@ void AudioSettings::normalize(Settings& settings)
 {
   const int settingPreset = settings.getInt(SETTING_PRESET);
   const Preset preset = normalizedPreset(settingPreset);
-  if (static_cast<int>(preset) != settingPreset) settings.setValue(SETTING_PRESET, static_cast<int>(DEFAULT_PRESET));
+  if (static_cast<int>(preset) != settingPreset)
+    settings.setValue(SETTING_PRESET, static_cast<int>(DEFAULT_PRESET));
 
   switch (settings.getInt(SETTING_SAMPLE_RATE)) {
     case 44100:
@@ -187,7 +188,7 @@ void AudioSettings::setPreset(AudioSettings::Preset preset)
       myPresetFragmentSize = 1024;
       myPresetBufferSize = 6;
       myPresetHeadroom = 5;
-      myPresetResamplingQuality = ResamplingQuality::nearestNeightbour;
+      myPresetResamplingQuality = ResamplingQuality::nearestNeighbour;
       break;
 
     case Preset::highQualityMediumLag:

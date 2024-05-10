@@ -268,19 +268,20 @@ string SoundSDL2::about() const
       << "  Preset:   ";
   switch(myAudioSettings.preset())
   {
-    case AudioSettings::Preset::custom:
+    using enum AudioSettings::Preset;
+    case custom:
       buf << "Custom\n";
       break;
-    case AudioSettings::Preset::lowQualityMediumLag:
+    case lowQualityMediumLag:
       buf << "Low quality, medium lag\n";
       break;
-    case AudioSettings::Preset::highQualityMediumLag:
+    case highQualityMediumLag:
       buf << "High quality, medium lag\n";
       break;
-    case AudioSettings::Preset::highQualityLowLag:
+    case highQualityLowLag:
       buf << "High quality, low lag\n";
       break;
-    case AudioSettings::Preset::ultraQualityMinimalLag:
+    case ultraQualityMinimalLag:
       buf << "Ultra quality, minimal lag\n";
       break;
     default:
@@ -293,13 +294,14 @@ string SoundSDL2::about() const
   buf << "    Resampling:    ";
   switch(myAudioSettings.resamplingQuality())
   {
-    case AudioSettings::ResamplingQuality::nearestNeightbour:
+    using enum AudioSettings::ResamplingQuality;
+    case nearestNeighbour:
       buf << "Quality 1, nearest neighbor\n";
       break;
-    case AudioSettings::ResamplingQuality::lanczos_2:
+    case lanczos_2:
       buf << "Quality 2, Lanczos (a = 2)\n";
       break;
-    case AudioSettings::ResamplingQuality::lanczos_3:
+    case lanczos_3:
       buf << "Quality 3, Lanczos (a = 3)\n";
       break;
     default:
@@ -341,17 +343,18 @@ void SoundSDL2::initResampler()
 
   switch(myAudioSettings.resamplingQuality())
   {
-    case AudioSettings::ResamplingQuality::nearestNeightbour:
+    using enum AudioSettings::ResamplingQuality;
+    case nearestNeighbour:
       myResampler = make_unique<SimpleResampler>(formatFrom, formatTo,
                                                  nextFragmentCallback);
       break;
 
-    case AudioSettings::ResamplingQuality::lanczos_2:
+    case lanczos_2:
       myResampler = make_unique<LanczosResampler>(formatFrom, formatTo,
                                                   nextFragmentCallback, 2);
       break;
 
-    case AudioSettings::ResamplingQuality::lanczos_3:
+    case lanczos_3:
       myResampler = make_unique<LanczosResampler>(formatFrom, formatTo,
                                                   nextFragmentCallback, 3);
       break;
