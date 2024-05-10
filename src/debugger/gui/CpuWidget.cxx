@@ -203,7 +203,7 @@ void CpuWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
           // event the rest of the debugger widgets
           ostringstream command;
           command << "pc #" << value;
-          instance().debugger().run(command.str());
+          instance().debugger().run(command.view());
           break;
         }
 

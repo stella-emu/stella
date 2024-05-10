@@ -83,7 +83,7 @@ DiStella::DiStella(const CartDebug& dbg, CartDebug::DisassemblyList& list,
       if (CartDebug::addressType(k + myOffset) == CartDebug::AddrType::ROM) {
         reservedLabel.str("");
         reservedLabel << "L" << Base::HEX4 << (k + myOffset);
-        myReserved.Label.emplace(k + myOffset, reservedLabel.str());
+        myReserved.Label.emplace(k + myOffset, reservedLabel.view());
       }
     }
   }
@@ -227,7 +227,7 @@ void DiStella::disasm(uInt32 distart, int pass)
             nextLine << ".byte   $" << Base::HEX2 << static_cast<int>(opcode) << " ;";
             nextLine << ourLookup[opcode].mnemonic;
 
-            myDisasmBuf << nextLine.str() << "'" << ";"
+            myDisasmBuf << nextLine.view() << "'" << ";"
               << std::dec << static_cast<int>(ourLookup[opcode].cycles) << "-"
               << std::dec << static_cast<int>(ourLookup[nextOpcode].cycles) << " "
               << "'= " << std::setw(3) << std::setfill(' ') << std::dec << cycles;
@@ -603,7 +603,7 @@ void DiStella::disasm(uInt32 distart, int pass)
       if(pass == 3) {
         cycles += static_cast<int>(ourLookup[opcode].cycles);
         // A complete line of disassembly (text, cycle count, and bytes)
-        myDisasmBuf << nextLine.str() << "'"
+        myDisasmBuf << nextLine.view() << "'"
           << ";" << std::dec << static_cast<int>(ourLookup[opcode].cycles)
           << (addrMode == AddressingMode::RELATIVE ? (ad & 0xf00) != ((myPC + myOffset) & 0xf00) ? "/3!" : "/3 " : "   ");
         if((opcode == 0x40 || opcode == 0x60 || opcode == 0x4c || opcode == 0x00 // code block end
@@ -617,7 +617,7 @@ void DiStella::disasm(uInt32 distart, int pass)
         else {
           myDisasmBuf << "'     ";
         }
-        myDisasmBuf << "'" << nextLineBytes.str();
+        myDisasmBuf << "'" << nextLineBytes.view();
 
         addEntry(Device::CODE);
         if(opcode == 0x40 || opcode == 0x60 || opcode == 0x4c || opcode == 0x00) {

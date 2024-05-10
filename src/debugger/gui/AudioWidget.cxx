@@ -152,7 +152,7 @@ void AudioWidget::handleVolume()
   stringstream s;
 
   s << getEffectiveVolume() << "% (eff. volume)";
-  myAudEffV->setLabel(s.str());
+  myAudEffV->setLabel(s.view());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

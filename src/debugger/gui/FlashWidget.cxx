@@ -105,7 +105,7 @@ void FlashWidget::loadConfig()
             label << "    ";
           label << ": " << Common::Base::HEX4 << from << "-" << Common::Base::HEX4 << to;
         }
-        myPage[useCount]->setLabel(label.str());
+        myPage[useCount]->setLabel(label.view());
 
         startPage = -1;
         if(++useCount == MAX_PAGES)

@@ -85,10 +85,10 @@ void DelayQueueWidget::loadConfig() {
         break;
     }
 
-    if(line != ss.str())
+    if(line != ss.view())
     {
       setDirty();
-      line = ss.str();
+      line = ss.view();
     }
     delayQueueIterator->next();
   }

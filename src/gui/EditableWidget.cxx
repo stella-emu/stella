@@ -886,9 +886,9 @@ bool EditableWidget::pasteSelectedText()
       lastOk = false;
     }
 
-  _editString.insert(_caretPos, buf.str());
+  _editString.insert(_caretPos, buf.view());
   // position cursor at the end of pasted text
-  setCaretPos(_caretPos + static_cast<int>(buf.str().length()));
+  setCaretPos(_caretPos + static_cast<int>(buf.view().length()));
 
   if(selected || !pasted.empty())
   {

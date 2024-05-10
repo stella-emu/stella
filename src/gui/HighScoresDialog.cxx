@@ -235,7 +235,7 @@ void HighScoresDialog::loadConfig()
   {
     ostringstream buf;
     buf << std::setw(3) << std::setfill(' ') << i;
-    VarList::push_back(items, buf.str(), i);
+    VarList::push_back(items, buf.view(), i);
   }
   myVariationPopup->addItems(items);
 
@@ -404,7 +404,7 @@ void HighScoresDialog::updateWidgets(bool init)
     if (myScores.scores[r].special > 0)
       buf << std::setw(HSM::MAX_SPECIAL_DIGITS) << std::setfill(' ')
       << myScores.scores[r].special;
-    mySpecialWidgets[r]->setLabel(buf.str());
+    mySpecialWidgets[r]->setLabel(buf.view());
 
     myNameWidgets[r]->setLabel(myScores.scores[r].name);
     myDateWidgets[r]->setLabel(myScores.scores[r].date);

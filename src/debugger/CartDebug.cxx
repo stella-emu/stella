@@ -1378,7 +1378,7 @@ string CartDebug::saveDisassembly(string path)
   }
 
   // And finally, output the disassembly
-  out << buf.str();
+  out << buf.view();
 
   if(path.empty())
     path = myOSystem.userDir().getPath()

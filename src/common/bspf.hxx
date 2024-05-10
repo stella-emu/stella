@@ -47,6 +47,7 @@ using uInt64 = uint64_t;
 #include <functional>
 #include <iomanip>
 #include <memory>
+#include <numbers>
 #include <string>
 #include <string_view>
 #include <charconv>
@@ -116,8 +117,8 @@ static const string EmptyString("");
 
 namespace BSPF
 {
-  static constexpr float PI_f = 3.141592653589793238462643383279502884F;
-  static constexpr double PI_d = 3.141592653589793238462643383279502884;
+  static constexpr float PI_f = std::numbers::pi_v<float>;
+  static constexpr double PI_d = std::numbers::pi_v<double>;
 
   // CPU architecture type
   // This isn't complete yet, but takes care of all the major platforms

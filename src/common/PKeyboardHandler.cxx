@@ -614,7 +614,7 @@ void PhysicalKeyboardHandler::toggleModKeys(bool toggle)
   ostringstream ss;
   ss << "Modifier key combos ";
   ss << (modCombo ? "enabled" : "disabled");
-  myOSystem.frameBuffer().showTextMessage(ss.str());
+  myOSystem.frameBuffer().showTextMessage(ss.view());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

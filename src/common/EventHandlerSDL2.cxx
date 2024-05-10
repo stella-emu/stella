@@ -33,7 +33,7 @@ EventHandlerSDL2::EventHandlerSDL2(OSystem& osystem)
     myQwertz = int{'y'} == static_cast<int>
       (SDL_GetKeyFromScancode(static_cast<SDL_Scancode>(KBDK_Z)));
     buf << "Keyboard: " << (myQwertz ? "QWERTZ" : "QWERTY");
-    Logger::debug(buf.str());
+    Logger::debug(buf.view());
   }
 #endif
 
@@ -43,7 +43,7 @@ EventHandlerSDL2::EventHandlerSDL2(OSystem& osystem)
     ostringstream buf;
     buf << "ERROR: Couldn't initialize SDL joystick support: "
         << SDL_GetError() << '\n';
-    Logger::error(buf.str());
+    Logger::error(buf.view());
   }
   Logger::debug("EventHandlerSDL2::EventHandlerSDL2 SDL_INIT_JOYSTICK");
 #endif

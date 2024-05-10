@@ -239,7 +239,7 @@ string RewindManager::saveAllStates()
       << myOSystem.console().properties().get(PropType::Cart_Name)
       << ".sta";
 
-    Serializer out(buf.str(), Serializer::Mode::ReadWriteTrunc);
+    Serializer out(buf.view(), Serializer::Mode::ReadWriteTrunc);
     if (!out)
       return "Can't save to all states file";
 
@@ -296,7 +296,7 @@ string RewindManager::loadAllStates()
       << ".sta";
 
     // Make sure the file can be opened for reading
-    const Serializer in(buf.str(), Serializer::Mode::ReadOnly);
+    const Serializer in(buf.view(), Serializer::Mode::ReadOnly);
     if (!in)
       return "Can't load from all states file";
 
