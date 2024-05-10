@@ -131,7 +131,7 @@ inline uInt8 M6502::peek(uInt16 address, Device::AccessFlags flags)
       stringstream msg;
       msg << "RTrap" << (flags == DISASM_NONE ? "G[" : "[") << Common::Base::HEX2 << cond << "]"
         << (myTrapCondNames[cond].empty() ? ": " : "If: {" + myTrapCondNames[cond] + "} ");
-      myHitTrapInfo.message = msg.str();
+      myHitTrapInfo.message = msg.view();
       myHitTrapInfo.address = address;
     }
   }
@@ -166,7 +166,7 @@ inline void M6502::poke(uInt16 address, uInt8 value, Device::AccessFlags flags)
       myJustHitWriteTrapFlag = true;
       stringstream msg;
       msg << "WTrap[" << Common::Base::HEX2 << cond << "]" << (myTrapCondNames[cond].empty() ? ":" : "If: {" + myTrapCondNames[cond] + "}");
-      myHitTrapInfo.message = msg.str();
+      myHitTrapInfo.message = msg.view();
       myHitTrapInfo.address = address;
     }
   }
@@ -289,7 +289,7 @@ inline void M6502::_execute(uInt64 cycles, DispatchResult& result)
 
                 msg << "BP: $" << Common::Base::HEX4 << PC << ", bank #"
                     << std::dec << static_cast<int>(bank);
-                result.setDebugger(currentCycles, msg.str(), "Breakpoint");
+                result.setDebugger(currentCycles, msg.view(), "Breakpoint");
                 return;
               }
             }
@@ -309,12 +309,12 @@ inline void M6502::_execute(uInt64 cycles, DispatchResult& result)
           if(myLogBreaks)
           {
             msg << "CBP[" << Common::Base::HEX2 << cond << "]:";
-            myDebugger->log(msg.str());
+            myDebugger->log(msg.view());
           }
           else
           {
             msg << "CBP[" << Common::Base::HEX2 << cond << "]: " << myCondBreakNames[cond];
-            result.setDebugger(currentCycles, msg.str(), "Conditional breakpoint");
+            result.setDebugger(currentCycles, msg.view(), "Conditional breakpoint");
             return;
           }
         }
@@ -333,7 +333,7 @@ inline void M6502::_execute(uInt64 cycles, DispatchResult& result)
       {
         ostringstream msg;
         msg << "conditional savestate [" << Common::Base::HEX2 << cond << "]";
-        myDebugger->addState(msg.str());
+        myDebugger->addState(msg.view());
       }
 
       mySystem->cart().clearAllRAMAccesses();
@@ -376,7 +376,7 @@ inline void M6502::_execute(uInt64 cycles, DispatchResult& result)
           {
             ostringstream msg;
             msg << "RWP[@ $" << Common::Base::HEX4 << rwpAddr << "]: ";
-            result.setDebugger(currentCycles, msg.str(), "Read from write port", oldPC);
+            result.setDebugger(currentCycles, msg.view(), "Read from write port", oldPC);
             return;
           }
         }
@@ -388,7 +388,7 @@ inline void M6502::_execute(uInt64 cycles, DispatchResult& result)
           {
             ostringstream msg;
             msg << "WRP[@ $" << Common::Base::HEX4 << wrpAddr << "]: ";
-            result.setDebugger(currentCycles, msg.str(), "Write to read port", oldPC);
+            result.setDebugger(currentCycles, msg.view(), "Write to read port", oldPC);
             return;
           }
         }

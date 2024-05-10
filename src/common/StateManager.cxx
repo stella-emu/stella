@@ -207,12 +207,12 @@ void StateManager::loadState(int slot)
         << ".st" << slot;
 
     // Make sure the file can be opened in read-only mode
-    Serializer in(buf.str(), Serializer::Mode::ReadOnly);
+    Serializer in(buf.view(), Serializer::Mode::ReadOnly);
     if(!in)
     {
       buf.str("");
       buf << "Can't open/load from state file " << slot;
-      myOSystem.frameBuffer().showTextMessage(buf.str());
+      myOSystem.frameBuffer().showTextMessage(buf.view());
       return;
     }
 
@@ -236,7 +236,7 @@ void StateManager::loadState(int slot)
       buf << "Invalid data in state " << slot << " file";
     }
 
-    myOSystem.frameBuffer().showTextMessage(buf.str());
+    myOSystem.frameBuffer().showTextMessage(buf.view());
   }
 }
 
@@ -253,12 +253,12 @@ void StateManager::saveState(int slot)
         << ".st" << slot;
 
     // Make sure the file can be opened for writing
-    Serializer out(buf.str(), Serializer::Mode::ReadWriteTrunc);
+    Serializer out(buf.view(), Serializer::Mode::ReadWriteTrunc);
     if(!out)
     {
       buf.str("");
       buf << "Can't open/save to state file " << slot;
-      myOSystem.frameBuffer().showTextMessage(buf.str());
+      myOSystem.frameBuffer().showTextMessage(buf.view());
       return;
     }
 
@@ -271,7 +271,7 @@ void StateManager::saveState(int slot)
     catch(...)
     {
       buf << "Error saving state " << slot;
-      myOSystem.frameBuffer().showTextMessage(buf.str());
+      myOSystem.frameBuffer().showTextMessage(buf.view());
       return;
     }
 
@@ -289,7 +289,7 @@ void StateManager::saveState(int slot)
     else
       buf << "Error saving state " << slot;
 
-    myOSystem.frameBuffer().showTextMessage(buf.str());
+    myOSystem.frameBuffer().showTextMessage(buf.view());
   }
 }
 
@@ -304,7 +304,7 @@ void StateManager::changeState(int direction)
     buf << "Changed to state slot " << myCurrentSlot;
   else
     buf << "State slot " << myCurrentSlot;
-  myOSystem.frameBuffer().showTextMessage(buf.str());
+  myOSystem.frameBuffer().showTextMessage(buf.view());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -315,7 +315,7 @@ void StateManager::toggleAutoSlot()
   // Print appropriate message
   ostringstream buf;
   buf << "Automatic slot change " << (autoSlot ? "enabled" : "disabled");
-  myOSystem.frameBuffer().showTextMessage(buf.str());
+  myOSystem.frameBuffer().showTextMessage(buf.view());
 
   myOSystem.settings().setValue("autoslot", autoSlot);
 }

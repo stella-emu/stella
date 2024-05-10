@@ -125,7 +125,7 @@ bool Debugger::start(string_view message, int address, bool read,
     buf << message;
     if(address > -1)
       buf << cartDebug().getLabel(address, read, 4);
-    myDialog->message().setText(buf.str());
+    myDialog->message().setText(buf.view());
     myDialog->message().setToolTip(toolTip);
     return true;
   }
@@ -461,7 +461,7 @@ void Debugger::log(string_view triggerMsg)
         msg << "B/";
     }
     msg << "Addr Code     Disasm";
-    Logger::log(msg.str());
+    Logger::log(msg.view());
     myFirstLog = false;
   }
 
@@ -515,7 +515,7 @@ void Debugger::log(string_view triggerMsg)
       break;
     }
   }
-  Logger::log(msg.str());
+  Logger::log(msg.view());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -628,7 +628,7 @@ void Debugger::nextScanline(int lines)
   }
   lockSystem();
 
-  addState(buf.str());
+  addState(buf.view());
   myOSystem.console().tia().flushLineCache();
 }
 
@@ -651,7 +651,7 @@ void Debugger::nextFrame(int frames)
   }
   lockSystem();
 
-  addState(buf.str());
+  addState(buf.view());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

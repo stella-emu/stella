@@ -255,7 +255,7 @@ void TiaZoomWidget::handleCommand(CommandSender* sender, int cmd, int data, int 
       if(lines > 0)
       {
         command << "scanline #" << lines;
-        const string& message = instance().debugger().parser().run(command.str());
+        const string& message = instance().debugger().parser().run(command.view());
         instance().frameBuffer().showTextMessage(message);
       }
     }
@@ -264,7 +264,7 @@ void TiaZoomWidget::handleCommand(CommandSender* sender, int cmd, int data, int 
       ostringstream command;
       const int scanline = myClickY / myZoomLevel + myOffY + startLine;
       command << "breakif _scan==#" << scanline;
-      const string& message = instance().debugger().parser().run(command.str());
+      const string& message = instance().debugger().parser().run(command.view());
       instance().frameBuffer().showTextMessage(message);
     }
     else

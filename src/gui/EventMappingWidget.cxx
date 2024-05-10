@@ -205,7 +205,7 @@ void EventMappingWidget::startRemapping()
       << EventHandler::actionAtIndex(myActionSelected, myEventGroup)
       << "' event";
   myKeyMapping->setTextColor(kTextColorEm);
-  myKeyMapping->setText(buf.str());
+  myKeyMapping->setText(buf.view());
 
   // Make sure that this widget receives all raw data, before any
   // pre-processing occurs

@@ -298,7 +298,7 @@ void CheatManager::saveCheats(string_view md5sum)
       cheats << ",";
   }
 
-  const bool changed = cheats.str() != myCurrentCheat;
+  const bool changed = cheats.view() != myCurrentCheat;
 
   // Only update the list if absolutely necessary
   if(changed)
@@ -310,8 +310,8 @@ void CheatManager::saveCheats(string_view md5sum)
       myCheatMap.erase(iter);
 
     // Add new entry only if there are any cheats defined
-    if(!cheats.str().empty())
-      myCheatMap.emplace(md5sum, cheats.str());
+    if(!cheats.view().empty())
+      myCheatMap.emplace(md5sum, cheats.view());
   }
 
   // Update the dirty flag

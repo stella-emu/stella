@@ -273,7 +273,7 @@ void PNGLibrary::toggleContinuousSnapshots(bool perFrame)
       buf << "Enabling snapshots in " << interval << " second intervals";
       interval *= static_cast<uInt32>(myOSystem.frameRate());
     }
-    myOSystem.frameBuffer().showTextMessage(buf.str());
+    myOSystem.frameBuffer().showTextMessage(buf.view());
     setContinuousSnapInterval(interval);
   }
   else
@@ -282,7 +282,7 @@ void PNGLibrary::toggleContinuousSnapshots(bool perFrame)
     buf << "Disabling snapshots, generated "
       << (mySnapCounter / mySnapInterval)
       << " files";
-    myOSystem.frameBuffer().showTextMessage(buf.str());
+    myOSystem.frameBuffer().showTextMessage(buf.view());
     setContinuousSnapInterval(0);
   }
 }
@@ -313,7 +313,7 @@ void PNGLibrary::takeSnapshot(uInt32 number)
     ostringstream buf;
     buf << sspath << "_" << std::hex << std::setw(8) << std::setfill('0')
         << number << ".png";
-    filename = buf.str();
+    filename = buf.view();
   }
   else if(!myOSystem.settings().getBool("sssingle"))
   {
@@ -328,11 +328,11 @@ void PNGLibrary::takeSnapshot(uInt32 number)
       {
         buf.str("");
         buf << sspath << "_" << i << ".png";
-        const FSNode next(buf.str());
+        const FSNode next(buf.view());
         if(!next.exists())
           break;
       }
-      filename = buf.str();
+      filename = buf.view();
     }
   }
   else
@@ -344,7 +344,7 @@ void PNGLibrary::takeSnapshot(uInt32 number)
   VarList::push_back(metaData, "Title", "Snapshot");
   version << "Stella " << STELLA_VERSION << " (Build " << STELLA_BUILD << ") ["
           << BSPF::ARCH << "]";
-  VarList::push_back(metaData, "Software", version.str());
+  VarList::push_back(metaData, "Software", version.view());
   const string& name = (myOSystem.settings().getString("snapname") == "int")
       ? myOSystem.console().properties().get(PropType::Cart_Name)
       : myOSystem.romFile().getName();

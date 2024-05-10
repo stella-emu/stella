@@ -68,13 +68,6 @@ class MD5
     */
     static string hash(const ByteBuffer& buffer, size_t length);
     static string hash(const uInt8* buffer, size_t length);
-    /**
-      Ditto.
-
-      @param buffer  The message to compute the digest of
-
-      @return   The message - digest
-    */
     static string hash(string_view buffer);
 
   public:

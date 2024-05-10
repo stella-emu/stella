@@ -181,7 +181,7 @@ void RomWidget::setPC(int disasm_line)
   {
     ostringstream command;
     command << "pc #" << address;
-    instance().debugger().run(command.str());
+    instance().debugger().run(command.view());
   }
 }
 
@@ -194,7 +194,7 @@ void RomWidget::runtoPC(int disasm_line)
   {
     ostringstream command;
     command << "runtopc #" << address;
-    const string& msg = instance().debugger().run(command.str());
+    const string& msg = instance().debugger().run(command.view());
     instance().frameBuffer().showTextMessage(msg);
   }
 }
@@ -208,7 +208,7 @@ void RomWidget::setTimer(int disasm_line)
   {
     ostringstream command;
     command << "timer #" << address << " " << instance().debugger().cartDebug().getBank(address);
-    const string& msg = instance().debugger().run(command.str());
+    const string& msg = instance().debugger().run(command.view());
     instance().frameBuffer().showTextMessage(msg);
   }
 }
@@ -244,7 +244,7 @@ void RomWidget::patchROM(int disasm_line, string_view bytes,
 
     Common::Base::setFormat(base);
     command << "rom #" << address << " " << bytes;
-    instance().debugger().run(command.str());
+    instance().debugger().run(command.view());
 
     // Restore previous base
     Common::Base::setFormat(oldbase);

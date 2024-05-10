@@ -197,7 +197,7 @@ string KeyMap::getEventMappingDesc(const Event::Type event, const EventMode mode
   {
     if (_event == event && _mapping.mode == mode)
     {
-      if(!buf.str().empty())
+      if(!buf.view().empty())
         buf << ", ";
       buf << getDesc(_mapping);
     }

@@ -118,8 +118,8 @@ void KidVid::update()
     }
     if(myTape)
     {
-      static constexpr uInt32 gameNumber[4] = { 3, 1, 2, 3 };
-      static constexpr string_view gameName[6] = {
+      static constexpr std::array<uInt32, 4> gameNumber = { 3, 1, 2, 3 };
+      static constexpr std::array<string_view, 6> gameName = {
         "Harmony Smurf", "Handy Smurf", "Greedy Smurf",
         "Big Number Hunt", "Great Letter Roundup", "Spooky Spelling Bee"
       };
@@ -132,7 +132,7 @@ void KidVid::update()
       ostringstream msg;
       msg << "Game #" << gameNumber[myTape - 1] << " - \""
         << gameName[gameNumber[myTape - 1] + (myGame == Game::Smurfs ? -1 : 2)] << "\"";
-      myCallback(msg.str(), true);
+      myCallback(msg.view(), true);
     }
   }
 
@@ -239,9 +239,9 @@ bool KidVid::load(Serializer& in)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const char* KidVid::getFileName() const
+string KidVid::getFileName() const
 {
-  static constexpr const char* const fileNames[6] = {
+  static constexpr std::array<string, 6> fileNames = {
     "KVS3.WAV", "KVS1.WAV", "KVS2.WAV",
     "KVB3.WAV", "KVB1.WAV", "KVB2.WAV"
   };
@@ -256,7 +256,7 @@ const char* KidVid::getFileName() const
 void KidVid::openSampleFiles()
 {
 #ifdef SOUND_SUPPORT
-  static constexpr uInt32 firstSongPointer[6] = {
+  static constexpr std::array<uInt32, 6> firstSongPointer = {
     44 + 38,
     0,
     44,
@@ -302,7 +302,7 @@ void KidVid::setNextSong()
                               ourSongStart[temp], mySongLength);
     ostringstream msg;
     msg << "Read song #" << mySongPointer << " (" << fileName << ")";
-    myCallback(msg.str(), false);
+    myCallback(msg.view(), false);
 
   #ifdef DEBUG_BUILD
     cerr << fileName << ": " << (ourSongPositions[mySongPointer] & 0x7f) << '\n';

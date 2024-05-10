@@ -164,7 +164,7 @@ void TIASurface::setNTSC(NTSCFilter::Preset preset, bool show)
   }
   myOSystem.settings().setValue("tv.filter", static_cast<int>(preset));
 
-  if(show) myFB.showTextMessage(buf.str());
+  if(show) myFB.showTextMessage(buf.view());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -247,7 +247,7 @@ void TIASurface::changeScanlineIntensity(int direction)
     buf << intensity << "%";
   else
     buf << "Off";
-  myFB.showGaugeMessage("Scanline intensity", buf.str(), intensity);
+  myFB.showGaugeMessage("Scanline intensity", buf.view(), intensity);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -299,7 +299,7 @@ void TIASurface::cycleScanlineMask(int direction)
   ostringstream msg;
 
   msg << "Scanline data '" << Names[i] << "'";
-  myOSystem.frameBuffer().showTextMessage(msg.str());
+  myOSystem.frameBuffer().showTextMessage(msg.view());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

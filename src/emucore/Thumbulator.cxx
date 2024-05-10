@@ -191,7 +191,7 @@ string Thumbulator::doRun(uInt32& cycles, bool irqDrivenAudio)
 #endif
 #if defined(THUMB_DISS) || defined(THUMB_DBUG)
   dump_counters();
-  cout << statusMsg.str() << '\n';
+  cout << statusMsg.view() << '\n';
   return statusMsg.str();
 #else
   return "";
