@@ -214,10 +214,11 @@ size_t FSNodeZIP::read(ByteBuffer& buffer, size_t) const
 {
   switch(_error)
   {
-    case zip_error::NONE:         break;
-    case zip_error::NOT_A_FILE:   throw runtime_error("ZIP file contains errors/not found");
-    case zip_error::NOT_READABLE: throw runtime_error("ZIP file not readable");
-    case zip_error::NO_ROMS:      throw runtime_error("ZIP file doesn't contain any ROMs");
+    using enum zip_error;
+    case NONE:         break;
+    case NOT_A_FILE:   throw runtime_error("ZIP file contains errors/not found");
+    case NOT_READABLE: throw runtime_error("ZIP file not readable");
+    case NO_ROMS:      throw runtime_error("ZIP file doesn't contain any ROMs");
     default: throw runtime_error("FSNodeZIP::read default case hit");
   }
 

@@ -615,7 +615,7 @@ void VideoAudioDialog::addAudioTab()
 
   // Resampling quality
   items.clear();
-  VarList::push_back(items, "Low", static_cast<int>(AudioSettings::ResamplingQuality::nearestNeightbour));
+  VarList::push_back(items, "Low", static_cast<int>(AudioSettings::ResamplingQuality::nearestNeighbour));
   VarList::push_back(items, "High", static_cast<int>(AudioSettings::ResamplingQuality::lanczos_2));
   VarList::push_back(items, "Ultra", static_cast<int>(AudioSettings::ResamplingQuality::lanczos_3));
   myResamplingPopup = new PopUpWidget(myTab, _font, xpos, ypos,

@@ -88,7 +88,7 @@ bool StellaLIBRETRO::create(bool logging)
   settings.setValue(AudioSettings::SETTING_FRAGMENT_SIZE, 128);
   settings.setValue(AudioSettings::SETTING_BUFFER_SIZE, 8);
   settings.setValue(AudioSettings::SETTING_HEADROOM, 0);
-  settings.setValue(AudioSettings::SETTING_RESAMPLING_QUALITY, static_cast<int>(AudioSettings::ResamplingQuality::nearestNeightbour));
+  settings.setValue(AudioSettings::SETTING_RESAMPLING_QUALITY, static_cast<int>(AudioSettings::ResamplingQuality::nearestNeighbour));
   settings.setValue(AudioSettings::SETTING_VOLUME, 100);
   settings.setValue(AudioSettings::SETTING_STEREO, audio_mode);
 

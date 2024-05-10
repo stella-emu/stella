@@ -280,19 +280,20 @@ EventMode PhysicalKeyboardHandler::getMode(const Controller::Type type)
 {
   switch(type)
   {
-    case Controller::Type::Keyboard:
-    case Controller::Type::KidVid:
+    using enum Controller::Type;
+    case Keyboard:
+    case KidVid:
       return EventMode::kKeyboardMode;
 
-    case Controller::Type::Paddles:
-    case Controller::Type::PaddlesIAxDr:
-    case Controller::Type::PaddlesIAxis:
+    case Paddles:
+    case PaddlesIAxDr:
+    case PaddlesIAxis:
       return EventMode::kPaddlesMode;
 
-    case Controller::Type::CompuMate:
+    case CompuMate:
       return EventMode::kCompuMateMode;
 
-    case Controller::Type::Driving:
+    case Driving:
       return EventMode::kDrivingMode;
 
     default:
