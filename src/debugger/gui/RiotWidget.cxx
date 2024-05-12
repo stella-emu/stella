@@ -559,37 +559,24 @@ RiotWidget::addControlWidget(GuiObject* boss, const GUI::Font& font,
 {
   switch(controller.type())
   {
-    case Controller::Type::AmigaMouse:
-      return new AmigaMouseWidget(boss, font, x, y, controller);
-    case Controller::Type::AtariMouse:
-      return new AtariMouseWidget(boss, font, x, y, controller);
-    case Controller::Type::AtariVox:
-      return new AtariVoxWidget(boss, font, x, y, controller);
-    case Controller::Type::BoosterGrip:
-      return new BoosterWidget(boss, font, x, y, controller);
-    case Controller::Type::Driving:
-      return new DrivingWidget(boss, font, x, y, controller);
-    case Controller::Type::Genesis:
-      return new GenesisWidget(boss, font, x, y, controller);
-    case Controller::Type::Joy2BPlus:
-      return new Joy2BPlusWidget(boss, font, x, y, controller);
-    case Controller::Type::Joystick:
-      return new JoystickWidget(boss, font, x, y, controller);
-    case Controller::Type::Keyboard:
-      return new KeyboardWidget(boss, font, x, y, controller);
-//    case Controller::Type::KidVid:      // TODO - implement this
-//    case Controller::Type::MindLink:    // TODO - implement this
-//    case Controller::Type::Lightgun:    // TODO - implement this
-    case Controller::Type::QuadTari:
-      return new QuadTariWidget(boss, font, x, y, controller);
-    case Controller::Type::Paddles:
-      return new PaddleWidget(boss, font, x, y, controller);
-    case Controller::Type::SaveKey:
-      return new SaveKeyWidget(boss, font, x, y, controller);
-    case Controller::Type::TrakBall:
-      return new TrakBallWidget(boss, font, x, y, controller);
-    default:
-      return new NullControlWidget(boss, font, x, y, controller);
+    using enum Controller::Type;
+    case AmigaMouse:  return new AmigaMouseWidget(boss, font, x, y, controller);
+    case AtariMouse:  return new AtariMouseWidget(boss, font, x, y, controller);
+    case AtariVox:    return new AtariVoxWidget(boss, font, x, y, controller);
+    case BoosterGrip: return new BoosterWidget(boss, font, x, y, controller);
+    case Driving:     return new DrivingWidget(boss, font, x, y, controller);
+    case Genesis:     return new GenesisWidget(boss, font, x, y, controller);
+    case Joy2BPlus:   return new Joy2BPlusWidget(boss, font, x, y, controller);
+    case Joystick:    return new JoystickWidget(boss, font, x, y, controller);
+    case Keyboard:    return new KeyboardWidget(boss, font, x, y, controller);
+//    case KidVid:      // TODO - implement this
+//    case MindLink:    // TODO - implement this
+//    case Lightgun:    // TODO - implement this
+    case QuadTari:    return new QuadTariWidget(boss, font, x, y, controller);
+    case Paddles:     return new PaddleWidget(boss, font, x, y, controller);
+    case SaveKey:     return new SaveKeyWidget(boss, font, x, y, controller);
+    case TrakBall:    return new TrakBallWidget(boss, font, x, y, controller);
+    default:          return new NullControlWidget(boss, font, x, y, controller);
   }
 }
 

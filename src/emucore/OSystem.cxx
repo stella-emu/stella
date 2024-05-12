@@ -914,10 +914,11 @@ double OSystem::dispatchEmulation(EmulationWorker& emulationWorker)
 
   // Handle the dispatch result
   switch (dispatchResult.getStatus()) {
-    case DispatchResult::Status::ok:
+    using enum DispatchResult::Status;
+    case ok:
       break;
 
-    case DispatchResult::Status::debugger:
+    case debugger:
       #ifdef DEBUGGER_SUPPORT
        myDebugger->start(
           dispatchResult.getMessage(),
@@ -929,7 +930,7 @@ double OSystem::dispatchEmulation(EmulationWorker& emulationWorker)
 
       break;
 
-    case DispatchResult::Status::fatal:
+    case fatal:
       #ifdef DEBUGGER_SUPPORT
         myDebugger->startWithFatalError(dispatchResult.getMessage());
       #else

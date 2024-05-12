@@ -42,20 +42,12 @@ namespace {
   Thumbulator::ConfigureFor thumulatorConfiguration(CartridgeCDF::CDFSubtype subtype)
   {
     switch (subtype) {
-      case CartridgeCDF::CDFSubtype::CDF0:
-        return Thumbulator::ConfigureFor::CDF;
-
-      case CartridgeCDF::CDFSubtype::CDF1:
-        return Thumbulator::ConfigureFor::CDF1;
-
-      case CartridgeCDF::CDFSubtype::CDFJ:
-        return Thumbulator::ConfigureFor::CDFJ;
-
-      case CartridgeCDF::CDFSubtype::CDFJplus:
-        return Thumbulator::ConfigureFor::CDFJplus;
-
-      default:
-        throw runtime_error("unreachable");
+      using enum CartridgeCDF::CDFSubtype;
+      case CDF0:      return Thumbulator::ConfigureFor::CDF;
+      case CDF1:      return Thumbulator::ConfigureFor::CDF1;
+      case CDFJ:      return Thumbulator::ConfigureFor::CDFJ;
+      case CDFJplus:  return Thumbulator::ConfigureFor::CDFJplus;
+      default:        throw runtime_error("unreachable");
     }
   }
 } // namespace
@@ -886,14 +878,14 @@ uInt32 CartridgeCDF::romSize() const
 
 #ifdef DEBUGGER_SUPPORT
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-  CartDebugWidget* CartridgeCDF::debugWidget(GuiObject* boss, const GUI::Font& lfont,
-                               const GUI::Font& nfont, int x, int y, int w, int h)
+  CartDebugWidget* CartridgeCDF::debugWidget(GuiObject* boss,
+      const GUI::Font& lfont, const GUI::Font& nfont, int x, int y, int w, int h)
   {
     return new CartridgeCDFWidget(boss, lfont, nfont, x, y, w, h, *this);
   }
 
-  CartDebugWidget* CartridgeCDF::infoWidget(GuiObject* boss, const GUI::Font& lfont,
-                                             const GUI::Font& nfont, int x, int y, int w, int h)
+  CartDebugWidget* CartridgeCDF::infoWidget(GuiObject* boss,
+      const GUI::Font& lfont, const GUI::Font& nfont, int x, int y, int w, int h)
   {
     return new CartridgeCDFInfoWidget(boss, lfont, nfont, x, y, w, h, *this);
   }
