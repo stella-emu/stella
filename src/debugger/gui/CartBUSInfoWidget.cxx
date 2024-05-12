@@ -65,18 +65,11 @@ string CartridgeBUSInfoWidget::describeBUSVersion(CartridgeBUS::BUSSubtype subty
 {
   switch(subtype)
   {
-    case CartridgeBUS::BUSSubtype::BUS0:
-      return "BUS (v0)";
-
-    case CartridgeBUS::BUSSubtype::BUS1:
-      return "BUS (v1)";
-
-    case CartridgeBUS::BUSSubtype::BUS2:
-      return "BUS (v2)";
-
-    case CartridgeBUS::BUSSubtype::BUS3:
-      return "BUS (v3)";
-    default:
-      throw runtime_error("unreachable");
+    using enum CartridgeBUS::BUSSubtype;
+    case BUS0:  return "BUS (v0)";
+    case BUS1:  return "BUS (v1)";
+    case BUS2:  return "BUS (v2)";
+    case BUS3:  return "BUS (v3)";
+    default:    throw runtime_error("unreachable");
   }
 }

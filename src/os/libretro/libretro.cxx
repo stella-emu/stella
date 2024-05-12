@@ -80,13 +80,14 @@ static void update_input()
   GET_BITMASK(pad)
   switch(input_type[0])
   {
-    case Controller::Type::Driving:
+    using enum Controller::Type;
+    case Driving:
       MASK_EVENT(Event::LeftDrivingCCW, pad, RETRO_DEVICE_ID_JOYPAD_LEFT);
       MASK_EVENT(Event::LeftDrivingCW, pad, RETRO_DEVICE_ID_JOYPAD_RIGHT);
       MASK_EVENT(Event::LeftDrivingFire, pad, RETRO_DEVICE_ID_JOYPAD_B);
       break;
 
-    case Controller::Type::Paddles:
+    case Paddles:
       MASK_EVENT(Event::LeftPaddleAIncrease, pad, RETRO_DEVICE_ID_JOYPAD_LEFT);
       MASK_EVENT(Event::LeftPaddleADecrease, pad, RETRO_DEVICE_ID_JOYPAD_RIGHT);
       MASK_EVENT(Event::LeftPaddleAFire, pad, RETRO_DEVICE_ID_JOYPAD_B);
@@ -100,7 +101,7 @@ static void update_input()
       EVENT(Event::LeftPaddleBAnalog, input_state_cb(pad, RETRO_DEVICE_ANALOG, RETRO_DEVICE_INDEX_ANALOG_RIGHT, RETRO_DEVICE_ID_ANALOG_X));
       break;
 
-    case Controller::Type::Lightgun:
+    case Lightgun:
     {
       // scale from -0x8000..0x7fff to image rect
       const Common::Rect& rect =  stella.getImageRect();
@@ -114,14 +115,14 @@ static void update_input()
       break;
     }
 
-    case Controller::Type::Joy2BPlus:
-    case Controller::Type::BoosterGrip:
+    case Joy2BPlus:
+    case BoosterGrip:
       MASK_EVENT(Event::LeftJoystickFire9, pad, RETRO_DEVICE_ID_JOYPAD_Y);
       [[fallthrough]];
-    case Controller::Type::Genesis:
+    case Genesis:
       MASK_EVENT(Event::LeftJoystickFire5, pad, RETRO_DEVICE_ID_JOYPAD_A);
       [[fallthrough]];
-    case Controller::Type::Joystick:
+    case Joystick:
     default:
       MASK_EVENT(Event::LeftJoystickLeft, pad, RETRO_DEVICE_ID_JOYPAD_LEFT);
       MASK_EVENT(Event::LeftJoystickRight, pad, RETRO_DEVICE_ID_JOYPAD_RIGHT);
@@ -135,13 +136,14 @@ static void update_input()
 
   switch(input_type[1])
   {
-    case Controller::Type::Driving:
+    using enum Controller::Type;
+    case Driving:
       MASK_EVENT(Event::RightDrivingCCW, pad, RETRO_DEVICE_ID_JOYPAD_LEFT);
       MASK_EVENT(Event::RightDrivingCW, pad, RETRO_DEVICE_ID_JOYPAD_RIGHT);
       MASK_EVENT(Event::RightDrivingFire, pad, RETRO_DEVICE_ID_JOYPAD_B);
       break;
 
-    case Controller::Type::Paddles:
+    case Paddles:
       MASK_EVENT(Event::RightPaddleAIncrease, pad, RETRO_DEVICE_ID_JOYPAD_LEFT);
       MASK_EVENT(Event::RightPaddleADecrease, pad, RETRO_DEVICE_ID_JOYPAD_RIGHT);
       MASK_EVENT(Event::RightPaddleAFire, pad, RETRO_DEVICE_ID_JOYPAD_B);
@@ -155,14 +157,14 @@ static void update_input()
       EVENT(Event::RightPaddleBAnalog, input_state_cb(pad, RETRO_DEVICE_ANALOG, RETRO_DEVICE_INDEX_ANALOG_RIGHT, RETRO_DEVICE_ID_ANALOG_X));
       break;
 
-    case Controller::Type::Joy2BPlus:
-    case Controller::Type::BoosterGrip:
+    case Joy2BPlus:
+    case BoosterGrip:
       MASK_EVENT(Event::RightJoystickFire9, pad, RETRO_DEVICE_ID_JOYPAD_Y);
       [[fallthrough]];
-    case Controller::Type::Genesis:
+    case Genesis:
       MASK_EVENT(Event::RightJoystickFire5, pad, RETRO_DEVICE_ID_JOYPAD_A);
       [[fallthrough]];
-    case Controller::Type::Joystick:
+    case Joystick:
     default:
       MASK_EVENT(Event::RightJoystickLeft, pad, RETRO_DEVICE_ID_JOYPAD_LEFT);
       MASK_EVENT(Event::RightJoystickRight, pad, RETRO_DEVICE_ID_JOYPAD_RIGHT);

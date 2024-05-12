@@ -517,20 +517,12 @@ string CartridgeCDFWidget::describeCDFVersion(CartridgeCDF::CDFSubtype subtype)
 {
   switch(subtype)
   {
-    case CartridgeCDF::CDFSubtype::CDF0:
-      return "CDF (v0)";
-
-    case CartridgeCDF::CDFSubtype::CDF1:
-      return "CDF (v1)";
-
-    case CartridgeCDF::CDFSubtype::CDFJ:
-      return "CDFJ";
-
-    case CartridgeCDF::CDFSubtype::CDFJplus:
-      return "CDFJ+";
-
-    default:
-      throw runtime_error("unreachable");
+    using enum CartridgeCDF::CDFSubtype;
+    case CDF0:      return "CDF (v0)";
+    case CDF1:      return "CDF (v1)";
+    case CDFJ:      return "CDFJ";
+    case CDFJplus:  return "CDFJ+";
+    default:        throw runtime_error("unreachable");
   }
 }
 

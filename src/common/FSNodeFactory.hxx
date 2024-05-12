@@ -65,6 +65,7 @@ class FSNodeFactory
         default:
           return nullptr;
       }
+      return nullptr;
     }
 
   private:

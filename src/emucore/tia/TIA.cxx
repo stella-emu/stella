@@ -429,11 +429,12 @@ void TIA::bindToControllers()
       updateEmulation();
 
       switch (pin) {
-        case Controller::AnalogPin::Five:
+        using enum Controller::AnalogPin;
+        case Five:
           updateAnalogReadout(1);
           break;
 
-        case Controller::AnalogPin::Nine:
+        case Nine:
           updateAnalogReadout(0);
           break;
 
@@ -448,11 +449,12 @@ void TIA::bindToControllers()
       updateEmulation();
 
       switch (pin) {
-        case Controller::AnalogPin::Five:
+        using enum Controller::AnalogPin;
+        case Five:
           updateAnalogReadout(3);
           break;
 
-        case Controller::AnalogPin::Nine:
+        case Nine:
           updateAnalogReadout(2);
           break;
 

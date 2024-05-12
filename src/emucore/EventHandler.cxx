@@ -2262,47 +2262,21 @@ StringList EventHandler::getActionList(Event::Group group)
 {
   switch(group)
   {
-    case Event::Group::Menu:
-      return getActionList(EventMode::kMenuMode);
-
-    case Event::Group::Emulation:
-      return getActionList(EventMode::kEmulationMode);
-
-    case Event::Group::Misc:
-      return getActionList(MiscEvents);
-
-    case Event::Group::AudioVideo:
-      return getActionList(AudioVideoEvents);
-
-    case Event::Group::States:
-      return getActionList(StateEvents);
-
-    case Event::Group::Console:
-      return getActionList(ConsoleEvents);
-
-    case Event::Group::Joystick:
-      return getActionList(JoystickEvents);
-
-    case Event::Group::Paddles:
-      return getActionList(PaddlesEvents);
-
-    case Event::Group::Keyboard:
-      return getActionList(KeyboardEvents);
-
-    case Event::Group::Driving:
-      return getActionList(DrivingEvents);
-
-    case Event::Group::Devices:
-      return getActionList(DevicesEvents);
-
-    case Event::Group::Debug:
-      return getActionList(DebugEvents);
-
-    case Event::Group::Combo:
-      return getActionList(ComboEvents);
-
-    default:
-      return {}; // ToDo
+    using enum Event::Group;
+    case Menu:        return getActionList(EventMode::kMenuMode);
+    case Emulation:   return getActionList(EventMode::kEmulationMode);
+    case Misc:        return getActionList(MiscEvents);
+    case AudioVideo:  return getActionList(AudioVideoEvents);
+    case States:      return getActionList(StateEvents);
+    case Console:     return getActionList(ConsoleEvents);
+    case Joystick:    return getActionList(JoystickEvents);
+    case Paddles:     return getActionList(PaddlesEvents);
+    case Keyboard:    return getActionList(KeyboardEvents);
+    case Driving:     return getActionList(DrivingEvents);
+    case Devices:     return getActionList(DevicesEvents);
+    case Debug:       return getActionList(DebugEvents);
+    case Combo:       return getActionList(ComboEvents);
+    default:          return {}; // ToDo
   }
 }
 
@@ -2438,47 +2412,21 @@ int EventHandler::getActionListIndex(int idx, Event::Group group)
 {
   switch(group)
   {
-    case Event::Group::Menu:
-      return idx;
-
-    case Event::Group::Emulation:
-      return idx;
-
-    case Event::Group::Misc:
-      return getEmulActionListIndex(idx, MiscEvents);
-
-    case Event::Group::AudioVideo:
-      return getEmulActionListIndex(idx, AudioVideoEvents);
-
-    case Event::Group::States:
-      return getEmulActionListIndex(idx, StateEvents);
-
-    case Event::Group::Console:
-      return getEmulActionListIndex(idx, ConsoleEvents);
-
-    case Event::Group::Joystick:
-      return getEmulActionListIndex(idx, JoystickEvents);
-
-    case Event::Group::Paddles:
-      return getEmulActionListIndex(idx, PaddlesEvents);
-
-    case Event::Group::Keyboard:
-      return getEmulActionListIndex(idx, KeyboardEvents);
-
-    case Event::Group::Driving:
-      return getEmulActionListIndex(idx, DrivingEvents);
-
-    case Event::Group::Devices:
-      return getEmulActionListIndex(idx, DevicesEvents);
-
-    case Event::Group::Debug:
-      return getEmulActionListIndex(idx, DebugEvents);
-
-    case Event::Group::Combo:
-      return getEmulActionListIndex(idx, ComboEvents);
-
-    default:
-      return -1;
+    using enum Event::Group;
+    case Menu:        return idx;
+    case Emulation:   return idx;
+    case Misc:        return getEmulActionListIndex(idx, MiscEvents);
+    case AudioVideo:  return getEmulActionListIndex(idx, AudioVideoEvents);
+    case States:      return getEmulActionListIndex(idx, StateEvents);
+    case Console:     return getEmulActionListIndex(idx, ConsoleEvents);
+    case Joystick:    return getEmulActionListIndex(idx, JoystickEvents);
+    case Paddles:     return getEmulActionListIndex(idx, PaddlesEvents);
+    case Keyboard:    return getEmulActionListIndex(idx, KeyboardEvents);
+    case Driving:     return getEmulActionListIndex(idx, DrivingEvents);
+    case Devices:     return getEmulActionListIndex(idx, DevicesEvents);
+    case Debug:       return getEmulActionListIndex(idx, DebugEvents);
+    case Combo:       return getEmulActionListIndex(idx, ComboEvents);
+    default:          return -1;
   }
 }
 

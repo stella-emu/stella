@@ -54,24 +54,25 @@ void QuadTariWidget::addController(GuiObject* boss, int x, int y,
   x += second ? _fontWidth * 10 : 0;
   switch(controller.type())
   {
-    case Controller::Type::Joystick:
+    using enum Controller::Type;
+    case Joystick:
       x += _fontWidth * 2;
       widget = new JoystickWidget(boss, _font, x, y, controller, true);
       break;
 
-    case Controller::Type::Driving:
+    case Driving:
       widget = new DrivingWidget(boss, _font, x, y, controller, true);
       break;
 
-    case Controller::Type::Paddles:
+    case Paddles:
       widget = new PaddleWidget(boss, _font, x, y, controller, true, second);
       break;
 
-    case Controller::Type::AtariVox:
+    case AtariVox:
       widget = new AtariVoxWidget(boss, _font, x, y, controller, true);
       break;
 
-    case Controller::Type::SaveKey:
+    case SaveKey:
       widget = new SaveKeyWidget(boss, _font, x, y, controller, true);
       break;
 

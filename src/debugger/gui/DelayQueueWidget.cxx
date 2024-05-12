@@ -63,15 +63,16 @@ void DelayQueueWidget::loadConfig() {
     const int delay = delayQueueIterator->delay();
 
     switch (address) {
-      case TIA::DummyRegisters::shuffleP0:
+      using enum TIA::DummyRegisters;
+      case shuffleP0:
         ss << delay << " clk, shuffle GRP0";
         break;
 
-      case TIA::DummyRegisters::shuffleP1:
+      case shuffleP1:
         ss << delay << " clk, shuffle GRP1";
         break;
 
-      case TIA::DummyRegisters::shuffleBL:
+      case shuffleBL:
         ss << delay << " clk, shuffle ENABL";
         break;
 
