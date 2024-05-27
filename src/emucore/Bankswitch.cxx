@@ -129,6 +129,7 @@ Bankswitch::BSList = {{
   { "UASW"    , "UASW (8K UA swapped banks)"  },
   { "WD"      , "WD (Pink Panther)"           },
   { "WDSW"    , "WDSW (Pink Panther, bad)"    },
+  { "WF8"     , "WF8 (Coleco, white label)"   },
   { "X07"     , "X07 (64K AtariAge)"          },
 #if defined(CUSTOM_ARM)
   { "CUSTOM"  ,   "CUSTOM (ARM)"              }
@@ -193,6 +194,7 @@ Bankswitch::Sizes = {{
   {    8_KB,   8_KB }, // _UASW
   {    8_KB,   8_KB }, // _WD
   {    8_KB,   8_KB+5 }, // _WDSW
+  {    8_KB,   8_KB }, // _WF8
   {   64_KB,  64_KB }, // _X07
 #if defined(CUSTOM_ARM)
   { Bankswitch::any_KB, Bankswitch::any_KB }
@@ -286,6 +288,7 @@ Bankswitch::ExtensionMap Bankswitch::ourExtensions = {
   { "UASW"  , Bankswitch::Type::_UASW   },
   { "WD"    , Bankswitch::Type::_WD     },
   { "WDSW"  , Bankswitch::Type::_WDSW   },
+  { "WF8"   , Bankswitch::Type::_WF8    },
   { "X07"   , Bankswitch::Type::_X07    }
 };
 
@@ -346,5 +349,6 @@ Bankswitch::NameToTypeMap Bankswitch::ourNameToTypes = {
   { "UASW"    , Bankswitch::Type::_UASW   },
   { "WD"      , Bankswitch::Type::_WD     },
   { "WDSW"    , Bankswitch::Type::_WDSW   },
+  { "WF8"     , Bankswitch::Type::_WF8    },
   { "X07"     , Bankswitch::Type::_X07    }
 };
