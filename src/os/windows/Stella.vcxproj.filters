@@ -1224,6 +1224,12 @@
     <ClCompile Include="SerialPortWINDOWS.cxx">
       <Filter>Source Files\os</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\emucore\CartWF8.cxx">
+      <Filter>Source Files\emucore</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\debugger\gui\CartWF8Widget.cxx">
+      <Filter>Source Files\debugger\gui</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\emucore\AtariVox.hxx">
@@ -2482,6 +2488,15 @@
     </ClInclude>
     <ClInclude Include="Windows.hxx">
       <Filter>Header Files\os</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\common\md5type.hxx">
+      <Filter>Header Files\common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\emucore\CartWF8.hxx">
+      <Filter>Header Files\emucore</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\debugger\gui\CartWF8Widget.hxx">
+      <Filter>Header Files\debugger\gui</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
