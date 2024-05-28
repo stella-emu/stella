@@ -90,6 +90,8 @@ Bankswitch::Type CartDetector::autodetectType(const ByteBuffer& image, size_t si
       type = Bankswitch::Type::_FC;
     else if(isProbably03E0(image, size))
       type = Bankswitch::Type::_03E0;
+    else if (isProbablyWF8(image, size))
+      type = Bankswitch::Type::_WF8;
     else
       type = Bankswitch::Type::_F8;
   }
@@ -824,6 +826,20 @@ bool CartDetector::isProbablyWD(const ByteBuffer& image, size_t size)
     { 0xA5, 0x39, 0x4C }  // LDA $39, JMP
   };
   return searchForBytes(image, size, signature[0], 3);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool CartDetector::isProbablyWF8(const ByteBuffer& image, size_t size)
+{
+  // WF8 cart bankswitching for certain Coleco white lable ROMs, switches to 
+  // - bank 0 by writing D3 = 0  
+  // - bank 1 by writing D3 = 1
+  // into 0xfff8
+  static constexpr uInt8 sig[] = { 
+    0xa9, 0x04, 0x8d, 0xf8, 0xff 
+  };
+
+  return searchForBytes(image, size, sig, sizeof(sig));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
