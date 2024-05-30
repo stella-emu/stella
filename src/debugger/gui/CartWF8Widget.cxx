@@ -35,7 +35,7 @@ string CartridgeWF8Widget::description()
   size_t size = 0;
   const ByteBuffer& image = myCart.getImage(size);
 
-  info << "Coleco (white label) 8K cartridge, two 4K banks\n"
+  info << "Coleco (some white carts) 8K cartridge, two 4K banks\n"
     << "Banks selected by D3 of value written to " << hotspotStr() << "\n"
     << "Startup bank = undetermined\n";
 

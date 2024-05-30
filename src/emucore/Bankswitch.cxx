@@ -129,7 +129,7 @@ Bankswitch::BSList = {{
   { "UASW"    , "UASW (8K UA swapped banks)"  },
   { "WD"      , "WD (Pink Panther)"           },
   { "WDSW"    , "WDSW (Pink Panther, bad)"    },
-  { "WF8"     , "WF8 (Coleco, white label)"   },
+  { "WF8"     , "WF8 (Coleco, white carts)"   },
   { "X07"     , "X07 (64K AtariAge)"          },
 #if defined(CUSTOM_ARM)
   { "CUSTOM"  ,   "CUSTOM (ARM)"              }
