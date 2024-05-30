@@ -62,6 +62,7 @@
 #include "CartTVBoy.hxx"
 #include "CartUA.hxx"
 #include "CartWD.hxx"
+#include "CartWF8.hxx"
 #include "CartX07.hxx"
 #include "MD5.hxx"
 #include "Settings.hxx"
@@ -279,6 +280,7 @@ CartCreator::createFromImage(const ByteBuffer& image, size_t size,
     case _TVBOY:return make_unique<CartridgeTVBoy>(image, size, md5, settings);
     case _WD:   [[fallthrough]];
     case _WDSW: return make_unique<CartridgeWD>(image, size, md5, settings);
+    case _WF8: return make_unique<CartridgeWF8>(image, size, md5, settings);
     case _X07:  return make_unique<CartridgeX07>(image, size, md5, settings);
     default:    return nullptr;  // The remaining types have already been handled
   }

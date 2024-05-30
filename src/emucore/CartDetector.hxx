@@ -242,11 +242,6 @@ class CartDetector
     static bool isProbablyWD(const ByteBuffer& image, size_t size);
 
     /**
-      Returns true if the image is probably a Coleco (white label) WF8 bankswitching cartridge
-    */
-    static bool isProbablyWF8(const ByteBuffer& image, size_t size);
-
-    /**
       Returns true if the image is probably an X07 bankswitching cartridge
     */
     static bool isProbablyX07(const ByteBuffer& image, size_t size);
