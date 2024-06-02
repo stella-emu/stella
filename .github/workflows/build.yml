@@ -38,6 +38,8 @@ jobs:
         run: |
           gcc --version
           clang++ --version
+          sw_vers
+          arch
           ./configure && make -j3 all
 
   windows:
