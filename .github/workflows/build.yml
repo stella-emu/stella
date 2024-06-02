@@ -33,11 +33,11 @@ jobs:
           curl https://www.libsdl.org/release/SDL2-2.26.0.tar.gz | tar xzf -
           mkdir SDL2-2.26.0/build
           cd SDL2-2.26.0/build
-          gcc --version
-          clang++ --version
           ../configure && make -j3 && sudo make install
       - name: Build Stella
         run: |
+          gcc --version
+          clang++ --version
           ./configure && make -j3 all
 
   windows:
