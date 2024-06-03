@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 51;
+	objectVersion = 54;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -1773,8 +1773,6 @@
 		2D20F9E308C603C500A73076 /* gui */ = {
 			isa = PBXGroup;
 			children = (
-				E07DF4462C0A81ED00E1FB07 /* CartWF8Widget.cxx */,
-				E07DF4452C0A81ED00E1FB07 /* CartWF8Widget.hxx */,
 				DC9616221F817830008A2206 /* AmigaMouseWidget.cxx */,
 				DC9616231F817830008A2206 /* AmigaMouseWidget.hxx */,
 				DC9616241F817830008A2206 /* AtariMouseWidget.cxx */,
@@ -1883,6 +1881,8 @@
 				DCAAE5D21715887B0080BB82 /* CartUAWidget.hxx */,
 				DC6D39851A3CE65000171E71 /* CartWDWidget.cxx */,
 				DC6D39861A3CE65000171E71 /* CartWDWidget.hxx */,
+				E07DF4462C0A81ED00E1FB07 /* CartWF8Widget.cxx */,
+				E07DF4452C0A81ED00E1FB07 /* CartWF8Widget.hxx */,
 				DC676A3F1729A0B000E4E73D /* CartX07Widget.cxx */,
 				DC676A401729A0B000E4E73D /* CartX07Widget.hxx */,
 				DCCF47DB14B60DEE00814FAB /* ControllerWidget.hxx */,
@@ -2064,8 +2064,6 @@
 		2D6050CC0898776500C6DE89 /* emucore */ = {
 			isa = PBXGroup;
 			children = (
-				E07DF4422C0A819D00E1FB07 /* CartWF8.cxx */,
-				E07DF4412C0A819D00E1FB07 /* CartWF8.hxx */,
 				DC1B2EBE1E50036100F62837 /* AmigaMouse.hxx */,
 				DC1B2EC01E50036100F62837 /* AtariMouse.hxx */,
 				DC487FB40DA5350900E12499 /* AtariVox.cxx */,
@@ -2174,6 +2172,8 @@
 				2DDBEB7108457B7D00812C11 /* CartUA.hxx */,
 				DCDA03AE1A2009BA00711920 /* CartWD.cxx */,
 				DCDA03AF1A2009BB00711920 /* CartWD.hxx */,
+				E07DF4422C0A819D00E1FB07 /* CartWF8.cxx */,
+				E07DF4412C0A819D00E1FB07 /* CartWF8.hxx */,
 				DCA23AE70D75B22500F77B33 /* CartX07.cxx */,
 				DCA23AE80D75B22500F77B33 /* CartX07.hxx */,
 				DC8C1BA914B25DE7006440EE /* CompuMate.cxx */,
@@ -3217,7 +3217,8 @@
 		29B97313FDCFA39411CA2CEA /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 1420;
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 1540;
 				ORGANIZATIONNAME = "Stella-emu";
 			};
 			buildConfigurationList = 2D91752109BA903B0026E9FF /* Build configuration list for PBXProject "stella" */;
@@ -3843,6 +3844,7 @@
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					.,
 					"$(HOME)/Library/Frameworks",
@@ -3919,6 +3921,7 @@
 				COPY_PHASE_STRIP = NO;
 				DEAD_CODE_STRIPPING = YES;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					.,
 					"$(HOME)/Library/Frameworks",
