@@ -759,6 +759,10 @@
 		E06508BF2272447200B341AC /* KeyValueRepository.hxx in Headers */ = {isa = PBXBuildFile; fileRef = E06508B92272447200B341AC /* KeyValueRepository.hxx */; };
 		E06508C02272447200B341AC /* KeyValueRepositoryConfigfile.hxx in Headers */ = {isa = PBXBuildFile; fileRef = E06508BA2272447200B341AC /* KeyValueRepositoryConfigfile.hxx */; };
 		E06508C12272447200B341AC /* KeyValueRepositoryConfigfile.cxx in Sources */ = {isa = PBXBuildFile; fileRef = E06508BB2272447200B341AC /* KeyValueRepositoryConfigfile.cxx */; };
+		E07DF4432C0A819D00E1FB07 /* CartWF8.hxx in Headers */ = {isa = PBXBuildFile; fileRef = E07DF4412C0A819D00E1FB07 /* CartWF8.hxx */; };
+		E07DF4442C0A819D00E1FB07 /* CartWF8.cxx in Sources */ = {isa = PBXBuildFile; fileRef = E07DF4422C0A819D00E1FB07 /* CartWF8.cxx */; };
+		E07DF4472C0A81ED00E1FB07 /* CartWF8Widget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = E07DF4452C0A81ED00E1FB07 /* CartWF8Widget.hxx */; };
+		E07DF4482C0A81ED00E1FB07 /* CartWF8Widget.cxx in Sources */ = {isa = PBXBuildFile; fileRef = E07DF4462C0A81ED00E1FB07 /* CartWF8Widget.cxx */; };
 		E0893AF2211B9842008B170D /* HighPass.cxx in Sources */ = {isa = PBXBuildFile; fileRef = E0893AF0211B9841008B170D /* HighPass.cxx */; };
 		E0893AF3211B9842008B170D /* HighPass.hxx in Headers */ = {isa = PBXBuildFile; fileRef = E0893AF1211B9841008B170D /* HighPass.hxx */; };
 		E08B1C18231FF97B00EEF922 /* BreakpointMap.cxx in Sources */ = {isa = PBXBuildFile; fileRef = E08B1C16231FF97B00EEF922 /* BreakpointMap.cxx */; };
@@ -1613,6 +1617,10 @@
 		E06508BA2272447200B341AC /* KeyValueRepositoryConfigfile.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = KeyValueRepositoryConfigfile.hxx; sourceTree = "<group>"; };
 		E06508BB2272447200B341AC /* KeyValueRepositoryConfigfile.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = KeyValueRepositoryConfigfile.cxx; sourceTree = "<group>"; };
 		E07C2326226393BD00B78631 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		E07DF4412C0A819D00E1FB07 /* CartWF8.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = CartWF8.hxx; sourceTree = "<group>"; };
+		E07DF4422C0A819D00E1FB07 /* CartWF8.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CartWF8.cxx; sourceTree = "<group>"; };
+		E07DF4452C0A81ED00E1FB07 /* CartWF8Widget.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = CartWF8Widget.hxx; sourceTree = "<group>"; };
+		E07DF4462C0A81ED00E1FB07 /* CartWF8Widget.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CartWF8Widget.cxx; sourceTree = "<group>"; };
 		E0893AF0211B9841008B170D /* HighPass.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = HighPass.cxx; path = audio/HighPass.cxx; sourceTree = "<group>"; };
 		E0893AF1211B9841008B170D /* HighPass.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = HighPass.hxx; path = audio/HighPass.hxx; sourceTree = "<group>"; };
 		E08B1C16231FF97B00EEF922 /* BreakpointMap.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = BreakpointMap.cxx; sourceTree = "<group>"; };
@@ -1765,6 +1773,8 @@
 		2D20F9E308C603C500A73076 /* gui */ = {
 			isa = PBXGroup;
 			children = (
+				E07DF4462C0A81ED00E1FB07 /* CartWF8Widget.cxx */,
+				E07DF4452C0A81ED00E1FB07 /* CartWF8Widget.hxx */,
 				DC9616221F817830008A2206 /* AmigaMouseWidget.cxx */,
 				DC9616231F817830008A2206 /* AmigaMouseWidget.hxx */,
 				DC9616241F817830008A2206 /* AtariMouseWidget.cxx */,
@@ -2054,6 +2064,8 @@
 		2D6050CC0898776500C6DE89 /* emucore */ = {
 			isa = PBXGroup;
 			children = (
+				E07DF4422C0A819D00E1FB07 /* CartWF8.cxx */,
+				E07DF4412C0A819D00E1FB07 /* CartWF8.hxx */,
 				DC1B2EBE1E50036100F62837 /* AmigaMouse.hxx */,
 				DC1B2EC01E50036100F62837 /* AtariMouse.hxx */,
 				DC487FB40DA5350900E12499 /* AtariVox.cxx */,
@@ -2748,6 +2760,7 @@
 				2D9173CB09BA90380026E9FF /* SDLMain.h in Headers */,
 				E09F4141201E9050004A3391 /* Audio.hxx in Headers */,
 				2D9173CC09BA90380026E9FF /* Booster.hxx in Headers */,
+				E07DF4472C0A81ED00E1FB07 /* CartWF8Widget.hxx in Headers */,
 				2D9173CD09BA90380026E9FF /* Cart.hxx in Headers */,
 				DCDE648023E6638E00EE3EFF /* MessageDialog.hxx in Headers */,
 				2D9173CE09BA90380026E9FF /* Cart2K.hxx in Headers */,
@@ -3063,6 +3076,7 @@
 				DCCF4B0514BA27EB00814FAB /* KeyboardWidget.hxx in Headers */,
 				E050876F25A1337400E4B62A /* OSystemStandalone.hxx in Headers */,
 				DC5C768F14C26F7C0031EBC7 /* StellaKeys.hxx in Headers */,
+				E07DF4432C0A819D00E1FB07 /* CartWF8.hxx in Headers */,
 				DC36D2C914CAFAB0007DC821 /* CartFA2.hxx in Headers */,
 				DC56FCDF14CCCC4900A31CC3 /* MouseControl.hxx in Headers */,
 				E08B1C19231FF97B00EEF922 /* BreakpointMap.hxx in Headers */,
@@ -3309,6 +3323,7 @@
 				DC6DC91E205DB879004A5FC3 /* PhysicalJoystick.cxx in Sources */,
 				E08FCD5323A037EB0051F59B /* QisBlitter.cxx in Sources */,
 				DCCE0355225104BF008C246F /* StellaSettingsDialog.cxx in Sources */,
+				E07DF4442C0A819D00E1FB07 /* CartWF8.cxx in Sources */,
 				DC8685C128AAAF7E00DF21AA /* RomImageWidget.cxx in Sources */,
 				2D91748A09BA90380026E9FF /* Control.cxx in Sources */,
 				2D91748C09BA90380026E9FF /* Driving.cxx in Sources */,
@@ -3608,6 +3623,7 @@
 				DC79F81217A88D9E00288B91 /* Base.cxx in Sources */,
 				DCAACAF6188D631500A4D282 /* Cart4KSC.cxx in Sources */,
 				DC9616341F817830008A2206 /* TrakBallWidget.cxx in Sources */,
+				E07DF4482C0A81ED00E1FB07 /* CartWF8Widget.cxx in Sources */,
 				DCAACAF8188D631500A4D282 /* CartBF.cxx in Sources */,
 				DCAACAFA188D631500A4D282 /* CartBFSC.cxx in Sources */,
 				DCAACAFC188D631500A4D282 /* CartDF.cxx in Sources */,
