@@ -510,7 +510,6 @@ void Thumbulator::write32(uInt32 addr, uInt32 data)
             mamcr = static_cast<MamModeType>(data);
           break;
       #endif
-
         default:
           break;
       }
@@ -760,6 +759,11 @@ uInt32 Thumbulator::read32(uInt32 addr)
         case 0xE000E018:
           data = systick_count;
           return data;
+#ifdef THUMB_CYCLE_COUNT
+        case 0xE01FC100: // APBDIV 
+          _countCycles = true; // enabe cycle counting
+          return 1; // random value 
+#endif
 
 #ifndef UNSAFE_OPTIMIZATIONS
         case 0xE000E01C:
