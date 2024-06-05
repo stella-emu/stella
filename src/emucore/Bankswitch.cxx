@@ -121,6 +121,7 @@ Bankswitch::BSList = {{
   { "FC"      , "FC (32K Amiga)"              },
   { "FE"      , "FE (8K Activision)"          },
   { "GL"      , "GL (GameLine Master Module)" },
+  { "JANE"    , "JANE (16K Tarzan prototype)" },
   { "MDM"     , "MDM (Menu Driven Megacart)"  },
   { "MVC"     , "MVC (Movie Cart)"            },
   { "SB"      , "SB (128-256K SUPERbank)"     },
@@ -186,6 +187,7 @@ Bankswitch::Sizes = {{
   {   32_KB,  32_KB }, // _FC
   {    8_KB,   8_KB }, // _FE
   {    4_KB,   6_KB }, // _GL
+  {   16_KB,  16_KB }, // _JANE
   {    8_KB, Bankswitch::any_KB }, // _MDM
   { 1024_KB, Bankswitch::any_KB }, // _MVC
   {  128_KB, 256_KB }, // _SB
@@ -279,6 +281,8 @@ Bankswitch::ExtensionMap Bankswitch::ourExtensions = {
   { "FC"    , Bankswitch::Type::_FC     },
   { "FE"    , Bankswitch::Type::_FE     },
   { "GL"    , Bankswitch::Type::_GL     },
+  { "JAN"   , Bankswitch::Type::_JANE   },
+  { "JANE"  , Bankswitch::Type::_JANE   },
   { "MDM"   , Bankswitch::Type::_MDM    },
   { "MVC"   , Bankswitch::Type::_MVC    },
   { "SB"    , Bankswitch::Type::_SB     },
@@ -341,6 +345,7 @@ Bankswitch::NameToTypeMap Bankswitch::ourNameToTypes = {
   { "FC"      , Bankswitch::Type::_FC     },
   { "FE"      , Bankswitch::Type::_FE     },
   { "GL"      , Bankswitch::Type::_GL     },
+  { "JANE"    , Bankswitch::Type::_JANE   },
   { "MDM"     , Bankswitch::Type::_MDM    },
   { "MVC"     , Bankswitch::Type::_MVC    },
   { "SB"      , Bankswitch::Type::_SB     },

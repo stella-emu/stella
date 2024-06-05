@@ -50,6 +50,10 @@
 
   * Added 03E0 bankswitching for Brazilian Parker Bros ROMs.
 
+  * Added WF8 bankswitching used by some certain Coleco white carts  
+
+  * Added JANE bankswitching used by Coleco's Tarzan prototype
+
   * Added BUS bankswitching support for some older demos.
 
   * Fixed broken 7800 pause key support.

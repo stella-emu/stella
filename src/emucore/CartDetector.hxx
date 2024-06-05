@@ -207,6 +207,11 @@ class CartDetector
     static bool isProbablyFE(const ByteBuffer& image, size_t size);
 
     /**
+      Returns true if the image is probably a JANE cartridge (Tarzan)
+    */
+    static bool isProbablyJANE(const ByteBuffer& image, size_t size);
+
+    /**
       Returns true if the image is probably a GameLine cartridge
     */
     static bool isProbablyGL(const ByteBuffer& image, size_t size);

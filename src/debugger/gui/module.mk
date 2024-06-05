@@ -6,9 +6,9 @@ MODULE_OBJS := \
         src/debugger/gui/AtariVoxWidget.o \
         src/debugger/gui/AudioWidget.o \
         src/debugger/gui/BoosterWidget.o \
-	src/debugger/gui/Cart03E0Widget.o \
+        src/debugger/gui/Cart03E0Widget.o \
         src/debugger/gui/Cart0840Widget.o \
-	src/debugger/gui/Cart0FA0Widget.o \
+        src/debugger/gui/Cart0FA0Widget.o \
         src/debugger/gui/Cart2KWidget.o \
         src/debugger/gui/Cart3EPlusWidget.o \
         src/debugger/gui/Cart3EWidget.o \
@@ -47,7 +47,8 @@ MODULE_OBJS := \
         src/debugger/gui/CartFAWidget.o \
         src/debugger/gui/CartFCWidget.o \
         src/debugger/gui/CartFEWidget.o \
-	src/debugger/gui/CartGLWidget.o \
+        src/debugger/gui/CartGLWidget.o \
+        src/debugger/gui/CartJANEWidget.o \
         src/debugger/gui/CartMDMWidget.o \
         src/debugger/gui/CartRamWidget.o \
         src/debugger/gui/CartSBWidget.o \
@@ -59,14 +60,14 @@ MODULE_OBJS := \
         src/debugger/gui/CartDebugWidget.o \
         src/debugger/gui/CpuWidget.o \
         src/debugger/gui/DataGridOpsWidget.o \
-	src/debugger/gui/DataGridRamWidget.o \
+        src/debugger/gui/DataGridRamWidget.o \
         src/debugger/gui/DataGridWidget.o \
         src/debugger/gui/DebuggerDialog.o \
         src/debugger/gui/DelayQueueWidget.o \
         src/debugger/gui/DrivingWidget.o \
         src/debugger/gui/FlashWidget.o \
         src/debugger/gui/GenesisWidget.o \
-	src/debugger/gui/Joy2BPlusWidget.o \
+        src/debugger/gui/Joy2BPlusWidget.o \
         src/debugger/gui/JoystickWidget.o \
         src/debugger/gui/KeyboardWidget.o \
         src/debugger/gui/PaddleWidget.o \
