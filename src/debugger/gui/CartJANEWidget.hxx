@@ -1,0 +1,50 @@
+//============================================================================
+//
+//   SSSS    tt          lll  lll
+//  SS  SS   tt           ll   ll
+//  SS     tttttt  eeee   ll   ll   aaaa
+//   SSSS    tt   ee  ee  ll   ll      aa
+//      SS   tt   eeeeee  ll   ll   aaaaa  --  "An Atari 2600 VCS Emulator"
+//  SS  SS   tt   ee      ll   ll  aa  aa
+//   SSSS     ttt  eeeee llll llll  aaaaa
+//
+// Copyright (c) 1995-2024 by Bradford W. Mott, Stephen Anthony
+// and the Stella Team
+//
+// See the file "License.txt" for information on usage and redistribution of
+// this file, and for a DISCLAIMER OF ALL WARRANTIES.
+//============================================================================
+
+#ifndef CARTRIDGEJANE_WIDGET_HXX
+#define CARTRIDGEJANE_WIDGET_HXX
+
+class CartridgeJANE;
+
+#include "CartEnhancedWidget.hxx"
+
+class CartridgeJANEWidget : public CartridgeEnhancedWidget
+{
+  public:
+    CartridgeJANEWidget(GuiObject* boss, const GUI::Font& lfont,
+                      const GUI::Font& nfont,
+                      int x, int y, int w, int h,
+                      CartridgeJANE& cart);
+    ~CartridgeJANEWidget() override = default;
+
+  private:
+    string manufacturer() override { return "Coleco"; }
+
+    string description() override;
+
+    string hotspotStr(int bank, int seg = 0, bool prefix = false) override;
+
+  private:
+    // Following constructors and assignment operators not supported
+    CartridgeJANEWidget() = delete;
+    CartridgeJANEWidget(const CartridgeJANEWidget&) = delete;
+    CartridgeJANEWidget(CartridgeJANEWidget&&) = delete;
+    CartridgeJANEWidget& operator=(const CartridgeJANEWidget&) = delete;
+    CartridgeJANEWidget& operator=(CartridgeJANEWidget&&) = delete;
+};
+
+#endif

@@ -56,6 +56,7 @@
 #include "CartFC.hxx"
 #include "CartFE.hxx"
 #include "CartGL.hxx"
+#include "CartJANE.hxx"
 #include "CartMDM.hxx"
 #include "CartMVC.hxx"
 #include "CartSB.hxx"
@@ -273,6 +274,7 @@ CartCreator::createFromImage(const ByteBuffer& image, size_t size,
     case _FC:   return make_unique<CartridgeFC>(image, size, md5, settings);
     case _FE:   return make_unique<CartridgeFE>(image, size, md5, settings, size);
     case _GL:   return make_unique<CartridgeGL>(image, size, md5, settings);
+    case _JANE: return make_unique<CartridgeJANE>(image, size, md5, settings);
     case _MDM:  return make_unique<CartridgeMDM>(image, size, md5, settings);
     case _UA:   return make_unique<CartridgeUA>(image, size, md5, settings);
     case _UASW: return make_unique<CartridgeUA>(image, size, md5, settings, true);

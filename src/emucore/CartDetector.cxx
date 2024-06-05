@@ -110,20 +110,22 @@ Bankswitch::Type CartDetector::autodetectType(const ByteBuffer& image, size_t si
   }
   else if(size == 16_KB)
   {
-    if(isProbablySC(image, size))
+    if (isProbablySC(image, size))
       type = Bankswitch::Type::_F6SC;
-    else if(isProbablyE7(image, size))
+    else if (isProbablyE7(image, size))
       type = Bankswitch::Type::_E7;
     else if (isProbablyFC(image, size))
       type = Bankswitch::Type::_FC;
-    else if(isProbably3EX(image, size))
+    else if (isProbably3EX(image, size))
       type = Bankswitch::Type::_3EX;
-    else if(isProbably3E(image, size))
+    else if (isProbably3E(image, size))
       type = Bankswitch::Type::_3E;
   /* no known 16K 3F ROMS
     else if(isProbably3F(image, size))
       type = Bankswitch::Type::_3F;
   */
+    else if (isProbablyJANE(image, size))
+      type = Bankswitch::Type::_JANE;
     else
       type = Bankswitch::Type::_F6;
   }
@@ -722,6 +724,14 @@ bool CartDetector::isProbablyFE(const ByteBuffer& image, size_t size)
       return true;
 
   return false;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool CartDetector::isProbablyJANE(const ByteBuffer& image, size_t size)
+{
+  static constexpr uInt8 signature[] = { 0xad, 0xf1, 0xff, 0x60 };  // LDA $0CB8
+
+  return searchForBytes(image, size, signature, sizeof(signature));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
