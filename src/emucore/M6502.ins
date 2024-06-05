@@ -2363,10 +2363,11 @@ break;
 //////////////////////////////////////////////////
 // LDA
 case 0xa9:
+SET_LAST_PEEK(myLastSrcAddressA, PC)
 {
   operand = peek(PC++, DISASM_CODE);
 }
-CLEAR_LAST_PEEK(myLastSrcAddressA)
+//CLEAR_LAST_PEEK(myLastSrcAddressA)
 {
   A = operand;
   notZ = A;
@@ -2511,10 +2512,11 @@ break;
 //////////////////////////////////////////////////
 // LDX
 case 0xa2:
+SET_LAST_PEEK(myLastSrcAddressX, PC)
 {
   operand = peek(PC++, DISASM_CODE);
 }
-CLEAR_LAST_PEEK(myLastSrcAddressX)
+//CLEAR_LAST_PEEK(myLastSrcAddressX)
 {
   X = operand;
   notZ = X;
@@ -2593,10 +2595,11 @@ break;
 //////////////////////////////////////////////////
 // LDY
 case 0xa0:
+SET_LAST_PEEK(myLastSrcAddressY, PC)
 {
   operand = peek(PC++, DISASM_CODE);
 }
-CLEAR_LAST_PEEK(myLastSrcAddressY)
+//CLEAR_LAST_PEEK(myLastSrcAddressY)
 {
   Y = operand;
   notZ = Y;

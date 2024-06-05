@@ -108,6 +108,7 @@ class DiStella
     bool checkBits(uInt16 address, uInt16 mask, uInt16 notMask, bool useDebugger = true) const;
     void outputGraphics();
     void outputColors();
+    string getColor(uInt8 byte);
     void outputBytes(Device::AccessType type);
 
     // Convenience methods to generate appropriate labels
