@@ -1619,8 +1619,9 @@ break;
 //////////////////////////////////////////////////
 // LDA
 case 0xa9:
+SET_LAST_PEEK(myLastSrcAddressA, PC)
 M6502_IMMEDIATE_READ
-CLEAR_LAST_PEEK(myLastSrcAddressA)
+//CLEAR_LAST_PEEK(myLastSrcAddressA)
 M6502_LDA
 break;
 
@@ -1671,8 +1672,9 @@ break;
 //////////////////////////////////////////////////
 // LDX
 case 0xa2:
+SET_LAST_PEEK(myLastSrcAddressX, PC)
 M6502_IMMEDIATE_READ
-CLEAR_LAST_PEEK(myLastSrcAddressX)
+//CLEAR_LAST_PEEK(myLastSrcAddressX)
 M6502_LDX
 break;
 
@@ -1705,8 +1707,9 @@ break;
 //////////////////////////////////////////////////
 // LDY
 case 0xa0:
+SET_LAST_PEEK(myLastSrcAddressY, PC)
 M6502_IMMEDIATE_READ
-CLEAR_LAST_PEEK(myLastSrcAddressY)
+//CLEAR_LAST_PEEK(myLastSrcAddressY)
 M6502_LDY
 break;
 

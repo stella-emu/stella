@@ -376,11 +376,16 @@ void DiStella::disasm(uInt32 distart, int pass)
 
         case AddressingMode::IMMEDIATE:
         {
-          d1 = Debugger::debugger().peek(myPC + myOffset);  ++myPC;
+          d1 = Debugger::debugger().peek(myPC + myOffset);
           if(pass == 3) {
-            nextLine << "     #$" << Base::HEX2 << static_cast<int>(d1) << " ";
+            if (checkBits(myPC, Device::COL | Device::PCOL | Device::BCOL, 
+                /*Device::CODE |*/ Device::GFX | Device::PGFX))
+              nextLine << "     #" << getColor(d1);
+            else
+              nextLine << "     #$" << Base::HEX2 << static_cast<int>(d1) << " ";
             nextLineBytes << Base::HEX2 << static_cast<int>(d1);
           }
+          ++myPC;
           break;
         }
 
@@ -1140,23 +1145,6 @@ void DiStella::outputGraphics()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DiStella::outputColors()
 {
-  const string NTSC_COLOR[16] = {
-    "BLACK", "YELLOW", "BROWN", "ORANGE",
-    "RED", "MAUVE", "VIOLET", "PURPLE",
-    "BLUE", "BLUE_CYAN", "CYAN", "CYAN_GREEN",
-    "GREEN", "GREEN_YELLOW", "GREEN_BEIGE", "BEIGE"
-  };
-  const string PAL_COLOR[16] = {
-    "BLACK0", "BLACK1", "YELLOW", "GREEN_YELLOW",
-    "ORANGE", "GREEN", "RED", "CYAN_GREEN",
-    "MAUVE", "CYAN", "VIOLET", "BLUE_CYAN",
-    "PURPLE", "BLUE", "BLACKE", "BLACKF"
-  };
-  const string SECAM_COLOR[8] = {
-    "BLACK", "BLUE", "RED", "PURPLE",
-    "GREEN", "CYAN", "YELLOW", "WHITE"
-  };
-
   const uInt8 byte = Debugger::debugger().peek(myPC + myOffset);
 
   // add extra spacing line when switching from non-colors to colors
@@ -1174,25 +1162,10 @@ void DiStella::outputColors()
     myDisasmBuf << Base::HEX4 << myPC + myOffset << "'     '";
 
   // output color
-  string color;
+  const string color = getColor(byte);
 
-  myDisasmBuf << ".byte ";
-  if(myDbg.myConsole.timing() == ConsoleTiming::ntsc)
-  {
-    color = NTSC_COLOR[byte >> 4];
-    myDisasmBuf << color << "|$" << Base::HEX1 << (byte & 0xf);
-  }
-  else if(myDbg.myConsole.timing() == ConsoleTiming::pal)
-  {
-    color = PAL_COLOR[byte >> 4];
-    myDisasmBuf << color << "|$" << Base::HEX1 << (byte & 0xf);
-  }
-  else
-  {
-    color = SECAM_COLOR[(byte >> 1) & 0x7];
-    myDisasmBuf << "$" << Base::HEX1 << (byte >> 4) << "|" << color;
-  }
-  myDisasmBuf << std::setw(static_cast<int>(16 - color.length())) << std::setfill(' ');
+  myDisasmBuf << ".byte " << color;
+  myDisasmBuf << std::setw(static_cast<int>(16 + 3 - color.length())) << std::setfill(' ');
 
   // output address
   myDisasmBuf << "; $" << Base::HEX4 << myPC + myOffset << " "
@@ -1203,6 +1176,47 @@ void DiStella::outputColors()
 
   addEntry(checkBit(myPC, Device::COL) ? Device::COL :
            checkBit(myPC, Device::PCOL) ? Device::PCOL : Device::BCOL);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+string DiStella::getColor(uInt8 byte)
+{
+  const string NTSC_COLOR[16] = {
+    "BLACK", "YELLOW", "BROWN", "ORANGE",
+    "RED", "MAUVE", "VIOLET", "PURPLE",
+    "BLUE", "BLUE_CYAN", "CYAN", "CYAN_GREEN",
+    "GREEN", "GREEN_YELLOW", "GREEN_BEIGE", "BEIGE"
+  };
+  const string PAL_COLOR[16] = {
+    "BLACK0", "BLACK1", "YELLOW", "GREEN_YELLOW",
+    "ORANGE", "GREEN", "RED", "CYAN_GREEN",
+    "MAUVE", "CYAN", "VIOLET", "BLUE_CYAN",
+    "PURPLE", "BLUE", "BLACKE", "BLACKF"
+  };
+  const string SECAM_COLOR[8] = {
+    "BLACK", "BLUE", "RED", "PURPLE",
+    "GREEN", "CYAN", "YELLOW", "WHITE"
+  };
+
+  string color;
+  ostringstream buf;
+
+  if (myDbg.myConsole.timing() == ConsoleTiming::ntsc)
+  {
+    color = NTSC_COLOR[byte >> 4];
+    buf << color << "|$" << Base::HEX1 << (byte & 0xf);
+  }
+  else if (myDbg.myConsole.timing() == ConsoleTiming::pal)
+  {
+    color = PAL_COLOR[byte >> 4];
+    buf << color << "|$" << Base::HEX1 << (byte & 0xf);
+  }
+  else
+  {
+    color = SECAM_COLOR[(byte >> 1) & 0x7];
+    buf << "$" << Base::HEX1 << (byte >> 4) << "|" << color;
+  }
+  return buf.str();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
