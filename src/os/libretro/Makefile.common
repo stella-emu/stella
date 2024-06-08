@@ -84,12 +84,14 @@ SOURCES_CXX := \
 	$(CORE_DIR)/emucore/CartFC.cxx \
 	$(CORE_DIR)/emucore/CartFE.cxx \
 	$(CORE_DIR)/emucore/CartGL.cxx \
+	$(CORE_DIR)/emucore/CartJANE.cxx \
 	$(CORE_DIR)/emucore/CartMDM.cxx \
 	$(CORE_DIR)/emucore/CartMVC.cxx \
 	$(CORE_DIR)/emucore/CartSB.cxx \
 	$(CORE_DIR)/emucore/CartTVBoy.cxx \
 	$(CORE_DIR)/emucore/CartUA.cxx \
 	$(CORE_DIR)/emucore/CartWD.cxx \
+	$(CORE_DIR)/emucore/CartWF8.cxx \
 	$(CORE_DIR)/emucore/CartX07.cxx \
 	$(CORE_DIR)/emucore/CompuMate.cxx \
 	$(CORE_DIR)/emucore/Console.cxx \
