@@ -286,6 +286,12 @@ uInt16 CartridgeE7::getBank(uInt16 address) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt16 CartridgeE7::getSegmentBank(uInt16 segment) const
+{
+  return getBank(0x800 * segment);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CartridgeE7::patch(uInt16 address, uInt8 value)
 {
   address = address & 0x0FFF;
