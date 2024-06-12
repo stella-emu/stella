@@ -112,6 +112,13 @@ class CartridgeE7 : public Cartridge
     uInt16 getBank(uInt16 address = 0) const override;
 
     /**
+      Get the current bank for a bank segment.
+
+      @param segment  The segment to get the bank for
+    */
+    uInt16 getSegmentBank(uInt16 segment = 0) const override;
+
+    /**
       Query the number of banks supported by the cartridge.
     */
     uInt16 romBankCount() const override;
