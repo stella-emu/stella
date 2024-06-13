@@ -55,6 +55,7 @@ using uInt64 = uint64_t;
 #include <cctype>
 #include <cstdio>
 #include <ctime>
+#include <numbers>
 #include <utility>
 #include <vector>
 
