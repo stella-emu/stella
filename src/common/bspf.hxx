@@ -55,13 +55,9 @@ using uInt64 = uint64_t;
 #include <cctype>
 #include <cstdio>
 #include <ctime>
+#include <numbers>
 #include <utility>
 #include <vector>
-
-// It seems not all C++20 implementations support this yet
-#if __has_include(<numbers>)
-  #include <numbers>
-#endif
 
 using std::cin;
 using std::cout;
@@ -121,21 +117,10 @@ static const string EmptyString("");
 
 namespace BSPF
 {
-#if __has_include(<numbers>)
   static constexpr float PI_f = std::numbers::pi_v<float>;
   static constexpr double PI_d = std::numbers::pi_v<double>;
   static constexpr double ln10 = std::numbers::ln10;
   static constexpr double ln2 = std::numbers::ln2;
-#else
-  [[deprecated("C++20 implementation missing <numbers> support.")]]
-  static constexpr float PI_f = 3.141592653589793238462643383279502884F;
-  [[deprecated("C++20 implementation missing <numbers> support.")]]
-  static constexpr double PI_d = 3.141592653589793238462643383279502884;
-  [[deprecated("C++20 implementation missing <numbers> support.")]]
-  static constexpr double ln10 = 2.302585092994045684017991454684364208;
-  [[deprecated("C++20 implementation missing <numbers> support.")]]
-  static constexpr double ln2 = 0.693147180559945309417232121458176568;
-#endif
 
   // CPU architecture type
   // This isn't complete yet, but takes care of all the major platforms
