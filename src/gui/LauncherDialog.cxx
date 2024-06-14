@@ -427,8 +427,7 @@ const string& LauncherDialog::selectedRomMD5()
     myMD5List.clear();
 
   // Lookup MD5, and if not present, cache it
-  const auto iter = myMD5List.find(currentNode().getPath());
-  if(iter == myMD5List.end())
+  if(!myMD5List.contains(currentNode().getPath()))
     myMD5List[currentNode().getPath()] = OSystem::getROMMD5(currentNode());
 
   return myMD5List[currentNode().getPath()];

@@ -800,8 +800,7 @@ bool Debugger::isBuiltinFunction(string_view name)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool Debugger::delFunction(string_view name)
 {
-  const auto& iter = myFunctions.find(name);
-  if(iter == myFunctions.end())
+  if(!myFunctions.contains(name))
     return false;
 
   // We never want to delete built-in functions
@@ -810,8 +809,7 @@ bool Debugger::delFunction(string_view name)
 
   myFunctions.erase(string{name});
 
-  const auto& def_iter = myFunctionDefs.find(name);
-  if(def_iter == myFunctionDefs.end())
+  if(!myFunctionDefs.contains(name))
     return false;
 
   myFunctionDefs.erase(string{name});
