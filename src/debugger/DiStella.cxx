@@ -967,7 +967,7 @@ DiStella::AddressType DiStella::mark(uInt32 address, uInt16 mask, bool directive
       myDirectives[address - myOffset] = mask;
     return AddressType::ROM;
   }
-  else if(address > 0x1000 && myOffset != 0)  // Exclude zero-page accesses
+  else if(address > 0x1000 && myOffset != 0 && mySettings.rFlag)  // Exclude zero-page accesses
   {
     /* 2K & 4K case */
     myLabels[address & myAppData.end] = myLabels[address & myAppData.end] | mask;
