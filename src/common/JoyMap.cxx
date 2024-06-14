@@ -98,9 +98,7 @@ Event::Type JoyMap::get(const EventMode mode, const int button,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool JoyMap::check(const JoyMapping& mapping) const
 {
-  const auto find = myMap.find(mapping);
-
-  return (find != myMap.end());
+  return myMap.contains(mapping);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

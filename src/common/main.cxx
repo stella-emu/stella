@@ -140,12 +140,11 @@ void parseCommandLine(int ac, const char* const av[],
 void checkForCustomBaseDir(Settings::Options& options)
 {
   // If both of these are activated, the 'base in app dir' takes precedence
-  auto it = options.find("baseinappdir");
-  if(it != options.end())
+  if(options.contains("baseinappdir"))
     OSystem::overrideBaseDirWithApp();
   else
   {
-    it = options.find("basedir");
+    auto it = options.find("basedir");
     if(it != options.end())
       OSystem::overrideBaseDir(it->second.toString());
   }

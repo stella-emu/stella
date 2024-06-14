@@ -446,33 +446,33 @@ EventMode PhysicalKeyboardHandler::getEventMode(const Event::Type event,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool PhysicalKeyboardHandler::isJoystickEvent(const Event::Type event)
 {
-  return LeftJoystickEvents.find(event) != LeftJoystickEvents.end()
-    || QTJoystick3Events.find(event) != QTJoystick3Events.end()
-    || RightJoystickEvents.find(event) != RightJoystickEvents.end()
-    || QTJoystick4Events.find(event) != QTJoystick4Events.end();
+  return LeftJoystickEvents.contains(event)
+    || QTJoystick3Events.contains(event)
+    || RightJoystickEvents.contains(event)
+    || QTJoystick4Events.contains(event);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool PhysicalKeyboardHandler::isPaddleEvent(const Event::Type event)
 {
-  return LeftPaddlesEvents.find(event) != LeftPaddlesEvents.end()
-    || QTPaddles3Events.find(event) != QTPaddles3Events.end()
-    || RightPaddlesEvents.find(event) != RightPaddlesEvents.end()
-    || QTPaddles4Events.find(event) != QTPaddles4Events.end();
+  return LeftPaddlesEvents.contains(event)
+    || QTPaddles3Events.contains(event)
+    || RightPaddlesEvents.contains(event)
+    || QTPaddles4Events.contains(event);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool PhysicalKeyboardHandler::isKeyboardEvent(const Event::Type event)
 {
-  return LeftKeyboardEvents.find(event) != LeftKeyboardEvents.end()
-    || RightKeyboardEvents.find(event) != RightKeyboardEvents.end();
+  return LeftKeyboardEvents.contains(event)
+    || RightKeyboardEvents.contains(event);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool PhysicalKeyboardHandler::isDrivingEvent(const Event::Type event)
 {
-  return LeftDrivingEvents.find(event) != LeftDrivingEvents.end()
-    || RightDrivingEvents.find(event) != RightDrivingEvents.end();
+  return LeftDrivingEvents.contains(event)
+    || RightDrivingEvents.contains(event);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -169,7 +169,7 @@ bool FavoritesManager::toggleUser(string_view path)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool FavoritesManager::existsUser(string_view path) const
 {
-  return myUserSet.find(string{path}) != myUserSet.end();  // TODO: fixed in C++20
+  return myUserSet.contains(string{path});
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

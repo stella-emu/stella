@@ -122,9 +122,7 @@ Event::Type KeyMap::get(const EventMode mode, const int key, const int mod) cons
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool KeyMap::check(const Mapping& mapping) const
 {
-  const auto find = myMap.find(convertMod(mapping));
-
-  return (find != myMap.end());
+  return myMap.contains(convertMod(mapping));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

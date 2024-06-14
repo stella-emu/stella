@@ -191,8 +191,7 @@ void StellaDb::importOldPropset(const FSNode& node)
 
     if (props.empty())
       break;
-    if ((props.find("Cart.MD5") == props.end()) ||
-         props["Cart.MD5"].toString().empty())
+    if (!props.contains("Cart.MD5") || props["Cart.MD5"].toString().empty())
       continue;
 
     myPropertyRepository->get(props["Cart.MD5"].toString())->save(props);
