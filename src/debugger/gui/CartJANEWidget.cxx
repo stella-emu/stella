@@ -46,7 +46,9 @@ string CartridgeJANEWidget::hotspotStr(int bank, int, bool prefix)
 
   info << (prefix ? "(hotspot " : "(")
     << "$" << Common::Base::HEX1 << (hotspot + (bank < 2 ? bank : bank + 6))
-    << (prefix ? ")" : ")");
+    << ")";
+    // << (prefix ? ")" : ")");  TODO: misc-redundant-expression
+    //                                 same logic for true and false
 
   return info.str();
 }
