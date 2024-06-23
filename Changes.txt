@@ -46,13 +46,15 @@
 
   * Accelerated emulation up to ~15% (ARM).
 
-  * Added limited GameLine Master Module bankswitching support.
+  * Added limited GameLine Master Module bankswitching support.  
 
   * Added 03E0 bankswitching for Brazilian Parker Bros ROMs.
 
   * Added WF8 bankswitching used by some certain Coleco white carts  
 
   * Added JANE bankswitching used by Coleco's Tarzan prototype
+
+  * Added ELF mapper for Mattress Monkeys.
 
   * Added BUS bankswitching support for some older demos.
 
