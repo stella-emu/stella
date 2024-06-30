@@ -52,8 +52,39 @@ class CartridgeELF: public Cartridge {
     string name() const override { return "CartridgeELF"; };
 
   private:
+    struct ScheduledRead {
+      uInt16 address;
+      uInt8 value;
+    };
+
+    class ReadStream {
+      public:
+        ReadStream();
+
+        void Reset();
+
+        void Push(uInt8 value);
+        void Push(uInt8 value, uInt8 address);
+
+        bool HasPendingRead() const;
+        uInt16 GetNextReadAddress() const;
+        uInt8 Pop(uInt16 readAddress);
+
+      private:
+        unique_ptr<ScheduledRead[]> myStream;
+        size_t myStreamNext{0};
+        size_t myStreamSize{0};
+
+        uInt16 myNextReadAddress{0};
+    };
+
+  private:
     ByteBuffer myImage;
     size_t myImageSize{0};
+
+    System* mySystem{nullptr};
+
+    ReadStream myReadStream;
 };
 
 #endif // CARTRIDGE_ELF
