@@ -789,6 +789,7 @@
     <ClCompile Include="..\..\emucore\CartSB.cxx" />
     <ClCompile Include="..\..\emucore\CartUA.cxx" />
     <ClCompile Include="..\..\emucore\CartX07.cxx" />
+    <ClCompile Include="..\..\emucore\CartELF.cxx" />
     <ClCompile Include="..\..\emucore\Console.cxx" />
     <ClCompile Include="..\..\emucore\Control.cxx" />
     <ClCompile Include="..\..\emucore\Driving.cxx" />
@@ -1786,6 +1787,7 @@
     <ClInclude Include="..\..\emucore\CartSB.hxx" />
     <ClInclude Include="..\..\emucore\CartUA.hxx" />
     <ClInclude Include="..\..\emucore\CartX07.hxx" />
+    <ClInclude Include="..\..\emucore\CartELF.hxx" />
     <ClInclude Include="..\..\emucore\Console.hxx" />
     <ClInclude Include="..\..\emucore\Control.hxx" />
     <ClInclude Include="..\..\emucore\DefProps.hxx" />

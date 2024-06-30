@@ -231,6 +231,9 @@
     <ClCompile Include="..\..\emucore\CartX07.cxx">
       <Filter>Source Files\emucore</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\emucore\CartELF.cxx">
+      <Filter>Source Files\emucore</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\emucore\Console.cxx">
       <Filter>Source Files\emucore</Filter>
     </ClCompile>
@@ -1263,6 +1266,9 @@
       <Filter>Header Files\emucore</Filter>
     </ClInclude>
     <ClInclude Include="..\..\emucore\Cart4K.hxx">
+      <Filter>Header Files\emucore</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\emucore\CartELF.hxx">
       <Filter>Header Files\emucore</Filter>
     </ClInclude>
     <ClInclude Include="..\..\emucore\CartAR.hxx">
