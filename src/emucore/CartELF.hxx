@@ -38,6 +38,7 @@ class CartridgeELF: public Cartridge {
     bool load(Serializer& in) override;
 
     uInt8 peek(uInt16 address) override;
+    uInt8 peekOob(uInt16 address) override;
 
     bool poke(uInt16 address, uInt8 value) override;
 
@@ -52,30 +53,41 @@ class CartridgeELF: public Cartridge {
     string name() const override { return "CartridgeELF"; };
 
   private:
+    void vcsWrite5(uInt8 zpAddress, uInt8 value);
+    void vcsCopyOverblankToRiotRam();
+    void vcsStartOverblank();
+
+  private:
     struct ScheduledRead {
       uInt16 address;
       uInt8 value;
+      bool yield;
     };
 
     class ReadStream {
       public:
         ReadStream();
 
-        void Reset();
+        void reset();
 
-        void Push(uInt8 value);
-        void Push(uInt8 value, uInt8 address);
+        void setNextPushAddress(uInt16 address);
+        void push(uInt8 value);
+        void push(uInt8 value, uInt16 address);
 
-        bool HasPendingRead() const;
-        uInt16 GetNextReadAddress() const;
-        uInt8 Pop(uInt16 readAddress);
+        void yield();
+        bool isYield() const;
+
+        bool hasPendingRead() const;
+        uInt8 pop(uInt16 readAddress);
 
       private:
         unique_ptr<ScheduledRead[]> myStream;
         size_t myStreamNext{0};
         size_t myStreamSize{0};
 
-        uInt16 myNextReadAddress{0};
+        uInt16 myNextPushAddress{0};
+
+        bool myIsYield{true};
     };
 
   private:
@@ -84,6 +96,7 @@ class CartridgeELF: public Cartridge {
 
     System* mySystem{nullptr};
 
+    unique_ptr<uint8_t[]> myLastPeekResult;
     ReadStream myReadStream;
 };
 

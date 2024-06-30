@@ -98,7 +98,7 @@ void Debugger::initialize()
   delete myDialog;  myDialog = nullptr;
   myDialog = new DebuggerDialog(myOSystem, *this, 0, 0, mySize.w, mySize.h);
 
-  myCartDebug->setDebugWidget(&(myDialog->cartDebug()));
+  myCartDebug->setDebugWidget(myDialog->cartDebug());
 
   saveOldState();
 }
@@ -249,7 +249,7 @@ string Debugger::setRAM(IntArray& args)
   const size_t count = args.size();
   int address = args[0];
   for(size_t i = 1; i < count; ++i)
-    mySystem.poke(address++, args[i]);
+    mySystem.pokeOob(address++, args[i]);
 
   buf << "changed " << (count-1) << " location";
   if(count != 2)
@@ -327,7 +327,7 @@ int Debugger::step(bool save)
 int Debugger::trace()
 {
   // 32 is the 6502 JSR instruction:
-  if(mySystem.peek(myCpuDebug->pc()) == 32)
+  if(mySystem.peekOob(myCpuDebug->pc()) == 32)
   {
     saveOldState();
 
@@ -521,20 +521,20 @@ void Debugger::log(string_view triggerMsg)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 Debugger::peek(uInt16 addr, Device::AccessFlags flags)
 {
-  return mySystem.peek(addr, flags);
+  return mySystem.peekOob(addr, flags);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt16 Debugger::dpeek(uInt16 addr, Device::AccessFlags flags)
 {
-  return static_cast<uInt16>(mySystem.peek(addr, flags) |
-                            (mySystem.peek(addr+1, flags) << 8));
+  return static_cast<uInt16>(mySystem.peekOob(addr, flags) |
+                            (mySystem.peekOob(addr+1, flags) << 8));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Debugger::poke(uInt16 addr, uInt8 value, Device::AccessFlags flags)
 {
-  mySystem.poke(addr, value, flags);
+  mySystem.pokeOob(addr, value, flags);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -546,14 +546,14 @@ M6502& Debugger::m6502() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 int Debugger::peekAsInt(int addr, Device::AccessFlags flags)
 {
-  return mySystem.peek(static_cast<uInt16>(addr), flags);
+  return mySystem.peekOob(static_cast<uInt16>(addr), flags);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 int Debugger::dpeekAsInt(int addr, Device::AccessFlags flags)
 {
-  return mySystem.peek(static_cast<uInt16>(addr), flags) |
-      (mySystem.peek(static_cast<uInt16>(addr+1), flags) << 8);
+  return mySystem.peekOob(static_cast<uInt16>(addr), flags) |
+      (mySystem.peekOob(static_cast<uInt16>(addr+1), flags) << 8);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

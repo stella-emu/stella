@@ -374,7 +374,7 @@ bool CartridgeEnhanced::patch(uInt16 address, uInt8 value)
       // However, the patch command is special in that ignores such
       // cart restrictions
       myRAM[address & myRamMask] = value;
-      mySystem->poke(address, value); // keep RIOT RAM in sync
+      mySystem->pokeOob(address, value); // keep RIOT RAM in sync
     }
     else
       myImage[romAddressSegmentOffset(address) + (address & myBankMask)] = value;
