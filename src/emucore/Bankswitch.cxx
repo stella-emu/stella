@@ -199,7 +199,7 @@ Bankswitch::Sizes = {{
   {    8_KB,   8_KB+5 }, // _WDSW
   {    8_KB,   8_KB }, // _WF8
   {   64_KB,  64_KB }, // _X07
-  {   4_KB,  Bankswitch::any_KB }, // ELF
+  {   Bankswitch::any_KB,  Bankswitch::any_KB }, // ELF
 #if defined(CUSTOM_ARM)
   { Bankswitch::any_KB, Bankswitch::any_KB }
 #endif

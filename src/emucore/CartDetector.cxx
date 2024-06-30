@@ -27,7 +27,7 @@ Bankswitch::Type CartDetector::autodetectType(const ByteBuffer& image, size_t si
   // Guess type based on size
   Bankswitch::Type type = Bankswitch::Type::_AUTO;
 
-  if (size >= 4_KB && isProbablyELF(image, size)) {
+  if (size >= 128 && isProbablyELF(image, size)) {
     type =Bankswitch::Type::_ELF;
   }
   else if ((size % 8448) == 0 || size == 6_KB)
@@ -865,7 +865,7 @@ bool CartDetector::isProbablyELF(const ByteBuffer& image, size_t size) {
 
   // Must start with ELF magic
   static constexpr uInt8 signature[] = { 0x7f, 'E', 'L', 'F' };
-  if (!searchForBytes(image, sizeof(signature), signature, sizeof(signature), 1)) return false;
+  if (!searchForBytes(image, 2 * sizeof(signature), signature, sizeof(signature), 1)) return false;
 
   // We require little endian
   if (image[0x05] != 1) return false;
