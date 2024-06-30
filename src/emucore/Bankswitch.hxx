@@ -44,8 +44,8 @@ class Bankswitch
       _CM,    _CTY,   _CV,     _DF,    _DFSC, _DPC,  _DPCP, _E0,
       _E7,    _EF,    _EFSC,   _F0,    _F4,   _F4SC, _F6,   _F6SC,
       _F8,    _F8SC,  _FA,     _FA2,   _FC,   _FE,   _GL,   _JANE,
-      _MDM,   _MVC,   _SB,     _TVBOY,  _UA,  _UASW, _WD,   _WDSW, 
-      _WF8,   _X07,
+      _MDM,   _MVC,   _SB,     _TVBOY,  _UA,  _UASW, _WD,   _WDSW,
+      _WF8,   _X07,   _ELF,
     #ifdef CUSTOM_ARM
       _CUSTOM,
     #endif

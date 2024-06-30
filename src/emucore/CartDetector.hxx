@@ -251,6 +251,11 @@ class CartDetector
     */
     static bool isProbablyX07(const ByteBuffer& image, size_t size);
 
+    /**
+      Returns true if the image is probably an ELF cartridge
+    */
+    static bool isProbablyELF(const ByteBuffer& image, size_t size);
+
   private:
     // Following constructors and assignment operators not supported
     CartDetector() = delete;
