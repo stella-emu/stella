@@ -88,7 +88,7 @@ void CartridgeELF::reset()
   myTransactionQueue.reset();
 	myTransactionQueue.injectROM(0x00, 0x1ffc);
 	myTransactionQueue.injectROM(0x10);
-  myTransactionQueue.setNextPushAddress(0x1000);
+  myTransactionQueue.setNextInjectAddress(0x1000);
 
   vcsCopyOverblankToRiotRam();
   vcsStartOverblank();
@@ -237,7 +237,7 @@ void CartridgeELF::BusTransactionQueue::reset()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgeELF::BusTransactionQueue::setNextPushAddress(uInt16 address)
+void CartridgeELF::BusTransactionQueue::setNextInjectAddress(uInt16 address)
 {
   myNextInjectAddress = address;
 }

@@ -83,12 +83,11 @@ class CartridgeELF: public Cartridge {
 
         void reset();
 
-        void setNextPushAddress(uInt16 address);
+        void setNextInjectAddress(uInt16 address);
         void injectROM(uInt8 value);
         void injectROM(uInt8 value, uInt16 address);
 
         void yield(uInt16 address);
-
 
         bool hasPendingTransaction() const;
         BusTransaction* getNextTransaction(uInt16 address);
