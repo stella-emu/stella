@@ -445,6 +445,8 @@ class System : public Serializable
     // Some parts of the codebase need to act differently in such a case
     bool mySystemInAutodetect{false};
 
+    bool myCartridgeDoesBusStuffing{false};
+
   private:
     // Following constructors and assignment operators not supported
     System() = delete;
