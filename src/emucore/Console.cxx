@@ -1277,9 +1277,13 @@ void Console::changeAutoFireRate(int direction)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 float Console::currentFrameRate() const
 {
+  uInt32 scalinesLastFrame = myTIA->frameBufferScanlinesLastFrame();
+
   return
-    (myConsoleTiming == ConsoleTiming::ntsc ? 262.F * 60.F : 312.F * 50.F) /
-     myTIA->frameBufferScanlinesLastFrame();
+    scalinesLastFrame != 0 ?
+      (myConsoleTiming == ConsoleTiming::ntsc ? 262.F * 60.F : 312.F * 50.F)
+        / myTIA->frameBufferScanlinesLastFrame() :
+      0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
