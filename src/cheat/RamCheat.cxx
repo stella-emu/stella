@@ -55,5 +55,5 @@ bool RamCheat::disable()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void RamCheat::evaluate()
 {
-  myOSystem.console().system().poke(address, value);
+  myOSystem.console().system().pokeOob(address, value);
 }

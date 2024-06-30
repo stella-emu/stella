@@ -121,25 +121,25 @@ void RiotDebug::saveOldState()
 uInt8 RiotDebug::swcha(int newVal)
 {
   if(newVal > -1)
-    mySystem.poke(0x280, newVal);
+    mySystem.pokeOob(0x280, newVal);
 
-  return mySystem.peek(0x280);
+  return mySystem.peekOob(0x280);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 RiotDebug::swchb(int newVal)
 {
   if(newVal > -1)
-    mySystem.poke(0x282, newVal);
+    mySystem.pokeOob(0x282, newVal);
 
-  return mySystem.peek(0x282);
+  return mySystem.peekOob(0x282);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 RiotDebug::swacnt(int newVal)
 {
   if(newVal > -1)
-    mySystem.poke(0x281, newVal);
+    mySystem.pokeOob(0x281, newVal);
 
   return mySystem.m6532().myDDRA;
 }
@@ -148,7 +148,7 @@ uInt8 RiotDebug::swacnt(int newVal)
 uInt8 RiotDebug::swbcnt(int newVal)
 {
   if(newVal > -1)
-    mySystem.poke(0x283, newVal);
+    mySystem.pokeOob(0x283, newVal);
 
   return mySystem.m6532().myDDRB;
 }
@@ -159,7 +159,7 @@ uInt8 RiotDebug::inpt(int x)
   static constexpr std::array<TIARegister, 6> _inpt = {
     INPT0, INPT1, INPT2, INPT3, INPT4, INPT5
   };
-  return mySystem.peek(_inpt[x]);
+  return mySystem.peekOob(_inpt[x]);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -177,7 +177,7 @@ bool RiotDebug::vblank(int bit)
 uInt8 RiotDebug::tim1T(int newVal)
 {
   if(newVal > -1)
-    mySystem.poke(0x294, newVal);
+    mySystem.pokeOob(0x294, newVal);
 
   return mySystem.m6532().myOutTimer[0];
 }
@@ -186,7 +186,7 @@ uInt8 RiotDebug::tim1T(int newVal)
 uInt8 RiotDebug::tim8T(int newVal)
 {
   if(newVal > -1)
-    mySystem.poke(0x295, newVal);
+    mySystem.pokeOob(0x295, newVal);
 
   return mySystem.m6532().myOutTimer[1];
 }
@@ -195,7 +195,7 @@ uInt8 RiotDebug::tim8T(int newVal)
 uInt8 RiotDebug::tim64T(int newVal)
 {
   if(newVal > -1)
-    mySystem.poke(0x296, newVal);
+    mySystem.pokeOob(0x296, newVal);
 
   return mySystem.m6532().myOutTimer[2];
 }
@@ -204,7 +204,7 @@ uInt8 RiotDebug::tim64T(int newVal)
 uInt8 RiotDebug::tim1024T(int newVal)
 {
   if(newVal > -1)
-    mySystem.poke(0x297, newVal);
+    mySystem.pokeOob(0x297, newVal);
 
   return mySystem.m6532().myOutTimer[3];
 }
@@ -410,10 +410,10 @@ string RiotDebug::toString()
       // Yes, the fire buttons are in the TIA, but we might as well
       // show them here for convenience.
       << "Left/P0 stick:  " << dirP0String()
-      << ((mySystem.peek(0x03c) & 0x80) ? "" : "(button) ")
+      << ((mySystem.peekOob(0x03c) & 0x80) ? "" : "(button) ")
       << '\n'
       << "Right/P1 stick: " << dirP1String()
-      << ((mySystem.peek(0x03d) & 0x80) ? "" : "(button) ");
+      << ((mySystem.peekOob(0x03d) & 0x80) ? "" : "(button) ");
 
   return buf.str();
 }

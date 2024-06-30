@@ -77,7 +77,7 @@ Int16 HighScoresManager::peek(uInt16 addr) const
   if (myOSystem.hasConsole())
   {
     if(addr < 0x100U || myOSystem.console().cartridge().internalRamSize() == 0)
-      return myOSystem.console().system().peek(addr);
+      return myOSystem.console().system().peekOob(addr);
     else
       return myOSystem.console().cartridge().internalRamGetValue(addr);
   }

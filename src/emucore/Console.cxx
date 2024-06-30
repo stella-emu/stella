@@ -789,7 +789,7 @@ void Console::initializeAudio()
 void Console::fry() const
 {
   for(int i = 0; i < 0x100; i += mySystem->randGenerator().next() % 4)
-    mySystem->poke(i, mySystem->peek(i) & mySystem->randGenerator().next());
+    mySystem->pokeOob(i, mySystem->peekOob(i) & mySystem->randGenerator().next());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

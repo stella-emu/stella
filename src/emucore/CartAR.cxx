@@ -337,9 +337,9 @@ void CartridgeAR::loadIntoRAM(uInt8 load)
 
       // Copy the bank switching byte and starting address into the 2600's
       // RAM for the "dummy" SC BIOS to access it
-      mySystem->poke(0xfe, myHeader[0]);
-      mySystem->poke(0xff, myHeader[1]);
-      mySystem->poke(0x80, myHeader[2]);
+      mySystem->pokeOob(0xfe, myHeader[0]);
+      mySystem->pokeOob(0xff, myHeader[1]);
+      mySystem->pokeOob(0x80, myHeader[2]);
 
       myBankChanged = true;
       if(success)
