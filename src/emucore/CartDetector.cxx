@@ -27,7 +27,10 @@ Bankswitch::Type CartDetector::autodetectType(const ByteBuffer& image, size_t si
   // Guess type based on size
   Bankswitch::Type type = Bankswitch::Type::_AUTO;
 
-  if((size % 8448) == 0 || size == 6_KB)
+  if (size >= 4_KB && isProbablyELF(image, size)) {
+    type =Bankswitch::Type::_ELF;
+  }
+  else if ((size % 8448) == 0 || size == 6_KB)
   {
     if(size == 6_KB && isProbablyGL(image, size))
       type = Bankswitch::Type::_GL;
@@ -853,6 +856,27 @@ bool CartDetector::isProbablyX07(const ByteBuffer& image, size_t size)
       return true;
 
   return false;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool CartDetector::isProbablyELF(const ByteBuffer& image, size_t size) {
+  // Min ELF header size
+  if (size < 52) return false;
+
+  // Must start with ELF magic
+  static constexpr uInt8 signature[] = { 0x7f, 'E', 'L', 'F' };
+  if (!searchForBytes(image, sizeof(signature), signature, sizeof(signature), 1)) return false;
+
+  // We require little endian
+  if (image[0x05] != 1) return false;
+
+  // Type must be ET_REL (relocatable ELF)
+  if (image[0x10] != 0x01) return false;
+
+  // Arch must be ARM
+  if (image[0x12] != 0x28) return false;
+
+  return true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

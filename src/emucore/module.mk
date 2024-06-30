@@ -55,8 +55,9 @@ MODULE_OBJS := \
 	src/emucore/CartTVBoy.o \
 	src/emucore/CartUA.o \
 	src/emucore/CartWD.o \
-    src/emucore/CartWF8.o \
+  src/emucore/CartWF8.o \
 	src/emucore/CartX07.o \
+	src/emucore/CartELF.o \
 	src/emucore/CompuMate.o \
 	src/emucore/Console.o \
 	src/emucore/Control.o \
