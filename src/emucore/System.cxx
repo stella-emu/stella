@@ -40,6 +40,8 @@ System::System(Random& random, M6502& m6502, M6532& m6532,
 
   // Bus starts out unlocked (in other words, peek() changes myDataBusState)
   myDataBusLocked = false;
+
+  myCartridgeDoesBusStuffing = myCart.doesBusStuffing();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -119,9 +121,11 @@ uInt8 System::peekImpl(uInt16 addr, Device::AccessFlags flags)
 #endif
 
   // See if this page uses direct accessing or not
-  const uInt8 result = access.directPeekBase
+  uInt8 result = access.directPeekBase
       ? *(access.directPeekBase + (addr & PAGE_MASK))
       : (oob ? access.device->peekOob(addr) : access.device->peek(addr));
+
+  if (!oob && myCartridgeDoesBusStuffing) result = myCart.overdrivePeek(addr, result);
 
 #ifdef DEBUGGER_SUPPORT
   if(!myDataBusLocked)
@@ -141,6 +145,8 @@ uInt8 System::peekImpl<false>(uInt16 addr, Device::AccessFlags flags);
 template<bool oob>
 void System::pokeImpl(uInt16 addr, uInt8 value, Device::AccessFlags flags)
 {
+  if (!oob && myCartridgeDoesBusStuffing) value = myCart.overdrivePoke(addr, value);
+
   const uInt16 page = (addr & ADDRESS_MASK) >> PAGE_SHIFT;
   const PageAccess& access = myPageAccessTable[page];
 

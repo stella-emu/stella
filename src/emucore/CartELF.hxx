@@ -52,42 +52,56 @@ class CartridgeELF: public Cartridge {
 
     string name() const override { return "CartridgeELF"; };
 
+    uInt8 overdrivePeek(uInt16 address, uInt8 value) override;
+
+    uInt8 overdrivePoke(uInt16 address, uInt8 value) override;
+
+    bool doesBusStuffing() override { return true; }
+
   private:
+    uInt8 driveBus(uInt16 address, uInt8 value);
+
     void vcsWrite5(uInt8 zpAddress, uInt8 value);
     void vcsCopyOverblankToRiotRam();
     void vcsStartOverblank();
 
   private:
-    struct ScheduledRead {
+    struct BusTransaction {
+      static BusTransaction transactionYield(uInt16 address);
+      static BusTransaction transactionDrive(uInt16 address, uInt8 value);
+
+      void setBusState(bool& drive, uInt8& value);
+
       uInt16 address;
       uInt8 value;
       bool yield;
     };
 
-    class ReadStream {
+    class BusTransactionQueue {
       public:
-        ReadStream();
+        BusTransactionQueue();
 
         void reset();
 
         void setNextPushAddress(uInt16 address);
-        void push(uInt8 value);
-        void push(uInt8 value, uInt16 address);
+        void injectROM(uInt8 value);
+        void injectROM(uInt8 value, uInt16 address);
 
-        void yield();
-        bool isYield() const;
+        void yield(uInt16 address);
 
-        bool hasPendingRead() const;
-        uInt8 pop(uInt16 readAddress);
+
+        bool hasPendingTransaction() const;
+        BusTransaction* getNextTransaction(uInt16 address);
 
       private:
-        unique_ptr<ScheduledRead[]> myStream;
-        size_t myStreamNext{0};
-        size_t myStreamSize{0};
+        void push(const BusTransaction& transaction);
 
-        uInt16 myNextPushAddress{0};
+      private:
+        unique_ptr<BusTransaction[]> myQueue;
+        size_t myQueueNext{0};
+        size_t myQueueSize{0};
 
-        bool myIsYield{true};
+        uInt16 myNextInjectAddress{0};
     };
 
   private:
@@ -97,7 +111,10 @@ class CartridgeELF: public Cartridge {
     System* mySystem{nullptr};
 
     unique_ptr<uint8_t[]> myLastPeekResult;
-    ReadStream myReadStream;
+    BusTransactionQueue myTransactionQueue;
+
+    bool myIsBusDriven{false};
+    uInt8 myDriveBusValue{0};
 };
 
 #endif // CARTRIDGE_ELF

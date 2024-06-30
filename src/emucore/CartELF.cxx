@@ -23,7 +23,7 @@
 #include "CartELF.hxx"
 
 namespace {
-  constexpr size_t READ_STREAM_CAPACITY = 1024;
+  constexpr size_t TRANSACTION_QUEUE_CAPACITY = 16384;
 
   constexpr uInt8 OVERBLANK_PROGRAM[] = {
 	  0xa0,0x00,			  // ldy #0
@@ -82,11 +82,13 @@ CartridgeELF::~CartridgeELF() {}
 void CartridgeELF::reset()
 {
   std::fill_n(myLastPeekResult.get(), 0x1000, 0);
+  myIsBusDriven = false;
+  myDriveBusValue = 0;
 
-  myReadStream.reset();
-	myReadStream.push(0x00, 0x0ffc);
-	myReadStream.push(0x10);
-  myReadStream.setNextPushAddress(0);
+  myTransactionQueue.reset();
+	myTransactionQueue.injectROM(0x00, 0x1ffc);
+	myTransactionQueue.injectROM(0x10);
+  myTransactionQueue.setNextPushAddress(0x1000);
 
   vcsCopyOverblankToRiotRam();
   vcsStartOverblank();
@@ -121,10 +123,8 @@ bool CartridgeELF::load(Serializer& in)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 CartridgeELF::peek(uInt16 address)
 {
-  if (myReadStream.isYield()) return mySystem->getDataBusState();
-
-  myLastPeekResult[address & 0xfff] = myReadStream.pop(address);
-  return myLastPeekResult[address & 0xfff];
+  // The actual handling happens in overdrivePeek
+  return 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -146,14 +146,41 @@ const ByteBuffer& CartridgeELF::getImage(size_t& size) const
   return myImage;
 }
 
+uInt8 CartridgeELF::overdrivePeek(uInt16 address, uInt8 value)
+{
+  value = driveBus(address, value);
+
+  if (address & 0x1000) {
+    if (!myIsBusDriven) value = mySystem->getDataBusState();
+    myLastPeekResult[address & 0xfff] = value;
+  }
+
+  return value;
+}
+
+uInt8 CartridgeELF::overdrivePoke(uInt16 address, uInt8 value)
+{
+  return driveBus(address, value);
+}
+
+inline uInt8 CartridgeELF::driveBus(uInt16 address, uInt8 value)
+{
+  BusTransaction* nextTransaction = myTransactionQueue.getNextTransaction(address);
+  if (nextTransaction) nextTransaction->setBusState(myIsBusDriven, myDriveBusValue);
+
+  if (myIsBusDriven) value |= myDriveBusValue;
+
+  return value;
+}
+
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeELF::vcsWrite5(uInt8 zpAddress, uInt8 value)
 {
-	myReadStream.push(0xa9);
-	myReadStream.push(value);
-	myReadStream.push(0x85);
-	myReadStream.push(zpAddress);
-  myReadStream.yield();
+	myTransactionQueue.injectROM(0xa9);
+	myTransactionQueue.injectROM(value);
+	myTransactionQueue.injectROM(0x85);
+	myTransactionQueue.injectROM(zpAddress);
+  myTransactionQueue.yield(zpAddress);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -165,101 +192,111 @@ void CartridgeELF::vcsCopyOverblankToRiotRam()
 
 void CartridgeELF::vcsStartOverblank()
 {
-	myReadStream.push(0x4c);
-	myReadStream.push(0x80);
-	myReadStream.push(0x00);
-  myReadStream.yield();
+	myTransactionQueue.injectROM(0x4c);
+	myTransactionQueue.injectROM(0x80);
+	myTransactionQueue.injectROM(0x00);
+  myTransactionQueue.yield(0x0080);
+}
+
+CartridgeELF::BusTransaction CartridgeELF::BusTransaction::transactionYield(uInt16 address)
+{
+  address &= 0x1fff;
+  return {.address = address, .value = 0, .yield = true};
+}
+
+CartridgeELF::BusTransaction CartridgeELF::BusTransaction::transactionDrive(uInt16 address, uInt8 value)
+{
+  address &= 0x1fff;
+  return {.address = address, .value = value, .yield = false};
+}
+
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void CartridgeELF::BusTransaction::setBusState(bool& drive, uInt8& value)
+{
+  if (yield) {
+    drive = false;
+  } else {
+    drive = true;
+    value = this->value;
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CartridgeELF::ReadStream::ReadStream()
+CartridgeELF::BusTransactionQueue::BusTransactionQueue()
 {
-  myStream = make_unique<ScheduledRead[]>(READ_STREAM_CAPACITY);
+  myQueue = make_unique<BusTransaction[]>(TRANSACTION_QUEUE_CAPACITY);
   reset();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgeELF::ReadStream::reset()
+void CartridgeELF::BusTransactionQueue::reset()
 {
-  myStreamNext = myStreamSize = myNextPushAddress = 0;
-  myIsYield = true;
+  myQueueNext = myQueueSize = 0;
+  myNextInjectAddress = 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgeELF::ReadStream::setNextPushAddress(uInt16 address)
+void CartridgeELF::BusTransactionQueue::setNextPushAddress(uInt16 address)
 {
-  myNextPushAddress = address;
+  myNextInjectAddress = address;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgeELF::ReadStream::push(uInt8 value)
+void CartridgeELF::BusTransactionQueue::injectROM(uInt8 value)
 {
-  if (myNextPushAddress > 0xfff)
-    throw FatalEmulationError("read stream pointer overflow");
-
-  push(value, myNextPushAddress);
+  injectROM(value, myNextInjectAddress);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgeELF::ReadStream::push(uInt8 value, uInt16 address)
+void CartridgeELF::BusTransactionQueue::injectROM(uInt8 value, uInt16 address)
 {
-  if (myStreamSize == READ_STREAM_CAPACITY)
+  push(BusTransaction::transactionDrive(address, value));
+  myNextInjectAddress = address + 1;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void CartridgeELF::BusTransactionQueue::yield(uInt16 address)
+{
+  push(BusTransaction::transactionYield(address));
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool CartridgeELF::BusTransactionQueue::hasPendingTransaction() const
+{
+  return myQueueSize > 0;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+CartridgeELF::BusTransaction* CartridgeELF::BusTransactionQueue::getNextTransaction(uInt16 address)
+{
+  if (myQueueSize == 0) return nullptr;
+
+  BusTransaction* nextTransaction = &myQueue[myQueueNext];
+  if (nextTransaction->address != (address & 0x1fff)) return nullptr;
+
+  myQueueNext = (myQueueNext + 1) % TRANSACTION_QUEUE_CAPACITY;
+  myQueueSize--;
+
+  return nextTransaction;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void CartridgeELF::BusTransactionQueue::push(const BusTransaction& transaction)
+{
+  if (myQueueSize > 0) {
+    BusTransaction& lastTransaction = myQueue[(myQueueNext + myQueueSize - 1) % TRANSACTION_QUEUE_CAPACITY];
+
+    if (lastTransaction.address == transaction.address) {
+      lastTransaction = transaction;
+      return;
+    }
+  }
+
+  if (myQueueSize == TRANSACTION_QUEUE_CAPACITY)
     throw FatalEmulationError("read stream overflow");
 
-  address &= 0xfff;
-
-  myStream[(myStreamNext + myStreamSize++) % READ_STREAM_CAPACITY] =
-    {.address = address, .value = value, .yield = false};
-
-  myNextPushAddress = address + 1;
-  myIsYield = false;
+  myQueue[(myQueueNext + myQueueSize++) % TRANSACTION_QUEUE_CAPACITY] = transaction;
 }
 
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgeELF::ReadStream::yield()
-{
-  if (myStreamSize == 0)
-    throw new FatalEmulationError("yield called on empty stream");
 
-  myStream[(myStreamNext + myStreamSize - 1) % READ_STREAM_CAPACITY].yield = true;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool CartridgeELF::ReadStream::isYield() const
-{
-  return myIsYield;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool CartridgeELF::ReadStream::hasPendingRead() const
-{
-  return myStreamSize > 0;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt8 CartridgeELF::ReadStream::pop(uInt16 readAddress)
-{
-  if (myStreamSize == 0) {
-    ostringstream s;
-    s << "read stream underflow at 0x" << std::hex << std::setw(4) << readAddress;
-    throw FatalEmulationError(s.str());
-  }
-
-  if ((readAddress & 0xfff) != myStream[myStreamNext].address)
-  {
-    ostringstream s;
-    s <<
-      "unexcpected cartridge read from 0x" << std::hex << std::setw(4) <<
-      std::setfill('0') << (readAddress & 0xfff) << " expected 0x" << myStream[myStreamNext].address;
-
-    throw FatalEmulationError(s.str());
-  }
-
-  myIsYield = myStream[myStreamNext].yield && myStreamSize == 1;
-  const uInt8 value = myStream[myStreamNext++].value;
-
-  myStreamNext %= READ_STREAM_CAPACITY;
-  myStreamSize--;
-
-  return value;
-}

@@ -315,6 +315,12 @@ class Cartridge : public Device
     */
     virtual uInt32 thumbCallback(uInt8 function, uInt32 value1, uInt32 value2) { return 0; }
 
+    virtual uInt8 overdrivePeek(uInt16 address, uInt8 value) { return value; }
+
+    virtual uInt8 overdrivePoke(uInt16 address, uInt8 value) { return value; }
+
+    virtual bool doesBusStuffing() { return false; }
+
   #ifdef DEBUGGER_SUPPORT
     /**
       Get optional debugger widget responsible for displaying info about the cart.
