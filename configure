@@ -799,6 +799,7 @@ SRC_LIB="$SRC/lib"
 CORE="$SRC/emucore"
 COMMON="$SRC/common"
 TIA="$SRC/emucore/tia"
+ELF="$SRC/emucore/elf"
 TIA_FRAME_MANAGER="$SRC/emucore/tia/frame-manager"
 TV="$SRC/common/tv_filters"
 GUI="$SRC/gui"
@@ -815,7 +816,7 @@ SQLITE_LIB="$SRC_LIB/sqlite"
 JSON="$SRC_LIB/json"
 HTTP_LIB="$SRC_LIB/httplib"
 
-INCLUDES="-I$CORE -I$COMMON -I$TV -I$TIA -I$TIA_FRAME_MANAGER -I$JSON -I$SQLITE_REPO"
+INCLUDES="-I$CORE -I$COMMON -I$TV -I$TIA -I$TIA_FRAME_MANAGER -I$ELF -I$JSON -I$SQLITE_REPO"
 
 INCLUDES="$INCLUDES `$_sdlconfig --cflags`"
 if test "$_build_static" = yes ; then

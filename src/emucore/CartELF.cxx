@@ -65,6 +65,12 @@ CartridgeELF::CartridgeELF(const ByteBuffer& image, size_t size, string_view md5
                            const Settings& settings)
   : Cartridge(settings, md5), myImageSize(size)
 {
+  try {
+    elfParser.parse(image.get(), size);
+  } catch (ElfParser::EInvalidElf& e) {
+    throw runtime_error("failed to initialize ELF: " + e.getReason());
+  }
+
   myImage = make_unique<uInt8[]>(size);
   std::memcpy(myImage.get(), image.get(), size);
 

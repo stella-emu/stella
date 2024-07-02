@@ -18,6 +18,7 @@
 #include "bspf.hxx"
 #include "Logger.hxx"
 
+#include "ElfParser.hxx"
 #include "CartDetector.hxx"
 #include "CartMVC.hxx"
 
@@ -868,13 +869,13 @@ bool CartDetector::isProbablyELF(const ByteBuffer& image, size_t size) {
   if (!searchForBytes(image, 2 * sizeof(signature), signature, sizeof(signature), 1)) return false;
 
   // We require little endian
-  if (image[0x05] != 1) return false;
+  if (image[0x05] != ElfParser::ENDIAN_LITTLE_ENDIAN) return false;
 
   // Type must be ET_REL (relocatable ELF)
-  if (image[0x10] != 0x01) return false;
+  if (image[0x10] != ElfParser::ET_REL) return false;
 
   // Arch must be ARM
-  if (image[0x12] != 0x28) return false;
+  if (image[0x12] != ElfParser::ARCH_ARM32) return false;
 
   return true;
 }

@@ -58,6 +58,7 @@ using uInt64 = uint64_t;
 #include <numbers>
 #include <utility>
 #include <vector>
+#include <optional>
 
 using std::cin;
 using std::cout;
@@ -78,6 +79,7 @@ using std::make_shared;
 using std::array;
 using std::vector;
 using std::runtime_error;
+using std::optional;
 
 // Common array types
 using IntArray = std::vector<Int32>;
