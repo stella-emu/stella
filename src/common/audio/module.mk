@@ -7,7 +7,8 @@ MODULE_OBJS := \
 	src/common/audio/HighPass.o
 
 MODULE_DIRS += \
-	src/emucore/tia
+	src/emucore/tia \
+	src/emucore/elf
 
 # Include common rules
 include $(srcdir)/common.rules

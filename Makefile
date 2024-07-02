@@ -176,6 +176,7 @@ MODULES += \
 	src/emucore \
 	src/emucore/tia \
 	src/emucore/tia/frame-manager \
+	src/emucore/elf \
 	src/common/repository/sqlite
 
 ######################################################################
