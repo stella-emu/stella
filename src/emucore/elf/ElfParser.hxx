@@ -64,6 +64,19 @@ class ElfParser {
       uInt32 align;
     };
 
+    struct Symbol {
+      uInt32 nameOffset;
+      uInt32 value;
+      uInt32 size;
+      uInt8 info;
+      uInt8 visibility;
+      uInt16 section;
+
+      string name;
+      uInt8 bind;
+      uInt8 type;
+    };
+
   public:
     static constexpr uInt8 ENDIAN_LITTLE_ENDIAN = 0x01;
     static constexpr uInt8 ENDIAN_BIG_ENDIAN = 0x02;
@@ -72,6 +85,7 @@ class ElfParser {
 
     static constexpr uInt16 ARCH_ARM32 = 0x28;
 
+    static constexpr uInt32 SHT_NULL = 0x00;
     static constexpr uInt32 SHT_PROGBITS = 0x01;
     static constexpr uInt32 SHT_SYMTAB = 0x02;
     static constexpr uInt32 SHT_STRTAB = 0x03;
@@ -80,6 +94,9 @@ class ElfParser {
     static constexpr uInt32 SHT_REL = 0x09;
     static constexpr uInt32 SHT_INIT_ARRAY = 0x0e;
     static constexpr uInt32 SHT_PREINIT_ARRAY = 0x10;
+
+    static constexpr uInt32 SHN_ABS = 0xfff1;
+    static constexpr uInt32 SHN_UND = 0x00;
 
   public:
     ElfParser() = default;
@@ -91,15 +108,20 @@ class ElfParser {
 
     const Header& getHeader() const;
     const vector<Section>& getSections() const;
+    const vector<Symbol>& getSymbols() const;
     const optional<Section> getSection(const std::string &name) const;
 
   private:
-    uInt8 read8(uInt32 offset);
-    uInt16 read16(uInt32 offset);
-    uInt32 read32(uInt32 offset);
+    uInt8 read8(uInt32 offset) const;
+    uInt16 read16(uInt32 offset) const;
+    uInt32 read32(uInt32 offset) const;
 
-    Section readSection(uInt32 offset);
-    const char* getName(const Section& section, uInt32 offset);
+    Section readSection(uInt32 offset) const;
+    Symbol readSymbol(uInt32 index, const Section& symSec, const Section& strSec) const;
+    const char* getName(const Section& section, uInt32 offset) const;
+
+    const Section* getSymtab() const;
+    const Section* getStrtab() const;
 
   private:
     const uInt8 *data{nullptr};
@@ -109,6 +131,11 @@ class ElfParser {
 
     Header header;
     vector<Section> sections;
+    vector<Symbol> symbols;
 };
+
+ostream& operator<<(ostream& os, const ElfParser::Section& section);
+
+ostream& operator<<(ostream& os, const ElfParser::Symbol symbol);
 
 #endif // ELF_PARSER
