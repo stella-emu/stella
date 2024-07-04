@@ -8,10 +8,6 @@ namespace {
   constexpr uInt8 ELF_VERSION = 1;
 } // namespace
 
-ElfParser::EInvalidElf::EInvalidElf(const string &reason) : reason(reason) {}
-
-const string &ElfParser::EInvalidElf::getReason() const { return reason; }
-
 void ElfParser::parse(const uInt8 *elfData, size_t size) {
   data = elfData;
   this->size = size;
@@ -19,14 +15,14 @@ void ElfParser::parse(const uInt8 *elfData, size_t size) {
   sections.resize(0);
 
   try {
-    if (read32(0x00) != ELF_MAGIC) throw EInvalidElf("bad magic");
-    if (read8(0x04) != ELF_CLASS_32) throw EInvalidElf("not 32bit ELF");
-    if (read8(0x06) != ELF_VERSION) throw EInvalidElf("invalid ELF version");
+    if (read32(0x00) != ELF_MAGIC) EInvalidElf::raise("bad magic");
+    if (read8(0x04) != ELF_CLASS_32) EInvalidElf::raise("not 32bit ELF");
+    if (read8(0x06) != ELF_VERSION) EInvalidElf::raise("invalid ELF version");
 
     header.endianess = read8(0x05);
     bigEndian = header.endianess == ENDIAN_BIG_ENDIAN;
 
-    if (read32(0x14) != ELF_VERSION) throw EInvalidElf("inconsistent ELF version");
+    if (read32(0x14) != ELF_VERSION) EInvalidElf::raise("inconsistent ELF version");
 
     header.type = read16(0x10);
     header.arch = read16(0x12);
@@ -36,7 +32,7 @@ void ElfParser::parse(const uInt8 *elfData, size_t size) {
     header.shNum = read16(0x30);
     header.shstrIndex = read16(0x32);
 
-    if (header.shstrIndex >= header.shNum) throw EInvalidElf(".shstrtab out of range");
+    if (header.shstrIndex >= header.shNum) EInvalidElf::raise(".shstrtab out of range");
 
     sections.reserve(header.shNum);
 
@@ -46,14 +42,14 @@ void ElfParser::parse(const uInt8 *elfData, size_t size) {
 
     const Section &shrstrtab(sections[header.shstrIndex]);
 
-    if (shrstrtab.type != SHT_STRTAB) throw new EInvalidElf(".shstrtab has wrong type");
+    if (shrstrtab.type != SHT_STRTAB) EInvalidElf::raise(".shstrtab has wrong type");
 
 
     for (Section &section : sections)
       section.name = getName(shrstrtab, section.nameOffset);
 
   } catch (const EInvalidElf &e) {
-    throw EInvalidElf("failed to parse ELF: " + e.getReason());
+    EInvalidElf::raise("failed to parse ELF: " + string(e.what()));
   }
 }
 
@@ -76,7 +72,7 @@ ElfParser::getSection(const string &name) const {
 
 uInt8 ElfParser::read8(uInt32 offset) {
   if (offset >= size)
-    throw EInvalidElf("reference beyond bounds");
+    EInvalidElf::raise("reference beyond bounds");
 
   return data[offset];
 }
@@ -106,9 +102,9 @@ ElfParser::Section ElfParser::readSection(uInt32 offset) {
     section.align = read32(offset + 0x20);
 
     if (section.offset + section.size >= size)
-      throw EInvalidElf("section exceeds bounds");
+      EInvalidElf::raise("section exceeds bounds");
   } catch (const EInvalidElf &e) {
-    throw EInvalidElf("failed to parse section: " + e.getReason());
+    EInvalidElf::raise("failed to parse section: " + string(e.what()));
   }
 
   return section;
@@ -116,13 +112,13 @@ ElfParser::Section ElfParser::readSection(uInt32 offset) {
 
 const char* ElfParser::getName(const Section& section, uInt32 offset)
 {
-  if (offset >= section.size) throw EInvalidElf("name out of bounds");
+  if (offset >= section.size) EInvalidElf::raise("name out of bounds");
   const uInt32 imageOffset = offset + section.offset;
 
   const char *name = reinterpret_cast<const char *>(data + imageOffset);
 
   if (data[imageOffset + strnlen(name, section.size - offset)] != '\0')
-    throw new EInvalidElf("unterminated section name");
+    EInvalidElf::raise("unterminated section name");
 
   return name;
 }

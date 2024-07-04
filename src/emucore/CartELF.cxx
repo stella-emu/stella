@@ -68,7 +68,7 @@ CartridgeELF::CartridgeELF(const ByteBuffer& image, size_t size, string_view md5
   try {
     elfParser.parse(image.get(), size);
   } catch (ElfParser::EInvalidElf& e) {
-    throw runtime_error("failed to initialize ELF: " + e.getReason());
+    throw runtime_error("failed to initialize ELF: " + string(e.what()));
   }
 
   myImage = make_unique<uInt8[]>(size);
