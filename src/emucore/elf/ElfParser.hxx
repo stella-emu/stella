@@ -22,17 +22,21 @@
 
 class ElfParser {
   public:
-    class EInvalidElf {
+    class EInvalidElf : public std::exception {
       friend ElfParser;
 
       public:
-        const std::string &getReason() const;
+        const char* what() const noexcept override { return myReason.c_str(); }
+
+        [[noreturn]] static void raise(string_view message) {
+          throw EInvalidElf(message);
+        }
 
       private:
-        EInvalidElf(const std::string &reason);
+        explicit EInvalidElf(string_view reason) : myReason(reason) {}
 
       private:
-        std::string reason;
+        const string myReason;
     };
 
     struct Header {
