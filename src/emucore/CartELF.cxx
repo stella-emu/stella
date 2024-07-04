@@ -22,6 +22,8 @@
 
 #include "CartELF.hxx"
 
+#define DUMP_ELF
+
 namespace {
   constexpr size_t TRANSACTION_QUEUE_CAPACITY = 16384;
 
@@ -78,6 +80,22 @@ CartridgeELF::CartridgeELF(const ByteBuffer& image, size_t size, string_view md5
   std::fill_n(myLastPeekResult.get(), 0x1000, 0);
 
   createRomAccessArrays(0x1000);
+
+  #ifdef DUMP_ELF
+    cout << "ELF sections:" << std::endl << std::endl;
+
+    size_t i = 0;
+    for (auto& section: elfParser.getSections())
+      if (section.type != 0x00) cout << (i++) << " " << section << std::endl;
+
+    auto symbols = elfParser.getSymbols();
+    cout << std::endl << "ELF symbols:" << std::endl << std::endl;
+    if (symbols.size() > 0) {
+      i = 0;
+      for (auto& symbol: symbols)
+        cout << (i++) << " " << symbol << std::endl;
+    }
+  #endif
 }
 
 
