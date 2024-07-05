@@ -7,6 +7,8 @@ namespace {
   constexpr uInt8 ELF_CLASS_32 = 1;
   constexpr uInt8 ELF_VERSION = 1;
   constexpr uInt32 SYMBOL_ENTRY_SIZE = 16;
+  constexpr uInt32 REL_ENTRY_SIZE = 8;
+  constexpr uInt32 RELA_ENTRY_SIZE = 12;
 } // namespace
 
 void ElfParser::parse(const uInt8 *elfData, size_t size)
@@ -50,6 +52,7 @@ void ElfParser::parse(const uInt8 *elfData, size_t size)
       section.name = getName(shrstrtab, section.nameOffset);
 
     const Section* symtab = getSymtab();
+
     if (symtab) {
       const Section* strtab = getStrtab();
       if (!strtab) EInvalidElf::raise("no string table to resolve symbol names");
@@ -58,6 +61,25 @@ void ElfParser::parse(const uInt8 *elfData, size_t size)
 
       for (size_t i = 0; i < symtab->size / SYMBOL_ENTRY_SIZE; i++)
         symbols.push_back(readSymbol(i, *symtab, *strtab));
+    }
+
+    for (auto& section: sections) {
+      if (section.type != SHT_REL && section.type != SHT_RELA) continue;
+      if (section.info >= sections.size()) EInvalidElf::raise("relocation table for invalid section");
+
+      vector<Relocation> rels;
+      rels.reserve(section.size / (section.type == SHT_REL ? REL_ENTRY_SIZE : RELA_ENTRY_SIZE));
+
+      for (size_t i = 0; i < rels.capacity(); i++) {
+        Relocation rel = readRelocation(i, section);
+
+        if (rel.symbol >= symbols.size()) EInvalidElf::raise("invalid relocation symbol");
+        rel.symbolName = symbols[rel.symbol].name;
+
+        rels.push_back(rel);
+      }
+
+      relocations[section.info] = rels;
     }
   } catch (const EInvalidElf &e) {
     EInvalidElf::raise("failed to parse ELF: " + string(e.what()));
@@ -85,6 +107,11 @@ ElfParser::getSection(const string &name) const {
       return section;
 
   return optional<Section>();
+}
+
+const optional<vector<ElfParser::Relocation>> ElfParser::getRelocations(size_t section) const
+{
+  return relocations.contains(section) ? relocations.at(section) : optional<vector<ElfParser::Relocation>>();
 }
 
 uInt8 ElfParser::read8(uInt32 offset) const
@@ -133,11 +160,11 @@ ElfParser::Section ElfParser::readSection(uInt32 offset) const {
 
 ElfParser::Symbol ElfParser::readSymbol(uInt32 index, const Section& symSec, const Section& strSec) const
 {
-  Symbol sym;
-
   uInt32 offset = index * SYMBOL_ENTRY_SIZE;
   if (offset + SYMBOL_ENTRY_SIZE > symSec.size) EInvalidElf::raise("symbol is beyond section");
   offset += symSec.offset;
+
+  Symbol sym;
 
   sym.nameOffset = read32(offset);
   sym.value = read32(offset + 0x04);
@@ -146,11 +173,41 @@ ElfParser::Symbol ElfParser::readSymbol(uInt32 index, const Section& symSec, con
   sym.visibility = read8(offset + 0x0d);
   sym.section = read16(offset + 0x0e);
 
-  sym.name = getName(strSec, sym.nameOffset);
+  if (
+      ((sym.section != SHN_ABS && sym.section != SHN_UND) || sym.type == STT_SECTION) &&
+      sym.section >= sections.size()
+  )
+    EInvalidElf::raise("symbol: section index out of range");
+
   sym.bind = sym.info >> 4;
   sym.type = sym.info & 0x0f;
 
+  sym.name = sym.type == STT_SECTION ? sections[sym.section].name : getName(strSec, sym.nameOffset);
+
   return sym;
+}
+
+ElfParser::Relocation ElfParser::readRelocation(uInt32 index, const Section& sec) const
+{
+  if (sec.type != SHT_REL && sec.type != SHT_RELA)
+    throw runtime_error("section is not RELA or REL");
+
+  const size_t size = sec.type == SHT_REL ? REL_ENTRY_SIZE : RELA_ENTRY_SIZE;
+  uInt32 offset = index * size;
+
+  if (offset + size > sec.size) EInvalidElf::raise("relocation is beyond bounds");
+
+  offset += sec.offset;
+  Relocation rel;
+
+  rel.address = read32(offset);
+  rel.info = read32(offset + 0x04);
+  rel.addend = sec.type == SHT_RELA ? read32(offset + 0x08) :  0;
+
+  rel.symbol = rel.info >> 8;
+  rel.type = rel.info & 0x0f;
+
+  return rel;
 }
 
 const char* ElfParser::getName(const Section& section, uInt32 offset) const
@@ -220,6 +277,7 @@ ostream& operator<<(ostream& os, const ElfParser::Symbol symbol)
   reset.copyfmt(os);
 
   os
+    << symbol.nameOffset << " "
     << symbol.name
     << std::hex << std::setw(4) << std::setfill('0')
     << " value=0x" << symbol.value
@@ -231,6 +289,26 @@ ostream& operator<<(ostream& os, const ElfParser::Symbol symbol)
   os.copyfmt(reset);
 
   os << " section=" << symbol.section;
+
+  return os;
+}
+
+ostream& operator<<(ostream& os, const ElfParser::Relocation rel)
+{
+  std::ios reset(nullptr);
+  reset.copyfmt(os);
+
+  os
+    << rel.symbolName << " :"
+    << std::hex << std::setw(4) << std::setfill('0')
+    << " address=0x" << rel.address
+    << " info=0x" << rel.info
+    << " addend=0x" << rel.addend
+    << " type=0x" << (int)rel.type;
+
+  os.copyfmt(reset);
+
+  os << " symbol=" << (int)rel.symbol;
 
   return os;
 }

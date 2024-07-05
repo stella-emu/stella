@@ -18,6 +18,8 @@
 #ifndef ELF_PARSER
 #define ELF_PARSER
 
+#include <unordered_map>
+
 #include "bspf.hxx"
 
 class ElfParser {
@@ -78,6 +80,16 @@ class ElfParser {
       uInt8 type;
     };
 
+    struct Relocation {
+      uInt32 address;
+      uInt32 info;
+      uInt32 addend;
+
+      uInt32 symbol;
+      uInt8 type;
+      string symbolName;
+    };
+
   public:
     static constexpr uInt8 ENDIAN_LITTLE_ENDIAN = 0x01;
     static constexpr uInt8 ENDIAN_BIG_ENDIAN = 0x02;
@@ -99,6 +111,8 @@ class ElfParser {
     static constexpr uInt32 SHN_ABS = 0xfff1;
     static constexpr uInt32 SHN_UND = 0x00;
 
+    static constexpr uInt32 STT_SECTION = 0x03;
+
   public:
     ElfParser() = default;
 
@@ -111,6 +125,7 @@ class ElfParser {
     const vector<Section>& getSections() const;
     const vector<Symbol>& getSymbols() const;
     const optional<Section> getSection(const std::string &name) const;
+    const optional<vector<Relocation>> getRelocations(size_t section) const;
 
   private:
     uInt8 read8(uInt32 offset) const;
@@ -119,6 +134,7 @@ class ElfParser {
 
     Section readSection(uInt32 offset) const;
     Symbol readSymbol(uInt32 index, const Section& symSec, const Section& strSec) const;
+    Relocation readRelocation(uInt32 index, const Section& sec) const;
     const char* getName(const Section& section, uInt32 offset) const;
 
     const Section* getSymtab() const;
@@ -133,9 +149,11 @@ class ElfParser {
     Header header;
     vector<Section> sections;
     vector<Symbol> symbols;
+    std::unordered_map<size_t, vector<Relocation>> relocations;
 };
 
 ostream& operator<<(ostream& os, const ElfParser::Section& section);
 ostream& operator<<(ostream& os, const ElfParser::Symbol symbol);
+ostream& operator<<(ostream& os, const ElfParser::Relocation relocation);
 
 #endif // ELF_PARSER

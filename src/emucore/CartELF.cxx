@@ -60,6 +60,38 @@ namespace {
 	  0xd0, 0xfb,			  // bne WaitForCart
 	  0x4c, 0x00, 0x10	// jmp $1000
   };
+
+#ifdef DUMP_ELF
+  void dumpElf(const ElfParser& elfParser) {
+    cout << "ELF sections:" << std::endl << std::endl;
+
+    size_t i = 0;
+    for (auto& section: elfParser.getSections()) {
+      if (section.type != 0x00) cout << i << " " << section << std::endl;
+      i++;
+    }
+
+    auto symbols = elfParser.getSymbols();
+    cout << std::endl << "ELF symbols:" << std::endl << std::endl;
+    if (symbols.size() > 0) {
+      i = 0;
+      for (auto& symbol: symbols)
+        cout << (i++) << " " << symbol << std::endl;
+    }
+
+    i = 0;
+    for (auto& section: elfParser.getSections()) {
+      auto rels = elfParser.getRelocations(i++);
+      if (!rels) continue;
+
+      cout
+        << std::endl << "ELF relocations for section "
+        << section.name << ":" << std::endl << std::endl;
+
+      for (auto& rel: *rels) cout << rel << std::endl;
+    }
+  }
+#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -81,23 +113,9 @@ CartridgeELF::CartridgeELF(const ByteBuffer& image, size_t size, string_view md5
 
   createRomAccessArrays(0x1000);
 
-  #ifdef DUMP_ELF
-    cout << "ELF sections:" << std::endl << std::endl;
-
-    size_t i = 0;
-    for (auto& section: elfParser.getSections()) {
-      if (section.type != 0x00) cout << i << " " << section << std::endl;
-      i++;
-    }
-
-    auto symbols = elfParser.getSymbols();
-    cout << std::endl << "ELF symbols:" << std::endl << std::endl;
-    if (symbols.size() > 0) {
-      i = 0;
-      for (auto& symbol: symbols)
-        cout << (i++) << " " << symbol << std::endl;
-    }
-  #endif
+#ifdef DUMP_ELF
+  dumpElf(elfParser);
+#endif
 }
 
 
