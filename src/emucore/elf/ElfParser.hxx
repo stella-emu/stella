@@ -61,6 +61,7 @@ class ElfParser {
       uInt32 offset;
       uInt32 size;
 
+      uInt32 info;
       uInt32 align;
     };
 

@@ -85,8 +85,10 @@ CartridgeELF::CartridgeELF(const ByteBuffer& image, size_t size, string_view md5
     cout << "ELF sections:" << std::endl << std::endl;
 
     size_t i = 0;
-    for (auto& section: elfParser.getSections())
-      if (section.type != 0x00) cout << (i++) << " " << section << std::endl;
+    for (auto& section: elfParser.getSections()) {
+      if (section.type != 0x00) cout << i << " " << section << std::endl;
+      i++;
+    }
 
     auto symbols = elfParser.getSymbols();
     cout << std::endl << "ELF symbols:" << std::endl << std::endl;
