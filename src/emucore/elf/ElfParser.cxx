@@ -175,10 +175,19 @@ const ElfParser::Section* ElfParser::getSymtab() const
 
 const ElfParser::Section* ElfParser::getStrtab() const
 {
-  for (size_t i = 0; i < sections.size(); i++)
-      if (sections[i].type == SHT_STRTAB && i != header.shstrIndex) return &sections[i];
+  const Section* strtab = nullptr;
+  size_t count = 0;
 
-   return nullptr;
+  for (size_t i = 0; i < sections.size(); i++) {
+    if (sections[i].type != SHT_STRTAB || i == header.shstrIndex) continue;
+
+    strtab = &sections[i];
+    count++;
+  }
+
+  if (count > 1) EInvalidElf::raise("more than one symbol table");
+
+  return strtab;
 }
 
 ostream& operator<<(ostream& os, const ElfParser::Section& section)

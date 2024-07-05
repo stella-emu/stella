@@ -135,7 +135,6 @@ class ElfParser {
 };
 
 ostream& operator<<(ostream& os, const ElfParser::Section& section);
-
 ostream& operator<<(ostream& os, const ElfParser::Symbol symbol);
 
 #endif // ELF_PARSER
