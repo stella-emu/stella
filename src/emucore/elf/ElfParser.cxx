@@ -119,6 +119,7 @@ ElfParser::Section ElfParser::readSection(uInt32 offset) const {
     section.virtualAddress = read32(offset + 0x0c);
     section.offset = read32(offset + 0x10);
     section.size = read32(offset + 0x14);
+    section.info = read32(offset + 0x1c);
     section.align = read32(offset + 0x20);
 
     if (section.offset + section.size >= size)
@@ -207,6 +208,7 @@ ostream& operator<<(ostream& os, const ElfParser::Section& section)
 
   os
     << " size=" << section.size
+    << " info=" << section.info
     << " align=" << section.align;
 
   return os;
