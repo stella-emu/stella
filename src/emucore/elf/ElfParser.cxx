@@ -1,3 +1,20 @@
+//============================================================================
+//
+//   SSSS    tt          lll  lll
+//  SS  SS   tt           ll   ll
+//  SS     tttttt  eeee   ll   ll   aaaa
+//   SSSS    tt   ee  ee  ll   ll      aa
+//      SS   tt   eeeeee  ll   ll   aaaaa  --  "An Atari 2600 VCS Emulator"
+//  SS  SS   tt   ee      ll   ll  aa  aa
+//   SSSS     ttt  eeeee llll llll  aaaaa
+//
+// Copyright (c) 1995-2024 by Bradford W. Mott, Stephen Anthony
+// and the Stella Team
+//
+// See the file "License.txt" for information on usage and redistribution of
+// this file, and for a DISCLAIMER OF ALL WARRANTIES.
+//============================================================================
+
 #include "ElfParser.hxx"
 
 #include <cstring>
@@ -11,6 +28,7 @@ namespace {
   constexpr uInt32 RELA_ENTRY_SIZE = 12;
 } // namespace
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ElfParser::parse(const uInt8 *elfData, size_t size)
 {
   data = elfData;
@@ -22,14 +40,14 @@ void ElfParser::parse(const uInt8 *elfData, size_t size)
   bigEndian = true;
 
   try {
-    if (read32(0x00) != ELF_MAGIC) EInvalidElf::raise("bad magic");
-    if (read8(0x04) != ELF_CLASS_32) EInvalidElf::raise("not 32bit ELF");
-    if (read8(0x06) != ELF_VERSION) EInvalidElf::raise("invalid ELF version");
+    if (read32(0x00) != ELF_MAGIC) ElfParseError::raise("bad magic");
+    if (read8(0x04) != ELF_CLASS_32) ElfParseError::raise("not 32bit ELF");
+    if (read8(0x06) != ELF_VERSION) ElfParseError::raise("invalid ELF version");
 
     header.endianess = read8(0x05);
     bigEndian = header.endianess == ENDIAN_BIG_ENDIAN;
 
-    if (read32(0x14) != ELF_VERSION) EInvalidElf::raise("inconsistent ELF version");
+    if (read32(0x14) != ELF_VERSION) ElfParseError::raise("inconsistent ELF version");
 
     header.type = read16(0x10);
     header.arch = read16(0x12);
@@ -39,7 +57,7 @@ void ElfParser::parse(const uInt8 *elfData, size_t size)
     header.shNum = read16(0x30);
     header.shstrIndex = read16(0x32);
 
-    if (header.shstrIndex >= header.shNum) EInvalidElf::raise(".shstrtab out of range");
+    if (header.shstrIndex >= header.shNum) ElfParseError::raise(".shstrtab out of range");
 
     sections.reserve(header.shNum);
 
@@ -49,7 +67,7 @@ void ElfParser::parse(const uInt8 *elfData, size_t size)
 
     const Section &shrstrtab(sections[header.shstrIndex]);
 
-    if (shrstrtab.type != SHT_STRTAB) EInvalidElf::raise(".shstrtab has wrong type");
+    if (shrstrtab.type != SHT_STRTAB) ElfParseError::raise(".shstrtab has wrong type");
 
     for (Section &section : sections)
       section.name = getName(shrstrtab, section.nameOffset);
@@ -58,7 +76,7 @@ void ElfParser::parse(const uInt8 *elfData, size_t size)
 
     if (symtab) {
       const Section* strtab = getStrtab();
-      if (!strtab) EInvalidElf::raise("no string table to resolve symbol names");
+      if (!strtab) ElfParseError::raise("no string table to resolve symbol names");
 
       symbols.reserve(symtab->size / SYMBOL_ENTRY_SIZE);
 
@@ -68,7 +86,7 @@ void ElfParser::parse(const uInt8 *elfData, size_t size)
 
     for (auto& section: sections) {
       if (section.type != SHT_REL && section.type != SHT_RELA) continue;
-      if (section.info >= sections.size()) EInvalidElf::raise("relocation table for invalid section");
+      if (section.info >= sections.size()) ElfParseError::raise("relocation table for invalid section");
 
       vector<Relocation> rels;
       const size_t relocationCount = section.size / (section.type == SHT_REL ? REL_ENTRY_SIZE : RELA_ENTRY_SIZE);
@@ -77,7 +95,7 @@ void ElfParser::parse(const uInt8 *elfData, size_t size)
       for (size_t i = 0; i < relocationCount; i++) {
         Relocation rel = readRelocation(i, section);
 
-        if (rel.symbol >= symbols.size()) EInvalidElf::raise("invalid relocation symbol");
+        if (rel.symbol >= symbols.size()) ElfParseError::raise("invalid relocation symbol");
         rel.symbolName = symbols[rel.symbol].name;
 
         rels.push_back(rel);
@@ -85,25 +103,30 @@ void ElfParser::parse(const uInt8 *elfData, size_t size)
 
       relocations[section.info] = rels;
     }
-  } catch (const EInvalidElf &e) {
-    EInvalidElf::raise("failed to parse ELF: " + string(e.what()));
+  } catch (const ElfParseError &e) {
+    ElfParseError::raise("failed to parse ELF: " + string(e.what()));
   }
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const uInt8 *ElfParser::getData() const { return data; }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 size_t ElfParser::getSize() const { return size; }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const vector<ElfParser::Section> &ElfParser::getSections() const
 {
   return sections;
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const vector<ElfParser::Symbol>& ElfParser::getSymbols() const
 {
   return symbols;
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const optional<ElfParser::Section>
 ElfParser::getSection(const string &name) const {
   for (const Section &section : sections)
@@ -113,25 +136,29 @@ ElfParser::getSection(const string &name) const {
   return optional<Section>();
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const optional<vector<ElfParser::Relocation>> ElfParser::getRelocations(size_t section) const
 {
   return relocations.contains(section) ? relocations.at(section) : optional<vector<ElfParser::Relocation>>();
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 ElfParser::read8(uInt32 offset) const
 {
   if (offset >= size)
-    EInvalidElf::raise("reference beyond bounds");
+    ElfParseError::raise("reference beyond bounds");
 
   return data[offset];
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt16 ElfParser::read16(uInt32 offset)  const
 {
   return bigEndian ? ((read8(offset) << 8) | read8(offset + 1))
                    : ((read8(offset + 1) << 8) | read8(offset));
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt32 ElfParser::read32(uInt32 offset) const
 {
   return bigEndian ? ((read8(offset) << 24) | (read8(offset + 1) << 16) |
@@ -140,6 +167,7 @@ uInt32 ElfParser::read32(uInt32 offset) const
                       (read8(offset + 1) << 8) | read8(offset));
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ElfParser::Section ElfParser::readSection(uInt32 offset) const {
   Section section;
 
@@ -154,34 +182,39 @@ ElfParser::Section ElfParser::readSection(uInt32 offset) const {
     section.align = read32(offset + 0x20);
 
     if (section.offset + section.size >= size)
-      EInvalidElf::raise("section exceeds bounds");
-  } catch (const EInvalidElf &e) {
-    EInvalidElf::raise("failed to parse section: " + string(e.what()));
+      ElfParseError::raise("section exceeds bounds");
+  } catch (const ElfParseError &e) {
+    ElfParseError::raise("failed to read section: " + string(e.what()));
   }
 
   return section;
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ElfParser::Symbol ElfParser::readSymbol(uInt32 index, const Section& symSec, const Section& strSec) const
 {
   uInt32 offset = index * SYMBOL_ENTRY_SIZE;
-  if (offset + SYMBOL_ENTRY_SIZE > symSec.size) EInvalidElf::raise("symbol is beyond section");
+  if (offset + SYMBOL_ENTRY_SIZE > symSec.size) ElfParseError::raise("symbol is beyond section");
   offset += symSec.offset;
 
   Symbol sym;
 
-  sym.nameOffset = read32(offset);
-  sym.value = read32(offset + 0x04);
-  sym.size = read32(offset + 0x08);
-  sym.info = read8(offset + 0x0c);
-  sym.visibility = read8(offset + 0x0d);
-  sym.section = read16(offset + 0x0e);
+  try {
+    sym.nameOffset = read32(offset);
+    sym.value = read32(offset + 0x04);
+    sym.size = read32(offset + 0x08);
+    sym.info = read8(offset + 0x0c);
+    sym.visibility = read8(offset + 0x0d);
+    sym.section = read16(offset + 0x0e);
+  } catch (const ElfParseError& e) {
+    ElfParseError::raise("failed to read section: " + string(e.what()));
+  }
 
   if (
       ((sym.section != SHN_ABS && sym.section != SHN_UND) || sym.type == STT_SECTION) &&
       sym.section >= sections.size()
   )
-    EInvalidElf::raise("symbol: section index out of range");
+    ElfParseError::raise("symbol: section index out of range");
 
   sym.bind = sym.info >> 4;
   sym.type = sym.info & 0x0f;
@@ -191,6 +224,7 @@ ElfParser::Symbol ElfParser::readSymbol(uInt32 index, const Section& symSec, con
   return sym;
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ElfParser::Relocation ElfParser::readRelocation(uInt32 index, const Section& sec) const
 {
   if (sec.type != SHT_REL && sec.type != SHT_RELA)
@@ -199,14 +233,18 @@ ElfParser::Relocation ElfParser::readRelocation(uInt32 index, const Section& sec
   const size_t size = sec.type == SHT_REL ? REL_ENTRY_SIZE : RELA_ENTRY_SIZE;
   uInt32 offset = index * size;
 
-  if (offset + size > sec.size) EInvalidElf::raise("relocation is beyond bounds");
+  if (offset + size > sec.size) ElfParseError::raise("relocation is beyond bounds");
 
   offset += sec.offset;
   Relocation rel;
 
-  rel.address = read32(offset);
-  rel.info = read32(offset + 0x04);
-  rel.addend = sec.type == SHT_RELA ? read32(offset + 0x08) :  0;
+  try {
+    rel.address = read32(offset);
+    rel.info = read32(offset + 0x04);
+    rel.addend = sec.type == SHT_RELA ? read32(offset + 0x08) :  0;
+  } catch (const ElfParseError& e) {
+    ElfParseError::raise("failed to read relocation: " + string(e.what()));
+  }
 
   rel.symbol = rel.info >> 8;
   rel.type = rel.info & 0x0f;
@@ -214,19 +252,21 @@ ElfParser::Relocation ElfParser::readRelocation(uInt32 index, const Section& sec
   return rel;
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const char* ElfParser::getName(const Section& section, uInt32 offset) const
 {
-  if (offset >= section.size) EInvalidElf::raise("name out of bounds");
+  if (offset >= section.size) ElfParseError::raise("name out of bounds");
   const uInt32 imageOffset = offset + section.offset;
 
   const char *name = reinterpret_cast<const char *>(data + imageOffset);
 
   if (data[imageOffset + strnlen(name, section.size - offset)] != '\0')
-    EInvalidElf::raise("unterminated section name");
+    ElfParseError::raise("unterminated section name");
 
   return name;
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const ElfParser::Section* ElfParser::getSymtab() const
 {
   for (auto& section: sections)
@@ -235,6 +275,7 @@ const ElfParser::Section* ElfParser::getSymtab() const
   return nullptr;
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const ElfParser::Section* ElfParser::getStrtab() const
 {
   const Section* strtab = nullptr;
@@ -247,11 +288,12 @@ const ElfParser::Section* ElfParser::getStrtab() const
     count++;
   }
 
-  if (count > 1) EInvalidElf::raise("more than one symbol table");
+  if (count > 1) ElfParseError::raise("more than one symbol table");
 
   return strtab;
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ostream& operator<<(ostream& os, const ElfParser::Section& section)
 {
   std::ios reset(nullptr);
@@ -275,6 +317,7 @@ ostream& operator<<(ostream& os, const ElfParser::Section& section)
   return os;
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ostream& operator<<(ostream& os, const ElfParser::Symbol symbol)
 {
   std::ios reset(nullptr);
@@ -297,6 +340,7 @@ ostream& operator<<(ostream& os, const ElfParser::Symbol symbol)
   return os;
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ostream& operator<<(ostream& os, const ElfParser::Relocation rel)
 {
   std::ios reset(nullptr);
