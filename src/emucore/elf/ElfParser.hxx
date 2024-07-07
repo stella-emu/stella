@@ -150,6 +150,12 @@ class ElfParser {
     vector<Section> sections;
     vector<Symbol> symbols;
     std::unordered_map<size_t, vector<Relocation>> relocations;
+
+  private:
+    ElfParser(const ElfParser&) = delete;
+    ElfParser(ElfParser&&) = delete;
+    ElfParser& operator=(const ElfParser&) = delete;
+    ElfParser& operator=(ElfParser&&) = delete;
 };
 
 ostream& operator<<(ostream& os, const ElfParser::Section& section);

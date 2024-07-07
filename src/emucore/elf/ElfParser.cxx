@@ -17,6 +17,9 @@ void ElfParser::parse(const uInt8 *elfData, size_t size)
   this->size = size;
 
   sections.resize(0);
+  symbols.resize(0);
+  relocations.clear();
+  bigEndian = true;
 
   try {
     if (read32(0x00) != ELF_MAGIC) EInvalidElf::raise("bad magic");
@@ -68,9 +71,10 @@ void ElfParser::parse(const uInt8 *elfData, size_t size)
       if (section.info >= sections.size()) EInvalidElf::raise("relocation table for invalid section");
 
       vector<Relocation> rels;
-      rels.reserve(section.size / (section.type == SHT_REL ? REL_ENTRY_SIZE : RELA_ENTRY_SIZE));
+      const size_t relocationCount = section.size / (section.type == SHT_REL ? REL_ENTRY_SIZE : RELA_ENTRY_SIZE);
+      rels.reserve(section.size / relocationCount);
 
-      for (size_t i = 0; i < rels.capacity(); i++) {
+      for (size_t i = 0; i < relocationCount; i++) {
         Relocation rel = readRelocation(i, section);
 
         if (rel.symbol >= symbols.size()) EInvalidElf::raise("invalid relocation symbol");
