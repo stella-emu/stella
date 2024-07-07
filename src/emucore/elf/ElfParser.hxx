@@ -24,18 +24,18 @@
 
 class ElfParser {
   public:
-    class EInvalidElf : public std::exception {
+    class ElfParseError : public std::exception {
       friend ElfParser;
 
       public:
         const char* what() const noexcept override { return myReason.c_str(); }
 
         [[noreturn]] static void raise(string_view message) {
-          throw EInvalidElf(message);
+          throw ElfParseError(message);
         }
 
       private:
-        explicit EInvalidElf(string_view reason) : myReason(reason) {}
+        explicit ElfParseError(string_view reason) : myReason(reason) {}
 
       private:
         const string myReason;
