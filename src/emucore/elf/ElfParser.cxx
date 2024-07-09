@@ -31,45 +31,45 @@ namespace {
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ElfParser::parse(const uInt8 *elfData, size_t size)
 {
-  data = elfData;
-  this->size = size;
+  myData = elfData;
+  mySize = size;
 
-  sections.resize(0);
-  symbols.resize(0);
-  relocations.clear();
-  bigEndian = true;
+  mySections.resize(0);
+  mySymbols.resize(0);
+  myRelocations.clear();
+  myBigEndian = true;
 
   try {
     if (read32(0x00) != ELF_MAGIC) ElfParseError::raise("bad magic");
     if (read8(0x04) != ELF_CLASS_32) ElfParseError::raise("not 32bit ELF");
     if (read8(0x06) != ELF_VERSION) ElfParseError::raise("invalid ELF version");
 
-    header.endianess = read8(0x05);
-    bigEndian = header.endianess == ENDIAN_BIG_ENDIAN;
+    myHeader.endianess = read8(0x05);
+    myBigEndian = myHeader.endianess == ENDIAN_BIG_ENDIAN;
 
     if (read32(0x14) != ELF_VERSION) ElfParseError::raise("inconsistent ELF version");
 
-    header.type = read16(0x10);
-    header.arch = read16(0x12);
+    myHeader.type = read16(0x10);
+    myHeader.arch = read16(0x12);
 
-    header.shOffset = read32(0x20);
-    header.shSize = read16(0x2e);
-    header.shNum = read16(0x30);
-    header.shstrIndex = read16(0x32);
+    myHeader.shOffset = read32(0x20);
+    myHeader.shSize = read16(0x2e);
+    myHeader.shNum = read16(0x30);
+    myHeader.shstrIndex = read16(0x32);
 
-    if (header.shstrIndex >= header.shNum) ElfParseError::raise(".shstrtab out of range");
+    if (myHeader.shstrIndex >= myHeader.shNum) ElfParseError::raise(".shstrtab out of range");
 
-    sections.reserve(header.shNum);
+    mySections.reserve(myHeader.shNum);
 
-    for (size_t i = 0; i < header.shNum; i++)
-      sections.push_back(
-          readSection(header.shOffset + i * header.shSize));
+    for (size_t i = 0; i < myHeader.shNum; i++)
+      mySections.push_back(
+          readSection(myHeader.shOffset + i * myHeader.shSize));
 
-    const Section &shrstrtab(sections[header.shstrIndex]);
+    const Section &shrstrtab(mySections[myHeader.shstrIndex]);
 
     if (shrstrtab.type != SHT_STRTAB) ElfParseError::raise(".shstrtab has wrong type");
 
-    for (Section &section : sections)
+    for (Section &section : mySections)
       section.name = getName(shrstrtab, section.nameOffset);
 
     const Section* symtab = getSymtab();
@@ -78,15 +78,15 @@ void ElfParser::parse(const uInt8 *elfData, size_t size)
       const Section* strtab = getStrtab();
       if (!strtab) ElfParseError::raise("no string table to resolve symbol names");
 
-      symbols.reserve(symtab->size / SYMBOL_ENTRY_SIZE);
+      mySymbols.reserve(symtab->size / SYMBOL_ENTRY_SIZE);
 
       for (size_t i = 0; i < symtab->size / SYMBOL_ENTRY_SIZE; i++)
-        symbols.push_back(readSymbol(i, *symtab, *strtab));
+        mySymbols.push_back(readSymbol(i, *symtab, *strtab));
     }
 
-    for (auto& section: sections) {
+    for (const auto& section: mySections) {
       if (section.type != SHT_REL && section.type != SHT_RELA) continue;
-      if (section.info >= sections.size()) ElfParseError::raise("relocation table for invalid section");
+      if (section.info >= mySections.size()) ElfParseError::raise("relocation table for invalid section");
 
       vector<Relocation> rels;
       const size_t relocationCount = section.size / (section.type == SHT_REL ? REL_ENTRY_SIZE : RELA_ENTRY_SIZE);
@@ -95,13 +95,13 @@ void ElfParser::parse(const uInt8 *elfData, size_t size)
       for (size_t i = 0; i < relocationCount; i++) {
         Relocation rel = readRelocation(i, section);
 
-        if (rel.symbol >= symbols.size()) ElfParseError::raise("invalid relocation symbol");
-        rel.symbolName = symbols[rel.symbol].name;
+        if (rel.symbol >= mySymbols.size()) ElfParseError::raise("invalid relocation symbol");
+        rel.symbolName = mySymbols[rel.symbol].name;
 
         rels.push_back(rel);
       }
 
-      relocations[section.info] = rels;
+      myRelocations[section.info] = rels;
     }
   } catch (const ElfParseError &e) {
     ElfParseError::raise("failed to parse ELF: " + string(e.what()));
@@ -109,27 +109,27 @@ void ElfParser::parse(const uInt8 *elfData, size_t size)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const uInt8 *ElfParser::getData() const { return data; }
+const uInt8 *ElfParser::getData() const { return myData; }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-size_t ElfParser::getSize() const { return size; }
+size_t ElfParser::getSize() const { return mySize; }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const vector<ElfParser::Section> &ElfParser::getSections() const
 {
-  return sections;
+  return mySections;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const vector<ElfParser::Symbol>& ElfParser::getSymbols() const
 {
-  return symbols;
+  return mySymbols;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const optional<ElfParser::Section>
 ElfParser::getSection(const string &name) const {
-  for (const Section &section : sections)
+  for (const Section &section : mySections)
     if (section.name == name)
       return section;
 
@@ -139,29 +139,29 @@ ElfParser::getSection(const string &name) const {
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const optional<vector<ElfParser::Relocation>> ElfParser::getRelocations(size_t section) const
 {
-  return relocations.contains(section) ? relocations.at(section) : optional<vector<ElfParser::Relocation>>();
+  return myRelocations.contains(section) ? myRelocations.at(section) : optional<vector<ElfParser::Relocation>>();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 ElfParser::read8(uInt32 offset) const
 {
-  if (offset >= size)
+  if (offset >= mySize)
     ElfParseError::raise("reference beyond bounds");
 
-  return data[offset];
+  return myData[offset];
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt16 ElfParser::read16(uInt32 offset)  const
 {
-  return bigEndian ? ((read8(offset) << 8) | read8(offset + 1))
+  return myBigEndian ? ((read8(offset) << 8) | read8(offset + 1))
                    : ((read8(offset + 1) << 8) | read8(offset));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt32 ElfParser::read32(uInt32 offset) const
 {
-  return bigEndian ? ((read8(offset) << 24) | (read8(offset + 1) << 16) |
+  return myBigEndian ? ((read8(offset) << 24) | (read8(offset + 1) << 16) |
                       (read8(offset + 2) << 8) | read8(offset + 3))
                    : ((read8(offset + 3) << 24) | (read8(offset + 2) << 16) |
                       (read8(offset + 1) << 8) | read8(offset));
@@ -181,7 +181,7 @@ ElfParser::Section ElfParser::readSection(uInt32 offset) const {
     section.info = read32(offset + 0x1c);
     section.align = read32(offset + 0x20);
 
-    if (section.offset + section.size >= size)
+    if (section.offset + section.size >= mySize)
       ElfParseError::raise("section exceeds bounds");
   } catch (const ElfParseError &e) {
     ElfParseError::raise("failed to read section: " + string(e.what()));
@@ -212,14 +212,14 @@ ElfParser::Symbol ElfParser::readSymbol(uInt32 index, const Section& symSec, con
 
   if (
       ((sym.section != SHN_ABS && sym.section != SHN_UND) || sym.type == STT_SECTION) &&
-      sym.section >= sections.size()
+      sym.section >= mySections.size()
   )
     ElfParseError::raise("symbol: section index out of range");
 
   sym.bind = sym.info >> 4;
   sym.type = sym.info & 0x0f;
 
-  sym.name = sym.type == STT_SECTION ? sections[sym.section].name : getName(strSec, sym.nameOffset);
+  sym.name = sym.type == STT_SECTION ? mySections[sym.section].name : getName(strSec, sym.nameOffset);
 
   return sym;
 }
@@ -239,15 +239,18 @@ ElfParser::Relocation ElfParser::readRelocation(uInt32 index, const Section& sec
   Relocation rel;
 
   try {
-    rel.address = read32(offset);
+    rel.offset = read32(offset);
     rel.info = read32(offset + 0x04);
-    rel.addend = sec.type == SHT_RELA ? read32(offset + 0x08) :  0;
+    rel.addend = sec.type == SHT_RELA ? read32(offset + 0x08) : optional<uInt32>();
   } catch (const ElfParseError& e) {
     ElfParseError::raise("failed to read relocation: " + string(e.what()));
   }
 
   rel.symbol = rel.info >> 8;
   rel.type = rel.info & 0x0f;
+
+  if (rel.symbol >=mySymbols.size())
+    ElfParseError::raise("bad relocation: symbol out of bounds");
 
   return rel;
 }
@@ -258,9 +261,9 @@ const char* ElfParser::getName(const Section& section, uInt32 offset) const
   if (offset >= section.size) ElfParseError::raise("name out of bounds");
   const uInt32 imageOffset = offset + section.offset;
 
-  const char *name = reinterpret_cast<const char *>(data + imageOffset);
+  const char *name = reinterpret_cast<const char *>(myData + imageOffset);
 
-  if (data[imageOffset + strnlen(name, section.size - offset)] != '\0')
+  if (myData[imageOffset + strnlen(name, section.size - offset)] != '\0')
     ElfParseError::raise("unterminated section name");
 
   return name;
@@ -269,7 +272,7 @@ const char* ElfParser::getName(const Section& section, uInt32 offset) const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const ElfParser::Section* ElfParser::getSymtab() const
 {
-  for (auto& section: sections)
+  for (auto& section: mySections)
     if (section.type == SHT_SYMTAB) return &section;
 
   return nullptr;
@@ -281,10 +284,10 @@ const ElfParser::Section* ElfParser::getStrtab() const
   const Section* strtab = nullptr;
   size_t count = 0;
 
-  for (size_t i = 0; i < sections.size(); i++) {
-    if (sections[i].type != SHT_STRTAB || i == header.shstrIndex) continue;
+  for (size_t i = 0; i < mySections.size(); i++) {
+    if (mySections[i].type != SHT_STRTAB || i == myHeader.shstrIndex) continue;
 
-    strtab = &sections[i];
+    strtab = &mySections[i];
     count++;
   }
 
@@ -349,10 +352,12 @@ ostream& operator<<(ostream& os, const ElfParser::Relocation rel)
   os
     << rel.symbolName << " :"
     << std::hex << std::setw(4) << std::setfill('0')
-    << " address=0x" << rel.address
+    << " offset=0x" << rel.offset
     << " info=0x" << rel.info
-    << " addend=0x" << rel.addend
     << " type=0x" << (int)rel.type;
+
+  if (rel.addend.has_value())
+    os << " addend=0x" << *rel.addend;
 
   os.copyfmt(reset);
 

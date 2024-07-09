@@ -81,9 +81,9 @@ class ElfParser {
     };
 
     struct Relocation {
-      uInt32 address;
+      uInt32 offset;
       uInt32 info;
-      uInt32 addend;
+      optional<uInt32> addend;
 
       uInt32 symbol;
       uInt8 type;
@@ -113,6 +113,13 @@ class ElfParser {
 
     static constexpr uInt32 STT_SECTION = 0x03;
 
+    static constexpr uInt32 R_ARM_ABS32 = 0x02;
+    static constexpr uInt32 R_ARM_THM_CALL = 0x0a;
+    static constexpr uInt32 R_ARM_THM_JUMP24 = 0x1e;
+    static constexpr uInt32 R_ARM_TARGET1 = 0x26;
+
+    static constexpr uInt32 STT_FUNC = 0x02;
+
   public:
     ElfParser() = default;
 
@@ -141,15 +148,15 @@ class ElfParser {
     const Section* getStrtab() const;
 
   private:
-    const uInt8 *data{nullptr};
-    size_t size;
+    const uInt8 *myData{nullptr};
+    size_t mySize;
 
-    bool bigEndian{true};
+    bool myBigEndian{true};
 
-    Header header;
-    vector<Section> sections;
-    vector<Symbol> symbols;
-    std::unordered_map<size_t, vector<Relocation>> relocations;
+    Header myHeader;
+    vector<Section> mySections;
+    vector<Symbol> mySymbols;
+    std::unordered_map<size_t, vector<Relocation>> myRelocations;
 
   private:
     ElfParser(const ElfParser&) = delete;

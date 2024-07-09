@@ -20,7 +20,6 @@
 
 #include "bspf.hxx"
 #include "Cart.hxx"
-#include "ElfParser.hxx"
 
 class CartridgeELF: public Cartridge {
   public:
@@ -116,7 +115,7 @@ class CartridgeELF: public Cartridge {
     bool myIsBusDriven{false};
     uInt8 myDriveBusValue{0};
 
-    ElfParser elfParser;
+    uInt32 myArmEntrypoint{0};
 };
 
 #endif // CARTRIDGE_ELF
