@@ -18,6 +18,8 @@
 #include <sstream>
 
 #include "System.hxx"
+#include "ElfParser.hxx"
+#include "ElfLinker.hxx"
 #include "exception/FatalEmulationError.hxx"
 
 #include "CartELF.hxx"
@@ -61,6 +63,24 @@ namespace {
 	  0x4c, 0x00, 0x10	// jmp $1000
   };
 
+  constexpr uInt32 ADDR_TEXT_BASE = 0x00100000;
+  constexpr uInt32 ADDR_DATA_BASE = 0x00200000;
+
+  constexpr uInt32 ADDR_ADDR_IDR = 0xf0000000;
+  constexpr uInt32 ADDR_DATA_IDR = 0xf0000004;
+  constexpr uInt32 ADDR_DATA_ODR = 0xf0000008;
+  constexpr uInt32 ADDR_DATA_MODER = 0xf0000010;
+
+  constexpr uInt32 ADDR_VCS_JSR6 = 0x1000;
+
+  const vector<ElfLinker::ExternalSymbol> EXTERNAL_SYMBOLS = {
+    {"ADDR_IDR", ADDR_ADDR_IDR},
+    {"DATA_IDR", ADDR_DATA_IDR},
+    {"DATA_ODR", ADDR_DATA_ODR},
+    {"DATA_MODER", ADDR_DATA_MODER},
+    {"vcsJsr6", ADDR_VCS_JSR6}
+  };
+
 #ifdef DUMP_ELF
   void dumpElf(const ElfParser& elfParser) {
     cout << "ELF sections:" << std::endl << std::endl;
@@ -99,6 +119,8 @@ CartridgeELF::CartridgeELF(const ByteBuffer& image, size_t size, string_view md5
                            const Settings& settings)
   : Cartridge(settings, md5), myImageSize(size)
 {
+  ElfParser elfParser;
+
   try {
     elfParser.parse(image.get(), size);
   } catch (ElfParser::ElfParseError& e) {
@@ -116,6 +138,27 @@ CartridgeELF::CartridgeELF(const ByteBuffer& image, size_t size, string_view md5
 #ifdef DUMP_ELF
   dumpElf(elfParser);
 #endif
+
+  ElfLinker elfLinker(ADDR_TEXT_BASE, ADDR_DATA_BASE, elfParser);
+  try {
+    elfLinker.link(EXTERNAL_SYMBOLS);
+  } catch (const ElfLinker::ElfLinkError& e) {
+    throw runtime_error("failed to link ELF: " + string(e.what()));
+  }
+
+  try {
+    myArmEntrypoint = elfLinker.findRelocatedSymbol("elf_main").value;
+  } catch (const ElfLinker::ElfSymbolResolutionError& e) {
+    throw runtime_error("failed to resolve ARM entrypoint" + string(e.what()));
+  }
+
+  #ifdef DUMP_ELF
+    cout
+      << std::endl
+      << "ARM entrypoint: 0x"
+      << std::hex << std::setw(8) << std::setfill('0') << myArmEntrypoint << std::dec
+      << std::endl;
+  #endif
 }
 
 
