@@ -82,16 +82,17 @@ namespace {
   };
 
 #ifdef DUMP_ELF
-  void dumpElf(const ElfParser& elfParser) {
+  void dumpElf(const ElfParser& parser)
+  {
     cout << "ELF sections:" << std::endl << std::endl;
 
     size_t i = 0;
-    for (auto& section: elfParser.getSections()) {
+    for (auto& section: parser.getSections()) {
       if (section.type != 0x00) cout << i << " " << section << std::endl;
       i++;
     }
 
-    auto symbols = elfParser.getSymbols();
+    auto symbols = parser.getSymbols();
     cout << std::endl << "ELF symbols:" << std::endl << std::endl;
     if (symbols.size() > 0) {
       i = 0;
@@ -100,8 +101,8 @@ namespace {
     }
 
     i = 0;
-    for (auto& section: elfParser.getSections()) {
-      auto rels = elfParser.getRelocations(i++);
+    for (auto& section: parser.getSections()) {
+      auto rels = parser.getRelocations(i++);
       if (!rels) continue;
 
       cout
@@ -110,6 +111,49 @@ namespace {
 
       for (auto& rel: *rels) cout << rel << std::endl;
     }
+  }
+
+  void dumpLinkage(const ElfParser& parser, const ElfLinker& linker)
+  {
+    cout << std::endl << "relocated sections:" << std::endl << std::endl;
+    cout << std::hex << std::setfill('0');
+
+    const auto& sections = parser.getSections();
+    const auto& relocatedSections = linker.getRelocatedSections();
+
+    for (size_t i = 0; i < sections.size(); i++) {
+      if (!relocatedSections[i]) continue;
+
+      cout
+        << sections[i].name
+        << " @ 0x"<< std::setw(8) << (relocatedSections[i]->offset +
+          (relocatedSections[i]->type == ElfLinker::SectionType::text ? ADDR_TEXT_BASE : ADDR_DATA_BASE)
+        )
+        << " size 0x" << std::setw(8) << sections[i].size << std::endl;
+    }
+
+    cout << std::endl << "relocated symbols:" << std::endl << std::endl;
+
+    const auto& symbols = parser.getSymbols();
+    const auto& relocatedSymbols = linker.getRelocatedSymbols();
+
+    for (size_t i = 0; i < symbols.size(); i++) {
+      if (!relocatedSymbols[i]) continue;
+
+      cout
+        << symbols[i].name
+        << " = 0x" << std::setw(8) << relocatedSymbols[i]->value;
+
+      if (relocatedSymbols[i]->section) {
+        cout << (*relocatedSymbols[i]->section == ElfLinker::SectionType::text ? " (text)" : " (data)");
+      } else {
+        cout << " (abs)";
+      }
+
+      cout << std::endl;
+    }
+
+    cout << std::dec;
   }
 #endif
 }
@@ -153,6 +197,8 @@ CartridgeELF::CartridgeELF(const ByteBuffer& image, size_t size, string_view md5
   }
 
   #ifdef DUMP_ELF
+    dumpLinkage(elfParser, elfLinker);
+
     cout
       << std::endl
       << "ARM entrypoint: 0x"
