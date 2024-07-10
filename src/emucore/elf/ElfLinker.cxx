@@ -78,7 +78,7 @@ void ElfLinker::link(const vector<ExternalSymbol>& externalSymbols)
 
   for (size_t i = 0; i < sections.size(); i++) {
     const auto& relocatedSection = myRelocatedSections[i];
-    if (!relocatedSection.has_value()) continue;
+    if (!relocatedSection) continue;
 
     const auto& section = sections[i];
     if (section.type != ElfParser::SHT_PROGBITS) continue;
@@ -192,6 +192,16 @@ ElfLinker::RelocatedSymbol ElfLinker::findRelocatedSymbol(string_view name) cons
   ElfSymbolResolutionError::raise("symbol not found");
 }
 
+const vector<std::optional<ElfLinker::RelocatedSection>>& ElfLinker::getRelocatedSections() const
+{
+  return myRelocatedSections;
+}
+
+const vector<std::optional<ElfLinker::RelocatedSymbol>>& ElfLinker::getRelocatedSymbols() const
+{
+  return myRelocatedSymbols;
+}
+
 void ElfLinker::applyRelocation(const ElfParser::Relocation& relocation, size_t iSection)
 {
   const auto& targetSection = myParser.getSections()[iSection];
@@ -204,6 +214,11 @@ void ElfLinker::applyRelocation(const ElfParser::Relocation& relocation, size_t 
       "unable to relocate " + symbol.name + " in " + targetSection.name + ": symbol could not be relocated"
     );
 
+  if (relocation.offset + 4 > targetSection.size)
+    ElfLinkError::raise(
+      "unable to relocate " + symbol.name + " in " + targetSection.name + ": target out of range"
+    );
+
   uInt8* target =
     (targetSectionRelocated.type == SectionType::text ? myTextData : myDataData).get() +
     targetSectionRelocated.offset + relocation.offset;
@@ -212,11 +227,6 @@ void ElfLinker::applyRelocation(const ElfParser::Relocation& relocation, size_t 
     case ElfParser::R_ARM_ABS32:
     case ElfParser::R_ARM_TARGET1:
       {
-        if (relocation.offset + 4 > targetSection.size)
-          ElfLinkError::raise(
-            "unable to relocate " + symbol.name + " in " + targetSection.name + ": target out of range"
-          );
-
         const uInt32 value = relocatedSymbol->value + relocation.addend.value_or(read32(target));
         write32(target, value | (symbol.type == ElfParser::STT_FUNC ? 0x01 : 0));
 
@@ -226,18 +236,13 @@ void ElfLinker::applyRelocation(const ElfParser::Relocation& relocation, size_t 
     case ElfParser::R_ARM_THM_CALL:
     case ElfParser::R_ARM_THM_JUMP24:
       {
-        if (relocation.offset + 4 > targetSection.size)
-          ElfLinkError::raise(
-            "unable to relocate " + symbol.name + " in " + targetSection.name + ": target out of range"
-          );
-
         const uInt32 op = read32(target);
 
         Int32 offset = relocatedSymbol->value + relocation.addend.value_or(elfUtil::decode_B_BL(op)) -
           (targetSectionRelocated.type == SectionType::text ? myTextBase : myDataBase) -
           targetSectionRelocated.offset - relocation.offset - 4;
 
-        if ((offset >> 25) != -1 && (offset >> 25) != 0)
+        if ((offset >> 24) != -1 && (offset >> 24) != 0)
           ElfLinkError::raise("unable to relocate jump: offset out of bounds");
 
         write32(target, elfUtil::encode_B_BL(offset, relocation.type == ElfParser::R_ARM_THM_CALL));

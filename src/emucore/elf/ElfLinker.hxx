@@ -59,6 +59,11 @@ class ElfLinker {
 
     enum class SectionType: uInt8 { text, data };
 
+    struct RelocatedSection {
+      SectionType type;
+      uInt32 offset;
+    };
+
     struct RelocatedSymbol {
       optional<SectionType> section;
       uInt32 value;
@@ -87,11 +92,8 @@ class ElfLinker {
 
     RelocatedSymbol findRelocatedSymbol(string_view name) const;
 
-  private:
-    struct RelocatedSection {
-      SectionType type;
-      uInt32 offset;
-    };
+    const vector<std::optional<RelocatedSection>>& getRelocatedSections() const;
+    const vector<std::optional<RelocatedSymbol>>& getRelocatedSymbols() const;
 
   private:
     void applyRelocation(const ElfParser::Relocation& relocation, size_t iSection);

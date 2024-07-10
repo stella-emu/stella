@@ -329,12 +329,12 @@ ostream& operator<<(ostream& os, const ElfParser::Symbol symbol)
   os
     << symbol.nameOffset << " "
     << symbol.name
-    << std::hex << std::setw(4) << std::setfill('0')
-    << " value=0x" << symbol.value
-    << " size=0x" << symbol.size
+    << std::hex << std::setfill('0')
+    << " value=0x" << std::setw(8) << symbol.value
+    << " size=0x" << std::setw(8) << symbol.size
     << std::setw(1)
-    << " bind=0x" << (int)symbol.bind
-    << " type=0x" << (int)symbol.type;
+    << " bind=0x" << std::setw(2) << (int)symbol.bind
+    << " type=0x" << std::setw(2) << (int)symbol.type;
 
   os.copyfmt(reset);
 
@@ -351,13 +351,13 @@ ostream& operator<<(ostream& os, const ElfParser::Relocation rel)
 
   os
     << rel.symbolName << " :"
-    << std::hex << std::setw(4) << std::setfill('0')
-    << " offset=0x" << rel.offset
-    << " info=0x" << rel.info
-    << " type=0x" << (int)rel.type;
+    << std::hex << std::setfill('0')
+    << " offset=0x" << std::setw(8) << rel.offset
+    << " info=0x" << std::setw(8) << rel.info
+    << " type=0x" << std::setw(2) << (int)rel.type;
 
   if (rel.addend.has_value())
-    os << " addend=0x" << *rel.addend;
+    os << " addend=0x" << std::setw(8) << *rel.addend;
 
   os.copyfmt(reset);
 
