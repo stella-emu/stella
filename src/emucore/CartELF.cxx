@@ -85,7 +85,7 @@ namespace {
 #ifdef DUMP_ELF
   void dumpElf(const ElfParser& parser)
   {
-    cout << "ELF sections:" << std::endl << std::endl;
+    cout << std::endl << "ELF sections:" << std::endl << std::endl;
 
     size_t i = 0;
     for (auto& section: parser.getSections()) {
@@ -116,8 +116,16 @@ namespace {
 
   void dumpLinkage(const ElfParser& parser, const ElfLinker& linker)
   {
-    cout << std::endl << "relocated sections:" << std::endl << std::endl;
     cout << std::hex << std::setfill('0');
+
+    cout
+      << std::endl
+      << "text segment size: 0x" << std::setw(8) << linker.getTextSize()
+      << std::endl
+      << "data segment size: 0x" << std::setw(8) << linker.getDataSize()
+      << std::endl;
+
+    cout << std::endl << "relocated sections:" << std::endl << std::endl;
 
     const auto& sections = parser.getSections();
     const auto& relocatedSections = linker.getRelocatedSections();
