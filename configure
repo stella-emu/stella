@@ -13,6 +13,16 @@
 # use environment vars if set
 CXXFLAGS="$CXXFLAGS $CPPFLAGS"
 
+if test -n "$CXXFLAGS_TEST"; then
+	CXXFLAGS_TEST="$CXXFLAGS_TEST $CPPFLAGS"
+else
+	CXXFLAGS_TEST="$CXXFLAGS"
+fi
+
+if test -z "$LDFLAGS_TEST"; then
+	LDFLAGS_TEST="$LDFLAGS"
+fi
+
 # default option behaviour yes/no
 _build_gui=yes
 _build_windowed=yes
@@ -225,6 +235,7 @@ Optional Libraries:
   --with-sdl-prefix=DIR    Prefix where the sdl2-config script is installed (optional)
   --with-libpng-prefix=DIR Prefix where libpng is installed (optional)
   --with-zlib-prefix=DIR   Prefix where zlib is installed (optional)
+  --with-gtest-prefix=DIR	 Prefix where googletest is installed (optional)
 
 Some influential environment variables:
   LDFLAGS	linker flags, e.g. -L<lib dir> if you have libraries in a
@@ -233,6 +244,8 @@ Some influential environment variables:
   CXXFLAGS	C++ compiler flags
   CPPFLAGS	C++ preprocessor flags, e.g. -I<include dir> if you have
   		headers in a nonstandard directory <include dir>
+  LDFLAGS_TEST linker flags for unit tests
+  CXXFLAGS_TEST C++ compiler flags for unit tests
 
 EOF
     exit 0
@@ -280,6 +293,11 @@ for ac_option in $@; do
         _prefix=`echo $ac_option | cut -d '=' -f 2`
         ZLIB_CFLAGS="-I$_prefix/include"
         ZLIB_LIBS="-L$_prefix/lib"
+        ;;
+			--with-gtest-prefix=*)
+        _prefix=`echo $ac_option | cut -d '=' -f 2`
+        CXXFLAGS_TEST="$CXXFLAGS_TEST -I$_prefix/include"
+        LDFLAGS_TEST="$LDFLAGS_TEST -L$_prefix/lib"
         ;;
       --host=*)
         _host=`echo $ac_option | cut -d '=' -f 2`
@@ -841,6 +859,9 @@ case $_host_os in
 			INCLUDES="$INCLUDES -I$SRC_OS/unix"
 			if test "$have_clang" == yes; then
 				CXXFLAGS="$CXXFLAGS -Wno-poison-system-directories"
+				if test -n "$CXXFLAGS_TEST"; then
+					CXXFLAGS_TEST="$CXXFLAGS_TEST -Wno-poison-system-directories"
+				fi
 			fi
 			_libsqlite3=no
 			;;
@@ -954,6 +975,7 @@ cat > config.mak << EOF
 CC := $CC
 CXX := $CXX
 CXXFLAGS := $CXXFLAGS
+CXXFLAGS_TEST := $CXXFLAGS_TEST
 LD := $LD
 LIBS += $LIBS
 RANLIB := $_ranlib
@@ -991,6 +1013,7 @@ INCLUDES += $INCLUDES
 OBJS += $OBJS
 DEFINES += $DEFINES
 LDFLAGS += $LDFLAGS
+LDFLAGS_TEST += $LDFLAGS_TEST
 $_config_mk_data
 EOF
 

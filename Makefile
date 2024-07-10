@@ -47,17 +47,38 @@ else
   CFLAGS:= -O2
 endif
 
+ifndef CXXFLAGS_TEST
+	CXXFLAGS_TEST := $(CXXFLAGS)
+endif
+
+ifndef CFLAGS_TEST
+	CFLAGS_TEST := $(CFLAGS)
+endif
+
+ifndef LDFLAGS_TEST
+	LDFLAGS_TEST := $(LDFLAGS)
+endif
+
 CXXFLAGS+= -Wall -Wextra -Wno-unused-parameter
 CFLAGS+= -Wall -Wextra -Wno-unused-parameter
+
+CXXFLAGS_TEST+= -Wall -Wextra -Wno-unused-parameter
+CFLAGS_TEST+= -Wall -Wextra -Wno-unused-parameter
 
 ifdef HAVE_GCC
   CXXFLAGS+= -Wno-multichar -Wunused -Woverloaded-virtual -Wnon-virtual-dtor -std=c++20
   CFLAGS+= -Wno-multichar -Wunused
+
+	CXXFLAGS_TEST+= -Wno-multichar -Wunused -Woverloaded-virtual -Wnon-virtual-dtor -std=c++20
+  CFLAGS_TEST+= -Wno-multichar -Wunused
 endif
 
 ifdef HAVE_CLANG
   CXXFLAGS+= -Wno-multichar -Wunused -Woverloaded-virtual -Wnon-virtual-dtor -std=c++20
   CFLAGS+= -Wno-multichar -Wunused
+
+  CXXFLAGS_TEST+= -Wno-multichar -Wunused -Woverloaded-virtual -Wnon-virtual-dtor -std=c++20
+  CFLAGS_TEST+= -Wno-multichar -Wunused
 endif
 
 ifdef CLANG_WARNINGS
@@ -70,6 +91,9 @@ ifdef CLANG_WARNINGS
 
   CXXFLAGS+= $(EXTRA_WARN)
   CFLAGS+= $(EXTRA_WARN)
+
+	CXXFLAGS_TEST+= $(EXTRA_WARN)
+  CFLAGS_TEST+= $(EXTRA_WARN)
 endif
 
 ifdef PROFILE
@@ -108,12 +132,14 @@ ifdef STELLA_BUILD_ROOT
 else
   OBJECT_ROOT := out
 endif
+OBJECT_ROOT_TEST := out.test
 OBJECT_ROOT_PROFILE_GENERERATE := out.pgen
 OBJECT_ROOT_PROFILE_USE := out.pgo
 
 EXECUTABLE := stella$(EXEEXT)
 EXECUTABLE_PROFILE_GENERATE := stella-pgo-generate$(EXEEXT)
 EXECUTABLE_PROFILE_USE := stella-pgo$(EXEEXT)
+EXECUTABLE_TEST := stella-test$(EXEEXT)
 
 PROFILE_DIR = $(CURDIR)/test/roms/profile
 PROFILE_OUT = $(PROFILE_DIR)/out
@@ -153,6 +179,9 @@ endif
 all: $(EXECUTABLE)
 
 pgo: $(EXECUTABLE_PROFILE_USE)
+
+test: $(EXECUTABLE_TEST)
+	./$(EXECUTABLE_TEST)
 
 ######################################################################
 # Various minor settings
@@ -195,12 +224,16 @@ DEPDIRS = $(addsuffix /$(DEPDIR),$(MODULE_DIRS))
 DEPFILES =
 
 OBJ=$(addprefix $(OBJECT_ROOT)/,$(OBJS))
+OBJ_TEST=$(addprefix $(OBJECT_ROOT_TEST)/,$(OBJS_TEST))
 OBJ_PROFILE_GENERATE=$(addprefix $(OBJECT_ROOT_PROFILE_GENERERATE)/,$(OBJS))
 OBJ_PROFILE_USE=$(addprefix $(OBJECT_ROOT_PROFILE_USE)/,$(OBJS))
 
 # The build rule for the Stella executable
 $(EXECUTABLE): $(OBJ)
 	$(LD) $(LDFLAGS) $(PRE_OBJS_FLAGS) $+ $(POST_OBJS_FLAGS) $(LIBS) $(PROF) -o $@
+
+$(EXECUTABLE_TEST): $(OBJ_TEST)
+	$(LD) $(LDFLAGS_TEST) $(PRE_OBJS_FLAGS) $+ $(POST_OBJS_FLAGS) $(LIBS) -lgtest -lgtest_main -o $@
 
 $(EXECUTABLE_PROFILE_GENERATE): $(OBJ_PROFILE_GENERATE)
 	$(LD) $(LDFLAGS_PROFILE_GENERATE) $(PRE_OBJS_FLAGS) $+ $(POST_OBJS_FLAGS) $(LIBS) $(PROF) -o $@
@@ -216,7 +249,7 @@ clean:
 	-$(RM) -fr \
 		$(OBJECT_ROOT) $(OBJECT_ROOT_PROFILE_GENERERATE) $(OBJECT_ROOT_PROFILE_USE) \
 		$(EXECUTABLE) $(EXECUTABLE_PROFILE_GENERATE) $(EXECUTABLE_PROFILE_USE) \
-		$(PROFILE_OUT) $(PROFILE_STAMP)
+		$(OBJECT_ROOT_TEST) $(PROFILE_OUT) $(PROFILE_STAMP)
 
 .PHONY: all clean dist distclean
 
@@ -244,6 +277,16 @@ $(OBJECT_ROOT)/%.o: %.cxx
 	$(merge_dep)
 
 $(OBJECT_ROOT)/%.o: %.c
+	$(create_dir)
+	$(CC) $(CXX_UPDATE_DEP_FLAG) $(CFLAGS_TEST) $(CPPFLAGS) -c $(<) -o $@
+	$(merge_dep)
+
+$(OBJECT_ROOT_TEST)/%.o: %.cxx
+	$(create_dir)
+	$(CXX) $(CXX_UPDATE_DEP_FLAG) $(CXXFLAGS_TEST) $(CPPFLAGS) -c $(<) -o $@
+	$(merge_dep)
+
+$(OBJECT_ROOT_TEST)/%.o: %.c
 	$(create_dir)
 	$(CC) $(CXX_UPDATE_DEP_FLAG) $(CFLAGS) $(CPPFLAGS) -c $(<) -o $@
 	$(merge_dep)
@@ -280,6 +323,14 @@ $(OBJECT_ROOT)/%.o: %.cxx
 $(OBJECT_ROOT)/%.o: %.c
 	$(create_dir)
 	$(CC) $(CXX_UPDATE_DEP_FLAG) $(CFLAGS) $(CPPFLAGS) -c $(<) -o $@
+
+$(OBJECT_ROOT_TEST)/%.o: %.cxx
+	$(create_dir)
+	$(CXX) $(CXX_UPDATE_DEP_FLAG) $(CXXFLAGS_TEST) $(CPPFLAGS) -c $(<) -o $@
+
+$(OBJECT_ROOT_TEST)/%.o: %.c
+	$(create_dir)
+	$(CC) $(CXX_UPDATE_DEP_FLAG) $(CFLAGS_TEST) $(CPPFLAGS) -c $(<) -o $@
 
 $(OBJECT_ROOT_PROFILE_GENERERATE)/%.o: %.cxx
 	$(create_dir)

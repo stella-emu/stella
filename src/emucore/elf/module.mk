@@ -5,8 +5,12 @@ MODULE_OBJS = \
 	src/emucore/elf/ElfLinker.o \
 	src/emucore/elf/ElfUtil.o
 
+MODULE_TEST_OBJS = \
+	src/emucore/elf/ElfUtil.o \
+	src/emucore/elf/EncodingTest.o
+
 MODULE_DIRS += \
-	src/emucore/elf
+	src/emucore/elf/EncodingTest.o
 
 # Include common rules
 include $(srcdir)/common.rules
