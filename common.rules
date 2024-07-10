@@ -4,7 +4,9 @@
 # contains the module name, a trick we use so we can keep multiple different
 # module object lists, one for each module.
 MODULE_OBJS-$(MODULE) := $(MODULE_OBJS)
+MODULE_TEST_OBJS-$(MODULE) := $(MODULE_TEST_OBJS)
 
 # If not building as a plugin, add the object files to the main OBJS list
 #OBJS += $(MODULE_LIB-$(MODULE))
 OBJS += $(MODULE_OBJS)
+OBJS_TEST := $(MODULE_TEST_OBJS)

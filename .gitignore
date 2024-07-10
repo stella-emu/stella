@@ -10,7 +10,9 @@ src/**/*.tlog
 out
 out.pgo
 out.pgen
+out.test
 stella
+stella-test
 ￼stella-pgo
 ￼stella-pgo-generate
 *.diff
