@@ -57,15 +57,15 @@ class ElfLinker {
         const string myReason;
     };
 
-    enum class SectionType: uInt8 { text, data };
+    enum class SegmentType: uInt8 { text, data };
 
     struct RelocatedSection {
-      SectionType type;
+      SegmentType segment;
       uInt32 offset;
     };
 
     struct RelocatedSymbol {
-      optional<SectionType> section;
+      optional<SegmentType> segment;
       uInt32 value;
     };
 

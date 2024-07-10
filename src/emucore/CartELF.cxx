@@ -71,7 +71,8 @@ namespace {
   constexpr uInt32 ADDR_DATA_ODR = 0xf0000008;
   constexpr uInt32 ADDR_DATA_MODER = 0xf0000010;
 
-  constexpr uInt32 ADDR_VCS_JSR6 = 0x1000;
+  constexpr uInt32 VCSLIB_BASE = 0x1001;
+  constexpr uInt32 ADDR_VCS_JSR6 = VCSLIB_BASE;
 
   const vector<ElfLinker::ExternalSymbol> EXTERNAL_SYMBOLS = {
     {"ADDR_IDR", ADDR_ADDR_IDR},
@@ -127,7 +128,7 @@ namespace {
       cout
         << sections[i].name
         << " @ 0x"<< std::setw(8) << (relocatedSections[i]->offset +
-          (relocatedSections[i]->type == ElfLinker::SectionType::text ? ADDR_TEXT_BASE : ADDR_DATA_BASE)
+          (relocatedSections[i]->segment == ElfLinker::SegmentType::text ? ADDR_TEXT_BASE : ADDR_DATA_BASE)
         )
         << " size 0x" << std::setw(8) << sections[i].size << std::endl;
     }
@@ -144,8 +145,8 @@ namespace {
         << symbols[i].name
         << " = 0x" << std::setw(8) << relocatedSymbols[i]->value;
 
-      if (relocatedSymbols[i]->section) {
-        cout << (*relocatedSymbols[i]->section == ElfLinker::SectionType::text ? " (text)" : " (data)");
+      if (relocatedSymbols[i]->segment) {
+        cout << (*relocatedSymbols[i]->segment == ElfLinker::SegmentType::text ? " (text)" : " (data)");
       } else {
         cout << " (abs)";
       }

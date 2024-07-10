@@ -47,7 +47,7 @@ void ElfLinker::link(const vector<ExternalSymbol>& externalSymbols)
       if (segmentSize % section.align)
         segmentSize = (segmentSize / section.align + 1) * section.align;
 
-      myRelocatedSections[i] = {isText ? SectionType::text : SectionType::data, segmentSize};
+      myRelocatedSections[i] = {isText ? SegmentType::text : SegmentType::data, segmentSize};
       segmentSize += section.size;
     }
   }
@@ -60,7 +60,7 @@ void ElfLinker::link(const vector<ExternalSymbol>& externalSymbols)
       if (myDataSize % section.align)
         myDataSize = (myDataSize / section.align + 1) * section.align;
 
-      myRelocatedSections[i] = {SectionType::data, myDataSize};
+      myRelocatedSections[i] = {SegmentType::data, myDataSize};
       myDataSize += section.size;
     }
   }
@@ -119,11 +119,11 @@ void ElfLinker::link(const vector<ExternalSymbol>& externalSymbols)
     const auto& relocatedSection = myRelocatedSections[symbol.section];
     if (!relocatedSection) continue;
 
-    uInt32 value = relocatedSection->type == SectionType::text ? myTextBase : myDataBase;
+    uInt32 value = relocatedSection->segment == SegmentType::text ? myTextBase : myDataBase;
     value += relocatedSection->offset;
     if (symbol.type != ElfParser::STT_SECTION) value += symbol.value;
 
-    myRelocatedSymbols[i] = {relocatedSection->type, value};
+    myRelocatedSymbols[i] = {relocatedSection->segment, value};
   }
 
   // apply relocations
@@ -220,7 +220,7 @@ void ElfLinker::applyRelocation(const ElfParser::Relocation& relocation, size_t 
     );
 
   uInt8* target =
-    (targetSectionRelocated.type == SectionType::text ? myTextData : myDataData).get() +
+    (targetSectionRelocated.segment == SegmentType::text ? myTextData : myDataData).get() +
     targetSectionRelocated.offset + relocation.offset;
 
   switch (relocation.type) {
@@ -239,7 +239,7 @@ void ElfLinker::applyRelocation(const ElfParser::Relocation& relocation, size_t 
         const uInt32 op = read32(target);
 
         Int32 offset = relocatedSymbol->value + relocation.addend.value_or(elfUtil::decode_B_BL(op)) -
-          (targetSectionRelocated.type == SectionType::text ? myTextBase : myDataBase) -
+          (targetSectionRelocated.segment == SegmentType::text ? myTextBase : myDataBase) -
           targetSectionRelocated.offset - relocation.offset - 4;
 
         if ((offset >> 24) != -1 && (offset >> 24) != 0)
