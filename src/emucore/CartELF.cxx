@@ -72,14 +72,89 @@ namespace {
   constexpr uInt32 ADDR_DATA_MODER = 0xf0000010;
 
   constexpr uInt32 VCSLIB_BASE = 0x1001;
-  constexpr uInt32 ADDR_VCS_JSR6 = VCSLIB_BASE;
+
+  constexpr uInt32 ADDR_MEMSET = VCSLIB_BASE;
+  constexpr uInt32 ADDR_MEMCPY = VCSLIB_BASE + 4;
+
+  constexpr uInt32 ADDR_VCS_LDA_FOR_BUS_STUFF2 = VCSLIB_BASE + 8;
+  constexpr uInt32 ADDR_VCS_LDX_FOR_BUS_STUFF2 = VCSLIB_BASE + 12;
+  constexpr uInt32 ADDR_VCS_LDY_FOR_BUS_STUFF2 = VCSLIB_BASE + 16;
+  constexpr uInt32 ADDR_VCS_WRITE3 = VCSLIB_BASE + 20;
+  constexpr uInt32 ADDR_VCS_JMP3 = VCSLIB_BASE + 24;
+  constexpr uInt32 ADDR_VCS_NOP2 = VCSLIB_BASE + 28;
+  constexpr uInt32 ADDR_VCS_NOP2N = VCSLIB_BASE + 32;
+  constexpr uInt32 ADDR_VCS_WRITE5 = VCSLIB_BASE + 36;
+  constexpr uInt32 ADDR_VCS_WRITE6 = VCSLIB_BASE + 40;
+  constexpr uInt32 ADDR_VCS_LDA2 = VCSLIB_BASE + 44;
+  constexpr uInt32 ADDR_VCS_LDX2 = VCSLIB_BASE + 48;
+  constexpr uInt32 ADDR_VCS_LDY2 = VCSLIB_BASE + 52;
+  constexpr uInt32 ADDR_VCS_SAX3 = VCSLIB_BASE + 56;
+  constexpr uInt32 ADDR_VCS_STA3 = VCSLIB_BASE + 60;
+  constexpr uInt32 ADDR_VCS_STX3 = VCSLIB_BASE + 64;
+  constexpr uInt32 ADDR_VCS_STY3 = VCSLIB_BASE + 68;
+  constexpr uInt32 ADDR_VCS_STA4 = VCSLIB_BASE + 72;
+  constexpr uInt32 ADDR_VCS_STX4 = VCSLIB_BASE + 76;
+  constexpr uInt32 ADDR_VCS_STY4 = VCSLIB_BASE + 80;
+  constexpr uInt32 ADDR_VCS_COPY_OVERBLANK_TO_RIOT_RAM = VCSLIB_BASE + 84;
+  constexpr uInt32 ADDR_VCS_START_OVERBLANK = VCSLIB_BASE + 88;
+  constexpr uInt32 ADDR_VCS_END_OVERBLANK = VCSLIB_BASE + 92;
+  constexpr uInt32 ADDR_VCS_READ4 = VCSLIB_BASE + 96;
+  constexpr uInt32 ADDR_RANDINT = VCSLIB_BASE + 100;
+  constexpr uInt32 ADDR_VCS_TXS2 = VCSLIB_BASE + 104;
+  constexpr uInt32 ADDR_VCS_JSR6 = VCSLIB_BASE + 108;
+  constexpr uInt32 ADDR_VCS_PHA3 = VCSLIB_BASE + 112;
+  constexpr uInt32 ADDR_VCS_PHP3 = VCSLIB_BASE + 116;
+  constexpr uInt32 ADDR_VCS_PLA4 = VCSLIB_BASE + 120;
+  constexpr uInt32 ADDR_VCS_PLP4 = VCSLIB_BASE + 124;
+  constexpr uInt32 ADDR_VCS_PLA4_EX = VCSLIB_BASE + 128;
+  constexpr uInt32 ADDR_VCS_PLP4_EX = VCSLIB_BASE + 132;
+  constexpr uInt32 ADDR_VCS_JMP_TO_RAM3 = VCSLIB_BASE + 136;
+  constexpr uInt32 ADDR_VCS_WAIT_FOR_ADDRESS = VCSLIB_BASE + 140;
+  constexpr uInt32 ADDR_INJECT_DMA_DATA = VCSLIB_BASE + 144;
 
   const vector<ElfLinker::ExternalSymbol> EXTERNAL_SYMBOLS = {
     {"ADDR_IDR", ADDR_ADDR_IDR},
     {"DATA_IDR", ADDR_DATA_IDR},
     {"DATA_ODR", ADDR_DATA_ODR},
     {"DATA_MODER", ADDR_DATA_MODER},
-    {"vcsJsr6", ADDR_VCS_JSR6}
+    {"memset", ADDR_MEMSET},
+    {"memcpy", ADDR_MEMCPY},
+    {"vcsLdaForBusStuff2", ADDR_VCS_LDA_FOR_BUS_STUFF2},
+    {"vcsLdxForBusStuff2", ADDR_VCS_LDX_FOR_BUS_STUFF2},
+    {"vcsLdyForBusStuff2", ADDR_VCS_LDY_FOR_BUS_STUFF2},
+    {"vcsWrite3", ADDR_VCS_WRITE3},
+    {"vcsJmp3", ADDR_VCS_JMP3},
+    {"vcsNop2", ADDR_VCS_NOP2},
+    {"vcsNop2n", ADDR_VCS_NOP2N},
+    {"vcsWrite5", ADDR_VCS_WRITE5},
+    {"vcsWrite6", ADDR_VCS_WRITE6},
+    {"vcsLda2", ADDR_VCS_LDA2},
+    {"vcsLdx2", ADDR_VCS_LDX2},
+    {"vcsLdy2", ADDR_VCS_LDY2},
+    {"vcsSax3", ADDR_VCS_SAX3},
+    {"vcsSta3", ADDR_VCS_STA3},
+    {"vcsStx3", ADDR_VCS_STX3},
+    {"vcsSty3", ADDR_VCS_STY3},
+    {"vcsSta4", ADDR_VCS_STA4},
+    {"vcsStx4", ADDR_VCS_STX4},
+    {"vcsSty4", ADDR_VCS_STY4},
+    {"vcsCopyOverblankToRiotRam", ADDR_VCS_COPY_OVERBLANK_TO_RIOT_RAM},
+    {"vcsStartOverblank", ADDR_VCS_START_OVERBLANK},
+    {"vcsEndOverblank", ADDR_VCS_END_OVERBLANK},
+    {"vcsRead4", ADDR_VCS_READ4},
+    {"randint", ADDR_RANDINT},
+    {"vcsTxs2", ADDR_VCS_TXS2},
+    {"vcsJsr6", ADDR_VCS_JSR6},
+    {"vcsPha3", ADDR_VCS_PHA3},
+    {"vcsPhp3", ADDR_VCS_PHP3},
+    {"vcsPla4", ADDR_VCS_PLA4},
+    {"vcsPlp4", ADDR_VCS_PLP4},
+    {"vcsPla4Ex", ADDR_VCS_PLA4_EX},
+    {"vcsPlp4Ex", ADDR_VCS_PLP4_EX},
+    {"vcsJmpToRam3", ADDR_VCS_JMP_TO_RAM3},
+    {"vcsWaitForAddress", ADDR_VCS_WAIT_FOR_ADDRESS},
+    {"injectDmaData", ADDR_INJECT_DMA_DATA},
+    {"ReverseByte", 0} // FIXME
   };
 
 #ifdef DUMP_ELF

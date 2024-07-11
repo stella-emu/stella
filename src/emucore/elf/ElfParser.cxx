@@ -247,7 +247,7 @@ ElfParser::Relocation ElfParser::readRelocation(uInt32 index, const Section& sec
   }
 
   rel.symbol = rel.info >> 8;
-  rel.type = rel.info & 0x0f;
+  rel.type = rel.info & 0xff;
 
   if (rel.symbol >=mySymbols.size())
     ElfParseError::raise("bad relocation: symbol out of bounds");
