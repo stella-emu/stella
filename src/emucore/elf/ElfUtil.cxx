@@ -30,7 +30,7 @@ Int32 elfUtil::decode_B_BL(uInt32 opcode)
     const uInt32 imm11 = hw2 & 0x7ff;
     const uInt32 imm10 = hw1 & 0x3ff;
 
-    Int32 offset = imm11 | (imm10 << 11) | (i1 << 21) | (i2 << 22) | (s << 23);
+    Int32 offset = imm11 | (imm10 << 11) | (i2 << 21) | (i1 << 22) | (s << 23);
 
     offset <<= 8;
     offset >>= 7;
@@ -45,8 +45,8 @@ uInt32 elfUtil::encode_B_BL(Int32 offset, bool link)
   offset >>= 1;
 
   uInt8 s = (offset >> 23) & 0x01;
-  uInt8 j2 = ((~offset >> 22) ^ s) & 0x01;
-  uInt8 j1 = ((~offset >> 21) ^ s) & 0x01;
+  uInt8 j2 = ((~offset >> 21) ^ s) & 0x01;
+  uInt8 j1 = ((~offset >> 22) ^ s) & 0x01;
   uInt32 imm11 = offset & 0x7ff;
   uInt32 imm10 = (offset >> 11) & 0x3ff;
 
