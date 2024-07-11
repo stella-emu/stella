@@ -61,7 +61,7 @@ void ElfParser::parse(const uInt8 *elfData, size_t size)
 
     mySections.reserve(myHeader.shNum);
 
-    for (size_t i = 0; i < myHeader.shNum; i++)
+    for (uInt32 i = 0; i < myHeader.shNum; i++)
       mySections.push_back(
           readSection(myHeader.shOffset + i * myHeader.shSize));
 
@@ -80,7 +80,7 @@ void ElfParser::parse(const uInt8 *elfData, size_t size)
 
       mySymbols.reserve(symtab->size / SYMBOL_ENTRY_SIZE);
 
-      for (size_t i = 0; i < symtab->size / SYMBOL_ENTRY_SIZE; i++)
+      for (uInt32 i = 0; i < symtab->size / SYMBOL_ENTRY_SIZE; i++)
         mySymbols.push_back(readSymbol(i, *symtab, *strtab));
     }
 
@@ -92,7 +92,7 @@ void ElfParser::parse(const uInt8 *elfData, size_t size)
       const size_t relocationCount = section.size / (section.type == SHT_REL ? REL_ENTRY_SIZE : RELA_ENTRY_SIZE);
       rels.reserve(section.size / relocationCount);
 
-      for (size_t i = 0; i < relocationCount; i++) {
+      for (uInt32 i = 0; i < relocationCount; i++) {
         Relocation rel = readRelocation(i, section);
 
         if (rel.symbol >= mySymbols.size()) ElfParseError::raise("invalid relocation symbol");
@@ -230,7 +230,7 @@ ElfParser::Relocation ElfParser::readRelocation(uInt32 index, const Section& sec
   if (sec.type != SHT_REL && sec.type != SHT_RELA)
     throw runtime_error("section is not RELA or REL");
 
-  const size_t size = sec.type == SHT_REL ? REL_ENTRY_SIZE : RELA_ENTRY_SIZE;
+  const uInt32 size = sec.type == SHT_REL ? REL_ENTRY_SIZE : RELA_ENTRY_SIZE;
   uInt32 offset = index * size;
 
   if (offset + size > sec.size) ElfParseError::raise("relocation is beyond bounds");
