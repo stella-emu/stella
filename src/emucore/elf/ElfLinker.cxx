@@ -352,19 +352,19 @@ void ElfLinker::applyRelocationsToInitArrays(uInt8 initArrayType, vector<uInt32>
 
     for (const auto& relocation: *relocations) {
       if (relocation.type != ElfParser::R_ARM_ABS32 && relocation.type != ElfParser::R_ARM_TARGET1)
-        ElfLinkError::raise("unsupported relocation for init table");
+        ElfLinkError::raise("unsupported relocation for init array");
 
       const auto& relocatedSymbol = myRelocatedSymbols[relocation.symbol];
       if (!relocatedSymbol)
         ElfLinkError::raise(
-          "unable to relocate init section: symbol " + relocation.symbolName + " could not be relocated"
+          "unable to relocate init array: symbol " + relocation.symbolName + " could not be relocated"
         );
 
       if (relocatedSymbol->undefined)
         Logger::error("unable to relocate symbol " + relocation.symbolName);
 
       if (relocation.offset + 4 > section.size)
-        ElfLinkError::raise("unable relocate init section: symbol " + relocation.symbolName + " out of range");
+        ElfLinkError::raise("unable relocate init array: symbol " + relocation.symbolName + " out of range");
 
         const uInt32 index = (relocatedInitArrays.at(iSection) + relocation.offset) >> 2;
         const uInt32 value = relocatedSymbol->value + relocation.addend.value_or(initArray[index]);
