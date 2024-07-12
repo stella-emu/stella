@@ -112,6 +112,23 @@ namespace {
       cout << std::endl;
     }
 
+    const auto& initArray = linker.getInitArray();
+    const auto& preinitArray = linker.getPreinitArray();
+
+    if (initArray.size()) {
+      cout << std::endl << "init array:" << std::endl << std::endl;
+
+      for (uInt32 address: initArray)
+        cout << " * 0x" << std::setw(8) <<  address << std::endl;
+    }
+
+    if (preinitArray.size()) {
+      cout << std::endl << "preinit array:" << std::endl << std::endl;
+
+      for (uInt32 address: preinitArray)
+        cout << " * 0x" << std::setw(8) <<  address << std::endl;
+    }
+
     cout << std::dec;
   }
 #endif

@@ -89,8 +89,8 @@ class ElfLinker {
     uInt32 getDataSize() const;
     const uInt8* getDataData() const;
 
-    const vector<uInt32> getInitArray() const;
-    const vector<uInt32> getPreinitArray() const;
+    const vector<uInt32>& getInitArray() const;
+    const vector<uInt32>& getPreinitArray() const;
 
     RelocatedSymbol findRelocatedSymbol(string_view name) const;
 
@@ -98,7 +98,12 @@ class ElfLinker {
     const vector<std::optional<RelocatedSymbol>>& getRelocatedSymbols() const;
 
   private:
-    void applyRelocation(const ElfParser::Relocation& relocation, size_t iSection);
+    void relocateSections();
+    void relocateInitArrays();
+    void relocateSymbols(const vector<ExternalSymbol>& externalSymbols);
+    void applyRelocationsToSections();
+
+    void applyRelocationToSection(const ElfParser::Relocation& relocation, size_t iSection);
 
     uInt32 read32(const uInt8* address);
     void write32(uInt8* address, uInt32 value);
@@ -117,6 +122,9 @@ class ElfLinker {
 
     vector<optional<RelocatedSection>> myRelocatedSections;
     vector<optional<RelocatedSymbol>> myRelocatedSymbols;
+
+    vector<uInt32> myInitArray;
+    vector<uInt32> myPreinitArray;
 
   private:
     ElfLinker(const ElfLinker&) = delete;
