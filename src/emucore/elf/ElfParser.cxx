@@ -181,8 +181,9 @@ ElfParser::Section ElfParser::readSection(uInt32 offset) const {
     section.info = read32(offset + 0x1c);
     section.align = read32(offset + 0x20);
 
-    if (section.offset + section.size >= mySize)
-      ElfParseError::raise("section exceeds bounds");
+    if (section.offset + section.size >= mySize && section.type != SHT_NOBITS)
+      ElfParseError::raise("section  exceeds bounds");
+
   } catch (const ElfParseError &e) {
     ElfParseError::raise("failed to read section: " + string(e.what()));
   }

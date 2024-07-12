@@ -67,6 +67,7 @@ class ElfLinker {
     struct RelocatedSymbol {
       optional<SegmentType> segment;
       uInt32 value;
+      bool undefined;
     };
 
     struct ExternalSymbol {
@@ -77,6 +78,7 @@ class ElfLinker {
   public:
     ElfLinker(uInt32 textBase, uInt32 dataBase, const ElfParser& parser);
 
+    ElfLinker& setUndefinedSymbolDefault(uInt32 defaultValue);
     void link(const vector<ExternalSymbol>& externalSymbols);
 
     uInt32 getTextBase() const;
@@ -102,6 +104,8 @@ class ElfLinker {
     void write32(uInt8* address, uInt32 value);
 
   private:
+    std::optional<uInt32> undefinedSymbolDefault;
+
     const uInt32 myTextBase{0};
     const uInt32 myDataBase{0};
     const ElfParser& myParser;
