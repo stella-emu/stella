@@ -40,7 +40,82 @@ void ElfLinker::link(const vector<ExternalSymbol>& externalSymbols)
   myDataData.reset();
   myRelocatedSections.resize(0);
   myRelocatedSymbols.resize(0);
+  myInitArray.resize(0);
+  myPreinitArray.resize(0);
 
+  relocateSections();
+  relocateSymbols(externalSymbols);
+  relocateInitArrays();
+  applyRelocationsToSections();
+}
+
+uInt32 ElfLinker::getTextBase() const
+{
+  return myTextBase;
+}
+
+uInt32 ElfLinker::getTextSize() const
+{
+  return myTextSize;
+}
+
+const uInt8* ElfLinker::getTextData() const
+{
+  return myTextData ? myTextData.get() : nullptr;
+}
+
+uInt32 ElfLinker::getDataBase() const
+{
+  return myDataBase;
+}
+
+uInt32 ElfLinker::getDataSize() const
+{
+  return myDataSize;
+}
+
+const uInt8* ElfLinker::getDataData() const
+{
+  return myDataData ? myDataData.get() : nullptr;
+}
+
+const vector<uInt32>& ElfLinker::getInitArray() const
+{
+  return myInitArray;
+}
+
+const vector<uInt32>& ElfLinker::getPreinitArray() const
+{
+  return myPreinitArray;
+}
+
+ElfLinker::RelocatedSymbol ElfLinker::findRelocatedSymbol(string_view name) const
+{
+  const auto& symbols = myParser.getSymbols();
+  for (size_t i = 0; i < symbols.size(); i++) {
+    if (symbols[i].name != name) continue;
+
+    if (!myRelocatedSymbols[i])
+      ElfSymbolResolutionError::raise("symbol could not be relocated");
+
+    return *myRelocatedSymbols[i];
+  }
+
+  ElfSymbolResolutionError::raise("symbol not found");
+}
+
+const vector<std::optional<ElfLinker::RelocatedSection>>& ElfLinker::getRelocatedSections() const
+{
+  return myRelocatedSections;
+}
+
+const vector<std::optional<ElfLinker::RelocatedSymbol>>& ElfLinker::getRelocatedSymbols() const
+{
+  return myRelocatedSymbols;
+}
+
+void ElfLinker::relocateSections()
+{
   auto& sections = myParser.getSections();
   myRelocatedSections.resize(sections.size(), std::nullopt);
 
@@ -99,8 +174,113 @@ void ElfLinker::link(const vector<ExternalSymbol>& externalSymbols)
       section.size
     );
   }
+}
 
+void ElfLinker::relocateInitArrays()
+{
+  const auto& sections = myParser.getSections();
+  uInt32 initArraySize = 0;
+  uInt32 preinitArraySize = 0;
+
+  std::unordered_map<uInt32, uInt32> relocatedInitArrays;
+  std::unordered_map<uInt32, uInt32> relocatedPreinitArrays;
+
+  // Relocate init arrays
+  for (size_t i = 0; i < sections.size(); i++) {
+    const auto& section = sections[i];
+
+    switch (section.type) {
+      case ElfParser::SHT_INIT_ARRAY:
+        if (section.size % 4) ElfLinkError::raise("invalid init arrey");
+
+        relocatedInitArrays[i] = initArraySize;
+        initArraySize += section.size;
+
+        break;
+
+      case ElfParser::SHT_PREINIT_ARRAY:
+        if (section.size % 4) ElfLinkError::raise("invalid preinit arrey");
+
+        relocatedPreinitArrays[i] = preinitArraySize;
+        preinitArraySize += section.size;
+
+        break;
+    }
+  }
+
+  myInitArray.resize(initArraySize >> 2);
+  myPreinitArray.resize(preinitArraySize >> 2);
+
+  const uInt8* elfData = myParser.getData();
+
+  // Copy init arrays
+  for (const auto [iSection, offset]: relocatedInitArrays) {
+    const auto& section = sections[iSection];
+
+    for (size_t i = 0; i < section.size; i += 4)
+      myInitArray[(offset + i) >> 2] = read32(elfData + section.offset + i);
+  }
+
+  for (const auto [iSection, offset]: relocatedPreinitArrays) {
+    const auto& section = sections[iSection];
+
+    for (size_t i = 0; i < section.size; i += 4)
+      myPreinitArray[(offset + i) >> 2] = read32(elfData + section.offset + i);
+  }
+
+  // Apply relocations
+  const auto& symbols = myParser.getSymbols();
+
+  for (size_t iSection = 0; iSection < sections.size(); iSection++) {
+    const auto& section = sections[iSection];
+    if (section.type != ElfParser::SHT_INIT_ARRAY && section.type != ElfParser::SHT_PREINIT_ARRAY) continue;
+
+    const auto& relocations = myParser.getRelocations(iSection);
+    if (!relocations) continue;
+
+    for (const auto& relocation: *relocations) {
+      if (relocation.type != ElfParser::R_ARM_ABS32 && relocation.type != ElfParser::R_ARM_TARGET1)
+        ElfLinkError::raise("unsupported relocation for init table");
+
+      const auto& relocatedSymbol = myRelocatedSymbols[relocation.symbol];
+      if (!relocatedSymbol)
+        ElfLinkError::raise(
+          "unable to relocate init section: symbol " + relocation.symbolName + " could not be relocated"
+        );
+
+      if (relocatedSymbol->undefined)
+        Logger::error("unable to relocate symbol " + relocation.symbolName);
+
+      if (relocation.offset + 4 > section.size)
+        ElfLinkError::raise("unable relocate init section: symbol " + relocation.symbolName + " out of range");
+
+      switch (section.type) {
+        case ElfParser::SHT_INIT_ARRAY:
+          {
+            const uInt32 index = (relocatedInitArrays.at(iSection) + relocation.offset) >> 2;
+            const uInt32 value = relocatedSymbol->value + relocation.addend.value_or(myInitArray[index]);
+            myInitArray[index] = value | (symbols[relocation.symbol].type == ElfParser::STT_FUNC ? 1 : 0);
+
+            break;
+          }
+
+        case ElfParser::SHT_PREINIT_ARRAY:
+          {
+            const uInt32 index = (relocatedPreinitArrays.at(iSection) + relocation.offset) >> 2;
+            const uInt32 value = relocatedSymbol->value + relocation.addend.value_or(myPreinitArray[index]);
+            myPreinitArray[index] = value | (symbols[relocation.symbol].type == ElfParser::STT_FUNC ? 1 : 0);
+
+            break;
+          }
+      }
+    }
+  }
+}
+
+void ElfLinker::relocateSymbols(const vector<ExternalSymbol>& externalSymbols)
+{
   std::unordered_map<string, const ExternalSymbol*> externalSymbolLookup;
+
   for (const auto& externalSymbol: externalSymbols)
     externalSymbolLookup[externalSymbol.name] = &externalSymbol;
 
@@ -136,6 +316,11 @@ void ElfLinker::link(const vector<ExternalSymbol>& externalSymbols)
 
     myRelocatedSymbols[i] = {relocatedSection->segment, value, false};
   }
+}
+
+void ElfLinker::applyRelocationsToSections()
+{
+    auto& sections = myParser.getSections();
 
   // apply relocations
   for (size_t iSection = 0; iSection < sections.size(); iSection++) {
@@ -144,76 +329,11 @@ void ElfLinker::link(const vector<ExternalSymbol>& externalSymbols)
     if (!myRelocatedSections[iSection]) continue;
 
     for (const auto& relocation: *relocations)
-      applyRelocation(relocation, iSection);
+      applyRelocationToSection(relocation, iSection);
   }
 }
 
-uInt32 ElfLinker::getTextBase() const
-{
-  return myTextBase;
-}
-
-uInt32 ElfLinker::getTextSize() const
-{
-  return myTextSize;
-}
-
-const uInt8* ElfLinker::getTextData() const
-{
-  return myTextData ? myTextData.get() : nullptr;
-}
-
-uInt32 ElfLinker::getDataBase() const
-{
-  return myDataBase;
-}
-
-uInt32 ElfLinker::getDataSize() const
-{
-  return myDataSize;
-}
-
-const uInt8* ElfLinker::getDataData() const
-{
-  return myDataData ? myDataData.get() : nullptr;
-}
-
-const vector<uInt32> ElfLinker::getInitArray() const
-{
-  throw runtime_error("not implemented");
-}
-
-const vector<uInt32> ElfLinker::getPreinitArray() const
-{
-  throw runtime_error("not implemented");
-}
-
-ElfLinker::RelocatedSymbol ElfLinker::findRelocatedSymbol(string_view name) const
-{
-  const auto& symbols = myParser.getSymbols();
-  for (size_t i = 0; i < symbols.size(); i++) {
-    if (symbols[i].name != name) continue;
-
-    if (!myRelocatedSymbols[i])
-      ElfSymbolResolutionError::raise("symbol could not be relocated");
-
-    return *myRelocatedSymbols[i];
-  }
-
-  ElfSymbolResolutionError::raise("symbol not found");
-}
-
-const vector<std::optional<ElfLinker::RelocatedSection>>& ElfLinker::getRelocatedSections() const
-{
-  return myRelocatedSections;
-}
-
-const vector<std::optional<ElfLinker::RelocatedSymbol>>& ElfLinker::getRelocatedSymbols() const
-{
-  return myRelocatedSymbols;
-}
-
-void ElfLinker::applyRelocation(const ElfParser::Relocation& relocation, size_t iSection)
+void ElfLinker::applyRelocationToSection(const ElfParser::Relocation& relocation, size_t iSection)
 {
   const auto& targetSection = myParser.getSections()[iSection];
   const auto& targetSectionRelocated = *myRelocatedSections[iSection];
@@ -224,14 +344,7 @@ void ElfLinker::applyRelocation(const ElfParser::Relocation& relocation, size_t 
     "unable to relocate " + symbol.name + " in " + targetSection.name + ": symbol could not be relocated"
   );
 
-  if (relocatedSymbol->undefined) {
-    stringstream s;
-
-    s << "unable to resolve symbol " << relocation.symbolName << " - using default 0x"
-      << std::hex << std::setw(8) << std::setfill('0') << relocatedSymbol->value;
-
-    Logger::error(s.str());
-  }
+  if (relocatedSymbol->undefined) Logger::error("unable to resolve symbol " + relocation.symbolName);
 
   if (relocation.offset + 4 > targetSection.size)
     ElfLinkError::raise(
