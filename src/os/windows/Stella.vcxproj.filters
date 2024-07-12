@@ -1254,6 +1254,9 @@
     <ClCompile Include="..\..\emucore\elf\ElfUtil.cxx">
       <Filter>Source Files\emucore\elf</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\emucore\elf\ElfEnvironment.cxx">
+      <Filter>Source Files\emucore\elf</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\emucore\AtariVox.hxx">
@@ -2535,6 +2538,9 @@
       <Filter>Header Files\emucore\elf</Filter>
     </ClInclude>
     <ClInclude Include="..\..\emucore\elf\ElfUtil.hxx">
+      <Filter>Header Files\emucore\elf</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\emucore\elf\ElfEnvironment.hxx">
       <Filter>Header Files\emucore\elf</Filter>
     </ClInclude>
   </ItemGroup>

@@ -18,12 +18,20 @@
 #include <unordered_map>
 
 #include "ElfUtil.hxx"
+#include "Logger.hxx"
 
 #include "ElfLinker.hxx"
 
 ElfLinker::ElfLinker(uInt32 textBase, uInt32 dataBase, const ElfParser& parser)
   : myTextBase(textBase), myDataBase(dataBase), myParser(parser)
 {}
+
+ElfLinker& ElfLinker::setUndefinedSymbolDefault(uInt32 defaultValue)
+{
+  undefinedSymbolDefault = defaultValue;
+
+  return *this;
+}
 
 void ElfLinker::link(const vector<ExternalSymbol>& externalSymbols)
 {
@@ -104,14 +112,17 @@ void ElfLinker::link(const vector<ExternalSymbol>& externalSymbols)
     const auto& symbol = symbols[i];
 
     if (symbol.section == ElfParser::SHN_ABS) {
-      myRelocatedSymbols[i] = {std::nullopt, symbol.value};
+      myRelocatedSymbols[i] = {std::nullopt, symbol.value, false};
 
       continue;
     }
 
     if (symbol.section == ElfParser::SHN_UND) {
       if (externalSymbolLookup.contains(symbol.name))
-        myRelocatedSymbols[i] = {std::nullopt, externalSymbolLookup[symbol.name]->value};
+        myRelocatedSymbols[i] = {std::nullopt, externalSymbolLookup[symbol.name]->value, false};
+
+      else if (undefinedSymbolDefault)
+        myRelocatedSymbols[i] = {std::nullopt, *undefinedSymbolDefault, true};
 
       continue;
     }
@@ -123,7 +134,7 @@ void ElfLinker::link(const vector<ExternalSymbol>& externalSymbols)
     value += relocatedSection->offset;
     if (symbol.type != ElfParser::STT_SECTION) value += symbol.value;
 
-    myRelocatedSymbols[i] = {relocatedSection->segment, value};
+    myRelocatedSymbols[i] = {relocatedSection->segment, value, false};
   }
 
   // apply relocations
@@ -209,10 +220,18 @@ void ElfLinker::applyRelocation(const ElfParser::Relocation& relocation, size_t 
   const auto& symbol = myParser.getSymbols()[relocation.symbol];
   const auto& relocatedSymbol = myRelocatedSymbols[relocation.symbol];
 
-  if (!relocatedSymbol)
-    ElfLinkError::raise(
-      "unable to relocate " + symbol.name + " in " + targetSection.name + ": symbol could not be relocated"
-    );
+  if (!relocatedSymbol) ElfLinkError::raise(
+    "unable to relocate " + symbol.name + " in " + targetSection.name + ": symbol could not be relocated"
+  );
+
+  if (relocatedSymbol->undefined) {
+    stringstream s;
+
+    s << "unable to resolve symbol " << relocation.symbolName << " - using default 0x"
+      << std::hex << std::setw(8) << std::setfill('0') << relocatedSymbol->value;
+
+    Logger::error(s.str());
+  }
 
   if (relocation.offset + 4 > targetSection.size)
     ElfLinkError::raise(
