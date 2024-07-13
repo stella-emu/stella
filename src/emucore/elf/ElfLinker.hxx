@@ -57,7 +57,7 @@ class ElfLinker {
         const string myReason;
     };
 
-    enum class SegmentType: uInt8 { text, data };
+    enum class SegmentType: uInt8 { text, data, rodata };
 
     struct RelocatedSection {
       SegmentType segment;
@@ -76,18 +76,14 @@ class ElfLinker {
     };
 
   public:
-    ElfLinker(uInt32 textBase, uInt32 dataBase, const ElfParser& parser);
+    ElfLinker(uInt32 textBase, uInt32 dataBase, uInt32 rodataBase, const ElfParser& parser);
 
     ElfLinker& setUndefinedSymbolDefault(uInt32 defaultValue);
     void link(const vector<ExternalSymbol>& externalSymbols);
 
-    uInt32 getTextBase() const;
-    uInt32 getTextSize() const;
-    const uInt8* getTextData() const;
-
-    uInt32 getDataBase() const;
-    uInt32 getDataSize() const;
-    const uInt8* getDataData() const;
+    uInt32 getSegmentSize(SegmentType type) const;
+    const uInt8* getSegmentData(SegmentType type) const;
+    uInt32 getSegmentBase(SegmentType type) const;
 
     const vector<uInt32>& getInitArray() const;
     const vector<uInt32>& getPreinitArray() const;
@@ -98,6 +94,9 @@ class ElfLinker {
     const vector<std::optional<RelocatedSymbol>>& getRelocatedSymbols() const;
 
   private:
+    uInt32& getSegmentSizeRef(SegmentType type);
+    unique_ptr<uInt8[]>& getSegmentDataRef(SegmentType type);
+
     void relocateSections();
     void relocateInitArrays();
     void relocateSymbols(const vector<ExternalSymbol>& externalSymbols);
@@ -116,12 +115,15 @@ class ElfLinker {
 
     const uInt32 myTextBase{0};
     const uInt32 myDataBase{0};
+    const uInt32 myRodataBase{0};
     const ElfParser& myParser;
 
     uInt32 myTextSize{0};
     uInt32 myDataSize{0};
+    uInt32 myRodataSize{0};
     unique_ptr<uInt8[]> myTextData;
     unique_ptr<uInt8[]> myDataData;
+    unique_ptr<uInt8[]> myRodataData;
 
     vector<optional<RelocatedSection>> myRelocatedSections;
     vector<optional<RelocatedSymbol>> myRelocatedSymbols;

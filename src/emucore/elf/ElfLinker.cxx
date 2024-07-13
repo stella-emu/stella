@@ -22,9 +22,35 @@
 
 #include "ElfLinker.hxx"
 
+namespace {
+  // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  std::optional<ElfLinker::SegmentType> determineSegmentType(const ElfParser::Section& section)
+  {
+    switch (section.type) {
+      case ElfParser::SHT_PROGBITS:
+        if (section.name.starts_with(".text")) return ElfLinker::SegmentType::text;
+
+        if (section.name.starts_with(".rodata")) return ElfLinker::SegmentType::rodata;
+
+        return ElfLinker::SegmentType::data;
+
+      case ElfParser::SHT_NOBITS:
+        return ElfLinker::SegmentType::data;
+
+      default:
+        return std::nullopt;
+    }
+  }
+
+  // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  bool checkSegmentOverlap(uInt32 segmentBase1, uInt32 segmentSize1, uInt32 segmentBase2, uInt32 segmentSize2) {
+    return !(segmentBase1 + segmentSize1 <= segmentBase2 || segmentBase2 + segmentSize2 <= segmentBase1);
+  }
+}
+
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-ElfLinker::ElfLinker(uInt32 textBase, uInt32 dataBase, const ElfParser& parser)
-  : myTextBase(textBase), myDataBase(dataBase), myParser(parser)
+ElfLinker::ElfLinker(uInt32 textBase, uInt32 dataBase, uInt32 rodataBase, const ElfParser& parser)
+  : myTextBase(textBase), myDataBase(dataBase), myRodataBase(rodataBase), myParser(parser)
 {}
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -38,9 +64,10 @@ ElfLinker& ElfLinker::setUndefinedSymbolDefault(uInt32 defaultValue)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ElfLinker::link(const vector<ExternalSymbol>& externalSymbols)
 {
-  myTextSize = myDataSize = 0;
+  myTextSize = myDataSize = myRodataSize = 0;
   myTextData.reset();
   myDataData.reset();
+  myRodataData.reset();
   myRelocatedSections.resize(0);
   myRelocatedSymbols.resize(0);
   myInitArray.resize(0);
@@ -53,39 +80,57 @@ void ElfLinker::link(const vector<ExternalSymbol>& externalSymbols)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt32 ElfLinker::getTextBase() const
+uInt32 ElfLinker::getSegmentSize(SegmentType type) const
 {
-  return myTextBase;
+  switch (type) {
+    case SegmentType::text:
+      return myTextSize;
+
+    case SegmentType::data:
+      return myDataSize;
+
+    case SegmentType::rodata:
+      return myRodataSize;
+
+    default:
+      throw runtime_error("unreachable");
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt32 ElfLinker::getTextSize() const
+const uInt8* ElfLinker::getSegmentData(SegmentType type) const
 {
-  return myTextSize;
+  switch (type) {
+    case SegmentType::text:
+      return myTextData.get();
+
+    case SegmentType::data:
+      return myDataData.get();
+
+    case SegmentType::rodata:
+      return myRodataData.get();
+
+    default:
+      throw runtime_error("unreachable");
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const uInt8* ElfLinker::getTextData() const
+uInt32 ElfLinker::getSegmentBase(SegmentType type) const
 {
-  return myTextData ? myTextData.get() : nullptr;
-}
+  switch (type) {
+    case SegmentType::text:
+      return myTextBase;
 
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt32 ElfLinker::getDataBase() const
-{
-  return myDataBase;
-}
+    case SegmentType::data:
+      return myDataBase;
 
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt32 ElfLinker::getDataSize() const
-{
-  return myDataSize;
-}
+    case SegmentType::rodata:
+      return myRodataBase;
 
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const uInt8* ElfLinker::getDataData() const
-{
-  return myDataData ? myDataData.get() : nullptr;
+    default:
+      throw runtime_error("unreachable");
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -129,25 +174,61 @@ const vector<std::optional<ElfLinker::RelocatedSymbol>>& ElfLinker::getRelocated
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt32& ElfLinker::getSegmentSizeRef(SegmentType type)
+{
+  switch (type) {
+    case SegmentType::text:
+      return myTextSize;
+
+    case SegmentType::data:
+      return myDataSize;
+
+    case SegmentType::rodata:
+      return myRodataSize;
+
+    default:
+      throw runtime_error("unreachable");
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+unique_ptr<uInt8[]>& ElfLinker::getSegmentDataRef(SegmentType type)
+{
+  switch (type) {
+    case SegmentType::text:
+      return myTextData;
+
+    case SegmentType::data:
+      return myDataData;
+
+    case SegmentType::rodata:
+      return myRodataData;
+
+    default:
+      throw runtime_error("unreachable");
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ElfLinker::relocateSections()
 {
   auto& sections = myParser.getSections();
   myRelocatedSections.resize(sections.size(), std::nullopt);
 
-  // relocate all .text and .data sections
+  // relocate everything that is not .bss
   for (size_t i = 0; i < sections.size(); i++) {
     const auto& section = sections[i];
 
-    if (section.type == ElfParser::SHT_PROGBITS) {
-      const bool isText = section.name.starts_with(".text");
-      uInt32& segmentSize = isText ? myTextSize : myDataSize;
+    const auto segmentType = determineSegmentType(section);
+    if (!segmentType || section.type == ElfParser::SHT_NOBITS) continue;
 
-      if (segmentSize % section.align)
-        segmentSize = (segmentSize / section.align + 1) * section.align;
+    uInt32& segmentSize = getSegmentSizeRef(*segmentType);
 
-      myRelocatedSections[i] = {isText ? SegmentType::text : SegmentType::data, segmentSize};
-      segmentSize += section.size;
-    }
+    if (segmentSize % section.align)
+      segmentSize = (segmentSize / section.align + 1) * section.align;
+
+    myRelocatedSections[i] = {*segmentType, segmentSize};
+    segmentSize += section.size;
   }
 
   // relocate all .bss sections
@@ -164,27 +245,37 @@ void ElfLinker::relocateSections()
   }
 
   // ensure that the segments don't overlap
-  if (!(myTextBase + myTextSize <= myDataBase || myDataBase + myDataSize <= myTextBase))
+  if (
+    checkSegmentOverlap(myTextBase, myTextSize, myDataBase, myDataSize) ||
+    checkSegmentOverlap(myTextBase, myTextSize, myRodataBase, myRodataSize) ||
+    checkSegmentOverlap(myDataBase, myDataSize, myRodataBase, myRodataSize)
+  )
     ElfLinkError::raise("segments overlap");
 
-  // allocate and copy section data
-  myTextData = make_unique<uInt8[]>(myTextSize);
-  myDataData = make_unique<uInt8[]>(myDataSize);
+  // allocate segment data
+  for (SegmentType segmentType: {SegmentType::text, SegmentType::data, SegmentType::rodata}) {
+    const uInt32 segmentSize = getSegmentSize(segmentType);
+    if (segmentSize == 0) continue;
 
-  std::memset(myTextData.get(), 0, myTextSize);
-  std::memset(myDataData.get(), 0, myDataSize);
+    auto& segmentData = getSegmentDataRef(segmentType);
 
+    segmentData = make_unique<uInt8[]>(segmentSize);
+    std::memset(segmentData.get(), 0, segmentSize);
+  }
+
+  // copy segment data
   for (size_t i = 0; i < sections.size(); i++) {
     const auto& relocatedSection = myRelocatedSections[i];
     if (!relocatedSection) continue;
 
     const auto& section = sections[i];
-    if (section.type != ElfParser::SHT_PROGBITS) continue;
+    if (section.type == ElfParser::SHT_NOBITS) continue;
 
-    const bool isText = section.name.starts_with(".text");
+    const auto segmentType = determineSegmentType(section);
+    if (!segmentType) continue;
 
     std::memcpy(
-      (isText ? myTextData : myDataData).get() + relocatedSection->offset,
+      getSegmentDataRef(*segmentType).get() + relocatedSection->offset,
       myParser.getData() + section.offset,
       section.size
     );
@@ -268,8 +359,7 @@ void ElfLinker::relocateSymbols(const vector<ExternalSymbol>& externalSymbols)
     const auto& relocatedSection = myRelocatedSections[symbol.section];
     if (!relocatedSection) continue;
 
-    uInt32 value = relocatedSection->segment == SegmentType::text ? myTextBase : myDataBase;
-    value += relocatedSection->offset;
+    uInt32 value = getSegmentBase(relocatedSection->segment) + relocatedSection->offset;
     if (symbol.type != ElfParser::STT_SECTION) value += symbol.value;
 
     myRelocatedSymbols[i] = {relocatedSection->segment, value, false};
@@ -327,8 +417,9 @@ void ElfLinker::applyRelocationToSection(const ElfParser::Relocation& relocation
     );
 
   uInt8* target =
-    (targetSectionRelocated.segment == SegmentType::text ? myTextData : myDataData).get() +
-    targetSectionRelocated.offset + relocation.offset;
+    getSegmentDataRef(targetSectionRelocated.segment).get() +
+    targetSectionRelocated.offset +
+    relocation.offset;
 
   switch (relocation.type) {
     case ElfParser::R_ARM_ABS32:
@@ -346,8 +437,9 @@ void ElfLinker::applyRelocationToSection(const ElfParser::Relocation& relocation
         const uInt32 op = read32(target);
 
         Int32 offset = relocatedSymbol->value + relocation.addend.value_or(elfUtil::decode_B_BL(op)) -
-          (targetSectionRelocated.segment == SegmentType::text ? myTextBase : myDataBase) -
-          targetSectionRelocated.offset - relocation.offset - 4;
+          getSegmentBase(targetSectionRelocated.segment) -
+          targetSectionRelocated.offset -
+          relocation.offset - 4;
 
         if ((offset >> 24) != -1 && (offset >> 24) != 0)
           ElfLinkError::raise("unable to relocate jump: offset out of bounds");

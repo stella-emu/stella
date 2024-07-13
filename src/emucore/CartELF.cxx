@@ -70,9 +70,11 @@ namespace {
 
     cout
       << std::endl
-      << "text segment size: 0x" << std::setw(8) << linker.getTextSize()
+      << "text segment size: 0x" << std::setw(8) << linker.getSegmentSize(ElfLinker::SegmentType::text)
       << std::endl
-      << "data segment size: 0x" << std::setw(8) << linker.getDataSize()
+      << "data segment size: 0x" << std::setw(8) << linker.getSegmentSize(ElfLinker::SegmentType::data)
+      << std::endl
+      << "rodata segment size: 0x" << std::setw(8) << linker.getSegmentSize(ElfLinker::SegmentType::rodata)
       << std::endl;
 
     cout << std::endl << "relocated sections:" << std::endl << std::endl;
@@ -85,9 +87,8 @@ namespace {
 
       cout
         << sections[i].name
-        << " @ 0x"<< std::setw(8) << (relocatedSections[i]->offset +
-          (relocatedSections[i]->segment == ElfLinker::SegmentType::text ? ADDR_TEXT_BASE : ADDR_DATA_BASE)
-        )
+        << " @ 0x"<< std::setw(8)
+        << (relocatedSections[i]->offset + linker.getSegmentBase(relocatedSections[i]->segment))
         << " size 0x" << std::setw(8) << sections[i].size << std::endl;
     }
 
@@ -104,7 +105,19 @@ namespace {
         << " = 0x" << std::setw(8) << relocatedSymbols[i]->value;
 
       if (relocatedSymbols[i]->segment) {
-        cout << (*relocatedSymbols[i]->segment == ElfLinker::SegmentType::text ? " (text)" : " (data)");
+        switch (*relocatedSymbols[i]->segment) {
+          case ElfLinker::SegmentType::text:
+            cout << " (text)";
+            break;
+
+          case ElfLinker::SegmentType::data:
+            cout << " (data)";
+            break;
+
+          case ElfLinker::SegmentType::rodata:
+            cout << " (rodata)";
+            break;
+        }
       } else {
         cout << " (abs)";
       }
@@ -159,7 +172,7 @@ CartridgeELF::CartridgeELF(const ByteBuffer& image, size_t size, string_view md5
   dumpElf(elfParser);
 #endif
 
-  ElfLinker elfLinker(ADDR_TEXT_BASE, ADDR_DATA_BASE, elfParser);
+  ElfLinker elfLinker(ADDR_TEXT_BASE, ADDR_DATA_BASE, ADDR_RODATA_BASE, elfParser);
   try {
     elfLinker.link(externalSymbols(Palette::ntsc));
   } catch (const ElfLinker::ElfLinkError& e) {
@@ -299,6 +312,7 @@ void CartridgeELF::vcsCopyOverblankToRiotRam()
     vcsWrite5(0x80 + i, OVERBLANK_PROGRAM[i]);
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeELF::vcsStartOverblank()
 {
 	myTransactionQueue.injectROM(0x4c);
@@ -307,12 +321,14 @@ void CartridgeELF::vcsStartOverblank()
   myTransactionQueue.yield(0x0080);
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartridgeELF::BusTransaction CartridgeELF::BusTransaction::transactionYield(uInt16 address)
 {
   address &= 0x1fff;
   return {.address = address, .value = 0, .yield = true};
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartridgeELF::BusTransaction CartridgeELF::BusTransaction::transactionDrive(uInt16 address, uInt8 value)
 {
   address &= 0x1fff;
