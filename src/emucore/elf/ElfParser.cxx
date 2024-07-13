@@ -127,16 +127,6 @@ const vector<ElfParser::Symbol>& ElfParser::getSymbols() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const optional<ElfParser::Section>
-ElfParser::getSection(const string &name) const {
-  for (const Section &section : mySections)
-    if (section.name == name)
-      return section;
-
-  return optional<Section>();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const optional<vector<ElfParser::Relocation>> ElfParser::getRelocations(size_t section) const
 {
   return myRelocations.contains(section) ? myRelocations.at(section) : optional<vector<ElfParser::Relocation>>();
