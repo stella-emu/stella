@@ -64,6 +64,8 @@ MODULE_OBJS := \
         src/gui/WhatsNewDialog.o \
         src/gui/Widget.o
 
+MODULE_TEST_OBJS =
+
 MODULE_DIRS += \
         src/gui
 

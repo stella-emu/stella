@@ -11,6 +11,8 @@ MODULE_OBJS := \
         src/debugger/TIADebug.o \
         src/debugger/TimerMap.o
 
+MODULE_TEST_OBJS =
+
 MODULE_DIRS += \
         src/debugger
 

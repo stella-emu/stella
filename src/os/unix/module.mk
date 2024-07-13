@@ -5,6 +5,8 @@ MODULE_OBJS := \
 	src/os/unix/OSystemUNIX.o \
 	src/os/unix/SerialPortUNIX.o
 
+MODULE_TEST_OBJS =
+
 MODULE_DIRS += \
 	src/os/unix
 

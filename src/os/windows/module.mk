@@ -7,6 +7,8 @@ MODULE_OBJS := \
 	src/os/windows/SettingsWINDOWS.o \
 	src/os/windows/stella_icon.o
 
+MODULE_TEST_OBJS =
+
 MODULE_DIRS += \
 	src/os/windows
 

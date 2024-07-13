@@ -4,7 +4,7 @@ MODULE_OBJS := \
 	src/common/AudioQueue.o \
 	src/common/AudioSettings.o \
 	src/common/Base.o \
-        src/common/Bezel.o \
+  src/common/Bezel.o \
 	src/common/DevSettingsHandler.o \
 	src/common/EventHandlerSDL2.o \
 	src/common/FBBackendSDL2.o \
@@ -40,6 +40,9 @@ MODULE_OBJS := \
 	src/common/repository/KeyValueRepositoryConfigfile.o \
 	src/common/repository/CompositeKVRJsonAdapter.o \
 	src/common/repository/CompositeKeyValueRepository.o
+
+MODULE_TEST_OBJS = \
+	src/common/Logger.o
 
 MODULE_DIRS += \
 	src/common

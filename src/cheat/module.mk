@@ -7,8 +7,10 @@ MODULE_OBJS := \
 	src/cheat/BankRomCheat.o \
 	src/cheat/RamCheat.o
 
+MODULE_TEST_OBJS =
+
 MODULE_DIRS += \
 	src/cheat
 
-# Include common rules 
+# Include common rules
 include $(srcdir)/common.rules

@@ -6,6 +6,8 @@ MODULE_OBJS := \
 	src/emucore/tia/frame-manager/FrameLayoutDetector.o \
 	src/emucore/tia/frame-manager/JitterEmulation.o
 
+MODULE_TEST_OBJS =
+
 MODULE_DIRS += \
 	src/emucore/tia/frame-manager
 
