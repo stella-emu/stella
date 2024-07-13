@@ -22,10 +22,12 @@
 
 #include "ElfLinker.hxx"
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ElfLinker::ElfLinker(uInt32 textBase, uInt32 dataBase, const ElfParser& parser)
   : myTextBase(textBase), myDataBase(dataBase), myParser(parser)
 {}
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ElfLinker& ElfLinker::setUndefinedSymbolDefault(uInt32 defaultValue)
 {
   undefinedSymbolDefault = defaultValue;
@@ -33,6 +35,7 @@ ElfLinker& ElfLinker::setUndefinedSymbolDefault(uInt32 defaultValue)
   return *this;
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ElfLinker::link(const vector<ExternalSymbol>& externalSymbols)
 {
   myTextSize = myDataSize = 0;
@@ -49,46 +52,55 @@ void ElfLinker::link(const vector<ExternalSymbol>& externalSymbols)
   applyRelocationsToSections();
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt32 ElfLinker::getTextBase() const
 {
   return myTextBase;
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt32 ElfLinker::getTextSize() const
 {
   return myTextSize;
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const uInt8* ElfLinker::getTextData() const
 {
   return myTextData ? myTextData.get() : nullptr;
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt32 ElfLinker::getDataBase() const
 {
   return myDataBase;
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt32 ElfLinker::getDataSize() const
 {
   return myDataSize;
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const uInt8* ElfLinker::getDataData() const
 {
   return myDataData ? myDataData.get() : nullptr;
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const vector<uInt32>& ElfLinker::getInitArray() const
 {
   return myInitArray;
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const vector<uInt32>& ElfLinker::getPreinitArray() const
 {
   return myPreinitArray;
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ElfLinker::RelocatedSymbol ElfLinker::findRelocatedSymbol(string_view name) const
 {
   const auto& symbols = myParser.getSymbols();
@@ -104,16 +116,19 @@ ElfLinker::RelocatedSymbol ElfLinker::findRelocatedSymbol(string_view name) cons
   ElfSymbolResolutionError::raise("symbol not found");
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const vector<std::optional<ElfLinker::RelocatedSection>>& ElfLinker::getRelocatedSections() const
 {
   return myRelocatedSections;
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const vector<std::optional<ElfLinker::RelocatedSymbol>>& ElfLinker::getRelocatedSymbols() const
 {
   return myRelocatedSymbols;
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ElfLinker::relocateSections()
 {
   auto& sections = myParser.getSections();
@@ -176,6 +191,7 @@ void ElfLinker::relocateSections()
   }
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ElfLinker::relocateInitArrays()
 {
   const auto& sections = myParser.getSections();
@@ -218,6 +234,7 @@ void ElfLinker::relocateInitArrays()
   applyRelocationsToInitArrays(ElfParser::SHT_PREINIT_ARRAY, myPreinitArray, relocatedPreinitArrays);
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ElfLinker::relocateSymbols(const vector<ExternalSymbol>& externalSymbols)
 {
   std::unordered_map<string, const ExternalSymbol*> externalSymbolLookup;
@@ -259,6 +276,7 @@ void ElfLinker::relocateSymbols(const vector<ExternalSymbol>& externalSymbols)
   }
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ElfLinker::applyRelocationsToSections()
 {
     auto& sections = myParser.getSections();
@@ -274,6 +292,7 @@ void ElfLinker::applyRelocationsToSections()
   }
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ElfLinker::copyInitArrays(vector<uInt32>& initArray,  std::unordered_map<uInt32, uInt32> relocatedInitArrays)
 {
   const uInt8* elfData = myParser.getData();
@@ -288,6 +307,7 @@ void ElfLinker::copyInitArrays(vector<uInt32>& initArray,  std::unordered_map<uI
   }
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ElfLinker::applyRelocationToSection(const ElfParser::Relocation& relocation, size_t iSection)
 {
   const auto& targetSection = myParser.getSections()[iSection];
@@ -337,8 +357,9 @@ void ElfLinker::applyRelocationToSection(const ElfParser::Relocation& relocation
   }
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ElfLinker::applyRelocationsToInitArrays(uInt8 initArrayType, vector<uInt32>& initArray,
-                                             std::unordered_map<uInt32, uInt32> relocatedInitArrays)
+                                             const std::unordered_map<uInt32, uInt32>& relocatedInitArrays)
 {
   const auto& symbols = myParser.getSymbols();
   const auto& sections = myParser.getSections();
@@ -373,6 +394,7 @@ void ElfLinker::applyRelocationsToInitArrays(uInt8 initArrayType, vector<uInt32>
   }
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt32 ElfLinker::read32(const uInt8* address)
 {
   uInt32 value = *(address++);
@@ -383,6 +405,7 @@ uInt32 ElfLinker::read32(const uInt8* address)
   return value;
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ElfLinker::write32(uInt8* address, uInt32 value)
 {
   *(address++) = value;
