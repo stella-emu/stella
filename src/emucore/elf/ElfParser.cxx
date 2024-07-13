@@ -129,7 +129,7 @@ const vector<ElfParser::Symbol>& ElfParser::getSymbols() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const optional<vector<ElfParser::Relocation>> ElfParser::getRelocations(size_t section) const
 {
-  return myRelocations.contains(section) ? myRelocations.at(section) : optional<vector<ElfParser::Relocation>>();
+  return myRelocations.contains(section) ? myRelocations.at(section) : optional<vector<Relocation>>();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

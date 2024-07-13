@@ -90,6 +90,8 @@ MODULE_OBJS := \
         src/debugger/gui/ToggleWidget.o \
         src/debugger/gui/TrakBallWidget.o
 
+MODULE_TEST_OBJS =
+
 MODULE_DIRS += \
         src/debugger/gui
 

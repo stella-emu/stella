@@ -9,4 +9,4 @@ MODULE_TEST_OBJS-$(MODULE) := $(MODULE_TEST_OBJS)
 # If not building as a plugin, add the object files to the main OBJS list
 #OBJS += $(MODULE_LIB-$(MODULE))
 OBJS += $(MODULE_OBJS)
-OBJS_TEST := $(MODULE_TEST_OBJS)
+OBJS_TEST += $(MODULE_TEST_OBJS)

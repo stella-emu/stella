@@ -26,6 +26,7 @@ LDFLAGS     := -pthread
 INCLUDES    :=
 LIBS	    :=
 OBJS	    :=
+OBJS_TEST :=
 PROF        :=
 
 MODULES     :=

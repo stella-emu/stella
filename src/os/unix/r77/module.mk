@@ -4,6 +4,8 @@ MODULE_OBJS := \
 	src/os/unix/r77/OSystemR77.o \
 	src/os/unix/r77/SettingsR77.o
 
+MODULE_TEST_OBJS =
+
 MODULE_DIRS += \
 	src/os/unix/r77
 

@@ -17,6 +17,8 @@ MODULE_OBJS := \
 	src/lib/zlib/inftrees.o \
 	src/lib/zlib/inffast.o
 
+MODULE_TEST_OBJS =
+
 MODULE_DIRS += \
 	src/lib/zlib
 

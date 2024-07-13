@@ -4,6 +4,8 @@ MODULE_OBJS := \
 	src/common/tv_filters/NTSCFilter.o \
 	src/common/tv_filters/AtariNTSC.o
 
+MODULE_TEST_OBJS =
+
 MODULE_DIRS += \
 	src/common/tv_filters
 

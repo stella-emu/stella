@@ -99,6 +99,8 @@ MODULE_OBJS := \
 	src/emucore/TIASurface.o \
 	src/emucore/Thumbulator.o
 
+MODULE_TEST_OBJS =
+
 MODULE_DIRS += \
 	src/emucore
 

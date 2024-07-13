@@ -9,6 +9,8 @@ MODULE_OBJS := \
 	src/common/repository/sqlite/SqliteStatement.o \
 	src/common/repository/sqlite/SqliteTransaction.o
 
+MODULE_TEST_OBJS =
+
 MODULE_DIRS += \
 	src/common/repository/sqlite
 

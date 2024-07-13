@@ -17,6 +17,8 @@ MODULE_OBJS := \
 	src/lib/libpng/pngwtran.o \
 	src/lib/libpng/pngwutil.o
 
+MODULE_TEST_OBJS =
+
 MODULE_DIRS += \
 	src/lib/libpng
 
