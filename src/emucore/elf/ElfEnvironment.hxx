@@ -24,7 +24,8 @@
 namespace elfEnvironment {
   constexpr uInt32 ADDR_TEXT_BASE = 0x00100000;
   constexpr uInt32 ADDR_DATA_BASE = 0x00200000;
-  constexpr uInt32 ADDR_TABLES_BASE = 0x00300000;
+  constexpr uInt32 ADDR_RODATA_BASE = 0x00300000;
+  constexpr uInt32 ADDR_TABLES_BASE = 0x00400000;
 
   constexpr uInt32 ADDR_ADDR_IDR = 0xf0000000;
   constexpr uInt32 ADDR_DATA_IDR = 0xf0000004;
