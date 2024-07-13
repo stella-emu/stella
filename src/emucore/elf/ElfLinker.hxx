@@ -105,8 +105,8 @@ class ElfLinker {
     void copyInitArrays(vector<uInt32>& initArray,  std::unordered_map<uInt32, uInt32> relocatedInitArrays);
 
     void applyRelocationToSection(const ElfParser::Relocation& relocation, size_t iSection);
-    void applyRelocationsToInitArrays(uInt8 initArrayType,
-                                      vector<uInt32>& initArray, std::unordered_map<uInt32, uInt32> relocatedInitArrays);
+    void applyRelocationsToInitArrays(uInt8 initArrayType, vector<uInt32>& initArray,
+                                      const std::unordered_map<uInt32, uInt32>& relocatedInitArrays);
 
     uInt32 read32(const uInt8* address);
     void write32(uInt8* address, uInt32 value);
