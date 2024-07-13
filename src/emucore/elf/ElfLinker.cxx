@@ -298,7 +298,7 @@ void ElfLinker::relocateInitArrays()
 
     switch (section.type) {
       case ElfParser::SHT_INIT_ARRAY:
-        if (section.size % 4) ElfLinkError::raise("invalid init arrey");
+        if (section.size % 4) ElfLinkError::raise("invalid init array");
 
         relocatedInitArrays[i] = initArraySize;
         initArraySize += section.size;
@@ -306,7 +306,7 @@ void ElfLinker::relocateInitArrays()
         break;
 
       case ElfParser::SHT_PREINIT_ARRAY:
-        if (section.size % 4) ElfLinkError::raise("invalid preinit arrey");
+        if (section.size % 4) ElfLinkError::raise("invalid preinit array");
 
         relocatedPreinitArrays[i] = preinitArraySize;
         preinitArraySize += section.size;
