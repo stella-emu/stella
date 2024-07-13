@@ -19,7 +19,7 @@
 #define ELF_LINKER
 
 #include "bspf.hxx"
-#include "ElfParser.hxx"
+#include "ElfFile.hxx"
 
 class ElfLinker {
   public:
@@ -76,7 +76,7 @@ class ElfLinker {
     };
 
   public:
-    ElfLinker(uInt32 textBase, uInt32 dataBase, uInt32 rodataBase, const ElfParser& parser);
+    ElfLinker(uInt32 textBase, uInt32 dataBase, uInt32 rodataBase, const ElfFile& elf);
 
     ElfLinker& setUndefinedSymbolDefault(uInt32 defaultValue);
     void link(const vector<ExternalSymbol>& externalSymbols);
@@ -103,7 +103,7 @@ class ElfLinker {
     void applyRelocationsToSections();
     void copyInitArrays(vector<uInt32>& initArray,  std::unordered_map<uInt32, uInt32> relocatedInitArrays);
 
-    void applyRelocationToSection(const ElfParser::Relocation& relocation, size_t iSection);
+    void applyRelocationToSection(const ElfFile::Relocation& relocation, size_t iSection);
     void applyRelocationsToInitArrays(uInt8 initArrayType, vector<uInt32>& initArray,
                                       const std::unordered_map<uInt32, uInt32>& relocatedInitArrays);
 
@@ -116,7 +116,7 @@ class ElfLinker {
     const uInt32 myTextBase{0};
     const uInt32 myDataBase{0};
     const uInt32 myRodataBase{0};
-    const ElfParser& myParser;
+    const ElfFile& myElf;
 
     uInt32 myTextSize{0};
     uInt32 myDataSize{0};

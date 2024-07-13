@@ -33,17 +33,17 @@ namespace {
   constexpr size_t TRANSACTION_QUEUE_CAPACITY = 16384;
 
 #ifdef DUMP_ELF
-  void dumpElf(const ElfParser& parser)
+  void dumpElf(const ElfFile& elf)
   {
     cout << std::endl << "ELF sections:" << std::endl << std::endl;
 
     size_t i = 0;
-    for (auto& section: parser.getSections()) {
+    for (auto& section: elf.getSections()) {
       if (section.type != 0x00) cout << i << " " << section << std::endl;
       i++;
     }
 
-    auto symbols = parser.getSymbols();
+    auto symbols = elf.getSymbols();
     cout << std::endl << "ELF symbols:" << std::endl << std::endl;
     if (symbols.size() > 0) {
       i = 0;
@@ -52,8 +52,8 @@ namespace {
     }
 
     i = 0;
-    for (auto& section: parser.getSections()) {
-      auto rels = parser.getRelocations(i++);
+    for (auto& section: elf.getSections()) {
+      auto rels = elf.getRelocations(i++);
       if (!rels) continue;
 
       cout

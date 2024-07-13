@@ -1665,6 +1665,7 @@
     <ClInclude Include="..\..\emucore\ControllerDetector.hxx" />
     <ClInclude Include="..\..\emucore\ControlLowLevel.hxx" />
     <ClInclude Include="..\..\emucore\DispatchResult.hxx" />
+    <ClInclude Include="..\..\emucore\elf\ElfFile.hxx" />
     <ClInclude Include="..\..\emucore\elf\ElfParser.hxx" />
     <ClInclude Include="..\..\emucore\elf\ElfLinker.hxx" />
     <ClInclude Include="..\..\emucore\elf\ElfUtil.hxx" />

@@ -24,17 +24,17 @@
 
 namespace {
   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-  std::optional<ElfLinker::SegmentType> determineSegmentType(const ElfParser::Section& section)
+  std::optional<ElfLinker::SegmentType> determineSegmentType(const ElfFile::Section& section)
   {
     switch (section.type) {
-      case ElfParser::SHT_PROGBITS:
+      case ElfFile::SHT_PROGBITS:
         if (section.name.starts_with(".text")) return ElfLinker::SegmentType::text;
 
         if (section.name.starts_with(".rodata")) return ElfLinker::SegmentType::rodata;
 
         return ElfLinker::SegmentType::data;
 
-      case ElfParser::SHT_NOBITS:
+      case ElfFile::SHT_NOBITS:
         return ElfLinker::SegmentType::data;
 
       default:
@@ -49,8 +49,8 @@ namespace {
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-ElfLinker::ElfLinker(uInt32 textBase, uInt32 dataBase, uInt32 rodataBase, const ElfParser& parser)
-  : myTextBase(textBase), myDataBase(dataBase), myRodataBase(rodataBase), myParser(parser)
+ElfLinker::ElfLinker(uInt32 textBase, uInt32 dataBase, uInt32 rodataBase, const ElfFile& elf)
+  : myTextBase(textBase), myDataBase(dataBase), myRodataBase(rodataBase), myElf(elf)
 {}
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -148,7 +148,7 @@ const vector<uInt32>& ElfLinker::getPreinitArray() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ElfLinker::RelocatedSymbol ElfLinker::findRelocatedSymbol(string_view name) const
 {
-  const auto& symbols = myParser.getSymbols();
+  const auto& symbols = myElf.getSymbols();
   for (size_t i = 0; i < symbols.size(); i++) {
     if (symbols[i].name != name) continue;
 
@@ -212,7 +212,7 @@ unique_ptr<uInt8[]>& ElfLinker::getSegmentDataRef(SegmentType type)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ElfLinker::relocateSections()
 {
-  auto& sections = myParser.getSections();
+  auto& sections = myElf.getSections();
   myRelocatedSections.resize(sections.size(), std::nullopt);
 
   // relocate everything that is not .bss
@@ -220,7 +220,7 @@ void ElfLinker::relocateSections()
     const auto& section = sections[i];
 
     const auto segmentType = determineSegmentType(section);
-    if (!segmentType || section.type == ElfParser::SHT_NOBITS) continue;
+    if (!segmentType || section.type == ElfFile::SHT_NOBITS) continue;
 
     uInt32& segmentSize = getSegmentSizeRef(*segmentType);
 
@@ -235,7 +235,7 @@ void ElfLinker::relocateSections()
   for (size_t i = 0; i < sections.size(); i++) {
     const auto& section = sections[i];
 
-    if (section.type == ElfParser::SHT_NOBITS) {
+    if (section.type == ElfFile::SHT_NOBITS) {
       if (myDataSize % section.align)
         myDataSize = (myDataSize / section.align + 1) * section.align;
 
@@ -269,14 +269,14 @@ void ElfLinker::relocateSections()
     if (!relocatedSection) continue;
 
     const auto& section = sections[i];
-    if (section.type == ElfParser::SHT_NOBITS) continue;
+    if (section.type == ElfFile::SHT_NOBITS) continue;
 
     const auto segmentType = determineSegmentType(section);
     if (!segmentType) continue;
 
     std::memcpy(
       getSegmentDataRef(*segmentType).get() + relocatedSection->offset,
-      myParser.getData() + section.offset,
+      myElf.getData() + section.offset,
       section.size
     );
   }
@@ -285,7 +285,7 @@ void ElfLinker::relocateSections()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ElfLinker::relocateInitArrays()
 {
-  const auto& sections = myParser.getSections();
+  const auto& sections = myElf.getSections();
   uInt32 initArraySize = 0;
   uInt32 preinitArraySize = 0;
 
@@ -297,7 +297,7 @@ void ElfLinker::relocateInitArrays()
     const auto& section = sections[i];
 
     switch (section.type) {
-      case ElfParser::SHT_INIT_ARRAY:
+      case ElfFile::SHT_INIT_ARRAY:
         if (section.size % 4) ElfLinkError::raise("invalid init array");
 
         relocatedInitArrays[i] = initArraySize;
@@ -305,7 +305,7 @@ void ElfLinker::relocateInitArrays()
 
         break;
 
-      case ElfParser::SHT_PREINIT_ARRAY:
+      case ElfFile::SHT_PREINIT_ARRAY:
         if (section.size % 4) ElfLinkError::raise("invalid preinit array");
 
         relocatedPreinitArrays[i] = preinitArraySize;
@@ -321,8 +321,8 @@ void ElfLinker::relocateInitArrays()
   copyInitArrays(myInitArray, relocatedInitArrays);
   copyInitArrays(myPreinitArray, relocatedPreinitArrays);
 
-  applyRelocationsToInitArrays(ElfParser::SHT_INIT_ARRAY, myInitArray, relocatedInitArrays);
-  applyRelocationsToInitArrays(ElfParser::SHT_PREINIT_ARRAY, myPreinitArray, relocatedPreinitArrays);
+  applyRelocationsToInitArrays(ElfFile::SHT_INIT_ARRAY, myInitArray, relocatedInitArrays);
+  applyRelocationsToInitArrays(ElfFile::SHT_PREINIT_ARRAY, myPreinitArray, relocatedPreinitArrays);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -334,19 +334,19 @@ void ElfLinker::relocateSymbols(const vector<ExternalSymbol>& externalSymbols)
     externalSymbolLookup[externalSymbol.name] = &externalSymbol;
 
   // relocate symbols
-  const auto& symbols = myParser.getSymbols();
+  const auto& symbols = myElf.getSymbols();
   myRelocatedSymbols.resize(symbols.size(), std::nullopt);
 
   for (size_t i = 0; i < symbols.size(); i++) {
     const auto& symbol = symbols[i];
 
-    if (symbol.section == ElfParser::SHN_ABS) {
+    if (symbol.section == ElfFile::SHN_ABS) {
       myRelocatedSymbols[i] = {std::nullopt, symbol.value, false};
 
       continue;
     }
 
-    if (symbol.section == ElfParser::SHN_UND) {
+    if (symbol.section == ElfFile::SHN_UND) {
       if (externalSymbolLookup.contains(symbol.name))
         myRelocatedSymbols[i] = {std::nullopt, externalSymbolLookup[symbol.name]->value, false};
 
@@ -360,7 +360,7 @@ void ElfLinker::relocateSymbols(const vector<ExternalSymbol>& externalSymbols)
     if (!relocatedSection) continue;
 
     uInt32 value = getSegmentBase(relocatedSection->segment) + relocatedSection->offset;
-    if (symbol.type != ElfParser::STT_SECTION) value += symbol.value;
+    if (symbol.type != ElfFile::STT_SECTION) value += symbol.value;
 
     myRelocatedSymbols[i] = {relocatedSection->segment, value, false};
   }
@@ -369,11 +369,11 @@ void ElfLinker::relocateSymbols(const vector<ExternalSymbol>& externalSymbols)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ElfLinker::applyRelocationsToSections()
 {
-    auto& sections = myParser.getSections();
+    auto& sections = myElf.getSections();
 
   // apply relocations
   for (size_t iSection = 0; iSection < sections.size(); iSection++) {
-    const auto& relocations = myParser.getRelocations(iSection);
+    const auto& relocations = myElf.getRelocations(iSection);
     if (!relocations) continue;
     if (!myRelocatedSections[iSection]) continue;
 
@@ -385,8 +385,8 @@ void ElfLinker::applyRelocationsToSections()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ElfLinker::copyInitArrays(vector<uInt32>& initArray,  std::unordered_map<uInt32, uInt32> relocatedInitArrays)
 {
-  const uInt8* elfData = myParser.getData();
-  const auto& sections = myParser.getSections();
+  const uInt8* elfData = myElf.getData();
+  const auto& sections = myElf.getSections();
 
   // Copy init arrays
   for (const auto [iSection, offset]: relocatedInitArrays) {
@@ -398,11 +398,11 @@ void ElfLinker::copyInitArrays(vector<uInt32>& initArray,  std::unordered_map<uI
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void ElfLinker::applyRelocationToSection(const ElfParser::Relocation& relocation, size_t iSection)
+void ElfLinker::applyRelocationToSection(const ElfFile::Relocation& relocation, size_t iSection)
 {
-  const auto& targetSection = myParser.getSections()[iSection];
+  const auto& targetSection = myElf.getSections()[iSection];
   const auto& targetSectionRelocated = *myRelocatedSections[iSection];
-  const auto& symbol = myParser.getSymbols()[relocation.symbol];
+  const auto& symbol = myElf.getSymbols()[relocation.symbol];
   const auto& relocatedSymbol = myRelocatedSymbols[relocation.symbol];
 
   if (!relocatedSymbol) ElfLinkError::raise(
@@ -422,17 +422,17 @@ void ElfLinker::applyRelocationToSection(const ElfParser::Relocation& relocation
     relocation.offset;
 
   switch (relocation.type) {
-    case ElfParser::R_ARM_ABS32:
-    case ElfParser::R_ARM_TARGET1:
+    case ElfFile::R_ARM_ABS32:
+    case ElfFile::R_ARM_TARGET1:
       {
         const uInt32 value = relocatedSymbol->value + relocation.addend.value_or(read32(target));
-        write32(target, value | (symbol.type == ElfParser::STT_FUNC ? 0x01 : 0));
+        write32(target, value | (symbol.type == ElfFile::STT_FUNC ? 0x01 : 0));
 
         break;
       }
 
-    case ElfParser::R_ARM_THM_CALL:
-    case ElfParser::R_ARM_THM_JUMP24:
+    case ElfFile::R_ARM_THM_CALL:
+    case ElfFile::R_ARM_THM_JUMP24:
       {
         const uInt32 op = read32(target);
 
@@ -444,7 +444,7 @@ void ElfLinker::applyRelocationToSection(const ElfParser::Relocation& relocation
         if ((offset >> 24) != -1 && (offset >> 24) != 0)
           ElfLinkError::raise("unable to relocate jump: offset out of bounds");
 
-        write32(target, elfUtil::encode_B_BL(offset, relocation.type == ElfParser::R_ARM_THM_CALL));
+        write32(target, elfUtil::encode_B_BL(offset, relocation.type == ElfFile::R_ARM_THM_CALL));
       }
   }
 }
@@ -453,18 +453,18 @@ void ElfLinker::applyRelocationToSection(const ElfParser::Relocation& relocation
 void ElfLinker::applyRelocationsToInitArrays(uInt8 initArrayType, vector<uInt32>& initArray,
                                              const std::unordered_map<uInt32, uInt32>& relocatedInitArrays)
 {
-  const auto& symbols = myParser.getSymbols();
-  const auto& sections = myParser.getSections();
+  const auto& symbols = myElf.getSymbols();
+  const auto& sections = myElf.getSections();
 
   for (size_t iSection = 0; iSection < sections.size(); iSection++) {
     const auto& section = sections[iSection];
     if (section.type != initArrayType) continue;
 
-    const auto& relocations = myParser.getRelocations(iSection);
+    const auto& relocations = myElf.getRelocations(iSection);
     if (!relocations) continue;
 
     for (const auto& relocation: *relocations) {
-      if (relocation.type != ElfParser::R_ARM_ABS32 && relocation.type != ElfParser::R_ARM_TARGET1)
+      if (relocation.type != ElfFile::R_ARM_ABS32 && relocation.type != ElfFile::R_ARM_TARGET1)
         ElfLinkError::raise("unsupported relocation for init array");
 
       const auto& relocatedSymbol = myRelocatedSymbols[relocation.symbol];
@@ -481,7 +481,7 @@ void ElfLinker::applyRelocationsToInitArrays(uInt8 initArrayType, vector<uInt32>
 
         const uInt32 index = (relocatedInitArrays.at(iSection) + relocation.offset) >> 2;
         const uInt32 value = relocatedSymbol->value + relocation.addend.value_or(initArray[index]);
-        initArray[index] = value | (symbols[relocation.symbol].type == ElfParser::STT_FUNC ? 1 : 0);
+        initArray[index] = value | (symbols[relocation.symbol].type == ElfFile::STT_FUNC ? 1 : 0);
     }
   }
 }

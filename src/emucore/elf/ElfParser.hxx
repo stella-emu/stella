@@ -20,9 +20,10 @@
 
 #include <unordered_map>
 
+#include "ElfFile.hxx"
 #include "bspf.hxx"
 
-class ElfParser {
+class ElfParser : public ElfFile {
   public:
     class ElfParseError : public std::exception {
       friend ElfParser;
@@ -41,6 +42,19 @@ class ElfParser {
         const string myReason;
     };
 
+  public:
+    ElfParser() = default;
+
+    void parse(const uInt8 *elfData, size_t size);
+
+    const uInt8 *getData() const override;
+    size_t getSize() const override;
+
+    const vector<Section>& getSections() const override;
+    const vector<Symbol>& getSymbols() const override;
+    const optional<vector<Relocation>> getRelocations(size_t section) const override;
+
+  private:
     struct Header {
       uInt16 type;
       uInt16 arch;
@@ -51,88 +65,6 @@ class ElfParser {
       uInt16 shSize;
       uInt16 shstrIndex;
     };
-
-    struct Section {
-      uInt32 nameOffset;
-      string name;
-
-      uInt32 type;
-      uInt32 flags;
-
-      uInt32 virtualAddress;
-      uInt32 offset;
-      uInt32 size;
-
-      uInt32 info;
-      uInt32 align;
-    };
-
-    struct Symbol {
-      uInt32 nameOffset;
-      uInt32 value;
-      uInt32 size;
-      uInt8 info;
-      uInt8 visibility;
-      uInt16 section;
-
-      string name;
-      uInt8 bind;
-      uInt8 type;
-    };
-
-    struct Relocation {
-      uInt32 offset;
-      uInt32 info;
-      optional<uInt32> addend;
-
-      uInt32 symbol;
-      uInt8 type;
-      string symbolName;
-    };
-
-  public:
-    static constexpr uInt8 ENDIAN_LITTLE_ENDIAN = 0x01;
-    static constexpr uInt8 ENDIAN_BIG_ENDIAN = 0x02;
-
-    static constexpr uInt16 ET_REL = 0x01;
-
-    static constexpr uInt16 ARCH_ARM32 = 0x28;
-
-    static constexpr uInt32 SHT_NULL = 0x00;
-    static constexpr uInt32 SHT_PROGBITS = 0x01;
-    static constexpr uInt32 SHT_SYMTAB = 0x02;
-    static constexpr uInt32 SHT_STRTAB = 0x03;
-    static constexpr uInt32 SHT_RELA = 0x04;
-    static constexpr uInt32 SHT_NOBITS = 0x08;
-    static constexpr uInt32 SHT_REL = 0x09;
-    static constexpr uInt32 SHT_INIT_ARRAY = 0x0e;
-    static constexpr uInt32 SHT_PREINIT_ARRAY = 0x10;
-
-    static constexpr uInt32 SHN_ABS = 0xfff1;
-    static constexpr uInt32 SHN_UND = 0x00;
-
-    static constexpr uInt32 STT_SECTION = 0x03;
-
-    static constexpr uInt32 R_ARM_ABS32 = 0x02;
-    static constexpr uInt32 R_ARM_THM_CALL = 0x0a;
-    static constexpr uInt32 R_ARM_THM_JUMP24 = 0x1e;
-    static constexpr uInt32 R_ARM_TARGET1 = 0x26;
-
-    static constexpr uInt32 STT_FUNC = 0x02;
-
-  public:
-    ElfParser() = default;
-
-    void parse(const uInt8 *elfData, size_t size);
-
-    const uInt8 *getData() const;
-    size_t getSize() const;
-
-    const Header& getHeader() const;
-    const vector<Section>& getSections() const;
-    const vector<Symbol>& getSymbols() const;
-    const optional<Section> getSection(const std::string &name) const;
-    const optional<vector<Relocation>> getRelocations(size_t section) const;
 
   private:
     uInt8 read8(uInt32 offset) const;
