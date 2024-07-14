@@ -24,7 +24,7 @@
 
 namespace {
   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-  std::optional<ElfLinker::SegmentType> determineSegmentType(const ElfFile::Section& section)
+  optional<ElfLinker::SegmentType> determineSegmentType(const ElfFile::Section& section)
   {
     switch (section.type) {
       case ElfFile::SHT_PROGBITS:
@@ -162,13 +162,13 @@ ElfLinker::RelocatedSymbol ElfLinker::findRelocatedSymbol(string_view name) cons
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const vector<std::optional<ElfLinker::RelocatedSection>>& ElfLinker::getRelocatedSections() const
+const vector<optional<ElfLinker::RelocatedSection>>& ElfLinker::getRelocatedSections() const
 {
   return myRelocatedSections;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const vector<std::optional<ElfLinker::RelocatedSymbol>>& ElfLinker::getRelocatedSymbols() const
+const vector<optional<ElfLinker::RelocatedSymbol>>& ElfLinker::getRelocatedSymbols() const
 {
   return myRelocatedSymbols;
 }
