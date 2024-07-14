@@ -92,6 +92,7 @@ class ElfFile {
     static constexpr uInt32 SHN_UND = 0x00;
 
     static constexpr uInt32 STT_SECTION = 0x03;
+    static constexpr uInt32 STT_NOTYPE = 0x00;
 
     static constexpr uInt32 R_ARM_ABS32 = 0x02;
     static constexpr uInt32 R_ARM_THM_CALL = 0x0a;

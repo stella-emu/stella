@@ -28,6 +28,8 @@ namespace {
     public:
       explicit ElfFixture(size_t size) : mySize(size) {
         myData = make_unique<uInt8[]>(mySize);
+
+        addSection("", 0, 0, 0);
       }
 
       const uInt8 *getData() const override {
@@ -66,6 +68,22 @@ namespace {
         return *this;
       }
 
+      ElfFixture& addSymbol(string_view name, uInt32 value, uInt16 section, uInt8 type = ElfFile::STT_NOTYPE) {
+        mySymbols.push_back({
+          .nameOffset = 0,
+          .value = value,
+          .size = 0,
+          .info = 0,
+          .visibility = 0,
+          .section = section,
+          .name = string(name),
+          .bind = 0,
+          .type = type
+        });
+
+        return *this;
+      }
+
       ElfFixture& write8(size_t address, uInt8 value) {
         myData[address] = value;
 
@@ -92,7 +110,7 @@ namespace {
     EXPECT_EQ(linker.getSegmentSize(ElfLinker::SegmentType::rodata), static_cast<uInt32>(0));
   }
 
-  TEST(ElfLinker, TextSegmentsGoToText) {
+  TEST(ElfLinker, TextSectionsGoToText) {
     ElfFixture fixture(1000);
     ElfLinker linker(0x00100000, 0x00200000, 0x00300000, fixture);
 
@@ -112,17 +130,17 @@ namespace {
     EXPECT_EQ(linker.getSegmentSize(ElfLinker::SegmentType::data), static_cast<uInt32>(0));
     EXPECT_EQ(linker.getSegmentSize(ElfLinker::SegmentType::rodata), static_cast<uInt32>(0));
 
-    EXPECT_EQ(linker.getRelocatedSections()[0]->offset, static_cast<uInt32>(0));
-    EXPECT_EQ(linker.getRelocatedSections()[0]->segment, ElfLinker::SegmentType::text);
-
-    EXPECT_EQ(linker.getRelocatedSections()[1]->offset, static_cast<uInt32>(12));
+    EXPECT_EQ(linker.getRelocatedSections()[1]->offset, static_cast<uInt32>(0));
     EXPECT_EQ(linker.getRelocatedSections()[1]->segment, ElfLinker::SegmentType::text);
 
-    EXPECT_EQ(linker.getRelocatedSections()[2]->offset, static_cast<uInt32>(34));
+    EXPECT_EQ(linker.getRelocatedSections()[2]->offset, static_cast<uInt32>(12));
     EXPECT_EQ(linker.getRelocatedSections()[2]->segment, ElfLinker::SegmentType::text);
 
-    EXPECT_EQ(linker.getRelocatedSections()[3]->offset, static_cast<uInt32>(67));
+    EXPECT_EQ(linker.getRelocatedSections()[3]->offset, static_cast<uInt32>(34));
     EXPECT_EQ(linker.getRelocatedSections()[3]->segment, ElfLinker::SegmentType::text);
+
+    EXPECT_EQ(linker.getRelocatedSections()[4]->offset, static_cast<uInt32>(67));
+    EXPECT_EQ(linker.getRelocatedSections()[4]->segment, ElfLinker::SegmentType::text);
 
     EXPECT_EQ(linker.getSegmentData(ElfLinker::SegmentType::text)[0], 0x01);
     EXPECT_EQ(linker.getSegmentData(ElfLinker::SegmentType::text)[12], 0x02);
@@ -130,7 +148,7 @@ namespace {
     EXPECT_EQ(linker.getSegmentData(ElfLinker::SegmentType::text)[67], 0x04);
   }
 
-  TEST(ElfLinker, DataSegmentsGoToData) {
+  TEST(ElfLinker, DataSectionsGoToData) {
     ElfFixture fixture(1000);
     ElfLinker linker(0x00100000, 0x00200000, 0x00300000, fixture);
 
@@ -150,17 +168,17 @@ namespace {
     EXPECT_EQ(linker.getSegmentSize(ElfLinker::SegmentType::data), static_cast<uInt32>(78));
     EXPECT_EQ(linker.getSegmentSize(ElfLinker::SegmentType::rodata), static_cast<uInt32>(0));
 
-    EXPECT_EQ(linker.getRelocatedSections()[0]->offset, static_cast<uInt32>(0));
-    EXPECT_EQ(linker.getRelocatedSections()[0]->segment, ElfLinker::SegmentType::data);
-
-    EXPECT_EQ(linker.getRelocatedSections()[1]->offset, static_cast<uInt32>(12));
+    EXPECT_EQ(linker.getRelocatedSections()[1]->offset, static_cast<uInt32>(0));
     EXPECT_EQ(linker.getRelocatedSections()[1]->segment, ElfLinker::SegmentType::data);
 
-    EXPECT_EQ(linker.getRelocatedSections()[2]->offset, static_cast<uInt32>(34));
+    EXPECT_EQ(linker.getRelocatedSections()[2]->offset, static_cast<uInt32>(12));
     EXPECT_EQ(linker.getRelocatedSections()[2]->segment, ElfLinker::SegmentType::data);
 
-    EXPECT_EQ(linker.getRelocatedSections()[3]->offset, static_cast<uInt32>(67));
+    EXPECT_EQ(linker.getRelocatedSections()[3]->offset, static_cast<uInt32>(34));
     EXPECT_EQ(linker.getRelocatedSections()[3]->segment, ElfLinker::SegmentType::data);
+
+    EXPECT_EQ(linker.getRelocatedSections()[4]->offset, static_cast<uInt32>(67));
+    EXPECT_EQ(linker.getRelocatedSections()[4]->segment, ElfLinker::SegmentType::data);
 
     EXPECT_EQ(linker.getSegmentData(ElfLinker::SegmentType::data)[0], 0x01);
     EXPECT_EQ(linker.getSegmentData(ElfLinker::SegmentType::data)[12], 0x02);
@@ -168,7 +186,7 @@ namespace {
     EXPECT_EQ(linker.getSegmentData(ElfLinker::SegmentType::data)[67], 0x04);
   }
 
-TEST(ElfLinker, RodataSegmentsGoToRodata) {
+TEST(ElfLinker, RodataSectionsGoToRodata) {
     ElfFixture fixture(1000);
     ElfLinker linker(0x00100000, 0x00200000, 0x00300000, fixture);
 
@@ -188,17 +206,17 @@ TEST(ElfLinker, RodataSegmentsGoToRodata) {
     EXPECT_EQ(linker.getSegmentSize(ElfLinker::SegmentType::data), static_cast<uInt32>(0));
     EXPECT_EQ(linker.getSegmentSize(ElfLinker::SegmentType::rodata), static_cast<uInt32>(78));
 
-    EXPECT_EQ(linker.getRelocatedSections()[0]->offset, static_cast<uInt32>(0));
-    EXPECT_EQ(linker.getRelocatedSections()[0]->segment, ElfLinker::SegmentType::rodata);
-
-    EXPECT_EQ(linker.getRelocatedSections()[1]->offset, static_cast<uInt32>(12));
+    EXPECT_EQ(linker.getRelocatedSections()[1]->offset, static_cast<uInt32>(0));
     EXPECT_EQ(linker.getRelocatedSections()[1]->segment, ElfLinker::SegmentType::rodata);
 
-    EXPECT_EQ(linker.getRelocatedSections()[2]->offset, static_cast<uInt32>(34));
+    EXPECT_EQ(linker.getRelocatedSections()[2]->offset, static_cast<uInt32>(12));
     EXPECT_EQ(linker.getRelocatedSections()[2]->segment, ElfLinker::SegmentType::rodata);
 
-    EXPECT_EQ(linker.getRelocatedSections()[3]->offset, static_cast<uInt32>(67));
+    EXPECT_EQ(linker.getRelocatedSections()[3]->offset, static_cast<uInt32>(34));
     EXPECT_EQ(linker.getRelocatedSections()[3]->segment, ElfLinker::SegmentType::rodata);
+
+    EXPECT_EQ(linker.getRelocatedSections()[4]->offset, static_cast<uInt32>(67));
+    EXPECT_EQ(linker.getRelocatedSections()[4]->segment, ElfLinker::SegmentType::rodata);
 
     EXPECT_EQ(linker.getSegmentData(ElfLinker::SegmentType::rodata)[0], 0x01);
     EXPECT_EQ(linker.getSegmentData(ElfLinker::SegmentType::rodata)[12], 0x02);
@@ -224,21 +242,205 @@ TEST(ElfLinker, RodataSegmentsGoToRodata) {
     EXPECT_EQ(linker.getSegmentSize(ElfLinker::SegmentType::data), static_cast<uInt32>(76));
     EXPECT_EQ(linker.getSegmentSize(ElfLinker::SegmentType::rodata), static_cast<uInt32>(0));
 
-    EXPECT_EQ(linker.getRelocatedSections()[0]->offset, static_cast<uInt32>(0));
-    EXPECT_EQ(linker.getRelocatedSections()[0]->segment, ElfLinker::SegmentType::data);
-
-    EXPECT_EQ(linker.getRelocatedSections()[1]->offset, static_cast<uInt32>(44));
+    EXPECT_EQ(linker.getRelocatedSections()[1]->offset, static_cast<uInt32>(0));
     EXPECT_EQ(linker.getRelocatedSections()[1]->segment, ElfLinker::SegmentType::data);
 
-    EXPECT_EQ(linker.getRelocatedSections()[2]->offset, static_cast<uInt32>(10));
+    EXPECT_EQ(linker.getRelocatedSections()[2]->offset, static_cast<uInt32>(44));
     EXPECT_EQ(linker.getRelocatedSections()[2]->segment, ElfLinker::SegmentType::data);
 
-    EXPECT_EQ(linker.getRelocatedSections()[3]->offset, static_cast<uInt32>(65));
+    EXPECT_EQ(linker.getRelocatedSections()[3]->offset, static_cast<uInt32>(10));
     EXPECT_EQ(linker.getRelocatedSections()[3]->segment, ElfLinker::SegmentType::data);
+
+    EXPECT_EQ(linker.getRelocatedSections()[4]->offset, static_cast<uInt32>(65));
+    EXPECT_EQ(linker.getRelocatedSections()[4]->segment, ElfLinker::SegmentType::data);
 
     EXPECT_EQ(linker.getSegmentData(ElfLinker::SegmentType::data)[0], 0x01);
     EXPECT_EQ(linker.getSegmentData(ElfLinker::SegmentType::data)[10], 0x02);
     EXPECT_EQ(linker.getSegmentData(ElfLinker::SegmentType::data)[44], 0);
     EXPECT_EQ(linker.getSegmentData(ElfLinker::SegmentType::data)[65], 0);
+  }
+
+  TEST(ElfLinker, SegmentsMayEndNextToEachOther) {
+    ElfFixture fixture(1000);
+    ElfLinker linker(100, 200, 300, fixture);
+
+    fixture
+      .addSection(".text", ElfFile::SHT_PROGBITS, 0, 100, 4)
+      .addSection(".data", ElfFile::SHT_PROGBITS, 0, 100, 4)
+      .addSection(".rodata", ElfFile::SHT_PROGBITS, 0, 100, 4);
+
+    EXPECT_NO_THROW(linker.link({}));
+  }
+
+  TEST(ElfLinker, OverlappingTextAndDataSegmentsThrow) {
+    ElfFixture fixture(1000);
+    ElfLinker linker(100, 200, 300, fixture);
+
+    fixture
+      .addSection(".text", ElfFile::SHT_PROGBITS, 0, 101, 4)
+      .addSection(".data", ElfFile::SHT_PROGBITS, 0, 100, 4)
+      .addSection(".rodata", ElfFile::SHT_PROGBITS, 0, 100, 4);
+
+    EXPECT_THROW(linker.link({}), ElfLinker::ElfLinkError);
+  }
+
+  TEST(ElfLinker, OverlappingTextAndRodataSegmentsThrow) {
+    ElfFixture fixture(1000);
+    ElfLinker linker(100, 300, 200, fixture);
+
+    fixture
+      .addSection(".text", ElfFile::SHT_PROGBITS, 0, 101, 4)
+      .addSection(".data", ElfFile::SHT_PROGBITS, 0, 100, 4)
+      .addSection(".rodata", ElfFile::SHT_PROGBITS, 0, 100, 4);
+
+    EXPECT_THROW(linker.link({}), ElfLinker::ElfLinkError);
+  }
+
+  TEST(ElfLinker, OverlappingDataAndRodataSegmentsThrow) {
+    ElfFixture fixture(1000);
+    ElfLinker linker(100, 200, 300, fixture);
+
+    fixture
+      .addSection(".text", ElfFile::SHT_PROGBITS, 0, 100, 4)
+      .addSection(".data", ElfFile::SHT_PROGBITS, 0, 101, 4)
+      .addSection(".rodata", ElfFile::SHT_PROGBITS, 0, 100, 4);
+
+    EXPECT_THROW(linker.link({}), ElfLinker::ElfLinkError);
+  }
+
+  TEST(ElfLinker, ABSSymbolsAreAcceptedUnchanged) {
+    ElfFixture fixture(1000);
+    ElfLinker linker(0x00100000, 0x00200000, 0x00300000, fixture);
+
+    fixture
+      .addSymbol("foo", 0x12345678, ElfFile::SHN_ABS);
+
+    linker.link({});
+
+    EXPECT_EQ(linker.getRelocatedSymbols().size(), static_cast<size_t>(1));
+    EXPECT_TRUE(linker.getRelocatedSymbols()[0].has_value());
+    EXPECT_FALSE(linker.getRelocatedSymbols()[0]->undefined);
+    EXPECT_EQ(linker.getRelocatedSymbols()[0]->value, static_cast<uInt32>(0x12345678));
+  }
+
+  TEST(ElfLinker, UNDSymbolesAreTakenFromExternals) {
+    ElfFixture fixture(1000);
+    ElfLinker linker(0x00100000, 0x00200000, 0x00300000, fixture);
+
+    fixture
+      .addSymbol("foo", 0, ElfFile::SHN_UND);
+
+    linker.link({{"foo", 0x12345678}});
+
+    EXPECT_EQ(linker.getRelocatedSymbols().size(), static_cast<size_t>(1));
+    EXPECT_TRUE(linker.getRelocatedSymbols()[0].has_value());
+    EXPECT_FALSE(linker.getRelocatedSymbols()[0]->undefined);
+    EXPECT_EQ(linker.getRelocatedSymbols()[0]->value, static_cast<uInt32>(0x12345678));
+  }
+
+  TEST(ElfLinker, UNDSymbolsAreResolvedWithTheDefaultIfSet) {
+    ElfFixture fixture(1000);
+    ElfLinker linker(0x00100000, 0x00200000, 0x00300000, fixture);
+
+    fixture
+      .addSymbol("foo", 0, ElfFile::SHN_UND);
+
+    linker
+      .setUndefinedSymbolDefault(0x12345678)
+      .link({});
+
+    EXPECT_EQ(linker.getRelocatedSymbols().size(), static_cast<size_t>(1));
+    EXPECT_TRUE(linker.getRelocatedSymbols()[0].has_value());
+    EXPECT_TRUE(linker.getRelocatedSymbols()[0]->undefined);
+    EXPECT_EQ(linker.getRelocatedSymbols()[0]->value, static_cast<uInt32>(0x12345678));
+  }
+
+  TEST(ElfLinker, UNDSymbolsAreIgnoredIfTheyCannotBeResolved) {
+    ElfFixture fixture(1000);
+    ElfLinker linker(0x00100000, 0x00200000, 0x00300000, fixture);
+
+    fixture
+      .addSymbol("foo", 0, ElfFile::SHN_UND);
+
+    linker.link({});
+
+    EXPECT_EQ(linker.getRelocatedSymbols().size(), static_cast<size_t>(1));
+    EXPECT_FALSE(linker.getRelocatedSymbols()[0].has_value());
+  }
+
+  TEST(ElfLinker, SymbolsThatReferToTextAreResolvedRelativeToText) {
+    ElfFixture fixture(1000);
+    ElfLinker linker(0x00100000, 0x00200000, 0x00300000, fixture);
+
+    fixture
+      .addSection(".text.1", ElfFile::SHT_PROGBITS, 0, 0x10)
+      .addSection(".text.2", ElfFile::SHT_PROGBITS, 0, 0xef)
+      .addSection(".data", ElfFile::SHT_PROGBITS, 0, 0xff)
+      .addSection(".rodata", ElfFile::SHT_PROGBITS, 0, 0xff)
+      .addSymbol("foo", 0x42, 2);
+
+    linker.link({});
+
+    EXPECT_EQ(linker.getRelocatedSymbols().size(), static_cast<size_t>(1));
+    EXPECT_TRUE(linker.getRelocatedSymbols()[0].has_value());
+    EXPECT_FALSE(linker.getRelocatedSymbols()[0]->undefined);
+    EXPECT_EQ(linker.getRelocatedSymbols()[0]->value, static_cast<uInt32>(0x00100052));
+  }
+
+  TEST(ElfLinker, SymbolsThatReferToDataAreResolvedRelativeToData) {
+    ElfFixture fixture(1000);
+    ElfLinker linker(0x00100000, 0x00200000, 0x00300000, fixture);
+
+    fixture
+      .addSection(".text", ElfFile::SHT_PROGBITS, 0, 0xff)
+      .addSection(".data.1", ElfFile::SHT_PROGBITS, 0, 0x10)
+      .addSection(".data.2", ElfFile::SHT_PROGBITS, 0, 0xef)
+      .addSection(".rodata", ElfFile::SHT_PROGBITS, 0, 0xff)
+      .addSymbol("foo", 0x42, 3);
+
+    linker.link({});
+
+    EXPECT_EQ(linker.getRelocatedSymbols().size(), static_cast<size_t>(1));
+    EXPECT_TRUE(linker.getRelocatedSymbols()[0].has_value());
+    EXPECT_FALSE(linker.getRelocatedSymbols()[0]->undefined);
+    EXPECT_EQ(linker.getRelocatedSymbols()[0]->value, static_cast<uInt32>(0x00200052));
+  }
+
+  TEST(ElfLinker, SymbolsThatReferToRodataAreResolvedRelativeToRodata) {
+    ElfFixture fixture(1000);
+    ElfLinker linker(0x00100000, 0x00200000, 0x00300000, fixture);
+
+    fixture
+      .addSection(".text", ElfFile::SHT_PROGBITS, 0, 0xff)
+      .addSection(".data", ElfFile::SHT_PROGBITS, 0, 0xff)
+      .addSection(".rodata.1", ElfFile::SHT_PROGBITS, 0, 0x10)
+      .addSection(".rodata.2", ElfFile::SHT_PROGBITS, 0, 0xef)
+      .addSymbol("foo", 0x42, 4);
+
+    linker.link({});
+
+    EXPECT_EQ(linker.getRelocatedSymbols().size(), static_cast<size_t>(1));
+    EXPECT_TRUE(linker.getRelocatedSymbols()[0].has_value());
+    EXPECT_FALSE(linker.getRelocatedSymbols()[0]->undefined);
+    EXPECT_EQ(linker.getRelocatedSymbols()[0]->value, static_cast<uInt32>(0x00300052));
+  }
+
+  TEST(ElfLinker, SymbolsThatReferToBssAreResolvedRelativeToBss) {
+    ElfFixture fixture(1000);
+    ElfLinker linker(0x00100000, 0x00200000, 0x00300000, fixture);
+
+    fixture
+      .addSection(".text", ElfFile::SHT_PROGBITS, 0, 0xff)
+      .addSection(".data", ElfFile::SHT_PROGBITS, 0, 0x10)
+      .addSection(".bss", ElfFile::SHT_PROGBITS, 0, 0xef)
+      .addSection(".rodata", ElfFile::SHT_PROGBITS, 0, 0xff)
+      .addSymbol("foo", 0x42, 3);
+
+    linker.link({});
+
+    EXPECT_EQ(linker.getRelocatedSymbols().size(), static_cast<size_t>(1));
+    EXPECT_TRUE(linker.getRelocatedSymbols()[0].has_value());
+    EXPECT_FALSE(linker.getRelocatedSymbols()[0]->undefined);
+    EXPECT_EQ(linker.getRelocatedSymbols()[0]->value, static_cast<uInt32>(0x00200052));
   }
 }
