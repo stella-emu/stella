@@ -101,14 +101,26 @@ class ElfLinker {
     void relocateInitArrays();
     void relocateSymbols(const vector<ExternalSymbol>& externalSymbols);
     void applyRelocationsToSections();
-    void copyInitArrays(vector<uInt32>& initArray,  std::unordered_map<uInt32, uInt32> relocatedInitArrays);
+    void copyInitArrays(vector<uInt32>& initArray, const std::unordered_map<uInt32, uInt32>& relocatedInitArrays);
 
     void applyRelocationToSection(const ElfFile::Relocation& relocation, size_t iSection);
     void applyRelocationsToInitArrays(uInt8 initArrayType, vector<uInt32>& initArray,
                                       const std::unordered_map<uInt32, uInt32>& relocatedInitArrays);
 
-    uInt32 read32(const uInt8* address);
-    void write32(uInt8* address, uInt32 value);
+    static constexpr uInt32 read32(const uInt8* address) {
+      uInt32 value = *(address++);
+      value |= *(address++) << 8;
+      value |= *(address++) << 16;
+      value |= *(address++) << 24;
+
+      return value;
+    }
+    static constexpr void write32(uInt8* address, uInt32 value) {
+      *(address++) = value;
+      *(address++) = value >> 8;
+      *(address++) = value >> 16;
+      *(address++) = value >> 24;
+    }
 
   private:
     std::optional<uInt32> undefinedSymbolDefault;

@@ -98,7 +98,7 @@ class ElfParser : public ElfFile {
 };
 
 ostream& operator<<(ostream& os, const ElfParser::Section& section);
-ostream& operator<<(ostream& os, const ElfParser::Symbol symbol);
-ostream& operator<<(ostream& os, const ElfParser::Relocation relocation);
+ostream& operator<<(ostream& os, const ElfParser::Symbol& symbol);
+ostream& operator<<(ostream& os, const ElfParser::Relocation& relocation);
 
 #endif // ELF_PARSER

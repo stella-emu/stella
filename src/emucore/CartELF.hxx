@@ -70,7 +70,7 @@ class CartridgeELF: public Cartridge {
       static BusTransaction transactionYield(uInt16 address);
       static BusTransaction transactionDrive(uInt16 address, uInt8 value);
 
-      void setBusState(bool& drive, uInt8& value);
+      void setBusState(bool& drive, uInt8& value) const;
 
       uInt16 address;
       uInt8 value;
