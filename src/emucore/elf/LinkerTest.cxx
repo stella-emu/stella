@@ -687,4 +687,101 @@ TEST(ElfLinker, RodataSectionsGoToRodata) {
 
     EXPECT_EQ(segmentRead32(linker, SegmentType::rodata, 0x14), static_cast<uInt32>(0x12345679));
   }
+
+  TEST(ElfLinker, R_ARM_THM_CALL_PatchesOffset) {
+    ElfFixture fixture(1000);
+    ElfLinker linker(0x00100000, 0x00200000, 0x00300000, fixture);
+
+    fixture
+      .addSection(".text.1", ElfFile::SHT_PROGBITS, 0, 0x10)
+      .addSection(".text.2", ElfFile::SHT_PROGBITS, 0x10, 0x20)
+      .addSymbol("foo", 0x04, 2)
+      .addRelocation(1, 0, 0x08, ElfFile::R_ARM_THM_CALL)
+      .write32(0x08, 0xf800f000);
+
+    linker.link({});
+
+    EXPECT_EQ(segmentRead32(linker, SegmentType::text, 0x08), 0xf804f000);
+  }
+
+  TEST(ElfLinker, R_ARM_THM_CALL_AddsAddendToTarget) {
+    ElfFixture fixture(1000);
+    ElfLinker linker(0x00100000, 0x00200000, 0x00300000, fixture);
+
+    fixture
+      .addSection(".text.1", ElfFile::SHT_PROGBITS, 0, 0x10)
+      .addSection(".text.2", ElfFile::SHT_PROGBITS, 0x10, 0x20)
+      .addSymbol("foo", 0x04, 2)
+      .addRelocation(1, 0, 0x08, ElfFile::R_ARM_THM_CALL, -2)
+      .write32(0x08, 0xf800f000);
+
+    linker.link({});
+
+    EXPECT_EQ(segmentRead32(linker, SegmentType::text, 0x08), 0xf803f000);
+  }
+
+  TEST(ElfLinker, R_ARM_THM_CALL_UsesExistingValueAsAddend) {
+    ElfFixture fixture(1000);
+    ElfLinker linker(0x00100000, 0x00200000, 0x00300000, fixture);
+
+    fixture
+      .addSection(".text.1", ElfFile::SHT_PROGBITS, 0, 0x10)
+      .addSection(".text.2", ElfFile::SHT_PROGBITS, 0x10, 0x20)
+      .addSymbol("foo", 0x04, 2)
+      .addRelocation(1, 0, 0x08, ElfFile::R_ARM_THM_CALL)
+      .write32(0x08, 0xfffff7ff);
+
+    linker.link({});
+
+    EXPECT_EQ(segmentRead32(linker, SegmentType::text, 0x08), 0xf803f000);
+  }
+
+  TEST(ElfLinker, R_ARM_THM_JUMP24L_PatchesOffset) {
+    ElfFixture fixture(1000);
+    ElfLinker linker(0x00100000, 0x00200000, 0x00300000, fixture);
+
+    fixture
+      .addSection(".text.1", ElfFile::SHT_PROGBITS, 0, 0x10)
+      .addSection(".text.2", ElfFile::SHT_PROGBITS, 0x10, 0x20)
+      .addSymbol("foo", 0x04, 2)
+      .addRelocation(1, 0, 0x08, ElfFile::R_ARM_THM_JUMP24)
+      .write32(0x08, 0xb800f000);
+
+    linker.link({});
+
+    EXPECT_EQ(segmentRead32(linker, SegmentType::text, 0x08), 0xb804f000);
+  }
+
+  TEST(ElfLinker, R_ARM_THM_JUMP24_AddsAddendToTarget) {
+    ElfFixture fixture(1000);
+    ElfLinker linker(0x00100000, 0x00200000, 0x00300000, fixture);
+
+    fixture
+      .addSection(".text.1", ElfFile::SHT_PROGBITS, 0, 0x10)
+      .addSection(".text.2", ElfFile::SHT_PROGBITS, 0x10, 0x20)
+      .addSymbol("foo", 0x04, 2)
+      .addRelocation(1, 0, 0x08, ElfFile::R_ARM_THM_JUMP24, -2)
+      .write32(0x08, 0xb800f000);
+
+    linker.link({});
+
+    EXPECT_EQ(segmentRead32(linker, SegmentType::text, 0x08), 0xb803f000);
+  }
+
+  TEST(ElfLinker, R_ARM_THM_JUMP24_UsesExistingValueAsAddend) {
+    ElfFixture fixture(1000);
+    ElfLinker linker(0x00100000, 0x00200000, 0x00300000, fixture);
+
+    fixture
+      .addSection(".text.1", ElfFile::SHT_PROGBITS, 0, 0x10)
+      .addSection(".text.2", ElfFile::SHT_PROGBITS, 0x10, 0x20)
+      .addSymbol("foo", 0x04, 2)
+      .addRelocation(1, 0, 0x08, ElfFile::R_ARM_THM_JUMP24)
+      .write32(0x08, 0xbffff7ff);
+
+    linker.link({});
+
+    EXPECT_EQ(segmentRead32(linker, SegmentType::text, 0x08), 0xb803f000);
+  }
+
 }
