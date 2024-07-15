@@ -736,6 +736,20 @@ TEST(ElfLinker, RodataSectionsGoToRodata) {
     EXPECT_EQ(segmentRead32(linker, SegmentType::text, 0x08), 0xf803f000);
   }
 
+  TEST(ElfLinker, R_ARM_THM_CALL_ThrowsIfTargetIsOutOfBounds) {
+    ElfFixture fixture(1000);
+    ElfLinker linker(0x00100000, 0x00200000, 0x00300000, fixture);
+
+    fixture
+      .addSection(".text.1", ElfFile::SHT_PROGBITS, 0, 0x10)
+      .addSection(".text.2", ElfFile::SHT_PROGBITS, 0x10, 0x20)
+      .addSymbol("foo", 0x04, 2)
+      .addRelocation(1, 0, 0x08, ElfFile::R_ARM_THM_CALL, 0x7fffff00)
+      .write32(0x08, 0xfffff7ff);
+
+    EXPECT_THROW(linker.link({}), ElfLinker::ElfLinkError);
+  }
+
   TEST(ElfLinker, R_ARM_THM_JUMP24L_PatchesOffset) {
     ElfFixture fixture(1000);
     ElfLinker linker(0x00100000, 0x00200000, 0x00300000, fixture);
@@ -783,5 +797,65 @@ TEST(ElfLinker, RodataSectionsGoToRodata) {
 
     EXPECT_EQ(segmentRead32(linker, SegmentType::text, 0x08), 0xb803f000);
   }
+
+  TEST(ElfLinker, R_ARM_THM_JUMP24_ThrowsIfTargetIsOutOfBounds) {
+    ElfFixture fixture(1000);
+    ElfLinker linker(0x00100000, 0x00200000, 0x00300000, fixture);
+
+    fixture
+      .addSection(".text.1", ElfFile::SHT_PROGBITS, 0, 0x10)
+      .addSection(".text.2", ElfFile::SHT_PROGBITS, 0x10, 0x20)
+      .addSymbol("foo", 0x04, 2)
+      .addRelocation(1, 0, 0x08, ElfFile::R_ARM_THM_JUMP24, 0x7fffff00)
+      .write32(0x08, 0xbffff7ff);
+
+    EXPECT_THROW(linker.link({}), ElfLinker::ElfLinkError);
+  }
+
+  class RelocationExceptionTest: public testing::TestWithParam<uInt32> {};
+
+  TEST_P(RelocationExceptionTest, RelocationThrowsIfRelocatedSymbolIsNotResolved) {
+    ElfFixture fixture(1000);
+    ElfLinker linker(0x00100000, 0x00200000, 0x00300000, fixture);
+
+    fixture
+      .addSection(".text.1", ElfFile::SHT_PROGBITS, 0, 0x10)
+      .addSection(".text.2", ElfFile::SHT_PROGBITS, 0x10, 0x10)
+      .addSymbol("foo", 0x1234, ElfFile::SHN_UND)
+      .addRelocation(2, 0, 0x04, GetParam());
+
+    EXPECT_THROW(linker.link({}), ElfLinker::ElfLinkError);
+  }
+
+  TEST_P(RelocationExceptionTest, RelocationThrowsIfTargetIsBeyondSectionLimits) {
+    ElfFixture fixture(1000);
+    ElfLinker linker(0x00100000, 0x00200000, 0x00300000, fixture);
+
+    fixture
+      .addSection(".text.1", ElfFile::SHT_PROGBITS, 0, 0x10)
+      .addSection(".text.2", ElfFile::SHT_PROGBITS, 0x10, 0x10)
+      .addSymbol("foo", 0x1234, ElfFile::SHN_ABS)
+      .addRelocation(2, 0, 0xd, GetParam());
+
+    EXPECT_THROW(linker.link({}), ElfLinker::ElfLinkError);
+  }
+
+  TEST_P(RelocationExceptionTest, RelocationDoesNotThrowIfTargetIsExactlyOnSectionLimit) {
+    ElfFixture fixture(1000);
+    ElfLinker linker(0x00100000, 0x00200000, 0x00300000, fixture);
+
+    fixture
+      .addSection(".text.1", ElfFile::SHT_PROGBITS, 0, 0x10)
+      .addSection(".text.2", ElfFile::SHT_PROGBITS, 0x10, 0x10)
+      .addSymbol("foo", 0x1234, ElfFile::SHN_ABS)
+      .addRelocation(2, 0, 0xc, GetParam());
+
+    EXPECT_NO_THROW(linker.link({}));
+  }
+
+  INSTANTIATE_TEST_SUITE_P(RelocationExceptionSuite, RelocationExceptionTest, testing::Values(
+    ElfFile::R_ARM_ABS32, ElfFile::R_ARM_TARGET1,
+    ElfFile::R_ARM_THM_CALL, ElfFile::R_ARM_THM_JUMP24
+  ));
 
 }
