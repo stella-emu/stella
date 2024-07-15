@@ -263,7 +263,7 @@ const char* ElfParser::getName(const Section& section, uInt32 offset) const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const ElfParser::Section* ElfParser::getSymtab() const
 {
-  for (auto& section: mySections)
+  for (const auto& section: mySections)
     if (section.type == SHT_SYMTAB) return &section;
 
   return nullptr;
@@ -312,7 +312,7 @@ ostream& operator<<(ostream& os, const ElfParser::Section& section)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-ostream& operator<<(ostream& os, const ElfParser::Symbol symbol)
+ostream& operator<<(ostream& os, const ElfParser::Symbol& symbol)
 {
   std::ios reset(nullptr);
   reset.copyfmt(os);
@@ -324,8 +324,8 @@ ostream& operator<<(ostream& os, const ElfParser::Symbol symbol)
     << " value=0x" << std::setw(8) << symbol.value
     << " size=0x" << std::setw(8) << symbol.size
     << std::setw(1)
-    << " bind=0x" << std::setw(2) << (int)symbol.bind
-    << " type=0x" << std::setw(2) << (int)symbol.type;
+    << " bind=0x" << std::setw(2) << static_cast<int>(symbol.bind)
+    << " type=0x" << std::setw(2) << static_cast<int>(symbol.type);
 
   os.copyfmt(reset);
 
@@ -335,7 +335,7 @@ ostream& operator<<(ostream& os, const ElfParser::Symbol symbol)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-ostream& operator<<(ostream& os, const ElfParser::Relocation rel)
+ostream& operator<<(ostream& os, const ElfParser::Relocation& rel)
 {
   std::ios reset(nullptr);
   reset.copyfmt(os);
@@ -345,14 +345,14 @@ ostream& operator<<(ostream& os, const ElfParser::Relocation rel)
     << std::hex << std::setfill('0')
     << " offset=0x" << std::setw(8) << rel.offset
     << " info=0x" << std::setw(8) << rel.info
-    << " type=0x" << std::setw(2) << (int)rel.type;
+    << " type=0x" << std::setw(2) << static_cast<int>(rel.type);
 
   if (rel.addend.has_value())
     os << " addend=0x" << std::setw(8) << *rel.addend;
 
   os.copyfmt(reset);
 
-  os << " symbol=" << (int)rel.symbol;
+  os << " symbol=" << static_cast<int>(rel.symbol);
 
   return os;
 }

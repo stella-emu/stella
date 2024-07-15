@@ -43,10 +43,10 @@ namespace {
   }
 
   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-  bool checkSegmentOverlap(uInt32 segmentBase1, uInt32 segmentSize1, uInt32 segmentBase2, uInt32 segmentSize2) {
+  constexpr bool checkSegmentOverlap(uInt32 segmentBase1, uInt32 segmentSize1, uInt32 segmentBase2, uInt32 segmentSize2) {
     return !(segmentBase1 + segmentSize1 <= segmentBase2 || segmentBase2 + segmentSize2 <= segmentBase1);
   }
-}
+}  // namespace
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ElfLinker::ElfLinker(uInt32 textBase, uInt32 dataBase, uInt32 rodataBase, const ElfFile& elf)
@@ -212,7 +212,7 @@ unique_ptr<uInt8[]>& ElfLinker::getSegmentDataRef(SegmentType type)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ElfLinker::relocateSections()
 {
-  auto& sections = myElf.getSections();
+  const auto& sections = myElf.getSections();
   myRelocatedSections.resize(sections.size(), std::nullopt);
 
   // relocate everything that is not .bss
@@ -253,7 +253,7 @@ void ElfLinker::relocateSections()
     ElfLinkError::raise("segments overlap");
 
   // allocate segment data
-  for (SegmentType segmentType: {SegmentType::text, SegmentType::data, SegmentType::rodata}) {
+  for (const SegmentType segmentType: {SegmentType::text, SegmentType::data, SegmentType::rodata}) {
     const uInt32 segmentSize = getSegmentSize(segmentType);
     if (segmentSize == 0) continue;
 
@@ -293,7 +293,7 @@ void ElfLinker::relocateInitArrays()
   std::unordered_map<uInt32, uInt32> relocatedPreinitArrays;
 
   // Relocate init arrays
-  for (size_t i = 0; i < sections.size(); i++) {
+  for (uInt32 i = 0; i < sections.size(); i++) {
     const auto& section = sections[i];
 
     switch (section.type) {
@@ -311,6 +311,9 @@ void ElfLinker::relocateInitArrays()
         relocatedPreinitArrays[i] = preinitArraySize;
         preinitArraySize += section.size;
 
+        break;
+
+      default:
         break;
     }
   }
@@ -369,7 +372,7 @@ void ElfLinker::relocateSymbols(const vector<ExternalSymbol>& externalSymbols)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ElfLinker::applyRelocationsToSections()
 {
-    auto& sections = myElf.getSections();
+  const auto& sections = myElf.getSections();
 
   // apply relocations
   for (size_t iSection = 0; iSection < sections.size(); iSection++) {
@@ -383,7 +386,7 @@ void ElfLinker::applyRelocationsToSections()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void ElfLinker::copyInitArrays(vector<uInt32>& initArray,  std::unordered_map<uInt32, uInt32> relocatedInitArrays)
+void ElfLinker::copyInitArrays(vector<uInt32>& initArray, const std::unordered_map<uInt32, uInt32>& relocatedInitArrays)
 {
   const uInt8* elfData = myElf.getData();
   const auto& sections = myElf.getSections();
@@ -436,7 +439,7 @@ void ElfLinker::applyRelocationToSection(const ElfFile::Relocation& relocation, 
       {
         const uInt32 op = read32(target);
 
-        Int32 offset = relocatedSymbol->value + relocation.addend.value_or(elfUtil::decode_B_BL(op)) -
+        const Int32 offset = relocatedSymbol->value + relocation.addend.value_or(elfUtil::decode_B_BL(op)) -
           getSegmentBase(targetSectionRelocated.segment) -
           targetSectionRelocated.offset -
           relocation.offset - 4;
@@ -446,6 +449,9 @@ void ElfLinker::applyRelocationToSection(const ElfFile::Relocation& relocation, 
 
         write32(target, elfUtil::encode_B_BL(offset, relocation.type == ElfFile::R_ARM_THM_CALL));
       }
+
+    default:
+      break;
   }
 }
 
@@ -456,7 +462,7 @@ void ElfLinker::applyRelocationsToInitArrays(uInt8 initArrayType, vector<uInt32>
   const auto& symbols = myElf.getSymbols();
   const auto& sections = myElf.getSections();
 
-  for (size_t iSection = 0; iSection < sections.size(); iSection++) {
+  for (uInt32 iSection = 0; iSection < sections.size(); iSection++) {
     const auto& section = sections[iSection];
     if (section.type != initArrayType) continue;
 
@@ -479,29 +485,9 @@ void ElfLinker::applyRelocationsToInitArrays(uInt8 initArrayType, vector<uInt32>
       if (relocation.offset + 4 > section.size)
         ElfLinkError::raise("unable relocate init array: symbol " + relocation.symbolName + " out of range");
 
-        const uInt32 index = (relocatedInitArrays.at(iSection) + relocation.offset) >> 2;
-        const uInt32 value = relocatedSymbol->value + relocation.addend.value_or(initArray[index]);
-        initArray[index] = value | (symbols[relocation.symbol].type == ElfFile::STT_FUNC ? 1 : 0);
+      const uInt32 index = (relocatedInitArrays.at(iSection) + relocation.offset) >> 2;
+      const uInt32 value = relocatedSymbol->value + relocation.addend.value_or(initArray[index]);
+      initArray[index] = value | (symbols[relocation.symbol].type == ElfFile::STT_FUNC ? 1 : 0);
     }
   }
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt32 ElfLinker::read32(const uInt8* address)
-{
-  uInt32 value = *(address++);
-  value |= *(address++) << 8;
-  value |= *(address++) << 16;
-  value |= *(address++) << 24;
-
-  return value;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void ElfLinker::write32(uInt8* address, uInt32 value)
-{
-  *(address++) = value;
-  *(address++) = value >> 8;
-  *(address++) = value >> 16;
-  *(address++) = value >> 24;
 }

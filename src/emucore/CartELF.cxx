@@ -35,32 +35,32 @@ namespace {
 #ifdef DUMP_ELF
   void dumpElf(const ElfFile& elf)
   {
-    cout << std::endl << "ELF sections:" << std::endl << std::endl;
+    cout << "\nELF sections:\n\n";
 
     size_t i = 0;
-    for (auto& section: elf.getSections()) {
-      if (section.type != 0x00) cout << i << " " << section << std::endl;
+    for (const auto& section: elf.getSections()) {
+      if (section.type != 0x00) cout << i << " " << section << '\n';
       i++;
     }
 
     auto symbols = elf.getSymbols();
-    cout << std::endl << "ELF symbols:" << std::endl << std::endl;
-    if (symbols.size() > 0) {
+    cout << "\nELF symbols:\n\n";
+    if (!symbols.empty()) {
       i = 0;
       for (auto& symbol: symbols)
-        cout << (i++) << " " << symbol << std::endl;
+        cout << (i++) << " " << symbol << '\n';
     }
 
     i = 0;
-    for (auto& section: elf.getSections()) {
+    for (const auto& section: elf.getSections()) {
       auto rels = elf.getRelocations(i++);
       if (!rels) continue;
 
       cout
-        << std::endl << "ELF relocations for section "
-        << section.name << ":" << std::endl << std::endl;
+        << "\nELF relocations for section "
+        << section.name << ":\n\n";
 
-      for (auto& rel: *rels) cout << rel << std::endl;
+      for (auto& rel: *rels) cout << rel << '\n';
     }
   }
 
@@ -69,15 +69,12 @@ namespace {
     cout << std::hex << std::setfill('0');
 
     cout
-      << std::endl
-      << "text segment size: 0x" << std::setw(8) << linker.getSegmentSize(ElfLinker::SegmentType::text)
-      << std::endl
-      << "data segment size: 0x" << std::setw(8) << linker.getSegmentSize(ElfLinker::SegmentType::data)
-      << std::endl
-      << "rodata segment size: 0x" << std::setw(8) << linker.getSegmentSize(ElfLinker::SegmentType::rodata)
-      << std::endl;
+      << "\ntext segment size: 0x" << std::setw(8) << linker.getSegmentSize(ElfLinker::SegmentType::text)
+      << "\ndata segment size: 0x" << std::setw(8) << linker.getSegmentSize(ElfLinker::SegmentType::data)
+      << "\nrodata segment size: 0x" << std::setw(8) << linker.getSegmentSize(ElfLinker::SegmentType::rodata)
+      << '\n';
 
-    cout << std::endl << "relocated sections:" << std::endl << std::endl;
+    cout << "\nrelocated sections:\n\n";
 
     const auto& sections = parser.getSections();
     const auto& relocatedSections = linker.getRelocatedSections();
@@ -89,10 +86,10 @@ namespace {
         << sections[i].name
         << " @ 0x"<< std::setw(8)
         << (relocatedSections[i]->offset + linker.getSegmentBase(relocatedSections[i]->segment))
-        << " size 0x" << std::setw(8) << sections[i].size << std::endl;
+        << " size 0x" << std::setw(8) << sections[i].size << '\n';
     }
 
-    cout << std::endl << "relocated symbols:" << std::endl << std::endl;
+    cout << "\nrelocated symbols:\n\n";
 
     const auto& symbols = parser.getSymbols();
     const auto& relocatedSymbols = linker.getRelocatedSymbols();
@@ -122,30 +119,30 @@ namespace {
         cout << " (abs)";
       }
 
-      cout << std::endl;
+      cout << '\n';
     }
 
     const auto& initArray = linker.getInitArray();
     const auto& preinitArray = linker.getPreinitArray();
 
-    if (initArray.size()) {
-      cout << std::endl << "init array:" << std::endl << std::endl;
+    if (!initArray.empty()) {
+      cout << "\ninit array:\n\n";
 
-      for (uInt32 address: initArray)
-        cout << " * 0x" << std::setw(8) <<  address << std::endl;
+      for (const uInt32 address: initArray)
+        cout << " * 0x" << std::setw(8) <<  address << '\n';
     }
 
-    if (preinitArray.size()) {
-      cout << std::endl << "preinit array:" << std::endl << std::endl;
+    if (!preinitArray.empty()) {
+      cout << "\npreinit array:\n\n";
 
-      for (uInt32 address: preinitArray)
-        cout << " * 0x" << std::setw(8) <<  address << std::endl;
+      for (const uInt32 address: preinitArray)
+        cout << " * 0x" << std::setw(8) <<  address << '\n';
     }
 
     cout << std::dec;
   }
 #endif
-}
+}  // namespace
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartridgeELF::CartridgeELF(const ByteBuffer& image, size_t size, string_view md5,
@@ -189,16 +186,15 @@ CartridgeELF::CartridgeELF(const ByteBuffer& image, size_t size, string_view md5
     dumpLinkage(elfParser, elfLinker);
 
     cout
-      << std::endl
-      << "ARM entrypoint: 0x"
+      << "\nARM entrypoint: 0x"
       << std::hex << std::setw(8) << std::setfill('0') << myArmEntrypoint << std::dec
-      << std::endl;
+      << '\n';
   #endif
 }
 
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CartridgeELF::~CartridgeELF() {}
+CartridgeELF::~CartridgeELF() = default;
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeELF::reset()
@@ -221,7 +217,7 @@ void CartridgeELF::install(System& system)
 {
   mySystem = &system;
 
-  for (size_t addr = 0; addr < 0x1000; addr += System::PAGE_SIZE) {
+  for (uInt16 addr = 0; addr < 0x1000; addr += System::PAGE_SIZE) {
     System::PageAccess access(this, System::PageAccessType::READ);
     access.romPeekCounter = &myRomAccessCounter[addr];
     access.romPokeCounter = &myRomAccessCounter[addr];
@@ -308,7 +304,7 @@ void CartridgeELF::vcsWrite5(uInt8 zpAddress, uInt8 value)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeELF::vcsCopyOverblankToRiotRam()
 {
-  for (size_t i = 0; i < OVERBLANK_PROGRAM_SIZE; i++)
+  for (uInt8 i = 0; i < OVERBLANK_PROGRAM_SIZE; i++)
     vcsWrite5(0x80 + i, OVERBLANK_PROGRAM[i]);
 }
 
@@ -337,13 +333,13 @@ CartridgeELF::BusTransaction CartridgeELF::BusTransaction::transactionDrive(uInt
 
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgeELF::BusTransaction::setBusState(bool& drive, uInt8& value)
+void CartridgeELF::BusTransaction::setBusState(bool& bs_drive, uInt8& bs_value) const
 {
   if (yield) {
-    drive = false;
+    bs_drive = false;
   } else {
-    drive = true;
-    value = this->value;
+    bs_drive = true;
+    bs_value = this->value;
   }
 }
 
