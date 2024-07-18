@@ -858,4 +858,174 @@ TEST(ElfLinker, RodataSectionsGoToRodata) {
     ElfFile::R_ARM_THM_CALL, ElfFile::R_ARM_THM_JUMP24
   ));
 
+  class InitArrayTest: public testing::TestWithParam<uInt32> {
+    public:
+      InitArrayTest()
+        : fixture(1000), linker(0x00100000, 0x00200000, 0x00300000, fixture)
+      {}
+
+    protected:
+      uInt32 sectionType() const {
+        return GetParam();
+      }
+
+      string sectionName() const {
+        return sectionType() == ElfFile::SHT_INIT_ARRAY ? ".init_array" : ".preinit_array";
+      }
+
+      const vector<uInt32>& initArray() const {
+        return sectionType() == ElfFile::SHT_INIT_ARRAY ? linker.getInitArray() : linker.getPreinitArray();
+      }
+
+      ElfFixture fixture;
+      ElfLinker linker;
+  };
+
+  TEST_P(InitArrayTest, InitArrayWithBadSizeThrowsAnException) {
+    fixture
+      .addSection(sectionName(), sectionType(), 0, 3);
+
+    EXPECT_THROW(linker.link({}), ElfLinker::ElfLinkError);
+  }
+
+  TEST_P(InitArrayTest, InitArrayIsReadIntoVectorLittleEndian) {
+    fixture
+      .addSection(sectionName(), sectionType(), 0, 0x08)
+      .write32(0x00, 0x12345678)
+      .write32(0x04, 0xabcdef01);
+
+    linker.link({});
+
+    EXPECT_EQ(initArray().size(), static_cast<size_t>(2));
+    EXPECT_EQ(initArray()[0], static_cast<uInt32>(0x12345678));
+    EXPECT_EQ(initArray()[1], static_cast<uInt32>(0xabcdef01));
+  }
+
+  TEST_P(InitArrayTest, R_ARM_ABS32_RelocationsApplyToInitArray) {
+    fixture
+      .addSection(sectionName(), sectionType(), 0, 0x08)
+      .addSymbol("foo", 0xabcdef01, ElfFile::SHN_ABS)
+      .addRelocation(1, 0, 0x04, ElfFile::R_ARM_ABS32);
+
+    linker.link({});
+
+    EXPECT_EQ(initArray()[1], static_cast<uInt32>(0xabcdef01));
+  }
+
+  TEST_P(InitArrayTest, R_ARM_ABS32_RelocationsToInitArrayApplyAddend) {
+    fixture
+      .addSection(sectionName(), sectionType(), 0, 0x08)
+      .addSymbol("foo", 0xabcdef01, ElfFile::SHN_ABS)
+      .addRelocation(1, 0, 0x04, ElfFile::R_ARM_ABS32, 0xa0);
+
+    linker.link({});
+
+    EXPECT_EQ(initArray()[1], static_cast<uInt32>(0xabcdefa1));
+  }
+
+  TEST_P(InitArrayTest, R_ARM_ABS32_RelocationsToInitArrayUseCurrentValueAsAddend) {
+    fixture
+      .addSection(sectionName(), sectionType(), 0, 0x08)
+      .addSymbol("foo", 0xabcdef01, ElfFile::SHN_ABS)
+      .addRelocation(1, 0, 0x04, ElfFile::R_ARM_ABS32)
+      .write32(0x04, -0x0300);
+
+    linker.link({});
+
+    EXPECT_EQ(initArray()[1], static_cast<uInt32>(0xabcdec01));
+  }
+
+  TEST_P(InitArrayTest, R_ARM_ABS32_RelocationsToInitArrayThrowIfLocationLaysBeyondBoundary) {
+    fixture
+      .addSection(sectionName(), sectionType(), 0, 0x08)
+      .addSymbol("foo", 0xabcdef01, ElfFile::SHN_ABS)
+      .addRelocation(1, 0, 0x05, ElfFile::R_ARM_ABS32);
+
+    EXPECT_THROW(linker.link({}), ElfLinker::ElfLinkError);
+  }
+
+  TEST_P(InitArrayTest, R_ARM_ABS32_RelocationsToInitArrayThrowIfSymbolCannotBeResolved) {
+    fixture
+      .addSection(sectionName(), sectionType(), 0, 0x08)
+      .addSymbol("foo", 0xabcdef01, ElfFile::SHN_UND)
+      .addRelocation(1, 0, 0x04, ElfFile::R_ARM_ABS32);
+
+    EXPECT_THROW(linker.link({}), ElfLinker::ElfLinkError);
+  }
+
+  TEST_P(InitArrayTest, R_ARM_TARGET1_RelocationsApplyToInitArray) {
+    fixture
+      .addSection(sectionName(), sectionType(), 0, 0x08)
+      .addSymbol("foo", 0xabcdef01, ElfFile::SHN_ABS)
+      .addRelocation(1, 0, 0x04, ElfFile::R_ARM_TARGET1);
+
+    linker.link({});
+
+    EXPECT_EQ(initArray()[1], static_cast<uInt32>(0xabcdef01));
+  }
+
+  TEST_P(InitArrayTest, R_ARM_TARGET1_RelocationsToInitArrayApplyAddend) {
+    fixture
+      .addSection(sectionName(), sectionType(), 0, 0x08)
+      .addSymbol("foo", 0xabcdef01, ElfFile::SHN_ABS)
+      .addRelocation(1, 0, 0x04, ElfFile::R_ARM_TARGET1, 0xa0);
+
+    linker.link({});
+
+    EXPECT_EQ(initArray()[1], static_cast<uInt32>(0xabcdefa1));
+  }
+
+  TEST_P(InitArrayTest, R_ARM_TARGET1_RelocationsToInitArrayUseCurrentValueAsAddend) {
+    fixture
+      .addSection(sectionName(), sectionType(), 0, 0x08)
+      .addSymbol("foo", 0xabcdef01, ElfFile::SHN_ABS)
+      .addRelocation(1, 0, 0x04, ElfFile::R_ARM_TARGET1)
+      .write32(0x04, -0x0300);
+
+    linker.link({});
+
+    EXPECT_EQ(initArray()[1], static_cast<uInt32>(0xabcdec01));
+  }
+
+  TEST_P(InitArrayTest, R_ARM_TARGET1_RelocationsToInitArrayThrowIfLocationLaysBeyondBoundary) {
+    fixture
+      .addSection(sectionName(), sectionType(), 0, 0x08)
+      .addSymbol("foo", 0xabcdef01, ElfFile::SHN_ABS)
+      .addRelocation(1, 0, 0x05, ElfFile::R_ARM_TARGET1);
+
+    EXPECT_THROW(linker.link({}), ElfLinker::ElfLinkError);
+  }
+
+  TEST_P(InitArrayTest, R_ARM_TARGET1_RelocationsToInitArrayThrowIfSymbolCannotBeResolved) {
+    fixture
+      .addSection(sectionName(), sectionType(), 0, 0x08)
+      .addSymbol("foo", 0xabcdef01, ElfFile::SHN_UND)
+      .addRelocation(1, 0, 0x04, ElfFile::R_ARM_TARGET1);
+
+    EXPECT_THROW(linker.link({}), ElfLinker::ElfLinkError);
+  }
+
+  TEST_P(InitArrayTest, R_ARM_THM_CALL_Throws) {
+    fixture
+      .addSection(sectionName(), sectionType(), 0, 0x08)
+      .addSymbol("foo", 0x1000, ElfFile::SHN_ABS)
+      .addRelocation(1, 0, 0x04, ElfFile::R_ARM_THM_CALL)
+      .write32(0x04, 0xf800f000);
+
+    EXPECT_THROW(linker.link({}), ElfLinker::ElfLinkError);
+  }
+
+  TEST_P(InitArrayTest, R_ARM_THM_JUMP24_Throws) {
+    fixture
+      .addSection(sectionName(), sectionType(), 0, 0x08)
+      .addSymbol("foo", 0x1000, ElfFile::SHN_ABS)
+      .addRelocation(1, 0, 0x04, ElfFile::R_ARM_THM_JUMP24)
+      .write32(0x04, 0xf800f000);
+
+    EXPECT_THROW(linker.link({}), ElfLinker::ElfLinkError);
+  }
+
+  INSTANTIATE_TEST_SUITE_P(InitArraySuite, InitArrayTest, testing::Values(
+    ElfFile::SHT_INIT_ARRAY, ElfFile::SHT_PREINIT_ARRAY
+  ));
 }
