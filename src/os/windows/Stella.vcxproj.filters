@@ -1242,6 +1242,9 @@
     <ClCompile Include="..\..\emucore\CartJANE.cxx">
       <Filter>Source Files\emucore</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\emucore\CortexMß.cxx">
+      <Filter>Source Files\emucore</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\debugger\gui\CartJANEWidget.cxx">
       <Filter>Source Files\debugger\gui</Filter>
     </ClCompile>
@@ -2526,6 +2529,9 @@
       <Filter>Header Files\debugger\gui</Filter>
     </ClInclude>
     <ClInclude Include="..\..\emucore\CartJANE.hxx">
+      <Filter>Header Files\emucore</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\emucore\CortexM0.hxx">
       <Filter>Header Files\emucore</Filter>
     </ClInclude>
     <ClInclude Include="..\..\debugger\gui\CartJANEWidget.hxx">

@@ -14,6 +14,7 @@
     "C_Cpp.intelliSenseEngine": "Default",
     "files.insertFinalNewline": true,
     "files.associations": {
+        "*.h": "cpp",
         "__functional_base": "cpp",
         "array": "cpp",
         "istream": "cpp",
@@ -103,6 +104,18 @@
         "version": "cpp",
         "shared_mutex": "cpp",
         "compare": "cpp",
-        "concepts": "cpp"
+        "concepts": "cpp",
+        "__verbose_abort": "cpp",
+        "any": "cpp",
+        "charconv": "cpp",
+        "csignal": "cpp",
+        "execution": "cpp",
+        "numbers": "cpp",
+        "span": "cpp",
+        "unordered_set": "cpp",
+        "variant": "cpp",
+        "hash_map": "cpp",
+        "format": "cpp",
+        "*.inc": "cpp"
     }
 }
