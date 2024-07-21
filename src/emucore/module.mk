@@ -62,6 +62,7 @@ MODULE_OBJS := \
 	src/emucore/Console.o \
 	src/emucore/Control.o \
 	src/emucore/ControllerDetector.o \
+	src/emucore/CortexM0.o \
 	src/emucore/DispatchResult.o \
 	src/emucore/Driving.o \
 	src/emucore/EventHandler.o \

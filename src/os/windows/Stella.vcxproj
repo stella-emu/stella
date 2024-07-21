@@ -695,6 +695,7 @@
     <ClCompile Include="..\..\emucore\elf\ElfLinker.cxx" />
     <ClCompile Include="..\..\emucore\elf\ElfUtil.cxx" />
     <ClCompile Include="..\..\emucore\elf\ElfEnvironment.cxx" />
+    <ClCompile Include="..\..\emucore\CortexM0.cxx" />
     <ClCompile Include="..\..\emucore\EmulationTiming.cxx" />
     <ClCompile Include="..\..\emucore\EmulationWorker.cxx" />
     <ClCompile Include="..\..\emucore\FBSurface.cxx" />
@@ -1670,6 +1671,7 @@
     <ClInclude Include="..\..\emucore\elf\ElfLinker.hxx" />
     <ClInclude Include="..\..\emucore\elf\ElfUtil.hxx" />
     <ClInclude Include="..\..\emucore\elf\ElfEnvironment.hxx" />
+    <ClInclude Include="..\..\emucore\CortexM0.hxx" />
     <ClInclude Include="..\..\emucore\EmulationTiming.hxx" />
     <ClInclude Include="..\..\emucore\EmulationWorker.hxx" />
     <ClInclude Include="..\..\emucore\EventHandlerConstants.hxx" />
