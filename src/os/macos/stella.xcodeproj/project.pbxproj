@@ -207,6 +207,9 @@
 		CFE3F6161E84A9CE00A8204E /* CartCDF.hxx in Headers */ = {isa = PBXBuildFile; fileRef = CFE3F6121E84A9CE00A8204E /* CartCDF.hxx */; };
 		DC047FEE1A4A6F3600348F0F /* JoystickDialog.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC047FEC1A4A6F3600348F0F /* JoystickDialog.cxx */; };
 		DC047FEF1A4A6F3600348F0F /* JoystickDialog.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC047FED1A4A6F3600348F0F /* JoystickDialog.hxx */; };
+		DC0932172C50017A00527D3C /* ElfEnvironment.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC0932142C50017A00527D3C /* ElfEnvironment.cxx */; };
+		DC0932182C50017A00527D3C /* ElfEnvironment.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC0932152C50017A00527D3C /* ElfEnvironment.hxx */; };
+		DC0932192C50017A00527D3C /* ElfFile.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC0932162C50017A00527D3C /* ElfFile.hxx */; };
 		DC0984850D3985160073C852 /* CartSB.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC0984830D3985160073C852 /* CartSB.cxx */; };
 		DC0984860D3985160073C852 /* CartSB.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC0984840D3985160073C852 /* CartSB.hxx */; };
 		DC0DF8690F0DAAF500B0F1F3 /* GlobalPropsDialog.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC0DF8670F0DAAF500B0F1F3 /* GlobalPropsDialog.cxx */; };
@@ -1076,6 +1079,9 @@
 		CFE3F6121E84A9CE00A8204E /* CartCDF.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = CartCDF.hxx; sourceTree = "<group>"; };
 		DC047FEC1A4A6F3600348F0F /* JoystickDialog.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = JoystickDialog.cxx; sourceTree = "<group>"; };
 		DC047FED1A4A6F3600348F0F /* JoystickDialog.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = JoystickDialog.hxx; sourceTree = "<group>"; };
+		DC0932142C50017A00527D3C /* ElfEnvironment.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ElfEnvironment.cxx; sourceTree = "<group>"; };
+		DC0932152C50017A00527D3C /* ElfEnvironment.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = ElfEnvironment.hxx; sourceTree = "<group>"; };
+		DC0932162C50017A00527D3C /* ElfFile.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = ElfFile.hxx; sourceTree = "<group>"; };
 		DC0984830D3985160073C852 /* CartSB.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CartSB.cxx; sourceTree = "<group>"; };
 		DC0984840D3985160073C852 /* CartSB.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = CartSB.hxx; sourceTree = "<group>"; };
 		DC0DF8670F0DAAF500B0F1F3 /* GlobalPropsDialog.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GlobalPropsDialog.cxx; sourceTree = "<group>"; };
@@ -2499,6 +2505,9 @@
 		DC1E89032C4033280033E15F /* elf */ = {
 			isa = PBXGroup;
 			children = (
+				DC0932142C50017A00527D3C /* ElfEnvironment.cxx */,
+				DC0932152C50017A00527D3C /* ElfEnvironment.hxx */,
+				DC0932162C50017A00527D3C /* ElfFile.hxx */,
 				DC1E88FB2C4033280033E15F /* ElfLinker.cxx */,
 				DC1E88FC2C4033280033E15F /* ElfLinker.hxx */,
 				DC1E88FD2C4033280033E15F /* ElfParser.cxx */,
@@ -2927,6 +2936,7 @@
 				2D91742009BA90380026E9FF /* ConsoleFont.hxx in Headers */,
 				DC564F6628C114D200177588 /* sqlite3.h in Headers */,
 				2D91742109BA90380026E9FF /* Font.hxx in Headers */,
+				DC0932192C50017A00527D3C /* ElfFile.hxx in Headers */,
 				2D91742209BA90380026E9FF /* Debugger.hxx in Headers */,
 				2D91742309BA90380026E9FF /* DebuggerParser.hxx in Headers */,
 				2D91742409BA90380026E9FF /* EditableWidget.hxx in Headers */,
@@ -2957,6 +2967,7 @@
 				2D91745309BA90380026E9FF /* CommandMenu.hxx in Headers */,
 				E0306E111F93E916003DDD52 /* JitterEmulation.hxx in Headers */,
 				DC0E98E52801CD1600097C68 /* Cart0FA0.hxx in Headers */,
+				DC0932182C50017A00527D3C /* ElfEnvironment.hxx in Headers */,
 				DC1E474F24D34F3B0047E61A /* WhatsNewDialog.hxx in Headers */,
 				2D91745509BA90380026E9FF /* CpuWidget.hxx in Headers */,
 				2D91745609BA90380026E9FF /* DataGridOpsWidget.hxx in Headers */,
@@ -3340,6 +3351,7 @@
 				DC3EE8671E2C0E6D00905161 /* inftrees.c in Sources */,
 				2D91747609BA90380026E9FF /* Cart.cxx in Sources */,
 				2D91747709BA90380026E9FF /* Cart2K.cxx in Sources */,
+				DC0932172C50017A00527D3C /* ElfEnvironment.cxx in Sources */,
 				E0D7E6F425A271A0006991C7 /* CompositeKeyValueRepository.cxx in Sources */,
 				E034A5EE209FB25D00C89E9E /* EmulationTiming.cxx in Sources */,
 				2D91747809BA90380026E9FF /* Cart3F.cxx in Sources */,
