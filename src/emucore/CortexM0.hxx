@@ -28,27 +28,54 @@
 class CortexM0
 {
   public:
-    enum class BusTransactionResult : uInt8 {
-      ok,
-      stopAndRollback,
-      stop,
-      fail
-    };
+    using err_t = uInt64;
 
     class BusTransactionDelegate {
       public:
         virtual ~BusTransactionDelegate() = default;
 
-        virtual BusTransactionResult read32(uInt32 address, uInt32& value) = 0;
-        virtual BusTransactionResult read16(uInt32 address, uInt16& value) = 0;
+        virtual err_t read32(uInt32 address, uInt32& value) = 0;
+        virtual err_t read16(uInt32 address, uInt16& value) = 0;
+        virtual err_t read8(uInt32 address, uInt8& value) = 0;
 
-        virtual BusTransactionResult write32(uInt32 address, uInt32 value) = 0;
-        virtual BusTransactionResult write16(uInt32 address, uInt16 value) = 0;
+        virtual err_t write32(uInt32 address, uInt32 value) = 0;
+        virtual err_t write16(uInt32 address, uInt16 value) = 0;
+        virtual err_t write8(uInt32 address, uInt8 value) = 0;
 
-        virtual BusTransactionResult fetch16(uInt32 address, uInt16& value, uInt8& op) = 0;
+        virtual err_t fetch16(uInt32 address, uInt16& value, uInt8& op);
     };
 
     static constexpr uInt32 PAGE_SIZE = 4096;
+
+    static constexpr err_t ERR_NONE = 0;
+    static constexpr err_t ERR_UNMAPPED_ACCESS = 1;
+    static constexpr err_t ERR_WRITE_ACCESS_DENIED = 2;
+    static constexpr err_t ERR_ACCESS_ALIGNMENT_FAULT = 3;
+    static constexpr err_t ERR_BKPT = 4;
+    static constexpr err_t ERR_INVALID_OPERATING_MODE = 5;
+    static constexpr err_t ERR_UNIMPLEMENTED_INST = 6;
+    static constexpr err_t ERR_SWI = 7;
+    static constexpr err_t ERR_UNDEFINED_INST = 8;
+
+    static inline bool isErrCustom(err_t err) {
+      return (err & 0xff) == 0;
+    }
+
+    static inline uInt32 getErrCustom(err_t err)  {
+      return (err & 0xffffffff) >> 8;
+    }
+
+    static inline uInt32 getErrExtra(err_t err) {
+      return err >> 32;
+    }
+
+    static inline err_t errCustom(uInt32 code, uInt32 extra = 0) {
+      return ((static_cast<uInt64>(code) << 8) & 0xffffffff) | (static_cast<uInt64>(extra) << 32);
+    }
+
+    static inline err_t errIntrinsic(uInt8 code, uInt32 extra = 0) {
+      return static_cast<uInt64>(code) | (static_cast<uInt64>(extra) << 32);
+    }
 
   public:
     CortexM0();
@@ -69,7 +96,7 @@ class CortexM0
 
     static uInt8 decodeInstructionWord(uInt16 instructionWord);
 
-    BusTransactionResult run(uInt32 maxCycles, uInt32& cycles);
+    err_t run(uInt32 maxCycles, uInt32& cycles);
 
   private:
 
@@ -90,6 +117,8 @@ class CortexM0
     };
 
     struct MemoryRegion {
+      MemoryRegion() = default;
+
       ~MemoryRegion() {
         if (type == MemoryRegionType::directCode)
           std::free(access.accessCode.ops);
@@ -106,23 +135,31 @@ class CortexM0
         MemoryRegionAccessCode accessCode;
         BusTransactionDelegate* delegate;
       } access;
+
+      private:
+        MemoryRegion(const MemoryRegion&) = delete;
+        MemoryRegion(MemoryRegion&&) = delete;
+        MemoryRegion& operator=(const MemoryRegion&) = delete;
+        MemoryRegion& operator=(MemoryRegion&&) = delete;
     };
 
   private:
     MemoryRegion& setupMapping(uInt32 pageBase, uInt32 pageCount,
                                bool readOnly, MemoryRegionType type);
 
-    BusTransactionResult read32(uInt32 address, uInt32& value);
-    BusTransactionResult read16(uInt32 address, uInt16& value);
+    err_t read32(uInt32 address, uInt32& value);
+    err_t read16(uInt32 address, uInt16& value);
+    err_t read8(uInt32 address, uInt8& value);
 
-    BusTransactionResult write32(uInt32 address, uInt32 value);
-    BusTransactionResult write16(uInt32 address, uInt16 value);
+    err_t write32(uInt32 address, uInt32 value);
+    err_t write16(uInt32 address, uInt16 value);
+    err_t write8(uInt32 address, uInt8 value);
 
-    BusTransactionResult fetch16(uInt32 address, uInt16& value, uInt8& op);
+    err_t fetch16(uInt32 address, uInt16& value, uInt8& op);
 
     void do_cvflag(uInt32 a, uInt32 b, uInt32 c);
 
-    int execute();
+    err_t execute(uInt16 inst, uInt8 op);
 
   private:
     std::array<uInt32, 16> reg_norm; // normal execution mode, do not have a thread mode
