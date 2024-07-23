@@ -697,7 +697,7 @@ TEST(ElfLinker, RodataSectionsGoToRodata) {
       .addSection(".text.2", ElfFile::SHT_PROGBITS, 0x10, 0x20)
       .addSymbol("foo", 0x04, 2)
       .addRelocation(1, 0, 0x08, ElfFile::R_ARM_THM_CALL)
-      .write32(0x08, 0xf800f000);
+      .write32(0x08, 0xfffef7ff);
 
     linker.link({});
 
@@ -713,7 +713,7 @@ TEST(ElfLinker, RodataSectionsGoToRodata) {
       .addSection(".text.2", ElfFile::SHT_PROGBITS, 0x10, 0x20)
       .addSymbol("foo", 0x04, 2)
       .addRelocation(1, 0, 0x08, ElfFile::R_ARM_THM_CALL, -2)
-      .write32(0x08, 0xf800f000);
+      .write32(0x08, 0xfffef7ff);
 
     linker.link({});
 
@@ -729,7 +729,7 @@ TEST(ElfLinker, RodataSectionsGoToRodata) {
       .addSection(".text.2", ElfFile::SHT_PROGBITS, 0x10, 0x20)
       .addSymbol("foo", 0x04, 2)
       .addRelocation(1, 0, 0x08, ElfFile::R_ARM_THM_CALL)
-      .write32(0x08, 0xfffff7ff);
+      .write32(0x08, 0xfffdf7ff);
 
     linker.link({});
 
@@ -745,12 +745,12 @@ TEST(ElfLinker, RodataSectionsGoToRodata) {
       .addSection(".text.2", ElfFile::SHT_PROGBITS, 0x10, 0x20)
       .addSymbol("foo", 0x04, 2)
       .addRelocation(1, 0, 0x08, ElfFile::R_ARM_THM_CALL, 0x7fffff00)
-      .write32(0x08, 0xfffff7ff);
+      .write32(0x08, 0xfffef7ff);
 
     EXPECT_THROW(linker.link({}), ElfLinker::ElfLinkError);
   }
 
-  TEST(ElfLinker, R_ARM_THM_JUMP24L_PatchesOffset) {
+  TEST(ElfLinker, R_ARM_THM_JUMP24_PatchesOffset) {
     ElfFixture fixture(1000);
     ElfLinker linker(0x00100000, 0x00200000, 0x00300000, fixture);
 
@@ -759,7 +759,7 @@ TEST(ElfLinker, RodataSectionsGoToRodata) {
       .addSection(".text.2", ElfFile::SHT_PROGBITS, 0x10, 0x20)
       .addSymbol("foo", 0x04, 2)
       .addRelocation(1, 0, 0x08, ElfFile::R_ARM_THM_JUMP24)
-      .write32(0x08, 0xb800f000);
+      .write32(0x08, 0xbffef7ff);
 
     linker.link({});
 
@@ -775,7 +775,7 @@ TEST(ElfLinker, RodataSectionsGoToRodata) {
       .addSection(".text.2", ElfFile::SHT_PROGBITS, 0x10, 0x20)
       .addSymbol("foo", 0x04, 2)
       .addRelocation(1, 0, 0x08, ElfFile::R_ARM_THM_JUMP24, -2)
-      .write32(0x08, 0xb800f000);
+      .write32(0x08, 0xbffef7ff);
 
     linker.link({});
 
@@ -791,7 +791,7 @@ TEST(ElfLinker, RodataSectionsGoToRodata) {
       .addSection(".text.2", ElfFile::SHT_PROGBITS, 0x10, 0x20)
       .addSymbol("foo", 0x04, 2)
       .addRelocation(1, 0, 0x08, ElfFile::R_ARM_THM_JUMP24)
-      .write32(0x08, 0xbffff7ff);
+      .write32(0x08, 0xbffdf7ff);
 
     linker.link({});
 
@@ -807,7 +807,7 @@ TEST(ElfLinker, RodataSectionsGoToRodata) {
       .addSection(".text.2", ElfFile::SHT_PROGBITS, 0x10, 0x20)
       .addSymbol("foo", 0x04, 2)
       .addRelocation(1, 0, 0x08, ElfFile::R_ARM_THM_JUMP24, 0x7fffff00)
-      .write32(0x08, 0xbffff7ff);
+      .write32(0x08, 0xbffef7ff);
 
     EXPECT_THROW(linker.link({}), ElfLinker::ElfLinkError);
   }
