@@ -17,6 +17,10 @@
 
 #include <sstream>
 
+#ifdef DUMP_ELF
+#include <ofstream>
+#endif
+
 #include "System.hxx"
 #include "ElfParser.hxx"
 #include "ElfLinker.hxx"
@@ -141,6 +145,31 @@ namespace {
 
     cout << std::dec;
   }
+
+  void writeDebugBinary(const ElfLinker& linker)
+  {
+    constexpr size_t IMAGE_SIZE = 4 * 0x00100000;
+    static const char* IMAGE_FILE_NAME = "elf_executable_image.bin";
+
+    auto binary = make_unique<uInt8[]>(IMAGE_SIZE);
+    std::memset(binary.get(), 0, IMAGE_SIZE);
+
+    for (auto segment: {ElfLinker::SegmentType::text, ElfLinker::SegmentType::data, ElfLinker::SegmentType::rodata})
+      std::memcpy(
+        binary.get() + linker.getSegmentBase(segment),
+        linker.getSegmentData(segment),
+        linker.getSegmentSize(segment)
+      );
+
+    {
+      std::ofstream binaryFile;
+
+      binaryFile.open(IMAGE_FILE_NAME);
+      binaryFile.write(reinterpret_cast<const char*>(binary.get()), 4 * 0x00100000);
+    }
+
+    cout << "wrote executable image to " << IMAGE_FILE_NAME << std::endl;
+  }
 #endif
 }  // namespace
 
@@ -182,6 +211,10 @@ CartridgeELF::CartridgeELF(const ByteBuffer& image, size_t size, string_view md5
     throw runtime_error("failed to resolve ARM entrypoint" + string(e.what()));
   }
 
+  for (auto segment: {ElfLinker::SegmentType::text, ElfLinker::SegmentType::data, ElfLinker::SegmentType::rodata})
+    if (elfLinker.getSegmentSize(segment) > 0x00100000)
+      throw runtime_error("segment size exceeds limit");
+
   #ifdef DUMP_ELF
     dumpLinkage(elfParser, elfLinker);
 
@@ -189,6 +222,8 @@ CartridgeELF::CartridgeELF(const ByteBuffer& image, size_t size, string_view md5
       << "\nARM entrypoint: 0x"
       << std::hex << std::setw(8) << std::setfill('0') << myArmEntrypoint << std::dec
       << '\n';
+
+    writeDebugBinary(elfLinker);
   #endif
 }
 
