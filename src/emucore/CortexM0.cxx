@@ -52,8 +52,17 @@
   #define WRITE16(data, addr, value) ((uInt16*)(data))[(addr) >> 1] = value;
 #endif
 
+#define DO_DISS(statement)
+
 #define read_register(reg)        reg_norm[reg]
 #define write_register(reg, data) reg_norm[reg]=(data)
+
+#define do_znflags(x) znFlags=(x)
+#define do_cflag_bit(x) cFlag = (x)
+#define do_vflag_bit(x) vFlag = (x)
+
+#define branch_target_9(inst) (read_register(15) + 2 + (((Int32)(inst) << 24) >> 23))
+#define branch_target_12(inst) (read_register(15) + 2 + (((Int32)(inst) << 21) >> 20))
 
 namespace {
   constexpr uInt32 PAGEMAP_SIZE = 0x100000000 / 4096;
@@ -69,12 +78,11 @@ namespace {
       bic,
       bkpt,
       // blx1 variants:
-      bl, blx_thumb, blx_arm,
+      bl, blx_thumb,
       blx2,
       bx,
       cmn,
       cmp1, cmp2, cmp3,
-      cps,
       cpy,
       eor,
       ldmia,
@@ -214,7 +222,6 @@ namespace {
       {
         if((inst & 0x1800) == 0x1000) return Op::bl;
         else if((inst & 0x1800) == 0x1800) return Op::blx_thumb;
-        else if((inst & 0x1800) == 0x0800) return Op::blx_arm;
         return Op::invalid;
       }
 
@@ -235,9 +242,6 @@ namespace {
 
       //CMP(3) compare high register
       if((inst & 0xFF00) == 0x4500) return Op::cmp3;
-
-      //CPS
-      if((inst & 0xFFE8) == 0xB660) return Op::cps;
 
       //CPY copy high register
       if((inst & 0xFFC0) == 0x4600) return Op::cpy;
@@ -393,6 +397,17 @@ namespace {
     }
 }
 
+CortexM0::err_t CortexM0::BusTransactionDelegate::fetch16(
+  uInt32 address, uInt16& value, uInt8& op
+) {
+  const err_t err = read16(address, value);
+  if (err) return err;
+
+  op = decodeInstructionWord(value);
+
+  return 0;
+}
+
 CortexM0::CortexM0()
 {
   myPageMap = make_unique<uInt8[]>(PAGEMAP_SIZE);
@@ -466,6 +481,30 @@ uInt8 CortexM0::decodeInstructionWord(uInt16 instructionWord)
   return static_cast<uInt8>(::decodeInstructionWord(instructionWord));
 }
 
+CortexM0::err_t CortexM0::run(uInt32 maxCycles, uInt32& cycles)
+{
+  for (cycles = 0; cycles < maxCycles; cycles++) {
+    const uInt32 pc = read_register(15);
+
+    uInt16 inst;
+    uInt8 op;
+    err_t err = fetch16(pc -2, inst, op);
+
+    if (err) return err;
+
+    write_register(15, pc + 2);
+
+    err = execute(inst, op);
+
+    if (err) {
+      write_register(15, pc);
+      return err;
+    }
+  }
+
+  return ERR_NONE;
+}
+
 CortexM0::MemoryRegion& CortexM0::setupMapping(uInt32 pageBase, uInt32 pageCount,
                                                bool readOnly, CortexM0::MemoryRegionType type)
 {
@@ -485,8 +524,10 @@ CortexM0::MemoryRegion& CortexM0::setupMapping(uInt32 pageBase, uInt32 pageCount
   return region;
 }
 
-CortexM0::BusTransactionResult CortexM0::read32(uInt32 address, uInt32& value)
+CortexM0::err_t CortexM0::read32(uInt32 address, uInt32& value)
 {
+  if (address & 0x03) return errIntrinsic(ERR_ACCESS_ALIGNMENT_FAULT, address);
+
   MemoryRegion& region = myRegions[myPageMap[address / PAGE_SIZE]];
 
   switch (region.type) {
@@ -495,20 +536,22 @@ CortexM0::BusTransactionResult CortexM0::read32(uInt32 address, uInt32& value)
 
     case MemoryRegionType::directCode:
       value = READ32(region.access.accessCode.backingStore, address - region.base);
-      return BusTransactionResult::ok;
+      return ERR_NONE;
 
     case MemoryRegionType::directData:
       value = READ32(region.access.accessData.backingStore, address - region.base);
-      return BusTransactionResult::ok;
+      return ERR_NONE;
 
     default:
       return myDefaultDelegate ?
-        myDefaultDelegate->read32(address, value) : BusTransactionResult::fail;
+        myDefaultDelegate->read32(address, value) : errIntrinsic(ERR_UNMAPPED_ACCESS, address);
   }
 }
 
-CortexM0::BusTransactionResult CortexM0::read16(uInt32 address, uInt16& value)
+CortexM0::err_t CortexM0::read16(uInt32 address, uInt16& value)
 {
+  if (address & 0x01) return errIntrinsic(ERR_ACCESS_ALIGNMENT_FAULT, address);
+
   MemoryRegion& region = myRegions[myPageMap[address / PAGE_SIZE]];
 
   switch (region.type) {
@@ -517,21 +560,46 @@ CortexM0::BusTransactionResult CortexM0::read16(uInt32 address, uInt16& value)
 
     case MemoryRegionType::directCode:
       value = READ16(region.access.accessCode.backingStore, address - region.base);
-      return BusTransactionResult::ok;
+      return ERR_NONE;
 
     case MemoryRegionType::directData:
       value = READ16(region.access.accessData.backingStore, address - region.base);
-      return BusTransactionResult::ok;
+      return ERR_NONE;
 
     default:
       return myDefaultDelegate ?
-        myDefaultDelegate->read16(address, value) : BusTransactionResult::fail;
+        myDefaultDelegate->read16(address, value) : errIntrinsic(ERR_UNMAPPED_ACCESS, address);
   }
 }
 
-CortexM0::BusTransactionResult CortexM0::write32(uInt32 address, uInt32 value)
+CortexM0::err_t CortexM0::read8(uInt32 address, uInt8& value)
 {
   MemoryRegion& region = myRegions[myPageMap[address / PAGE_SIZE]];
+
+  switch (region.type) {
+    case MemoryRegionType::delegate:
+      return region.access.delegate->read8(address, value);
+
+    case MemoryRegionType::directCode:
+      value = region.access.accessCode.backingStore[address - region.base];
+      return ERR_NONE;
+
+    case MemoryRegionType::directData:
+      value = region.access.accessData.backingStore[address - region.base];
+      return ERR_NONE;
+
+    default:
+      return myDefaultDelegate ?
+        myDefaultDelegate->read8(address, value) : errIntrinsic(ERR_UNMAPPED_ACCESS, address);
+  }
+}
+
+CortexM0::err_t CortexM0::write32(uInt32 address, uInt32 value)
+{
+  if (address & 0x03) return errIntrinsic(ERR_ACCESS_ALIGNMENT_FAULT, address);
+
+  MemoryRegion& region = myRegions[myPageMap[address / PAGE_SIZE]];
+  if (region.readOnly) return errIntrinsic(ERR_WRITE_ACCESS_DENIED, address);
 
   switch (region.type) {
     case MemoryRegionType::delegate:
@@ -539,21 +607,24 @@ CortexM0::BusTransactionResult CortexM0::write32(uInt32 address, uInt32 value)
 
     case MemoryRegionType::directCode:
       WRITE32(region.access.accessCode.backingStore, address - region.base, value);
-      return BusTransactionResult::ok;
+      return ERR_NONE;
 
     case MemoryRegionType::directData:
       WRITE32(region.access.accessData.backingStore, address - region.base, value);
-      return BusTransactionResult::ok;
+      return ERR_NONE;
 
     default:
       return myDefaultDelegate ?
-        myDefaultDelegate->write32(address, value) : BusTransactionResult::fail;
+        myDefaultDelegate->write32(address, value) : errIntrinsic(ERR_UNMAPPED_ACCESS, address);
   }
 }
 
-CortexM0::BusTransactionResult CortexM0::write16(uInt32 address, uInt16 value)
+CortexM0::err_t CortexM0::write16(uInt32 address, uInt16 value)
 {
+  if (address & 0x01) return errIntrinsic(ERR_ACCESS_ALIGNMENT_FAULT, address);
+
   MemoryRegion& region = myRegions[myPageMap[address / PAGE_SIZE]];
+  if (region.readOnly) return errIntrinsic(ERR_WRITE_ACCESS_DENIED, address);
 
   switch (region.type) {
     case MemoryRegionType::delegate:
@@ -565,21 +636,53 @@ CortexM0::BusTransactionResult CortexM0::write16(uInt32 address, uInt16 value)
       WRITE16(region.access.accessCode.backingStore, offset, value);
       region.access.accessCode.ops[offset >> 1] = decodeInstructionWord(value);
 
-      return BusTransactionResult::ok;
+      return ERR_NONE;
     }
 
     case MemoryRegionType::directData:
       WRITE16(region.access.accessData.backingStore, address - region.base, value);
-      return BusTransactionResult::ok;
+      return ERR_NONE;
 
     default:
       return myDefaultDelegate ?
-        myDefaultDelegate->write16(address, value) : BusTransactionResult::fail;
+        myDefaultDelegate->write16(address, value) : errIntrinsic(ERR_UNMAPPED_ACCESS, address);
   }
 }
 
-CortexM0::BusTransactionResult CortexM0::fetch16(uInt32 address, uInt16& value, uInt8& op)
+CortexM0::err_t CortexM0::write8(uInt32 address, uInt8 value)
 {
+  if (address & 0x01) return errIntrinsic(ERR_ACCESS_ALIGNMENT_FAULT, address);
+
+  MemoryRegion& region = myRegions[myPageMap[address / PAGE_SIZE]];
+  if (region.readOnly) return errIntrinsic(ERR_WRITE_ACCESS_DENIED, address);
+
+  switch (region.type) {
+    case MemoryRegionType::delegate:
+      return region.access.delegate->write8(address, value);
+
+    case MemoryRegionType::directCode: {
+      const uInt32 offset = address - region.base;
+
+      region.access.accessCode.backingStore[offset] = value;
+      region.access.accessCode.ops[offset >> 1] = decodeInstructionWord(value);
+
+      return ERR_NONE;
+    }
+
+    case MemoryRegionType::directData:
+      region.access.accessData.backingStore[address - region.base] = value;
+      return ERR_NONE;
+
+    default:
+      return myDefaultDelegate ?
+        myDefaultDelegate->write8(address, value) : errIntrinsic(ERR_UNMAPPED_ACCESS, address);
+  }
+}
+
+CortexM0::err_t CortexM0::fetch16(uInt32 address, uInt16& value, uInt8& op)
+{
+  if (address & 0x01) return errIntrinsic(ERR_ACCESS_ALIGNMENT_FAULT, address);
+
   MemoryRegion& region = myRegions[myPageMap[address / PAGE_SIZE]];
 
   switch (region.type) {
@@ -592,18 +695,18 @@ CortexM0::BusTransactionResult CortexM0::fetch16(uInt32 address, uInt16& value, 
       value = READ16(region.access.accessCode.backingStore, offset);
       op = region.access.accessCode.ops[offset >> 1];
 
-      return BusTransactionResult::ok;
+      return ERR_NONE;
     }
 
     case MemoryRegionType::directData:
       value = READ16(region.access.accessCode.backingStore, address - region.base);
       op = decodeInstructionWord(value);
 
-      return BusTransactionResult::ok;
+      return ERR_NONE;
 
     default:
       return myDefaultDelegate ?
-        myDefaultDelegate->fetch16(address, value, op) : BusTransactionResult::fail;
+        myDefaultDelegate->fetch16(address, value, op) : errIntrinsic(ERR_UNMAPPED_ACCESS, address);
   }
 }
 
@@ -620,4 +723,1368 @@ void CortexM0::do_cvflag(uInt32 a, uInt32 b, uInt32 c)
 
   rc += a + b;             //carry out
   cFlag = rc & 2;
+}
+
+CortexM0::err_t CortexM0::execute(uInt16 inst, uInt8 op)
+{
+  uInt32 sp, ra, rb, rc, rm, rd, rn, rs;  // NOLINT
+
+  switch (static_cast<Op>(op)) {
+    //ADC
+    case Op::adc: {
+      rd = (inst >> 0) & 0x07;
+      rm = (inst >> 3) & 0x07;
+      DO_DISS(statusMsg << "adc r" << dec << rd << ",r" << dec << rm << '\n');
+      ra = read_register(rd);
+      rb = read_register(rm);
+      rc = ra + rb;
+      if(cFlag)
+        ++rc;
+      write_register(rd, rc);
+      do_znflags(rc);
+      if(cFlag) do_cvflag(ra, rb, 1);
+      else      do_cvflag(ra, rb, 0);
+      return ERR_NONE;
+    }
+
+    //ADD(1) small immediate two registers
+    case Op::add1: {
+      rd = (inst >> 0) & 0x7;
+      rn = (inst >> 3) & 0x7;
+      rb = (inst >> 6) & 0x7;
+
+      DO_DISS(statusMsg << "adds r" << dec << rd << ",r" << dec << rn << ","
+                        << "#0x" << Base::HEX2 << rb << '\n');
+      ra = read_register(rn);
+      rc = ra + rb;
+      //fprintf(stderr,"0x%08X = 0x%08X + 0x%08X\n",rc,ra,rb);
+      write_register(rd, rc);
+      do_znflags(rc);
+      do_cvflag(ra, rb, 0);
+
+      return ERR_NONE;
+    }
+
+    //ADD(2) big immediate one register
+    case Op::add2: {
+      rb = (inst >> 0) & 0xFF;
+      rd = (inst >> 8) & 0x7;
+      DO_DISS(statusMsg << "adds r" << dec << rd << ",#0x" << Base::HEX2 << rb << '\n');
+      ra = read_register(rd);
+      rc = ra + rb;
+      write_register(rd, rc);
+      do_znflags(rc);
+      do_cvflag(ra, rb, 0);
+      return ERR_NONE;
+    }
+
+    //ADD(3) three registers
+    case Op::add3: {
+      rd = (inst >> 0) & 0x7;
+      rn = (inst >> 3) & 0x7;
+      rm = (inst >> 6) & 0x7;
+      DO_DISS(statusMsg << "adds r" << dec << rd << ",r" << dec << rn << ",r" << rm << '\n');
+      ra = read_register(rn);
+      rb = read_register(rm);
+      rc = ra + rb;
+      write_register(rd, rc);
+      do_znflags(rc);
+      do_cvflag(ra, rb, 0);
+      return ERR_NONE;
+    }
+
+    //ADD(4) two registers one or both high no flags
+    case Op::add4: {
+      if((inst >> 6) & 3)
+      {
+        //UNPREDICTABLE
+      }
+      rd  = (inst >> 0) & 0x7;
+      rd |= (inst >> 4) & 0x8;
+      rm  = (inst >> 3) & 0xF;
+      DO_DISS(statusMsg << "add r" << dec << rd << ",r" << dec << rm << '\n');
+      ra = read_register(rd);
+      rb = read_register(rm);
+      rc = ra + rb;
+      if(rd == 15)
+      {
+        rc &= ~1; //write_register may f this as well
+        rc += 2;  //The program counter is special
+      }
+      //fprintf(stderr,"0x%08X = 0x%08X + 0x%08X\n",rc,ra,rb);
+      write_register(rd, rc);
+      return ERR_NONE;
+    }
+
+    //ADD(5) rd = pc plus immediate
+    case Op::add5: {
+      rb = (inst >> 0) & 0xFF;
+      rd = (inst >> 8) & 0x7;
+      rb <<= 2;
+      DO_DISS(statusMsg << "add r" << dec << rd << ",PC,#0x" << Base::HEX2 << rb << '\n');
+      ra = read_register(15);
+      rc = (ra & (~3U)) + rb;
+      write_register(rd, rc);
+      return ERR_NONE;
+    }
+
+    //ADD(6) rd = sp plus immediate
+    case Op::add6: {
+      rb = (inst >> 0) & 0xFF;
+      rd = (inst >> 8) & 0x7;
+      rb <<= 2;
+      DO_DISS(statusMsg << "add r" << dec << rd << ",SP,#0x" << Base::HEX2 << rb << '\n');
+      ra = read_register(13);
+      rc = ra + rb;
+      write_register(rd, rc);
+      return ERR_NONE;
+    }
+
+    //ADD(7) sp plus immediate
+    case Op::add7: {
+      rb = (inst >> 0) & 0x7F;
+      rb <<= 2;
+      DO_DISS(statusMsg << "add SP,#0x" << Base::HEX2 << rb << '\n');
+      ra = read_register(13);
+      rc = ra + rb;
+      write_register(13, rc);
+      return ERR_NONE;
+    }
+
+    //AND
+    case Op::and_: {
+      rd = (inst >> 0) & 0x7;
+      rm = (inst >> 3) & 0x7;
+      DO_DISS(statusMsg << "ands r" << dec << rd << ",r" << dec << rm << '\n');
+      ra = read_register(rd);
+      rb = read_register(rm);
+      rc = ra & rb;
+      write_register(rd, rc);
+      do_znflags(rc);
+      return ERR_NONE;
+    }
+
+    //ASR(1) two register immediate
+    case Op::asr1: {
+      rd = (inst >> 0) & 0x07;
+      rm = (inst >> 3) & 0x07;
+      rb = (inst >> 6) & 0x1F;
+      DO_DISS(statusMsg << "asrs r" << dec << rd << ",r" << dec << rm << ",#0x" << Base::HEX2 << rb << '\n');
+      rc = read_register(rm);
+      if(rb == 0)
+      {
+        if(rc & 0x80000000)
+        {
+          do_cflag_bit(1);
+          rc = ~0U;
+        }
+        else
+        {
+          do_cflag_bit(0);
+          rc = 0;
+        }
+      }
+      else
+      {
+        do_cflag_bit(rc & (1 << (rb-1)));
+        ra = rc & 0x80000000;
+        rc >>= rb;
+        if(ra) //asr, sign is shifted in
+          rc |= (~0U) << (32-rb);
+      }
+      write_register(rd, rc);
+      do_znflags(rc);
+      return ERR_NONE;
+    }
+
+    //ASR(2) two register
+    case Op::asr2: {
+      rd = (inst >> 0) & 0x07;
+      rs = (inst >> 3) & 0x07;
+      DO_DISS(statusMsg << "asrs r" << dec << rd << ",r" << dec << rs << '\n');
+      rc = read_register(rd);
+      rb = read_register(rs);
+      rb &= 0xFF;
+      if(rb == 0)
+      {
+      }
+      else if(rb < 32)
+      {
+        do_cflag_bit(rc & (1 << (rb-1)));
+        ra = rc & 0x80000000;
+        rc >>= rb;
+        if(ra) //asr, sign is shifted in
+        {
+          rc |= (~0U) << (32-rb);
+        }
+      }
+      else
+      {
+        if(rc & 0x80000000)
+        {
+          do_cflag_bit(1);
+          rc = (~0U);
+        }
+        else
+        {
+          do_cflag_bit(0);
+          rc = 0;
+        }
+      }
+      write_register(rd, rc);
+      do_znflags(rc);
+      return ERR_NONE;
+    }
+
+    //B(1) conditional branch variants:
+    // (beq, bne, bcs, bcc, bmi, bpl, bvs, bvc, bhi, bls, bge, blt, bgt, ble)
+    case Op::beq: {
+      if(!znFlags)
+        write_register(15, branch_target_9(inst));
+      return ERR_NONE;
+    }
+
+    case Op::bne: {
+      if(znFlags)
+        write_register(15, branch_target_9(inst));
+      return ERR_NONE;
+    }
+
+    case Op::bcs: {
+      if(cFlag)
+        write_register(15, branch_target_9(inst));
+      return ERR_NONE;
+    }
+
+    case Op::bcc: {
+      if(!cFlag)
+        write_register(15, branch_target_9(inst));
+      return ERR_NONE;
+    }
+
+    case Op::bmi: {
+      if(znFlags & 0x80000000)
+        write_register(15, branch_target_9(inst));
+      return ERR_NONE;
+    }
+
+    case Op::bpl: {
+      if(!(znFlags & 0x80000000))
+        write_register(15, branch_target_9(inst));
+      return ERR_NONE;
+    }
+
+    case Op::bvs: {
+      if(vFlag)
+        write_register(15, branch_target_9(inst));
+      return ERR_NONE;
+    }
+
+    case Op::bvc: {
+      if(!vFlag)
+        write_register(15, branch_target_9(inst));
+      return ERR_NONE;
+    }
+
+    case Op::bhi: {
+      if(cFlag && znFlags)
+        write_register(15, branch_target_9(inst));
+      return ERR_NONE;
+    }
+
+    case Op::bls: {
+      if(!znFlags || !cFlag)
+        write_register(15, branch_target_9(inst));
+      return ERR_NONE;
+    }
+
+    case Op::bge: {
+      if(((znFlags & 0x80000000) && vFlag) ||
+         ((!(znFlags & 0x80000000)) && !vFlag))
+        write_register(15, branch_target_9(inst));
+      return ERR_NONE;
+    }
+
+    case Op::blt: {
+      if((!(znFlags & 0x80000000) && vFlag) ||
+         (((znFlags & 0x80000000)) && !vFlag))
+        write_register(15, branch_target_9(inst));
+      return ERR_NONE;
+    }
+
+    case Op::bgt: {
+      if(znFlags)
+      {
+        if(((znFlags & 0x80000000) && vFlag) ||
+           ((!(znFlags & 0x80000000)) && !vFlag))
+          write_register(15, branch_target_9(inst));
+      }
+      return ERR_NONE;
+    }
+
+    case Op::ble: {
+      if(!znFlags ||
+         (!(znFlags & 0x80000000) && vFlag) ||
+         (((znFlags & 0x80000000)) && !vFlag))
+        write_register(15, branch_target_9(inst));
+      return ERR_NONE;
+    }
+
+    //B(2) unconditional branch
+    case Op::b2: {
+      write_register(15, branch_target_12(inst));
+      return ERR_NONE;
+    }
+
+    //BIC
+    case Op::bic: {
+      rd = (inst >> 0) & 0x7;
+      rm = (inst >> 3) & 0x7;
+      DO_DISS(statusMsg << "bics r" << dec << rd << ",r" << dec << rm << '\n');
+      ra = read_register(rd);
+      rb = read_register(rm);
+      rc = ra & (~rb);
+      write_register(rd, rc);
+      do_znflags(rc);
+      return ERR_NONE;
+    }
+
+    case Op::bkpt:
+      return errIntrinsic(ERR_BKPT, read_register(15) - 2);
+
+    //BL/BLX(1) variants
+    // (bl, blx_thumb)
+    case Op::bl: {
+      // branch to label
+      DO_DISS(statusMsg << '\n');
+      rb = inst & ((1 << 11) - 1);
+      if(rb & 1 << 10) rb |= (~((1 << 11) - 1)); //sign extend
+      rb <<= 12;
+      rb += read_register(15);
+      write_register(14, rb);
+      return ERR_NONE;
+    }
+
+    case Op::blx_thumb: {
+      // branch to label, switch to thumb
+      rb = read_register(14);
+      rb += (inst & ((1 << 11) - 1)) << 1;
+      rb += 2;
+      DO_DISS(statusMsg << "bl 0x" << Base::HEX8 << (rb-3) << '\n');
+      write_register(14, (read_register(15)-2) | 1);
+      write_register(15, rb);
+      return ERR_NONE;
+    }
+
+    //BLX(2)
+    case Op::blx2: {
+      rm = (inst >> 3) & 0xF;
+      DO_DISS(statusMsg << "blx r" << dec << rm << '\n');
+      rc = read_register(rm);
+      //fprintf(stderr,"blx r%u 0x%X 0x%X\n",rm,rc,pc);
+      rc += 2;
+      if(rc & 1)
+      {
+        write_register(14, (read_register(15)-2) | 1);
+        rc &= ~1; // not checked and corrected in write_register
+        write_register(15, rc);
+        return ERR_NONE;
+      }
+      else return errIntrinsic(ERR_INVALID_OPERATING_MODE, read_register(15) - 2);
+    }
+
+    //BX
+    case Op::bx: {
+      rm = (inst >> 3) & 0xF;
+      DO_DISS(statusMsg << "bx r" << dec << rm << '\n');
+      rc = read_register(rm);
+      rc += 2;
+      //fprintf(stderr,"bx r%u 0x%X 0x%X\n",rm,rc,pc);
+      if(rc & 1)
+      {
+        // branch to odd address denotes 16 bit ARM code
+        rc &= ~1;
+        write_register(15, rc);
+        return ERR_NONE;
+      }
+      else return errIntrinsic(ERR_INVALID_OPERATING_MODE, read_register(15) - 2);
+    }
+
+    //CMN
+    case Op::cmn: {
+      rn = (inst >> 0) & 0x7;
+      rm = (inst >> 3) & 0x7;
+      DO_DISS(statusMsg << "cmns r" << dec << rn << ",r" << dec << rm << '\n');
+      ra = read_register(rn);
+      rb = read_register(rm);
+      rc = ra + rb;
+      do_znflags(rc);
+      do_cvflag(ra, rb, 0);
+      return ERR_NONE;
+    }
+
+    //CMP(1) compare immediate
+    case Op::cmp1: {
+      rb = (inst >> 0) & 0xFF;
+      rn = (inst >> 8) & 0x07;
+      DO_DISS(statusMsg << "cmp r" << dec << rn << ",#0x" << Base::HEX2 << rb << '\n');
+      ra = read_register(rn);
+      rc = ra - rb;
+      //fprintf(stderr,"0x%08X 0x%08X\n",ra,rb);
+      do_znflags(rc);
+      do_cvflag(ra, ~rb, 1);
+      return ERR_NONE;
+    }
+
+    //CMP(2) compare register
+    case Op::cmp2: {
+      rn = (inst >> 0) & 0x7;
+      rm = (inst >> 3) & 0x7;
+      DO_DISS(statusMsg << "cmps r" << dec << rn << ",r" << dec << rm << '\n');
+      ra = read_register(rn);
+      rb = read_register(rm);
+      rc = ra - rb;
+      //fprintf(stderr,"0x%08X 0x%08X\n",ra,rb);
+      do_znflags(rc);
+      do_cvflag(ra, ~rb, 1);
+      return ERR_NONE;
+    }
+
+    //CMP(3) compare high register
+    case Op::cmp3: {
+      if(((inst >> 6) & 3) == 0x0)
+      {
+        //UNPREDICTABLE
+      }
+      rn = (inst >> 0) & 0x7;
+      rn |= (inst >> 4) & 0x8;
+      if(rn == 0xF)
+      {
+        //UNPREDICTABLE
+      }
+      rm = (inst >> 3) & 0xF;
+      DO_DISS(statusMsg << "cmps r" << dec << rn << ",r" << dec << rm << '\n');
+      ra = read_register(rn);
+      rb = read_register(rm);
+      rc = ra - rb;
+      do_znflags(rc);
+      do_cvflag(ra, ~rb, 1);
+      return ERR_NONE;
+    }
+
+    //CPY copy high register
+    case Op::cpy: {
+      //same as mov except you can use both low registers
+      //going to let mov handle high registers
+      rd = (inst >> 0) & 0x7;
+      rm = (inst >> 3) & 0x7;
+      DO_DISS(statusMsg << "cpy r" << dec << rd << ",r" << dec << rm << '\n');
+      rc = read_register(rm);
+      write_register(rd, rc);
+      return ERR_NONE;
+    }
+
+    //EOR
+    case Op::eor: {
+      rd = (inst >> 0) & 0x7;
+      rm = (inst >> 3) & 0x7;
+      DO_DISS(statusMsg << "eors r" << dec << rd << ",r" << dec << rm << '\n');
+      ra = read_register(rd);
+      rb = read_register(rm);
+      rc = ra ^ rb;
+      write_register(rd, rc);
+      do_znflags(rc);
+      return ERR_NONE;
+    }
+
+    //LDMIA
+    case Op::ldmia: {
+      rn = (inst >> 8) & 0x7;
+    #if defined(THUMB_DISS)
+      statusMsg << "ldmia r" << dec << rn << "!,{";
+      for(ra=0,rb=0x01,rc=0;rb;rb=(rb<<1)&0xFF,++ra)
+      {
+        if(inst&rb)
+        {
+          if(rc) statusMsg << ",";
+          statusMsg << "r" << dec << ra;
+          rc++;
+        }
+      }
+      statusMsg << "}\n";
+    #endif
+      sp = read_register(rn);
+
+      std::array<uInt32, 16> regsOld = reg_norm;
+
+      for(ra = 0, rb = 0x01; rb; rb = (rb << 1) & 0xFF, ++ra)
+      {
+        if(inst & rb)
+        {
+          err_t err = read32(sp, reg_norm[ra]);
+
+          if (err) {
+            reg_norm = regsOld;
+            return err;
+          }
+
+          sp += 4;
+        }
+      }
+      // write back?
+      if((inst & (1 << rn)) == 0)
+        write_register(rn, sp);
+      return ERR_NONE;
+    }
+
+    //LDR(1) two register immediate
+    case Op::ldr1: {
+      rd = (inst >> 0) & 0x07;
+      rn = (inst >> 3) & 0x07;
+      rb = (inst >> 6) & 0x1F;
+      rb <<= 2;
+      DO_DISS(statusMsg << "ldr r" << dec << rd << ",[r" << dec << rn << ",#0x" << Base::HEX2 << rb << "]\n");
+      rb = read_register(rn) + rb;
+
+      const err_t err = read32(rb, rc);
+      if (err) return err;
+
+      write_register(rd, rc);
+      return ERR_NONE;
+    }
+
+    //LDR(2) three register
+    case Op::ldr2: {
+      rd = (inst >> 0) & 0x7;
+      rn = (inst >> 3) & 0x7;
+      rm = (inst >> 6) & 0x7;
+      DO_DISS(statusMsg << "ldr r" << dec << rd << ",[r" << dec << rn << ",r" << dec << "]\n");
+      rb = read_register(rn) + read_register(rm);
+
+      const err_t err = read32(rb, rc);
+      if (err) return err;
+
+      write_register(rd, rc);
+      return ERR_NONE;
+    }
+
+    //LDR(3)
+    case Op::ldr3: {
+      rb = (inst >> 0) & 0xFF;
+      rd = (inst >> 8) & 0x07;
+      rb <<= 2;
+      DO_DISS(statusMsg << "ldr r" << dec << rd << ",[PC+#0x" << Base::HEX2 << rb << "] ");
+      ra = read_register(15);
+      ra &= ~3;
+      rb += ra;
+      DO_DISS(statusMsg << ";@ 0x" << Base::HEX2 << rb << '\n');
+
+      const err_t err = read32(rb, rc);
+      if (err) return err;
+
+      write_register(rd, rc);
+      return ERR_NONE;
+    }
+
+    //LDR(4)
+    case Op::ldr4: {
+      rb = (inst >> 0) & 0xFF;
+      rd = (inst >> 8) & 0x07;
+      rb <<= 2;
+      DO_DISS(statusMsg << "ldr r" << dec << rd << ",[SP+#0x" << Base::HEX2 << rb << "]\n");
+      ra = read_register(13);
+      //ra&=~3;
+      rb += ra;
+
+      const err_t err = read32(rb, rc);
+      if (err) return err;
+
+      write_register(rd, rc);
+      return ERR_NONE;
+    }
+
+    //LDRB(1)
+    case Op::ldrb1: {
+      rd = (inst >> 0) & 0x07;
+      rn = (inst >> 3) & 0x07;
+      rb = (inst >> 6) & 0x1F;
+      DO_DISS(statusMsg << "ldrb r" << dec << rd << ",[r" << dec << rn << ",#0x" << Base::HEX2 << rb << "]\n");
+      rb = read_register(rn) + rb;
+
+      uInt8 val8;
+      const err_t err = read8(rb, val8);
+      if (err) return err;
+
+      rc = val8;
+
+      write_register(rd, rc & 0xFF);
+      return ERR_NONE;
+    }
+
+    //LDRB(2)
+    case Op::ldrb2: {
+      rd = (inst >> 0) & 0x7;
+      rn = (inst >> 3) & 0x7;
+      rm = (inst >> 6) & 0x7;
+      DO_DISS(statusMsg << "ldrb r" << dec << rd << ",[r" << dec << rn << ",r" << dec << rm << "]\n");
+      rb = read_register(rn) + read_register(rm);
+
+      uInt8 val8;
+      const err_t err = read8(rb, val8);
+      if (err) return err;
+
+      rc = val8;
+
+      write_register(rd, rc & 0xFF);
+      return ERR_NONE;
+    }
+
+    //LDRH(1)
+    case Op::ldrh1: {
+      rd = (inst >> 0) & 0x07;
+      rn = (inst >> 3) & 0x07;
+      rb = (inst >> 6) & 0x1F;
+      rb <<= 1;
+      DO_DISS(statusMsg << "ldrh r" << dec << rd << ",[r" << dec << rn << ",#0x" << Base::HEX2 << rb << "]\n");
+      rb = read_register(rn) + rb;
+
+      uInt16 val16;
+      const err_t err = read16(rb, val16);
+      if (err) return err;
+
+      rc = val16;
+
+      write_register(rd, rc & 0xFFFF);
+      return ERR_NONE;
+    }
+
+    //LDRH(2)
+    case Op::ldrh2: {
+      rd = (inst >> 0) & 0x7;
+      rn = (inst >> 3) & 0x7;
+      rm = (inst >> 6) & 0x7;
+      DO_DISS(statusMsg << "ldrh r" << dec << rd << ",[r" << dec << rn << ",r" << dec << rm << "]\n");
+      rb = read_register(rn) + read_register(rm);
+
+      uInt16 val16;
+      const err_t err = read16(rb, val16);
+      if (err) return err;
+
+      rc = val16;
+
+      write_register(rd, rc & 0xFFFF);
+      return ERR_NONE;
+    }
+
+    //LDRSB
+    case Op::ldrsb: {
+      rd = (inst >> 0) & 0x7;
+      rn = (inst >> 3) & 0x7;
+      rm = (inst >> 6) & 0x7;
+      DO_DISS(statusMsg << "ldrsb r" << dec << rd << ",[r" << dec << rn << ",r" << dec << rm << "]\n");
+      rb = read_register(rn) + read_register(rm);
+
+      uInt8 val8;
+      const err_t err = read8(rb, val8);
+      if (err) return err;
+
+      rc = (static_cast<Int32>(val8) << 24) >> 24;
+
+      write_register(rd, rc);
+      return ERR_NONE;
+    }
+
+    //LDRSH
+    case Op::ldrsh: {
+      rd = (inst >> 0) & 0x7;
+      rn = (inst >> 3) & 0x7;
+      rm = (inst >> 6) & 0x7;
+      DO_DISS(statusMsg << "ldrsh r" << dec << rd << ",[r" << dec << rn << ",r" << dec << rm << "]\n");
+      rb = read_register(rn) + read_register(rm);
+
+      uInt16 val16;
+      const err_t err = read16(rb, val16);
+      if (err) return err;
+
+      rc = (static_cast<Int16>(val16) << 8) >> 8;
+
+      write_register(rd, rc);
+      return ERR_NONE;
+    }
+
+    //LSL(1)
+    case Op::lsl1: {
+      rd = (inst >> 0) & 0x07;
+      rm = (inst >> 3) & 0x07;
+      rb = (inst >> 6) & 0x1F;
+      DO_DISS(statusMsg << "lsls r" << dec << rd << ",r" << dec << rm << ",#0x" << Base::HEX2 << rb << '\n');
+      rc = read_register(rm);
+      if(rb == 0)
+      {
+        //if immed_5 == 0
+        //C unaffected
+        //result not shifted
+      }
+      else
+      {
+        //else immed_5 > 0
+        do_cflag_bit(rc & (1 << (32-rb)));
+        rc <<= rb;
+      }
+      write_register(rd, rc);
+      do_znflags(rc);
+      return ERR_NONE;
+    }
+
+    //LSL(2) two register
+    case Op::lsl2: {
+      rd = (inst >> 0) & 0x07;
+      rs = (inst >> 3) & 0x07;
+      DO_DISS(statusMsg << "lsls r" << dec << rd << ",r" << dec << rs << '\n');
+      rc = read_register(rd);
+      rb = read_register(rs);
+      rb &= 0xFF;
+      if(rb == 0)
+      {
+      }
+      else if(rb < 32)
+      {
+        do_cflag_bit(rc & (1 << (32-rb)));
+        rc <<= rb;
+      }
+      else if(rb == 32)
+      {
+        do_cflag_bit(rc & 1);
+        rc = 0;
+      }
+      else
+      {
+        do_cflag_bit(0);
+        rc = 0;
+      }
+      write_register(rd, rc);
+      do_znflags(rc);
+      return ERR_NONE;
+    }
+
+    //LSR(1) two register immediate
+    case Op::lsr1: {
+      rd = (inst >> 0) & 0x07;
+      rm = (inst >> 3) & 0x07;
+      rb = (inst >> 6) & 0x1F;
+      DO_DISS(statusMsg << "lsrs r" << dec << rd << ",r" << dec << rm << ",#0x" << Base::HEX2 << rb << '\n');
+      rc = read_register(rm);
+      if(rb == 0)
+      {
+        do_cflag_bit(rc & 0x80000000);
+        rc = 0;
+      }
+      else
+      {
+        do_cflag_bit(rc & (1 << (rb-1)));
+        rc >>= rb;
+      }
+      write_register(rd, rc);
+      do_znflags(rc);
+      return ERR_NONE;
+    }
+
+    //LSR(2) two register
+    case Op::lsr2: {
+      rd = (inst >> 0) & 0x07;
+      rs = (inst >> 3) & 0x07;
+      DO_DISS(statusMsg << "lsrs r" << dec << rd << ",r" << dec << rs << '\n');
+      rc = read_register(rd);
+      rb = read_register(rs);
+      rb &= 0xFF;
+      if(rb == 0)
+      {
+      }
+      else if(rb < 32)
+      {
+        do_cflag_bit(rc & (1 << (rb-1)));
+        rc >>= rb;
+      }
+      else if(rb == 32)
+      {
+        do_cflag_bit(rc & 0x80000000);
+        rc = 0;
+      }
+      else
+      {
+        do_cflag_bit(0);
+        rc = 0;
+      }
+      write_register(rd, rc);
+      do_znflags(rc);
+      return ERR_NONE;
+    }
+
+    //MOV(1) immediate
+    case Op::mov1: {
+      rb = (inst >> 0) & 0xFF;
+      rd = (inst >> 8) & 0x07;
+      DO_DISS(statusMsg << "movs r" << dec << rd << ",#0x" << Base::HEX2 << rb << '\n');
+      write_register(rd, rb);
+      do_znflags(rb);
+      return ERR_NONE;
+    }
+
+    //MOV(2) two low registers
+    case Op::mov2: {
+      rd = (inst >> 0) & 7;
+      rn = (inst >> 3) & 7;
+      DO_DISS(statusMsg << "movs r" << dec << rd << ",r" << dec << rn << '\n');
+      rc = read_register(rn);
+      //fprintf(stderr,"0x%08X\n",rc);
+      write_register(rd, rc);
+      do_znflags(rc);
+      do_cflag_bit(0);
+      do_vflag_bit(0);
+      return ERR_NONE;
+    }
+
+    //MOV(3)
+    case Op::mov3: {
+      rd  = (inst >> 0) & 0x7;
+      rd |= (inst >> 4) & 0x8;
+      rm  = (inst >> 3) & 0xF;
+      DO_DISS(statusMsg << "mov r" << dec << rd << ",r" << dec << rm << '\n');
+      rc = read_register(rm);
+      if((rd == 14) && (rm == 15))
+      {
+        //printf("mov lr,pc warning 0x%08X\n",pc-2);
+        //rc|=1;
+      }
+      if(rd == 15)
+      {
+        //rc &= ~1; //write_register may do this as well
+        rc += 2;  //The program counter is special
+      }
+      write_register(rd, rc);
+      return ERR_NONE;
+    }
+
+    //MUL
+    case Op::mul: {
+      rd = (inst >> 0) & 0x7;
+      rm = (inst >> 3) & 0x7;
+      DO_DISS(statusMsg << "muls r" << dec << rd << ",r" << dec << rm << '\n');
+      ra = read_register(rd);
+      rb = read_register(rm);
+      rc = ra * rb;
+      write_register(rd, rc);
+      do_znflags(rc);
+      return ERR_NONE;
+    }
+
+    //MVN
+    case Op::mvn: {
+      rd = (inst >> 0) & 0x7;
+      rm = (inst >> 3) & 0x7;
+      DO_DISS(statusMsg << "mvns r" << dec << rd << ",r" << dec << rm << '\n');
+      ra = read_register(rm);
+      rc = (~ra);
+      write_register(rd, rc);
+      do_znflags(rc);
+      return ERR_NONE;
+    }
+
+    //NEG
+    case Op::neg: {
+      rd = (inst >> 0) & 0x7;
+      rm = (inst >> 3) & 0x7;
+      DO_DISS(statusMsg << "negs r" << dec << rd << ",r" << dec << rm << '\n');
+      ra = read_register(rm);
+      rc = 0 - ra;
+      write_register(rd, rc);
+      do_znflags(rc);
+      do_cvflag(0, ~ra, 1);
+      return ERR_NONE;
+    }
+
+    //ORR
+    case Op::orr: {
+      rd = (inst >> 0) & 0x7;
+      rm = (inst >> 3) & 0x7;
+      DO_DISS(statusMsg << "orrs r" << dec << rd << ",r" << dec << rm << '\n');
+      ra = read_register(rd);
+      rb = read_register(rm);
+      rc = ra | rb;
+      write_register(rd, rc);
+      do_znflags(rc);
+      return ERR_NONE;
+    }
+
+    //POP
+    case Op::pop: {
+    #if defined(THUMB_DISS)
+      statusMsg << "pop {";
+      for(ra=0,rb=0x01,rc=0;rb;rb=(rb<<1)&0xFF,++ra)
+      {
+        if(inst&rb)
+        {
+          if(rc) statusMsg << ",";
+          statusMsg << "r" << dec << ra;
+          rc++;
+        }
+      }
+      if(inst&0x100)
+      {
+        if(rc) statusMsg << ",";
+        statusMsg << "pc";
+      }
+      statusMsg << "}\n";
+    #endif
+
+      std::array<uInt32, 16> regOld = reg_norm;
+
+      sp = read_register(13);
+      for(ra = 0, rb = 0x01; rb; rb = (rb << 1) & 0xFF, ++ra)
+      {
+        if(inst & rb)
+        {
+          err_t err = read32(sp, reg_norm[ra]);
+          if (err) {
+            reg_norm = regOld;
+            return err;
+          }
+
+          sp += 4;
+        }
+      }
+
+      if(inst & 0x100)
+      {
+        err_t err = read32(sp, rc);
+        if (err) {
+          reg_norm = regOld;
+          return err;
+        }
+
+        rc += 2;
+        write_register(15, rc);
+        sp += 4;
+      }
+      write_register(13, sp);
+      return ERR_NONE;
+    }
+
+    //PUSH
+    case Op::push: {
+    #if defined(THUMB_DISS)
+      statusMsg << "push {";
+      for(ra=0,rb=0x01,rc=0;rb;rb=(rb<<1)&0xFF,++ra)
+      {
+        if(inst&rb)
+        {
+          if(rc) statusMsg << ",";
+          statusMsg << "r" << dec << ra;
+          rc++;
+        }
+      }
+      if(inst&0x100)
+      {
+        if(rc) statusMsg << ",";
+        statusMsg << "lr";
+      }
+      statusMsg << "}\n";
+    #endif
+
+      sp = read_register(13);
+      //fprintf(stderr,"sp 0x%08X\n",sp);
+      for(ra = 0, rb = 0x01, rc = 0; rb; rb = (rb << 1) & 0xFF, ++ra)
+      {
+        if(inst & rb)
+        {
+          ++rc;
+        }
+      }
+      if(inst & 0x100) ++rc;
+      rc <<= 2;
+      sp -= rc;
+
+      rd = sp;
+      for(ra = 0, rb = 0x01; rb; rb = (rb << 1) & 0xFF, ++ra)
+      {
+        if(inst & rb)
+        {
+          const err_t err = write32(rd, read_register(ra));
+          if (err) return err;
+
+          rd += 4;
+        }
+      }
+      if(inst & 0x100)
+      {
+        rc = read_register(14);
+        const err_t err = write32(rd, rc);
+        if (err) return err;
+
+        if((rc & 1) == 0)
+        {
+          return errIntrinsic(ERR_INVALID_OPERATING_MODE, read_register(15) - 2);
+        }
+      }
+      write_register(13, sp);
+      return ERR_NONE;
+    }
+
+    //REV
+    case Op::rev: {
+      rd = (inst >> 0) & 0x7;
+      rn = (inst >> 3) & 0x7;
+      DO_DISS(statusMsg << "rev r" << dec << rd << ",r" << dec << rn << '\n');
+      ra = read_register(rn);
+      rc  = ((ra >>  0) & 0xFF) << 24;
+      rc |= ((ra >>  8) & 0xFF) << 16;
+      rc |= ((ra >> 16) & 0xFF) <<  8;
+      rc |= ((ra >> 24) & 0xFF) <<  0;
+      write_register(rd, rc);
+      return ERR_NONE;
+    }
+
+    //REV16
+    case Op::rev16: {
+      rd = (inst >> 0) & 0x7;
+      rn = (inst >> 3) & 0x7;
+      DO_DISS(statusMsg << "rev16 r" << dec << rd << ",r" << dec << rn << '\n');
+      ra = read_register(rn);
+      rc  = ((ra >>  0) & 0xFF) <<  8;
+      rc |= ((ra >>  8) & 0xFF) <<  0;
+      rc |= ((ra >> 16) & 0xFF) << 24;
+      rc |= ((ra >> 24) & 0xFF) << 16;
+      write_register(rd, rc);
+      return ERR_NONE;
+    }
+
+    //REVSH
+    case Op::revsh: {
+      rd = (inst >> 0) & 0x7;
+      rn = (inst >> 3) & 0x7;
+      DO_DISS(statusMsg << "revsh r" << dec << rd << ",r" << dec << rn << '\n');
+      ra = read_register(rn);
+      rc  = ((ra >> 0) & 0xFF) << 8;
+      rc |= ((ra >> 8) & 0xFF) << 0;
+      if(rc & 0x8000) rc |= 0xFFFF0000;
+      else            rc &= 0x0000FFFF;
+      write_register(rd, rc);
+      return ERR_NONE;
+    }
+
+    //ROR
+    case Op::ror: {
+      rd = (inst >> 0) & 0x7;
+      rs = (inst >> 3) & 0x7;
+      DO_DISS(statusMsg << "rors r" << dec << rd << ",r" << dec << rs << '\n');
+      rc = read_register(rd);
+      ra = read_register(rs);
+      ra &= 0xFF;
+      if(ra == 0)
+      {
+      }
+      else
+      {
+        ra &= 0x1F;
+        if(ra == 0)
+        {
+          do_cflag_bit(rc & 0x80000000);
+        }
+        else
+        {
+          do_cflag_bit(rc & (1 << (ra-1)));
+          rb = rc << (32-ra);
+          rc >>= ra;
+          rc |= rb;
+        }
+      }
+      write_register(rd, rc);
+      do_znflags(rc);
+      return ERR_NONE;
+    }
+
+    //SBC
+    case Op::sbc: {
+      rd = (inst >> 0) & 0x7;
+      rm = (inst >> 3) & 0x7;
+      DO_DISS(statusMsg << "sbc r" << dec << rd << ",r" << dec << rm << '\n');
+      ra = read_register(rd);
+      rb = read_register(rm);
+      rc = ra - rb;
+      if(!cFlag) --rc;
+      write_register(rd, rc);
+      do_znflags(rc);
+      if(cFlag) do_cvflag(ra, ~rb, 1);
+      else      do_cvflag(ra, ~rb, 0);
+      return ERR_NONE;
+    }
+
+#ifndef UNSAFE_OPTIMIZATIONS
+    //SETEND
+    case Op::setend: {
+      return errIntrinsic(ERR_UNIMPLEMENTED_INST, read_register(15) - 2);
+    }
+#endif
+
+    //STMIA
+    case Op::stmia: {
+      rn = (inst >> 8) & 0x7;
+    #if defined(THUMB_DISS)
+      statusMsg << "stmia r" << dec << rn << "!,{";
+      for(ra=0,rb=0x01,rc=0;rb;rb=(rb<<1)&0xFF,++ra)
+      {
+        if(inst & rb)
+        {
+          if(rc) statusMsg << ",";
+          statusMsg << "r" << dec << ra;
+          rc++;
+        }
+      }
+      statusMsg << "}\n";
+    #endif
+
+      sp = read_register(rn);
+      for(ra = 0, rb = 0x01; rb; rb = (rb << 1) & 0xFF, ++ra)
+      {
+        if(inst & rb)
+        {
+          err_t err = write32(sp, read_register(ra));
+          if (err) return err;
+
+          sp += 4;
+        }
+      }
+      write_register(rn, sp);
+      return ERR_NONE;
+    }
+
+    //STR(1)
+    case Op::str1: {
+      rd = (inst >> 0) & 0x07;
+      rn = (inst >> 3) & 0x07;
+      rb = (inst >> 6) & 0x1F;
+      rb <<= 2;
+      DO_DISS(statusMsg << "str r" << dec << rd << ",[r" << dec << rn << ",#0x" << Base::HEX2 << rb << "]\n");
+      rb = read_register(rn) + rb;
+      rc = read_register(rd);
+
+      err_t err = write32(rb, rc);
+      if (err) return err;
+
+      return ERR_NONE;
+    }
+
+    //STR(2)
+    case Op::str2: {
+      rd = (inst >> 0) & 0x7;
+      rn = (inst >> 3) & 0x7;
+      rm = (inst >> 6) & 0x7;
+      DO_DISS(statusMsg << "str r" << dec << rd << ",[r" << dec << rn << ",r" << dec << rm << "]\n");
+      rb = read_register(rn) + read_register(rm);
+      rc = read_register(rd);
+
+      err_t err = write32(rb, rc);
+      if (err) return err;
+
+      return ERR_NONE;
+    }
+
+    //STR(3)
+    case Op::str3: {
+      rb = (inst >> 0) & 0xFF;
+      rd = (inst >> 8) & 0x07;
+      rb <<= 2;
+      DO_DISS(statusMsg << "str r" << dec << rd << ",[SP,#0x" << Base::HEX2 << rb << "]\n");
+      rb = read_register(13) + rb;
+      //fprintf(stderr,"0x%08X\n",rb);
+      rc = read_register(rd);
+
+      err_t err = write32(rb, rc);
+      if (err) return err;
+
+      return ERR_NONE;
+    }
+
+    //STRB(1)
+    case Op::strb1: {
+      rd = (inst >> 0) & 0x07;
+      rn = (inst >> 3) & 0x07;
+      rb = (inst >> 6) & 0x1F;
+      DO_DISS(statusMsg << "strb r" << dec << rd << ",[r" << dec << rn << ",#0x" << Base::HEX8 << rb << "]\n");
+      rb = read_register(rn) + rb;
+      rc = read_register(rd);
+
+      err_t err = write8(rb, rc);
+      if (err) return err;
+
+      return ERR_NONE;
+    }
+
+    //STRB(2)
+    case Op::strb2: {
+      rd = (inst >> 0) & 0x7;
+      rn = (inst >> 3) & 0x7;
+      rm = (inst >> 6) & 0x7;
+      DO_DISS(statusMsg << "strb r" << dec << rd << ",[r" << dec << rn << ",r" << rm << "]\n");
+      rb = read_register(rn) + read_register(rm);
+      rc = read_register(rd);
+
+      err_t err = write8(rb, rc);
+      if (err) return err;
+
+      return ERR_NONE;
+    }
+
+    //STRH(1)
+    case Op::strh1: {
+      rd = (inst >> 0) & 0x07;
+      rn = (inst >> 3) & 0x07;
+      rb = (inst >> 6) & 0x1F;
+      rb <<= 1;
+      DO_DISS(statusMsg << "strh r" << dec << rd << ",[r" << dec << rn << ",#0x" << Base::HEX2 << rb << "]\n");
+      rb = read_register(rn) + rb;
+      rc=  read_register(rd);
+
+      const err_t err = write16(rb, rc & 0xFFFF);
+      if (err) return err;
+
+      return ERR_NONE;
+    }
+
+    //STRH(2)
+    case Op::strh2: {
+      rd = (inst >> 0) & 0x7;
+      rn = (inst >> 3) & 0x7;
+      rm = (inst >> 6) & 0x7;
+      DO_DISS(statusMsg << "strh r" << dec << rd << ",[r" << dec << rn << ",r" << dec << rm << "]\n");
+      rb = read_register(rn) + read_register(rm);
+      rc = read_register(rd);
+
+      const err_t err = write16(rb, rc & 0xFFFF);
+      if (err) return err;
+
+      return ERR_NONE;
+    }
+
+    //SUB(1)
+    case Op::sub1: {
+      rd = (inst >> 0) & 0x7;
+      rn = (inst >> 3) & 0x7;
+      rb = (inst >> 6) & 0x7;
+      DO_DISS(statusMsg << "subs r" << dec << rd << ",r" << dec << rn << ",#0x" << Base::HEX2 << rb << '\n');
+      ra = read_register(rn);
+      rc = ra - rb;
+      write_register(rd, rc);
+      do_znflags(rc);
+      do_cvflag(ra, ~rb, 1);
+      return ERR_NONE;
+    }
+
+    //SUB(2)
+    case Op::sub2: {
+      rb = (inst >> 0) & 0xFF;
+      rd = (inst >> 8) & 0x07;
+      DO_DISS(statusMsg << "subs r" << dec << rd << ",#0x" << Base::HEX2 << rb << '\n');
+      ra = read_register(rd);
+      rc = ra - rb;
+      write_register(rd, rc);
+      do_znflags(rc);
+      do_cvflag(ra, ~rb, 1);
+      return ERR_NONE;
+    }
+
+    //SUB(3)
+    case Op::sub3: {
+      rd = (inst >> 0) & 0x7;
+      rn = (inst >> 3) & 0x7;
+      rm = (inst >> 6) & 0x7;
+      DO_DISS(statusMsg << "subs r" << dec << rd << ",r" << dec << rn << ",r" << dec << rm << '\n');
+      ra = read_register(rn);
+      rb = read_register(rm);
+      rc = ra - rb;
+      write_register(rd, rc);
+      do_znflags(rc);
+      do_cvflag(ra, ~rb, 1);
+      return ERR_NONE;
+    }
+
+    //SUB(4)
+    case Op::sub4: {
+      rb = inst & 0x7F;
+      rb <<= 2;
+      DO_DISS(statusMsg << "sub SP,#0x" << Base::HEX2 << rb << '\n');
+      ra = read_register(13);
+      ra -= rb;
+      write_register(13, ra);
+      return ERR_NONE;
+    }
+
+    //SWI
+    case Op::swi:
+      DO_DISS(statusMsg << "\n\nswi 0x" << Base::HEX2 << rb << '\n');
+      return errIntrinsic(ERR_SWI, inst & 0xff);
+
+    //SXTB
+    case Op::sxtb: {
+      rd = (inst >> 0) & 0x7;
+      rm = (inst >> 3) & 0x7;
+      DO_DISS(statusMsg << "sxtb r" << dec << rd << ",r" << dec << rm << '\n');
+      ra = read_register(rm);
+      rc = ra & 0xFF;
+      if(rc & 0x80)
+        rc |= (~0U) << 8;
+      write_register(rd, rc);
+      return ERR_NONE;
+    }
+
+    //SXTH
+    case Op::sxth: {
+      rd = (inst >> 0) & 0x7;
+      rm = (inst >> 3) & 0x7;
+      DO_DISS(statusMsg << "sxth r" << dec << rd << ",r" << dec << rm << '\n');
+      ra = read_register(rm);
+      rc = ra & 0xFFFF;
+      if(rc & 0x8000)
+        rc |= (~0U) << 16;
+      write_register(rd, rc);
+      return ERR_NONE;
+    }
+
+    //TST
+    case Op::tst: {
+      rn = (inst >> 0) & 0x7;
+      rm = (inst >> 3) & 0x7;
+      DO_DISS(statusMsg << "tst r" << dec << rn << ",r" << dec << rm << '\n');
+      ra = read_register(rn);
+      rb = read_register(rm);
+      rc = ra & rb;
+      do_znflags(rc);
+      return ERR_NONE;
+    }
+
+    //UXTB
+    case Op::uxtb: {
+      rd = (inst >> 0) & 0x7;
+      rm = (inst >> 3) & 0x7;
+      DO_DISS(statusMsg << "uxtb r" << dec << rd << ",r" << dec << rm << '\n');
+      ra = read_register(rm);
+      rc = ra & 0xFF;
+      write_register(rd, rc);
+      return ERR_NONE;
+    }
+
+    //UXTH
+    case Op::uxth: {
+      rd = (inst >> 0) & 0x7;
+      rm = (inst >> 3) & 0x7;
+      DO_DISS(statusMsg << "uxth r" << dec << rd << ",r" << dec << rm << '\n');
+      ra = read_register(rm);
+      rc = ra & 0xFFFF;
+      write_register(rd, rc);
+      return ERR_NONE;
+    }
+
+    default:
+      return errIntrinsic(ERR_UNDEFINED_INST, read_register(15) - 2);
+  }
 }
