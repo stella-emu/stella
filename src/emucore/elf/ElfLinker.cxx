@@ -439,7 +439,7 @@ void ElfLinker::applyRelocationToSection(const ElfFile::Relocation& relocation, 
       {
         const uInt32 op = read32(target);
 
-        const Int32 offset = relocatedSymbol->value + relocation.addend.value_or(elfUtil::decode_B_BL(op)) -
+        const Int32 offset = relocatedSymbol->value + relocation.addend.value_or(elfUtil::decode_B_BL(op) + 4) -
           getSegmentBase(targetSectionRelocated.segment) -
           targetSectionRelocated.offset -
           relocation.offset - 4;
