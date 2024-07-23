@@ -476,6 +476,11 @@ CortexM0& CortexM0::setRegister(uInt8 regno, uInt32 value)
   return *this;
 }
 
+uInt32 CortexM0::getRegister(uInt32 regno)
+{
+  return read_register(regno);
+}
+
 uInt8 CortexM0::decodeInstructionWord(uInt16 instructionWord)
 {
   return static_cast<uInt8>(::decodeInstructionWord(instructionWord));

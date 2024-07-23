@@ -93,6 +93,7 @@ class CortexM0
 
     CortexM0& reset();
     CortexM0& setRegister(uInt8 regno, uInt32 value);
+    uInt32 getRegister(uInt32 regno);
 
     static uInt8 decodeInstructionWord(uInt16 instructionWord);
 
