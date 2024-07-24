@@ -497,10 +497,12 @@ void CartridgeELF::setupMemoryMap()
                    STACK_SIZE / CortexM0::PAGE_SIZE, false, mySectionStack.get())
     .mapRegionCode(ADDR_TEXT_BASE / CortexM0::PAGE_SIZE,
                    TEXT_SIZE / CortexM0::PAGE_SIZE, true, mySectionText.get())
+    .mapRegionData(ADDR_DATA_BASE / CortexM0::PAGE_SIZE,
+                   DATA_SIZE / CortexM0::PAGE_SIZE, false, mySectionData.get())
     .mapRegionData(ADDR_RODATA_BASE / CortexM0::PAGE_SIZE,
-                   RODATA_SIZE / CortexM0::PAGE_SIZE, true, mySectionData.get())
+                   RODATA_SIZE / CortexM0::PAGE_SIZE, true, mySectionRodata.get())
     .mapRegionData(ADDR_TABLES_BASE / CortexM0::PAGE_SIZE,
-                   TABLES_SIZE / CortexM0::PAGE_SIZE, false, mySectionRodata.get());
+                   TABLES_SIZE / CortexM0::PAGE_SIZE, true, mySectionTables.get());
 }
 
 
