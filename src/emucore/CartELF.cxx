@@ -178,14 +178,6 @@ CartridgeELF::CartridgeELF(const ByteBuffer& image, size_t size, string_view md5
                            const Settings& settings)
   : Cartridge(settings, md5), myImageSize(size)
 {
-  ElfParser elfParser;
-
-  try {
-    elfParser.parse(image.get(), size);
-  } catch (ElfParser::ElfParseError& e) {
-    throw runtime_error("failed to initialize ELF: " + string(e.what()));
-  }
-
   myImage = make_unique<uInt8[]>(size);
   std::memcpy(myImage.get(), image.get(), size);
 
@@ -194,37 +186,10 @@ CartridgeELF::CartridgeELF(const ByteBuffer& image, size_t size, string_view md5
 
   createRomAccessArrays(0x1000);
 
-#ifdef DUMP_ELF
-  dumpElf(elfParser);
-#endif
+  parseAndLinkElf();
+  setupMemoryMap();
 
-  ElfLinker elfLinker(ADDR_TEXT_BASE, ADDR_DATA_BASE, ADDR_RODATA_BASE, elfParser);
-  try {
-    elfLinker.link(externalSymbols(Palette::ntsc));
-  } catch (const ElfLinker::ElfLinkError& e) {
-    throw runtime_error("failed to link ELF: " + string(e.what()));
-  }
-
-  try {
-    myArmEntrypoint = elfLinker.findRelocatedSymbol("elf_main").value;
-  } catch (const ElfLinker::ElfSymbolResolutionError& e) {
-    throw runtime_error("failed to resolve ARM entrypoint" + string(e.what()));
-  }
-
-  for (auto segment: {ElfLinker::SegmentType::text, ElfLinker::SegmentType::data, ElfLinker::SegmentType::rodata})
-    if (elfLinker.getSegmentSize(segment) > 0x00100000)
-      throw runtime_error("segment size exceeds limit");
-
-  #ifdef DUMP_ELF
-    dumpLinkage(elfParser, elfLinker);
-
-    cout
-      << "\nARM entrypoint: 0x"
-      << std::hex << std::setw(8) << std::setfill('0') << myArmEntrypoint << std::dec
-      << '\n';
-
-    writeDebugBinary(elfLinker);
-  #endif
+  reset();
 }
 
 
@@ -245,6 +210,22 @@ void CartridgeELF::reset()
 
   vcsCopyOverblankToRiotRam();
   vcsStartOverblank();
+
+  std::memset(mySectionStack.get(), 0, STACK_SIZE);
+  std::memset(mySectionText.get(), 0, TEXT_SIZE);
+  std::memset(mySectionData.get(), 0, DATA_SIZE);
+  std::memset(mySectionRodata.get(), 0, RODATA_SIZE);
+  std::memset(mySectionTables.get(), 0, TABLES_SIZE);
+
+  std::memcpy(mySectionText.get(), myLinker->getSegmentData(ElfLinker::SegmentType::text),
+                                   myLinker->getSegmentSize(ElfLinker::SegmentType::text));
+  std::memcpy(mySectionData.get(), myLinker->getSegmentData(ElfLinker::SegmentType::data),
+                                   myLinker->getSegmentSize(ElfLinker::SegmentType::data));
+  std::memcpy(mySectionRodata.get(), myLinker->getSegmentData(ElfLinker::SegmentType::rodata),
+                                     myLinker->getSegmentSize(ElfLinker::SegmentType::rodata));
+  std::memcpy(mySectionTables.get(), LOOKUP_TABLES, sizeof(LOOKUP_TABLES));
+
+  myCortexEmu.reset();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -453,6 +434,73 @@ void CartridgeELF::BusTransactionQueue::push(const BusTransaction& transaction)
     throw FatalEmulationError("read stream overflow");
 
   myQueue[(myQueueNext + myQueueSize++) % TRANSACTION_QUEUE_CAPACITY] = transaction;
+}
+
+void CartridgeELF::parseAndLinkElf()
+{
+  ElfParser elfParser;
+
+  try {
+    elfParser.parse(myImage.get(), myImageSize);
+  } catch (ElfParser::ElfParseError& e) {
+    throw runtime_error("failed to initialize ELF: " + string(e.what()));
+  }
+
+#ifdef DUMP_ELF
+  dumpElf(elfParser);
+#endif
+
+  myLinker = make_unique<ElfLinker>(ADDR_TEXT_BASE, ADDR_DATA_BASE, ADDR_RODATA_BASE, elfParser);
+  try {
+    myLinker->link(externalSymbols(Palette::ntsc));
+  } catch (const ElfLinker::ElfLinkError& e) {
+    throw runtime_error("failed to link ELF: " + string(e.what()));
+  }
+
+  try {
+    myArmEntrypoint = myLinker->findRelocatedSymbol("elf_main").value;
+  } catch (const ElfLinker::ElfSymbolResolutionError& e) {
+    throw runtime_error("failed to resolve ARM entrypoint" + string(e.what()));
+  }
+
+  if (myLinker->getSegmentSize(ElfLinker::SegmentType::text) > TEXT_SIZE)
+    throw runtime_error("text segment too large");
+
+  if (myLinker->getSegmentSize(ElfLinker::SegmentType::data) > DATA_SIZE)
+    throw runtime_error("data segment too large");
+
+  if (myLinker->getSegmentSize(ElfLinker::SegmentType::rodata) > RODATA_SIZE)
+    throw runtime_error("rodata segment too large");
+
+  #ifdef DUMP_ELF
+    dumpLinkage(elfParser, *myLinker);
+
+    cout
+      << "\nARM entrypoint: 0x"
+      << std::hex << std::setw(8) << std::setfill('0') << myArmEntrypoint << std::dec
+      << '\n';
+
+    writeDebugBinary(*myLinker);
+  #endif
+}
+
+void CartridgeELF::setupMemoryMap()
+{
+  mySectionStack = make_unique<uInt8[]>(STACK_SIZE);
+  mySectionText = make_unique<uInt8[]>(TEXT_SIZE);
+  mySectionData = make_unique<uInt8[]>(DATA_SIZE);
+  mySectionRodata = make_unique<uInt8[]>(RODATA_SIZE);
+  mySectionTables = make_unique<uInt8[]>(TABLES_SIZE);
+
+  myCortexEmu
+    .mapRegionData(ADDR_STACK_BASE / CortexM0::PAGE_SIZE,
+                   STACK_SIZE / CortexM0::PAGE_SIZE, false, mySectionStack.get())
+    .mapRegionCode(ADDR_TEXT_BASE / CortexM0::PAGE_SIZE,
+                   TEXT_SIZE / CortexM0::PAGE_SIZE, true, mySectionText.get())
+    .mapRegionData(ADDR_RODATA_BASE / CortexM0::PAGE_SIZE,
+                   RODATA_SIZE / CortexM0::PAGE_SIZE, true, mySectionData.get())
+    .mapRegionData(ADDR_TABLES_BASE / CortexM0::PAGE_SIZE,
+                   TABLES_SIZE / CortexM0::PAGE_SIZE, false, mySectionRodata.get());
 }
 
 

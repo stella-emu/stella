@@ -20,6 +20,9 @@
 
 #include "bspf.hxx"
 #include "Cart.hxx"
+#include "CortexM0.hxx"
+
+class ElfLinker;
 
 class CartridgeELF: public Cartridge {
   public:
@@ -104,6 +107,10 @@ class CartridgeELF: public Cartridge {
     };
 
   private:
+    void parseAndLinkElf();
+    void setupMemoryMap();
+
+  private:
     ByteBuffer myImage;
     size_t myImageSize{0};
 
@@ -116,6 +123,15 @@ class CartridgeELF: public Cartridge {
     uInt8 myDriveBusValue{0};
 
     uInt32 myArmEntrypoint{0};
+
+    CortexM0 myCortexEmu;
+    unique_ptr<ElfLinker> myLinker;
+
+    unique_ptr<uInt8[]> mySectionStack;
+    unique_ptr<uInt8[]> mySectionText;
+    unique_ptr<uInt8[]> mySectionData;
+    unique_ptr<uInt8[]> mySectionRodata;
+    unique_ptr<uInt8[]> mySectionTables;
 };
 
 #endif // CARTRIDGE_ELF
