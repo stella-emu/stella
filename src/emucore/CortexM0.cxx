@@ -397,10 +397,40 @@ namespace {
     }
 }
 
+CortexM0::err_t CortexM0::BusTransactionDelegate::read32(uInt32 address, uInt32& value, CortexM0& cortex)
+{
+  return errIntrinsic(ERR_UNMAPPED_READ32, address);
+}
+
+CortexM0::err_t CortexM0::BusTransactionDelegate::read16(uInt32 address, uInt16& value, CortexM0& cortex)
+{
+  return errIntrinsic(ERR_UNMAPPED_READ16, address);
+}
+
+CortexM0::err_t CortexM0::BusTransactionDelegate::read8(uInt32 address, uInt8& value, CortexM0& cortex)
+{
+  return errIntrinsic(ERR_UNMAPPED_READ8, address);
+}
+
+CortexM0::err_t CortexM0::BusTransactionDelegate::write32(uInt32 address, uInt32 value, CortexM0& cortex)
+{
+  return errIntrinsic(ERR_UNMAPPED_WRITE32, address);
+}
+
+CortexM0::err_t CortexM0::BusTransactionDelegate::write16(uInt32 address, uInt16 value, CortexM0& cortex)
+{
+  return errIntrinsic(ERR_UNMAPPED_WRITE16, address);
+}
+
+CortexM0::err_t CortexM0::BusTransactionDelegate::write8(uInt32 address, uInt8 value, CortexM0& cortex)
+{
+  return errIntrinsic(ERR_UNMAPPED_WRITE8, address);
+}
+
 CortexM0::err_t CortexM0::BusTransactionDelegate::fetch16(
-  uInt32 address, uInt16& value, uInt8& op
+  uInt32 address, uInt16& value, uInt8& op, CortexM0& cortex
 ) {
-  const err_t err = read16(address, value);
+  const err_t err = read16(address, value, cortex);
   if (err) return err;
 
   op = decodeInstructionWord(value);
@@ -537,7 +567,7 @@ CortexM0::err_t CortexM0::read32(uInt32 address, uInt32& value)
 
   switch (region.type) {
     case MemoryRegionType::delegate:
-      return region.access.delegate->read32(address, value);
+      return region.access.delegate->read32(address, value, *this);
 
     case MemoryRegionType::directCode:
       value = READ32(region.access.accessCode.backingStore, address - region.base);
@@ -549,7 +579,7 @@ CortexM0::err_t CortexM0::read32(uInt32 address, uInt32& value)
 
     default:
       return myDefaultDelegate ?
-        myDefaultDelegate->read32(address, value) : errIntrinsic(ERR_UNMAPPED_ACCESS, address);
+        myDefaultDelegate->read32(address, value, *this) : errIntrinsic(ERR_UNMAPPED_READ32, address);
   }
 }
 
@@ -561,7 +591,7 @@ CortexM0::err_t CortexM0::read16(uInt32 address, uInt16& value)
 
   switch (region.type) {
     case MemoryRegionType::delegate:
-      return region.access.delegate->read16(address, value);
+      return region.access.delegate->read16(address, value, *this);
 
     case MemoryRegionType::directCode:
       value = READ16(region.access.accessCode.backingStore, address - region.base);
@@ -573,7 +603,7 @@ CortexM0::err_t CortexM0::read16(uInt32 address, uInt16& value)
 
     default:
       return myDefaultDelegate ?
-        myDefaultDelegate->read16(address, value) : errIntrinsic(ERR_UNMAPPED_ACCESS, address);
+        myDefaultDelegate->read16(address, value, *this) : errIntrinsic(ERR_UNMAPPED_READ16, address);
   }
 }
 
@@ -583,7 +613,7 @@ CortexM0::err_t CortexM0::read8(uInt32 address, uInt8& value)
 
   switch (region.type) {
     case MemoryRegionType::delegate:
-      return region.access.delegate->read8(address, value);
+      return region.access.delegate->read8(address, value, *this);
 
     case MemoryRegionType::directCode:
       value = region.access.accessCode.backingStore[address - region.base];
@@ -595,7 +625,7 @@ CortexM0::err_t CortexM0::read8(uInt32 address, uInt8& value)
 
     default:
       return myDefaultDelegate ?
-        myDefaultDelegate->read8(address, value) : errIntrinsic(ERR_UNMAPPED_ACCESS, address);
+        myDefaultDelegate->read8(address, value, *this) : errIntrinsic(ERR_UNMAPPED_READ8, address);
   }
 }
 
@@ -608,7 +638,7 @@ CortexM0::err_t CortexM0::write32(uInt32 address, uInt32 value)
 
   switch (region.type) {
     case MemoryRegionType::delegate:
-      return region.access.delegate->write32(address, value);
+      return region.access.delegate->write32(address, value, *this);
 
     case MemoryRegionType::directCode:
       WRITE32(region.access.accessCode.backingStore, address - region.base, value);
@@ -620,7 +650,7 @@ CortexM0::err_t CortexM0::write32(uInt32 address, uInt32 value)
 
     default:
       return myDefaultDelegate ?
-        myDefaultDelegate->write32(address, value) : errIntrinsic(ERR_UNMAPPED_ACCESS, address);
+        myDefaultDelegate->write32(address, value, *this) : errIntrinsic(ERR_UNMAPPED_WRITE32, address);
   }
 }
 
@@ -633,7 +663,7 @@ CortexM0::err_t CortexM0::write16(uInt32 address, uInt16 value)
 
   switch (region.type) {
     case MemoryRegionType::delegate:
-      return region.access.delegate->write16(address, value);
+      return region.access.delegate->write16(address, value, *this);
 
     case MemoryRegionType::directCode: {
       const uInt32 offset = address - region.base;
@@ -650,7 +680,7 @@ CortexM0::err_t CortexM0::write16(uInt32 address, uInt16 value)
 
     default:
       return myDefaultDelegate ?
-        myDefaultDelegate->write16(address, value) : errIntrinsic(ERR_UNMAPPED_ACCESS, address);
+        myDefaultDelegate->write16(address, value, *this) : errIntrinsic(ERR_UNMAPPED_WRITE16, address);
   }
 }
 
@@ -663,7 +693,7 @@ CortexM0::err_t CortexM0::write8(uInt32 address, uInt8 value)
 
   switch (region.type) {
     case MemoryRegionType::delegate:
-      return region.access.delegate->write8(address, value);
+      return region.access.delegate->write8(address, value, *this);
 
     case MemoryRegionType::directCode: {
       const uInt32 offset = address - region.base;
@@ -680,7 +710,7 @@ CortexM0::err_t CortexM0::write8(uInt32 address, uInt8 value)
 
     default:
       return myDefaultDelegate ?
-        myDefaultDelegate->write8(address, value) : errIntrinsic(ERR_UNMAPPED_ACCESS, address);
+        myDefaultDelegate->write8(address, value, *this) : errIntrinsic(ERR_UNMAPPED_WRITE8, address);
   }
 }
 
@@ -692,7 +722,7 @@ CortexM0::err_t CortexM0::fetch16(uInt32 address, uInt16& value, uInt8& op)
 
   switch (region.type) {
     case MemoryRegionType::delegate:
-      return region.access.delegate->fetch16(address, value, op);
+      return region.access.delegate->fetch16(address, value, op, *this);
 
     case MemoryRegionType::directCode: {
       const uInt32 offset = address - region.base;
@@ -711,7 +741,7 @@ CortexM0::err_t CortexM0::fetch16(uInt32 address, uInt16& value, uInt8& op)
 
     default:
       return myDefaultDelegate ?
-        myDefaultDelegate->fetch16(address, value, op) : errIntrinsic(ERR_UNMAPPED_ACCESS, address);
+        myDefaultDelegate->fetch16(address, value, op, *this) : errIntrinsic(ERR_UNMAPPED_FETCH16, address);
   }
 }
 
