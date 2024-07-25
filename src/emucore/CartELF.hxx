@@ -106,6 +106,21 @@ class CartridgeELF: public Cartridge {
         uInt16 myNextInjectAddress{0};
     };
 
+    class VcslibDelegate: public CortexM0::BusTransactionDelegate {
+      public:
+        VcslibDelegate(CartridgeELF& cart) : myCart(cart) {}
+
+        CortexM0::err_t fetch16(uInt32 address, uInt16& value, uInt8& op, CortexM0& cortex) override;
+
+      private:
+        CortexM0::err_t returnFromStub(uInt16& value, uInt8& op);
+
+      private:
+        CartridgeELF& myCart;
+    };
+
+    friend VcslibDelegate;
+
   private:
     void parseAndLinkElf();
     void setupMemoryMap();
@@ -132,6 +147,8 @@ class CartridgeELF: public Cartridge {
     unique_ptr<uInt8[]> mySectionData;
     unique_ptr<uInt8[]> mySectionRodata;
     unique_ptr<uInt8[]> mySectionTables;
+
+    VcslibDelegate myVcslibDelegate;
 };
 
 #endif // CARTRIDGE_ELF

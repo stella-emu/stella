@@ -34,28 +34,34 @@ class CortexM0
       public:
         virtual ~BusTransactionDelegate() = default;
 
-        virtual err_t read32(uInt32 address, uInt32& value) = 0;
-        virtual err_t read16(uInt32 address, uInt16& value) = 0;
-        virtual err_t read8(uInt32 address, uInt8& value) = 0;
+        virtual err_t read32(uInt32 address, uInt32& value, CortexM0& cortex);
+        virtual err_t read16(uInt32 address, uInt16& value, CortexM0& cortex);
+        virtual err_t read8(uInt32 address, uInt8& value, CortexM0& cortex);
 
-        virtual err_t write32(uInt32 address, uInt32 value) = 0;
-        virtual err_t write16(uInt32 address, uInt16 value) = 0;
-        virtual err_t write8(uInt32 address, uInt8 value) = 0;
+        virtual err_t write32(uInt32 address, uInt32 value, CortexM0& cortex);
+        virtual err_t write16(uInt32 address, uInt16 value, CortexM0& cortex);
+        virtual err_t write8(uInt32 address, uInt8 value, CortexM0& cortex);
 
-        virtual err_t fetch16(uInt32 address, uInt16& value, uInt8& op);
+        virtual err_t fetch16(uInt32 address, uInt16& value, uInt8& op, CortexM0& cortex);
     };
 
     static constexpr uInt32 PAGE_SIZE = 4096;
 
     static constexpr err_t ERR_NONE = 0;
-    static constexpr err_t ERR_UNMAPPED_ACCESS = 1;
-    static constexpr err_t ERR_WRITE_ACCESS_DENIED = 2;
-    static constexpr err_t ERR_ACCESS_ALIGNMENT_FAULT = 3;
-    static constexpr err_t ERR_BKPT = 4;
-    static constexpr err_t ERR_INVALID_OPERATING_MODE = 5;
-    static constexpr err_t ERR_UNIMPLEMENTED_INST = 6;
-    static constexpr err_t ERR_SWI = 7;
-    static constexpr err_t ERR_UNDEFINED_INST = 8;
+    static constexpr err_t ERR_UNMAPPED_READ32 = 1;
+    static constexpr err_t ERR_UNMAPPED_READ16 = 2;
+    static constexpr err_t ERR_UNMAPPED_READ8 = 3;
+    static constexpr err_t ERR_UNMAPPED_WRITE32 = 4;
+    static constexpr err_t ERR_UNMAPPED_WRITE16 = 5;
+    static constexpr err_t ERR_UNMAPPED_WRITE8 = 6;
+    static constexpr err_t ERR_UNMAPPED_FETCH16 = 7;
+    static constexpr err_t ERR_WRITE_ACCESS_DENIED = 8;
+    static constexpr err_t ERR_ACCESS_ALIGNMENT_FAULT = 9;
+    static constexpr err_t ERR_BKPT = 10;
+    static constexpr err_t ERR_INVALID_OPERATING_MODE = 11;
+    static constexpr err_t ERR_UNIMPLEMENTED_INST = 12;
+    static constexpr err_t ERR_SWI = 13;
+    static constexpr err_t ERR_UNDEFINED_INST = 14;
 
     static inline bool isErrCustom(err_t err) {
       return (err & 0xff) == 0;
