@@ -32,6 +32,8 @@ class VcsLib: public CortexM0::BusTransactionDelegate {
     void vcsWrite5(uInt8 zpAddress, uInt8 value);
     void vcsCopyOverblankToRiotRam();
     void vcsStartOverblank();
+    void vcsEndOverblank();
+    void vcsNop2n(uInt16 n);
 
   private:
     CortexM0::err_t returnFromStub(uInt16& value, uInt8& op);
