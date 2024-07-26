@@ -39,6 +39,8 @@ class BusTransactionQueue {
     BusTransactionQueue& reset();
 
     BusTransactionQueue& setNextInjectAddress(uInt16 address);
+    uInt16 getNextInjectAddress() const;
+
     BusTransactionQueue& injectROM(uInt8 value);
     BusTransactionQueue& injectROM(uInt8 value, uInt16 address);
 

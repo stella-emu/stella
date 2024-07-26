@@ -204,15 +204,6 @@ void CartridgeELF::reset()
   myIsBusDriven = false;
   myDriveBusValue = 0;
 
-  myTransactionQueue
-    .reset()
-	  .injectROM(0x00, 0x1ffc)
-	  .injectROM(0x10)
-    .setNextInjectAddress(0x1000);
-
-  myVcsLib.vcsCopyOverblankToRiotRam();
-  myVcsLib.vcsStartOverblank();
-
   std::memset(mySectionStack.get(), 0, STACK_SIZE);
   std::memset(mySectionText.get(), 0, TEXT_SIZE);
   std::memset(mySectionData.get(), 0, DATA_SIZE);
@@ -228,6 +219,17 @@ void CartridgeELF::reset()
   std::memcpy(mySectionTables.get(), LOOKUP_TABLES, sizeof(LOOKUP_TABLES));
 
   myCortexEmu.reset();
+
+  myTransactionQueue
+    .reset()
+	  .injectROM(0x00, 0x1ffc)
+	  .injectROM(0x10)
+    .setNextInjectAddress(0x1000);
+
+  myVcsLib.vcsCopyOverblankToRiotRam();
+  myVcsLib.vcsStartOverblank();
+  myVcsLib.vcsEndOverblank();
+  myVcsLib.vcsNop2n(1024);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

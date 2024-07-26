@@ -70,6 +70,11 @@ BusTransactionQueue& BusTransactionQueue::setNextInjectAddress(uInt16 address)
   return *this;
 }
 
+uInt16 BusTransactionQueue::getNextInjectAddress() const
+{
+  return myNextInjectAddress;
+}
+
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 BusTransactionQueue& BusTransactionQueue::injectROM(uInt8 value)
 {

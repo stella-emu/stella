@@ -55,6 +55,24 @@ void VcsLib::vcsStartOverblank()
     .yield(0x0080);
 }
 
+void VcsLib::vcsEndOverblank()
+{
+  myTransactionQueue
+    .injectROM(0x00, 0x1fff)
+    .yield(0x00ac)
+    .setNextInjectAddress(0x1000);
+}
+
+void VcsLib::vcsNop2n(uInt16 n)
+{
+  if (n == 0) return;
+
+  myTransactionQueue.injectROM(0xea);
+  myTransactionQueue.setNextInjectAddress(
+    myTransactionQueue.getNextInjectAddress() + (n - 1)
+  );
+}
+
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CortexM0::err_t VcsLib::fetch16(uInt32 address, uInt16& value, uInt8& op, CortexM0& cortex)
 {
@@ -84,7 +102,8 @@ CortexM0::err_t VcsLib::fetch16(uInt32 address, uInt16& value, uInt8& op, Cortex
       FatalEmulationError::raise("unimplemented: vcsNop2");
 
     case ADDR_VCS_NOP2N:
-      FatalEmulationError::raise("unimplemented: vcsNop2n");
+      vcsNop2n(cortex.getRegister(0));
+      return returnFromStub(value, op);
 
     case ADDR_VCS_WRITE5:
       FatalEmulationError::raise("unimplemented: vcsWrite5");
@@ -131,7 +150,8 @@ CortexM0::err_t VcsLib::fetch16(uInt32 address, uInt16& value, uInt8& op, Cortex
       return returnFromStub(value, op);
 
     case ADDR_VCS_END_OVERBLANK:
-      FatalEmulationError::raise("unimplemented: vcsEndOverblank");
+      vcsEndOverblank();
+      return returnFromStub(value, op);
 
     case ADDR_VCS_READ4:
       FatalEmulationError::raise("unimplemented: vcsRead4");
