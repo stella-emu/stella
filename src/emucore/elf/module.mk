@@ -4,7 +4,9 @@ MODULE_OBJS = \
 	src/emucore/elf/ElfParser.o \
 	src/emucore/elf/ElfLinker.o \
 	src/emucore/elf/ElfUtil.o \
-	src/emucore/elf/ElfEnvironment.o
+	src/emucore/elf/ElfEnvironment.o \
+	src/emucore/elf/BusTransactionQueue.o \
+	src/emucore/elf/VcsLib.o
 
 MODULE_TEST_OBJS = \
 	src/emucore/elf/ElfUtil.o \

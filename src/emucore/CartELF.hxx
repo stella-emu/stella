@@ -21,6 +21,8 @@
 #include "bspf.hxx"
 #include "Cart.hxx"
 #include "CortexM0.hxx"
+#include "BusTransactionQueue.hxx"
+#include "VcsLib.hxx"
 
 class ElfLinker;
 
@@ -64,63 +66,6 @@ class CartridgeELF: public Cartridge {
   private:
     uInt8 driveBus(uInt16 address, uInt8 value);
 
-    void vcsWrite5(uInt8 zpAddress, uInt8 value);
-    void vcsCopyOverblankToRiotRam();
-    void vcsStartOverblank();
-
-  private:
-    struct BusTransaction {
-      static BusTransaction transactionYield(uInt16 address);
-      static BusTransaction transactionDrive(uInt16 address, uInt8 value);
-
-      void setBusState(bool& drive, uInt8& value) const;
-
-      uInt16 address;
-      uInt8 value;
-      bool yield;
-    };
-
-    class BusTransactionQueue {
-      public:
-        BusTransactionQueue();
-
-        void reset();
-
-        void setNextInjectAddress(uInt16 address);
-        void injectROM(uInt8 value);
-        void injectROM(uInt8 value, uInt16 address);
-
-        void yield(uInt16 address);
-
-        bool hasPendingTransaction() const;
-        BusTransaction* getNextTransaction(uInt16 address);
-
-      private:
-        void push(const BusTransaction& transaction);
-
-      private:
-        unique_ptr<BusTransaction[]> myQueue;
-        size_t myQueueNext{0};
-        size_t myQueueSize{0};
-
-        uInt16 myNextInjectAddress{0};
-    };
-
-    class VcslibDelegate: public CortexM0::BusTransactionDelegate {
-      public:
-        VcslibDelegate(CartridgeELF& cart) : myCart(cart) {}
-
-        CortexM0::err_t fetch16(uInt32 address, uInt16& value, uInt8& op, CortexM0& cortex) override;
-
-      private:
-        CortexM0::err_t returnFromStub(uInt16& value, uInt8& op);
-
-      private:
-        CartridgeELF& myCart;
-    };
-
-    friend VcslibDelegate;
-
   private:
     void parseAndLinkElf();
     void setupMemoryMap();
@@ -148,7 +93,7 @@ class CartridgeELF: public Cartridge {
     unique_ptr<uInt8[]> mySectionRodata;
     unique_ptr<uInt8[]> mySectionTables;
 
-    VcslibDelegate myVcslibDelegate;
+    VcsLib myVcsLib;
 };
 
 #endif // CARTRIDGE_ELF

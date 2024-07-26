@@ -176,7 +176,8 @@ namespace {
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartridgeELF::CartridgeELF(const ByteBuffer& image, size_t size, string_view md5,
                            const Settings& settings)
-  : Cartridge(settings, md5), myImageSize(size), myVcslibDelegate(*this)
+  : Cartridge(settings, md5), myImageSize(size), myTransactionQueue(TRANSACTION_QUEUE_CAPACITY),
+    myVcsLib(myTransactionQueue)
 {
   myImage = make_unique<uInt8[]>(size);
   std::memcpy(myImage.get(), image.get(), size);
@@ -203,13 +204,14 @@ void CartridgeELF::reset()
   myIsBusDriven = false;
   myDriveBusValue = 0;
 
-  myTransactionQueue.reset();
-	myTransactionQueue.injectROM(0x00, 0x1ffc);
-	myTransactionQueue.injectROM(0x10);
-  myTransactionQueue.setNextInjectAddress(0x1000);
+  myTransactionQueue
+    .reset()
+	  .injectROM(0x00, 0x1ffc)
+	  .injectROM(0x10)
+    .setNextInjectAddress(0x1000);
 
-  vcsCopyOverblankToRiotRam();
-  vcsStartOverblank();
+  myVcsLib.vcsCopyOverblankToRiotRam();
+  myVcsLib.vcsStartOverblank();
 
   std::memset(mySectionStack.get(), 0, STACK_SIZE);
   std::memset(mySectionText.get(), 0, TEXT_SIZE);
@@ -299,272 +301,12 @@ uInt8 CartridgeELF::overdrivePoke(uInt16 address, uInt8 value)
 
 inline uInt8 CartridgeELF::driveBus(uInt16 address, uInt8 value)
 {
-  BusTransaction* nextTransaction = myTransactionQueue.getNextTransaction(address);
+  auto* nextTransaction = myTransactionQueue.getNextTransaction(address);
   if (nextTransaction) nextTransaction->setBusState(myIsBusDriven, myDriveBusValue);
 
   if (myIsBusDriven) value |= myDriveBusValue;
 
   return value;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgeELF::vcsWrite5(uInt8 zpAddress, uInt8 value)
-{
-	myTransactionQueue.injectROM(0xa9);
-	myTransactionQueue.injectROM(value);
-	myTransactionQueue.injectROM(0x85);
-	myTransactionQueue.injectROM(zpAddress);
-  myTransactionQueue.yield(zpAddress);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgeELF::vcsCopyOverblankToRiotRam()
-{
-  for (uInt8 i = 0; i < OVERBLANK_PROGRAM_SIZE; i++)
-    vcsWrite5(0x80 + i, OVERBLANK_PROGRAM[i]);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgeELF::vcsStartOverblank()
-{
-	myTransactionQueue.injectROM(0x4c);
-	myTransactionQueue.injectROM(0x80);
-	myTransactionQueue.injectROM(0x00);
-  myTransactionQueue.yield(0x0080);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CartridgeELF::BusTransaction CartridgeELF::BusTransaction::transactionYield(uInt16 address)
-{
-  address &= 0x1fff;
-  return {.address = address, .value = 0, .yield = true};
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CartridgeELF::BusTransaction CartridgeELF::BusTransaction::transactionDrive(uInt16 address, uInt8 value)
-{
-  address &= 0x1fff;
-  return {.address = address, .value = value, .yield = false};
-}
-
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgeELF::BusTransaction::setBusState(bool& bs_drive, uInt8& bs_value) const
-{
-  if (yield) {
-    bs_drive = false;
-  } else {
-    bs_drive = true;
-    bs_value = this->value;
-  }
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CartridgeELF::BusTransactionQueue::BusTransactionQueue()
-{
-  myQueue = make_unique<BusTransaction[]>(TRANSACTION_QUEUE_CAPACITY);
-  reset();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgeELF::BusTransactionQueue::reset()
-{
-  myQueueNext = myQueueSize = 0;
-  myNextInjectAddress = 0;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgeELF::BusTransactionQueue::setNextInjectAddress(uInt16 address)
-{
-  myNextInjectAddress = address;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgeELF::BusTransactionQueue::injectROM(uInt8 value)
-{
-  injectROM(value, myNextInjectAddress);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgeELF::BusTransactionQueue::injectROM(uInt8 value, uInt16 address)
-{
-  push(BusTransaction::transactionDrive(address, value));
-  myNextInjectAddress = address + 1;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgeELF::BusTransactionQueue::yield(uInt16 address)
-{
-  push(BusTransaction::transactionYield(address));
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool CartridgeELF::BusTransactionQueue::hasPendingTransaction() const
-{
-  return myQueueSize > 0;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CartridgeELF::BusTransaction* CartridgeELF::BusTransactionQueue::getNextTransaction(uInt16 address)
-{
-  if (myQueueSize == 0) return nullptr;
-
-  BusTransaction* nextTransaction = &myQueue[myQueueNext];
-  if (nextTransaction->address != (address & 0x1fff)) return nullptr;
-
-  myQueueNext = (myQueueNext + 1) % TRANSACTION_QUEUE_CAPACITY;
-  myQueueSize--;
-
-  return nextTransaction;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgeELF::BusTransactionQueue::push(const BusTransaction& transaction)
-{
-  if (myQueueSize > 0) {
-    BusTransaction& lastTransaction = myQueue[(myQueueNext + myQueueSize - 1) % TRANSACTION_QUEUE_CAPACITY];
-
-    if (lastTransaction.address == transaction.address) {
-      lastTransaction = transaction;
-      return;
-    }
-  }
-
-  if (myQueueSize == TRANSACTION_QUEUE_CAPACITY)
-    throw FatalEmulationError("read stream overflow");
-
-  myQueue[(myQueueNext + myQueueSize++) % TRANSACTION_QUEUE_CAPACITY] = transaction;
-}
-
-CortexM0::err_t CartridgeELF::VcslibDelegate::fetch16(uInt32 address, uInt16& value, uInt8& op, CortexM0& cortex)
-{
-  switch (address) {
-    case ADDR_MEMSET:
-      FatalEmulationError::raise("unimplemented: memset");
-
-    case ADDR_MEMCPY:
-      FatalEmulationError::raise("unimplemented: memcpy");
-
-    case ADDR_VCS_LDA_FOR_BUS_STUFF2:
-      FatalEmulationError::raise("unimplemented: vcsLdaForBusStuff2");
-
-    case ADDR_VCS_LDX_FOR_BUS_STUFF2:
-      FatalEmulationError::raise("unimplemented: vcsLdxForBusStuff2");
-
-    case ADDR_VCS_LDY_FOR_BUS_STUFF2:
-      FatalEmulationError::raise("unimplemented: vcsLdyForBusStuff2");
-
-    case ADDR_VCS_WRITE3:
-      FatalEmulationError::raise("unimplemented: vcsWrite3");
-
-    case ADDR_VCS_JMP3:
-      FatalEmulationError::raise("unimplemented: vcsJump3");
-
-    case ADDR_VCS_NOP2:
-      FatalEmulationError::raise("unimplemented: vcsNop2");
-
-    case ADDR_VCS_NOP2N:
-      FatalEmulationError::raise("unimplemented: vcsNop2n");
-
-    case ADDR_VCS_WRITE5:
-      FatalEmulationError::raise("unimplemented: vcsWrite5");
-
-    case ADDR_VCS_WRITE6:
-      FatalEmulationError::raise("unimplemented: vcsWrite6");
-
-    case ADDR_VCS_LDA2:
-      FatalEmulationError::raise("unimplemented: vcsLda2");
-
-    case ADDR_VCS_LDX2:
-      FatalEmulationError::raise("unimplemented: vcsLdx2");
-
-    case ADDR_VCS_LDY2:
-      FatalEmulationError::raise("unimplemented: vcsLdy2");
-
-    case ADDR_VCS_SAX3:
-      FatalEmulationError::raise("unimplemented: vcsSax3");
-
-    case ADDR_VCS_STA3:
-      FatalEmulationError::raise("unimplemented: vcsSta3");
-
-    case ADDR_VCS_STX3:
-      FatalEmulationError::raise("unimplemented: vcsStx3");
-
-    case ADDR_VCS_STY3:
-      FatalEmulationError::raise("unimplemented: vcsSty3");
-
-    case ADDR_VCS_STA4:
-      FatalEmulationError::raise("unimplemented: vcsSta4");
-
-    case ADDR_VCS_STX4:
-      FatalEmulationError::raise("unimplemented: vcsStx4");
-
-    case ADDR_VCS_STY4:
-      FatalEmulationError::raise("unimplemented: vcsSty4");
-
-    case ADDR_VCS_COPY_OVERBLANK_TO_RIOT_RAM:
-      myCart.vcsCopyOverblankToRiotRam();
-      return returnFromStub(value, op);
-
-    case ADDR_VCS_START_OVERBLANK:
-      myCart.vcsStartOverblank();
-      return returnFromStub(value, op);
-
-    case ADDR_VCS_END_OVERBLANK:
-      FatalEmulationError::raise("unimplemented: vcsEndOverblank");
-
-    case ADDR_VCS_READ4:
-      FatalEmulationError::raise("unimplemented: vcsRead4");
-
-    case ADDR_RANDINT:
-      FatalEmulationError::raise("unimplemented: randint ");
-
-    case ADDR_VCS_TXS2:
-      FatalEmulationError::raise("unimplemented: vcsTx2");
-
-    case ADDR_VCS_JSR6:
-      FatalEmulationError::raise("unimplemented: vcsJsr6");
-
-    case ADDR_VCS_PHA3:
-      FatalEmulationError::raise("unimplemented: vcsPha3");
-
-    case ADDR_VCS_PHP3:
-      FatalEmulationError::raise("unimplemented: vcsPph3");
-
-    case ADDR_VCS_PLA4:
-      FatalEmulationError::raise("unimplemented: vcsPla4");
-
-    case ADDR_VCS_PLP4:
-      FatalEmulationError::raise("unimplemented: vcsPlp4");
-
-    case ADDR_VCS_PLA4_EX:
-      FatalEmulationError::raise("unimplemented: vcsPla4Ex");
-
-    case ADDR_VCS_PLP4_EX:
-      FatalEmulationError::raise("unimplemented: vcsPlp4Ex");
-
-    case ADDR_VCS_JMP_TO_RAM3:
-      FatalEmulationError::raise("unimplemented: vcsJmpToRam3");
-
-    case ADDR_VCS_WAIT_FOR_ADDRESS:
-      FatalEmulationError::raise("unimplemented: vcsWaitForAddress");
-
-    case ADDR_INJECT_DMA_DATA:
-      FatalEmulationError::raise("unimplemented: vcsInjectDmaData");
-
-    default:
-      return CortexM0::errIntrinsic(CortexM0::ERR_UNMAPPED_FETCH16, address);
-  }
-}
-
-CortexM0::err_t CartridgeELF::VcslibDelegate::returnFromStub(uInt16& value, uInt8& op)
-{
-  constexpr uInt16 BX_LR = 0x7047;
-
-  value = BX_LR;
-  op = CortexM0::decodeInstructionWord(BX_LR);
-
-  return CortexM0::ERR_NONE;
 }
 
 void CartridgeELF::parseAndLinkElf()
@@ -635,7 +377,7 @@ void CartridgeELF::setupMemoryMap()
     .mapRegionData(ADDR_TABLES_BASE / CortexM0::PAGE_SIZE,
                    TABLES_SIZE / CortexM0::PAGE_SIZE, true, mySectionTables.get())
     .mapRegionDelegate(ADDR_STUB_BASE / CortexM0::PAGE_SIZE,
-                       STUB_SIZE / CortexM0::PAGE_SIZE, true, &myVcslibDelegate);
+                       STUB_SIZE / CortexM0::PAGE_SIZE, true, &myVcsLib);
 }
 
 
