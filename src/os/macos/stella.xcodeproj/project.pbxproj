@@ -276,6 +276,8 @@
 		DC2C5EDB1F8F2403007D2A09 /* smartmod.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC2C5EDA1F8F2403007D2A09 /* smartmod.hxx */; };
 		DC30924C212F74930020DAD0 /* TimerManager.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC30924A212F74930020DAD0 /* TimerManager.cxx */; };
 		DC30924D212F74930020DAD0 /* TimerManager.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC30924B212F74930020DAD0 /* TimerManager.hxx */; };
+		DC3131ED2C540CE2008A1E43 /* CortexM0.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC3131EB2C540CE2008A1E43 /* CortexM0.cxx */; };
+		DC3131EE2C540CE2008A1E43 /* CortexM0.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC3131EC2C540CE2008A1E43 /* CortexM0.hxx */; };
 		DC368F5818A2FB710084199C /* SoundSDL2.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC368F5218A2FB710084199C /* SoundSDL2.cxx */; };
 		DC368F5918A2FB710084199C /* SoundSDL2.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC368F5318A2FB710084199C /* SoundSDL2.hxx */; };
 		DC36D2C814CAFAB0007DC821 /* CartFA2.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC36D2C614CAFAB0007DC821 /* CartFA2.cxx */; };
@@ -1148,6 +1150,8 @@
 		DC2C5EDA1F8F2403007D2A09 /* smartmod.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = smartmod.hxx; sourceTree = "<group>"; };
 		DC30924A212F74930020DAD0 /* TimerManager.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TimerManager.cxx; sourceTree = "<group>"; };
 		DC30924B212F74930020DAD0 /* TimerManager.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = TimerManager.hxx; sourceTree = "<group>"; };
+		DC3131EB2C540CE2008A1E43 /* CortexM0.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CortexM0.cxx; sourceTree = "<group>"; };
+		DC3131EC2C540CE2008A1E43 /* CortexM0.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = CortexM0.hxx; sourceTree = "<group>"; };
 		DC368F5218A2FB710084199C /* SoundSDL2.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SoundSDL2.cxx; sourceTree = "<group>"; };
 		DC368F5318A2FB710084199C /* SoundSDL2.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = SoundSDL2.hxx; sourceTree = "<group>"; };
 		DC36D2C614CAFAB0007DC821 /* CartFA2.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CartFA2.cxx; sourceTree = "<group>"; };
@@ -2223,6 +2227,8 @@
 				DC71C398221623D9005DE92F /* ControllerDetector.cxx */,
 				DC71C397221623D8005DE92F /* ControllerDetector.hxx */,
 				DCCE03572251050C008C246F /* ControlLowLevel.hxx */,
+				DC3131EB2C540CE2008A1E43 /* CortexM0.cxx */,
+				DC3131EC2C540CE2008A1E43 /* CortexM0.hxx */,
 				DC932D3F0F278A5200FEFEFC /* DefProps.hxx */,
 				DCC527C910B9DA19005E1287 /* Device.hxx */,
 				DCDFF07F20B781B0001227C0 /* DispatchResult.cxx */,
@@ -2846,6 +2852,7 @@
 				2D9173DB09BA90380026E9FF /* CartF8SC.hxx in Headers */,
 				2D9173DD09BA90380026E9FF /* CartFE.hxx in Headers */,
 				DC62E6481960E87B007AEF05 /* AtariVoxWidget.hxx in Headers */,
+				DC3131EE2C540CE2008A1E43 /* CortexM0.hxx in Headers */,
 				2D9173E009BA90380026E9FF /* Console.hxx in Headers */,
 				2D9173E109BA90380026E9FF /* Control.hxx in Headers */,
 				DC5AAC2D1FCB24DF00C420A6 /* RadioButtonWidget.hxx in Headers */,
@@ -3519,6 +3526,7 @@
 				DC47455C09C34BFA00EDDA3A /* CheetahCheat.cxx in Sources */,
 				DC62E6471960E87B007AEF05 /* AtariVoxWidget.cxx in Sources */,
 				DC47455E09C34BFA00EDDA3A /* RamCheat.cxx in Sources */,
+				DC3131ED2C540CE2008A1E43 /* CortexM0.cxx in Sources */,
 				E0FABEEC20E9948200EB8E28 /* AudioSettings.cxx in Sources */,
 				DCD56D380B247D920092F9F8 /* Cart4A50.cxx in Sources */,
 				DC96162E1F817830008A2206 /* AtariMouseWidget.cxx in Sources */,
