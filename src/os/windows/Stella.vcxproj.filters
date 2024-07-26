@@ -1260,6 +1260,12 @@
     <ClCompile Include="..\..\emucore\elf\ElfEnvironment.cxx">
       <Filter>Source Files\emucore\elf</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\emucore\elf\BusTransactionCode.cxx">
+      <Filter>Source Files\emucore\elf</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\emucore\elf\VcsLib.cxx">
+      <Filter>Source Files\emucore\elf</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\emucore\AtariVox.hxx">
@@ -2552,6 +2558,12 @@
     <ClInclude Include="..\..\emucore\elf\ElfEnvironment.hxx">
       <Filter>Header Files\emucore\elf</Filter>
     </ClInclude>
+    <ClCompile Include="..\..\emucore\elf\BusTransactionCode.hxx">
+      <Filter>Source Files\emucore\elf</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\emucore\elf\VcsLib.hxx">
+      <Filter>Source Files\emucore\elf</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="stella.ico">
