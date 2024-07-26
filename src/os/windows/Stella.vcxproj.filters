@@ -1260,7 +1260,7 @@
     <ClCompile Include="..\..\emucore\elf\ElfEnvironment.cxx">
       <Filter>Source Files\emucore\elf</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\emucore\elf\BusTransactionCode.cxx">
+    <ClCompile Include="..\..\emucore\elf\BusTransactionQueue.cxx">
       <Filter>Source Files\emucore\elf</Filter>
     </ClCompile>
     <ClCompile Include="..\..\emucore\elf\VcsLib.cxx">
@@ -2558,7 +2558,7 @@
     <ClInclude Include="..\..\emucore\elf\ElfEnvironment.hxx">
       <Filter>Header Files\emucore\elf</Filter>
     </ClInclude>
-    <ClCompile Include="..\..\emucore\elf\BusTransactionCode.hxx">
+    <ClCompile Include="..\..\emucore\elf\BusTransactionQueue.hxx">
       <Filter>Source Files\emucore\elf</Filter>
     </ClCompile>
     <ClCompile Include="..\..\emucore\elf\VcsLib.hxx">
