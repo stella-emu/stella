@@ -553,10 +553,6 @@ CortexM0& CortexM0::mapRegionCode(uInt32 pageBase,
   region.access.accessCode.backingStore = backingStore;
   region.access.accessCode.ops = static_cast<uInt8*>(std::malloc((pageCount * PAGE_SIZE) >> 1));
 
-  for (size_t i = 0; i < pageCount * PAGE_SIZE; i += 2)
-    region.access.accessCode.ops[i >> 1] =
-      decodeInstructionWord(READ16(backingStore, i));
-
   return *this;
 }
 
@@ -583,7 +579,14 @@ CortexM0& CortexM0::reset()
   reg_norm.fill(0);
   znFlags = cFlag = vFlag = 0;
 
+  recompileCodeRegions();
+
   return *this;
+}
+
+CortexM0& CortexM0::setPc(uInt32 pc)
+{
+  return setRegister(15, (pc & ~1) + 2);
 }
 
 CortexM0& CortexM0::setRegister(uInt8 regno, uInt32 value)
@@ -610,7 +613,7 @@ CortexM0::err_t CortexM0::run(uInt32 maxCycles, uInt32& cycles)
 
     uInt16 inst;
     uInt8 op;
-    err_t err = fetch16(pc -2, inst, op);
+    err_t err = fetch16(pc - 2, inst, op);
 
     if (err) return err;
 
@@ -648,6 +651,17 @@ CortexM0::MemoryRegion& CortexM0::setupMapping(uInt32 pageBase, uInt32 pageCount
     myPageMap[page] = regionIndex;
 
   return region;
+}
+
+void CortexM0::recompileCodeRegions()
+{
+  for (const auto& region: myRegions) {
+    if (region.type != MemoryRegionType::directCode) continue;
+
+    for (size_t i = 0; i < region.size; i += 2)
+      region.access.accessCode.ops[i >> 1] =
+        decodeInstructionWord(READ16(region.access.accessCode.backingStore, i));
+  }
 }
 
 CortexM0::err_t CortexM0::read32(uInt32 address, uInt32& value)
@@ -1176,7 +1190,7 @@ CortexM0::err_t CortexM0::execute(uInt16 inst, uInt8 op)
     }
 
     case Op::bkpt:
-      return errIntrinsic(ERR_BKPT, read_register(15) - 2);
+      return errIntrinsic(ERR_BKPT, read_register(15) - 4);
 
     //BL/BLX(1) variants
     // (bl, blx_thumb)
@@ -1216,7 +1230,7 @@ CortexM0::err_t CortexM0::execute(uInt16 inst, uInt8 op)
         write_register(15, rc);
         return ERR_NONE;
       }
-      else return errIntrinsic(ERR_INVALID_OPERATING_MODE, read_register(15) - 2);
+      else return errIntrinsic(ERR_INVALID_OPERATING_MODE, read_register(15) - 4);
     }
 
     //BX
@@ -1233,7 +1247,7 @@ CortexM0::err_t CortexM0::execute(uInt16 inst, uInt8 op)
         write_register(15, rc);
         return ERR_NONE;
       }
-      else return errIntrinsic(ERR_INVALID_OPERATING_MODE, read_register(15) - 2);
+      else return errIntrinsic(ERR_INVALID_OPERATING_MODE, read_register(15) - 4);
     }
 
     //CMN
@@ -1864,11 +1878,6 @@ CortexM0::err_t CortexM0::execute(uInt16 inst, uInt8 op)
         rc = read_register(14);
         const err_t err = write32(rd, rc);
         if (err) return err;
-
-        if((rc & 1) == 0)
-        {
-          return errIntrinsic(ERR_INVALID_OPERATING_MODE, read_register(15) - 2);
-        }
       }
       write_register(13, sp);
       return ERR_NONE;
@@ -1966,7 +1975,7 @@ CortexM0::err_t CortexM0::execute(uInt16 inst, uInt8 op)
 #ifndef UNSAFE_OPTIMIZATIONS
     //SETEND
     case Op::setend: {
-      return errIntrinsic(ERR_UNIMPLEMENTED_INST, read_register(15) - 2);
+      return errIntrinsic(ERR_UNIMPLEMENTED_INST, read_register(15) - 4);
     }
 #endif
 
@@ -2235,6 +2244,6 @@ CortexM0::err_t CortexM0::execute(uInt16 inst, uInt8 op)
     }
 
     default:
-      return errIntrinsic(ERR_UNDEFINED_INST, read_register(15) - 2);
+      return errIntrinsic(ERR_UNDEFINED_INST, read_register(15) - 4);
   }
 }

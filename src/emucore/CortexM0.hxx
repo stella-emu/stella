@@ -104,6 +104,7 @@ class CortexM0
     CortexM0& mapDefault(BusTransactionDelegate* delegate);
 
     CortexM0& reset();
+    CortexM0& setPc(uInt32 pc);
     CortexM0& setRegister(uInt8 regno, uInt32 value);
     uInt32 getRegister(uInt32 regno);
 
@@ -167,6 +168,8 @@ class CortexM0
   private:
     MemoryRegion& setupMapping(uInt32 pageBase, uInt32 pageCount,
                                bool readOnly, MemoryRegionType type);
+
+    void recompileCodeRegions();
 
     err_t fetch16(uInt32 address, uInt16& value, uInt8& op);
 
