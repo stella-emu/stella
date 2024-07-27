@@ -447,6 +447,7 @@ void CartridgeELF::jumpToMain()
 
   myCortexEmu
     .setRegister(0, sp )
+    .setRegister(13, sp)
     .setRegister(14, RETURN_ADDR_MAIN)
     .setRegister(15, myArmEntrypoint);
 }

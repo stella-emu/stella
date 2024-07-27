@@ -796,7 +796,6 @@
     <ClCompile Include="..\..\emucore\CartSB.cxx" />
     <ClCompile Include="..\..\emucore\CartUA.cxx" />
     <ClCompile Include="..\..\emucore\CartX07.cxx" />
-    <ClCompile Include="..\..\emucore\CartELF.cxx" />
     <ClCompile Include="..\..\emucore\Console.cxx" />
     <ClCompile Include="..\..\emucore\Control.cxx" />
     <ClCompile Include="..\..\emucore\Driving.cxx" />
@@ -1675,6 +1674,7 @@
     <ClInclude Include="..\..\emucore\elf\ElfEnvironment.hxx" />
     <ClCompile Include="..\..\emucore\elf\BusTransactionQueue.hxx" />
     <ClCompile Include="..\..\emucore\elf\VcsLib.hxx" />
+    <ClCompile Include="..\..\emucore\CartELF.cxx" />
     <ClInclude Include="..\..\emucore\CortexM0.hxx" />
     <ClInclude Include="..\..\emucore\EmulationTiming.hxx" />
     <ClInclude Include="..\..\emucore\EmulationWorker.hxx" />
