@@ -71,6 +71,10 @@ class CortexM0
       return (err & 0xffffffff) >> 8;
     }
 
+    static inline uInt8 getErrInstrinsic(err_t err)  {
+      return err;
+    }
+
     static inline uInt32 getErrExtra(err_t err) {
       return err >> 32;
     }
@@ -82,6 +86,8 @@ class CortexM0
     static inline err_t errIntrinsic(uInt8 code, uInt32 extra = 0) {
       return static_cast<uInt64>(code) | (static_cast<uInt64>(extra) << 32);
     }
+
+    static string describeError(err_t error);
 
   public:
     CortexM0();

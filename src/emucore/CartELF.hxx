@@ -75,6 +75,8 @@ class CartridgeELF: public Cartridge {
     uInt32 getSystemType() const;
     void jumpToMain();
 
+    void runArm();
+
   private:
     ByteBuffer myImage;
     size_t myImageSize{0};
@@ -102,6 +104,8 @@ class CartridgeELF: public Cartridge {
 
     ConsoleTiming myConsoleTiming{ConsoleTiming::ntsc};
     uInt32 myArmCyclesPer6502Cycle{80};
+
+    uInt64 myArmCycles{0};
 };
 
 #endif // CARTRIDGE_ELF
