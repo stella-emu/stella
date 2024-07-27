@@ -105,6 +105,14 @@ class CortexM0
 
     err_t run(uInt32 maxCycles, uInt32& cycles);
 
+    err_t read32(uInt32 address, uInt32& value);
+    err_t read16(uInt32 address, uInt16& value);
+    err_t read8(uInt32 address, uInt8& value);
+
+    err_t write32(uInt32 address, uInt32 value);
+    err_t write16(uInt32 address, uInt16 value);
+    err_t write8(uInt32 address, uInt8 value);
+
   private:
 
     enum class MemoryRegionType : uInt8 {
@@ -153,14 +161,6 @@ class CortexM0
   private:
     MemoryRegion& setupMapping(uInt32 pageBase, uInt32 pageCount,
                                bool readOnly, MemoryRegionType type);
-
-    err_t read32(uInt32 address, uInt32& value);
-    err_t read16(uInt32 address, uInt16& value);
-    err_t read8(uInt32 address, uInt8& value);
-
-    err_t write32(uInt32 address, uInt32 value);
-    err_t write16(uInt32 address, uInt16 value);
-    err_t write8(uInt32 address, uInt8 value);
 
     err_t fetch16(uInt32 address, uInt16& value, uInt8& op);
 

@@ -106,6 +106,12 @@ namespace elfEnvironment {
   extern const uInt8 OVERBLANK_PROGRAM[];
   extern const uInt32 OVERBLANK_PROGRAM_SIZE;
 
+  constexpr uInt32  ST_NTSC_2600 =	0;
+  constexpr uInt32  ST_PAL_2600 = 1;
+  constexpr uInt32  ST_PAL60_2600 = 2;
+
+  constexpr uInt32 RETURN_ADDR_MAIN = 0xffffdead;
+
   enum class Palette: uInt8 {pal, ntsc};
 
   vector<ElfLinker::ExternalSymbol> externalSymbols(Palette palette);

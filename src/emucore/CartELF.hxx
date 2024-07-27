@@ -47,6 +47,8 @@ class CartridgeELF: public Cartridge {
 
     bool poke(uInt16 address, uInt8 value) override;
 
+    void consoleChanged(ConsoleTiming timing) override;
+
   // Methods from Cartridge
   public:
     bool bankChanged() override { return false; }
@@ -66,9 +68,12 @@ class CartridgeELF: public Cartridge {
   private:
     uInt8 driveBus(uInt16 address, uInt8 value);
 
-  private:
     void parseAndLinkElf();
     void setupMemoryMap();
+
+    uInt32 getCoreClock() const;
+    uInt32 getSystemType() const;
+    void jumpToMain();
 
   private:
     ByteBuffer myImage;
@@ -94,6 +99,9 @@ class CartridgeELF: public Cartridge {
     unique_ptr<uInt8[]> mySectionTables;
 
     VcsLib myVcsLib;
+
+    ConsoleTiming myConsoleTiming{ConsoleTiming::ntsc};
+    uInt32 myArmCyclesPer6502Cycle{80};
 };
 
 #endif // CARTRIDGE_ELF

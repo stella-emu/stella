@@ -189,8 +189,6 @@ CartridgeELF::CartridgeELF(const ByteBuffer& image, size_t size, string_view md5
 
   parseAndLinkElf();
   setupMemoryMap();
-
-  reset();
 }
 
 
@@ -230,6 +228,8 @@ void CartridgeELF::reset()
   myVcsLib.vcsStartOverblank();
   myVcsLib.vcsEndOverblank();
   myVcsLib.vcsNop2n(1024);
+
+  jumpToMain();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -277,6 +277,11 @@ bool CartridgeELF::poke(uInt16 address, uInt8 value)
   return false;
 }
 
+void CartridgeELF::consoleChanged(ConsoleTiming timing)
+{
+  myConsoleTiming = timing;
+}
+
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const ByteBuffer& CartridgeELF::getImage(size_t& size) const
 {
@@ -284,6 +289,7 @@ const ByteBuffer& CartridgeELF::getImage(size_t& size) const
   return myImage;
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 CartridgeELF::overdrivePeek(uInt16 address, uInt8 value)
 {
   value = driveBus(address, value);
@@ -296,11 +302,13 @@ uInt8 CartridgeELF::overdrivePeek(uInt16 address, uInt8 value)
   return value;
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 CartridgeELF::overdrivePoke(uInt16 address, uInt8 value)
 {
   return driveBus(address, value);
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 inline uInt8 CartridgeELF::driveBus(uInt16 address, uInt8 value)
 {
   auto* nextTransaction = myTransactionQueue.getNextTransaction(address);
@@ -311,6 +319,7 @@ inline uInt8 CartridgeELF::driveBus(uInt16 address, uInt8 value)
   return value;
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeELF::parseAndLinkElf()
 {
   ElfParser elfParser;
@@ -359,6 +368,7 @@ void CartridgeELF::parseAndLinkElf()
   #endif
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeELF::setupMemoryMap()
 {
   mySectionStack = make_unique<uInt8[]>(STACK_SIZE);
@@ -380,6 +390,65 @@ void CartridgeELF::setupMemoryMap()
                    TABLES_SIZE / CortexM0::PAGE_SIZE, true, mySectionTables.get())
     .mapRegionDelegate(ADDR_STUB_BASE / CortexM0::PAGE_SIZE,
                        STUB_SIZE / CortexM0::PAGE_SIZE, true, &myVcsLib);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt32 CartridgeELF::getCoreClock() const
+{
+  switch (myConsoleTiming) {
+    case ConsoleTiming::ntsc:
+      return myArmCyclesPer6502Cycle * 262 * 76 * 60;
+
+    case ConsoleTiming::pal:
+    case ConsoleTiming::secam:
+      return myArmCyclesPer6502Cycle * 312 * 76 * 50;
+
+    default:
+      throw runtime_error("invalid console timing");
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt32 CartridgeELF::getSystemType() const
+{
+  switch (myConsoleTiming) {
+    case ConsoleTiming::ntsc:
+      return ST_NTSC_2600;
+
+    // Use frame layout here instead
+    case ConsoleTiming::pal:
+    case ConsoleTiming::secam:
+      return ST_PAL_2600;
+
+    default:
+      throw runtime_error("invalid console timing");
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void CartridgeELF::jumpToMain()
+{
+  if (!mySystem) throw runtime_error("cartridge not installed");
+
+  uInt32 sp = ADDR_STACK_BASE + STACK_SIZE;
+  CortexM0::err_t err = 0;
+
+  // Feature flags
+  sp -= 4;
+  err |= myCortexEmu.write32(sp, 0);
+
+  sp -= 4;
+  err |= myCortexEmu.write32(sp, getCoreClock());
+
+  sp -= 4;
+  err |= myCortexEmu.write32(sp, getSystemType());
+
+  if (err) throw runtime_error("unable to setup main args");
+
+  myCortexEmu
+    .setRegister(0, sp )
+    .setRegister(14, RETURN_ADDR_MAIN)
+    .setRegister(15, myArmEntrypoint);
 }
 
 
