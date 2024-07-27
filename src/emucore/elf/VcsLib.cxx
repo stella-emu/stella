@@ -38,7 +38,7 @@ namespace {
       }
       else if ((ptr & 0x01) == 0 && size - (ptr - target) >= 2) {
         err = cortex.write16(ptr, value16);
-        ptr += 4;
+        ptr += 2;
       }
       else {
         err = cortex.write8(ptr, value);
