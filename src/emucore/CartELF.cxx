@@ -35,6 +35,8 @@ using namespace elfEnvironment;
 
 namespace {
   constexpr size_t TRANSACTION_QUEUE_CAPACITY = 16384;
+  constexpr uInt32 ARM_RUNAHED_MIN = 3;
+  constexpr uInt32 ARM_RUNAHED_MAX = 6;
 
 #ifdef DUMP_ELF
   void dumpElf(const ElfFile& elf)
@@ -201,6 +203,7 @@ void CartridgeELF::reset()
   std::fill_n(myLastPeekResult.get(), 0x1000, 0);
   myIsBusDriven = false;
   myDriveBusValue = 0;
+  myArmCycles = 0;
 
   std::memset(mySectionStack.get(), 0, STACK_SIZE);
   std::memset(mySectionText.get(), 0, TEXT_SIZE);
@@ -292,6 +295,8 @@ const ByteBuffer& CartridgeELF::getImage(size_t& size) const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 CartridgeELF::overdrivePeek(uInt16 address, uInt8 value)
 {
+  runArm();
+
   value = driveBus(address, value);
 
   if (address & 0x1000) {
@@ -305,6 +310,8 @@ uInt8 CartridgeELF::overdrivePeek(uInt16 address, uInt8 value)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 CartridgeELF::overdrivePoke(uInt16 address, uInt8 value)
 {
+  runArm();
+
   return driveBus(address, value);
 }
 
@@ -450,6 +457,20 @@ void CartridgeELF::jumpToMain()
     .setRegister(13, sp)
     .setRegister(14, RETURN_ADDR_MAIN)
     .setRegister(15, myArmEntrypoint);
+}
+
+void CartridgeELF::runArm()
+{
+  if (myArmCycles >= (mySystem->cycles() + ARM_RUNAHED_MIN) * myArmCyclesPer6502Cycle) return;
+
+  const uInt32 cyclesGoal =
+    (mySystem->cycles() + ARM_RUNAHED_MAX) * myArmCyclesPer6502Cycle - myArmCycles;
+  uInt32 cycles;
+
+  const CortexM0::err_t err = myCortexEmu.run(cyclesGoal, cycles);
+  myArmCycles += cycles;
+
+  if (err != 0) FatalEmulationError::raise("error executing ARM code: " + CortexM0::describeError(err));
 }
 
 
