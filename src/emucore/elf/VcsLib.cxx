@@ -55,6 +55,7 @@ void VcsLib::vcsStartOverblank()
     .yield(0x0080);
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void VcsLib::vcsEndOverblank()
 {
   myTransactionQueue
@@ -63,6 +64,7 @@ void VcsLib::vcsEndOverblank()
     .setNextInjectAddress(0x1000);
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void VcsLib::vcsNop2n(uInt16 n)
 {
   if (n == 0) return;
