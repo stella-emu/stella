@@ -791,8 +791,6 @@ CortexM0::err_t CortexM0::write16(uInt32 address, uInt16 value)
 
 CortexM0::err_t CortexM0::write8(uInt32 address, uInt8 value)
 {
-  if (address & 0x01) return errIntrinsic(ERR_ACCESS_ALIGNMENT_FAULT, address);
-
   MemoryRegion& region = myRegions[myPageMap[address / PAGE_SIZE]];
   if (region.readOnly) return errIntrinsic(ERR_WRITE_ACCESS_DENIED, address);
 
@@ -868,6 +866,10 @@ void CortexM0::do_cvflag(uInt32 a, uInt32 b, uInt32 c)
 CortexM0::err_t CortexM0::execute(uInt16 inst, uInt8 op)
 {
   uInt32 sp, ra, rb, rc, rm, rd, rn, rs;  // NOLINT
+
+  #ifdef THUMB_DISS
+    cout << "0x" << std::hex << std::setw(8) << std::setfill('0') << (read_register(15) - 4) << " " << std::dec;
+  #endif
 
   switch (static_cast<Op>(op)) {
     //ADC
@@ -1085,60 +1087,70 @@ CortexM0::err_t CortexM0::execute(uInt16 inst, uInt8 op)
     }
 
     case Op::bne: {
+      DO_DISS("bne 0x" << Base::HEX8 << branch_target_9(inst) << "\n");
       if(znFlags)
         write_register(15, branch_target_9(inst));
       return ERR_NONE;
     }
 
     case Op::bcs: {
+      DO_DISS("bcs 0x" << Base::HEX8 << branch_target_9(inst) << "\n");
       if(cFlag)
         write_register(15, branch_target_9(inst));
       return ERR_NONE;
     }
 
     case Op::bcc: {
+      DO_DISS("bcc 0x" << Base::HEX8 << branch_target_9(inst) << "\n");
       if(!cFlag)
         write_register(15, branch_target_9(inst));
       return ERR_NONE;
     }
 
     case Op::bmi: {
+      DO_DISS("bmi 0x" << Base::HEX8 << branch_target_9(inst) << "\n");
       if(znFlags & 0x80000000)
         write_register(15, branch_target_9(inst));
       return ERR_NONE;
     }
 
     case Op::bpl: {
+      DO_DISS("bpl 0x" << Base::HEX8 << branch_target_9(inst) << "\n");
       if(!(znFlags & 0x80000000))
         write_register(15, branch_target_9(inst));
       return ERR_NONE;
     }
 
     case Op::bvs: {
+      DO_DISS("bvs 0x" << Base::HEX8 << branch_target_9(inst) << "\n");
       if(vFlag)
         write_register(15, branch_target_9(inst));
       return ERR_NONE;
     }
 
     case Op::bvc: {
+      DO_DISS("bvc 0x" << Base::HEX8 << branch_target_9(inst) << "\n");
       if(!vFlag)
         write_register(15, branch_target_9(inst));
       return ERR_NONE;
     }
 
     case Op::bhi: {
+      DO_DISS("bhi 0x" << Base::HEX8 << branch_target_9(inst) << "\n");
       if(cFlag && znFlags)
         write_register(15, branch_target_9(inst));
       return ERR_NONE;
     }
 
     case Op::bls: {
+      DO_DISS("bls 0x" << Base::HEX8 << branch_target_9(inst) << "\n");
       if(!znFlags || !cFlag)
         write_register(15, branch_target_9(inst));
       return ERR_NONE;
     }
 
     case Op::bge: {
+      DO_DISS("bge 0x" << Base::HEX8 << branch_target_9(inst) << "\n");
       if(((znFlags & 0x80000000) && vFlag) ||
          ((!(znFlags & 0x80000000)) && !vFlag))
         write_register(15, branch_target_9(inst));
@@ -1146,6 +1158,7 @@ CortexM0::err_t CortexM0::execute(uInt16 inst, uInt8 op)
     }
 
     case Op::blt: {
+      DO_DISS("blt 0x" << Base::HEX8 << branch_target_9(inst) << "\n");
       if((!(znFlags & 0x80000000) && vFlag) ||
          (((znFlags & 0x80000000)) && !vFlag))
         write_register(15, branch_target_9(inst));
@@ -1153,6 +1166,7 @@ CortexM0::err_t CortexM0::execute(uInt16 inst, uInt8 op)
     }
 
     case Op::bgt: {
+      DO_DISS("bgt 0x" << Base::HEX8 << branch_target_9(inst) << "\n");
       if(znFlags)
       {
         if(((znFlags & 0x80000000) && vFlag) ||
@@ -1163,6 +1177,7 @@ CortexM0::err_t CortexM0::execute(uInt16 inst, uInt8 op)
     }
 
     case Op::ble: {
+      DO_DISS("ble 0x" << Base::HEX8 << branch_target_9(inst) << "\n");
       if(!znFlags ||
          (!(znFlags & 0x80000000) && vFlag) ||
          (((znFlags & 0x80000000)) && !vFlag))
@@ -1172,6 +1187,7 @@ CortexM0::err_t CortexM0::execute(uInt16 inst, uInt8 op)
 
     //B(2) unconditional branch
     case Op::b2: {
+      DO_DISS("b 0x" << Base::HEX8 << branch_target_12(inst) << "\n");
       write_register(15, branch_target_12(inst));
       return ERR_NONE;
     }
@@ -1196,7 +1212,7 @@ CortexM0::err_t CortexM0::execute(uInt16 inst, uInt8 op)
     // (bl, blx_thumb)
     case Op::bl: {
       // branch to label
-      DO_DISS('\n');
+      DO_DISS("bkpt\n");
       rb = inst & ((1 << 11) - 1);
       if(rb & 1 << 10) rb |= (~((1 << 11) - 1)); //sign extend
       rb <<= 12;
@@ -1814,8 +1830,13 @@ CortexM0::err_t CortexM0::execute(uInt16 inst, uInt8 op)
           return err;
         }
 
+        if ((rc & 0x01) == 0) {
+          reg_norm = regOld;
+          return errIntrinsic(ERR_INVALID_OPERATING_MODE, read_register(15) - 4);
+        }
+
         rc += 2;
-        write_register(15, rc);
+        write_register(15, rc & ~0x01);
         sp += 4;
       }
       write_register(13, sp);

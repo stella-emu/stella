@@ -23,9 +23,43 @@
 
 using namespace elfEnvironment;
 
+namespace {
+  CortexM0::err_t memset(uInt32 target, uInt8 value, uInt32 size, CortexM0& cortex)
+  {
+    const uInt16 value16 = value | (value << 16);
+    const uInt32 value32 = value16 | (value16 << 16);
+    CortexM0::err_t err;
+    uInt32 ptr = target;
+
+    while (ptr < target + size) {
+      if ((ptr & 0x03) == 0 && size - (ptr - target) >= 4) {
+        err = cortex.write32(ptr, value32);
+        ptr += 4;
+      }
+      else if ((ptr & 0x01) == 0 && size - (ptr - target) >= 2) {
+        err = cortex.write16(ptr, value16);
+        ptr += 4;
+      }
+      else {
+        err = cortex.write8(ptr, value);
+        ptr++;
+      }
+
+      if (err) return err;
+    }
+
+    return 0;
+  }
+}
+
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 VcsLib::VcsLib(BusTransactionQueue& transactionQueue) : myTransactionQueue(transactionQueue)
 {}
+
+void VcsLib::reset()
+{
+  myStuffMaskA = myStuffMaskX = myStuffMaskY = 0xff;
+}
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void VcsLib::vcsWrite5(uInt8 zpAddress, uInt8 value)
@@ -76,29 +110,52 @@ void VcsLib::vcsNop2n(uInt16 n)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void VcsLib::vcsLda2(uInt8 value)
+{
+        myTransactionQueue
+    	  .injectROM(0xa9)
+	      .injectROM(value);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CortexM0::err_t VcsLib::fetch16(uInt32 address, uInt16& value, uInt8& op, CortexM0& cortex)
 {
+  uInt32 arg;
+  CortexM0::err_t err;
+
   switch (address) {
     case ADDR_MEMSET:
-      FatalEmulationError::raise("unimplemented: memset");
+      err = memset(cortex.getRegister(0), cortex.getRegister(1), cortex.getRegister(3), cortex);
+      if (err) return err;
+
+      return returnFromStub(value, op);
 
     case ADDR_MEMCPY:
       FatalEmulationError::raise("unimplemented: memcpy");
 
     case ADDR_VCS_LDA_FOR_BUS_STUFF2:
-      FatalEmulationError::raise("unimplemented: vcsLdaForBusStuff2");
+      vcsLda2(myStuffMaskA);
+      return returnFromStub(value, op);
 
     case ADDR_VCS_LDX_FOR_BUS_STUFF2:
-      FatalEmulationError::raise("unimplemented: vcsLdxForBusStuff2");
+      vcsLda2(myStuffMaskX);
+      return returnFromStub(value, op);
 
     case ADDR_VCS_LDY_FOR_BUS_STUFF2:
-      FatalEmulationError::raise("unimplemented: vcsLdyForBusStuff2");
+      vcsLda2(myStuffMaskY);
+      return returnFromStub(value, op);
 
     case ADDR_VCS_WRITE3:
       FatalEmulationError::raise("unimplemented: vcsWrite3");
 
     case ADDR_VCS_JMP3:
-      FatalEmulationError::raise("unimplemented: vcsJump3");
+      myTransactionQueue
+    	  .injectROM(0x4c)
+        .injectROM(0x00)
+        .injectROM(0x10)
+        .setNextInjectAddress(0x1000);
+
+      return returnFromStub(value, op);
 
     case ADDR_VCS_NOP2:
       FatalEmulationError::raise("unimplemented: vcsNop2");
@@ -108,13 +165,15 @@ CortexM0::err_t VcsLib::fetch16(uInt32 address, uInt16& value, uInt8& op, Cortex
       return returnFromStub(value, op);
 
     case ADDR_VCS_WRITE5:
-      FatalEmulationError::raise("unimplemented: vcsWrite5");
+      vcsWrite5(cortex.getRegister(0), cortex.getRegister(1));
+      return returnFromStub(value, op);
 
     case ADDR_VCS_WRITE6:
       FatalEmulationError::raise("unimplemented: vcsWrite6");
 
     case ADDR_VCS_LDA2:
-      FatalEmulationError::raise("unimplemented: vcsLda2");
+      vcsLda2(cortex.getRegister(0));
+      return returnFromStub(value, op);
 
     case ADDR_VCS_LDX2:
       FatalEmulationError::raise("unimplemented: vcsLdx2");
@@ -126,7 +185,14 @@ CortexM0::err_t VcsLib::fetch16(uInt32 address, uInt16& value, uInt8& op, Cortex
       FatalEmulationError::raise("unimplemented: vcsSax3");
 
     case ADDR_VCS_STA3:
-      FatalEmulationError::raise("unimplemented: vcsSta3");
+      arg = cortex.getRegister(0);
+
+      myTransactionQueue
+    	  .injectROM(0x85)
+        .injectROM(arg)
+        .yield(arg);
+
+      return returnFromStub(value, op);
 
     case ADDR_VCS_STX3:
       FatalEmulationError::raise("unimplemented: vcsStx3");
@@ -202,7 +268,7 @@ CortexM0::err_t VcsLib::fetch16(uInt32 address, uInt16& value, uInt8& op, Cortex
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CortexM0::err_t VcsLib::returnFromStub(uInt16& value, uInt8& op)
 {
-  constexpr uInt16 BX_LR = 0x7047;
+  constexpr uInt16 BX_LR = 0x4770;
 
   value = BX_LR;
   op = CortexM0::decodeInstructionWord(BX_LR);
