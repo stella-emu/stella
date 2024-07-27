@@ -22,6 +22,8 @@
 
 #include "CortexM0.hxx"
 
+#include "Base.hxx"
+
 #ifdef __BIG_ENDIAN__
   #define READ32(data, addr) (              \
     (((uInt8*)(data))[(addr)]) |            \
@@ -52,7 +54,18 @@
   #define WRITE16(data, addr, value) ((uInt16*)(data))[(addr) >> 1] = value;
 #endif
 
-#define DO_DISS(statement)
+// #define THUMB_DISS
+
+#ifdef THUMB_DISS
+  #define DO_DISS(statement)          \
+    {                                 \
+      ostringstream s;                \
+      s << statement;                 \
+      cout << s.str();   \
+    }
+#else
+  #define DO_DISS(statement)
+#endif
 
 #define read_register(reg)        reg_norm[reg]
 #define write_register(reg, data) reg_norm[reg]=(data)
@@ -63,6 +76,9 @@
 
 #define branch_target_9(inst) (read_register(15) + 2 + (((Int32)(inst) << 24) >> 23))
 #define branch_target_12(inst) (read_register(15) + 2 + (((Int32)(inst) << 21) >> 20))
+
+using std::dec;
+using Common::Base;
 
 namespace {
   constexpr uInt32 PAGEMAP_SIZE = 0x100000000 / 4096;
@@ -531,6 +547,10 @@ CortexM0::err_t CortexM0::run(uInt32 maxCycles, uInt32& cycles)
 
     err = execute(inst, op);
 
+    #ifdef THUMB_DISS
+      cout << std::flush;
+    #endif
+
     if (err) {
       write_register(15, pc);
       return err;
@@ -769,7 +789,7 @@ CortexM0::err_t CortexM0::execute(uInt16 inst, uInt8 op)
     case Op::adc: {
       rd = (inst >> 0) & 0x07;
       rm = (inst >> 3) & 0x07;
-      DO_DISS(statusMsg << "adc r" << dec << rd << ",r" << dec << rm << '\n');
+      DO_DISS("adc r" << dec << rd << ",r" << dec << rm << '\n');
       ra = read_register(rd);
       rb = read_register(rm);
       rc = ra + rb;
@@ -788,7 +808,7 @@ CortexM0::err_t CortexM0::execute(uInt16 inst, uInt8 op)
       rn = (inst >> 3) & 0x7;
       rb = (inst >> 6) & 0x7;
 
-      DO_DISS(statusMsg << "adds r" << dec << rd << ",r" << dec << rn << ","
+      DO_DISS("adds r" << dec << rd << ",r" << dec << rn << ","
                         << "#0x" << Base::HEX2 << rb << '\n');
       ra = read_register(rn);
       rc = ra + rb;
@@ -804,7 +824,7 @@ CortexM0::err_t CortexM0::execute(uInt16 inst, uInt8 op)
     case Op::add2: {
       rb = (inst >> 0) & 0xFF;
       rd = (inst >> 8) & 0x7;
-      DO_DISS(statusMsg << "adds r" << dec << rd << ",#0x" << Base::HEX2 << rb << '\n');
+      DO_DISS("adds r" << dec << rd << ",#0x" << Base::HEX2 << rb << '\n');
       ra = read_register(rd);
       rc = ra + rb;
       write_register(rd, rc);
@@ -818,7 +838,7 @@ CortexM0::err_t CortexM0::execute(uInt16 inst, uInt8 op)
       rd = (inst >> 0) & 0x7;
       rn = (inst >> 3) & 0x7;
       rm = (inst >> 6) & 0x7;
-      DO_DISS(statusMsg << "adds r" << dec << rd << ",r" << dec << rn << ",r" << rm << '\n');
+      DO_DISS("adds r" << dec << rd << ",r" << dec << rn << ",r" << rm << '\n');
       ra = read_register(rn);
       rb = read_register(rm);
       rc = ra + rb;
@@ -837,7 +857,7 @@ CortexM0::err_t CortexM0::execute(uInt16 inst, uInt8 op)
       rd  = (inst >> 0) & 0x7;
       rd |= (inst >> 4) & 0x8;
       rm  = (inst >> 3) & 0xF;
-      DO_DISS(statusMsg << "add r" << dec << rd << ",r" << dec << rm << '\n');
+      DO_DISS("add r" << dec << rd << ",r" << dec << rm << '\n');
       ra = read_register(rd);
       rb = read_register(rm);
       rc = ra + rb;
@@ -856,7 +876,7 @@ CortexM0::err_t CortexM0::execute(uInt16 inst, uInt8 op)
       rb = (inst >> 0) & 0xFF;
       rd = (inst >> 8) & 0x7;
       rb <<= 2;
-      DO_DISS(statusMsg << "add r" << dec << rd << ",PC,#0x" << Base::HEX2 << rb << '\n');
+      DO_DISS("add r" << dec << rd << ",PC,#0x" << Base::HEX2 << rb << '\n');
       ra = read_register(15);
       rc = (ra & (~3U)) + rb;
       write_register(rd, rc);
@@ -868,7 +888,7 @@ CortexM0::err_t CortexM0::execute(uInt16 inst, uInt8 op)
       rb = (inst >> 0) & 0xFF;
       rd = (inst >> 8) & 0x7;
       rb <<= 2;
-      DO_DISS(statusMsg << "add r" << dec << rd << ",SP,#0x" << Base::HEX2 << rb << '\n');
+      DO_DISS("add r" << dec << rd << ",SP,#0x" << Base::HEX2 << rb << '\n');
       ra = read_register(13);
       rc = ra + rb;
       write_register(rd, rc);
@@ -879,7 +899,7 @@ CortexM0::err_t CortexM0::execute(uInt16 inst, uInt8 op)
     case Op::add7: {
       rb = (inst >> 0) & 0x7F;
       rb <<= 2;
-      DO_DISS(statusMsg << "add SP,#0x" << Base::HEX2 << rb << '\n');
+      DO_DISS("add SP,#0x" << Base::HEX2 << rb << '\n');
       ra = read_register(13);
       rc = ra + rb;
       write_register(13, rc);
@@ -890,7 +910,7 @@ CortexM0::err_t CortexM0::execute(uInt16 inst, uInt8 op)
     case Op::and_: {
       rd = (inst >> 0) & 0x7;
       rm = (inst >> 3) & 0x7;
-      DO_DISS(statusMsg << "ands r" << dec << rd << ",r" << dec << rm << '\n');
+      DO_DISS("ands r" << dec << rd << ",r" << dec << rm << '\n');
       ra = read_register(rd);
       rb = read_register(rm);
       rc = ra & rb;
@@ -904,7 +924,7 @@ CortexM0::err_t CortexM0::execute(uInt16 inst, uInt8 op)
       rd = (inst >> 0) & 0x07;
       rm = (inst >> 3) & 0x07;
       rb = (inst >> 6) & 0x1F;
-      DO_DISS(statusMsg << "asrs r" << dec << rd << ",r" << dec << rm << ",#0x" << Base::HEX2 << rb << '\n');
+      DO_DISS("asrs r" << dec << rd << ",r" << dec << rm << ",#0x" << Base::HEX2 << rb << '\n');
       rc = read_register(rm);
       if(rb == 0)
       {
@@ -936,7 +956,7 @@ CortexM0::err_t CortexM0::execute(uInt16 inst, uInt8 op)
     case Op::asr2: {
       rd = (inst >> 0) & 0x07;
       rs = (inst >> 3) & 0x07;
-      DO_DISS(statusMsg << "asrs r" << dec << rd << ",r" << dec << rs << '\n');
+      DO_DISS("asrs r" << dec << rd << ",r" << dec << rs << '\n');
       rc = read_register(rd);
       rb = read_register(rs);
       rb &= 0xFF;
@@ -1075,7 +1095,7 @@ CortexM0::err_t CortexM0::execute(uInt16 inst, uInt8 op)
     case Op::bic: {
       rd = (inst >> 0) & 0x7;
       rm = (inst >> 3) & 0x7;
-      DO_DISS(statusMsg << "bics r" << dec << rd << ",r" << dec << rm << '\n');
+      DO_DISS("bics r" << dec << rd << ",r" << dec << rm << '\n');
       ra = read_register(rd);
       rb = read_register(rm);
       rc = ra & (~rb);
@@ -1091,7 +1111,7 @@ CortexM0::err_t CortexM0::execute(uInt16 inst, uInt8 op)
     // (bl, blx_thumb)
     case Op::bl: {
       // branch to label
-      DO_DISS(statusMsg << '\n');
+      DO_DISS('\n');
       rb = inst & ((1 << 11) - 1);
       if(rb & 1 << 10) rb |= (~((1 << 11) - 1)); //sign extend
       rb <<= 12;
@@ -1105,7 +1125,7 @@ CortexM0::err_t CortexM0::execute(uInt16 inst, uInt8 op)
       rb = read_register(14);
       rb += (inst & ((1 << 11) - 1)) << 1;
       rb += 2;
-      DO_DISS(statusMsg << "bl 0x" << Base::HEX8 << (rb-3) << '\n');
+      DO_DISS("bl 0x" << Base::HEX8 << (rb-3) << '\n');
       write_register(14, (read_register(15)-2) | 1);
       write_register(15, rb);
       return ERR_NONE;
@@ -1114,7 +1134,7 @@ CortexM0::err_t CortexM0::execute(uInt16 inst, uInt8 op)
     //BLX(2)
     case Op::blx2: {
       rm = (inst >> 3) & 0xF;
-      DO_DISS(statusMsg << "blx r" << dec << rm << '\n');
+      DO_DISS("blx r" << dec << rm << '\n');
       rc = read_register(rm);
       //fprintf(stderr,"blx r%u 0x%X 0x%X\n",rm,rc,pc);
       rc += 2;
@@ -1131,7 +1151,7 @@ CortexM0::err_t CortexM0::execute(uInt16 inst, uInt8 op)
     //BX
     case Op::bx: {
       rm = (inst >> 3) & 0xF;
-      DO_DISS(statusMsg << "bx r" << dec << rm << '\n');
+      DO_DISS("bx r" << dec << rm << '\n');
       rc = read_register(rm);
       rc += 2;
       //fprintf(stderr,"bx r%u 0x%X 0x%X\n",rm,rc,pc);
@@ -1149,7 +1169,7 @@ CortexM0::err_t CortexM0::execute(uInt16 inst, uInt8 op)
     case Op::cmn: {
       rn = (inst >> 0) & 0x7;
       rm = (inst >> 3) & 0x7;
-      DO_DISS(statusMsg << "cmns r" << dec << rn << ",r" << dec << rm << '\n');
+      DO_DISS("cmns r" << dec << rn << ",r" << dec << rm << '\n');
       ra = read_register(rn);
       rb = read_register(rm);
       rc = ra + rb;
@@ -1162,7 +1182,7 @@ CortexM0::err_t CortexM0::execute(uInt16 inst, uInt8 op)
     case Op::cmp1: {
       rb = (inst >> 0) & 0xFF;
       rn = (inst >> 8) & 0x07;
-      DO_DISS(statusMsg << "cmp r" << dec << rn << ",#0x" << Base::HEX2 << rb << '\n');
+      DO_DISS("cmp r" << dec << rn << ",#0x" << Base::HEX2 << rb << '\n');
       ra = read_register(rn);
       rc = ra - rb;
       //fprintf(stderr,"0x%08X 0x%08X\n",ra,rb);
@@ -1175,7 +1195,7 @@ CortexM0::err_t CortexM0::execute(uInt16 inst, uInt8 op)
     case Op::cmp2: {
       rn = (inst >> 0) & 0x7;
       rm = (inst >> 3) & 0x7;
-      DO_DISS(statusMsg << "cmps r" << dec << rn << ",r" << dec << rm << '\n');
+      DO_DISS("cmps r" << dec << rn << ",r" << dec << rm << '\n');
       ra = read_register(rn);
       rb = read_register(rm);
       rc = ra - rb;
@@ -1198,7 +1218,7 @@ CortexM0::err_t CortexM0::execute(uInt16 inst, uInt8 op)
         //UNPREDICTABLE
       }
       rm = (inst >> 3) & 0xF;
-      DO_DISS(statusMsg << "cmps r" << dec << rn << ",r" << dec << rm << '\n');
+      DO_DISS("cmps r" << dec << rn << ",r" << dec << rm << '\n');
       ra = read_register(rn);
       rb = read_register(rm);
       rc = ra - rb;
@@ -1213,7 +1233,7 @@ CortexM0::err_t CortexM0::execute(uInt16 inst, uInt8 op)
       //going to let mov handle high registers
       rd = (inst >> 0) & 0x7;
       rm = (inst >> 3) & 0x7;
-      DO_DISS(statusMsg << "cpy r" << dec << rd << ",r" << dec << rm << '\n');
+      DO_DISS("cpy r" << dec << rd << ",r" << dec << rm << '\n');
       rc = read_register(rm);
       write_register(rd, rc);
       return ERR_NONE;
@@ -1223,7 +1243,7 @@ CortexM0::err_t CortexM0::execute(uInt16 inst, uInt8 op)
     case Op::eor: {
       rd = (inst >> 0) & 0x7;
       rm = (inst >> 3) & 0x7;
-      DO_DISS(statusMsg << "eors r" << dec << rd << ",r" << dec << rm << '\n');
+      DO_DISS("eors r" << dec << rd << ",r" << dec << rm << '\n');
       ra = read_register(rd);
       rb = read_register(rm);
       rc = ra ^ rb;
@@ -1236,17 +1256,23 @@ CortexM0::err_t CortexM0::execute(uInt16 inst, uInt8 op)
     case Op::ldmia: {
       rn = (inst >> 8) & 0x7;
     #if defined(THUMB_DISS)
-      statusMsg << "ldmia r" << dec << rn << "!,{";
-      for(ra=0,rb=0x01,rc=0;rb;rb=(rb<<1)&0xFF,++ra)
       {
-        if(inst&rb)
+        ostringstream s;
+
+        s <<"ldmia r" << dec << rn << "!,{";
+        for(ra=0,rb=0x01,rc=0;rb;rb=(rb<<1)&0xFF,++ra)
         {
-          if(rc) statusMsg << ",";
-          statusMsg << "r" << dec << ra;
-          rc++;
+          if(inst&rb)
+          {
+            if(rc) s << ",";
+            s << "r" << dec << ra;
+            rc++;
+          }
         }
+        s << "}\n";
+
+        cout << s.str();
       }
-      statusMsg << "}\n";
     #endif
       sp = read_register(rn);
 
@@ -1278,7 +1304,7 @@ CortexM0::err_t CortexM0::execute(uInt16 inst, uInt8 op)
       rn = (inst >> 3) & 0x07;
       rb = (inst >> 6) & 0x1F;
       rb <<= 2;
-      DO_DISS(statusMsg << "ldr r" << dec << rd << ",[r" << dec << rn << ",#0x" << Base::HEX2 << rb << "]\n");
+      DO_DISS("ldr r" << dec << rd << ",[r" << dec << rn << ",#0x" << Base::HEX2 << rb << "]\n");
       rb = read_register(rn) + rb;
 
       const err_t err = read32(rb, rc);
@@ -1293,7 +1319,7 @@ CortexM0::err_t CortexM0::execute(uInt16 inst, uInt8 op)
       rd = (inst >> 0) & 0x7;
       rn = (inst >> 3) & 0x7;
       rm = (inst >> 6) & 0x7;
-      DO_DISS(statusMsg << "ldr r" << dec << rd << ",[r" << dec << rn << ",r" << dec << "]\n");
+      DO_DISS("ldr r" << dec << rd << ",[r" << dec << rn << ",r" << dec << "]\n");
       rb = read_register(rn) + read_register(rm);
 
       const err_t err = read32(rb, rc);
@@ -1308,11 +1334,11 @@ CortexM0::err_t CortexM0::execute(uInt16 inst, uInt8 op)
       rb = (inst >> 0) & 0xFF;
       rd = (inst >> 8) & 0x07;
       rb <<= 2;
-      DO_DISS(statusMsg << "ldr r" << dec << rd << ",[PC+#0x" << Base::HEX2 << rb << "] ");
+      DO_DISS("ldr r" << dec << rd << ",[PC+#0x" << Base::HEX2 << rb << "] ");
       ra = read_register(15);
       ra &= ~3;
       rb += ra;
-      DO_DISS(statusMsg << ";@ 0x" << Base::HEX2 << rb << '\n');
+      DO_DISS(";@ 0x" << Base::HEX2 << rb << '\n');
 
       const err_t err = read32(rb, rc);
       if (err) return err;
@@ -1326,7 +1352,7 @@ CortexM0::err_t CortexM0::execute(uInt16 inst, uInt8 op)
       rb = (inst >> 0) & 0xFF;
       rd = (inst >> 8) & 0x07;
       rb <<= 2;
-      DO_DISS(statusMsg << "ldr r" << dec << rd << ",[SP+#0x" << Base::HEX2 << rb << "]\n");
+      DO_DISS("ldr r" << dec << rd << ",[SP+#0x" << Base::HEX2 << rb << "]\n");
       ra = read_register(13);
       //ra&=~3;
       rb += ra;
@@ -1343,7 +1369,7 @@ CortexM0::err_t CortexM0::execute(uInt16 inst, uInt8 op)
       rd = (inst >> 0) & 0x07;
       rn = (inst >> 3) & 0x07;
       rb = (inst >> 6) & 0x1F;
-      DO_DISS(statusMsg << "ldrb r" << dec << rd << ",[r" << dec << rn << ",#0x" << Base::HEX2 << rb << "]\n");
+      DO_DISS("ldrb r" << dec << rd << ",[r" << dec << rn << ",#0x" << Base::HEX2 << rb << "]\n");
       rb = read_register(rn) + rb;
 
       uInt8 val8;
@@ -1361,7 +1387,7 @@ CortexM0::err_t CortexM0::execute(uInt16 inst, uInt8 op)
       rd = (inst >> 0) & 0x7;
       rn = (inst >> 3) & 0x7;
       rm = (inst >> 6) & 0x7;
-      DO_DISS(statusMsg << "ldrb r" << dec << rd << ",[r" << dec << rn << ",r" << dec << rm << "]\n");
+      DO_DISS("ldrb r" << dec << rd << ",[r" << dec << rn << ",r" << dec << rm << "]\n");
       rb = read_register(rn) + read_register(rm);
 
       uInt8 val8;
@@ -1380,7 +1406,7 @@ CortexM0::err_t CortexM0::execute(uInt16 inst, uInt8 op)
       rn = (inst >> 3) & 0x07;
       rb = (inst >> 6) & 0x1F;
       rb <<= 1;
-      DO_DISS(statusMsg << "ldrh r" << dec << rd << ",[r" << dec << rn << ",#0x" << Base::HEX2 << rb << "]\n");
+      DO_DISS("ldrh r" << dec << rd << ",[r" << dec << rn << ",#0x" << Base::HEX2 << rb << "]\n");
       rb = read_register(rn) + rb;
 
       uInt16 val16;
@@ -1398,7 +1424,7 @@ CortexM0::err_t CortexM0::execute(uInt16 inst, uInt8 op)
       rd = (inst >> 0) & 0x7;
       rn = (inst >> 3) & 0x7;
       rm = (inst >> 6) & 0x7;
-      DO_DISS(statusMsg << "ldrh r" << dec << rd << ",[r" << dec << rn << ",r" << dec << rm << "]\n");
+      DO_DISS("ldrh r" << dec << rd << ",[r" << dec << rn << ",r" << dec << rm << "]\n");
       rb = read_register(rn) + read_register(rm);
 
       uInt16 val16;
@@ -1416,7 +1442,7 @@ CortexM0::err_t CortexM0::execute(uInt16 inst, uInt8 op)
       rd = (inst >> 0) & 0x7;
       rn = (inst >> 3) & 0x7;
       rm = (inst >> 6) & 0x7;
-      DO_DISS(statusMsg << "ldrsb r" << dec << rd << ",[r" << dec << rn << ",r" << dec << rm << "]\n");
+      DO_DISS("ldrsb r" << dec << rd << ",[r" << dec << rn << ",r" << dec << rm << "]\n");
       rb = read_register(rn) + read_register(rm);
 
       uInt8 val8;
@@ -1434,7 +1460,7 @@ CortexM0::err_t CortexM0::execute(uInt16 inst, uInt8 op)
       rd = (inst >> 0) & 0x7;
       rn = (inst >> 3) & 0x7;
       rm = (inst >> 6) & 0x7;
-      DO_DISS(statusMsg << "ldrsh r" << dec << rd << ",[r" << dec << rn << ",r" << dec << rm << "]\n");
+      DO_DISS("ldrsh r" << dec << rd << ",[r" << dec << rn << ",r" << dec << rm << "]\n");
       rb = read_register(rn) + read_register(rm);
 
       uInt16 val16;
@@ -1452,7 +1478,7 @@ CortexM0::err_t CortexM0::execute(uInt16 inst, uInt8 op)
       rd = (inst >> 0) & 0x07;
       rm = (inst >> 3) & 0x07;
       rb = (inst >> 6) & 0x1F;
-      DO_DISS(statusMsg << "lsls r" << dec << rd << ",r" << dec << rm << ",#0x" << Base::HEX2 << rb << '\n');
+      DO_DISS("lsls r" << dec << rd << ",r" << dec << rm << ",#0x" << Base::HEX2 << rb << '\n');
       rc = read_register(rm);
       if(rb == 0)
       {
@@ -1475,7 +1501,7 @@ CortexM0::err_t CortexM0::execute(uInt16 inst, uInt8 op)
     case Op::lsl2: {
       rd = (inst >> 0) & 0x07;
       rs = (inst >> 3) & 0x07;
-      DO_DISS(statusMsg << "lsls r" << dec << rd << ",r" << dec << rs << '\n');
+      DO_DISS("lsls r" << dec << rd << ",r" << dec << rs << '\n');
       rc = read_register(rd);
       rb = read_register(rs);
       rb &= 0xFF;
@@ -1507,7 +1533,7 @@ CortexM0::err_t CortexM0::execute(uInt16 inst, uInt8 op)
       rd = (inst >> 0) & 0x07;
       rm = (inst >> 3) & 0x07;
       rb = (inst >> 6) & 0x1F;
-      DO_DISS(statusMsg << "lsrs r" << dec << rd << ",r" << dec << rm << ",#0x" << Base::HEX2 << rb << '\n');
+      DO_DISS("lsrs r" << dec << rd << ",r" << dec << rm << ",#0x" << Base::HEX2 << rb << '\n');
       rc = read_register(rm);
       if(rb == 0)
       {
@@ -1528,7 +1554,7 @@ CortexM0::err_t CortexM0::execute(uInt16 inst, uInt8 op)
     case Op::lsr2: {
       rd = (inst >> 0) & 0x07;
       rs = (inst >> 3) & 0x07;
-      DO_DISS(statusMsg << "lsrs r" << dec << rd << ",r" << dec << rs << '\n');
+      DO_DISS("lsrs r" << dec << rd << ",r" << dec << rs << '\n');
       rc = read_register(rd);
       rb = read_register(rs);
       rb &= 0xFF;
@@ -1559,7 +1585,7 @@ CortexM0::err_t CortexM0::execute(uInt16 inst, uInt8 op)
     case Op::mov1: {
       rb = (inst >> 0) & 0xFF;
       rd = (inst >> 8) & 0x07;
-      DO_DISS(statusMsg << "movs r" << dec << rd << ",#0x" << Base::HEX2 << rb << '\n');
+      DO_DISS("movs r" << dec << rd << ",#0x" << Base::HEX2 << rb << '\n');
       write_register(rd, rb);
       do_znflags(rb);
       return ERR_NONE;
@@ -1569,7 +1595,7 @@ CortexM0::err_t CortexM0::execute(uInt16 inst, uInt8 op)
     case Op::mov2: {
       rd = (inst >> 0) & 7;
       rn = (inst >> 3) & 7;
-      DO_DISS(statusMsg << "movs r" << dec << rd << ",r" << dec << rn << '\n');
+      DO_DISS("movs r" << dec << rd << ",r" << dec << rn << '\n');
       rc = read_register(rn);
       //fprintf(stderr,"0x%08X\n",rc);
       write_register(rd, rc);
@@ -1584,7 +1610,7 @@ CortexM0::err_t CortexM0::execute(uInt16 inst, uInt8 op)
       rd  = (inst >> 0) & 0x7;
       rd |= (inst >> 4) & 0x8;
       rm  = (inst >> 3) & 0xF;
-      DO_DISS(statusMsg << "mov r" << dec << rd << ",r" << dec << rm << '\n');
+      DO_DISS("mov r" << dec << rd << ",r" << dec << rm << '\n');
       rc = read_register(rm);
       if((rd == 14) && (rm == 15))
       {
@@ -1604,7 +1630,7 @@ CortexM0::err_t CortexM0::execute(uInt16 inst, uInt8 op)
     case Op::mul: {
       rd = (inst >> 0) & 0x7;
       rm = (inst >> 3) & 0x7;
-      DO_DISS(statusMsg << "muls r" << dec << rd << ",r" << dec << rm << '\n');
+      DO_DISS("muls r" << dec << rd << ",r" << dec << rm << '\n');
       ra = read_register(rd);
       rb = read_register(rm);
       rc = ra * rb;
@@ -1617,7 +1643,7 @@ CortexM0::err_t CortexM0::execute(uInt16 inst, uInt8 op)
     case Op::mvn: {
       rd = (inst >> 0) & 0x7;
       rm = (inst >> 3) & 0x7;
-      DO_DISS(statusMsg << "mvns r" << dec << rd << ",r" << dec << rm << '\n');
+      DO_DISS("mvns r" << dec << rd << ",r" << dec << rm << '\n');
       ra = read_register(rm);
       rc = (~ra);
       write_register(rd, rc);
@@ -1629,7 +1655,7 @@ CortexM0::err_t CortexM0::execute(uInt16 inst, uInt8 op)
     case Op::neg: {
       rd = (inst >> 0) & 0x7;
       rm = (inst >> 3) & 0x7;
-      DO_DISS(statusMsg << "negs r" << dec << rd << ",r" << dec << rm << '\n');
+      DO_DISS("negs r" << dec << rd << ",r" << dec << rm << '\n');
       ra = read_register(rm);
       rc = 0 - ra;
       write_register(rd, rc);
@@ -1642,7 +1668,7 @@ CortexM0::err_t CortexM0::execute(uInt16 inst, uInt8 op)
     case Op::orr: {
       rd = (inst >> 0) & 0x7;
       rm = (inst >> 3) & 0x7;
-      DO_DISS(statusMsg << "orrs r" << dec << rd << ",r" << dec << rm << '\n');
+      DO_DISS("orrs r" << dec << rd << ",r" << dec << rm << '\n');
       ra = read_register(rd);
       rb = read_register(rm);
       rc = ra | rb;
@@ -1654,22 +1680,28 @@ CortexM0::err_t CortexM0::execute(uInt16 inst, uInt8 op)
     //POP
     case Op::pop: {
     #if defined(THUMB_DISS)
-      statusMsg << "pop {";
-      for(ra=0,rb=0x01,rc=0;rb;rb=(rb<<1)&0xFF,++ra)
       {
-        if(inst&rb)
+        ostringstream s;
+
+        s << "pop {";
+        for(ra=0,rb=0x01,rc=0;rb;rb=(rb<<1)&0xFF,++ra)
         {
-          if(rc) statusMsg << ",";
-          statusMsg << "r" << dec << ra;
-          rc++;
+          if(inst&rb)
+          {
+            if(rc) s << ",";
+            s << "r" << dec << ra;
+            rc++;
+          }
         }
+        if(inst&0x100)
+        {
+          if(rc) s << ",";
+          s << "pc";
+        }
+        s << "}\n";
+
+        cout << s.str();
       }
-      if(inst&0x100)
-      {
-        if(rc) statusMsg << ",";
-        statusMsg << "pc";
-      }
-      statusMsg << "}\n";
     #endif
 
       std::array<uInt32, 16> regOld = reg_norm;
@@ -1708,22 +1740,28 @@ CortexM0::err_t CortexM0::execute(uInt16 inst, uInt8 op)
     //PUSH
     case Op::push: {
     #if defined(THUMB_DISS)
-      statusMsg << "push {";
-      for(ra=0,rb=0x01,rc=0;rb;rb=(rb<<1)&0xFF,++ra)
       {
-        if(inst&rb)
+        ostringstream s;
+
+        s << "push {";
+        for(ra=0,rb=0x01,rc=0;rb;rb=(rb<<1)&0xFF,++ra)
         {
-          if(rc) statusMsg << ",";
-          statusMsg << "r" << dec << ra;
-          rc++;
+          if(inst&rb)
+          {
+            if(rc) s << ",";
+            s << "r" << dec << ra;
+            rc++;
+          }
         }
+        if(inst&0x100)
+        {
+          if(rc) s << ",";
+          s << "lr";
+        }
+        s << "}\n";
+
+        cout << s.str();
       }
-      if(inst&0x100)
-      {
-        if(rc) statusMsg << ",";
-        statusMsg << "lr";
-      }
-      statusMsg << "}\n";
     #endif
 
       sp = read_register(13);
@@ -1769,7 +1807,7 @@ CortexM0::err_t CortexM0::execute(uInt16 inst, uInt8 op)
     case Op::rev: {
       rd = (inst >> 0) & 0x7;
       rn = (inst >> 3) & 0x7;
-      DO_DISS(statusMsg << "rev r" << dec << rd << ",r" << dec << rn << '\n');
+      DO_DISS("rev r" << dec << rd << ",r" << dec << rn << '\n');
       ra = read_register(rn);
       rc  = ((ra >>  0) & 0xFF) << 24;
       rc |= ((ra >>  8) & 0xFF) << 16;
@@ -1783,7 +1821,7 @@ CortexM0::err_t CortexM0::execute(uInt16 inst, uInt8 op)
     case Op::rev16: {
       rd = (inst >> 0) & 0x7;
       rn = (inst >> 3) & 0x7;
-      DO_DISS(statusMsg << "rev16 r" << dec << rd << ",r" << dec << rn << '\n');
+      DO_DISS("rev16 r" << dec << rd << ",r" << dec << rn << '\n');
       ra = read_register(rn);
       rc  = ((ra >>  0) & 0xFF) <<  8;
       rc |= ((ra >>  8) & 0xFF) <<  0;
@@ -1797,7 +1835,7 @@ CortexM0::err_t CortexM0::execute(uInt16 inst, uInt8 op)
     case Op::revsh: {
       rd = (inst >> 0) & 0x7;
       rn = (inst >> 3) & 0x7;
-      DO_DISS(statusMsg << "revsh r" << dec << rd << ",r" << dec << rn << '\n');
+      DO_DISS("revsh r" << dec << rd << ",r" << dec << rn << '\n');
       ra = read_register(rn);
       rc  = ((ra >> 0) & 0xFF) << 8;
       rc |= ((ra >> 8) & 0xFF) << 0;
@@ -1811,7 +1849,7 @@ CortexM0::err_t CortexM0::execute(uInt16 inst, uInt8 op)
     case Op::ror: {
       rd = (inst >> 0) & 0x7;
       rs = (inst >> 3) & 0x7;
-      DO_DISS(statusMsg << "rors r" << dec << rd << ",r" << dec << rs << '\n');
+      DO_DISS("rors r" << dec << rd << ",r" << dec << rs << '\n');
       rc = read_register(rd);
       ra = read_register(rs);
       ra &= 0xFF;
@@ -1842,7 +1880,7 @@ CortexM0::err_t CortexM0::execute(uInt16 inst, uInt8 op)
     case Op::sbc: {
       rd = (inst >> 0) & 0x7;
       rm = (inst >> 3) & 0x7;
-      DO_DISS(statusMsg << "sbc r" << dec << rd << ",r" << dec << rm << '\n');
+      DO_DISS("sbc r" << dec << rd << ",r" << dec << rm << '\n');
       ra = read_register(rd);
       rb = read_register(rm);
       rc = ra - rb;
@@ -1865,17 +1903,23 @@ CortexM0::err_t CortexM0::execute(uInt16 inst, uInt8 op)
     case Op::stmia: {
       rn = (inst >> 8) & 0x7;
     #if defined(THUMB_DISS)
-      statusMsg << "stmia r" << dec << rn << "!,{";
-      for(ra=0,rb=0x01,rc=0;rb;rb=(rb<<1)&0xFF,++ra)
       {
-        if(inst & rb)
+        ostringstream s;
+
+        s << "stmia r" << dec << rn << "!,{";
+        for(ra=0,rb=0x01,rc=0;rb;rb=(rb<<1)&0xFF,++ra)
         {
-          if(rc) statusMsg << ",";
-          statusMsg << "r" << dec << ra;
-          rc++;
+          if(inst & rb)
+          {
+            if(rc) s << ",";
+            s << "r" << dec << ra;
+            rc++;
+          }
         }
+        s << "}\n";
+
+        cout << s.str();
       }
-      statusMsg << "}\n";
     #endif
 
       sp = read_register(rn);
@@ -1899,7 +1943,7 @@ CortexM0::err_t CortexM0::execute(uInt16 inst, uInt8 op)
       rn = (inst >> 3) & 0x07;
       rb = (inst >> 6) & 0x1F;
       rb <<= 2;
-      DO_DISS(statusMsg << "str r" << dec << rd << ",[r" << dec << rn << ",#0x" << Base::HEX2 << rb << "]\n");
+      DO_DISS("str r" << dec << rd << ",[r" << dec << rn << ",#0x" << Base::HEX2 << rb << "]\n");
       rb = read_register(rn) + rb;
       rc = read_register(rd);
 
@@ -1914,7 +1958,7 @@ CortexM0::err_t CortexM0::execute(uInt16 inst, uInt8 op)
       rd = (inst >> 0) & 0x7;
       rn = (inst >> 3) & 0x7;
       rm = (inst >> 6) & 0x7;
-      DO_DISS(statusMsg << "str r" << dec << rd << ",[r" << dec << rn << ",r" << dec << rm << "]\n");
+      DO_DISS("str r" << dec << rd << ",[r" << dec << rn << ",r" << dec << rm << "]\n");
       rb = read_register(rn) + read_register(rm);
       rc = read_register(rd);
 
@@ -1929,7 +1973,7 @@ CortexM0::err_t CortexM0::execute(uInt16 inst, uInt8 op)
       rb = (inst >> 0) & 0xFF;
       rd = (inst >> 8) & 0x07;
       rb <<= 2;
-      DO_DISS(statusMsg << "str r" << dec << rd << ",[SP,#0x" << Base::HEX2 << rb << "]\n");
+      DO_DISS("str r" << dec << rd << ",[SP,#0x" << Base::HEX2 << rb << "]\n");
       rb = read_register(13) + rb;
       //fprintf(stderr,"0x%08X\n",rb);
       rc = read_register(rd);
@@ -1945,7 +1989,7 @@ CortexM0::err_t CortexM0::execute(uInt16 inst, uInt8 op)
       rd = (inst >> 0) & 0x07;
       rn = (inst >> 3) & 0x07;
       rb = (inst >> 6) & 0x1F;
-      DO_DISS(statusMsg << "strb r" << dec << rd << ",[r" << dec << rn << ",#0x" << Base::HEX8 << rb << "]\n");
+      DO_DISS("strb r" << dec << rd << ",[r" << dec << rn << ",#0x" << Base::HEX8 << rb << "]\n");
       rb = read_register(rn) + rb;
       rc = read_register(rd);
 
@@ -1960,7 +2004,7 @@ CortexM0::err_t CortexM0::execute(uInt16 inst, uInt8 op)
       rd = (inst >> 0) & 0x7;
       rn = (inst >> 3) & 0x7;
       rm = (inst >> 6) & 0x7;
-      DO_DISS(statusMsg << "strb r" << dec << rd << ",[r" << dec << rn << ",r" << rm << "]\n");
+      DO_DISS("strb r" << dec << rd << ",[r" << dec << rn << ",r" << rm << "]\n");
       rb = read_register(rn) + read_register(rm);
       rc = read_register(rd);
 
@@ -1976,7 +2020,7 @@ CortexM0::err_t CortexM0::execute(uInt16 inst, uInt8 op)
       rn = (inst >> 3) & 0x07;
       rb = (inst >> 6) & 0x1F;
       rb <<= 1;
-      DO_DISS(statusMsg << "strh r" << dec << rd << ",[r" << dec << rn << ",#0x" << Base::HEX2 << rb << "]\n");
+      DO_DISS("strh r" << dec << rd << ",[r" << dec << rn << ",#0x" << Base::HEX2 << rb << "]\n");
       rb = read_register(rn) + rb;
       rc=  read_register(rd);
 
@@ -1991,7 +2035,7 @@ CortexM0::err_t CortexM0::execute(uInt16 inst, uInt8 op)
       rd = (inst >> 0) & 0x7;
       rn = (inst >> 3) & 0x7;
       rm = (inst >> 6) & 0x7;
-      DO_DISS(statusMsg << "strh r" << dec << rd << ",[r" << dec << rn << ",r" << dec << rm << "]\n");
+      DO_DISS("strh r" << dec << rd << ",[r" << dec << rn << ",r" << dec << rm << "]\n");
       rb = read_register(rn) + read_register(rm);
       rc = read_register(rd);
 
@@ -2006,7 +2050,7 @@ CortexM0::err_t CortexM0::execute(uInt16 inst, uInt8 op)
       rd = (inst >> 0) & 0x7;
       rn = (inst >> 3) & 0x7;
       rb = (inst >> 6) & 0x7;
-      DO_DISS(statusMsg << "subs r" << dec << rd << ",r" << dec << rn << ",#0x" << Base::HEX2 << rb << '\n');
+      DO_DISS("subs r" << dec << rd << ",r" << dec << rn << ",#0x" << Base::HEX2 << rb << '\n');
       ra = read_register(rn);
       rc = ra - rb;
       write_register(rd, rc);
@@ -2019,7 +2063,7 @@ CortexM0::err_t CortexM0::execute(uInt16 inst, uInt8 op)
     case Op::sub2: {
       rb = (inst >> 0) & 0xFF;
       rd = (inst >> 8) & 0x07;
-      DO_DISS(statusMsg << "subs r" << dec << rd << ",#0x" << Base::HEX2 << rb << '\n');
+      DO_DISS("subs r" << dec << rd << ",#0x" << Base::HEX2 << rb << '\n');
       ra = read_register(rd);
       rc = ra - rb;
       write_register(rd, rc);
@@ -2033,7 +2077,7 @@ CortexM0::err_t CortexM0::execute(uInt16 inst, uInt8 op)
       rd = (inst >> 0) & 0x7;
       rn = (inst >> 3) & 0x7;
       rm = (inst >> 6) & 0x7;
-      DO_DISS(statusMsg << "subs r" << dec << rd << ",r" << dec << rn << ",r" << dec << rm << '\n');
+      DO_DISS("subs r" << dec << rd << ",r" << dec << rn << ",r" << dec << rm << '\n');
       ra = read_register(rn);
       rb = read_register(rm);
       rc = ra - rb;
@@ -2047,7 +2091,7 @@ CortexM0::err_t CortexM0::execute(uInt16 inst, uInt8 op)
     case Op::sub4: {
       rb = inst & 0x7F;
       rb <<= 2;
-      DO_DISS(statusMsg << "sub SP,#0x" << Base::HEX2 << rb << '\n');
+      DO_DISS("sub SP,#0x" << Base::HEX2 << rb << '\n');
       ra = read_register(13);
       ra -= rb;
       write_register(13, ra);
@@ -2056,14 +2100,14 @@ CortexM0::err_t CortexM0::execute(uInt16 inst, uInt8 op)
 
     //SWI
     case Op::swi:
-      DO_DISS(statusMsg << "\n\nswi 0x" << Base::HEX2 << rb << '\n');
+      DO_DISS("\n\nswi 0x" << Base::HEX2 << (inst & 0xff) << '\n');
       return errIntrinsic(ERR_SWI, inst & 0xff);
 
     //SXTB
     case Op::sxtb: {
       rd = (inst >> 0) & 0x7;
       rm = (inst >> 3) & 0x7;
-      DO_DISS(statusMsg << "sxtb r" << dec << rd << ",r" << dec << rm << '\n');
+      DO_DISS("sxtb r" << dec << rd << ",r" << dec << rm << '\n');
       ra = read_register(rm);
       rc = ra & 0xFF;
       if(rc & 0x80)
@@ -2076,7 +2120,7 @@ CortexM0::err_t CortexM0::execute(uInt16 inst, uInt8 op)
     case Op::sxth: {
       rd = (inst >> 0) & 0x7;
       rm = (inst >> 3) & 0x7;
-      DO_DISS(statusMsg << "sxth r" << dec << rd << ",r" << dec << rm << '\n');
+      DO_DISS("sxth r" << dec << rd << ",r" << dec << rm << '\n');
       ra = read_register(rm);
       rc = ra & 0xFFFF;
       if(rc & 0x8000)
@@ -2089,7 +2133,7 @@ CortexM0::err_t CortexM0::execute(uInt16 inst, uInt8 op)
     case Op::tst: {
       rn = (inst >> 0) & 0x7;
       rm = (inst >> 3) & 0x7;
-      DO_DISS(statusMsg << "tst r" << dec << rn << ",r" << dec << rm << '\n');
+      DO_DISS("tst r" << dec << rn << ",r" << dec << rm << '\n');
       ra = read_register(rn);
       rb = read_register(rm);
       rc = ra & rb;
@@ -2101,7 +2145,7 @@ CortexM0::err_t CortexM0::execute(uInt16 inst, uInt8 op)
     case Op::uxtb: {
       rd = (inst >> 0) & 0x7;
       rm = (inst >> 3) & 0x7;
-      DO_DISS(statusMsg << "uxtb r" << dec << rd << ",r" << dec << rm << '\n');
+      DO_DISS("uxtb r" << dec << rd << ",r" << dec << rm << '\n');
       ra = read_register(rm);
       rc = ra & 0xFF;
       write_register(rd, rc);
@@ -2112,7 +2156,7 @@ CortexM0::err_t CortexM0::execute(uInt16 inst, uInt8 op)
     case Op::uxth: {
       rd = (inst >> 0) & 0x7;
       rm = (inst >> 3) & 0x7;
-      DO_DISS(statusMsg << "uxth r" << dec << rd << ",r" << dec << rm << '\n');
+      DO_DISS("uxth r" << dec << rd << ",r" << dec << rm << '\n');
       ra = read_register(rm);
       rc = ra & 0xFFFF;
       write_register(rd, rc);
