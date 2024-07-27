@@ -27,6 +27,8 @@ class VcsLib: public CortexM0::BusTransactionDelegate {
   public:
     explicit VcsLib(BusTransactionQueue& transactionQueue);
 
+    void reset();
+
     CortexM0::err_t fetch16(uInt32 address, uInt16& value, uInt8& op, CortexM0& cortex) override;
 
     void vcsWrite5(uInt8 zpAddress, uInt8 value);
@@ -34,12 +36,17 @@ class VcsLib: public CortexM0::BusTransactionDelegate {
     void vcsStartOverblank();
     void vcsEndOverblank();
     void vcsNop2n(uInt16 n);
+    void vcsLda2(uInt8 value);
 
   private:
     CortexM0::err_t returnFromStub(uInt16& value, uInt8& op);
 
   private:
     BusTransactionQueue& myTransactionQueue;
+
+    uInt8 myStuffMaskA{0xff};
+    uInt8 myStuffMaskX{0xff};
+    uInt8 myStuffMaskY{0xff};
 
   private:
     VcsLib(const VcsLib&) = delete;
