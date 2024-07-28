@@ -43,11 +43,16 @@ class BusTransactionQueue {
 
     BusTransactionQueue& injectROM(uInt8 value);
     BusTransactionQueue& injectROM(uInt8 value, uInt16 address);
+    BusTransactionQueue& stuffByte(uInt8 value, uInt16 address);
 
     BusTransactionQueue& yield(uInt16 address);
 
     bool hasPendingTransaction() const;
     Transaction* getNextTransaction(uInt16 address);
+
+    inline size_t size() const {
+      return myQueueSize;
+    }
 
   private:
     void push(const Transaction& transaction);
