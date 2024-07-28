@@ -146,7 +146,14 @@ CortexM0::err_t VcsLib::fetch16(uInt32 address, uInt16& value, uInt8& op, Cortex
       return returnFromStub(value, op);
 
     case ADDR_VCS_WRITE3:
-      FatalEmulationError::raise("unimplemented: vcsWrite3");
+      arg = cortex.getRegister(0);
+
+      myTransactionQueue
+        .injectROM(0x85)
+        .injectROM(arg)
+        .stuffByte(arg, cortex.getRegister(1));
+
+      return returnFromStub(value, op);
 
     case ADDR_VCS_JMP3:
       myTransactionQueue

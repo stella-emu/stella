@@ -92,6 +92,13 @@ BusTransactionQueue& BusTransactionQueue::injectROM(uInt8 value, uInt16 address)
   return *this;
 }
 
+BusTransactionQueue& BusTransactionQueue::stuffByte(uInt8 value, uInt16 address)
+{
+  push(Transaction::transactionDrive(address, value));
+
+  return *this;
+}
+
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 BusTransactionQueue& BusTransactionQueue::yield(uInt16 address)
 {
