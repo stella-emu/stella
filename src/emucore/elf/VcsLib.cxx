@@ -17,6 +17,8 @@
 
 #include "VcsLib.hxx"
 
+#include <cmath>
+
 #include "BusTransactionQueue.hxx"
 #include "ElfEnvironment.hxx"
 #include "exception/FatalEmulationError.hxx"
@@ -363,7 +365,8 @@ CortexM0::err_t VcsLib::fetch16(uInt32 address, uInt16& value, uInt8& op, Cortex
       }
 
     case ADDR_RANDINT:
-      FatalEmulationError::raise("unimplemented: randint ");
+      cortex.setRegister(0, rand());
+      return returnFromStub(value, op);
 
     case ADDR_VCS_TXS2:
       FatalEmulationError::raise("unimplemented: vcsTx2");

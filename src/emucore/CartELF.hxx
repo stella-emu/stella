@@ -66,6 +66,15 @@ class CartridgeELF: public Cartridge {
     bool doesBusStuffing() override { return true; }
 
   private:
+    class BusFallbackDelegate: public CortexM0::BusTransactionDelegate {
+      CortexM0::err_t fetch16(uInt32 address, uInt16& value, uInt8& op, CortexM0& cortex);
+    };
+
+    enum class ExecutionStage {
+      boot, preinit, init, main
+    };
+
+  private:
     uInt64 getArmCycles() const;
 
     uInt8 driveBus(uInt16 address, uInt8 value);
@@ -76,7 +85,10 @@ class CartridgeELF: public Cartridge {
 
     uInt32 getCoreClock() const;
     uInt32 getSystemType() const;
-    void jumpToMain();
+
+    void switchExecutionStage();
+    void callFn(uInt32 ptr, uInt32 sp);
+    void callMain();
 
     void runArm();
 
@@ -104,11 +116,15 @@ class CartridgeELF: public Cartridge {
     unique_ptr<uInt8[]> mySectionTables;
 
     VcsLib myVcsLib;
+    BusFallbackDelegate myFallbackDelegate;
 
     ConsoleTiming myConsoleTiming{ConsoleTiming::ntsc};
     uInt32 myArmCyclesPer6502Cycle{80};
 
     Int64 myArmCyclesOffset{0};
+
+    ExecutionStage myExecutionStage{ExecutionStage::boot};
+    uInt32 myInitFunctionIndex{0};
 };
 
 #endif // CARTRIDGE_ELF

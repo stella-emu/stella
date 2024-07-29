@@ -235,7 +235,10 @@ void CartridgeELF::reset()
   myVcsLib.vcsEndOverblank();
   myVcsLib.vcsNop2n(1024);
 
-  jumpToMain();
+  myExecutionStage = ExecutionStage::boot;
+  myInitFunctionIndex = 0;
+
+  switchExecutionStage();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -312,6 +315,14 @@ uInt8 CartridgeELF::overdrivePeek(uInt16 address, uInt8 value)
 uInt8 CartridgeELF::overdrivePoke(uInt16 address, uInt8 value)
 {
   return driveBus(address, value);
+}
+
+CortexM0::err_t CartridgeELF::BusFallbackDelegate::fetch16(
+  uInt32 address, uInt16& value, uInt8& op, CortexM0& cortex
+) {
+  return address == (RETURN_ADDR & ~1)
+    ? CortexM0::errCustom(ERR_RETURN)
+    : CortexM0::errIntrinsic(CortexM0::ERR_UNMAPPED_FETCH16, address);
 }
 
 inline uInt64 CartridgeELF::getArmCycles() const
@@ -418,7 +429,8 @@ void CartridgeELF::setupMemoryMap()
     .mapRegionData(ADDR_TABLES_BASE / CortexM0::PAGE_SIZE,
                    TABLES_SIZE / CortexM0::PAGE_SIZE, true, mySectionTables.get())
     .mapRegionDelegate(ADDR_STUB_BASE / CortexM0::PAGE_SIZE,
-                       STUB_SIZE / CortexM0::PAGE_SIZE, true, &myVcsLib);
+                       STUB_SIZE / CortexM0::PAGE_SIZE, true, &myVcsLib)
+    .mapDefault(&myFallbackDelegate);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -454,8 +466,48 @@ uInt32 CartridgeELF::getSystemType() const
   }
 }
 
+void CartridgeELF::switchExecutionStage()
+{
+  constexpr uInt32 sp = ADDR_STACK_BASE + STACK_SIZE;
+
+  if (myExecutionStage == ExecutionStage::boot) {
+    myExecutionStage = ExecutionStage::preinit;
+    myInitFunctionIndex = 0;
+  }
+
+  if (myExecutionStage == ExecutionStage::preinit) {
+    if (myInitFunctionIndex >= myLinker->getPreinitArray().size()) {
+      myExecutionStage = ExecutionStage::init;
+      myInitFunctionIndex = 0;
+    }
+    else {
+      return callFn(myLinker->getPreinitArray()[myInitFunctionIndex++], sp);
+    }
+  }
+
+  if (myExecutionStage == ExecutionStage::init) {
+    if (myInitFunctionIndex >= myLinker->getInitArray().size()) {
+      myExecutionStage = ExecutionStage::main;
+    }
+    else {
+      return callFn(myLinker->getInitArray()[myInitFunctionIndex++], sp);
+    }
+  }
+
+  callMain();
+}
+
+void CartridgeELF::callFn(uInt32 ptr, uInt32 sp)
+{
+  myCortexEmu
+    .setRegister(0, sp)
+    .setRegister(13, sp)
+    .setRegister(14, RETURN_ADDR)
+    .setPc(ptr);
+}
+
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgeELF::jumpToMain()
+void CartridgeELF::callMain()
 {
   if (!mySystem) throw runtime_error("cartridge not installed");
 
@@ -474,11 +526,7 @@ void CartridgeELF::jumpToMain()
 
   if (err) throw runtime_error("unable to setup main args");
 
-  myCortexEmu
-    .setRegister(0, sp )
-    .setRegister(13, sp)
-    .setRegister(14, RETURN_ADDR_MAIN)
-    .setPc(myArmEntrypoint);
+  callFn(myArmEntrypoint, sp);
 }
 
 void CartridgeELF::runArm()
@@ -496,8 +544,20 @@ void CartridgeELF::runArm()
 
   const CortexM0::err_t err = myCortexEmu.run(cyclesGoal, cycles);
 
-  if (err && (CortexM0::getErrCustom(err) != ERR_STOP_EXECUTION))
-    FatalEmulationError::raise("error executing ARM code: " + CortexM0::describeError(err));
+  if (err) {
+    if (CortexM0::getErrCustom(err) == ERR_RETURN) {
+      if (myExecutionStage == ExecutionStage::main) {
+        FatalEmulationError::raise("return from elf_main");
+      }
+      else {
+        switchExecutionStage();
+        return;
+      }
+    }
+
+    if (CortexM0::getErrCustom(err) != ERR_STOP_EXECUTION)
+      FatalEmulationError::raise("error executing ARM code: " + CortexM0::describeError(err));
+  }
 }
 
 
