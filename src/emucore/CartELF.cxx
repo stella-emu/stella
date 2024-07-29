@@ -325,6 +325,13 @@ CortexM0::err_t CartridgeELF::BusFallbackDelegate::fetch16(
     : CortexM0::errIntrinsic(CortexM0::ERR_UNMAPPED_FETCH16, address);
 }
 
+CortexM0::err_t CartridgeELF::BusFallbackDelegate::read8(uInt32 address, uInt8& value, CortexM0& cortex)
+{
+  // TODO: remove this hack and replace it with a setting.
+  value = 0;
+  return 0;
+}
+
 inline uInt64 CartridgeELF::getArmCycles() const
 {
   return myCortexEmu.getCycles() + myArmCyclesOffset;

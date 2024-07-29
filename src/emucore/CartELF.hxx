@@ -68,6 +68,7 @@ class CartridgeELF: public Cartridge {
   private:
     class BusFallbackDelegate: public CortexM0::BusTransactionDelegate {
       CortexM0::err_t fetch16(uInt32 address, uInt16& value, uInt8& op, CortexM0& cortex);
+      CortexM0::err_t read8(uInt32 address, uInt8& value, CortexM0& cortex);
     };
 
     enum class ExecutionStage {
@@ -119,7 +120,7 @@ class CartridgeELF: public Cartridge {
     BusFallbackDelegate myFallbackDelegate;
 
     ConsoleTiming myConsoleTiming{ConsoleTiming::ntsc};
-    uInt32 myArmCyclesPer6502Cycle{80};
+    uInt32 myArmCyclesPer6502Cycle{140};
 
     Int64 myArmCyclesOffset{0};
 
