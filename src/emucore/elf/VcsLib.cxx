@@ -303,12 +303,6 @@ CortexM0::err_t VcsLib::fetch16(uInt32 address, uInt16& value, uInt8& op, Cortex
   }
 }
 
-void VcsLib::updateBus(uInt16 address, uInt8 value)
-{
-  myCurrentAddress = address;
-  myCurrentValue = value;
-}
-
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CortexM0::err_t VcsLib::returnFromStub(uInt16& value, uInt8& op)
 {

@@ -30,7 +30,10 @@ class VcsLib: public CortexM0::BusTransactionDelegate {
 
     CortexM0::err_t fetch16(uInt32 address, uInt16& value, uInt8& op, CortexM0& cortex) override;
 
-    void updateBus(uInt16 address, uInt8 value);
+    inline void updateBus(uInt16 address, uInt8 value) {
+      myCurrentAddress = address;
+      myCurrentValue = value;
+    }
 
     inline bool isSuspended() const {
       return
