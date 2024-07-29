@@ -332,7 +332,7 @@ inline uInt8 CartridgeELF::driveBus(uInt16 address, uInt8 value)
 
   myVcsLib.updateBus(address, value);
 
-  if (!myVcsLib.isSuspended()) runArm();
+  runArm();
 
   return value;
 }
@@ -485,7 +485,8 @@ void CartridgeELF::runArm()
 {
   if (
     (getArmCycles() >= (mySystem->cycles() + ARM_RUNAHED_MIN) * myArmCyclesPer6502Cycle) ||
-    myTransactionQueue.size() >= QUEUE_SIZE_LIMIT
+    myTransactionQueue.size() >= QUEUE_SIZE_LIMIT ||
+    myVcsLib.isSuspended()
   )
     return;
 
