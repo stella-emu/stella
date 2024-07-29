@@ -330,7 +330,9 @@ inline uInt8 CartridgeELF::driveBus(uInt16 address, uInt8 value)
 
   if (myIsBusDriven) value |= myDriveBusValue;
 
-  runArm();
+  myVcsLib.updateBus(address, value);
+
+  if (!myVcsLib.isSuspended()) runArm();
 
   return value;
 }
@@ -493,7 +495,7 @@ void CartridgeELF::runArm()
 
   const CortexM0::err_t err = myCortexEmu.run(cyclesGoal, cycles);
 
-  if (err && (CortexM0::getErrCustom(err) != ERR_QUEUE_FULL))
+  if (err && (CortexM0::getErrCustom(err) != ERR_STOP_EXECUTION))
     FatalEmulationError::raise("error executing ARM code: " + CortexM0::describeError(err));
 }
 
