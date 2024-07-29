@@ -27,7 +27,7 @@ using namespace elfEnvironment;
 namespace {
   CortexM0::err_t memset(uInt32 target, uInt8 value, uInt32 size, CortexM0& cortex)
   {
-    const uInt16 value16 = value | (value << 16);
+    const uInt16 value16 = value | (value << 8);
     const uInt32 value32 = value16 | (value16 << 16);
     CortexM0::err_t err;
     uInt32 ptr = target;
@@ -134,7 +134,7 @@ CortexM0::err_t VcsLib::fetch16(uInt32 address, uInt16& value, uInt8& op, Cortex
 
   switch (address) {
     case ADDR_MEMSET:
-      err = memset(cortex.getRegister(0), cortex.getRegister(1), cortex.getRegister(3), cortex);
+      err = memset(cortex.getRegister(0), cortex.getRegister(1), cortex.getRegister(2), cortex);
       if (err) return err;
 
       return returnFromStub(value, op);
