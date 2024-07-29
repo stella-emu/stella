@@ -124,12 +124,12 @@ bool BusTransactionQueue::hasPendingTransaction() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-BusTransactionQueue::Transaction* BusTransactionQueue::getNextTransaction(uInt16 address)
+BusTransactionQueue::Transaction* BusTransactionQueue::getNextTransaction(uInt16 address, uInt64 timestamp)
 {
   if (myQueueSize == 0) return nullptr;
 
   Transaction* nextTransaction = &myQueue[myQueueNext];
-  if (nextTransaction->address != (address & 0x1fff)) return nullptr;
+  if (nextTransaction->address != (address & 0x1fff) || nextTransaction->timestamp > timestamp) return nullptr;
 
   myQueueNext = (myQueueNext + 1) % myQueueCapacity;
   myQueueSize--;

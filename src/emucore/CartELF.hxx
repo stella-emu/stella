@@ -120,7 +120,7 @@ class CartridgeELF: public Cartridge {
     BusFallbackDelegate myFallbackDelegate;
 
     ConsoleTiming myConsoleTiming{ConsoleTiming::ntsc};
-    uInt32 myArmCyclesPer6502Cycle{140};
+    uInt32 myArmCyclesPer6502Cycle{160};
 
     Int64 myArmCyclesOffset{0};
 
