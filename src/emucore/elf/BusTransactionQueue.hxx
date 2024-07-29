@@ -50,7 +50,7 @@ class BusTransactionQueue {
     BusTransactionQueue& yield(uInt16 address);
 
     bool hasPendingTransaction() const;
-    Transaction* getNextTransaction(uInt16 address);
+    Transaction* getNextTransaction(uInt16 address, uInt64 timestamp);
 
     inline size_t size() const {
       return myQueueSize;

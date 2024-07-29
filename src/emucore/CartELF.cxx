@@ -340,7 +340,7 @@ inline uInt64 CartridgeELF::getArmCycles() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 inline uInt8 CartridgeELF::driveBus(uInt16 address, uInt8 value)
 {
-  auto* nextTransaction = myTransactionQueue.getNextTransaction(address);
+  auto* nextTransaction = myTransactionQueue.getNextTransaction(address, getArmCycles());
   if (nextTransaction) {
     nextTransaction->setBusState(myIsBusDriven, myDriveBusValue);
     syncClock(*nextTransaction);
@@ -361,9 +361,6 @@ inline void CartridgeELF::syncClock(const BusTransactionQueue::Transaction& tran
   const Int64 transactionArmCycles = transaction.timestamp + myArmCyclesOffset;
 
   myArmCyclesOffset += currentSystemArmCycles - transactionArmCycles;
-
-  if (transactionArmCycles > currentSystemArmCycles)
-    Logger::error("ARM took too many cycles between bus transitions");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
