@@ -25,6 +25,7 @@
 #include "ElfParser.hxx"
 #include "ElfLinker.hxx"
 #include "ElfEnvironment.hxx"
+#include "Logger.hxx"
 #include "exception/FatalEmulationError.hxx"
 
 #include "CartELF.hxx"
@@ -203,7 +204,7 @@ void CartridgeELF::reset()
   std::fill_n(myLastPeekResult.get(), 0x1000, 0);
   myIsBusDriven = false;
   myDriveBusValue = 0;
-  myArmCycles = 0;
+  myArmCyclesOffset = 0;
 
   std::memset(mySectionStack.get(), 0, STACK_SIZE);
   std::memset(mySectionText.get(), 0, TEXT_SIZE);
@@ -223,9 +224,11 @@ void CartridgeELF::reset()
 
   myTransactionQueue
     .reset()
-	  .injectROM(0x00, 0x1ffc)
+	  .injectROMAt(0x00, 0x1ffc)
 	  .injectROM(0x10)
     .setNextInjectAddress(0x1000);
+
+  myVcsLib.reset();
 
   myVcsLib.vcsCopyOverblankToRiotRam();
   myVcsLib.vcsStartOverblank();
@@ -295,8 +298,6 @@ const ByteBuffer& CartridgeELF::getImage(size_t& size) const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 CartridgeELF::overdrivePeek(uInt16 address, uInt8 value)
 {
-  runArm();
-
   value = driveBus(address, value);
 
   if (address & 0x1000) {
@@ -310,20 +311,39 @@ uInt8 CartridgeELF::overdrivePeek(uInt16 address, uInt8 value)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 CartridgeELF::overdrivePoke(uInt16 address, uInt8 value)
 {
-  runArm();
-
   return driveBus(address, value);
+}
+
+inline uInt64 CartridgeELF::getArmCycles() const
+{
+  return myCortexEmu.getCycles() + myArmCyclesOffset;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 inline uInt8 CartridgeELF::driveBus(uInt16 address, uInt8 value)
 {
   auto* nextTransaction = myTransactionQueue.getNextTransaction(address);
-  if (nextTransaction) nextTransaction->setBusState(myIsBusDriven, myDriveBusValue);
+  if (nextTransaction) {
+    nextTransaction->setBusState(myIsBusDriven, myDriveBusValue);
+    syncClock(*nextTransaction);
+  }
 
   if (myIsBusDriven) value |= myDriveBusValue;
 
+  runArm();
+
   return value;
+}
+
+inline void CartridgeELF::syncClock(const BusTransactionQueue::Transaction& transaction)
+{
+  const Int64 currentSystemArmCycles = mySystem->cycles() * myArmCyclesPer6502Cycle;
+  const Int64 transactionArmCycles = transaction.timestamp + myArmCyclesOffset;
+
+  myArmCyclesOffset += currentSystemArmCycles - transactionArmCycles;
+
+  if (transactionArmCycles > currentSystemArmCycles)
+    Logger::error("ARM took too many cycles between bus transitions");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -461,16 +481,20 @@ void CartridgeELF::jumpToMain()
 
 void CartridgeELF::runArm()
 {
-  if (myArmCycles >= (mySystem->cycles() + ARM_RUNAHED_MIN) * myArmCyclesPer6502Cycle) return;
+  if (
+    (getArmCycles() >= (mySystem->cycles() + ARM_RUNAHED_MIN) * myArmCyclesPer6502Cycle) ||
+    myTransactionQueue.size() >= QUEUE_SIZE_LIMIT
+  )
+    return;
 
   const uInt32 cyclesGoal =
-    (mySystem->cycles() + ARM_RUNAHED_MAX) * myArmCyclesPer6502Cycle - myArmCycles;
+    (mySystem->cycles() + ARM_RUNAHED_MAX) * myArmCyclesPer6502Cycle - getArmCycles();
   uInt32 cycles;
 
   const CortexM0::err_t err = myCortexEmu.run(cyclesGoal, cycles);
-  myArmCycles += cycles;
 
-  if (err != 0) FatalEmulationError::raise("error executing ARM code: " + CortexM0::describeError(err));
+  if (err && (CortexM0::getErrCustom(err) != ERR_QUEUE_FULL))
+    FatalEmulationError::raise("error executing ARM code: " + CortexM0::describeError(err));
 }
 
 

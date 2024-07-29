@@ -20,6 +20,7 @@
 #include "BusTransactionQueue.hxx"
 #include "ElfEnvironment.hxx"
 #include "exception/FatalEmulationError.hxx"
+#include "ElfEnvironment.hxx"
 
 using namespace elfEnvironment;
 
@@ -58,7 +59,7 @@ VcsLib::VcsLib(BusTransactionQueue& transactionQueue) : myTransactionQueue(trans
 
 void VcsLib::reset()
 {
-  myStuffMaskA = myStuffMaskX = myStuffMaskY = 0xff;
+  myStuffMaskA = myStuffMaskX = myStuffMaskY = 0x00;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -93,7 +94,7 @@ void VcsLib::vcsStartOverblank()
 void VcsLib::vcsEndOverblank()
 {
   myTransactionQueue
-    .injectROM(0x00, 0x1fff)
+    .injectROMAt(0x00, 0x1fff)
     .yield(0x00ac)
     .setNextInjectAddress(0x1000);
 }
@@ -103,10 +104,9 @@ void VcsLib::vcsNop2n(uInt16 n)
 {
   if (n == 0) return;
 
-  myTransactionQueue.injectROM(0xea);
-  myTransactionQueue.setNextInjectAddress(
-    myTransactionQueue.getNextInjectAddress() + (n - 1)
-  );
+  myTransactionQueue
+    .injectROM(0xea)
+    .setNextInjectAddress(myTransactionQueue.getNextInjectAddress() + n - 1);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -122,6 +122,11 @@ CortexM0::err_t VcsLib::fetch16(uInt32 address, uInt16& value, uInt8& op, Cortex
 {
   uInt32 arg;
   CortexM0::err_t err;
+
+  if (myTransactionQueue.size() >= elfEnvironment::QUEUE_SIZE_LIMIT)
+    return CortexM0::errCustom(ERR_QUEUE_FULL);
+
+  myTransactionQueue.setTimestamp(cortex.getCycles());
 
   switch (address) {
     case ADDR_MEMSET:
@@ -151,7 +156,7 @@ CortexM0::err_t VcsLib::fetch16(uInt32 address, uInt16& value, uInt8& op, Cortex
       myTransactionQueue
         .injectROM(0x85)
         .injectROM(arg)
-        .stuffByte(arg, cortex.getRegister(1));
+        .stuffByte(cortex.getRegister(1), arg);
 
       return returnFromStub(value, op);
 

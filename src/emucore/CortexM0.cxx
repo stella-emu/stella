@@ -578,6 +578,7 @@ CortexM0& CortexM0::reset()
 {
   reg_norm.fill(0);
   znFlags = cFlag = vFlag = 0;
+  myCycleCounter = 0;
 
   recompileCodeRegions();
 
@@ -608,7 +609,7 @@ uInt8 CortexM0::decodeInstructionWord(uInt16 instructionWord)
 
 CortexM0::err_t CortexM0::run(uInt32 maxCycles, uInt32& cycles)
 {
-  for (cycles = 0; cycles < maxCycles; cycles++) {
+  for (cycles = 0; cycles < maxCycles; cycles++, myCycleCounter++) {
     const uInt32 pc = read_register(15);
 
     uInt16 inst;

@@ -20,17 +20,19 @@
 #include "exception/FatalEmulationError.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-BusTransactionQueue::Transaction BusTransactionQueue::Transaction::transactionYield(uInt16 address)
-{
+BusTransactionQueue::Transaction BusTransactionQueue::Transaction::transactionYield(
+  uInt16 address, uInt64 timestamp
+) {
   address &= 0x1fff;
-  return {.address = address, .value = 0, .yield = true};
+  return {.address = address, .value = 0, .timestamp = timestamp, .yield = true};
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-BusTransactionQueue::Transaction BusTransactionQueue::Transaction::transactionDrive(uInt16 address, uInt8 value)
-{
+BusTransactionQueue::Transaction BusTransactionQueue::Transaction::transactionDrive(
+  uInt16 address, uInt8 value, uInt64 timestamp
+) {
   address &= 0x1fff;
-  return {.address = address, .value = value, .yield = false};
+  return {.address = address, .value = value, .timestamp = timestamp, .yield = false};
 }
 
 
@@ -58,6 +60,7 @@ BusTransactionQueue& BusTransactionQueue::reset()
 {
   myQueueNext = myQueueSize = 0;
   myNextInjectAddress = 0;
+  myTimestamp = 0;
 
   return *this;
 }
@@ -75,18 +78,25 @@ uInt16 BusTransactionQueue::getNextInjectAddress() const
   return myNextInjectAddress;
 }
 
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-BusTransactionQueue& BusTransactionQueue::injectROM(uInt8 value)
+BusTransactionQueue& BusTransactionQueue::setTimestamp(uInt64 timestamp)
 {
-  injectROM(value, myNextInjectAddress);
+  myTimestamp = timestamp;
 
   return *this;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-BusTransactionQueue& BusTransactionQueue::injectROM(uInt8 value, uInt16 address)
+BusTransactionQueue& BusTransactionQueue::injectROM(uInt8 value)
 {
-  push(Transaction::transactionDrive(address, value));
+  injectROMAt(value, myNextInjectAddress);
+
+  return *this;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+BusTransactionQueue& BusTransactionQueue::injectROMAt(uInt8 value, uInt16 address)
+{
+  push(Transaction::transactionDrive(address, value, myTimestamp));
   myNextInjectAddress = address + 1;
 
   return *this;
@@ -94,7 +104,7 @@ BusTransactionQueue& BusTransactionQueue::injectROM(uInt8 value, uInt16 address)
 
 BusTransactionQueue& BusTransactionQueue::stuffByte(uInt8 value, uInt16 address)
 {
-  push(Transaction::transactionDrive(address, value));
+  push(Transaction::transactionDrive(address, value, myTimestamp));
 
   return *this;
 }
@@ -102,7 +112,7 @@ BusTransactionQueue& BusTransactionQueue::stuffByte(uInt8 value, uInt16 address)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 BusTransactionQueue& BusTransactionQueue::yield(uInt16 address)
 {
-  push(Transaction::transactionYield(address));
+  push(Transaction::transactionYield(address, myTimestamp));
 
   return *this;
 }

@@ -112,6 +112,9 @@ namespace elfEnvironment {
 
   constexpr uInt32 RETURN_ADDR_MAIN = 0xffffdead;
 
+  constexpr uInt32 ERR_QUEUE_FULL = 1;
+  constexpr uInt32 QUEUE_SIZE_LIMIT = 10;
+
   enum class Palette: uInt8 {pal, ntsc};
 
   vector<ElfLinker::ExternalSymbol> externalSymbols(Palette palette);
