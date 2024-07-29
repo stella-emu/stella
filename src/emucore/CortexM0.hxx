@@ -120,6 +120,10 @@ class CortexM0
     err_t write16(uInt32 address, uInt16 value);
     err_t write8(uInt32 address, uInt8 value);
 
+    inline uInt64 getCycles() const {
+      return myCycleCounter;
+    }
+
   private:
 
     enum class MemoryRegionType : uInt8 {
@@ -187,6 +191,8 @@ class CortexM0
     unique_ptr<uInt8[]> myPageMap;
     uInt8 myNextRegionIndex{0};
     BusTransactionDelegate* myDefaultDelegate{nullptr};
+
+    uInt64 myCycleCounter{0};
 
     static constexpr uInt32
       CPSR_N = 1u << 31,

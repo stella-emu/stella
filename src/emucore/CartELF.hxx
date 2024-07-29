@@ -66,7 +66,10 @@ class CartridgeELF: public Cartridge {
     bool doesBusStuffing() override { return true; }
 
   private:
+    uInt64 getArmCycles() const;
+
     uInt8 driveBus(uInt16 address, uInt8 value);
+    void syncClock(const BusTransactionQueue::Transaction& transaction);
 
     void parseAndLinkElf();
     void setupMemoryMap();
@@ -105,7 +108,7 @@ class CartridgeELF: public Cartridge {
     ConsoleTiming myConsoleTiming{ConsoleTiming::ntsc};
     uInt32 myArmCyclesPer6502Cycle{80};
 
-    uInt64 myArmCycles{0};
+    Int64 myArmCyclesOffset{0};
 };
 
 #endif // CARTRIDGE_ELF

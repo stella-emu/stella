@@ -44,9 +44,9 @@ class VcsLib: public CortexM0::BusTransactionDelegate {
   private:
     BusTransactionQueue& myTransactionQueue;
 
-    uInt8 myStuffMaskA{0xff};
-    uInt8 myStuffMaskX{0xff};
-    uInt8 myStuffMaskY{0xff};
+    uInt8 myStuffMaskA{0x00};
+    uInt8 myStuffMaskX{0x00};
+    uInt8 myStuffMaskY{0x00};
 
   private:
     VcsLib(const VcsLib&) = delete;

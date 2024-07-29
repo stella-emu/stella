@@ -23,13 +23,14 @@
 class BusTransactionQueue {
   public:
     struct Transaction {
-      static Transaction transactionYield(uInt16 address);
-      static Transaction transactionDrive(uInt16 address, uInt8 value);
+      static Transaction transactionYield(uInt16 address, uInt64 timestamp);
+      static Transaction transactionDrive(uInt16 address, uInt8 value, uInt64 timestamp);
 
       void setBusState(bool& drive, uInt8& value) const;
 
       uInt16 address;
       uInt8 value;
+      uInt64 timestamp;
       bool yield;
     };
 
@@ -41,8 +42,9 @@ class BusTransactionQueue {
     BusTransactionQueue& setNextInjectAddress(uInt16 address);
     uInt16 getNextInjectAddress() const;
 
+    BusTransactionQueue& setTimestamp(uInt64 timestamp);
     BusTransactionQueue& injectROM(uInt8 value);
-    BusTransactionQueue& injectROM(uInt8 value, uInt16 address);
+    BusTransactionQueue& injectROMAt(uInt8 value, uInt16 address);
     BusTransactionQueue& stuffByte(uInt8 value, uInt16 address);
 
     BusTransactionQueue& yield(uInt16 address);
@@ -65,6 +67,7 @@ class BusTransactionQueue {
     size_t myQueueSize{0};
 
     uInt16 myNextInjectAddress{0};
+    uInt64 myTimestamp{0};
 
   private:
     BusTransactionQueue(const BusTransactionQueue&) = delete;
