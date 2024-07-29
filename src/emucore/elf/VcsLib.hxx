@@ -20,8 +20,7 @@
 
 #include "bspf.hxx"
 #include "CortexM0.hxx"
-
-class BusTransactionQueue;
+#include "BusTransactionQueue.hxx"
 
 class VcsLib: public CortexM0::BusTransactionDelegate {
   public:
@@ -30,6 +29,13 @@ class VcsLib: public CortexM0::BusTransactionDelegate {
     void reset();
 
     CortexM0::err_t fetch16(uInt32 address, uInt16& value, uInt8& op, CortexM0& cortex) override;
+
+    void updateBus(uInt16 address, uInt8 value);
+
+    inline bool isSuspended() const {
+      return
+        myIsWaitingForRead && (myTransactionQueue.size() > 0 || (myWaitingForReadAddress != myCurrentAddress));
+    }
 
     void vcsWrite5(uInt8 zpAddress, uInt8 value);
     void vcsCopyOverblankToRiotRam();
@@ -47,6 +53,12 @@ class VcsLib: public CortexM0::BusTransactionDelegate {
     uInt8 myStuffMaskA{0x00};
     uInt8 myStuffMaskX{0x00};
     uInt8 myStuffMaskY{0x00};
+
+    bool myIsWaitingForRead{false};
+    uInt16 myWaitingForReadAddress{0};
+
+    uInt16 myCurrentAddress{0};
+    uInt8 myCurrentValue{0};
 
   private:
     VcsLib(const VcsLib&) = delete;

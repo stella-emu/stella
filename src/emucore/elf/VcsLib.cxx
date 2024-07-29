@@ -60,6 +60,10 @@ VcsLib::VcsLib(BusTransactionQueue& transactionQueue) : myTransactionQueue(trans
 void VcsLib::reset()
 {
   myStuffMaskA = myStuffMaskX = myStuffMaskY = 0x00;
+  myIsWaitingForRead = false;
+  myWaitingForReadAddress = 0;
+  myCurrentAddress = 0;
+  myCurrentValue = 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -124,7 +128,7 @@ CortexM0::err_t VcsLib::fetch16(uInt32 address, uInt16& value, uInt8& op, Cortex
   CortexM0::err_t err;
 
   if (myTransactionQueue.size() >= elfEnvironment::QUEUE_SIZE_LIMIT)
-    return CortexM0::errCustom(ERR_QUEUE_FULL);
+    return CortexM0::errCustom(ERR_STOP_EXECUTION);
 
   myTransactionQueue.setTimestamp(cortex.getCycles());
 
@@ -170,7 +174,8 @@ CortexM0::err_t VcsLib::fetch16(uInt32 address, uInt16& value, uInt8& op, Cortex
       return returnFromStub(value, op);
 
     case ADDR_VCS_NOP2:
-      FatalEmulationError::raise("unimplemented: vcsNop2");
+      myTransactionQueue.injectROM(0xea);
+      return returnFromStub(value, op);
 
     case ADDR_VCS_NOP2N:
       vcsNop2n(cortex.getRegister(0));
@@ -234,7 +239,28 @@ CortexM0::err_t VcsLib::fetch16(uInt32 address, uInt16& value, uInt8& op, Cortex
       return returnFromStub(value, op);
 
     case ADDR_VCS_READ4:
-      FatalEmulationError::raise("unimplemented: vcsRead4");
+      if (myIsWaitingForRead) {
+        if (myTransactionQueue.size() > 0 || myCurrentAddress != myWaitingForReadAddress)
+          return CortexM0::errCustom(ERR_STOP_EXECUTION);
+
+        myIsWaitingForRead = false;
+        cortex.setRegister(0, myCurrentValue);
+
+        return returnFromStub(value, op);
+      } else {
+        arg = cortex.getRegister(0);
+
+        myIsWaitingForRead = true;
+        myWaitingForReadAddress = arg;
+
+        myTransactionQueue
+          .injectROM(0xad)
+	        .injectROM(arg & 0xff)
+	        .injectROM(arg >> 8)
+          .yield(arg);
+
+        return CortexM0::errCustom(ERR_STOP_EXECUTION);
+      }
 
     case ADDR_RANDINT:
       FatalEmulationError::raise("unimplemented: randint ");
@@ -275,6 +301,12 @@ CortexM0::err_t VcsLib::fetch16(uInt32 address, uInt16& value, uInt8& op, Cortex
     default:
       return CortexM0::errIntrinsic(CortexM0::ERR_UNMAPPED_FETCH16, address);
   }
+}
+
+void VcsLib::updateBus(uInt16 address, uInt8 value)
+{
+  myCurrentAddress = address;
+  myCurrentValue = value;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
