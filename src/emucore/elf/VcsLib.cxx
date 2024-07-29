@@ -49,6 +49,57 @@ namespace {
       if (err) return err;
     }
 
+    cortex.setRegister(0, target);
+    return 0;
+  }
+
+  CortexM0::err_t memcpy(uInt32 dest, uInt32 src, uInt32 size, CortexM0& cortex)
+  {
+    CortexM0::err_t err;
+    const uInt32 destOrig = dest;
+
+    while (size > 0) {
+      if (((dest | src) & 0x03) == 0 && size >= 4) {
+        uInt32 value;
+
+        err = cortex.read32(src, value);
+        if (err) return err;
+
+        err = cortex.write32(dest, value);
+
+        size -= 4;
+        dest += 4;
+        src += 4;
+      }
+      else if (((dest | src) & 0x01) == 0 && size >= 2) {
+        uInt16 value;
+
+        err = cortex.read16(src, value);
+        if (err) return err;
+
+        err = cortex.write16(dest, value);
+
+        size -= 2;
+        dest += 2;
+        src += 2;
+      }
+      else {
+        uInt8 value;
+
+        err = cortex.read8(src, value);
+        if (err) return err;
+
+        err = cortex.write8(dest, value);
+
+        size--;
+        dest++;
+        src++;
+      }
+
+      if (err) return err;
+    }
+
+    cortex.setRegister(0, destOrig);
     return 0;
   }
 }
@@ -116,9 +167,9 @@ void VcsLib::vcsNop2n(uInt16 n)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void VcsLib::vcsLda2(uInt8 value)
 {
-        myTransactionQueue
-    	  .injectROM(0xa9)
-	      .injectROM(value);
+  myTransactionQueue
+	  .injectROM(0xa9)
+    .injectROM(value);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -140,7 +191,10 @@ CortexM0::err_t VcsLib::fetch16(uInt32 address, uInt16& value, uInt8& op, Cortex
       return returnFromStub(value, op);
 
     case ADDR_MEMCPY:
-      FatalEmulationError::raise("unimplemented: memcpy");
+      err = memcpy(cortex.getRegister(0), cortex.getRegister(1), cortex.getRegister(2), cortex);
+      if (err) return err;
+
+      return returnFromStub(value, op);
 
     case ADDR_VCS_LDA_FOR_BUS_STUFF2:
       vcsLda2(myStuffMaskA);
@@ -193,10 +247,18 @@ CortexM0::err_t VcsLib::fetch16(uInt32 address, uInt16& value, uInt8& op, Cortex
       return returnFromStub(value, op);
 
     case ADDR_VCS_LDX2:
-      FatalEmulationError::raise("unimplemented: vcsLdx2");
+      myTransactionQueue
+	      .injectROM(0xa2)
+        .injectROM(cortex.getRegister(0));
+
+      return returnFromStub(value, op);
 
     case ADDR_VCS_LDY2:
-      FatalEmulationError::raise("unimplemented: vcsLdy2");
+      myTransactionQueue
+	      .injectROM(0xa0)
+        .injectROM(cortex.getRegister(0));
+
+      return returnFromStub(value, op);
 
     case ADDR_VCS_SAX3:
       FatalEmulationError::raise("unimplemented: vcsSax3");
@@ -212,19 +274,57 @@ CortexM0::err_t VcsLib::fetch16(uInt32 address, uInt16& value, uInt8& op, Cortex
       return returnFromStub(value, op);
 
     case ADDR_VCS_STX3:
-      FatalEmulationError::raise("unimplemented: vcsStx3");
+      arg = cortex.getRegister(0);
+
+      myTransactionQueue
+    	  .injectROM(0x86)
+        .injectROM(arg)
+        .yield(arg);
+
+      return returnFromStub(value, op);
 
     case ADDR_VCS_STY3:
-      FatalEmulationError::raise("unimplemented: vcsSty3");
+      arg = cortex.getRegister(0);
+
+      myTransactionQueue
+    	  .injectROM(0x84)
+        .injectROM(arg)
+        .yield(arg);
+
+      return returnFromStub(value, op);
 
     case ADDR_VCS_STA4:
-      FatalEmulationError::raise("unimplemented: vcsSta4");
+      arg = cortex.getRegister(0);
+
+      myTransactionQueue
+      	.injectROM(0x8d)
+	      .injectROM(arg)
+	      .injectROM(arg >> 8)
+	      .yield(arg);
+
+      return returnFromStub(value, op);
 
     case ADDR_VCS_STX4:
-      FatalEmulationError::raise("unimplemented: vcsStx4");
+      arg = cortex.getRegister(0);
+
+      myTransactionQueue
+      	.injectROM(0x8e)
+	      .injectROM(arg)
+	      .injectROM(arg >> 8)
+	      .yield(arg);
+
+      return returnFromStub(value, op);
 
     case ADDR_VCS_STY4:
-      FatalEmulationError::raise("unimplemented: vcsSty4");
+      arg = cortex.getRegister(0);
+
+      myTransactionQueue
+      	.injectROM(0x8c)
+	      .injectROM(arg)
+	      .injectROM(arg >> 8)
+	      .yield(arg);
+
+      return returnFromStub(value, op);
 
     case ADDR_VCS_COPY_OVERBLANK_TO_RIOT_RAM:
       vcsCopyOverblankToRiotRam();
@@ -255,7 +355,7 @@ CortexM0::err_t VcsLib::fetch16(uInt32 address, uInt16& value, uInt8& op, Cortex
 
         myTransactionQueue
           .injectROM(0xad)
-	        .injectROM(arg & 0xff)
+	        .injectROM(arg)
 	        .injectROM(arg >> 8)
           .yield(arg);
 
