@@ -167,7 +167,7 @@ namespace BSPF
   // if it is outside the specified range
   template<typename T> inline constexpr T clamp(T val, T lower, T upper)
   {
-    return (val < lower) ? lower : (val > upper) ? upper : val;
+    return std::clamp<T>(val, lower, upper);
   }
   template<typename T> inline constexpr void clamp(T& val, T lower, T upper, T setVal)
   {
