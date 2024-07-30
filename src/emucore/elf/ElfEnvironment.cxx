@@ -1,5 +1,23 @@
+//============================================================================
+//
+//   SSSS    tt          lll  lll
+//  SS  SS   tt           ll   ll
+//  SS     tttttt  eeee   ll   ll   aaaa
+//   SSSS    tt   ee  ee  ll   ll      aa
+//      SS   tt   eeeeee  ll   ll   aaaaa  --  "An Atari 2600 VCS Emulator"
+//  SS  SS   tt   ee      ll   ll  aa  aa
+//   SSSS     ttt  eeeee llll llll  aaaaa
+//
+// Copyright (c) 1995-2024 by Bradford W. Mott, Stephen Anthony
+// and the Stella Team
+//
+// See the file "License.txt" for information on usage and redistribution of
+// this file, and for a DISCLAIMER OF ALL WARRANTIES.
+//============================================================================
+
 #include "ElfEnvironment.hxx"
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const uInt8 elfEnvironment::OVERBLANK_PROGRAM[] = {
   0xa0,0x00,			  // ldy #0
   0xa5,0xe0,			  // lda $e0
@@ -34,8 +52,10 @@ const uInt8 elfEnvironment::OVERBLANK_PROGRAM[] = {
   0x4c, 0x00, 0x10	// jmp $1000
 };
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const uInt32 elfEnvironment::OVERBLANK_PROGRAM_SIZE = sizeof(elfEnvironment::OVERBLANK_PROGRAM);
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const uInt8 elfEnvironment::LOOKUP_TABLES[3 * 256] = {
     // Ntsc2600
 		0x00,0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08,0x09,0x0A,0x0B,0x0C,0x0D,0x0E,0x0F,
@@ -92,6 +112,7 @@ const uInt8 elfEnvironment::LOOKUP_TABLES[3 * 256] = {
 	  0x0f, 0x8f, 0x4f, 0xcf, 0x2f, 0xaf, 0x6f, 0xef,	0x1f, 0x9f, 0x5f, 0xdf, 0x3f, 0xbf, 0x7f, 0xff
 };
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 vector<ElfLinker::ExternalSymbol> elfEnvironment::externalSymbols(elfEnvironment::Palette palette)
 {
   static const vector<ElfLinker::ExternalSymbol> EXTERNAL_SYMBOLS_STATIC = {

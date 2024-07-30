@@ -48,7 +48,14 @@ class VcsLib: public CortexM0::BusTransactionDelegate {
     void vcsLda2(uInt8 value);
 
   private:
-    CortexM0::err_t returnFromStub(uInt16& value, uInt8& op);
+    static CortexM0::err_t returnFromStub(uInt16& value, uInt8& op) {
+      constexpr uInt16 BX_LR = 0x4770;
+
+      value = BX_LR;
+      op = CortexM0::decodeInstructionWord(BX_LR);
+
+      return CortexM0::ERR_NONE;
+    }
 
   private:
     BusTransactionQueue& myTransactionQueue;

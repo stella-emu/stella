@@ -22,7 +22,6 @@
 #include "BusTransactionQueue.hxx"
 #include "ElfEnvironment.hxx"
 #include "exception/FatalEmulationError.hxx"
-#include "ElfEnvironment.hxx"
 
 using namespace elfEnvironment;
 
@@ -31,7 +30,7 @@ namespace {
   {
     const uInt16 value16 = value | (value << 8);
     const uInt32 value32 = value16 | (value16 << 16);
-    CortexM0::err_t err;
+    CortexM0::err_t err = CortexM0::ERR_NONE;
     uInt32 ptr = target;
 
     while (ptr < target + size) {
@@ -57,12 +56,12 @@ namespace {
 
   CortexM0::err_t memcpy(uInt32 dest, uInt32 src, uInt32 size, CortexM0& cortex)
   {
-    CortexM0::err_t err;
+    CortexM0::err_t err = CortexM0::ERR_NONE;
     const uInt32 destOrig = dest;
 
     while (size > 0) {
       if (((dest | src) & 0x03) == 0 && size >= 4) {
-        uInt32 value;
+        uInt32 value = 0;
 
         err = cortex.read32(src, value);
         if (err) return err;
@@ -74,7 +73,7 @@ namespace {
         src += 4;
       }
       else if (((dest | src) & 0x01) == 0 && size >= 2) {
-        uInt16 value;
+        uInt16 value = 0;
 
         err = cortex.read16(src, value);
         if (err) return err;
@@ -86,7 +85,7 @@ namespace {
         src += 2;
       }
       else {
-        uInt8 value;
+        uInt8 value = 0;
 
         err = cortex.read8(src, value);
         if (err) return err;
@@ -104,7 +103,7 @@ namespace {
     cortex.setRegister(0, destOrig);
     return 0;
   }
-}
+}  // namespace
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 VcsLib::VcsLib(BusTransactionQueue& transactionQueue) : myTransactionQueue(transactionQueue)
@@ -177,8 +176,8 @@ void VcsLib::vcsLda2(uInt8 value)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CortexM0::err_t VcsLib::fetch16(uInt32 address, uInt16& value, uInt8& op, CortexM0& cortex)
 {
-  uInt32 arg;
-  CortexM0::err_t err;
+  uInt32 arg = 0;
+  CortexM0::err_t err = CortexM0::ERR_NONE;
 
   if (myTransactionQueue.size() >= elfEnvironment::QUEUE_SIZE_LIMIT)
     return CortexM0::errCustom(ERR_STOP_EXECUTION);
@@ -404,15 +403,4 @@ CortexM0::err_t VcsLib::fetch16(uInt32 address, uInt16& value, uInt8& op, Cortex
     default:
       return CortexM0::errIntrinsic(CortexM0::ERR_UNMAPPED_FETCH16, address);
   }
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CortexM0::err_t VcsLib::returnFromStub(uInt16& value, uInt8& op)
-{
-  constexpr uInt16 BX_LR = 0x4770;
-
-  value = BX_LR;
-  op = CortexM0::decodeInstructionWord(BX_LR);
-
-  return CortexM0::ERR_NONE;
 }

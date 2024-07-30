@@ -77,9 +77,6 @@
 #define branch_target_9(inst) (read_register(15) + 2 + (((Int32)(inst) << 24) >> 23))
 #define branch_target_12(inst) (read_register(15) + 2 + (((Int32)(inst) << 21) >> 20))
 
-using std::dec;
-using Common::Base;
-
 namespace {
   constexpr uInt32 PAGEMAP_SIZE = 0x100000000 / 4096;
 
@@ -462,6 +459,9 @@ namespace {
 
       case CortexM0::ERR_UNDEFINED_INST:
         return "undefined instruction";
+
+      default:
+        break;
     }
 
     ostringstream s;
@@ -469,38 +469,45 @@ namespace {
 
     return s.str();
   }
-}
+} // namespace
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CortexM0::err_t CortexM0::BusTransactionDelegate::read32(uInt32 address, uInt32& value, CortexM0& cortex)
 {
   return errIntrinsic(ERR_UNMAPPED_READ32, address);
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CortexM0::err_t CortexM0::BusTransactionDelegate::read16(uInt32 address, uInt16& value, CortexM0& cortex)
 {
   return errIntrinsic(ERR_UNMAPPED_READ16, address);
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CortexM0::err_t CortexM0::BusTransactionDelegate::read8(uInt32 address, uInt8& value, CortexM0& cortex)
 {
   return errIntrinsic(ERR_UNMAPPED_READ8, address);
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CortexM0::err_t CortexM0::BusTransactionDelegate::write32(uInt32 address, uInt32 value, CortexM0& cortex)
 {
   return errIntrinsic(ERR_UNMAPPED_WRITE32, address);
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CortexM0::err_t CortexM0::BusTransactionDelegate::write16(uInt32 address, uInt16 value, CortexM0& cortex)
 {
   return errIntrinsic(ERR_UNMAPPED_WRITE16, address);
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CortexM0::err_t CortexM0::BusTransactionDelegate::write8(uInt32 address, uInt8 value, CortexM0& cortex)
 {
   return errIntrinsic(ERR_UNMAPPED_WRITE8, address);
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CortexM0::err_t CortexM0::BusTransactionDelegate::fetch16(
   uInt32 address, uInt16& value, uInt8& op, CortexM0& cortex
 ) {
@@ -512,6 +519,7 @@ CortexM0::err_t CortexM0::BusTransactionDelegate::fetch16(
   return 0;
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string CortexM0::describeError(err_t err) {
   if (err == ERR_NONE) return "no error";
 
@@ -524,7 +532,7 @@ string CortexM0::describeError(err_t err) {
   return s.str();
 }
 
-
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CortexM0::CortexM0()
 {
   myPageMap = make_unique<uInt8[]>(PAGEMAP_SIZE);
@@ -533,6 +541,7 @@ CortexM0::CortexM0()
   reset();
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CortexM0& CortexM0::mapRegionData(uInt32 pageBase,
                                   uInt32 pageCount, bool readOnly, uInt8* backingStore)
 {
@@ -544,6 +553,7 @@ CortexM0& CortexM0::mapRegionData(uInt32 pageBase,
   return *this;
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CortexM0& CortexM0::mapRegionCode(uInt32 pageBase,
                                   uInt32 pageCount, bool readOnly, uInt8* backingStore)
 {
@@ -556,6 +566,7 @@ CortexM0& CortexM0::mapRegionCode(uInt32 pageBase,
   return *this;
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CortexM0& CortexM0::mapRegionDelegate(uInt32 pageBase, uInt32 pageCount, bool readOnly,
                                       CortexM0::BusTransactionDelegate* delegate)
 {
@@ -567,6 +578,7 @@ CortexM0& CortexM0::mapRegionDelegate(uInt32 pageBase, uInt32 pageCount, bool re
   return *this;
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CortexM0& CortexM0::mapDefault(CortexM0::BusTransactionDelegate* delegate)
 {
   myDefaultDelegate = delegate;
@@ -574,6 +586,7 @@ CortexM0& CortexM0::mapDefault(CortexM0::BusTransactionDelegate* delegate)
   return *this;
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CortexM0& CortexM0::reset()
 {
   reg_norm.fill(0);
@@ -585,11 +598,13 @@ CortexM0& CortexM0::reset()
   return *this;
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CortexM0& CortexM0::setPc(uInt32 pc)
 {
   return setRegister(15, (pc & ~1) + 2);
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CortexM0& CortexM0::setRegister(uInt8 regno, uInt32 value)
 {
   write_register(regno, value);
@@ -597,23 +612,26 @@ CortexM0& CortexM0::setRegister(uInt8 regno, uInt32 value)
   return *this;
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt32 CortexM0::getRegister(uInt32 regno)
 {
   return read_register(regno);
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 CortexM0::decodeInstructionWord(uInt16 instructionWord)
 {
   return static_cast<uInt8>(::decodeInstructionWord(instructionWord));
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CortexM0::err_t CortexM0::run(uInt32 maxCycles, uInt32& cycles)
 {
   for (cycles = 0; cycles < maxCycles; cycles++, myCycleCounter++) {
     const uInt32 pc = read_register(15);
 
-    uInt16 inst;
-    uInt8 op;
+    uInt16 inst = 0;
+    uInt8 op = 0;
     err_t err = fetch16(pc - 2, inst, op);
 
     if (err) return err;
@@ -635,6 +653,7 @@ CortexM0::err_t CortexM0::run(uInt32 maxCycles, uInt32& cycles)
   return ERR_NONE;
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CortexM0::MemoryRegion& CortexM0::setupMapping(uInt32 pageBase, uInt32 pageCount,
                                                bool readOnly, CortexM0::MemoryRegionType type)
 {
@@ -654,6 +673,7 @@ CortexM0::MemoryRegion& CortexM0::setupMapping(uInt32 pageBase, uInt32 pageCount
   return region;
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CortexM0::recompileCodeRegions()
 {
   for (const auto& region: myRegions) {
@@ -665,6 +685,7 @@ void CortexM0::recompileCodeRegions()
   }
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CortexM0::err_t CortexM0::read32(uInt32 address, uInt32& value)
 {
   if (address & 0x03) return errIntrinsic(ERR_ACCESS_ALIGNMENT_FAULT, address);
@@ -689,6 +710,7 @@ CortexM0::err_t CortexM0::read32(uInt32 address, uInt32& value)
   }
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CortexM0::err_t CortexM0::read16(uInt32 address, uInt16& value)
 {
   if (address & 0x01) return errIntrinsic(ERR_ACCESS_ALIGNMENT_FAULT, address);
@@ -713,6 +735,7 @@ CortexM0::err_t CortexM0::read16(uInt32 address, uInt16& value)
   }
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CortexM0::err_t CortexM0::read8(uInt32 address, uInt8& value)
 {
   MemoryRegion& region = myRegions[myPageMap[address / PAGE_SIZE]];
@@ -735,6 +758,7 @@ CortexM0::err_t CortexM0::read8(uInt32 address, uInt8& value)
   }
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CortexM0::err_t CortexM0::write32(uInt32 address, uInt32 value)
 {
   if (address & 0x03) return errIntrinsic(ERR_ACCESS_ALIGNMENT_FAULT, address);
@@ -760,6 +784,7 @@ CortexM0::err_t CortexM0::write32(uInt32 address, uInt32 value)
   }
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CortexM0::err_t CortexM0::write16(uInt32 address, uInt16 value)
 {
   if (address & 0x01) return errIntrinsic(ERR_ACCESS_ALIGNMENT_FAULT, address);
@@ -790,6 +815,7 @@ CortexM0::err_t CortexM0::write16(uInt32 address, uInt16 value)
   }
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CortexM0::err_t CortexM0::write8(uInt32 address, uInt8 value)
 {
   MemoryRegion& region = myRegions[myPageMap[address / PAGE_SIZE]];
@@ -818,6 +844,7 @@ CortexM0::err_t CortexM0::write8(uInt32 address, uInt8 value)
   }
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CortexM0::err_t CortexM0::fetch16(uInt32 address, uInt16& value, uInt8& op)
 {
   if (address & 0x01) return errIntrinsic(ERR_ACCESS_ALIGNMENT_FAULT, address);
@@ -849,6 +876,7 @@ CortexM0::err_t CortexM0::fetch16(uInt32 address, uInt16& value, uInt8& op)
   }
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CortexM0::do_cvflag(uInt32 a, uInt32 b, uInt32 c)
 {
   uInt32 rc = (a & 0x7FFFFFFF) + (b & 0x7FFFFFFF) + c; //carry in
@@ -864,9 +892,10 @@ void CortexM0::do_cvflag(uInt32 a, uInt32 b, uInt32 c)
   cFlag = rc & 2;
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CortexM0::err_t CortexM0::execute(uInt16 inst, uInt8 op)
 {
-  uInt32 sp, ra, rb, rc, rm, rd, rn, rs;  // NOLINT
+  uInt32 sp, ra, rb, rc, rm, rd, rn, rs;  // NOLINT: don't need to initialize
 
   #ifdef THUMB_DISS
     cout << "0x" << std::hex << std::setw(8) << std::setfill('0') << (read_register(15) - 4) << " " << std::dec;
@@ -1378,13 +1407,13 @@ CortexM0::err_t CortexM0::execute(uInt16 inst, uInt8 op)
     #endif
       sp = read_register(rn);
 
-      std::array<uInt32, 16> regsOld = reg_norm;
+      const std::array<uInt32, 16> regsOld = reg_norm;
 
       for(ra = 0, rb = 0x01; rb; rb = (rb << 1) & 0xFF, ++ra)
       {
         if(inst & rb)
         {
-          err_t err = read32(sp, reg_norm[ra]);
+          const err_t err = read32(sp, reg_norm[ra]);
 
           if (err) {
             reg_norm = regsOld;
@@ -1474,7 +1503,7 @@ CortexM0::err_t CortexM0::execute(uInt16 inst, uInt8 op)
       DO_DISS("ldrb r" << dec << rd << ",[r" << dec << rn << ",#0x" << Base::HEX2 << rb << "]\n");
       rb = read_register(rn) + rb;
 
-      uInt8 val8;
+      uInt8 val8 = 0;
       const err_t err = read8(rb, val8);
       if (err) return err;
 
@@ -1492,7 +1521,7 @@ CortexM0::err_t CortexM0::execute(uInt16 inst, uInt8 op)
       DO_DISS("ldrb r" << dec << rd << ",[r" << dec << rn << ",r" << dec << rm << "]\n");
       rb = read_register(rn) + read_register(rm);
 
-      uInt8 val8;
+      uInt8 val8 = 0;
       const err_t err = read8(rb, val8);
       if (err) return err;
 
@@ -1511,7 +1540,7 @@ CortexM0::err_t CortexM0::execute(uInt16 inst, uInt8 op)
       DO_DISS("ldrh r" << dec << rd << ",[r" << dec << rn << ",#0x" << Base::HEX2 << rb << "]\n");
       rb = read_register(rn) + rb;
 
-      uInt16 val16;
+      uInt16 val16 = 0;
       const err_t err = read16(rb, val16);
       if (err) return err;
 
@@ -1529,7 +1558,7 @@ CortexM0::err_t CortexM0::execute(uInt16 inst, uInt8 op)
       DO_DISS("ldrh r" << dec << rd << ",[r" << dec << rn << ",r" << dec << rm << "]\n");
       rb = read_register(rn) + read_register(rm);
 
-      uInt16 val16;
+      uInt16 val16 = 0;
       const err_t err = read16(rb, val16);
       if (err) return err;
 
@@ -1547,7 +1576,7 @@ CortexM0::err_t CortexM0::execute(uInt16 inst, uInt8 op)
       DO_DISS("ldrsb r" << dec << rd << ",[r" << dec << rn << ",r" << dec << rm << "]\n");
       rb = read_register(rn) + read_register(rm);
 
-      uInt8 val8;
+      uInt8 val8 = 0;
       const err_t err = read8(rb, val8);
       if (err) return err;
 
@@ -1565,7 +1594,7 @@ CortexM0::err_t CortexM0::execute(uInt16 inst, uInt8 op)
       DO_DISS("ldrsh r" << dec << rd << ",[r" << dec << rn << ",r" << dec << rm << "]\n");
       rb = read_register(rn) + read_register(rm);
 
-      uInt16 val16;
+      uInt16 val16 = 0;
       const err_t err = read16(rb, val16);
       if (err) return err;
 
@@ -1806,14 +1835,14 @@ CortexM0::err_t CortexM0::execute(uInt16 inst, uInt8 op)
       }
     #endif
 
-      std::array<uInt32, 16> regOld = reg_norm;
+      const std::array<uInt32, 16> regOld = reg_norm;
 
       sp = read_register(13);
       for(ra = 0, rb = 0x01; rb; rb = (rb << 1) & 0xFF, ++ra)
       {
         if(inst & rb)
         {
-          err_t err = read32(sp, reg_norm[ra]);
+          const err_t err = read32(sp, reg_norm[ra]);
           if (err) {
             reg_norm = regOld;
             return err;
@@ -1825,7 +1854,7 @@ CortexM0::err_t CortexM0::execute(uInt16 inst, uInt8 op)
 
       if(inst & 0x100)
       {
-        err_t err = read32(sp, rc);
+        const err_t err = read32(sp, rc);
         if (err) {
           reg_norm = regOld;
           return err;
@@ -2029,7 +2058,7 @@ CortexM0::err_t CortexM0::execute(uInt16 inst, uInt8 op)
       {
         if(inst & rb)
         {
-          err_t err = write32(sp, read_register(ra));
+          const err_t err = write32(sp, read_register(ra));
           if (err) return err;
 
           sp += 4;
@@ -2049,7 +2078,7 @@ CortexM0::err_t CortexM0::execute(uInt16 inst, uInt8 op)
       rb = read_register(rn) + rb;
       rc = read_register(rd);
 
-      err_t err = write32(rb, rc);
+      const err_t err = write32(rb, rc);
       if (err) return err;
 
       return ERR_NONE;
@@ -2064,7 +2093,7 @@ CortexM0::err_t CortexM0::execute(uInt16 inst, uInt8 op)
       rb = read_register(rn) + read_register(rm);
       rc = read_register(rd);
 
-      err_t err = write32(rb, rc);
+      const err_t err = write32(rb, rc);
       if (err) return err;
 
       return ERR_NONE;
@@ -2080,7 +2109,7 @@ CortexM0::err_t CortexM0::execute(uInt16 inst, uInt8 op)
       //fprintf(stderr,"0x%08X\n",rb);
       rc = read_register(rd);
 
-      err_t err = write32(rb, rc);
+      const err_t err = write32(rb, rc);
       if (err) return err;
 
       return ERR_NONE;
@@ -2095,7 +2124,7 @@ CortexM0::err_t CortexM0::execute(uInt16 inst, uInt8 op)
       rb = read_register(rn) + rb;
       rc = read_register(rd);
 
-      err_t err = write8(rb, rc);
+      const err_t err = write8(rb, rc);
       if (err) return err;
 
       return ERR_NONE;
@@ -2110,7 +2139,7 @@ CortexM0::err_t CortexM0::execute(uInt16 inst, uInt8 op)
       rb = read_register(rn) + read_register(rm);
       rc = read_register(rd);
 
-      err_t err = write8(rb, rc);
+      const err_t err = write8(rb, rc);
       if (err) return err;
 
       return ERR_NONE;

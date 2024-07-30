@@ -35,7 +35,6 @@ BusTransactionQueue::Transaction BusTransactionQueue::Transaction::transactionDr
   return {.address = address, .value = value, .timestamp = timestamp, .yield = false};
 }
 
-
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void BusTransactionQueue::Transaction::setBusState(bool& bs_drive, uInt8& bs_value) const
 {
@@ -46,7 +45,6 @@ void BusTransactionQueue::Transaction::setBusState(bool& bs_drive, uInt8& bs_val
     bs_value = this->value;
   }
 }
-
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 BusTransactionQueue::BusTransactionQueue(size_t capacity) : myQueueCapacity(capacity)
@@ -73,11 +71,13 @@ BusTransactionQueue& BusTransactionQueue::setNextInjectAddress(uInt16 address)
   return *this;
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt16 BusTransactionQueue::getNextInjectAddress() const
 {
   return myNextInjectAddress;
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 BusTransactionQueue& BusTransactionQueue::setTimestamp(uInt64 timestamp)
 {
   myTimestamp = timestamp;
@@ -102,6 +102,7 @@ BusTransactionQueue& BusTransactionQueue::injectROMAt(uInt8 value, uInt16 addres
   return *this;
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 BusTransactionQueue& BusTransactionQueue::stuffByte(uInt8 value, uInt16 address)
 {
   push(Transaction::transactionDrive(address, value, myTimestamp));
