@@ -218,6 +218,10 @@
 		DC0E98E12801CC8900097C68 /* Cart0FA0Widget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC0E98DF2801CC8900097C68 /* Cart0FA0Widget.hxx */; };
 		DC0E98E42801CD1600097C68 /* Cart0FA0.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC0E98E22801CD1500097C68 /* Cart0FA0.cxx */; };
 		DC0E98E52801CD1600097C68 /* Cart0FA0.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC0E98E32801CD1500097C68 /* Cart0FA0.hxx */; };
+		DC0EF94C2C59578C0007F3B5 /* BusTransactionQueue.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC0EF9482C59578C0007F3B5 /* BusTransactionQueue.hxx */; };
+		DC0EF94D2C59578C0007F3B5 /* VcsLib.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC0EF9492C59578C0007F3B5 /* VcsLib.hxx */; };
+		DC0EF94E2C59578C0007F3B5 /* BusTransactionQueue.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC0EF94A2C59578C0007F3B5 /* BusTransactionQueue.cxx */; };
+		DC0EF94F2C59578C0007F3B5 /* VcsLib.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC0EF94B2C59578C0007F3B5 /* VcsLib.cxx */; };
 		DC11F78D0DB36933003B505E /* MT24LC256.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC11F78B0DB36933003B505E /* MT24LC256.cxx */; };
 		DC11F78E0DB36933003B505E /* MT24LC256.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC11F78C0DB36933003B505E /* MT24LC256.hxx */; };
 		DC13B53F176FF2F500B8B4BB /* RomListSettings.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC13B53D176FF2F500B8B4BB /* RomListSettings.cxx */; };
@@ -1092,6 +1096,10 @@
 		DC0E98DF2801CC8900097C68 /* Cart0FA0Widget.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Cart0FA0Widget.hxx; sourceTree = "<group>"; };
 		DC0E98E22801CD1500097C68 /* Cart0FA0.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Cart0FA0.cxx; sourceTree = "<group>"; };
 		DC0E98E32801CD1500097C68 /* Cart0FA0.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Cart0FA0.hxx; sourceTree = "<group>"; };
+		DC0EF9482C59578C0007F3B5 /* BusTransactionQueue.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = BusTransactionQueue.hxx; sourceTree = "<group>"; };
+		DC0EF9492C59578C0007F3B5 /* VcsLib.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = VcsLib.hxx; sourceTree = "<group>"; };
+		DC0EF94A2C59578C0007F3B5 /* BusTransactionQueue.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = BusTransactionQueue.cxx; sourceTree = "<group>"; };
+		DC0EF94B2C59578C0007F3B5 /* VcsLib.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = VcsLib.cxx; sourceTree = "<group>"; };
 		DC11F78B0DB36933003B505E /* MT24LC256.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = MT24LC256.cxx; sourceTree = "<group>"; };
 		DC11F78C0DB36933003B505E /* MT24LC256.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; path = MT24LC256.hxx; sourceTree = "<group>"; };
 		DC13B53D176FF2F500B8B4BB /* RomListSettings.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = RomListSettings.cxx; sourceTree = "<group>"; };
@@ -2511,6 +2519,8 @@
 		DC1E89032C4033280033E15F /* elf */ = {
 			isa = PBXGroup;
 			children = (
+				DC0EF94A2C59578C0007F3B5 /* BusTransactionQueue.cxx */,
+				DC0EF9482C59578C0007F3B5 /* BusTransactionQueue.hxx */,
 				DC0932142C50017A00527D3C /* ElfEnvironment.cxx */,
 				DC0932152C50017A00527D3C /* ElfEnvironment.hxx */,
 				DC0932162C50017A00527D3C /* ElfFile.hxx */,
@@ -2520,6 +2530,8 @@
 				DC1E88FE2C4033280033E15F /* ElfParser.hxx */,
 				DC1E88FF2C4033280033E15F /* ElfUtil.cxx */,
 				DC1E89002C4033280033E15F /* ElfUtil.hxx */,
+				DC0EF94B2C59578C0007F3B5 /* VcsLib.cxx */,
+				DC0EF9492C59578C0007F3B5 /* VcsLib.hxx */,
 			);
 			path = elf;
 			sourceTree = "<group>";
@@ -2825,6 +2837,7 @@
 				2D9173CE09BA90380026E9FF /* Cart2K.hxx in Headers */,
 				2D9173CF09BA90380026E9FF /* Cart3F.hxx in Headers */,
 				DC3EE86D1E2C0E6D00905161 /* zlib.h in Headers */,
+				DC0EF94D2C59578C0007F3B5 /* VcsLib.hxx in Headers */,
 				E08FCD5523A037EB0051F59B /* Blitter.hxx in Headers */,
 				DC84397F247B297A00C6A4FC /* CartTVBoyWidget.hxx in Headers */,
 				E034A5EF209FB25D00C89E9E /* EmulationTiming.hxx in Headers */,
@@ -3114,6 +3127,7 @@
 				DCFFE59E12100E1400DFA000 /* ComboDialog.hxx in Headers */,
 				DCD2839912E39F1200A808DC /* Thumbulator.hxx in Headers */,
 				DC69670B1361FD0A0036499D /* pngdebug.h in Headers */,
+				DC0EF94C2C59578C0007F3B5 /* BusTransactionQueue.hxx in Headers */,
 				DC69670C1361FD0A0036499D /* pnginfo.h in Headers */,
 				DC69670D1361FD0A0036499D /* pnglibconf.h in Headers */,
 				DC69670E1361FD0A0036499D /* pngstruct.h in Headers */,
@@ -3380,6 +3394,7 @@
 				2D91747F09BA90380026E9FF /* CartF4.cxx in Sources */,
 				DCFCDE7220C9E66500915CBE /* EmulationWorker.cxx in Sources */,
 				DC30924C212F74930020DAD0 /* TimerManager.cxx in Sources */,
+				DC0EF94E2C59578C0007F3B5 /* BusTransactionQueue.cxx in Sources */,
 				2D91748009BA90380026E9FF /* CartF4SC.cxx in Sources */,
 				2D91748109BA90380026E9FF /* CartF6.cxx in Sources */,
 				2D91748209BA90380026E9FF /* CartF6SC.cxx in Sources */,
@@ -3479,6 +3494,7 @@
 				2D9174F509BA90380026E9FF /* CommandMenu.cxx in Sources */,
 				DCB1502B2A814E6C0036F9EC /* Cart03E0.cxx in Sources */,
 				2D9174F709BA90380026E9FF /* CpuWidget.cxx in Sources */,
+				DC0EF94F2C59578C0007F3B5 /* VcsLib.cxx in Sources */,
 				2D9174F809BA90380026E9FF /* DataGridOpsWidget.cxx in Sources */,
 				E08FCD5423A037EB0051F59B /* BlitterFactory.cxx in Sources */,
 				2D9174F909BA90380026E9FF /* DataGridWidget.cxx in Sources */,
