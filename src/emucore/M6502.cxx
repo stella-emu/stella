@@ -81,7 +81,9 @@ void M6502::reset()
   icycles = 0;
 
   // Load PC from the reset vector
-  PC = static_cast<uInt16>(mySystem->peek(0xfffc)) | (static_cast<uInt16>(mySystem->peek(0xfffd)) << 8);
+  // Note: ELF needs the correct order here!
+  PC = static_cast<uInt16>(mySystem->peek(0xfffc));
+  PC |= (static_cast<uInt16>(mySystem->peek(0xfffd)) << 8);
 
   myLastAddress = myLastPeekAddress = myLastPokeAddress =
     myLastPeekBaseAddress = myLastPokeBaseAddress = 0;
@@ -415,6 +417,7 @@ inline void M6502::_execute(uInt64 cycles, DispatchResult& result)
   #endif
     }
 
+    // JTZ, TODO: This code seems to be superfluous for a 6507:
     // See if we need to handle an interrupt
     if((myExecutionStatus & MaskableInterruptBit) ||
         (myExecutionStatus & NonmaskableInterruptBit))
