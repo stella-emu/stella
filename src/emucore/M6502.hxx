@@ -84,16 +84,6 @@ class M6502 : public Serializable
     void reset();
 
     /**
-      Request a maskable interrupt
-    */
-    void irq() { myExecutionStatus |= MaskableInterruptBit; }
-
-    /**
-      Request a non-maskable interrupt
-    */
-    void nmi() { myExecutionStatus |= NonmaskableInterruptBit; }
-
-    /**
       Set the callback for handling a halt condition
     */
     void setOnHaltCallback(const onHaltCallback& callback) {
@@ -331,11 +321,6 @@ class M6502 : public Serializable
     }
 
     /**
-      Called after an interrupt has be requested using irq() or nmi()
-    */
-    void interruptHandler();
-
-    /**
       Check whether halt was requested (RDY low) and notify
     */
     void handleHalt();
@@ -362,9 +347,7 @@ class M6502 : public Serializable
     */
     static constexpr uInt8
       StopExecutionBit        = 0x01,
-      FatalErrorBit           = 0x02,
-      MaskableInterruptBit    = 0x04,
-      NonmaskableInterruptBit = 0x08
+      FatalErrorBit           = 0x02
     ;
     uInt8 myExecutionStatus{0};
 
