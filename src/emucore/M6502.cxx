@@ -417,15 +417,6 @@ inline void M6502::_execute(uInt64 cycles, DispatchResult& result)
   #endif
     }
 
-    // JTZ, TODO: This code seems to be superfluous for a 6507:
-    // See if we need to handle an interrupt
-    if((myExecutionStatus & MaskableInterruptBit) ||
-        (myExecutionStatus & NonmaskableInterruptBit))
-    {
-      // Yes, so handle the interrupt
-      interruptHandler();
-    }
-
     // See if a fatal error has occurred
     if(myExecutionStatus & FatalErrorBit)
     {
@@ -448,34 +439,6 @@ inline void M6502::_execute(uInt64 cycles, DispatchResult& result)
       return;
     }
   }
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void M6502::interruptHandler()
-{
-  // Handle the interrupt
-  if((myExecutionStatus & MaskableInterruptBit) && !I)
-  {
-    mySystem->incrementCycles(7 * SYSTEM_CYCLES_PER_CPU);
-    mySystem->poke(0x0100 + SP--, (PC - 1) >> 8);
-    mySystem->poke(0x0100 + SP--, (PC - 1) & 0x00ff);
-    mySystem->poke(0x0100 + SP--, PS() & (~0x10));
-    D = false;
-    I = true;
-    PC = static_cast<uInt16>(mySystem->peek(0xFFFE)) | (static_cast<uInt16>(mySystem->peek(0xFFFF)) << 8);
-  }
-  else if(myExecutionStatus & NonmaskableInterruptBit)
-  {
-    mySystem->incrementCycles(7 * SYSTEM_CYCLES_PER_CPU);
-    mySystem->poke(0x0100 + SP--, (PC - 1) >> 8);
-    mySystem->poke(0x0100 + SP--, (PC - 1) & 0x00ff);
-    mySystem->poke(0x0100 + SP--, PS() & (~0x10));
-    D = false;
-    PC = static_cast<uInt16>(mySystem->peek(0xFFFA)) | (static_cast<uInt16>(mySystem->peek(0xFFFB)) << 8);
-  }
-
-  // Clear the interrupt bits in myExecutionStatus
-  myExecutionStatus &= ~(MaskableInterruptBit | NonmaskableInterruptBit);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
