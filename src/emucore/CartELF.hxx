@@ -79,7 +79,6 @@ class CartridgeELF: public Cartridge {
     uInt64 getArmCycles() const;
 
     uInt8 driveBus(uInt16 address, uInt8 value);
-    void syncClock(const BusTransactionQueue::Transaction& transaction);
 
     void parseAndLinkElf();
     void setupMemoryMap();
