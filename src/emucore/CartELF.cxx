@@ -340,10 +340,11 @@ inline uInt64 CartridgeELF::getArmCycles() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 inline uInt8 CartridgeELF::driveBus(uInt16 address, uInt8 value)
 {
-  auto* nextTransaction = myTransactionQueue.getNextTransaction(address, getArmCycles());
+  auto* nextTransaction = myTransactionQueue.getNextTransaction(address,
+    mySystem->cycles() * myArmCyclesPer6502Cycle - myArmCyclesOffset);
   if (nextTransaction) {
     nextTransaction->setBusState(myIsBusDriven, myDriveBusValue);
-    syncClock(*nextTransaction);
+    myArmCyclesOffset = mySystem->cycles() * myArmCyclesPer6502Cycle - nextTransaction->timestamp;
   }
 
   if (myIsBusDriven) value |= myDriveBusValue;
@@ -353,14 +354,6 @@ inline uInt8 CartridgeELF::driveBus(uInt16 address, uInt8 value)
   runArm();
 
   return value;
-}
-
-inline void CartridgeELF::syncClock(const BusTransactionQueue::Transaction& transaction)
-{
-  const Int64 currentSystemArmCycles = mySystem->cycles() * myArmCyclesPer6502Cycle;
-  const Int64 transactionArmCycles = transaction.timestamp + myArmCyclesOffset;
-
-  myArmCyclesOffset += currentSystemArmCycles - transactionArmCycles;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
