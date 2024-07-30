@@ -166,7 +166,7 @@ void PhysicalJoystickHandler::addToDatabase(const PhysicalJoystickPtr& stick)
   }
   else // adding for the first time
   {
-    StickInfo info("", stick);
+    const StickInfo info("", stick);
     myDatabase.emplace(stick->name, info);
     setStickDefaultMapping(stick->ID, Event::NoType, EventMode::kMenuMode);
     setStickDefaultMapping(stick->ID, Event::NoType, EventMode::kEmulationMode);

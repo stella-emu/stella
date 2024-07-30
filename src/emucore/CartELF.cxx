@@ -151,7 +151,7 @@ namespace {
 
   void writeDebugBinary(const ElfLinker& linker)
   {
-    constexpr size_t IMAGE_SIZE = 4 * 0x00100000;
+    constexpr size_t IMAGE_SIZE = 4L * 0x00100000;
     static const char* IMAGE_FILE_NAME = "elf_executable_image.bin";
 
     auto binary = make_unique<uInt8[]>(IMAGE_SIZE);
@@ -168,10 +168,10 @@ namespace {
       std::ofstream binaryFile;
 
       binaryFile.open(IMAGE_FILE_NAME);
-      binaryFile.write(reinterpret_cast<const char*>(binary.get()), 4 * 0x00100000);
+      binaryFile.write(reinterpret_cast<const char*>(binary.get()), 4L * 0x00100000);
     }
 
-    cout << "wrote executable image to " << IMAGE_FILE_NAME << std::endl;
+    cout << "wrote executable image to " << IMAGE_FILE_NAME << '\n';
   }
 #endif
 }  // namespace
@@ -193,7 +193,6 @@ CartridgeELF::CartridgeELF(const ByteBuffer& image, size_t size, string_view md5
   parseAndLinkElf();
   setupMemoryMap();
 }
-
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartridgeELF::~CartridgeELF() = default;
@@ -286,6 +285,7 @@ bool CartridgeELF::poke(uInt16 address, uInt8 value)
   return false;
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeELF::consoleChanged(ConsoleTiming timing)
 {
   myConsoleTiming = timing;
@@ -325,6 +325,7 @@ CortexM0::err_t CartridgeELF::BusFallbackDelegate::fetch16(
     : CortexM0::errIntrinsic(CortexM0::ERR_UNMAPPED_FETCH16, address);
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CortexM0::err_t CartridgeELF::BusFallbackDelegate::read8(uInt32 address, uInt8& value, CortexM0& cortex)
 {
   // TODO: remove this hack and replace it with a setting.
@@ -332,6 +333,7 @@ CortexM0::err_t CartridgeELF::BusFallbackDelegate::read8(uInt32 address, uInt8& 
   return 0;
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 inline uInt64 CartridgeELF::getArmCycles() const
 {
   return myCortexEmu.getCycles() + myArmCyclesOffset;
@@ -393,16 +395,16 @@ void CartridgeELF::parseAndLinkElf()
   if (myLinker->getSegmentSize(ElfLinker::SegmentType::rodata) > RODATA_SIZE)
     throw runtime_error("rodata segment too large");
 
-  #ifdef DUMP_ELF
-    dumpLinkage(elfParser, *myLinker);
+#ifdef DUMP_ELF
+  dumpLinkage(elfParser, *myLinker);
 
-    cout
-      << "\nARM entrypoint: 0x"
-      << std::hex << std::setw(8) << std::setfill('0') << myArmEntrypoint << std::dec
-      << '\n';
+  cout
+    << "\nARM entrypoint: 0x"
+    << std::hex << std::setw(8) << std::setfill('0') << myArmEntrypoint
+    << std::dec << '\n';
 
-    writeDebugBinary(*myLinker);
-  #endif
+  writeDebugBinary(*myLinker);
+#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -463,6 +465,7 @@ uInt32 CartridgeELF::getSystemType() const
   }
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeELF::switchExecutionStage()
 {
   constexpr uInt32 sp = ADDR_STACK_BASE + STACK_SIZE;
@@ -478,7 +481,8 @@ void CartridgeELF::switchExecutionStage()
       myInitFunctionIndex = 0;
     }
     else {
-      return callFn(myLinker->getPreinitArray()[myInitFunctionIndex++], sp);
+      callFn(myLinker->getPreinitArray()[myInitFunctionIndex++], sp);
+      return;
     }
   }
 
@@ -487,13 +491,15 @@ void CartridgeELF::switchExecutionStage()
       myExecutionStage = ExecutionStage::main;
     }
     else {
-      return callFn(myLinker->getInitArray()[myInitFunctionIndex++], sp);
+      callFn(myLinker->getInitArray()[myInitFunctionIndex++], sp);
+      return;
     }
   }
 
   callMain();
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeELF::callFn(uInt32 ptr, uInt32 sp)
 {
   myCortexEmu
@@ -526,6 +532,7 @@ void CartridgeELF::callMain()
   callFn(myArmEntrypoint, sp);
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeELF::runArm()
 {
   if (
@@ -537,7 +544,7 @@ void CartridgeELF::runArm()
 
   const uInt32 cyclesGoal =
     (mySystem->cycles() + ARM_RUNAHED_MAX) * myArmCyclesPer6502Cycle - getArmCycles();
-  uInt32 cycles;
+  uInt32 cycles = 0;
 
   const CortexM0::err_t err = myCortexEmu.run(cyclesGoal, cycles);
 
@@ -556,5 +563,3 @@ void CartridgeELF::runArm()
       FatalEmulationError::raise("error executing ARM code: " + CortexM0::describeError(err));
   }
 }
-
-

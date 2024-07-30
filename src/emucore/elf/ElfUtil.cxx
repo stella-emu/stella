@@ -17,6 +17,7 @@
 
 #include "ElfUtil.hxx"
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Int32 elfUtil::decode_B_BL(uInt32 opcode)
 {
     // nomenclature follows Thumb32 BL / B.W encoding in Arm Architecture Reference
@@ -38,6 +39,7 @@ Int32 elfUtil::decode_B_BL(uInt32 opcode)
     return offset;
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt32 elfUtil::encode_B_BL(Int32 offset, bool link)
 {
   // nomenclature follows Thumb32 BL / B.W encoding in Arm Architecture Reference
