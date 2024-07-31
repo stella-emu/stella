@@ -542,8 +542,8 @@ void CartridgeELF::runArm()
   )
     return;
 
-  const uInt32 cyclesGoal =
-    (mySystem->cycles() + ARM_RUNAHED_MAX) * myArmCyclesPer6502Cycle - getArmCycles();
+  const uInt32 cyclesGoal = static_cast<uInt32>(
+    (mySystem->cycles() + ARM_RUNAHED_MAX) * myArmCyclesPer6502Cycle - getArmCycles());
   uInt32 cycles = 0;
 
   const CortexM0::err_t err = myCortexEmu.run(cyclesGoal, cycles);
