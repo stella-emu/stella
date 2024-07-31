@@ -120,6 +120,6 @@ namespace elfEnvironment {
   enum class Palette: uInt8 {pal, ntsc};
 
   vector<ElfLinker::ExternalSymbol> externalSymbols(Palette palette);
-}
+}  // namespace elfEnvironment
 
 #endif // ELF_ENVIRONMENT

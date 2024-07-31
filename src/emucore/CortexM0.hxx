@@ -32,6 +32,7 @@ class CortexM0
 
     class BusTransactionDelegate {
       public:
+        BusTransactionDelegate() = default;
         virtual ~BusTransactionDelegate() = default;
 
         virtual err_t read32(uInt32 address, uInt32& value, CortexM0& cortex);
@@ -43,6 +44,13 @@ class CortexM0
         virtual err_t write8(uInt32 address, uInt8 value, CortexM0& cortex);
 
         virtual err_t fetch16(uInt32 address, uInt16& value, uInt8& op, CortexM0& cortex);
+
+      private:
+        // Following constructors and assignment operators not supported
+        BusTransactionDelegate(const BusTransactionDelegate&) = delete;
+        BusTransactionDelegate(BusTransactionDelegate&&) = delete;
+        BusTransactionDelegate& operator=(const BusTransactionDelegate&) = delete;
+        BusTransactionDelegate& operator=(BusTransactionDelegate&&) = delete;
     };
 
     static constexpr uInt32 PAGE_SIZE = 4096;
@@ -63,27 +71,27 @@ class CortexM0
     static constexpr err_t ERR_SWI = 13;
     static constexpr err_t ERR_UNDEFINED_INST = 14;
 
-    static inline bool isErrCustom(err_t err) {
+    static constexpr bool isErrCustom(err_t err) {
       return (err & 0xff) == 0;
     }
 
-    static inline uInt32 getErrCustom(err_t err)  {
+    static constexpr uInt32 getErrCustom(err_t err)  {
       return (err & 0xffffffff) >> 8;
     }
 
-    static inline uInt8 getErrInstrinsic(err_t err)  {
+    static constexpr uInt8 getErrInstrinsic(err_t err)  {
       return err;
     }
 
-    static inline uInt32 getErrExtra(err_t err) {
+    static constexpr uInt32 getErrExtra(err_t err) {
       return err >> 32;
     }
 
-    static inline err_t errCustom(uInt32 code, uInt32 extra = 0) {
+    static constexpr err_t errCustom(uInt32 code, uInt32 extra = 0) {
       return ((static_cast<uInt64>(code) << 8) & 0xffffffff) | (static_cast<uInt64>(extra) << 32);
     }
 
-    static inline err_t errIntrinsic(uInt8 code, uInt32 extra = 0) {
+    static constexpr err_t errIntrinsic(uInt8 code, uInt32 extra = 0) {
       return static_cast<uInt64>(code) | (static_cast<uInt64>(extra) << 32);
     }
 
@@ -91,6 +99,7 @@ class CortexM0
 
   public:
     CortexM0();
+    ~CortexM0() = default;
 
     CortexM0& mapRegionData(uInt32 pageBase, uInt32 pageCount,
                             bool readOnly, uInt8* backingStore);
@@ -120,7 +129,7 @@ class CortexM0
     err_t write16(uInt32 address, uInt16 value);
     err_t write8(uInt32 address, uInt8 value);
 
-    inline uInt64 getCycles() const {
+    uInt64 getCycles() const {
       return myCycleCounter;
     }
 
@@ -134,12 +143,12 @@ class CortexM0
     };
 
     struct MemoryRegionAccessData {
-      uInt8* backingStore;
+      uInt8* backingStore{nullptr};
     };
 
     struct MemoryRegionAccessCode {
-      uInt8* backingStore;
-      uInt8* ops;
+      uInt8* backingStore{nullptr};
+      uInt8* ops{nullptr};
     };
 
     struct MemoryRegion {
@@ -152,14 +161,14 @@ class CortexM0
 
       MemoryRegionType type{MemoryRegionType::unmapped};
 
-      uInt32 base;
-      uInt32 size;
-      bool readOnly;
+      uInt32 base{0};
+      uInt32 size{0};
+      bool readOnly{false};
 
       union {
         MemoryRegionAccessData accessData;
         MemoryRegionAccessCode accessCode;
-        BusTransactionDelegate* delegate;
+        BusTransactionDelegate* delegate{nullptr};
       } access;
 
       private:
@@ -195,10 +204,10 @@ class CortexM0
     uInt64 myCycleCounter{0};
 
     static constexpr uInt32
-      CPSR_N = 1u << 31,
-      CPSR_Z = 1u << 30,
-      CPSR_C = 1u << 29,
-      CPSR_V = 1u << 28;
+      CPSR_N = 1U << 31,
+      CPSR_Z = 1U << 30,
+      CPSR_C = 1U << 29,
+      CPSR_V = 1U << 28;
 
   private:
     // Following constructors and assignment operators not supported

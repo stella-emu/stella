@@ -60,7 +60,7 @@ namespace {
         return mySymbols;
       }
 
-      const optional<vector<Relocation>> getRelocations(size_t section) const override {
+      optional<vector<Relocation>> getRelocations(size_t section) const override {
         return myRelocations.contains(section) ? myRelocations.at(section) : optional<vector<Relocation>>();
       }
 
