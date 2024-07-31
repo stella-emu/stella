@@ -143,12 +143,12 @@ class CortexM0
     };
 
     struct MemoryRegionAccessData {
-      uInt8* backingStore{nullptr};
+      uInt8* backingStore;
     };
 
     struct MemoryRegionAccessCode {
-      uInt8* backingStore{nullptr};
-      uInt8* ops{nullptr};
+      uInt8* backingStore;
+      uInt8* ops;
     };
 
     struct MemoryRegion {
