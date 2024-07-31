@@ -37,7 +37,7 @@ class ElfLinker {
         explicit ElfLinkError(string_view reason) : myReason(reason) {}
 
       private:
-        const string myReason;
+        string myReason;
     };
 
     class ElfSymbolResolutionError : public std::exception {
@@ -54,29 +54,30 @@ class ElfLinker {
         explicit ElfSymbolResolutionError(string_view reason) : myReason(reason) {}
 
       private:
-        const string myReason;
+        string myReason;
     };
 
     enum class SegmentType: uInt8 { text, data, rodata };
 
     struct RelocatedSection {
       SegmentType segment;
-      uInt32 offset;
+      uInt32 offset{0};
     };
 
     struct RelocatedSymbol {
       optional<SegmentType> segment;
-      uInt32 value;
-      bool undefined;
+      uInt32 value{0};
+      bool undefined{true};
     };
 
     struct ExternalSymbol {
       string name;
-      uInt32 value;
+      uInt32 value{0};
     };
 
   public:
     ElfLinker(uInt32 textBase, uInt32 dataBase, uInt32 rodataBase, const ElfFile& elf);
+    ~ElfLinker() = default;
 
     ElfLinker& setUndefinedSymbolDefault(uInt32 defaultValue);
     void link(const vector<ExternalSymbol>& externalSymbols);

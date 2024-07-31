@@ -107,8 +107,10 @@ namespace {
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 VcsLib::VcsLib(BusTransactionQueue& transactionQueue) : myTransactionQueue(transactionQueue)
-{}
+{
+}
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void VcsLib::reset()
 {
   myStuffMaskA = myStuffMaskX = myStuffMaskY = 0x00;
@@ -364,7 +366,7 @@ CortexM0::err_t VcsLib::fetch16(uInt32 address, uInt16& value, uInt8& op, Cortex
       }
 
     case ADDR_RANDINT:
-      cortex.setRegister(0, rand());
+      cortex.setRegister(0, rand());  // FIXME: use C++11 random library instead
       return returnFromStub(value, op);
 
     case ADDR_VCS_TXS2:

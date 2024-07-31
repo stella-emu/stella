@@ -24,6 +24,6 @@ namespace elfUtil {
   Int32 decode_B_BL(uInt32 opcode);
 
   uInt32 encode_B_BL(Int32 offset, bool link);
-}
+}  // namespace elfUtil
 
 #endif //  ELF_UTIL

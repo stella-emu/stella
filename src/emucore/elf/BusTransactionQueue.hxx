@@ -28,14 +28,15 @@ class BusTransactionQueue {
 
       void setBusState(bool& drive, uInt8& value) const;
 
-      uInt16 address;
-      uInt8 value;
-      uInt64 timestamp;
-      bool yield;
+      uInt16 address{0};
+      uInt8 value{0};
+      uInt64 timestamp{0};
+      bool yield{false};
     };
 
   public:
     explicit BusTransactionQueue(size_t capacity);
+    ~BusTransactionQueue() = default;
 
     BusTransactionQueue& reset();
 
@@ -52,7 +53,7 @@ class BusTransactionQueue {
     bool hasPendingTransaction() const;
     Transaction* getNextTransaction(uInt16 address, uInt64 timestamp);
 
-    inline size_t size() const {
+    size_t size() const {
       return myQueueSize;
     }
 
@@ -60,7 +61,7 @@ class BusTransactionQueue {
     void push(const Transaction& transaction);
 
   private:
-    const size_t myQueueCapacity;
+    const size_t myQueueCapacity{0};
 
     unique_ptr<Transaction[]> myQueue;
     size_t myQueueNext{0};

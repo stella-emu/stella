@@ -25,17 +25,18 @@
 class VcsLib: public CortexM0::BusTransactionDelegate {
   public:
     explicit VcsLib(BusTransactionQueue& transactionQueue);
+    ~VcsLib() override = default;
 
     void reset();
 
     CortexM0::err_t fetch16(uInt32 address, uInt16& value, uInt8& op, CortexM0& cortex) override;
 
-    inline void updateBus(uInt16 address, uInt8 value) {
+    void updateBus(uInt16 address, uInt8 value) {
       myCurrentAddress = address;
       myCurrentValue = value;
     }
 
-    inline bool isSuspended() const {
+    bool isSuspended() const {
       return
         myIsWaitingForRead && (myTransactionQueue.size() > 0 || (myWaitingForReadAddress != myCurrentAddress));
     }

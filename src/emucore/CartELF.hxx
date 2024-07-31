@@ -30,7 +30,7 @@ class CartridgeELF: public Cartridge {
   public:
     CartridgeELF(const ByteBuffer& image, size_t size, string_view md5,
                  const Settings& settings);
-    virtual ~CartridgeELF();
+    ~CartridgeELF() override;
 
   // Methods from Device
   public:
@@ -67,11 +67,11 @@ class CartridgeELF: public Cartridge {
 
   private:
     class BusFallbackDelegate: public CortexM0::BusTransactionDelegate {
-      CortexM0::err_t fetch16(uInt32 address, uInt16& value, uInt8& op, CortexM0& cortex);
-      CortexM0::err_t read8(uInt32 address, uInt8& value, CortexM0& cortex);
+      CortexM0::err_t fetch16(uInt32 address, uInt16& value, uInt8& op, CortexM0& cortex) override;
+      CortexM0::err_t read8(uInt32 address, uInt8& value, CortexM0& cortex) override;
     };
 
-    enum class ExecutionStage {
+    enum class ExecutionStage: uInt8 {
       boot, preinit, init, main
     };
 
@@ -125,6 +125,14 @@ class CartridgeELF: public Cartridge {
 
     ExecutionStage myExecutionStage{ExecutionStage::boot};
     uInt32 myInitFunctionIndex{0};
+
+  private:
+    // Following constructors and assignment operators not supported
+    CartridgeELF(const CartridgeELF&) = delete;
+    CartridgeELF(CartridgeELF&&) = delete;
+    CartridgeELF& operator=(const CartridgeELF&) = delete;
+    CartridgeELF& operator=(CartridgeELF&&) = delete;
+
 };
 
 #endif // CARTRIDGE_ELF

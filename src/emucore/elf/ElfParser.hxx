@@ -39,11 +39,12 @@ class ElfParser : public ElfFile {
         explicit ElfParseError(string_view reason) : myReason(reason) {}
 
       private:
-        const string myReason;
+        string myReason;
     };
 
   public:
     ElfParser() = default;
+    ~ElfParser() override = default;
 
     void parse(const uInt8 *elfData, size_t size);
 
@@ -52,18 +53,18 @@ class ElfParser : public ElfFile {
 
     const vector<Section>& getSections() const override;
     const vector<Symbol>& getSymbols() const override;
-    const optional<vector<Relocation>> getRelocations(size_t section) const override;
+    optional<vector<Relocation>> getRelocations(size_t section) const override;
 
   private:
     struct Header {
-      uInt16 type;
-      uInt16 arch;
-      uInt8 endianess;
-      uInt32 shOffset;
+      uInt16 type{0};
+      uInt16 arch{0};
+      uInt8 endianess{0};
+      uInt32 shOffset{0};
 
-      uInt16 shNum;
-      uInt16 shSize;
-      uInt16 shstrIndex;
+      uInt16 shNum{0};
+      uInt16 shSize{0};
+      uInt16 shstrIndex{0};
     };
 
   private:
@@ -81,9 +82,9 @@ class ElfParser : public ElfFile {
 
   private:
     const uInt8 *myData{nullptr};
-    size_t mySize;
+    size_t mySize{0};
 
-    bool myBigEndian{true};
+    bool myBigEndian{false};
 
     Header myHeader;
     vector<Section> mySections;

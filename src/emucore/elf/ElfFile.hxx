@@ -23,44 +23,45 @@
 class ElfFile {
   public:
     struct Section {
-      uInt32 nameOffset;
+      uInt32 nameOffset{0};
       string name;
 
-      uInt32 type;
-      uInt32 flags;
+      uInt32 type{0};
+      uInt32 flags{0};
 
-      uInt32 virtualAddress;
-      uInt32 offset;
-      uInt32 size;
+      uInt32 virtualAddress{0};
+      uInt32 offset{0};
+      uInt32 size{0};
 
-      uInt32 info;
-      uInt32 align;
+      uInt32 info{0};
+      uInt32 align{0};
     };
 
     struct Symbol {
-      uInt32 nameOffset;
-      uInt32 value;
-      uInt32 size;
-      uInt8 info;
-      uInt8 visibility;
-      uInt16 section;
+      uInt32 nameOffset{0};
+      uInt32 value{0};
+      uInt32 size{0};
+      uInt8 info{0};
+      uInt8 visibility{0};
+      uInt16 section{0};
 
       string name;
-      uInt8 bind;
-      uInt8 type;
+      uInt8 bind{0};
+      uInt8 type{0};
     };
 
     struct Relocation {
-      uInt32 offset;
-      uInt32 info;
+      uInt32 offset{0};
+      uInt32 info{0};
       optional<uInt32> addend;
 
-      uInt32 symbol;
-      uInt8 type;
+      uInt32 symbol{0};
+      uInt8 type{0};
       string symbolName;
     };
 
   public:
+    ElfFile() = default;
     virtual ~ElfFile() = default;
 
     virtual const uInt8 *getData() const = 0;
@@ -68,7 +69,7 @@ class ElfFile {
 
     virtual const vector<Section>& getSections() const = 0;
     virtual const vector<Symbol>& getSymbols() const = 0;
-    virtual const optional<vector<Relocation>> getRelocations(size_t section) const = 0;
+    virtual optional<vector<Relocation>> getRelocations(size_t section) const = 0;
 
   public:
     static constexpr uInt8 ENDIAN_LITTLE_ENDIAN = 0x01;
@@ -100,6 +101,13 @@ class ElfFile {
     static constexpr uInt32 R_ARM_TARGET1 = 0x26;
 
     static constexpr uInt32 STT_FUNC = 0x02;
+
+  private:
+    // Following constructors and assignment operators not supported
+    ElfFile(const ElfFile&) = delete;
+    ElfFile(ElfFile&&) = delete;
+    ElfFile& operator=(const ElfFile&) = delete;
+    ElfFile& operator=(ElfFile&&) = delete;
 };
 
 #endif // ELF_FILE
