@@ -1,5 +1,5 @@
 LIBRETRO_COMM_DIR = $(CORE_DIR)/../libretro-common
-INCFLAGS := -I. -I$(CORE_DIR) -I$(CORE_DIR)/os/libretro -I$(CORE_DIR)/emucore -I$(CORE_DIR)/emucore/tia -I$(CORE_DIR)/common -I$(CORE_DIR)/common/audio -I$(CORE_DIR)/common/tv_filters -I$(CORE_DIR)/common/repository/sqlite -I$(CORE_DIR)/lib/json -I$(CORE_DIR)/lib/httplib -I$(CORE_DIR)/lib/sqlite
+INCFLAGS := -I. -I$(CORE_DIR) -I$(CORE_DIR)/os/libretro -I$(CORE_DIR)/emucore -I$(CORE_DIR)/emucore/elf -I$(CORE_DIR)/emucore/tia -I$(CORE_DIR)/common -I$(CORE_DIR)/common/audio -I$(CORE_DIR)/common/tv_filters -I$(CORE_DIR)/common/repository/sqlite -I$(CORE_DIR)/lib/json -I$(CORE_DIR)/lib/httplib -I$(CORE_DIR)/lib/sqlite
 
 ifneq (,$(findstring msvc2003,$(platform)))
 INCFLAGS += -I$(LIBRETRO_COMM_DIR)/include/compat/msvc
@@ -72,6 +72,7 @@ SOURCES_CXX := \
 	$(CORE_DIR)/emucore/CartE7.cxx \
 	$(CORE_DIR)/emucore/CartEF.cxx \
 	$(CORE_DIR)/emucore/CartEFSC.cxx \
+	$(CORE_DIR)/emucore/CartELF.cxx \
 	$(CORE_DIR)/emucore/CartF0.cxx \
 	$(CORE_DIR)/emucore/CartF4.cxx \
 	$(CORE_DIR)/emucore/CartF4SC.cxx \
@@ -97,6 +98,7 @@ SOURCES_CXX := \
 	$(CORE_DIR)/emucore/Console.cxx \
 	$(CORE_DIR)/emucore/Control.cxx \
 	$(CORE_DIR)/emucore/ControllerDetector.cxx \
+	$(CORE_DIR)/emucore/CortexM0.cxx \
 	$(CORE_DIR)/emucore/DispatchResult.cxx \
 	$(CORE_DIR)/emucore/Driving.cxx \
 	$(CORE_DIR)/emucore/EmulationTiming.cxx \
@@ -130,6 +132,12 @@ SOURCES_CXX := \
 	$(CORE_DIR)/emucore/Switches.cxx \
 	$(CORE_DIR)/emucore/System.cxx \
 	$(CORE_DIR)/emucore/Thumbulator.cxx \
+	$(CORE_DIR)/emucore/elf/BusTransactionQueue.cxx \
+	$(CORE_DIR)/emucore/elf/ElfEnvironment.cxx \
+	$(CORE_DIR)/emucore/elf/ElfLinker.cxx \
+	$(CORE_DIR)/emucore/elf/ElfParser.cxx \
+	$(CORE_DIR)/emucore/elf/ElfUtil.cxx \
+	$(CORE_DIR)/emucore/elf/VcsLib.cxx \
 	$(CORE_DIR)/emucore/tia/AudioChannel.cxx \
 	$(CORE_DIR)/emucore/tia/Audio.cxx \
 	$(CORE_DIR)/emucore/tia/Background.cxx \
