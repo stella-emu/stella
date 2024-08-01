@@ -26,7 +26,7 @@ class AudioSettings
 {
   public:
 
-    enum class Preset {
+    enum class Preset: uInt8 {
       custom                 = 1,
       lowQualityMediumLag    = 2,
       highQualityMediumLag   = 3,
@@ -34,7 +34,7 @@ class AudioSettings
       ultraQualityMinimalLag = 5
     };
 
-    enum class ResamplingQuality {
+    enum class ResamplingQuality: uInt8 {
       nearestNeighbour   = 1,
       lanczos_2          = 2,
       lanczos_3          = 3

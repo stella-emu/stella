@@ -120,7 +120,7 @@ class FBBackendSDL2 : public FBBackend
       @param g  The green component of the color.
       @param b  The blue component of the color.
     */
-    inline uInt32 mapRGB(uInt8 r, uInt8 g, uInt8 b) const override
+    uInt32 mapRGB(uInt8 r, uInt8 g, uInt8 b) const override
       { return SDL_MapRGB(myPixelFormat, r, g, b); }
 
     /**
@@ -131,7 +131,7 @@ class FBBackendSDL2 : public FBBackend
       @param b  The blue component of the color.
       @param a  The alpha component of the color.
     */
-    inline uInt32 mapRGBA(uInt8 r, uInt8 g, uInt8 b, uInt8 a) const override
+    uInt32 mapRGBA(uInt8 r, uInt8 g, uInt8 b, uInt8 a) const override
       { return SDL_MapRGBA(myPixelFormat, r, g, b, a); }
 
     /**

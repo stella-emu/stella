@@ -58,6 +58,7 @@ class JoyMap
           axis{JoyAxis::NONE}, adir{JoyDir::NONE},
           hat{c_hat}, hdir{c_hdir} { }
 
+      ~JoyMapping() = default;
       JoyMapping(const JoyMapping&) = default;
       JoyMapping& operator=(const JoyMapping&) = default;
       JoyMapping(JoyMapping&&) = default;
@@ -77,64 +78,61 @@ class JoyMap
     using JoyMappingArray = std::vector<JoyMapping>;
 
     JoyMap() = default;
+    ~JoyMap() = default;
 
     /** Add new mapping for given event */
-    void add(const Event::Type event, const JoyMapping& mapping);
-    void add(const Event::Type event, const EventMode mode, const int button,
-             const JoyAxis axis, const JoyDir adir,
-             const int hat = JOY_CTRL_NONE, const JoyHatDir hdir = JoyHatDir::CENTER);
-    void add(const Event::Type event, const EventMode mode, const int button,
-             const int hat, const JoyHatDir hdir);
+    void add(Event::Type event, const JoyMapping& mapping);
+    void add(Event::Type event, EventMode mode, int button,
+             JoyAxis axis, JoyDir adir,
+             int hat = JOY_CTRL_NONE, JoyHatDir hdir = JoyHatDir::CENTER);
+    void add(Event::Type event, EventMode mode, int button,
+             int hat, JoyHatDir hdir);
 
     /** Erase mapping */
     void erase(const JoyMapping& mapping);
-    void erase(const EventMode mode, const int button,
-               const JoyAxis axis, const JoyDir adir);
-    void erase(const EventMode mode, const int button,
-               const int hat, const JoyHatDir hdir);
+    void erase(EventMode mode, int button, JoyAxis axis, JoyDir adir);
+    void erase(EventMode mode, int button, int hat, JoyHatDir hdir);
 
     /** Get event for mapping */
     Event::Type get(const JoyMapping& mapping) const;
-    Event::Type get(const EventMode mode, const int button,
-                    const JoyAxis axis = JoyAxis::NONE, const JoyDir adir = JoyDir::NONE) const;
-    Event::Type get(const EventMode mode, const int button,
-                    const int hat, const JoyHatDir hdir) const;
+    Event::Type get(EventMode mode, int button, JoyAxis axis = JoyAxis::NONE,
+                    JoyDir adir = JoyDir::NONE) const;
+    Event::Type get(EventMode mode, int button, int hat, JoyHatDir hdir) const;
 
     /** Check if a mapping exists */
     bool check(const JoyMapping& mapping) const;
-    bool check(const EventMode mode, const int button,
-               const JoyAxis axis, const JoyDir adir,
-               const int hat = JOY_CTRL_NONE, const JoyHatDir hdir = JoyHatDir::CENTER) const;
+    bool check(EventMode mode, int button, JoyAxis axis, JoyDir adir,
+               int hat = JOY_CTRL_NONE, JoyHatDir hdir = JoyHatDir::CENTER) const;
 
     /** Get mapping description */
-    string getEventMappingDesc(int stick, const Event::Type event, const EventMode mode) const;
+    string getEventMappingDesc(int stick, Event::Type event, EventMode mode) const;
 
-    JoyMappingArray getEventMapping(const Event::Type event, const EventMode mode) const;
+    JoyMappingArray getEventMapping(Event::Type event, EventMode mode) const;
 
-    nlohmann::json saveMapping(const EventMode mode) const;
-    int loadMapping(const nlohmann::json& eventMappings, const EventMode mode);
+    nlohmann::json saveMapping(EventMode mode) const;
+    int loadMapping(const nlohmann::json& eventMappings, EventMode mode);
 
     static nlohmann::json convertLegacyMapping(string list);
 
     /** Erase all mappings for given mode */
-    void eraseMode(const EventMode mode);
+    void eraseMode(EventMode mode);
     /** Erase given event's mapping for given mode */
-    void eraseEvent(const Event::Type event, const EventMode mode);
+    void eraseEvent(Event::Type event, EventMode mode);
     /** clear all mappings for a modes */
     // void clear() { myMap.clear(); }
     size_t size() const { return myMap.size(); }
 
   private:
-    static string getDesc(const Event::Type event, const JoyMapping& mapping);
+    static string getDesc(Event::Type event, const JoyMapping& mapping);
 
     struct JoyHash {
       size_t operator()(const JoyMapping& m)const {
-        return std::hash<uInt64>()((uInt64(m.mode)) // 3 bits
-          + ((uInt64(m.button)) * 7)  // 3 bits
-          + (((uInt64(m.axis)) << 0)  // 2 bits
-           | ((uInt64(m.adir)) << 2)  // 2 bits
-           | ((uInt64(m.hat )) << 4)  // 1 bit
-           | ((uInt64(m.hdir)) << 5)  // 2 bits
+        return std::hash<uInt64>()((static_cast<uInt64>(m.mode)) // 3 bits
+          + ((static_cast<uInt64>(m.button)) * 7)  // 3 bits
+          + (((static_cast<uInt64>(m.axis)) << 0)  // 2 bits
+           | ((static_cast<uInt64>(m.adir)) << 2)  // 2 bits
+           | ((static_cast<uInt64>(m.hat )) << 4)  // 1 bit
+           | ((static_cast<uInt64>(m.hdir)) << 5)  // 2 bits
             ) * 61
         );
       }

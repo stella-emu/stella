@@ -88,8 +88,8 @@ using BoolArray = std::vector<bool>;
 using ByteArray = std::vector<uInt8>;
 using ShortArray = std::vector<uInt16>;
 using StringList = std::vector<std::string>;
-using ByteBuffer = std::unique_ptr<uInt8[]>;  // NOLINT
-using DWordBuffer = std::unique_ptr<uInt32[]>;  // NOLINT
+using ByteBuffer = std::unique_ptr<uInt8[]>;
+using DWordBuffer = std::unique_ptr<uInt32[]>;
 
 // We use KB a lot; let's make a literal for it
 constexpr size_t operator "" _KB(unsigned long long size)
@@ -105,7 +105,7 @@ std::ostream& operator<< (std::ostream& out, const std::vector<T>& v) {
   return out;
 }
 
-static const string EmptyString("");
+static const string EmptyString;
 
 // This is defined by some systems, but Stella has other uses for it
 #undef PAGE_SIZE
@@ -147,7 +147,7 @@ namespace BSPF
   #endif
 
   // Get next power of two greater than or equal to the given value
-  inline constexpr size_t nextPowerOfTwo(size_t size) {
+  constexpr size_t nextPowerOfTwo(size_t size) {
     if(size < 2) return 1;
     size_t power2 = 1;
     while(power2 < size)
@@ -157,7 +157,7 @@ namespace BSPF
 
   // Get next multiple of the given value
   // Note that this only works when multiple is a power of two
-  inline constexpr size_t nextMultipleOf(size_t size, size_t multiple) {
+  constexpr size_t nextMultipleOf(size_t size, size_t multiple) {
     return (size + multiple - 1) & ~(multiple - 1);
   }
 
@@ -167,15 +167,15 @@ namespace BSPF
 
   // Combines 'max' and 'min', and clamps value to the upper/lower value
   // if it is outside the specified range
-  template<typename T> inline constexpr T clamp(T val, T lower, T upper)
+  template<typename T> constexpr T clamp(T val, T lower, T upper)
   {
     return std::clamp<T>(val, lower, upper);
   }
-  template<typename T> inline constexpr void clamp(T& val, T lower, T upper, T setVal)
+  template<typename T> constexpr void clamp(T& val, T lower, T upper, T setVal)
   {
     if(val < lower || val > upper)  val = setVal;
   }
-  template<typename T> inline constexpr T clampw(T val, T lower, T upper)
+  template<typename T> constexpr T clampw(T val, T lower, T upper)
   {
     return (val < lower) ? upper : (val > upper) ? lower : val;
   }
@@ -204,7 +204,7 @@ namespace BSPF
   {
     try {
       int i{};
-      s = s.substr(s.find_first_not_of(" "));
+      s = s.substr(s.find_first_not_of(' '));
       auto result = std::from_chars(s.data(), s.data() + s.size(), i, BASE);
       return result.ec == std::errc() ? i : defaultValue;
     }
@@ -226,13 +226,13 @@ namespace BSPF
   }
 
   // Test whether two strings are equal (case insensitive)
-  inline constexpr bool equalsIgnoreCase(string_view s1, string_view s2)
+  constexpr bool equalsIgnoreCase(string_view s1, string_view s2)
   {
     return s1.size() == s2.size() ? (compareIgnoreCase(s1, s2) == 0) : false;
   }
 
   // Test whether the first string starts with the second one (case insensitive)
-  inline constexpr bool startsWithIgnoreCase(string_view s1, string_view s2)
+  constexpr bool startsWithIgnoreCase(string_view s1, string_view s2)
   {
     if(s1.size() >= s2.size())
       return compareIgnoreCase(s1.substr(0, s2.size()), s2) == 0;
@@ -241,7 +241,7 @@ namespace BSPF
   }
 
   // Test whether the first string ends with the second one (case insensitive)
-  inline constexpr bool endsWithIgnoreCase(string_view s1, string_view s2)
+  constexpr bool endsWithIgnoreCase(string_view s1, string_view s2)
   {
     if(s1.size() >= s2.size())
       return compareIgnoreCase(s1.substr(s1.size() - s2.size()), s2) == 0;
@@ -253,7 +253,7 @@ namespace BSPF
   // starting from 'startpos' in the first string
   static size_t findIgnoreCase(string_view s1, string_view s2, size_t startpos = 0)
   {
-    const auto pos = std::search(s1.cbegin()+startpos, s1.cend(),
+    const auto *const pos = std::search(s1.cbegin()+startpos, s1.cend(),
       s2.cbegin(), s2.cend(), [](char ch1, char ch2) {
         return toupper(static_cast<uInt8>(ch1)) == toupper(static_cast<uInt8>(ch2));
       });

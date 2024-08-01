@@ -22,6 +22,7 @@ class OSystem;
 class StateManager;
 
 #include "LinkedObjectPool.hxx"
+#include "Serializer.hxx"
 #include "bspf.hxx"
 
 /**
@@ -47,12 +48,13 @@ class RewindManager
 {
   public:
     RewindManager(OSystem& system, StateManager& statemgr);
+    ~RewindManager() = default;
 
   public:
     static constexpr uInt32 MAX_BUF_SIZE = 1000;
     static constexpr int NUM_INTERVALS = 7;
     // cycle values for the intervals
-    const std::array<uInt32, NUM_INTERVALS> INTERVAL_CYCLES = {
+    static constexpr std::array<uInt32, NUM_INTERVALS> INTERVAL_CYCLES = {
       76 * 262,
       76 * 262 * 3,
       76 * 262 * 10,
@@ -74,7 +76,7 @@ class RewindManager
 
     static constexpr int NUM_HORIZONS = 8;
     // cycle values for the horzions
-    const std::array<uInt64, NUM_HORIZONS> HORIZON_CYCLES = {
+    static constexpr std::array<uInt64, NUM_HORIZONS> HORIZON_CYCLES = {
       uInt64{76} * 262 * 60 * 3,
       uInt64{76} * 262 * 60 * 10,
       uInt64{76} * 262 * 60 * 30,
@@ -187,7 +189,7 @@ class RewindManager
       RewindState() = default;
       ~RewindState() = default;
       RewindState(const RewindState& rs) : cycles(rs.cycles) { }
-      RewindState& operator= (const RewindState& rs) { cycles = rs.cycles; return *this; }
+      RewindState& operator= (const RewindState& rs) { cycles = rs.cycles; return *this; }  // NOLINT: we don't worry about self-assignment here
       RewindState(RewindState&&) = default;
       RewindState& operator=(RewindState&&) = default;
 

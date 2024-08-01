@@ -235,7 +235,7 @@ void PhysicalKeyboardHandler::setDefaultMapping(Event::Type event, EventMode mod
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PhysicalKeyboardHandler::defineControllerMappings(
-    const Controller::Type type, Controller::Jack port, const Properties& properties,
+    Controller::Type type, Controller::Jack port, const Properties& properties,
     Controller::Type qtType1, Controller::Type qtType2)
 {
   // Determine controller events to use
@@ -265,7 +265,7 @@ void PhysicalKeyboardHandler::defineControllerMappings(
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 EventMode PhysicalKeyboardHandler::getMode(const Properties& properties,
-                                           const PropType propType)
+                                           PropType propType)
 {
   const string& propName = properties.get(propType);
 
@@ -276,7 +276,7 @@ EventMode PhysicalKeyboardHandler::getMode(const Properties& properties,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-EventMode PhysicalKeyboardHandler::getMode(const Controller::Type type)
+EventMode PhysicalKeyboardHandler::getMode(Controller::Type type)
 {
   switch(type)
   {
@@ -408,8 +408,7 @@ void PhysicalKeyboardHandler::enableMappings(const Event::EventSet& events,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PhysicalKeyboardHandler::enableMapping(const Event::Type event,
-                                            EventMode mode)
+void PhysicalKeyboardHandler::enableMapping(Event::Type event, EventMode mode)
 {
   // copy from controller mode into emulation mode
   const KeyMap::MappingArray mappings = myKeyMap.getEventMapping(event, mode);
@@ -419,8 +418,7 @@ void PhysicalKeyboardHandler::enableMapping(const Event::Type event,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-EventMode PhysicalKeyboardHandler::getEventMode(const Event::Type event,
-                                                const EventMode mode)
+EventMode PhysicalKeyboardHandler::getEventMode(Event::Type event, EventMode mode)
 {
   if (mode == EventMode::kEmulationMode)
   {
@@ -444,7 +442,7 @@ EventMode PhysicalKeyboardHandler::getEventMode(const Event::Type event,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool PhysicalKeyboardHandler::isJoystickEvent(const Event::Type event)
+bool PhysicalKeyboardHandler::isJoystickEvent(Event::Type event)
 {
   return LeftJoystickEvents.contains(event)
     || QTJoystick3Events.contains(event)
@@ -453,7 +451,7 @@ bool PhysicalKeyboardHandler::isJoystickEvent(const Event::Type event)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool PhysicalKeyboardHandler::isPaddleEvent(const Event::Type event)
+bool PhysicalKeyboardHandler::isPaddleEvent(Event::Type event)
 {
   return LeftPaddlesEvents.contains(event)
     || QTPaddles3Events.contains(event)
@@ -462,21 +460,21 @@ bool PhysicalKeyboardHandler::isPaddleEvent(const Event::Type event)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool PhysicalKeyboardHandler::isKeyboardEvent(const Event::Type event)
+bool PhysicalKeyboardHandler::isKeyboardEvent(Event::Type event)
 {
   return LeftKeyboardEvents.contains(event)
     || RightKeyboardEvents.contains(event);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool PhysicalKeyboardHandler::isDrivingEvent(const Event::Type event)
+bool PhysicalKeyboardHandler::isDrivingEvent(Event::Type event)
 {
   return LeftDrivingEvents.contains(event)
     || RightDrivingEvents.contains(event);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool PhysicalKeyboardHandler::isCommonEvent(const Event::Type event)
+bool PhysicalKeyboardHandler::isCommonEvent(Event::Type event)
 {
   return !(isJoystickEvent(event) || isPaddleEvent(event)
     || isKeyboardEvent(event) || isDrivingEvent(event));

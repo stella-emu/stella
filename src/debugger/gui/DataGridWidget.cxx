@@ -778,7 +778,7 @@ void DataGridWidget::endEditMode()
       case Common::Base::Fmt::_10:
         editString().insert(0, 1, '#');
         break;
-      case Common::Base::Fmt::_DEFAULT:
+      case Common::Base::Fmt::DEFAULT:
       default:  // TODO - properly handle all other cases
         break;
     }

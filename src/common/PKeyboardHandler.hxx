@@ -24,6 +24,7 @@ class OSystem;
 class EventHandler;
 
 #include "bspf.hxx"
+#include "Control.hxx"
 #include "Event.hxx"
 #include "EventHandlerConstants.hxx"
 #include "Props.hxx"
@@ -52,7 +53,7 @@ class PhysicalKeyboardHandler
                            bool updateDefaults = false);
 
     /** define mappings for current controllers */
-    void defineControllerMappings(const Controller::Type type,
+    void defineControllerMappings(Controller::Type type,
                                   Controller::Jack port,
                                   const Properties& properties,
                                   Controller::Type qtType1 = Controller::Type::Unknown,
@@ -108,23 +109,23 @@ class PhysicalKeyboardHandler
       EventMode mode = EventMode::kEmulationMode, bool updateDefaults = false);
 
     /** returns the event's controller mode */
-    static EventMode getEventMode(const Event::Type event, const EventMode mode);
+    static EventMode getEventMode(Event::Type event, EventMode mode);
     /** Checks event type. */
-    static bool isJoystickEvent(const Event::Type event);
-    static bool isPaddleEvent(const Event::Type event);
-    static bool isKeyboardEvent(const Event::Type event);
-    static bool isDrivingEvent(const Event::Type event);
-    static bool isCommonEvent(const Event::Type event);
+    static bool isJoystickEvent(Event::Type event);
+    static bool isPaddleEvent(Event::Type event);
+    static bool isKeyboardEvent(Event::Type event);
+    static bool isDrivingEvent(Event::Type event);
+    static bool isCommonEvent(Event::Type event);
 
     void enableCommonMappings();
 
     void enableMappings(const Event::EventSet& events, EventMode mode);
-    void enableMapping(const Event::Type event, EventMode mode);
+    void enableMapping(Event::Type event, EventMode mode);
 
     /** return event mode for given property */
-    static EventMode getMode(const Properties& properties, const PropType propType);
+    static EventMode getMode(const Properties& properties, PropType propType);
     /** return event mode for given controller type */
-    static EventMode getMode(const Controller::Type type);
+    static EventMode getMode(Controller::Type type);
 
 #ifdef DEBUG_BUILD
     void verifyDefaultMapping(PhysicalKeyboardHandler::EventMappingArray mapping,

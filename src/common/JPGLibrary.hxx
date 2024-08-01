@@ -23,6 +23,9 @@
 class OSystem;
 class FBSurface;
 
+#include "Variant.hxx"
+#include "bspf.hxx"
+
 /**
   This class implements a thin wrapper around the nanojpeg library, and
   abstracts all the irrelevant details other loading an actual image.
@@ -33,6 +36,7 @@ class JPGLibrary
 {
   public:
     explicit JPGLibrary(OSystem& osystem);
+    ~JPGLibrary() = default;
 
     /**
       Read a JPG image from the specified file into a FBSurface structure,

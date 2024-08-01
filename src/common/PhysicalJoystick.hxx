@@ -43,7 +43,7 @@ class PhysicalJoystick
   static constexpr char MODE_DELIM = '>'; // must not be '^', '|' or '#'
 
   public:
-    enum class Port {
+    enum class Port: uInt8 {
       AUTO,
       LEFT,
       RIGHT,
@@ -51,10 +51,11 @@ class PhysicalJoystick
     };
 
     PhysicalJoystick() = default;
+    ~PhysicalJoystick() = default;
 
     nlohmann::json getMap() const;
     bool setMap(const nlohmann::json& map);
-    void setPort(const Port _port) { port = _port; }
+    void setPort(Port _port) { port = _port; }
 
     static nlohmann::json convertLegacyMapping(string_view mapping,
                                                string_view name);
@@ -68,7 +69,7 @@ class PhysicalJoystick
                     int axes, int buttons, int hats, int balls);
 
   private:
-    enum class Type {
+    enum class Type: uInt8 {
       REGULAR,
       LEFT_STELLADAPTOR, RIGHT_STELLADAPTOR,
       LEFT_2600DAPTOR, RIGHT_2600DAPTOR
@@ -89,7 +90,7 @@ class PhysicalJoystick
     // Convert from string to Port type and vice versa
     static string getName(const Port _port) {
       static constexpr std::array<string_view,
-      static_cast<int>(PhysicalJoystick::Port::NUM_PORTS)> NAMES = {
+      static_cast<uInt8>(PhysicalJoystick::Port::NUM_PORTS)> NAMES = {
         "Auto", "Left", "Right"
       };
 
@@ -98,11 +99,11 @@ class PhysicalJoystick
 
     static Port getPort(string_view portName) {
       static constexpr std::array<string_view,
-      static_cast<int>(PhysicalJoystick::Port::NUM_PORTS)> NAMES = {
+      static_cast<uInt8>(PhysicalJoystick::Port::NUM_PORTS)> NAMES = {
         "Auto", "Left", "Right"
       };
 
-      for(int i = 0; i < static_cast<int>(PhysicalJoystick::Port::NUM_PORTS); ++i)
+      for(uInt8 i = 0; i < static_cast<uInt8>(PhysicalJoystick::Port::NUM_PORTS); ++i)
         if (BSPF::equalsIgnoreCase(portName, NAMES[i]))
           return PhysicalJoystick::Port{i};
 

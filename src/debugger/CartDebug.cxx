@@ -200,7 +200,7 @@ string CartDebug::toString()
       bytesPerLine = 0x04;
       break;
 
-    case Base::Fmt::_DEFAULT:
+    case Base::Fmt::DEFAULT:
     default:
       return DebuggerParser::red("invalid base, this is a BUG");
   }

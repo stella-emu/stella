@@ -42,6 +42,7 @@ class KeyMap
         : mode{c_mode}, key{c_key}, mod{c_mod} { }
       explicit Mapping(EventMode c_mode, int c_key, int c_mod)
         : mode{c_mode}, key{static_cast<StellaKey>(c_key)}, mod{static_cast<StellaMod>(c_mod)} { }
+      ~Mapping() = default;
       Mapping(const Mapping&) = default;
       Mapping& operator=(const Mapping&) = default;
       Mapping(Mapping&&) = default;
@@ -61,41 +62,42 @@ class KeyMap
     using MappingArray = std::vector<Mapping>;
 
     KeyMap() = default;
+    ~KeyMap() = default;
 
     /** Add new mapping for given event */
-    void add(const Event::Type event, const Mapping& mapping);
-    void add(const Event::Type event, const EventMode mode, const int key, const int mod);
+    void add(Event::Type event, const Mapping& mapping);
+    void add(Event::Type event, EventMode mode, int key, int mod);
 
     /** Erase mapping */
     void erase(const Mapping& mapping);
-    void erase(const EventMode mode, const int key, const int mod);
+    void erase(EventMode mode, int key, int mod);
 
     /** Get event for mapping */
     Event::Type get(const Mapping& mapping) const;
-    Event::Type get(const EventMode mode, const int key, const int mod) const;
+    Event::Type get(EventMode mode, int key, int mod) const;
 
     /** Check if a mapping exists */
     bool check(const Mapping& mapping) const;
-    bool check(const EventMode mode, const int key, const int mod) const;
+    bool check(EventMode mode, int key, int mod) const;
 
     /** Get mapping description */
     static string getDesc(const Mapping& mapping);
-    static string getDesc(const EventMode mode, const int key, const int mod);
+    static string getDesc(EventMode mode, int key, int mod);
 
     /** Get the mapping description(s) for given event and mode */
-    string getEventMappingDesc(const Event::Type event, const EventMode mode) const;
+    string getEventMappingDesc(Event::Type event, EventMode mode) const;
 
-    MappingArray getEventMapping(const Event::Type event, const EventMode mode) const;
+    MappingArray getEventMapping(Event::Type event, EventMode mode) const;
 
-    nlohmann::json saveMapping(const EventMode mode) const;
-    int loadMapping(const nlohmann::json& mapping, const EventMode mode);
+    nlohmann::json saveMapping(EventMode mode) const;
+    int loadMapping(const nlohmann::json& mapping, EventMode mode);
 
     static nlohmann::json convertLegacyMapping(string_view lm);
 
     /** Erase all mappings for given mode */
-    void eraseMode(const EventMode mode);
+    void eraseMode(EventMode mode);
     /** Erase given event's mapping for given mode */
-    void eraseEvent(const Event::Type event, const EventMode mode);
+    void eraseEvent(Event::Type event, EventMode mode);
     /** clear all mappings for a modes */
     // void clear() { myMap.clear(); }
     size_t size() { return myMap.size(); }
@@ -108,12 +110,12 @@ class KeyMap
 
     struct KeyHash {
       size_t operator()(const Mapping& m) const {
-        return std::hash<uInt64>()((uInt64(m.mode))     // 3 bits
-          + ((uInt64(m.key)) * 7)                       // 8 bits
-          + (((uInt64((m.mod & KBDM_SHIFT) != 0) << 0)) // 1 bit
-           | ((uInt64((m.mod & KBDM_ALT  ) != 0) << 1)) // 1 bit
-           | ((uInt64((m.mod & KBDM_GUI  ) != 0) << 2)) // 1 bit
-           | ((uInt64((m.mod & KBDM_CTRL ) != 0) << 3)) // 1 bit
+        return std::hash<uInt64>()((static_cast<uInt64>(m.mode))     // 3 bits
+          + ((static_cast<uInt64>(m.key)) * 7)                       // 8 bits
+          + (((static_cast<uInt64>((m.mod & KBDM_SHIFT) != 0) << 0)) // 1 bit
+           | ((static_cast<uInt64>((m.mod & KBDM_ALT  ) != 0) << 1)) // 1 bit
+           | ((static_cast<uInt64>((m.mod & KBDM_GUI  ) != 0) << 2)) // 1 bit
+           | ((static_cast<uInt64>((m.mod & KBDM_CTRL ) != 0) << 3)) // 1 bit
             ) * 2047
         );
       }

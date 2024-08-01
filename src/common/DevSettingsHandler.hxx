@@ -21,6 +21,7 @@
 class OSystem;
 
 #include <array>
+#include "bspf.hxx"
 
 /**
   This class takes care of developer settings sets.
@@ -30,13 +31,14 @@ class OSystem;
 class DevSettingsHandler
 {
   public:
-    enum SettingsSet {
+    enum SettingsSet: uInt8 {
       player,
       developer,
       numSets
     };
 
     explicit DevSettingsHandler(OSystem& osystem);
+    ~DevSettingsHandler() = default;
 
     void loadSettings(SettingsSet set);
     void saveSettings(SettingsSet set);

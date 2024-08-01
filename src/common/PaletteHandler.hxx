@@ -39,7 +39,7 @@ class PaletteHandler
     static constexpr float DEF_RGB_SHIFT = 0.0F;
     static constexpr float MAX_RGB_SHIFT = 22.5F;
 
-    enum Adjustables : uInt32 {
+    enum Adjustables : uInt8 {
       PHASE_SHIFT,
       RED_SCALE,
       GREEN_SCALE,
@@ -66,6 +66,7 @@ class PaletteHandler
 
   public:
     explicit PaletteHandler(OSystem& system);
+    ~PaletteHandler() = default;
 
     /**
       Cycle through available palettes.
@@ -124,7 +125,7 @@ class PaletteHandler
   private:
     static constexpr char DEGREE = 0x1c;
 
-    enum PaletteType {
+    enum PaletteType: uInt8 {
       Standard,
       Z26,
       User,

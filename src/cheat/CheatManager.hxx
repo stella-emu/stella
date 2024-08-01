@@ -38,6 +38,7 @@ class CheatManager
 {
   public:
     explicit CheatManager(OSystem& osystem);
+    ~CheatManager() = default;
 
     /**
       Adds the specified cheat to an internal list.

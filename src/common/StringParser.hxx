@@ -36,12 +36,13 @@ class StringParser
     */
     explicit StringParser(string_view str)
     {
-      istringstream buf(string{str});  // TODO: fixed in C++20
+      istringstream buf(string{str});  // TODO: fixed in C++23
       string line;
 
       while(std::getline(buf, line, '\n'))
         myStringList.push_back(line);
     }
+    ~StringParser() = default;
 
     /**
       Split the given string based on the newline character, making sure that
@@ -52,7 +53,7 @@ class StringParser
     */
     StringParser(string_view str, uInt32 maxlen)
     {
-      istringstream buf(string{str});  // TODO: fixed in C++20
+      istringstream buf(string{str});  // TODO: fixed in C++23
       string line;
 
       while(std::getline(buf, line, '\n'))

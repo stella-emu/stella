@@ -111,7 +111,7 @@ bool PhysicalJoystick::setMap(const json& map)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 json PhysicalJoystick::convertLegacyMapping(string_view mapping, string_view name)
 {
-  istringstream buf(string{mapping});  // TODO: fixed in C++20
+  istringstream buf(string{mapping});  // TODO: fixed in C++23
   json convertedMapping = json::object();
   string map;
 

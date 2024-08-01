@@ -34,7 +34,7 @@ class SqliteDatabase
 
     const string& fileName() const { return myDatabaseFile; }
 
-    operator sqlite3*() const { return myHandle; }
+    operator sqlite3*() const { return myHandle; }  // NOLINT: explicit not required
 
     void exec(string_view sql);
 

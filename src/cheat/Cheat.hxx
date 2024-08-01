@@ -27,7 +27,7 @@ class Cheat
   public:
     Cheat(OSystem& osystem, string_view name, string_view code)
       : myOSystem{osystem},
-        myName{name == "" ? code : name},
+        myName{name.empty() ? code : name},
         myCode{code} { }
     virtual ~Cheat() = default;
 

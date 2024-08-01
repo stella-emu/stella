@@ -68,13 +68,13 @@ namespace {
 } // namespace
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void KeyMap::add(const Event::Type event, const Mapping& mapping)
+void KeyMap::add(Event::Type event, const Mapping& mapping)
 {
   myMap[convertMod(mapping)] = event;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void KeyMap::add(const Event::Type event, const EventMode mode, const int key, const int mod)
+void KeyMap::add(Event::Type event, EventMode mode, int key, int mod)
 {
   add(event, Mapping(mode, key, mod));
 }
@@ -86,7 +86,7 @@ void KeyMap::erase(const Mapping& mapping)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void KeyMap::erase(const EventMode mode, const int key, const int mod)
+void KeyMap::erase(EventMode mode, int key, int mod)
 {
   erase(Mapping(mode, key, mod));
 }
@@ -114,7 +114,7 @@ Event::Type KeyMap::get(const Mapping& mapping) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Event::Type KeyMap::get(const EventMode mode, const int key, const int mod) const
+Event::Type KeyMap::get(EventMode mode, int key, int mod) const
 {
   return get(Mapping(mode, key, mod));
 }
@@ -126,7 +126,7 @@ bool KeyMap::check(const Mapping& mapping) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool KeyMap::check(const EventMode mode, const int key, const int mod) const
+bool KeyMap::check(EventMode mode, int key, int mod) const
 {
   return check(Mapping(mode, key, mod));
 }
@@ -181,13 +181,13 @@ string KeyMap::getDesc(const Mapping& mapping)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string KeyMap::getDesc(const EventMode mode, const int key, const int mod)
+string KeyMap::getDesc(EventMode mode, int key, int mod)
 {
   return getDesc(Mapping(mode, key, mod));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string KeyMap::getEventMappingDesc(const Event::Type event, const EventMode mode) const
+string KeyMap::getEventMappingDesc(Event::Type event, EventMode mode) const
 {
   ostringstream buf;
 
@@ -204,8 +204,8 @@ string KeyMap::getEventMappingDesc(const Event::Type event, const EventMode mode
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-KeyMap::MappingArray KeyMap::getEventMapping(const Event::Type event,
-                                             const EventMode mode) const
+KeyMap::MappingArray KeyMap::getEventMapping(Event::Type event,
+                                             EventMode mode) const
 {
   MappingArray ma;
 
@@ -217,7 +217,7 @@ KeyMap::MappingArray KeyMap::getEventMapping(const Event::Type event,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-json KeyMap::saveMapping(const EventMode mode) const
+json KeyMap::saveMapping(EventMode mode) const
 {
   using MapType = std::pair<Mapping, Event::Type>;
   std::vector<MapType> sortedMap(myMap.begin(), myMap.end());
@@ -256,7 +256,8 @@ json KeyMap::saveMapping(const EventMode mode) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int KeyMap::loadMapping(const json& mappings, const EventMode mode) {
+int KeyMap::loadMapping(const json& mappings, EventMode mode)
+{
   int i = 0;
 
   for(const json& mapping : mappings)
@@ -313,7 +314,7 @@ json KeyMap::convertLegacyMapping(string_view lm)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void KeyMap::eraseMode(const EventMode mode)
+void KeyMap::eraseMode(EventMode mode)
 {
   for(auto item = myMap.begin(); item != myMap.end();)
     if(item->first.mode == mode) {
@@ -324,7 +325,7 @@ void KeyMap::eraseMode(const EventMode mode)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void KeyMap::eraseEvent(const Event::Type event, const EventMode mode)
+void KeyMap::eraseEvent(Event::Type event, EventMode mode)
 {
   for(auto item = myMap.begin(); item != myMap.end();)
     if(item->second == event && item->first.mode == mode) {

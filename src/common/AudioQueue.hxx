@@ -46,6 +46,7 @@ class AudioQueue
        @param isStereo      Whether samples are stereo or mono.
      */
     AudioQueue(uInt32 fragmentSize, uInt32 capacity, bool isStereo);
+    ~AudioQueue() = default;
 
     /**
        Capacity getter.
@@ -133,7 +134,6 @@ class AudioQueue
     StaggeredLogger myOverflowLogger{"audio buffer overflow", Logger::Level::INFO};
 
   private:
-
     AudioQueue() = delete;
     AudioQueue(const AudioQueue&) = delete;
     AudioQueue(AudioQueue&&) = delete;

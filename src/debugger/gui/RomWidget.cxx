@@ -90,7 +90,7 @@ void RomWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
     case RomListWidget::kRomChangedCmd:
       // 'data' is the line in the disassemblylist to be accessed
       // 'id' is the base to use for the data to be changed
-      patchROM(data, myRomList->getText(), Common::Base::Fmt{id});
+      patchROM(data, myRomList->getText(), Common::Base::Fmt(id));
       break;
 
     case RomListWidget::kSetPCCmd:

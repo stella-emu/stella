@@ -100,9 +100,8 @@ void AtariNTSC::enableThreading(bool enable)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void AtariNTSC::render(const uInt8* atari_in, const uInt32 in_width,
-                       const uInt32 in_height, void* rgb_out,
-                       const uInt32 out_pitch, uInt32* rgb_in)
+void AtariNTSC::render(const uInt8* atari_in, uInt32 in_width, uInt32 in_height,
+                       void* rgb_out, uInt32 out_pitch, uInt32* rgb_in)
 {
   // Spawn the threads...
   for(uInt32 i = 0; i < myWorkerThreads; ++i)
@@ -130,9 +129,9 @@ void AtariNTSC::render(const uInt8* atari_in, const uInt32 in_width,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void AtariNTSC::renderThread(const uInt8* atari_in, const uInt32 in_width,
-  const uInt32 in_height, const uInt32 numThreads, const uInt32 threadNum,
-  void* rgb_out, const uInt32 out_pitch)
+void AtariNTSC::renderThread(const uInt8* atari_in, uInt32 in_width,
+  uInt32 in_height, uInt32 numThreads, uInt32 threadNum,
+  void* rgb_out, uInt32 out_pitch)
 {
   // Adapt parameters to thread number
   const uInt32 yStart = in_height * threadNum / numThreads;
@@ -204,9 +203,9 @@ void AtariNTSC::renderThread(const uInt8* atari_in, const uInt32 in_width,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void AtariNTSC::renderWithPhosphorThread(const uInt8* atari_in, const uInt32 in_width,
-  const uInt32 in_height, const uInt32 numThreads, const uInt32 threadNum,
-  uInt32* rgb_in, void* rgb_out, const uInt32 out_pitch)
+void AtariNTSC::renderWithPhosphorThread(const uInt8* atari_in, uInt32 in_width,
+  uInt32 in_height, uInt32 numThreads, uInt32 threadNum, uInt32* rgb_in,
+  void* rgb_out, uInt32 out_pitch)
 {
   // Adapt parameters to thread number
   const uInt32 yStart = in_height * threadNum / numThreads;

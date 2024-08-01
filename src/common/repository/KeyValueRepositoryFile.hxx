@@ -25,7 +25,7 @@
 #include "FSNode.hxx"
 #include "bspf.hxx"
 
-template<class T>
+template<typename T>
 class KeyValueRepositoryFile : public KeyValueRepository {
   public:
     explicit KeyValueRepositoryFile(const FSNode& node);
@@ -44,16 +44,17 @@ class KeyValueRepositoryFile : public KeyValueRepository {
 ///////////////////////////////////////////////////////////////////////////////
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-template<class T>
+template<typename T>
 KeyValueRepositoryFile<T>::KeyValueRepositoryFile(const FSNode& node)
   : myNode{node}
-{}
+{
+}
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-template<class T>
+template<typename T>
 KVRMap KeyValueRepositoryFile<T>::load()
 {
-  if (!myNode.exists()) return KVRMap();
+  if (!myNode.exists()) return {};
 
   stringstream in;
 
@@ -64,18 +65,18 @@ KVRMap KeyValueRepositoryFile<T>::load()
   catch (const runtime_error& err) {
     Logger::error(err.what());
 
-    return KVRMap();
+    return {};
   }
   catch (...) {
-    return KVRMap();
+    return {};
   }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-template<class T>
+template<typename T>
 bool KeyValueRepositoryFile<T>::save(const KVRMap& values)
 {
-  if (values.size() == 0) return true;
+  if (values.empty()) return true;
 
   stringstream out;
 

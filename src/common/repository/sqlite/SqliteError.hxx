@@ -30,7 +30,7 @@ class SqliteError : public std::exception
     const char* what() const noexcept override { return myMessage.c_str(); }
 
   private:
-    const string myMessage;
+    string myMessage;
 };
 
 #endif // SQLITE_ERROR_HXX
