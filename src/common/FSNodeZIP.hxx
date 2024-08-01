@@ -88,7 +88,7 @@ class FSNodeZIP : public AbstractFSNode
 
   private:
     /* Error types */
-    enum class zip_error
+    enum class zip_error: uInt8
     {
       NONE,
       NOT_A_FILE,

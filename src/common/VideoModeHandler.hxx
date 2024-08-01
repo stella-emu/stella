@@ -34,7 +34,7 @@ class VideoModeHandler
     //   'screen' are the dimensions of the screen itself
     struct Mode
     {
-      enum class Stretch {
+      enum class Stretch: uInt8 {
         Preserve,   // Stretch to fill all available space; preserve aspect ratio
         Fill,       // Stretch to fill all available space
         None        // No stretching (1x zoom)
@@ -70,6 +70,7 @@ class VideoModeHandler
 
   public:
     VideoModeHandler() = default;
+    ~VideoModeHandler() = default;
 
     /**
       Set the base size of the image. Scaling can be applied to this,

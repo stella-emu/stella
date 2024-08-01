@@ -35,6 +35,7 @@ class ZipHandler
 {
   public:
     ZipHandler() = default;
+    ~ZipHandler() = default;
 
     // Open ZIP file for processing
     // An exception will be thrown on any errors
@@ -54,7 +55,7 @@ class ZipHandler
 
   private:
     // Error types
-    enum class ZipError
+    enum class ZipError: uInt8
     {
       NONE = 0,
       OUT_OF_MEMORY,
@@ -182,7 +183,7 @@ class ZipHandler
         }
         string read_string(size_t offs, size_t len = string::npos) const
         {
-          return string(reinterpret_cast<char const *>(myBuf + offs), len);
+          return {reinterpret_cast<char const *>(myBuf + offs), len};
         }
 
       private:

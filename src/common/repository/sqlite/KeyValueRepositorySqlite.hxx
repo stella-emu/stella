@@ -29,6 +29,7 @@ class KeyValueRepositorySqlite : public AbstractKeyValueRepositorySqlite
 
     KeyValueRepositorySqlite(SqliteDatabase& db, string_view tableName,
                              string_view colKey, string_view colValue);
+    ~KeyValueRepositorySqlite() override = default;
 
     void initialize();
 

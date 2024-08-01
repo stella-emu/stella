@@ -442,9 +442,8 @@ void PNGLibrary::loadImagetoSurface(FBSurface& surface, bool hasAlpha)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PNGLibrary::writeMetaData(
-    const png_structp png_ptr, png_infop info_ptr,  // NOLINT
-    const VariantList& metaData)
+void PNGLibrary::writeMetaData(png_structp png_ptr, png_infop info_ptr,
+                               const VariantList& metaData)
 {
   const size_t numMetaData = metaData.size();
   if(numMetaData == 0)
@@ -462,9 +461,8 @@ void PNGLibrary::writeMetaData(
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PNGLibrary::readMetaData(
-    const png_structp png_ptr, png_infop info_ptr,  // NOLINT
-    VariantList& metaData)
+void PNGLibrary::readMetaData(png_structp png_ptr, png_infop info_ptr,
+                              VariantList& metaData)
 {
   png_textp text_ptr{nullptr};
   int numMetaData{0};
@@ -479,37 +477,33 @@ void PNGLibrary::readMetaData(
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PNGLibrary::png_read_data(const png_structp ctx,  // NOLINT
-                               png_bytep area, png_size_t size)
+void PNGLibrary::png_read_data(png_structp ctx, png_bytep area, png_size_t size)
 {
   (static_cast<std::ifstream*>(png_get_io_ptr(ctx)))->read(
     reinterpret_cast<char *>(area), size);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PNGLibrary::png_write_data(const png_structp ctx,  // NOLINT
-                                png_bytep area, png_size_t size)
+void PNGLibrary::png_write_data(png_structp ctx, png_bytep area, png_size_t size)
 {
   (static_cast<std::ofstream*>(png_get_io_ptr(ctx)))->write(
     reinterpret_cast<const char *>(area), size);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PNGLibrary::png_io_flush(const png_structp ctx)  // NOLINT
+void PNGLibrary::png_io_flush(png_structp ctx)
 {
   (static_cast<std::ofstream*>(png_get_io_ptr(ctx)))->flush();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PNGLibrary::png_user_warn(const png_structp ctx,  // NOLINT
-                               png_const_charp str)
+void PNGLibrary::png_user_warn(png_structp ctx, png_const_charp str)
 {
   throw runtime_error(string("PNGLibrary warning: ") + str);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PNGLibrary::png_user_error(const png_structp ctx,  // NOLINT
-                                png_const_charp str)
+void PNGLibrary::png_user_error(png_structp ctx, png_const_charp str)
 {
   throw runtime_error(string("PNGLibrary error: ") + str);
 }

@@ -24,7 +24,7 @@ string Base::toString(int value, Common::Base::Fmt outputBase)
 {
   static char vToS_buf[32];  // NOLINT : One place where C-style is acceptable
 
-  if(outputBase == Base::Fmt::_DEFAULT)
+  if(outputBase == Base::Fmt::DEFAULT)
     outputBase = myDefaultBase;
 
   switch(outputBase)

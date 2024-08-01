@@ -38,6 +38,7 @@ class FixedStack
     using StackFunction = std::function<void(T&)>;
 
     FixedStack() = default;
+    ~FixedStack() = default;
 
     bool empty() const { return _size == 0; }
     bool full() const  { return _size >= CAPACITY; }

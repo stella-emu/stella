@@ -29,6 +29,7 @@ class SimpleResampler : public Resampler
       Resampler::Format formatTo,
       const Resampler::NextFragmentCallback& NextFragmentCallback
     );
+    ~SimpleResampler() override = default;
 
     void fillFragment(float* fragment, uInt32 length) override;
 

@@ -205,7 +205,7 @@ class TimerManager
     bool done{false};
 
     // Valid IDs are guaranteed not to be this value
-    static TimerId constexpr no_timer = TimerId(0);
+    static TimerId constexpr no_timer = static_cast<TimerId>(0);
 
   private:
     // Following constructors and assignment operators not supported

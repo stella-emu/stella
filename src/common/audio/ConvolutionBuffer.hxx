@@ -23,12 +23,12 @@
 class ConvolutionBuffer
 {
   public:
-
     explicit ConvolutionBuffer(uInt32 size);
+    ~ConvolutionBuffer() = default;
 
     void shift(float nextValue);
 
-    float convoluteWith(const float* const kernel) const;
+    float convoluteWith(const float* kernel) const;
 
   private:
 
@@ -39,7 +39,6 @@ class ConvolutionBuffer
     uInt32 mySize{0};
 
   private:
-
     ConvolutionBuffer() = delete;
     ConvolutionBuffer(const ConvolutionBuffer&) = delete;
     ConvolutionBuffer(ConvolutionBuffer&&) = delete;

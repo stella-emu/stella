@@ -35,7 +35,7 @@ class RewindManager;
 class StateManager
 {
   public:
-    enum class Mode {
+    enum class Mode: uInt8 {
       Off,
       TimeMachine,
       MovieRecord,

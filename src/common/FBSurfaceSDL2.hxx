@@ -69,7 +69,7 @@ class FBSurfaceSDL2 : public FBSurface
     void applyAttributes() override;
 
   private:
-    inline bool setSrcPosInternal(uInt32 x, uInt32 y) {
+    bool setSrcPosInternal(uInt32 x, uInt32 y) {
       if(x != static_cast<uInt32>(mySrcR.x) || y != static_cast<uInt32>(mySrcR.y))
       {
         mySrcR.x = x;  mySrcR.y = y;
@@ -78,7 +78,7 @@ class FBSurfaceSDL2 : public FBSurface
       }
       return false;
     }
-    inline bool setSrcSizeInternal(uInt32 w, uInt32 h) {
+    bool setSrcSizeInternal(uInt32 w, uInt32 h) {
       if(w != static_cast<uInt32>(mySrcR.w) || h != static_cast<uInt32>(mySrcR.h))
       {
         mySrcR.w = w;  mySrcR.h = h;
@@ -87,7 +87,7 @@ class FBSurfaceSDL2 : public FBSurface
       }
       return false;
     }
-    inline bool setDstPosInternal(uInt32 x, uInt32 y) {
+    bool setDstPosInternal(uInt32 x, uInt32 y) {
       if(x != static_cast<uInt32>(myDstR.x) || y != static_cast<uInt32>(myDstR.y))
       {
         myDstR.x = x;  myDstR.y = y;
@@ -96,7 +96,7 @@ class FBSurfaceSDL2 : public FBSurface
       }
       return false;
     }
-    inline bool setDstSizeInternal(uInt32 w, uInt32 h) {
+    bool setDstSizeInternal(uInt32 w, uInt32 h) {
       if(w != static_cast<uInt32>(myDstR.w) || h != static_cast<uInt32>(myDstR.h))
       {
         myDstR.w = w;  myDstR.h = h;

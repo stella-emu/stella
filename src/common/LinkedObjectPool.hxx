@@ -60,6 +60,7 @@ class LinkedObjectPool
       Create a pool of size CAPACITY; the active list starts out empty.
     */
     LinkedObjectPool() { resize(CAPACITY); }
+    ~LinkedObjectPool() = default;
 
     /**
       Return node data that the 'current' iterator points to.

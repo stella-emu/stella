@@ -27,7 +27,7 @@ class Logger {
 
   public:
 
-    enum class Level {
+    enum class Level: uInt8 {
       ERR = 0, // cannot use ERROR???
       INFO = 1,
       DEBUG = 2,
@@ -55,6 +55,7 @@ class Logger {
 
   protected:
     Logger() = default;
+    ~Logger() = default;
 
   private:
     int myLogLevel{static_cast<int>(Level::MAX)};

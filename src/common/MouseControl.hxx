@@ -19,9 +19,9 @@
 #define MOUSE_CONTROL_HXX
 
 class Console;
-class Controller;
 class Properties;
 
+#include "Control.hxx"
 #include "bspf.hxx"
 
 /**
@@ -41,7 +41,7 @@ class MouseControl
     /**
       Enumeration of mouse axis control types
     */
-    enum class Type
+    enum class Type: uInt8
     {
       LeftPaddleA = 0, LeftPaddleB, RightPaddleA, RightPaddleB,
       LeftDriving, RightDriving, LeftMindLink, RightMindLink,
@@ -56,6 +56,7 @@ class MouseControl
       @param mode    Contains information about how to use the mouse axes/buttons
     */
     MouseControl(Console& console, string_view mode);
+    ~MouseControl() = default;
 
     /**
       Cycle through each available mouse control mode

@@ -37,6 +37,7 @@ class CompositeKeyValueRepositorySqlite : public CompositeKeyValueRepositoryAtom
       string_view colKey2,
       string_view colValue
     );
+    ~CompositeKeyValueRepositorySqlite() override = default;
 
     shared_ptr<KeyValueRepository> get(string_view key) override;
 
@@ -53,6 +54,7 @@ class CompositeKeyValueRepositorySqlite : public CompositeKeyValueRepositoryAtom
 
         ProxyRepository(const CompositeKeyValueRepositorySqlite& repo,
                         string_view key);
+        ~ProxyRepository() override = default;
 
       protected:
 

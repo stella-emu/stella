@@ -27,6 +27,7 @@ class FpsMeter
   public:
 
     explicit FpsMeter(uInt32 queueSize);
+    ~FpsMeter() = default;
 
     void reset(uInt32 garbageFrameLimit = 0);
 

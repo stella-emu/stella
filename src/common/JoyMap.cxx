@@ -22,22 +22,21 @@
 using json = nlohmann::json;
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void JoyMap::add(const Event::Type event, const JoyMapping& mapping)
+void JoyMap::add(Event::Type event, const JoyMapping& mapping)
 {
   myMap[mapping] = event;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void JoyMap::add(const Event::Type event, const EventMode mode, const int button,
-                 const JoyAxis axis, const JoyDir adir,
-                 const int hat, const JoyHatDir hdir)
+void JoyMap::add(Event::Type event, EventMode mode, int button,
+                 JoyAxis axis, JoyDir adir, int hat, JoyHatDir hdir)
 {
   add(event, JoyMapping(mode, button, axis, adir, hat, hdir));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void JoyMap::add(const Event::Type event, const EventMode mode, const int button,
-                 const int hat, const JoyHatDir hdir)
+void JoyMap::add(Event::Type event, EventMode mode, int button,
+                 int hat, JoyHatDir hdir)
 {
   add(event, JoyMapping(mode, button, hat, hdir));
 }
@@ -49,15 +48,13 @@ void JoyMap::erase(const JoyMapping& mapping)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void JoyMap::erase(const EventMode mode, const int button,
-                   const JoyAxis axis, const JoyDir adir)
+void JoyMap::erase(EventMode mode, int button, JoyAxis axis, JoyDir adir)
 {
   erase(JoyMapping(mode, button, axis, adir));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void JoyMap::erase(const EventMode mode, const int button,
-                   const int hat, const JoyHatDir hdir)
+void JoyMap::erase(EventMode mode, int button, int hat, JoyHatDir hdir)
 {
   erase(JoyMapping(mode, button, hat, hdir));
 }
@@ -82,15 +79,15 @@ Event::Type JoyMap::get(const JoyMapping& mapping) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Event::Type JoyMap::get(const EventMode mode, const int button,
-                        const JoyAxis axis, const JoyDir adir) const
+Event::Type JoyMap::get(EventMode mode, int button,
+                        JoyAxis axis, JoyDir adir) const
 {
   return get(JoyMapping(mode, button, axis, adir));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Event::Type JoyMap::get(const EventMode mode, const int button,
-                        const int hat, const JoyHatDir hdir) const
+Event::Type JoyMap::get(EventMode mode, int button,
+                        int hat, JoyHatDir hdir) const
 {
   return get(JoyMapping(mode, button, hat, hdir));
 }
@@ -102,15 +99,14 @@ bool JoyMap::check(const JoyMapping& mapping) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool JoyMap::check(const EventMode mode, const int button,
-                   const JoyAxis axis, const JoyDir adir,
-                   const int hat, const JoyHatDir hdir) const
+bool JoyMap::check(EventMode mode, int button, JoyAxis axis, JoyDir adir,
+                   int hat, JoyHatDir hdir) const
 {
   return check(JoyMapping(mode, button, axis, adir, hat, hdir));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string JoyMap::getDesc(const Event::Type event, const JoyMapping& mapping)
+string JoyMap::getDesc(Event::Type event, const JoyMapping& mapping)
 {
   ostringstream buf;
 
@@ -156,7 +152,8 @@ string JoyMap::getDesc(const Event::Type event, const JoyMapping& mapping)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string JoyMap::getEventMappingDesc(int stick, const Event::Type event, const EventMode mode) const
+string JoyMap::getEventMappingDesc(int stick, Event::Type event,
+                                   EventMode mode) const
 {
   ostringstream buf;
 
@@ -173,7 +170,8 @@ string JoyMap::getEventMappingDesc(int stick, const Event::Type event, const Eve
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-JoyMap::JoyMappingArray JoyMap::getEventMapping(const Event::Type event, const EventMode mode) const
+JoyMap::JoyMappingArray JoyMap::getEventMapping(Event::Type event,
+                                                EventMode mode) const
 {
   JoyMappingArray map;
 
@@ -185,7 +183,7 @@ JoyMap::JoyMappingArray JoyMap::getEventMapping(const Event::Type event, const E
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-json JoyMap::saveMapping(const EventMode mode) const
+json JoyMap::saveMapping(EventMode mode) const
 {
   using MapType = std::pair<JoyMapping, Event::Type>;
   std::vector<MapType> sortedMap(myMap.begin(), myMap.end());
@@ -241,7 +239,7 @@ json JoyMap::saveMapping(const EventMode mode) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int JoyMap::loadMapping(const json& eventMappings, const EventMode mode)
+int JoyMap::loadMapping(const json& eventMappings, EventMode mode)
 {
   int i = 0;
 
@@ -327,7 +325,7 @@ json JoyMap::convertLegacyMapping(string list)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void JoyMap::eraseMode(const EventMode mode)
+void JoyMap::eraseMode(EventMode mode)
 {
   for(auto item = myMap.begin(); item != myMap.end();)
     if(item->first.mode == mode) {
@@ -338,7 +336,7 @@ void JoyMap::eraseMode(const EventMode mode)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void JoyMap::eraseEvent(const Event::Type event, const EventMode mode)
+void JoyMap::eraseEvent(Event::Type event, EventMode mode)
 {
   for(auto item = myMap.begin(); item != myMap.end();)
     if(item->second == event && item->first.mode == mode) {

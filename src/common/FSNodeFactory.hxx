@@ -41,7 +41,7 @@ class AbstractFSNode;
 class FSNodeFactory
 {
   public:
-    enum class Type { SYSTEM, ZIP };
+    enum class Type: uInt8 { SYSTEM, ZIP };
 
   public:
     static unique_ptr<AbstractFSNode> create(string_view path, Type type)
@@ -71,6 +71,7 @@ class FSNodeFactory
   private:
     // Following constructors and assignment operators not supported
     FSNodeFactory() = delete;
+    ~FSNodeFactory() = delete;
     FSNodeFactory(const FSNodeFactory&) = delete;
     FSNodeFactory(FSNodeFactory&&) = delete;
     FSNodeFactory& operator=(const FSNodeFactory&) = delete;

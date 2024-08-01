@@ -94,8 +94,8 @@ class AtariNTSC
     // palette colors.
     //  In_row_width is the number of pixels to get to the next input row.
     //  Out_pitch is the number of *bytes* to get to the next output row.
-    void render(const uInt8* atari_in, const uInt32 in_width, const uInt32 in_height,
-                void* rgb_out, const uInt32 out_pitch, uInt32* rgb_in = nullptr);
+    void render(const uInt8* atari_in, uInt32 in_width, uInt32 in_height,
+                void* rgb_out, uInt32 out_pitch, uInt32* rgb_in = nullptr);
 
     // Number of output pixels written by blitter for given input width.
     // Width might be rounded down slightly; use inWidth() on result to
@@ -109,10 +109,11 @@ class AtariNTSC
     void generateKernels();
 
     // Threaded rendering
-    void renderThread(const uInt8* atari_in, const uInt32 in_width,
-      const uInt32 in_height, const uInt32 numThreads, const uInt32 threadNum, void* rgb_out, const uInt32 out_pitch);
-    void renderWithPhosphorThread(const uInt8* atari_in, const uInt32 in_width,
-      const uInt32 in_height, const uInt32 numThreads, const uInt32 threadNum, uInt32* rgb_in, void* rgb_out, const uInt32 out_pitch);
+    void renderThread(const uInt8* atari_in, uInt32 in_width, uInt32 in_height,
+      uInt32 numThreads, uInt32 threadNum, void* rgb_out, uInt32 out_pitch);
+    void renderWithPhosphorThread(const uInt8* atari_in, uInt32 in_width,
+      uInt32 in_height, uInt32 numThreads, uInt32 threadNum, uInt32* rgb_in,
+      void* rgb_out, uInt32 out_pitch);
 
   private:
     static constexpr Int32
@@ -153,20 +154,21 @@ class AtariNTSC
       luma_cutoff   = 0.20F
     ;
 
-    std::array<uInt8, palette_size*3> myRGBPalette;
+    std::array<uInt8, palette_size * 3L> myRGBPalette;
     BSPF::array2D<uInt32, palette_size, entry_size> myColorTable;
 
     // Rendering threads
-    unique_ptr<std::thread[]> myThreads;  // NOLINT
+    unique_ptr<std::thread[]> myThreads;
     // Number of rendering and total threads
     uInt32 myWorkerThreads{0}, myTotalThreads{0};
 
     struct init_t
     {
-      std::array<float, burst_count * 6> to_rgb{0.F};
+      std::array<float, burst_count * 6L> to_rgb{0.F};
       float artifacts{0.F};
       float fringing{0.F};
-      std::array<float, rescale_out * kernel_size * 2> kernel{0.F};
+      std::array<float, static_cast<size_t>
+                 (rescale_out * kernel_size * 2)> kernel{0.F};
 
       init_t() {
         to_rgb.fill(0.0);
@@ -213,10 +215,10 @@ class AtariNTSC
     //  8888:   00000000 RRRRRRRR GGGGGGGG BBBBBBBB (8-8-8-8 32-bit ARGB)
     #define ATARI_NTSC_RGB_OUT_8888( index, rgb_out ) {\
       uInt32 raw_ =\
-        kernel0  [index       ] + kernel1  [(index+10)%7+14] +\
-        kernelx0 [(index+7)%14] + kernelx1 [(index+ 3)%7+14+7];\
+        kernel0  [(index)       ] + kernel1  [((index)+10)%7+14] +\
+        kernelx0 [((index)+7)%14] + kernelx1 [((index)+ 3)%7+14+7];\
       ATARI_NTSC_CLAMP( raw_, 0 );\
-      rgb_out = (raw_>>5 & 0x00FF0000)|(raw_>>3 & 0x0000FF00)|(raw_>>1 & 0x000000FF);\
+      (rgb_out) = (raw_>>5 & 0x00FF0000)|(raw_>>3 & 0x0000FF00)|(raw_>>1 & 0x000000FF);\
     }
 
     // Common ntsc macros

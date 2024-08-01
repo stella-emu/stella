@@ -29,56 +29,56 @@ constexpr uInt8 smartmod(uInt8 x)
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 template<>
-inline constexpr uInt8 smartmod<2>(uInt8 x)
+constexpr uInt8 smartmod<2>(uInt8 x)
 {
   return x & 0x01;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 template<>
-inline constexpr uInt8 smartmod<4>(uInt8 x)
+constexpr uInt8 smartmod<4>(uInt8 x)
 {
   return x & 0x03;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 template<>
-inline constexpr uInt8 smartmod<8>(uInt8 x)
+constexpr uInt8 smartmod<8>(uInt8 x)
 {
   return x & 0x07;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 template<>
-inline constexpr uInt8 smartmod<16>(uInt8 x)
+constexpr uInt8 smartmod<16>(uInt8 x)
 {
   return x & 0x0F;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 template<>
-inline constexpr uInt8 smartmod<32>(uInt8 x)
+constexpr uInt8 smartmod<32>(uInt8 x)
 {
   return x & 0x1F;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 template<>
-inline constexpr uInt8 smartmod<64>(uInt8 x)
+constexpr uInt8 smartmod<64>(uInt8 x)
 {
   return x & 0x3F;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 template<>
-inline constexpr uInt8 smartmod<128>(uInt8 x)
+constexpr uInt8 smartmod<128>(uInt8 x)
 {
   return x & 0x7F;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 template<>
-inline constexpr uInt8 smartmod<256>(uInt8 x)
+constexpr uInt8 smartmod<256>(uInt8 x)
 {
   return x & 0xFF;
 }

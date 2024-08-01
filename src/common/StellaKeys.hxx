@@ -417,7 +417,7 @@ enum StellaMod
 // Test if specified modifier is pressed
 namespace StellaModTest
 {
-  inline constexpr bool isAlt(int mod)
+  constexpr bool isAlt(int mod)
   {
 #if defined(BSPF_MACOS) || defined(MACOS_KEYS)
     return (mod & KBDM_GUI);
@@ -426,16 +426,16 @@ namespace StellaModTest
 #endif
   }
 
-  inline constexpr bool isControl(int mod)
+  constexpr bool isControl(int mod)
   {
     return (mod & KBDM_CTRL);
   }
 
-  inline constexpr bool isShift(int mod)
+  constexpr bool isShift(int mod)
   {
     return (mod & KBDM_SHIFT);
   }
-}
+}  // namespace StellaModTest
 
 namespace StellaKeyName
 {
@@ -447,6 +447,6 @@ namespace StellaKeyName
     return string_view{};
   #endif
   }
-}
+}  // namespace StellaKeyName
 
 #endif /* StellaKeys */

@@ -385,8 +385,7 @@ void SoundSDL2::callback(void* object, uInt8* stream, int len)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool SoundSDL2::playWav(const string& fileName, const uInt32 position,
-                        const uInt32 length)
+bool SoundSDL2::playWav(const string& fileName, uInt32 position, uInt32 length)
 {
   const char* const device = myDeviceId
     ? myDevices.at(myDeviceId).first.c_str()
@@ -409,9 +408,7 @@ uInt32 SoundSDL2::wavSize() const
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool SoundSDL2::WavHandlerSDL2::play(
-    const string& fileName, const char* device,
-    const uInt32 position, const uInt32 length
-)
+    const string& fileName, const char* device, uInt32 position, uInt32 length)
 {
   // Load WAV file
   if(fileName != myFilename || myBuffer == nullptr)

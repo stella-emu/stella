@@ -38,7 +38,7 @@ class Base
     // The base to use for conversion from integers to strings
     // Note that the actual number of places will be determined by
     // the magnitude of the value itself in the general case
-    enum class Fmt {
+    enum class Fmt: uInt8 {
       _16,      // base 16: 2, 4, 8 bytes (depending on value)
       _16_1,    // base 16: 1 byte wide
       _16_2,    // base 16: 2 bytes wide
@@ -56,7 +56,7 @@ class Base
       _2,       // base 2:  8 or 16 bits (depending on value)
       _2_8,     // base 2:  1 byte (8 bits) wide
       _2_16,    // base 2:  2 bytes (16 bits) wide
-      _DEFAULT
+      DEFAULT
     };
 
   public:
@@ -72,31 +72,31 @@ class Base
     static bool hexUppercase() { return myHexflags & std::ios_base::uppercase; }
 
     /** Output HEX digits in 0.5/1/2/4 byte format */
-    static inline std::ostream& HEX1(std::ostream& os) {
+    static std::ostream& HEX1(std::ostream& os) {
       os.flags(myHexflags);
       return os << std::setw(1);
     }
-    static inline std::ostream& HEX2(std::ostream& os) {
+    static std::ostream& HEX2(std::ostream& os) {
       os.flags(myHexflags);
       return os << std::setw(2) << std::setfill('0');
     }
-    static inline std::ostream& HEX3(std::ostream& os)
+    static std::ostream& HEX3(std::ostream& os)
     {
       os.flags(myHexflags);
       return os << std::setw(3) << std::setfill('0');
     }
-    static inline std::ostream& HEX4(std::ostream& os) {
+    static std::ostream& HEX4(std::ostream& os) {
       os.flags(myHexflags);
       return os << std::setw(4) << std::setfill('0');
     }
-    static inline std::ostream& HEX8(std::ostream& os) {
+    static std::ostream& HEX8(std::ostream& os) {
       os.flags(myHexflags);
       return os << std::setw(8) << std::setfill('0');
     }
 
     /** Convert integer to a string in the given base format */
     static string toString(int value,
-      Common::Base::Fmt outputBase = Common::Base::Fmt::_DEFAULT);
+      Common::Base::Fmt outputBase = Common::Base::Fmt::DEFAULT);
 
   private:
     // Default format to use when none is specified
@@ -108,6 +108,7 @@ class Base
   private:
     // Following constructors and assignment operators not supported
     Base() = delete;
+    ~Base() = delete;
     Base(const Base&) = delete;
     Base(Base&&) = delete;
     Base& operator=(const Base&) = delete;

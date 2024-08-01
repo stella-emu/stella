@@ -32,7 +32,7 @@ class SqliteStatement {
 
     ~SqliteStatement();
 
-    operator sqlite3_stmt*() const { return myStmt; }
+    operator sqlite3_stmt*() const { return myStmt; }  // NOLINT: explicit not required
 
     SqliteStatement& bind(int index, string_view value);
     SqliteStatement& bind(int index, Int32 value);

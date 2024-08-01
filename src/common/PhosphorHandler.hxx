@@ -33,7 +33,7 @@ class PhosphorHandler
     static constexpr string_view VALUE_AUTO_ON = "autoon";
     static constexpr string_view VALUE_AUTO = "auto";
 
-    enum PhosphorMode {
+    enum PhosphorMode: uInt8 {
       ByRom,
       Always,
       Auto_on,
@@ -44,6 +44,7 @@ class PhosphorHandler
     static constexpr string_view DEFAULT_BLEND = "50"; // align with myPhosphorPercent!
 
     PhosphorHandler() = default;
+    ~PhosphorHandler() = default;
 
     bool initialize(bool enable, int blend);
 
@@ -63,12 +64,12 @@ class PhosphorHandler
     static constexpr uInt32 getPixel(const uInt32 c, const uInt32 p)
     {
       // Mix current calculated frame with previous displayed frame
-      const uInt8 rc = static_cast<uInt8>(c >> 16),
-                  gc = static_cast<uInt8>(c >> 8),
-                  bc = static_cast<uInt8>(c),
-                  rp = static_cast<uInt8>(p >> 16),
-                  gp = static_cast<uInt8>(p >> 8),
-                  bp = static_cast<uInt8>(p);
+      const auto rc = static_cast<uInt8>(c >> 16),
+                 gc = static_cast<uInt8>(c >> 8),
+                 bc = static_cast<uInt8>(c),
+                 rp = static_cast<uInt8>(p >> 16),
+                 gp = static_cast<uInt8>(p >> 8),
+                 bp = static_cast<uInt8>(p);
 
       return (ourPhosphorLUT[rc][rp] << 16) | (ourPhosphorLUT[gc][gp] << 8) |
               ourPhosphorLUT[bc][bp];

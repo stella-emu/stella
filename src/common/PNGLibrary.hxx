@@ -22,6 +22,9 @@
 
 #include <png.h>
 
+#include "bspf.hxx"
+#include "Variant.hxx"
+
 class OSystem;
 class FBSurface;
 
@@ -36,6 +39,7 @@ class PNGLibrary
 {
   public:
     explicit PNGLibrary(OSystem& osystem);
+    ~PNGLibrary() = default;
 
     /**
       Read a PNG image from the specified file into a FBSurface structure,
@@ -178,25 +182,21 @@ class PNGLibrary
     /**
       Write PNG tEXt chunks to the image.
     */
-    static void writeMetaData(const png_structp png_ptr, png_infop info_ptr,
+    static void writeMetaData(png_structp png_ptr, png_infop info_ptr,
                               const VariantList& metaData);
 
     /**
       Read PNG tEXt chunks from the image.
     */
-    static void readMetaData(const png_structp png_ptr, png_infop info_ptr,
+    static void readMetaData(png_structp png_ptr, png_infop info_ptr,
                              VariantList& metaData);
 
     /** PNG library callback functions */
-    static void png_read_data(const png_structp ctx, png_bytep area,
-                              png_size_t size);
-    static void png_write_data(const png_structp ctx, png_bytep area,
-                               png_size_t size);
-    static void png_io_flush(const png_structp ctx);
-    [[noreturn]] static void png_user_warn(const png_structp ctx,
-                                           png_const_charp str);
-    [[noreturn]] static void png_user_error(const png_structp ctx,
-                                            png_const_charp str);
+    static void png_read_data(png_structp ctx, png_bytep area, png_size_t size);
+    static void png_write_data(png_structp ctx, png_bytep area, png_size_t size);
+    static void png_io_flush(png_structp ctx);
+    [[noreturn]] static void png_user_warn(png_structp ctx, png_const_charp str);
+    [[noreturn]] static void png_user_error(png_structp ctx, png_const_charp str);
 
   private:
     // Following constructors and assignment operators not supported

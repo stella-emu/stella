@@ -27,7 +27,7 @@
 class BlitterFactory {
   public:
 
-    enum class ScalingAlgorithm {
+    enum class ScalingAlgorithm: uInt8 {
       nearestNeighbour,
       bilinear,
       quasiInteger
