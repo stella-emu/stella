@@ -1755,7 +1755,7 @@
     <ClInclude Include="..\..\gui\WhatsNewDialog.hxx" />
     <ClInclude Include="..\..\lib\httplib\httplib.h" />
     <ClInclude Include="..\..\lib\httplib\http_lib.hxx" />
-    <ClInclude Include="..\..\lib\json\json.hxx" />
+    <ClInclude Include="..\..\lib\json\json.hpp" />
     <ClInclude Include="..\..\lib\json\json_lib.hxx" />
     <ClInclude Include="..\..\lib\libpng\pngdebug.h" />
     <ClInclude Include="..\..\lib\libpng\pnginfo.h" />
