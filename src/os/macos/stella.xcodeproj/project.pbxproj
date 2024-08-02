@@ -222,6 +222,7 @@
 		DC0EF94D2C59578C0007F3B5 /* VcsLib.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC0EF9492C59578C0007F3B5 /* VcsLib.hxx */; };
 		DC0EF94E2C59578C0007F3B5 /* BusTransactionQueue.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC0EF94A2C59578C0007F3B5 /* BusTransactionQueue.cxx */; };
 		DC0EF94F2C59578C0007F3B5 /* VcsLib.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC0EF94B2C59578C0007F3B5 /* VcsLib.cxx */; };
+		DC0EF9512C5D4B900007F3B5 /* json.hpp in Headers */ = {isa = PBXBuildFile; fileRef = DC0EF9502C5D4B900007F3B5 /* json.hpp */; };
 		DC11F78D0DB36933003B505E /* MT24LC256.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC11F78B0DB36933003B505E /* MT24LC256.cxx */; };
 		DC11F78E0DB36933003B505E /* MT24LC256.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC11F78C0DB36933003B505E /* MT24LC256.hxx */; };
 		DC13B53F176FF2F500B8B4BB /* RomListSettings.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC13B53D176FF2F500B8B4BB /* RomListSettings.cxx */; };
@@ -465,7 +466,6 @@
 		DC8078DB0B4BD5F3005E9305 /* DebuggerExpressions.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC8078DA0B4BD5F3005E9305 /* DebuggerExpressions.hxx */; };
 		DC8078EA0B4BD697005E9305 /* UIDialog.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC8078E60B4BD697005E9305 /* UIDialog.cxx */; };
 		DC8078EB0B4BD697005E9305 /* UIDialog.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC8078E70B4BD697005E9305 /* UIDialog.hxx */; };
-		DC816CF62572F92A00FBCCDA /* json.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC816CF42572F92A00FBCCDA /* json.hxx */; };
 		DC816CF72572F92A00FBCCDA /* json_lib.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC816CF52572F92A00FBCCDA /* json_lib.hxx */; };
 		DC816CFC25757D9A00FBCCDA /* HighScoresManager.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC816CF925757D9A00FBCCDA /* HighScoresManager.hxx */; };
 		DC816CFD25757D9A00FBCCDA /* HighScoresManager.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC816CFA25757D9A00FBCCDA /* HighScoresManager.cxx */; };
@@ -1100,6 +1100,7 @@
 		DC0EF9492C59578C0007F3B5 /* VcsLib.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = VcsLib.hxx; sourceTree = "<group>"; };
 		DC0EF94A2C59578C0007F3B5 /* BusTransactionQueue.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = BusTransactionQueue.cxx; sourceTree = "<group>"; };
 		DC0EF94B2C59578C0007F3B5 /* VcsLib.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = VcsLib.cxx; sourceTree = "<group>"; };
+		DC0EF9502C5D4B900007F3B5 /* json.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = json.hpp; sourceTree = "<group>"; };
 		DC11F78B0DB36933003B505E /* MT24LC256.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = MT24LC256.cxx; sourceTree = "<group>"; };
 		DC11F78C0DB36933003B505E /* MT24LC256.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; path = MT24LC256.hxx; sourceTree = "<group>"; };
 		DC13B53D176FF2F500B8B4BB /* RomListSettings.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = RomListSettings.cxx; sourceTree = "<group>"; };
@@ -1343,7 +1344,6 @@
 		DC8078DA0B4BD5F3005E9305 /* DebuggerExpressions.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; path = DebuggerExpressions.hxx; sourceTree = "<group>"; };
 		DC8078E60B4BD697005E9305 /* UIDialog.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = UIDialog.cxx; sourceTree = "<group>"; };
 		DC8078E70B4BD697005E9305 /* UIDialog.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; path = UIDialog.hxx; sourceTree = "<group>"; };
-		DC816CF42572F92A00FBCCDA /* json.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = json.hxx; sourceTree = "<group>"; };
 		DC816CF52572F92A00FBCCDA /* json_lib.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = json_lib.hxx; sourceTree = "<group>"; };
 		DC816CF925757D9A00FBCCDA /* HighScoresManager.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = HighScoresManager.hxx; sourceTree = "<group>"; };
 		DC816CFA25757D9A00FBCCDA /* HighScoresManager.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = HighScoresManager.cxx; sourceTree = "<group>"; };
@@ -2617,7 +2617,7 @@
 			isa = PBXGroup;
 			children = (
 				DC816CF52572F92A00FBCCDA /* json_lib.hxx */,
-				DC816CF42572F92A00FBCCDA /* json.hxx */,
+				DC0EF9502C5D4B900007F3B5 /* json.hpp */,
 			);
 			path = json;
 			sourceTree = "<group>";
@@ -3058,6 +3058,7 @@
 				DC6F394A21B897C700897AD8 /* FatalEmulationError.hxx in Headers */,
 				DCA23AEA0D75B22500F77B33 /* CartX07.hxx in Headers */,
 				DC4613680D92C03600D8DAB9 /* RomAuditDialog.hxx in Headers */,
+				DC0EF9512C5D4B900007F3B5 /* json.hpp in Headers */,
 				DC487FB70DA5350900E12499 /* AtariVox.hxx in Headers */,
 				DC11F78E0DB36933003B505E /* MT24LC256.hxx in Headers */,
 				DC70065C241EC97900A459AB /* Stella12x24tFont.hxx in Headers */,
@@ -3191,7 +3192,6 @@
 				DCE9681627553F1000E99839 /* FavoritesManager.hxx in Headers */,
 				DCAAE5E31715887B0080BB82 /* CartF0Widget.hxx in Headers */,
 				DCAAE5E51715887B0080BB82 /* CartF4SCWidget.hxx in Headers */,
-				DC816CF62572F92A00FBCCDA /* json.hxx in Headers */,
 				DCAAE5E71715887B0080BB82 /* CartF4Widget.hxx in Headers */,
 				DC5963142139FA14002736F2 /* Bankswitch.hxx in Headers */,
 				DCAAE5E91715887B0080BB82 /* CartF6SCWidget.hxx in Headers */,

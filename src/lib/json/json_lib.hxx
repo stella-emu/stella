@@ -25,14 +25,14 @@
 #if defined(__clang__)
   #pragma clang diagnostic push
   #pragma clang diagnostic ignored "-Weverything"
-  #include "json.hxx"
+  #include "json.hpp"
   #pragma clang diagnostic pop
 #elif defined(BSPF_WINDOWS)
   #pragma warning(push, 0)
-  #include "json.hxx"
+  #include "json.hpp"
   #pragma warning(pop)
 #else
-  #include "json.hxx"
+  #include "json.hpp"
 #endif
 
 #endif  // JSON_LIB_HXX
