@@ -158,7 +158,7 @@ void TimerMap::reset()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void TimerMap::update(uInt16 addr, uInt8 bank, const uInt64 cycles)
+void TimerMap::update(uInt16 addr, uInt8 bank, uInt64 cycles)
 {
   if((addr & ADDRESS_MASK) != addr)
   {

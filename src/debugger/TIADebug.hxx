@@ -48,13 +48,15 @@ class TiaState : public DebuggerState
     BoolArray vsb;
 
     // Indices for various IntArray above
-    enum { P0, P1, M0, M1, BL };
+    enum: uInt8 { P0, P1, M0, M1, BL };
 };
 
 class TIADebug : public DebuggerSystem
 {
   public:
     TIADebug(Debugger& dbg, Console& console);
+    ~TIADebug() override = default;
+
     TIA& tia() const { return myTIA; }
 
     const DebuggerState& getState() override;

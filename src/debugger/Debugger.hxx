@@ -312,8 +312,8 @@ class Debugger : public DialogContainer
     int trace();
     void nextScanline(int lines);
     void nextFrame(int frames);
-    uInt16 rewindStates(const uInt16 numStates, string& message);
-    uInt16 unwindStates(const uInt16 numStates, string& message);
+    uInt16 rewindStates(uInt16 numStates, string& message);
+    uInt16 unwindStates(uInt16 numStates, string& message);
 
     void clearAllBreakPoints() const;
 

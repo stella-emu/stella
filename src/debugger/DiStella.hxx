@@ -71,12 +71,13 @@ class DiStella
              CartDebug::AddrTypeArray& labels,
              CartDebug::AddrTypeArray& directives,
              CartDebug::ReservedEquates& reserved);
+    ~DiStella() = default;
 
   private:
     /**
-    Enumeration of the addressing type (RAM, ROM, RIOT, TIA...)
+      Enumeration of the addressing type (RAM, ROM, RIOT, TIA...)
     */
-    enum class AddressType : int
+    enum class AddressType: uInt8
     {
       INVALID,
       ROM,
@@ -85,7 +86,6 @@ class DiStella
       ROM_MIRROR,
       ZP_RAM
     };
-
 
   private:
     // Indicate that a new line of disassembly has been completed
@@ -112,12 +112,12 @@ class DiStella
     void outputBytes(Device::AccessType type);
 
     // Convenience methods to generate appropriate labels
-    inline void labelA12High(stringstream& buf, uInt8 op, uInt16 addr, AddressType labfound)
+    void labelA12High(stringstream& buf, uInt8 op, uInt16 addr, AddressType labfound)
     {
       if(!myDbg.getLabel(buf, addr, true))
         buf << "L" << Common::Base::HEX4 << addr;
     }
-    inline void labelA12Low(stringstream& buf, uInt8 op, uInt16 addr, AddressType labfound)
+    void labelA12Low(stringstream& buf, uInt8 op, uInt16 addr, AddressType labfound)
     {
       myDbg.getLabel(buf, addr, ourLookup[op].rw_mode == RWMode::READ, 2);
       if (labfound == AddressType::TIA)

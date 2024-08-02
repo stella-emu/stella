@@ -681,13 +681,13 @@ uInt16 Debugger::windStates(uInt16 numStates, bool unwind, string& message)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt16 Debugger::rewindStates(const uInt16 numStates, string& message)
+uInt16 Debugger::rewindStates(uInt16 numStates, string& message)
 {
   return windStates(numStates, false, message);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt16 Debugger::unwindStates(const uInt16 numStates, string& message)
+uInt16 Debugger::unwindStates(uInt16 numStates, string& message)
 {
   return windStates(numStates, true, message);
 }

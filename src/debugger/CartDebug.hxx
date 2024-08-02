@@ -65,7 +65,7 @@ class CartDebug : public DebuggerSystem
     };
 
     // Determine 'type' of address (ie, what part of the system accessed)
-    enum class AddrType { TIA, IO, ZPRAM, ROM };
+    enum class AddrType: uInt8 { TIA, IO, ZPRAM, ROM };
     static AddrType addressType(uInt16 addr);
 
   public:
@@ -302,7 +302,7 @@ class CartDebug : public DebuggerSystem
       std::array<bool, 64>  TIAWrite{false};
       std::array<bool, 32>  IOReadWrite{false};
       std::array<bool, 128> ZPRAM{false};
-      AddrToLabel Label{};
+      AddrToLabel Label;
       bool breakFound{false};
     };
     ReservedEquates myReserved;

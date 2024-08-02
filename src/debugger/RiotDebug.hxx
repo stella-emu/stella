@@ -52,6 +52,7 @@ class RiotDebug : public DebuggerSystem
 {
   public:
     RiotDebug(Debugger& dbg, Console& console);
+    ~RiotDebug() override = default;
 
     const DebuggerState& getState() override;
     const DebuggerState& getOldState() override { return myOldState; }
