@@ -39,6 +39,7 @@ class CpuDebug : public DebuggerSystem
 {
   public:
     CpuDebug(Debugger& dbg, Console& console);
+    ~CpuDebug() override = default;
 
     const DebuggerState& getState() override;
     const DebuggerState& getOldState() override { return myOldState; }

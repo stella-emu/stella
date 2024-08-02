@@ -31,7 +31,7 @@
 class Expression
 {
   public:
-    Expression(Expression* lhs = nullptr, Expression* rhs = nullptr)
+    explicit Expression(Expression* lhs = nullptr, Expression* rhs = nullptr)
       : myLHS{lhs}, myRHS{rhs} { }
     virtual ~Expression() = default;
 

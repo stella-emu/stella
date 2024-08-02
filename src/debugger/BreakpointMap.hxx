@@ -63,16 +63,17 @@ class BreakpointMap
     using BreakpointList = std::vector<Breakpoint>;
 
     BreakpointMap() = default;
+    ~BreakpointMap() = default;
 
-    inline bool isInitialized() const { return myInitialized; }
+    bool isInitialized() const { return myInitialized; }
 
     /** Add new breakpoint */
-    void add(const Breakpoint& breakpoint, const uInt32 flags = 0);
-    void add(const uInt16 addr, const uInt8 bank, const uInt32 flags = 0);
+    void add(const Breakpoint& breakpoint, uInt32 flags = 0);
+    void add(uInt16 addr, uInt8 bank, uInt32 flags = 0);
 
     /** Erase breakpoint */
     void erase(const Breakpoint& breakpoint);
-    void erase(const uInt16 addr, const uInt8 bank);
+    void erase(uInt16 addr, uInt8 bank);
 
     /** Get info for breakpoint */
     uInt32 get(const Breakpoint& breakpoint) const;
@@ -80,7 +81,7 @@ class BreakpointMap
 
     /** Check if a breakpoint exists */
     bool check(const Breakpoint& breakpoint) const;
-    bool check(const uInt16 addr, const uInt8 bank) const;
+    bool check(uInt16 addr, uInt8 bank) const;
 
     /** Returns a sorted list of breakpoints */
     BreakpointList getBreakpoints() const;
@@ -95,7 +96,7 @@ class BreakpointMap
     struct BreakpointHash {
       size_t operator()(const Breakpoint& bp) const {
         return std::hash<uInt64>()(
-          uInt64(bp.addr) * 13 // only check for address, bank check via == operator
+          static_cast<uInt64>(bp.addr) * 13 // only check for address, bank check via == operator
         );
       }
     };

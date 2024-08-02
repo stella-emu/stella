@@ -28,11 +28,13 @@ struct Command;
 
 #include "bspf.hxx"
 #include "Device.hxx"
+#include "FrameBufferConstants.hxx"
 
 class DebuggerParser
 {
   public:
     DebuggerParser(Debugger& debugger, Settings& settings);
+    ~DebuggerParser() = default;
 
     /** Run the given command, and return the result */
     string run(string_view command);
@@ -50,11 +52,11 @@ class DebuggerParser
     /** String representation of all watches currently defined */
     string showWatches();
 
-    static inline string red(string_view msg = "")
+    static string red(string_view msg = "")
     {
-      return char(kDbgColorRed & 0xff) + string{msg};
+      return static_cast<char>(kDbgColorRed & 0xff) + string{msg};
     }
-    static inline string inverse(string_view msg = "")
+    static string inverse(string_view msg = "")
     {
       // ASCII DEL char, decimal 127
       return "\177" + string{msg};
@@ -71,14 +73,14 @@ class DebuggerParser
 
   private:
     // Constants for argument processing
-    enum class ParseState {
+    enum class ParseState: uInt8 {
       IN_COMMAND,
       IN_SPACE,
       IN_BRACE,
       IN_ARG
     };
 
-    enum class Parameters {
+    enum class Parameters: uInt8 {
       ARG_WORD,        // single 16-bit value
       ARG_DWORD,       // single 32-bit value
       ARG_MULTI_WORD,  // multiple 16-bit values (must occur last)

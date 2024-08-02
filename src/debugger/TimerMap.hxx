@@ -42,11 +42,9 @@ class TimerMap
       uInt16 addr{0};
       uInt8  bank{ANY_BANK};
 
+      TimerPoint() = default;
       explicit constexpr TimerPoint(uInt16 c_addr, uInt8 c_bank)
         : addr{c_addr}, bank{c_bank} {}
-
-      TimerPoint()
-        : addr{0}, bank(ANY_BANK) {}
 
       bool operator<(const TimerPoint& other) const
       {
@@ -60,8 +58,8 @@ class TimerMap
   public:
     struct Timer
     {
-      TimerPoint from{};
-      TimerPoint to{};
+      TimerPoint from;
+      TimerPoint to;
       bool   mirrors{false};
       bool   anyBank{false};
       bool   isPartial{false};
@@ -79,10 +77,9 @@ class TimerMap
 
       Timer(uInt16 fromAddr, uInt16 toAddr, uInt8 fromBank, uInt8 toBank,
             bool c_mirrors = false, bool c_anyBank = false)
-      {
-        Timer(TimerPoint(fromAddr, fromBank), TimerPoint(fromAddr, fromBank),
-              c_mirrors, c_anyBank);
-      }
+        : Timer(TimerPoint{fromAddr, fromBank}, TimerPoint{fromAddr, fromBank},
+                c_mirrors, c_anyBank)
+      {}
 
       explicit Timer(const TimerPoint& tp, bool c_mirrors = false,
                      bool c_anyBank = false)
@@ -90,9 +87,8 @@ class TimerMap
 
       Timer(uInt16 addr, uInt8 bank, bool c_mirrors = false,
             bool c_anyBank = false)
-      {
-        Timer(TimerPoint(addr, bank), c_mirrors, c_anyBank);
-      }
+        : Timer(TimerPoint{addr, bank}, c_mirrors, c_anyBank)
+      {}
 
       void setTo(const TimerPoint& tp, bool c_mirrors = false,
                  bool c_anyBank = false)
@@ -136,8 +132,9 @@ class TimerMap
     }; // Timer
 
     explicit TimerMap() = default;
+    ~TimerMap() = default;
 
-    inline bool isInitialized() const { return myList.size(); }
+    bool isInitialized() const { return !myList.empty(); }
 
     /** Add new timer */
     uInt32 add(uInt16 fromAddr, uInt16 toAddr,
@@ -147,7 +144,7 @@ class TimerMap
                bool mirrors, bool anyBank);
 
     /** Erase timer */
-    bool erase(const uInt32 idx);
+    bool erase(uInt32 idx);
 
     /** Clear all timers */
     void clear();
@@ -160,8 +157,7 @@ class TimerMap
     uInt32 size() const { return static_cast<uInt32>(myList.size()); }
 
     /** Update timer */
-    void update(uInt16 addr, uInt8 bank,
-                const uInt64 cycles);
+    void update(uInt16 addr, uInt8 bank, uInt64 cycles);
 
   private:
     static void toKey(TimerPoint& tp, bool mirrors, bool anyBank);
