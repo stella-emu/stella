@@ -29,7 +29,7 @@ class SliderWidget;
 class StaticTextWidget;
 namespace GUI {
   class MessageBox;
-}
+}  // namespace GUI
 
 #include "Dialog.hxx"
 #include "bspf.hxx"

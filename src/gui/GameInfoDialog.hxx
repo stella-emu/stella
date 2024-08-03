@@ -199,7 +199,7 @@ class GameInfoDialog : public Dialog, public CommandSender
       kBezelFilePressed = 'BFpr'
     };
 
-    enum { kLinkId };
+    enum: uInt8 { kLinkId };
 
     // Game properties for currently loaded ROM
     Properties myGameProperties;

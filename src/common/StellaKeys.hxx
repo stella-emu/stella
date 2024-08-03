@@ -36,7 +36,7 @@
 */
 
 // This comes directly from SDL_scancode.h
-enum StellaKey
+enum StellaKey  // NOLINT: use 32-bit, even though 16-bit is sufficient
 {
     KBDK_UNKNOWN = 0,
 
@@ -393,7 +393,7 @@ enum StellaKey
 };
 
 // This comes directly from SDL_keycode.h
-enum StellaMod
+enum StellaMod: uInt16
 {
     KBDM_NONE = 0x0000,
     KBDM_LSHIFT = 0x0001,

@@ -34,7 +34,7 @@ GlobalKeyHandler::GlobalKeyHandler(OSystem& osystem)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool GlobalKeyHandler::handleEvent(const Event::Type event, bool pressed, bool repeated)
+bool GlobalKeyHandler::handleEvent(Event::Type event, bool pressed, bool repeated)
 {
   // The global settings keys change settings or values as long as the setting
   //  message from the previous settings event is still displayed.
@@ -136,7 +136,7 @@ bool GlobalKeyHandler::handleEvent(const Event::Type event, bool pressed, bool r
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void GlobalKeyHandler::setSetting(const Setting setting)
+void GlobalKeyHandler::setSetting(Setting setting)
 {
   if(setting == Setting::ZOOM && myOSystem.frameBuffer().fullScreen())
     mySetting = Setting::FS_ASPECT;
@@ -146,7 +146,7 @@ void GlobalKeyHandler::setSetting(const Setting setting)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void GlobalKeyHandler::setDirectSetting(const Setting setting)
+void GlobalKeyHandler::setDirectSetting(Setting setting)
 {
   myDirectSetting = setting;
 }
@@ -331,7 +331,7 @@ GlobalKeyHandler::Function GlobalKeyHandler::cycleSetting(int direction)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-GlobalKeyHandler::SettingData GlobalKeyHandler::getSettingData(const Setting setting) const
+GlobalKeyHandler::SettingData GlobalKeyHandler::getSettingData(Setting setting) const
 {
   // Notes:
   // - all setting methods MUST always display a message

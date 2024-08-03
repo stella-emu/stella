@@ -23,7 +23,7 @@
 class DispatchResult
 {
   public:
-    enum class Status { invalid, ok, debugger, fatal };
+    enum class Status: uInt8 { invalid, ok, debugger, fatal };
 
   public:
 

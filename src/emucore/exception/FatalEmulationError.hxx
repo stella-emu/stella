@@ -32,7 +32,7 @@ class FatalEmulationError : public std::exception
     }
 
   private:
-    const string myMessage;
+    string myMessage;
 };
 
 #endif // FATAL_EMULATION_ERROR_HXX

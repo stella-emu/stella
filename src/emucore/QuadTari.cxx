@@ -82,7 +82,7 @@ QuadTari::QuadTari(Jack jack, const OSystem& osystem, const System& system,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-unique_ptr<Controller> QuadTari::addController(const Controller::Type type, bool second)
+unique_ptr<Controller> QuadTari::addController(Controller::Type type, bool second)
 {
   FSNode nvramfile = myOSystem.nvramDir();
   const Controller::onMessageCallback callback = [&os = myOSystem]

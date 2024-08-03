@@ -30,6 +30,7 @@ class Missile : public Serializable
   public:
 
     explicit Missile(uInt32 collisionMask);
+    ~Missile() override = default;
 
   public:
 
@@ -64,7 +65,7 @@ class Missile : public Serializable
 
     void toggleEnabled(bool enabled);
 
-    inline bool isOn() const { return (collision & 0x8000); }
+    bool isOn() const { return (collision & 0x8000); }
     uInt8 getColor() const;
 
     uInt8 getPosition() const;

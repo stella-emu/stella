@@ -40,6 +40,7 @@ class FavoritesManager
     using PopularList = std::vector<PopularType>;
 
     explicit FavoritesManager(Settings& settings);
+    ~FavoritesManager() = default;
 
     void load();
     void save();

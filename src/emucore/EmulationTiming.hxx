@@ -25,8 +25,9 @@
 class EmulationTiming {
   public:
 
-    EmulationTiming(FrameLayout frameLayout = FrameLayout::ntsc,
-                    ConsoleTiming consoleTiming = ConsoleTiming::ntsc);
+    explicit EmulationTiming(FrameLayout frameLayout = FrameLayout::ntsc,
+                             ConsoleTiming consoleTiming = ConsoleTiming::ntsc);
+    ~EmulationTiming() = default;
 
     EmulationTiming& updateFrameLayout(FrameLayout frameLayout);
 

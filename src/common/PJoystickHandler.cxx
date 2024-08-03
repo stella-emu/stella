@@ -326,8 +326,7 @@ bool PhysicalJoystickHandler::hasStelladaptors() const
 // 2. reset all events to default    (event == Event::NoType, updateDefault == false)
 // 3. reset one event to default     (event != Event::NoType)
 void PhysicalJoystickHandler::setDefaultAction(int stick,
-                                               EventMapping map, Event::Type event,
-                                               EventMode mode, bool updateDefaults)
+    EventMapping map, Event::Type event, EventMode mode, bool updateDefaults)
 {
   const PhysicalJoystickPtr j = joy(stick);
 
@@ -406,11 +405,11 @@ void PhysicalJoystickHandler::setStickDefaultMapping(
             setDefaultAction(stick, item, event, EventMode::kDrivingMode, updateDefaults);
         }
 
-#if defined(RETRON77)
+    #if defined(RETRON77)
         constexpr bool retron77 = true;
-#else
+    #else
         constexpr bool retron77 = false;
-#endif
+    #endif
 
         // Regular joysticks can only be used by one player at a time,
         // so we need to separate the paddles onto different
@@ -501,7 +500,7 @@ void PhysicalJoystickHandler::setDefaultMapping(Event::Type event, EventMode mod
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PhysicalJoystickHandler::defineControllerMappings(
-  const Controller::Type type, Controller::Jack port, const Properties& properties,
+  Controller::Type type, Controller::Jack port, const Properties& properties,
   Controller::Type qtType1, Controller::Type qtType2)
 {
   // Determine controller events to use
@@ -531,7 +530,7 @@ void PhysicalJoystickHandler::defineControllerMappings(
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 EventMode PhysicalJoystickHandler::getMode(const Properties& properties,
-                                           const PropType propType)
+                                           PropType propType)
 {
   const string& propName = properties.get(propType);
 
@@ -542,7 +541,7 @@ EventMode PhysicalJoystickHandler::getMode(const Properties& properties,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-EventMode PhysicalJoystickHandler::getMode(const Controller::Type type)
+EventMode PhysicalJoystickHandler::getMode(Controller::Type type)
 {
   switch(type)
   {
@@ -671,7 +670,7 @@ void PhysicalJoystickHandler::enableMappings(const Event::EventSet& events, Even
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PhysicalJoystickHandler::enableMapping(const Event::Type event, EventMode mode)
+void PhysicalJoystickHandler::enableMapping(Event::Type event, EventMode mode)
 {
   // copy from controller mode into emulation mode
   for (auto& stick : mySticks)
@@ -687,8 +686,7 @@ void PhysicalJoystickHandler::enableMapping(const Event::Type event, EventMode m
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-EventMode PhysicalJoystickHandler::getEventMode(const Event::Type event,
-                                                const EventMode mode)
+EventMode PhysicalJoystickHandler::getEventMode(Event::Type event, EventMode mode)
 {
   if(mode == EventMode::kEmulationMode)
   {
@@ -712,7 +710,7 @@ EventMode PhysicalJoystickHandler::getEventMode(const Event::Type event,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool PhysicalJoystickHandler::isJoystickEvent(const Event::Type event)
+bool PhysicalJoystickHandler::isJoystickEvent(Event::Type event)
 {
   return LeftJoystickEvents.contains(event)
     || QTJoystick3Events.contains(event)
@@ -721,7 +719,7 @@ bool PhysicalJoystickHandler::isJoystickEvent(const Event::Type event)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool PhysicalJoystickHandler::isPaddleEvent(const Event::Type event)
+bool PhysicalJoystickHandler::isPaddleEvent(Event::Type event)
 {
   return LeftPaddlesEvents.contains(event)
     || QTPaddles3Events.contains(event)
@@ -730,21 +728,21 @@ bool PhysicalJoystickHandler::isPaddleEvent(const Event::Type event)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool PhysicalJoystickHandler::isKeyboardEvent(const Event::Type event)
+bool PhysicalJoystickHandler::isKeyboardEvent(Event::Type event)
 {
   return LeftKeyboardEvents.contains(event)
     || RightKeyboardEvents.contains(event);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool PhysicalJoystickHandler::isDrivingEvent(const Event::Type event)
+bool PhysicalJoystickHandler::isDrivingEvent(Event::Type event)
 {
   return LeftDrivingEvents.contains(event)
     || RightDrivingEvents.contains(event);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool PhysicalJoystickHandler::isCommonEvent(const Event::Type event)
+bool PhysicalJoystickHandler::isCommonEvent(Event::Type event)
 {
   return !(isJoystickEvent(event) || isPaddleEvent(event)
     || isKeyboardEvent(event) || isDrivingEvent(event));
@@ -820,8 +818,8 @@ string PhysicalJoystickHandler::getMappingDesc(Event::Type event, EventMode mode
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool PhysicalJoystickHandler::addJoyMapping(Event::Type event, EventMode mode, int stick,
-                                            int button, JoyAxis axis, JoyDir adir)
+bool PhysicalJoystickHandler::addJoyMapping(Event::Type event, EventMode mode,
+    int stick, int button, JoyAxis axis, JoyDir adir)
 {
   const PhysicalJoystickPtr j = joy(stick);
 
@@ -861,8 +859,8 @@ bool PhysicalJoystickHandler::addJoyMapping(Event::Type event, EventMode mode, i
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool PhysicalJoystickHandler::addJoyHatMapping(Event::Type event, EventMode mode, int stick,
-                                               int button, int hat, JoyHatDir hdir)
+bool PhysicalJoystickHandler::addJoyHatMapping(Event::Type event, EventMode mode,
+    int stick, int button, int hat, JoyHatDir hdir)
 {
   const PhysicalJoystickPtr j = joy(stick);
 

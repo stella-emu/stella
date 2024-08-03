@@ -102,7 +102,7 @@ class FileListWidget : public StringListWidget
     const FSNode& currentDir() const { return _node; }
 
     static void setQuickSelectDelay(uInt64 time) { _QUICK_SELECT_DELAY = time; }
-    uInt64 getQuickSelectDelay() const { return _QUICK_SELECT_DELAY; }
+    static uInt64 getQuickSelectDelay() { return _QUICK_SELECT_DELAY; }
 
     ProgressDialog& progress();
     void incProgress();
@@ -116,7 +116,7 @@ class FileListWidget : public StringListWidget
       explicit HistoryType(const FSNode& _hnode, string_view _hselected)
         : node{_hnode}, selected{_hselected} {}
     };
-    enum class IconType {
+    enum class IconType: uInt8 {
       unknown,
       rom,
       directory,

@@ -542,7 +542,7 @@ void CartridgeELF::runArm()
   )
     return;
 
-  const uInt32 cyclesGoal = static_cast<uInt32>(
+  const auto cyclesGoal = static_cast<uInt32>(
     (mySystem->cycles() + ARM_RUNAHED_MAX) * myArmCyclesPer6502Cycle - getArmCycles());
   uInt32 cycles = 0;
 

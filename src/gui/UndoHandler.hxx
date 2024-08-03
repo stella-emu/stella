@@ -29,7 +29,7 @@
 class UndoHandler
 {
   public:
-    UndoHandler(size_t size = 100);
+    explicit UndoHandler(size_t size = 100);
     ~UndoHandler() = default;
 
     // Reset undo buffer

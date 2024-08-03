@@ -42,7 +42,7 @@ class CartridgeBUS : public CartridgeARM
   friend class CartridgeBUSInfoWidget;
   friend class CartridgeRamBUSWidget;
 
-  enum class BUSSubtype {
+  enum class BUSSubtype: uInt8 {
     BUS0, // very old demos when BUS was in flux, not supported in Stella
     BUS1, // draconian_20161102.bin
     BUS2, // 128bus_20170120.bin, 128chronocolour_20170101.bin, parrot_20161231_NTSC.bin

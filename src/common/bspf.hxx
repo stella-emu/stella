@@ -253,7 +253,7 @@ namespace BSPF
   // starting from 'startpos' in the first string
   static size_t findIgnoreCase(string_view s1, string_view s2, size_t startpos = 0)
   {
-    const auto pos = std::search(s1.cbegin()+startpos, s1.cend(),
+    const auto pos = std::search(s1.cbegin()+startpos, s1.cend(),  // NOLINT
       s2.cbegin(), s2.cend(), [](char ch1, char ch2) {
         return toupper(static_cast<uInt8>(ch1)) == toupper(static_cast<uInt8>(ch2));
       });

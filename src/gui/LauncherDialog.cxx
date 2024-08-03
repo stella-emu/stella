@@ -1045,7 +1045,8 @@ void LauncherDialog::handleCommand(CommandSender* sender, int cmd,
       if(subDirs && cmd == EditableWidget::kChangedCmd)
       {
         // delay (potentially slow) subdirectories reloads until user stops typing
-        myReloadTime = TimerManager::getTicks() / 1000 + myList->getQuickSelectDelay();
+        myReloadTime = TimerManager::getTicks() / 1000 +
+          LauncherFileListWidget::getQuickSelectDelay();
         myPendingReload = true;
       }
       else
@@ -1173,11 +1174,11 @@ void LauncherDialog::openContextMenu(int x, int y)
   {
     if(!currentNode().isDirectory())
     {
-      if(myList->isUserDir(currentNode().getName()))
+      if(LauncherFileListWidget::isUserDir(currentNode().getName()))
         items.emplace_back("Remove all from favorites", "removefavorites");
-      if(myList->isPopularDir(currentNode().getName()))
+      if(LauncherFileListWidget::isPopularDir(currentNode().getName()))
         items.emplace_back("Remove all from most popular", "removepopular");
-      if(myList->isRecentDir(currentNode().getName()))
+      if(LauncherFileListWidget::isRecentDir(currentNode().getName()))
         items.emplace_back("Remove all from recently played", "removerecent");
       if(myList->inRecentDir())
         items.emplace_back("Remove from recently played", "Ctrl+X", "remove");

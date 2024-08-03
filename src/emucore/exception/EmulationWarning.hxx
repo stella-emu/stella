@@ -32,7 +32,7 @@ class EmulationWarning : public std::exception
     }
 
   private:
-    const string myMessage;
+    string myMessage;
 };
 
 #endif // EMULATION_WARNING_HXX

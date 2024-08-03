@@ -59,7 +59,7 @@ class ScrollBarWidget : public Widget, public CommandSender
     int _wheel_lines{0};
 
   private:
-    enum class Part { None, UpArrow, DownArrow, Slider, PageUp, PageDown };
+    enum class Part: uInt8 { None, UpArrow, DownArrow, Slider, PageUp, PageDown };
 
     Part _part{Part::None};
     Part _draggingPart{Part::None};

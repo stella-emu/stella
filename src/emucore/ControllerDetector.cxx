@@ -23,7 +23,7 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Controller::Type ControllerDetector::detectType(
     const ByteBuffer& image, size_t size,
-    const Controller::Type type, const Controller::Jack port,
+    Controller::Type type, Controller::Jack port,
     const Settings& settings, bool isQuadTari)
 {
   if(type == Controller::Type::Unknown || settings.getBool("rominfo"))
@@ -46,7 +46,7 @@ Controller::Type ControllerDetector::detectType(
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string ControllerDetector::detectName(const ByteBuffer& image, size_t size,
-    const Controller::Type type, const Controller::Jack port,
+    Controller::Type type, Controller::Jack port,
     const Settings& settings, bool isQuadTari)
 {
   return Controller::getName(detectType(image, size, type, port, settings, isQuadTari));

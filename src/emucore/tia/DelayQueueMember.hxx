@@ -32,6 +32,7 @@ class DelayQueueMember : public Serializable {
 
   public:
     DelayQueueMember();
+    ~DelayQueueMember() override = default;
 
   public:
     void push(uInt8 address, uInt8 value);
@@ -64,9 +65,7 @@ class DelayQueueMember : public Serializable {
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 template<unsigned capacity>
-DelayQueueMember<capacity>::DelayQueueMember()
-{
-}
+DelayQueueMember<capacity>::DelayQueueMember() = default;
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 template<unsigned capacity>
@@ -82,7 +81,7 @@ void DelayQueueMember<capacity>::push(uInt8 address, uInt8 value)
 template<unsigned capacity>
 void DelayQueueMember<capacity>::remove(uInt8 address)
 {
-  uInt8 index;
+  uInt8 index = 0;
 
   for (index = 0; index < mySize; ++index) {
     if (myEntries[index].address == address) break;

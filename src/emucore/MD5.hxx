@@ -72,54 +72,55 @@ class MD5
 
   public:
     MD5() = default;
+    ~MD5() = default;
 
   private:
     void init();
-    void update(const uInt8* const input, uInt32 length);
+    void update(const uInt8* input, uInt32 length);
     void finalize();
     string hexdigest() const;
     void transform(const uInt8* block);
-    static void decode(uInt32* output, const uInt8* const input, uInt32 len);
-    static void encode(uInt8* output, const uInt32* const input, uInt32 len);
+    static void decode(uInt32* output, const uInt8* input, uInt32 len);
+    static void encode(uInt8* output, const uInt32* input, uInt32 len);
 
     // F, G, H and I are basic MD5 functions.
-    FORCE_INLINE constexpr uInt32 F(uInt32 x, uInt32 y, uInt32 z) {
+    static constexpr uInt32 F(uInt32 x, uInt32 y, uInt32 z) {
       return (x&y) | (~x&z);
     }
-    FORCE_INLINE constexpr uInt32 G(uInt32 x, uInt32 y, uInt32 z) {
+    static constexpr uInt32 G(uInt32 x, uInt32 y, uInt32 z) {
       return (x&z) | (y&~z);
     }
-    FORCE_INLINE constexpr uInt32 H(uInt32 x, uInt32 y, uInt32 z) {
+    static constexpr uInt32 H(uInt32 x, uInt32 y, uInt32 z) {
       return x^y^z;
     }
-    FORCE_INLINE constexpr uInt32 I(uInt32 x, uInt32 y, uInt32 z) {
+    static constexpr uInt32 I(uInt32 x, uInt32 y, uInt32 z) {
       return y ^ (x | ~z);
     }
     // rotate_left rotates x left n bits.
-    FORCE_INLINE constexpr uInt32 rotate_left(uInt32 x, int n) {
+    static constexpr uInt32 rotate_left(uInt32 x, int n) {
       return (x << n) | (x >> (32-n));
     }
     // FF, GG, HH, and II transformations for rounds 1, 2, 3, and 4.
     // Rotation is separate from addition to prevent recomputation.
-    FORCE_INLINE constexpr void FF(uInt32 &a, uInt32 b, uInt32 c,
-                                   uInt32 d, uInt32 x, uInt32 s, uInt32 ac) {
+    static constexpr void FF(uInt32 &a, uInt32 b, uInt32 c,
+                             uInt32 d, uInt32 x, uInt32 s, uInt32 ac) {
       a = rotate_left(a+ F(b,c,d) + x + ac, s) + b;
     }
-    FORCE_INLINE constexpr void GG(uInt32 &a, uInt32 b, uInt32 c, uInt32 d,
-                                   uInt32 x, uInt32 s, uInt32 ac) {
+    static constexpr void GG(uInt32 &a, uInt32 b, uInt32 c, uInt32 d,
+                             uInt32 x, uInt32 s, uInt32 ac) {
       a = rotate_left(a + G(b,c,d) + x + ac, s) + b;
     }
-    FORCE_INLINE constexpr void HH(uInt32 &a, uInt32 b, uInt32 c, uInt32 d,
-                                   uInt32 x, uInt32 s, uInt32 ac) {
+    static constexpr void HH(uInt32 &a, uInt32 b, uInt32 c, uInt32 d,
+                             uInt32 x, uInt32 s, uInt32 ac) {
       a = rotate_left(a + H(b,c,d) + x + ac, s) + b;
     }
-    FORCE_INLINE constexpr void II(uInt32 &a, uInt32 b, uInt32 c, uInt32 d,
-                                   uInt32 x, uInt32 s, uInt32 ac) {
+    static constexpr void II(uInt32 &a, uInt32 b, uInt32 c, uInt32 d,
+                             uInt32 x, uInt32 s, uInt32 ac) {
       a = rotate_left(a + I(b,c,d) + x + ac, s) + b;
     }
 
   private:
-    static inline constexpr uInt32 BLOCKSIZE = 64;
+    static constexpr uInt32 BLOCKSIZE = 64;
     bool finalized{false};
     std::array<uInt8, BLOCKSIZE> buffer; // bytes that didn't fit in last chunk
     std::array<uInt32, 2> count;   // 64bit counter for number of bits (lo, hi)

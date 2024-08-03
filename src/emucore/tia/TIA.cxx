@@ -64,7 +64,7 @@ static constexpr uInt8 resxLateHblankThreshold = TIAConstants::H_CYCLES - 3;
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 TIA::TIA(ConsoleIO& console, const ConsoleTimingProvider& timingProvider,
-         Settings& settings, const onPhosphorCallback callback)
+         Settings& settings, const onPhosphorCallback& callback)
   : myConsole{console},
     myTimingProvider{timingProvider},
     mySettings{settings},

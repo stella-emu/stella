@@ -26,7 +26,7 @@
 class FrameManager: public AbstractFrameManager {
   public:
 
-    enum Metrics : uInt32 {
+    enum Metrics : uInt32 {  // NOLINT: use 32-bit, even though 16-bit is sufficient
       vblankNTSC = 37,
       vblankPAL = 45,
       vsync = 3,
@@ -34,7 +34,7 @@ class FrameManager: public AbstractFrameManager {
       frameSizePAL = 312,
       baseHeightNTSC = 228, // 217..239
       baseHeightPAL = 274, // 260..288
-      maxHeight = static_cast<uInt32>(baseHeightPAL * 1.05 + 0.5), // 288
+      maxHeight = static_cast<uInt32>(baseHeightPAL * 1.05 + 0.5), // 288   FIXME
       maxLinesVsync = 50,
       initialGarbageFrames = TIAConstants::initialGarbageFrames,
       ystartNTSC = 23,
@@ -45,6 +45,7 @@ class FrameManager: public AbstractFrameManager {
   public:
 
     FrameManager();
+    ~FrameManager() override = default;
 
   public:
     void setJitterSensitivity(uInt8 sensitivity) override { myJitterEmulation.setSensitivity(sensitivity); }
@@ -95,7 +96,7 @@ class FrameManager: public AbstractFrameManager {
 
   private:
 
-    enum class State {
+    enum class State: uInt8 {
       waitForVsyncStart,
       waitForVsyncEnd,
       waitForFrameStart,

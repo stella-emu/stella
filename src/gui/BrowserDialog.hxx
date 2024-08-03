@@ -33,7 +33,7 @@ class StaticTextWidget;
 class BrowserDialog : public Dialog
 {
   public:
-    enum class Mode {
+    enum class Mode: uInt8 {
       FileLoad,       // File selector, no input from user
       FileLoadNoDirs, // File selector, no input from user, fixed directory
       FileSave,       // File selector, filename changable by user

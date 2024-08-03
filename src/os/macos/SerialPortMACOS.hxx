@@ -28,7 +28,7 @@
 class SerialPortMACOS : public SerialPort
 {
   public:
-    SerialPortMACOS();
+    SerialPortMACOS() = default;
     ~SerialPortMACOS() override;
 
     /**

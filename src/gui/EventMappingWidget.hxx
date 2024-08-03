@@ -42,7 +42,7 @@ class EventMappingWidget : public Widget, public CommandSender
                        int x, int y, int w, int h);
     ~EventMappingWidget() override = default;
 
-    bool remapMode() { return myRemapStatus; }
+    bool remapMode() const { return myRemapStatus; }
 
     void setDefaults();
 
@@ -74,7 +74,7 @@ class EventMappingWidget : public Widget, public CommandSender
     void resetRemapping();
     void stopRemapping();
 
-    bool isRemapping() { return myRemapStatus; }
+    bool isRemapping() const { return myRemapStatus; }
 
     void drawKeyMapping();
     void enableButtons(bool state);

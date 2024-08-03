@@ -39,7 +39,6 @@
 #include "Ball.hxx"
 #include "LatchedInput.hxx"
 #include "AnalogReadout.hxx"
-#include "DelayQueueIterator.hxx"
 #include "Control.hxx"
 #include "System.hxx"
 
@@ -75,7 +74,7 @@ class TIA : public Device
     /**
      * Possible palette entries for objects in "fixed debug color mode".
      */
-    enum FixedColor {
+    enum FixedColor: uInt8 {
       NTSC_RED      = 0x42,
       NTSC_ORANGE   = 0x38,
       NTSC_YELLOW   = 0x1c,
@@ -118,7 +117,7 @@ class TIA : public Device
       @param settings  The settings object for this TIA device
     */
     TIA(ConsoleIO& console, const ConsoleTimingProvider& timingProvider,
-        Settings& settings, const onPhosphorCallback callback);
+        Settings& settings, const onPhosphorCallback& callback);
     ~TIA() override = default;
 
   public:
@@ -224,7 +223,7 @@ class TIA : public Device
     /**
       Did we generate a new frame?
      */
-    bool newFramePending() { return myFramesSinceLastRender  > 0; }
+    bool newFramePending() const { return myFramesSinceLastRender  > 0; }
 
     /**
      * Clear any pending frames.
@@ -234,7 +233,7 @@ class TIA : public Device
     /**
       The number of frames since we did last render to the front buffer.
      */
-    uInt32 framesSinceLastRender() { return myFramesSinceLastRender; }
+    uInt32 framesSinceLastRender() const { return myFramesSinceLastRender; }
 
     /**
       Render the pending frame to the framebuffer and clear the flag.
@@ -257,7 +256,7 @@ class TIA : public Device
     /**
       Answers dimensional info about the framebuffer.
     */
-    uInt32 width() const  { return TIAConstants::H_PIXEL; }
+    uInt32 width() const { return TIAConstants::H_PIXEL; }  // NOLINT
     uInt32 height() const { return myFrameManager->height(); }
     Int32 vcenter() const { return myFrameManager->vcenter(); }
     Int32 minVcenter() const { return myFrameManager->minVcenter(); }
@@ -362,7 +361,7 @@ class TIA : public Device
       Answers the system cycles used by WSYNC from the start of the current frame.
     */
     uInt32 frameWSyncCycles() const {
-      return uInt32(myFrameWsyncCycles);
+      return static_cast<uInt32>(myFrameWsyncCycles);
     }
   #endif // DEBUGGER_SUPPORT
 
@@ -599,18 +598,18 @@ class TIA : public Device
     /**
      * During each line, the TIA cycles through these two states.
      */
-    enum class HState {blank, frame};
+    enum class HState: uInt8 {blank, frame};
 
     /**
      * The three different modes of the priority encoder. Check TIA::renderPixel
      * for a precise definition.
      */
-    enum class Priority {pfp, score, normal};
+    enum class Priority: uInt8 {pfp, score, normal};
 
     /**
      * Palette and indices for fixed debug colors.
      */
-    enum FixedObject { P0, M0, P1, M1, PF, BL, BK };
+    enum FixedObject: uInt8 { P0, M0, P1, M1, PF, BL, BK };
     BSPF::array2D<FixedColor, 3, 7> myFixedColorPalette;
     std::array<string, 7> myFixedColorNames;
 
@@ -841,12 +840,12 @@ class TIA : public Device
     LatchedInput myInput1;
 
     // Pointer to the internal color-index-based frame buffer
-    std::array<uInt8, TIAConstants::H_PIXEL * TIAConstants::frameBufferHeight> myFramebuffer;
+    std::array<uInt8, static_cast<size_t>(TIAConstants::H_PIXEL * TIAConstants::frameBufferHeight)> myFramebuffer;
 
     // The frame is rendered to the backbuffer and only copied to the framebuffer
     // upon completion
-    std::array<uInt8, TIAConstants::H_PIXEL * TIAConstants::frameBufferHeight> myBackBuffer;
-    std::array<uInt8, TIAConstants::H_PIXEL * TIAConstants::frameBufferHeight> myFrontBuffer;
+    std::array<uInt8, static_cast<size_t>(TIAConstants::H_PIXEL * TIAConstants::frameBufferHeight)> myBackBuffer;
+    std::array<uInt8, static_cast<size_t>(TIAConstants::H_PIXEL * TIAConstants::frameBufferHeight)> myFrontBuffer;
 
     // We snapshot frame statistics when the back buffer is copied to the front buffer
     // and when the front buffer is copied to the frame buffer

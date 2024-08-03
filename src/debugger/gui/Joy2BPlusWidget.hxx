@@ -29,7 +29,7 @@ class Joy2BPlusWidget : public ControllerWidget
     ~Joy2BPlusWidget() override = default;
 
   private:
-    enum { kJUp = 0, kJDown, kJLeft, kJRight, kJButtonB, kJButtonC, kJButton3 };
+    enum: uInt8 { kJUp = 0, kJDown, kJLeft, kJRight, kJButtonB, kJButtonC, kJButton3 };
 
     std::array<CheckboxWidget*, 7> myPins{nullptr};
     static constexpr std::array<Controller::DigitalPin, 5> ourPinNo = {{

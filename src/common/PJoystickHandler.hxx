@@ -53,7 +53,7 @@ class PhysicalJoystickHandler
       int                       ID;
       PhysicalJoystick::Port    port;
 
-      explicit MinStrickInfo(string _name, int _id, PhysicalJoystick::Port _port)
+      explicit MinStrickInfo(string_view _name, int _id, PhysicalJoystick::Port _port)
         : name{_name}, ID{_id}, port{_port} {}
     };
     using MinStrickInfoList = std::vector<MinStrickInfo>;
@@ -66,7 +66,7 @@ class PhysicalJoystickHandler
       //       on the 'mapping' instance variable; there lay dragons ...
       // https://json.nlohmann.me/home/faq/#brace-initialization-yields-arrays
       explicit StickInfo(nlohmann::json map, PhysicalJoystickPtr stick = nullptr)
-        : mapping(map), joy{std::move(stick)} {}
+        : mapping(map), joy{std::move(stick)} {}  // NOLINT
 
       nlohmann::json mapping;
       PhysicalJoystickPtr joy;
@@ -92,7 +92,7 @@ class PhysicalJoystickHandler
     void setDefaultMapping(Event::Type event, EventMode mode);
 
     /** define mappings for current controllers */
-    void defineControllerMappings(const Controller::Type type, Controller::Jack port,
+    void defineControllerMappings(Controller::Type type, Controller::Jack port,
                                   const Properties& properties,
                                   Controller::Type qtType1 = Controller::Type::Unknown,
                                   Controller::Type qtType2 = Controller::Type::Unknown);
@@ -145,9 +145,9 @@ class PhysicalJoystickHandler
     using StickDatabase = std::map<string, StickInfo, std::less<>>;
     using StickList = std::map<int, PhysicalJoystickPtr>;
 
-    OSystem& myOSystem;
-    EventHandler& myHandler;
-    Event& myEvent;
+    OSystem& myOSystem;      // NOLINT: we want a reference here
+    EventHandler& myHandler; // NOLINT: we want a reference here
+    Event& myEvent;          // NOLINT: we want a reference here
 
     // Contains all joysticks that Stella knows about, indexed by name
     StickDatabase myDatabase;
@@ -157,7 +157,7 @@ class PhysicalJoystickHandler
 
     // Get joystick corresponding to given id (or nullptr if it doesn't exist)
     // Make this inline so it's as fast as possible
-    const PhysicalJoystickPtr joy(int id) const {
+    PhysicalJoystickPtr joy(int id) const {
       const auto& i = mySticks.find(id);
       return i != mySticks.cend() ? i->second : nullptr;
     }
@@ -171,8 +171,10 @@ class PhysicalJoystickHandler
 
     friend ostream& operator<<(ostream& os, const PhysicalJoystickHandler& jh);
 
-    JoyDir convertAxisValue(int value) const {
-      return value == int(JoyDir::NONE) ? JoyDir::NONE : value > 0 ? JoyDir::POS : JoyDir::NEG;
+    static constexpr JoyDir convertAxisValue(int value) {
+      return value == static_cast<int>(JoyDir::NONE)
+        ? JoyDir::NONE
+        : value > 0 ? JoyDir::POS : JoyDir::NEG;
     }
 
     // Handle regular axis events (besides special Stelladaptor handling)
@@ -196,23 +198,23 @@ class PhysicalJoystickHandler
                           bool updateDefaults = false);
 
     /** return event mode for given property */
-    static EventMode getMode(const Properties& properties, const PropType propType);
+    static EventMode getMode(const Properties& properties, PropType propType);
     /** return event mode for given controller type */
-    static EventMode getMode(const Controller::Type type);
+    static EventMode getMode(Controller::Type type);
 
     /** returns the event's controller mode */
-    static EventMode getEventMode(const Event::Type event, const EventMode mode);
+    static EventMode getEventMode(Event::Type event, EventMode mode);
     /** Checks event type. */
-    static bool isJoystickEvent(const Event::Type event);
-    static bool isPaddleEvent(const Event::Type event);
-    static bool isKeyboardEvent(const Event::Type event);
-    static bool isDrivingEvent(const Event::Type event);
-    static bool isCommonEvent(const Event::Type event);
+    static bool isJoystickEvent(Event::Type event);
+    static bool isPaddleEvent(Event::Type event);
+    static bool isKeyboardEvent(Event::Type event);
+    static bool isDrivingEvent(Event::Type event);
+    static bool isCommonEvent(Event::Type event);
 
     void enableCommonMappings();
 
     void enableMappings(const Event::EventSet& events, EventMode mode);
-    void enableMapping(const Event::Type event, EventMode mode);
+    void enableMapping(Event::Type event, EventMode mode);
 
   private:
     EventMode myLeftMode{EventMode::kEmulationMode};

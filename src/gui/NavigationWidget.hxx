@@ -22,7 +22,7 @@ class EditTextWidget;
 class FileListWidget;
 namespace GUI {
   class Font;
-}
+}  // namespace GUI
 
 #include "Widget.hxx"
 

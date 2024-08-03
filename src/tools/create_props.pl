@@ -66,6 +66,7 @@ print OUTFILE "  located in the src/tools directory.  All properties changes\n";
 print OUTFILE "  should be made in stella.pro, and then this file should be\n";
 print OUTFILE "  regenerated and the application recompiled.\n";
 print OUTFILE "*/\n";
+print OUTFILE "\n// NOLINTBEGIN: static analyzer can't tell the following is data\n";
 print OUTFILE "\nstatic constexpr uInt32 DEF_PROPS_SIZE = " . $setsize . ";";
 print OUTFILE "\n\n";
 print OUTFILE "/**\n";
@@ -93,7 +94,7 @@ for my $key ( sort keys %propset )
 }
 
 print OUTFILE "}};\n";
-print OUTFILE "\n";
+print OUTFILE "\n// NOLINTEND\n\n";
 print OUTFILE "#endif\n";
 
 close(OUTFILE);

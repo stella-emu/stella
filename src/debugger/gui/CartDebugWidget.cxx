@@ -39,7 +39,7 @@ CartDebugWidget::CartDebugWidget(GuiObject* boss, const GUI::Font& lfont,
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 int CartDebugWidget::addBaseInformation(size_t bytes, string_view manufacturer,
-        string_view desc, const uInt16 maxlines)
+        string_view desc, uInt16 maxlines)
 {
   const int lwidth = _font.getStringWidth("Manufacturer "),
             fwidth = _w - lwidth - 12;

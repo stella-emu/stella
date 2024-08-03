@@ -40,8 +40,8 @@ class OSystem;
 class PropertiesSet
 {
   public:
-
     PropertiesSet();
+    ~PropertiesSet() = default;
 
     void setRepository(shared_ptr<CompositeKeyValueRepository> repository);
 

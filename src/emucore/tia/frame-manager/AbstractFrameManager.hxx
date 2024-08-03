@@ -33,6 +33,7 @@ class AbstractFrameManager : public Serializable
   public:
 
     AbstractFrameManager();
+    ~AbstractFrameManager() override = default;
 
   public:
 
@@ -78,7 +79,7 @@ class AbstractFrameManager : public Serializable
      * Should the TIA render its frame? This is buffered in a flag for
      * performance reasons; descendants must update the flag.
      */
-    inline bool isRendering() const { return myIsRendering; }
+    bool isRendering() const { return myIsRendering; }
 
     /**
      * Is vsync on?
@@ -88,7 +89,7 @@ class AbstractFrameManager : public Serializable
     /**
      * Is vblank on?
      */
-    inline bool vblank() const { return myVblank; }
+    bool vblank() const { return myVblank; }
 
     /**
      * The number of scanlines in the last finished frame.

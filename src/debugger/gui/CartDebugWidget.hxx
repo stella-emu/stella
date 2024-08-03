@@ -23,7 +23,7 @@ class StringListWidget;
 
 namespace GUI {
   class Font;
-}
+}  // namespace GUI
 
 #include "Base.hxx"  // not needed here, but all child classes need it
 #include "Command.hxx"
@@ -39,7 +39,7 @@ class CartDebugWidget : public Widget, public CommandSender
 
   public:
     int addBaseInformation(size_t bytes, string_view manufacturer,
-        string_view desc, const uInt16 maxlines = 10);
+        string_view desc, uInt16 maxlines = 10);
 
     // Inform the ROM Widget that the underlying cart has somehow changed
     void invalidate();

@@ -33,6 +33,7 @@ class DrawCounterDecodes
   protected:
 
     DrawCounterDecodes();
+    ~DrawCounterDecodes() = default;
 
   private:
 

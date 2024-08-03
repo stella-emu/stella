@@ -34,7 +34,7 @@ class Event
       console and controller event types as well as events that aren't
       technically part of the emulation core.
     */
-    enum Type
+    enum Type: uInt16
     {
       NoType = 0,
       ConsoleColor, ConsoleBlackWhite, ConsoleColorToggle, Console7800Pause,
@@ -182,7 +182,7 @@ class Event
     };
 
     // Event categorizing groups
-    enum Group
+    enum Group: uInt8
     {
       Menu, Emulation,
       Misc, AudioVideo, States, Console, Joystick, Paddles, Driving, Keyboard,
@@ -201,13 +201,14 @@ class Event
       Create a new event object.
     */
     Event() { clear(); }
+    ~Event() = default;
 
   public:
     /**
       Get the value associated with the event of the specified type.
     */
     Int32 get(Type type) const {
-      std::lock_guard<std::mutex> lock(myMutex);
+      const std::lock_guard<std::mutex> lock(myMutex);
 
       return myValues[type];
     }
@@ -216,7 +217,7 @@ class Event
       Set the value associated with the event of the specified type.
     */
     void set(Type type, Int32 value) {
-      std::lock_guard<std::mutex> lock(myMutex);
+      const std::lock_guard<std::mutex> lock(myMutex);
 
       myValues[type] = value;
     }
@@ -226,7 +227,7 @@ class Event
     */
     void clear()
     {
-      std::lock_guard<std::mutex> lock(myMutex);
+      const std::lock_guard<std::mutex> lock(myMutex);
 
       myValues.fill(Event::NoType);
     }

@@ -28,6 +28,7 @@ class Player : public Serializable
 {
   public:
     explicit Player(uInt32 collisionMask);
+    ~Player() override = default;
 
   public:
 
@@ -66,7 +67,7 @@ class Player : public Serializable
 
     uInt8 getClock() const { return myCounter; }
 
-    inline bool isOn() const { return (collision & 0x8000); }
+    bool isOn() const { return (collision & 0x8000); }
     uInt8 getColor() const;
 
     void shufflePatterns();
@@ -115,7 +116,7 @@ class Player : public Serializable
 
     uInt8 myColor{0};
     uInt8 myObjectColor{0}, myDebugColor{0};
-    bool myDebugEnabled{0};
+    bool myDebugEnabled{false};
 
     bool myIsSuppressed{false};
 
@@ -205,7 +206,7 @@ void Player::tick()
         if (myRenderCounter > 0)
           ++mySampleCounter;
 
-        if (myRenderCounter >= 0 && myDividerChangeCounter >= 0 && myDividerChangeCounter-- == 0)
+        if (myRenderCounter >= 0 && myDividerChangeCounter >= 0 && myDividerChangeCounter-- == 0)  // NOLINT (bugprone-inc-dec-in-conditions)
           setDivider(myDividerPending);
 
         break;
@@ -214,7 +215,7 @@ void Player::tick()
         if (myRenderCounter > 1 && (((myRenderCounter - 1) % myDivider) == 0))
           ++mySampleCounter;
 
-        if (myRenderCounter > 0 && myDividerChangeCounter >= 0 && myDividerChangeCounter-- == 0)
+        if (myRenderCounter > 0 && myDividerChangeCounter >= 0 && myDividerChangeCounter-- == 0)  // NOLINT (bugprone-inc-dec-in-conditions)
           setDivider(myDividerPending);
 
         break;

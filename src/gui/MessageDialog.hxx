@@ -36,7 +36,7 @@ class MessageDialog : public Dialog
                            bool yesNo = false);
     static void setMessage(string_view title, const StringList& text,
                            bool yesNo = false);
-    bool confirmed() { return myConfirmed; }
+    static bool confirmed() { return myConfirmed; }
 
   protected:
     void loadConfig() override;

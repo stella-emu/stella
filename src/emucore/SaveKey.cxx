@@ -110,7 +110,7 @@ void SaveKey::eraseCurrent()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool SaveKey::isPageUsed(const uInt32 page) const
+bool SaveKey::isPageUsed(uInt32 page) const
 {
   return myEEPROM->isPageUsed(page);
 }

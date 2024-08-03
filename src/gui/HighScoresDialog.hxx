@@ -25,7 +25,7 @@ class EditTextWidget;
 class PopUpWidget;
 namespace GUI {
   class MessageBox;
-}
+}  // namespace GUI
 class Serializer;
 
 #include "OptionsMenu.hxx"

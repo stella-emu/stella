@@ -19,12 +19,6 @@
 #include "SerialPortWINDOWS.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-SerialPortWINDOWS::SerialPortWINDOWS()
-  : SerialPort()
-{
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 SerialPortWINDOWS::~SerialPortWINDOWS()
 {
   if(myHandle != INVALID_HANDLE_VALUE)

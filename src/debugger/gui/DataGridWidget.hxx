@@ -78,7 +78,7 @@ class DataGridWidget : public EditableWidget
     // Account for the extra width of embedded scrollbar
     int getWidth() const override;
 
-    int colWidth() { return _colWidth; }
+    int colWidth() const { return _colWidth; }
 
     void setOpsWidget(DataGridOpsWidget* w) { _opsWidget = w; }
 

@@ -29,9 +29,10 @@ class GlobalKeyHandler
 {
   public:
     explicit GlobalKeyHandler(OSystem& osystem);
+    ~GlobalKeyHandler() = default;
 
   public:
-    enum class Setting
+    enum class Setting: Int8
     {
       NONE = -1,
       // *** Audio & Video group ***
@@ -138,14 +139,14 @@ class GlobalKeyHandler
     };
 
   public:
-    bool handleEvent(const Event::Type event, bool pressed, bool repeated);
-    void setSetting(const Setting setting);
-    void setDirectSetting(const Setting setting);
+    bool handleEvent(Event::Type event, bool pressed, bool repeated);
+    void setSetting(Setting setting);
+    void setDirectSetting(Setting setting);
 
   private:
     using Function = std::function<void(int)>;
 
-    enum class Group
+    enum class Group: uInt8
     {
       AV,
       INPUT,
@@ -171,7 +172,7 @@ class GlobalKeyHandler
     // Cycle settings using given direction (can be 0)
     Function cycleSetting(int direction);
     // Get adjustment function and if it is repeated
-    SettingData getSettingData(const Setting setting) const;
+    SettingData getSettingData(Setting setting) const;
 
     PhysicalJoystickHandler& joyHandler() const {
       return myOSystem.eventHandler().joyHandler();

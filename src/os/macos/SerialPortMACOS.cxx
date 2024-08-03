@@ -15,7 +15,7 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#include <stdio.h>
+#include <cstdio>
 #include <fcntl.h>
 #include <sys/errno.h>
 #include <sys/termios.h>
@@ -27,12 +27,6 @@
 
 #include "FSNode.hxx"
 #include "SerialPortMACOS.hxx"
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-SerialPortMACOS::SerialPortMACOS()
-  : SerialPort()
-{
-}
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 SerialPortMACOS::~SerialPortMACOS()

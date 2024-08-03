@@ -136,7 +136,7 @@ string Controller::getPropName(const Type type)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Controller::Type Controller::getType(string_view propName)
 {
-  for(int i = 0; i < static_cast<int>(Type::LastType); ++i)
+  for(uInt8 i = 0; i < static_cast<uInt8>(Type::LastType); ++i)
     if (BSPF::equalsIgnoreCase(propName, getPropName(Type{i})))
       return Type{i};
 

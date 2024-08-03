@@ -25,31 +25,31 @@
 namespace FBMinimum {
   static constexpr uInt32 Width = TIAConstants::viewableWidth * 2;
   static constexpr uInt32 Height = TIAConstants::viewableHeight * 2;
-}
+}  // namespace FBMinimum
 
 // Return values for initialization of framebuffer window
-enum class FBInitStatus {
+enum class FBInitStatus: uInt8 {
   Success,
   FailComplete,
   FailTooLarge,
   FailNotSupported
 };
 
-enum class BufferType {
+enum class BufferType: uInt8 {
   None,
   Launcher,
   Emulator,
   Debugger
 };
 
-enum class ScalingInterpolation {
+enum class ScalingInterpolation: uInt8 {
   none,
   sharp,
   blur
 };
 
 // Positions for onscreen/overlaid messages
-enum class MessagePosition {
+enum class MessagePosition: uInt8 {
   TopLeft,
   TopCenter,
   TopRight,
@@ -120,14 +120,14 @@ using UIPaletteArray = std::array<uInt32, kNumColors-kColor>;
 using FullPaletteArray = std::array<uInt32, kNumColors>;
 
 // Text alignment modes for drawString()
-enum class TextAlign {
+enum class TextAlign: uInt8 {
   Left,
   Center,
   Right
 };
 
 // Line types for drawing rectangular frames
-enum class FrameStyle {
+enum class FrameStyle: uInt8 {
   Solid,
   Dashed
 };

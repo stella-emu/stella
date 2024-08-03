@@ -66,7 +66,7 @@ class CartridgeCDF : public CartridgeARM
 
   public:
 
-    enum class CDFSubtype {
+    enum class CDFSubtype: uInt8 {
       CDF0,
       CDF1,
       CDFJ,

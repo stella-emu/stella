@@ -29,7 +29,7 @@ class JoystickWidget : public ControllerWidget
     ~JoystickWidget() override = default;
 
   private:
-    enum { kJUp = 0, kJDown, kJLeft, kJRight, kJFire };
+    enum: uInt8 { kJUp = 0, kJDown, kJLeft, kJRight, kJFire };
 
     std::array<CheckboxWidget*, 5> myPins{nullptr};
     static constexpr std::array<Controller::DigitalPin, 5> ourPinNo = {{

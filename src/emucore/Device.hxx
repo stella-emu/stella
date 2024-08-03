@@ -33,7 +33,7 @@ class System;
 class Device : public Serializable
 {
   public:
-    enum AccessType {
+    enum AccessType: uInt16 {
       NONE        = 0,
       REFERENCED  = 1 << 0, /* 0x01, code somewhere in the program references it,
                                i.e. LDA $F372 referenced $F372 */
@@ -102,7 +102,7 @@ class Device : public Serializable
       @param out  The Serializer object to use
       @return  False on any errors, else true
     */
-    virtual bool save(Serializer& out) const override = 0;
+    bool save(Serializer& out) const override = 0;
 
     /**
       Load the current state of this device from the given Serializer.
@@ -110,7 +110,7 @@ class Device : public Serializable
       @param in  The Serializer object to use
       @return  False on any errors, else true
     */
-    virtual bool load(Serializer& in) override = 0;
+    bool load(Serializer& in) override = 0;
 
   public:
     /**

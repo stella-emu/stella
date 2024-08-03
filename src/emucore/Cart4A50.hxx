@@ -176,43 +176,37 @@ class Cartridge4A50 : public Cartridge
     /**
       Methods to perform all the ways that banks can be switched
     */
-    inline void bankROMLower(uInt16 value)
-    {
+    void bankROMLower(uInt16 value) {
       myIsRomLow = true;
       mySliceLow = value << 11;
       myBankChanged = true;
     }
 
-    inline void bankRAMLower(uInt16 value)
-    {
+    void bankRAMLower(uInt16 value) {
       myIsRomLow = false;
       mySliceLow = value << 11;
       myBankChanged = true;
     }
 
-    inline void bankROMMiddle(uInt16 value)
-    {
+    void bankROMMiddle(uInt16 value) {
       myIsRomMiddle = true;
       mySliceMiddle = value << 11;
       myBankChanged = true;
     }
 
-    inline void bankRAMMiddle(uInt16 value)
-    {
+    void bankRAMMiddle(uInt16 value) {
       myIsRomMiddle = false;
       mySliceMiddle = value << 11;
       myBankChanged = true;
     }
 
-    inline void bankROMHigh(uInt16 value)
-    {
+    void bankROMHigh(uInt16 value) {
       myIsRomHigh = true;
       mySliceHigh = value << 8;
       myBankChanged = true;
     }
 
-    inline void bankRAMHigh(uInt16 value)
-    {
+    void bankRAMHigh(uInt16 value) {
       myIsRomHigh = false;
       mySliceHigh = value << 8;
       myBankChanged = true;

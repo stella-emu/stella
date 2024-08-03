@@ -39,6 +39,7 @@ class Random : public Serializable
     explicit Random() {
       initSeed(static_cast<uInt32>(std::chrono::system_clock::now().time_since_epoch().count()));
     }
+    ~Random() override = default;
 
     /**
       Create a new random number generator with given seed.

@@ -25,7 +25,7 @@ class PopUpWidget;
 
 namespace GUI {
   class Font;
-}
+}  // namespace GUI
 
 #include "Variant.hxx"
 #include "CartDebugWidget.hxx"

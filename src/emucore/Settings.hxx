@@ -105,10 +105,10 @@ class Settings
     const string& getString(string_view key) const {
       return value(key).toString();
     }
-    const Common::Size getSize(string_view key) const {
+    Common::Size getSize(string_view key) const {
       return value(key).toSize();
     }
-    const Common::Point getPoint(string_view key) const {
+    Common::Point getPoint(string_view key) const {
       return value(key).toPoint();
     }
 

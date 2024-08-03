@@ -43,7 +43,7 @@ class ControllerDetector
       @return   The detected controller type
     */
     static Controller::Type detectType(const ByteBuffer& image, size_t size,
-        const Controller::Type type, const Controller::Jack port,
+        Controller::Type type, Controller::Jack port,
         const Settings& settings, bool isQuadTari = false);
 
     /**
@@ -60,7 +60,7 @@ class ControllerDetector
       @return   The (detected) controller name
     */
     static string detectName(const ByteBuffer& image, size_t size,
-        const Controller::Type type, const Controller::Jack port,
+        Controller::Type type, Controller::Jack port,
         const Settings& settings, bool isQuadTari = false);
 
   private:
@@ -137,6 +137,7 @@ class ControllerDetector
   private:
     // Following constructors and assignment operators not supported
     ControllerDetector() = delete;
+    ~ControllerDetector() = delete;
     ControllerDetector(const ControllerDetector&) = delete;
     ControllerDetector(ControllerDetector&&) = delete;
     ControllerDetector& operator=(const ControllerDetector&) = delete;

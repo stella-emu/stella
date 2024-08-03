@@ -259,6 +259,7 @@ class CartDetector
   private:
     // Following constructors and assignment operators not supported
     CartDetector() = delete;
+    ~CartDetector() = delete;
     CartDetector(const CartDetector&) = delete;
     CartDetector(CartDetector&&) = delete;
     CartDetector& operator=(const CartDetector&) = delete;

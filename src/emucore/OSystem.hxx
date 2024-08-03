@@ -105,7 +105,7 @@ class OSystem
       @return The frame buffer
     */
     FrameBuffer& frameBuffer() const { return *myFrameBuffer; }
-    bool hasFrameBuffer() const { return myFrameBuffer.get() != nullptr; }
+    bool hasFrameBuffer() const { return myFrameBuffer != nullptr; }
 
     /**
       Get the sound object of the system.

@@ -428,8 +428,8 @@ class Console : public Serializable, public ConsoleIO
     /**
       Selects the left or right controller depending on ROM properties
     */
-    unique_ptr<Controller> getControllerPort(const Controller::Type type,
-                                             const Controller::Jack port,
+    unique_ptr<Controller> getControllerPort(Controller::Type type,
+                                             Controller::Jack port,
                                              string_view romMd5);
 
     void toggleTIABit(TIABit bit, string_view bitname,

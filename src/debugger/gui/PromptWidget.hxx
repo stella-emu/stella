@@ -100,7 +100,7 @@ class PromptWidget : public Widget, public CommandSender
     void resetFunctions();
 
   private:
-    enum {
+    enum: uInt16 {
       kBufferSize = 32768,
       kLineBufferSize = 256,
       kHistorySize = 1000
