@@ -104,15 +104,15 @@ class SoundLIBRETRO : public Sound
 
         for (uInt32 i = 0; i < myAudioQueue->fragmentSize(); ++i)
         {
-          Int16 sampleL, sampleR;
+          Int16 sampleL = 0, sampleR = 0;
 
           if (myAudioQueue->isStereo())
           {
-            sampleL = static_cast<Int16>(myCurrentFragment[2*i + 0]);
-            sampleR = static_cast<Int16>(myCurrentFragment[2*i + 1]);
+            sampleL = myCurrentFragment[2*i + 0];
+            sampleR = myCurrentFragment[2*i + 1];
           }
           else
-            sampleL = sampleR = static_cast<Int16>(myCurrentFragment[i]);
+            sampleL = sampleR = myCurrentFragment[i];
 
           stream[outIndex++] = sampleL;
           stream[outIndex++] = sampleR;

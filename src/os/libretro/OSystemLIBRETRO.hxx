@@ -20,7 +20,6 @@
 
 #include "FSNode.hxx"
 #include "OSystem.hxx"
-#include "OSystemLIBRETRO.hxx"
 #include "repository/KeyValueRepositoryNoop.hxx"
 #include "repository/CompositeKeyValueRepositoryNoop.hxx"
 
@@ -80,6 +79,13 @@ class OSystemLIBRETRO : public OSystem
   protected:
     void initPersistence(FSNode& basedir) override { }
     string describePresistence() override { return "none"; }
+
+  private:
+    // Following constructors and assignment operators not supported
+    OSystemLIBRETRO(const OSystemLIBRETRO&) = delete;
+    OSystemLIBRETRO(OSystemLIBRETRO&&) = delete;
+    OSystemLIBRETRO& operator=(const OSystemLIBRETRO&) = delete;
+    OSystemLIBRETRO& operator=(OSystemLIBRETRO&&) = delete;
 };
 
 #endif
