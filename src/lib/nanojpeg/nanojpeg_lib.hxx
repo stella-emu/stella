@@ -25,7 +25,7 @@
 #if defined(__clang__)
   #pragma clang diagnostic push
   #pragma clang diagnostic ignored "-Weverything"
-  #include "nanojpeg.c"
+  #include "nanojpeg.c"  // NOLINT (bugprone-suspicious-include)
   #pragma clang diagnostic pop
 #elif defined(__GNUC__) || defined(__GNUG__)
   #pragma GCC diagnostic push

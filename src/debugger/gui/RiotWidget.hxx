@@ -75,7 +75,7 @@ class RiotWidget : public Widget, public CommandSender
 
     // ID's for the various widgets
     // We need ID's, since there are more than one of several types of widgets
-    enum {
+    enum: uInt8 {
       kTim1TID, kTim8TID, kTim64TID, kTim1024TID, kTimWriteID,
       kSWCHABitsID, kSWACNTBitsID, kSWCHBBitsID, kSWBCNTBitsID,
       kP0DiffChanged, kP1DiffChanged, kTVTypeChanged, kSelectID, kResetID,

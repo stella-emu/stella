@@ -968,11 +968,12 @@ void Console::setControllers(string_view romMd5)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Console::changeLeftController(int direction)
 {
-  int type = static_cast<int>(Controller::getType(myProperties.get(PropType::Controller_Left)));
+  auto type =
+    static_cast<uInt8>(Controller::getType(myProperties.get(PropType::Controller_Left)));
   if(!type)
-    type = static_cast<int>(Controller::getType(leftController().name()));
+    type = static_cast<uInt8>(Controller::getType(leftController().name()));
   type = BSPF::clampw(type + direction,
-                      1, static_cast<int>(Controller::Type::LastType) - 1);
+                      1, static_cast<uInt8>(Controller::Type::LastType) - 1);
 
   myProperties.set(PropType::Controller_Left, Controller::getPropName(Controller::Type{type}));
   setControllers(myProperties.get(PropType::Cart_MD5));
@@ -985,11 +986,12 @@ void Console::changeLeftController(int direction)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Console::changeRightController(int direction)
 {
-  int type = static_cast<int>(Controller::getType(myProperties.get(PropType::Controller_Right)));
+  auto type =
+    static_cast<uInt8>(Controller::getType(myProperties.get(PropType::Controller_Right)));
   if(!type)
-    type = static_cast<int>(Controller::getType(rightController().name()));
+    type = static_cast<uInt8>(Controller::getType(rightController().name()));
   type = BSPF::clampw(type + direction,
-                      1, static_cast<int>(Controller::Type::LastType) - 1);
+                      1, static_cast<uInt8>(Controller::Type::LastType) - 1);
 
   myProperties.set(PropType::Controller_Right, Controller::getPropName(Controller::Type{type}));
   setControllers(myProperties.get(PropType::Cart_MD5));
@@ -1001,7 +1003,7 @@ void Console::changeRightController(int direction)
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 unique_ptr<Controller> Console::getControllerPort(
-    const Controller::Type type, const Controller::Jack port, string_view romMd5)
+    Controller::Type type, Controller::Jack port, string_view romMd5)
 {
   unique_ptr<Controller> controller;
 

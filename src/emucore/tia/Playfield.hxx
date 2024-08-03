@@ -31,6 +31,7 @@ class Playfield : public Serializable
       The collision mask is injected at construction
      */
     explicit Playfield(uInt32 collisionMask);
+    ~Playfield() override = default;
 
   public:
 
@@ -118,7 +119,7 @@ class Playfield : public Serializable
       Is the playfield visible? This is determined by looking at bit 15
       of the collision mask.
      */
-    inline bool isOn() const { return (collision & 0x8000); }
+    bool isOn() const { return (collision & 0x8000); }
 
     /**
       Get the current color.
@@ -275,7 +276,7 @@ void Playfield::tick(uInt32 x)
 
   if (x & 0x03) return;
 
-  uInt32 currentPixel;
+  uInt32 currentPixel;  // NOLINT (cppcoreguidelines-init-variables)
 
   if (myEffectivePattern == 0) {
       currentPixel = 0;

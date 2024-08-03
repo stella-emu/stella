@@ -24,7 +24,7 @@ AtariMouseWidget::AtariMouseWidget(GuiObject* boss, const GUI::Font& font,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt8 AtariMouseWidget::getGrayCodeTable(const int index, const int direction) const
+uInt8 AtariMouseWidget::getGrayCodeTable(int index, int) const
 {
   return myGrayCodeTable[index];
 }

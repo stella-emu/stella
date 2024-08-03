@@ -25,6 +25,7 @@ class AudioChannel : public Serializable
 {
   public:
     AudioChannel() = default;
+    ~AudioChannel() override = default;
 
     void reset();
 

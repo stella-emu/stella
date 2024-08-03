@@ -109,7 +109,7 @@ class SaveKey : public Controller
     void eraseCurrent();
 
     /** Returns true if the page is used by the current ROM */
-    bool isPageUsed(const uInt32 page) const;
+    bool isPageUsed(uInt32 page) const;
 
   private:
     // The EEPROM used in the SaveKey

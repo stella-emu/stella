@@ -37,7 +37,7 @@ class Bankswitch
 {
   public:
     // Currently supported bankswitch schemes
-    enum class Type {
+    enum class Type: uInt8 {
       _AUTO,  _03E0,  _0840,   _0FA0,  _2IN1, _4IN1, _8IN1, _16IN1,
       _32IN1, _64IN1, _128IN1, _2K,    _3E,   _3EX,  _3EP,  _3F,
       _4A50,  _4K,    _4KSC,   _AR,    _BF,   _BFSC, _BUS,  _CDF,
@@ -60,7 +60,7 @@ class Bankswitch
     static constexpr size_t any_KB = 0;
 
     static const std::array<SizesType,
-                            static_cast<uInt32>(Type::NumSchemes)> Sizes;
+        static_cast<uInt8>(Type::NumSchemes)> Sizes;
 
     // Info about the various bankswitch schemes, useful for displaying
     // in GUI dropdown boxes, etc
@@ -69,7 +69,7 @@ class Bankswitch
       string_view desc;
     };
     static const std::array<Description,
-                            static_cast<uInt32>(Type::NumSchemes)> BSList;
+        static_cast<uInt8>(Type::NumSchemes)> BSList;
 
   public:
     // Convert BSType enum to string
@@ -96,14 +96,14 @@ class Bankswitch
     /**
       Convenience functions for different parameter types.
      */
-    static inline bool isValidRomName(const FSNode& name, string& ext) {
+    static bool isValidRomName(const FSNode& name, string& ext) {
       return isValidRomName(name.getPath(), ext);
     }
-    static inline bool isValidRomName(const FSNode& name) {
+    static bool isValidRomName(const FSNode& name) {
       string ext;  // extension not used
       return isValidRomName(name.getPath(), ext);
     }
-    static inline bool isValidRomName(string_view name) {
+    static bool isValidRomName(string_view name) {
       string ext;  // extension not used
       return isValidRomName(name, ext);
     }
@@ -130,6 +130,7 @@ class Bankswitch
   private:
     // Following constructors and assignment operators not supported
     Bankswitch() = delete;
+    ~Bankswitch() = delete;
     Bankswitch(const Bankswitch&) = delete;
     Bankswitch(Bankswitch&&) = delete;
     Bankswitch& operator=(const Bankswitch&) = delete;

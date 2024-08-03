@@ -35,7 +35,7 @@
 class Serializer
 {
   public:
-    enum class Mode { ReadOnly, ReadWrite, ReadWriteTrunc };
+    enum class Mode: uInt8 { ReadOnly, ReadWrite, ReadWriteTrunc };
 
   public:
     /**

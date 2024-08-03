@@ -102,7 +102,7 @@ class KidVid : public Controller
     void setNextSong();
 
   private:
-    enum class Game {
+    enum class Game: uInt8 {
       Smurfs,
       BBears
     };

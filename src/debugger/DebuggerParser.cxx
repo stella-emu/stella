@@ -1248,12 +1248,12 @@ void DebuggerParser::executeDump()
 {
   const auto dump = [&](ostream& os, int start, int end)
   {
-    for(int i = start; i <= end; i += 16)
+    for(int i = start; i <= end; i += 16)  // NOLINT (i is not a const)
     {
       // Print label every 16 bytes
       os << Base::toString(i) << ": ";
 
-      for(int j = i; j < i+16 && j <= end; ++j)
+      for(int j = i; j < i+16 && j <= end; ++j)  // NOLINT (j is not a const)
       {
         os << Base::toString(debugger.peek(j)) << " ";
         if(j == i+7 && j != end) os << "- ";
@@ -1291,7 +1291,7 @@ void DebuggerParser::executeDump()
       return;
     }
 
-    ostringstream path;
+    ostringstream path;  // NOLINT (path is not a const)
     path << debugger.myOSystem.userDir() << cartName() << "_dbg_";
     if(execDepth > 0)
       path << execPrefix;
@@ -1302,7 +1302,7 @@ void DebuggerParser::executeDump()
 
     commandResult << "dumped ";
 
-    stringstream out;
+    stringstream out;  // NOLINT (out is not a const)
     if((args[2] & 0x01) != 0)
     {
       // dump memory
@@ -1381,6 +1381,7 @@ void DebuggerParser::executeDump()
         if(OK)
         {
           const stringstream localOut(outStr);
+          // NOLINTNEXTLINE (localOut is not a const)
           ostringstream localResult(resultStr, std::ios_base::app);
 
           saveDump(node, localOut, localResult);
@@ -2171,7 +2172,7 @@ void DebuggerParser::executeSaveRom()
 // "saveSes"
 void DebuggerParser::executeSaveSes()
 {
-  ostringstream filename;
+  ostringstream filename;  // NOLINT (filename is not a const)
   auto timeinfo = BSPF::localTime();
   filename << std::put_time(&timeinfo, "session_%F_%H-%M-%S.txt");
 
@@ -2193,7 +2194,7 @@ void DebuggerParser::executeSaveSes()
   }
   else
   {
-    ostringstream path;
+    ostringstream path;  // NOLINT (path is not a const)
 
     if(argCount)
       path << argStrings[0];

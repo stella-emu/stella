@@ -18,6 +18,9 @@
 #ifndef JSON_DEFINITIONS_HXX
 #define JSON_DEFINITIONS_HXX
 
+// NOLINTBEGIN: NLOHMANN_JSON_SERIALIZE_ENUM
+//   warning: use c++17 style variable templates [modernize-type-traits]
+
 #include "EventHandlerConstants.hxx"
 #include "Event.hxx"
 #include "json_lib.hxx"
@@ -768,5 +771,7 @@ NLOHMANN_JSON_SERIALIZE_ENUM(StellaMod, {
   {StellaMod::KBDM_ALT, "alt"},
   {StellaMod::KBDM_GUI, "gui"}
 })
+
+// NOLINTEND
 
 #endif // JSON_DEFINITIONS_HXX

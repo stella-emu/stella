@@ -63,7 +63,7 @@ class Keyboard : public Controller
     string name() const override { return "Keyboard"; }
 
   private:
-    enum class ColumnState {
+    enum class ColumnState: uInt8 {
       vcc, gnd, notConnected
     };
 

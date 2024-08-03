@@ -81,22 +81,22 @@ class Controller : public Serializable
     /**
       Enumeration of the controller jacks
     */
-    enum class Jack { Left = 0, Right = 1, Left2 = 2, Right2 = 3 };
+    enum class Jack: uInt8 { Left = 0, Right = 1, Left2 = 2, Right2 = 3 };
 
     /**
       Enumeration of the digital pins of a controller port
     */
-    enum class DigitalPin { One, Two, Three, Four, Six };
+    enum class DigitalPin: uInt8 { One, Two, Three, Four, Six };
 
     /**
       Enumeration of the analog pins of a controller port
     */
-    enum class AnalogPin { Five, Nine };
+    enum class AnalogPin: uInt8 { Five, Nine };
 
     /**
       Enumeration of the controller types
     */
-    enum class Type
+    enum class Type: uInt8
     {
       Unknown,
       AmigaMouse, AtariMouse, AtariVox, BoosterGrip, CompuMate,
@@ -269,12 +269,12 @@ class Controller : public Serializable
     /**
       Returns the display name of the given controller type
     */
-    static string getName(const Type type);
+    static string getName(Type type);
 
     /**
       Returns the property name of the given controller type
     */
-    static string getPropName(const Type type);
+    static string getPropName(Type type);
 
     /**
       Returns the controller type of the given property name
@@ -305,9 +305,8 @@ class Controller : public Serializable
     */
     static int analogDeadZoneValue(int deadZone);
 
-    inline static int digitalDeadZone() { return DIGITAL_DEAD_ZONE; }
-
-    inline static int analogDeadZone() { return ANALOG_DEAD_ZONE; }
+    static int digitalDeadZone() { return DIGITAL_DEAD_ZONE; }
+    static int analogDeadZone()  { return ANALOG_DEAD_ZONE;  }
 
     /**
       Sets the sensitivity for analog emulation movement
@@ -338,28 +337,28 @@ class Controller : public Serializable
       Derived classes *must* use these accessor/mutator methods.
       The read/write methods above are meant to be used at a higher level.
     */
-    inline bool setPin(DigitalPin pin, bool value) {
+    bool setPin(DigitalPin pin, bool value) {
       return myDigitalPinState[static_cast<int>(pin)] = value;
     }
-    inline bool getPin(DigitalPin pin) const {
+    bool getPin(DigitalPin pin) const {
       return myDigitalPinState[static_cast<int>(pin)];
     }
-    inline void setPin(AnalogPin pin, AnalogReadout::Connection value) {
+    void setPin(AnalogPin pin, AnalogReadout::Connection value) {
       myAnalogPinValue[static_cast<int>(pin)] = value;
       if(myOnAnalogPinUpdateCallback)
         myOnAnalogPinUpdateCallback(pin);
     }
-    inline AnalogReadout::Connection getPin(AnalogPin pin) const {
+    AnalogReadout::Connection getPin(AnalogPin pin) const {
       return myAnalogPinValue[static_cast<int>(pin)];
     }
-    inline void resetDigitalPins() {
+    void resetDigitalPins() {
       setPin(DigitalPin::One,   true);
       setPin(DigitalPin::Two,   true);
       setPin(DigitalPin::Three, true);
       setPin(DigitalPin::Four,  true);
       setPin(DigitalPin::Six,   true);
     }
-    inline void resetAnalogPins() {
+    void resetAnalogPins() {
       setPin(AnalogPin::Five, AnalogReadout::disconnect());
       setPin(AnalogPin::Nine, AnalogReadout::disconnect());
     }
@@ -370,7 +369,7 @@ class Controller : public Serializable
       @param pressed  True if the fire button is currently pressed
       @return  The result of the auto fire event check
     */
-    inline bool getAutoFireState(bool pressed)
+    bool getAutoFireState(bool pressed)
     {
       if(AUTO_FIRE && AUTO_FIRE_RATE && pressed)
       {
@@ -389,7 +388,7 @@ class Controller : public Serializable
       @param pressed  True if the fire button is current pressed
       @return  The result of the auto fire event check
     */
-    inline bool getAutoFireStateP1(bool pressed)
+    bool getAutoFireStateP1(bool pressed)
     {
       if(AUTO_FIRE && AUTO_FIRE_RATE && pressed)
       {

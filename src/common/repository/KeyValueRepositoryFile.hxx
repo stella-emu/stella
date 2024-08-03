@@ -36,7 +36,7 @@ class KeyValueRepositoryFile : public KeyValueRepository {
 
   protected:
 
-    const FSNode& myNode;
+    const FSNode& myNode;  // NOLINT: we want a reference here
 };
 
 ///////////////////////////////////////////////////////////////////////////////

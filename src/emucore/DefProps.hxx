@@ -25,6 +25,8 @@
   regenerated and the application recompiled.
 */
 
+// NOLINTBEGIN: static analyzer can't tell the following is data
+
 static constexpr uInt32 DEF_PROPS_SIZE = 3661;
 
 /**
@@ -3697,5 +3699,7 @@ static constexpr BSPF::array2D<const char*, DEF_PROPS_SIZE, 30> DefProps = {{
   { "ffe51989ba6da2c6ae5a12d277862e16", "Atari - Sears", "CX2627 - 6-99841", "Human Cannonball (1979) (Atari) (4K)", "AKA Cannon Man", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "ffebb0070689b9d322687edd9c0a2bae", "", "", "Spitfire Attack (1983) (Milton Bradley) [h1]", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }
 }};
+
+// NOLINTEND
 
 #endif

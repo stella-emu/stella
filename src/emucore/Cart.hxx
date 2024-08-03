@@ -32,7 +32,7 @@ class Settings;
 #ifdef DEBUGGER_SUPPORT
   namespace GUI {
     class Font;
-  }
+  }  // namespace GUI
 #endif
 
 /**
@@ -167,8 +167,8 @@ class Cartridge : public Device
 
       @return  Address of illegal access if one occurred, else 0
     */
-    inline uInt16 getIllegalRAMReadAccess() const {
-      return myRamReadAccesses.size() > 0 ? myRamReadAccesses[0] : 0;
+    uInt16 getIllegalRAMReadAccess() const {
+      return !myRamReadAccesses.empty() ? myRamReadAccesses[0] : 0;
     }
 
     /**
@@ -178,7 +178,9 @@ class Cartridge : public Device
 
       @return  Address of illegal access if one occurred, else 0
     */
-    inline uInt16 getIllegalRAMWriteAccess() const { return myRamWriteAccess; }
+    uInt16 getIllegalRAMWriteAccess() const {
+      return myRamWriteAccess;
+    }
 
     /**
       Query the access counters

@@ -28,6 +28,7 @@ class JitterEmulation : public Serializable
 {
   public:
     JitterEmulation();
+    ~JitterEmulation() override = default;
 
   public:
     // sensitivity:

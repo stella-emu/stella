@@ -29,7 +29,9 @@ class BoosterWidget : public ControllerWidget
     ~BoosterWidget() override = default;
 
   private:
-    enum { kJUp = 0, kJDown, kJLeft, kJRight, kJFire, kJBooster, kJTrigger };
+    enum: uInt8 {
+      kJUp = 0, kJDown, kJLeft, kJRight, kJFire, kJBooster, kJTrigger
+    };
 
     std::array<CheckboxWidget*, 7> myPins{nullptr};
     static constexpr std::array<Controller::DigitalPin, 5> ourPinNo = {{

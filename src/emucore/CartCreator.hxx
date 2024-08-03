@@ -86,6 +86,7 @@ class CartCreator
   private:
     // Following constructors and assignment operators not supported
     CartCreator() = delete;
+    ~CartCreator() = delete;
     CartCreator(const CartCreator&) = delete;
     CartCreator(CartCreator&&) = delete;
     CartCreator& operator=(const CartCreator&) = delete;

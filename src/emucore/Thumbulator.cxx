@@ -135,7 +135,7 @@ using Common::Base;
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Thumbulator::Thumbulator(const uInt16* rom_ptr, uInt16* ram_ptr, uInt32 rom_size,
-                         const uInt32 c_base, const uInt32 c_start, const uInt32 c_stack,
+                         uInt32 c_base, uInt32 c_start, uInt32 c_stack,
                          bool traponfatal, double cyclefactor,
                          Thumbulator::ConfigureFor configurefor,
                          Cartridge* cartridge)
@@ -760,9 +760,9 @@ uInt32 Thumbulator::read32(uInt32 addr)
           data = systick_count;
           return data;
 #ifdef THUMB_CYCLE_COUNT
-        case 0xE01FC100: // APBDIV 
+        case 0xE01FC100: // APBDIV
           _countCycles = true; // enabe cycle counting
-          return 1; // random value 
+          return 1; // random value
 #endif
 
 #ifndef UNSAFE_OPTIMIZATIONS

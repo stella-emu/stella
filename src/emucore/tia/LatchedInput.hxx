@@ -25,6 +25,7 @@ class LatchedInput : public Serializable
 {
   public:
     LatchedInput() = default;
+    ~LatchedInput() override = default;
 
   public:
 

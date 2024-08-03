@@ -33,6 +33,7 @@ class RadioButtonWidget : public CheckboxWidget
     RadioButtonWidget(GuiObject* boss, const GUI::Font& font, int x, int y,
                       const string& label, RadioButtonGroup* group,
                       int cmd = 0);
+    ~RadioButtonWidget() override = default;
 
     void handleMouseUp(int x, int y, MouseButton b, int clickCount) override;
     void setState(bool state, bool send = true) override;
@@ -62,13 +63,14 @@ class RadioButtonGroup
 {
   public:
     RadioButtonGroup() = default;
+    ~RadioButtonGroup() = default;
 
     // add widget to group
     void addWidget(RadioButtonWidget* widget);
     // tell the group which widget was selected
     void select(const RadioButtonWidget* widget);
     void setSelected(uInt32 selected);
-    uInt32 getSelected() { return mySelected; }
+    uInt32 getSelected() const { return mySelected; }
 
   private:
     WidgetArray myWidgets;

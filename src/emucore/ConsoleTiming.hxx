@@ -21,7 +21,7 @@
 /**
   Contains timing information about the specified console.
 */
-enum class ConsoleTiming
+enum class ConsoleTiming: uInt8
 {
   ntsc,  // console with CPU running at 1.193182 MHz, NTSC colours
   pal,   // console with CPU running at 1.182298 MHz, PAL colours

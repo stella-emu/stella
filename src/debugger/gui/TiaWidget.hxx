@@ -102,7 +102,7 @@ class TiaWidget : public Widget, public CommandSender
 
     // ID's for the various widgets
     // We need ID's, since there are more than one of several types of widgets
-    enum {
+    enum: uInt8 {
       kP0_PFID,   kP0_BLID,   kP0_M1ID,   kP0_M0ID,   kP0_P1ID,
       kP1_PFID,   kP1_BLID,   kP1_M1ID,   kP1_M0ID,
       kM0_PFID,   kM0_BLID,   kM0_M1ID,
@@ -146,7 +146,7 @@ class TiaWidget : public Widget, public CommandSender
     };
 
     // Color registers
-    enum {
+    enum: uInt8 {
       kCOLUP0Addr,
       kCOLUP1Addr,
       kCOLUPFAddr,

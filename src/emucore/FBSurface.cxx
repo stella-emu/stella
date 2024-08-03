@@ -450,7 +450,7 @@ int FBSurface::drawString(const GUI::Font& font, string_view s,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool FBSurface::checkBounds(const uInt32 x, const uInt32 y) const
+bool FBSurface::checkBounds(uInt32 x, uInt32 y) const
 {
   if (x <= width() && y <= height())
     return true;

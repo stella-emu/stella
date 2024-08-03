@@ -27,7 +27,7 @@
 class SerialPortWINDOWS : public SerialPort
 {
   public:
-    SerialPortWINDOWS();
+    SerialPortWINDOWS() = default;
     ~SerialPortWINDOWS() override;
 
     /**

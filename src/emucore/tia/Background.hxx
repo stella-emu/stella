@@ -27,6 +27,7 @@ class Background : public Serializable
 {
   public:
     Background() = default;
+    ~Background() override = default;
 
   public:
     void setTIA(TIA* tia) { myTIA = tia; }
@@ -39,7 +40,7 @@ class Background : public Serializable
 
     void applyColorLoss();
 
-    inline uInt8 getColor() const { return myColor; }
+    uInt8 getColor() const { return myColor; }
 
     /**
       Serializable methods (see that class for more information).

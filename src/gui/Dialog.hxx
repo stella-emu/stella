@@ -45,7 +45,7 @@ class Dialog : public GuiObject
 
   public:
     // Current Stella mode
-    enum class AppMode { launcher, emulator, debugger };
+    enum class AppMode: uInt8 { launcher, emulator, debugger };
 
     using RenderCallback = std::function<void()>;
 

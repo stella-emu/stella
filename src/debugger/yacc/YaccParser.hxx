@@ -40,6 +40,6 @@ namespace YaccParser
   CpuMethod getCpuSpecial(const char* ch);
   RiotMethod getRiotSpecial(const char* ch);
   TiaMethod getTiaSpecial(const char* ch);
-}
+}  // namespace YaccParser
 
 #endif

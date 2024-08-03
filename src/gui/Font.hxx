@@ -47,7 +47,7 @@ struct FontDesc
   const uInt8*  width;                  /* character widths or nullptr if fixed */
   const BBX*    bbx;                    /* character bounding box or nullptr if fixed */
   int           defaultchar;            /* default char (not glyph index) */
-  long          bits_size;              /* # words of bitmap_t bits */
+  Int64         bits_size;              /* # words of bitmap_t bits */
 };
 
 namespace GUI {
@@ -56,6 +56,7 @@ class Font
 {
   public:
     explicit Font(const FontDesc& desc);
+    ~Font() = default;
 
     const FontDesc& desc() const { return myFontDesc; }
 

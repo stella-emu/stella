@@ -30,9 +30,11 @@ class AtariMouseWidget : public PointingDeviceWidget
     ~AtariMouseWidget() override = default;
 
   private:
-    const std::array<uInt8, 4> myGrayCodeTable = { 0b00, 0b01, 0b11, 0b10 };
+    static constexpr std::array<uInt8, 4> myGrayCodeTable = {
+      0b00, 0b01, 0b11, 0b10
+    };
 
-    uInt8 getGrayCodeTable(const int index, const int direction) const override;
+    uInt8 getGrayCodeTable(int index, int direction) const override;
 
     // Following constructors and assignment operators not supported
     AtariMouseWidget() = delete;

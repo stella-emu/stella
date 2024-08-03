@@ -18,7 +18,7 @@
 #ifndef FRAME_LAYOUT
 #define FRAME_LAYOUT
 
-enum class FrameLayout {
+enum class FrameLayout: uInt8 {
   ntsc,   // ROM display has NTSC timings (~60Hz, ~262 scanlines, etc)
   pal,    // ROM display has PAL timings (~50Hz, ~312 scanlines, etc)
   pal60,  // ROM display has NTSC timings (~60Hz, ~262 scanlines, etc), but uses PAL colors

@@ -28,6 +28,7 @@ class Audio : public Serializable
 {
   public:
     Audio();
+    ~Audio() override = default;
 
     void reset();
 
@@ -46,9 +47,9 @@ class Audio : public Serializable
 
     FORCE_INLINE void tick();
 
-    inline AudioChannel& channel0() { return myChannel0; }
+    AudioChannel& channel0() { return myChannel0; }
 
-    inline AudioChannel& channel1() { return myChannel1; }
+    AudioChannel& channel1() { return myChannel1; }
 
     /**
       Serializable methods (see that class for more information).

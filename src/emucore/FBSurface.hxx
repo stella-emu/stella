@@ -23,10 +23,10 @@ class TIASurface;
 
 namespace GUI {
   class Font;
-}
+}  // namespace GUI
 namespace Common {
   struct Rect;
-}
+}  // namespace Common
 
 #include "FrameBufferConstants.hxx"
 #include "FrameBuffer.hxx"
@@ -55,8 +55,7 @@ class FBSurface
       This method returns the surface pixel pointer and pitch, which are
       used when one wishes to modify the surface pixels directly.
     */
-    inline void basePtr(uInt32*& pixels, uInt32& pitch) const
-    {
+    void basePtr(uInt32*& pixels, uInt32& pitch) const {
       pixels = myPixels;
       pitch = myPitch;
     }
@@ -403,14 +402,14 @@ class FBSurface
       @param y      The y coordinate to check
       @return       True if coordinates are in bounds
     */
-    bool checkBounds(const uInt32 x, const uInt32 y) const;
+    bool checkBounds(uInt32 x, uInt32 y) const;
 
     /**
       Check if the given character is a whitespace.
       @param c      Character to check
       @return       True if whitespace character
     */
-    static bool isWhiteSpace(const char c) {
+    static bool isWhiteSpace(char c) {
       static constexpr string_view spaces{" ,.;:+-*/\\'([\n"};
       return spaces.find(c) != string_view::npos;
     }

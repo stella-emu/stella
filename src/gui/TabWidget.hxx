@@ -56,9 +56,9 @@ class TabWidget : public Widget, public CommandSender
     void setParentWidget(int tabID, Widget* parent);
     Widget* parentWidget(int tabID);
 
-    int getTabWidth()  { return _tabWidth;  }
-    int getTabHeight() { return _tabHeight; }
-    int getActiveTab() { return _activeTab; }
+    int getTabWidth() const  { return _tabWidth;  }
+    int getTabHeight() const { return _tabHeight; }
+    int getActiveTab() const { return _activeTab; }
 
     void loadConfig() override;
 
@@ -95,7 +95,7 @@ class TabWidget : public Widget, public CommandSender
     int     _activeTab{-1};
     bool    _firstTime{true};
 
-    enum {
+    enum: uInt8 {
       kTabLeftOffset = 0,
       kTabSpacing = 1,
       kTabPadding = 4

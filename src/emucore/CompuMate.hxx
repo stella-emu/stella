@@ -52,6 +52,7 @@ class CompuMate
       @param system   The system using this controller
     */
     CompuMate(const Console& console, const Event& event, const System& system);
+    ~CompuMate() = default;
 
     /**
       Return the left and right CompuMate controllers

@@ -44,7 +44,7 @@ class DelayQueueIteratorImpl : public DelayQueueIterator
     uInt8 currentIndex() const;
 
   private:
-    const DelayQueue<length, capacity>& myDelayQueue;
+    const DelayQueue<length, capacity>& myDelayQueue;  // NOLINT: we want a reference here
     uInt8 myDelayCycle{0};
     uInt8 myIndex{0};
 };

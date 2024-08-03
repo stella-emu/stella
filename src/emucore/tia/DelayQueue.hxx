@@ -34,6 +34,7 @@ class DelayQueue : public Serializable
 
   public:
     DelayQueue();
+    ~DelayQueue() override = default;
 
   public:
 

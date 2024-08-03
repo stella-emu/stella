@@ -1231,8 +1231,8 @@ void DeveloperDialog::handleSize()
   {
     for(i = horizon; i < NUM_HORIZONS; ++i)
     {
-      if(static_cast<uInt64>(size) * instance().state().rewindManager().INTERVAL_CYCLES[interval]
-         <= instance().state().rewindManager().HORIZON_CYCLES[i])
+      if(static_cast<uInt64>(size) * RewindManager::INTERVAL_CYCLES[interval]
+         <= RewindManager::HORIZON_CYCLES[i])
       {
         found = true;
         break;
@@ -1281,8 +1281,8 @@ void DeveloperDialog::handleInterval()
   {
     for(i = horizon; i < NUM_HORIZONS; ++i)
     {
-      if(static_cast<uInt64>(size) * instance().state().rewindManager().INTERVAL_CYCLES[interval]
-         <= instance().state().rewindManager().HORIZON_CYCLES[i])
+      if(static_cast<uInt64>(size) * RewindManager::INTERVAL_CYCLES[interval]
+         <= RewindManager::HORIZON_CYCLES[i])
       {
         found = true;
         break;
@@ -1319,8 +1319,8 @@ void DeveloperDialog::handleHorizon()
   {
     for(i = interval; i >= 0; --i)
     {
-      if(static_cast<uInt64>(size) * instance().state().rewindManager().INTERVAL_CYCLES[i]
-         <= instance().state().rewindManager().HORIZON_CYCLES[horizon])
+      if(static_cast<uInt64>(size) * RewindManager::INTERVAL_CYCLES[i]
+         <= RewindManager::HORIZON_CYCLES[horizon])
       {
         found = true;
         break;

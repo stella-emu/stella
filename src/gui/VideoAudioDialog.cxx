@@ -1382,14 +1382,14 @@ void VideoAudioDialog::handleCommand(CommandSender* sender, int cmd,
 
     case kHeadroomChanged:
     {
-      std::ostringstream ss;
+      std::ostringstream ss;  // NOLINT (ss is not a const)
       ss << std::fixed << std::setprecision(1) << (0.5 * myHeadroomSlider->getValue()) << " frames";
       myHeadroomSlider->setValueLabel(ss.view());
       break;
     }
     case kBufferSizeChanged:
     {
-      std::ostringstream ss;
+      std::ostringstream ss;  // NOLINT (ss is not a const)
       ss << std::fixed << std::setprecision(1) << (0.5 * myBufferSizeSlider->getValue()) << " frames";
       myBufferSizeSlider->setValueLabel(ss.view());
       break;

@@ -141,7 +141,7 @@ void PointingDeviceWidget::setGrayCodeV()
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PointingDeviceWidget::setValue(DataGridWidget* grayValue,
-                                    const int index, const int direction)
+                                    int index, int direction)
 {
   const uInt8 grayCode = getGrayCodeTable(index, direction);
 

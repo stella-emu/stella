@@ -250,11 +250,14 @@ class M6532 : public Device
     std::array<Device::AccessFlags, IO_SIZE>    myIOAccessBase;
     // The arrays containing information about every byte of RIOT
     // indicating how often it is accessed.
-    std::array<Device::AccessCounter, RAM_SIZE * 2>   myRAMAccessCounter;
-    std::array<Device::AccessCounter, STACK_SIZE * 2> myStackAccessCounter;
-    std::array<Device::AccessCounter, IO_SIZE * 2>    myIOAccessCounter;
+    std::array<Device::AccessCounter,
+      static_cast<size_t>(RAM_SIZE * 2)>   myRAMAccessCounter;
+    std::array<Device::AccessCounter,
+      static_cast<size_t>(STACK_SIZE * 2)> myStackAccessCounter;
+    std::array<Device::AccessCounter,
+      static_cast<size_t>(IO_SIZE * 2)>    myIOAccessCounter;
     // The array used to skip the first ZP access tracking
-    std::array<uInt8, RAM_SIZE>   myZPAccessDelay;
+    std::array<uInt8, RAM_SIZE>            myZPAccessDelay;
 
     // Detect timer being accessed on wraparound
     bool myTimWrappedOnRead{false};

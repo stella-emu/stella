@@ -134,7 +134,7 @@ class EmulationWorker
   /**
     Thread state.
    */
-    enum class State {
+    enum class State: uInt8 {
       // Initial state
       initializing,
       // Thread has initialized. From the point, myThreadIsRunningMutex is locked if and only if
@@ -153,7 +153,7 @@ class EmulationWorker
     /**
       Thread behavior is controlled by signals that are raised prior to waking up the thread.
      */
-    enum class Signal {
+    enum class Signal: uInt8 {
       // Resume emulation
       resume,
       // Stop emulation

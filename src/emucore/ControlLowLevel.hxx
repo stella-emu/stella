@@ -38,26 +38,26 @@ class ControllerLowLevel
       : myController(controller) { }
     virtual ~ControllerLowLevel() = default;
 
-    inline bool setPin(Controller::DigitalPin pin, bool value) {
+    bool setPin(Controller::DigitalPin pin, bool value) {
       return myController.setPin(pin, value);
     }
-    inline bool togglePin(Controller::DigitalPin pin) { return false; }
-    inline bool getPin(Controller::DigitalPin pin) const {
+    bool togglePin(Controller::DigitalPin pin) { return false; }  // NOLINT (is this required?)
+    bool getPin(Controller::DigitalPin pin) const {
       return myController.getPin(pin);
     }
-    inline void setPin(Controller::AnalogPin pin, AnalogReadout::Connection value) {
+    void setPin(Controller::AnalogPin pin, AnalogReadout::Connection value) {
       myController.setPin(pin, value);
     }
-    inline AnalogReadout::Connection getPin(Controller::AnalogPin pin) const {
+    AnalogReadout::Connection getPin(Controller::AnalogPin pin) const {
       return myController.getPin(pin);
     }
-    inline void resetDigitalPins() {
+    void resetDigitalPins() {
       myController.resetDigitalPins();
     }
-    inline void resetAnalogPins() {
+    void resetAnalogPins() {
       myController.resetAnalogPins();
     }
-    inline Controller& controller() const { return myController; }
+    Controller& controller() const { return myController; }
 
   protected:
     Controller& myController;

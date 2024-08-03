@@ -44,7 +44,7 @@ class RomImageWidget : public Widget
     void toggleImageZoom();
     void disableImageZoom() { myZoomMode = false; }
 
-    uInt64 pendingLoadTime() { return myMaxLoadTime * timeFactor; }
+    uInt64 pendingLoadTime() const { return myMaxLoadTime * timeFactor; }
 
   protected:
   #ifdef IMAGE_SUPPORT
@@ -75,7 +75,7 @@ class RomImageWidget : public Widget
 
   private:
     // Navigation areas
-    enum class Area {
+    enum class Area: uInt8 {
       NONE,
       LEFT,
       RIGHT,

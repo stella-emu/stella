@@ -45,14 +45,14 @@ class PointingDeviceWidget : public ControllerWidget
     CheckboxWidget* myFire{nullptr};
 
   private:
-    virtual uInt8 getGrayCodeTable(const int index, const int direction) const = 0;
+    virtual uInt8 getGrayCodeTable(int index, int direction) const = 0;
 
     void loadConfig() override;
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 
     void setGrayCodeH();
     void setGrayCodeV();
-    void setValue(DataGridWidget* grayValue, const int index, const int direction);
+    void setValue(DataGridWidget* grayValue, int index, int direction);
 
     // Following constructors and assignment operators not supported
     PointingDeviceWidget() = delete;

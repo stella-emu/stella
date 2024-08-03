@@ -111,20 +111,24 @@ void RomAuditDialog::auditRoms()
   myResults2->setText("");
 
   const FSNode node(auditPath);
-  FSList files;
+  FSList files;  // NOLINT (files is not a const)
   files.reserve(2048);
   node.getChildren(files, FSNode::ListMode::FilesOnly);
 
   // Create a progress dialog box to show the progress of processing
   // the ROMs, since this is usually a time-consuming operation
+  // NOLINTBEGIN (the following are not a const)
   ostringstream buf;
   ProgressDialog progress(this, instance().frameBuffer().font());
+  // NOLINTEND
 
   buf << "Auditing ROM files" << ELLIPSIS;
   progress.setMessage(buf.view());
   progress.setRange(0, static_cast<int>(files.size()) - 1, 5);
   progress.open();
 
+  // NOLINTBEGIN: several variables are tagged as const by clang-tidy,
+  //              but they obviously cannot be; suspect a bug in the tool
   Properties props;
   uInt32 renamed = 0, notfound = 0;
   for(uInt32 idx = 0; idx < files.size() && !progress.isCancelled(); ++idx)
@@ -160,6 +164,8 @@ void RomAuditDialog::auditRoms()
     // Update the progress bar, indicating one more ROM has been processed
     progress.incProgress();
   }
+  // NOLINTEND
+
   progress.close();
 
   myResults1->setText(std::to_string(renamed));
@@ -175,7 +181,7 @@ void RomAuditDialog::handleCommand(CommandSender* sender, int cmd,
     case GuiObject::kOKCmd:
       if(!myConfirmMsg)
       {
-        StringList msg;
+        StringList msg;  // NOLINT (msg is not a const)
         msg.emplace_back("This operation cannot be undone.  Your ROMs");
         msg.emplace_back("will be modified, and as such there is a chance");
         msg.emplace_back("that files may be lost.  You are recommended");

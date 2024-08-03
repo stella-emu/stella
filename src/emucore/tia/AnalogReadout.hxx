@@ -43,6 +43,7 @@ class AnalogReadout : public Serializable
   public:
 
     AnalogReadout();
+    ~AnalogReadout() override = default;
 
     void reset(uInt64 timestamp);
 

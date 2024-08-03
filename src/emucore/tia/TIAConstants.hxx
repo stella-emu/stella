@@ -34,7 +34,7 @@ namespace TIAConstants {
     H_PIXEL = 160, H_CYCLES = 76, CYCLE_CLOCKS = 3,
     H_CLOCKS = H_CYCLES * CYCLE_CLOCKS,   // = 228
     H_BLANK_CLOCKS = H_CLOCKS - H_PIXEL;  // = 68
-}
+} // namespace TIAConstants
 
 enum TIABit: uInt8 {
   P0Bit       = 0x01,  // Bit for Player 0
@@ -48,7 +48,7 @@ enum TIABit: uInt8 {
   AllBits     = 0xff
 };
 
-enum TIAColor {
+enum TIAColor: uInt8 {
   BKColor     = 0,  // Color index for Background
   PFColor     = 1,  // Color index for Playfield
   P0Color     = 2,  // Color index for Player 0
@@ -59,7 +59,7 @@ enum TIAColor {
   HBLANKColor = 7   // Color index for HMove blank area
 };
 
-enum class CollisionBit
+enum class CollisionBit: uInt16
 {
   M0P1 = 1 << 0,   // Missle0 - Player1   collision
   M0P0 = 1 << 1,   // Missle0 - Player0   collision
@@ -79,7 +79,7 @@ enum class CollisionBit
 };
 
 // TIA Write/Read register names
-enum TIARegister {
+enum TIARegister: uInt8 {
   VSYNC   = 0x00,  // Write: vertical sync set-clear (D1)
   VBLANK  = 0x01,  // Write: vertical blank set-clear (D7-6,D1)
   WSYNC   = 0x02,  // Write: wait for leading edge of hrz. blank (strobe)

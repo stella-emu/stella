@@ -34,6 +34,7 @@ class FrameLayoutDetector: public AbstractFrameManager
   public:
 
     FrameLayoutDetector();
+    ~FrameLayoutDetector() override = default;
 
   public:
 
@@ -75,7 +76,7 @@ class FrameLayoutDetector: public AbstractFrameManager
     /**
      * This frame manager only tracks frame boundaries, so we have only two states.
      */
-    enum class State {
+    enum class State: uInt8 {
       // Wait for VSYNC to be enabled.
       waitForVsyncStart,
 
@@ -86,7 +87,7 @@ class FrameLayoutDetector: public AbstractFrameManager
     /**
      * Misc. numeric constants used in the algorithm.
      */
-    enum Metrics: uInt32 {
+    enum Metrics: uInt32 {  // NOLINT: use 32-bit, even though 16-bit is sufficient
       // ideal frame heights
       frameLinesNTSC            = 262,
       frameLinesPAL             = 312,
@@ -132,7 +133,7 @@ class FrameLayoutDetector: public AbstractFrameManager
     */
     static constexpr int NUM_HUES = 16;
     static constexpr int NUM_LUMS = 8;
-    std::array<uInt64, NUM_HUES * NUM_LUMS> myColorCount{0};
+    std::array<uInt64, static_cast<size_t>(NUM_HUES * NUM_LUMS)> myColorCount{0};
 
   private:
     FrameLayoutDetector(const FrameLayoutDetector&) = delete;

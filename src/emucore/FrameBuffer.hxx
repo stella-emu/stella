@@ -56,7 +56,7 @@ class FrameBuffer
     // Zoom level step interval
     static constexpr double ZOOM_STEPS = 0.25;
 
-    enum UpdateMode {
+    enum UpdateMode: uInt8 {
       NONE = 0,
       REDRAW = 1,
       RERENDER = 2

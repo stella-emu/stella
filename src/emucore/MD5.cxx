@@ -60,7 +60,7 @@ void MD5::init()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // Decodes input (uInt8) into output (uInt32).
 // Assumes len is a multiple of 4.
-void MD5::decode(uInt32* output, const uInt8* const input, uInt32 len)
+void MD5::decode(uInt32* output, const uInt8* input, uInt32 len)
 {
   for (uInt32 i = 0, j = 0; j < len; ++i, j += 4)
     output[i] =  (static_cast<uInt32>(input[j]))
@@ -72,7 +72,7 @@ void MD5::decode(uInt32* output, const uInt8* const input, uInt32 len)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // Encodes input (uInt32) into output (uInt8).
 // Assumes len is a multiple of 4.
-void MD5::encode(uInt8* output, const uInt32* const input, uInt32 len)
+void MD5::encode(uInt8* output, const uInt32* input, uInt32 len)
 {
   for (uInt32 i = 0, j = 0; j < len; ++i, j += 4) {
     output[j]   = static_cast<uInt8>(input[i] & 0xff);
@@ -84,7 +84,7 @@ void MD5::encode(uInt8* output, const uInt32* const input, uInt32 len)
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // Apply MD5 algo on a block.
-void MD5::transform(const uInt8* const block)
+void MD5::transform(const uInt8* block)
 {
   std::array<uInt32, 16> x;
   decode(x.data(), block, BLOCKSIZE);
@@ -175,7 +175,7 @@ void MD5::transform(const uInt8* const block)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // MD5 block update operation.
 // Continues an MD5 message-digest operation, processing another message block.
-void MD5::update(const uInt8* const input, uInt32 length)
+void MD5::update(const uInt8* input, uInt32 length)
 {
   // Compute number of bytes mod 64
   auto index = count[0] / 8 % BLOCKSIZE;

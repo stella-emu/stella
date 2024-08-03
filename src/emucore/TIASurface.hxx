@@ -169,7 +169,7 @@ class TIASurface
       Enable/disable/query NTSC filtering effects.
     */
     void enableNTSC(bool enable);
-    bool ntscEnabled() const { return uInt8(myFilter) & 0x10; }
+    bool ntscEnabled() const { return static_cast<uInt8>(myFilter) & 0x10; }
     string effectsInfo() const;
 
     /**
@@ -195,7 +195,7 @@ class TIASurface
     void updateSurfaceSettings();
 
   private:
-    enum class ScanlineMask {
+    enum class ScanlineMask: uInt8 {
       Standard,
       Thin,
       Pixels,
@@ -246,10 +246,12 @@ class TIASurface
     // Phosphor blend
     int myPBlend{0};
 
-    std::array<uInt32, AtariNTSC::outWidth(TIAConstants::frameBufferWidth) *
-        TIAConstants::frameBufferHeight> myRGBFramebuffer;
-    std::array<uInt32, AtariNTSC::outWidth(TIAConstants::frameBufferWidth) *
-        TIAConstants::frameBufferHeight> myPrevRGBFramebuffer;
+    std::array<uInt32, static_cast<std::size_t>
+      (AtariNTSC::outWidth(TIAConstants::frameBufferWidth) *
+      TIAConstants::frameBufferHeight)> myRGBFramebuffer;
+    std::array<uInt32, static_cast<std::size_t>
+      (AtariNTSC::outWidth(TIAConstants::frameBufferWidth) *
+        TIAConstants::frameBufferHeight)> myPrevRGBFramebuffer;
     /////////////////////////////////////////////////////////////
 
     // Use scanlines in TIA rendering mode

@@ -33,7 +33,7 @@ class PopUpWidget;
 namespace GUI {
   class Font;
   class MessageBox;
-}
+}  // namespace GUI
 
 class StellaSettingsDialog : public Dialog
 {

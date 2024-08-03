@@ -29,6 +29,7 @@
 
   @author  Stephen Anthony
 */
+// NOLINTBEGIN: c'tors cannot be explicit here
 class Variant
 {
   private:
@@ -91,4 +92,5 @@ namespace VarList {
   }
 }  // namespace VarList
 
+// NOLINTEND
 #endif

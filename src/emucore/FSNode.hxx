@@ -59,7 +59,7 @@ class FSNode
     /**
      * Flag to tell listDir() which kind of files to list.
      */
-    enum class ListMode { FilesOnly, DirectoriesOnly, All };
+    enum class ListMode: uInt8 { FilesOnly, DirectoriesOnly, All };
 
     /** Function used to filter the file listing.  Returns true if the filename
         should be included, else false.*/
@@ -97,8 +97,7 @@ class FSNode
      * Compare the name of this node to the name of another, testing for
      * equality.
      */
-    inline bool operator==(const FSNode& node) const
-    {
+    bool operator==(const FSNode& node) const {
       return BSPF::compareIgnoreCase(getName(), node.getName()) == 0;
     }
 

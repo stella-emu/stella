@@ -25,7 +25,7 @@ class EditTextWidget;
 class StaticTextWidget;
 namespace GUI {
   class MessageBox;
-}
+}  // namespace GUI
 
 #include "Dialog.hxx"
 #include "Command.hxx"

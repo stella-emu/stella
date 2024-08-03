@@ -31,7 +31,7 @@ class ColorWidget;
 
 namespace GUI {
   class Font;
-}
+}  // namespace GUI
 
 #include "bspf.hxx"
 #include "Dialog.hxx"

@@ -101,14 +101,14 @@ class System : public Serializable
 
       @return The attached 6532 microprocessor
     */
-    inline M6532& m6532() const { return myM6532; }
+    M6532& m6532() const { return myM6532; }
 
     /**
       Answer the TIA device attached to the system.
 
       @return The attached TIA device
     */
-    inline TIA& tia() const { return myTIA; }
+    TIA& tia() const { return myTIA; }
 
     /**
       Answer the Cart attached to the system.
@@ -140,14 +140,14 @@ class System : public Serializable
 
       @return The number of system cycles which have passed
     */
-    inline uInt64 cycles() const { return myCycles; }
+    uInt64 cycles() const { return myCycles; }
 
     /**
       Increment the system cycles by the specified number of cycles.
 
       @param amount The amount to add to the system cycles counter
     */
-    inline void incrementCycles(uInt32 amount) { myCycles += amount; }
+    void incrementCycles(uInt32 amount) { myCycles += amount; }
 
     /**
       Informs all attached devices that the console type has changed.
@@ -171,7 +171,7 @@ class System : public Serializable
     /**
      * See peekImpl below.
      */
-    inline uInt8 peek(uInt16 address, Device::AccessFlags flags = Device::NONE)
+    uInt8 peek(uInt16 address, Device::AccessFlags flags = Device::NONE)
     {
       return peekImpl<false>(address, flags);
     }
@@ -179,7 +179,7 @@ class System : public Serializable
     /**
      * See peekImpl below.
      */
-    inline uInt8 peekOob(uInt16 address, Device::AccessFlags flags = Device::NONE)
+    uInt8 peekOob(uInt16 address, Device::AccessFlags flags = Device::NONE)
     {
       return peekImpl<true>(address, flags);
     }
@@ -187,7 +187,7 @@ class System : public Serializable
     /**
      * See pokeImpl below.
      */
-    inline void poke(uInt16 address, uInt8 value, Device::AccessFlags flags = Device::NONE)
+    void poke(uInt16 address, uInt8 value, Device::AccessFlags flags = Device::NONE)
     {
       pokeImpl<false>(address, value, flags);
     }
@@ -195,7 +195,7 @@ class System : public Serializable
     /**
      * See pokeImpl below.
      */
-    inline void pokeOob(uInt16 address, uInt8 value, Device::AccessFlags flags = Device::NONE)
+    void pokeOob(uInt16 address, uInt8 value, Device::AccessFlags flags = Device::NONE)
     {
       pokeImpl<true>(address, value, flags);
     }

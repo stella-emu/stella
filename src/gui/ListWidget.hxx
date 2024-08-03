@@ -76,8 +76,8 @@ class ListWidget : public EditableWidget
     bool handleEvent(Event::Type e) override;
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 
-    virtual void drawWidget(bool hilite) override  = 0;
-    virtual Common::Rect getEditRect() const override = 0;
+    void drawWidget(bool hilite) override  = 0;
+    Common::Rect getEditRect() const override = 0;
 
     int findItem(int x, int y) const;
     void recalc();

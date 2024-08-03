@@ -38,6 +38,7 @@ class Icon
       : myIconDesc{desc}, myBitmap{bitmap} { }
     Icon(int width, int height, const uIntArray& bitmap)
       : Icon(IconDesc(width, height), bitmap) { }
+    ~Icon() = default;
 
     const IconDesc& desc() const { return myIconDesc; }
     int height() const { return myIconDesc.height; }

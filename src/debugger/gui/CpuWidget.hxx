@@ -44,14 +44,14 @@ class CpuWidget : public Widget, public CommandSender
   private:
     // ID's for the various widgets
     // We need ID's, since there are more than one of several types of widgets
-    enum {
+    enum: uInt8 {
       kPCRegID,
       kCpuRegID,
       kCpuRegDecID,
       kCpuRegBinID
     };
 
-    enum {
+    enum: uInt8 {
       kPCRegAddr,
       kSPRegAddr,
       kARegAddr,
@@ -59,7 +59,7 @@ class CpuWidget : public Widget, public CommandSender
       kYRegAddr
     };
 
-    enum {
+    enum: uInt8 {
       kPSRegN = 0,
       kPSRegV = 1,
       kPSRegB = 3,

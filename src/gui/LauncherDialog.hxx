@@ -33,10 +33,10 @@ class StaticTextWidget;
 
 namespace Common {
   struct Size;
-}
+}  // namespace Common
 namespace GUI {
   class MessageBox;
-}
+}  // namespace GUI
 
 #include <unordered_map>
 #include <unordered_set>

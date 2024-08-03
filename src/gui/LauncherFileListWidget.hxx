@@ -55,9 +55,9 @@ class LauncherFileListWidget : public FileListWidget
     bool inUserDir() const { return myVirtualDir == user_name; }
     bool inRecentDir() const { return myVirtualDir == recent_name; }
     bool inPopularDir() const { return myVirtualDir == popular_name; }
-    bool isUserDir(string_view name) const { return name == user_name; }
-    bool isRecentDir(string_view name) const { return name == recent_name; }
-    bool isPopularDir(string_view name) const { return name == popular_name; }
+    static bool isUserDir(string_view name) { return name == user_name; }
+    static bool isRecentDir(string_view name) { return name == recent_name; }
+    static bool isPopularDir(string_view name) { return name == popular_name; }
 
   private:
     static const string user_name;

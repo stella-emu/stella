@@ -60,7 +60,7 @@ void MessageMenu::setMessage(string_view title, string_view text, bool yesNo)
 bool MessageMenu::confirmed()
 {
   if (myMessageDialog != nullptr)
-    return myMessageDialog->confirmed();
+    return MessageDialog::confirmed();
 
   return false;
 }
