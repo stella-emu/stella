@@ -33,7 +33,7 @@ class FBSurfaceLIBRETRO : public FBSurface
     FBSurfaceLIBRETRO(uInt32 width, uInt32 height)
       : myWidth{width},
         myHeight{height},
-        myPixelData{make_unique<uInt32[]>(myWidth * myHeight)}
+        myPixelData{make_unique<uInt32[]>(static_cast<size_t>(myWidth) * myHeight)}
     {
       ////////////////////////////////////////////////////
       // These *must* be set for the parent class
@@ -41,7 +41,7 @@ class FBSurfaceLIBRETRO : public FBSurface
       myPitch = myWidth;
       ////////////////////////////////////////////////////
     }
-    ~FBSurfaceLIBRETRO() override { }
+    ~FBSurfaceLIBRETRO() override = default;
 
     // Most of the surface drawing primitives are implemented in FBSurface;
     void fillRect(uInt32 x, uInt32 y, uInt32 w,

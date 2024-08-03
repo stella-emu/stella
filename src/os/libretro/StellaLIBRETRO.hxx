@@ -41,6 +41,7 @@ class StellaLIBRETRO
 {
   public:
     StellaLIBRETRO();
+    ~StellaLIBRETRO() = default;
 
   public:
     OSystemLIBRETRO& osystem() const { return *myOSystem; }
@@ -60,7 +61,9 @@ class StellaLIBRETRO
 
     void*  getROM() const { return rom_image.get(); }
     uInt32 getROMSize() const { return rom_size; }
-    constexpr uInt32 getROMMax() const { return uInt32(Cartridge::maxSize()); }
+    constexpr uInt32 getROMMax() const {
+      return static_cast<uInt32>(Cartridge::maxSize());
+    }
 
     uInt8* getRAM() { return system_ram; }
     constexpr uInt32 getRAMSize() const { return 128; }

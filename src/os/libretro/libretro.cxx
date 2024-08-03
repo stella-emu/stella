@@ -1,10 +1,11 @@
+// NOLINTBEGIN (misc-use-anonymous-namespace)
+
 #ifndef _MSC_VER
-#include <stdbool.h>
 #include <sched.h>
 #endif
-#include <stddef.h>
-#include <stdio.h>
-#include <stdlib.h>
+#include <cstddef>
+#include <cstdio>
+#include <cstdlib>
 
 #ifdef _MSC_VER
 #define snprintf _snprintf
@@ -74,7 +75,7 @@ static void update_input()
         for (int i = 0; i <= RETRO_DEVICE_ID_JOYPAD_R3; i++) \
           input_bitmask[(pad)] |= input_state_cb((pad), RETRO_DEVICE_JOYPAD, 0, i) ? (1 << i) : 0; \
     }
-#define MASK_EVENT(evt, pad, id) stella.setInputEvent((evt), (input_bitmask[(pad)] & (1 << id)) ? 1 : 0)
+#define MASK_EVENT(evt, pad, id) stella.setInputEvent((evt), (input_bitmask[(pad)] & (1 << (id))) ? 1 : 0)
 
   int pad = 0;
   GET_BITMASK(pad)
@@ -761,3 +762,5 @@ void retro_cheat_reset()
 void retro_cheat_set(unsigned index, bool enabled, const char *code)
 {
 }
+
+// NOLINTEND

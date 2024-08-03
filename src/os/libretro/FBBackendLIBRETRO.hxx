@@ -34,7 +34,7 @@ class FBBackendLIBRETRO : public FBBackend
 {
   public:
     explicit FBBackendLIBRETRO(OSystem&) { }
-    ~FBBackendLIBRETRO() override { }
+    ~FBBackendLIBRETRO() override = default;
 
   protected:
     /**

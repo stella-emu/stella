@@ -46,7 +46,7 @@ bool StellaLIBRETRO::create(bool logging)
 
   myOSystem = make_unique<OSystemLIBRETRO>();
 
-  Settings::Options options;
+  const Settings::Options options;
   myOSystem->initialize(options);
 
   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -92,7 +92,7 @@ bool StellaLIBRETRO::create(bool logging)
   settings.setValue(AudioSettings::SETTING_VOLUME, 100);
   settings.setValue(AudioSettings::SETTING_STEREO, audio_mode);
 
-  FSNode rom(rom_path);
+  const FSNode rom(rom_path);
 
   if(myOSystem->createConsole(rom) != EmptyString)
     return false;
@@ -160,7 +160,7 @@ void StellaLIBRETRO::updateVideo()
 {
   TIA& tia = myOSystem->console().tia();
 
-  while (1)
+  while (true)
   {
     tia.updateScanline();
 
@@ -227,7 +227,7 @@ size_t StellaLIBRETRO::getStateSize() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 float StellaLIBRETRO::getVideoAspectPar() const
 {
-  float par;
+  float par = 0.F;
 
   if (getVideoNTSC())
   {
@@ -236,7 +236,7 @@ float StellaLIBRETRO::getVideoAspectPar() const
       if (video_filter != NTSCFilter::Preset::OFF)
       {
         // non-interlace square pixel clock -- 1.0 pixel @ color burst -- double-width pixels
-        par = (6.1363635f / 3.579545454f) / 2.0;
+        par = (6.1363635F / 3.579545454F) / 2.0;
       }
       else
       {
@@ -254,7 +254,7 @@ float StellaLIBRETRO::getVideoAspectPar() const
       if (video_filter != NTSCFilter::Preset::OFF)
       {
         // non-interlace square pixel clock -- 0.8 pixel @ color burst -- double-width pixels
-        par = (7.3750000f / (4.43361875f * 4.0f / 5.0f)) / 2.0f;
+        par = (7.3750000F / (4.43361875F * 4.F / 5.F)) / 2.F;
       }
       else
       {
@@ -272,7 +272,7 @@ float StellaLIBRETRO::getVideoAspectPar() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 float StellaLIBRETRO::getVideoAspect() const
 {
-  uInt32 width = myOSystem->console().tia().width() * 2;
+  const uInt32 width = myOSystem->console().tia().width() * 2;
 
   // display aspect ratio
   return (width * getVideoAspectPar()) / getVideoHeight();
@@ -335,6 +335,7 @@ void StellaLIBRETRO::setConsoleFormat(uInt32 mode)
     case 4:  console_format = "NTSC50";  break;
     case 5:  console_format = "PAL60";   break;
     case 6:  console_format = "SECAM60"; break;
+    default:                             break;
   }
 
   if (system_ready)
@@ -371,6 +372,7 @@ void StellaLIBRETRO::setVideoPhosphor(uInt32 mode, uInt32 blend)
     case 0:  video_phosphor = "byrom";  break;
     case 1:  video_phosphor = "never";  break;
     case 2:  video_phosphor = "always"; break;
+    default:                            break;
   }
 
   video_phosphor_blend = blend;
@@ -385,6 +387,7 @@ void StellaLIBRETRO::setVideoPhosphor(uInt32 mode, uInt32 blend)
       case 0: myOSystem->frameBuffer().tiaSurface().enablePhosphor(phosphor_default, blend); break;
       case 1: myOSystem->frameBuffer().tiaSurface().enablePhosphor(false, blend); break;
       case 2: myOSystem->frameBuffer().tiaSurface().enablePhosphor(true, blend); break;
+      default:  break;
     }
   }
 }
@@ -397,6 +400,7 @@ void StellaLIBRETRO::setAudioStereo(int mode)
     case 0:  audio_mode = "byrom";  break;
     case 1:  audio_mode = "mono";   break;
     case 2:  audio_mode = "stereo"; break;
+    default:                        break;
   }
 
   if (system_ready)
