@@ -34,8 +34,7 @@ class FrameManager: public AbstractFrameManager {
       frameSizePAL = 312,
       baseHeightNTSC = 228, // 217..239
       baseHeightPAL = 274, // 260..288
-      // NOLINTNEXTLINE: lround suggested, but not constexpr until C++23
-      maxHeight = static_cast<uInt32>(baseHeightPAL * 1.05 + 0.5), // 288
+      maxHeight = static_cast<uInt32>(baseHeightPAL * 1.05 + 0.5), // 288   FIXME
       maxLinesVsync = 50,
       initialGarbageFrames = TIAConstants::initialGarbageFrames,
       ystartNTSC = 23,
