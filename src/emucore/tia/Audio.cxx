@@ -47,6 +47,9 @@ void Audio::reset()
 {
   myCounter = 0;
   mySampleIndex = 0;
+  sumChannel0 = 0;
+  sumChannel1 = 0;
+  sumCt = 0;
 
   myChannel0.reset();
   myChannel1.reset();
@@ -64,8 +67,13 @@ void Audio::setAudioQueue(const shared_ptr<AudioQueue>& queue)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Audio::phase1()
 {
-  const uInt8 sample0 = myChannel0.phase1();
-  const uInt8 sample1 = myChannel1.phase1();
+  // calculate average of all recent volume samples. the average for each
+  // channel is mixed to create a single audible value
+  const uInt8 sample0 = (uInt8)(sumChannel0/sumCt);
+  const uInt8 sample1 = (uInt8)(sumChannel1/sumCt);
+  sumChannel0 = 0;
+  sumChannel1 = 0;
+  sumCt = 0;
 
   addSample(sample0, sample1);
 #ifdef GUI_SUPPORT
