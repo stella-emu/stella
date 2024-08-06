@@ -509,8 +509,8 @@ CortexM0::err_t CortexM0::BusTransactionDelegate::write8(uInt32 address, uInt8 v
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CortexM0::err_t CortexM0::BusTransactionDelegate::fetch16(
-  uInt32 address, uInt16& value, uInt8& op, CortexM0& cortex
-) {
+  uInt32 address, uInt16& value, uInt8& op, CortexM0& cortex)
+{
   const err_t err = read16(address, value, cortex);
   if (err) return err;
 
@@ -536,32 +536,32 @@ string CortexM0::describeError(err_t err) {
 CortexM0::CortexM0()
 {
   myPageMap = make_unique<uInt8[]>(PAGEMAP_SIZE);
-  std::memset(myPageMap.get(), 0xff, PAGEMAP_SIZE);
+  std::fill_n(myPageMap.get(), PAGEMAP_SIZE, 0xff);
 
   reset();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CortexM0& CortexM0::mapRegionData(uInt32 pageBase,
-                                  uInt32 pageCount, bool readOnly, uInt8* backingStore)
+CortexM0& CortexM0::mapRegionData(uInt32 pageBase, uInt32 pageCount,
+                                  bool readOnly, uInt8* backingStore)
 {
   MemoryRegion& region =
     setupMapping(pageBase, pageCount, readOnly, MemoryRegionType::directData);
 
-  region.access.accessData.backingStore = backingStore;
+  region.access.emplace<0>(backingStore);
 
   return *this;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CortexM0& CortexM0::mapRegionCode(uInt32 pageBase,
-                                  uInt32 pageCount, bool readOnly, uInt8* backingStore)
+CortexM0& CortexM0::mapRegionCode(uInt32 pageBase, uInt32 pageCount,
+                                  bool readOnly, uInt8* backingStore)
 {
   MemoryRegion& region =
     setupMapping(pageBase, pageCount, readOnly, MemoryRegionType::directCode);
 
-  region.access.accessCode.backingStore = backingStore;
-  region.access.accessCode.ops = static_cast<uInt8*>(std::malloc((pageCount * PAGE_SIZE) >> 1));
+  region.access.emplace<1>(backingStore,
+                           make_unique<uInt8[]>((pageCount * PAGE_SIZE) >> 1));
 
   return *this;
 }
@@ -573,7 +573,7 @@ CortexM0& CortexM0::mapRegionDelegate(uInt32 pageBase, uInt32 pageCount, bool re
   MemoryRegion& region =
     setupMapping(pageBase, pageCount, readOnly, MemoryRegionType::delegate);
 
-  region.access.delegate = delegate;
+  region.access.emplace<2>(delegate);
 
   return *this;
 }
@@ -655,7 +655,7 @@ CortexM0::err_t CortexM0::run(uInt32 maxCycles, uInt32& cycles)
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CortexM0::MemoryRegion& CortexM0::setupMapping(uInt32 pageBase, uInt32 pageCount,
-                                               bool readOnly, CortexM0::MemoryRegionType type)
+    bool readOnly, CortexM0::MemoryRegionType type)
 {
   if (myNextRegionIndex == 0xff) throw runtime_error("no free memory region");
   const uInt8 regionIndex = myNextRegionIndex++;
@@ -677,11 +677,12 @@ CortexM0::MemoryRegion& CortexM0::setupMapping(uInt32 pageBase, uInt32 pageCount
 void CortexM0::recompileCodeRegions()
 {
   for (const auto& region: myRegions) {
-    if (region.type != MemoryRegionType::directCode) continue;
+    if (!std::holds_alternative<MemoryRegionAccessCode>(region.access))
+      continue;
 
     for (size_t i = 0; i < region.size; i += 2)
-      region.access.accessCode.ops[i >> 1] =
-        decodeInstructionWord(READ16(region.access.accessCode.backingStore, i));
+      std::get<1>(region.access).ops[i >> 1] =
+        decodeInstructionWord(READ16(std::get<1>(region.access).backingStore, i));
   }
 }
 
@@ -694,19 +695,20 @@ CortexM0::err_t CortexM0::read32(uInt32 address, uInt32& value)
 
   switch (region.type) {
     case MemoryRegionType::delegate:
-      return region.access.delegate->read32(address, value, *this);
+      return std::get<2>(region.access)->read32(address, value, *this);
 
     case MemoryRegionType::directCode:
-      value = READ32(region.access.accessCode.backingStore, address - region.base);
+      value = READ32(std::get<1>(region.access).backingStore, address - region.base);
       return ERR_NONE;
 
     case MemoryRegionType::directData:
-      value = READ32(region.access.accessData.backingStore, address - region.base);
+      value = READ32(std::get<0>(region.access).backingStore, address - region.base);
       return ERR_NONE;
 
     default:
-      return myDefaultDelegate ?
-        myDefaultDelegate->read32(address, value, *this) : errIntrinsic(ERR_UNMAPPED_READ32, address);
+      return myDefaultDelegate
+        ? myDefaultDelegate->read32(address, value, *this)
+        : errIntrinsic(ERR_UNMAPPED_READ32, address);
   }
 }
 
@@ -719,19 +721,20 @@ CortexM0::err_t CortexM0::read16(uInt32 address, uInt16& value)
 
   switch (region.type) {
     case MemoryRegionType::delegate:
-      return region.access.delegate->read16(address, value, *this);
+      return std::get<2>(region.access)->read16(address, value, *this);
 
     case MemoryRegionType::directCode:
-      value = READ16(region.access.accessCode.backingStore, address - region.base);
+      value = READ16(std::get<1>(region.access).backingStore, address - region.base);
       return ERR_NONE;
 
     case MemoryRegionType::directData:
-      value = READ16(region.access.accessData.backingStore, address - region.base);
+      value = READ16(std::get<0>(region.access).backingStore, address - region.base);
       return ERR_NONE;
 
     default:
-      return myDefaultDelegate ?
-        myDefaultDelegate->read16(address, value, *this) : errIntrinsic(ERR_UNMAPPED_READ16, address);
+      return myDefaultDelegate
+        ? myDefaultDelegate->read16(address, value, *this)
+        : errIntrinsic(ERR_UNMAPPED_READ16, address);
   }
 }
 
@@ -742,19 +745,20 @@ CortexM0::err_t CortexM0::read8(uInt32 address, uInt8& value)
 
   switch (region.type) {
     case MemoryRegionType::delegate:
-      return region.access.delegate->read8(address, value, *this);
+      return std::get<2>(region.access)->read8(address, value, *this);
 
     case MemoryRegionType::directCode:
-      value = region.access.accessCode.backingStore[address - region.base];
+      value = std::get<1>(region.access).backingStore[address - region.base];
       return ERR_NONE;
 
     case MemoryRegionType::directData:
-      value = region.access.accessData.backingStore[address - region.base];
+      value = std::get<0>(region.access).backingStore[address - region.base];
       return ERR_NONE;
 
     default:
-      return myDefaultDelegate ?
-        myDefaultDelegate->read8(address, value, *this) : errIntrinsic(ERR_UNMAPPED_READ8, address);
+      return myDefaultDelegate
+        ? myDefaultDelegate->read8(address, value, *this)
+        : errIntrinsic(ERR_UNMAPPED_READ8, address);
   }
 }
 
@@ -768,19 +772,20 @@ CortexM0::err_t CortexM0::write32(uInt32 address, uInt32 value)
 
   switch (region.type) {
     case MemoryRegionType::delegate:
-      return region.access.delegate->write32(address, value, *this);
+      return std::get<2>(region.access)->write32(address, value, *this);
 
     case MemoryRegionType::directCode:
-      WRITE32(region.access.accessCode.backingStore, address - region.base, value);
+      WRITE32(std::get<1>(region.access).backingStore, address - region.base, value);
       return ERR_NONE;
 
     case MemoryRegionType::directData:
-      WRITE32(region.access.accessData.backingStore, address - region.base, value);
+      WRITE32(std::get<0>(region.access).backingStore, address - region.base, value);
       return ERR_NONE;
 
     default:
-      return myDefaultDelegate ?
-        myDefaultDelegate->write32(address, value, *this) : errIntrinsic(ERR_UNMAPPED_WRITE32, address);
+      return myDefaultDelegate
+        ? myDefaultDelegate->write32(address, value, *this)
+        : errIntrinsic(ERR_UNMAPPED_WRITE32, address);
   }
 }
 
@@ -794,24 +799,25 @@ CortexM0::err_t CortexM0::write16(uInt32 address, uInt16 value)
 
   switch (region.type) {
     case MemoryRegionType::delegate:
-      return region.access.delegate->write16(address, value, *this);
+      return std::get<2>(region.access)->write16(address, value, *this);
 
     case MemoryRegionType::directCode: {
       const uInt32 offset = address - region.base;
 
-      WRITE16(region.access.accessCode.backingStore, offset, value);
-      region.access.accessCode.ops[offset >> 1] = decodeInstructionWord(value);
+      WRITE16(std::get<1>(region.access).backingStore, offset, value);
+      std::get<1>(region.access).ops[offset >> 1] = decodeInstructionWord(value);
 
       return ERR_NONE;
     }
 
     case MemoryRegionType::directData:
-      WRITE16(region.access.accessData.backingStore, address - region.base, value);
+      WRITE16(std::get<0>(region.access).backingStore, address - region.base, value);
       return ERR_NONE;
 
     default:
-      return myDefaultDelegate ?
-        myDefaultDelegate->write16(address, value, *this) : errIntrinsic(ERR_UNMAPPED_WRITE16, address);
+      return myDefaultDelegate
+        ? myDefaultDelegate->write16(address, value, *this)
+        : errIntrinsic(ERR_UNMAPPED_WRITE16, address);
   }
 }
 
@@ -823,24 +829,25 @@ CortexM0::err_t CortexM0::write8(uInt32 address, uInt8 value)
 
   switch (region.type) {
     case MemoryRegionType::delegate:
-      return region.access.delegate->write8(address, value, *this);
+      return std::get<2>(region.access)->write8(address, value, *this);
 
     case MemoryRegionType::directCode: {
       const uInt32 offset = address - region.base;
 
-      region.access.accessCode.backingStore[offset] = value;
-      region.access.accessCode.ops[offset >> 1] = decodeInstructionWord(value);
+      std::get<1>(region.access).backingStore[offset] = value;
+      std::get<1>(region.access).ops[offset >> 1] = decodeInstructionWord(value);
 
       return ERR_NONE;
     }
 
     case MemoryRegionType::directData:
-      region.access.accessData.backingStore[address - region.base] = value;
+      std::get<0>(region.access).backingStore[address - region.base] = value;
       return ERR_NONE;
 
     default:
-      return myDefaultDelegate ?
-        myDefaultDelegate->write8(address, value, *this) : errIntrinsic(ERR_UNMAPPED_WRITE8, address);
+      return myDefaultDelegate
+        ? myDefaultDelegate->write8(address, value, *this)
+        : errIntrinsic(ERR_UNMAPPED_WRITE8, address);
   }
 }
 
@@ -853,26 +860,27 @@ CortexM0::err_t CortexM0::fetch16(uInt32 address, uInt16& value, uInt8& op)
 
   switch (region.type) {
     case MemoryRegionType::delegate:
-      return region.access.delegate->fetch16(address, value, op, *this);
+      return std::get<2>(region.access)->fetch16(address, value, op, *this);
 
     case MemoryRegionType::directCode: {
       const uInt32 offset = address - region.base;
 
-      value = READ16(region.access.accessCode.backingStore, offset);
-      op = region.access.accessCode.ops[offset >> 1];
+      value = READ16(std::get<1>(region.access).backingStore, offset);
+      op = std::get<1>(region.access).ops[offset >> 1];
 
       return ERR_NONE;
     }
 
     case MemoryRegionType::directData:
-      value = READ16(region.access.accessCode.backingStore, address - region.base);
+      value = READ16(std::get<0>(region.access).backingStore, address - region.base);
       op = decodeInstructionWord(value);
 
       return ERR_NONE;
 
     default:
-      return myDefaultDelegate ?
-        myDefaultDelegate->fetch16(address, value, op, *this) : errIntrinsic(ERR_UNMAPPED_FETCH16, address);
+      return myDefaultDelegate
+        ? myDefaultDelegate->fetch16(address, value, op, *this)
+        : errIntrinsic(ERR_UNMAPPED_FETCH16, address);
   }
 }
 
@@ -893,6 +901,7 @@ void CortexM0::do_cvflag(uInt32 a, uInt32 b, uInt32 c)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// NOLINTNEXTLINE: function exceeds recommended size/complexity thresholds
 CortexM0::err_t CortexM0::execute(uInt16 inst, uInt8 op)
 {
   uInt32 sp, ra, rb, rc, rm, rd, rn, rs;  // NOLINT: don't need to initialize
