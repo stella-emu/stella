@@ -77,7 +77,7 @@ void AudioChannel::phase0()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt8 AudioChannel::phase1()
+void AudioChannel::phase1()
 {
   if (myClockEnable) {
     bool pulseFeedback = false;
@@ -118,7 +118,10 @@ uInt8 AudioChannel::phase1()
       }
     }
   }
+}
 
+uInt8 AudioChannel::volume() 
+{
   return (myPulseCounter & 0x01) * myAudv;
 }
 

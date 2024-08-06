@@ -98,8 +98,8 @@ void Audio::tick()
 {
   // volume for each channel is sampled every color clock. the average of
   // these samples will be taken twice a scanline in the phase1() function
-  sumChannel0 += (uInt32)myChannel0.phase1();
-  sumChannel1 += (uInt32)myChannel1.phase1();
+  sumChannel0 += (uInt32)myChannel0.volume();
+  sumChannel1 += (uInt32)myChannel1.volume();
   sumCt++;
 
   switch (myCounter) {
@@ -111,7 +111,9 @@ void Audio::tick()
 
     case 37:
     case 149:
-      phase1();
+      myChannel0.phase1();
+      myChannel1.phase1();
+	  phase1();
       break;
 
     default:
