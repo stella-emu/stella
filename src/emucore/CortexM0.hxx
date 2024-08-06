@@ -23,6 +23,8 @@
 #ifndef CORTEX_M0
 #define CORTEX_M0
 
+#include <variant>
+
 #include "bspf.hxx"
 
 class CortexM0
@@ -148,16 +150,12 @@ class CortexM0
 
     struct MemoryRegionAccessCode {
       uInt8* backingStore;
-      uInt8* ops;
+      unique_ptr<uInt8[]> ops;
     };
 
     struct MemoryRegion {
       MemoryRegion() = default;
-
-      ~MemoryRegion() {
-        if (type == MemoryRegionType::directCode)
-          std::free(access.accessCode.ops);
-      }
+      ~MemoryRegion() = default;
 
       MemoryRegionType type{MemoryRegionType::unmapped};
 
@@ -165,11 +163,11 @@ class CortexM0
       uInt32 size{0};
       bool readOnly{false};
 
-      union {
-        MemoryRegionAccessData accessData;
-        MemoryRegionAccessCode accessCode;
-        BusTransactionDelegate* delegate{nullptr};
-      } access;
+      std::variant<
+        MemoryRegionAccessData,  // ::get<0>, directData
+        MemoryRegionAccessCode,  // ::get<1>, directCode
+        BusTransactionDelegate*  // ::get<2>, delegate
+      > access;
 
       private:
         MemoryRegion(const MemoryRegion&) = delete;
