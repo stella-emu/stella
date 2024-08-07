@@ -19,6 +19,7 @@
 #define VCSLIB_H
 
 #include "bspf.hxx"
+#include "Random.hxx"
 #include "CortexM0.hxx"
 #include "BusTransactionQueue.hxx"
 
@@ -70,6 +71,8 @@ class VcsLib: public CortexM0::BusTransactionDelegate {
 
     uInt16 myCurrentAddress{0};
     uInt8 myCurrentValue{0};
+
+    Random myRand;
 
   private:
     VcsLib(const VcsLib&) = delete;

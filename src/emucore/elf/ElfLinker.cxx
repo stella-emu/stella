@@ -49,9 +49,11 @@ namespace {
 }  // namespace
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-ElfLinker::ElfLinker(uInt32 textBase, uInt32 dataBase, uInt32 rodataBase, const ElfFile& elf)
-  : myTextBase(textBase), myDataBase(dataBase), myRodataBase(rodataBase), myElf(elf)
-{}
+ElfLinker::ElfLinker(uInt32 textBase, uInt32 dataBase, uInt32 rodataBase,
+                     const ElfFile& elf)
+  : myTextBase{textBase}, myDataBase{dataBase}, myRodataBase{rodataBase}, myElf{elf}
+{
+}
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ElfLinker& ElfLinker::setUndefinedSymbolDefault(uInt32 defaultValue)
@@ -162,13 +164,15 @@ ElfLinker::RelocatedSymbol ElfLinker::findRelocatedSymbol(string_view name) cons
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const vector<optional<ElfLinker::RelocatedSection>>& ElfLinker::getRelocatedSections() const
+const vector<optional<ElfLinker::RelocatedSection>>&
+ElfLinker::getRelocatedSections() const
 {
   return myRelocatedSections;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const vector<optional<ElfLinker::RelocatedSymbol>>& ElfLinker::getRelocatedSymbols() const
+const vector<optional<ElfLinker::RelocatedSymbol>>&
+ElfLinker::getRelocatedSymbols() const
 {
   return myRelocatedSymbols;
 }
