@@ -32,7 +32,7 @@ class AudioChannel : public Serializable
 
     void phase1();
 
-	uInt8 actualVolume();
+    uInt8 actualVolume() const;
 
     void audc(uInt8 value);
 

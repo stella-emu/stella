@@ -36,8 +36,10 @@ namespace {
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Audio::Audio()
 {
-  for (uInt8 i = 0; i <= 0x1e; ++i) myMixingTableSum[i] = mixingTableEntry(i, 0x1e);
-  for (uInt8 i = 0; i <= 0x0f; ++i) myMixingTableIndividual[i] = mixingTableEntry(i, 0x0f);
+  for (uInt8 i = 0; i <= 0x1e; ++i)
+    myMixingTableSum[i] = mixingTableEntry(i, 0x1e);
+  for (uInt8 i = 0; i <= 0x0f; ++i)
+    myMixingTableIndividual[i] = mixingTableEntry(i, 0x0f);
 
   reset();
 }
@@ -45,11 +47,9 @@ Audio::Audio()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Audio::reset()
 {
+  mySumChannel0 = mySumChannel1 = mySumCt = 0;
   myCounter = 0;
   mySampleIndex = 0;
-  sumChannel0 = 0;
-  sumChannel1 = 0;
-  sumCt = 0;
 
   myChannel0.reset();
   myChannel1.reset();
@@ -67,13 +67,11 @@ void Audio::setAudioQueue(const shared_ptr<AudioQueue>& queue)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Audio::createSample()
 {
-  // calculate average of all recent volume samples. the average for each
+  // Calculate average of all recent volume samples. the average for each
   // channel is mixed to create a single audible value
-  const uInt8 sample0 = (uInt8)(sumChannel0/sumCt);
-  const uInt8 sample1 = (uInt8)(sumChannel1/sumCt);
-  sumChannel0 = 0;
-  sumChannel1 = 0;
-  sumCt = 0;
+  const auto sample0 = static_cast<uInt8>(mySumChannel0 / mySumCt);
+  const auto sample1 = static_cast<uInt8>(mySumChannel1 / mySumCt);
+  mySumChannel0 = mySumChannel1 = mySumCt = 0;
 
   addSample(sample0, sample1);
 #ifdef GUI_SUPPORT
@@ -115,6 +113,11 @@ bool Audio::save(Serializer& out) const
 
     if (!myChannel0.save(out)) return false;
     if (!myChannel1.save(out)) return false;
+
+    out.putInt(mySumChannel0);
+    out.putInt(mySumChannel1);
+    out.putInt(mySumCt);
+
   #ifdef GUI_SUPPORT
     out.putLong(static_cast<uInt64>(mySamples.size()));
     out.putByteArray(mySamples.data(), mySamples.size());
@@ -144,6 +147,11 @@ bool Audio::load(Serializer& in)
 
     if (!myChannel0.load(in)) return false;
     if (!myChannel1.load(in)) return false;
+
+    mySumChannel0 = in.getInt();
+    mySumChannel1 = in.getInt();
+    mySumCt = in.getInt();
+
   #ifdef GUI_SUPPORT
     const uInt64 sampleSize = in.getLong();
     ByteArray samples(sampleSize);

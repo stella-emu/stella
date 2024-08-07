@@ -120,9 +120,10 @@ void AudioChannel::phase1()
   }
 }
 
-// the actual volume of a chaneel is the volume register multiplied by the
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// The actual volume of a chaneel is the volume register multiplied by the
 // lowest of the pulse counter
-uInt8 AudioChannel::actualVolume() 
+uInt8 AudioChannel::actualVolume() const
 {
   return (myPulseCounter & 0x01) * myAudv;
 }
