@@ -31,7 +31,9 @@ class AudioChannel : public Serializable
 
     void phase0();
 
-    uInt8 phase1();
+    void phase1();
+
+    uInt8 actualVolume() const;
 
     void audc(uInt8 value);
 

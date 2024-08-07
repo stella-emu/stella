@@ -58,7 +58,7 @@ class Audio : public Serializable
     bool load(Serializer& in) override;
 
   private:
-    void phase1();
+    void createSample();
     void addSample(uInt8 sample0, uInt8 sample1);
 
   private:
@@ -68,6 +68,10 @@ class Audio : public Serializable
 
     AudioChannel myChannel0;
     AudioChannel myChannel1;
+
+    uInt32 mySumChannel0{0};
+    uInt32 mySumChannel1{0};
+    uInt32 mySumCt{0};
 
     std::array<Int16, 0x1e + 1> myMixingTableSum;
     std::array<Int16, 0x0f + 1> myMixingTableIndividual;
@@ -93,6 +97,12 @@ class Audio : public Serializable
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Audio::tick()
 {
+  // Volume for each channel is sampled every color clock. the average of
+  // these samples will be taken twice a scanline in the phase1() function
+  mySumChannel0 += static_cast<uInt32>(myChannel0.actualVolume());
+  mySumChannel1 += static_cast<uInt32>(myChannel1.actualVolume());
+  mySumCt++;
+
   switch (myCounter) {
     case 9:
     case 81:
@@ -102,7 +112,9 @@ void Audio::tick()
 
     case 37:
     case 149:
-      phase1();
+      myChannel0.phase1();
+      myChannel1.phase1();
+	  createSample();
       break;
 
     default:
