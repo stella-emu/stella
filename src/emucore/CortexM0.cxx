@@ -47,11 +47,21 @@
     ((uInt8*)(data))[(addr)] = value;             \
     ((uInt8*)(data))[(addr) + 1] = (value) >> 8;
 #else
-  #define READ32(data, addr) (((uInt32*)(data))[(addr) >> 2])
-  #define READ16(data, addr) (((uInt16*)(data))[(addr) >> 1])
+namespace {
+  inline uInt32 READ32(const uInt8* data, uInt32 addr) {
+    return (reinterpret_cast<const uInt32*>(data))[addr >> 2];
+  }
+  inline uInt16 READ16(const uInt8* data, uInt16 addr) {
+    return (reinterpret_cast<const uInt16*>(data))[addr >> 1];
+  }
 
-  #define WRITE32(data, addr, value) ((uInt32*)(data))[(addr) >> 2] = value;
-  #define WRITE16(data, addr, value) ((uInt16*)(data))[(addr) >> 1] = value;
+  inline void WRITE32(uInt8* data, uInt32 addr, uInt32 value) {
+    (reinterpret_cast<uInt32*>(data))[addr >> 2] = value;
+  }
+  inline void WRITE16(uInt8* data, uInt32 addr, uInt16 value) {
+    (reinterpret_cast<uInt16*>(data))[addr >> 1] = value;
+  }
+}  // namespace
 #endif
 
 // #define THUMB_DISS
