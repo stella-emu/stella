@@ -32,13 +32,23 @@ class AudioChannel : public Serializable
 
     void phase1();
 
-    uInt8 actualVolume() const;
+    // The actual volume of a channel is the volume register multiplied by the
+    // lowest of the pulse counter
+    uInt8 actualVolume() const {
+      return (myPulseCounter & 0x01) * myAudv;
+    }
 
-    void audc(uInt8 value);
+    void audc(uInt8 value) {
+      myAudc = value & 0x0f;
+    }
 
-    void audf(uInt8 value);
+    void audf(uInt8 value) {
+      myAudf = value & 0x1f;
+    }
 
-    void audv(uInt8 value);
+    void audv(uInt8 value) {
+      myAudv = value & 0x0f;
+    }
 
     /**
       Serializable methods (see that class for more information).
@@ -48,8 +58,8 @@ class AudioChannel : public Serializable
 
   private:
     uInt8 myAudc{0};
-    uInt8 myAudv{0};
     uInt8 myAudf{0};
+    uInt8 myAudv{0};
 
     bool myClockEnable{false};
     bool myNoiseFeedback{false};
