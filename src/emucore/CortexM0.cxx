@@ -51,7 +51,7 @@ namespace {
   inline uInt32 READ32(const uInt8* data, uInt32 addr) {
     return (reinterpret_cast<const uInt32*>(data))[addr >> 2];
   }
-  inline uInt16 READ16(const uInt8* data, uInt16 addr) {
+  inline uInt16 READ16(const uInt8* data, uInt32 addr) {
     return (reinterpret_cast<const uInt16*>(data))[addr >> 1];
   }
 
@@ -690,7 +690,7 @@ void CortexM0::recompileCodeRegions()
     if (!std::holds_alternative<MemoryRegionAccessCode>(region.access))
       continue;
 
-    for (size_t i = 0; i < region.size; i += 2)
+    for (uInt32 i = 0; i < region.size; i += 2)
       std::get<1>(region.access).ops[i >> 1] =
         decodeInstructionWord(READ16(std::get<1>(region.access).backingStore, i));
   }
