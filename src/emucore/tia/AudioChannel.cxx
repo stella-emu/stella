@@ -77,7 +77,7 @@ void AudioChannel::phase0()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt8 AudioChannel::phase1()
+void AudioChannel::phase1()
 {
   if (myClockEnable) {
     bool pulseFeedback = false;
@@ -118,7 +118,12 @@ uInt8 AudioChannel::phase1()
       }
     }
   }
+}
 
+// the actual volume of a chaneel is the volume register multiplied by the
+// lowest of the pulse counter
+uInt8 AudioChannel::actualVolume() 
+{
   return (myPulseCounter & 0x01) * myAudv;
 }
 
