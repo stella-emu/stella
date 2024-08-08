@@ -21,10 +21,10 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 BusTransactionQueue::Transaction BusTransactionQueue::Transaction::transactionYield(
-  uInt16 address, uInt64 timestamp
+  uInt16 address, uInt64 timestamp, uInt16 mask
 ) {
   address &= 0x1fff;
-  return {.address = address, .value = 0, .timestamp = timestamp, .yield = true};
+  return {.address = address, .mask = mask, .value = 0, .timestamp = timestamp, .yield = true};
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -32,7 +32,7 @@ BusTransactionQueue::Transaction BusTransactionQueue::Transaction::transactionDr
   uInt16 address, uInt8 value, uInt64 timestamp
 ) {
   address &= 0x1fff;
-  return {.address = address, .value = value, .timestamp = timestamp, .yield = false};
+  return {.address = address, .mask = 0xffff, .value = value, .timestamp = timestamp, .yield = false};
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -112,9 +112,9 @@ BusTransactionQueue& BusTransactionQueue::stuffByte(uInt8 value, uInt16 address)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-BusTransactionQueue& BusTransactionQueue::yield(uInt16 address)
+BusTransactionQueue& BusTransactionQueue::yield(uInt16 address, uInt16 mask)
 {
-  push(Transaction::transactionYield(address, myTimestamp));
+  push(Transaction::transactionYield(address, myTimestamp, mask));
 
   return *this;
 }
@@ -131,7 +131,10 @@ BusTransactionQueue::Transaction* BusTransactionQueue::getNextTransaction(uInt16
   if (myQueueSize == 0) return nullptr;
 
   Transaction* nextTransaction = &myQueue[myQueueNext];
-  if (nextTransaction->address != (address & 0x1fff) || nextTransaction->timestamp > timestamp) return nullptr;
+  if (
+    nextTransaction->address != (address & 0x1fff & nextTransaction->mask) ||
+    nextTransaction->timestamp > timestamp
+  ) return nullptr;
 
   myQueueNext = (myQueueNext + 1) % myQueueCapacity;
   myQueueSize--;

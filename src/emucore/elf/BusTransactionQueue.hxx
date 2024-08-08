@@ -23,12 +23,13 @@
 class BusTransactionQueue {
   public:
     struct Transaction {
-      static Transaction transactionYield(uInt16 address, uInt64 timestamp);
+      static Transaction transactionYield(uInt16 address, uInt64 timestamp, uInt16 mask);
       static Transaction transactionDrive(uInt16 address, uInt8 value, uInt64 timestamp);
 
       void setBusState(bool& drive, uInt8& value) const;
 
       uInt16 address{0};
+      uInt16 mask{0xffff};
       uInt8 value{0};
       uInt64 timestamp{0};
       bool yield{false};
@@ -48,7 +49,7 @@ class BusTransactionQueue {
     BusTransactionQueue& injectROMAt(uInt8 value, uInt16 address);
     BusTransactionQueue& stuffByte(uInt8 value, uInt16 address);
 
-    BusTransactionQueue& yield(uInt16 address);
+    BusTransactionQueue& yield(uInt16 address, uInt16 mask = 0xffff);
 
     bool hasPendingTransaction() const;
     Transaction* getNextTransaction(uInt16 address, uInt64 timestamp);
