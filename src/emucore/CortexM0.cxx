@@ -558,7 +558,7 @@ CortexM0& CortexM0::mapRegionData(uInt32 pageBase, uInt32 pageCount,
   MemoryRegion& region =
     setupMapping(pageBase, pageCount, readOnly, MemoryRegionType::directData);
 
-  region.access.emplace<0>(backingStore);
+  region.access.emplace<0>(MemoryRegionAccessData{backingStore});
 
   return *this;
 }
@@ -570,8 +570,8 @@ CortexM0& CortexM0::mapRegionCode(uInt32 pageBase, uInt32 pageCount,
   MemoryRegion& region =
     setupMapping(pageBase, pageCount, readOnly, MemoryRegionType::directCode);
 
-  region.access.emplace<1>(backingStore,
-                           make_unique<uInt8[]>((pageCount * PAGE_SIZE) >> 1));
+  region.access.emplace<1>(MemoryRegionAccessCode{backingStore,
+                           make_unique<uInt8[]>((pageCount * PAGE_SIZE) >> 1)});
 
   return *this;
 }
