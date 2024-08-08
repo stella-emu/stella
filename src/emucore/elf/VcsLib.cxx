@@ -176,6 +176,15 @@ void VcsLib::vcsLda2(uInt8 value)
     .injectROM(value);
 }
 
+CortexM0::err_t VcsLib::stackOperation(uInt16& value, uInt8& op, uInt8 opcode)
+{
+  myTransactionQueue
+    .injectROM(opcode)
+    .yield(0, 0x1000);
+
+  return returnFromStub(value, op);
+}
+
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CortexM0::err_t VcsLib::fetch16(uInt32 address, uInt16& value, uInt8& op, CortexM0& cortex)
 {
@@ -244,7 +253,17 @@ CortexM0::err_t VcsLib::fetch16(uInt32 address, uInt16& value, uInt8& op, Cortex
       return returnFromStub(value, op);
 
     case ADDR_VCS_WRITE6:
-      FatalEmulationError::raise("unimplemented: vcsWrite6");
+      arg = cortex.getRegister(0);
+
+      myTransactionQueue
+    	  .injectROM(0xa9)
+	      .injectROM(cortex.getRegister(1))
+	      .injectROM(0x8d)
+	      .injectROM(arg)
+	      .injectROM(arg >> 8)
+	      .yield(arg);
+
+      return returnFromStub(value, op);
 
     case ADDR_VCS_LDA2:
       vcsLda2(cortex.getRegister(0));
@@ -265,7 +284,14 @@ CortexM0::err_t VcsLib::fetch16(uInt32 address, uInt16& value, uInt8& op, Cortex
       return returnFromStub(value, op);
 
     case ADDR_VCS_SAX3:
-      FatalEmulationError::raise("unimplemented: vcsSax3");
+      arg = cortex.getRegister(0);
+
+      myTransactionQueue
+        .injectROM(0x87)
+	      .injectROM(arg)
+	      .yield(arg);
+
+      return returnFromStub(value, op);
 
     case ADDR_VCS_STA3:
       arg = cortex.getRegister(0);
@@ -371,22 +397,32 @@ CortexM0::err_t VcsLib::fetch16(uInt32 address, uInt16& value, uInt8& op, Cortex
       return returnFromStub(value, op);
 
     case ADDR_VCS_TXS2:
-      FatalEmulationError::raise("unimplemented: vcsTx2");
+      myTransactionQueue.injectROM(0x9a);
+      return returnFromStub(value, op);
 
     case ADDR_VCS_JSR6:
-      FatalEmulationError::raise("unimplemented: vcsJsr6");
+      arg = cortex.getRegister(0);
+
+      myTransactionQueue
+        .injectROM(0x20)
+        .injectROM(arg)
+        .yield(0, 0x1000)
+        .injectROM(arg >> 8)
+        .setNextInjectAddress(arg & 0x1fff);
+
+      return returnFromStub(value, op);
 
     case ADDR_VCS_PHA3:
-      FatalEmulationError::raise("unimplemented: vcsPha3");
+      return stackOperation(value, op, 0x48);
 
     case ADDR_VCS_PHP3:
-      FatalEmulationError::raise("unimplemented: vcsPph3");
+      return stackOperation(value, op, 0x08);
 
     case ADDR_VCS_PLA4:
-      FatalEmulationError::raise("unimplemented: vcsPla4");
+      return stackOperation(value, op, 0x68);
 
     case ADDR_VCS_PLP4:
-      FatalEmulationError::raise("unimplemented: vcsPlp4");
+      return stackOperation(value, op, 0x28);
 
     case ADDR_VCS_PLA4_EX:
       FatalEmulationError::raise("unimplemented: vcsPla4Ex");
@@ -395,7 +431,15 @@ CortexM0::err_t VcsLib::fetch16(uInt32 address, uInt16& value, uInt8& op, Cortex
       FatalEmulationError::raise("unimplemented: vcsPlp4Ex");
 
     case ADDR_VCS_JMP_TO_RAM3:
-      FatalEmulationError::raise("unimplemented: vcsJmpToRam3");
+      arg = cortex.getRegister(0);
+
+      myTransactionQueue
+      	.injectROM(0x4c)
+      	.injectROM(arg)
+      	.injectROM(arg >> 8)
+      	.yield(arg);
+
+      return returnFromStub(value, op);
 
     case ADDR_VCS_WAIT_FOR_ADDRESS:
       FatalEmulationError::raise("unimplemented: vcsWaitForAddress");

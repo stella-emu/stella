@@ -59,6 +59,8 @@ class VcsLib: public CortexM0::BusTransactionDelegate {
       return CortexM0::ERR_NONE;
     }
 
+    CortexM0::err_t stackOperation(uInt16& value, uInt8& op, uInt8 opcode);
+
   private:
     BusTransactionQueue& myTransactionQueue;
 
