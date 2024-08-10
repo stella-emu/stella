@@ -120,6 +120,8 @@ Console::Console(OSystem& osystem, unique_ptr<Cartridge>& cart,
     myCart{std::move(cart)},
     myAudioSettings{audioSettings}
 {
+  myCart->setProperties(&myProperties);
+
   // Create subsystems for the console
   my6502 = make_unique<M6502>(myOSystem.settings());
   myRiot = make_unique<M6532>(*this, myOSystem.settings());

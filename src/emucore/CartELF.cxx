@@ -22,10 +22,10 @@
 #endif
 
 #include "System.hxx"
-#include "ElfParser.hxx"
 #include "ElfLinker.hxx"
 #include "ElfEnvironment.hxx"
 #include "Logger.hxx"
+#include "Props.hxx"
 #include "exception/FatalEmulationError.hxx"
 
 #include "CartELF.hxx"
@@ -174,6 +174,35 @@ namespace {
     cout << "wrote executable image to " << IMAGE_FILE_NAME << '\n';
   }
 #endif
+
+  SystemType determineSystemType(const Properties* props)
+  {
+    if (!props) return SystemType::ntsc;
+
+    string displayFormat = props->get(PropType::Display_Format);
+
+    if(displayFormat == "PAL" || displayFormat == "SECAM") return SystemType::pal;
+    if(displayFormat == "PAL60") return SystemType::pal60;
+
+    return SystemType::ntsc;
+  }
+
+  uInt32 getSystemTypeParam(SystemType systemType)
+  {
+    switch (systemType) {
+      case SystemType::ntsc:
+        return ST_NTSC_2600;
+
+      case SystemType::pal:
+        return ST_PAL_2600;
+
+      case SystemType::pal60:
+        return ST_PAL60_2600;
+
+      default:
+        throw runtime_error("invalid system type");
+    }
+}
 }  // namespace
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -204,6 +233,9 @@ void CartridgeELF::reset()
   myIsBusDriven = false;
   myDriveBusValue = 0;
   myArmCyclesOffset = 0;
+
+  mySystemType = determineSystemType(myProperties);
+  myLinker->relink(externalSymbols(mySystemType));
 
   std::memset(mySectionStack.get(), 0, STACK_SIZE);
   std::memset(mySectionText.get(), 0, TEXT_SIZE);
@@ -361,21 +393,19 @@ inline uInt8 CartridgeELF::driveBus(uInt16 address, uInt8 value)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeELF::parseAndLinkElf()
 {
-  ElfParser elfParser;
-
   try {
-    elfParser.parse(myImage.get(), myImageSize);
+    myElfParser.parse(myImage.get(), myImageSize);
   } catch (ElfParser::ElfParseError& e) {
     throw runtime_error("failed to initialize ELF: " + string(e.what()));
   }
 
 #ifdef DUMP_ELF
-  dumpElf(elfParser);
+  dumpElf(myElfParser);
 #endif
 
-  myLinker = make_unique<ElfLinker>(ADDR_TEXT_BASE, ADDR_DATA_BASE, ADDR_RODATA_BASE, elfParser);
+  myLinker = make_unique<ElfLinker>(ADDR_TEXT_BASE, ADDR_DATA_BASE, ADDR_RODATA_BASE, myElfParser);
   try {
-    myLinker->link(externalSymbols(Palette::ntsc));
+    myLinker->link(externalSymbols(SystemType::ntsc));
   } catch (const ElfLinker::ElfLinkError& e) {
     throw runtime_error("failed to link ELF: " + string(e.what()));
   }
@@ -396,7 +426,7 @@ void CartridgeELF::parseAndLinkElf()
     throw runtime_error("rodata segment too large");
 
 #ifdef DUMP_ELF
-  dumpLinkage(elfParser, *myLinker);
+  dumpLinkage(myElfParser, *myLinker);
 
   cout
     << "\nARM entrypoint: 0x"
@@ -442,23 +472,6 @@ uInt32 CartridgeELF::getCoreClock() const
     case ConsoleTiming::pal:
     case ConsoleTiming::secam:
       return myArmCyclesPer6502Cycle * 312 * 76 * 50;
-
-    default:
-      throw runtime_error("invalid console timing");
-  }
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt32 CartridgeELF::getSystemType() const
-{
-  switch (myConsoleTiming) {
-    case ConsoleTiming::ntsc:
-      return ST_NTSC_2600;
-
-    // Use frame layout here instead
-    case ConsoleTiming::pal:
-    case ConsoleTiming::secam:
-      return ST_PAL_2600;
 
     default:
       throw runtime_error("invalid console timing");
@@ -525,7 +538,7 @@ void CartridgeELF::callMain()
   err |= myCortexEmu.write32(sp, getCoreClock());
 
   sp -= 4;
-  err |= myCortexEmu.write32(sp, getSystemType());
+  err |= myCortexEmu.write32(sp, getSystemTypeParam(mySystemType));
 
   if (err) throw runtime_error("unable to setup main args");
 

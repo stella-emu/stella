@@ -43,6 +43,12 @@ Cartridge::Cartridge(const Settings& settings, string_view md5)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Cartridge::setProperties(const Properties* props)
+{
+  myProperties = props;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Cartridge::setAbout(string_view about, string_view type, string_view id)
 {
   myAbout = about;

@@ -67,6 +67,13 @@ class Cartridge : public Device
     ~Cartridge() override = default;
 
     /**
+     * @brief Set the game properties container
+     *
+     * @param props   game properties container
+     */
+    void setProperties(const Properties* props);
+
+    /**
       Set/query some information about this cartridge.
     */
     void setAbout(string_view about, string_view type, string_view id);
@@ -449,6 +456,9 @@ class Cartridge : public Device
 
     // If myRandomHotspots is true, peeks to hotspots return semi-random values.
     bool myRandomHotspots{false};
+
+    // Game properties. Set after construction when Console is created
+    const Properties* myProperties{nullptr};
 
   private:
     // The startup bank to use (where to look for the reset vector address)
