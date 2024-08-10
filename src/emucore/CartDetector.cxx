@@ -28,7 +28,7 @@ Bankswitch::Type CartDetector::autodetectType(const ByteBuffer& image, size_t si
   // Guess type based on size
   Bankswitch::Type type = Bankswitch::Type::_AUTO;
 
-  if (size >= 128 && isProbablyELF(image, size)) {
+  if (isProbablyELF(image, size)) {
     type =Bankswitch::Type::_ELF;
   }
   else if ((size % 8448) == 0 || size == 6_KB)
