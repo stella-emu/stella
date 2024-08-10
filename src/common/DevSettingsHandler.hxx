@@ -67,6 +67,7 @@ class DevSettingsHandler
     std::array<bool, numSets>   myWRPortBreak;
   #endif
     std::array<bool, numSets>   myThumbException;
+    std::array<int, numSets>    myArmCycles;
     // TIA sets
     std::array<string, numSets> myTIAType;
     std::array<bool, numSets>   myPlInvPhase;
