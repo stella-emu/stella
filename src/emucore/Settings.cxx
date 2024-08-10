@@ -311,6 +311,7 @@ Settings::Settings()
   setPermanent("dev.extaccess", "true");
   // Thumb ARM emulation options
   setPermanent("dev.thumb.trapfatal", "true");
+  setPermanent("dev.arm.mips", "150"); // TODO: use constant
 #ifdef DEBUGGER_SUPPORT
   setPermanent("dev.thumb.inccycles", "true");
   setPermanent("dev.thumb.cyclefactor", "1.05");
@@ -794,6 +795,7 @@ void Settings::usage()
 #endif
     << "  -dev.thumb.trapfatal   <1|0>     Determines whether errors in ARM emulation\n"
     << "                                    throw an exception\n"
+    << "  -dev.arm.mips         <number>   Limit emulation speed to simulate ARM CPU used.\n"
 #ifdef DEBUGGER_SUPPORT
     << "  -dev.thumb.inccycles   <1|0>     Determines whether ARM emulation cycles\n"
     << "                                    increase system cycles\n"

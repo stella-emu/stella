@@ -57,6 +57,7 @@ class DeveloperDialog : public Dialog, DevSettingsHandler
       kPlrSettings          = 'DVpl',
       kDevSettings          = 'DVdv',
       kConsole              = 'DVco',
+      kArmSpeedChanged      = 'DVas',
       kTIAType              = 'DVtt',
       kTVJitter             = 'DVjt',
       kTimeMachine          = 'DTtm',
@@ -97,10 +98,12 @@ class DeveloperDialog : public Dialog, DevSettingsHandler
     CheckboxWidget*     myRandomHotspotsWidget{nullptr};
     CheckboxWidget*     myUndrivenPinsWidget{nullptr};
 #ifdef DEBUGGER_SUPPORT
+    StaticTextWidget*   myPortBreakLabel{nullptr};
     CheckboxWidget*     myRWPortBreakWidget{nullptr};
     CheckboxWidget*     myWRPortBreakWidget{nullptr};
 #endif
     CheckboxWidget*     myThumbExceptionWidget{nullptr};
+    SliderWidget*       myArmSpeedWidget{nullptr};
 
     // TIA widgets
     RadioButtonGroup*   mySettingsGroupTia{nullptr};
