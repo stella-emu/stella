@@ -71,11 +71,20 @@ void ElfLinker::link(const vector<ExternalSymbol>& externalSymbols)
   myDataData.reset();
   myRodataData.reset();
   myRelocatedSections.resize(0);
+
+  relocateSections();
+
+  relink(externalSymbols);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void ElfLinker::relink(const vector<ExternalSymbol>& externalSymbols)
+{
   myRelocatedSymbols.resize(0);
   myInitArray.resize(0);
   myPreinitArray.resize(0);
 
-  relocateSections();
+  copySections();
   relocateSymbols(externalSymbols);
   relocateInitArrays();
   applyRelocationsToSections();
@@ -266,6 +275,12 @@ void ElfLinker::relocateSections()
     segmentData = make_unique<uInt8[]>(segmentSize);
     std::memset(segmentData.get(), 0, segmentSize);
   }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void ElfLinker::copySections()
+{
+  const auto& sections = myElf.getSections();
 
   // copy segment data
   for (size_t i = 0; i < sections.size(); i++) {

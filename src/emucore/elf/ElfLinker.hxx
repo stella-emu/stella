@@ -81,6 +81,7 @@ class ElfLinker {
 
     ElfLinker& setUndefinedSymbolDefault(uInt32 defaultValue);
     void link(const vector<ExternalSymbol>& externalSymbols);
+    void relink(const vector<ExternalSymbol>& externalSymbols);
 
     uInt32 getSegmentSize(SegmentType type) const;
     const uInt8* getSegmentData(SegmentType type) const;
@@ -99,6 +100,7 @@ class ElfLinker {
     unique_ptr<uInt8[]>& getSegmentDataRef(SegmentType type);
 
     void relocateSections();
+    void copySections();
     void relocateInitArrays();
     void relocateSymbols(const vector<ExternalSymbol>& externalSymbols);
     void applyRelocationsToSections();

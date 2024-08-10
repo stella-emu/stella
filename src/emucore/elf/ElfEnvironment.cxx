@@ -113,7 +113,7 @@ const uInt8 elfEnvironment::LOOKUP_TABLES[3 * 256] = {
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-vector<ElfLinker::ExternalSymbol> elfEnvironment::externalSymbols(elfEnvironment::Palette palette)
+vector<ElfLinker::ExternalSymbol> elfEnvironment::externalSymbols(elfEnvironment::SystemType systemType)
 {
   static const vector<ElfLinker::ExternalSymbol> EXTERNAL_SYMBOLS_STATIC = {
     {"ADDR_IDR", ADDR_ADDR_IDR + 1},
@@ -166,7 +166,7 @@ vector<ElfLinker::ExternalSymbol> elfEnvironment::externalSymbols(elfEnvironment
   externalSymbols = EXTERNAL_SYMBOLS_STATIC;
   externalSymbols.push_back({
     "ColorLookup",
-    palette == Palette::ntsc ? ADDR_TABLE_COLOR_LOOKUP_NTSC : ADDR_TABLE_COLOR_LOOKUP_PAL
+    systemType == SystemType::ntsc ? ADDR_TABLE_COLOR_LOOKUP_NTSC : ADDR_TABLE_COLOR_LOOKUP_PAL
   });
 
   return externalSymbols;
