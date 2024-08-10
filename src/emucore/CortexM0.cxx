@@ -999,6 +999,9 @@ CortexM0::err_t CortexM0::execute(uInt16 inst, uInt8 op)
       rc = ra + rb;
       if(rd == 15)
       {
+        if ((rc & 1) == 0)
+          return errIntrinsic(ERR_INVALID_OPERATING_MODE, read_register(15) - 4);
+
         rc &= ~1; //write_register may f this as well
         rc += 2;  //The program counter is special
       }
