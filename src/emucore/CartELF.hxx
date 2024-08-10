@@ -21,6 +21,8 @@
 #include "bspf.hxx"
 #include "Cart.hxx"
 #include "CortexM0.hxx"
+#include "ElfEnvironment.hxx"
+#include "ElfParser.hxx"
 #include "BusTransactionQueue.hxx"
 #include "VcsLib.hxx"
 
@@ -84,7 +86,6 @@ class CartridgeELF: public Cartridge {
     void setupMemoryMap();
 
     uInt32 getCoreClock() const;
-    uInt32 getSystemType() const;
 
     void switchExecutionStage();
     void callFn(uInt32 ptr, uInt32 sp);
@@ -107,6 +108,7 @@ class CartridgeELF: public Cartridge {
     uInt32 myArmEntrypoint{0};
 
     CortexM0 myCortexEmu;
+    ElfParser myElfParser;
     unique_ptr<ElfLinker> myLinker;
 
     unique_ptr<uInt8[]> mySectionStack;
@@ -125,6 +127,8 @@ class CartridgeELF: public Cartridge {
 
     ExecutionStage myExecutionStage{ExecutionStage::boot};
     uInt32 myInitFunctionIndex{0};
+
+    elfEnvironment::SystemType mySystemType{elfEnvironment::SystemType::ntsc};
 
   private:
     // Following constructors and assignment operators not supported

@@ -117,9 +117,9 @@ namespace elfEnvironment {
 
   constexpr uInt32 QUEUE_SIZE_LIMIT = 10;
 
-  enum class Palette: uInt8 {pal, ntsc};
+  enum class SystemType: uInt8 {ntsc, pal, pal60};
 
-  vector<ElfLinker::ExternalSymbol> externalSymbols(Palette palette);
+  vector<ElfLinker::ExternalSymbol> externalSymbols(SystemType systemType);
 }  // namespace elfEnvironment
 
 #endif // ELF_ENVIRONMENT
