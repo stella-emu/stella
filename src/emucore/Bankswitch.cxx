@@ -109,6 +109,7 @@ Bankswitch::BSList = {{
   { "E7"      , "E7 (8-16K M Network)"        },
   { "EF"      , "EF (64K H. Runner)"          },
   { "EFSC"    , "EFSC (64K H. Runner + RAM)"  },
+  { "ELF"     , "ELF (ARM bus stuffing)"      },
   { "F0"      , "F0 (Dynacom Megaboy)"        },
   { "F4"      , "F4 (32K Atari)"              },
   { "F4SC"    , "F4SC (32K Atari + RAM)"      },
@@ -132,7 +133,6 @@ Bankswitch::BSList = {{
   { "WDSW"    , "WDSW (Pink Panther, bad)"    },
   { "WF8"     , "WF8 (Coleco, white carts)"   },
   { "X07"     , "X07 (64K AtariAge)"          },
-  { "ELF"     , "ELF (ARM bus stuffing)"      },
 #if defined(CUSTOM_ARM)
   { "CUSTOM"  ,   "CUSTOM (ARM)"              }
 #endif
@@ -176,6 +176,7 @@ Bankswitch::Sizes = {{
   {    8_KB,  16_KB }, // _E7
   {   64_KB,  64_KB }, // _EF
   {   64_KB,  64_KB }, // _EFSC
+  {   Bankswitch::any_KB,  Bankswitch::any_KB }, // ELF
   {   64_KB,  64_KB }, // _F0
   {   32_KB,  32_KB }, // _F4
   {   32_KB,  32_KB }, // _F4SC
@@ -199,7 +200,6 @@ Bankswitch::Sizes = {{
   {    8_KB,   8_KB+5 }, // _WDSW
   {    8_KB,   8_KB }, // _WF8
   {   64_KB,  64_KB }, // _X07
-  {   Bankswitch::any_KB,  Bankswitch::any_KB }, // ELF
 #if defined(CUSTOM_ARM)
   { Bankswitch::any_KB, Bankswitch::any_KB }
 #endif
@@ -268,6 +268,7 @@ Bankswitch::ExtensionMap Bankswitch::ourExtensions = {
   { "EF"    , Bankswitch::Type::_EF     },
   { "EFS"   , Bankswitch::Type::_EFSC   },
   { "EFSC"  , Bankswitch::Type::_EFSC   },
+  { "ELF"   , Bankswitch::Type::_ELF    },
   { "F0"    , Bankswitch::Type::_F0     },
   { "F4"    , Bankswitch::Type::_F4     },
   { "F4S"   , Bankswitch::Type::_F4SC   },
@@ -296,7 +297,6 @@ Bankswitch::ExtensionMap Bankswitch::ourExtensions = {
   { "WDSW"  , Bankswitch::Type::_WDSW   },
   { "WF8"   , Bankswitch::Type::_WF8    },
   { "X07"   , Bankswitch::Type::_X07    },
-  { "ELF"   , Bankswitch::Type::_ELF    }
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -336,6 +336,7 @@ Bankswitch::NameToTypeMap Bankswitch::ourNameToTypes = {
   { "E7"      , Bankswitch::Type::_E7     },
   { "EF"      , Bankswitch::Type::_EF     },
   { "EFSC"    , Bankswitch::Type::_EFSC   },
+  { "ELF"     , Bankswitch::Type::_ELF    },
   { "F0"      , Bankswitch::Type::_F0     },
   { "F4"      , Bankswitch::Type::_F4     },
   { "F4SC"    , Bankswitch::Type::_F4SC   },
@@ -358,6 +359,5 @@ Bankswitch::NameToTypeMap Bankswitch::ourNameToTypes = {
   { "WD"      , Bankswitch::Type::_WD     },
   { "WDSW"    , Bankswitch::Type::_WDSW   },
   { "WF8"     , Bankswitch::Type::_WF8    },
-  { "X07"     , Bankswitch::Type::_X07    },
-  { "ELF"     , Bankswitch::Type::_ELF    }
+  { "X07"     , Bankswitch::Type::_X07    }
 };
