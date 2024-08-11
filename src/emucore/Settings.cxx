@@ -318,6 +318,8 @@ Settings::Settings()
   setPermanent("dev.thumb.chiptype", "0"); // = LPC2103
   setPermanent("dev.thumb.mammode", "2");
 #endif
+
+  setTemporary("elf.dump", false);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -818,7 +820,8 @@ void Settings::usage()
     << "  -dev.tia.pfscoreglitch <1|0>      Enable PF score mode color glitch\n"
     << "  -dev.tia.delaybkcolor  <1|0>      Enable extra delay cycle for background color\n"
     << "  -dev.tia.delayplswap   <1|0>      Enable extra delay cycle for VDELP0/1 swap\n"
-    << "  -dev.tia.delayblswap   <1|0>      Enable extra delay cycle for VDELBL swap\n\n";
+    << "  -dev.tia.delayblswap   <1|0>      Enable extra delay cycle for VDELBL swap\n"
+    << "  -elf.dump              <1|0>      Dump ELF linkage information and write elf_executable_image.bin\n\n";
 
 #ifdef BSPF_WINDOWS
 //  int height = 25;
