@@ -48,7 +48,7 @@ class ElfParser : public ElfFile {
 
     void parse(const uInt8 *elfData, size_t size);
 
-    const uInt8 *getData() const override;
+    const uInt8* getData() const override;
     size_t getSize() const override;
 
     const vector<Section>& getSections() const override;
