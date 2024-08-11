@@ -24,6 +24,7 @@
 #include "StateManager.hxx"
 #include "TIA.hxx"
 #include "Cart.hxx"
+#include "CartELF.hxx"
 
 #include "DevSettingsHandler.hxx"
 
@@ -62,7 +63,7 @@ void DevSettingsHandler::loadSettings(SettingsSet set)
 #endif
   // Thumb ARM emulation exception
   myThumbException[set] = devSettings ? settings.getBool("dev.thumb.trapfatal") : false;
-  myArmSpeed[set] = devSettings ? settings.getInt("dev.arm.mips") : 250; // TODO: use constant
+  myArmSpeed[set] = devSettings ? settings.getInt("dev.arm.mips") : CartridgeELF::MIPS_MAX;
 
   // TIA tab
   myTIAType[set] = devSettings ? settings.getString("dev.tia.type") : "standard";

@@ -24,6 +24,7 @@
 #include "PaletteHandler.hxx"
 #include "Joystick.hxx"
 #include "Paddles.hxx"
+#include "CartELF.hxx"
 #ifdef GUI_SUPPORT
   #include "JitterEmulation.hxx"
 #endif
@@ -311,7 +312,7 @@ Settings::Settings()
   setPermanent("dev.extaccess", "true");
   // Thumb ARM emulation options
   setPermanent("dev.thumb.trapfatal", "true");
-  setPermanent("dev.arm.mips", "150"); // TODO: use constant
+  setPermanent("dev.arm.mips", CartridgeELF::MIPS_DEF); 
 #ifdef DEBUGGER_SUPPORT
   setPermanent("dev.thumb.inccycles", "true");
   setPermanent("dev.thumb.cyclefactor", "1.05");

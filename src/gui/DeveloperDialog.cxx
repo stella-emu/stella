@@ -229,9 +229,9 @@ void DeveloperDialog::addEmulationTab(const GUI::Font& font)
   myArmSpeedWidget = new SliderWidget(myTab, font, HBORDER + INDENT * 1, ypos - 1,
                                       fontWidth * 10, lineHeight, "Limit ARM speed (*) ",
                                       0, kArmSpeedChanged, fontWidth * 9, " MIPS");
-  myArmSpeedWidget->setMinValue(CartridgeELF::MIPS_MIN); // TODO: use constant
-  myArmSpeedWidget->setMaxValue(CartridgeELF::MIPS_MAX); // TODO: use constant
-  myArmSpeedWidget->setTickmarkIntervals(4);
+  myArmSpeedWidget->setMinValue(CartridgeELF::MIPS_MIN); 
+  myArmSpeedWidget->setMaxValue(CartridgeELF::MIPS_MAX); 
+  myArmSpeedWidget->setTickmarkIntervals((CartridgeELF::MIPS_MAX - CartridgeELF::MIPS_MIN) / 50);
   myArmSpeedWidget->setStepValue(2);
   myArmSpeedWidget->setToolTip("Limit emulation speed to simulate ARM CPU used for ELF.");
   wid.push_back(myArmSpeedWidget);
@@ -959,7 +959,7 @@ void DeveloperDialog::setDefaults()
     #endif
       // Thumb ARM emulation exception
       myThumbException[set] = devSettings;
-      myArmSpeed[set] = devSettings ? 150 : 250;
+      myArmSpeed[set] = devSettings ? CartridgeELF::MIPS_DEF : CartridgeELF::MIPS_MAX;
 
       setWidgetStates(set);
       break;

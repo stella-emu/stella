@@ -31,7 +31,8 @@ class ElfLinker;
 class CartridgeELF: public Cartridge {
   public:
     static constexpr uInt32 MIPS_MAX = 300;
-    static constexpr uInt32 MIPS_MIN = 50;
+    static constexpr uInt32 MIPS_MIN = 50; 
+    static constexpr uInt32 MIPS_DEF = 150;
 
   public:
     CartridgeELF(const ByteBuffer& image, size_t size, string_view md5,
