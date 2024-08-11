@@ -254,8 +254,6 @@ void CartridgeELF::reset()
   myArmCyclesOffset = 0;
   myArmCyclesPer6502Cycle = (mips * 1000000) / get6502SpeedHz(myConsoleTiming);
 
-  cout << myArmCyclesPer6502Cycle << std::endl;
-
   mySystemType = determineSystemType(myProperties);
   myLinker->relink(externalSymbols(mySystemType));
 
