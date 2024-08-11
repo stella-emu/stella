@@ -185,7 +185,7 @@ class Console : public Serializable, public ConsoleIO
     /**
       Retrieve emulation timing provider.
      */
-    EmulationTiming& emulationTiming() { return myEmulationTiming; }
+    EmulationTiming& emulationTiming() { return *myEmulationTiming; }
 
     /**
       Toggle left and right controller ports swapping
@@ -497,8 +497,9 @@ class Console : public Serializable, public ConsoleIO
     ConsoleTiming myConsoleTiming{ConsoleTiming::ntsc};
 
     // Emulation timing provider. This ties together the timing of the core emulation loop
-    // and the parameters that govern audio synthesis
-    EmulationTiming myEmulationTiming;
+    // and the parameters that govern audio synthesis. It is used on the audio thread,
+    // so we make it a shared pointer.
+    shared_ptr<EmulationTiming> myEmulationTiming;
 
     // The audio settings
     AudioSettings& myAudioSettings;

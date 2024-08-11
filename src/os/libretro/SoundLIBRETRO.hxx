@@ -63,10 +63,8 @@ class SoundLIBRETRO : public Sound
       calls are made to derived methods.
     */
     void open(shared_ptr<AudioQueue> audioQueue,
-              EmulationTiming* emulationTiming) override
+              shared_ptr<const EmulationTiming>) override
     {
-      myEmulationTiming = emulationTiming;
-
       Logger::debug("SoundLIBRETRO::open started ...");
 
       audioQueue->ignoreOverflows(!myAudioSettings.enabled());
@@ -141,8 +139,6 @@ class SoundLIBRETRO : public Sound
     bool myIsInitializedFlag{false};
 
     shared_ptr<AudioQueue> myAudioQueue;
-
-    EmulationTiming* myEmulationTiming{nullptr};
 
     Int16* myCurrentFragment{nullptr};
     bool myUnderrun{false};

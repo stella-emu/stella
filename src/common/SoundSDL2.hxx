@@ -59,7 +59,7 @@ class SoundSDL2 : public Sound
       calls are made to derived methods.
     */
     void open(shared_ptr<AudioQueue> audioQueue,
-              EmulationTiming* emulationTiming) override;
+              shared_ptr<const EmulationTiming> emulationTiming) override;
 
     /**
       Sets the sound mute state; sound processing continues.  When enabled,
@@ -164,7 +164,7 @@ class SoundSDL2 : public Sound
     shared_ptr<AudioQueue> myAudioQueue;
     unique_ptr<Resampler> myResampler;
 
-    EmulationTiming* myEmulationTiming{nullptr};
+    shared_ptr<const EmulationTiming> myEmulationTiming;
 
     Int16* myCurrentFragment{nullptr};
     bool myUnderrun{false};

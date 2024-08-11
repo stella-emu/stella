@@ -144,7 +144,7 @@ void SoundSDL2::setEnabled(bool enable)
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void SoundSDL2::open(shared_ptr<AudioQueue> audioQueue,
-                     EmulationTiming* emulationTiming)
+                     shared_ptr<const EmulationTiming> emulationTiming)
 {
   const string pre_about = myAboutString;
 
