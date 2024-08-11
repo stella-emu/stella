@@ -16,10 +16,7 @@
 //============================================================================
 
 #include <sstream>
-
-#ifdef DUMP_ELF
-#include <ofstream>
-#endif
+#include <fstream>
 
 #include "System.hxx"
 #include "ElfLinker.hxx"
@@ -31,8 +28,6 @@
 
 #include "CartELF.hxx"
 
-#define DUMP_ELF
-
 using namespace elfEnvironment;
 
 namespace {
@@ -40,7 +35,6 @@ namespace {
   constexpr uInt32 ARM_RUNAHED_MIN = 3;
   constexpr uInt32 ARM_RUNAHED_MAX = 6;
 
-#ifdef DUMP_ELF
   void dumpElf(const ElfFile& elf)
   {
     cout << "\nELF sections:\n\n";
@@ -174,7 +168,6 @@ namespace {
 
     cout << "wrote executable image to " << IMAGE_FILE_NAME << '\n';
   }
-#endif
 
   SystemType determineSystemType(const Properties* props)
   {
@@ -470,15 +463,15 @@ inline uInt8 CartridgeELF::driveBus(uInt16 address, uInt8 value)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeELF::parseAndLinkElf()
 {
+  const bool dump = mySettings.getBool("elf.dump");
+
   try {
     myElfParser.parse(myImage.get(), myImageSize);
   } catch (ElfParser::ElfParseError& e) {
     throw runtime_error("failed to initialize ELF: " + string(e.what()));
   }
 
-#ifdef DUMP_ELF
-  dumpElf(myElfParser);
-#endif
+  if (dump) dumpElf(myElfParser);
 
   myLinker = make_unique<ElfLinker>(ADDR_TEXT_BASE, ADDR_DATA_BASE, ADDR_RODATA_BASE, myElfParser);
   try {
@@ -502,16 +495,16 @@ void CartridgeELF::parseAndLinkElf()
   if (myLinker->getSegmentSize(ElfLinker::SegmentType::rodata) > RODATA_SIZE)
     throw runtime_error("rodata segment too large");
 
-#ifdef DUMP_ELF
-  dumpLinkage(myElfParser, *myLinker);
+  if (dump) {
+    dumpLinkage(myElfParser, *myLinker);
 
-  cout
-    << "\nARM entrypoint: 0x"
-    << std::hex << std::setw(8) << std::setfill('0') << myArmEntrypoint
-    << std::dec << '\n';
+    cout
+      << "\nARM entrypoint: 0x"
+      << std::hex << std::setw(8) << std::setfill('0') << myArmEntrypoint
+      << std::dec << '\n';
 
-  writeDebugBinary(*myLinker);
-#endif
+    writeDebugBinary(*myLinker);
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
