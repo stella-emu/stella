@@ -438,7 +438,12 @@ void ElfLinker::applyRelocationToSection(const ElfFile::Relocation& relocation, 
       "unable to relocate " + symbol.name + " in " + targetSection.name + ": target out of range"
     );
 
-  uInt8* target =
+  const uInt32 targetAddress =
+    getSegmentBase(targetSectionRelocated.segment) +
+    targetSectionRelocated.offset +
+    relocation.offset;
+
+  uInt8* const target =
     getSegmentDataRef(targetSectionRelocated.segment).get() +
     targetSectionRelocated.offset +
     relocation.offset;
@@ -449,6 +454,16 @@ void ElfLinker::applyRelocationToSection(const ElfFile::Relocation& relocation, 
       {
         const uInt32 value = relocatedSymbol->value + relocation.addend.value_or(read32(target));
         write32(target, value | (symbol.type == ElfFile::STT_FUNC ? 0x01 : 0));
+
+        break;
+      }
+
+    case ElfFile::R_ARM_REL32:
+      {
+        uInt32 value = relocatedSymbol->value + relocation.addend.value_or(read32(target));
+        value |= (symbol.type == ElfFile::STT_FUNC ? 0x01 : 0);
+
+        write32(target, value - targetAddress);
 
         break;
       }

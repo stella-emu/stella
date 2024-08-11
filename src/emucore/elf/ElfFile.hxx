@@ -96,6 +96,7 @@ class ElfFile {
     static constexpr uInt32 STT_NOTYPE = 0x00;
 
     static constexpr uInt32 R_ARM_ABS32 = 0x02;
+    static constexpr uInt32 R_ARM_REL32 = 0x03;
     static constexpr uInt32 R_ARM_THM_CALL = 0x0a;
     static constexpr uInt32 R_ARM_THM_JUMP24 = 0x1e;
     static constexpr uInt32 R_ARM_TARGET1 = 0x26;
