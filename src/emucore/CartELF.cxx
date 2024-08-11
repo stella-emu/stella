@@ -203,7 +203,21 @@ namespace {
       default:
         throw runtime_error("invalid system type");
     }
-}
+  }
+
+  uInt32 get6502SpeedHz(ConsoleTiming timing) {
+    switch (timing) {
+      case ConsoleTiming::ntsc:
+        return 262 * 76 * 60;
+
+      case ConsoleTiming::pal:
+      case ConsoleTiming::secam:
+        return 312 * 76 * 50;
+
+      default:
+        throw runtime_error("invalid console timing");
+    }
+  }
 }  // namespace
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -232,11 +246,15 @@ void CartridgeELF::reset()
 {
   const bool devMode = mySettings.getBool("dev.settings");
   const bool strictMode = devMode && mySettings.getBool("dev.thumb.trapfatal");
+  const uInt32 mips = devMode ? mySettings.getInt("dev.arm.mips") : MIPS_MAX;
 
   std::fill_n(myLastPeekResult.get(), 0x1000, 0);
   myIsBusDriven = false;
   myDriveBusValue = 0;
   myArmCyclesOffset = 0;
+  myArmCyclesPer6502Cycle = (mips * 1000000) / get6502SpeedHz(myConsoleTiming);
+
+  cout << myArmCyclesPer6502Cycle << std::endl;
 
   mySystemType = determineSystemType(myProperties);
   myLinker->relink(externalSymbols(mySystemType));
@@ -531,22 +549,6 @@ void CartridgeELF::setupMemoryMap(bool strictMode)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt32 CartridgeELF::getCoreClock() const
-{
-  switch (myConsoleTiming) {
-    case ConsoleTiming::ntsc:
-      return myArmCyclesPer6502Cycle * 262 * 76 * 60;
-
-    case ConsoleTiming::pal:
-    case ConsoleTiming::secam:
-      return myArmCyclesPer6502Cycle * 312 * 76 * 50;
-
-    default:
-      throw runtime_error("invalid console timing");
-  }
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeELF::switchExecutionStage()
 {
   constexpr uInt32 sp = ADDR_STACK_BASE + STACK_SIZE;
@@ -603,7 +605,7 @@ void CartridgeELF::callMain()
   err |= myCortexEmu.write32(sp, 0);
 
   sp -= 4;
-  err |= myCortexEmu.write32(sp, getCoreClock());
+  err |= myCortexEmu.write32(sp, myArmCyclesPer6502Cycle * get6502SpeedHz(myConsoleTiming));
 
   sp -= 4;
   err |= myCortexEmu.write32(sp, getSystemTypeParam(mySystemType));

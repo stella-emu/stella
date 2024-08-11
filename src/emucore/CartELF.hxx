@@ -30,6 +30,10 @@ class ElfLinker;
 
 class CartridgeELF: public Cartridge {
   public:
+    static constexpr uInt32 MIPS_MAX = 300;
+    static constexpr uInt32 MIPS_MIN = 50;
+
+  public:
     CartridgeELF(const ByteBuffer& image, size_t size, string_view md5,
                  const Settings& settings);
     ~CartridgeELF() override;
@@ -102,8 +106,6 @@ class CartridgeELF: public Cartridge {
     void allocationSections();
     void setupMemoryMap(bool strictMode);
 
-    uInt32 getCoreClock() const;
-
     void switchExecutionStage();
     void callFn(uInt32 ptr, uInt32 sp);
     void callMain();
@@ -138,7 +140,7 @@ class CartridgeELF: public Cartridge {
     BusFallbackDelegate myFallbackDelegate;
 
     ConsoleTiming myConsoleTiming{ConsoleTiming::ntsc};
-    uInt32 myArmCyclesPer6502Cycle{160};
+    uInt32 myArmCyclesPer6502Cycle{100};
 
     Int64 myArmCyclesOffset{0};
 

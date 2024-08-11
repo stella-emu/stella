@@ -125,6 +125,7 @@ void DevSettingsHandler::saveSettings(SettingsSet set)
   #endif
     // Thumb ARM emulation exception
     settings.setValue("dev.thumb.trapfatal", myThumbException[set]);
+    settings.setValue("dev.arm.mips", myArmSpeed[set]);
   }
 
   // AtariVox/SaveKey/PlusROM access

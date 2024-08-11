@@ -35,6 +35,7 @@
 #include "StateManager.hxx"
 #include "RewindManager.hxx"
 #include "M6502.hxx"
+#include "CartELF.hxx"
 #ifdef DEBUGGER_SUPPORT
   #include "Debugger.hxx"
   #include "DebuggerDialog.hxx"
@@ -224,10 +225,10 @@ void DeveloperDialog::addEmulationTab(const GUI::Font& font)
   ypos += lineHeight + VGAP;
 
   myArmSpeedWidget = new SliderWidget(myTab, font, HBORDER + INDENT * 1, ypos - 1,
-                                      fontWidth * 10, lineHeight, "Limit ARM speed ", 
+                                      fontWidth * 10, lineHeight, "Limit ARM speed ",
                                       0, kArmSpeedChanged, fontWidth * 9, " MIPS");
-  myArmSpeedWidget->setMinValue(50); // TODO: use constant
-  myArmSpeedWidget->setMaxValue(250); // TODO: use constant
+  myArmSpeedWidget->setMinValue(CartridgeELF::MIPS_MIN); // TODO: use constant
+  myArmSpeedWidget->setMaxValue(CartridgeELF::MIPS_MAX); // TODO: use constant
   myArmSpeedWidget->setTickmarkIntervals(4);
   myArmSpeedWidget->setStepValue(2);
   myArmSpeedWidget->setToolTip("Limit emulation speed to simulate ARM CPU used.");
