@@ -176,6 +176,7 @@ void VcsLib::vcsLda2(uInt8 value)
     .injectROM(value);
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CortexM0::err_t VcsLib::stackOperation(uInt16& value, uInt8& op, uInt8 opcode)
 {
   myTransactionQueue
