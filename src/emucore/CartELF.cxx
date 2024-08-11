@@ -26,6 +26,7 @@
 #include "ElfEnvironment.hxx"
 #include "Logger.hxx"
 #include "Props.hxx"
+#include "Settings.hxx"
 #include "exception/FatalEmulationError.hxx"
 
 #include "CartELF.hxx"
@@ -220,7 +221,7 @@ CartridgeELF::CartridgeELF(const ByteBuffer& image, size_t size, string_view md5
   createRomAccessArrays(0x1000);
 
   parseAndLinkElf();
-  setupMemoryMap();
+  allocationSections();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -229,6 +230,9 @@ CartridgeELF::~CartridgeELF() = default;
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeELF::reset()
 {
+  const bool devMode = mySettings.getBool("dev.settings");
+  const bool strictMode = devMode && mySettings.getBool("dev.thumb.trapfatal");
+
   std::fill_n(myLastPeekResult.get(), 0x1000, 0);
   myIsBusDriven = false;
   myDriveBusValue = 0;
@@ -251,6 +255,7 @@ void CartridgeELF::reset()
                                      myLinker->getSegmentSize(ElfLinker::SegmentType::rodata));
   std::memcpy(mySectionTables.get(), LOOKUP_TABLES, sizeof(LOOKUP_TABLES));
 
+  setupMemoryMap(strictMode);
   myCortexEmu.reset();
 
   myTransactionQueue
@@ -349,20 +354,76 @@ uInt8 CartridgeELF::overdrivePoke(uInt16 address, uInt8 value)
   return driveBus(address, value);
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CortexM0::err_t CartridgeELF::BusFallbackDelegate::fetch16(
   uInt32 address, uInt16& value, uInt8& op, CortexM0& cortex
 ) {
-  return address == (RETURN_ADDR & ~1)
-    ? CortexM0::errCustom(ERR_RETURN)
-    : CortexM0::errIntrinsic(CortexM0::ERR_UNMAPPED_FETCH16, address);
+  if (address == (RETURN_ADDR & ~1)) return CortexM0::errCustom(ERR_RETURN);
+
+  return handleError("fetch16", address, CortexM0::ERR_UNMAPPED_FETCH16, cortex);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CortexM0::err_t CartridgeELF::BusFallbackDelegate::read8(uInt32 address, uInt8& value, CortexM0& cortex)
 {
-  // TODO: remove this hack and replace it with a setting.
-  value = 0;
-  return 0;
+  return handleError("read8", address, CortexM0::ERR_UNMAPPED_READ8, cortex);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+CortexM0::err_t CartridgeELF::BusFallbackDelegate::read16(uInt32 address, uInt16& value, CortexM0& cortex)
+{
+  return handleError("read16", address, CortexM0::ERR_UNMAPPED_READ16, cortex);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+CortexM0::err_t CartridgeELF::BusFallbackDelegate::read32(uInt32 address, uInt32& value, CortexM0& cortex)
+{
+  return handleError("read32", address, CortexM0::ERR_UNMAPPED_READ32, cortex);
+}
+
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+CortexM0::err_t CartridgeELF::BusFallbackDelegate::write8(uInt32 address, uInt8 value, CortexM0& cortex)
+{
+  return handleError("write8", address, CortexM0::ERR_UNMAPPED_WRITE8, cortex);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+CortexM0::err_t CartridgeELF::BusFallbackDelegate::write16(uInt32 address, uInt16 value, CortexM0& cortex)
+{
+  return handleError("write16", address, CortexM0::ERR_UNMAPPED_WRITE16, cortex);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+CortexM0::err_t CartridgeELF::BusFallbackDelegate::write32(uInt32 address, uInt32 value, CortexM0& cortex)
+{
+  return handleError("write32", address, CortexM0::ERR_UNMAPPED_WRITE32, cortex);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void CartridgeELF::BusFallbackDelegate::setErrorsAreFatal(bool fatal)
+{
+  myErrorsAreFatal = fatal;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+CortexM0::err_t CartridgeELF::BusFallbackDelegate::handleError(
+  string_view accessType, uInt32 address, CortexM0::err_t err, CortexM0& cortex
+) const {
+  if (myErrorsAreFatal) return CortexM0::errIntrinsic(err, address);
+
+  stringstream s;
+
+  s
+    << "invalid " << accessType << " access to 0x"
+    << std::hex << std::setw(8) << std::setfill('0') << address
+    << " (PC = 0x"
+    << std::hex << std::setw(8) << std::setfill('0') << cortex.getRegister(15)
+    << ")";
+
+  Logger::error(s.str());
+
+  return CortexM0::ERR_NONE;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -438,28 +499,35 @@ void CartridgeELF::parseAndLinkElf()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgeELF::setupMemoryMap()
+void CartridgeELF::allocationSections()
 {
   mySectionStack = make_unique<uInt8[]>(STACK_SIZE);
   mySectionText = make_unique<uInt8[]>(TEXT_SIZE);
   mySectionData = make_unique<uInt8[]>(DATA_SIZE);
   mySectionRodata = make_unique<uInt8[]>(RODATA_SIZE);
   mySectionTables = make_unique<uInt8[]>(TABLES_SIZE);
+}
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void CartridgeELF::setupMemoryMap(bool strictMode)
+{
   myCortexEmu
+    .resetMappings()
     .mapRegionData(ADDR_STACK_BASE / CortexM0::PAGE_SIZE,
                    STACK_SIZE / CortexM0::PAGE_SIZE, false, mySectionStack.get())
     .mapRegionCode(ADDR_TEXT_BASE / CortexM0::PAGE_SIZE,
-                   TEXT_SIZE / CortexM0::PAGE_SIZE, true, mySectionText.get())
+                   TEXT_SIZE / CortexM0::PAGE_SIZE, strictMode, mySectionText.get())
     .mapRegionData(ADDR_DATA_BASE / CortexM0::PAGE_SIZE,
                    DATA_SIZE / CortexM0::PAGE_SIZE, false, mySectionData.get())
     .mapRegionData(ADDR_RODATA_BASE / CortexM0::PAGE_SIZE,
-                   RODATA_SIZE / CortexM0::PAGE_SIZE, true, mySectionRodata.get())
+                   RODATA_SIZE / CortexM0::PAGE_SIZE, strictMode, mySectionRodata.get())
     .mapRegionData(ADDR_TABLES_BASE / CortexM0::PAGE_SIZE,
-                   TABLES_SIZE / CortexM0::PAGE_SIZE, true, mySectionTables.get())
+                   TABLES_SIZE / CortexM0::PAGE_SIZE, strictMode, mySectionTables.get())
     .mapRegionDelegate(ADDR_STUB_BASE / CortexM0::PAGE_SIZE,
                        STUB_SIZE / CortexM0::PAGE_SIZE, true, &myVcsLib)
     .mapDefault(&myFallbackDelegate);
+
+  myFallbackDelegate.setErrorsAreFatal(strictMode);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -572,7 +640,15 @@ void CartridgeELF::runArm()
       }
     }
 
-    if (CortexM0::getErrCustom(err) != ERR_STOP_EXECUTION)
-      FatalEmulationError::raise("error executing ARM code: " + CortexM0::describeError(err));
+    if (CortexM0::getErrCustom(err) != ERR_STOP_EXECUTION) {
+      ostringstream s;
+
+      s
+        << "error executing ARM code (PC = 0x"
+        << std::hex << std::setw(8) << std::setfill('0') << myCortexEmu.getRegister(15)
+        << "): " << CortexM0::describeError(err);
+
+      FatalEmulationError::raise(s.str());
+    }
   }
 }

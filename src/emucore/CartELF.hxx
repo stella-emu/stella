@@ -69,8 +69,24 @@ class CartridgeELF: public Cartridge {
 
   private:
     class BusFallbackDelegate: public CortexM0::BusTransactionDelegate {
-      CortexM0::err_t fetch16(uInt32 address, uInt16& value, uInt8& op, CortexM0& cortex) override;
-      CortexM0::err_t read8(uInt32 address, uInt8& value, CortexM0& cortex) override;
+      public:
+        CortexM0::err_t fetch16(uInt32 address, uInt16& value, uInt8& op, CortexM0& cortex) override;
+        CortexM0::err_t read8(uInt32 address, uInt8& value, CortexM0& cortex) override;
+        CortexM0::err_t read16(uInt32 address, uInt16& value, CortexM0& cortex) override;
+        CortexM0::err_t read32(uInt32 address, uInt32& value, CortexM0& cortex) override;
+        CortexM0::err_t write8(uInt32 address, uInt8 value, CortexM0& cortex) override;
+        CortexM0::err_t write16(uInt32 address, uInt16 value, CortexM0& cortex) override;
+        CortexM0::err_t write32(uInt32 address, uInt32 value, CortexM0& cortex) override;
+
+        void setErrorsAreFatal(bool fatal);
+
+      private:
+        CortexM0::err_t handleError(
+          string_view accessType, uInt32 address, CortexM0::err_t err, CortexM0& cortex
+        ) const;
+
+      private:
+        bool myErrorsAreFatal{false};
     };
 
     enum class ExecutionStage: uInt8 {
@@ -83,7 +99,8 @@ class CartridgeELF: public Cartridge {
     uInt8 driveBus(uInt16 address, uInt8 value);
 
     void parseAndLinkElf();
-    void setupMemoryMap();
+    void allocationSections();
+    void setupMemoryMap(bool strictMode);
 
     uInt32 getCoreClock() const;
 

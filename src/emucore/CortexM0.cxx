@@ -546,9 +546,23 @@ string CortexM0::describeError(err_t err) {
 CortexM0::CortexM0()
 {
   myPageMap = make_unique<uInt8[]>(PAGEMAP_SIZE);
+
+  resetMappings();
+  reset();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+CortexM0& CortexM0::resetMappings()
+{
+  for (auto& region: myRegions) {
+    region.type = MemoryRegionType::unmapped;
+    region.access.emplace<std::monostate>();
+  }
+
+  myNextRegionIndex = 0;
   std::fill_n(myPageMap.get(), PAGEMAP_SIZE, 0xff);
 
-  reset();
+  return *this;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

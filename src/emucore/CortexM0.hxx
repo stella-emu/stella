@@ -103,6 +103,8 @@ class CortexM0
     CortexM0();
     ~CortexM0() = default;
 
+    CortexM0& resetMappings();
+
     CortexM0& mapRegionData(uInt32 pageBase, uInt32 pageCount,
                             bool readOnly, uInt8* backingStore);
 
@@ -166,7 +168,8 @@ class CortexM0
       std::variant<
         MemoryRegionAccessData,  // ::get<0>, directData
         MemoryRegionAccessCode,  // ::get<1>, directCode
-        BusTransactionDelegate*  // ::get<2>, delegate
+        BusTransactionDelegate*,  // ::get<2>, delegate
+        std::monostate
       > access;
 
       private:
