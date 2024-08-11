@@ -179,8 +179,11 @@ void TimerManager::timerThreadWorker()
     }
     else
     {
-      // Wait until the timer is ready or a timer creation notifies
-      wakeUp.wait_until(lock, timer.next);
+      // Wait until the timer is ready or a timer creation notifies. Note that wait until accesses
+      // time_point by reference, so we make a copy in case the current time is deleted while the
+      // thread sleeps.
+      const auto next = timer.next;
+      wakeUp.wait_until(lock, next);
     }
   }
 }
