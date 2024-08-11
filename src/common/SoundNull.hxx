@@ -57,7 +57,7 @@ class SoundNull : public Sound
       Initializes the sound device.  This must be called before any
       calls are made to derived methods.
     */
-    void open(shared_ptr<AudioQueue>, EmulationTiming*) override { }
+    void open(shared_ptr<AudioQueue>, shared_ptr<const EmulationTiming>) override { }
 
     /**
       Sets the sound mute state; sound processing continues.  When turned

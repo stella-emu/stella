@@ -120,6 +120,7 @@ Console::Console(OSystem& osystem, unique_ptr<Cartridge>& cart,
     myCart{std::move(cart)},
     myAudioSettings{audioSettings}
 {
+  myEmulationTiming = make_shared<EmulationTiming>();
   myCart->setProperties(&myProperties);
 
   // Create subsystems for the console
@@ -752,7 +753,7 @@ FBInitStatus Console::initializeVideo(bool full)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Console::initializeAudio()
 {
-  myEmulationTiming
+  (*myEmulationTiming)
     .updatePlaybackRate(myAudioSettings.sampleRate())
     .updatePlaybackPeriod(myAudioSettings.fragmentSize())
     .updateAudioQueueExtraFragments(myAudioSettings.bufferSize())
@@ -765,7 +766,7 @@ void Console::initializeAudio()
   myTIA->setAudioQueue(myAudioQueue);
   myTIA->setAudioRewindMode(myOSystem.state().mode() != StateManager::Mode::Off);
 
-  myOSystem.sound().open(myAudioQueue, &myEmulationTiming);
+  myOSystem.sound().open(myAudioQueue, myEmulationTiming);
 }
 
 /* Original frying research and code by Fred Quimby.
@@ -879,8 +880,8 @@ void Console::setTIAProperties()
   myTIA->setAdjustVSize(myOSystem.settings().getInt("tia.vsizeadjust"));
   myTIA->setVcenter(vcenter);
 
-  myEmulationTiming.updateFrameLayout(myTIA->frameLayout());
-  myEmulationTiming.updateConsoleTiming(myConsoleTiming);
+  myEmulationTiming->updateFrameLayout(myTIA->frameLayout());
+  myEmulationTiming->updateConsoleTiming(myConsoleTiming);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -890,8 +891,8 @@ void Console::createAudioQueue()
     || myProperties.get(PropType::Cart_Sound) == "STEREO";
 
   myAudioQueue = make_shared<AudioQueue>(
-    myEmulationTiming.audioFragmentSize(),
-    myEmulationTiming.audioQueueCapacity(),
+    myEmulationTiming->audioFragmentSize(),
+    myEmulationTiming->audioQueueCapacity(),
     useStereo
   );
 }

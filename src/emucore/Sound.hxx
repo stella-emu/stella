@@ -53,7 +53,7 @@ class Sound
       Start the sound system, initializing it if necessary.  This must be
       called before any calls are made to derived methods.
     */
-    virtual void open(shared_ptr<AudioQueue>, EmulationTiming*) = 0;
+    virtual void open(shared_ptr<AudioQueue>, shared_ptr<const EmulationTiming>) = 0;
 
     /**
       Sets the sound mute state; sound processing continues.  When turned
