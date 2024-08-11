@@ -109,7 +109,7 @@ void ElfParser::parse(const uInt8 *elfData, size_t size)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const uInt8 *ElfParser::getData() const { return myData; }
+const uInt8* ElfParser::getData() const { return myData; }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 size_t ElfParser::getSize() const { return mySize; }
@@ -142,19 +142,21 @@ uInt8 ElfParser::read8(uInt32 offset) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt16 ElfParser::read16(uInt32 offset)  const
+uInt16 ElfParser::read16(uInt32 offset) const
 {
-  return myBigEndian ? ((read8(offset) << 8) | read8(offset + 1))
-                   : ((read8(offset + 1) << 8) | read8(offset));
+  return myBigEndian
+    ? ((read8(offset) << 8) | read8(offset + 1))
+    : ((read8(offset + 1) << 8) | read8(offset));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt32 ElfParser::read32(uInt32 offset) const
 {
-  return myBigEndian ? ((read8(offset) << 24) | (read8(offset + 1) << 16) |
-                      (read8(offset + 2) << 8) | read8(offset + 3))
-                   : ((read8(offset + 3) << 24) | (read8(offset + 2) << 16) |
-                      (read8(offset + 1) << 8) | read8(offset));
+  return myBigEndian
+    ? ((read8(offset) << 24) | (read8(offset + 1) << 16) |
+      (read8(offset + 2) << 8) | read8(offset + 3))
+    : ((read8(offset + 3) << 24) | (read8(offset + 2) << 16) |
+      (read8(offset + 1) << 8) | read8(offset));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

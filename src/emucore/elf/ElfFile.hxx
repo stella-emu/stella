@@ -64,7 +64,7 @@ class ElfFile {
     ElfFile() = default;
     virtual ~ElfFile() = default;
 
-    virtual const uInt8 *getData() const = 0;
+    virtual const uInt8* getData() const = 0;
     virtual size_t getSize() const = 0;
 
     virtual const vector<Section>& getSections() const = 0;

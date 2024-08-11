@@ -166,8 +166,8 @@ class CortexM0
       bool readOnly{false};
 
       std::variant<
-        MemoryRegionAccessData,  // ::get<0>, directData
-        MemoryRegionAccessCode,  // ::get<1>, directCode
+        MemoryRegionAccessData,   // ::get<0>, directData
+        MemoryRegionAccessCode,   // ::get<1>, directCode
         BusTransactionDelegate*,  // ::get<2>, delegate
         std::monostate
       > access;
