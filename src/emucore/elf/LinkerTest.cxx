@@ -688,6 +688,102 @@ TEST(ElfLinker, RodataSectionsGoToRodata) {
     EXPECT_EQ(segmentRead32(linker, SegmentType::rodata, 0x14), static_cast<uInt32>(0x12345679));
   }
 
+
+  TEST(ElfLinker, R_ARM_REL32_InsertsTheValueRelativeToTheTargetPosition_text) {
+    ElfFixture fixture(1000);
+    ElfLinker linker(0x00100000, 0x00200000, 0x00300000, fixture);
+
+    fixture
+      .addSection(".text.1", ElfFile::SHT_PROGBITS, 0, 0x10)
+      .addSection(".text.2", ElfFile::SHT_PROGBITS, 0x10, 0x10)
+      .addSymbol("foo", 0x12345678, ElfFile::SHN_ABS)
+      .addRelocation(2, 0, 0x04, ElfFile::R_ARM_REL32);
+
+    linker.link({});
+
+    EXPECT_EQ(segmentRead32(linker, SegmentType::text, 0x14), static_cast<uInt32>(0x12345678 - 0x00100014));
+  }
+
+  TEST(ElfLinker, R_ARM_REL32_InsertsTheValueRelativeToTheTargetPosition_data) {
+    ElfFixture fixture(1000);
+    ElfLinker linker(0x00100000, 0x00200000, 0x00300000, fixture);
+
+    fixture
+      .addSection(".data.1", ElfFile::SHT_PROGBITS, 0, 0x10)
+      .addSection(".data.2", ElfFile::SHT_PROGBITS, 0x10, 0x10)
+      .addSymbol("foo", 0x12345678, ElfFile::SHN_ABS)
+      .addRelocation(2, 0, 0x04, ElfFile::R_ARM_REL32);
+
+    linker.link({});
+
+    EXPECT_EQ(segmentRead32(linker, SegmentType::data, 0x14), static_cast<uInt32>(0x12345678 - 0x00200014));
+  }
+
+  TEST(ElfLinker, R_ARM_REL32_InsertsTheValueRelativeToTheTargetPosition_rodata) {
+    ElfFixture fixture(1000);
+    ElfLinker linker(0x00100000, 0x00200000, 0x00300000, fixture);
+
+    fixture
+      .addSection(".rodata.1", ElfFile::SHT_PROGBITS, 0, 0x10)
+      .addSection(".rodata.2", ElfFile::SHT_PROGBITS, 0x10, 0x10)
+      .addSymbol("foo", 0x12345678, ElfFile::SHN_ABS)
+      .addRelocation(2, 0, 0x04, ElfFile::R_ARM_REL32);
+
+    linker.link({});
+
+    EXPECT_EQ(segmentRead32(linker, SegmentType::rodata, 0x14), static_cast<uInt32>(0x12345678 - 0x00300014));
+  }
+
+  TEST(ElfLinker, R_ARM_REL32_AddsAddendToTarget) {
+    ElfFixture fixture(1000);
+    ElfLinker linker(0x00100000, 0x00200000, 0x00300000, fixture);
+
+    fixture
+      .addSection(".rodata.1", ElfFile::SHT_PROGBITS, 0, 0x10)
+      .addSection(".rodata.2", ElfFile::SHT_PROGBITS, 0x10, 0x10)
+      .addSymbol("foo", 0x12345678, ElfFile::SHN_ABS)
+      .addRelocation(2, 0, 0x04, ElfFile::R_ARM_REL32, -4);
+
+
+    linker.link({});
+
+    EXPECT_EQ(segmentRead32(linker, SegmentType::rodata, 0x14), static_cast<uInt32>(0x12345674 - 0x00300014));
+  }
+
+  TEST(ElfLinker, R_ARM_REL32_UsesExistingValueAsAddend) {
+    ElfFixture fixture(1000);
+
+    ElfLinker linker(0x00100000, 0x00200000, 0x00300000, fixture);
+
+    fixture
+      .addSection(".rodata.1", ElfFile::SHT_PROGBITS, 0, 0x10)
+      .addSection(".rodata.2", ElfFile::SHT_PROGBITS, 0x10, 0x10)
+      .addSymbol("foo", 0x12345678, ElfFile::SHN_ABS)
+      .addRelocation(2, 0, 0x04, ElfFile::R_ARM_REL32)
+      .write32(0x14, -4);
+
+
+    linker.link({});
+
+    EXPECT_EQ(segmentRead32(linker, SegmentType::rodata, 0x14), static_cast<uInt32>(0x12345674 - 0x00300014));
+  }
+
+  TEST(ElfLinker, R_ARM_REL32_SetsBit0IfTargetIsFunction) {
+    ElfFixture fixture(1000);
+    ElfLinker linker(0x00100000, 0x00200000, 0x00300000, fixture);
+
+    fixture
+      .addSection(".rodata.1", ElfFile::SHT_PROGBITS, 0, 0x10)
+      .addSection(".rodata.2", ElfFile::SHT_PROGBITS, 0x10, 0x10)
+      .addSymbol("foo", 0x12345678, ElfFile::SHN_ABS, ElfFile::STT_FUNC)
+      .addRelocation(2, 0, 0x04, ElfFile::R_ARM_REL32);
+
+
+    linker.link({});
+
+    EXPECT_EQ(segmentRead32(linker, SegmentType::rodata, 0x14), static_cast<uInt32>(0x12345679 - 0x00300014));
+  }
+
   TEST(ElfLinker, R_ARM_THM_CALL_PatchesOffset) {
     ElfFixture fixture(1000);
     ElfLinker linker(0x00100000, 0x00200000, 0x00300000, fixture);
@@ -854,7 +950,7 @@ TEST(ElfLinker, RodataSectionsGoToRodata) {
   }
 
   INSTANTIATE_TEST_SUITE_P(RelocationExceptionSuite, RelocationExceptionTest, testing::Values(
-    ElfFile::R_ARM_ABS32, ElfFile::R_ARM_TARGET1,
+    ElfFile::R_ARM_ABS32, ElfFile::R_ARM_TARGET1, ElfFile::R_ARM_REL32,
     ElfFile::R_ARM_THM_CALL, ElfFile::R_ARM_THM_JUMP24
   ));
 
