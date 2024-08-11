@@ -225,7 +225,7 @@ void DeveloperDialog::addEmulationTab(const GUI::Font& font)
 
   myArmSpeedWidget = new SliderWidget(myTab, font, HBORDER + INDENT * 1, ypos - 1,
                                       fontWidth * 10, lineHeight, "Limit ARM speed ", 
-                                      0, kArmSpeedChanged, fontWidth * 10, " cycles");
+                                      0, kArmSpeedChanged, fontWidth * 9, " MIPS");
   myArmSpeedWidget->setMinValue(50); // TODO: use constant
   myArmSpeedWidget->setMaxValue(250); // TODO: use constant
   myArmSpeedWidget->setTickmarkIntervals(4);
@@ -743,7 +743,7 @@ void DeveloperDialog::getWidgetStates(SettingsSet set)
 #endif
   // Thumb ARM emulation exception
   myThumbException[set] = myThumbExceptionWidget->getState();
-  myArmCycles[set] = myArmSpeedWidget->getValue();
+  myArmSpeed[set] = myArmSpeedWidget->getValue();
 
   // TIA tab
   myTIAType[set] = myTIATypeWidget->getSelectedTag().toString();
@@ -803,7 +803,7 @@ void DeveloperDialog::setWidgetStates(SettingsSet set)
 #endif
   // Thumb ARM emulation exception
   myThumbExceptionWidget->setState(myThumbException[set]);
-  myArmSpeedWidget->setValue(myArmCycles[set]);
+  myArmSpeedWidget->setValue(myArmSpeed[set]);
   handleConsole();
 
   // TIA tab
@@ -951,7 +951,7 @@ void DeveloperDialog::setDefaults()
     #endif
       // Thumb ARM emulation exception
       myThumbException[set] = devSettings;
-      myArmCycles[set] = devSettings ? 150 : 250;
+      myArmSpeed[set] = devSettings ? 150 : 250;
 
       setWidgetStates(set);
       break;
