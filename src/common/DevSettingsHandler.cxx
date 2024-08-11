@@ -62,7 +62,7 @@ void DevSettingsHandler::loadSettings(SettingsSet set)
 #endif
   // Thumb ARM emulation exception
   myThumbException[set] = devSettings ? settings.getBool("dev.thumb.trapfatal") : false;
-  myArmCycles[set] = devSettings ? settings.getInt("dev.arm.mips") : 250; // TODO: use constant
+  myArmSpeed[set] = devSettings ? settings.getInt("dev.arm.mips") : 250; // TODO: use constant
 
   // TIA tab
   myTIAType[set] = devSettings ? settings.getString("dev.tia.type") : "standard";
