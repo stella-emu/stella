@@ -1028,4 +1028,17 @@ TEST(ElfLinker, RodataSectionsGoToRodata) {
   INSTANTIATE_TEST_SUITE_P(InitArraySuite, InitArrayTest, testing::Values(
     ElfFile::SHT_INIT_ARRAY, ElfFile::SHT_PREINIT_ARRAY
   ));
+
+  TEST(ElfLinker, R_ARM_ABS32_UnknownRelocationTypeThrows) {
+    ElfFixture fixture(1000);
+    ElfLinker linker(0x00100000, 0x00200000, 0x00300000, fixture);
+
+    fixture
+      .addSection(".text.1", ElfFile::SHT_PROGBITS, 0, 0x10)
+      .addSection(".text.2", ElfFile::SHT_PROGBITS, 0x10, 0x10)
+      .addSymbol("foo", 0x12345678, ElfFile::SHN_ABS)
+      .addRelocation(2, 0, 0x04, 255);
+
+    EXPECT_THROW(linker.link({}), ElfLinker::ElfLinkError);
+  }
 }

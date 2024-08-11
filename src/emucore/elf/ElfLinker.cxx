@@ -467,10 +467,12 @@ void ElfLinker::applyRelocationToSection(const ElfFile::Relocation& relocation, 
           ElfLinkError::raise("unable to relocate jump: offset out of bounds");
 
         write32(target, elfUtil::encode_B_BL(offset, relocation.type == ElfFile::R_ARM_THM_CALL));
+
+        break;
       }
 
     default:
-      break;
+      ElfLinkError::raise("unknown relocation type");
   }
 }
 
