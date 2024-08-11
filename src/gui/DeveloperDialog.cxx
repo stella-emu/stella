@@ -57,7 +57,7 @@ DeveloperDialog::DeveloperDialog(OSystem& osystem, DialogContainer& parent,
 
   // Set real dimensions
   setSize(61 * fontWidth + HBORDER * 2,
-          _th + VGAP * 3 + lineHeight + 14 * (lineHeight + VGAP) + buttonHeight + VBORDER * 3,
+          _th + VGAP * 3 + lineHeight + 15 * (lineHeight + VGAP) + buttonHeight + VBORDER * 3,
           max_w, max_h);
 
   // The tab widget
@@ -89,11 +89,13 @@ void DeveloperDialog::addEmulationTab(const GUI::Font& font)
 {
   const int lineHeight = Dialog::lineHeight(),
             fontWidth  = Dialog::fontWidth(),
+            fontHeight = Dialog::fontHeight(),
             VBORDER    = Dialog::vBorder(),
             HBORDER    = Dialog::hBorder(),
             VGAP       = Dialog::vGap(),
             INDENT     = Dialog::indent();
   int ypos = VBORDER;
+  const GUI::Font& infofont = instance().frameBuffer().infoFont();
   WidgetArray wid;
   VariantList items;
   const int tabID = myTab->addTab(" Emulation ", TabWidget::AUTO_WIDTH);
@@ -137,7 +139,7 @@ void DeveloperDialog::addEmulationTab(const GUI::Font& font)
   items.clear();
   VarList::push_back(items, "Atari 2600", "2600");
   VarList::push_back(items, "Atari 7800", "7800");
-  const int lwidth = font.getStringWidth("Console ");
+  int lwidth = font.getStringWidth("Console ");
   const int pwidth = font.getStringWidth("Atari 2600");
 
   myConsoleWidget = new PopUpWidget(myTab, font, HBORDER + INDENT * 1, ypos, pwidth, lineHeight, items,
@@ -215,9 +217,9 @@ void DeveloperDialog::addEmulationTab(const GUI::Font& font)
   ypos += lineHeight + VGAP;
 
 #endif
-  // Thumb ARM emulation exception
+  // Thumb ARM/ELF emulation exception
   myThumbExceptionWidget = new CheckboxWidget(myTab, font, HBORDER + INDENT * 1, ypos + 1,
-                                              "Strict ARM emulation");
+                                              "Strict ARM emulation (*)");
   myThumbExceptionWidget->setToolTip("Strict checking for exceptions and suspicious program\n"
                                      "behaviour in ARM emulation.\n"
                                      "Interrupts emulation and enters debugger in such cases.");
@@ -225,14 +227,19 @@ void DeveloperDialog::addEmulationTab(const GUI::Font& font)
   ypos += lineHeight + VGAP;
 
   myArmSpeedWidget = new SliderWidget(myTab, font, HBORDER + INDENT * 1, ypos - 1,
-                                      fontWidth * 10, lineHeight, "Limit ARM speed ",
+                                      fontWidth * 10, lineHeight, "Limit ARM speed (*) ",
                                       0, kArmSpeedChanged, fontWidth * 9, " MIPS");
   myArmSpeedWidget->setMinValue(CartridgeELF::MIPS_MIN); // TODO: use constant
   myArmSpeedWidget->setMaxValue(CartridgeELF::MIPS_MAX); // TODO: use constant
   myArmSpeedWidget->setTickmarkIntervals(4);
   myArmSpeedWidget->setStepValue(2);
-  myArmSpeedWidget->setToolTip("Limit emulation speed to simulate ARM CPU used.");
+  myArmSpeedWidget->setToolTip("Limit emulation speed to simulate ARM CPU used for ELF.");
   wid.push_back(myArmSpeedWidget);
+
+  ypos = myTab->getHeight() - fontHeight - infofont.getFontHeight() - VGAP - VBORDER;
+  lwidth = infofont.getStringWidth("(*) Change requires a reload for ELF ROMs");
+  new StaticTextWidget(myTab, infofont, HBORDER, ypos, lwidth, infofont.getFontHeight(), 
+                       "(*) Change requires a reload for ELF ROMs");
 
   // Add items for tab 0
   addToFocusList(wid, myTab, tabID);

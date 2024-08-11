@@ -176,7 +176,7 @@ Bankswitch::Sizes = {{
   {    8_KB,  16_KB }, // _E7
   {   64_KB,  64_KB }, // _EF
   {   64_KB,  64_KB }, // _EFSC
-  {   Bankswitch::any_KB,  Bankswitch::any_KB }, // ELF
+  {   Bankswitch::any_KB,  Bankswitch::any_KB }, // _ELF
   {   64_KB,  64_KB }, // _F0
   {   32_KB,  32_KB }, // _F4
   {   32_KB,  32_KB }, // _F4SC
