@@ -31,7 +31,7 @@ class ElfLinker;
 class CartridgeELF: public Cartridge {
   public:
     static constexpr uInt32 MIPS_MAX = 300;
-    static constexpr uInt32 MIPS_MIN = 50; 
+    static constexpr uInt32 MIPS_MIN = 50;
     static constexpr uInt32 MIPS_DEF = 150;
 
   public:
@@ -102,6 +102,7 @@ class CartridgeELF: public Cartridge {
     uInt64 getArmCycles() const;
 
     uInt8 driveBus(uInt16 address, uInt8 value);
+    void syncArmTime(uInt64 armCycles);
 
     void parseAndLinkElf();
     void allocationSections();

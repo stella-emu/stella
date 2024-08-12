@@ -364,78 +364,6 @@ uInt8 CartridgeELF::overdrivePoke(uInt16 address, uInt8 value)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CortexM0::err_t CartridgeELF::BusFallbackDelegate::fetch16(
-  uInt32 address, uInt16& value, uInt8& op, CortexM0& cortex
-) {
-  if (address == (RETURN_ADDR & ~1)) return CortexM0::errCustom(ERR_RETURN);
-
-  return handleError("fetch16", address, CortexM0::ERR_UNMAPPED_FETCH16, cortex);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CortexM0::err_t CartridgeELF::BusFallbackDelegate::read8(uInt32 address, uInt8& value, CortexM0& cortex)
-{
-  return handleError("read8", address, CortexM0::ERR_UNMAPPED_READ8, cortex);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CortexM0::err_t CartridgeELF::BusFallbackDelegate::read16(uInt32 address, uInt16& value, CortexM0& cortex)
-{
-  return handleError("read16", address, CortexM0::ERR_UNMAPPED_READ16, cortex);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CortexM0::err_t CartridgeELF::BusFallbackDelegate::read32(uInt32 address, uInt32& value, CortexM0& cortex)
-{
-  return handleError("read32", address, CortexM0::ERR_UNMAPPED_READ32, cortex);
-}
-
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CortexM0::err_t CartridgeELF::BusFallbackDelegate::write8(uInt32 address, uInt8 value, CortexM0& cortex)
-{
-  return handleError("write8", address, CortexM0::ERR_UNMAPPED_WRITE8, cortex);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CortexM0::err_t CartridgeELF::BusFallbackDelegate::write16(uInt32 address, uInt16 value, CortexM0& cortex)
-{
-  return handleError("write16", address, CortexM0::ERR_UNMAPPED_WRITE16, cortex);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CortexM0::err_t CartridgeELF::BusFallbackDelegate::write32(uInt32 address, uInt32 value, CortexM0& cortex)
-{
-  return handleError("write32", address, CortexM0::ERR_UNMAPPED_WRITE32, cortex);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgeELF::BusFallbackDelegate::setErrorsAreFatal(bool fatal)
-{
-  myErrorsAreFatal = fatal;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CortexM0::err_t CartridgeELF::BusFallbackDelegate::handleError(
-  string_view accessType, uInt32 address, CortexM0::err_t err, CortexM0& cortex
-) const {
-  if (myErrorsAreFatal) return CortexM0::errIntrinsic(err, address);
-
-  stringstream s;
-
-  s
-    << "invalid " << accessType << " access to 0x"
-    << std::hex << std::setw(8) << std::setfill('0') << address
-    << " (PC = 0x"
-    << std::hex << std::setw(8) << std::setfill('0') << cortex.getRegister(15)
-    << ")";
-
-  Logger::error(s.str());
-
-  return CortexM0::ERR_NONE;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 inline uInt64 CartridgeELF::getArmCycles() const
 {
   return myCortexEmu.getCycles() + myArmCyclesOffset;
@@ -448,16 +376,22 @@ inline uInt8 CartridgeELF::driveBus(uInt16 address, uInt8 value)
     mySystem->cycles() * myArmCyclesPer6502Cycle - myArmCyclesOffset);
   if (nextTransaction) {
     nextTransaction->setBusState(myIsBusDriven, myDriveBusValue);
-    myArmCyclesOffset = mySystem->cycles() * myArmCyclesPer6502Cycle - nextTransaction->timestamp;
+    syncArmTime(nextTransaction->timestamp);
   }
 
   if (myIsBusDriven) value |= myDriveBusValue;
 
-  myVcsLib.updateBus(address, value);
+  if (myVcsLib.updateBus(address, value)) syncArmTime(myCortexEmu.getCycles());
 
   runArm();
 
   return value;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+inline void CartridgeELF::syncArmTime(uInt64 armCycles)
+{
+  myArmCyclesOffset = mySystem->cycles() * myArmCyclesPer6502Cycle - armCycles;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -644,4 +578,76 @@ void CartridgeELF::runArm()
       FatalEmulationError::raise(s.str());
     }
   }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+CortexM0::err_t CartridgeELF::BusFallbackDelegate::fetch16(
+  uInt32 address, uInt16& value, uInt8& op, CortexM0& cortex
+) {
+  if (address == (RETURN_ADDR & ~1)) return CortexM0::errCustom(ERR_RETURN);
+
+  return handleError("fetch16", address, CortexM0::ERR_UNMAPPED_FETCH16, cortex);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+CortexM0::err_t CartridgeELF::BusFallbackDelegate::read8(uInt32 address, uInt8& value, CortexM0& cortex)
+{
+  return handleError("read8", address, CortexM0::ERR_UNMAPPED_READ8, cortex);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+CortexM0::err_t CartridgeELF::BusFallbackDelegate::read16(uInt32 address, uInt16& value, CortexM0& cortex)
+{
+  return handleError("read16", address, CortexM0::ERR_UNMAPPED_READ16, cortex);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+CortexM0::err_t CartridgeELF::BusFallbackDelegate::read32(uInt32 address, uInt32& value, CortexM0& cortex)
+{
+  return handleError("read32", address, CortexM0::ERR_UNMAPPED_READ32, cortex);
+}
+
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+CortexM0::err_t CartridgeELF::BusFallbackDelegate::write8(uInt32 address, uInt8 value, CortexM0& cortex)
+{
+  return handleError("write8", address, CortexM0::ERR_UNMAPPED_WRITE8, cortex);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+CortexM0::err_t CartridgeELF::BusFallbackDelegate::write16(uInt32 address, uInt16 value, CortexM0& cortex)
+{
+  return handleError("write16", address, CortexM0::ERR_UNMAPPED_WRITE16, cortex);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+CortexM0::err_t CartridgeELF::BusFallbackDelegate::write32(uInt32 address, uInt32 value, CortexM0& cortex)
+{
+  return handleError("write32", address, CortexM0::ERR_UNMAPPED_WRITE32, cortex);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void CartridgeELF::BusFallbackDelegate::setErrorsAreFatal(bool fatal)
+{
+  myErrorsAreFatal = fatal;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+CortexM0::err_t CartridgeELF::BusFallbackDelegate::handleError(
+  string_view accessType, uInt32 address, CortexM0::err_t err, CortexM0& cortex
+) const {
+  if (myErrorsAreFatal) return CortexM0::errIntrinsic(err, address);
+
+  stringstream s;
+
+  s
+    << "invalid " << accessType << " access to 0x"
+    << std::hex << std::setw(8) << std::setfill('0') << address
+    << " (PC = 0x"
+    << std::hex << std::setw(8) << std::setfill('0') << cortex.getRegister(15)
+    << ")";
+
+  Logger::error(s.str());
+
+  return CortexM0::ERR_NONE;
 }
