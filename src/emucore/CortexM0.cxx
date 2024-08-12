@@ -24,45 +24,49 @@
 
 #include "Base.hxx"
 
-#ifdef __BIG_ENDIAN__
-  #define READ32(data, addr) (              \
-    (((uInt8*)(data))[(addr)]) |            \
-    (((uInt8*)(data))[(addr) + 1]  << 8) |  \
-    (((uInt8*)(data))[(addr) + 2] << 16) |  \
-    (((uInt8*)(data))[(addr) + 3] << 24)    \
-  )
-
-  #define READ16(data, addr) (              \
-    (((uInt8*)(data))[(addr)]) |            \
-    (((uInt8*)(data))[(addr) + 1]  << 8)    \
-  )
-
-  #define WRITE32(data, addr, value)                \
-    ((uInt8*)(data))[(addr)] = (value);             \
-    ((uInt8*)(data))[(addr) + 1] = (value) >> 8;    \
-    ((uInt8*)(data))[(addr) + 2] = (value) >> 16;   \
-    ((uInt8*)(data))[(addr) + 3] = (value) >> 24;
-
-  #define WRITE16(data, addr, value)              \
-    ((uInt8*)(data))[(addr)] = value;             \
-    ((uInt8*)(data))[(addr) + 1] = (value) >> 8;
-#else
 namespace {
-  inline uInt32 READ32(const uInt8* data, uInt32 addr) {
+#ifdef __BIG_ENDIAN__
+  FORCE_INLINE uInt32 READ32(const uInt8* data, uInt32 addr) {
+    return
+      (((uInt8*)(data))[(addr)]) |
+      (((uInt8*)(data))[(addr) + 1]  << 8) |
+      (((uInt8*)(data))[(addr) + 2] << 16) |
+      (((uInt8*)(data))[(addr) + 3] << 24);
+  }
+
+  FORCE_INLINE uInt16 READ16(const uInt8* data, uInt32 addr) {
+    return (((uInt8*)(data))[(addr)]) | (((uInt8*)(data))[(addr) + 1]  << 8);
+  }
+
+  FORCE_INLINE void WRITE32(uInt8* data, uInt32 addr, uInt32 value) {
+    ((uInt8*)(data))[(addr)] = (value);
+    ((uInt8*)(data))[(addr) + 1] = (value) >> 8;
+    ((uInt8*)(data))[(addr) + 2] = (value) >> 16;
+    ((uInt8*)(data))[(addr) + 3] = (value) >> 24;
+  }
+
+  FORCE_INLINE void WRITE16(uInt8* data, uInt32 addr, uInt16 value) {
+    ((uInt8*)(data))[(addr)] = value;
+    ((uInt8*)(data))[(addr) + 1] = (value) >> 8;
+  }
+#else
+  FORCE_INLINE uInt32 READ32(const uInt8* data, uInt32 addr) {
     return (reinterpret_cast<const uInt32*>(data))[addr >> 2];
   }
-  inline uInt16 READ16(const uInt8* data, uInt32 addr) {
+
+  FORCE_INLINE uInt16 READ16(const uInt8* data, uInt32 addr) {
     return (reinterpret_cast<const uInt16*>(data))[addr >> 1];
   }
 
-  inline void WRITE32(uInt8* data, uInt32 addr, uInt32 value) {
+  FORCE_INLINE void WRITE32(uInt8* data, uInt32 addr, uInt32 value) {
     (reinterpret_cast<uInt32*>(data))[addr >> 2] = value;
   }
-  inline void WRITE16(uInt8* data, uInt32 addr, uInt16 value) {
+
+  FORCE_INLINE void WRITE16(uInt8* data, uInt32 addr, uInt16 value) {
     (reinterpret_cast<uInt16*>(data))[addr >> 1] = value;
   }
-}  // namespace
 #endif
+}  // namespace
 
 // #define THUMB_DISS
 
