@@ -70,6 +70,9 @@ void DevSettingsHandler::loadSettings(SettingsSet set)
   myPlInvPhase[set] = devSettings ? settings.getBool("dev.tia.plinvphase") : false;
   myMsInvPhase[set] = devSettings ? settings.getBool("dev.tia.msinvphase") : false;
   myBlInvPhase[set] = devSettings ? settings.getBool("dev.tia.blinvphase") : false;
+  myPlLateHMove[set] = devSettings ? settings.getBool("dev.tia.pllatehmove") : false;
+  myMsLateHMove[set] = devSettings ? settings.getBool("dev.tia.mslatehmove") : false;
+  myBlLateHMove[set] = devSettings ? settings.getBool("dev.tia.bllatehmove") : false;
   myPFBits[set] = devSettings ? settings.getBool("dev.tia.delaypfbits") : false;
   myPFColor[set] = devSettings ? settings.getBool("dev.tia.delaypfcolor") : false;
   myPFScore[set] = devSettings ? settings.getBool("dev.tia.pfscoreglitch") : false;
@@ -141,6 +144,9 @@ void DevSettingsHandler::saveSettings(SettingsSet set)
       settings.setValue("dev.tia.plinvphase", myPlInvPhase[set]);
       settings.setValue("dev.tia.msinvphase", myMsInvPhase[set]);
       settings.setValue("dev.tia.blinvphase", myBlInvPhase[set]);
+      settings.setValue("dev.tia.pllatehmove", myPlLateHMove[set]);
+      settings.setValue("dev.tia.mslatehmove", myMsLateHMove[set]);
+      settings.setValue("dev.tia.bllatehmove", myBlLateHMove[set]);
       settings.setValue("dev.tia.delaypfbits", myPFBits[set]);
       settings.setValue("dev.tia.delaypfcolor", myPFColor[set]);
       settings.setValue("dev.tia.pfscoreglitch", myPFScore[set]);
@@ -197,6 +203,9 @@ void DevSettingsHandler::applySettings(SettingsSet set)
     myOSystem.console().tia().setPlInvertedPhaseClock(myPlInvPhase[set]);
     myOSystem.console().tia().setMsInvertedPhaseClock(myMsInvPhase[set]);
     myOSystem.console().tia().setBlInvertedPhaseClock(myBlInvPhase[set]);
+    myOSystem.console().tia().setPlShortLateHMove(myPlLateHMove[set]);
+    myOSystem.console().tia().setMsShortLateHMove(myMsLateHMove[set]);
+    myOSystem.console().tia().setBlShortLateHMove(myBlLateHMove[set]);
     myOSystem.console().tia().setPFBitsDelay(myPFBits[set]);
     myOSystem.console().tia().setPFColorDelay(myPFColor[set]);
     myOSystem.console().tia().setPFScoreGlitch(myPFScore[set]);

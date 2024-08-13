@@ -108,6 +108,7 @@ class Ball : public Serializable
       Aid Man bug on some Jr. models.
      */
     void setInvertedPhaseClock(bool enable);
+    void setShortLateHMove(bool enable);
 
     /**
       Start movement --- this is triggered by strobing HMOVE.
@@ -323,6 +324,8 @@ class Ball : public Serializable
      */
     bool myUseInvertedPhaseClock{false};
 
+    bool myUseShortLateHMove{false};
+
     /**
       TIA instance. Required for flushing the line cache and requesting collision updates.
      */
@@ -350,7 +353,7 @@ void Ball::movementTick(uInt32 clock, uInt32 hclock, bool hblank)
     // Stop movement once the number of clocks according to HMBL is reached
     if (clock == myHmmClocks)
       isMoving = false;
-    else if (hclock != 0)
+    else if (!myUseShortLateHMove || hclock != 0)
     {
       // Process the tick if we are in hblank. Otherwise, the tick is either masked
       // by an ordinary tick or merges two consecutive ticks into a single tick (inverted

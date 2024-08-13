@@ -73,6 +73,9 @@ class DevSettingsHandler
     std::array<bool, numSets>   myPlInvPhase;
     std::array<bool, numSets>   myMsInvPhase;
     std::array<bool, numSets>   myBlInvPhase;
+    std::array<bool, numSets>   myPlLateHMove;
+    std::array<bool, numSets>   myMsLateHMove;
+    std::array<bool, numSets>   myBlLateHMove;
     std::array<bool, numSets>   myPFBits;
     std::array<bool, numSets>   myPFColor;
     std::array<bool, numSets>   myPFScore;

@@ -229,8 +229,8 @@ void DeveloperDialog::addEmulationTab(const GUI::Font& font)
   myArmSpeedWidget = new SliderWidget(myTab, font, HBORDER + INDENT * 1, ypos - 1,
                                       fontWidth * 10, lineHeight, "Limit ARM speed (*) ",
                                       0, kArmSpeedChanged, fontWidth * 9, " MIPS");
-  myArmSpeedWidget->setMinValue(CartridgeELF::MIPS_MIN); 
-  myArmSpeedWidget->setMaxValue(CartridgeELF::MIPS_MAX); 
+  myArmSpeedWidget->setMinValue(CartridgeELF::MIPS_MIN);
+  myArmSpeedWidget->setMaxValue(CartridgeELF::MIPS_MAX);
   myArmSpeedWidget->setTickmarkIntervals((CartridgeELF::MIPS_MAX - CartridgeELF::MIPS_MIN) / 50);
   myArmSpeedWidget->setStepValue(2);
   myArmSpeedWidget->setToolTip("Limit emulation speed to simulate ARM CPU used for ELF.");
@@ -238,7 +238,7 @@ void DeveloperDialog::addEmulationTab(const GUI::Font& font)
 
   ypos = myTab->getHeight() - fontHeight - infofont.getFontHeight() - VGAP - VBORDER;
   lwidth = infofont.getStringWidth("(*) Change requires a reload for ELF ROMs");
-  new StaticTextWidget(myTab, infofont, HBORDER, ypos, lwidth, infofont.getFontHeight(), 
+  new StaticTextWidget(myTab, infofont, HBORDER, ypos, lwidth, infofont.getFontHeight(),
                        "(*) Change requires a reload for ELF ROMs");
 
   // Add items for tab 0
@@ -286,6 +286,7 @@ void DeveloperDialog::addTiaTab(const GUI::Font& font)
   VarList::push_back(items, "Glitched Matchie line", "matchie");
   VarList::push_back(items, "Glitched Indy 500 menu", "indy500");
   VarList::push_back(items, "Glitched He-Man title", "heman");
+  VarList::push_back(items, "Shifted flashcart menu", "flashmenu");
   VarList::push_back(items, "Custom", "custom");
   myTIATypeWidget = new PopUpWidget(myTab, font, HBORDER + INDENT, ypos - 1,
                                     pwidth, lineHeight, items, "Chip type ", 0, kTIAType);
@@ -312,6 +313,24 @@ void DeveloperDialog::addTiaTab(const GUI::Font& font)
   myBlInvPhaseWidget = new CheckboxWidget(myTab, font, myMsInvPhaseWidget->getRight() + fontWidth() * 2.5,
                                           ypos + 1, "Ball");
   wid.push_back(myBlInvPhaseWidget);
+  ypos += lineHeight + VGAP * 1;
+
+  myLateHMoveLabel = new StaticTextWidget(myTab, font, HBORDER + INDENT * 2, ypos + 1,
+                                          "Short late HMOVEs for");
+  myLateHMoveLabel->setToolTip("Objects react different to late HMOVEs");
+  wid.push_back(myLateHMoveLabel);
+  ypos += lineHeight + VGAP * 1;
+
+  myPlLateHMoveWidget = new CheckboxWidget(myTab, font, HBORDER + INDENT * 3, ypos + 1, "Players");
+  wid.push_back(myPlLateHMoveWidget);
+
+  myMsLateHMoveWidget = new CheckboxWidget(myTab, font, myPlLateHMoveWidget->getRight() + fontWidth() * 2.5,
+                                           ypos + 1, "Missiles");
+  wid.push_back(myMsLateHMoveWidget);
+
+  myBlLateHMoveWidget = new CheckboxWidget(myTab, font, myMsLateHMoveWidget->getRight() + fontWidth() * 2.5,
+                                           ypos + 1, "Ball");
+  wid.push_back(myBlLateHMoveWidget);
   ypos += lineHeight + VGAP * 1;
 
   myPlayfieldLabel = new StaticTextWidget(myTab, font, HBORDER + INDENT * 2, ypos + 1,
@@ -758,6 +777,9 @@ void DeveloperDialog::getWidgetStates(SettingsSet set)
   myPlInvPhase[set] = myPlInvPhaseWidget->getState();
   myMsInvPhase[set] = myMsInvPhaseWidget->getState();
   myBlInvPhase[set] = myBlInvPhaseWidget->getState();
+  myPlLateHMove[set] = myPlLateHMoveWidget->getState();
+  myMsLateHMove[set] = myMsLateHMoveWidget->getState();
+  myBlLateHMove[set] = myBlLateHMoveWidget->getState();
   myPFBits[set] = myPFBitsWidget->getState();
   myPFColor[set] = myPFColorWidget->getState();
   myPFScore[set] = myPFScoreWidget->getState();
@@ -1183,6 +1205,10 @@ void DeveloperDialog::handleTia()
   myPlInvPhaseWidget->setEnabled(enable);
   myMsInvPhaseWidget->setEnabled(enable);
   myBlInvPhaseWidget->setEnabled(enable);
+  myLateHMoveLabel->setEnabled(enable);
+  myPlLateHMoveWidget->setEnabled(enable);
+  myMsLateHMoveWidget->setEnabled(enable);
+  myBlLateHMoveWidget->setEnabled(enable);
   myPlayfieldLabel->setEnabled(enable);
   myBackgroundLabel->setEnabled(enable);
   myPFBitsWidget->setEnabled(enable);
@@ -1200,6 +1226,9 @@ void DeveloperDialog::handleTia()
     myPlInvPhaseWidget->setState(myPlInvPhase[set]);
     myMsInvPhaseWidget->setState(myMsInvPhase[set]);
     myBlInvPhaseWidget->setState(myBlInvPhase[set]);
+    myPlLateHMoveWidget->setState(myPlLateHMove[set]);
+    myMsLateHMoveWidget->setState(myMsLateHMove[set]);
+    myBlLateHMoveWidget->setState(myBlLateHMove[set]);
     myPFBitsWidget->setState(myPFBits[set]);
     myPFColorWidget->setState(myPFColor[set]);
     myPFScoreWidget->setState(myPFScore[set]);
@@ -1212,6 +1241,9 @@ void DeveloperDialog::handleTia()
     myPlInvPhaseWidget->setState(BSPF::equalsIgnoreCase("koolaidman", myTIATypeWidget->getSelectedTag().toString()));
     myMsInvPhaseWidget->setState(BSPF::equalsIgnoreCase("cosmicark", myTIATypeWidget->getSelectedTag().toString()));
     myBlInvPhaseWidget->setState(false);
+    myPlLateHMoveWidget->setState(BSPF::equalsIgnoreCase("flashmenu", myTIATypeWidget->getSelectedTag().toString()));
+    myMsLateHMoveWidget->setState(false);
+    myBlLateHMoveWidget->setState(false);
     myPFBitsWidget->setState(BSPF::equalsIgnoreCase("pesco", myTIATypeWidget->getSelectedTag().toString()));
     myPFColorWidget->setState(BSPF::equalsIgnoreCase("quickstep", myTIATypeWidget->getSelectedTag().toString()));
     myPFScoreWidget->setState(BSPF::equalsIgnoreCase("matchie", myTIATypeWidget->getSelectedTag().toString()));

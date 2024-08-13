@@ -978,6 +978,11 @@ void TIA::applyDeveloperSettings()
                             ? mySettings.getBool("dev.tia.msinvphase")
                             : BSPF::equalsIgnoreCase("cosmicark", mySettings.getString("dev.tia.type")));
     setBlInvertedPhaseClock(custom ? mySettings.getBool("dev.tia.blinvphase") : false);
+    setPlShortLateHMove(custom
+                        ? mySettings.getBool("dev.tia.pllatehmove")
+                        : BSPF::equalsIgnoreCase("flashmenu", mySettings.getString("dev.tia.type")));
+    setMsShortLateHMove(custom ? mySettings.getBool("dev.tia.mslatehmove") : false);
+    setBlShortLateHMove(custom ? mySettings.getBool("dev.tia.bllatehmove") : false);
     setPFBitsDelay(custom
                    ? mySettings.getBool("dev.tia.delaypfbits")
                    : BSPF::equalsIgnoreCase("pesco", mySettings.getString("dev.tia.type")));
@@ -1899,6 +1904,27 @@ void TIA::setBlInvertedPhaseClock(bool enable)
 {
   myBall.setInvertedPhaseClock(enable);
 }
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TIA::setPlShortLateHMove(bool enable)
+{
+  myPlayer0.setShortLateHMove(enable);
+  myPlayer1.setShortLateHMove(enable);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TIA::setMsShortLateHMove(bool enable)
+{
+  myMissile0.setShortLateHMove(enable);
+  myMissile1.setShortLateHMove(enable);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TIA::setBlShortLateHMove(bool enable)
+{
+  myBall.setShortLateHMove(enable);
+}
+
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TIA::delayedWrite(uInt8 address, uInt8 value)
