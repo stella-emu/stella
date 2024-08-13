@@ -27,6 +27,8 @@
 
 #include "bspf.hxx"
 
+class Serializer;
+
 class CortexM0
 {
   public:
@@ -116,6 +118,8 @@ class CortexM0
 
     CortexM0& mapDefault(BusTransactionDelegate* delegate);
 
+    void save(Serializer& serializer) const;
+
     CortexM0& reset();
     CortexM0& setPc(uInt32 pc);
     CortexM0& setRegister(uInt8 regno, uInt32 value);
@@ -165,12 +169,19 @@ class CortexM0
       uInt32 size{0};
       bool readOnly{false};
 
+      bool dirty{false};
+      uInt32 accessWatermarkLow{static_cast<uInt32>(~0)};
+      uInt32 accessWatermarkHigh{0};
+
       std::variant<
         MemoryRegionAccessData,   // ::get<0>, directData
         MemoryRegionAccessCode,   // ::get<1>, directCode
         BusTransactionDelegate*,  // ::get<2>, delegate
         std::monostate
       > access;
+
+      void reset();
+      void save(Serializer& serializer) const;
 
       private:
         MemoryRegion(const MemoryRegion&) = delete;

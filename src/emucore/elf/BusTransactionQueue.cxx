@@ -17,6 +17,7 @@
 
 #include "BusTransactionQueue.hxx"
 
+#include "Serializable.hxx"
 #include "exception/FatalEmulationError.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -62,6 +63,27 @@ BusTransactionQueue& BusTransactionQueue::reset()
   myTimestamp = 0;
 
   return *this;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void BusTransactionQueue::save(Serializer& serializer) const
+{
+  serializer.putInt(myQueueSize);
+  serializer.putShort(myNextInjectAddress);
+  serializer.putLong(myTimestamp);
+
+  for (size_t i = 0; i < myQueueSize; i++)
+    myQueue[(myQueueNext + i) % myQueueCapacity].save(serializer);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void BusTransactionQueue::Transaction::save(Serializer& serializer) const
+{
+  serializer.putShort(address);
+  serializer.putShort(mask);
+  serializer.putByte(value);
+  serializer.putLong(timestamp);
+  serializer.putBool(yield);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

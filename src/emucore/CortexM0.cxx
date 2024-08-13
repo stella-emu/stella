@@ -22,6 +22,9 @@
 
 #include "CortexM0.hxx"
 
+#include <algorithm>
+
+#include "Serializable.hxx"
 #include "Base.hxx"
 
 namespace {
@@ -556,12 +559,65 @@ CortexM0::CortexM0()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void CortexM0::MemoryRegion::save(Serializer& serializer) const
+{
+  if (type != MemoryRegionType::directCode && type != MemoryRegionType::directData) return;
+
+  serializer.putBool(dirty);
+  if (!dirty) return;
+
+  serializer.putInt(accessWatermarkLow);
+  serializer.putInt(accessWatermarkHigh);
+
+  switch (type) {
+    case MemoryRegionType::directCode:
+      serializer.putByteArray(
+        std::get<1>(access).backingStore + (accessWatermarkLow - base),
+        accessWatermarkHigh - accessWatermarkLow + 1
+      );
+
+      break;
+
+    case MemoryRegionType::directData:
+      serializer.putByteArray(
+        std::get<0>(access).backingStore + (accessWatermarkLow - base),
+        accessWatermarkHigh - accessWatermarkLow + 1
+      );
+
+      break;
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void CortexM0::save(Serializer& serializer) const
+{
+  for (size_t i = 0; i < 16; i++)
+    serializer.putInt(reg_norm[i]);
+
+  serializer.putInt(znFlags);
+  serializer.putInt(cFlag);
+  serializer.putInt(vFlag);
+  serializer.putLong(myCycleCounter);
+
+  for (size_t i = 0; i < myNextRegionIndex; i++)
+    myRegions[i].save(serializer);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void CortexM0::MemoryRegion::reset()
+{
+  type = MemoryRegionType::unmapped;
+  access.emplace<std::monostate>();
+
+  accessWatermarkHigh = 0;
+  accessWatermarkLow = ~0;
+  dirty = false;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CortexM0& CortexM0::resetMappings()
 {
-  for (auto& region: myRegions) {
-    region.type = MemoryRegionType::unmapped;
-    region.access.emplace<std::monostate>();
-  }
+  for (auto& region: myRegions) region.reset();
 
   myNextRegionIndex = 0;
   std::fill_n(myPageMap.get(), PAGEMAP_SIZE, 0xff);
@@ -802,11 +858,25 @@ CortexM0::err_t CortexM0::write32(uInt32 address, uInt32 value)
     case MemoryRegionType::delegate:
       return std::get<2>(region.access)->write32(address, value, *this);
 
-    case MemoryRegionType::directCode:
-      WRITE32(std::get<1>(region.access).backingStore, address - region.base, value);
+    case MemoryRegionType::directCode: {
+      const uInt32 offset = address - region.base;
+
+      region.dirty = true;
+      region.accessWatermarkLow = std::min(address, region.accessWatermarkLow);
+      region.accessWatermarkHigh = std::max(address + 3, region.accessWatermarkHigh);
+
+      WRITE32(std::get<1>(region.access).backingStore, offset, value);
+      std::get<1>(region.access).ops[offset >> 1] = decodeInstructionWord(value);
+      std::get<1>(region.access).ops[(offset + 2) >> 1] = decodeInstructionWord(value >> 16);
+
       return ERR_NONE;
+    }
 
     case MemoryRegionType::directData:
+      region.dirty = true;
+      region.accessWatermarkLow = std::min(address, region.accessWatermarkLow);
+      region.accessWatermarkHigh = std::max(address + 3, region.accessWatermarkHigh);
+
       WRITE32(std::get<0>(region.access).backingStore, address - region.base, value);
       return ERR_NONE;
 
@@ -832,6 +902,10 @@ CortexM0::err_t CortexM0::write16(uInt32 address, uInt16 value)
     case MemoryRegionType::directCode: {
       const uInt32 offset = address - region.base;
 
+      region.dirty = true;
+      region.accessWatermarkLow = std::min(address, region.accessWatermarkLow);
+      region.accessWatermarkHigh = std::max(address + 1, region.accessWatermarkHigh);
+
       WRITE16(std::get<1>(region.access).backingStore, offset, value);
       std::get<1>(region.access).ops[offset >> 1] = decodeInstructionWord(value);
 
@@ -839,6 +913,10 @@ CortexM0::err_t CortexM0::write16(uInt32 address, uInt16 value)
     }
 
     case MemoryRegionType::directData:
+      region.dirty = true;
+      region.accessWatermarkLow = std::min(address, region.accessWatermarkLow);
+      region.accessWatermarkHigh = std::max(address + 1, region.accessWatermarkHigh);
+
       WRITE16(std::get<0>(region.access).backingStore, address - region.base, value);
       return ERR_NONE;
 
@@ -862,6 +940,10 @@ CortexM0::err_t CortexM0::write8(uInt32 address, uInt8 value)
     case MemoryRegionType::directCode: {
       const uInt32 offset = address - region.base;
 
+      region.dirty = true;
+      region.accessWatermarkLow = std::min(address, region.accessWatermarkLow);
+      region.accessWatermarkHigh = std::max(address, region.accessWatermarkHigh);
+
       std::get<1>(region.access).backingStore[offset] = value;
       std::get<1>(region.access).ops[offset >> 1] = decodeInstructionWord(value);
 
@@ -869,6 +951,10 @@ CortexM0::err_t CortexM0::write8(uInt32 address, uInt8 value)
     }
 
     case MemoryRegionType::directData:
+      region.dirty = true;
+      region.accessWatermarkLow = std::min(address, region.accessWatermarkLow);
+      region.accessWatermarkHigh = std::max(address, region.accessWatermarkHigh);
+
       std::get<0>(region.access).backingStore[address - region.base] = value;
       return ERR_NONE;
 

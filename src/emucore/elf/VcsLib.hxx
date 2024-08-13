@@ -23,10 +23,14 @@
 #include "CortexM0.hxx"
 #include "BusTransactionQueue.hxx"
 
+class Serializer;
+
 class VcsLib: public CortexM0::BusTransactionDelegate {
   public:
     explicit VcsLib(BusTransactionQueue& transactionQueue);
     ~VcsLib() override = default;
+
+    void save(Serializer& serializer) const;
 
     void reset();
 

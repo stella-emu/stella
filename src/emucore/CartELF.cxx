@@ -237,53 +237,8 @@ CartridgeELF::~CartridgeELF() = default;
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeELF::reset()
 {
-  const bool devMode = mySettings.getBool("dev.settings");
-  const bool strictMode = devMode && mySettings.getBool("dev.thumb.trapfatal");
-  const uInt32 mips = devMode ? mySettings.getInt("dev.arm.mips") : MIPS_MAX;
-
-  std::fill_n(myLastPeekResult.get(), 0x1000, 0);
-  myIsBusDriven = false;
-  myDriveBusValue = 0;
-  myArmCyclesOffset = 0;
-  myArmCyclesPer6502Cycle = (mips * 1000000) / get6502SpeedHz(myConsoleTiming);
-
-  mySystemType = determineSystemType(myProperties);
-  myLinker->relink(externalSymbols(mySystemType));
-
-  std::memset(mySectionStack.get(), 0, STACK_SIZE);
-  std::memset(mySectionText.get(), 0, TEXT_SIZE);
-  std::memset(mySectionData.get(), 0, DATA_SIZE);
-  std::memset(mySectionRodata.get(), 0, RODATA_SIZE);
-  std::memset(mySectionTables.get(), 0, TABLES_SIZE);
-
-  std::memcpy(mySectionText.get(), myLinker->getSegmentData(ElfLinker::SegmentType::text),
-                                   myLinker->getSegmentSize(ElfLinker::SegmentType::text));
-  std::memcpy(mySectionData.get(), myLinker->getSegmentData(ElfLinker::SegmentType::data),
-                                   myLinker->getSegmentSize(ElfLinker::SegmentType::data));
-  std::memcpy(mySectionRodata.get(), myLinker->getSegmentData(ElfLinker::SegmentType::rodata),
-                                     myLinker->getSegmentSize(ElfLinker::SegmentType::rodata));
-  std::memcpy(mySectionTables.get(), LOOKUP_TABLES, sizeof(LOOKUP_TABLES));
-
-  setupMemoryMap(strictMode);
-  myCortexEmu.reset();
-
-  myTransactionQueue
-    .reset()
-	  .injectROMAt(0x00, 0x1ffc)
-	  .injectROM(0x10)
-    .setNextInjectAddress(0x1000);
-
-  myVcsLib.reset();
-
-  myVcsLib.vcsCopyOverblankToRiotRam();
-  myVcsLib.vcsStartOverblank();
-  myVcsLib.vcsEndOverblank();
-  myVcsLib.vcsNop2n(1024);
-
-  myExecutionStage = ExecutionStage::boot;
-  myInitFunctionIndex = 0;
-
-  switchExecutionStage();
+  setupConfig();
+  resetWithConfig();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -303,7 +258,28 @@ void CartridgeELF::install(System& system)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CartridgeELF::save(Serializer& out) const
 {
-  return false;
+  try {
+    out.putBool(myConfigStrictMode);
+    out.putInt(myConfigMips);
+    out.putByte(static_cast<uInt8>(myConfigSystemType));
+
+    out.putBool(myIsBusDriven);
+    out.putByte(myDriveBusValue);
+    out.putLong(myArmCyclesOffset);
+    out.putByte(static_cast<uInt8>(myExecutionStage));
+    out.putInt(myInitFunctionIndex);
+    out.putByte(static_cast<uInt8>(myConsoleTiming));
+
+    myTransactionQueue.save(out);
+    myCortexEmu.save(out);
+    myVcsLib.save(out);
+  }
+  catch(...) {
+    cerr << "ERROR: failed to save ELF\n";
+    return false;
+  }
+
+  return true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -533,7 +509,7 @@ void CartridgeELF::callMain()
   err |= myCortexEmu.write32(sp, myArmCyclesPer6502Cycle * get6502SpeedHz(myConsoleTiming));
 
   sp -= 4;
-  err |= myCortexEmu.write32(sp, getSystemTypeParam(mySystemType));
+  err |= myCortexEmu.write32(sp, getSystemTypeParam(myConfigSystemType));
 
   if (err) throw runtime_error("unable to setup main args");
 
@@ -650,4 +626,60 @@ CortexM0::err_t CartridgeELF::BusFallbackDelegate::handleError(
   Logger::error(s.str());
 
   return CortexM0::ERR_NONE;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void CartridgeELF::setupConfig()
+{
+  const bool devMode = mySettings.getBool("dev.settings");
+
+  myConfigStrictMode = devMode && mySettings.getBool("dev.thumb.trapfatal");
+  myConfigMips = devMode ? mySettings.getInt("dev.arm.mips") : MIPS_MAX;
+  myConfigSystemType = determineSystemType(myProperties);
+}
+
+void CartridgeELF::resetWithConfig()
+{
+  std::fill_n(myLastPeekResult.get(), 0x1000, 0);
+  myIsBusDriven = false;
+  myDriveBusValue = 0;
+  myArmCyclesOffset = 0;
+  myArmCyclesPer6502Cycle = (myConfigMips * 1000000) / get6502SpeedHz(myConsoleTiming);
+
+  myLinker->relink(externalSymbols(myConfigSystemType));
+
+  std::memset(mySectionStack.get(), 0, STACK_SIZE);
+  std::memset(mySectionText.get(), 0, TEXT_SIZE);
+  std::memset(mySectionData.get(), 0, DATA_SIZE);
+  std::memset(mySectionRodata.get(), 0, RODATA_SIZE);
+  std::memset(mySectionTables.get(), 0, TABLES_SIZE);
+
+  std::memcpy(mySectionText.get(), myLinker->getSegmentData(ElfLinker::SegmentType::text),
+                                   myLinker->getSegmentSize(ElfLinker::SegmentType::text));
+  std::memcpy(mySectionData.get(), myLinker->getSegmentData(ElfLinker::SegmentType::data),
+                                   myLinker->getSegmentSize(ElfLinker::SegmentType::data));
+  std::memcpy(mySectionRodata.get(), myLinker->getSegmentData(ElfLinker::SegmentType::rodata),
+                                     myLinker->getSegmentSize(ElfLinker::SegmentType::rodata));
+  std::memcpy(mySectionTables.get(), LOOKUP_TABLES, sizeof(LOOKUP_TABLES));
+
+  setupMemoryMap(myConfigStrictMode);
+  myCortexEmu.reset();
+
+  myTransactionQueue
+    .reset()
+	  .injectROMAt(0x00, 0x1ffc)
+	  .injectROM(0x10)
+    .setNextInjectAddress(0x1000);
+
+  myVcsLib.reset();
+
+  myVcsLib.vcsCopyOverblankToRiotRam();
+  myVcsLib.vcsStartOverblank();
+  myVcsLib.vcsEndOverblank();
+  myVcsLib.vcsNop2n(1024);
+
+  myExecutionStage = ExecutionStage::boot;
+  myInitFunctionIndex = 0;
+
+  switchExecutionStage();
 }

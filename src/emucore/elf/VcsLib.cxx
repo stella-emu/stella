@@ -112,6 +112,21 @@ VcsLib::VcsLib(BusTransactionQueue& transactionQueue)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void VcsLib::save(Serializer& serializer) const
+{
+  serializer.putByte(myStuffMaskA);
+  serializer.putByte(myStuffMaskX);
+  serializer.putByte(myStuffMaskY);
+  serializer.putBool(myIsWaitingForRead);
+  serializer.putShort(myWaitingForReadAddress);
+  serializer.putShort(myCurrentAddress);
+  serializer.putBool(myCurrentValue);
+
+  if (!myRand.save(serializer))
+    throw runtime_error("failed to save RNG");
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void VcsLib::reset()
 {
   myStuffMaskA = myStuffMaskX = myStuffMaskY = 0x00;

@@ -99,6 +99,9 @@ class CartridgeELF: public Cartridge {
     };
 
   private:
+    void setupConfig();
+    void resetWithConfig();
+
     uInt64 getArmCycles() const;
 
     uInt8 driveBus(uInt16 address, uInt8 value);
@@ -119,6 +122,10 @@ class CartridgeELF: public Cartridge {
     size_t myImageSize{0};
 
     System* mySystem{nullptr};
+
+    bool myConfigStrictMode{false};
+    uInt32 myConfigMips{100};
+    elfEnvironment::SystemType myConfigSystemType{elfEnvironment::SystemType::ntsc};
 
     unique_ptr<uint8_t[]> myLastPeekResult;
     BusTransactionQueue myTransactionQueue;
@@ -148,8 +155,6 @@ class CartridgeELF: public Cartridge {
 
     ExecutionStage myExecutionStage{ExecutionStage::boot};
     uInt32 myInitFunctionIndex{0};
-
-    elfEnvironment::SystemType mySystemType{elfEnvironment::SystemType::ntsc};
 
   private:
     // Following constructors and assignment operators not supported

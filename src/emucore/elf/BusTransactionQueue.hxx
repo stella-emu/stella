@@ -20,6 +20,8 @@
 
 #include "bspf.hxx"
 
+class Serializer;
+
 class BusTransactionQueue {
   public:
     struct Transaction {
@@ -33,6 +35,8 @@ class BusTransactionQueue {
       uInt8 value{0};
       uInt64 timestamp{0};
       bool yield{false};
+
+      void save(Serializer& serializer) const;
     };
 
   public:
@@ -40,6 +44,8 @@ class BusTransactionQueue {
     ~BusTransactionQueue() = default;
 
     BusTransactionQueue& reset();
+
+    void save(Serializer& serializer) const;
 
     BusTransactionQueue& setNextInjectAddress(uInt16 address);
     uInt16 getNextInjectAddress() const;
