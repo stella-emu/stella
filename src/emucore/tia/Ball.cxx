@@ -45,6 +45,7 @@ void Ball::reset()
   myRenderCounter = 0;
   myInvertedPhaseClock = false;
   myUseInvertedPhaseClock = false;
+  myUseShortLateHMove = false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -151,6 +152,12 @@ void Ball::applyColorLoss()
 void Ball::setInvertedPhaseClock(bool enable)
 {
   myUseInvertedPhaseClock = enable;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Ball::setShortLateHMove(bool enable)
+{
+  myUseShortLateHMove = enable;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

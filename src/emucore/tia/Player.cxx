@@ -47,6 +47,7 @@ void Player::reset()
   myDividerChangeCounter = -1;
   myInvertedPhaseClock = false;
   myUseInvertedPhaseClock = false;
+  myUseShortLateHMove = false;
   myPattern = 0;
 
   setDivider(1);
@@ -258,6 +259,12 @@ void Player::applyColorLoss()
 void Player::setInvertedPhaseClock(bool enable)
 {
   myUseInvertedPhaseClock = enable;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Player::setShortLateHMove(bool enable)
+{
+  myUseShortLateHMove = enable;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

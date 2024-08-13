@@ -46,6 +46,7 @@ void Missile::reset()
   collision = myCollisionMaskDisabled;
   myInvertedPhaseClock = false;
   myUseInvertedPhaseClock = false;
+  myUseShortLateHMove = false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -197,6 +198,12 @@ void Missile::applyColorLoss()
 void Missile::setInvertedPhaseClock(bool enable)
 {
   myUseInvertedPhaseClock = enable;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Missile::setShortLateHMove(bool enable)
+{
+  myUseShortLateHMove = enable;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
