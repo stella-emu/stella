@@ -1558,9 +1558,9 @@ FORCE_INLINE void TIA::tickMovement()
 
     myMissile0.movementTick(movementCounter, myHctr, hblank);
     myMissile1.movementTick(movementCounter, myHctr, hblank);
-    myPlayer0.movementTick(movementCounter, hblank);
-    myPlayer1.movementTick(movementCounter, hblank);
-    myBall.movementTick(movementCounter, hblank);
+    myPlayer0.movementTick(movementCounter, myHctr, hblank);
+    myPlayer1.movementTick(movementCounter, myHctr, hblank);
+    myBall.movementTick(movementCounter, myHctr, hblank);
 
     myMovementInProgress =
       myMissile0.isMoving ||
