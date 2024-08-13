@@ -167,7 +167,7 @@ class Ball : public Serializable
     /**
       Process a single movement tick. Inline for performance (implementation below).
      */
-    FORCE_INLINE void movementTick(uInt32 clock, bool hblank);
+    FORCE_INLINE void movementTick(uInt32 clock, uInt32 hclock, bool hblank);
 
     /**
       Tick one color clock. Inline for performance (implementation below).
@@ -341,7 +341,7 @@ class Ball : public Serializable
 // ############################################################################
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Ball::movementTick(uInt32 clock, bool hblank)
+void Ball::movementTick(uInt32 clock, uInt32 hclock, bool hblank)
 {
   myLastMovementTick = myCounter;
 
@@ -350,7 +350,7 @@ void Ball::movementTick(uInt32 clock, bool hblank)
     // Stop movement once the number of clocks according to HMBL is reached
     if (clock == myHmmClocks)
       isMoving = false;
-    else
+    else if (hclock != 0)
     {
       // Process the tick if we are in hblank. Otherwise, the tick is either masked
       // by an ordinary tick or merges two consecutive ticks into a single tick (inverted
