@@ -104,7 +104,7 @@ class CortexM0: public Serializable
 
   public:
     CortexM0();
-    ~CortexM0() = default;
+    ~CortexM0() override = default;
 
     CortexM0& resetMappings();
 
@@ -121,8 +121,8 @@ class CortexM0: public Serializable
 
     bool save(Serializer& out) const override;
     bool load(Serializer& in) override;
-    void saveDirtyRegions(Serializer& serialized) const;
-    void loadDirtyRegions(Serializer& serialized);
+    void saveDirtyRegions(Serializer& out) const;
+    void loadDirtyRegions(Serializer& in);
 
     CortexM0& reset();
     CortexM0& setPc(uInt32 pc);
