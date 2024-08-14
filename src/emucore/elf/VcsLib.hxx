@@ -31,8 +31,8 @@ class VcsLib: public CortexM0::BusTransactionDelegate, public Serializable {
     explicit VcsLib(BusTransactionQueue& transactionQueue);
     ~VcsLib() override = default;
 
-    bool save(Serializer& serializer) const override;
-    bool load(Serializer& serializer) override;
+    bool save(Serializer& out) const override;
+    bool load(Serializer& in) override;
 
     void reset();
 

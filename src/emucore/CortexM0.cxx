@@ -559,19 +559,19 @@ CortexM0::CortexM0()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CortexM0::MemoryRegion::serialize(Serializer& serializer) const
+void CortexM0::MemoryRegion::saveDirtyBits(Serializer& out) const
 {
   if (type != MemoryRegionType::directCode && type != MemoryRegionType::directData) return;
 
-  serializer.putBool(dirty);
+  out.putBool(dirty);
   if (!dirty) return;
 
-  serializer.putInt(accessWatermarkLow);
-  serializer.putInt(accessWatermarkHigh);
+  out.putInt(accessWatermarkLow);
+  out.putInt(accessWatermarkHigh);
 
   switch (type) {
     case MemoryRegionType::directCode:
-      serializer.putByteArray(
+      out.putByteArray(
         std::get<1>(access).backingStore + (accessWatermarkLow - base),
         accessWatermarkHigh - accessWatermarkLow + 1
       );
@@ -579,26 +579,62 @@ void CortexM0::MemoryRegion::serialize(Serializer& serializer) const
       break;
 
     case MemoryRegionType::directData:
-      serializer.putByteArray(
+      out.putByteArray(
         std::get<0>(access).backingStore + (accessWatermarkLow - base),
         accessWatermarkHigh - accessWatermarkLow + 1
       );
 
       break;
+
+    default:
+      break;
   }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool CortexM0::save(Serializer& serializer) const
+void CortexM0::MemoryRegion::loadDirtyBits(Serializer& in)
+{
+  if (type != MemoryRegionType::directCode && type != MemoryRegionType::directData) return;
+
+  dirty = in.getBool();
+  if (!dirty) return;
+
+  accessWatermarkLow = in.getInt();
+  accessWatermarkHigh = in.getInt();
+
+  switch (type) {
+    case MemoryRegionType::directCode:
+      in.getByteArray(
+        std::get<1>(access).backingStore + (accessWatermarkLow - base),
+        accessWatermarkHigh - accessWatermarkLow + 1
+      );
+
+      break;
+
+    case MemoryRegionType::directData:
+      in.getByteArray(
+        std::get<0>(access).backingStore + (accessWatermarkLow - base),
+        accessWatermarkHigh - accessWatermarkLow + 1
+      );
+
+      break;
+
+    default:
+      break;
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool CortexM0::save(Serializer& out) const
 {
   try {
     for (size_t i = 0; i < 16; i++)
-      serializer.putInt(reg_norm[i]);
+      out.putInt(reg_norm[i]);
 
-    serializer.putInt(znFlags);
-    serializer.putInt(cFlag);
-    serializer.putInt(vFlag);
-    serializer.putLong(myCycleCounter);
+    out.putInt(znFlags);
+    out.putInt(cFlag);
+    out.putInt(vFlag);
+    out.putLong(myCycleCounter);
   }
   catch (...) {
     cerr << "ERROR: failed to save cortex M0\n";
@@ -609,18 +645,42 @@ bool CortexM0::save(Serializer& serializer) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool CortexM0::load(Serializer& serializer)
+bool CortexM0::load(Serializer& in)
 {
-  return false;
+  try {
+    reset();
+
+    for (size_t i = 0; i < 16; i++)
+      reg_norm[i] = in.getInt();
+
+    znFlags = in.getInt();
+    cFlag = in.getInt();
+    vFlag = in.getInt();
+    myCycleCounter = in.getLong();
+  }
+  catch (...) {
+    cerr << "ERROR: failed to load cortex M0\n";
+    return false;
+  }
+
+  return true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CortexM0::saveDirtyRegions(Serializer& serializer) const
+void CortexM0::saveDirtyRegions(Serializer& out) const
 {
-for (size_t i = 0; i < myNextRegionIndex; i++)
-    myRegions[i].serialize(serializer);
+  for (size_t i = 0; i < myNextRegionIndex; i++)
+    myRegions[i].saveDirtyBits(out);
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void CortexM0::loadDirtyRegions(Serializer& in)
+{
+  for (size_t i = 0; i < myNextRegionIndex; i++)
+    myRegions[i].loadDirtyBits(in);
+
+  recompileCodeRegions();
+}
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CortexM0::MemoryRegion::reset()

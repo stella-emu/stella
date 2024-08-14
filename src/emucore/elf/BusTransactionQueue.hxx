@@ -37,7 +37,8 @@ class BusTransactionQueue: public Serializable {
       uInt64 timestamp{0};
       bool yield{false};
 
-      void serialize(Serializer& serializer) const;
+      void serialize(Serializer& out) const;
+      void deserialize(Serializer& in);
     };
 
   public:
@@ -46,8 +47,8 @@ class BusTransactionQueue: public Serializable {
 
     BusTransactionQueue& reset();
 
-    bool save(Serializer& serializer) const override;
-    bool load(Serializer& serializer) override;
+    bool save(Serializer& out) const override;
+    bool load(Serializer& in) override;
 
     BusTransactionQueue& setNextInjectAddress(uInt16 address);
     uInt16 getNextInjectAddress() const;

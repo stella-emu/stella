@@ -289,7 +289,34 @@ bool CartridgeELF::save(Serializer& out) const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CartridgeELF::load(Serializer& in)
 {
-  return false;
+  try {
+    myConfigStrictMode = in.getBool();
+    myConfigMips = in.getInt();
+    myConfigSystemType = static_cast<SystemType>(in.getByte());
+
+    resetWithConfig();
+
+    myIsBusDriven = in.getBool();
+    myDriveBusValue = in.getByte();
+    myArmCyclesOffset = in.getLong();
+    myExecutionStage = static_cast<ExecutionStage>(in.getByte());
+    myInitFunctionIndex = in.getInt();
+    myConsoleTiming = static_cast<ConsoleTiming>(in.getByte());
+
+    in.getByteArray(myLastPeekResult.get(), 0x1000);
+
+    if (!myTransactionQueue.load(in)) return false;
+    if (!myCortexEmu.load(in)) return false;
+    if (!myVcsLib.load(in)) return false;
+
+    myCortexEmu.loadDirtyRegions(in);
+  }
+  catch(...) {
+    cerr << "ERROR: failed to load ELF\n";
+    return false;
+  }
+
+  return true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

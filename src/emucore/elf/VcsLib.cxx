@@ -112,18 +112,18 @@ VcsLib::VcsLib(BusTransactionQueue& transactionQueue)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool VcsLib::save(Serializer& serializer) const
+bool VcsLib::save(Serializer& out) const
 {
   try {
-    serializer.putByte(myStuffMaskA);
-    serializer.putByte(myStuffMaskX);
-    serializer.putByte(myStuffMaskY);
-    serializer.putBool(myIsWaitingForRead);
-    serializer.putShort(myWaitingForReadAddress);
-    serializer.putShort(myCurrentAddress);
-    serializer.putBool(myCurrentValue);
+    out.putByte(myStuffMaskA);
+    out.putByte(myStuffMaskX);
+    out.putByte(myStuffMaskY);
+    out.putBool(myIsWaitingForRead);
+    out.putShort(myWaitingForReadAddress);
+    out.putShort(myCurrentAddress);
+    out.putBool(myCurrentValue);
 
-    if (!myRand.save(serializer)) return false;
+    if (!myRand.save(out)) return false;
   }
   catch (...) {
     cerr << "ERROR: failed to save vcslib\n";
@@ -134,9 +134,27 @@ bool VcsLib::save(Serializer& serializer) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool VcsLib::load(Serializer& serializer)
+bool VcsLib::load(Serializer& in)
 {
-  return false;
+  reset();
+
+  try {
+    myStuffMaskA = in.getByte();
+    myStuffMaskX = in.getByte();
+    myStuffMaskY = in.getByte();
+    myIsWaitingForRead = in.getBool();
+    myWaitingForReadAddress = in.getShort();
+    myCurrentAddress = in.getShort();
+    myCurrentValue = in.getBool();
+
+    if (!myRand.load(in)) return false;
+  }
+  catch(...) {
+    cerr << "ERROR: failed to load vcslib\n";
+    return false;
+  }
+
+  return true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -66,15 +66,15 @@ BusTransactionQueue& BusTransactionQueue::reset()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool BusTransactionQueue::save(Serializer& serializer) const
+bool BusTransactionQueue::save(Serializer& out) const
 {
   try {
-    serializer.putInt(myQueueSize);
-    serializer.putShort(myNextInjectAddress);
-    serializer.putLong(myTimestamp);
+    out.putInt(myQueueSize);
+    out.putShort(myNextInjectAddress);
+    out.putLong(myTimestamp);
 
     for (size_t i = 0; i < myQueueSize; i++)
-      myQueue[(myQueueNext + i) % myQueueCapacity].serialize(serializer);
+      myQueue[(myQueueNext + i) % myQueueCapacity].serialize(out);
   }
   catch (...) {
     cerr << "ERROR: failed to save bus transaction queue\n";
@@ -85,19 +85,46 @@ bool BusTransactionQueue::save(Serializer& serializer) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool BusTransactionQueue::load(Serializer& serializer)
+bool BusTransactionQueue::load(Serializer& in)
 {
+  try {
+    reset();
+
+    myQueueSize = in.getInt();
+    myNextInjectAddress = in.getShort();
+    myTimestamp = in.getLong();
+
+    if (myQueueSize > myQueueCapacity) return false;
+
+    for (size_t i = 0; i < myQueueSize; i++)
+      myQueue[i].deserialize(in);
+  }
+  catch(...) {
+    cerr << "ERROR: failed to load bus transaction queue\n";
+    return false;
+  }
+
   return true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void BusTransactionQueue::Transaction::serialize(Serializer& serializer) const
+void BusTransactionQueue::Transaction::serialize(Serializer& out) const
 {
-  serializer.putShort(address);
-  serializer.putShort(mask);
-  serializer.putByte(value);
-  serializer.putLong(timestamp);
-  serializer.putBool(yield);
+  out.putShort(address);
+  out.putShort(mask);
+  out.putByte(value);
+  out.putLong(timestamp);
+  out.putBool(yield);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void BusTransactionQueue::Transaction::deserialize(Serializer& in)
+{
+  address = in.getShort();
+  mask = in.getShort();
+  value = in.getByte();
+  timestamp = in.getLong();
+  yield = in.getBool();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
