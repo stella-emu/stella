@@ -119,9 +119,10 @@ class CortexM0: public Serializable
 
     CortexM0& mapDefault(BusTransactionDelegate* delegate);
 
-    bool save(Serializer& serializer) const override;
-    bool load(Serializer& serializer) override;
+    bool save(Serializer& out) const override;
+    bool load(Serializer& in) override;
     void saveDirtyRegions(Serializer& serialized) const;
+    void loadDirtyRegions(Serializer& serialized);
 
     CortexM0& reset();
     CortexM0& setPc(uInt32 pc);
@@ -184,7 +185,8 @@ class CortexM0: public Serializable
       > access;
 
       void reset();
-      void serialize(Serializer& serializer) const;
+      void saveDirtyBits(Serializer& out) const;
+      void loadDirtyBits(Serializer& in);
 
       private:
         MemoryRegion(const MemoryRegion&) = delete;
