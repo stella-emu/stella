@@ -43,7 +43,7 @@ class BusTransactionQueue: public Serializable {
 
   public:
     explicit BusTransactionQueue(size_t capacity);
-    ~BusTransactionQueue() = default;
+    ~BusTransactionQueue() override = default;
 
     BusTransactionQueue& reset();
 
