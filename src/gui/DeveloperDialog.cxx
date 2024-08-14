@@ -316,7 +316,7 @@ void DeveloperDialog::addTiaTab(const GUI::Font& font)
   ypos += lineHeight + VGAP * 1;
 
   myLateHMoveLabel = new StaticTextWidget(myTab, font, HBORDER + INDENT * 2, ypos + 1,
-                                          "Short late HMOVEs for");
+                                          "Short late HMOVE for");
   myLateHMoveLabel->setToolTip("Objects react different to late HMOVEs");
   wid.push_back(myLateHMoveLabel);
   ypos += lineHeight + VGAP * 1;
