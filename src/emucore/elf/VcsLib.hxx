@@ -22,15 +22,17 @@
 #include "Random.hxx"
 #include "CortexM0.hxx"
 #include "BusTransactionQueue.hxx"
+#include "Serializable.hxx"
 
 class Serializer;
 
-class VcsLib: public CortexM0::BusTransactionDelegate {
+class VcsLib: public CortexM0::BusTransactionDelegate, public Serializable {
   public:
     explicit VcsLib(BusTransactionQueue& transactionQueue);
     ~VcsLib() override = default;
 
-    void save(Serializer& serializer) const;
+    bool save(Serializer& serializer) const override;
+    bool load(Serializer& serializer) override;
 
     void reset();
 

@@ -66,18 +66,32 @@ BusTransactionQueue& BusTransactionQueue::reset()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void BusTransactionQueue::save(Serializer& serializer) const
+bool BusTransactionQueue::save(Serializer& serializer) const
 {
-  serializer.putInt(myQueueSize);
-  serializer.putShort(myNextInjectAddress);
-  serializer.putLong(myTimestamp);
+  try {
+    serializer.putInt(myQueueSize);
+    serializer.putShort(myNextInjectAddress);
+    serializer.putLong(myTimestamp);
 
-  for (size_t i = 0; i < myQueueSize; i++)
-    myQueue[(myQueueNext + i) % myQueueCapacity].save(serializer);
+    for (size_t i = 0; i < myQueueSize; i++)
+      myQueue[(myQueueNext + i) % myQueueCapacity].serialize(serializer);
+  }
+  catch (...) {
+    cerr << "ERROR: failed to save bus transaction queue\n";
+    return false;
+  }
+
+  return true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void BusTransactionQueue::Transaction::save(Serializer& serializer) const
+bool BusTransactionQueue::load(Serializer& serializer)
+{
+  return true;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void BusTransactionQueue::Transaction::serialize(Serializer& serializer) const
 {
   serializer.putShort(address);
   serializer.putShort(mask);

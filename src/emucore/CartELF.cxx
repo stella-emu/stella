@@ -270,9 +270,13 @@ bool CartridgeELF::save(Serializer& out) const
     out.putInt(myInitFunctionIndex);
     out.putByte(static_cast<uInt8>(myConsoleTiming));
 
-    myTransactionQueue.save(out);
-    myCortexEmu.save(out);
-    myVcsLib.save(out);
+    out.putByteArray(myLastPeekResult.get(), 0x1000);
+
+    if (!myTransactionQueue.save(out)) return false;
+    if (!myCortexEmu.save(out)) return false;
+    if (!myVcsLib.save(out)) return false;
+
+    myCortexEmu.saveDirtyRegions(out);
   }
   catch(...) {
     cerr << "ERROR: failed to save ELF\n";

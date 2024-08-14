@@ -559,7 +559,7 @@ CortexM0::CortexM0()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CortexM0::MemoryRegion::save(Serializer& serializer) const
+void CortexM0::MemoryRegion::serialize(Serializer& serializer) const
 {
   if (type != MemoryRegionType::directCode && type != MemoryRegionType::directData) return;
 
@@ -589,19 +589,38 @@ void CortexM0::MemoryRegion::save(Serializer& serializer) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CortexM0::save(Serializer& serializer) const
+bool CortexM0::save(Serializer& serializer) const
 {
-  for (size_t i = 0; i < 16; i++)
-    serializer.putInt(reg_norm[i]);
+  try {
+    for (size_t i = 0; i < 16; i++)
+      serializer.putInt(reg_norm[i]);
 
-  serializer.putInt(znFlags);
-  serializer.putInt(cFlag);
-  serializer.putInt(vFlag);
-  serializer.putLong(myCycleCounter);
+    serializer.putInt(znFlags);
+    serializer.putInt(cFlag);
+    serializer.putInt(vFlag);
+    serializer.putLong(myCycleCounter);
+  }
+  catch (...) {
+    cerr << "ERROR: failed to save cortex M0\n";
+    return false;
+  }
 
-  for (size_t i = 0; i < myNextRegionIndex; i++)
-    myRegions[i].save(serializer);
+  return true;
 }
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool CortexM0::load(Serializer& serializer)
+{
+  return false;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void CortexM0::saveDirtyRegions(Serializer& serializer) const
+{
+for (size_t i = 0; i < myNextRegionIndex; i++)
+    myRegions[i].serialize(serializer);
+}
+
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CortexM0::MemoryRegion::reset()

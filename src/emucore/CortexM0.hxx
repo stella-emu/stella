@@ -25,11 +25,12 @@
 
 #include <variant>
 
+#include "Serializable.hxx"
 #include "bspf.hxx"
 
 class Serializer;
 
-class CortexM0
+class CortexM0: public Serializable
 {
   public:
     using err_t = uInt64;
@@ -118,7 +119,9 @@ class CortexM0
 
     CortexM0& mapDefault(BusTransactionDelegate* delegate);
 
-    void save(Serializer& serializer) const;
+    bool save(Serializer& serializer) const override;
+    bool load(Serializer& serializer) override;
+    void saveDirtyRegions(Serializer& serialized) const;
 
     CortexM0& reset();
     CortexM0& setPc(uInt32 pc);
@@ -181,7 +184,7 @@ class CortexM0
       > access;
 
       void reset();
-      void save(Serializer& serializer) const;
+      void serialize(Serializer& serializer) const;
 
       private:
         MemoryRegion(const MemoryRegion&) = delete;
