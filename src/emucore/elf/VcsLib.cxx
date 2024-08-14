@@ -112,18 +112,31 @@ VcsLib::VcsLib(BusTransactionQueue& transactionQueue)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void VcsLib::save(Serializer& serializer) const
+bool VcsLib::save(Serializer& serializer) const
 {
-  serializer.putByte(myStuffMaskA);
-  serializer.putByte(myStuffMaskX);
-  serializer.putByte(myStuffMaskY);
-  serializer.putBool(myIsWaitingForRead);
-  serializer.putShort(myWaitingForReadAddress);
-  serializer.putShort(myCurrentAddress);
-  serializer.putBool(myCurrentValue);
+  try {
+    serializer.putByte(myStuffMaskA);
+    serializer.putByte(myStuffMaskX);
+    serializer.putByte(myStuffMaskY);
+    serializer.putBool(myIsWaitingForRead);
+    serializer.putShort(myWaitingForReadAddress);
+    serializer.putShort(myCurrentAddress);
+    serializer.putBool(myCurrentValue);
 
-  if (!myRand.save(serializer))
-    throw runtime_error("failed to save RNG");
+    if (!myRand.save(serializer)) return false;
+  }
+  catch (...) {
+    cerr << "ERROR: failed to save vcslib\n";
+    return false;
+  }
+
+  return true;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool VcsLib::load(Serializer& serializer)
+{
+  return false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

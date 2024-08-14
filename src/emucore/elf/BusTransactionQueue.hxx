@@ -18,11 +18,12 @@
 #ifndef BUS_TRANSACTION_QUEUE
 #define BUS_TRANSACTION_QUEUE
 
+#include "Serializable.hxx"
 #include "bspf.hxx"
 
 class Serializer;
 
-class BusTransactionQueue {
+class BusTransactionQueue: public Serializable {
   public:
     struct Transaction {
       static Transaction transactionYield(uInt16 address, uInt64 timestamp, uInt16 mask);
@@ -36,7 +37,7 @@ class BusTransactionQueue {
       uInt64 timestamp{0};
       bool yield{false};
 
-      void save(Serializer& serializer) const;
+      void serialize(Serializer& serializer) const;
     };
 
   public:
@@ -45,7 +46,8 @@ class BusTransactionQueue {
 
     BusTransactionQueue& reset();
 
-    void save(Serializer& serializer) const;
+    bool save(Serializer& serializer) const override;
+    bool load(Serializer& serializer) override;
 
     BusTransactionQueue& setNextInjectAddress(uInt16 address);
     uInt16 getNextInjectAddress() const;
