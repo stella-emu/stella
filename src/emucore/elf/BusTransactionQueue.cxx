@@ -69,7 +69,7 @@ BusTransactionQueue& BusTransactionQueue::reset()
 bool BusTransactionQueue::save(Serializer& out) const
 {
   try {
-    out.putInt(myQueueSize);
+    out.putLong(myQueueSize);
     out.putShort(myNextInjectAddress);
     out.putLong(myTimestamp);
 
@@ -90,7 +90,7 @@ bool BusTransactionQueue::load(Serializer& in)
   try {
     reset();
 
-    myQueueSize = in.getInt();
+    myQueueSize = in.getLong();
     myNextInjectAddress = in.getShort();
     myTimestamp = in.getLong();
 
