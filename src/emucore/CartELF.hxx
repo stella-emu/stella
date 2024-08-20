@@ -28,7 +28,15 @@
 
 class ElfLinker;
 
+#ifdef DEBUGGER_SUPPORT
+  class CartridgeELFWidget;
+#endif
+
 class CartridgeELF: public Cartridge {
+#ifdef DEBUGGER_SUPPORT
+  friend CartridgeELFWidget;
+#endif
+
   public:
     static constexpr uInt32 MIPS_MAX = 300;
     static constexpr uInt32 MIPS_MIN = 50;
@@ -71,6 +79,15 @@ class CartridgeELF: public Cartridge {
     uInt8 overdrivePoke(uInt16 address, uInt8 value) override;
 
     bool doesBusStuffing() override { return true; }
+
+#ifdef DEBUGGER_SUPPORT
+    CartDebugWidget* debugWidget(
+      GuiObject* boss, const GUI::Font& lfont, const GUI::Font& nfont, int x, int y, int w, int h
+    ) override;
+#endif
+
+  public:
+    string getDebugLog() const;
 
   private:
     class BusFallbackDelegate: public CortexM0::BusTransactionDelegate {
