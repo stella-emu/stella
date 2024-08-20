@@ -26,6 +26,10 @@
 #include "Settings.hxx"
 #include "exception/FatalEmulationError.hxx"
 
+#ifdef DEBUGGER_SUPPORT
+  #include "CartELFWidget.hxx"
+#endif
+
 #include "CartELF.hxx"
 
 using namespace elfEnvironment;
@@ -35,22 +39,22 @@ namespace {
   constexpr uInt32 ARM_RUNAHED_MIN = 3;
   constexpr uInt32 ARM_RUNAHED_MAX = 6;
 
-  void dumpElf(const ElfFile& elf)
+  void dumpElf(const ElfFile& elf, ostream& stream)
   {
-    cout << "\nELF sections:\n\n";
+    stream << "\nELF sections:\n\n";
 
     size_t i = 0;
     for (const auto& section: elf.getSections()) {
-      if (section.type != 0x00) cout << i << " " << section << '\n';
+      if (section.type != 0x00) stream << i << " " << section << '\n';
       i++;
     }
 
     auto symbols = elf.getSymbols();
-    cout << "\nELF symbols:\n\n";
+    stream << "\nELF symbols:\n\n";
     if (!symbols.empty()) {
       i = 0;
       for (auto& symbol: symbols)
-        cout << (i++) << " " << symbol << '\n';
+        stream << (i++) << " " << symbol << '\n';
     }
 
     i = 0;
@@ -58,25 +62,25 @@ namespace {
       auto rels = elf.getRelocations(i++);
       if (!rels) continue;
 
-      cout
+      stream
         << "\nELF relocations for section "
         << section.name << ":\n\n";
 
-      for (auto& rel: *rels) cout << rel << '\n';
+      for (auto& rel: *rels) stream << rel << '\n';
     }
   }
 
-  void dumpLinkage(const ElfParser& parser, const ElfLinker& linker)
+  void dumpLinkage(const ElfParser& parser, const ElfLinker& linker, ostream& stream)
   {
-    cout << std::hex << std::setfill('0');
+    stream << std::hex << std::setfill('0');
 
-    cout
+    stream
       << "\ntext segment size: 0x" << std::setw(8) << linker.getSegmentSize(ElfLinker::SegmentType::text)
       << "\ndata segment size: 0x" << std::setw(8) << linker.getSegmentSize(ElfLinker::SegmentType::data)
       << "\nrodata segment size: 0x" << std::setw(8) << linker.getSegmentSize(ElfLinker::SegmentType::rodata)
       << '\n';
 
-    cout << "\nrelocated sections:\n\n";
+    stream << "\nrelocated sections:\n\n";
 
     const auto& sections = parser.getSections();
     const auto& relocatedSections = linker.getRelocatedSections();
@@ -84,14 +88,14 @@ namespace {
     for (size_t i = 0; i < sections.size(); i++) {
       if (!relocatedSections[i]) continue;
 
-      cout
+      stream
         << sections[i].name
         << " @ 0x"<< std::setw(8)
         << (relocatedSections[i]->offset + linker.getSegmentBase(relocatedSections[i]->segment))
         << " size 0x" << std::setw(8) << sections[i].size << '\n';
     }
 
-    cout << "\nrelocated symbols:\n\n";
+    stream << "\nrelocated symbols:\n\n";
 
     const auto& symbols = parser.getSymbols();
     const auto& relocatedSymbols = linker.getRelocatedSymbols();
@@ -99,49 +103,49 @@ namespace {
     for (size_t i = 0; i < symbols.size(); i++) {
       if (!relocatedSymbols[i]) continue;
 
-      cout
+      stream
         << symbols[i].name
         << " = 0x" << std::setw(8) << relocatedSymbols[i]->value;
 
       if (relocatedSymbols[i]->segment) {
         switch (*relocatedSymbols[i]->segment) {
           case ElfLinker::SegmentType::text:
-            cout << " (text)";
+            stream << " (text)";
             break;
 
           case ElfLinker::SegmentType::data:
-            cout << " (data)";
+            stream << " (data)";
             break;
 
           case ElfLinker::SegmentType::rodata:
-            cout << " (rodata)";
+            stream << " (rodata)";
             break;
         }
       } else {
-        cout << " (abs)";
+        stream << " (abs)";
       }
 
-      cout << '\n';
+      stream << '\n';
     }
 
     const auto& initArray = linker.getInitArray();
     const auto& preinitArray = linker.getPreinitArray();
 
     if (!initArray.empty()) {
-      cout << "\ninit array:\n\n";
+      stream << "\ninit array:\n\n";
 
       for (const uInt32 address: initArray)
-        cout << " * 0x" << std::setw(8) <<  address << '\n';
+        stream << " * 0x" << std::setw(8) <<  address << '\n';
     }
 
     if (!preinitArray.empty()) {
-      cout << "\npreinit array:\n\n";
+      stream << "\npreinit array:\n\n";
 
       for (const uInt32 address: preinitArray)
-        cout << " * 0x" << std::setw(8) <<  address << '\n';
+        stream << " * 0x" << std::setw(8) <<  address << '\n';
     }
 
-    cout << std::dec;
+    stream << std::dec;
   }
 
   void writeDebugBinary(const ElfLinker& linker)
@@ -370,6 +374,31 @@ uInt8 CartridgeELF::overdrivePoke(uInt16 address, uInt8 value)
   return driveBus(address, value);
 }
 
+#ifdef DEBUGGER_SUPPORT
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+CartDebugWidget* CartridgeELF::debugWidget(
+  GuiObject* boss, const GUI::Font& lfont, const GUI::Font& nfont, int x, int y, int w, int h
+) {
+  return new CartridgeELFWidget(boss, lfont, nfont, x, y, w, h, *this);
+}
+
+string CartridgeELF::getDebugLog() const
+{
+  ostringstream s;
+
+  s
+    << "ARM entrypoint: 0x"
+    << std::hex << std::setw(8) << std::setfill('0') << myArmEntrypoint
+    << std::dec << '\n';
+
+  dumpLinkage(myElfParser, *myLinker, s);
+
+  return s.str();
+}
+
+#endif
+
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 inline uInt64 CartridgeELF::getArmCycles() const
 {
@@ -412,7 +441,7 @@ void CartridgeELF::parseAndLinkElf()
     throw runtime_error("failed to initialize ELF: " + string(e.what()));
   }
 
-  if (dump) dumpElf(myElfParser);
+  if (dump) dumpElf(myElfParser, cout);
 
   myLinker = make_unique<ElfLinker>(ADDR_TEXT_BASE, ADDR_DATA_BASE, ADDR_RODATA_BASE, myElfParser);
   try {
@@ -437,7 +466,7 @@ void CartridgeELF::parseAndLinkElf()
     throw runtime_error("rodata segment too large");
 
   if (dump) {
-    dumpLinkage(myElfParser, *myLinker);
+    dumpLinkage(myElfParser, *myLinker, cout);
 
     cout
       << "\nARM entrypoint: 0x"
