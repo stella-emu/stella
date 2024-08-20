@@ -22,33 +22,68 @@
 #include "StringParser.hxx"
 #include "ScrollBarWidget.hxx"
 #include "StringListWidget.hxx"
+#include "EditTextWidget.hxx"
+
+namespace {
+  constexpr int SAVE_ARM_IMAGE_CMD = 'sarm';
+}
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartridgeELFWidget::CartridgeELFWidget(GuiObject* boss, const GUI::Font& lfont,
                        const GUI::Font& nfont,
                        int x, int y, int w, int h,
                        CartridgeELF& cart)
-  : CartDebugWidget(boss, lfont, nfont, x, y, w, h)
+  : CartDebugWidget(boss, lfont, nfont, x, y, w, h), myCart(cart)
 {
-  addBaseInformation(cart.myImageSize, "AtariAge", "see log below", 1);
+  initialize();
+}
 
-  const auto lineHeight = lfont.getLineHeight();
-  const auto logWidth = _w - 12;
-  constexpr uInt32 visibleLogLines = 20;
+void CartridgeELFWidget::initialize()
+{
+  addBaseInformation(myCart.myImageSize, "AtariAge", "see log below", 1);
+
+  const auto lineHeight = _font.getLineHeight();
+  const auto width = _w - 12;
+  constexpr uInt32 visibleLogLines = 19;
+  constexpr int x = 2;
+
+  int y = (9 * lineHeight) / 2;
 
   const StringParser parser(
-    cart.getDebugLog(),
-    (logWidth - ScrollBarWidget::scrollBarWidth(lfont)) / lfont.getMaxCharWidth()
+    myCart.getDebugLog(),
+    (width - ScrollBarWidget::scrollBarWidth(_font)) / _font.getMaxCharWidth()
   );
 
   const auto& logLines = parser.stringList();
   const bool useScrollbar = logLines.size() > visibleLogLines;
 
   auto logWidget = new StringListWidget(
-    boss, lfont, 2, (9 * lineHeight) / 2, logWidth, visibleLogLines * lineHeight, false, useScrollbar
+    _boss, _font, x, y, width, visibleLogLines * lineHeight, false, useScrollbar
   );
 
   logWidget->setEditable(false);
   logWidget->setEnabled(true);
   logWidget->setList(logLines);
+
+  y += visibleLogLines * lineHeight + lineHeight / 2;
+  const auto saveImageButtonWidth = 17 * _font.getMaxCharWidth();
+
+  WidgetArray wid;
+
+  const auto saveImageButton = new ButtonWidget(_boss, _font, x, y, "Save ARM image", SAVE_ARM_IMAGE_CMD);
+  saveImageButton->setTarget(this);
+
+  const auto imageNameEdit = new EditTextWidget(
+    _boss, _font, x + saveImageButtonWidth, y, width - saveImageButtonWidth, lineHeight + 2, "arm_image.bin"
+  );
+
+  wid.push_back(saveImageButton);
+  wid.push_back(imageNameEdit);
+
+  addToFocusList(wid);
+}
+
+void CartridgeELFWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
+{
+  if (cmd == SAVE_ARM_IMAGE_CMD) cout << "save image" << std::endl;
 }

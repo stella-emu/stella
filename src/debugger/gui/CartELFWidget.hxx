@@ -22,7 +22,7 @@
 
 class CartridgeELF;
 
-class CartridgeELFWidget: public CartDebugWidget
+class CartridgeELFWidget: public CartDebugWidget, public CommandSender
 {
   public:
     CartridgeELFWidget(GuiObject* boss, const GUI::Font& lfont,
@@ -32,7 +32,13 @@ class CartridgeELFWidget: public CartDebugWidget
 
     ~CartridgeELFWidget() override = default;
 
+  private:
+    void initialize();
 
+    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+
+  private:
+    CartridgeELF& myCart;
 
   private:
     CartridgeELFWidget() = delete;
