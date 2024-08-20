@@ -689,7 +689,7 @@ void CortexM0::MemoryRegion::reset()
   access.emplace<std::monostate>();
 
   accessWatermarkHigh = 0;
-  accessWatermarkLow = ~0;
+  accessWatermarkLow = ~0U;
   dirty = false;
 }
 
