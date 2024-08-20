@@ -23,6 +23,7 @@
 #include "ScrollBarWidget.hxx"
 #include "StringListWidget.hxx"
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartridgeELFWidget::CartridgeELFWidget(GuiObject* boss, const GUI::Font& lfont,
                        const GUI::Font& nfont,
                        int x, int y, int w, int h,

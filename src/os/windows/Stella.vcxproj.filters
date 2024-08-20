@@ -1266,6 +1266,9 @@
     <ClCompile Include="..\..\emucore\CortexM0.cxx">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\debugger\gui\CartELFWidget.cxx">
+      <Filter>Source Files\debugger\gui</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\emucore\AtariVox.hxx">
@@ -2563,6 +2566,9 @@
     </ClInclude>
     <ClInclude Include="..\..\lib\json\json.hpp">
       <Filter>Header Files\lib\json</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\debugger\gui\CartELFWidget.hxx">
+      <Filter>Header Files\debugger\gui</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
