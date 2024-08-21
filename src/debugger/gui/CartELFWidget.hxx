@@ -21,6 +21,8 @@
 #include "CartDebugWidget.hxx"
 
 class CartridgeELF;
+class EditTextWidget;
+class FSNode;
 
 class CartridgeELFWidget: public CartDebugWidget
 {
@@ -34,6 +36,7 @@ class CartridgeELFWidget: public CartDebugWidget
 
   private:
     void initialize();
+    void saveArmImage(const FSNode& node);
 
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 

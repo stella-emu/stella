@@ -397,6 +397,23 @@ string CartridgeELF::getDebugLog() const
   return s.str();
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+std::pair<unique_ptr<uInt8[]>, size_t> CartridgeELF::getArmImage() const
+{
+  const size_t imageSize = ADDR_TABLES_BASE + TABLES_SIZE;
+  unique_ptr<uInt8[]> image = make_unique<uInt8[]>(imageSize);
+
+  memset(image.get(), 0, imageSize);
+
+  memcpy(image.get() + ADDR_STACK_BASE, mySectionStack.get(), STACK_SIZE);
+  memcpy(image.get() + ADDR_TEXT_BASE, mySectionText.get(), TEXT_SIZE);
+  memcpy(image.get() + ADDR_DATA_BASE, mySectionData.get(), DATA_SIZE);
+  memcpy(image.get() + ADDR_RODATA_BASE, mySectionRodata.get(), RODATA_SIZE);
+  memcpy(image.get() + ADDR_TABLES_BASE, mySectionTables.get(), TABLES_SIZE);
+
+  return std::pair(std::move(image), imageSize);
+}
+
 #endif
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -444,6 +461,7 @@ void CartridgeELF::parseAndLinkElf()
   if (dump) dumpElf(myElfParser, cout);
 
   myLinker = make_unique<ElfLinker>(ADDR_TEXT_BASE, ADDR_DATA_BASE, ADDR_RODATA_BASE, myElfParser);
+
   try {
     myLinker->link(externalSymbols(SystemType::ntsc));
   } catch (const ElfLinker::ElfLinkError& e) {

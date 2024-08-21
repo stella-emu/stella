@@ -89,6 +89,8 @@ class CartridgeELF: public Cartridge {
   public:
     string getDebugLog() const;
 
+    std::pair<unique_ptr<uInt8[]>, size_t> getArmImage() const;
+
   private:
     class BusFallbackDelegate: public CortexM0::BusTransactionDelegate {
       public:
