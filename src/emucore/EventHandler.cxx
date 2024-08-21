@@ -1518,7 +1518,9 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       return;
 
     case Event::ReloadConsole:
-      if(pressed && !repeated) myOSystem.reloadConsole(true);
+      if(pressed && !repeated && !myOSystem.reloadConsole(true))
+        setState(EventHandlerState::LAUNCHER);
+
       return;
 
     case Event::PreviousMultiCartRom:

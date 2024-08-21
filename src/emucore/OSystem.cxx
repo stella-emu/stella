@@ -967,6 +967,7 @@ void OSystem::mainLoop()
     const bool wasEmulation = myEventHandler->state() == EventHandlerState::EMULATION;
 
     myEventHandler->poll(TimerManager::getTicks());
+
     if(myQuitLoop) break;  // Exit if the user wants to quit
 
     if (!wasEmulation && myEventHandler->state() == EventHandlerState::EMULATION) {
