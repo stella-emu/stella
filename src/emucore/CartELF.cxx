@@ -461,6 +461,7 @@ void CartridgeELF::parseAndLinkElf()
   if (dump) dumpElf(myElfParser, cout);
 
   myLinker = make_unique<ElfLinker>(ADDR_TEXT_BASE, ADDR_DATA_BASE, ADDR_RODATA_BASE, myElfParser);
+  if (!mySettings.getBool("dev.thumb.trapfatal")) myLinker->setUndefinedSymbolDefault(0);
 
   try {
     myLinker->link(externalSymbols(SystemType::ntsc));
