@@ -22,7 +22,10 @@
 #include "StringParser.hxx"
 #include "ScrollBarWidget.hxx"
 #include "StringListWidget.hxx"
-#include "EditTextWidget.hxx"
+#include "BrowserDialog.hxx"
+#include "OSystem.hxx"
+#include "FrameBuffer.hxx"
+#include "bspf.hxx"
 
 namespace {
   constexpr int SAVE_ARM_IMAGE_CMD = 'sarm';
@@ -66,24 +69,42 @@ void CartridgeELFWidget::initialize()
   logWidget->setList(logLines);
 
   y += visibleLogLines * lineHeight + lineHeight / 2;
-  const auto saveImageButtonWidth = 17 * _font.getMaxCharWidth();
 
   WidgetArray wid;
 
   const auto saveImageButton = new ButtonWidget(_boss, _font, x, y, "Save ARM image", SAVE_ARM_IMAGE_CMD);
   saveImageButton->setTarget(this);
 
-  const auto imageNameEdit = new EditTextWidget(
-    _boss, _font, x + saveImageButtonWidth, y, width - saveImageButtonWidth, lineHeight + 2, "arm_image.bin"
-  );
-
   wid.push_back(saveImageButton);
-  wid.push_back(imageNameEdit);
 
   addToFocusList(wid);
 }
 
+void CartridgeELFWidget::saveArmImage(const FSNode& node)
+{
+  try {
+    const auto [buffer, size] = myCart.getArmImage();
+
+    const size_t sizeWritten = node.write(buffer, size);
+    if (sizeWritten != size) throw runtime_error("failed to write arm image");
+
+    instance().frameBuffer().showTextMessage("Successfully exported ARM executable image");
+  }
+  catch (...) {
+    instance().frameBuffer().showTextMessage("Failed to export ARM executable image");
+  }
+}
+
 void CartridgeELFWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
 {
-  if (cmd == SAVE_ARM_IMAGE_CMD) cout << "save image" << std::endl;
+  if (cmd == SAVE_ARM_IMAGE_CMD)
+    BrowserDialog::show(
+      _boss,
+      "Save ARM image",
+      instance().userDir().getPath() + "arm_image.bin",
+      BrowserDialog::Mode::FileSave,
+      [this](bool ok, const FSNode& node) {
+        if (ok) saveArmImage(node);
+      }
+    );
 }

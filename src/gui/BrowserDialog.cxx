@@ -117,9 +117,16 @@ void BrowserDialog::show(GuiObject* parent, const GUI::Font& font,
                          const Command& command,
                          const FSNode::NameFilter& namefilter)
 {
-  uInt32 w = 0, h = 0;
+  uInt32 w, h;
 
-  static_cast<Dialog*>(parent)->getDynamicBounds(w, h);
+  const auto parentDialog = dynamic_cast<Dialog*>(parent);
+  if (parentDialog) {
+    parentDialog->getDynamicBounds(w, h);
+  } else {
+    w = FBMinimum::Width;
+    h = FBMinimum::Height;
+  }
+
   if(w > static_cast<uInt32>(font.getMaxCharWidth() * 80))
     w = font.getMaxCharWidth() * 80;
 
