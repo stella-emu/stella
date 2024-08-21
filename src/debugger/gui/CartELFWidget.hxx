@@ -22,7 +22,7 @@
 
 class CartridgeELF;
 
-class CartridgeELFWidget: public CartDebugWidget, public CommandSender
+class CartridgeELFWidget: public CartDebugWidget
 {
   public:
     CartridgeELFWidget(GuiObject* boss, const GUI::Font& lfont,
