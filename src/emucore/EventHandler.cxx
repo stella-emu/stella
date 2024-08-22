@@ -1519,12 +1519,14 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
 
     case Event::ReloadConsole:
       if(pressed && !repeated && !myOSystem.reloadConsole(true))
-        setState(EventHandlerState::LAUNCHER);
+        exitEmulation(true);
 
       return;
 
     case Event::PreviousMultiCartRom:
-      if(pressed && !repeated) myOSystem.reloadConsole(false);
+      if(pressed && !repeated&& !myOSystem.reloadConsole(true))
+        exitEmulation(true);
+
       return;
 
     case Event::ToggleTimeMachine:
