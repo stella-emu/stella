@@ -29,7 +29,7 @@
 
 namespace {
   constexpr int SAVE_ARM_IMAGE_CMD = 'sarm';
-}
+}  // namespace
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartridgeELFWidget::CartridgeELFWidget(GuiObject* boss, const GUI::Font& lfont,
@@ -41,6 +41,7 @@ CartridgeELFWidget::CartridgeELFWidget(GuiObject* boss, const GUI::Font& lfont,
   initialize();
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeELFWidget::initialize()
 {
   addBaseInformation(myCart.myImageSize, "AtariAge", "see log below", 1);
@@ -60,7 +61,7 @@ void CartridgeELFWidget::initialize()
   const auto& logLines = parser.stringList();
   const bool useScrollbar = logLines.size() > visibleLogLines;
 
-  auto logWidget = new StringListWidget(
+  auto* logWidget = new StringListWidget(
     _boss, _font, x, y, width, visibleLogLines * lineHeight, false, useScrollbar
   );
 
@@ -72,7 +73,7 @@ void CartridgeELFWidget::initialize()
 
   WidgetArray wid;
 
-  const auto saveImageButton = new ButtonWidget(_boss, _font, x, y, "Save ARM image", SAVE_ARM_IMAGE_CMD);
+  auto* saveImageButton = new ButtonWidget(_boss, _font, x, y, "Save ARM image", SAVE_ARM_IMAGE_CMD);
   saveImageButton->setTarget(this);
 
   wid.push_back(saveImageButton);
@@ -80,6 +81,7 @@ void CartridgeELFWidget::initialize()
   addToFocusList(wid);
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeELFWidget::saveArmImage(const FSNode& node)
 {
   try {
@@ -95,6 +97,7 @@ void CartridgeELFWidget::saveArmImage(const FSNode& node)
   }
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeELFWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
 {
   if (cmd == SAVE_ARM_IMAGE_CMD)

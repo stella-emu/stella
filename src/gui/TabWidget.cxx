@@ -27,7 +27,8 @@
 TabWidget::TabWidget(GuiObject* boss, const GUI::Font& font,
                      int x, int y, int w, int h)
   : Widget(boss, font, x, y, w, h),
-    CommandSender(boss)
+    CommandSender(boss),
+    _tabHeight{font.getLineHeight() + 4}
 {
   _id = 0;  // For dialogs with multiple tab widgets, they should specifically
             // call ::setID to differentiate among them
@@ -36,8 +37,6 @@ TabWidget::TabWidget(GuiObject* boss, const GUI::Font& font,
   _bgcolorhi = kDlgColor;
   _textcolor = kTextColor;
   _textcolorhi = kTextColor;
-
-  _tabHeight = font.getLineHeight() + 4;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

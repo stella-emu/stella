@@ -63,8 +63,9 @@ class FSNodeFactory
         #endif
           break;
         default:
-          return nullptr;
+          break;
       }
+      return nullptr;  // satisfy compiler
     }
 
   private:

@@ -28,6 +28,8 @@
 ListWidget::ListWidget(GuiObject* boss, const GUI::Font& font,
                        int x, int y, int w, int h, bool useScrollbar)
   : EditableWidget(boss, font, x, y, 16, 16),
+    _rows{h / _lineHeight},
+    _cols{w / _fontWidth},
     _useScrollbar{useScrollbar}
 {
   _flags = Widget::FLAG_ENABLED | Widget::FLAG_CLEARBG | Widget::FLAG_RETAIN_FOCUS;
@@ -37,9 +39,6 @@ ListWidget::ListWidget(GuiObject* boss, const GUI::Font& font,
   _textcolorhi = kTextColor;
 
   _editMode = false;
-
-  _cols = w / _fontWidth;
-  _rows = h / _lineHeight;
 
   // Set real dimensions
   _h = h + 2;

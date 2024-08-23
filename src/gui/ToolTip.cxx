@@ -27,10 +27,9 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ToolTip::ToolTip(Dialog& dialog, const GUI::Font& font)
-  : myDialog{dialog}
+  : myDialog{dialog},
+    myScale{myDialog.instance().frameBuffer().hidpiScaleFactor()}
 {
-  myScale = myDialog.instance().frameBuffer().hidpiScaleFactor();
-
   setFont(font);
 }
 

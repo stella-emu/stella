@@ -202,9 +202,11 @@ class CartridgeCDF : public CartridgeARM
       of the cart.
     */
     CartDebugWidget* debugWidget(GuiObject* boss, const GUI::Font& lfont,
-                                 const GUI::Font& nfont, int x, int y, int w, int h) override;
+                                 const GUI::Font& nfont, int x, int y,
+                                 int w, int h) override;
     CartDebugWidget* infoWidget(GuiObject* boss, const GUI::Font& lfont,
-                                const GUI::Font& nfont, int x, int y, int w, int h) override;
+                                const GUI::Font& nfont, int x, int y,
+                                int w, int h) override;
 #endif
 
   public:
@@ -296,7 +298,7 @@ class CartridgeCDF : public CartridgeARM
     // For CDFJ+, used as:
     //   $0000 - 2K Driver
     //   $0800 - Display Data, C Variables & Stack
-    std::array<uInt8, 32_KB> myRAM;
+    std::array<uInt8, 32_KB> myRAM{};
 
     // Indicates the offset into the ROM image (aligns to current bank)
     uInt16 myBankOffset{0};

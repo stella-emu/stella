@@ -157,15 +157,7 @@ void RomListSettings::handleCommand(CommandSender* sender, int cmd, int data, in
   {
     case RomListWidget::kSetPCCmd:
     case RomListWidget::kRuntoPCCmd:
-    {
-      sendCommand(cmd, _item, -1);
-      break;
-    }
     case RomListWidget::kSetTimerCmd:
-    {
-      sendCommand(cmd, _item, -1);
-      break;
-    }
     case RomListWidget::kDisassembleCmd:
     {
       sendCommand(cmd, _item, -1);

@@ -248,17 +248,17 @@ class TIASurface
 
     std::array<uInt32, static_cast<std::size_t>
       (AtariNTSC::outWidth(TIAConstants::frameBufferWidth) *
-      TIAConstants::frameBufferHeight)> myRGBFramebuffer;
+      TIAConstants::frameBufferHeight)> myRGBFramebuffer{};
     std::array<uInt32, static_cast<std::size_t>
       (AtariNTSC::outWidth(TIAConstants::frameBufferWidth) *
-        TIAConstants::frameBufferHeight)> myPrevRGBFramebuffer;
+        TIAConstants::frameBufferHeight)> myPrevRGBFramebuffer{};
     /////////////////////////////////////////////////////////////
 
     // Use scanlines in TIA rendering mode
     bool myScanlinesEnabled{false};
 
     // Palette for normal TIA rendering mode
-    PaletteArray myPalette;
+    PaletteArray myPalette{};
 
     // Flag for saving a snapshot
     bool mySaveSnapFlag{false};

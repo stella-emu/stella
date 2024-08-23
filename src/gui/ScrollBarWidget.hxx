@@ -36,8 +36,7 @@ class ScrollBarWidget : public Widget, public CommandSender
 
     static void setWheelLines(int lines) { _WHEEL_LINES = lines; }
     static int  getWheelLines()          { return _WHEEL_LINES;  }
-    static int scrollBarWidth(const GUI::Font& font)
-    {
+    static int scrollBarWidth(const GUI::Font& font) {
       return font.getFontHeight() < 24 ? 15 : 23;
     }
 

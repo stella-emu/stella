@@ -190,7 +190,7 @@ class M6532 : public Device
     const Settings& mySettings;
 
     // An amazing 128 bytes of RAM
-    std::array<uInt8, 128> myRAM;
+    std::array<uInt8, 128> myRAM{};
 
     // Current value of the timer
     uInt8 myTimer{0};
@@ -230,7 +230,7 @@ class M6532 : public Device
     bool myEdgeDetectPositive{false};
 
     // Last value written to the timer registers
-    std::array<uInt8, 4> myOutTimer{0};
+    std::array<uInt8, 4> myOutTimer{};
 
     // Accessible bits in the interrupt flag register
     // All other bits are always zeroed
@@ -245,19 +245,19 @@ class M6532 : public Device
 
     // The arrays containing information about every byte of RIOT
     // indicating whether and how (RW) it is used.
-    std::array<Device::AccessFlags, RAM_SIZE>   myRAMAccessBase;
-    std::array<Device::AccessFlags, STACK_SIZE> myStackAccessBase;
-    std::array<Device::AccessFlags, IO_SIZE>    myIOAccessBase;
+    std::array<Device::AccessFlags, RAM_SIZE>   myRAMAccessBase{};
+    std::array<Device::AccessFlags, STACK_SIZE> myStackAccessBase{};
+    std::array<Device::AccessFlags, IO_SIZE>    myIOAccessBase{};
     // The arrays containing information about every byte of RIOT
     // indicating how often it is accessed.
     std::array<Device::AccessCounter,
-      static_cast<size_t>(RAM_SIZE * 2)>   myRAMAccessCounter;
+      static_cast<size_t>(RAM_SIZE * 2)>   myRAMAccessCounter{};
     std::array<Device::AccessCounter,
-      static_cast<size_t>(STACK_SIZE * 2)> myStackAccessCounter;
+      static_cast<size_t>(STACK_SIZE * 2)> myStackAccessCounter{};
     std::array<Device::AccessCounter,
-      static_cast<size_t>(IO_SIZE * 2)>    myIOAccessCounter;
+      static_cast<size_t>(IO_SIZE * 2)>    myIOAccessCounter{};
     // The array used to skip the first ZP access tracking
-    std::array<uInt8, RAM_SIZE>            myZPAccessDelay;
+    std::array<uInt8, RAM_SIZE>            myZPAccessDelay{};
 
     // Detect timer being accessed on wraparound
     bool myTimWrappedOnRead{false};

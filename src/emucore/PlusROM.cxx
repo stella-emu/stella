@@ -72,8 +72,10 @@ class PlusROMRequest {
   public:
     PlusROMRequest(const Destination& destination, const PlusStoreId& id,
                    const uInt8* request, uInt8 requestSize)
-      : myState{State::created}, myDestination{destination},
-        myId{id}, myRequestSize{requestSize}
+      : myState{State::created},
+        myDestination{destination},
+        myId{id},
+        myRequestSize{requestSize}
     {
       memcpy(myRequest.data(), request, myRequestSize);
     }
@@ -184,7 +186,7 @@ class PlusROMRequest {
     Destination myDestination;
     PlusStoreId myId;
 
-    std::array<uInt8, 256> myRequest;
+    std::array<uInt8, 256> myRequest{};
     uInt8 myRequestSize{0};
 
     string myResponse;
@@ -201,8 +203,6 @@ PlusROM::PlusROM(const Settings& settings, const Cartridge& cart)
   : mySettings{settings},
     myCart{cart}
 {
-  myRxBuffer.fill(0);
-  myTxBuffer.fill(0);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -433,7 +433,7 @@ void PlusROM::send()
     // as the thread is running. Thus, the request can only be destructed once
     // the thread has finished, and we can safely evict it from the deque at
     // any time.
-    std::thread thread([=, this]()
+    std::thread thread([request, this]()
     {
       request->execute();
       switch(request->getState())

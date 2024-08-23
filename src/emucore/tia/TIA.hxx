@@ -610,8 +610,8 @@ class TIA : public Device
      * Palette and indices for fixed debug colors.
      */
     enum FixedObject: uInt8 { P0, M0, P1, M1, PF, BL, BK };
-    BSPF::array2D<FixedColor, 3, 7> myFixedColorPalette;
-    std::array<string, 7> myFixedColorNames;
+    BSPF::array2D<FixedColor, 3, 7> myFixedColorPalette{};
+    std::array<string, 7> myFixedColorNames{};
 
   private:
     /**
@@ -840,12 +840,12 @@ class TIA : public Device
     LatchedInput myInput1;
 
     // Pointer to the internal color-index-based frame buffer
-    std::array<uInt8, static_cast<size_t>(TIAConstants::H_PIXEL * TIAConstants::frameBufferHeight)> myFramebuffer;
+    std::array<uInt8, static_cast<size_t>(TIAConstants::H_PIXEL * TIAConstants::frameBufferHeight)> myFramebuffer{};
 
     // The frame is rendered to the backbuffer and only copied to the framebuffer
     // upon completion
-    std::array<uInt8, static_cast<size_t>(TIAConstants::H_PIXEL * TIAConstants::frameBufferHeight)> myBackBuffer;
-    std::array<uInt8, static_cast<size_t>(TIAConstants::H_PIXEL * TIAConstants::frameBufferHeight)> myFrontBuffer;
+    std::array<uInt8, static_cast<size_t>(TIAConstants::H_PIXEL * TIAConstants::frameBufferHeight)> myBackBuffer{};
+    std::array<uInt8, static_cast<size_t>(TIAConstants::H_PIXEL * TIAConstants::frameBufferHeight)> myFrontBuffer{};
 
     // We snapshot frame statistics when the back buffer is copied to the front buffer
     // and when the front buffer is copied to the frame buffer
@@ -971,7 +971,7 @@ class TIA : public Device
      * The "shadow registers" track the last written register value for the
      * debugger.
      */
-    std::array<uInt8, 64> myShadowRegisters;
+    std::array<uInt8, 64> myShadowRegisters{};
 
     /**
      * Indicates if color loss should be enabled or disabled.  Color loss
@@ -991,8 +991,8 @@ class TIA : public Device
     bool myAutoPhosphorEnabled{false};
     bool myAutoPhosphorAutoOn{false};
     bool myAutoPhosphorActive{false};
-    ObjectPos myPosP0, myPosP1, myPosM0, myPosM1, myPosBL;
-    ObjectGfx myPatPF;
+    ObjectPos myPosP0{}, myPosP1{}, myPosM0{}, myPosM1{}, myPosBL{};
+    ObjectGfx myPatPF{};
     int myFlickerFrame{0}, myFlickerCount{0};
     uInt32 myFrameEnd{0};
     onPhosphorCallback myPhosphorCallback;
@@ -1024,13 +1024,13 @@ class TIA : public Device
   #ifdef DEBUGGER_SUPPORT
     // The arrays containing information about every byte of TIA
     // indicating whether and how (RW) it is used.
-    std::array<Device::AccessFlags, TIA_SIZE> myAccessBase;
+    std::array<Device::AccessFlags, TIA_SIZE> myAccessBase{};
     // The arrays containing information about every byte of TIA
     // indicating how often it is accessed (read and write).
-    std::array<Device::AccessCounter, TIA_SIZE + TIA_READ_SIZE> myAccessCounter;
+    std::array<Device::AccessCounter, TIA_SIZE + TIA_READ_SIZE> myAccessCounter{};
 
     // The array used to skip the first two TIA access trackings
-    std::array<uInt8, TIA_SIZE> myAccessDelay;
+    std::array<uInt8, TIA_SIZE> myAccessDelay{};
   #endif // DEBUGGER_SUPPORT
 
   private:

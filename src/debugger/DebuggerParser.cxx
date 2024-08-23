@@ -499,14 +499,14 @@ bool DebuggerParser::validateArgs(int cmd)
 
       case Parameters::ARG_LABEL:
       case Parameters::ARG_FILE:
-        break; // TODO: validate these (for now any string's allowed)
+        [[fallthrough]]; // FIXME: validate these (for now any string's allowed)
 
       case Parameters::ARG_MULTI_BYTE:
       case Parameters::ARG_MULTI_WORD:
-        break; // FIXME: validate these (for now, any number's allowed)
+        [[fallthrough]]; // FIXME: validate these (for now, any number's allowed)
 
       case Parameters::ARG_END_ARGS:
-        break;
+        [[fallthrough]];
 
       default:
         break;  // Not supposed to get here

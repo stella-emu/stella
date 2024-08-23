@@ -259,10 +259,10 @@ class CartridgeE7 : public Cartridge
     size_t mySize{0};
 
     // The 2K of RAM
-    std::array<uInt8, RAM_SIZE> myRAM;
+    std::array<uInt8, RAM_SIZE> myRAM{};
 
     // Indicates which bank is in the segment
-    std::array<uInt16, NUM_SEGMENTS> myCurrentBank;
+    std::array<uInt16, NUM_SEGMENTS> myCurrentBank{};
 
     // Indicates which 256 byte bank of RAM is being used
     uInt16 myCurrentRAM{0};

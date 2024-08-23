@@ -65,7 +65,7 @@ namespace HSM {
     bool specialZeroBased{false};
     string notes;
     // Addresses
-    ScoreAddresses scoreAddr;
+    ScoreAddresses scoreAddr{};
     uInt16 varsAddr{0};
     uInt16 specialAddr{0};
   };

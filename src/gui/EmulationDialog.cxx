@@ -65,7 +65,8 @@ namespace {
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 EmulationDialog::EmulationDialog(OSystem& osystem, DialogContainer& parent,
                                  const GUI::Font& font, int max_w, int max_h)
-  : Dialog(osystem, parent, font, "Emulation settings")
+  : Dialog(osystem, parent, font, "Emulation settings"),
+    mySaveOnExitGroup{new RadioButtonGroup()}
 {
   const int lineHeight   = Dialog::lineHeight(),
             fontWidth    = Dialog::fontWidth(),
@@ -139,7 +140,6 @@ EmulationDialog::EmulationDialog(OSystem& osystem, DialogContainer& parent,
   new StaticTextWidget(this, font, HBORDER, ypos + 1,
                        "When entering/exiting emulation:");
   ypos += lineHeight + VGAP;
-  mySaveOnExitGroup = new RadioButtonGroup();
   auto* r = new RadioButtonWidget(this, font, xpos, ypos + 1,
                                   "Do nothing", mySaveOnExitGroup);
   wid.push_back(r);

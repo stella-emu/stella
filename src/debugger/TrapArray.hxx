@@ -44,7 +44,7 @@ class TrapArray
 
   private:
     // The actual counts
-    std::array<uInt8, 0x10000> myCount;
+    std::array<uInt8, 0x10000> myCount{};
 
     // Indicates whether we should treat this array as initialized
     bool myInitialized{false};

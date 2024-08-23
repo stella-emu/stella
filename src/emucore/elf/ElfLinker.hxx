@@ -60,7 +60,7 @@ class ElfLinker {
     enum class SegmentType: uInt8 { text, data, rodata };
 
     struct RelocatedSection {
-      SegmentType segment;
+      SegmentType segment{};
       uInt32 offset{0};
     };
 

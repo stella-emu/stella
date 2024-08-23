@@ -116,9 +116,10 @@ Console::Console(OSystem& osystem, unique_ptr<Cartridge>& cart,
                  const Properties& props, AudioSettings& audioSettings)
   : myOSystem{osystem},
     myEvent{osystem.eventHandler().event()},
+    myAudioSettings{audioSettings},
     myProperties{props},
     myCart{std::move(cart)},
-    myAudioSettings{audioSettings}
+    myDisplayFormat{myProperties.get(PropType::Display_Format)}
 {
   myEmulationTiming = make_shared<EmulationTiming>();
   myCart->setProperties(&myProperties);
@@ -170,9 +171,6 @@ Console::Console(OSystem& osystem, unique_ptr<Cartridge>& cart,
   myDevSettingsHandler = make_unique<DevSettingsHandler>(myOSystem);
 
   // Auto-detect NTSC/PAL mode if it's requested
-  string autodetected;
-  myDisplayFormat = myProperties.get(PropType::Display_Format);
-
   if (myDisplayFormat == "AUTO")
     myDisplayFormat = formatFromFilename();
 
@@ -184,6 +182,7 @@ Console::Console(OSystem& osystem, unique_ptr<Cartridge>& cart,
   myOSystem.sound().pause(true);
   myOSystem.frameBuffer().clear();
 
+  string autodetected;
   if(myDisplayFormat == "AUTO" || myOSystem.settings().getBool("rominfo"))
   {
     autodetectFrameLayout();

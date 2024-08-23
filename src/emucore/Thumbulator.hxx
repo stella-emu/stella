@@ -79,7 +79,7 @@ class Thumbulator
       uInt32 instructions{0};
     #ifdef THUMB_STATS
       uInt32 reads{0}, writes{0};
-      uInt32 nCylces{0}, sCylces{0}, iCylces{0};
+      uInt32 nCycles{0}, sCycles{0}, iCycles{0};
       uInt32 branches{0}, taken{0};
       uInt32 mamPrefetchHits{0}, mamPrefetchMisses{0};
       uInt32 mamBranchHits{0}, mamBranchMisses{0};
@@ -268,7 +268,7 @@ class Thumbulator
     const unique_ptr<Op[]> decodedRom;  // NOLINT
     const unique_ptr<uInt32[]> decodedParam;  // NOLINT
     uInt16* ram{nullptr};
-    std::array<uInt32, 16> reg_norm; // normal execution mode, do not have a thread mode
+    std::array<uInt32, 16> reg_norm{}; // normal execution mode, do not have a thread mode
     uInt32 znFlags{0};
     uInt32 cFlag{0};
     uInt32 vFlag{0};

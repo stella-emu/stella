@@ -217,7 +217,7 @@ class Cartridge4A50 : public Cartridge
     ByteBuffer myImage;
 
     // The 32K of RAM on the cartridge
-    std::array<uInt8, 32_KB> myRAM;
+    std::array<uInt8, 32_KB> myRAM{};
 
     // (Actual) Size of the ROM image
     size_t mySize{0};

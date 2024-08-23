@@ -235,25 +235,25 @@ class CartridgeDPCPlus : public CartridgeARM
     //   3K DPC+ driver
     //   4K Display Data
     //   1K Frequency Data
-    std::array<uInt8, 8_KB> myDPCRAM;
+    std::array<uInt8, 8_KB> myDPCRAM{};
 
     // Pointer to the 1K frequency table
     uInt8* myFrequencyImage{nullptr};
 
     // The top registers for the data fetchers
-    std::array<uInt8, 8> myTops;
+    std::array<uInt8, 8> myTops{};
 
     // The bottom registers for the data fetchers
-    std::array<uInt8, 8> myBottoms;
+    std::array<uInt8, 8> myBottoms{};
 
     // The counter registers for the data fetchers
-    std::array<uInt16, 8> myCounters;
+    std::array<uInt16, 8> myCounters{};
 
     // The counter registers for the fractional data fetchers
-    std::array<uInt32, 8> myFractionalCounters;
+    std::array<uInt32, 8> myFractionalCounters{};
 
     // The fractional increments for the data fetchers
-    std::array<uInt8, 8> myFractionalIncrements;
+    std::array<uInt8, 8> myFractionalIncrements{};
 
     // The Fast Fetcher Enabled flag
     bool myFastFetch{false};
@@ -262,19 +262,19 @@ class CartridgeDPCPlus : public CartridgeARM
     bool myLDAimmediate{false};
 
     // Parameter for special functions
-    std::array<uInt8, 8> myParameter;
+    std::array<uInt8, 8> myParameter{};
 
     // Parameter pointer for special functions
     uInt8 myParameterPointer{0};
 
     // The music mode counters
-    std::array<uInt32, 3> myMusicCounters;
+    std::array<uInt32, 3> myMusicCounters{};
 
     // The music frequency
-    std::array<uInt32, 3> myMusicFrequencies;
+    std::array<uInt32, 3> myMusicFrequencies{};
 
     // The music waveforms
-    std::array<uInt16, 3> myMusicWaveforms;
+    std::array<uInt16, 3> myMusicWaveforms{};
 
     // The random number generator register
     uInt32 myRandomNumber{1};

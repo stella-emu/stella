@@ -178,7 +178,7 @@ class PlusROM : public Serializable
     string myHost;
     string myPath;
 
-    std::array<uInt8, 256> myRxBuffer, myTxBuffer;
+    std::array<uInt8, 256> myRxBuffer{}, myTxBuffer{};
     uInt8 myRxReadPos{0}, myRxWritePos{0}, myTxPos{0};
 
     std::deque<shared_ptr<PlusROMRequest>> myPendingRequests;

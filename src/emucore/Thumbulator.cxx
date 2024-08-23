@@ -2952,7 +2952,7 @@ int Thumbulator::reset()
 #endif
 #ifdef THUMB_STATS
   _stats.reads = _stats.writes
-    = _stats.nCylces = _stats.sCylces = _stats.iCylces
+    = _stats.nCycles = _stats.nCycles = _stats.iCycles
     = _stats.branches = _stats.taken
     = _stats.mamPrefetchHits = _stats.mamPrefetchMisses
     = _stats.mamBranchHits = _stats.mamBranchMisses
@@ -3191,7 +3191,7 @@ void Thumbulator::incCycles(AccessType accessType, uInt32 cycles)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Thumbulator::incSCycles(uInt32 addr, AccessType accessType)
 {
-  THUMB_STAT(_stats.sCylces)
+  THUMB_STAT(_stats.nCycles)
   uInt32 cycles = 0;
 
   if(addr & 0xC0000000) // RAM, peripherals
@@ -3251,7 +3251,7 @@ void Thumbulator::incSCycles(uInt32 addr, AccessType accessType)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Thumbulator::incNCycles(uInt32 addr, AccessType accessType)
 {
-  THUMB_STAT(_stats.nCylces)
+  THUMB_STAT(_stats.nCycles)
   uInt32 cycles = 0;
 
   if(addr & 0xC0000000) // RAM, peripherals
@@ -3278,7 +3278,7 @@ void Thumbulator::incNCycles(uInt32 addr, AccessType accessType)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Thumbulator::incICycles(uInt32 m)
 {
-  THUMB_STAT(_stats.iCylces)
+  THUMB_STAT(_stats.iCycles)
 
  #ifdef EMULATE_PIPELINE
   _fetchPipeline += m;

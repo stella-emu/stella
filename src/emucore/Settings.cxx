@@ -312,7 +312,7 @@ Settings::Settings()
   setPermanent("dev.extaccess", "true");
   // Thumb ARM emulation options
   setPermanent("dev.thumb.trapfatal", "true");
-  setPermanent("dev.arm.mips", CartridgeELF::MIPS_DEF); 
+  setPermanent("dev.arm.mips", CartridgeELF::MIPS_DEF);
 #ifdef DEBUGGER_SUPPORT
   setPermanent("dev.thumb.inccycles", "true");
   setPermanent("dev.thumb.cyclefactor", "1.05");
@@ -835,7 +835,7 @@ void Settings::usage()
 
 #if defined(BSPF_UNIX) || defined(BSPF_MACOS)
   int height = 25;
-  struct winsize ws;
+  struct winsize ws{};
 
   ioctl(STDOUT_FILENO, TIOCGWINSZ, &ws);
 
@@ -906,7 +906,8 @@ void Settings::migrateOne()
   const int version = getInt(SETTINGS_VERSION_KEY);
   if (version >= SETTINGS_VERSION) return;
 
-  switch (version) {  // NOLINT  (could be written as IF/ELSE)
+  // NOLINTBEGIN: could be written as IF/ELSE, bugprone-branch-clone
+  switch (version) {
     case 0:
       #if defined BSPF_MACOS || defined DARWIN
         setPermanent("video", "");
@@ -915,6 +916,7 @@ void Settings::migrateOne()
     default:
       break;
   }
+  // NOLINTEND
 
   setPermanent(SETTINGS_VERSION_KEY, version + 1);
 }

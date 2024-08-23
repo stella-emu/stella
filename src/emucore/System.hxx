@@ -430,7 +430,7 @@ class System : public Serializable
     std::array<PageAccess, NUM_PAGES> myPageAccessTable;
 
     // The list of dirty pages
-    std::array<bool, NUM_PAGES> myPageIsDirtyTable;
+    std::array<bool, NUM_PAGES> myPageIsDirtyTable{};
 
     // The current state of the Data Bus
     uInt8 myDataBusState{0};

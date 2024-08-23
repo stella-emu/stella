@@ -26,7 +26,7 @@
 class FrameManager: public AbstractFrameManager {
   public:
 
-    enum Metrics : uInt32 {  // NOLINT: use 32-bit, even though 16-bit is sufficient
+    enum Metrics: uInt32 {  // NOLINT: use 32-bit, even though 16-bit is sufficient
       vblankNTSC = 37,
       vblankPAL = 45,
       vsync = 3,

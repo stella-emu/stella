@@ -194,13 +194,13 @@ class CartridgeAR : public Cartridge
 
   private:
     // Indicates the offset within the image for the corresponding bank
-    std::array<uInt32, 2> myImageOffset;
+    std::array<uInt32, 2> myImageOffset{};
 
     // The 6K of RAM and 2K of ROM contained in the Supercharger
-    std::array<uInt8, 8_KB> myImage;
+    std::array<uInt8, 8_KB> myImage{};
 
     // The 256 byte header for the current 8448 byte load
-    std::array<uInt8, 256> myHeader;
+    std::array<uInt8, 256> myHeader{};
 
     // Size of the ROM image
     size_t mySize{0};

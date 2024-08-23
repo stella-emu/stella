@@ -86,7 +86,7 @@ void MD5::encode(uInt8* output, const uInt32* input, uInt32 len)
 // Apply MD5 algo on a block.
 void MD5::transform(const uInt8* block)
 {
-  std::array<uInt32, 16> x;
+  std::array<uInt32, 16> x{};
   decode(x.data(), block, BLOCKSIZE);
 
   uInt32 a = state[0], b = state[1], c = state[2], d = state[3];
@@ -214,16 +214,12 @@ void MD5::update(const uInt8* input, uInt32 length)
 // the message digest and zeroizing the context.
 void MD5::finalize()
 {
-  static constexpr std::array<uInt8, BLOCKSIZE> padding = {
-    0x80, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
-  };
+  static constexpr std::array<uInt8, BLOCKSIZE> padding = { 0x80 };
 
   if (!finalized)
   {
     // Save number of bits
-    std::array<uInt8, 8> bits;
+    std::array<uInt8, 8> bits{};
     encode(bits.data(), count.data(), 8);
 
     // Pad out to 56 mod 64

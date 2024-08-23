@@ -33,7 +33,8 @@
 RomListWidget::RomListWidget(GuiObject* boss, const GUI::Font& lfont,
                              const GUI::Font& nfont,
                              int x, int y, int w, int h)
-  : EditableWidget(boss, nfont, x, y, 16, 16)
+  : EditableWidget(boss, nfont, x, y, 16, 16),
+    _rows{h / _lineHeight}
 {
   _flags = Widget::FLAG_ENABLED | Widget::FLAG_CLEARBG | Widget::FLAG_RETAIN_FOCUS;
   _bgcolor = kWidColor;
@@ -44,14 +45,12 @@ RomListWidget::RomListWidget(GuiObject* boss, const GUI::Font& lfont,
   _editMode = false;
   _dyText = -1; // fixes the vertical position of selected text
 
-  _cols = w / _fontWidth;
-  _rows = h / _lineHeight;
-
   // Set real dimensions
   _w = w - ScrollBarWidget::scrollBarWidth(_font);
   _h = h + 2;
 
   // Create scrollbar and attach to the list
+  // NOLINTNEXTLINE: we want to initialize here, not in the member list
   myScrollBar = new ScrollBarWidget(boss, lfont, _x + _w, _y,
                                     ScrollBarWidget::scrollBarWidth(_font), _h);
   myScrollBar->setTarget(this);
@@ -73,7 +72,7 @@ RomListWidget::RomListWidget(GuiObject* boss, const GUI::Font& lfont,
   // rowheight is determined by largest item on a line,
   // possibly meaning that number of rows will change
   _lineHeight = std::max(_lineHeight, CheckboxWidget::boxSize(_font));
-  _rows = h / _lineHeight;
+  _rows = h / _lineHeight;  // NOLINT: must be initialized after _lineHeight
 
   // Create a CheckboxWidget for each row in the list
   for(int i = 0; i < _rows; ++i)

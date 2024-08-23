@@ -32,12 +32,12 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 RomImageWidget::RomImageWidget(GuiObject* boss, const GUI::Font& font,
                                int x, int y, int w, int h)
-  : Widget(boss, font, x, y, w, h)
+  : Widget(boss, font, x, y, w, h),
+    myImageHeight{_h - labelHeight(font) - font.getFontHeight() / 4 - 1}
 {
   _flags = Widget::FLAG_ENABLED | Widget::FLAG_TRACK_MOUSE; // | FLAG_WANTS_RAWDATA;
   _bgcolor = kDlgColor;
   _bgcolorlo = kBGColorLo;
-  myImageHeight = _h - labelHeight(font) - font.getFontHeight() / 4 - 1;
 
   myZoomRect = Common::Rect(_w * 7 / 16, myImageHeight * 7 / 16,
                             _w * 9 / 16, myImageHeight * 9 / 16);

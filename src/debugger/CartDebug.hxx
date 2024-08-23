@@ -294,14 +294,14 @@ class CartDebug : public DebuggerSystem
     };
 
     // Address type information determined by Distella
-    AddrTypeArray myDisLabels, myDisDirectives;
+    AddrTypeArray myDisLabels{}, myDisDirectives{};
 
     // Information on equates used in the disassembly
     struct ReservedEquates {
-      std::array<bool, 16>  TIARead{false};
-      std::array<bool, 64>  TIAWrite{false};
-      std::array<bool, 32>  IOReadWrite{false};
-      std::array<bool, 128> ZPRAM{false};
+      std::array<bool, 16>  TIARead{};
+      std::array<bool, 64>  TIAWrite{};
+      std::array<bool, 32>  IOReadWrite{};
+      std::array<bool, 128> ZPRAM{};
       AddrToLabel Label;
       bool breakFound{false};
     };

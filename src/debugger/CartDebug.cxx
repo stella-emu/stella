@@ -779,9 +779,8 @@ int CartDebug::getAddress(const string& label) const
 {
   LabelToAddr::const_iterator iter;
 
-  if((iter = mySystemAddresses.find(label)) != mySystemAddresses.end())
-    return iter->second;
-  else if((iter = myUserAddresses.find(label)) != myUserAddresses.end())
+  if((iter = mySystemAddresses.find(label)) != mySystemAddresses.end() ||
+    ((iter = myUserAddresses.find(label)) != myUserAddresses.end()))
     return iter->second;
   else
     return -1;
@@ -1626,10 +1625,8 @@ void CartDebug::accessTypeAsString(ostream& buf, uInt16 addr) const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Device::AccessType CartDebug::accessTypeAbsolute(Device::AccessFlags flags)
 {
-  if(flags & Device::CODE)
+  if(flags & Device::CODE || flags & Device::TCODE) // TODO: TCODE separate?
     return Device::CODE;
-  else if(flags & Device::TCODE)
-    return Device::CODE;          // TODO - should this be separate??
   else if(flags & Device::GFX)
     return Device::GFX;
   else if(flags & Device::PGFX)

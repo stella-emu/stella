@@ -40,7 +40,10 @@
 PromptWidget::PromptWidget(GuiObject* boss, const GUI::Font& font,
                            int x, int y, int w, int h)
   : Widget(boss, font, x, y, w - ScrollBarWidget::scrollBarWidth(font), h),
-    CommandSender(boss)
+    CommandSender(boss),
+    _kConsoleCharWidth{font.getMaxCharWidth()},
+    _kConsoleCharHeight{font.getFontHeight()},
+    _kConsoleLineHeight{_kConsoleCharHeight + 2}
 {
   _flags = Widget::FLAG_ENABLED | Widget::FLAG_CLEARBG | Widget::FLAG_RETAIN_FOCUS |
            Widget::FLAG_WANTS_TAB | Widget::FLAG_WANTS_RAWDATA;
@@ -48,20 +51,16 @@ PromptWidget::PromptWidget(GuiObject* boss, const GUI::Font& font,
   _bgcolor = kWidColor;
   _bgcolorlo = kDlgColor;
 
-  _kConsoleCharWidth  = font.getMaxCharWidth();
-  _kConsoleCharHeight = font.getFontHeight();
-  _kConsoleLineHeight = _kConsoleCharHeight + 2;
-
   // Calculate depending values
   _lineWidth = (_w - ScrollBarWidget::scrollBarWidth(_font) - 2) / _kConsoleCharWidth;
   _linesPerPage = (_h - 2) / _kConsoleLineHeight;
   _linesInBuffer = kBufferSize / _lineWidth;
 
   // Add scrollbar
+  // NOLINTNEXTLINE: we want to initialize here, not in the member list
   _scrollBar = new ScrollBarWidget(boss, font, _x + _w, _y,
                                    ScrollBarWidget::scrollBarWidth(_font), _h);
   _scrollBar->setTarget(this);
-  _scrollStopLine = INT_MAX;
 
   clearScreen();
 

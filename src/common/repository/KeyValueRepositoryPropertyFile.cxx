@@ -31,9 +31,7 @@ namespace {
     string s;
     while(in.get(c))
     {
-      if((c == '\\') && (in.peek() == '"'))
-        in.get(c);
-      else if((c == '\\') && (in.peek() == '\\'))
+      if(c == '\\' && (in.peek() == '"' || in.peek() == '\\'))
         in.get(c);
       else if(c == '"')
         break;

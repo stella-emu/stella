@@ -106,29 +106,29 @@ class PromptWidget : public Widget, public CommandSender
       kHistorySize = 1000
     };
 
-    int  _buffer[kBufferSize];  // NOLINT  (will be rewritten soon)
-    int  _linesInBuffer;
+    int  _buffer[kBufferSize]{};  // NOLINT  (will be rewritten soon)
+    int  _linesInBuffer{0};
 
-    int  _lineWidth;
-    int  _linesPerPage;
+    int  _lineWidth{0};
+    int  _linesPerPage{0};
 
-    int  _currentPos;
-    int  _scrollLine;
-    int  _firstLineInBuffer;
-    int  _scrollStopLine;
+    int  _currentPos{0};
+    int  _scrollLine{0};
+    int  _firstLineInBuffer{0};
+    int  _scrollStopLine{INT_MAX};
 
-    int  _promptStartPos;
-    int  _promptEndPos;
+    int  _promptStartPos{0};
+    int  _promptEndPos{0};
 
-    ScrollBarWidget* _scrollBar;
+    ScrollBarWidget* _scrollBar{nullptr};
 
     std::vector<string> _history;
     int _historyIndex{0};
     int _historyLine{0};
     int _tabCount{-1};
-    char _inputStr[kLineBufferSize];
+    char _inputStr[kLineBufferSize]{};
 
-    int _kConsoleCharWidth, _kConsoleCharHeight, _kConsoleLineHeight;
+    int _kConsoleCharWidth{0}, _kConsoleCharHeight{0}, _kConsoleLineHeight{0};
 
     bool _inverse{false};
     bool _firstTime{true};

@@ -46,7 +46,7 @@ bool SerialPortUNIX::openPort(const string& device)
   tcflush(myHandle, TCIFLUSH);
   fcntl(myHandle, F_SETFL, FNDELAY);
 
-  struct termios termios;
+  struct termios termios{};
   memset(&termios, 0, sizeof(struct termios));
 
   termios.c_cflag = CREAD | CLOCAL;

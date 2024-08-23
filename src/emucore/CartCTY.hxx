@@ -274,10 +274,10 @@ class CartridgeCTY : public Cartridge
     ByteBuffer myImage;
 
     // The 28K ROM image of the music
-    std::array<uInt8, 28_KB> myTuneData;
+    std::array<uInt8, 28_KB> myTuneData{};
 
     // The 64 bytes of RAM accessible at $1000 - $1080
-    std::array<uInt8, 64> myRAM;
+    std::array<uInt8, 64> myRAM{};
 
     // Console clock rate
     double myClockRate{1193191.66666667};
@@ -293,10 +293,10 @@ class CartridgeCTY : public Cartridge
     uInt16 myTunePosition{0};
 
     // The music mode counters
-    std::array<uInt32, 3> myMusicCounters{0};
+    std::array<uInt32, 3> myMusicCounters{};
 
     // The music frequency
-    std::array<uInt32, 3> myMusicFrequencies{0};
+    std::array<uInt32, 3> myMusicFrequencies{};
 
     // Flags that last byte peeked was A9 (LDA #)
     bool myLDAimmediate{false};

@@ -31,7 +31,7 @@ class CheetahCheat : public Cheat
     void evaluate() override;
 
   private:
-    std::array<uInt8, 16> savedRom;
+    std::array<uInt8, 16> savedRom{};
     uInt16 address{0};
     uInt8  value{0};
     uInt8  count{0};
