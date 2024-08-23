@@ -67,25 +67,25 @@ CXXFLAGS_TEST+= -Wall -Wextra -Wno-unused-parameter
 CFLAGS_TEST+= -Wall -Wextra -Wno-unused-parameter
 
 ifdef HAVE_GCC
-  CXXFLAGS+= -Wno-multichar -Wunused -Woverloaded-virtual -Wnon-virtual-dtor -std=c++20
-  CFLAGS+= -Wno-multichar -Wunused
+  CXXFLAGS+= -Wno-multichar -Wunused -Woverloaded-virtual -std=c++20
+  CFLAGS+= -Wunused
 
-	CXXFLAGS_TEST+= -Wno-multichar -Wunused -Woverloaded-virtual -Wnon-virtual-dtor -std=c++20
+  CXXFLAGS_TEST+= -Wno-multichar -Wunused -Woverloaded-virtual -std=c++20
   CFLAGS_TEST+= -Wno-multichar -Wunused
 endif
 
 ifdef HAVE_CLANG
-  CXXFLAGS+= -Wno-multichar -Wunused -Woverloaded-virtual -Wnon-virtual-dtor -std=c++20
-  CFLAGS+= -Wno-multichar -Wunused
+  CXXFLAGS+= -Wunused -Woverloaded-virtual -std=c++20
+  CFLAGS+= -Wunused
 
-  CXXFLAGS_TEST+= -Wno-multichar -Wunused -Woverloaded-virtual -Wnon-virtual-dtor -std=c++20
+  CXXFLAGS_TEST+= -Wno-multichar -Wunused -Woverloaded-virtual -std=c++20
   CFLAGS_TEST+= -Wno-multichar -Wunused
 endif
 
 ifdef CLANG_WARNINGS
-  EXTRA_WARN=-Wno-c++98-compat-pedantic -Wno-unknown-warning-option \
+  EXTRA_WARN=-Wno-c++98-compat-pedantic -Wno-undefined-func-template \
     -Wno-switch-enum -Wno-conversion -Wno-covered-switch-default \
-    -Wno-inconsistent-missing-destructor-override -Wno-float-equal \
+    -Wno-documentation -Wno-float-equal \
     -Wno-exit-time-destructors -Wno-global-constructors -Wno-weak-vtables \
     -Wno-four-char-constants -Wno-padded -Wno-reserved-identifier \
     -Wno-duplicate-enum -Wno-unsafe-buffer-usage

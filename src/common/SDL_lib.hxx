@@ -31,6 +31,7 @@
   #pragma clang diagnostic ignored "-Wimplicit-fallthrough"
   #pragma clang diagnostic ignored "-Wreserved-id-macro"
   #pragma clang diagnostic ignored "-Wold-style-cast"
+  #pragma clang diagnostic ignored "-Wreserved-identifier"
   #pragma clang diagnostic ignored "-Wswitch-default"
   #include <SDL.h>
   #pragma clang diagnostic pop

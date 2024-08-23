@@ -72,7 +72,7 @@ class CartridgeELF: public Cartridge {
 
     const ByteBuffer& getImage(size_t& size) const override;
 
-    string name() const override { return "CartridgeELF"; };
+    string name() const override { return "CartridgeELF"; }
 
     uInt8 overdrivePeek(uInt16 address, uInt8 value) override;
 
