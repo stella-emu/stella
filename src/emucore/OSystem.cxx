@@ -582,11 +582,13 @@ string OSystem::createConsole(const FSNode& rom, string_view md5sum, bool newrom
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool OSystem::reloadConsole(bool nextrom)
+optional<string> OSystem::reloadConsole(bool nextrom)
 {
   mySettings->setValue("romloadprev", !nextrom);
 
-  return createConsole(myRomFile, myRomMD5, false) == EmptyString;
+  const string result = createConsole(myRomFile, myRomMD5, false);
+
+  return result == EmptyString ? std::nullopt : optional<string>(result);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

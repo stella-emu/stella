@@ -1518,14 +1518,15 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       return;
 
     case Event::ReloadConsole:
-      if(pressed && !repeated && !myOSystem.reloadConsole(true))
-        exitEmulation(true);
-
-      return;
-
     case Event::PreviousMultiCartRom:
-      if(pressed && !repeated&& !myOSystem.reloadConsole(true))
-        exitEmulation(true);
+      if(pressed && !repeated) {
+        const auto reloadError = myOSystem.reloadConsole(event == Event::ReloadConsole);
+
+        if (reloadError) {
+          exitEmulation(true);
+          myOSystem.frameBuffer().showTextMessage(reloadError.value(), MessagePosition::MiddleCenter, true);
+        }
+      }
 
       return;
 

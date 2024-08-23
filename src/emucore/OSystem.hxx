@@ -377,7 +377,7 @@ class OSystem
 
       @return  True on successful creation, otherwise false
     */
-    bool reloadConsole(bool nextrom = true);
+    optional<string> reloadConsole(bool nextrom = true);
 
     /**
       Creates a new ROM launcher, to select a new ROM to emulate.
