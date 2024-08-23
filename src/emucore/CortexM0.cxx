@@ -91,8 +91,8 @@ namespace {
 #define do_cflag_bit(x) cFlag = (x)
 #define do_vflag_bit(x) vFlag = (x)
 
-#define branch_target_9(inst) (read_register(15) + 2 + (((Int32)(inst) << 24) >> 23))
-#define branch_target_12(inst) (read_register(15) + 2 + (((Int32)(inst) << 21) >> 20))
+#define branch_target_9(inst) (read_register(15) + 2 + ((static_cast<Int32>(inst) << 24) >> 23))
+#define branch_target_12(inst) (read_register(15) + 2 + ((static_cast<Int32>(inst) << 21) >> 20))
 
 namespace {
   constexpr uInt32 PAGEMAP_SIZE = 0x100000000 / 4096;
