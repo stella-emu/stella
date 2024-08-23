@@ -691,6 +691,7 @@
     <ClCompile Include="..\..\emucore\CartWF8.cxx" />
     <ClCompile Include="..\..\emucore\CompuMate.cxx" />
     <ClCompile Include="..\..\emucore\ControllerDetector.cxx" />
+    <ClCompile Include="..\..\emucore\CortexM0.cxx" />
     <ClCompile Include="..\..\emucore\DispatchResult.cxx" />
     <ClCompile Include="..\..\emucore\elf\ElfParser.cxx" />
     <ClCompile Include="..\..\emucore\elf\ElfLinker.cxx" />
@@ -698,7 +699,6 @@
     <ClCompile Include="..\..\emucore\elf\ElfEnvironment.cxx" />
     <ClCompile Include="..\..\emucore\elf\BusTransactionQueue.cxx" />
     <ClCompile Include="..\..\emucore\elf\VcsLib.cxx" />
-    <ClCompile Include="..\..\emucore\CortexM0.cxx" />
     <ClCompile Include="..\..\emucore\EmulationTiming.cxx" />
     <ClCompile Include="..\..\emucore\EmulationWorker.cxx" />
     <ClCompile Include="..\..\emucore\FBSurface.cxx" />
@@ -1670,14 +1670,14 @@
     <ClInclude Include="..\..\emucore\ControllerDetector.hxx" />
     <ClInclude Include="..\..\emucore\ControlLowLevel.hxx" />
     <ClInclude Include="..\..\emucore\DispatchResult.hxx" />
+    <ClInclude Include="..\..\emucore\elf\BusTransactionQueue.hxx" />
     <ClInclude Include="..\..\emucore\elf\ElfFile.hxx" />
     <ClInclude Include="..\..\emucore\elf\ElfParser.hxx" />
     <ClInclude Include="..\..\emucore\elf\ElfLinker.hxx" />
     <ClInclude Include="..\..\emucore\elf\ElfUtil.hxx" />
     <ClInclude Include="..\..\emucore\elf\ElfEnvironment.hxx" />
-    <ClInclude Include="..\..\emucore\elf\BusTransactionQueue.hxx" />
-    <ClInclude Include="..\..\emucore\elf\VcsLib.hxx" />
     <ClInclude Include="..\..\emucore\CortexM0.hxx" />
+    <ClInclude Include="..\..\emucore\elf\VcsLib.hxx" />
     <ClInclude Include="..\..\emucore\EmulationTiming.hxx" />
     <ClInclude Include="..\..\emucore\EmulationWorker.hxx" />
     <ClInclude Include="..\..\emucore\EventHandlerConstants.hxx" />

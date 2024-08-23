@@ -1263,11 +1263,11 @@
     <ClCompile Include="..\..\emucore\elf\VcsLib.cxx">
       <Filter>Source Files\emucore\elf</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\emucore\CortexM0.cxx">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\debugger\gui\CartELFWidget.cxx">
       <Filter>Source Files\debugger\gui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\emucore\CortexM0.cxx">
+      <Filter>Source Files\emucore</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -2558,17 +2558,17 @@
     <ClInclude Include="..\..\emucore\elf\ElfEnvironment.hxx">
       <Filter>Header Files\emucore\elf</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\emucore\elf\BusTransactionQueue.hxx">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\emucore\elf\VcsLib.hxx">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\lib\json\json.hpp">
       <Filter>Header Files\lib\json</Filter>
     </ClInclude>
     <ClInclude Include="..\..\debugger\gui\CartELFWidget.hxx">
       <Filter>Header Files\debugger\gui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\emucore\elf\BusTransactionQueue.hxx">
+      <Filter>Header Files\emucore\elf</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\emucore\elf\VcsLib.hxx">
+      <Filter>Header Files\emucore\elf</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
