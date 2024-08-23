@@ -551,9 +551,8 @@ string CortexM0::describeError(err_t err) {
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CortexM0::CortexM0()
+  : myPageMap{make_unique<uInt8[]>(PAGEMAP_SIZE)}
 {
-  myPageMap = make_unique<uInt8[]>(PAGEMAP_SIZE);
-
   resetMappings();
   reset();
 }
@@ -628,8 +627,7 @@ void CortexM0::MemoryRegion::loadDirtyBits(Serializer& in)
 bool CortexM0::save(Serializer& out) const
 {
   try {
-    for (size_t i = 0; i < 16; i++)
-      out.putInt(reg_norm[i]);
+    out.putIntArray(reg_norm.data(), reg_norm.size());
 
     out.putInt(znFlags);
     out.putInt(cFlag);
@@ -650,8 +648,7 @@ bool CortexM0::load(Serializer& in)
   try {
     reset();
 
-    for (size_t i = 0; i < 16; i++)
-      reg_norm[i] = in.getInt();
+    in.getIntArray(reg_norm.data(), reg_norm.size());
 
     znFlags = in.getInt();
     cFlag = in.getInt();

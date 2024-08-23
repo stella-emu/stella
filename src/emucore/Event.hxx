@@ -200,7 +200,7 @@ class Event
     /**
       Create a new event object.
     */
-    Event() { clear(); }
+    Event() { clear(); }  // NOLINT: myValues is initialized in clear()
     ~Event() = default;
 
   public:

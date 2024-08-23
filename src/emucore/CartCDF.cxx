@@ -70,6 +70,7 @@ CartridgeCDF::CartridgeCDF(const ByteBuffer& image, size_t size,
 
   // Pointer to the program ROM
   // which starts after the 2K driver (and 2K C Code for CDF)
+  // NOLINTNEXTLINE: we want to initialize here, not in the member list
   myProgramImage = myImage.get() + (isCDFJplus() ? 2_KB : 4_KB);
 
   // Pointer to CDF driver in RAM

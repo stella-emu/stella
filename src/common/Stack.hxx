@@ -31,7 +31,7 @@ template <typename T, size_t CAPACITY = 50>
 class FixedStack
 {
   private:
-    std::array<T, CAPACITY> _stack;
+    std::array<T, CAPACITY> _stack{};
     size_t _size{0};
 
   public:

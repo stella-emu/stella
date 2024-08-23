@@ -45,10 +45,10 @@ class CartridgeBUS : public CartridgeARM
   enum class BUSSubtype: uInt8 {
     BUS0, // very old demos when BUS was in flux, not supported in Stella
     BUS1, // draconian_20161102.bin
-    BUS2, // 128bus_20170120.bin, 128chronocolour_20170101.bin, parrot_20161231_NTSC.bin
+    BUS2, // 128bus_20170120.bin, 128chronocolour_20170101.bin,
+          // parrot_20161231_NTSC.bin
     BUS3  // rpg_20170616_NTSC.bin
   };
-
 
   public:
     /**
@@ -160,18 +160,18 @@ class CartridgeBUS : public CartridgeARM
   */
   uInt8 internalRamGetValue(uInt16 addr) const override;
 
-
   #ifdef DEBUGGER_SUPPORT
     /**
       Get debugger widget responsible for accessing the inner workings
       of the cart.
     */
     CartDebugWidget* debugWidget(GuiObject* boss, const GUI::Font& lfont,
-                                 const GUI::Font& nfont, int x, int y, int w, int h) override;
+                                 const GUI::Font& nfont, int x, int y,
+                                 int w, int h) override;
 
     CartDebugWidget* infoWidget(GuiObject* boss, const GUI::Font& lfont,
-                                const GUI::Font& nfont, int x, int y, int w, int h) override;
-
+                                const GUI::Font& nfont, int x, int y,
+                                int w, int h) override;
   #endif
 
   public:
@@ -249,7 +249,7 @@ class CartridgeBUS : public CartridgeARM
     //   $0000 - 2K BUS driver
     //   $0800 - 4K Display Data
     //   $1800 - 2K C Variable & Stack
-    std::array<uInt8, 8_KB> myRAM;
+    std::array<uInt8, 8_KB> myRAM{};
 
     // Indicates the offset into the ROM image (aligns to current bank)
     uInt16 myBankOffset{0};
@@ -283,13 +283,13 @@ class CartridgeBUS : public CartridgeARM
     uInt16 myWaveformBase{0}; // was WAVEFORM
 
     // The music mode counters
-    std::array<uInt32, 3> myMusicCounters{0};
+    std::array<uInt32, 3> myMusicCounters{};
 
     // The music frequency
-    std::array<uInt32, 3> myMusicFrequencies{0};
+    std::array<uInt32, 3> myMusicFrequencies{};
 
     // The music waveform sizes
-    std::array<uInt8, 3> myMusicWaveformSize{0};
+    std::array<uInt8, 3> myMusicWaveformSize{};
 
     // Fractional DPC music OSC clocks unused during the last update
     double myFractionalClocks{0.0};

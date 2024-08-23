@@ -54,7 +54,7 @@ namespace {
 class StreamReader : public Serializable
 {
   public:
-    StreamReader() { myBuffer1.fill(0);  myBuffer2.fill(0); }
+    StreamReader() = default;
 
     bool open(string_view path) {
       myFile = Serializer(path, Serializer::Mode::ReadOnly);
@@ -250,8 +250,8 @@ class StreamReader : public Serializable
     uInt8*        myColor{nullptr};
     uInt8*        myColorBK{nullptr};
 
-    std::array<uInt8, CartridgeMVC::MVC_FIELD_SIZE> myBuffer1;
-    std::array<uInt8, CartridgeMVC::MVC_FIELD_SIZE> myBuffer2;
+    std::array<uInt8, CartridgeMVC::MVC_FIELD_SIZE> myBuffer1{};
+    std::array<uInt8, CartridgeMVC::MVC_FIELD_SIZE> myBuffer2{};
 
     uInt8         myVisibleLines{192};
     uInt8         myVSyncLines{3};
@@ -785,7 +785,7 @@ static constexpr uInt8 levelBarsOddData[] = {
 class MovieCart : public Serializable
 {
   public:
-    MovieCart() { myROM.fill(0); }
+    MovieCart() = default;
 
     bool init(string_view path);
     bool process(uInt16 address);
@@ -845,7 +845,7 @@ class MovieCart : public Serializable
     void updateTransport();
 
     // data
-    std::array<uInt8, 1_KB> myROM;
+    std::array<uInt8, 1_KB> myROM{};
 
     // title screen state
     int        myTitleCycles{0};

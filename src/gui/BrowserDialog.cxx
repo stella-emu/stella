@@ -117,9 +117,9 @@ void BrowserDialog::show(GuiObject* parent, const GUI::Font& font,
                          const Command& command,
                          const FSNode::NameFilter& namefilter)
 {
-  uInt32 w, h;
+  uInt32 w = 0, h = 0;
 
-  const auto parentDialog = dynamic_cast<Dialog*>(parent);
+  const auto* parentDialog = static_cast<Dialog*>(parent);
   if (parentDialog) {
     parentDialog->getDynamicBounds(w, h);
   } else {

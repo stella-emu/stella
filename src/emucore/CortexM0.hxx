@@ -147,7 +147,7 @@ class CortexM0: public Serializable
 
   private:
 
-    enum class MemoryRegionType : uInt8 {
+    enum class MemoryRegionType: uInt8 {
       directData,
       directCode,
       delegate,
@@ -208,12 +208,12 @@ class CortexM0: public Serializable
     err_t execute(uInt16 inst, uInt8 op);
 
   private:
-    std::array<uInt32, 16> reg_norm; // normal execution mode, do not have a thread mode
+    std::array<uInt32, 16> reg_norm{}; // normal execution mode, do not have a thread mode
     uInt32 znFlags{0};
     uInt32 cFlag{0};
     uInt32 vFlag{0};
 
-    std::array<MemoryRegion, 0x100> myRegions;
+    std::array<MemoryRegion, 0x100> myRegions{};
     unique_ptr<uInt8[]> myPageMap;
     uInt8 myNextRegionIndex{0};
     BusTransactionDelegate* myDefaultDelegate{nullptr};

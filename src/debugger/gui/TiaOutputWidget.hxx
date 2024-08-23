@@ -63,7 +63,7 @@ class TiaOutputWidget : public Widget, public CommandSender
 
     // Create this buffer once, instead of allocating it each time the
     // TIA image is redrawn
-    std::array<uInt32, 320> myLineBuffer;
+    std::array<uInt32, 320> myLineBuffer{};
 
   private:
     void handleMouseDown(int x, int y, MouseButton b, int clickCount) override;

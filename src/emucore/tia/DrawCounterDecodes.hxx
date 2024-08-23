@@ -37,13 +37,12 @@ class DrawCounterDecodes
 
   private:
 
-    uInt8* myPlayerDecodes[8]{nullptr}; // TJ: one per NUSIZ number and size
-
-    uInt8* myMissileDecodes[8]{nullptr}; // TJ: one per NUSIZ number and size
+    uInt8* myPlayerDecodes[8]{};  // TJ: one per NUSIZ number and size
+    uInt8* myMissileDecodes[8]{}; // TJ: one per NUSIZ number and size
 
     // TJ: 6 scanline pixel arrays, one for each copy pattern
-    uInt8 myDecodes0[160], myDecodes1[160], myDecodes2[160], myDecodes3[160],
-          myDecodes4[160], myDecodes6[160];
+    uInt8 myDecodes0[160]{}, myDecodes1[160]{}, myDecodes2[160]{},
+          myDecodes3[160]{}, myDecodes4[160]{}, myDecodes6[160]{};
 
     static DrawCounterDecodes myInstance;
 

@@ -2418,7 +2418,7 @@ int EventHandler::getActionListIndex(int idx, Event::Group group)
   switch(group)
   {
     using enum Event::Group;
-    case Menu:        return idx;
+    case Menu:
     case Emulation:   return idx;
     case Misc:        return getEmulActionListIndex(idx, MiscEvents);
     case AudioVideo:  return getEmulActionListIndex(idx, AudioVideoEvents);

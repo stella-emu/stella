@@ -31,6 +31,7 @@ DiStella::DiStella(const CartDebug& dbg, CartDebug::DisassemblyList& list,
     myList{list},
     mySettings{s},
     myReserved{reserved},
+    myOffset{info.offset},
     myLabels{labels},
     myDirectives{directives}
 {
@@ -38,7 +39,6 @@ DiStella::DiStella(const CartDebug& dbg, CartDebug::DisassemblyList& list,
   const CartDebug::AddressList& debuggerAddresses = info.addressList;
   const uInt16 start = *debuggerAddresses.cbegin();
 
-  myOffset = info.offset;
   if (start & 0x1000) {
     info.start = myAppData.start = 0x0000;
     info.end = myAppData.end = static_cast<uInt16>(info.size - 1);
@@ -378,7 +378,7 @@ void DiStella::disasm(uInt32 distart, int pass)
         {
           d1 = Debugger::debugger().peek(myPC + myOffset);
           if(pass == 3) {
-            if (checkBits(myPC, Device::COL | Device::PCOL | Device::BCOL, 
+            if (checkBits(myPC, Device::COL | Device::PCOL | Device::BCOL,
                 /*Device::CODE |*/ Device::GFX | Device::PGFX))
               nextLine << "     #" << getColor(d1);
             else
@@ -818,38 +818,21 @@ void DiStella::disasmFromAddress(uInt32 distart)
           mark(ad, Device::DATA);
         break;
 
-      case AddressingMode::ZERO_PAGE:
-        d1 = Debugger::debugger().peek(myPC + myOffset);  ++myPC;
-        mark(d1, Device::REFERENCED);
+      case AddressingMode::ABSOLUTE_X:
+      case AddressingMode::ABSOLUTE_Y:
+      case AddressingMode::ABS_INDIRECT:
+        ad = Debugger::debugger().dpeek(myPC + myOffset);  myPC += 2;
+        mark(ad, Device::REFERENCED);
         break;
 
       case AddressingMode::IMMEDIATE:
-        ++myPC;
-        break;
-
-      case AddressingMode::ABSOLUTE_X:
-        ad = Debugger::debugger().dpeek(myPC + myOffset);  myPC += 2;
-        mark(ad, Device::REFERENCED);
-        break;
-
-      case AddressingMode::ABSOLUTE_Y:
-        ad = Debugger::debugger().dpeek(myPC + myOffset);  myPC += 2;
-        mark(ad, Device::REFERENCED);
-        break;
-
       case AddressingMode::INDIRECT_X:
-        ++myPC;
-        break;
-
       case AddressingMode::INDIRECT_Y:
         ++myPC;
         break;
 
+      case AddressingMode::ZERO_PAGE:
       case AddressingMode::ZERO_PAGE_X:
-        d1 = Debugger::debugger().peek(myPC + myOffset);  ++myPC;
-        mark(d1, Device::REFERENCED);
-        break;
-
       case AddressingMode::ZERO_PAGE_Y:
         d1 = Debugger::debugger().peek(myPC + myOffset);  ++myPC;
         mark(d1, Device::REFERENCED);
@@ -867,11 +850,6 @@ void DiStella::disasmFromAddress(uInt32 distart)
           myAddressQueue.push(ad);
           mark(ad, Device::CODE);
         }
-        break;
-
-      case AddressingMode::ABS_INDIRECT:
-        ad = Debugger::debugger().dpeek(myPC + myOffset);  myPC += 2;
-        mark(ad, Device::REFERENCED);
         break;
 
       default:

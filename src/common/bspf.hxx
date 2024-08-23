@@ -424,7 +424,7 @@ namespace BSPF
   inline std::tm localTime()
   {
     const auto currtime = std::time(nullptr);
-    std::tm tm_snapshot;
+    std::tm tm_snapshot{};
   #if (defined BSPF_WINDOWS || defined __WIN32__) && (!defined __GNUG__ || defined __MINGW32__)
     localtime_s(&tm_snapshot, &currtime);
   #else

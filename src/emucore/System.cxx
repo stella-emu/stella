@@ -31,17 +31,12 @@ System::System(Random& random, M6502& m6502, M6532& m6532,
     myM6502{m6502},
     myM6532{m6532},
     myTIA{mTIA},
-    myCart{mCart}
+    myCart{mCart},
+    myCartridgeDoesBusStuffing{myCart.doesBusStuffing()}
 {
   // Initialize page access table
   const PageAccess access(&myNullDevice, System::PageAccessType::READ);
   myPageAccessTable.fill(access);
-  myPageIsDirtyTable.fill(false);
-
-  // Bus starts out unlocked (in other words, peek() changes myDataBusState)
-  myDataBusLocked = false;
-
-  myCartridgeDoesBusStuffing = myCart.doesBusStuffing();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

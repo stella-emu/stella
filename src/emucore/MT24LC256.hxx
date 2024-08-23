@@ -96,7 +96,7 @@ class MT24LC256
     ByteBuffer myData;
 
     // Track which pages are used
-    std::array<bool, PAGE_NUM> myPageHit;
+    std::array<bool, PAGE_NUM> myPageHit{};
 
     // Cached state of the SDA and SCL pins on the last write
     bool mySDA{false}, mySCL{false};
@@ -121,7 +121,7 @@ class MT24LC256
     Int32 jpee_sizemask{0}, jpee_pagemask{0}, jpee_smallmode{0}, jpee_logmode{0};
     Int32 jpee_pptr{0}, jpee_state{0}, jpee_nb{0};
     uInt32 jpee_address{0}, jpee_ad_known{0};
-    std::array<uInt8, 70> jpee_packet;
+    std::array<uInt8, 70> jpee_packet{};
 
   private:
     // Following constructors and assignment operators not supported

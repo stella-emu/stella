@@ -411,7 +411,7 @@ std::pair<unique_ptr<uInt8[]>, size_t> CartridgeELF::getArmImage() const
   memcpy(image.get() + ADDR_RODATA_BASE, mySectionRodata.get(), RODATA_SIZE);
   memcpy(image.get() + ADDR_TABLES_BASE, mySectionTables.get(), TABLES_SIZE);
 
-  return std::pair(std::move(image), imageSize);
+  return {std::move(image), imageSize};
 }
 
 #endif
@@ -718,6 +718,7 @@ void CartridgeELF::setupConfig()
   myConfigSystemType = determineSystemType(myProperties);
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeELF::resetWithConfig()
 {
   std::fill_n(myLastPeekResult.get(), 0x1000, 0);

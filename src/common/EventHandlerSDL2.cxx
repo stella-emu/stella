@@ -265,6 +265,7 @@ EventHandlerSDL2::JoystickSDL2::JoystickSDL2(int idx)
 {
   ASSERT_MAIN_THREAD;
 
+  // NOLINTNEXTLINE: we want to initialize here, not in the member list
   myStick = SDL_JoystickOpen(idx);
   if(myStick)
   {

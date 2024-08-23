@@ -28,11 +28,11 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 NavigationWidget::NavigationWidget(GuiObject* boss, const GUI::Font& font,
     int xpos, int ypos, int w, int h)
-  : Widget(boss, font, xpos, ypos, w, h)
+  : Widget(boss, font, xpos, ypos, w, h),
+    myUseMinimalUI{instance().settings().getBool("minimal_ui")}
 {
   // Add some buttons and textfield to show current directory
   const int lineHeight = _font.getLineHeight();
-  myUseMinimalUI = instance().settings().getBool("minimal_ui");
 
   if(!myUseMinimalUI)
   {

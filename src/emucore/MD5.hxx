@@ -122,10 +122,10 @@ class MD5
   private:
     static constexpr uInt32 BLOCKSIZE = 64;
     bool finalized{false};
-    std::array<uInt8, BLOCKSIZE> buffer; // bytes that didn't fit in last chunk
-    std::array<uInt32, 2> count;   // 64bit counter for number of bits (lo, hi)
-    std::array<uInt32, 4> state;   // digest so far
-    std::array<uInt8, 16> digest;  // the result
+    std::array<uInt8, BLOCKSIZE> buffer{}; // bytes that didn't fit in last chunk
+    std::array<uInt32, 2> count{};   // 64bit counter for number of bits (lo, hi)
+    std::array<uInt32, 4> state{};   // digest so far
+    std::array<uInt8, 16> digest{};  // the result
 
   private:
     MD5(const MD5&) = delete;

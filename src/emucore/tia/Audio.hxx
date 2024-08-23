@@ -73,8 +73,8 @@ class Audio : public Serializable
     uInt32 mySumChannel1{0};
     uInt32 mySumCt{0};
 
-    std::array<Int16, 0x1e + 1> myMixingTableSum;
-    std::array<Int16, 0x0f + 1> myMixingTableIndividual;
+    std::array<Int16, 0x1e + 1> myMixingTableSum{};
+    std::array<Int16, 0x0f + 1> myMixingTableIndividual{};
 
     Int16* myCurrentFragment{nullptr};
     uInt32 mySampleIndex{0};

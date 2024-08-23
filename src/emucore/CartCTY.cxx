@@ -515,7 +515,7 @@ void CartridgeCTY::loadScore(uInt8 index)
   const Serializer serializer(myEEPROMFile, Serializer::Mode::ReadOnly);
   if(serializer)
   {
-    std::array<uInt8, 256> scoreRAM;
+    std::array<uInt8, 256> scoreRAM{};
     try
     {
       serializer.getByteArray(scoreRAM.data(), scoreRAM.size());
@@ -537,7 +537,7 @@ void CartridgeCTY::saveScore(uInt8 index)
   if(serializer)
   {
     // Load score RAM
-    std::array<uInt8, 256> scoreRAM;
+    std::array<uInt8, 256> scoreRAM{};
     try
     {
       serializer.getByteArray(scoreRAM.data(), scoreRAM.size());
@@ -571,7 +571,7 @@ void CartridgeCTY::wipeAllScores()
   if(serializer)
   {
     // Erase score RAM
-    std::array<uInt8, 256> scoreRAM = {};
+    std::array<uInt8, 256> scoreRAM{};
     try
     {
       serializer.putByteArray(scoreRAM.data(), scoreRAM.size());

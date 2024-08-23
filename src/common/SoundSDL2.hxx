@@ -156,7 +156,7 @@ class SoundSDL2 : public Sound
     bool myIsInitializedFlag{false};
 
     // Audio specification structure
-    SDL_AudioSpec myHardwareSpec;
+    SDL_AudioSpec myHardwareSpec{};
 
     SDL_AudioDeviceID myDevice{0};
     uInt32 myDeviceId{0};
@@ -196,9 +196,9 @@ class SoundSDL2 : public Sound
         double mySpeed{1.0};
         unique_ptr<uInt8[]> myCvtBuffer;
         uInt32 myCvtBufferSize{0};
-        SDL_AudioSpec mySpec;  // audio output format
-        uInt8* myPos{nullptr}; // pointer to the audio buffer to be played
-        uInt32 myRemaining{0}; // remaining length of the sample we have to play
+        SDL_AudioSpec mySpec{}; // audio output format
+        uInt8* myPos{nullptr};  // pointer to the audio buffer to be played
+        uInt32 myRemaining{0};  // remaining length of the sample we have to play
 
       private:
         // Callback function invoked by the SDL Audio library when it needs data

@@ -30,13 +30,13 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ScrollBarWidget::ScrollBarWidget(GuiObject* boss, const GUI::Font& font,
                                  int x, int y, int w, int h)
-  : Widget(boss, font, x, y, w, h), CommandSender(boss)
+  : Widget(boss, font, x, y, w, h),
+    CommandSender(boss),
+    _scrollBarWidth{scrollBarWidth(font)}
 {
   _flags = Widget::FLAG_ENABLED | Widget::FLAG_TRACK_MOUSE | Widget::FLAG_CLEARBG;
   _bgcolor = kWidColor;
   _bgcolorhi = kWidColor;
-
-  _scrollBarWidth = scrollBarWidth(font);
 
   setArrows();
 }

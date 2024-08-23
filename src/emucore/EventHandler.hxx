@@ -549,7 +549,7 @@ class EventHandler
     ;
 
     // The event(s) assigned to each combination event
-    BSPF::array2D<Event::Type, COMBO_SIZE, EVENTS_PER_COMBO> myComboTable;
+    BSPF::array2D<Event::Type, COMBO_SIZE, EVENTS_PER_COMBO> myComboTable{};
 
     // Holds static strings for the remap menu (emulation and menu events)
     using EmulActionList = std::array<ActionList, EMUL_ACTIONLIST_SIZE>;

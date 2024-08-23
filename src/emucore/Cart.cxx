@@ -191,13 +191,12 @@ uInt16 Cartridge::bankOrigin(uInt16 bank, uInt16 PC) const
   const uInt32 offset = bank * bankSize();
   //uInt16 addrMask = (4_KB - 1) & ~(bankSize(bank) - 1);
   //int addrShift = 0;
-  std::array<uInt16, intervals> count; // up to 128 256 byte interval origins
+  std::array<uInt16, intervals> count{}; // up to 128 256 byte interval origins
 
   //if(addrMask)
   //  addrShift = log(addrMask) / log(2);
   //addrMask;
 
-  count.fill(0);
   if(PC)
     count[PC >> 13]++;
   for(uInt16 addr = 0x0000; addr < bankSize(bank); ++addr)

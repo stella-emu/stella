@@ -154,8 +154,8 @@ class AtariNTSC
       luma_cutoff   = 0.20F
     ;
 
-    std::array<uInt8, palette_size * 3L> myRGBPalette;
-    BSPF::array2D<uInt32, palette_size, entry_size> myColorTable;
+    std::array<uInt8, palette_size * 3L> myRGBPalette{};
+    BSPF::array2D<uInt32, palette_size, entry_size> myColorTable{};
 
     // Rendering threads
     unique_ptr<std::thread[]> myThreads;

@@ -34,14 +34,13 @@ Widget::Widget(GuiObject* boss, const GUI::Font& font,
                int x, int y, int w, int h)
   : GuiObject(boss->instance(), boss->parent(), boss->dialog(), x, y, w, h),
     _boss{boss},
-    _font{font}
+    _font{font},
+    _next{_boss->_firstWidget},
+    _fontWidth{_font.getMaxCharWidth()},
+    _lineHeight{_font.getLineHeight()}
 {
   // Insert into the widget list of the boss
-  _next = _boss->_firstWidget;
   _boss->_firstWidget = this;
-
-  _fontWidth  = _font.getMaxCharWidth();
-  _lineHeight = _font.getLineHeight();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -544,7 +543,6 @@ StaticTextWidget::StaticTextWidget(GuiObject* boss, const GUI::Font& font,
   _textcolor = kTextColor;
   _textcolorhi = kTextColor;
   _shadowcolor = shadowColor;
-  _cmd = 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -862,14 +860,14 @@ CheckboxWidget::CheckboxWidget(GuiObject* boss, const GUI::Font& font,
                                int x, int y, string_view label,
                                int cmd)
   : ButtonWidget(boss, font, x, y, font.getFontHeight() < 24 ? 16 : 24,
-                 font.getFontHeight() < 24 ? 16 : 24, label, cmd)
+                 font.getFontHeight() < 24 ? 16 : 24, label, cmd),
+    _boxSize{boxSize(font)}
 {
   _flags = Widget::FLAG_ENABLED;
   _bgcolor = _bgcolorhi = kWidColor;
   _bgcolorlo = kDlgColor;
 
   _editable = true;
-  _boxSize = boxSize(font);
 
   if(label.empty())
     _w = _boxSize;

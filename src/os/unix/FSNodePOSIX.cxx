@@ -56,7 +56,7 @@ FSNodePOSIX::FSNodePOSIX(string_view path, bool verify)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool FSNodePOSIX::setFlags()
 {
-  struct stat st;
+  struct stat st{};
   if (stat(_path.c_str(), &st) == 0)
   {
     _isDirectory = S_ISDIR(st.st_mode);
@@ -102,7 +102,7 @@ size_t FSNodePOSIX::getSize() const
 {
   if (_size == 0 && _isFile)
   {
-    struct stat st;
+    struct stat st{};
     _size = (stat(_path.c_str(), &st) == 0) ? st.st_size : 0;
   }
   return _size;

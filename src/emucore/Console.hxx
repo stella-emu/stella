@@ -444,6 +444,9 @@ class Console : public Serializable, public ConsoleIO
     // Reference to the event object to use
     const Event& myEvent;
 
+    // The audio settings
+    AudioSettings& myAudioSettings;
+
     // Properties for the game
     Properties myProperties;
 
@@ -500,9 +503,6 @@ class Console : public Serializable, public ConsoleIO
     // and the parameters that govern audio synthesis. It is used on the audio thread,
     // so we make it a shared pointer.
     shared_ptr<EmulationTiming> myEmulationTiming;
-
-    // The audio settings
-    AudioSettings& myAudioSettings;
 
   private:
     // Following constructors and assignment operators not supported

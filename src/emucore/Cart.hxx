@@ -452,7 +452,7 @@ class Cartridge : public Device
     messageCallback myMsgCallback{nullptr};
 
     // Semi-random values to use when a read from write port occurs
-    std::array<uInt8, 256> myRWPRandomValues;
+    std::array<uInt8, 256> myRWPRandomValues{};
 
     // If myRandomHotspots is true, peeks to hotspots return semi-random values.
     bool myRandomHotspots{false};

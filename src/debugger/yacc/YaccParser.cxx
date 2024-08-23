@@ -20,6 +20,8 @@
 
 #include "YaccParser.hxx"
 
+// NOLINTBEGIN: this entire class is due to be rewritten
+
 namespace YaccParser {
 #include <cctype>
 
@@ -409,3 +411,5 @@ int yylex() {
 }
 
 } // namespace YaccParser
+
+// NOLINTEND
