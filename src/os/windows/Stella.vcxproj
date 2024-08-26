@@ -548,6 +548,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\debugger\gui\CartELFWidget.cxx" />
+    <ClCompile Include="..\..\debugger\gui\CartELFStateWidget.cxx" />
     <ClCompile Include="..\..\debugger\gui\CartEnhancedWidget.cxx">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
     </ClCompile>
@@ -1521,6 +1522,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
     </ClInclude>
     <ClInclude Include="..\..\debugger\gui\CartELFWidget.hxx" />
+    <ClInclude Include="..\..\debugger\gui\CartELFStateWidget.hxx" />
     <ClInclude Include="..\..\debugger\gui\CartEnhancedWidget.hxx">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
     </ClInclude>

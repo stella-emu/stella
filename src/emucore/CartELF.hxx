@@ -30,11 +30,13 @@ class ElfLinker;
 
 #ifdef DEBUGGER_SUPPORT
   class CartridgeELFWidget;
+  class CartridgeELFStateWidget;
 #endif
 
 class CartridgeELF: public Cartridge {
 #ifdef DEBUGGER_SUPPORT
   friend CartridgeELFWidget;
+  friend CartridgeELFStateWidget;
 #endif
 
   public:
@@ -82,6 +84,10 @@ class CartridgeELF: public Cartridge {
 
 #ifdef DEBUGGER_SUPPORT
     CartDebugWidget* debugWidget(
+      GuiObject* boss, const GUI::Font& lfont, const GUI::Font& nfont, int x, int y, int w, int h
+    ) override;
+
+    CartDebugWidget* infoWidget(
       GuiObject* boss, const GUI::Font& lfont, const GUI::Font& nfont, int x, int y, int w, int h
     ) override;
 #endif

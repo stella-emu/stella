@@ -127,7 +127,12 @@ class CortexM0: public Serializable
     CortexM0& reset();
     CortexM0& setPc(uInt32 pc);
     CortexM0& setRegister(uInt8 regno, uInt32 value);
-    uInt32 getRegister(uInt32 regno);
+    uInt32 getRegister(uInt32 regno) const;
+
+    bool getN() const;
+    bool getZ() const;
+    bool getC() const;
+    bool getV() const;
 
     static uInt8 decodeInstructionWord(uInt16 instructionWord);
 
