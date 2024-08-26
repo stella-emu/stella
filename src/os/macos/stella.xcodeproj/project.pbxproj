@@ -525,6 +525,8 @@
 		DCA233B523BAB1300032ABF3 /* Lightgun.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCA233B323BAB1300032ABF3 /* Lightgun.hxx */; };
 		DCA23AE90D75B22500F77B33 /* CartX07.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCA23AE70D75B22500F77B33 /* CartX07.cxx */; };
 		DCA23AEA0D75B22500F77B33 /* CartX07.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCA23AE80D75B22500F77B33 /* CartX07.hxx */; };
+		DCA6A9122C7CD04000EEB5FF /* CartELFWidget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCA6A9102C7CD04000EEB5FF /* CartELFWidget.hxx */; };
+		DCA6A9132C7CD04000EEB5FF /* CartELFWidget.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCA6A9112C7CD04000EEB5FF /* CartELFWidget.cxx */; };
 		DCA82C711FEB4E780059340F /* TimeMachine.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCA82C6D1FEB4E780059340F /* TimeMachine.cxx */; };
 		DCA82C721FEB4E780059340F /* TimeMachine.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCA82C6E1FEB4E780059340F /* TimeMachine.hxx */; };
 		DCA82C731FEB4E780059340F /* TimeMachineDialog.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCA82C6F1FEB4E780059340F /* TimeMachineDialog.cxx */; };
@@ -1404,6 +1406,8 @@
 		DCA23AE70D75B22500F77B33 /* CartX07.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = CartX07.cxx; sourceTree = "<group>"; };
 		DCA23AE80D75B22500F77B33 /* CartX07.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; path = CartX07.hxx; sourceTree = "<group>"; };
 		DCA43BFF10DED5890070CEFD /* Info-Stella.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Info-Stella.plist"; sourceTree = "<group>"; };
+		DCA6A9102C7CD04000EEB5FF /* CartELFWidget.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = CartELFWidget.hxx; sourceTree = "<group>"; };
+		DCA6A9112C7CD04000EEB5FF /* CartELFWidget.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CartELFWidget.cxx; sourceTree = "<group>"; };
 		DCA82C6D1FEB4E780059340F /* TimeMachine.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TimeMachine.cxx; sourceTree = "<group>"; };
 		DCA82C6E1FEB4E780059340F /* TimeMachine.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = TimeMachine.hxx; sourceTree = "<group>"; };
 		DCA82C6F1FEB4E780059340F /* TimeMachineDialog.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TimeMachineDialog.cxx; sourceTree = "<group>"; };
@@ -1885,6 +1889,8 @@
 				DCAAE5BE1715887B0080BB82 /* CartEFSCWidget.hxx */,
 				DCAAE5BF1715887B0080BB82 /* CartEFWidget.cxx */,
 				DCAAE5C01715887B0080BB82 /* CartEFWidget.hxx */,
+				DCA6A9112C7CD04000EEB5FF /* CartELFWidget.cxx */,
+				DCA6A9102C7CD04000EEB5FF /* CartELFWidget.hxx */,
 				DC3C9BD72469C9C700CF2D47 /* CartEnhancedWidget.cxx */,
 				DC3C9BD82469C9C700CF2D47 /* CartEnhancedWidget.hxx */,
 				DCAAE5C11715887B0080BB82 /* CartF0Widget.cxx */,
@@ -3259,6 +3265,7 @@
 				DCF3A6F91DFC75E3008A8AF3 /* AnalogReadout.hxx in Headers */,
 				DC6DC5E8273C2BED00F64413 /* GlobalKeyHandler.hxx in Headers */,
 				DCFF14CE18B0260300A20364 /* EventHandlerSDL2.hxx in Headers */,
+				DCA6A9122C7CD04000EEB5FF /* CartELFWidget.hxx in Headers */,
 				DC047FEF1A4A6F3600348F0F /* JoystickDialog.hxx in Headers */,
 				CFE3F60E1E84A9A200A8204E /* CartCDFWidget.hxx in Headers */,
 				DCF3A6F01DFC75E3008A8AF3 /* DrawCounterDecodes.hxx in Headers */,
@@ -3404,6 +3411,7 @@
 				DCE7161A2AA78BD700B870EA /* Bezel.cxx in Sources */,
 				2D91748609BA90380026E9FF /* CartFE.cxx in Sources */,
 				2D91748909BA90380026E9FF /* Console.cxx in Sources */,
+				DCA6A9132C7CD04000EEB5FF /* CartELFWidget.cxx in Sources */,
 				DC3C9BD32469C9A200CF2D47 /* CartEnhanced.cxx in Sources */,
 				DC6DC91E205DB879004A5FC3 /* PhysicalJoystick.cxx in Sources */,
 				E08FCD5323A037EB0051F59B /* QisBlitter.cxx in Sources */,
