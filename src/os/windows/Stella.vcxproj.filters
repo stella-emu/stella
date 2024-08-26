@@ -1266,6 +1266,9 @@
     <ClCompile Include="..\..\debugger\gui\CartELFWidget.cxx">
       <Filter>Source Files\debugger\gui</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\debugger\gui\CartELFStateWidget.cxx">
+      <Filter>Source Files\debugger\gui</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\emucore\CortexM0.cxx">
       <Filter>Source Files\emucore</Filter>
     </ClCompile>
@@ -2562,6 +2565,9 @@
       <Filter>Header Files\lib\json</Filter>
     </ClInclude>
     <ClInclude Include="..\..\debugger\gui\CartELFWidget.hxx">
+      <Filter>Header Files\debugger\gui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\debugger\gui\CartELFStateWidget.hxx">
       <Filter>Header Files\debugger\gui</Filter>
     </ClInclude>
     <ClInclude Include="..\..\emucore\elf\BusTransactionQueue.hxx">
