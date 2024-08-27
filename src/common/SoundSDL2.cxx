@@ -369,7 +369,7 @@ void SoundSDL2::callback(void* object, uInt8* stream, int len)
 {
   auto* self = static_cast<SoundSDL2*>(object);
 
-  if(self->myAudioQueue)
+  if(self->myAudioQueue && self->myResampler)
   {
     // The stream is 32-bit float (even though this callback is 8-bits), since
     // the resampler and TIA audio subsystem always generate float samples
