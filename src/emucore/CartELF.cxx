@@ -435,6 +435,12 @@ inline uInt64 CartridgeELF::getArmCycles() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt64 CartridgeELF::getVcsCyclesArm() const
+{
+  return mySystem->cycles() * myArmCyclesPer6502Cycle;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 inline uInt8 CartridgeELF::driveBus(uInt16 address, uInt8 value)
 {
   auto* nextTransaction = myTransactionQueue.getNextTransaction(address,

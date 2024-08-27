@@ -62,6 +62,7 @@ class BusTransactionQueue: public Serializable {
 
     bool hasPendingTransaction() const;
     Transaction* getNextTransaction(uInt16 address, uInt64 timestamp);
+    Transaction* peekNextTransaction();
 
     size_t size() const {
       return myQueueSize;

@@ -23,6 +23,8 @@
 class CartridgeELF;
 class DataGridWidget;
 class ToggleBitWidget;
+class EditTextWidget;
+class StaticTextWidget;
 
 class CartridgeELFStateWidget : public CartDebugWidget {
   public:
@@ -44,6 +46,11 @@ class CartridgeELFStateWidget : public CartDebugWidget {
 
     DataGridWidget* myArmRegisters{nullptr};
     ToggleBitWidget* myFlags{nullptr};
+    EditTextWidget* myCurrentCyclesVcs{nullptr};
+    EditTextWidget* myCurrentCyclesArm{nullptr};
+    EditTextWidget* myQueueSize{nullptr};
+    StaticTextWidget* myNextTransaction{nullptr};
+
 };
 
 #endif // CART_ELF_INFO_WIDGET_HXX

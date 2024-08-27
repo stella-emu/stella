@@ -206,6 +206,12 @@ BusTransactionQueue::Transaction* BusTransactionQueue::getNextTransaction(uInt16
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+BusTransactionQueue::Transaction* BusTransactionQueue::peekNextTransaction()
+{
+  return myQueueSize > 0 ? &myQueue[myQueueNext] : nullptr;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void BusTransactionQueue::push(const Transaction& transaction)
 {
   if (myQueueSize > 0) {

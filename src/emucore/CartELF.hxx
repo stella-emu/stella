@@ -128,6 +128,7 @@ class CartridgeELF: public Cartridge {
     void resetWithConfig();
 
     uInt64 getArmCycles() const;
+    uInt64 getVcsCyclesArm() const;
 
     uInt8 driveBus(uInt16 address, uInt8 value);
     void syncArmTime(uInt64 armCycles);
