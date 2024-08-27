@@ -527,6 +527,8 @@
 		DCA23AEA0D75B22500F77B33 /* CartX07.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCA23AE80D75B22500F77B33 /* CartX07.hxx */; };
 		DCA6A9122C7CD04000EEB5FF /* CartELFWidget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCA6A9102C7CD04000EEB5FF /* CartELFWidget.hxx */; };
 		DCA6A9132C7CD04000EEB5FF /* CartELFWidget.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCA6A9112C7CD04000EEB5FF /* CartELFWidget.cxx */; };
+		DCA6A9162C7E0ADD00EEB5FF /* CartELFStateWidget.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCA6A9142C7E0ADD00EEB5FF /* CartELFStateWidget.cxx */; };
+		DCA6A9172C7E0ADD00EEB5FF /* CartELFStateWidget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCA6A9152C7E0ADD00EEB5FF /* CartELFStateWidget.hxx */; };
 		DCA82C711FEB4E780059340F /* TimeMachine.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCA82C6D1FEB4E780059340F /* TimeMachine.cxx */; };
 		DCA82C721FEB4E780059340F /* TimeMachine.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCA82C6E1FEB4E780059340F /* TimeMachine.hxx */; };
 		DCA82C731FEB4E780059340F /* TimeMachineDialog.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCA82C6F1FEB4E780059340F /* TimeMachineDialog.cxx */; };
@@ -1408,6 +1410,8 @@
 		DCA43BFF10DED5890070CEFD /* Info-Stella.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Info-Stella.plist"; sourceTree = "<group>"; };
 		DCA6A9102C7CD04000EEB5FF /* CartELFWidget.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = CartELFWidget.hxx; sourceTree = "<group>"; };
 		DCA6A9112C7CD04000EEB5FF /* CartELFWidget.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CartELFWidget.cxx; sourceTree = "<group>"; };
+		DCA6A9142C7E0ADD00EEB5FF /* CartELFStateWidget.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CartELFStateWidget.cxx; sourceTree = "<group>"; };
+		DCA6A9152C7E0ADD00EEB5FF /* CartELFStateWidget.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = CartELFStateWidget.hxx; sourceTree = "<group>"; };
 		DCA82C6D1FEB4E780059340F /* TimeMachine.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TimeMachine.cxx; sourceTree = "<group>"; };
 		DCA82C6E1FEB4E780059340F /* TimeMachine.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = TimeMachine.hxx; sourceTree = "<group>"; };
 		DCA82C6F1FEB4E780059340F /* TimeMachineDialog.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TimeMachineDialog.cxx; sourceTree = "<group>"; };
@@ -1889,6 +1893,8 @@
 				DCAAE5BE1715887B0080BB82 /* CartEFSCWidget.hxx */,
 				DCAAE5BF1715887B0080BB82 /* CartEFWidget.cxx */,
 				DCAAE5C01715887B0080BB82 /* CartEFWidget.hxx */,
+				DCA6A9142C7E0ADD00EEB5FF /* CartELFStateWidget.cxx */,
+				DCA6A9152C7E0ADD00EEB5FF /* CartELFStateWidget.hxx */,
 				DCA6A9112C7CD04000EEB5FF /* CartELFWidget.cxx */,
 				DCA6A9102C7CD04000EEB5FF /* CartELFWidget.hxx */,
 				DC3C9BD72469C9C700CF2D47 /* CartEnhancedWidget.cxx */,
@@ -3220,6 +3226,7 @@
 				DCE9681B2761128200E99839 /* Icon.hxx in Headers */,
 				DCCA26B31FA64D5E000EE4D8 /* AbstractFrameManager.hxx in Headers */,
 				DC3EE8631E2C0E6D00905161 /* inffast.h in Headers */,
+				DCA6A9172C7E0ADD00EEB5FF /* CartELFStateWidget.hxx in Headers */,
 				DC676A501729A0B000E4E73D /* CartE0Widget.hxx in Headers */,
 				DCE9681427553F1000E99839 /* LauncherFileListWidget.hxx in Headers */,
 				DC676A521729A0B000E4E73D /* CartE7Widget.hxx in Headers */,
@@ -3674,6 +3681,7 @@
 				DCDA03B01A2009BB00711920 /* CartWD.cxx in Sources */,
 				E0A3841C2589741A0062AA93 /* SqliteStatement.cxx in Sources */,
 				DCC6A4B220A2622500863C59 /* SimpleResampler.cxx in Sources */,
+				DCA6A9162C7E0ADD00EEB5FF /* CartELFStateWidget.cxx in Sources */,
 				DC21E5BF21CA903E007D0E1A /* OSystemMACOS.cxx in Sources */,
 				DC84397C247B294E00C6A4FC /* CartTVBoy.cxx in Sources */,
 				DCAAE5D91715887B0080BB82 /* Cart0840Widget.cxx in Sources */,
