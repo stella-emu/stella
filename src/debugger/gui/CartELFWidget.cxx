@@ -73,7 +73,7 @@ void CartridgeELFWidget::initialize()
 
   WidgetArray wid;
 
-  auto* saveImageButton = new ButtonWidget(_boss, _font, x, y, "Save ARM image", SAVE_ARM_IMAGE_CMD);
+  auto* saveImageButton = new ButtonWidget(_boss, _font, x, y, "Save ARM image" + ELLIPSIS, SAVE_ARM_IMAGE_CMD);
   saveImageButton->setTarget(this);
 
   wid.push_back(saveImageButton);
