@@ -63,7 +63,7 @@ namespace {
 
     return s.str();
   }
-}
+}  // namespace
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartridgeELFStateWidget::CartridgeELFStateWidget(GuiObject* boss,
@@ -123,7 +123,7 @@ void CartridgeELFStateWidget::initialize()
 
   y += myQueueSize->getHeight() + lineHeight / 2;
 
-  myNextTransaction = new StaticTextWidget(_boss, _font, x0, y, describeTransaction(0xffff, 0xffff, ~0ll));
+  myNextTransaction = new StaticTextWidget(_boss, _font, x0, y, describeTransaction(0xffff, 0xffff, ~0LL));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
