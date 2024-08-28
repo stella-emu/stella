@@ -34,6 +34,11 @@ class CartridgeELFWidget: public CartDebugWidget
 
     ~CartridgeELFWidget() override = default;
 
+private:
+  enum {
+    kSaveArmImageCmd = 'sarm'
+  };
+
   private:
     void initialize();
     void saveArmImage(const FSNode& node);
