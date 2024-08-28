@@ -126,11 +126,6 @@ class Debugger : public DialogContainer
     void getCompletions(string_view in, StringList& list) const;
 
     /**
-      The dialog/GUI associated with the debugger
-    */
-    Dialog& dialog() const { return *myDialog; }
-
-    /**
       The debugger subsystem responsible for all CPU state
     */
     CpuDebug& cpuDebug() const { return *myCpuDebug; }
