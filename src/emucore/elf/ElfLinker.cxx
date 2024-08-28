@@ -23,7 +23,6 @@
 #include "ElfLinker.hxx"
 
 namespace {
-  // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   optional<ElfLinker::SegmentType> determineSegmentType(const ElfFile::Section& section)
   {
     switch (section.type) {
@@ -42,7 +41,6 @@ namespace {
     }
   }
 
-  // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   constexpr bool checkSegmentOverlap(uInt32 segmentBase1, uInt32 segmentSize1, uInt32 segmentBase2, uInt32 segmentSize2) {
     return !(segmentBase1 + segmentSize1 <= segmentBase2 || segmentBase2 + segmentSize2 <= segmentBase1);
   }
@@ -51,7 +49,10 @@ namespace {
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ElfLinker::ElfLinker(uInt32 textBase, uInt32 dataBase, uInt32 rodataBase,
                      const ElfFile& elf)
-  : myTextBase{textBase}, myDataBase{dataBase}, myRodataBase{rodataBase}, myElf{elf}
+  : myTextBase{textBase},
+    myDataBase{dataBase},
+    myRodataBase{rodataBase},
+    myElf{elf}
 {
 }
 

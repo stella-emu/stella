@@ -221,8 +221,10 @@ namespace {
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartridgeELF::CartridgeELF(const ByteBuffer& image, size_t size, string_view md5,
                            const Settings& settings)
-  : Cartridge(settings, md5), myImageSize(size), myTransactionQueue(TRANSACTION_QUEUE_CAPACITY),
-    myVcsLib(myTransactionQueue)
+  : Cartridge(settings, md5),
+    myImageSize{size},
+    myTransactionQueue{TRANSACTION_QUEUE_CAPACITY},
+    myVcsLib{myTransactionQueue}
 {
   myImage = make_unique<uInt8[]>(size);
   std::memcpy(myImage.get(), image.get(), size);
@@ -235,9 +237,6 @@ CartridgeELF::CartridgeELF(const ByteBuffer& image, size_t size, string_view md5
   parseAndLinkElf();
   allocationSections();
 }
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CartridgeELF::~CartridgeELF() = default;
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeELF::reset()
@@ -376,7 +375,6 @@ uInt8 CartridgeELF::overdrivePoke(uInt16 address, uInt8 value)
 }
 
 #ifdef DEBUGGER_SUPPORT
-
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartDebugWidget* CartridgeELF::debugWidget(
   GuiObject* boss, const GUI::Font& lfont, const GUI::Font& nfont, int x, int y, int w, int h
@@ -425,20 +423,7 @@ std::pair<unique_ptr<uInt8[]>, size_t> CartridgeELF::getArmImage() const
 
   return {std::move(image), imageSize};
 }
-
 #endif
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-inline uInt64 CartridgeELF::getArmCycles() const
-{
-  return myCortexEmu.getCycles() + myArmCyclesOffset;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt64 CartridgeELF::getVcsCyclesArm() const
-{
-  return mySystem->cycles() * myArmCyclesPer6502Cycle;
-}
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 inline uInt8 CartridgeELF::driveBus(uInt16 address, uInt8 value)

@@ -32,11 +32,12 @@ namespace {
 }  // namespace
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CartridgeELFWidget::CartridgeELFWidget(GuiObject* boss, const GUI::Font& lfont,
-                       const GUI::Font& nfont,
+CartridgeELFWidget::CartridgeELFWidget(GuiObject* boss,
+                       const GUI::Font& lfont, const GUI::Font& nfont,
                        int x, int y, int w, int h,
                        CartridgeELF& cart)
-  : CartDebugWidget(boss, lfont, nfont, x, y, w, h), myCart(cart)
+  : CartDebugWidget(boss, lfont, nfont, x, y, w, h),
+    myCart{cart}
 {
   initialize();
 }

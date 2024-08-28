@@ -36,6 +36,7 @@ MODULE_OBJS := \
 	src/emucore/CartBFSC.o \
 	src/emucore/CartDF.o \
 	src/emucore/CartDFSC.o \
+	src/emucore/CartELF.o \
 	src/emucore/CartF0.o \
 	src/emucore/CartF4.o \
 	src/emucore/CartF4SC.o \
@@ -55,9 +56,8 @@ MODULE_OBJS := \
 	src/emucore/CartTVBoy.o \
 	src/emucore/CartUA.o \
 	src/emucore/CartWD.o \
-  src/emucore/CartWF8.o \
+	src/emucore/CartWF8.o \
 	src/emucore/CartX07.o \
-	src/emucore/CartELF.o \
 	src/emucore/CompuMate.o \
 	src/emucore/Console.o \
 	src/emucore/Control.o \
