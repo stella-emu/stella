@@ -29,9 +29,9 @@ class StaticTextWidget;
 class CartridgeELFStateWidget : public CartDebugWidget {
   public:
     CartridgeELFStateWidget(GuiObject* boss, const GUI::Font& lfont,
-                         const GUI::Font& nfont,
-                         int x, int y, int w, int h,
-                         CartridgeELF& cart);
+                            const GUI::Font& nfont,
+                            int x, int y, int w, int h,
+                            CartridgeELF& cart);
 
     ~CartridgeELFStateWidget() override = default;
 
@@ -51,6 +51,12 @@ class CartridgeELFStateWidget : public CartDebugWidget {
     EditTextWidget* myQueueSize{nullptr};
     StaticTextWidget* myNextTransaction{nullptr};
 
+  private:
+    CartridgeELFStateWidget() = delete;
+    CartridgeELFStateWidget(const CartridgeELFStateWidget&) = delete;
+    CartridgeELFStateWidget(CartridgeELFStateWidget&&) = delete;
+    CartridgeELFStateWidget& operator=(const CartridgeELFStateWidget&) = delete;
+    CartridgeELFStateWidget& operator=(CartridgeELFStateWidget&&) = delete;
 };
 
 #endif // CART_ELF_INFO_WIDGET_HXX
