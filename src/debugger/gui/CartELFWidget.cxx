@@ -25,11 +25,8 @@
 #include "BrowserDialog.hxx"
 #include "OSystem.hxx"
 #include "FrameBuffer.hxx"
+#include "Debugger.hxx"
 #include "bspf.hxx"
-
-namespace {
-  constexpr int SAVE_ARM_IMAGE_CMD = 'sarm';
-}  // namespace
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartridgeELFWidget::CartridgeELFWidget(GuiObject* boss,
@@ -74,7 +71,7 @@ void CartridgeELFWidget::initialize()
 
   WidgetArray wid;
 
-  auto* saveImageButton = new ButtonWidget(_boss, _font, x, y, "Save ARM image" + ELLIPSIS, SAVE_ARM_IMAGE_CMD);
+  auto* saveImageButton = new ButtonWidget(_boss, _font, x, y, "Save ARM image" + ELLIPSIS, kSaveArmImageCmd);
   saveImageButton->setTarget(this);
 
   wid.push_back(saveImageButton);
@@ -91,19 +88,19 @@ void CartridgeELFWidget::saveArmImage(const FSNode& node)
     const size_t sizeWritten = node.write(buffer, size);
     if (sizeWritten != size) throw runtime_error("failed to write arm image");
 
-    instance().frameBuffer().showTextMessage("Successfully exported ARM executable image", MessagePosition::MiddleCenter, true);
+    instance().frameBuffer().showTextMessage("Successfully exported ARM executable image", MessagePosition::BottomCenter, true);
   }
   catch (...) {
-    instance().frameBuffer().showTextMessage("Failed to export ARM executable image", MessagePosition::MiddleCenter, true);
+    instance().frameBuffer().showTextMessage("Failed to export ARM executable image", MessagePosition::BottomCenter, true);
   }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeELFWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
 {
-  if (cmd == SAVE_ARM_IMAGE_CMD)
+  if (cmd == kSaveArmImageCmd)
     BrowserDialog::show(
-      _boss,
+      instance().debugger().baseDialog(),
       "Save ARM image",
       instance().userDir().getPath() + "arm_image.bin",
       BrowserDialog::Mode::FileSave,
