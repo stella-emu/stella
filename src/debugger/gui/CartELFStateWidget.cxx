@@ -66,11 +66,13 @@ namespace {
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CartridgeELFStateWidget::CartridgeELFStateWidget(GuiObject* boss, const GUI::Font& lfont,
-                       const GUI::Font& nfont,
+CartridgeELFStateWidget::CartridgeELFStateWidget(GuiObject* boss,
+                       const GUI::Font& lfont, const GUI::Font& nfont,
                        int x, int y, int w, int h,
                        CartridgeELF& cart)
-  : CartDebugWidget(boss, lfont, nfont, x, y, w, h), myCart(cart), myFlagValues(4)
+  : CartDebugWidget(boss, lfont, nfont, x, y, w, h),
+    myCart{cart},
+    myFlagValues(4)
 {
   initialize();
 }
@@ -124,6 +126,7 @@ void CartridgeELFStateWidget::initialize()
   myNextTransaction = new StaticTextWidget(_boss, _font, x0, y, describeTransaction(0xffff, 0xffff, ~0ll));
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeELFStateWidget::loadConfig()
 {
   for (uInt8 i = 0; i < 16; i++)

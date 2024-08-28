@@ -20,23 +20,23 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Int32 elfUtil::decode_B_BL(uInt32 opcode)
 {
-    // nomenclature follows Thumb32 BL / B.W encoding in Arm Architecture Reference
+  // nomenclature follows Thumb32 BL / B.W encoding in Arm Architecture Reference
 
-    const uInt16 hw1 = opcode;
-    const uInt16 hw2 = opcode >> 16;
+  const uInt16 hw1 = opcode;
+  const uInt16 hw2 = opcode >> 16;
 
-    const uInt8 s = (hw1 >> 10) & 0x01;
-    const uInt8 i1 = ~((hw2 >> 13) ^ s) & 0x01;
-    const uInt8 i2 = ~((hw2 >> 11) ^ s) & 0x01;
-    const uInt32 imm11 = hw2 & 0x7ff;
-    const uInt32 imm10 = hw1 & 0x3ff;
+  const uInt8 s = (hw1 >> 10) & 0x01;
+  const uInt8 i1 = ~((hw2 >> 13) ^ s) & 0x01;
+  const uInt8 i2 = ~((hw2 >> 11) ^ s) & 0x01;
+  const uInt32 imm11 = hw2 & 0x7ff;
+  const uInt32 imm10 = hw1 & 0x3ff;
 
-    Int32 offset = imm11 | (imm10 << 11) | (i2 << 21) | (i1 << 22) | (s << 23);
+  Int32 offset = imm11 | (imm10 << 11) | (i2 << 21) | (i1 << 22) | (s << 23);
 
-    offset <<= 8;
-    offset >>= 7;
+  offset <<= 8;
+  offset >>= 7;
 
-    return offset;
+  return offset;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

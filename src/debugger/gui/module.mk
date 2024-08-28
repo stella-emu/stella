@@ -32,6 +32,8 @@ MODULE_OBJS := \
         src/debugger/gui/CartDPCPlusWidget.o \
         src/debugger/gui/CartDPCWidget.o \
         src/debugger/gui/CartE0Widget.o \
+        src/debugger/gui/CartELFStateWidget.o \
+        src/debugger/gui/CartELFWidget.o \
         src/debugger/gui/CartEnhancedWidget.o \
         src/debugger/gui/CartE7Widget.o \
         src/debugger/gui/CartEFSCWidget.o \
@@ -48,8 +50,6 @@ MODULE_OBJS := \
         src/debugger/gui/CartFCWidget.o \
         src/debugger/gui/CartFEWidget.o \
         src/debugger/gui/CartGLWidget.o \
-        src/debugger/gui/CartELFWidget.o \
-        src/debugger/gui/CartELFStateWidget.o \
         src/debugger/gui/CartJANEWidget.o \
         src/debugger/gui/CartMDMWidget.o \
         src/debugger/gui/CartRamWidget.o \
