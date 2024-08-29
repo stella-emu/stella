@@ -142,18 +142,16 @@ class StellaLIBRETRO
 
     void setPaddleJoypadSensitivity(int sensitivity)
     {
-      if(getLeftControllerType() == Controller::Type::Paddles)
-        static_cast<Paddles&>(myOSystem->console().leftController()).setDigitalSensitivity(sensitivity);
-      if(getRightControllerType() == Controller::Type::Paddles)
-        static_cast<Paddles&>(myOSystem->console().rightController()).setDigitalSensitivity(sensitivity);
+      if(getLeftControllerType() == Controller::Type::Paddles ||
+         getRightControllerType() == Controller::Type::Paddles)
+        Paddles::setDigitalSensitivity(sensitivity);
     }
 
     void setPaddleAnalogSensitivity(int sensitivity)
     {
-      if(getLeftControllerType() == Controller::Type::Paddles)
-        static_cast<Paddles&>(myOSystem->console().leftController()).setAnalogSensitivity(sensitivity);
-      if(getRightControllerType() == Controller::Type::Paddles)
-        static_cast<Paddles&>(myOSystem->console().rightController()).setAnalogSensitivity(sensitivity);
+      if(getLeftControllerType() == Controller::Type::Paddles ||
+         getRightControllerType() == Controller::Type::Paddles)
+        Paddles::setAnalogSensitivity(sensitivity);
     }
 
   protected:
