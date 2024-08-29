@@ -111,7 +111,7 @@ BrowserDialog::BrowserDialog(GuiObject* boss, const GUI::Font& font,
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // static
-void BrowserDialog::show(GuiObject* parent, const GUI::Font& font,
+void BrowserDialog::show(Dialog* parent, const GUI::Font& font,
                          string_view title, string_view startpath,
                          BrowserDialog::Mode mode,
                          const Command& command,
@@ -119,9 +119,8 @@ void BrowserDialog::show(GuiObject* parent, const GUI::Font& font,
 {
   uInt32 w = 0, h = 0;
 
-  const auto* parentDialog = static_cast<Dialog*>(parent);
-  if (parentDialog) {
-    parentDialog->getDynamicBounds(w, h);
+  if (parent) {
+    parent->getDynamicBounds(w, h);
   } else {
     w = FBMinimum::Width;
     h = FBMinimum::Height;
@@ -141,7 +140,7 @@ void BrowserDialog::show(GuiObject* parent, const GUI::Font& font,
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // static
-void BrowserDialog::show(GuiObject* parent,
+void BrowserDialog::show(Dialog* parent,
                          string_view title, string_view startpath,
                          BrowserDialog::Mode mode,
                          const Command& command,
