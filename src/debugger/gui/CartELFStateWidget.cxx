@@ -123,7 +123,7 @@ void CartridgeELFStateWidget::initialize()
 
   y += myQueueSize->getHeight() + lineHeight / 2;
 
-  myNextTransaction = new StaticTextWidget(_boss, _font, x0, y, describeTransaction(0xffff, 0xffff, ~0LLu));
+  myNextTransaction = new StaticTextWidget(_boss, _font, x0, y, describeTransaction(0xffff, 0xffff, ~0LLU));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
