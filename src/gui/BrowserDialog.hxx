@@ -63,7 +63,7 @@ class BrowserDialog : public Dialog
       @param command    The command to run when 'OK' or 'Cancel' is clicked
       @param namefilter Filter files/directories in browser display
     */
-    static void show(GuiObject* parent, const GUI::Font& font,
+    static void show(Dialog* parent, const GUI::Font& font,
                      string_view title,string_view startpath,
                      BrowserDialog::Mode mode,
                      const Command& command,
@@ -80,7 +80,7 @@ class BrowserDialog : public Dialog
       @param command    The command to run when 'OK' or 'Cancel' is clicked
       @param namefilter Filter files/directories in browser display
     */
-    static void show(GuiObject* parent,
+    static void show(Dialog* parent,
                      string_view title, string_view startpath,
                      BrowserDialog::Mode mode,
                      const Command& command,
