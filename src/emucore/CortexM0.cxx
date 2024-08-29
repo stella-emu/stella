@@ -715,7 +715,7 @@ CortexM0& CortexM0::mapRegionData(uInt32 pageBase, uInt32 pageCount,
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CortexM0& CortexM0::mapRegionCode(uInt32 pageBase, uInt32 pageCount,
-                                  bool readOnly, uInt8* backingStore)
+                                  bool readOnly, uInt8* backingStore)  // NOLINT
 {
   MemoryRegion& region =
     setupMapping(pageBase, pageCount, readOnly, MemoryRegionType::directCode);
