@@ -108,14 +108,22 @@ class DeveloperDialog : public Dialog, DevSettingsHandler
     // TIA widgets
     RadioButtonGroup*   mySettingsGroupTia{nullptr};
     PopUpWidget*        myTIATypeWidget{nullptr};
+
     StaticTextWidget*   myInvPhaseLabel{nullptr};
     CheckboxWidget*     myPlInvPhaseWidget{nullptr};
     CheckboxWidget*     myMsInvPhaseWidget{nullptr};
     CheckboxWidget*     myBlInvPhaseWidget{nullptr};
+
+    StaticTextWidget*   myLateHMoveLabel{nullptr};
+    CheckboxWidget*     myPlLateHMoveWidget{nullptr};
+    CheckboxWidget*     myMsLateHMoveWidget{nullptr};
+    CheckboxWidget*     myBlLateHMoveWidget{nullptr};
+
     StaticTextWidget*   myPlayfieldLabel{nullptr};
     CheckboxWidget*     myPFBitsWidget{nullptr};
     CheckboxWidget*     myPFColorWidget{nullptr};
     CheckboxWidget*     myPFScoreWidget{nullptr};
+
     StaticTextWidget*   myBackgroundLabel{nullptr};
     CheckboxWidget*     myBKColorWidget{nullptr};
     StaticTextWidget*   mySwapLabel{nullptr};

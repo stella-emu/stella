@@ -3694,7 +3694,7 @@
       <td>When enabled, each external access (AtariVox/SaveKey EEPROM, PlusROM, Supercharger...)
         is signalled by a message.</td>
     </tr><tr>
-      <td><pre>-dev.tia.type &lt;standard|koolaidman|</br>  cosmicark|pesco|quickstep|matchie|</br>  indy500|heman|custom&gt;</pre></td>
+      <td><pre>-dev.tia.type &lt;standard|koolaidman|</br>  cosmicark|pesco|quickstep|matchie|</br>  indy500|heman|flashmenu|custom&gt;</pre></td>
       <td>Set emulated TIA type. Only with 'custom' the following TIA options become relevant.</td>
     </tr><tr>
       <td><pre>-dev.tia.plinvphase &lt;1|0&gt;</pre></td>
@@ -3705,6 +3705,15 @@
     </tr><tr>
       <td><pre>-dev.tia.blinvphase &lt;1|0&gt;</pre></td>
       <td>Enable/disable inverted HMOVE clock phase for ball.</td>
+    </tr><tr>
+      <td><pre>-dev.tia.pllatehmove &lt;1|0&gt;</pre></td>
+      <td>Enable/disable short late HMOVE for players (Flashcart menu shifted right).</td>
+    </tr><tr>
+      <td><pre>-dev.tia.mslatehmove &lt;1|0&gt;</pre></td>
+      <td>Enable/disable short late HMOVE for missiles.</td>
+    </tr><tr>
+      <td><pre>-dev.tia.bllatehmove &lt;1|0&gt;</pre></td>
+      <td>Enable/disable short late HMOVE for ball.</td>
     </tr><tr>
       <td><pre>-dev.tia.delaypfbits &lt;1|0&gt;</pre></td>
       <td>Enable/disable playfield bits delayed by one color clock (stray playfield pixels in Pesco).</td>
@@ -4615,6 +4624,9 @@
     <tr><td>Inverted HMOVE clock...</td><td>Emulates the Kool-Aid Man
       collision and Cosmic Ark stars glitches for the given objects.</td>
       <td>-dev.tia.plinvphase</br>-dev.tia.msinvphase</br>-dev.tia.blinvphase</td></tr>
+    <tr><td>Short late HMOVE</td><td>Emulates one pixel too short late HMOVEs for the given objects.
+            This causes e.g. shifted flashcart menues.</td>
+      <td>-dev.tia.pllatehmove</br>-dev.tia.mslatehmove</br>-dev.tia.bllatehmove</td></tr>
     <tr><td>Delayed Playfield</td><td>Emulates playfield changes moved
       by one color clock. This e.g. causes glitches in Pesco (stray playfield
       pixel), Quick Step! (colored step borders) and Matchie (vertical line at pixel 79).</td>

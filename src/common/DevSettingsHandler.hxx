@@ -69,16 +69,19 @@ class DevSettingsHandler
     std::array<bool, numSets>   myThumbException{};
     std::array<int, numSets>    myArmSpeed{};
     // TIA sets
-    std::array<string, numSets> myTIAType{};
-    std::array<bool, numSets>   myPlInvPhase{};
-    std::array<bool, numSets>   myMsInvPhase{};
-    std::array<bool, numSets>   myBlInvPhase{};
-    std::array<bool, numSets>   myPFBits{};
-    std::array<bool, numSets>   myPFColor{};
-    std::array<bool, numSets>   myPFScore{};
-    std::array<bool, numSets>   myBKColor{};
-    std::array<bool, numSets>   myPlSwap{};
-    std::array<bool, numSets>   myBlSwap{};
+    std::array<string, numSets> myTIAType;
+    std::array<bool, numSets>   myPlInvPhase;
+    std::array<bool, numSets>   myMsInvPhase;
+    std::array<bool, numSets>   myBlInvPhase;
+    std::array<bool, numSets>   myPlLateHMove;
+    std::array<bool, numSets>   myMsLateHMove;
+    std::array<bool, numSets>   myBlLateHMove;
+    std::array<bool, numSets>   myPFBits;
+    std::array<bool, numSets>   myPFColor;
+    std::array<bool, numSets>   myPFScore;
+    std::array<bool, numSets>   myBKColor;
+    std::array<bool, numSets>   myPlSwap;
+    std::array<bool, numSets>   myBlSwap;
     // States sets
     std::array<bool, numSets>   myTimeMachine{};
     std::array<int, numSets>    myStateSize{};
