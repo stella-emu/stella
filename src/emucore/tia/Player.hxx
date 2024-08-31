@@ -60,6 +60,7 @@ class Player : public Serializable
     void applyColorLoss();
 
     void setInvertedPhaseClock(bool enable);
+    void setShortLateHMove(bool enable);
 
     void startMovement();
 
@@ -88,7 +89,7 @@ class Player : public Serializable
     bool save(Serializer& out) const override;
     bool load(Serializer& in) override;
 
-    FORCE_INLINE void movementTick(uInt32 clock, bool hblank);
+    FORCE_INLINE void movementTick(uInt32 clock, uInt32 hclock, bool hblank);
 
     FORCE_INLINE void tick();
 
@@ -143,6 +144,7 @@ class Player : public Serializable
     bool myIsDelaying{false};
     bool myInvertedPhaseClock{false};
     bool myUseInvertedPhaseClock{false};
+    bool myUseShortLateHMove{false};
 
     TIA* myTIA{nullptr};
 
@@ -158,14 +160,14 @@ class Player : public Serializable
 // ############################################################################
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Player::movementTick(uInt32 clock, bool hblank)
+void Player::movementTick(uInt32 clock, uInt32 hclock, bool hblank)
 {
   if(isMoving)
   {
     // Stop movement once the number of clocks according to HMPx is reached
     if (clock == myHmmClocks)
       isMoving = false;
-    else
+    else if (!myUseShortLateHMove || hclock != 0)
     {
       // Process the tick if we are in hblank. Otherwise, the tick is either masked
       // by an ordinary tick or merges two consecutive ticks into a single tick (inverted

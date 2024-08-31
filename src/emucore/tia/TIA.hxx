@@ -524,6 +524,27 @@ class TIA : public Device
     void setBlInvertedPhaseClock(bool enable);
 
     /**
+      Enables/disables short late HMOVE for players.
+
+      @param enable   Whether to enable short late HMOVE for players
+    */
+    void setPlShortLateHMove(bool enable);
+
+    /**
+      Enables/disables short late HMOVE for missiles.
+
+      @param enable   Whether to enable short late HMOVE for missiles
+    */
+    void setMsShortLateHMove(bool enable);
+
+    /**
+      Enables/disables short late HMOVE for ball.
+
+      @param enable   Whether to enable short late HMOVE for ball
+    */
+    void setBlShortLateHMove(bool enable);
+
+    /**
       This method should be called to update the TIA with a new scanline.
     */
     TIA& updateScanline();
