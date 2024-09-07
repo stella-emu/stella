@@ -3447,6 +3447,13 @@
     </tr>
 
     <tr>
+      <td><pre>-elf.dump</pre></td>
+      <td>Display extensive linkage information when loading ELF ROMs and dump
+        the low 4.5MB of ARM memory (to which all sections are relocated) to
+        'elf_executable_image.bin' in the current working directory.</td>
+    </tr>
+
+    <tr>
       <td><pre>-holdjoy0 &lt;U,D,L,R,F&gt;</pre></td>
       <td>Start the emulator with the left joystick direction/button held down
         (ie, use 'UF' for up and fire). After entering the emulation, you will
@@ -3606,15 +3613,6 @@
       <td>Set "Display.PPBlend" property, used for phosphor effect (0-100).
         Default is whatever is specified for tv.phosblend.</td>
     </tr>
-
-    <tr>
-      <td><pre>-elf.dump</pre></td>
-      <td>
-        Display extensive linkage information when loading ELF cartridges and dump the low 4.5MB of
-        ARM memory (to which all sections are relocated) to elf_executable_image.bin in
-        the current working directory.
-      </td>
-    </tr>
   </table>
 
   <p>The following are almost all available in two sets, one for players (prefixed by "plr.") and one
@@ -3679,11 +3677,14 @@
         fatal errors are simply logged, and emulation continues. Do not use this
         unless you know exactly what you're doing, as it changes the behaviour as
         compared to real hardware.
-        For ELF cartridges, this option additionally checks for write accesses to
+        For ELF ROMs, this option additionally checks for write accesses to
         those parts of memory that should be read only and validates that all
         relevant symbols in the ELF file can be relocated. Errors during relocation
         will cause Stella to return to the debugger.
       </td>
+    </tr><tr>
+      <td><pre>-dev.arm.mips &lt;50-300&gt;</pre></td>
+      <td>Limit the number of ARM instructions executed per 6507 instruction for ELF ROMs.</td>
     </tr><tr>
       <td><pre>-dev.thumb.incycles &lt;1|0&gt;</pre></td>
       <td>When enabled, ARM emulation cycles are added to 6507 system cycles. This
@@ -3782,10 +3783,6 @@
       <td><pre>-&lt;plr.|dev.&gt;tm.horizon &lt;3s|10s|30s|1m|3m|</br>  10m|30m|60m&gt;</pre></td>
       <td>Define the horizon of the Time Machine.</td>
     </tr>
-    </tr><tr>
-    <td><pre>-dev.arm.mips &lt;number&gt;</pre></td>
-    <td>
-      Limit the number of ARM instructions executed per 6507 instruction for ELF cartridges. Dev mode only.
     </td>
   </tr>
   </table>
@@ -4621,11 +4618,14 @@
             <td><span style="white-space:nowrap">-dev.wrportbreak</span></td>
           </tr>
           <tr>
-            <td>Fatal ARM emulation ...</td>
-            <td>Thumb ARM emulation throws an exception and enters the debugger on fatal errors</td>
+            <td>Strict ARM emulation ...</td>
+            <td>Thumb ARM emulation throws an exception and enters the debugger on fatal errors.</br>
+              For ELF ROMs, this option additionally checks for valid write accesses.</td>
             <td><span style="white-space:nowrap">-dev.thumb.trapfatal</span></td>
           </tr>
-          <tr><td>Limit ARM speed...</td><td>Change the number of ARM instructions executed for eacht 6507 instruction for ELF ROMs.</td><td>-dev.arm.mips</td></tr>
+            <tr><td>Limit ARM speed...</td>
+            <td>Limit the number of ARM instructions executed per 6507 instruction for ELF ROMs.</td>
+            <td>-dev.arm.mips</td></tr>
         </table>
       </td>
     </tr>
@@ -5130,8 +5130,8 @@ Ms Pac-Man (Stella extended codes):
       <td>Indicates the television format the game was designed for. The value
       must be <b>Auto</b> or one of the following. Types marked as (&#185;)
       do currently have no reliable auto-detection. A format can be enforced
-      by using one of the following pattern in the filename.
-      For ELF cartridges, this also controls the mode Stella configures the
+      by using one of the following pattern in the filename.</br>
+      For ELF ROMs, this also controls the mode Stella configures the
       cartridge to run in.
       <table cellpadding="2" border="1">
         <tr><th>&nbsp;Format&nbsp;</th><th>Filename Pattern (to force format)</th></tr>
