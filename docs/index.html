@@ -75,7 +75,7 @@
 
   <br><br><br>
 
-  <center><b>February 1999 - June 2022</b></center>
+  <center><b>February 1999 - September 2024</b></center>
     <center><b>The Stella Team</b></center>
   <center><b><a href="https://stella-emu.github.io">Stella Homepage</a></b></center>
 
@@ -342,8 +342,8 @@
   <p>
   <h3><b><u>General</u> (required for all versions of Stella)</b></h3>
   <ul>
-    <li>SDL version 2.0.5 or greater, latest version highly recommended</li>
-    <li>15/16 bit color minimum; 24/32 bit color graphics card highly recommended</li>
+    <li>SDL version 2.0.14 or greater, latest version highly recommended</li>
+    <li>32 bit color graphics card</li>
     <li>Enough RAM for the OS + 256MB RAM for the emulation; 512MB+ highly recommended</li>
     <li>Joysticks or gamepads are highly recommended</li>
     <li>Mouse or <a href="http://www.grandideastudio.com/stelladaptor-2600">Stelladaptor</a>/<a href="http://2600-daptor.com">2600-daptor</a>
@@ -356,9 +356,9 @@
   <p>The Linux version of Stella is designed to work on a Linux Workstation with
   the following:</p>
   <ul>
-    <li>i386 or x86_64 class machine, with 32 or 64-bit distribution</li>
+    <li>x86_64 class machine (32-bit not actively tested, but probably works fine)</li>
     <li>Other architectures (MIPS, PPC, PPC64, etc.) have been confirmed to work,
-      but aren't as well tested as i386/x86_64</li>
+      but aren't as well tested as x86_64</li>
     <li>GNU g++ v/11 or Clang v/10 (with C++20 support) and the make utility are required for compiling the Stella source code</li>
   </ul>
 
@@ -368,9 +368,9 @@
   <p>The Mac version of Stella is designed to work on an Apple Macintosh with
   the following:</p>
   <ul>
-    <li>macOS 10.7 or above</li>
-    <li>64-bit Intel processor</li>
-    <li>Xcode 8.0 is required to compile the Stella source code</li>
+    <li>macOS 10.11 or above</li>
+    <li>64-bit ARM or Intel processor</li>
+    <li>Xcode 13.0 is required to compile the Stella source code</li>
   </ul>
 
   <p>
@@ -380,7 +380,7 @@
   with the following:</p>
 
   <ul>
-    <li>Visual C++ 2019 Community is required to compile the Stella source code</li>
+    <li>Visual C++ 2022 Community is required to compile the Stella source code</li>
   </ul>
 
   <p>
@@ -3606,6 +3606,15 @@
       <td>Set "Display.PPBlend" property, used for phosphor effect (0-100).
         Default is whatever is specified for tv.phosblend.</td>
     </tr>
+
+    <tr>
+      <td><pre>-elf.dump</pre></td>
+      <td>
+        Display extensive linkage information when loading ELF cartridges and dump the low 4.5MB of
+        ARM memory (to which all sections are relocated) to elf_executable_image.bin in
+        the current working directory.
+      </td>
+    </tr>
   </table>
 
   <p>The following are almost all available in two sets, one for players (prefixed by "plr.") and one
@@ -3669,7 +3678,12 @@
         throw an exception and enter the debugger on fatal errors. When disabled, such
         fatal errors are simply logged, and emulation continues. Do not use this
         unless you know exactly what you're doing, as it changes the behaviour as
-        compared to real hardware.</td>
+        compared to real hardware.
+        For ELF cartridges, this option additionally checks for write accesses to
+        those parts of memory that should be read only and validates that all
+        relevant symbols in the ELF file can be relocated. Errors during relocation
+        will cause Stella to return to the debugger.
+      </td>
     </tr><tr>
       <td><pre>-dev.thumb.incycles &lt;1|0&gt;</pre></td>
       <td>When enabled, ARM emulation cycles are added to 6507 system cycles. This
@@ -3768,6 +3782,12 @@
       <td><pre>-&lt;plr.|dev.&gt;tm.horizon &lt;3s|10s|30s|1m|3m|</br>  10m|30m|60m&gt;</pre></td>
       <td>Define the horizon of the Time Machine.</td>
     </tr>
+    </tr><tr>
+    <td><pre>-dev.arm.mips &lt;number&gt;</pre></td>
+    <td>
+      Limit the number of ARM instructions executed per 6507 instruction for ELF cartridges. Dev mode only.
+    </td>
+  </tr>
   </table>
   </blockquote></br>
 
@@ -4605,6 +4625,7 @@
             <td>Thumb ARM emulation throws an exception and enters the debugger on fatal errors</td>
             <td><span style="white-space:nowrap">-dev.thumb.trapfatal</span></td>
           </tr>
+          <tr><td>Limit ARM speed...</td><td>Change the number of ARM instructions executed for eacht 6507 instruction for ELF ROMs.</td><td>-dev.arm.mips</td></tr>
         </table>
       </td>
     </tr>
@@ -5110,6 +5131,8 @@ Ms Pac-Man (Stella extended codes):
       must be <b>Auto</b> or one of the following. Types marked as (&#185;)
       do currently have no reliable auto-detection. A format can be enforced
       by using one of the following pattern in the filename.
+      For ELF cartridges, this also controls the mode Stella configures the
+      cartridge to run in.
       <table cellpadding="2" border="1">
         <tr><th>&nbsp;Format&nbsp;</th><th>Filename Pattern (to force format)</th></tr>
         <tr><td>NTSC</td><td>NTSC, NTSC60, NTSC 60, NTSC-60, PAL-M</td></tr>
@@ -5201,7 +5224,7 @@ Ms Pac-Man (Stella extended codes):
         <tr><td>Paddles </td><td>Standard paddle controllers for use with games such as Breakout and Warlords. One pair of controller per connector (allows for 4-player Warlords).</td></tr>
         <tr><td>Paddles_IAxis &#185</td><td>Same as Paddles, except the axes are inverted.</td></tr>
         <tr><td>Paddles_IAxDr &#185</td><td>Same as Paddles, except both the axes and direction of movement are inverted.</td></tr>
-        <tr><td>Driving &#185 </td><td>Looks like a paddle, but allows 360° movement. Only one unit per connector, unlike paddles which were sold in pairs.</td></tr>
+        <tr><td>Driving &#185 </td><td>Looks like a paddle, but allows 360&#176; movement. Only one unit per connector, unlike paddles which were sold in pairs.</td></tr>
         <tr><td>Keyboard</td><td>Also known as the Star Raiders controller, functionally identical to the Kid's Controller and Keyboard Controller. Game included an overlay with commands, for use with Star Raiders.</td></tr>
         <tr><td>AmigaMouse</td><td>Commodore Amiga computer mouse.</td></tr>
         <tr><td>AtariMouse</td><td>Atari ST computer mouse.</td></tr>
