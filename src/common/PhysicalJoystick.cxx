@@ -47,7 +47,6 @@ void PhysicalJoystick::initialize(int index, string_view desc,
   numButtons = buttons;
   numHats    = hats;
   axisLastValue.resize(numAxes, 0);
-  buttonLast.resize(numButtons, JOY_CTRL_NONE);
 
   // Erase the mappings
   eraseMap(EventMode::kMenuMode);
