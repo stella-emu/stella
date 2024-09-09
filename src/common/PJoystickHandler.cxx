@@ -901,7 +901,7 @@ void PhysicalJoystickHandler::handleAxisEvent(int stick, int axis, int value)
 
   if(j)
   {
-    //int button = j->buttonLast[stick];
+    //int button = j->buttonLast;
 
     switch(j->type)
     {
@@ -945,7 +945,7 @@ void PhysicalJoystickHandler::handleAxisEvent(int stick, int axis, int value)
 void PhysicalJoystickHandler::handleRegularAxisEvent(const PhysicalJoystickPtr& j,
                                                      int stick, int axis, int value)
 {
-  const int button = j->buttonLast[stick];
+  const int button = j->buttonLast;
 
   if(myHandler.state() == EventHandlerState::EMULATION)
   {
@@ -1025,7 +1025,7 @@ void PhysicalJoystickHandler::handleBtnEvent(int stick, int button, bool pressed
 
   if(j)
   {
-    j->buttonLast[stick] = pressed ? button : JOY_CTRL_NONE;
+    j->buttonLast = pressed ? button : JOY_CTRL_NONE;
 
     // Handle buttons which switch eventhandler state
     if(!pressed && myHandler.changeStateByEvent(j->joyMap.get(EventMode::kEmulationMode, button)))
@@ -1052,7 +1052,7 @@ void PhysicalJoystickHandler::handleHatEvent(int stick, int hat, int value)
 
   if(j)
   {
-    const int button = j->buttonLast[stick];
+    const int button = j->buttonLast;
 
     if(myHandler.state() == EventHandlerState::EMULATION)
     {

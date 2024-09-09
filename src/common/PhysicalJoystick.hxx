@@ -81,7 +81,7 @@ class PhysicalJoystick
     Port port{Port::AUTO};
     int numAxes{0}, numButtons{0}, numHats{0};
     IntArray axisLastValue;
-    IntArray buttonLast;
+    int buttonLast{JOY_CTRL_NONE};
 
     // Hashmaps of controller events
     JoyMap joyMap;
