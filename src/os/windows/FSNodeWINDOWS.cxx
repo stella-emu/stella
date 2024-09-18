@@ -110,28 +110,7 @@ AbstractFSNodePtr FSNodeWINDOWS::getParent() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool FSNodeWINDOWS::getChildren(AbstractFSList& myList, ListMode mode) const
 {
-  if (_isPseudoRoot)
-  {
-    // Drives enumeration
-    TCHAR drive_buffer[100];
-    GetLogicalDriveStrings(sizeof(drive_buffer) / sizeof(TCHAR), drive_buffer);
-
-    char drive_name[2] = { '\0', '\0' };
-    for (TCHAR *current_drive = drive_buffer; *current_drive;
-         current_drive += _tcslen(current_drive) + 1)
-    {
-      FSNodeWINDOWS entry;
-
-      drive_name[0] = current_drive[0];
-      entry._displayName = drive_name;
-      entry._isDirectory = true;
-      entry._isFile = false;
-      entry._isPseudoRoot = false;
-      entry._path = current_drive;
-      myList.emplace_back(make_unique<FSNodeWINDOWS>(entry));
-    }
-  }
-  else
+  if (!_isPseudoRoot) [[likely]]
   {
     // Files enumeration
     WIN32_FIND_DATA desc{};
@@ -166,10 +145,30 @@ bool FSNodeWINDOWS::getChildren(AbstractFSList& myList, ListMode mode) const
       entry._size = desc.nFileSizeHigh * (static_cast<size_t>(MAXDWORD) + 1) + desc.nFileSizeLow;
 
       myList.emplace_back(make_unique<FSNodeWINDOWS>(entry));
-    }
-    while (FindNextFile(handle, &desc));
+    } while (FindNextFile(handle, &desc));
 
     FindClose(handle);
+  }
+  else
+  {
+    // Drives enumeration
+    TCHAR drive_buffer[100];
+    GetLogicalDriveStrings(sizeof(drive_buffer) / sizeof(TCHAR), drive_buffer);
+
+    char drive_name[2] = { '\0', '\0' };
+    for (TCHAR *current_drive = drive_buffer; *current_drive;
+         current_drive += _tcslen(current_drive) + 1)
+    {
+      FSNodeWINDOWS entry;
+
+      drive_name[0] = current_drive[0];
+      entry._displayName = drive_name;
+      entry._isDirectory = true;
+      entry._isFile = false;
+      entry._isPseudoRoot = false;
+      entry._path = current_drive;
+      myList.emplace_back(make_unique<FSNodeWINDOWS>(entry));
+    }
   }
 
   return true;
