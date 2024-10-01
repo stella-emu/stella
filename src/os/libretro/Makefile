@@ -64,9 +64,6 @@ ifneq (,$(findstring unix,$(platform)))
    ifeq ($(GPP_MAJOR),)
       $(error Unable to determine $(CXX) version)
    endif
-   ifeq "$(shell [ $(GPP_MAJOR) -lt 10 ]; echo $$?)" "0"
-      CXXFLAGS := $(subst -std=c++20,-std=c++2a,$(CXXFLAGS))
-   endif
    CXXFLAGS += $(LTO)
    LDFLAGS += $(LTO) $(PTHREAD_FLAGS) $(call GET_STATIC_ARG,libgcc) $(call GET_STATIC_ARG,libstdc++)
    TARGET := $(TARGET_NAME)_libretro.so
@@ -88,13 +85,6 @@ ifneq (,$(findstring unix,$(platform)))
 
 # OS X
 else ifeq ($(platform), osx)
-   XCODE_MAJOR := $(shell xcodebuild -version | grep -oE 'Xcode ([0-9]+)' | cut -d ' ' -f 2)
-   ifeq ($(XCODE_MAJOR),)
-      $(error Unable to determine Xcode version)
-   endif
-   ifeq "$(shell [ $(XCODE_MAJOR) -lt 14 ]; echo $$?)" "0"
-      CXXFLAGS := $(subst -std=c++20,-std=c++2a,$(CXXFLAGS))
-   endif
    CXXFLAGS += $(LTO) -stdlib=libc++
    LDFLAGS += $(LTO) $(PTHREAD_FLAGS) -stdlib=libc++
    TARGET := $(TARGET_NAME)_libretro.dylib
@@ -108,21 +98,17 @@ else ifeq ($(platform), osx)
    ifeq ($(arch),ppc)
       CXXFLAGS += -DBLARGG_BIG_ENDIAN=1 -D__ppc__
    endif
-   OSXVER = $(shell sw_vers -productVersion | cut -d. -f 2)
-   OSX_GT_MOJAVE = $(shell (( $(OSXVER) >= 14)) && echo "YES")
-   ifneq ($(OSX_GT_MOJAVE),YES)
-      #this breaks compiling on Mac OS Mojave
-      MINVERSION = -mmacosx-version-min=10.7
-   endif
    fpic += $(MINVERSION)
 
    ifeq ($(CROSS_COMPILE),1)
-		TARGET_RULE   = -target $(LIBRETRO_APPLE_PLATFORM) -isysroot $(LIBRETRO_APPLE_ISYSROOT)
-		CFLAGS   += $(TARGET_RULE)
-		CPPFLAGS += $(TARGET_RULE)
-		CXXFLAGS += $(TARGET_RULE)
-		LDFLAGS  += $(TARGET_RULE)
+      TARGET_RULE   = -target $(LIBRETRO_APPLE_PLATFORM)
+   else
+      TARGET_RULE   = -target x86_64-apple-macos10.13
    endif
+   CFLAGS   += $(TARGET_RULE)
+   CPPFLAGS += $(TARGET_RULE)
+   CXXFLAGS += $(TARGET_RULE)
+   LDFLAGS  += $(TARGET_RULE)
 
    CFLAGS    += $(ARCHFLAGS)
    CXXFLAGS  += $(ARCHFLAGS)
@@ -130,13 +116,6 @@ else ifeq ($(platform), osx)
 
 # iOS
 else ifneq (,$(findstring ios,$(platform)))
-   XCODE_MAJOR := $(shell xcodebuild -version | grep -oE 'Xcode ([0-9]+)' | cut -d ' ' -f 2)
-   ifeq ($(XCODE_MAJOR),)
-      $(error Unable to determine Xcode version)
-   endif
-   ifeq "$(shell [ $(XCODE_MAJOR) -lt 14 ]; echo $$?)" "0"
-      CXXFLAGS := $(subst -std=c++20,-std=c++2a,$(CXXFLAGS))
-   endif
    CXXFLAGS += $(LTO) -stdlib=libc++
    LDFLAGS += $(LTO) $(PTHREAD_FLAGS) -stdlib=libc++
    TARGET := $(TARGET_NAME)_libretro_ios.dylib
@@ -163,13 +142,6 @@ else ifneq (,$(findstring ios,$(platform)))
 
 # tvOS
 else ifeq ($(platform), tvos-arm64)
-   XCODE_MAJOR := $(shell xcodebuild -version | grep -oE 'Xcode ([0-9]+)' | cut -d ' ' -f 2)
-   ifeq ($(XCODE_MAJOR),)
-      $(error Unable to determine Xcode version)
-   endif
-   ifeq "$(shell [ $(XCODE_MAJOR) -lt 14 ]; echo $$?)" "0"
-      CXXFLAGS := $(subst -std=c++20,-std=c++2a,$(CXXFLAGS))
-   endif
    CXXFLAGS += $(LTO) $(PTHREAD_FLAGS) -stdlib=libc++
    LDFLAGS += $(LTO) $(PTHREAD_FLAGS) -stdlib=libc++
    TARGET := $(TARGET_NAME)_libretro_tvos.dylib

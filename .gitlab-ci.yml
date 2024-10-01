@@ -76,48 +76,62 @@ libretro-build-linux-x64:
   extends:
     - .libretro-linux-x64-make-default
     - .core-defs
+  image: $CI_SERVER_HOST:5050/libretro-infrastructure/libretro-build-amd64-ubuntu:latest
+  before_script:
+    - export NUMPROC=$(($(nproc)/5))
+    - sudo apt-get update -qy
+    - sudo apt-get install -qy software-properties-common
+    - sudo add-apt-repository -y ppa:savoury1/build-tools
+    - sudo add-apt-repository -y ppa:savoury1/gcc-defaults-12
+    - sudo apt-get update -qy
+    - sudo apt-get install -qy gcc-12 g++-12
+  # This container's existing installations of gcc and CMake are way too old
+  variables:
+    CC: /usr/bin/gcc-12
+    CXX: /usr/bin/g++-12
+    CXXFLAGS: -Wno-deprecated-declarations # Deprecation warnings aren't helpful on the libretro Gitlab
 
 # MacOS 64-bit
 libretro-build-osx-x64:
+  tags:
+    - mac-apple-silicon
   extends:
     - .libretro-osx-x64-make-default
     - .core-defs
 
 # MacOS ARM 64-bit
 libretro-build-osx-arm64:
+  tags:
+    - mac-apple-silicon
   extends:
     - .libretro-osx-arm64-make-default
     - .core-defs
 
 ################################### CELLULAR #################################
 # Android ARMv7a
-android-armeabi-v7a:
-  extends:
-    - .libretro-android-jni-armeabi-v7a
-    - .core-defs
+# android-armeabi-v7a:
+#   extends:
+#     - .libretro-android-jni-armeabi-v7a
+#     - .core-defs
 
 # Android ARMv8a
-android-arm64-v8a:
-  extends:
-    - .libretro-android-jni-arm64-v8a
-    - .core-defs
+# android-arm64-v8a:
+#   extends:
+#     - .libretro-android-jni-arm64-v8a
+#     - .core-defs
 
 # Android 64-bit x86
-android-x86_64:
-  extends:
-    - .libretro-android-jni-x86_64
-    - .core-defs
+# android-x86_64:
+#   extends:
+#     - .libretro-android-jni-x86_64
+#     - .core-defs
 
 # iOS
 libretro-build-ios-arm64:
+  tags:
+    - mac-apple-silicon
   extends:
     - .libretro-ios-arm64-make-default
-    - .core-defs
-
-# iOS (armv7) [iOS 9 and up]
-libretro-build-ios9:
-  extends:
-    - .libretro-ios9-make-default
     - .core-defs
 
 # tvOS
@@ -128,7 +142,7 @@ libretro-build-tvos-arm64:
 
 ################################### CONSOLES #################################
 # Nintendo Switch
-libretro-build-libnx-aarch64:
-  extends:
-    - .libretro-libnx-static-retroarch-master
-    - .core-defs
+# libretro-build-libnx-aarch64:
+#   extends:
+#     - .libretro-libnx-static-retroarch-master
+#     - .core-defs
