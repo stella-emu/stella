@@ -12,7 +12,7 @@
                               Release History
 ===========================================================================
 
-6.7.1 to 7.0 (XXXXX XX, 2024)
+6.7.1 to 7.0 (October 5, 2024)
 
   * Enhanced ROM launcher to allow multiple images per ROM.
 
@@ -46,13 +46,13 @@
 
   * Accelerated emulation up to ~15% (ARM).
 
-  * Added limited GameLine Master Module bankswitching support.  
+  * Added limited GameLine Master Module bankswitching support.
 
   * Added 03E0 bankswitching for Brazilian Parker Bros ROMs.
 
-  * Added WF8 bankswitching used by some certain Coleco white carts  
+  * Added WF8 bankswitching used by some certain Coleco white carts.
 
-  * Added JANE bankswitching used by Coleco's Tarzan prototype
+  * Added JANE bankswitching used by Coleco's Tarzan prototype.
 
   * Added ELF mapper for Mattress Monkeys.
 

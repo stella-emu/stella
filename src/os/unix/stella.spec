@@ -1,5 +1,5 @@
 %define name    stella
-%define version 6.7
+%define version 7.0
 %define rel     1
 
 %define enable_sound 1
@@ -100,6 +100,9 @@ rm -rf $RPM_BUILD_DIR/%{name}-%{version}
 %_datadir/icons/large/%{name}.png
 
 %changelog
+* Sat Oct 5 2024 Stephen Anthony <sa666666@gmail.com> 7.0-1
+- Version 7.0 release
+
 * Mon Jun 13 2022 Stephen Anthony <sa666666@gmail.com> 6.7-1
 - Version 6.7 release
 
