@@ -793,8 +793,8 @@ bool Debugger::addFunction(string_view name, string_view definition,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool Debugger::isBuiltinFunction(string_view name)
 {
-  return std::any_of(ourBuiltinFunctions.cbegin(), ourBuiltinFunctions.cend(),
-      [&](const auto& func) { return name == func.name; });
+  return std::ranges::any_of(ourBuiltinFunctions,
+      [&name](const auto& func) { return name == func.name; });
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -845,10 +845,8 @@ string Debugger::builtinHelp()
   // Get column widths for aligned output (functions)
   for(const auto& func: ourBuiltinFunctions)
   {
-    size_t len = func.name.size();
-    if(len > c_maxlen)  c_maxlen = len;
-    len = func.defn.size();
-    if(len > i_maxlen)  i_maxlen = len;
+    c_maxlen = std::max(func.name.size(), c_maxlen);
+    i_maxlen = std::max(func.defn.size(), i_maxlen);
   }
 
   buf << std::setfill(' ') << "\nBuilt-in functions:\n";
@@ -865,10 +863,7 @@ string Debugger::builtinHelp()
   // Get column widths for aligned output (pseudo-registers)
   c_maxlen = 0;
   for(const auto& reg: ourPseudoRegisters)
-  {
-    const size_t len = reg.name.size();
-    if(len > c_maxlen)  c_maxlen = len;
-  }
+    c_maxlen = std::max(reg.name.size(), c_maxlen);
 
   buf << "\nPseudo-registers:\n";
   for(const auto& reg: ourPseudoRegisters)

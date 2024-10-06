@@ -2051,15 +2051,15 @@ void EventHandler::setComboMap()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-json EventHandler::convertLegacyComboMapping(string list)
+json EventHandler::convertLegacyComboMapping(string lst)
 {
   json convertedMapping = json::array();
 
   // Since istringstream swallows whitespace, we have to make the
   // delimiters be spaces
-  std::replace(list.begin(), list.end(), ':', ' ');
-  std::replace(list.begin(), list.end(), ',', ' ');
-  istringstream buf(list);
+  std::ranges::replace(lst, ':', ' ');
+  std::ranges::replace(lst, ',', ' ');
+  istringstream buf(lst);
 
   try
   {

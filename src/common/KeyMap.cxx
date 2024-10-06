@@ -222,8 +222,7 @@ json KeyMap::saveMapping(EventMode mode) const
   using MapType = std::pair<Mapping, Event::Type>;
   std::vector<MapType> sortedMap(myMap.begin(), myMap.end());
 
-  std::sort(sortedMap.begin(), sortedMap.end(),
-            [](const MapType& a, const MapType& b)
+  std::ranges::sort(sortedMap, [](const MapType& a, const MapType& b)
   {
     // Event::Type first
     if(a.first.key != b.first.key)
@@ -290,11 +289,11 @@ json KeyMap::convertLegacyMapping(string_view lm)
 
   // Since istringstream swallows whitespace, we have to make the
   // delimiters be spaces
-  string list{lm};
-  std::replace(list.begin(), list.end(), '|', ' ');
-  std::replace(list.begin(), list.end(), ':', ' ');
-  std::replace(list.begin(), list.end(), ',', ' ');
-  istringstream buf(list);
+  string lst{lm};
+  std::ranges::replace(lst, '|', ' ');
+  std::ranges::replace(lst, ':', ' ');
+  std::ranges::replace(lst, ',', ' ');
+  istringstream buf(lst);
   int event = 0, key = 0, mod = 0;
 
   while(buf >> event && buf >> key && buf >> mod)

@@ -81,14 +81,12 @@ int TabWidget::addTab(string_view title, int tabWidth)
   }
 
   if(tabWidth == NO_WIDTH)
-    if(_tabWidth < newWidth)
-      _tabWidth = newWidth;
+    _tabWidth = std::max(_tabWidth, newWidth);
 
   if(numTabs - fixedTabs)
   {
     const int maxWidth = (_w - kTabLeftOffset - fixedWidth) / (numTabs - fixedTabs) - kTabLeftOffset;
-    if(_tabWidth > maxWidth)
-      _tabWidth = maxWidth;
+    _tabWidth = std::min(_tabWidth, maxWidth);
   }
 
   // Activate the new tab

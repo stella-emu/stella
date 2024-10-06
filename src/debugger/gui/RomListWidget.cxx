@@ -164,11 +164,7 @@ void RomListWidget::setHighlighted(int item)
 
     // Only scroll the list if we're about to pass the page boundary
     if (_highlightedItem < _currentPos)
-    {
-      _currentPos -= _rows;
-      if (_currentPos < 0)
-        _currentPos = 0;
-    }
+      _currentPos = std::max(_currentPos - _rows, 0);
     else if(_highlightedItem == _currentPos + _rows)
       _currentPos += _rows;
 
@@ -187,10 +183,7 @@ void RomListWidget::recalc()
 {
   const int size = static_cast<int>(myDisasm->list.size());
 
-  if (_currentPos >= size)
-    _currentPos = size - 1;
-  if (_currentPos < 0)
-    _currentPos = 0;
+  _currentPos = BSPF::clamp(_currentPos, 0, size - 1);
 
   if(_selectedItem < 0 || _selectedItem >= size)
     _selectedItem = 0;
@@ -378,15 +371,12 @@ bool RomListWidget::handleEvent(Event::Type e)
       break;
 
     case Event::UIPgUp:
-      _selectedItem -= _rows - 1;
-      if (_selectedItem < 0)
-        _selectedItem = 0;
+      _selectedItem = std::max(_selectedItem - (_rows - 1), 0);
       break;
 
     case Event::UIPgDown:
-      _selectedItem += _rows - 1;
-      if (_selectedItem >= static_cast<int>(myDisasm->list.size()))
-        _selectedItem = static_cast<int>(myDisasm->list.size()) - 1;
+      _selectedItem = std::min(_selectedItem + (_rows - 1),
+          static_cast<int>(myDisasm->list.size()) - 1);
       break;
 
     case Event::UIHome:

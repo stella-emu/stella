@@ -118,10 +118,8 @@ void DataGridWidget::setList(const IntArray& alist, const IntArray& vlist,
   const size_t size = vlist.size();  // assume the alist is the same size
 
   const bool dirty = _editMode
-    || !std::equal(_valueList.begin(), _valueList.end(),
-                   vlist.begin(), vlist.end())
-    || !std::equal(_changedList.begin(), _changedList.end(),
-                   changed.begin(), changed.end());
+    || !std::ranges::equal(_valueList, vlist)
+    || !std::ranges::equal(_changedList, changed);
 
   _addrList.clear();
   _valueList.clear();

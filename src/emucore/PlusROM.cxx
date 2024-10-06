@@ -478,7 +478,7 @@ void PlusROM::receive()
         // and start over
         const auto [responseSize, response] = (*iter)->getResponse();
 
-        for(uInt8 i = 0; i < responseSize; i++)
+        for(size_t i = 0; i < responseSize; ++i)
           myRxBuffer[myRxWritePos++] = response[i];
 
         myPendingRequests.erase(iter);

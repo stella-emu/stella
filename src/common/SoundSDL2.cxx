@@ -479,7 +479,7 @@ void SoundSDL2::WavHandlerSDL2::processWav(uInt8* stream, uInt32 len)
       const int newFreq =
         std::round(static_cast<double>(mySpec.freq) * origLen / len);
 
-      if(len > myRemaining)
+      if(len > myRemaining)  // NOLINT(readability-use-std-min-max)
         len = myRemaining;
 
       SDL_AudioCVT cvt;
@@ -505,7 +505,7 @@ void SoundSDL2::WavHandlerSDL2::processWav(uInt8* stream, uInt32 len)
     }
     else
     {
-      if(len > myRemaining)
+      if(len > myRemaining)  // NOLINT(readability-use-std-min-max)
         len = myRemaining;
 
       // Mix volume adjusted WAV data into silent buffer

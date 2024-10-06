@@ -141,17 +141,14 @@ void ListWidget::setHighlighted(int item)
 const string& ListWidget::getSelectedString() const
 {
   return (_selectedItem >= 0 && _selectedItem < static_cast<int>(_list.size()))
-            ? _list[_selectedItem] : EmptyString;
+    ? _list[_selectedItem]
+    : EmptyString;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ListWidget::scrollTo(int item)
 {
-  const int size = static_cast<int>(_list.size());
-  if (item >= size)
-    item = size - 1;
-  if (item < 0)
-    item = 0;
+  item = BSPF::clamp(item, 0, static_cast<int>(_list.size() - 1));
 
   if(_currentPos != item)
   {
@@ -178,14 +175,8 @@ void ListWidget::recalc()
     else
       _currentPos = size - _rows;
   }
-  if (_currentPos < 0)
-    _currentPos = 0;
-
-  if(_selectedItem >= size)
-    _selectedItem = size - 1;
-  if(_selectedItem < 0)
-    _selectedItem = 0;
-
+  _currentPos = std::max(_currentPos, 0);
+  _selectedItem = BSPF::clamp(_selectedItem, 0, size - 1);
   _editMode = false;
 
   if(_useScrollbar)
@@ -351,16 +342,12 @@ bool ListWidget::handleEvent(Event::Type e)
 
     case Event::UIPgUp:
     case Event::UILeft:
-      _selectedItem -= _rows - 1;
-      if (_selectedItem < 0)
-        _selectedItem = 0;
+      _selectedItem = std::max(_selectedItem - (_rows - 1), 0);
       break;
 
     case Event::UIPgDown:
     case Event::UIRight:
-      _selectedItem += _rows - 1;
-      if (_selectedItem >= size)
-        _selectedItem = size - 1;
+      _selectedItem = std::min(_selectedItem + (_rows - 1), size - 1);
       break;
 
     case Event::UIHome:

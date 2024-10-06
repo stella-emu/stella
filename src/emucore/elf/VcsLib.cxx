@@ -181,7 +181,7 @@ void VcsLib::vcsWrite5(uInt8 zpAddress, uInt8 value)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void VcsLib::vcsCopyOverblankToRiotRam()
 {
-  for (uInt8 i = 0; i < OVERBLANK_PROGRAM_SIZE; i++)
+  for (uInt32 i = 0; i < OVERBLANK_PROGRAM_SIZE; ++i)
     vcsWrite5(0x80 + i, OVERBLANK_PROGRAM[i]);
 }
 

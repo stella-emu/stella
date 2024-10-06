@@ -56,6 +56,7 @@ using uInt64 = uint64_t;
 #include <cstdio>
 #include <ctime>
 #include <numbers>
+#include <ranges>
 #include <utility>
 #include <vector>
 #include <optional>
@@ -189,12 +190,12 @@ namespace BSPF
   // Convert string to given case
   inline const string& toUpperCase(string& s)
   {
-    transform(s.begin(), s.end(), s.begin(), ::toupper);
+    std::ranges::transform(s, s.begin(), ::toupper);
     return s;
   }
   inline const string& toLowerCase(string& s)
   {
-    transform(s.begin(), s.end(), s.begin(), ::tolower);
+    std::ranges::transform(s, s.begin(), ::tolower);
     return s;
   }
 
@@ -426,9 +427,9 @@ namespace BSPF
     const auto currtime = std::time(nullptr);
     std::tm tm_snapshot{};
   #if (defined BSPF_WINDOWS || defined __WIN32__) && (!defined __GNUG__ || defined __MINGW32__)
-    localtime_s(&tm_snapshot, &currtime);
+    std::ignore = localtime_s(&tm_snapshot, &currtime);
   #else
-    localtime_r(&currtime, &tm_snapshot);
+    std::ignore = localtime_r(&currtime, &tm_snapshot);
   #endif
     return tm_snapshot;
   }

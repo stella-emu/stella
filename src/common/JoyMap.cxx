@@ -188,27 +188,26 @@ json JoyMap::saveMapping(EventMode mode) const
   using MapType = std::pair<JoyMapping, Event::Type>;
   std::vector<MapType> sortedMap(myMap.begin(), myMap.end());
 
-  std::sort(sortedMap.begin(), sortedMap.end(),
-      [](const MapType& a, const MapType& b)
-      {
-        // Event::Type first
-        if(a.first.button != b.first.button)
-          return a.first.button < b.first.button;
+  std::ranges::sort(sortedMap, [](const MapType& a, const MapType& b)
+    {
+      // Event::Type first
+      if(a.first.button != b.first.button)
+        return a.first.button < b.first.button;
 
-        if(a.first.axis != b.first.axis)
-          return a.first.axis < b.first.axis;
+      if(a.first.axis != b.first.axis)
+        return a.first.axis < b.first.axis;
 
-        if(a.first.adir != b.first.adir)
-          return a.first.adir < b.first.adir;
+      if(a.first.adir != b.first.adir)
+        return a.first.adir < b.first.adir;
 
-        if(a.first.hat != b.first.hat)
-          return a.first.hat < b.first.hat;
+      if(a.first.hat != b.first.hat)
+        return a.first.hat < b.first.hat;
 
-        if(a.first.hdir != b.first.hdir)
-          return a.first.hdir < b.first.hdir;
+      if(a.first.hdir != b.first.hdir)
+        return a.first.hdir < b.first.hdir;
 
-        return a.second < b.second;
-      }
+      return a.second < b.second;
+    }
   );
 
   json eventMappings = json::array();
@@ -285,17 +284,17 @@ int JoyMap::loadMapping(const json& eventMappings, EventMode mode)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-json JoyMap::convertLegacyMapping(string list)
+json JoyMap::convertLegacyMapping(string lst)
 {
   json eventMappings = json::array();
 
   // Since istringstream swallows whitespace, we have to make the
   // delimiters be spaces
-  std::replace(list.begin(), list.end(), '|', ' ');
-  std::replace(list.begin(), list.end(), ':', ' ');
-  std::replace(list.begin(), list.end(), ',', ' ');
+  std::ranges::replace(lst, '|', ' ');
+  std::ranges::replace(lst, ':', ' ');
+  std::ranges::replace(lst, ',', ' ');
 
-  istringstream buf(list);
+  istringstream buf(lst);
   int event = 0, button = 0, axis = 0, adir = 0, hat = 0, hdir = 0;
 
   while(buf >> event && buf >> button

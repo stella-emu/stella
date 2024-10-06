@@ -157,7 +157,7 @@ void ToolTip::show(string_view tip)
   {
     string leftStr, rightStr;
 
-    surface()->splitString(*myFont, inStr, maxWidth, leftStr, rightStr);
+    FBSurface::splitString(*myFont, inStr, maxWidth, leftStr, rightStr);
     width = std::max(width, static_cast<uInt32>(myFont->getStringWidth(leftStr)));
     inStr = rightStr;
   }

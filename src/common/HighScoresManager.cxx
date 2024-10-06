@@ -381,8 +381,7 @@ string HighScoresManager::formattedScore(Int32 score, Int32 width) const
 
   if(scoreBCD(jprops))
   {
-    if(width > digits)
-      digits = width;
+    digits = std::max(width, digits);
     buf << std::setw(digits) << std::setfill(' ') << score;
   }
   else {

@@ -112,26 +112,26 @@ json PhysicalJoystick::convertLegacyMapping(string_view mapping, string_view nam
 {
   istringstream buf(string{mapping});  // TODO: fixed in C++23
   json convertedMapping = json::object();
-  string map;
+  string lmap;
 
   // Skip joystick name
-  getline(buf, map, MODE_DELIM);
+  getline(buf, lmap, MODE_DELIM);
 
-  while (getline(buf, map, MODE_DELIM))
+  while (getline(buf, lmap, MODE_DELIM))
   {
     int mode{0};
 
     // Get event mode
-    std::replace(map.begin(), map.end(), '|', ' ');
-    istringstream modeBuf(map);
+    std::ranges::replace(lmap, '|', ' ');
+    istringstream modeBuf(lmap);
     modeBuf >> mode;
 
     // Remove leading "<mode>|" string
-    map.erase(0, 2);
+    lmap.erase(0, 2);
 
-    const json mappingForMode = JoyMap::convertLegacyMapping(map);
+    const json lmappingForMode = JoyMap::convertLegacyMapping(lmap);
 
-    convertedMapping[jsonName(static_cast<EventMode>(mode))] = mappingForMode;
+    convertedMapping[jsonName(static_cast<EventMode>(mode))] = lmappingForMode;
   }
 
   convertedMapping["name"] = name;

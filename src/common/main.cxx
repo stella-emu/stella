@@ -40,6 +40,8 @@
   #include "CheatManager.hxx"
 #endif
 
+namespace {
+
 /**
   Parse the commandline arguments and store into the appropriate hashmap.
 
@@ -47,39 +49,6 @@
   Some keys are used only by the main function; these are placed in localOpts.
   The rest are needed globally, and are placed in globalOpts.
 */
-void parseCommandLine(int ac, const char* const av[],
-    Settings::Options& globalOpts, Settings::Options& localOpts);
-
-/**
-  Checks the commandline for special settings that are used by various ports
-  to use a specific 'base directory'.
-
-  This needs to be done separately, before either an OSystem or Settings
-  object can be created, since they both depend on each other, and a
-  variable basedir implies a different location for the settings file.
-
-  This function will call OSystem::overrideBaseDir() when either of the
-  applicable arguments are found, and then remove them from the argument
-  list.
-*/
-void checkForCustomBaseDir(Settings::Options& options);
-
-/**
-  Checks whether the commandline contains an argument corresponding to
-  starting a profile session.
-*/
-bool isProfilingRun(int ac, char* av[]);
-
-/**
-  In Windows, attach console to allow command line output (e.g. for -help).
-  This is needed since by default Windows doesn't set up stdout/stderr
-  correctly.
-*/
-void attachConsole();
-void freeConsole();
-
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void parseCommandLine(int ac, const char* const av[],
     Settings::Options& globalOpts, Settings::Options& localOpts)
 {
@@ -136,7 +105,18 @@ void parseCommandLine(int ac, const char* const av[],
 #endif
 }
 
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+/**
+  Checks the commandline for special settings that are used by various ports
+  to use a specific 'base directory'.
+
+  This needs to be done separately, before either an OSystem or Settings
+  object can be created, since they both depend on each other, and a
+  variable basedir implies a different location for the settings file.
+
+  This function will call OSystem::overrideBaseDir() when either of the
+  applicable arguments are found, and then remove them from the argument
+  list.
+*/
 void checkForCustomBaseDir(Settings::Options& options)
 {
   // If both of these are activated, the 'base in app dir' takes precedence
@@ -150,14 +130,22 @@ void checkForCustomBaseDir(Settings::Options& options)
   }
 }
 
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool isProfilingRun(int ac, char* av[]) {
+/**
+  Checks whether the commandline contains an argument corresponding to
+  starting a profile session.
+*/
+bool isProfilingRun(int ac, char* av[])
+{
   if (ac <= 1) return false;
 
   return string(av[1]) == "-profile";
 }
 
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+/**
+  In Windows, attach console to allow command line output (e.g. for -help).
+  This is needed since by default Windows doesn't set up stdout/stderr
+  correctly.
+*/
 void attachConsole()
 {
 #if defined(BSPF_WINDOWS)
@@ -183,7 +171,6 @@ void attachConsole()
 #endif
 }
 
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void freeConsole()
 {
 #if defined(BSPF_WINDOWS)
@@ -191,6 +178,9 @@ void freeConsole()
   FreeConsole();
 #endif
 }
+
+} // namespace
+
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 #if defined(BSPF_MACOS)

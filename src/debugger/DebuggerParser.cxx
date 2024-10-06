@@ -1481,10 +1481,7 @@ void DebuggerParser::executeHelp()
     // Find length of longest command
     size_t clen = 0;
     for(const auto& c: commands)
-    {
-      const size_t len = c.cmdString.length();
-      if(len > clen)  clen = len;
-    }
+      clen = std::max(clen, c.cmdString.length());
 
     commandResult << setfill(' ');
     for(const auto& c: commands)

@@ -182,8 +182,7 @@ const FavoritesManager::UserList& FavoritesManager::userList() const
   sortedList.assign(myUserSet.begin(), myUserSet.end());
 
   if(!mySettings.getBool("altsorting"))
-    std::sort(sortedList.begin(), sortedList.end(),
-      [](string_view a, string_view b)
+    std::ranges::sort(sortedList, [](string_view a, string_view b)
     {
       // Sort without path
       const FSNode aNode(a);
@@ -221,7 +220,7 @@ void FavoritesManager::addRecent(string_view path)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool FavoritesManager::removeRecent(string_view path)
 {
-  auto it = std::find(myRecentList.begin(), myRecentList.end(), path);
+  auto it = std::ranges::find(myRecentList, path);
 
   if(it != myRecentList.end())
     myRecentList.erase(it);
@@ -246,8 +245,7 @@ const FavoritesManager::RecentList& FavoritesManager::recentList() const
   {
     sortedList.assign(myRecentList.begin(), myRecentList.end());
 
-    std::sort(sortedList.begin(), sortedList.end(),
-      [](string_view a, string_view b)
+    std::ranges::sort(sortedList, [](string_view a, string_view b)
     {
       // Sort alphabetical, without path
       const FSNode aNode(a);
@@ -324,8 +322,7 @@ FavoritesManager::sortedPopularList(bool sortByName) const
   sortedList.clear();
   sortedList.assign(myPopularMap.begin(), myPopularMap.end());
 
-  std::sort(sortedList.begin(), sortedList.end(),
-    [sortByName](const PopularType& a, const PopularType& b)
+  std::ranges::sort(sortedList, [sortByName](const PopularType& a, const PopularType& b)
   {
     // 1. sort by most popular
     if(!sortByName && a.second != b.second)

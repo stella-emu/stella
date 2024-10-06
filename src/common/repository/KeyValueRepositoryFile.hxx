@@ -28,11 +28,13 @@
 template<typename T>
 class KeyValueRepositoryFile : public KeyValueRepository {
   public:
-    explicit KeyValueRepositoryFile(const FSNode& node);
-
     KVRMap load() override;
 
     bool save(const KVRMap& values) override;
+
+  private:
+    explicit KeyValueRepositoryFile(const FSNode& node);
+    friend T;
 
   protected:
 
