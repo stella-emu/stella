@@ -266,8 +266,7 @@ void ZipHandler::ZipFile::readEcd()
     uInt64 read_length = 0;
 
     // Max out the buf length at the size of the file
-    if(buflen > myLength)
-      buflen = myLength;
+    buflen = std::min(buflen, myLength);
 
     // Allocate buffer
     const ByteBuffer buffer = make_unique<uInt8[]>(buflen + 1);

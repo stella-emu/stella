@@ -987,9 +987,8 @@ void Dialog::addOKBGroup(WidgetArray& wid, const GUI::Font& font,
             VBORDER      = Dialog::vBorder(),
             HBORDER      = Dialog::hBorder();
 
-  buttonWidth = std::max(buttonWidth,
-                         std::max(Dialog::buttonWidth(okText),
-                         Dialog::buttonWidth("Cancel")));
+  buttonWidth = std::max({buttonWidth, Dialog::buttonWidth(okText),
+                          Dialog::buttonWidth("Cancel")});
   _w = std::max(HBORDER * 2 + buttonWidth * 2 + BUTTON_GAP, _w);
 
   addOKWidget(new ButtonWidget(this, font, (_w - buttonWidth) / 2,
@@ -1007,10 +1006,10 @@ void Dialog::addOKCancelBGroup(WidgetArray& wid, const GUI::Font& font,
             VBORDER      = Dialog::vBorder(),
             HBORDER      = Dialog::hBorder();
 
-  buttonWidth = std::max(buttonWidth,
-                         std::max(Dialog::buttonWidth("Defaults"),
-                         std::max(Dialog::buttonWidth(okText),
-                         Dialog::buttonWidth(cancelText))));
+  buttonWidth = std::max({buttonWidth,
+                          Dialog::buttonWidth("Defaults"),
+                          Dialog::buttonWidth(okText),
+                          Dialog::buttonWidth(cancelText)});
 
   _w = std::max(HBORDER * 2 + buttonWidth * 2 + BUTTON_GAP, _w);
 

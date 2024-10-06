@@ -69,8 +69,7 @@ int CartDebugWidget::addBaseInformation(size_t bytes, string_view manufacturer,
   const StringParser bs(desc, (fwidth - ScrollBarWidget::scrollBarWidth(_font)) /
     myFontWidth);
   const StringList& sl = bs.stringList();
-  size_t lines = sl.size();
-  if(lines < 3) lines = 3;
+  size_t lines = std::max<size_t>(sl.size(), 3);
   bool useScrollbar = false;
   if(lines > maxlines)
   {

@@ -68,8 +68,7 @@ void ToggleBitWidget::setList(const StringList& off, const StringList& on)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ToggleBitWidget::setState(const BoolArray& state, const BoolArray& changed)
 {
-  if(!std::equal(_changedList.begin(), _changedList.end(),
-     changed.begin(), changed.end()))
+  if(!std::ranges::equal(_changedList, changed))
     setDirty();
 
   _stateList.clear();
@@ -77,7 +76,6 @@ void ToggleBitWidget::setState(const BoolArray& state, const BoolArray& changed)
   _changedList.clear();
   _changedList = changed;
 }
-
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string ToggleBitWidget::getToolTip(const Common::Point& pos) const

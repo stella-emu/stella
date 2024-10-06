@@ -112,7 +112,7 @@ class JoyMap
     nlohmann::json saveMapping(EventMode mode) const;
     int loadMapping(const nlohmann::json& eventMappings, EventMode mode);
 
-    static nlohmann::json convertLegacyMapping(string list);
+    static nlohmann::json convertLegacyMapping(string lst);
 
     /** Erase all mappings for given mode */
     void eraseMode(EventMode mode);

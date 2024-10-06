@@ -170,9 +170,8 @@ bool PromptWidget::handleKeyDown(StellaKey key, StellaMod mod)
       if(_scrollLine < _currentPos / _lineWidth)
       {
         // Scroll page by page when not at cursor position:
-        _scrollLine += _linesPerPage;
-        if(_scrollLine > _promptEndPos / _lineWidth)
-          _scrollLine = _promptEndPos / _lineWidth;
+        _scrollLine = std::min(_scrollLine + _linesPerPage,
+                               _promptEndPos / _lineWidth);
         updateScrollBuffer();
         break;
       }
@@ -293,9 +292,8 @@ bool PromptWidget::handleKeyDown(StellaKey key, StellaMod mod)
       if(_scrollLine < _linesPerPage)
         break;
 
-      _scrollLine -= _linesPerPage - 1;
-      if(_scrollLine < _firstLineInBuffer + _linesPerPage - 1)
-        _scrollLine = _firstLineInBuffer + _linesPerPage - 1;
+      _scrollLine = std::max(_scrollLine - (_linesPerPage - 1),
+                             _firstLineInBuffer + _linesPerPage - 1);
       updateScrollBuffer();
       break;
 
@@ -304,9 +302,8 @@ bool PromptWidget::handleKeyDown(StellaKey key, StellaMod mod)
       if(_scrollLine >= _promptEndPos / _lineWidth)
         break;
 
-      _scrollLine += _linesPerPage - 1;
-      if(_scrollLine > _promptEndPos / _lineWidth)
-        _scrollLine = _promptEndPos / _lineWidth;
+      _scrollLine = std::min(_scrollLine + (_linesPerPage - 1),
+                             _promptEndPos / _lineWidth);
       updateScrollBuffer();
       break;
 
@@ -316,9 +313,7 @@ bool PromptWidget::handleKeyDown(StellaKey key, StellaMod mod)
       break;
 
     case Event::UIEnd:
-      _scrollLine = _promptEndPos / _lineWidth;
-      if(_scrollLine < _linesPerPage - 1)
-        _scrollLine = _linesPerPage - 1;
+      _scrollLine = std::max(_promptEndPos / _lineWidth, _linesPerPage - 1);
       updateScrollBuffer();
       break;
 
@@ -727,8 +722,7 @@ bool PromptWidget::autoComplete(int direction)
 
   if(_tabCount != -1)
     len = static_cast<int>(strlen(_inputStr));
-  if(len > kLineBufferSize - 1)
-    len = kLineBufferSize - 1;
+  len = std::min(len, kLineBufferSize - 1);
 
   int lastDelimPos = -1;
   char delimiter = '\0';
@@ -748,11 +742,11 @@ bool PromptWidget::autoComplete(int direction)
   if(_tabCount == -1)
     _inputStr[len] = '\0';
 
-  StringList list;
+  StringList lst;
 
   if(lastDelimPos == -1)
     // no delimiters, do only command completion:
-    DebuggerParser::getCompletions(_inputStr, list);
+    DebuggerParser::getCompletions(_inputStr, lst);
   else
   {
     const size_t strLen = len - lastDelimPos - 1;
@@ -761,29 +755,29 @@ bool PromptWidget::autoComplete(int direction)
     {
       // Special case for 'help' command
       if(BSPF::startsWithIgnoreCase(_inputStr, "help"))
-        DebuggerParser::getCompletions(_inputStr + lastDelimPos + 1, list);
+        DebuggerParser::getCompletions(_inputStr + lastDelimPos + 1, lst);
       else
       {
         // we got a delimiter, so this must be a label or a function
         const Debugger& dbg = instance().debugger();
 
-        dbg.cartDebug().getCompletions(_inputStr + lastDelimPos + 1, list);
-        dbg.getCompletions(_inputStr + lastDelimPos + 1, list);
+        dbg.cartDebug().getCompletions(_inputStr + lastDelimPos + 1, lst);
+        dbg.getCompletions(_inputStr + lastDelimPos + 1, lst);
       }
     }
 
   }
-  if(list.empty())
+  if(lst.empty())
     return false;
-  sort(list.begin(), list.end());
+  std::ranges::sort(lst);
 
   if(direction < 0)
   {
     if(--_tabCount < 0)
-      _tabCount = static_cast<int>(list.size()) - 1;
+      _tabCount = static_cast<int>(lst.size()) - 1;
   }
   else
-    _tabCount = (_tabCount + 1) % list.size();
+    _tabCount = (_tabCount + 1) % lst.size();
 
   nextLine();
   _currentPos = _promptStartPos;
@@ -796,7 +790,7 @@ bool PromptWidget::autoComplete(int direction)
     putcharIntern(delimiter);
 
   // ...and add current autocompletion string
-  print(list[_tabCount]);
+  print(lst[_tabCount]);
   putcharIntern(' ');
   _promptEndPos = _currentPos;
 

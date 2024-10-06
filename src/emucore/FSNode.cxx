@@ -89,8 +89,7 @@ bool FSNode::getAllChildren(FSList& fslist, ListMode mode,
     }
   #endif
 
-    std::sort(fslist.begin(), fslist.end(),
-              [](const FSNode& node1, const FSNode& node2)
+    std::ranges::sort(fslist, [](const FSNode& node1, const FSNode& node2)
     {
       if(node1.isDirectory() != node2.isDirectory())
         return node1.isDirectory();
@@ -153,8 +152,8 @@ bool FSNode::getChildren(FSList& fslist, ListMode mode,
     }
   #endif
 
-    std::sort(tmp.begin(), tmp.end(),
-              [](const AbstractFSNodePtr& node1, const AbstractFSNodePtr& node2)
+    std::ranges::sort(tmp,
+        [](const AbstractFSNodePtr& node1, const AbstractFSNodePtr& node2)
     {
       if(node1->isDirectory() != node2->isDirectory())
         return node1->isDirectory();

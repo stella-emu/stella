@@ -478,9 +478,9 @@ void PaletteHandler::generateCustomPalette(ConsoleTiming timing) const
         float G = Y + dotProduct(IQ[chroma], IQG);
         float B = Y + dotProduct(IQ[chroma], IQB);
 
-        if(R < 0) R = 0;
-        if(G < 0) G = 0;
-        if(B < 0) B = 0;
+        R = std::max(R, 0.F);
+        G = std::max(G, 0.F);
+        B = std::max(B, 0.F);
 
         R = powf(R, 0.9F);
         G = powf(G, 0.9F);

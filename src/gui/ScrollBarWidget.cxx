@@ -184,15 +184,10 @@ void ScrollBarWidget::handleMouseMoved(int x, int y)
 
   if(_draggingPart == Part::Slider)
   {
+    _sliderPos = BSPF::clamp(y - _sliderDeltaMouseDownPos,
+        _upDownBoxHeight, _h - _upDownBoxHeight - _sliderHeight);
+
     const int old_pos = _currentPos;
-    _sliderPos = y - _sliderDeltaMouseDownPos;
-
-    if(_sliderPos < _upDownBoxHeight)
-      _sliderPos = _upDownBoxHeight;
-
-    if(_sliderPos > _h - _upDownBoxHeight - _sliderHeight)
-      _sliderPos = _h - _upDownBoxHeight - _sliderHeight;
-
     _currentPos = (_sliderPos - _upDownBoxHeight) * (_numEntries - _entriesPerPage) /
                   (_h - 2 * _upDownBoxHeight - _sliderHeight);
     checkBounds(old_pos);
@@ -256,14 +251,12 @@ void ScrollBarWidget::recalc()
 
   if(_numEntries > _entriesPerPage)
   {
-    _sliderHeight = (_h - 2 * _upDownBoxHeight) * _entriesPerPage / _numEntries;
-    if(_sliderHeight < _upDownBoxHeight)
-      _sliderHeight = _upDownBoxHeight;
+    _sliderHeight = std::max(_upDownBoxHeight,
+        (_h - 2 * _upDownBoxHeight) * _entriesPerPage / _numEntries);
 
-    _sliderPos = _upDownBoxHeight + (_h - 2 * _upDownBoxHeight - _sliderHeight) *
-                 _currentPos / (_numEntries - _entriesPerPage);
-    if(_sliderPos < 0)
-      _sliderPos = 0;
+    _sliderPos = std::max(0,
+      _upDownBoxHeight + (_h - 2 * _upDownBoxHeight - _sliderHeight) *
+      _currentPos / (_numEntries - _entriesPerPage));
   }
   else
   {
@@ -309,10 +302,9 @@ void ScrollBarWidget::drawWidget(bool hilite)
   if(!isSinglePage)
   {
     // align slider to scroll intervals
-    int alignedPos = _upDownBoxHeight + (_h - 2 * _upDownBoxHeight - _sliderHeight) *
-      _currentPos / (_numEntries - _entriesPerPage);
-    if(alignedPos < 0)
-      alignedPos = 0;
+    const int alignedPos = std::max(0,
+      _upDownBoxHeight + (_h - 2 * _upDownBoxHeight - _sliderHeight) *
+      _currentPos / (_numEntries - _entriesPerPage));
 
     s.fillRect(_x + 1, _y + alignedPos - 1, _w - 2, _sliderHeight + 2,
               (hilite && _part == Part::Slider) ? kScrollColorHi : kScrollColor);

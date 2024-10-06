@@ -244,8 +244,8 @@ bool RomImageWidget::getImageList(const string& propName, const string& romName,
 
   // Sort again, not considering extensions, else <filename.png|jpg> would be at
   // the end of the list
-  std::sort(myImageList.begin(), myImageList.end(),
-            [oldFileName](const FSNode& node1, const FSNode& node2)
+  std::ranges::sort(myImageList, [oldFileName]
+    (const FSNode& node1, const FSNode& node2)
     {
       const int compare = BSPF::compareIgnoreCase(
         node1.getNameWithExt(), node2.getNameWithExt());
@@ -395,9 +395,9 @@ void RomImageWidget::zoomSurfaces(bool zoomed, bool force)
       const Int32 lh = maxSize.h - b * 2;
       const Int32 iw = mySrcRect.w() * scaleDpi;
       const Int32 ih = mySrcRect.h() * scaleDpi;
-      const float zoom = std::min(1.F, // do not zoom beyond original size
-                                  std::min(static_cast<float>(lw) / iw,
-                                           static_cast<float>(lh) / ih));
+      const float zoom = std::min({1.F, // do not zoom beyond original size
+                                   static_cast<float>(lw) / iw,
+                                   static_cast<float>(lh) / ih});
       const Int32 w = iw * zoom;
       const Int32 h = ih * zoom;
 

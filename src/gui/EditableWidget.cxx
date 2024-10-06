@@ -64,9 +64,8 @@ void EditableWidget::setText(string_view str, bool changed)
   _caretPos = static_cast<int>(_editString.size());
   _selectSize = 0;
 
-  _editScrollOffset = (_font.getStringWidth(_editString) - (getEditRect().w()));
-  if (_editScrollOffset < 0)
-    _editScrollOffset = 0;
+  _editScrollOffset = std::max<int>(0,
+    _font.getStringWidth(_editString) - getEditRect().w());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -424,8 +423,8 @@ bool EditableWidget::handleKeyDown(StellaKey key, StellaMod mod)
       if(handled)
       {
         // Put caret at last difference
-        myUndoHandler->lastDiff(_editString, oldString);
-        setCaretPos(myUndoHandler->lastDiff(_editString, oldString));
+        UndoHandler::lastDiff(_editString, oldString);
+        setCaretPos(UndoHandler::lastDiff(_editString, oldString));
         _selectSize = 0;
         sendCommand(EditableWidget::kChangedCmd, key, _id);
       }
@@ -583,9 +582,7 @@ bool EditableWidget::adjustOffset()
     if (strWidth - _editScrollOffset < editWidth)
     {
       // scroll right
-      _editScrollOffset = (strWidth - editWidth);
-      if (_editScrollOffset < 0)
-        _editScrollOffset = 0;
+      _editScrollOffset = std::max(strWidth - editWidth, 0);
     }
   }
 

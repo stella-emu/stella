@@ -38,9 +38,9 @@
 //#endif
 
 #if defined(BSPF_UNIX) || defined(BSPF_MACOS)
-#include <cstdio>
-#include <sys/ioctl.h>
-#include <unistd.h>
+  #include <cstdio>
+  #include <sys/ioctl.h>
+  #include <unistd.h>
 #endif
 
 #include "Settings.hxx"
@@ -366,7 +366,7 @@ void Settings::validate()
   if(i < -5 || i > 5)  setValue("tia.vsizeadjust", 0);
 
   string s = getString("tia.dbgcolors");
-  sort(s.begin(), s.end());
+  std::ranges::sort(s);
   if(s != "bgopry")  setValue("tia.dbgcolors", "roygpb");
 
   if(PhosphorHandler::toPhosphorMode(getString(PhosphorHandler::SETTING_MODE)) == PhosphorHandler::ByRom)
