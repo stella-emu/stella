@@ -25,7 +25,7 @@ Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{
 
 [Files]
 Source: "{#STELLA_PATH}\Stella.exe"; DestDir: "{app}"; Flags: ignoreversion
-Source: "{#STELLA_PATH}\*.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "{#STELLA_PATH}\SDL*.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "{#STELLA_DOCPATH}\*"; DestDir: "{app}\docs"; Flags: ignoreversion recursesubdirs createallsubdirs
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
@@ -36,5 +36,4 @@ Name: "{group}\Documentation"; Filename: "{app}\docs\index.html"
 Name: "{group}\Uninstall Stella"; Filename: "{uninstallexe}"
 
 [InstallDelete]
-Type: files; Name: "{app}\msvcp140.dll"
-Type: files; Name: "{app}\vcruntime140.dll"
+Type: files; Name: "{app}\*.dll"
