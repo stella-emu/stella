@@ -1017,6 +1017,10 @@ void LauncherDialog::handleCommand(CommandSender* sender, int cmd,
       loadRandomRom();
       break;
 
+    case ListWidget::kParentDirCmd:
+      myList->sendCommand(ListWidget::kParentDirCmd, 0, 0);
+      break;
+
     case kOptionsCmd:
       openSettings();
       break;
