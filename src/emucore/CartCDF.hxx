@@ -272,6 +272,14 @@ class CartridgeCDF : public CartridgeARM
     */
     bool isPlusROM() const override { return myPlusROM->isValid(); }
 
+    /**
+      Enable or disable PlusROM support.
+
+      @param enabled  Whether to enable the PlusROM support
+    */
+    void enablePlusROM(bool enable) override { myPlusROM->enable(enable); }
+
+
   private:
     static constexpr uInt8  COMMSTREAM = 0x20, JUMPSTREAM_BASE = 0x21;
     static constexpr uInt16 LDAXY_OVERRIDE_INACTIVE = 0xFFFF;

@@ -46,6 +46,7 @@ void DevSettingsHandler::loadSettings(SettingsSet set)
   // AtariVox/SaveKey/PlusROM access
   myExternAccess[set] = settings.getBool(prefix + "extaccess");
   myConsole[set] = settings.getString(prefix + "console") == "7800" ? 1 : 0;
+  myPlusROM[set] = devSettings ? settings.getBool("dev.plusroms.on") : true;
   // Randomization
   myRandomBank[set] = settings.getBool(prefix + "bankrandom");
   myRandomizeTIA[set] = settings.getBool(prefix + "tiarandom");
@@ -118,6 +119,7 @@ void DevSettingsHandler::saveSettings(SettingsSet set)
 
   if(devSettings)
   {
+    settings.setValue("dev.plusroms.on", myPlusROM[set]);
     settings.setValue("dev.hsrandom", myRandomHotspots[set]);
     // Undriven TIA pins
     settings.setValue("dev.tiadriven", myUndrivenPins[set]);
@@ -183,6 +185,7 @@ void DevSettingsHandler::applySettings(SettingsSet set)
   {
     myOSystem.console().cartridge().enableRandomHotspots(myRandomHotspots[set]);
     myOSystem.console().tia().driveUnusedPinsRandom(myUndrivenPins[set]);
+    myOSystem.console().cartridge().enablePlusROM(myPlusROM[set]);
     // Notes:
     // - thumb exceptions not updated, because set in cart constructor
     // - other missing settings are used on-the-fly

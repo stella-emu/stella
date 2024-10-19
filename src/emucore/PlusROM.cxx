@@ -23,7 +23,6 @@
 #include "PlusROM.hxx"
 #include "Logger.hxx"
 #include "Version.hxx"
-#include "Settings.hxx"
 #include "CartDetector.hxx"
 
 #if defined(HTTP_LIB_SUPPORT)

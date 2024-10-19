@@ -150,6 +150,13 @@ class Cartridge : public Device
     virtual bool isPlusROM() const { return false; }
 
     /**
+      Enable or disable PlusROM support.
+
+      @param enabled  Whether to enable the PlusROM support
+    */
+    virtual void enablePlusROM(bool enable) { };
+
+    /**
       Set the callback for displaying messages
     */
     virtual void setMessageCallback(const messageCallback& callback)

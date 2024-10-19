@@ -88,6 +88,7 @@ class DeveloperDialog : public Dialog, DevSettingsHandler
     CheckboxWidget*     myFrameStatsWidget{nullptr};
     CheckboxWidget*     myDetectedInfoWidget{nullptr};
     CheckboxWidget*     myExternAccessWidget{nullptr};
+    CheckboxWidget*     myPlusRomWidget{nullptr};
     PopUpWidget*        myConsoleWidget{nullptr};
     StaticTextWidget*   myLoadingROMLabel{nullptr};
     CheckboxWidget*     myRandomBankWidget{nullptr};

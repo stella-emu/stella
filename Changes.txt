@@ -12,6 +12,10 @@
                               Release History
 ===========================================================================
 
+7.0 to 7.1 (xxx x, 202x)
+
+  * Added developer option for disabling PlusROM support (TODO: Doc)
+
 6.7.1 to 7.0 (October 5, 2024)
 
   * Enhanced ROM launcher to allow multiple images per ROM.

@@ -313,6 +313,7 @@ Settings::Settings()
   setPermanent("dev.tm.horizon", "30s"); // = ~30 seconds
   setPermanent("dev.detectedinfo", "true");
   setPermanent("dev.extaccess", "true");
+  setPermanent("dev.plusroms.on", "true");
   // Thumb ARM emulation options
   setPermanent("dev.thumb.trapfatal", "true");
   setPermanent("dev.arm.mips", CartridgeELF::MIPS_DEF);
@@ -810,6 +811,7 @@ void Settings::usage()
     << "  -dev.thumb.mammode     <0-3>     Selects the LPC's MAM mode\n"
 #endif
     << "  -dev.extaccess         <1|0>     Enable messages for external access\n"
+    << "  -dev.plusroms.on       <1|0>     Enable PlusROM support\n"
     << "  -dev.tia.type <standard|custom|  Selects a TIA type\n"
     << "                 koolaidman|\n"
     << "                 cosmicark|pesco|\n"

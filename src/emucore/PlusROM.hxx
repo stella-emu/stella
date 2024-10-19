@@ -18,13 +18,12 @@
 #ifndef PLUSROM_HXX
 #define PLUSROM_HXX
 
-class Settings;
-
 #include <deque>
 
 #include "bspf.hxx"
 #include "Serializable.hxx"
 #include "Cart.hxx"
+#include "Settings.hxx"
 
 /**
   Class used to emulate the 'PlusROM' meta-scheme, documented at
@@ -75,7 +74,18 @@ class PlusROM : public Serializable
 
       @return  Whether this is actually a PlusROM cart
     */
-    bool isValid() const { return myIsPlusROM; }
+    bool isValid() const {
+      return myIsPlusROM && myIsEnabled;
+    }
+
+    /**
+      Enable or disable PlusROM support.
+
+      @param enabled  Whether to enable the PlusROM support
+    */
+    void enable(bool enabled) {
+      myIsEnabled = enabled;
+    }
 
     /**
       Read from hotspot addresses ($1FF2 and $1FF3).
@@ -175,6 +185,7 @@ class PlusROM : public Serializable
     const Cartridge& myCart;
 
     bool myIsPlusROM{false};
+    bool myIsEnabled{true};
     string myHost;
     string myPath;
 
