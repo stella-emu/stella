@@ -195,6 +195,13 @@ class CartridgeEnhanced : public Cartridge
     bool isPlusROM() const override { return myPlusROM->isValid(); }
 
     /**
+      Enable or disable PlusROM support.
+
+      @param enabled  Whether to enable the PlusROM support
+    */
+    void enablePlusROM(bool enable) override { myPlusROM->enable(enable); }
+
+    /**
       Set the callback for displaying messages
     */
     void setMessageCallback(const messageCallback& callback) override
@@ -339,7 +346,7 @@ class CartridgeEnhanced : public Cartridge
     */
     uInt16 ramAddressSegmentOffset(uInt16 address) const {
       return static_cast<uInt16>(
-        (myCurrentSegOffset[((address & ROM_MASK) >> myBankShift) % myBankSegs] - mySize) 
+        (myCurrentSegOffset[((address & ROM_MASK) >> myBankShift) % myBankSegs] - mySize)
         >> (myBankShift - myRamBankShift));
     }
 

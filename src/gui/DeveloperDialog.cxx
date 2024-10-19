@@ -129,7 +129,7 @@ void DeveloperDialog::addEmulationTab(const GUI::Font& font)
 
   // AtariVox/SaveKey/PlusROM access
   myExternAccessWidget = new CheckboxWidget(myTab, font, HBORDER + INDENT * 1, ypos + 1,
-                                            "Display external access message");
+                                            "External access messages");
   myExternAccessWidget->setToolTip("Display a message for any external access\n"
                                    "AtariVox/SaveKey EEPROM, PlusROM, Supercharger...).");
   wid.push_back(myExternAccessWidget);
@@ -147,6 +147,13 @@ void DeveloperDialog::addEmulationTab(const GUI::Font& font)
   myConsoleWidget->setToolTip("Emulate Color/B&W/Pause key and zero\n"
                               "page RAM initialization differently.");
   wid.push_back(myConsoleWidget);
+
+  // PlusROM functionality
+  myPlusRomWidget = new CheckboxWidget(myTab, font,
+                                       myDetectedInfoWidget->getLeft(), ypos + 1,
+                                       "PlusROM support");
+  myPlusRomWidget->setToolTip("Enable PlusROM support");
+  wid.push_back(myPlusRomWidget);
   ypos += lineHeight + VGAP;
 
   // Randomize items
@@ -748,6 +755,7 @@ void DeveloperDialog::getWidgetStates(SettingsSet set)
   // AtariVox/SaveKey/PlusROM access
   myExternAccess[set] = myExternAccessWidget->getState();
   myConsole[set] = myConsoleWidget->getSelected() == 1;
+  myPlusROM[set] = myPlusRomWidget->getState() == 1;
   // Randomization
   myRandomBank[set] = myRandomBankWidget->getState();
   myRandomizeTIA[set] = myRandomizeTIAWidget->getState();
@@ -812,6 +820,7 @@ void DeveloperDialog::setWidgetStates(SettingsSet set)
   // AtariVox/SaveKey/PlusROM access
   myExternAccessWidget->setState(myExternAccess[set]);
   myConsoleWidget->setSelectedIndex(myConsole[set]);
+  myPlusRomWidget->setState(myPlusROM[set]);
   // Randomization
   myRandomBankWidget->setState(myRandomBank[set]);
   myRandomizeTIAWidget->setState(myRandomizeTIA[set]);
@@ -965,6 +974,7 @@ void DeveloperDialog::setDefaults()
       // AtariVox/SaveKey/PlusROM access
       myExternAccess[set] = devSettings;
       myConsole[set] = 0;
+      myPlusROM[set] = true;
       // Randomization
       myRandomBank[set] = devSettings;
       myRandomizeTIA[set] = devSettings;
@@ -1149,6 +1159,7 @@ void DeveloperDialog::handleCommand(CommandSender* sender, int cmd, int data, in
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DeveloperDialog::handleSettings(bool devSettings)
 {
+  myPlusRomWidget->setEnabled(devSettings);
   myRandomHotspotsWidget->setEnabled(devSettings);
   myUndrivenPinsWidget->setEnabled(devSettings);
 #ifdef DEBUGGER_SUPPORT

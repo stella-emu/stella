@@ -51,6 +51,7 @@ class DevSettingsHandler
     std::array<bool, numSets>   myDetectedInfo{};
     std::array<bool, numSets>   myExternAccess{};
     std::array<int, numSets>    myConsole{};
+    std::array<int, numSets>    myPlusROM{};
     std::array<bool, numSets>   myRandomBank{};
     std::array<bool, numSets>   myRandomizeTIA{};
     std::array<bool, numSets>   myRandomizeRAM{};
