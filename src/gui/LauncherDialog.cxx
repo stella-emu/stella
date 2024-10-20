@@ -1018,7 +1018,7 @@ void LauncherDialog::handleCommand(CommandSender* sender, int cmd,
       break;
 
     case ListWidget::kParentDirCmd:
-      myList->sendCommand(ListWidget::kParentDirCmd, 0, 0);
+      myList->selectParent();
       break;
 
     case kOptionsCmd:
