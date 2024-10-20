@@ -238,6 +238,7 @@ bool PlusROM::initialize(const ByteBuffer& image, size_t size)
 
   reset();
 
+  myIsEnabled = mySettings.getBool("dev.settings") ? mySettings.getBool("dev.plusroms.on") : true;
   return myIsPlusROM = CartDetector::isProbablyPlusROM(image, size);
 #else
   return myIsPlusROM = false;
