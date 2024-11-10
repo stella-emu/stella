@@ -43,3 +43,4 @@ a.out
 *.json
 *.sqlite3
 *.bak
+debian/files
