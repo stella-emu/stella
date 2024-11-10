@@ -3,6 +3,7 @@ Maintainer: Stephen Anthony <sa666666@gmail.com>
 Section: otherosfs
 Priority: optional
 Build-Depends: debhelper (>= 10~),
+               libgtest-dev,
                libpng-dev,
                libsdl2-dev,
                zlib1g-dev
