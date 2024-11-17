@@ -114,10 +114,10 @@ private:
 
 public:
   constexpr Rect() = default;
-  constexpr explicit Rect(const Size& s) : bottom{ s.h }, right{ s.w } { assert(valid()); }
-  constexpr Rect(uInt32 w, uInt32 h) : bottom{ h }, right{ w } { assert(valid()); }
+  constexpr explicit Rect(const Size& s) : bottom{s.h}, right{s.w} { assert(valid()); }
+  constexpr Rect(uInt32 w, uInt32 h) : bottom{h}, right{w} { assert(valid()); }
   constexpr Rect(const Point& p, uInt32 w, uInt32 h)
-    : top(p.y), left(p.x), bottom(p.y + h), right( p.x + w) { assert(valid()); }
+    : top(p.y), left(p.x), bottom(p.y + h), right(p.x + w) { assert(valid()); }
   constexpr Rect(uInt32 x1, uInt32 y1, uInt32 x2, uInt32 y2) : top{y1}, left{x1}, bottom{y2}, right{x2} { assert(valid()); }
 
   constexpr uInt32 x() const { return left; }
