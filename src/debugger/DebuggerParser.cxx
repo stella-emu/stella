@@ -1492,9 +1492,9 @@ void DebuggerParser::executeHelp()
   }
   else  // get help for specific command
   {
-    for(const auto& c: commands)
+    for(auto& c: commands)
     {
-      if(argStrings[0] == c.cmdString)
+      if(BSPF::toLowerCase(argStrings[0]) == BSPF::toLowerCase(c.cmdString))
       {
         commandResult << "  " << red(c.description) << '\n' << c.extendedDesc;
         break;
