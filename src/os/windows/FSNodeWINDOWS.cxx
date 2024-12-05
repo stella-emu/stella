@@ -40,7 +40,7 @@ FSNodeWINDOWS::FSNodeWINDOWS(string_view p)
 bool FSNodeWINDOWS::setFlags()
 {
   // Get absolute path
-  TCHAR buf[MAX_PATH];
+  static TCHAR buf[MAX_PATH];
   if (GetFullPathName(_path.c_str(), MAX_PATH - 1, buf, NULL))
     _path = buf;
 
