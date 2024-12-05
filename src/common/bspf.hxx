@@ -252,7 +252,7 @@ namespace BSPF
 
   // Find location (if any) of the second string within the first,
   // starting from 'startpos' in the first string
-  static size_t findIgnoreCase(string_view s1, string_view s2, size_t startpos = 0)
+  static constexpr size_t findIgnoreCase(string_view s1, string_view s2, size_t startpos = 0)
   {
     const auto pos = std::search(s1.cbegin()+startpos, s1.cend(),  // NOLINT
       s2.cbegin(), s2.cend(), [](char ch1, char ch2) {
@@ -262,7 +262,7 @@ namespace BSPF
   }
 
   // Test whether the first string contains the second one (case insensitive)
-  inline bool containsIgnoreCase(string_view s1, string_view s2)
+  inline constexpr bool containsIgnoreCase(string_view s1, string_view s2)
   {
     return findIgnoreCase(s1, s2) != string::npos;
   }
