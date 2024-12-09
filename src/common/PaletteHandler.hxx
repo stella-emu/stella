@@ -33,7 +33,7 @@ class PaletteHandler
     static constexpr string_view SETTING_CUSTOM = "custom";
 
     // Phase shift default and limits
-    static constexpr float DEF_NTSC_SHIFT = 26.2F;
+    static constexpr float DEF_NTSC_SHIFT = 26.7F; // makes color $fx fall between $1x and $2x
     static constexpr float DEF_PAL_SHIFT = 31.3F; // ~= 360 / 11.5
     static constexpr float MAX_PHASE_SHIFT = 4.5F;
     static constexpr float DEF_RGB_SHIFT = 0.0F;
