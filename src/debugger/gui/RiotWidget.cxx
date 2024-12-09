@@ -141,44 +141,48 @@ RiotWidget::RiotWidget(GuiObject* boss, const GUI::Font& lfont,
   addFocusWidget(myTimWrite);
 
   t = new StaticTextWidget(boss, lfont,
-                           myTimWrite->getRight() + hGap * 2,
+                           myTimWrite->getRight() + hGap * 3,
                            ypos + _lineHeight * 1.5 + 2 , "#");
-  myTimAvail = new DataGridWidget(boss, nfont, t->getRight() + hGap / 2, t->getTop() - 2,
+  myTimAvail = new DataGridWidget(boss, nfont, t->getRight(), t->getTop() - 2,
                                    1, 1, 6, 30, Common::Base::Fmt::_10_6);
   myTimAvail->setToolTip("Number of CPU cycles available for current timer interval.\n");
   myTimAvail->setTarget(this);
   myTimAvail->setEditable(false);
 
   // Timer registers (RO)
-  static constexpr std::array<string_view, 3> readNames = {
-    "INTIM", " Clocks", "TIMINT"
+  static constexpr std::array<string_view, 4> readNames = {
+    "INTIM", " Clocks", "TIMINT", "Divider #"
   };
   ypos = myTimWrite->getBottom() + _lineHeight / 2;
-  for(int row = 0; row < 3; ++row)
+  for(int row = 0; row < 4; ++row)
   {
     new StaticTextWidget(boss, lfont, hBorder, ypos + row * _lineHeight + 2,
                          readNames[row]);
   }
   xpos = hBorder + lwidth;
-  myTimRead = new DataGridWidget(boss, nfont, xpos, ypos, 1, 3, 2, 30, Common::Base::Fmt::_16);
+  myTimRead = new DataGridWidget(boss, nfont, xpos, ypos, 1, 3, 4, 30, Common::Base::Fmt::_16_2);
   myTimRead->setToolTip(0, 1, "Remaining timer interval clocks.\n");
   myTimRead->setToolTip(0, 2, "Timer interrupt flag in bit 7.\n");
   myTimRead->setTarget(this);
   myTimRead->setEditable(false);
 
   t = new StaticTextWidget(boss, lfont,
-                           myTimWrite->getRight() + hGap * 2,
+                           myTimWrite->getRight() + hGap * 3,
                            ypos + _lineHeight * 0.5 + 2 , "#");
   new StaticTextWidget(boss, lfont,
-                       myTimWrite->getRight() + hGap * 2,
+                       myTimWrite->getRight() + hGap * 3,
                        ypos + _lineHeight * 1.5 + 2 , "#");
-  myTimTotal = new DataGridWidget(boss, nfont, t->getRight() + hGap / 2, t->getTop() - 2,
+  myTimTotal = new DataGridWidget(boss, nfont, t->getRight(), t->getTop() - 2,
                                   1, 2, 6, 30, Common::Base::Fmt::_10_6);
   myTimTotal->setToolTip(0, 0, "Number of CPU cycles since last TIMxxT write.\n");
   myTimTotal->setToolTip(0, 1, "Number of CPU cycles remaining.\n");
   myTimTotal->setTarget(this);
   myTimTotal->setEditable(false);
 
+  ypos = myTimTotal->getBottom() + _lineHeight / 2;
+  myTimDivider = new DataGridWidget(boss, nfont, xpos, ypos, 1, 1, 4, 12, Common::Base::Fmt::_10_4);
+  myTimDivider->setTarget(this);
+  myTimDivider->setEditable(false);
 
   // Controller ports
   const int col = mySWCHAWriteBits->getRight() + hGap * 2.5;
@@ -376,13 +380,13 @@ void RiotWidget::loadConfig()
   alist.clear();  vlist.clear();  changed.clear();
   alist.push_back(0);
   Int32 avail = 0;
-  if(state.TIM1T)
+  if(state.TIMDIV == 1)
     avail = (state.TIM1T  - 1) * 1;
-  else if(state.TIM8T)
+  else if(state.TIMDIV == 8)
     avail = (state.TIM8T  - 1) * 8;
-  else if(state.TIM64T)
+  else if(state.TIMDIV == 64)
     avail = (state.TIM64T - 1) * 64;
-  else if(state.T1024T)
+  else if(state.TIMDIV == 1024)
     avail = (state.T1024T - 1) * 1024;
   vlist.push_back(avail);
   changed.push_back(state.TIM1T != oldstate.TIM1T ||
@@ -407,6 +411,11 @@ void RiotWidget::loadConfig()
   alist.push_back(0);  vlist.push_back(avail - state.TIMCLKS);
     changed.push_back(state.TIMCLKS != oldstate.TIMCLKS);
   myTimTotal->setList(alist, vlist, changed);
+
+  alist.clear();  vlist.clear();  changed.clear();
+  alist.push_back(0);  vlist.push_back(state.TIMDIV);
+  changed.push_back(state.TIMDIV != oldstate.TIMDIV);
+  myTimDivider->setList(alist, vlist, changed);
 
   // Console switches (inverted, since 'selected' in the UI
   // means 'grounded' in the system)
