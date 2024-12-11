@@ -152,11 +152,11 @@ bool FSNodeWINDOWS::getChildren(AbstractFSList& myList, ListMode mode) const
   else
   {
     // Drives enumeration
-    TCHAR drive_buffer[100];
-    GetLogicalDriveStrings(sizeof(drive_buffer) / sizeof(TCHAR), drive_buffer);
+    static std::array<TCHAR, 100> drive_buffer;
+    GetLogicalDriveStrings(static_cast<DWORD>(drive_buffer.size()), drive_buffer.data());
 
-    char drive_name[2] = { '\0', '\0' };
-    for (TCHAR *current_drive = drive_buffer; *current_drive;
+    static char drive_name[2] = { '\0', '\0' };
+    for (TCHAR* current_drive = drive_buffer.data(); *current_drive;
          current_drive += _tcslen(current_drive) + 1)
     {
       FSNodeWINDOWS entry;
