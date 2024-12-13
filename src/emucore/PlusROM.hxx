@@ -191,6 +191,7 @@ class PlusROM : public Serializable
 
     std::array<uInt8, 256> myRxBuffer{}, myTxBuffer{};
     uInt8 myRxReadPos{0}, myRxWritePos{0}, myTxPos{0};
+    uInt8 myLastRxReadPos{0}, myLastTxPos{0};
 
     std::deque<shared_ptr<PlusROMRequest>> myPendingRequests;
 

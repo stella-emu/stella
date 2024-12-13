@@ -364,7 +364,7 @@ bool PlusROM::load(Serializer& in)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PlusROM::reset()
 {
-  myRxReadPos = myRxWritePos = myTxPos = 0;
+  myRxReadPos = myRxWritePos = myTxPos = myLastRxReadPos = myLastTxPos = 0;
   myPendingRequests.clear();
 }
 
@@ -424,6 +424,7 @@ void PlusROM::send()
       myTxPos
       );
 
+    myLastTxPos = myTxPos - 1;
     myTxPos = 0;
 
     // We push to the back in order to avoid reverse_iterator in receive()
@@ -478,6 +479,7 @@ void PlusROM::receive()
         // and start over
         const auto [responseSize, response] = (*iter)->getResponse();
 
+        myLastRxReadPos = myRxReadPos;
         for(size_t i = 0; i < responseSize; ++i)
           myRxBuffer[myRxWritePos++] = response[i];
 
@@ -497,8 +499,9 @@ void PlusROM::receive()
 ByteArray PlusROM::getSend() const
 {
   ByteArray arr;
+  uInt8 txPos = myTxPos != 0 ? myTxPos : myLastTxPos;
 
-  for(int i = 0; i < myTxPos; ++i)
+  for(int i = 0; i < txPos; ++i)
     arr.push_back(myTxBuffer[i]);
 
   return arr;
@@ -508,8 +511,9 @@ ByteArray PlusROM::getSend() const
 ByteArray PlusROM::getReceive() const
 {
   ByteArray arr;
+  uInt8 txReadPos = myRxReadPos != myRxWritePos ? myRxReadPos : myLastRxReadPos;
 
-  for(uInt8 i = myRxReadPos; i != myRxWritePos; ++i)
+  for(uInt8 i = txReadPos; i != myRxWritePos; ++i)
     arr.push_back(myRxBuffer[i]);
 
   return arr;
