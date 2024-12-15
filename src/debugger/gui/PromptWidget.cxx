@@ -381,6 +381,10 @@ void PromptWidget::loadConfig()
     print(version);
     print(PROMPT);
 
+    print(instance().debugger().cartDebug().loadConfigFile() + "\n");
+    print(instance().debugger().cartDebug().loadListFile() + "\n");
+    print(instance().debugger().cartDebug().loadSymbolFile() + "\n");
+
     // Take care of one-time debugger stuff
     // fill the history from the saved breaks, traps and watches commands
     StringList history;
@@ -389,9 +393,6 @@ void PromptWidget::loadConfig()
       addToHistory(h.c_str());
 
     history.clear();
-    print(instance().debugger().cartDebug().loadConfigFile() + "\n");
-    print(instance().debugger().cartDebug().loadListFile() + "\n");
-    print(instance().debugger().cartDebug().loadSymbolFile() + "\n");
 
     bool extra = false;
     if(instance().settings().getBool("dbg.autosave"))
