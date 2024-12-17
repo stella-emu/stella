@@ -171,8 +171,10 @@ Console::Console(OSystem& osystem, unique_ptr<Cartridge>& cart,
   myDevSettingsHandler = make_unique<DevSettingsHandler>(myOSystem);
 
   // Auto-detect NTSC/PAL mode if it's requested
-  if (myDisplayFormat == "AUTO")
+  if(myDisplayFormat == "AUTO")
     myDisplayFormat = formatFromFilename();
+  if(myDisplayFormat == "AUTO")
+    myDisplayFormat = formatFromSignature();
 
   // Add the real controllers for this system
   // This must be done before the debugger is initialized
@@ -384,6 +386,48 @@ string Console::formatFromFilename() const
 
   // Nothing found
   return "AUTO";
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+string Console::formatFromSignature() const
+{
+  static constexpr uInt8 PAL60[] = { 'P', 'A', 'L', '6', '0'};
+  static constexpr uInt8 PAL_60[] = { 'P', 'A', 'L', ' ', '6', '0'};
+  static constexpr uInt8 PAL__60[] = { 'P', 'A', 'L', '-', '6', '0'};
+
+  size_t size;
+  const ByteBuffer& image = myCart->getImage(size);
+
+  if(searchForBytes(image, size, PAL60, 5) ||
+       searchForBytes(image, size, PAL_60, 6) ||
+       searchForBytes(image, size, PAL__60, 6))
+    return "PAL60";
+  // Nothing found
+  return "AUTO";
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool Console::searchForBytes(const ByteBuffer& image, size_t imagesize,
+                             const uInt8* signature, uInt32 sigsize) const
+{
+  if(imagesize >= sigsize)
+    for(uInt32 i = 0; i < imagesize - sigsize; ++i)
+    {
+      uInt32 matches = 0;
+      for(uInt32 j = 0; j < sigsize; ++j)
+      {
+        if(image[i + j] == signature[j])
+          ++matches;
+        else
+          break;
+      }
+      if(matches == sigsize)
+      {
+        return true;
+      }
+    }
+
+  return false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
