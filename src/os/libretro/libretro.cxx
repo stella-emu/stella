@@ -40,6 +40,7 @@ static int stella_paddle_analog_sensitivity;
 static int setting_crop_hoverscan, crop_left;
 static NTSCFilter::Preset setting_filter;
 static const char* setting_palette;
+static int setting_reload;
 
 static bool system_reset;
 
@@ -186,6 +187,8 @@ static void update_input()
   MASK_EVENT(Event::ConsoleBlackWhite, 0, RETRO_DEVICE_ID_JOYPAD_R3);
   MASK_EVENT(Event::ConsoleSelect,     0, RETRO_DEVICE_ID_JOYPAD_SELECT);
   MASK_EVENT(Event::ConsoleReset,      0, RETRO_DEVICE_ID_JOYPAD_START);
+  if (setting_reload)
+    MASK_EVENT(Event::ReloadConsole,   0, RETRO_DEVICE_ID_JOYPAD_X);
 
 #undef EVENT
 #undef MASK_EVENT
@@ -387,6 +390,16 @@ static void update_variables(bool init = false)
     }
   }
 
+  RETRO_GET("stella_reload")
+  {
+    int value = 0;
+
+    if(!strcmp(var.value, "off")) value = 0;
+    else if(!strcmp(var.value, "on")) value = 1;
+
+    setting_reload = value;
+  }
+
   if(!init && !system_reset)
   {
     crop_left = setting_crop_hoverscan ? (stella.getVideoZoom() == 2 ? 26 : 8) : 0;
@@ -517,6 +530,7 @@ void retro_set_environment(retro_environment_t cb)
     { "stella_phosphor_blend", "Phosphor blend %; 60|65|70|75|80|85|90|95|100|0|5|10|15|20|25|30|35|40|45|50|55" },
     { "stella_paddle_joypad_sensitivity", "Paddle joypad sensitivity; 3|4|5|6|7|8|9|10|11|12|13|14|15|16|17|18|19|20|1|2" },
     { "stella_paddle_analog_sensitivity", "Paddle analog sensitivity; 20|21|22|23|24|25|26|27|28|29|30|0|1|2|3|4|5|6|7|8|9|10|11|12|13|14|15|16|17|18|19" },
+    { "stella_reload", "Enable reload/next game; off|on" },
     { NULL, NULL },
   };
 
@@ -570,6 +584,7 @@ bool retro_load_game(const struct retro_game_info *info)
     { 0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_RIGHT,  "Right" },
     { 0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_A,      "Trigger" },
     { 0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_B,      "Fire" },
+    { 0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_X,      "Reload/Next game" },
     { 0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_Y,      "Booster" },
 
     { 0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_SELECT, "Select" },
@@ -587,6 +602,7 @@ bool retro_load_game(const struct retro_game_info *info)
     { 1, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_RIGHT,  "Right" },
     { 1, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_A,      "Trigger" },
     { 1, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_B,      "Fire" },
+    { 1, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_X,      "Reload/Next game" },
     { 1, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_Y,      "Booster" },
 
     { 1, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_SELECT, "Select" },
