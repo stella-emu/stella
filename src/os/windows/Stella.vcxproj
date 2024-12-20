@@ -135,28 +135,34 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LibraryPath>$(ProjectDir)\SDL\lib\x64;$(LibraryPath)</LibraryPath>
-    <IncludePath>$(ProjectDir)\SDL\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(IncludePath)</IncludePath>
     <EnableMicrosoftCodeAnalysis>true</EnableMicrosoftCodeAnalysis>
+    <ExternalIncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(ProjectDir)\SDL\include</ExternalIncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">
     <LibraryPath>$(ProjectDir)\SDL\lib\x64;$(LibraryPath)</LibraryPath>
-    <IncludePath>$(ProjectDir)\SDL\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(IncludePath)</IncludePath>
+    <ExternalIncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(ProjectDir)\SDL\include</ExternalIncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LibraryPath>$(ProjectDir)\SDL\lib\x64;$(LibraryPath)</LibraryPath>
-    <IncludePath>$(ProjectDir)\SDL\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(IncludePath)</IncludePath>
+    <ExternalIncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(ProjectDir)\SDL\include</ExternalIncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release PGO|x64'">
     <LibraryPath>$(ProjectDir)\SDL\lib\x64;$(LibraryPath)</LibraryPath>
-    <IncludePath>$(ProjectDir)\SDL\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(IncludePath)</IncludePath>
+    <ExternalIncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(ProjectDir)\SDL\include</ExternalIncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release-Sanitize|x64'">
     <LibraryPath>$(ProjectDir)\SDL\lib\x64;$(LibraryPath)</LibraryPath>
-    <IncludePath>$(ProjectDir)\SDL\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(IncludePath)</IncludePath>
+    <ExternalIncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(ProjectDir)\SDL\include</ExternalIncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Profile|x64'">
     <LibraryPath>$(ProjectDir)\SDL\lib\x64;$(LibraryPath)</LibraryPath>
-    <IncludePath>$(ProjectDir)\SDL\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(IncludePath)</IncludePath>
+    <ExternalIncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(ProjectDir)\SDL\include</ExternalIncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <Midl>
@@ -181,6 +187,7 @@
       <AssemblerOutput>NoListing</AssemblerOutput>
       <AssemblerListingLocation>$(IntDir)asm\windows\%(RelativeDir)</AssemblerListingLocation>
       <AdditionalOptions>/w14596 %(AdditionalOptions)</AdditionalOptions>
+      <DisableAnalyzeExternal>true</DisableAnalyzeExternal>
     </ClCompile>
     <Link>
       <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2main.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -218,6 +225,7 @@
       <AssemblerOutput>NoListing</AssemblerOutput>
       <AssemblerListingLocation>$(IntDir)asm\windows\%(RelativeDir)</AssemblerListingLocation>
       <AdditionalOptions>/w14596 %(AdditionalOptions)</AdditionalOptions>
+      <DisableAnalyzeExternal>true</DisableAnalyzeExternal>
     </ClCompile>
     <Link>
       <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2main.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -257,6 +265,7 @@
       <AssemblerListingLocation>$(IntDir)asm\windows\%(RelativeDir)</AssemblerListingLocation>
       <WholeProgramOptimization>true</WholeProgramOptimization>
       <AdditionalOptions>/w14596 %(AdditionalOptions)</AdditionalOptions>
+      <DisableAnalyzeExternal>true</DisableAnalyzeExternal>
     </ClCompile>
     <Link>
       <AdditionalDependencies>SDL2.lib;SDL2main.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -297,6 +306,7 @@
       <AssemblerListingLocation>$(IntDir)asm\windows\%(RelativeDir)</AssemblerListingLocation>
       <WholeProgramOptimization>true</WholeProgramOptimization>
       <AdditionalOptions>/w14596 %(AdditionalOptions)</AdditionalOptions>
+      <DisableAnalyzeExternal>true</DisableAnalyzeExternal>
     </ClCompile>
     <Link>
       <AdditionalDependencies>SDL2.lib;SDL2main.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -337,6 +347,7 @@
       <AssemblerListingLocation>$(IntDir)asm\windows\%(RelativeDir)</AssemblerListingLocation>
       <WholeProgramOptimization>false</WholeProgramOptimization>
       <AdditionalOptions>/w14596 %(AdditionalOptions)</AdditionalOptions>
+      <DisableAnalyzeExternal>true</DisableAnalyzeExternal>
     </ClCompile>
     <Link>
       <AdditionalDependencies>SDL2.lib;SDL2main.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -376,6 +387,7 @@
       <AssemblerOutput>All</AssemblerOutput>
       <AssemblerListingLocation>$(IntDir)asm\windows\%(RelativeDir)</AssemblerListingLocation>
       <AdditionalOptions>/w14596 %(AdditionalOptions)</AdditionalOptions>
+      <DisableAnalyzeExternal>true</DisableAnalyzeExternal>
     </ClCompile>
     <Link>
       <AdditionalDependencies>SDL2.lib;SDL2main.lib;%(AdditionalDependencies)</AdditionalDependencies>
