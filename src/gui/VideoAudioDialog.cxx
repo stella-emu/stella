@@ -315,7 +315,7 @@ void VideoAudioDialog::addPaletteTab()
   CREATE_CUSTOM_SLIDERS(Gamma, "Gamma ", kPaletteUpdated)
 
   ypos += VGAP;
-  auto* s = new StaticTextWidget(myTab, _font, xpos, ypos + 1, "Autodetection");
+  const auto* s = new StaticTextWidget(myTab, _font, xpos, ypos + 1, "Autodetection");
 
   myDetectPal60 = new CheckboxWidget(myTab, _font, s->getRight() + fontWidth * 2, ypos + 1, "PAL-60");
   myDetectPal60 ->setToolTip("Enable autodetection of PAL-60 based on colors used.");

@@ -254,7 +254,7 @@ const char* ElfParser::getName(const Section& section, uInt32 offset) const
   if (offset >= section.size) ElfParseError::raise("name out of bounds");
   const uInt32 imageOffset = offset + section.offset;
 
-  const char *name = reinterpret_cast<const char *>(myData + imageOffset);
+  const char* name = reinterpret_cast<const char*>(myData + imageOffset);
 
   if (myData[imageOffset + strnlen(name, section.size - offset)] != '\0')
     ElfParseError::raise("unterminated section name");

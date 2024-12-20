@@ -25,10 +25,9 @@ PaddleWidget::PaddleWidget(GuiObject* boss, const GUI::Font& font, int x, int y,
 {
   const bool leftport = isLeftPort();
   const string& label = getHeader();
-  const int fontHeight = font.getFontHeight();
-
-  int xpos = x, ypos = y,
-    lwidth = font.getStringWidth("Right (Paddles)");
+  const int fontHeight = font.getFontHeight(),
+            lwidth = font.getStringWidth("Right (Paddles)");
+  int xpos = x, ypos = y;
 
   if(!embedded)
   {

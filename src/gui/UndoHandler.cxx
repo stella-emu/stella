@@ -89,18 +89,3 @@ bool UndoHandler::redo(string& text)
   }
   return false;
 }
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt32 UndoHandler::lastDiff(string_view text, string_view oldText)
-{
-  auto pos = static_cast<uInt32>(text.size());
-
-  for(auto itn = text.crbegin(), ito = oldText.crbegin();
-      itn != text.crend() && ito != oldText.crend(); ++itn, ++ito)
-  {
-    if(*itn != *ito)
-      break;
-    pos--;
-  }
-  return pos;
-}

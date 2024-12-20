@@ -132,7 +132,7 @@ class HighScoresManager
 
       @return The number of score address bytes
     */
-    static uInt32 numAddrBytes(Int32 digits, Int32 trailing) {
+    static constexpr uInt32 numAddrBytes(Int32 digits, Int32 trailing) {
       return (digits - trailing + 1) / 2;
     }
 

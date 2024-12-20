@@ -132,7 +132,7 @@ HighScoresDialog::HighScoresDialog(OSystem& osystem, DialogContainer& parent,
   int ypos = VBORDER + _th;
   ypos += lineHeight + VGAP * 2; // space for game name
 
-  auto* s = new StaticTextWidget(this, _font, xpos, ypos + 1, "Variation ");
+  const auto* s = new StaticTextWidget(this, _font, xpos, ypos + 1, "Variation ");
   myVariationPopup = new PopUpWidget(this, _font, s->getRight(), ypos,
       _font.getStringWidth("256"), lineHeight, items, "", 0, kVariationChanged);
   wid.push_back(myVariationPopup);

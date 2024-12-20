@@ -499,7 +499,7 @@ void PlusROM::receive()
 ByteArray PlusROM::getSend() const
 {
   ByteArray arr;
-  uInt8 txPos = myTxPos != 0 ? myTxPos : myLastTxPos;
+  const uInt8 txPos = myTxPos != 0 ? myTxPos : myLastTxPos;
 
   for(int i = 0; i < txPos; ++i)
     arr.push_back(myTxBuffer[i]);
@@ -511,7 +511,7 @@ ByteArray PlusROM::getSend() const
 ByteArray PlusROM::getReceive() const
 {
   ByteArray arr;
-  uInt8 txReadPos = myRxReadPos != myRxWritePos ? myRxReadPos : myLastRxReadPos;
+  const uInt8 txReadPos = myRxReadPos != myRxWritePos ? myRxReadPos : myLastRxReadPos;
 
   for(uInt8 i = txReadPos; i != myRxWritePos; ++i)
     arr.push_back(myRxBuffer[i]);

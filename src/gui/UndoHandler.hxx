@@ -48,7 +48,18 @@ class UndoHandler
     bool endChars(string_view text);
 
     // Get index into text of last different character
-    static uInt32 lastDiff(string_view text, string_view oldText);
+    static constexpr uInt32 lastDiff(string_view text, string_view oldText) {
+      auto pos = static_cast<uInt32>(text.size());
+
+      for (auto itn = text.crbegin(), ito = oldText.crbegin();
+        itn != text.crend() && ito != oldText.crend(); ++itn, ++ito)
+      {
+        if (*itn != *ito)
+          break;
+        pos--;
+      }
+      return pos;
+    }
 
   private:
     std::deque<string> myBuffer;

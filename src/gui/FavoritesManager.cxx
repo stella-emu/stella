@@ -220,7 +220,7 @@ void FavoritesManager::addRecent(string_view path)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool FavoritesManager::removeRecent(string_view path)
 {
-  auto it = std::ranges::find(myRecentList, path);
+  const auto it = std::ranges::find(myRecentList, path);
 
   if(it != myRecentList.end())
     myRecentList.erase(it);

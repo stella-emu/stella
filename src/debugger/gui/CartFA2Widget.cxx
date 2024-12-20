@@ -26,11 +26,10 @@ CartridgeFA2Widget::CartridgeFA2Widget(
     myCartFA2{cart}
 {
   int xpos = 2;
-  const int ypos = initialize() + 12;
+  const int ypos = initialize() + 12,
+            bwidth = _font.getStringWidth("Erase") + 20;
 
-  const int bwidth = _font.getStringWidth("Erase") + 20;
-
-  auto* t = new StaticTextWidget(boss, _font, xpos, ypos,
+  const auto* t = new StaticTextWidget(boss, _font, xpos, ypos,
       _font.getStringWidth("Harmony flash memory "),
       myFontHeight, "Harmony flash memory ", TextAlign::Left);
 

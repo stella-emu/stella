@@ -15,8 +15,6 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#include <cmath>
-
 #include "System.hxx"
 #include "Control.hxx"
 
@@ -148,51 +146,12 @@ Controller::Type Controller::getType(string_view propName)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Controller::setDigitalDeadZone(int deadZone)
-{
-  DIGITAL_DEAD_ZONE = digitalDeadZoneValue(deadZone);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int Controller::digitalDeadZoneValue(int deadZone)
-{
-  deadZone = BSPF::clamp(deadZone, MIN_DIGITAL_DEADZONE, MAX_DIGITAL_DEADZONE);
-
-  return 3200 + deadZone * 1000;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Controller::setAnalogDeadZone(int deadZone)
-{
-  ANALOG_DEAD_ZONE = analogDeadZoneValue(deadZone);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int Controller::analogDeadZoneValue(int deadZone)
-{
-  deadZone = BSPF::clamp(deadZone, MIN_ANALOG_DEADZONE, MAX_ANALOG_DEADZONE);
-
-  return deadZone * std::round(32768 / 2. / MAX_DIGITAL_DEADZONE);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Controller::setMouseSensitivity(int sensitivity)
-{
-  MOUSE_SENSITIVITY = BSPF::clamp(sensitivity, MIN_MOUSE_SENSE, MAX_MOUSE_SENSE);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Controller::setAutoFire(bool enable)
-{
-  AUTO_FIRE = enable;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Controller::setAutoFireRate(int rate, bool isNTSC)
-{
-  rate = BSPF::clamp(rate, 0, isNTSC ? 30 : 25);
-  AUTO_FIRE_RATE = 32 * 1024 * rate / (isNTSC ? 60 : 50);
-}
+// int Controller::analogDeadZoneValue(int deadZone)
+// {
+//   deadZone = BSPF::clamp(deadZone, MIN_ANALOG_DEADZONE, MAX_ANALOG_DEADZONE);
+//
+//   return deadZone * std::round(32768 / 2. / MAX_DIGITAL_DEADZONE);
+// }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 int Controller::DIGITAL_DEAD_ZONE = 3200;

@@ -36,7 +36,7 @@ RomWidget::RomWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& n
 {
   // Show current bank state
   int xpos = x, ypos = y + 7;
-  auto* t = new StaticTextWidget(boss, lfont, xpos, ypos, "Info ");
+  const auto* t = new StaticTextWidget(boss, lfont, xpos, ypos, "Info ");
 
   xpos += t->getRight();
   myBank = new EditTextWidget(boss, nfont, xpos, ypos-2,
@@ -90,7 +90,7 @@ void RomWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
     case RomListWidget::kRomChangedCmd:
       // 'data' is the line in the disassemblylist to be accessed
       // 'id' is the base to use for the data to be changed
-      patchROM(data, myRomList->getText(), Common::Base::Fmt(id));
+      patchROM(data, myRomList->getText(), static_cast<Common::Base::Fmt>(id));
       break;
 
     case RomListWidget::kSetPCCmd:

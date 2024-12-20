@@ -21,17 +21,17 @@
 #include "exception/FatalEmulationError.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-BusTransactionQueue::Transaction BusTransactionQueue::Transaction::transactionYield(
-  uInt16 address, uInt64 timestamp, uInt16 mask
-) {
+constexpr BusTransactionQueue::Transaction BusTransactionQueue::Transaction::transactionYield(
+  uInt16 address, uInt64 timestamp, uInt16 mask)
+{
   address &= 0x1fff;
   return {.address = address, .mask = mask, .value = 0, .timestamp = timestamp, .yield = true};
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-BusTransactionQueue::Transaction BusTransactionQueue::Transaction::transactionDrive(
-  uInt16 address, uInt8 value, uInt64 timestamp
-) {
+constexpr BusTransactionQueue::Transaction BusTransactionQueue::Transaction::transactionDrive(
+  uInt16 address, uInt8 value, uInt64 timestamp)
+{
   address &= 0x1fff;
   return {.address = address, .mask = 0xffff, .value = value, .timestamp = timestamp, .yield = false};
 }
@@ -118,7 +118,7 @@ void BusTransactionQueue::Transaction::serialize(Serializer& out) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void BusTransactionQueue::Transaction::deserialize(Serializer& in)
+void BusTransactionQueue::Transaction::deserialize(const Serializer& in)
 {
   address = in.getShort();
   mask = in.getShort();

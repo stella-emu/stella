@@ -156,7 +156,8 @@ void CartridgeELFStateWidget::loadConfig()
   s << myCart.myTransactionQueue.size();
   myQueueSize->setText(s.str());
 
-  BusTransactionQueue::Transaction* nextTransaction = myCart.myTransactionQueue.peekNextTransaction();
+  const BusTransactionQueue::Transaction* nextTransaction =
+      myCart.myTransactionQueue.peekNextTransaction();
   myNextTransaction->setLabel(nextTransaction
     ? describeTransaction(
         nextTransaction->address,

@@ -24,11 +24,12 @@ GenesisWidget::GenesisWidget(GuiObject* boss, const GUI::Font& font,
 {
   const string& label = getHeader();
 
-  const int fontHeight = font.getFontHeight();
-  int xpos = x, ypos = y, lwidth = font.getStringWidth("Right (Genesis)");
+  const int fontHeight = font.getFontHeight(),
+            lwidth = font.getStringWidth("Right (Genesis)");
+  int xpos = x, ypos = y;
 
   const StaticTextWidget* t = new StaticTextWidget(boss, font, xpos, ypos+2, lwidth,
-                                      fontHeight, label, TextAlign::Left);
+                                                   fontHeight, label, TextAlign::Left);
   xpos += t->getWidth()/2 - 5;  ypos += t->getHeight() + 20;
   myPins[kJUp] = new CheckboxWidget(boss, font, xpos, ypos, "",
                                     CheckboxWidget::kCheckActionCmd);

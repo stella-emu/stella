@@ -264,7 +264,7 @@ TIASurface::ScanlineMask TIASurface::scanlineMaskType(int direction)
   int i = 0;
   const string& name = myOSystem.settings().getString("tv.scanmask");
 
-  for(const auto& mask: Masks)
+  for(const auto mask: Masks)
   {
     if(mask == name)
     {

@@ -775,7 +775,7 @@ FBInitStatus Console::initializeVideo(bool full)
 
   if(full)
   {
-    auto size = myOSystem.settings().getBool("tia.correct_aspect") ?
+    const auto size = myOSystem.settings().getBool("tia.correct_aspect") ?
       Common::Size(TIAConstants::viewableWidth, TIAConstants::viewableHeight) :
       Common::Size(2 * myTIA->width(), myTIA->height());
 

@@ -442,7 +442,7 @@ namespace StellaKeyName
   inline string_view forKey(StellaKey key)
   {
   #ifdef SDL_SUPPORT
-    return SDL_GetScancodeName(SDL_Scancode(key));
+    return SDL_GetScancodeName(static_cast<SDL_Scancode>(key));
   #else
     return string_view{};
   #endif

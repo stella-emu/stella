@@ -23,6 +23,7 @@ class ControllerLowLevel;
 class Event;
 class System;
 
+#include <cmath>
 #include <functional>
 
 #include "bspf.hxx"
@@ -286,24 +287,35 @@ class Controller : public Serializable
 
       @param deadZone Value from 0 to 29
     */
-    static void setDigitalDeadZone(int deadZone);
+    static void setDigitalDeadZone(int deadZone) {
+      DIGITAL_DEAD_ZONE = digitalDeadZoneValue(deadZone);
+    }
 
     /**
       Sets the dead zone for analog paddles.
 
       @param deadZone Value from 0 to 29
     */
-    static void setAnalogDeadZone(int deadZone);
+    static void setAnalogDeadZone(int deadZone) {
+      ANALOG_DEAD_ZONE = analogDeadZoneValue(deadZone);
+    }
 
     /**
       Retrieves the effective digital dead zone value
     */
-    static int digitalDeadZoneValue(int deadZone);
+    static constexpr int digitalDeadZoneValue(int deadZone) {
+      deadZone = BSPF::clamp(deadZone, MIN_DIGITAL_DEADZONE, MAX_DIGITAL_DEADZONE);
+      return 3200 + deadZone * 1000;
+    }
 
     /**
       Retrieves the effective analog dead zone value
+      TODO: std::round not constexpr until C++23
     */
-    static int analogDeadZoneValue(int deadZone);
+    static /*constexpr*/ int analogDeadZoneValue(int deadZone) {
+      deadZone = BSPF::clamp(deadZone, MIN_ANALOG_DEADZONE, MAX_ANALOG_DEADZONE);
+      return deadZone * std::round(32768 / 2. / MAX_DIGITAL_DEADZONE);
+    }
 
     static int digitalDeadZone() { return DIGITAL_DEAD_ZONE; }
     static int analogDeadZone()  { return ANALOG_DEAD_ZONE;  }
@@ -315,14 +327,18 @@ class Controller : public Serializable
       @param sensitivity  Value from 1 to MAX_MOUSE_SENSE, with larger
                           values causing more movement
     */
-    static void setMouseSensitivity(int sensitivity);
+    static void setMouseSensitivity(int sensitivity) {
+      MOUSE_SENSITIVITY = BSPF::clamp(sensitivity, MIN_MOUSE_SENSE, MAX_MOUSE_SENSE);
+    }
 
     /**
       Set auto fire state.
 
       @param enable The new autofire state
     */
-    static void setAutoFire(bool enable);
+    static void setAutoFire(bool enable) {
+      AUTO_FIRE = enable;
+    }
 
     /**
       Sets the auto fire rate. 0 disables auto fire.
@@ -330,7 +346,10 @@ class Controller : public Serializable
       @param rate   Auto fire rate (0..30/25) in Hz
       @param isNTSC NTSC or PAL frame rate
     */
-    static void setAutoFireRate(int rate, bool isNTSC = true);
+    static void setAutoFireRate(int rate, bool isNTSC = true) {
+      rate = BSPF::clamp(rate, 0, isNTSC ? 30 : 25);
+      AUTO_FIRE_RATE = 32 * 1024 * rate / (isNTSC ? 60 : 50);
+    }
 
   protected:
     /**

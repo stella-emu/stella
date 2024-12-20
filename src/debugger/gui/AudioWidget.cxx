@@ -35,8 +35,9 @@ AudioWidget::AudioWidget(GuiObject* boss, const GUI::Font& lfont,
 {
   const int fontWidth  = lfont.getMaxCharWidth(),
             fontHeight = lfont.getFontHeight(),
-            lineHeight = lfont.getLineHeight();
-  int xpos = 10, ypos = 25, lwidth = lfont.getStringWidth("AUDW ");
+            lineHeight = lfont.getLineHeight(),
+            lwidth     = lfont.getStringWidth("AUDW ");
+  int xpos = 10, ypos = 25;
 
   // AudF registers
   new StaticTextWidget(boss, lfont, xpos, ypos+2,

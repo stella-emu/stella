@@ -24,10 +24,11 @@ Joy2BPlusWidget::Joy2BPlusWidget(GuiObject* boss, const GUI::Font& font,
 {
   const string& label = isLeftPort() ? "Left (Joy 2B+)" : "Right (Joy 2B+)";
 
-  const int fontHeight = font.getFontHeight();
-  int xpos = x, ypos = y, lwidth = font.getStringWidth("Right (Joy 2B+)");
-  auto* t = new StaticTextWidget(boss, font, xpos, ypos+2, lwidth,
-                                 fontHeight, label, TextAlign::Left);
+  const int fontHeight = font.getFontHeight(),
+            lwidth = font.getStringWidth("Right (Joy 2B+)");
+  int xpos = x, ypos = y;
+  const auto* t = new StaticTextWidget(boss, font, xpos, ypos+2, lwidth,
+                                       fontHeight, label, TextAlign::Left);
   xpos += t->getWidth()/2 - 5;  ypos += t->getHeight() + 10;
   myPins[kJUp] = new CheckboxWidget(boss, font, xpos, ypos, "",
     CheckboxWidget::kCheckActionCmd);

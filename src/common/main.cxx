@@ -124,7 +124,7 @@ void checkForCustomBaseDir(Settings::Options& options)
     OSystem::overrideBaseDirWithApp();
   else
   {
-    auto it = options.find("basedir");
+    const auto it = options.find("basedir");
     if(it != options.end())
       OSystem::overrideBaseDir(it->second.toString());
   }
@@ -161,7 +161,7 @@ void attachConsole()
   CONSOLE_SCREEN_BUFFER_INFO csbi;
   if(GetConsoleScreenBufferInfo(hConsole, &csbi))
   {
-    COORD pos = {0, csbi.dwCursorPosition.Y};
+    const COORD pos = {0, csbi.dwCursorPosition.Y};
     SetConsoleCursorPosition(hConsole, pos);
     cout << std::setw(160) << ""; // this clears the extra prompt display
     SetConsoleCursorPosition(hConsole, pos);
