@@ -454,9 +454,9 @@ void PaletteHandler::generateCustomPalette(ConsoleTiming timing) const
   {
     constexpr float SATURATION = 0.30F; // default NTSC saturation
     vector2d IQ[NUM_CHROMA];
-    // YIQ is YUV shifted by 33°
-    // -90° + 33° = -57° would create a greenish yellow
-    // -90° + 53° = -37° creates gold (which is correct according to the documentation)
+    // YIQ is YUV shifted by 33Â°
+    // -90Â° + 33Â° = -57Â° would create a greenish yellow
+    // -90Â° + 53Â° = -37Â° creates gold (which is correct according to the documentation)
     constexpr float offset = (33 + 20) * BSPF::PI_f / 180;
     const float shift = myPhaseNTSC * BSPF::PI_f / 180;
 
