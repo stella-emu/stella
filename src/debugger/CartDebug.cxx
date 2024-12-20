@@ -378,7 +378,7 @@ bool CartDebug::fillDisassemblyList(BankInfo& info, Disassembly& disassembly,
 
   disassembly.fieldwidth = 24 + myLabelLength;
   // line offset must be set before calling DiStella!
-  auto lineOfs = static_cast<uInt32>(myDisassembly.list.size());
+  const auto lineOfs = static_cast<uInt32>(myDisassembly.list.size());
   const DiStella distella(*this, disassembly.list, info, DiStella::settings,
                           myDisLabels, myDisDirectives, myReserved);
 
@@ -1209,7 +1209,7 @@ string CartDebug::saveDisassembly(string path)
   cart.lockHotspots();
 
   // Some boilerplate, similar to what DiStella adds
-  auto timeinfo = BSPF::localTime();
+  const auto timeinfo = BSPF::localTime();
   stringstream out;
   out << "; Disassembly of " << myOSystem.romFile().getShortPath() << "\n"
       << "; Disassembled " << std::put_time(&timeinfo, "%c\n")

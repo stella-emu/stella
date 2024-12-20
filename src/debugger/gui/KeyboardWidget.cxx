@@ -26,8 +26,9 @@ KeyboardWidget::KeyboardWidget(GuiObject* boss, const GUI::Font& font,
   const bool leftport = isLeftPort();
   const string& label = leftport ? "Left (Keyboard)" : "Right (Keyboard)";
 
-  const int fontHeight = font.getFontHeight();
-  int xpos = x, ypos = y, lwidth = font.getStringWidth("Right (Keyboard)");
+  const int fontHeight = font.getFontHeight(),
+            lwidth = font.getStringWidth("Right (Keyboard)");
+  int xpos = x, ypos = y;
   const StaticTextWidget* t = new StaticTextWidget(boss, font, xpos, ypos+2, lwidth,
                                       fontHeight, label, TextAlign::Left);
 

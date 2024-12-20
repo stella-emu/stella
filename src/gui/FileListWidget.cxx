@@ -685,7 +685,7 @@ const FileListWidget::Icon* FileListWidget::getIcon(int i) const
     0b11111111111'11111111110,
     0b11111111111'11111111110
   };
-  const int idx = static_cast<int>(IconType::numTypes);
+  constexpr int idx = static_cast<int>(IconType::numTypes);
   static const Icon* const small_icons[idx] = {
     &unknown_small, &rom_small, &directory_small, &zip_small, &up_small
   };

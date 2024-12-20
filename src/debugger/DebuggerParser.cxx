@@ -2170,7 +2170,7 @@ void DebuggerParser::executeSaveRom()
 void DebuggerParser::executeSaveSes()
 {
   ostringstream filename;  // NOLINT (filename is not a const)
-  auto timeinfo = BSPF::localTime();
+  const auto timeinfo = BSPF::localTime();
   filename << std::put_time(&timeinfo, "session_%F_%H-%M-%S.txt");
 
   if(argCount && argStrings[0] == "?")
@@ -2356,8 +2356,8 @@ void DebuggerParser::executeTimer()
   }
 
   uInt32 numAddrs = 0, numBanks = 0;
-  uInt16 addr[2];
-  uInt8 bank[2];
+  uInt16 addr[2]{};
+  uInt8 bank[2]{};
 
   // set defaults:
   addr[0] = debugger.cpuDebug().pc() ;

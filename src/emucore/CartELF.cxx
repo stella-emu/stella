@@ -412,7 +412,7 @@ string CartridgeELF::getDebugLog() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 std::pair<unique_ptr<uInt8[]>, size_t> CartridgeELF::getArmImage() const
 {
-  const size_t imageSize = ADDR_TABLES_BASE + TABLES_SIZE;
+  constexpr size_t imageSize = ADDR_TABLES_BASE + TABLES_SIZE;
   unique_ptr<uInt8[]> image = make_unique<uInt8[]>(imageSize);
 
   memset(image.get(), 0, imageSize);
@@ -430,7 +430,7 @@ std::pair<unique_ptr<uInt8[]>, size_t> CartridgeELF::getArmImage() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 inline uInt8 CartridgeELF::driveBus(uInt16 address, uInt8 value)
 {
-  auto* nextTransaction = myTransactionQueue.getNextTransaction(address,
+  const auto* nextTransaction = myTransactionQueue.getNextTransaction(address,
     mySystem->cycles() * myArmCyclesPer6502Cycle - myArmCyclesOffset);
   if (nextTransaction) {
     nextTransaction->setBusState(myIsBusDriven, myDriveBusValue);
@@ -459,7 +459,7 @@ void CartridgeELF::parseAndLinkElf()
 
   try {
     myElfParser.parse(myImage.get(), myImageSize);
-  } catch (ElfParser::ElfParseError& e) {
+  } catch (const ElfParser::ElfParseError& e) {
     throw runtime_error("failed to initialize ELF: " + string(e.what()));
   }
 
@@ -695,7 +695,7 @@ void CartridgeELF::BusFallbackDelegate::setErrorsAreFatal(bool fatal)
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CortexM0::err_t CartridgeELF::BusFallbackDelegate::handleError(
-  string_view accessType, uInt32 address, CortexM0::err_t err, CortexM0& cortex
+  string_view accessType, uInt32 address, CortexM0::err_t err, const CortexM0& cortex
 ) const {
   if (myErrorsAreFatal) return CortexM0::errIntrinsic(err, address);
 

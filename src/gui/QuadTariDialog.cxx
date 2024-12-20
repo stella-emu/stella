@@ -177,13 +177,13 @@ void QuadTariDialog::defineController(const Properties& props, PropType key,
   {
     if(instance().hasConsole())
     {
-      Controller& controller = (jack == Controller::Jack::Left
+      const Controller& controller = (jack == Controller::Jack::Left
         ? instance().console().leftController()
         : instance().console().rightController());
 
       if(BSPF::startsWithIgnoreCase(controller.name(), "QT"))
       {
-        const QuadTari* qt = static_cast<QuadTari*>(&controller);
+        const auto* qt = static_cast<const QuadTari*>(&controller);
         label = (first
           ? qt->firstController().name()
           : qt->secondController().name())

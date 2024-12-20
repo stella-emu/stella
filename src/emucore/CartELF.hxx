@@ -113,7 +113,7 @@ class CartridgeELF: public Cartridge {
 
       private:
         CortexM0::err_t handleError(
-          string_view accessType, uInt32 address, CortexM0::err_t err, CortexM0& cortex
+          string_view accessType, uInt32 address, CortexM0::err_t err, const CortexM0& cortex
         ) const;
 
       private:

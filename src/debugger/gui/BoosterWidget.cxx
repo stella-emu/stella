@@ -24,10 +24,11 @@ BoosterWidget::BoosterWidget(GuiObject* boss, const GUI::Font& font,
 {
   const string& label = isLeftPort() ? "Left (Booster)" : "Right (Booster)";
 
-  const int fontHeight = font.getFontHeight();
-  int xpos = x, ypos = y, lwidth = font.getStringWidth("Right (Booster)");
-  auto* t = new StaticTextWidget(boss, font, xpos, ypos+2, lwidth,
-                                 fontHeight, label, TextAlign::Left);
+  const int fontHeight = font.getFontHeight(),
+            lwidth = font.getStringWidth("Right (Booster)");
+  int xpos = x, ypos = y;
+  const auto* t = new StaticTextWidget(boss, font, xpos, ypos+2, lwidth,
+                                       fontHeight, label, TextAlign::Left);
   xpos += t->getWidth()/2 - 5;  ypos += t->getHeight() + 10;
   myPins[kJUp] = new CheckboxWidget(boss, font, xpos, ypos, "",
                                     CheckboxWidget::kCheckActionCmd);

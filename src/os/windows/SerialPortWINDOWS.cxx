@@ -116,7 +116,7 @@ StringList SerialPortWINDOWS::portNames()
     L"HARDWARE\\DEVICEMAP\\SERIALCOMM", 0, KEY_READ, &hKey);
   if (result == ERROR_SUCCESS)
   {
-    TCHAR deviceName[2048], friendlyName[32];
+    TCHAR deviceName[2048]{}, friendlyName[32]{};
     DWORD numValues = 0;
 
     result = RegQueryInfoKey(hKey, NULL, NULL, NULL, NULL, NULL, NULL,

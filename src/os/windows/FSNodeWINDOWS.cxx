@@ -40,9 +40,9 @@ FSNodeWINDOWS::FSNodeWINDOWS(string_view p)
 bool FSNodeWINDOWS::setFlags()
 {
   // Get absolute path
-  static TCHAR buf[MAX_PATH];
-  if (GetFullPathName(_path.c_str(), MAX_PATH - 1, buf, NULL))
-    _path = buf;
+  static std::array<TCHAR, MAX_PATH> buf;
+  if (GetFullPathName(_path.c_str(), MAX_PATH - 1, buf.data(), NULL))
+    _path = buf.data();
 
   _displayName = lastPathComponent(_path);
 

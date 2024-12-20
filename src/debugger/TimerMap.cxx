@@ -94,7 +94,7 @@ uInt32 TimerMap::add(uInt16 addr, uInt8 bank, bool mirrors, bool anyBank)
     // update tp key in myFromMap for new mirrors & anyBank settings
     // 1. find map entry using OLD tp key settings:
     toKey(tpFrom, oldMirrors, oldAnyBank);
-    auto from = myFromMap.equal_range(tpFrom);
+    const auto from = myFromMap.equal_range(tpFrom);
     for(auto it = from.first; it != from.second; ++it)
       if(it->second == &tmPartial)
       {

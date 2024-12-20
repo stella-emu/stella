@@ -191,7 +191,7 @@ class CortexM0: public Serializable
 
       void reset();
       void saveDirtyBits(Serializer& out) const;
-      void loadDirtyBits(Serializer& in);
+      void loadDirtyBits(const Serializer& in);
 
       private:
         MemoryRegion(const MemoryRegion&) = delete;

@@ -83,7 +83,7 @@ void FBBackendSDL2::queryHardware(vector<Common::Size>& fullscreenRes,
   myNumDisplays = SDL_GetNumVideoDisplays();
 
   // First get the maximum fullscreen desktop resolution
-  SDL_DisplayMode display;
+  SDL_DisplayMode display{};
   for(int i = 0; i < myNumDisplays; ++i)
   {
     SDL_GetDesktopDisplayMode(i, &display);
@@ -133,7 +133,7 @@ void FBBackendSDL2::queryHardware(vector<Common::Size>& fullscreenRes,
     SDL_DestroyWindow(tmpWindow);
   }
 
-  SDL_Rect r;
+  SDL_Rect r{};
   for(int i = 0; i < myNumDisplays; ++i)
   {
     // Display bounds minus dock
@@ -261,7 +261,7 @@ bool FBBackendSDL2::setVideoMode(const VideoModeHandler::Mode& mode,
   }
 
 #ifdef ADAPTABLE_REFRESH_SUPPORT
-  SDL_DisplayMode adaptedSdlMode;
+  SDL_DisplayMode adaptedSdlMode{};
   const int gameRefreshRate =
       myOSystem.hasConsole() ? myOSystem.console().gameRefreshRate() : 0;
   const bool shouldAdapt = fullScreen
@@ -374,7 +374,7 @@ bool FBBackendSDL2::adaptRefreshRate(Int32 displayIndex,
   // Check for integer factors 1 (60/50 Hz) and 2 (120/100 Hz)
   for(int m = 1; m <= 2; ++m)
   {
-    SDL_DisplayMode closestSdlMode;
+    SDL_DisplayMode closestSdlMode{};
 
     sdlMode.refresh_rate = wantedRefreshRate * m;
     if(SDL_GetClosestDisplayMode(displayIndex, &sdlMode, &closestSdlMode) == nullptr)
@@ -416,7 +416,7 @@ bool FBBackendSDL2::createRenderer()
   bool recreate = myRenderer == nullptr;
   uInt32 renderFlags = SDL_RENDERER_ACCELERATED;
   const string& video = myOSystem.settings().getString("video");  // Render hint
-  SDL_RendererInfo renderInfo;
+  SDL_RendererInfo renderInfo{};
 
   if(myOSystem.settings().getBool("vsync")
      && !myOSystem.settings().getBool("turbo"))  // V'synced blits option

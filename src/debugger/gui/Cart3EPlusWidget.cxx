@@ -120,7 +120,7 @@ void Cartridge3EPlusWidget::bankSelect(int& ypos)
     label.str("");
     label << "$" << Common::Base::HEX4 << addr1 << "-$"
           << Common::Base::HEX4 << (addr1 + 0x1FF);
-    auto* t = new StaticTextWidget(_boss, _font, xpos_s, ypos_s + 2, label.view());
+    const auto* t = new StaticTextWidget(_boss, _font, xpos_s, ypos_s + 2, label.view());
 
     const int xoffset = t->getRight() + _font.getMaxCharWidth();
     const size_t bank_off = static_cast<size_t>(seg) * 2;

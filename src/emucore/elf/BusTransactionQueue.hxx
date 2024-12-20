@@ -26,8 +26,8 @@ class Serializer;
 class BusTransactionQueue: public Serializable {
   public:
     struct Transaction {
-      static Transaction transactionYield(uInt16 address, uInt64 timestamp, uInt16 mask);
-      static Transaction transactionDrive(uInt16 address, uInt8 value, uInt64 timestamp);
+      static constexpr Transaction transactionYield(uInt16 address, uInt64 timestamp, uInt16 mask);
+      static constexpr Transaction transactionDrive(uInt16 address, uInt8 value, uInt64 timestamp);
 
       void setBusState(bool& drive, uInt8& value) const;
 
@@ -38,7 +38,7 @@ class BusTransactionQueue: public Serializable {
       bool yield{false};
 
       void serialize(Serializer& out) const;
-      void deserialize(Serializer& in);
+      void deserialize(const Serializer& in);
     };
 
   public:

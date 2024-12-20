@@ -591,7 +591,7 @@ void CortexM0::MemoryRegion::saveDirtyBits(Serializer& out) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CortexM0::MemoryRegion::loadDirtyBits(Serializer& in)
+void CortexM0::MemoryRegion::loadDirtyBits(const Serializer& in)
 {
   if (type != MemoryRegionType::directCode && type != MemoryRegionType::directData) return;
 

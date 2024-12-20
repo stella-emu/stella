@@ -84,7 +84,7 @@ void Cartridge3EWidget::bankSelect(int& ypos)
   myBankWidgets[0]->setID(0);
   addFocusWidget(myBankWidgets[0]);
 
-  auto* t = new StaticTextWidget(_boss, _font,
+  const auto* t = new StaticTextWidget(_boss, _font,
       myBankWidgets[0]->getRight(), ypos - 1, " (ROM)");
 
   xpos = t->getRight() + 20;

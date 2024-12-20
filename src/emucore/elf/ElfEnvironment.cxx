@@ -18,7 +18,7 @@
 #include "ElfEnvironment.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const uInt8 elfEnvironment::OVERBLANK_PROGRAM[] = {
+constexpr uInt8 elfEnvironment::OVERBLANK_PROGRAM[] = {
   0xa0,0x00,			  // ldy #0
   0xa5,0xe0,			  // lda $e0
         					  // OverblankLoop:
@@ -53,7 +53,7 @@ const uInt8 elfEnvironment::OVERBLANK_PROGRAM[] = {
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const uInt32 elfEnvironment::OVERBLANK_PROGRAM_SIZE = sizeof(elfEnvironment::OVERBLANK_PROGRAM);
+constexpr uInt32 elfEnvironment::OVERBLANK_PROGRAM_SIZE = sizeof(elfEnvironment::OVERBLANK_PROGRAM);
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const uInt8 elfEnvironment::LOOKUP_TABLES[3 * 256] = {

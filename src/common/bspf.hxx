@@ -206,7 +206,7 @@ namespace BSPF
     try {
       int i{};
       s = s.substr(s.find_first_not_of(' '));
-      auto result = std::from_chars(s.data(), s.data() + s.size(), i, BASE);
+      const auto result = std::from_chars(s.data(), s.data() + s.size(), i, BASE);
       return result.ec == std::errc() ? i : defaultValue;
     }
     catch(...) { return defaultValue; }
@@ -262,7 +262,7 @@ namespace BSPF
   }
 
   // Test whether the first string contains the second one (case insensitive)
-  inline constexpr bool containsIgnoreCase(string_view s1, string_view s2)
+  constexpr bool containsIgnoreCase(string_view s1, string_view s2)
   {
     return findIgnoreCase(s1, s2) != string::npos;
   }

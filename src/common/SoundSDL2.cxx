@@ -367,7 +367,7 @@ void SoundSDL2::initResampler()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void SoundSDL2::callback(void* object, uInt8* stream, int len)
 {
-  auto* self = static_cast<SoundSDL2*>(object);
+  const auto* self = static_cast<SoundSDL2*>(object);
 
   if(self->myAudioQueue && self->myResampler)
   {
