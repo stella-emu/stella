@@ -124,12 +124,10 @@ void FrameManager::onSetVblank(uInt64 cycles)
     if (myVblank) // VBLANK switched on
     {
       myVblankStart = cycles;
-      cerr << ", VBLANK ON " << cycles;
     }
     else // VBLANK switched off
     {
       myVblankCycles += cycles - myVblankStart;
-      cerr << ", VBLANK OFF " << cycles;
     }
 }
 
@@ -141,14 +139,12 @@ void FrameManager::onSetVsync(uInt64 cycles)
     if(myVblankStart != INT64_MAX)
       myVblankCycles += cycles - myVblankStart;
     setState(State::waitForFrameStart);
-    cerr << ", VSYNC waitForVsyncEnd " << cycles << " \n";
   }
   else {
     myVsyncStart = cycles;
     myVblankStart = myVblank ? cycles : INT64_MAX;
     myVblankCycles = 0;
     setState(State::waitForVsyncEnd);
-    cerr << ", VSYNC waitForFrameStart " << cycles;
   }
 }
 
