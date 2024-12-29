@@ -927,13 +927,13 @@ int TIADebug::frameWsyncCycles() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 int TIADebug::cyclesLo() const
 {
-  return static_cast<int>(myTIA.cycles());
+  return static_cast<int>(mySystem.cycles());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 int TIADebug::cyclesHi() const
 {
-  return static_cast<int>(myTIA.cycles() >> 32);
+  return static_cast<int>(mySystem.cycles() >> 32);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -670,9 +670,9 @@ uInt16 Debugger::windStates(uInt16 numStates, bool unwind, string& message)
 
   unlockSystem();
 
-  const uInt64 startCycles = myOSystem.console().tia().cycles();
+  const uInt64 startCycles = myOSystem.console().system().cycles();
   const uInt16 winds = r.windStates(numStates, unwind);
-  message = r.getUnitString(myOSystem.console().tia().cycles() - startCycles);
+  message = r.getUnitString(myOSystem.console().system().cycles() - startCycles);
 
   lockSystem();
 

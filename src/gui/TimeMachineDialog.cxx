@@ -529,7 +529,7 @@ void TimeMachineDialog::handleWinds(Int32 numWinds)
     if(numWinds < 0)      r.rewindStates(-numWinds);
     else if(numWinds > 0) r.unwindStates(numWinds);
 
-    const uInt64 elapsed = instance().console().tia().cycles() - startCycles;
+    const uInt64 elapsed = instance().console().system().cycles() - startCycles;
     if(elapsed > 0)
     {
       const string message = r.getUnitString(elapsed);

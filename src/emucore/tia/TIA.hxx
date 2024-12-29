@@ -339,11 +339,6 @@ class TIA : public Device
      */
     uInt32 frameBufferScanlinesLastFrame() const { return myFrameBufferScanlines; }
 
-    /**
-      Answers the total system cycles from the start of the emulation.
-    */
-    uInt64 cycles() const { return mySystem->cycles(); }
-
   #ifdef DEBUGGER_SUPPORT
     /**
       Answers the frame count from the start of the emulation.

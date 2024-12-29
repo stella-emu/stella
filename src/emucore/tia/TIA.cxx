@@ -570,7 +570,7 @@ bool TIA::poke(uInt16 address, uInt8 value)
       break;
 
     case VSYNC:
-      myFrameManager->setVsync(value & 0x02, mySystem->cycles());
+      myFrameManager->setVsync(value & 0x02, myTimestamp / 3);
       myShadowRegisters[address] = value;
       break;
 
@@ -1935,7 +1935,7 @@ void TIA::delayedWrite(uInt8 address, uInt8 value)
   {
     case VBLANK:
       flushLineCache();
-      myFrameManager->setVblank(value & 0x02, mySystem->cycles());
+      myFrameManager->setVblank(value & 0x02, myTimestamp / 3);
       break;
 
     case HMOVE:
