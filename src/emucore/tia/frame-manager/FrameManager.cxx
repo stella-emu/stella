@@ -121,6 +121,7 @@ void FrameManager::setAdjustVSize(Int32 adjustVSize)
 void FrameManager::onSetVblank(uInt64 cycles)
 {
   if (myState == State::waitForVsyncEnd)
+  {
     if (myVblank) // VBLANK switched on
     {
       myVblankStart = cycles;
@@ -129,6 +130,7 @@ void FrameManager::onSetVblank(uInt64 cycles)
     {
       myVblankCycles += cycles - myVblankStart;
     }
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
