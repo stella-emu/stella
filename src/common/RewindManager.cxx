@@ -114,7 +114,7 @@ bool RewindManager::addState(string_view message, bool timeMachine)
       interval = interval * scanlines / 262;
     }
 
-    if(myOSystem.console().tia().cycles() - lastState.cycles < interval)
+    if(myOSystem.console().system().cycles() - lastState.cycles < interval)
       return false;
   }
 
@@ -135,7 +135,7 @@ bool RewindManager::addState(string_view message, bool timeMachine)
   if(myStateManager.saveState(s) && myOSystem.console().tia().saveDisplay(s))
   {
     state.message = message;
-    state.cycles = myOSystem.console().tia().cycles();
+    state.cycles = myOSystem.console().system().cycles();
     myLastTimeMachineAdd = timeMachine;
     return true;
   }
@@ -145,7 +145,7 @@ bool RewindManager::addState(string_view message, bool timeMachine)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt32 RewindManager::rewindStates(uInt32 numStates)
 {
-  const uInt64 startCycles = myOSystem.console().tia().cycles();
+  const uInt64 startCycles = myOSystem.console().system().cycles();
   uInt32 i{0};
   string message;
 
@@ -185,7 +185,7 @@ uInt32 RewindManager::rewindStates(uInt32 numStates)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt32 RewindManager::unwindStates(uInt32 numStates)
 {
-  const uInt64 startCycles = myOSystem.console().tia().cycles();
+  const uInt64 startCycles = myOSystem.console().system().cycles();
   uInt32 i{0};
   string message;
 
