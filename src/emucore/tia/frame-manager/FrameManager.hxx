@@ -83,6 +83,8 @@ class FrameManager: public AbstractFrameManager {
 
     void setLayout(FrameLayout mode) override { layout(mode); }
 
+    void onSetVblank(uInt64 cycles) override;
+
     void onSetVsync(uInt64 cycles) override;
 
     void onNextLine() override;
@@ -116,7 +118,7 @@ class FrameManager: public AbstractFrameManager {
 
     State myState{State::waitForVsyncStart};
     uInt32 myLineInState{0};
-    uInt32 myVsyncLines{0};
+    uInt32 myVsyncLineCount{0};
     uInt32 myY{0}, myLastY{0};
 
     uInt32 myVblankLines{0};
@@ -129,6 +131,8 @@ class FrameManager: public AbstractFrameManager {
 
     uInt64 myVsyncStart{0};
     uInt64 myVsyncEnd{0};
+    uInt64 myVblankStart{0};
+    uInt64 myVblankCycles{0};
     bool myJitterEnabled{false};
 
     JitterEmulation myJitterEmulation;
