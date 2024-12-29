@@ -48,7 +48,7 @@ class JitterEmulation : public Serializable
     void setRecovery(Int32 recoveryFactor) { myJitterRecovery = recoveryFactor; }
     void setYStart(Int32 ystart) { myYStart = ystart; }
 
-    void frameComplete(Int32 scanlineCount, Int32 vsyncCycles);
+    void frameComplete(Int32 scanlineCount, Int32 vsyncCycles, Int32 vblankCycles);
     Int32 jitter() const { return myJitter; }
 
     bool vsyncCorrect() const { return myVsyncCorrect; }

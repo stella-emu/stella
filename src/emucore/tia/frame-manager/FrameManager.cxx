@@ -34,7 +34,7 @@ void FrameManager::onReset()
   myState = State::waitForVsyncStart;
   myLineInState = 0;
   myTotalFrames = 0;
-  myVsyncLines = 0;
+  myVsyncLineCount = 0;
   myY = 0;
 
   myJitterEmulation.reset();
@@ -50,14 +50,19 @@ void FrameManager::onNextLine()
   {
     case State::waitForVsyncStart:
       if ((myCurrentFrameTotalLines > myFrameLines - 3) || myTotalFrames == 0)
-        ++myVsyncLines;
+      {
+        if (myVblank)
+          ++myVsyncLineCount;
+      }
 
-      if (myVsyncLines > Metrics::maxLinesVsync) setState(State::waitForFrameStart);
+      if (myVsyncLineCount > Metrics::maxLinesVsync) setState(State::waitForFrameStart);
 
       break;
 
     case State::waitForVsyncEnd:
-      if (++myVsyncLines > Metrics::maxLinesVsync)
+      if (myVblank)
+        ++myVsyncLineCount;
+      if (myVsyncLineCount > Metrics::maxLinesVsync)
         setState(State::waitForFrameStart);
 
       break;
@@ -113,15 +118,37 @@ void FrameManager::setAdjustVSize(Int32 adjustVSize)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FrameManager::onSetVblank(uInt64 cycles)
+{
+  if (myState == State::waitForVsyncEnd)
+    if (myVblank) // VBLANK switched on
+    {
+      myVblankStart = cycles;
+      cerr << ", VBLANK ON " << cycles;
+    }
+    else // VBLANK switched off
+    {
+      myVblankCycles += cycles - myVblankStart;
+      cerr << ", VBLANK OFF " << cycles;
+    }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameManager::onSetVsync(uInt64 cycles)
 {
   if (myState == State::waitForVsyncEnd) {
     myVsyncEnd = cycles;
+    if(myVblankStart != INT64_MAX)
+      myVblankCycles += cycles - myVblankStart;
     setState(State::waitForFrameStart);
+    cerr << ", VSYNC waitForVsyncEnd " << cycles << " \n";
   }
   else {
     myVsyncStart = cycles;
+    myVblankStart = myVblank ? cycles : INT64_MAX;
+    myVblankCycles = 0;
     setState(State::waitForVsyncEnd);
+    cerr << ", VSYNC waitForFrameStart " << cycles;
   }
 }
 
@@ -139,15 +166,15 @@ void FrameManager::setState(FrameManager::State state)
 
       if (myTotalFrames > Metrics::initialGarbageFrames)
         myJitterEmulation.frameComplete(myCurrentFrameFinalLines,
-            static_cast<Int32>(myVsyncEnd - myVsyncStart));
+            static_cast<Int32>(myVsyncEnd - myVsyncStart), static_cast<Int32>(myVblankCycles));
 
       notifyFrameStart();
 
-      myVsyncLines = 0;
+      myVsyncLineCount = 0;
       break;
 
     case State::frame:
-      myVsyncLines = 0;
+      myVsyncLineCount = 0;
       myY = 0;
       break;
 
@@ -176,7 +203,7 @@ bool FrameManager::onSave(Serializer& out) const
 
   out.putInt(static_cast<uInt32>(myState));
   out.putInt(myLineInState);
-  out.putInt(myVsyncLines);
+  out.putInt(myVsyncLineCount);
   out.putInt(myY);
   out.putInt(myLastY);
 
@@ -200,7 +227,7 @@ bool FrameManager::onLoad(Serializer& in)
 
   myState = static_cast<State>(in.getInt());
   myLineInState = in.getInt();
-  myVsyncLines = in.getInt();
+  myVsyncLineCount = in.getInt();
   myY = in.getInt();
   myLastY = in.getInt();
 

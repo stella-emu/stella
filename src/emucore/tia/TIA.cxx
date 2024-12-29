@@ -583,7 +583,6 @@ bool TIA::poke(uInt16 address, uInt8 value)
       updateDumpPorts(value);
 
       myDelayQueue.push(VBLANK, value, Delay::vblank);
-
       break;
 
     case AUDV0:
@@ -1936,7 +1935,7 @@ void TIA::delayedWrite(uInt8 address, uInt8 value)
   {
     case VBLANK:
       flushLineCache();
-      myFrameManager->setVblank(value & 0x02);
+      myFrameManager->setVblank(value & 0x02, mySystem->cycles());
       break;
 
     case HMOVE:

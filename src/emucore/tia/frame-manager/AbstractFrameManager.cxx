@@ -62,13 +62,13 @@ void AbstractFrameManager::clearHandlers()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void AbstractFrameManager::setVblank(bool vblank)
+void AbstractFrameManager::setVblank(bool vblank, uInt64 cycles)
 {
   if (vblank == myVblank) return;
 
   myVblank = vblank;
 
-  onSetVblank();
+  onSetVblank(cycles);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -63,7 +63,7 @@ class AbstractFrameManager : public Serializable
     /**
      * Called by TIA on VBLANK writes.
      */
-    void setVblank(bool vblank);
+    void setVblank(bool vblank, uInt64 cycles);
 
     /**
      * Called by TIA on VSYNC writes.
@@ -218,7 +218,7 @@ class AbstractFrameManager : public Serializable
     /**
      * Called if vblank changes.
      */
-    virtual void onSetVblank() {}
+    virtual void onSetVblank(uInt64 cycles) {}
 
     /**
      * Called if vsync changes.
