@@ -16,6 +16,10 @@
 
   * Added developer option for disabling PlusROM support (TODO: Doc)
 
+  * Enhanced PAL-60 detection, searches for signature (e.g. PAL60) in ROM
+
+  * Enhanced VSYNC emulation, considers VBLANK now too
+
 6.7.1 to 7.0 (October 5, 2024)
 
   * Enhanced ROM launcher to allow multiple images per ROM.
