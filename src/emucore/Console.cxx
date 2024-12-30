@@ -395,22 +395,24 @@ string Console::formatFromSignature() const
   static constexpr uInt8 PAL_60[] = { 'P', 'A', 'L', ' ', '6', '0'};
   static constexpr uInt8 PAL__60[] = { 'P', 'A', 'L', '-', '6', '0'};
 
-  size_t size;
+  size_t size = 0;
   const ByteBuffer& image = myCart->getImage(size);
 
   if(searchForBytes(image, size, PAL60, 5) ||
-       searchForBytes(image, size, PAL_60, 6) ||
-       searchForBytes(image, size, PAL__60, 6))
+     searchForBytes(image, size, PAL_60, 6) ||
+     searchForBytes(image, size, PAL__60, 6))
     return "PAL60";
+
   // Nothing found
   return "AUTO";
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool Console::searchForBytes(const ByteBuffer& image, size_t imagesize,
-                             const uInt8* signature, uInt32 sigsize) const
+                             const uInt8* signature, uInt32 sigsize)
 {
   if(imagesize >= sigsize)
+  {
     for(uInt32 i = 0; i < imagesize - sigsize; ++i)
     {
       uInt32 matches = 0;
@@ -422,11 +424,9 @@ bool Console::searchForBytes(const ByteBuffer& image, size_t imagesize,
           break;
       }
       if(matches == sigsize)
-      {
         return true;
-      }
     }
-
+  }
   return false;
 }
 
