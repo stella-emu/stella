@@ -176,7 +176,7 @@ uInt8 CartridgeEnhanced::peek(uInt16 address)
   address &= ROM_MASK;
 
   // Write port is e.g. at 0xF000 - 0xF07F (128 bytes)
-  if(address >= myWriteOffset && address < myWriteOffset + myRamSize)
+  if(!myRamBankCount && address >= myWriteOffset && address < myWriteOffset + myRamSize)
   {
     // This is a read access to a write port!
     // Reading from the write port triggers an unwanted write
