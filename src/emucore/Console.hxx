@@ -427,20 +427,6 @@ class Console : public Serializable, public ConsoleIO
     string formatFromSignature() const;
 
     /**
-      Search the image for the specified byte signature.
-
-      @param image      A pointer to the ROM image
-      @param imagesize  The size of the ROM image
-      @param signature  The byte sequence to search for
-      @param sigsize    The number of bytes in the signature
-
-      @return  True if the signature was found, else false
-    */
-    bool searchForBytes(const ByteBuffer& image, size_t imagesize,
-                        const uInt8* signature, uInt32 sigsize) const;
-
-
-    /**
       Create the audio queue
      */
     void createAudioQueue();
@@ -456,6 +442,19 @@ class Console : public Serializable, public ConsoleIO
                       bool show = true, bool toggle = true) const;
     void toggleTIACollision(TIABit bit, string_view bitname,
                             bool show = true, bool toggle = true) const;
+
+    /**
+      Search the image for the specified byte signature.
+
+      @param image      A pointer to the ROM image
+      @param imagesize  The size of the ROM image
+      @param signature  The byte sequence to search for
+      @param sigsize    The number of bytes in the signature
+
+      @return  True if the signature was found, else false
+    */
+    static bool searchForBytes(const ByteBuffer& image, size_t imagesize,
+                               const uInt8* signature, uInt32 sigsize);
 
   private:
     // Reference to the osystem object
