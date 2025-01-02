@@ -51,18 +51,13 @@ mkdir %STELLA_DIR%
 mkdir %STELLA_DIR%\docs
 
 echo Copying executable files ...
-copy %RELEASE%\Stella.exe   %STELLA_DIR%
-copy %RELEASE%\SDL*.dll     %STELLA_DIR%
+copy %RELEASE%\Stella.exe %STELLA_DIR%
+copy %RELEASE%\*.dll      %STELLA_DIR%
 
 echo Copying DOC files ...
-xcopy ..\..\..\docs\*        %STELLA_DIR%\docs /s /q
-copy ..\..\..\Announce.txt   %STELLA_DIR%\docs
-copy ..\..\..\Changes.txt    %STELLA_DIR%\docs
-copy ..\..\..\Copyright.txt  %STELLA_DIR%\docs
-copy ..\..\..\License.txt    %STELLA_DIR%\docs
-copy ..\..\..\Readme.md      %STELLA_DIR%\docs
-copy ..\..\..\README-SDL.txt %STELLA_DIR%\docs
-copy ..\..\..\Todo.txt       %STELLA_DIR%\docs
+xcopy ..\..\..\docs\* %STELLA_DIR%\docs /s /q
+copy ..\..\..\*.txt   %STELLA_DIR%\docs
+copy ..\..\..\*.md    %STELLA_DIR%\docs
 
 :: Create output directory for release files
 if not exist Output (
