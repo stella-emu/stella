@@ -52,6 +52,10 @@ enum class JoyAxis: Int8 {
   Y = 1,    // since they'll be used as array indices
   Z = 2,
   A3 = 3,
+  A4 = 4,
+  A5 = 5,
+  A6 = 6,
+  A7 = 7,
   NONE = JOY_CTRL_NONE
 };
 

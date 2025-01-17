@@ -31,7 +31,11 @@ NLOHMANN_JSON_SERIALIZE_ENUM(JoyAxis, {
   {JoyAxis::X, "x"},
   {JoyAxis::Y, "y"},
   {JoyAxis::Z, "z"},
-  {JoyAxis::A3, "a3"}
+  {JoyAxis::A3, "a3"},
+  {JoyAxis::A4, "a4"},
+  {JoyAxis::A5, "a5"},
+  {JoyAxis::A6, "a6"},
+  {JoyAxis::A7, "a7"}
 })
 
 NLOHMANN_JSON_SERIALIZE_ENUM(JoyDir, {
