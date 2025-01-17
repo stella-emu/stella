@@ -129,10 +129,10 @@ class JoyMap
       size_t operator()(const JoyMapping& m)const {
         return std::hash<uInt64>()((static_cast<uInt64>(m.mode)) // 3 bits
           + ((static_cast<uInt64>(m.button)) * 7)  // 3 bits
-          + (((static_cast<uInt64>(m.axis)) << 0)  // 2 bits
-           | ((static_cast<uInt64>(m.adir)) << 2)  // 2 bits
-           | ((static_cast<uInt64>(m.hat )) << 4)  // 1 bit
-           | ((static_cast<uInt64>(m.hdir)) << 5)  // 2 bits
+          + (((static_cast<uInt64>(m.axis)) << 0)  // 3 bits
+           | ((static_cast<uInt64>(m.adir)) << 3)  // 2 bits
+           | ((static_cast<uInt64>(m.hat )) << 5)  // 1 bit
+           | ((static_cast<uInt64>(m.hdir)) << 6)  // 2 bits
             ) * 61
         );
       }
