@@ -205,7 +205,7 @@ void EventHandler::toggleAllow4JoyDirections(bool toggle)
   ostringstream ss;
   ss << "Allow all 4 joystick directions ";
   ss << (joyAllow4 ? "enabled" : "disabled");
-  myOSystem.frameBuffer().showTextMessage(ss.view());
+  myOSystem.frameBuffer().showTextMessage(ss.str());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -2330,7 +2330,7 @@ VariantList EventHandler::getComboList()
     if(event < Event::Combo1 || event > Event::Combo16)
     {
       buf << i;
-      VarList::push_back(l, EventHandler::ourEmulActionList[i].action, buf.view());
+      VarList::push_back(l, EventHandler::ourEmulActionList[i].action, buf.str());
       buf.str("");
     }
   }
@@ -2547,7 +2547,7 @@ void EventHandler::changeMouseControllerMode(int direction)
 
   ostringstream ss;
   ss << "Mouse controls " << MSG[i] << " devices";
-  myOSystem.frameBuffer().showTextMessage(ss.view());
+  myOSystem.frameBuffer().showTextMessage(ss.str());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -2562,7 +2562,7 @@ void EventHandler::changeMouseCursor(int direction)
   ss << "Mouse cursor visibilility: "
     << ((cursor & 2) ? "+" : "-") << "UI, "
     << ((cursor & 1) ? "+" : "-") << "Emulation";
-  myOSystem.frameBuffer().showTextMessage(ss.view());
+  myOSystem.frameBuffer().showTextMessage(ss.str());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

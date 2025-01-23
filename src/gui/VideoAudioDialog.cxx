@@ -1147,7 +1147,7 @@ void VideoAudioDialog::handleShiftChanged(SliderWidget* widget)
 
   ss << std::setw(4) << std::fixed << std::setprecision(1)
     << (0.1 * (widget->getValue())) << DEGREE;
-  widget->setValueLabel(ss.view());
+  widget->setValueLabel(ss.str());
   handlePaletteUpdate();
 }
 
@@ -1384,14 +1384,14 @@ void VideoAudioDialog::handleCommand(CommandSender* sender, int cmd,
     {
       std::ostringstream ss;  // NOLINT (ss is not a const)
       ss << std::fixed << std::setprecision(1) << (0.5 * myHeadroomSlider->getValue()) << " frames";
-      myHeadroomSlider->setValueLabel(ss.view());
+      myHeadroomSlider->setValueLabel(ss.str());
       break;
     }
     case kBufferSizeChanged:
     {
       std::ostringstream ss;  // NOLINT (ss is not a const)
       ss << std::fixed << std::setprecision(1) << (0.5 * myBufferSizeSlider->getValue()) << " frames";
-      myBufferSizeSlider->setValueLabel(ss.view());
+      myBufferSizeSlider->setValueLabel(ss.str());
       break;
     }
 
@@ -1445,7 +1445,7 @@ void VideoAudioDialog::colorPalette()
       const int color = order[type][idx];
 
       ss << Common::Base::HEX1 << std::uppercase << color;
-      myColorLbl[idx]->setLabel(ss.view());
+      myColorLbl[idx]->setLabel(ss.str());
       for(int lum = 0; lum < NUM_LUMA; ++lum)
         myColor[idx][lum]->setColor(color * NUM_CHROMA + lum * 2); // skip grayscale colors
     }

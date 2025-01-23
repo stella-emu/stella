@@ -840,7 +840,7 @@ void Settings::usage()
 //
 //  if(NULL != GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &csbi))
 //    height = csbi.srWindow.Bottom - csbi.srWindow.Top + 1;
-  cout << buf.view() << std::flush;
+  cout << buf.str() << std::flush;
 #endif
 
 #if defined(BSPF_UNIX) || defined(BSPF_MACOS)

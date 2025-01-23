@@ -41,7 +41,7 @@ namespace {
 
           if (!KeyValueRepositoryJsonFile::save(out, values)) return false;
 
-          return myKvr.save(myKey, out.view());
+          return myKvr.save(myKey, out.str());
         }
 
       private:

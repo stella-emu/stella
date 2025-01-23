@@ -54,7 +54,7 @@ const VideoModeHandler::Mode&
       // Overscan is not applicable in this mode
       myMode = Mode(myImage.w, myImage.h,
                     Mode::Stretch::Fill, myFSIndex,
-                    desc.view(), zoom, bezelInfo);
+                    desc.str(), zoom, bezelInfo);
     }
     else
     {

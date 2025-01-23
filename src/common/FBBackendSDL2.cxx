@@ -105,11 +105,11 @@ void FBBackendSDL2::queryHardware(vector<Common::Size>& fullscreenRes,
       SDL_GetDisplayMode(i, m, &mode);
       res << std::setw(4) << mode.w << "x" << std::setw(4) << mode.h;
 
-      if(lastRes != res.view())
+      if(lastRes != res.str())
       {
-        Logger::debug(s.view());
+        Logger::debug(s.str());
         s.str("");
-        lastRes = res.view();
+        lastRes = res.str();
         s << "  " << lastRes << ": ";
       }
       s << mode.refresh_rate << "Hz";
@@ -118,7 +118,7 @@ void FBBackendSDL2::queryHardware(vector<Common::Size>& fullscreenRes,
       else
         s << "  ";
     }
-    Logger::debug(s.view());
+    Logger::debug(s.str());
   }
 
   // Now get the maximum windowed desktop resolution
@@ -332,7 +332,7 @@ bool FBBackendSDL2::setVideoMode(const VideoModeHandler::Mode& mode,
 
       msg << "Display refresh rate changed to "
           << adaptedSdlMode.refresh_rate << " Hz " << "(" << adaptedSdlMode.w << "x" << adaptedSdlMode.h << ")";
-      Logger::info(msg.view());
+      Logger::info(msg.str());
 
       SDL_DisplayMode setSdlMode;
       SDL_GetWindowDisplayMode(myWindow, &setSdlMode);

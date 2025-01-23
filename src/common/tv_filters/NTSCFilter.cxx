@@ -92,8 +92,8 @@ void NTSCFilter::selectAdjustable(int direction,
   msg << "Custom " << ourCustomAdjustables[myCurrentAdjustable].type;
   val << value << "%";
 
-  text = msg.view();
-  valueText = val.view();
+  text = msg.str();
+  valueText = val.str();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -123,8 +123,8 @@ void NTSCFilter::changeCurrentAdjustable(int direction,
   msg << "Custom " << ourCustomAdjustables[myCurrentAdjustable].type;
   val << newValue << "%";
 
-  text = msg.view();
-  valueText = val.view();
+  text = msg.str();
+  valueText = val.str();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

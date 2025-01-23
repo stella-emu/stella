@@ -947,12 +947,12 @@ void GameInfoDialog::loadHighScoresProperties(const Properties& props)
   ss.str("");
   ss << hex << right // << setw(HSM::MAX_ADDR_CHARS) << setfill(' ')
     << uppercase << info.varsAddr;
-  myVarAddress->setText(ss.view());
+  myVarAddress->setText(ss.str());
 
   ss.str("");
   ss << hex << right // << setw(HSM::MAX_ADDR_CHARS) << setfill(' ')
     << uppercase << info.specialAddr;
-  mySpecialAddress->setText(ss.view());
+  mySpecialAddress->setText(ss.str());
 
 
   for (uInt32 a = 0; a < HSM::MAX_SCORE_ADDR; ++a)
@@ -963,7 +963,7 @@ void GameInfoDialog::loadHighScoresProperties(const Properties& props)
       ss << hex << right // << setw(HSM::MAX_ADDR_CHARS) << setfill(' ')
         << uppercase << info.scoreAddr[a];
     }
-    myScoreAddress[a]->setText(ss.view());
+    myScoreAddress[a]->setText(ss.str());
   }
   updateHighScoresWidgets();
 }
@@ -1489,7 +1489,7 @@ void GameInfoDialog::setAddressVal(const EditTextWidget* addressWidget, EditText
     //  ss << hex;
     ss << right // << setw(2) << setfill(' ')
       << uppercase << static_cast<uInt16>(val);
-    valWidget->setText(ss.view());
+    valWidget->setText(ss.str());
   }
   else
     valWidget->setText("");

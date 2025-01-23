@@ -93,7 +93,7 @@ class KidVid : public Controller
 
   private:
     // Get name of the current sample file
-    string getFileName() const;
+    const char* getFileName() const;
 
     // Open/close a WAV sample file
     void openSampleFiles();

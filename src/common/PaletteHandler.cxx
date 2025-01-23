@@ -112,7 +112,7 @@ void PaletteHandler::showAdjustableMessage()
         myOSystem.console().timing() == ConsoleTiming::pal ? myPhasePAL : myPhaseNTSC;
     buf << std::fixed << std::setprecision(1) << value << DEGREE;
     myOSystem.frameBuffer().showGaugeMessage(
-        "Palette phase shift", buf.view(), value,
+        "Palette phase shift", buf.str(), value,
         (isNTSC ? DEF_NTSC_SHIFT : DEF_PAL_SHIFT) - MAX_PHASE_SHIFT,
         (isNTSC ? DEF_NTSC_SHIFT : DEF_PAL_SHIFT) + MAX_PHASE_SHIFT);
   }
@@ -122,7 +122,7 @@ void PaletteHandler::showAdjustableMessage()
 
     buf << std::fixed << std::setprecision(1) << value << DEGREE;
     myOSystem.frameBuffer().showGaugeMessage(
-      msg.view(), buf.view(), value, -MAX_RGB_SHIFT, +MAX_RGB_SHIFT);
+      msg.str(), buf.str(), value, -MAX_RGB_SHIFT, +MAX_RGB_SHIFT);
   }
   else
   {
@@ -131,7 +131,7 @@ void PaletteHandler::showAdjustableMessage()
       : scaleTo100(*myAdjustables[myCurrentAdjustable].value);
     buf << value << "%";
     myOSystem.frameBuffer().showGaugeMessage(
-      msg.view(), buf.view(), value);
+      msg.str(), buf.str(), value);
   }
 }
 

@@ -49,13 +49,13 @@ class Variant
     Variant(string_view s) : data{s} { }
     Variant(const char* s) : data{s} { }
 
-    Variant(Int32 i)  { buf().str(""); buf() << i; data = buf().view(); }
-    Variant(uInt32 i) { buf().str(""); buf() << i; data = buf().view(); }
-    Variant(float f)  { buf().str(""); buf() << f; data = buf().view(); }
-    Variant(double d) { buf().str(""); buf() << d; data = buf().view(); }
-    Variant(bool b)   { buf().str(""); buf() << b; data = buf().view(); }
-    Variant(const Common::Size& s) { buf().str(""); buf() << s; data = buf().view(); }
-    Variant(const Common::Point& s) { buf().str(""); buf() << s; data = buf().view(); }
+    Variant(Int32 i)  { buf().str(""); buf() << i; data = buf().str(); }
+    Variant(uInt32 i) { buf().str(""); buf() << i; data = buf().str(); }
+    Variant(float f)  { buf().str(""); buf() << f; data = buf().str(); }
+    Variant(double d) { buf().str(""); buf() << d; data = buf().str(); }
+    Variant(bool b)   { buf().str(""); buf() << b; data = buf().str(); }
+    Variant(const Common::Size& s) { buf().str(""); buf() << s; data = buf().str(); }
+    Variant(const Common::Point& s) { buf().str(""); buf() << s; data = buf().str(); }
 
     // Conversion methods
     const string& toString() const { return data; }

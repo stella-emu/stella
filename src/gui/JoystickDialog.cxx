@@ -140,7 +140,7 @@ void JoystickDialog::handleCommand(CommandSender* sender, int cmd, int data, int
       {
         ostringstream buf;
         buf << "C" << myJoyIDs[data];
-        myJoyText->setText(buf.view());
+        myJoyText->setText(buf.str());
         myJoyPort->setSelected(myJoyPorts[data]);
       }
       else
