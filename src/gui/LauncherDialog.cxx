@@ -106,7 +106,7 @@ void LauncherDialog::addTitleWidget(int &ypos)
   ver << " for RetroN 77";
 #endif
   new StaticTextWidget(this, _font, 1, ypos, _w - 2, fontHeight,
-                       ver.view(), TextAlign::Center);
+                       ver.str(), TextAlign::Center);
   ypos += fontHeight + VGAP;
 }
 
@@ -549,7 +549,7 @@ void LauncherDialog::updateUI()
   ostringstream buf;
   buf << (myList->getList().size() - (currentDir().hasParent() ? 1 : 0))
     << (myShortCount ? " items" : " items found");
-  myRomCount->setLabel(buf.view());
+  myRomCount->setLabel(buf.str());
 
   loadRomInfo();
 }

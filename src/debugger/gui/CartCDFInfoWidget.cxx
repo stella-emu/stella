@@ -53,7 +53,7 @@ CartridgeCDFInfoWidget::CartridgeCDFInfoWidget(
   }
 #endif
 
-  addBaseInformation(cart.romSize(), "AtariAge", info.view());
+  addBaseInformation(cart.romSize(), "AtariAge", info.str());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

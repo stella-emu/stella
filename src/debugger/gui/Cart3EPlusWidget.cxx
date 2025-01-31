@@ -79,7 +79,7 @@ void Cartridge3EPlusWidget::bankSelect(int& ypos)
 
     label << "Set segment " << seg << " as ";
 
-    new StaticTextWidget(_boss, _font, xpos, ypos, label.view());
+    new StaticTextWidget(_boss, _font, xpos, ypos, label.str());
     ypos += myLineHeight + VGAP * 2;
 
     xpos += _font.getMaxCharWidth() * 2;
@@ -120,7 +120,7 @@ void Cartridge3EPlusWidget::bankSelect(int& ypos)
     label.str("");
     label << "$" << Common::Base::HEX4 << addr1 << "-$"
           << Common::Base::HEX4 << (addr1 + 0x1FF);
-    const auto* t = new StaticTextWidget(_boss, _font, xpos_s, ypos_s + 2, label.view());
+    const auto* t = new StaticTextWidget(_boss, _font, xpos_s, ypos_s + 2, label.str());
 
     const int xoffset = t->getRight() + _font.getMaxCharWidth();
     const size_t bank_off = static_cast<size_t>(seg) * 2;
@@ -131,7 +131,7 @@ void Cartridge3EPlusWidget::bankSelect(int& ypos)
 
     label.str("");
     label << "$" << Common::Base::HEX4 << addr2 << "-$" << Common::Base::HEX4 << (addr2 + 0x1FF);
-    new StaticTextWidget(_boss, _font, xpos_s, ypos_s + 2, label.view());
+    new StaticTextWidget(_boss, _font, xpos_s, ypos_s + 2, label.str());
 
     myBankState[bank_off + 1] = new EditTextWidget(_boss, _font,
         xoffset, ypos_s, _w - xoffset - 10, myLineHeight, "");
@@ -209,12 +209,12 @@ void Cartridge3EPlusWidget::updateUIState()
 
       buf << "RAM @ $" << Common::Base::HEX4
           << (ramBank << myCart3EP.myBankShift) << " (R)";
-      myBankState[bank_off]->setText(buf.view());
+      myBankState[bank_off]->setText(buf.str());
 
       buf.str("");
       buf << "RAM @ $" << Common::Base::HEX4
         << ((ramBank << myCart3EP.myBankShift) + myCart3EP.myBankSize) << " (W)";
-      myBankState[bank_off + 1]->setText(buf.view());
+      myBankState[bank_off + 1]->setText(buf.str());
 
       myBankWidgets[seg]->setSelectedIndex(ramBank);
       myBankType[seg]->setSelected("RAM");
@@ -223,12 +223,12 @@ void Cartridge3EPlusWidget::updateUIState()
     {
       buf << "ROM @ $" << Common::Base::HEX4
         << ((bank << myCart3EP.myBankShift));
-      myBankState[bank_off]->setText(buf.view());
+      myBankState[bank_off]->setText(buf.str());
 
       buf.str("");
       buf << "ROM @ $" << Common::Base::HEX4
         << ((bank << myCart3EP.myBankShift) + myCart3EP.myBankSize);
-      myBankState[bank_off + 1]->setText(buf.view());
+      myBankState[bank_off + 1]->setText(buf.str());
 
       myBankWidgets[seg]->setSelectedIndex(bank);
       myBankType[seg]->setSelected("ROM");

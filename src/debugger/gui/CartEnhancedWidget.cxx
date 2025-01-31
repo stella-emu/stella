@@ -197,8 +197,8 @@ void CartridgeEnhancedWidget::bankList(uInt16 bankCount, int seg, VariantList& i
 
     if(myCart.hotspot() != 0 && myHotspotDelta > 0)
       buf << " " << hotspotStr(bank, seg);
-    VarList::push_back(items, buf.view());
-    width = std::max(width, _font.getStringWidth(buf.view()));
+    VarList::push_back(items, buf.str());
+    width = std::max(width, _font.getStringWidth(buf.str()));
   }
 }
 
@@ -229,7 +229,7 @@ void CartridgeEnhancedWidget::bankSelect(int& ypos)
         buf << "     "; // align with info
 
       myBankWidgets[seg] = new PopUpWidget(_boss, _font, xpos, ypos - 2,
-                                           pw, myLineHeight, items, buf.view(),
+                                           pw, myLineHeight, items, buf.str(),
                                            0, kBankChanged);
       myBankWidgets[seg]->setTarget(this);
       myBankWidgets[seg]->setID(seg);
@@ -338,14 +338,14 @@ void CartridgeEnhancedWidget::loadConfig()
 
     for(auto i: arr)
       buf << Common::Base::HEX2 << static_cast<int>(i) << " ";
-    myPlusROMSendWidget->setText(buf.view(), arr != myOldState.send);
+    myPlusROMSendWidget->setText(buf.str(), arr != myOldState.send);
 
     buf.str("");
     arr = myCart.myPlusROM->getReceive();
 
     for(auto i: arr)
       buf << Common::Base::HEX2 << static_cast<int>(i) << " ";
-    myPlusROMReceiveWidget->setText(buf.view(), arr != myOldState.receive);
+    myPlusROMReceiveWidget->setText(buf.str(), arr != myOldState.receive);
   }
   if(myBankWidgets != nullptr)
   {

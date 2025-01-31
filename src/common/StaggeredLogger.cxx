@@ -84,7 +84,7 @@ void StaggeredLogger::logLine()
       << millisecondsSinceIntervalStart << "  milliseconds"
     << ")";
 
-  Logger::log(ss.view(), myLevel);
+  Logger::log(ss.str(), myLevel);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

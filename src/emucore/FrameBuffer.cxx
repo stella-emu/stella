@@ -721,7 +721,7 @@ void FrameBuffer::drawFrameStats(float framesPerSecond)
     << "Hz => "
     << info.DisplayFormat;
 
-  myStatsMsg.surface->drawString(f, ss.view(), xPos, yPos,
+  myStatsMsg.surface->drawString(f, ss.str(), xPos, yPos,
                                  myStatsMsg.w, color, TextAlign::Left, 0, true, kBGColor);
 
   yPos += dy;
@@ -736,7 +736,7 @@ void FrameBuffer::drawFrameStats(float framesPerSecond)
         : myOSystem.settings().getFloat("speed"))
     << "% speed";
 
-  myStatsMsg.surface->drawString(f, ss.view(), xPos, yPos,
+  myStatsMsg.surface->drawString(f, ss.str(), xPos, yPos,
       myStatsMsg.w, myStatsMsg.color, TextAlign::Left, 0, true, kBGColor);
 
   yPos += dy;
@@ -744,7 +744,7 @@ void FrameBuffer::drawFrameStats(float framesPerSecond)
 
   ss << info.BankSwitch;
   int xPosEnd =
-    myStatsMsg.surface->drawString(f, ss.view(), xPos, yPos,
+    myStatsMsg.surface->drawString(f, ss.str(), xPos, yPos,
                                    myStatsMsg.w, myStatsMsg.color, TextAlign::Left, 0, true, kBGColor);
 
   if(myOSystem.settings().getBool("dev.settings"))
@@ -760,7 +760,7 @@ void FrameBuffer::drawFrameStats(float framesPerSecond)
       color = kDbgColorRed;
       ss << "VSYNC!";
     }
-    myStatsMsg.surface->drawString(f, ss.view(), xPosEnd, yPos,
+    myStatsMsg.surface->drawString(f, ss.str(), xPosEnd, yPos,
         myStatsMsg.w, color, TextAlign::Left, 0, true, kBGColor);
   }
 
@@ -1174,7 +1174,7 @@ void FrameBuffer::toggleFullscreen(bool toggle)
           else
             msg << "disabled";
         }
-        showTextMessage(msg.view());
+        showTextMessage(msg.str());
       }
       break;
     }
@@ -1207,7 +1207,7 @@ void FrameBuffer::toggleAdaptRefresh(bool toggle)
     msg << (isAdaptRefresh ? "enabled" : "disabled");
     msg << " (" << myBackend->refreshRate() << " Hz)";
 
-    showTextMessage(msg.view());
+    showTextMessage(msg.str());
   }
 }
 #endif
@@ -1233,7 +1233,7 @@ void FrameBuffer::changeOverscan(int direction)
       val << (overscan > 0 ? "+" : "" ) << overscan << "%";
     else
       val << "Off";
-    myOSystem.frameBuffer().showGaugeMessage("Overscan", val.view(), overscan, 0, 10);
+    myOSystem.frameBuffer().showGaugeMessage("Overscan", val.str(), overscan, 0, 10);
   }
 }
 

@@ -50,7 +50,7 @@ CartridgeDPCPlusWidget::CartridgeDPCPlusWidget(
 #endif
 
   int xpos = 2,
-      ypos = addBaseInformation(size, "Activision (Pitfall II)", info.view()) +
+      ypos = addBaseInformation(size, "Activision (Pitfall II)", info.str()) +
               myLineHeight;
 
   VariantList items;

@@ -123,7 +123,7 @@ void RomAuditDialog::auditRoms()
   // NOLINTEND
 
   buf << "Auditing ROM files" << ELLIPSIS;
-  progress.setMessage(buf.view());
+  progress.setMessage(buf.str());
   progress.setRange(0, static_cast<int>(files.size()) - 1, 5);
   progress.open();
 

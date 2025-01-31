@@ -242,7 +242,7 @@ void CartridgeARMWidget::handleChipType()
       << (chipProps.flashBanks > 1 ? "s" : "") << ", "
       << chipProps.MHz << " MHz, "
       << chipProps.flashCycles - 1 << " wait states";
-    myChipType->setToolTip(buf.view());
+    myChipType->setToolTip(buf.str());
   }
 }
 

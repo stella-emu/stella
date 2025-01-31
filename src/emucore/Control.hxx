@@ -115,8 +115,8 @@ class Controller : public Serializable
     /**
       Callback type for general controller messages
     */
-    using onMessageCallback = std::function<void(string_view)>;
-    using onMessageCallbackForced = std::function<void(string_view, bool force)>;
+    using onMessageCallback = std::function<void(const string&)>;
+    using onMessageCallbackForced = std::function<void(const string&, bool force)>;
 
   public:
     /**

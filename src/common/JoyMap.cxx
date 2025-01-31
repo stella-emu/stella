@@ -161,7 +161,7 @@ string JoyMap::getEventMappingDesc(int stick, Event::Type event,
   {
     if (_event == event && _mapping.mode == mode)
     {
-      if(!buf.view().empty())
+      if(!buf.str().empty())
         buf << ", ";
       buf << "C" << stick << getDesc(event, _mapping);
     }

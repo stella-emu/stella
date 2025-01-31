@@ -57,7 +57,7 @@ CartridgeBUSInfoWidget::CartridgeBUSInfoWidget(
   }
 #endif
 
-  addBaseInformation(size, "AtariAge", info.view());
+  addBaseInformation(size, "AtariAge", info.str());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

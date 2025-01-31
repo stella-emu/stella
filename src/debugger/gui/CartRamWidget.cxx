@@ -55,7 +55,7 @@ CartRamWidget::CartRamWidget(
     buf << " / " << (ramsize/1024) << "KB";
 
   etw = new EditTextWidget(boss, nfont, xpos+lwidth, ypos - 1,
-                           fwidth, myLineHeight, buf.view());
+                         fwidth, myLineHeight, buf.str());
   etw->setEditable(false);
   ypos += myLineHeight + 4;
 

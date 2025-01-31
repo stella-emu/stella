@@ -48,7 +48,7 @@ SoundSDL2::SoundSDL2(OSystem& osystem, AudioSettings& audioSettings)
 
     buf << "WARNING: Failed to initialize SDL audio system! \n"
         << "         " << SDL_GetError() << '\n';
-    Logger::error(buf.view());
+    Logger::error(buf.str());
     return;
   }
 
@@ -83,7 +83,7 @@ void SoundSDL2::queryHardware(VariantList& devices)
   // log the available audio devices
   ostringstream s;
   s << "Supported audio devices (" << numDevices << "):";
-  Logger::debug(s.view());
+  Logger::debug(s.str());
 
   VarList::push_back(devices, "Default", 0);
   for(int i = 0; i < numDevices; ++i)
@@ -91,7 +91,7 @@ void SoundSDL2::queryHardware(VariantList& devices)
     ostringstream ss;
 
     ss << "  " << i + 1 << ": " << SDL_GetAudioDeviceName(i, 0);
-    Logger::debug(ss.view());
+    Logger::debug(ss.str());
 
     VarList::push_back(devices, SDL_GetAudioDeviceName(i, 0), i + 1);
   }
@@ -128,7 +128,7 @@ bool SoundSDL2::openDevice()
 
     buf << "WARNING: Couldn't open SDL audio device! \n"
         << "         " << SDL_GetError() << '\n';
-    Logger::error(buf.view());
+    Logger::error(buf.str());
 
     return myIsInitializedFlag = false;
   }
@@ -253,7 +253,7 @@ void SoundSDL2::adjustVolume(int direction)
   // Now show an onscreen message
   ostringstream strval;
   (percent) ? strval << percent << "%" : strval << "Off";
-  myOSystem.frameBuffer().showGaugeMessage("Volume", strval.view(), percent);
+  myOSystem.frameBuffer().showGaugeMessage("Volume", strval.str(), percent);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

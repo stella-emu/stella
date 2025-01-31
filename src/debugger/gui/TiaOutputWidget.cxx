@@ -97,12 +97,12 @@ void TiaOutputWidget::saveSnapshot(int execDepth, string_view execPrefix,
         buf.str("");
         suffix.str("");
         suffix << "_" << i;
-        buf << sspath.view() << suffix.view() << ".png";
-        const FSNode next(buf.view());
+        buf << sspath.str() << suffix.str() << ".png";
+        const FSNode next(buf.str());
         if(!next.exists())
           break;
       }
-      sspath << suffix.view();
+      sspath << suffix.str();
     }
   }
   sspath << ".png";
@@ -166,7 +166,7 @@ void TiaOutputWidget::handleCommand(CommandSender* sender, int cmd, int data, in
       if(lines > 0)
       {
         command << "scanLine #" << lines;
-        const string message = instance().debugger().parser().run(command.view());
+        const string message = instance().debugger().parser().run(command.str());
         instance().frameBuffer().showTextMessage(message);
       }
     }
@@ -175,7 +175,7 @@ void TiaOutputWidget::handleCommand(CommandSender* sender, int cmd, int data, in
       ostringstream command;
       const int scanline = myClickY + startLine;
       command << "breakIf _scan==#" << scanline;
-      const string& message = instance().debugger().parser().run(command.view());
+      const string& message = instance().debugger().parser().run(command.str());
       instance().frameBuffer().showTextMessage(message);
     }
     else if(rmb == "zoom")

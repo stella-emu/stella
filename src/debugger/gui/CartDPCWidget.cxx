@@ -48,7 +48,7 @@ CartridgeDPCWidget::CartridgeDPCWidget(
   }
 
   int xpos = 2,
-      ypos = addBaseInformation(size, "Activision (Pitfall II)", info.view()) +
+      ypos = addBaseInformation(size, "Activision (Pitfall II)", info.str()) +
               myLineHeight;
 
   VariantList items;
@@ -57,7 +57,7 @@ CartridgeDPCWidget::CartridgeDPCWidget(
     ostringstream buf;
 
     buf << "#" << std::dec << bank << " ($" << Common::Base::HEX4 << (0xFFF8 + bank) << ")";
-    VarList::push_back(items, buf.view());
+    VarList::push_back(items, buf.str());
   }
 
   myBank =

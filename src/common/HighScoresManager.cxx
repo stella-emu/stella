@@ -413,7 +413,7 @@ string HighScoresManager::md5Props() const
 
   buf << specialAddress(jprops) << specialBCD(jprops) << specialZeroBased(jprops);
 
-  return MD5::hash(buf.view());
+  return MD5::hash(buf.str());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -569,7 +569,7 @@ string HighScoresManager::hash(const ScoresData& data) const
       << data.scores[r].date;
   }
 
-  return MD5::hash(buf.view());
+  return MD5::hash(buf.str());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -656,7 +656,7 @@ void HighScoresManager::loadHighScores(ScoresData& data)
     clearHighScores(data);
     buf << "Error: Invalid high scores data for variation " << data.variation << ".";
   }
-  myOSystem.frameBuffer().showTextMessage(buf.view());
+  myOSystem.frameBuffer().showTextMessage(buf.str());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

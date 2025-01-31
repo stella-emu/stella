@@ -264,7 +264,7 @@ Bankswitch::Type CartDetector::autodetectType(const ByteBuffer& image, size_t si
 
   ostringstream ss;
   ss << "Bankswitching type '" << Bankswitch::typeToDesc(type) << "' detected";
-  Logger::debug(ss.view());
+  Logger::debug(ss.str());
 
   return type;
 }

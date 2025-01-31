@@ -183,7 +183,7 @@ unique_ptr<Cartridge> CartCreator::create(const FSNode& file,
     buf << " " << Bankswitch::typeToName(detectedType);
   buf << ") ";
 
-  cartridge->setAbout(buf.view(), Bankswitch::typeToName(type), id);
+  cartridge->setAbout(buf.str(), Bankswitch::typeToName(type), id);
 
   return cartridge;
 }
@@ -211,7 +211,7 @@ CartCreator::createFromMultiCart(const ByteBuffer& image, size_t& size,
   md5 = MD5::hash(slice, size);
   ostringstream buf;
   buf << " [G" << (i+1) << "]";
-  id = buf.view();
+  id = buf.str();
 
   // TODO: allow using ROM properties instead of autodetect only
   if(size <= 2_KB)

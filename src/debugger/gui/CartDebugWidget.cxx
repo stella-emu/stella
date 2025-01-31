@@ -56,7 +56,7 @@ int CartDebugWidget::addBaseInformation(size_t bytes, string_view manufacturer,
     buf << " / " << (bytes/1024) << "KB";
 
   w = new EditTextWidget(_boss, _nfont, x+lwidth, y - 1,
-                         fwidth, myLineHeight, buf.view());
+                         fwidth, myLineHeight, buf.str());
   w->setEditable(false);
   y += myLineHeight + 4;
 
