@@ -102,6 +102,14 @@ class Cartridge3EPlus: public Cartridge3E
     ~Cartridge3EPlus() override = default;
 
   public:
+    /**
+      Install cartridge in the specified system.  Invoked by the system
+      when the cartridge is attached to it.
+
+      @param system The system the device should install itself in
+    */
+    void install(System& system) override;
+
     /** Reset device to its power-on state */
     void reset() override;
 
@@ -124,6 +132,23 @@ class Cartridge3EPlus: public Cartridge3E
     }
   #endif
 
+  public:
+    /**
+      Get the byte at the specified address
+
+      @return The byte at the specified address
+    */
+    uInt8 peek(uInt16 address) override;
+
+    /**
+      Change the byte at the specified address to the given value
+
+      @param address The address where the value should be stored
+      @param value The value to be stored at the address
+      @return  True if the poke changed the device address space, else false
+    */
+    bool poke(uInt16 address, uInt8 value) override;
+
   private:
     /**
       Checks if startup bank randomization is enabled.  For this scheme,
@@ -132,6 +157,8 @@ class Cartridge3EPlus: public Cartridge3E
     bool randomStartBank() const override { return false; }
 
     bool checkSwitchBank(uInt16 address, uInt8 value) override;
+
+    uInt16 hotspot() const override { return 0x003F; }
 
     /**
       Get the number of segments supported by the cartridge.

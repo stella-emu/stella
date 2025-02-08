@@ -159,7 +159,7 @@ uInt8 RiotDebug::inpt(int x)
   static constexpr std::array<TIARegister, 6> _inpt = {
     INPT0, INPT1, INPT2, INPT3, INPT4, INPT5
   };
-  return mySystem.peekOob(_inpt[x]);
+  return mySystem.peekOob(_inpt[x] | 0x40); // fix for 3E/3F bankswitching
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

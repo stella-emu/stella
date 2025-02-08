@@ -16,7 +16,6 @@
 //============================================================================
 
 #include "System.hxx"
-#include "TIA.hxx"
 #include "Cart3E.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -37,54 +36,31 @@ void Cartridge3E::install(System& system)
 {
   CartridgeEnhanced::install(system);
 
-  const System::PageAccess access(this, System::PageAccessType::WRITE);
+  const System::PageAccess access(this, System::PageAccessType::READWRITE);
 
-  // The hotspots ($3E and $3F) are in TIA address space, so we claim it here
-  for(uInt16 addr = 0x00; addr < 0x40; addr += System::PAGE_SIZE)
+  // The hotspots ($3E and $3F) are in TIA address space (plus mirrors), so we claim them here
+  for(uInt16 addr = 0x0000; addr < 0x0800; addr += 0x100)
     mySystem->setPageAccess(addr, access);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool Cartridge3E::checkSwitchBank(uInt16 address, uInt8 value)
 {
+  // Tigervision bankswitching checks only A12, A11, A7, A6 and A0
+  address &= 0b1100011000001; // 0x18c1;
+
   // Switch banks if necessary
-  if(address == 0x003F) {
-    // Switch ROM bank into segment 0
+  if(address == 0x01) // $3F
+  {
+    // Switch ROM bank into segment <value>
     bank(value);
     return true;
   }
-  else if(address == 0x003E)
+  if(address == 0x00) // $3E
   {
-    // Switch RAM bank into segment 0
+    // Switch RAM bank into segment <value>
     bank(value + romBankCount());
     return true;
   }
   return false;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt8 Cartridge3E::peek(uInt16 address)
-{
-  const uInt16 peekAddress = address;
-  address &= ROM_MASK;
-
-  if(address < 0x0040)  // TIA access
-    return mySystem->tia().peek(address);
-
-  return CartridgeEnhanced::peek(peekAddress);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool Cartridge3E::poke(uInt16 address, uInt8 value)
-{
-  const uInt16 pokeAddress = address;
-  address &= ROM_MASK;
-
-  if(address < 0x0040)  // TIA access
-  {
-    checkSwitchBank(address, value);
-    return mySystem->tia().poke(address, value);
-  }
-
-  return CartridgeEnhanced::poke(pokeAddress, value);
 }

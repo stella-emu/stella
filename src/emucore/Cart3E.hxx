@@ -45,7 +45,10 @@ class System;
 
   To map ROM, the desired bank number of the first 2K segment is selected
   by storing its value into $3F. To map RAM in the first 2K segment
-  instead, store the RAM bank number into $3E.
+  instead, store the RAM bank number into $3E. (*)
+
+  (*) 1/2025: Updated to emulate the new 3E board. Now reads and writes and
+  all mirror addresses are considered. This breaks previous Boulder Dash ROMs!
 
   This implementation of 3E bankswitching numbers the RAM banks (up to 32)
   after the ROM banks (up to 256).
@@ -107,25 +110,10 @@ class Cartridge3E : public CartridgeEnhanced
     }
   #endif
 
-  public:
-    /**
-      Get the byte at the specified address
-
-      @return The byte at the specified address
-    */
-    uInt8 peek(uInt16 address) override;
-
-    /**
-      Change the byte at the specified address to the given value
-
-      @param address The address where the value should be stored
-      @param value The value to be stored at the address
-      @return  True if the poke changed the device address space, else false
-    */
-    bool poke(uInt16 address, uInt8 value) override;
-
   private:
     bool checkSwitchBank(uInt16 address, uInt8 value) override;
+
+    uInt16 hotspot() const override { return 0x013F; } // mirrors outside ZP area
 
   protected:
     // log(ROM bank segment size) / log(2)
