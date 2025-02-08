@@ -45,6 +45,7 @@ _ranlib=ranlib
 _install=install
 _ar="ar cru"
 _strip=strip
+_pkg_config=pkg-config
 _mkdir="mkdir -p"
 _echo=printf
 _cat=cat
@@ -343,11 +344,16 @@ mingw32-cross)
 	_host_cpu=i386
 	_host_prefix=i386-mingw32msvc
 	;;
-*)
+"")
 	guessed_host=`$_srcdir/config.guess`
 	_host_cpu=`echo $guessed_host | sed 's/^\([^-]*\)-\([^-]*\)-\(.*\)$/\1/'`
 	_host_os=`echo $guessed_host | sed 's/^\([^-]*\)-\([^-]*\)-\(.*\)$/\3/'`
 	_host_vendor=`echo $guessed_host | sed 's/^\([^-]*\)-\([^-]*\)-\(.*\)$/\2/'`
+	;;
+*)
+	_host_cpu=`echo "$_host" | sed 's/^\([^-]*\)-.*/\1/'`
+	_host_os=`echo "$_host" | sed 's/-\([^-]*\)-[^-]*$/\1/'`
+	_host_prefix="$_host"
 	;;
 esac
 
@@ -626,6 +632,9 @@ fi
 # Cross-compilers use their own commands for the following functions
 if test -n "$_host_prefix"; then
 	_strip="$_host_prefix-$_strip"
+	if command -v "$_host_prefix-$_pkg_config" >/dev/null 2>&1; then
+		_pkg_config="$_host_prefix-$_pkg_config"
+	fi
 fi
 
 #
@@ -639,7 +648,7 @@ if test "$_build_zip" = yes ; then
 #include <zlib.h>
 int main(void) { return strcmp(ZLIB_VERSION, zlibVersion()); }
 EOF
-	cc_check $LDFLAGS $CXXFLAGS $ZLIB_CFLAGS $ZLIB_LIBS `pkg-config --libs zlib` && _zlib=yes
+	cc_check $LDFLAGS $CXXFLAGS $ZLIB_CFLAGS $ZLIB_LIBS `$_pkg_config --libs zlib` && _zlib=yes
 
   if test "$_zlib" = yes ; then
     echo "$_zlib"
@@ -665,7 +674,7 @@ if test "$_build_png" = yes ; then
 #include <png.h>
 int main(void) { return printf("%s\n", PNG_HEADER_VERSION_STRING); }
 EOF
-  cc_check $LDFLAGS $CXXFLAGS $LIBPNG_CFLAGS $LIBPNG_LIBS `pkg-config --libs libpng` && _libpng=yes
+  cc_check $LDFLAGS $CXXFLAGS $LIBPNG_CFLAGS $LIBPNG_LIBS `$_pkg_config --libs libpng` && _libpng=yes
 
   if test "$_libpng" = yes ; then
     echo "$_libpng"
@@ -689,7 +698,7 @@ if test "$_build_sqlite3" = yes ; then
 #include <sqlite3.h>
 int main(void) { return printf("%s\n", SQLITE_VERSION); }
 EOF
-  cc_check $LDFLAGS $CXXFLAGS `pkg-config --libs sqlite3` && _libsqlite3=yes
+  cc_check $LDFLAGS $CXXFLAGS `$_pkg_config --libs sqlite3` && _libsqlite3=yes
 
   if test "$_libsqlite3" = yes ; then
     echo "$_libsqlite3"
@@ -922,7 +931,7 @@ if test "$_build_png" = yes ; then
 	INCLUDES="$INCLUDES -I$LIBJPG -I$LIBJPGEXIF"
 	MODULES="$MODULES $LIBJPGEXIF"
   if test "$_libpng" = yes ; then
-    LIBS="$LIBS `pkg-config --libs libpng`"
+    LIBS="$LIBS `$_pkg_config --libs libpng`"
   else
     MODULES="$MODULES $LIBPNG"
     INCLUDES="$INCLUDES -I$LIBPNG"
@@ -930,7 +939,7 @@ if test "$_build_png" = yes ; then
 fi
 
 if test "$_libsqlite3" = yes ; then
-  LIBS="$LIBS `pkg-config --libs sqlite3`"
+  LIBS="$LIBS `$_pkg_config --libs sqlite3`"
 else
   MODULES="$MODULES $SQLITE_LIB"
   INCLUDES="$INCLUDES -I$SQLITE_LIB"
@@ -939,7 +948,7 @@ fi
 if test "$_build_zip" = yes ; then
 	DEFINES="$DEFINES -DZIP_SUPPORT"
   if test "$_zlib" = yes ; then
-    LIBS="$LIBS `pkg-config --libs zlib`"
+    LIBS="$LIBS `$_pkg_config --libs zlib`"
   else
     MODULES="$MODULES $ZLIB"
     INCLUDES="$INCLUDES -I$ZLIB"
