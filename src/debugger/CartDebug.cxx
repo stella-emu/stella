@@ -619,13 +619,25 @@ bool CartDebug::addLabel(const string& label, uInt16 address)
     case AddrType::IO:
       return false;
     default:
-      removeLabel(label);
-      myUserAddresses.emplace(label, address);
-      myUserLabels.emplace(address, label);
-      myLabelLength = std::max(myLabelLength, static_cast<uInt16>(label.size()));
+      string newLabel = uniqueLabel(label);
+      myUserAddresses.emplace(newLabel, address);
+      myUserLabels.emplace(address, newLabel);
+      myLabelLength = std::max(myLabelLength, static_cast<uInt16>(newLabel.size()));
       mySystem.setDirtyPage(address);
       return true;
   }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+string CartDebug::uniqueLabel(const string& label)
+{
+  string uniqueLabel = label;
+  int count = 0;
+
+  while(myUserAddresses.find(uniqueLabel) != myUserAddresses.end())
+    uniqueLabel = label + "." + std::to_string(++count);
+
+  return uniqueLabel;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

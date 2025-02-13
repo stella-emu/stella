@@ -196,6 +196,11 @@ class CartDebug : public DebuggerSystem
     bool addLabel(const string& label, uInt16 address);
 
     /**
+      Make given (local) label unique by adding .<count> to it
+    */
+    string uniqueLabel(const string& label);
+
+    /**
       Remove the given label and its associated address.
       Labels that reference either TIA or RIOT spaces will not be processed.
     */
