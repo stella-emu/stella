@@ -34,7 +34,7 @@ Cartridge3EPlus::Cartridge3EPlus(const ByteBuffer& image, size_t size,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Cartridge3EPlus::install(System& system)
 {
-  CartridgeEnhanced::install(system);
+  CartridgeEnhanced::install(system); // NOLINT (bugprone-parent-virtual-call)
 
   const System::PageAccess access(this, System::PageAccessType::WRITE);
 
@@ -42,6 +42,7 @@ void Cartridge3EPlus::install(System& system)
   for(uInt16 addr = 0x00; addr < 0x40; addr += System::PAGE_SIZE)
     mySystem->setPageAccess(addr, access);
 }
+
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Cartridge3EPlus::reset()
 {
