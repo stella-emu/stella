@@ -129,7 +129,7 @@ bool ControllerDetector::usesJoystickButton(const ByteBuffer& image, size_t size
   if(port == Controller::Jack::Left)
   {
     // check for INPT4 access
-    static constexpr int NUM_SIGS_0 = 25;
+    static constexpr int NUM_SIGS_0 = 26;
     static constexpr int SIG_SIZE_0 = 3;
     static constexpr uInt8 signature_0[NUM_SIGS_0][SIG_SIZE_0] = {
       { 0x24, 0x0c, 0x10 }, // bit INPT4; bpl (joystick games only)
@@ -147,6 +147,7 @@ bool ControllerDetector::usesJoystickButton(const ByteBuffer& image, size_t size
       { 0xb4, 0x0c, 0x30 }, // ldy INPT4|$30,x; bmi (joystick games only)
       { 0xa5, 0x3c, 0x2a }, // ldy INPT4|$30; rol (joystick games only)
       { 0xa6, 0x3c, 0x8e }, // ldx INPT4|$30; stx (joystick games only)
+      { 0xa6, 0x0c, 0x86 }, // ldx INPT4; stx ZP (RubyQ only)
       { 0xa6, 0x0c, 0x8e }, // ldx INPT4; stx (joystick games only)
       { 0xa4, 0x3c, 0x8c }, // ldy INPT4; sty (joystick games only, Scramble)
       { 0xa5, 0x0c, 0x8d }, // lda INPT4; sta (joystick games only, Super Cobra Arcade)
