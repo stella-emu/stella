@@ -71,7 +71,7 @@ void ListWidget::setSelected(int item)
 {
   setDirty();
 
-  if(item < 0 || item >= static_cast<int>(_list.size()))
+  if(item < 0 || std::cmp_greater_equal(item, _list.size()))
     return;
 
   if(isEnabled())
@@ -117,7 +117,7 @@ void ListWidget::setSelected(string_view item)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ListWidget::setHighlighted(int item)
 {
-  if(item < -1 || item >= static_cast<int>(_list.size()))
+  if(item < -1 || std::cmp_greater_equal(item, _list.size()))
     return;
 
   if(isEnabled())
@@ -140,7 +140,7 @@ void ListWidget::setHighlighted(int item)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const string& ListWidget::getSelectedString() const
 {
-  return (_selectedItem >= 0 && _selectedItem < static_cast<int>(_list.size()))
+  return (_selectedItem >= 0 && std::cmp_less(_selectedItem, _list.size()))
     ? _list[_selectedItem]
     : EmptyString;
 }
@@ -207,18 +207,18 @@ void ListWidget::scrollBarRecalc()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ListWidget::handleMouseDown(int x, int y, MouseButton b, int clickCount)
 {
-  if (!isEnabled())
+  if(!isEnabled())
     return;
 
   resetSelection();
   // First check whether the selection changed
   const int newSelectedItem = findItem(x, y);
-  if (newSelectedItem >= static_cast<int>(_list.size()))
+  if(std::cmp_greater_equal(newSelectedItem, _list.size()))
     return;
 
-  if (_selectedItem != newSelectedItem)
+  if(_selectedItem != newSelectedItem)
   {
-    if (_editMode)
+    if(_editMode)
       abortEditMode();
     _selectedItem = newSelectedItem;
     sendCommand(ListWidget::kSelectionChangedCmd, _selectedItem, _id);
@@ -234,7 +234,7 @@ void ListWidget::handleMouseUp(int x, int y, MouseButton b, int clickCount)
 {
   // If this was a double click and the mouse is still over the selected item,
   // send the double click command
-  if (clickCount == 2 && (_selectedItem == findItem(x, y)))
+  if(clickCount == 2 && (_selectedItem == findItem(x, y)))
   {
     sendCommand(ListWidget::kDoubleClickedCmd, _selectedItem, _id);
 
@@ -420,7 +420,7 @@ void ListWidget::scrollToCurrent(int item)
     _currentPos = item - _rows + 1;
   }
 
-  if (_currentPos < 0 || _rows > static_cast<int>(_list.size()))
+  if (_currentPos < 0 || std::cmp_greater_equal(_rows, _list.size()))
     _currentPos = 0;
   else if (_currentPos + _rows > static_cast<int>(_list.size()))
     _currentPos = static_cast<int>(_list.size()) - _rows;

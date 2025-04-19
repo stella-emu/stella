@@ -1489,7 +1489,7 @@ void DeveloperDialog::handleDebugColours(int idx, int color)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DeveloperDialog::handleDebugColours(string_view colors)
 {
-  for(int i = 0; i < DEBUG_COLORS && i < static_cast<int>(colors.length()); ++i)
+  for(int i = 0; i < DEBUG_COLORS && std::cmp_less(i, colors.length()); ++i)
   {
     switch(colors[i])
     {
@@ -1531,11 +1531,11 @@ void DeveloperDialog::handleFontSize()
   minH = std::min(size.h, minH);
 
   myDebuggerWidthSlider->setMinValue(minW);
-  if(minW > static_cast<uInt32>(myDebuggerWidthSlider->getValue()))
+  if(std::cmp_greater(minW, myDebuggerWidthSlider->getValue()))
     myDebuggerWidthSlider->setValue(minW);
 
   myDebuggerHeightSlider->setMinValue(minH);
-  if(minH > static_cast<uInt32>(myDebuggerHeightSlider->getValue()))
+  if(std::cmp_greater(minH, myDebuggerHeightSlider->getValue()))
     myDebuggerHeightSlider->setValue(minH);
 #endif
 }

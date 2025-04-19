@@ -70,7 +70,7 @@ class FBSurfaceSDL2 : public FBSurface
 
   private:
     bool setSrcPosInternal(uInt32 x, uInt32 y) {
-      if(x != static_cast<uInt32>(mySrcR.x) || y != static_cast<uInt32>(mySrcR.y))
+      if(std::cmp_not_equal(x, mySrcR.x) || std::cmp_not_equal(y, mySrcR.y))
       {
         mySrcR.x = x;  mySrcR.y = y;
         mySrcGUIR.moveTo(x, y);
@@ -79,7 +79,7 @@ class FBSurfaceSDL2 : public FBSurface
       return false;
     }
     bool setSrcSizeInternal(uInt32 w, uInt32 h) {
-      if(w != static_cast<uInt32>(mySrcR.w) || h != static_cast<uInt32>(mySrcR.h))
+      if(std::cmp_not_equal(w, mySrcR.w) || std::cmp_not_equal(h, mySrcR.h))
       {
         mySrcR.w = w;  mySrcR.h = h;
         mySrcGUIR.setWidth(w);  mySrcGUIR.setHeight(h);
@@ -88,7 +88,7 @@ class FBSurfaceSDL2 : public FBSurface
       return false;
     }
     bool setDstPosInternal(uInt32 x, uInt32 y) {
-      if(x != static_cast<uInt32>(myDstR.x) || y != static_cast<uInt32>(myDstR.y))
+      if(std::cmp_not_equal(x, myDstR.x) || std::cmp_not_equal(y, myDstR.y))
       {
         myDstR.x = x;  myDstR.y = y;
         myDstGUIR.moveTo(x, y);
@@ -97,7 +97,7 @@ class FBSurfaceSDL2 : public FBSurface
       return false;
     }
     bool setDstSizeInternal(uInt32 w, uInt32 h) {
-      if(w != static_cast<uInt32>(myDstR.w) || h != static_cast<uInt32>(myDstR.h))
+      if(std::cmp_not_equal(w, myDstR.w) || std::cmp_not_equal(h, myDstR.h))
       {
         myDstR.w = w;  myDstR.h = h;
         myDstGUIR.setWidth(w);  myDstGUIR.setHeight(h);

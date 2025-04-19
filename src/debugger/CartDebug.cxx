@@ -634,6 +634,7 @@ string CartDebug::uniqueLabel(const string& label)
   string uniqueLabel = label;
   int count = 0;
 
+  // TODO: does find return multiple items??
   while(myUserAddresses.find(uniqueLabel) != myUserAddresses.end())
     uniqueLabel = label + "." + std::to_string(++count);
 
@@ -1113,7 +1114,7 @@ string CartDebug::saveDisassembly(string path)
   // prepare for switching banks
   uInt32 origin = 0;
 
-  for(int bank = 0; bank < romBankCount; ++bank)
+  for(int bank = 0; std::cmp_less(bank, romBankCount); ++bank)
   {
     // TODO: not every CartDebugWidget does it like that, we need a method
     cart.unlockHotspots();

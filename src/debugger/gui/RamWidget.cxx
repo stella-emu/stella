@@ -501,7 +501,7 @@ string RamWidget::doCompare(string_view str)
     }
 
     const int addr = mySearchAddr[i];
-    if(ram[addr] == searchVal)
+    if(std::cmp_equal(ram[addr], searchVal))
     {
       tempAddrList.push_back(addr);
       tempValueList.push_back(searchVal);

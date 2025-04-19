@@ -208,7 +208,7 @@ string Dialog::getHelpURL() const
   if(_focusedWidget && _focusedWidget->hasHelp())
     return _focusedWidget->getHelpURL();
 
-  if(_tabID < static_cast<int>(_myTabList.size()))
+  if(std::cmp_less(_tabID, _myTabList.size()))
   {
     TabWidget* activeTabGroup = _myTabList[_tabID].widget;
 
@@ -490,7 +490,7 @@ void Dialog::buildCurrentFocusList(int tabID)
   // Remember which tab item previously had focus, if applicable
   // This only applies if this method was called for a tab change
   Widget* tabFocusWidget = nullptr;
-  if(tabID >= 0 && tabID < static_cast<int>(_myTabList.size()))
+  if(tabID >= 0 && std::cmp_less(tabID, _myTabList.size()))
   {
     // Save focus in previously selected tab column,
     // and get focus for new tab column
@@ -937,7 +937,7 @@ void Dialog::getTabIdForWidget(const Widget* w)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool Dialog::cycleTab(int direction)
 {
-  if(_tabID >= 0 && _tabID < static_cast<int>(_myTabList.size()))
+  if(_tabID >= 0 && std::cmp_less(_tabID, _myTabList.size()))
   {
     _myTabList[_tabID].widget->cycleTab(direction);
     return true;
@@ -1086,12 +1086,12 @@ void Dialog::addDefaultsExtraOKCancelBGroup(
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Dialog::TabFocus::appendFocusList(WidgetArray& list)
+void Dialog::TabFocus::appendFocusList(WidgetArray& lst)
 {
   const int active = widget->getActiveTab();
 
-  if(active >= 0 && active < static_cast<int>(focus.size()))
-    Vec::append(list, focus[active].list);
+  if(active >= 0 && std::cmp_less(active, focus.size()))
+    Vec::append(lst, focus[active].list);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1146,7 +1146,7 @@ bool Dialog::shouldResize(uInt32& w, uInt32& h) const
 
   // returns true if the current size is larger than the allowed size or
   //  if the current size is smaller than the allowed and wanted size
-  return (static_cast<uInt32>(_w) > w || static_cast<uInt32>(_h) > h ||
-         (static_cast<uInt32>(_w) < w && static_cast<uInt32>(_w) < _max_w) ||
-         (static_cast<uInt32>(_h) < h && static_cast<uInt32>(_h) < _max_h));
+  return (std::cmp_greater(_w, w) || std::cmp_greater(_h, h) ||
+         (std::cmp_less(_w, w) && std::cmp_less(_w, _max_w)) ||
+         (std::cmp_less(_h, h) && std::cmp_less(_h, _max_h)));
 }

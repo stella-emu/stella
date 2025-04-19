@@ -717,7 +717,7 @@ string FileListWidget::getToolTip(const Common::Point& pos) const
   if(idx < 0)
     return EmptyString;
 
-  if(_includeSubDirs && static_cast<int>(_dirList.size()) > idx)
+  if(_includeSubDirs && std::cmp_greater(_dirList.size(), idx))
     return _toolTipText + _dirList[idx];
 
   const string value = _list[idx];

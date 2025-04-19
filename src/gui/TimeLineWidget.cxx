@@ -101,7 +101,7 @@ void TimeLineWidget::setStepValues(const IntArray& steps)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TimeLineWidget::handleMouseMoved(int x, int y)
 {
-  if(isEnabled() && _isDragging && x >= static_cast<int>(_labelWidth))
+  if(isEnabled() && _isDragging && std::cmp_greater_equal(x, _labelWidth))
     setValue(posToValue(x - _labelWidth));
 }
 

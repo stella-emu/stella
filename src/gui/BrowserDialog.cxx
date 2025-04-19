@@ -126,11 +126,11 @@ void BrowserDialog::show(Dialog* parent, const GUI::Font& font,
     h = FBMinimum::Height;
   }
 
-  if(w > static_cast<uInt32>(font.getMaxCharWidth() * 80))
+  if(std::cmp_greater(w, font.getMaxCharWidth() * 80))
     w = font.getMaxCharWidth() * 80;
 
-  if(ourBrowser == nullptr || &ourBrowser->parent() != &parent->parent()
-      || ourBrowser->_w > static_cast<int>(w) || ourBrowser->_h > static_cast<int>(h))
+  if(ourBrowser == nullptr || &ourBrowser->parent() != &parent->parent() ||
+     std::cmp_greater(ourBrowser->_w, w) || std::cmp_greater(ourBrowser->_h, h))
   {
     ourBrowser = make_unique<BrowserDialog>(parent, font, w, h);
   }

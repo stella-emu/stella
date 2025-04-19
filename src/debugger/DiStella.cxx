@@ -73,7 +73,7 @@ DiStella::DiStella(const CartDebug& dbg, CartDebug::DisassemblyList& list,
 
   // Add reserved line equates
   ostringstream reservedLabel;
-  for (int k = 0; k <= myAppData.end; k++) {
+  for (int k = 0; std::cmp_less_equal(k, myAppData.end); k++) {
     if ((myLabels[k] & (Device::REFERENCED | Device::VALID_ENTRY)) == Device::REFERENCED) {
       // If we have a piece of code referenced somewhere else, but cannot
       // locate the label in code (i.e because the address is inside of a
@@ -718,7 +718,7 @@ void DiStella::disasmPass1(CartDebug::AddressList& debuggerAddresses)
 
     // Stella itself can provide hints on whether an address has ever
     // been referenced as CODE
-    while (myAddressQueue.empty() && codeAccessPoint <= myAppData.end) {
+    while (myAddressQueue.empty() && std::cmp_less_equal(codeAccessPoint, myAppData.end)) {
       if ((Debugger::debugger().getAccessFlags(codeAccessPoint + myOffset) & Device::CODE)
           && !(myLabels[codeAccessPoint & myAppData.end] & Device::CODE)) {
         myAddressQueue.push(codeAccessPoint + myOffset);
@@ -730,7 +730,7 @@ void DiStella::disasmPass1(CartDebug::AddressList& debuggerAddresses)
     duplicateFound = !myAddressQueue.empty() && (myAddressQueue.front() == lastPC); // TODO: check!
   } // while
 
-  for (int k = 0; k <= myAppData.end; k++) {
+  for (int k = 0; std::cmp_less_equal(k, myAppData.end); k++) {
     // Let the emulation core know about tentative code
     if (checkBit(k, Device::CODE) &&
       !(Debugger::debugger().getAccessFlags(k + myOffset) & Device::CODE)
@@ -938,8 +938,8 @@ DiStella::AddressType DiStella::mark(uInt32 address, uInt16 mask, bool directive
   else if(type == CartDebug::AddrType::ZPRAM && myOffset != 0) {
     return AddressType::ZP_RAM;
   }
-  else if(address >= static_cast<uInt32>(myOffset) &&
-          address <= static_cast<uInt32>(myAppData.end + myOffset)) {
+  else if(std::cmp_greater_equal(address, myOffset) &&
+          std::cmp_less_equal(address, myAppData.end + myOffset)) {
     myLabels[address - myOffset] = myLabels[address - myOffset] | mask;
     if(directive)
       myDirectives[address - myOffset] = mask;

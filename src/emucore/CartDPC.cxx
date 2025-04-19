@@ -124,9 +124,9 @@ FORCE_INLINE void CartridgeDPC::updateMusicModeDataFetchers()
         newLow = 0;
 
       // Update flag register for this data fetcher
-      if(newLow <= myBottoms[x])
+      if(std::cmp_less_equal(newLow, myBottoms[x]))
         myFlags[x] = 0x00;
-      else if(newLow <= myTops[x])
+      else if(std::cmp_less_equal(newLow, myTops[x]))
         myFlags[x] = 0xff;
 
       myCounters[x] = (myCounters[x] & 0x0700) | static_cast<uInt16>(newLow);

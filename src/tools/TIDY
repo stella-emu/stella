@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-run-clang-tidy-19 -header-filter=\(.*\.hxx\) \
+run-clang-tidy-20 -header-filter=\(.*\.hxx\) \
 -checks=*,\
 -abseil*,\
 -altera*,\

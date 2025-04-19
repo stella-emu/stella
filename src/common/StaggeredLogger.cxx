@@ -116,7 +116,9 @@ void StaggeredLogger::startInterval()
   Int64 msecSinceLastIntervalEnd =
     duration_cast<duration<Int64, std::milli>>(now - myLastIntervalEndTimestamp).count();
 
-  while (msecSinceLastIntervalEnd > myCooldownTime && myCurrentIntervalFactor > 1) {
+  while (std::cmp_greater(msecSinceLastIntervalEnd, myCooldownTime) &&
+         myCurrentIntervalFactor > 1)
+  {
     msecSinceLastIntervalEnd -= myCooldownTime;
     decreaseInterval();
   }

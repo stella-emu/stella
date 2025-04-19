@@ -256,7 +256,7 @@ class Dialog : public GuiObject
 
       explicit TabFocus(TabWidget* w = nullptr) : widget{w} { }
 
-      void appendFocusList(WidgetArray& list);
+      void appendFocusList(WidgetArray& lst);
       void saveCurrentFocus(Widget* w);
       Widget* getNewFocus();
     };

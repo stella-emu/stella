@@ -190,12 +190,12 @@ inline void CartridgeDPCPlus::callFunction(uInt8 value)
       myParameterPointer = 0;
       break;
     case 1: // Copy ROM to fetcher
-      for(int i = 0; i < myParameter[3]; ++i)
+      for(int i = 0; std::cmp_less(i, myParameter[3]); ++i)
         myDisplayImage[myCounters[myParameter[2] & 0x7]+i] = myProgramImage[ROMdata+i];
       myParameterPointer = 0;
       break;
     case 2: // Copy value to fetcher
-      for(int i = 0; i < myParameter[3]; ++i)
+      for(int i = 0; std::cmp_less(i, myParameter[3]); ++i)
         myDisplayImage[myCounters[myParameter[2]]+i] = myParameter[0];
       myParameterPointer = 0;
       break;

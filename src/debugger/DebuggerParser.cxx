@@ -107,7 +107,7 @@ string DebuggerParser::run(string_view command)
   getArgs(command, verb);
   commandResult.str("");
 
-  for(int i = 0; i < static_cast<int>(commands.size()); ++i)
+  for(int i = 0; std::cmp_less(i, commands.size()); ++i)
   {
     if(BSPF::equalsIgnoreCase(verb, commands[i].cmdString))
     {
@@ -205,31 +205,31 @@ int DebuggerParser::decipher_arg(string_view str)
     bin=false; dec=false;
   }
 
-  if(arg.substr(0, 1) == "*") {
+  if(arg.starts_with("*")) {
     derefByte = true;
     arg.erase(0, 1);
-  } else if(arg.substr(0, 1) == "@") {
+  } else if(arg.starts_with("@")) {
     derefWord = true;
     arg.erase(0, 1);
   }
 
-  if(arg.substr(0, 1) == "<") {
+  if(arg.starts_with("<")) {
     lobyte = true;
     arg.erase(0, 1);
-  } else if(arg.substr(0, 1) == ">") {
+  } else if(arg.starts_with(">")) {
     hibyte = true;
     arg.erase(0, 1);
   }
 
-  if(arg.substr(0, 1) == "\\") {
+  if(arg.starts_with("\\")) {
     dec = false;
     bin = true;
     arg.erase(0, 1);
-  } else if(arg.substr(0, 1) == "#") {
+  } else if(arg.starts_with("#")) {
     dec = true;
     bin = false;
     arg.erase(0, 1);
-  } else if(arg.substr(0, 1) == "$") {
+  } else if(arg.starts_with("$")) {
     dec = false;
     bin = false;
     arg.erase(0, 1);
@@ -1212,7 +1212,7 @@ void DebuggerParser::executeDelTrap()
 void DebuggerParser::executeDelWatch()
 {
   const int which = args[0] - 1;
-  if(which >= 0 && which < static_cast<int>(myWatches.size()))
+  if(which >= 0 && std::cmp_less(which, myWatches.size()))
   {
     Vec::removeAt(myWatches, which);
     commandResult << "removed watch";
@@ -2028,7 +2028,7 @@ void DebuggerParser::executeRunToPc()
 
     // Update romlist to point to current PC
     const int pcline = cartdbg.addressToLine(debugger.cpuDebug().pc());
-    done = (pcline >= 0) && (list[pcline].address == args[0]);
+    done = (pcline >= 0) && std::cmp_equal(list[pcline].address, args[0]);
     progress.incProgress();
     ++count;
   } while(!done && !progress.isCancelled());
@@ -2365,7 +2365,7 @@ void DebuggerParser::executeTimer()
 
   for(uInt32 i = 0; i < argCount; ++i)
   {
-    if(static_cast<uInt32>(args[i]) >= std::max(0x80U, romBankCount - 1))
+    if(std::cmp_greater_equal(args[i], std::max(0x80U, romBankCount - 1)))
     {
       if(numAddrs == 2)
       {
@@ -2381,7 +2381,7 @@ void DebuggerParser::executeTimer()
         outputCommandError("too many bank arguments", myCommand);
         return;
       }
-      if(static_cast<uInt32>(args[i]) >= romBankCount)
+      if(std::cmp_greater_equal(args[i], romBankCount))
       {
         commandResult << red("invalid bank");
         return;

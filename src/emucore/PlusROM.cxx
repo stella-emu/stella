@@ -501,7 +501,7 @@ ByteArray PlusROM::getSend() const
   ByteArray arr;
   const uInt8 txPos = myTxPos != 0 ? myTxPos : myLastTxPos;
 
-  for(int i = 0; i < txPos; ++i)
+  for(int i = 0; std::cmp_less(i, txPos); ++i)
     arr.push_back(myTxBuffer[i]);
 
   return arr;

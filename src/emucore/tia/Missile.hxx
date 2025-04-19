@@ -210,7 +210,8 @@ void Missile::tick(uInt8 hclock, bool isReceivingMclock)
         }
       }
 
-      if (++myRenderCounter >= (isMoving ? myEffectiveWidth : myWidth)) myIsRendering = false;
+      if (std::cmp_greater_equal(++myRenderCounter, isMoving ? myEffectiveWidth : myWidth))
+        myIsRendering = false;
   }
 
   if (++myCounter >= TIAConstants::H_PIXEL) myCounter = 0;

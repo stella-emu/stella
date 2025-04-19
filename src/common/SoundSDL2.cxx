@@ -488,8 +488,7 @@ void SoundSDL2::WavHandlerSDL2::processWav(uInt8* stream, uInt32 len)
       SDL_assert(cvt.needed); // Obviously, this one is always needed.
       cvt.len = len * mySpec.channels;  // Mono 8 bit sample frames
 
-      if(!myCvtBuffer ||
-          myCvtBufferSize < static_cast<uInt32>(cvt.len * cvt.len_mult))
+      if(!myCvtBuffer || std::cmp_less(myCvtBufferSize, cvt.len * cvt.len_mult))
       {
         myCvtBufferSize = cvt.len * cvt.len_mult;
         myCvtBuffer = make_unique<uInt8[]>(myCvtBufferSize);

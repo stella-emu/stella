@@ -249,9 +249,9 @@ RadioButtonWidget::RadioButtonWidget(GuiObject* boss, const GUI::Font& font,
 
   // Depending on font size, either the font or box will need to be
   // centered vertically
-  if(_h > static_cast<int>(_buttonSize))  // center box
+  if(std::cmp_greater(_h, _buttonSize))  // center box
     _boxY = (_h - _buttonSize) / 2;
-  else         // center text
+  else                                   // center text
     _textY = (_buttonSize - _font.getFontHeight()) / 2;
 
   setFill(CheckboxWidget::FillType::Normal);  // NOLINT

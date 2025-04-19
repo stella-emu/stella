@@ -580,7 +580,7 @@ int PromptWidget::historyDir(int& index, int direction)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PromptWidget::historyAdd(string_view entry)
 {
-  if(_historyIndex >= static_cast<int>(_history.size()))
+  if(std::cmp_greater_equal(_historyIndex, _history.size()))
     _history.emplace_back(entry);
   else
     _history[_historyIndex] = entry;

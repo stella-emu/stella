@@ -98,7 +98,7 @@ int TabWidget::addTab(string_view title, int tabWidth)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TabWidget::setActiveTab(int tabID, bool show)
 {
-  assert(0 <= tabID && tabID < int(_tabs.size()));
+  assert(0 <= tabID && std::cmp_less(tabID, _tabs.size()));
 
   if (_activeTab != -1)
   {
@@ -120,7 +120,7 @@ void TabWidget::setActiveTab(int tabID, bool show)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TabWidget::enableTab(int tabID, bool enable)
 {
-  assert(0 <= tabID && tabID < int(_tabs.size()));
+  assert(0 <= tabID && std::cmp_less(tabID, _tabs.size()));
 
   _tabs[tabID].enabled = enable;
   // Note: We do not have to disable the widgets because the tab is disabled
@@ -168,7 +168,7 @@ void TabWidget::cycleTab(int direction)
   {
     do {
       tabID++;
-      if(tabID == static_cast<int>(_tabs.size()))
+      if(std::cmp_equal(tabID, _tabs.size()))
         tabID = 0;
     } while(!_tabs[tabID].enabled);
   }
@@ -181,14 +181,14 @@ void TabWidget::cycleTab(int direction)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TabWidget::setParentWidget(int tabID, Widget* parent)
 {
-  assert(0 <= tabID && tabID < static_cast<int>(_tabs.size()));
+  assert(0 <= tabID && std::cmp_less(tabID, _tabs.size()));
   _tabs[tabID].parentWidget = parent;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Widget* TabWidget::parentWidget(int tabID)
 {
-  assert(0 <= tabID && tabID < int(_tabs.size()));
+  assert(0 <= tabID && std::cmp_less(tabID, _tabs.size()));
 
   if(!_tabs[tabID].parentWidget)
   {
@@ -209,7 +209,7 @@ void TabWidget::handleMouseDown(int x, int y, MouseButton b, int clickCount)
   int tabID = -1;
   x -= kTabLeftOffset;
 
-  for(int i = 0; i < static_cast<int>(_tabs.size()); ++i)
+  for(int i = 0; std::cmp_less(i, _tabs.size()); ++i)
   {
     const int tabWidth = _tabs[i].tabWidth ? _tabs[i].tabWidth : _tabWidth;
     if(x >= 0 && x < tabWidth)
@@ -283,7 +283,7 @@ void TabWidget::drawWidget(bool hilite)
 
     // Iterate over all tabs and draw them
     int x = _x + kTabLeftOffset;
-    for(int i = 0; i < static_cast<int>(_tabs.size()); ++i)
+    for(int i = 0; std::cmp_less(i, _tabs.size()); ++i)
     {
       const int tabWidth = _tabs[i].tabWidth ? _tabs[i].tabWidth : _tabWidth;
       const ColorId fontcolor = _tabs[i].enabled ? kTextColor : kColor;

@@ -657,9 +657,9 @@ void LauncherDialog::setRomInfoFont(const Common::Size& area)
     // only use fonts <= launcher fonts
     if(Dialog::fontHeight() >= font.height)
     {
-      if(area.h >= static_cast<uInt32>(MIN_ROMINFO_ROWS * font.height + 2
-         + MIN_ROMINFO_LINES * font.height)
-         && area.w >= static_cast<uInt32>(MIN_ROMINFO_CHARS * font.maxwidth))
+      if(std::cmp_greater_equal(area.h,
+            MIN_ROMINFO_ROWS * font.height + 2 + MIN_ROMINFO_LINES * font.height)
+         && std::cmp_greater_equal(area.w, MIN_ROMINFO_CHARS * font.maxwidth))
       {
         myROMInfoFont = make_unique<GUI::Font>(font);
         return;

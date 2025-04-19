@@ -38,7 +38,7 @@ int Font::getCharWidth(uInt8 chr) const
     return myFontDesc.maxwidth;
 
   // If this character is not included in the font, use the default char.
-  if(chr < myFontDesc.firstchar || myFontDesc.firstchar + myFontDesc.size < chr)
+  if(std::cmp_less(chr, myFontDesc.firstchar) || myFontDesc.firstchar + myFontDesc.size < chr)
   {
     if(chr == ' ')
       return myFontDesc.maxwidth / 2;

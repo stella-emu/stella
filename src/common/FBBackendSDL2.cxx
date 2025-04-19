@@ -287,8 +287,9 @@ bool FBBackendSDL2::setVideoMode(const VideoModeHandler::Mode& mode,
     int w{0}, h{0};
 
     SDL_GetWindowSize(myWindow, &w, &h);
-    if(d != displayIndex || static_cast<uInt32>(w) != mode.screenS.w ||
-      static_cast<uInt32>(h) != mode.screenS.h || adaptRefresh)
+    if(d != displayIndex ||
+       std::cmp_not_equal(w, mode.screenS.w) ||
+       std::cmp_not_equal(h, mode.screenS.h) || adaptRefresh)
     {
       // Renderer has to be destroyed *before* the window gets destroyed to avoid memory leaks
       SDL_DestroyRenderer(myRenderer);

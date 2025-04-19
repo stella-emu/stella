@@ -59,7 +59,7 @@ void CheckListWidget::setList(const StringList& list, const BoolArray& state)
     _checkList[i]->setFlags(Widget::FLAG_ENABLED);
 
   // Then turn off any extras
-  if(static_cast<int>(_stateList.size()) < _rows)
+  if(std::cmp_less(_stateList.size(), _rows))
     for(int i = static_cast<int>(_stateList.size()); i < _rows; ++i)
       _checkList[i]->clearFlags(Widget::FLAG_ENABLED);
 
@@ -69,7 +69,7 @@ void CheckListWidget::setList(const StringList& list, const BoolArray& state)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CheckListWidget::setLine(int line, string_view str, const bool& state)
 {
-  if(line >= static_cast<int>(_list.size()))
+  if(std::cmp_greater_equal(line, _list.size()))
     return;
 
   _list[line]      = str;
@@ -147,7 +147,7 @@ Common::Rect CheckListWidget::getEditRect() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CheckListWidget::getState(int line) const
 {
-  if(line >= 0 && line < static_cast<int>(_stateList.size()))
+  if(line >= 0 && std::cmp_less(line, _stateList.size()))
     return _stateList[line];
   else
     return false;

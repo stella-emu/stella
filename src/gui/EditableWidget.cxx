@@ -127,7 +127,7 @@ int EditableWidget::toCaretPos(int x) const
   int i = 0;
 
   x += caretOfs();
-  for(i = 0; i < static_cast<int>(_editString.size()); ++i)
+  for(i = 0; std::cmp_less(i, _editString.size()); ++i)
   {
     x -= _font.getCharWidth(_editString[i]);
     if(x <= 0)
@@ -248,7 +248,7 @@ bool EditableWidget::tryInsertChar(char c, int pos)
     if(_selectSize < 0)   // left to right selection
       pos += _selectSize; // adjust to new position after removing selected text
     killSelectedText();
-    if(!_maxLen || static_cast<int>(_editString.length()) < _maxLen)
+    if(!_maxLen || std::cmp_less(_editString.length(), _maxLen))
     {
       myUndoHandler->doChar(); // aggregate single chars
       _editString.insert(pos, 1, c);
@@ -296,7 +296,7 @@ bool EditableWidget::handleKeyDown(StellaKey key, StellaMod mod)
     case Event::MoveRightChar:
       if(_selectSize)
         handled = setCaretPos(selectEndPos());
-      else if(_caretPos < static_cast<int>(_editString.size()))
+      else if(std::cmp_less(_caretPos, _editString.size()))
         handled = setCaretPos(_caretPos + 1);
       _selectSize = 0;
       break;
@@ -327,7 +327,7 @@ bool EditableWidget::handleKeyDown(StellaKey key, StellaMod mod)
       break;
 
     case Event::SelectRightChar:
-      if(_caretPos < static_cast<int>(_editString.size()))
+      if(std::cmp_less(_caretPos, _editString.size()))
         handled = moveCaretPos(+1);
       break;
 
@@ -532,7 +532,7 @@ void EditableWidget::drawCaretSelection()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool EditableWidget::setCaretPos(int newPos)
 {
-  assert(newPos >= 0 && newPos <= int(_editString.size()));
+  assert(newPos >= 0 && std::cmp_less_equal(newPos, _editString.size()));
   _caretPos = newPos;
 
   _caretTimer = 0;
@@ -612,7 +612,7 @@ bool EditableWidget::killChar(int direction, bool addEdit)
   }
   else if(direction == 1)  // Delete next character (delete)
   {
-    if(_caretPos < static_cast<int>(_editString.size()))
+    if(std::cmp_less(_caretPos, _editString.size()))
     {
       if(_selectSize > 0)
         _selectSize--;
@@ -679,7 +679,7 @@ bool EditableWidget::killWord(int direction)
   }
   else if(direction == +1)  // move to first character of next word
   {
-    while(currentPos < static_cast<int>(_editString.size()))
+    while(std::cmp_less(currentPos, _editString.size()))
     {
       if(currentPos && BSPF::isWhiteSpace(_editString[currentPos - 1]))
       {
@@ -715,11 +715,11 @@ bool EditableWidget::moveWord(int direction, bool select)
 
   if(direction == -1)  // move to first character of previous word
   {
-    while (currentPos > 0)
+    while(currentPos > 0)
     {
-      if (BSPF::isWhiteSpace(_editString[currentPos - 1]))
+      if(BSPF::isWhiteSpace(_editString[currentPos - 1]))
       {
-        if (!space)
+        if(!space)
           break;
       }
       else
@@ -734,11 +734,11 @@ bool EditableWidget::moveWord(int direction, bool select)
   }
   else if(direction == +1)  // move to first character of next word
   {
-    while (currentPos < static_cast<int>(_editString.size()))
+    while(std::cmp_less(currentPos, _editString.size()))
     {
-      if (currentPos && BSPF::isWhiteSpace(_editString[currentPos - 1]))
+      if(currentPos && BSPF::isWhiteSpace(_editString[currentPos - 1]))
       {
-        if (!space)
+        if(!space)
           break;
       }
       else
@@ -798,19 +798,13 @@ string EditableWidget::selectString() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 int EditableWidget::selectStartPos() const
 {
-  if(_selectSize < 0)
-    return _caretPos + _selectSize;
-  else
-    return _caretPos;
+  return (_selectSize < 0) ? _caretPos + _selectSize : _caretPos;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 int EditableWidget::selectEndPos() const
 {
-  if(_selectSize > 0)
-    return _caretPos + _selectSize;
-  else
-    return _caretPos;
+  return (_selectSize > 0) ? _caretPos + _selectSize : _caretPos;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
