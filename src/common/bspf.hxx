@@ -93,7 +93,7 @@ using ByteBuffer = std::unique_ptr<uInt8[]>;
 using DWordBuffer = std::unique_ptr<uInt32[]>;
 
 // We use KB a lot; let's make a literal for it
-constexpr size_t operator "" _KB(unsigned long long size)
+constexpr size_t operator ""_KB(unsigned long long size)
 {
   return static_cast<size_t>(size * 1024);
 }
