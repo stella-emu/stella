@@ -15,26 +15,26 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#ifndef FBSURFACE_SDL2_HXX
-#define FBSURFACE_SDL2_HXX
+#ifndef FBSURFACE_SDL_HXX
+#define FBSURFACE_SDL_HXX
 
 #include "bspf.hxx"
 #include "FBSurface.hxx"
-#include "FBBackendSDL2.hxx"
+#include "FBBackendSDL.hxx"
 #include "sdl_blitter/Blitter.hxx"
 
 /**
-  An FBSurface suitable for the SDL2 Render2D API, making use of hardware
+  An FBSurface suitable for the SDL Render2D API, making use of hardware
   acceleration behind the scenes.
 
   @author  Stephen Anthony
 */
-class FBSurfaceSDL2 : public FBSurface
+class FBSurfaceSDL : public FBSurface
 {
   public:
-    FBSurfaceSDL2(FBBackendSDL2& backend, uInt32 width, uInt32 height,
-                  ScalingInterpolation inter, const uInt32* staticData);
-    ~FBSurfaceSDL2() override;
+    FBSurfaceSDL(FBBackendSDL& backend, uInt32 width, uInt32 height,
+                 ScalingInterpolation inter, const uInt32* staticData);
+    ~FBSurfaceSDL() override;
 
     // Most of the surface drawing primitives are implemented in FBSurface;
     // the ones implemented here use SDL-specific code for extra performance
@@ -111,18 +111,17 @@ class FBSurfaceSDL2 : public FBSurface
     void reinitializeBlitter(bool force = false);
 
     // Following constructors and assignment operators not supported
-    FBSurfaceSDL2() = delete;
-    FBSurfaceSDL2(const FBSurfaceSDL2&) = delete;
-    FBSurfaceSDL2(FBSurfaceSDL2&&) = delete;
-    FBSurfaceSDL2& operator=(const FBSurfaceSDL2&) = delete;
-    FBSurfaceSDL2& operator=(FBSurfaceSDL2&&) = delete;
+    FBSurfaceSDL() = delete;
+    FBSurfaceSDL(const FBSurfaceSDL&) = delete;
+    FBSurfaceSDL(FBSurfaceSDL&&) = delete;
+    FBSurfaceSDL& operator=(const FBSurfaceSDL&) = delete;
+    FBSurfaceSDL& operator=(FBSurfaceSDL&&) = delete;
 
   private:
-    FBBackendSDL2& myBackend;
+    FBBackendSDL& myBackend;
 
     unique_ptr<Blitter> myBlitter;
-    ScalingInterpolation myInterpolationMode
-        {ScalingInterpolation::none};
+    ScalingInterpolation myInterpolationMode{ScalingInterpolation::none};
 
     SDL_Surface* mySurface{nullptr};
     SDL_Rect mySrcR{-1, -1, -1, -1}, myDstR{-1, -1, -1, -1};

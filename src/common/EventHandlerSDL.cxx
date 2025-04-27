@@ -17,12 +17,12 @@
 
 #include "Logger.hxx"
 #include "OSystem.hxx"
-#include "EventHandlerSDL2.hxx"
+#include "EventHandlerSDL.hxx"
 
 #include "ThreadDebugging.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-EventHandlerSDL2::EventHandlerSDL2(OSystem& osystem)
+EventHandlerSDL::EventHandlerSDL(OSystem& osystem)
   : EventHandler{osystem}
 {
   ASSERT_MAIN_THREAD;
@@ -45,14 +45,14 @@ EventHandlerSDL2::EventHandlerSDL2(OSystem& osystem)
         << SDL_GetError() << '\n';
     Logger::error(buf.view());
   }
-  Logger::debug("EventHandlerSDL2::EventHandlerSDL2 SDL_INIT_JOYSTICK");
+  Logger::debug("EventHandlerSDL::EventHandlerSDL SDL_INIT_JOYSTICK");
 #endif
 
   SDL_SetHint(SDL_HINT_MOUSE_FOCUS_CLICKTHROUGH, "1");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-EventHandlerSDL2::~EventHandlerSDL2()
+EventHandlerSDL::~EventHandlerSDL()
 {
   ASSERT_MAIN_THREAD;
 
@@ -61,7 +61,7 @@ EventHandlerSDL2::~EventHandlerSDL2()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EventHandlerSDL2::enableTextEvents(bool enable)
+void EventHandlerSDL::enableTextEvents(bool enable)
 {
   ASSERT_MAIN_THREAD;
 
@@ -72,13 +72,13 @@ void EventHandlerSDL2::enableTextEvents(bool enable)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EventHandlerSDL2::copyText(const string& text) const
+void EventHandlerSDL::copyText(const string& text) const
 {
   SDL_SetClipboardText(text.c_str());
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string EventHandlerSDL2::pasteText(string& text) const
+string EventHandlerSDL::pasteText(string& text) const
 {
   if(SDL_HasClipboardText())
     text = SDL_GetClipboardText();
@@ -89,7 +89,7 @@ string EventHandlerSDL2::pasteText(string& text) const
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EventHandlerSDL2::pollEvent()
+void EventHandlerSDL::pollEvent()
 {
   ASSERT_MAIN_THREAD;
 
@@ -192,7 +192,7 @@ void EventHandlerSDL2::pollEvent()
 
       case SDL_JOYDEVICEADDED:
       {
-        addPhysicalJoystick(make_shared<JoystickSDL2>(myEvent.jdevice.which));
+        addPhysicalJoystick(make_shared<JoystickSDL>(myEvent.jdevice.which));
         break;  // SDL_JOYDEVICEADDED
       }
       case SDL_JOYDEVICEREMOVED:
@@ -261,7 +261,7 @@ void EventHandlerSDL2::pollEvent()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-EventHandlerSDL2::JoystickSDL2::JoystickSDL2(int idx)
+EventHandlerSDL::JoystickSDL::JoystickSDL(int idx)
 {
   ASSERT_MAIN_THREAD;
 
@@ -285,7 +285,7 @@ EventHandlerSDL2::JoystickSDL2::JoystickSDL2(int idx)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-EventHandlerSDL2::JoystickSDL2::~JoystickSDL2()
+EventHandlerSDL::JoystickSDL::~JoystickSDL()
 {
   ASSERT_MAIN_THREAD;
 

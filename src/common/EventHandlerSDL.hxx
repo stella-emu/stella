@@ -15,8 +15,8 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#ifndef EVENTHANDLER_SDL2_HXX
-#define EVENTHANDLER_SDL2_HXX
+#ifndef EVENTHANDLER_SDL_HXX
+#define EVENTHANDLER_SDL_HXX
 
 #include "SDL_lib.hxx"
 #include "EventHandler.hxx"
@@ -24,19 +24,19 @@
 
 /**
   This class handles event collection from the point of view of the specific
-  backend toolkit (SDL2).  It converts from SDL2-specific events into events
+  backend toolkit (SDL).  It converts from SDL-specific events into events
   that the Stella core can understand.
 
   @author  Stephen Anthony
 */
-class EventHandlerSDL2 : public EventHandler
+class EventHandlerSDL : public EventHandler
 {
   public:
     /**
-      Create a new SDL2 event handler object
+      Create a new SDL event handler object
     */
-    explicit EventHandlerSDL2(OSystem& osystem);
-    ~EventHandlerSDL2() override;
+    explicit EventHandlerSDL(OSystem& osystem);
+    ~EventHandlerSDL() override;
 
   private:
     /**
@@ -51,7 +51,7 @@ class EventHandlerSDL2 : public EventHandler
     string pasteText(string& text) const override;
 
     /**
-      Collects and dispatches any pending SDL2 events.
+      Collects and dispatches any pending SDL events.
     */
     void pollEvent() override;
 
@@ -60,31 +60,31 @@ class EventHandlerSDL2 : public EventHandler
 
     // A thin wrapper around a basic PhysicalJoystick, holding the pointer to
     // the underlying SDL joystick device.
-    class JoystickSDL2 : public PhysicalJoystick
+    class JoystickSDL : public PhysicalJoystick
     {
       public:
-        explicit JoystickSDL2(int idx);
-        virtual ~JoystickSDL2();
+        explicit JoystickSDL(int idx);
+        virtual ~JoystickSDL();
 
       private:
         SDL_Joystick* myStick{nullptr};
 
       private:
         // Following constructors and assignment operators not supported
-        JoystickSDL2() = delete;
-        JoystickSDL2(const JoystickSDL2&) = delete;
-        JoystickSDL2(JoystickSDL2&&) = delete;
-        JoystickSDL2& operator=(const JoystickSDL2&) = delete;
-        JoystickSDL2& operator=(JoystickSDL2&&) = delete;
+        JoystickSDL() = delete;
+        JoystickSDL(const JoystickSDL&) = delete;
+        JoystickSDL(JoystickSDL&&) = delete;
+        JoystickSDL& operator=(const JoystickSDL&) = delete;
+        JoystickSDL& operator=(JoystickSDL&&) = delete;
     };
 
   private:
     // Following constructors and assignment operators not supported
-    EventHandlerSDL2() = delete;
-    EventHandlerSDL2(const EventHandlerSDL2&) = delete;
-    EventHandlerSDL2(EventHandlerSDL2&&) = delete;
-    EventHandlerSDL2& operator=(const EventHandlerSDL2&) = delete;
-    EventHandlerSDL2& operator=(EventHandlerSDL2&&) = delete;
+    EventHandlerSDL() = delete;
+    EventHandlerSDL(const EventHandlerSDL&) = delete;
+    EventHandlerSDL(EventHandlerSDL&&) = delete;
+    EventHandlerSDL& operator=(const EventHandlerSDL&) = delete;
+    EventHandlerSDL& operator=(EventHandlerSDL&&) = delete;
 };
 
 #endif

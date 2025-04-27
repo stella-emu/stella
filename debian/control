@@ -19,7 +19,7 @@ Depends: ${misc:Depends},
          ${shlibs:Depends}
 Recommends: joystick (>= 1:1.5.1)
 Pre-Depends: ${misc:Pre-Depends}
-Description: Atari 2600 Emulator for SDL2
+Description: Atari 2600 Emulator for SDL
  Stella is a portable emulator of the old Atari 2600 video-game
  console. You can play most Atari 2600 games with it.
  .

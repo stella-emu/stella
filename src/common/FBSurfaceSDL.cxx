@@ -15,7 +15,7 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#include "FBSurfaceSDL2.hxx"
+#include "FBSurfaceSDL.hxx"
 
 #include "Logger.hxx"
 #include "ThreadDebugging.hxx"
@@ -41,10 +41,10 @@ namespace {
 } // namespace
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FBSurfaceSDL2::FBSurfaceSDL2(FBBackendSDL2& backend,
-                             uInt32 width, uInt32 height,
-                             ScalingInterpolation inter,
-                             const uInt32* staticData)
+FBSurfaceSDL::FBSurfaceSDL(FBBackendSDL& backend,
+                           uInt32 width, uInt32 height,
+                           ScalingInterpolation inter,
+                           const uInt32* staticData)
   : myBackend{backend},
     myInterpolationMode{inter}
 {
@@ -53,7 +53,7 @@ FBSurfaceSDL2::FBSurfaceSDL2(FBBackendSDL2& backend,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FBSurfaceSDL2::~FBSurfaceSDL2()
+FBSurfaceSDL::~FBSurfaceSDL()
 {
   ASSERT_MAIN_THREAD;
 
@@ -65,7 +65,7 @@ FBSurfaceSDL2::~FBSurfaceSDL2()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FBSurfaceSDL2::fillRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h, ColorId color)
+void FBSurfaceSDL::fillRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h, ColorId color)
 {
   ASSERT_MAIN_THREAD;
 
@@ -79,45 +79,45 @@ void FBSurfaceSDL2::fillRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h, ColorId col
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt32 FBSurfaceSDL2::width() const
+uInt32 FBSurfaceSDL::width() const
 {
   return mySurface->w;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt32 FBSurfaceSDL2::height() const
+uInt32 FBSurfaceSDL::height() const
 {
   return mySurface->h;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const Common::Rect& FBSurfaceSDL2::srcRect() const
+const Common::Rect& FBSurfaceSDL::srcRect() const
 {
   return mySrcGUIR;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const Common::Rect& FBSurfaceSDL2::dstRect() const
+const Common::Rect& FBSurfaceSDL::dstRect() const
 {
   return myDstGUIR;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FBSurfaceSDL2::setSrcPos(uInt32 x, uInt32 y)
+void FBSurfaceSDL::setSrcPos(uInt32 x, uInt32 y)
 {
   if(setSrcPosInternal(x, y))
     reinitializeBlitter();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FBSurfaceSDL2::setSrcSize(uInt32 w, uInt32 h)
+void FBSurfaceSDL::setSrcSize(uInt32 w, uInt32 h)
 {
   if(setSrcSizeInternal(w, h))
     reinitializeBlitter();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FBSurfaceSDL2::setSrcRect(const Common::Rect& r)
+void FBSurfaceSDL::setSrcRect(const Common::Rect& r)
 {
   const bool posChanged = setSrcPosInternal(r.x(), r.y()),
              sizeChanged = setSrcSizeInternal(r.w(), r.h());
@@ -127,21 +127,21 @@ void FBSurfaceSDL2::setSrcRect(const Common::Rect& r)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FBSurfaceSDL2::setDstPos(uInt32 x, uInt32 y)
+void FBSurfaceSDL::setDstPos(uInt32 x, uInt32 y)
 {
   if(setDstPosInternal(x, y))
     reinitializeBlitter();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FBSurfaceSDL2::setDstSize(uInt32 w, uInt32 h)
+void FBSurfaceSDL::setDstSize(uInt32 w, uInt32 h)
 {
   if(setDstSizeInternal(w, h))
     reinitializeBlitter();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FBSurfaceSDL2::setDstRect(const Common::Rect& r)
+void FBSurfaceSDL::setDstRect(const Common::Rect& r)
 {
   const bool posChanged = setDstPosInternal(r.x(), r.y()),
              sizeChanged = setDstSizeInternal(r.w(), r.h());
@@ -151,22 +151,23 @@ void FBSurfaceSDL2::setDstRect(const Common::Rect& r)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FBSurfaceSDL2::setVisible(bool visible)
+void FBSurfaceSDL::setVisible(bool visible)
 {
   myIsVisible = visible;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FBSurfaceSDL2::translateCoords(Int32& x, Int32& y) const
+void FBSurfaceSDL::translateCoords(Int32& x, Int32& y) const
 {
   x -= myDstR.x;  x /= myDstR.w / mySrcR.w;
   y -= myDstR.y;  y /= myDstR.h / mySrcR.h;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool FBSurfaceSDL2::render()
+bool FBSurfaceSDL::render()
 {
-  if (!myBlitter) reinitializeBlitter();
+  if(!myBlitter)
+    reinitializeBlitter();
 
   if(myIsVisible && myBlitter)
   {
@@ -178,7 +179,7 @@ bool FBSurfaceSDL2::render()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FBSurfaceSDL2::invalidate()
+void FBSurfaceSDL::invalidate()
 {
   ASSERT_MAIN_THREAD;
 
@@ -186,7 +187,7 @@ void FBSurfaceSDL2::invalidate()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FBSurfaceSDL2::invalidateRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h)
+void FBSurfaceSDL::invalidateRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h)
 {
   ASSERT_MAIN_THREAD;
 
@@ -202,13 +203,13 @@ void FBSurfaceSDL2::invalidateRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FBSurfaceSDL2::reload()
+void FBSurfaceSDL::reload()
 {
   reinitializeBlitter(true);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FBSurfaceSDL2::resize(uInt32 width, uInt32 height)
+void FBSurfaceSDL::resize(uInt32 width, uInt32 height)
 {
   ASSERT_MAIN_THREAD;
 
@@ -224,8 +225,7 @@ void FBSurfaceSDL2::resize(uInt32 width, uInt32 height)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FBSurfaceSDL2::createSurface(uInt32 width, uInt32 height,
-                                  const uInt32* data)
+void FBSurfaceSDL::createSurface(uInt32 width, uInt32 height, const uInt32* data)
 {
   ASSERT_MAIN_THREAD;
 
@@ -258,7 +258,7 @@ void FBSurfaceSDL2::createSurface(uInt32 width, uInt32 height,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FBSurfaceSDL2::reinitializeBlitter(bool force)
+void FBSurfaceSDL::reinitializeBlitter(bool force)
 {
   if (force)
     myBlitter.reset();
@@ -273,13 +273,13 @@ void FBSurfaceSDL2::reinitializeBlitter(bool force)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FBSurfaceSDL2::applyAttributes()
+void FBSurfaceSDL::applyAttributes()
 {
   reinitializeBlitter();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FBSurfaceSDL2::setScalingInterpolation(ScalingInterpolation interpolation)
+void FBSurfaceSDL::setScalingInterpolation(ScalingInterpolation interpolation)
 {
   if (interpolation == ScalingInterpolation::sharp &&
       (

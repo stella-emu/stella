@@ -1146,13 +1146,13 @@
     <ClCompile Include="..\..\common\DevSettingsHandler.cxx">
       <Filter>Source Files\common</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\common\EventHandlerSDL2.cxx">
+    <ClCompile Include="..\..\common\EventHandlerSDL.cxx">
       <Filter>Source Files\common</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\common\FBBackendSDL2.cxx">
+    <ClCompile Include="..\..\common\FBBackendSDL.cxx">
       <Filter>Source Files\common</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\common\FBSurfaceSDL2.cxx">
+    <ClCompile Include="..\..\common\FBSurfaceSDL.cxx">
       <Filter>Source Files\common</Filter>
     </ClCompile>
     <ClCompile Include="..\..\common\FpsMeter.cxx">
@@ -1203,7 +1203,7 @@
     <ClCompile Include="..\..\common\RewindManager.cxx">
       <Filter>Source Files\common</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\common\SoundSDL2.cxx">
+    <ClCompile Include="..\..\common\SoundSDL.cxx">
       <Filter>Source Files\common</Filter>
     </ClCompile>
     <ClCompile Include="..\..\common\StaggeredLogger.cxx">
@@ -2402,13 +2402,13 @@
     <ClInclude Include="..\..\common\DevSettingsHandler.hxx">
       <Filter>Header Files\common</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\common\EventHandlerSDL2.hxx">
+    <ClInclude Include="..\..\common\EventHandlerSDL.hxx">
       <Filter>Header Files\common</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\common\FBBackendSDL2.hxx">
+    <ClInclude Include="..\..\common\FBBackendSDL.hxx">
       <Filter>Header Files\common</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\common\FBSurfaceSDL2.hxx">
+    <ClInclude Include="..\..\common\FBSurfaceSDL.hxx">
       <Filter>Header Files\common</Filter>
     </ClInclude>
     <ClInclude Include="..\..\common\FpsMeter.hxx">
@@ -2477,7 +2477,7 @@
     <ClInclude Include="..\..\common\smartmod.hxx">
       <Filter>Header Files\common</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\common\SoundSDL2.hxx">
+    <ClInclude Include="..\..\common\SoundSDL.hxx">
       <Filter>Header Files\common</Filter>
     </ClInclude>
     <ClInclude Include="..\..\common\Stack.hxx">

@@ -15,31 +15,31 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#ifndef FB_BACKEND_SDL2_HXX
-#define FB_BACKEND_SDL2_HXX
+#ifndef FB_BACKEND_SDL_HXX
+#define FB_BACKEND_SDL_HXX
 
 #include "SDL_lib.hxx"
 
 class OSystem;
-class FBSurfaceSDL2;
+class FBSurfaceSDL;
 
 #include "bspf.hxx"
 #include "FBBackend.hxx"
 
 /**
-  This class implements a standard SDL2 2D, hardware accelerated framebuffer
+  This class implements a standard SDL 2D, hardware accelerated framebuffer
   backend.  Behind the scenes, it may be using Direct3D, OpenGL(ES), etc.
 
   @author  Stephen Anthony
 */
-class FBBackendSDL2 : public FBBackend
+class FBBackendSDL : public FBBackend
 {
   public:
     /**
-      Creates a new SDL2 framebuffer
+      Creates a new SDL framebuffer
     */
-    explicit FBBackendSDL2(OSystem& osystem);
-    ~FBBackendSDL2() override;
+    explicit FBBackendSDL(OSystem& osystem);
+    ~FBBackendSDL() override;
 
   public:
     /**
@@ -305,11 +305,11 @@ class FBBackendSDL2 : public FBBackend
 
   private:
     // Following constructors and assignment operators not supported
-    FBBackendSDL2() = delete;
-    FBBackendSDL2(const FBBackendSDL2&) = delete;
-    FBBackendSDL2(FBBackendSDL2&&) = delete;
-    FBBackendSDL2& operator=(const FBBackendSDL2&) = delete;
-    FBBackendSDL2& operator=(FBBackendSDL2&&) = delete;
+    FBBackendSDL() = delete;
+    FBBackendSDL(const FBBackendSDL&) = delete;
+    FBBackendSDL(FBBackendSDL&&) = delete;
+    FBBackendSDL& operator=(const FBBackendSDL&) = delete;
+    FBBackendSDL& operator=(FBBackendSDL&&) = delete;
 };
 
 #endif

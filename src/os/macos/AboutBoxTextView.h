@@ -19,7 +19,7 @@
 
 /**
   AboutBoxTextView class and support functions for the macOS
-  SDL2 port of Stella.
+  SDL port of Stella.
 
   @author  Mark Grebe <atarimac@cox.net>
 */
