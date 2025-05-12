@@ -103,7 +103,7 @@ class CartridgeAR : public Cartridge
       @param bank  The bank to get the size for
       @return  The bank's size
     */
-    uInt16 bankSize(uInt16 bank = 0) const override { return 4_KB; };
+    uInt16 bankSize(uInt16 bank) const override { return static_cast<uInt16>(4_KB); };
 
     /**
       Patch the cartridge ROM.
