@@ -136,7 +136,7 @@ void RomListWidget::setList(const CartDebug::Disassembly& disasm)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void RomListWidget::setSelected(int item)
 {
-  if(item < -1 || item >= static_cast<int>(myDisasm->list.size()))
+  if(item < -1 || std::cmp_greater_equal(item, myDisasm->list.size()))
     return;
 
   if(isEnabled())
