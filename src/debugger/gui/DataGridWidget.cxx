@@ -225,7 +225,7 @@ void DataGridWidget::setValueInternal(int position, int value, bool changed)
 void DataGridWidget::setValue(int position, int value, bool changed,
                               bool emitSignal)
 {
-  if(position >= 0 && position < static_cast<int>(_valueList.size()))
+  if(position >= 0 && std::cmp_less(position, _valueList.size()))
   {
     // Correctly format the data for viewing
     editString() = Common::Base::toString(value, _base);

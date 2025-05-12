@@ -409,7 +409,8 @@ void Ball::tick(bool isReceivingRegularClock)
         break;
     }
 
-  } else if (myIsRendering && ++myRenderCounter >= (starfieldEffect ? myEffectiveWidth : myWidth))
+  } else if (myIsRendering && std::cmp_greater_equal(++myRenderCounter,
+        starfieldEffect ? myEffectiveWidth : myWidth))
     myIsRendering = false;
 
   if (++myCounter >= TIAConstants::H_PIXEL)

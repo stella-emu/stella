@@ -496,7 +496,7 @@ int StellaSettingsDialog::valueToLevel(int value)
 
   for (int i = NUM_LEVELS - 1; i > 0; --i)
   {
-    if (value >= values[i])
+    if (std::cmp_greater_equal(value, values[i]))
       return i;
   }
   return 0;

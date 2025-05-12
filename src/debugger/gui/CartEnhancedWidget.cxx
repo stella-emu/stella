@@ -101,7 +101,8 @@ string CartridgeEnhancedWidget::romDescription()
 
   if(myCart.romBankCount() > 1)
   {
-    for(int bank = 0, offset = 0xFFC; bank < myCart.romBankCount(); ++bank, offset += 0x1000)
+    for(int bank = 0, offset = 0xFFC; std::cmp_less(bank, myCart.romBankCount());
+        ++bank, offset += 0x1000)
     {
       uInt16 start = (image[offset + 1] << 8) | image[offset];
       start -= start % 0x1000;
@@ -183,10 +184,10 @@ void CartridgeEnhancedWidget::bankList(uInt16 bankCount, int seg, VariantList& i
 
   const bool hasRamBanks = myCart.myRamBankCount > 0;
 
-  for(int bank = 0; bank < bankCount; ++bank)
+  for(int bank = 0; std::cmp_less(bank, bankCount); ++bank)
   {
     ostringstream buf;
-    const bool isRamBank = (bank >= myCart.romBankCount());
+    const bool isRamBank = std::cmp_greater_equal(bank, myCart.romBankCount());
     const int bankNum = (bank - (isRamBank ? myCart.romBankCount() : 0));
 
     buf << std::setw(bankNum < 10 ? 2 : 1) << "#" << std::dec << bankNum;
@@ -211,7 +212,7 @@ void CartridgeEnhancedWidget::bankSelect(int& ypos)
 
     myBankWidgets = make_unique<PopUpWidget* []>(bankSegs());
 
-    for(int seg = 0; seg < bankSegs(); ++seg)
+    for(int seg = 0; std::cmp_less(seg, bankSegs()); ++seg)
     {
       // fill bank and hotspot list
       VariantList items;
@@ -253,10 +254,10 @@ string CartridgeEnhancedWidget::bankState()
     {
       buf << "Segments: ";
 
-      for(int seg = 0; seg < bankSegs(); ++seg)
+      for(int seg = 0; std::cmp_less(seg, bankSegs()); ++seg)
       {
         const int bank = myCart.getSegmentBank(seg);
-        const bool isRamBank = (bank >= myCart.romBankCount());
+        const bool isRamBank = std::cmp_greater_equal(bank, myCart.romBankCount());
 
         if(seg > 0)
           buf << " / ";
@@ -321,8 +322,8 @@ void CartridgeEnhancedWidget::saveOldState()
   }
 
   myOldState.banks.clear();
-  if (bankSegs() > 1)
-    for(int seg = 0; seg < bankSegs(); ++seg)
+  if(bankSegs() > 1)
+    for(int seg = 0; std::cmp_less(seg, bankSegs()); ++seg)
       myOldState.banks.push_back(myCart.getSegmentBank(seg));
   else
     myOldState.banks.push_back(myCart.getBank());
@@ -350,7 +351,7 @@ void CartridgeEnhancedWidget::loadConfig()
   if(myBankWidgets != nullptr)
   {
     if(bankSegs() > 1)
-      for(int seg = 0; seg < bankSegs(); ++seg)
+      for(int seg = 0; std::cmp_less(seg, bankSegs()); ++seg)
         myBankWidgets[seg]->setSelectedIndex(myCart.getSegmentBank(seg),
                                              myCart.getSegmentBank(seg) != myOldState.banks[seg]);
     else

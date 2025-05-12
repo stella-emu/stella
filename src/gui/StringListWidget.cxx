@@ -54,10 +54,7 @@ int StringListWidget::getToolTipIndex(const Common::Point& pos) const
 {
   const int idx = (pos.y - getAbsY()) / _lineHeight + _currentPos;
 
-  if(idx >= static_cast<int>(_list.size()))
-    return -1;
-  else
-    return idx;
+  return std::cmp_greater_equal(idx, _list.size()) ? -1 : idx;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

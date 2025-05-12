@@ -31,7 +31,7 @@ class EventHandlerLIBRETRO : public EventHandler
 {
   public:
     /**
-      Create a new LIBRETRO event handler object
+      Create a new LIBRETRO event handler object.
     */
     explicit EventHandlerLIBRETRO(OSystem& osystem) : EventHandler(osystem) { }
     ~EventHandlerLIBRETRO() override = default;
@@ -43,7 +43,7 @@ class EventHandlerLIBRETRO : public EventHandler
     void enableTextEvents(bool enable) override { }
 
     /**
-      Collects and dispatches any pending SDL2 events.
+      Collects and dispatches any pending events.
     */
     void pollEvent() override { }
 

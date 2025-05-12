@@ -114,7 +114,7 @@ void ContextMenu::recalc(const Common::Rect& image)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ContextMenu::setSelectedIndex(int idx)
 {
-  if(idx >= 0 && idx < static_cast<int>(_entries.size()))
+  if(idx >= 0 && std::cmp_less(idx, _entries.size()))
     _selectedItem = idx;
   else
     _selectedItem = -1;
@@ -423,12 +423,12 @@ void ContextMenu::moveDown()
     // Otherwise, the offset should increase by 1
     if(_selectedOffset == _numEntries)
       scrollDown();
-    else if(_selectedOffset < static_cast<int>(_entries.size()))
+    else if(std::cmp_less(_selectedOffset, _entries.size()))
       drawCurrentSelection(_selectedOffset+1);
   }
   else
   {
-    if(_selectedOffset < static_cast<int>(_entries.size()) - 1)
+    if(std::cmp_less(_selectedOffset, _entries.size() - 1))
       drawCurrentSelection(_selectedOffset+1);
   }
 }
@@ -445,7 +445,7 @@ void ContextMenu::movePgUp()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ContextMenu::movePgDown()
 {
-  if(_firstEntry == static_cast<int>(_entries.size() - _numEntries))
+  if(std::cmp_equal(_firstEntry, _entries.size() - _numEntries))
     moveToLast();
   else
     scrollDown(_numEntries);
@@ -474,7 +474,7 @@ void ContextMenu::moveToLast()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ContextMenu::moveToSelected()
 {
-  if(_selectedItem < 0 || _selectedItem >= static_cast<int>(_entries.size()))
+  if(_selectedItem < 0 || std::cmp_greater_equal(_selectedItem, _entries.size()))
     return;
 
   // First jump immediately to the item

@@ -31,16 +31,16 @@
 #include "audio/LanczosResampler.hxx"
 #include "ThreadDebugging.hxx"
 
-#include "SoundSDL2.hxx"
+#include "SoundSDL.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-SoundSDL2::SoundSDL2(OSystem& osystem, AudioSettings& audioSettings)
+SoundSDL::SoundSDL(OSystem& osystem, AudioSettings& audioSettings)
   : Sound{osystem},
     myAudioSettings{audioSettings}
 {
   ASSERT_MAIN_THREAD;
 
-  Logger::debug("SoundSDL2::SoundSDL2 started ...");
+  Logger::debug("SoundSDL::SoundSDL started ...");
 
   if(SDL_InitSubSystem(SDL_INIT_AUDIO) < 0)
   {
@@ -58,11 +58,11 @@ SoundSDL2::SoundSDL2(OSystem& osystem, AudioSettings& audioSettings)
   if(!openDevice())
     return;
 
-  Logger::debug("SoundSDL2::SoundSDL2 initialized");
+  Logger::debug("SoundSDL::SoundSDL initialized");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-SoundSDL2::~SoundSDL2()
+SoundSDL::~SoundSDL()
 {
   ASSERT_MAIN_THREAD;
 
@@ -74,7 +74,7 @@ SoundSDL2::~SoundSDL2()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void SoundSDL2::queryHardware(VariantList& devices)
+void SoundSDL::queryHardware(VariantList& devices)
 {
   ASSERT_MAIN_THREAD;
 
@@ -98,7 +98,7 @@ void SoundSDL2::queryHardware(VariantList& devices)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool SoundSDL2::openDevice()
+bool SoundSDL::openDevice()
 {
   ASSERT_MAIN_THREAD;
 
@@ -136,15 +136,15 @@ bool SoundSDL2::openDevice()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void SoundSDL2::setEnabled(bool enable)
+void SoundSDL::setEnabled(bool enable)
 {
   mute(!enable);
   pause(!enable);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void SoundSDL2::open(shared_ptr<AudioQueue> audioQueue,
-                     shared_ptr<const EmulationTiming> emulationTiming)
+void SoundSDL::open(shared_ptr<AudioQueue> audioQueue,
+                    shared_ptr<const EmulationTiming> emulationTiming)
 {
   const string pre_about = myAboutString;
 
@@ -158,7 +158,7 @@ void SoundSDL2::open(shared_ptr<AudioQueue> audioQueue,
   myEmulationTiming = emulationTiming;
   myWavHandler.setSpeed(262 * 60 * 2. / myEmulationTiming->audioSampleRate());
 
-  Logger::debug("SoundSDL2::open started ...");
+  Logger::debug("SoundSDL::open started ...");
 
   audioQueue->ignoreOverflows(!myAudioSettings.enabled());
   if(!myAudioSettings.enabled())
@@ -184,11 +184,11 @@ void SoundSDL2::open(shared_ptr<AudioQueue> audioQueue,
   // And start the SDL sound subsystem ...
   pause(false);
 
-  Logger::debug("SoundSDL2::open finished");
+  Logger::debug("SoundSDL::open finished");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void SoundSDL2::mute(bool enable)
+void SoundSDL::mute(bool enable)
 {
   if(enable)
     myVolumeFactor = 0;
@@ -197,7 +197,7 @@ void SoundSDL2::mute(bool enable)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void SoundSDL2::toggleMute()
+void SoundSDL::toggleMute()
 {
   const bool wasMuted = myVolumeFactor == 0;
   mute(!wasMuted);
@@ -211,7 +211,7 @@ void SoundSDL2::toggleMute()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool SoundSDL2::pause(bool enable)
+bool SoundSDL::pause(bool enable)
 {
   ASSERT_MAIN_THREAD;
 
@@ -225,7 +225,7 @@ bool SoundSDL2::pause(bool enable)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void SoundSDL2::setVolume(uInt32 volume)
+void SoundSDL::setVolume(uInt32 volume)
 {
   if(myIsInitializedFlag && (volume <= 100))
   {
@@ -235,7 +235,7 @@ void SoundSDL2::setVolume(uInt32 volume)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void SoundSDL2::adjustVolume(int direction)
+void SoundSDL::adjustVolume(int direction)
 {
   Int32 percent = myAudioSettings.volume();
   percent = BSPF::clamp(percent + direction * 2, 0, 100);
@@ -257,7 +257,7 @@ void SoundSDL2::adjustVolume(int direction)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string SoundSDL2::about() const
+string SoundSDL::about() const
 {
   ostringstream buf;
   buf << "Sound enabled:\n"
@@ -315,7 +315,7 @@ string SoundSDL2::about() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void SoundSDL2::initResampler()
+void SoundSDL::initResampler()
 {
   const Resampler::NextFragmentCallback nextFragmentCallback = [this] () -> Int16* {
     Int16* nextFragment = nullptr;
@@ -365,9 +365,9 @@ void SoundSDL2::initResampler()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void SoundSDL2::callback(void* object, uInt8* stream, int len)
+void SoundSDL::callback(void* object, uInt8* stream, int len)
 {
-  const auto* self = static_cast<SoundSDL2*>(object);
+  const auto* self = static_cast<SoundSDL*>(object);
 
   if(self->myAudioQueue && self->myResampler)
   {
@@ -378,14 +378,14 @@ void SoundSDL2::callback(void* object, uInt8* stream, int len)
     self->myResampler->fillFragment(s, length);
 
     for(uInt32 i = 0; i < length; ++i)
-      s[i] *= SoundSDL2::myVolumeFactor;
+      s[i] *= SoundSDL::myVolumeFactor;
   }
   else
     SDL_memset(stream, 0, len);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool SoundSDL2::playWav(const string& fileName, uInt32 position, uInt32 length)
+bool SoundSDL::playWav(const string& fileName, uInt32 position, uInt32 length)
 {
   const char* const device = myDeviceId
     ? myDevices.at(myDeviceId).first.c_str()
@@ -395,19 +395,19 @@ bool SoundSDL2::playWav(const string& fileName, uInt32 position, uInt32 length)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void SoundSDL2::stopWav()
+void SoundSDL::stopWav()
 {
   myWavHandler.stop();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt32 SoundSDL2::wavSize() const
+uInt32 SoundSDL::wavSize() const
 {
   return myWavHandler.size();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool SoundSDL2::WavHandlerSDL2::play(
+bool SoundSDL::WavHandlerSDL::play(
     const string& fileName, const char* device, uInt32 position, uInt32 length)
 {
   // Load WAV file
@@ -450,7 +450,7 @@ bool SoundSDL2::WavHandlerSDL2::play(
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void SoundSDL2::WavHandlerSDL2::stop()
+void SoundSDL::WavHandlerSDL::stop()
 {
   if(myBuffer)
   {
@@ -467,7 +467,7 @@ void SoundSDL2::WavHandlerSDL2::stop()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void SoundSDL2::WavHandlerSDL2::processWav(uInt8* stream, uInt32 len)
+void SoundSDL::WavHandlerSDL::processWav(uInt8* stream, uInt32 len)
 {
   SDL_memset(stream, mySpec.silence, len);
   if(myRemaining)
@@ -488,8 +488,7 @@ void SoundSDL2::WavHandlerSDL2::processWav(uInt8* stream, uInt32 len)
       SDL_assert(cvt.needed); // Obviously, this one is always needed.
       cvt.len = len * mySpec.channels;  // Mono 8 bit sample frames
 
-      if(!myCvtBuffer ||
-          myCvtBufferSize < static_cast<uInt32>(cvt.len * cvt.len_mult))
+      if(!myCvtBuffer || std::cmp_less(myCvtBufferSize, cvt.len * cvt.len_mult))
       {
         myCvtBufferSize = cvt.len * cvt.len_mult;
         myCvtBuffer = make_unique<uInt8[]>(myCvtBufferSize);
@@ -501,7 +500,7 @@ void SoundSDL2::WavHandlerSDL2::processWav(uInt8* stream, uInt32 len)
       SDL_ConvertAudio(&cvt);
       // Mix volume adjusted WAV data into silent buffer
       SDL_MixAudioFormat(stream, cvt.buf, mySpec.format, cvt.len_cvt,
-                         SDL_MIX_MAXVOLUME * SoundSDL2::myVolumeFactor);
+                         SDL_MIX_MAXVOLUME * SoundSDL::myVolumeFactor);
     }
     else
     {
@@ -518,14 +517,14 @@ void SoundSDL2::WavHandlerSDL2::processWav(uInt8* stream, uInt32 len)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void SoundSDL2::WavHandlerSDL2::callback(void* object, uInt8* stream, int len)
+void SoundSDL::WavHandlerSDL::callback(void* object, uInt8* stream, int len)
 {
-  static_cast<WavHandlerSDL2*>(object)->processWav(
+  static_cast<WavHandlerSDL*>(object)->processWav(
       stream, static_cast<uInt32>(len));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-SoundSDL2::WavHandlerSDL2::~WavHandlerSDL2()
+SoundSDL::WavHandlerSDL::~WavHandlerSDL()
 {
   if(myDevice)
   {
@@ -535,13 +534,13 @@ SoundSDL2::WavHandlerSDL2::~WavHandlerSDL2()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void SoundSDL2::WavHandlerSDL2::pause(bool state) const
+void SoundSDL::WavHandlerSDL::pause(bool state) const
 {
   if(myDevice)
     SDL_PauseAudioDevice(myDevice, state ? 1 : 0);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-float SoundSDL2::myVolumeFactor = 0.F;
+float SoundSDL::myVolumeFactor = 0.F;
 
 #endif  // SOUND_SUPPORT

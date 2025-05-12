@@ -145,7 +145,7 @@ void Missile::nusiz(uInt8 value)
   myWidth = ourWidths[(value & 0x30) >> 4];
   myDecodes = DrawCounterDecodes::get().missileDecodes()[myDecodesOffset];
 
-  if (myIsRendering && myRenderCounter >= myWidth)
+  if (myIsRendering && std::cmp_greater_equal(myRenderCounter, myWidth))
     myIsRendering = false;
 }
 

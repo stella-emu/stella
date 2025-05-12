@@ -69,7 +69,7 @@ void CartridgeE7Widget::initialize(GuiObject* boss,
   int ypos = addBaseInformation(size, "M Network", info.view(), 15) + myLineHeight;
 
   VariantList items0, items1;
-  for(int i = 0; i < cart.romBankCount(); ++i)
+  for(int i = 0; std::cmp_less(i, cart.romBankCount()); ++i)
     VarList::push_back(items0, getSpotLower(i, myCart.romBankCount()));
   for(int i = 0; i < 4; ++i)
     VarList::push_back(items1, getSpotUpper(i));

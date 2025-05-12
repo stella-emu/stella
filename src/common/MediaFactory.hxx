@@ -53,8 +53,8 @@
   #include "EventHandlerLIBRETRO.hxx"
   #include "FBBackendLIBRETRO.hxx"
 #elif defined(SDL_SUPPORT)
-  #include "EventHandlerSDL2.hxx"
-  #include "FBBackendSDL2.hxx"
+  #include "EventHandlerSDL.hxx"
+  #include "FBBackendSDL.hxx"
 #else
   #error Unsupported backend!
 #endif
@@ -63,7 +63,7 @@
   #if defined(__LIB_RETRO__)
     #include "SoundLIBRETRO.hxx"
   #elif defined(SDL_SUPPORT)
-    #include "SoundSDL2.hxx"
+    #include "SoundSDL.hxx"
   #else
     #include "SoundNull.hxx"
   #endif
@@ -133,7 +133,7 @@ class MediaFactory
     #if defined(__LIB_RETRO__)
       return make_unique<FBBackendLIBRETRO>(osystem);
     #elif defined(SDL_SUPPORT)
-      return make_unique<FBBackendSDL2>(osystem);
+      return make_unique<FBBackendSDL>(osystem);
     #else
       #error Unsupported platform for FrameBuffer!
     #endif
@@ -145,7 +145,7 @@ class MediaFactory
       #if defined(__LIB_RETRO__)
         return make_unique<SoundLIBRETRO>(osystem, audioSettings);
       #elif defined(SOUND_SUPPORT) && defined(SDL_SUPPORT)
-        return make_unique<SoundSDL2>(osystem, audioSettings);
+        return make_unique<SoundSDL>(osystem, audioSettings);
       #else
         return make_unique<SoundNull>(osystem);
       #endif
@@ -159,7 +159,7 @@ class MediaFactory
     #if defined(__LIB_RETRO__)
       return make_unique<EventHandlerLIBRETRO>(osystem);
     #elif defined(SDL_SUPPORT)
-      return make_unique<EventHandlerSDL2>(osystem);
+      return make_unique<EventHandlerSDL>(osystem);
     #else
       #error Unsupported platform for EventHandler!
     #endif

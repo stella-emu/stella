@@ -169,7 +169,8 @@ void CartridgeDPCWidget::loadConfig()
   for(int i = 0; i < 8; ++i)
   {
     alist.push_back(0);  vlist.push_back(myCart.myTops[i]);
-    changed.push_back(myCart.myTops[i] != myOldState.tops[i]);
+    changed.push_back(std::cmp_not_equal(myCart.myTops[i],
+                                         myOldState.tops[i]));
   }
   myTops->setList(alist, vlist, changed);
 
@@ -177,7 +178,8 @@ void CartridgeDPCWidget::loadConfig()
   for(int i = 0; i < 8; ++i)
   {
     alist.push_back(0);  vlist.push_back(myCart.myBottoms[i]);
-    changed.push_back(myCart.myBottoms[i] != myOldState.bottoms[i]);
+    changed.push_back(std::cmp_not_equal(myCart.myBottoms[i],
+                                         myOldState.bottoms[i]));
   }
   myBottoms->setList(alist, vlist, changed);
 
@@ -185,7 +187,8 @@ void CartridgeDPCWidget::loadConfig()
   for(int i = 0; i < 8; ++i)
   {
     alist.push_back(0);  vlist.push_back(myCart.myCounters[i]);
-    changed.push_back(myCart.myCounters[i] != myOldState.counters[i]);
+    changed.push_back(std::cmp_not_equal(myCart.myCounters[i],
+                                         myOldState.counters[i]));
   }
   myCounters->setList(alist, vlist, changed);
 
@@ -193,7 +196,8 @@ void CartridgeDPCWidget::loadConfig()
   for(int i = 0; i < 8; ++i)
   {
     alist.push_back(0);  vlist.push_back(myCart.myFlags[i]);
-    changed.push_back(myCart.myFlags[i] != myOldState.flags[i]);
+    changed.push_back(std::cmp_not_equal(myCart.myFlags[i],
+                                         myOldState.flags[i]));
   }
   myFlags->setList(alist, vlist, changed);
 

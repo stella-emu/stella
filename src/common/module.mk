@@ -6,9 +6,9 @@ MODULE_OBJS := \
 	src/common/Base.o \
   src/common/Bezel.o \
 	src/common/DevSettingsHandler.o \
-	src/common/EventHandlerSDL2.o \
-	src/common/FBBackendSDL2.o \
-	src/common/FBSurfaceSDL2.o \
+	src/common/EventHandlerSDL.o \
+	src/common/FBBackendSDL.o \
+	src/common/FBSurfaceSDL.o \
 	src/common/FpsMeter.o \
 	src/common/FSNodeZIP.o \
 	src/common/HighScoresManager.o \
@@ -25,7 +25,7 @@ MODULE_OBJS := \
 	src/common/PKeyboardHandler.o \
 	src/common/PNGLibrary.o \
 	src/common/RewindManager.o \
-	src/common/SoundSDL2.o \
+	src/common/SoundSDL.o \
 	src/common/StaggeredLogger.o \
 	src/common/StateManager.o \
 	src/common/ThreadDebugging.o \

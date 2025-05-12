@@ -15,12 +15,12 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#include "FBBackendSDL2.hxx"
+#include "FBBackendSDL.hxx"
 #include "ThreadDebugging.hxx"
 #include "QisBlitter.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-QisBlitter::QisBlitter(FBBackendSDL2& fb)
+QisBlitter::QisBlitter(FBBackendSDL& fb)
   : myFB{fb}
 {
 }
@@ -32,7 +32,7 @@ QisBlitter::~QisBlitter()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool QisBlitter::isSupported(const FBBackendSDL2& fb)
+bool QisBlitter::isSupported(const FBBackendSDL& fb)
 {
   if (!fb.isInitialized()) throw runtime_error("framebuffer not initialized");
 
@@ -112,7 +112,6 @@ void QisBlitter::blit(SDL_Surface& surface)
   SDL_RenderCopy(myFB.renderer(), intermediateTexture, &myIntermediateRect, &myDstRect);
 }
 
-
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void QisBlitter::blitToIntermediate()
 {
@@ -130,7 +129,6 @@ void QisBlitter::blitToIntermediate()
 
   SDL_SetRenderTarget(myFB.renderer(), nullptr);
 }
-
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void QisBlitter::recreateTexturesIfNecessary()

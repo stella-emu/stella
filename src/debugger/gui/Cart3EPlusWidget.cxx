@@ -162,8 +162,9 @@ void Cartridge3EPlusWidget::handleCommand(CommandSender* sender,
       const bool isROM = myBankType[segment]->getSelectedTag() == "ROM";
       const int bank = myBankWidgets[segment]->getSelected();
 
-      myBankCommit[segment]->setEnabled((isROM && bank < myCart.romBankCount())
-        || (!isROM && bank < myCart.ramBankCount()));
+      myBankCommit[segment]->setEnabled(
+        (isROM  && std::cmp_less(bank, myCart.romBankCount())) ||
+        (!isROM && std::cmp_less(bank, myCart.ramBankCount())));
       break;
     }
     case kChangeBank:
@@ -197,7 +198,7 @@ void Cartridge3EPlusWidget::updateUIState()
 {
   // Set description for each 1K segment state (@ each index)
   // Set contents for actual banks number and type (@ each even index)
-  for(int seg = 0; seg < myCart3EP.myBankSegs; ++seg)
+  for(int seg = 0; std::cmp_less(seg, myCart3EP.myBankSegs); ++seg)
   {
     const uInt16 bank = myCart.getSegmentBank(seg);
     const size_t bank_off = static_cast<size_t>(seg) * 2;

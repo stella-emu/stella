@@ -234,7 +234,7 @@ void CartridgeCDFWidget::saveOldState()
   if (isCDFJplus())
     myOldState.fastfetchoffset.push_back(myCart.myRAM[myCart.myFastFetcherOffset]);
 
-  for(uInt32 i = 0; i < static_cast<uInt32>((isCDFJ() || isCDFJplus()) ? 35 : 34); ++i)
+  for(uInt32 i = 0; i < (isCDFJ() || isCDFJplus() ? 35U : 34U); ++i)
   {
     // Pointers are stored as:
     // PPPFF---
@@ -319,7 +319,7 @@ void CartridgeCDFWidget::loadConfig()
   alist.clear();  vlist.clear();  changed.clear();
   alist.push_back(0);
   vlist.push_back(myCart.getDatastreamPointer(0x20) >> ds_shift);
-  changed.push_back(static_cast<Int32>(myCart.getDatastreamPointer(0x20)) != myOldState.datastreampointers[0x20]);
+  changed.push_back(std::cmp_not_equal(myCart.getDatastreamPointer(0x20), myOldState.datastreampointers[0x20]));
   myCommandStreamPointer->setList(alist, vlist, changed);
 
   alist.clear();  vlist.clear();  changed.clear();
@@ -343,7 +343,7 @@ void CartridgeCDFWidget::loadConfig()
   alist.clear();  vlist.clear();  changed.clear();
   alist.push_back(0);
   vlist.push_back(myCart.getDatastreamIncrement(0x20));
-  changed.push_back(static_cast<Int32>(myCart.getDatastreamIncrement(0x20)) != myOldState.datastreamincrements[0x20]);
+  changed.push_back(std::cmp_not_equal(myCart.getDatastreamIncrement(0x20), myOldState.datastreamincrements[0x20]));
   myCommandStreamIncrement->setList(alist, vlist, changed);
 
   alist.clear();  vlist.clear();  changed.clear();
@@ -359,8 +359,8 @@ void CartridgeCDFWidget::loadConfig()
   for(int i = 0; i < 3; ++i)
   {
     alist.push_back(0);  vlist.push_back(myCart.myMusicCounters[i]);
-    changed.push_back(myCart.myMusicCounters[i] !=
-      static_cast<uInt32>(myOldState.mcounters[i]));
+    changed.push_back(std::cmp_not_equal(myCart.myMusicCounters[i],
+                                         myOldState.mcounters[i]));
   }
   myMusicCounters->setList(alist, vlist, changed);
 
@@ -368,8 +368,8 @@ void CartridgeCDFWidget::loadConfig()
   for(int i = 0; i < 3; ++i)
   {
     alist.push_back(0);  vlist.push_back(myCart.myMusicFrequencies[i]);
-    changed.push_back(myCart.myMusicFrequencies[i] !=
-      static_cast<uInt32>(myOldState.mfreqs[i]));
+    changed.push_back(std::cmp_not_equal(myCart.myMusicFrequencies[i],
+                                         myOldState.mfreqs[i]));
   }
   myMusicFrequencies->setList(alist, vlist, changed);
 
@@ -377,8 +377,8 @@ void CartridgeCDFWidget::loadConfig()
   for(int i = 0; i < 3; ++i)
   {
     alist.push_back(0);  vlist.push_back(myCart.getWaveform(i) >> 5);
-    changed.push_back((myCart.getWaveform(i) >> 5) !=
-      static_cast<uInt32>(myOldState.mwaves[i]));
+    changed.push_back(std::cmp_not_equal(myCart.getWaveform(i) >> 5,
+                                         myOldState.mwaves[i]));
   }
   myMusicWaveforms->setList(alist, vlist, changed);
 
@@ -386,15 +386,15 @@ void CartridgeCDFWidget::loadConfig()
   for(int i = 0; i < 3; ++i)
   {
     alist.push_back(0);  vlist.push_back(myCart.getWaveformSize(i));
-    changed.push_back((myCart.getWaveformSize(i)) !=
-      static_cast<uInt32>(myOldState.mwavesizes[i]));
+    changed.push_back(std::cmp_not_equal(myCart.getWaveformSize(i),
+                                         myOldState.mwavesizes[i]));
   }
   myMusicWaveformSizes->setList(alist, vlist, changed);
 
   alist.clear();  vlist.clear();  changed.clear();
   alist.push_back(0);  vlist.push_back(myCart.getSample());
-  changed.push_back((myCart.getSample()) !=
-    static_cast<uInt32>(myOldState.samplepointer[0]));
+  changed.push_back(std::cmp_not_equal(myCart.getSample(),
+                                       myOldState.samplepointer[0]));
   mySamplePointer->setList(alist, vlist, changed);
 
   myFastFetch->setState((myCart.myMode & 0x0f) == 0);

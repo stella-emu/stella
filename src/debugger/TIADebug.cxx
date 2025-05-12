@@ -1190,7 +1190,7 @@ string TIADebug::toString()
   // build up output, then return it.
   buf << std::setfill(' ') << std::left
       << decWithLabel("scanline", myTIA.scanlines(),
-                      static_cast<int>(myTIA.scanlines()) != oldState.info[4]) << " "
+                      std::cmp_not_equal(myTIA.scanlines(), oldState.info[4])) << " "
       << boolWithLabel("vsync",  vsync(),
                        state.vsb[0] != oldState.vsb[0]) << " "
       << boolWithLabel("vblank", vblank(),

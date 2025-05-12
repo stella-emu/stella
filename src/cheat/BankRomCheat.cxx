@@ -33,7 +33,7 @@ BankRomCheat::BankRomCheat(OSystem& os, string_view name, string_view code)
   count = static_cast<uInt8>(BSPF::stoi<16>(myCode.substr(7, 1)) + 1);
 
   // Back up original data; we need this if the cheat is ever disabled
-  for(int i = 0; i < count; ++i)
+  for(int i = 0; std::cmp_less(i, count); ++i)
     savedRom[i] = myOSystem.console().cartridge().peek(address + i);
 }
 
@@ -50,7 +50,7 @@ bool BankRomCheat::disable()
   const int oldBank = myOSystem.console().cartridge().getBank(address);
   myOSystem.console().cartridge().bank(bank);
 
-  for(int i = 0; i < count; ++i)
+  for(int i = 0; std::cmp_less(i, count); ++i)
     myOSystem.console().cartridge().patch(address + i, savedRom[i]);
 
   myOSystem.console().cartridge().bank(oldBank);
@@ -66,7 +66,7 @@ void BankRomCheat::evaluate()
     const int oldBank = myOSystem.console().cartridge().getBank(address);
     myOSystem.console().cartridge().bank(bank);
 
-    for(int i = 0; i < count; ++i)
+    for(int i = 0; std::cmp_less(i, count); ++i)
       myOSystem.console().cartridge().patch(address + i, value);
 
     myOSystem.console().cartridge().bank(oldBank);

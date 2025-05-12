@@ -2442,14 +2442,14 @@ Event::Type EventHandler::eventAtIndex(int idx, Event::Group group)
 
   if(group == Event::Group::Menu)
   {
-    if(index < 0 || index >= static_cast<int>(ourMenuActionList.size()))
+    if(index < 0 || std::cmp_greater_equal(index, ourMenuActionList.size()))
       return Event::NoType;
     else
       return ourMenuActionList[index].event;
   }
   else
   {
-    if(index < 0 || index >= static_cast<int>(ourEmulActionList.size()))
+    if(index < 0 || std::cmp_greater_equal(index, ourEmulActionList.size()))
       return Event::NoType;
     else
       return ourEmulActionList[index].event;
@@ -2463,14 +2463,14 @@ string EventHandler::actionAtIndex(int idx, Event::Group group)
 
   if(group == Event::Group::Menu)
   {
-    if(index < 0 || index >= static_cast<int>(ourMenuActionList.size()))
+    if(index < 0 || std::cmp_greater_equal(index, ourMenuActionList.size()))
       return EmptyString;
     else
       return ourMenuActionList[index].action;
   }
   else
   {
-    if(index < 0 || index >= static_cast<int>(ourEmulActionList.size()))
+    if(index < 0 || std::cmp_greater_equal(index, ourEmulActionList.size()))
       return EmptyString;
     else
       return ourEmulActionList[index].action;
@@ -2484,14 +2484,14 @@ string EventHandler::keyAtIndex(int idx, Event::Group group)
 
   if(group == Event::Group::Menu)
   {
-    if(index < 0 || index >= static_cast<int>(ourMenuActionList.size()))
+    if(index < 0 || std::cmp_greater_equal(index, ourMenuActionList.size()))
       return EmptyString;
     else
       return ourMenuActionList[index].key;
   }
   else
   {
-    if(index < 0 || index >= static_cast<int>(ourEmulActionList.size()))
+    if(index < 0 || std::cmp_greater_equal(index, ourEmulActionList.size()))
       return EmptyString;
     else
       return ourEmulActionList[index].key;

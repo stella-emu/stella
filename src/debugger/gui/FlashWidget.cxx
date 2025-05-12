@@ -108,7 +108,7 @@ void FlashWidget::loadConfig()
         myPage[useCount]->setLabel(label.view());
 
         startPage = -1;
-        if(++useCount == MAX_PAGES)
+        if(std::cmp_equal(++useCount, MAX_PAGES))
           break;
       }
     }

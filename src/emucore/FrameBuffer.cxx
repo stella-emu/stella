@@ -532,7 +532,7 @@ void FrameBuffer::update(UpdateMode mode)
 
         // Pause sound if saved states were removed or states are too far apart
         myOSystem.sound().pause(stateFrames > intervalFrames ||
-            frames > static_cast<Int32>(myOSystem.audioSettings().bufferSize() / 2 + 1));
+            std::cmp_greater(frames, myOSystem.audioSettings().bufferSize() / 2 + 1));
       }
       redraw |= success;
       if(redraw)

@@ -28,7 +28,7 @@ CheetahCheat::CheetahCheat(OSystem& os, string_view name, string_view code)
     count{static_cast<uInt8>(BSPF::stoi<16>(code.substr(5, 1)) + 1)}
 {
   // Back up original data; we need this if the cheat is ever disabled
-  for(int i = 0; i < count; ++i)
+  for(uInt8 i = 0; i < count; ++i)
     savedRom[i] = myOSystem.console().cartridge().peek(address + i);
 }
 
@@ -42,7 +42,7 @@ bool CheetahCheat::enable()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CheetahCheat::disable()
 {
-  for(int i = 0; i < count; ++i)
+  for(uInt8 i = 0; i < count; ++i)
     myOSystem.console().cartridge().patch(address + i, savedRom[i]);
 
   return myEnabled = false;
@@ -53,7 +53,7 @@ void CheetahCheat::evaluate()
 {
   if(!myEnabled)
   {
-    for(int i = 0; i < count; ++i)
+    for(uInt8 i = 0; i < count; ++i)
       myOSystem.console().cartridge().patch(address + i, value);
 
     myEnabled = true;

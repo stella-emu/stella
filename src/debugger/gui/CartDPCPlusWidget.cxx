@@ -253,7 +253,7 @@ void CartridgeDPCPlusWidget::loadConfig()
   for(int i = 0; i < 8; ++i)
   {
     alist.push_back(0);  vlist.push_back(myCart.myCounters[i]);
-    changed.push_back(myCart.myCounters[i] != myOldState.counters[i]);
+    changed.push_back(std::cmp_not_equal(myCart.myCounters[i], myOldState.counters[i]));
   }
   myCounters->setList(alist, vlist, changed);
 
@@ -261,8 +261,8 @@ void CartridgeDPCPlusWidget::loadConfig()
   for(int i = 0; i < 8; ++i)
   {
     alist.push_back(0);  vlist.push_back(myCart.myFractionalCounters[i]);
-    changed.push_back(myCart.myFractionalCounters[i] !=
-      static_cast<uInt32>(myOldState.fraccounters[i]));
+    changed.push_back(std::cmp_not_equal(myCart.myFractionalCounters[i],
+                                         myOldState.fraccounters[i]));
   }
   myFracCounters->setList(alist, vlist, changed);
 
@@ -286,8 +286,8 @@ void CartridgeDPCPlusWidget::loadConfig()
   for(int i = 0; i < 3; ++i)
   {
     alist.push_back(0);  vlist.push_back(myCart.myMusicCounters[i]);
-    changed.push_back(myCart.myMusicCounters[i] !=
-      static_cast<uInt32>(myOldState.mcounters[i]));
+    changed.push_back(std::cmp_not_equal(myCart.myMusicCounters[i],
+                                         myOldState.mcounters[i]));
   }
   myMusicCounters->setList(alist, vlist, changed);
 
@@ -295,8 +295,8 @@ void CartridgeDPCPlusWidget::loadConfig()
   for(int i = 0; i < 3; ++i)
   {
     alist.push_back(0);  vlist.push_back(myCart.myMusicFrequencies[i]);
-    changed.push_back(myCart.myMusicFrequencies[i] !=
-      static_cast<uInt32>(myOldState.mfreqs[i]));
+    changed.push_back(std::cmp_not_equal(myCart.myMusicFrequencies[i],
+                                         myOldState.mfreqs[i]));
   }
   myMusicFrequencies->setList(alist, vlist, changed);
 
@@ -304,7 +304,8 @@ void CartridgeDPCPlusWidget::loadConfig()
   for(int i = 0; i < 3; ++i)
   {
     alist.push_back(0);  vlist.push_back(myCart.myMusicWaveforms[i]);
-    changed.push_back(myCart.myMusicWaveforms[i] != myOldState.mwaves[i]);
+    changed.push_back(std::cmp_not_equal(myCart.myMusicWaveforms[i],
+                                         myOldState.mwaves[i]));
   }
   myMusicWaveforms->setList(alist, vlist, changed);
 

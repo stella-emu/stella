@@ -29,7 +29,7 @@ class FBSurface;
 /**
   This class provides an interface/abstraction for platform-specific,
   framebuffer-related rendering operations.  Different graphical
-  platforms will inherit from this.  For most ports that means SDL2,
+  platforms will inherit from this.  For most ports that means SDL,
   but some (such as libretro) use their own graphical subsystem.
 
   @author  Stephen Anthony

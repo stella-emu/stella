@@ -416,9 +416,9 @@
     <ClCompile Include="..\..\common\Base.cxx" />
     <ClCompile Include="..\..\common\Bezel.cxx" />
     <ClCompile Include="..\..\common\DevSettingsHandler.cxx" />
-    <ClCompile Include="..\..\common\EventHandlerSDL2.cxx" />
-    <ClCompile Include="..\..\common\FBBackendSDL2.cxx" />
-    <ClCompile Include="..\..\common\FBSurfaceSDL2.cxx" />
+    <ClCompile Include="..\..\common\EventHandlerSDL.cxx" />
+    <ClCompile Include="..\..\common\FBBackendSDL.cxx" />
+    <ClCompile Include="..\..\common\FBSurfaceSDL.cxx" />
     <ClCompile Include="..\..\common\FpsMeter.cxx" />
     <ClCompile Include="..\..\common\FSNodeZIP.cxx" />
     <ClCompile Include="..\..\common\HighScoresManager.cxx" />
@@ -784,7 +784,7 @@
     <ClCompile Include="OSystemWINDOWS.cxx" />
     <ClCompile Include="..\..\common\PNGLibrary.cxx" />
     <ClCompile Include="SerialPortWINDOWS.cxx" />
-    <ClCompile Include="..\..\common\SoundSDL2.cxx" />
+    <ClCompile Include="..\..\common\SoundSDL.cxx" />
     <ClCompile Include="..\..\emucore\AtariVox.cxx" />
     <ClCompile Include="..\..\emucore\Booster.cxx" />
     <ClCompile Include="..\..\emucore\Cart.cxx" />
@@ -1382,9 +1382,9 @@
     <ClInclude Include="..\..\common\Bezel.hxx" />
     <ClInclude Include="..\..\common\bspf.hxx" />
     <ClInclude Include="..\..\common\DevSettingsHandler.hxx" />
-    <ClInclude Include="..\..\common\EventHandlerSDL2.hxx" />
-    <ClInclude Include="..\..\common\FBBackendSDL2.hxx" />
-    <ClInclude Include="..\..\common\FBSurfaceSDL2.hxx" />
+    <ClInclude Include="..\..\common\EventHandlerSDL.hxx" />
+    <ClInclude Include="..\..\common\FBBackendSDL.hxx" />
+    <ClInclude Include="..\..\common\FBSurfaceSDL.hxx" />
     <ClInclude Include="..\..\common\FpsMeter.hxx" />
     <ClInclude Include="..\..\common\FSNodeFactory.hxx" />
     <ClInclude Include="..\..\common\FSNodeZIP.hxx" />
@@ -1790,7 +1790,7 @@
     <ClInclude Include="OSystemWINDOWS.hxx" />
     <ClInclude Include="..\..\common\PNGLibrary.hxx" />
     <ClInclude Include="SerialPortWINDOWS.hxx" />
-    <ClInclude Include="..\..\common\SoundSDL2.hxx" />
+    <ClInclude Include="..\..\common\SoundSDL.hxx" />
     <ClInclude Include="..\..\common\Stack.hxx" />
     <ClInclude Include="..\..\common\Version.hxx" />
     <ClInclude Include="..\..\emucore\AtariVox.hxx" />

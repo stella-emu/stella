@@ -126,7 +126,7 @@ void RomListWidget::setList(const CartDebug::Disassembly& disasm)
     myCheckList[i]->setFlags(Widget::FLAG_ENABLED);
 
   // Then turn off any extras
-  if(static_cast<int>(myDisasm->list.size()) < _rows)
+  if(std::cmp_less(myDisasm->list.size(), _rows))
     for(int i = static_cast<int>(myDisasm->list.size()); i < _rows; ++i)
       myCheckList[i]->clearFlags(Widget::FLAG_ENABLED);
 
@@ -152,7 +152,7 @@ void RomListWidget::setSelected(int item)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void RomListWidget::setHighlighted(int item)
 {
-  if(item < -1 || item >= static_cast<int>(myDisasm->list.size()))
+  if(item < -1 || std::cmp_greater_equal(item, myDisasm->list.size()))
     return;
 
   if(isEnabled())

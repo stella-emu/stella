@@ -167,7 +167,7 @@ void FBSurface::drawChar(const GUI::Font& font, uInt8 chr,
   const FontDesc& desc = font.desc();
 
   // If this character is not included in the font, use the default char.
-  if(chr < desc.firstchar || chr >= desc.firstchar + desc.size)
+  if(std::cmp_less(chr, desc.firstchar) || chr >= desc.firstchar + desc.size)
   {
     if (chr == ' ') return;
     chr = desc.defaultchar;

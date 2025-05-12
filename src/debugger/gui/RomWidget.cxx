@@ -257,7 +257,7 @@ uInt16 RomWidget::getAddress(int disasm_line)
   const CartDebug::DisassemblyList& list =
     instance().debugger().cartDebug().disassembly().list;
 
-  if (disasm_line < static_cast<int>(list.size()) && list[disasm_line].address != 0)
+  if (std::cmp_less(disasm_line, list.size()) && list[disasm_line].address != 0)
     return list[disasm_line].address;
   else
     return 0;

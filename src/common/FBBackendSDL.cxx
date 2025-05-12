@@ -25,33 +25,33 @@
 #include "Settings.hxx"
 
 #include "ThreadDebugging.hxx"
-#include "FBSurfaceSDL2.hxx"
-#include "FBBackendSDL2.hxx"
+#include "FBSurfaceSDL.hxx"
+#include "FBBackendSDL.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FBBackendSDL2::FBBackendSDL2(OSystem& osystem)
+FBBackendSDL::FBBackendSDL(OSystem& osystem)
   : myOSystem{osystem}
 {
   ASSERT_MAIN_THREAD;
 
-  // Initialize SDL2 context
+  // Initialize SDL context
   if(SDL_InitSubSystem(SDL_INIT_VIDEO | SDL_INIT_TIMER) < 0)
   {
     ostringstream buf;
     buf << "ERROR: Couldn't initialize SDL: " << SDL_GetError();
     throw runtime_error(buf.str());
   }
-  Logger::debug("FBBackendSDL2::FBBackendSDL2 SDL_Init()");
+  Logger::debug("FBBackendSDL::FBBackendSDL SDL_Init()");
 
   // We need a pixel format for palette value calculations
-  // It's done this way (vs directly accessing a FBSurfaceSDL2 object)
+  // It's done this way (vs directly accessing a FBSurfaceSDL object)
   // since the structure may be needed before any FBSurface's have
   // been created
   myPixelFormat = SDL_AllocFormat(SDL_PIXELFORMAT_ARGB8888);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FBBackendSDL2::~FBBackendSDL2()
+FBBackendSDL::~FBBackendSDL()
 {
   ASSERT_MAIN_THREAD;
 
@@ -73,9 +73,9 @@ FBBackendSDL2::~FBBackendSDL2()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FBBackendSDL2::queryHardware(vector<Common::Size>& fullscreenRes,
-                                  vector<Common::Size>& windowedRes,
-                                  VariantList& renderers)
+void FBBackendSDL::queryHardware(vector<Common::Size>& fullscreenRes,
+                                 vector<Common::Size>& windowedRes,
+                                 VariantList& renderers)
 {
   ASSERT_MAIN_THREAD;
 
@@ -190,7 +190,7 @@ void FBBackendSDL2::queryHardware(vector<Common::Size>& fullscreenRes,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool FBBackendSDL2::isCurrentWindowPositioned() const
+bool FBBackendSDL::isCurrentWindowPositioned() const
 {
   ASSERT_MAIN_THREAD;
 
@@ -199,19 +199,18 @@ bool FBBackendSDL2::isCurrentWindowPositioned() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Common::Point FBBackendSDL2::getCurrentWindowPos() const
+Common::Point FBBackendSDL::getCurrentWindowPos() const
 {
   ASSERT_MAIN_THREAD;
 
   Common::Point pos;
-
   SDL_GetWindowPosition(myWindow, &pos.x, &pos.y);
 
   return pos;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Int32 FBBackendSDL2::getCurrentDisplayIndex() const
+Int32 FBBackendSDL::getCurrentDisplayIndex() const
 {
   ASSERT_MAIN_THREAD;
 
@@ -219,8 +218,8 @@ Int32 FBBackendSDL2::getCurrentDisplayIndex() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool FBBackendSDL2::setVideoMode(const VideoModeHandler::Mode& mode,
-                                 int winIdx, const Common::Point& winPos)
+bool FBBackendSDL::setVideoMode(const VideoModeHandler::Mode& mode,
+                                int winIdx, const Common::Point& winPos)
 {
   ASSERT_MAIN_THREAD;
 
@@ -287,8 +286,9 @@ bool FBBackendSDL2::setVideoMode(const VideoModeHandler::Mode& mode,
     int w{0}, h{0};
 
     SDL_GetWindowSize(myWindow, &w, &h);
-    if(d != displayIndex || static_cast<uInt32>(w) != mode.screenS.w ||
-      static_cast<uInt32>(h) != mode.screenS.h || adaptRefresh)
+    if(d != displayIndex ||
+       std::cmp_not_equal(w, mode.screenS.w) ||
+       std::cmp_not_equal(h, mode.screenS.h) || adaptRefresh)
     {
       // Renderer has to be destroyed *before* the window gets destroyed to avoid memory leaks
       SDL_DestroyRenderer(myRenderer);
@@ -345,8 +345,8 @@ bool FBBackendSDL2::setVideoMode(const VideoModeHandler::Mode& mode,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool FBBackendSDL2::adaptRefreshRate(Int32 displayIndex,
-                                     SDL_DisplayMode& adaptedSdlMode)
+bool FBBackendSDL::adaptRefreshRate(Int32 displayIndex,
+                                    SDL_DisplayMode& adaptedSdlMode)
 {
   ASSERT_MAIN_THREAD;
 
@@ -405,7 +405,7 @@ bool FBBackendSDL2::adaptRefreshRate(Int32 displayIndex,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool FBBackendSDL2::createRenderer()
+bool FBBackendSDL::createRenderer()
 {
   ASSERT_MAIN_THREAD;
 
@@ -459,7 +459,7 @@ bool FBBackendSDL2::createRenderer()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FBBackendSDL2::setTitle(string_view title)
+void FBBackendSDL::setTitle(string_view title)
 {
   ASSERT_MAIN_THREAD;
 
@@ -470,7 +470,7 @@ void FBBackendSDL2::setTitle(string_view title)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string FBBackendSDL2::about() const
+string FBBackendSDL::about() const
 {
   ASSERT_MAIN_THREAD;
 
@@ -492,7 +492,7 @@ string FBBackendSDL2::about() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FBBackendSDL2::showCursor(bool show)
+void FBBackendSDL::showCursor(bool show)
 {
   ASSERT_MAIN_THREAD;
 
@@ -500,7 +500,7 @@ void FBBackendSDL2::showCursor(bool show)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FBBackendSDL2::grabMouse(bool grab)
+void FBBackendSDL::grabMouse(bool grab)
 {
   ASSERT_MAIN_THREAD;
 
@@ -508,7 +508,7 @@ void FBBackendSDL2::grabMouse(bool grab)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool FBBackendSDL2::fullScreen() const
+bool FBBackendSDL::fullScreen() const
 {
   ASSERT_MAIN_THREAD;
 
@@ -520,7 +520,7 @@ bool FBBackendSDL2::fullScreen() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int FBBackendSDL2::refreshRate() const
+int FBBackendSDL::refreshRate() const
 {
   ASSERT_MAIN_THREAD;
 
@@ -537,7 +537,7 @@ int FBBackendSDL2::refreshRate() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FBBackendSDL2::renderToScreen()
+void FBBackendSDL::renderToScreen()
 {
   ASSERT_MAIN_THREAD;
 
@@ -546,7 +546,7 @@ void FBBackendSDL2::renderToScreen()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FBBackendSDL2::setWindowIcon()
+void FBBackendSDL::setWindowIcon()
 {
 #if !defined(BSPF_MACOS) && !defined(RETRON77)
 #include "stella_icon.hxx"
@@ -560,20 +560,20 @@ void FBBackendSDL2::setWindowIcon()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-unique_ptr<FBSurface> FBBackendSDL2::createSurface(
+unique_ptr<FBSurface> FBBackendSDL::createSurface(
   uInt32 w,
   uInt32 h,
   ScalingInterpolation inter,
   const uInt32* data
 ) const
 {
-  return make_unique<FBSurfaceSDL2>
-      (const_cast<FBBackendSDL2&>(*this), w, h, inter, data);
+  return make_unique<FBSurfaceSDL>
+      (const_cast<FBBackendSDL&>(*this), w, h, inter, data);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FBBackendSDL2::readPixels(uInt8* buffer, size_t pitch,
-                               const Common::Rect& rect) const
+void FBBackendSDL::readPixels(uInt8* buffer, size_t pitch,
+                              const Common::Rect& rect) const
 {
   ASSERT_MAIN_THREAD;
 
@@ -585,7 +585,7 @@ void FBBackendSDL2::readPixels(uInt8* buffer, size_t pitch,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FBBackendSDL2::clear()
+void FBBackendSDL::clear()
 {
   ASSERT_MAIN_THREAD;
 
@@ -593,7 +593,7 @@ void FBBackendSDL2::clear()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FBBackendSDL2::detectFeatures()
+void FBBackendSDL::detectFeatures()
 {
   myRenderTargetSupport = detectRenderTargetSupport();
 
@@ -602,7 +602,7 @@ void FBBackendSDL2::detectFeatures()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool FBBackendSDL2::detectRenderTargetSupport()
+bool FBBackendSDL::detectRenderTargetSupport()
 {
   ASSERT_MAIN_THREAD;
 
@@ -631,7 +631,7 @@ bool FBBackendSDL2::detectRenderTargetSupport()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FBBackendSDL2::determineDimensions()
+void FBBackendSDL::determineDimensions()
 {
   ASSERT_MAIN_THREAD;
 

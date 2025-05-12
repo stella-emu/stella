@@ -409,7 +409,7 @@ void HighScoresDialog::updateWidgets(bool init)
     myNameWidgets[r]->setLabel(myScores.scores[r].name);
     myDateWidgets[r]->setLabel(myScores.scores[r].date);
 
-    if (static_cast<Int32>(r) == myEditRank)
+    if (std::cmp_equal(r, myEditRank))
     {
       myNameWidgets[r]->setFlags(EditTextWidget::FLAG_INVISIBLE);
       myEditNameWidgets[r]->clearFlags(EditTextWidget::FLAG_INVISIBLE);
@@ -440,7 +440,7 @@ void HighScoresDialog::handlePlayedVariation()
     const Int32 newSpecial = instance().highScores().special();
     const bool scoreInvert = instance().highScores().scoreInvert();
 
-    for (myHighScoreRank = 0; myHighScoreRank < static_cast<Int32>(NUM_RANKS); ++myHighScoreRank)
+    for (myHighScoreRank = 0; std::cmp_less(myHighScoreRank, NUM_RANKS); ++myHighScoreRank)
     {
       const Int32 highScore = myScores.scores[myHighScoreRank].score;
 
@@ -452,10 +452,10 @@ void HighScoresDialog::handlePlayedVariation()
         break;
     }
 
-    if (myHighScoreRank < static_cast<Int32>(NUM_RANKS))
+    if (std::cmp_less(myHighScoreRank, NUM_RANKS))
     {
       myEditRank = myHighScoreRank;
-      for (uInt32 r = NUM_RANKS - 1; static_cast<Int32>(r) > myHighScoreRank; --r)
+      for (uInt32 r = NUM_RANKS - 1; std::cmp_greater(r, myHighScoreRank); --r)
       {
         myScores.scores[r].score = myScores.scores[r - 1].score;
         myScores.scores[r].special = myScores.scores[r - 1].special;

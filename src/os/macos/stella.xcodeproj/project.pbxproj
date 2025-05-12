@@ -283,10 +283,16 @@
 		DC30924D212F74930020DAD0 /* TimerManager.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC30924B212F74930020DAD0 /* TimerManager.hxx */; };
 		DC3131ED2C540CE2008A1E43 /* CortexM0.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC3131EB2C540CE2008A1E43 /* CortexM0.cxx */; };
 		DC3131EE2C540CE2008A1E43 /* CortexM0.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC3131EC2C540CE2008A1E43 /* CortexM0.hxx */; };
-		DC368F5818A2FB710084199C /* SoundSDL2.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC368F5218A2FB710084199C /* SoundSDL2.cxx */; };
-		DC368F5918A2FB710084199C /* SoundSDL2.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC368F5318A2FB710084199C /* SoundSDL2.hxx */; };
 		DC36D2C814CAFAB0007DC821 /* CartFA2.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC36D2C614CAFAB0007DC821 /* CartFA2.cxx */; };
 		DC36D2C914CAFAB0007DC821 /* CartFA2.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC36D2C714CAFAB0007DC821 /* CartFA2.hxx */; };
+		DC39F2A02DC107F3006D74A8 /* FBSurfaceSDL.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC39F29D2DC107F3006D74A8 /* FBSurfaceSDL.cxx */; };
+		DC39F2A12DC107F3006D74A8 /* EventHandlerSDL.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC39F2992DC107F3006D74A8 /* EventHandlerSDL.cxx */; };
+		DC39F2A22DC107F3006D74A8 /* SoundSDL.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC39F29F2DC107F3006D74A8 /* SoundSDL.cxx */; };
+		DC39F2A32DC107F3006D74A8 /* FBBackendSDL.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC39F29B2DC107F3006D74A8 /* FBBackendSDL.cxx */; };
+		DC39F2A42DC107F3006D74A8 /* EventHandlerSDL.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC39F2982DC107F3006D74A8 /* EventHandlerSDL.hxx */; };
+		DC39F2A52DC107F3006D74A8 /* FBBackendSDL.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC39F29A2DC107F3006D74A8 /* FBBackendSDL.hxx */; };
+		DC39F2A62DC107F3006D74A8 /* FBSurfaceSDL.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC39F29C2DC107F3006D74A8 /* FBSurfaceSDL.hxx */; };
+		DC39F2A72DC107F3006D74A8 /* SoundSDL.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC39F29E2DC107F3006D74A8 /* SoundSDL.hxx */; };
 		DC3C9BC52469C8F700CF2D47 /* PaletteHandler.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC3C9BC32469C8F700CF2D47 /* PaletteHandler.cxx */; };
 		DC3C9BC62469C8F700CF2D47 /* PaletteHandler.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC3C9BC42469C8F700CF2D47 /* PaletteHandler.hxx */; };
 		DC3C9BCB2469C93D00CF2D47 /* VideoAudioDialog.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC3C9BC72469C93D00CF2D47 /* VideoAudioDialog.cxx */; };
@@ -451,8 +457,6 @@
 		DC70065E241EC97900A459AB /* Stella14x28tFont.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC70065B241EC97900A459AB /* Stella14x28tFont.hxx */; };
 		DC71C399221623D9005DE92F /* ControllerDetector.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC71C397221623D8005DE92F /* ControllerDetector.hxx */; };
 		DC71C39A221623D9005DE92F /* ControllerDetector.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC71C398221623D9005DE92F /* ControllerDetector.cxx */; };
-		DC73BD851915E5B1003FAFAD /* FBSurfaceSDL2.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC73BD831915E5B1003FAFAD /* FBSurfaceSDL2.cxx */; };
-		DC73BD861915E5B1003FAFAD /* FBSurfaceSDL2.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC73BD841915E5B1003FAFAD /* FBSurfaceSDL2.hxx */; };
 		DC73BD891915E5E3003FAFAD /* FBSurface.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC73BD871915E5E3003FAFAD /* FBSurface.cxx */; };
 		DC73BD8A1915E5E3003FAFAD /* FBSurface.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC73BD881915E5E3003FAFAD /* FBSurface.hxx */; };
 		DC74D6A2138D4D7E00F05C5C /* StringParser.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC74D6A0138D4D7E00F05C5C /* StringParser.hxx */; };
@@ -602,8 +606,6 @@
 		DCB60AC92535E30600A5C1D2 /* VideoModeHandler.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCB60AC72535E30500A5C1D2 /* VideoModeHandler.cxx */; };
 		DCB60ACA2535E30600A5C1D2 /* VideoModeHandler.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCB60AC82535E30600A5C1D2 /* VideoModeHandler.hxx */; };
 		DCB60ACC25430FC600A5C1D2 /* FBBackend.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCB60ACB25430FC600A5C1D2 /* FBBackend.hxx */; };
-		DCB60AD02543100900A5C1D2 /* FBBackendSDL2.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCB60ACD2543100900A5C1D2 /* FBBackendSDL2.cxx */; };
-		DCB60AD12543100900A5C1D2 /* FBBackendSDL2.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCB60ACE2543100900A5C1D2 /* FBBackendSDL2.hxx */; };
 		DCB87E581A104C1E00BF2A3B /* MediaFactory.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCB87E571A104C1E00BF2A3B /* MediaFactory.hxx */; };
 		DCBA539925557E2800087DD7 /* UndoHandler.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCBA539725557E2700087DD7 /* UndoHandler.hxx */; };
 		DCBA539A25557E2800087DD7 /* UndoHandler.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCBA539825557E2800087DD7 /* UndoHandler.cxx */; };
@@ -764,8 +766,6 @@
 		DCFB9FAC1ECA2609004FD69B /* DelayQueueIteratorImpl.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCFB9FAB1ECA2609004FD69B /* DelayQueueIteratorImpl.hxx */; };
 		DCFCDE7220C9E66500915CBE /* EmulationWorker.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCFCDE7020C9E66500915CBE /* EmulationWorker.cxx */; };
 		DCFCDE7320C9E66500915CBE /* EmulationWorker.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCFCDE7120C9E66500915CBE /* EmulationWorker.hxx */; };
-		DCFF14CD18B0260300A20364 /* EventHandlerSDL2.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCFF14CB18B0260300A20364 /* EventHandlerSDL2.cxx */; };
-		DCFF14CE18B0260300A20364 /* EventHandlerSDL2.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCFF14CC18B0260300A20364 /* EventHandlerSDL2.hxx */; };
 		DCFFE59D12100E1400DFA000 /* ComboDialog.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCFFE59B12100E1400DFA000 /* ComboDialog.cxx */; };
 		DCFFE59E12100E1400DFA000 /* ComboDialog.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCFFE59C12100E1400DFA000 /* ComboDialog.hxx */; };
 		E007231E210FBF5E002CF343 /* FpsMeter.hxx in Headers */ = {isa = PBXBuildFile; fileRef = E007231C210FBF5C002CF343 /* FpsMeter.hxx */; };
@@ -1165,10 +1165,16 @@
 		DC30924B212F74930020DAD0 /* TimerManager.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = TimerManager.hxx; sourceTree = "<group>"; };
 		DC3131EB2C540CE2008A1E43 /* CortexM0.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CortexM0.cxx; sourceTree = "<group>"; };
 		DC3131EC2C540CE2008A1E43 /* CortexM0.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = CortexM0.hxx; sourceTree = "<group>"; };
-		DC368F5218A2FB710084199C /* SoundSDL2.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SoundSDL2.cxx; sourceTree = "<group>"; };
-		DC368F5318A2FB710084199C /* SoundSDL2.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = SoundSDL2.hxx; sourceTree = "<group>"; };
 		DC36D2C614CAFAB0007DC821 /* CartFA2.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CartFA2.cxx; sourceTree = "<group>"; };
 		DC36D2C714CAFAB0007DC821 /* CartFA2.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = CartFA2.hxx; sourceTree = "<group>"; };
+		DC39F2982DC107F3006D74A8 /* EventHandlerSDL.hxx */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = EventHandlerSDL.hxx; sourceTree = "<group>"; };
+		DC39F2992DC107F3006D74A8 /* EventHandlerSDL.cxx */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = EventHandlerSDL.cxx; sourceTree = "<group>"; };
+		DC39F29A2DC107F3006D74A8 /* FBBackendSDL.hxx */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = FBBackendSDL.hxx; sourceTree = "<group>"; };
+		DC39F29B2DC107F3006D74A8 /* FBBackendSDL.cxx */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = FBBackendSDL.cxx; sourceTree = "<group>"; };
+		DC39F29C2DC107F3006D74A8 /* FBSurfaceSDL.hxx */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = FBSurfaceSDL.hxx; sourceTree = "<group>"; };
+		DC39F29D2DC107F3006D74A8 /* FBSurfaceSDL.cxx */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = FBSurfaceSDL.cxx; sourceTree = "<group>"; };
+		DC39F29E2DC107F3006D74A8 /* SoundSDL.hxx */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = SoundSDL.hxx; sourceTree = "<group>"; };
+		DC39F29F2DC107F3006D74A8 /* SoundSDL.cxx */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = SoundSDL.cxx; sourceTree = "<group>"; };
 		DC3C9BC32469C8F700CF2D47 /* PaletteHandler.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PaletteHandler.cxx; sourceTree = "<group>"; };
 		DC3C9BC42469C8F700CF2D47 /* PaletteHandler.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = PaletteHandler.hxx; sourceTree = "<group>"; };
 		DC3C9BC72469C93D00CF2D47 /* VideoAudioDialog.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = VideoAudioDialog.cxx; sourceTree = "<group>"; };
@@ -1333,8 +1339,6 @@
 		DC70065B241EC97900A459AB /* Stella14x28tFont.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Stella14x28tFont.hxx; sourceTree = "<group>"; };
 		DC71C397221623D8005DE92F /* ControllerDetector.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = ControllerDetector.hxx; sourceTree = "<group>"; };
 		DC71C398221623D9005DE92F /* ControllerDetector.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ControllerDetector.cxx; sourceTree = "<group>"; };
-		DC73BD831915E5B1003FAFAD /* FBSurfaceSDL2.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FBSurfaceSDL2.cxx; sourceTree = "<group>"; };
-		DC73BD841915E5B1003FAFAD /* FBSurfaceSDL2.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = FBSurfaceSDL2.hxx; sourceTree = "<group>"; };
 		DC73BD871915E5E3003FAFAD /* FBSurface.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FBSurface.cxx; sourceTree = "<group>"; };
 		DC73BD881915E5E3003FAFAD /* FBSurface.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = FBSurface.hxx; sourceTree = "<group>"; };
 		DC74D6A0138D4D7E00F05C5C /* StringParser.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = StringParser.hxx; sourceTree = "<group>"; };
@@ -1485,8 +1489,6 @@
 		DCB60AC72535E30500A5C1D2 /* VideoModeHandler.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = VideoModeHandler.cxx; sourceTree = "<group>"; };
 		DCB60AC82535E30600A5C1D2 /* VideoModeHandler.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = VideoModeHandler.hxx; sourceTree = "<group>"; };
 		DCB60ACB25430FC600A5C1D2 /* FBBackend.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = FBBackend.hxx; sourceTree = "<group>"; };
-		DCB60ACD2543100900A5C1D2 /* FBBackendSDL2.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FBBackendSDL2.cxx; sourceTree = "<group>"; };
-		DCB60ACE2543100900A5C1D2 /* FBBackendSDL2.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = FBBackendSDL2.hxx; sourceTree = "<group>"; };
 		DCB87E571A104C1E00BF2A3B /* MediaFactory.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = MediaFactory.hxx; sourceTree = "<group>"; };
 		DCBA539725557E2700087DD7 /* UndoHandler.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = UndoHandler.hxx; sourceTree = "<group>"; };
 		DCBA539825557E2800087DD7 /* UndoHandler.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = UndoHandler.cxx; sourceTree = "<group>"; };
@@ -1648,8 +1650,6 @@
 		DCFB9FAB1ECA2609004FD69B /* DelayQueueIteratorImpl.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = DelayQueueIteratorImpl.hxx; sourceTree = "<group>"; };
 		DCFCDE7020C9E66500915CBE /* EmulationWorker.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = EmulationWorker.cxx; sourceTree = "<group>"; };
 		DCFCDE7120C9E66500915CBE /* EmulationWorker.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = EmulationWorker.hxx; sourceTree = "<group>"; };
-		DCFF14CB18B0260300A20364 /* EventHandlerSDL2.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = EventHandlerSDL2.cxx; sourceTree = "<group>"; };
-		DCFF14CC18B0260300A20364 /* EventHandlerSDL2.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = EventHandlerSDL2.hxx; sourceTree = "<group>"; };
 		DCFFE59B12100E1400DFA000 /* ComboDialog.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ComboDialog.cxx; sourceTree = "<group>"; };
 		DCFFE59C12100E1400DFA000 /* ComboDialog.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = ComboDialog.hxx; sourceTree = "<group>"; };
 		E007231C210FBF5C002CF343 /* FpsMeter.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = FpsMeter.hxx; sourceTree = "<group>"; };
@@ -2011,85 +2011,85 @@
 			isa = PBXGroup;
 			children = (
 				DCC6A4AD20A2620D00863C59 /* audio */,
-				E09F413A201E901D004A3391 /* AudioQueue.cxx */,
 				E09F4139201E901C004A3391 /* AudioQueue.hxx */,
-				E0FABEEA20E9948100EB8E28 /* AudioSettings.cxx */,
+				E09F413A201E901D004A3391 /* AudioQueue.cxx */,
 				E0FABEE920E9948000EB8E28 /* AudioSettings.hxx */,
-				DC79F81017A88D9E00288B91 /* Base.cxx */,
+				E0FABEEA20E9948100EB8E28 /* AudioSettings.cxx */,
 				DC79F81117A88D9E00288B91 /* Base.hxx */,
-				DCE716182AA78BD700B870EA /* Bezel.cxx */,
+				DC79F81017A88D9E00288B91 /* Base.cxx */,
 				DCE716192AA78BD700B870EA /* Bezel.hxx */,
+				DCE716182AA78BD700B870EA /* Bezel.cxx */,
 				DCC527D810B9DA6A005E1287 /* bspf.hxx */,
-				DC6DC5E9273C2C3A00F64413 /* DevSettingsHandler.cxx */,
 				DC6DC5EA273C2C3A00F64413 /* DevSettingsHandler.hxx */,
-				DCFF14CB18B0260300A20364 /* EventHandlerSDL2.cxx */,
-				DCFF14CC18B0260300A20364 /* EventHandlerSDL2.hxx */,
-				DCB60ACD2543100900A5C1D2 /* FBBackendSDL2.cxx */,
-				DCB60ACE2543100900A5C1D2 /* FBBackendSDL2.hxx */,
-				DC73BD831915E5B1003FAFAD /* FBSurfaceSDL2.cxx */,
-				DC73BD841915E5B1003FAFAD /* FBSurfaceSDL2.hxx */,
-				E007231D210FBF5D002CF343 /* FpsMeter.cxx */,
+				DC6DC5E9273C2C3A00F64413 /* DevSettingsHandler.cxx */,
+				DC39F2982DC107F3006D74A8 /* EventHandlerSDL.hxx */,
+				DC39F2992DC107F3006D74A8 /* EventHandlerSDL.cxx */,
+				DC39F29A2DC107F3006D74A8 /* FBBackendSDL.hxx */,
+				DC39F29B2DC107F3006D74A8 /* FBBackendSDL.cxx */,
+				DC39F29C2DC107F3006D74A8 /* FBSurfaceSDL.hxx */,
+				DC39F29D2DC107F3006D74A8 /* FBSurfaceSDL.cxx */,
 				E007231C210FBF5C002CF343 /* FpsMeter.hxx */,
+				E007231D210FBF5D002CF343 /* FpsMeter.cxx */,
 				DCE395EA16CB0B5F008DB1E5 /* FSNodeFactory.hxx */,
-				DCE395EB16CB0B5F008DB1E5 /* FSNodeZIP.cxx */,
 				DCE395EC16CB0B5F008DB1E5 /* FSNodeZIP.hxx */,
-				DC816CFA25757D9A00FBCCDA /* HighScoresManager.cxx */,
+				DCE395EB16CB0B5F008DB1E5 /* FSNodeZIP.cxx */,
 				DC816CF925757D9A00FBCCDA /* HighScoresManager.hxx */,
-				E08D2F3C23089B9B000BD709 /* JoyMap.cxx */,
+				DC816CFA25757D9A00FBCCDA /* HighScoresManager.cxx */,
 				E08D2F3D23089B9B000BD709 /* JoyMap.hxx */,
-				DC564F7428C11C2B00177588 /* JPGLibrary.cxx */,
+				E08D2F3C23089B9B000BD709 /* JoyMap.cxx */,
 				DC564F7328C11C2B00177588 /* JPGLibrary.hxx */,
+				DC564F7428C11C2B00177588 /* JPGLibrary.cxx */,
 				DC6DC5EB273C2C3A00F64413 /* jsonDefinitions.hxx */,
-				DCBD31E72299ADB400567357 /* KeyMap.cxx */,
 				DCBD31E52299ADB400567357 /* KeyMap.hxx */,
+				DCBD31E72299ADB400567357 /* KeyMap.cxx */,
 				DCA078321F8C1B04008EFEE5 /* LinkedObjectPool.hxx */,
-				E0EA1FFE227A42D0008BA944 /* Logger.cxx */,
 				E0EA1FFD227A42D0008BA944 /* Logger.hxx */,
+				E0EA1FFE227A42D0008BA944 /* Logger.cxx */,
 				DCB20EC61A0C506C0048F595 /* main.cxx */,
 				DCB87E571A104C1E00BF2A3B /* MediaFactory.hxx */,
-				DC56FCDC14CCCC4900A31CC3 /* MouseControl.cxx */,
 				DC56FCDD14CCCC4900A31CC3 /* MouseControl.hxx */,
-				DC3C9BC32469C8F700CF2D47 /* PaletteHandler.cxx */,
+				DC56FCDC14CCCC4900A31CC3 /* MouseControl.cxx */,
 				DC3C9BC42469C8F700CF2D47 /* PaletteHandler.hxx */,
-				DCA233AE23B583FE0032ABF3 /* PhosphorHandler.cxx */,
+				DC3C9BC32469C8F700CF2D47 /* PaletteHandler.cxx */,
 				DCA233AF23B583FE0032ABF3 /* PhosphorHandler.hxx */,
-				DC6DC91A205DB879004A5FC3 /* PhysicalJoystick.cxx */,
+				DCA233AE23B583FE0032ABF3 /* PhosphorHandler.cxx */,
 				DC6DC91B205DB879004A5FC3 /* PhysicalJoystick.hxx */,
-				DC6DC91C205DB879004A5FC3 /* PJoystickHandler.cxx */,
+				DC6DC91A205DB879004A5FC3 /* PhysicalJoystick.cxx */,
 				DC6DC91D205DB879004A5FC3 /* PJoystickHandler.hxx */,
-				DC1BC6642066B4390076F74A /* PKeyboardHandler.cxx */,
+				DC6DC91C205DB879004A5FC3 /* PJoystickHandler.cxx */,
 				DC1BC6652066B4390076F74A /* PKeyboardHandler.hxx */,
-				DCD6FC9111C28C6F005DA767 /* PNGLibrary.cxx */,
+				DC1BC6642066B4390076F74A /* PKeyboardHandler.cxx */,
 				DCD6FC9211C28C6F005DA767 /* PNGLibrary.hxx */,
+				DCD6FC9111C28C6F005DA767 /* PNGLibrary.cxx */,
 				DCBD31E62299ADB400567357 /* Rect.hxx */,
 				E06508B72272447200B341AC /* repository */,
-				DCDDEAC01F5DBF0400C67366 /* RewindManager.cxx */,
 				DCDDEAC11F5DBF0400C67366 /* RewindManager.hxx */,
+				DCDDEAC01F5DBF0400C67366 /* RewindManager.cxx */,
 				E08FCD4B23A037D80051F59B /* sdl_blitter */,
 				DCA078331F8C1B04008EFEE5 /* SDL_lib.hxx */,
 				DC2C5EDA1F8F2403007D2A09 /* smartmod.hxx */,
 				DCF467B40F93993B00B25D7A /* SoundNull.hxx */,
-				DC368F5218A2FB710084199C /* SoundSDL2.cxx */,
-				DC368F5318A2FB710084199C /* SoundSDL2.hxx */,
+				DC39F29E2DC107F3006D74A8 /* SoundSDL.hxx */,
+				DC39F29F2DC107F3006D74A8 /* SoundSDL.cxx */,
 				DC5D1AA6102C6FC900E59AC1 /* Stack.hxx */,
-				DCF8621721C9D43300F95F52 /* StaggeredLogger.cxx */,
 				DCF8621821C9D43300F95F52 /* StaggeredLogger.hxx */,
-				DCDDEAC21F5DBF0400C67366 /* StateManager.cxx */,
+				DCF8621721C9D43300F95F52 /* StaggeredLogger.cxx */,
 				DCDDEAC31F5DBF0400C67366 /* StateManager.hxx */,
+				DCDDEAC21F5DBF0400C67366 /* StateManager.cxx */,
 				DC5C768E14C26F7C0031EBC7 /* StellaKeys.hxx */,
 				DC74D6A0138D4D7E00F05C5C /* StringParser.hxx */,
-				DC6F394B21B897F300897AD8 /* ThreadDebugging.cxx */,
 				DC6F394C21B897F300897AD8 /* ThreadDebugging.hxx */,
-				DC30924A212F74930020DAD0 /* TimerManager.cxx */,
+				DC6F394B21B897F300897AD8 /* ThreadDebugging.cxx */,
 				DC30924B212F74930020DAD0 /* TimerManager.hxx */,
+				DC30924A212F74930020DAD0 /* TimerManager.cxx */,
 				DCC467EA14FBEC9600E15508 /* tv_filters */,
 				DC7A24D4173B1CF600B20FE9 /* Variant.hxx */,
 				DCF490791A0ECE5B00A67AA9 /* Vec.hxx */,
 				DCF467BC0F9399F500B25D7A /* Version.hxx */,
-				DCB60AC72535E30500A5C1D2 /* VideoModeHandler.cxx */,
 				DCB60AC82535E30600A5C1D2 /* VideoModeHandler.hxx */,
-				DCE395ED16CB0B5F008DB1E5 /* ZipHandler.cxx */,
+				DCB60AC72535E30500A5C1D2 /* VideoModeHandler.cxx */,
 				DCE395EE16CB0B5F008DB1E5 /* ZipHandler.hxx */,
+				DCE395ED16CB0B5F008DB1E5 /* ZipHandler.cxx */,
 			);
 			name = common;
 			path = ../common;
@@ -2926,7 +2926,6 @@
 				2D91740609BA90380026E9FF /* GameInfoDialog.hxx in Headers */,
 				DCE9158C201543B900960CC0 /* TimeLineWidget.hxx in Headers */,
 				2D91740809BA90380026E9FF /* GuiObject.hxx in Headers */,
-				DC73BD861915E5B1003FAFAD /* FBSurfaceSDL2.hxx in Headers */,
 				2D91740A09BA90380026E9FF /* HelpDialog.hxx in Headers */,
 				2D91740B09BA90380026E9FF /* Launcher.hxx in Headers */,
 				2D91740C09BA90380026E9FF /* LauncherDialog.hxx in Headers */,
@@ -2999,6 +2998,10 @@
 				2D91745309BA90380026E9FF /* CommandMenu.hxx in Headers */,
 				E0306E111F93E916003DDD52 /* JitterEmulation.hxx in Headers */,
 				DC0E98E52801CD1600097C68 /* Cart0FA0.hxx in Headers */,
+				DC39F2A42DC107F3006D74A8 /* EventHandlerSDL.hxx in Headers */,
+				DC39F2A52DC107F3006D74A8 /* FBBackendSDL.hxx in Headers */,
+				DC39F2A62DC107F3006D74A8 /* FBSurfaceSDL.hxx in Headers */,
+				DC39F2A72DC107F3006D74A8 /* SoundSDL.hxx in Headers */,
 				DC0932182C50017A00527D3C /* ElfEnvironment.hxx in Headers */,
 				DC1E474F24D34F3B0047E61A /* WhatsNewDialog.hxx in Headers */,
 				2D91745509BA90380026E9FF /* CpuWidget.hxx in Headers */,
@@ -3087,7 +3090,6 @@
 				DC816D0225757DC300FBCCDA /* HighScoresDialog.hxx in Headers */,
 				DC5D2C530F117CFD004D1660 /* StellaFont.hxx in Headers */,
 				DC5D2C540F117CFD004D1660 /* StellaLargeFont.hxx in Headers */,
-				DCB60AD12543100900A5C1D2 /* FBBackendSDL2.hxx in Headers */,
 				DC5D2C550F117CFD004D1660 /* StellaMediumFont.hxx in Headers */,
 				DC3EE8681E2C0E6D00905161 /* inftrees.h in Headers */,
 				DC932D440F278A5200FEFEFC /* DefProps.hxx in Headers */,
@@ -3268,10 +3270,8 @@
 				DC96162D1F817830008A2206 /* AmigaMouseWidget.hxx in Headers */,
 				DCAACB17188D636F00A4D282 /* CartDFWidget.hxx in Headers */,
 				DCF3A6FF1DFC75E3008A8AF3 /* TIA.hxx in Headers */,
-				DC368F5918A2FB710084199C /* SoundSDL2.hxx in Headers */,
 				DCF3A6F91DFC75E3008A8AF3 /* AnalogReadout.hxx in Headers */,
 				DC6DC5E8273C2BED00F64413 /* GlobalKeyHandler.hxx in Headers */,
-				DCFF14CE18B0260300A20364 /* EventHandlerSDL2.hxx in Headers */,
 				DCA6A9122C7CD04000EEB5FF /* CartELFWidget.hxx in Headers */,
 				DC047FEF1A4A6F3600348F0F /* JoystickDialog.hxx in Headers */,
 				CFE3F60E1E84A9A200A8204E /* CartCDFWidget.hxx in Headers */,
@@ -3314,7 +3314,7 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = YES;
-				LastUpgradeCheck = 1600;
+				LastUpgradeCheck = 1630;
 				ORGANIZATIONNAME = "Stella-emu";
 			};
 			buildConfigurationList = 2D91752109BA903B0026E9FF /* Build configuration list for PBXProject "stella" */;
@@ -3543,7 +3543,6 @@
 				2D91750609BA90380026E9FF /* TiaZoomWidget.cxx in Sources */,
 				DC1E89062C4033280033E15F /* ElfParser.cxx in Sources */,
 				CFE3F6131E84A9CE00A8204E /* CartBUS.cxx in Sources */,
-				DC73BD851915E5B1003FAFAD /* FBSurfaceSDL2.cxx in Sources */,
 				DCDDEAC41F5DBF0400C67366 /* RewindManager.cxx in Sources */,
 				E09F413C201E901D004A3391 /* AudioQueue.cxx in Sources */,
 				2D91750809BA90380026E9FF /* AudioWidget.cxx in Sources */,
@@ -3681,6 +3680,10 @@
 				DCDA03B01A2009BB00711920 /* CartWD.cxx in Sources */,
 				E0A3841C2589741A0062AA93 /* SqliteStatement.cxx in Sources */,
 				DCC6A4B220A2622500863C59 /* SimpleResampler.cxx in Sources */,
+				DC39F2A02DC107F3006D74A8 /* FBSurfaceSDL.cxx in Sources */,
+				DC39F2A12DC107F3006D74A8 /* EventHandlerSDL.cxx in Sources */,
+				DC39F2A22DC107F3006D74A8 /* SoundSDL.cxx in Sources */,
+				DC39F2A32DC107F3006D74A8 /* FBBackendSDL.cxx in Sources */,
 				DCA6A9162C7E0ADD00EEB5FF /* CartELFStateWidget.cxx in Sources */,
 				DC21E5BF21CA903E007D0E1A /* OSystemMACOS.cxx in Sources */,
 				DC84397C247B294E00C6A4FC /* CartTVBoy.cxx in Sources */,
@@ -3739,7 +3742,6 @@
 				DCE9681E276A40AC00E99839 /* NavigationWidget.cxx in Sources */,
 				DCAACAFE188D631500A4D282 /* CartDFSC.cxx in Sources */,
 				DCAACB0E188D636F00A4D282 /* Cart4KSCWidget.cxx in Sources */,
-				DCB60AD02543100900A5C1D2 /* FBBackendSDL2.cxx in Sources */,
 				DC911C7526333B9200666AC0 /* CartMVC.cxx in Sources */,
 				DCAACB10188D636F00A4D282 /* CartBFSCWidget.cxx in Sources */,
 				DCC2FDF6255EB82500FA5E81 /* ToolTip.cxx in Sources */,
@@ -3747,8 +3749,6 @@
 				DCAACB14188D636F00A4D282 /* CartDFSCWidget.cxx in Sources */,
 				DCAACB16188D636F00A4D282 /* CartDFWidget.cxx in Sources */,
 				E0D4153D25A120340031A8D6 /* SettingsRepositoryMACOS.mm in Sources */,
-				DC368F5818A2FB710084199C /* SoundSDL2.cxx in Sources */,
-				DCFF14CD18B0260300A20364 /* EventHandlerSDL2.cxx in Sources */,
 				DC3EE8561E2C0E6D00905161 /* adler32.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

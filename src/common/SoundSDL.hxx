@@ -17,8 +17,8 @@
 
 #ifdef SOUND_SUPPORT
 
-#ifndef SOUND_SDL2_HXX
-#define SOUND_SDL2_HXX
+#ifndef SOUND_SDL_HXX
+#define SOUND_SDL_HXX
 
 class OSystem;
 class AudioQueue;
@@ -36,15 +36,15 @@ class Resampler;
 
   @author Stephen Anthony and Christian Speckner (DirtyHairy)
 */
-class SoundSDL2 : public Sound
+class SoundSDL : public Sound
 {
   public:
     /**
       Create a new sound object.  The init method must be invoked before
       using the object.
     */
-    SoundSDL2(OSystem& osystem, AudioSettings& audioSettings);
-    ~SoundSDL2() override;
+    SoundSDL(OSystem& osystem, AudioSettings& audioSettings);
+    ~SoundSDL() override;
 
   public:
     /**
@@ -172,13 +172,13 @@ class SoundSDL2 : public Sound
     string myAboutString;
 
     /**
-      This class implements WAV file playback using the SDL2 sound API.
+      This class implements WAV file playback using the SDL sound API.
     */
-    class WavHandlerSDL2
+    class WavHandlerSDL
     {
       public:
-        explicit WavHandlerSDL2() = default;
-        ~WavHandlerSDL2();
+        explicit WavHandlerSDL() = default;
+        ~WavHandlerSDL();
 
         bool play(const string& fileName, const char* device,
                   uInt32 position, uInt32 length);
@@ -206,13 +206,13 @@ class SoundSDL2 : public Sound
         static void callback(void* object, uInt8* stream, int len);
 
         // Following constructors and assignment operators not supported
-        WavHandlerSDL2(const WavHandlerSDL2&) = delete;
-        WavHandlerSDL2(WavHandlerSDL2&&) = delete;
-        WavHandlerSDL2& operator=(const WavHandlerSDL2&) = delete;
-        WavHandlerSDL2& operator=(WavHandlerSDL2&&) = delete;
+        WavHandlerSDL(const WavHandlerSDL&) = delete;
+        WavHandlerSDL(WavHandlerSDL&&) = delete;
+        WavHandlerSDL& operator=(const WavHandlerSDL&) = delete;
+        WavHandlerSDL& operator=(WavHandlerSDL&&) = delete;
     };
 
-    WavHandlerSDL2 myWavHandler;
+    WavHandlerSDL myWavHandler;
 
     static float myVolumeFactor;  // Current volume level (0 - 100)
 
@@ -221,11 +221,11 @@ class SoundSDL2 : public Sound
     static void callback(void* object, uInt8* stream, int len);
 
     // Following constructors and assignment operators not supported
-    SoundSDL2() = delete;
-    SoundSDL2(const SoundSDL2&) = delete;
-    SoundSDL2(SoundSDL2&&) = delete;
-    SoundSDL2& operator=(const SoundSDL2&) = delete;
-    SoundSDL2& operator=(SoundSDL2&&) = delete;
+    SoundSDL() = delete;
+    SoundSDL(const SoundSDL&) = delete;
+    SoundSDL(SoundSDL&&) = delete;
+    SoundSDL& operator=(const SoundSDL&) = delete;
+    SoundSDL& operator=(SoundSDL&&) = delete;
 };
 
 #endif
