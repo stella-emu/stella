@@ -47,8 +47,12 @@ class System;
            D6 = Audio out to tape player and 4017 CLK
                 1 -> increase key column (0 to 9)
            D5 = 4017 RST, and RAM direction. (high = write, low = read)
-                1 -> reset key column to 0 (if D4 = 0)
-                0 -> enable RAM writing (if D4 = 1)
+                if D4 = 1:
+                   0 -> enable key column CLK via D6
+                   1 -> reset key column to 0 (CLK via D6 disabled)
+                if D4 = 0:
+                   0 -> enable RAM writing
+                   1 -> enable RAM read
            D4 = RAM enable: 1 = disable RAM, 0 = enable RAM
            D3 = keyboard row 3 input (0 = key pressed)
            D2 = keyboard row 1 input (0 = key pressed)
