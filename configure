@@ -6,7 +6,7 @@
 # * command line options to...
 #   - override the host settings (for cross compiles
 #   - whether to do a debug build (with -g) or an optimized build (-O3 etc.)
-# * detect whether the chosen backend is available (e.g. call sdl2-config)
+# * detect whether the chosen backend is available
 # * ....
 
 
@@ -54,7 +54,6 @@ _rm_rec="$_rm -r"
 _zip="zip -q"
 _cp=cp
 _windowspath=""
-_sdlconfig=sdl2-config
 _sdlpath="$PATH"
 _prefix=/usr/local
 
@@ -817,8 +816,8 @@ fi
 #
 # Now, add the appropriate defines/libraries/headers
 #
-echo
-find_sdlconfig
+#echo
+#find_sdlconfig
 
 SRC="src"
 SRC_OS="$SRC/os"
@@ -845,15 +844,18 @@ HTTP_LIB="$SRC_LIB/httplib"
 
 INCLUDES="-I$CORE -I$COMMON -I$TV -I$TIA -I$TIA_FRAME_MANAGER -I$ELF -I$JSON -I$SQLITE_REPO"
 
-INCLUDES="$INCLUDES `$_sdlconfig --cflags`"
-if test "$_build_static" = yes ; then
-	_sdl_conf_libs="--static-libs"
-	LDFLAGS="-static $LDFLAGS"
-else
-	_sdl_conf_libs="--libs"
-fi
+#INCLUDES="$INCLUDES `$_sdlconfig --cflags`"
+#if test "$_build_static" = yes ; then
+#	_sdl_conf_libs="--static-libs"
+#	LDFLAGS="-static $LDFLAGS"
+#else
+#	_sdl_conf_libs="--libs"
+#fi
 
-LIBS="$LIBS `$_sdlconfig $_sdl_conf_libs`"
+#if test "$_libpng" = yes ; then  #FIXME:
+		LIBS="$LIBS `$_pkg_config --libs sdl3`"
+#fi
+
 LD=$CXX
 
 case $_host_os in

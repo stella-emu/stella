@@ -49,14 +49,17 @@ void BilinearBlitter::reinitialize(
     myStaticData == staticData
    );
 
-   myStaticData = staticData;
-   mySrcRect = srcRect;
-   myAttributes = attributes;
+  myAttributes = attributes;
+  myStaticData = staticData;
 
-   myDstRect.x = myFB.scaleX(destRect.x);
-   myDstRect.y = myFB.scaleY(destRect.y);
-   myDstRect.w = myFB.scaleX(destRect.w);
-   myDstRect.h = myFB.scaleY(destRect.h);
+  mySrcRect = srcRect;
+  SDL_RectToFRect(&mySrcRect, &mySrcFRect);
+
+  myDstRect.x = myFB.scaleX(destRect.x);
+  myDstRect.y = myFB.scaleY(destRect.y);
+  myDstRect.w = myFB.scaleX(destRect.w);
+  myDstRect.h = myFB.scaleY(destRect.h);
+  SDL_RectToFRect(&myDstRect, &myDstFRect);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -68,7 +71,9 @@ void BilinearBlitter::free()
 
   ASSERT_MAIN_THREAD;
 
-  const std::array<SDL_Texture*, 2> textures = { myTexture, mySecondaryTexture };
+  const std::array<SDL_Texture*, 2> textures = {
+    myTexture, mySecondaryTexture
+  };
   for (SDL_Texture* texture: textures) {
     if (!texture) continue;
 
@@ -93,9 +98,8 @@ void BilinearBlitter::blit(SDL_Surface& surface)
     mySecondaryTexture = texture;
   }
 
-  SDL_RenderCopy(myFB.renderer(), texture, &mySrcRect, &myDstRect);
+  SDL_RenderTexture(myFB.renderer(), texture, &mySrcFRect, &myDstFRect);
 }
-
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void BilinearBlitter::recreateTexturesIfNecessary()
@@ -110,16 +114,22 @@ void BilinearBlitter::recreateTexturesIfNecessary()
     free();
   }
 
-  const SDL_TextureAccess texAccess = myStaticData == nullptr ? SDL_TEXTUREACCESS_STREAMING : SDL_TEXTUREACCESS_STATIC;
-
-  SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, myInterpolate ? "1" : "0");
+  const SDL_TextureAccess texAccess = myStaticData == nullptr
+    ? SDL_TEXTUREACCESS_STREAMING
+    : SDL_TEXTUREACCESS_STATIC;
 
   myTexture = SDL_CreateTexture(myFB.renderer(), myFB.pixelFormat().format,
       texAccess, mySrcRect.w, mySrcRect.h);
+  SDL_SetTextureScaleMode(myTexture, myInterpolate
+      ? SDL_SCALEMODE_LINEAR : SDL_SCALEMODE_NEAREST);
 
   if (myStaticData == nullptr) {
-    mySecondaryTexture = SDL_CreateTexture(myFB.renderer(), myFB.pixelFormat().format,
+    mySecondaryTexture = SDL_CreateTexture(myFB.renderer(),
+        myFB.pixelFormat().format,
         texAccess, mySrcRect.w, mySrcRect.h);
+    SDL_SetTextureScaleMode(mySecondaryTexture, myInterpolate
+        ? SDL_SCALEMODE_LINEAR
+        : SDL_SCALEMODE_NEAREST);
   } else {
     mySecondaryTexture = nullptr;
     SDL_UpdateTexture(myTexture, nullptr, myStaticData->pixels, myStaticData->pitch);

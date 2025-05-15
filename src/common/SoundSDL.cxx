@@ -104,7 +104,7 @@ bool SoundSDL::openDevice()
 
   SDL_AudioSpec desired;
   desired.freq   = myAudioSettings.sampleRate();
-  desired.format = AUDIO_F32SYS;
+  desired.format = SDL_AUDIO_F32;
   desired.channels = 2;
   desired.samples  = static_cast<Uint16>(myAudioSettings.fragmentSize());
   desired.callback = callback;
@@ -218,7 +218,12 @@ bool SoundSDL::pause(bool enable)
   const bool wasPaused = SDL_GetAudioDeviceStatus(myDevice) == SDL_AUDIO_PAUSED;
   if(myIsInitializedFlag)
   {
-    SDL_PauseAudioDevice(myDevice, enable ? 1 : 0);
+    if (enable ? 1 : 0) {
+      SDL_PauseAudioDevice(myDevice);
+    }
+    else {
+      SDL_ResumeAudioDevice(myDevice);
+    }
     myWavHandler.pause(enable);
   }
   return wasPaused;
@@ -415,7 +420,7 @@ bool SoundSDL::WavHandlerSDL::play(
   {
     if(myBuffer)
     {
-      SDL_FreeWAV(myBuffer);
+      SDL_free(myBuffer);
       myBuffer = nullptr;
     }
     SDL_zero(mySpec);
@@ -457,7 +462,7 @@ void SoundSDL::WavHandlerSDL::stop()
     // Clean up
     myRemaining = 0;
     SDL_CloseAudioDevice(myDevice);  myDevice = 0;
-    SDL_FreeWAV(myBuffer);  myBuffer = nullptr;
+    SDL_free(myBuffer);  myBuffer = nullptr;
   }
   if(myCvtBuffer)
   {
@@ -537,7 +542,12 @@ SoundSDL::WavHandlerSDL::~WavHandlerSDL()
 void SoundSDL::WavHandlerSDL::pause(bool state) const
 {
   if(myDevice)
-    SDL_PauseAudioDevice(myDevice, state ? 1 : 0);
+    if (state ? 1 : 0) {
+      SDL_PauseAudioDevice(myDevice);
+    }
+  else {
+    SDL_ResumeAudioDevice(myDevice);
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

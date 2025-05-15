@@ -304,7 +304,7 @@ void AboutDialog::handleCommand(CommandSender* sender, int cmd, int data, int id
     {
       const string& url = myDesc[id]->getUrl();
 
-      if(url != EmptyString && MediaFactory::supportsURL())
+      if(url != EmptyString)
         MediaFactory::openURL(url);
       break;
     }

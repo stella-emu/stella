@@ -277,7 +277,7 @@ void LauncherDialog::addPathWidgets(int& ypos)
                                     buttonWidth, buttonHeight, helpIcon, kHelpCmd);
     const string key = instance().eventHandler().getMappingDesc(Event::UIHelp, EventMode::kMenuMode);
     myHelpButton->setToolTip("Click for help. (" + key + ")");
-    myHelpButton->setEnabled(MediaFactory::supportsURL());
+    myHelpButton->setEnabled(true);
     wid.push_back(myHelpButton);
   }
   ypos += lineHeight + Dialog::vGap() * 2;

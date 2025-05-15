@@ -64,7 +64,7 @@ HelpDialog::HelpDialog(OSystem& osystem, DialogContainer& parent,
   myUpdateButton =
     new ButtonWidget(this, font, xpos, ypos, updButtonWidth, buttonHeight,
                      "Check for Update" + ELLIPSIS, kUpdateCmd);
-  myUpdateButton->setEnabled(MediaFactory::supportsURL());
+  myUpdateButton->setEnabled(true);
   wid.push_back(myUpdateButton);
 
   xpos = _w - closeButtonWidth - HBORDER;

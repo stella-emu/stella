@@ -104,7 +104,7 @@ class FBBackendLIBRETRO : public FBBackend
     void readPixels(uInt8*, size_t, const Common::Rect&) const override { }
     bool isCurrentWindowPositioned() const override { return true; }
     Common::Point getCurrentWindowPos() const override { return Common::Point{}; }
-    Int32 getCurrentDisplayIndex() const override { return 0; }
+    uInt32 getCurrentDisplayID() const override { return 0; }
     void clear() override { }
     bool setVideoMode(const VideoModeHandler::Mode&,
                       int, const Common::Point&) override { return true; }

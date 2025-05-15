@@ -19,6 +19,19 @@
 #include "ThreadDebugging.hxx"
 #include "QisBlitter.hxx"
 
+static void P(const char* str, const SDL_Rect r, const SDL_FRect fr)
+{
+  cerr << str << ": "
+       << r.x << "," << r.y << " " << r.w << "x" << r.h << "  =>  "
+       << fr.x << "," << fr.y << " " << fr.w << "x" << fr.h << '\n';
+}
+static void PF(const char* str, const SDL_FRect r, const SDL_FRect fr)
+{
+  cerr << str << ": "
+       << r.x << "," << r.y << " " << r.w << "x" << r.h << "  =>  "
+       << fr.x << "," << fr.y << " " << fr.w << "x" << fr.h << '\n';
+}
+
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 QisBlitter::QisBlitter(FBBackendSDL& fb)
   : myFB{fb}
@@ -56,14 +69,17 @@ void QisBlitter::reinitialize(
     myStaticData == staticData
    );
 
-   myStaticData = staticData;
-   mySrcRect = srcRect;
-   myAttributes = attributes;
+  myAttributes = attributes;
+  myStaticData = staticData;
 
-   myDstRect.x = myFB.scaleX(destRect.x);
-   myDstRect.y = myFB.scaleY(destRect.y);
-   myDstRect.w = myFB.scaleX(destRect.w);
-   myDstRect.h = myFB.scaleY(destRect.h);
+  mySrcRect = srcRect;
+  SDL_RectToFRect(&mySrcRect, &mySrcFRect);
+
+  myDstRect.x = myFB.scaleX(destRect.x);
+  myDstRect.y = myFB.scaleY(destRect.y);
+  myDstRect.w = myFB.scaleX(destRect.w);
+  myDstRect.h = myFB.scaleY(destRect.h);
+  SDL_RectToFRect(&myDstRect, &myDstFRect);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -76,7 +92,7 @@ void QisBlitter::free()
   ASSERT_MAIN_THREAD;
 
   const std::array<SDL_Texture*, 3> textures = {
-    mySrcTexture, myIntermediateTexture, mySecondaryIntermedateTexture
+    mySrcTexture, myIntermediateTexture, mySecondaryIntermediateTexture
   };
   for (SDL_Texture* texture: textures) {
     if (!texture) continue;
@@ -101,15 +117,16 @@ void QisBlitter::blit(SDL_Surface& surface)
 
     blitToIntermediate();
 
-    myIntermediateTexture = mySecondaryIntermedateTexture;
-    mySecondaryIntermedateTexture = intermediateTexture;
+    myIntermediateTexture = mySecondaryIntermediateTexture;
+    mySecondaryIntermediateTexture = intermediateTexture;
 
     SDL_Texture* temporary = mySrcTexture;
     mySrcTexture = mySecondarySrcTexture;
     mySecondarySrcTexture = temporary;
   }
 
-  SDL_RenderCopy(myFB.renderer(), intermediateTexture, &myIntermediateRect, &myDstRect);
+  SDL_RenderTexture(myFB.renderer(), intermediateTexture,
+                    &myIntermediateFRect, &myDstFRect);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -117,15 +134,16 @@ void QisBlitter::blitToIntermediate()
 {
   ASSERT_MAIN_THREAD;
 
-  SDL_Rect r = mySrcRect;
-  r.x = r.y = 0;
+  SDL_FRect r{};
+  SDL_RectToFRect(&mySrcRect, &r);
+  r.x = r.y = 0.F;
 
   SDL_SetRenderTarget(myFB.renderer(), myIntermediateTexture);
 
   SDL_SetRenderDrawColor(myFB.renderer(), 0, 0, 0, 255);
   SDL_RenderClear(myFB.renderer());
 
-  SDL_RenderCopy(myFB.renderer(), mySrcTexture, &r, &myIntermediateRect);
+  SDL_RenderTexture(myFB.renderer(), mySrcTexture, &r, &myIntermediateFRect);
 
   SDL_SetRenderTarget(myFB.renderer(), nullptr);
 }
@@ -143,36 +161,40 @@ void QisBlitter::recreateTexturesIfNecessary()
     free();
   }
 
-  const SDL_TextureAccess texAccess =
-      myStaticData == nullptr ? SDL_TEXTUREACCESS_STREAMING : SDL_TEXTUREACCESS_STATIC;
+  const SDL_TextureAccess texAccess = myStaticData == nullptr
+                                        ? SDL_TEXTUREACCESS_STREAMING
+                                        : SDL_TEXTUREACCESS_STATIC;
 
   myIntermediateRect.w = (myDstRect.w / mySrcRect.w) * mySrcRect.w;
   myIntermediateRect.h = (myDstRect.h / mySrcRect.h) * mySrcRect.h;
   myIntermediateRect.x = 0;
   myIntermediateRect.y = 0;
-
-  SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "0");
+  SDL_RectToFRect(&myIntermediateRect, &myIntermediateFRect);
 
   mySrcTexture = SDL_CreateTexture(myFB.renderer(), myFB.pixelFormat().format,
     texAccess, mySrcRect.w, mySrcRect.h);
+  SDL_SetTextureScaleMode(mySrcTexture, SDL_SCALEMODE_NEAREST);
 
   if (myStaticData == nullptr) {
-    mySecondarySrcTexture = SDL_CreateTexture(myFB.renderer(), myFB.pixelFormat().format,
-      texAccess, mySrcRect.w, mySrcRect.h);
+    mySecondarySrcTexture = SDL_CreateTexture(myFB.renderer(),
+        myFB.pixelFormat().format, texAccess, mySrcRect.w, mySrcRect.h);
+    SDL_SetTextureScaleMode(mySecondarySrcTexture, SDL_SCALEMODE_NEAREST);
   } else {
     mySecondarySrcTexture = nullptr;
   }
 
-  SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "1");
-
   myIntermediateTexture = SDL_CreateTexture(myFB.renderer(), myFB.pixelFormat().format,
       SDL_TEXTUREACCESS_TARGET, myIntermediateRect.w, myIntermediateRect.h);
+  SDL_SetTextureScaleMode(myIntermediateTexture, SDL_SCALEMODE_LINEAR);
 
   if (myStaticData == nullptr) {
-    mySecondaryIntermedateTexture = SDL_CreateTexture(myFB.renderer(), myFB.pixelFormat().format,
-        SDL_TEXTUREACCESS_TARGET, myIntermediateRect.w, myIntermediateRect.h);
+    mySecondaryIntermediateTexture = SDL_CreateTexture(myFB.renderer(),
+        myFB.pixelFormat().format, SDL_TEXTUREACCESS_TARGET,
+        myIntermediateRect.w, myIntermediateRect.h);
+    SDL_SetTextureScaleMode(mySecondaryIntermediateTexture,
+                            SDL_SCALEMODE_LINEAR);
   } else {
-    mySecondaryIntermedateTexture = nullptr;
+    mySecondaryIntermediateTexture = nullptr;
     SDL_UpdateTexture(mySrcTexture, nullptr, myStaticData->pixels, myStaticData->pitch);
 
     blitToIntermediate();
@@ -182,7 +204,7 @@ void QisBlitter::recreateTexturesIfNecessary()
     const auto blendAlpha = static_cast<uInt8>(myAttributes.blendalpha * 2.55);
 
     const std::array<SDL_Texture*, 2> textures = {
-      myIntermediateTexture, mySecondaryIntermedateTexture
+      myIntermediateTexture, mySecondaryIntermediateTexture
     };
     for (SDL_Texture* texture: textures) {
       if (!texture) continue;

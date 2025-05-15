@@ -46,6 +46,7 @@ class BilinearBlitter : public Blitter {
     SDL_Texture* myTexture{nullptr};
     SDL_Texture* mySecondaryTexture{nullptr};
     SDL_Rect mySrcRect{0, 0, 0, 0}, myDstRect{0, 0, 0, 0};
+    SDL_FRect mySrcFRect{0.F, 0.F, 0.F, 0.F}, myDstFRect{0.F, 0.F, 0.F, 0.F};
     FBSurface::Attributes myAttributes;
 
     bool myInterpolate{false};

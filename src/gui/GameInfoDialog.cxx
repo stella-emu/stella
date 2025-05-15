@@ -1378,7 +1378,7 @@ void GameInfoDialog::updateLink()
     || startsWithIgnoreCase(link, "https://")
     || startsWithIgnoreCase(link, "www.");
 
-  myUrlButton->setEnabled(enable && MediaFactory::supportsURL());
+  myUrlButton->setEnabled(enable);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -78,10 +78,6 @@ class AudioSettings;
   implementations for the various ports of Stella, and always returns a
   valid object based on the specific port and restrictions on that port.
 
-  As of SDL2, this code is greatly simplified.  However, it remains here
-  in case we ever have multiple backend implementations again (should
-  not be necessary since SDL2 covers this nicely).
-
   @author  Stephen Anthony
 */
 class MediaFactory
@@ -178,15 +174,6 @@ class MediaFactory
       return SDLVersion();
     #else
       return "Custom backend";
-    #endif
-    }
-
-    static bool supportsURL()
-    {
-    #if defined(SDL_SUPPORT)
-      return SDLSupportsURL();
-    #else
-      return false;
     #endif
     }
 

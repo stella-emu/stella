@@ -55,7 +55,7 @@ class FBBackendSDL : public FBBackend
     /**
       Get the SDL pixel format.
      */
-    const SDL_PixelFormat& pixelFormat() const { return *myPixelFormat; }
+    const SDL_PixelFormatDetails& pixelFormat() const { return *myPixelFormat; }
 
     /**
       Does the renderer support render targets?
@@ -99,7 +99,7 @@ class FBBackendSDL : public FBBackend
       @param b      The blue component of the color
     */
     FORCE_INLINE void getRGB(uInt32 pixel, uInt8* r, uInt8* g, uInt8* b) const override
-      { SDL_GetRGB(pixel, myPixelFormat, r, g, b); }
+      { SDL_GetRGB(pixel, myPixelFormat, nullptr, r, g, b); }
 
     /**
       This method is called to retrieve the R/G/B/A data from the given pixel.
@@ -111,7 +111,7 @@ class FBBackendSDL : public FBBackend
       @param a      The alpha component of the color.
     */
     FORCE_INLINE void getRGBA(uInt32 pixel, uInt8* r, uInt8* g, uInt8* b, uInt8* a) const override
-      { SDL_GetRGBA(pixel, myPixelFormat, r, g, b, a); }
+      { SDL_GetRGBA(pixel, myPixelFormat, nullptr, r, g, b, a); }
 
     /**
       This method is called to map a given R/G/B triple to the screen palette.
@@ -121,7 +121,7 @@ class FBBackendSDL : public FBBackend
       @param b  The blue component of the color.
     */
     uInt32 mapRGB(uInt8 r, uInt8 g, uInt8 b) const override
-      { return SDL_MapRGB(myPixelFormat, r, g, b); }
+      { return SDL_MapRGB(myPixelFormat, nullptr, r, g, b); }
 
     /**
       This method is called to map a given R/G/B/A triple to the screen palette.
@@ -132,7 +132,7 @@ class FBBackendSDL : public FBBackend
       @param a  The alpha component of the color.
     */
     uInt32 mapRGBA(uInt8 r, uInt8 g, uInt8 b, uInt8 a) const override
-      { return SDL_MapRGBA(myPixelFormat, r, g, b, a); }
+      { return SDL_MapRGBA(myPixelFormat, nullptr, r, g, b, a); }
 
     /**
       This method is called to get a copy of the specified ARGB data from the
@@ -167,10 +167,9 @@ class FBBackendSDL : public FBBackend
       This method is called to query the video hardware for the index
       of the display the current window is displayed on
 
-      @return  the current display index or a negative value if no
-               window is displayed
+      @return  the current display index or a 0 if no window is displayed
     */
-    Int32 getCurrentDisplayIndex() const override;
+    uInt32 getCurrentDisplayID() const override;
 
     /**
       Clear the frame buffer.
@@ -286,7 +285,14 @@ class FBBackendSDL : public FBBackend
     SDL_Renderer* myRenderer{nullptr};
 
     // Used by mapRGB (when palettes are created)
-    SDL_PixelFormat* myPixelFormat{nullptr};
+    const SDL_PixelFormatDetails* myPixelFormat{nullptr};
+
+    // Are we in fullscreen mode?
+    // There seem to be issues with creating the window and renderer separately,
+    // and doing so means we can't query the window for fullscreen status
+    // So we do it at window creation and cache the result
+    // TODO: Is this a bug in SDL?
+    bool myIsFullscreen{false};
 
     // Center setting of current window
     bool myCenter{false};
@@ -298,7 +304,7 @@ class FBBackendSDL : public FBBackend
     string myScreenTitle;
 
     // Number of displays
-    int myNumDisplays{1};
+    uInt32 myNumDisplays{0};
 
     // Window and renderer dimensions
     int myWindowW{0}, myWindowH{0}, myRenderW{0}, myRenderH{0};

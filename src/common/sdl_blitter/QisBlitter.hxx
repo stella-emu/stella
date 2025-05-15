@@ -49,9 +49,14 @@ class QisBlitter : public Blitter {
     SDL_Texture* mySrcTexture{nullptr};
     SDL_Texture* mySecondarySrcTexture{nullptr};
     SDL_Texture* myIntermediateTexture{nullptr};
-    SDL_Texture* mySecondaryIntermedateTexture{nullptr};
+    SDL_Texture* mySecondaryIntermediateTexture{nullptr};
 
-    SDL_Rect mySrcRect{0, 0, 0, 0}, myIntermediateRect{0, 0, 0, 0}, myDstRect{0, 0, 0, 0};
+    SDL_Rect mySrcRect{0, 0, 0, 0},
+             myIntermediateRect{0, 0, 0, 0},
+             myDstRect{0, 0, 0, 0};
+    SDL_FRect mySrcFRect{0.F, 0.F, 0.F, 0.F},
+              myIntermediateFRect{0.F, 0.F, 0.F, 0.F},
+              myDstFRect{0.F, 0.F, 0.F, 0.F};
     FBSurface::Attributes myAttributes;
 
     bool myTexturesAreAllocated{false};

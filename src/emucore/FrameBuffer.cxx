@@ -135,7 +135,7 @@ int FrameBuffer::displayId(BufferType bufferType) const
   int display = 0;
 
   if(bufferType == myBufferType)
-    display = myBackend->getCurrentDisplayIndex();
+    display = myBackend->getCurrentDisplayID();
   else
     display = myOSystem.settings().getInt(getDisplayKey(bufferType != BufferType::None
                                           ? bufferType : myBufferType));
@@ -1096,7 +1096,7 @@ void FrameBuffer::saveCurrentWindowPosition() const
   if(myBackend)
   {
     myOSystem.settings().setValue(
-      getDisplayKey(), myBackend->getCurrentDisplayIndex());
+      getDisplayKey(), myBackend->getCurrentDisplayID());
     if(myBackend->isCurrentWindowPositioned())
       myOSystem.settings().setValue(
         getPositionKey(), myBackend->getCurrentWindowPos());
@@ -1319,12 +1319,12 @@ FBInitStatus FrameBuffer::applyVideoMode()
 {
   // Update display size, in case windowed/fullscreen mode has changed
   const Settings& s = myOSystem.settings();
-  const int display = displayId();
+  const int ID = displayId();
 
   if(s.getBool("fullscreen"))
-    myVidModeHandler.setDisplaySize(myFullscreenDisplays[display], display);
+    myVidModeHandler.setDisplaySize(myFullscreenDisplays[ID], true);
   else
-    myVidModeHandler.setDisplaySize(myAbsDesktopSize[display]);
+    myVidModeHandler.setDisplaySize(myAbsDesktopSize[ID], false);
 
   const bool inTIAMode = myOSystem.eventHandler().inTIAMode();
 
