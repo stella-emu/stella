@@ -167,22 +167,22 @@ void EventHandlerSDL::pollEvent()
       }
 
   #ifdef JOYSTICK_SUPPORT
-      case SDL_JOYBUTTONUP:
-      case SDL_JOYBUTTONDOWN:
+      case SDL_EVENT_JOYSTICK_BUTTON_UP:
+      case SDL_EVENT_JOYSTICK_BUTTON_DOWN:
       {
         handleJoyBtnEvent(myEvent.jbutton.which, myEvent.jbutton.button,
-                          myEvent.jbutton.state == SDL_PRESSED);
+                          myEvent.jbutton.down);
         break;
       }
 
-      case SDL_JOYAXISMOTION:
+      case SDL_EVENT_JOYSTICK_AXIS_MOTION:
       {
         handleJoyAxisEvent(myEvent.jaxis.which, myEvent.jaxis.axis,
                            myEvent.jaxis.value);
         break;
       }
 
-      case SDL_JOYHATMOTION:
+      case SDL_EVENT_JOYSTICK_HAT_MOTION:
       {
         int value = 0;
         const int v = myEvent.jhat.value;
@@ -197,18 +197,18 @@ void EventHandlerSDL::pollEvent()
         }
 
         handleJoyHatEvent(myEvent.jhat.which, myEvent.jhat.hat, value);
-        break;  // SDL_JOYHATMOTION
+        break;
       }
 
-      case SDL_JOYDEVICEADDED:
+      case SDL_EVENT_JOYSTICK_ADDED:
       {
         addPhysicalJoystick(make_shared<JoystickSDL>(myEvent.jdevice.which));
-        break;  // SDL_JOYDEVICEADDED
+        break;
       }
-      case SDL_JOYDEVICEREMOVED:
+      case SDL_EVENT_JOYSTICK_REMOVED:
       {
         removePhysicalJoystick(myEvent.jdevice.which);
-        break;  // SDL_JOYDEVICEREMOVED
+        break;
       }
   #endif
 
@@ -296,6 +296,6 @@ EventHandlerSDL::JoystickSDL::~JoystickSDL()
   ASSERT_MAIN_THREAD;
 
   if(SDL_WasInit(SDL_INIT_JOYSTICK) && myStick)
-    SDL_JoystickClose(myStick);
+    SDL_CloseJoystick(myStick);
 }
 #endif
