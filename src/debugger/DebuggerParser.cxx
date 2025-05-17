@@ -653,6 +653,7 @@ void DebuggerParser::printTimer(uInt32 idx, bool showHeader)
   }
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string DebuggerParser::getTimerCmds()
 {
   ostringstream out;
