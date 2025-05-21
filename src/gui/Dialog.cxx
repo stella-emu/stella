@@ -339,6 +339,10 @@ void Dialog::render()
   //cerr << "  render " << typeid(*this).name() << '\n';
 #endif
 
+  if(_surface == NULL) {
+    return; // fixes #1078
+  }
+
   // Update dialog surface; also render any extra surfaces
   // Extra surfaces must be rendered afterwards, so they are drawn on top
   if(_surface->render())
