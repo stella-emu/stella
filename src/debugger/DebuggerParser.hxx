@@ -146,6 +146,7 @@ class DebuggerParser
 
     void printTimer(uInt32 idx,bool showHeader = true);
     void listTimers();
+    string getTimerCmds();
 
     // output the error with the example provided for the command
     void outputCommandError(string_view errorMsg, int command);

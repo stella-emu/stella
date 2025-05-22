@@ -654,6 +654,49 @@ void DebuggerParser::printTimer(uInt32 idx, bool showHeader)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+string DebuggerParser::getTimerCmds()
+{
+  ostringstream out;
+
+  for(uInt32 idx = 0; idx < debugger.m6502().numTimers(); ++idx)
+  {
+    const TimerMap::Timer& timer = debugger.m6502().getTimer(idx);
+    const bool banked = debugger.cartDebug().romBankCount() > 1;
+    ostringstream fromBuf;
+
+    if(!debugger.cartDebug().getLabel(fromBuf, timer.from.addr, true))
+      fromBuf << Base::HEX4 << timer.from.addr;
+    fromBuf << (timer.mirrors ? "+" : "");
+
+    out << "timer " << fromBuf.str();
+
+    if(banked) {
+      if(timer.anyBank)
+        fromBuf << "*";
+      else
+        fromBuf << dec << static_cast<uInt16>(timer.from.bank);
+    }
+    if(!timer.isPartial) {
+      ostringstream toBuf;
+
+      if(!debugger.cartDebug().getLabel(toBuf, timer.to.addr, true))
+        toBuf << Base::HEX4 << timer.to.addr;
+      toBuf << (timer.mirrors ? "+" : "");
+
+      if(banked) {
+        if(timer.anyBank)
+          toBuf << "*";
+        else
+          toBuf << dec << static_cast<uInt16>(timer.to.bank);
+      }
+      out << " " << toBuf.str();
+    }
+    out << "\n";
+  } // for
+  return out.str();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DebuggerParser::listTimers()
 {
   commandResult << "timers:\n";
@@ -767,6 +810,8 @@ string DebuggerParser::saveScriptFile(string file)
       out << " " << Base::toString(myTraps[i]->end);
     out << '\n';
   }
+
+  out << getTimerCmds();
 
   // Append 'script' extension when necessary
   if(file.find_last_of('.') == string::npos)
