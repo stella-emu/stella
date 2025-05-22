@@ -15,6 +15,10 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
+#if defined(SDL_SUPPORT)
+  #include <SDL3/SDL_main.h>
+#endif
+
 #include "bspf.hxx"
 #include "Logger.hxx"
 #include "MediaFactory.hxx"
