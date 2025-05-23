@@ -19,7 +19,7 @@ License:        GPL
 URL:            https://stella-emu.github.io
 Source:         %{name}-%{version}.tar.xz
 BuildRoot:      %_tmppath/%name-%version-%release-root
-BuildRequires:  SDL2-devel MesaGLU-devel
+BuildRequires:  SDL3-devel MesaGLU-devel
 
 %description
 The Atari 2600 Video Computer System (VCS), introduced in 1977, was the most

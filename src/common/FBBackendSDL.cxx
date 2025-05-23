@@ -506,7 +506,7 @@ string FBBackendSDL::about() const
     out << "  Renderer: "
         << SDL_GetStringProperty(props, SDL_PROP_RENDERER_NAME_STRING, "")
         << '\n';
-    const int maxTexSize =
+    const uInt64 maxTexSize =
       SDL_GetNumberProperty(props, SDL_PROP_RENDERER_MAX_TEXTURE_SIZE_NUMBER, 0);
     if(maxTexSize > 0)
       out << "  Max texture: " << maxTexSize << "x" << maxTexSize << '\n';
