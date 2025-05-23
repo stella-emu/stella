@@ -187,11 +187,7 @@ void freeConsole()
 
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-#if defined(BSPF_MACOS)
-int stellaMain(int ac, char* av[])
-#else
 int main(int ac, char* av[])
-#endif
 {
   SET_MAIN_THREAD;
 

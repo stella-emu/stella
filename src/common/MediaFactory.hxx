@@ -40,9 +40,6 @@
 #elif defined(BSPF_MACOS)
   #include "SerialPortMACOS.hxx"
   #include "OSystemMACOS.hxx"
-  extern "C" {
-    int stellaMain(int argc, char* argv[]);
-  }
 #elif defined(__LIB_RETRO__)
   #include "OSystemLIBRETRO.hxx"
 #else
