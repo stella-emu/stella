@@ -3802,7 +3802,6 @@
 					"PNG_ARM_NEON_OPT=0",
 				);
 				HEADER_SEARCH_PATHS = (
-					/Library/Frameworks/SDL2.framework/Headers,
 					../../cheat,
 					../../common,
 					../../common/tv_filters,
@@ -3874,7 +3873,6 @@
 					"PNG_ARM_NEON_OPT=0",
 				);
 				HEADER_SEARCH_PATHS = (
-					/Library/Frameworks/SDL2.framework/Headers,
 					../../cheat,
 					../../common,
 					../../common/tv_filters,

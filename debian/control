@@ -5,7 +5,7 @@ Priority: optional
 Build-Depends: debhelper (>= 10~),
                libgtest-dev,
                libpng-dev,
-               libsdl2-dev,
+               libsdl3-dev,
                zlib1g-dev
 Standards-Version: 4.5.0
 Vcs-Browser: https://github.com/stella-emu/stella/
