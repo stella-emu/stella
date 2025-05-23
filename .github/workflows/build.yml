@@ -14,10 +14,10 @@ jobs:
     steps:
       - name: Check out the repository
         uses: actions/checkout@93ea575cb5d8a053eaa0ac8fa3b40d7e05a33cc8
-      - name: Install SDL2
+      - name: Install SDL3
         run: |
           sudo apt-get update
-          sudo apt-get install libsdl2-dev
+          sudo apt-get install libsdl3-dev
       - name: Build Stella
         run: |
           ./configure && make -j2 all
@@ -25,17 +25,19 @@ jobs:
   macos:
     name: macOS
     runs-on: macos-latest
+    env:
+      SDL3_version: 3.2.14
     steps:
       - uses: maxim-lobanov/setup-xcode@v1
         with:
           xcode-version: '16.2'
       - name: Check out the repository
         uses: actions/checkout@93ea575cb5d8a053eaa0ac8fa3b40d7e05a33cc8
-      - name: Install SDL2
+      - name: Install SDL3
         run: |
-          curl https://www.libsdl.org/release/SDL2-2.26.0.tar.gz | tar xzf -
-          mkdir SDL2-2.26.0/build
-          cd SDL2-2.26.0/build
+          curl https://www.libsdl.org/release/SDL3-$SDL3_version.tar.gz | tar xzf -
+          mkdir SDL3-$SDL3_version/build
+          cd SDL3-$SDL3_version/build
           ../configure && make -j3 && sudo make install
       - name: Build Stella
         run: |
@@ -49,19 +51,19 @@ jobs:
         platform: [x64]
     env:
       Platform: ${{ matrix.platform }}
-      SDL2_version: 2.26.0
+      SDL3_version: 3.2.14
     steps:
       - name: Check out the repository
         uses: actions/checkout@93ea575cb5d8a053eaa0ac8fa3b40d7e05a33cc8
       - name: Set up MSBUILD
         uses: microsoft/setup-msbuild@34cfbaee7f672c76950673338facd8a73f637506
-      - name: Install SDL2
+      - name: Install SDL3
         shell: cmd
         run: |
-          curl -o "C:\SDL2-devel.zip" "https://www.libsdl.org/release/SDL2-devel-%SDL2_version%-VC.zip"
-          7z x "C:\SDL2-devel.zip" -o"C:\"
-          xcopy /S "C:\SDL2-%SDL2_version%\include" src\common
-          if %Platform%==x64 xcopy /S "C:\SDL2-%SDL2_version%\lib\x64" src\os\windows
+          curl -o "C:\SDL3-devel.zip" "https://www.libsdl.org/release/SDL3-devel-%SDL3_version%-VC.zip"
+          7z x "C:\SDL3-devel.zip" -o"C:\"
+          xcopy /S "C:\SDL3-%SDL3_version%\include" src\common
+          if %Platform%==x64 xcopy /S "C:\SDL3-%SDL3_version%\lib\x64" src\os\windows
 
       - name: Build Stella
         run: |
