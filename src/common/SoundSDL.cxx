@@ -52,14 +52,14 @@ SoundSDL::SoundSDL(OSystem& osystem, AudioSettings& audioSettings)
     return;
   }
 
-  // Reserve 8K for the audio buffer; seems to be enough on most systems
-  myBuffer.reserve(8_KB);
-
   SDL_zero(mySpec);
   if(!myAudioSettings.enabled())
     Logger::info("Sound disabled\n");
 
   Logger::debug("SoundSDL::SoundSDL initialized");
+
+  // Reserve 8K for the audio buffer; seems to be enough on most systems
+  myBuffer.reserve(8_KB);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
