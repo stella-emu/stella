@@ -42,13 +42,11 @@ class AudioSettings
 
     static constexpr string_view SETTING_PRESET              = "audio.preset";
     static constexpr string_view SETTING_SAMPLE_RATE         = "audio.sample_rate";
-    static constexpr string_view SETTING_FRAGMENT_SIZE       = "audio.fragment_size";
     static constexpr string_view SETTING_BUFFER_SIZE         = "audio.buffer_size";
     static constexpr string_view SETTING_HEADROOM            = "audio.headroom";
     static constexpr string_view SETTING_RESAMPLING_QUALITY  = "audio.resampling_quality";
     static constexpr string_view SETTING_STEREO              = "audio.stereo";
     static constexpr string_view SETTING_VOLUME              = "audio.volume";
-    static constexpr string_view SETTING_DEVICE              = "audio.device";
     static constexpr string_view SETTING_ENABLED             = "audio.enabled";
     static constexpr string_view SETTING_DPC_PITCH           = "audio.dpc_pitch";
 
@@ -132,7 +130,8 @@ class AudioSettings
     Preset myPreset{Preset::custom};
 
     uInt32 myPresetSampleRate{0};
-    uInt32 myPresetFragmentSize{0};
+    uInt32 myPresetFragmentSize{1024}; // no longer configurable in sound backend
+
     uInt32 myPresetBufferSize{0};
     uInt32 myPresetHeadroom{0};
     ResamplingQuality myPresetResamplingQuality{ResamplingQuality::nearestNeighbour};

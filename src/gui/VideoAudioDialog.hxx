@@ -144,10 +144,8 @@ class VideoAudioDialog : public Dialog
     // Audio
     CheckboxWidget*   mySoundEnableCheckbox{nullptr};
     SliderWidget*     myVolumeSlider{nullptr};
-    PopUpWidget*      myDevicePopup{nullptr};
     CheckboxWidget*   myStereoSoundCheckbox{nullptr};
     PopUpWidget*      myModePopup{nullptr};
-    PopUpWidget*      myFragsizePopup{nullptr};
     PopUpWidget*      myFreqPopup{nullptr};
     PopUpWidget*      myResamplingPopup{nullptr};
     SliderWidget*     myHeadroomSlider{nullptr};

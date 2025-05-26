@@ -92,9 +92,10 @@ class SoundSDL : public Sound
       volume is given as a range from 0 to 100 (0 indicates mute).  Values
       outside this range indicate that the volume shouldn't be changed at all.
 
-      @param volume  The new volume level for the sound device
+      @param volume   The new volume level for the sound device
+      @param persist  Whether to save the volume change to settings
     */
-    void setVolume(uInt32 volume) override;
+    void setVolume(uInt32 volume, bool persist = true) override;
 
     /**
       Adjusts the volume of the sound device based on the given direction.
@@ -134,13 +135,6 @@ class SoundSDL : public Sound
 
   private:
     /**
-      This method is called to query the audio devices.
-
-      @param devices  List of device names
-    */
-    void queryHardware(VariantList& devices) override;
-
-    /**
       The actual sound device is opened only when absolutely necessary.
       Typically this will only happen once per program run, but it can also
       happen dynamically when changing sample rate and/or fragment size.
@@ -156,10 +150,13 @@ class SoundSDL : public Sound
     bool myIsInitializedFlag{false};
 
     // Audio specification structure
-    SDL_AudioSpec myHardwareSpec{};
+    SDL_AudioSpec mySpec{};
 
-    SDL_AudioDeviceID myDevice{0};
-    uInt32 myDeviceId{0};
+    // Audio stream, which handles all interaction with SDL sound backend
+    SDL_AudioStream* myStream{nullptr};
+
+    // Audio buffer, passed to the audio callback and filled from the resampler
+    std::vector<uInt8> myBuffer;
 
     shared_ptr<AudioQueue> myAudioQueue;
     unique_ptr<Resampler> myResampler;
@@ -169,8 +166,11 @@ class SoundSDL : public Sound
     Int16* myCurrentFragment{nullptr};
     bool myUnderrun{false};
 
+    float myVolumeFactor{0.F};  // Current volume level (0.F - 1.F)
+
     string myAboutString;
 
+#if 0
     /**
       This class implements WAV file playback using the SDL sound API.
     */
@@ -180,20 +180,21 @@ class SoundSDL : public Sound
         explicit WavHandlerSDL() = default;
         ~WavHandlerSDL();
 
-        bool play(const string& fileName, const char* device,
-                  uInt32 position, uInt32 length);
+        bool play(const string& fileName, uInt32 position, uInt32 length);
         void stop();
         uInt32 size() const { return myBuffer ? myRemaining : 0; }
 
-        void setSpeed(const double speed) { mySpeed = speed; }
+        void setSpeed(double speed) { mySpeed = speed; }
+        void setVolume(double volumeFactor) { mySpeed = speed; }
         void pause(bool state) const;
 
       private:
         string myFilename;
         uInt32 myLength{0};
-        SDL_AudioDeviceID myDevice{0};
         uInt8* myBuffer{nullptr};
         double mySpeed{1.0};
+        float myVolumeFactor{0.F};  // Current volume level (0 - 100)
+
         unique_ptr<uInt8[]> myCvtBuffer;
         uInt32 myCvtBufferSize{0};
         SDL_AudioSpec mySpec{}; // audio output format
@@ -203,7 +204,8 @@ class SoundSDL : public Sound
       private:
         // Callback function invoked by the SDL Audio library when it needs data
         void processWav(uInt8* stream, uInt32 len);
-        static void callback(void* object, uInt8* stream, int len);
+        static void wavCallback(void* object, SDL_AudioStream* stream,
+                                int additonal_amt, int total_amt);
 
         // Following constructors and assignment operators not supported
         WavHandlerSDL(const WavHandlerSDL&) = delete;
@@ -213,12 +215,12 @@ class SoundSDL : public Sound
     };
 
     WavHandlerSDL myWavHandler;
-
-    static float myVolumeFactor;  // Current volume level (0 - 100)
+#endif
 
   private:
     // Callback functions invoked by the SDL Audio library when it needs data
-    static void callback(void* object, uInt8* stream, int len);
+    static void audioCallback(void* object, SDL_AudioStream* stream,
+                              int additional_amt, int);
 
     // Following constructors and assignment operators not supported
     SoundSDL() = delete;
@@ -228,6 +230,6 @@ class SoundSDL : public Sound
     SoundSDL& operator=(SoundSDL&&) = delete;
 };
 
-#endif
+#endif  // SOUND_SDL_HXX
 
 #endif  // SOUND_SUPPORT

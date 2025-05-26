@@ -86,9 +86,10 @@ class Sound
       volume is given as a range from 0 to 100 (0 indicates mute).  Values
       outside this range indicate that the volume shouldn't be changed at all.
 
-      @param volume  The new volume level for the sound device
+      @param volume   The new volume level for the sound device
+      @param persist  Whether to save the volume change to settings
     */
-    virtual void setVolume(uInt32 volume) = 0;
+    virtual void setVolume(uInt32 volume, bool persist = true) = 0;
 
     /**
       Adjusts the volume of the sound device based on the given direction.
@@ -101,13 +102,6 @@ class Sound
       This method is called to provide information about the sound device.
     */
     virtual string about() const = 0;
-
-    /**
-      Get the supported devices for the audio hardware.
-
-      @return  An array of supported devices
-    */
-    const VariantList& supportedDevices() const { return myDevices; }
 
     /**
       Play a WAV file.
@@ -134,19 +128,8 @@ class Sound
     virtual uInt32 wavSize() const { return 0; }
 
   protected:
-    /**
-      This method is called to query the audio devices.
-
-      @param devices  List of device names
-    */
-    virtual void queryHardware(VariantList& devices) = 0;
-
-  protected:
     // The OSystem for this sound object
     OSystem& myOSystem;
-
-    // Supported device
-    VariantList myDevices;
 
   private:
     // Following constructors and assignment operators not supported

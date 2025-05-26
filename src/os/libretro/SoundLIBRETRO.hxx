@@ -125,13 +125,12 @@ class SoundLIBRETRO : public Sound
     // description, if needed.
     //////////////////////////////////////////////////////////////////////
 
-    void setEnabled(bool enable) override { }
-    void queryHardware(VariantList& devices) override { }
-    void setVolume(uInt32 percent) override { }
-    void adjustVolume(int direction = +1) override { }
-    void mute(bool state) override { }
+    void setEnabled(bool) override { }
+    void setVolume(uInt32, bool) override { }
+    void adjustVolume(int) override { }
+    void mute(bool) override { }
     void toggleMute() override { }
-    bool pause(bool state) override { return !myIsInitializedFlag; }
+    bool pause(bool) override { return !myIsInitializedFlag; }
     string about() const override { return ""; }
 
   private:

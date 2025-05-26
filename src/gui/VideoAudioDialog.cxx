@@ -564,14 +564,6 @@ void VideoAudioDialog::addAudioTab()
   wid.push_back(myVolumeSlider);
   ypos += lineHeight + VGAP;
 
-  // Device
-  myDevicePopup = new PopUpWidget(myTab, _font, xpos, ypos,
-                                  _w - xpos - lwidth - HBORDER - PopUpWidget::dropDownWidth(_font) - 2, lineHeight,
-                                  instance().sound().supportedDevices(),
-                                  "Device", lwidth, kDeviceChanged);
-  wid.push_back(myDevicePopup);
-  ypos += lineHeight + VGAP;
-
   // Mode
   items.clear();
   VarList::push_back(items, "Low quality, medium lag", static_cast<int>(AudioSettings::Preset::lowQualityMediumLag));
@@ -586,23 +578,9 @@ void VideoAudioDialog::addAudioTab()
   ypos += lineHeight + VGAP;
   xpos += INDENT;
 
-  // Fragment size
+  // Output frequency
   lwidth = _font.getStringWidth("Resampling quality ");
   pwidth = myModePopup->getRight() - xpos - lwidth - PopUpWidget::dropDownWidth(_font);
-  items.clear();
-  VarList::push_back(items, "128 samples", 128);
-  VarList::push_back(items, "256 samples", 256);
-  VarList::push_back(items, "512 samples", 512);
-  VarList::push_back(items, "1k samples", 1024);
-  VarList::push_back(items, "2k samples", 2048);
-  VarList::push_back(items, "4K samples", 4096);
-  myFragsizePopup = new PopUpWidget(myTab, _font, xpos, ypos,
-                                    pwidth, lineHeight,
-                                    items, "Fragment size", lwidth);
-  wid.push_back(myFragsizePopup);
-  ypos += lineHeight + VGAP;
-
-  // Output frequency
   items.clear();
   VarList::push_back(items, "44100 Hz", 44100);
   VarList::push_back(items, "48000 Hz", 48000);
@@ -799,11 +777,6 @@ void VideoAudioDialog::loadConfig()
   // Volume
   myVolumeSlider->setValue(audioSettings.volume());
 
-  // Device
-  const uInt32 deviceId = BSPF::clamp(audioSettings.device(), 0U,
-      static_cast<uInt32>(instance().sound().supportedDevices().size() - 1));
-  myDevicePopup->setSelected(deviceId);
-
   // Stereo
   myStereoSoundCheckbox->setState(audioSettings.stereo());
 
@@ -823,9 +796,6 @@ void VideoAudioDialog::loadConfig()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void VideoAudioDialog::updateSettingsWithPreset(AudioSettings& audioSettings)
 {
-  // Fragsize
-  myFragsizePopup->setSelected(audioSettings.fragmentSize());
-
   // Output frequency
   myFreqPopup->setSelected(audioSettings.sampleRate());
 
@@ -951,9 +921,6 @@ void VideoAudioDialog::saveConfig()
   audioSettings.setVolume(myVolumeSlider->getValue());
   instance().sound().setVolume(myVolumeSlider->getValue());
 
-  // Device
-  audioSettings.setDevice(myDevicePopup->getSelected());
-
   // Stereo
   audioSettings.setStereo(myStereoSoundCheckbox->getState());
 
@@ -973,7 +940,6 @@ void VideoAudioDialog::saveConfig()
 
   if (preset == AudioSettings::Preset::custom) {
     // Fragsize
-    audioSettings.setFragmentSize(myFragsizePopup->getSelectedTag().toInt());
     audioSettings.setSampleRate(myFreqPopup->getSelectedTag().toInt());
     audioSettings.setHeadroom(myHeadroomSlider->getValue());
     audioSettings.setBufferSize(myBufferSizeSlider->getValue());
@@ -1068,14 +1034,12 @@ void VideoAudioDialog::setDefaults()
 #endif
       mySoundEnableCheckbox->setState(AudioSettings::DEFAULT_ENABLED);
       myVolumeSlider->setValue(AudioSettings::DEFAULT_VOLUME);
-      myDevicePopup->setSelected(AudioSettings::DEFAULT_DEVICE);
       myStereoSoundCheckbox->setState(AudioSettings::DEFAULT_STEREO);
       myDpcPitch->setValue(AudioSettings::DEFAULT_DPC_PITCH);
       myModePopup->setSelected(static_cast<int>(AudioSettings::DEFAULT_PRESET));
 
       if constexpr(AudioSettings::DEFAULT_PRESET == AudioSettings::Preset::custom) {
         myResamplingPopup->setSelected(static_cast<int>(AudioSettings::DEFAULT_RESAMPLING_QUALITY));
-        myFragsizePopup->setSelected(AudioSettings::DEFAULT_FRAGMENT_SIZE);
         myFreqPopup->setSelected(AudioSettings::DEFAULT_SAMPLE_RATE);
         myHeadroomSlider->setValue(AudioSettings::DEFAULT_HEADROOM);
         myBufferSizeSlider->setValue(AudioSettings::DEFAULT_BUFFER_SIZE);
@@ -1466,14 +1430,12 @@ void VideoAudioDialog::updateAudioEnabledState()
   const bool userMode = preset == AudioSettings::Preset::custom;
 
   myVolumeSlider->setEnabled(active);
-  myDevicePopup->setEnabled(active);
   myStereoSoundCheckbox->setEnabled(active);
   myModePopup->setEnabled(active);
   // enable only for Pitfall II cart
   myDpcPitch->setEnabled(active && instance().hasConsole() &&
       instance().console().cartridge().name() == "CartridgeDPC");
 
-  myFragsizePopup->setEnabled(active && userMode);
   myFreqPopup->setEnabled(active && userMode);
   myResamplingPopup->setEnabled(active && userMode);
   myHeadroomSlider->setEnabled(active && userMode);
