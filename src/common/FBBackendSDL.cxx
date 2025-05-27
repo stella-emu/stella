@@ -47,7 +47,7 @@ FBBackendSDL::FBBackendSDL(OSystem& osystem)
   // It's done this way (vs directly accessing a FBSurfaceSDL object)
   // since the structure may be needed before any FBSurface's have
   // been created
-  myPixelFormat = SDL_GetPixelFormatDetails(SDL_PIXELFORMAT_ARGB8888);
+  myPixelFormat = SDL_GetPixelFormatDetails(SDL_PIXELFORMAT_RGBA32);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -582,7 +582,7 @@ void FBBackendSDL::setWindowIcon()
   ASSERT_MAIN_THREAD;
 
   SDL_Surface* surface =
-    SDL_CreateSurfaceFrom(32, 32, SDL_PIXELFORMAT_ARGB8888, stella_icon, 32 * 4);
+    SDL_CreateSurfaceFrom(32, 32, SDL_PIXELFORMAT_RGBA32, stella_icon, 32 * 4);
   SDL_SetWindowIcon(myWindow, surface);
   SDL_DestroySurface(surface);
 #endif
@@ -596,8 +596,11 @@ unique_ptr<FBSurface> FBBackendSDL::createSurface(
   const uInt32* data
 ) const
 {
-  return make_unique<FBSurfaceSDL>
-      (const_cast<FBBackendSDL&>(*this), w, h, inter, data);
+  unique_ptr<FBSurface> s = make_unique<FBSurfaceSDL>
+    (const_cast<FBBackendSDL&>(*this), w, h, inter, data);
+  s->setBlendLevel(100);  // by default, disable shading (use full alpha)
+
+  return s;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

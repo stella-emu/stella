@@ -104,12 +104,7 @@ void RomImageWidget::parseProperties(const FSNode& node, bool full)
 
     myNavSurface = fb.allocateSurface(_w, myImageHeight);
     myNavSurface->setDstSize(_w * scale, myImageHeight * scale);
-
-    FBSurface::Attributes& attr = myNavSurface->attributes();
-
-    attr.blending = true;
-    attr.blendalpha = 60;
-    myNavSurface->applyAttributes();
+    myNavSurface->setBlendLevel(60);
   }
 
   // Check if a surface has ever been created; if so, we use it
@@ -118,9 +113,9 @@ void RomImageWidget::parseProperties(const FSNode& node, bool full)
   if(mySurface == nullptr)
   {
     mySurface = fb.allocateSurface(_w, myImageHeight, ScalingInterpolation::blur);
-    mySurface->applyAttributes();
+// FIXME    mySurface->applyAttributes();
     myFrameSurface = fb.allocateSurface(1, 1, ScalingInterpolation::sharp);
-    myFrameSurface->applyAttributes();
+// FIXME    myFrameSurface->applyAttributes();
     myFrameSurface->setVisible(true);
 
     dialog().addRenderCallback([this]() {

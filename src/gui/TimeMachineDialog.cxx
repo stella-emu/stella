@@ -312,13 +312,7 @@ void TimeMachineDialog::setPosition()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TimeMachineDialog::loadConfig()
 {
-  // Enable blending (only once is necessary)
-  if(!surface().attributes().blending)
-  {
-    surface().attributes().blending = true;
-    surface().attributes().blendalpha = 92;
-    surface().applyAttributes();
-  }
+  surface().setBlendLevel(92);
 
   initBar();
 }

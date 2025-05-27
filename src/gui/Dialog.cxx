@@ -363,12 +363,7 @@ void Dialog::render()
 
       _shadeSurface = instance().frameBuffer().allocateSurface(
         1, 1, ScalingInterpolation::sharp, &data);
-
-      FBSurface::Attributes& attr = _shadeSurface->attributes();
-
-      attr.blending = true;
-      attr.blendalpha = 25; // darken background dialogs by 25%
-      _shadeSurface->applyAttributes();
+      _shadeSurface->setBlendLevel(25); // darken background dialogs by 25%
     }
     _shadeSurface->setDstRect(_surface->dstRect());
     _shadeSurface->render();

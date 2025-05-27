@@ -277,23 +277,10 @@ class FBSurface
                             string& left, string& right);
 
     /**
-      The rendering attributes that can be modified for this texture.
-      These probably can only be implemented in child FBSurfaces where
-      the specific functionality actually exists.
+      Get the currently applied alpha percentage for this surface.
+      Note that this level is 0 - 100%, and is not scaled.
     */
-    struct Attributes {
-      bool blending{false};    // Blending is enabled
-      uInt32 blendalpha{100};  // Alpha to use in blending mode (0-100%)
-
-      bool operator==(const Attributes& other) const {
-        return blendalpha == other.blendalpha && blending == other.blending;
-      }
-    };
-
-    /**
-      Get the currently applied attributes.
-    */
-    Attributes& attributes() { return myAttributes; }
+    uInt32 blendLevel() const { return myBlendLevel; }
 
     //////////////////////////////////////////////////////////////////////////
     // Note:  The following methods are FBSurface-specific, and must be
@@ -380,15 +367,18 @@ class FBSurface
     virtual void resize(uInt32 width, uInt32 height) = 0;
 
     /**
+      Set alpha level used in blending.
+
+      @param percent  Internally, uses formula 'srcA = srcA * (alpha / 255)'
+                      Note that this level is 0 - 100%, and is not scaled;
+                      the scaling is done inside this method call
+     */
+    virtual void setBlendLevel(uInt32 percent) = 0;
+
+    /**
       Configure scaling interpolation.
      */
     virtual void setScalingInterpolation(ScalingInterpolation) = 0;
-
-    /**
-      The child class chooses which (if any) of the actual attributes
-      can be applied.
-    */
-    virtual void applyAttributes() = 0;
     //////////////////////////////////////////////////////////////////////////
 
     static void setPalette(const FullPaletteArray& palette) { myPalette = palette; }
@@ -417,8 +407,7 @@ class FBSurface
   protected:
     uInt32* myPixels{nullptr};  // NOTE: MUST be set in child classes
     uInt32 myPitch{0};          // NOTE: MUST be set in child classes
-
-    Attributes myAttributes;
+    uInt32 myBlendLevel{100};   // NOTE: MUST be set in child classes
 
     static FullPaletteArray myPalette;
 

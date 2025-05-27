@@ -19,19 +19,6 @@
 #include "ThreadDebugging.hxx"
 #include "QisBlitter.hxx"
 
-static void P(const char* str, const SDL_Rect r, const SDL_FRect fr)
-{
-  cerr << str << ": "
-       << r.x << "," << r.y << " " << r.w << "x" << r.h << "  =>  "
-       << fr.x << "," << fr.y << " " << fr.w << "x" << fr.h << '\n';
-}
-static void PF(const char* str, const SDL_FRect r, const SDL_FRect fr)
-{
-  cerr << str << ": "
-       << r.x << "," << r.y << " " << r.w << "x" << r.h << "  =>  "
-       << fr.x << "," << fr.y << " " << fr.w << "x" << fr.h << '\n';
-}
-
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 QisBlitter::QisBlitter(FBBackendSDL& fb)
   : myFB{fb}
@@ -54,10 +41,8 @@ bool QisBlitter::isSupported(const FBBackendSDL& fb)
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void QisBlitter::reinitialize(
-  SDL_Rect srcRect,
-  SDL_Rect destRect,
-  FBSurface::Attributes attributes,
-  SDL_Surface* staticData
+  SDL_Rect srcRect, SDL_Rect destRect,
+  uInt8 blendLevel, SDL_Surface* staticData
 )
 {
   myRecreateTextures = myRecreateTextures || !(
@@ -65,11 +50,11 @@ void QisBlitter::reinitialize(
     mySrcRect.h == srcRect.h &&
     myDstRect.w == myFB.scaleX(destRect.w) &&
     myDstRect.h == myFB.scaleY(destRect.h) &&
-    attributes == myAttributes &&
+    blendLevel  == myBlendLevel &&
     myStaticData == staticData
    );
 
-  myAttributes = attributes;
+  myBlendLevel = blendLevel;
   myStaticData = staticData;
 
   mySrcRect = srcRect;
@@ -120,6 +105,7 @@ void QisBlitter::blit(SDL_Surface& surface)
     myIntermediateTexture = mySecondaryIntermediateTexture;
     mySecondaryIntermediateTexture = intermediateTexture;
 
+//     std::swap(mySrcTexture, mySecondarySrcTexture);
     SDL_Texture* temporary = mySrcTexture;
     mySrcTexture = mySecondarySrcTexture;
     mySecondarySrcTexture = temporary;
@@ -200,18 +186,14 @@ void QisBlitter::recreateTexturesIfNecessary()
     blitToIntermediate();
   }
 
-  if (myAttributes.blending) {
-    const auto blendAlpha = static_cast<uInt8>(myAttributes.blendalpha * 2.55);
+  const std::array<SDL_Texture*, 2> textures = {
+    myIntermediateTexture, mySecondaryIntermediateTexture
+  };
+  for (SDL_Texture* texture: textures) {
+    if (!texture) continue;
 
-    const std::array<SDL_Texture*, 2> textures = {
-      myIntermediateTexture, mySecondaryIntermediateTexture
-    };
-    for (SDL_Texture* texture: textures) {
-      if (!texture) continue;
-
-      SDL_SetTextureBlendMode(texture, SDL_BLENDMODE_BLEND);
-      SDL_SetTextureAlphaMod(texture, blendAlpha);
-    }
+    SDL_SetTextureBlendMode(texture, SDL_BLENDMODE_BLEND);
+    SDL_SetTextureAlphaMod(texture, myBlendLevel * 2.55);
   }
 
   myRecreateTextures = false;

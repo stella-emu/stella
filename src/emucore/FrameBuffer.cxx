@@ -300,9 +300,7 @@ FBInitStatus FrameBuffer::createDisplay(string_view title, BufferType type,
   if(!myStatsMsg.surface)
   {
     myStatsMsg.surface = allocateSurface(myStatsMsg.w, myStatsMsg.h);
-    myStatsMsg.surface->attributes().blending = true;
-    myStatsMsg.surface->attributes().blendalpha = 92; //aligned with TimeMachineDialog
-    myStatsMsg.surface->applyAttributes();
+    myStatsMsg.surface->setBlendLevel(92); //aligned with TimeMachineDialog
   }
 
   if(!myMsg.surface)

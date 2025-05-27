@@ -234,9 +234,7 @@ void Bezel::apply()
     // Note: Variable bezel window positions are handled in VideoModeHandler::Mode
 
     // Enable blending to allow overlaying the bezel over the TIA output
-    mySurface->attributes().blending = true;
-    mySurface->attributes().blendalpha = 100;
-    mySurface->applyAttributes();
+    mySurface->setBlendLevel(100);
     mySurface->setVisible(true);
   }
   else

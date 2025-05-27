@@ -232,7 +232,6 @@ void FBSurfaceSDL::createSurface(uInt32 width, uInt32 height, const uInt32* data
   // Create a surface in the same format as the parent GL class
   const SDL_PixelFormatDetails& pf = myBackend.pixelFormat();
   mySurface = SDL_CreateSurface(width, height, pf.format);
-  //SDL_SetSurfaceBlendMode(mySurface, SDL_BLENDMODE_ADD); // default: SDL_BLENDMODE_BLEND
 
   // We start out with the src and dst rectangles containing the same
   // dimensions, indicating no scaling or re-positioning
@@ -258,28 +257,30 @@ void FBSurfaceSDL::createSurface(uInt32 width, uInt32 height, const uInt32* data
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FBSurfaceSDL::reinitializeBlitter(bool force)
 {
-  if (force)
+  if(force)
     myBlitter.reset();
 
-  if (!myBlitter && myBackend.isInitialized())
+  if(!myBlitter && myBackend.isInitialized())
     myBlitter = BlitterFactory::createBlitter(
         myBackend, scalingAlgorithm(myInterpolationMode));
 
-  if (myBlitter)
-    myBlitter->reinitialize(mySrcR, myDstR, myAttributes,
+  if(myBlitter)
+    myBlitter->reinitialize(mySrcR, myDstR, myBlendLevel,
                             myIsStatic ? mySurface : nullptr);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FBSurfaceSDL::applyAttributes()
+void FBSurfaceSDL::setBlendLevel(uInt32 percent)
 {
+  myBlendLevel = BSPF::clamp(percent, 0U, 100U);
+
   reinitializeBlitter();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FBSurfaceSDL::setScalingInterpolation(ScalingInterpolation interpolation)
 {
-  if (interpolation == ScalingInterpolation::sharp &&
+  if(interpolation == ScalingInterpolation::sharp &&
       (
         static_cast<int>(mySrcGUIR.h()) >= myBackend.scaleY(myDstGUIR.h()) ||
         static_cast<int>(mySrcGUIR.w()) >= myBackend.scaleX(myDstGUIR.w())
@@ -287,7 +288,8 @@ void FBSurfaceSDL::setScalingInterpolation(ScalingInterpolation interpolation)
   )
     interpolation = ScalingInterpolation::blur;
 
-  if (interpolation == myInterpolationMode) return;
+  if(interpolation == myInterpolationMode)
+    return;
 
   myInterpolationMode = interpolation;
   reload();
