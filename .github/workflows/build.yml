@@ -26,8 +26,7 @@ jobs:
           make -j2 install
       - name: Build Stella
         run: |
-          CXXFLAGS="-I `pwd`/../SDL3/prefix/include -O2 -g" LDFLAGS="-L `pwd`/../SDL3/prefix/lib"
-          ./configure
+          CXXFLAGS="-I `pwd`/../SDL3/prefix/include -O2 -g" LDFLAGS="-L `pwd`/../SDL3/prefix/lib" ./configure
           make -j2 all
 
   macos:
