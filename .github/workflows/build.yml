@@ -11,16 +11,24 @@ jobs:
   linux:
     name: Linux
     runs-on: ubuntu-latest
+    env:
+      SDL3_VERSION: 3.2.14
     steps:
       - name: Check out the repository
         uses: actions/checkout@93ea575cb5d8a053eaa0ac8fa3b40d7e05a33cc8
       - name: Install SDL3
         run: |
-          sudo apt-get update
-          sudo apt-get install libsdl3-dev
+          wget https://github.com/libsdl-org/SDL/releases/download/release-${SDL3_VERSION}/SDL3-${SDL3_VERSION}.tar.gz
+          tar -xzf SDL3-${SDL3_VERSION}.tar.gz
+          mv SDL3-${SDL3_VERSION} SDL3
+          cd SDL3
+          cmake -DCMAKE_INSTALL_PREFIX="`pwd`/prefix" -DSDL_UNIX_CONSOLE_BUILD=ON .
+          make -j2 install
       - name: Build Stella
         run: |
-          ./configure && make -j2 all
+          CXXFLAGS="-I `pwd`/../SDL3/prefix/include -O2 -g" LDFLAGS="-L `pwd`/../SDL3/prefix/lib"
+          ./configure
+          make -j2 all
 
   macos:
     name: macOS
