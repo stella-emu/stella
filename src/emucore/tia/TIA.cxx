@@ -1599,7 +1599,7 @@ void TIA::tickHblank()
       break;
   }
 
-  if (myExtendedHblank && myHctr > TIAConstants::H_BLANK_CLOCKS - 1)
+  if (myExtendedHblank && myHctr - myHctrDelta > TIAConstants::H_BLANK_CLOCKS - 1)
     myPlayfield.tick(myHctr - TIAConstants::H_BLANK_CLOCKS - myHctrDelta);
 }
 
