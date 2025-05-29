@@ -598,10 +598,7 @@ unique_ptr<FBSurface> FBBackendSDL::createSurface(
 {
   unique_ptr<FBSurface> s = make_unique<FBSurfaceSDL>
     (const_cast<FBBackendSDL&>(*this), w, h, inter, data);
-
-  // by default, disable shading (use full alpha)
-  s->enableBlend(false);
-  s->setBlendLevel(100);
+  s->setBlendLevel(100);  // by default, disable shading (use full alpha)
 
   return s;
 }
