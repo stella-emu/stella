@@ -367,6 +367,15 @@ class FBSurface
     virtual void resize(uInt32 width, uInt32 height) = 0;
 
     /**
+       Enable or disable blending. This will enable alpha channel
+       blending with an additional, overall blend factor (see
+       setBlendLevel below).
+
+       @param enable  Enable blending?
+     */
+    virtual void enableBlend(bool enableBlend) = 0;
+
+    /**
       Set alpha level used in blending.
 
       @param percent  Internally, uses formula 'srcA = srcA * (alpha / 255)'
@@ -407,6 +416,7 @@ class FBSurface
   protected:
     uInt32* myPixels{nullptr};  // NOTE: MUST be set in child classes
     uInt32 myPitch{0};          // NOTE: MUST be set in child classes
+    bool myEnableBlend{false};        // NOTE: MUST be set in child classes
     uInt32 myBlendLevel{100};   // NOTE: MUST be set in child classes
 
     static FullPaletteArray myPalette;

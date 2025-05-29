@@ -265,7 +265,7 @@ void FBSurfaceSDL::reinitializeBlitter(bool force)
         myBackend, scalingAlgorithm(myInterpolationMode));
 
   if(myBlitter)
-    myBlitter->reinitialize(mySrcR, myDstR, myBlendLevel,
+    myBlitter->reinitialize(mySrcR, myDstR, myEnableBlend, myBlendLevel,
                             myIsStatic ? mySurface : nullptr);
 }
 
@@ -273,6 +273,14 @@ void FBSurfaceSDL::reinitializeBlitter(bool force)
 void FBSurfaceSDL::setBlendLevel(uInt32 percent)
 {
   myBlendLevel = BSPF::clamp(percent, 0U, 100U);
+
+  reinitializeBlitter();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FBSurfaceSDL::enableBlend(bool enableBlend)
+{
+  myEnableBlend = enableBlend;
 
   reinitializeBlitter();
 }

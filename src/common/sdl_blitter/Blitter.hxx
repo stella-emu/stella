@@ -29,7 +29,7 @@ class Blitter {
     virtual ~Blitter() = default;
 
     virtual void reinitialize(
-      SDL_Rect srcRect, SDL_Rect destRect,
+      SDL_Rect srcRect, SDL_Rect destRect, bool enableBlend,
       uInt8 blendLevel, SDL_Surface* staticData = nullptr
     ) = 0;
 

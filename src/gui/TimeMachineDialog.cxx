@@ -313,6 +313,7 @@ void TimeMachineDialog::setPosition()
 void TimeMachineDialog::loadConfig()
 {
   surface().setBlendLevel(92);
+  surface().enableBlend(true);
 
   initBar();
 }

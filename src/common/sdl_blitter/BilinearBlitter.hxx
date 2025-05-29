@@ -32,7 +32,7 @@ class BilinearBlitter : public Blitter {
     ~BilinearBlitter() override;
 
     void reinitialize(
-      SDL_Rect srcRect, SDL_Rect destRect,
+      SDL_Rect srcRect, SDL_Rect destRect, bool enableBlend,
       uInt8 blendLevel, SDL_Surface* staticData = nullptr
     ) override;
 
@@ -45,6 +45,7 @@ class BilinearBlitter : public Blitter {
     SDL_Rect mySrcRect{0, 0, 0, 0}, myDstRect{0, 0, 0, 0};
     SDL_FRect mySrcFRect{0.F, 0.F, 0.F, 0.F}, myDstFRect{0.F, 0.F, 0.F, 0.F};
 
+    bool myEnableBlend{false};
     uInt8 myBlendLevel{100};
     bool myInterpolate{false};
     bool myTexturesAreAllocated{false};

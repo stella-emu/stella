@@ -105,6 +105,7 @@ void RomImageWidget::parseProperties(const FSNode& node, bool full)
     myNavSurface = fb.allocateSurface(_w, myImageHeight);
     myNavSurface->setDstSize(_w * scale, myImageHeight * scale);
     myNavSurface->setBlendLevel(60);
+    myNavSurface->enableBlend(true);
   }
 
   // Check if a surface has ever been created; if so, we use it

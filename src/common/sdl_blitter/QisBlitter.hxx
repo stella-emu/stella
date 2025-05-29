@@ -34,7 +34,7 @@ class QisBlitter : public Blitter {
     ~QisBlitter() override;
 
     void reinitialize(
-      SDL_Rect srcRect, SDL_Rect destRect,
+      SDL_Rect srcRect, SDL_Rect destRect, bool enableBlend,
       uInt8 blendLevel, SDL_Surface* staticData
     ) override;
 
@@ -57,6 +57,7 @@ class QisBlitter : public Blitter {
               myDstFRect{0.F, 0.F, 0.F, 0.F};
 
     uInt32 myBlendLevel{100};
+    bool myEnableBlend{false};
     bool myTexturesAreAllocated{false};
     bool myRecreateTextures{false};
 

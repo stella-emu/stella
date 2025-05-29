@@ -66,6 +66,7 @@ TIASurface::TIASurface(OSystem& system)
   // Create shading surface
   static constexpr uInt32 data = 0xff000000;
   myShadeSurface = myFB.allocateSurface(1, 1, ScalingInterpolation::sharp, &data);
+  myShadeSurface->enableBlend(true);
   myShadeSurface->setBlendLevel(35); // darken stopped emulation by 35%
 
   myRGBFramebuffer.fill(0);
@@ -417,6 +418,7 @@ void TIASurface::createScanlineSurface()
   myFB.deallocateSurface(mySLineSurface);
   mySLineSurface = myFB.allocateSurface(width, height,
     interpolationModeFromSettings(myOSystem.settings()), data.data());
+  mySLineSurface->enableBlend(true);
 
   //mySLineSurface->setSrcSize(mySLineSurface->width(), height);
   mySLineSurface->setDstRect(myTiaSurface->dstRect());

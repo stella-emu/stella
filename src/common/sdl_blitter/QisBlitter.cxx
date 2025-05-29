@@ -41,7 +41,7 @@ bool QisBlitter::isSupported(const FBBackendSDL& fb)
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void QisBlitter::reinitialize(
-  SDL_Rect srcRect, SDL_Rect destRect,
+  SDL_Rect srcRect, SDL_Rect destRect, bool enableBlend,
   uInt8 blendLevel, SDL_Surface* staticData
 )
 {
@@ -51,9 +51,11 @@ void QisBlitter::reinitialize(
     myDstRect.w == myFB.scaleX(destRect.w) &&
     myDstRect.h == myFB.scaleY(destRect.h) &&
     blendLevel  == myBlendLevel &&
+    enableBlend == myEnableBlend &&
     myStaticData == staticData
    );
 
+  myEnableBlend = enableBlend;
   myBlendLevel = blendLevel;
   myStaticData = staticData;
 
@@ -160,11 +162,13 @@ void QisBlitter::recreateTexturesIfNecessary()
   mySrcTexture = SDL_CreateTexture(myFB.renderer(), myFB.pixelFormat().format,
     texAccess, mySrcRect.w, mySrcRect.h);
   SDL_SetTextureScaleMode(mySrcTexture, SDL_SCALEMODE_NEAREST);
+  SDL_SetTextureBlendMode(mySrcTexture, SDL_BLENDMODE_NONE);
 
   if (myStaticData == nullptr) {
     mySecondarySrcTexture = SDL_CreateTexture(myFB.renderer(),
         myFB.pixelFormat().format, texAccess, mySrcRect.w, mySrcRect.h);
     SDL_SetTextureScaleMode(mySecondarySrcTexture, SDL_SCALEMODE_NEAREST);
+    SDL_SetTextureBlendMode(mySecondarySrcTexture, SDL_BLENDMODE_NONE);
   } else {
     mySecondarySrcTexture = nullptr;
   }
@@ -189,11 +193,16 @@ void QisBlitter::recreateTexturesIfNecessary()
   const std::array<SDL_Texture*, 2> textures = {
     myIntermediateTexture, mySecondaryIntermediateTexture
   };
+
   for (SDL_Texture* texture: textures) {
     if (!texture) continue;
 
-    SDL_SetTextureBlendMode(texture, SDL_BLENDMODE_BLEND);
-    SDL_SetTextureAlphaMod(texture, myBlendLevel * 2.55);
+    if (myEnableBlend) {
+      SDL_SetTextureBlendMode(texture, SDL_BLENDMODE_BLEND);
+      SDL_SetTextureAlphaMod(texture, myBlendLevel * 2.55);
+    } else {
+      SDL_SetTextureBlendMode(texture, SDL_BLENDMODE_NONE);
+    }
   }
 
   myRecreateTextures = false;

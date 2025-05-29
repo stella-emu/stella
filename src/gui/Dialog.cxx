@@ -363,6 +363,7 @@ void Dialog::render()
 
       _shadeSurface = instance().frameBuffer().allocateSurface(
         1, 1, ScalingInterpolation::sharp, &data);
+      _shadeSurface->enableBlend(true);
       _shadeSurface->setBlendLevel(25); // darken background dialogs by 25%
     }
     _shadeSurface->setDstRect(_surface->dstRect());

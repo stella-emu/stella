@@ -34,7 +34,7 @@ BilinearBlitter::~BilinearBlitter()
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void BilinearBlitter::reinitialize(
-  SDL_Rect srcRect, SDL_Rect destRect,
+  SDL_Rect srcRect, SDL_Rect destRect, bool enableBlend,
   uInt8 blendLevel, SDL_Surface* staticData
 )
 {
@@ -44,9 +44,11 @@ void BilinearBlitter::reinitialize(
     myDstRect.w == myFB.scaleX(destRect.w) &&
     myDstRect.h == myFB.scaleY(destRect.h) &&
     blendLevel  == myBlendLevel &&
+    enableBlend == myEnableBlend &&
     myStaticData == staticData
    );
 
+  myEnableBlend = enableBlend;
   myBlendLevel = blendLevel;
   myStaticData = staticData;
 
@@ -134,11 +136,16 @@ void BilinearBlitter::recreateTexturesIfNecessary()
   }
 
   const std::array<SDL_Texture*, 2> textures = { myTexture, mySecondaryTexture };
+
   for (SDL_Texture* texture: textures) {
     if (!texture) continue;
 
-    SDL_SetTextureBlendMode(texture, SDL_BLENDMODE_BLEND);
-    SDL_SetTextureAlphaMod(texture, myBlendLevel * 2.55);
+    if (myEnableBlend) {
+      SDL_SetTextureBlendMode(texture, SDL_BLENDMODE_BLEND);
+      SDL_SetTextureAlphaMod(texture, myBlendLevel * 2.55);
+    } else {
+      SDL_SetTextureBlendMode(texture, SDL_BLENDMODE_NONE);
+    }
   }
 
   myRecreateTextures = false;
