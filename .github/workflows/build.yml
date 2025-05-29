@@ -26,22 +26,24 @@ jobs:
     name: macOS
     runs-on: macos-latest
     env:
-      SDL3_version: 3.2.14
+      SDL3_VERSION: 3.2.14
     steps:
       - uses: maxim-lobanov/setup-xcode@v1
         with:
-          xcode-version: '16.2'
+          xcode-version: '16.4'
       - name: Check out the repository
         uses: actions/checkout@93ea575cb5d8a053eaa0ac8fa3b40d7e05a33cc8
       - name: Install SDL3
         run: |
-          curl https://www.libsdl.org/release/SDL3-$SDL3_version.tar.gz | tar xzf -
-          mkdir SDL3-$SDL3_version/build
-          cd SDL3-$SDL3_version/build
-          ../configure && make -j3 && sudo make install
+          wget https://github.com/libsdl-org/SDL/releases/download/release-${SDL3_VERSION}/SDL3-${SDL3_VERSION}.dmg
+          hdiutil attach SDL3-${SDL3_VERSION}.dmg
+          mkdir -p src/os/macos/Frameworks
+          cp -Rv /Volumes/SDL3/SDL3.xcframework src/os/macos/Frameworks
+          hdiutil detach /Volumes/SDL3
       - name: Build Stella
         run: |
-          ./configure && make -j3 all
+          cd src/os/macos
+          xcodebuild
 
   windows:
     name: Windows
