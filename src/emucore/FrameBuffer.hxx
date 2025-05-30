@@ -344,6 +344,13 @@ class FrameBuffer
     bool fullScreen() const { return myBackend->fullScreen(); }
 
     /**
+      Updates theme according to OS setting.
+
+      @return  true if theme has changed
+    */
+    bool updateTheme();
+
+    /**
       This method is called to retrieve the R/G/B data from the given pixel.
 
       @param pixel  The pixel containing R/G/B data

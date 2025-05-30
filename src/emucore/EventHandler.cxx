@@ -395,6 +395,14 @@ void EventHandler::handleSystemEvent(SystemEvent e, int, int)
         setState(EventHandlerState::PAUSE);
       break;
 
+    case SystemEvent::THEME_CHANGED:
+      if(myOSystem.frameBuffer().updateTheme())
+      {
+        myOSystem.frameBuffer().setUIPalette();
+        myOSystem.frameBuffer().update(FrameBuffer::UpdateMode::REDRAW);
+      }
+      break;
+
     default:  // handle other events as testing requires
       // cerr << "handleSystemEvent: " << e << '\n';
       break;

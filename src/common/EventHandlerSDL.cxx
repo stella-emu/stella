@@ -256,7 +256,9 @@ void EventHandlerSDL::pollEvent()
       case SDL_EVENT_WINDOW_FOCUS_LOST:
         handleSystemEvent(SystemEvent::WINDOW_FOCUS_LOST);
         break;
-
+      case SDL_EVENT_SYSTEM_THEME_CHANGED:
+        handleSystemEvent(SystemEvent::THEME_CHANGED);
+        break;
       default:
         break;
     }

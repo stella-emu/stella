@@ -95,6 +95,12 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
   wid.push_back(myPalette2Popup);
   ypos += lineHeight + VGAP;
 
+  int xpos2 = myPalette1Popup->getRight() + fontWidth * 5;
+  myAutoPalette = new CheckboxWidget(myTab, font, xpos2,
+                                     myPalette1Popup->getBottom() - CheckboxWidget::boxSize(font) / 2 - 1,
+                                     "Auto theme");
+  wid.push_back(myAutoPalette);
+
   // Dialog font
   items.clear();
   VarList::push_back(items, "Small", "small");            //  8x13
@@ -109,8 +115,7 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
   wid.push_back(myDialogFontPopup);
 
   // Enable HiDPI mode
-  xpos = myDialogFontPopup->getRight() + fontWidth * 5;
-  myHidpiWidget = new CheckboxWidget(myTab, font, xpos,
+  myHidpiWidget = new CheckboxWidget(myTab, font, xpos2,
                                      ypos + 1, "HiDPI mode (*)");
   myHidpiWidget->setToolTip("Scale the UI by a factor of two when enabled.");
 
@@ -129,8 +134,7 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
   wid.push_back(myPositionPopup);
 
   // Center window (in windowed mode)
-  xpos = myHidpiWidget->getLeft();
-  myCenter = new CheckboxWidget(myTab, _font, xpos, ypos + 1, "Center windows");
+  myCenter = new CheckboxWidget(myTab, _font, xpos2, ypos + 1, "Center windows");
   myCenter->setToolTip("Check to center all windows, else remember last position.");
   wid.push_back(myCenter);
 
@@ -220,7 +224,7 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
                                  _w - xpos - HBORDER - 2, lineHeight, "");
   wid.push_back(myRomPath);
 
-  const int xpos2 = _w - HBORDER - font.getStringWidth("Display file extensions")
+  xpos2 = _w - HBORDER - font.getStringWidth("Display file extensions")
     - CheckboxWidget::prefixSize(font) - 1;
   ypos += lineHeight + VGAP * 2;
   myFollowLauncherWidget = new CheckboxWidget(myTab, font, xpos2, ypos, "Follow Launcher path");
@@ -399,6 +403,7 @@ void UIDialog::loadConfig()
   myPalette1Popup->setSelected(pal1, "standard");
   const string& pal2 = settings.getString("uipalette2");
   myPalette2Popup->setSelected(pal2, "dark");
+  myAutoPalette->setState(settings.getBool("autouipalette"));
 
   // Dialog font
   const string& dialogFont = settings.getString("dialogfont");
@@ -490,6 +495,9 @@ void UIDialog::saveConfig()
                     myPalette1Popup->getSelectedTag().toString());
   settings.setValue("uipalette2",
                     myPalette2Popup->getSelectedTag().toString());
+  settings.setValue("autouipalette", myAutoPalette->getState());
+
+  instance().frameBuffer().updateTheme();
   instance().frameBuffer().setUIPalette();
   instance().frameBuffer().update(FrameBuffer::UpdateMode::REDRAW);
 
@@ -539,6 +547,7 @@ void UIDialog::setDefaults()
     case 0:  // Misc. options
       myPalette1Popup->setSelected("standard");
       myPalette2Popup->setSelected("dark");
+      myAutoPalette->setState(false);
       myDialogFontPopup->setSelected("medium", "");
       myHidpiWidget->setState(false);
       myPositionPopup->setSelected("0");

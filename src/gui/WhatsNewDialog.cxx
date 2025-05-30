@@ -58,21 +58,12 @@ WhatsNewDialog::WhatsNewDialog(OSystem& osystem, DialogContainer& parent,
   add(ypos, "added bezel support (incl. Sinden Lightgun)");
   add(ypos, "accelerated ARM emulation by ~15%");
 #else
-  if(version < "6.7")
+  if(version < "7.0")
   {
-    add(ypos, "extensively redesigned and enhanced ROM launcher");
+    add(ypos, "accelerated ARM emulation by ~15%");
+    add(ypos, "added user defined CPU cycle timers to debugger");
   }
-  add(ypos, "enhanced ROM launcher to allow multiple images per ROM");
-  add(ypos, "added bezel support (incl. Sinden Lightgun)");
-  add(ypos, "made heaps of additional images and bezels available for download");
-  add(ypos, "enhanced Kid Vid support to play tape audio");
-  add(ypos, "added Joy2B+ controller support");
-  if(version < "6.7.1")
-  {
-    add(ypos, "fixed broken mouse and Stelladaptor input for Driving Controller");
-  }
-  add(ypos, "accelerated ARM emulation by ~15%");
-  add(ypos, "added user defined CPU cycle timers to debugger");
+  add(ypos, "ported Stella to SDL3");
   add(ypos, ELLIPSIS + " (for a complete list see 'docs/Changes.txt')");
 #endif
 

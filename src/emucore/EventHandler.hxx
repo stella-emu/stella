@@ -440,7 +440,8 @@ class EventHandler
       WINDOW_ENTER,
       WINDOW_LEAVE,
       WINDOW_FOCUS_GAINED,
-      WINDOW_FOCUS_LOST
+      WINDOW_FOCUS_LOST,
+      THEME_CHANGED
     };
     void handleSystemEvent(SystemEvent e, int data1 = 0, int data2 = 0);
 

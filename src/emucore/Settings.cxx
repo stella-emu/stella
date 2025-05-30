@@ -200,6 +200,7 @@ Settings::Settings()
   setPermanent("uipalette", "standard");
   setPermanent("uipalette2", "dark");
   setPermanent("altuipalette", "false");
+  setPermanent("autouipalette", "false");
   setPermanent("hidpi", "false");
   setPermanent("listdelay", "300");
   setPermanent("mwheel", "4");
@@ -670,14 +671,16 @@ void Settings::usage()
     << "  -bezel.dir          <dir>    Set the path to load bezels from\n"
     << "  -lastrom            <name>   Last played ROM, automatically selected in\n"
     << "                                launcher\n"
-    << "  -romloadcount <number>       Number of ROM to load next from multicard\n"
-    << "  -uipalette    <standard|     Set GUI theme\n"
-    << "                 classic|\n"
-    << "                 light|dark>\n"
-    << "  -uipalette2   <standard|     Set alternative GUI theme\n"
-    << "                 classic|\n"
-    << "                 light|dark>\n"
-    << "  -altuipalette <0|1>          Enable alternative GUI theme\n"
+    << "  -romloadcount  <number>       Number of ROM to load next from multicard\n"
+    << "  -uipalette     <standard|     Set GUI theme\n"
+    << "                  classic|\n"
+    << "                  light|dark>\n"
+    << "  -uipalette2    <standard|     Set alternative GUI theme\n"
+    << "                  classic|\n"
+    << "                  light|dark>\n"
+    << "  -altuipalette  <0|1>          Enable alternative GUI theme\n"
+    << "  -autouipalette <0|1>          Switch GUI theme automatically\n"
+
     << "  -hidpi        <0|1>          Enable HiDPI mode\n"
     << "  -dialogfont   <small|        Use the specified font in the dialogs\n"
     << "                 low_medium|\n"

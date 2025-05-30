@@ -246,6 +246,16 @@ class FBBackendSDL : public FBBackend
     int refreshRate() const override;
 
     /**
+      Checks if the OS theme is set to light.
+    */
+    bool isLightTheme() const override { return SDL_GetSystemTheme() == SDL_SYSTEM_THEME_LIGHT; }
+
+    /**
+      Checks if the OS theme is set to dark.
+    */
+    bool isDarkTheme() const override { return SDL_GetSystemTheme() == SDL_SYSTEM_THEME_DARK; }
+
+    /**
       Checks if the display refresh rate should be adapted to game refresh
       rate in (real) fullscreen mode.
 

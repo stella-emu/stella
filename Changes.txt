@@ -14,11 +14,15 @@
 
 7.0 to 7.1 (xxx x, 202x)
 
-  * Added developer option for disabling PlusROM support (TODO: Doc)
+  * Ported Stella to SDL3 
+
+  * Added option for switching Stella's theme in sync with OS (TODO: Doc)
 
   * Enhanced PAL-60 detection, searches for signature (e.g. PAL60) in ROM
 
   * Enhanced VSYNC emulation, considers VBLANK now too
+
+  * Added developer option for disabling PlusROM support (TODO: Doc)
 
 6.7.1 to 7.0 (October 5, 2024)
 

@@ -119,6 +119,16 @@ class FBBackend
     virtual int refreshRate() const = 0;
 
     /**
+      Checks if the OS theme is set to light.
+    */
+    virtual bool isLightTheme() const = 0;
+
+    /**
+      Checks if the OS theme is set to dark.
+    */
+    virtual bool isDarkTheme() const = 0;
+
+    /**
       This method is called to retrieve the R/G/B data from the given pixel.
 
       @param pixel  The pixel containing R/G/B data

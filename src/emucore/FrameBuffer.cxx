@@ -118,6 +118,7 @@ void FrameBuffer::initialize()
   setupFonts();
 #endif
 
+  updateTheme();
   setUIPalette();
 
   myGrabMouse = myOSystem.settings().getBool("grabmouse");
@@ -1490,6 +1491,23 @@ void FrameBuffer::toggleGrabMouse(bool toggle)
   myOSystem.frameBuffer().showTextMessage(oldState != myGrabMouse ? myGrabMouse
                                           ? "Grab mouse enabled" : "Grab mouse disabled"
                                           : "Grab mouse not allowed");
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool FrameBuffer::updateTheme()
+{
+  if(myOSystem.settings().getBool("autouipalette"))
+  {
+    bool darkTheme = myOSystem.settings().getBool("altuipalette");
+
+    if(myBackend->isLightTheme() && darkTheme ||
+       myBackend->isDarkTheme() && !darkTheme)
+    {
+      myOSystem.settings().setValue("altuipalette", !darkTheme);
+      return true;
+    }
+  }
+  return false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

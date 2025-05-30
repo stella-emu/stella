@@ -111,6 +111,8 @@ class FBBackendLIBRETRO : public FBBackend
     void grabMouse(bool) override { }
     void renderToScreen() override { }
     int refreshRate() const override { return 0; }
+    bool isLightTheme() const override { return false; }
+    bool isDarkTheme() const override { return false; }
 
   private:
     // Following constructors and assignment operators not supported
