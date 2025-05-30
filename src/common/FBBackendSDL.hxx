@@ -253,12 +253,16 @@ class FBBackendSDL : public FBBackend
     /**
       Checks if the OS theme is set to light.
     */
-    bool isLightTheme() const override { return SDL_GetSystemTheme() == SDL_SYSTEM_THEME_LIGHT; }
+    bool isLightTheme() const override {
+      return SDL_GetSystemTheme() == SDL_SYSTEM_THEME_LIGHT;
+    }
 
     /**
       Checks if the OS theme is set to dark.
     */
-    bool isDarkTheme() const override { return SDL_GetSystemTheme() == SDL_SYSTEM_THEME_DARK; }
+    bool isDarkTheme() const override {
+      return SDL_GetSystemTheme() == SDL_SYSTEM_THEME_DARK;
+    }
 
     /**
       Checks if the display refresh rate should be adapted to game refresh
@@ -309,6 +313,8 @@ class FBBackendSDL : public FBBackend
     // TODO: Is this a bug in SDL?
     bool myIsFullscreen{false};
 
+    // Text events are sometimes enabled before a window exists
+    // So we cache the request here, and honour it after the window has been created
     bool myTextEventsEnabled{false};
 
     // Center setting of current window

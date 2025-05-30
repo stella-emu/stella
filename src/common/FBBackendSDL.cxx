@@ -122,8 +122,9 @@ void FBBackendSDL::queryHardware(vector<Common::Size>& fullscreenRes,
 
       ref << mode->refresh_rate << "Hz";
       s << std::setw(7) << std::left << ref.str();
-      s << (mode->w == display->w && mode->h == display->h && mode->refresh_rate == display->refresh_rate)
-        ? "* " : "  ";
+      if(mode->w == display->w && mode->h == display->h &&
+         mode->refresh_rate == display->refresh_rate)
+        s << "* ";
     }
     Logger::debug(s.view());
   }

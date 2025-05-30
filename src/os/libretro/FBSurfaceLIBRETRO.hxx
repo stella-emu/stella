@@ -68,9 +68,8 @@ class FBSurfaceLIBRETRO : public FBSurface
     void reload() override { }
     void resize(uInt32 width, uInt32 height) override { }
     void setScalingInterpolation(ScalingInterpolation) override { }
-
-  protected:
-    void applyAttributes() override { }
+    void enableBlend(bool) override { }
+    void setBlendLevel(uInt32) override { }
 
   private:
     uInt32 myWidth{0}, myHeight{0};

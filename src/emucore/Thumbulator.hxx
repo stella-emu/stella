@@ -278,8 +278,10 @@ class Thumbulator
     ChipType _chipType{ChipType::AUTO};
     ConsoleTiming _consoleTiming{ConsoleTiming::ntsc};
     double _MHz{70.0};
+  #ifdef THUMB_CYCLE_COUNT
     uInt32 _flashCycles{4};
     uInt32 _flashBanks{1};
+  #endif
     Stats _stats{0};
     bool _irqDrivenAudio{false};
     uInt32 _totalCycles{0};

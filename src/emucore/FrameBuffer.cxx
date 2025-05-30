@@ -1507,8 +1507,8 @@ bool FrameBuffer::updateTheme()
   {
     bool darkTheme = myOSystem.settings().getBool("altuipalette");
 
-    if(myBackend->isLightTheme() && darkTheme ||
-       myBackend->isDarkTheme() && !darkTheme)
+    if((myBackend->isLightTheme() && darkTheme) ||
+       (myBackend->isDarkTheme() && !darkTheme))
     {
       myOSystem.settings().setValue("altuipalette", !darkTheme);
       return true;

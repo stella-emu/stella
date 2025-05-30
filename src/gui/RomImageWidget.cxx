@@ -114,9 +114,7 @@ void RomImageWidget::parseProperties(const FSNode& node, bool full)
   if(mySurface == nullptr)
   {
     mySurface = fb.allocateSurface(_w, myImageHeight, ScalingInterpolation::blur);
-// FIXME    mySurface->applyAttributes();
     myFrameSurface = fb.allocateSurface(1, 1, ScalingInterpolation::sharp);
-// FIXME    myFrameSurface->applyAttributes();
     myFrameSurface->setVisible(true);
 
     dialog().addRenderCallback([this]() {
