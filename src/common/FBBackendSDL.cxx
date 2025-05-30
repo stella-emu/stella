@@ -89,31 +89,28 @@ void FBBackendSDL::queryHardware(vector<Common::Size>& fullscreenRes,
   for(uInt32 i = 0; i < myNumDisplays; ++i)
   {
     // Fullscreen mode
-    const SDL_DisplayMode* fsmode = SDL_GetDesktopDisplayMode(displays[i]);
-    fullscreenRes.emplace_back(fsmode->w, fsmode->h);
+    const SDL_DisplayMode* display = SDL_GetDesktopDisplayMode(displays[i]);
+    fullscreenRes.emplace_back(display->w, display->h);
 
     // Windowed mode
     SDL_Rect r{};
     if(SDL_GetDisplayUsableBounds(displays[i], &r))
       windowedRes.emplace_back(r.w, r.h);
 
-  #if 0  //FIXME: debug code, not yet converted to SDL3
-    SDL_DisplayMode display{};
-    // evaluate fullscreen display modes (debug only for now)
-    const int numModes = SDL_GetNumDisplayModes(i);
+    int numModes;
     ostringstream s;
+    string lastRes;
+    SDL_DisplayMode** modes = SDL_GetFullscreenDisplayModes(displays[i], &numModes);
 
     s << "Supported video modes (" << numModes << ") for display " << i
-      << " (" << SDL_GetDisplayName(i) << "):";
+      << " (" << SDL_GetDisplayName(displays[i]) << "):";
 
-    string lastRes;
-    for(int m = 0; m < numModes; ++m)
+    for(int m = 0; modes != nullptr && modes[m] != nullptr; m++)
     {
-      SDL_DisplayMode mode;
-      ostringstream res;
+      const SDL_DisplayMode* mode = modes[m];
+      ostringstream res, ref;
 
-      SDL_GetDisplayMode(i, m, &mode);
-      res << std::setw(4) << mode.w << "x" << std::setw(4) << mode.h;
+      res << std::setw(4) << mode->w << "x" << std::setw(4) << mode->h;
 
       if(lastRes != res.view())
       {
@@ -122,15 +119,13 @@ void FBBackendSDL::queryHardware(vector<Common::Size>& fullscreenRes,
         lastRes = res.view();
         s << "  " << lastRes << ": ";
       }
-      s << mode.refresh_rate << "Hz";
-      if(mode.w == display.w && mode.h == display.h &&
-         mode.refresh_rate == display.refresh_rate)
-        s << "* ";
-      else
-        s << "  ";
+
+      ref << mode->refresh_rate << "Hz";
+      s << std::setw(7) << std::left << ref.str();
+      s << (mode->w == display->w && mode->h == display->h && mode->refresh_rate == display->refresh_rate)
+        ? "* " : "  ";
     }
     Logger::debug(s.view());
-  #endif
   }
   SDL_free(displays);
 
@@ -243,7 +238,6 @@ bool FBBackendSDL::setVideoMode(const VideoModeHandler::Mode& mode,
     posY = BSPF::clamp(posY, y0 + 50, y1 - 50);
   }
 
-#if 0  // FIXME: adaptable
 #ifdef ADAPTABLE_REFRESH_SUPPORT
   SDL_DisplayMode adaptedSdlMode{};
   const int gameRefreshRate =
@@ -259,7 +253,6 @@ bool FBBackendSDL::setVideoMode(const VideoModeHandler::Mode& mode,
 #else
   const bool adaptRefresh = false;
 #endif
-#endif
 
   // Don't re-create the window if its display and size hasn't changed,
   // as it's not necessary, and causes flashing in fullscreen mode
@@ -271,7 +264,7 @@ bool FBBackendSDL::setVideoMode(const VideoModeHandler::Mode& mode,
     SDL_GetWindowSize(myWindow, &w, &h);
     if(d != displayIndex ||
        std::cmp_not_equal(w, mode.screenS.w) ||
-       std::cmp_not_equal(h, mode.screenS.h) /*|| adaptRefresh*/) //FIXME
+       std::cmp_not_equal(h, mode.screenS.h) || adaptRefresh)
     {
       // Renderer has to be destroyed *before* the window gets destroyed to avoid memory leaks
       SDL_DestroyRenderer(myRenderer);
@@ -306,8 +299,6 @@ bool FBBackendSDL::setVideoMode(const VideoModeHandler::Mode& mode,
     SDL_SetBooleanProperty(props,
                            SDL_PROP_WINDOW_CREATE_HIGH_PIXEL_DENSITY_BOOLEAN,
                            true);
-    // FIXME: adaptable (does it need a property??)
-
     myWindow = SDL_CreateWindowWithProperties(props);
     SDL_DestroyProperties(props);
     if(myWindow == nullptr)
@@ -320,12 +311,11 @@ bool FBBackendSDL::setVideoMode(const VideoModeHandler::Mode& mode,
     setWindowIcon();
   }
 
-#if 0  // FIXME: adaptable
 #ifdef ADAPTABLE_REFRESH_SUPPORT
   if(adaptRefresh)
   {
     // Switch to mode for adapted refresh rate
-    if(SDL_SetWindowDisplayMode(myWindow, &adaptedSdlMode) != 0)
+    if(!SDL_SetWindowFullscreenMode(myWindow, &adaptedSdlMode))
     {
       Logger::error("ERROR: Display refresh rate change failed");
     }
@@ -337,12 +327,10 @@ bool FBBackendSDL::setVideoMode(const VideoModeHandler::Mode& mode,
           << adaptedSdlMode.refresh_rate << " Hz " << "(" << adaptedSdlMode.w << "x" << adaptedSdlMode.h << ")";
       Logger::info(msg.view());
 
-      SDL_DisplayMode setSdlMode;
-      SDL_GetWindowDisplayMode(myWindow, &setSdlMode);
-      cerr << setSdlMode.refresh_rate << "Hz\n";
+      const SDL_DisplayMode* setSdlMode = SDL_GetWindowFullscreenMode(myWindow);
+      cerr << setSdlMode->refresh_rate << "Hz\n";
     }
   }
-#endif
 #endif
 
   const bool result = createRenderer();
@@ -361,18 +349,17 @@ bool FBBackendSDL::setVideoMode(const VideoModeHandler::Mode& mode,
 bool FBBackendSDL::adaptRefreshRate(Int32 displayIndex,
                                     SDL_DisplayMode& adaptedSdlMode)
 {
-#if 0  // FIXME: adaptable
   ASSERT_MAIN_THREAD;
 
-  SDL_DisplayMode sdlMode;
+  const SDL_DisplayMode* sdlMode = SDL_GetCurrentDisplayMode(displayIndex);
 
-  if(SDL_GetCurrentDisplayMode(displayIndex, &sdlMode) != 0)
+  if(sdlMode == nullptr)
   {
     Logger::error("ERROR: Display mode could not be retrieved");
     return false;
   }
 
-  const int currentRefreshRate = sdlMode.refresh_rate;
+  const int currentRefreshRate = sdlMode->refresh_rate;
   const int wantedRefreshRate =
       myOSystem.hasConsole() ? myOSystem.console().gameRefreshRate() : 0;
   // Take care of rounded refresh rates (e.g. 59.94 Hz)
@@ -389,17 +376,18 @@ bool FBBackendSDL::adaptRefreshRate(Int32 displayIndex,
   for(int m = 1; m <= 2; ++m)
   {
     SDL_DisplayMode closestSdlMode{};
+    float refresh_rate = wantedRefreshRate * m;
 
-    sdlMode.refresh_rate = wantedRefreshRate * m;
-    if(SDL_GetClosestDisplayMode(displayIndex, &sdlMode, &closestSdlMode) == nullptr)
+    if(!SDL_GetClosestFullscreenDisplayMode(displayIndex, sdlMode->w, sdlMode->h, refresh_rate, true, &closestSdlMode))
     {
       Logger::error("ERROR: Closest display mode could not be retrieved");
       return adapt;
     }
     factor = std::min(
-        static_cast<float>(sdlMode.refresh_rate) / sdlMode.refresh_rate,
-        static_cast<float>(sdlMode.refresh_rate) / (sdlMode.refresh_rate - 1));
+        static_cast<float>(refresh_rate) / refresh_rate,
+        static_cast<float>(refresh_rate) / (refresh_rate - 1));
     const float diff = std::abs(factor - std::round(factor)) / factor;
+
     if(diff < bestDiff)
     {
       bestDiff = diff;
@@ -416,8 +404,6 @@ bool FBBackendSDL::adaptRefreshRate(Int32 displayIndex,
 
   // Only change if the display supports a better refresh rate
   return adapt;
-#endif
-  return false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
