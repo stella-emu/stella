@@ -507,11 +507,7 @@ void StellaSettingsDialog::openHelp()
 {
   // Create an help dialog, similar to the in-game one
   if (myHelpDialog == nullptr)
-  #if defined(RETRON77)
-    myHelpDialog = make_unique<R77HelpDialog>(instance(), parent(), _font);
-  #else
     myHelpDialog = make_unique<HelpDialog>(instance(), parent(), _font);
-  #endif
   myHelpDialog->open();
 }
 

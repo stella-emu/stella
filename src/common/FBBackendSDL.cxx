@@ -581,7 +581,7 @@ void FBBackendSDL::renderToScreen()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FBBackendSDL::setWindowIcon()
 {
-#if !defined(BSPF_MACOS) && !defined(RETRON77)
+#if !defined(BSPF_MACOS)
 #include "stella_icon.hxx"
   ASSERT_MAIN_THREAD;
 

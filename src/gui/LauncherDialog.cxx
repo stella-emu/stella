@@ -102,9 +102,6 @@ void LauncherDialog::addTitleWidget(int &ypos)
   // App information
   ostringstream ver;
   ver << "Stella " << STELLA_VERSION;
-#if defined(RETRON77)
-  ver << " for RetroN 77";
-#endif
   new StaticTextWidget(this, _font, 1, ypos, _w - 2, fontHeight,
                        ver.view(), TextAlign::Center);
   ypos += fontHeight + VGAP;
@@ -859,36 +856,9 @@ void LauncherDialog::handleKeyDown(StellaKey key, StellaMod mod, bool repeated)
     }
   }
   if(!handled)
-#if defined(RETRON77)
-    // handle keys used by R77
-    switch(key)
-    {
-      case KBDK_F8: // front  ("Skill P2")
-        openGlobalProps();
-        break;
-      case KBDK_F4: // back ("COLOR", "B/W")
-        openSettings();
-        break;
-
-      case KBDK_F11: // front ("LOAD")
-        // convert unused previous item key into page-up event
-        _focusedWidget->handleEvent(Event::UIPgUp);
-        break;
-
-      case KBDK_F1: // front ("MODE")
-        // convert unused next item key into page-down event
-        _focusedWidget->handleEvent(Event::UIPgDown);
-        break;
-
-      default:
-        Dialog::handleKeyDown(key, mod);
-        break;
-    }
-#else
     // Required because BrowserDialog does not want raw input
     if(repeated || !myList->handleKeyDown(key, mod))
       Dialog::handleKeyDown(key, mod, repeated);
-#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1203,19 +1173,13 @@ void LauncherDialog::openContextMenu(int x, int y)
   }
   if(myUseMinimalUI)
   {
-  #ifndef RETRON77
     items.emplace_back(instance().settings().getBool("launchersubdirs")
       ? "Exclude subdirectories"
       : "Include subdirectories", "subdirs");
-  #endif
     items.emplace_back("Go to initial directory", "homedir");
     items.emplace_back("Go to parent directory", "prevdir");
-  #ifndef RETRON77
     items.emplace_back("Reload listing", "reload");
     items.emplace_back("Options" + ELLIPSIS, "options");
-  #else
-    items.emplace_back("Settings" + ELLIPSIS, "options");
-  #endif
   }
   else
   {

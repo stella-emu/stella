@@ -760,7 +760,6 @@
     <ClCompile Include="..\..\gui\MinUICommandDialog.cxx" />
     <ClCompile Include="..\..\gui\PlusRomsSetupDialog.cxx" />
     <ClCompile Include="..\..\gui\QuadTariDialog.cxx" />
-    <ClCompile Include="..\..\gui\R77HelpDialog.cxx" />
     <ClCompile Include="..\..\gui\RadioButtonWidget.cxx" />
     <ClCompile Include="..\..\gui\RomImageWidget.cxx" />
     <ClCompile Include="..\..\gui\SnapshotDialog.cxx" />
@@ -1757,7 +1756,6 @@
     <ClInclude Include="..\..\gui\MinUICommandDialog.hxx" />
     <ClInclude Include="..\..\gui\PlusRomsSetupDialog.hxx" />
     <ClInclude Include="..\..\gui\QuadTariDialog.hxx" />
-    <ClInclude Include="..\..\gui\R77HelpDialog.hxx" />
     <ClInclude Include="..\..\gui\RadioButtonWidget.hxx" />
     <ClInclude Include="..\..\gui\Icons.hxx" />
     <ClInclude Include="..\..\gui\RomImageWidget.hxx" />

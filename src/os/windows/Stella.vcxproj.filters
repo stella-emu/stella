@@ -705,9 +705,6 @@
     <ClCompile Include="..\..\gui\MinUICommandDialog.cxx">
       <Filter>Source Files\gui</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\gui\R77HelpDialog.cxx">
-      <Filter>Source Files\gui</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\debugger\BreakpointMap.cxx">
       <Filter>Source Files\debugger</Filter>
     </ClCompile>
@@ -1900,9 +1897,6 @@
     </ClInclude>
     <ClInclude Include="..\..\common\repository\KeyValueRepositoryNoop.hxx">
       <Filter>Header Files\common\repository</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\gui\R77HelpDialog.hxx">
-      <Filter>Header Files\gui</Filter>
     </ClInclude>
     <ClInclude Include="..\..\debugger\BreakpointMap.hxx">
       <Filter>Header Files\debugger</Filter>

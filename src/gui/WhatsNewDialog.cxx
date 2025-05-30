@@ -26,13 +26,8 @@ static constexpr int MAX_CHARS = 64; // maximum number of chars per line
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 WhatsNewDialog::WhatsNewDialog(OSystem& osystem, DialogContainer& parent,
                                int max_w, int max_h)
-#if defined(RETRON77)
-  : Dialog(osystem, parent, osystem.frameBuffer().font(),
-           "What's New in Stella " + string(STELLA_VERSION) + " for RetroN 77?")
-#else
   : Dialog(osystem, parent, osystem.frameBuffer().font(),
            "What's New in Stella " + string(STELLA_VERSION) + "?")
-#endif
 {
   const int fontWidth = Dialog::fontWidth(),
     buttonHeight = Dialog::buttonHeight(),
@@ -46,18 +41,6 @@ WhatsNewDialog::WhatsNewDialog(OSystem& osystem, DialogContainer& parent,
           max_w, max_h);
 
   const string_view version = instance().settings().getString("stella.version");
-#ifdef RETRON77
-  add(ypos, "extensively redesigned and enhanced file launcher");
-  add(ypos, "improved controller mappings for Paddles");
-  add(ypos, "improved controller mappings for Driving controllers");
-  add(ypos, "added keeping multiple dump files when dumping to SD");
-  add(ypos, "removed deadzone from USB game controllers");
-  add(ypos, "added opt-out for overclocking to the settings file");
-  add(ypos, "enhanced ROM launcher to allow multiple images per ROM");
-  add(ypos, "made heaps of additional images and bezels available for download");
-  add(ypos, "added bezel support (incl. Sinden Lightgun)");
-  add(ypos, "accelerated ARM emulation by ~15%");
-#else
   if(version < "7.0")
   {
     add(ypos, "accelerated ARM emulation by ~15%");
@@ -65,7 +48,6 @@ WhatsNewDialog::WhatsNewDialog(OSystem& osystem, DialogContainer& parent,
   }
   add(ypos, "ported Stella to SDL3");
   add(ypos, ELLIPSIS + " (for a complete list see 'docs/Changes.txt')");
-#endif
 
   // Set needed dimensions
   ypos += VGAP * 2 + buttonHeight + VBORDER;

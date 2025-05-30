@@ -75,10 +75,8 @@ void Widget::tick()
 {
   if(isEnabled())
   {
-  #ifndef RETRON77
     if(wantsToolTip())
       dialog().tooltip().request();
-  #endif
 
     // Recursively tick widget and all child dialogs and widgets
     Widget* w = _firstWidget;
@@ -588,7 +586,6 @@ void StaticTextWidget::setLink(size_t start, int len, bool underline)
 bool StaticTextWidget::setUrl(string_view url, string_view label,
                               string_view placeHolder)
 {
-#ifndef RETRON77
   size_t start = string::npos, len = 0;
   const string_view text = label != EmptyString ? label : url;
 
@@ -649,9 +646,6 @@ bool StaticTextWidget::setUrl(string_view url, string_view label,
     _url = EmptyString;
     return false;
   }
-#else
-  return false;
-#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
