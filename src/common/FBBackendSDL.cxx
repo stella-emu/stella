@@ -125,6 +125,8 @@ void FBBackendSDL::queryHardware(vector<Common::Size>& fullscreenRes,
       if(mode->w == display->w && mode->h == display->h &&
          mode->refresh_rate == display->refresh_rate)
         s << "* ";
+      else
+        s << "  ";
     }
     Logger::debug(s.view());
   }
