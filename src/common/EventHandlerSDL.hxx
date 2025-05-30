@@ -40,11 +40,6 @@ class EventHandlerSDL : public EventHandler
 
   private:
     /**
-      Enable/disable text events (distinct from single-key events).
-    */
-    void enableTextEvents(bool enable) override;
-
-    /**
       Clipboard methods.
     */
     void copyText(const string& text) const override;

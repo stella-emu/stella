@@ -101,6 +101,11 @@ class FBBackend
     virtual void grabMouse(bool grab) = 0;
 
     /**
+      Enable/disable text events (distinct from single-key events).
+    */
+    virtual void enableTextEvents(bool enable) = 0;
+
+    /**
       This method must be called after all drawing is done, and indicates
       that the buffers should be pushed to the physical screen.
     */

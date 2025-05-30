@@ -361,7 +361,7 @@ class EventHandler
     /**
       Enable/disable text events (distinct from single-key events).
     */
-    virtual void enableTextEvents(bool enable) = 0;
+    void enableTextEvents(bool enable);
 
   #ifdef GUI_SUPPORT
     /**

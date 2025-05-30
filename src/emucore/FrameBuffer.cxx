@@ -1371,6 +1371,7 @@ FBInitStatus FrameBuffer::applyVideoMode()
 
     resetSurfaces();
     setCursorState();
+
     myPendingRender = true;
   }
   else
@@ -1441,6 +1442,12 @@ void FrameBuffer::setCursorState()
 
   myGrabMouse &= grabMouseAllowed();
   myBackend->grabMouse(myGrabMouse);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FrameBuffer::enableTextEvents(bool enable)
+{
+  myBackend->enableTextEvents(enable);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

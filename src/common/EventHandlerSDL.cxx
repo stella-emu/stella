@@ -30,12 +30,8 @@ EventHandlerSDL::EventHandlerSDL(OSystem& osystem)
 #ifdef GUI_SUPPORT
   {
     ostringstream buf;
-  #if 0  //FIXME: come back to this
     myQwertz = int{'y'} == static_cast<int>
-      (SDL_GetKeyFromScancode(static_cast<SDL_Scancode>(KBDK_Z)));
-  #else
-    myQwertz = false;
-  #endif
+      (SDL_GetKeyFromScancode(static_cast<SDL_Scancode>(KBDK_Z), static_cast<SDL_Keymod>(StellaMod::KBDM_NONE), false));
     buf << "Keyboard: " << (myQwertz ? "QWERTZ" : "QWERTY");
     Logger::debug(buf.view());
   }
@@ -62,19 +58,6 @@ EventHandlerSDL::~EventHandlerSDL()
 
   if(SDL_WasInit(SDL_INIT_JOYSTICK))
     SDL_QuitSubSystem(SDL_INIT_JOYSTICK);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EventHandlerSDL::enableTextEvents(bool enable)
-{
-#if 0 // FIXME: needs a window ptr; refactor to pass this into the method
-  ASSERT_MAIN_THREAD;
-
-  if(enable)
-    SDL_StartTextInput();
-  else
-    SDL_StopTextInput();
-#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

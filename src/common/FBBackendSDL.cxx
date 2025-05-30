@@ -308,6 +308,7 @@ bool FBBackendSDL::setVideoMode(const VideoModeHandler::Mode& mode,
       return false;
     }
 
+    enableTextEvents(myTextEventsEnabled);
     setWindowIcon();
   }
 
@@ -520,6 +521,20 @@ void FBBackendSDL::grabMouse(bool grab)
   ASSERT_MAIN_THREAD;
 
   SDL_SetWindowMouseGrab(myWindow, grab);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FBBackendSDL::enableTextEvents(bool enable)
+{
+  ASSERT_MAIN_THREAD;
+
+  if(enable)
+    SDL_StartTextInput(myWindow);
+  else
+    SDL_StopTextInput(myWindow);
+  // myWindows can still be null, so we remember the state and set again when
+  // the window is created
+  myTextEventsEnabled = enable;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

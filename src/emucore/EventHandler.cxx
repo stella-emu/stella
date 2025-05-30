@@ -306,6 +306,12 @@ void EventHandler::poll(uInt64 time)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void EventHandler::enableTextEvents(bool enable)
+{
+  myOSystem.frameBuffer().enableTextEvents(enable);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventHandler::handleTextEvent(char text)
 {
 #ifdef GUI_SUPPORT

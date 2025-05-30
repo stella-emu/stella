@@ -223,6 +223,11 @@ class FBBackendSDL : public FBBackend
     void grabMouse(bool grab) override;
 
     /**
+      Enable/disable text events (distinct from single-key events).
+    */
+    void enableTextEvents(bool enable) override;
+
+    /**
       This method is called to provide information about the backend.
     */
     string about() const override;
@@ -303,6 +308,8 @@ class FBBackendSDL : public FBBackend
     // So we do it at window creation and cache the result
     // TODO: Is this a bug in SDL?
     bool myIsFullscreen{false};
+
+    bool myTextEventsEnabled{false};
 
     // Center setting of current window
     bool myCenter{false};

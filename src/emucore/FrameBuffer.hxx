@@ -269,6 +269,11 @@ class FrameBuffer
     void setCursorState();
 
     /**
+      Enable/disable text events (distinct from single-key events).
+    */
+    void enableTextEvents(bool enable);
+
+    /**
       Checks if mouse grabbing is allowed.
     */
     bool grabMouseAllowed();

@@ -109,6 +109,7 @@ class FBBackendLIBRETRO : public FBBackend
     bool setVideoMode(const VideoModeHandler::Mode&,
                       int, const Common::Point&) override { return true; }
     void grabMouse(bool) override { }
+    void enableTextEvents(bool enable) override { }
     void renderToScreen() override { }
     int refreshRate() const override { return 0; }
     bool isLightTheme() const override { return false; }
