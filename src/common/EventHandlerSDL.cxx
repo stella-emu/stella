@@ -49,6 +49,8 @@ EventHandlerSDL::EventHandlerSDL(OSystem& osystem)
 #endif
 
   SDL_SetHint(SDL_HINT_MOUSE_FOCUS_CLICKTHROUGH, "1");
+  //SDL_SetHint(SDL_HINT_MOUSE_RELATIVE_SYSTEM_SCALE, "1");
+  //SDL_SetHint(SDL_HINT_MOUSE_RELATIVE_MODE_CENTER, "0");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

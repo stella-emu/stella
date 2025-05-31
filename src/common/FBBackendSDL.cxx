@@ -524,6 +524,8 @@ void FBBackendSDL::grabMouse(bool grab)
   ASSERT_MAIN_THREAD;
 
   SDL_SetWindowMouseGrab(myWindow, grab);
+  SDL_SetHint(SDL_HINT_MOUSE_RELATIVE_SYSTEM_SCALE, grab ? "1" : "0");
+  SDL_SetWindowRelativeMouseMode(myWindow, grab);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
