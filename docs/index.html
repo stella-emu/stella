@@ -3641,6 +3641,9 @@
       <td><pre>-&lt;plr.|dev.&gt;console &lt;2600|7800&gt;</pre></td>
       <td>Select console for B/W and Pause key handling and RAM initialization.</td>
     </tr><tr>
+      <td><pre>-dev.plusroms.on &lt;1|0&gt;</pre></td>
+      <td>Enable/disable PlusROM support, e.g. for testing.</td>
+    </tr><tr>
       <td><pre>-&lt;plr.|dev.&gt;bankrandom &lt;1|0&gt;</pre></td>
       <td>On reset, randomize the startup bank (only for selected bankswitch types).</td>
     </tr><tr>
@@ -4583,6 +4586,11 @@
             <td>-plr.console <br/>-dev.console</td>
           </tr>
           <tr>
+            <td>PlusROM support</td>
+            <td>Enable/disable PlusROM support, e.g. for testing.</td>
+            <td>-dev.plusroms.on</td>
+          </tr>
+          <tr>
             <td>Random startup bank</td>
             <td>Randomize the startup bank (only for selected bankswitch types)</td>
             <td>-plr.bankrandom<br/>-dev.bankrandom</td>
@@ -5147,7 +5155,9 @@ Ms Pac-Man (Stella extended codes):
         <tr><td>NTSC50 &#185;</td><td>NTSC50, NTSC 50, NTSC-50, PAL-N</td></tr>
         <tr><td>PAL60 &#185;</td><td>PAL60, PAL 60, PAL-60</td></tr>
         <tr><td>SECAM60 &#185;</td><td>SECAM60, SECAM 60, SECAM-60</td></tr>
-      </table></td>
+      </table>
+	  Additionally, to detect PAL-60 format games, the ROM is scanned for the following
+	  signature strings: "PAL60", "PAL 60" and "PAL-60"</td>
     </tr>
 
     <tr>
