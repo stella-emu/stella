@@ -152,7 +152,8 @@ class SoundSDL : public Sound
     // Audio specification structure
     SDL_AudioSpec mySpec{};
 
-    // Audio stream, which handles all interaction with SDL sound backend
+    // Audio device and stream, which handles all interaction with SDL sound backend
+    SDL_AudioDeviceID myDevice{};
     SDL_AudioStream* myStream{nullptr};
 
     // Audio buffer, passed to the audio callback and filled from the resampler
@@ -166,56 +167,52 @@ class SoundSDL : public Sound
     Int16* myCurrentFragment{nullptr};
     bool myUnderrun{false};
 
-    float myVolumeFactor{0.F};  // Current volume level (0.F - 1.F)
+    float myVolumeFactor{1.F};  // Current volume level (0.F - 1.F)
 
     string myAboutString;
 
-#if 0
     /**
       This class implements WAV file playback using the SDL sound API.
     */
-    class WavHandlerSDL
+    class WavHandler
     {
       public:
-        explicit WavHandlerSDL() = default;
-        ~WavHandlerSDL();
+        explicit WavHandler() = default;
+        ~WavHandler();
 
-        bool play(const string& fileName, uInt32 position, uInt32 length);
+        bool play(SDL_AudioDeviceID device, const string& fileName,
+                  uInt32 position, uInt32 length);
         void stop();
         uInt32 size() const { return myBuffer ? myRemaining : 0; }
-
         void setSpeed(double speed) { mySpeed = speed; }
-        void setVolume(double volumeFactor) { mySpeed = speed; }
+        void setVolumeFactor(float volumeFactor);
         void pause(bool state) const;
 
       private:
         string myFilename;
-        uInt32 myLength{0};
+        SDL_AudioStream* myStream{nullptr};
+        SDL_AudioSpec mySpec{};
         uInt8* myBuffer{nullptr};
+        uInt32 myLength{0};
         double mySpeed{1.0};
-        float myVolumeFactor{0.F};  // Current volume level (0 - 100)
+        float myVolumeFactor{1.F};  // Current volume level (0.F - 1.F)
 
-        unique_ptr<uInt8[]> myCvtBuffer;
-        uInt32 myCvtBufferSize{0};
-        SDL_AudioSpec mySpec{}; // audio output format
         uInt8* myPos{nullptr};  // pointer to the audio buffer to be played
         uInt32 myRemaining{0};  // remaining length of the sample we have to play
 
       private:
         // Callback function invoked by the SDL Audio library when it needs data
-        void processWav(uInt8* stream, uInt32 len);
         static void wavCallback(void* object, SDL_AudioStream* stream,
-                                int additonal_amt, int total_amt);
+                                int additional_amt, int);
 
         // Following constructors and assignment operators not supported
-        WavHandlerSDL(const WavHandlerSDL&) = delete;
-        WavHandlerSDL(WavHandlerSDL&&) = delete;
-        WavHandlerSDL& operator=(const WavHandlerSDL&) = delete;
-        WavHandlerSDL& operator=(WavHandlerSDL&&) = delete;
+        WavHandler(const WavHandler&) = delete;
+        WavHandler(WavHandler&&) = delete;
+        WavHandler& operator=(const WavHandler&) = delete;
+        WavHandler& operator=(WavHandler&&) = delete;
     };
 
-    WavHandlerSDL myWavHandler;
-#endif
+    WavHandler myWavHandler;
 
   private:
     // Callback functions invoked by the SDL Audio library when it needs data
