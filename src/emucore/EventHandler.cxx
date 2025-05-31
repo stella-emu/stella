@@ -331,6 +331,14 @@ void EventHandler::handleMouseMotionEvent(int x, int y, int xrel, int yrel)
     {
       myEvent.set(Event::MouseAxisXValue, x); // required for Lightgun controller
       myEvent.set(Event::MouseAxisYValue, y); // required for Lightgun controller
+      cerr << "dx " << (x - lastX - xrel) << ": " << x << ", " << xrel <<
+        "   y:" << y << ", " << yrel << "\n";
+      if(x - lastX - xrel != 0)
+        int i = 0;
+
+
+
+      lastX = x;
       myEvent.set(Event::MouseAxisXMove, xrel);
       myEvent.set(Event::MouseAxisYMove, yrel);
     }

@@ -12,11 +12,13 @@
                               Release History
 ===========================================================================
 
-7.0 to 7.1 (xxx x, 202x)
+7.x to 8.0 (xxx x, 202x)
 
   * Ported Stella to SDL3 
 
   * Added option for switching Stella's theme in sync with OS (TODO: Doc)
+
+7.0 to 7.1 (xxx x, 202x)
 
   * Enhanced PAL-60 detection, searches for signature (e.g. PAL60) in ROM
 

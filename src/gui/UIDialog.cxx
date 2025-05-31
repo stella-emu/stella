@@ -84,14 +84,14 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
   VarList::push_back(items, "Light", "light");
   VarList::push_back(items, "Dark", "dark");
   myPalette1Popup = new PopUpWidget(myTab, font, xpos, ypos, pwidth, lineHeight,
-                                    items, "Theme #1   ", lwidth);
-  myPalette1Popup->setToolTip("Primary theme.", Event::ToggleUIPalette, EventMode::kMenuMode);
+                                    items, "Light theme", lwidth);
+  myPalette1Popup->setToolTip("Primary/light theme.", Event::ToggleUIPalette, EventMode::kMenuMode);
   wid.push_back(myPalette1Popup);
   ypos += lineHeight + VGAP;
 
   myPalette2Popup = new PopUpWidget(myTab, font, xpos, ypos, pwidth, lineHeight,
-                                    items, "Theme #2   ", lwidth);
-  myPalette2Popup->setToolTip("Alternative theme.", Event::ToggleUIPalette, EventMode::kMenuMode);
+                                    items, "Dark theme ", lwidth);
+  myPalette2Popup->setToolTip("Alternative/dark theme.", Event::ToggleUIPalette, EventMode::kMenuMode);
   wid.push_back(myPalette2Popup);
   ypos += lineHeight + VGAP;
 
@@ -99,6 +99,7 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
   myAutoPalette = new CheckboxWidget(myTab, font, xpos2,
                                      myPalette1Popup->getBottom() - CheckboxWidget::boxSize(font) / 2 - 1,
                                      "Auto theme");
+  myAutoPalette->setToolTip("Enable for automatic switching between light and dark themes in sync with OS.");
   wid.push_back(myAutoPalette);
 
   // Dialog font
