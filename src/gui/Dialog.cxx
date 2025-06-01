@@ -116,13 +116,6 @@ void Dialog::open()
   else
     buildCurrentFocusList();
 
-  /*if (!_surface->attributes().blending)
-  {
-    _surface->attributes().blending = true;
-    _surface->attributes().blendalpha = 90;
-    _surface->applyAttributes();
-  }*/
-
   loadConfig(); // has to be done AFTER (re)building the focus list
 
   _visible = true;
