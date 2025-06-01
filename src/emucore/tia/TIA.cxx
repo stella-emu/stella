@@ -1380,7 +1380,7 @@ void TIA::onFrameStart()
   myXAtRenderingStart = 0;
 #ifdef DEBUGGER_SUPPORT
   myFrameWsyncCycles = 0;
-  mySystem->m6532().resetTimReadCylces();
+  mySystem->m6532().resetTimReadCycles();
 #endif
 
   // Check for colour-loss emulation

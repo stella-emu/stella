@@ -141,7 +141,7 @@ class M6532 : public Device
     /**
       Reset the timer read CPU cycle counter
     */
-    void resetTimReadCylces() { myTimReadCycles = 0; }
+    void resetTimReadCycles() { myTimReadCycles = 0; }
   #endif
 
   private:
