@@ -154,9 +154,7 @@ Thumbulator::Thumbulator(const uInt16* rom_ptr, uInt16* ram_ptr, uInt32 rom_size
     decodedRom[i] = decodeInstructionWord(CONV_RAMROM(rom[i]), i * 2);
 
   setConsoleTiming(ConsoleTiming::ntsc);
-#ifndef UNSAFE_OPTIMIZATIONS
   trapFatalErrors(traponfatal);
-#endif
 #ifdef DEBUGGER_SUPPORT
   cycleFactor(cyclefactor);
 #endif
@@ -171,10 +169,8 @@ string Thumbulator::doRun(uInt32& cycles, bool irqDrivenAudio)
   for(;;)
   {
     if(execute()) break;
-#ifndef UNSAFE_OPTIMIZATIONS
     if(_stats.instructions > 500000) // way more than would otherwise be possible
       throw runtime_error("instructions > 500000");
-#endif
   }
 #ifdef THUMB_CYCLE_COUNT
   _totalCycles *= _armCyclesFactor;
@@ -241,7 +237,6 @@ string Thumbulator::run(uInt32& cycles, bool irqDrivenAudio)
   return doRun(cycles, irqDrivenAudio);
 }
 
-#ifndef UNSAFE_OPTIMIZATIONS
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 int Thumbulator::fatalError(string_view opcode, uInt32 v1, string_view msg)
 {
@@ -293,12 +288,10 @@ void Thumbulator::dump_regs()
             << "LR = " << Base::HEX8 << reg_norm[14] << "  "
             << "PC = " << Base::HEX8 << reg_norm[15] << '\n';
 }
-#endif
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FORCE_INLINE uInt32 Thumbulator::fetch16(uInt32 addr)
 {
-#ifndef UNSAFE_OPTIMIZATIONS
   uInt32 data = 0;
 
 #ifdef THUMB_CYCLE_COUNT
@@ -355,42 +348,32 @@ FORCE_INLINE uInt32 Thumbulator::fetch16(uInt32 addr)
       break;
   }
   return fatalError("fetch16", addr, "abort");
-#else
-  addr &= ROMADDMASK;
-  addr >>= 1;
-  return CONV_RAMROM(rom[addr]);
-#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Thumbulator::write16(uInt32 addr, uInt32 data)
 {
-#ifndef UNSAFE_OPTIMIZATIONS
   if(addr & 1)
     fatalError("write16", addr, "abort - misaligned");
-#endif
+
   THUMB_STAT(_stats.writes)
   DO_DBUG(statusMsg << "write16(" << Base::HEX8 << addr << "," << Base::HEX8 << data << ")\n");
 
-  switch(addr & 0xF0000000) // NOLINT (missing default for UNSAFE_OPTIMIZATIONS)
+  switch(addr & 0xF0000000)
   {
     case 0x40000000: //RAM
-#ifndef UNSAFE_OPTIMIZATIONS
       if(isInvalidRAM(addr))
         fatalError("write16", addr, "abort - out of range");
       if(isProtectedRAM(addr))
         fatalError("write16", addr, "to driver area");
-#endif
+
       addr &= RAMADDMASK;
       addr >>= 1;
       ram[addr] = CONV_DATA(data);
       return;
 
-#ifndef UNSAFE_OPTIMIZATIONS
     case 0xE0000000: //MAMCR
-#else
     default:
-#endif
       if(addr == 0xE01FC000)
       {
         DO_DBUG(statusMsg << "write16(" << Base::HEX8 << "MAMCR" << "," << Base::HEX8 << data << ") *\n");
@@ -399,36 +382,29 @@ void Thumbulator::write16(uInt32 addr, uInt32 data)
         return;
       }
   }
-#ifndef UNSAFE_OPTIMIZATIONS
   fatalError("write16", addr, data, "abort");
-#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Thumbulator::write32(uInt32 addr, uInt32 data)
 {
-#ifndef UNSAFE_OPTIMIZATIONS
   if(addr & 3)
     fatalError("write32", addr, "abort - misaligned");
-#endif
+
   DO_DBUG(statusMsg << "write32(" << Base::HEX8 << addr << "," << Base::HEX8 << data << ")\n");
 
-  switch(addr & 0xF0000000) // NOLINT (missing default for UNSAFE_OPTIMIZATIONS)
+  switch(addr & 0xF0000000)
   {
-#ifndef UNSAFE_OPTIMIZATIONS
     case 0xF0000000: //halt
       dump_counters();
       throw runtime_error("HALT");
-#endif
 
     case 0xE0000000: //periph
       switch(addr)
       {
-#ifndef UNSAFE_OPTIMIZATIONS
         case 0xE0000000:
           DO_DISS(statusMsg << "uart: [" << char(data&0xFF) << "]\n");
           break;
-#endif
 #ifdef TIMER_0
         case 0xE0004004:  // T0TCR - Timer 0 Control Register
         #ifdef THUMB_CYCLE_COUNT
@@ -516,7 +492,6 @@ void Thumbulator::write32(uInt32 addr, uInt32 data)
       return;
 
     case 0xD0000000: //debug
-#ifndef UNSAFE_OPTIMIZATIONS
       switch(addr & 0xFF)
       {
         case 0x00:
@@ -535,24 +510,17 @@ void Thumbulator::write32(uInt32 addr, uInt32 data)
         default:
           break;
       }
-#endif
       return;
 
-#ifndef UNSAFE_OPTIMIZATIONS
     case 0x40000000: //RAM
-#else
     default:
-#endif
       write16(addr+0, (data >>  0) & 0xFFFF);
       write16(addr+2, (data >> 16) & 0xFFFF);
       return;
   }
-#ifndef UNSAFE_OPTIMIZATIONS
   fatalError("write32", addr, data, "abort");
-#endif
 }
 
-#ifndef UNSAFE_OPTIMIZATIONS
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FORCE_INLINE bool Thumbulator::isInvalidROM(uInt32 addr) const
 {
@@ -613,25 +581,21 @@ FORCE_INLINE bool Thumbulator::isProtectedRAM(uInt32 addr)
 
   return false;
 }
-#endif
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt32 Thumbulator::read16(uInt32 addr)
 {
   uInt32 data = 0;
-#ifndef UNSAFE_OPTIMIZATIONS
   if(addr & 1)
     fatalError("read16", addr, "abort - misaligned");
-#endif
   THUMB_STAT(_stats.reads)
 
-  switch(addr & 0xF0000000) // NOLINT (missing default for UNSAFE_OPTIMIZATIONS)
+  switch(addr & 0xF0000000)
   {
     case 0x00000000: //ROM
-#ifndef UNSAFE_OPTIMIZATIONS
       if(isInvalidROM(addr))
         fatalError("read16", addr, "abort - out of range");
-#endif
+
       addr &= ROMADDMASK;
       addr >>= 1;
       data = CONV_RAMROM(rom[addr]);
@@ -639,10 +603,9 @@ uInt32 Thumbulator::read16(uInt32 addr)
       return data;
 
     case 0x40000000: //RAM
-#ifndef UNSAFE_OPTIMIZATIONS
       if(isInvalidRAM(addr))
         fatalError("read16", addr, "abort - out of range");
-#endif
+
       addr &= RAMADDMASK;
       addr >>= 1;
       data = CONV_RAMROM(ram[addr]);
@@ -661,49 +624,40 @@ uInt32 Thumbulator::read16(uInt32 addr)
         return data;
       }
   }
-#ifndef UNSAFE_OPTIMIZATIONS
   return fatalError("read16", addr, "abort");
-#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt32 Thumbulator::read32(uInt32 addr)
 {
-#ifndef UNSAFE_OPTIMIZATIONS
   if(addr & 3)
     fatalError("read32", addr, "abort - misaligned");
-#endif
 
   uInt32 data = 0;
-  switch(addr & 0xF0000000) // NOLINT (missing default for UNSAFE_OPTIMIZATIONS)
+  switch(addr & 0xF0000000)
   {
     case 0x00000000: //ROM
-#ifndef UNSAFE_OPTIMIZATIONS
       if(isInvalidROM(addr))
         fatalError("read32", addr, "abort - out of range");
-#endif
+
       data = read16(addr+0);
       data |= read16(addr+2) << 16;
       DO_DBUG(statusMsg << "read32(" << Base::HEX8 << addr << ")=" << Base::HEX8 << data << '\n');
       return data;
 
     case 0x40000000: //RAM
-#ifndef UNSAFE_OPTIMIZATIONS
       if(isInvalidRAM(addr))
         fatalError("read32", addr, "abort - out of range");
-#endif
+
       data = read16(addr+0);
       data |= read16(addr+2) << 16;
       DO_DBUG(statusMsg << "read32(" << Base::HEX8 << addr << ")=" << Base::HEX8 << data << '\n');
       return data;
 
-#ifndef UNSAFE_OPTIMIZATIONS
     case 0xE0000000:
-#else
     default:
-#endif
     {
-      switch(addr)  // NOLINT  (FIXME: missing default)
+      switch(addr)
       {
       #ifdef THUMB_CYCLE_COUNT
         case 0xE01FC000: //MAMCR
@@ -765,22 +719,16 @@ uInt32 Thumbulator::read32(uInt32 addr)
           return 1; // random value
 #endif
 
-#ifndef UNSAFE_OPTIMIZATIONS
         case 0xE000E01C:
-#else
         default:
-#endif
           data = systick_calibrate;
           return data;
       }
     }
   }
-#ifndef UNSAFE_OPTIMIZATIONS
   return fatalError("read32", addr, "abort");
-#endif
 }
 
-#ifndef UNSAFE_OPTIMIZATIONS
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FORCE_INLINE uInt32 Thumbulator::read_register(uInt32 reg)
 {
@@ -818,10 +766,6 @@ FORCE_INLINE void Thumbulator::write_register(uInt32 reg, uInt32 data, bool isFl
   }
   reg_norm[reg] = data;
 }
-#else
-  #define read_register(reg)        reg_norm[reg]
-  #define write_register(reg, data) reg_norm[reg]=(data)
-#endif
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Thumbulator::do_cvflag(uInt32 a, uInt32 b, uInt32 c)
@@ -1145,37 +1089,23 @@ FORCE_INLINE int Thumbulator::execute()  // NOLINT (readability-function-size)
 {
   uInt32 sp, inst, ra, rb, rc, rm, rd, rn, rs;  // NOLINT
 
-#ifndef UNSAFE_OPTIMIZATIONS
   uInt32 pc = read_register(15);
-#else
-  uInt32 pc = read_register(15) & ~1; // not checked and corrected in read_register
-#endif
 
   const uInt32 instructionPtr = pc - 2;
   const uInt32 instructionPtr2 = instructionPtr >> 1;
   inst = fetch16(instructionPtr);
 
   pc += 2;
-#ifndef UNSAFE_OPTIMIZATIONS
   write_register(15, pc, false);
-#else
-  write_register(15, pc);
-#endif
   DO_DISS(statusMsg << Base::HEX8 << (pc-5) << ": " << Base::HEX4 << inst << " ");
 
-#ifndef UNSAFE_OPTIMIZATIONS
   ++_stats.instructions;
-#endif
 
   Op decodedOp{};
-#ifndef UNSAFE_OPTIMIZATIONS
   if ((instructionPtr & 0xF0000000) == 0 && instructionPtr < romSize)
     decodedOp = decodedRom[instructionPtr2];
   else
     decodedOp = decodeInstructionWord(CONV_RAMROM(rom[instructionPtr2]), instructionPtr);
-#else
-  decodedOp = decodedRom[(instructionPtr & ROMADDMASK) >> 1];
-#endif
 
 #ifdef COUNT_OPS
   ++opCount[static_cast<int>(decodedOp)];
@@ -1265,10 +1195,9 @@ FORCE_INLINE int Thumbulator::execute()  // NOLINT (readability-function-size)
       rc = ra + rb;
       if(rd == 15)
       {
-#ifndef UNSAFE_OPTIMIZATIONS
         if((rc & 1) == 0)
           fatalError("add pc", pc, rc, " produced an arm address");
-#endif
+
         //rc &= ~1; //write_register may f this as well
         rc += 2;  //The program counter is special
       }
@@ -1526,14 +1455,12 @@ FORCE_INLINE int Thumbulator::execute()  // NOLINT (readability-function-size)
       return 0;
     }
 
-#ifndef UNSAFE_OPTIMIZATIONS
     //BKPT
     case Op::bkpt: {
       rb = (inst >> 0) & 0xFF;
       statusMsg << "bkpt 0x" << Base::HEX2 << rb << '\n';
       return 1;
     }
-#endif
 
     //BL/BLX(1) variants
     // (bl, blx_thumb, blx_arm)
@@ -1584,9 +1511,6 @@ FORCE_INLINE int Thumbulator::execute()  // NOLINT (readability-function-size)
       if(rc & 1)
       {
         write_register(14, (pc-2) | 1);
-#ifdef UNSAFE_OPTIMIZATIONS
-        rc &= ~1; // not checked and corrected in write_register
-#endif
         write_register(15, rc);
         return 0;
       }
@@ -1906,13 +1830,11 @@ FORCE_INLINE int Thumbulator::execute()  // NOLINT (readability-function-size)
       return 0;
     }
 
-#ifndef UNSAFE_OPTIMIZATIONS
     //CPS
     case Op::cps: {
       DO_DISS(statusMsg << "cps TODO\n");
       return 1;
     }
-#endif
 
     //CPY copy high register
     case Op::cpy: {
@@ -2047,11 +1969,7 @@ FORCE_INLINE int Thumbulator::execute()  // NOLINT (readability-function-size)
       rb = (inst >> 6) & 0x1F;
       DO_DISS(statusMsg << "ldrb r" << dec << rd << ",[r" << dec << rn << ",#0x" << Base::HEX2 << rb << "]\n");
       rb = read_register(rn) + rb;
-#ifndef UNSAFE_OPTIMIZATIONS
       rc = read16(rb & (~1U));
-#else
-      rc = read16(rb);
-#endif
       if(rb & 1)
       {
         rc >>= 8;
@@ -2071,11 +1989,7 @@ FORCE_INLINE int Thumbulator::execute()  // NOLINT (readability-function-size)
       rm = (inst >> 6) & 0x7;
       DO_DISS(statusMsg << "ldrb r" << dec << rd << ",[r" << dec << rn << ",r" << dec << rm << "]\n");
       rb = read_register(rn) + read_register(rm);
-#ifndef UNSAFE_OPTIMIZATIONS
       rc = read16(rb & (~1U));
-#else
-      rc = read16(rb);
-#endif
       if(rb & 1)
       {
         rc >>= 8;
@@ -2119,11 +2033,7 @@ FORCE_INLINE int Thumbulator::execute()  // NOLINT (readability-function-size)
       rm = (inst >> 6) & 0x7;
       DO_DISS(statusMsg << "ldrsb r" << dec << rd << ",[r" << dec << rn << ",r" << dec << rm << "]\n");
       rb = read_register(rn) + read_register(rm);
-#ifndef UNSAFE_OPTIMIZATIONS
       rc = read16(rb & (~1U));
-#else
-      rc = read16(rb);
-#endif
       if(rb & 1)
       {
         rc >>= 8;
@@ -2603,13 +2513,11 @@ FORCE_INLINE int Thumbulator::execute()  // NOLINT (readability-function-size)
       return 0;
     }
 
-#ifndef UNSAFE_OPTIMIZATIONS
     //SETEND
     case Op::setend: {
       statusMsg << "setend not implemented\n";
       return 1;
     }
-#endif
 
     //STMIA
     case Op::stmia: {
@@ -2701,11 +2609,7 @@ FORCE_INLINE int Thumbulator::execute()  // NOLINT (readability-function-size)
       DO_DISS(statusMsg << "strb r" << dec << rd << ",[r" << dec << rn << ",#0x" << Base::HEX8 << rb << "]\n");
       rb = read_register(rn) + rb;
       rc = read_register(rd);
-#ifndef UNSAFE_OPTIMIZATIONS
       ra = read16(rb & (~1U));
-#else
-      ra = read16(rb);
-#endif
       if(rb & 1)
       {
         ra &= 0x00FF;
@@ -2729,11 +2633,7 @@ FORCE_INLINE int Thumbulator::execute()  // NOLINT (readability-function-size)
       DO_DISS(statusMsg << "strb r" << dec << rd << ",[r" << dec << rn << ",r" << rm << "]\n");
       rb = read_register(rn) + read_register(rm);
       rc = read_register(rd);
-#ifndef UNSAFE_OPTIMIZATIONS
       ra = read16(rb & (~1U));
-#else
-      ra = read16(rb);
-#endif
       if(rb & 1)
       {
         ra &= 0x00FF;
@@ -2912,19 +2812,13 @@ FORCE_INLINE int Thumbulator::execute()  // NOLINT (readability-function-size)
     case Op::numOps:
       break;
 
-#ifndef UNSAFE_OPTIMIZATIONS
     case Op::invalid:
-      break;
-#else
     default:
       break;
-#endif
   }
 
-#ifndef UNSAFE_OPTIMIZATIONS
   statusMsg << "invalid instruction " << Base::HEX8 << pc << " "
             << Base::HEX4 << inst << '\n';
-#endif
   return 1;
 }
 
@@ -2946,10 +2840,8 @@ int Thumbulator::reset()
   systick_calibrate = 0x00ABCDEF;
 
   // fxq: don't care about below so much (maybe to guess timing???)
-#ifndef UNSAFE_OPTIMIZATIONS
   _stats.instructions = 0;
   statusMsg.str("");
-#endif
 #ifdef THUMB_STATS
   _stats.reads = _stats.writes
     = _stats.nCycles = _stats.nCycles = _stats.iCycles

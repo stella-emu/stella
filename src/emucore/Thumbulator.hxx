@@ -30,8 +30,6 @@ class Cartridge;
 #include "bspf.hxx"
 #include "Console.hxx"
 
-//#define UNSAFE_OPTIMIZATIONS
-
 #ifdef DEBUGGER_SUPPORT
   #define THUMB_CYCLE_COUNT
   //#define COUNT_OPS
@@ -117,7 +115,6 @@ class Thumbulator
     double cycleFactor() const { return 1.0; }
   #endif
 
-  #ifndef UNSAFE_OPTIMIZATIONS
     /**
       Normally when a fatal error is encountered, the ARM emulation
       immediately throws an exception and exits.  This method allows execution
@@ -131,7 +128,6 @@ class Thumbulator
       @param enable  Enable (the default) or disable exceptions on fatal errors
     */
     void trapFatalErrors(bool enable) { trapOnFatal = enable; }
-  #endif
 
     /**
       Inform the Thumbulator class about the console currently in use,
@@ -215,18 +211,14 @@ class Thumbulator
 
   private:
     string doRun(uInt32& cycles, bool irqDrivenAudio);
-#ifndef UNSAFE_OPTIMIZATIONS
     uInt32 read_register(uInt32 reg);
     void write_register(uInt32 reg, uInt32 data, bool isFlowBreak = true);
-#endif
     uInt32 fetch16(uInt32 addr);
     uInt32 read16(uInt32 addr);
     uInt32 read32(uInt32 addr);
-  #ifndef UNSAFE_OPTIMIZATIONS
     bool isInvalidROM(uInt32 addr) const;
     bool isInvalidRAM(uInt32 addr) const;
     bool isProtectedRAM(uInt32 addr);
-  #endif
     void write16(uInt32 addr, uInt32 data);
     void write32(uInt32 addr, uInt32 data);
     void updateTimer(uInt32 cycles);
@@ -235,7 +227,6 @@ class Thumbulator
 
     void do_cvflag(uInt32 a, uInt32 b, uInt32 c);
 
-  #ifndef UNSAFE_OPTIMIZATIONS
     // Throw a runtime_error exception containing an error referencing the
     // given message and variables
     // Note that the return value is never used in these methods
@@ -244,7 +235,6 @@ class Thumbulator
 
     void dump_counters() const;
     void dump_regs();
-  #endif
     int execute();
     int reset();
 
@@ -299,10 +289,8 @@ class Thumbulator
     uInt32 tim1Total{0};  // total cycles of Timer 1
     double timing_factor{0.0};
 
-  #ifndef UNSAFE_OPTIMIZATIONS
     ostringstream statusMsg;
     bool trapOnFatal{true};
-  #endif
     bool _countCycles{false};
     bool _lockMamcr{false};
 

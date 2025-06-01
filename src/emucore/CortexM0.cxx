@@ -2250,12 +2250,10 @@ CortexM0::err_t CortexM0::execute(uInt16 inst, uInt8 op)
       return ERR_NONE;
     }
 
-#ifndef UNSAFE_OPTIMIZATIONS
     //SETEND
     case Op::setend: {
       return errIntrinsic(ERR_UNIMPLEMENTED_INST, read_register(15) - 4);
     }
-#endif
 
     //STMIA
     case Op::stmia: {
