@@ -513,10 +513,12 @@ void Thumbulator::write32(uInt32 addr, uInt32 data)
       return;
 
     case 0x40000000: //RAM
-    default:
       write16(addr+0, (data >>  0) & 0xFFFF);
       write16(addr+2, (data >> 16) & 0xFFFF);
       return;
+
+    default:
+      break;
   }
   fatalError("write32", addr, data, "abort");
 }
