@@ -356,7 +356,7 @@ void SoundSDL::audioCallback(void* object, SDL_AudioStream* stream,
   std::vector<uInt8>& buf = self->myBuffer;
 
   // Make sure we always have enough room in the buffer
-  if(additional_amt >= static_cast<int>(buf.capacity()))
+  if(std::cmp_greater_equal(additional_amt, buf.capacity()))
     buf.resize(additional_amt);
 
   // The stream is 32-bit float (even though this callback is 8-bits), since
@@ -465,8 +465,8 @@ void SoundSDL::WavHandler::wavCallback(void* object, SDL_AudioStream* stream,
                                        int additional_amt, int)
 {
   auto* self = static_cast<WavHandler*>(object);
-  uInt32 len = static_cast<uInt32>(additional_amt);
-  uInt32& remaining = self->myRemaining;
+  auto len = static_cast<uInt32>(additional_amt);
+  auto& remaining = self->myRemaining;
 
   if(remaining)
   {

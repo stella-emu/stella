@@ -497,8 +497,6 @@ class EventHandler
     // Global Event object
     Event myEvent;
 
-    int lastX;
-
     // Indicates current overlay object
     DialogContainer* myOverlay{nullptr};
 

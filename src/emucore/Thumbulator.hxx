@@ -112,7 +112,7 @@ class Thumbulator
     double cycleFactor() const { return _armCyclesFactor; }
   #else
     void cycleFactor(double) { }
-    double cycleFactor() const { return 1.0; }
+    double cycleFactor() const { return 1.0; }  // NOLINT: we don't want static
   #endif
 
     /**

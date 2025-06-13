@@ -62,8 +62,8 @@ FBBackendSDL::~FBBackendSDL()
   }
   if(myWindow)
   {
-    SDL_SetWindowFullscreen(myWindow, 0); // on some systems, a crash occurs
-                                          // when destroying fullscreen window
+    SDL_SetWindowFullscreen(myWindow, false); // on some systems, a crash occurs
+                                              // when destroying fullscreen window
     SDL_DestroyWindow(myWindow);
     myWindow = nullptr;
   }
@@ -97,7 +97,7 @@ void FBBackendSDL::queryHardware(vector<Common::Size>& fullscreenRes,
     if(SDL_GetDisplayUsableBounds(displays[i], &r))
       windowedRes.emplace_back(r.w, r.h);
 
-    int numModes;
+    int numModes = 0;
     ostringstream s;
     string lastRes;
     SDL_DisplayMode** modes = SDL_GetFullscreenDisplayModes(displays[i], &numModes);
@@ -380,7 +380,7 @@ bool FBBackendSDL::adaptRefreshRate(Int32 displayIndex,
   for(int m = 1; m <= 2; ++m)
   {
     SDL_DisplayMode closestSdlMode{};
-    float refresh_rate = wantedRefreshRate * m;
+    const float refresh_rate = wantedRefreshRate * m;
 
     if(!SDL_GetClosestFullscreenDisplayMode(displayIndex, sdlMode->w, sdlMode->h, refresh_rate, true, &closestSdlMode))
     {
@@ -428,7 +428,7 @@ bool FBBackendSDL::createRenderer()
   {
     recreate = recreate || video != SDL_GetRendererName(myRenderer);
 
-    SDL_PropertiesID props = SDL_GetRendererProperties(myRenderer);
+    const SDL_PropertiesID props = SDL_GetRendererProperties(myRenderer);
     const bool currentVSync = SDL_GetNumberProperty(props,
         SDL_PROP_RENDERER_VSYNC_NUMBER, 0) != 0;
     recreate = recreate || currentVSync != enableVSync;
@@ -440,7 +440,7 @@ bool FBBackendSDL::createRenderer()
       SDL_DestroyRenderer(myRenderer);
 
     // Re-create with new properties
-    SDL_PropertiesID props = SDL_CreateProperties();
+    const SDL_PropertiesID props = SDL_CreateProperties();
     if(!video.empty())
       SDL_SetStringProperty(props, SDL_PROP_RENDERER_CREATE_NAME_STRING,
                             video.c_str());
@@ -490,7 +490,7 @@ string FBBackendSDL::about() const
   ostringstream out;
   out << "Video system: " << SDL_GetCurrentVideoDriver() << '\n';
 
-  SDL_PropertiesID props = SDL_GetRendererProperties(myRenderer);
+  const SDL_PropertiesID props = SDL_GetRendererProperties(myRenderer);
   if(props != 0)
   {
     out << "  Renderer: "

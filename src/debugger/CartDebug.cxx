@@ -634,7 +634,7 @@ string CartDebug::uniqueLabel(const string& label)
   string uniqueLabel = label;
   int count = 0;
 
-  // TODO: does find return multiple items??
+  // FIXME: does find return multiple items??
   while(myUserAddresses.find(uniqueLabel) != myUserAddresses.end())
     uniqueLabel = label + "." + std::to_string(++count);
 
