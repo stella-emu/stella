@@ -151,6 +151,7 @@ void TIA::initialize()
   myXAtRenderingStart = 0;
 
   myShadowRegisters.fill(0);
+  for (auto reg: {HMP0, HMP1, HMM0, HMM1, HMBL}) myShadowRegisters[reg] = 0x80;
 
   myBackground.reset();
   myPlayfield.reset();
