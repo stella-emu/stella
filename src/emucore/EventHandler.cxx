@@ -2879,6 +2879,8 @@ EventHandler::EmulActionList EventHandler::ourEmulActionList = { {
   { Event::LeftPaddleAIncrease,     "Left Paddle A Turn Left"               },
   { Event::LeftPaddleADecrease,     "Left Paddle A Turn Right"              },
   { Event::LeftPaddleAFire,         "Left Paddle A Fire"                    },
+  { Event::LeftPaddleAButton1,      "Left Paddle A Button 1"                },
+  { Event::LeftPaddleAButton2,      "Left Paddle A Button 2"                },
 
   { Event::LeftPaddleBAnalog,       "Left Paddle B Analog"                  },
   { Event::LeftPaddleBIncrease,     "Left Paddle B Turn Left"               },
@@ -2930,11 +2932,15 @@ EventHandler::EmulActionList EventHandler::ourEmulActionList = { {
   { Event::LeftDrivingCCW,          "Left Driving Turn Left"                },
   { Event::LeftDrivingCW,           "Left Driving Turn Right"               },
   { Event::LeftDrivingFire,         "Left Driving Fire"                     },
+  { Event::LeftDrivingButton1,      "Left Driving Button 1"                 },
+  { Event::LeftDrivingButton2,      "Left Driving Button 2"                 },
 
   { Event::RightDrivingAnalog,      "Right Driving Analog"                  },
   { Event::RightDrivingCCW,         "Right Driving Turn Left"               },
   { Event::RightDrivingCW,          "Right Driving Turn Right"              },
   { Event::RightDrivingFire,        "Right Driving Fire"                    },
+  { Event::RightDrivingButton1,     "Right Driving Button 1"                },
+  { Event::RightDrivingButton2,     "Right Driving Button 2"                },
 
   // Video
   { Event::ToggleInter,             "Toggle display interpolation"          },
@@ -3194,8 +3200,10 @@ const Event::EventSet EventHandler::JoystickEvents = {
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const Event::EventSet EventHandler::PaddlesEvents = {
-  Event::LeftPaddleADecrease, Event::LeftPaddleAIncrease, Event::LeftPaddleAAnalog, Event::LeftPaddleAFire,
-  Event::LeftPaddleBDecrease, Event::LeftPaddleBIncrease, Event::LeftPaddleBAnalog, Event::LeftPaddleBFire,
+  Event::LeftPaddleADecrease, Event::LeftPaddleAIncrease, Event::LeftPaddleAAnalog,
+  Event::LeftPaddleAFire, Event::LeftPaddleAButton1, Event::LeftPaddleAButton2,
+  Event::LeftPaddleBDecrease, Event::LeftPaddleBIncrease, Event::LeftPaddleBAnalog,
+  Event::LeftPaddleBFire,
   Event::RightPaddleADecrease, Event::RightPaddleAIncrease, Event::RightPaddleAAnalog, Event::RightPaddleAFire,
   Event::RightPaddleBDecrease, Event::RightPaddleBIncrease, Event::RightPaddleBAnalog, Event::RightPaddleBFire,
   Event::QTPaddle3AFire, Event::QTPaddle3BFire,Event::QTPaddle4AFire,Event::QTPaddle4BFire,
@@ -3215,8 +3223,9 @@ const Event::EventSet EventHandler::KeyboardEvents = {
 
 const Event::EventSet EventHandler::DrivingEvents = {
   Event::LeftDrivingAnalog, Event::LeftDrivingCCW, Event::LeftDrivingCW,
-  Event::LeftDrivingFire, Event::RightDrivingAnalog, Event::RightDrivingCCW,
-  Event::RightDrivingCW, Event::RightDrivingFire,
+  Event::LeftDrivingFire, Event::LeftDrivingButton1, Event::LeftDrivingButton2,
+  Event::RightDrivingAnalog, Event::RightDrivingCCW, Event::RightDrivingCW,
+  Event::RightDrivingFire, Event::RightDrivingButton1, Event::RightDrivingButton2
 };
 
 const Event::EventSet EventHandler::DevicesEvents = {

@@ -47,8 +47,10 @@ class Event
       RightJoystickUp, RightJoystickDown, RightJoystickLeft, RightJoystickRight,
       RightJoystickFire, RightJoystickFire5, RightJoystickFire9,
 
-      LeftPaddleADecrease, LeftPaddleAIncrease, LeftPaddleAAnalog, LeftPaddleAFire,
-      LeftPaddleBDecrease, LeftPaddleBIncrease, LeftPaddleBAnalog, LeftPaddleBFire,
+      LeftPaddleADecrease, LeftPaddleAIncrease, LeftPaddleAAnalog,
+      LeftPaddleAFire, LeftPaddleAButton1, LeftPaddleAButton2,
+      LeftPaddleBDecrease, LeftPaddleBIncrease, LeftPaddleBAnalog,
+      LeftPaddleBFire,
       RightPaddleADecrease, RightPaddleAIncrease, RightPaddleAAnalog, RightPaddleAFire,
       RightPaddleBDecrease, RightPaddleBIncrease, RightPaddleBAnalog, RightPaddleBFire,
 
@@ -63,7 +65,9 @@ class Event
       RightKeyboardStar, RightKeyboard0, RightKeyboardPound,
 
       LeftDrivingCCW, LeftDrivingCW, LeftDrivingFire, LeftDrivingAnalog,
+      LeftDrivingButton1, LeftDrivingButton2,
       RightDrivingCCW, RightDrivingCW, RightDrivingFire, RightDrivingAnalog,
+      RightDrivingButton1, RightDrivingButton2,
 
       CompuMateFunc, CompuMateShift,
       CompuMate0, CompuMate1, CompuMate2, CompuMate3, CompuMate4,
@@ -290,8 +294,10 @@ static const Event::EventSet QTJoystick4Events = {
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 static const Event::EventSet LeftPaddlesEvents = {
-  Event::LeftPaddleADecrease, Event::LeftPaddleAIncrease, Event::LeftPaddleAAnalog, Event::LeftPaddleAFire,
-  Event::LeftPaddleBDecrease, Event::LeftPaddleBIncrease, Event::LeftPaddleBAnalog, Event::LeftPaddleBFire,
+  Event::LeftPaddleADecrease, Event::LeftPaddleAIncrease, Event::LeftPaddleAAnalog,
+  Event::LeftPaddleAFire, Event::LeftPaddleAButton1, Event::LeftPaddleAButton2,
+  Event::LeftPaddleBDecrease, Event::LeftPaddleBIncrease, Event::LeftPaddleBAnalog,
+  Event::LeftPaddleBFire,
 };
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 static const Event::EventSet QTPaddles3Events = {
@@ -328,14 +334,14 @@ static const Event::EventSet RightKeyboardEvents = {
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 static const Event::EventSet LeftDrivingEvents = {
-  Event::LeftDrivingAnalog, Event::LeftDrivingCCW,
-  Event::LeftDrivingCW, Event::LeftDrivingFire,
+  Event::LeftDrivingAnalog, Event::LeftDrivingCCW, Event::LeftDrivingCW,
+  Event::LeftDrivingFire, Event::LeftDrivingButton1, Event::LeftDrivingButton2,
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 static const Event::EventSet RightDrivingEvents = {
-  Event::RightDrivingAnalog, Event::RightDrivingCCW,
-  Event::RightDrivingCW, Event::RightDrivingFire,
+  Event::RightDrivingAnalog, Event::RightDrivingCCW, Event::RightDrivingCW,
+  Event::RightDrivingFire, Event::RightDrivingButton1, Event::RightDrivingButton2,
 };
 
 #endif

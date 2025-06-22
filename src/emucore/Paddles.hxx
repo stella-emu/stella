@@ -179,7 +179,8 @@ class Paddles : public Controller
     Event::Type myAAxisValue, myBAxisValue,
                 myLeftADecEvent, myLeftAIncEvent,
                 myLeftBDecEvent, myLeftBIncEvent,
-                myLeftAFireEvent, myLeftBFireEvent,
+                myLeftAFireEvent, myLeftAButton1Event, myLeftAButton2Event,
+                myLeftBFireEvent,
                 myAxisMouseMotion;
 
     // The following are used for the various mouse-axis modes

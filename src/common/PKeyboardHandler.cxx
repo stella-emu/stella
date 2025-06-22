@@ -1037,6 +1037,8 @@ PhysicalKeyboardHandler::DefaultPaddleMapping = {
   {Event::LeftPaddleAFire,          KBDK_SPACE},
   {Event::LeftPaddleAFire,          KBDK_LCTRL},
   {Event::LeftPaddleAFire,          KBDK_KP_5},
+  {Event::LeftPaddleAButton1,       KBDK_UP, KBDM_SHIFT},
+  {Event::LeftPaddleAButton2,       KBDK_DOWN, KBDM_SHIFT},
 
   {Event::LeftPaddleBDecrease,      KBDK_DOWN},
   {Event::LeftPaddleBIncrease,      KBDK_UP},
@@ -1097,10 +1099,16 @@ PhysicalKeyboardHandler::EventMappingArray PhysicalKeyboardHandler::DefaultDrivi
   {Event::LeftDrivingFire,         KBDK_SPACE},
   {Event::LeftDrivingFire,         KBDK_LCTRL},
   {Event::LeftDrivingFire,         KBDK_KP_5},
+  {Event::LeftDrivingButton1,      KBDK_UP},
+  {Event::LeftDrivingButton2,      KBDK_DOWN},
+  {Event::LeftDrivingButton1,      KBDK_KP_8},
+  {Event::LeftDrivingButton2,      KBDK_KP_2},
 
   {Event::RightDrivingCCW,         KBDK_G},
   {Event::RightDrivingCW,          KBDK_J},
   {Event::RightDrivingFire,        KBDK_F},
+  {Event::RightDrivingButton1,     KBDK_Y},
+  {Event::RightDrivingButton2,     KBDK_H},
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

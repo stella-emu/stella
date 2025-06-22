@@ -50,10 +50,13 @@ Paddles::Paddles(Jack jack, const Event& event, const System& system,
     if(!altmap)
     {
       // First paddle is left A, second is left B
-      myAAxisValue     = Event::LeftPaddleAAnalog;
-      myBAxisValue     = Event::LeftPaddleBAnalog;
-      myLeftAFireEvent = Event::LeftPaddleAFire;
-      myLeftBFireEvent = Event::LeftPaddleBFire;
+      myAAxisValue        = Event::LeftPaddleAAnalog;
+      myBAxisValue        = Event::LeftPaddleBAnalog;
+      myLeftAFireEvent    = Event::LeftPaddleAFire;
+      myLeftAButton1Event = Event::LeftPaddleAButton1;
+      myLeftAButton2Event = Event::LeftPaddleAButton2;
+
+      myLeftBFireEvent    = Event::LeftPaddleBFire;
 
       // These can be affected by changes in axis orientation
       myLeftADecEvent = Event::LeftPaddleADecrease;
@@ -106,6 +109,8 @@ Paddles::Paddles(Jack jack, const Event& event, const System& system,
     // First paddle is right A|B, second is left A|B
     std::swap(myAAxisValue, myBAxisValue);
     std::swap(myLeftAFireEvent, myLeftBFireEvent);
+    myLeftAButton1Event = Event::NoType;
+    myLeftAButton2Event = Event::NoType;
     std::swap(myLeftADecEvent, myLeftBDecEvent);
     std::swap(myLeftAIncEvent, myLeftBIncEvent);
   }
@@ -137,8 +142,8 @@ Paddles::Paddles(Jack jack, const Event& event, const System& system,
   }
 
   // Digital pins 1, 2 and 6 are not connected
-  setPin(DigitalPin::One, true);
-  setPin(DigitalPin::Two, true);
+  //setPin(DigitalPin::One, true);
+  //setPin(DigitalPin::Two, true);
   setPin(DigitalPin::Six, true);
 }
 
@@ -182,6 +187,10 @@ void Paddles::updateA()
   }
 
   setPin(DigitalPin::Four, !getAutoFireState(firePressedA));
+
+  // Joystick up/down pins when using a splitter:
+  setPin(DigitalPin::One, myEvent.get(myLeftAButton1Event) == 0);
+  setPin(DigitalPin::Two, myEvent.get(myLeftAButton2Event) == 0);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
