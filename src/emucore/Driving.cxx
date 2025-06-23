@@ -25,16 +25,18 @@ Driving::Driving(Jack jack, const Event& event, const System& system, bool altma
   {
     if(!altmap)
     {
-      myCCWEvent    = Event::LeftDrivingCCW;
-      myCWEvent     = Event::LeftDrivingCW;
-      myFireEvent   = Event::LeftDrivingFire;
-      myAnalogEvent = Event::LeftDrivingAnalog;
+      myCCWEvent     = Event::LeftDrivingCCW;
+      myCWEvent      = Event::LeftDrivingCW;
+      myFireEvent    = Event::LeftDrivingFire;
+      myButton1Event = Event::LeftDrivingButton1;
+      myButton2Event = Event::LeftDrivingButton2;
+      myAnalogEvent  = Event::LeftDrivingAnalog;
     }
     else
     {
-      myCCWEvent  = Event::QTJoystickThreeLeft;
-      myCWEvent   = Event::QTJoystickThreeRight;
-      myFireEvent = Event::QTJoystickThreeFire;
+      myCCWEvent     = Event::QTJoystickThreeLeft;
+      myCWEvent      = Event::QTJoystickThreeRight;
+      myFireEvent    = Event::QTJoystickThreeFire;
     }
     myXAxisValue = Event::SALeftAxis0Value; // joystick input
     myYAxisValue = Event::SALeftAxis1Value; // driving controller input
@@ -43,10 +45,12 @@ Driving::Driving(Jack jack, const Event& event, const System& system, bool altma
   {
     if(!altmap)
     {
-      myCCWEvent    = Event::RightDrivingCCW;
-      myCWEvent     = Event::RightDrivingCW;
-      myFireEvent   = Event::RightDrivingFire;
-      myAnalogEvent = Event::RightDrivingAnalog;
+      myCCWEvent     = Event::RightDrivingCCW;
+      myCWEvent      = Event::RightDrivingCW;
+      myFireEvent    = Event::RightDrivingFire;
+      myButton1Event = Event::RightDrivingButton1;
+      myButton2Event = Event::RightDrivingButton2;
+      myAnalogEvent  = Event::RightDrivingAnalog;
     }
     else
     {
@@ -58,9 +62,9 @@ Driving::Driving(Jack jack, const Event& event, const System& system, bool altma
     myYAxisValue = Event::SARightAxis1Value; // driving controller input
   }
 
-  // Digital pins 3 and 4 are not connected
-  setPin(DigitalPin::Three, true);
-  setPin(DigitalPin::Four, true);
+  //// Digital pins 3 and 4 are not connected
+  //setPin(DigitalPin::Three, true);
+  //setPin(DigitalPin::Four, true);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -90,6 +94,9 @@ void Driving::updateButtons()
   updateMouseButtons(firePressed);
 
   setPin(DigitalPin::Six, !getAutoFireState(firePressed));
+  // Joystick left/right pins when using a splitter:
+  setPin(DigitalPin::Three, myEvent.get(myButton1Event) == 0);
+  setPin(DigitalPin::Four, myEvent.get(myButton2Event) == 0);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
