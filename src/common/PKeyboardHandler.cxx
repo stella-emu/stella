@@ -1048,6 +1048,8 @@ PhysicalKeyboardHandler::DefaultPaddleMapping = {
   {Event::RightPaddleADecrease,     KBDK_J},
   {Event::RightPaddleAIncrease,     KBDK_G},
   {Event::RightPaddleAFire,         KBDK_F},
+  {Event::RightPaddleAButton1,      KBDK_Y, KBDM_SHIFT},
+  {Event::RightPaddleAButton2,      KBDK_H, KBDM_SHIFT},
 
   {Event::RightPaddleBDecrease,     KBDK_H},
   {Event::RightPaddleBIncrease,     KBDK_Y},

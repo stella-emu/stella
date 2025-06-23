@@ -2891,6 +2891,8 @@ EventHandler::EmulActionList EventHandler::ourEmulActionList = { {
   { Event::RightPaddleAIncrease,    "Right Paddle A Turn Left"              },
   { Event::RightPaddleADecrease,    "Right Paddle A Turn Right"             },
   { Event::RightPaddleAFire,        "Right Paddle A Fire"                   },
+  { Event::RightPaddleAButton1,     "Right Paddle A Button 1"               },
+  { Event::RightPaddleAButton2,     "Right Paddle A Button 2"               },
 
   { Event::RightPaddleBAnalog,      "Right Paddle B Analog"                 },
   { Event::RightPaddleBIncrease,    "Right Paddle B Turn Left"              },
@@ -3204,8 +3206,10 @@ const Event::EventSet EventHandler::PaddlesEvents = {
   Event::LeftPaddleAFire, Event::LeftPaddleAButton1, Event::LeftPaddleAButton2,
   Event::LeftPaddleBDecrease, Event::LeftPaddleBIncrease, Event::LeftPaddleBAnalog,
   Event::LeftPaddleBFire,
-  Event::RightPaddleADecrease, Event::RightPaddleAIncrease, Event::RightPaddleAAnalog, Event::RightPaddleAFire,
-  Event::RightPaddleBDecrease, Event::RightPaddleBIncrease, Event::RightPaddleBAnalog, Event::RightPaddleBFire,
+  Event::RightPaddleADecrease, Event::RightPaddleAIncrease, Event::RightPaddleAAnalog,
+  Event::RightPaddleAFire, Event::RightPaddleAButton1, Event::RightPaddleAButton2,
+  Event::RightPaddleBDecrease, Event::RightPaddleBIncrease, Event::RightPaddleBAnalog,
+  Event::RightPaddleBFire,
   Event::QTPaddle3AFire, Event::QTPaddle3BFire,Event::QTPaddle4AFire,Event::QTPaddle4BFire,
 };
 

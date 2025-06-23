@@ -123,6 +123,8 @@ NLOHMANN_JSON_SERIALIZE_ENUM(Event::Type, {
   {Event::RightPaddleAIncrease, "RightPaddleAIncrease"},
   {Event::RightPaddleAAnalog, "RightPaddleAAnalog"},
   {Event::RightPaddleAFire, "RightPaddleAFire"},
+  {Event::RightPaddleAButton1, "RightPaddleAButton1"},
+  {Event::RightPaddleAButton2, "RightPaddleAButton2"},
   {Event::RightPaddleBDecrease, "RightPaddleBDecrease"},
   {Event::RightPaddleBIncrease, "RightPaddleBIncrease"},
   {Event::RightPaddleBAnalog, "RightPaddleBAnalog"},

@@ -50,8 +50,9 @@ class Event
       LeftPaddleADecrease, LeftPaddleAIncrease, LeftPaddleAAnalog,
       LeftPaddleAFire, LeftPaddleAButton1, LeftPaddleAButton2,
       LeftPaddleBDecrease, LeftPaddleBIncrease, LeftPaddleBAnalog,
-      LeftPaddleBFire,
-      RightPaddleADecrease, RightPaddleAIncrease, RightPaddleAAnalog, RightPaddleAFire,
+      LeftPaddleBFire, RightPaddleAButton1, RightPaddleAButton2,
+      RightPaddleADecrease, RightPaddleAIncrease, RightPaddleAAnalog,
+      RightPaddleAFire,
       RightPaddleBDecrease, RightPaddleBIncrease, RightPaddleBAnalog, RightPaddleBFire,
 
       LeftKeyboard1, LeftKeyboard2, LeftKeyboard3,
@@ -307,8 +308,10 @@ static const Event::EventSet QTPaddles3Events = {
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 static const Event::EventSet RightPaddlesEvents = {
-  Event::RightPaddleADecrease, Event::RightPaddleAIncrease, Event::RightPaddleAAnalog, Event::RightPaddleAFire,
-  Event::RightPaddleBDecrease, Event::RightPaddleBIncrease, Event::RightPaddleBAnalog, Event::RightPaddleBFire,
+  Event::RightPaddleADecrease, Event::RightPaddleAIncrease, Event::RightPaddleAAnalog,
+  Event::RightPaddleAFire, Event::RightPaddleAButton1, Event::RightPaddleAButton2,
+  Event::RightPaddleBDecrease, Event::RightPaddleBIncrease, Event::RightPaddleBAnalog,
+  Event::RightPaddleBFire,
 };
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 static const Event::EventSet QTPaddles4Events = {

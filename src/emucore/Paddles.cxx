@@ -44,35 +44,37 @@ Paddles::Paddles(Jack jack, const Event& event, const System& system,
   // As much as possible, precompute which events we care about for
   // a given port; this will speed up processing in update()
 
+  // Clear some potentially unused events:
+  myAAxisValue = myBAxisValue =
+    myADecEvent = myAIncEvent =
+    myAButton1Event = myAButton2Event =
+    myBDecEvent = myBIncEvent = Event::NoType;
+
   // Consider whether this is the left or right port
   if(myJack == Jack::Left)
   {
     if(!altmap)
     {
       // First paddle is left A, second is left B
-      myAAxisValue        = Event::LeftPaddleAAnalog;
-      myBAxisValue        = Event::LeftPaddleBAnalog;
-      myLeftAFireEvent    = Event::LeftPaddleAFire;
-      myLeftAButton1Event = Event::LeftPaddleAButton1;
-      myLeftAButton2Event = Event::LeftPaddleAButton2;
+      myAAxisValue    = Event::LeftPaddleAAnalog;
+      myBAxisValue    = Event::LeftPaddleBAnalog;
+      myAFireEvent    = Event::LeftPaddleAFire;
+      myAButton1Event = Event::LeftPaddleAButton1;
+      myAButton2Event = Event::LeftPaddleAButton2;
 
-      myLeftBFireEvent    = Event::LeftPaddleBFire;
+      myBFireEvent    = Event::LeftPaddleBFire;
 
       // These can be affected by changes in axis orientation
-      myLeftADecEvent = Event::LeftPaddleADecrease;
-      myLeftAIncEvent = Event::LeftPaddleAIncrease;
-      myLeftBDecEvent = Event::LeftPaddleBDecrease;
-      myLeftBIncEvent = Event::LeftPaddleBIncrease;
+      myAIncEvent     = Event::LeftPaddleAIncrease;
+      myBDecEvent     = Event::LeftPaddleBDecrease;
+      myBIncEvent     = Event::LeftPaddleBIncrease;
+      myADecEvent     = Event::LeftPaddleADecrease;
     }
     else
     {
       // First paddle is QT 3A, second is QT 3B (fire buttons only)
-      myLeftAFireEvent = Event::QTPaddle3AFire;
-      myLeftBFireEvent = Event::QTPaddle3BFire;
-
-      myAAxisValue = myBAxisValue =
-        myLeftADecEvent = myLeftAIncEvent =
-        myLeftBDecEvent = myLeftBIncEvent = Event::NoType;
+      myAFireEvent = Event::QTPaddle3AFire;
+      myBFireEvent = Event::QTPaddle3BFire;
     }
   }
   else    // Jack is right port
@@ -80,26 +82,25 @@ Paddles::Paddles(Jack jack, const Event& event, const System& system,
     if(!altmap)
     {
       // First paddle is right A, second is right B
-      myAAxisValue     = Event::RightPaddleAAnalog;
-      myBAxisValue     = Event::RightPaddleBAnalog;
-      myLeftAFireEvent = Event::RightPaddleAFire;
-      myLeftBFireEvent = Event::RightPaddleBFire;
+      myAAxisValue    = Event::RightPaddleAAnalog;
+      myBAxisValue    = Event::RightPaddleBAnalog;
+      myAFireEvent    = Event::RightPaddleAFire;
+      myAButton1Event = Event::RightPaddleAButton1;
+      myAButton2Event = Event::RightPaddleAButton2;
+
+      myBFireEvent    = Event::RightPaddleBFire;
 
       // These can be affected by changes in axis orientation
-      myLeftADecEvent = Event::RightPaddleADecrease;
-      myLeftAIncEvent = Event::RightPaddleAIncrease;
-      myLeftBDecEvent = Event::RightPaddleBDecrease;
-      myLeftBIncEvent = Event::RightPaddleBIncrease;
+      myADecEvent     = Event::RightPaddleADecrease;
+      myAIncEvent     = Event::RightPaddleAIncrease;
+      myBDecEvent     = Event::RightPaddleBDecrease;
+      myBIncEvent     = Event::RightPaddleBIncrease;
     }
     else
     {
       // First paddle is QT 4A, second is QT 4B (fire buttons only)
-      myLeftAFireEvent = Event::QTPaddle4AFire;
-      myLeftBFireEvent = Event::QTPaddle4BFire;
-
-      myAAxisValue = myBAxisValue =
-        myLeftADecEvent = myLeftAIncEvent =
-        myLeftBDecEvent = myLeftBIncEvent = Event::NoType;
+      myAFireEvent = Event::QTPaddle4AFire;
+      myBFireEvent = Event::QTPaddle4BFire;
     }
   }
 
@@ -108,11 +109,10 @@ Paddles::Paddles(Jack jack, const Event& event, const System& system,
   {
     // First paddle is right A|B, second is left A|B
     std::swap(myAAxisValue, myBAxisValue);
-    std::swap(myLeftAFireEvent, myLeftBFireEvent);
-    myLeftAButton1Event = Event::NoType;
-    myLeftAButton2Event = Event::NoType;
-    std::swap(myLeftADecEvent, myLeftBDecEvent);
-    std::swap(myLeftAIncEvent, myLeftBIncEvent);
+    std::swap(myAFireEvent, myBFireEvent);
+    myAButton1Event = myAButton2Event = Event::NoType;
+    std::swap(myADecEvent, myBDecEvent);
+    std::swap(myAIncEvent, myBIncEvent);
   }
 
   // Direction of movement can be swapped
@@ -120,8 +120,8 @@ Paddles::Paddles(Jack jack, const Event& event, const System& system,
   // result in either increasing or decreasing paddle movement
   if(swapdir)
   {
-    std::swap(myLeftADecEvent, myLeftAIncEvent);
-    std::swap(myLeftBDecEvent, myLeftBIncEvent);
+    std::swap(myADecEvent, myAIncEvent);
+    std::swap(myBDecEvent, myBIncEvent);
   }
 
   // The following are independent of whether or not the port
@@ -141,7 +141,7 @@ Paddles::Paddles(Jack jack, const Event& event, const System& system,
     myAxisDigitalOne  = 0;
   }
 
-  // Digital pins 1, 2 and 6 are not connected
+  // Digital pins 1, 2 and 6 are (usually, see below) not connected
   //setPin(DigitalPin::One, true);
   //setPin(DigitalPin::Two, true);
   setPin(DigitalPin::Six, true);
@@ -160,7 +160,7 @@ void Paddles::updateA()
   setPin(DigitalPin::Four, true);
 
   // Digital events (from keyboard or joystick hats & buttons)
-  bool firePressedA = myEvent.get(myLeftAFireEvent) != 0;
+  bool firePressedA = myEvent.get(myAFireEvent) != 0;
 
   // Paddle movement is a very difficult thing to accurately emulate,
   // since it originally came from an analog device that had very
@@ -189,8 +189,8 @@ void Paddles::updateA()
   setPin(DigitalPin::Four, !getAutoFireState(firePressedA));
 
   // Joystick up/down pins when using a splitter:
-  setPin(DigitalPin::One, myEvent.get(myLeftAButton1Event) == 0);
-  setPin(DigitalPin::Two, myEvent.get(myLeftAButton2Event) == 0);
+  setPin(DigitalPin::One, myEvent.get(myAButton1Event) == 0);
+  setPin(DigitalPin::Two, myEvent.get(myAButton2Event) == 0);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -328,13 +328,13 @@ void Paddles::updateDigitalAxesA()
 
   myKeyRepeatA = false;
 
-  if(myEvent.get(myLeftADecEvent))
+  if(myEvent.get(myADecEvent))
   {
     myKeyRepeatA = true;
     if(myCharge[myAxisDigitalZero] > myPaddleRepeatA)
       myCharge[myAxisDigitalZero] -= myPaddleRepeatA;
   }
-  if(myEvent.get(myLeftAIncEvent))
+  if(myEvent.get(myAIncEvent))
   {
     myKeyRepeatA = true;
     if((myCharge[myAxisDigitalZero] + myPaddleRepeatA) < TRIGRANGE)
@@ -348,7 +348,7 @@ void Paddles::updateB()
   setPin(DigitalPin::Three, true);
 
   // Digital events (from keyboard or joystick hats & buttons)
-  bool firePressedB = myEvent.get(myLeftBFireEvent) != 0;
+  bool firePressedB = myEvent.get(myBFireEvent) != 0;
 
   if(!updateAnalogAxesB())
   {
@@ -435,13 +435,13 @@ void Paddles::updateDigitalAxesB()
 
   myKeyRepeatB = false;
 
-  if(myEvent.get(myLeftBDecEvent))
+  if(myEvent.get(myBDecEvent))
   {
     myKeyRepeatB = true;
     if(myCharge[myAxisDigitalOne] > myPaddleRepeatB)
       myCharge[myAxisDigitalOne] -= myPaddleRepeatB;
   }
-  if(myEvent.get(myLeftBIncEvent))
+  if(myEvent.get(myBIncEvent))
   {
     myKeyRepeatB = true;
     if((myCharge[myAxisDigitalOne] + myPaddleRepeatB) < TRIGRANGE)
