@@ -221,7 +221,9 @@ static void update_input()
       MASK_EVENT(Event::LeftPaddleADecrease, pad, RETRO_DEVICE_ID_JOYPAD_RIGHT);
       MASK_EVENT(Event::LeftPaddleAFire,     pad, RETRO_DEVICE_ID_JOYPAD_B);
 
+      pad++;
       GET_BITMASK(pad)
+      
       retro_analog_paddle(pad, &paddle_b, &input_bitmask[pad]);
       EVENT(Event::LeftPaddleBAnalog, paddle_b);
       MASK_EVENT(Event::LeftPaddleBIncrease, pad, RETRO_DEVICE_ID_JOYPAD_LEFT);
@@ -747,10 +749,10 @@ void retro_set_environment(retro_environment_t cb)
     { "stella_paddle_mouse_sensitivity", "Paddle mouse sensitivity; 10|11|12|13|14|15|16|17|18|19|20|21|22|23|24|25|26|27|28|29|30|1|2|3|4|5|6|7|8|9" },
     { "stella_paddle_joypad_sensitivity", "Paddle joypad sensitivity; 3|4|5|6|7|8|9|10|11|12|13|14|15|16|17|18|19|20|1|2" },
     { "stella_paddle_analog_sensitivity", "Paddle analog sensitivity; 20|21|22|23|24|25|26|27|28|29|30|0|1|2|3|4|5|6|7|8|9|10|11|12|13|14|15|16|17|18|19" },
-    { "stella_reload", "Enable reload/next game; off|on" },
     { "stella_paddle_analog_deadzone", "Paddle analog deadzone; 15|16|17|18|19|20|21|22|23|24|25|26|27|28|29|30|0|1|2|3|4|5|6|7|8|9|10|11|12|13|14" },
     { "stella_paddle_analog_absolute", "Paddle analog absolute; disabled|enabled" },
     { "stella_lightgun_crosshair", "Lightgun crosshair; disabled|enabled" },
+    { "stella_reload", "Enable reload/next game; off|on" },
     { NULL, NULL },
   };
 
