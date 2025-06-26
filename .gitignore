@@ -5,6 +5,7 @@ src/**/*.so
 src/**/*.dylib
 src/**/*.dll
 src/**/*.o
+src/**/*.d
 src/**/*.obj
 src/**/*.tlog
 out
