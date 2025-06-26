@@ -1,4 +1,5 @@
-DEBUG = 0
+DEBUG := 0
+SILENT := 0
 HAVE_EXCEPTIONS = 1
 HAVE_STRINGS_H = 1
 
@@ -540,7 +541,7 @@ else ifeq ($(platform), windows_msvc2005_x86)
 else
    TARGET := $(TARGET_NAME)_libretro.dll
    CXX ?= g++
-   SHARED := -shared -static-libgcc -static-libstdc++ -s -Wl,--version-script=link.T
+   SHARED := -shared -static-libgcc -static-libstdc++ -Wl,--version-script=link.T
    CXXFLAGS += -D__WIN32__
 endif
 
@@ -548,7 +549,7 @@ CORE_DIR := ../..
 
 ifeq ($(DEBUG), 1)
    ifneq (,$(findstring msvc,$(platform)))
-      CXXFLAGS += -Od -Zi -DDEBUG -D_DEBUG
+      CXXFLAGS += -Od -Zi -D_DEBUG
 
       ifeq ($(STATIC_LINKING),1)
          CXXFLAGS += -MTd
@@ -556,7 +557,7 @@ ifeq ($(DEBUG), 1)
          CXXFLAGS += -MDd
       endif
    else
-      CXXFLAGS += -O0 -g -DDEBUG
+      CXXFLAGS += -O0 -g
    endif
 else
    ifneq (,$(findstring msvc,$(platform)))
@@ -572,6 +573,8 @@ else
          CXXFLAGS += -MD
       endif
    endif
+
+   SHARED += -s
 endif
 
 include Makefile.common
@@ -590,7 +593,7 @@ else
 endif
 
 CXXFLAGS += $(CODE_DEFINES) $(WARNINGS_DEFINES) $(fpic)
-CXXFLAGS += -D__LIB_RETRO__ -DSOUND_SUPPORT
+CXXFLAGS += -D__LIB_RETRO__ -DSOUND_SUPPORT -MMD
 CXXFLAGS += -DHAVE_STDINT_H
 
 ifeq (,$(findstring msvc,$(platform)))
@@ -627,7 +630,15 @@ ifeq ($(platform), theos_ios)
    ${LIBRARY_NAME}_FILES = $(SOURCES_CXX) $(SOURCES_C)
    include $(THEOS_MAKE_PATH)/library.mk
 else
+default: info all
+
+info:
+	$(info CXXFLAGS: $(CXXFLAGS))
+	$(info -------)
+
 all: $(TARGET)
+
+-include $(OBJECTS:.o=.d))
 
 $(TARGET): $(OBJECTS)
 ifeq ($(STATIC_LINKING), 1)
@@ -637,11 +648,16 @@ else
 endif
 
 %.o: %.cxx
+	@if [ $(SILENT) -ne 1 ]; then\
+		$(if $@, $(shell echo echo CXX $<),);\
+	fi
 	$(CXX) $(INCFLAGS) $(CPPFLAGS) $(CXXFLAGS) -c $(OBJOUT)$@ $<
 
-%.o: %.c
+%.o: %.c	@if [ $(SILENT) -ne 1 ]; then\
+		$(if $@, $(shell echo echo CC $<),);\
+	fi
 	$(CC) $(INCFLAGS) -c $(OBJOUT)$@ $<
 
 clean:
-	rm -f $(OBJECTS) $(TARGET)
+	rm -f $(OBJECTS) $(OBJECTS:.o=.d) $(TARGET)
 endif

@@ -231,36 +231,14 @@ float StellaLIBRETRO::getVideoAspectPar() const
   if (getVideoNTSC())
   {
     if (!video_aspect_ntsc)
-    {
-      if (video_filter != NTSCFilter::Preset::OFF)
-      {
-        // non-interlace square pixel clock -- 1.0 pixel @ color burst -- double-width pixels
-        par = (6.1363635F / 3.579545454F) / 2.0;
-      }
-      else
-      {
-        // blargg filter
-        par = 1.0;
-      }
-    }
+      par = (6.1363635f / 3.579545454f) / 2.0;
     else
       par = video_aspect_ntsc / 100.0;
   }
   else
   {
     if (!video_aspect_pal)
-    {
-      if (video_filter != NTSCFilter::Preset::OFF)
-      {
-        // non-interlace square pixel clock -- 0.8 pixel @ color burst -- double-width pixels
-        par = (7.3750000F / (4.43361875F * 4.F / 5.F)) / 2.F;
-      }
-      else
-      {
-        // blargg filter
-        par = 1.0;
-      }
-    }
+      par = (7.3750000f / (4.43361875f * 4.0f / 5.0f)) / 2.0f;
     else
       par = video_aspect_pal / 100.0;
   }
@@ -356,6 +334,8 @@ void StellaLIBRETRO::setVideoFilter(NTSCFilter::Preset mode)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void StellaLIBRETRO::setVideoPalette(const string& mode)
 {
+  video_palette = mode;
+  
   if (system_ready)
   {
     myOSystem->settings().setValue("palette", video_palette);
