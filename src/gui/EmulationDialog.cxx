@@ -39,7 +39,7 @@ namespace {
     speed = std::abs(speed);
 
     return BSPF::clamp(
-      static_cast<int>(round(100 * (speed >= 1 ? speed - 1 : -1 / speed + 1))),
+      static_cast<int>(std::round(100 * (speed >= 1 ? speed - 1 : -1 / speed + 1))),
       MIN_SPEED, MAX_SPEED
     );
   }
