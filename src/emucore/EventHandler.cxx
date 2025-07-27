@@ -306,6 +306,12 @@ void EventHandler::poll(uInt64 time)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void EventHandler::enableTextEvents(bool enable)
+{
+  myOSystem.frameBuffer().enableTextEvents(enable);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventHandler::handleTextEvent(char text)
 {
 #ifdef GUI_SUPPORT
@@ -325,6 +331,13 @@ void EventHandler::handleMouseMotionEvent(int x, int y, int xrel, int yrel)
     {
       myEvent.set(Event::MouseAxisXValue, x); // required for Lightgun controller
       myEvent.set(Event::MouseAxisYValue, y); // required for Lightgun controller
+#if 0  // FIXME: remove debug code
+      cerr << "dx " << (x - lastX - xrel) << ": " << x << ", " << xrel <<
+        "   y:" << y << ", " << yrel << "\n";
+      if(x - lastX - xrel != 0)
+        int i = 0;
+      lastX = x;
+#endif
       myEvent.set(Event::MouseAxisXMove, xrel);
       myEvent.set(Event::MouseAxisYMove, yrel);
     }
@@ -393,6 +406,14 @@ void EventHandler::handleSystemEvent(SystemEvent e, int, int)
       if(myOSystem.settings().getBool("autopause") && myState == EventHandlerState::EMULATION
           && myOSystem.launcherLostFocus())
         setState(EventHandlerState::PAUSE);
+      break;
+
+    case SystemEvent::THEME_CHANGED:
+      if(myOSystem.frameBuffer().updateTheme())
+      {
+        myOSystem.frameBuffer().setUIPalette();
+        myOSystem.frameBuffer().update(FrameBuffer::UpdateMode::REDRAW);
+      }
       break;
 
     default:  // handle other events as testing requires

@@ -269,6 +269,11 @@ class FrameBuffer
     void setCursorState();
 
     /**
+      Enable/disable text events (distinct from single-key events).
+    */
+    void enableTextEvents(bool enable);
+
+    /**
       Checks if mouse grabbing is allowed.
     */
     bool grabMouseAllowed();
@@ -342,6 +347,13 @@ class FrameBuffer
       Answers if the display is currently in fullscreen mode.
     */
     bool fullScreen() const { return myBackend->fullScreen(); }
+
+    /**
+      Updates theme according to OS setting.
+
+      @return  true if theme has changed
+    */
+    bool updateTheme();
 
     /**
       This method is called to retrieve the R/G/B data from the given pixel.

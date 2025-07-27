@@ -43,8 +43,7 @@ namespace {
       StellaMod::KBDM_RGUI,
       StellaMod::KBDM_NUM,
       StellaMod::KBDM_CAPS,
-      StellaMod::KBDM_MODE,
-      StellaMod::KBDM_RESERVED
+      StellaMod::KBDM_MODE
     }) {
       if((mask & mod) != mod) continue;
 

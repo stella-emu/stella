@@ -59,7 +59,7 @@ FBSurfaceSDL::~FBSurfaceSDL()
 
   if(mySurface)
   {
-    SDL_FreeSurface(mySurface);
+    SDL_DestroySurface(mySurface);
     mySurface = nullptr;
   }
 }
@@ -75,7 +75,7 @@ void FBSurfaceSDL::fillRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h, ColorId colo
   tmp.y = y;
   tmp.w = w;
   tmp.h = h;
-  SDL_FillRect(mySurface, &tmp, myPalette[color]);
+  SDL_FillSurfaceRect(mySurface, &tmp, myPalette[color]);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -183,7 +183,7 @@ void FBSurfaceSDL::invalidate()
 {
   ASSERT_MAIN_THREAD;
 
-  SDL_FillRect(mySurface, nullptr, 0);
+  SDL_FillSurfaceRect(mySurface, nullptr, 0);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -199,7 +199,7 @@ void FBSurfaceSDL::invalidateRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h)
   tmp.h = h;
   // Note: Transparency has to be 0 to clear the rectangle foreground
   //  without affecting the background display.
-  SDL_FillRect(mySurface, &tmp, 0);
+  SDL_FillSurfaceRect(mySurface, &tmp, 0);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -214,7 +214,7 @@ void FBSurfaceSDL::resize(uInt32 width, uInt32 height)
   ASSERT_MAIN_THREAD;
 
   if(mySurface)
-    SDL_FreeSurface(mySurface);
+    SDL_DestroySurface(mySurface);
 
   // NOTE: Currently, a resize changes a 'static' surface to 'streaming'
   //       No code currently does this, but we should at least check for it
@@ -230,11 +230,8 @@ void FBSurfaceSDL::createSurface(uInt32 width, uInt32 height, const uInt32* data
   ASSERT_MAIN_THREAD;
 
   // Create a surface in the same format as the parent GL class
-  const SDL_PixelFormat& pf = myBackend.pixelFormat();
-
-  mySurface = SDL_CreateRGBSurface(0, width, height,
-      pf.BitsPerPixel, pf.Rmask, pf.Gmask, pf.Bmask, pf.Amask);
-  //SDL_SetSurfaceBlendMode(mySurface, SDL_BLENDMODE_ADD); // default: SDL_BLENDMODE_BLEND
+  const SDL_PixelFormatDetails& pf = myBackend.pixelFormat();
+  mySurface = SDL_CreateSurface(width, height, pf.format);
 
   // We start out with the src and dst rectangles containing the same
   // dimensions, indicating no scaling or re-positioning
@@ -246,7 +243,7 @@ void FBSurfaceSDL::createSurface(uInt32 width, uInt32 height, const uInt32* data
   ////////////////////////////////////////////////////
   // These *must* be set for the parent class
   myPixels = static_cast<uInt32*>(mySurface->pixels);
-  myPitch = mySurface->pitch / pf.BytesPerPixel;
+  myPitch = mySurface->pitch / pf.bytes_per_pixel;
   ////////////////////////////////////////////////////
 
   myIsStatic = data != nullptr;
@@ -260,28 +257,38 @@ void FBSurfaceSDL::createSurface(uInt32 width, uInt32 height, const uInt32* data
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FBSurfaceSDL::reinitializeBlitter(bool force)
 {
-  if (force)
+  if(force)
     myBlitter.reset();
 
-  if (!myBlitter && myBackend.isInitialized())
+  if(!myBlitter && myBackend.isInitialized())
     myBlitter = BlitterFactory::createBlitter(
         myBackend, scalingAlgorithm(myInterpolationMode));
 
-  if (myBlitter)
-    myBlitter->reinitialize(mySrcR, myDstR, myAttributes,
+  if(myBlitter)
+    myBlitter->reinitialize(mySrcR, myDstR, myEnableBlend, myBlendLevel,
                             myIsStatic ? mySurface : nullptr);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FBSurfaceSDL::applyAttributes()
+void FBSurfaceSDL::setBlendLevel(uInt32 percent)
 {
+  myBlendLevel = BSPF::clamp(percent, 0U, 100U);
+
+  reinitializeBlitter();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FBSurfaceSDL::enableBlend(bool enableBlend)
+{
+  myEnableBlend = enableBlend;
+
   reinitializeBlitter();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FBSurfaceSDL::setScalingInterpolation(ScalingInterpolation interpolation)
 {
-  if (interpolation == ScalingInterpolation::sharp &&
+  if(interpolation == ScalingInterpolation::sharp &&
       (
         static_cast<int>(mySrcGUIR.h()) >= myBackend.scaleY(myDstGUIR.h()) ||
         static_cast<int>(mySrcGUIR.w()) >= myBackend.scaleX(myDstGUIR.w())
@@ -289,7 +296,8 @@ void FBSurfaceSDL::setScalingInterpolation(ScalingInterpolation interpolation)
   )
     interpolation = ScalingInterpolation::blur;
 
-  if (interpolation == myInterpolationMode) return;
+  if(interpolation == myInterpolationMode)
+    return;
 
   myInterpolationMode = interpolation;
   reload();

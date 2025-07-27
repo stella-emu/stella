@@ -564,13 +564,8 @@ void InputDialog::setDefaults()
 
       // Paddle linearity
       myPaddleLinearity->setValue(100);
-    #if defined(RETRON77)
-      myDejitterBase->setValue(2);
-      myDejitterDiff->setValue(6);
-    #else
       myDejitterBase->setValue(0);
       myDejitterDiff->setValue(0);
-    #endif
 
       // Paddle speed (digital)
       myDPaddleSpeed->setValue(10);

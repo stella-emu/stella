@@ -32,10 +32,8 @@ class BilinearBlitter : public Blitter {
     ~BilinearBlitter() override;
 
     void reinitialize(
-      SDL_Rect srcRect,
-      SDL_Rect destRect,
-      FBSurface::Attributes attributes,
-      SDL_Surface* staticData = nullptr
+      SDL_Rect srcRect, SDL_Rect destRect, bool enableBlend,
+      uInt8 blendLevel, SDL_Surface* staticData = nullptr
     ) override;
 
     void blit(SDL_Surface& surface) override;
@@ -43,11 +41,12 @@ class BilinearBlitter : public Blitter {
   private:
     FBBackendSDL& myFB;
 
-    SDL_Texture* myTexture{nullptr};
-    SDL_Texture* mySecondaryTexture{nullptr};
+    SDL_Texture *myTexture{nullptr}, *mySecondaryTexture{nullptr};
     SDL_Rect mySrcRect{0, 0, 0, 0}, myDstRect{0, 0, 0, 0};
-    FBSurface::Attributes myAttributes;
+    SDL_FRect mySrcFRect{0.F, 0.F, 0.F, 0.F}, myDstFRect{0.F, 0.F, 0.F, 0.F};
 
+    bool myEnableBlend{false};
+    uInt8 myBlendLevel{100};
     bool myInterpolate{false};
     bool myTexturesAreAllocated{false};
     bool myRecreateTextures{false};

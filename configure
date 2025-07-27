@@ -6,7 +6,7 @@
 # * command line options to...
 #   - override the host settings (for cross compiles
 #   - whether to do a debug build (with -g) or an optimized build (-O3 etc.)
-# * detect whether the chosen backend is available (e.g. call sdl2-config)
+# * detect whether the chosen backend is available
 # * ....
 
 
@@ -54,7 +54,6 @@ _rm_rec="$_rm -r"
 _zip="zip -q"
 _cp=cp
 _windowspath=""
-_sdlconfig=sdl2-config
 _sdlpath="$PATH"
 _prefix=/usr/local
 
@@ -336,9 +335,6 @@ case $_host in
 #	_host_os=amigaos
 #	_host_cpu=ppc
 #	;;
-retron77)
-	_host_os=retron77
-	;;
 mingw32-cross)
 	_host_os=mingw32msvc
 	_host_cpu=i386
@@ -559,14 +555,6 @@ fi
 if test -n "$_host"; then
 	# Cross-compiling mode - add your target here if needed
 	case "$_host" in
-    retron77)
-      echo "Compiling for $_host, disabling windowed mode, debugger and cheats."
-      _build_gui=yes
-      _build_windowed=no
-      _build_debugger=no
-      _build_cheats=no
-      _build_httplib=no
-      ;;
 		mingw32-cross)
 			echo "Cross-compiling for Windows using MinGW."
 			DEFINES="$DEFINES -DWIN32"
@@ -817,8 +805,8 @@ fi
 #
 # Now, add the appropriate defines/libraries/headers
 #
-echo
-find_sdlconfig
+#echo
+#find_sdlconfig
 
 SRC="src"
 SRC_OS="$SRC/os"
@@ -845,15 +833,18 @@ HTTP_LIB="$SRC_LIB/httplib"
 
 INCLUDES="-I$CORE -I$COMMON -I$TV -I$TIA -I$TIA_FRAME_MANAGER -I$ELF -I$JSON -I$SQLITE_REPO"
 
-INCLUDES="$INCLUDES `$_sdlconfig --cflags`"
-if test "$_build_static" = yes ; then
-	_sdl_conf_libs="--static-libs"
-	LDFLAGS="-static $LDFLAGS"
-else
-	_sdl_conf_libs="--libs"
-fi
+#INCLUDES="$INCLUDES `$_sdlconfig --cflags`"
+#if test "$_build_static" = yes ; then
+#	_sdl_conf_libs="--static-libs"
+#	LDFLAGS="-static $LDFLAGS"
+#else
+#	_sdl_conf_libs="--libs"
+#fi
 
-LIBS="$LIBS `$_sdlconfig $_sdl_conf_libs`"
+#if test "$_libpng" = yes ; then  #FIXME:
+		LIBS="$LIBS `$_pkg_config --libs sdl3`"
+#fi
+
 LD=$CXX
 
 case $_host_os in
@@ -874,11 +865,6 @@ case $_host_os in
 			fi
 			_libsqlite3=no
 			;;
-    retron77)
-      DEFINES="$DEFINES -DBSPF_UNIX -DRETRON77"
-      MODULES="$MODULES $SRC_OS/unix $SRC_OS/unix/r77"
-      INCLUDES="$INCLUDES -I$SRC_OS/unix -I$SRC_OS/unix/r77"
-      ;;
 		win32)
 			DEFINES="$DEFINES -DBSPF_WINDOWS"
 			MODULES="$MODULES $SRC_OS/windows"

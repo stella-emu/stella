@@ -67,20 +67,6 @@ void AudioSettings::normalize(Settings& settings)
       break;
   }
 
-  switch (settings.getInt(SETTING_FRAGMENT_SIZE)) {
-    case 128:
-    case 256:
-    case 512:
-    case 1024:
-    case 2048:
-    case 4096:
-      break;
-
-    default:
-      settings.setValue(SETTING_FRAGMENT_SIZE, DEFAULT_FRAGMENT_SIZE);
-      break;
-  }
-
   const int settingBufferSize = settings.getInt(SETTING_BUFFER_SIZE);
   if (settingBufferSize < 0 || settingBufferSize > MAX_BUFFER_SIZE) settings.setValue(SETTING_BUFFER_SIZE, DEFAULT_BUFFER_SIZE);
 
@@ -115,7 +101,7 @@ uInt32 AudioSettings::sampleRate()
 uInt32 AudioSettings::fragmentSize()
 {
   updatePresetFromSettings();
-  return customSettings() ? lboundInt(mySettings.getInt(SETTING_FRAGMENT_SIZE), DEFAULT_FRAGMENT_SIZE) : myPresetFragmentSize;
+  return myPresetFragmentSize;  // No longer configurable in sound backend
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -156,12 +142,6 @@ uInt32 AudioSettings::volume() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt32 AudioSettings::device() const
-{
-  return mySettings.getInt(SETTING_DEVICE);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool AudioSettings::enabled() const
 {
   return mySettings.getBool(SETTING_ENABLED);
@@ -185,7 +165,6 @@ void AudioSettings::setPreset(AudioSettings::Preset preset)
 
     case Preset::lowQualityMediumLag:
       myPresetSampleRate = 44100;
-      myPresetFragmentSize = 1024;
       myPresetBufferSize = 6;
       myPresetHeadroom = 5;
       myPresetResamplingQuality = ResamplingQuality::nearestNeighbour;
@@ -193,7 +172,6 @@ void AudioSettings::setPreset(AudioSettings::Preset preset)
 
     case Preset::highQualityMediumLag:
       myPresetSampleRate = 44100;
-      myPresetFragmentSize = 1024;
       myPresetBufferSize = 6;
       myPresetHeadroom = 5;
       myPresetResamplingQuality = ResamplingQuality::lanczos_2;
@@ -201,7 +179,6 @@ void AudioSettings::setPreset(AudioSettings::Preset preset)
 
     case Preset::highQualityLowLag:
       myPresetSampleRate = 48000;
-      myPresetFragmentSize = 512;
       myPresetBufferSize = 3;
       myPresetHeadroom = 2;
       myPresetResamplingQuality = ResamplingQuality::lanczos_2;
@@ -209,7 +186,6 @@ void AudioSettings::setPreset(AudioSettings::Preset preset)
 
     case Preset::ultraQualityMinimalLag:
       myPresetSampleRate = 96000;
-      myPresetFragmentSize = 128;
       myPresetBufferSize = 0;
       myPresetHeadroom = 0;
       myPresetResamplingQuality = ResamplingQuality::lanczos_3;
@@ -228,15 +204,6 @@ void AudioSettings::setSampleRate(uInt32 sampleRate)
   if (!myIsPersistent) return;
 
   mySettings.setValue(SETTING_SAMPLE_RATE, sampleRate);
-  normalize(mySettings);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void AudioSettings::setFragmentSize(uInt32 fragmentSize)
-{
-  if (!myIsPersistent) return;
-
-  mySettings.setValue(SETTING_FRAGMENT_SIZE, fragmentSize);
   normalize(mySettings);
 }
 
@@ -290,14 +257,6 @@ void AudioSettings::setVolume(uInt32 volume)
 
   mySettings.setValue(SETTING_VOLUME, volume);
   normalize(mySettings);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void AudioSettings::setDevice(uInt32 device)
-{
-  if(!myIsPersistent) return;
-
-  mySettings.setValue(SETTING_DEVICE, device);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

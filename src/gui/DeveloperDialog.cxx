@@ -594,11 +594,7 @@ void DeveloperDialog::addTimeMachineTab(const GUI::Font& font)
   myStateSizeWidget = new SliderWidget(myTab, font, xpos,  ypos - 1, swidth, lineHeight,
                                        "Buffer size (*)   ", 0, kSizeChanged, lwidth, " states");
   myStateSizeWidget->setMinValue(20);
-#ifdef RETRON77
-  myStateSizeWidget->setMaxValue(100);
-#else
   myStateSizeWidget->setMaxValue(1000);
-#endif
   myStateSizeWidget->setStepValue(20);
   myStateSizeWidget->setTickmarkIntervals(5);
   myStateSizeWidget->setToolTip("Define the total Time Machine buffer size.");
@@ -608,11 +604,7 @@ void DeveloperDialog::addTimeMachineTab(const GUI::Font& font)
   myUncompressedWidget = new SliderWidget(myTab, font, xpos, ypos - 1, swidth, lineHeight,
                                           "Uncompressed size ", 0, kUncompressedChanged, lwidth, " states");
   myUncompressedWidget->setMinValue(0);
-#ifdef RETRON77
-  myUncompressedWidget->setMaxValue(100);
-#else
   myUncompressedWidget->setMaxValue(1000);
-#endif
   myUncompressedWidget->setStepValue(20);
   myUncompressedWidget->setTickmarkIntervals(5);
   myUncompressedWidget->setToolTip("Define the number of completely kept states.\n"

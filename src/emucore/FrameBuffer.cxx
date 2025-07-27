@@ -118,6 +118,7 @@ void FrameBuffer::initialize()
   setupFonts();
 #endif
 
+  updateTheme();
   setUIPalette();
 
   myGrabMouse = myOSystem.settings().getBool("grabmouse");
@@ -135,7 +136,7 @@ int FrameBuffer::displayId(BufferType bufferType) const
   int display = 0;
 
   if(bufferType == myBufferType)
-    display = myBackend->getCurrentDisplayIndex();
+    display = myBackend->getCurrentDisplayID();
   else
     display = myOSystem.settings().getInt(getDisplayKey(bufferType != BufferType::None
                                           ? bufferType : myBufferType));
@@ -300,9 +301,8 @@ FBInitStatus FrameBuffer::createDisplay(string_view title, BufferType type,
   if(!myStatsMsg.surface)
   {
     myStatsMsg.surface = allocateSurface(myStatsMsg.w, myStatsMsg.h);
-    myStatsMsg.surface->attributes().blending = true;
-    myStatsMsg.surface->attributes().blendalpha = 92; //aligned with TimeMachineDialog
-    myStatsMsg.surface->applyAttributes();
+    myStatsMsg.surface->enableBlend(true);
+    myStatsMsg.surface->setBlendLevel(92); //aligned with TimeMachineDialog
   }
 
   if(!myMsg.surface)
@@ -1096,7 +1096,7 @@ void FrameBuffer::saveCurrentWindowPosition() const
   if(myBackend)
   {
     myOSystem.settings().setValue(
-      getDisplayKey(), myBackend->getCurrentDisplayIndex());
+      getDisplayKey(), myBackend->getCurrentDisplayID());
     if(myBackend->isCurrentWindowPositioned())
       myOSystem.settings().setValue(
         getPositionKey(), myBackend->getCurrentWindowPos());
@@ -1319,12 +1319,12 @@ FBInitStatus FrameBuffer::applyVideoMode()
 {
   // Update display size, in case windowed/fullscreen mode has changed
   const Settings& s = myOSystem.settings();
-  const int display = displayId();
+  const int ID = displayId();
 
   if(s.getBool("fullscreen"))
-    myVidModeHandler.setDisplaySize(myFullscreenDisplays[display], display);
+    myVidModeHandler.setDisplaySize(myFullscreenDisplays[ID], true);
   else
-    myVidModeHandler.setDisplaySize(myAbsDesktopSize[display]);
+    myVidModeHandler.setDisplaySize(myAbsDesktopSize[ID], false);
 
   const bool inTIAMode = myOSystem.eventHandler().inTIAMode();
 
@@ -1371,6 +1371,7 @@ FBInitStatus FrameBuffer::applyVideoMode()
 
     resetSurfaces();
     setCursorState();
+
     myPendingRender = true;
   }
   else
@@ -1444,6 +1445,12 @@ void FrameBuffer::setCursorState()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FrameBuffer::enableTextEvents(bool enable)
+{
+  myBackend->enableTextEvents(enable);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool FrameBuffer::grabMouseAllowed()
 {
   // Allow grabbing mouse in emulation (if enabled) and emulating a controller
@@ -1491,6 +1498,23 @@ void FrameBuffer::toggleGrabMouse(bool toggle)
   myOSystem.frameBuffer().showTextMessage(oldState != myGrabMouse ? myGrabMouse
                                           ? "Grab mouse enabled" : "Grab mouse disabled"
                                           : "Grab mouse not allowed");
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool FrameBuffer::updateTheme()
+{
+  if(myOSystem.settings().getBool("autouipalette"))
+  {
+    const bool darkTheme = myOSystem.settings().getBool("altuipalette");
+
+    if((myBackend->isLightTheme() && darkTheme) ||
+       (myBackend->isDarkTheme() && !darkTheme))
+    {
+      myOSystem.settings().setValue("altuipalette", !darkTheme);
+      return true;
+    }
+  }
+  return false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

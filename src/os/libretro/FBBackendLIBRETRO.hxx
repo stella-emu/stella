@@ -104,13 +104,16 @@ class FBBackendLIBRETRO : public FBBackend
     void readPixels(uInt8*, size_t, const Common::Rect&) const override { }
     bool isCurrentWindowPositioned() const override { return true; }
     Common::Point getCurrentWindowPos() const override { return Common::Point{}; }
-    Int32 getCurrentDisplayIndex() const override { return 0; }
+    uInt32 getCurrentDisplayID() const override { return 0; }
     void clear() override { }
     bool setVideoMode(const VideoModeHandler::Mode&,
                       int, const Common::Point&) override { return true; }
     void grabMouse(bool) override { }
+    void enableTextEvents(bool enable) override { }
     void renderToScreen() override { }
     int refreshRate() const override { return 0; }
+    bool isLightTheme() const override { return false; }
+    bool isDarkTheme() const override { return false; }
 
   private:
     // Following constructors and assignment operators not supported

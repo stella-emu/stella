@@ -101,6 +101,11 @@ class FBBackend
     virtual void grabMouse(bool grab) = 0;
 
     /**
+      Enable/disable text events (distinct from single-key events).
+    */
+    virtual void enableTextEvents(bool enable) = 0;
+
+    /**
       This method must be called after all drawing is done, and indicates
       that the buffers should be pushed to the physical screen.
     */
@@ -117,6 +122,16 @@ class FBBackend
       Retrieve the current display's refresh rate.
     */
     virtual int refreshRate() const = 0;
+
+    /**
+      Checks if the OS theme is set to light.
+    */
+    virtual bool isLightTheme() const = 0;
+
+    /**
+      Checks if the OS theme is set to dark.
+    */
+    virtual bool isDarkTheme() const = 0;
 
     /**
       This method is called to retrieve the R/G/B data from the given pixel.
@@ -191,10 +206,9 @@ class FBBackend
       This method is called to query the video hardware for the index
       of the display the current window is displayed on.
 
-      @return  The current display index or a negative value if no
-               window is displayed
+      @return  The current display id or a 0 if no window is displayed
     */
-    virtual Int32 getCurrentDisplayIndex() const = 0;
+    virtual uInt32 getCurrentDisplayID() const = 0;
 
     /**
       This method is called to create a surface with the given attributes.

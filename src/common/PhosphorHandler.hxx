@@ -64,15 +64,15 @@ class PhosphorHandler
     static constexpr uInt32 getPixel(const uInt32 c, const uInt32 p)
     {
       // Mix current calculated frame with previous displayed frame
-      const auto rc = static_cast<uInt8>(c >> 16),
+      const auto rc = static_cast<uInt8>(c),
                  gc = static_cast<uInt8>(c >> 8),
-                 bc = static_cast<uInt8>(c),
-                 rp = static_cast<uInt8>(p >> 16),
+                 bc = static_cast<uInt8>(c >> 16),
+                 rp = static_cast<uInt8>(p),
                  gp = static_cast<uInt8>(p >> 8),
-                 bp = static_cast<uInt8>(p);
+                 bp = static_cast<uInt8>(p >> 16);
 
-      return (ourPhosphorLUT[rc][rp] << 16) | (ourPhosphorLUT[gc][gp] << 8) |
-              ourPhosphorLUT[bc][bp];
+      return  ourPhosphorLUT[rc][rp] | (ourPhosphorLUT[gc][gp] << 8) |
+              (ourPhosphorLUT[bc][bp] << 16);
     }
 
   private:

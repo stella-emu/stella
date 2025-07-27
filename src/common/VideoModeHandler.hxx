@@ -46,14 +46,14 @@ class VideoModeHandler
       Stretch stretch{Mode::Stretch::None};
       string description;
       double zoom{1.};
-      Int32 fsIndex{-1};  // -1 indicates windowed mode
+      bool fullscreen{false};  // false indicates windowed mode
 
       Mode() = default;
       Mode(uInt32 iw, uInt32 ih, uInt32 sw, uInt32 sh, Stretch smode,
-           Int32 fsindex = -1, string_view desc = "",
+           bool fullscreen = false, string_view desc = "",
            double zoomLevel = 1., double overscan = 1.,
            Bezel::Info bezelInfo = Bezel::Info());
-      Mode(uInt32 iw, uInt32 ih, Stretch smode, Int32 fsindex = -1,
+      Mode(uInt32 iw, uInt32 ih, Stretch smode, bool fullscreen = false,
            string_view desc = "", double zoomLevel = 1.,
            Bezel::Info bezelInfo = Bezel::Info());
 
@@ -63,7 +63,7 @@ class VideoModeHandler
            << "  stretch=" << (vm.stretch == Stretch::Preserve ? "preserve" :
                                vm.stretch == Stretch::Fill ? "fill" : "none")
            << "  desc=" << vm.description << "  zoom=" << vm.zoom
-           << "  fsIndex= " << vm.fsIndex;
+           << "  fullscreen= " << vm.fullscreen;
         return os;
       }
     };
@@ -84,10 +84,10 @@ class VideoModeHandler
       Set the size of the display.  This could be either the desktop size,
       or the size of the monitor currently active.
 
-      @param display  The dimensions of the enclosing display
-      @param fsIndex  Fullscreen mode in use (-1 indicates windowed mode)
+      @param display     The dimensions of the enclosing display
+      @param fullscreen  Whether to use fullscreen or windowed mode
     */
-    void setDisplaySize(const Common::Size& display, Int32 fsIndex = -1);
+    void setDisplaySize(const Common::Size& display, bool fullscreen);
 
     /**
       Build a video mode based on the given parameters, assuming that
@@ -103,7 +103,7 @@ class VideoModeHandler
 
   private:
     Common::Size myImage, myDisplay;
-    Int32 myFSIndex{-1};
+    bool myFullscreen{false};
 
     Mode myMode;
 

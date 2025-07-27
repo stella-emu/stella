@@ -1381,7 +1381,7 @@ void TIA::onFrameStart()
   myXAtRenderingStart = 0;
 #ifdef DEBUGGER_SUPPORT
   myFrameWsyncCycles = 0;
-  mySystem->m6532().resetTimReadCylces();
+  mySystem->m6532().resetTimReadCycles();
 #endif
 
   // Check for colour-loss emulation
@@ -1600,7 +1600,7 @@ void TIA::tickHblank()
       break;
   }
 
-  if (myExtendedHblank && myHctr > TIAConstants::H_BLANK_CLOCKS - 1)
+  if (myExtendedHblank && myHctr - myHctrDelta > TIAConstants::H_BLANK_CLOCKS - 1)
     myPlayfield.tick(myHctr - TIAConstants::H_BLANK_CLOCKS - myHctrDelta);
 }
 

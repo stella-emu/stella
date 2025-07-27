@@ -28,21 +28,13 @@
 #include "SerialPort.hxx"
 #if defined(BSPF_UNIX)
   #include "SerialPortUNIX.hxx"
-  #if defined(RETRON77)
-    #include "SettingsR77.hxx"
-    #include "OSystemR77.hxx"
-  #else
-    #include "OSystemUNIX.hxx"
-  #endif
+  #include "OSystemUNIX.hxx"
 #elif defined(BSPF_WINDOWS)
   #include "SerialPortWINDOWS.hxx"
   #include "OSystemWINDOWS.hxx"
 #elif defined(BSPF_MACOS)
   #include "SerialPortMACOS.hxx"
   #include "OSystemMACOS.hxx"
-  extern "C" {
-    int stellaMain(int argc, char* argv[]);
-  }
 #elif defined(__LIB_RETRO__)
   #include "OSystemLIBRETRO.hxx"
 #else
@@ -78,10 +70,6 @@ class AudioSettings;
   implementations for the various ports of Stella, and always returns a
   valid object based on the specific port and restrictions on that port.
 
-  As of SDL2, this code is greatly simplified.  However, it remains here
-  in case we ever have multiple backend implementations again (should
-  not be necessary since SDL2 covers this nicely).
-
   @author  Stephen Anthony
 */
 class MediaFactory
@@ -90,11 +78,7 @@ class MediaFactory
     static unique_ptr<OSystem> createOSystem()
     {
     #if defined(BSPF_UNIX)
-      #if defined(RETRON77)
-        return make_unique<OSystemR77>();
-      #else
-        return make_unique<OSystemUNIX>();
-      #endif
+      return make_unique<OSystemUNIX>();
     #elif defined(BSPF_WINDOWS)
       return make_unique<OSystemWINDOWS>();
     #elif defined(BSPF_MACOS)
@@ -108,11 +92,7 @@ class MediaFactory
 
     static unique_ptr<Settings> createSettings()
     {
-    #ifdef RETRON77
-      return make_unique<SettingsR77>();
-    #else
       return make_unique<Settings>();
-    #endif
     }
 
     static unique_ptr<SerialPort> createSerialPort()
@@ -178,15 +158,6 @@ class MediaFactory
       return SDLVersion();
     #else
       return "Custom backend";
-    #endif
-    }
-
-    static bool supportsURL()
-    {
-    #if defined(SDL_SUPPORT)
-      return SDLSupportsURL();
-    #else
-      return false;
     #endif
     }
 

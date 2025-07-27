@@ -40,11 +40,6 @@ class EventHandlerSDL : public EventHandler
 
   private:
     /**
-      Enable/disable text events (distinct from single-key events).
-    */
-    void enableTextEvents(bool enable) override;
-
-    /**
       Clipboard methods.
     */
     void copyText(const string& text) const override;
@@ -58,6 +53,7 @@ class EventHandlerSDL : public EventHandler
   private:
     SDL_Event myEvent{0};
 
+  #ifdef JOYSTICK_SUPPORT
     // A thin wrapper around a basic PhysicalJoystick, holding the pointer to
     // the underlying SDL joystick device.
     class JoystickSDL : public PhysicalJoystick
@@ -77,6 +73,7 @@ class EventHandlerSDL : public EventHandler
         JoystickSDL& operator=(const JoystickSDL&) = delete;
         JoystickSDL& operator=(JoystickSDL&&) = delete;
     };
+  #endif
 
   private:
     // Following constructors and assignment operators not supported

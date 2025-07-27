@@ -44,7 +44,6 @@ MODULE_OBJS := \
         src/gui/PopUpWidget.o \
         src/gui/ProgressDialog.o \
         src/gui/QuadTariDialog.o \
-        src/gui/R77HelpDialog.o \
         src/gui/RadioButtonWidget.o \
         src/gui/RomAuditDialog.o \
         src/gui/RomImageWidget.o \

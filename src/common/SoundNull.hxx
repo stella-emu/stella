@@ -90,9 +90,10 @@ class SoundNull : public Sound
       volume is given as a range from 0 to 100 (0 indicates mute).  Values
       outside this range indicate that the volume shouldn't be changed at all.
 
-      @param volume  The new volume level for the sound device
+      @param volume   The new volume level for the sound device
+      @param persist  Whether to save the volume change to settings
     */
-    void setVolume(uInt32 volume) override { }
+    void setVolume(uInt32 volume, bool persist = true) override { }
 
     /**
       Adjusts the volume of the sound device based on the given direction.

@@ -15,17 +15,11 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#if defined(RETRON77)
-  #define ROOT_DIR "/mnt/games/"
-#else
-  #define ROOT_DIR "/"
-#endif
-
 #include "FSNodePOSIX.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FSNodePOSIX::FSNodePOSIX()
-  : _path{ROOT_DIR},
+  : _path{"/"},
     _displayName{_path}
 {
 }
@@ -111,13 +105,13 @@ size_t FSNodePOSIX::getSize() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool FSNodePOSIX::hasParent() const
 {
-  return !_path.empty() && _path != ROOT_DIR;
+  return !_path.empty() && _path != "/";
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 AbstractFSNodePtr FSNodePOSIX::getParent() const
 {
-  if (_path == ROOT_DIR)
+  if (_path == "/")
     return nullptr;
 
   return make_unique<FSNodePOSIX>(stemPathComponent(_path));

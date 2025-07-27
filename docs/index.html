@@ -21,7 +21,7 @@
     <img src="graphics/stella_icon.png">
     <h2><b>A multi-platform Atari 2600 VCS emulator</b></h2>
 
-    <h4><b>Release 7.0</b></h4>
+    <h4><b>Release 8.0</b></h4>
     <br>
 
     <h2><b>User's Guide</b></h2>
@@ -342,7 +342,7 @@
   <p>
   <h3><b><u>General</u> (required for all versions of Stella)</b></h3>
   <ul>
-    <li>SDL version 2.0.14 or greater, latest version highly recommended</li>
+    <li>SDL version 3.2.14 or greater, latest version highly recommended</li>
     <li>32 bit color graphics card</li>
     <li>Enough RAM for the OS + 256MB RAM for the emulation; 512MB+ highly recommended</li>
     <li>Joysticks or gamepads are highly recommended</li>
@@ -387,7 +387,7 @@
   <h3><b><u>Other</u></b></h3>
 
   <p>Stella is extremely portable, and in its lifetime has been ported to almost every
-  platform where the SDL library exists. It is 32/64-bit and endian clean in Linux/Unix, macOS
+  platform where the SDL library exists. It is 64-bit and endian clean in Linux/Unix, macOS
   and Windows. The Stella Team is interested in hearing about any problems you may
   encounter with diverse operating systems and CPU types.</p>
   </blockquote></br>
@@ -3249,12 +3249,17 @@
 
     <tr>
       <td><pre>-uipalette2 &lt;standard|classic|light|dark&gt;</pre></td>
-      <td>Define alternative palette/theme for UI elements.</td>
+      <td>Define alternative/light palette/theme for UI elements.</td>
     </tr>
 
     <tr>
       <td><pre>-altpalette &lt;1|0&gt;</pre></td>
-      <td>Use alternative palette/theme for UI elements.</td>
+      <td>Use alternative/dark palette/theme for UI elements.</td>
+    </tr>
+
+    <tr>
+      <td><pre>-autouipalette &lt;1|0&gt;</pre></td>
+      <td>Automatic switching between light and dark theme in sync with OS.</td>
     </tr>
 
     <tr>
@@ -3636,6 +3641,9 @@
       <td><pre>-&lt;plr.|dev.&gt;console &lt;2600|7800&gt;</pre></td>
       <td>Select console for B/W and Pause key handling and RAM initialization.</td>
     </tr><tr>
+      <td><pre>-dev.plusroms.on &lt;1|0&gt;</pre></td>
+      <td>Enable/disable PlusROM support, e.g. for testing.</td>
+    </tr><tr>
       <td><pre>-&lt;plr.|dev.&gt;bankrandom &lt;1|0&gt;</pre></td>
       <td>On reset, randomize the startup bank (only for selected bankswitch types).</td>
     </tr><tr>
@@ -4007,8 +4015,9 @@
       <td valign="top">
         <table border="1" cellpadding="4">
           <tr><th>Item</th><th>Brief description</th><th>For more information,<br>see <a href="#CommandLine">Command Line</a></th></tr>
-          <tr><td>Theme #1</td><td>Default theme to use for UI elements (see examples)</td><td>-uipalette</td></tr>
-          <tr><td>Theme #2</td><td>Alternative theme to use for UI elements (see examples)</td><td>-uipalette2</td></tr>
+          <tr><td>Light theme</td><td>Default theme to use for UI elements (see examples)</td><td>-uipalette</td></tr>
+          <tr><td>Dark theme</td><td>Alternative theme to use for UI elements (see examples)</td><td>-uipalette2</td></tr>
+		  <tr><td>Auto theme</td><td>Enable for automatic switching between light and dark themes in sync with OS.</td><td>-autouipalette</td></tr>
           <tr><td>Dialogs font</td><td>The font used in the dialogs</td><td>-dialogfont</td></tr>
           <tr><td>HiDPI mode</td><td>Scale the UI by a factor of two when enabled</td><td>-hidpi</td></tr>
           <tr><td>Dialogs position</td><td>Position of dialogs with Stella window</td><td>-dialogpos</td></tr>
@@ -4577,6 +4586,11 @@
             <td>-plr.console <br/>-dev.console</td>
           </tr>
           <tr>
+            <td>PlusROM support</td>
+            <td>Enable/disable PlusROM support, e.g. for testing.</td>
+            <td>-dev.plusroms.on</td>
+          </tr>
+          <tr>
             <td>Random startup bank</td>
             <td>Randomize the startup bank (only for selected bankswitch types)</td>
             <td>-plr.bankrandom<br/>-dev.bankrandom</td>
@@ -5141,7 +5155,9 @@ Ms Pac-Man (Stella extended codes):
         <tr><td>NTSC50 &#185;</td><td>NTSC50, NTSC 50, NTSC-50, PAL-N</td></tr>
         <tr><td>PAL60 &#185;</td><td>PAL60, PAL 60, PAL-60</td></tr>
         <tr><td>SECAM60 &#185;</td><td>SECAM60, SECAM 60, SECAM-60</td></tr>
-      </table></td>
+      </table>
+	  Additionally, to detect PAL-60 format games, the ROM is scanned for the following
+	  signature strings: "PAL60", "PAL 60" and "PAL-60"</td>
     </tr>
 
     <tr>

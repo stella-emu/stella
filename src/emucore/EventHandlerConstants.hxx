@@ -97,19 +97,11 @@ enum class EventMode: uInt8 {
 };
 
 namespace GUI {
-#ifdef RETRON77
-  static const std::string SELECT = "Mode";
-  static const std::string LEFT_DIFFICULTY = "P1 skill";
-  static const std::string RIGHT_DIFFICULTY = "P2 skill";
-  static const std::string LEFT_DIFF = "P1 Skill";
-  static const std::string RIGHT_DIFF = "P2 Skill";
-#else
   static const std::string SELECT = "Select";
   static const std::string LEFT_DIFFICULTY = "Left difficulty";
   static const std::string RIGHT_DIFFICULTY = "Right difficulty";
   static const std::string LEFT_DIFF = "Left Diff";
   static const std::string RIGHT_DIFF = "Right Diff";
-#endif
 }  // namespace GUI
 
 #endif // EVENTHANDLER_CONSTANTS_HXX

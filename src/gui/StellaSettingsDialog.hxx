@@ -24,11 +24,7 @@ class PopUpWidget;
 #include "OptionsMenu.hxx"
 #include "Dialog.hxx"
 
-#if defined(RETRON77)
-  #include "R77HelpDialog.hxx"
-#else
-  #include "HelpDialog.hxx"
-#endif
+#include "HelpDialog.hxx"
 
 namespace GUI {
   class Font;
@@ -96,11 +92,7 @@ class StellaSettingsDialog : public Dialog
     StaticTextWidget* myRightPortDetected{nullptr};
 
     unique_ptr<GUI::MessageBox> myConfirmMsg;
-  #if defined(RETRON77)
-    unique_ptr<R77HelpDialog> myHelpDialog;
-  #else
     unique_ptr<HelpDialog> myHelpDialog;
-  #endif
 
     // Indicates if this dialog is used for global (vs. in-game) settings
     AppMode myMode{AppMode::emulator};

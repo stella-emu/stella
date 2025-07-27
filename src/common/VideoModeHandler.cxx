@@ -29,17 +29,17 @@ void VideoModeHandler::setImageSize(const Common::Size& image)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void VideoModeHandler::setDisplaySize(const Common::Size& display, Int32 fsIndex)
+void VideoModeHandler::setDisplaySize(const Common::Size& display, bool fullscreen)
 {
   myDisplay = display;
-  myFSIndex = fsIndex;
+  myFullscreen = fullscreen;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const VideoModeHandler::Mode&
   VideoModeHandler::buildMode(const Settings& settings, bool inTIAMode, Bezel::Info bezelInfo)
 {
-  const bool windowedRequested = myFSIndex == -1;
+  const bool windowedRequested = !myFullscreen;
 
   // TIA mode allows zooming at non-integral factors in most cases
   if(inTIAMode)
@@ -53,7 +53,7 @@ const VideoModeHandler::Mode&
       // Image and screen (aka window) dimensions are the same
       // Overscan is not applicable in this mode
       myMode = Mode(myImage.w, myImage.h,
-                    Mode::Stretch::Fill, myFSIndex,
+                    Mode::Stretch::Fill, myFullscreen,
                     desc.view(), zoom, bezelInfo);
     }
     else
@@ -74,7 +74,7 @@ const VideoModeHandler::Mode&
       {
         myMode = Mode(myImage.w, myImage.h,
                       myDisplay.w, myDisplay.h,
-                      Mode::Stretch::Preserve, myFSIndex,
+                      Mode::Stretch::Preserve, myFullscreen,
                       "Fullscreen: Preserve aspect, no stretch",
                       zoom, overscan, bezelInfo);
       }
@@ -82,7 +82,7 @@ const VideoModeHandler::Mode&
       {
         myMode = Mode(myImage.w, myImage.h,
                       myDisplay.w, myDisplay.h,
-                      Mode::Stretch::Fill, myFSIndex,
+                      Mode::Stretch::Fill, myFullscreen,
                       "Fullscreen: Ignore aspect, full stretch",
                       zoom, overscan, bezelInfo);
       }
@@ -94,31 +94,31 @@ const VideoModeHandler::Mode&
       myMode = Mode(myImage.w, myImage.h, Mode::Stretch::None);
     else
       myMode = Mode(myImage.w, myImage.h, myDisplay.w, myDisplay.h,
-                    Mode::Stretch::None, myFSIndex);
+                    Mode::Stretch::None, myFullscreen);
   }
   return myMode;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 VideoModeHandler::Mode::Mode(uInt32 iw, uInt32 ih, Stretch smode,
-                             Int32 fsindex, string_view desc,
+                             bool fullscreen, string_view desc,
                              double zoomLevel, Bezel::Info bezelInfo)
-  : Mode(iw, ih, iw, ih, smode, fsindex, desc, zoomLevel, 1., bezelInfo)
+  : Mode(iw, ih, iw, ih, smode, fullscreen, desc, zoomLevel, 1., bezelInfo)
 {
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 VideoModeHandler::Mode::Mode(uInt32 iw, uInt32 ih, uInt32 sw, uInt32 sh,
-                             Stretch smode, Int32 fsindex, string_view desc,
+                             Stretch smode, bool fullscreen, string_view desc,
                              double zoomLevel, double overscan, Bezel::Info bezelInfo)
   : screenS{sw, sh},
     stretch{smode},
     description{desc},
     zoom{zoomLevel}, //hZoom{zoomLevel}, vZoom{zoomLevel},
-    fsIndex{fsindex}
+    fullscreen{fullscreen}
 {
   // Now resize based on windowed/fullscreen mode and stretch factor
-  if(fsIndex != -1)  // fullscreen mode
+  if(fullscreen)
   {
     switch(stretch)
     {
@@ -174,9 +174,9 @@ VideoModeHandler::Mode::Mode(uInt32 iw, uInt32 ih, uInt32 sw, uInt32 sh,
   const uInt32 wx = bezelInfo.window().x() * iw / bezelInfo.window().w();
   const uInt32 wy = bezelInfo.window().y() * ih / bezelInfo.window().h();
   const uInt32 bezelW = std::min(screenS.w,
-                                  static_cast<uInt32>(std::round(iw * bezelInfo.ratioW())));
+      static_cast<uInt32>(std::round(iw * bezelInfo.ratioW())));
   const uInt32 bezelH = std::min(screenS.h,
-                                  static_cast<uInt32>(std::round(ih * bezelInfo.ratioH())));
+      static_cast<uInt32>(std::round(ih * bezelInfo.ratioH())));
   // Center image (no bezel) or move image relative to centered bezel
   imageR.moveTo(((screenS.w - bezelW) >> 1) + wx, ((screenS.h - bezelH) >> 1) + wy);
 

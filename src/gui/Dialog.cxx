@@ -116,13 +116,6 @@ void Dialog::open()
   else
     buildCurrentFocusList();
 
-  /*if (!_surface->attributes().blending)
-  {
-    _surface->attributes().blending = true;
-    _surface->attributes().blendalpha = 90;
-    _surface->applyAttributes();
-  }*/
-
   loadConfig(); // has to be done AFTER (re)building the focus list
 
   _visible = true;
@@ -159,7 +152,6 @@ void Dialog::setTitle(string_view title)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Dialog::initHelp()
 {
-#ifndef RETRON77
   if(hasTitle())
   {
     if(_helpWidget == nullptr)
@@ -176,12 +168,11 @@ void Dialog::initHelp()
       _helpWidget->setToolTip("Click or press " + key + " for help.");
     }
 
-    if(hasHelp() && MediaFactory::supportsURL())
+    if(hasHelp())
       _helpWidget->clearFlags(Widget::FLAG_INVISIBLE);
     else
       _helpWidget->setFlags(Widget::FLAG_INVISIBLE);
   }
-#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -339,9 +330,8 @@ void Dialog::render()
   //cerr << "  render " << typeid(*this).name() << '\n';
 #endif
 
-  if(_surface == NULL) {
+  if(_surface == nullptr)
     return; // fixes #1078
-  }
 
   // Update dialog surface; also render any extra surfaces
   // Extra surfaces must be rendered afterwards, so they are drawn on top
@@ -363,12 +353,8 @@ void Dialog::render()
 
       _shadeSurface = instance().frameBuffer().allocateSurface(
         1, 1, ScalingInterpolation::sharp, &data);
-
-      FBSurface::Attributes& attr = _shadeSurface->attributes();
-
-      attr.blending = true;
-      attr.blendalpha = 25; // darken background dialogs by 25%
-      _shadeSurface->applyAttributes();
+      _shadeSurface->enableBlend(true);
+      _shadeSurface->setBlendLevel(25); // darken background dialogs by 25%
     }
     _shadeSurface->setDstRect(_surface->dstRect());
     _shadeSurface->render();
@@ -628,15 +614,6 @@ void Dialog::handleKeyDown(StellaKey key, StellaMod mod, bool repeated)
 
   tooltip().hide();
 
-// FIXME - I don't think this will compile!
-#if defined(RETRON77)
-  // special keys used for R77
-  if (key == KBDK_F13)
-    e = Event::UITabPrev;
-  else if (key == KBDK_BACKSPACE)
-    e = Event::UITabNext;
-#endif
-
   // Check the keytable now, since we might get one of the above events,
   // which must always be processed before any widget sees it.
   if(e == Event::NoType)
@@ -760,10 +737,8 @@ void Dialog::handleMouseMoved(int x, int y)
   if (w && (w->getFlags() & Widget::FLAG_TRACK_MOUSE))
     w->handleMouseMoved(x - (w->getAbsX() - _x), y - (w->getAbsY() - _y));
 
-#ifndef RETRON77
   // Update mouse coordinates for tooltips
   _toolTip->update(_mouseWidget, Common::Point(x, y));
-#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

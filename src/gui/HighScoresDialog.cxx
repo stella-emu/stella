@@ -220,11 +220,9 @@ HighScoresDialog::~HighScoresDialog()  // NOLINT (we need an empty d'tor)
 void HighScoresDialog::loadConfig()
 {
   // Enable blending (only once is necessary)
-  if (myMode == AppMode::emulator && !surface().attributes().blending)
-  {
-    surface().attributes().blending = true;
-    surface().attributes().blendalpha = 90;
-    surface().applyAttributes();
+  if (myMode == AppMode::emulator/* && surface().blendLevel() ... */) {
+    surface().setBlendLevel(90);
+    surface().enableBlend(true);
   }
 
   VariantList items;

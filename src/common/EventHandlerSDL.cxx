@@ -31,14 +31,14 @@ EventHandlerSDL::EventHandlerSDL(OSystem& osystem)
   {
     ostringstream buf;
     myQwertz = int{'y'} == static_cast<int>
-      (SDL_GetKeyFromScancode(static_cast<SDL_Scancode>(KBDK_Z)));
+      (SDL_GetKeyFromScancode(static_cast<SDL_Scancode>(KBDK_Z), static_cast<SDL_Keymod>(StellaMod::KBDM_NONE), false));
     buf << "Keyboard: " << (myQwertz ? "QWERTZ" : "QWERTY");
     Logger::debug(buf.view());
   }
 #endif
 
 #ifdef JOYSTICK_SUPPORT
-  if(SDL_InitSubSystem(SDL_INIT_JOYSTICK) < 0)
+  if(!SDL_InitSubSystem(SDL_INIT_JOYSTICK))
   {
     ostringstream buf;
     buf << "ERROR: Couldn't initialize SDL joystick support: "
@@ -49,6 +49,8 @@ EventHandlerSDL::EventHandlerSDL(OSystem& osystem)
 #endif
 
   SDL_SetHint(SDL_HINT_MOUSE_FOCUS_CLICKTHROUGH, "1");
+  //SDL_SetHint(SDL_HINT_MOUSE_RELATIVE_SYSTEM_SCALE, "1");
+  //SDL_SetHint(SDL_HINT_MOUSE_RELATIVE_MODE_CENTER, "0");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -58,17 +60,6 @@ EventHandlerSDL::~EventHandlerSDL()
 
   if(SDL_WasInit(SDL_INIT_JOYSTICK))
     SDL_QuitSubSystem(SDL_INIT_JOYSTICK);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EventHandlerSDL::enableTextEvents(bool enable)
-{
-  ASSERT_MAIN_THREAD;
-
-  if(enable)
-    SDL_StartTextInput();
-  else
-    SDL_StopTextInput();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -98,31 +89,31 @@ void EventHandlerSDL::pollEvent()
     switch(myEvent.type)
     {
       // keyboard events
-      case SDL_KEYUP:
-      case SDL_KEYDOWN:
+      case SDL_EVENT_KEY_UP:
+      case SDL_EVENT_KEY_DOWN:
       {
-        handleKeyEvent(static_cast<StellaKey>(myEvent.key.keysym.scancode),
-                       static_cast<StellaMod>(myEvent.key.keysym.mod),
-                       myEvent.key.type == SDL_KEYDOWN,
+        handleKeyEvent(static_cast<StellaKey>(myEvent.key.scancode),
+                       static_cast<StellaMod>(myEvent.key.mod),
+                       myEvent.type == SDL_EVENT_KEY_DOWN,
                        myEvent.key.repeat);
         break;
       }
 
-      case SDL_TEXTINPUT:
+      case SDL_EVENT_TEXT_INPUT:
       {
         handleTextEvent(*(myEvent.text.text));
         break;
       }
 
-      case SDL_MOUSEMOTION:
+      case SDL_EVENT_MOUSE_MOTION:
       {
         handleMouseMotionEvent(myEvent.motion.x, myEvent.motion.y,
                                myEvent.motion.xrel, myEvent.motion.yrel);
         break;
       }
 
-      case SDL_MOUSEBUTTONDOWN:
-      case SDL_MOUSEBUTTONUP:
+      case SDL_EVENT_MOUSE_BUTTON_DOWN:
+      case SDL_EVENT_MOUSE_BUTTON_UP:
       {
         // ToDo: check support of more buttons and double-click
         MouseButton b{MouseButton::NONE};
@@ -140,39 +131,43 @@ void EventHandlerSDL::pollEvent()
           default:
             break;
         }
-        handleMouseButtonEvent(b, myEvent.button.type == SDL_MOUSEBUTTONDOWN,
+        handleMouseButtonEvent(b, myEvent.button.type == SDL_EVENT_MOUSE_BUTTON_DOWN,
                                myEvent.button.x, myEvent.button.y);
         break;
       }
 
-      case SDL_MOUSEWHEEL:
+      case SDL_EVENT_MOUSE_WHEEL:
       {
-        int x{0}, y{0};
+        // TODO: SDL now uses float for mouse coords, but the core still
+        //       uses int throughout; maybe this is sufficient?
+        float x{0.F}, y{0.F};
         SDL_GetMouseState(&x, &y);  // we need mouse position too
         if(myEvent.wheel.y < 0)
-          handleMouseButtonEvent(MouseButton::WHEELDOWN, true, x, y);
+          handleMouseButtonEvent(MouseButton::WHEELDOWN, true,
+                                 static_cast<int>(x), static_cast<int>(y));
         else if(myEvent.wheel.y > 0)
-          handleMouseButtonEvent(MouseButton::WHEELUP, true, x, y);
+          handleMouseButtonEvent(MouseButton::WHEELUP, true,
+                                 static_cast<int>(x), static_cast<int>(y));
         break;
       }
 
   #ifdef JOYSTICK_SUPPORT
-      case SDL_JOYBUTTONUP:
-      case SDL_JOYBUTTONDOWN:
+      case SDL_EVENT_JOYSTICK_BUTTON_UP:
+      case SDL_EVENT_JOYSTICK_BUTTON_DOWN:
       {
         handleJoyBtnEvent(myEvent.jbutton.which, myEvent.jbutton.button,
-                          myEvent.jbutton.state == SDL_PRESSED);
+                          myEvent.jbutton.down);
         break;
       }
 
-      case SDL_JOYAXISMOTION:
+      case SDL_EVENT_JOYSTICK_AXIS_MOTION:
       {
         handleJoyAxisEvent(myEvent.jaxis.which, myEvent.jaxis.axis,
                            myEvent.jaxis.value);
         break;
       }
 
-      case SDL_JOYHATMOTION:
+      case SDL_EVENT_JOYSTICK_HAT_MOTION:
       {
         int value = 0;
         const int v = myEvent.jhat.value;
@@ -187,86 +182,82 @@ void EventHandlerSDL::pollEvent()
         }
 
         handleJoyHatEvent(myEvent.jhat.which, myEvent.jhat.hat, value);
-        break;  // SDL_JOYHATMOTION
+        break;
       }
 
-      case SDL_JOYDEVICEADDED:
+      case SDL_EVENT_JOYSTICK_ADDED:
       {
         addPhysicalJoystick(make_shared<JoystickSDL>(myEvent.jdevice.which));
-        break;  // SDL_JOYDEVICEADDED
+        break;
       }
-      case SDL_JOYDEVICEREMOVED:
+      case SDL_EVENT_JOYSTICK_REMOVED:
       {
         removePhysicalJoystick(myEvent.jdevice.which);
-        break;  // SDL_JOYDEVICEREMOVED
+        break;
       }
   #endif
 
-      case SDL_QUIT:
+      case SDL_EVENT_QUIT:
       {
         handleEvent(Event::Quit);
-        break;  // SDL_QUIT
+        break;
       }
 
-      case SDL_WINDOWEVENT:
-        switch(myEvent.window.event)
-        {
-          case SDL_WINDOWEVENT_SHOWN:
-            handleSystemEvent(SystemEvent::WINDOW_SHOWN);
-            break;
-          case SDL_WINDOWEVENT_HIDDEN:
-            handleSystemEvent(SystemEvent::WINDOW_HIDDEN);
-            break;
-          case SDL_WINDOWEVENT_EXPOSED:
-            handleSystemEvent(SystemEvent::WINDOW_EXPOSED);
-            break;
-          case SDL_WINDOWEVENT_MOVED:
-            handleSystemEvent(SystemEvent::WINDOW_MOVED,
-                              myEvent.window.data1, myEvent.window.data1);
-            break;
-          case SDL_WINDOWEVENT_RESIZED:
-            handleSystemEvent(SystemEvent::WINDOW_RESIZED,
-                              myEvent.window.data1, myEvent.window.data1);
-            break;
-          case SDL_WINDOWEVENT_MINIMIZED:
-            handleSystemEvent(SystemEvent::WINDOW_MINIMIZED);
-            break;
-          case SDL_WINDOWEVENT_MAXIMIZED:
-            handleSystemEvent(SystemEvent::WINDOW_MAXIMIZED);
-            break;
-          case SDL_WINDOWEVENT_RESTORED:
-            handleSystemEvent(SystemEvent::WINDOW_RESTORED);
-            break;
-          case SDL_WINDOWEVENT_ENTER:
-            handleSystemEvent(SystemEvent::WINDOW_ENTER);
-            break;
-          case SDL_WINDOWEVENT_LEAVE:
-            handleSystemEvent(SystemEvent::WINDOW_LEAVE);
-            break;
-          case SDL_WINDOWEVENT_FOCUS_GAINED:
-            handleSystemEvent(SystemEvent::WINDOW_FOCUS_GAINED);
-            break;
-          case SDL_WINDOWEVENT_FOCUS_LOST:
-            handleSystemEvent(SystemEvent::WINDOW_FOCUS_LOST);
-            break;
-          default:
-            break;
-        }
-        break;  // SDL_WINDOWEVENT
-
+      case SDL_EVENT_WINDOW_SHOWN:
+        handleSystemEvent(SystemEvent::WINDOW_SHOWN);
+        break;
+      case SDL_EVENT_WINDOW_HIDDEN:
+        handleSystemEvent(SystemEvent::WINDOW_HIDDEN);
+        break;
+      case SDL_EVENT_WINDOW_EXPOSED:
+        handleSystemEvent(SystemEvent::WINDOW_EXPOSED);
+        break;
+      case SDL_EVENT_WINDOW_MOVED:
+        handleSystemEvent(SystemEvent::WINDOW_MOVED,
+                          myEvent.window.data1, myEvent.window.data1);
+        break;
+      case SDL_EVENT_WINDOW_RESIZED:
+        handleSystemEvent(SystemEvent::WINDOW_RESIZED,
+                          myEvent.window.data1, myEvent.window.data1);
+        break;
+      case SDL_EVENT_WINDOW_MINIMIZED:
+        handleSystemEvent(SystemEvent::WINDOW_MINIMIZED);
+        break;
+      case SDL_EVENT_WINDOW_MAXIMIZED:
+        handleSystemEvent(SystemEvent::WINDOW_MAXIMIZED);
+        break;
+      case SDL_EVENT_WINDOW_RESTORED:
+        handleSystemEvent(SystemEvent::WINDOW_RESTORED);
+        break;
+      case SDL_EVENT_WINDOW_MOUSE_ENTER:
+        handleSystemEvent(SystemEvent::WINDOW_ENTER);
+        break;
+      case SDL_EVENT_WINDOW_MOUSE_LEAVE:
+        handleSystemEvent(SystemEvent::WINDOW_LEAVE);
+        break;
+      case SDL_EVENT_WINDOW_FOCUS_GAINED:
+        handleSystemEvent(SystemEvent::WINDOW_FOCUS_GAINED);
+        break;
+      case SDL_EVENT_WINDOW_FOCUS_LOST:
+        handleSystemEvent(SystemEvent::WINDOW_FOCUS_LOST);
+        break;
+      case SDL_EVENT_SYSTEM_THEME_CHANGED:
+        handleSystemEvent(SystemEvent::THEME_CHANGED);
+        break;
       default:
         break;
     }
   }
 }
 
+#ifdef JOYSTICK_SUPPORT
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 EventHandlerSDL::JoystickSDL::JoystickSDL(int idx)
 {
   ASSERT_MAIN_THREAD;
 
   // NOLINTNEXTLINE: we want to initialize here, not in the member list
-  myStick = SDL_JoystickOpen(idx);
+  myStick = SDL_OpenJoystick(idx);
   if(myStick)
   {
     // In Windows, all XBox controllers using the XInput API seem to name
@@ -274,13 +265,15 @@ EventHandlerSDL::JoystickSDL::JoystickSDL(int idx)
     // it also appends " #x", where x seems to vary. Obviously this wreaks
     // havoc with the idea that a joystick will always have the same name.
     // So we truncate the number.
-    const char* const sdlname = SDL_JoystickName(myStick);
+    const char* const sdlname = SDL_GetJoystickName(myStick);
     const string& desc = BSPF::startsWithIgnoreCase(sdlname, "XInput Controller")
                          ? "XInput Controller" : sdlname;
 
-    initialize(SDL_JoystickInstanceID(myStick), desc,
-        SDL_JoystickNumAxes(myStick), SDL_JoystickNumButtons(myStick),
-        SDL_JoystickNumHats(myStick), SDL_JoystickNumBalls(myStick));
+    initialize(SDL_GetJoystickID(myStick), desc,
+               SDL_GetNumJoystickAxes(myStick),
+               SDL_GetNumJoystickButtons(myStick),
+               SDL_GetNumJoystickHats(myStick),
+               SDL_GetNumJoystickBalls(myStick));
   }
 }
 
@@ -290,5 +283,6 @@ EventHandlerSDL::JoystickSDL::~JoystickSDL()
   ASSERT_MAIN_THREAD;
 
   if(SDL_WasInit(SDL_INIT_JOYSTICK) && myStick)
-    SDL_JoystickClose(myStick);
+    SDL_CloseJoystick(myStick);
 }
+#endif

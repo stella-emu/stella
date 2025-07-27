@@ -63,10 +63,9 @@ class FBSurfaceSDL : public FBSurface
     void reload() override;
     void resize(uInt32 width, uInt32 height) override;
 
+    void enableBlend(bool enable) override;
+    void setBlendLevel(uInt32 percent) override;
     void setScalingInterpolation(ScalingInterpolation) override;
-
-  protected:
-    void applyAttributes() override;
 
   private:
     bool setSrcPosInternal(uInt32 x, uInt32 y) {

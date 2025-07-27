@@ -221,16 +221,16 @@ enum StellaKey  // NOLINT: use 32-bit, even though 16-bit is sufficient
     KBDK_F23 = 114,
     KBDK_F24 = 115,
     KBDK_EXECUTE = 116,
-    KBDK_HELP = 117,
-    KBDK_MENU = 118,
+    KBDK_HELP = 117,    /**< AL Integrated Help Center */
+    KBDK_MENU = 118,    /**< Menu (show menu) */
     KBDK_SELECT = 119,
-    KBDK_STOP = 120,
-    KBDK_AGAIN = 121,   /**< redo */
-    KBDK_UNDO = 122,
-    KBDK_CUT = 123,
-    KBDK_COPY = 124,
-    KBDK_PASTE = 125,
-    KBDK_FIND = 126,
+    KBDK_STOP = 120,    /**< AC Stop */
+    KBDK_AGAIN = 121,   /**< AC Redo/Repeat */
+    KBDK_UNDO = 122,    /**< AC Undo */
+    KBDK_CUT = 123,     /**< AC Cut */
+    KBDK_COPY = 124,    /**< AC Copy */
+    KBDK_PASTE = 125,   /**< AC Paste */
+    KBDK_FIND = 126,    /**< AC Find */
     KBDK_MUTE = 127,
     KBDK_VOLUMEUP = 128,
     KBDK_VOLUMEDOWN = 129,
@@ -261,9 +261,9 @@ enum StellaKey  // NOLINT: use 32-bit, even though 16-bit is sufficient
     KBDK_LANG8 = 151, /**< reserved */
     KBDK_LANG9 = 152, /**< reserved */
 
-    KBDK_ALTERASE = 153, /**< Erase-Eaze */
+    KBDK_ALTERASE = 153,    /**< Erase-Eaze */
     KBDK_SYSREQ = 154,
-    KBDK_CANCEL = 155,
+    KBDK_CANCEL = 155,      /**< AC Cancel */
     KBDK_CLEAR = 156,
     KBDK_PRIOR = 157,
     KBDK_RETURN2 = 158,
@@ -330,10 +330,10 @@ enum StellaKey  // NOLINT: use 32-bit, even though 16-bit is sufficient
     KBDK_RALT = 230, /**< alt gr, option */
     KBDK_RGUI = 231, /**< windows, command (apple), meta */
 
-    KBDK_MODE = 257,    /**< ALT-GR(aph) key on non-American keyboards
-                         *   This is like pressing KBDK_RALT + KBDK_RCTRL
-                         *   on some keyboards
-                         */
+    KBDK_MODE = 257,    /**< I'm not sure if this is really not covered
+                                 *   by any of the above, but since there's a
+                                 *   special SDL_KMOD_MODE for it I'm adding it here
+                                 */
 
     /* @} *//* Usage page 0x07 */
 
@@ -341,77 +341,98 @@ enum StellaKey  // NOLINT: use 32-bit, even though 16-bit is sufficient
      *  \name Usage page 0x0C
      *
      *  These values are mapped from usage page 0x0C (USB consumer page).
+     *
+     *  There are way more keys in the spec than we can represent in the
+     *  current scancode range, so pick the ones that commonly come up in
+     *  real world usage.
      */
     /* @{ */
 
-    KBDK_AUDIONEXT = 258,
-    KBDK_AUDIOPREV = 259,
-    KBDK_AUDIOSTOP = 260,
-    KBDK_AUDIOPLAY = 261,
-    KBDK_AUDIOMUTE = 262,
-    KBDK_MEDIASELECT = 263,
-    KBDK_WWW = 264,
-    KBDK_MAIL = 265,
-    KBDK_CALCULATOR = 266,
-    KBDK_COMPUTER = 267,
-    KBDK_AC_SEARCH = 268,
-    KBDK_AC_HOME = 269,
-    KBDK_AC_BACK = 270,
-    KBDK_AC_FORWARD = 271,
-    KBDK_AC_STOP = 272,
-    KBDK_AC_REFRESH = 273,
-    KBDK_AC_BOOKMARKS = 274,
+    KBDK_SLEEP = 258,                   /**< Sleep */
+    KBDK_WAKE = 259,                    /**< Wake */
+
+    KBDK_CHANNEL_INCREMENT = 260,       /**< Channel Increment */
+    KBDK_CHANNEL_DECREMENT = 261,       /**< Channel Decrement */
+
+    KBDK_MEDIA_PLAY = 262,          /**< Play */
+    KBDK_MEDIA_PAUSE = 263,         /**< Pause */
+    KBDK_MEDIA_RECORD = 264,        /**< Record */
+    KBDK_MEDIA_FAST_FORWARD = 265,  /**< Fast Forward */
+    KBDK_MEDIA_REWIND = 266,        /**< Rewind */
+    KBDK_MEDIA_NEXT_TRACK = 267,    /**< Next Track */
+    KBDK_MEDIA_PREVIOUS_TRACK = 268, /**< Previous Track */
+    KBDK_MEDIA_STOP = 269,          /**< Stop */
+    KBDK_MEDIA_EJECT = 270,         /**< Eject */
+    KBDK_MEDIA_PLAY_PAUSE = 271,    /**< Play / Pause */
+    KBDK_MEDIA_SELECT = 272,        /* Media Select */
+
+    KBDK_AC_NEW = 273,              /**< AC New */
+    KBDK_AC_OPEN = 274,             /**< AC Open */
+    KBDK_AC_CLOSE = 275,            /**< AC Close */
+    KBDK_AC_EXIT = 276,             /**< AC Exit */
+    KBDK_AC_SAVE = 277,             /**< AC Save */
+    KBDK_AC_PRINT = 278,            /**< AC Print */
+    KBDK_AC_PROPERTIES = 279,       /**< AC Properties */
+
+    KBDK_AC_SEARCH = 280,           /**< AC Search */
+    KBDK_AC_HOME = 281,             /**< AC Home */
+    KBDK_AC_BACK = 282,             /**< AC Back */
+    KBDK_AC_FORWARD = 283,          /**< AC Forward */
+    KBDK_AC_STOP = 284,             /**< AC Stop */
+    KBDK_AC_REFRESH = 285,          /**< AC Refresh */
+    KBDK_AC_BOOKMARKS = 286,        /**< AC Bookmarks */
 
     /* @} *//* Usage page 0x0C */
 
+
     /**
-     *  \name Walther keys
+     *  \name Mobile keys
      *
-     *  These are values that Christian Walther added (for mac keyboard?).
+     *  These are values that are often used on mobile phones.
      */
     /* @{ */
 
-    KBDK_BRIGHTNESSDOWN = 275,
-    KBDK_BRIGHTNESSUP = 276,
-    KBDK_DISPLAYSWITCH = 277, /**< display mirroring/dual display
-                                           switch, video mode switch */
-    KBDK_KBDILLUMTOGGLE = 278,
-    KBDK_KBDILLUMDOWN = 279,
-    KBDK_KBDILLUMUP = 280,
-    KBDK_EJECT = 281,
-    KBDK_SLEEP = 282,
+    KBDK_SOFTLEFT = 287, /**< Usually situated below the display on phones and
+                                      used as a multi-function feature key for selecting
+                                      a software defined function shown on the bottom left
+                                      of the display. */
+    KBDK_SOFTRIGHT = 288, /**< Usually situated below the display on phones and
+                                       used as a multi-function feature key for selecting
+                                       a software defined function shown on the bottom right
+                                       of the display. */
+    KBDK_CALL = 289, /**< Used for accepting phone calls. */
+    KBDK_ENDCALL = 290, /**< Used for rejecting phone calls. */
 
-    KBDK_APP1 = 283,
-    KBDK_APP2 = 284,
-
-    /* @} *//* Walther keys */
+    /* @} *//* Mobile keys */
 
     /* Add any other keys here. */
 
-    KBDK_LAST = 512 /**< not a key, just marks the number of scancodes
-                                 for array bounds */
+    KBDK_RESERVED = 400,    /**< 400-500 reserved for dynamic keycodes */
+
+    KBDK_COUNT = 512 /**< not a key, just marks the number of scancodes for array bounds */
 };
 
 // This comes directly from SDL_keycode.h
 enum StellaMod: uInt16
 {
-    KBDM_NONE = 0x0000,
-    KBDM_LSHIFT = 0x0001,
-    KBDM_RSHIFT = 0x0002,
-    KBDM_LCTRL = 0x0040,
-    KBDM_RCTRL = 0x0080,
-    KBDM_LALT = 0x0100,
-    KBDM_RALT = 0x0200,
-    KBDM_LGUI = 0x0400,
-    KBDM_RGUI = 0x0800,
-    KBDM_NUM = 0x1000,
-    KBDM_CAPS = 0x2000,
-    KBDM_MODE = 0x4000,
-    KBDM_RESERVED = 0x8000,
-    KBDM_CTRL = (KBDM_LCTRL|KBDM_RCTRL),
-    KBDM_SHIFT = (KBDM_LSHIFT|KBDM_RSHIFT),
-    KBDM_ALT = (KBDM_LALT|KBDM_RALT),
-    KBDM_GUI = (KBDM_LGUI|KBDM_RGUI)
+  KBDM_NONE   = 0x0000U, /**< no modifier is applicable. */
+  KBDM_LSHIFT = 0x0001U, /**< the left Shift key is down. */
+  KBDM_RSHIFT = 0x0002U, /**< the right Shift key is down. */
+  KBDM_LEVEL5 = 0x0004U, /**< the Level 5 Shift key is down. */
+  KBDM_LCTRL  = 0x0040U, /**< the left Ctrl (Control) key is down. */
+  KBDM_RCTRL  = 0x0080U, /**< the right Ctrl (Control) key is down. */
+  KBDM_LALT   = 0x0100U, /**< the left Alt key is down. */
+  KBDM_RALT   = 0x0200U, /**< the right Alt key is down. */
+  KBDM_LGUI   = 0x0400U, /**< the left GUI key (often the Windows key) is down. */
+  KBDM_RGUI   = 0x0800U, /**< the right GUI key (often the Windows key) is down. */
+  KBDM_NUM    = 0x1000U, /**< the Num Lock key (may be located on an extended keypad) is down. */
+  KBDM_CAPS   = 0x2000U, /**< the Caps Lock key is down. */
+  KBDM_MODE   = 0x4000U, /**< the !AltGr key is down. */
+  KBDM_SCROLL = 0x8000U, /**< the Scroll Lock key is down. */
+  KBDM_CTRL   = (KBDM_LCTRL | KBDM_RCTRL),   /**< Any Ctrl key is down. */
+  KBDM_SHIFT  = (KBDM_LSHIFT | KBDM_RSHIFT), /**< Any Shift key is down. */
+  KBDM_ALT    = (KBDM_LALT | KBDM_RALT),     /**< Any Alt key is down. */
+  KBDM_GUI    = (KBDM_LGUI | KBDM_RGUI)      /**< Any GUI key is down. */
 };
 
 // Test if specified modifier is pressed

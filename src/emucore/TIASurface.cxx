@@ -27,18 +27,9 @@
 namespace {
   ScalingInterpolation interpolationModeFromSettings(const Settings& settings)
   {
-#ifdef RETRON77
-  // Witv TV / and or scanline interpolation, the image has a height of ~480px. THe R77 runs at 720p, so there
-  // is no benefit from QIS in y-direction. In addition, QIS on the R77 has performance issues if TV effects are
-  // enabled.
-  return settings.getBool("tia.inter") || settings.getInt("tv.filter") != 0
-    ? ScalingInterpolation::blur
-    : ScalingInterpolation::sharp;
-#else
-    return settings.getBool("tia.inter") ?
-      ScalingInterpolation::blur :
-      ScalingInterpolation::sharp;
-#endif
+    return settings.getBool("tia.inter")
+      ? ScalingInterpolation::blur
+      : ScalingInterpolation::sharp;
   }
 } // namespace
 
@@ -65,14 +56,9 @@ TIASurface::TIASurface(OSystem& system)
 
   // Create shading surface
   static constexpr uInt32 data = 0xff000000;
-
   myShadeSurface = myFB.allocateSurface(1, 1, ScalingInterpolation::sharp, &data);
-
-  FBSurface::Attributes& attr = myShadeSurface->attributes();
-
-  attr.blending = true;
-  attr.blendalpha = 35; // darken stopped emulation by 35%
-  myShadeSurface->applyAttributes();
+  myShadeSurface->enableBlend(true);
+  myShadeSurface->setBlendLevel(35); // darken stopped emulation by 35%
 
   myRGBFramebuffer.fill(0);
 
@@ -231,13 +217,9 @@ void TIASurface::changeCurrentNTSCAdjustable(int direction)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TIASurface::changeScanlineIntensity(int direction)
 {
-  FBSurface::Attributes& attr = mySLineSurface->attributes();
-
-  attr.blendalpha += direction * 2;
-  attr.blendalpha = BSPF::clamp(static_cast<Int32>(attr.blendalpha), 0, 100);
-  mySLineSurface->applyAttributes();
-
-  const uInt32 intensity = attr.blendalpha;
+  const int intensity =
+      BSPF::clamp<int>(mySLineSurface->blendLevel() + direction * 2, 0, 100);
+  mySLineSurface->setBlendLevel(intensity);
 
   myOSystem.settings().setValue("tv.scanlines", intensity);
   enableNTSC(ntscEnabled());
@@ -427,6 +409,7 @@ void TIASurface::createScanlineSurface()
   myFB.deallocateSurface(mySLineSurface);
   mySLineSurface = myFB.allocateSurface(width, height,
     interpolationModeFromSettings(myOSystem.settings()), data.data());
+  mySLineSurface->enableBlend(true);
 
   //mySLineSurface->setSrcSize(mySLineSurface->width(), height);
   mySLineSurface->setDstRect(myTiaSurface->dstRect());
@@ -453,11 +436,9 @@ void TIASurface::enableNTSC(bool enable)
 
   // Generate a scanline surface from current scanline pattern
   // Apply current blend to scan line surface
-  myScanlinesEnabled = myOSystem.settings().getInt("tv.scanlines") > 0;
-  FBSurface::Attributes& sl_attr = mySLineSurface->attributes();
-  sl_attr.blending = myScanlinesEnabled;
-  sl_attr.blendalpha = myOSystem.settings().getInt("tv.scanlines");
-  mySLineSurface->applyAttributes();
+  const int scanlines = myOSystem.settings().getInt("tv.scanlines");
+  myScanlinesEnabled = scanlines > 0;
+  mySLineSurface->setBlendLevel(scanlines);
 
   myRGBFramebuffer.fill(0);
 }
@@ -465,9 +446,7 @@ void TIASurface::enableNTSC(bool enable)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string TIASurface::effectsInfo() const
 {
-  const FBSurface::Attributes& attr = mySLineSurface->attributes();
   ostringstream buf;
-
   switch(myFilter)
   {
     case Filter::Normal:
@@ -485,8 +464,8 @@ string TIASurface::effectsInfo() const
     default:
       break;  // Not supposed to get here
   }
-  if(attr.blendalpha)
-    buf << ", scanlines=" << attr.blendalpha
+  if(mySLineSurface->blendLevel() > 0)
+    buf << ", scanlines=" << mySLineSurface->blendLevel()
       << "/" << myOSystem.settings().getString("tv.scanmask");
   buf << ", inter=" << (myOSystem.settings().getBool("tia.inter") ? "enabled" : "disabled");
   buf << ", aspect correction=" << (correctAspect() ? "enabled" : "disabled");

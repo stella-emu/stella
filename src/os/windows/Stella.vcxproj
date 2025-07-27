@@ -135,35 +135,35 @@
     <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Profile|x64'" />
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <LibraryPath>$(ProjectDir)\SDL\lib\x64;$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(ProjectDir)SDL3\lib\x64;$(LibraryPath)</LibraryPath>
     <IncludePath>$(IncludePath)</IncludePath>
     <EnableMicrosoftCodeAnalysis>true</EnableMicrosoftCodeAnalysis>
-    <ExternalIncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(ProjectDir)\SDL\include</ExternalIncludePath>
+    <ExternalIncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(ProjectDir)SDL3\include</ExternalIncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">
-    <LibraryPath>$(ProjectDir)\SDL\lib\x64;$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(ProjectDir)SDL3\lib\x64;$(LibraryPath)</LibraryPath>
     <IncludePath>$(IncludePath)</IncludePath>
-    <ExternalIncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(ProjectDir)\SDL\include</ExternalIncludePath>
+    <ExternalIncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(ProjectDir)SDL3\include</ExternalIncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <LibraryPath>$(ProjectDir)\SDL\lib\x64;$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(ProjectDir)SDL3\lib\x64;$(LibraryPath)</LibraryPath>
     <IncludePath>$(IncludePath)</IncludePath>
-    <ExternalIncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(ProjectDir)\SDL\include</ExternalIncludePath>
+    <ExternalIncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(ProjectDir)SDL3\include</ExternalIncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release PGO|x64'">
-    <LibraryPath>$(ProjectDir)\SDL\lib\x64;$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(ProjectDir)SDL3\lib\x64;$(LibraryPath)</LibraryPath>
     <IncludePath>$(IncludePath)</IncludePath>
-    <ExternalIncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(ProjectDir)\SDL\include</ExternalIncludePath>
+    <ExternalIncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(ProjectDir)SDL3\include</ExternalIncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release-Sanitize|x64'">
-    <LibraryPath>$(ProjectDir)\SDL\lib\x64;$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(ProjectDir)SDL3\lib\x64;$(LibraryPath)</LibraryPath>
     <IncludePath>$(IncludePath)</IncludePath>
-    <ExternalIncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(ProjectDir)\SDL\include</ExternalIncludePath>
+    <ExternalIncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(ProjectDir)SDL3\include</ExternalIncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Profile|x64'">
-    <LibraryPath>$(ProjectDir)\SDL\lib\x64;$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(ProjectDir)SDL3\lib\x64;$(LibraryPath)</LibraryPath>
     <IncludePath>$(IncludePath)</IncludePath>
-    <ExternalIncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(ProjectDir)\SDL\include</ExternalIncludePath>
+    <ExternalIncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(ProjectDir)SDL3\include</ExternalIncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <Midl>
@@ -191,7 +191,7 @@
       <DisableAnalyzeExternal>true</DisableAnalyzeExternal>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2main.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>SDL3.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)Stella.exe</OutputFile>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(OutDir)Stella.pdb</ProgramDatabaseFile>
@@ -229,7 +229,7 @@
       <DisableAnalyzeExternal>true</DisableAnalyzeExternal>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2main.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>SDL3.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)Stella.exe</OutputFile>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(OutDir)Stella.pdb</ProgramDatabaseFile>
@@ -269,7 +269,7 @@
       <DisableAnalyzeExternal>true</DisableAnalyzeExternal>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>SDL2.lib;SDL2main.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>SDL3.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)Stella.exe</OutputFile>
       <GenerateDebugInformation>false</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
@@ -311,7 +311,7 @@
       <DisableAnalyzeExternal>true</DisableAnalyzeExternal>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>SDL2.lib;SDL2main.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>SDL3.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)Stella.exe</OutputFile>
       <GenerateDebugInformation>false</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
@@ -353,7 +353,7 @@
       <DisableAnalyzeExternal>true</DisableAnalyzeExternal>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>SDL2.lib;SDL2main.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>SDL3.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)Stella.exe</OutputFile>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
@@ -393,7 +393,7 @@
       <DisableAnalyzeExternal>true</DisableAnalyzeExternal>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>SDL2.lib;SDL2main.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>SDL3.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)Stella.exe</OutputFile>
       <GenerateDebugInformation>DebugFull</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
@@ -760,7 +760,6 @@
     <ClCompile Include="..\..\gui\MinUICommandDialog.cxx" />
     <ClCompile Include="..\..\gui\PlusRomsSetupDialog.cxx" />
     <ClCompile Include="..\..\gui\QuadTariDialog.cxx" />
-    <ClCompile Include="..\..\gui\R77HelpDialog.cxx" />
     <ClCompile Include="..\..\gui\RadioButtonWidget.cxx" />
     <ClCompile Include="..\..\gui\RomImageWidget.cxx" />
     <ClCompile Include="..\..\gui\SnapshotDialog.cxx" />
@@ -1757,7 +1756,6 @@
     <ClInclude Include="..\..\gui\MinUICommandDialog.hxx" />
     <ClInclude Include="..\..\gui\PlusRomsSetupDialog.hxx" />
     <ClInclude Include="..\..\gui\QuadTariDialog.hxx" />
-    <ClInclude Include="..\..\gui\R77HelpDialog.hxx" />
     <ClInclude Include="..\..\gui\RadioButtonWidget.hxx" />
     <ClInclude Include="..\..\gui\Icons.hxx" />
     <ClInclude Include="..\..\gui\RomImageWidget.hxx" />

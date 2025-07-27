@@ -405,18 +405,11 @@ void PhysicalJoystickHandler::setStickDefaultMapping(
             setDefaultAction(stick, item, event, EventMode::kDrivingMode, updateDefaults);
         }
 
-    #if defined(RETRON77)
-        constexpr bool retron77 = true;
-    #else
-        constexpr bool retron77 = false;
-    #endif
-
         // Regular joysticks can only be used by one player at a time,
         // so we need to separate the paddles onto different
-        // devices. The R77 controllers support two players each when
-        // used as paddles, so are different. Similarly, stelladaptors
-        // and 2600-daptors support two players natively.
-        const int paddlesPerJoystick = (j->type == PhysicalJoystick::Type::REGULAR && !retron77) ? 1 : 2;
+        // devices. The Stelladaptor and 2600-daptor controllers support
+        // two players each when used as paddles, so are different.
+        const int paddlesPerJoystick = (j->type == PhysicalJoystick::Type::REGULAR) ? 1 : 2;
 
         if(paddlesPerJoystick == 2)
         {
@@ -1355,17 +1348,11 @@ PhysicalJoystickHandler::EventMappingArray PhysicalJoystickHandler::DefaultRight
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 PhysicalJoystickHandler::EventMappingArray PhysicalJoystickHandler::DefaultLeftPaddlesMapping = {
   {Event::LeftPaddleAAnalog,   JOY_CTRL_NONE, JoyAxis::X, JoyDir::ANALOG},
-#if defined(RETRON77)
-  {Event::LeftPaddleAAnalog,   JOY_CTRL_NONE, JoyAxis::Z, JoyDir::ANALOG},
-#endif
   // Current code does NOT allow digital and anlog events on the same axis at the same time
   //{Event::LeftPaddleADecrease, JOY_CTRL_NONE, JoyAxis::X, JoyDir::POS},
   //{Event::LeftPaddleAIncrease, JOY_CTRL_NONE, JoyAxis::X, JoyDir::NEG},
   {Event::LeftPaddleAFire,     0},
   {Event::LeftPaddleBAnalog,    JOY_CTRL_NONE, JoyAxis::Y, JoyDir::ANALOG},
-#if defined(RETRON77)
-  {Event::LeftPaddleBAnalog,    JOY_CTRL_NONE, JoyAxis::A3, JoyDir::ANALOG},
-#endif
   // Current code does NOT allow digital and anlog events on the same axis at the same
   //{Event::LeftPaddleBDecrease,  JOY_CTRL_NONE, JoyAxis::Y, JoyDir::POS},
   //{Event::LeftPaddleBIncrease,  JOY_CTRL_NONE, JoyAxis::Y, JoyDir::NEG},
@@ -1375,17 +1362,11 @@ PhysicalJoystickHandler::EventMappingArray PhysicalJoystickHandler::DefaultLeftP
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 PhysicalJoystickHandler::EventMappingArray PhysicalJoystickHandler::DefaultRightPaddlesMapping = {
   {Event::RightPaddleAAnalog,    JOY_CTRL_NONE, JoyAxis::X, JoyDir::ANALOG},
-#if defined(RETRON77)
-  {Event::RightPaddleAAnalog,    JOY_CTRL_NONE, JoyAxis::Z, JoyDir::ANALOG},
-#endif
   // Current code does NOT allow digital and anlog events on the same axis at the same
   //{Event::RightPaddleADecrease,  JOY_CTRL_NONE, JoyAxis::X, JoyDir::POS},
   //{Event::RightPaddleAIncrease,  JOY_CTRL_NONE, JoyAxis::X, JoyDir::NEG},
   {Event::RightPaddleAFire,      0},
   {Event::RightPaddleBAnalog,  JOY_CTRL_NONE, JoyAxis::Y, JoyDir::ANALOG},
-#if defined(RETRON77)
-  {Event::RightPaddleBAnalog,  JOY_CTRL_NONE, JoyAxis::A3, JoyDir::ANALOG},
-#endif
   // Current code does NOT allow digital and anlog events on the same axis at the same
   //{Event::RightPaddleBDecrease,JOY_CTRL_NONE, JoyAxis::Y, JoyDir::POS},
   //{Event::RightPaddleBIncrease,JOY_CTRL_NONE, JoyAxis::Y, JoyDir::NEG},
@@ -1485,14 +1466,6 @@ PhysicalJoystickHandler::EventMappingArray
 PhysicalJoystickHandler::DefaultCommonMapping = {
   // valid for all joysticks
   // Note: buttons 0..2 are used by controllers!
-#if defined(RETRON77)
-  {Event::CmdMenuMode,            3}, // Button "Y" / "4"
-  {Event::ExitMode,               4}, // Left Shoulder Button
-  {Event::OptionsMenuMode,        5}, // Right Shoulder Button
-  {Event::RewindPause,            7}, // Right Trigger Button
-  {Event::ConsoleSelect,          8}, // Button "Select"
-  {Event::ConsoleReset,           9}, // Button "Start"
-#else
   {Event::ConsoleSelect,          8}, // Button "Select"
   {Event::ConsoleReset,           9}, // Button "Start"
   {Event::ConsoleColorToggle,     3}, // Button "Y" / "4"
@@ -1500,7 +1473,6 @@ PhysicalJoystickHandler::DefaultCommonMapping = {
   {Event::ConsoleRightDiffToggle, 5}, // Right Shoulder Button
   {Event::CmdMenuMode,            6}, // Left Trigger Button
   {Event::OptionsMenuMode,        7}, // Right Trigger Button
-#endif
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

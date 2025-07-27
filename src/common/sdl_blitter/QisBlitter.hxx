@@ -34,10 +34,8 @@ class QisBlitter : public Blitter {
     ~QisBlitter() override;
 
     void reinitialize(
-      SDL_Rect srcRect,
-      SDL_Rect destRect,
-      FBSurface::Attributes attributes,
-      SDL_Surface* staticData
+      SDL_Rect srcRect, SDL_Rect destRect, bool enableBlend,
+      uInt8 blendLevel, SDL_Surface* staticData
     ) override;
 
     void blit(SDL_Surface& surface) override;
@@ -49,11 +47,17 @@ class QisBlitter : public Blitter {
     SDL_Texture* mySrcTexture{nullptr};
     SDL_Texture* mySecondarySrcTexture{nullptr};
     SDL_Texture* myIntermediateTexture{nullptr};
-    SDL_Texture* mySecondaryIntermedateTexture{nullptr};
+    SDL_Texture* mySecondaryIntermediateTexture{nullptr};
 
-    SDL_Rect mySrcRect{0, 0, 0, 0}, myIntermediateRect{0, 0, 0, 0}, myDstRect{0, 0, 0, 0};
-    FBSurface::Attributes myAttributes;
+    SDL_Rect mySrcRect{0, 0, 0, 0},
+             myIntermediateRect{0, 0, 0, 0},
+             myDstRect{0, 0, 0, 0};
+    SDL_FRect mySrcFRect{0.F, 0.F, 0.F, 0.F},
+              myIntermediateFRect{0.F, 0.F, 0.F, 0.F},
+              myDstFRect{0.F, 0.F, 0.F, 0.F};
 
+    uInt32 myBlendLevel{100};
+    bool myEnableBlend{false};
     bool myTexturesAreAllocated{false};
     bool myRecreateTextures{false};
 

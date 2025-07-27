@@ -806,18 +806,10 @@ PhysicalKeyboardHandler::DefaultCommonMapping = {
   { Event::HighScoresMenuMode,       KBDK_INSERT },
   { Event::TogglePlayBackMode,       KBDK_SPACE, KBDM_SHIFT },
 
-  #if defined(RETRON77)
-  { Event::ConsoleColorToggle,       KBDK_F4 },         // back ("COLOR","B/W")
-  { Event::ConsoleLeftDiffToggle,    KBDK_F6 },         // front ("SKILL P1")
-  { Event::ConsoleRightDiffToggle,   KBDK_F8 },         // front ("SKILL P2")
-  { Event::CmdMenuMode,              KBDK_F13 },        // back ("4:3","16:9")
-  { Event::ExitMode,                 KBDK_BACKSPACE },  // back ("FRY")
-  #else // defining duplicate keys must be avoided!
   { Event::ConsoleBlackWhite,        KBDK_F4 },
   { Event::ConsoleLeftDiffB,         KBDK_F6 },
   { Event::ConsoleRightDiffB,        KBDK_F8 },
-  { Event::Fry,                      KBDK_BACKSPACE, KBDM_SHIFT },
-#endif
+  { Event::Fry,                      KBDK_BACKSPACE, KBDM_SHIFT }
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -862,23 +854,11 @@ PhysicalKeyboardHandler::DefaultMenuMapping = {
   {Event::Quit,                     KBDK_Q, KBDM_CTRL},
 #endif
 
-#if defined(RETRON77)
-  {Event::UIUp,                     KBDK_F9},         // front ("SAVE")
-  {Event::UIDown,                   KBDK_F2},         // front ("RESET")
-  {Event::UINavPrev,                KBDK_F11},        // front ("LOAD")
-  {Event::UINavNext,                KBDK_F1},         // front ("MODE")
-  {Event::UISelect,                 KBDK_F6},         // front ("SKILL P1")
-  {Event::UICancel,                 KBDK_F8},         // front ("SKILL P2")
-  //{Event::NoType,                   KBDK_F4},         // back ("COLOR","B/W")
-  {Event::UITabPrev,                KBDK_F13},        // back ("4:3","16:9")
-  {Event::UITabNext,                KBDK_BACKSPACE},  // back (FRY)
-#else // defining duplicate keys must be avoided!
   {Event::UIPrevDir,                KBDK_BACKSPACE},
 #ifdef BSPF_MACOS
   {Event::UIHelp,                   KBDK_SLASH, KBDM_SHIFT | CMD},
 #else
   {Event::UIHelp,                   KBDK_F1},
-#endif
 #endif
 };
 
@@ -1167,9 +1147,7 @@ PhysicalKeyboardHandler::CompuMateMapping = {
   {Event::CompuMateRightBracket,  KBDK_RIGHTBRACKET},
   {Event::CompuMateMinus,         KBDK_MINUS},
   {Event::CompuMateQuote,         KBDK_APOSTROPHE, KBDM_SHIFT},
-#ifndef RETRON77
   {Event::CompuMateBackspace,     KBDK_BACKSPACE},
-#endif
   {Event::CompuMateEquals,        KBDK_EQUALS},
   {Event::CompuMatePlus,          KBDK_EQUALS, KBDM_SHIFT},
   {Event::CompuMateSlash,         KBDK_SLASH}

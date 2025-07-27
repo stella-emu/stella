@@ -33,48 +33,30 @@
   #pragma clang diagnostic ignored "-Wold-style-cast"
   #pragma clang diagnostic ignored "-Wreserved-identifier"
   #pragma clang diagnostic ignored "-Wswitch-default"
-  #include <SDL.h>
+  #include <SDL3/SDL.h>
   #pragma clang diagnostic pop
 #elif defined(BSPF_WINDOWS)
   #pragma warning(push, 0)
-  #include <SDL.h>
+  #include <SDL3/SDL.h>
   #pragma warning(pop)
 #else
-  #include <SDL.h>
+  #include <SDL3/SDL.h>
 #endif
-
-/*
- * Seems to be needed for ppc64le, doesn't hurt other archs
- * Note that this is a problem in SDL2, which includes <altivec.h>
- *  https://bugzilla.redhat.com/show_bug.cgi?id=1419452
- */
-#undef vector
-#undef pixel
-#undef bool
 
 static inline string SDLVersion()
 {
   ostringstream buf;
-  SDL_version ver;
-  SDL_GetVersion(&ver);
-  buf << "SDL " << static_cast<int>(ver.major) << "." << static_cast<int>(ver.minor)
-      << "." << static_cast<int>(ver.patch);
+  const int ver = SDL_GetVersion();
+  buf << "SDL "
+      << SDL_VERSIONNUM_MAJOR(ver) << "."
+      << SDL_VERSIONNUM_MINOR(ver) << "."
+      << SDL_VERSIONNUM_MICRO(ver);
   return buf.str();
-}
-
-static inline bool SDLSupportsURL()
-{
-  return SDL_VERSION_ATLEAST(2,0,14);
 }
 
 static inline bool SDLOpenURL(const string& url)
 {
-#if SDL_VERSION_ATLEAST(2,0,14)
-  return SDL_OpenURL(url.c_str()) == 0;
-#else
-  cerr << "OpenURL requires at least SDL 2.0.14\n";
-  return false;
-#endif
+  return SDL_OpenURL(url.c_str());
 }
 
 #endif  // SDL_LIB_HXX
