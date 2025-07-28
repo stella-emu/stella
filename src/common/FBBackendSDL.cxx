@@ -47,7 +47,7 @@ FBBackendSDL::FBBackendSDL(OSystem& osystem)
   // It's done this way (vs directly accessing a FBSurfaceSDL object)
   // since the structure may be needed before any FBSurface's have
   // been created
-  myPixelFormat = SDL_GetPixelFormatDetails(SDL_PIXELFORMAT_RGBA32);
+  myPixelFormat = SDL_GetPixelFormatDetails(SDL_PIXELFORMAT_ARGB8888);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -588,7 +588,7 @@ void FBBackendSDL::setWindowIcon()
   ASSERT_MAIN_THREAD;
 
   SDL_Surface* surface =
-    SDL_CreateSurfaceFrom(32, 32, SDL_PIXELFORMAT_RGBA32, stella_icon, 32 * 4);
+    SDL_CreateSurfaceFrom(32, 32, pixelFormat().format, stella_icon, 32 * 4);
   SDL_SetWindowIcon(myWindow, surface);
   SDL_DestroySurface(surface);
 #endif

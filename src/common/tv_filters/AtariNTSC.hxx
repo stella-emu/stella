@@ -212,13 +212,13 @@ class AtariNTSC
     }
 
     // Generates output in the specified 32-bit format.
-    //  8888:   00000000 BBBBBBBB GGGGGGGG RRRRRRRR (8-8-8-8 32-bit ABGR)
+    //  8888:   00000000 RRRRRRRR GGGGGGGG BBBBBBBB (8-8-8-8 32-bit ARGB)
     #define ATARI_NTSC_RGB_OUT_8888( index, rgb_out ) {\
       uInt32 raw_ =\
         kernel0  [(index)       ] + kernel1  [((index)+10)%7+14] +\
         kernelx0 [((index)+7)%14] + kernelx1 [((index)+ 3)%7+14+7];\
       ATARI_NTSC_CLAMP( raw_, 0 );\
-      (rgb_out) = (raw_>>21 & 0x000000FF)|(raw_>>3 & 0x0000FF00)|(raw_<<15 & 0x00FF0000);\
+      (rgb_out) = (raw_>>5 & 0x00FF0000)|(raw_>>3 & 0x0000FF00)|(raw_>>1 & 0x000000FF);\
     }
 
     // Common ntsc macros
