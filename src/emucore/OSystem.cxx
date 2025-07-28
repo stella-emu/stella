@@ -122,6 +122,8 @@ bool OSystem::initialize(const Settings::Options& options)
 {
   loadConfig(options);
 
+  Logger::debug("Creating the OSystem ...");
+
   ostringstream buf;
   buf << "Stella " << STELLA_VERSION << '\n'
       << "  Features: " << myFeatures << '\n'
