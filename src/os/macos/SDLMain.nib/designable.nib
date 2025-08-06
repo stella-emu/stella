@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="14490.70" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="23727" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="14490.70"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="23727"/>
     </dependencies>
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="NSApplication">
@@ -17,15 +17,6 @@
                 <menuItem title="Stella" id="56">
                     <menu key="submenu" title="Stella" systemMenu="apple" id="57">
                         <items>
-                            <menuItem title="About Stella" id="717">
-                                <modifierMask key="keyEquivalentModifierMask"/>
-                                <connections>
-                                    <action selector="showPanel:" target="719" id="720"/>
-                                </connections>
-                            </menuItem>
-                            <menuItem isSeparatorItem="YES" id="196">
-                                <modifierMask key="keyEquivalentModifierMask" command="YES"/>
-                            </menuItem>
                             <menuItem title="Quit Stella" keyEquivalent="q" id="136">
                                 <connections>
                                     <action selector="terminate:" target="-1" id="292"/>
@@ -34,21 +25,10 @@
                         </items>
                     </menu>
                 </menuItem>
-                <menuItem title="Help" id="103">
-                    <menu key="submenu" title="Help" id="106">
-                        <items>
-                            <menuItem title="Stella Help" keyEquivalent="?" id="111">
-                                <connections>
-                                    <action selector="showHelp:" target="-2" id="469"/>
-                                </connections>
-                            </menuItem>
-                        </items>
-                    </menu>
-                </menuItem>
             </items>
+            <point key="canvasLocation" x="56" y="-72"/>
         </menu>
         <customObject id="194" userLabel="SDLMain" customClass="SDLMain"/>
         <customObject id="253" userLabel="Font Manager" customClass="NSFontManager"/>
-        <customObject id="719" userLabel="AboutBox" customClass="AboutBox"/>
     </objects>
 </document>
