@@ -33,8 +33,6 @@
 
 #include "TinyEXIF.h"
 
-#define TINYEXIF_NO_XMP_SUPPORT
-
 #ifndef TINYEXIF_NO_XMP_SUPPORT
 #include <tinyxml2.h>
 #endif // TINYEXIF_NO_XMP_SUPPORT
@@ -945,12 +943,14 @@ int EXIFInfo::parseFromEXIFSegment(const uint8_t* buf, unsigned len) {
 	//  8 bytes
 	if (offs + 8 > len)
 		return PARSE_CORRUPT_DATA;
+	const uint32_t _ONE32 = 1;
+	const bool IS_LITTLE_ENDIAN = reinterpret_cast<uint8_t const*>(&_ONE32)[0] == 1;
 	bool alignIntel;
 	if (buf[offs] == 'I' && buf[offs+1] == 'I')
-		alignIntel = true; // 1: Intel byte alignment
+		alignIntel = IS_LITTLE_ENDIAN; // 1: Intel byte alignment
 	else
 	if (buf[offs] == 'M' && buf[offs+1] == 'M')
-		alignIntel = false; // 0: Motorola byte alignment
+		alignIntel = !IS_LITTLE_ENDIAN; // 0: Motorola byte alignment
 	else
 		return PARSE_UNKNOWN_BYTEALIGN;
 	EntryParser parser(buf, len, offs, alignIntel);

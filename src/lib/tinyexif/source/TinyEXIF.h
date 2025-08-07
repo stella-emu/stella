@@ -34,15 +34,19 @@
 #ifndef __TINYEXIF_H__
 #define __TINYEXIF_H__
 
-#include <cstdlib>  // Added by SA (2023-05-05), needed for gcc-13
-#include <cstdint>
+//////////////////////////////////////////////
+// Added by SA (2023-05-05), needed for gcc-13
+#define TINYEXIF_NO_XMP_SUPPORT
+#include <cstdlib>
+//////////////////////////////////////////////
 
+#include <cstdint>
 #include <string>
 #include <vector>
 
 #define TINYEXIF_MAJOR_VERSION 1
 #define TINYEXIF_MINOR_VERSION 0
-#define TINYEXIF_PATCH_VERSION 1
+#define TINYEXIF_PATCH_VERSION 3
 
 #ifdef _MSC_VER
 #   ifdef TINYEXIF_EXPORT
