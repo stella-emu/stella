@@ -193,7 +193,7 @@ class PlusROM : public Serializable
     uInt8 myRxReadPos{0}, myRxWritePos{0}, myTxPos{0};
     uInt8 myLastRxReadPos{0}, myLastTxPos{0};
 
-    std::deque<shared_ptr<PlusROMRequest>> myPendingRequests;
+    std::shared_ptr<PlusROMRequest> myRequest;
 
     // Callback to output messages
     Cartridge::messageCallback myMsgCallback{nullptr};
