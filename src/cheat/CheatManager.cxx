@@ -8,7 +8,7 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2025 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2024 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
@@ -20,6 +20,7 @@
 #include "Settings.hxx"
 #include "CheetahCheat.hxx"
 #include "BankRomCheat.hxx"
+#include "PatchRomCheat.hxx"
 #include "RamCheat.hxx"
 #include "Vec.hxx"
 
@@ -137,6 +138,7 @@ shared_ptr<Cheat> CheatManager::createCheat(string_view name, string_view code) 
     case 6:  return make_shared<CheetahCheat>(myOSystem, name, code);
     case 7:  [[fallthrough]];
     case 8:  return make_shared<BankRomCheat>(myOSystem, name, code);
+	case 9:  return make_shared<PatchRomCheat>(myOSystem, name, code);
     default: return nullptr;
   }
 }
@@ -328,5 +330,5 @@ bool CheatManager::isValidCode(string_view code)
       return false;
 
   const size_t length = code.length();
-  return (length == 4 || length == 6 || length == 7 || length == 8);
+  return (length == 4 || length == 6 || length == 7 || length == 8 || length == 9);
 }
