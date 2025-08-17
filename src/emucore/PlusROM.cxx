@@ -350,7 +350,7 @@ bool PlusROM::save(Serializer& out) const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool PlusROM::load(Serializer& in)
 {
-    myRequest = make_shared<PlusROMRequest>();
+  myRequest = make_shared<PlusROMRequest>();
 
   try
   {
@@ -470,24 +470,24 @@ void PlusROM::send()
 void PlusROM::receive()
 {
 #if defined(HTTP_LIB_SUPPORT)
-    switch (myRequest->getState()) {
+  switch (myRequest->getState()) {
     case PlusROMRequest::State::failed:
-        myMsgCallback("PlusROM data receiving failed!");
-        break;
+      myMsgCallback("PlusROM data receiving failed!");
+      break;
     case PlusROMRequest::State::done:
     {
-        myMsgCallback("PlusROM data received successfully");
-        // Request has finished sucessfully? -> consume the response.
-        const auto [responseSize, response] = myRequest->getResponse();
+      myMsgCallback("PlusROM data received successfully");
+      // Request has finished sucessfully? -> consume the response.
+      const auto [responseSize, response] = myRequest->getResponse();
 
-        myLastRxReadPos = myRxReadPos;
-        for (size_t i = 0; i < responseSize; ++i)
-            myRxBuffer[myRxWritePos++] = response[i];
+      myLastRxReadPos = myRxReadPos;
+      for (size_t i = 0; i < responseSize; ++i)
+        myRxBuffer[myRxWritePos++] = response[i];
 
-        break;
+      break;
     }
     default:
-        break;
+      break;
     }
 
 #endif
