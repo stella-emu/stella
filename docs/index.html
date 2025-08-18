@@ -4948,6 +4948,18 @@
    c = count - 1
   </pre>
     </li>
+    <li>Patch cheats are a straight-forward ROM patching format, the address 
+	  is the address in the cartridge ROM that you want to temporarily patch 
+	  during runtime. They are 9 digits long merely to ensure they are unique:
+  <pre>
+   9-digit (patch) code: aaaaddeef
+
+   aaaa = cartridge address
+   dd = new data to poke
+   ee = original data (must be correct or the cheat wont enable)
+   f = throwaway (set to F)
+  </pre>
+  </li>		
   </ul>
 
   <p>There's also the concept of <i>one shot</i> codes. These codes work
