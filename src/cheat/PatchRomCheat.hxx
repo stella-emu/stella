@@ -33,7 +33,7 @@ class PatchRomCheat : public Cheat
   private:
     uInt16 address{0};
     uInt8  new_value{0};
-	uInt8  original_value{0};
+    uInt8  original_value{0};
     uInt8  throwaway{0};
 
   private:

@@ -34,6 +34,7 @@ PatchRomCheat::PatchRomCheat(OSystem& os, string_view name, string_view code)
 bool PatchRomCheat::enable()
 {
   evaluate();
+
   return myEnabled;
 }
 
@@ -41,8 +42,8 @@ bool PatchRomCheat::enable()
 bool PatchRomCheat::disable()
 {
   if(myEnabled && myOSystem.console().cartridge().peek(address) == new_value)
-	myOSystem.console().cartridge().patch(address, original_value);
- 
+    myOSystem.console().cartridge().patch(address, original_value);
+
   return myEnabled = false;
 }
 
@@ -52,6 +53,6 @@ void PatchRomCheat::evaluate()
   if(!myEnabled && myOSystem.console().cartridge().peek(address) == original_value)
   {
     myOSystem.console().cartridge().patch(address, new_value);
-	myEnabled = true;
+    myEnabled = true;
   }
 }
