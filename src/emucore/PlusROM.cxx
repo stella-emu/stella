@@ -29,7 +29,6 @@
   #include "http_lib.hxx"
 
 namespace {
-  constexpr int MAX_CONCURRENT_REQUESTS = 5;
   constexpr int CONNECTION_TIMEOUT_MSEC = 3000;
   constexpr int READ_TIMEOUT_MSEC       = 3000;
   constexpr int WRITE_TIMEOUT_MSEC      = 3000;
@@ -65,6 +64,7 @@ class PlusROMRequest {
       created,
       pending,
       done,
+      read,
       failed
     };
 
@@ -78,6 +78,12 @@ class PlusROMRequest {
     {
       memcpy(myRequest.data(), request, myRequestSize);
     }
+    PlusROMRequest()
+      : myDestination{ Destination("", "")},
+        myId{ PlusStoreId("", "")},
+        myRequestSize{ 0 }
+    {
+    };
     ~PlusROMRequest() = default;
 
   #if defined(HTTP_LIB_SUPPORT)
@@ -171,6 +177,8 @@ class PlusROMRequest {
 
     std::pair<size_t, const uInt8*> getResponse() {
       if (myState != State::done) throw runtime_error("invalid access to response");
+      
+      myState = State::read;
 
       return {
         myResponse.size() - 1,
@@ -342,7 +350,7 @@ bool PlusROM::save(Serializer& out) const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool PlusROM::load(Serializer& in)
 {
-  myPendingRequests.clear();
+  myRequest = make_shared<PlusROMRequest>();
 
   try
   {
@@ -365,7 +373,7 @@ bool PlusROM::load(Serializer& in)
 void PlusROM::reset()
 {
   myRxReadPos = myRxWritePos = myTxPos = myLastRxReadPos = myLastTxPos = 0;
-  myPendingRequests.clear();
+  myRequest = make_shared<PlusROMRequest>();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -397,16 +405,19 @@ bool PlusROM::isValidPath(string_view path)
 void PlusROM::send()
 {
 #if defined(HTTP_LIB_SUPPORT)
-  if (myPendingRequests.size() >= MAX_CONCURRENT_REQUESTS) {
-    // Try to make room by consuming any requests that have completed.
-    receive();
+  if (myRequest->getState() == PlusROMRequest::State::pending) {
+    myMsgCallback("Ignoring new PlusROM request made while another is pending");
+    return; 
   }
 
-  if (myPendingRequests.size() >= MAX_CONCURRENT_REQUESTS) {
-    Logger::error("PlusCart: max number of concurrent requests exceeded");
-
-    myTxPos = 0;
+  if (myRequest->getState() == PlusROMRequest::State::created) {
+    myMsgCallback("Ignoring new PlusROM request made while another is ready to be sent");
     return;
+  }
+
+  if (myRequest->getState() == PlusROMRequest::State::done) {
+    // Try to make room by consuming any requests that have completed.
+    receive();
   }
 
   string id = mySettings.getString("plusroms.id");
@@ -417,7 +428,7 @@ void PlusROM::send()
   if(id != EmptyString)
   {
     const string nick = mySettings.getString("plusroms.nick");
-    auto request = make_shared<PlusROMRequest>(
+    myRequest = make_shared<PlusROMRequest>(
       PlusROMRequest::Destination(myHost, "/" + myPath),
       PlusROMRequest::PlusStoreId(nick, id),
       myTxBuffer.data(),
@@ -427,14 +438,12 @@ void PlusROM::send()
     myLastTxPos = myTxPos - 1;
     myTxPos = 0;
 
-    // We push to the back in order to avoid reverse_iterator in receive()
-    myPendingRequests.push_back(request);
 
     // The lambda will retain a copy of the shared_ptr that is alive as long
     // as the thread is running. Thus, the request can only be destructed once
-    // the thread has finished, and we can safely evict it from the deque at
+    // the thread has finished, and we can safely evict it from the class at
     // any time.
-    std::thread thread([request, this]()
+    std::thread thread([this](shared_ptr<PlusROMRequest> request)
     {
       request->execute();
       switch(request->getState())
@@ -450,7 +459,7 @@ void PlusROM::send()
         default:
           break;
       }
-    });
+    }, myRequest);
 
     thread.detach();
   }
@@ -461,37 +470,26 @@ void PlusROM::send()
 void PlusROM::receive()
 {
 #if defined(HTTP_LIB_SUPPORT)
-  auto iter = myPendingRequests.begin();
+  switch (myRequest->getState()) {
+    case PlusROMRequest::State::failed:
+      myMsgCallback("PlusROM data receiving failed!");
+      break;
+    case PlusROMRequest::State::done:
+    {
+      myMsgCallback("PlusROM data received successfully");
+      // Request has finished sucessfully? -> consume the response.
+      const auto [responseSize, response] = myRequest->getResponse();
 
-  while(iter != myPendingRequests.end()) {
-    switch((*iter)->getState()) {
-      case PlusROMRequest::State::failed:
-        myMsgCallback("PlusROM data receiving failed!");
-        // Request has failed? -> remove it and start over
-        myPendingRequests.erase(iter);
-        iter = myPendingRequests.begin();
-        continue;
+      myLastRxReadPos = myRxReadPos;
+      for (size_t i = 0; i < responseSize; ++i)
+        myRxBuffer[myRxWritePos++] = response[i];
 
-      case PlusROMRequest::State::done:
-      {
-        myMsgCallback("PlusROM data received successfully");
-        // Request has finished sucessfully? -> consume the response, remove it
-        // and start over
-        const auto [responseSize, response] = (*iter)->getResponse();
-
-        myLastRxReadPos = myRxReadPos;
-        for(size_t i = 0; i < responseSize; ++i)
-          myRxBuffer[myRxWritePos++] = response[i];
-
-        myPendingRequests.erase(iter);
-        iter = myPendingRequests.begin();
-        continue;
-      }
-
-      default:
-        iter++;
+      break;
     }
-  }
+    default:
+      break;
+    }
+
 #endif
 }
 
