@@ -627,6 +627,8 @@
 		DCC6A4B320A2622500863C59 /* SimpleResampler.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCC6A4B020A2622500863C59 /* SimpleResampler.hxx */; };
 		DCCA26B31FA64D5E000EE4D8 /* AbstractFrameManager.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCCA26B11FA64D5E000EE4D8 /* AbstractFrameManager.hxx */; };
 		DCCA26B41FA64D5E000EE4D8 /* FrameManager.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCCA26B21FA64D5E000EE4D8 /* FrameManager.hxx */; };
+		DCCC1ACC2E5369640016AC77 /* PatchRomCheat.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCCC1ACB2E5369640016AC77 /* PatchRomCheat.cxx */; };
+		DCCC1ACD2E5369640016AC77 /* PatchRomCheat.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCCC1ACA2E5369640016AC77 /* PatchRomCheat.hxx */; };
 		DCCE0355225104BF008C246F /* StellaSettingsDialog.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCCE0353225104BE008C246F /* StellaSettingsDialog.cxx */; };
 		DCCE0356225104BF008C246F /* StellaSettingsDialog.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCCE0354225104BF008C246F /* StellaSettingsDialog.hxx */; };
 		DCCE03582251050C008C246F /* ControlLowLevel.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCCE03572251050C008C246F /* ControlLowLevel.hxx */; };
@@ -1509,6 +1511,8 @@
 		DCC6A4B020A2622500863C59 /* SimpleResampler.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = SimpleResampler.hxx; path = audio/SimpleResampler.hxx; sourceTree = "<group>"; };
 		DCCA26B11FA64D5E000EE4D8 /* AbstractFrameManager.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = AbstractFrameManager.hxx; sourceTree = "<group>"; };
 		DCCA26B21FA64D5E000EE4D8 /* FrameManager.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = FrameManager.hxx; sourceTree = "<group>"; };
+		DCCC1ACA2E5369640016AC77 /* PatchRomCheat.hxx */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = PatchRomCheat.hxx; sourceTree = "<group>"; };
+		DCCC1ACB2E5369640016AC77 /* PatchRomCheat.cxx */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = PatchRomCheat.cxx; sourceTree = "<group>"; };
 		DCCE0353225104BE008C246F /* StellaSettingsDialog.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = StellaSettingsDialog.cxx; sourceTree = "<group>"; };
 		DCCE0354225104BF008C246F /* StellaSettingsDialog.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = StellaSettingsDialog.hxx; sourceTree = "<group>"; };
 		DCCE03572251050C008C246F /* ControlLowLevel.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = ControlLowLevel.hxx; sourceTree = "<group>"; };
@@ -2653,17 +2657,19 @@
 		DCCC0C9109C3541E0088BFF1 /* cheat */ = {
 			isa = PBXGroup;
 			children = (
-				DC47454A09C34BFA00EDDA3A /* BankRomCheat.cxx */,
 				DC47454B09C34BFA00EDDA3A /* BankRomCheat.hxx */,
+				DC47454A09C34BFA00EDDA3A /* BankRomCheat.cxx */,
 				DC47454C09C34BFA00EDDA3A /* Cheat.hxx */,
-				DC47454D09C34BFA00EDDA3A /* CheatCodeDialog.cxx */,
 				DC47454E09C34BFA00EDDA3A /* CheatCodeDialog.hxx */,
-				DC47454F09C34BFA00EDDA3A /* CheatManager.cxx */,
+				DC47454D09C34BFA00EDDA3A /* CheatCodeDialog.cxx */,
 				DC47455009C34BFA00EDDA3A /* CheatManager.hxx */,
-				DC47455109C34BFA00EDDA3A /* CheetahCheat.cxx */,
+				DC47454F09C34BFA00EDDA3A /* CheatManager.cxx */,
 				DC47455209C34BFA00EDDA3A /* CheetahCheat.hxx */,
-				DC47455309C34BFA00EDDA3A /* RamCheat.cxx */,
+				DC47455109C34BFA00EDDA3A /* CheetahCheat.cxx */,
+				DCCC1ACA2E5369640016AC77 /* PatchRomCheat.hxx */,
+				DCCC1ACB2E5369640016AC77 /* PatchRomCheat.cxx */,
 				DC47455409C34BFA00EDDA3A /* RamCheat.hxx */,
+				DC47455309C34BFA00EDDA3A /* RamCheat.cxx */,
 			);
 			name = cheat;
 			path = ../cheat;
@@ -3059,6 +3065,7 @@
 				DCDE647E23E6638E00EE3EFF /* MessageMenu.hxx in Headers */,
 				DCEC585E1E945175002F0246 /* DelayQueueIterator.hxx in Headers */,
 				DC6F394A21B897C700897AD8 /* FatalEmulationError.hxx in Headers */,
+				DCCC1ACD2E5369640016AC77 /* PatchRomCheat.hxx in Headers */,
 				DCA23AEA0D75B22500F77B33 /* CartX07.hxx in Headers */,
 				DC4613680D92C03600D8DAB9 /* RomAuditDialog.hxx in Headers */,
 				DC0EF9512C5D4B900007F3B5 /* json.hpp in Headers */,
@@ -3473,6 +3480,7 @@
 				DC96162C1F817830008A2206 /* AmigaMouseWidget.cxx in Sources */,
 				2D9174C509BA90380026E9FF /* Font.cxx in Sources */,
 				2D9174C609BA90380026E9FF /* Debugger.cxx in Sources */,
+				DCCC1ACC2E5369640016AC77 /* PatchRomCheat.cxx in Sources */,
 				2D9174C709BA90380026E9FF /* DebuggerParser.cxx in Sources */,
 				2D9174C809BA90380026E9FF /* EditableWidget.cxx in Sources */,
 				E0A384142589741A0062AA93 /* KeyValueRepositorySqlite.cxx in Sources */,
