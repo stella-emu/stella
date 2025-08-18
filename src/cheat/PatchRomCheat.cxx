@@ -22,12 +22,11 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 PatchRomCheat::PatchRomCheat(OSystem& os, string_view name, string_view code)
-  : Cheat(os, name, code)
+  : Cheat(os, name, code),
+    address{static_cast<uInt16>(BSPF::stoi<16>(myCode.substr(0, 4)))},
+    new_value{static_cast<uInt8>(BSPF::stoi<16>(myCode.substr(4, 2)))},
+    original_value{static_cast<uInt8>(BSPF::stoi<16>(myCode.substr(6, 2)))}
 {
-  address = static_cast<uInt16>(BSPF::stoi<16>(myCode.substr(0, 4)));
-  new_value = static_cast<uInt8>(BSPF::stoi<16>(myCode.substr(4, 2)));
-  original_value = static_cast<uInt8>(BSPF::stoi<16>(myCode.substr(6, 2)));
-  throwaway = static_cast<uInt8>(BSPF::stoi<16>(myCode.substr(8, 1)) + 1); //used to make it an 9 number code only
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

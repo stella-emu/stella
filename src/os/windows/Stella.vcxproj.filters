@@ -1269,6 +1269,9 @@
     <ClCompile Include="..\..\emucore\CortexM0.cxx">
       <Filter>Source Files\emucore</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\cheat\PatchRomCheat.cxx">
+      <Filter>Source Files\cheat</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\emucore\AtariVox.hxx">
@@ -2569,6 +2572,9 @@
     </ClInclude>
     <ClInclude Include="..\..\emucore\elf\VcsLib.hxx">
       <Filter>Header Files\emucore\elf</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\cheat\PatchRomCheat.hxx">
+      <Filter>Header Files\cheat</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
