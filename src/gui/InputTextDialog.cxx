@@ -245,10 +245,6 @@ void InputTextDialog::handleCommand(CommandSender* sender, int cmd,
       }
       break;
 
-    case EditableWidget::kCancelCmd:
-      Dialog::handleCommand(sender, GuiObject::kCloseCmd, data, id);
-      break;
-
     default:
       Dialog::handleCommand(sender, cmd, data, id);
       break;
