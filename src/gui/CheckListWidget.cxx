@@ -135,8 +135,9 @@ void CheckListWidget::drawWidget(bool hilite)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Common::Rect CheckListWidget::getEditRect() const
 {
-  const uInt32 yoffset = (_selectedItem - _currentPos) * _lineHeight,
-               xoffset = CheckboxWidget::boxSize(_font) + 10;
+  const uInt32
+    xoffset = CheckboxWidget::boxSize(_font) + 10,
+    yoffset = std::max((_selectedItem - _currentPos), 0) * _lineHeight;
 
   return {
     2 + xoffset, 1 + yoffset,
