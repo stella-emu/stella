@@ -62,7 +62,7 @@ bool CartridgeMDM::checkSwitchBank(uInt16 address, uInt8)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt8 CartridgeMDM::peek(uInt16 address)
+uInt8 CartridgeMDM::peek(uInt16 address, bool banked)
 {
   // Because of the way we've set up accessing above, we can only
   // get here when the addresses are from 0x800 - 0xBFF
@@ -70,7 +70,7 @@ uInt8 CartridgeMDM::peek(uInt16 address)
   checkSwitchBank(address, 0);
 
   const int hotspot = ((address & 0x0F00) >> 8) - 8;
-  return myHotSpotPageAccess[hotspot].device->peek(address);
+  return myHotSpotPageAccess[hotspot].device->peek(address, true);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

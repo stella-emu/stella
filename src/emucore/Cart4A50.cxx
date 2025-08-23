@@ -76,52 +76,58 @@ void Cartridge4A50::install(System& system)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt8 Cartridge4A50::peek(uInt16 address)
+uInt8 Cartridge4A50::peek(uInt16 address, bool banked)
 {
   uInt8 value = 0;
-
-  if(!(address & 0x1000))                      // Hotspots below 0x1000
+  if (banked == false)
   {
-    // Check for RAM or TIA mirroring
-    const uInt16 lowAddress = address & 0x3ff;
-    if(lowAddress & 0x80)
-      value = mySystem->m6532().peek(address);
-    else if(!(lowAddress & 0x200))
-      value = mySystem->tia().peek(address);
-
-    checkBankSwitch(address, value);
+    return myImage[address];
   }
   else
   {
-    if((address & 0x1800) == 0x1000)           // 2K region from 0x1000 - 0x17ff
+    if (!(address & 0x1000))            // Hotspots below 0x1000
     {
-      value = myIsRomLow ? myImage[(address & 0x7ff) + mySliceLow]
-                         : myRAM[(address & 0x7ff) + mySliceLow];
-    }
-    else if(((address & 0x1fff) >= 0x1800) &&  // 1.5K region from 0x1800 - 0x1dff
-            ((address & 0x1fff) <= 0x1dff))
-    {
-      value = myIsRomMiddle ? myImage[(address & 0x7ff) + mySliceMiddle + 0x10000]
-                            : myRAM[(address & 0x7ff) + mySliceMiddle];
-    }
-    else if((address & 0x1f00) == 0x1e00)      // 256B region from 0x1e00 - 0x1eff
-    {
-      value = myIsRomHigh ? myImage[(address & 0xff) + mySliceHigh + 0x10000]
-                          : myRAM[(address & 0xff) + mySliceHigh];
-    }
-    else if((address & 0x1f00) == 0x1f00)      // 256B region from 0x1f00 - 0x1fff
-    {
-      value = myImage[(address & 0xff) + 0x1ff00];
-      if(!hotspotsLocked() && ((myLastData & 0xe0) == 0x60) &&
-         ((myLastAddress >= 0x1000) || (myLastAddress < 0x200)))
-        mySliceHigh = (mySliceHigh & 0xf0ff) | ((address & 0x8) << 8) |
-                      ((address & 0x70) << 4);
-    }
-  }
-  myLastData = value;
-  myLastAddress = address & 0x1fff;
+      // Check for RAM or TIA mirroring
+      const uInt16 lowAddress = address & 0x3ff;
+      if (lowAddress & 0x80)
+        value = mySystem->m6532().peek(address, true);
+      else if (!(lowAddress & 0x200))
+        value = mySystem->tia().peek(address, true);
 
-  return value;
+      checkBankSwitch(address, value);
+    }
+    else
+    {
+      if ((address & 0x1800) == 0x1000)       // 2K region from 0x1000 - 0x17ff
+      {
+        value = myIsRomLow ? myImage[(address & 0x7ff) + mySliceLow]
+          : myRAM[(address & 0x7ff) + mySliceLow];
+      }
+      else if (((address & 0x1fff) >= 0x1800) &&  // 1.5K region from 0x1800 - 0x1dff
+        ((address & 0x1fff) <= 0x1dff))
+      {
+        value = myIsRomMiddle ? myImage[(address & 0x7ff) + mySliceMiddle + 0x10000]
+          : myRAM[(address & 0x7ff) + mySliceMiddle];
+      }
+      else if ((address & 0x1f00) == 0x1e00)    // 256B region from 0x1e00 - 0x1eff
+      {
+        value = myIsRomHigh ? myImage[(address & 0xff) + mySliceHigh + 0x10000]
+          : myRAM[(address & 0xff) + mySliceHigh];
+      }
+      else if ((address & 0x1f00) == 0x1f00)    // 256B region from 0x1f00 - 0x1fff
+      {
+        value = myImage[(address & 0xff) + 0x1ff00];
+        if (!hotspotsLocked() && ((myLastData & 0xe0) == 0x60) &&
+          ((myLastAddress >= 0x1000) || (myLastAddress < 0x200)))
+          mySliceHigh = (mySliceHigh & 0xf0ff) | ((address & 0x8) << 8) |
+          ((address & 0x70) << 4);
+      }
+    }
+    myLastData = value;
+    myLastAddress = address & 0x1fff;
+
+    return value;
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -319,35 +325,43 @@ void Cartridge4A50::checkBankSwitch(uInt16 address, uInt8 value)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool Cartridge4A50::patch(uInt16 address, uInt8 value)
+bool Cartridge4A50::patch(uInt16 address, uInt8 value, bool banked)
 {
-  if((address & 0x1800) == 0x1000)           // 2K region from 0x1000 - 0x17ff
+  if (banked == false)
   {
-    if(myIsRomLow)
-      myImage[(address & 0x7ff) + mySliceLow] = value;
-    else
-      myRAM[(address & 0x7ff) + mySliceLow] = value;
+    myImage[address] = value;
+    return false;
   }
-  else if(((address & 0x1fff) >= 0x1800) &&  // 1.5K region from 0x1800 - 0x1dff
-          ((address & 0x1fff) <= 0x1dff))
+  else
   {
-    if(myIsRomMiddle)
-      myImage[(address & 0x7ff) + mySliceMiddle + 0x10000] = value;
-    else
-      myRAM[(address & 0x7ff) + mySliceMiddle] = value;
+    if ((address & 0x1800) == 0x1000)           // 2K region from 0x1000 - 0x17ff
+    {
+      if (myIsRomLow)
+        myImage[(address & 0x7ff) + mySliceLow] = value;
+      else
+        myRAM[(address & 0x7ff) + mySliceLow] = value;
+    }
+    else if (((address & 0x1fff) >= 0x1800) &&  // 1.5K region from 0x1800 - 0x1dff
+        ((address & 0x1fff) <= 0x1dff))
+    {
+      if (myIsRomMiddle)
+        myImage[(address & 0x7ff) + mySliceMiddle + 0x10000] = value;
+      else
+        myRAM[(address & 0x7ff) + mySliceMiddle] = value;
+    }
+    else if ((address & 0x1f00) == 0x1e00)      // 256B region from 0x1e00 - 0x1eff
+    {
+      if (myIsRomHigh)
+        myImage[(address & 0xff) + mySliceHigh + 0x10000] = value;
+      else
+        myRAM[(address & 0xff) + mySliceHigh] = value;
+    }
+    else if ((address & 0x1f00) == 0x1f00)      // 256B region from 0x1f00 - 0x1fff
+    {
+      myImage[(address & 0xff) + 0x1ff00] = value;
+    }
+    return myBankChanged = true;
   }
-  else if((address & 0x1f00) == 0x1e00)      // 256B region from 0x1e00 - 0x1eff
-  {
-    if(myIsRomHigh)
-      myImage[(address & 0xff) + mySliceHigh + 0x10000] = value;
-    else
-      myRAM[(address & 0xff) + mySliceHigh] = value;
-  }
-  else if((address & 0x1f00) == 0x1f00)      // 256B region from 0x1f00 - 0x1fff
-  {
-    myImage[(address & 0xff) + 0x1ff00] = value;
-  }
-  return myBankChanged = true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

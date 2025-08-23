@@ -92,65 +92,72 @@ void CartridgeAR::install(System& system)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt8 CartridgeAR::peek(uInt16 addr)
+uInt8 CartridgeAR::peek(uInt16 addr, bool banked)
 {
-  // In debugger/bank-locked mode, we ignore all hotspots and in general
-  // anything that can change the internal state of the cart
-  if(hotspotsLocked())
-    return myImage[(addr & 0x07FF) + myImageOffset[(addr & 0x0800) ? 1 : 0]];
-
-  // Is the "dummy" SC BIOS hotspot for reading a load being accessed?
-  if(((addr & 0x1FFF) == 0x1850) && (myImageOffset[1] == RAM_SIZE))
+  if (banked == false)
   {
-    // Get load that's being accessed (BIOS places load number at 0x80)
-    const uInt8 load = mySystem->peek(0x0080);
-
-    // Read the specified load into RAM
-    loadIntoRAM(load);
-
-    return myImage[(addr & 0x07FF) + myImageOffset[1]];
+    return myImage[addr];
   }
+  else
+  {
+    // In debugger/bank-locked mode, we ignore all hotspots and in general
+    // anything that can change the internal state of the cart
+    if (hotspotsLocked())
+      return myImage[(addr & 0x07FF) + myImageOffset[(addr & 0x0800) ? 1 : 0]];
 
-  // Cancel any pending write if more than 5 distinct accesses have occurred
-  // TODO: Modify to handle when the distinct counter wraps around...
-  if(myWritePending &&
+    // Is the "dummy" SC BIOS hotspot for reading a load being accessed?
+    if (((addr & 0x1FFF) == 0x1850) && (myImageOffset[1] == RAM_SIZE))
+    {
+      // Get load that's being accessed (BIOS places load number at 0x80)
+      const uInt8 load = mySystem->peek(0x0080, true);
+
+      // Read the specified load into RAM
+      loadIntoRAM(load);
+
+      return myImage[(addr & 0x07FF) + myImageOffset[1]];
+    }
+
+    // Cancel any pending write if more than 5 distinct accesses have occurred
+    // TODO: Modify to handle when the distinct counter wraps around...
+    if (myWritePending &&
       (mySystem->m6502().distinctAccesses() > myNumberOfDistinctAccesses + 5))
-  {
-    myWritePending = false;
-  }
+    {
+      myWritePending = false;
+    }
 
-  // Is the data hold register being set?
-  if(!(addr & 0x0F00) && (!myWriteEnabled || !myWritePending))
-  {
-    myDataHoldRegister = static_cast<uInt8>(addr);  // FIXME - check cast here
-    myNumberOfDistinctAccesses = mySystem->m6502().distinctAccesses();
-    myWritePending = true;
-  }
-  // Is the bank configuration hotspot being accessed?
-  else if((addr & 0x1FFF) == 0x1FF8)
-  {
-    // Yes, so handle bank configuration
-    myWritePending = false;
-    bankConfiguration(myDataHoldRegister);
-  }
-  // Handle poke if writing enabled
-  else if(myWriteEnabled && myWritePending &&
+    // Is the data hold register being set?
+    if (!(addr & 0x0F00) && (!myWriteEnabled || !myWritePending))
+    {
+      myDataHoldRegister = static_cast<uInt8>(addr);  // FIXME - check cast here
+      myNumberOfDistinctAccesses = mySystem->m6502().distinctAccesses();
+      myWritePending = true;
+    }
+    // Is the bank configuration hotspot being accessed?
+    else if ((addr & 0x1FFF) == 0x1FF8)
+    {
+      // Yes, so handle bank configuration
+      myWritePending = false;
+      bankConfiguration(myDataHoldRegister);
+    }
+    // Handle poke if writing enabled
+    else if (myWriteEnabled && myWritePending &&
       (mySystem->m6502().distinctAccesses() == (myNumberOfDistinctAccesses + 5)))
-  {
-    if((addr & 0x0800) == 0)
     {
-      myImage[(addr & 0x07FF) + myImageOffset[0]] = myDataHoldRegister;
-      mySystem->setDirtyPage(addr);
+      if ((addr & 0x0800) == 0)
+      {
+        myImage[(addr & 0x07FF) + myImageOffset[0]] = myDataHoldRegister;
+        mySystem->setDirtyPage(addr);
+      }
+      else if (myImageOffset[1] != (3 * BANK_SIZE))  // Can't poke to ROM :-)
+      {
+        myImage[(addr & 0x07FF) + myImageOffset[1]] = myDataHoldRegister;
+        mySystem->setDirtyPage(addr);
+      }
+      myWritePending = false;
     }
-    else if(myImageOffset[1] != (3 * BANK_SIZE))    // Can't poke to ROM :-)
-    {
-      myImage[(addr & 0x07FF) + myImageOffset[1]] = myDataHoldRegister;
-      mySystem->setDirtyPage(addr);
-    }
-    myWritePending = false;
-  }
 
-  return myImage[(addr & 0x07FF) + myImageOffset[(addr & 0x0800) ? 1 : 0]];
+    return myImage[(addr & 0x07FF) + myImageOffset[(addr & 0x0800) ? 1 : 0]];
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -375,7 +382,7 @@ uInt16 CartridgeAR::romBankCount() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool CartridgeAR::patch(uInt16 address, uInt8 value)
+bool CartridgeAR::patch(uInt16 address, uInt8 value, bool banked)
 {
   // TODO - add support for debugger
   return false;

@@ -211,118 +211,124 @@ inline void CartridgeCDF::callFunction(uInt8 value)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt8 CartridgeCDF::peek(uInt16 address)
+uInt8 CartridgeCDF::peek(uInt16 address, bool banked)
 {
-  // Is this a PlusROM?
-  if(myPlusROM->isValid())
+  if (banked == false)
   {
-    uInt8 value = 0;
-    if(myPlusROM->peekHotspot(address, value))
-      return value;
+    return myImage[address];
   }
-
-  address &= 0x0FFF;
-  uInt8 peekvalue = myProgramImage[myBankOffset + address];
-
-  // In debugger/bank-locked mode, we ignore all hotspots and in general
-  // anything that can change the internal state of the cart
-  if(hotspotsLocked())
-    return peekvalue;
-
-  // implement JMP FASTJMP which fetches the destination address from stream 33
-  if (myFastJumpActive
-      && myJMPoperandAddress == address)
+  else
   {
-    --myFastJumpActive;
-    ++myJMPoperandAddress;
-
-    uInt32 pointer = getDatastreamPointer(myFastJumpStream);
-    uInt8 value = 0;
-    if (isCDFJplus()) {
-      value = myDisplayImage[ pointer >> 16 ];
-      pointer += 0x00010000;  // always increment by 1
-    } else {
-      value = myDisplayImage[ pointer >> 20 ];
-      pointer += 0x00100000;  // always increment by 1
+    // Is this a PlusROM?
+    if (myPlusROM->isValid())
+    {
+      uInt8 value = 0;
+      if (myPlusROM->peekHotspot(address, value))
+        return value;
     }
 
-    setDatastreamPointer(myFastJumpStream, pointer);
+    address &= 0x0FFF;
+    uInt8 peekvalue = myProgramImage[myBankOffset + address];
 
-    return value;
-  }
+    // In debugger/bank-locked mode, we ignore all hotspots and in general
+    // anything that can change the internal state of the cart
+    if (hotspotsLocked())
+      return peekvalue;
 
-  // test for JMP FASTJUMP where FASTJUMP = $0000
-  if (FAST_FETCH_ON(myMode)
-      && peekvalue == 0x4C
-      && (myProgramImage[myBankOffset + address+1] & myFastjumpStreamIndexMask) == 0
-      && myProgramImage[myBankOffset + address+2] == 0)
-  {
-    myFastJumpActive = 2; // return next two peeks from datastream 31
-    myJMPoperandAddress = address + 1;
-    myFastJumpStream = myProgramImage[myBankOffset + address+1] + JUMPSTREAM_BASE;
-    return peekvalue;
-  }
-
-  myJMPoperandAddress = 0;
-
-  // Do a FAST FETCH LDA# if:
-  //  1) in Fast Fetch mode
-  //  2) peeking the operand of an LDA # instruction
-  //  3) peek value is between myDSfetcherOffset and myDSfetcherOffset+34 inclusive
-  bool fastfetch = false;
-  if (myFastFetcherOffset)
-    fastfetch = (FAST_FETCH_ON(myMode) && myLDAXYimmediateOperandAddress == address
-                 && peekvalue >= myRAM[myFastFetcherOffset]
-                 && peekvalue <= myRAM[myFastFetcherOffset]+myAmplitudeStream);
-  else
-    fastfetch = (FAST_FETCH_ON(myMode) && myLDAXYimmediateOperandAddress == address
-                 && peekvalue <= myAmplitudeStream);
-  if (fastfetch)
-  {
-    myLDAXYimmediateOperandAddress = LDAXY_OVERRIDE_INACTIVE;
-    if (myFastFetcherOffset)
-      peekvalue -= myRAM[myFastFetcherOffset]; // normalize peekvalue to 0 - 35
-    if (peekvalue == myAmplitudeStream)
+    // implement JMP FASTJMP which fetches the destination address from stream 33
+    if (myFastJumpActive
+      && myJMPoperandAddress == address)
     {
-      updateMusicModeDataFetchers();
+      --myFastJumpActive;
+      ++myJMPoperandAddress;
 
-      if (DIGITAL_AUDIO_ON(myMode))
+      uInt32 pointer = getDatastreamPointer(myFastJumpStream);
+      uInt8 value = 0;
+      if (isCDFJplus()) {
+        value = myDisplayImage[pointer >> 16];
+        pointer += 0x00010000;  // always increment by 1
+      } else {
+        value = myDisplayImage[pointer >> 20];
+        pointer += 0x00100000;  // always increment by 1
+      }
+
+      setDatastreamPointer(myFastJumpStream, pointer);
+
+      return value;
+    }
+
+    // test for JMP FASTJUMP where FASTJUMP = $0000
+    if (FAST_FETCH_ON(myMode)
+      && peekvalue == 0x4C
+      && (myProgramImage[myBankOffset + address + 1] & myFastjumpStreamIndexMask) == 0
+      && myProgramImage[myBankOffset + address + 2] == 0)
+    {
+      myFastJumpActive = 2; // return next two peeks from datastream 31
+      myJMPoperandAddress = address + 1;
+      myFastJumpStream = myProgramImage[myBankOffset + address + 1] + JUMPSTREAM_BASE;
+      return peekvalue;
+    }
+
+    myJMPoperandAddress = 0;
+
+    // Do a FAST FETCH LDA# if:
+    //  1) in Fast Fetch mode
+    //  2) peeking the operand of an LDA # instruction
+    //  3) peek value is between myDSfetcherOffset and myDSfetcherOffset+34 inclusive
+    bool fastfetch = false;
+    if (myFastFetcherOffset)
+      fastfetch = (FAST_FETCH_ON(myMode) && myLDAXYimmediateOperandAddress == address
+        && peekvalue >= myRAM[myFastFetcherOffset]
+        && peekvalue <= myRAM[myFastFetcherOffset] + myAmplitudeStream);
+    else
+      fastfetch = (FAST_FETCH_ON(myMode) && myLDAXYimmediateOperandAddress == address
+        && peekvalue <= myAmplitudeStream);
+    if (fastfetch)
+    {
+      myLDAXYimmediateOperandAddress = LDAXY_OVERRIDE_INACTIVE;
+      if (myFastFetcherOffset)
+        peekvalue -= myRAM[myFastFetcherOffset]; // normalize peekvalue to 0 - 35
+      if (peekvalue == myAmplitudeStream)
       {
-        // retrieve packed sample (max size is 2K, or 4K of unpacked data)
+        updateMusicModeDataFetchers();
 
-        const uInt32 sampleaddress = getSample() + (myMusicCounters[0] >> (isCDFJplus() ? 13 : 21));
+        if (DIGITAL_AUDIO_ON(myMode))
+        {
+          // retrieve packed sample (max size is 2K, or 4K of unpacked data)
 
-        // get sample value from ROM or RAM
-        if (sampleaddress < 0x00080000)
-          peekvalue = myImage[sampleaddress];
-        else if (sampleaddress >= 0x40000000 && sampleaddress < 0x40008000) // check for RAM
-          peekvalue = myRAM[sampleaddress - 0x40000000];
+          const uInt32 sampleaddress = getSample() + (myMusicCounters[0] >> (isCDFJplus() ? 13 : 21));
+
+          // get sample value from ROM or RAM
+          if (sampleaddress < 0x00080000)
+            peekvalue = myImage[sampleaddress];
+          else if (sampleaddress >= 0x40000000 && sampleaddress < 0x40008000) // check for RAM
+            peekvalue = myRAM[sampleaddress - 0x40000000];
+          else
+            peekvalue = 0;
+
+          // make sure current volume value is in the lower nybble
+          if ((myMusicCounters[0] & (1 << (isCDFJplus() ? 12 : 20))) == 0)
+            peekvalue >>= 4;
+          peekvalue &= 0x0f;
+        }
         else
-          peekvalue = 0;
-
-        // make sure current volume value is in the lower nybble
-        if ((myMusicCounters[0] & (1<<(isCDFJplus() ? 12 : 20))) == 0)
-          peekvalue >>= 4;
-        peekvalue &= 0x0f;
+        {
+          peekvalue = myDisplayImage[getWaveform(0) + (myMusicCounters[0] >> myMusicWaveformSize[0])]
+            + myDisplayImage[getWaveform(1) + (myMusicCounters[1] >> myMusicWaveformSize[1])]
+            + myDisplayImage[getWaveform(2) + (myMusicCounters[2] >> myMusicWaveformSize[2])];
+        }
+        return peekvalue;
       }
       else
       {
-        peekvalue = myDisplayImage[getWaveform(0) + (myMusicCounters[0] >> myMusicWaveformSize[0])]
-                  + myDisplayImage[getWaveform(1) + (myMusicCounters[1] >> myMusicWaveformSize[1])]
-                  + myDisplayImage[getWaveform(2) + (myMusicCounters[2] >> myMusicWaveformSize[2])];
+        return readFromDatastream(peekvalue);
       }
-      return peekvalue;
     }
-    else
-    {
-      return readFromDatastream(peekvalue);
-    }
-  }
-  myLDAXYimmediateOperandAddress = LDAXY_OVERRIDE_INACTIVE;
+    myLDAXYimmediateOperandAddress = LDAXY_OVERRIDE_INACTIVE;
 
-  // Switch banks if necessary
-  switch(address)
-  {
+    // Switch banks if necessary
+    switch (address)
+    {
     case 0x0FF4:
       bank(isCDFJplus() ? 0 : 6);
       break;
@@ -357,17 +363,18 @@ uInt8 CartridgeCDF::peek(uInt16 address)
 
     default:
       break;
-  }
+    }
 
-  if (FAST_FETCH_ON(myMode))
-  {
-    if ((peekvalue == 0xA9) ||
-        (myLDXenabled && peekvalue == 0xA2 ) ||
+    if (FAST_FETCH_ON(myMode))
+    {
+      if ((peekvalue == 0xA9) ||
+        (myLDXenabled && peekvalue == 0xA2) ||
         (myLDYenabled && peekvalue == 0xA0))
-      myLDAXYimmediateOperandAddress = address + 1;
-  }
+        myLDAXYimmediateOperandAddress = address + 1;
+    }
 
-  return peekvalue;
+    return peekvalue;
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -489,18 +496,26 @@ uInt16 CartridgeCDF::romBankCount() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool CartridgeCDF::patch(uInt16 address, uInt8 value)
+bool CartridgeCDF::patch(uInt16 address, uInt8 value, bool banked)
 {
-  address &= 0x0FFF;
-
-  // For now, we ignore attempts to patch the CDF address space
-  if(address >= 0x0040)
+  if (banked == false)
   {
-    myProgramImage[myBankOffset + (address & 0x0FFF)] = value;
-    return myBankChanged = true;
+    myProgramImage[address] = value;
+    return false;
   }
   else
-    return false;
+  {
+    address &= 0x0FFF;
+
+    // For now, we ignore attempts to patch the CDF address space
+    if (address >= 0x0040)
+    {
+      myProgramImage[myBankOffset + (address & 0x0FFF)] = value;
+      return myBankChanged = true;
+    }
+    else
+      return false;
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -60,7 +60,7 @@ class CartridgeELF: public Cartridge {
 
     bool load(Serializer& in) override;
 
-    uInt8 peek(uInt16 address) override;
+    uInt8 peek(uInt16 address, bool banked) override;
     uInt8 peekOob(uInt16 address) override;
 
     bool poke(uInt16 address, uInt8 value) override;
@@ -71,7 +71,7 @@ class CartridgeELF: public Cartridge {
   public:
     bool bankChanged() override { return false; }
 
-    bool patch(uInt16 address, uInt8 value) override { return false; }
+    bool patch(uInt16 address, uInt8 value, bool banked) override { return false; }
 
     const ByteBuffer& getImage(size_t& size) const override;
 

@@ -234,85 +234,91 @@ inline void CartridgeBUS::callFunction(uInt8 value)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt8 CartridgeBUS::peek(uInt16 address)
+uInt8 CartridgeBUS::peek(uInt16 address, bool banked)
 {
-  // Is this a PlusROM?
-  if(myPlusROM->isValid())
+  if (banked == false)
   {
-    uInt8 value = 0;
-    if(myPlusROM->peekHotspot(address, value))
-      return value;
-  }
-
-  if(!(address & 0x1000))                      // Hotspots below 0x1000
-  {
-    // Check for RAM or TIA mirroring
-    const uInt16 lowAddress = address & 0x3ff;
-    if(lowAddress & 0x80)
-      return mySystem->m6532().peek(address);
-    else if(!(lowAddress & 0x200))
-      return mySystem->tia().peek(address);
+    return myImage[address];
   }
   else
   {
-    address &= 0x0FFF;
-
-    uInt8 peekvalue = myProgramImage[myBankOffset + address];
-
     // In debugger/bank-locked mode, we ignore all hotspots and in general
-    // anything that can change the internal state of the cart
-    if(hotspotsLocked())
-      return peekvalue;
+    if (myPlusROM->isValid())
+    {
+      uInt8 value = 0;
+      if (myPlusROM->peekHotspot(address, value))
+        return value;
+    }
 
-    if (myBUSSubtype == BUSSubtype::BUS3)
+    if (!(address & 0x1000))            // Hotspots below 0x1000
     {
       // Fast Jump only supported in BUS3
+      const uInt16 lowAddress = address & 0x3ff;
+      if (lowAddress & 0x80)
+        return mySystem->m6532().peek(address, true);
+      else if (!(lowAddress & 0x200))
+        return mySystem->tia().peek(address, true);
+    }
+    else
+    {
+      address &= 0x0FFF;
+
+      uInt8 peekvalue = myProgramImage[myBankOffset + address];
+
       // implement JMP FASTJMP which fetches the destination address from stream 17
-      if (myFastJumpActive
-          && myJMPoperandAddress == address)
+      // anything that can change the internal state of the cart
+      if (hotspotsLocked())
+        return peekvalue;
+
+      if (myBUSSubtype == BUSSubtype::BUS3)
       {
-        --myFastJumpActive;
-        ++myJMPoperandAddress;
+        // Fast Jump only supported in BUS3
+        // implement JMP FASTJMP which fetches the destination address from stream 17
+        if (myFastJumpActive
+          && myJMPoperandAddress == address)
+        {
+          --myFastJumpActive;
+          ++myJMPoperandAddress;
 
-        uInt32 pointer = getDatastreamPointer(JUMPSTREAM);
-        const uInt8 value = myDisplayImage[pointer >> 20];
-        pointer += 0x100000;  // always increment by 1
-        setDatastreamPointer(JUMPSTREAM, pointer);
+          uInt32 pointer = getDatastreamPointer(JUMPSTREAM);
+          const uInt8 value = myDisplayImage[pointer >> 20];
+          pointer += 0x100000;  // always increment by 1
+          setDatastreamPointer(JUMPSTREAM, pointer);
 
-        return value;
+          return value;
+        }
+
+        // test for JMP FASTJUMP where FASTJUMP = $0000
+        if (BUS_STUFF_ON(myMode)
+          && peekvalue == 0x4C
+          && myProgramImage[myBankOffset + address + 1] == 0
+          && myProgramImage[myBankOffset + address + 2] == 0)
+        {
+          myFastJumpActive = 2; // return next two peeks from datastream 17
+          myJMPoperandAddress = address + 1;
+          return peekvalue;
+        }
+
+        myJMPoperandAddress = 0;
       }
 
       // test for JMP FASTJUMP where FASTJUMP = $0000
-      if (BUS_STUFF_ON(myMode)
-          && peekvalue == 0x4C
-          && myProgramImage[myBankOffset + address+1] == 0
-          && myProgramImage[myBankOffset + address+2] == 0)
-      {
-        myFastJumpActive = 2; // return next two peeks from datastream 17
-        myJMPoperandAddress = address + 1;
-        return peekvalue;
-      }
+      if (BUS_STUFF_ON(myMode) && mySTYZeroPageAddress == address)
+        myBusOverdriveAddress = peekvalue;
 
-      myJMPoperandAddress = 0;
-    }
+      mySTYZeroPageAddress = 0;
 
-    // save the STY's zero page address
-    if (BUS_STUFF_ON(myMode) && mySTYZeroPageAddress == address)
-      myBusOverdriveAddress =  peekvalue;
-
-    mySTYZeroPageAddress = 0;
-
-    if (address < 0x20 &&
+      if (address < 0x20 &&
         (myBUSSubtype == BUSSubtype::BUS1 || myBUSSubtype == BUSSubtype::BUS2))
-    {
-      uInt8 result = 0;
-
-      // Get the index of the data fetcher that's being accessed
-      const uInt32 index = address & 0x0f;
-      const uInt32 function = (address >> 4) & 0x01;
-
-      switch(function)
       {
+        uInt8 result = 0;
+
+        // Get the index of the data fetcher that's being accessed
+        const uInt32 index = address & 0x0f;
+        const uInt32 function = (address >> 4) & 0x01;
+
+        switch (function)
+        {
         case 0x00:  // read from a datastream
         {
           result = readFromDatastream(index);
@@ -320,52 +326,52 @@ uInt8 CartridgeBUS::peek(uInt16 address)
         }
         case 0x01:  // misc read registers
         {
-          switch(index)
+          switch (index)
           {
-              // the following are POKE ONLY
-            case 0x00:  // 0x10 DF0WRITE
-            case 0x01:  // 0x11 DF1WRITE
-            case 0x02:  // 0x12 DF2WRITE
-            case 0x03:  // 0x13 DF3WRITE
-            case 0x04:  // 0x14 DF0PTR
-            case 0x05:  // 0x15 DF1PTR
-            case 0x06:  // 0x16 DF2PTR
-            case 0x07:  // 0x17 DF3PTR
-            case 0x09:  // 0x19 STUFFMODE
-            case 0x0a:  // 0x1A CALLFN
-              break;
+            // the following are POKE ONLY
+          case 0x00:  // 0x10 DF0WRITE
+          case 0x01:  // 0x11 DF1WRITE
+          case 0x02:  // 0x12 DF2WRITE
+          case 0x03:  // 0x13 DF3WRITE
+          case 0x04:  // 0x14 DF0PTR
+          case 0x05:  // 0x15 DF1PTR
+          case 0x06:  // 0x16 DF2PTR
+          case 0x07:  // 0x17 DF3PTR
+          case 0x09:  // 0x19 STUFFMODE
+          case 0x0a:  // 0x1A CALLFN
+            break;
 
-            case 0x08:  // 0x18 = AMPLITUDE
-            {
-              // Update the music data fetchers (counter & flag)
-              updateMusicModeDataFetchers();
+          case 0x08:  // 0x18 = AMPLITUDE
+          {
+            // Update the music data fetchers (counter & flag)
+            updateMusicModeDataFetchers();
 
-              // using myDisplayImage[] instead of myProgramImage[] because waveforms
-              // can be modified during runtime.
-              const uInt32 i = myDisplayImage[(getWaveform(0)) + (myMusicCounters[0] >> myMusicWaveformSize[0])] +
-                myDisplayImage[(getWaveform(1)) + (myMusicCounters[1] >> myMusicWaveformSize[1])] +
-                myDisplayImage[(getWaveform(2)) + (myMusicCounters[2] >> myMusicWaveformSize[2])];
+            // using myDisplayImage[] instead of myProgramImage[] because waveforms
+            // can be modified during runtime.
+            const uInt32 i = myDisplayImage[(getWaveform(0)) + (myMusicCounters[0] >> myMusicWaveformSize[0])] +
+              myDisplayImage[(getWaveform(1)) + (myMusicCounters[1] >> myMusicWaveformSize[1])] +
+              myDisplayImage[(getWaveform(2)) + (myMusicCounters[2] >> myMusicWaveformSize[2])];
 
-              result = static_cast<uInt8>(i);
-              break;
-            }
+            result = static_cast<uInt8>(i);
+            break;
+          }
 
-            default:
-              break;
+          default:
+            break;
           }
           break;
         }
 
         default:
           break;
-      }
+        }
 
-      return result;
-    }
-    else if (address >= 0xFEE && address <= 0xFF3 && myBUSSubtype == BUSSubtype::BUS3)
-    {
-      switch(address)
+        return result;
+      }
+      else if (address >= 0xFEE && address <= 0xFF3 && myBUSSubtype == BUSSubtype::BUS3)
       {
+        switch (address)
+        {
         case 0xFEE: // AMPLITUDE
           // Update the music data fetchers (counter & flag)
           updateMusicModeDataFetchers();
@@ -384,7 +390,7 @@ uInt8 CartridgeBUS::peek(uInt16 address)
               peekvalue = 0;
 
             // make sure current volume value is in the lower nybble
-            if ((myMusicCounters[0] & (1<<20)) == 0)
+            if ((myMusicCounters[0] & (1 << 20)) == 0)
               peekvalue >>= 4;
             peekvalue &= 0x0f;
           }
@@ -393,9 +399,9 @@ uInt8 CartridgeBUS::peek(uInt16 address)
             // using myDisplayImage[] instead of myProgramImage[] because waveforms
             // can be modified during runtime.
             const uInt32 i =
-                myDisplayImage[(getWaveform(0) ) + (myMusicCounters[0] >> myMusicWaveformSize[0])] +
-                myDisplayImage[(getWaveform(1) ) + (myMusicCounters[1] >> myMusicWaveformSize[1])] +
-                myDisplayImage[(getWaveform(2) ) + (myMusicCounters[2] >> myMusicWaveformSize[2])];
+              myDisplayImage[(getWaveform(0)) + (myMusicCounters[0] >> myMusicWaveformSize[0])] +
+              myDisplayImage[(getWaveform(1)) + (myMusicCounters[1] >> myMusicWaveformSize[1])] +
+              myDisplayImage[(getWaveform(2)) + (myMusicCounters[2] >> myMusicWaveformSize[2])];
 
             peekvalue = static_cast<uInt8>(i);
           }
@@ -414,12 +420,12 @@ uInt8 CartridgeBUS::peek(uInt16 address)
 
         default:
           break;
+        }
       }
-    }
-    else if (myBUSSubtype == BUSSubtype::BUS0)
-    {
-      switch(address)
+      else if (myBUSSubtype == BUSSubtype::BUS0)
       {
+        switch (address)
+        {
         case 0x00: case 0x01: case 0x02: case 0x03:
         case 0x04: case 0x05: case 0x06: case 0x07:
         case 0x08: case 0x09: case 0x0a: case 0x0b:
@@ -459,13 +465,13 @@ uInt8 CartridgeBUS::peek(uInt16 address)
 
         default:
           break;
+        }
+        //    return result;
       }
-//      return result;
-    }
-    else
-    {
-      switch(address)
+      else
       {
+        switch (address)
+        {
         case 0xFF5:
           // Set the current bank to the first 4k bank
           bank(0);
@@ -503,17 +509,17 @@ uInt8 CartridgeBUS::peek(uInt16 address)
 
         default:
           break;
+        }
       }
+
+      // this might not work right for STY $84
+      if (BUS_STUFF_ON(myMode) && peekvalue == 0x84)
+        mySTYZeroPageAddress = address + 1;
+
+      return peekvalue;
     }
-
-    // this might not work right for STY $84
-    if (BUS_STUFF_ON(myMode) && peekvalue == 0x84)
-      mySTYZeroPageAddress = address + 1;
-
-    return peekvalue;
+    return 0;  // make compiler happy
   }
-
-  return 0;  // make compiler happy
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -820,18 +826,26 @@ uInt16 CartridgeBUS::romBankCount() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool CartridgeBUS::patch(uInt16 address, uInt8 value)
+bool CartridgeBUS::patch(uInt16 address, uInt8 value, bool banked)
 {
-  address &= 0x0FFF;
-
-  // For now, we ignore attempts to patch the BUS address space
-  if(address >= 0x0040)
+  if (banked == false)
   {
-    myProgramImage[myBankOffset + (address & 0x0FFF)] = value;
-    return myBankChanged = true;
+    myProgramImage[address] = value;
+    return false;
   }
   else
-    return false;
+  {
+    address &= 0x0FFF;
+
+    // For now, we ignore attempts to patch the BUS address space
+    if (address >= 0x0040)
+    {
+      myProgramImage[myBankOffset + (address & 0x0FFF)] = value;
+      return myBankChanged = true;
+    }
+    else
+      return false;
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

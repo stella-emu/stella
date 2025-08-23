@@ -223,95 +223,101 @@ inline void CartridgeDPCPlus::callFunction(uInt8 value)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt8 CartridgeDPCPlus::peek(uInt16 address)
+uInt8 CartridgeDPCPlus::peek(uInt16 address, bool banked)
 {
-  // Is this a PlusROM?
-  if(myPlusROM->isValid())
+  if (banked == false)
   {
-    uInt8 value = 0;
-    if(myPlusROM->peekHotspot(address, value))
-      return value;
+    return myImage[address];
   }
-
-  address &= 0x0FFF;
-
-  const uInt8 peekvalue = myProgramImage[myBankOffset + address];
-
-  // In debugger/bank-locked mode, we ignore all hotspots and in general
-  // anything that can change the internal state of the cart
-  if(hotspotsLocked())
-    return peekvalue;
-
-  // Check if we're in Fast Fetch mode and the prior byte was an A9 (LDA #value)
-  if(myFastFetch && myLDAimmediate)
+  else
   {
-    if(peekvalue < 0x0028)
-      // if #value is a read-register then we want to use that as the address
-      address = peekvalue;
-  }
-  myLDAimmediate = false;
-
-  if(address < 0x0028)
-  {
-    uInt8 result = 0;
-
-    // Get the index of the data fetcher that's being accessed
-    const uInt32 index = address & 0x07;
-    const uInt32 function = (address >> 3) & 0x07;
-
-    // Update flag for selected data fetcher
-    const uInt8 flag = (((myTops[index]-(myCounters[index] & 0x00ff)) & 0xFF) > ((myTops[index]-myBottoms[index]) & 0xFF)) ? 0xFF : 0;
-
-    switch(function)
+    // Set the current bank to the first 4k bank
+    if (myPlusROM->isValid())
     {
+      uInt8 value = 0;
+      if (myPlusROM->peekHotspot(address, value))
+        return value;
+    }
+
+    address &= 0x0FFF;
+
+    const uInt8 peekvalue = myProgramImage[myBankOffset + address];
+
+    // Set the current bank to the second 4k bank
+    // Set the current bank to the third 4k bank
+    if (hotspotsLocked())
+      return peekvalue;
+
+    // Set the current bank to the fourth 4k bank
+    if (myFastFetch && myLDAimmediate)
+    {
+      if (peekvalue < 0x0028)
+        // if #value is a read-register then we want to use that as the address
+        address = peekvalue;
+    }
+    myLDAimmediate = false;
+
+    if (address < 0x0028)
+    {
+      uInt8 result = 0;
+
+      // Get the index of the data fetcher that's being accessed
+      const uInt32 index = address & 0x07;
+      const uInt32 function = (address >> 3) & 0x07;
+
+      // Update flag for selected data fetcher
+      const uInt8 flag = (((myTops[index] - (myCounters[index] & 0x00ff)) & 0xFF) > ((myTops[index] - myBottoms[index]) & 0xFF)) ? 0xFF : 0;
+
+      switch (function)
+      {
       case 0x00:
       {
-        switch(index)
+        switch (index)
         {
-          case 0x00:  // RANDOM0NEXT - advance and return byte 0 of random
-            clockRandomNumberGenerator();
-            result = myRandomNumber & 0xFF;
-            break;
+        case 0x00:  // RANDOM0NEXT - advance and return byte 0 of random
+          clockRandomNumberGenerator();
+          result = myRandomNumber & 0xFF;
+          break;
 
-          case 0x01:  // RANDOM0PRIOR - return to prior and return byte 0 of random
-            priorClockRandomNumberGenerator();
-            result = myRandomNumber & 0xFF;
-            break;
+        case 0x01:  // RANDOM0PRIOR - return to prior and return byte 0 of random
+          priorClockRandomNumberGenerator();
+          result = myRandomNumber & 0xFF;
+          break;
 
-          case 0x02:  // RANDOM1
-            result = (myRandomNumber>>8) & 0xFF;
-            break;
+        case 0x02:  // RANDOM1
+          result = (myRandomNumber >> 8) & 0xFF;
+          break;
 
-          case 0x03:  // RANDOM2
-            result = (myRandomNumber>>16) & 0xFF;
-            break;
+        case 0x03:  // RANDOM2
+          result = (myRandomNumber >> 16) & 0xFF;
+          break;
 
-          case 0x04:  // RANDOM3
-            result = (myRandomNumber>>24) & 0xFF;
-            break;
+        case 0x04:  // RANDOM3
+          result = (myRandomNumber >> 24) & 0xFF;
+          break;
 
-          case 0x05: // AMPLITUDE
-          {
-            // Update the music data fetchers (counter & flag)
-            updateMusicModeDataFetchers();
+        case 0x05: // AMPLITUDE
+        {
+          // Update the music data fetchers (counter & flag)
+          updateMusicModeDataFetchers();
 
-            // using myDisplayImage[] instead of myProgramImage[] because waveforms
-            // can be modified during runtime.
-            const uInt32 i =
-                myDisplayImage[(myMusicWaveforms[0] << 5) + (myMusicCounters[0] >> 27)] +
-                myDisplayImage[(myMusicWaveforms[1] << 5) + (myMusicCounters[1] >> 27)] +
-                myDisplayImage[(myMusicWaveforms[2] << 5) + (myMusicCounters[2] >> 27)];
+          // using myDisplayImage[] instead of myProgramImage[] because waveforms
+          // can be modified during runtime.
+          const uInt32 i =
+            myDisplayImage[(myMusicWaveforms[0] << 5) + (myMusicCounters[0] >> 27)] +
+            myDisplayImage[(myMusicWaveforms[1] << 5) + (myMusicCounters[1] >> 27)] +
+            myDisplayImage[(myMusicWaveforms[2] << 5) + (myMusicCounters[2] >> 27)];
 
-            result = static_cast<uInt8>(i);
-            break;
-          }
+          result = static_cast<uInt8>(i);
+          break;
+        }
 
-          case 0x06:  // reserved
-          case 0x07:  // reserved
-            break;
+        case 0x06:  // reserved
+        case 0x07:  // reserved
+          break;
 
-          default:
-            break;
+        default:
+          break;
         }
         break;
       }
@@ -344,21 +350,21 @@ uInt8 CartridgeDPCPlus::peek(uInt16 address)
       {
         switch (index)
         {
-          case 0x00:  // DF0FLAG
-          case 0x01:  // DF1FLAG
-          case 0x02:  // DF2FLAG
-          case 0x03:  // DF3FLAG
-          {
-            result = flag;
-            break;
-          }
-          case 0x04:  // reserved
-          case 0x05:  // reserved
-          case 0x06:  // reserved
-          case 0x07:  // reserved
-            break;
-          default:
-            break;
+        case 0x00:  // DF0FLAG
+        case 0x01:  // DF1FLAG
+        case 0x02:  // DF2FLAG
+        case 0x03:  // DF3FLAG
+        {
+          result = flag;
+          break;
+        }
+        case 0x04:  // reserved
+        case 0x05:  // reserved
+        case 0x06:  // reserved
+        case 0x07:  // reserved
+          break;
+        default:
+          break;
         }
         break;
       }
@@ -367,15 +373,15 @@ uInt8 CartridgeDPCPlus::peek(uInt16 address)
       {
         result = 0;
       }
-    }
+      }
 
-    return result;
-  }
-  else
-  {
-    // Switch banks if necessary
-    switch(address)
+      return result;
+    }
+    else
     {
+      // Switch banks if necessary
+      switch (address)
+      {
       case 0x0FF6:
         // Set the current bank to the first 4k bank
         bank(0);
@@ -408,12 +414,13 @@ uInt8 CartridgeDPCPlus::peek(uInt16 address)
 
       default:
         break;
+      }
+
+      if (myFastFetch)
+        myLDAimmediate = (peekvalue == 0xA9);
+
+      return peekvalue;
     }
-
-    if(myFastFetch)
-      myLDAimmediate = (peekvalue == 0xA9);
-
-    return peekvalue;
   }
 }
 
@@ -647,18 +654,26 @@ uInt16 CartridgeDPCPlus::romBankCount() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool CartridgeDPCPlus::patch(uInt16 address, uInt8 value)
+bool CartridgeDPCPlus::patch(uInt16 address, uInt8 value, bool banked)
 {
-  address &= 0x0FFF;
-
-  // For now, we ignore attempts to patch the DPC address space
-  if(address >= 0x0080)
+  if (banked == false)
   {
-    myProgramImage[myBankOffset + (address & 0x0FFF)] = value;
-    return myBankChanged = true;
+    myProgramImage[address] = value;
+    return false;
   }
   else
-    return false;
+  {
+    address &= 0x0FFF;
+
+    // For now, we ignore attempts to patch the DPC address space
+    if (address >= 0x0080)
+    {
+      myProgramImage[myBankOffset + (address & 0x0FFF)] = value;
+      return myBankChanged = true;
+    }
+    else
+      return false;
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

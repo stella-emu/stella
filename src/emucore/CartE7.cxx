@@ -147,35 +147,41 @@ void CartridgeE7::checkSwitchBank(uInt16 address)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt8 CartridgeE7::peek(uInt16 address)
+uInt8 CartridgeE7::peek(uInt16 address, bool banked)
 {
   const uInt16 peekAddress = address;
-
-  // Is this a PlusROM?
-  if (myPlusROM->isValid())
+  if (banked == false)
   {
-      uInt8 value = 0;
-      if (myPlusROM->peekHotspot(address, value))
-          return value;
-  }
-
-  address &= 0x0FFF;
-
-  // Switch banks if necessary
-  checkSwitchBank(address);
-
-  if((myCurrentBank[0] == myRAMBank) && (address < BANK_SIZE / 2))
-  {
-    // Reading from the 1K write port @ $1000 triggers an unwanted write
-    return peekRAM(myRAM[address & (BANK_SIZE / 2 - 1)], peekAddress);
-  }
-  else if((address >= 0x0800) && (address <= 0x08FF))
-  {
-    // Reading from the 256B write port @ $1800 triggers an unwanted write
-    return peekRAM(myRAM[0x0400 + (myCurrentRAM << 8) + (address & 0x00FF)], peekAddress);
+    return myImage[peekAddress];
   }
   else
-    return myImage[(myCurrentBank[address >> 11] << 11) + (address & (BANK_SIZE - 1))];
+  {
+    // Is this a PlusROM?
+    if (myPlusROM->isValid())
+    {
+      uInt8 value = 0;
+      if (myPlusROM->peekHotspot(address, value))
+        return value;
+    }
+
+    address &= 0x0FFF;
+
+    // Switch banks if necessary
+    checkSwitchBank(address);
+
+    if ((myCurrentBank[0] == myRAMBank) && (address < BANK_SIZE / 2))
+    {
+      // Reading from the 1K write port @ $1000 triggers an unwanted write
+      return peekRAM(myRAM[address & (BANK_SIZE / 2 - 1)], peekAddress);
+    }
+    else if ((address >= 0x0800) && (address <= 0x08FF))
+    {
+      // Reading from the 256B write port @ $1800 triggers an unwanted write
+      return peekRAM(myRAM[0x0400 + (myCurrentRAM << 8) + (address & 0x00FF)], peekAddress);
+    }
+    else
+      return myImage[(myCurrentBank[address >> 11] << 11) + (address & (BANK_SIZE - 1))];
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -292,33 +298,41 @@ uInt16 CartridgeE7::getSegmentBank(uInt16 segment) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool CartridgeE7::patch(uInt16 address, uInt8 value)
+bool CartridgeE7::patch(uInt16 address, uInt8 value, bool banked)
 {
-  address = address & 0x0FFF;
-
-  if(address < 0x0800)
+  if (banked == false)
   {
-    if(myCurrentBank[0] == myRAMBank)
+    myImage[address] = value;
+    return false;
+  }
+  else
+  {
+    address = address & 0x0FFF;
+
+    if (address < 0x0800)
+    {
+      if (myCurrentBank[0] == myRAMBank)
+      {
+        // Normally, a write to the read port won't do anything
+        // However, the patch command is special in that ignores such
+        // cart restrictions
+        myRAM[address & 0x03FF] = value;
+      }
+      else
+        myImage[(myCurrentBank[0] << 11) + (address & (BANK_SIZE - 1))] = value;
+    }
+    else if (address < 0x0900)
     {
       // Normally, a write to the read port won't do anything
       // However, the patch command is special in that ignores such
       // cart restrictions
-      myRAM[address & 0x03FF] = value;
+      myRAM[0x0400 + (myCurrentRAM << 8) + (address & 0x00FF)] = value;
     }
     else
-      myImage[(myCurrentBank[0] << 11) + (address & (BANK_SIZE-1))] = value;
-  }
-  else if(address < 0x0900)
-  {
-    // Normally, a write to the read port won't do anything
-    // However, the patch command is special in that ignores such
-    // cart restrictions
-    myRAM[0x0400 + (myCurrentRAM << 8) + (address & 0x00FF)] = value;
-  }
-  else
-    myImage[(myCurrentBank[address >> 11] << 11) + (address & (BANK_SIZE-1))] = value;
+      myImage[(myCurrentBank[address >> 11] << 11) + (address & (BANK_SIZE - 1))] = value;
 
-  return myBankChanged = true;
+    return myBankChanged = true;
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
