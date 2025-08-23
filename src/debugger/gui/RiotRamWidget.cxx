@@ -34,7 +34,7 @@ RiotRamWidget::RiotRamWidget(GuiObject* boss, const GUI::Font& lfont,
 uInt8 RiotRamWidget::getValue(int addr) const
 {
   const auto& state = static_cast<const CartState&>(myDbg.getState());
-  return instance().debugger().peek(state.rport[addr]);
+  return instance().debugger().peek(state.rport[addr], true);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
