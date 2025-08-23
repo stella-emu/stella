@@ -1309,17 +1309,17 @@ string TIADebug::toString()
       << boolWithLabel("score",    scorePF(),    state.pf[4] != oldState.pf[4]) << " "
       << boolWithLabel("priority", priorityPF(), state.pf[5] != oldState.pf[5])
       << '\n'
-      << boolWithLabel("inpt0", myTIA.peek(0x08) & 0x80,
+      << boolWithLabel("inpt0", myTIA.peek(0x08, true) & 0x80,
                         (riotState.INPT0 & 0x80) != (oldRiotState.INPT0 & 0x80)) << " "
-      << boolWithLabel("inpt1", myTIA.peek(0x09) & 0x80,
+      << boolWithLabel("inpt1", myTIA.peek(0x09, true) & 0x80,
                         (riotState.INPT1 & 0x80) != (oldRiotState.INPT1 & 0x80)) << " "
-      << boolWithLabel("inpt2", myTIA.peek(0x0a) & 0x80,
+      << boolWithLabel("inpt2", myTIA.peek(0x0a, true) & 0x80,
                         (riotState.INPT2 & 0x80) != (oldRiotState.INPT2 & 0x80)) << " "
-      << boolWithLabel("inpt3", myTIA.peek(0x0b) & 0x80,
+      << boolWithLabel("inpt3", myTIA.peek(0x0b, true) & 0x80,
                         (riotState.INPT3 & 0x80) != (oldRiotState.INPT3 & 0x80)) << " "
-      << boolWithLabel("inpt4", myTIA.peek(0x0c) & 0x80,
+      << boolWithLabel("inpt4", myTIA.peek(0x0c, true) & 0x80,
                         (riotState.INPT4 & 0x80) != (oldRiotState.INPT4 & 0x80)) << " "
-      << boolWithLabel("inpt5", myTIA.peek(0x0d) & 0x80,
+      << boolWithLabel("inpt5", myTIA.peek(0x0d, true) & 0x80,
                         (riotState.INPT5 & 0x80) != (oldRiotState.INPT5 & 0x80)) << " "
       << boolWithLabel("dump_gnd_0123", myTIA.myAnalogReadouts[0].vblankDumped(),
                         riotState.INPTDump != oldRiotState.INPTDump)
