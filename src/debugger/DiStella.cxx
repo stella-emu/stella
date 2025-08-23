@@ -195,7 +195,7 @@ void DiStella::disasm(uInt32 distart, int pass)
         mark(myPC + myOffset, Device::VALID_ENTRY);
 
       // get opcode
-      opcode = Debugger::debugger().peek(myPC + myOffset);
+      opcode = Debugger::debugger().peek(myPC + myOffset, true);
       // get address mode for opcode
       addrMode = ourLookup[opcode].addr_mode;
 
@@ -220,7 +220,7 @@ void DiStella::disasm(uInt32 distart, int pass)
           // the opcode's operand address matches a label address
           if(pass == 3) {
             // output the byte of the opcode incl. cycles
-            const uInt8 nextOpcode = Debugger::debugger().peek(myPC + myOffset);
+            const uInt8 nextOpcode = Debugger::debugger().peek(myPC + myOffset, true);
 
             cycles += static_cast<int>(ourLookup[opcode].cycles) -
                       static_cast<int>(ourLookup[nextOpcode].cycles);
@@ -281,7 +281,7 @@ void DiStella::disasm(uInt32 distart, int pass)
                 else
                   myDisasmBuf << Base::HEX4 << myPC + myOffset << "'     '";
 
-                opcode = Debugger::debugger().peek(myPC + myOffset);  ++myPC;
+                opcode = Debugger::debugger().peek(myPC + myOffset, true);  ++myPC;
                 myDisasmBuf << ".byte $" << Base::HEX2 << static_cast<int>(opcode);
                 addEntry(Device::DATA);
               }
@@ -364,7 +364,7 @@ void DiStella::disasm(uInt32 distart, int pass)
 
         case AddressingMode::ZERO_PAGE:
         {
-          d1 = Debugger::debugger().peek(myPC + myOffset);  ++myPC;
+          d1 = Debugger::debugger().peek(myPC + myOffset, true);  ++myPC;
           labelFound = mark(d1, Device::REFERENCED);
           if(pass == 3) {
             nextLine << "     ";
@@ -376,7 +376,7 @@ void DiStella::disasm(uInt32 distart, int pass)
 
         case AddressingMode::IMMEDIATE:
         {
-          d1 = Debugger::debugger().peek(myPC + myOffset);
+          d1 = Debugger::debugger().peek(myPC + myOffset, true);
           if(pass == 3) {
             if (checkBits(myPC, Device::COL | Device::PCOL | Device::BCOL,
                 /*Device::CODE |*/ Device::GFX | Device::PGFX))
@@ -391,7 +391,7 @@ void DiStella::disasm(uInt32 distart, int pass)
 
         case AddressingMode::ABSOLUTE_X:
         {
-          ad = Debugger::debugger().dpeek(myPC + myOffset);  myPC += 2;
+          ad = Debugger::debugger().dpeek(myPC + myOffset, true);  myPC += 2;
           labelFound = mark(ad, Device::REFERENCED);
           if(pass == 2 && !checkBit(ad & myAppData.end, Device::CODE)) {
             // Since we can't know what address is being accessed unless we also
@@ -485,7 +485,7 @@ void DiStella::disasm(uInt32 distart, int pass)
 
         case AddressingMode::INDIRECT_X:
         {
-          d1 = Debugger::debugger().peek(myPC + myOffset);  ++myPC;
+          d1 = Debugger::debugger().peek(myPC + myOffset, true);  ++myPC;
           if(pass == 3) {
             labelFound = mark(d1, 0);  // dummy call to get address type
             nextLine << "     (";
@@ -498,7 +498,7 @@ void DiStella::disasm(uInt32 distart, int pass)
 
         case AddressingMode::INDIRECT_Y:
         {
-          d1 = Debugger::debugger().peek(myPC + myOffset);  ++myPC;
+          d1 = Debugger::debugger().peek(myPC + myOffset, true);  ++myPC;
           if(pass == 3) {
             labelFound = mark(d1, 0);  // dummy call to get address type
             nextLine << "     (";
@@ -511,7 +511,7 @@ void DiStella::disasm(uInt32 distart, int pass)
 
         case AddressingMode::ZERO_PAGE_X:
         {
-          d1 = Debugger::debugger().peek(myPC + myOffset);  ++myPC;
+          d1 = Debugger::debugger().peek(myPC + myOffset, true);  ++myPC;
           labelFound = mark(d1, Device::REFERENCED);
           if(pass == 3) {
             nextLine << "     ";
@@ -524,7 +524,7 @@ void DiStella::disasm(uInt32 distart, int pass)
 
         case AddressingMode::ZERO_PAGE_Y:
         {
-          d1 = Debugger::debugger().peek(myPC + myOffset);  ++myPC;
+          d1 = Debugger::debugger().peek(myPC + myOffset, true);  ++myPC;
           labelFound = mark(d1, Device::REFERENCED);
           if(pass == 3) {
             nextLine << "     ";
@@ -540,7 +540,7 @@ void DiStella::disasm(uInt32 distart, int pass)
           // SA - 04-06-2010: there seemed to be a bug in distella,
           // where wraparound occurred on a 32-bit int, and subsequent
           // indexing into the labels array caused a crash
-          d1 = Debugger::debugger().peek(myPC + myOffset);  ++myPC;
+          d1 = Debugger::debugger().peek(myPC + myOffset, true);  ++myPC;
           ad = ((myPC + static_cast<Int8>(d1)) & 0xfff) + myOffset;
 
           labelFound = mark(ad, Device::REFERENCED);
@@ -768,7 +768,7 @@ void DiStella::disasmFromAddress(uInt32 distart)
 
     // so this should be code now...
     // get opcode
-    opcode = Debugger::debugger().peek(myPC + myOffset);  ++myPC;
+    opcode = Debugger::debugger().peek(myPC + myOffset, true);  ++myPC;
     // get address mode for opcode
     addrMode = ourLookup[opcode].addr_mode;
 
@@ -834,7 +834,7 @@ void DiStella::disasmFromAddress(uInt32 distart)
       case AddressingMode::ZERO_PAGE:
       case AddressingMode::ZERO_PAGE_X:
       case AddressingMode::ZERO_PAGE_Y:
-        d1 = Debugger::debugger().peek(myPC + myOffset);  ++myPC;
+        d1 = Debugger::debugger().peek(myPC + myOffset, true);  ++myPC;
         mark(d1, Device::REFERENCED);
         break;
 
@@ -842,7 +842,7 @@ void DiStella::disasmFromAddress(uInt32 distart)
         // SA - 04-06-2010: there seemed to be a bug in distella,
         // where wraparound occurred on a 32-bit int, and subsequent
         // indexing into the labels array caused a crash
-        d1 = Debugger::debugger().peek(myPC + myOffset);  ++myPC;
+        d1 = Debugger::debugger().peek(myPC + myOffset, true);  ++myPC;
         ad = ((myPC + static_cast<Int8>(d1)) & 0xfff) + myOffset;
         mark(ad, Device::REFERENCED);
         // do NOT use flags set by debugger, else known CODE will not analyzed statically.
@@ -1095,7 +1095,7 @@ void DiStella::outputGraphics()
 {
   const bool isPGfx = checkBit(myPC, Device::PGFX);
   const string& bitString = isPGfx ? "\x1f" : "\x1e";
-  const uInt8 byte = Debugger::debugger().peek(myPC + myOffset);
+  const uInt8 byte = Debugger::debugger().peek(myPC + myOffset, true);
 
   // add extra spacing line when switching from non-graphics to graphics
   if (mySegType != Device::GFX && mySegType != Device::NONE) {
@@ -1123,7 +1123,7 @@ void DiStella::outputGraphics()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DiStella::outputColors()
 {
-  const uInt8 byte = Debugger::debugger().peek(myPC + myOffset);
+  const uInt8 byte = Debugger::debugger().peek(myPC + myOffset, true);
 
   // add extra spacing line when switching from non-colors to colors
   if(mySegType != Device::COL && mySegType != Device::NONE)
@@ -1220,14 +1220,14 @@ void DiStella::outputBytes(Device::AccessType type)
 
       myDisasmBuf << Base::HEX4 << myPC + myOffset << "'L" << Base::HEX4
         << myPC + myOffset << "'.byte " << "$" << Base::HEX2
-        << static_cast<int>(Debugger::debugger().peek(myPC + myOffset));
+        << static_cast<int>(Debugger::debugger().peek(myPC + myOffset, true));
       ++myPC;
       numBytes = 1;
       lineEmpty = false;
     } else if (lineEmpty) {
       // start a new line without a label
       myDisasmBuf << Base::HEX4 << myPC + myOffset << "'     '"
-        << ".byte $" << Base::HEX2 << static_cast<int>(Debugger::debugger().peek(myPC + myOffset));
+        << ".byte $" << Base::HEX2 << static_cast<int>(Debugger::debugger().peek(myPC + myOffset, true));
       ++myPC;
       numBytes = 1;
       lineEmpty = false;
@@ -1237,7 +1237,7 @@ void DiStella::outputBytes(Device::AccessType type)
       addEntry(type);
       lineEmpty = true;
     } else {
-      myDisasmBuf << ",$" << Base::HEX2 << static_cast<int>(Debugger::debugger().peek(myPC + myOffset));
+      myDisasmBuf << ",$" << Base::HEX2 << static_cast<int>(Debugger::debugger().peek(myPC + myOffset, true));
       ++myPC;
     }
     isType = checkBits(myPC, type,

@@ -243,7 +243,7 @@ class Debugger : public DialogContainer
     static Debugger& debugger() { return *myStaticDebugger; }
 
     /** Convenience methods to access peek/poke from System */
-    uInt8 peek(uInt16 addr, Device::AccessFlags flags = Device::NONE);
+    uInt8 peek(uInt16 addr, bool banked, Device::AccessFlags flags = Device::NONE);
     uInt16 dpeek(uInt16 addr, Device::AccessFlags flags = Device::NONE);
     void poke(uInt16 addr, uInt8 value, Device::AccessFlags flags = Device::NONE);
 
