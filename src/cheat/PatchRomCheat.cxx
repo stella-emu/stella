@@ -32,7 +32,9 @@ PatchRomCheat::PatchRomCheat(OSystem& os, string_view name, string_view code)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool PatchRomCheat::enable()
 {
-  evaluate();
+  //Need to add a better check here so that it only euns evaluates if actual cart size is => address
+  if (myOSystem.console().cartridge().maxSize() >= address)
+    evaluate();
 
   return myEnabled;
 }
@@ -40,18 +42,29 @@ bool PatchRomCheat::enable()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool PatchRomCheat::disable()
 {
-  if(myEnabled && myOSystem.console().cartridge().peek(address) == new_value)
-    myOSystem.console().cartridge().patch(address, original_value);
-
+  //Need to add a better check here so that it only does this if actual cart size is => address
+  if (myOSystem.console().cartridge().maxSize() >= address)
+  {
+    if (myEnabled && myOSystem.console().cartridge().peek(address, false) == new_value)
+      myOSystem.console().cartridge().patch(address, original_value, false);
+  }
   return myEnabled = false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PatchRomCheat::evaluate()
 {
-  if(!myEnabled && myOSystem.console().cartridge().peek(address) == original_value)
+  if (myOSystem.console().cartridge().peek(address, false) == original_value)
   {
-    myOSystem.console().cartridge().patch(address, new_value);
+    myOSystem.console().cartridge().patch(address, new_value, false);
     myEnabled = true;
+  }
+  else if (myOSystem.console().cartridge().peek(address, false) == new_value)
+  {
+    myEnabled = true;
+  }
+  else
+  {
+    myEnabled = false; //There's an error with the cheat so dont poke it
   }
 }

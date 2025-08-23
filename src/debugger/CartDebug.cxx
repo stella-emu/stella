@@ -137,7 +137,7 @@ const DebuggerState& CartDebug::getState()
 {
   myState.ram.clear();
   for(auto addr: myState.rport)
-    myState.ram.push_back(myDebugger.peek(addr));
+    myState.ram.push_back(myDebugger.peek(addr, true));
 
   if(myDebugWidget)
     myState.bank = myDebugWidget->bankState();
@@ -150,7 +150,7 @@ void CartDebug::saveOldState()
 {
   myOldState.ram.clear();
   for(auto addr: myOldState.rport)
-    myOldState.ram.push_back(myDebugger.peek(addr));
+    myOldState.ram.push_back(myDebugger.peek(addr, true));
 
   if(myDebugWidget)
   {

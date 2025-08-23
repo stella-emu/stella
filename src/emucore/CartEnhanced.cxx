@@ -147,43 +147,49 @@ void CartridgeEnhanced::reset()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt8 CartridgeEnhanced::peek(uInt16 address)
+uInt8 CartridgeEnhanced::peek(uInt16 address, bool banked)
 {
   const uInt16 peekAddress = address;
-
-  // Is this a PlusROM?
-  if(myPlusROM->isValid())
+  if (banked == false)
   {
-    uInt8 value = 0;
-    if(myPlusROM->peekHotspot(address, value))
-      return value;
+    return myImage[peekAddress];
   }
-
-  // hotspots in TIA range are reacting to pokes only
-  if(hotspot() >= 0x80)
-    if(checkSwitchBank(address & ADDR_MASK, 0) && myRandomHotspots)
-      return myRWPRandomValues[address & 0xFF];
-
-  if(isRamBank(address))
+  else
   {
-    address &= myRamMask;
+    // Is this a PlusROM?
+    if (myPlusROM->isValid())
+    {
+      uInt8 value = 0;
+      if (myPlusROM->peekHotspot(address, value))
+        return value;
+    }
 
-    // This is a read access to a write port!
-    // Reading from the write port triggers an unwanted write
-    // The RAM banks follow the ROM banks and are half the size of a ROM bank
-    return peekRAM(myRAM[ramAddressSegmentOffset(peekAddress) + address], peekAddress);
+    // hotspots in TIA range are reacting to pokes only
+    if (hotspot() >= 0x80)
+      if (checkSwitchBank(address & ADDR_MASK, 0) && myRandomHotspots)
+        return myRWPRandomValues[address & 0xFF];
+
+    if (isRamBank(address))
+    {
+      address &= myRamMask;
+
+      // This is a read access to a write port!
+      // Reading from the write port triggers an unwanted write
+      // The RAM banks follow the ROM banks and are half the size of a ROM bank
+      return peekRAM(myRAM[ramAddressSegmentOffset(peekAddress) + address], peekAddress);
+    }
+    address &= ROM_MASK;
+
+    // Write port is e.g. at 0xF000 - 0xF07F (128 bytes)
+    if (!myRamBankCount && address >= myWriteOffset && address < myWriteOffset + myRamSize)
+    {
+      // This is a read access to a write port!
+      // Reading from the write port triggers an unwanted write
+      return peekRAM(myRAM[address - myWriteOffset], peekAddress);
+    }
+
+    return myImage[romAddressSegmentOffset(peekAddress) + (peekAddress & myBankMask)];
   }
-  address &= ROM_MASK;
-
-  // Write port is e.g. at 0xF000 - 0xF07F (128 bytes)
-  if(!myRamBankCount && address >= myWriteOffset && address < myWriteOffset + myRamSize)
-  {
-    // This is a read access to a write port!
-    // Reading from the write port triggers an unwanted write
-    return peekRAM(myRAM[address - myWriteOffset], peekAddress);
-  }
-
-  return myImage[romAddressSegmentOffset(peekAddress) + (peekAddress & myBankMask)];
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -360,27 +366,35 @@ bool CartridgeEnhanced::isRamBank(uInt16 address) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool CartridgeEnhanced::patch(uInt16 address, uInt8 value)
+bool CartridgeEnhanced::patch(uInt16 address, uInt8 value, bool banked)
 {
-  if(isRamBank(address))
+  if (banked == false)
   {
-    myRAM[ramAddressSegmentOffset(address) + (address & myRamMask)] = value;
+    myImage[address] = value;
+    return false;
   }
   else
   {
-    if(static_cast<size_t>(address & myBankMask) < myRamSize * 2)
+    if (isRamBank(address))
     {
-      // Normally, a write to the read port won't do anything
-      // However, the patch command is special in that ignores such
-      // cart restrictions
-      myRAM[address & myRamMask] = value;
-      mySystem->pokeOob(address, value); // keep RIOT RAM in sync
+      myRAM[ramAddressSegmentOffset(address) + (address & myRamMask)] = value;
     }
     else
-      myImage[romAddressSegmentOffset(address) + (address & myBankMask)] = value;
-  }
+    {
+      if (static_cast<size_t>(address & myBankMask) < myRamSize * 2)
+      {
+        // Normally, a write to the read port won't do anything
+        // However, the patch command is special in that ignores such
+        // cart restrictions
+        myRAM[address & myRamMask] = value;
+        mySystem->pokeOob(address, value); // keep RIOT RAM in sync
+      }
+      else
+        myImage[romAddressSegmentOffset(address) + (address & myBankMask)] = value;
+    }
 
-  return myBankChanged = true;
+    return myBankChanged = true;
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -519,7 +519,7 @@ void Debugger::log(string_view triggerMsg)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt8 Debugger::peek(uInt16 addr, Device::AccessFlags flags)
+uInt8 Debugger::peek(uInt16 addr, bool banked, Device::AccessFlags flags)
 {
   return mySystem.peekOob(addr, flags);
 }
@@ -720,7 +720,7 @@ int Debugger::stringToValue(string_view stringval)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool Debugger::patchROM(uInt16 addr, uInt8 value)
 {
-  return myConsole.cartridge().patch(addr, value);
+  return myConsole.cartridge().patch(addr, value, true);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

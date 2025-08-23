@@ -295,7 +295,7 @@ int DebuggerParser::decipher_arg(string_view str)
   else if(hibyte) result = (result >> 8) & 0xff;
 
   // dereference if we're supposed to:
-  if(derefByte) result = debugger.peek(result);
+  if(derefByte) result = debugger.peek(result, true);
   if(derefWord) result = debugger.dpeek(result);
 
   return result;
@@ -1300,7 +1300,7 @@ void DebuggerParser::executeDump()
 
       for(int j = i; j < i+16 && j <= end; ++j)  // NOLINT (j is not a const)
       {
-        os << Base::toString(debugger.peek(j)) << " ";
+        os << Base::toString(debugger.peek(j, true)) << " ";
         if(j == i+7 && j != end) os << "- ";
       }
       os << '\n';
@@ -1388,20 +1388,20 @@ void DebuggerParser::executeDump()
       // dump SWCHx/INPTx state
       out << "   SWA - SWB  - IT  -  -  -   I0 I1 I2 I3 I4 I5 -  -\n";
       out << "XS: "
-        << Base::toString(debugger.peek(0x280)) << " "    // SWCHA
+        << Base::toString(debugger.peek(0x280, true)) << " "    // SWCHA
         << Base::toString(0) << " "    // unused
-        << Base::toString(debugger.peek(0x282)) << " "    // SWCHB
+        << Base::toString(debugger.peek(0x282, true)) << " "    // SWCHB
         << Base::toString(0) << " "    // unused
-        << Base::toString(debugger.peek(0x284)) << " "    // INTIM
+        << Base::toString(debugger.peek(0x284, true)) << " "    // INTIM
         << Base::toString(0) << " "    // unused
         << Base::toString(0) << " "    // unused
         << Base::toString(0) << " - "  // unused
-        << Base::toString(debugger.peek(TIARegister::INPT0)) << " "
-        << Base::toString(debugger.peek(TIARegister::INPT1)) << " "
-        << Base::toString(debugger.peek(TIARegister::INPT2)) << " "
-        << Base::toString(debugger.peek(TIARegister::INPT3)) << " "
-        << Base::toString(debugger.peek(TIARegister::INPT4)) << " "
-        << Base::toString(debugger.peek(TIARegister::INPT5)) << " "
+        << Base::toString(debugger.peek(TIARegister::INPT0, true)) << " "
+        << Base::toString(debugger.peek(TIARegister::INPT1, true)) << " "
+        << Base::toString(debugger.peek(TIARegister::INPT2, true)) << " "
+        << Base::toString(debugger.peek(TIARegister::INPT3, true)) << " "
+        << Base::toString(debugger.peek(TIARegister::INPT4, true)) << " "
+        << Base::toString(debugger.peek(TIARegister::INPT5, true)) << " "
         << Base::toString(0) << " "    // unused
         << Base::toString(0) << " "    // unused
         << '\n';

@@ -62,21 +62,28 @@ bool CartridgeSB::checkSwitchBank(uInt16 address, uInt8)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt8 CartridgeSB::peek(uInt16 address)
+uInt8 CartridgeSB::peek(uInt16 address, bool banked)
 {
-  address &= (0x17FF + romBankCount());
-
-  checkSwitchBank(address, 0);
-
-  if(!(address & 0x1000))
+  if (banked == false)
   {
-    // Because of the way we've set up accessing above, we can only
-    // get here when the addresses are from 0x800 - 0xFFF
-    const int hotspot = ((address & 0x0F00) >> 8) - 8;
-    return myHotSpotPageAccess[hotspot].device->peek(address);
+    return myImage[address];
   }
+  else
+  {
+    address &= (0x17FF + romBankCount());
 
-  return 0;
+    checkSwitchBank(address, 0);
+
+    if (!(address & 0x1000))
+    {
+      // Because of the way we've set up accessing above, we can only
+      // get here when the addresses are from 0x800 - 0xFFF
+      const int hotspot = ((address & 0x0F00) >> 8) - 8;
+      return myHotSpotPageAccess[hotspot].device->peek(address, true);
+    }
+
+    return 0;
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

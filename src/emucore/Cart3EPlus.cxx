@@ -73,15 +73,22 @@ bool Cartridge3EPlus::checkSwitchBank(uInt16 address, uInt8 value)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt8 Cartridge3EPlus::peek(uInt16 address)
+uInt8 Cartridge3EPlus::peek(uInt16 address, bool banked)
 {
   const uInt16 peekAddress = address;
-  address &= ROM_MASK;
+  if (banked == false)
+  {
+    return myImage[peekAddress];
+  }
+  else
+  {
+    address &= ROM_MASK;
 
-  if(address < 0x0040)  // TIA access
-    return mySystem->tia().peek(address);
+    if (address < 0x0040)  // TIA access
+      return mySystem->tia().peek(address, true);
 
-  return CartridgeEnhanced::peek(peekAddress);
+    return CartridgeEnhanced::peek(peekAddress, true);
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

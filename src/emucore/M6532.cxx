@@ -178,7 +178,7 @@ void M6532::installDelegate(System& system, Device& device)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt8 M6532::peek(uInt16 addr)
+uInt8 M6532::peek(uInt16 addr, bool banked)
 {
   updateEmulation();
 

@@ -52,16 +52,23 @@ bool CartridgeFA2::checkSwitchBank(uInt16 address, uInt8)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt8 CartridgeFA2::peek(uInt16 address)
+uInt8 CartridgeFA2::peek(uInt16 address, bool banked)
 {
-  if((address & ROM_MASK) == 0x0FF4)
+  if (banked == false)
   {
-    // Load/save RAM to/from Harmony cart flash
-    if(mySize == 28_KB && !hotspotsLocked())
-      return ramReadWrite();
+    return myImage[address];
   }
+  else
+  {
+    if ((address & ROM_MASK) == 0x0FF4)
+    {
+      // Load/save RAM to/from Harmony cart flash
+      if (mySize == 28_KB && !hotspotsLocked())
+        return ramReadWrite();
+    }
 
-  return CartridgeEnhanced::peek(address);
+    return CartridgeEnhanced::peek(address, true);
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

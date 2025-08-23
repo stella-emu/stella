@@ -67,30 +67,37 @@ void CartridgeWD::install(System& system)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt8 CartridgeWD::peek(uInt16 address)
+uInt8 CartridgeWD::peek(uInt16 address, bool banked)
 {
-  // Is it time to do an actual bankswitch?
-  if(myPendingBank != 0xF0 && !hotspotsLocked() &&
-     mySystem->cycles() > (myCyclesAtBankswitchInit + 3))
+  if (banked == false)
   {
-    bank(myPendingBank);
-    myPendingBank = 0xF0;
-  }
-
-  if(!(address & 0x1000))   // Hotspots below 0x1000 are also TIA addresses
-  {
-    // Hotspots at $30 - $3F
-    // Note that a hotspot read triggers a bankswitch after at least 3 cycles
-    // have passed, so we only initiate the switch here
-    if(!hotspotsLocked() && (address & 0x00FF) >= 0x30 && (address & 0x00FF) <= 0x3F)
-    {
-      myCyclesAtBankswitchInit = mySystem->cycles();
-      myPendingBank = address & 0x000F;
-    }
-    return mySystem->tia().peek(address);
+    return myImage[address];
   }
   else
-    return CartridgeEnhanced::peek(address);
+  {
+    // Is it time to do an actual bankswitch?
+    if (myPendingBank != 0xF0 && !hotspotsLocked() &&
+      mySystem->cycles() > (myCyclesAtBankswitchInit + 3))
+    {
+      bank(myPendingBank);
+      myPendingBank = 0xF0;
+    }
+
+    if (!(address & 0x1000))   // Hotspots below 0x1000 are also TIA addresses
+    {
+      // Hotspots at $30 - $3F
+      // Note that a hotspot read triggers a bankswitch after at least 3 cycles
+      // have passed, so we only initiate the switch here
+      if (!hotspotsLocked() && (address & 0x00FF) >= 0x30 && (address & 0x00FF) <= 0x3F)
+      {
+        myCyclesAtBankswitchInit = mySystem->cycles();
+        myPendingBank = address & 0x000F;
+      }
+      return mySystem->tia().peek(address, true);
+    }
+    else
+      return CartridgeEnhanced::peek(address, true);
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

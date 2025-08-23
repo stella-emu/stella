@@ -118,8 +118,8 @@ class Device : public Serializable
 
       @return The byte at the specified address
     */
-    virtual uInt8 peek(uInt16 address) = 0;
-    virtual uInt8 peekOob(uInt16 address) { return peek(address); }
+    virtual uInt8 peek(uInt16 address, bool banked) = 0;
+    virtual uInt8 peekOob(uInt16 address) { return peek(address, true); }
 
     /**
       Change the byte at the specified address to the given value
