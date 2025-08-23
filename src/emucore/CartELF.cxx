@@ -326,7 +326,7 @@ bool CartridgeELF::load(Serializer& in)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt8 CartridgeELF::peek(uInt16 address)
+uInt8 CartridgeELF::peek(uInt16 address, bool banked)
 {
   // The actual handling happens in overdrivePeek
   return 0;

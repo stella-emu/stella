@@ -77,15 +77,22 @@ bool Cartridge0FA0::checkSwitchBank(uInt16 address, uInt8)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt8 Cartridge0FA0::peek(uInt16 address)
+uInt8 Cartridge0FA0::peek(uInt16 address, bool banked)
 {
-  address &= myBankMask;
+  if (banked == false)
+  {
+    return myImage[address];
+  }
+  else
+  {
+    address &= myBankMask;
 
-  checkSwitchBank(address, 0);
+    checkSwitchBank(address, 0);
 
-  // Because of the way accessing is set up, we will only get here
-  // when doing a TIA read
-  return myHotSpotPageAccess.device->peek(address);
+    // Because of the way accessing is set up, we will only get here
+    // when doing a TIA read
+    return myHotSpotPageAccess.device->peek(address, true);
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

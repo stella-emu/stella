@@ -63,20 +63,27 @@ bool CartridgeX07::checkSwitchBank(uInt16 address, uInt8)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt8 CartridgeX07::peek(uInt16 address)
+uInt8 CartridgeX07::peek(uInt16 address, bool banked)
 {
-  uInt8 value = 0; // JTZ: is this correct?
-  // Check for RAM or TIA mirroring
-  const uInt16 lowAddress = address & 0x3ff;
+  if (banked == false)
+  {
+    return myImage[address];
+  }
+  else
+  {
+    uInt8 value = 0; // JTZ: is this correct?
+    // Check for RAM or TIA mirroring
+    const uInt16 lowAddress = address & 0x3ff;
 
-  if(lowAddress & 0x80)
-    value = mySystem->m6532().peek(address);
-  else if(!(lowAddress & 0x200))
-    value = mySystem->tia().peek(address);
+    if (lowAddress & 0x80)
+      value = mySystem->m6532().peek(address, true);
+    else if (!(lowAddress & 0x200))
+      value = mySystem->tia().peek(address, true);
 
-  checkSwitchBank(address, 0);
+    checkSwitchBank(address, 0);
 
-  return value;
+    return value;
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

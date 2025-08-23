@@ -95,61 +95,67 @@ void CartridgeCTY::install(System& system)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt8 CartridgeCTY::peek(uInt16 address)
+uInt8 CartridgeCTY::peek(uInt16 address, bool banked)
 {
   const uInt16 peekAddress = address;
-  address &= 0x0FFF;
-  const uInt8 peekValue = myImage[myBankOffset + address];
-
-  // In debugger/bank-locked mode, we ignore all hotspots and in general
-  // anything that can change the internal state of the cart
-  if(hotspotsLocked())
-    return peekValue;
-
-  // Check for aliasing to 'LDA #$F2'
-  if(myLDAimmediate && peekValue == 0xF2)
+  if (banked == false)
   {
-    myLDAimmediate = false;
-
-    // Update the music data fetchers (counter & flag)
-    updateMusicModeDataFetchers();
-
-    uInt8 i = 0;
-
-    /*
-     in the ARM driver registers 8-10 are the music counters 0-2
-     lsr     r2, r8, #31
-     add     r2, r2, r9, lsr #31
-     add     r2, r2, r10, lsr #31
-     lsl     r2, r2, #2
-    */
-
-    i = myMusicCounters[0] >> 31;
-    i = i + (myMusicCounters[1] >> 31);
-    i = i + (myMusicCounters[2] >> 31);
-    i <<= 2;
-
-    return i;
-
+    return myImage[address];
   }
   else
-    myLDAimmediate = false;
+  {
+    address &= 0x0FFF;
+    const uInt8 peekValue = myImage[myBankOffset + address];
 
-  if(address < 0x0040)  // Write port is at $1000 - $103F (64 bytes)
-  {
-    // Reading from the write port triggers an unwanted write
-    return peekRAM(myRAM[address], peekAddress);
-  }
-  else if(address < 0x0080)  // Read port is at $1040 - $107F (64 bytes)
-  {
-    address -= 0x40;
-    switch(address)
+    // In debugger/bank-locked mode, we ignore all hotspots and in general
+    // anything that can change the internal state of the cart
+    if (hotspotsLocked())
+      return peekValue;
+
+    // Check for aliasing to 'LDA #$F2'
+    if (myLDAimmediate && peekValue == 0xF2)
     {
+      myLDAimmediate = false;
+
+      // Update the music data fetchers (counter & flag)
+      updateMusicModeDataFetchers();
+
+      uInt8 i = 0;
+
+      /*
+   in the ARM driver registers 8-10 are the music counters 0-2
+   lsr   r2, r8, #31
+   add   r2, r2, r9, lsr #31
+   add   r2, r2, r10, lsr #31
+   lsl   r2, r2, #2
+  */
+
+      i = myMusicCounters[0] >> 31;
+      i = i + (myMusicCounters[1] >> 31);
+      i = i + (myMusicCounters[2] >> 31);
+      i <<= 2;
+
+      return i;
+
+    }
+    else
+      myLDAimmediate = false;
+
+    if (address < 0x0040)  // Write port is at $1000 - $103F (64 bytes)
+    {
+      // Reading from the write port triggers an unwanted write
+      return peekRAM(myRAM[address], peekAddress);
+    }
+    else if (address < 0x0080)  // Read port is at $1040 - $107F (64 bytes)
+    {
+      address -= 0x40;
+      switch (address)
+      {
       case 0x00:  // Error code after operation
         return myRAM[0];
       case 0x01:  // Get next Random Number (8-bit LFSR)
-        myRandomNumber = ((myRandomNumber & (1<<10)) ? 0x10adab1e: 0x00) ^
-                         ((myRandomNumber >> 11) | (myRandomNumber << 21));
+        myRandomNumber = ((myRandomNumber & (1 << 10)) ? 0x10adab1e : 0x00) ^
+          ((myRandomNumber >> 11) | (myRandomNumber << 21));
         return myRandomNumber & 0xFF;
       case 0x02:  // Get Tune position (low byte)
         return myTunePosition & 0xFF;
@@ -157,12 +163,12 @@ uInt8 CartridgeCTY::peek(uInt16 address)
         return (myTunePosition >> 8) & 0xFF;
       default:
         return myRAM[address];
+      }
     }
-  }
-  else  // Check hotspots
-  {
-    switch(address)
+    else  // Check hotspots
     {
+      switch (address)
+      {
       case 0x0FF4:
         // Bank 0 is ARM code and not actually accessed
         return ramReadWrite();
@@ -178,12 +184,13 @@ uInt8 CartridgeCTY::peek(uInt16 address)
         break;
       default:
         break;
+      }
+
+      // Is this instruction an immediate mode LDA?
+      myLDAimmediate = (peekValue == 0xA9);
+
+      return peekValue;
     }
-
-    // Is this instruction an immediate mode LDA?
-    myLDAimmediate = (peekValue == 0xA9);
-
-    return peekValue;
   }
 }
 
@@ -278,21 +285,29 @@ uInt16 CartridgeCTY::romBankCount() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool CartridgeCTY::patch(uInt16 address, uInt8 value)
+bool CartridgeCTY::patch(uInt16 address, uInt8 value, bool banked)
 {
-  address &= 0x0FFF;
-
-  if(address < 0x0080)
+  if (banked == false)
   {
-    // Normally, a write to the read port won't do anything
-    // However, the patch command is special in that ignores such
-    // cart restrictions
-    myRAM[address & 0x003F] = value;
+    myImage[address] = value;
+    return false;
   }
   else
-    myImage[myBankOffset + address] = value;
+  {
+    address &= 0x0FFF;
 
-  return myBankChanged = true;
+    if (address < 0x0080)
+    {
+      // Normally, a write to the read port won't do anything
+      // However, the patch command is special in that ignores such
+      // cart restrictions
+      myRAM[address & 0x003F] = value;
+    }
+    else
+      myImage[myBankOffset + address] = value;
+
+    return myBankChanged = true;
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
