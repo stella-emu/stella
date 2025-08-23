@@ -266,7 +266,7 @@ void CheatManager::saveCheatDatabase()
     {
       const int i = (bottom + top) / 2;
       const int compare = BSPF::compareIgnoreCase(md5,
-          DefProps[i][static_cast<uInt8>(PropType::Cart_MD5)]);
+       DefProps[i][static_cast<uInt8>(PropType::Cart_MD5)]);
       
       if (compare == 0)  // found it
       {
