@@ -114,7 +114,7 @@ static const string EmptyString;
 
 // Adaptable refresh is currently not available on MacOS
 // In the future, this may expand to other systems
-#if !defined(BSPF_MACOS)
+#ifndef BSPF_MACOS
   #define ADAPTABLE_REFRESH_SUPPORT
 #endif
 

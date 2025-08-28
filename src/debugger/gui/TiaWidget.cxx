@@ -47,9 +47,8 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
             hBorder = 10,
             vBorder = 10;
   int xpos = hBorder, ypos = vBorder;
-  StaticTextWidget* t = nullptr;
+  StaticTextWidget* t = nullptr;  // NOLINT (erroneously marked as const)
   ButtonWidget* b = nullptr;
-
 
   ////////////////////////////
   // VSync/VBlank

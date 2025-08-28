@@ -15,7 +15,7 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#if defined(ZIP_SUPPORT)
+#ifdef ZIP_SUPPORT
 
 #ifndef FS_NODE_ZIP_HXX
 #define FS_NODE_ZIP_HXX

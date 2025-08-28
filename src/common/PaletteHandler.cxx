@@ -408,7 +408,7 @@ void PaletteHandler::loadUserPalette()
   try        { myOSystem.paletteFile().read(in); }
   catch(...) { return; }
 
-  uInt8* pixbuf = in.get();
+  uInt8* pixbuf = in.get();  // NOLINT (erroneously marked as const)
   for(int i = 0; i < 128; i++, pixbuf += 3)  // NTSC palette
   {
     const uInt32 pixel = (static_cast<int>(pixbuf[0]) << 16) +
@@ -433,7 +433,7 @@ void PaletteHandler::loadUserPalette()
     secam[(i<<1)]   = pixel;
     secam[(i<<1)+1] = 0;
   }
-  uInt32* ptr = ourUserSECAMPalette.data();
+  uInt32* ptr = ourUserSECAMPalette.data();  // NOLINT (erroneously marked as const)
   for(int i = 0; i < 16; ++i)
   {
     const uInt32* s = secam.data();

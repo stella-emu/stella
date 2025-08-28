@@ -141,14 +141,15 @@ uInt64 EmulationWorker::stop()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EmulationWorker::threadMain(std::condition_variable* initializedCondition, std::mutex* initializationMutex)
+void EmulationWorker::threadMain(std::condition_variable* initializedCondition,
+                                 std::mutex* initializationMutex)
 {
   std::unique_lock<std::mutex> lock(myThreadIsRunningMutex);
 
   try {
     {
       // Wait until our parent releases the lock and sleeps
-      const std::lock_guard<std::mutex> guard(*initializationMutex);
+      const std::scoped_lock guard(*initializationMutex);
 
       // Update the state...
       myState = State::initialized;

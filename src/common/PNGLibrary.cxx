@@ -431,7 +431,7 @@ void PNGLibrary::loadImagetoSurface(FBSurface& surface, bool hasAlpha)
   for(uInt32 irow = 0; irow < ih; ++irow, i_buf += i_pitch, s_buf += s_pitch)
   {
     const uInt8* i_ptr = i_buf;
-    uInt32* s_ptr = s_buf;
+    uInt32* s_ptr = s_buf;  // NOLINT (erroneously marked as const)
     if(hasAlpha)
       for(uInt32 icol = 0; icol < ReadInfo.width; ++icol, i_ptr += 4)
         *s_ptr++ = fb.mapRGBA(*i_ptr, *(i_ptr+1), *(i_ptr+2), *(i_ptr+3));

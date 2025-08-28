@@ -62,7 +62,7 @@ class SqliteDatabase
 // IMPLEMENTATION
 ///////////////////////////////////////////////////////////////////////////////
 
-#if defined(__clang__)
+#ifdef __clang__
   #pragma clang diagnostic push
   #pragma clang diagnostic ignored "-Wformat-nonliteral"
 #endif
@@ -78,7 +78,7 @@ void SqliteDatabase::exec(string_view sql, T arg1, Ts... args)
   exec(buffer);
 }
 
-#if defined(__clang__)
+#ifdef __clang__
 #pragma clang diagnostic pop
 #endif
 

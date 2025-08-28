@@ -53,7 +53,7 @@ bool CompositeKeyValueRepositorySqlite::has(string_view key)
 
     const Int32 rowCount = myStmtCountSet->columnInt(0);
 
-    myStmtCountSet->reset();
+    (*myStmtCountSet).reset();  // Make sure to call ::reset, not smartptr reset
 
     return rowCount > 0;
   } catch (const SqliteError& err) {
@@ -72,7 +72,7 @@ void CompositeKeyValueRepositorySqlite::remove(string_view key)
       .bind(1, key)
       .step();
 
-    myStmtDelete->reset();
+    (*myStmtDelete).reset();  // Make sure to call ::reset, not smartptr reset
   }
   catch (const SqliteError& err) {
     Logger::error(err.what());
@@ -170,7 +170,7 @@ SqliteStatement& CompositeKeyValueRepositorySqlite::ProxyRepository::stmtSelect(
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 SqliteStatement& CompositeKeyValueRepositorySqlite::ProxyRepository::stmtDelete(string_view key)
 {
-  myRepo.myStmtDelete->reset();
+  (*myRepo.myStmtDelete).reset();  // Make sure to call ::reset, not smartptr reset
 
   return (*myRepo.myStmtDelete)
     .bind(1, myKey)

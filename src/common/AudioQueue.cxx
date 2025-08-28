@@ -17,9 +17,6 @@
 
 #include "AudioQueue.hxx"
 
-using std::mutex;
-using std::lock_guard;
-
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 AudioQueue::AudioQueue(uInt32 fragmentSize, uInt32 capacity, bool isStereo)
   : myFragmentSize{fragmentSize},
@@ -54,7 +51,7 @@ uInt32 AudioQueue::capacity() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt32 AudioQueue::size() const
 {
-  const lock_guard<mutex> guard(myMutex);
+  const std::scoped_lock guard(myMutex);
 
   return mySize;
 }
@@ -74,9 +71,9 @@ uInt32 AudioQueue::fragmentSize() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Int16* AudioQueue::enqueue(Int16* fragment)
 {
-  const lock_guard<mutex> guard(myMutex);
+  const std::scoped_lock guard(myMutex);
 
-  Int16* newFragment = nullptr;
+  Int16* newFragment = nullptr;  // NOLINT (must not be const)
 
   if (!fragment) {
     if (!myFirstFragmentForEnqueue) throw runtime_error("enqueue called empty");
@@ -105,7 +102,7 @@ Int16* AudioQueue::enqueue(Int16* fragment)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Int16* AudioQueue::dequeue(Int16* fragment)
 {
-  const lock_guard<mutex> guard(myMutex);
+  const std::scoped_lock guard(myMutex);
 
   if (mySize == 0) return nullptr;
 
@@ -116,7 +113,7 @@ Int16* AudioQueue::dequeue(Int16* fragment)
     myFirstFragmentForDequeue = nullptr;
   }
 
-  Int16* nextFragment = myFragmentQueue.at(myNextFragment);
+  Int16* nextFragment = myFragmentQueue.at(myNextFragment);  // NOLINT (must not be const)
   myFragmentQueue.at(myNextFragment) = fragment;
 
   --mySize;
@@ -128,7 +125,7 @@ Int16* AudioQueue::dequeue(Int16* fragment)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void AudioQueue::closeSink(Int16* fragment)
 {
-  const lock_guard<mutex> guard(myMutex);
+  const std::scoped_lock guard(myMutex);
 
   if (myFirstFragmentForDequeue && fragment)
     throw runtime_error("attempt to return unknown buffer on closeSink");

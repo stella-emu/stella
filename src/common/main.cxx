@@ -15,7 +15,7 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#if defined(SDL_SUPPORT)
+#ifdef SDL_SUPPORT
   #include <SDL3/SDL_main.h>
 #endif
 
@@ -152,7 +152,7 @@ bool isProfilingRun(int ac, char* av[])
 */
 void attachConsole()
 {
-#if defined(BSPF_WINDOWS)
+#ifdef BSPF_WINDOWS
   // Attach console to allow command line output (e.g. for -help)
   AttachConsole(ATTACH_PARENT_PROCESS);
   FILE* fDummy;
@@ -177,7 +177,7 @@ void attachConsole()
 
 void freeConsole()
 {
-#if defined(BSPF_WINDOWS)
+#ifdef BSPF_WINDOWS
   cout << "Press \"Enter\"" << '\n' << std::flush;
   FreeConsole();
 #endif

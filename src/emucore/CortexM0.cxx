@@ -482,7 +482,8 @@ namespace {
     }
 
     ostringstream s;
-    s << "unknown instrinsic error " << CortexM0::getErrInstrinsic(err);
+    s << "unknown instrinsic error "
+      << static_cast<uInt32>(CortexM0::getErrInstrinsic(err));
 
     return s.str();
   }
@@ -1613,7 +1614,7 @@ CortexM0::err_t CortexM0::execute(uInt16 inst, uInt8 op)
     //LDMIA
     case Op::ldmia: {
       rn = (inst >> 8) & 0x7;
-    #if defined(THUMB_DISS)
+    #ifdef THUMB_DISS
       {
         ostringstream s;
 
@@ -2037,7 +2038,7 @@ CortexM0::err_t CortexM0::execute(uInt16 inst, uInt8 op)
 
     //POP
     case Op::pop: {
-    #if defined(THUMB_DISS)
+    #ifdef THUMB_DISS
       {
         ostringstream s;
 
@@ -2102,7 +2103,7 @@ CortexM0::err_t CortexM0::execute(uInt16 inst, uInt8 op)
 
     //PUSH
     case Op::push: {
-    #if defined(THUMB_DISS)
+    #ifdef THUMB_DISS
       {
         ostringstream s;
 
@@ -2258,7 +2259,7 @@ CortexM0::err_t CortexM0::execute(uInt16 inst, uInt8 op)
     //STMIA
     case Op::stmia: {
       rn = (inst >> 8) & 0x7;
-    #if defined(THUMB_DISS)
+    #ifdef THUMB_DISS
       {
         ostringstream s;
 

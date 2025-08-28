@@ -58,7 +58,7 @@ RiotWidget::RiotWidget(GuiObject* boss, const GUI::Font& lfont,
             vBorder = 10;
   int xpos = hBorder, ypos = vBorder + _lineHeight,
     lwidth = _fontWidth * 8 + hGap;
-  StaticTextWidget* t = nullptr;
+  StaticTextWidget* t = nullptr;  // NOLINT (erroneously marked as const)
   VariantList items;
 
   // Set the strings to be used in the various bit registers

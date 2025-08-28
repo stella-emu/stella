@@ -19,14 +19,14 @@
 #define MEDIA_FACTORY_HXX
 
 #include "bspf.hxx"
-#if defined(SDL_SUPPORT)
+#ifdef SDL_SUPPORT
   #include "SDL_lib.hxx"
 #endif
 
 #include "OSystem.hxx"
 #include "Settings.hxx"
 #include "SerialPort.hxx"
-#if defined(BSPF_UNIX)
+#ifdef BSPF_UNIX
   #include "SerialPortUNIX.hxx"
   #include "OSystemUNIX.hxx"
 #elif defined(BSPF_WINDOWS)
@@ -41,7 +41,7 @@
   #error Unsupported platform!
 #endif
 
-#if defined(__LIB_RETRO__)
+#ifdef __LIB_RETRO__
   #include "EventHandlerLIBRETRO.hxx"
   #include "FBBackendLIBRETRO.hxx"
 #elif defined(SDL_SUPPORT)
@@ -51,8 +51,8 @@
   #error Unsupported backend!
 #endif
 
-#if defined(SOUND_SUPPORT)
-  #if defined(__LIB_RETRO__)
+#ifdef SOUND_SUPPORT
+  #ifdef __LIB_RETRO__
     #include "SoundLIBRETRO.hxx"
   #elif defined(SDL_SUPPORT)
     #include "SoundSDL.hxx"
@@ -77,7 +77,7 @@ class MediaFactory
   public:
     static unique_ptr<OSystem> createOSystem()
     {
-    #if defined(BSPF_UNIX)
+    #ifdef BSPF_UNIX
       return make_unique<OSystemUNIX>();
     #elif defined(BSPF_WINDOWS)
       return make_unique<OSystemWINDOWS>();
@@ -97,7 +97,7 @@ class MediaFactory
 
     static unique_ptr<SerialPort> createSerialPort()
     {
-    #if defined(BSPF_UNIX)
+    #ifdef BSPF_UNIX
       return make_unique<SerialPortUNIX>();
     #elif defined(BSPF_WINDOWS)
       return make_unique<SerialPortWINDOWS>();
@@ -110,7 +110,7 @@ class MediaFactory
 
     static unique_ptr<FBBackend> createVideoBackend(OSystem& osystem)
     {
-    #if defined(__LIB_RETRO__)
+    #ifdef __LIB_RETRO__
       return make_unique<FBBackendLIBRETRO>(osystem);
     #elif defined(SDL_SUPPORT)
       return make_unique<FBBackendSDL>(osystem);
@@ -121,8 +121,8 @@ class MediaFactory
 
     static unique_ptr<Sound> createAudio(OSystem& osystem, AudioSettings& audioSettings)
     {
-    #if defined(SOUND_SUPPORT)
-      #if defined(__LIB_RETRO__)
+    #ifdef SOUND_SUPPORT
+      #ifdef __LIB_RETRO__
         return make_unique<SoundLIBRETRO>(osystem, audioSettings);
       #elif defined(SOUND_SUPPORT) && defined(SDL_SUPPORT)
         return make_unique<SoundSDL>(osystem, audioSettings);
@@ -136,7 +136,7 @@ class MediaFactory
 
     static unique_ptr<EventHandler> createEventHandler(OSystem& osystem)
     {
-    #if defined(__LIB_RETRO__)
+    #ifdef __LIB_RETRO__
       return make_unique<EventHandlerLIBRETRO>(osystem);
     #elif defined(SDL_SUPPORT)
       return make_unique<EventHandlerSDL>(osystem);
@@ -147,14 +147,14 @@ class MediaFactory
 
     static void cleanUp()
     {
-    #if defined(SDL_SUPPORT)
+    #ifdef SDL_SUPPORT
       SDL_Quit();
     #endif
     }
 
     static string backendName()
     {
-    #if defined(SDL_SUPPORT)
+    #ifdef SDL_SUPPORT
       return SDLVersion();
     #else
       return "Custom backend";
@@ -163,7 +163,7 @@ class MediaFactory
 
     static bool openURL(const string& url)
     {
-    #if defined(SDL_SUPPORT)
+    #ifdef SDL_SUPPORT
       return SDLOpenURL(url);
     #else
       return false;

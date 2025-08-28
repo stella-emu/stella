@@ -1,3 +1,4 @@
+// NOLINTBEGIN
 // NanoJPEG -- KeyJ's Tiny Baseline JPEG Decoder
 // version 1.3.5 (2016-11-14)
 // Copyright (c) 2009-2016 Martin J. Fiedler <martin.fiedler@gmx.net>
@@ -914,3 +915,4 @@ unsigned char* njGetImage(void) { return (nj.ncomp == 1) ? nj.comp[0].pixels : n
 int njGetImageSize(void)        { return nj.width * nj.height * nj.ncomp; }
 
 #endif // _NJ_INCLUDE_HEADER_ONLY
+// NOLINTEND

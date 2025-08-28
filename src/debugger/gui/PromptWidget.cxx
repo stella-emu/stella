@@ -512,7 +512,7 @@ void PromptWidget::killWord()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string PromptWidget::getLine()
 {
-#if defined(PSEUDO_CUT_COPY_PASTE)
+#ifdef PSEUDO_CUT_COPY_PASTE
   assert(_promptEndPos >= _promptStartPos);
   string text;
 
@@ -527,7 +527,7 @@ string PromptWidget::getLine()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PromptWidget::textCut()
 {
-#if defined(PSEUDO_CUT_COPY_PASTE)
+#ifdef PSEUDO_CUT_COPY_PASTE
   textCopy();
 
   // Remove the current line
@@ -542,7 +542,7 @@ void PromptWidget::textCut()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PromptWidget::textCopy()
 {
-#if defined(PSEUDO_CUT_COPY_PASTE)
+#ifdef PSEUDO_CUT_COPY_PASTE
   instance().eventHandler().copyText(getLine());
 #endif
 }
@@ -550,7 +550,7 @@ void PromptWidget::textCopy()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PromptWidget::textPaste()
 {
-#if defined(PSEUDO_CUT_COPY_PASTE)
+#ifdef PSEUDO_CUT_COPY_PASTE
   string text;
 
   // Remove the current line

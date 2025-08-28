@@ -53,7 +53,7 @@ class TimerManager
     using millisec = uInt64;
 
     // Constructor does not start worker until there is a Timer.
-    explicit TimerManager();
+    explicit TimerManager() = default;
 
     // Destructor is thread safe, even if a timer callback is running.
     // All callbacks are guaranteed to have returned before this
@@ -187,7 +187,7 @@ class TimerManager
     bool destroy_impl(ScopedLock& lock, TimerMap::iterator i, bool notify);
 
     // Inexhaustible source of unique IDs
-    TimerId nextId;
+    TimerId nextId{no_timer + 1};
 
     // The Timer objects are physically stored in this map
     TimerMap active;

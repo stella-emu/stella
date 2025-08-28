@@ -43,7 +43,7 @@ StellaSettingsDialog::StellaSettingsDialog(OSystem& osystem, DialogContainer& pa
             HBORDER      = Dialog::hBorder(),
             VGAP         = Dialog::vGap(),
             INDENT       = Dialog::indent();
-  ButtonWidget* bw = nullptr;
+  ButtonWidget* bw = nullptr;  // NOLINT (erroneously marked as const)
 
   WidgetArray wid;
 

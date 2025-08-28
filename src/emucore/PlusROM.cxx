@@ -25,18 +25,18 @@
 #include "Version.hxx"
 #include "CartDetector.hxx"
 
-#if defined(HTTP_LIB_SUPPORT)
+#ifdef HTTP_LIB_SUPPORT
   #include "http_lib.hxx"
 
-namespace {
-  constexpr int CONNECTION_TIMEOUT_MSEC = 3000;
-  constexpr int READ_TIMEOUT_MSEC       = 3000;
-  constexpr int WRITE_TIMEOUT_MSEC      = 3000;
+  namespace {
+    constexpr int CONNECTION_TIMEOUT_MSEC = 3000;
+    constexpr int READ_TIMEOUT_MSEC       = 3000;
+    constexpr int WRITE_TIMEOUT_MSEC      = 3000;
 
-  constexpr uInt16 WRITE_TO_BUFFER      = 0x1FF0;
-  constexpr uInt16 WRITE_SEND_BUFFER    = 0x1FF1;
-  constexpr uInt16 RECEIVE_BUFFER       = 0x1FF2;
-  constexpr uInt16 RECEIVE_BUFFER_SIZE  = 0x1FF3;
+    constexpr uInt16 WRITE_TO_BUFFER      = 0x1FF0;
+    constexpr uInt16 WRITE_SEND_BUFFER    = 0x1FF1;
+    constexpr uInt16 RECEIVE_BUFFER       = 0x1FF2;
+    constexpr uInt16 RECEIVE_BUFFER_SIZE  = 0x1FF3;
 } // namespace
 #endif
 
@@ -79,14 +79,13 @@ class PlusROMRequest {
       memcpy(myRequest.data(), request, myRequestSize);
     }
     PlusROMRequest()
-      : myDestination{ Destination("", "")},
-        myId{ PlusStoreId("", "")},
-        myRequestSize{ 0 }
+      : myDestination{Destination("", "")},
+        myId{PlusStoreId("", "")}
     {
     };
     ~PlusROMRequest() = default;
 
-  #if defined(HTTP_LIB_SUPPORT)
+  #ifdef HTTP_LIB_SUPPORT
     void execute() {
       myState = State::pending;
 
@@ -177,7 +176,7 @@ class PlusROMRequest {
 
     std::pair<size_t, const uInt8*> getResponse() {
       if (myState != State::done) throw runtime_error("invalid access to response");
-      
+
       myState = State::read;
 
       return {
@@ -215,7 +214,7 @@ PlusROM::PlusROM(const Settings& settings, const Cartridge& cart)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool PlusROM::initialize(const ByteBuffer& image, size_t size)
 {
-#if defined(HTTP_LIB_SUPPORT)
+#ifdef HTTP_LIB_SUPPORT
   // Host and path are stored at the NMI vector
   size_t i = ((image[size - 5] - 16) << 8) | image[size - 6];  // NMI @ $FFFA
   if(i >= size)
@@ -256,7 +255,7 @@ bool PlusROM::initialize(const ByteBuffer& image, size_t size)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool PlusROM::peekHotspot(uInt16 address, uInt8& value)
 {
-#if defined(HTTP_LIB_SUPPORT)
+#ifdef HTTP_LIB_SUPPORT
   if(myCart.hotspotsLocked()) return false;
 
   switch(address & 0x1FFF)
@@ -294,7 +293,7 @@ bool PlusROM::peekHotspot(uInt16 address, uInt8& value)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool PlusROM::pokeHotspot(uInt16 address, uInt8 value)
 {
-#if defined(HTTP_LIB_SUPPORT)
+#ifdef HTTP_LIB_SUPPORT
   if(myCart.hotspotsLocked()) return false;
 
   switch(address & 0x1FFF)
@@ -404,10 +403,10 @@ bool PlusROM::isValidPath(string_view path)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PlusROM::send()
 {
-#if defined(HTTP_LIB_SUPPORT)
+#ifdef HTTP_LIB_SUPPORT
   if (myRequest->getState() == PlusROMRequest::State::pending) {
     myMsgCallback("Ignoring new PlusROM request made while another is pending");
-    return; 
+    return;
   }
 
   if (myRequest->getState() == PlusROMRequest::State::created) {
@@ -443,7 +442,7 @@ void PlusROM::send()
     // as the thread is running. Thus, the request can only be destructed once
     // the thread has finished, and we can safely evict it from the class at
     // any time.
-    std::thread thread([this](shared_ptr<PlusROMRequest> request)
+    std::thread thread([this](const shared_ptr<PlusROMRequest>& request)
     {
       request->execute();
       switch(request->getState())
@@ -469,7 +468,7 @@ void PlusROM::send()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PlusROM::receive()
 {
-#if defined(HTTP_LIB_SUPPORT)
+#ifdef HTTP_LIB_SUPPORT
   switch (myRequest->getState()) {
     case PlusROMRequest::State::failed:
       myMsgCallback("PlusROM data receiving failed!");

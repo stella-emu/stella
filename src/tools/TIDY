@@ -1,11 +1,12 @@
 #!/usr/bin/env bash
 
-run-clang-tidy-20 -header-filter=\(.*\.hxx\) \
+run-clang-tidy-21 -header-filter=\(.*\.hxx\) \
 -checks=*,\
 -abseil*,\
 -altera*,\
 -android*,\
 -fuchsia*,\
+-llvm-prefer-static-over-anonymous-namespace,\
 -llvmlibc-inline-function-decl,\
 -boost-use-ranges,\
 -bugprone-assignment-in-if-condition,\
@@ -33,6 +34,7 @@ run-clang-tidy-20 -header-filter=\(.*\.hxx\) \
 -cppcoreguidelines-pro-type-reinterpret-cast,\
 -cppcoreguidelines-pro-type-static-cast-downcast,\
 -cppcoreguidelines-pro-type-vararg,\
+-cppcoreguidelines-use-enum-class,\
 -google-build-using-namespace,\
 -google-default-arguments,\
 -google-global-names-in-headers,\
@@ -66,6 +68,7 @@ run-clang-tidy-20 -header-filter=\(.*\.hxx\) \
 -modernize-use-equals-delete,\
 -modernize-use-nodiscard,\
 -modernize-use-trailing-return-type,\
+-portability-template-virtual-member-function,\
 -readability-avoid-nested-conditional-operator,\
 -readability-avoid-unconditional-preprocessor-if,\
 -readability-braces-around-statements,\

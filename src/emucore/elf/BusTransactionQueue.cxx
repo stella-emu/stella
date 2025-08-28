@@ -193,7 +193,7 @@ BusTransactionQueue::Transaction* BusTransactionQueue::getNextTransaction(uInt16
 {
   if (myQueueSize == 0) return nullptr;
 
-  Transaction* nextTransaction = &myQueue[myQueueNext];
+  Transaction* nextTransaction = &myQueue[myQueueNext];  // NOLINT (erroneously marked as const)
   if (
     nextTransaction->address != (address & 0x1fff & nextTransaction->mask) ||
     nextTransaction->timestamp > timestamp

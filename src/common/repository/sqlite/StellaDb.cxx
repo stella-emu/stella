@@ -117,7 +117,7 @@ void StellaDb::importOldSettings()
 
     mySettingsRepository->save(SettingsRepositoryMACOS().load());
   #else
-    #if defined(BSPF_WINDOWS)
+    #ifdef BSPF_WINDOWS
       constexpr char LEGACY_SETTINGS_FILE[] = "stella.ini";
     #else
       constexpr char LEGACY_SETTINGS_FILE[] = "stellarc";

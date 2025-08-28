@@ -2808,7 +2808,7 @@ void EventHandler::exitEmulation(bool checkLauncher)
   }
 }
 
-#if defined(__clang__)
+#ifdef __clang__
   #pragma clang diagnostic ignored "-Wmissing-field-initializers"
 #elif defined(__GNUC__) || defined(__GNUG__)
   #pragma GCC diagnostic ignored "-Wmissing-field-initializers"

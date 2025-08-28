@@ -74,7 +74,7 @@ enum class JoyHatDir: uInt8 {
   CENTER = 4
 };
 
-enum JoyHatMask: uInt8 {
+enum JoyHatMask: uInt8 {      // NOLINT / TODO masks can't be 'enum class'
   EVENT_HATUP_M     = 1<<0,
   EVENT_HATDOWN_M   = 1<<1,
   EVENT_HATLEFT_M   = 1<<2,

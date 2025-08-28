@@ -126,6 +126,7 @@ void FBSurface::hLine(uInt32 x, uInt32 y, uInt32 x2, ColorId color)
   if(!checkBounds(x, y) || !checkBounds(x2, 2))
     return;
 
+  // NOLINTNEXTLINE (erroneously marked as const)
   uInt32* buffer = myPixels + (y * static_cast<size_t>(myPitch)) + x;
   while(x++ <= x2)
     *buffer++ = myPalette[color];
@@ -247,6 +248,7 @@ void FBSurface::drawPixels(const uInt32* data, uInt32 tx, uInt32 ty, uInt32 nump
   if(!checkBounds(tx, ty) || !checkBounds(tx + numpixels - 1, ty))
     return;
 
+  // NOLINTNEXTLINE (erroneously marked as const)
   uInt32* buffer = myPixels + (ty * static_cast<size_t>(myPitch)) + tx;
 
   for(uInt32 i = 0; i < numpixels; ++i)

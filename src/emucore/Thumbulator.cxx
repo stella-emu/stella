@@ -33,12 +33,12 @@ using Common::Base;
 // #define THUMB_DISS
 // #define THUMB_DBUG
 
-#if defined(THUMB_DISS)
+#ifdef THUMB_DISS
   #define DO_DISS(statement) statement
 #else
   #define DO_DISS(statement)
 #endif
-#if defined(THUMB_DBUG)
+#ifdef THUMB_DBUG
   #define DO_DBUG(statement) statement
 #else
   #define DO_DBUG(statement)
@@ -1866,7 +1866,7 @@ FORCE_INLINE int Thumbulator::execute()  // NOLINT (readability-function-size)
     //LDMIA
     case Op::ldmia: {
       rn = (inst >> 8) & 0x7;
-    #if defined(THUMB_DISS)
+    #ifdef THUMB_DISS
       statusMsg << "ldmia r" << dec << rn << "!,{";
       for(ra=0,rb=0x01,rc=0;rb;rb=(rb<<1)&0xFF,++ra)
       {
@@ -2292,7 +2292,7 @@ FORCE_INLINE int Thumbulator::execute()  // NOLINT (readability-function-size)
 
     //POP
     case Op::pop: {
-    #if defined(THUMB_DISS)
+    #ifdef THUMB_DISS
       statusMsg << "pop {";
       for(ra=0,rb=0x01,rc=0;rb;rb=(rb<<1)&0xFF,++ra)
       {
@@ -2352,7 +2352,7 @@ FORCE_INLINE int Thumbulator::execute()  // NOLINT (readability-function-size)
 
     //PUSH
     case Op::push: {
-    #if defined(THUMB_DISS)
+    #ifdef THUMB_DISS
       statusMsg << "push {";
       for(ra=0,rb=0x01,rc=0;rb;rb=(rb<<1)&0xFF,++ra)
       {
@@ -2524,7 +2524,7 @@ FORCE_INLINE int Thumbulator::execute()  // NOLINT (readability-function-size)
     //STMIA
     case Op::stmia: {
       rn = (inst >> 8) & 0x7;
-    #if defined(THUMB_DISS)
+    #ifdef THUMB_DISS
       statusMsg << "stmia r" << dec << rn << "!,{";
       for(ra=0,rb=0x01,rc=0;rb;rb=(rb<<1)&0xFF,++ra)
       {

@@ -385,13 +385,13 @@ void FrameBuffer::update(UpdateMode mode)
   //  - at the bottom of ::update(), to actually draw them (this must come
   //    last, since they are always drawn on top of everything else).
 
-  const bool forceRedraw = mode & UpdateMode::REDRAW;
+  const bool forceRedraw = (mode == UpdateMode::REDRAW);
   bool redraw = forceRedraw;
 
   // Forced render without draw required if messages or dialogs were closed
   // Note: For dialogs only relevant when two or more dialogs were stacked
-  const bool rerender = (mode & (UpdateMode::REDRAW | UpdateMode::RERENDER))
-    || myPendingRender;
+  const bool rerender = (mode == UpdateMode::REDRAW || mode == UpdateMode::RERENDER
+                         || myPendingRender);
   myPendingRender = false;
 
   switch(myOSystem.eventHandler().state())

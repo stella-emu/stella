@@ -68,7 +68,7 @@ class SqliteStatement {
 // IMPLEMENTATION
 ///////////////////////////////////////////////////////////////////////////////
 
-#if defined(__clang__)
+#ifdef __clang__
   #pragma clang diagnostic push
   #pragma clang diagnostic ignored "-Wformat-nonliteral"
 #endif
@@ -85,7 +85,7 @@ SqliteStatement::SqliteStatement(sqlite3* handle, string_view sql, T arg1, Ts...
   initialize(buffer);
 }
 
-#if defined(__clang__)
+#ifdef __clang__
   #pragma clang diagnostic pop
 #endif
 

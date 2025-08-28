@@ -414,7 +414,7 @@ bool DebuggerParser::validateArgs(int cmd)
 {
   // cerr << "entering validateArgs(" << cmd << ")\n";
   const bool required = commands[cmd].parmsRequired;
-  Parameters* p = commands[cmd].parms.data();
+  const Parameters* p = commands[cmd].parms.data();
 
   if(argCount == 0)
   {

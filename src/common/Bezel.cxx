@@ -100,7 +100,7 @@ string Bezel::getName(int& index) const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt32 Bezel::borderSize(uInt32 x, uInt32 y, uInt32 size, Int32 step) const
 {
-  uInt32 *pixels{nullptr}, pitch{0};
+  uInt32 *pixels{nullptr}, pitch{0};  // NOLINT (erroneously marked as const)
 
   mySurface->basePtr(pixels, pitch);
   pixels += x + y * pitch;

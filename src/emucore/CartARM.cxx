@@ -29,7 +29,7 @@ CartridgeARM::CartridgeARM(const Settings& settings, string_view md5)
 void CartridgeARM::reset()
 {
   if(myPlusROM->isValid())
-    myPlusROM->reset();
+    (*myPlusROM).reset();  // Make sure to call ::reset, not smartptr reset
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

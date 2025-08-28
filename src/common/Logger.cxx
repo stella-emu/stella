@@ -55,8 +55,8 @@ void Logger::debug(string_view message)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Logger::logMessage(string_view message, Level level)
 {
-  const std::lock_guard<std::mutex> lock(mutex);
-  
+  const std::scoped_lock lock(mutex);
+
 #ifdef __LIB_RETRO__
   libretro_logger(static_cast<int>(level), string{message}.c_str());
 #endif

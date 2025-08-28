@@ -38,7 +38,7 @@ DrawCounterDecodes& DrawCounterDecodes::DrawCounterDecodes::get()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 DrawCounterDecodes::DrawCounterDecodes()
 {
-  uInt8* decodeTables[] = {
+  uInt8* decodeTables[] = {  // NOLINT (erroneously marked as const)
     myDecodes0, myDecodes1, myDecodes2, myDecodes3, myDecodes4, myDecodes6
   };
 
