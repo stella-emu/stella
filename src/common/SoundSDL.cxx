@@ -353,18 +353,21 @@ void SoundSDL::audioCallback(void* object, SDL_AudioStream* stream,
                              int additional_amt, int)
 {
   auto* self = static_cast<SoundSDL*>(object);
-  std::vector<uInt8>& buf = self->myBuffer;
+  if(self->myResampler)
+  {
+    std::vector<uInt8>& buf = self->myBuffer;
 
-  // Make sure we always have enough room in the buffer
-  if(std::cmp_greater_equal(additional_amt, buf.capacity()))
-    buf.resize(additional_amt);
+    // Make sure we always have enough room in the buffer
+    if(std::cmp_greater_equal(additional_amt, buf.capacity()))
+      buf.resize(additional_amt);
 
-  // The stream is 32-bit float (even though this callback is 8-bits), since
-  // the resampler and TIA audio subsystem always generate float samples
-  auto* s = reinterpret_cast<float*>(buf.data());
-  self->myResampler->fillFragment(s, additional_amt >> 2);
+    // The stream is 32-bit float (even though this callback is 8-bits), since
+    // the resampler and TIA audio subsystem always generate float samples
+    auto* s = reinterpret_cast<float*>(buf.data());
+    self->myResampler->fillFragment(s, additional_amt >> 2);
 
-  SDL_PutAudioStreamData(stream, buf.data(), additional_amt);
+    SDL_PutAudioStreamData(stream, buf.data(), additional_amt);
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
