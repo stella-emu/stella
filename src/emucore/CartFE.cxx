@@ -59,15 +59,22 @@ bool CartridgeFE::checkSwitchBank(uInt16 address, uInt8 value)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt8 CartridgeFE::peek(uInt16 address)
+uInt8 CartridgeFE::peek(uInt16 address, bool banked)
 {
-  const uInt8 value = (address < 0x200) ? mySystem->m6532().peek(address) :
-    myImage[myCurrentSegOffset[(address & myBankMask) >> myBankShift] + (address & myBankMask)];
+  if (banked == false)
+  {
+    return myImage[address];
+  }
+  else
+  {
+    const uInt8 value = (address < 0x200) ? mySystem->m6532().peek(address, true) :
+      myImage[myCurrentSegOffset[(address & myBankMask) >> myBankShift] + (address & myBankMask)];
 
-  // Check if we hit hotspot
-  checkSwitchBank(address, value);
+    // Check if we hit hotspot
+    checkSwitchBank(address, value);
 
-  return value;
+    return value;
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -470,7 +470,7 @@ void TIA::bindToControllers()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt8 TIA::peek(uInt16 address)
+uInt8 TIA::peek(uInt16 address, bool banked)
 {
   updateEmulation();
 

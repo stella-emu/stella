@@ -23,6 +23,8 @@
 #include "PatchRomCheat.hxx"
 #include "RamCheat.hxx"
 #include "Vec.hxx"
+#include "Props.hxx"
+#include "DefProps.hxx"
 
 #include "CheatManager.hxx"
 
@@ -226,7 +228,7 @@ void CheatManager::loadCheatDatabase()
   // Loop reading cheats
   while(getline(in, line))
   {
-    if(line.empty())
+    if(line.empty() || line[0] == ';')
       continue;
 
     const string::size_type one = line.find('\"', 0);
@@ -257,8 +259,28 @@ void CheatManager::saveCheatDatabase()
 
   stringstream out;
   for(const auto& [md5, cheat]: myCheatMap)
-    out << "\"" << md5 << "\" " << "\"" << cheat << "\"\n";
-
+  {
+    //binary search internal md5 database
+    int bottom = 0, top = DEF_PROPS_SIZE - 1;
+    while (bottom <= top)
+    {
+      const int i = (bottom + top) / 2;
+      const int compare = BSPF::compareIgnoreCase(md5,
+       DefProps[i][static_cast<uInt8>(PropType::Cart_MD5)]);
+      
+      if (compare == 0)  // found it
+      {
+        //output the game title :- ; [ game name ]
+        out << "; [ " << DefProps[i][3] << " ]\n";
+        break;
+      }
+      else if (compare < 0)
+        top = i - 1; // under
+      else
+        bottom = i + 1;  // above
+    }
+    out << "\"" << md5 << "\" \"" << cheat << "\"\n\n";
+  }
   try         { myOSystem.cheatFile().write(out); }
   catch(...)  { return; }
 }

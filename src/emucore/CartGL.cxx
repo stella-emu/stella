@@ -122,14 +122,21 @@ bool CartridgeGL::checkSwitchBank(uInt16 address, uInt8)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt8 CartridgeGL::peek(uInt16 address)
+uInt8 CartridgeGL::peek(uInt16 address, bool banked)
 {
-  if(myEnablePROM && ((address & ADDR_MASK) >= 0x1fc0) && ((address & ADDR_MASK) <= 0x1fdf))
+  if (banked == false)
   {
-    return 0; // sufficient for PROM check
+    return myImage[address];
   }
+  else
+  {
+    if (myEnablePROM && ((address & ADDR_MASK) >= 0x1fc0) && ((address & ADDR_MASK) <= 0x1fdf))
+    {
+      return 0; // sufficient for PROM check
+    }
 
-  checkSwitchBank(address, 0);
+    checkSwitchBank(address, 0);
 
-  return myRWPRandomValues[address & 0xFF];
+    return myRWPRandomValues[address & 0xFF];
+  }
 }

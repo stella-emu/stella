@@ -297,9 +297,10 @@ class Cartridge : public Device
 
       @param address  The ROM address to patch
       @param value    The value to place into the address
+      @param banked   If banking is to be applied to the patch
       @return    Success or failure of the patch operation
     */
-    virtual bool patch(uInt16 address, uInt8 value) = 0;
+    virtual bool patch(uInt16 address, uInt8 value, bool banked) = 0;
 
     /**
       Access the internal ROM image for this cartridge.

@@ -58,12 +58,12 @@ void CartridgeCM::install(System& system)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt8 CartridgeCM::peek(uInt16 address)
+uInt8 CartridgeCM::peek(uInt16 address, bool banked)
 {
   // NOTE: This does not handle accessing cart ROM/RAM, however, this method
   // should never be called for ROM/RAM because of the way page accessing
   // has been setup (it will only ever be called for RIOT reads)
-  return mySystem->m6532().peek(address);
+  return mySystem->m6532().peek(address, true);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -174,14 +174,22 @@ uInt16 CartridgeCM::romBankCount() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool CartridgeCM::patch(uInt16 address, uInt8 value)
+bool CartridgeCM::patch(uInt16 address, uInt8 value, bool banked)
 {
-  if((mySWCHA & 0x30) == 0x20)
-    myRAM[address & 0x7FF] = value;
+  if (banked == false)
+  {
+    myImage[address] = value;
+    return false;
+  }
   else
-    myImage[myBankOffset + address] = value;
+  {
+    if ((mySWCHA & 0x30) == 0x20)
+      myRAM[address & 0x7FF] = value;
+    else
+      myImage[myBankOffset + address] = value;
 
-  return myBankChanged = true;
+    return myBankChanged = true;
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

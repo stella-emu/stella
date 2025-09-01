@@ -34,7 +34,7 @@ BankRomCheat::BankRomCheat(OSystem& os, string_view name, string_view code)
 
   // Back up original data; we need this if the cheat is ever disabled
   for(int i = 0; std::cmp_less(i, count); ++i)
-    savedRom[i] = myOSystem.console().cartridge().peek(address + i);
+    savedRom[i] = myOSystem.console().cartridge().peek(address + i, true);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -51,7 +51,7 @@ bool BankRomCheat::disable()
   myOSystem.console().cartridge().bank(bank);
 
   for(int i = 0; std::cmp_less(i, count); ++i)
-    myOSystem.console().cartridge().patch(address + i, savedRom[i]);
+    myOSystem.console().cartridge().patch(address + i, savedRom[i], true);
 
   myOSystem.console().cartridge().bank(oldBank);
 
@@ -67,7 +67,7 @@ void BankRomCheat::evaluate()
     myOSystem.console().cartridge().bank(bank);
 
     for(int i = 0; std::cmp_less(i, count); ++i)
-      myOSystem.console().cartridge().patch(address + i, value);
+      myOSystem.console().cartridge().patch(address + i, value, true);
 
     myOSystem.console().cartridge().bank(oldBank);
 

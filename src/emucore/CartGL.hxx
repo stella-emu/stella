@@ -99,7 +99,7 @@ class CartridgeGL : public CartridgeEnhanced
 
       @return The byte at the specified address
     */
-    uInt8 peek(uInt16 address) override;
+    uInt8 peek(uInt16 address, bool banked) override;
 
   private:
     bool checkSwitchBank(uInt16 address, uInt8) override;

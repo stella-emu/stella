@@ -1682,14 +1682,22 @@ const ByteBuffer& CartridgeMVC::getImage(size_t& size) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool CartridgeMVC::patch(uInt16 address, uInt8 value)
+bool CartridgeMVC::patch(uInt16 address, uInt8 value, bool banked)
 {
-  myMovie->writeROM(address, value);
-  return true;
+  if (banked == 0)
+  {
+    myImage[address] = value;
+    return false;
+  }
+  else
+  {
+	  myMovie->writeROM(address, value);
+	  return true;
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt8 CartridgeMVC::peek(uInt16 address)
+uInt8 CartridgeMVC::peek(uInt16 address, bool banked)
 {
   myMovie->process(address);
   return myMovie->readROM(address);
