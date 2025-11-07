@@ -278,6 +278,17 @@ CortexM0::err_t VcsLib::fetch16(uInt32 address, uInt16& value, uInt8& op, Cortex
 
       return returnFromStub(value, op);
 
+    case ADDR_VCS_WRITE4:
+      arg = cortex.getRegister(0);
+
+      myTransactionQueue
+        .injectROM(0x8d)
+	      .injectROM(arg)
+	      .injectROM(arg >> 8)
+        .stuffByte(cortex.getRegister(1), arg);
+
+      return returnFromStub(value, op);
+
     case ADDR_VCS_JMP3:
       myTransactionQueue
     	  .injectROM(0x4c)

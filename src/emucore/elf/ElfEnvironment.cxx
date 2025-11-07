@@ -126,6 +126,7 @@ vector<ElfLinker::ExternalSymbol> elfEnvironment::externalSymbols(elfEnvironment
     {"vcsLdxForBusStuff2", ADDR_VCS_LDX_FOR_BUS_STUFF2 + 1},
     {"vcsLdyForBusStuff2", ADDR_VCS_LDY_FOR_BUS_STUFF2 + 1},
     {"vcsWrite3", ADDR_VCS_WRITE3 + 1},
+    {"vcsWrite4", ADDR_VCS_WRITE4 + 1},
     {"vcsJmp3", ADDR_VCS_JMP3 + 1},
     {"vcsNop2", ADDR_VCS_NOP2 + 1},
     {"vcsNop2n", ADDR_VCS_NOP2N + 1},
