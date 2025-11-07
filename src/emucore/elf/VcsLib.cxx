@@ -283,8 +283,8 @@ CortexM0::err_t VcsLib::fetch16(uInt32 address, uInt16& value, uInt8& op, Cortex
 
       myTransactionQueue
         .injectROM(0x8d)
-	      .injectROM(arg)
-	      .injectROM(arg >> 8)
+        .injectROM(arg)
+        .injectROM(arg >> 8)
         .stuffByte(cortex.getRegister(1), arg);
 
       return returnFromStub(value, op);
