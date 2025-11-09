@@ -22,7 +22,7 @@
  * We can't control the quality of code from outside projects, so for now
  * just disable warnings for it.
  */
-#if defined(__clang__)
+#ifdef __clang__
   #pragma clang diagnostic push
   #pragma clang diagnostic ignored "-Weverything"
   #include "nanojpeg.c"  // NOLINT (bugprone-suspicious-include)
@@ -33,15 +33,15 @@
   #pragma GCC diagnostic ignored "-Wcast-function-type"
   #pragma GCC diagnostic ignored "-Wshift-negative-value"
   #pragma GCC diagnostic ignored "-Wregister"
-  #include "nanojpeg.c"
+  #include "nanojpeg.c"  // NOLINT (bugprone-suspicious-include)
   #pragma GCC diagnostic pop
 #elif defined(BSPF_WINDOWS)
   #pragma warning(push, 0)
   #pragma warning(disable : 4706)
-  #include "nanojpeg.c"
+  #include "nanojpeg.c"  // NOLINT (bugprone-suspicious-include)
   #pragma warning(pop)
 #else
-  #include "nanojpeg.c"
+  #include "nanojpeg.c"  // NOLINT (bugprone-suspicious-include)
 #endif
 
 #endif  // NANOJPEG_LIB_HXX

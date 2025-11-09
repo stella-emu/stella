@@ -100,7 +100,7 @@ void FBBackendSDL::queryHardware(vector<Common::Size>& fullscreenRes,
     int numModes = 0;
     ostringstream s;
     string lastRes;
-    SDL_DisplayMode** modes = SDL_GetFullscreenDisplayModes(displays[i], &numModes);
+    SDL_DisplayMode** modes = SDL_GetFullscreenDisplayModes(displays[i], &numModes);  // NOLINT
 
     s << "Supported video modes (" << numModes << ") for display " << i
       << " (" << SDL_GetDisplayName(displays[i]) << "):";
@@ -583,8 +583,8 @@ void FBBackendSDL::renderToScreen()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FBBackendSDL::setWindowIcon()
 {
-#if !defined(BSPF_MACOS)
-#include "stella_icon.hxx"
+#ifndef BSPF_MACOS
+  #include "stella_icon.hxx"
   ASSERT_MAIN_THREAD;
 
   SDL_Surface* surface =

@@ -56,7 +56,7 @@ StaggeredLogger::~StaggeredLogger()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void StaggeredLogger::log()
 {
-  const std::lock_guard<std::mutex> lock(myMutex);
+  const std::scoped_lock lock(myMutex);
 
   _log();
 }
@@ -133,7 +133,7 @@ void StaggeredLogger::startInterval()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void StaggeredLogger::onTimerExpired(uInt32 timerCallbackId)
 {
-  const std::lock_guard<std::mutex> lock(myMutex);
+  const std::scoped_lock lock(myMutex);
 
   if (timerCallbackId != myTimerCallbackId) return;
 

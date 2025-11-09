@@ -20,7 +20,7 @@
 
 class AbstractFSNode;
 
-#if defined(ZIP_SUPPORT)
+#ifdef ZIP_SUPPORT
   #include "FSNodeZIP.hxx"
 #endif
 #if defined(BSPF_UNIX) || defined(BSPF_MACOS)
@@ -58,7 +58,7 @@ class FSNodeFactory
         #endif
           break;
         case Type::ZIP:
-        #if defined(ZIP_SUPPORT)
+        #ifdef ZIP_SUPPORT
           return make_unique<FSNodeZIP>(path);
         #endif
           break;

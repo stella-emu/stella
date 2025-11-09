@@ -86,7 +86,8 @@ class NullDevice : public Device
       @return  True if the poke changed the device address space, else false
     */
     bool poke(uInt16 address, uInt8 value) override {
-      cerr << "NullDevice: poke(" << address << "," << value << ")\n";
+      cerr << "NullDevice: poke(" << address << ","
+           << static_cast<uInt32>(value) << ")\n";
       return false;
     }
 

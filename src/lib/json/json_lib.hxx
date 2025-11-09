@@ -22,7 +22,7 @@
  * We can't control the quality of code from outside projects, so for now
  * just disable warnings for it.
  */
-#if defined(__clang__)
+#ifdef __clang__
   #pragma clang diagnostic push
   #pragma clang diagnostic ignored "-Weverything"
   #include "json.hpp"

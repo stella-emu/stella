@@ -58,7 +58,7 @@ void EditableWidget::setText(string_view str, bool changed)
   if(oldEditString != _editString)
     setDirty();
 
-  myUndoHandler->reset();
+  (*myUndoHandler).reset();  // Make sure to call ::reset, not smartptr reset
   myUndoHandler->doo(_editString);
 
   _caretPos = static_cast<int>(_editString.size());
@@ -117,7 +117,7 @@ void EditableWidget::receivedFocusWidget()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EditableWidget::lostFocusWidget()
 {
-  myUndoHandler->reset();
+  (*myUndoHandler).reset();  // Make sure to call ::reset, not smartptr reset
   _selectSize = 0;
 }
 

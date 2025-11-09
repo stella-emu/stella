@@ -63,8 +63,8 @@ void CartridgeE7::reset()
 
   myBankChanged = true;
 
-  if (myPlusROM->isValid())
-      myPlusROM->reset();
+  if(myPlusROM->isValid())
+    (*myPlusROM).reset();  // Make sure to call ::reset, not smartptr reset
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

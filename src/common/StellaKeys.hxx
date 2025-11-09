@@ -413,7 +413,7 @@ enum StellaKey  // NOLINT: use 32-bit, even though 16-bit is sufficient
 };
 
 // This comes directly from SDL_keycode.h
-enum StellaMod: uInt16
+enum StellaMod: uInt16  // NOLINT / TODO masks can't be 'enum class'
 {
   KBDM_NONE   = 0x0000U, /**< no modifier is applicable. */
   KBDM_LSHIFT = 0x0001U, /**< the left Shift key is down. */

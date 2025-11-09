@@ -262,7 +262,7 @@ void TiaOutputWidget::drawWidget(bool hilite)
 
   for(uInt32 y = 0, i = yStart * width; y < height; ++y)
   {
-    uInt32* line_ptr = myLineBuffer.data();
+    uInt32* line_ptr = myLineBuffer.data();  // NOLINT (erroneously marked as const)
     for(uInt32 x = 0; x < width; ++x, ++i)
     {
       const uInt8 shift = i >= scanoffset ? 1 : 0;

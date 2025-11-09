@@ -143,7 +143,8 @@ void CartridgeEnhanced::reset()
   // Upon reset we switch to the reset bank
   bank(startBank());
 
-  if (myPlusROM->isValid()) myPlusROM->reset();
+  if (myPlusROM->isValid())
+    (*myPlusROM).reset();  // Make sure to call ::reset, not smartptr reset
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

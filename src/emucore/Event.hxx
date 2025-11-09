@@ -213,7 +213,7 @@ class Event
       Get the value associated with the event of the specified type.
     */
     Int32 get(Type type) const {
-      const std::lock_guard<std::mutex> lock(myMutex);
+      const std::scoped_lock lock(myMutex);
 
       return myValues[type];
     }
@@ -222,7 +222,7 @@ class Event
       Set the value associated with the event of the specified type.
     */
     void set(Type type, Int32 value) {
-      const std::lock_guard<std::mutex> lock(myMutex);
+      const std::scoped_lock lock(myMutex);
 
       myValues[type] = value;
     }
@@ -232,7 +232,7 @@ class Event
     */
     void clear()
     {
-      const std::lock_guard<std::mutex> lock(myMutex);
+      const std::scoped_lock lock(myMutex);
 
       myValues.fill(Event::NoType);
     }

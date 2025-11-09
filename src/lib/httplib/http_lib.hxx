@@ -22,17 +22,17 @@
  * We can't control the quality of code from outside projects, so for now
  * just disable warnings for it.
  */
-#if defined(__clang__)
+#ifdef __clang__
   #pragma clang diagnostic push
   #pragma clang diagnostic ignored "-Weverything"
-  #include "httplib.h"
+  #include "httplib.h"  // NOLINT
   #pragma clang diagnostic pop
 #elif defined(BSPF_WINDOWS)
   #pragma warning(push, 0)
-  #include "httplib.h"
+  #include "httplib.h"  // NOLINT
   #pragma warning(pop)
 #else
-  #include "httplib.h"
+  #include "httplib.h"  // NOLINT
 #endif
 
 #endif  // HTTPLIB_LIB_HXX

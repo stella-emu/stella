@@ -91,7 +91,7 @@ void JPGLibrary::loadImagetoSurface(FBSurface& surface)
   for(uInt32 irow = 0; irow < ih; ++irow, i_buf += i_pitch, s_buf += s_pitch)
   {
     const uInt8* i_ptr = i_buf;
-    uInt32* s_ptr = s_buf;
+    uInt32* s_ptr = s_buf;  // NOLINT (erroneously marked as const)
     for(uInt32 icol = 0; icol < myReadInfo.width; ++icol, i_ptr += 3)
       *s_ptr++ = fb.mapRGB(*i_ptr, *(i_ptr + 1), *(i_ptr + 2));
   }

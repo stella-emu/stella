@@ -45,7 +45,7 @@ CommandDialog::CommandDialog(OSystem& osystem, DialogContainer& parent)
   // Set real dimensions
   _w = 3 * (buttonWidth + HGAP) - HGAP + HBORDER * 2;
   _h = 6 * rowHeight - VGAP + VBORDER * 2 + _th;
-  ButtonWidget* bw = nullptr;
+  ButtonWidget* bw = nullptr;  // NOLINT (erroneously marked as const)
   WidgetArray wid;
   int xoffset = HBORDER, yoffset = VBORDER + _th;
 

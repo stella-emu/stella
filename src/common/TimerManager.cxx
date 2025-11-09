@@ -19,12 +19,6 @@
 #include "TimerManager.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-TimerManager::TimerManager()
-  : nextId{no_timer + 1}
-{
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 TimerManager::~TimerManager()
 {
   ScopedLock lock(sync);

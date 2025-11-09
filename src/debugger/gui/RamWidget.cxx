@@ -46,7 +46,7 @@ RamWidget::RamWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& n
             bheight = myLineHeight + 2;
   //const int VGAP = 4;
   const int VGAP = myFontHeight / 4;
-  StaticTextWidget* s = nullptr;
+  StaticTextWidget* s = nullptr;  // NOLINT (erroneously marked as const)
   WidgetArray wid;
 
   int ypos = y + myLineHeight;

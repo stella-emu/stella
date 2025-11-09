@@ -15,7 +15,7 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#if defined(ZIP_SUPPORT)
+#ifdef ZIP_SUPPORT
 
 #ifndef ZIP_HANDLER_HXX
 #define ZIP_HANDLER_HXX

@@ -38,7 +38,7 @@ void FSNode::setPath(string_view path)
     return;
 
   // Is this potentially a ZIP archive?
-#if defined(ZIP_SUPPORT)
+#ifdef ZIP_SUPPORT
   if (BSPF::containsIgnoreCase(path, ".zip"))
     _realNode = FSNodeFactory::create(path, FSNodeFactory::Type::ZIP);
   else
@@ -76,7 +76,7 @@ bool FSNode::getAllChildren(FSList& fslist, ListMode mode,
   if(getChildren(fslist, mode, filter, true, includeParentDirectory, isCancelled))
   {
     // Sort only once at the end
-  #if defined(ZIP_SUPPORT)
+  #ifdef ZIP_SUPPORT
     // before sorting, replace single file ZIP archive names with contained
     // file names because they are displayed using their contained file names
     for(auto& i : fslist)
@@ -98,7 +98,7 @@ bool FSNode::getAllChildren(FSList& fslist, ListMode mode,
     }
     );
 
-  #if defined(ZIP_SUPPORT)
+  #ifdef ZIP_SUPPORT
     // After sorting replace zip files with zip nodes
     for(auto& i : fslist)
     {
@@ -139,7 +139,7 @@ bool FSNode::getChildren(FSList& fslist, ListMode mode,
     if(isCancelled())
       return false;
 
-  #if defined(ZIP_SUPPORT)
+  #ifdef ZIP_SUPPORT
     // before sorting, replace single file ZIP archive names with contained
     // file names because they are displayed using their contained file names
     for(auto& i : tmp)
@@ -177,7 +177,7 @@ bool FSNode::getChildren(FSList& fslist, ListMode mode,
     if(isCancelled())
       return false;
 
-  #if defined(ZIP_SUPPORT)
+  #ifdef ZIP_SUPPORT
     if (BSPF::endsWithIgnoreCase(i->getPath(), ".zip"))
     {
       // Force ZIP c'tor to be called

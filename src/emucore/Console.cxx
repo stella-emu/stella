@@ -235,7 +235,7 @@ Console::Console(OSystem& osystem, unique_ptr<Cartridge>& cart,
   myOSystem.eventHandler().allowAllDirections(joyallow4);
 
   // Reset the system to its power-on state
-  mySystem->reset();
+  (*mySystem).reset();  // Make sure to call ::reset, not smartptr reset
   myRiot->update();
 
   // Finally, add remaining info about the console

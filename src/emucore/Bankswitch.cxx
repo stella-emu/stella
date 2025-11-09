@@ -133,7 +133,7 @@ Bankswitch::BSList = {{
   { "WDSW"    , "WDSW (Pink Panther, bad)"    },
   { "WF8"     , "WF8 (Coleco, white carts)"   },
   { "X07"     , "X07 (64K AtariAge)"          },
-#if defined(CUSTOM_ARM)
+#ifdef CUSTOM_ARM
   { "CUSTOM"  ,   "CUSTOM (ARM)"              }
 #endif
 }};
@@ -200,7 +200,7 @@ Bankswitch::Sizes = {{
   {    8_KB,   8_KB+5 }, // _WDSW
   {    8_KB,   8_KB }, // _WF8
   {   64_KB,  64_KB }, // _X07
-#if defined(CUSTOM_ARM)
+#ifdef CUSTOM_ARM
   { Bankswitch::any_KB, Bankswitch::any_KB }
 #endif
 }};
@@ -212,7 +212,7 @@ Bankswitch::ExtensionMap Bankswitch::ourExtensions = {
   { "a26"   , Bankswitch::Type::_AUTO   },
   { "bin"   , Bankswitch::Type::_AUTO   },
   { "rom"   , Bankswitch::Type::_AUTO   },
-#if defined(ZIP_SUPPORT)
+#ifdef ZIP_SUPPORT
   { "zip"   , Bankswitch::Type::_AUTO   },
 #endif
   { "cu"    , Bankswitch::Type::_AUTO   },

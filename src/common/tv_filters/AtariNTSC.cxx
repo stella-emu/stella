@@ -21,7 +21,7 @@
 
 // blitter related
 #ifndef restrict
-  #if defined (__GNUC__)
+  #ifdef __GNUC__
     #define restrict __restrict__
   #elif defined (_MSC_VER) && _MSC_VER > 1300
     #define restrict __restrict
@@ -41,7 +41,7 @@ void AtariNTSC::initialize(const Setup& setup)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void AtariNTSC::setPalette(const PaletteArray& palette)
 {
-  uInt8* ptr = myRGBPalette.data();
+  uInt8* ptr = myRGBPalette.data();  // NOLINT (erroneously marked as const)
   for(auto p: palette)
   {
     *ptr++ = (p >> 16) & 0xff;
@@ -337,7 +337,7 @@ void AtariNTSC::init(init_t& impl, const Setup& setup)
 
   /* setup decoder matricies */
   {
-    float* out = impl.to_rgb.data();
+    float* out = impl.to_rgb.data();  // NOLINT (erroneously marked as const)
 
     int n = burst_count;
     do
@@ -446,7 +446,7 @@ void AtariNTSC::initFilters(init_t& impl, const Setup& setup)
 
   /* generate linear rescale kernels */
   float weight = 1.0F;
-  float* out = impl.kernel.data();
+  float* out = impl.kernel.data();  // NOLINT (erroneously marked as const)
   int n = rescale_out;
   do
   {
