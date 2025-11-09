@@ -135,46 +135,51 @@ FORCE_INLINE void CartridgeDPC::updateMusicModeDataFetchers()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt8 CartridgeDPC::peek(uInt16 address)
+uInt8 CartridgeDPC::peek(uInt16 address, bool banked)
 {
   const uInt16 peekAddress = address;
-
-  address &= 0x0FFF;
-
-  // In debugger/bank-locked mode, we ignore all hotspots and in general
-  // anything that can change the internal state of the cart
-  if(hotspotsLocked())
-    return myImage[myCurrentSegOffset[0] + address];
-
-  // Clock the random number generator.  This should be done for every
-  // cartridge access, however, we're only doing it for the DPC and
-  // hot-spot accesses to save time.
-  clockRandomNumberGenerator();
-
-  if(address < 0x0040)
+  if (banked == false)
   {
-    uInt8 result = 0;
+    return myImage[peekAddress];
+  }
+  else
+  {
+    address &= 0x0FFF;
 
-    // Get the index of the data fetcher that's being accessed
-    const uInt32 index = address & 0x07;
-    const uInt32 function = (address >> 3) & 0x07;
+    // In debugger/bank-locked mode, we ignore all hotspots and in general
+    // anything that can change the internal state of the cart
+    if (hotspotsLocked())
+      return myImage[myCurrentSegOffset[0] + address];
 
-    // Update flag register for selected data fetcher
-    if((myCounters[index] & 0x00ff) == myTops[index])
-    {
-      myFlags[index] = 0xff;
-    }
-    else if((myCounters[index] & 0x00ff) == myBottoms[index])
-    {
-      myFlags[index] = 0x00;
-    }
+    // Clock the random number generator.  This should be done for every
+    // cartridge access, however, we're only doing it for the DPC and
+    // hot-spot accesses to save time.
+    clockRandomNumberGenerator();
 
-    switch(function)
+    if (address < 0x0040)
     {
+      uInt8 result = 0;
+
+      // Get the index of the data fetcher that's being accessed
+      const uInt32 index = address & 0x07;
+      const uInt32 function = (address >> 3) & 0x07;
+
+      // Update flag register for selected data fetcher
+      if ((myCounters[index] & 0x00ff) == myTops[index])
+      {
+        myFlags[index] = 0xff;
+      }
+      else if ((myCounters[index] & 0x00ff) == myBottoms[index])
+      {
+        myFlags[index] = 0x00;
+      }
+
+      switch (function)
+      {
       case 0x00:
       {
         // Is this a random number read
-        if(index < 4)
+        if (index < 4)
         {
           result = myRandomNumber;
         }
@@ -182,22 +187,22 @@ uInt8 CartridgeDPC::peek(uInt16 address)
         else
         {
           static constexpr std::array<uInt8, 8> musicAmplitudes = {
-              0x00, 0x04, 0x05, 0x09, 0x06, 0x0a, 0x0b, 0x0f
+            0x00, 0x04, 0x05, 0x09, 0x06, 0x0a, 0x0b, 0x0f
           };
 
           // Update the music data fetchers (counter & flag)
           updateMusicModeDataFetchers();
 
           uInt8 i = 0;
-          if(myMusicMode[0] && myFlags[5])
+          if (myMusicMode[0] && myFlags[5])
           {
             i |= 0x01;
           }
-          if(myMusicMode[1] && myFlags[6])
+          if (myMusicMode[1] && myFlags[6])
           {
             i |= 0x02;
           }
-          if(myMusicMode[2] && myFlags[7])
+          if (myMusicMode[2] && myFlags[7])
           {
             i |= 0x04;
           }
@@ -232,18 +237,19 @@ uInt8 CartridgeDPC::peek(uInt16 address)
       {
         result = 0;
       }
-    }
+      }
 
-    // Clock the selected data fetcher's counter if needed
-    if(index < 5 || !myMusicMode[index - 5])
-    {
-      myCounters[index] = (myCounters[index] - 1) & 0x07ff;
-    }
+      // Clock the selected data fetcher's counter if needed
+      if (index < 5 || !myMusicMode[index - 5])
+      {
+        myCounters[index] = (myCounters[index] - 1) & 0x07ff;
+      }
 
-    return result;
+      return result;
+    }
+    else
+      return CartridgeEnhanced::peek(peekAddress, true);
   }
-  else
-    return CartridgeEnhanced::peek(peekAddress);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -337,15 +343,23 @@ bool CartridgeDPC::poke(uInt16 address, uInt8 value)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool CartridgeDPC::patch(uInt16 address, uInt8 value)
+bool CartridgeDPC::patch(uInt16 address, uInt8 value, bool banked)
 {
-  // For now, we ignore attempts to patch the DPC address space
-  if((address & ADDR_MASK) >= ROM_OFFSET + myRomOffset)
+  if (banked == 0)
   {
-    return CartridgeEnhanced::patch(address, value);
+    myImage[address] = value;
+    return false;
   }
   else
-    return false;
+  {
+    // For now, we ignore attempts to patch the DPC address space
+    if ((address & ADDR_MASK) >= ROM_OFFSET + myRomOffset)
+    {
+      return CartridgeEnhanced::patch(address, value, banked);
+    }
+    else
+      return false;
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

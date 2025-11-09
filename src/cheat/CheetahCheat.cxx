@@ -29,7 +29,7 @@ CheetahCheat::CheetahCheat(OSystem& os, string_view name, string_view code)
 {
   // Back up original data; we need this if the cheat is ever disabled
   for(uInt8 i = 0; i < count; ++i)
-    savedRom[i] = myOSystem.console().cartridge().peek(address + i);
+    savedRom[i] = myOSystem.console().cartridge().peek(address + i, true);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -43,7 +43,7 @@ bool CheetahCheat::enable()
 bool CheetahCheat::disable()
 {
   for(uInt8 i = 0; i < count; ++i)
-    myOSystem.console().cartridge().patch(address + i, savedRom[i]);
+    myOSystem.console().cartridge().patch(address + i, savedRom[i], true);
 
   return myEnabled = false;
 }
@@ -54,7 +54,7 @@ void CheetahCheat::evaluate()
   if(!myEnabled)
   {
     for(uInt8 i = 0; i < count; ++i)
-      myOSystem.console().cartridge().patch(address + i, value);
+      myOSystem.console().cartridge().patch(address + i, value, true);
 
     myEnabled = true;
   }

@@ -87,7 +87,7 @@ class CartridgeUA : public CartridgeEnhanced
 
       @return The byte at the specified address
     */
-    uInt8 peek(uInt16 address) override;
+    uInt8 peek(uInt16 address, bool banked) override;
 
     /**
       Change the byte at the specified address to the given value

@@ -75,7 +75,7 @@ class ByteDerefExpression : public Expression
   public:
     explicit ByteDerefExpression(Expression* left): Expression(left) { }
     Int32 evaluate() const override
-      { return Debugger::debugger().peek(myLHS->evaluate()); }
+      { return Debugger::debugger().peek(myLHS->evaluate(), true); }
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -84,7 +84,7 @@ class ByteDerefOffsetExpression : public Expression
   public:
     ByteDerefOffsetExpression(Expression* left, Expression* right) : Expression(left, right) { }
     Int32 evaluate() const override
-      { return Debugger::debugger().peek(myLHS->evaluate() + myRHS->evaluate()); }
+      { return Debugger::debugger().peek(myLHS->evaluate() + myRHS->evaluate(), true); }
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

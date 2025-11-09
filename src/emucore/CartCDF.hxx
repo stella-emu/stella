@@ -129,7 +129,7 @@ class CartridgeCDF : public CartridgeARM
       @param value    The value to place into the address
       @return    Success or failure of the patch operation
     */
-    bool patch(uInt16 address, uInt8 value) override;
+    bool patch(uInt16 address, uInt8 value, bool banked) override;
 
     /**
       Access the internal ROM image for this cartridge.
@@ -215,7 +215,7 @@ class CartridgeCDF : public CartridgeARM
 
       @return The byte at the specified address
     */
-    uInt8 peek(uInt16 address) override;
+    uInt8 peek(uInt16 address, bool banked) override;
 
     /**
       Change the byte at the specified address to the given value

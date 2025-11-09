@@ -118,7 +118,7 @@ uInt8 System::peekImpl(uInt16 addr, Device::AccessFlags flags)
   // See if this page uses direct accessing or not
   uInt8 result = access.directPeekBase
       ? *(access.directPeekBase + (addr & PAGE_MASK))
-      : (oob ? access.device->peekOob(addr) : access.device->peek(addr));
+      : (oob ? access.device->peekOob(addr) : access.device->peek(addr, true));
 
   if (!oob && myCartridgeDoesBusStuffing) result = myCart.overdrivePeek(addr, result);
 
