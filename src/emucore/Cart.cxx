@@ -123,7 +123,8 @@ void Cartridge::pokeRAM(uInt8& dest, uInt16 address, uInt8 value)
 #ifdef DEBUGGER_SUPPORT
   for(auto i = myRamReadAccesses.begin(); i != myRamReadAccesses.end(); ++i)
   {
-    if(*i == address)
+    // Compare with target address and with one page before (in case of page crossed while indexing)
+    if(*i == address || *i == address - 256)
     {
       myRamReadAccesses.erase(i);
       break;
