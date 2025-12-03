@@ -18,7 +18,6 @@
 #ifndef LOGGER_HXX
 #define LOGGER_HXX
 
-#include <functional>
 #include <mutex>
 
 #include "bspf.hxx"

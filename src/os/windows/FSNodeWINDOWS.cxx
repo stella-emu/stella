@@ -23,6 +23,7 @@
 #include <tchar.h>
 
 #include "Windows.hxx"
+#include "HomeFinder.hxx"
 #include "FSNodeWINDOWS.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

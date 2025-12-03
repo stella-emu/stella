@@ -19,7 +19,6 @@
 #define FS_NODE_WINDOWS_HXX
 
 #include "FSNode.hxx"
-#include "HomeFinder.hxx"
 
 // TODO - fix isFile() functionality so that it actually determines if something
 //        is a file; for now, it assumes a file if it isn't a directory
