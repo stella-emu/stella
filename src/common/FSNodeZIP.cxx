@@ -19,6 +19,9 @@
 
 #include <set>
 
+#ifdef BSPF_WINDOWS
+  #include "HomeFinder.hxx"
+#endif
 #include "bspf.hxx"
 #include "Bankswitch.hxx"
 #include "FSNodeFactory.hxx"

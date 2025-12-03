@@ -20,6 +20,7 @@
 
 #pragma warning( disable : 4091 )
 #include <shlobj.h>
+#include "bspf.hxx"
 
 /*
  * Used to determine the location of the various Win32 user/system folders.
