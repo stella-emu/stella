@@ -1184,9 +1184,11 @@ void FrameBuffer::toggleFullscreen(bool toggle)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+#if 0
 const FBSurface& FrameBuffer::renderedTIASurface()
 {
 }
+#endif
 
 #ifdef ADAPTABLE_REFRESH_SUPPORT
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

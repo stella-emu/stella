@@ -230,6 +230,7 @@ class FrameBuffer
     */
     TIASurface& tiaSurface() const { return *myTIASurface; }
 
+#if 0
     /**
       Get the viewable surface associated with the framebuffer, minus any
       centering/blank space.  Note that this takes into account any post-processing,
@@ -239,6 +240,7 @@ class FrameBuffer
       and should not be used for anything else.
     */
     const FBSurface& renderedTIASurface();
+#endif
 
     /**
       Toggles between fullscreen and window mode.
