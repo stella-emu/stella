@@ -135,17 +135,14 @@ class FBBackendSDL : public FBBackend
       { return SDL_MapRGBA(myPixelFormat, nullptr, r, g, b, a); }
 
     /**
-      This method is called to get a copy of the specified ARGB data from the
-      viewable FrameBuffer area.  Note that this isn't the same as any
-      internal surfaces that may be in use; it should return the actual data
-      as it is currently seen onscreen.
+      This method is called to get a copy of the viewable framebuffer area
+      as a surface.  Note that this isn't the same as any internal surfaces
+      that may be in use; it should return the actual data as it is currently
+      seen onscreen.
 
-      @param buffer  A copy of the pixel data in ARGB8888 format
-      @param pitch   The pitch (in bytes) for the pixel data
-      @param rect    The bounding rectangle for the buffer
+      @param surface  The surface used to store the current framebuffer.
     */
-    void readPixels(uInt8* buffer, size_t pitch,
-                    const Common::Rect& rect) const override;
+    void getSurface(FBSurface& surface) const override;
 
     /**
       This method is called to query if the current window is not centered

@@ -69,12 +69,7 @@ void FBSurfaceSDL::fillRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h, ColorId colo
 {
   ASSERT_MAIN_THREAD;
 
-  // Fill the rectangle
-  SDL_Rect tmp;
-  tmp.x = x;
-  tmp.y = y;
-  tmp.w = w;
-  tmp.h = h;
+  const SDL_Rect tmp = ToSDLRect(x, y, w, h);
   SDL_FillSurfaceRect(mySurface, &tmp, myPalette[color]);
 }
 
@@ -191,14 +186,9 @@ void FBSurfaceSDL::invalidateRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h)
 {
   ASSERT_MAIN_THREAD;
 
-  // Clear the rectangle
-  SDL_Rect tmp;
-  tmp.x = x;
-  tmp.y = y;
-  tmp.w = w;
-  tmp.h = h;
   // Note: Transparency has to be 0 to clear the rectangle foreground
-  //  without affecting the background display.
+  //       without affecting the background display.
+  const SDL_Rect tmp = ToSDLRect(x, y, w, h);
   SDL_FillSurfaceRect(mySurface, &tmp, 0);
 }
 
@@ -228,6 +218,8 @@ void FBSurfaceSDL::resize(uInt32 width, uInt32 height)
 void FBSurfaceSDL::createSurface(uInt32 width, uInt32 height, const uInt32* data)
 {
   ASSERT_MAIN_THREAD;
+
+  assert(width > 0 && height > 0);
 
   // Create a surface in the same format as the parent GL class
   const SDL_PixelFormatDetails& pf = myBackend.pixelFormat();

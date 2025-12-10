@@ -416,8 +416,8 @@ class FBSurface
   protected:
     uInt32* myPixels{nullptr};  // NOTE: MUST be set in child classes
     uInt32 myPitch{0};          // NOTE: MUST be set in child classes
-    bool myEnableBlend{false};        // NOTE: MUST be set in child classes
-    uInt32 myBlendLevel{100};   // NOTE: MUST be set in child classes
+    bool myEnableBlend{false};
+    uInt32 myBlendLevel{100};
 
     static FullPaletteArray myPalette;
 

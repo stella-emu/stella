@@ -174,17 +174,14 @@ class FBBackend
     virtual uInt32 mapRGBA(uInt8 r, uInt8 g, uInt8 b, uInt8 a) const = 0;
 
     /**
-      This method is called to get the specified ARGB data from the viewable
-      FrameBuffer area.  Note that this isn't the same as any internal
-      surfaces that may be in use; it should return the actual data as it
-      is currently seen onscreen.
+      This method is called to get a copy of the viewable framebuffer area
+      as a surface.  Note that this isn't the same as any internal surfaces
+      that may be in use; it should return the actual data as it is currently
+      seen onscreen.
 
-      @param buffer  The actual pixel data in ARGB8888 format
-      @param pitch   The pitch (in bytes) for the pixel data
-      @param rect    The bounding rectangle for the buffer
+      @param surface  The surface used to store the current framebuffer.
     */
-    virtual void readPixels(uInt8* buffer, size_t pitch,
-                            const Common::Rect& rect) const = 0;
+    virtual void getSurface(FBSurface& surface) const = 0;
 
     /**
       This method is called to query if the current window is not

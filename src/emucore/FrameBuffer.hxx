@@ -225,8 +225,20 @@ class FrameBuffer
 
     /**
       Get the TIA surface associated with the framebuffer.
+      Note that this is the 'raw' TIA surface, without any post-processing
+      effects included.
     */
     TIASurface& tiaSurface() const { return *myTIASurface; }
+
+    /**
+      Get the viewable surface associated with the framebuffer, minus any
+      centering/blank space.  Note that this takes into account any post-processing,
+      including Blargg filtering, scanlines, etc.
+
+      Currently this is used only for taking PNG snapshots.  As such, it is slow
+      and should not be used for anything else.
+    */
+    const FBSurface& renderedTIASurface();
 
     /**
       Toggles between fullscreen and window mode.
@@ -403,6 +415,7 @@ class FrameBuffer
       return myBackend->mapRGBA(r, g, b, a);
     }
 
+#if 0
     /**
       This method is called to get the specified ARGB data from the viewable
       FrameBuffer area.  Note that this isn't the same as any internal
@@ -416,6 +429,7 @@ class FrameBuffer
     void readPixels(uInt8* buffer, size_t pitch, const Common::Rect& rect) const {
       myBackend->readPixels(buffer, pitch, rect);
     }
+#endif
 
     /**
       Clear the framebuffer.

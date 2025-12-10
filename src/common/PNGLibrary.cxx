@@ -54,7 +54,7 @@ void PNGLibrary::loadImage(const string& filename, FBSurface& surface,
 
   // Create the PNG loading context structure
   png_ptr = png_create_read_struct(PNG_LIBPNG_VER_STRING, nullptr,
-                 png_user_error, png_user_warn);
+                                   png_user_error, png_user_warn);
   if(png_ptr == nullptr)
     loadImageERROR("Couldn't allocate memory for PNG image");
 
@@ -131,6 +131,9 @@ void PNGLibrary::loadImage(const string& filename, FBSurface& surface,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PNGLibrary::saveImage(const string& filename, const VariantList& metaData)
 {
+//  saveImage(filename, , Common::Rect{}, metaData);
+
+#if 0
   std::ofstream out(filename, std::ios_base::binary);
   if(!out.is_open())
     throw runtime_error("ERROR: Couldn't create snapshot file");
@@ -156,6 +159,7 @@ void PNGLibrary::saveImage(const string& filename, const VariantList& metaData)
 
   // And save the image
   saveImageToDisk(out, rows, width, height, metaData);
+#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

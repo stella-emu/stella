@@ -299,9 +299,6 @@ bool FBBackendSDL::setVideoMode(const VideoModeHandler::Mode& mode,
                            true);
     SDL_SetBooleanProperty(props, SDL_PROP_WINDOW_CREATE_FULLSCREEN_BOOLEAN,
                            mode.fullscreen);
-    SDL_SetBooleanProperty(props,
-                           SDL_PROP_WINDOW_CREATE_HIGH_PIXEL_DENSITY_BOOLEAN,
-                           true);
     myWindow = SDL_CreateWindowWithProperties(props);
     SDL_DestroyProperties(props);
     if(myWindow == nullptr)
@@ -502,9 +499,7 @@ string FBBackendSDL::about() const
       out << "  Max texture: " << maxTexSize << "x" << maxTexSize << '\n';
     const bool usingVSync = SDL_GetNumberProperty(props,
       SDL_PROP_RENDERER_VSYNC_NUMBER, 0) != 0;
-    out << "  Flags: "
-        << (usingVSync ? "+" : "-") << "vsync"
-        << '\n';
+    out << "  VSync: " << (usingVSync ? "enabled" : "disabled") << '\n';
   }
   return out.str();
 }
@@ -548,7 +543,7 @@ bool FBBackendSDL::fullScreen() const
   ASSERT_MAIN_THREAD;
 
 #ifdef WINDOWED_SUPPORT
-  return myIsFullscreen;  // TODO: should query SDL directly
+  return myIsFullscreen;  // TODO: this should query SDL directly (BUG?)
 #else
   return true;
 #endif
@@ -610,20 +605,17 @@ unique_ptr<FBSurface> FBBackendSDL::createSurface(
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FBBackendSDL::readPixels(uInt8* buffer, size_t pitch,
-                              const Common::Rect& rect) const
+void FBBackendSDL::getSurface(FBSurface& surface) const
 {
-// FIXME: this method needs to be refactored to return an FBSurface,
-//        since SDL_RenderReadPixels now returns an SDL_Surface
-//        PNGLibrary is the only user of this; that will need to be refactored too
 #if 0
   ASSERT_MAIN_THREAD;
 
-  SDL_Rect r;
-  r.x = rect.x();  r.y = rect.y();
-  r.w = rect.w();  r.h = rect.h();
+  const SDL_Rect r = ToSDLRect(rect);
+  SDL_Surface* surface = SDL_RenderReadPixels(myRenderer, &r);
 
-  SDL_RenderReadPixels(myRenderer, &r, 0, buffer, static_cast<int>(pitch));
+
+
+  SDL_DestroySurface(surface);
 #endif
 }
 
