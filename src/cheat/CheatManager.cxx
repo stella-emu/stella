@@ -20,7 +20,6 @@
 #include "Settings.hxx"
 #include "CheetahCheat.hxx"
 #include "BankRomCheat.hxx"
-#include "PatchRomCheat.hxx"
 #include "RamCheat.hxx"
 #include "Vec.hxx"
 
@@ -138,7 +137,6 @@ shared_ptr<Cheat> CheatManager::createCheat(string_view name, string_view code) 
     case 6:  return make_shared<CheetahCheat>(myOSystem, name, code);
     case 7:  [[fallthrough]];
     case 8:  return make_shared<BankRomCheat>(myOSystem, name, code);
-    case 9:  return make_shared<PatchRomCheat>(myOSystem, name, code);
     default: return nullptr;
   }
 }
@@ -330,5 +328,5 @@ bool CheatManager::isValidCode(string_view code)
       return false;
 
   const size_t length = code.length();
-  return (length == 4 || length == 6 || length == 7 || length == 8 || length == 9);
+  return (length == 4 || length == 6 || length == 7 || length == 8);
 }

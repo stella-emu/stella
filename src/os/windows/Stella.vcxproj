@@ -407,7 +407,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\cheat\PatchRomCheat.cxx" />
     <ClCompile Include="..\..\common\AudioQueue.cxx" />
     <ClCompile Include="..\..\common\AudioSettings.cxx" />
     <ClCompile Include="..\..\common\audio\ConvolutionBuffer.cxx" />
@@ -1371,7 +1370,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\cheat\PatchRomCheat.hxx" />
     <ClInclude Include="..\..\common\AudioQueue.hxx" />
     <ClInclude Include="..\..\common\AudioSettings.hxx" />
     <ClInclude Include="..\..\common\audio\ConvolutionBuffer.hxx" />
