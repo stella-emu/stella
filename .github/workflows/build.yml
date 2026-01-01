@@ -12,7 +12,7 @@ jobs:
     name: Linux
     runs-on: ubuntu-latest
     env:
-      SDL3_VERSION: 3.2.14
+      SDL3_VERSION: 3.4.0
     steps:
       - name: Check out the repository
         uses: actions/checkout@93ea575cb5d8a053eaa0ac8fa3b40d7e05a33cc8
@@ -60,7 +60,7 @@ jobs:
         platform: [x64]
     env:
       Platform: ${{ matrix.platform }}
-      SDL3_version: 3.2.14
+      SDL3_version: 3.4.0
     steps:
       - name: Check out the repository
         uses: actions/checkout@93ea575cb5d8a053eaa0ac8fa3b40d7e05a33cc8
