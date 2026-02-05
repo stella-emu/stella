@@ -94,7 +94,7 @@ Controller::Type ControllerDetector::autodetectPort(ByteSpan image,
     else if(isQuadTari) // currently most likely assumption
       type = Controller::Type::Paddles;
   }
-  // TODO: BOOSTERGRIP, DRIVING, COMPUMATE, MINDLINK, ATARIVOX
+  // TODO: BOOSTERGRIP, DRIVING, COMPUMATE, MINDLINK, ATARIVOX, KEYPORTARI
   // not detectable: PADDLES_IAXIS, PADDLES_IAXDR
   return type;
 }

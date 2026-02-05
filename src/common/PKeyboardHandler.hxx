@@ -157,6 +157,7 @@ class PhysicalKeyboardHandler
     static const EventMappingSpan DefaultKeyboardMapping;
     static const EventMappingSpan DefaultDrivingMapping;
     static const EventMappingSpan CompuMateMapping;
+    static const EventMappingSpan KeyPortariMapping;
 };
 
 #endif  // PHYSICAL_KEYBOARD_HANDLER_HXX

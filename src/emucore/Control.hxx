@@ -111,7 +111,7 @@ class Controller : public Serializable
       AmigaMouse, AtariMouse, AtariVox, BoosterGrip, CompuMate,
       Driving, Genesis, Joystick, Keyboard, KidVid, MindLink,
       Paddles, PaddlesIAxis, PaddlesIAxDr, SaveKey, TrakBall,
-      Lightgun, QuadTari, Joy2BPlus,
+      Lightgun, QuadTari, Joy2BPlus, KeyPortari,
       LastType
     };
 
@@ -559,7 +559,8 @@ class Controller : public Serializable
         { "Trak-Ball",     "TRAKBALL"      },
         { "Light Gun",     "LIGHTGUN"      },
         { "QuadTari",      "QUADTARI"      },
-        { "Joy 2B+",       "JOY_2B+"       }
+        { "Joy 2B+",       "JOY_2B+"       },
+        { "KeyPortari",    "KEYPORTARI"    }
     });
     static_assert(CONTROLLER_INFO.size() == std::to_underlying(Type::LastType),
         "CONTROLLER_INFO must have an entry for each Controller::Type");

@@ -133,7 +133,8 @@ bool PhysicalKeyboardHandler::isMappingUsed(EventMode mode, const EventMapping& 
     || myKeyMap.check(EventMode::kPaddlesMode, map.key, map.mod)
     || myKeyMap.check(EventMode::kKeyboardMode, map.key, map.mod)
     || myKeyMap.check(EventMode::kDrivingMode, map.key, map.mod)
-    || myKeyMap.check(EventMode::kCompuMateMode, map.key, map.mod);
+    || myKeyMap.check(EventMode::kCompuMateMode, map.key, map.mod)
+    || myKeyMap.check(EventMode::kKeyPortariMode, map.key, map.mod);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -205,6 +206,8 @@ void PhysicalKeyboardHandler::setDefaultMapping(Event::Type event, EventMode mod
                            EventMode::kDrivingMode, updateDefaults);
       applyDefaultMappings(CompuMateMapping, event,
                            EventMode::kCompuMateMode, updateDefaults);
+      applyDefaultMappings(KeyPortariMapping, event,
+                           EventMode::kKeyPortariMode, updateDefaults);
       break;
 
     case EventMode::kMenuMode:
@@ -291,6 +294,9 @@ EventMode PhysicalKeyboardHandler::getMode(Controller::Type type)
 
     case CompuMate:
       return EventMode::kCompuMateMode;
+      
+    case KeyPortari:
+      return EventMode::kKeyPortariMode;
 
     case Driving:
       return EventMode::kDrivingMode;
@@ -352,6 +358,10 @@ void PhysicalKeyboardHandler::enableEmulationMappings()
       // see below
       break;
 
+    case EventMode::kKeyPortariMode:
+      // see below
+      break;
+
     case EventMode::kDrivingMode:
       enableMappings(RightDrivingEvents, EventMode::kDrivingMode);
       break;
@@ -376,6 +386,11 @@ void PhysicalKeyboardHandler::enableEmulationMappings()
         enableMapping(item.event, EventMode::kCompuMateMode);
       break;
 
+    case EventMode::kKeyPortariMode:
+      for(const auto& item : KeyPortariMapping)
+        enableMapping(item.event, EventMode::kKeyPortariMode);
+      break;
+      
     case EventMode::kDrivingMode:
       enableMappings(LeftDrivingEvents, EventMode::kDrivingMode);
       break;
@@ -526,6 +541,7 @@ bool PhysicalKeyboardHandler::addMapping(Event::Type event, EventMode mode,
       myKeyMap.erase(EventMode::kPaddlesMode, key, mod);
       myKeyMap.erase(EventMode::kKeyboardMode, key, mod);
       myKeyMap.erase(EventMode::kCompuMateMode, key, mod);
+      myKeyMap.erase(EventMode::kKeyPortariMode, key, mod);
     }
     else if(evMode != EventMode::kMenuMode
             && evMode != EventMode::kEditMode
@@ -558,6 +574,21 @@ void PhysicalKeyboardHandler::handleEvent(StellaKey key, StellaMod mod,
     const Event::Type event = myKeyMap.get(EventMode::kCompuMateMode, key, mod);
 
     // (potential) CompuMate events are handled directly.
+    if (myKeyMap.get(EventMode::kEmulationMode, key, mod) != Event::ExitMode &&
+      !StellaModTest::isAlt(mod) && event != Event::NoType)
+    {
+      myHandler.handleEvent(event, pressed, repeated);
+      return;
+    }
+  }
+  
+  // special handling for KeyPortari in emulation modes
+  if ((estate == EventHandlerState::EMULATION || estate == EventHandlerState::PAUSE) &&
+      myOSystem.console().leftController().type() == Controller::Type::KeyPortari)
+  {
+    const Event::Type event = myKeyMap.get(EventMode::kKeyPortariMode, key, mod);
+
+    // (potential) KeyPortari events are handled directly.
     if (myKeyMap.get(EventMode::kEmulationMode, key, mod) != Event::ExitMode &&
       !StellaModTest::isAlt(mod) && event != Event::NoType)
     {
@@ -1169,6 +1200,69 @@ PhysicalKeyboardHandler::CompuMateMapping = [] noexcept {
     {Event::CompuMateEquals,        StellaKey::EQUALS},
     {Event::CompuMatePlus,          StellaKey::EQUALS, StellaMod::SHIFT},
     {Event::CompuMateSlash,         StellaKey::SLASH}
-  };
-  return EventMappingSpan{data};
+    };
+    return EventMappingSpan{data};
+}();
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+const PhysicalKeyboardHandler::EventMappingSpan
+PhysicalKeyboardHandler::KeyPortariMapping = [] noexcept {
+  static constexpr EventMapping data[] = {
+    {Event::KeyPortariShift,         KBDK_LSHIFT},
+    {Event::KeyPortariShift,         KBDK_RSHIFT},
+    {Event::KeyPortariFunc,          KBDK_LCTRL},
+    {Event::KeyPortariFunc,          KBDK_RCTRL},
+    {Event::KeyPortari0,             KBDK_0},
+    {Event::KeyPortari1,             KBDK_1},
+    {Event::KeyPortari2,             KBDK_2},
+    {Event::KeyPortari3,             KBDK_3},
+    {Event::KeyPortari4,             KBDK_4},
+    {Event::KeyPortari5,             KBDK_5},
+    {Event::KeyPortari6,             KBDK_6},
+    {Event::KeyPortari7,             KBDK_7},
+    {Event::KeyPortari8,             KBDK_8},
+    {Event::KeyPortari9,             KBDK_9},
+    {Event::KeyPortariA,             KBDK_A},
+    {Event::KeyPortariB,             KBDK_B},
+    {Event::KeyPortariC,             KBDK_C},
+    {Event::KeyPortariD,             KBDK_D},
+    {Event::KeyPortariE,             KBDK_E},
+    {Event::KeyPortariF,             KBDK_F},
+    {Event::KeyPortariG,             KBDK_G},
+    {Event::KeyPortariH,             KBDK_H},
+    {Event::KeyPortariI,             KBDK_I},
+    {Event::KeyPortariJ,             KBDK_J},
+    {Event::KeyPortariK,             KBDK_K},
+    {Event::KeyPortariL,             KBDK_L},
+    {Event::KeyPortariM,             KBDK_M},
+    {Event::KeyPortariN,             KBDK_N},
+    {Event::KeyPortariO,             KBDK_O},
+    {Event::KeyPortariP,             KBDK_P},
+    {Event::KeyPortariQ,             KBDK_Q},
+    {Event::KeyPortariR,             KBDK_R},
+    {Event::KeyPortariS,             KBDK_S},
+    {Event::KeyPortariT,             KBDK_T},
+    {Event::KeyPortariU,             KBDK_U},
+    {Event::KeyPortariV,             KBDK_V},
+    {Event::KeyPortariW,             KBDK_W},
+    {Event::KeyPortariX,             KBDK_X},
+    {Event::KeyPortariY,             KBDK_Y},
+    {Event::KeyPortariZ,             KBDK_Z},
+    {Event::KeyPortariComma,         KBDK_COMMA},
+    {Event::KeyPortariPeriod,        KBDK_PERIOD},
+    {Event::KeyPortariEnter,         KBDK_RETURN},
+    {Event::KeyPortariEnter,         KBDK_KP_ENTER},
+    {Event::KeyPortariSpace,         KBDK_SPACE},
+    // extra emulated keys
+    {Event::KeyPortariQuestion,      KBDK_SLASH, KBDM_SHIFT},
+    {Event::KeyPortariLeftBracket,   KBDK_LEFTBRACKET},
+    {Event::KeyPortariRightBracket,  KBDK_RIGHTBRACKET},
+    {Event::KeyPortariMinus,         KBDK_MINUS},
+    {Event::KeyPortariQuote,         KBDK_APOSTROPHE, KBDM_SHIFT},
+    {Event::KeyPortariBackspace,     KBDK_BACKSPACE},
+    {Event::KeyPortariEquals,        KBDK_EQUALS},
+    {Event::KeyPortariPlus,          KBDK_EQUALS, KBDM_SHIFT},
+    {Event::KeyPortariSlash,         KBDK_SLASH}
+    };
+    return EventMappingSpan{data};
 }();
