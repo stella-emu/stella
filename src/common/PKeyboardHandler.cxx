@@ -589,21 +589,6 @@ void PhysicalKeyboardHandler::handleEvent(StellaKey key, StellaMod mod,
       return;
     }
   }
-  
-  // special handling for KeyPortari in emulation modes
-  if ((estate == EventHandlerState::EMULATION || estate == EventHandlerState::PAUSE) &&
-      myOSystem.console().leftController().type() == Controller::Type::KeyPortari)
-  {
-    const Event::Type event = myKeyMap.get(EventMode::kKeyPortariMode, key, mod);
-
-    // (potential) KeyPortari events are handled directly.
-    if (myKeyMap.get(EventMode::kEmulationMode, key, mod) != Event::ExitMode &&
-      !StellaModTest::isAlt(mod) && event != Event::NoType)
-    {
-      myHandler.handleEvent(event, pressed, repeated);
-      return;
-    }
-  }
 
   // Arrange the logic to take advantage of short-circuit evaluation
   // Handle keys which switch eventhandler state
