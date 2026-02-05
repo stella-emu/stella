@@ -79,7 +79,8 @@ KeyPortari::KeyCodeMappingArray KeyPortari::DefaultKeyCodeMappingArray = {
   {Event::KeyPortariQuote,         '\''},
   {Event::KeyPortariEquals,        '='},
   {Event::KeyPortariPlus,          '+'},
-  {Event::KeyPortariSlash,         '/'}
+  {Event::KeyPortariSlash,         '/'},
+  {Event::KeyPortariDelete,        127}
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
