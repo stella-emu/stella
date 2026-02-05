@@ -87,13 +87,14 @@ KeyPortari::KeyCodeMappingArray KeyPortari::DefaultKeyCodeMappingArray = {
 void KeyPortari::KPControl::update()
 {
   uInt8 c = 0xff;
-  // BUGBUG: do we need to check all mappings?
+  // iterate through possible keys
   for (auto &mapping : myHandler.keyCodeMappingArray()) {
     if (myEvent.get(mapping.event)) {
       c = mapping.code;
       break;
     }
   }
+  // shift left controller codes down to match pinout
   if (myJack == Controller::Jack::Left) {
     c = c >> 4;
   }
