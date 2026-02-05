@@ -115,6 +115,7 @@ class GameInfoDialog : public Dialog, public CommandSender
     StaticTextWidget* myRightPortDetected{nullptr};
     ButtonWidget*     myQuadTariButton{nullptr};
     CheckboxWidget*   mySwapPorts{nullptr};
+    CheckboxWidget*   myKeyPortari{nullptr};
     CheckboxWidget*   mySwapPaddles{nullptr};
     StaticTextWidget* myEraseEEPROMLabel{nullptr};
     ButtonWidget*     myEraseEEPROMButton{nullptr};

@@ -190,6 +190,10 @@
 		2D91751209BA90380026E9FF /* ApplicationServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2D17D98E08BC398400E47F69 /* ApplicationServices.framework */; };
 		2DEFB40C09C3386F00754289 /* Cart.icns in Resources */ = {isa = PBXBuildFile; fileRef = 2DEFB40B09C3386F00754289 /* Cart.icns */; };
 		55FE2A501EE4880500078ADE /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 55FE2A3C1EE487CA00078ADE /* InfoPlist.strings */; };
+		C9C1D59E2F30835A00DA20D5 /* SDL3.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = E0EA57A92DE8E9E30040BE24 /* SDL3.xcframework */; };
+		C9C1D59F2F30835A00DA20D5 /* SDL3.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = E0EA57A92DE8E9E30040BE24 /* SDL3.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		C9C1D5A22F31D99E00DA20D5 /* KeyPortari.hxx in Headers */ = {isa = PBXBuildFile; fileRef = C9C1D5A12F31D99E00DA20D5 /* KeyPortari.hxx */; };
+		C9C1D5A32F31D99E00DA20D5 /* KeyPortari.cxx in Sources */ = {isa = PBXBuildFile; fileRef = C9C1D5A02F31D99E00DA20D5 /* KeyPortari.cxx */; };
 		CFB521D72853A2590083B9CE /* CartBUSInfoWidget.cxx in Sources */ = {isa = PBXBuildFile; fileRef = CFB521D52853A2590083B9CE /* CartBUSInfoWidget.cxx */; };
 		CFB521D82853A2590083B9CE /* CartBUSInfoWidget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = CFB521D62853A2590083B9CE /* CartBUSInfoWidget.hxx */; };
 		CFE3F60B1E84A9A200A8204E /* CartBUSWidget.cxx in Sources */ = {isa = PBXBuildFile; fileRef = CFE3F6071E84A9A200A8204E /* CartBUSWidget.cxx */; };
@@ -821,8 +825,6 @@
 		E0DCD3AA20A64E96000B614E /* ConvolutionBuffer.cxx in Sources */ = {isa = PBXBuildFile; fileRef = E0DCD3A620A64E96000B614E /* ConvolutionBuffer.cxx */; };
 		E0EA1FFF227A42D0008BA944 /* Logger.hxx in Headers */ = {isa = PBXBuildFile; fileRef = E0EA1FFD227A42D0008BA944 /* Logger.hxx */; };
 		E0EA2000227A42D0008BA944 /* Logger.cxx in Sources */ = {isa = PBXBuildFile; fileRef = E0EA1FFE227A42D0008BA944 /* Logger.cxx */; };
-		E0EA57AA2DE8E9E30040BE24 /* SDL3.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = E0EA57A92DE8E9E30040BE24 /* SDL3.xcframework */; };
-		E0EA57AB2DE8E9E30040BE24 /* SDL3.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = E0EA57A92DE8E9E30040BE24 /* SDL3.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		E0FABEEB20E9948200EB8E28 /* AudioSettings.hxx in Headers */ = {isa = PBXBuildFile; fileRef = E0FABEE920E9948000EB8E28 /* AudioSettings.hxx */; };
 		E0FABEEC20E9948200EB8E28 /* AudioSettings.cxx in Sources */ = {isa = PBXBuildFile; fileRef = E0FABEEA20E9948100EB8E28 /* AudioSettings.cxx */; };
 		E0FABEEE20E994A600EB8E28 /* ConsoleTiming.hxx in Headers */ = {isa = PBXBuildFile; fileRef = E0FABEED20E994A500EB8E28 /* ConsoleTiming.hxx */; };
@@ -865,6 +867,17 @@
 /* End PBXBuildRule section */
 
 /* Begin PBXCopyFilesBuildPhase section */
+		C9C98E822F30826300FF5F82 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				C9C1D59F2F30835A00DA20D5 /* SDL3.xcframework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		DCCC0C9609C354660088BFF1 /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
@@ -872,17 +885,6 @@
 			dstSubfolderSpec = 7;
 			files = (
 			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		E0EA57AC2DE8E9E30040BE24 /* Embed Frameworks */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "";
-			dstSubfolderSpec = 10;
-			files = (
-				E0EA57AB2DE8E9E30040BE24 /* SDL3.xcframework in Embed Frameworks */,
-			);
-			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXCopyFilesBuildPhase section */
@@ -1070,6 +1072,8 @@
 		2DF971D70892CEA400F64D23 /* DebuggerSystem.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; path = DebuggerSystem.hxx; sourceTree = "<group>"; };
 		2DF971DF0892CEA400F64D23 /* Expression.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; path = Expression.hxx; sourceTree = "<group>"; };
 		B2F367C504C7ADC700A80002 /* SDLMain.nib */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; path = SDLMain.nib; sourceTree = "<group>"; };
+		C9C1D5A02F31D99E00DA20D5 /* KeyPortari.cxx */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = KeyPortari.cxx; sourceTree = "<group>"; };
+		C9C1D5A12F31D99E00DA20D5 /* KeyPortari.hxx */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = KeyPortari.hxx; sourceTree = "<group>"; };
 		CFB521D52853A2590083B9CE /* CartBUSInfoWidget.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CartBUSInfoWidget.cxx; sourceTree = "<group>"; };
 		CFB521D62853A2590083B9CE /* CartBUSInfoWidget.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = CartBUSInfoWidget.hxx; sourceTree = "<group>"; };
 		CFE3F6071E84A9A200A8204E /* CartBUSWidget.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CartBUSWidget.cxx; sourceTree = "<group>"; };
@@ -1718,7 +1722,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				2D91750F09BA90380026E9FF /* Cocoa.framework in Frameworks */,
-				E0EA57AA2DE8E9E30040BE24 /* SDL3.xcframework in Frameworks */,
+				C9C1D59E2F30835A00DA20D5 /* SDL3.xcframework in Frameworks */,
 				2D91751009BA90380026E9FF /* OpenGL.framework in Frameworks */,
 				2D91751209BA90380026E9FF /* ApplicationServices.framework in Frameworks */,
 			);
@@ -2227,6 +2231,8 @@
 				DCA23AE80D75B22500F77B33 /* CartX07.hxx */,
 				DC8C1BA914B25DE7006440EE /* CompuMate.cxx */,
 				DC8C1BAA14B25DE7006440EE /* CompuMate.hxx */,
+				C9C1D5A02F31D99E00DA20D5 /* KeyPortari.cxx */,
+				C9C1D5A12F31D99E00DA20D5 /* KeyPortari.hxx */,
 				2DE2DF380627AE07006BEC99 /* Console.cxx */,
 				2DE2DF390627AE07006BEC99 /* Console.hxx */,
 				DCF7F125223D795F00701A47 /* ConsoleIO.hxx */,
@@ -3219,6 +3225,7 @@
 				DCA6A9172C7E0ADD00EEB5FF /* CartELFStateWidget.hxx in Headers */,
 				DC676A501729A0B000E4E73D /* CartE0Widget.hxx in Headers */,
 				DCE9681427553F1000E99839 /* LauncherFileListWidget.hxx in Headers */,
+				C9C1D5A22F31D99E00DA20D5 /* KeyPortari.hxx in Headers */,
 				DC676A521729A0B000E4E73D /* CartE7Widget.hxx in Headers */,
 				DC911C7626333B9200666AC0 /* CartMVC.hxx in Headers */,
 				DC676A541729A0B000E4E73D /* CartFA2Widget.hxx in Headers */,
@@ -3280,7 +3287,7 @@
 				2D91747309BA90380026E9FF /* Sources */,
 				2D91750E09BA90380026E9FF /* Frameworks */,
 				DCCC0C9609C354660088BFF1 /* CopyFiles */,
-				E0EA57AC2DE8E9E30040BE24 /* Embed Frameworks */,
+				C9C98E822F30826300FF5F82 /* Embed Frameworks */,
 			);
 			buildRules = (
 				DC5EE7DF14F7C32D001C628C /* PBXBuildRule */,
@@ -3362,6 +3369,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				E0406FB61F81A85400A82AE0 /* AbstractFrameManager.cxx in Sources */,
+				C9C1D5A32F31D99E00DA20D5 /* KeyPortari.cxx in Sources */,
 				E0A755792244294600101889 /* CartCDFInfoWidget.cxx in Sources */,
 				E0406FB81F81A85400A82AE0 /* FrameManager.cxx in Sources */,
 				2D91747409BA90380026E9FF /* SDLMain.m in Sources */,

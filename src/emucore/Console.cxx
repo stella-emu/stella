@@ -37,6 +37,7 @@
 #include "Lightgun.hxx"
 #include "QuadTari.hxx"
 #include "Joy2BPlus.hxx"
+#include "KeyPortari.hxx"
 #include "M6502.hxx"
 #include "M6532.hxx"
 #include "TIA.hxx"
@@ -974,6 +975,8 @@ void Console::setControllers(string_view romMd5)
     const ByteBuffer& image = myCart->getImage(size);
     const bool swappedPorts =
         myProperties.get(PropType::Console_SwapPorts) == "YES";
+    const bool keyPortari =
+        myProperties.get(PropType::Controller_KeyPortari) == "YES";
 
     // Try to detect controllers
     if(image != nullptr && size != 0)
@@ -984,19 +987,30 @@ void Console::setControllers(string_view romMd5)
       rightType = ControllerDetector::detectType(image, size, rightType,
           !swappedPorts ? Controller::Jack::Right : Controller::Jack::Left, myOSystem.settings());
     }
-
+    
     unique_ptr<Controller>
       leftC = getControllerPort(leftType, Controller::Jack::Left, romMd5),
       rightC = getControllerPort(rightType, Controller::Jack::Right, romMd5);
 
-    // Swap the ports if necessary
-    if(!swappedPorts)
+    if (keyPortari) {
+      myKeyPortariHandler = make_shared<KeyPortari>();
+      // BUGBUG: swap ports?
+      myKeyPortariHandler->bindController(Controller::Jack::Left, myEvent, *mySystem, myLeftControl, leftC);
+      myKeyPortariHandler->bindController(Controller::Jack::Right, myEvent, *mySystem, myRightControl, rightC);
+      myOSystem.eventHandler().defineKeyControllerMappings(
+          Controller::Type::KeyPortari, Controller::Jack::Left, myProperties);
+      myOSystem.eventHandler().defineJoyControllerMappings(
+          Controller::Type::KeyPortari, Controller::Jack::Left, myProperties);
+      
+    }
+    else if(!swappedPorts)
     {
       myLeftControl = std::move(leftC);
       myRightControl = std::move(rightC);
     }
     else
     {
+      // Swap the ports if necessary
       myLeftControl = std::move(rightC);
       myRightControl = std::move(leftC);
     }

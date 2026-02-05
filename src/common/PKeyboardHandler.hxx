@@ -175,6 +175,7 @@ class PhysicalKeyboardHandler
     static EventMappingArray DefaultKeyboardMapping;
     static EventMappingArray DefaultDrivingMapping;
     static EventMappingArray CompuMateMapping;
+    static EventMappingArray KeyPortariMapping;
 };
 
 #endif

@@ -326,6 +326,11 @@ void GameInfoDialog::addControllersTab()
                                    myLeftPort->getTop() + 1, "Swap ports");
   mySwapPorts->setToolTip(Event::ToggleSwapPorts);
   wid.push_back(mySwapPorts);
+  
+  myKeyPortari = new CheckboxWidget(myTab, _font, mySwapPorts->getLeft(),
+                                    mySwapPorts->getBottom() + 1, "KeyPortari");
+  myKeyPortari->setToolTip(Event::ToggleSwapPorts);
+  wid.push_back(myKeyPortari);
 
   myQuadTariButton = new ButtonWidget(myTab, _font, myRightPort->getRight() + fontWidth * 4, myRightPort->getTop() - 2,
                                       " QuadTari" + ELLIPSIS + " ", kQuadTariPressed);
@@ -850,6 +855,7 @@ void GameInfoDialog::loadControllerProperties(const Properties& props)
   myRightPort->setSelected(controller, "AUTO");
 
   mySwapPorts->setState(props.get(PropType::Console_SwapPorts) == "YES");
+  myKeyPortari->setState(props.get(PropType::Controller_KeyPortari) == "YES");
   mySwapPaddles->setState(props.get(PropType::Controller_SwapPaddles) == "YES");
 
   // Paddle centers
@@ -1008,6 +1014,7 @@ void GameInfoDialog::saveProperties()
   }
 
   myGameProperties.set(PropType::Console_SwapPorts, (mySwapPorts->isEnabled() && mySwapPorts->getState()) ? "YES" : "NO");
+  myGameProperties.set(PropType::Controller_KeyPortari, (myKeyPortari->isEnabled() && myKeyPortari->getState()) ? "YES" : "NO");
   myGameProperties.set(PropType::Controller_SwapPaddles, mySwapPaddles->getState() ? "YES" : "NO");
 
   // Paddle center
@@ -1326,6 +1333,7 @@ void GameInfoDialog::updateControllerStates()
                                BSPF::startsWithIgnoreCase(myRightPortDetected->getLabel(), "QT"));
 
   mySwapPorts->setEnabled(enableSelectControl);
+  myKeyPortari->setEnabled(enableSelectControl);
   mySwapPaddles->setEnabled(enablePaddles);
 
   myEraseEEPROMLabel->setEnabled(enableEEEraseButton);

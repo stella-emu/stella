@@ -90,6 +90,7 @@ enum class EventMode: uInt8 {
   kKeyboardMode,
   kDrivingMode,
   kCompuMateMode, // cannot be remapped
+  kKeyPortariMode,
   kCommonMode,    // mapping common between controllers
   kEditMode,      // mapping used in editable widgets
   kPromptMode,    // extra mappings used in debugger's prompt widget
