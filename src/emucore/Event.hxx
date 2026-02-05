@@ -95,8 +95,8 @@ class Event
       KeyPortariZ,
       KeyPortariComma, KeyPortariPeriod, KeyPortariEnter, KeyPortariSpace,
       KeyPortariQuestion, KeyPortariLeftBracket, KeyPortariRightBracket, KeyPortariMinus,
-      KeyPortariQuote, KeyPortariBackspace, KeyPortariEquals, KeyPortariPlus,
-      KeyPortariSlash,
+      KeyPortariQuote, KeyPortariEquals, KeyPortariPlus,
+      KeyPortariSlash, KeyPortariDelete,
 
       Combo1, Combo2, Combo3, Combo4, Combo5, Combo6, Combo7, Combo8,
       Combo9, Combo10, Combo11, Combo12, Combo13, Combo14, Combo15, Combo16,

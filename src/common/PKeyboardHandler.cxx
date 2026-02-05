@@ -1239,8 +1239,9 @@ PhysicalKeyboardHandler::KeyPortariMapping = {
   {Event::KeyPortariRightBracket,  KBDK_RIGHTBRACKET},
   {Event::KeyPortariMinus,         KBDK_MINUS},
   {Event::KeyPortariQuote,         KBDK_APOSTROPHE, KBDM_SHIFT},
-  {Event::KeyPortariBackspace,     KBDK_BACKSPACE},
+  {Event::KeyPortariDelete,        KBDK_BACKSPACE},
   {Event::KeyPortariEquals,        KBDK_EQUALS},
   {Event::KeyPortariPlus,          KBDK_EQUALS, KBDM_SHIFT},
-  {Event::KeyPortariSlash,         KBDK_SLASH}
+  {Event::KeyPortariSlash,         KBDK_SLASH},
+  {Event::KeyPortariDelete,        KBDK_DELETE}
 };
