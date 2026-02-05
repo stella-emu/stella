@@ -994,7 +994,7 @@ void Console::setControllers(string_view romMd5)
 
     if (keyPortari) {
       myKeyPortariHandler = make_shared<KeyPortari>();
-      // BUGBUG: swap ports?
+      // BUGBUG: should we swap ports?
       myKeyPortariHandler->bindController(Controller::Jack::Left, myEvent, *mySystem, myLeftControl, leftC);
       myKeyPortariHandler->bindController(Controller::Jack::Right, myEvent, *mySystem, myRightControl, rightC);
       myOSystem.eventHandler().defineKeyControllerMappings(

@@ -838,7 +838,7 @@ bool PhysicalJoystickHandler::addJoyMapping(Event::Type event, EventMode mode,
       j->joyMap.erase(EventMode::kPaddlesMode, button, axis, adir);
       //j->joyMap.erase(EventMode::kKeyboardMode, button, axis, adir); // no common buttons in keyboard mode!
       j->joyMap.erase(EventMode::kCompuMateMode, button, axis, adir);
-      // BUGBUG
+      j->joyMap.erase(EventMode::kKeyPortariMode, button, axis, adir);
       j->joyMap.erase(EventMode::kDrivingMode, button, axis, adir);
     }
     else if (evMode != EventMode::kMenuMode)
@@ -876,7 +876,7 @@ bool PhysicalJoystickHandler::addJoyHatMapping(Event::Type event, EventMode mode
       j->joyMap.erase(EventMode::kKeyboardMode, button, hat, hdir);
       j->joyMap.erase(EventMode::kDrivingMode, button, hat, hdir);
       j->joyMap.erase(EventMode::kCompuMateMode, button, hat, hdir);
-      // BUGBUG
+      j->joyMap.erase(EventMode::kKeyPortariMode, button, hat, hdir);
     }
     else if (evMode != EventMode::kMenuMode)
     {
