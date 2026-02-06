@@ -112,7 +112,7 @@ class Event
       KeyPortariBackslash, KeyPortariRightBracket, KeyPortariCaret,
       KeyPortariUnderscore, KeyPortariLeftBrace, KeyPortariVerticalBar,
       KeyPortariRightBrace, KeyPortariTilde,
-      KeyPortariQuote, KeyPortariEquals, KeyPortariPlus,
+      KeyPortariApostrophe, KeyPortariEquals, KeyPortariPlus,
       KeyPortariSlash, KeyPortariDelete,
 
       Combo1, Combo2, Combo3, Combo4, Combo5, Combo6, Combo7, Combo8,

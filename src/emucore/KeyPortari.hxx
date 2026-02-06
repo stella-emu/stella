@@ -28,12 +28,21 @@ class System;
 
 
 /**
-  Handler for  KeyPortari
+  Handler for  KeyPortari.
   @author  Dave Christianson
 */
 class KeyPortari
 {
   public:
+  
+    /**
+       KeyPortari protocol setting
+     */
+    enum Protocol {
+      AlphaNumeric, // AlphaNumeric characters with port forwarding
+      Ascii         // Full ASCII range, no port forwarding
+    };
+  
     /**
       Create a new KeyPortari handler for both left and right ports.
       Note that this class creates KeyPortari controllers for both ports,
@@ -43,29 +52,27 @@ class KeyPortari
       @param event    The event object to use for events
       @param system   The system using this controller
     */
-    KeyPortari();
+    KeyPortari(const Protocol protocol, const Event& event);
     ~KeyPortari() = default;
-  
     /**
       Bind to a controller jack
     */
     void bindController(const Controller::Jack jack, const Event& event, const System& system, unique_ptr<Controller>& bindingController, unique_ptr<Controller>& passthroughController);
   
-  public:
-  
+  private:
+
     struct KeyCodeMapping {
       Event::Type event;
       uint8_t code;
     };
-  
-    using KeyCodeMappingArray = std::vector<KeyCodeMapping>;
-  
-    static KeyCodeMappingArray DefaultKeyCodeMappingArray;
-  
-    const KeyCodeMappingArray& keyCodeMappingArray() { return myKeyCodeMappingArray; }
 
-  private:
-    
+    using KeyCodeMappingArray = std::vector<KeyCodeMapping>;
+
+    uint8_t mapKeyCode();
+  
+    static KeyCodeMappingArray AlphaNumericKeyCodeMappingArray;
+    static KeyCodeMappingArray AsciiKeyCodeMappingArray;
+  
     // The actual KeyPortari controller
     class KPControl : public Controller
     {
@@ -78,12 +85,15 @@ class KeyPortari
           @param event    The event object to use for events
           @param system   The system using this controller
         */
-        KPControl(class KeyPortari& handler, Controller::Jack jack, const Event& event,
-                  const System& system, unique_ptr<Controller>& passthroughController);
+        KPControl(class KeyPortari& handler, Controller::Jack jack, const Event& event, const System& system);
         ~KPControl() override = default;
 
     public:
 
+        void setPassthroughController(unique_ptr<Controller> &passthroughController) {
+          myPassthroughController = std::move(passthroughController);
+        }
+      
         void update() override;
       
         /**
@@ -94,7 +104,6 @@ class KeyPortari
       private:
         class KeyPortari& myHandler;
         unique_ptr<Controller> myPassthroughController;
-
         
         // Following constructors and assignment operators not supported
         KPControl() = delete;
@@ -106,11 +115,10 @@ class KeyPortari
 
   private:
 
-    // Left and right controllers
-    unique_ptr<Controller> myLeftController, myRightController;
+    // KeyCode mapping protocol
+    Protocol myProtocol;
   
-    // keyCodeMapping
-    KeyCodeMappingArray myKeyCodeMappingArray;
+    const Event &myEvent;
 
   private:
     // Following constructors and assignment operators not supported
