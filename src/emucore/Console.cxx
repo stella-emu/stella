@@ -889,8 +889,6 @@ void Console::setControllers(string_view romMd5)
         Controller::getType(myProperties.get(PropType::Controller_Right));
     const bool swappedPorts =
         myProperties.get(PropType::Console_SwapPorts) == "YES";
-    const bool keyPortari =
-        myProperties.get(PropType::Controller_KeyPortari) == "YES";
 
     // Try to detect controllers
     const ByteSpan image = myCart->getImage();
@@ -902,23 +900,17 @@ void Console::setControllers(string_view romMd5)
       rightType = ControllerDetector::detectType(image, rightType,
           !swappedPorts ? Controller::Jack::Right : Controller::Jack::Left, myOSystem.settings());
     }
+
+    bool useKeyPortari = leftType == Controller::Type::KeyPortari || rightType == Controller::Type::KeyPortari;
+    if (useKeyPortari) {
+      myKeyPortariHandler = make_shared<KeyPortari>(myProperties);
+    }
     
     unique_ptr<Controller>
       leftC = getControllerPort(leftType, Controller::Jack::Left, romMd5),
       rightC = getControllerPort(rightType, Controller::Jack::Right, romMd5);
-
-    if (keyPortari) {
-      myKeyPortariHandler = make_shared<KeyPortari>(KeyPortari::Protocol::Ascii, myEvent);
-      // BUGBUG: should we swap ports?
-      myKeyPortariHandler->bindController(Controller::Jack::Left, myEvent, *mySystem, myLeftControl, leftC);
-      myKeyPortariHandler->bindController(Controller::Jack::Right, myEvent, *mySystem, myRightControl, rightC);
-      myOSystem.eventHandler().defineKeyControllerMappings(
-          Controller::Type::KeyPortari, Controller::Jack::Left, myProperties);
-      myOSystem.eventHandler().defineJoyControllerMappings(
-          Controller::Type::KeyPortari, Controller::Jack::Right, myProperties);
       
-    }
-    else if(!swappedPorts)
+    if(!swappedPorts)
     {
       myLeftControl = std::move(leftC);
       myRightControl = std::move(rightC);
@@ -1100,10 +1092,15 @@ unique_ptr<Controller> Console::getControllerPort(
       controller = std::move(quadTari);
       break;
     }
+    
     case Controller::Type::Joy2BPlus:
       controller = std::make_unique<Joy2BPlus>(port, myEvent, *mySystem);
       break;
 
+    case Controller::Type::KeyPortari:
+      controller = myKeyPortariHandler->getControllerPort(port, myEvent, *mySystem);
+      break;
+      
     default:
       // What else can we do?
       // always create because it may have been changed by user dialog

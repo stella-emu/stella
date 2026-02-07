@@ -17,38 +17,61 @@
 
 #include "Console.hxx"
 #include "Event.hxx"
+#include "Driving.hxx"
+#include "Joystick.hxx"
 #include "Logger.hxx"
+#include "Paddles.hxx"
 #include "System.hxx"
 #include "KeyPortari.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-KeyPortari::KeyPortari(KeyPortari::Protocol protocol, const Event &event)
- : myProtocol(protocol), myEvent(event)
+KeyPortari::KeyPortari(const Properties &properties)
 {
+  myProtocol = KeyPortari::Protocol::Ascii;
+  myLeftCType = Controller::Type::Joystick;
+  myRightCType = Controller::Type::Joystick;
 }
 
-void KeyPortari::bindController(const Controller::Jack jack, const Event& event, const System& system, unique_ptr<Controller>& bindingController, unique_ptr<Controller>& passthroughController)
+unique_ptr<Controller> KeyPortari::getControllerPort(const Controller::Jack jack, const Event& event, const System& system)
 {
   unique_ptr<KPControl> controller = make_unique<KPControl>(*this, jack, event, system);
-  if (myProtocol == KeyPortari::Protocol::AlphaNumeric) {
-    controller->setPassthroughController(passthroughController);
+  if (myProtocol == KeyPortari::Protocol::Alphanumeric) {
+    unique_ptr<Controller> passthroughController = getPassthroughControllerPort(jack == Controller::Jack::Left ? myLeftCType : myRightCType, jack, event, system);
+    controller->addPassthroughController(passthroughController);
   }
-  bindingController = std::move(controller);
-  
+  return controller;
 }
 
-uint8_t KeyPortari::mapKeyCode() {
-  const KeyCodeMappingArray &keyCodeMappingArray = myProtocol == KeyPortari::Protocol::AlphaNumeric ? AlphaNumericKeyCodeMappingArray : AsciiKeyCodeMappingArray;
+unique_ptr<Controller> KeyPortari::getPassthroughControllerPort(Controller::Type type, const Controller::Jack jack, const Event& event, const System& system)
+{
+  switch(type)
+  {
+    case Controller::Type::Paddles:
+    {
+      return make_unique<Paddles>(jack, event, system, false, false, false, false);
+    }
+    case Controller::Type::Driving:
+      return make_unique<Driving>(jack, event, system, false);
+
+    default:
+      // fall back to joystick
+      return make_unique<Joystick>(jack, event, system, false);
+  }
+}
+
+
+uint8_t KeyPortari::getKeyCode(const Event &event) {
+  const KeyCodeMappingArray &keyCodeMappingArray = myProtocol == KeyPortari::Protocol::Alphanumeric ? AlphanumericKeyCodeMappingArray : AsciiKeyCodeMappingArray;
   // iterate through possible keys
   for (auto &mapping : keyCodeMappingArray) {
-    if (myEvent.get(mapping.event)) {
+    if (event.get(mapping.event)) {
       return mapping.code;
     }
   }
   return 0xff;
 }
 
-KeyPortari::KeyCodeMappingArray KeyPortari::AlphaNumericKeyCodeMappingArray = {
+KeyPortari::KeyCodeMappingArray KeyPortari::AlphanumericKeyCodeMappingArray = {
   {Event::KeyPortariTab,           ' '},
   {Event::KeyPortariExclam,        ' '},
   {Event::KeyPortariDoubleQuote,   ' '},
@@ -255,28 +278,7 @@ KeyPortari::KeyCodeMappingArray KeyPortari::AsciiKeyCodeMappingArray = {
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void KeyPortari::KPControl::update()
-{
-  uInt8 c = myHandler.mapKeyCode();
-  
-  // passthrough if no key is pressed
-  if (c == 0xff && myPassthroughController) {
-    // TODO: analog
-    myPassthroughController->update();
-    c = myPassthroughController->read();
-    
-  } else if (myJack == Controller::Jack::Left) {
-    // shift left controller codes down to match pinout
-    c = c >> 4;
-    
-  }
 
-  setPin(DigitalPin::One, c & 0b0000001);
-  setPin(DigitalPin::Two, c & 0b0000010);
-  setPin(DigitalPin::Three, c & 0b0000100);
-  setPin(DigitalPin::Four, c & 0b0001000);
-  
-}
 
 KeyPortari::KPControl::KPControl(class KeyPortari& handler, Controller::Jack jack, const Event& event,
                                  const System& system)
@@ -294,4 +296,27 @@ KeyPortari::KPControl::KPControl(class KeyPortari& handler, Controller::Jack jac
     setPin(Controller::AnalogPin::Five,
            AnalogReadout::connectToGround());
   }
+}
+
+void KeyPortari::KPControl::update()
+{
+  uInt8 c = myHandler.getKeyCode(myEvent);
+
+  // passthrough if no key is pressed
+  if (c == 0xff && myPassthroughController) {
+    // TODO: analog
+    myPassthroughController->update();
+    c = myPassthroughController->read();
+
+  } else if (myJack == Controller::Jack::Left) {
+    // shift left controller codes down to match pinout
+    c = c >> 4;
+
+  }
+
+  setPin(DigitalPin::One, c & 0b0000001);
+  setPin(DigitalPin::Two, c & 0b0000010);
+  setPin(DigitalPin::Three, c & 0b0000100);
+  setPin(DigitalPin::Four, c & 0b0001000);
+
 }

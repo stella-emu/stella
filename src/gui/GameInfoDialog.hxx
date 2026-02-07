@@ -27,6 +27,7 @@ class RadioButtonGroup;
 class RadioButtonWidget;
 class TabWidget;
 class SliderWidget;
+class KeyPortariDialog;
 class QuadTariDialog;
 
 #include "Dialog.hxx"
@@ -179,6 +180,9 @@ class GameInfoDialog : public Dialog, public CommandSender
     LabelWidget*    myMouseRangeLbl{nullptr};
     SliderWidget*   myMouseRange{nullptr};
 
+    // Allow assigning the KeyPortari protocol and passthrough controllers
+    unique_ptr<KeyPortariDialog> myKeyPortariDialog;
+
     // Allow assigning the four QuadTari controllers
     unique_ptr<QuadTariDialog> myQuadTariDialog;
 
@@ -252,6 +256,7 @@ class GameInfoDialog : public Dialog, public CommandSender
         LeftControllerChanged   = GuiCmd::of("GameInfoDialog.LeftControllerChanged"),
         RightControllerChanged  = GuiCmd::of("GameInfoDialog.RightControllerChanged"),
         QuadTariPressed         = GuiCmd::of("GameInfoDialog.QuadTariPressed"),
+        KeyPortariPressed       = GuiCmd::of("GameInfoDialog.KeyPortariPressed"),
         MouseControlChanged     = GuiCmd::of("GameInfoDialog.MouseControlChanged"),
         EraseEeprom             = GuiCmd::of("GameInfoDialog.EraseEeprom"),
         HighScoresChanged       = GuiCmd::of("GameInfoDialog.HighScoresChanged"),
