@@ -158,6 +158,7 @@
     <ClCompile Include="..\..\emucore\Lightgun.cxx" />
     <ClCompile Include="..\..\emucore\PlusROM.cxx" />
     <ClCompile Include="..\..\emucore\QuadTari.cxx" />
+    <ClCompile Include="..\..\emucore\KeyPortari.cxx" />
     <ClCompile Include="libretro.cxx" />
     <ClCompile Include="FSNodeLIBRETRO.cxx" />
     <ClCompile Include="StellaLIBRETRO.cxx" />

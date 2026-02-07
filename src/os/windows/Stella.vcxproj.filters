@@ -753,6 +753,15 @@
     <ClCompile Include="..\..\gui\QuadTariDialog.cxx">
       <Filter>Source Files\gui</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\gui\KeyPortariDialog.cxx">
+      <Filter>Source Files\gui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\emucore\KeyPortari.cxx">
+      <Filter>Source Files\emucore</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\gui\KeyPortariDialog.cxx">
+      <Filter>Source Files\gui</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\gui\UndoHandler.cxx">
       <Filter>Source Files\gui</Filter>
     </ClCompile>
@@ -1955,7 +1964,13 @@
     <ClInclude Include="..\..\emucore\QuadTari.hxx">
       <Filter>Header Files\emucore</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\emucore\KeyPortari.hxx">
+      <Filter>Header Files\emucore</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\gui\QuadTariDialog.hxx">
+      <Filter>Header Files\gui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\gui\KeyPortariDialog.hxx">
       <Filter>Header Files\gui</Filter>
     </ClInclude>
     <ClInclude Include="..\..\emucore\FBBackend.hxx">
