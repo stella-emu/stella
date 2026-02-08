@@ -132,6 +132,8 @@ string DebuggerParser::run(string_view command)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string DebuggerParser::exec(const FSNode& file, StringList* history)
 {
+  const bool logExec = settings.getBool("dbg.logexec");
+
   if(file.exists())
   {
     stringstream in;
@@ -139,6 +141,7 @@ string DebuggerParser::exec(const FSNode& file, StringList* history)
     catch(...) { return red("script file \'" + file.getShortPath() + "\' not found"); }
 
     ostringstream buf;
+    stringstream logBuf; // used to log the results of commands, if enabled
     int count = 0;
     string command;
     while( !in.eof() )
@@ -146,13 +149,44 @@ string DebuggerParser::exec(const FSNode& file, StringList* history)
       if(!getline(in, command))
         break;
 
+      // skip empty/comment lines
+      command = BSPF::trim(command);
+      if(command.empty() || command[0] == ';')
+        continue;
+
       ++execDepth;
       run(command);
+      if(logExec)
+      {
+        logBuf << '[' << command << "]\n";
+        const string result = run(command);
+        if(!result.empty() && result != "_EXIT_DEBUGGER" && result != "_NO_PROMPT")
+          logBuf << result << '\n';
+      }
+      else
+      {
+        run(command);
+      }
       --execDepth;
       if (history != nullptr)
         history->push_back(command);
       count++;
     }
+
+    // write execution log if enabled
+    if(logExec && !logBuf.str().empty())
+    {
+      const FSNode logNode(file.getPath() + ".output.txt");
+      try
+      {
+        logNode.write(logBuf);
+      }
+      catch(...)
+      {
+        buf << "\nWarning: Unable to write exec output to " << logNode.getShortPath() << '\n';
+      }
+    }
+
     buf << "\nExecuted " << count << " command" << (count != 1 ? "s" : "") << " from \""
         << file.getShortPath() << "\"";
 
