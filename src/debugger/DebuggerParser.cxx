@@ -132,8 +132,6 @@ string DebuggerParser::run(string_view command)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string DebuggerParser::exec(const FSNode& file, StringList* history)
 {
-  const bool logExec = settings.getBool("dbg.logexec");
-
   if(file.exists())
   {
     stringstream in;
@@ -155,7 +153,7 @@ string DebuggerParser::exec(const FSNode& file, StringList* history)
         continue;
 
       ++execDepth;
-      if(logExec)
+      if(settings.getBool("dbg.logexec"))
       {
         logBuf << "> " << command << '\n';
         const string result = run(command);
@@ -173,7 +171,7 @@ string DebuggerParser::exec(const FSNode& file, StringList* history)
     }
 
     // write execution log if enabled
-    if(logExec && !logBuf.str().empty())
+    if(settings.getBool("dbg.logexec") && !logBuf.str().empty())
     {
       const FSNode logNode(file.getPath() + ".output.txt");
       try        { logNode.write(logBuf);}
