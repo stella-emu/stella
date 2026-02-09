@@ -177,7 +177,7 @@ string DebuggerParser::exec(const FSNode& file, StringList* history)
     {
       const FSNode logNode(file.getPath() + ".output.txt");
       try        { logNode.write(logBuf);}
-      catch(...) { buf << "\nWarning: Unable to write exec output to " << logNode.getShortPath() << '\n'; }
+      catch(...) { buf << red("\nUnable to write exec output to file \'" + logNode.getShortPath() + "\'\n"); }
     }
 
     buf << "\nExecuted " << count << " command" << (count != 1 ? "s" : "") << " from \""
