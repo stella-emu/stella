@@ -1872,6 +1872,15 @@ void DebuggerParser::executeLogBreaks()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void DebuggerParser::executeLogExec()
+{
+  const bool enable = !settings.getBool("dbg.logexec");
+
+  settings.setValue("dbg.logexec", enable);
+  commandResult << "logExec " << (enable ? "enabled" : "disabled");
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DebuggerParser::executeLogTrace()
 {
   const bool enable = !debugger.mySystem.m6502().getLogTrace();
@@ -3446,6 +3455,16 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
     true,
     { Parameters::ARG_END_ARGS },
     std::mem_fn(&DebuggerParser::executeLogBreaks)
+  },
+
+  {
+    "logExec",
+    "Toggle script execution logging to file",
+    "Example: logExec (no parameters)",
+    false,
+    true,
+    { Parameters::ARG_END_ARGS },
+    std::mem_fn(&DebuggerParser::executeLogExec)
   },
 
   {
