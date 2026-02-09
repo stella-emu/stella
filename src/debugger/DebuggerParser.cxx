@@ -155,7 +155,6 @@ string DebuggerParser::exec(const FSNode& file, StringList* history)
         continue;
 
       ++execDepth;
-      run(command);
       if(logExec)
       {
         logBuf << "> " << command << '\n';
@@ -177,14 +176,8 @@ string DebuggerParser::exec(const FSNode& file, StringList* history)
     if(logExec && !logBuf.str().empty())
     {
       const FSNode logNode(file.getPath() + ".output.txt");
-      try
-      {
-        logNode.write(logBuf);
-      }
-      catch(...)
-      {
-        buf << "\nWarning: Unable to write exec output to " << logNode.getShortPath() << '\n';
-      }
+      try        { logNode.write(logBuf);}
+      catch(...) { buf << "\nWarning: Unable to write exec output to " << logNode.getShortPath() << '\n'; }
     }
 
     buf << "\nExecuted " << count << " command" << (count != 1 ? "s" : "") << " from \""
