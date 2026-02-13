@@ -238,6 +238,7 @@ Settings::Settings()
   setPermanent("dbg.logexec", "false");
   setPermanent("dbg.logtrace", "false");
   setPermanent("dbg.autosave", "false");
+  setPermanent("dbg.script", "");
   setPermanent("dis.resolve", "true");
   setPermanent("dis.gfxformat", "2");
   setPermanent("dis.showaddr", "true");
@@ -741,6 +742,7 @@ void Settings::usage()
     << "   -dbg.logexec   <0|1>          Log script execution output to file\n"
     << "   -dbg.logtrace  <0|1>          Log emulation\n"
     << "   -dbg.autosave  <0|1>          Automatically save breaks, traps etc.\n"
+    << "   -dbg.script    <file>         Execute script file on debugger startup\n"
     << "   -break         <address>      Set a breakpoint at 'address'\n"
     << "   -debug                        Start in debugger mode\n\n"
     << "   -bs          <arg>          Sets the 'Cartridge.Type' (bankswitch) property\n"
