@@ -133,7 +133,8 @@ bool PhysicalKeyboardHandler::isMappingUsed(EventMode mode, const EventMapping& 
     || myKeyMap.check(EventMode::kPaddlesMode, map.key, map.mod)
     || myKeyMap.check(EventMode::kKeyboardMode, map.key, map.mod)
     || myKeyMap.check(EventMode::kDrivingMode, map.key, map.mod)
-    || myKeyMap.check(EventMode::kCompuMateMode, map.key, map.mod);
+    || myKeyMap.check(EventMode::kCompuMateMode, map.key, map.mod)
+    || myKeyMap.check(EventMode::kKeyPortariMode, map.key, map.mod);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -206,6 +207,8 @@ void PhysicalKeyboardHandler::setDefaultMapping(Event::Type event, EventMode mod
         setDefaultKey(item, event, EventMode::kDrivingMode, updateDefaults);
       for (const auto& item : CompuMateMapping)
         setDefaultKey(item, event, EventMode::kCompuMateMode, updateDefaults);
+      for (const auto& item : KeyPortariMapping)
+        setDefaultKey(item, event, EventMode::kKeyPortariMode, updateDefaults);
       break;
 
     case EventMode::kMenuMode:
@@ -292,6 +295,9 @@ EventMode PhysicalKeyboardHandler::getMode(Controller::Type type)
 
     case CompuMate:
       return EventMode::kCompuMateMode;
+      
+    case KeyPortari:
+      return EventMode::kKeyPortariMode;
 
     case Driving:
       return EventMode::kDrivingMode;
@@ -353,6 +359,10 @@ void PhysicalKeyboardHandler::enableEmulationMappings()
       // see below
       break;
 
+    case EventMode::kKeyPortariMode:
+      // see below
+      break;
+
     case EventMode::kDrivingMode:
       enableMappings(RightDrivingEvents, EventMode::kDrivingMode);
       break;
@@ -377,6 +387,11 @@ void PhysicalKeyboardHandler::enableEmulationMappings()
         enableMapping(item.event, EventMode::kCompuMateMode);
       break;
 
+    case EventMode::kKeyPortariMode:
+      for(const auto& item : KeyPortariMapping)
+        enableMapping(item.event, EventMode::kKeyPortariMode);
+      break;
+      
     case EventMode::kDrivingMode:
       enableMappings(LeftDrivingEvents, EventMode::kDrivingMode);
       break;
@@ -519,6 +534,7 @@ bool PhysicalKeyboardHandler::addMapping(Event::Type event, EventMode mode,
       myKeyMap.erase(EventMode::kPaddlesMode, key, mod);
       myKeyMap.erase(EventMode::kKeyboardMode, key, mod);
       myKeyMap.erase(EventMode::kCompuMateMode, key, mod);
+      myKeyMap.erase(EventMode::kKeyPortariMode, key, mod);
     }
     else if(evMode != EventMode::kMenuMode
             && evMode != EventMode::kEditMode
@@ -1151,4 +1167,115 @@ PhysicalKeyboardHandler::CompuMateMapping = {
   {Event::CompuMateEquals,        KBDK_EQUALS},
   {Event::CompuMatePlus,          KBDK_EQUALS, KBDM_SHIFT},
   {Event::CompuMateSlash,         KBDK_SLASH}
+};
+
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+PhysicalKeyboardHandler::EventMappingArray
+PhysicalKeyboardHandler::KeyPortariMapping = {
+  {Event::KeyPortariShift,         KBDK_LSHIFT},
+  {Event::KeyPortariShift,         KBDK_RSHIFT},
+  {Event::KeyPortariFunc,          KBDK_LCTRL},
+  {Event::KeyPortariFunc,          KBDK_RCTRL},
+  {Event::KeyPortariTab,           KBDK_TAB},
+  {Event::KeyPortariEscape,        KBDK_ESCAPE},
+  {Event::KeyPortariSpace,         KBDK_SPACE},
+  {Event::KeyPortariExclam,        KBDK_1, KBDM_SHIFT},
+  {Event::KeyPortariDoubleQuote,   KBDK_APOSTROPHE, KBDM_SHIFT},
+  {Event::KeyPortariApostrophe,    KBDK_APOSTROPHE},
+  {Event::KeyPortariHash,          KBDK_3, KBDM_SHIFT},
+  {Event::KeyPortariDollar,        KBDK_4, KBDM_SHIFT},
+  {Event::KeyPortariPercent,       KBDK_5, KBDM_SHIFT},
+  {Event::KeyPortariAmpersand,     KBDK_7, KBDM_SHIFT},
+  {Event::KeyPortariGrave,         KBDK_GRAVE},
+  {Event::KeyPortariLeftParen,     KBDK_9, KBDM_SHIFT},
+  {Event::KeyPortariRightParen,    KBDK_0, KBDM_SHIFT},
+  {Event::KeyPortariMultiply,      KBDK_8, KBDM_SHIFT},
+  {Event::KeyPortariPlus,          KBDK_EQUALS, KBDM_SHIFT},
+  {Event::KeyPortariComma,         KBDK_COMMA},
+  {Event::KeyPortariMinus,         KBDK_MINUS},
+  {Event::KeyPortariPeriod,        KBDK_PERIOD},
+  {Event::KeyPortariSlash,         KBDK_SLASH},
+  {Event::KeyPortari0,             KBDK_0},
+  {Event::KeyPortari1,             KBDK_1},
+  {Event::KeyPortari2,             KBDK_2},
+  {Event::KeyPortari3,             KBDK_3},
+  {Event::KeyPortari4,             KBDK_4},
+  {Event::KeyPortari5,             KBDK_5},
+  {Event::KeyPortari6,             KBDK_6},
+  {Event::KeyPortari7,             KBDK_7},
+  {Event::KeyPortari8,             KBDK_8},
+  {Event::KeyPortari9,             KBDK_9},
+  {Event::KeyPortariColon,         KBDK_SEMICOLON, KBDM_SHIFT},
+  {Event::KeyPortariSemiColon,     KBDK_SEMICOLON},
+  {Event::KeyPortariLessThan,      KBDK_COMMA, KBDM_SHIFT},
+  {Event::KeyPortariEquals,        KBDK_EQUALS},
+  {Event::KeyPortariGreaterThan,   KBDK_PERIOD, KBDM_SHIFT},
+  {Event::KeyPortariQuestion,      KBDK_SLASH, KBDM_SHIFT},
+  {Event::KeyPortariAt,            KBDK_2, KBDM_SHIFT},
+  {Event::KeyPortariA,             KBDK_A, KBDM_SHIFT},
+  {Event::KeyPortariB,             KBDK_B, KBDM_SHIFT},
+  {Event::KeyPortariC,             KBDK_C, KBDM_SHIFT},
+  {Event::KeyPortariD,             KBDK_D, KBDM_SHIFT},
+  {Event::KeyPortariE,             KBDK_E, KBDM_SHIFT},
+  {Event::KeyPortariF,             KBDK_F, KBDM_SHIFT},
+  {Event::KeyPortariG,             KBDK_G, KBDM_SHIFT},
+  {Event::KeyPortariH,             KBDK_H, KBDM_SHIFT},
+  {Event::KeyPortariI,             KBDK_I, KBDM_SHIFT},
+  {Event::KeyPortariJ,             KBDK_J, KBDM_SHIFT},
+  {Event::KeyPortariK,             KBDK_K, KBDM_SHIFT},
+  {Event::KeyPortariL,             KBDK_L, KBDM_SHIFT},
+  {Event::KeyPortariM,             KBDK_M, KBDM_SHIFT},
+  {Event::KeyPortariN,             KBDK_N, KBDM_SHIFT},
+  {Event::KeyPortariO,             KBDK_O, KBDM_SHIFT},
+  {Event::KeyPortariP,             KBDK_P, KBDM_SHIFT},
+  {Event::KeyPortariQ,             KBDK_Q, KBDM_SHIFT},
+  {Event::KeyPortariR,             KBDK_R, KBDM_SHIFT},
+  {Event::KeyPortariS,             KBDK_S, KBDM_SHIFT},
+  {Event::KeyPortariT,             KBDK_T, KBDM_SHIFT},
+  {Event::KeyPortariU,             KBDK_U, KBDM_SHIFT},
+  {Event::KeyPortariV,             KBDK_V, KBDM_SHIFT},
+  {Event::KeyPortariW,             KBDK_W, KBDM_SHIFT},
+  {Event::KeyPortariX,             KBDK_X, KBDM_SHIFT},
+  {Event::KeyPortariY,             KBDK_Y, KBDM_SHIFT},
+  {Event::KeyPortariZ,             KBDK_Z, KBDM_SHIFT},
+  {Event::KeyPortariLeftBracket,   KBDK_LEFTBRACKET},
+  {Event::KeyPortariBackslash,     KBDK_BACKSLASH},
+  {Event::KeyPortariRightBracket,  KBDK_RIGHTBRACKET},
+  {Event::KeyPortariCaret,         KBDK_6, KBDM_SHIFT},
+  {Event::KeyPortariUnderscore,    KBDK_MINUS, KBDM_SHIFT},
+  {Event::KeyPortariLowercaseA,    KBDK_A},
+  {Event::KeyPortariLowercaseB,    KBDK_B},
+  {Event::KeyPortariLowercaseC,    KBDK_C},
+  {Event::KeyPortariLowercaseD,    KBDK_D},
+  {Event::KeyPortariLowercaseE,    KBDK_E},
+  {Event::KeyPortariLowercaseF,    KBDK_F},
+  {Event::KeyPortariLowercaseG,    KBDK_G},
+  {Event::KeyPortariLowercaseH,    KBDK_H},
+  {Event::KeyPortariLowercaseI,    KBDK_I},
+  {Event::KeyPortariLowercaseJ,    KBDK_J},
+  {Event::KeyPortariLowercaseK,    KBDK_K},
+  {Event::KeyPortariLowercaseL,    KBDK_L},
+  {Event::KeyPortariLowercaseM,    KBDK_M},
+  {Event::KeyPortariLowercaseN,    KBDK_N},
+  {Event::KeyPortariLowercaseO,    KBDK_O},
+  {Event::KeyPortariLowercaseP,    KBDK_P},
+  {Event::KeyPortariLowercaseQ,    KBDK_Q},
+  {Event::KeyPortariLowercaseR,    KBDK_R},
+  {Event::KeyPortariLowercaseS,    KBDK_S},
+  {Event::KeyPortariLowercaseT,    KBDK_T},
+  {Event::KeyPortariLowercaseU,    KBDK_U},
+  {Event::KeyPortariLowercaseV,    KBDK_V},
+  {Event::KeyPortariLowercaseW,    KBDK_W},
+  {Event::KeyPortariLowercaseX,    KBDK_X},
+  {Event::KeyPortariLowercaseY,    KBDK_Y},
+  {Event::KeyPortariLowercaseZ,    KBDK_Z},
+  {Event::KeyPortariLeftBrace,     KBDK_LEFTBRACKET, KBDM_SHIFT},
+  {Event::KeyPortariVerticalBar,   KBDK_BACKSLASH, KBDM_SHIFT},
+  {Event::KeyPortariRightBrace,    KBDK_RIGHTBRACKET, KBDM_SHIFT},
+  {Event::KeyPortariTilde,         KBDK_GRAVE, KBDM_SHIFT},
+  {Event::KeyPortariEnter,         KBDK_RETURN},
+  {Event::KeyPortariEnter,         KBDK_KP_ENTER},
+  {Event::KeyPortariDelete,        KBDK_BACKSPACE},
+  {Event::KeyPortariDelete,        KBDK_DELETE}
 };

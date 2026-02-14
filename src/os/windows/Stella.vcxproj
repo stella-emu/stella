@@ -727,6 +727,7 @@
     <ClCompile Include="..\..\emucore\PointingDevice.cxx" />
     <ClCompile Include="..\..\emucore\ProfilingRunner.cxx" />
     <ClCompile Include="..\..\emucore\QuadTari.cxx" />
+    <ClCompile Include="..\..\emucore\KeyPortari.cxx" />
     <ClCompile Include="..\..\emucore\TIASurface.cxx" />
     <ClCompile Include="..\..\emucore\tia\Audio.cxx" />
     <ClCompile Include="..\..\emucore\tia\AudioChannel.cxx" />
@@ -760,6 +761,7 @@
     <ClCompile Include="..\..\gui\MinUICommandDialog.cxx" />
     <ClCompile Include="..\..\gui\PlusRomsSetupDialog.cxx" />
     <ClCompile Include="..\..\gui\QuadTariDialog.cxx" />
+    <ClCompile Include="..\..\gui\KeyPortariDialog.cxx" />
     <ClCompile Include="..\..\gui\RadioButtonWidget.cxx" />
     <ClCompile Include="..\..\gui\RomImageWidget.cxx" />
     <ClCompile Include="..\..\gui\SnapshotDialog.cxx" />
@@ -1711,6 +1713,7 @@
     <ClInclude Include="..\..\emucore\PointingDevice.hxx" />
     <ClInclude Include="..\..\emucore\ProfilingRunner.hxx" />
     <ClInclude Include="..\..\emucore\QuadTari.hxx" />
+    <ClInclude Include="..\..\emucore\KeyPortari.hxx" />
     <ClInclude Include="..\..\emucore\SerialPort.hxx" />
     <ClInclude Include="..\..\emucore\TIASurface.hxx" />
     <ClInclude Include="..\..\emucore\tia\Audio.hxx" />
@@ -1756,6 +1759,7 @@
     <ClInclude Include="..\..\gui\MinUICommandDialog.hxx" />
     <ClInclude Include="..\..\gui\PlusRomsSetupDialog.hxx" />
     <ClInclude Include="..\..\gui\QuadTariDialog.hxx" />
+    <ClInclude Include="..\..\gui\KeyPortariDialog.hxx" />
     <ClInclude Include="..\..\gui\RadioButtonWidget.hxx" />
     <ClInclude Include="..\..\gui\Icons.hxx" />
     <ClInclude Include="..\..\gui\RomImageWidget.hxx" />

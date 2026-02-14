@@ -37,6 +37,7 @@
 #include "Lightgun.hxx"
 #include "QuadTari.hxx"
 #include "Joy2BPlus.hxx"
+#include "KeyPortari.hxx"
 #include "M6502.hxx"
 #include "M6532.hxx"
 #include "TIA.hxx"
@@ -985,11 +986,15 @@ void Console::setControllers(string_view romMd5)
           !swappedPorts ? Controller::Jack::Right : Controller::Jack::Left, myOSystem.settings());
     }
 
+    bool useKeyPortari = leftType == Controller::Type::KeyPortari || rightType == Controller::Type::KeyPortari;
+    if (useKeyPortari) {
+      myKeyPortariHandler = make_shared<KeyPortari>(myProperties);
+    }
+    
     unique_ptr<Controller>
       leftC = getControllerPort(leftType, Controller::Jack::Left, romMd5),
       rightC = getControllerPort(rightType, Controller::Jack::Right, romMd5);
-
-    // Swap the ports if necessary
+      
     if(!swappedPorts)
     {
       myLeftControl = std::move(leftC);
@@ -997,6 +1002,7 @@ void Console::setControllers(string_view romMd5)
     }
     else
     {
+      // Swap the ports if necessary
       myLeftControl = std::move(rightC);
       myRightControl = std::move(leftC);
     }
@@ -1172,10 +1178,15 @@ unique_ptr<Controller> Console::getControllerPort(
       controller = std::move(quadTari);
       break;
     }
+    
     case Controller::Type::Joy2BPlus:
       controller = make_unique<Joy2BPlus>(port, myEvent, *mySystem);
       break;
 
+    case Controller::Type::KeyPortari:
+      controller = myKeyPortariHandler->getControllerPort(port, myEvent, *mySystem);
+      break;
+      
     default:
       // What else can we do?
       // always create because it may have been changed by user dialog

@@ -26,6 +26,7 @@ class StaticTextWidget;
 class RadioButtonGroup;
 class TabWidget;
 class SliderWidget;
+class KeyPortariDialog;
 class QuadTariDialog;
 
 #include "Dialog.hxx"
@@ -115,6 +116,7 @@ class GameInfoDialog : public Dialog, public CommandSender
     StaticTextWidget* myRightPortDetected{nullptr};
     ButtonWidget*     myQuadTariButton{nullptr};
     CheckboxWidget*   mySwapPorts{nullptr};
+    ButtonWidget*     myKeyPortariButton{nullptr};
     CheckboxWidget*   mySwapPaddles{nullptr};
     StaticTextWidget* myEraseEEPROMLabel{nullptr};
     ButtonWidget*     myEraseEEPROMButton{nullptr};
@@ -126,6 +128,9 @@ class GameInfoDialog : public Dialog, public CommandSender
     PopUpWidget*      myMouseX{nullptr};
     PopUpWidget*      myMouseY{nullptr};
     SliderWidget*     myMouseRange{nullptr};
+
+    // Allow assigning the KeyPortari protocol and passthrough controllers
+    unique_ptr<KeyPortariDialog> myKeyPortariDialog;
 
     // Allow assigning the four QuadTari controllers
     unique_ptr<QuadTariDialog> myQuadTariDialog;
@@ -196,7 +201,8 @@ class GameInfoDialog : public Dialog, public CommandSender
       kPYCenterChanged  = 'Pych',
       kExportPressed    = 'Expr',
       kLinkPressed      = 'Lkpr',
-      kBezelFilePressed = 'BFpr'
+      kBezelFilePressed = 'BFpr',
+      kKPButtonPressed  = 'KPpr',
     };
 
     enum: uInt8 { kLinkId };

@@ -86,6 +86,7 @@ void Properties::set(PropType key, string_view value)
       case PropType::Controller_Right2:
       case PropType::Controller_SwapPaddles:
       case PropType::Controller_MouseAxis:
+      case PropType::Controller_KeyPortariProtocol:
       case PropType::Display_Format:
       case PropType::Display_Phosphor:
       {
@@ -178,6 +179,7 @@ void Properties::print() const
        << get(PropType::Controller_PaddlesXCenter) << "|"
        << get(PropType::Controller_PaddlesYCenter) << "|"
        << get(PropType::Controller_MouseAxis)      << "|"
+       << get(PropType::Controller_KeyPortariProtocol) << "|"
        << get(PropType::Display_Format)            << "|"
        << get(PropType::Display_VCenter)           << "|"
        << get(PropType::Display_Phosphor)          << "|"
@@ -239,6 +241,7 @@ void Properties::printHeader()
        << "Controller_PaddlesXCenter|"
        << "Controller_PaddlesYCenter|"
        << "Controller_MouseAxis|"
+       << "Controller_KeyPortariProtocol|"
        << "Display_Format|"
        << "Display_VCenter|"
        << "Display_Phosphor|"
@@ -275,6 +278,7 @@ std::array<string, Properties::NUM_PROPS> Properties::ourDefaultProperties =
   "12",     // Controller.PaddlesXCenter
   "12",     // Controller.PaddlesYCenter
   "AUTO",   // Controller.MouseAxis
+  "ASCII",  // Controller.KeyPortariProtocol
   "AUTO",   // Display.Format
   "0",      // Display.VCenter
   "NO",     // Display.Phosphor
@@ -310,6 +314,7 @@ std::array<string, Properties::NUM_PROPS> Properties::ourPropertyNames =
   "Controller.PaddlesXCenter",
   "Controller.PaddlesYCenter",
   "Controller.MouseAxis",
+  "Controller.KeyPortariProtocol",
   "Display.Format",
   "Display.VCenter",
   "Display.Phosphor",

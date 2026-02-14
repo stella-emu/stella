@@ -5358,6 +5358,39 @@ Ms Pac-Man (Stella extended codes):
   </table>
   </br>
 
+  <h3><a name="KeyPortari"><b>KeyPortari Properties</b></h3></a>
+  <p>
+    <img src="graphics/options_gameinfo_keyportari.png">
+  </p>
+  <table CELLSPACING="10">
+    <tr>
+      <td VALIGN="TOP">
+        <i>Controller.KeyPortariProtocol</i><br>
+      </td>
+      <td>Indicates what KeyPortari protocol to use.
+      <table cellpadding="2" border="1">
+        <tr><th>&nbsp;Type&nbsp;</th><th>Description</th></tr>
+        <tr><td>Alphanumeric</td><td>Alphanumeric characters only, with passthrough to attached controllers.</td></tr>
+        <tr><td>Ascii</td><td>ASCII character range, without passthrough to attached controllers.</td></tr>
+      </table></td>
+    </tr>
+    <tr>
+      <td VALIGN="TOP">
+        <i>Controller.Left1</i><br>
+        <i>Controller.Right1</i><br>
+      </td>
+      <td>Indicates which controllers are plugged into the KeyPortari passthrough ports.
+      The value must be one of the following types.
+      <table cellpadding="2" border="1">
+        <tr><th>&nbsp;Type&nbsp;</th><th>Description</th></tr>
+        <tr><td>Joystick</td><td>Atari's famous black joystick that was originally included with the system.</td></tr>
+        <tr><td>Paddles </td><td>Standard paddle controllers, only (up to 8) fire buttons supported for QuadTari.</td></tr>
+        <tr><td>Driving</td><td>Looks like a paddle, but allows 360&#176; movement. Only one unit per connector, unlike paddles which were sold in pairs.</td></tr>
+      </table></td>
+    </tr>
+  </table>
+  </br>
+
   <h3><a name="CartridgeProps"><b>Cartridge Properties</b></h3></a>
   <p>
     <img src="graphics/options_gameinfo_cartridge.png">

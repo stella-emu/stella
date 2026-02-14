@@ -30,6 +30,7 @@
 #include "PopUpWidget.hxx"
 #include "PropsSet.hxx"
 #include "BrowserDialog.hxx"
+#include "KeyPortariDialog.hxx"
 #include "QuadTariDialog.hxx"
 #include "TabWidget.hxx"
 #include "TIAConstants.hxx"
@@ -296,6 +297,7 @@ void GameInfoDialog::addControllersTab()
   VarList::push_back(items, "Light Gun", "LIGHTGUN");
   VarList::push_back(items, "MindLink", "MINDLINK");
   VarList::push_back(items, "QuadTari", "QUADTARI");
+  VarList::push_back(items, "KeyPortari", "KEYPORTARI");
 
   int xpos = HBORDER, ypos = VBORDER;
   int pwidth = _font.getStringWidth("Paddles_IAxis");
@@ -326,8 +328,14 @@ void GameInfoDialog::addControllersTab()
                                    myLeftPort->getTop() + 1, "Swap ports");
   mySwapPorts->setToolTip(Event::ToggleSwapPorts);
   wid.push_back(mySwapPorts);
+  
+  myKeyPortariButton = new ButtonWidget(myTab, _font, mySwapPorts->getLeft(),
+                                        mySwapPorts->getBottom() + VGAP, " KeyPortari" + ELLIPSIS + " ",
+                                        kKPButtonPressed);
+  wid.push_back(myKeyPortariButton);
 
-  myQuadTariButton = new ButtonWidget(myTab, _font, myRightPort->getRight() + fontWidth * 4, myRightPort->getTop() - 2,
+  myQuadTariButton = new ButtonWidget(myTab, _font, myRightPort->getRight() + fontWidth * 4,
+                                      myKeyPortariButton->getBottom() + VGAP,
                                       " QuadTari" + ELLIPSIS + " ", kQuadTariPressed);
   wid.push_back(myQuadTariButton);
 
@@ -1326,6 +1334,8 @@ void GameInfoDialog::updateControllerStates()
                                BSPF::startsWithIgnoreCase(myRightPortDetected->getLabel(), "QT"));
 
   mySwapPorts->setEnabled(enableSelectControl);
+  myKeyPortariButton->setEnabled(BSPF::startsWithIgnoreCase(contrLeft, "KEYPORTARI") ||
+                                 BSPF::startsWithIgnoreCase(contrRight, "KEYPORTARI"));
   mySwapPaddles->setEnabled(enablePaddles);
 
   myEraseEEPROMLabel->setEnabled(enableEEEraseButton);
@@ -1564,6 +1574,17 @@ void GameInfoDialog::handleCommand(CommandSender* sender, int cmd,
       myQuadTariDialog->show(enableLeft, enableRight);
       break;
     }
+      
+    case kKPButtonPressed:
+    {
+      if(!myKeyPortariDialog)
+        myKeyPortariDialog = make_unique<KeyPortariDialog>
+          (this, _font, _font.getMaxCharWidth() * 42, _font.getFontHeight() * 10,
+           myGameProperties);
+      myKeyPortariDialog->open();
+      break;
+    }
+      
     case kEEButtonPressed:
       eraseEEPROM();
       break;
@@ -1652,6 +1673,7 @@ void GameInfoDialog::handleCommand(CommandSender* sender, int cmd,
       updateHighScoresWidgets();
       break;
 
+      
     default:
       Dialog::handleCommand(sender, cmd, data, 0);
       break;
