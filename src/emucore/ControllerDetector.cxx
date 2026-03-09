@@ -91,10 +91,12 @@ Controller::Type ControllerDetector::autodetectPort(ByteSpan image,
       type = Controller::Type::Paddles;
     else if(isProbablyKidVid(image, port))
       type = Controller::Type::KidVid;
+    else if(isProbablyKeyPortari(image, size))
+      type = Controller::Type::KeyPortari;
     else if(isQuadTari) // currently most likely assumption
       type = Controller::Type::Paddles;
   }
-  // TODO: BOOSTERGRIP, DRIVING, COMPUMATE, MINDLINK, ATARIVOX, KEYPORTARI
+  // TODO: BOOSTERGRIP, DRIVING, COMPUMATE, MINDLINK, ATARIVOX
   // not detectable: PADDLES_IAXIS, PADDLES_IAXDR
   return type;
 }
@@ -618,4 +620,14 @@ bool ControllerDetector::isProbablyKidVid(ByteSpan image, Controller::Jack port)
     return searchForBytes(image, signature);
   }
   return false;
+}
+
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool ControllerDetector::isProbablyKeyPortari(ByteSpan image)
+{
+  static constexpr int SIG_SIZE = 10;
+  static constexpr uInt8 signature[SIG_SIZE] = { 'K', 'E', 'Y', 'P', 'O', 'R', 'T', 'A', 'R', 'I' };
+
+  return searchForBytes(image, signature, SIG_SIZE);
 }

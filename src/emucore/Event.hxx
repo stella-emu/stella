@@ -102,6 +102,9 @@ class Event
       CompuMateQuote, CompuMateBackspace, CompuMateEquals, CompuMatePlus,
       CompuMateSlash,
       
+      ToggleKeyPortariMode,
+      
+      KeyPortariUpArrow, KeyPortariDownArrow, KeyPortariLeftArrow, KeyPortariRightArrow,
       KeyPortariFunc, KeyPortariShift, KeyPortariTab, KeyPortariEscape,
       KeyPortariSpace, KeyPortariExclam, KeyPortariDoubleQuote, KeyPortariHash,
       KeyPortariDollar, KeyPortariPercent, KeyPortariAmpersand, KeyPortariGrave,
@@ -123,7 +126,7 @@ class Event
       KeyPortariLowercaseS, KeyPortariLowercaseT, KeyPortariLowercaseU,
       KeyPortariLowercaseV, KeyPortariLowercaseW, KeyPortariLowercaseX,
       KeyPortariLowercaseY, KeyPortariLowercaseZ,
-      KeyPortariComma, KeyPortariPeriod, KeyPortariEnter,
+      KeyPortariComma, KeyPortariPeriod, KeyPortariEnter, KeyPortariReturn,
       KeyPortariColon, KeyPortariSemiColon, KeyPortariLessThan,
       KeyPortariGreaterThan, KeyPortariAt, KeyPortariQuestion,
       KeyPortariLeftBracket, KeyPortariMinus,
@@ -132,7 +135,7 @@ class Event
       KeyPortariRightBrace, KeyPortariTilde,
       KeyPortariApostrophe, KeyPortariEquals, KeyPortariPlus,
       KeyPortariSlash, KeyPortariDelete,
-
+      
       Combo1, Combo2, Combo3, Combo4, Combo5, Combo6, Combo7, Combo8,
       Combo9, Combo10, Combo11, Combo12, Combo13, Combo14, Combo15, Combo16,
 

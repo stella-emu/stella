@@ -91,6 +91,8 @@ class Console : public Serializable, public ConsoleIO
     */
     Controller& leftController() const override { return *myLeftControl;  }
     Controller& rightController() const override { return *myRightControl; }
+  
+    KeyPortari& keyPortariHandler() const { return *myKeyPortariHandler; }
 
     /**
       Change to next or previous controller type
