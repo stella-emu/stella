@@ -59,7 +59,6 @@ unique_ptr<Controller> KeyPortari::getPassthroughControllerPort(Controller::Type
   }
 }
 
-
 uint8_t KeyPortari::getKeyCode(const Event &event) {
   const KeyCodeMappingArray &keyCodeMappingArray = myProtocol == KeyPortari::Protocol::Alphanumeric ? AlphanumericKeyCodeMappingArray : AsciiKeyCodeMappingArray;
   // iterate through possible keys
@@ -72,6 +71,10 @@ uint8_t KeyPortari::getKeyCode(const Event &event) {
 }
 
 KeyPortari::KeyCodeMappingArray KeyPortari::AlphanumericKeyCodeMappingArray = {
+  {Event::KeyPortariUpArrow,       ' '},
+  {Event::KeyPortariDownArrow,     ' '},
+  {Event::KeyPortariLeftArrow,     ' '},
+  {Event::KeyPortariRightArrow,    ' '},
   {Event::KeyPortariTab,           ' '},
   {Event::KeyPortariExclam,        ' '},
   {Event::KeyPortariDoubleQuote,   ' '},
@@ -168,13 +171,19 @@ KeyPortari::KeyCodeMappingArray KeyPortari::AlphanumericKeyCodeMappingArray = {
   {Event::KeyPortariTilde,         ' '},
   {Event::KeyPortariComma,         ' '},
   {Event::KeyPortariEnter,         ' '},
+  {Event::KeyPortariReturn,        ' '},
   {Event::KeyPortariSpace,         ' '},
   {Event::KeyPortariQuestion,      ' '},
   {Event::KeyPortariSlash,         ' '},
-  {Event::KeyPortariDelete,        ' '}
+  {Event::KeyPortariDelete,        ' '},
 };
 
 KeyPortari::KeyCodeMappingArray KeyPortari::AsciiKeyCodeMappingArray = {
+  {Event::KeyPortariEscape,         27},
+  {Event::KeyPortariUpArrow,        11},
+  {Event::KeyPortariDownArrow,      10},
+  {Event::KeyPortariLeftArrow,       8},
+  {Event::KeyPortariRightArrow,     21},
   {Event::KeyPortariTab,          '\t'},
   {Event::KeyPortariExclam,        '!'},
   {Event::KeyPortariDoubleQuote,   '"'},
@@ -235,7 +244,7 @@ KeyPortari::KeyCodeMappingArray KeyPortari::AsciiKeyCodeMappingArray = {
   {Event::KeyPortariY,             'Y'},
   {Event::KeyPortariZ,             'Z'},
   {Event::KeyPortariLeftBracket,   '['},
-  {Event::KeyPortariBackslash,     '\\'},
+  {Event::KeyPortariBackslash,    '\\'},
   {Event::KeyPortariRightBracket,  ']'},
   {Event::KeyPortariCaret,         '^'},
   {Event::KeyPortariUnderscore,    '_'},
@@ -270,11 +279,12 @@ KeyPortari::KeyCodeMappingArray KeyPortari::AsciiKeyCodeMappingArray = {
   {Event::KeyPortariRightBrace,    '}'},
   {Event::KeyPortariTilde,         '~'},
   {Event::KeyPortariComma,         ','},
-  {Event::KeyPortariEnter,         '\n'},
+  {Event::KeyPortariEnter,         '\r'},
+  {Event::KeyPortariReturn,        '\r'},
   {Event::KeyPortariSpace,         ' '},
   {Event::KeyPortariQuestion,      '?'},
   {Event::KeyPortariSlash,         '/'},
-  {Event::KeyPortariDelete,        127}
+  {Event::KeyPortariDelete,        127},
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

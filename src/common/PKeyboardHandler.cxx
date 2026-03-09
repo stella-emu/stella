@@ -207,8 +207,12 @@ void PhysicalKeyboardHandler::setDefaultMapping(Event::Type event, EventMode mod
         setDefaultKey(item, event, EventMode::kDrivingMode, updateDefaults);
       for (const auto& item : CompuMateMapping)
         setDefaultKey(item, event, EventMode::kCompuMateMode, updateDefaults);
-      for (const auto& item : KeyPortariMapping)
-        setDefaultKey(item, event, EventMode::kKeyPortariMode, updateDefaults);
+      for (const auto& item : KeyPortariCommonMapping) {
+        setDefaultKey(item, event, EventMode::kCommonMode, updateDefaults); // use common mode
+        myKeyPortariModeMap.add(item.event, EventMode::kKeyPortariMode, item.key, item.mod);
+      }
+      for (const auto& item : KeyPortariModeMapping)
+        myKeyPortariModeMap.add(item.event, EventMode::kKeyPortariMode, item.key, item.mod);
       break;
 
     case EventMode::kMenuMode:
@@ -385,11 +389,6 @@ void PhysicalKeyboardHandler::enableEmulationMappings()
     case EventMode::kCompuMateMode:
       for(const auto& item : CompuMateMapping)
         enableMapping(item.event, EventMode::kCompuMateMode);
-      break;
-
-    case EventMode::kKeyPortariMode:
-      for(const auto& item : KeyPortariMapping)
-        enableMapping(item.event, EventMode::kKeyPortariMode);
       break;
       
     case EventMode::kDrivingMode:
@@ -589,7 +588,7 @@ void PhysicalKeyboardHandler::handleEvent(StellaKey key, StellaMod mod,
       return;
     }
   }
-
+  
   // Arrange the logic to take advantage of short-circuit evaluation
   // Handle keys which switch eventhandler state
   if (!pressed && myHandler.changeStateByEvent(myKeyMap.get(EventMode::kEmulationMode, key, mod)))
@@ -601,7 +600,11 @@ void PhysicalKeyboardHandler::handleEvent(StellaKey key, StellaMod mod,
     case EventHandlerState::EMULATION:
     case EventHandlerState::PAUSE:
     case EventHandlerState::PLAYBACK:
-      myHandler.handleEvent(myKeyMap.get(EventMode::kEmulationMode, key, mod), pressed, repeated);
+      if (myKeyPortariModeEnabled) {
+        myHandler.handleEvent(myKeyPortariModeMap.get(EventMode::kKeyPortariMode, key, mod), pressed, repeated);
+      } else {
+        myHandler.handleEvent(myKeyMap.get(EventMode::kEmulationMode, key, mod), pressed, repeated);
+      }
       break;
 
     default:
@@ -629,6 +632,17 @@ void PhysicalKeyboardHandler::toggleModKeys(bool toggle)
   ostringstream ss;
   ss << "Modifier key combos ";
   ss << (modCombo ? "enabled" : "disabled");
+  myOSystem.frameBuffer().showTextMessage(ss.view());
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void PhysicalKeyboardHandler::toggleKeyPortariMode()
+{
+  myKeyPortariModeEnabled = !myKeyPortariModeEnabled;
+
+  ostringstream ss;
+  ss << "KeyPortari mode ";
+  ss << (myKeyPortariModeEnabled ? "enabled" : "disabled");
   myOSystem.frameBuffer().showTextMessage(ss.view());
 }
 
@@ -1171,8 +1185,22 @@ PhysicalKeyboardHandler::CompuMateMapping = {
 
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
 PhysicalKeyboardHandler::EventMappingArray
-PhysicalKeyboardHandler::KeyPortariMapping = {
+PhysicalKeyboardHandler::KeyPortariCommonMapping = {
+  #ifdef BSPF_MACOS
+  { Event::ToggleKeyPortariMode,     KBDK_F12, MOD3 },
+  #else
+  { Event::ToggleKeyPortariMode,     KBDK_SCROLLLOCK },
+  #endif
+};
+
+PhysicalKeyboardHandler::EventMappingArray
+PhysicalKeyboardHandler::KeyPortariModeMapping = {
+  {Event::KeyPortariUpArrow,       KBDK_UP},
+  {Event::KeyPortariDownArrow,     KBDK_DOWN},
+  {Event::KeyPortariLeftArrow,     KBDK_LEFT},
+  {Event::KeyPortariRightArrow,    KBDK_RIGHT},
   {Event::KeyPortariShift,         KBDK_LSHIFT},
   {Event::KeyPortariShift,         KBDK_RSHIFT},
   {Event::KeyPortariFunc,          KBDK_LCTRL},
@@ -1274,7 +1302,7 @@ PhysicalKeyboardHandler::KeyPortariMapping = {
   {Event::KeyPortariVerticalBar,   KBDK_BACKSLASH, KBDM_SHIFT},
   {Event::KeyPortariRightBrace,    KBDK_RIGHTBRACKET, KBDM_SHIFT},
   {Event::KeyPortariTilde,         KBDK_GRAVE, KBDM_SHIFT},
-  {Event::KeyPortariEnter,         KBDK_RETURN},
+  {Event::KeyPortariReturn,        KBDK_RETURN},
   {Event::KeyPortariEnter,         KBDK_KP_ENTER},
   {Event::KeyPortariDelete,        KBDK_BACKSPACE},
   {Event::KeyPortariDelete,        KBDK_DELETE}

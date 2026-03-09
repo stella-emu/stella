@@ -222,6 +222,12 @@ NLOHMANN_JSON_SERIALIZE_ENUM(Event::Type, {
   {Event::CompuMatePlus, "CompuMatePlus"},
   {Event::CompuMateSlash, "CompuMateSlash"},
   
+  {Event::ToggleKeyPortariMode, "ToggleKeyPortariMode"},
+  
+  {Event::KeyPortariUpArrow, "KeyPortariUpArrow"},
+  {Event::KeyPortariDownArrow, "KeyPortariDownArrow"},
+  {Event::KeyPortariLeftArrow, "KeyPortariLeftArrow"},
+  {Event::KeyPortariRightArrow, "KeyPortariRightArrow"},
   {Event::KeyPortariShift, "KeyPortariShift"},
   {Event::KeyPortariFunc, "KeyPortariFunc"},
   {Event::KeyPortariTab, "KeyPortariTab"},
@@ -323,7 +329,7 @@ NLOHMANN_JSON_SERIALIZE_ENUM(Event::Type, {
   {Event::KeyPortariTilde, "KeyPortariTilde"},
   {Event::KeyPortariEnter, "KeyPortariEnter"},
   {Event::KeyPortariDelete, "KeyPortariDelete"},
-
+  
   {Event::DecreaseDeadzone, "DecreaseDeadzone"},
   {Event::IncreaseDeadzone, "IncreaseDeadzone"},
   {Event::DecAnalogDeadzone, "DecAnalogDeadzone"},

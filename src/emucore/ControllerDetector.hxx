@@ -134,6 +134,11 @@ class ControllerDetector
     // Returns true if a Kid Vid code pattern is found.
     static bool isProbablyKidVid(const ByteBuffer& image, size_t size,
                                    Controller::Jack port);
+  
+    // Returns true if a KeyPortari code pattern is found.
+    static bool isProbablyKeyPortari(const ByteBuffer& image, size_t size);
+
+
   private:
     // Following constructors and assignment operators not supported
     ControllerDetector() = delete;

@@ -45,12 +45,12 @@ class KeyPortari
     */
     KeyPortari(const Properties& properties);
     ~KeyPortari() = default;
-
+  
     /**
       Bind to a controller jack
      */
     unique_ptr<Controller> getControllerPort(const Controller::Jack jack, const Event& event, const System& system);
-
+  
   private:
 
     unique_ptr<Controller> getPassthroughControllerPort(Controller::Type type, const Controller::Jack jack, const Event& event, const System& system);
