@@ -448,7 +448,6 @@ class Cartridge : public Device
     // how often it is accessed.
     std::unique_ptr<Device::AccessCounter[]> myRomAccessCounter;
 
-
     // Contains address of illegal RAM write access or 0
     uInt16 myRamWriteAccess{0};
 
