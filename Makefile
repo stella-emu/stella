@@ -60,41 +60,29 @@ ifndef LDFLAGS_TEST
 	LDFLAGS_TEST := $(LDFLAGS)
 endif
 
-CXXFLAGS+= -Wall -Wextra -Wno-unused-parameter
+CXXFLAGS+= -std=c++20 -Wall -Wextra -Wunused -Woverloaded-virtual -Wno-unused-parameter
 CFLAGS+= -Wall -Wextra -Wno-unused-parameter
 
-CXXFLAGS_TEST+= -Wall -Wextra -Wno-unused-parameter
-CFLAGS_TEST+= -Wall -Wextra -Wno-unused-parameter
+CXXFLAGS_TEST+= -std=c++20 -Wall -Wextra -Wunused -Woverloaded-virtual -Wno-unused-parameter
+CFLAGS_TEST+= -Wall -Wextra -Wunused -Wno-unused-parameter
 
 ifdef HAVE_GCC
-  CXXFLAGS+= -Wno-multichar -Wunused -Woverloaded-virtual -std=c++20
-  CFLAGS+= -Wunused
-
-  CXXFLAGS_TEST+= -Wno-multichar -Wunused -Woverloaded-virtual -std=c++20
-  CFLAGS_TEST+= -Wno-multichar -Wunused
+  CXXFLAGS+= -Wno-multichar
+  CXXFLAGS_TEST+= -Wno-multichar
+  CFLAGS_TEST+= -Wno-multichar
 endif
 
-ifdef HAVE_CLANG
-  CXXFLAGS+= -Wunused -Woverloaded-virtual -std=c++20
-  CFLAGS+= -Wunused
-
-  CXXFLAGS_TEST+= -Wno-multichar -Wunused -Woverloaded-virtual -std=c++20
-  CFLAGS_TEST+= -Wno-multichar -Wunused
-endif
-
-ifdef CLANG_WARNINGS
-  EXTRA_WARN=-Wno-c++98-compat-pedantic -Wno-undefined-func-template \
-    -Wno-switch-enum -Wno-conversion -Wno-covered-switch-default \
-    -Wno-documentation -Wno-float-equal \
-    -Wno-exit-time-destructors -Wno-global-constructors -Wno-weak-vtables \
-    -Wno-four-char-constants -Wno-padded -Wno-reserved-identifier \
-    -Wno-duplicate-enum -Wno-unsafe-buffer-usage
-
-  CXXFLAGS+= $(EXTRA_WARN)
-  CFLAGS+= $(EXTRA_WARN)
-
-	CXXFLAGS_TEST+= $(EXTRA_WARN)
-  CFLAGS_TEST+= $(EXTRA_WARN)
+ifdef USE_FULL_WARNINGS
+  ifdef HAVE_CLANG
+    CXXFLAGS+= -Weverything -Wno-c++98-compat-pedantic -Wno-padded \
+               -Wno-four-char-constants -Wno-sign-conversion \
+               -Wno-global-constructors -Wno-exit-time-destructors \
+               -Wno-weak-vtables -Wno-duplicate-enum -Wno-reserved-identifier \
+               -Wno-switch-enum -Wno-float-conversion -Wno-unsafe-buffer-usage \
+               -Wno-implicit-int-conversion -Wno-ctad-maybe-unsupported \
+               -Wno-undefined-func-template -Wno-covered-switch-default \
+               -Wno-implicit-int-float-conversion
+  endif
 endif
 
 ifdef PROFILE
@@ -119,9 +107,9 @@ else
 endif
 
 ifdef RELEASE
-  CXXFLAGS += -flto -fno-rtti
-  CFLAGS += -flto
-  LDFLAGS += -flto -fno-rtti
+  CXXFLAGS += -flto=auto -fno-rtti
+  CFLAGS += -flto=auto
+  LDFLAGS += -flto=auto -fno-rtti
 endif
 
 #######################################################################

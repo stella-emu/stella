@@ -39,6 +39,7 @@ _build_profile=no
 _build_debug=no
 _build_release=no
 _build_mold=no
+_build_full_warn=no
 
 # more defaults
 _ranlib=ranlib
@@ -230,6 +231,7 @@ Optional Features:
   --enable-release       build with all optimizations, for final release [disabled]
   --disable-release
   --use-mold-linker      use mold linker (experimental) [disabled]
+  --use-full-warnings    enable all possible compiler warnings
 
 Optional Libraries:
   --with-sdl-prefix=DIR    Prefix where the sdl2-config script is installed (optional)
@@ -280,6 +282,7 @@ for ac_option in $@; do
       --enable-release)         _build_release=yes   ;;
       --disable-release)        _build_release=no    ;;
       --use-mold-linker)        _build_mold=yes      ;;
+      --use-full-warnings)      _build_full_warn=yes ;;
       --with-sdl-prefix=*)
         arg=`echo $ac_option | cut -d '=' -f 2`
         _sdlpath="$arg:$arg/bin"
@@ -444,8 +447,6 @@ if test "$have_clang" = yes; then
 			cxx_version="$cxx_version, bad"
 			cxx_verc_fail=yes
 		fi
-
-		_make_def_CLANG_WARNINGS='CLANG_WARNINGS = 1'
 	else
     # Need at least version 3.5
 		if [ $clang_major -ge 4 ] || [ $clang_major -eq 3 -a $clang_minor -ge 5 ]; then
@@ -454,11 +455,6 @@ if test "$have_clang" = yes; then
 		else
 			cxx_version="$cxx_version, bad"
 			cxx_verc_fail=yes
-		fi
-
-    # Only clang >= 5.0 supports extra warnings
-		if [ $clang_major -ge 5 ]; then
-			_make_def_CLANG_WARNINGS='CLANG_WARNINGS = 1'
 		fi
 	fi
 	CXXFLAGS="$CXXFLAGS"
@@ -957,6 +953,10 @@ if test "$_build_mold" = yes ; then
 	LDFLAGS="-fuse-ld=mold"
 fi
 
+if test "$_build_full_warn" = yes ; then
+	_make_def_FULL_WARNINGS='USE_FULL_WARNINGS = 1'
+fi
+
 # Workaround until we deal with autodetection of C compiler properly
 # Or we remove C files from Stella entirely, by making them C++
 if test -z "$CC"; then
@@ -1002,7 +1002,7 @@ RELEASE := $_build_release
 
 $_make_def_HAVE_GCC
 $_make_def_HAVE_CLANG
-$_make_def_CLANG_WARNINGS
+$_make_def_FULL_WARNINGS
 
 INCLUDES += $INCLUDES
 OBJS += $OBJS
