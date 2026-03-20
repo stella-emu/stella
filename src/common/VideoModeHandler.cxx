@@ -101,21 +101,21 @@ const VideoModeHandler::Mode&
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 VideoModeHandler::Mode::Mode(uInt32 iw, uInt32 ih, Stretch smode,
-                             bool fullscreen, string_view desc,
+                             bool fs, string_view desc,
                              double zoomLevel, Bezel::Info bezelInfo)
-  : Mode(iw, ih, iw, ih, smode, fullscreen, desc, zoomLevel, 1., bezelInfo)
+  : Mode(iw, ih, iw, ih, smode, fs, desc, zoomLevel, 1., bezelInfo)
 {
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 VideoModeHandler::Mode::Mode(uInt32 iw, uInt32 ih, uInt32 sw, uInt32 sh,
-                             Stretch smode, bool fullscreen, string_view desc,
+                             Stretch smode, bool fs, string_view desc,
                              double zoomLevel, double overscan, Bezel::Info bezelInfo)
   : screenS{sw, sh},
     stretch{smode},
     description{desc},
     zoom{zoomLevel}, //hZoom{zoomLevel}, vZoom{zoomLevel},
-    fullscreen{fullscreen}
+    fullscreen{fs}
 {
   // Now resize based on windowed/fullscreen mode and stretch factor
   if(fullscreen)

@@ -190,7 +190,7 @@ namespace {
       [[nodiscard]] uInt8 getBlankLines() const    { return myBlankLines; }
       [[nodiscard]] uInt8 getOverscanLines() const { return myOverscanLines; }
       [[nodiscard]] uInt8 getEmbeddedFrame() const { return myEmbeddedFrame; }
-      [[nodiscard]] uInt8 peekAudio() const        { return *myAudio; }
+      // [[nodiscard]] uInt8 peekAudio() const        { return *myAudio; }
 
       void startTimeCode() { myGraph = myTimecode; }
 

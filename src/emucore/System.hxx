@@ -375,8 +375,8 @@ class System : public Serializable
       address occurs before it's sent to the device mapped at
       the address.
 
-      @param oob      Out-of-band peeks are not part of the activity of the
-                      emulated system
+        oob      Out-of-band peeks are not part of the activity of the
+                 emulated system
       @param address  The address from which the value should be loaded
       @param flags    Indicates that this address has the given flags
                       for type of access (CODE, DATA, GFX, etc)
@@ -396,8 +396,8 @@ class System : public Serializable
       if the device is handling the poke, we depend on its return value
       for this information.
 
-      @param oob      Out-of-band peeks are not part of the activity of the
-                      emulated system
+        oob      Out-of-band peeks are not part of the activity of the
+                 emulated system
       @param address  The address where the value should be stored
       @param value    The value to be stored at the address
     */

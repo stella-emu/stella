@@ -123,6 +123,9 @@ namespace {
           case ElfLinker::SegmentType::rodata:
             stream << " (rodata)";
             break;
+
+          default:
+            break;  // Stop braindead compiler from complaining
         }
       } else {
         stream << " (abs)";

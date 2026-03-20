@@ -579,6 +579,9 @@ FORCE_INLINE bool Thumbulator::isProtectedRAM(uInt32 addr)
 
     case ConfigureFor::BUS:
       return (addr < 0x06d8) && (addr > 0x0028);
+
+    default:
+      break;  // Stop braindead compiler from complaining
   }
 
   return false;
@@ -1755,6 +1758,9 @@ FORCE_INLINE int Thumbulator::execute()  // NOLINT (readability-function-size)
           case ConfigureFor::DPCplus:
             // no 32-bit subroutines in DPC+
             break;
+
+          default:
+            break;  // Stop braindead compiler from complaining
         }
 
         if (handled)

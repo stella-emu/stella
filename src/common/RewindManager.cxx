@@ -74,7 +74,7 @@ void RewindManager::setup()
     // calculate nextCycles factor
     myFactor = (minFactor + maxFactor) / 2;
     // horizon not reachable?
-    if(myFactor == MAX_FACTOR)
+    if(std::equal_to()(myFactor, MAX_FACTOR))
       break;
     // sum up interval cycles (first state is not compressed)
     for(uInt32 i = myUncompressed + 1; i < mySize; ++i)

@@ -82,7 +82,7 @@ class PlusROMRequest {
       : myDestination{Destination("", "")},
         myId{PlusStoreId("", "")}
     {
-    };
+    }
     ~PlusROMRequest() = default;
 
   #ifdef HTTP_LIB_SUPPORT

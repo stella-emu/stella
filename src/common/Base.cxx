@@ -78,42 +78,42 @@ string Base::toString(int value, Common::Base::Fmt outputBase)
 
     case Base::Fmt::_16_1:  // base 16: 1 byte wide
       std::ignore = std::snprintf(
-          vToS_buf, 2, hexUppercase() ? "%1X" : "%1x", value);
+          vToS_buf, 2, hexUppercase() ? "%1X" : "%1x", static_cast<uInt32>(value));
       break;
     case Base::Fmt::_16_2:  // base 16: 2 bytes wide
       std::ignore = std::snprintf(
-          vToS_buf, 3, hexUppercase() ? "%02X" : "%02x", value);
+          vToS_buf, 3, hexUppercase() ? "%02X" : "%02x", static_cast<uInt32>(value));
       break;
     case Base::Fmt::_16_2_2:
       std::ignore = std::snprintf(
           vToS_buf, 6, hexUppercase() ? "%02X.%02X" : "%02x.%02x",
-          value >> 8, value & 0xff );
+          static_cast<uInt32>(value >> 8), static_cast<uInt32>(value & 0xff) );
       break;
     case Base::Fmt::_16_3_2:
       std::ignore = std::snprintf(
           vToS_buf, 7, hexUppercase() ? "%03X.%02X" : "%03x.%02x",
-          value >> 8, value & 0xff );
+          static_cast<uInt32>(value >> 8), static_cast<uInt32>(value & 0xff) );
       break;
     case Base::Fmt::_16_4:  // base 16: 4 bytes wide
       std::ignore = std::snprintf(
-          vToS_buf, 5, hexUppercase() ? "%04X" : "%04x", value);
+          vToS_buf, 5, hexUppercase() ? "%04X" : "%04x", static_cast<uInt32>(value));
       break;
     case Base::Fmt::_16_8:  // base 16: 8 bytes wide
       std::ignore = std::snprintf(
-          vToS_buf, 9, hexUppercase() ? "%08X" : "%08x", value);
+          vToS_buf, 9, hexUppercase() ? "%08X" : "%08x", static_cast<uInt32>(value));
       break;
 
     case Base::Fmt::_16:    // base 16: 2, 4, 8 bytes (depending on value)
     default:
       if(value < 0x100)
         std::ignore = std::snprintf(
-            vToS_buf, 3, hexUppercase() ? "%02X" : "%02x", value);
+            vToS_buf, 3, hexUppercase() ? "%02X" : "%02x", static_cast<uInt32>(value));
       else if(value < 0x10000)
         std::ignore = std::snprintf(
-            vToS_buf, 5, hexUppercase() ? "%04X" : "%04x", value);
+            vToS_buf, 5, hexUppercase() ? "%04X" : "%04x", static_cast<uInt32>(value));
       else
         std::ignore = std::snprintf(
-            vToS_buf, 9, hexUppercase() ? "%08X" : "%08x", value);
+            vToS_buf, 9, hexUppercase() ? "%08X" : "%08x", static_cast<uInt32>(value));
       break;
   }
 

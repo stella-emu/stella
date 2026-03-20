@@ -656,8 +656,8 @@ void VideoAudioDialog::loadConfig()
   // TIA zoom levels
   // These are dynamically loaded, since they depend on the size of
   // the desktop and which renderer we're using
-  const float minZoom = instance().frameBuffer().supportedTIAMinZoom(); // or 2 if we allow lower values
-  const float maxZoom = instance().frameBuffer().supportedTIAMaxZoom();
+  const double minZoom = instance().frameBuffer().supportedTIAMinZoom(); // or 2 if we allow lower values
+  const double maxZoom = instance().frameBuffer().supportedTIAMaxZoom();
 
   myTIAZoom->setMinValue(minZoom * 100);
   myTIAZoom->setMaxValue(maxZoom * 100);

@@ -371,7 +371,7 @@ class FBSurface
        blending with an additional, overall blend factor (see
        setBlendLevel below).
 
-       @param enable  Enable blending?
+       @param enableBlend  Enable blending?
      */
     virtual void enableBlend(bool enableBlend) = 0;
 

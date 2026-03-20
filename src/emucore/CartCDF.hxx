@@ -275,7 +275,7 @@ class CartridgeCDF : public CartridgeARM
     /**
       Enable or disable PlusROM support.
 
-      @param enabled  Whether to enable the PlusROM support
+      @param enable  Whether to enable the PlusROM support
     */
     void enablePlusROM(bool enable) override { myPlusROM->enable(enable); }
 

@@ -50,10 +50,10 @@ class VideoModeHandler
 
       Mode() = default;
       Mode(uInt32 iw, uInt32 ih, uInt32 sw, uInt32 sh, Stretch smode,
-           bool fullscreen = false, string_view desc = "",
+           bool fs = false, string_view desc = "",
            double zoomLevel = 1., double overscan = 1.,
            Bezel::Info bezelInfo = Bezel::Info());
-      Mode(uInt32 iw, uInt32 ih, Stretch smode, bool fullscreen = false,
+      Mode(uInt32 iw, uInt32 ih, Stretch smode, bool fs = false,
            string_view desc = "", double zoomLevel = 1.,
            Bezel::Info bezelInfo = Bezel::Info());
 

@@ -20,13 +20,15 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool PhosphorHandler::initialize(bool enable, int blend)
 {
-  if(myUsePhosphor == enable && myPhosphorPercent == blend / 100.F)
+  if(myUsePhosphor == enable && std::equal_to()(myPhosphorPercent, blend / 100.F))
     return false;
 
   myUsePhosphor = enable;
 
   // Precalculate the average colors for the 'phosphor' effect
-  if((myUsePhosphor && blend != -1 && blend / 100.F != myPhosphorPercent) || !myLUTInitialized)
+  if((myUsePhosphor && blend != -1
+      && std::not_equal_to()(myPhosphorPercent, blend / 100.F))
+      || !myLUTInitialized)
   {
     if(blend >= 0 && blend <= 100)
       myPhosphorPercent = blend / 100.F;

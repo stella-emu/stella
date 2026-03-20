@@ -152,9 +152,9 @@ class Cartridge : public Device
     /**
       Enable or disable PlusROM support.
 
-      @param enabled  Whether to enable the PlusROM support
+      @param enable  Whether to enable the PlusROM support
     */
-    virtual void enablePlusROM(bool enable) { };
+    virtual void enablePlusROM(bool enable) { }
 
     /**
       Set the callback for displaying messages

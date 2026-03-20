@@ -63,7 +63,7 @@ uInt8 CartridgeEFF::peek(uInt16 address)
         return readI2C();
       default:
         break;
-    };
+    }
   }
   return CartridgeEF::peek(address);
 }
@@ -98,7 +98,7 @@ bool CartridgeEFF::poke(uInt16 address, uInt8 value)
 
       default:
         break;
-    };
+    }
   }
   return CartridgeEF::poke(address, value);
 }

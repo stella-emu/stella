@@ -670,7 +670,7 @@ void FrameBuffer::showGaugeMessage(string_view message, string_view valueText,
   const int HBORDER = fontWidth * 1.25 / 2.0;
 
   myMsg.showGauge  = true;
-  if(maxValue - minValue != 0)
+  if(std::not_equal_to()(maxValue - minValue, 0))
     myMsg.value = (value - minValue) / (maxValue - minValue) * 100.F;
   else
     myMsg.value = 100.F;
@@ -1279,8 +1279,10 @@ void FrameBuffer::switchVideoMode(int direction)
     if(fullScreen())
       showTextMessage(myActiveVidMode.description);
     else
-      showGaugeMessage("Zoom", myActiveVidMode.description, myActiveVidMode.zoom,
-                  supportedTIAMinZoom(), supportedTIAMaxZoom());
+      showGaugeMessage("Zoom", myActiveVidMode.description,
+                       static_cast<float>(myActiveVidMode.zoom),
+                       static_cast<float>(supportedTIAMinZoom()),
+                       static_cast<float>(supportedTIAMaxZoom()));
   }
 }
 

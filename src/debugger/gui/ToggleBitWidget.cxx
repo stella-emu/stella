@@ -85,16 +85,13 @@ string ToggleBitWidget::getToolTip(const Common::Point& pos) const
   if(idx.y < 0)
     return EmptyString();
 
-  string tip = ToggleWidget::getToolTip(pos);
-
   if(std::cmp_less(idx.x, _labelList.size()))
   {
     const string& label = _labelList[idx.x];
-
     if(!label.empty())
-      return tip + "\n" + label;
+      return ToggleWidget::getToolTip(pos) + "\n" + label;
   }
-  return tip;
+  return ToggleWidget::getToolTip(pos);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -152,8 +152,6 @@ class CartridgeELF: public Cartridge {
     ByteBuffer myImage;
     size_t myImageSize{0};
 
-    System* mySystem{nullptr};
-
     bool myConfigStrictMode{false};
     uInt32 myConfigMips{100};
     elfEnvironment::SystemType myConfigSystemType{elfEnvironment::SystemType::ntsc};

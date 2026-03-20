@@ -41,14 +41,16 @@ string DataGridRamWidget::getToolTip(const Common::Point& pos) const
 
   const Int32 addr = _addrList[idx];
   const string label = _ram.getLabel(addr);
-  string tip = DataGridWidget::getToolTip(pos);
 
   if(label.empty())
-    return tip;
+  {
+    return DataGridWidget::getToolTip(pos);
+  }
+  else
+  {
+    ostringstream buf;
+    buf << label << '\n' << DataGridWidget::getToolTip(pos);
 
-  ostringstream buf;
-
-  buf << label << '\n' << tip;
-
-  return buf.str();
+    return buf.str();
+  }
 }

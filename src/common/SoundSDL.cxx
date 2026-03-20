@@ -180,7 +180,7 @@ void SoundSDL::mute(bool enable)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void SoundSDL::toggleMute()
 {
-  const bool wasMuted = myVolumeFactor == 0;
+  const bool wasMuted = std::equal_to()(myVolumeFactor, 0);
   mute(!wasMuted);
 
   string message = "Sound ";

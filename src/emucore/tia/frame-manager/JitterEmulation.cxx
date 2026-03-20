@@ -17,7 +17,7 @@
 
 #include <cmath>
 using std::abs;
-using std::pow;
+using std::powf;
 using std::round;
 
 #include "JitterEmulation.hxx"
@@ -40,7 +40,7 @@ void JitterEmulation::setSensitivity(Int32 sensitivity)
   myLastFrameScanlines = myLastFrameVsyncCycles = myUnstableCount = myJitter = 0;
   mySensitivity = BSPF::clamp(sensitivity, MIN_SENSITIVITY, MAX_SENSITIVITY);
 
-  const float factor = pow(static_cast<float>(mySensitivity - MIN_SENSITIVITY) / (MAX_SENSITIVITY - MIN_SENSITIVITY), 1.5);
+  const float factor = powf(static_cast<float>(mySensitivity - MIN_SENSITIVITY) / (MAX_SENSITIVITY - MIN_SENSITIVITY), 1.5);
 
   myScanlineDelta  = round(MAX_SCANLINE_DELTA  - (MAX_SCANLINE_DELTA  - MIN_SCANLINE_DELTA)  * factor);
   myVsyncCycles    = round(MIN_VSYNC_CYCLES    + (MAX_VSYNC_CYCLES    - MIN_VSYNC_CYCLES)    * factor);
