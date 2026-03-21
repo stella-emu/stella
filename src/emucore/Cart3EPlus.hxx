@@ -132,7 +132,6 @@ class Cartridge3EPlus: public Cartridge3E
     }
   #endif
 
-  public:
     /**
       Get the byte at the specified address
 
@@ -149,22 +148,22 @@ class Cartridge3EPlus: public Cartridge3E
     */
     bool poke(uInt16 address, uInt8 value) override;
 
-  private:
+    uInt16 hotspot() const override { return 0x003F; }
+
+  protected:
     /**
       Checks if startup bank randomization is enabled.  For this scheme,
       randomization is not supported (see above).
     */
     bool randomStartBank() const override { return false; }
 
+  private:
     bool checkSwitchBank(uInt16 address, uInt8 value) override;
-
-    uInt16 hotspot() const override { return 0x003F; }
 
     /**
       Get the number of segments supported by the cartridge.
     */
     uInt16 calcNumSegments() const override { return 4; }
-
 
   private:
     // log(ROM bank segment size) / log(2)

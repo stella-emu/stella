@@ -37,12 +37,12 @@ class PlusRomsMenu : public DialogContainer
     explicit PlusRomsMenu(OSystem& osystem);
     ~PlusRomsMenu() override;
 
-  private:
     /**
       Return (and possibly create) the bottom-most dialog of this container.
     */
     Dialog* baseDialog() override;
 
+  private:
     PlusRomsSetupDialog& plusRomsSetupDialog();
 
   private:

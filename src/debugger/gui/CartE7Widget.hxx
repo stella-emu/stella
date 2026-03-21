@@ -32,6 +32,20 @@ class CartridgeE7Widget : public CartDebugWidget
                       CartridgeE7& cart);
     ~CartridgeE7Widget() override = default;
 
+    void saveOldState() override;
+    void loadConfig() override;
+    string bankState() override;
+
+    // Start of functions for Cartridge RAM tab
+    uInt32 internalRamSize() override;
+    uInt32 internalRamRPort(int start) override;
+    string internalRamDescription() override;
+    const ByteArray& internalRamOld(int start, int count) override;
+    const ByteArray& internalRamCurrent(int start, int count) override;
+    void internalRamSetValue(int addr, uInt8 value) override;
+    uInt8 internalRamGetValue(int addr) override;
+    // End of functions for Cartridge RAM tab
+
   protected:
     CartridgeE7& myCart;
 
@@ -55,21 +69,9 @@ class CartridgeE7Widget : public CartDebugWidget
     void initialize(GuiObject* boss, const CartridgeE7& cart,
                     const ostringstream& info);
 
-  private:
-    void saveOldState() override;
-    void loadConfig() override;
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
-    string bankState() override;
-    // start of functions for Cartridge RAM tab
-    uInt32 internalRamSize() override;
-    uInt32 internalRamRPort(int start) override;
-    string internalRamDescription() override;
-    const ByteArray& internalRamOld(int start, int count) override;
-    const ByteArray& internalRamCurrent(int start, int count) override;
-    void internalRamSetValue(int addr, uInt8 value) override;
-    uInt8 internalRamGetValue(int addr) override;
-    // end of functions for Cartridge RAM tab
 
+  private:
     static string_view getSpotLower(int idx, int bankcount);
     static string_view getSpotUpper(int idx);
 

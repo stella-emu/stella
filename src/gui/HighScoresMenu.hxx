@@ -37,8 +37,9 @@ class HighScoresMenu : public DialogContainer
     explicit HighScoresMenu(OSystem& osystem);
     ~HighScoresMenu() override;
 
-  private:
     Dialog* baseDialog() override;
+
+  private:
     HighScoresDialog* myHighScoresDialog{nullptr};
 
   private:

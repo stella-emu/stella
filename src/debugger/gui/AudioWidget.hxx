@@ -31,6 +31,11 @@ class AudioWidget : public Widget, public CommandSender
                 int x, int y, int w, int h);
     ~AudioWidget() override = default;
 
+    void loadConfig() override;
+
+  protected:
+    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+
   private:
     // ID's for the various widgets
     // We need ID's, since there are more than one of several types of widgets
@@ -58,9 +63,6 @@ class AudioWidget : public Widget, public CommandSender
     void changeFrequencyRegs();
     void changeControlRegs();
     void changeVolumeRegs();
-    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
-    void loadConfig() override;
-
     void handleFrequencies();
     void handleVolume();
     uInt32 getEffectiveVolume();

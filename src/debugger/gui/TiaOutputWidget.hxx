@@ -34,10 +34,16 @@ class TiaOutputWidget : public Widget, public CommandSender
     ~TiaOutputWidget() override = default;
 
     void loadConfig() override;
+
     void setZoomWidget(TiaZoomWidget* w) { myZoom = w; }
 
     void saveSnapshot(int execDepth = 0, string_view execPrefix = EmptyString(),
                       bool mark = true);
+
+    string getToolTip(const Common::Point& pos) const override;
+    bool changedToolTip(const Common::Point& oldPos, const Common::Point& newPos) const override;
+
+    bool wantsFocus() const override { return false; }
 
 // Eventually, these methods will enable access to the onscreen TIA image
 // For example, clicking an area may cause an action
@@ -48,12 +54,13 @@ class TiaOutputWidget : public Widget, public CommandSender
     bool handleKeyDown(StellaKey key, StellaMod mod) override;
     bool handleKeyUp(StellaKey key, StellaMod mod) override;
 */
-    string getToolTip(const Common::Point& pos) const override;
-    bool changedToolTip(const Common::Point& oldPos, const Common::Point& newPos) const override;
+    void handleMouseDown(int x, int y, MouseButton b, int clickCount) override;
 
   protected:
     bool hasToolTip() const override { return true; }
     Common::Point getToolTipIndex(const Common::Point& pos) const;
+    void drawWidget(bool hilite) override;
+    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 
   private:
     unique_ptr<ContextMenu> myMenu;
@@ -66,12 +73,6 @@ class TiaOutputWidget : public Widget, public CommandSender
     std::array<uInt32, 320> myLineBuffer{};
 
   private:
-    void handleMouseDown(int x, int y, MouseButton b, int clickCount) override;
-    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
-
-    void drawWidget(bool hilite) override;
-    bool wantsFocus() const override { return false; }
-
     // Following constructors and assignment operators not supported
     TiaOutputWidget() = delete;
     TiaOutputWidget(const TiaOutputWidget&) = delete;

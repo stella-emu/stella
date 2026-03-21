@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-run-clang-tidy-22 -header-filter=\(.*\.hxx\) \
+time run-clang-tidy-22 -header-filter=\(.*\.hxx\) \
 -checks=*,\
 -abseil*,\
 -altera*,\
@@ -63,7 +63,6 @@ run-clang-tidy-22 -header-filter=\(.*\.hxx\) \
 -misc-no-recursion,\
 -misc-non-private-member-variables-in-classes,\
 -misc-unused-parameters,\
--misc-override-with-different-visibility,\
 -modernize-avoid-bind,\
 -modernize-avoid-c-arrays,\
 -modernize-pass-by-value,\

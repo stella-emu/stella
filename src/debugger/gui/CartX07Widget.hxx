@@ -31,9 +31,8 @@ class CartridgeX07Widget : public CartridgeEnhancedWidget
                        CartridgeX07& cart);
     ~CartridgeX07Widget() override = default;
 
-  private:
+  protected:
     string manufacturer() override { return "AtariAge / John Payson / Fred Quimby"; }
-
     string description() override;
 
   private:

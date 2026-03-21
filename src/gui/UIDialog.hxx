@@ -28,12 +28,14 @@ class UIDialog : public Dialog, public CommandSender
              GuiObject* boss, int max_w, int max_h);
     ~UIDialog() override = default;
 
-  private:
     void loadConfig() override;
     void saveConfig() override;
     void setDefaults() override;
 
+  protected:
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+
+  private:
     void handleLauncherSize();
     void handleRomViewer();
 

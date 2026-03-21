@@ -81,10 +81,9 @@ class Widget : public GuiObject
 
     void tick() override;
 
+    void draw() override;
     void setDirty() override;
     void setDirtyChain() override;
-    void draw() override;
-    void drawChain() override;
     void receivedFocus();
     void lostFocus();
     void addFocusWidget(Widget* w) override { _focusList.push_back(w); }
@@ -132,6 +131,8 @@ class Widget : public GuiObject
     virtual void loadConfig() { }
 
   protected:
+    void drawChain() override;
+
     virtual void drawWidget(bool hilite) { }
 
     virtual void receivedFocusWidget() { }
@@ -234,11 +235,11 @@ class StaticTextWidget : public Widget, public CommandSender
                 string_view placeHolder = EmptyString());
     const string& getUrl() const { return _url; }
 
-  protected:
     void handleMouseEntered() override;
     void handleMouseLeft() override;
     void handleMouseUp(int x, int y, MouseButton b, int clickCount) override;
 
+  protected:
     void drawWidget(bool hilite) override;
 
   protected:
@@ -294,13 +295,13 @@ class ButtonWidget : public StaticTextWidget
     void setBitmap(const uInt32* bitmap, int bmw, int bmh);
     void setIcon(const GUI::Icon& icon);
 
-  protected:
     bool handleMouseClicks(int x, int y, MouseButton b) override;
     void handleMouseDown(int x, int y, MouseButton b, int clickCount) override;
     void handleMouseUp(int x, int y, MouseButton b, int clickCount) override;
     void handleMouseEntered() override;
     void handleMouseLeft() override;
 
+  protected:
     void drawWidget(bool hilite) override;
 
   protected:
@@ -404,16 +405,15 @@ class SliderWidget : public ButtonWidget
     void setValueLabel(int value);
     const string& getValueLabel() const { return _valueLabel; }
     void setValueUnit(string_view valueUnit);
-
     void setTickmarkIntervals(int numIntervals);
 
-  protected:
     void handleMouseMoved(int x, int y) override;
     void handleMouseDown(int x, int y, MouseButton b, int clickCount) override;
     void handleMouseUp(int x, int y, MouseButton b, int clickCount) override;
     void handleMouseWheel(int x, int y, int direction) override;
     bool handleEvent(Event::Type event) override;
 
+  protected:
     void drawWidget(bool hilite) override;
 
     int valueToPos(int value) const;

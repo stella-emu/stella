@@ -36,11 +36,11 @@ class SnapshotDialog : public Dialog
                    const GUI::Font& font, int max_w, int max_h);
     ~SnapshotDialog() override = default;
 
-  private:
     void loadConfig() override;
     void saveConfig() override;
     void setDefaults() override;
 
+  protected:
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 
   private:

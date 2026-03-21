@@ -41,13 +41,12 @@ class Joy2BPlus : public Joystick
     Joy2BPlus(Jack jack, const Event& event, const System& system);
     ~Joy2BPlus() override = default;
 
-  public:
     /**
       Returns the name of this controller.
     */
     string name() const override { return "Joy 2B+"; }
 
-  private:
+  protected:
     /**
       Update the button pin states.
     */

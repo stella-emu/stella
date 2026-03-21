@@ -33,52 +33,52 @@ class CartridgeWF8 : public CartridgeEnhanced
 {
   friend class CartridgeWF4Widget;
 
-public:
-  /**
-    Create a new cartridge using the specified image
+  public:
+    /**
+      Create a new cartridge using the specified image
 
-    @param image     Pointer to the ROM image
-    @param size      The size of the ROM image
-    @param md5       The md5sum of the ROM image
-    @param settings  A reference to the various settings (read-only)
-    @param bsSize    The size specified by the bankswitching scheme
-  */
-  CartridgeWF8(const ByteBuffer& image, size_t size, string_view md5,
-    const Settings& settings, size_t bsSize = 8_KB);
-  ~CartridgeWF8() override = default;
+      @param image     Pointer to the ROM image
+      @param size      The size of the ROM image
+      @param md5       The md5sum of the ROM image
+      @param settings  A reference to the various settings (read-only)
+      @param bsSize    The size specified by the bankswitching scheme
+    */
+    CartridgeWF8(const ByteBuffer& image, size_t size, string_view md5,
+                 const Settings& settings, size_t bsSize = 8_KB);
+    ~CartridgeWF8() override = default;
 
-public:
-  /**
-    Get a descriptor for the device name (used in error checking).
+    /**
+      Get a descriptor for the device name (used in error checking).
 
-    @return The name of the object
-  */
-  string name() const override { return "CartridgeWF8"; }
+      @return The name of the object
+    */
+    string name() const override { return "CartridgeWF8"; }
 
-#ifdef DEBUGGER_SUPPORT
-  /**
-    Get debugger widget responsible for accessing the inner workings
-    of the cart.
-  */
-  CartDebugWidget* debugWidget(GuiObject* boss, const GUI::Font& lfont,
-    const GUI::Font& nfont, int x, int y, int w, int h) override
-  {
-    return new CartridgeWF8Widget(boss, lfont, nfont, x, y, w, h, *this);
-  }
-#endif
+  #ifdef DEBUGGER_SUPPORT
+    /**
+      Get debugger widget responsible for accessing the inner workings
+      of the cart.
+    */
+    CartDebugWidget* debugWidget(GuiObject* boss, const GUI::Font& lfont,
+                                 const GUI::Font& nfont, int x, int y,
+                                 int w, int h) override
+    {
+      return new CartridgeWF8Widget(boss, lfont, nfont, x, y, w, h, *this);
+    }
+  #endif
 
-private:
-  bool checkSwitchBank(uInt16 address, uInt8 value) override;
+    uInt16 hotspot() const override { return 0x1FF8; }
 
-  uInt16 hotspot() const override { return 0x1FF8; }
+  private:
+    bool checkSwitchBank(uInt16 address, uInt8 value) override;
 
-private:
-  // Following constructors and assignment operators not supported
-  CartridgeWF8() = delete;
-  CartridgeWF8(const CartridgeWF8&) = delete;
-  CartridgeWF8(CartridgeWF8&&) = delete;
-  CartridgeWF8& operator=(const CartridgeWF8&) = delete;
-  CartridgeWF8& operator=(CartridgeWF8&&) = delete;
+  private:
+    // Following constructors and assignment operators not supported
+    CartridgeWF8() = delete;
+    CartridgeWF8(const CartridgeWF8&) = delete;
+    CartridgeWF8(CartridgeWF8&&) = delete;
+    CartridgeWF8& operator=(const CartridgeWF8&) = delete;
+    CartridgeWF8& operator=(CartridgeWF8&&) = delete;
 };
 
 #endif

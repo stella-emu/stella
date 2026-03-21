@@ -40,12 +40,11 @@ class CartridgeARMWidget : public CartDebugWidget
                        CartridgeARM& cart);
     ~CartridgeARMWidget() override = default;
 
-  protected:
-    void addCycleWidgets(int xpos, int ypos);
-
     void saveOldState() override;
     void loadConfig() override;
 
+  protected:
+    void addCycleWidgets(int xpos, int ypos);
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 
   private:

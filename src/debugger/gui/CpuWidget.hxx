@@ -38,7 +38,7 @@ class CpuWidget : public Widget, public CommandSender
     void setOpsWidget(DataGridOpsWidget* w);
     void loadConfig() override;
 
-  private:
+  protected:
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 
   private:

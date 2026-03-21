@@ -122,7 +122,6 @@ class CartridgeMVC : public Cartridge
     */
     bool load(Serializer& in) override;
 
-  protected:
     /**
       Notification method invoked by the system when the console type
       has changed.  Simply used to change titlescreen format, content

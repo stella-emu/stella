@@ -33,6 +33,24 @@ class CartridgeDPCWidget : public CartDebugWidget
                        CartridgeDPC& cart);
     ~CartridgeDPCWidget() override = default;
 
+    void saveOldState() override;
+    void loadConfig() override;
+    string bankState() override;
+
+    // Start of functions for Cartridge RAM tab
+    uInt32 internalRamSize() override;
+    uInt32 internalRamRPort(int start) override;
+    string internalRamDescription() override;
+    const ByteArray& internalRamOld(int start, int count) override;
+    const ByteArray& internalRamCurrent(int start, int count) override;
+    void internalRamSetValue(int addr, uInt8 value) override;
+    uInt8 internalRamGetValue(int addr) override;
+    string tabLabel() override { return " DPC Display Data "; }
+    // End of functions for Cartridge RAM tab
+
+  protected:
+    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+
   private:
     struct CartState {
       ByteArray tops;
@@ -56,28 +74,9 @@ class CartridgeDPCWidget : public CartDebugWidget
     DataGridWidget* myRandom{nullptr};
 
     CartState myOldState;
-
     enum { kBankChanged = 'bkCH' };
 
   private:
-    void saveOldState() override;
-
-    void loadConfig() override;
-    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
-
-    string bankState() override;
-
-    // start of functions for Cartridge RAM tab
-    uInt32 internalRamSize() override;
-    uInt32 internalRamRPort(int start) override;
-    string internalRamDescription() override;
-    const ByteArray& internalRamOld(int start, int count) override;
-    const ByteArray& internalRamCurrent(int start, int count) override;
-    void internalRamSetValue(int addr, uInt8 value) override;
-    uInt8 internalRamGetValue(int addr) override;
-    string tabLabel() override { return " DPC Display Data "; }
-    // end of functions for Cartridge RAM tab
-
     // Following constructors and assignment operators not supported
     CartridgeDPCWidget() = delete;
     CartridgeDPCWidget(const CartridgeDPCWidget&) = delete;

@@ -26,16 +26,14 @@ class CartridgeJANEWidget : public CartridgeEnhancedWidget
 {
   public:
     CartridgeJANEWidget(GuiObject* boss, const GUI::Font& lfont,
-                      const GUI::Font& nfont,
-                      int x, int y, int w, int h,
-                      CartridgeJANE& cart);
+                        const GUI::Font& nfont,
+                        int x, int y, int w, int h,
+                        CartridgeJANE& cart);
     ~CartridgeJANEWidget() override = default;
 
-  private:
+  protected:
     string manufacturer() override { return "Coleco"; }
-
     string description() override;
-
     string hotspotStr(int bank, int seg = 0, bool prefix = false) override;
 
   private:

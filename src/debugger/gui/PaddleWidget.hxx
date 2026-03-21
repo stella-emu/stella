@@ -30,6 +30,11 @@ class PaddleWidget : public ControllerWidget
                  bool embedded = false, bool second = false);
     ~PaddleWidget() override = default;
 
+    void loadConfig() override;
+
+  protected:
+    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+
   private:
     enum { kP0Changed = 'P0ch', kP1Changed = 'P1ch',
            kP0Fire = 'P0fr', kP1Fire = 'P1fr' };
@@ -38,9 +43,6 @@ class PaddleWidget : public ControllerWidget
     CheckboxWidget *myP0Fire{nullptr}, *myP1Fire{nullptr};
 
   private:
-    void loadConfig() override;
-    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
-
     // Following constructors and assignment operators not supported
     PaddleWidget() = delete;
     PaddleWidget(const PaddleWidget&) = delete;

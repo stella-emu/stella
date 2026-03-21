@@ -31,15 +31,11 @@ class CartridgeE0Widget : public CartridgeEnhancedWidget
                       CartridgeE0& cart);
     ~CartridgeE0Widget() override = default;
 
-  private:
+  protected:
     string manufacturer() override { return "Parker Brothers"; }
-
     string description() override;
-
     string romDescription() override;
-
     string hotspotStr(int bank, int segment, bool noBrackets = false) override;
-
     uInt16 bankSegs() override { return 3; }
 
   private:

@@ -26,20 +26,16 @@ class Cartridge03E0Widget : public CartridgeEnhancedWidget
 {
   public:
     Cartridge03E0Widget(GuiObject* boss, const GUI::Font& lfont,
-      const GUI::Font& nfont,
-      int x, int y, int w, int h,
-      Cartridge03E0& cart);
+                        const GUI::Font& nfont,
+                        int x, int y, int w, int h,
+                        Cartridge03E0& cart);
     ~Cartridge03E0Widget() override = default;
 
-  private:
+  protected:
     string manufacturer() override { return "Parker Brothers (Brazil Pirate)"; }
-
     string description() override;
-
     string romDescription() override;
-
     string hotspotStr(int bank, int segment, bool noBrackets = false) override;
-
     uInt16 bankSegs() override { return 3; }
 
   private:

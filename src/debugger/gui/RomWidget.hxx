@@ -39,15 +39,17 @@ class RomWidget : public Widget, public CommandSender
               int x, int y, int w, int h);
     ~RomWidget() override = default;
 
+    void loadConfig() override;
+
     void invalidate(bool forcereload = true)
     { myListIsDirty = true; if(forcereload) loadConfig(); }
 
     void scrollTo(int line);
 
-  private:
+  protected:
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
-    void loadConfig() override;
 
+  private:
     void toggleBreak(int disasm_line);
     void setPC(int disasm_line);
     void runtoPC(int disasm_line);

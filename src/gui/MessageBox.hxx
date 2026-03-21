@@ -59,9 +59,11 @@ class MessageBox : public Dialog, public CommandSender
     /** Place the input dialog onscreen and center it */
     void show() { open(); }
 
+  protected:
+    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+
   private:
     void addText(const GUI::Font& font, const StringList& text);
-    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 
   private:
     int myOkCmd{0};

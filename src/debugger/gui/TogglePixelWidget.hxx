@@ -41,13 +41,14 @@ class TogglePixelWidget : public ToggleWidget
 
     void setCrossed(bool enable);
 
+  protected:
+    void drawWidget(bool hilite) override;
+
   private:
     ColorId _pixelColor{kNone}, _backgroundColor{kDlgColor};
     bool _crossBits{false};
 
   private:
-    void drawWidget(bool hilite) override;
-
     // Following constructors and assignment operators not supported
     TogglePixelWidget() = delete;
     TogglePixelWidget(const TogglePixelWidget&) = delete;

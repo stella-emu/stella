@@ -46,6 +46,11 @@ class FrameLayoutDetector: public AbstractFrameManager
                                string_view name = EmptyString()) const;
 
     /**
+     * Called when a pixel is rendered.
+    */
+    void pixelColor(uInt8 color) override;
+
+    /**
      * Simulate some input to pass a potential title screen.
     */
     static void simulateInput(M6532& riot, EventHandler& eventHandler,
@@ -66,11 +71,6 @@ class FrameLayoutDetector: public AbstractFrameManager
      * Hook into line changes.
      */
     void onNextLine() override;
-
-    /**
-     * Called when a pixel is rendered.
-    */
-    void pixelColor(uInt8 color) override;
 
   private:
     /**

@@ -28,6 +28,11 @@ class Joy2BPlusWidget : public ControllerWidget
                    Controller& controller);
     ~Joy2BPlusWidget() override = default;
 
+    void loadConfig() override;
+
+  protected:
+    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+
   private:
     enum: uInt8 { kJUp = 0, kJDown, kJLeft, kJRight, kJButtonB, kJButtonC, kJButton3 };
 
@@ -39,9 +44,6 @@ class Joy2BPlusWidget : public ControllerWidget
     }};
 
   private:
-    void loadConfig() override;
-    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
-
     // Following constructors and assignment operators not supported
     Joy2BPlusWidget() = delete;
     Joy2BPlusWidget(const Joy2BPlusWidget&) = delete;

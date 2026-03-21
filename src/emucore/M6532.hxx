@@ -132,35 +132,6 @@ class M6532 : public Device
 
   #ifdef DEBUGGER_SUPPORT
     /**
-      Query the access counters
-
-      @return  The access counters as comma separated string
-    */
-    string getAccessCounters() const override;
-
-    /**
-      Reset the timer read CPU cycle counter
-    */
-    void resetTimReadCycles() { myTimReadCycles = 0; }
-  #endif
-
-  private:
-
-    void setTimerRegister(uInt8 value, uInt8 interval);
-    void setPinState(bool swcha);
-
-  #ifdef DEBUGGER_SUPPORT
-    // The following are used by the debugger to read INTIM/TIMINT
-    // We need separate methods to do this, so the state of the system
-    // isn't changed
-    uInt8 intim();
-    uInt8 timint();
-    Int32 intimClocks();
-    uInt32 timerClocks() const;
-
-    void createAccessBases();
-
-    /**
       Query the given address type for the associated access flags.
 
       @param address  The address to query
@@ -180,6 +151,34 @@ class M6532 : public Device
       @param address The address to modify
     */
     void increaseAccessCounter(uInt16 address, bool isWrite) override;
+
+    /**
+      Query the access counters
+
+      @return  The access counters as comma separated string
+    */
+    string getAccessCounters() const override;
+
+    /**
+      Reset the timer read CPU cycle counter
+    */
+    void resetTimReadCycles() { myTimReadCycles = 0; }
+  #endif
+
+  private:
+    void setTimerRegister(uInt8 value, uInt8 interval);
+    void setPinState(bool swcha);
+
+  #ifdef DEBUGGER_SUPPORT
+    // The following are used by the debugger to read INTIM/TIMINT
+    // We need separate methods to do this, so the state of the system
+    // isn't changed
+    uInt8 intim();
+    uInt8 timint();
+    Int32 intimClocks();
+    uInt32 timerClocks() const;
+
+    void createAccessBases();
   #endif // DEBUGGER_SUPPORT
 
   private:

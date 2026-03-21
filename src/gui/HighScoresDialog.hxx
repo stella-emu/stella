@@ -50,9 +50,10 @@ class HighScoresDialog : public Dialog
                      int max_w, int max_h, AppMode mode);
     ~HighScoresDialog() override;
 
-  protected:
     void loadConfig() override;
     void saveConfig() override;
+
+  protected:
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 
     void updateWidgets(bool init = false);

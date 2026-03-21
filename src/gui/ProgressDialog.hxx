@@ -40,6 +40,9 @@ class ProgressDialog : public Dialog
     void incProgress();
     bool isCancelled() const { return myIsCancelled; }
 
+  protected:
+    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+
   private:
     StaticTextWidget* myMessage{nullptr};
     SliderWidget*     mySlider{nullptr};
@@ -48,9 +51,6 @@ class ProgressDialog : public Dialog
     int myProgress{0};
     uInt64 myLastTick{0};
     bool myIsCancelled{false};
-
-  private:
-    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 
   private:
     // Following constructors and assignment operators not supported

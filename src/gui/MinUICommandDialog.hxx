@@ -31,8 +31,9 @@ class MinUICommandDialog : public Dialog
     MinUICommandDialog(OSystem& osystem, DialogContainer& parent);
     ~MinUICommandDialog() override = default;
 
-  protected:
     void loadConfig() override;
+
+  protected:
     void handleKeyDown(StellaKey key, StellaMod mod, bool repeated) override;
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
     void updateSlot(int slot);

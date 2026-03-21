@@ -34,11 +34,11 @@ class ComboDialog : public Dialog
     /** Place the dialog onscreen and center it */
     void show(Event::Type event, string_view name);
 
-  private:
     void loadConfig() override;
     void saveConfig() override;
     void setDefaults() override;
 
+  protected:
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 
   private:

@@ -31,12 +31,11 @@ class CartridgeGLWidget : public CartridgeEnhancedWidget
                       CartridgeGL& cart);
     ~CartridgeGLWidget() override = default;
 
-  private:
-    string manufacturer() override { return "Control Video Corporation (CVC)"; }
-
-    string description() override;
-
     string internalRamDescription() override;
+
+  protected:
+    string manufacturer() override { return "Control Video Corporation (CVC)"; }
+    string description() override;
 
   private:
     // Following constructors and assignment operators not supported

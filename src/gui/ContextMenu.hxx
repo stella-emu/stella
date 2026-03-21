@@ -88,7 +88,9 @@ class ContextMenu : public Dialog, public CommandSender
     bool sendSelectionFirst();
     bool sendSelectionLast();
 
-  private:
+    void drawDialog() override;
+
+  protected:
     void handleMouseDown(int x, int y, MouseButton b, int clickCount) override;
     void handleMouseMoved(int x, int y) override;
     bool handleMouseClicks(int x, int y, MouseButton b) override;
@@ -99,8 +101,8 @@ class ContextMenu : public Dialog, public CommandSender
     bool handleJoyHat(int stick, int hat, JoyHatDir hdir, int button) override;
     void handleEvent(Event::Type e) override;
 
+  private:
     void setArrows();
-    void drawDialog() override;
 
     void recalc(const Common::Rect& image);
 

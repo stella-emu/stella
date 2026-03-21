@@ -40,13 +40,14 @@ class GameInfoDialog : public Dialog, public CommandSender
                    const GUI::Font& font, GuiObject* boss, int max_w, int max_h);
     ~GameInfoDialog() override;
 
-  private:
     void loadConfig() override;
     void saveConfig() override;
-    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
-
     void setDefaults() override;
 
+  protected:
+    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+
+  private:
     void addEmulationTab();
     void addConsoleTab();
     void addControllersTab();

@@ -49,7 +49,6 @@ class CartDebugWidget : public Widget, public CommandSender
     virtual void saveOldState() { }
 
     void loadConfig() override;
-    void handleCommand(CommandSender* sender, int cmd, int data, int id) override { }
 
     // Query internal state of the cart (usually just bankswitching info)
     virtual string bankState() { return "0 (non-bankswitched)"; }
@@ -65,6 +64,9 @@ class CartDebugWidget : public Widget, public CommandSender
     virtual uInt8 internalRamGetValue(int addr) { return 0; }
     virtual string internalRamLabel(int addr) { return "Not available/applicable"; }
     virtual string tabLabel() { return " Cartridge RAM "; }
+
+  protected:
+    void handleCommand(CommandSender* sender, int cmd, int data, int id) override { }
 
   protected:
     // Arrays used to hold current and previous internal RAM values

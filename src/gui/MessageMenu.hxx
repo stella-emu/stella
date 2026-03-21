@@ -43,8 +43,9 @@ class MessageMenu : public DialogContainer
                            bool yesNo = false);
     bool confirmed();
 
-  private:
     Dialog* baseDialog() override;
+
+  private:
     MessageDialog* myMessageDialog{nullptr};
 
   private:

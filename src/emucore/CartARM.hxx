@@ -40,7 +40,6 @@ class CartridgeARM : public Cartridge
     */
     void reset() override;
 
-  protected:
     /**
       Notification method invoked by the system when the console type
       has changed.  We need this to inform the Thumbulator that the
@@ -67,6 +66,17 @@ class CartridgeARM : public Cartridge
     bool load(Serializer& in) override;
 
     /**
+      Set the callback for displaying messages
+    */
+    void setMessageCallback(const messageCallback& callback) override
+    {
+      Cartridge::setMessageCallback(callback);
+      if(myPlusROM->isValid())
+        myPlusROM->setMessageCallback(myMsgCallback);
+    }
+
+  protected:
+    /**
       Sets the initial state of the MAM mode
     */
     virtual void setInitialState();
@@ -90,16 +100,6 @@ class CartridgeARM : public Cartridge
     void lockMamMode(bool lock) { myThumbEmulator->lockMamMode(lock); }
     void setMamMode(Thumbulator::MamModeType mamMode) { myThumbEmulator->setMamMode(mamMode); }
     Thumbulator::MamModeType mamMode() const { return myThumbEmulator->mamMode(); }
-
-    /**
-      Set the callback for displaying messages
-    */
-    void setMessageCallback(const messageCallback& callback) override
-    {
-      Cartridge::setMessageCallback(callback);
-      if(myPlusROM->isValid())
-        myPlusROM->setMessageCallback(myMsgCallback);
-    }
 
   protected:
     // Pointer to the Thumb ARM emulator object

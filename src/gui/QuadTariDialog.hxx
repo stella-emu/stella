@@ -36,13 +36,14 @@ class QuadTariDialog: public Dialog
     /** Place the dialog onscreen */
     void show(bool enableLeft, bool enableRight);
 
-  private:
     void loadConfig() override;
     void saveConfig() override;
-    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
-
     void setDefaults() override;
 
+  protected:
+    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+
+  private:
     void loadControllerProperties(const Properties& props);
     void defineController(const Properties& props, PropType key,
       Controller::Jack jack, PopUpWidget* popup, StaticTextWidget* label, bool first = true);

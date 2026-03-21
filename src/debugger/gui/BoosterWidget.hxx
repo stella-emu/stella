@@ -28,6 +28,11 @@ class BoosterWidget : public ControllerWidget
                    Controller& controller);
     ~BoosterWidget() override = default;
 
+    void loadConfig() override;
+
+  protected:
+    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+
   private:
     enum: uInt8 {
       kJUp = 0, kJDown, kJLeft, kJRight, kJFire, kJBooster, kJTrigger
@@ -41,9 +46,6 @@ class BoosterWidget : public ControllerWidget
     }};
 
   private:
-    void loadConfig() override;
-    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
-
     // Following constructors and assignment operators not supported
     BoosterWidget() = delete;
     BoosterWidget(const BoosterWidget&) = delete;

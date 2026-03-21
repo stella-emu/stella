@@ -32,6 +32,12 @@ class Cartridge4A50Widget : public CartDebugWidget
                         Cartridge4A50& cart);
     ~Cartridge4A50Widget() override = default;
 
+    void loadConfig() override;
+    string bankState() override;
+
+  protected:
+    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+
   private:
     Cartridge4A50& myCart;
     PopUpWidget *myROMLower{nullptr}, *myRAMLower{nullptr};
@@ -48,11 +54,6 @@ class Cartridge4A50Widget : public CartDebugWidget
     };
 
   private:
-    void loadConfig() override;
-    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
-
-    string bankState() override;
-
     // Following constructors and assignment operators not supported
     Cartridge4A50Widget() = delete;
     Cartridge4A50Widget(const Cartridge4A50Widget&) = delete;

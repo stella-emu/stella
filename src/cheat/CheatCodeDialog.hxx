@@ -38,10 +38,11 @@ class CheatCodeDialog : public Dialog
                    const GUI::Font& font);
     ~CheatCodeDialog() override;
 
-  protected:
-    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
     void loadConfig() override;
     void saveConfig() override;
+
+  protected:
+    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 
   private:
     void addCheat();

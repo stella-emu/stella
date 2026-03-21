@@ -31,11 +31,9 @@ class Cartridge0FA0Widget : public CartridgeEnhancedWidget
                         Cartridge0FA0& cart);
     ~Cartridge0FA0Widget() override = default;
 
-  private:
+  protected:
     string manufacturer() override { return "Fotomania"; }
-
     string description() override;
-
     string hotspotStr(int bank, int seg, bool prefix = false) override;
 
   private:

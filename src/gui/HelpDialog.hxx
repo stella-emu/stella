@@ -33,11 +33,14 @@ class HelpDialog : public Dialog
     HelpDialog(OSystem& osystem, DialogContainer& parent, const GUI::Font& font);
     ~HelpDialog() override = default;
 
-  private:
+    void loadConfig() override { displayInfo(); }
+
+  protected:
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+
+  private:
     void updateStrings(uInt8 page, uInt8 lines, string& title);
     void displayInfo();
-    void loadConfig() override { displayInfo(); }
 
   private:
     static constexpr uInt32 LINES_PER_PAGE = 10;
@@ -54,10 +57,7 @@ class HelpDialog : public Dialog
     uInt8 myPage{1};
     uInt8 myNumPages{5};
 
-    enum {
-      kUpdateCmd = 'upCm'
-    };
-
+    enum { kUpdateCmd = 'upCm' };
 
   private:
     // Following constructors and assignment operators not supported

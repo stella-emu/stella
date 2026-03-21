@@ -31,9 +31,10 @@ class PlusRomsSetupDialog: public InputTextDialog
     PlusRomsSetupDialog(OSystem& osystem, DialogContainer& parent, const GUI::Font& font);
     ~PlusRomsSetupDialog() override = default;
 
-  protected:
     void loadConfig() override;
     void saveConfig() override;
+
+  protected:
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 
   private:

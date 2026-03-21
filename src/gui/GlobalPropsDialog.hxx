@@ -33,14 +33,15 @@ class GlobalPropsDialog : public Dialog, public CommandSender
     GlobalPropsDialog(GuiObject* boss, const GUI::Font& font);
     ~GlobalPropsDialog() override = default;
 
-  private:
-    int addHoldWidgets(const GUI::Font& font, int x, int y, WidgetArray& wid);
-
     void loadConfig() override;
     void saveConfig() override;
     void setDefaults() override;
 
+  protected:
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+
+  private:
+    int addHoldWidgets(const GUI::Font& font, int x, int y, WidgetArray& wid);
 
   private:
     enum: uInt8 {

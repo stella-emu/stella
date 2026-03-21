@@ -30,8 +30,9 @@ class CommandDialog : public Dialog
     CommandDialog(OSystem& osystem, DialogContainer& parent);
     ~CommandDialog() override = default;
 
-  protected:
     void loadConfig() override;
+
+  protected:
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
     void updateSlot(int slot);
     void updateTVFormat();

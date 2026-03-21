@@ -30,6 +30,11 @@ class PointingDeviceWidget : public ControllerWidget
                          Controller& controller);
     ~PointingDeviceWidget() override = default;
 
+    void loadConfig() override;
+
+  protected:
+    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+
   private:
     enum {
       kTBLeft = 'TWlf',
@@ -46,9 +51,6 @@ class PointingDeviceWidget : public ControllerWidget
 
   private:
     virtual uInt8 getGrayCodeTable(int index, int direction) const = 0;
-
-    void loadConfig() override;
-    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 
     void setGrayCodeH();
     void setGrayCodeV();

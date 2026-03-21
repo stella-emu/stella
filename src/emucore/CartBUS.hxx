@@ -191,7 +191,7 @@ class CartridgeBUS : public CartridgeARM
     */
     bool poke(uInt16 address, uInt8 value) override;
 
-  private:
+  protected:
     /**
       Checks if startup bank randomization is enabled.  For this scheme,
       randomization is not supported, since the ARM code is always in a
@@ -204,6 +204,7 @@ class CartridgeBUS : public CartridgeARM
     */
     void setInitialState() override;
 
+  private:
     /**
       Updates any data fetchers in music mode based on the number of
       CPU cycles which have passed since the last update.

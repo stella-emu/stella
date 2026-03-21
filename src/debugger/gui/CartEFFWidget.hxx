@@ -31,7 +31,7 @@ class CartridgeEFFWidget : public CartridgeEnhancedWidget
                        CartridgeEFF& cart);
     ~CartridgeEFFWidget() override = default;
 
-  private:
+  protected:
     string manufacturer() override { return "Fred Quimby/AtariAge"; }
     string description() override;
     int descriptionLines() override;

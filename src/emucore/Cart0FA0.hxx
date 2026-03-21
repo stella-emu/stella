@@ -98,17 +98,17 @@ class Cartridge0FA0 : public CartridgeEnhanced
     */
     bool poke(uInt16 address, uInt8 value) override;
 
-  private:
+    uInt16 hotspot() const override { return 0x06a0; }
+
+  protected:
     /**
       Checks if startup bank randomization is enabled.  For this scheme,
       randomization is not supported (see above).
     */
     bool randomStartBank() const override { return false; }
 
+  private:
     bool checkSwitchBank(uInt16 address, uInt8) override;
-
-    uInt16 hotspot() const override { return 0x06a0; }
-
     uInt16 getStartBank() const override { return 1; }
 
   private:

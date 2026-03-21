@@ -31,9 +31,8 @@ class Cartridge4KSCWidget : public CartridgeEnhancedWidget
                       Cartridge4KSC& cart);
     ~Cartridge4KSCWidget() override = default;
 
-  private:
+  protected:
     string manufacturer() override { return "homebrew intermediate format"; }
-
     string description() override;
 
   private:

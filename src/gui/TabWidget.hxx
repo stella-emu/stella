@@ -62,17 +62,18 @@ class TabWidget : public Widget, public CommandSender
 
     void loadConfig() override;
 
-  protected:
     void handleMouseDown(int x, int y, MouseButton b, int clickCount) override;
     void handleMouseEntered() override {}
     void handleMouseLeft() override {}
 
-    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
     bool handleEvent(Event::Type event) override;
 
+    int getChildY() const override;
+
+  protected:
     void drawWidget(bool hilite) override;
     Widget* findWidget(int x, int y) override;
-    int getChildY() const override;
+    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 
   private:
     struct Tab {

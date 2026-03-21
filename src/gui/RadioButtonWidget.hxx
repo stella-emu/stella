@@ -37,12 +37,11 @@ class RadioButtonWidget : public CheckboxWidget
 
     void handleMouseUp(int x, int y, MouseButton b, int clickCount) override;
     void setState(bool state, bool send = true) override;
+    void setFill(FillType type) override;
 
   protected:
-    void setFill(FillType type) override;
     void drawWidget(bool hilite) override;
-    static uInt32 buttonSize(const GUI::Font& font)
-    {
+    static uInt32 buttonSize(const GUI::Font& font) {
       return font.getFontHeight() < 24 ? 14 : 22; // box is square
     }
 
@@ -76,12 +75,12 @@ class RadioButtonGroup
     WidgetArray myWidgets;
     uInt32 mySelected{0};
 
-private:
-  // Following constructors and assignment operators not supported
-  RadioButtonGroup(const RadioButtonGroup&) = delete;
-  RadioButtonGroup(RadioButtonGroup&&) = delete;
-  RadioButtonGroup& operator=(const RadioButtonGroup&) = delete;
-  RadioButtonGroup& operator=(RadioButtonGroup&&) = delete;
+  private:
+    // Following constructors and assignment operators not supported
+    RadioButtonGroup(const RadioButtonGroup&) = delete;
+    RadioButtonGroup(RadioButtonGroup&&) = delete;
+    RadioButtonGroup& operator=(const RadioButtonGroup&) = delete;
+    RadioButtonGroup& operator=(RadioButtonGroup&&) = delete;
 };
 
 #endif

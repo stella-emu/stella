@@ -46,6 +46,9 @@ class InputTextDialog : public Dialog, public CommandSender
     /** Show input dialog onscreen at the specified coordinates */
     void show(uInt32 x, uInt32 y, const Common::Rect& bossRect);
 
+    /** This dialog uses its own positioning, so we override Dialog::center() */
+    void setPosition() override;
+
     const string& getResult(int idx = 0);
 
     void setText(string_view str, int idx = 0);
@@ -63,9 +66,6 @@ class InputTextDialog : public Dialog, public CommandSender
     void initialize(const GUI::Font& lfont, const GUI::Font& nfont,
                     const StringList& labels, int widthChars = 39);
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
-
-    /** This dialog uses its own positioning, so we override Dialog::center() */
-    void setPosition() override;
 
   private:
     vector<StaticTextWidget*> myLabel;

@@ -31,11 +31,9 @@ class Cartridge3FWidget : public CartridgeEnhancedWidget
                       Cartridge3F& cart);
     ~Cartridge3FWidget() override = default;
 
-  private:
+  protected:
     string manufacturer() override { return "TigerVision"; }
-
     string description() override;
-
     uInt16 bankSegs() override { return 1; }
 
   private:

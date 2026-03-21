@@ -39,7 +39,7 @@ class CartRamWidget : public Widget, public CommandSender
     void loadConfig() override;
     void setOpsWidget(DataGridOpsWidget* w);
 
-  private:
+  protected:
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 
   protected:

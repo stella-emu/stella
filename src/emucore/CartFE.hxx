@@ -155,14 +155,14 @@ class CartridgeFE : public CartridgeEnhanced
     */
     bool poke(uInt16 address, uInt8 value) override;
 
-  protected:
+    uInt16 hotspot() const override { return 0x01FE; }
+
+  private:
     /**
       Perform bankswitch when necessary, by monitoring for $01FE
       on the address bus and getting the bank number from the data bus.
     */
     bool checkSwitchBank(uInt16 address, uInt8 value) override;
-
-    uInt16 hotspot() const override { return 0x01FE; }
 
   private:
     // Whether previous address by peek/poke equals $01FE (hotspot)

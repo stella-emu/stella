@@ -33,8 +33,9 @@ class OptionsDialog : public Dialog
                   int max_w, int max_h, AppMode mode);
     ~OptionsDialog() override;
 
-  private:
     void loadConfig() override;
+
+  protected:
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 
   private:

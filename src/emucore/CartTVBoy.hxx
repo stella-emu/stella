@@ -96,10 +96,10 @@ class CartridgeTVBoy : public CartridgeEnhanced
     }
   #endif
 
+    uInt16 hotspot() const override { return 0x1800; }
+
   private:
     bool checkSwitchBank(uInt16 address, uInt8 value) override;
-
-    uInt16 hotspot() const override { return 0x1800; }
 
   private:
     // Indicates whether banking has been disabled due to a bankswitch

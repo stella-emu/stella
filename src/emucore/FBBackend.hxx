@@ -42,6 +42,16 @@ class FBBackend
     FBBackend() = default;
     virtual ~FBBackend() = default;
 
+    /**
+      Transform from window to renderer coordinates, x direction
+     */
+    virtual int scaleX(int x) const = 0;
+
+    /**
+      Transform from window to renderer coordinates, y direction
+     */
+    virtual int scaleY(int y) const = 0;
+
   protected:
     /**
       This method is called to query and initialize the video hardware
@@ -72,16 +82,6 @@ class FBBackend
       Clear the framebuffer.
     */
     virtual void clear() = 0;
-
-    /**
-      Transform from window to renderer coordinates, x direction
-     */
-    virtual int scaleX(int x) const = 0;
-
-    /**
-      Transform from window to renderer coordinates, y direction
-     */
-    virtual int scaleY(int y) const = 0;
 
     /**
       Updates window title.

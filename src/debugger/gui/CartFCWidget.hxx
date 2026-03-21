@@ -31,11 +31,9 @@ class CartridgeFCWidget : public CartridgeEnhancedWidget
                       CartridgeFC& cart);
     ~CartridgeFCWidget() override = default;
 
-  private:
+  protected:
     string manufacturer() override { return "Amiga Corp."; }
-
     string description() override;
-
     string hotspotStr(int bank, int seg = 0, bool prefix = false) override;
 
   private:

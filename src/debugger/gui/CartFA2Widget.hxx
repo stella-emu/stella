@@ -32,6 +32,11 @@ class CartridgeFA2Widget : public CartridgeEnhancedWidget
                        CartridgeFA2& cart);
     ~CartridgeFA2Widget() override = default;
 
+  protected:
+    string manufacturer() override { return "Chris D. Walton (Star Castle 2600 Arcade)"; }
+    string description() override;
+    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+
   private:
     CartridgeFA2& myCartFA2;
 
@@ -42,14 +47,6 @@ class CartridgeFA2Widget : public CartridgeEnhancedWidget
       kFlashLoad   = 'flLD',
       kFlashSave   = 'flSV'
     };
-
-  private:
-    string manufacturer() override { return "Chris D. Walton (Star Castle 2600 Arcade)"; }
-
-    string description() override;
-
-  private:
-    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 
   private:
     // Following constructors and assignment operators not supported

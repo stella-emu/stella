@@ -65,15 +65,15 @@ class PopUpWidget : public EditableWidget
     const Variant& getSelectedTag() const;
 
     bool wantsFocus() const override { return true; }
-    static int dropDownWidth(const GUI::Font& font)
-    {
+    static int dropDownWidth(const GUI::Font& font) {
       return font.getFontHeight() < 24 ? (9 * 2 + 3) : (13 * 2 + 7);
     }
 
-  protected:
     void handleMouseDown(int x, int y, MouseButton b, int clickCount) override;
     void handleMouseWheel(int x, int y, int direction) override;
     bool handleEvent(Event::Type e) override;
+
+  protected:
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
     int caretOfs() const override { return _editScrollOffset - _labelWidth; }
 

@@ -23,9 +23,9 @@
 #include "bspf.hxx"
 #include "JitterEmulation.hxx"
 
-class FrameManager: public AbstractFrameManager {
+class FrameManager: public AbstractFrameManager
+{
   public:
-
     enum Metrics: uInt32 {  // NOLINT: use 32-bit, even though 16-bit is sufficient
       vblankNTSC = 37,
       vblankPAL = 45,
@@ -42,13 +42,10 @@ class FrameManager: public AbstractFrameManager {
       ystartPAL = 32
     };
 
-
   public:
-
     FrameManager();
     ~FrameManager() override = default;
 
-  public:
     void setJitterSensitivity(uInt8 sensitivity) override { myJitterEmulation.setSensitivity(sensitivity); }
 
     void setJitterRecovery(uInt8 factor) override { myJitterEmulation.setRecovery(factor); }
@@ -83,6 +80,7 @@ class FrameManager: public AbstractFrameManager {
 
     void setLayout(FrameLayout mode) override { layout(mode); }
 
+  protected:
     void onSetVblank(uInt64 cycles) override;
 
     void onSetVsync(uInt64 cycles) override;
@@ -107,7 +105,6 @@ class FrameManager: public AbstractFrameManager {
     };
 
   private:
-
     void setState(State state);
 
     void updateIsRendering();
@@ -115,7 +112,6 @@ class FrameManager: public AbstractFrameManager {
     void recalculateMetrics();
 
   private:
-
     State myState{State::waitForVsyncStart};
     uInt32 myLineInState{0};
     uInt32 myVsyncLineCount{0};
@@ -138,7 +134,6 @@ class FrameManager: public AbstractFrameManager {
     JitterEmulation myJitterEmulation;
 
   private:
-
     FrameManager(const FrameManager&) = delete;
     FrameManager(FrameManager&&) = delete;
     FrameManager& operator=(const FrameManager&) = delete;

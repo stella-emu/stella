@@ -47,7 +47,7 @@ class NavigationWidget : public Widget
             void setPath(string_view path) { myPath = path; }
             const string& getPath() const  { return myPath; }
 
-          private:
+          protected:
             void drawWidget(bool hilite) override;
 
           private:
@@ -94,7 +94,7 @@ class NavigationWidget : public Widget
     void setVisible(bool isVisible);
     void updateUI();
 
-  private:
+  protected:
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 
   private:
@@ -106,7 +106,6 @@ class NavigationWidget : public Widget
     ButtonWidget*     myUpButton{nullptr};
     EditTextWidget*   myDir{nullptr};
     PathWidget*       myPath{nullptr};
-
     FileListWidget*   myList{nullptr};
 
   private:

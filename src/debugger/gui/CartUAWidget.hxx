@@ -31,11 +31,9 @@ class CartridgeUAWidget : public CartridgeEnhancedWidget
                       CartridgeUA& cart, bool swapHotspots);
     ~CartridgeUAWidget() override = default;
 
-  private:
+  protected:
     string manufacturer() override { return "UA Limited"; }
-
     string description() override;
-
     string hotspotStr(int bank, int seg, bool prefix = false) override;
 
   private:

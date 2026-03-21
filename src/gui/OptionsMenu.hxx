@@ -38,8 +38,9 @@ class OptionsMenu : public DialogContainer
     explicit OptionsMenu(OSystem& osystem);
     ~OptionsMenu() override;
 
-  private:
     Dialog* baseDialog() override;
+
+  private:
     StellaSettingsDialog* stellaSettingDialog{nullptr};
     OptionsDialog* optionsDialog{nullptr};
 

@@ -44,7 +44,18 @@ class EventMappingWidget : public Widget, public CommandSender
 
     bool remapMode() const { return myRemapStatus; }
 
+    void loadConfig() override;
     void setDefaults();
+
+    bool handleKeyDown(StellaKey key, StellaMod mod) override;
+    bool handleKeyUp(StellaKey key, StellaMod mod) override;
+    void handleJoyDown(int stick, int button, bool longPress = false) override;
+    void handleJoyUp(int stick, int button) override;
+    void handleJoyAxis(int stick, JoyAxis axis, JoyDir adir, int button) override;
+    bool handleJoyHat(int stick, int hat, JoyHatDir hdir, int button) override;
+
+  protected:
+    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 
   private:
     enum {
@@ -56,17 +67,7 @@ class EventMappingWidget : public Widget, public CommandSender
       kComboCmd    = 'cmbo'
     };
 
-    bool handleKeyDown(StellaKey key, StellaMod mod) override;
-    bool handleKeyUp(StellaKey key, StellaMod mod) override;
-    void handleJoyDown(int stick, int button, bool longPress = false) override;
-    void handleJoyUp(int stick, int button) override;
-    void handleJoyAxis(int stick, JoyAxis axis, JoyDir adir, int button) override;
-    bool handleJoyHat(int stick, int hat, JoyHatDir hdir, int button) override;
-
-    void loadConfig() override;
     void saveConfig();
-
-    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 
     void updateActions();
     void startRemapping();

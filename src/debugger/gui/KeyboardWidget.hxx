@@ -28,6 +28,11 @@ class KeyboardWidget : public ControllerWidget
                    Controller& controller);
     ~KeyboardWidget() override = default;
 
+    void loadConfig() override;
+
+  protected:
+    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+
   private:
     std::array<CheckboxWidget*, 12> myBox{nullptr};
     const Event::Type* myEvent{nullptr};
@@ -46,9 +51,6 @@ class KeyboardWidget : public ControllerWidget
     }};
 
   private:
-    void loadConfig() override;
-    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
-
     // Following constructors and assignment operators not supported
     KeyboardWidget() = delete;
     KeyboardWidget(const KeyboardWidget&) = delete;

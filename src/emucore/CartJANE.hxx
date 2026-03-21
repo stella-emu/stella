@@ -24,7 +24,7 @@
 #endif
 
 /**
-  Cartridge class used for the Tarzan prototype. There are four 4K banks, 
+  Cartridge class used for the Tarzan prototype. There are four 4K banks,
   accessible by read at $1FF0/1/8/9.
 
   @author  Thomas Jentzsch
@@ -33,54 +33,54 @@ class CartridgeJANE : public CartridgeEnhanced
 {
   friend class CartridgeJANEWidget;
 
-public:
-  /**
-    Create a new cartridge using the specified image
+  public:
+    /**
+      Create a new cartridge using the specified image
 
-    @param image     Pointer to the ROM image
-    @param size      The size of the ROM image
-    @param md5       The md5sum of the ROM image
-    @param settings  A reference to the various settings (read-only)
-    @param bsSize    The size specified by the bankswitching scheme
-  */
-  CartridgeJANE(const ByteBuffer& image, size_t size, string_view md5,
-    const Settings& settings, size_t bsSize = 16_KB);
-  ~CartridgeJANE() override = default;
+      @param image     Pointer to the ROM image
+      @param size      The size of the ROM image
+      @param md5       The md5sum of the ROM image
+      @param settings  A reference to the various settings (read-only)
+      @param bsSize    The size specified by the bankswitching scheme
+    */
+    CartridgeJANE(const ByteBuffer& image, size_t size, string_view md5,
+                  const Settings& settings, size_t bsSize = 16_KB);
+    ~CartridgeJANE() override = default;
 
-public:
-  /**
-    Get a descriptor for the device name (used in error checking).
+  public:
+    /**
+      Get a descriptor for the device name (used in error checking).
 
-    @return The name of the object
-  */
-  string name() const override { return "CartridgeJANE"; }
+      @return The name of the object
+    */
+    string name() const override { return "CartridgeJANE"; }
 
-#ifdef DEBUGGER_SUPPORT
-  /**
-    Get debugger widget responsible for accessing the inner workings
-    of the cart.
-  */
-  CartDebugWidget* debugWidget(GuiObject* boss, const GUI::Font& lfont,
-    const GUI::Font& nfont, int x, int y, int w, int h) override
-  {
-    return new CartridgeJANEWidget(boss, lfont, nfont, x, y, w, h, *this);
-  }
-#endif
+  #ifdef DEBUGGER_SUPPORT
+    /**
+      Get debugger widget responsible for accessing the inner workings
+      of the cart.
+    */
+    CartDebugWidget* debugWidget(GuiObject* boss, const GUI::Font& lfont,
+                                 const GUI::Font& nfont, int x, int y,
+                                 int w, int h) override
+    {
+      return new CartridgeJANEWidget(boss, lfont, nfont, x, y, w, h, *this);
+    }
+  #endif
 
-private:
-  bool checkSwitchBank(uInt16 address, uInt8 value) override;
+    uInt16 hotspot() const override { return 0x1FF0; }
 
-  uInt16 hotspot() const override { return 0x1FF0; }
+  private:
+    bool checkSwitchBank(uInt16 address, uInt8 value) override;
+    uInt16 getStartBank() const override { return 1; }
 
-  uInt16 getStartBank() const override { return 1; }
-
-private:
-  // Following constructors and assignment operators not supported
-  CartridgeJANE() = delete;
-  CartridgeJANE(const CartridgeJANE&) = delete;
-  CartridgeJANE(CartridgeJANE&&) = delete;
-  CartridgeJANE& operator=(const CartridgeJANE&) = delete;
-  CartridgeJANE& operator=(CartridgeJANE&&) = delete;
+  private:
+    // Following constructors and assignment operators not supported
+    CartridgeJANE() = delete;
+    CartridgeJANE(const CartridgeJANE&) = delete;
+    CartridgeJANE(CartridgeJANE&&) = delete;
+    CartridgeJANE& operator=(const CartridgeJANE&) = delete;
+    CartridgeJANE& operator=(CartridgeJANE&&) = delete;
 };
 
 #endif

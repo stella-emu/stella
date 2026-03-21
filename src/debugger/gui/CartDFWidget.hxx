@@ -31,9 +31,8 @@ class CartridgeDFWidget : public CartridgeEnhancedWidget
                       CartridgeDF& cart);
     ~CartridgeDFWidget() override = default;
 
-  private:
+  protected:
     string manufacturer() override { return "CPUWIZ"; }
-
     string description() override;
 
   private:

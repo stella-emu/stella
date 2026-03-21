@@ -35,6 +35,8 @@ class TiaInfoWidget : public Widget, public CommandSender
 
     void loadConfig() override;
 
+    void handleMouseDown(int x, int y, MouseButton b, int clickCount) override;
+
   private:
     EditTextWidget* myFrameCount{nullptr};
     EditTextWidget* myFrameCycles{nullptr};
@@ -49,10 +51,10 @@ class TiaInfoWidget : public Widget, public CommandSender
     EditTextWidget* myPixelPosition{nullptr};
     EditTextWidget* myColorClocks{nullptr};
 
-  private:
-    void handleMouseDown(int x, int y, MouseButton b, int clickCount) override;
+  protected:
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 
+  private:
     // Following constructors and assignment operators not supported
     TiaInfoWidget() = delete;
     TiaInfoWidget(const TiaInfoWidget&) = delete;

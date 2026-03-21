@@ -51,7 +51,6 @@ class CartridgeEFF : public CartridgeEF
                  const Settings& settings, size_t bsSize = 64_KB);
     ~CartridgeEFF() override = default;
 
-  public:
     /**
        Get a descriptor for the device name (used in error checking).
 
@@ -73,13 +72,11 @@ class CartridgeEFF : public CartridgeEF
 
     uInt8 peek(uInt16 address) override;
     bool poke(uInt16 address, uInt8 value) override;
+    uInt16 hotspot() const override { return 0x1FE0; }
     void setNVRamFile(string_view path) override;
 
-  protected:
+  private:
     bool checkSwitchBank (uInt16 address, uInt8) override;
-
-    uInt16 hotspot() const override { return 0x1FE0; }
-
     uInt16 getStartBank() const override { return 1; }
 
     void setI2CClock(bool value);

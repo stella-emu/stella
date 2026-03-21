@@ -86,7 +86,6 @@ class CartridgeCDF : public CartridgeARM
                  const Settings& settings);
     ~CartridgeCDF() override = default;
 
-  public:
     /**
       Reset device to its power-on state
     */
@@ -209,7 +208,6 @@ class CartridgeCDF : public CartridgeARM
                                 int w, int h) override;
 #endif
 
-  public:
     /**
       Get the byte at the specified address.
 
@@ -226,7 +224,22 @@ class CartridgeCDF : public CartridgeARM
     */
     bool poke(uInt16 address, uInt8 value) override;
 
-  private:
+    /**
+      Answer whether this is a PlusROM cart.  Note that until the
+      initialize method has been called, this will always return false.
+
+      @return  Whether this is actually a PlusROM cart
+    */
+    bool isPlusROM() const override { return myPlusROM->isValid(); }
+
+    /**
+      Enable or disable PlusROM support.
+
+      @param enable  Whether to enable the PlusROM support
+    */
+    void enablePlusROM(bool enable) override { myPlusROM->enable(enable); }
+
+  protected:
     /**
       Checks if startup bank randomization is enabled.  For this scheme,
       randomization is not supported, since the ARM code is always in a
@@ -263,22 +276,6 @@ class CartridgeCDF : public CartridgeARM
     void setupVersion();
 
     uInt32 scanCDFDriver(uInt32 value);
-
-    /**
-      Answer whether this is a PlusROM cart.  Note that until the
-      initialize method has been called, this will always return false.
-
-      @return  Whether this is actually a PlusROM cart
-    */
-    bool isPlusROM() const override { return myPlusROM->isValid(); }
-
-    /**
-      Enable or disable PlusROM support.
-
-      @param enable  Whether to enable the PlusROM support
-    */
-    void enablePlusROM(bool enable) override { myPlusROM->enable(enable); }
-
 
   private:
     static constexpr uInt8  COMMSTREAM = 0x20, JUMPSTREAM_BASE = 0x21;

@@ -38,8 +38,9 @@ class MessageDialog : public Dialog
                            bool yesNo = false);
     static bool confirmed() { return myConfirmed; }
 
-  protected:
     void loadConfig() override;
+
+  protected:
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 
   private:

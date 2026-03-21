@@ -36,6 +36,23 @@ class CartridgeCDFWidget : public CartridgeARMWidget
                        CartridgeCDF& cart);
     ~CartridgeCDFWidget() override = default;
 
+    void saveOldState() override;
+    void loadConfig() override;
+    string bankState() override;
+
+    // Start of functions for Cartridge RAM tab
+    uInt32 internalRamSize() override;
+    uInt32 internalRamRPort(int start) override;
+    string internalRamDescription() override;
+    const ByteArray& internalRamOld(int start, int count) override;
+    const ByteArray& internalRamCurrent(int start, int count) override;
+    void internalRamSetValue(int addr, uInt8 value) override;
+    uInt8 internalRamGetValue(int addr) override;
+    // End of functions for Cartridge RAM tab
+
+  protected:
+    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+
   private:
     struct CartState {
       ByteArray fastfetchoffset;
@@ -80,23 +97,6 @@ class CartridgeCDFWidget : public CartridgeARMWidget
     bool isCDFJplus() const;
 
     static string describeCDFVersion(CartridgeCDF::CDFSubtype subtype);
-
-    void saveOldState() override;
-    void loadConfig() override;
-
-    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
-
-    string bankState() override;
-
-    // start of functions for Cartridge RAM tab
-    uInt32 internalRamSize() override;
-    uInt32 internalRamRPort(int start) override;
-    string internalRamDescription() override;
-    const ByteArray& internalRamOld(int start, int count) override;
-    const ByteArray& internalRamCurrent(int start, int count) override;
-    void internalRamSetValue(int addr, uInt8 value) override;
-    uInt8 internalRamGetValue(int addr) override;
-    // end of functions for Cartridge RAM tab
 
     // Following constructors and assignment operators not supported
     CartridgeCDFWidget() = delete;

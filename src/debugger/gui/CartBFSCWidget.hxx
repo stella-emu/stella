@@ -31,9 +31,8 @@ class CartridgeBFSCWidget : public CartridgeEnhancedWidget
                         CartridgeBFSC& cart);
     ~CartridgeBFSCWidget() override = default;
 
-  private:
+  protected:
     string manufacturer() override { return "CPUWIZ"; }
-
     string description() override;
 
   private:

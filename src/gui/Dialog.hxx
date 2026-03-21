@@ -67,10 +67,10 @@ class Dialog : public GuiObject
     virtual void saveConfig()  { }
     virtual void setDefaults() { }
 
+    void draw() override { }
     void setDirty() override;
     void setDirtyChain() override;
     void redraw(bool force = false);
-    void drawChain() override;
     void render();
 
     void tick() override;
@@ -153,7 +153,6 @@ class Dialog : public GuiObject
       kHelpCmd = 'DlHp'
     };
 
-    void draw() override { }
     void releaseFocus() override;
 
     virtual void handleText(char text);
@@ -174,6 +173,9 @@ class Dialog : public GuiObject
 
     Widget* findWidget(int x, int y) const; // Find the widget at pos x,y if any
 
+    void drawChain() override;
+    string getHelpURL() const override;
+    bool hasHelp() const override { return !getHelpURL().empty(); }
 
     void addOKBGroup(WidgetArray& wid, const GUI::Font& font,
                      string_view okText = "OK",
@@ -214,8 +216,6 @@ class Dialog : public GuiObject
     bool handleNavEvent(Event::Type e, bool repeated = false);
     void getTabIdForWidget(const Widget* w);
     bool cycleTab(int direction);
-    string getHelpURL() const override;
-    bool hasHelp() const override { return !getHelpURL().empty(); }
     void openHelp();
 
   protected:

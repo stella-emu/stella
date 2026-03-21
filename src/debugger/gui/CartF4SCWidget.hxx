@@ -31,9 +31,8 @@ class CartridgeF4SCWidget : public CartridgeEnhancedWidget
                         CartridgeF4SC& cart);
     ~CartridgeF4SCWidget() override = default;
 
-  private:
+  protected:
     string manufacturer() override { return "Atari"; }
-
     string description() override;
 
   private:

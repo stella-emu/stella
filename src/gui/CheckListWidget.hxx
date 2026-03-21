@@ -42,8 +42,9 @@ class CheckListWidget : public ListWidget
     bool getState(int line) const;
     bool getSelectedState() const { return getState(_selectedItem); }
 
-  private:
     bool handleEvent(Event::Type e) override;
+
+  protected:
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 
     void drawWidget(bool hilite) override;

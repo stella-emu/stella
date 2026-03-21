@@ -90,7 +90,6 @@ class CartridgeFA2 : public CartridgeFA
     }
   #endif
 
-  public:
     /**
       Get the byte at the specified address.
 
@@ -107,11 +106,10 @@ class CartridgeFA2 : public CartridgeFA
     */
     bool poke(uInt16 address, uInt8 value) override;
 
-  private:
-    bool checkSwitchBank(uInt16 address, uInt8 value) override;
-
     uInt16 hotspot() const override { return 0x1FF5; }
 
+  private:
+    bool checkSwitchBank(uInt16 address, uInt8 value) override;
     uInt16 getStartBank() const override { return 0; }
 
     /**

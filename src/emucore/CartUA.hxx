@@ -98,10 +98,10 @@ class CartridgeUA : public CartridgeEnhanced
     */
     bool poke(uInt16 address, uInt8 value) override;
 
+    uInt16 hotspot() const override { return 0x0220; }
+
   private:
     bool checkSwitchBank(uInt16 address, uInt8) override;
-
-    uInt16 hotspot() const override { return 0x0220; }
 
   private:
     // Previous Device's page access

@@ -30,8 +30,11 @@ class FlashWidget : public ControllerWidget
                 Controller& controller);
     ~FlashWidget() override = default;
 
+    void loadConfig() override;
+
   protected:
     void init(GuiObject* boss, const GUI::Font& font, int x, int y, bool embedded);
+    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 
   private:
     enum { kEEPROMEraseCurrent = 'eeEC' };
@@ -43,9 +46,6 @@ class FlashWidget : public ControllerWidget
     std::array<StaticTextWidget*, MAX_PAGES> myPage{nullptr};
 
   private:
-    void loadConfig() override;
-    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
-
     /**
       Erase the EEPROM pages used by the current ROM
     */

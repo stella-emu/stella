@@ -31,22 +31,23 @@ class TimeMachineDialog : public Dialog
     TimeMachineDialog(OSystem& osystem, DialogContainer& parent, int width);
     ~TimeMachineDialog() override = default;
 
-    /** set/get number of winds when entering the dialog */
+    void loadConfig() override;
+
+    /** Set/get number of winds when entering the dialog */
     void setEnterWinds(Int32 numWinds) { _enterWinds = numWinds; }
     Int32 getEnterWinds() const { return _enterWinds; }
-
-  private:
-    void loadConfig() override;
-    void handleKeyDown(StellaKey key, StellaMod mod, bool repeated) override;
-    void handleKeyUp(StellaKey key, StellaMod mod) override;
-    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
-
-    /** initialize timeline bar */
-    void initBar();
 
     /** This dialog uses its own positioning, so we override Dialog::setPosition() */
     void setPosition() override;
 
+  protected:
+    void handleKeyDown(StellaKey key, StellaMod mod, bool repeated) override;
+    void handleKeyUp(StellaKey key, StellaMod mod) override;
+    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+
+  private:
+    /** initialize timeline bar */
+    void initBar();
     /** convert cycles into time */
     string getTimeString(uInt64 cycles) const;
     /** re/unwind and update display */

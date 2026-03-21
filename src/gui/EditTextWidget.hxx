@@ -31,6 +31,8 @@ class EditTextWidget : public EditableWidget
 
     void setText(string_view str, bool changed = false) override;
 
+    void handleMouseDown(int x, int y, MouseButton b, int clickCount) override;
+
     // Get total width of widget
     static int calcWidth(const GUI::Font& font, int length = 0)
     {
@@ -52,8 +54,6 @@ class EditTextWidget : public EditableWidget
     void abortEditMode() override;
 
     Common::Rect getEditRect() const override;
-
-    void handleMouseDown(int x, int y, MouseButton b, int clickCount) override;
 
   protected:
     bool   _changed{false};

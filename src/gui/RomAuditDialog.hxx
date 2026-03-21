@@ -38,10 +38,13 @@ class RomAuditDialog : public Dialog
                    const GUI::Font& font, int max_w, int max_h);
     ~RomAuditDialog() override;
 
-  private:
     void loadConfig() override;
-    void auditRoms();
+
+  protected:
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+
+  private:
+    void auditRoms();
 
   private:
     enum {

@@ -57,9 +57,9 @@ class ControllerWidget : public Widget, public CommandSender, public ControllerL
       return (isLeftPort() ? "Left (" : "Right (") + controller().name() + ")";
     }
 
-  private:
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override { }
 
+  private:
     // Following constructors and assignment operators not supported
     ControllerWidget() = delete;
     ControllerWidget(const ControllerWidget&) = delete;

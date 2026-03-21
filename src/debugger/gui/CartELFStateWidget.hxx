@@ -32,13 +32,12 @@ class CartridgeELFStateWidget : public CartDebugWidget {
                             const GUI::Font& nfont,
                             int x, int y, int w, int h,
                             CartridgeELF& cart);
-
     ~CartridgeELFStateWidget() override = default;
+
+    void loadConfig() override;
 
   private:
     void initialize();
-
-    void loadConfig() override;
 
   private:
     CartridgeELF& myCart;

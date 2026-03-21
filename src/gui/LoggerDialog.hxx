@@ -34,12 +34,14 @@ class LoggerDialog : public Dialog
                  bool useLargeFont = true);
     ~LoggerDialog() override = default;
 
-  private:
     void loadConfig() override;
     void saveConfig() override;
-    void saveLogFile(const FSNode& node);
 
+  protected:
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+
+  private:
+    void saveLogFile(const FSNode& node);
 
   private:
     StringListWidget* myLogInfo{nullptr};

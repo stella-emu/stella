@@ -41,13 +41,12 @@ class Genesis : public Joystick
     Genesis(Jack jack, const Event& event, const System& system);
     ~Genesis() override = default;
 
-  public:
     /**
       Returns the name of this controller.
     */
     string name() const override { return "Sega Genesis"; }
 
-  private:
+  protected:
     /**
       Update the button pin states.
     */

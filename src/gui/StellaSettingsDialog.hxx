@@ -38,16 +38,18 @@ class StellaSettingsDialog : public Dialog
       int max_w, int max_h, AppMode mode);
     ~StellaSettingsDialog() override;
 
-  private:
     void loadConfig() override;
     void saveConfig() override;
     void setDefaults() override;
 
+  protected:
+    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+
+  private:
     void addVideoOptions(WidgetArray& wid, int xpos, int& ypos);
     void addUIOptions(WidgetArray& wid, int xpos, int& ypos);
     void addGameOptions(WidgetArray& wid, int xpos, int& ypos);
 
-    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
     void handleOverscanChange();
 
     // switch to advanced settings after user confirmation
@@ -111,6 +113,7 @@ class StellaSettingsDialog : public Dialog
     // Game properties for currently loaded ROM
     Properties myGameProperties;
 
+  private:
     // Following constructors and assignment operators not supported
     StellaSettingsDialog() = delete;
     StellaSettingsDialog(const StellaSettingsDialog&) = delete;

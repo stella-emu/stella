@@ -89,6 +89,13 @@ class DataGridWidget : public EditableWidget
     string getToolTip(const Common::Point& pos) const override;
     bool changedToolTip(const Common::Point& oldPos, const Common::Point& newPos) const override;
 
+    void handleMouseDown(int x, int y, MouseButton b, int clickCount) override;
+    void handleMouseUp(int x, int y, MouseButton b, int clickCount) override;
+    void handleMouseWheel(int x, int y, int direction) override;
+    bool handleText(char text) override;
+    bool handleKeyDown(StellaKey key, StellaMod mod) override;
+    bool handleKeyUp(StellaKey key, StellaMod mod) override;
+
   protected:
     void drawWidget(bool hilite) override;
 
@@ -106,12 +113,6 @@ class DataGridWidget : public EditableWidget
     bool hasToolTip() const override { return true; }
     int getToolTipIndex(const Common::Point& pos) const;
 
-    void handleMouseDown(int x, int y, MouseButton b, int clickCount) override;
-    void handleMouseUp(int x, int y, MouseButton b, int clickCount) override;
-    void handleMouseWheel(int x, int y, int direction) override;
-    bool handleText(char text) override;
-    bool handleKeyDown(StellaKey key, StellaMod mod) override;
-    bool handleKeyUp(StellaKey key, StellaMod mod) override;
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 
   protected:

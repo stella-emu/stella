@@ -31,9 +31,8 @@ class CartridgeEFWidget : public CartridgeEnhancedWidget
                       CartridgeEF& cart);
     ~CartridgeEFWidget() override = default;
 
-  private:
+  protected:
     string manufacturer() override { return "Paul Slocum / Homestar Runner"; }
-
     string description() override;
 
   private:

@@ -36,14 +36,17 @@ class RiotWidget : public Widget, public CommandSender
                int x, int y, int w, int h);
     ~RiotWidget() override = default;
 
+    void loadConfig() override;
+
+  protected:
+    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+
   private:
     static ControllerWidget* addControlWidget(
         GuiObject* boss, const GUI::Font& font,
         int x, int y, Controller& controller);
 
     void handleConsole();
-    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
-    void loadConfig() override;
 
   private:
     ToggleBitWidget* mySWCHAReadBits{nullptr};

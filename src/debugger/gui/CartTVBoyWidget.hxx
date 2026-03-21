@@ -32,23 +32,19 @@ class CartridgeTVBoyWidget : public CartridgeEnhancedWidget
                       CartridgeTVBoy& cart);
     ~CartridgeTVBoyWidget() override = default;
 
-  private:
+    void loadConfig() override;
+
+  protected:
     string manufacturer() override { return "Akor"; }
-
     string description() override;
-
     void bankSelect(int& ypos) override;
+    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 
+  private:
     CartridgeTVBoy& myCartTVBoy;
     CheckboxWidget* myBankLocked{nullptr};
 
-    enum {
-      kBankLocked = 'bkLO'
-    };
-
-  private:
-    void loadConfig() override;
-    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+    enum { kBankLocked = 'bkLO' };
 
   private:
     // Following constructors and assignment operators not supported

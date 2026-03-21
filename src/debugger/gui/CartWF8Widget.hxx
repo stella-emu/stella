@@ -25,25 +25,24 @@ class PopUpWidget;
 
 class CartridgeWF8Widget : public CartridgeEnhancedWidget
 {
-public:
-  CartridgeWF8Widget(GuiObject* boss, const GUI::Font& lfont,
-                     const GUI::Font& nfont,
-                     int x, int y, int w, int h,
-                     CartridgeWF8& cart);
-  ~CartridgeWF8Widget() override = default;
+  public:
+    CartridgeWF8Widget(GuiObject* boss, const GUI::Font& lfont,
+                       const GUI::Font& nfont,
+                       int x, int y, int w, int h,
+                       CartridgeWF8& cart);
+    ~CartridgeWF8Widget() override = default;
 
-private:
-  string manufacturer() override { return "Coleco"; }
+  protected:
+    string manufacturer() override { return "Coleco"; }
+    string description() override;
 
-  string description() override;
-
-private:
-  // Following constructors and assignment operators not supported
-  CartridgeWF8Widget() = delete;
-  CartridgeWF8Widget(const CartridgeWF8Widget&) = delete;
-  CartridgeWF8Widget(CartridgeWF8Widget&&) = delete;
-  CartridgeWF8Widget& operator=(const CartridgeWF8Widget&) = delete;
-  CartridgeWF8Widget& operator=(CartridgeWF8Widget&&) = delete;
+  private:
+    // Following constructors and assignment operators not supported
+    CartridgeWF8Widget() = delete;
+    CartridgeWF8Widget(const CartridgeWF8Widget&) = delete;
+    CartridgeWF8Widget(CartridgeWF8Widget&&) = delete;
+    CartridgeWF8Widget& operator=(const CartridgeWF8Widget&) = delete;
+    CartridgeWF8Widget& operator=(CartridgeWF8Widget&&) = delete;
 };
 
 #endif

@@ -32,23 +32,19 @@ class CartridgeMDMWidget : public CartridgeEnhancedWidget
                        CartridgeMDM& cart);
     ~CartridgeMDMWidget() override = default;
 
-  private:
+    void loadConfig() override;
+
+  protected:
     string manufacturer() override { return "Edwin Blink"; }
-
     string description() override;
-
     void bankSelect(int& ypos) override;
+    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 
+  private:
     CartridgeMDM& myCartMDM;
     CheckboxWidget* myBankDisabled{nullptr};
 
-    enum {
-      kBankDisabled = 'bkDI'
-    };
-
-  private:
-    void loadConfig() override;
-    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+    enum { kBankDisabled = 'bkDI' };
 
   private:
     // Following constructors and assignment operators not supported

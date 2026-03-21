@@ -44,12 +44,12 @@ class DeveloperDialog : public Dialog, DevSettingsHandler
                 const GUI::Font& font, int max_w, int max_h);
     ~DeveloperDialog() override = default;
 
-  private:
-    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
-
     void loadConfig() override;
     void saveConfig() override;
     void setDefaults() override;
+
+  protected:
+    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 
   private:
     enum

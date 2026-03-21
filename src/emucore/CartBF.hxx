@@ -71,11 +71,10 @@ class CartridgeBF : public CartridgeEnhanced
     }
   #endif
 
-  private:
-    bool checkSwitchBank(uInt16 address, uInt8) override;
-
     uInt16 hotspot() const override { return 0x1F80; }
 
+  private:
+    bool checkSwitchBank(uInt16 address, uInt8) override;
     uInt16 getStartBank() const override { return 1; }
 
   private:

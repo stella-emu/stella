@@ -44,9 +44,10 @@ class ColorWidget : public Widget, public CommandSender
 
     void setCrossed(bool enable);
 
-  protected:
     void handleMouseEntered() override { }
     void handleMouseLeft() override { }
+
+  protected:
     void drawWidget(bool hilite) override;
 
   protected:

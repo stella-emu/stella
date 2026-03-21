@@ -31,11 +31,9 @@ class CartridgeFEWidget : public CartridgeEnhancedWidget
                       CartridgeFE& cart);
     ~CartridgeFEWidget() override = default;
 
-  private:
+  protected:
     string manufacturer() override { return "Activision"; }
-
     string description() override;
-
     string hotspotStr(int bank, int, bool) override;
 
   private:

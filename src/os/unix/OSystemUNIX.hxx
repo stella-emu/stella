@@ -33,6 +33,7 @@ class OSystemUNIX : public OSystemStandalone
     OSystemUNIX() = default;
     ~OSystemUNIX() override = default;
 
+  protected:
     /**
       Determine the base directory and home directory from the derived
       class.  It can also use hints, as described below.

@@ -49,9 +49,15 @@ class ToggleWidget : public Widget, public CommandSender
     string getToolTip(const Common::Point& pos) const override;
     bool changedToolTip(const Common::Point& oldPos, const Common::Point& newPos) const override;
 
+    void handleMouseDown(int x, int y, MouseButton b, int clickCount) override;
+    void handleMouseUp(int x, int y, MouseButton b, int clickCount) override;
+    bool handleKeyDown(StellaKey key, StellaMod mod) override;
+
   protected:
     bool hasToolTip() const override { return true; }
     Common::Point getToolTipIndex(const Common::Point& pos) const;
+    void drawWidget(bool hilite) override = 0;
+    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 
   protected:
     int  _rows{0};
@@ -69,13 +75,7 @@ class ToggleWidget : public Widget, public CommandSender
     BoolArray  _changedList;
 
   private:
-    void drawWidget(bool hilite) override = 0;
     int findItem(int x, int y) const;
-
-    void handleMouseDown(int x, int y, MouseButton b, int clickCount) override;
-    void handleMouseUp(int x, int y, MouseButton b, int clickCount) override;
-    bool handleKeyDown(StellaKey key, StellaMod mod) override;
-    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 
     // Following constructors and assignment operators not supported
     ToggleWidget() = delete;

@@ -41,8 +41,9 @@ class JoystickDialog : public Dialog
     /** Place the dialog onscreen and center it */
     void show() { open(); }
 
-  private:
     void loadConfig() override;
+
+  protected:
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
     void handleEvent(Event::Type event) override;
 

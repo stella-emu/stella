@@ -41,7 +41,8 @@ class PromptWidget : public Widget, public CommandSender
                  int x, int y, int w, int h);
     ~PromptWidget() override = default;
 
-  public:
+    void loadConfig() override;
+
     void print(string_view str);
     void printPrompt();
     string saveBuffer(const FSNode& file);
@@ -54,6 +55,16 @@ class PromptWidget : public Widget, public CommandSender
     void addToHistory(const char *str);
 
     bool isLoaded() const { return !_firstTime; }
+
+    // Account for the extra width of embedded scrollbar
+    int getWidth() const override;
+
+    bool wantsFocus() const override { return true; }
+
+    void handleMouseDown(int x, int y, MouseButton b, int clickCount) override;
+    void handleMouseWheel(int x, int y, int direction) override;
+    bool handleText(char text) override;
+    bool handleKeyDown(StellaKey key, StellaMod mod) override;
 
   protected:
     ATTRIBUTE_FMT_PRINTF int printf(const char* format, ...);
@@ -84,20 +95,9 @@ class PromptWidget : public Widget, public CommandSender
 
     bool execute();
     bool autoComplete(int direction);
-
-    void handleMouseDown(int x, int y, MouseButton b, int clickCount) override;
-    void handleMouseWheel(int x, int y, int direction) override;
-    bool handleText(char text) override;
-    bool handleKeyDown(StellaKey key, StellaMod mod) override;
-    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
-
-    // Account for the extra width of embedded scrollbar
-    int getWidth() const override;
-
-    bool wantsFocus() const override { return true; }
-    void loadConfig() override;
-
     void resetFunctions();
+
+    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 
   private:
     enum: uInt16 {

@@ -31,9 +31,8 @@ class CartridgeCVWidget : public CartridgeEnhancedWidget
                       CartridgeCV& cart);
     ~CartridgeCVWidget() override = default;
 
-  private:
+  protected:
     string manufacturer() override { return "CommaVid"; }
-
     string description() override;
 
   private:

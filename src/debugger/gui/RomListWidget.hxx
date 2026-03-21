@@ -60,7 +60,6 @@ class RomListWidget : public EditableWidget
     string getToolTip(const Common::Point& pos) const override;
     bool changedToolTip(const Common::Point& oldPos, const Common::Point& newPos) const override;
 
-  protected:
     void handleMouseDown(int x, int y, MouseButton b, int clickCount) override;
     void handleMouseUp(int x, int y, MouseButton b, int clickCount) override;
     void handleMouseWheel(int x, int y, int direction) override;
@@ -68,6 +67,8 @@ class RomListWidget : public EditableWidget
     bool handleKeyDown(StellaKey key, StellaMod mod) override;
     bool handleKeyUp(StellaKey key, StellaMod mod) override;
     bool handleEvent(Event::Type e) override;
+
+  protected:
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 
     void drawWidget(bool hilite) override;

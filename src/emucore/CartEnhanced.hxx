@@ -224,7 +224,6 @@ class CartridgeEnhanced : public Cartridge
     // Usually myBankShift - 1
     uInt16 myRamBankShift{0};
 
-  protected:
     // The extra RAM size
     size_t myRamSize{RAM_SIZE};                 // default 0
 
@@ -277,7 +276,6 @@ class CartridgeEnhanced : public Cartridge
     // Handle PlusROM functionality, if available
     unique_ptr<PlusROM> myPlusROM;
 
-  protected:
     // The mask for 6507 address space
     static constexpr uInt16 ADDR_MASK = 0x1FFF;
 
@@ -303,7 +301,7 @@ class CartridgeEnhanced : public Cartridge
     // The maximum shift (for a 4K bank size)
     static constexpr uInt16 MAX_BANK_SHIFT = 12;  // -> 4K
 
-  protected:
+  private:
     /**
       Check hotspots and switch bank if triggered.
 
@@ -319,7 +317,6 @@ class CartridgeEnhanced : public Cartridge
     */
     virtual uInt16 calcNumSegments() const;
 
-  private:
     /**
       Get the ROM's startup bank.
 

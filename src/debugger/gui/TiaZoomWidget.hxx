@@ -39,24 +39,25 @@ class TiaZoomWidget : public Widget, public CommandSender
     string getToolTip(const Common::Point& pos) const override;
     bool changedToolTip(const Common::Point& oldPos, const Common::Point& newPos) const override;
 
-  protected:
-    bool hasToolTip() const override { return true; }
-    Common::Point getToolTipIndex(const Common::Point& pos) const;
-
-  private:
-    void zoom(int level);
-    void recalc();
-
     void handleMouseDown(int x, int y, MouseButton b, int clickCount) override;
     void handleMouseUp(int x, int y, MouseButton b, int clickCount) override;
     void handleMouseWheel(int x, int y, int direction) override;
     void handleMouseMoved(int x, int y) override;
     void handleMouseLeft() override;
     bool handleEvent(Event::Type event) override;
-    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+
+    bool wantsFocus() const override { return true; }
+
+  protected:
+    bool hasToolTip() const override { return true; }
+    Common::Point getToolTipIndex(const Common::Point& pos) const;
 
     void drawWidget(bool hilite) override;
-    bool wantsFocus() const override { return true; }
+    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+
+  private:
+    void zoom(int level);
+    void recalc();
 
   private:
     unique_ptr<ContextMenu> myMenu;

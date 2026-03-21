@@ -50,7 +50,6 @@ class LauncherFileListWidget : public FileListWidget
     void removeAllPopular();
     void removeAllRecent();
 
-    bool isDirectory(const FSNode& node) const override;
     bool inVirtualDir() const { return myInVirtualDir; }
     bool inUserDir() const { return myVirtualDir == user_name; }
     bool inRecentDir() const { return myVirtualDir == recent_name; }
@@ -58,6 +57,15 @@ class LauncherFileListWidget : public FileListWidget
     static bool isUserDir(string_view name) { return name == user_name; }
     static bool isRecentDir(string_view name) { return name == recent_name; }
     static bool isPopularDir(string_view name) { return name == popular_name; }
+
+    bool isDirectory(const FSNode& node) const override;
+
+  protected:
+    void getChildren(const FSNode::CancelCheck& isCancelled) override;
+    void extendLists(StringList& list) override;
+    IconType getIconType(string_view path) const override;
+    const Icon* getIcon(int i) const override;
+    bool fullPathToolTip() const override { return myInVirtualDir; }
 
   private:
     static constexpr string_view user_name = "Favorites";
@@ -70,13 +78,8 @@ class LauncherFileListWidget : public FileListWidget
 
   private:
     FSNode startRomNode() const;
-    void getChildren(const FSNode::CancelCheck& isCancelled) override;
     void userFavor(string_view path);
     void addFolder(StringList& list, int& offset, string_view name, IconType icon);
-    void extendLists(StringList& list) override;
-    IconType getIconType(string_view path) const override;
-    const Icon* getIcon(int i) const override;
-    bool fullPathToolTip() const override { return myInVirtualDir; }
 
   private:
     // Following constructors and assignment operators not supported

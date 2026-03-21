@@ -603,6 +603,27 @@ class TIA : public Device
 
   #ifdef DEBUGGER_SUPPORT
     /**
+     * Query the given address type for the associated access flags.
+     *
+     * @param address  The address to query
+     */
+    Device::AccessFlags getAccessFlags(uInt16 address) const override;
+    /**
+     * Change the given address to use the given access flags.
+     *
+     * @param address  The address to modify
+     * @param flags    A bitfield of AccessType directives for the given address
+     */
+    void setAccessFlags(uInt16 address, Device::AccessFlags flags) override;
+
+    /**
+      Increase the given address's access counter
+
+      @param address The address to modify
+    */
+    void increaseAccessCounter(uInt16 address, bool isWrite) override;
+
+    /**
       Query the access counters
 
       @return  The access counters as comma separated string
@@ -766,27 +787,6 @@ class TIA : public Device
 
   #ifdef DEBUGGER_SUPPORT
     void createAccessArrays();
-
-    /**
-     * Query the given address type for the associated access flags.
-     *
-     * @param address  The address to query
-     */
-    Device::AccessFlags getAccessFlags(uInt16 address) const override;
-    /**
-     * Change the given address to use the given access flags.
-     *
-     * @param address  The address to modify
-     * @param flags    A bitfield of AccessType directives for the given address
-     */
-    void setAccessFlags(uInt16 address, Device::AccessFlags flags) override;
-
-    /**
-      Increase the given address's access counter
-
-      @param address The address to modify
-    */
-    void increaseAccessCounter(uInt16 address, bool isWrite) override;
   #endif // DEBUGGER_SUPPORT
 
   private:

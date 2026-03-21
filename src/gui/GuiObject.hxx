@@ -93,6 +93,7 @@ class GuiObject : public CommandReceiver
 
     virtual bool isVisible() const = 0;
 
+    virtual void draw() = 0;
     virtual void setDirty() = 0;
     virtual void setDirtyChain() = 0;
     void clearDirty() { _dirty = false; }
@@ -144,7 +145,6 @@ class GuiObject : public CommandReceiver
 
   protected:
     virtual void releaseFocus() = 0;
-    virtual void draw() = 0;
     virtual void drawChain() = 0;
 
     virtual string getHelpURL() const = 0;

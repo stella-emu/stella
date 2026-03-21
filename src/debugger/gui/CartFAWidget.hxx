@@ -31,9 +31,8 @@ class CartridgeFAWidget : public CartridgeEnhancedWidget
                       CartridgeFA& cart);
     ~CartridgeFAWidget() override = default;
 
-  private:
+  protected:
     string manufacturer() override { return "CBS"; }
-
     string description() override;
 
   private:

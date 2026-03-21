@@ -28,10 +28,10 @@ class QuadTariWidget: public ControllerWidget
                    Controller& controller);
     ~QuadTariWidget() override = default;
 
+    void loadConfig() override;
+
   private:
     StaticTextWidget* myPointer{nullptr};
-
-    void loadConfig() override;
 
     void addController(GuiObject* boss, int x, int y,
                        Controller& controller, bool second);

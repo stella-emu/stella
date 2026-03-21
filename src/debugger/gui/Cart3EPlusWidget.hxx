@@ -34,20 +34,17 @@ class Cartridge3EPlusWidget : public CartridgeEnhancedWidget
                           Cartridge3EPlus& cart);
     ~Cartridge3EPlusWidget() override = default;
 
-  private:
-    string manufacturer() override { return "Thomas Jentzsch"; }
-
-    string description() override;
-
-    void bankSelect(int& ypos) override;
-
-    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
-
-    void updateUIState();
-
     void loadConfig() override;
 
     string internalRamDescription() override;
+
+  protected:
+    string manufacturer() override { return "Thomas Jentzsch"; }
+    string description() override;
+    void bankSelect(int& ypos) override;
+    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+
+    void updateUIState();
 
   private:
     Cartridge3EPlus& myCart3EP;

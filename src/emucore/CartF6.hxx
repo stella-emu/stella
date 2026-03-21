@@ -67,10 +67,10 @@ class CartridgeF6 : public CartridgeEnhanced
     }
   #endif
 
+    uInt16 hotspot() const override { return 0x1FF6; }
+
   private:
     bool checkSwitchBank(uInt16 address, uInt8 value) override;
-
-    uInt16 hotspot() const override { return 0x1FF6; }
 
   private:
     // Following constructors and assignment operators not supported

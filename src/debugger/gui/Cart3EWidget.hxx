@@ -33,27 +33,21 @@ class Cartridge3EWidget : public CartridgeEnhancedWidget
                       Cartridge3E& cart);
     ~Cartridge3EWidget() override = default;
 
+    void loadConfig() override;
+    string bankState() override;
+
   private:
     enum {
       kRAMBankChanged = 'raCH'
     };
 
-  private:
+  protected:
     string manufacturer() override { return "Andrew Davie & Thomas Jentzsch"; }
-
     string description() override;
-
     void bankList(uInt16 bankCount, int seg, VariantList& items, int& width) override;
-
     void bankSelect(int& ypos) override;
-
     uInt16 bankSegs() override { return 1; }
-
-    void loadConfig() override;
-
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
-
-    string bankState() override;
 
   private:
     // Following constructors and assignment operators not supported

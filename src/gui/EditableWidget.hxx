@@ -67,17 +67,19 @@ class EditableWidget : public Widget, public CommandSender
     // Set filter used to test whether a character can be inserted
     void setTextFilter(const TextFilter& filter) { _filter = filter; }
 
-  protected:
     void handleMouseDown(int x, int y, MouseButton b, int clickCount) override;
     void handleMouseUp(int x, int y, MouseButton b, int clickCount) override;
     void handleMouseMoved(int x, int y) override;
+    void tick() override;
+
+  protected:
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+
     virtual int caretOfs() const { return _editScrollOffset; }
     int toCaretPos(int x) const;
 
     void receivedFocusWidget() override;
     void lostFocusWidget() override;
-    void tick() override;
     bool wantsToolTip() const override;
 
     virtual void startEditMode() { setFlags(Widget::FLAG_WANTS_RAWDATA);   }

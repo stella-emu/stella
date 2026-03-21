@@ -42,11 +42,14 @@ class VideoAudioDialog : public Dialog
                      int max_w, int max_h);
     ~VideoAudioDialog() override = default;
 
-  private:
     void loadConfig() override;
     void saveConfig() override;
     void setDefaults() override;
 
+  protected:
+    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+
+  private:
     void addDisplayTab();
     void addPaletteTab();
     void addTVEffectsTab();
@@ -63,8 +66,6 @@ class VideoAudioDialog : public Dialog
     void handleOverscanChange();
     void handlePhosphorChange();
     void handleBezelChange();
-
-    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 
     void addPalette(int x, int y, int w, int h);
     void colorPalette();

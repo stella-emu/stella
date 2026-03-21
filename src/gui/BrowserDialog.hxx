@@ -95,6 +95,10 @@ class BrowserDialog : public Dialog
     */
     static void hide();
 
+  protected:
+    void handleKeyDown(StellaKey key, StellaMod mod, bool repeated) override;
+    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+
   private:
     /** Place the browser window onscreen, using the given attributes */
     void show(string_view startpath,
@@ -105,8 +109,6 @@ class BrowserDialog : public Dialog
     /** Get resulting file node (called after receiving kChooseCmd) */
     const FSNode& getResult() const;
 
-    void handleKeyDown(StellaKey key, StellaMod mod, bool repeated) override;
-    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
     void updateUI(bool fileSelected);
 
   private:

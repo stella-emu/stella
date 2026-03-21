@@ -34,13 +34,15 @@ class AboutDialog : public Dialog
                 const GUI::Font& font);
     ~AboutDialog() override;
 
-  private:
+    void loadConfig() override { displayInfo(); }
+
+  protected:
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+
+  private:
     void updateStrings(int page, int lines, string& title);
     void displayInfo();
     static string getUrl(string_view text);
-
-    void loadConfig() override { displayInfo(); }
 
   private:
     ButtonWidget* myWhatsNewButton{nullptr};

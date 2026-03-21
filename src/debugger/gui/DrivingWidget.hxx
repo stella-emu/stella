@@ -32,6 +32,11 @@ class DrivingWidget : public ControllerWidget
                   Controller& controller, bool embedded = false);
     ~DrivingWidget() override = default;
 
+    void loadConfig() override;
+
+  protected:
+    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+
   private:
     enum {
       kGrayUpCmd   = 'DWup',
@@ -49,9 +54,6 @@ class DrivingWidget : public ControllerWidget
     };
 
   private:
-    void loadConfig() override;
-    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
-
     void setValue(int idx);
 
     // Following constructors and assignment operators not supported

@@ -74,15 +74,17 @@ class DebuggerDialog : public Dialog
     ButtonWidget& unwindButton() const { return *myUnwindButton; }
 
     void showFatalMessage(string_view msg);
+    void loadConfig() override;
     void saveConfig() override;
 
-  private:
     void setPosition() override { positionAt(0); }
-    void loadConfig() override;
+
+  protected:
     void handleKeyDown(StellaKey key, StellaMod mod, bool repeated) override;
     void handleKeyUp(StellaKey key, StellaMod mod) override;
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 
+  private:
     void doStep();
     void doTrace();
     void doScanlineAdvance();

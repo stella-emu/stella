@@ -42,12 +42,12 @@ class TimeLineWidget : public ButtonWidget
     */
     void setStepValues(const IntArray& steps);
 
-  protected:
     void handleMouseMoved(int x, int y) override;
     void handleMouseDown(int x, int y, MouseButton b, int clickCount) override;
     void handleMouseUp(int x, int y, MouseButton b, int clickCount) override;
     void handleMouseWheel(int x, int y, int direction) override;
 
+  protected:
     void drawWidget(bool hilite) override;
 
     uInt32 valueToPos(uInt32 value) const;

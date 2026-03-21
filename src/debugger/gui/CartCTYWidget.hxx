@@ -32,6 +32,24 @@ class CartridgeCTYWidget : public CartDebugWidget
                        CartridgeCTY& cart);
     ~CartridgeCTYWidget() override = default;
 
+    void loadConfig() override;
+    void saveOldState() override;
+    string bankState() override;
+
+    // Start of functions for Cartridge RAM tab
+    uInt32 internalRamSize() override;
+    uInt32 internalRamRPort(int start) override;
+    string internalRamDescription() override;
+    const ByteArray& internalRamOld(int start, int count) override;
+    const ByteArray& internalRamCurrent(int start, int count) override;
+    void internalRamSetValue(int addr, uInt8 value) override;
+    uInt8 internalRamGetValue(int addr) override;
+    string internalRamLabel(int addr) override;
+    // End of functions for Cartridge RAM tab
+
+  protected:
+    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+
   private:
     CartridgeCTY& myCart;
     PopUpWidget* myBank{nullptr};
@@ -45,23 +63,6 @@ class CartridgeCTYWidget : public CartDebugWidget
     enum { kBankChanged = 'bkCH' };
 
   private:
-    void saveOldState() override;
-    void loadConfig() override;
-    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
-
-    string bankState() override;
-
-    // start of functions for Cartridge RAM tab
-    uInt32 internalRamSize() override;
-    uInt32 internalRamRPort(int start) override;
-    string internalRamDescription() override;
-    const ByteArray& internalRamOld(int start, int count) override;
-    const ByteArray& internalRamCurrent(int start, int count) override;
-    void internalRamSetValue(int addr, uInt8 value) override;
-    uInt8 internalRamGetValue(int addr) override;
-    string internalRamLabel(int addr) override;
-    // end of functions for Cartridge RAM tab
-
     // Following constructors and assignment operators not supported
     CartridgeCTYWidget() = delete;
     CartridgeCTYWidget(const CartridgeCTYWidget&) = delete;

@@ -39,39 +39,11 @@ class CartridgeEnhancedWidget : public CartDebugWidget
                             CartridgeEnhanced& cart);
     ~CartridgeEnhancedWidget() override = default;
 
-  protected:
-    int initialize();
-
-    virtual size_t size();
-
-    virtual string manufacturer() = 0;
-
-    virtual string description();
-
-    virtual int descriptionLines();
-
-    virtual string ramDescription();
-
-    virtual string romDescription();
-
-    virtual void plusROMInfo(int& ypos);
-
-    virtual void bankList(uInt16 bankCount, int seg, VariantList& items, int& width);
-
-    virtual void bankSelect(int& ypos);
-
-    virtual string hotspotStr(int bank = 0, int segment = 0, bool prefix = false);
-
-    virtual uInt16 bankSegs(); // { return myCart.myBankSegs; }
-
-    void saveOldState() override;
     void loadConfig() override;
-
-    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
-
+    void saveOldState() override;
     string bankState() override;
 
-    // start of functions for Cartridge RAM tab
+    // Start of functions for Cartridge RAM tab
     uInt32 internalRamSize() override;
     uInt32 internalRamRPort(int start) override;
     string internalRamDescription() override;
@@ -80,7 +52,23 @@ class CartridgeEnhancedWidget : public CartDebugWidget
     void internalRamSetValue(int addr, uInt8 value) override;
     uInt8 internalRamGetValue(int addr) override;
     string internalRamLabel(int addr) override;
-    // end of functions for Cartridge RAM tab
+    // End of functions for Cartridge RAM tab
+
+  protected:
+    int initialize();
+    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+
+    virtual size_t size();
+    virtual string manufacturer() = 0;
+    virtual string description();
+    virtual int descriptionLines();
+    virtual string ramDescription();
+    virtual string romDescription();
+    virtual void plusROMInfo(int& ypos);
+    virtual void bankList(uInt16 bankCount, int seg, VariantList& items, int& width);
+    virtual void bankSelect(int& ypos);
+    virtual string hotspotStr(int bank = 0, int segment = 0, bool prefix = false);
+    virtual uInt16 bankSegs(); // { return myCart.myBankSegs; }
 
   protected:
     enum { kBankChanged = 'bkCH' };

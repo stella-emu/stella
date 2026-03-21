@@ -28,6 +28,11 @@ class JoystickWidget : public ControllerWidget
                    Controller& controller, bool embedded = false);
     ~JoystickWidget() override = default;
 
+    void loadConfig() override;
+
+  protected:
+    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+
   private:
     enum: uInt8 { kJUp = 0, kJDown, kJLeft, kJRight, kJFire };
 
@@ -39,9 +44,6 @@ class JoystickWidget : public ControllerWidget
     }};
 
   private:
-    void loadConfig() override;
-    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
-
     // Following constructors and assignment operators not supported
     JoystickWidget() = delete;
     JoystickWidget(const JoystickWidget&) = delete;

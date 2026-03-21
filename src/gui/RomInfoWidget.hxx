@@ -42,9 +42,10 @@ class RomInfoWidget : public Widget, public CommandSender
 
     const string& getUrl() const { return myUrl; }
 
+    void handleMouseUp(int x, int y, MouseButton b, int clickCount) override;
+
   protected:
     void drawWidget(bool hilite) override;
-    void handleMouseUp(int x, int y, MouseButton b, int clickCount) override;
 
   private:
     void parseProperties(const FSNode& node, bool full = true);

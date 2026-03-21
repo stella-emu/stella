@@ -176,7 +176,6 @@ class CartridgeDPCPlus : public CartridgeARM
     }
   #endif
 
-  public:
     /**
       Get the byte at the specified address.
 
@@ -193,7 +192,7 @@ class CartridgeDPCPlus : public CartridgeARM
     */
     bool poke(uInt16 address, uInt8 value) override;
 
-  private:
+  protected:
     /**
       Checks if startup bank randomization is enabled.  For this scheme,
       randomization is not supported, since the ARM code is always in a
@@ -206,6 +205,7 @@ class CartridgeDPCPlus : public CartridgeARM
     */
     void setInitialState() override;
 
+  private:
     /**
       Clocks the random number generator to move it to its next state
     */

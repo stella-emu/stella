@@ -41,11 +41,14 @@ class InputDialog : public Dialog
                 const GUI::Font& font, int max_w, int max_h);
     ~InputDialog() override;
 
+    void loadConfig() override;
+    void saveConfig() override;
+    void setDefaults() override;
+
   protected:
     // disable repeat during and directly after mapping events
     bool repeatEnabled() override;
 
-  private:
     void handleKeyDown(StellaKey key, StellaMod mod, bool repeated) override;
     void handleKeyUp(StellaKey key, StellaMod mod) override;
     void handleJoyDown(int stick, int button, bool longPress) override;
@@ -54,10 +57,7 @@ class InputDialog : public Dialog
     bool handleJoyHat(int stick, int hat, JoyHatDir hdir, int button) override;
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 
-    void loadConfig() override;
-    void saveConfig() override;
-    void setDefaults() override;
-
+  private:
     void addDevicePortTab();
     void addMouseTab();
 

@@ -31,12 +31,11 @@ class CartridgeF0Widget : public CartridgeEnhancedWidget
                       CartridgeF0& cart);
     ~CartridgeF0Widget() override = default;
 
-  private:
-    string manufacturer() override { return "Dynacom Megaboy"; }
-
-    string description() override;
-
     string bankState() override;
+
+  protected:
+    string manufacturer() override { return "Dynacom Megaboy"; }
+    string description() override;
 
   private:
     // Following constructors and assignment operators not supported

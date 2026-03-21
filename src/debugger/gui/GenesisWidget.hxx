@@ -28,6 +28,11 @@ class GenesisWidget : public ControllerWidget
                   Controller& controller);
     ~GenesisWidget() override = default;
 
+    void loadConfig() override;
+
+  protected:
+    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+
   private:
     enum: uInt8 { kJUp = 0, kJDown, kJLeft, kJRight, kJBbtn, kJCbtn };
 
@@ -39,9 +44,6 @@ class GenesisWidget : public ControllerWidget
     }};
 
   private:
-    void loadConfig() override;
-    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
-
     // Following constructors and assignment operators not supported
     GenesisWidget() = delete;
     GenesisWidget(const GenesisWidget&) = delete;

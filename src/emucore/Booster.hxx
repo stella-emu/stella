@@ -40,13 +40,12 @@ class BoosterGrip : public Joystick
     BoosterGrip(Jack jack, const Event& event, const System& system);
     ~BoosterGrip() override = default;
 
-  public:
     /**
       Returns the name of this controller.
     */
     string name() const override { return "Booster Grip"; }
 
-  private:
+  protected:
     /**
       Update the button pin states.
     */

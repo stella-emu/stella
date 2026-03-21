@@ -31,9 +31,8 @@ class Cartridge0840Widget : public CartridgeEnhancedWidget
                         Cartridge0840& cart);
     ~Cartridge0840Widget() override = default;
 
-  private:
+  protected:
     string manufacturer() override { return "Fred X. Quimby"; }
-
     string description() override;
 
   private:

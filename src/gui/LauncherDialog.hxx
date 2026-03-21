@@ -103,16 +103,14 @@ class LauncherDialog : public Dialog, CommandSender
     */
     void quit();
 
+    void loadConfig() override;
+    void saveConfig() override;
+
+    void setPosition() override { positionAt(0); }
 
     void tick() override;
 
-  private:
-    static constexpr int MIN_LAUNCHER_CHARS = 24;
-    static constexpr int MIN_ROMINFO_CHARS = 30;
-    static constexpr int MIN_ROMINFO_ROWS = 7; // full lines
-    static constexpr int MIN_ROMINFO_LINES = 4; // extra lines
-
-    void setPosition() override { positionAt(0); }
+  protected:
     void handleKeyDown(StellaKey key, StellaMod mod, bool repeated) override;
     void handleMouseUp(int x, int y, MouseButton b, int clickCount) override;
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
@@ -120,8 +118,12 @@ class LauncherDialog : public Dialog, CommandSender
     void handleJoyUp(int stick, int button) override;
     Event::Type getJoyAxisEvent(int stick, JoyAxis axis, JoyDir adir, int button) override;
 
-    void loadConfig() override;
-    void saveConfig() override;
+  private:
+    static constexpr int MIN_LAUNCHER_CHARS = 24;
+    static constexpr int MIN_ROMINFO_CHARS = 30;
+    static constexpr int MIN_ROMINFO_ROWS = 7; // full lines
+    static constexpr int MIN_ROMINFO_LINES = 4; // extra lines
+
     void updateUI();
     void addTitleWidget(int& ypos);
     void addFilteringWidgets(int& ypos);

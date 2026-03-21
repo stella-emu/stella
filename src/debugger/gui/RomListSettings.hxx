@@ -34,6 +34,8 @@ class RomListSettings : public Dialog, public CommandSender
     RomListSettings(GuiObject* boss, const GUI::Font& font);
     ~RomListSettings() override = default;
 
+    void loadConfig() override;
+
     bool isShading() const override { return false; }
 
     /** Show dialog onscreen at the specified coordinates
@@ -42,6 +44,10 @@ class RomListSettings : public Dialog, public CommandSender
 
     /** This dialog uses its own positioning, so we override Dialog::setPosition() */
     void setPosition() override;
+
+  protected:
+    void handleMouseDown(int x, int y, MouseButton b, int clickCount) override;
+    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 
   private:
     uInt32 _xorig{0}, _yorig{0};
@@ -53,10 +59,6 @@ class RomListSettings : public Dialog, public CommandSender
     CheckboxWidget* myUseRelocation{nullptr};
 
   private:
-    void loadConfig() override;
-    void handleMouseDown(int x, int y, MouseButton b, int clickCount) override;
-    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
-
     // Following constructors and assignment operators not supported
     RomListSettings() = delete;
     RomListSettings(const RomListSettings&) = delete;

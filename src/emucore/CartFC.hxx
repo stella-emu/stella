@@ -79,7 +79,6 @@ class CartridgeFC : public CartridgeEnhanced
     }
   #endif
 
-  public:
     /**
       Change the byte at the specified address to the given value
 
@@ -89,10 +88,10 @@ class CartridgeFC : public CartridgeEnhanced
     */
     bool poke(uInt16 address, uInt8 value) override;
 
+    uInt16 hotspot() const override { return 0x1FF8; }
+
   private:
     bool checkSwitchBank(uInt16 address, uInt8) override;
-
-    uInt16 hotspot() const override { return 0x1FF8; }
 
     // Target bank defined by writing to $1FF8/9
     uInt16 myTargetBank{0};

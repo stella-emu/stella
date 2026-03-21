@@ -32,6 +32,8 @@ class InputTextDialog;
 
 class RamWidget : public Widget, public CommandSender
 {
+  friend class CartRamWidget;  // TODO: handleCommand() needs this
+
   public:
     RamWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& nfont,
               int x, int y, int w, int h,
@@ -41,9 +43,11 @@ class RamWidget : public Widget, public CommandSender
 
     void loadConfig() override;
     void setOpsWidget(DataGridOpsWidget* w);
-    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 
     virtual string getLabel(int addr) const = 0;
+
+  protected:
+    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 
   private:
     // To be implemented by derived classes

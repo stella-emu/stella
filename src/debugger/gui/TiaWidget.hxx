@@ -37,6 +37,11 @@ class TiaWidget : public Widget, public CommandSender
               int x, int y, int w, int h);
     ~TiaWidget() override = default;
 
+    void loadConfig() override;
+
+  protected:
+    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+
   private:
     DataGridWidget* myColorRegs{nullptr};
 
@@ -155,8 +160,6 @@ class TiaWidget : public Widget, public CommandSender
 
   private:
     void changeColorRegs();
-    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
-    void loadConfig() override;
 
     // Following constructors and assignment operators not supported
     TiaWidget() = delete;

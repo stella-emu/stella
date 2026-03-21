@@ -32,6 +32,12 @@ class CartridgeARWidget : public CartDebugWidget
                       CartridgeAR& cart);
     ~CartridgeARWidget() override = default;
 
+    void loadConfig() override;
+    string bankState() override;
+
+  protected:
+    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+
   private:
     CartridgeAR& myCart;
     PopUpWidget* myBank{nullptr};
@@ -39,11 +45,6 @@ class CartridgeARWidget : public CartDebugWidget
     enum { kBankChanged = 'bkCH' };
 
   private:
-    void loadConfig() override;
-    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
-
-    string bankState() override;
-
     // Following constructors and assignment operators not supported
     CartridgeARWidget() = delete;
     CartridgeARWidget(const CartridgeARWidget&) = delete;
