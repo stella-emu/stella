@@ -98,13 +98,13 @@ void RomInfoWidget::parseProperties(const FSNode& node, bool full)
 
   string value;
 
-  if((value = myProperties.get(PropType::Cart_Manufacturer)) != EmptyString())
+  if(value = myProperties.get(PropType::Cart_Manufacturer); value != EmptyString())
     myRomInfo.push_back("Manufacturer: " + value);
-  if((value = myProperties.get(PropType::Cart_ModelNo)) != EmptyString())
+  if(value = myProperties.get(PropType::Cart_ModelNo); value != EmptyString())
     myRomInfo.push_back("Model: " + value);
-  if((value = myProperties.get(PropType::Cart_Rarity)) != EmptyString())
+  if(value = myProperties.get(PropType::Cart_Rarity); value != EmptyString())
     myRomInfo.push_back("Rarity: " + value);
-  if((value = myProperties.get(PropType::Cart_Note)) != EmptyString())
+  if(value = myProperties.get(PropType::Cart_Note); value != EmptyString())
     myRomInfo.push_back("Note: " + value);
 
   if(full)
@@ -121,23 +121,23 @@ void RomInfoWidget::parseProperties(const FSNode& node, bool full)
     size_t size = 0;
     try
     {
-      ByteBuffer image;
-      string md5;
-
-      if(node.exists() && !node.isDirectory() &&
-        (image = instance().openROM(node, md5, size)) != nullptr)
+      if(node.exists() && !node.isDirectory())
       {
-        Logger::debug(myProperties.get(PropType::Cart_Name) + ":");
-        left = ControllerDetector::detectName(image, size, leftType,
-          !swappedPorts ? Controller::Jack::Left : Controller::Jack::Right,
-            instance().settings());
-        right = ControllerDetector::detectName(image, size, rightType,
-          !swappedPorts ? Controller::Jack::Right : Controller::Jack::Left,
-            instance().settings());
-        if(bsDetected == "AUTO")
-          bsDetected = Bankswitch::typeToName(CartDetector::autodetectType(image, size));
+        string md5;
+        if(const ByteBuffer image = instance().openROM(node, md5, size); image != nullptr)
+        {
+          Logger::debug(myProperties.get(PropType::Cart_Name) + ":");
+          left = ControllerDetector::detectName(image, size, leftType,
+            !swappedPorts ? Controller::Jack::Left : Controller::Jack::Right,
+              instance().settings());
+          right = ControllerDetector::detectName(image, size, rightType,
+            !swappedPorts ? Controller::Jack::Right : Controller::Jack::Left,
+              instance().settings());
+          if(bsDetected == "AUTO")
+            bsDetected = Bankswitch::typeToName(CartDetector::autodetectType(image, size));
 
-        isPlusCart = CartDetector::isProbablyPlusROM(image, size);
+          isPlusCart = CartDetector::isProbablyPlusROM(image, size);
+        }
       }
     }
     catch(const runtime_error&)

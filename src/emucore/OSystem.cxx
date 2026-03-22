@@ -402,20 +402,20 @@ FBInitStatus OSystem::createFrameBuffer()
     case EventHandlerState::TIMEMACHINE:
   #endif
     case EventHandlerState::PLAYBACK:
-      if((fbstatus = myConsole->initializeVideo()) != FBInitStatus::Success)
+      if(fbstatus = myConsole->initializeVideo(); fbstatus != FBInitStatus::Success)
         return fbstatus;
       break;
 
   #ifdef GUI_SUPPORT
     case EventHandlerState::LAUNCHER:
-      if((fbstatus = myLauncher->initializeVideo()) != FBInitStatus::Success)
+      if(fbstatus = myLauncher->initializeVideo(); fbstatus != FBInitStatus::Success)
         return fbstatus;
       break;
   #endif
 
   #ifdef DEBUGGER_SUPPORT
     case EventHandlerState::DEBUGGER:
-      if((fbstatus = myDebugger->initializeVideo()) != FBInitStatus::Success)
+      if(fbstatus = myDebugger->initializeVideo(); fbstatus != FBInitStatus::Success)
         return fbstatus;
       break;
   #endif
@@ -677,9 +677,8 @@ unique_ptr<Console> OSystem::openConsole(const FSNode& romfile, string& md5)
   unique_ptr<Console> console;
 
   // Open the cartridge image and read it in
-  ByteBuffer image;
   size_t size = 0;
-  if((image = openROM(romfile, md5, size)) != nullptr)
+  if(const ByteBuffer image = openROM(romfile, md5, size); image != nullptr)
   {
     // Get a valid set of properties, including any entered on the commandline
     // For initial creation of the Cart, we're only concerned with the BS type
@@ -857,7 +856,7 @@ ByteBuffer OSystem::openROM(const FSNode& rom, size_t& size,
   ByteBuffer image;
   try
   {
-    if((size = rom.read(image, sizeToRead)) == 0)
+    if(size = rom.read(image, sizeToRead); size == 0)
       return nullptr;
   }
   catch(const runtime_error&)

@@ -942,15 +942,14 @@ void PhysicalJoystickHandler::handleRegularAxisEvent(const PhysicalJoystickPtr& 
 
   if(myHandler.state() == EventHandlerState::EMULATION)
   {
-    Event::Type eventAxisAnalog{};
-
     // Check for analog events, which are handled differently
     // A value change lower than ~90% indicates analog input
-    if((abs(j->axisLastValue[axis] - value) < 30000)
-       && (eventAxisAnalog = j->joyMap.get(EventMode::kEmulationMode, button,
-           static_cast<JoyAxis>(axis), JoyDir::ANALOG)) != Event::Type::NoType)
+    if(abs(j->axisLastValue[axis] - value) < 30000)
     {
-      myHandler.handleEvent(eventAxisAnalog, value);
+      if(const Event::Type eventAxisAnalog = j->joyMap.get(
+          EventMode::kEmulationMode, button, static_cast<JoyAxis>(axis), JoyDir::ANALOG);
+          eventAxisAnalog != Event::Type::NoType)
+        myHandler.handleEvent(eventAxisAnalog, value);
     }
     else
     {

@@ -42,7 +42,7 @@ KVRMap KeyValueRepositoryConfigfile::load(istream& in)
       continue;
 
     // Search for the equal sign and discard the line if its not found
-    if((equalPos = line.find('=')) == string::npos)
+    if(equalPos = line.find('='); equalPos == string::npos)
       continue;
 
     // Split the line into key/value pairs and trim any whitespace

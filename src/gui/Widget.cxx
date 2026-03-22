@@ -595,7 +595,7 @@ bool StaticTextWidget::setUrl(string_view url, string_view label,
       BSPF::replaceAll(_label, placeHolder, text);
 
     // determine position of link
-    if((start = BSPF::findIgnoreCase(_label, text)) != string::npos)
+    if(start = BSPF::findIgnoreCase(_label, text); start != string::npos)
     {
       len = text.size();
       _url = url;

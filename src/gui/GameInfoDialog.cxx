@@ -761,15 +761,15 @@ void GameInfoDialog::loadEmulationProperties(const Properties& props)
     }
     else
     {
-      ByteBuffer image;
       string md5 = props.get(PropType::Cart_MD5);
       size_t size = 0;
 
-      // try to load the image for auto detection
-      if(myGameFile.exists() && !myGameFile.isDirectory() && (image = instance().openROM(myGameFile, md5, size)) != nullptr)
-      {
-        bsDetected = Bankswitch::typeToDesc(CartDetector::autodetectType(image, size)) + " detected";
-      }
+      // Try to load the image for auto detection
+      if(myGameFile.exists() && !myGameFile.isDirectory())
+        if(const ByteBuffer image = instance().openROM(myGameFile, md5, size);
+           image != nullptr)
+          bsDetected = Bankswitch::typeToDesc(
+              CartDetector::autodetectType(image, size)) + " detected";
     }
   }
   myTypeDetected->setLabel(bsDetected);

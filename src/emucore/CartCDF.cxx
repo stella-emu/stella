@@ -763,10 +763,8 @@ void CartridgeCDF::setupVersion()
 {
   // CDFJ+ detection
 
-  // get offset of CDFJPlus ID
-  uInt32 cdfjOffset = 0;
-
-  if ((cdfjOffset = scanCDFDriver(0x53554c50)) != 0xFFFFFFFF && // Plus
+  if (const uInt32 cdfjOffset = scanCDFDriver(0x53554c50); // offset of CDFJPlus ID
+      cdfjOffset != 0xFFFFFFFF &&                               // Plus
       getUInt32(myImage.get(), cdfjOffset+4) == 0x4a464443 &&   // CDFJ
       getUInt32(myImage.get(), cdfjOffset+8) == 0x00000001) {   // V1
     myCDFSubtype = CDFSubtype::CDFJplus;

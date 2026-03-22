@@ -9,7 +9,6 @@ time run-clang-tidy-22 -header-filter=\(.*\.hxx\) \
 -llvm-prefer-static-over-anonymous-namespace,\
 -llvmlibc-inline-function-decl,\
 -boost-use-ranges,\
--bugprone-assignment-in-if-condition,\
 -bugprone-branch-clone,\
 -bugprone-easily-swappable-parameters,\
 -bugprone-narrowing-conversions,\

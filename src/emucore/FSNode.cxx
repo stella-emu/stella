@@ -344,8 +344,9 @@ size_t FSNode::read(ByteBuffer& buffer, size_t size) const
     throw runtime_error("File not found/readable");
 
   // First let the private subclass attempt to open the file
-  if (_realNode && (sizeRead = _realNode->read(buffer, size)) > 0)
-    return sizeRead;
+  if (_realNode)
+    if (sizeRead = _realNode->read(buffer, size); sizeRead > 0)
+      return sizeRead;
 
   // Otherwise, the default behaviour is to read from a normal C++ ifstream
   std::ifstream in(getPath(), std::ios::binary);
@@ -379,8 +380,9 @@ size_t FSNode::read(stringstream& buffer) const
     throw runtime_error("File not found/readable");
 
   // First let the private subclass attempt to open the file
-  if (_realNode && (sizeRead = _realNode->read(buffer)) > 0)
-    return sizeRead;
+  if (_realNode)
+    if (sizeRead = _realNode->read(buffer); sizeRead > 0)
+      return sizeRead;
 
   // Otherwise, the default behaviour is to read from a normal C++ ifstream
   // and convert to a stringstream
@@ -408,8 +410,9 @@ size_t FSNode::write(const ByteBuffer& buffer, size_t size) const
   size_t sizeWritten = 0;
 
   // First let the private subclass attempt to open the file
-  if (_realNode && (sizeWritten = _realNode->write(buffer, size)) > 0)
-    return sizeWritten;
+  if (_realNode)
+    if (sizeWritten = _realNode->write(buffer, size); sizeWritten > 0)
+      return sizeWritten;
 
   // Otherwise, the default behaviour is to write to a normal C++ ofstream
   std::ofstream out(getPath(), std::ios::binary);
@@ -432,8 +435,9 @@ size_t FSNode::write(const stringstream& buffer) const
   size_t sizeWritten = 0;
 
   // First let the private subclass attempt to open the file
-  if (_realNode && (sizeWritten = _realNode->write(buffer)) > 0)
-    return sizeWritten;
+  if (_realNode)
+    if (sizeWritten = _realNode->write(buffer); sizeWritten > 0)
+      return sizeWritten;
 
   // Otherwise, the default behaviour is to write to a normal C++ ofstream
   std::ofstream out(getPath());
