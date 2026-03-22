@@ -196,7 +196,7 @@ string Debugger::autoExec(StringList* history)
     if(res == 0)
       addFunction(func.name, func.defn, YaccParser::getResult(), true);
     else
-      cerr << "ERROR in builtin function!\n";
+      cerr << "ERROR in builtin function " << func.name << "!\n";
   }
   return buf.str();
 }

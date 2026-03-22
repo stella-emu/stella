@@ -87,8 +87,10 @@ void TiaZoomWidget::zoom(int level)
     return;
 
   // zoom towards mouse position
-  myOffX = round(myOffX + myClickX / myZoomLevel - myClickX / level);
-  myOffY = round(myOffY + myClickY / myZoomLevel - myClickY / level);
+  const auto clickx = static_cast<double>(myClickX),
+             clicky = static_cast<double>(myClickY);
+  myOffX = round(myOffX + clickx / myZoomLevel - clickx / level);
+  myOffY = round(myOffY + clicky / myZoomLevel - clicky / level);
 
   myZoomLevel = level;
   myNumCols = (_w - 4) / myZoomLevel & 0xfffe; // must be even!
