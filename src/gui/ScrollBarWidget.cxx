@@ -167,9 +167,9 @@ void ScrollBarWidget::handleMouseWheel(int x, int y, int direction)
     return;
 
   if(direction < 0)
-    _currentPos -= _wheel_lines ? _wheel_lines : _WHEEL_LINES;
+    _currentPos -= _wheel_lines ? _wheel_lines : S_WHEEL_LINES;
   else
-    _currentPos += _wheel_lines ? _wheel_lines : _WHEEL_LINES;
+    _currentPos += _wheel_lines ? _wheel_lines : S_WHEEL_LINES;
 
   // Make sure that _currentPos is still inside the bounds
   checkBounds(old_pos);
@@ -313,4 +313,4 @@ void ScrollBarWidget::drawWidget(bool hilite)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int ScrollBarWidget::_WHEEL_LINES = 4;
+int ScrollBarWidget::S_WHEEL_LINES = 4;

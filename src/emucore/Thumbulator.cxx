@@ -206,9 +206,9 @@ void Thumbulator::setConsoleTiming(ConsoleTiming timing)
   _consoleTiming = timing;
   switch(timing)
   {
-    case ConsoleTiming::ntsc:   timing_factor = _MHz / NTSC;   break;
-    case ConsoleTiming::pal:    timing_factor = _MHz / PAL;    break;
-    case ConsoleTiming::secam:  timing_factor = _MHz / SECAM;  break;
+    case ConsoleTiming::ntsc:   timing_factor = _chipMHz / NTSC;   break;
+    case ConsoleTiming::pal:    timing_factor = _chipMHz / PAL;    break;
+    case ConsoleTiming::secam:  timing_factor = _chipMHz / SECAM;  break;
     default:  break;  // satisfy compiler
   }
 }
@@ -2890,7 +2890,7 @@ Thumbulator::ChipPropsType Thumbulator::setChipType(ChipType type)
   ChipPropsType props = ChipProps[static_cast<uInt32>(type)];
 
   _chipType = type;
-  _MHz = props.MHz;
+  _chipMHz = props.MHz;
 #ifdef THUMB_CYCLE_COUNT
   _flashCycles = props.flashCycles;
   _flashBanks = props.flashBanks;

@@ -174,10 +174,10 @@ class DialogContainer
     /**
       Set input speeds.
     */
-    static void setDoubleClickDelay(int delay) { _DOUBLE_CLICK_DELAY = delay; }
-    static void setControllerDelay(int delay) { _REPEAT_INITIAL_DELAY = delay; }
+    static void setDoubleClickDelay(int delay) { S_DOUBLE_CLICK_DELAY = delay; }
+    static void setControllerDelay(int delay) { S_REPEAT_INITIAL_DELAY = delay; }
     static void setControllerRate(int rate) {
-      _REPEAT_SUSTAIN_DELAY = (rate > 0 ? (1000 / rate) : 50);
+      S_REPEAT_SUSTAIN_DELAY = (rate > 0 ? (1000 / rate) : 50);
     }
 
   private:
@@ -201,11 +201,11 @@ class DialogContainer
     // Indicates the most current time (in milliseconds) as set by updateTime()
     uInt64 myTime{0};
 
-    static uInt64 _DOUBLE_CLICK_DELAY;
-    static uInt64 _REPEAT_INITIAL_DELAY;
-    static uInt64 _REPEAT_SUSTAIN_DELAY;
-    static constexpr uInt64 _REPEAT_NONE = 1 << 24; // loooong
-    static constexpr uInt64 _LONG_PRESS_DELAY = 1000; // 1 second
+    static uInt64 S_DOUBLE_CLICK_DELAY;
+    static uInt64 S_REPEAT_INITIAL_DELAY;
+    static uInt64 S_REPEAT_SUSTAIN_DELAY;
+    static constexpr uInt64 S_REPEAT_NONE = 1 << 24; // loooong
+    static constexpr uInt64 S_LONG_PRESS_DELAY = 1000; // 1 second
 
     // For continuous 'mouse down' events
     struct {

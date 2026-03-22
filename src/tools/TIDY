@@ -12,9 +12,7 @@ time run-clang-tidy-22 -header-filter=\(.*\.hxx\) \
 -bugprone-branch-clone,\
 -bugprone-easily-swappable-parameters,\
 -bugprone-narrowing-conversions,\
--bugprone-reserved-identifier,\
 -cert-dcl37-c,\
--cert-dcl51-cpp,\
 -cert-err58-cpp,\
 -cert-int09-c,\
 -clang-analyzer-cplusplus.NewDeleteLeaks,\

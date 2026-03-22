@@ -26,33 +26,33 @@
 Bankswitch::Type CartDetector::autodetectType(const ByteBuffer& image, size_t size)
 {
   // Guess type based on size
-  Bankswitch::Type type = Bankswitch::Type::_AUTO;
+  Bankswitch::Type type = Bankswitch::Type::AUTO;
 
   if (isProbablyELF(image, size)) {
-    type =Bankswitch::Type::_ELF;
+    type =Bankswitch::Type::ELF;
   }
   else if ((size % 8448) == 0 || size == 6_KB)
   {
     if(size == 6_KB && isProbablyGL(image, size))
-      type = Bankswitch::Type::_GL;
+      type = Bankswitch::Type::GL;
     else
-      type = Bankswitch::Type::_AR;
+      type = Bankswitch::Type::AR;
   }
   else if((size <= 2_KB) ||
           (size == 4_KB && std::memcmp(image.get(), image.get() + 2_KB, 2_KB) == 0))
   {
-    type = isProbablyCV(image, size) ? Bankswitch::Type::_CV : Bankswitch::Type::_2K;
+    type = isProbablyCV(image, size) ? Bankswitch::Type::CV : Bankswitch::Type::_2K;
   }
   else if(size == 4_KB)
   {
     if(isProbablyCV(image, size))
-      type = Bankswitch::Type::_CV;
+      type = Bankswitch::Type::CV;
     else if(isProbably4KSC(image, size))
       type = Bankswitch::Type::_4KSC;
     else if (isProbablyFC(image, size))
-      type = Bankswitch::Type::_FC;
+      type = Bankswitch::Type::FC;
     else if (isProbablyGL(image, size))
-      type = Bankswitch::Type::_GL;
+      type = Bankswitch::Type::GL;
     else
       type = Bankswitch::Type::_4K;
   }
@@ -67,11 +67,11 @@ Bankswitch::Type CartDetector::autodetectType(const ByteBuffer& image, size_t si
                     searchForBytes(image, size, signature[1], 3, 2);
 
     if(isProbablySC(image, size))
-      type = Bankswitch::Type::_F8SC;
+      type = Bankswitch::Type::F8SC;
     else if(std::memcmp(image.get(), image.get() + 4_KB, 4_KB) == 0)
       type = Bankswitch::Type::_4K;
     else if(isProbablyE0(image, size))
-      type = Bankswitch::Type::_E0;
+      type = Bankswitch::Type::E0;
     else if(isProbably3EX(image, size))
       type = Bankswitch::Type::_3EX;
     else if(isProbably3E(image, size))
@@ -79,81 +79,81 @@ Bankswitch::Type CartDetector::autodetectType(const ByteBuffer& image, size_t si
     else if(isProbably3F(image, size))
       type = Bankswitch::Type::_3F;
     else if(isProbablyUA(image, size))
-      type = Bankswitch::Type::_UA;
+      type = Bankswitch::Type::UA;
     else if(isProbably0FA0(image, size))
       type = Bankswitch::Type::_0FA0;
     else if(isProbablyFE(image, size) && !f8)
-      type = Bankswitch::Type::_FE;
+      type = Bankswitch::Type::FE;
     else if(isProbably0840(image, size))
       type = Bankswitch::Type::_0840;
     else if(isProbablyE78K(image, size))
-      type = Bankswitch::Type::_E7;
+      type = Bankswitch::Type::E7;
     else if (isProbablyWD(image,size))
-      type = Bankswitch::Type::_WD;
+      type = Bankswitch::Type::WD;
     else if (isProbablyFC(image, size))
-      type = Bankswitch::Type::_FC;
+      type = Bankswitch::Type::FC;
     else if(isProbably03E0(image, size))
       type = Bankswitch::Type::_03E0;
     else
-      type = Bankswitch::Type::_F8;
+      type = Bankswitch::Type::F8;
   }
   else if(size == 8_KB + 3)  // 8195 bytes (Experimental)
   {
-    type = Bankswitch::Type::_WDSW;
+    type = Bankswitch::Type::WDSW;
   }
   else if(size >= 10_KB && size <= 10_KB + 256)  // ~10K - Pitfall2
   {
-    type = Bankswitch::Type::_DPC;
+    type = Bankswitch::Type::DPC;
   }
   else if(size == 12_KB)
   {
     if(isProbablyE7(image, size))
-      type = Bankswitch::Type::_E7;
+      type = Bankswitch::Type::E7;
     else
-      type = Bankswitch::Type::_FA;
+      type = Bankswitch::Type::FA;
   }
   else if(size == 16_KB)
   {
     if (isProbablySC(image, size))
-      type = Bankswitch::Type::_F6SC;
+      type = Bankswitch::Type::F6SC;
     else if (isProbablyE7(image, size))
-      type = Bankswitch::Type::_E7;
+      type = Bankswitch::Type::E7;
     else if (isProbablyFC(image, size))
-      type = Bankswitch::Type::_FC;
+      type = Bankswitch::Type::FC;
     else if (isProbably3EX(image, size))
       type = Bankswitch::Type::_3EX;
     else if (isProbably3E(image, size))
       type = Bankswitch::Type::_3E;
   /* no known 16K 3F ROMS
     else if(isProbably3F(image, size))
-      type = Bankswitch::Type::_3F;
+      type = Bankswitch::Type::3F;
   */
     else if (isProbablyJANE(image, size))
-      type = Bankswitch::Type::_JANE;
+      type = Bankswitch::Type::JANE;
     else
-      type = Bankswitch::Type::_F6;
+      type = Bankswitch::Type::F6;
   }
   else if(size == 24_KB || size == 28_KB)
   {
-    type = Bankswitch::Type::_FA2;
+    type = Bankswitch::Type::FA2;
   }
   else if(size == 29_KB)
   {
     if(isProbablyARM(image, size))
-      type = Bankswitch::Type::_FA2;
+      type = Bankswitch::Type::FA2;
     else /*if(isProbablyDPCplus(image, size))*/
-      type = Bankswitch::Type::_DPCP;
+      type = Bankswitch::Type::DPCP;
   }
   else if(size == 32_KB)
   {
     if (isProbablyCTY(image, size))
-      type = Bankswitch::Type::_CTY;
+      type = Bankswitch::Type::CTY;
     else if(isProbablyCDF(image, size))
-      type = Bankswitch::Type::_CDF;
+      type = Bankswitch::Type::CDF;
     else if(isProbablyDPCplus(image, size))
-      type = Bankswitch::Type::_DPCP;
+      type = Bankswitch::Type::DPCP;
     else if(isProbablySC(image, size))
-      type = Bankswitch::Type::_F4SC;
+      type = Bankswitch::Type::F4SC;
     else if(isProbably3EX(image, size))
       type = Bankswitch::Type::_3EX;
     else if(isProbably3E(image, size))
@@ -161,27 +161,27 @@ Bankswitch::Type CartDetector::autodetectType(const ByteBuffer& image, size_t si
     else if(isProbably3F(image, size))
       type = Bankswitch::Type::_3F;
     else if (isProbablyBUS(image, size))
-      type = Bankswitch::Type::_BUS;
+      type = Bankswitch::Type::BUS;
     else if(isProbablyFA2(image, size))
-      type = Bankswitch::Type::_FA2;
+      type = Bankswitch::Type::FA2;
     else if (isProbablyFC(image, size))
-      type = Bankswitch::Type::_FC;
+      type = Bankswitch::Type::FC;
     else
-      type = Bankswitch::Type::_F4;
+      type = Bankswitch::Type::F4;
   }
   else if(size == 60_KB)
   {
     if(isProbablyCTY(image, size))
-      type = Bankswitch::Type::_CTY;
+      type = Bankswitch::Type::CTY;
     else
-      type = Bankswitch::Type::_F4;
+      type = Bankswitch::Type::F4;
   }
   else if(size == 64_KB)
   {
     if(isProbablyEFF(image, size, type))
       ; // type has been set directly in the function
     else if (isProbablyCDF(image, size))
-      type = Bankswitch::Type::_CDF;
+      type = Bankswitch::Type::CDF;
     else if(isProbably3EX(image, size))
       type = Bankswitch::Type::_3EX;
     else if(isProbably3E(image, size))
@@ -193,14 +193,14 @@ Bankswitch::Type CartDetector::autodetectType(const ByteBuffer& image, size_t si
     else if(isProbablyEF(image, size, type))
       ; // type has been set directly in the function
     else if(isProbablyX07(image, size))
-      type = Bankswitch::Type::_X07;
+      type = Bankswitch::Type::X07;
     else
-      type = Bankswitch::Type::_F0;
+      type = Bankswitch::Type::F0;
   }
   else if(size == 128_KB)
   {
     if (isProbablyCDF(image, size))
-      type = Bankswitch::Type::_CDF;
+      type = Bankswitch::Type::CDF;
     else if(isProbably3EX(image, size))
       type = Bankswitch::Type::_3EX;
     else if(isProbably3E(image, size))
@@ -212,12 +212,12 @@ Bankswitch::Type CartDetector::autodetectType(const ByteBuffer& image, size_t si
     else if(isProbably4A50(image, size))
       type = Bankswitch::Type::_4A50;
     else /*if(isProbablySB(image, size))*/
-      type = Bankswitch::Type::_SB;
+      type = Bankswitch::Type::SB;
   }
   else if(size == 256_KB)
   {
     if (isProbablyCDF(image, size))
-      type = Bankswitch::Type::_CDF;
+      type = Bankswitch::Type::CDF;
     else if(isProbably3EX(image, size))
       type = Bankswitch::Type::_3EX;
     else if(isProbably3E(image, size))
@@ -227,14 +227,14 @@ Bankswitch::Type CartDetector::autodetectType(const ByteBuffer& image, size_t si
     else if(isProbably3F(image, size))
       type = Bankswitch::Type::_3F;
     else /*if(isProbablySB(image, size))*/
-      type = Bankswitch::Type::_SB;
+      type = Bankswitch::Type::SB;
   }
   else if(size == 512_KB)
   {
     if(isProbablyTVBoy(image, size))
-      type = Bankswitch::Type::_TVBOY;
+      type = Bankswitch::Type::TVBOY;
     else if (isProbablyCDF(image, size))
-      type = Bankswitch::Type::_CDF;
+      type = Bankswitch::Type::CDF;
     else if(isProbably3EX(image, size))
       type = Bankswitch::Type::_3EX;
     else if(isProbably3E(image, size))
@@ -256,12 +256,12 @@ Bankswitch::Type CartDetector::autodetectType(const ByteBuffer& image, size_t si
   if(isProbably3EPlus(image, size))
     type = Bankswitch::Type::_3EP;
   else if(isProbablyMDM(image, size))
-    type = Bankswitch::Type::_MDM;
+    type = Bankswitch::Type::MDM;
   else if(isProbablyMVC(image, size))
-    type = Bankswitch::Type::_MVC;
+    type = Bankswitch::Type::MVC;
 
   // If we get here and autodetection failed, then we force '4K'
-  if(type == Bankswitch::Type::_AUTO)
+  if(type == Bankswitch::Type::AUTO)
     type = Bankswitch::Type::_4K;  // Most common bankswitching type
 
   ostringstream ss;
@@ -473,12 +473,12 @@ bool CartDetector::isProbablyBF(const ByteBuffer& image, size_t size,
   static constexpr uInt8 bfsc[] = { 'B', 'F', 'S', 'C' };
   if(searchForBytes(image.get()+size-8, 8, bf, 4))
   {
-    type = Bankswitch::Type::_BF;
+    type = Bankswitch::Type::BF;
     return true;
   }
   else if(searchForBytes(image.get()+size-8, 8, bfsc, 4))
   {
-    type = Bankswitch::Type::_BFSC;
+    type = Bankswitch::Type::BFSC;
     return true;
   }
 
@@ -540,12 +540,12 @@ bool CartDetector::isProbablyDF(const ByteBuffer& image, size_t size,
   static constexpr uInt8 dfsc[] = { 'D', 'F', 'S', 'C' };
   if(searchForBytes(image.get()+size-8, 8, df, 4))
   {
-    type = Bankswitch::Type::_DF;
+    type = Bankswitch::Type::DF;
     return true;
   }
   else if(searchForBytes(image.get()+size-8, 8, dfsc, 4))
   {
-    type = Bankswitch::Type::_DFSC;
+    type = Bankswitch::Type::DFSC;
     return true;
   }
 
@@ -642,12 +642,12 @@ bool CartDetector::isProbablyEF(const ByteBuffer& image, size_t size,
   static constexpr uInt8 efsc[] = { 'E', 'F', 'S', 'C' };
   if(searchForBytes(image.get()+size-8, 8, efef, 4))
   {
-    type = Bankswitch::Type::_EF;
+    type = Bankswitch::Type::EF;
     return true;
   }
   else if(searchForBytes(image.get()+size-8, 8, efsc, 4))
   {
-    type = Bankswitch::Type::_EFSC;
+    type = Bankswitch::Type::EFSC;
     return true;
   }
 
@@ -674,7 +674,7 @@ bool CartDetector::isProbablyEF(const ByteBuffer& image, size_t size,
   // the SC variant
   if(isEF)
   {
-    type = isProbablySC(image, size) ? Bankswitch::Type::_EFSC : Bankswitch::Type::_EF;
+    type = isProbablySC(image, size) ? Bankswitch::Type::EFSC : Bankswitch::Type::EF;
     return true;
   }
 
@@ -689,7 +689,7 @@ bool CartDetector::isProbablyEFF(const ByteBuffer& image, size_t size,
   static constexpr uInt8 effb[] = { 'E', 'F', 'F', 'B' };
   if(searchForBytes(image.get()+size-8, 8, effb, 4))
     {
-      type = Bankswitch::Type::_EFF;
+      type = Bankswitch::Type::EFF;
       return true;
     }
 
@@ -713,7 +713,7 @@ bool CartDetector::isProbablyEFF(const ByteBuffer& image, size_t size,
     }
 
   if (isEFF) {
-    type = Bankswitch::Type::_EFF;
+    type = Bankswitch::Type::EFF;
   }
   return isEFF;
 }
@@ -807,7 +807,7 @@ size_t CartDetector::isProbablyMVC(const FSNode& rom)
 {
   constexpr size_t frameSize = 2 * CartridgeMVC::MVC_FIELD_SIZE;
 
-  if(Bankswitch::typeFromExtension(rom) == Bankswitch::Type::_MVC)
+  if(Bankswitch::typeFromExtension(rom) == Bankswitch::Type::MVC)
     return frameSize;
 
   Serializer s(rom.getPath(), Serializer::Mode::ReadOnly);

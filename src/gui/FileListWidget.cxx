@@ -377,7 +377,7 @@ bool FileListWidget::handleText(char text)
     _quickSelectStr = text;
   else
     _quickSelectStr += text;
-  _quickSelectTime = time + _QUICK_SELECT_DELAY;
+  _quickSelectTime = time + S_QUICK_SELECT_DELAY;
 
   int selectedItem = 0;
   for(const auto& i : _list)

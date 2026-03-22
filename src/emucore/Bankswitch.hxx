@@ -37,17 +37,18 @@ class Bankswitch
 {
   public:
     // Currently supported bankswitch schemes
+    // Those starting with a number need an underscore (bugprone-reserved-identifier)
     enum class Type: uInt8 {
-      _AUTO,  _03E0,  _0840,   _0FA0,  _2IN1, _4IN1, _8IN1, _16IN1,
+      AUTO,   _03E0,  _0840,   _0FA0,  _2IN1, _4IN1, _8IN1, _16IN1,
       _32IN1, _64IN1, _128IN1, _2K,    _3E,   _3EX,  _3EP,  _3F,
-      _4A50,  _4K,    _4KSC,   _AR,    _BF,   _BFSC, _BUS,  _CDF,
-      _CM,    _CTY,   _CV,     _DF,    _DFSC, _DPC,  _DPCP, _E0,
-      _E7,    _EF,    _EFF,    _EFSC,  _ELF,  _F0,   _F4,   _F4SC,
-      _F6,    _F6SC,  _F8,     _F8SC,  _FA,   _FA2,  _FC,   _FE,
-      _GL,    _JANE,  _MDM,   _MVC,    _SB,   _TVBOY,_UA,   _UASW,
-      _WD,    _WDSW,  _WF8,   _X07,
+      _4A50,  _4K,    _4KSC,   AR,     BF,    BFSC,  BUS,   CDF,
+      CM,     CTY,    CV,      DF,     DFSC,  DPC,   DPCP,  E0,
+      E7,     EF,     EFF,     EFSC,   ELF,   F0,    F4,    F4SC,
+      F6,     F6SC,   F8,      F8SC,   FA,    FA2,   FC,    FE,
+      GL,     JANE,   MDM,     MVC,    SB,    TVBOY, UA,    UASW,
+      WD,     WDSW,   WF8,     X07,
     #ifdef CUSTOM_ARM
-      _CUSTOM,
+      CUSTOM,
     #endif
       NumSchemes,
       NumMulti = _128IN1 - _2IN1 + 1,
@@ -61,7 +62,7 @@ class Bankswitch
 
     static constexpr std::array<SizesType, static_cast<uInt8>(Type::NumSchemes)>
       Sizes= {{
-        { Bankswitch::any_KB, Bankswitch::any_KB }, // _AUTO
+        { Bankswitch::any_KB, Bankswitch::any_KB }, // AUTO
         {    8_KB,   8_KB }, // _03E0
         {    8_KB,   8_KB }, // _0840
         {    8_KB,   8_KB }, // _0FA0
@@ -195,7 +196,7 @@ class Bankswitch
         { "WF8"     , "WF8 (Coleco, white carts)"   },
         { "X07"     , "X07 (64K AtariAge)"          },
       #ifdef CUSTOM_ARM
-        { "CUSTOM"  ,   "CUSTOM (ARM)"              }
+        { "CUSTOM"  , "CUSTOM (ARM)"                }
       #endif
       }};
 
@@ -211,7 +212,7 @@ class Bankswitch
       if(it != ourNameToTypes.end())
         return it->second;
 
-      return Bankswitch::Type::_AUTO;
+      return Bankswitch::Type::AUTO;
     }
 
     // Convert BSType enum to description string
@@ -220,7 +221,7 @@ class Bankswitch
     }
 
     // Determine bankswitch type by filename extension
-    // Use '_AUTO' if unknown
+    // Use 'AUTO' if unknown
     static Bankswitch::Type typeFromExtension(const FSNode& file) {
       const string_view name = file.getPath();
       const auto idx = name.find_last_of('.');
@@ -231,7 +232,7 @@ class Bankswitch
           return it->second;
       }
 
-      return Bankswitch::Type::_AUTO;
+      return Bankswitch::Type::AUTO;
     }
 
     /**
@@ -286,13 +287,13 @@ class Bankswitch
     inline static const ExtensionMap ourExtensions = {  // NOLINT
       // Normal file extensions that don't actually tell us anything
       // about the bankswitch type to use
-      { "a26"   , Bankswitch::Type::_AUTO   },
-      { "bin"   , Bankswitch::Type::_AUTO   },
-      { "rom"   , Bankswitch::Type::_AUTO   },
+      { "a26"   , Bankswitch::Type::AUTO    },
+      { "bin"   , Bankswitch::Type::AUTO    },
+      { "rom"   , Bankswitch::Type::AUTO    },
     #ifdef ZIP_SUPPORT
-      { "zip"   , Bankswitch::Type::_AUTO   },
+      { "zip"   , Bankswitch::Type::AUTO    },
     #endif
-      { "cu"    , Bankswitch::Type::_AUTO   },
+      { "cu"    , Bankswitch::Type::AUTO    },
 
       // All bankswitch types (those that UnoCart and HarmonyCart support have the same name)
       { "03E"   , Bankswitch::Type::_03E0   },
@@ -323,64 +324,64 @@ class Bankswitch
       { "4K"    , Bankswitch::Type::_4K     },
       { "4KS"   , Bankswitch::Type::_4KSC   },
       { "4KSC"  , Bankswitch::Type::_4KSC   },
-      { "AR"    , Bankswitch::Type::_AR     },
-      { "BF"    , Bankswitch::Type::_BF     },
-      { "BFS"   , Bankswitch::Type::_BFSC   },
-      { "BFSC"  , Bankswitch::Type::_BFSC   },
-      { "BUS"   , Bankswitch::Type::_BUS    },
-      { "CDF"   , Bankswitch::Type::_CDF    },
-      { "CM"    , Bankswitch::Type::_CM     },
-      { "CTY"   , Bankswitch::Type::_CTY    },
-      { "CV"    , Bankswitch::Type::_CV     },
-      { "DF"    , Bankswitch::Type::_DF     },
-      { "DFS"   , Bankswitch::Type::_DFSC   },
-      { "DFSC"  , Bankswitch::Type::_DFSC   },
-      { "DPC"   , Bankswitch::Type::_DPC    },
-      { "DPP"   , Bankswitch::Type::_DPCP   },
-      { "DPCP"  , Bankswitch::Type::_DPCP   },
-      { "E0"    , Bankswitch::Type::_E0     },
-      { "E7"    , Bankswitch::Type::_E7     },
-      { "E78"   , Bankswitch::Type::_E7     },
-      { "E78K"  , Bankswitch::Type::_E7     },
-      { "EF"    , Bankswitch::Type::_EF     },
-      { "EFF"   , Bankswitch::Type::_EFF    },
-      { "EFS"   , Bankswitch::Type::_EFSC   },
-      { "EFSC"  , Bankswitch::Type::_EFSC   },
-      { "ELF"   , Bankswitch::Type::_ELF    },
-      { "F0"    , Bankswitch::Type::_F0     },
-      { "F4"    , Bankswitch::Type::_F4     },
-      { "F4S"   , Bankswitch::Type::_F4SC   },
-      { "F4SC"  , Bankswitch::Type::_F4SC   },
-      { "F6"    , Bankswitch::Type::_F6     },
-      { "F6S"   , Bankswitch::Type::_F6SC   },
-      { "F6SC"  , Bankswitch::Type::_F6SC   },
-      { "F8"    , Bankswitch::Type::_F8     },
-      { "F8S"   , Bankswitch::Type::_F8SC   },
-      { "F8SC"  , Bankswitch::Type::_F8SC   },
-      { "FA"    , Bankswitch::Type::_FA     },
-      { "FA2"   , Bankswitch::Type::_FA2    },
-      { "FC"    , Bankswitch::Type::_FC     },
-      { "FE"    , Bankswitch::Type::_FE     },
-      { "GL"    , Bankswitch::Type::_GL     },
-      { "JAN"   , Bankswitch::Type::_JANE   },
-      { "JANE"  , Bankswitch::Type::_JANE   },
-      { "MDM"   , Bankswitch::Type::_MDM    },
-      { "MVC"   , Bankswitch::Type::_MVC    },
-      { "SB"    , Bankswitch::Type::_SB     },
-      { "TVB"   , Bankswitch::Type::_TVBOY  },
-      { "TVBOY" , Bankswitch::Type::_TVBOY  },
-      { "UA"    , Bankswitch::Type::_UA     },
-      { "UASW"  , Bankswitch::Type::_UASW   },
-      { "WD"    , Bankswitch::Type::_WD     },
-      { "WDSW"  , Bankswitch::Type::_WDSW   },
-      { "WF8"   , Bankswitch::Type::_WF8    },
-      { "X07"   , Bankswitch::Type::_X07    }
+      { "AR"    , Bankswitch::Type::AR      },
+      { "BF"    , Bankswitch::Type::BF      },
+      { "BFS"   , Bankswitch::Type::BFSC    },
+      { "BFSC"  , Bankswitch::Type::BFSC    },
+      { "BUS"   , Bankswitch::Type::BUS     },
+      { "CDF"   , Bankswitch::Type::CDF     },
+      { "CM"    , Bankswitch::Type::CM      },
+      { "CTY"   , Bankswitch::Type::CTY     },
+      { "CV"    , Bankswitch::Type::CV      },
+      { "DF"    , Bankswitch::Type::DF      },
+      { "DFS"   , Bankswitch::Type::DFSC    },
+      { "DFSC"  , Bankswitch::Type::DFSC    },
+      { "DPC"   , Bankswitch::Type::DPC     },
+      { "DPP"   , Bankswitch::Type::DPCP    },
+      { "DPCP"  , Bankswitch::Type::DPCP    },
+      { "E0"    , Bankswitch::Type::E0      },
+      { "E7"    , Bankswitch::Type::E7      },
+      { "E78"   , Bankswitch::Type::E7      },
+      { "E78K"  , Bankswitch::Type::E7      },
+      { "EF"    , Bankswitch::Type::EF      },
+      { "EFF"   , Bankswitch::Type::EFF     },
+      { "EFS"   , Bankswitch::Type::EFSC    },
+      { "EFSC"  , Bankswitch::Type::EFSC    },
+      { "ELF"   , Bankswitch::Type::ELF     },
+      { "F0"    , Bankswitch::Type::F0      },
+      { "F4"    , Bankswitch::Type::F4      },
+      { "F4S"   , Bankswitch::Type::F4SC    },
+      { "F4SC"  , Bankswitch::Type::F4SC    },
+      { "F6"    , Bankswitch::Type::F6      },
+      { "F6S"   , Bankswitch::Type::F6SC    },
+      { "F6SC"  , Bankswitch::Type::F6SC    },
+      { "F8"    , Bankswitch::Type::F8      },
+      { "F8S"   , Bankswitch::Type::F8SC    },
+      { "F8SC"  , Bankswitch::Type::F8SC    },
+      { "FA"    , Bankswitch::Type::FA      },
+      { "FA2"   , Bankswitch::Type::FA2     },
+      { "FC"    , Bankswitch::Type::FC      },
+      { "FE"    , Bankswitch::Type::FE      },
+      { "GL"    , Bankswitch::Type::GL      },
+      { "JAN"   , Bankswitch::Type::JANE    },
+      { "JANE"  , Bankswitch::Type::JANE    },
+      { "MDM"   , Bankswitch::Type::MDM     },
+      { "MVC"   , Bankswitch::Type::MVC     },
+      { "SB"    , Bankswitch::Type::SB      },
+      { "TVB"   , Bankswitch::Type::TVBOY   },
+      { "TVBOY" , Bankswitch::Type::TVBOY   },
+      { "UA"    , Bankswitch::Type::UA      },
+      { "UASW"  , Bankswitch::Type::UASW    },
+      { "WD"    , Bankswitch::Type::WD      },
+      { "WDSW"  , Bankswitch::Type::WDSW    },
+      { "WF8"   , Bankswitch::Type::WF8     },
+      { "X07"   , Bankswitch::Type::X07     }
     };
 
     using NameToTypeMap = const std::map<string_view, Bankswitch::Type,
                                          TypeComparator>;
     inline static const NameToTypeMap ourNameToTypes = {  // NOLINT
-      { "AUTO"    , Bankswitch::Type::_AUTO   },
+      { "AUTO"    , Bankswitch::Type::AUTO    },
       { "03E0"    , Bankswitch::Type::_03E0   },
       { "0840"    , Bankswitch::Type::_0840   },
       { "0FA0"    , Bankswitch::Type::_0FA0   },
@@ -399,47 +400,47 @@ class Bankswitch
       { "4A50"    , Bankswitch::Type::_4A50   },
       { "4K"      , Bankswitch::Type::_4K     },
       { "4KSC"    , Bankswitch::Type::_4KSC   },
-      { "AR"      , Bankswitch::Type::_AR     },
-      { "BF"      , Bankswitch::Type::_BF     },
-      { "BFSC"    , Bankswitch::Type::_BFSC   },
-      { "BUS"     , Bankswitch::Type::_BUS    },
-      { "CDF"     , Bankswitch::Type::_CDF    },
-      { "CM"      , Bankswitch::Type::_CM     },
-      { "CTY"     , Bankswitch::Type::_CTY    },
-      { "CV"      , Bankswitch::Type::_CV     },
-      { "DF"      , Bankswitch::Type::_DF     },
-      { "DFSC"    , Bankswitch::Type::_DFSC   },
-      { "DPC"     , Bankswitch::Type::_DPC    },
-      { "DPC+"    , Bankswitch::Type::_DPCP   },
-      { "E0"      , Bankswitch::Type::_E0     },
-      { "E7"      , Bankswitch::Type::_E7     },
-      { "EF"      , Bankswitch::Type::_EF     },
-      { "EFF"     , Bankswitch::Type::_EFF    },
-      { "EFSC"    , Bankswitch::Type::_EFSC   },
-      { "ELF"     , Bankswitch::Type::_ELF    },
-      { "F0"      , Bankswitch::Type::_F0     },
-      { "F4"      , Bankswitch::Type::_F4     },
-      { "F4SC"    , Bankswitch::Type::_F4SC   },
-      { "F6"      , Bankswitch::Type::_F6     },
-      { "F6SC"    , Bankswitch::Type::_F6SC   },
-      { "F8"      , Bankswitch::Type::_F8     },
-      { "F8SC"    , Bankswitch::Type::_F8SC   },
-      { "FA"      , Bankswitch::Type::_FA     },
-      { "FA2"     , Bankswitch::Type::_FA2    },
-      { "FC"      , Bankswitch::Type::_FC     },
-      { "FE"      , Bankswitch::Type::_FE     },
-      { "GL"      , Bankswitch::Type::_GL     },
-      { "JANE"    , Bankswitch::Type::_JANE   },
-      { "MDM"     , Bankswitch::Type::_MDM    },
-      { "MVC"     , Bankswitch::Type::_MVC    },
-      { "SB"      , Bankswitch::Type::_SB     },
-      { "TVBOY"   , Bankswitch::Type::_TVBOY  },
-      { "UA"      , Bankswitch::Type::_UA     },
-      { "UASW"    , Bankswitch::Type::_UASW   },
-      { "WD"      , Bankswitch::Type::_WD     },
-      { "WDSW"    , Bankswitch::Type::_WDSW   },
-      { "WF8"     , Bankswitch::Type::_WF8    },
-      { "X07"     , Bankswitch::Type::_X07    }
+      { "AR"      , Bankswitch::Type::AR      },
+      { "BF"      , Bankswitch::Type::BF      },
+      { "BFSC"    , Bankswitch::Type::BFSC    },
+      { "BUS"     , Bankswitch::Type::BUS     },
+      { "CDF"     , Bankswitch::Type::CDF     },
+      { "CM"      , Bankswitch::Type::CM      },
+      { "CTY"     , Bankswitch::Type::CTY     },
+      { "CV"      , Bankswitch::Type::CV      },
+      { "DF"      , Bankswitch::Type::DF      },
+      { "DFSC"    , Bankswitch::Type::DFSC    },
+      { "DPC"     , Bankswitch::Type::DPC     },
+      { "DPC+"    , Bankswitch::Type::DPCP    },
+      { "E0"      , Bankswitch::Type::E0      },
+      { "E7"      , Bankswitch::Type::E7      },
+      { "EF"      , Bankswitch::Type::EF      },
+      { "EFF"     , Bankswitch::Type::EFF     },
+      { "EFSC"    , Bankswitch::Type::EFSC    },
+      { "ELF"     , Bankswitch::Type::ELF     },
+      { "F0"      , Bankswitch::Type::F0      },
+      { "F4"      , Bankswitch::Type::F4      },
+      { "F4SC"    , Bankswitch::Type::F4SC    },
+      { "F6"      , Bankswitch::Type::F6      },
+      { "F6SC"    , Bankswitch::Type::F6SC    },
+      { "F8"      , Bankswitch::Type::F8      },
+      { "F8SC"    , Bankswitch::Type::F8SC    },
+      { "FA"      , Bankswitch::Type::FA      },
+      { "FA2"     , Bankswitch::Type::FA2     },
+      { "FC"      , Bankswitch::Type::FC      },
+      { "FE"      , Bankswitch::Type::FE      },
+      { "GL"      , Bankswitch::Type::GL      },
+      { "JANE"    , Bankswitch::Type::JANE    },
+      { "MDM"     , Bankswitch::Type::MDM     },
+      { "MVC"     , Bankswitch::Type::MVC     },
+      { "SB"      , Bankswitch::Type::SB      },
+      { "TVBOY"   , Bankswitch::Type::TVBOY   },
+      { "UA"      , Bankswitch::Type::UA      },
+      { "UASW"    , Bankswitch::Type::UASW    },
+      { "WD"      , Bankswitch::Type::WD      },
+      { "WDSW"    , Bankswitch::Type::WDSW    },
+      { "WF8"     , Bankswitch::Type::WF8     },
+      { "X07"     , Bankswitch::Type::X07     }
     };
 
   private:

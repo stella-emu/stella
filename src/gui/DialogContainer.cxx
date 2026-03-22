@@ -29,8 +29,8 @@
 DialogContainer::DialogContainer(OSystem& osystem)
   : myOSystem{osystem}
 {
-  _DOUBLE_CLICK_DELAY = osystem.settings().getInt("mdouble");
-  _REPEAT_INITIAL_DELAY = osystem.settings().getInt("ctrldelay");
+  S_DOUBLE_CLICK_DELAY = osystem.settings().getInt("mdouble");
+  S_REPEAT_INITIAL_DELAY = osystem.settings().getInt("ctrldelay");
   setControllerRate(osystem.settings().getInt("ctrlrate"));
   reset();
 }
@@ -53,14 +53,14 @@ void DialogContainer::updateTime(uInt64 time)
     activeDialog->handleMouseDown(myCurrentMouseDown.x - activeDialog->_x,
                                   myCurrentMouseDown.y - activeDialog->_y,
                                   myCurrentMouseDown.b, 1);
-    myClickRepeatTime = myTime + _REPEAT_SUSTAIN_DELAY;
+    myClickRepeatTime = myTime + S_REPEAT_SUSTAIN_DELAY;
   }
 
   // Joystick button still pressed
   if(myCurrentButtonDown.stick != -1 && myButtonRepeatTime < myTime)
   {
     activeDialog->handleJoyDown(myCurrentButtonDown.stick, myCurrentButtonDown.button);
-    myButtonRepeatTime = myTime + _REPEAT_SUSTAIN_DELAY;
+    myButtonRepeatTime = myTime + S_REPEAT_SUSTAIN_DELAY;
   }
 
   // Joystick has been pressed long
@@ -68,7 +68,7 @@ void DialogContainer::updateTime(uInt64 time)
   {
     myIgnoreButtonUp = true;
     activeDialog->handleJoyDown(myCurrentButtonDown.stick, myCurrentButtonDown.button, true);
-    myButtonLongPressTime = myButtonRepeatTime = myTime + _REPEAT_NONE;
+    myButtonLongPressTime = myButtonRepeatTime = myTime + S_REPEAT_NONE;
   }
 
   // Joystick axis still pressed
@@ -80,7 +80,7 @@ void DialogContainer::updateTime(uInt64 time)
     else
       activeDialog->handleJoyAxis(myCurrentAxisDown.stick, myCurrentAxisDown.axis,
                                   myCurrentAxisDown.adir);
-    myAxisRepeatTime = myTime + _REPEAT_SUSTAIN_DELAY;
+    myAxisRepeatTime = myTime + S_REPEAT_SUSTAIN_DELAY;
   }
 
   // Joystick hat still pressed
@@ -88,7 +88,7 @@ void DialogContainer::updateTime(uInt64 time)
   {
     activeDialog->handleJoyHat(myCurrentHatDown.stick, myCurrentHatDown.hat,
                                 myCurrentHatDown.hdir);
-    myHatRepeatTime = myTime + _REPEAT_SUSTAIN_DELAY;
+    myHatRepeatTime = myTime + S_REPEAT_SUSTAIN_DELAY;
   }
 }
 
@@ -272,7 +272,7 @@ void DialogContainer::handleMouseButtonEvent(MouseButton b, bool pressed,
           myLastClick.count = 2;
           b = MouseButton::LEFT;
         }
-        else if(myLastClick.count && (myTime < myLastClick.time + _DOUBLE_CLICK_DELAY)
+        else if(myLastClick.count && (myTime < myLastClick.time + S_DOUBLE_CLICK_DELAY)
            && std::abs(myLastClick.x - x) < 3
            && std::abs(myLastClick.y - y) < 3)
         {
@@ -293,7 +293,7 @@ void DialogContainer::handleMouseButtonEvent(MouseButton b, bool pressed,
           myCurrentMouseDown.x = x;
           myCurrentMouseDown.y = y;
           myCurrentMouseDown.b = b;
-          myClickRepeatTime = myTime + _REPEAT_INITIAL_DELAY;
+          myClickRepeatTime = myTime + S_REPEAT_INITIAL_DELAY;
         }
         else
           myCurrentMouseDown.b = MouseButton::NONE;
@@ -337,12 +337,12 @@ void DialogContainer::handleJoyBtnEvent(int stick, int button, bool pressed)
   if(pressed)
   {
     if(myButtonRepeatTime < myTime ||                       // prevent pending repeats after enabling repeat again
-       myButtonRepeatTime + _REPEAT_INITIAL_DELAY > myTime) // ignore blocking delays
+       myButtonRepeatTime + S_REPEAT_INITIAL_DELAY > myTime) // ignore blocking delays
     {
       myCurrentButtonDown.stick = stick;
       myCurrentButtonDown.button = button;
-      myButtonRepeatTime = myTime + (activeDialog->repeatEnabled() ? _REPEAT_INITIAL_DELAY : _REPEAT_NONE);
-      myButtonLongPressTime = myTime + _LONG_PRESS_DELAY;
+      myButtonRepeatTime = myTime + (activeDialog->repeatEnabled() ? S_REPEAT_INITIAL_DELAY : S_REPEAT_NONE);
+      myButtonLongPressTime = myTime + S_LONG_PRESS_DELAY;
 
       activeDialog->handleJoyDown(stick, button);
     }
@@ -371,8 +371,8 @@ void DialogContainer::handleJoyAxisEvent(int stick, JoyAxis axis, JoyDir adir, i
   Dialog* activeDialog = myDialogStack.top();
 
   // Prevent button repeats and long button press in button/axis combinations
-  myButtonRepeatTime = myTime + _REPEAT_NONE;
-  myButtonLongPressTime = myTime + _REPEAT_NONE;
+  myButtonRepeatTime = myTime + S_REPEAT_NONE;
+  myButtonLongPressTime = myTime + S_REPEAT_NONE;
 
   // Only stop firing events if it's the current stick
   if(myCurrentAxisDown.stick == stick && adir == JoyDir::NONE)
@@ -387,7 +387,7 @@ void DialogContainer::handleJoyAxisEvent(int stick, JoyAxis axis, JoyDir adir, i
     myCurrentAxisDown.stick = stick;
     myCurrentAxisDown.axis  = axis;
     myCurrentAxisDown.adir = adir;
-    myAxisRepeatTime = myTime + (activeDialog->repeatEnabled() ? _REPEAT_INITIAL_DELAY : _REPEAT_NONE);
+    myAxisRepeatTime = myTime + (activeDialog->repeatEnabled() ? S_REPEAT_INITIAL_DELAY : S_REPEAT_NONE);
   }
   if(adir != JoyDir::NONE)
     myIgnoreButtonUp = true; // prevent button released events
@@ -404,8 +404,8 @@ void DialogContainer::handleJoyHatEvent(int stick, int hat, JoyHatDir hdir, int 
   Dialog* activeDialog = myDialogStack.top();
 
   // Prevent button repeats and long button press in button/hat combinations
-  myButtonRepeatTime = myTime + _REPEAT_NONE;
-  myButtonLongPressTime = myTime + _REPEAT_NONE;
+  myButtonRepeatTime = myTime + S_REPEAT_NONE;
+  myButtonLongPressTime = myTime + S_REPEAT_NONE;
 
   // Only stop firing events if it's the current stick
   if(myCurrentHatDown.stick == stick && hdir == JoyHatDir::CENTER)
@@ -419,7 +419,7 @@ void DialogContainer::handleJoyHatEvent(int stick, int hat, JoyHatDir hdir, int 
     myCurrentHatDown.stick = stick;
     myCurrentHatDown.hat  = hat;
     myCurrentHatDown.hdir = hdir;
-    myHatRepeatTime = myTime + (activeDialog->repeatEnabled() ? _REPEAT_INITIAL_DELAY : _REPEAT_NONE);
+    myHatRepeatTime = myTime + (activeDialog->repeatEnabled() ? S_REPEAT_INITIAL_DELAY : S_REPEAT_NONE);
   }
   activeDialog->handleJoyHat(stick, hat, hdir, button);
 }
@@ -448,6 +448,6 @@ void DialogContainer::reset()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt64 DialogContainer::_DOUBLE_CLICK_DELAY = 500;
-uInt64 DialogContainer::_REPEAT_INITIAL_DELAY = 400;
-uInt64 DialogContainer::_REPEAT_SUSTAIN_DELAY = 50;
+uInt64 DialogContainer::S_DOUBLE_CLICK_DELAY = 500;
+uInt64 DialogContainer::S_REPEAT_INITIAL_DELAY = 400;
+uInt64 DialogContainer::S_REPEAT_SUSTAIN_DELAY = 50;

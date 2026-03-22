@@ -265,7 +265,7 @@ class Thumbulator
     uInt32 systick_ctrl{0}, systick_reload{0}, systick_count{0}, systick_calibrate{0};
     ChipType _chipType{ChipType::AUTO};
     ConsoleTiming _consoleTiming{ConsoleTiming::ntsc};
-    double _MHz{70.0};
+    double _chipMHz{70.0};
   #ifdef THUMB_CYCLE_COUNT
     uInt32 _flashCycles{4};
     uInt32 _flashBanks{1};

@@ -102,8 +102,8 @@ class FileListWidget : public StringListWidget
     const FSNode& selected();
     const FSNode& currentDir() const { return _node; }
 
-    static void setQuickSelectDelay(uInt64 time) { _QUICK_SELECT_DELAY = time; }
-    static uInt64 getQuickSelectDelay() { return _QUICK_SELECT_DELAY; }
+    static void setQuickSelectDelay(uInt64 time) { S_QUICK_SELECT_DELAY = time; }
+    static uInt64 getQuickSelectDelay() { return S_QUICK_SELECT_DELAY; }
 
     ProgressDialog& progress();
     void incProgress();
@@ -182,7 +182,7 @@ class FileListWidget : public StringListWidget
     StellaMod _firstMod{StellaMod::KBDM_NONE};
     string _quickSelectStr;
     uInt64 _quickSelectTime{0};
-    static inline uInt64 _QUICK_SELECT_DELAY{300};
+    static inline uInt64 S_QUICK_SELECT_DELAY{300};
 
     unique_ptr<ProgressDialog> myProgressDialog;
 

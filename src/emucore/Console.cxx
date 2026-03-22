@@ -391,16 +391,16 @@ string Console::formatFromFilename() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string Console::formatFromSignature() const
 {
-  static constexpr uInt8 PAL60[] = { 'P', 'A', 'L', '6', '0'};
-  static constexpr uInt8 PAL_60[] = { 'P', 'A', 'L', ' ', '6', '0'};
-  static constexpr uInt8 PAL__60[] = { 'P', 'A', 'L', '-', '6', '0'};
+  static constexpr uInt8 PAL60_v1[] = { 'P', 'A', 'L', '6', '0'};
+  static constexpr uInt8 PAL60_v2[] = { 'P', 'A', 'L', ' ', '6', '0'};
+  static constexpr uInt8 PAL60_v3[] = { 'P', 'A', 'L', '-', '6', '0'};
 
   size_t size = 0;
   const ByteBuffer& image = myCart->getImage(size);
 
-  if(searchForBytes(image, size, PAL60, 5) ||
-     searchForBytes(image, size, PAL_60, 6) ||
-     searchForBytes(image, size, PAL__60, 6))
+  if(searchForBytes(image, size, PAL60_v1, 5) ||
+     searchForBytes(image, size, PAL60_v2, 6) ||
+     searchForBytes(image, size, PAL60_v3, 6))
     return "PAL60";
 
   // Nothing found

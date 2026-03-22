@@ -89,15 +89,15 @@ unique_ptr<Cartridge> CartCreator::create(const FSNode& file,
   // First inspect the file extension itself
   // If a valid type is found, it will override the one passed into this method
   const Bankswitch::Type typeByName = Bankswitch::typeFromExtension(file);
-  if(typeByName != Bankswitch::Type::_AUTO)
+  if(typeByName != Bankswitch::Type::AUTO)
     type = detectedType = typeByName;
 
   // See if we should try to auto-detect the cartridge type
   // If we ask for extended info, always do an autodetect
-  if(type == Bankswitch::Type::_AUTO || settings.getBool("rominfo"))
+  if(type == Bankswitch::Type::AUTO || settings.getBool("rominfo"))
   {
     detectedType = CartDetector::autodetectType(image, size);
-    if(type != Bankswitch::Type::_AUTO && type != detectedType)
+    if(type != Bankswitch::Type::AUTO && type != detectedType)
       cerr << "Auto-detection not consistent: "
            << Bankswitch::typeToName(type) << ", "
            << Bankswitch::typeToName(detectedType) << '\n';
@@ -156,7 +156,7 @@ unique_ptr<Cartridge> CartCreator::create(const FSNode& file,
       validMultiSize = (size == 128 * 2_KB || size == 128 * 4_KB);
       break;
 
-    case _MVC:
+    case MVC:
       cartridge = make_unique<CartridgeMVC>(file.getPath(), size, md5, settings);
       break;
 
@@ -248,46 +248,46 @@ CartCreator::createFromImage(const ByteBuffer& image, size_t size,
     case _4A50: return make_unique<Cartridge4A50>(image, size, md5, settings);
     case _4K:   return make_unique<Cartridge4K>(image, size, md5, settings);
     case _4KSC: return make_unique<Cartridge4KSC>(image, size, md5, settings);
-    case _AR:   return make_unique<CartridgeAR>(image, size, md5, settings);
-    case _BF:   return make_unique<CartridgeBF>(image, size, md5, settings);
-    case _BFSC: return make_unique<CartridgeBFSC>(image, size, md5, settings);
-    case _BUS:  return make_unique<CartridgeBUS>(image, size, md5, settings);
-    case _CDF:  return make_unique<CartridgeCDF>(image, size, md5, settings);
-    case _CM:   return make_unique<CartridgeCM>(image, size, md5, settings);
-    case _CTY:  return make_unique<CartridgeCTY>(image, size, md5, settings);
-    case _CV:   return make_unique<CartridgeCV>(image, size, md5, settings);
-    case _DF:   return make_unique<CartridgeDF>(image, size, md5, settings);
-    case _DFSC: return make_unique<CartridgeDFSC>(image, size, md5, settings);
-    case _DPC:  return make_unique<CartridgeDPC>(image, size, md5, settings);
-    case _DPCP: return make_unique<CartridgeDPCPlus>(image, size, md5, settings);
-    case _E0:   return make_unique<CartridgeE0>(image, size, md5, settings);
-    case _E7:   return make_unique<CartridgeE7>(image, size, md5, settings);
-    case _EF:   return make_unique<CartridgeEF>(image, size, md5, settings);
-    case _EFF:  return make_unique<CartridgeEFF>(image, size, md5, settings);
-    case _EFSC: return make_unique<CartridgeEFSC>(image, size, md5, settings);
-    case _F0:   return make_unique<CartridgeF0>(image, size, md5, settings);
-    case _F4:   return make_unique<CartridgeF4>(image, size, md5, settings);
-    case _F4SC: return make_unique<CartridgeF4SC>(image, size, md5, settings);
-    case _F6:   return make_unique<CartridgeF6>(image, size, md5, settings);
-    case _F6SC: return make_unique<CartridgeF6SC>(image, size, md5, settings);
-    case _F8:   return make_unique<CartridgeF8>(image, size, md5, settings);
-    case _F8SC: return make_unique<CartridgeF8SC>(image, size, md5, settings);
-    case _FA:   return make_unique<CartridgeFA>(image, size, md5, settings);
-    case _FA2:  return make_unique<CartridgeFA2>(image, size, md5, settings);
-    case _FC:   return make_unique<CartridgeFC>(image, size, md5, settings);
-    case _FE:   return make_unique<CartridgeFE>(image, size, md5, settings, size);
-    case _GL:   return make_unique<CartridgeGL>(image, size, md5, settings);
-    case _JANE: return make_unique<CartridgeJANE>(image, size, md5, settings);
-    case _MDM:  return make_unique<CartridgeMDM>(image, size, md5, settings);
-    case _UA:   return make_unique<CartridgeUA>(image, size, md5, settings);
-    case _UASW: return make_unique<CartridgeUA>(image, size, md5, settings, true);
-    case _SB:   return make_unique<CartridgeSB>(image, size, md5, settings);
-    case _TVBOY:return make_unique<CartridgeTVBoy>(image, size, md5, settings);
-    case _WD:   [[fallthrough]];
-    case _WDSW: return make_unique<CartridgeWD>(image, size, md5, settings);
-    case _WF8: return make_unique<CartridgeWF8>(image, size, md5, settings);
-    case _X07:  return make_unique<CartridgeX07>(image, size, md5, settings);
-    case _ELF: return make_unique<CartridgeELF>(image, size, md5, settings);
+    case AR:    return make_unique<CartridgeAR>(image, size, md5, settings);
+    case BF:    return make_unique<CartridgeBF>(image, size, md5, settings);
+    case BFSC:  return make_unique<CartridgeBFSC>(image, size, md5, settings);
+    case BUS:   return make_unique<CartridgeBUS>(image, size, md5, settings);
+    case CDF:   return make_unique<CartridgeCDF>(image, size, md5, settings);
+    case CM:    return make_unique<CartridgeCM>(image, size, md5, settings);
+    case CTY:   return make_unique<CartridgeCTY>(image, size, md5, settings);
+    case CV:    return make_unique<CartridgeCV>(image, size, md5, settings);
+    case DF:    return make_unique<CartridgeDF>(image, size, md5, settings);
+    case DFSC:  return make_unique<CartridgeDFSC>(image, size, md5, settings);
+    case DPC:   return make_unique<CartridgeDPC>(image, size, md5, settings);
+    case DPCP:  return make_unique<CartridgeDPCPlus>(image, size, md5, settings);
+    case E0:    return make_unique<CartridgeE0>(image, size, md5, settings);
+    case E7:    return make_unique<CartridgeE7>(image, size, md5, settings);
+    case EF:    return make_unique<CartridgeEF>(image, size, md5, settings);
+    case EFF:   return make_unique<CartridgeEFF>(image, size, md5, settings);
+    case EFSC:  return make_unique<CartridgeEFSC>(image, size, md5, settings);
+    case F0:    return make_unique<CartridgeF0>(image, size, md5, settings);
+    case F4:    return make_unique<CartridgeF4>(image, size, md5, settings);
+    case F4SC:  return make_unique<CartridgeF4SC>(image, size, md5, settings);
+    case F6:    return make_unique<CartridgeF6>(image, size, md5, settings);
+    case F6SC:  return make_unique<CartridgeF6SC>(image, size, md5, settings);
+    case F8:    return make_unique<CartridgeF8>(image, size, md5, settings);
+    case F8SC:  return make_unique<CartridgeF8SC>(image, size, md5, settings);
+    case FA:    return make_unique<CartridgeFA>(image, size, md5, settings);
+    case FA2:   return make_unique<CartridgeFA2>(image, size, md5, settings);
+    case FC:    return make_unique<CartridgeFC>(image, size, md5, settings);
+    case FE:    return make_unique<CartridgeFE>(image, size, md5, settings, size);
+    case GL:    return make_unique<CartridgeGL>(image, size, md5, settings);
+    case JANE:  return make_unique<CartridgeJANE>(image, size, md5, settings);
+    case MDM:   return make_unique<CartridgeMDM>(image, size, md5, settings);
+    case UA:    return make_unique<CartridgeUA>(image, size, md5, settings);
+    case UASW:  return make_unique<CartridgeUA>(image, size, md5, settings, true);
+    case SB:    return make_unique<CartridgeSB>(image, size, md5, settings);
+    case TVBOY: return make_unique<CartridgeTVBoy>(image, size, md5, settings);
+    case WD:    [[fallthrough]];
+    case WDSW:  return make_unique<CartridgeWD>(image, size, md5, settings);
+    case WF8:   return make_unique<CartridgeWF8>(image, size, md5, settings);
+    case X07:   return make_unique<CartridgeX07>(image, size, md5, settings);
+    case ELF:   return make_unique<CartridgeELF>(image, size, md5, settings);
     default:    return nullptr;  // The remaining types have already been handled
   }
 }
