@@ -183,10 +183,10 @@ void QuadTariDialog::defineController(const Properties& props, PropType key,
 
       if(BSPF::startsWithIgnoreCase(controller.name(), "QT"))
       {
-        const auto* qt = static_cast<const QuadTari*>(&controller);
+        const auto& qt = static_cast<const QuadTari&>(controller);
         label = (first
-          ? qt->firstController().name()
-          : qt->secondController().name())
+          ? qt.firstController().name()
+          : qt.secondController().name())
         + " detected";
       }
       else

@@ -122,7 +122,7 @@ class MindLink : public Controller
     int myMindlinkShift{1};
 
     // Whether to use the mouse to emulate this controller
-    int myMouseEnabled{false};
+    bool myMouseEnabled{false};
 
   private:
     // Following constructors and assignment operators not supported

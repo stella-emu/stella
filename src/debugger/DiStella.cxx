@@ -365,7 +365,7 @@ void DiStella::disasm(uInt32 distart, int pass)
           labelFound = mark(d1, Device::REFERENCED);
           if(pass == 3) {
             nextLine << "     ";
-            labelA12Low(nextLine, opcode, int(d1), labelFound);
+            labelA12Low(nextLine, opcode, d1, labelFound);
             nextLineBytes << Base::HEX2 << static_cast<int>(d1);
           }
           break;

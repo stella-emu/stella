@@ -302,7 +302,7 @@ class CartridgeBUS : public CartridgeARM
     // F- = 3 Voice Music
     uInt8 myMode{0};
 
-    uInt8 myFastJumpActive{false};
+    uInt8 myFastJumpActive{0};
 
   // BUS subtype
   BUSSubtype myBUSSubtype{BUSSubtype::BUS1};
