@@ -54,10 +54,8 @@ Launcher::~Launcher()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FBInitStatus Launcher::initializeVideo()
 {
-  const string title = string("Stella ") + STELLA_VERSION;
-  return myOSystem.frameBuffer().createDisplay(
-      title, BufferType::Launcher, mySize
-  );
+  return myOSystem.frameBuffer().createDisplay(STELLA_FULL_TITLE,
+                                               BufferType::Launcher, mySize);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -84,7 +84,7 @@ CartridgeBUSWidget::CartridgeBUSWidget(
   int lwidth = _font.getStringWidth("Datastream Increments "); // get width of the widest label
 
   // Datastream Pointers
-#define DS_X 30
+  constexpr int DS_X = 30;
   xpos = DS_X;
   ypos += myLineHeight + VGAP;
   new StaticTextWidget(boss, _font, xpos, ypos, lwidth,

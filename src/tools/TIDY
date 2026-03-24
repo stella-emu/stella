@@ -6,13 +6,10 @@ time run-clang-tidy-22 -header-filter=\(.*\.hxx\) \
 -altera*,\
 -android*,\
 -fuchsia*,\
--llvm-prefer-static-over-anonymous-namespace,\
--llvmlibc-inline-function-decl,\
 -boost-use-ranges,\
 -bugprone-branch-clone,\
 -bugprone-easily-swappable-parameters,\
 -bugprone-narrowing-conversions,\
--cert-dcl37-c,\
 -cert-err58-cpp,\
 -cert-int09-c,\
 -clang-analyzer-cplusplus.NewDeleteLeaks,\
@@ -20,7 +17,6 @@ time run-clang-tidy-22 -header-filter=\(.*\.hxx\) \
 -cppcoreguidelines-avoid-c-arrays,\
 -cppcoreguidelines-avoid-do-while,\
 -cppcoreguidelines-avoid-magic-numbers,\
--cppcoreguidelines-macro-usage,\
 -cppcoreguidelines-narrowing-conversions,\
 -cppcoreguidelines-non-private-member-variables-in-classes,\
 -cppcoreguidelines-owning-memory,\
@@ -51,6 +47,8 @@ time run-clang-tidy-22 -header-filter=\(.*\.hxx\) \
 -llvm-else-after-return,\
 -llvm-header-guard,\
 -llvm-include-order,\
+-llvm-prefer-static-over-anonymous-namespace,\
+-llvmlibc-inline-function-decl,\
 -llvmlibc-callee-namespace,\
 -llvmlibc-implementation-in-namespace,\
 -llvmlibc-restrict-system-libc-headers,\

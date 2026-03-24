@@ -18,7 +18,8 @@
 #ifndef VERSION_HXX
 #define VERSION_HXX
 
-#define STELLA_VERSION "8.0_pre"
-#define STELLA_BUILD "8005"
+static constexpr string_view STELLA_FULL_TITLE = "Stella 8.0_pre";
+static constexpr string_view STELLA_VERSION = "8.0_pre";
+static constexpr string_view STELLA_BUILD = "8005";
 
 #endif

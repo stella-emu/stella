@@ -86,7 +86,6 @@ class MicroChip24LC
     void jpee_data_stop();
     void jpee_clock_fall();
     bool jpee_timercheck(int mode);
-    static void jpee_logproc(string_view st) { cerr << "    " << st << '\n'; }
 
     void update();
 
@@ -130,6 +129,41 @@ class MicroChip24LC
     uInt32 jpee_address{0}, jpee_ad_known{0};
     std::array<uInt8, 2 * PAGE_SIZE> jpee_packet{};
 
+    /*
+      State values for I2C:
+      0 - Idle
+      1 - Byte going to chip (shift left until bit 8 is set)
+      2 - Chip outputting acknowledgement
+      3 - Byte coming in from chip (shift left until lower 8 bits are clear)
+      4 - Chip waiting for acknowledgement
+    */
+    void jpee_clock(bool state) {
+      if(state)
+        jpee_mclk = 1;
+      else
+      {
+        if(jpee_mclk)
+          jpee_clock_fall();  // falling edge detected
+        jpee_mclk = 0;
+      }
+    }
+    void jpee_data(bool state) {
+      if(state)
+      {
+        // rising edge: 0 → 1
+        if(!jpee_mdat && jpee_sdat && jpee_mclk)
+          jpee_data_stop();
+        jpee_mdat = 1;
+      }
+      else
+      {
+        // falling edge: 1 → 0
+        if(jpee_mdat && jpee_sdat && jpee_mclk)
+          jpee_data_start();
+        jpee_mdat = 0;
+      }
+    }
+
   private:
     // Following constructors and assignment operators not supported
     MicroChip24LC() = delete;
@@ -144,33 +178,25 @@ class MicroChip24LC
 // ############################################################################
 
 #ifdef DEBUG_EEPROM
-  static constexpr size_t jpee_log_msg_len = 0x100;
-  static inline char jpee_msg[jpee_log_msg_len];
-  #define JPEE_LOG0(msg) jpee_logproc(msg);
-  #define JPEE_LOG1(msg,arg1) snprintf(jpee_msg,jpee_log_msg_len-1,(msg),(arg1)), jpee_logproc(jpee_msg);
-  #define JPEE_LOG2(msg,arg1,arg2) snprintf(jpee_msg,jpee_log_msg_len-1,(msg),(arg1),(arg2)), jpee_logproc(jpee_msg);
+  static inline char jpee_msg[0x100]{};
+  static inline void jpee_logproc(string_view msg) {
+    cerr << "    " << msg << '\n';
+  }
+  static inline void JPEE_LOG0(string_view msg) { jpee_logproc(msg); }
+  static inline void JPEE_LOG1(string_view msg, int arg1) {
+    snprintf(jpee_msg, 0x100-1, msg.data(), arg1);
+    jpee_logproc(jpee_msg);
+  }
+  static inline void JPEE_LOG2(string_view msg, int arg1, int arg2) {
+    snprintf(jpee_msg, 0x100-1, msg.data(), arg1, arg2);
+    jpee_logproc(jpee_msg);
+  }
 #else
-  #define JPEE_LOG0(msg) ;
-  #define JPEE_LOG1(msg,arg1) ;
-  #define JPEE_LOG2(msg,arg1,arg2) ;
+  static inline void jpee_logproc(string_view) { }
+  static inline void JPEE_LOG0(string_view) { }
+  static inline void JPEE_LOG1(string_view, int) { }
+  static inline void JPEE_LOG2(string_view, int, int) { }
 #endif
-
-/*
-  State values for I2C:
-  0 - Idle
-  1 - Byte going to chip (shift left until bit 8 is set)
-  2 - Chip outputting acknowledgement
-  3 - Byte coming in from chip (shift left until lower 8 bits are clear)
-  4 - Chip waiting for acknowledgement
-*/
-
-#define jpee_clock(x) ( (x) \
-  ? (jpee_mclk = 1)         \
-  : (jpee_mclk && (jpee_clock_fall(),1), jpee_mclk = 0))
-
-#define jpee_data(x) ( (x)  \
-  ? (!jpee_mdat && jpee_sdat && jpee_mclk && (jpee_data_stop(),1), jpee_mdat = 1) \
-  : (jpee_mdat && jpee_sdat && jpee_mclk && (jpee_data_start(),1), jpee_mdat = 0))
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 template<std::size_t device_flash_size, std::size_t device_page_size>
@@ -335,21 +361,21 @@ void MicroChip24LC<device_flash_size, device_page_size>
   /* We have a start condition */
   if(jpee_state == 1 && (jpee_nb != 1 || jpee_pptr != 3))
   {
-    JPEE_LOG0("I2C_WARNING ABANDON WRITE")
+    JPEE_LOG0("I2C_WARNING ABANDON WRITE");
     jpee_ad_known = 0;
   }
   if(jpee_state == 3)
   {
-    JPEE_LOG0("I2C_WARNING ABANDON READ")
+    JPEE_LOG0("I2C_WARNING ABANDON READ");
   }
   if(!jpee_timercheck(0))
   {
-    JPEE_LOG0("I2C_START")
+    JPEE_LOG0("I2C_START");
     jpee_state = 2;
   }
   else
   {
-    JPEE_LOG0("I2C_BUSY")
+    JPEE_LOG0("I2C_BUSY");
     jpee_state = 0;
   }
   jpee_pptr = 0;
@@ -364,23 +390,23 @@ void MicroChip24LC<device_flash_size, device_page_size>
 {
   if(jpee_state == 1 && jpee_nb != 1)
   {
-    JPEE_LOG0("I2C_WARNING ABANDON_WRITE")
+    JPEE_LOG0("I2C_WARNING ABANDON_WRITE");
     jpee_ad_known = 0;
   }
   if(jpee_state == 3)
   {
-    JPEE_LOG0("I2C_WARNING ABANDON_READ")
+    JPEE_LOG0("I2C_WARNING ABANDON_READ");
     jpee_ad_known = 0;
   }
   /* We have a stop condition. */
   if(jpee_state == 1 && jpee_nb == 1 && jpee_pptr > 3)
   {
     jpee_timercheck(1);
-    JPEE_LOG2("I2C_STOP(Write %d bytes at %04X)", jpee_pptr - 3, jpee_address)
+    JPEE_LOG2("I2C_STOP(Write %d bytes at %04X)", jpee_pptr - 3, jpee_address);
     if(((jpee_address + jpee_pptr - 4) ^ jpee_address) & ~jpee_pagemask)
     {
       jpee_pptr = 4 + jpee_pagemask - (jpee_address & jpee_pagemask);
-      JPEE_LOG1("I2C_WARNING PAGECROSSING!(Truncate to %d bytes)", jpee_pptr - 3)
+      JPEE_LOG1("I2C_WARNING PAGECROSSING!(Truncate to %d bytes)", jpee_pptr - 3);
     }
     for(int i = 3; i < jpee_pptr; i++)
     {
@@ -404,7 +430,7 @@ void MicroChip24LC<device_flash_size, device_page_size>
   else
   {
   #ifdef DEBUG_EEPROM
-    jpee_logproc("I2C_STOP")
+    jpee_logproc("I2C_STOP");
   #endif
     jpee_timercheck(1);
   }
@@ -432,29 +458,29 @@ void MicroChip24LC<device_flash_size, device_page_size>
             jpee_packet[1] = (jpee_nb >> 1) & 7;
           #ifdef DEBUG_EEPROM
             if(jpee_packet[1] != (jpee_address >> 8) && (jpee_packet[0] & 1))
-              jpee_logproc("I2C_WARNING ADDRESS MSB CHANGED")
+              jpee_logproc("I2C_WARNING ADDRESS MSB CHANGED");
           #endif
             jpee_nb &= 0x1A1;
           }
           if(jpee_nb == 0x1A0)
           {
-            JPEE_LOG1("I2C_SENT(%02X--start write)",jpee_packet[0])
+            JPEE_LOG1("I2C_SENT(%02X--start write)",jpee_packet[0]);
             jpee_state = 2;
             jpee_sdat = 0;
           }
           else if(jpee_nb == 0x1A1)
           {
             jpee_state = 4;
-            JPEE_LOG2("I2C_SENT(%02X--start read @%04X)", jpee_packet[0],jpee_address)
+            JPEE_LOG2("I2C_SENT(%02X--start read @%04X)", jpee_packet[0],jpee_address);
           #ifdef DEBUG_EEPROM
             if(!jpee_ad_known)
-              jpee_logproc("I2C_WARNING ADDRESS IS UNKNOWN")
+              jpee_logproc("I2C_WARNING ADDRESS IS UNKNOWN");
           #endif
             jpee_sdat = 0;
           }
           else
           {
-            JPEE_LOG1("I2C_WARNING ODDBALL FIRST BYTE!(%02X)",jpee_nb & 0xFF)
+            JPEE_LOG1("I2C_WARNING ODDBALL FIRST BYTE!(%02X)",jpee_nb & 0xFF);
             jpee_state = 0;
           }
         }
@@ -479,7 +505,7 @@ void MicroChip24LC<device_flash_size, device_page_size>
         }
         else if(jpee_pptr < 70)
         {
-          JPEE_LOG1("I2C_SENT(%02X)", jpee_nb & 0xFF)
+          JPEE_LOG1("I2C_SENT(%02X)", jpee_nb & 0xFF);
           jpee_packet[jpee_pptr++] = static_cast<uInt8>(jpee_nb);
           jpee_address = (jpee_packet[1] << 8) | jpee_packet[2];
           if(jpee_pptr > 2)
@@ -487,7 +513,7 @@ void MicroChip24LC<device_flash_size, device_page_size>
         }
       #ifdef DEBUG_EEPROM
         else
-          jpee_logproc("I2C_WARNING OUTPUT_OVERFLOW!")
+          jpee_logproc("I2C_WARNING OUTPUT_OVERFLOW!");
       #endif
       }
       jpee_sdat = 1;
@@ -498,7 +524,7 @@ void MicroChip24LC<device_flash_size, device_page_size>
     case 4:
       if(jpee_mdat && jpee_sdat)
       {
-        JPEE_LOG0("I2C_READ_NAK")
+        JPEE_LOG0("I2C_READ_NAK");
         jpee_state = 0;
         break;
       }
@@ -514,7 +540,7 @@ void MicroChip24LC<device_flash_size, device_page_size>
       }
 
       jpee_nb = (myData[jpee_address & jpee_sizemask] << 1) | 1;  /* Fall through */
-      JPEE_LOG2("I2C_READ(%04X=%02X)",jpee_address,jpee_nb/2)
+      JPEE_LOG2("I2C_READ(%04X=%02X)",jpee_address,jpee_nb/2);
 
       [[fallthrough]];
 
@@ -533,7 +559,7 @@ void MicroChip24LC<device_flash_size, device_page_size>
       /* Do nothing */
       break;
   }
-  JPEE_LOG2("I2C_CLOCK (dat=%d/%d)",jpee_mdat,jpee_sdat)
+  JPEE_LOG2("I2C_CLOCK (dat=%d/%d)",jpee_mdat,jpee_sdat);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

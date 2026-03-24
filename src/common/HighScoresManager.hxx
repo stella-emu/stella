@@ -18,8 +18,6 @@
 #ifndef HIGHSCORES_MANAGER_HXX
 #define HIGHSCORES_MANAGER_HXX
 
-#define HIGHSCORE_HEADER "06050000highscores"
-
 class OSystem;
 
 #include "Props.hxx"
@@ -93,6 +91,10 @@ namespace HSM {
 
 class HighScoresManager
 {
+  public:
+    // FIXME: Must be const char* and not string_view because of json & VC++2022
+    const char* HIGHSCORE_HEADER = "06050000highscores";
+
   public:
     explicit HighScoresManager(OSystem& osystem);
     virtual ~HighScoresManager() = default;

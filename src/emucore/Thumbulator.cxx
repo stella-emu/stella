@@ -22,6 +22,7 @@
 // Code is public domain and used with the author's consent
 //============================================================================
 
+// NOLINTBEGIN (cppcoreguidelines-macro-usage)  TODO: Too many macros for now
 #include "bspf.hxx"
 #include "Base.hxx"
 #include "Cart.hxx"
@@ -45,11 +46,15 @@ using Common::Base;
 #endif
 
 #ifdef __BIG_ENDIAN__
-  #define CONV_DATA(d)   ((((d) & 0xFFFF)>>8) | (((d) & 0xffff)<<8)) & 0xffff
-  #define CONV_RAMROM(d) (((d)>>8) | ((d)<<8)) & 0xffff
+  static constexpr uInt32 CONV_DATA(uInt32 d) {
+    return (((d & 0xFFFF)>>8) | ((d & 0xFFFF)<<8)) & 0xFFFF;
+  }
+  static constexpr uInt32 CONV_RAMROM(uInt32 d) {
+    return ((d>>8) | (d<<8)) & 0xFFFF;
+  }
 #else
-  #define CONV_DATA(d)   ((d) & 0xFFFF)
-  #define CONV_RAMROM(d) (d)
+  static constexpr uInt32 CONV_DATA(uInt32 d)   { return d & 0xFFFF; }
+  static constexpr uInt32 CONV_RAMROM(uInt32 d) { return d; }
 #endif
 
 #ifdef THUMB_CYCLE_COUNT
@@ -3223,3 +3228,4 @@ bool Thumbulator::searchPattern(uInt32 pattern, uInt32 repeats) const
   }
   return false;
 }
+// NOLINTEND

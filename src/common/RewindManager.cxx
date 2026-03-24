@@ -249,7 +249,7 @@ string RewindManager::saveAllStates()
 
     // Save header
     buf.str("");
-    out.putString(STATE_HEADER);
+    out.putString(StateManager::STATE_HEADER);
     out.putShort(numStates);
 
     for (uInt32 i = 0; i < numStates; ++i)
@@ -306,7 +306,7 @@ string RewindManager::loadAllStates()
     // Load header
     buf.str("");
     // Check compatibility
-    if (in.getString() != STATE_HEADER)
+    if (in.getString() != StateManager::STATE_HEADER)
       return "Incompatible all states file";
     numStates = in.getShort();
 

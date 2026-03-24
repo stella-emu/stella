@@ -29,7 +29,7 @@
 #include "PromptWidget.hxx"
 #include "CartDebug.hxx"
 
-#define PROMPT  "> "
+static constexpr string_view PROMPT = "> ";
 
 // Uncomment the following to give full-line cut/copy/paste
 // Note that this will be removed eventually, when we implement proper cut/copy/paste
@@ -377,7 +377,7 @@ void PromptWidget::loadConfig()
     _firstTime = false;
 
     // Display greetings & prompt
-    const string version = string("Stella ") + STELLA_VERSION + "\n";
+    const string version = string{STELLA_FULL_TITLE} + "\n";
     print(version);
     print(PROMPT);
 

@@ -685,7 +685,9 @@ void retro_get_system_info(struct retro_system_info *info)
 #ifndef GIT_VERSION
 #define GIT_VERSION ""
 #endif
-  info->library_version = STELLA_VERSION GIT_VERSION;
+  static char library_version[100]{};
+  snprintf(library_version, 99, "%s%s", STELLA_VERSION.data(), GIT_VERSION);
+  info->library_version = library_version;
   info->valid_extensions = stella.getROMExtensions();
   info->need_fullpath = false;
   info->block_extract = false;

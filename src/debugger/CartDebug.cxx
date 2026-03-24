@@ -790,10 +790,10 @@ string CartDebug::getLabel(uInt16 addr, bool isRead, int places, bool isRam) con
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 int CartDebug::getAddress(const string& label) const
 {
-  if(const auto iter = mySystemAddresses.find(label); iter != mySystemAddresses.end())
-    return iter->second;
-  else if(const auto iter = myUserAddresses.find(label); iter != myUserAddresses.end())
-    return iter->second;
+  if(const auto it1 = mySystemAddresses.find(label); it1 != mySystemAddresses.end())
+    return it1->second;
+  else if(const auto it2 = myUserAddresses.find(label); it2 != myUserAddresses.end())
+    return it2->second;
   else
     return -1;
 }
@@ -1086,7 +1086,7 @@ string CartDebug::saveConfigFile()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string CartDebug::saveDisassembly(string path)
 {
-#define ALIGN(x) setfill(' ') << left << setw(x)
+#define ALIGN(x) setfill(' ') << left << setw(x)  // NOLINT no easier way to do this
 
   // We can't print the header to the disassembly until it's actually
   // been processed; therefore buffer output to a string first

@@ -101,9 +101,6 @@ void DiStella::disasm(uInt32 distart, int pass)
    - pass 3 generates output
 */
 {
-#define LABEL_A12_HIGH(address) labelA12High(nextLine, opcode, address, labelFound)
-#define LABEL_A12_LOW(address)  labelA12Low(nextLine, opcode, address, labelFound)
-
   uInt8 opcode = 0, d1 = 0;
   uInt16 ad = 0;
   Int32 cycles = 0;
@@ -336,14 +333,14 @@ void DiStella::disasm(uInt32 distart, int pass)
               nextLine << "     ";
 
             if(labelFound == AddressType::ROM) {
-              LABEL_A12_HIGH(ad);
+              labelA12High(nextLine, opcode, ad, labelFound);
               nextLineBytes << Base::HEX2 << static_cast<int>(ad & 0xff) << " "
                             << Base::HEX2 << static_cast<int>(ad >> 8);
             }
             else if(labelFound == AddressType::ROM_MIRROR) {
               if(mySettings.rFlag) {
                 const int tmp = (ad & myAppData.end) + myOffset;
-                LABEL_A12_HIGH(tmp);
+                labelA12High(nextLine, opcode, tmp, labelFound);
                 nextLineBytes << Base::HEX2 << static_cast<int>(tmp & 0xff) << " "
                               << Base::HEX2 << static_cast<int>(tmp >> 8);
               }
@@ -354,7 +351,7 @@ void DiStella::disasm(uInt32 distart, int pass)
               }
             }
             else {
-              LABEL_A12_LOW(ad);
+              labelA12Low(nextLine, opcode, ad, labelFound);
               nextLineBytes << Base::HEX2 << static_cast<int>(ad & 0xff) << " "
                             << Base::HEX2 << static_cast<int>(ad >> 8);
             }
@@ -368,7 +365,7 @@ void DiStella::disasm(uInt32 distart, int pass)
           labelFound = mark(d1, Device::REFERENCED);
           if(pass == 3) {
             nextLine << "     ";
-            LABEL_A12_LOW(int(d1));
+            labelA12Low(nextLine, opcode, int(d1), labelFound);
             nextLineBytes << Base::HEX2 << static_cast<int>(d1);
           }
           break;
@@ -407,7 +404,7 @@ void DiStella::disasm(uInt32 distart, int pass)
               nextLine << "     ";
 
             if(labelFound == AddressType::ROM) {
-              LABEL_A12_HIGH(ad);
+              labelA12High(nextLine, opcode, ad, labelFound);
               nextLine << ",x";
               nextLineBytes << Base::HEX2 << static_cast<int>(ad & 0xff) << " "
                             << Base::HEX2 << static_cast<int>(ad >> 8);
@@ -415,7 +412,7 @@ void DiStella::disasm(uInt32 distart, int pass)
             else if(labelFound == AddressType::ROM_MIRROR) {
               if(mySettings.rFlag) {
                 const int tmp = (ad & myAppData.end) + myOffset;
-                LABEL_A12_HIGH(tmp);
+                labelA12High(nextLine, opcode, tmp, labelFound);
                 nextLine << ",x";
                 nextLineBytes << Base::HEX2 << static_cast<int>(tmp & 0xff) << " "
                               << Base::HEX2 << static_cast<int>(tmp >> 8);
@@ -427,7 +424,7 @@ void DiStella::disasm(uInt32 distart, int pass)
               }
             }
             else {
-              LABEL_A12_LOW(ad);
+              labelA12Low(nextLine, opcode, ad, labelFound);
               nextLine << ",x";
               nextLineBytes << Base::HEX2 << static_cast<int>(ad & 0xff) << " "
                             << Base::HEX2 << static_cast<int>(ad >> 8);
@@ -454,7 +451,7 @@ void DiStella::disasm(uInt32 distart, int pass)
               nextLine << "     ";
 
             if(labelFound == AddressType::ROM) {
-              LABEL_A12_HIGH(ad);
+              labelA12High(nextLine, opcode, ad, labelFound);
               nextLine << ",y";
               nextLineBytes << Base::HEX2 << static_cast<int>(ad & 0xff) << " "
                             << Base::HEX2 << static_cast<int>(ad >> 8);
@@ -462,7 +459,7 @@ void DiStella::disasm(uInt32 distart, int pass)
             else if(labelFound == AddressType::ROM_MIRROR) {
               if(mySettings.rFlag) {
                 const int tmp = (ad & myAppData.end) + myOffset;
-                LABEL_A12_HIGH(tmp);
+                labelA12High(nextLine, opcode, tmp, labelFound);
                 nextLine << ",y";
                 nextLineBytes << Base::HEX2 << static_cast<int>(tmp & 0xff) << " "
                               << Base::HEX2 << static_cast<int>(tmp >> 8);
@@ -474,7 +471,7 @@ void DiStella::disasm(uInt32 distart, int pass)
               }
             }
             else {
-              LABEL_A12_LOW(ad);
+              labelA12Low(nextLine, opcode, ad, labelFound);
               nextLine << ",y";
               nextLineBytes << Base::HEX2 << static_cast<int>(ad & 0xff) << " "
                             << Base::HEX2 << static_cast<int>(ad >> 8);
@@ -489,7 +486,7 @@ void DiStella::disasm(uInt32 distart, int pass)
           if(pass == 3) {
             labelFound = mark(d1, 0);  // dummy call to get address type
             nextLine << "     (";
-            LABEL_A12_LOW(d1);
+            labelA12Low(nextLine, opcode, d1, labelFound);
             nextLine << ",x)";
             nextLineBytes << Base::HEX2 << static_cast<int>(d1);
           }
@@ -502,7 +499,7 @@ void DiStella::disasm(uInt32 distart, int pass)
           if(pass == 3) {
             labelFound = mark(d1, 0);  // dummy call to get address type
             nextLine << "     (";
-            LABEL_A12_LOW(d1);
+            labelA12Low(nextLine, opcode, d1, labelFound);
             nextLine << "),y";
             nextLineBytes << Base::HEX2 << static_cast<int>(d1);
           }
@@ -515,7 +512,7 @@ void DiStella::disasm(uInt32 distart, int pass)
           labelFound = mark(d1, Device::REFERENCED);
           if(pass == 3) {
             nextLine << "     ";
-            LABEL_A12_LOW(d1);
+            labelA12Low(nextLine, opcode, d1, labelFound);
             nextLine << ",x";
           }
           nextLineBytes << Base::HEX2 << static_cast<int>(d1);
@@ -528,7 +525,7 @@ void DiStella::disasm(uInt32 distart, int pass)
           labelFound = mark(d1, Device::REFERENCED);
           if(pass == 3) {
             nextLine << "     ";
-            LABEL_A12_LOW(d1);
+            labelA12Low(nextLine, opcode, d1, labelFound);
             nextLine << ",y";
           }
           nextLineBytes << Base::HEX2 << static_cast<int>(d1);
@@ -547,7 +544,7 @@ void DiStella::disasm(uInt32 distart, int pass)
           if(pass == 3) {
             if(labelFound == AddressType::ROM) {
               nextLine << "     ";
-              LABEL_A12_HIGH(ad);
+              labelA12High(nextLine, opcode, ad, labelFound);
             }
             else
               nextLine << "     $" << Base::HEX4 << ad;
@@ -576,23 +573,23 @@ void DiStella::disasm(uInt32 distart, int pass)
           }
           if(labelFound == AddressType::ROM) {
             nextLine << "(";
-            LABEL_A12_HIGH(ad);
+            labelA12High(nextLine, opcode, ad, labelFound);
             nextLine << ")";
           }
           else if(labelFound == AddressType::ROM_MIRROR) {
             nextLine << "(";
             if(mySettings.rFlag) {
               const int tmp = (ad & myAppData.end) + myOffset;
-              LABEL_A12_HIGH(tmp);
+              labelA12High(nextLine, opcode, tmp, labelFound);
             }
             else {
-              LABEL_A12_LOW(ad);
+              labelA12Low(nextLine, opcode, ad, labelFound);
             }
             nextLine << ")";
           }
           else {
             nextLine << "(";
-            LABEL_A12_LOW(ad);
+            labelA12Low(nextLine, opcode, ad, labelFound);
             nextLine << ")";
           }
 

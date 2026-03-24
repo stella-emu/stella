@@ -72,22 +72,26 @@ RiotWidget::RiotWidget(GuiObject* boss, const GUI::Font& lfont,
 
   StringList labels;
 
-#define CREATE_IO_REGS(desc, bits, bitsID, editable)                      \
-  new StaticTextWidget(boss, lfont, xpos, ypos + 2, desc);                \
-  xpos = hBorder + lwidth;                                                \
-  (bits) = new ToggleBitWidget(boss, nfont, xpos, ypos, 8, 1, 1, labels); \
-  (bits)->setTarget(this);                                                \
-  (bits)->setID(bitsID);                                                  \
-  if(editable) addFocusWidget(bits); else (bits)->setEditable(false);     \
-  (bits)->setList(off, on);
+  auto CREATE_IO_REGS = [&](string_view desc, uInt8 bitsID,
+                            bool editable) -> auto
+  {
+    new StaticTextWidget(boss, lfont, xpos, ypos + 2, desc);
+    xpos = hBorder + lwidth;
+    auto* wid = new ToggleBitWidget(boss, nfont, xpos, ypos, 8, 1, 1, labels);
+    wid->setTarget(this);
+    wid->setID(bitsID);
+    if(editable) addFocusWidget(wid); else wid->setEditable(false);
+    wid->setList(off, on);
+    return wid;
+  };
 
   // SWCHA bits in 'poke' mode
   labels.clear();
-  CREATE_IO_REGS("SWCHA(W)", mySWCHAWriteBits, kSWCHABitsID, true)
+  mySWCHAWriteBits = CREATE_IO_REGS("SWCHA(W)", kSWCHABitsID, true);
 
   // SWACNT bits
   xpos = hBorder;  ypos += _lineHeight + vGap / 2;
-  CREATE_IO_REGS("SWACNT", mySWACNTBits, kSWACNTBitsID, true)
+  mySWACNTBits = CREATE_IO_REGS("SWACNT", kSWACNTBitsID, true);
 
   // SWCHA bits in 'peek' mode
   xpos = hBorder;  ypos += _lineHeight + vGap / 2;
@@ -100,16 +104,16 @@ RiotWidget::RiotWidget(GuiObject* boss, const GUI::Font& lfont,
   labels.emplace_back("Right left");
   labels.emplace_back("Right down");
   labels.emplace_back("Right up");
-  CREATE_IO_REGS("SWCHA(R)", mySWCHAReadBits, kSWCHARBitsID, true)
+  mySWCHAReadBits = CREATE_IO_REGS("SWCHA(R)", kSWCHARBitsID, true);
 
   // SWCHB bits in 'poke' mode
   xpos = hBorder;  ypos = mySWCHAReadBits->getBottom() + vGap * 2;
   labels.clear();
-  CREATE_IO_REGS("SWCHB(W)", mySWCHBWriteBits, kSWCHBBitsID, true)
+  mySWCHBWriteBits = CREATE_IO_REGS("SWCHB(W)", kSWCHBBitsID, true);
 
   // SWBCNT bits
   xpos = hBorder;  ypos += _lineHeight + vGap / 2;
-  CREATE_IO_REGS("SWBCNT", mySWBCNTBits, kSWBCNTBitsID, true)
+  mySWBCNTBits = CREATE_IO_REGS("SWBCNT", kSWBCNTBitsID, true);
 
   // SWCHB bits in 'peek' mode
   xpos = hBorder;  ypos += _lineHeight + vGap / 2;
@@ -122,7 +126,7 @@ RiotWidget::RiotWidget(GuiObject* boss, const GUI::Font& lfont,
   labels.emplace_back("");
   labels.emplace_back("Select");
   labels.emplace_back("Reset");
-  CREATE_IO_REGS("SWCHB(R)", mySWCHBReadBits, kSWCHBRBitsID, true)
+  mySWCHBReadBits = CREATE_IO_REGS("SWCHB(R)", kSWCHBRBitsID, true);
 
   // Timer registers (R/W)
   static constexpr std::array<string_view, 4> writeNames = {
@@ -305,15 +309,18 @@ RiotWidget::RiotWidget(GuiObject* boss, const GUI::Font& lfont,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void RiotWidget::loadConfig()
 {
-#define IO_REGS_UPDATE(bits, s_bits)                          \
-  changed.clear();                                            \
-  for(uInt32 i = 0; i < state.s_bits.size(); ++i)             \
-    changed.push_back(state.s_bits[i] != oldstate.s_bits[i]); \
-  (bits)->setState(state.s_bits, changed);
-
   IntArray alist;
   IntArray vlist;
   BoolArray changed;
+
+  auto IO_REGS_UPDATE = [&](ToggleBitWidget* bits,
+                            const BoolArray& s_bits, const BoolArray& old_bits)
+  {
+    changed.clear();
+    for(uInt32 i = 0; i < s_bits.size(); ++i)
+      changed.push_back(s_bits[i] != old_bits[i]);
+    bits->setState(s_bits, changed);
+  };
 
   // We push the enumerated items as addresses, and deal with the real
   // address in the callback (handleCommand)
@@ -322,22 +329,22 @@ void RiotWidget::loadConfig()
   const auto& oldstate = static_cast<const RiotState&>(riot.getOldState());
 
   // Update the SWCHA register booleans (poke mode)
-  IO_REGS_UPDATE(mySWCHAWriteBits, swchaWriteBits)
+  IO_REGS_UPDATE(mySWCHAWriteBits, state.swchaWriteBits, oldstate.swchaWriteBits);
 
   // Update the SWACNT register booleans
-  IO_REGS_UPDATE(mySWACNTBits, swacntBits)
+  IO_REGS_UPDATE(mySWACNTBits, state.swacntBits, oldstate.swacntBits);
 
   // Update the SWCHA register booleans (peek mode)
-  IO_REGS_UPDATE(mySWCHAReadBits, swchaReadBits)
+  IO_REGS_UPDATE(mySWCHAReadBits, state.swchaReadBits, oldstate.swchaReadBits);
 
   // Update the SWCHB register booleans (poke mode)
-  IO_REGS_UPDATE(mySWCHBWriteBits, swchbWriteBits)
+  IO_REGS_UPDATE(mySWCHBWriteBits, state.swchbWriteBits, oldstate.swchbWriteBits);
 
   // Update the SWBCNT register booleans
-  IO_REGS_UPDATE(mySWBCNTBits, swbcntBits)
+  IO_REGS_UPDATE(mySWBCNTBits, state.swbcntBits, oldstate.swbcntBits);
 
   // Update the SWCHB register booleans (peek mode)
-  IO_REGS_UPDATE(mySWCHBReadBits, swchbReadBits)
+  IO_REGS_UPDATE(mySWCHBReadBits, state.swchbReadBits, oldstate.swchbReadBits);
 
   // Update TIA INPTx registers
   alist.clear();  vlist.clear();  changed.clear();

@@ -780,8 +780,8 @@ FBInitStatus Console::initializeVideo(bool full)
       Common::Size(2 * myTIA->width(), myTIA->height());
 
     const bool devSettings = myOSystem.settings().getBool("dev.settings");
-    const string title = string{"Stella "} + STELLA_VERSION +
-                   ": \"" + myProperties.get(PropType::Cart_Name) + "\"";
+    const string title = string{STELLA_FULL_TITLE} + ": \"" +
+        myProperties.get(PropType::Cart_Name) + "\"";
     fbstatus = myOSystem.frameBuffer().createDisplay(title,
         BufferType::Emulator, size, false);
     if(fbstatus != FBInitStatus::Success)

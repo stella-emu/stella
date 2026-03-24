@@ -209,6 +209,7 @@ class AtariNTSC
     // Generate pixel at all burst phases and column alignments
     static void genKernel(init_t& impl, float y, float i, float q, uInt32* out);
 
+    // NOLINTBEGIN: leave as macro's for now
     // Begins outputting row and starts two pixels. First pixel will be cut
     // off a bit.  Use atari_ntsc_black for unused pixels.
     #define ATARI_NTSC_BEGIN_ROW( pixel0, pixel1 ) \
@@ -235,6 +236,7 @@ class AtariNTSC
       ATARI_NTSC_CLAMP( raw_, 0 );\
       (rgb_out) = (raw_>>5 & 0x00FF0000)|(raw_>>3 & 0x0000FF00)|(raw_>>1 & 0x000000FF);\
     }
+    // NOLINTEND
 
     // Common ntsc macros
     static constexpr void ATARI_NTSC_CLAMP( uInt32& io, uInt32 shift ) {

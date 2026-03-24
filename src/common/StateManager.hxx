@@ -18,8 +18,6 @@
 #ifndef STATE_MANAGER_HXX
 #define STATE_MANAGER_HXX
 
-#define STATE_HEADER "07000001state"
-
 class OSystem;
 class RewindManager;
 
@@ -41,6 +39,7 @@ class StateManager
       MovieRecord,
       MoviePlayback
     };
+    static constexpr string_view STATE_HEADER = "07000001state";
 
     /**
       Create a new statemananger class.
