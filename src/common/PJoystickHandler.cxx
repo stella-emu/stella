@@ -305,19 +305,20 @@ bool PhysicalJoystickHandler::mapStelladaptors(string_view saport, int ID)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool PhysicalJoystickHandler::hasStelladaptors() const
 {
-  for(const auto& [_id, _joyptr] : mySticks)
-  {
+  // Note: this has side effect of changing joystick name; removes part of
+  //       name that starts with " (emulates " to end of string
+  return std::ranges::any_of(mySticks, [](const auto& stick) {
+    const auto& [_id, _joyptr] = stick;
+
     // remove previously added emulated ports
     const size_t pos = _joyptr->name.find(" (emulates ");
 
     if(pos != std::string::npos)
       _joyptr->name.erase(pos);
 
-    if(BSPF::containsIgnoreCase(_joyptr->name, "Stelladaptor")
-       || BSPF::containsIgnoreCase(_joyptr->name, "2600-daptor"))
-      return true;
-  }
-  return false;
+    return BSPF::containsIgnoreCase(_joyptr->name, "Stelladaptor") ||
+           BSPF::containsIgnoreCase(_joyptr->name, "2600-daptor");
+  });
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
