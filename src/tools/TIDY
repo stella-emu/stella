@@ -71,8 +71,7 @@ time run-clang-tidy-22 -header-filter=\(.*\.hxx\) \
 -readability-named-parameter,\
 -readability-redundant-access-specifiers,\
 -readability-simplify-boolean-expr,\
--readability-suspicious-call-argument,\
--readability-use-anyofallof\
+-readability-suspicious-call-argument\
  > ~/tmp/TODO
 
 exit

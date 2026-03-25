@@ -276,11 +276,9 @@ bool ControllerDetector::usesJoystickDirections(const ByteBuffer& image, size_t 
     { 0xad, 0x88, 0x02 }, // lda SWCHA|8 (Jawbreaker)
   };
 
-  for(const auto* const sig: signature)
-    if(searchForBytes(image, size, sig, SIG_SIZE))
-      return true;
-
-  return false;
+  return std::ranges::any_of(signature, [&](const auto* sig) {
+    return searchForBytes(image, size, sig, SIG_SIZE);
+  });
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -605,11 +603,9 @@ bool ControllerDetector::isProbablyTrakBall(const ByteBuffer& image, size_t size
     { 0x00, 0x01, 0x81, 0x01, 0x82, 0x03 }  // .MovementTab_1 (Omegamatrix)
   }; // all pattern checked, only TrakBall matches
 
-  for(const auto* const sig: signature)
-    if(searchForBytes(image, size, sig, SIG_SIZE))
-      return true;
-
-  return false;
+  return std::ranges::any_of(signature, [&](const auto* sig) {
+    return searchForBytes(image, size, sig, SIG_SIZE);
+  });
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -624,11 +620,9 @@ bool ControllerDetector::isProbablyAtariMouse(const ByteBuffer& image, size_t si
     { 0x00, 0x81, 0x01, 0x00, 0x02, 0x83 }  // .MovementTab_1 (Omegamatrix)
   }; // all pattern checked, only Atari Mouse matches
 
-  for(const auto* const sig: signature)
-    if(searchForBytes(image, size, sig, SIG_SIZE))
-      return true;
-
-  return false;
+  return std::ranges::any_of(signature, [&](const auto* sig) {
+    return searchForBytes(image, size, sig, SIG_SIZE);
+  });
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -644,11 +638,9 @@ bool ControllerDetector::isProbablyAmigaMouse(const ByteBuffer& image, size_t si
     { 0b100, 0b000, 0b000, 0b000, 0b101, 0b001} // NextTrackTbl (T. Jentzsch, MCTB)
   }; // all pattern checked, only Amiga Mouse matches
 
-  for(const auto* const sig: signature)
-    if(searchForBytes(image, size, sig, SIG_SIZE))
-      return true;
-
-  return false;
+  return std::ranges::any_of(signature, [&](const auto* sig) {
+    return searchForBytes(image, size, sig, SIG_SIZE);
+  });
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -710,11 +702,9 @@ bool ControllerDetector::isProbablyLightGun(const ByteBuffer& image, size_t size
       { 0xea, 0xea, 0xea, 0x24, 0x3c, 0x10 }
     }; // all pattern checked, only 'Sentinel' and 'Shooting Arcade' match
 
-    for(const auto* const sig: signature)
-      if (searchForBytes(image, size, sig, SIG_SIZE))
-        return true;
-
-    return false;
+    return std::ranges::any_of(signature, [&](const auto* sig) {
+      return searchForBytes(image, size, sig, SIG_SIZE);
+    });
   }
   else if(port == Controller::Jack::Right)
   {
@@ -726,9 +716,9 @@ bool ControllerDetector::isProbablyLightGun(const ByteBuffer& image, size_t size
       { 0xea, 0xea, 0xea, 0x24, 0x3d, 0x10 }
     }; // all pattern checked, only 'Bobby is Hungry' matches
 
-    for(const auto* const sig: signature)
-      if (searchForBytes(image, size, sig, SIG_SIZE))
-        return true;
+    return std::ranges::any_of(signature, [&](const auto* sig) {
+      return searchForBytes(image, size, sig, SIG_SIZE);
+    });
   }
   return false;
 }
@@ -737,19 +727,18 @@ bool ControllerDetector::isProbablyLightGun(const ByteBuffer& image, size_t size
 bool ControllerDetector::isProbablyQuadTari(const ByteBuffer& image, size_t size,
                                             Controller::Jack port)
 {
-  {
-    static constexpr int NUM_SIGS = 3;
-    static constexpr int SIG_SIZE = 8;
-    static constexpr uInt8 signatureBoth[NUM_SIGS][SIG_SIZE] = {
-      { 0x1B, 0x1F, 0x0B, 0x0E, 0x1E, 0x0B, 0x1C, 0x13 }, // Champ Games
-      { 0x1c, 0x20, 0x0C, 0x0F, 0x1F, 0x0C, 0x1D, 0x14 }, // RobotWar-2684
-      { 'Q', 'U', 'A', 'D', 'T', 'A', 'R', 'I' }
-    }; // "QUADTARI"
+  static constexpr int NUM_SIGS = 3;
+  static constexpr int SIG_SIZE = 8;
+  static constexpr uInt8 signatureBoth[NUM_SIGS][SIG_SIZE] = {
+    { 0x1B, 0x1F, 0x0B, 0x0E, 0x1E, 0x0B, 0x1C, 0x13 }, // Champ Games
+    { 0x1c, 0x20, 0x0C, 0x0F, 0x1F, 0x0C, 0x1D, 0x14 }, // RobotWar-2684
+    { 'Q', 'U', 'A', 'D', 'T', 'A', 'R', 'I' }
+  }; // "QUADTARI"
 
-    for(const auto* const sig: signatureBoth)
-      if(searchForBytes(image, size, sig, SIG_SIZE))
-        return true;
-  }
+  if(std::ranges::any_of(signatureBoth, [&](const auto* sig) {
+    return searchForBytes(image, size, sig, SIG_SIZE);
+  }))
+    return true;
 
   if(port == Controller::Jack::Left)
   {

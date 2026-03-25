@@ -178,8 +178,8 @@ Bankswitch::Type CartDetector::autodetectType(const ByteBuffer& image, size_t si
   }
   else if(size == 64_KB)
   {
-    if(isProbablyEFF(image, size, type))
-      ; // type has been set directly in the function
+    if(isProbablyEFF(image, size))
+      type = Bankswitch::Type::EFF;
     else if (isProbablyCDF(image, size))
       type = Bankswitch::Type::CDF;
     else if(isProbably3EX(image, size))
@@ -339,11 +339,9 @@ bool CartDetector::isProbably03E0(const ByteBuffer& image, size_t size)
     { 0x0D, 0xE0, 0x03, 0x0D },  // ORA $3E0, ORA (Popeye)
     { 0xAD, 0xE0, 0x03, 0xAD }   // LDA $3E0, ORA (Montezuma's Revenge)
   };
-  for(const auto* const sig: signature)
-    if(searchForBytes(image, size, sig, 4))
-      return true;
-
-  return false;
+  return std::ranges::any_of(signature, [&](const auto* sig) {
+    return searchForBytes(image, size, sig, 4);
+  });
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -356,19 +354,18 @@ bool CartDetector::isProbably0840(const ByteBuffer& image, size_t size)
     { 0xAD, 0x40, 0x08 },  // LDA $0840
     { 0x2C, 0x00, 0x08 }   // BIT $0800
   };
-  for(const auto* const sig: signature1)
-    if(searchForBytes(image, size, sig, 3, 2))
-      return true;
+  if(std::ranges::any_of(signature1, [&](const auto* sig) {
+    return searchForBytes(image, size, sig, 3, 2);
+  }))
+    return true;
 
   static constexpr uInt8 signature2[2][4] = {
     { 0x0C, 0x00, 0x08, 0x4C },  // NOP $0800; JMP ...
     { 0x0C, 0xFF, 0x0F, 0x4C }   // NOP $0FFF; JMP ...
   };
-  for(const auto* const sig: signature2)
-    if(searchForBytes(image, size, sig, 4, 2))
-      return true;
-
-  return false;
+  return std::ranges::any_of(signature2, [&](const auto* sig) {
+    return searchForBytes(image, size, sig, 4, 2);
+  });
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -383,11 +380,9 @@ bool CartDetector::isProbably0FA0(const ByteBuffer& image, size_t size)
     { 0xAD, 0xC0, 0x0F },  // LDA $FC0  (Front Line, Zaxxon)
     { 0x2C, 0xC0, 0xEF }   // BIT $EFC0 (Motocross)
   };
-  for(const auto* const sig: signature)
-    if(searchForBytes(image, size, sig, 3))
-      return true;
-
-  return false;
+  return std::ranges::any_of(signature, [&](const auto* sig) {
+    return searchForBytes(image, size, sig, 3);
+  });
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -401,8 +396,8 @@ bool CartDetector::isProbably3E(const ByteBuffer& image, size_t size)
 
   static constexpr uInt8 signature1[] = { 0x85, 0x3E };  // STA $3E
   static constexpr uInt8 signature2[] = { 0x85, 0x3F };  // STA $3F
-  return searchForBytes(image, size, signature1, 2)
-    && searchForBytes(image, size, signature2, 2, 2);
+  return searchForBytes(image, size, signature1, 2) &&
+         searchForBytes(image, size, signature2, 2, 2);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -581,11 +576,9 @@ bool CartDetector::isProbablyE0(const ByteBuffer& image, size_t size)
     { 0xAD, 0xED, 0xFF },  // LDA $FFED
     { 0xAD, 0xF3, 0xBF }   // LDA $BFF3
   };
-  for(const auto* const sig: signature)
-    if(searchForBytes(image, size, sig, 3))
-      return true;
-
-  return false;
+  return std::ranges::any_of(signature, [&](const auto* sig) {
+    return searchForBytes(image, size, sig, 3);
+  });
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -606,11 +599,9 @@ bool CartDetector::isProbablyE7(const ByteBuffer& image, size_t size)
     { 0x8D, 0xE7, 0xFF },  // STA $FFE7
     { 0x8D, 0xE7, 0x1F }   // STA $1FE7
   };
-  for(const auto* const sig: signature)
-    if(searchForBytes(image, size, sig, 3))
-      return true;
-
-  return false;
+  return std::ranges::any_of(signature, [&](const auto* sig) {
+    return searchForBytes(image, size, sig, 3);
+  });
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -625,11 +616,9 @@ bool CartDetector::isProbablyE78K(const ByteBuffer& image, size_t size)
     { 0xAD, 0xE5, 0xFF },  // LDA $FFE5
     { 0xAD, 0xE6, 0xFF },  // LDA $FFE6
   };
-  for(const auto* const sig: signature)
-    if(searchForBytes(image, size, sig, 3))
-      return true;
-
-  return false;
+  return std::ranges::any_of(signature, [&](const auto* sig) {
+    return searchForBytes(image, size, sig, 3);
+  });
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -654,21 +643,15 @@ bool CartDetector::isProbablyEF(const ByteBuffer& image, size_t size,
   // Otherwise, EF cart bankswitching switches banks by accessing addresses
   // 0xFE0 to 0xFEF, usually with either a NOP or LDA
   // It's likely that the code will switch to bank 0, so that's what is tested
-  bool isEF = false;
   static constexpr uInt8 signature[4][3] = {
     { 0x0C, 0xE0, 0xFF },  // NOP $FFE0
     { 0xAD, 0xE0, 0xFF },  // LDA $FFE0
     { 0x0C, 0xE0, 0x1F },  // NOP $1FE0
     { 0xAD, 0xE0, 0x1F }   // LDA $1FE0
   };
-  for(const auto* const sig: signature)
-  {
-    if(searchForBytes(image, size, sig, 3))
-    {
-      isEF = true;
-      break;
-    }
-  }
+  const bool isEF = std::ranges::any_of(signature, [&](const auto* sig) {
+    return searchForBytes(image, size, sig, 3);
+  });
 
   // Now that we know that the ROM is EF, we need to check if it's
   // the SC variant
@@ -681,41 +664,25 @@ bool CartDetector::isProbablyEF(const ByteBuffer& image, size_t size,
   return false;
 }
 
-
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool CartDetector::isProbablyEFF(const ByteBuffer& image, size_t size,
-                                Bankswitch::Type& type)
+bool CartDetector::isProbablyEFF(const ByteBuffer& image, size_t size)
 {
   static constexpr uInt8 effb[] = { 'E', 'F', 'F', 'B' };
   if(searchForBytes(image.get()+size-8, 8, effb, 4))
-    {
-      type = Bankswitch::Type::EFF;
-      return true;
-    }
+    return true;
 
-  // Otherwise,  EF  cart  bankswitching  switches  banks  by  accessing
-  // addresses 0xFE0 to 0xFEF, usually with  a NOP, as well as the 0xFF0
-  // to 0xFF3  for save-to-cart  and read from  0xFF4 (for  the EEPROM).
+  // Otherwise, EFF cart bankswitching switches banks by accessing
+  // addresses 0xFE0 to 0xFEF, usually with a NOP, as well as the 0xFF0
+  // to 0xFF3 for save-to-cart and read from 0xFF4 (for the EEPROM).
   // Unlike EF, we require to find all three.
-  bool isEFF = true;
-  static constexpr uInt8 signature[4][3] = {
+  static constexpr uInt8 signature[3][3] = {
     { 0x0C, 0xE0, 0xFF },  // NOP $FFE0
     { 0x0C, 0xF0, 0x1F },  // NOP $1FF0
     { 0xAD, 0xF4, 0x1F }   // LDA $1FF4
   };
-  for(const auto* const sig: signature)
-    {
-      if(!searchForBytes(image, size, sig, 3))
-        {
-          isEFF = false;
-          break;
-        }
-    }
-
-  if (isEFF) {
-    type = Bankswitch::Type::EFF;
-  }
-  return isEFF;
+  return std::ranges::all_of(signature, [&](const auto* sig) {
+    return searchForBytes(image, size, sig, 3);
+  });
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -742,11 +709,9 @@ bool CartDetector::isProbablyFC(const ByteBuffer& image, size_t size)
     { 0x8d, 0xf8, 0xff, 0x8d, 0xfc, 0xff }, // STA $FFF8, STA $FFFC        Surf's Up (4K)
     { 0x8c, 0xf9, 0xff, 0xad, 0xfc, 0xff }  // STY $FFF9, LDA $FFFC        3-D Havoc
   };
-  for(const auto* const sig: signature)
-    if(searchForBytes(image, size, sig, 6))
-      return true;
-
-  return false;
+  return std::ranges::any_of(signature, [&](const auto* sig) {
+    return searchForBytes(image, size, sig, 6);
+  });
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -762,18 +727,15 @@ bool CartDetector::isProbablyFE(const ByteBuffer& image, size_t size)
     { 0xD0, 0xFB, 0x20, 0x68, 0xFE },  // BNE $FB; JSR $FE73  Space Shuttle (SECAM)
     { 0x20, 0x00, 0xF0, 0x84, 0xD6 }   // JSR $F000; $84, $D6 Thwocker
   };
-  for(const auto* const sig: signature)
-    if(searchForBytes(image, size, sig, 5))
-      return true;
-
-  return false;
+  return std::ranges::any_of(signature, [&](const auto* sig) {
+    return searchForBytes(image, size, sig, 5);
+  });
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CartDetector::isProbablyJANE(const ByteBuffer& image, size_t size)
 {
   static constexpr uInt8 signature[] = { 0xad, 0xf1, 0xff, 0x60 };  // LDA $0CB8
-
   return searchForBytes(image, size, signature, sizeof(signature));
 }
 
@@ -781,7 +743,6 @@ bool CartDetector::isProbablyJANE(const ByteBuffer& image, size_t size)
 bool CartDetector::isProbablyGL(const ByteBuffer& image, size_t size)
 {
   static constexpr uInt8 signature[] = { 0xad, 0xb8, 0x0c };  // LDA $0CB8
-
   return searchForBytes(image, size, signature, 3);
 }
 
@@ -833,10 +794,9 @@ bool CartDetector::isProbablySB(const ByteBuffer& image, size_t size)
     { 0xBD, 0x00, 0x08 },  // LDA $0800,x
     { 0xAD, 0x00, 0x08 }   // LDA $0800
   };
-  if(searchForBytes(image, size, signature[0], 3))
-    return true;
-  else
-    return searchForBytes(image, size, signature[1], 3);
+  return std::ranges::any_of(signature, [&](const auto* sig) {
+    return searchForBytes(image, size, sig, 3);
+  });
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -862,11 +822,9 @@ bool CartDetector::isProbablyUA(const ByteBuffer& image, size_t size)
     { 0x8D, 0xC0, 0x02 },  // STA $2C0 (Fathom, Vanguard)
     { 0xAD, 0xC0, 0x02 },  // LDA $2C0 (Mickey)
   };
-  for(const auto* const sig: signature)
-    if(searchForBytes(image, size, sig, 3))
-      return true;
-
-  return false;
+  return std::ranges::any_of(signature, [&](const auto* sig) {
+    return searchForBytes(image, size, sig, 3);
+  });
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -891,15 +849,14 @@ bool CartDetector::isProbablyX07(const ByteBuffer& image, size_t size)
     { 0x0C, 0x1D, 0x08 },  // NOP $081D
     { 0x0C, 0x2D, 0x08 }   // NOP $082D
   };
-  for(const auto* const sig: signature)
-    if(searchForBytes(image, size, sig, 3))
-      return true;
-
-  return false;
+  return std::ranges::any_of(signature, [&](const auto* sig) {
+    return searchForBytes(image, size, sig, 3);
+  });
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool CartDetector::isProbablyELF(const ByteBuffer& image, size_t size) {
+bool CartDetector::isProbablyELF(const ByteBuffer& image, size_t size)
+{
   // Min ELF header size
   if (size < 52) return false;
 
@@ -924,6 +881,5 @@ bool CartDetector::isProbablyPlusROM(const ByteBuffer& image, size_t size)
 {
   // PlusCart uses this pattern to detect a PlusROM
   static constexpr uInt8 signature[3] = { 0x8d, 0xf1, 0x1f };  // STA $1FF1
-
   return searchForBytes(image, size, signature, 3);
 }

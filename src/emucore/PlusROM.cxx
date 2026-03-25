@@ -393,11 +393,9 @@ bool PlusROM::isValidPath(string_view path)
   // TODO: This isn't 100%
   //  Perhaps a better function will be included with whatever network
   //  library we decide to use
-  for(auto c: path)
-    if(!((c > 44 && c < 58) || (c > 64 && c < 91) || (c > 96 && c < 122)))
-      return false;
-
-  return true;
+  return std::ranges::all_of(path, [](auto c) {
+    return (c > 44 && c < 58) || (c > 64 && c < 91) || (c > 96 && c < 122);
+  });
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
