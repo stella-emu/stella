@@ -41,6 +41,7 @@ using uInt64 = uint64_t;
 // types: cout, cerr, string, ostream, istream, etc.
 #include <array>
 #include <algorithm>
+#include <bit>
 #include <compare>
 #include <iostream>
 #include <fstream>
@@ -164,11 +165,7 @@ namespace BSPF
 
   // Get next power of two greater than or equal to the given value
   constexpr size_t nextPowerOfTwo(size_t size) {
-    if(size < 2) return 1;
-    size_t power2 = 1;
-    while(power2 < size)
-      power2 <<= 1;
-    return power2;
+    return std::bit_ceil(size);
   }
 
   // Get next multiple of the given value
@@ -199,7 +196,7 @@ namespace BSPF
   // Test whether a container contains the given value
   template<typename Container>
   bool contains(const Container& c, typename Container::const_reference elem) {
-    return std::find(c.cbegin(), c.cend(), elem) != c.end();
+    return std::ranges::find(c, elem) != c.end();
   }
 
   // Convert string to given case
@@ -216,64 +213,73 @@ namespace BSPF
 
   // Convert string to integer, using default value on any error
   template<int BASE = 10>
-  inline int stoi(string_view s, const int defaultValue = 0)
+  inline int stoi(string_view s, int defaultValue = 0)
   {
-    try {
+      // Skip leading spaces safely
+      const auto pos = s.find_first_not_of(' ');
+      if(pos == string_view::npos)
+        return defaultValue;
+      s.remove_prefix(pos);
+
       int i{};
-      s = s.substr(s.find_first_not_of(' '));
       const auto result = std::from_chars(s.data(), s.data() + s.size(), i, BASE);
-      return result.ec == std::errc() ? i : defaultValue;
-    }
-    catch(...) { return defaultValue; }
+      return (result.ec == std::errc()) ? i : defaultValue;
+  }
+
+  // Convert character to uppercase (ASCII only)
+  constexpr char toUpperAscii(char c) {
+    return (c >= 'a' && c <= 'z') ? (c - 'a' + 'A') : c;
   }
 
   // Compare two strings (case insensitive)
   // Return negative, zero, positive result for <,==,> respectively
-  static constexpr int compareIgnoreCase(string_view s1, string_view s2)
+  constexpr int compareIgnoreCase(std::string_view s1, std::string_view s2)
   {
     // Only compare up to the length of the shorter string
     const auto maxsize = std::min(s1.size(), s2.size());
     for(size_t i = 0; i < maxsize; ++i)
-      if(toupper(s1[i]) != toupper(s2[i]))
-        return toupper(s1[i]) - toupper(s2[i]);
-
-    // Otherwise the length of the string takes priority
-    return static_cast<int>(s1.size() - s2.size());
+    {
+      const char c1 = toUpperAscii(s1[i]);
+      const char c2 = toUpperAscii(s2[i]);
+      if(c1 != c2)
+        return c1 - c2;
+    }
+    return (s1.size() < s2.size()) ? -1 : (s1.size() > s2.size() ? 1 : 0);
   }
 
   // Test whether two strings are equal (case insensitive)
   constexpr bool equalsIgnoreCase(string_view s1, string_view s2)
   {
-    return s1.size() == s2.size() ? (compareIgnoreCase(s1, s2) == 0) : false;
+    return s1.size() == s2.size() && compareIgnoreCase(s1, s2) == 0;
   }
 
   // Test whether the first string starts with the second one (case insensitive)
   constexpr bool startsWithIgnoreCase(string_view s1, string_view s2)
   {
-    if(s1.size() >= s2.size())
-      return compareIgnoreCase(s1.substr(0, s2.size()), s2) == 0;
-
-    return false;
+    return s1.size() >= s2.size() &&
+           compareIgnoreCase(s1.substr(0, s2.size()), s2) == 0;
   }
 
   // Test whether the first string ends with the second one (case insensitive)
   constexpr bool endsWithIgnoreCase(string_view s1, string_view s2)
   {
-    if(s1.size() >= s2.size())
-      return compareIgnoreCase(s1.substr(s1.size() - s2.size()), s2) == 0;
-
-    return false;
+    return s1.size() >= s2.size() &&
+           compareIgnoreCase(s1.substr(s1.size() - s2.size()), s2) == 0;
   }
 
   // Find location (if any) of the second string within the first,
   // starting from 'startpos' in the first string
-  static constexpr size_t findIgnoreCase(string_view s1, string_view s2, size_t startpos = 0)
+  constexpr size_t findIgnoreCase(std::string_view s1, std::string_view s2,
+                                  size_t startpos = 0)
   {
-    const auto pos = std::search(s1.cbegin()+startpos, s1.cend(),  // NOLINT
-      s2.cbegin(), s2.cend(), [](char ch1, char ch2) {
-        return toupper(static_cast<uInt8>(ch1)) == toupper(static_cast<uInt8>(ch2));
-      });
-    return pos == s1.cend() ? string::npos : pos - (s1.cbegin()+startpos);
+    if(startpos > s1.size()) return std::string::npos;
+    const auto* const pos = std::search(s1.begin() + startpos, s1.end(),
+                                        s2.begin(), s2.end(),
+            [&](char ch1, char ch2) {
+              return toUpperAscii(ch1) == toUpperAscii(ch2);
+            }
+    );
+    return pos == s1.end() ? std::string::npos : pos - s1.begin();
   }
 
   // Test whether the first string contains the second one (case insensitive)
@@ -449,9 +455,9 @@ namespace BSPF
     return tm_snapshot;
   }
 
-  inline bool isWhiteSpace(const char c)
+  constexpr bool isWhiteSpace(const char c)
   {
-    static constexpr string_view spaces{" ,.;:+-*&/\\'"};
+    constexpr string_view spaces{" ,.;:+-*&/\\'"};
     return spaces.find(c) != string_view::npos;
   }
 } // namespace BSPF
