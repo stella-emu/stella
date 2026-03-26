@@ -727,16 +727,16 @@ bool ControllerDetector::isProbablyLightGun(const ByteBuffer& image, size_t size
 bool ControllerDetector::isProbablyQuadTari(const ByteBuffer& image, size_t size,
                                             Controller::Jack port)
 {
-  static constexpr int NUM_SIGS = 3;
-  static constexpr int SIG_SIZE = 8;
-  static constexpr uInt8 signatureBoth[NUM_SIGS][SIG_SIZE] = {
+  static constexpr int NUM_SIGS_B = 3;
+  static constexpr int SIG_SIZE_B = 8;
+  static constexpr uInt8 signatureBoth[NUM_SIGS_B][SIG_SIZE_B] = {
     { 0x1B, 0x1F, 0x0B, 0x0E, 0x1E, 0x0B, 0x1C, 0x13 }, // Champ Games
     { 0x1c, 0x20, 0x0C, 0x0F, 0x1F, 0x0C, 0x1D, 0x14 }, // RobotWar-2684
     { 'Q', 'U', 'A', 'D', 'T', 'A', 'R', 'I' }
   }; // "QUADTARI"
 
   if(std::ranges::any_of(signatureBoth, [&](const auto* sig) {
-    return searchForBytes(image, size, sig, SIG_SIZE);
+    return searchForBytes(image, size, sig, SIG_SIZE_B);
   }))
     return true;
 
