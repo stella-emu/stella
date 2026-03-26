@@ -233,7 +233,7 @@ namespace BSPF
 
   // Compare two strings (case insensitive)
   // Return negative, zero, positive result for <,==,> respectively
-  constexpr int compareIgnoreCase(std::string_view s1, std::string_view s2)
+  constexpr int compareIgnoreCase(string_view s1, string_view s2)
   {
     // Only compare up to the length of the shorter string
     const auto maxsize = std::min(s1.size(), s2.size());
@@ -269,23 +269,23 @@ namespace BSPF
 
   // Find location (if any) of the second string within the first,
   // starting from 'startpos' in the first string
-  constexpr size_t findIgnoreCase(std::string_view s1, std::string_view s2,
+  constexpr size_t findIgnoreCase(string_view s1, string_view s2,
                                   size_t startpos = 0)
   {
-    if(startpos > s1.size()) return std::string::npos;
-    const auto* const pos = std::search(s1.begin() + startpos, s1.end(),
-                                        s2.begin(), s2.end(),
+    if(startpos > s1.size()) return string_view::npos;
+    const auto pos = std::search(s1.begin() + startpos, s1.end(),
+                                 s2.begin(), s2.end(),
             [&](char ch1, char ch2) {
               return toUpperAscii(ch1) == toUpperAscii(ch2);
             }
     );
-    return pos == s1.end() ? std::string::npos : pos - s1.begin();
+    return pos == s1.end() ? string_view::npos : pos - s1.begin();
   }
 
   // Test whether the first string contains the second one (case insensitive)
   constexpr bool containsIgnoreCase(string_view s1, string_view s2)
   {
-    return findIgnoreCase(s1, s2) != string::npos;
+    return findIgnoreCase(s1, s2) != string_view::npos;
   }
 
   // Test whether the first string matches the second one (case insensitive)
@@ -299,7 +299,7 @@ namespace BSPF
       for(uInt32 j = 1; j < s2.size(); ++j)
       {
         const size_t found = findIgnoreCase(s1, s2.substr(j, 1), pos);
-        if(found == string::npos)
+        if(found == string_view::npos)
           return false;
         pos += found + 1;
       }
@@ -327,7 +327,7 @@ namespace BSPF
         {
           const size_t found = s1.find_first_of(s2[j], pos + ofs);
 
-          if(found == string::npos)
+          if(found == string_view::npos)
             return false;
           // make sure no upper case characters are skipped
           for(size_t k = lastUpper + 1; k < found; ++k)
@@ -341,7 +341,7 @@ namespace BSPF
         {
           const size_t found = findIgnoreCase(s1, s2.substr(j, 1), pos + ofs);
 
-          if(found == string::npos)
+          if(found == string_view::npos)
             return false;
 
           pos += found + 1;
@@ -362,7 +362,7 @@ namespace BSPF
     if(str.length() >= pattern.length())
     {
       // optimize a bit
-      if(pattern.find('?') != string::npos)
+      if(pattern.find('?') != string_view::npos)
       {
         for(size_t pos = 0; pos < str.length() - pattern.length() + 1; ++pos)
         {
@@ -379,7 +379,7 @@ namespace BSPF
       else
         return str.find(pattern);
     }
-    return string::npos;
+    return string_view::npos;
   }
 
   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -404,7 +404,7 @@ namespace BSPF
     // Search for first '*'
     const size_t pos = pat.find('*');
 
-    if(pos != string::npos)
+    if(pos != string_view::npos)
     {
       // '*' found, split pattern into left and right part, search recursively
       const string leftPat = pat.substr(0, pos);
@@ -425,7 +425,7 @@ namespace BSPF
   {
     if(from.empty()) return;
     size_t start_pos = 0;
-    while((start_pos = str.find(from, start_pos)) != string::npos)
+    while((start_pos = str.find(from, start_pos)) != string_view::npos)
     {
       str.replace(start_pos, from.length(), to);
       start_pos += to.length(); // In case 'to' contains 'from',
@@ -437,7 +437,7 @@ namespace BSPF
   inline string trim(string_view str)
   {
     const auto first = str.find_first_not_of(' ');
-    return (first == string::npos) ? EmptyString() :
+    return (first == string_view::npos) ? EmptyString() :
             string{str.substr(first, str.find_last_not_of(' ')-first+1)};
   }
 
