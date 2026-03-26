@@ -839,6 +839,7 @@ INCLUDES="-I$CORE -I$COMMON -I$TV -I$TIA -I$TIA_FRAME_MANAGER -I$ELF -I$JSON -I$
 
 #if test "$_libpng" = yes ; then  #FIXME:
 		LIBS="$LIBS `$_pkg_config --libs sdl3`"
+		INCLUDES="$INCLUDES `$_pkg_config --cflags sdl3`"
 #fi
 
 LD=$CXX
@@ -914,6 +915,7 @@ if test "$_build_png" = yes ; then
 	MODULES="$MODULES $LIBJPGEXIF"
   if test "$_libpng" = yes ; then
     LIBS="$LIBS `$_pkg_config --libs libpng`"
+    INCLUDES="$INCLUDES `$_pkg_config --cflags libpng`"
   else
     MODULES="$MODULES $LIBPNG"
     INCLUDES="$INCLUDES -I$LIBPNG"
@@ -922,6 +924,7 @@ fi
 
 if test "$_libsqlite3" = yes ; then
   LIBS="$LIBS `$_pkg_config --libs sqlite3`"
+  INCLUDES="$INCLUDES `$_pkg_config --cflags sqlite3`"
 else
   MODULES="$MODULES $SQLITE_LIB"
   INCLUDES="$INCLUDES -I$SQLITE_LIB"
@@ -931,6 +934,7 @@ if test "$_build_zip" = yes ; then
 	DEFINES="$DEFINES -DZIP_SUPPORT"
   if test "$_zlib" = yes ; then
     LIBS="$LIBS `$_pkg_config --libs zlib`"
+    INCLUDES="$INCLUDES `$_pkg_config --cflags zlib`"
   else
     MODULES="$MODULES $ZLIB"
     INCLUDES="$INCLUDES -I$ZLIB"
