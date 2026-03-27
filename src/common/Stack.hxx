@@ -72,22 +72,15 @@ class FixedStack
       return std::move(_stack[--_size]);
     }
 
-    // Reverse the contents of the stack
-    // This operation isn't needed very often, but it's handy to have
-    constexpr void reverse() {
-      for(size_t i = 0, j = _size ? _size - 1 : 0; i < j; ++i, --j) {
-        std::swap(_stack[i], _stack[j]);
-      }
-    }
-
     // Apply the given function to every item in the stack
     // We do it this way so the stack API can be preserved,
     // and no access to individual elements is allowed outside
     // the class.
     template <typename Func>
     constexpr void applyAll(Func&& func) {
-      for(size_t i = 0; i < _size; ++i)
-        func(_stack[i]);
+      // Create a subrange of active stack elements, and apply func to each
+      auto r = std::ranges::subrange(_stack.begin(), _stack.begin() + _size);
+      std::ranges::for_each(r, std::forward<Func>(func));
     }
 
     friend ostream& operator<<(ostream& os, const FixedStack<T>& s) {
