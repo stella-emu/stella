@@ -18,8 +18,6 @@
 #ifndef STACK_HXX
 #define STACK_HXX
 
-#include <functional>
-
 #include "bspf.hxx"
 
 /**
@@ -35,33 +33,59 @@ class FixedStack
     size_t _size{0};
 
   public:
-    using StackFunction = std::function<void(T&)>;
-
-    FixedStack() = default;
+    constexpr FixedStack() = default;
     ~FixedStack() = default;
 
-    bool empty() const { return _size == 0; }
-    bool full() const  { return _size >= CAPACITY; }
+    constexpr bool empty() const { return _size == 0; }
+    constexpr bool full()  const { return _size == CAPACITY; }
+    constexpr size_t size() const { return _size; }
+    static constexpr size_t capacity() { return CAPACITY; }
 
-    T top() const { return _stack[_size - 1];     }
-    T get(size_t pos) const { return _stack[pos]; }
-    void push(const T& x) { _stack[_size++] = x;  }
-    T pop() { return std::move(_stack[--_size]);  }
-    size_t size() const { return _size; }
+    constexpr T& top() {
+      assert(_size > 0);
+      return _stack[_size - 1];
+    }
+    constexpr const T& top() const {
+      assert(_size > 0);
+      return _stack[_size - 1];
+    }
+
+    constexpr T& get(size_t pos) {
+      assert(pos < _size);
+      return _stack[pos];
+    }
+    constexpr const T& get(size_t pos) const {
+      assert(pos < _size);
+      return _stack[pos];
+    }
+
+    constexpr void push(const T& value) {
+      assert(_size < CAPACITY);
+      _stack[_size++] = value;
+    }
+    constexpr void push(T&& value) {
+      assert(_size < CAPACITY);
+      _stack[_size++] = std::move(value);
+    }
+    constexpr T pop() {
+      assert(_size > 0);
+      return std::move(_stack[--_size]);
+    }
 
     // Reverse the contents of the stack
     // This operation isn't needed very often, but it's handy to have
-    void reverse() {
-      if(_size > 1)
-        for(size_t i = 0, j = _size - 1; i < j; ++i, --j)
-          std::swap(_stack[i], _stack[j]);
+    constexpr void reverse() {
+      for(size_t i = 0, j = _size ? _size - 1 : 0; i < j; ++i, --j) {
+        std::swap(_stack[i], _stack[j]);
+      }
     }
 
     // Apply the given function to every item in the stack
     // We do it this way so the stack API can be preserved,
     // and no access to individual elements is allowed outside
     // the class.
-    void applyAll(const StackFunction& func) {
+    template <typename Func>
+    constexpr void applyAll(Func&& func) {
       for(size_t i = 0; i < _size; ++i)
         func(_stack[i]);
     }
