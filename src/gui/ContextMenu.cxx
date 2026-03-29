@@ -84,7 +84,7 @@ void ContextMenu::setPosition()
 
   // Now make sure that the entire menu can fit inside the screen bounds
   // If not, we reset its position
-  if(!instance().frameBuffer().screenRect().contains(
+  if(!instance().frameBuffer().screenRect().adjustToFit(
       _xorig, _yorig, surface().dstRect()))
     surface().setDstPos(_xorig, _yorig);
 }

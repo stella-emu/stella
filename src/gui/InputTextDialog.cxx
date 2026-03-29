@@ -152,7 +152,7 @@ void InputTextDialog::setPosition()
 
     // Now make sure that the entire menu can fit inside the screen bounds
     // If not, we reset its position
-    if(!instance().frameBuffer().screenRect().contains(
+    if(!instance().frameBuffer().screenRect().adjustToFit(
         myXOrig, myXOrig, surface().dstRect()))
       surface().setDstPos(myXOrig, myYOrig);
   }
