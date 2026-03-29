@@ -27,17 +27,17 @@ class AudioSettings
   public:
 
     enum class Preset: uInt8 {
-      custom                 = 1,
-      lowQualityMediumLag    = 2,
-      highQualityMediumLag   = 3,
-      highQualityLowLag      = 4,
-      ultraQualityMinimalLag = 5
+      custom                 = 0,
+      lowQualityMediumLag    = 1,
+      highQualityMediumLag   = 2,
+      highQualityLowLag      = 3,
+      ultraQualityMinimalLag = 4
     };
 
     enum class ResamplingQuality: uInt8 {
-      nearestNeighbour   = 1,
-      lanczos_2          = 2,
-      lanczos_3          = 3
+      nearestNeighbour   = 0,
+      lanczos_2          = 1,
+      lanczos_3          = 2
     };
 
     static constexpr string_view SETTING_PRESET              = "audio.preset";

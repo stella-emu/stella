@@ -886,7 +886,7 @@ const Variant& Settings::value(string_view key) const
     if(it != myTemporarySettings.end())
       return it->second;
   }
-  return EmptyVariant;
+  return EmptyVariant();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

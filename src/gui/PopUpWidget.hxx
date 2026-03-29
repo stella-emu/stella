@@ -54,7 +54,7 @@ class PopUpWidget : public EditableWidget
     /** Various selection methods passed directly to the underlying menu
         See ContextMenu.hxx for more information. */
     void setSelected(const Variant& tag,
-                     const Variant& def = EmptyVariant);
+                     const Variant& def = EmptyVariant());
     void setSelectedIndex(int idx, bool changed = false);
     void setSelectedMax(bool changed = false);
     void clearSelection();

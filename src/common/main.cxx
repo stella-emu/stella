@@ -186,6 +186,7 @@ void freeConsole()
 } // namespace
 
 
+// NOLINTBEGIN(bugprone-exception-escape)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 int main(int ac, char* av[])
 {
@@ -336,3 +337,4 @@ int main(int ac, char* av[])
   // Cleanup time ...
   return Cleanup();
 }
+// NOLINTEND(bugprone-exception-escape)

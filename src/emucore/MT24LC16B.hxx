@@ -26,7 +26,7 @@
   (aka Supercat) for the bulk of the 24LC256 code; altered for
   24LC16B / EFF (Grizzards) cart type by Bruce-Robert Pocock.
 
-  @author Stephen Anthon, J. Payson, and Bruce-Robert Pocock
+  @author Stephen Anthony, J. Payson, and Bruce-Robert Pocock
 */
 class MT24LC16B : public MicroChip24LC<2_KB, 16>
 {

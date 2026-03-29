@@ -178,7 +178,7 @@ void ContextMenu::setSelectedName(string_view name)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const Variant& ContextMenu::getSelectedTag() const
 {
-  return (_selectedItem >= 0) ? _entries[_selectedItem].second : EmptyVariant;
+  return (_selectedItem >= 0) ? _entries[_selectedItem].second : EmptyVariant();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
