@@ -12,7 +12,7 @@ jobs:
     name: Linux
     runs-on: ubuntu-latest
     env:
-      SDL3_VERSION: 3.4.0
+      SDL3_VERSION: 3.4.2
     steps:
       - name: Check out the repository
         uses: actions/checkout@93ea575cb5d8a053eaa0ac8fa3b40d7e05a33cc8
@@ -33,11 +33,11 @@ jobs:
     name: macOS
     runs-on: macos-latest
     env:
-      SDL3_VERSION: 3.2.14
+      SDL3_VERSION: 3.4.2
     steps:
       - uses: maxim-lobanov/setup-xcode@v1
         with:
-          xcode-version: '16.2'
+          xcode-version: '26'
       - name: Check out the repository
         uses: actions/checkout@93ea575cb5d8a053eaa0ac8fa3b40d7e05a33cc8
       - name: Install SDL3
@@ -60,7 +60,7 @@ jobs:
         platform: [x64]
     env:
       Platform: ${{ matrix.platform }}
-      SDL3_version: 3.4.0
+      SDL3_version: 3.4.2
     steps:
       - name: Check out the repository
         uses: actions/checkout@93ea575cb5d8a053eaa0ac8fa3b40d7e05a33cc8
