@@ -27,6 +27,12 @@
 
   * Added developer option for disabling PlusROM support.
 
+  * For the Mac port:
+    - Minimum OS version is macOS 26, and compilation requires Xcode 26.
+
+  * For the Linux/UNIX port:
+    - Minimum supported compilers are g++ 13 and Clang 16.
+
 -Have fun!
 
 
