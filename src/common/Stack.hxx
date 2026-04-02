@@ -50,10 +50,6 @@ class FixedStack
       return _stack[_size - 1];
     }
 
-    constexpr T& get(size_t pos) {
-      assert(pos < _size);
-      return _stack[pos];
-    }
     constexpr const T& get(size_t pos) const {
       assert(pos < _size);
       return _stack[pos];
@@ -82,10 +78,14 @@ class FixedStack
       auto r = std::ranges::subrange(_stack.begin(), _stack.begin() + _size);
       std::ranges::for_each(r, std::forward<Func>(func));
     }
+    template <typename Func>
+    constexpr void applyAll(Func&& func) const {
+      auto r = std::ranges::subrange(_stack.begin(), _stack.begin() + _size);
+      std::ranges::for_each(r, std::forward<Func>(func));
+    }
 
     friend ostream& operator<<(ostream& os, const FixedStack<T>& s) {
-      for(size_t pos = 0; pos < s._size; ++pos)
-        os << s._stack[pos] << " ";
+      s.applyAll([&os](const T& v) { os << v << ' '; });
       return os;
     }
 
