@@ -136,25 +136,25 @@ inline const string& EmptyString() { static const string empty; return empty; }
 
 namespace BSPF
 {
-  static constexpr float PI_f = std::numbers::pi_v<float>;
-  static constexpr double PI_d = std::numbers::pi_v<double>;
-  static constexpr double ln10 = std::numbers::ln10;
-  static constexpr double ln2 = std::numbers::ln2;
+  constexpr float PI_f = std::numbers::pi_v<float>;
+  constexpr double PI_d = std::numbers::pi_v<double>;
+  constexpr double ln10 = std::numbers::ln10;
+  constexpr double ln2 = std::numbers::ln2;
 
   // CPU architecture type
   // This isn't complete yet, but takes care of all the major platforms
   #if defined(__i386__) || defined(_M_IX86)
-    static constexpr string_view ARCH = "i386";
+    constexpr string_view ARCH = "i386";
   #elif defined(__x86_64__) || defined(_WIN64)
-    static constexpr string_view ARCH = "x86_64";
+    constexpr string_view ARCH = "x86_64";
   #elif defined(__powerpc__) || defined(__ppc__)
-    static constexpr string_view ARCH = "ppc";
+    constexpr string_view ARCH = "ppc";
   #elif defined(__arm__) || defined(__thumb__)
-    static constexpr string_view ARCH = "arm32";
+    constexpr string_view ARCH = "arm32";
   #elif defined(__aarch64__)
-    static constexpr string_view ARCH = "arm64";
+    constexpr string_view ARCH = "arm64";
   #else
-    static constexpr string_view ARCH = "NOARCH";
+    constexpr string_view ARCH = "NOARCH";
   #endif
 
   #if defined(BSPF_WINDOWS) || defined(__WIN32__)
