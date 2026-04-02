@@ -26,6 +26,7 @@ namespace Common {
 
 // Shared parsing helper
 template <typename T>
+requires std::integral<T>
 inline bool parsePair(string_view s, T& a, T& b) {
   const char* begin = s.data();
   const char* end   = begin + s.size();
@@ -38,7 +39,9 @@ inline bool parsePair(string_view s, T& a, T& b) {
 }
 // Shared toString helper
 template <typename T>
+requires std::integral<T>
 inline string toStringPair(const T& a, const T& b) {
+  static_assert(sizeof(T) <= 4, "toStringPair buffer too small");
   char buf[32];
   char* ptr = buf;
 
