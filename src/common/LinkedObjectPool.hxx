@@ -18,6 +18,8 @@
 #ifndef LINKED_OBJECT_POOL_HXX
 #define LINKED_OBJECT_POOL_HXX
 
+#include <cassert>
+
 #include "bspf.hxx"
 
 /**
@@ -28,10 +30,11 @@
 */
 namespace Common {
 
-template <typename T, uint32_t CAPACITY = 100>
+template <typename T>
 class LinkedObjectPool
 {
     static constexpr uInt32 npos = std::numeric_limits<uInt32>::max();
+    static constexpr uInt32 DEFAULT_CAPACITY = 100;
 
     struct Node {
       T value{};
@@ -44,24 +47,67 @@ class LinkedObjectPool
     // =========================
     // Iterator (STL-like)
     // =========================
+    class iter {
+      public:
+        using iterator_category = std::bidirectional_iterator_tag;
+        using value_type        = T;
+        using difference_type   = std::ptrdiff_t;
+        using pointer           = T*;
+        using reference         = T&;
+
+        iter() : pool{nullptr}, idx{npos} { }
+        iter(LinkedObjectPool* p, uInt32 i) : pool{p}, idx{i} { }
+
+        reference operator*() const { return pool->myNodes[idx].value;  }
+        pointer operator->() const  { return &pool->myNodes[idx].value; }
+
+        iter& operator++() {
+          idx = (idx == npos) ? npos : pool->myNodes[idx].next;
+          return *this;
+        }
+        iter& operator--() {
+          if(idx == npos) idx = pool->myTail;
+          else            idx = pool->myNodes[idx].prev;
+          return *this;
+        }
+        iter operator++(int) { iter tmp = *this; ++(*this); return tmp; }
+        iter operator--(int) { iter tmp = *this; --(*this); return tmp; }
+
+        bool operator==(const iter& o) const { return idx == o.idx; }
+        bool operator!=(const iter& o) const { return idx != o.idx; }
+        uInt32 index() const { return idx; }
+
+      private:
+        LinkedObjectPool* pool;  // non-const pointer — allows mutation
+        uInt32 idx;
+    };
     class const_iter {
       public:
-        const_iter(const LinkedObjectPool* p, uInt32 i)
-          : pool(p), idx(i) {}
+        // Required type aliases for the concept:
+        using iterator_category = std::bidirectional_iterator_tag;
+        using value_type        = T;
+        using difference_type   = std::ptrdiff_t;
+        using pointer           = const T*;
+        using reference         = const T&;
 
-        const T& operator*() const { return pool->myNodes[idx].value; }
-        const T* operator->() const { return &pool->myNodes[idx].value; }
+        const_iter() : pool{nullptr}, idx{npos} { }
+        const_iter(const LinkedObjectPool* p, uInt32 i)
+          : pool{p}, idx{i} { }
+
+        reference operator*() const { return pool->myNodes[idx].value; }
+        pointer operator->() const { return &pool->myNodes[idx].value; }
 
         const_iter& operator++() {
           idx = (idx == npos) ? npos : pool->myNodes[idx].next;
           return *this;
         }
-
         const_iter& operator--() {
           if(idx == npos) idx = pool->myTail;
-          else idx = pool->myNodes[idx].prev;
+          else            idx = pool->myNodes[idx].prev;
           return *this;
         }
+        const_iter operator++(int) { const_iter tmp = *this; ++(*this); return tmp; }
+        const_iter operator--(int) { const_iter tmp = *this; --(*this); return tmp; }
 
         bool operator==(const const_iter& o) const { return idx == o.idx; }
         bool operator!=(const const_iter& o) const { return idx != o.idx; }
@@ -73,13 +119,11 @@ class LinkedObjectPool
         uInt32 idx;
       };
 
-      using iter = const_iter;
-
   public:
     /*
-      Create a pool of size CAPACITY.
+      Create a pool of default size.
     */
-    LinkedObjectPool() { resize(CAPACITY); }
+    LinkedObjectPool() { resize(DEFAULT_CAPACITY); }
     ~LinkedObjectPool() = default;
 
     /**
@@ -102,49 +146,44 @@ class LinkedObjectPool
       Does the 'current' iterator point to a valid node in the list?
       This must be called before 'current()' is called.
     */
-    bool currentIsValid() const { return myCurrentIdx != npos; }
+    [[nodiscard]] bool currentIsValid() const { return myCurrentIdx != npos; }
 
     /**
       Returns current's position in the list.
     */
     uInt32 currentIdx() const {
-      if(!currentIsValid()) return 0;
-
-      uInt32 idx = 1;
-      uInt32 it = myCurrentIdx;
-
-      while(myNodes[it].prev != npos) {
-        ++idx;
-        it = myNodes[it].prev;
-      }
-      return idx;
+      return currentIsValid() ? myCurrentPos : 0;
     }
 
     /**
       Advance 'current' iterator to previous position in the list.
     */
     void moveToPrevious() {
-      if(currentIsValid())
-        myCurrentIdx = myNodes[myCurrentIdx].prev;
+      if(currentIsValid() && myNodes[myCurrentIdx].prev != npos) {
+          myCurrentIdx = myNodes[myCurrentIdx].prev;
+          --myCurrentPos;
+      }
     }
 
     /**
       Advance 'current' iterator to next position in the list.
     */
     void moveToNext() {
-      if(currentIsValid())
+      if(currentIsValid() && myNodes[myCurrentIdx].next != npos) {
         myCurrentIdx = myNodes[myCurrentIdx].next;
+        ++myCurrentPos;
       }
+    }
 
     /**
       Advance 'current' iterator to first position in the list.
     */
-    void moveToFirst() { myCurrentIdx = myHead; }
+    void moveToFirst() { myCurrentIdx = myHead; myCurrentPos = 1; }
 
     /**
       Advance 'current' iterator to last position in the list.
     */
-    void moveToLast()  { myCurrentIdx = myTail; }
+    void moveToLast() { myCurrentIdx = myTail; myCurrentPos = mySize; }
 
     /**
       Return an iterator to the specified node in the list.
@@ -161,8 +200,10 @@ class LinkedObjectPool
     /**
       Canonical iterators from C++ STL.
     */
+    iter begin() { return iter(this, myHead); }
+    iter end()   { return iter(this, npos);   }
     const_iter cbegin() const { return const_iter(this, myHead); }
-    const_iter cend()   const { return const_iter(this, npos); }
+    const_iter cend()   const { return const_iter(this, npos);   }
 
     /**
       Answer whether 'current' is at the specified position.
@@ -191,6 +232,7 @@ class LinkedObjectPool
       if(myTail == npos) myTail = n;
 
       myCurrentIdx = n;
+      myCurrentPos = 1;  // head is always position 1
       ++mySize;
     }
 
@@ -215,6 +257,7 @@ class LinkedObjectPool
       if(myHead == npos) myHead = n;
 
       myCurrentIdx = n;
+      myCurrentPos = mySize + 1;  // appended to end
       ++mySize;
     }
 
@@ -277,6 +320,7 @@ class LinkedObjectPool
     */
     void resize(uInt32 capacity) {
       if(capacity == myCapacity) return;
+      assert(mySize == 0 && "resize() discards all list contents — call clear() first");
 
       myCapacity = capacity;
       myNodes.resize(myCapacity);
@@ -289,7 +333,6 @@ class LinkedObjectPool
     void clear() {
       for(uInt32 i = 0; i < myCapacity; ++i) {
         myNodes[i].next = i + 1;
-        myNodes[i].prev = npos;
         myNodes[i].active = false;
       }
 
@@ -297,13 +340,13 @@ class LinkedObjectPool
 
       myFreeHead = 0;
       myHead = myTail = myCurrentIdx = npos;
-      mySize = 0;
+      myCurrentPos = mySize = 0;
     }
 
-    uInt32 capacity() const { return myCapacity; }
-    uInt32 size() const { return mySize; }
-    bool empty() const { return mySize == 0; }
-    bool full()  const { return mySize == myCapacity; }
+    [[nodiscard]] uInt32 capacity() const { return myCapacity; }
+    [[nodiscard]] uInt32 size() const { return mySize; }
+    [[nodiscard]] bool empty() const { return mySize == 0; }
+    [[nodiscard]] bool full()  const { return mySize == myCapacity; }
 
   #if 0
     friend ostream& operator<<(ostream& os, const LinkedObjectPool<T>& p) {
@@ -315,6 +358,7 @@ class LinkedObjectPool
 
   private:
     uInt32 alloc() {
+      assert(myFreeHead != npos && "alloc() called on full pool");
       const uInt32 n = myFreeHead;
       myFreeHead = myNodes[n].next;
       return n;
@@ -327,21 +371,35 @@ class LinkedObjectPool
     }
 
     void removeNode(uInt32 n) {
-      const Node& nd = myNodes[n];
+      const bool removingCurrent = (myCurrentIdx == n);
 
-      const uInt32 p = nd.prev;
-      const uInt32 nx = nd.next;
+      const uInt32 p  = myNodes[n].prev;
+      const uInt32 nx = myNodes[n].next;
+
+      // Compute ordinal position of n before unlinking
+      uInt32 removedPos = 1;
+      uInt32 it = myHead;
+      while(it != npos && it != n) {
+        ++removedPos;
+        it = myNodes[it].next;
+      }
 
       if(p != npos) myNodes[p].next = nx;
-      else myHead = nx;
+      else          myHead = nx;
 
       if(nx != npos) myNodes[nx].prev = p;
-      else myTail = p;
-
-      if(myCurrentIdx == n)
-        myCurrentIdx = nx;
+      else           myTail = p;
 
       freeNode(n);
+
+      if(removingCurrent) {
+        myCurrentIdx = nx;
+        if(nx == npos && myCurrentPos > 1)
+          --myCurrentPos;
+      }
+      else if(removedPos < myCurrentPos)
+        --myCurrentPos;
+
       --mySize;
     }
 
@@ -351,6 +409,7 @@ class LinkedObjectPool
     uInt32 myHead{npos};
     uInt32 myTail{npos};
     uInt32 myCurrentIdx{npos};
+    uInt32 myCurrentPos{0};
 
     uInt32 myFreeHead{npos};
 
@@ -364,6 +423,9 @@ class LinkedObjectPool
     LinkedObjectPool& operator=(const LinkedObjectPool&) = delete;
     LinkedObjectPool& operator=(LinkedObjectPool&&) = delete;
 };
+
+static_assert(std::bidirectional_iterator<LinkedObjectPool<int>::iter>);
+static_assert(std::bidirectional_iterator<LinkedObjectPool<int>::const_iter>);
 
 } // namespace Common
 
