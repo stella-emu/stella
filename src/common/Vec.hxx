@@ -25,19 +25,36 @@ namespace Vec {
 template<typename T>
 void append(vector<T>& dst, const vector<T>& src)
 {
-  dst.insert(dst.cend(), src.cbegin(), src.cend());
+  dst.reserve(dst.size() + src.size());
+  dst.insert(dst.end(), src.begin(), src.end());
+}
+template<typename T>
+void append(vector<T>& dst, vector<T>&& src)
+{
+  if(dst.empty())
+    dst = std::move(src);
+  else
+  {
+    dst.reserve(dst.size() + src.size());
+    dst.insert(dst.end(),
+               std::make_move_iterator(src.begin()),
+               std::make_move_iterator(src.end()));
+  }
+  src.clear();
+}
+
+template<typename T, typename U>
+void insertAt(vector<T>& dst, size_t idx, U&& element)
+{
+  assert(idx <= dst.size());
+  dst.insert(dst.begin() + idx, std::forward<U>(element));
 }
 
 template<typename T>
-void insertAt(vector<T>& dst, uInt32 idx, const T& element)
+void removeAt(vector<T>& dst, size_t idx)
 {
-  dst.insert(dst.cbegin()+idx, element);
-}
-
-template<typename T>
-void removeAt(vector<T>& dst, uInt32 idx)
-{
-  dst.erase(dst.cbegin()+idx);
+  assert(idx < dst.size());
+  dst.erase(dst.begin() + idx);
 }
 
 } // namespace Vec
