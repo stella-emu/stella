@@ -28,15 +28,10 @@
 #include <sys/stat.h>
 #include <dirent.h>
 
-#include <cassert>
 #include <cstdio>
 #include <cstring>
 #include <cstdlib>
 #include <unistd.h>
-
-#ifndef MAXPATHLEN // No MAXPATHLEN, as happens on Hurd
-  #define MAXPATHLEN 1024
-#endif
 
 /*
  * Implementation of the Stella file system API based on POSIX (for Linux
@@ -87,13 +82,12 @@ class FSNodePOSIX : public AbstractFSNode
      */
     bool setFlags();
 
+    static const string& homeDir();
+
   private:
     string _path, _displayName;
     bool _isFile{false}, _isDirectory{true};
     mutable size_t _size{0};
-
-    static const char* const ourHomeDir;
-    static std::array<char, MAXPATHLEN> ourBuf;
 };
 
 #endif

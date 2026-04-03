@@ -31,20 +31,33 @@ FSNodePOSIX::FSNodePOSIX(string_view path, bool verify)
   // Expand '~' to the HOME environment variable
   if (_path[0] == '~')
   {
-    if (ourHomeDir != nullptr)
-      _path.replace(0, 1, ourHomeDir);
+    if (const string& home = homeDir(); !home.empty())
+      _path.replace(0, 1, home);
   }
   // Get absolute path (only used for relative directories)
   else if (_path[0] == '.')
   {
-    if(realpath(_path.c_str(), ourBuf.data()))
-      _path = ourBuf.data();
+    if(char* resolved = realpath(_path.c_str(), nullptr))
+    {
+      _path = resolved;
+      free(resolved);
+    }
   }
 
   _displayName = lastPathComponent(_path);
 
   if (verify)
     setFlags();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+const string& FSNodePOSIX::homeDir()
+{
+  static const string dir = []() -> string {
+    const char* home = std::getenv("HOME");
+    return home ? home : "/";
+  }();
+  return dir;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -77,9 +90,9 @@ bool FSNodePOSIX::setFlags()
 string FSNodePOSIX::getShortPath() const
 {
   // If the path starts with the home directory, replace it with '~'
-  const string& home = ourHomeDir != nullptr ? ourHomeDir : EmptyString();
+  const string& home = homeDir();
 
-  if (home != EmptyString() && BSPF::startsWithIgnoreCase(_path, home))
+  if (!home.empty() && BSPF::startsWithIgnoreCase(_path, home))
   {
     string path = "~";
     const char* const offset = _path.c_str() + home.size();
@@ -168,7 +181,7 @@ bool FSNodePOSIX::getChildren(AbstractFSList& myList, ListMode mode) const
         (mode == FSNode::ListMode::DirectoriesOnly && !entry._isDirectory))
       continue;
 
-    myList.emplace_back(std::make_unique<FSNodePOSIX>(entry));
+    myList.emplace_back(std::make_unique<FSNodePOSIX>(std::move(entry)));
   }
   closedir(dirp);
 
@@ -181,9 +194,11 @@ bool FSNodePOSIX::makeDir()
   if (mkdir(_path.c_str(), 0777) == 0)
   {
     // Get absolute path
-    if (realpath(_path.c_str(), ourBuf.data()))
-      _path = ourBuf.data();
-
+    if (char* resolved = realpath(_path.c_str(), nullptr))
+    {
+      _path = resolved;
+      free(resolved);
+    }
     _displayName = lastPathComponent(_path);
     return setFlags();
   }
@@ -193,20 +208,19 @@ bool FSNodePOSIX::makeDir()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool FSNodePOSIX::rename(string_view newfile)
 {
-  if (std::rename(_path.c_str(), string{newfile}.c_str()) == 0)
+  string newPath{newfile};
+  if (std::rename(_path.c_str(), newPath.c_str()) == 0)
   {
-    _path = newfile;
+    _path = std::move(newPath);
 
     // Get absolute path
-    if (realpath(_path.c_str(), ourBuf.data()))
-      _path = ourBuf.data();
-
+    if (char* resolved = realpath(_path.c_str(), nullptr))
+    {
+      _path = resolved;
+      free(resolved);
+    }
     _displayName = lastPathComponent(_path);
     return setFlags();
   }
   return false;
 }
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const char* const FSNodePOSIX::ourHomeDir = std::getenv("HOME"); // NOLINT (not thread safe)
-std::array<char, MAXPATHLEN> FSNodePOSIX::ourBuf = { 0 };
