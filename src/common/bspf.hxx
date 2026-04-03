@@ -198,15 +198,15 @@ namespace BSPF
   template<int BASE = 10>
   inline int stoi(string_view s, int defaultValue = 0)
   {
-      // Skip leading spaces safely
-      const auto pos = s.find_first_not_of(' ');
-      if(pos == string_view::npos)
-        return defaultValue;
-      s.remove_prefix(pos);
+    // Skip leading spaces safely
+    const auto pos = s.find_first_not_of(' ');
+    if(pos == string_view::npos)
+      return defaultValue;
+    s.remove_prefix(pos);
 
-      int i{};
-      const auto result = std::from_chars(s.data(), s.data() + s.size(), i, BASE);
-      return (result.ec == std::errc()) ? i : defaultValue;
+    int i{};
+    const auto result = std::from_chars(s.data(), s.data() + s.size(), i, BASE);
+    return (result.ec == std::errc()) ? i : defaultValue;
   }
 
   // Convert character to uppercase (ASCII only)
