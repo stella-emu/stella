@@ -52,7 +52,7 @@ namespace {
   }
 
   string formatSpeed(int speed) {
-    std::stringstream ss;
+    std::ostringstream ss;
 
     ss
       << std::setw(3) << std::fixed << std::setprecision(0)

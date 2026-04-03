@@ -80,7 +80,7 @@ bool KeyValueRepositoryFile<T>::save(const KVRMap& values)
 {
   if (values.empty()) return true;
 
-  std::stringstream out;
+  std::ostringstream out;
 
   try {
     T::save(out, values);

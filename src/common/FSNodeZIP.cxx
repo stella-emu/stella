@@ -258,7 +258,7 @@ size_t FSNodeZIP::write(const ByteBuffer& buffer, size_t) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-size_t FSNodeZIP::write(const std::stringstream& buffer) const
+size_t FSNodeZIP::write(const std::ostringstream& buffer) const
 {
   // TODO: Not yet implemented
   throw std::runtime_error("ZIP file not writable");

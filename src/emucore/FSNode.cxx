@@ -432,7 +432,7 @@ size_t FSNode::write(const ByteBuffer& buffer, size_t size) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-size_t FSNode::write(const std::stringstream& buffer) const
+size_t FSNode::write(const std::ostringstream& buffer) const
 {
   size_t sizeWritten = 0;
 

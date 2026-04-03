@@ -253,7 +253,7 @@ void CheatManager::saveCheatDatabase()
   if(!myListIsDirty)
     return;
 
-  std::stringstream out;
+  std::ostringstream out;
   for(const auto& [md5, cheat]: myCheatMap)
     out << "\"" << md5 << "\" " << "\"" << cheat << "\"\n";
 

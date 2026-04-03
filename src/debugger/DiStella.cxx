@@ -106,7 +106,7 @@ void DiStella::disasm(uInt32 distart, int pass)
   Int32 cycles = 0;
   AddressingMode addrMode{};
   AddressType labelFound = AddressType::INVALID;
-  std::stringstream nextLine, nextLineBytes;
+  std::ostringstream nextLine, nextLineBytes;
 
   mySegType = Device::NONE; // create extra lines between code and data
 

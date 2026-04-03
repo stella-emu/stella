@@ -207,7 +207,7 @@ void StellaDb::migrate()
       return;
 
     default: {
-      std::stringstream ss;
+      std::ostringstream ss;
       ss << "invalid database version " << version;
 
       throw SqliteError(ss.str());

@@ -141,7 +141,7 @@ string DebuggerParser::exec(const FSNode& file, StringList* history)
     catch(...) { return red("script file \'" + file.getShortPath() + "\' not found"); }
 
     std::ostringstream buf;
-    std::stringstream logBuf; // used to log the results of commands, if enabled
+    std::ostringstream logBuf; // used to log the results of commands, if enabled
     int count = 0;
     string command;
     while( !in.eof() )
@@ -768,7 +768,7 @@ void DebuggerParser::listTraps(bool listCond)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string DebuggerParser::trapStatus(const Trap& trap)
 {
-  std::stringstream result;
+  std::ostringstream result;
   const string lblb = debugger.cartDebug().getLabel(trap.begin, !trap.write);
   const string lble = debugger.cartDebug().getLabel(trap.end, !trap.write);
 
@@ -797,7 +797,7 @@ string DebuggerParser::trapStatus(const Trap& trap)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string DebuggerParser::saveScriptFile(string file)
 {
-  std::stringstream out;
+  std::ostringstream out;
   const Debugger::FunctionDefMap funcs = debugger.getFunctionDefMap();
   for(const auto& [name, cmd]: funcs)
     if (!Debugger::isBuiltinFunction(name))
@@ -868,7 +868,7 @@ string DebuggerParser::saveScriptFile(string file)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void DebuggerParser::saveDump(const FSNode& node, const std::stringstream& out,
+void DebuggerParser::saveDump(const FSNode& node, const std::ostringstream& out,
                               std::ostringstream& result)
 {
   try
@@ -1374,7 +1374,7 @@ void DebuggerParser::executeDump()
 
     commandResult << "dumped ";
 
-    std::stringstream out;  // NOLINT (out is not a const)
+    std::ostringstream out;  // NOLINT (out is not a const)
     if((args[2] & 0x01) != 0)
     {
       // dump memory
@@ -1452,7 +1452,7 @@ void DebuggerParser::executeDump()
       {
         if(OK)
         {
-          const std::stringstream localOut(outStr);
+          const std::ostringstream localOut(outStr);
           // NOLINTNEXTLINE (localOut is not a const)
           std::ostringstream localResult(resultStr, std::ios_base::app);
 
@@ -1711,7 +1711,7 @@ void DebuggerParser::executeJump()
 // "listBreaks"
 void DebuggerParser::executeListBreaks()
 {
-  std::stringstream buf;
+  std::ostringstream buf;
   int count = 0;
   const uInt32 romBankCount = debugger.cartDebug().romBankCount();
 

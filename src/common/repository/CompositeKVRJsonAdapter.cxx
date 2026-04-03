@@ -31,13 +31,13 @@ namespace {
           Variant serialized;
           myKvr.get(myKey, serialized);
 
-          std::stringstream in{serialized.toString()};
+          std::istringstream in{serialized.toString()};
 
           return KeyValueRepositoryJsonFile::load(in);
         }
 
         bool save(const KVRMap& values) override {
-          std::stringstream out;
+          std::ostringstream out;
 
           if (!KeyValueRepositoryJsonFile::save(out, values)) return false;
 

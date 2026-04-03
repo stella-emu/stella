@@ -67,7 +67,7 @@ class DebuggerParser
     bool validateArgs(int cmd);
     string eval();
     string saveScriptFile(string file);
-    static void saveDump(const FSNode& node, const std::stringstream& out,
+    static void saveDump(const FSNode& node, const std::ostringstream& out,
                          std::ostringstream& result);
     const string& cartName() const;
 

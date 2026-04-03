@@ -66,7 +66,7 @@ class FSNodeZIP : public AbstractFSNode
     size_t read(ByteBuffer& buffer, size_t) const override;
     size_t read(std::stringstream& buffer) const override;
     size_t write(const ByteBuffer& buffer, size_t) const override;
-    size_t write(const std::stringstream& buffer) const override;
+    size_t write(const std::ostringstream& buffer) const override;
 
   private:
     FSNodeZIP(const string& zipfile, const string& virtualpath,

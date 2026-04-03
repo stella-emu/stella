@@ -293,7 +293,7 @@ class FSNode
      *          This method can throw exceptions, and should be used inside
      *          a try-catch block.
      */
-    size_t write(const std::stringstream& buffer) const;
+    size_t write(const std::ostringstream& buffer) const;
 
     /**
      * The following methods are almost exactly the same as the various
@@ -495,7 +495,7 @@ class AbstractFSNode
      *          This method can throw exceptions, and should be used inside
      *          a try-catch block.
      */
-    virtual size_t write(const std::stringstream& buffer) const { return 0; }
+    virtual size_t write(const std::ostringstream& buffer) const { return 0; }
 
   protected:
     /**

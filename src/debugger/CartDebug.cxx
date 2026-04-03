@@ -829,7 +829,7 @@ string CartDebug::loadListFile()
       continue;
     else  // Search for constants
     {
-      std::stringstream buf(line);
+      std::istringstream buf(line);
 
       // Swallow first value, then get actual numerical value for address
       // We need to read the address as a string, since it may contain 'U'
@@ -890,7 +890,7 @@ string CartDebug::loadSymbolFile()
 
     getline(in, label);
     if(!in.good())  continue;
-    std::stringstream buf(label);
+    std::istringstream buf(label);
     buf >> label >> hex >> value;
 
     if(!label.empty() && label[0] != '-' && value >= 0)
@@ -967,7 +967,7 @@ string CartDebug::loadConfigFile()
     {
       in.get();
       getline(in, line, ']');
-      std::stringstream buf(line);
+      std::istringstream buf(line);
       buf >> currentbank;
     }
     else  // Should be commands from this point on
@@ -1034,7 +1034,7 @@ string CartDebug::loadConfigFile()
   }
   myDebugger.rom().invalidate();
 
-  std::stringstream retVal;
+  std::ostringstream retVal;
   if(myConsole.cartridge().romBankCount() > 1)
     retVal << DebuggerParser::red("config file for multi-bank ROM not fully supported\n");
   retVal << "config file '" << cfg.getShortPath() << "' loaded OK";
@@ -1052,7 +1052,7 @@ string CartDebug::saveConfigFile()
   const string& md5 = myConsole.properties().get(PropType::Cart_MD5);
 
   // Store all bank information
-  std::stringstream out;
+  std::ostringstream out;
   out << "// Stella.pro: \"" << name << "\"\n"
       << "// MD5: " << md5 << "\n\n";
   for(uInt32 b = 0; b < myConsole.cartridge().romBankCount(); ++b)
@@ -1061,7 +1061,7 @@ string CartDebug::saveConfigFile()
     getBankDirectives(out, myBankInfo[b]);
   }
 
-  std::stringstream retVal;
+  std::ostringstream retVal;
   try
   {
     const FSNode romNode(myOSystem.romFile().getPathWithExt(".cfg"));
@@ -1222,7 +1222,7 @@ string CartDebug::saveDisassembly(string path)
 
   // Some boilerplate, similar to what DiStella adds
   const auto timeinfo = BSPF::localTime();
-  std::stringstream out;
+  std::ostringstream out;
   out << "; Disassembly of " << myOSystem.romFile().getShortPath() << "\n"
       << "; Disassembled " << std::put_time(&timeinfo, "%c\n")
       << "; Using Stella " << STELLA_VERSION << "\n;\n"
@@ -1440,7 +1440,7 @@ string CartDebug::saveRom(string path)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string CartDebug::saveAccessFile(string path)
 {
-  std::stringstream out;
+  std::ostringstream out;
   out << myConsole.tia().getAccessCounters();
   out << myConsole.riot().getAccessCounters();
   out << myConsole.cartridge().getAccessCounters();
