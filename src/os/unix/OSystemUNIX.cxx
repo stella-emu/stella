@@ -26,13 +26,13 @@ void OSystemUNIX::getBaseDirectories(string& basedir, string& homedir,
 {
   // Use XDG_CONFIG_HOME if defined, otherwise use the default
   const char* const cfg_home = std::getenv("XDG_CONFIG_HOME");  // NOLINT
-  const string& configDir = cfg_home != nullptr ? cfg_home : "~/.config";
-  basedir = configDir + "/stella";
+  const string_view configDir = cfg_home ? cfg_home : "~/.config";
+  basedir = string{configDir} + "/stella";
   homedir = "~/";
 
   // Check to see if basedir overrides are active
   if(useappdir)
-    cout << "ERROR: base dir in app folder not supported\n";
+    cerr << "ERROR: base dir in app folder not supported\n";
   else if(!usedir.empty())
     basedir = FSNode(usedir).getPath();
 }
