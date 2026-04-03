@@ -259,7 +259,7 @@ void CommandDialog::processCancel()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CommandDialog::updateSlot(int slot)
 {
-  ostringstream buf;
+  std::ostringstream buf;
   buf << " " << slot;
 
   mySaveStateButton->setLabel("Save State" + buf.str());

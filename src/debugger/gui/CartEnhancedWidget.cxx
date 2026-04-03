@@ -59,7 +59,7 @@ size_t CartridgeEnhancedWidget::size()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string CartridgeEnhancedWidget::description()
 {
-  ostringstream info;
+  std::ostringstream info;
 
   if (myCart.myRamSize > 0)
     info << ramDescription();
@@ -77,7 +77,7 @@ int CartridgeEnhancedWidget::descriptionLines()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string CartridgeEnhancedWidget::ramDescription()
 {
-  ostringstream info;
+  std::ostringstream info;
 
   if(myCart.ramBankCount() == 0)
     info << myCart.myRamSize << " bytes RAM @ "
@@ -95,7 +95,7 @@ string CartridgeEnhancedWidget::ramDescription()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string CartridgeEnhancedWidget::romDescription()
 {
-  ostringstream info;
+  std::ostringstream info;
   size_t size{0};
   const ByteBuffer& image = myCart.getImage(size);
 
@@ -186,7 +186,7 @@ void CartridgeEnhancedWidget::bankList(uInt16 bankCount, int seg, VariantList& i
 
   for(int bank = 0; std::cmp_less(bank, bankCount); ++bank)
   {
-    ostringstream buf;
+    std::ostringstream buf;
     const bool isRamBank = std::cmp_greater_equal(bank, myCart.romBankCount());
     const int bankNum = (bank - (isRamBank ? myCart.romBankCount() : 0));
 
@@ -210,7 +210,7 @@ void CartridgeEnhancedWidget::bankSelect(int& ypos)
   {
     constexpr int xpos = 2;
 
-    myBankWidgets = make_unique<PopUpWidget* []>(bankSegs());
+    myBankWidgets = std::make_unique<PopUpWidget* []>(bankSegs());
 
     for(int seg = 0; std::cmp_less(seg, bankSegs()); ++seg)
     {
@@ -221,7 +221,7 @@ void CartridgeEnhancedWidget::bankSelect(int& ypos)
       bankList(myCart.romBankCount() + myCart.ramBankCount(), seg, items, pw);
 
       // create widgets
-      ostringstream buf;
+      std::ostringstream buf;
 
       buf << "Set bank";
       if(bankSegs() > 1)
@@ -246,7 +246,7 @@ string CartridgeEnhancedWidget::bankState()
 {
   if(myCart.romBankCount() > 1)
   {
-    ostringstream& buf = buffer();
+    std::ostringstream& buf = buffer();
     const uInt16 hotspot = myCart.hotspot();
     const bool hasRamBanks = myCart.myRamBankCount > 0;
 
@@ -289,7 +289,7 @@ string CartridgeEnhancedWidget::bankState()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string CartridgeEnhancedWidget::hotspotStr(int bank, int segment, bool prefix)
 {
-  ostringstream info;
+  std::ostringstream info;
   uInt16 hotspot = myCart.hotspot();
 
   if(hotspot & 0x1000)
@@ -334,7 +334,7 @@ void CartridgeEnhancedWidget::loadConfig()
 {
   if(myCart.isPlusROM())
   {
-    ostringstream buf;
+    std::ostringstream buf;
     ByteArray arr = myCart.myPlusROM->getSend();
 
     for(auto i: arr)
@@ -392,7 +392,7 @@ uInt32 CartridgeEnhancedWidget::internalRamRPort(int start)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string CartridgeEnhancedWidget::internalRamDescription()
 {
-  ostringstream desc;
+  std::ostringstream desc;
   string indent;
 
   if(myCart.ramBankCount())

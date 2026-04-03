@@ -50,7 +50,7 @@ class PNGLibrary
       @param metaData  The meta data of the PNG image
 
       @post  On success, the FBSurface containing image data, otherwise a
-             runtime_error is thrown containing a more detailed
+             std::runtime_error is thrown containing a more detailed
              error message.
     */
     void loadImage(const string& filename, FBSurface& surface,
@@ -65,7 +65,7 @@ class PNGLibrary
       @param metaData  The meta data s to add to the PNG image
 
       @post  On success, the PNG file has been saved to 'filename',
-             otherwise a runtime_error is thrown containing a
+             otherwise a std::runtime_error is thrown containing a
              more detailed error message.
     */
     void saveImage(const string& filename,
@@ -80,7 +80,7 @@ class PNGLibrary
       @param metaData  The meta data to add to the PNG image
 
       @post  On success, the PNG file has been saved to 'filename',
-             otherwise a runtime_error is thrown containing a
+             otherwise a std::runtime_error is thrown containing a
              more detailed error message.
     */
     static void saveImage(const string& filename, const FBSurface& surface,

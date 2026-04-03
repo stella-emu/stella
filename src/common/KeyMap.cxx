@@ -133,7 +133,7 @@ bool KeyMap::check(EventMode mode, int key, int mod) const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string KeyMap::getDesc(const Mapping& mapping)
 {
-  ostringstream buf;
+  std::ostringstream buf;
 #if defined(BSPF_MACOS) || defined(MACOS_KEYS)
   const string mod2 = "Option";
   constexpr int MOD2 = KBDM_ALT;
@@ -188,7 +188,7 @@ string KeyMap::getDesc(EventMode mode, int key, int mod)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string KeyMap::getEventMappingDesc(Event::Type event, EventMode mode) const
 {
-  ostringstream buf;
+  std::ostringstream buf;
 
   for (const auto& [_mapping, _event]: myMap)
   {
@@ -292,7 +292,7 @@ json KeyMap::convertLegacyMapping(string_view lm)
   std::ranges::replace(lst, '|', ' ');
   std::ranges::replace(lst, ':', ' ');
   std::ranges::replace(lst, ',', ' ');
-  istringstream buf(lst);
+  std::istringstream buf(lst);
   int event = 0, key = 0, mod = 0;
 
   while(buf >> event && buf >> key && buf >> mod)

@@ -114,7 +114,7 @@ AbstractFSNodePtr FSNodePOSIX::getParent() const
   if (_path == "/")
     return nullptr;
 
-  return make_unique<FSNodePOSIX>(stemPathComponent(_path));
+  return std::make_unique<FSNodePOSIX>(stemPathComponent(_path));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -168,7 +168,7 @@ bool FSNodePOSIX::getChildren(AbstractFSList& myList, ListMode mode) const
         (mode == FSNode::ListMode::DirectoriesOnly && !entry._isDirectory))
       continue;
 
-    myList.emplace_back(make_unique<FSNodePOSIX>(entry));
+    myList.emplace_back(std::make_unique<FSNodePOSIX>(entry));
   }
   closedir(dirp);
 

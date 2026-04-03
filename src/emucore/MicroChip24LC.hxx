@@ -226,7 +226,7 @@ MicroChip24LC<device_flash_size, device_page_size>
 
   if(!fileValid)
   {
-    myData = make_unique<uInt8[]>(FLASH_SIZE);
+    myData = std::make_unique<uInt8[]>(FLASH_SIZE);
     std::fill_n(myData.get(), FLASH_SIZE, INITIAL_VALUE);
     myDataChanged = true;
   }

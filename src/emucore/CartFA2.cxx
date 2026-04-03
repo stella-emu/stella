@@ -33,7 +33,7 @@ CartridgeFA2::CartridgeFA2(const ByteBuffer& image, size_t size,
   }
 
   // Allocate array for the ROM image
-  myImage = make_unique<uInt8[]>(mySize);
+  myImage = std::make_unique<uInt8[]>(mySize);
 
   // Copy the ROM image into my buffer
   std::copy_n(img_ptr, mySize, myImage.get());

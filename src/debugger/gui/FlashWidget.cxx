@@ -92,7 +92,7 @@ void FlashWidget::loadConfig()
       {
         const int from = startPage * MT24LC256::PAGE_SIZE;
         const int to = page * MT24LC256::PAGE_SIZE - 1;
-        ostringstream label;
+        std::ostringstream label;
 
         label.str("");
         label << Common::Base::HEX3 << startPage;

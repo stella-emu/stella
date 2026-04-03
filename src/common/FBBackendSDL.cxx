@@ -37,9 +37,9 @@ FBBackendSDL::FBBackendSDL(OSystem& osystem)
   // Initialize SDL context
   if(!SDL_InitSubSystem(SDL_INIT_VIDEO))
   {
-    ostringstream buf;
+    std::ostringstream buf;
     buf << "ERROR: Couldn't initialize SDL: " << SDL_GetError();
-    throw runtime_error(buf.str());
+    throw std::runtime_error(buf.str());
   }
   Logger::debug("FBBackendSDL::FBBackendSDL SDL_Init()");
 
@@ -98,7 +98,7 @@ void FBBackendSDL::queryHardware(vector<Common::Size>& fullscreenRes,
       windowedRes.emplace_back(r.w, r.h);
 
     int numModes = 0;
-    ostringstream s;
+    std::ostringstream s;
     string lastRes;
     SDL_DisplayMode** modes = SDL_GetFullscreenDisplayModes(displays[i], &numModes);  // NOLINT
 
@@ -108,7 +108,7 @@ void FBBackendSDL::queryHardware(vector<Common::Size>& fullscreenRes,
     for(int m = 0; modes != nullptr && modes[m] != nullptr; m++)
     {
       const SDL_DisplayMode* mode = modes[m];
-      ostringstream res, ref;
+      std::ostringstream res, ref;
 
       res << std::setw(4) << mode->w << "x" << std::setw(4) << mode->h;
 
@@ -322,7 +322,7 @@ bool FBBackendSDL::setVideoMode(const VideoModeHandler::Mode& mode,
     }
     else
     {
-      ostringstream msg;
+      std::ostringstream msg;
 
       msg << "Display refresh rate changed to "
           << adaptedSdlMode.refresh_rate << " Hz " << "(" << adaptedSdlMode.w << "x" << adaptedSdlMode.h << ")";
@@ -484,7 +484,7 @@ string FBBackendSDL::about() const
 {
   ASSERT_MAIN_THREAD;
 
-  ostringstream out;
+  std::ostringstream out;
   out << "Video system: " << SDL_GetCurrentVideoDriver() << '\n';
 
   const SDL_PropertiesID props = SDL_GetRendererProperties(myRenderer);
@@ -597,7 +597,7 @@ unique_ptr<FBSurface> FBBackendSDL::createSurface(
   const uInt32* data
 ) const
 {
-  unique_ptr<FBSurface> s = make_unique<FBSurfaceSDL>
+  unique_ptr<FBSurface> s = std::make_unique<FBSurfaceSDL>
     (const_cast<FBBackendSDL&>(*this), w, h, inter, data);
   s->setBlendLevel(100);  // by default, disable shading (use full alpha)
 

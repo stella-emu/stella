@@ -56,7 +56,7 @@ FSNodeZIP::FSNodeZIP(string_view p)
   {
     zipHandler()->open(_zipFile);
   }
-  catch(const runtime_error&)
+  catch(const std::runtime_error&)
   {
     // TODO: Actually present the error passed in back to the user
     //       For now, we just indicate that no ROMs were found
@@ -162,7 +162,7 @@ bool FSNodeZIP::exists() const
           return true;
       }
     }
-    catch(const runtime_error&)
+    catch(const std::runtime_error&)
     {
       // TODO: Actually present the error passed in back to the user
       cerr << "ERROR: FSNodeZIP::exists()\n";
@@ -219,10 +219,10 @@ size_t FSNodeZIP::read(ByteBuffer& buffer, size_t) const
   {
     using enum zip_error;
     case NONE:         break;
-    case NOT_A_FILE:   throw runtime_error("ZIP file contains errors/not found");
-    case NOT_READABLE: throw runtime_error("ZIP file not readable");
-    case NO_ROMS:      throw runtime_error("ZIP file doesn't contain any ROMs");
-    default: throw runtime_error("FSNodeZIP::read default case hit");
+    case NOT_A_FILE:   throw std::runtime_error("ZIP file contains errors/not found");
+    case NOT_READABLE: throw std::runtime_error("ZIP file not readable");
+    case NO_ROMS:      throw std::runtime_error("ZIP file doesn't contain any ROMs");
+    default: throw std::runtime_error("FSNodeZIP::read default case hit");
   }
 
   zipHandler()->open(_zipFile);
@@ -238,7 +238,7 @@ size_t FSNodeZIP::read(ByteBuffer& buffer, size_t) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-size_t FSNodeZIP::read(stringstream& buffer) const
+size_t FSNodeZIP::read(std::stringstream& buffer) const
 {
   // For now, we just read into a buffer and store in the stream
   // TODO: maybe there's a more efficient way to do this?
@@ -254,14 +254,14 @@ size_t FSNodeZIP::read(stringstream& buffer) const
 size_t FSNodeZIP::write(const ByteBuffer& buffer, size_t) const
 {
   // TODO: Not yet implemented
-  throw runtime_error("ZIP file not writable");
+  throw std::runtime_error("ZIP file not writable");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-size_t FSNodeZIP::write(const stringstream& buffer) const
+size_t FSNodeZIP::write(const std::stringstream& buffer) const
 {
   // TODO: Not yet implemented
-  throw runtime_error("ZIP file not writable");
+  throw std::runtime_error("ZIP file not writable");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -282,7 +282,7 @@ AbstractFSNodePtr FSNodeZIP::getParent() const
     return s.substr(0, (cur + 1) - start - 1);
   };
 
-  return make_unique<FSNodeZIP>(STEM_FOR_ZIP(_path));
+  return std::make_unique<FSNodeZIP>(STEM_FOR_ZIP(_path));
 }
 
 #endif  // ZIP_SUPPORT

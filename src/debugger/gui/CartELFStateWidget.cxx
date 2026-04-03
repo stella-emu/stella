@@ -44,7 +44,7 @@ namespace {
         return "PC (R15) = ";
 
       default: {
-        ostringstream s;
+        std::ostringstream s;
         s << "R" << static_cast<int>(reg) << " = ";
 
         return s.str();
@@ -53,7 +53,7 @@ namespace {
   }
 
   string describeTransaction(uInt16 address, uInt16 mask, uInt64 timestamp) {
-    ostringstream s;
+    std::ostringstream s;
 
     s
       << std::hex << std::setfill('0')
@@ -144,7 +144,7 @@ void CartridgeELFStateWidget::loadConfig()
 
   myFlags->setState(flags, flagsChanged);
 
-  ostringstream s;
+  std::ostringstream s;
   s << myCart.getVcsCyclesArm();
   myCurrentCyclesVcs->setText(s.str());
 

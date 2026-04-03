@@ -32,14 +32,14 @@ CartridgeEnhanced::CartridgeEnhanced(const ByteBuffer& image, size_t size,
   // Is the ROM too large?  If so, we cap it
   if(size > bsSize)
   {
-    ostringstream buf;
+    std::ostringstream buf;
     buf << "ROM larger than expected (" << size << " > " << bsSize
         << "), truncating " << (size - bsSize) << " bytes\n";
     Logger::info(buf.view());
   }
   else if(size < bsSize)
   {
-    ostringstream buf;
+    std::ostringstream buf;
     buf << "ROM smaller than expected (" << size << " < " << bsSize
         << "), appending " << (bsSize - size) << " bytes\n";
     Logger::info(buf.view());
@@ -48,7 +48,7 @@ CartridgeEnhanced::CartridgeEnhanced(const ByteBuffer& image, size_t size,
   mySize = bsSize;
 
   // Initialize ROM with all 0's, to fill areas that the ROM may not cover
-  myImage = make_unique<uInt8[]>(mySize);
+  myImage = std::make_unique<uInt8[]>(mySize);
   std::fill_n(myImage.get(), mySize, 0);
 
   // Directly copy the ROM image into the buffer
@@ -56,7 +56,7 @@ CartridgeEnhanced::CartridgeEnhanced(const ByteBuffer& image, size_t size,
   // space will be filled with 0's from above
   std::copy_n(image.get(), std::min(mySize, size), myImage.get());
 
-  myPlusROM = make_unique<PlusROM>(mySettings, *this);
+  myPlusROM = std::make_unique<PlusROM>(mySettings, *this);
 
   // Determine whether we have a PlusROM cart
   myPlusROM->initialize(myImage, mySize);
@@ -85,11 +85,11 @@ void CartridgeEnhanced::install(System& system)
   createRomAccessArrays(mySize + (myRomOffset > 0 ? 0 : myRamSize));
 
   // Allocate array for the segment's current bank offset
-  myCurrentSegOffset = make_unique<uInt32[]>(myBankSegs);
+  myCurrentSegOffset = std::make_unique<uInt32[]>(myBankSegs);
 
   // Allocate array for the RAM area
   if(myRamSize > 0)
-    myRAM = make_unique<uInt8[]>(myRamSize);
+    myRAM = std::make_unique<uInt8[]>(myRamSize);
 
   mySystem = &system;
 

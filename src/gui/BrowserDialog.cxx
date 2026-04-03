@@ -132,7 +132,7 @@ void BrowserDialog::show(Dialog* parent, const GUI::Font& font,
   if(ourBrowser == nullptr || &ourBrowser->parent() != &parent->parent() ||
      std::cmp_greater(ourBrowser->_w, w) || std::cmp_greater(ourBrowser->_h, h))
   {
-    ourBrowser = make_unique<BrowserDialog>(parent, font, w, h);
+    ourBrowser = std::make_unique<BrowserDialog>(parent, font, w, h);
   }
   ourBrowser->setTitle(title); // has to be always updated!
   ourBrowser->show(startpath, mode, command, namefilter);

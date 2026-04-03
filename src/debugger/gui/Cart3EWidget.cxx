@@ -31,7 +31,7 @@ Cartridge3EWidget::Cartridge3EWidget(
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string Cartridge3EWidget::description()
 {
-  ostringstream info;
+  std::ostringstream info;
   size_t size{0};
   const ByteBuffer& image = myCart.getImage(size);
   const uInt16 numRomBanks = myCart.romBankCount();
@@ -73,7 +73,7 @@ void Cartridge3EWidget::bankSelect(int& ypos)
   VariantList items;
   int pw{0};
 
-  myBankWidgets = make_unique<PopUpWidget* []>(2);
+  myBankWidgets = std::make_unique<PopUpWidget* []>(2);
 
   bankList(myCart.romBankCount(), 0, items, pw);
   myBankWidgets[0] =
@@ -160,7 +160,7 @@ void Cartridge3EWidget::handleCommand(CommandSender* sender, int cmd, int data, 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string Cartridge3EWidget::bankState()
 {
-  ostringstream& buf = buffer();
+  std::ostringstream& buf = buffer();
   const uInt16 bank = myCart.getBank();
 
   if(bank < myCart.romBankCount())

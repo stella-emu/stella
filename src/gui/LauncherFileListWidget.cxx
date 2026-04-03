@@ -30,7 +30,7 @@ LauncherFileListWidget::LauncherFileListWidget(GuiObject* boss,
 {
   // This widget is special, in that it catches signals and redirects them
   setTarget(this);
-  myFavorites = make_unique<FavoritesManager>(instance().settings());
+  myFavorites = std::make_unique<FavoritesManager>(instance().settings());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

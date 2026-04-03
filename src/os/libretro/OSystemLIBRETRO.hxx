@@ -63,17 +63,17 @@ class OSystemLIBRETRO : public OSystem
 
     shared_ptr<KeyValueRepository>
     getSettingsRepository() override {
-      return make_shared<KeyValueRepositoryNoop>();
+      return std::make_shared<KeyValueRepositoryNoop>();
     }
 
     shared_ptr<CompositeKeyValueRepository>
     getPropertyRepository() override {
-      return make_shared<CompositeKeyValueRepositoryNoop>();
+      return std::make_shared<CompositeKeyValueRepositoryNoop>();
     }
 
     shared_ptr<CompositeKeyValueRepositoryAtomic>
     getHighscoreRepository() override {
-      return make_shared<CompositeKeyValueRepositoryNoop>();
+      return std::make_shared<CompositeKeyValueRepositoryNoop>();
     }
 
   protected:

@@ -56,7 +56,7 @@ RomListWidget::RomListWidget(GuiObject* boss, const GUI::Font& lfont,
   myScrollBar->setTarget(this);
 
   // Add settings menu
-  myMenu = make_unique<RomListSettings>(this, lfont);
+  myMenu = std::make_unique<RomListSettings>(this, lfont);
 
   // Take advantage of a wide debugger window when possible
   const int fontWidth = lfont.getMaxCharWidth(),
@@ -485,7 +485,7 @@ string RomListWidget::getToolTip(const Common::Point& pos) const
 
     val = static_cast<Int32>(stol(valStr, nullptr, 16));
   }
-  ostringstream buf;
+  std::ostringstream buf;
 
   buf << _toolTipText
     << "$" << Common::Base::toString(val, Common::Base::Fmt::_16)

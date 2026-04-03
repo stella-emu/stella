@@ -46,7 +46,7 @@
 
 static inline string SDLVersion()
 {
-  ostringstream buf;
+  std::ostringstream buf;
   const int ver = SDL_GetVersion();
   buf << "SDL "
       << SDL_VERSIONNUM_MAJOR(ver) << "."

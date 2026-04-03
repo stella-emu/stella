@@ -30,7 +30,7 @@ class CompositeKeyValueRepositoryNoop : public CompositeKeyValueRepositoryAtomic
     using CompositeKeyValueRepositoryAtomic::get;
 
     shared_ptr<KeyValueRepository> get(string_view key) override {
-      return make_shared<KeyValueRepositoryNoop>();
+      return std::make_shared<KeyValueRepositoryNoop>();
     }
 
     bool has(string_view key) override { return false; }

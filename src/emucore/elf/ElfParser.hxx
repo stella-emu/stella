@@ -19,6 +19,7 @@
 #define ELF_PARSER
 
 #include <unordered_map>
+#include <optional>
 
 #include "ElfFile.hxx"
 #include "bspf.hxx"
@@ -53,7 +54,7 @@ class ElfParser : public ElfFile {
 
     const vector<Section>& getSections() const override;
     const vector<Symbol>& getSymbols() const override;
-    optional<vector<Relocation>> getRelocations(size_t section) const override;
+    std::optional<vector<Relocation>> getRelocations(size_t section) const override;
 
   private:
     struct Header {
@@ -98,8 +99,8 @@ class ElfParser : public ElfFile {
     ElfParser& operator=(ElfParser&&) = delete;
 };
 
-ostream& operator<<(ostream& os, const ElfParser::Section& section);
-ostream& operator<<(ostream& os, const ElfParser::Symbol& symbol);
-ostream& operator<<(ostream& os, const ElfParser::Relocation& relocation);
+std::ostream& operator<<(std::ostream& os, const ElfParser::Section& section);
+std::ostream& operator<<(std::ostream& os, const ElfParser::Symbol& symbol);
+std::ostream& operator<<(std::ostream& os, const ElfParser::Relocation& relocation);
 
 #endif // ELF_PARSER

@@ -27,7 +27,7 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 PropertiesSet::PropertiesSet()
-  : myRepository{make_shared<CompositeKeyValueRepositoryNoop>()}
+  : myRepository{std::make_shared<CompositeKeyValueRepositoryNoop>()}
 {
 }
 

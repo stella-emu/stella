@@ -231,7 +231,7 @@ void HighScoresDialog::loadConfig()
   items.clear();
   for (Int32 i = 1; i <= instance().highScores().numVariations(); ++i)
   {
-    ostringstream buf;
+    std::ostringstream buf;
     buf << std::setw(3) << std::setfill(' ') << i;
     VarList::push_back(items, buf.view(), i);
   }
@@ -382,7 +382,7 @@ void HighScoresDialog::updateWidgets(bool init)
 
   for (uInt32 r = 0; r < NUM_RANKS; ++r)
   {
-    ostringstream buf;
+    std::ostringstream buf;
 
     if(myScores.scores[r].score > 0)
     {
@@ -510,7 +510,7 @@ bool HighScoresDialog::handleDirty()
       msg.emplace_back("Do you want to save the changes");
       msg.emplace_back("for this variation?");
       msg.emplace_back("");
-      myConfirmMsg = make_unique<GUI::MessageBox>
+      myConfirmMsg = std::make_unique<GUI::MessageBox>
         (this, _font, msg, _max_w, _max_h, kConfirmSave, kCancelSave,
          "Yes", "No", "Save High Scores", false);
     }
@@ -541,14 +541,14 @@ string HighScoresDialog::cartName() const
 string HighScoresDialog::now()
 {
   const std::tm now = BSPF::localTime();
-  ostringstream ss;
+  std::ostringstream ss;
 
   ss << std::setfill('0') << std::right
-    << std::setw(2) << (now.tm_year - 100) << '-'
-    << std::setw(2) << (now.tm_mon + 1) << '-'
-    << std::setw(2) << now.tm_mday << " "
-    << std::setw(2) << now.tm_hour << ":"
-    << std::setw(2) << now.tm_min;
+     << std::setw(2) << (now.tm_year - 100) << '-'
+     << std::setw(2) << (now.tm_mon + 1) << '-'
+     << std::setw(2) << now.tm_mday << " "
+     << std::setw(2) << now.tm_hour << ":"
+     << std::setw(2) << now.tm_min;
 
   return ss.str();
 }

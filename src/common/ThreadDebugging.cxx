@@ -30,7 +30,7 @@ void ThreadDebuggingHelper::fail(const string& message)
 {
   cerr << message << '\n';
 
-  throw runtime_error(message);
+  throw std::runtime_error(message);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

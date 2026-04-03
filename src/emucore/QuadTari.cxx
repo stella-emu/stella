@@ -99,28 +99,28 @@ unique_ptr<Controller> QuadTari::addController(Controller::Type type, bool secon
       // Check if we should swap the paddles plugged into a jack
       const bool swapPaddles = myProperties.get(PropType::Controller_SwapPaddles) == "YES";
 
-      return make_unique<Paddles>(myJack, myEvent, mySystem, swapPaddles,
+      return std::make_unique<Paddles>(myJack, myEvent, mySystem, swapPaddles,
                                   false, false, second);
     }
     case Controller::Type::Driving:
-      return make_unique<Driving>(myJack, myEvent, mySystem, second);
+      return std::make_unique<Driving>(myJack, myEvent, mySystem, second);
 
     case Controller::Type::AtariVox:
     {
       nvramfile /= "atarivox_eeprom.dat";
-      return make_unique<AtariVox>(myJack, myEvent, mySystem,
+      return std::make_unique<AtariVox>(myJack, myEvent, mySystem,
                                    myOSystem.settings().getString("avoxport"),
                                    nvramfile, callback); // no alternative mapping here
     }
     case Controller::Type::SaveKey:
     {
       nvramfile /= "savekey_eeprom.dat";
-      return make_unique<SaveKey>(myJack, myEvent, mySystem,
+      return std::make_unique<SaveKey>(myJack, myEvent, mySystem,
                                   nvramfile, callback); // no alternative mapping here
     }
     default:
       // fall back to good old Joystick
-      return make_unique<Joystick>(myJack, myEvent, mySystem, second);
+      return std::make_unique<Joystick>(myJack, myEvent, mySystem, second);
   }
 }
 

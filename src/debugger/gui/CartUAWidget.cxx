@@ -32,7 +32,7 @@ CartridgeUAWidget::CartridgeUAWidget(
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string CartridgeUAWidget::description()
 {
-  ostringstream info;
+  std::ostringstream info;
 
   info << "8K UA cartridge" << (mySwappedHotspots ? " (swapped banks)" : "")
        << ", two 4K banks\n"
@@ -44,7 +44,7 @@ string CartridgeUAWidget::description()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string CartridgeUAWidget::hotspotStr(int bank, int, bool prefix)
 {
-  ostringstream info;
+  std::ostringstream info;
   const uInt16 hotspot = myCart.hotspot() + (bank ^ (mySwappedHotspots ? 1 : 0)) * myHotspotDelta;
 
   info << "(" << (prefix ? "hotspot " : "")

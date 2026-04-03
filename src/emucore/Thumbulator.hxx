@@ -91,7 +91,7 @@ class Thumbulator
     ~Thumbulator() = default;
 
     /**
-      Run the ARM code, and return when finished.  A runtime_error exception is
+      Run the ARM code, and return when finished.  A std::runtime_error exception is
       thrown in case of any fatal errors/aborts (if enabled), containing the
       actual error, and the contents of the registers at that point in time.
 
@@ -227,7 +227,7 @@ class Thumbulator
 
     void do_cvflag(uInt32 a, uInt32 b, uInt32 c);
 
-    // Throw a runtime_error exception containing an error referencing the
+    // Throw a std::runtime_error exception containing an error referencing the
     // given message and variables
     // Note that the return value is never used in these methods
     int fatalError(string_view opcode, uInt32 v1, string_view msg);
@@ -289,7 +289,7 @@ class Thumbulator
     uInt32 tim1Total{0};  // total cycles of Timer 1
     double timing_factor{0.0};
 
-    ostringstream statusMsg;
+    std::ostringstream statusMsg;
     bool trapOnFatal{true};
     bool _countCycles{false};
     bool _lockMamcr{false};

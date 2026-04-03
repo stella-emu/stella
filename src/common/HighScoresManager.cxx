@@ -375,7 +375,7 @@ string HighScoresManager::formattedScore(Int32 score, Int32 width) const
   if(score <= 0)
     return "";
 
-  ostringstream buf;
+  std::ostringstream buf;
   json jprops;
   Int32 digits = numDigits(properties(jprops));
 
@@ -398,7 +398,7 @@ string HighScoresManager::md5Props() const
 {
   json jprops;
   properties(jprops);
-  ostringstream buf;
+  std::ostringstream buf;
 
   buf << varAddress(jprops) << numVariations() << varBCD(jprops)
     << varZeroBased(jprops);
@@ -557,7 +557,7 @@ Int32 HighScoresManager::fromBCD(uInt8 bcd)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string HighScoresManager::hash(const ScoresData& data) const
 {
-  ostringstream buf;
+  std::ostringstream buf;
 
   buf << HIGHSCORE_HEADER << data.md5 << md5Props() << data.variation;
 
@@ -616,7 +616,7 @@ void HighScoresManager::saveHighScores(ScoresData& data) const
 void HighScoresManager::loadHighScores(ScoresData& data)
 {
   bool invalid = false;
-  ostringstream buf;
+  std::ostringstream buf;
 
   clearHighScores(data);
 

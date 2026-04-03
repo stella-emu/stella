@@ -30,7 +30,7 @@ CartridgeJANEWidget::CartridgeJANEWidget(
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string CartridgeJANEWidget::description()
 {
-  ostringstream info;
+  std::ostringstream info;
 
   info << "Tarzan cartridge, four 4K banks\n"
        << CartridgeEnhancedWidget::description();
@@ -41,7 +41,7 @@ string CartridgeJANEWidget::description()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string CartridgeJANEWidget::hotspotStr(int bank, int, bool prefix)
 {
-  ostringstream info;
+  std::ostringstream info;
   const uInt16 hotspot = myCart.hotspot() | ADDR_BASE;
 
   info << (prefix ? "(hotspot " : "(")

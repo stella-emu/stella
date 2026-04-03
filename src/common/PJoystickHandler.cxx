@@ -70,7 +70,7 @@ json PhysicalJoystickHandler::convertLegacyMapping(string_view mapping)
 {
   constexpr char CTRL_DELIM = '^';
 
-  istringstream buf(string{mapping});  // TODO: fixed in C++20
+  std::istringstream buf(string{mapping});  // TODO: fixed in C++23
   string joymap, joyname;
 
   getline(buf, joymap, CTRL_DELIM); // event list size, ignore
@@ -79,7 +79,7 @@ json PhysicalJoystickHandler::convertLegacyMapping(string_view mapping)
 
   while(getline(buf, joymap, CTRL_DELIM))
   {
-    istringstream namebuf(joymap);
+    std::istringstream namebuf(joymap);
     getline(namebuf, joyname, PhysicalJoystick::MODE_DELIM);
 
     convertedMapping.push_back(PhysicalJoystick::convertLegacyMapping(joymap, joyname));
@@ -115,7 +115,7 @@ int PhysicalJoystickHandler::add(const PhysicalJoystickPtr& stick)
 
     if(count > 0)
     {
-      ostringstream name;
+      std::ostringstream name;
       name << stick->name << " #" << count+1;
       stick->name = name.view();
     }
@@ -172,7 +172,7 @@ void PhysicalJoystickHandler::addToDatabase(const PhysicalJoystickPtr& stick)
     setStickDefaultMapping(stick->ID, Event::NoType, EventMode::kEmulationMode);
   }
 
-  ostringstream buf;
+  std::ostringstream buf;
   buf << "Added joystick " << stick->ID << ":\n"
     << "  " << stick->about() << '\n';
   Logger::info(buf.view());
@@ -193,7 +193,7 @@ bool PhysicalJoystickHandler::remove(int id)
     const auto it = myDatabase.find(stick->name);
     if(it != myDatabase.end() && it->second.joy == stick)
     {
-      ostringstream buf;
+      std::ostringstream buf;
       buf << "Removed joystick " << mySticks[id]->ID << ":\n"
           << "  " << mySticks[id]->about() << '\n';
       Logger::info(buf.view());
@@ -261,7 +261,7 @@ bool PhysicalJoystickHandler::mapStelladaptors(string_view saport, int ID)
     if(pos != std::string::npos && ID != -1 && ID < _stick->ID)
     {
       // Erase a previously added Stelladapter with a higher ID
-      ostringstream buf;
+      std::ostringstream buf;
       buf << "Erased joystick " << _stick->ID << ":\n"
         << "  " << _stick->about() << '\n';
       Logger::info(buf.view());
@@ -792,7 +792,7 @@ void PhysicalJoystickHandler::saveMapping()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string PhysicalJoystickHandler::getMappingDesc(Event::Type event, EventMode mode) const
 {
-  ostringstream buf;
+  std::ostringstream buf;
   const EventMode evMode = getEventMode(event, mode);
 
   for(const auto& [_id, _joyptr]: mySticks)
@@ -1096,7 +1096,7 @@ PhysicalJoystickHandler::MinStrickInfoList PhysicalJoystickHandler::minStickList
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-ostream& operator<<(ostream& os, const PhysicalJoystickHandler& jh)
+std::ostream& operator<<(std::ostream& os, const PhysicalJoystickHandler& jh)
 {
   os << "---------------------------------------------------------\n"
      << "joy database:\n";
@@ -1123,7 +1123,7 @@ void PhysicalJoystickHandler::changeDigitalDeadZone(int direction)
 
   Controller::setDigitalDeadZone(deadZone);
 
-  ostringstream ss;
+  std::ostringstream ss;
   ss << std::round(Controller::digitalDeadZoneValue(deadZone) * 100.F / 32768) << "%";
 
   myOSystem.frameBuffer().showGaugeMessage(
@@ -1141,7 +1141,7 @@ void PhysicalJoystickHandler::changeAnalogPaddleDeadZone(int direction)
 
   Controller::setAnalogDeadZone(deadZone);
 
-  ostringstream ss;
+  std::ostringstream ss;
   ss << std::round(Controller::analogDeadZoneValue(deadZone) * 100.F / 32768) << "%";
 
   myOSystem.frameBuffer().showGaugeMessage(
@@ -1159,7 +1159,7 @@ void PhysicalJoystickHandler::changeAnalogPaddleSensitivity(int direction)
 
   Paddles::setAnalogSensitivity(sense);
 
-  ostringstream ss;
+  std::ostringstream ss;
   ss << std::round(Paddles::analogSensitivityValue(sense) * 100.F) << "%";
 
   myOSystem.frameBuffer().showGaugeMessage(
@@ -1177,7 +1177,7 @@ void PhysicalJoystickHandler::changeAnalogPaddleLinearity(int direction)
 
   Paddles::setAnalogLinearity(linear);
 
-  ostringstream ss;
+  std::ostringstream ss;
   if(linear)
     ss << linear << "%";
   else
@@ -1198,7 +1198,7 @@ void PhysicalJoystickHandler::changePaddleDejitterAveraging(int direction)
 
   Paddles::setDejitterBase(dejitter);
 
-  ostringstream ss;
+  std::ostringstream ss;
   if(dejitter)
     ss << dejitter;
   else
@@ -1219,7 +1219,7 @@ void PhysicalJoystickHandler::changePaddleDejitterReaction(int direction)
 
   Paddles::setDejitterDiff(dejitter);
 
-  ostringstream ss;
+  std::ostringstream ss;
   if(dejitter)
     ss << dejitter;
   else
@@ -1240,7 +1240,7 @@ void PhysicalJoystickHandler::changeDigitalPaddleSensitivity(int direction)
 
   Paddles::setDigitalSensitivity(sense);
 
-  ostringstream ss;
+  std::ostringstream ss;
   if(sense)
     ss << sense * 10 << "%";
   else
@@ -1261,7 +1261,7 @@ void PhysicalJoystickHandler::changeMousePaddleSensitivity(int direction)
 
   Controller::setMouseSensitivity(sense);
 
-  ostringstream ss;
+  std::ostringstream ss;
   ss << sense * 10 << "%";
 
   myOSystem.frameBuffer().showGaugeMessage(
@@ -1279,7 +1279,7 @@ void PhysicalJoystickHandler::changeMouseTrackballSensitivity(int direction)
 
   PointingDevice::setSensitivity(sense);
 
-  ostringstream ss;
+  std::ostringstream ss;
   ss << sense * 10 << "%";
 
   myOSystem.frameBuffer().showGaugeMessage(
@@ -1297,7 +1297,7 @@ void PhysicalJoystickHandler::changeDrivingSensitivity(int direction)
 
   Driving::setSensitivity(sense);
 
-  ostringstream ss;
+  std::ostringstream ss;
   ss << sense * 10 << "%";
 
   myOSystem.frameBuffer().showGaugeMessage(

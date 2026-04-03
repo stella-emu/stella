@@ -322,7 +322,7 @@ bool RomImageWidget::loadPng(const string& fileName)
     }
     return true;
   }
-  catch(const runtime_error& e)
+  catch(const std::runtime_error& e)
   {
     mySurfaceErrorMsg = e.what();
   }
@@ -349,7 +349,7 @@ bool RomImageWidget::loadJpg(const string& fileName)
     }
     return true;
   }
-  catch(const runtime_error& e)
+  catch(const std::runtime_error& e)
   {
     mySurfaceErrorMsg = e.what();
   }
@@ -565,7 +565,7 @@ void RomImageWidget::drawWidget(bool hilite)
     }
 
   // Draw the image label and counter
-  ostringstream buf;
+  std::ostringstream buf;
   buf << myImageIdx + 1 << "/" << myImageList.size();
   const int yText = _y + _h - _font.getFontHeight() * 10 / 8;
   const int wText = _font.getStringWidth(buf.view()) + 8;

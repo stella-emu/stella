@@ -610,7 +610,7 @@ void PhysicalKeyboardHandler::toggleModKeys(bool toggle)
     myOSystem.settings().setValue("modcombo", modCombo);
   }
 
-  ostringstream ss;
+  std::ostringstream ss;
   ss << "Modifier key combos ";
   ss << (modCombo ? "enabled" : "disabled");
   myOSystem.frameBuffer().showTextMessage(ss.view());

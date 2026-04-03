@@ -39,7 +39,7 @@ namespace {
   class ElfFixture: public ElfFile {
     public:
       explicit ElfFixture(size_t size) : mySize(size) {
-        myData = make_unique<uInt8[]>(mySize);
+        myData = std::make_unique<uInt8[]>(mySize);
 
         addSection("", 0, 0, 0);
       }

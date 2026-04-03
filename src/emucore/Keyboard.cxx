@@ -85,7 +85,7 @@ Keyboard::columnStateToAnalogSignal(ColumnState state)
       return AnalogReadout::connectToVcc(INTERNAL_RESISTANCE);
 
     default:
-      throw runtime_error("unreachable");
+      throw std::runtime_error("unreachable");
   }
 }
 

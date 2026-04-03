@@ -30,7 +30,7 @@ CartridgeGL::CartridgeGL(const ByteBuffer& image, size_t size,
 
   if(size == 4_KB + 2_KB) // ROM containing RAM data?
   {
-    myInitialRAM = make_unique<uInt8[]>(2_KB);
+    myInitialRAM = std::make_unique<uInt8[]>(2_KB);
     // Copy the RAM image into a buffer for use in reset()
     std::copy_n(image.get() + 4_KB, 2_KB, myInitialRAM.get());
   }

@@ -101,7 +101,7 @@ class ZipHandler
     struct ZipFile
     {
       string  myFilename;     // copy of ZIP filename (for caching)
-      fstream myStream;       // C++ fstream file handle
+      std::fstream myStream;  // C++ fstream file handle
       uInt64  myLength{0};    // length of zip file
       uInt16  myRomfiles{0};  // number of ROM files in central directory
 

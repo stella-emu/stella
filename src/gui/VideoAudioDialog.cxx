@@ -1405,7 +1405,7 @@ void VideoAudioDialog::colorPalette()
 
     for(int idx = 0; idx < NUM_CHROMA; ++idx)
     {
-      ostringstream ss;
+      std::ostringstream ss;
       const int color = order[type][idx];
 
       ss << Common::Base::HEX1 << std::uppercase << color;

@@ -30,7 +30,7 @@ CartridgeCVWidget::CartridgeCVWidget(
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string CartridgeCVWidget::description()
 {
-  ostringstream info;
+  std::ostringstream info;
 
   info << "CV 2K ROM + 1K RAM, non-bankswitched\n"
        << CartridgeEnhancedWidget::description();

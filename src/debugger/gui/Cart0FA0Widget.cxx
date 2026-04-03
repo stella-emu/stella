@@ -31,7 +31,7 @@ Cartridge0FA0Widget::Cartridge0FA0Widget(
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string Cartridge0FA0Widget::description()
 {
-  ostringstream info;
+  std::ostringstream info;
 
   info << "8K BR cartridge, two 4K banks\n"
     << CartridgeEnhancedWidget::description();
@@ -42,7 +42,7 @@ string Cartridge0FA0Widget::description()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string Cartridge0FA0Widget::hotspotStr(int bank, int, bool prefix)
 {
-  ostringstream info;
+  std::ostringstream info;
   const uInt16 hotspot = myCart.hotspot() + bank * myHotspotDelta;
 
   info << "(" << (prefix ? "hotspot " : "")

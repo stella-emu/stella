@@ -45,7 +45,7 @@ class NullControlWidget : public ControllerWidget
       }
       else
       {
-        ostringstream buf;
+        std::ostringstream buf;
         buf << getHeader();
         const int lwidth = std::max(font.getStringWidth(buf.view()),
                                     font.getStringWidth("Controller input"));

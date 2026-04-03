@@ -103,9 +103,9 @@ AbstractFSNodePtr FSNodeWINDOWS::getParent() const
   if (_isPseudoRoot)
     return nullptr;
   else if (_path.size() > 3)
-    return make_unique<FSNodeWINDOWS>(stemPathComponent(_path));
+    return std::make_unique<FSNodeWINDOWS>(stemPathComponent(_path));
   else
-    return make_unique<FSNodeWINDOWS>();
+    return std::make_unique<FSNodeWINDOWS>();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -145,7 +145,7 @@ bool FSNodeWINDOWS::getChildren(AbstractFSList& myList, ListMode mode) const
       entry._isPseudoRoot = false;
       entry._size = desc.nFileSizeHigh * (static_cast<size_t>(MAXDWORD) + 1) + desc.nFileSizeLow;
 
-      myList.emplace_back(make_unique<FSNodeWINDOWS>(entry));
+      myList.emplace_back(std::make_unique<FSNodeWINDOWS>(entry));
     } while (FindNextFile(handle, &desc));
 
     FindClose(handle);
@@ -168,7 +168,7 @@ bool FSNodeWINDOWS::getChildren(AbstractFSList& myList, ListMode mode) const
       entry._isFile = false;
       entry._isPseudoRoot = false;
       entry._path = current_drive;
-      myList.emplace_back(make_unique<FSNodeWINDOWS>(entry));
+      myList.emplace_back(std::make_unique<FSNodeWINDOWS>(entry));
     }
   }
 

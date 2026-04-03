@@ -930,7 +930,7 @@ void GameInfoDialog::loadHighScoresProperties(const Properties& props)
 
   myVariations->setText(to_string(numVariations));
 
-  ostringstream ss;
+  std::ostringstream ss;
 
   myScoreDigits->setSelected(info.numDigits);
   myTrailingZeroes->setSelected(info.trailingZeroes);
@@ -1477,7 +1477,7 @@ void GameInfoDialog::setAddressVal(const EditTextWidget* addressWidget, EditText
 
   if (instance().hasConsole() && valWidget->isEnabled())
   {
-    ostringstream ss;
+    std::ostringstream ss;
 
     // convert to number and read from memory
     const uInt16 addr = BSPF::stoi<16>(strAddr, HSM::DEFAULT_ADDRESS);
@@ -1558,7 +1558,7 @@ void GameInfoDialog::handleCommand(CommandSender* sender, int cmd,
         BSPF::startsWithIgnoreCase(myRightPortDetected->getLabel(), "QUADTARI");
 
       if(!myQuadTariDialog)
-        myQuadTariDialog = make_unique<QuadTariDialog>
+        myQuadTariDialog = std::make_unique<QuadTariDialog>
           (this, _font, _font.getMaxCharWidth() * 42, _font.getFontHeight() * 10,
            myGameProperties);
       myQuadTariDialog->show(enableLeft, enableRight);

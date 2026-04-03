@@ -55,12 +55,12 @@ int main(int ac, char* av[])
   int i_size = (int) in.tellg();
   in.seekg(0, ios::beg);
 
-  unique_ptr<uInt8[]> image = make_unique<uInt8[]>(i_size);
+  unique_ptr<uInt8[]> image = std::make_unique<uInt8[]>(i_size);
   in.read((char*)(image.get()), i_size);
   in.close();
 
   int s_size = 0;
-  unique_ptr<uInt8[]> sig = make_unique<uInt8[]>(strlen(av[2])/2);
+  unique_ptr<uInt8[]> sig = std::make_unique<uInt8[]>(strlen(av[2])/2);
   istringstream buf(av[2]);
 
   uInt32 c;

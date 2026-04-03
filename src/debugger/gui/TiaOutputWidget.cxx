@@ -50,7 +50,7 @@ TiaOutputWidget::TiaOutputWidget(GuiObject* boss, const GUI::Font& font,
 #ifdef IMAGE_SUPPORT
   VarList::push_back(l, "Save snapshot", "snap");
 #endif
-  myMenu = make_unique<ContextMenu>(this, font, l);
+  myMenu = std::make_unique<ContextMenu>(this, font, l);
 
   //setHelpAnchor("TIADisplay", true); // TODO: does not work due to missing focus
 }
@@ -70,7 +70,7 @@ void TiaOutputWidget::saveSnapshot(int execDepth, string_view execPrefix,
   if(execDepth > 0)
     drawWidget(false);
 
-  ostringstream sspath;
+  std::ostringstream sspath;
   sspath << instance().snapshotSaveDir()
          << instance().console().properties().get(PropType::Cart_Name);
 
@@ -90,8 +90,7 @@ void TiaOutputWidget::saveSnapshot(int execDepth, string_view execPrefix,
     const FSNode node(sspath.str() + ".png");
     if(node.exists())
     {
-      ostringstream suffix;
-      ostringstream buf;
+      std::ostringstream suffix, buf;
       for(uInt32 i = 1; ; ++i)
       {
         buf.str("");
@@ -119,7 +118,7 @@ void TiaOutputWidget::saveSnapshot(int execDepth, string_view execPrefix,
   {
     PNGLibrary::saveImage(sspath.str(), s, rect);
   }
-  catch(const runtime_error& e)
+  catch(const std::runtime_error& e)
   {
     message = e.what();
   }
@@ -158,7 +157,7 @@ void TiaOutputWidget::handleCommand(CommandSender* sender, int cmd, int data, in
 
     if(rmb == "scanline")
     {
-      ostringstream command;
+      std::ostringstream command;
       int lines = myClickY + startLine - instance().console().tia().scanlines();
 
       if(lines < 0)
@@ -172,7 +171,7 @@ void TiaOutputWidget::handleCommand(CommandSender* sender, int cmd, int data, in
     }
     else if(rmb == "bp")
     {
-      ostringstream command;
+      std::ostringstream command;
       const int scanline = myClickY + startLine;
       command << "breakIf _scan==#" << scanline;
       const string& message = instance().debugger().parser().run(command.view());
@@ -219,7 +218,7 @@ string TiaOutputWidget::getToolTip(const Common::Point& pos) const
     ? 0 : (height - FrameManager::Metrics::baseHeightPAL) >> 1;
   const Int32 i = idx.x + (yStart + idx.y) * instance().console().tia().width();
   const uInt8* tiaOutputBuffer = instance().console().tia().outputBuffer();
-  ostringstream buf;
+  std::ostringstream buf;
 
   buf << _toolTipText
     << "X: #" << idx.x

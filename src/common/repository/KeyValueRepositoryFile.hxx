@@ -58,13 +58,13 @@ KVRMap KeyValueRepositoryFile<T>::load()
 {
   if (!myNode.exists()) return {};
 
-  stringstream in;
+  std::stringstream in;
 
   try {
     myNode.read(in);
     return T::load(in);
   }
-  catch (const runtime_error& err) {
+  catch (const std::runtime_error& err) {
     Logger::error(err.what());
 
     return {};
@@ -80,7 +80,7 @@ bool KeyValueRepositoryFile<T>::save(const KVRMap& values)
 {
   if (values.empty()) return true;
 
-  stringstream out;
+  std::stringstream out;
 
   try {
     T::save(out, values);
@@ -88,7 +88,7 @@ bool KeyValueRepositoryFile<T>::save(const KVRMap& values)
 
     return true;
   }
-  catch (const runtime_error& err) {
+  catch (const std::runtime_error& err) {
     Logger::error(err.what());
 
     return false;

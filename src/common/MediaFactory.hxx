@@ -78,13 +78,13 @@ class MediaFactory
     static unique_ptr<OSystem> createOSystem()
     {
     #ifdef BSPF_UNIX
-      return make_unique<OSystemUNIX>();
+      return std::make_unique<OSystemUNIX>();
     #elif defined(BSPF_WINDOWS)
-      return make_unique<OSystemWINDOWS>();
+      return std::make_unique<OSystemWINDOWS>();
     #elif defined(BSPF_MACOS)
-      return make_unique<OSystemMACOS>();
+      return std::make_unique<OSystemMACOS>();
     #elif defined(__LIB_RETRO__)
-      return make_unique<OSystemLIBRETRO>();
+      return std::make_unique<OSystemLIBRETRO>();
     #else
       #error Unsupported platform for OSystem!
     #endif
@@ -92,28 +92,28 @@ class MediaFactory
 
     static unique_ptr<Settings> createSettings()
     {
-      return make_unique<Settings>();
+      return std::make_unique<Settings>();
     }
 
     static unique_ptr<SerialPort> createSerialPort()
     {
     #ifdef BSPF_UNIX
-      return make_unique<SerialPortUNIX>();
+      return std::make_unique<SerialPortUNIX>();
     #elif defined(BSPF_WINDOWS)
-      return make_unique<SerialPortWINDOWS>();
+      return std::make_unique<SerialPortWINDOWS>();
     #elif defined(BSPF_MACOS)
-      return make_unique<SerialPortMACOS>();
+      return std::make_unique<SerialPortMACOS>();
     #else
-      return make_unique<SerialPort>();
+      return std::make_unique<SerialPort>();
     #endif
     }
 
     static unique_ptr<FBBackend> createVideoBackend(OSystem& osystem)
     {
     #ifdef __LIB_RETRO__
-      return make_unique<FBBackendLIBRETRO>(osystem);
+      return std::make_unique<FBBackendLIBRETRO>(osystem);
     #elif defined(SDL_SUPPORT)
-      return make_unique<FBBackendSDL>(osystem);
+      return std::make_unique<FBBackendSDL>(osystem);
     #else
       #error Unsupported platform for FrameBuffer!
     #endif
@@ -123,23 +123,23 @@ class MediaFactory
     {
     #ifdef SOUND_SUPPORT
       #ifdef __LIB_RETRO__
-        return make_unique<SoundLIBRETRO>(osystem, audioSettings);
+        return std::make_unique<SoundLIBRETRO>(osystem, audioSettings);
       #elif defined(SOUND_SUPPORT) && defined(SDL_SUPPORT)
-        return make_unique<SoundSDL>(osystem, audioSettings);
+        return std::make_unique<SoundSDL>(osystem, audioSettings);
       #else
-        return make_unique<SoundNull>(osystem);
+        return std::make_unique<SoundNull>(osystem);
       #endif
     #else
-      return make_unique<SoundNull>(osystem);
+      return std::make_unique<SoundNull>(osystem);
     #endif
     }
 
     static unique_ptr<EventHandler> createEventHandler(OSystem& osystem)
     {
     #ifdef __LIB_RETRO__
-      return make_unique<EventHandlerLIBRETRO>(osystem);
+      return std::make_unique<EventHandlerLIBRETRO>(osystem);
     #elif defined(SDL_SUPPORT)
-      return make_unique<EventHandlerSDL>(osystem);
+      return std::make_unique<EventHandlerSDL>(osystem);
     #else
       #error Unsupported platform for EventHandler!
     #endif

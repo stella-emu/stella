@@ -31,7 +31,7 @@ Cartridge3FWidget::Cartridge3FWidget(
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string Cartridge3FWidget::description()
 {
-  ostringstream info;
+  std::ostringstream info;
   size_t size = 0;
   const ByteBuffer& image = myCart.getImage(size);
 

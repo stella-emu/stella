@@ -71,7 +71,7 @@ struct Point
 
   [[nodiscard]] string toString() const { return toStringPair(x, y); }
 
-  friend ostream& operator<<(ostream& os, const Point& p) {
+  friend std::ostream& operator<<(std::ostream& os, const Point& p) {
     os << p.x << "x" << p.y;
     return os;
   }
@@ -112,7 +112,7 @@ struct Size
 
   [[nodiscard]] string toString() const { return toStringPair(w, h); }
 
-  friend ostream& operator<<(ostream& os, const Size& s) {
+  friend std::ostream& operator<<(std::ostream& os, const Size& s) {
     os << s.w << "x" << s.h;
     return os;
   }
@@ -220,7 +220,7 @@ public:
   auto operator<=>(const Rect& r) const = default;
   bool operator==(const Rect&) const = default;
 
-  friend ostream& operator<<(ostream& os, const Rect& r) {
+  friend std::ostream& operator<<(std::ostream& os, const Rect& r) {
     os << r.point() << "," << r.size();
     return os;
   }

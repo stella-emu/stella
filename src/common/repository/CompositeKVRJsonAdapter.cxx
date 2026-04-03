@@ -31,13 +31,13 @@ namespace {
           Variant serialized;
           myKvr.get(myKey, serialized);
 
-          stringstream in{serialized.toString()};
+          std::stringstream in{serialized.toString()};
 
           return KeyValueRepositoryJsonFile::load(in);
         }
 
         bool save(const KVRMap& values) override {
-          stringstream out;
+          std::stringstream out;
 
           if (!KeyValueRepositoryJsonFile::save(out, values)) return false;
 
@@ -61,7 +61,7 @@ CompositeKVRJsonAdapter::CompositeKVRJsonAdapter(KeyValueRepositoryAtomic& kvr)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 shared_ptr<KeyValueRepository> CompositeKVRJsonAdapter::get(string_view key)
 {
-  return make_shared<ProxyRepository>(myKvr, key);
+  return std::make_shared<ProxyRepository>(myKvr, key);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

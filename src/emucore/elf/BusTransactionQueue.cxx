@@ -50,7 +50,7 @@ void BusTransactionQueue::Transaction::setBusState(bool& bs_drive, uInt8& bs_val
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 BusTransactionQueue::BusTransactionQueue(size_t capacity)
   : myQueueCapacity{capacity},
-    myQueue{make_unique<Transaction[]>(myQueueCapacity)}
+    myQueue{std::make_unique<Transaction[]>(myQueueCapacity)}
 {
   reset();
 }

@@ -351,7 +351,7 @@ class LinkedObjectPool
     [[nodiscard]] bool full()  const { return mySize == myCapacity; }
 
   #if 0
-    friend ostream& operator<<(ostream& os, const LinkedObjectPool<T>& p) {
+    friend std::ostream& operator<<(std::ostream& os, const LinkedObjectPool<T>& p) {
       for(const auto& i: p.myList)
         os << i << (p.current() == i ? "* " : "  ");
       return os;

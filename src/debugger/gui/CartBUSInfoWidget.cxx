@@ -24,7 +24,7 @@ CartridgeBUSInfoWidget::CartridgeBUSInfoWidget(
   : CartDebugWidget(boss, lfont, nfont, x, y, w, h)
 {
   constexpr uInt16 size = 8 * 4096;
-  ostringstream info;
+  std::ostringstream info;
 
   if (cart.myBUSSubtype == CartridgeBUS::BUSSubtype::BUS0)
   {
@@ -70,6 +70,6 @@ string CartridgeBUSInfoWidget::describeBUSVersion(CartridgeBUS::BUSSubtype subty
     case BUS1:  return "BUS (v1)";
     case BUS2:  return "BUS (v2)";
     case BUS3:  return "BUS (v3)";
-    default:    throw runtime_error("unreachable");
+    default:    throw std::runtime_error("unreachable");
   }
 }

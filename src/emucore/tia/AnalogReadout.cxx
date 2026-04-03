@@ -109,7 +109,7 @@ void AnalogReadout::updateCharge(uInt64 timestamp)
         break;
 
       default:
-        throw runtime_error("unreachable");
+        throw std::runtime_error("unreachable");
     }
   }
 

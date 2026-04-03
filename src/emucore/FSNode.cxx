@@ -341,7 +341,7 @@ size_t FSNode::read(ByteBuffer& buffer, size_t size) const
 
   // File must actually exist
   if (!(exists() && isReadable()))
-    throw runtime_error("File not found/readable");
+    throw std::runtime_error("File not found/readable");
 
   // First let the private subclass attempt to open the file
   if (_realNode)
@@ -357,27 +357,27 @@ size_t FSNode::read(ByteBuffer& buffer, size_t size) const
     in.seekg(0, std::ios::beg);
 
     if (sizeRead == 0)
-      throw runtime_error("Zero-byte file");
+      throw std::runtime_error("Zero-byte file");
     else if (size > 0)  // If a requested size to read is provided, honour it
       sizeRead = std::min(sizeRead, size);
 
-    buffer = make_unique<uInt8[]>(sizeRead);
+    buffer = std::make_unique<uInt8[]>(sizeRead);
     in.read(reinterpret_cast<char*>(buffer.get()), sizeRead);
   }
   else
-    throw runtime_error("File open/read error");
+    throw std::runtime_error("File open/read error");
 
   return sizeRead;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-size_t FSNode::read(stringstream& buffer) const
+size_t FSNode::read(std::stringstream& buffer) const
 {
   size_t sizeRead = 0;
 
   // File must actually exist
   if (!(exists() && isReadable()))
-    throw runtime_error("File not found/readable");
+    throw std::runtime_error("File not found/readable");
 
   // First let the private subclass attempt to open the file
   if (_realNode)
@@ -394,12 +394,12 @@ size_t FSNode::read(stringstream& buffer) const
     in.seekg(0, std::ios::beg);
 
     if (sizeRead == 0)
-      throw runtime_error("Zero-byte file");
+      throw std::runtime_error("Zero-byte file");
 
     buffer << in.rdbuf();
   }
   else
-    throw runtime_error("File open/read error");
+    throw std::runtime_error("File open/read error");
 
   return sizeRead;
 }
@@ -424,13 +424,13 @@ size_t FSNode::write(const ByteBuffer& buffer, size_t size) const
     sizeWritten = static_cast<size_t>(out.tellp());
   }
   else
-    throw runtime_error("File open/write error");
+    throw std::runtime_error("File open/write error");
 
   return sizeWritten;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-size_t FSNode::write(const stringstream& buffer) const
+size_t FSNode::write(const std::stringstream& buffer) const
 {
   size_t sizeWritten = 0;
 
@@ -449,7 +449,7 @@ size_t FSNode::write(const stringstream& buffer) const
     sizeWritten = static_cast<size_t>(out.tellp());
   }
   else
-    throw runtime_error("File open/write error");
+    throw std::runtime_error("File open/write error");
 
   return sizeWritten;
 }

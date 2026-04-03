@@ -212,7 +212,7 @@ void OptionsDialog::handleCommand(CommandSender* sender, int cmd,
       uInt32 w = 0, h = 0;
 
       getDynamicBounds(w, h);
-      myDialog = make_unique<VideoAudioDialog>(instance(), parent(), _font, w, h);
+      myDialog = std::make_unique<VideoAudioDialog>(instance(), parent(), _font, w, h);
       myDialog->open();
       break;
     }
@@ -221,7 +221,7 @@ void OptionsDialog::handleCommand(CommandSender* sender, int cmd,
       uInt32 w = 0, h = 0;
 
       getDynamicBounds(w, h);
-      myDialog = make_unique<EmulationDialog>(instance(), parent(), _font, w, h);
+      myDialog = std::make_unique<EmulationDialog>(instance(), parent(), _font, w, h);
       myDialog->open();
       break;
     }
@@ -230,7 +230,7 @@ void OptionsDialog::handleCommand(CommandSender* sender, int cmd,
       uInt32 w = 0, h = 0;
 
       getDynamicBounds(w, h);
-      myDialog = make_unique<InputDialog>(instance(), parent(), _font, w, h);
+      myDialog = std::make_unique<InputDialog>(instance(), parent(), _font, w, h);
       myDialog->open();
       break;
     }
@@ -240,7 +240,7 @@ void OptionsDialog::handleCommand(CommandSender* sender, int cmd,
       uInt32 w = 0, h = 0;
 
       getDynamicBounds(w, h);
-      myDialog = make_unique<UIDialog>(instance(), parent(), _font, myBoss, w, h);
+      myDialog = std::make_unique<UIDialog>(instance(), parent(), _font, myBoss, w, h);
       myDialog->open();
       break;
     }
@@ -250,7 +250,7 @@ void OptionsDialog::handleCommand(CommandSender* sender, int cmd,
       uInt32 w = 0, h = 0;
 
       getDynamicBounds(w, h);
-      myDialog = make_unique<SnapshotDialog>(instance(), parent(), _font, w, h);
+      myDialog = std::make_unique<SnapshotDialog>(instance(), parent(), _font, w, h);
       myDialog->open();
       break;
     }
@@ -260,7 +260,7 @@ void OptionsDialog::handleCommand(CommandSender* sender, int cmd,
       uInt32 w = 0, h = 0;
 
       getDynamicBounds(w, h);
-      myDialog = make_unique<DeveloperDialog>(instance(), parent(), _font, w, h);
+      myDialog = std::make_unique<DeveloperDialog>(instance(), parent(), _font, w, h);
       myDialog->open();
       break;
     }
@@ -270,14 +270,14 @@ void OptionsDialog::handleCommand(CommandSender* sender, int cmd,
       uInt32 w = 0, h = 0;
 
       getDynamicBounds(w, h);
-      myDialog = make_unique<GameInfoDialog>(instance(), parent(), _font, this, w, h);
+      myDialog = std::make_unique<GameInfoDialog>(instance(), parent(), _font, this, w, h);
       myDialog->open();
       break;
     }
 
 #ifdef CHEATCODE_SUPPORT
     case kCheatCmd:
-      myDialog = make_unique<CheatCodeDialog>(instance(), parent(), _font);
+      myDialog = std::make_unique<CheatCodeDialog>(instance(), parent(), _font);
       myDialog->open();
       break;
 #endif
@@ -287,7 +287,7 @@ void OptionsDialog::handleCommand(CommandSender* sender, int cmd,
       uInt32 w = 0, h = 0;
 
       getDynamicBounds(w, h);
-      myDialog = make_unique<RomAuditDialog>(instance(), parent(), _font, w, h);
+      myDialog = std::make_unique<RomAuditDialog>(instance(), parent(), _font, w, h);
       myDialog->open();
       break;
     }
@@ -296,18 +296,18 @@ void OptionsDialog::handleCommand(CommandSender* sender, int cmd,
       uInt32 w = 0, h = 0;
       const bool uselargefont = getDynamicBounds(w, h);
 
-      myDialog = make_unique<LoggerDialog>(instance(), parent(), _font, w, h, uselargefont);
+      myDialog = std::make_unique<LoggerDialog>(instance(), parent(), _font, w, h, uselargefont);
       myDialog->open();
       break;
     }
 
     case kHelpCmd:
-      myDialog = make_unique<HelpDialog>(instance(), parent(), _font);
+      myDialog = std::make_unique<HelpDialog>(instance(), parent(), _font);
       myDialog->open();
       break;
 
     case kAboutCmd:
-      myDialog = make_unique<AboutDialog>(instance(), parent(), _font);
+      myDialog = std::make_unique<AboutDialog>(instance(), parent(), _font);
       myDialog->open();
       break;
 

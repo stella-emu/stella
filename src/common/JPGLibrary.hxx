@@ -47,7 +47,7 @@ class JPGLibrary
       @param metaData  The meta data of the JPG image
 
       @post  On success, the FBSurface containing image data, otherwise a
-             runtime_error is thrown containing a more detailed
+             std::runtime_error is thrown containing a more detailed
              error message.
     */
     void loadImage(const string& filename, FBSurface& surface,

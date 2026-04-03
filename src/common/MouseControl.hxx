@@ -92,7 +92,7 @@ class MouseControl
                 string_view msg)
         : xtype{xt}, ytype{yt}, xid{xi}, yid{yi}, message{msg}  { }
 
-      friend ostream& operator<<(ostream& os, const MouseMode& mm)
+      friend std::ostream& operator<<(std::ostream& os, const MouseMode& mm)
       {
         os << "xtype=" << static_cast<int>(mm.xtype) << ", xid=" << mm.xid
            << ", ytype=" << static_cast<int>(mm.ytype) << ", yid=" << mm.yid

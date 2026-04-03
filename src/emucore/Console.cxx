@@ -101,7 +101,7 @@ namespace {
   }
 
   string formatSpeed(int speed) {
-    stringstream ss;
+    std::ostringstream ss;
 
     ss
       << std::setw(3) << std::fixed << std::setprecision(0)
@@ -121,25 +121,25 @@ Console::Console(OSystem& osystem, unique_ptr<Cartridge>& cart,
     myCart{std::move(cart)},
     myDisplayFormat{myProperties.get(PropType::Display_Format)}
 {
-  myEmulationTiming = make_shared<EmulationTiming>();
+  myEmulationTiming = std::make_shared<EmulationTiming>();
   myCart->setProperties(&myProperties);
 
   // Create subsystems for the console
-  my6502 = make_unique<M6502>(myOSystem.settings());
-  myRiot = make_unique<M6532>(*this, myOSystem.settings());
+  my6502 = std::make_unique<M6502>(myOSystem.settings());
+  myRiot = std::make_unique<M6532>(*this, myOSystem.settings());
 
   const TIA::onPhosphorCallback callback = [&frameBuffer = this->myOSystem.frameBuffer()](bool enable)
   {
     frameBuffer.tiaSurface().enablePhosphor(enable);
 #ifdef DEBUG_BUILD
-    ostringstream msg;
+    std::ostringstream msg;
     msg << "Phosphor effect automatically " << (enable ? "enabled" : "disabled");
     frameBuffer.showTextMessage(msg.view());
 #endif
   };
-  myTIA  = make_unique<TIA>(*this, [this]() { return timing(); }, myOSystem.settings(), callback);
-  myFrameManager = make_unique<FrameManager>();
-  mySwitches = make_unique<Switches>(myEvent, myProperties, myOSystem.settings());
+  myTIA  = std::make_unique<TIA>(*this, [this]() { return timing(); }, myOSystem.settings(), callback);
+  myFrameManager = std::make_unique<FrameManager>();
+  mySwitches = std::make_unique<Switches>(myEvent, myProperties, myOSystem.settings());
 
   myTIA->setFrameManager(myFrameManager.get());
   myOSystem.sound().stopWav();
@@ -148,14 +148,14 @@ Console::Console(OSystem& osystem, unique_ptr<Cartridge>& cart,
   myOSystem.random().initSeed(static_cast<uInt32>(TimerManager::getTicks()));
 
   // Construct the system and components
-  mySystem = make_unique<System>(myOSystem.random(), *my6502, *myRiot, *myTIA, *myCart);
+  mySystem = std::make_unique<System>(myOSystem.random(), *my6502, *myRiot, *myTIA, *myCart);
 
   // The real controllers for this console will be added later
   // For now, we just add dummy joystick controllers, since autodetection
   // runs the emulation for a while, and this may interfere with 'smart'
   // controllers such as the AVox and SaveKey
-  myLeftControl  = make_unique<Joystick>(Controller::Jack::Left, myEvent, *mySystem);
-  myRightControl = make_unique<Joystick>(Controller::Jack::Right, myEvent, *mySystem);
+  myLeftControl  = std::make_unique<Joystick>(Controller::Jack::Left, myEvent, *mySystem);
+  myRightControl = std::make_unique<Joystick>(Controller::Jack::Right, myEvent, *mySystem);
 
   // Let the cart know how to query for the 'Cartridge.StartBank' property
   myCart->setStartBankFromPropsFunc([this]() {
@@ -168,7 +168,7 @@ Console::Console(OSystem& osystem, unique_ptr<Cartridge>& cart,
   mySystem->initialize();
 
   // Create developer/player settings handler (handles switching sets)
-  myDevSettingsHandler = make_unique<DevSettingsHandler>(myOSystem);
+  myDevSettingsHandler = std::make_unique<DevSettingsHandler>(myOSystem);
 
   // Auto-detect NTSC/PAL mode if it's requested
   if(myDisplayFormat == "AUTO")
@@ -619,7 +619,7 @@ void Console::toggleInter(bool toggle)
       // Apply potential setting changes to the TIA surface
       myOSystem.frameBuffer().tiaSurface().updateSurfaceSettings();
     }
-    ostringstream ss;
+    std::ostringstream ss;
 
     ss << "Interpolation " << (enabled ? "enabled" : "disabled");
     myOSystem.frameBuffer().showTextMessage(ss.view());
@@ -642,7 +642,7 @@ void Console::toggleTurbo()
   // update VSync
   initializeVideo();
 
-  ostringstream ss;
+  std::ostringstream ss;
   ss << "Turbo mode " << (!enabled ? "enabled" : "disabled");
   myOSystem.frameBuffer().showTextMessage(ss.view());
 }
@@ -666,7 +666,7 @@ void Console::changeSpeed(int direction)
     initializeVideo();
   }
 
-  ostringstream val;
+  std::ostringstream val;
 
   val << formatSpeed(speed) << "%";
   myOSystem.frameBuffer().showGaugeMessage("Emulation speed", val.view(), speed, MIN_SPEED, MAX_SPEED);
@@ -690,7 +690,7 @@ void Console::togglePhosphor(bool toggle)
     myTIA->enableAutoPhosphor(false);
   }
 
-  ostringstream msg;
+  std::ostringstream msg;
   msg << "Phosphor effect " << (enable ? "enabled" : "disabled");
   myOSystem.frameBuffer().showTextMessage(msg.view());
 }
@@ -733,7 +733,7 @@ void Console::cyclePhosphorMode(int direction)
     myOSystem.settings().setValue(PhosphorHandler::SETTING_MODE,
                                   PhosphorHandler::toPhosphorName(mode));
   }
-  ostringstream msg;
+  std::ostringstream msg;
   msg << "Phosphor mode " << MESSAGES[mode];
   myOSystem.frameBuffer().showTextMessage(msg.view());
 }
@@ -749,7 +749,7 @@ void Console::changePhosphor(int direction)
     myOSystem.frameBuffer().tiaSurface().enablePhosphor(true, blend);
   }
 
-  ostringstream val;
+  std::ostringstream val;
   val << blend;
   myProperties.set(PropType::Display_PPBlend, val.view());
   if(blend)
@@ -845,7 +845,7 @@ void Console::changeVerticalCenter(int direction)
 
   vcenter = BSPF::clamp(vcenter + direction, myTIA->minVcenter(), myTIA->maxVcenter());
 
-  ostringstream ss, val;
+  std::ostringstream ss, val;
   ss << vcenter;
 
   myProperties.set(PropType::Display_VCenter, ss.view());
@@ -878,7 +878,7 @@ void Console::changeVSizeAdjust(int direction)
       initializeVideo();
   }
 
-  ostringstream val;
+  std::ostringstream val;
 
   val << (newAdjustVSize ? newAdjustVSize > 0 ? "+" : "" : " ")
       << newAdjustVSize << "%";
@@ -933,7 +933,7 @@ void Console::createAudioQueue()
   const bool useStereo = myOSystem.settings().getBool(AudioSettings::SETTING_STEREO)
     || myProperties.get(PropType::Cart_Sound) == "STEREO";
 
-  myAudioQueue = make_shared<AudioQueue>(
+  myAudioQueue = std::make_shared<AudioQueue>(
     myEmulationTiming->audioFragmentSize(),
     myEmulationTiming->audioQueueCapacity(),
     useStereo
@@ -947,7 +947,7 @@ void Console::setControllers(string_view romMd5)
   // controllers for us, and associates them with the bankswitching class
   if(myCart->detectedType() == "CM")
   {
-    myCMHandler = make_shared<CompuMate>(*this, myEvent, *mySystem);
+    myCMHandler = std::make_shared<CompuMate>(*this, myEvent, *mySystem);
 
     // A somewhat ugly bit of code that casts to CartridgeCM to
     // add the CompuMate, and then back again for the actual
@@ -1024,7 +1024,7 @@ void Console::changeLeftController(int direction)
   myProperties.set(PropType::Controller_Left, Controller::getPropName(Controller::Type{type}));
   setControllers(myProperties.get(PropType::Cart_MD5));
 
-  ostringstream msg;
+  std::ostringstream msg;
   msg << "Left controller " << Controller::getName(Controller::Type{type});
   myOSystem.frameBuffer().showTextMessage(msg.view());
 }
@@ -1042,7 +1042,7 @@ void Console::changeRightController(int direction)
   myProperties.set(PropType::Controller_Right, Controller::getPropName(Controller::Type{type}));
   setControllers(myProperties.get(PropType::Cart_MD5));
 
-  ostringstream msg;
+  std::ostringstream msg;
   msg << "Right controller " << Controller::getName(Controller::Type{type});
   myOSystem.frameBuffer().showTextMessage(msg.view());
 }
@@ -1062,15 +1062,15 @@ unique_ptr<Controller> Console::getControllerPort(
   switch(type)
   {
     case Controller::Type::BoosterGrip:
-      controller = make_unique<BoosterGrip>(port, myEvent, *mySystem);
+      controller = std::make_unique<BoosterGrip>(port, myEvent, *mySystem);
       break;
 
     case Controller::Type::Driving:
-      controller = make_unique<Driving>(port, myEvent, *mySystem);
+      controller = std::make_unique<Driving>(port, myEvent, *mySystem);
       break;
 
     case Controller::Type::Keyboard:
-      controller = make_unique<Keyboard>(port, myEvent, *mySystem);
+      controller = std::make_unique<Keyboard>(port, myEvent, *mySystem);
       break;
 
     case Controller::Type::Paddles:
@@ -1090,20 +1090,20 @@ unique_ptr<Controller> Console::getControllerPort(
       Paddles::setAnalogYCenter(BSPF::stoi(myProperties.get(PropType::Controller_PaddlesYCenter)));
       Paddles::setAnalogSensitivity(myOSystem.settings().getInt("psense"));
 
-      controller = make_unique<Paddles>(port, myEvent, *mySystem,
+      controller = std::make_unique<Paddles>(port, myEvent, *mySystem,
                                         swapPaddles, swapAxis, swapDir);
       break;
     }
     case Controller::Type::AmigaMouse:
-      controller = make_unique<AmigaMouse>(port, myEvent, *mySystem);
+      controller = std::make_unique<AmigaMouse>(port, myEvent, *mySystem);
       break;
 
     case Controller::Type::AtariMouse:
-      controller = make_unique<AtariMouse>(port, myEvent, *mySystem);
+      controller = std::make_unique<AtariMouse>(port, myEvent, *mySystem);
       break;
 
     case Controller::Type::TrakBall:
-      controller = make_unique<TrakBall>(port, myEvent, *mySystem);
+      controller = std::make_unique<TrakBall>(port, myEvent, *mySystem);
       break;
 
     case Controller::Type::AtariVox:
@@ -1117,7 +1117,7 @@ unique_ptr<Controller> Console::getControllerPort(
           if(os.settings().getBool(devSettings ? "dev.extaccess" : "plr.extaccess"))
             os.frameBuffer().showTextMessage(msg);
         };
-      controller = make_unique<AtariVox>(port, myEvent, *mySystem,
+      controller = std::make_unique<AtariVox>(port, myEvent, *mySystem,
           myOSystem.settings().getString("avoxport"), nvramfile, callback);
       break;
     }
@@ -1132,11 +1132,11 @@ unique_ptr<Controller> Console::getControllerPort(
           if(os.settings().getBool(devSettings ? "dev.extaccess" : "plr.extaccess"))
             os.frameBuffer().showTextMessage(msg);
         };
-      controller = make_unique<SaveKey>(port, myEvent, *mySystem, nvramfile, callback);
+      controller = std::make_unique<SaveKey>(port, myEvent, *mySystem, nvramfile, callback);
       break;
     }
     case Controller::Type::Genesis:
-      controller = make_unique<Genesis>(port, myEvent, *mySystem);
+      controller = std::make_unique<Genesis>(port, myEvent, *mySystem);
       break;
 
     case Controller::Type::KidVid:
@@ -1147,23 +1147,23 @@ unique_ptr<Controller> Console::getControllerPort(
         if(force || os.settings().getBool(devSettings ? "dev.extaccess" : "plr.extaccess"))
           os.frameBuffer().showTextMessage(msg);
         };
-      controller = make_unique<KidVid>
+      controller = std::make_unique<KidVid>
         (port, myEvent, myOSystem, *mySystem, romMd5, callback);
       break;
     }
 
     case Controller::Type::MindLink:
-      controller = make_unique<MindLink>(port, myEvent, *mySystem);
+      controller = std::make_unique<MindLink>(port, myEvent, *mySystem);
       break;
 
     case Controller::Type::Lightgun:
-      controller = make_unique<Lightgun>
+      controller = std::make_unique<Lightgun>
         (port, myEvent, *mySystem, romMd5, myOSystem.frameBuffer());
       break;
 
     case Controller::Type::QuadTari:
     {
-      unique_ptr<QuadTari> quadTari = make_unique<QuadTari>(port, myOSystem, *mySystem, myProperties, *myCart);
+      unique_ptr<QuadTari> quadTari = std::make_unique<QuadTari>(port, myOSystem, *mySystem, myProperties, *myCart);
 
       myOSystem.eventHandler().defineKeyControllerMappings(type, port, myProperties,
         quadTari->firstController().type(), quadTari->secondController().type());
@@ -1173,13 +1173,13 @@ unique_ptr<Controller> Console::getControllerPort(
       break;
     }
     case Controller::Type::Joy2BPlus:
-      controller = make_unique<Joy2BPlus>(port, myEvent, *mySystem);
+      controller = std::make_unique<Joy2BPlus>(port, myEvent, *mySystem);
       break;
 
     default:
       // What else can we do?
       // always create because it may have been changed by user dialog
-      controller = make_unique<Joystick>(port, myEvent, *mySystem);
+      controller = std::make_unique<Joystick>(port, myEvent, *mySystem);
   }
 
   return controller;
@@ -1198,7 +1198,7 @@ void Console::toggleSwapPorts(bool toggle)
     setControllers(myProperties.get(PropType::Cart_MD5));
   }
 
-  ostringstream msg;
+  std::ostringstream msg;
   msg << "Swap ports " << (swapped ? "enabled" : "disabled");
   myOSystem.frameBuffer().showTextMessage(msg.view());
 }
@@ -1216,7 +1216,7 @@ void Console::toggleSwapPaddles(bool toggle)
     setControllers(myProperties.get(PropType::Cart_MD5));
   }
 
-  ostringstream msg;
+  std::ostringstream msg;
   msg << "Swap paddles " << (swapped ? "enabled" : "disabled");
   myOSystem.frameBuffer().showTextMessage(msg.view());
 }
@@ -1230,7 +1230,7 @@ void Console::changePaddleCenterX(int direction)
   myProperties.set(PropType::Controller_PaddlesXCenter, std::to_string(center));
   Paddles::setAnalogXCenter(center);
 
-  ostringstream val;
+  std::ostringstream val;
   val << (center ? center > 0 ? "+" : "" : " ") << center * 5 << "px";
   myOSystem.frameBuffer().showGaugeMessage("Paddles x-center ", val.view(), center,
                                            Paddles::MIN_ANALOG_CENTER, Paddles::MAX_ANALOG_CENTER);
@@ -1245,7 +1245,7 @@ void Console::changePaddleCenterY(int direction)
   myProperties.set(PropType::Controller_PaddlesYCenter, std::to_string(center));
   Paddles::setAnalogYCenter(center);
 
-  ostringstream val;
+  std::ostringstream val;
   val << (center ? center > 0 ? "+" : "" : " ") << center * 5 << "px";
   myOSystem.frameBuffer().showGaugeMessage("Paddles y-center ", val.view(), center,
                                            Paddles::MIN_ANALOG_CENTER, Paddles::MAX_ANALOG_CENTER);
@@ -1254,7 +1254,7 @@ void Console::changePaddleCenterY(int direction)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Console::changePaddleAxesRange(int direction)
 {
-  istringstream m_axis(myProperties.get(PropType::Controller_MouseAxis));
+  std::istringstream m_axis(myProperties.get(PropType::Controller_MouseAxis));
   string mode = "AUTO";
   int range{0};
 
@@ -1265,7 +1265,7 @@ void Console::changePaddleAxesRange(int direction)
   range = BSPF::clamp(range + direction,
                       Paddles::MIN_MOUSE_RANGE, Paddles::MAX_MOUSE_RANGE);
 
-  ostringstream control;
+  std::ostringstream control;
   control << mode;
   if(range != 100)
     control << " " << std::to_string(range);
@@ -1273,7 +1273,7 @@ void Console::changePaddleAxesRange(int direction)
 
   Paddles::setDigitalPaddleRange(range);
 
-  ostringstream val;
+  std::ostringstream val;
   val << range << "%";
   myOSystem.frameBuffer().showGaugeMessage("Mouse axes range", val.view(), range);
 }
@@ -1290,7 +1290,7 @@ void Console::toggleAutoFire(bool toggle)
     Controller::setAutoFire(enabled);
   }
 
-  ostringstream ss;
+  std::ostringstream ss;
   ss << "Autofire " << (enabled ? "enabled" : "disabled");
   myOSystem.frameBuffer().showTextMessage(ss.view());
 }
@@ -1308,7 +1308,7 @@ void Console::changeAutoFireRate(int direction)
   myOSystem.settings().setValue("autofirerate", rate);
   Controller::setAutoFireRate(rate);
 
-  ostringstream val;
+  std::ostringstream val;
 
   if(rate)
   {
@@ -1438,7 +1438,7 @@ void Console::changeJitterSense(int direction) const
 
   if(enabled)
   {
-    ostringstream val;
+    std::ostringstream val;
 
     myTIA->toggleJitter(1);
     myTIA->setJitterSensitivity(sensitivity);
@@ -1471,7 +1471,7 @@ void Console::changeJitterRecovery(int direction) const
 
   if(enabled)
   {
-    ostringstream val;
+    std::ostringstream val;
 
     myTIA->toggleJitter(1);
     myTIA->setJitterRecoveryFactor(recovery);

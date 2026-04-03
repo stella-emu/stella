@@ -129,7 +129,7 @@ void KidVid::update()
       myBlock = 0;
       openSampleFiles();
 
-      ostringstream msg;
+      std::ostringstream msg;
       msg << "Game #" << gameNumber[myTape - 1] << " - \""
         << gameName[gameNumber[myTape - 1] + (myGame == Game::Smurfs ? -1 : 2)] << "\"";
       myCallback(msg.view(), true);
@@ -300,7 +300,7 @@ void KidVid::setNextSong()
     const string& fileName = (temp < 10) ? "KVSHARED.WAV" : getFileName();
     myOSystem.sound().playWav(myOSystem.baseDir().getPath() + fileName,
                               ourSongStart[temp], mySongLength);
-    ostringstream msg;
+    std::ostringstream msg;
     msg << "Read song #" << mySongPointer << " (" << fileName << ")";
     myCallback(msg.view(), false);
 

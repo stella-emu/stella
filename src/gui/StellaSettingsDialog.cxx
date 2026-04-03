@@ -422,7 +422,7 @@ void StellaSettingsDialog::switchSettingsMode()
   msg.emplace_back("proceed with the switch, click");
   msg.emplace_back("'OK', otherwise click 'Cancel'.");
 
-  myConfirmMsg = make_unique<GUI::MessageBox>(this, _font, msg,
+  myConfirmMsg = std::make_unique<GUI::MessageBox>(this, _font, msg,
       _w-16, _h, kConfirmSwitchCmd, "OK", "Cancel", "Switch settings mode", false);
   myConfirmMsg->show();
 }
@@ -507,7 +507,7 @@ void StellaSettingsDialog::openHelp()
 {
   // Create an help dialog, similar to the in-game one
   if (myHelpDialog == nullptr)
-    myHelpDialog = make_unique<HelpDialog>(instance(), parent(), _font);
+    myHelpDialog = std::make_unique<HelpDialog>(instance(), parent(), _font);
   myHelpDialog->open();
 }
 

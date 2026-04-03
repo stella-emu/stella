@@ -505,7 +505,7 @@ string TimeMachineDialog::getTimeString(uInt64 cycles) const
   cycles -= seconds * freq;
   const auto frames  = static_cast<uInt32>(cycles / (scanlines * 76));
 
-  stringstream time;
+  std::ostringstream time;
   time << Common::Base::toString(minutes, Common::Base::Fmt::_10_02) << ":";
   time << Common::Base::toString(seconds, Common::Base::Fmt::_10_02) << ".";
   time << Common::Base::toString(frames, Common::Base::Fmt::_10_02);

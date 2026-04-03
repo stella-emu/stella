@@ -136,12 +136,12 @@ string DebuggerParser::exec(const FSNode& file, StringList* history)
 
   if(file.exists())
   {
-    stringstream in;
+    std::stringstream in;
     try        { file.read(in); }
     catch(...) { return red("script file \'" + file.getShortPath() + "\' not found"); }
 
-    ostringstream buf;
-    stringstream logBuf; // used to log the results of commands, if enabled
+    std::ostringstream buf;
+    std::stringstream logBuf; // used to log the results of commands, if enabled
     int count = 0;
     string command;
     while( !in.eof() )
@@ -331,7 +331,7 @@ int DebuggerParser::decipher_arg(string_view str)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string DebuggerParser::showWatches()
 {
-  ostringstream buf;
+  std::ostringstream buf;
   for(uInt32 i = 0; i < myWatches.size(); ++i)
   {
     if(!myWatches[i].empty())
@@ -568,7 +568,7 @@ cerr << "curCount         = " << curCount << '\n'
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string DebuggerParser::eval()
 {
-  ostringstream buf;
+  std::ostringstream buf;
   for(uInt32 i = 0; i < argCount; ++i)
   {
     if(args[i] < 0x10000)
@@ -620,7 +620,7 @@ void DebuggerParser::printTimer(uInt32 idx, bool showHeader)
 
   const TimerMap::Timer& timer = debugger.m6502().getTimer(idx);
   const bool banked = debugger.cartDebug().romBankCount() > 1;
-  ostringstream buf;
+  std::ostringstream buf;
 
   if(!debugger.cartDebug().getLabel(buf, timer.from.addr, true))
     buf << "    $" << setw(4) << Base::HEX4 << timer.from.addr;
@@ -683,13 +683,13 @@ void DebuggerParser::printTimer(uInt32 idx, bool showHeader)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string DebuggerParser::getTimerCmds()
 {
-  ostringstream out;
+  std::ostringstream out;
 
   for(uInt32 idx = 0; idx < debugger.m6502().numTimers(); ++idx)
   {
     const TimerMap::Timer& timer = debugger.m6502().getTimer(idx);
     const bool banked = debugger.cartDebug().romBankCount() > 1;
-    ostringstream fromBuf;
+    std::ostringstream fromBuf;
 
     if(!debugger.cartDebug().getLabel(fromBuf, timer.from.addr, true))
       fromBuf << Base::HEX4 << timer.from.addr;
@@ -704,7 +704,7 @@ string DebuggerParser::getTimerCmds()
         fromBuf << dec << static_cast<uInt16>(timer.from.bank);
     }
     if(!timer.isPartial) {
-      ostringstream toBuf;
+      std::ostringstream toBuf;
 
       if(!debugger.cartDebug().getLabel(toBuf, timer.to.addr, true))
         toBuf << Base::HEX4 << timer.to.addr;
@@ -768,7 +768,7 @@ void DebuggerParser::listTraps(bool listCond)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string DebuggerParser::trapStatus(const Trap& trap)
 {
-  stringstream result;
+  std::stringstream result;
   const string lblb = debugger.cartDebug().getLabel(trap.begin, !trap.write);
   const string lble = debugger.cartDebug().getLabel(trap.end, !trap.write);
 
@@ -797,7 +797,7 @@ string DebuggerParser::trapStatus(const Trap& trap)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string DebuggerParser::saveScriptFile(string file)
 {
-  stringstream out;
+  std::stringstream out;
   const Debugger::FunctionDefMap funcs = debugger.getFunctionDefMap();
   for(const auto& [name, cmd]: funcs)
     if (!Debugger::isBuiltinFunction(name))
@@ -868,8 +868,8 @@ string DebuggerParser::saveScriptFile(string file)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void DebuggerParser::saveDump(const FSNode& node, const stringstream& out,
-                              ostringstream& result)
+void DebuggerParser::saveDump(const FSNode& node, const std::stringstream& out,
+                              std::ostringstream& result)
 {
   try
   {
@@ -1318,7 +1318,7 @@ void DebuggerParser::executeDisAsm()
 // "dump"
 void DebuggerParser::executeDump()
 {
-  const auto dump = [&](ostream& os, int start, int end)
+  const auto dump = [&](std::ostream& os, int start, int end)
   {
     for(int i = start; i <= end; i += 16)  // NOLINT (i is not a const)
     {
@@ -1363,7 +1363,7 @@ void DebuggerParser::executeDump()
       return;
     }
 
-    ostringstream path;  // NOLINT (path is not a const)
+    std::ostringstream path;  // NOLINT (path is not a const)
     path << debugger.myOSystem.userDir() << cartName() << "_dbg_";
     if(execDepth > 0)
       path << execPrefix;
@@ -1374,7 +1374,7 @@ void DebuggerParser::executeDump()
 
     commandResult << "dumped ";
 
-    stringstream out;  // NOLINT (out is not a const)
+    std::stringstream out;  // NOLINT (out is not a const)
     if((args[2] & 0x01) != 0)
     {
       // dump memory
@@ -1452,9 +1452,9 @@ void DebuggerParser::executeDump()
       {
         if(OK)
         {
-          const stringstream localOut(outStr);
+          const std::stringstream localOut(outStr);
           // NOLINTNEXTLINE (localOut is not a const)
-          ostringstream localResult(resultStr, std::ios_base::app);
+          std::ostringstream localResult(resultStr, std::ios_base::app);
 
           saveDump(node, localOut, localResult);
           dlg->prompt().print(localResult.str() + '\n');
@@ -1485,7 +1485,7 @@ void DebuggerParser::executeExec()
     execPrefix = argStrings[1];
   }
   else {
-    ostringstream prefix;
+    std::ostringstream prefix;
     prefix << std::hex << std::setw(8) << std::setfill('0')
            << static_cast<uInt32>(TimerManager::getTicks()/1000);
     execPrefix = prefix.view();
@@ -1711,7 +1711,7 @@ void DebuggerParser::executeJump()
 // "listBreaks"
 void DebuggerParser::executeListBreaks()
 {
-  stringstream buf;
+  std::stringstream buf;
   int count = 0;
   const uInt32 romBankCount = debugger.cartDebug().romBankCount();
 
@@ -1911,7 +1911,7 @@ void DebuggerParser::executePalette()
 // "pc"
 void DebuggerParser::executePc()
 {
-  ostringstream msg;
+  std::ostringstream msg;
 
   debugger.cpuDebug().setPC(args[0]);
   msg << "Set PC @ " << Base::HEX4 << args[0];
@@ -2047,7 +2047,7 @@ void DebuggerParser::executeRunTo()
 
   // Create a progress dialog box to show the progress searching through the
   // disassembly, since this may be a time-consuming operation
-  ostringstream buf;
+  std::ostringstream buf;
   ProgressDialog progress(debugger.baseDialog(), debugger.lfont());
 
   buf << "runTo searching through " << max_iterations << " disassembled instructions"
@@ -2096,7 +2096,7 @@ void DebuggerParser::executeRunToPc()
   bool done = false;
   // Create a progress dialog box to show the progress searching through the
   // disassembly, since this may be a time-consuming operation
-  ostringstream buf;
+  std::ostringstream buf;
   ProgressDialog progress(debugger.baseDialog(), debugger.lfont());
 
   buf << "        runTo PC running" << progress.ELLIPSIS << "        ";
@@ -2117,7 +2117,7 @@ void DebuggerParser::executeRunToPc()
 
   if(done)
   {
-    ostringstream msg;
+    std::ostringstream msg;
 
     commandResult
       << "Set PC to $" << Base::HEX4 << args[0] << " in "
@@ -2250,7 +2250,7 @@ void DebuggerParser::executeSaveRom()
 // "saveSes"
 void DebuggerParser::executeSaveSes()
 {
-  ostringstream filename;  // NOLINT (filename is not a const)
+  std::ostringstream filename;  // NOLINT (filename is not a const)
   const auto timeinfo = BSPF::localTime();
   filename << std::put_time(&timeinfo, "session_%F_%H-%M-%S.txt");
 
@@ -2272,7 +2272,7 @@ void DebuggerParser::executeSaveSes()
   }
   else
   {
-    ostringstream path;  // NOLINT (path is not a const)
+    std::ostringstream path;  // NOLINT (path is not a const)
 
     if(argCount)
       path << argStrings[0];
@@ -2364,7 +2364,7 @@ void DebuggerParser::executeStepWhile()
 
   // Create a progress dialog box to show the progress searching through the
   // disassembly, since this may be a time-consuming operation
-  ostringstream buf;
+  std::ostringstream buf;
   ProgressDialog progress(debugger.baseDialog(), debugger.lfont());
 
   buf << "stepWhile running through disassembled instructions"
@@ -2593,7 +2593,7 @@ void DebuggerParser::executeTraps(bool read, bool write, string_view command,
   const uInt32 endRead    = Debugger::getBaseAddress(end, true);
   const uInt32 beginWrite = Debugger::getBaseAddress(begin, false);
   const uInt32 endWrite   = Debugger::getBaseAddress(end, false);
-  stringstream conditionBuf;
+  std::ostringstream conditionBuf;
 
   // parenthesize provided and address range condition(s) (begin)
   if(hasCond)
@@ -2651,7 +2651,7 @@ void DebuggerParser::executeTraps(bool read, bool write, string_view command,
         YaccParser::getResult(), hasCond ? argStrings[0] : "");
       commandResult << "added trap " << Base::toString(ret);
 
-      myTraps.emplace_back(make_unique<Trap>(read, write, begin, end, condition));
+      myTraps.emplace_back(std::make_unique<Trap>(read, write, begin, end, condition));
     }
 
     for(uInt32 addr = begin; addr <= end; ++addr)

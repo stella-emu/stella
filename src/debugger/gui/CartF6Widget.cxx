@@ -30,7 +30,7 @@ CartridgeF6Widget::CartridgeF6Widget(
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string CartridgeF6Widget::description()
 {
-  ostringstream info;
+  std::ostringstream info;
 
   info << "Standard F6 cartridge, four 4K banks\n"
        << CartridgeEnhancedWidget::description();

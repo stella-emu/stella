@@ -58,7 +58,7 @@ void DelayQueueWidget::loadConfig() {
       continue;
     }
 
-    stringstream ss;
+    std::ostringstream ss;
     const auto address = delayQueueIterator->address();
     const int delay = delayQueueIterator->delay();
 

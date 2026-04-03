@@ -76,7 +76,7 @@ template<unsigned length, unsigned capacity>
 uInt8 DelayQueueIteratorImpl<length, capacity>::delay() const
 {
   if (!isValid()) {
-    throw runtime_error("delay called on invalid DelayQueueInterator");
+    throw std::runtime_error("delay called on invalid DelayQueueInterator");
   }
 
   return myDelayCycle;
@@ -87,7 +87,7 @@ template<unsigned length, unsigned capacity>
 uInt8 DelayQueueIteratorImpl<length, capacity>::address() const
 {
   if (!isValid()) {
-    throw runtime_error("address called on invalid DelayQueueInterator");
+    throw std::runtime_error("address called on invalid DelayQueueInterator");
   }
 
   return myDelayQueue.myMembers[currentIndex()].myEntries[myIndex].address;
@@ -98,7 +98,7 @@ template<unsigned length, unsigned capacity>
 uInt8 DelayQueueIteratorImpl<length, capacity>::value() const
 {
   if (!isValid()) {
-    throw runtime_error("value called on invalid DelayQueueInterator");
+    throw std::runtime_error("value called on invalid DelayQueueInterator");
   }
 
   return myDelayQueue.myMembers[currentIndex()].myEntries[myIndex].value;

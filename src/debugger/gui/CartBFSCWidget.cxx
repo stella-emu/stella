@@ -30,7 +30,7 @@ CartridgeBFSCWidget::CartridgeBFSCWidget(
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string CartridgeBFSCWidget::description()
 {
-  ostringstream info;
+  std::ostringstream info;
 
   info << "256K BFSC + RAM, 64 4K banks\n"
        << CartridgeEnhancedWidget::description();

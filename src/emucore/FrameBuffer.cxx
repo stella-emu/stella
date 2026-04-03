@@ -124,9 +124,9 @@ void FrameBuffer::initialize()
   myGrabMouse = myOSystem.settings().getBool("grabmouse");
 
   // Create a TIA surface; we need it for rendering TIA images
-  myTIASurface = make_unique<TIASurface>(myOSystem);
+  myTIASurface = std::make_unique<TIASurface>(myOSystem);
   // Create a bezel surface for TIA overlays
-  myBezel = make_unique<Bezel>(myOSystem);
+  myBezel = std::make_unique<Bezel>(myOSystem);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -162,14 +162,14 @@ void FrameBuffer::setupFonts()
   // This font is used in a variety of situations when a really small
   // font is needed; we let the specific widget/dialog decide when to
   // use it
-  mySmallFont = make_unique<GUI::Font>(GUI::stellaDesc); // 6x10
+  mySmallFont = std::make_unique<GUI::Font>(GUI::stellaDesc); // 6x10
 
   if(myOSystem.settings().getBool("minimal_ui"))
   {
     // The general font used in all UI elements
-    myFont = make_unique<GUI::Font>(GUI::stella12x24tDesc);           // 12x24
+    myFont = std::make_unique<GUI::Font>(GUI::stella12x24tDesc);           // 12x24
     // The info font used in all UI elements
-    myInfoFont = make_unique<GUI::Font>(GUI::stellaLargeDesc);        // 10x20
+    myInfoFont = std::make_unique<GUI::Font>(GUI::stellaLargeDesc);        // 10x20
   }
   else
   {
@@ -182,7 +182,7 @@ void FrameBuffer::setupFonts()
     const FontDesc fd = getFontDesc(dialogFont);
 
     // The general font used in all UI elements
-    myFont = make_unique<GUI::Font>(fd);                                //  default: 9x18
+    myFont = std::make_unique<GUI::Font>(fd);                                //  default: 9x18
     // The info font used in all UI elements,
     //  automatically determined aiming for 1 / 1.4 (~= 18 / 13) size
     int fontIdx = 0;
@@ -194,7 +194,7 @@ void FrameBuffer::setupFonts()
         break;
       }
     }
-    myInfoFont = make_unique<GUI::Font>(FONT_DESC[fontIdx]);            //  default 8x13
+    myInfoFont = std::make_unique<GUI::Font>(FONT_DESC[fontIdx]);            //  default 8x13
 
     // Determine minimal zoom level based on the default font
     //  So what fits with default font should fit for any font.
@@ -208,7 +208,7 @@ void FrameBuffer::setupFonts()
   // The font used by the ROM launcher
   const string_view lf = myOSystem.settings().getString("launcherfont");
 
-  myLauncherFont = make_unique<GUI::Font>(getFontDesc(lf));       //  8x13
+  myLauncherFont = std::make_unique<GUI::Font>(getFontDesc(lf));       //  8x13
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -705,7 +705,7 @@ void FrameBuffer::drawFrameStats(float framesPerSecond)
   const GUI::Font& f = hidpiEnabled() ? infoFont() : font();
   const int dy = f.getFontHeight() + 2;
 
-  ostringstream ss;
+  std::ostringstream ss;
 
   myStatsMsg.surface->invalidate();
 
@@ -1156,7 +1156,7 @@ void FrameBuffer::toggleFullscreen(bool toggle)
 
       if(state != EventHandlerState::LAUNCHER)
       {
-        ostringstream msg;
+        std::ostringstream msg;
         msg << "Fullscreen ";
 
         if(state != EventHandlerState::DEBUGGER)
@@ -1208,7 +1208,7 @@ void FrameBuffer::toggleAdaptRefresh(bool toggle)
       myOSystem.createFrameBuffer();
     }
 
-    ostringstream msg;
+    std::ostringstream msg;
 
     msg << "Adapt refresh rate ";
     msg << (isAdaptRefresh ? "enabled" : "disabled");
@@ -1235,7 +1235,7 @@ void FrameBuffer::changeOverscan(int direction)
       myOSystem.createFrameBuffer();
     }
 
-    ostringstream val;
+    std::ostringstream val;
     if(overscan)
       val << (overscan > 0 ? "+" : "" ) << overscan << "%";
     else

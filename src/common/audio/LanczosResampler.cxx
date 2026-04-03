@@ -76,16 +76,16 @@ LanczosResampler::LanczosResampler(
     myHighPassR{HIGH_PASS_CUT_OFF, static_cast<float>(formatFrom.sampleRate)},
     myHighPass{HIGH_PASS_CUT_OFF, static_cast<float>(formatFrom.sampleRate)}
 {
-  myPrecomputedKernels = make_unique<float[]>(
+  myPrecomputedKernels = std::make_unique<float[]>(
       static_cast<size_t>(myPrecomputedKernelCount) * myKernelSize);
 
   if (myFormatFrom.stereo)
   {
-    myBufferL = make_unique<ConvolutionBuffer>(myKernelSize);
-    myBufferR = make_unique<ConvolutionBuffer>(myKernelSize);
+    myBufferL = std::make_unique<ConvolutionBuffer>(myKernelSize);
+    myBufferR = std::make_unique<ConvolutionBuffer>(myKernelSize);
   }
   else
-    myBuffer = make_unique<ConvolutionBuffer>(myKernelSize);
+    myBuffer = std::make_unique<ConvolutionBuffer>(myKernelSize);
 
   precomputeKernels();
 }

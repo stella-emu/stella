@@ -28,8 +28,8 @@ CompuMate::CompuMate(const Console& console, const Event& event,
 {
   // These controller pointers will be retrieved by the Console, which will
   // also take ownership of them
-  myLeftController  = make_unique<CMControl>(*this, Controller::Jack::Left, event, system);
-  myRightController = make_unique<CMControl>(*this, Controller::Jack::Right, event, system);
+  myLeftController  = std::make_unique<CMControl>(*this, Controller::Jack::Left, event, system);
+  myRightController = std::make_unique<CMControl>(*this, Controller::Jack::Right, event, system);
 
   myLeftController->setPin(Controller::AnalogPin::Nine, AnalogReadout::connectToGround());
   myLeftController->setPin(Controller::AnalogPin::Five, AnalogReadout::connectToVcc());

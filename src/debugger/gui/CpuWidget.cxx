@@ -201,7 +201,7 @@ void CpuWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
         {
           // Use the parser to set PC, since we want to propagate the
           // event the rest of the debugger widgets
-          ostringstream command;
+          std::ostringstream command;
           command << "pc #" << value;
           instance().debugger().run(command.view());
           break;

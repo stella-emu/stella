@@ -64,9 +64,9 @@ class FSNodeZIP : public AbstractFSNode
     AbstractFSNodePtr getParent() const override;
 
     size_t read(ByteBuffer& buffer, size_t) const override;
-    size_t read(stringstream& buffer) const override;
+    size_t read(std::stringstream& buffer) const override;
     size_t write(const ByteBuffer& buffer, size_t) const override;
-    size_t write(const stringstream& buffer) const override;
+    size_t write(const std::stringstream& buffer) const override;
 
   private:
     FSNodeZIP(const string& zipfile, const string& virtualpath,
@@ -75,7 +75,7 @@ class FSNodeZIP : public AbstractFSNode
     void setFlags(const string& zipfile, const string& virtualpath,
         const AbstractFSNodePtr& realnode);
 
-    friend ostream& operator<<(ostream& os, const FSNodeZIP& node)
+    friend std::ostream& operator<<(std::ostream& os, const FSNodeZIP& node)
     {
       os << "_zipFile:     " << node._zipFile << '\n'
          << "_virtualPath: " << node._virtualPath << '\n'
@@ -110,7 +110,7 @@ class FSNodeZIP : public AbstractFSNode
 
     // ZipHandler static reference variable responsible for accessing ZIP files
     static unique_ptr<ZipHandler>& zipHandler() {
-      static unique_ptr<ZipHandler> z = make_unique<ZipHandler>();
+      static unique_ptr<ZipHandler> z = std::make_unique<ZipHandler>();
       return z;
     }
 };

@@ -300,7 +300,7 @@ const FSNode& FileListWidget::selected()
 ProgressDialog& FileListWidget::progress()
 {
   if(myProgressDialog == nullptr)
-    myProgressDialog = make_unique<ProgressDialog>(this, _font, "");
+    myProgressDialog = std::make_unique<ProgressDialog>(this, _font, "");
 
   return *myProgressDialog;
 }

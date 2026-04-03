@@ -89,7 +89,7 @@ class PlusROMRequest {
     void execute() {
       myState = State::pending;
 
-      ostringstream content;
+      std::ostringstream content;
       content << "agent=Stella; "
         << "ver=" << STELLA_VERSION << "; "
         << "id=" << myId.id << "; "
@@ -113,7 +113,7 @@ class PlusROMRequest {
       );
 
       if (!response) {
-        ostringstream ss;
+        std::ostringstream ss;
         ss
           << "PlusCart: request to "
           << myDestination.host
@@ -129,7 +129,7 @@ class PlusROMRequest {
       }
 
       if (response->status != 200) {
-        ostringstream ss;
+        std::ostringstream ss;
         ss
           << "PlusCart: request to "
           << myDestination.host
@@ -146,7 +146,7 @@ class PlusROMRequest {
       }
 
       if (response->body.empty() || static_cast<unsigned char>(response->body[0]) != (response->body.size() - 1)) {
-        ostringstream ss;
+        std::ostringstream ss;
         ss << "PlusCart: request to " << myDestination.host << "/" << myDestination.path << ": invalid response";
 
         Logger::error(ss.view());
@@ -175,7 +175,7 @@ class PlusROMRequest {
     }
 
     std::pair<size_t, const uInt8*> getResponse() {
-      if (myState != State::done) throw runtime_error("invalid access to response");
+      if (myState != State::done) throw std::runtime_error("invalid access to response");
 
       myState = State::read;
 
@@ -349,7 +349,7 @@ bool PlusROM::save(Serializer& out) const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool PlusROM::load(Serializer& in)
 {
-  myRequest = make_shared<PlusROMRequest>();
+  myRequest = std::make_shared<PlusROMRequest>();
 
   try
   {
@@ -372,7 +372,7 @@ bool PlusROM::load(Serializer& in)
 void PlusROM::reset()
 {
   myRxReadPos = myRxWritePos = myTxPos = myLastRxReadPos = myLastTxPos = 0;
-  myRequest = make_shared<PlusROMRequest>();
+  myRequest = std::make_shared<PlusROMRequest>();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -425,7 +425,7 @@ void PlusROM::send()
   if(id != EmptyString())
   {
     const string nick = mySettings.getString("plusroms.nick");
-    myRequest = make_shared<PlusROMRequest>(
+    myRequest = std::make_shared<PlusROMRequest>(
       PlusROMRequest::Destination(myHost, "/" + myPath),
       PlusROMRequest::PlusStoreId(nick, id),
       myTxBuffer.data(),

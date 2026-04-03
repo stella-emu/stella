@@ -244,12 +244,12 @@ class AbstractFrameManager : public Serializable
     /**
      * Called during state save (after the base class has serialized its state).
      */
-    virtual bool onSave(Serializer& out) const { throw runtime_error("cannot be serialized"); }
+    virtual bool onSave(Serializer& out) const { throw std::runtime_error("cannot be serialized"); }
 
     /**
      * Called during state restore (after the base class has restored its state).
      */
-    virtual bool onLoad(Serializer& in) { throw runtime_error("cannot be serialized"); }
+    virtual bool onLoad(Serializer& in) { throw std::runtime_error("cannot be serialized"); }
 
   protected:
     // These need to be called in order to drive the frame lifecycle of the

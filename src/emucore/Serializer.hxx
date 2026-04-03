@@ -275,7 +275,7 @@ class Serializer
 
     // File backend
     struct FileStream {
-      fstream stream;
+      std::fstream stream;
 
       vector<std::byte> writeBuffer;
       size_t bufferPos{0};

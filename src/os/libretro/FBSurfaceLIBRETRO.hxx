@@ -33,7 +33,7 @@ class FBSurfaceLIBRETRO : public FBSurface
     FBSurfaceLIBRETRO(uInt32 width, uInt32 height)
       : myWidth{width},
         myHeight{height},
-        myPixelData{make_unique<uInt32[]>(static_cast<size_t>(myWidth) * myHeight)}
+        myPixelData{std::make_unique<uInt32[]>(static_cast<size_t>(myWidth) * myHeight)}
     {
       ////////////////////////////////////////////////////
       // These *must* be set for the parent class

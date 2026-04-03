@@ -65,7 +65,7 @@ TIASurface::TIASurface(OSystem& system)
   // Enable/disable threading in the NTSC TV effects renderer
   myNTSCFilter.enableThreading(myOSystem.settings().getBool("threads"));
 
-  myPaletteHandler = make_unique<PaletteHandler>(myOSystem);
+  myPaletteHandler = std::make_unique<PaletteHandler>(myOSystem);
   myPaletteHandler->loadConfig(myOSystem.settings());
 }
 
@@ -136,7 +136,7 @@ uInt32 TIASurface::mapIndexedPixel(uInt8 indexedColor, uInt8 shift) const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TIASurface::setNTSC(NTSCFilter::Preset preset, bool show)
 {
-  ostringstream buf;
+  std::ostringstream buf;
   if(preset == NTSCFilter::Preset::OFF)
   {
     enableNTSC(false);
@@ -224,7 +224,7 @@ void TIASurface::changeScanlineIntensity(int direction)
   myOSystem.settings().setValue("tv.scanlines", intensity);
   enableNTSC(ntscEnabled());
 
-  ostringstream buf;
+  std::ostringstream buf;
   if(intensity)
     buf << intensity << "%";
   else
@@ -278,7 +278,7 @@ void TIASurface::cycleScanlineMask(int direction)
   if(direction)
     createScanlineSurface();
 
-  ostringstream msg;
+  std::ostringstream msg;
 
   msg << "Scanline data '" << Names[i] << "'";
   myOSystem.frameBuffer().showTextMessage(msg.view());
@@ -446,7 +446,7 @@ void TIASurface::enableNTSC(bool enable)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string TIASurface::effectsInfo() const
 {
-  ostringstream buf;
+  std::ostringstream buf;
   switch(myFilter)
   {
     case Filter::Normal:

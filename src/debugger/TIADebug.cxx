@@ -1030,7 +1030,7 @@ string TIADebug::audFreq(uInt8 dist, uInt8 div) const
   const double hz =
     (myConsole.timing() == ConsoleTiming::ntsc ? 31440.0 : 31200.0)
     / dist_div[dist] / (div + 1);
-  ostringstream buf;
+  std::ostringstream buf;
 
   buf.setf(std::ios_base::fixed, std::ios_base::floatfield);
   buf << std::setw(7) << std::setprecision(1) << hz << "Hz";
@@ -1041,7 +1041,7 @@ string TIADebug::audFreq(uInt8 dist, uInt8 div) const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string TIADebug::stringOnly(string_view value, bool changed)
 {
-  ostringstream buf;
+  std::ostringstream buf;
 
   buf << value;
 
@@ -1056,7 +1056,7 @@ string TIADebug::stringOnly(string_view value, bool changed)
 string TIADebug::decWithLabel(string_view label, uInt16 value,
                               bool changed, uInt16 width)
 {
-  ostringstream buf;
+  std::ostringstream buf;
 
   buf << label;
   if(label != EmptyString())
@@ -1074,7 +1074,7 @@ string TIADebug::decWithLabel(string_view label, uInt16 value,
 string TIADebug::hexWithLabel(string_view label, uInt16 value,
                               bool changed, uInt16 width)
 {
-  ostringstream buf;
+  std::ostringstream buf;
 
   buf << label;
   if(label != EmptyString())
@@ -1091,7 +1091,7 @@ string TIADebug::hexWithLabel(string_view label, uInt16 value,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string TIADebug::binWithLabel(string_view label, uInt16 value, bool changed)
 {
-  ostringstream buf;
+  std::ostringstream buf;
 
   buf << label;
   if(label != EmptyString())
@@ -1108,7 +1108,7 @@ string TIADebug::binWithLabel(string_view label, uInt16 value, bool changed)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string TIADebug::boolWithLabel(string_view label, bool value, bool changed)
 {
-  ostringstream buf;
+  std::ostringstream buf;
 
   if(value)
   {
@@ -1130,7 +1130,7 @@ string TIADebug::boolWithLabel(string_view label, bool value, bool changed)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string TIADebug::debugColors() const
 {
-  ostringstream buf;
+  std::ostringstream buf;
 
   const int timing = myConsole.timing() == ConsoleTiming::ntsc ? 0
     : myConsole.timing() == ConsoleTiming::pal ? 1 : 2;
@@ -1158,7 +1158,7 @@ string TIADebug::debugColors() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string TIADebug::palette()
 {
-  ostringstream buf;
+  std::ostringstream buf;
 
   buf << "     0     2     4     6     8     A     C     E\n";
   uInt8 c = 0;
@@ -1176,7 +1176,7 @@ string TIADebug::palette()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string TIADebug::toString()
 {
-  ostringstream buf;
+  std::ostringstream buf;
 
   // TODO: strobes? WSYNC RSYNC RESP0/1 RESM0/1 RESBL HMOVE HMCLR CXCLR
 

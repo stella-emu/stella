@@ -18,6 +18,8 @@
 #ifndef ELF_FILE
 #define ELF_FILE
 
+#include <optional>
+
 #include "bspf.hxx"
 
 class ElfFile {
@@ -53,7 +55,7 @@ class ElfFile {
     struct Relocation {
       uInt32 offset{0};
       uInt32 info{0};
-      optional<uInt32> addend;
+      std::optional<uInt32> addend;
 
       uInt32 symbol{0};
       uInt8 type{0};
@@ -69,7 +71,7 @@ class ElfFile {
 
     virtual const vector<Section>& getSections() const = 0;
     virtual const vector<Symbol>& getSymbols() const = 0;
-    virtual optional<vector<Relocation>> getRelocations(size_t section) const = 0;
+    virtual std::optional<vector<Relocation>> getRelocations(size_t section) const = 0;
 
   public:
     static constexpr uInt8 ENDIAN_LITTLE_ENDIAN = 0x01;

@@ -19,7 +19,7 @@
 
 namespace {
 
-  string readQuotedString(istream& in)
+  string readQuotedString(std::istream& in)
   {
     // Read characters until we see a quote
     char c{0};
@@ -44,7 +44,7 @@ namespace {
     return s;
   }
 
-  void writeQuotedString(ostream& out, string_view s)
+  void writeQuotedString(std::ostream& out, string_view s)
   {
     out.put('"');
     for(auto c: s)
@@ -74,7 +74,7 @@ KeyValueRepositoryPropertyFile::KeyValueRepositoryPropertyFile(
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-KVRMap KeyValueRepositoryPropertyFile::load(istream& in)
+KVRMap KeyValueRepositoryPropertyFile::load(std::istream& in)
 {
   KVRMap map;
 
@@ -106,7 +106,7 @@ KVRMap KeyValueRepositoryPropertyFile::load(istream& in)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool KeyValueRepositoryPropertyFile::save(ostream& out,
+bool KeyValueRepositoryPropertyFile::save(std::ostream& out,
     const KVRMap& values)
 {
   for (const auto& [key, value]: values) {

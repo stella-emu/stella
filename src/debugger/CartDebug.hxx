@@ -216,7 +216,7 @@ class CartDebug : public DebuggerSystem
       If places is not -1 and a label hasn't been defined, return a
       formatted hexidecimal address
     */
-    bool getLabel(ostream& buf, uInt16 addr, bool isRead,
+    bool getLabel(std::ostream& buf, uInt16 addr, bool isRead,
                   int places = -1, bool isRam = false) const;
     string getLabel(uInt16 addr, bool isRead,
                     int places = -1, bool isRam = false) const;
@@ -268,10 +268,10 @@ class CartDebug : public DebuggerSystem
     void getCompletions(string_view in, StringList& completions) const;
 
     // Convert given address to corresponding access type and append to buf
-    void accessTypeAsString(ostream& buf, uInt16 addr) const;
+    void accessTypeAsString(std::ostream& buf, uInt16 addr) const;
 
     // Convert access enum type to corresponding string and append to buf
-    static void AccessTypeAsString(ostream& buf, Device::AccessType type);
+    static void AccessTypeAsString(std::ostream& buf, Device::AccessType type);
 
   private:
     using AddrToLineList = std::map<uInt16, int>;
@@ -332,14 +332,14 @@ class CartDebug : public DebuggerSystem
 
     // Analyze of bank of ROM, generating a list of Distella directives
     // based on its disassembly
-    void getBankDirectives(ostream& buf, const BankInfo& info) const;
+    void getBankDirectives(std::ostream& buf, const BankInfo& info) const;
 
     // Get access enum type from 'flags', taking precendence into account
     static Device::AccessType accessTypeAbsolute(Device::AccessFlags flags);
 
     // Convert all access types in 'flags' to corresponding string and
     // append to buf
-    static void AccessTypeAsString(ostream& buf, Device::AccessFlags flags);
+    static void AccessTypeAsString(std::ostream& buf, Device::AccessFlags flags);
 
   private:
     const OSystem& myOSystem;

@@ -30,7 +30,7 @@ CartridgeSBWidget::CartridgeSBWidget(
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string CartridgeSBWidget::description()
 {
-  ostringstream info;
+  std::ostringstream info;
 
   info << "SB SUPERbanking, " << myCart.romBankCount() << " 4K banks\n"
        << "Hotspots are from $800 to $"

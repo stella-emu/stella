@@ -166,7 +166,7 @@ void EmulationTiming::recalculate()
       break;
 
     default:
-      throw runtime_error("invalid frame layout");
+      throw std::runtime_error("invalid frame layout");
   }
 
   switch (myConsoleTiming) {
@@ -180,7 +180,7 @@ void EmulationTiming::recalculate()
       break;
 
     default:
-      throw runtime_error("invalid console timing");
+      throw std::runtime_error("invalid console timing");
   }
 
   myCyclesPerSecond = myAudioSampleRate * 38;

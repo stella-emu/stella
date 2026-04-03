@@ -30,7 +30,7 @@ Cartridge03E0Widget::Cartridge03E0Widget(
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string Cartridge03E0Widget::description()
 {
-  ostringstream info;
+  std::ostringstream info;
 
   info << "03E0 cartridge,\n  eight 1K banks mapped into four segments\n"
     << CartridgeEnhancedWidget::description();
@@ -41,7 +41,7 @@ string Cartridge03E0Widget::description()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string Cartridge03E0Widget::romDescription()
 {
-  ostringstream info;
+  std::ostringstream info;
 
   for(int seg = 0; seg < 4; ++seg)
   {
@@ -64,7 +64,7 @@ string Cartridge03E0Widget::romDescription()
 string Cartridge03E0Widget::hotspotStr(int bank, int segment, bool noBrackets)
 {
   static constexpr uInt16 hotspots[3] = {0x03E0, 0x03D0, 0x03B0};
-  ostringstream info;
+  std::ostringstream info;
 
   info << (noBrackets ? "" : "(")
     << "$" << Common::Base::HEX1 << ( hotspots[segment] + bank)

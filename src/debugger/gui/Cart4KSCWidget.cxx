@@ -30,7 +30,7 @@ Cartridge4KSCWidget::Cartridge4KSCWidget(
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string Cartridge4KSCWidget::description()
 {
-  ostringstream info;
+  std::ostringstream info;
 
   info << "4KSC cartridge, non-bankswitched\n";
   info << CartridgeEnhancedWidget::description();

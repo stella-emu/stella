@@ -286,7 +286,7 @@ void DebuggerDialog::handleCommand(CommandSender* sender, int cmd,
         uInt32 w = 0, h = 0;
 
         getDynamicBounds(w, h);
-        myOptions = make_unique<OptionsDialog>(instance(), parent(), this, w, h,
+        myOptions = std::make_unique<OptionsDialog>(instance(), parent(), this, w, h,
                                                AppMode::debugger);
       }
       myOptions->open();
@@ -385,28 +385,28 @@ void DebuggerDialog::createFont()
   if(fontSize == "large")
   {
     // Large font doesn't use fontStyle at all
-    myLFont = make_unique<GUI::Font>(GUI::stellaMediumDesc);
-    myNFont = make_unique<GUI::Font>(GUI::stellaMediumDesc);
+    myLFont = std::make_unique<GUI::Font>(GUI::stellaMediumDesc);
+    myNFont = std::make_unique<GUI::Font>(GUI::stellaMediumDesc);
   }
   else if(fontSize == "medium")
     {
       switch(fontStyle)
       {
         case 1:
-          myLFont = make_unique<GUI::Font>(GUI::consoleMediumBDesc);
-          myNFont = make_unique<GUI::Font>(GUI::consoleMediumDesc);
+          myLFont = std::make_unique<GUI::Font>(GUI::consoleMediumBDesc);
+          myNFont = std::make_unique<GUI::Font>(GUI::consoleMediumDesc);
           break;
         case 2:
-          myLFont = make_unique<GUI::Font>(GUI::consoleMediumDesc);
-          myNFont = make_unique<GUI::Font>(GUI::consoleMediumBDesc);
+          myLFont = std::make_unique<GUI::Font>(GUI::consoleMediumDesc);
+          myNFont = std::make_unique<GUI::Font>(GUI::consoleMediumBDesc);
           break;
         case 3:
-          myLFont = make_unique<GUI::Font>(GUI::consoleMediumBDesc);
-          myNFont = make_unique<GUI::Font>(GUI::consoleMediumBDesc);
+          myLFont = std::make_unique<GUI::Font>(GUI::consoleMediumBDesc);
+          myNFont = std::make_unique<GUI::Font>(GUI::consoleMediumBDesc);
           break;
         default: // default to zero
-          myLFont = make_unique<GUI::Font>(GUI::consoleMediumDesc);
-          myNFont = make_unique<GUI::Font>(GUI::consoleMediumDesc);
+          myLFont = std::make_unique<GUI::Font>(GUI::consoleMediumDesc);
+          myNFont = std::make_unique<GUI::Font>(GUI::consoleMediumDesc);
           break;
       }
     }
@@ -415,20 +415,20 @@ void DebuggerDialog::createFont()
     switch(fontStyle)
     {
       case 1:
-        myLFont = make_unique<GUI::Font>(GUI::consoleBDesc);
-        myNFont = make_unique<GUI::Font>(GUI::consoleDesc);
+        myLFont = std::make_unique<GUI::Font>(GUI::consoleBDesc);
+        myNFont = std::make_unique<GUI::Font>(GUI::consoleDesc);
         break;
       case 2:
-        myLFont = make_unique<GUI::Font>(GUI::consoleDesc);
-        myNFont = make_unique<GUI::Font>(GUI::consoleBDesc);
+        myLFont = std::make_unique<GUI::Font>(GUI::consoleDesc);
+        myNFont = std::make_unique<GUI::Font>(GUI::consoleBDesc);
         break;
       case 3:
-        myLFont = make_unique<GUI::Font>(GUI::consoleBDesc);
-        myNFont = make_unique<GUI::Font>(GUI::consoleBDesc);
+        myLFont = std::make_unique<GUI::Font>(GUI::consoleBDesc);
+        myNFont = std::make_unique<GUI::Font>(GUI::consoleBDesc);
         break;
       default: // default to zero
-        myLFont = make_unique<GUI::Font>(GUI::consoleDesc);
-        myNFont = make_unique<GUI::Font>(GUI::consoleDesc);
+        myLFont = std::make_unique<GUI::Font>(GUI::consoleDesc);
+        myNFont = std::make_unique<GUI::Font>(GUI::consoleDesc);
         break;
     }
   }
@@ -438,7 +438,7 @@ void DebuggerDialog::createFont()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DebuggerDialog::showFatalMessage(string_view msg)
 {
-  myFatalError = make_unique<GUI::MessageBox>(this, *myLFont, msg, _w-20, _h-20,
+  myFatalError = std::make_unique<GUI::MessageBox>(this, *myLFont, msg, _w-20, _h-20,
                                               kDDExitFatalCmd, "Exit ROM", "Continue", "Fatal error");
   myFatalError->show();
 }

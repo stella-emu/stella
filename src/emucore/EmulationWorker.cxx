@@ -336,5 +336,5 @@ void EmulationWorker::waitUntilPendingSignalHasProcessed()
 void EmulationWorker::fatal(const string& message)
 {
   (cerr << "FATAL in emulation worker: " << message << '\n').flush();
-  throw runtime_error(message);
+  throw std::runtime_error(message);
 }

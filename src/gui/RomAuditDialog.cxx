@@ -118,7 +118,7 @@ void RomAuditDialog::auditRoms()
   // Create a progress dialog box to show the progress of processing
   // the ROMs, since this is usually a time-consuming operation
   // NOLINTBEGIN (the following are not a const)
-  ostringstream buf;
+  std::ostringstream buf;
   ProgressDialog progress(this, instance().frameBuffer().font());
   // NOLINTEND
 
@@ -189,7 +189,7 @@ void RomAuditDialog::handleCommand(CommandSender* sender, int cmd,
         msg.emplace_back("");
         msg.emplace_back("If you're sure you want to proceed with the");
         msg.emplace_back("audit, click 'OK', otherwise click 'Cancel'.");
-        myConfirmMsg = make_unique<GUI::MessageBox>
+        myConfirmMsg = std::make_unique<GUI::MessageBox>
           (this, _font, msg, myMaxWidth, myMaxHeight, kConfirmAuditCmd,
           "OK", "Cancel", "ROM Audit", false);
       }

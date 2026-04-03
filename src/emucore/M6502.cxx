@@ -130,7 +130,7 @@ inline uInt8 M6502::peek(uInt16 address, Device::AccessFlags flags)
     if(cond > -1)
     {
       myJustHitReadTrapFlag = true;
-      stringstream msg;
+      std::ostringstream msg;
       msg << "RTrap" << (flags == DISASM_NONE ? "G[" : "[") << Common::Base::HEX2 << cond << "]"
         << (myTrapCondNames[cond].empty() ? ": " : "If: {" + myTrapCondNames[cond] + "} ");
       myHitTrapInfo.message = msg.view();
@@ -166,7 +166,7 @@ inline void M6502::poke(uInt16 address, uInt8 value, Device::AccessFlags flags)
     if(cond > -1)
     {
       myJustHitWriteTrapFlag = true;
-      stringstream msg;
+      std::ostringstream msg;
       msg << "WTrap[" << Common::Base::HEX2 << cond << "]" << (myTrapCondNames[cond].empty() ? ":" : "If: {" + myTrapCondNames[cond] + "}");
       myHitTrapInfo.message = msg.view();
       myHitTrapInfo.address = address;
@@ -178,7 +178,7 @@ inline void M6502::poke(uInt16 address, uInt8 value, Device::AccessFlags flags)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void M6502::requestHalt()
 {
-  if (!myOnHaltCallback) throw runtime_error("onHaltCallback not configured");
+  if (!myOnHaltCallback) throw std::runtime_error("onHaltCallback not configured");
   myHaltRequested = true;
 }
 
@@ -287,7 +287,7 @@ inline void M6502::_execute(uInt64 cycles, DispatchResult& result)
               }
               else
               {
-                ostringstream msg;
+                std::ostringstream msg;
 
                 msg << "BP: $" << Common::Base::HEX4 << PC << ", bank #"
                     << std::dec << static_cast<int>(bank);
@@ -304,7 +304,7 @@ inline void M6502::_execute(uInt64 cycles, DispatchResult& result)
         const int cond = evalCondBreaks();
         if(cond > -1)
         {
-          ostringstream msg;
+          std::ostringstream msg;
 
           myLastBreakCycle = mySystem->cycles();
 
@@ -333,7 +333,7 @@ inline void M6502::_execute(uInt64 cycles, DispatchResult& result)
       const int cond = evalCondSaveStates();
       if(cond > -1)
       {
-        ostringstream msg;
+        std::ostringstream msg;
         msg << "conditional savestate [" << Common::Base::HEX2 << cond << "]";
         myDebugger->addState(msg.view());
       }
@@ -376,7 +376,7 @@ inline void M6502::_execute(uInt64 cycles, DispatchResult& result)
           const uInt16 rwpAddr = mySystem->cart().getIllegalRAMReadAccess();
           if(rwpAddr)
           {
-            ostringstream msg;
+            std::ostringstream msg;
             msg << "RWP[@ $" << Common::Base::HEX4 << rwpAddr << "]: ";
             result.setDebugger(currentCycles, msg.view(), "Read from write port", oldPC);
             return;
@@ -388,7 +388,7 @@ inline void M6502::_execute(uInt64 cycles, DispatchResult& result)
           const uInt16 wrpAddr = mySystem->cart().getIllegalRAMWriteAccess();
           if (wrpAddr)
           {
-            ostringstream msg;
+            std::ostringstream msg;
             msg << "WRP[@ $" << Common::Base::HEX4 << wrpAddr << "]: ";
             result.setDebugger(currentCycles, msg.view(), "Write to read port", oldPC);
             return;

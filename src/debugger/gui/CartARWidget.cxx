@@ -107,7 +107,7 @@ void CartridgeARWidget::handleCommand(CommandSender* sender,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string CartridgeARWidget::bankState()
 {
-  ostringstream& buf = buffer();
+  std::ostringstream& buf = buffer();
 
   buf << "Bank = " << std::dec << myCart.myCurrentBank;
 

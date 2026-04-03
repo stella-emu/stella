@@ -119,7 +119,7 @@ EventMappingWidget::EventMappingWidget(GuiObject* boss, const GUI::Font& font,
   myComboButton->setTarget(this);
   addFocusWidget(myComboButton);
 
-  myComboDialog = make_unique<ComboDialog>(boss, font, EventHandler::getComboList());
+  myComboDialog = std::make_unique<ComboDialog>(boss, font, EventHandler::getComboList());
 
   // Show message for currently selected event
   xpos = HBORDER;
@@ -200,7 +200,7 @@ void EventMappingWidget::startRemapping()
   enableButtons(false);
 
   // And show a message indicating which key is being remapped
-  ostringstream buf;
+  std::ostringstream buf;
   buf << "Select action for '"
       << EventHandler::actionAtIndex(myActionSelected, myEventGroup)
       << "' event";

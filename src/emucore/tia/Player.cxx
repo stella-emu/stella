@@ -310,7 +310,7 @@ uInt8 Player::getRespClock() const
       return (myCounter + TIAConstants::H_PIXEL - 12) % TIAConstants::H_PIXEL;
 
     default:
-      throw runtime_error("invalid width");
+      throw std::runtime_error("invalid width");
   }
 }
 

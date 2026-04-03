@@ -30,7 +30,7 @@ CartridgeWDWidget::CartridgeWDWidget(
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string CartridgeWDWidget::description()
 {
-  ostringstream info;
+  std::ostringstream info;
 
   info << "8K + RAM Wickstead Design cartridge, \n"
        << "  eight 1K banks, mapped into four segments\n"
@@ -44,7 +44,7 @@ string CartridgeWDWidget::description()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string CartridgeWDWidget::hotspotStr(int bank, int segment, bool prefix)
 {
-  ostringstream info;
+  std::ostringstream info;
   const CartridgeWD::BankOrg banks = CartridgeWD::ourBankOrg[bank];
 
   info << "(" << (prefix ? "hotspot " : "")

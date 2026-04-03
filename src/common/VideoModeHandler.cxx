@@ -47,7 +47,7 @@ const VideoModeHandler::Mode&
     if(windowedRequested)
     {
       const auto zoom = static_cast<double>(settings.getFloat("tia.zoom"));
-      ostringstream desc;
+      std::ostringstream desc;
       desc << (zoom * 100) << "%";
 
       // Image and screen (aka window) dimensions are the same

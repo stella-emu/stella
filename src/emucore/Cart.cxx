@@ -141,9 +141,9 @@ void Cartridge::createRomAccessArrays(size_t size)
 
   // Always create ROM access base even if DEBUGGER_SUPPORT is disabled,
   // since other parts of the code depend on it existing
-  myRomAccessBase = make_unique<Device::AccessFlags[]>(size);
+  myRomAccessBase = std::make_unique<Device::AccessFlags[]>(size);
   std::fill_n(myRomAccessBase.get(), size, Device::ROW);
-  myRomAccessCounter = make_unique<Device::AccessCounter[]>(size * 2);
+  myRomAccessCounter = std::make_unique<Device::AccessCounter[]>(size * 2);
   std::fill_n(myRomAccessCounter.get(), size * 2, 0);
 }
 
@@ -151,7 +151,7 @@ void Cartridge::createRomAccessArrays(size_t size)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string Cartridge::getAccessCounters() const
 {
-  ostringstream out;
+  std::ostringstream out;
   uInt32 offset = 0;
 
   for(uInt16 bank = 0; bank < romBankCount(); ++bank)

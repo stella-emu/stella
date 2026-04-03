@@ -234,7 +234,7 @@ void CartridgeARMWidget::handleChipType()
 
     // update tooltip with currently selecte chip's properties
     string tip = myChipType->getToolTip(Common::Point(0, 0));
-    ostringstream buf;
+    std::ostringstream buf;
     tip = tip.substr(0, 25);
 
     buf << tip << "\nCurrent: " << chipProps.name << "\n"

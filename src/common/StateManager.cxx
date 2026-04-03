@@ -30,7 +30,7 @@
 StateManager::StateManager(OSystem& osystem)
   : myOSystem{osystem}
 {
-  myRewindManager = make_unique<RewindManager>(myOSystem, *this);
+  myRewindManager = std::make_unique<RewindManager>(myOSystem, *this);
   reset();
 }
 
@@ -201,7 +201,7 @@ void StateManager::loadState(int slot)
   {
     if(slot < 0) slot = myCurrentSlot;
 
-    ostringstream buf;
+    std::ostringstream buf;
     buf << myOSystem.stateDir()
         << myOSystem.console().properties().get(PropType::Cart_Name)
         << ".st" << slot;
@@ -247,7 +247,7 @@ void StateManager::saveState(int slot)
   {
     if(slot < 0) slot = myCurrentSlot;
 
-    ostringstream buf;
+    std::ostringstream buf;
     buf << myOSystem.stateDir()
         << myOSystem.console().properties().get(PropType::Cart_Name)
         << ".st" << slot;
@@ -299,7 +299,7 @@ void StateManager::changeState(int direction)
   myCurrentSlot = BSPF::clampw(myCurrentSlot + direction, 0, 9);
 
   // Print appropriate message
-  ostringstream buf;
+  std::ostringstream buf;
   if(direction)
     buf << "Changed to state slot " << myCurrentSlot;
   else
@@ -313,7 +313,7 @@ void StateManager::toggleAutoSlot()
   const bool autoSlot = !myOSystem.settings().getBool("autoslot");
 
   // Print appropriate message
-  ostringstream buf;
+  std::ostringstream buf;
   buf << "Automatic slot change " << (autoSlot ? "enabled" : "disabled");
   myOSystem.frameBuffer().showTextMessage(buf.view());
 

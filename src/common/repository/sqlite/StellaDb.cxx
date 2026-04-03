@@ -48,22 +48,22 @@ StellaDb::StellaDb(const string& databaseDirectory, const string& databaseName)
 void StellaDb::initialize()
 {
   try {
-    myDb = make_unique<SqliteDatabase>(myDatabaseDirectory, myDatabaseName);
+    myDb = std::make_unique<SqliteDatabase>(myDatabaseDirectory, myDatabaseName);
     myDb->initialize();
 
-    auto settingsRepository = make_unique<KeyValueRepositorySqlite>(*myDb, "settings", "setting", "value");
+    auto settingsRepository = std::make_unique<KeyValueRepositorySqlite>(*myDb, "settings", "setting", "value");
     settingsRepository->initialize();
     mySettingsRepository = std::move(settingsRepository);
 
-    auto propertyRepositoryHost = make_unique<KeyValueRepositorySqlite>(*myDb, "properties", "md5", "properties");
+    auto propertyRepositoryHost = std::make_unique<KeyValueRepositorySqlite>(*myDb, "properties", "md5", "properties");
     propertyRepositoryHost->initialize();
     myPropertyRepositoryHost = std::move(propertyRepositoryHost);
 
-    auto highscoreRepository = make_unique<CompositeKeyValueRepositorySqlite>(*myDb, "highscores", "md5", "variation", "highscore_data");
+    auto highscoreRepository = std::make_unique<CompositeKeyValueRepositorySqlite>(*myDb, "highscores", "md5", "variation", "highscore_data");
     highscoreRepository->initialize();
     myHighscoreRepository = std::move(highscoreRepository);
 
-    myPropertyRepository = make_unique<CompositeKVRJsonAdapter>(*myPropertyRepositoryHost);
+    myPropertyRepository = std::make_unique<CompositeKVRJsonAdapter>(*myPropertyRepositoryHost);
 
     if (myDb->getUserVersion() == 0) {
       initializeDb();
@@ -74,9 +74,9 @@ void StellaDb::initialize()
   catch (const SqliteError& err) {
     Logger::error("sqlite DB " + databaseFileName() + " failed to initialize: " + err.what());
 
-    mySettingsRepository = make_unique<KeyValueRepositoryNoop>();
-    myPropertyRepository = make_unique<CompositeKeyValueRepositoryNoop>();
-    myHighscoreRepository = make_unique<CompositeKeyValueRepositoryNoop>();
+    mySettingsRepository = std::make_unique<KeyValueRepositoryNoop>();
+    myPropertyRepository = std::make_unique<CompositeKeyValueRepositoryNoop>();
+    myHighscoreRepository = std::make_unique<CompositeKeyValueRepositoryNoop>();
 
     myDb.reset();
     myPropertyRepositoryHost.reset();
@@ -170,12 +170,12 @@ void StellaDb::importOldPropset(const FSNode& node)
 {
   Logger::info("importing old game properties from " + node.getPath());
 
-  stringstream in;
+  std::stringstream in;
 
   try {
     node.read(in);
   }
-  catch (const runtime_error& err) {
+  catch (const std::runtime_error& err) {
     Logger::error(err.what());
 
     return;
@@ -207,7 +207,7 @@ void StellaDb::migrate()
       return;
 
     default: {
-      stringstream ss;
+      std::stringstream ss;
       ss << "invalid database version " << version;
 
       throw SqliteError(ss.str());

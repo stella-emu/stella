@@ -78,7 +78,7 @@ template<unsigned length, unsigned capacity>
 void DelayQueue<length, capacity>::push(uInt8 address, uInt8 value, uInt8 delay)
 {
   if (delay >= length)
-    throw runtime_error("delay exceeds queue length");
+    throw std::runtime_error("delay exceeds queue length");
 
   const uInt8 currentIndex = myIndices[address];
 
@@ -148,7 +148,7 @@ bool DelayQueue<length, capacity>::load(Serializer& in)
 {
   try
   {
-    if (in.getInt() != length) throw runtime_error("delay queue length mismatch");
+    if (in.getInt() != length) throw std::runtime_error("delay queue length mismatch");
 
     for (uInt32 i = 0; i < length; ++i)
       myMembers[i].load(in);

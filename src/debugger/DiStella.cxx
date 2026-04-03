@@ -72,7 +72,7 @@ DiStella::DiStella(const CartDebug& dbg, CartDebug::DisassemblyList& list,
   disasm(myOffset, 2);
 
   // Add reserved line equates
-  ostringstream reservedLabel;
+  std::ostringstream reservedLabel;
   for (int k = 0; std::cmp_less_equal(k, myAppData.end); k++) {
     if ((myLabels[k] & (Device::REFERENCED | Device::VALID_ENTRY)) == Device::REFERENCED) {
       // If we have a piece of code referenced somewhere else, but cannot
@@ -106,7 +106,7 @@ void DiStella::disasm(uInt32 distart, int pass)
   Int32 cycles = 0;
   AddressingMode addrMode{};
   AddressType labelFound = AddressType::INVALID;
-  stringstream nextLine, nextLineBytes;
+  std::stringstream nextLine, nextLineBytes;
 
   mySegType = Device::NONE; // create extra lines between code and data
 
@@ -1174,7 +1174,7 @@ string DiStella::getColor(uInt8 byte)
   };
 
   string color;
-  ostringstream buf;
+  std::ostringstream buf;
 
   if (myDbg.myConsole.timing() == ConsoleTiming::ntsc)
   {

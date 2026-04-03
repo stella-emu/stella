@@ -36,7 +36,7 @@ KeyValueRepositoryJsonFile::KeyValueRepositoryJsonFile(const FSNode& node)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-KVRMap KeyValueRepositoryJsonFile::load(istream& in)
+KVRMap KeyValueRepositoryJsonFile::load(std::istream& in)
 {
   try {
     KVRMap map;
@@ -63,7 +63,7 @@ KVRMap KeyValueRepositoryJsonFile::load(istream& in)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool KeyValueRepositoryJsonFile::save(ostream& out, const KVRMap& values)
+bool KeyValueRepositoryJsonFile::save(std::ostream& out, const KVRMap& values)
 {
   try {
     json serializedJson = json::object();

@@ -67,7 +67,7 @@ class CartridgeE7Widget : public CartDebugWidget
 
   protected:
     void initialize(GuiObject* boss, const CartridgeE7& cart,
-                    const ostringstream& info);
+                    const std::ostringstream& info);
 
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 

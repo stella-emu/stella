@@ -30,7 +30,7 @@ CartridgeGLWidget::CartridgeGLWidget(
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string CartridgeGLWidget::description()
 {
-  ostringstream info;
+  std::ostringstream info;
 
   info << "GameLine Master Module cartridge, 4K ROM, 10/12K RAM\n"
     << "mapped into four 1K segments\n"
@@ -42,7 +42,7 @@ string CartridgeGLWidget::description()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string CartridgeGLWidget::internalRamDescription()
 {
-  ostringstream desc;
+  std::ostringstream desc;
 
   desc << "Accessible 1K" << " at a time";
 

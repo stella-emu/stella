@@ -52,6 +52,7 @@ class AudioSettings;
 #endif
 
 #include <chrono>
+#include <optional>
 
 #include "FSNode.hxx"
 #include "FrameBufferConstants.hxx"
@@ -377,7 +378,7 @@ class OSystem
 
       @return  True on successful creation, otherwise false
     */
-    optional<string> reloadConsole(bool nextrom = true);
+    std::optional<string> reloadConsole(bool nextrom = true);
 
     /**
       Creates a new ROM launcher, to select a new ROM to emulate.

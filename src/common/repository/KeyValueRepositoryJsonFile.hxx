@@ -31,9 +31,9 @@ class KeyValueRepositoryJsonFile : public KeyValueRepositoryFile<KeyValueReposit
 
     explicit KeyValueRepositoryJsonFile(const FSNode& node);
 
-    static KVRMap load(istream& in);
+    static KVRMap load(std::istream& in);
 
-    static bool save(ostream& out, const KVRMap& values);
+    static bool save(std::ostream& out, const KVRMap& values);
 };
 
 #endif // KEY_VALUE_REPOSITORY_JSON_FILE_HXX

@@ -61,13 +61,13 @@ Debugger::Debugger(OSystem& osystem, Console& console)
     mySystem{console.system()}
 {
   // Init parser
-  myParser = make_unique<DebuggerParser>(*this, osystem.settings());
+  myParser = std::make_unique<DebuggerParser>(*this, osystem.settings());
 
   // Create debugger subsystems
-  myCpuDebug  = make_unique<CpuDebug>(*this, myConsole);
-  myCartDebug = make_unique<CartDebug>(*this, myConsole, osystem);
-  myRiotDebug = make_unique<RiotDebug>(*this, myConsole);
-  myTiaDebug  = make_unique<TIADebug>(*this, myConsole);
+  myCpuDebug  = std::make_unique<CpuDebug>(*this, myConsole);
+  myCartDebug = std::make_unique<CartDebug>(*this, myConsole, osystem);
+  myRiotDebug = std::make_unique<RiotDebug>(*this, myConsole);
+  myTiaDebug  = std::make_unique<TIADebug>(*this, myConsole);
 
   // Allow access to this object from any class
   // Technically this violates pure OO programming, but since I know
@@ -121,7 +121,7 @@ bool Debugger::start(string_view message, int address, bool read,
     myFirstLog = true;
     // This must be done *after* we enter debug mode,
     // so the message isn't erased
-    ostringstream buf;
+    std::ostringstream buf;
     buf << message;
     if(address > -1)
       buf << cartDebug().getLabel(address, read, 4);
@@ -168,7 +168,7 @@ void Debugger::exit(bool exitrom)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string Debugger::autoExec(StringList* history)
 {
-  ostringstream buf;
+  std::ostringstream buf;
 
   // autoexec.script is always run
   const FSNode autoexec(myOSystem.baseDir().getPath() + "autoexec.script");
@@ -252,7 +252,7 @@ void Debugger::reset()
 */
 string Debugger::setRAM(IntArray& args)
 {
-  ostringstream buf;
+  std::ostringstream buf;
 
   const size_t count = args.size();
   int address = args[0];
@@ -458,7 +458,7 @@ void Debugger::log(string_view triggerMsg)
 
   if(myFirstLog)
   {
-    ostringstream msg;
+    std::ostringstream msg;
 
     msg << "Trigger:  Frame Scn Cy Pxl | PS       A  X  Y  SP | ";
     if(myCartDebug->romBankCount() > 1)
@@ -473,7 +473,7 @@ void Debugger::log(string_view triggerMsg)
     myFirstLog = false;
   }
 
-  ostringstream msg;
+  std::ostringstream msg;
 
   msg << std::left << std::setw(10) << std::setfill(' ') << triggerMsg
     << Base::toString(myTiaDebug->frameCount(), Base::Fmt::_10_5) << " "
@@ -623,7 +623,7 @@ uInt32 Debugger::getBaseAddress(uInt32 addr, bool read)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Debugger::nextScanline(int lines)
 {
-  ostringstream buf;
+  std::ostringstream buf;
   buf << "scanline + " << lines;
 
   saveOldState();
@@ -643,7 +643,7 @@ void Debugger::nextScanline(int lines)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Debugger::nextFrame(int frames)
 {
-  ostringstream buf;
+  std::ostringstream buf;
   buf << "frame + " << frames;
 
   saveOldState();
@@ -847,7 +847,7 @@ Debugger::FunctionDefMap Debugger::getFunctionDefMap() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string Debugger::builtinHelp()
 {
-  ostringstream buf;
+  std::ostringstream buf;
   size_t c_maxlen = 0, i_maxlen = 0;
 
   // Get column widths for aligned output (functions)

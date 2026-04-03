@@ -31,7 +31,7 @@ CartridgeF0Widget::CartridgeF0Widget(
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string CartridgeF0Widget::description()
 {
-  ostringstream info;
+  std::ostringstream info;
 
   info << "Megaboy F0 cartridge, 16 4K banks\n"
        << "Startup bank = #" << myCart.startBank() << " or undetermined\n"
@@ -43,7 +43,7 @@ string CartridgeF0Widget::description()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string CartridgeF0Widget::bankState()
 {
-  ostringstream& buf = buffer();
+  std::ostringstream& buf = buffer();
 
   buf << "Bank #" << std::dec << myCart.getBank()
       << " (hotspot $" << Common::Base::HEX4 << 0xFFF0 << ")";

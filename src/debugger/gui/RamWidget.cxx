@@ -177,7 +177,7 @@ RamWidget::RamWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& n
 
   // Inputbox which will pop up when searching RAM
   const StringList labels = { "Value" };
-  myInputBox = make_unique<InputTextDialog>(boss, lfont, nfont, labels, " ");
+  myInputBox = std::make_unique<InputTextDialog>(boss, lfont, nfont, labels, " ");
   myInputBox->setTextFilter([](char c) {
       return (c >= 'a' && c <= 'f') || (c >= '0' && c <= '9');
     }

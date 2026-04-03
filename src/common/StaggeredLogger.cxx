@@ -76,7 +76,7 @@ void StaggeredLogger::logLine()
   const Int64 millisecondsSinceIntervalStart =
     duration_cast<duration<Int64, std::milli>>(now - myLastIntervalStartTimestamp).count();
 
-  stringstream ss;
+  std::ostringstream ss;
   ss
     << currentTimestamp() << ": "
     << myMessage

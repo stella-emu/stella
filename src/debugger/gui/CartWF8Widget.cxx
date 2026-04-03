@@ -31,7 +31,7 @@ CartridgeWF8Widget::CartridgeWF8Widget(
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string CartridgeWF8Widget::description()
 {
-  ostringstream info;
+  std::ostringstream info;
   size_t size = 0;
   const ByteBuffer& image = myCart.getImage(size);
 

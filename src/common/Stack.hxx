@@ -84,7 +84,7 @@ class FixedStack
       std::ranges::for_each(r, std::forward<Func>(func));
     }
 
-    friend ostream& operator<<(ostream& os, const FixedStack<T>& s) {
+    friend std::ostream& operator<<(std::ostream& os, const FixedStack<T>& s) {
       s.applyAll([&os](const T& v) { os << v << ' '; });
       return os;
     }

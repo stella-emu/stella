@@ -321,7 +321,7 @@ bool RiotDebug::reset(int newVal)
 string RiotDebug::dirP0String()
 {
   const uInt8 reg = swcha();
-  ostringstream buf;
+  std::ostringstream buf;
   buf << ((reg & 0x80) ? "" : "right ")
       << ((reg & 0x40) ? "" : "left ")
       << ((reg & 0x20) ? "" : "left ")
@@ -334,7 +334,7 @@ string RiotDebug::dirP0String()
 string RiotDebug::dirP1String()
 {
   const uInt8 reg = swcha();
-  ostringstream buf;
+  std::ostringstream buf;
   buf << ((reg & 0x08) ? "" : "right ")
       << ((reg & 0x04) ? "" : "left ")
       << ((reg & 0x02) ? "" : "left ")
@@ -364,7 +364,7 @@ string RiotDebug::tvTypeString()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string RiotDebug::switchesString()
 {
-  ostringstream buf;
+  std::ostringstream buf;
   buf << ((swchb() & 0x2) ? "-" : "+") << "select "
       << ((swchb() & 0x1) ? "-" : "+") << "reset";
   return buf.str();
@@ -376,7 +376,7 @@ string RiotDebug::toString()
   const auto& state    = static_cast<const RiotState&>(getState());
   const auto& oldstate = static_cast<const RiotState&>(getOldState());
 
-  ostringstream buf;
+  std::ostringstream buf;
   buf << "280/SWCHA(R)=" << Debugger::invIfChanged(state.SWCHA_R, oldstate.SWCHA_R)
       << " 280/SWCHA(W)=" << Debugger::invIfChanged(state.SWCHA_W, oldstate.SWCHA_W)
       << " 281/SWACNT=" << Debugger::invIfChanged(state.SWACNT, oldstate.SWACNT)

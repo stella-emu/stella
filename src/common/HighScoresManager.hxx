@@ -255,7 +255,7 @@ class HighScoresManager
     OSystem& myOSystem;
 
     shared_ptr<CompositeKeyValueRepositoryAtomic> myHighscoreRepository
-      = make_shared<CompositeKeyValueRepositoryNoop>();
+      = std::make_shared<CompositeKeyValueRepositoryNoop>();
 
   private:
     // Following constructors and assignment operators not supported

@@ -194,7 +194,7 @@ class RewindManager
       RewindState& operator=(RewindState&&) = delete;
 
       // Output object info; used for debugging only
-      friend ostream& operator<<(ostream& os, const RewindState& s) {
+      friend std::ostream& operator<<(std::ostream& os, const RewindState& s) {
         return os << "msg: " << s.message << "   cycle: " << s.cycles;
       }
     };

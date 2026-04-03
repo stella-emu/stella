@@ -49,7 +49,7 @@ namespace {
 CartridgeBUS::CartridgeBUS(const ByteBuffer& image, size_t size,
                            string_view md5, const Settings& settings)
   : CartridgeARM(settings, md5),
-    myImage{make_unique<uInt8[]>(32_KB)}
+    myImage{std::make_unique<uInt8[]>(32_KB)}
 {
   // Copy the ROM image into my buffer
   std::copy_n(image.get(), std::min(32_KB, size), myImage.get());
@@ -74,7 +74,7 @@ CartridgeBUS::CartridgeBUS(const ByteBuffer& image, size_t size,
     myDisplayImage = myRAM.data() + 0x0C00;
 
     // Create Thumbulator ARM emulator
-    myThumbEmulator = make_unique<Thumbulator>(
+    myThumbEmulator = std::make_unique<Thumbulator>(
       reinterpret_cast<uInt16*>(myImage.get()),
       reinterpret_cast<uInt16*>(myRAM.data()),
       static_cast<uInt32>(32_KB),
@@ -99,7 +99,7 @@ CartridgeBUS::CartridgeBUS(const ByteBuffer& image, size_t size,
     myDisplayImage = myRAM.data() + 0x0800;
 
     // Create Thumbulator ARM emulator
-    myThumbEmulator = make_unique<Thumbulator>(
+    myThumbEmulator = std::make_unique<Thumbulator>(
       reinterpret_cast<uInt16*>(myImage.get()),
       reinterpret_cast<uInt16*>(myRAM.data()),
       static_cast<uInt32>(32_KB),
@@ -115,7 +115,7 @@ CartridgeBUS::CartridgeBUS(const ByteBuffer& image, size_t size,
 
   this->setInitialState();  // NOLINT
 
-  myPlusROM = make_unique<PlusROM>(mySettings, *this);
+  myPlusROM = std::make_unique<PlusROM>(mySettings, *this);
 
   // Determine whether we have a PlusROM cart
   myPlusROM->initialize(myImage, size);
@@ -221,7 +221,7 @@ inline void CartridgeBUS::callFunction(uInt8 value)
         myThumbEmulator->run(cycles, value == 254);
         updateCycles(cycles);
       }
-      catch(const runtime_error& e) {
+      catch(const std::runtime_error& e) {
         if(!mySystem->autodetectMode())
         {
           FatalEmulationError::raise(e.what());

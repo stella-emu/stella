@@ -24,23 +24,23 @@ unique_ptr<Blitter>
 BlitterFactory::createBlitter(FBBackendSDL& fb, ScalingAlgorithm scaling)
 {
   if (!fb.isInitialized()) {
-    throw runtime_error("BlitterFactory requires an initialized framebuffer!");
+    throw std::runtime_error("BlitterFactory requires an initialized framebuffer!");
   }
 
   switch (scaling) {
     case ScalingAlgorithm::nearestNeighbour:
-      return make_unique<BilinearBlitter>(fb, false);
+      return std::make_unique<BilinearBlitter>(fb, false);
 
     case ScalingAlgorithm::bilinear:
-      return make_unique<BilinearBlitter>(fb, true);
+      return std::make_unique<BilinearBlitter>(fb, true);
 
     case ScalingAlgorithm::quasiInteger:
       if (QisBlitter::isSupported(fb))
-        return make_unique<QisBlitter>(fb);
+        return std::make_unique<QisBlitter>(fb);
       else
-        return make_unique<BilinearBlitter>(fb, true);
+        return std::make_unique<BilinearBlitter>(fb, true);
 
     default:
-      throw runtime_error("unreachable");
+      throw std::runtime_error("unreachable");
   }
 }

@@ -44,7 +44,7 @@ int CartDebugWidget::addBaseInformation(size_t bytes, string_view manufacturer,
   const int lwidth = _font.getStringWidth("Manufacturer "),
             fwidth = _w - lwidth - 12;
   EditTextWidget* w = nullptr;
-  ostringstream buf;
+  std::ostringstream buf;
 
   constexpr int x = 2;
   int y = 8;

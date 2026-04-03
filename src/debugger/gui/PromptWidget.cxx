@@ -939,7 +939,7 @@ void PromptWidget::scrollToCurrent()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string PromptWidget::saveBuffer(const FSNode& file)
 {
-  stringstream out;
+  std::stringstream out;
   for(int start = 0; start < _promptStartPos; start += _lineWidth)
   {
     int end = start + _lineWidth - 1;

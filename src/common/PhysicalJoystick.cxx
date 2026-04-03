@@ -110,7 +110,7 @@ bool PhysicalJoystick::setMap(const json& map)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 json PhysicalJoystick::convertLegacyMapping(string_view mapping, string_view name)
 {
-  istringstream buf(string{mapping});  // TODO: fixed in C++23
+  std::istringstream buf(string{mapping});  // TODO: fixed in C++23
   json convertedMapping = json::object();
   string lmap;
 
@@ -123,7 +123,7 @@ json PhysicalJoystick::convertLegacyMapping(string_view mapping, string_view nam
 
     // Get event mode
     std::ranges::replace(lmap, '|', ' ');
-    istringstream modeBuf(lmap);
+    std::istringstream modeBuf(lmap);
     modeBuf >> mode;
 
     // Remove leading "<mode>|" string
@@ -154,7 +154,7 @@ void PhysicalJoystick::eraseEvent(Event::Type event, EventMode mode)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string PhysicalJoystick::about() const
 {
-  ostringstream buf;
+  std::ostringstream buf;
 
   buf << "'" << name << "' in ";
   switch(port)

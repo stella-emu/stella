@@ -29,7 +29,7 @@ CartridgeDPCWidget::CartridgeDPCWidget(
 {
   constexpr int V_GAP = 4;
   const size_t size = cart.mySize;
-  ostringstream info;
+  std::ostringstream info;
 
   info << "DPC cartridge, two 4K banks + 2K display bank\n"
        << "DPC registers accessible @ $" << Common::Base::HEX4 << 0xF000 << " - $" << 0xF07F << "\n"
@@ -54,7 +54,7 @@ CartridgeDPCWidget::CartridgeDPCWidget(
   VariantList items;
   for(int bank = 0; bank < 2; ++bank)
   {
-    ostringstream buf;
+    std::ostringstream buf;
 
     buf << "#" << std::dec << bank << " ($" << Common::Base::HEX4 << (0xFFF8 + bank) << ")";
     VarList::push_back(items, buf.view());
@@ -231,7 +231,7 @@ void CartridgeDPCWidget::handleCommand(CommandSender* sender,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string CartridgeDPCWidget::bankState()
 {
-  ostringstream& buf = buffer();
+  std::ostringstream& buf = buffer();
 
   buf << "Bank #" << std::dec << myCart.getBank()
       << " (hotspot $" << Common::Base::HEX4 << (0xFFF8 + myCart.getBank()) << ")";
@@ -254,7 +254,7 @@ uInt32 CartridgeDPCWidget::internalRamRPort(int start)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string CartridgeDPCWidget::internalRamDescription()
 {
-  ostringstream desc;
+  std::ostringstream desc;
   desc << "2K display data @ $0000 - $" << Common::Base::HEX4 << 0x07FF << "\n"
     << "  indirectly accessible to 6507 via DPC's\n"
     << "  data fetcher registers\n";

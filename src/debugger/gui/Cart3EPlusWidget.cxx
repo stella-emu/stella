@@ -33,7 +33,7 @@ Cartridge3EPlusWidget::Cartridge3EPlusWidget(
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string Cartridge3EPlusWidget::description()
 {
-  ostringstream info;
+  std::ostringstream info;
   size_t size{0};
   const ByteBuffer& image = myCart.getImage(size);
   const uInt16 numRomBanks = myCart.romBankCount();
@@ -67,14 +67,14 @@ void Cartridge3EPlusWidget::bankSelect(int& ypos)
   VarList::push_back(banktype, "ROM", "ROM");
   VarList::push_back(banktype, "RAM", "RAM");
 
-  myBankWidgets = make_unique<PopUpWidget* []>(bankSegs());
+  myBankWidgets = std::make_unique<PopUpWidget* []>(bankSegs());
 
   ypos -= VGAP * 2;
 
   for(uInt32 seg = 0; seg < bankSegs(); ++seg)
   {
     int xpos = 2, ypos_s = ypos + 1, width = 0;
-    ostringstream label;
+    std::ostringstream label;
     VariantList items;
 
     label << "Set segment " << seg << " as ";
@@ -202,7 +202,7 @@ void Cartridge3EPlusWidget::updateUIState()
   {
     const uInt16 bank = myCart.getSegmentBank(seg);
     const size_t bank_off = static_cast<size_t>(seg) * 2;
-    ostringstream buf;
+    std::ostringstream buf;
 
     if(bank >= myCart.romBankCount()) // was RAM mapped here?
     {
@@ -240,7 +240,7 @@ void Cartridge3EPlusWidget::updateUIState()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string Cartridge3EPlusWidget::internalRamDescription()
 {
-  ostringstream desc;
+  std::ostringstream desc;
 
   desc << "Accessible 512b at a time via:\n"
        << "  $f000/$f400/$f800/$fc00 for read access\n"

@@ -41,7 +41,7 @@ CartridgeCV::CartridgeCV(const ByteBuffer& image, size_t size,
     // Copy the ROM image into my buffer
     std::copy_n(image.get() + 2_KB, 2_KB, myImage.get());
 
-    myInitialRAM = make_unique<uInt8[]>(1_KB);
+    myInitialRAM = std::make_unique<uInt8[]>(1_KB);
     // Copy the RAM image into a buffer for use in reset()
     std::copy_n(image.get(), 1_KB, myInitialRAM.get());
   }

@@ -23,7 +23,7 @@
 #include "ElfLinker.hxx"
 
 namespace {
-  optional<ElfLinker::SegmentType> determineSegmentType(const ElfFile::Section& section)
+  std::optional<ElfLinker::SegmentType> determineSegmentType(const ElfFile::Section& section)
   {
     switch (section.type) {
       case ElfFile::SHT_PROGBITS:
@@ -105,7 +105,7 @@ uInt32 ElfLinker::getSegmentSize(SegmentType type) const
       return myRodataSize;
 
     default:
-      throw runtime_error("unreachable");
+      throw std::runtime_error("unreachable");
   }
 }
 
@@ -123,7 +123,7 @@ const uInt8* ElfLinker::getSegmentData(SegmentType type) const
       return myRodataData.get();
 
     default:
-      throw runtime_error("unreachable");
+      throw std::runtime_error("unreachable");
   }
 }
 
@@ -141,7 +141,7 @@ uInt32 ElfLinker::getSegmentBase(SegmentType type) const
       return myRodataBase;
 
     default:
-      throw runtime_error("unreachable");
+      throw std::runtime_error("unreachable");
   }
 }
 
@@ -174,14 +174,14 @@ ElfLinker::RelocatedSymbol ElfLinker::findRelocatedSymbol(string_view name) cons
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const vector<optional<ElfLinker::RelocatedSection>>&
+const vector<std::optional<ElfLinker::RelocatedSection>>&
 ElfLinker::getRelocatedSections() const
 {
   return myRelocatedSections;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const vector<optional<ElfLinker::RelocatedSymbol>>&
+const vector<std::optional<ElfLinker::RelocatedSymbol>>&
 ElfLinker::getRelocatedSymbols() const
 {
   return myRelocatedSymbols;
@@ -201,7 +201,7 @@ uInt32& ElfLinker::getSegmentSizeRef(SegmentType type)
       return myRodataSize;
 
     default:
-      throw runtime_error("unreachable");
+      throw std::runtime_error("unreachable");
   }
 }
 
@@ -219,7 +219,7 @@ unique_ptr<uInt8[]>& ElfLinker::getSegmentDataRef(SegmentType type)
       return myRodataData;
 
     default:
-      throw runtime_error("unreachable");
+      throw std::runtime_error("unreachable");
   }
 }
 
@@ -273,7 +273,7 @@ void ElfLinker::relocateSections()
 
     auto& segmentData = getSegmentDataRef(segmentType);
 
-    segmentData = make_unique<uInt8[]>(segmentSize);
+    segmentData = std::make_unique<uInt8[]>(segmentSize);
     std::memset(segmentData.get(), 0, segmentSize);
   }
 }

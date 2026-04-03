@@ -30,7 +30,7 @@ CartridgeEFFWidget::CartridgeEFFWidget(
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string CartridgeEFFWidget::description()
 {
-  ostringstream info;
+  std::ostringstream info;
 
   info << "64k AtariAge EFF cartridge, 16 4k banks + 2k flash\n"
        << "i2c serial interface @ $FFF0 - $FFF3\n"

@@ -56,7 +56,7 @@ namespace {
       StreamReader() = default;
 
       bool open(string_view path) {
-        myFile = make_unique<Serializer>(path, Serializer::FileMode::ReadOnly);
+        myFile = std::make_unique<Serializer>(path, Serializer::FileMode::ReadOnly);
         myFileSize = myFile ? myFile->size() : 0;
 
         return static_cast<bool>(myFile);
@@ -1636,9 +1636,9 @@ CartridgeMVC::CartridgeMVC(string_view path, size_t size,
                            string_view md5, const Settings& settings,
                            size_t bsSize)
   : Cartridge(settings, md5),
-    myImage{make_unique<uInt8[]>(bsSize)},  // not used
+    myImage{std::make_unique<uInt8[]>(bsSize)},  // not used
     mySize{bsSize},
-    myMovie{make_unique<MovieCart>()},
+    myMovie{std::make_unique<MovieCart>()},
     myPath{path}
 {
     createRomAccessArrays(size);

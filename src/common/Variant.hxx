@@ -137,7 +137,7 @@ class Variant
       return toString() == other.toString();
     }
 
-    friend ostream& operator<<(ostream& os, const Variant& v) {
+    friend std::ostream& operator<<(std::ostream& os, const Variant& v) {
       return os << v.toString();
     }
 

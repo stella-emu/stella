@@ -150,7 +150,7 @@ void AudioWidget::handleFrequencies()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void AudioWidget::handleVolume()
 {
-  stringstream s;
+  std::ostringstream s;
 
   s << getEffectiveVolume() << "% (eff. volume)";
   myAudEffV->setLabel(s.view());

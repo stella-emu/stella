@@ -37,7 +37,7 @@ CartridgeAR::CartridgeAR(const ByteBuffer& image, size_t size,
     myNumberOfLoadImages{static_cast<uInt8>(mySize / LOAD_SIZE)}
 {
   // Create a load image buffer and copy the given image
-  myLoadImages = make_unique<uInt8[]>(mySize);
+  myLoadImages = std::make_unique<uInt8[]>(mySize);
   std::copy_n(image.get(), size, myLoadImages.get());
 
   // Add header if image doesn't include it

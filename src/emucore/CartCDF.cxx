@@ -47,7 +47,7 @@ namespace {
       case CDF1:      return Thumbulator::ConfigureFor::CDF1;
       case CDFJ:      return Thumbulator::ConfigureFor::CDFJ;
       case CDFJplus:  return Thumbulator::ConfigureFor::CDFJplus;
-      default:        throw runtime_error("unreachable");
+      default:        throw std::runtime_error("unreachable");
     }
   }
 } // namespace
@@ -59,7 +59,7 @@ CartridgeCDF::CartridgeCDF(const ByteBuffer& image, size_t size,
 {
   // Copy the ROM image into my buffer
   mySize = std::min(size, 512_KB);
-  myImage = make_unique<uInt8[]>(mySize);
+  myImage = std::make_unique<uInt8[]>(mySize);
   std::copy_n(image.get(), mySize, myImage.get());
 
   // Detect cart version
@@ -93,7 +93,7 @@ CartridgeCDF::CartridgeCDF(const ByteBuffer& image, size_t size,
 
   // Create Thumbulator ARM emulator
   const bool devSettings = settings.getBool("dev.settings");
-  myThumbEmulator = make_unique<Thumbulator>(
+  myThumbEmulator = std::make_unique<Thumbulator>(
     reinterpret_cast<uInt16*>(myImage.get()),
     reinterpret_cast<uInt16*>(myRAM.data()),
     static_cast<uInt32>(mySize),
@@ -106,7 +106,7 @@ CartridgeCDF::CartridgeCDF(const ByteBuffer& image, size_t size,
 
   this->setInitialState();  // NOLINT
 
-  myPlusROM = make_unique<PlusROM>(mySettings, *this);
+  myPlusROM = std::make_unique<PlusROM>(mySettings, *this);
 
   // Determine whether we have a PlusROM cart
   myPlusROM->initialize(myImage, mySize);
@@ -198,7 +198,7 @@ inline void CartridgeCDF::callFunction(uInt8 value)
         myThumbEmulator->run(cycles, value == 254);
         updateCycles(cycles);
       }
-      catch(const runtime_error& e) {
+      catch(const std::runtime_error& e) {
         if(!mySystem->autodetectMode())
         {
           FatalEmulationError::raise(e.what());

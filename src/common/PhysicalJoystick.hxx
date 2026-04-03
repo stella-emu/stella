@@ -110,7 +110,7 @@ class PhysicalJoystick
       return PhysicalJoystick::Port::AUTO;
     }
 
-    friend ostream& operator<<(ostream& os, const PhysicalJoystick& s) {
+    friend std::ostream& operator<<(std::ostream& os, const PhysicalJoystick& s) {
       os << "  ID: " << s.ID << ", name: " << s.name << ", numaxis: " << s.numAxes
          << ", numbtns: " << s.numButtons << ", numhats: " << s.numHats;
       return os;

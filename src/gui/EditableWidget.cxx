@@ -32,7 +32,7 @@ EditableWidget::EditableWidget(GuiObject* boss, const GUI::Font& font,
   : Widget(boss, font, x, y, w, h),
     CommandSender(boss),
     _editString{str},
-    myUndoHandler{make_unique<UndoHandler>()},
+    myUndoHandler{std::make_unique<UndoHandler>()},
     _filter{[](char c) { return isprint(c) && c != '\"'; }}
 {
   _bgcolor = kWidColor;
@@ -181,7 +181,7 @@ ContextMenu& EditableWidget::mouseMenu()
 {
   // add mouse context menu
   if(myMouseMenu == nullptr)
-    myMouseMenu = make_unique<ContextMenu>(this, _font);
+    myMouseMenu = std::make_unique<ContextMenu>(this, _font);
 
   return *myMouseMenu;
 }
@@ -861,7 +861,7 @@ bool EditableWidget::pasteSelectedText()
   // remove the currently selected text
   killSelectedText(false);
   // insert filtered paste text instead
-  ostringstream buf;
+  std::ostringstream buf;
   bool lastOk = true; // only one filler char per invalid character (block)
 
   for(const auto c : pasted)

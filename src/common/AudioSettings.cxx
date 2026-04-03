@@ -192,7 +192,7 @@ void AudioSettings::setPreset(AudioSettings::Preset preset)
       break;
 
     default:
-      throw runtime_error("invalid preset");
+      throw std::runtime_error("invalid preset");
   }
 
   if (myIsPersistent) mySettings.setValue(SETTING_PRESET, static_cast<int>(myPreset));

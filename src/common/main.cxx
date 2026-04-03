@@ -201,7 +201,7 @@ int main(int ac, char* av[])
     {
       return runner.run() ? 0 : 1;
     }
-    catch(const runtime_error& e)
+    catch(const std::runtime_error& e)
     {
       cerr << e.what() << '\n';
       return 0;
@@ -311,7 +311,7 @@ int main(int ac, char* av[])
       }
 #endif
     }
-    catch(const runtime_error& e)
+    catch(const std::runtime_error& e)
     {
       Logger::error(e.what());
       return Cleanup();

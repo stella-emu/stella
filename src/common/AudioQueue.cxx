@@ -26,7 +26,7 @@ AudioQueue::AudioQueue(uInt32 fragmentSize, uInt32 capacity, bool isStereo)
 {
   const uInt8 sampleSize = myIsStereo ? 2 : 1;
 
-  myFragmentBuffer = make_unique<Int16[]>(
+  myFragmentBuffer = std::make_unique<Int16[]>(
       static_cast<size_t>(myFragmentSize) * sampleSize * (capacity + 2));
 
   for (uInt32 i = 0; i < capacity; ++i)
@@ -76,7 +76,7 @@ Int16* AudioQueue::enqueue(Int16* fragment)
   Int16* newFragment = nullptr;  // NOLINT (must not be const)
 
   if (!fragment) {
-    if (!myFirstFragmentForEnqueue) throw runtime_error("enqueue called empty");
+    if (!myFirstFragmentForEnqueue) throw std::runtime_error("enqueue called empty");
 
     newFragment = myFirstFragmentForEnqueue;
     myFirstFragmentForEnqueue = nullptr;
@@ -107,7 +107,7 @@ Int16* AudioQueue::dequeue(Int16* fragment)
   if (mySize == 0) return nullptr;
 
   if (!fragment) {
-    if (!myFirstFragmentForDequeue) throw runtime_error("dequeue called empty");
+    if (!myFirstFragmentForDequeue) throw std::runtime_error("dequeue called empty");
 
     fragment = myFirstFragmentForDequeue;
     myFirstFragmentForDequeue = nullptr;
@@ -128,7 +128,7 @@ void AudioQueue::closeSink(Int16* fragment)
   const std::scoped_lock guard(myMutex);
 
   if (myFirstFragmentForDequeue && fragment)
-    throw runtime_error("attempt to return unknown buffer on closeSink");
+    throw std::runtime_error("attempt to return unknown buffer on closeSink");
 
   if (!myFirstFragmentForDequeue)
     myFirstFragmentForDequeue = fragment;

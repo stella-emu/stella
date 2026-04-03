@@ -111,7 +111,7 @@ class FSNode
      * By default, the output operator simply outputs the fully-qualified
      * pathname of the node.
      */
-    friend ostream& operator<<(ostream& os, const FSNode& node)
+    friend std::ostream& operator<<(std::ostream& os, const FSNode& node)
     {
       return os << node.getPath();
     }
@@ -270,7 +270,7 @@ class FSNode
      *          This method can throw exceptions, and should be used inside
      *          a try-catch block.
      */
-    size_t read(stringstream& buffer) const;
+    size_t read(std::stringstream& buffer) const;
 
     /**
      * Write data (binary format) from the given buffer.
@@ -293,7 +293,7 @@ class FSNode
      *          This method can throw exceptions, and should be used inside
      *          a try-catch block.
      */
-    size_t write(const stringstream& buffer) const;
+    size_t write(const std::stringstream& buffer) const;
 
     /**
      * The following methods are almost exactly the same as the various
@@ -472,7 +472,7 @@ class AbstractFSNode
      *          This method can throw exceptions, and should be used inside
      *          a try-catch block.
      */
-    virtual size_t read(stringstream& buffer) const { return 0; }
+    virtual size_t read(std::stringstream& buffer) const { return 0; }
 
     /**
      * Write data (binary format) from the given buffer.
@@ -495,7 +495,7 @@ class AbstractFSNode
      *          This method can throw exceptions, and should be used inside
      *          a try-catch block.
      */
-    virtual size_t write(const stringstream& buffer) const { return 0; }
+    virtual size_t write(const std::stringstream& buffer) const { return 0; }
 
   protected:
     /**

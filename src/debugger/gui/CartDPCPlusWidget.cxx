@@ -29,7 +29,7 @@ CartridgeDPCPlusWidget::CartridgeDPCPlusWidget(
 {
   const size_t size = cart.mySize;
 
-  ostringstream info;
+  std::ostringstream info;
   info << "Extended DPC cartridge, six 4K banks, 4K display bank, 1K frequency table, "
        << "8K DPC RAM\n"
        << "DPC registers accessible @ $F000 - $F07F\n"
@@ -336,7 +336,7 @@ void CartridgeDPCPlusWidget::handleCommand(CommandSender* sender,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string CartridgeDPCPlusWidget::bankState()
 {
-  ostringstream& buf = buffer();
+  std::ostringstream& buf = buffer();
 
   static constexpr std::array<string_view, 6> spot = {
     "$FFF6", "$FFF7", "$FFF8", "$FFF9", "$FFFA", "$FFFB"
@@ -362,7 +362,7 @@ uInt32 CartridgeDPCPlusWidget::internalRamRPort(int start)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string CartridgeDPCPlusWidget::internalRamDescription()
 {
-  ostringstream desc;
+  std::ostringstream desc;
   desc << "$0000 - $0FFF - 4K display data\n"
        << "                indirectly accessible to 6507\n"
        << "                via DPC+'s Data Fetcher registers\n"

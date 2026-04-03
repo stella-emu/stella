@@ -369,7 +369,7 @@ void DeveloperDialog::addTiaTab(const GUI::Font& font)
   wid.push_back(myBKColorWidget);
   ypos += lineHeight + VGAP * 1;
 
-  ostringstream ss;
+  std::ostringstream ss;
   ss << "Delayed VDEL" << ELLIPSIS << " swap for";
   mySwapLabel = new StaticTextWidget(myTab, font, HBORDER + INDENT * 2, ypos + 1, ss.view());
   mySwapLabel->setToolTip("VDELed objects react one color clock slower to updates.");

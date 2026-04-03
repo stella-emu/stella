@@ -71,7 +71,7 @@ class PhysicalJoystickHandler
       nlohmann::json mapping;
       PhysicalJoystickPtr joy;
 
-      friend ostream& operator<<(ostream& os, const StickInfo& si) {
+      friend std::ostream& operator<<(std::ostream& os, const StickInfo& si) {
         os << "  joy: " << si.joy << "\n  map: " << si.mapping;
         return os;
       }
@@ -169,7 +169,7 @@ class PhysicalJoystickHandler
     void setStickDefaultMapping(int stick, Event::Type event, EventMode mode,
                                 bool updateDefaults = false);
 
-    friend ostream& operator<<(ostream& os, const PhysicalJoystickHandler& jh);
+    friend std::ostream& operator<<(std::ostream& os, const PhysicalJoystickHandler& jh);
 
     static constexpr JoyDir convertAxisValue(int value) {
       return value == static_cast<int>(JoyDir::NONE)

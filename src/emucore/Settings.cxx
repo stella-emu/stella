@@ -48,7 +48,7 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Settings::Settings()
-  : myRespository{make_shared<KeyValueRepositoryNoop>()}
+  : myRespository{std::make_shared<KeyValueRepositoryNoop>()}
 {
   // If no version is recorded with the persisted settings, we set it to zero
   setPermanent(SETTINGS_VERSION_KEY, 0);
@@ -511,7 +511,7 @@ void Settings::validate()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Settings::usage()
 {
-  stringstream buf;
+  std::stringstream buf;
   buf << "\nStella version " << STELLA_VERSION
     << "\n\n"
     << "Usage: stella [options ...] romfile\n"

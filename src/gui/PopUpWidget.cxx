@@ -55,7 +55,7 @@ PopUpWidget::PopUpWidget(GuiObject* boss, const GUI::Font& font,
   myTextY   = (_h - _font.getFontHeight()) / 2;
   myArrowsY = (_h - _arrowHeight) / 2;
 
-  myMenu = make_unique<ContextMenu>(this, font, items, cmd,
+  myMenu = std::make_unique<ContextMenu>(this, font, items, cmd,
                                     w + dropDownWidth(font));
 }
 

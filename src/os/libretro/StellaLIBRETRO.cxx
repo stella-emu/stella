@@ -31,8 +31,8 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 StellaLIBRETRO::StellaLIBRETRO()
-  : rom_image{make_unique<uInt8[]>(getROMMax())},
-    audio_buffer{make_unique<Int16[]>(audio_buffer_max)}
+  : rom_image{std::make_unique<uInt8[]>(getROMMax())},
+    audio_buffer{std::make_unique<Int16[]>(audio_buffer_max)}
 {
 }
 
@@ -44,7 +44,7 @@ bool StellaLIBRETRO::create(bool logging)
   // build play system
   destroy();
 
-  myOSystem = make_unique<OSystemLIBRETRO>();
+  myOSystem = std::make_unique<OSystemLIBRETRO>();
 
   const Settings::Options options;
   myOSystem->initialize(options);

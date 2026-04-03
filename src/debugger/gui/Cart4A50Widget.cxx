@@ -268,7 +268,7 @@ void Cartridge4A50Widget::handleCommand(CommandSender* sender,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string Cartridge4A50Widget::bankState()
 {
-  ostringstream& buf = buffer();
+  std::ostringstream& buf = buffer();
 
   buf << "L/M/H = " << std::dec;
   if(myCart.myIsRomLow)

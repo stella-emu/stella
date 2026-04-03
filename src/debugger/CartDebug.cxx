@@ -186,7 +186,7 @@ int CartDebug::lastWriteBaseAddress()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string CartDebug::toString()
 {
-  ostringstream buf;
+  std::ostringstream buf;
   uInt32 bytesPerLine = 0;
 
   switch(Base::format())
@@ -423,7 +423,7 @@ string CartDebug::disassembleLines(uInt16 start, uInt16 lines) const
 {
   // Fill the string with disassembled data
   start &= 0xFFF;
-  ostringstream buffer;
+  std::ostringstream buffer;
 
   // First find the lines in the range, and determine the longest string
   const size_t list_size = myDisassembly.list.size();
@@ -663,7 +663,7 @@ bool CartDebug::removeLabel(const string& label)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool CartDebug::getLabel(ostream& buf, uInt16 addr, bool isRead,
+bool CartDebug::getLabel(std::ostream& buf, uInt16 addr, bool isRead,
                          int places, bool isRam) const
 {
   switch(addressType(addr))
@@ -782,7 +782,7 @@ bool CartDebug::getLabel(ostream& buf, uInt16 addr, bool isRead,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string CartDebug::getLabel(uInt16 addr, bool isRead, int places, bool isRam) const
 {
-  ostringstream buf;
+  std::ostringstream buf;
   getLabel(buf, addr, isRead, places, isRam);
   return buf.str();
 }
@@ -808,7 +808,7 @@ string CartDebug::loadListFile()
   if(!lst.isReadable())
     return DebuggerParser::red("list file \'" + lst.getShortPath() + "\' not found");
 
-  stringstream in;
+  std::stringstream in;
   try
   {
     if(lst.read(in) == 0)
@@ -829,7 +829,7 @@ string CartDebug::loadListFile()
       continue;
     else  // Search for constants
     {
-      stringstream buf(line);
+      std::stringstream buf(line);
 
       // Swallow first value, then get actual numerical value for address
       // We need to read the address as a string, since it may contain 'U'
@@ -872,7 +872,7 @@ string CartDebug::loadSymbolFile()
   myUserAddresses.clear();
   myUserLabels.clear();
 
-  stringstream in;
+  std::stringstream in;
   try
   {
     if(sym.read(in) == 0)
@@ -890,7 +890,7 @@ string CartDebug::loadSymbolFile()
 
     getline(in, label);
     if(!in.good())  continue;
-    stringstream buf(label);
+    std::stringstream buf(label);
     buf >> label >> hex >> value;
 
     if(!label.empty() && label[0] != '-' && value >= 0)
@@ -931,7 +931,7 @@ string CartDebug::loadConfigFile()
   if(!cfg.isReadable())
     return DebuggerParser::red("config file \'" + cfg.getShortPath() + "\' not found");
 
-  stringstream in;
+  std::stringstream in;
   try
   {
     cfg.read(in);
@@ -967,13 +967,13 @@ string CartDebug::loadConfigFile()
     {
       in.get();
       getline(in, line, ']');
-      stringstream buf(line);
+      std::stringstream buf(line);
       buf >> currentbank;
     }
     else  // Should be commands from this point on
     {
       getline(in, line);
-      stringstream buf;
+      std::stringstream buf;
       buf << line;
 
       string directive;
@@ -1034,7 +1034,7 @@ string CartDebug::loadConfigFile()
   }
   myDebugger.rom().invalidate();
 
-  stringstream retVal;
+  std::stringstream retVal;
   if(myConsole.cartridge().romBankCount() > 1)
     retVal << DebuggerParser::red("config file for multi-bank ROM not fully supported\n");
   retVal << "config file '" << cfg.getShortPath() << "' loaded OK";
@@ -1052,7 +1052,7 @@ string CartDebug::saveConfigFile()
   const string& md5 = myConsole.properties().get(PropType::Cart_MD5);
 
   // Store all bank information
-  stringstream out;
+  std::stringstream out;
   out << "// Stella.pro: \"" << name << "\"\n"
       << "// MD5: " << md5 << "\n\n";
   for(uInt32 b = 0; b < myConsole.cartridge().romBankCount(); ++b)
@@ -1061,7 +1061,7 @@ string CartDebug::saveConfigFile()
     getBankDirectives(out, myBankInfo[b]);
   }
 
-  stringstream retVal;
+  std::stringstream retVal;
   try
   {
     const FSNode romNode(myOSystem.romFile().getPathWithExt(".cfg"));
@@ -1076,7 +1076,7 @@ string CartDebug::saveConfigFile()
       retVal << DebuggerParser::red("config file for multi-bank ROM not fully supported\n");
     retVal << "config file '" << cfg.getShortPath() << "' saved OK";
   }
-  catch(const runtime_error& e)
+  catch(const std::runtime_error& e)
   {
     retVal << "Unable to save directives: " << e.what();
   }
@@ -1090,7 +1090,7 @@ string CartDebug::saveDisassembly(string path)
 
   // We can't print the header to the disassembly until it's actually
   // been processed; therefore buffer output to a string first
-  ostringstream buf;
+  std::ostringstream buf;
 
   // Use specific settings for disassembly output
   // This will most likely differ from what you see in the debugger
@@ -1222,7 +1222,7 @@ string CartDebug::saveDisassembly(string path)
 
   // Some boilerplate, similar to what DiStella adds
   const auto timeinfo = BSPF::localTime();
-  stringstream out;
+  std::stringstream out;
   out << "; Disassembly of " << myOSystem.romFile().getShortPath() << "\n"
       << "; Disassembled " << std::put_time(&timeinfo, "%c\n")
       << "; Using Stella " << STELLA_VERSION << "\n;\n"
@@ -1402,7 +1402,7 @@ string CartDebug::saveDisassembly(string path)
       path += ".asm";
 
   const FSNode node(path);
-  stringstream retVal;
+  std::ostringstream retVal;
   try
   {
     node.write(out);
@@ -1440,7 +1440,7 @@ string CartDebug::saveRom(string path)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string CartDebug::saveAccessFile(string path)
 {
-  stringstream out;
+  std::stringstream out;
   out << myConsole.tia().getAccessCounters();
   out << myConsole.riot().getAccessCounters();
   out << myConsole.cartridge().getAccessCounters();
@@ -1476,7 +1476,7 @@ string CartDebug::listConfig(int bank)
     endbank = startbank + 1;
   }
 
-  ostringstream buf;
+  std::ostringstream buf;
   buf << "(items marked '*' are user-defined)\n";
   for(uInt32 b = startbank; b < endbank; ++b)
   {
@@ -1517,7 +1517,7 @@ string CartDebug::clearConfig(int bank)
     myBankInfo[b].directiveList.clear();
   }
 
-  ostringstream buf;
+  std::ostringstream buf;
   if(count > 0)
     buf << "removed " << dec << count << " directives from "
         << dec << (endbank - startbank) << " banks";
@@ -1581,7 +1581,7 @@ CartDebug::AddrType CartDebug::addressType(uInt16 addr)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartDebug::getBankDirectives(ostream& buf, const BankInfo& info) const
+void CartDebug::getBankDirectives(std::ostream& buf, const BankInfo& info) const
 {
   // Start with the offset for this bank
   buf << "ORG " << Base::HEX4 << info.offset << '\n';
@@ -1613,7 +1613,7 @@ void CartDebug::getBankDirectives(ostream& buf, const BankInfo& info) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartDebug::accessTypeAsString(ostream& buf, uInt16 addr) const
+void CartDebug::accessTypeAsString(std::ostream& buf, uInt16 addr) const
 {
   if(!(addr & 0x1000))
   {
@@ -1660,7 +1660,7 @@ Device::AccessType CartDebug::accessTypeAbsolute(Device::AccessFlags flags)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartDebug::AccessTypeAsString(ostream& buf, Device::AccessType type)
+void CartDebug::AccessTypeAsString(std::ostream& buf, Device::AccessType type)
 {
   switch(type)
   {
@@ -1679,7 +1679,7 @@ void CartDebug::AccessTypeAsString(ostream& buf, Device::AccessType type)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartDebug::AccessTypeAsString(ostream& buf, Device::AccessFlags flags)
+void CartDebug::AccessTypeAsString(std::ostream& buf, Device::AccessFlags flags)
 {
   if(flags)
   {

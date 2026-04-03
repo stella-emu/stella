@@ -91,7 +91,7 @@ void CartridgeCTYWidget::handleCommand(CommandSender* sender,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string CartridgeCTYWidget::bankState()
 {
-  ostringstream& buf = buffer();
+  std::ostringstream& buf = buffer();
 
   static constexpr std::array<string_view, 8> spot = {
     "", "$FFF5", "$FFF6", "$FFF7", "$FFF8", "$FFF9", "$FFFA", "$FFFB"
@@ -117,7 +117,7 @@ uInt32 CartridgeCTYWidget::internalRamRPort(int start)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string CartridgeCTYWidget::internalRamDescription()
 {
-  ostringstream desc;
+  std::ostringstream desc;
   desc << "$F000 - $F03F used for Write Access\n"
        << "$F040 - $F07F used for Read Access";
 

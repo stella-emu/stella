@@ -86,32 +86,32 @@ void KeyValueRepositorySqlite::initialize()
     myColValue.c_str()
   );
 
-  myStmtInsert = make_unique<SqliteStatement>(myDb,
+  myStmtInsert = std::make_unique<SqliteStatement>(myDb,
     "INSERT OR REPLACE INTO `%s` VALUES (?, ?)",
     myTableName.c_str()
   );
 
-  myStmtSelect = make_unique<SqliteStatement>(myDb,
+  myStmtSelect = std::make_unique<SqliteStatement>(myDb,
     "SELECT `%s`, `%s` FROM `%s`",
     myColKey.c_str(),
     myColValue.c_str(),
     myTableName.c_str()
   );
 
-  myStmtDelete = make_unique<SqliteStatement>(myDb,
+  myStmtDelete = std::make_unique<SqliteStatement>(myDb,
     "DELETE FROM `%s` WHERE `%s` = ?",
     myTableName.c_str(),
     myColKey.c_str()
   );
 
-  myStmtSelectOne = make_unique<SqliteStatement>(myDb,
+  myStmtSelectOne = std::make_unique<SqliteStatement>(myDb,
     "SELECT `%s` FROM `%s` WHERE `%s` = ?",
     myColValue.c_str(),
     myTableName.c_str(),
     myColKey.c_str()
   );
 
-  myStmtCount = make_unique<SqliteStatement>(
+  myStmtCount = std::make_unique<SqliteStatement>(
     myDb,
     "SELECT COUNT(`%s`) FROM `%s` WHERE `%s` = ?",
     myColKey.c_str(),

@@ -534,7 +534,7 @@ void M6532::increaseAccessCounter(uInt16 address, bool isWrite)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string M6532::getAccessCounters() const
 {
-  ostringstream out;
+  std::ostringstream out;
 
   out << "RAM reads:\n";
   for(uInt16 addr = 0x00; addr < RAM_SIZE; ++addr)

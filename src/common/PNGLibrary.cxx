@@ -45,7 +45,7 @@ void PNGLibrary::loadImage(const string& filename, FBSurface& surface,
   const auto loadImageERROR = [&](string_view s) {
     if(png_ptr)
       png_destroy_read_struct(&png_ptr, info_ptr ? &info_ptr : nullptr, nullptr);
-    throw runtime_error(string{s});
+    throw std::runtime_error(string{s});
   };
 
   std::ifstream in(filename, std::ios_base::binary);
@@ -136,7 +136,7 @@ void PNGLibrary::saveImage(const string& filename, const VariantList& metaData)
 #if 0
   std::ofstream out(filename, std::ios_base::binary);
   if(!out.is_open())
-    throw runtime_error("ERROR: Couldn't create snapshot file");
+    throw std::runtime_error("ERROR: Couldn't create snapshot file");
 
   const FrameBuffer& fb = myOSystem.frameBuffer();
 
@@ -168,7 +168,7 @@ void PNGLibrary::saveImage(const string& filename, const FBSurface& surface,
 {
   std::ofstream out(filename, std::ios_base::binary);
   if(!out.is_open())
-    throw runtime_error("ERROR: Couldn't create snapshot file");
+    throw std::runtime_error("ERROR: Couldn't create snapshot file");
 
   // Do we want the entire surface or just a section?
   size_t width = rect.w(), height = rect.h();
@@ -201,7 +201,7 @@ void PNGLibrary::saveImageToDisk(std::ofstream& out, const vector<png_bytep>& ro
   const auto saveImageERROR = [&](string_view s) {
     if(png_ptr)
       png_destroy_write_struct(&png_ptr, &info_ptr);
-    throw runtime_error(string{s});
+    throw std::runtime_error(string{s});
   };
 
   // Create the PNG saving context structure
@@ -265,7 +265,7 @@ void PNGLibrary::toggleContinuousSnapshots(bool perFrame)
 {
   if(mySnapInterval == 0)
   {
-    ostringstream buf;
+    std::ostringstream buf;
     uInt32 interval = myOSystem.settings().getInt("ssinterval");
     if(perFrame)
     {
@@ -282,7 +282,7 @@ void PNGLibrary::toggleContinuousSnapshots(bool perFrame)
   }
   else
   {
-    ostringstream buf;
+    std::ostringstream buf;
     buf << "Disabling snapshots, generated "
       << (mySnapCounter / mySnapInterval)
       << " files";
@@ -314,7 +314,7 @@ void PNGLibrary::takeSnapshot(uInt32 number)
   // Check whether we want multiple snapshots created
   if(number > 0)
   {
-    ostringstream buf;
+    std::ostringstream buf;
     buf << sspath << "_" << std::hex << std::setw(8) << std::setfill('0')
         << number << ".png";
     filename = buf.view();
@@ -327,7 +327,7 @@ void PNGLibrary::takeSnapshot(uInt32 number)
     const FSNode node(filename);
     if(node.exists())
     {
-      ostringstream buf;
+      std::ostringstream buf;
       for(uInt32 i = 1; ;++i)
       {
         buf.str("");
@@ -344,7 +344,7 @@ void PNGLibrary::takeSnapshot(uInt32 number)
 
   // Some text fields to add to the PNG snapshot
   VariantList metaData;
-  ostringstream version;
+  std::ostringstream version;
   VarList::push_back(metaData, "Title", "Snapshot");
   version << "Stella " << STELLA_VERSION << " (Build " << STELLA_BUILD << ") ["
           << BSPF::ARCH << "]";
@@ -367,7 +367,7 @@ void PNGLibrary::takeSnapshot(uInt32 number)
         myOSystem.frameBuffer().tiaSurface().baseSurface(rect);
       PNGLibrary::saveImage(filename, surface, rect, metaData);
     }
-    catch(const runtime_error& e)
+    catch(const std::runtime_error& e)
     {
       message = e.what();
     }
@@ -382,7 +382,7 @@ void PNGLibrary::takeSnapshot(uInt32 number)
     {
       PNGLibrary::saveImage(filename, metaData);
     }
-    catch(const runtime_error& e)
+    catch(const std::runtime_error& e)
     {
       message = e.what();
     }
@@ -503,13 +503,13 @@ void PNGLibrary::png_io_flush(png_structp ctx)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PNGLibrary::png_user_warn(png_structp ctx, png_const_charp str)
 {
-  throw runtime_error(string("PNGLibrary warning: ") + str);
+  throw std::runtime_error(string("PNGLibrary warning: ") + str);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PNGLibrary::png_user_error(png_structp ctx, png_const_charp str)
 {
-  throw runtime_error(string("PNGLibrary error: ") + str);
+  throw std::runtime_error(string("PNGLibrary error: ") + str);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

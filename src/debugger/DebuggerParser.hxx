@@ -67,8 +67,8 @@ class DebuggerParser
     bool validateArgs(int cmd);
     string eval();
     string saveScriptFile(string file);
-    static void saveDump(const FSNode& node, const stringstream& out,
-                         ostringstream& result);
+    static void saveDump(const FSNode& node, const std::stringstream& out,
+                         std::ostringstream& result);
     const string& cartName() const;
 
   private:
@@ -125,7 +125,7 @@ class DebuggerParser
     Settings& settings;
 
     // The results of the currently running command
-    ostringstream commandResult;
+    std::ostringstream commandResult;
 
     // currently execute command id
     int myCommand{0};

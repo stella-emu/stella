@@ -85,7 +85,7 @@ void FrameManager::onNextLine()
       break;
 
     default:
-      throw runtime_error("frame manager: invalid state");
+      throw std::runtime_error("frame manager: invalid state");
   }
 
   if (myState == State::frame && previousState == State::frame) ++myY;
@@ -264,7 +264,7 @@ void FrameManager::recalculateMetrics() {
       break;
 
     default:
-      throw runtime_error("frame manager: invalid TV mode");
+      throw std::runtime_error("frame manager: invalid TV mode");
   }
 
   myHeight = BSPF::clamp<uInt32>(roundf(static_cast<float>(baseHeight) * (1.F - myVSizeAdjust / 100.F)), 0, myFrameLines);

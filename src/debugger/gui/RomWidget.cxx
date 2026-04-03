@@ -179,7 +179,7 @@ void RomWidget::setPC(int disasm_line)
 
   if(address != 0)
   {
-    ostringstream command;
+    std::ostringstream command;
     command << "pc #" << address;
     instance().debugger().run(command.view());
   }
@@ -192,7 +192,7 @@ void RomWidget::runtoPC(int disasm_line)
 
   if(address != 0)
   {
-    ostringstream command;
+    std::ostringstream command;
     command << "runtopc #" << address;
     const string& msg = instance().debugger().run(command.view());
     instance().frameBuffer().showTextMessage(msg);
@@ -206,7 +206,7 @@ void RomWidget::setTimer(int disasm_line)
 
   if(address != 0)
   {
-    ostringstream command;
+    std::ostringstream command;
     command << "timer #" << address << " " << instance().debugger().cartDebug().getBank(address);
     const string& msg = instance().debugger().run(command.view());
     instance().frameBuffer().showTextMessage(msg);
@@ -236,7 +236,7 @@ void RomWidget::patchROM(int disasm_line, string_view bytes,
 
   if(address != 0)
   {
-    ostringstream command;
+    std::ostringstream command;
 
     // Temporarily set to correct base, so we don't have to prefix each byte
     // with the type of data

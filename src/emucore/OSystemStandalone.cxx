@@ -21,7 +21,7 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void OSystemStandalone::initPersistence(FSNode& basedir)
 {
-  myStellaDb = make_shared<StellaDb>(basedir.getPath(), "stella");
+  myStellaDb = std::make_shared<StellaDb>(basedir.getPath(), "stella");
   myStellaDb->initialize();
 }
 

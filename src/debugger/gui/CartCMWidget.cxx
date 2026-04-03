@@ -222,7 +222,7 @@ void CartridgeCMWidget::handleCommand(CommandSender* sender,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string CartridgeCMWidget::bankState()
 {
-  ostringstream& buf = buffer();
+  std::ostringstream& buf = buffer();
 
   buf << "Bank = " << std::dec << myCart.getBank()
       << ", RAM is" << ((myCart.mySWCHA & 0x10) ? " Inactive" :
@@ -247,7 +247,7 @@ uInt32 CartridgeCMWidget::internalRamRPort(int start)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string CartridgeCMWidget::internalRamDescription()
 {
-  ostringstream desc;
+  std::ostringstream desc;
   desc << "$F800 - $FFFF used for Exclusive Read\n"
        << "              or Exclusive Write Access";
 

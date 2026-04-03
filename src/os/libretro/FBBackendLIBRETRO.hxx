@@ -80,7 +80,7 @@ class FBBackendLIBRETRO : public FBBackend
       createSurface(uInt32 w, uInt32 h, ScalingInterpolation,
                     const uInt32*) const override
     {
-      return make_unique<FBSurfaceLIBRETRO>(w, h);
+      return std::make_unique<FBSurfaceLIBRETRO>(w, h);
     }
 
     /**

@@ -30,7 +30,7 @@ CartridgeF4Widget::CartridgeF4Widget(
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string CartridgeF4Widget::description()
 {
-  ostringstream info;
+  std::ostringstream info;
 
   info << "Standard F4 cartridge, eight 4K banks\n"
        << CartridgeEnhancedWidget::description();

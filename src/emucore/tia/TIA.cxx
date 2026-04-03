@@ -1303,7 +1303,7 @@ bool TIA::toggleJitter(uInt8 mode)
       break;
 
     default:
-      throw runtime_error("invalid argument for toggleJitter");
+      throw std::runtime_error("invalid argument for toggleJitter");
   }
 
   if (myFrameManager) myFrameManager->enableJitter(myEnableJitter);
@@ -1330,7 +1330,7 @@ void TIA::setJitterRecoveryFactor(Int32 factor)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 shared_ptr<DelayQueueIterator> TIA::delayQueueIterator() const
 {
-  return make_shared<DelayQueueIteratorImpl<delayQueueLength, delayQueueSize>>(
+  return std::make_shared<DelayQueueIteratorImpl<delayQueueLength, delayQueueSize>>(
     myDelayQueue
   );
 }
@@ -1366,7 +1366,7 @@ void TIA::updateEmulation()
   const uInt64 systemCycles = mySystem->cycles();
 
   if (mySubClock > TIAConstants::CYCLE_CLOCKS - 1)
-    throw runtime_error("subclock exceeds range");
+    throw std::runtime_error("subclock exceeds range");
 
   const uInt32 cyclesToRun = TIAConstants::CYCLE_CLOCKS *
       static_cast<uInt32>(systemCycles - myLastCycle) + mySubClock;
@@ -2076,7 +2076,7 @@ void TIA::updateAnalogReadout(uInt8 idx)
       break;
 
     default:
-      throw runtime_error("invalid analog input");
+      throw std::runtime_error("invalid analog input");
   }
 
   myAnalogReadouts[idx].update(
@@ -2319,7 +2319,7 @@ void TIA::increaseAccessCounter(uInt16 address, bool isWrite)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string TIA::getAccessCounters() const
 {
-  ostringstream out;
+  std::ostringstream out;
 
   out << "TIA reads:\n";
   for(uInt16 addr = 0x00; addr < TIA_READ_SIZE; ++addr)

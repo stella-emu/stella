@@ -39,17 +39,17 @@ void ZipHandler::open(const string& filename)
 
     // Was already initialized; we just need to re-open it
     if(!myZip->open())
-      throw runtime_error(errorMessage(ZipError::FILE_ERROR));
+      throw std::runtime_error(errorMessage(ZipError::FILE_ERROR));
   }
   else
   {
     // Allocate memory for the ZipFile structure
-    try        { ptr = make_unique<ZipFile>(filename); }
-    catch(...) { throw runtime_error(errorMessage(ZipError::OUT_OF_MEMORY)); }
+    try        { ptr = std::make_unique<ZipFile>(filename); }
+    catch(...) { throw std::runtime_error(errorMessage(ZipError::OUT_OF_MEMORY)); }
 
     // Open the file and initialize it
     if(!ptr->open())
-      throw runtime_error(errorMessage(ZipError::FILE_ERROR));
+      throw std::runtime_error(errorMessage(ZipError::FILE_ERROR));
     ptr->initialize();
 
     myZip = std::move(ptr);
@@ -94,7 +94,7 @@ std::tuple<string, size_t> ZipHandler::next()
   {
     const ZipHeader* const header = myZip->nextFile();
     if(!header)
-      throw runtime_error(errorMessage(ZipError::FILE_CORRUPT));
+      throw std::runtime_error(errorMessage(ZipError::FILE_CORRUPT));
     else if(header->uncompressedLength == 0)
       return next();
     else
@@ -111,22 +111,22 @@ uInt64 ZipHandler::decompress(ByteBuffer& image)
     try
     {
       const uInt64 length = myZip->myHeader.uncompressedLength;
-      image = make_unique<uInt8[]>(length);
+      image = std::make_unique<uInt8[]>(length);
 
       myZip->decompress(image, length);
       return length;
     }
     catch(const ZipError& err)
     {
-      throw runtime_error(errorMessage(err));
+      throw std::runtime_error(errorMessage(err));
     }
     catch(...)
     {
-      throw runtime_error(errorMessage(ZipError::OUT_OF_MEMORY));
+      throw std::runtime_error(errorMessage(ZipError::OUT_OF_MEMORY));
     }
   }
   else
-    throw runtime_error("Invalid ZIP archive");
+    throw std::runtime_error("Invalid ZIP archive");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -202,7 +202,7 @@ void ZipHandler::addToCache()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ZipHandler::ZipFile::ZipFile(const string& filename)
   : myFilename{filename},
-    myBuffer{make_unique<uInt8[]>(DECOMPRESS_BUFSIZE)}
+    myBuffer{std::make_unique<uInt8[]>(DECOMPRESS_BUFSIZE)}
 {
   std::fill(myBuffer.get(), myBuffer.get() + DECOMPRESS_BUFSIZE, 0);
 }
@@ -210,7 +210,7 @@ ZipHandler::ZipFile::ZipFile(const string& filename)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool ZipHandler::ZipFile::open()
 {
-  myStream.open(myFilename, fstream::in | fstream::binary);
+  myStream.open(myFilename, std::fstream::in | std::fstream::binary);
   if(!myStream.is_open())
   {
     myLength = 0;
@@ -233,19 +233,19 @@ void ZipHandler::ZipFile::initialize()
   // Verify that we can work with this zipfile (no disk spanning allowed)
   if(myEcd.diskNumber != myEcd.cdStartDiskNumber ||
      myEcd.cdDiskEntries != myEcd.cdTotalEntries)
-    throw runtime_error(errorMessage(ZipError::UNSUPPORTED));
+    throw std::runtime_error(errorMessage(ZipError::UNSUPPORTED));
 
   // Allocate memory for the central directory
-  try        { myCd = make_unique<uInt8[]>(myEcd.cdSize + 1); }
-  catch(...) { throw runtime_error(errorMessage(ZipError::OUT_OF_MEMORY)); }
+  try        { myCd = std::make_unique<uInt8[]>(myEcd.cdSize + 1); }
+  catch(...) { throw std::runtime_error(errorMessage(ZipError::OUT_OF_MEMORY)); }
 
   // Read the central directory
   uInt64 read_length = 0;
   const bool success = readStream(myCd, myEcd.cdStartDiskOffset, myEcd.cdSize, read_length);
   if(!success)
-    throw runtime_error(errorMessage(ZipError::FILE_ERROR));
+    throw std::runtime_error(errorMessage(ZipError::FILE_ERROR));
   else if(read_length != myEcd.cdSize)
-    throw runtime_error(errorMessage(ZipError::FILE_TRUNCATED));
+    throw std::runtime_error(errorMessage(ZipError::FILE_TRUNCATED));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -269,14 +269,14 @@ void ZipHandler::ZipFile::readEcd()
     buflen = std::min(buflen, myLength);
 
     // Allocate buffer
-    const ByteBuffer buffer = make_unique<uInt8[]>(buflen + 1);
+    const ByteBuffer buffer = std::make_unique<uInt8[]>(buflen + 1);
     if(buffer == nullptr)
-      throw runtime_error(errorMessage(ZipError::OUT_OF_MEMORY));
+      throw std::runtime_error(errorMessage(ZipError::OUT_OF_MEMORY));
 
     // Read in one buffers' worth of data
     const bool success = readStream(buffer, myLength - buflen, buflen, read_length);
     if(!success || read_length != buflen)
-      throw runtime_error(errorMessage(ZipError::FILE_ERROR));
+      throw std::runtime_error(errorMessage(ZipError::FILE_ERROR));
 
     // Find the ECD signature
     Int32 offset = 0;
@@ -305,9 +305,9 @@ void ZipHandler::ZipFile::readEcd()
     if(buflen < myLength)
       buflen *= 2;
     else
-      throw runtime_error(errorMessage(ZipError::BAD_SIGNATURE));
+      throw std::runtime_error(errorMessage(ZipError::BAD_SIGNATURE));
   }
-  throw runtime_error(errorMessage(ZipError::OUT_OF_MEMORY));
+  throw std::runtime_error(errorMessage(ZipError::OUT_OF_MEMORY));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -359,11 +359,11 @@ void ZipHandler::ZipFile::decompress(const ByteBuffer& out, uInt64 length)
 {
   // If we don't have enough buffer, error
   if(length < myHeader.uncompressedLength)
-    throw runtime_error(errorMessage(ZipError::BUFFER_TOO_SMALL));
+    throw std::runtime_error(errorMessage(ZipError::BUFFER_TOO_SMALL));
 
   // Make sure the info in the header aligns with what we know
   if(myHeader.startDiskNumber != myEcd.diskNumber)
-    throw runtime_error(errorMessage(ZipError::UNSUPPORTED));
+    throw std::runtime_error(errorMessage(ZipError::UNSUPPORTED));
 
   // Get the compressed data offset
   const uInt64 offset = getCompressedDataOffset();
@@ -381,10 +381,10 @@ void ZipHandler::ZipFile::decompress(const ByteBuffer& out, uInt64 length)
 
     case 14:
       // FIXME - LZMA format not yet supported
-      throw runtime_error(errorMessage(ZipError::LZMA_UNSUPPORTED));
+      throw std::runtime_error(errorMessage(ZipError::LZMA_UNSUPPORTED));
 
     default:
-      throw runtime_error(errorMessage(ZipError::UNSUPPORTED));
+      throw std::runtime_error(errorMessage(ZipError::UNSUPPORTED));
   }
 }
 
@@ -396,20 +396,20 @@ uInt64 ZipHandler::ZipFile::getCompressedDataOffset()
   if(myHeader.startDiskNumber != myEcd.diskNumber ||
      myHeader.versionNeeded > 63 || flags.patchData() ||
      flags.encrypted() || flags.strongEncryption())
-    throw runtime_error(errorMessage(ZipError::UNSUPPORTED));
+    throw std::runtime_error(errorMessage(ZipError::UNSUPPORTED));
 
   // Read the fixed-sized part of the local file header
   uInt64 read_length = 0;
   const bool success = readStream(myBuffer, myHeader.localHeaderOffset, 0x1e, read_length);
   if(!success)
-    throw runtime_error(errorMessage(ZipError::FILE_ERROR));
+    throw std::runtime_error(errorMessage(ZipError::FILE_ERROR));
   else if(read_length != LocalFileHeaderReader::minimumLength())
-    throw runtime_error(errorMessage(ZipError::FILE_TRUNCATED));
+    throw std::runtime_error(errorMessage(ZipError::FILE_TRUNCATED));
 
   // Compute the final offset
   const LocalFileHeaderReader reader(&myBuffer[0]);
   if(!reader.signatureCorrect())
-    throw runtime_error(errorMessage(ZipError::BAD_SIGNATURE));
+    throw std::runtime_error(errorMessage(ZipError::BAD_SIGNATURE));
 
   return myHeader.localHeaderOffset + reader.totalLength();
 }
@@ -422,9 +422,9 @@ void ZipHandler::ZipFile::decompressDataType0(
   uInt64 read_length = 0;
   const bool success = readStream(out, offset, myHeader.compressedLength, read_length);
   if(!success)
-    throw runtime_error(errorMessage(ZipError::FILE_ERROR));
+    throw std::runtime_error(errorMessage(ZipError::FILE_ERROR));
   else if(read_length != myHeader.compressedLength)
-    throw runtime_error(errorMessage(ZipError::FILE_TRUNCATED));
+    throw std::runtime_error(errorMessage(ZipError::FILE_TRUNCATED));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -445,7 +445,7 @@ void ZipHandler::ZipFile::decompressDataType8(
   // Initialize the decompressor
   int zerr = inflateInit2(&stream, -MAX_WBITS);
   if(zerr != Z_OK)
-    throw runtime_error(errorMessage(ZipError::DECOMPRESS_ERROR));
+    throw std::runtime_error(errorMessage(ZipError::DECOMPRESS_ERROR));
 
   // Loop until we're done
   for(;;)
@@ -457,7 +457,7 @@ void ZipHandler::ZipFile::decompressDataType8(
     if(!success)
     {
       inflateEnd(&stream);
-      throw runtime_error(errorMessage(ZipError::FILE_ERROR));
+      throw std::runtime_error(errorMessage(ZipError::FILE_ERROR));
     }
     offset += read_length;
 
@@ -465,7 +465,7 @@ void ZipHandler::ZipFile::decompressDataType8(
     if(read_length == 0 && input_remaining > 0)
     {
       inflateEnd(&stream);
-      throw runtime_error(errorMessage(ZipError::FILE_TRUNCATED));
+      throw std::runtime_error(errorMessage(ZipError::FILE_TRUNCATED));
     }
 
     // Fill out the input data
@@ -484,18 +484,18 @@ void ZipHandler::ZipFile::decompressDataType8(
     else if(zerr != Z_OK)
     {
       inflateEnd(&stream);
-      throw runtime_error(errorMessage(ZipError::DECOMPRESS_ERROR));
+      throw std::runtime_error(errorMessage(ZipError::DECOMPRESS_ERROR));
     }
   }
 
   // Finish decompression
   zerr = inflateEnd(&stream);
   if(zerr != Z_OK)
-    throw runtime_error(errorMessage(ZipError::DECOMPRESS_ERROR));
+    throw std::runtime_error(errorMessage(ZipError::DECOMPRESS_ERROR));
 
   // If anything looks funny, report an error
   if(stream.avail_out > 0 || input_remaining > 0)
-    throw runtime_error(errorMessage(ZipError::DECOMPRESS_ERROR));
+    throw std::runtime_error(errorMessage(ZipError::DECOMPRESS_ERROR));
 }
 
 #endif  /* ZIP_SUPPORT */

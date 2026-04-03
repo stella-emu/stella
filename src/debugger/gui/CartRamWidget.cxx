@@ -42,7 +42,7 @@ CartRamWidget::CartRamWidget(
             fwidth = w - lwidth - 20;
 
   EditTextWidget* etw = nullptr;
-  ostringstream buf;
+  std::ostringstream buf;
   constexpr int xpos = 2;
   int ypos = 8;
 

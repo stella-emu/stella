@@ -50,7 +50,7 @@ class FSNodeLIBRETRO : public AbstractFSNode
     AbstractFSNodePtr getParent() const override;
 
     size_t read(ByteBuffer& image, size_t) const override;
-    size_t read(stringstream& buffer) const override;
+    size_t read(std::stringstream& buffer) const override;
 
   protected:
     string _name;

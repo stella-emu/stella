@@ -31,7 +31,7 @@ CartridgeE7::CartridgeE7(const ByteBuffer& image, size_t size,
 void CartridgeE7::initialize(const ByteBuffer& image, size_t size)
 {
   // Allocate array for the ROM image
-  myImage = make_unique<uInt8[]>(size);
+  myImage = std::make_unique<uInt8[]>(size);
 
   // Copy the ROM image into my buffer
   std::copy_n(image.get(), std::min<size_t>(romSize(), size), myImage.get());
@@ -42,7 +42,7 @@ void CartridgeE7::initialize(const ByteBuffer& image, size_t size)
 
   myRAMBank = romBankCount() - 1;  // NOLINT
 
-  myPlusROM = make_unique<PlusROM>(mySettings, *this);
+  myPlusROM = std::make_unique<PlusROM>(mySettings, *this);
 
   // Determine whether we have a PlusROM cart
   myPlusROM->initialize(myImage, mySize);

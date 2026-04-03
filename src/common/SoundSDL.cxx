@@ -44,7 +44,7 @@ SoundSDL::SoundSDL(OSystem& osystem, AudioSettings& audioSettings)
 
   if(!SDL_InitSubSystem(SDL_INIT_AUDIO))
   {
-    ostringstream buf;
+    std::ostringstream buf;
 
     buf << "WARNING: Failed to initialize SDL audio system! \n"
         << "         " << SDL_GetError() << '\n';
@@ -82,7 +82,7 @@ bool SoundSDL::openDevice()
 
   auto SOUND_ERROR = [this]() -> bool
   {
-    ostringstream buf;
+    std::ostringstream buf;
 
     buf << "WARNING: Couldn't open SDL audio device! \n"
         << "         " << SDL_GetError() << '\n';
@@ -241,7 +241,7 @@ void SoundSDL::adjustVolume(int direction)
   setVolume(percent);
 
   // Now show an onscreen message
-  ostringstream strval;
+  std::ostringstream strval;
   percent ? strval << percent << "%" : strval << "Off";
   myOSystem.frameBuffer().showGaugeMessage("Volume", strval.view(), percent);
 }
@@ -249,7 +249,7 @@ void SoundSDL::adjustVolume(int direction)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string SoundSDL::about() const
 {
-  ostringstream buf;
+  std::ostringstream buf;
   buf << "Sound enabled:\n"
       << "  Volume:   " << myAudioSettings.volume() << "%\n"
       << "  Channels: " << static_cast<uInt32>(mySpec.channels)
@@ -329,22 +329,22 @@ void SoundSDL::initResampler()
   {
     using enum AudioSettings::ResamplingQuality;
     case nearestNeighbour:
-      myResampler = make_unique<SimpleResampler>(formatFrom, formatTo,
+      myResampler = std::make_unique<SimpleResampler>(formatFrom, formatTo,
                                                  nextFragmentCallback);
       break;
 
     case lanczos_2:
-      myResampler = make_unique<LanczosResampler>(formatFrom, formatTo,
+      myResampler = std::make_unique<LanczosResampler>(formatFrom, formatTo,
                                                   nextFragmentCallback, 2);
       break;
 
     case lanczos_3:
-      myResampler = make_unique<LanczosResampler>(formatFrom, formatTo,
+      myResampler = std::make_unique<LanczosResampler>(formatFrom, formatTo,
                                                   nextFragmentCallback, 3);
       break;
 
     default:
-      throw runtime_error("invalid resampling quality");
+      throw std::runtime_error("invalid resampling quality");
   }
 }
 

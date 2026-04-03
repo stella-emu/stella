@@ -133,10 +133,10 @@ shared_ptr<Cheat> CheatManager::createCheat(string_view name, string_view code) 
   // Create new cheat based on string length
   switch(code.size())
   {
-    case 4:  return make_shared<RamCheat>(myOSystem, name, code);
-    case 6:  return make_shared<CheetahCheat>(myOSystem, name, code);
+    case 4:  return std::make_shared<RamCheat>(myOSystem, name, code);
+    case 6:  return std::make_shared<CheetahCheat>(myOSystem, name, code);
     case 7:  [[fallthrough]];
-    case 8:  return make_shared<BankRomCheat>(myOSystem, name, code);
+    case 8:  return std::make_shared<BankRomCheat>(myOSystem, name, code);
     default: return nullptr;
   }
 }
@@ -215,7 +215,7 @@ void CheatManager::enable(string_view code, bool enable)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CheatManager::loadCheatDatabase()
 {
-  stringstream in;
+  std::stringstream in;
   try         { myOSystem.cheatFile().read(in); }
   catch(...)  { return; }
 
@@ -253,7 +253,7 @@ void CheatManager::saveCheatDatabase()
   if(!myListIsDirty)
     return;
 
-  stringstream out;
+  std::stringstream out;
   for(const auto& [md5, cheat]: myCheatMap)
     out << "\"" << md5 << "\" " << "\"" << cheat << "\"\n";
 
@@ -288,7 +288,7 @@ void CheatManager::loadCheats(string_view md5sum)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CheatManager::saveCheats(string_view md5sum)
 {
-  ostringstream cheats;
+  std::ostringstream cheats;
   for(uInt32 i = 0; i < myCheatList.size(); ++i)
   {
     cheats << myCheatList[i]->name() << ":"

@@ -42,7 +42,7 @@ namespace {
   constexpr uInt32 ARM_RUNAHED_MIN = 3;
   constexpr uInt32 ARM_RUNAHED_MAX = 6;
 
-  void dumpElf(const ElfFile& elf, ostream& stream)
+  void dumpElf(const ElfFile& elf, std::ostream& stream)
   {
     stream << "\nELF sections:\n\n";
 
@@ -73,7 +73,7 @@ namespace {
     }
   }
 
-  void dumpLinkage(const ElfParser& parser, const ElfLinker& linker, ostream& stream)
+  void dumpLinkage(const ElfParser& parser, const ElfLinker& linker, std::ostream& stream)
   {
     stream << std::hex << std::setfill('0');
 
@@ -159,7 +159,7 @@ namespace {
     constexpr size_t IMAGE_SIZE = 4L * 0x00100000;
     static const char* IMAGE_FILE_NAME = "elf_executable_image.bin";
 
-    auto binary = make_unique<uInt8[]>(IMAGE_SIZE);
+    auto binary = std::make_unique<uInt8[]>(IMAGE_SIZE);
     std::memset(binary.get(), 0, IMAGE_SIZE);
 
     for (auto segment: {ElfLinker::SegmentType::text, ElfLinker::SegmentType::data, ElfLinker::SegmentType::rodata})
@@ -204,7 +204,7 @@ namespace {
         return ST_PAL60_2600;
 
       default:
-        throw runtime_error("invalid system type");
+        throw std::runtime_error("invalid system type");
     }
   }
 
@@ -218,7 +218,7 @@ namespace {
         return 312 * 76 * 50;
 
       default:
-        throw runtime_error("invalid console timing");
+        throw std::runtime_error("invalid console timing");
     }
   }
 }  // namespace
@@ -231,10 +231,10 @@ CartridgeELF::CartridgeELF(const ByteBuffer& image, size_t size, string_view md5
     myTransactionQueue{TRANSACTION_QUEUE_CAPACITY},
     myVcsLib{myTransactionQueue}
 {
-  myImage = make_unique<uInt8[]>(size);
+  myImage = std::make_unique<uInt8[]>(size);
   std::memcpy(myImage.get(), image.get(), size);
 
-  myLastPeekResult = make_unique<uInt8[]>(0x1000);
+  myLastPeekResult = std::make_unique<uInt8[]>(0x1000);
   std::fill_n(myLastPeekResult.get(), 0x1000, 0);
 
   createRomAccessArrays(0x1000);
@@ -397,7 +397,7 @@ CartDebugWidget* CartridgeELF::infoWidget(
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string CartridgeELF::getDebugLog() const
 {
-  ostringstream s;
+  std::ostringstream s;
 
   s
     << "ARM entrypoint: 0x"
@@ -416,7 +416,7 @@ string CartridgeELF::getDebugLog() const
 std::pair<unique_ptr<uInt8[]>, size_t> CartridgeELF::getArmImage() const
 {
   constexpr size_t imageSize = ADDR_TABLES_BASE + TABLES_SIZE;
-  unique_ptr<uInt8[]> image = make_unique<uInt8[]>(imageSize);
+  unique_ptr<uInt8[]> image = std::make_unique<uInt8[]>(imageSize);
 
   memset(image.get(), 0, imageSize);
 
@@ -463,35 +463,35 @@ void CartridgeELF::parseAndLinkElf()
   try {
     myElfParser.parse(myImage.get(), myImageSize);
   } catch (const ElfParser::ElfParseError& e) {
-    throw runtime_error("failed to initialize ELF: " + string(e.what()));
+    throw std::runtime_error("failed to initialize ELF: " + string(e.what()));
   }
 
   if (dump) dumpElf(myElfParser, cout);
 
-  myLinker = make_unique<ElfLinker>(ADDR_TEXT_BASE, ADDR_DATA_BASE, ADDR_RODATA_BASE, myElfParser);
+  myLinker = std::make_unique<ElfLinker>(ADDR_TEXT_BASE, ADDR_DATA_BASE, ADDR_RODATA_BASE, myElfParser);
   if (!(mySettings.getBool("dev.settings") && mySettings.getBool("dev.thumb.trapfatal")))
     myLinker->setUndefinedSymbolDefault(0);
 
   try {
     myLinker->link(externalSymbols(SystemType::ntsc));
   } catch (const ElfLinker::ElfLinkError& e) {
-    throw runtime_error("failed to link ELF: " + string(e.what()));
+    throw std::runtime_error("failed to link ELF: " + string(e.what()));
   }
 
   try {
     myArmEntrypoint = myLinker->findRelocatedSymbol("elf_main").value;
   } catch (const ElfLinker::ElfSymbolResolutionError& e) {
-    throw runtime_error("failed to resolve ARM entrypoint" + string(e.what()));
+    throw std::runtime_error("failed to resolve ARM entrypoint" + string(e.what()));
   }
 
   if (myLinker->getSegmentSize(ElfLinker::SegmentType::text) > TEXT_SIZE)
-    throw runtime_error("text segment too large");
+    throw std::runtime_error("text segment too large");
 
   if (myLinker->getSegmentSize(ElfLinker::SegmentType::data) > DATA_SIZE)
-    throw runtime_error("data segment too large");
+    throw std::runtime_error("data segment too large");
 
   if (myLinker->getSegmentSize(ElfLinker::SegmentType::rodata) > RODATA_SIZE)
-    throw runtime_error("rodata segment too large");
+    throw std::runtime_error("rodata segment too large");
 
   if (dump) {
     dumpLinkage(myElfParser, *myLinker, cout);
@@ -508,11 +508,11 @@ void CartridgeELF::parseAndLinkElf()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeELF::allocationSections()
 {
-  mySectionStack = make_unique<uInt8[]>(STACK_SIZE);
-  mySectionText = make_unique<uInt8[]>(TEXT_SIZE);
-  mySectionData = make_unique<uInt8[]>(DATA_SIZE);
-  mySectionRodata = make_unique<uInt8[]>(RODATA_SIZE);
-  mySectionTables = make_unique<uInt8[]>(TABLES_SIZE);
+  mySectionStack = std::make_unique<uInt8[]>(STACK_SIZE);
+  mySectionText = std::make_unique<uInt8[]>(TEXT_SIZE);
+  mySectionData = std::make_unique<uInt8[]>(DATA_SIZE);
+  mySectionRodata = std::make_unique<uInt8[]>(RODATA_SIZE);
+  mySectionTables = std::make_unique<uInt8[]>(TABLES_SIZE);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -584,7 +584,7 @@ void CartridgeELF::callFn(uInt32 ptr, uInt32 sp)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeELF::callMain()
 {
-  if (!mySystem) throw runtime_error("cartridge not installed");
+  if (!mySystem) throw std::runtime_error("cartridge not installed");
 
   uInt32 sp = ADDR_STACK_BASE + STACK_SIZE;
   CortexM0::err_t err = 0;
@@ -599,7 +599,7 @@ void CartridgeELF::callMain()
   sp -= 4;
   err |= myCortexEmu.write32(sp, getSystemTypeParam(myConfigSystemType));
 
-  if (err) throw runtime_error("unable to setup main args");
+  if (err) throw std::runtime_error("unable to setup main args");
 
   callFn(myArmEntrypoint, sp);
 }
@@ -632,7 +632,7 @@ void CartridgeELF::runArm()
     }
 
     if (CortexM0::getErrCustom(err) != ERR_STOP_EXECUTION) {
-      ostringstream s;
+      std::ostringstream s;
 
       s
         << "error executing ARM code (PC = 0x"
@@ -702,7 +702,7 @@ CortexM0::err_t CartridgeELF::BusFallbackDelegate::handleError(
 ) const {
   if (myErrorsAreFatal) return CortexM0::errIntrinsic(err, address);
 
-  stringstream s;
+  std::ostringstream s;
 
   s
     << "invalid " << accessType << " access to 0x"

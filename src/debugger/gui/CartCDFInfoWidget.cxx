@@ -23,7 +23,7 @@ CartridgeCDFInfoWidget::CartridgeCDFInfoWidget(
     int x, int y, int w, int h, CartridgeCDF& cart)
   : CartDebugWidget(boss, lfont, nfont, x, y, w, h)
 {
-  ostringstream info;
+  std::ostringstream info;
 
   info << describeCDFVersion(cart.myCDFSubtype) << " cartridge\n"
        << (cart.romSize() / 1024) << "K ROM\n"
@@ -66,6 +66,6 @@ string CartridgeCDFInfoWidget::describeCDFVersion(CartridgeCDF::CDFSubtype subty
     case CDF1:      return "CDF (v1)";
     case CDFJ:      return "CDFJ";
     case CDFJplus:  return "CDFJ+";
-    default:        throw runtime_error("unreachable");
+    default:        throw std::runtime_error("unreachable");
   }
 }

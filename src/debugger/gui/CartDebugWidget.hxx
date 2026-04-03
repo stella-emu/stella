@@ -79,11 +79,11 @@ class CartDebugWidget : public Widget, public CommandSender
     // we may as well make them protected variables
     int myFontWidth{0}, myFontHeight{0}, myLineHeight{0}, myButtonHeight{0};
 
-    ostringstream& buffer() { myBuffer.str(""); return myBuffer; }
+    std::ostringstream& buffer() { myBuffer.str(""); return myBuffer; }
 
   private:
     StringListWidget* myDesc{nullptr};
-    ostringstream myBuffer;
+    std::ostringstream myBuffer;
 
   private:
     // Following constructors and assignment operators not supported

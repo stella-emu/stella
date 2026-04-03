@@ -138,7 +138,7 @@ void JoystickDialog::handleCommand(CommandSender* sender, int cmd, int data, int
       const bool isPlugged = myJoyIDs[data] >= 0;
       if(isPlugged)
       {
-        ostringstream buf;
+        std::ostringstream buf;
         buf << "C" << myJoyIDs[data];
         myJoyText->setText(buf.view());
         myJoyPort->setSelected(myJoyPorts[data]);

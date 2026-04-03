@@ -86,7 +86,7 @@ void CartridgeELFWidget::saveArmImage(const FSNode& node)
     const auto [buffer, size] = myCart.getArmImage();
 
     const size_t sizeWritten = node.write(buffer, size);
-    if (sizeWritten != size) throw runtime_error("failed to write arm image");
+    if (sizeWritten != size) throw std::runtime_error("failed to write arm image");
 
     instance().frameBuffer().showTextMessage("Successfully exported ARM executable image", MessagePosition::BottomCenter, true);
   }

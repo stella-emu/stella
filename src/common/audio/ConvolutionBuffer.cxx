@@ -19,7 +19,7 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ConvolutionBuffer::ConvolutionBuffer(uInt32 size)
-  : myData{make_unique<float[]>(size)},
+  : myData{std::make_unique<float[]>(size)},
     mySize{size}
 {
   std::fill_n(myData.get(), mySize, 0.F);

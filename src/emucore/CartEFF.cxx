@@ -133,7 +133,7 @@ void CartridgeEFF::setNVRamFile(string_view pathname)
 {
   myEEPROMFile = string{pathname} + "_eeprom.dat";
   if(mySystem)
-    myEEPROM = make_unique<MT24LC16B>(FSNode(myEEPROMFile), *mySystem, nullptr);
+    myEEPROM = std::make_unique<MT24LC16B>(FSNode(myEEPROMFile), *mySystem, nullptr);
   else
     cerr << "ERROR asked to set up eeprom before cartridge installed in system\n";
 }

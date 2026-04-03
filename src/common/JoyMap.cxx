@@ -108,7 +108,7 @@ bool JoyMap::check(EventMode mode, int button, JoyAxis axis, JoyDir adir,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string JoyMap::getDesc(Event::Type event, const JoyMapping& mapping)
 {
-  ostringstream buf;
+  std::ostringstream buf;
 
   // button description
   if(mapping.button != JOY_CTRL_NONE)
@@ -155,7 +155,7 @@ string JoyMap::getDesc(Event::Type event, const JoyMapping& mapping)
 string JoyMap::getEventMappingDesc(int stick, Event::Type event,
                                    EventMode mode) const
 {
-  ostringstream buf;
+  std::ostringstream buf;
 
   for (const auto& [_mapping, _event]: myMap)
   {
@@ -294,7 +294,7 @@ json JoyMap::convertLegacyMapping(string lst)
   std::ranges::replace(lst, ':', ' ');
   std::ranges::replace(lst, ',', ' ');
 
-  istringstream buf(lst);
+  std::istringstream buf(lst);
   int event = 0, button = 0, axis = 0, adir = 0, hat = 0, hdir = 0;
 
   while(buf >> event && buf >> button

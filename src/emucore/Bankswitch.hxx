@@ -272,7 +272,7 @@ class Bankswitch
     }
 
     // Output operator
-    friend ostream& operator<<(ostream& os, const Bankswitch::Type& t) {
+    friend std::ostream& operator<<(std::ostream& os, const Bankswitch::Type& t) {
       return os << typeToName(t);
     }
 

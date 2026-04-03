@@ -27,7 +27,7 @@ CartridgeE7Widget::CartridgeE7Widget(
   : CartDebugWidget(boss, lfont, nfont, x, y, w, h),
     myCart{cart}
 {
-  ostringstream info;
+  std::ostringstream info;
 
   info << "E7 cartridge, "
     << (myCart.romBankCount() == 4 ? "four"
@@ -61,7 +61,7 @@ CartridgeE7Widget::CartridgeE7Widget(
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeE7Widget::initialize(GuiObject* boss,
-    const CartridgeE7& cart, const ostringstream& info)
+    const CartridgeE7& cart, const std::ostringstream& info)
 {
   const uInt32 size = cart.romBankCount() * CartridgeE7::BANK_SIZE;
 
@@ -136,7 +136,7 @@ void CartridgeE7Widget::handleCommand(CommandSender* sender,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string CartridgeE7Widget::bankState()
 {
-  ostringstream& buf = buffer();
+  std::ostringstream& buf = buffer();
 
   buf << "Segments: " << std::dec
     << getSpotLower(myCart.myCurrentBank[0], myCart.romBankCount()) << " / "
@@ -160,7 +160,7 @@ uInt32 CartridgeE7Widget::internalRamRPort(int start)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string CartridgeE7Widget::internalRamDescription()
 {
-  ostringstream desc;
+  std::ostringstream desc;
   desc << "First 1K accessible via:\n"
     << "  $F000 - $F3FF used for write access\n"
     << "  $F400 - $F7FF used for read access\n"

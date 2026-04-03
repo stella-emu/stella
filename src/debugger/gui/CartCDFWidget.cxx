@@ -435,7 +435,7 @@ void CartridgeCDFWidget::handleCommand(CommandSender* sender,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string CartridgeCDFWidget::bankState()
 {
-  ostringstream& buf = buffer();
+  std::ostringstream& buf = buffer();
 
   static constexpr std::array<string_view, 8> spot = {
     "$FFF4", "$FFF5", "$FFF6", "$FFF7", "$FFF8", "$FFF9", "$FFFA", "$FFFB"
@@ -462,7 +462,7 @@ uInt32 CartridgeCDFWidget::internalRamRPort(int start)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string CartridgeCDFWidget::internalRamDescription()
 {
-  ostringstream desc;
+  std::ostringstream desc;
   if (isCDFJplus()) {
     desc << "$0000 - $07FF - CDFJ+ driver\n"
     << "                not accessible to 6507\n"
@@ -522,7 +522,7 @@ string CartridgeCDFWidget::describeCDFVersion(CartridgeCDF::CDFSubtype subtype)
     case CDF1:      return "CDF (v1)";
     case CDFJ:      return "CDFJ";
     case CDFJplus:  return "CDFJ+";
-    default:        throw runtime_error("unreachable");
+    default:        throw std::runtime_error("unreachable");
   }
 }
 

@@ -78,7 +78,7 @@ namespace {
 #ifdef THUMB_DISS
   #define DO_DISS(statement)          \
     {                                 \
-      ostringstream s;                \
+      std::ostringstream s;           \
       s << statement;                 \
       cout << s.str();   \
     }
@@ -431,7 +431,7 @@ namespace {
 
   string describeErrorCode(CortexM0::err_t err) {
     if (CortexM0::isErrCustom(err)) {
-      ostringstream s;
+      std::ostringstream s;
       s << "custom error " << CortexM0::getErrCustom(err);
 
       return s.str();
@@ -484,7 +484,7 @@ namespace {
         break;
     }
 
-    ostringstream s;
+    std::ostringstream s;
     s << "unknown instrinsic error "
       << static_cast<uInt32>(CortexM0::getErrInstrinsic(err));
 
@@ -544,7 +544,7 @@ CortexM0::err_t CortexM0::BusTransactionDelegate::fetch16(
 string CortexM0::describeError(err_t err) {
   if (err == ERR_NONE) return "no error";
 
-  ostringstream s;
+  std::ostringstream s;
   s
     << describeErrorCode(err) << " : 0x"
     << std::hex << std::setw(8) << std::setfill('0')
@@ -555,7 +555,7 @@ string CortexM0::describeError(err_t err) {
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CortexM0::CortexM0()
-  : myPageMap{make_unique<uInt8[]>(PAGEMAP_SIZE)}
+  : myPageMap{std::make_unique<uInt8[]>(PAGEMAP_SIZE)}
 {
   resetMappings();
   reset();
@@ -725,7 +725,7 @@ CortexM0& CortexM0::mapRegionCode(uInt32 pageBase, uInt32 pageCount,
     setupMapping(pageBase, pageCount, readOnly, MemoryRegionType::directCode);
 
   region.access.emplace<1>(MemoryRegionAccessCode{backingStore,
-                           make_unique<uInt8[]>((pageCount * PAGE_SIZE) >> 1)});
+                           std::make_unique<uInt8[]>((pageCount * PAGE_SIZE) >> 1)});
 
   return *this;
 }
@@ -846,7 +846,7 @@ CortexM0::err_t CortexM0::run(uInt32 maxCycles, uInt32& cycles)
 CortexM0::MemoryRegion& CortexM0::setupMapping(uInt32 pageBase, uInt32 pageCount,
     bool readOnly, CortexM0::MemoryRegionType type)
 {
-  if (myNextRegionIndex == 0xff) throw runtime_error("no free memory region");
+  if (myNextRegionIndex == 0xff) throw std::runtime_error("no free memory region");
   const uInt8 regionIndex = myNextRegionIndex++;
 
   MemoryRegion& region = myRegions[regionIndex];
@@ -1619,7 +1619,7 @@ CortexM0::err_t CortexM0::execute(uInt16 inst, uInt8 op)
       rn = (inst >> 8) & 0x7;
     #ifdef THUMB_DISS
       {
-        ostringstream s;
+        std::ostringstream s;
 
         s <<"ldmia r" << dec << rn << "!,{";
         for(ra=0,rb=0x01,rc=0;rb;rb=(rb<<1)&0xFF,++ra)
@@ -2043,7 +2043,7 @@ CortexM0::err_t CortexM0::execute(uInt16 inst, uInt8 op)
     case Op::pop: {
     #ifdef THUMB_DISS
       {
-        ostringstream s;
+        std::ostringstream s;
 
         s << "pop {";
         for(ra=0,rb=0x01,rc=0;rb;rb=(rb<<1)&0xFF,++ra)
@@ -2108,7 +2108,7 @@ CortexM0::err_t CortexM0::execute(uInt16 inst, uInt8 op)
     case Op::push: {
     #ifdef THUMB_DISS
       {
-        ostringstream s;
+        std::ostringstream s;
 
         s << "push {";
         for(ra=0,rb=0x01,rc=0;rb;rb=(rb<<1)&0xFF,++ra)
@@ -2264,7 +2264,7 @@ CortexM0::err_t CortexM0::execute(uInt16 inst, uInt8 op)
       rn = (inst >> 8) & 0x7;
     #ifdef THUMB_DISS
       {
-        ostringstream s;
+        std::ostringstream s;
 
         s << "stmia r" << dec << rn << "!,{";
         for(ra=0,rb=0x01,rc=0;rb;rb=(rb<<1)&0xFF,++ra)

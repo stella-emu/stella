@@ -127,9 +127,11 @@ const vector<ElfParser::Symbol>& ElfParser::getSymbols() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-optional<vector<ElfParser::Relocation>> ElfParser::getRelocations(size_t section) const
+std::optional<vector<ElfParser::Relocation>> ElfParser::getRelocations(size_t section) const
 {
-  return myRelocations.contains(section) ? myRelocations.at(section) : optional<vector<Relocation>>();
+  return myRelocations.contains(section)
+    ? myRelocations.at(section)
+    : std::optional<vector<Relocation>>();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -221,7 +223,7 @@ ElfParser::Symbol ElfParser::readSymbol(uInt32 index, const Section& symSec, con
 ElfParser::Relocation ElfParser::readRelocation(uInt32 index, const Section& sec) const
 {
   if (sec.type != SHT_REL && sec.type != SHT_RELA)
-    throw runtime_error("section is not RELA or REL");
+    throw std::runtime_error("section is not RELA or REL");
 
   const uInt32 size = sec.type == SHT_REL ? REL_ENTRY_SIZE : RELA_ENTRY_SIZE;
   uInt32 offset = index * size;
@@ -234,7 +236,7 @@ ElfParser::Relocation ElfParser::readRelocation(uInt32 index, const Section& sec
   try {
     rel.offset = read32(offset);
     rel.info = read32(offset + 0x04);
-    rel.addend = sec.type == SHT_RELA ? read32(offset + 0x08) : optional<uInt32>();
+    rel.addend = sec.type == SHT_RELA ? read32(offset + 0x08) : std::optional<uInt32>();
   } catch (const ElfParseError& e) {
     ElfParseError::raise("failed to read relocation: " + string(e.what()));
   }
@@ -290,7 +292,7 @@ const ElfParser::Section* ElfParser::getStrtab() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-ostream& operator<<(ostream& os, const ElfParser::Section& section)
+std::ostream& operator<<(std::ostream& os, const ElfParser::Section& section)
 {
   std::ios reset(nullptr);
   reset.copyfmt(os);
@@ -314,7 +316,7 @@ ostream& operator<<(ostream& os, const ElfParser::Section& section)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-ostream& operator<<(ostream& os, const ElfParser::Symbol& symbol)
+std::ostream& operator<<(std::ostream& os, const ElfParser::Symbol& symbol)
 {
   std::ios reset(nullptr);
   reset.copyfmt(os);
@@ -337,7 +339,7 @@ ostream& operator<<(ostream& os, const ElfParser::Symbol& symbol)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-ostream& operator<<(ostream& os, const ElfParser::Relocation& rel)
+std::ostream& operator<<(std::ostream& os, const ElfParser::Relocation& rel)
 {
   std::ios reset(nullptr);
   reset.copyfmt(os);

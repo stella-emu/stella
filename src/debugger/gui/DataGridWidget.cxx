@@ -607,7 +607,7 @@ string DataGridWidget::getToolTip(const Common::Point& pos) const
     return EmptyString();
 
   const Int32 val = _valueList[idx];
-  ostringstream buf;
+  std::ostringstream buf;
 
   if(_toolTipList[idx] != EmptyString())
     buf << _toolTipList[idx];

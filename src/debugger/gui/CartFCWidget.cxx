@@ -30,7 +30,7 @@ CartridgeFCWidget::CartridgeFCWidget(
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string CartridgeFCWidget::description()
 {
-  ostringstream info;
+  std::ostringstream info;
   const uInt16 hotspot = myCart.hotspot() | ADDR_BASE;
 
   info << "FC cartridge, up to eight 4K banks\n"
@@ -46,7 +46,7 @@ string CartridgeFCWidget::description()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string CartridgeFCWidget::hotspotStr(int bank, int, bool prefix)
 {
-  ostringstream info;
+  std::ostringstream info;
   const uInt16 hotspot = myCart.hotspot() | ADDR_BASE;
 
   info << "(" << (prefix ? "hotspots " : "")

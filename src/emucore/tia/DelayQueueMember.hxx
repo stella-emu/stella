@@ -71,7 +71,7 @@ DelayQueueMember<capacity>::DelayQueueMember() = default;
 template<unsigned capacity>
 void DelayQueueMember<capacity>::push(uInt8 address, uInt8 value)
 {
-  if (mySize == capacity) throw runtime_error("delay queue overflow");
+  if (mySize == capacity) throw std::runtime_error("delay queue overflow");
 
   myEntries[mySize].address = address;
   myEntries[mySize++].value = value;
@@ -133,7 +133,7 @@ bool DelayQueueMember<capacity>::load(Serializer& in)
   try
   {
     mySize = in.getByte();
-    if (mySize > capacity) throw runtime_error("invalid delay queue size");
+    if (mySize > capacity) throw std::runtime_error("invalid delay queue size");
     for(uInt32 i = 0; i < mySize; ++i)
     {
       Entry& e = myEntries[i];

@@ -84,7 +84,7 @@ CheatCodeDialog::CheatCodeDialog(OSystem& osystem, DialogContainer& parent,
   StringList labels;
   labels.emplace_back("Name       ");
   labels.emplace_back("Code (hex) ");
-  myCheatInput = make_unique<InputTextDialog>(this, font, labels, "Cheat code");
+  myCheatInput = std::make_unique<InputTextDialog>(this, font, labels, "Cheat code");
   myCheatInput->setTarget(this);
 
   // Add filtering for each textfield

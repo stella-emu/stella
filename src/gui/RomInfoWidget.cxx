@@ -140,7 +140,7 @@ void RomInfoWidget::parseProperties(const FSNode& node, bool full)
         }
       }
     }
-    catch(const runtime_error&)
+    catch(const std::runtime_error&)
     {
       // Do nothing; we simply don't update the controllers if openROM
       // failed for any reason
@@ -151,7 +151,7 @@ void RomInfoWidget::parseProperties(const FSNode& node, bool full)
 
     if(!bsDetected.empty())
     {
-      ostringstream buf;
+      std::ostringstream buf;
 
       // Display actual ROM size in developer mode
       if(instance().settings().getBool("dev.settings"))

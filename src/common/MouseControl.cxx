@@ -28,7 +28,7 @@ MouseControl::MouseControl(Console& console, string_view mode)
     myLeftController{console.leftController()},
     myRightController{console.rightController()}
 {
-  istringstream m_axis(string{mode});  // TODO: fixed in C++20
+  std::istringstream m_axis(string{mode});  // TODO: fixed in C++23
   string m_mode;
   m_axis >> m_mode;
 
@@ -45,7 +45,7 @@ MouseControl::MouseControl(Console& console, string_view mode)
         (static_cast<int>(m_mode[0]) - '0');
     const auto yaxis = static_cast<MouseControl::Type>
         (static_cast<int>(m_mode[1]) - '0');
-    ostringstream msg;
+    std::ostringstream msg;
     Controller::Type xtype = Controller::Type::Joystick, ytype = Controller::Type::Joystick;
     int xid = -1, yid = -1;
 
@@ -170,7 +170,7 @@ void MouseControl::addLeftControllerModes(bool noswap)
     }
     else
     {
-      ostringstream msg;
+      std::ostringstream msg;
       msg << "Mouse is left " << myLeftController.name() << " controller";
       const Controller::Type type = myLeftController.type();
       const int id = noswap ? 0 : 1;
@@ -191,7 +191,7 @@ void MouseControl::addRightControllerModes(bool noswap)
     }
     else
     {
-      ostringstream msg;
+      std::ostringstream msg;
       msg << "Mouse is right " << myRightController.name() << " controller";
       const Controller::Type type = myRightController.type();
       const int id = noswap ? 1 : 0;
@@ -204,7 +204,7 @@ void MouseControl::addRightControllerModes(bool noswap)
 void MouseControl::addPaddleModes(int lport, int rport, int lname, int rname)
 {
   const Controller::Type type = Controller::Type::Paddles;
-  ostringstream msg;
+  std::ostringstream msg;
   msg << "Mouse is Paddle " << lname << " controller";
   const MouseMode mode0(type, lport, type, lport, msg.view());
 

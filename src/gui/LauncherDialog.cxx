@@ -100,7 +100,7 @@ void LauncherDialog::addTitleWidget(int &ypos)
   const int fontHeight   = Dialog::fontHeight(),
             VGAP         = Dialog::vGap();
   // App information
-  ostringstream ver;
+  std::ostringstream ver;
   ver << "Stella " << STELLA_VERSION;
   new StaticTextWidget(this, _font, 1, ypos, _w - 2, fontHeight,
                        ver.view(), TextAlign::Center);
@@ -543,7 +543,7 @@ void LauncherDialog::updateUI()
   myNavigationBar->updateUI();
 
   // Indicate how many files were found
-  ostringstream buf;
+  std::ostringstream buf;
   buf << (myList->getList().size() - (currentDir().hasParent() ? 1 : 0))
     << (myShortCount ? " items" : " items found");
   myRomCount->setLabel(buf.view());
@@ -658,12 +658,12 @@ void LauncherDialog::setRomInfoFont(const Common::Size& area)
             MIN_ROMINFO_ROWS * font.height + 2 + MIN_ROMINFO_LINES * font.height)
          && std::cmp_greater_equal(area.w, MIN_ROMINFO_CHARS * font.maxwidth))
       {
-        myROMInfoFont = make_unique<GUI::Font>(font);
+        myROMInfoFont = std::make_unique<GUI::Font>(font);
         return;
       }
     }
   }
-  myROMInfoFont = make_unique<GUI::Font>(GUI::stellaDesc);
+  myROMInfoFont = std::make_unique<GUI::Font>(GUI::stellaDesc);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -782,7 +782,7 @@ ContextMenu& LauncherDialog::contextMenu()
 {
   if(myContextMenu == nullptr)
     // Create (empty) context menu for ROM list options
-    myContextMenu = make_unique<ContextMenu>(this, _font);
+    myContextMenu = std::make_unique<ContextMenu>(this, _font);
 
   return *myContextMenu;
 }
@@ -1240,10 +1240,10 @@ void LauncherDialog::openSettings()
 
   // Create an options dialog, similar to the in-game one
   if (instance().settings().getBool("basic_settings"))
-    myDialog = make_unique<StellaSettingsDialog>(instance(), parent(),
+    myDialog = std::make_unique<StellaSettingsDialog>(instance(), parent(),
                                                  _w, _h, AppMode::launcher);
   else
-    myDialog = make_unique<OptionsDialog>(instance(), parent(), this, _w, _h,
+    myDialog = std::make_unique<OptionsDialog>(instance(), parent(), this, _w, _h,
                                           AppMode::launcher);
   myDialog->open();
 }
@@ -1254,7 +1254,7 @@ void LauncherDialog::openGameProperties()
   if(!currentNode().isDirectory() && Bankswitch::isValidRomName(currentNode()))
   {
     // Create game properties dialog
-    myDialog = make_unique<GameInfoDialog>(instance(), parent(),
+    myDialog = std::make_unique<GameInfoDialog>(instance(), parent(),
       myUseMinimalUI ? _font : instance().frameBuffer().font(), this, _w, _h);
     myDialog->open();
   }
@@ -1267,7 +1267,7 @@ void LauncherDialog::openGlobalProps()
   {
     // Create global props dialog, which is used to temporarily override
     // ROM properties
-    myDialog = make_unique<GlobalPropsDialog>(this, myUseMinimalUI
+    myDialog = std::make_unique<GlobalPropsDialog>(this, myUseMinimalUI
                                               ? _font
                                               : instance().frameBuffer().font());
     myDialog->open();
@@ -1278,7 +1278,7 @@ void LauncherDialog::openGlobalProps()
 void LauncherDialog::openHighScores()
 {
   // Create an high scores dialog, similar to the in-game one
-  myDialog = make_unique<HighScoresDialog>(instance(), parent(), _w, _h,
+  myDialog = std::make_unique<HighScoresDialog>(instance(), parent(), _w, _h,
                                            AppMode::launcher);
   myDialog->open();
 }
@@ -1286,7 +1286,7 @@ void LauncherDialog::openHighScores()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void LauncherDialog::openWhatsNew()
 {
-  myDialog = make_unique<WhatsNewDialog>(instance(), parent(), _w, _h);
+  myDialog = std::make_unique<WhatsNewDialog>(instance(), parent(), _w, _h);
   myDialog->open();
 }
 
@@ -1347,7 +1347,7 @@ void LauncherDialog::removeAllFavorites()
   msg.emplace_back("your 'Favorites' list!");
   msg.emplace_back("");
   msg.emplace_back("Are you sure?");
-  myConfirmMsg = make_unique<GUI::MessageBox>
+  myConfirmMsg = std::make_unique<GUI::MessageBox>
     (this, _font, msg, _w, _h, kRmAllFav,
       "Yes", "No", "Remove all Favorites", false);
   myConfirmMsg->show();
@@ -1362,7 +1362,7 @@ void LauncherDialog::removeAll(string_view name)
   msg.emplace_back("your '" + string{name} + "' list!");
   msg.emplace_back("");
   msg.emplace_back("Are you sure?");
-  myConfirmMsg = make_unique<GUI::MessageBox>
+  myConfirmMsg = std::make_unique<GUI::MessageBox>
     (this, _font, msg, _w, _h, kRmAllPop,
       "Yes", "No", "Remove all " + string{name}, false);
   myConfirmMsg->show();

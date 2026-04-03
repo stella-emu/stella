@@ -766,7 +766,7 @@ void InputDialog::handleCommand(CommandSender* sender, int cmd,
       if(!myJoyDialog)
       {
         const GUI::Font& font = instance().frameBuffer().font();
-        myJoyDialog = make_unique<JoystickDialog>
+        myJoyDialog = std::make_unique<JoystickDialog>
           (this, font, fontWidth() * 60 + 20, fontHeight() * 18 + 20);
       }
       myJoyDialog->show();
@@ -783,7 +783,7 @@ void InputDialog::handleCommand(CommandSender* sender, int cmd,
         msg.emplace_back("If you are sure you want to erase");
         msg.emplace_back("the data, click 'OK', otherwise ");
         msg.emplace_back("click 'Cancel'.");
-        myConfirmMsg = make_unique<GUI::MessageBox>
+        myConfirmMsg = std::make_unique<GUI::MessageBox>
           (this, instance().frameBuffer().font(), msg,
            myMaxWidth, myMaxHeight, kConfirmEEEraseCmd,
            "OK", "Cancel", "Erase EEPROM", false);

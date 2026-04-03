@@ -193,7 +193,7 @@ void FrameLayoutDetector::onNextLine()
       break;
 
     default:
-      throw runtime_error("cannot happen");
+      throw std::runtime_error("cannot happen");
   }
 }
 
@@ -225,7 +225,7 @@ void FrameLayoutDetector::setState(State state)
       break;
 
     default:
-      throw runtime_error("cannot happen");
+      throw std::runtime_error("cannot happen");
   }
 }
 

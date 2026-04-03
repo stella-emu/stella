@@ -32,7 +32,7 @@ CartridgeMDMWidget::CartridgeMDMWidget(
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string CartridgeMDMWidget::description()
 {
-  ostringstream info;
+  std::ostringstream info;
 
   info << "Menu Driven Megacart, " << myCart.romBankCount() << " 4K banks\n"
        << "Banks are selected by reading from $800 - $" << Common::Base::HEX1 << 0xBFF

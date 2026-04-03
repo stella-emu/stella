@@ -295,7 +295,7 @@ void AboutDialog::handleCommand(CommandSender* sender, int cmd, int data, int id
 
     case kWhatsNew:
       if(myWhatsNewDialog == nullptr)
-        myWhatsNewDialog = make_unique<WhatsNewDialog>(instance(), parent(),
+        myWhatsNewDialog = std::make_unique<WhatsNewDialog>(instance(), parent(),
                                                        640 * 0.95, 480 * 0.95);
       myWhatsNewDialog->open();
       break;

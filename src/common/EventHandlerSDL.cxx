@@ -29,7 +29,7 @@ EventHandlerSDL::EventHandlerSDL(OSystem& osystem)
 
 #ifdef GUI_SUPPORT
   {
-    ostringstream buf;
+    std::ostringstream buf;
     myQwertz = int{'y'} == static_cast<int>
       (SDL_GetKeyFromScancode(static_cast<SDL_Scancode>(KBDK_Z), static_cast<SDL_Keymod>(StellaMod::KBDM_NONE), false));
     buf << "Keyboard: " << (myQwertz ? "QWERTZ" : "QWERTY");
@@ -40,7 +40,7 @@ EventHandlerSDL::EventHandlerSDL(OSystem& osystem)
 #ifdef JOYSTICK_SUPPORT
   if(!SDL_InitSubSystem(SDL_INIT_JOYSTICK))
   {
-    ostringstream buf;
+    std::ostringstream buf;
     buf << "ERROR: Couldn't initialize SDL joystick support: "
         << SDL_GetError() << '\n';
     Logger::error(buf.view());
@@ -187,7 +187,7 @@ void EventHandlerSDL::pollEvent()
 
       case SDL_EVENT_JOYSTICK_ADDED:
       {
-        addPhysicalJoystick(make_shared<JoystickSDL>(myEvent.jdevice.which));
+        addPhysicalJoystick(std::make_shared<JoystickSDL>(myEvent.jdevice.which));
         break;
       }
       case SDL_EVENT_JOYSTICK_REMOVED:

@@ -54,7 +54,7 @@ Dialog::Dialog(OSystem& instance, DialogContainer& parent, const GUI::Font& font
   _flags = Widget::FLAG_ENABLED | Widget::FLAG_BORDER | Widget::FLAG_CLEARBG;
   setTitle(title);
 
-  _toolTip = make_unique<ToolTip>(*this, font);
+  _toolTip = std::make_unique<ToolTip>(*this, font);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -448,7 +448,7 @@ void CartridgeBUSWidget::handleCommand(CommandSender* sender,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string CartridgeBUSWidget::bankState()
 {
-  ostringstream& buf = buffer();
+  std::ostringstream& buf = buffer();
 
   if (myCart.myBUSSubtype == CartridgeBUS::BUSSubtype::BUS0)
   {
@@ -485,7 +485,7 @@ uInt32 CartridgeBUSWidget::internalRamRPort(int start)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string CartridgeBUSWidget::internalRamDescription()
 {
-  ostringstream desc;
+  std::ostringstream desc;
   desc << "$0000 - $07FF - BUS driver\n"
        << "                not accessible to 6507\n"
        << "$0800 - $17FF - 4K Data Stream storage\n"

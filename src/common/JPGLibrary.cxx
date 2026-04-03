@@ -38,7 +38,7 @@ void JPGLibrary::loadImage(const string& filename, FBSurface& surface,
 {
   std::ifstream in(filename, std::ios_base::binary | std::ios::ate);
   if(!in.is_open())
-    throw runtime_error("No image found");
+    throw std::runtime_error("No image found");
   const size_t size = in.tellg();
   in.clear();
   in.seekg(0);
@@ -47,10 +47,10 @@ void JPGLibrary::loadImage(const string& filename, FBSurface& surface,
   if(size > myFileBuffer.capacity())
     myFileBuffer.reserve(size * 1.5);
   if(!in.read(myFileBuffer.data(), size))
-    throw runtime_error("JPG image data reading failed");
+    throw std::runtime_error("JPG image data reading failed");
 
   if(njDecode(myFileBuffer.data(), static_cast<int>(size)))
-    throw runtime_error("Error decoding the JPG image");
+    throw std::runtime_error("Error decoding the JPG image");
 
   // Read the entire image in one go
   myReadInfo.buffer = njGetImage();

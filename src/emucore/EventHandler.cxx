@@ -85,13 +85,13 @@ EventHandler::~EventHandler()  // NOLINT (we need an empty d'tor)
 void EventHandler::initialize()
 {
   // Create global key handler (handles all global hot keys)
-  myGlobalKeyHandler = make_unique<GlobalKeyHandler>(myOSystem);
+  myGlobalKeyHandler = std::make_unique<GlobalKeyHandler>(myOSystem);
 
   // Create keyboard handler (to handle all physical keyboard functionality)
-  myPKeyHandler = make_unique<PhysicalKeyboardHandler>(myOSystem, *this);
+  myPKeyHandler = std::make_unique<PhysicalKeyboardHandler>(myOSystem, *this);
 
   // Create joystick handler (to handle all physical joystick functionality)
-  myPJoyHandler = make_unique<PhysicalJoystickHandler>(myOSystem, *this, myEvent);
+  myPJoyHandler = std::make_unique<PhysicalJoystickHandler>(myOSystem, *this, myEvent);
 
   // Make sure the event/action mappings are correctly set,
   // and fill the ActionList structure with valid values
@@ -202,7 +202,7 @@ void EventHandler::toggleAllow4JoyDirections(bool toggle)
     myOSystem.settings().setValue("joyallow4", joyAllow4);
   }
 
-  ostringstream ss;
+  std::ostringstream ss;
   ss << "Allow all 4 joystick directions ";
   ss << (joyAllow4 ? "enabled" : "disabled");
   myOSystem.frameBuffer().showTextMessage(ss.view());
@@ -2080,7 +2080,7 @@ json EventHandler::convertLegacyComboMapping(string lst)
   // delimiters be spaces
   std::ranges::replace(lst, ':', ' ');
   std::ranges::replace(lst, ',', ' ');
-  istringstream buf(lst);
+  std::istringstream buf(lst);
 
   try
   {
@@ -2341,7 +2341,7 @@ VariantList EventHandler::getComboList()
 {
   // For now, this only works in emulation mode
   VariantList l;
-  ostringstream buf;
+  std::ostringstream buf;
 
   VarList::push_back(l, "None", "-1");
   for(uInt32 i = 0; i < ourEmulActionList.size(); ++i)
@@ -2362,7 +2362,7 @@ VariantList EventHandler::getComboList()
 StringList EventHandler::getComboListForEvent(Event::Type event) const
 {
   StringList l;
-  ostringstream buf;
+  std::ostringstream buf;
   if(event >= Event::Combo1 && event <= Event::Combo16)
   {
     const int combo = event - Event::Combo1;
@@ -2538,7 +2538,7 @@ void EventHandler::setMouseControllerMode(string_view enable)
     const string& control = usemouse ?
       myOSystem.console().properties().get(PropType::Controller_MouseAxis) : "none";
 
-    myMouseControl = make_unique<MouseControl>(myOSystem.console(), control);
+    myMouseControl = std::make_unique<MouseControl>(myOSystem.console(), control);
     myMouseControl->change(0);  // set first available mode
   }
 }
@@ -2566,7 +2566,7 @@ void EventHandler::changeMouseControllerMode(int direction)
   setMouseControllerMode(usemouse);
   myOSystem.frameBuffer().setCursorState(); // if necessary change grab mouse
 
-  ostringstream ss;
+  std::ostringstream ss;
   ss << "Mouse controls " << MSG[i] << " devices";
   myOSystem.frameBuffer().showTextMessage(ss.view());
 }
@@ -2579,7 +2579,7 @@ void EventHandler::changeMouseCursor(int direction)
   myOSystem.settings().setValue("cursor", cursor);
   myOSystem.frameBuffer().setCursorState();
 
-  ostringstream ss;
+  std::ostringstream ss;
   ss << "Mouse cursor visibilility: "
     << ((cursor & 2) ? "+" : "-") << "UI, "
     << ((cursor & 1) ? "+" : "-") << "Emulation";

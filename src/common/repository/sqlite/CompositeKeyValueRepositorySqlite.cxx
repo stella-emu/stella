@@ -37,7 +37,7 @@ CompositeKeyValueRepositorySqlite::CompositeKeyValueRepositorySqlite(
 shared_ptr<KeyValueRepository> CompositeKeyValueRepositorySqlite::get(
     string_view key)
 {
-  return make_shared<ProxyRepository>(*this, key);
+  return std::make_shared<ProxyRepository>(*this, key);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -93,12 +93,12 @@ void CompositeKeyValueRepositorySqlite::initialize()
     myColKey2.c_str()
   );
 
-  myStmtInsert = make_unique<SqliteStatement>(myDb,
+  myStmtInsert = std::make_unique<SqliteStatement>(myDb,
     "INSERT OR REPLACE INTO `%s` VALUES (?, ?, ?)",
     myTableName.c_str()
   );
 
-  myStmtSelect = make_unique<SqliteStatement>(myDb,
+  myStmtSelect = std::make_unique<SqliteStatement>(myDb,
     "SELECT `%s`, `%s` FROM `%s` WHERE `%s` = ?",
     myColKey2.c_str(),
     myColValue.c_str(),
@@ -106,26 +106,26 @@ void CompositeKeyValueRepositorySqlite::initialize()
     myColKey1.c_str()
   );
 
-  myStmtCountSet = make_unique<SqliteStatement>(myDb,
+  myStmtCountSet = std::make_unique<SqliteStatement>(myDb,
     "SELECT COUNT(*) FROM `%s` WHERE `%s` = ?",
     myTableName.c_str(),
     myColKey1.c_str()
   );
 
-  myStmtDelete = make_unique<SqliteStatement>(myDb,
+  myStmtDelete = std::make_unique<SqliteStatement>(myDb,
     "DELETE FROM `%s` WHERE `%s` = ? AND `%s` = ?",
     myTableName.c_str(),
     myColKey1.c_str(),
     myColKey2.c_str()
   );
 
-  myStmtDeleteSet = make_unique<SqliteStatement>(myDb,
+  myStmtDeleteSet = std::make_unique<SqliteStatement>(myDb,
     "DELETE FROM `%s` WHERE `%s` = ?",
     myTableName.c_str(),
     myColKey1.c_str()
   );
 
-  myStmtSelectOne = make_unique<SqliteStatement>(myDb,
+  myStmtSelectOne = std::make_unique<SqliteStatement>(myDb,
     "SELECT `%s` FROM `%s` WHERE `%s` = ? AND `%s` = ?",
     myColValue.c_str(),
     myTableName.c_str(),
@@ -133,7 +133,7 @@ void CompositeKeyValueRepositorySqlite::initialize()
     myColKey2.c_str()
   );
 
-  myStmtCount = make_unique<SqliteStatement>(myDb,
+  myStmtCount = std::make_unique<SqliteStatement>(myDb,
     "SELECT COUNT(*) FROM `%s` WHERE `%s` = ? AND `%s` = ?",
     myTableName.c_str(),
     myColKey1.c_str(),

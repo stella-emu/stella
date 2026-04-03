@@ -112,12 +112,12 @@ class DiStella
     void outputBytes(Device::AccessType type);
 
     // Convenience methods to generate appropriate labels
-    void labelA12High(stringstream& buf, uInt8 op, uInt16 addr, AddressType labfound)
+    void labelA12High(std::stringstream& buf, uInt8 op, uInt16 addr, AddressType labfound)
     {
       if(!myDbg.getLabel(buf, addr, true))
         buf << "L" << Common::Base::HEX4 << addr;
     }
-    void labelA12Low(stringstream& buf, uInt8 op, uInt16 addr, AddressType labfound)
+    void labelA12Low(std::stringstream& buf, uInt8 op, uInt16 addr, AddressType labfound)
     {
       myDbg.getLabel(buf, addr, ourLookup[op].rw_mode == RWMode::READ, 2);
       if (labfound == AddressType::TIA)
@@ -139,7 +139,7 @@ class DiStella
     CartDebug::DisassemblyList& myList;
     const Settings& mySettings;
     CartDebug::ReservedEquates& myReserved;
-    stringstream myDisasmBuf;
+    std::stringstream myDisasmBuf;
     std::queue<uInt16> myAddressQueue;
     uInt16 myOffset{0}, myPC{0}, myPCEnd{0};
     uInt16 mySegType{0};

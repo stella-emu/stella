@@ -86,7 +86,7 @@ void NTSCFilter::selectAdjustable(int direction,
     else                         --myCurrentAdjustable;
   }
 
-  ostringstream msg, val;
+  std::ostringstream msg, val;
 
   value = scaleTo100(*ourCustomAdjustables[myCurrentAdjustable].value);
   msg << "Custom " << ourCustomAdjustables[myCurrentAdjustable].type;
@@ -118,7 +118,7 @@ void NTSCFilter::changeCurrentAdjustable(int direction,
 
   setPreset(myPreset);
 
-  ostringstream msg, val;
+  std::ostringstream msg, val;
 
   msg << "Custom " << ourCustomAdjustables[myCurrentAdjustable].type;
   val << newValue << "%";

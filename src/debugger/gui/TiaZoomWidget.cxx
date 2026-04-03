@@ -59,7 +59,7 @@ TiaZoomWidget::TiaZoomWidget(GuiObject* boss, const GUI::Font& font,
   VarList::push_back(l, "2x zoom", "2");
   VarList::push_back(l, "4x zoom", "4");
   VarList::push_back(l, "8x zoom", "8");
-  myMenu = make_unique<ContextMenu>(this, font, l);
+  myMenu = std::make_unique<ContextMenu>(this, font, l);
 
   setHelpAnchor("TIAZoom", true);
 }
@@ -249,7 +249,7 @@ void TiaZoomWidget::handleCommand(CommandSender* sender, int cmd, int data, int 
 
     if(rmb == "scanline")
     {
-      ostringstream command;
+      std::ostringstream command;
       int lines = myClickY / myZoomLevel + myOffY + startLine - instance().console().tia().scanlines();
 
       if (lines < 0)
@@ -263,7 +263,7 @@ void TiaZoomWidget::handleCommand(CommandSender* sender, int cmd, int data, int 
     }
     else if(rmb == "bp")
     {
-      ostringstream command;
+      std::ostringstream command;
       const int scanline = myClickY / myZoomLevel + myOffY + startLine;
       command << "breakif _scan==#" << scanline;
       const string& message = instance().debugger().parser().run(command.view());
@@ -303,7 +303,7 @@ string TiaZoomWidget::getToolTip(const Common::Point& pos) const
   const Int32 i = idx.x + idx.y * instance().console().tia().width();
   const uInt32 startLine = instance().console().tia().startLine();
   const uInt8* tiaOutputBuffer = instance().console().tia().outputBuffer();
-  ostringstream buf;
+  std::ostringstream buf;
 
   buf << _toolTipText
     << "X: #" << idx.x

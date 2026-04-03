@@ -76,7 +76,7 @@ class StaggeredLogger
     // We need control over the destruction porcess and over the exact point where
     // the worker thread joins -> allocate on the heap end delete explicitly in
     // our destructor.
-    unique_ptr<TimerManager> myTimer{make_unique<TimerManager>()};
+    unique_ptr<TimerManager> myTimer{std::make_unique<TimerManager>()};
     TimerManager::TimerId myTimerId{0};
 
     // It is possible that the timer callback is running even after TimerManager::clear

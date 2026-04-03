@@ -149,8 +149,8 @@ Thumbulator::Thumbulator(const uInt16* rom_ptr, uInt16* ram_ptr, uInt32 rom_size
     cBase{c_base},
     cStart{c_start},
     cStack{c_stack},
-    decodedRom{make_unique<Op[]>(romSize / 2)},  // NOLINT
-    decodedParam{make_unique<uInt32[]>(romSize / 2)},  // NOLINT
+    decodedRom{std::make_unique<Op[]>(romSize / 2)},  // NOLINT
+    decodedParam{std::make_unique<uInt32[]>(romSize / 2)},  // NOLINT
     ram{ram_ptr},
     configuration{configurefor},
     myCartridge{cartridge}
@@ -175,7 +175,7 @@ string Thumbulator::doRun(uInt32& cycles, bool irqDrivenAudio)
   {
     if(execute()) break;
     if(_stats.instructions > 500000) // way more than would otherwise be possible
-      throw runtime_error("instructions > 500000");
+      throw std::runtime_error("instructions > 500000");
   }
 #ifdef THUMB_CYCLE_COUNT
   _totalCycles *= _armCyclesFactor;
@@ -249,7 +249,7 @@ int Thumbulator::fatalError(string_view opcode, uInt32 v1, string_view msg)
             << opcode << "(" << Base::HEX8 << v1 << "), " << msg << '\n';
   dump_regs();
   if(trapOnFatal)
-    throw runtime_error(statusMsg.str());
+    throw std::runtime_error(statusMsg.str());
   return 0;
 }
 
@@ -262,7 +262,7 @@ int Thumbulator::fatalError(string_view opcode, uInt32 v1, uInt32 v2,
             << '\n';
   dump_regs();
   if(trapOnFatal)
-    throw runtime_error(statusMsg.str());
+    throw std::runtime_error(statusMsg.str());
   return 0;
 }
 
@@ -402,7 +402,7 @@ void Thumbulator::write32(uInt32 addr, uInt32 data)
   {
     case 0xF0000000: //halt
       dump_counters();
-      throw runtime_error("HALT");
+      throw std::runtime_error("HALT");
 
     case 0xE0000000: //periph
       switch(addr)

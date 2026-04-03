@@ -93,14 +93,14 @@ OSystem::OSystem()
   #endif
 
   // Get build info
-  ostringstream info;
+  std::ostringstream info;
   info << "Build " << STELLA_BUILD << ", using " << MediaFactory::backendName()
        << " [" << BSPF::ARCH << "]";
   myBuildInfo = info.view();
 
   mySettings = MediaFactory::createSettings();
 
-  myPropSet = make_unique<PropertiesSet>();
+  myPropSet = std::make_unique<PropertiesSet>();
 
   Logger::instance().setLogParameters(Logger::Level::MAX, false);
 }
@@ -124,7 +124,7 @@ bool OSystem::initialize(const Settings::Options& options)
 
   Logger::debug("Creating the OSystem ...");
 
-  ostringstream buf;
+  std::ostringstream buf;
   buf << "Stella " << STELLA_VERSION << '\n'
       << "  Features: " << myFeatures << '\n'
       << "  " << myBuildInfo << "\n\n"
@@ -148,10 +148,10 @@ bool OSystem::initialize(const Settings::Options& options)
   // it may be needed to initialize the size of graphical objects
   try
   {
-    myFrameBuffer = make_unique<FrameBuffer>(*this);
+    myFrameBuffer = std::make_unique<FrameBuffer>(*this);
     myFrameBuffer->initialize();
   }
-  catch(const runtime_error& e)
+  catch(const std::runtime_error& e)
   {
     Logger::error(e.what());
     return false;
@@ -161,10 +161,10 @@ bool OSystem::initialize(const Settings::Options& options)
   myEventHandler = MediaFactory::createEventHandler(*this);
   myEventHandler->initialize();
 
-  myStateManager = make_unique<StateManager>(*this);
-  myTimerManager = make_unique<TimerManager>();
+  myStateManager = std::make_unique<StateManager>(*this);
+  myTimerManager = std::make_unique<TimerManager>();
 
-  myAudioSettings = make_unique<AudioSettings>(*mySettings);
+  myAudioSettings = std::make_unique<AudioSettings>(*mySettings);
 
   // Create the sound object; the sound subsystem isn't actually
   // opened until needed, so this is non-blocking (on those systems
@@ -172,32 +172,32 @@ bool OSystem::initialize(const Settings::Options& options)
   createSound();
 
   // Create random number generator
-  myRandom = make_unique<Random>(static_cast<uInt32>(TimerManager::getTicks()));
+  myRandom = std::make_unique<Random>(static_cast<uInt32>(TimerManager::getTicks()));
 
 #ifdef CHEATCODE_SUPPORT
-  myCheatManager = make_unique<CheatManager>(*this);
+  myCheatManager = std::make_unique<CheatManager>(*this);
   myCheatManager->loadCheatDatabase();
 #endif
 
 #ifdef GUI_SUPPORT
   // Create various subsystems (menu and launcher GUI objects, etc)
-  myOptionsMenu = make_unique<OptionsMenu>(*this);
-  myCommandMenu = make_unique<CommandMenu>(*this);
-  myHighScoresManager = make_unique<HighScoresManager>(*this);
-  myHighScoresMenu = make_unique<HighScoresMenu>(*this);
-  myMessageMenu = make_unique<MessageMenu>(*this);
-  myPlusRomMenu = make_unique<PlusRomsMenu>(*this);
-  myTimeMachine = make_unique<TimeMachine>(*this);
-  myLauncher = make_unique<Launcher>(*this);
+  myOptionsMenu = std::make_unique<OptionsMenu>(*this);
+  myCommandMenu = std::make_unique<CommandMenu>(*this);
+  myHighScoresManager = std::make_unique<HighScoresManager>(*this);
+  myHighScoresMenu = std::make_unique<HighScoresMenu>(*this);
+  myMessageMenu = std::make_unique<MessageMenu>(*this);
+  myPlusRomMenu = std::make_unique<PlusRomsMenu>(*this);
+  myTimeMachine = std::make_unique<TimeMachine>(*this);
+  myLauncher = std::make_unique<Launcher>(*this);
 
   myHighScoresManager->setRepository(getHighscoreRepository());
 #endif
 
 #ifdef IMAGE_SUPPORT
   // Create PNG handler
-  myPNGLib = make_unique<PNGLibrary>(*this);
+  myPNGLib = std::make_unique<PNGLibrary>(*this);
   // Create JPG handler
-  myJPGLib = make_unique<JPGLibrary>(*this);
+  myJPGLib = std::make_unique<JPGLibrary>(*this);
 #endif
 
   // Detect serial port for AtariVox-USB
@@ -460,7 +460,7 @@ string OSystem::createConsole(const FSNode& rom, string_view md5sum, bool newrom
   }
 
   // Create an instance of the 2600 game console
-  ostringstream buf;
+  std::ostringstream buf;
 
   myEventHandler->handleConsoleStartupEvents();
 
@@ -469,7 +469,7 @@ string OSystem::createConsole(const FSNode& rom, string_view md5sum, bool newrom
     closeConsole();
     myConsole = openConsole(myRomFile, myRomMD5);
   }
-  catch(const runtime_error& e)
+  catch(const std::runtime_error& e)
   {
     buf << "ERROR: " << e.what();
     Logger::error(buf.view());
@@ -479,7 +479,7 @@ string OSystem::createConsole(const FSNode& rom, string_view md5sum, bool newrom
   if(myConsole)
   {
   #ifdef DEBUGGER_SUPPORT
-    myDebugger = make_unique<Debugger>(*this, *myConsole);
+    myDebugger = std::make_unique<Debugger>(*this, *myConsole);
     myDebugger->initialize();
     myConsole->attachDebugger(*myDebugger);
   #endif
@@ -535,7 +535,7 @@ string OSystem::createConsole(const FSNode& rom, string_view md5sum, bool newrom
     {
       if(settings().getBool(devSettings ? "dev.detectedinfo" : "plr.detectedinfo"))
       {
-        ostringstream msg;
+        std::ostringstream msg;
 
         msg << myConsole->leftController().name() << "/" << myConsole->rightController().name()
           << " - " << myConsole->cartridge().detectedType()
@@ -545,7 +545,7 @@ string OSystem::createConsole(const FSNode& rom, string_view md5sum, bool newrom
       }
       else if(!myLauncherUsed)
       {
-        ostringstream msg;
+        std::ostringstream msg;
 
         msg << "Stella " << STELLA_VERSION;
         myFrameBuffer->showTextMessage(msg.view());
@@ -584,13 +584,13 @@ string OSystem::createConsole(const FSNode& rom, string_view md5sum, bool newrom
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-optional<string> OSystem::reloadConsole(bool nextrom)
+std::optional<string> OSystem::reloadConsole(bool nextrom)
 {
   mySettings->setValue("romloadprev", !nextrom);
 
   const string result = createConsole(myRomFile, myRomMD5, false);
 
-  return result == EmptyString() ? std::nullopt : optional<string>(result);
+  return result == EmptyString() ? std::nullopt : std::optional<string>(result);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -648,9 +648,9 @@ string OSystem::getROMInfo(const FSNode& romfile)
     string md5;
     console = openConsole(romfile, md5);
   }
-  catch(const runtime_error& e)
+  catch(const std::runtime_error& e)
   {
-    ostringstream buf;
+    std::ostringstream buf;
     buf << "ERROR: Couldn't get ROM info (" << e.what() << ")";
     return buf.str();
   }
@@ -764,7 +764,7 @@ unique_ptr<Console> OSystem::openConsole(const FSNode& romfile, string& md5)
 
     // Finally, create the cart with the correct properties
     if(cart)
-      console = make_unique<Console>(*this, cart, props, *myAudioSettings);
+      console = std::make_unique<Console>(*this, cart, props, *myAudioSettings);
   }
 
   return console;
@@ -823,7 +823,7 @@ ByteBuffer OSystem::openROM(const FSNode& rom, size_t& size,
   // First check if this is a valid ROM filename
   const bool isValidROM = rom.isFile() && Bankswitch::isValidRomName(rom);
   if(!isValidROM && showErrorMessage)
-    throw runtime_error("Unrecognized ROM file type");
+    throw std::runtime_error("Unrecognized ROM file type");
 
   // Next check for a proper file size
   // Streaming ROMs read only a portion of the file
@@ -833,10 +833,10 @@ ByteBuffer OSystem::openROM(const FSNode& rom, size_t& size,
   {
     sizeToRead = CartDetector::isProbablyMVC(rom);
   }
-  catch(const runtime_error&)
+  catch(const std::runtime_error&)
   {
     if(showErrorMessage)
-      throw runtime_error("File not found/readable");
+      throw std::runtime_error("File not found/readable");
     else
       return nullptr;
   }
@@ -847,7 +847,7 @@ ByteBuffer OSystem::openROM(const FSNode& rom, size_t& size,
   if(!isValidSize)
   {
     if(showErrorMessage)
-      throw runtime_error("ROM file too large");
+      throw std::runtime_error("ROM file too large");
     else
       return nullptr;
   }
@@ -859,7 +859,7 @@ ByteBuffer OSystem::openROM(const FSNode& rom, size_t& size,
     if(size = rom.read(image, sizeToRead); size == 0)
       return nullptr;
   }
-  catch(const runtime_error&)
+  catch(const std::runtime_error&)
   {
     if(showErrorMessage)  // If caller wants error messages, pass it back
       throw;
@@ -872,7 +872,7 @@ ByteBuffer OSystem::openROM(const FSNode& rom, size_t& size,
 string OSystem::getROMInfo(const Console& console)
 {
   const ConsoleInfo& info = console.about();
-  ostringstream buf;
+  std::ostringstream buf;
 
   buf << "  Cart Name:       " << info.CartName << '\n'
       << "  Cart MD5:        " << info.CartMD5 << '\n'
@@ -952,7 +952,7 @@ double OSystem::dispatchEmulation(EmulationWorker& emulationWorker)
         break;
 
     default:
-      throw runtime_error("invalid emulation dispatch result");
+      throw std::runtime_error("invalid emulation dispatch result");
   }
 
   // Handle frying

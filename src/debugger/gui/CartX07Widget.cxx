@@ -30,7 +30,7 @@ CartridgeX07Widget::CartridgeX07Widget(
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string CartridgeX07Widget::description()
 {
-  ostringstream info;
+  std::ostringstream info;
 
   info << "64K X07 cartridge, 16 4K banks\n"
        << "Multiple hotspots, all below $1000\n"

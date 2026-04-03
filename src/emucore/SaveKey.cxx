@@ -24,7 +24,7 @@ SaveKey::SaveKey(Jack jack, const Event& event, const System& system,
                  const FSNode& eepromfile, const onMessageCallback& callback,
                  Type type)
   : Controller(jack, event, system, type),
-    myEEPROM{make_unique<MT24LC256>(eepromfile, system, callback)}
+    myEEPROM{std::make_unique<MT24LC256>(eepromfile, system, callback)}
 {
   setPin(DigitalPin::One, true);
   setPin(DigitalPin::Two, true);

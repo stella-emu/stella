@@ -264,7 +264,7 @@ Bankswitch::Type CartDetector::autodetectType(const ByteBuffer& image, size_t si
   if(type == Bankswitch::Type::AUTO)
     type = Bankswitch::Type::_4K;  // Most common bankswitching type
 
-  ostringstream ss;
+  std::ostringstream ss;
   ss << "Bankswitching type '" << Bankswitch::typeToDesc(type) << "' detected";
   Logger::debug(ss.view());
 

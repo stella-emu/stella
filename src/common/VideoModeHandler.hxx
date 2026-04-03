@@ -57,7 +57,7 @@ class VideoModeHandler
            string_view desc = "", double zoomLevel = 1.,
            Bezel::Info bezelInfo = Bezel::Info());
 
-      friend ostream& operator<<(ostream& os, const Mode& vm)
+      friend std::ostream& operator<<(std::ostream& os, const Mode& vm)
       {
         os << "image=" << vm.imageR << "  screen=" << vm.screenS
            << "  stretch=" << (vm.stretch == Stretch::Preserve ? "preserve" :
