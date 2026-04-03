@@ -432,7 +432,10 @@ void MicroChip24LC<device_flash_size, device_page_size>
   #ifdef DEBUG_EEPROM
     jpee_logproc("I2C_STOP");
   #endif
-    jpee_timercheck(1);
+    // Do NOT call jpee_timercheck(1) here — the write timer must only be
+    // armed after a committed page write. Arming it on an abandoned
+    // transaction causes the next jpee_data_start() to see a false busy
+    // condition and drop the transaction.
   }
 
   jpee_state = 0;
@@ -503,7 +506,7 @@ void MicroChip24LC<device_flash_size, device_page_size>
           else
             jpee_pptr = 1;
         }
-        else if(jpee_pptr < 70)
+        else if(jpee_pptr < static_cast<Int32>(jpee_packet.size()))
         {
           JPEE_LOG1("I2C_SENT(%02X)", jpee_nb & 0xFF);
           jpee_packet[jpee_pptr++] = static_cast<uInt8>(jpee_nb);
