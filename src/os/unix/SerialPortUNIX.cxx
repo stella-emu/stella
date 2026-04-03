@@ -15,11 +15,20 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
+#if defined(__OpenBSD__)
+  #include <errno.h>
+#else
+  #include <sys/errno.h>
+#endif
+
 #include <fcntl.h>
-#include <unistd.h>
-#include <sys/termios.h>
 #include <sys/ioctl.h>
-#include <cstring>
+#include <sys/stat.h>
+#include <sys/param.h>
+#include <sys/termios.h>
+#include <sys/types.h>
+#include <sys/time.h>
+#include <unistd.h>
 
 #include "FSNode.hxx"
 #include "SerialPortUNIX.hxx"
@@ -27,10 +36,14 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 SerialPortUNIX::~SerialPortUNIX()
 {
-  if(myHandle)
+  if(isOpen())
   {
+    tcflush(myHandle, TCOFLUSH);
+    tcflush(myHandle, TCIFLUSH);
+    tcsetattr(myHandle, TCSANOW, &myOldtio);
+
     close(myHandle);
-    myHandle = 0;
+    myHandle = INVALID_HANDLE_VALUE;
   }
 }
 
@@ -38,22 +51,62 @@ SerialPortUNIX::~SerialPortUNIX()
 bool SerialPortUNIX::openPort(const string& device)
 {
   myHandle = open(device.c_str(), O_RDWR | O_NOCTTY | O_NONBLOCK);
-  if(myHandle <= 0)
+  if(!isOpen())
     return false;
 
   // Clear buffers, then open the device in nonblocking mode
   tcflush(myHandle, TCOFLUSH);
   tcflush(myHandle, TCIFLUSH);
-  fcntl(myHandle, F_SETFL, FNDELAY);
 
-  struct termios termios{};
-  memset(&termios, 0, sizeof(struct termios));
+  tcgetattr(myHandle, &myOldtio); // Save current port settings
 
-  termios.c_cflag = CREAD | CLOCAL;
-  termios.c_cflag |= B19200;
-  termios.c_cflag |= CS8;
+  myNewtio = myOldtio;
+  myNewtio.c_cflag = CS8 | CLOCAL | CREAD;
+
+#if defined(__FreeBSD__) || defined(__OpenBSD__)
+  if(cfsetspeed(&myNewtio, static_cast<speed_t>(DEFAULT_BAUD_RATE)) != 0)
+  {
+    cerr << "ERROR: baudrate " << DEFAULT_BAUD_RATE << " not supported\n";
+    close(myHandle);
+    myHandle = INVALID_HANDLE_VALUE;
+    return false;
+  }
+#else
+  switch(DEFAULT_BAUD_RATE)
+  {
+#if defined (B1152000)
+    case 1152000: myNewtio.c_cflag |= B1152000; break;
+#endif
+#if defined (B576000)
+    case  576000: myNewtio.c_cflag |= B576000;  break;
+#endif
+#if defined (B230400)
+    case  230400: myNewtio.c_cflag |= B230400;  break;
+#endif
+    case  115200: myNewtio.c_cflag |= B115200;  break;
+    case   57600: myNewtio.c_cflag |= B57600;   break;
+    case   38400: myNewtio.c_cflag |= B38400;   break;
+    case   19200: myNewtio.c_cflag |= B19200;   break;
+    case    9600: myNewtio.c_cflag |= B9600;    break;
+    default:
+    {
+      cerr << "ERROR: unknown baudrate " << DEFAULT_BAUD_RATE << '\n';
+      close(myHandle);
+      myHandle = INVALID_HANDLE_VALUE;
+      return false;
+    }
+  }
+#endif
+
   tcflush(myHandle, TCIFLUSH);
-  tcsetattr(myHandle, TCSANOW, &termios);
+  if(tcsetattr(myHandle, TCSANOW, &myNewtio) != 0)
+  {
+    cerr << "Could not change serial port behaviour for "
+         << device << " (tcsetattr failed)\n";
+    close(myHandle);
+    myHandle = INVALID_HANDLE_VALUE;
+    return false;
+  }
 
   return true;
 }
@@ -61,27 +114,22 @@ bool SerialPortUNIX::openPort(const string& device)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool SerialPortUNIX::readByte(uInt8& data)
 {
-  if(myHandle)
-    return read(myHandle, &data, 1) == 1;
-
-  return false;
+  return isOpen() ? (read(myHandle, &data, 1) == 1) : false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool SerialPortUNIX::writeByte(uInt8 data)
 {
-  if(myHandle)
-    return write(myHandle, &data, 1) == 1;
-
-  return false;
+  return isOpen() ? (write(myHandle, &data, 1) == 1) : false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool SerialPortUNIX::isCTS()
 {
-  if(myHandle)
+  if(isOpen())
   {
-    int status = 0;
+    int status{};
+    // status stays 0 if ioctl fails; isCTS() will correctly return false
     ioctl(myHandle, TIOCMGET, &status);
     return status & TIOCM_CTS;
   }
@@ -97,14 +145,21 @@ StringList SerialPortUNIX::portNames()
   // Eventually we may extend this to do more intensive checks
   const auto isPortValid = [](const string& port) {
     const int handle = open(port.c_str(), O_RDWR | O_NOCTTY | O_NONBLOCK);
-    if(handle > 0)  close(handle);
-    return handle > 0;
+    const bool valid = handle != INVALID_HANDLE_VALUE;
+    if(valid)  close(handle);
+    return valid;
   };
 
   // Get all possible devices in the '/dev' directory
   const FSNode::NameFilter filter = [](const FSNode& node) {
-    return BSPF::startsWithIgnoreCase(node.getPath(), "/dev/ttyACM") ||
-           BSPF::startsWithIgnoreCase(node.getPath(), "/dev/ttyUSB");
+#if defined(BSPF_MACOS)
+    return BSPF::startsWithIgnoreCase(node.getPath(), "/dev/cu.usb") ||
+           BSPF::startsWithIgnoreCase(node.getPath(), "/dev/tty.usb");
+#else
+    return BSPF::startsWithIgnoreCase(node.getPath(), "/dev/ttyUSB") ||
+           BSPF::startsWithIgnoreCase(node.getPath(), "/dev/ttyACM") ||
+           BSPF::startsWithIgnoreCase(node.getPath(), "/dev/ttyS");
+#endif
   };
   FSList portList;  // NOLINT: cannot be const, but clang-tidy suggests it
   portList.reserve(5);

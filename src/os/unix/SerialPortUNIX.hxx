@@ -18,11 +18,14 @@
 #ifndef SERIALPORT_UNIX_HXX
 #define SERIALPORT_UNIX_HXX
 
+#include <termios.h>
+
 #include "SerialPort.hxx"
 
 /**
-  Implement reading and writing from a serial port under UNIX.  For now,
-  it seems to be Linux-only.
+  Implement reading and writing from a serial port under UNIX/POSIX.
+  Currently it is tuned for communicating with an AtariVox, but could
+  easily be extended to use other modes.
 
   @author  Stephen Anthony
 */
@@ -71,8 +74,14 @@ class SerialPortUNIX : public SerialPort
     StringList portNames() override;
 
   private:
+    static constexpr int INVALID_HANDLE_VALUE = -1;
+    static constexpr uInt32 DEFAULT_BAUD_RATE = 19200;
+
     // File descriptor for serial connection
-    int myHandle{0};
+    int myHandle{INVALID_HANDLE_VALUE};
+    bool isOpen() const { return myHandle != INVALID_HANDLE_VALUE; }
+
+    struct termios myOldtio{}, myNewtio{};
 
   private:
     // Following constructors and assignment operators not supported
