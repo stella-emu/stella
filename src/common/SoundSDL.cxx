@@ -18,6 +18,7 @@
 #ifdef SOUND_SUPPORT
 
 #include <cmath>
+#include <iomanip>
 
 #include "SDL_lib.hxx"
 #include "Logger.hxx"

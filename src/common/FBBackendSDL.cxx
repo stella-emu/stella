@@ -16,6 +16,8 @@
 //============================================================================
 
 #include <cmath>
+#include <climits>
+#include <iomanip>
 
 #include "bspf.hxx"
 #include "Logger.hxx"

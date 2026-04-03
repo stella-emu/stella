@@ -15,6 +15,8 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
+#include <iomanip>
+
 #include "OSystem.hxx"
 #include "Console.hxx"
 #include "FrameBuffer.hxx"

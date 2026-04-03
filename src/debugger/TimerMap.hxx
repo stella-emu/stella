@@ -19,6 +19,7 @@
 #define TIMER_MAP_HXX
 
 #include <cmath>
+#include <climits>
 #include <map>
 #include <deque>
 

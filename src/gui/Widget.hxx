@@ -24,6 +24,7 @@
 class Dialog;
 
 #include <cassert>
+#include <climits>
 
 #include "bspf.hxx"
 #include "Rect.hxx"

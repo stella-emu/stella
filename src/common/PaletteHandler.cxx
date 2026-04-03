@@ -16,6 +16,7 @@
 //============================================================================
 
 #include <cmath>
+#include <iomanip>
 
 #include "Console.hxx"
 #include "FrameBuffer.hxx"

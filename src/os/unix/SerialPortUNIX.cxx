@@ -15,7 +15,7 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#if defined(__OpenBSD__)
+#ifdef __OpenBSD__
   #include <errno.h>
 #else
   #include <sys/errno.h>
@@ -74,13 +74,13 @@ bool SerialPortUNIX::openPort(const string& device)
 #else
   switch(DEFAULT_BAUD_RATE)
   {
-#if defined (B1152000)
+#ifdef B1152000
     case 1152000: myNewtio.c_cflag |= B1152000; break;
 #endif
-#if defined (B576000)
+#ifdef B576000
     case  576000: myNewtio.c_cflag |= B576000;  break;
 #endif
-#if defined (B230400)
+#ifdef B230400
     case  230400: myNewtio.c_cflag |= B230400;  break;
 #endif
     case  115200: myNewtio.c_cflag |= B115200;  break;
@@ -152,7 +152,7 @@ StringList SerialPortUNIX::portNames()
 
   // Get all possible devices in the '/dev' directory
   const FSNode::NameFilter filter = [](const FSNode& node) {
-#if defined(BSPF_MACOS)
+#ifdef BSPF_MACOS
     return BSPF::startsWithIgnoreCase(node.getPath(), "/dev/cu.usb") ||
            BSPF::startsWithIgnoreCase(node.getPath(), "/dev/tty.usb");
 #else

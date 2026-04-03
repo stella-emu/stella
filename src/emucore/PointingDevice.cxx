@@ -16,6 +16,7 @@
 //============================================================================
 
 #include <cmath>
+#include <climits>
 
 #include "Control.hxx"
 #include "Event.hxx"
