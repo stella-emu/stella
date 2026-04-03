@@ -570,12 +570,12 @@ bool CartridgeCDF::save(Serializer& out) const
     out.putShort(myJMPoperandAddress);
 
     // Harmony RAM
-    out.putByteArray(myRAM.data(), myRAM.size());
+    out.putByteArray(myRAM);
 
     // Audio info
-    out.putIntArray(myMusicCounters.data(), myMusicCounters.size());
-    out.putIntArray(myMusicFrequencies.data(), myMusicFrequencies.size());
-    out.putByteArray(myMusicWaveformSize.data(), myMusicWaveformSize.size());
+    out.putIntArray(myMusicCounters);
+    out.putIntArray(myMusicFrequencies);
+    out.putByteArray(myMusicWaveformSize);
 
     // Save cycles and clocks
     out.putLong(myAudioCycles);
@@ -612,12 +612,12 @@ bool CartridgeCDF::load(Serializer& in)
     myJMPoperandAddress = in.getShort();
 
     // Harmony RAM
-    in.getByteArray(myRAM.data(), myRAM.size());
+    in.getByteArray(myRAM);
 
     // Audio info
-    in.getIntArray(myMusicCounters.data(), myMusicCounters.size());
-    in.getIntArray(myMusicFrequencies.data(), myMusicFrequencies.size());
-    in.getByteArray(myMusicWaveformSize.data(), myMusicWaveformSize.size());
+    in.getIntArray(myMusicCounters);
+    in.getIntArray(myMusicFrequencies);
+    in.getByteArray(myMusicWaveformSize);
 
     // Get cycles and clocks
     myAudioCycles = in.getLong();

@@ -184,7 +184,7 @@ bool AnalogReadout::Connection::save(Serializer& out) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool AnalogReadout::Connection::load(const Serializer& in)
+bool AnalogReadout::Connection::load(Serializer& in)
 {
   try
   {

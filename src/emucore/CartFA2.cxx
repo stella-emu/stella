@@ -120,7 +120,7 @@ uInt8 CartridgeFA2::ramReadWrite()
       {
         try
         {
-          serializer.getByteArray(myRAM.get(), myRamSize);
+          serializer.getByteArray(std::span{myRAM.get(), myRamSize});
         }
         catch(...)
         {
@@ -132,7 +132,7 @@ uInt8 CartridgeFA2::ramReadWrite()
       {
         try
         {
-          serializer.putByteArray(myRAM.get(), myRamSize);
+          serializer.putByteArray(std::span{myRAM.get(), myRamSize});
         }
         catch(...)
         {
@@ -173,7 +173,7 @@ void CartridgeFA2::flash(uInt8 operation)
       try
       {
         std::array<uInt8, 256> buf = {};
-        serializer.putByteArray(buf.data(), buf.size());
+        serializer.putByteArray(buf);
       }
       catch(...)
       {
@@ -185,7 +185,7 @@ void CartridgeFA2::flash(uInt8 operation)
     {
       try
       {
-        serializer.getByteArray(myRAM.get(), myRamSize);
+        serializer.getByteArray(std::span{myRAM.get(), myRamSize});
       }
       catch(...)
       {
@@ -196,7 +196,7 @@ void CartridgeFA2::flash(uInt8 operation)
     {
       try
       {
-        serializer.putByteArray(myRAM.get(), myRamSize);
+        serializer.putByteArray(std::span{myRAM.get(), myRamSize});
       }
       catch(...)
       {

@@ -398,9 +398,9 @@ bool CartridgeEnhanced::save(Serializer& out) const
 {
   try
   {
-    out.putIntArray(myCurrentSegOffset.get(), myBankSegs);
+    out.putIntArray(std::span{myCurrentSegOffset.get(), myBankSegs});
     if(myRamSize > 0)
-      out.putByteArray(myRAM.get(), myRamSize);
+      out.putByteArray(std::span{myRAM.get(), myRamSize});
 
     if(myPlusROM->isValid() && !myPlusROM->save(out))
       return false;
@@ -419,9 +419,9 @@ bool CartridgeEnhanced::load(Serializer& in)
 {
   try
   {
-    in.getIntArray(myCurrentSegOffset.get(), myBankSegs);
+    in.getIntArray(std::span{myCurrentSegOffset.get(), myBankSegs});
     if(myRamSize > 0)
-      in.getByteArray(myRAM.get(), myRamSize);
+      in.getByteArray(std::span{myRAM.get(), myRamSize});
 
     if(myPlusROM->isValid() && !myPlusROM->load(in))
       return false;

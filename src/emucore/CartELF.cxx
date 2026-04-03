@@ -279,7 +279,7 @@ bool CartridgeELF::save(Serializer& out) const
     out.putInt(myInitFunctionIndex);
     out.putByte(static_cast<uInt8>(myConsoleTiming));
 
-    out.putByteArray(myLastPeekResult.get(), 0x1000);
+    out.putByteArray(std::span{myLastPeekResult.get(), 0x1000});
 
     if (!myTransactionQueue.save(out)) return false;
     if (!myCortexEmu.save(out)) return false;
@@ -312,7 +312,7 @@ bool CartridgeELF::load(Serializer& in)
     myInitFunctionIndex = in.getInt();
     myConsoleTiming = static_cast<ConsoleTiming>(in.getByte());
 
-    in.getByteArray(myLastPeekResult.get(), 0x1000);
+    in.getByteArray(std::span{myLastPeekResult.get(), 0x1000});
 
     if (!myTransactionQueue.load(in)) return false;
     if (!myCortexEmu.load(in)) return false;

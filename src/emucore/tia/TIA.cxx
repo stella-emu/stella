@@ -322,7 +322,7 @@ bool TIA::save(Serializer& out) const
 
     out.putLong(myTimestamp);
 
-    out.putByteArray(myShadowRegisters.data(), myShadowRegisters.size());
+    out.putByteArray(myShadowRegisters);
 
   #ifdef DEBUGGER_SUPPORT
     out.putLong(myCyclesAtFrameStart);
@@ -397,7 +397,7 @@ bool TIA::load(Serializer& in)
 
     myTimestamp = in.getLong();
 
-    in.getByteArray(myShadowRegisters.data(), myShadowRegisters.size());
+    in.getByteArray(myShadowRegisters);
 
   #ifdef DEBUGGER_SUPPORT
     myCyclesAtFrameStart = in.getLong();
@@ -930,9 +930,9 @@ bool TIA::saveDisplay(Serializer& out) const
 {
   try
   {
-    out.putByteArray(myFramebuffer.data(), myFramebuffer.size());
-    out.putByteArray(myBackBuffer.data(), myBackBuffer.size());
-    out.putByteArray(myFrontBuffer.data(), myFrontBuffer.size());
+    out.putByteArray(myFramebuffer);
+    out.putByteArray(myBackBuffer);
+    out.putByteArray(myFrontBuffer);
     out.putInt(myFramesSinceLastRender);
   }
   catch(...)
@@ -945,14 +945,14 @@ bool TIA::saveDisplay(Serializer& out) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool TIA::loadDisplay(const Serializer& in)
+bool TIA::loadDisplay(Serializer& in)
 {
   try
   {
     // Reset frame buffer pointer and data
-    in.getByteArray(myFramebuffer.data(), myFramebuffer.size());
-    in.getByteArray(myBackBuffer.data(), myBackBuffer.size());
-    in.getByteArray(myFrontBuffer.data(), myFrontBuffer.size());
+    in.getByteArray(myFramebuffer);
+    in.getByteArray(myBackBuffer);
+    in.getByteArray(myFrontBuffer);
     myFramesSinceLastRender = in.getInt();
   }
   catch(...)

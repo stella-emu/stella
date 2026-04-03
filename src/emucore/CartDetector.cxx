@@ -771,14 +771,14 @@ size_t CartDetector::isProbablyMVC(const FSNode& rom)
   if(Bankswitch::typeFromExtension(rom) == Bankswitch::Type::MVC)
     return frameSize;
 
-  Serializer s(rom.getPath(), Serializer::Mode::ReadOnly);
+  Serializer s(rom.getPath(), Serializer::FileMode::ReadOnly);
   if(s)
   {
     if(s.size() < frameSize)
       return 0;
 
     uInt8 image[frameSize];
-    s.getByteArray(image, frameSize);
+    s.getByteArray(image);
 
     static constexpr uInt8 sig[] = { 'M', 'V', 'C', 0 };  // MVC version 0
     return searchForBytes(image, frameSize, sig, 4) ? frameSize : 0;

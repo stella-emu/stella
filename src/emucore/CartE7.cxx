@@ -333,9 +333,9 @@ bool CartridgeE7::save(Serializer& out) const
 {
   try
   {
-    out.putShortArray(myCurrentBank.data(), myCurrentBank.size());
+    out.putShortArray(myCurrentBank);
     out.putShort(myCurrentRAM);
-    out.putByteArray(myRAM.data(), myRAM.size());
+    out.putByteArray(myRAM);
     if (myPlusROM->isValid() && !myPlusROM->save(out))
         return false;
   }
@@ -353,9 +353,9 @@ bool CartridgeE7::load(Serializer& in)
 {
   try
   {
-    in.getShortArray(myCurrentBank.data(), myCurrentBank.size());
+    in.getShortArray(myCurrentBank);
     myCurrentRAM = in.getShort();
-    in.getByteArray(myRAM.data(), myRAM.size());
+    in.getByteArray(myRAM);
     if (myPlusROM->isValid() && !myPlusROM->load(in))
         return false;
   }

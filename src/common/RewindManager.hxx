@@ -190,8 +190,8 @@ class RewindManager
       ~RewindState() = default;
       RewindState(const RewindState& rs) : cycles(rs.cycles) { }
       RewindState& operator= (const RewindState& rs) { cycles = rs.cycles; return *this; }  // NOLINT: we don't worry about self-assignment here
-      RewindState(RewindState&&) = default;
-      RewindState& operator=(RewindState&&) = default;
+      RewindState(RewindState&&) = delete;
+      RewindState& operator=(RewindState&&) = delete;
 
       // Output object info; used for debugging only
       friend ostream& operator<<(ostream& os, const RewindState& s) {

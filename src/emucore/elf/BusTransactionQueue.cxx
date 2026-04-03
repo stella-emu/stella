@@ -118,7 +118,7 @@ void BusTransactionQueue::Transaction::serialize(Serializer& out) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void BusTransactionQueue::Transaction::deserialize(const Serializer& in)
+void BusTransactionQueue::Transaction::deserialize(Serializer& in)
 {
   address = in.getShort();
   mask = in.getShort();

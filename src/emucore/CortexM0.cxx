@@ -574,17 +574,17 @@ void CortexM0::MemoryRegion::saveDirtyBits(Serializer& out) const
 
   switch (type) {
     case MemoryRegionType::directCode:
-      out.putByteArray(
+      out.putByteArray(std::span{
         std::get<1>(access).backingStore + (accessWatermarkLow - base),
-        accessWatermarkHigh - accessWatermarkLow + 1
+        accessWatermarkHigh - accessWatermarkLow + 1}
       );
 
       break;
 
     case MemoryRegionType::directData:
-      out.putByteArray(
+      out.putByteArray(std::span{
         std::get<0>(access).backingStore + (accessWatermarkLow - base),
-        accessWatermarkHigh - accessWatermarkLow + 1
+        accessWatermarkHigh - accessWatermarkLow + 1}
       );
 
       break;
@@ -595,7 +595,7 @@ void CortexM0::MemoryRegion::saveDirtyBits(Serializer& out) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CortexM0::MemoryRegion::loadDirtyBits(const Serializer& in)
+void CortexM0::MemoryRegion::loadDirtyBits(Serializer& in)
 {
   if (type != MemoryRegionType::directCode && type != MemoryRegionType::directData) return;
 
@@ -607,17 +607,17 @@ void CortexM0::MemoryRegion::loadDirtyBits(const Serializer& in)
 
   switch (type) {
     case MemoryRegionType::directCode:
-      in.getByteArray(
+      in.getByteArray(std::span{
         std::get<1>(access).backingStore + (accessWatermarkLow - base),
-        accessWatermarkHigh - accessWatermarkLow + 1
+        accessWatermarkHigh - accessWatermarkLow + 1}
       );
 
       break;
 
     case MemoryRegionType::directData:
-      in.getByteArray(
+      in.getByteArray(std::span{
         std::get<0>(access).backingStore + (accessWatermarkLow - base),
-        accessWatermarkHigh - accessWatermarkLow + 1
+        accessWatermarkHigh - accessWatermarkLow + 1}
       );
 
       break;
@@ -631,7 +631,7 @@ void CortexM0::MemoryRegion::loadDirtyBits(const Serializer& in)
 bool CortexM0::save(Serializer& out) const
 {
   try {
-    out.putIntArray(reg_norm.data(), reg_norm.size());
+    out.putIntArray(reg_norm);
 
     out.putInt(znFlags);
     out.putInt(cFlag);
@@ -652,7 +652,7 @@ bool CortexM0::load(Serializer& in)
   try {
     reset();
 
-    in.getIntArray(reg_norm.data(), reg_norm.size());
+    in.getIntArray(reg_norm);
 
     znFlags = in.getInt();
     cFlag = in.getInt();

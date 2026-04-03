@@ -918,7 +918,7 @@ bool CartridgeBUS::save(Serializer& out) const
     out.putShort(myBankOffset);
 
     // Harmony RAM
-    out.putByteArray(myRAM.data(), myRAM.size());
+    out.putByteArray(myRAM);
 
     // Addresses for bus override logic
     out.putShort(myBusOverdriveAddress);
@@ -931,9 +931,9 @@ bool CartridgeBUS::save(Serializer& out) const
     out.putLong(myARMCycles);
 
     // Audio info
-    out.putIntArray(myMusicCounters.data(), myMusicCounters.size());
-    out.putIntArray(myMusicFrequencies.data(), myMusicFrequencies.size());
-    out.putByteArray(myMusicWaveformSize.data(), myMusicWaveformSize.size());
+    out.putIntArray(myMusicCounters);
+    out.putIntArray(myMusicFrequencies);
+    out.putByteArray(myMusicWaveformSize);
 
     // Indicates current mode
     out.putByte(myMode);
@@ -961,7 +961,7 @@ bool CartridgeBUS::load(Serializer& in)
     myBankOffset = in.getShort();
 
     // Harmony RAM
-    in.getByteArray(myRAM.data(), myRAM.size());
+    in.getByteArray(myRAM);
 
     // Addresses for bus override logic
     myBusOverdriveAddress = in.getShort();
@@ -974,9 +974,9 @@ bool CartridgeBUS::load(Serializer& in)
     myARMCycles = in.getLong();
 
     // Audio info
-    in.getIntArray(myMusicCounters.data(), myMusicCounters.size());
-    in.getIntArray(myMusicFrequencies.data(), myMusicFrequencies.size());
-    in.getByteArray(myMusicWaveformSize.data(), myMusicWaveformSize.size());
+    in.getIntArray(myMusicCounters);
+    in.getIntArray(myMusicFrequencies);
+    in.getByteArray(myMusicWaveformSize);
 
     // Indicates current mode
     myMode = in.getByte();

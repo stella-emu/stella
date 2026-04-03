@@ -373,7 +373,7 @@ bool M6532::save(Serializer& out) const
 {
   try
   {
-    out.putByteArray(myRAM.data(), myRAM.size());
+    out.putByteArray(myRAM);
 
     out.putInt(myTimer);
     out.putInt(mySubTimer);
@@ -392,7 +392,7 @@ bool M6532::save(Serializer& out) const
 
     out.putByte(myInterruptFlag);
     out.putBool(myEdgeDetectPositive);
-    out.putByteArray(myOutTimer.data(), myOutTimer.size());
+    out.putByteArray(myOutTimer);
   }
   catch(...)
   {
@@ -408,7 +408,7 @@ bool M6532::load(Serializer& in)
 {
   try
   {
-    in.getByteArray(myRAM.data(), myRAM.size());
+    in.getByteArray(myRAM);
 
     myTimer = in.getInt();
     mySubTimer = in.getInt();
@@ -427,7 +427,7 @@ bool M6532::load(Serializer& in)
 
     myInterruptFlag = in.getByte();
     myEdgeDetectPositive = in.getBool();
-    in.getByteArray(myOutTimer.data(), myOutTimer.size());
+    in.getByteArray(myOutTimer);
   }
   catch(...)
   {

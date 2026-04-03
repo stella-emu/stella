@@ -199,7 +199,7 @@ bool CartridgeCM::save(Serializer& out) const
     out.putShort(myBankOffset);
     out.putByte(mySWCHA);
     out.putByte(myCompuMate->column());
-    out.putByteArray(myRAM.data(), myRAM.size());
+    out.putByteArray(myRAM);
   }
   catch(...)
   {
@@ -218,7 +218,7 @@ bool CartridgeCM::load(Serializer& in)
     myBankOffset = in.getShort();
     mySWCHA = in.getByte();
     myCompuMate->column() = in.getByte();
-    in.getByteArray(myRAM.data(), myRAM.size());
+    in.getByteArray(myRAM);
   }
   catch(...)
   {

@@ -394,17 +394,17 @@ bool CartridgeAR::save(Serializer& out) const
   try
   {
     // Indicates the offest within the image for the corresponding bank
-    out.putIntArray(myImageOffset.data(), myImageOffset.size());
+    out.putIntArray(myImageOffset);
 
     // The 6K of RAM and 2K of ROM contained in the Supercharger
-    out.putByteArray(myImage.data(), myImage.size());
+    out.putByteArray(myImage);
 
     // The 256 byte header for the current 8448 byte load
-    out.putByteArray(myHeader.data(), myHeader.size());
+    out.putByteArray(myHeader);
 
     // All of the 8448 byte loads associated with the game
     // Note that the size of this array is myNumberOfLoadImages * 8448
-    out.putByteArray(myLoadImages.get(), myNumberOfLoadImages * LOAD_SIZE);
+    out.putByteArray(std::span{myLoadImages.get(), myNumberOfLoadImages * LOAD_SIZE});
 
     // Indicates how many 8448 loads there are
     out.putByte(myNumberOfLoadImages);
@@ -439,17 +439,17 @@ bool CartridgeAR::load(Serializer& in)
   try
   {
     // Indicates the offest within the image for the corresponding bank
-    in.getIntArray(myImageOffset.data(), myImageOffset.size());
+    in.getIntArray(myImageOffset);
 
     // The 6K of RAM and 2K of ROM contained in the Supercharger
-    in.getByteArray(myImage.data(), myImage.size());
+    in.getByteArray(myImage);
 
     // The 256 byte header for the current 8448 byte load
-    in.getByteArray(myHeader.data(), myHeader.size());
+    in.getByteArray(myHeader);
 
     // All of the 8448 byte loads associated with the game
     // Note that the size of this array is myNumberOfLoadImages * 8448
-    in.getByteArray(myLoadImages.get(), myNumberOfLoadImages * LOAD_SIZE);
+    in.getByteArray(std::span{myLoadImages.get(), myNumberOfLoadImages * LOAD_SIZE});
 
     // Indicates how many 8448 loads there are
     myNumberOfLoadImages = in.getByte();

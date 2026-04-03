@@ -686,38 +686,38 @@ bool CartridgeDPCPlus::save(Serializer& out) const
     out.putShort(myBankOffset);
 
     // Harmony RAM
-    out.putByteArray(myDPCRAM.data(), myDPCRAM.size());
+    out.putByteArray(myDPCRAM);
 
     // The top registers for the data fetchers
-    out.putByteArray(myTops.data(), myTops.size());
+    out.putByteArray(myTops);
 
     // The bottom registers for the data fetchers
-    out.putByteArray(myBottoms.data(), myBottoms.size());
+    out.putByteArray(myBottoms);
 
     // The counter registers for the data fetchers
-    out.putShortArray(myCounters.data(), myCounters.size());
+    out.putShortArray(myCounters);
 
     // The counter registers for the fractional data fetchers
-    out.putIntArray(myFractionalCounters.data(), myFractionalCounters.size());
+    out.putIntArray(myFractionalCounters);
 
     // The fractional registers for the data fetchers
-    out.putByteArray(myFractionalIncrements.data(), myFractionalIncrements.size());
+    out.putByteArray(myFractionalIncrements);
 
     // The Fast Fetcher Enabled flag
     out.putBool(myFastFetch);
     out.putBool(myLDAimmediate);
 
     // Control Byte to update
-    out.putByteArray(myParameter.data(), myParameter.size());
+    out.putByteArray(myParameter);
 
     // The music counters
-    out.putIntArray(myMusicCounters.data(), myMusicCounters.size());
+    out.putIntArray(myMusicCounters);
 
     // The music frequencies
-    out.putIntArray(myMusicFrequencies.data(), myMusicFrequencies.size());
+    out.putIntArray(myMusicFrequencies);
 
     // The music waveforms
-    out.putShortArray(myMusicWaveforms.data(), myMusicWaveforms.size());
+    out.putShortArray(myMusicWaveforms);
 
     // The random number generator register
     out.putInt(myRandomNumber);
@@ -749,38 +749,38 @@ bool CartridgeDPCPlus::load(Serializer& in)
     myBankOffset = in.getShort();
 
     // Harmony RAM
-    in.getByteArray(myDPCRAM.data(), myDPCRAM.size());
+    in.getByteArray(myDPCRAM);
 
     // The top registers for the data fetchers
-    in.getByteArray(myTops.data(), myTops.size());
+    in.getByteArray(myTops);
 
     // The bottom registers for the data fetchers
-    in.getByteArray(myBottoms.data(), myBottoms.size());
+    in.getByteArray(myBottoms);
 
     // The counter registers for the data fetchers
-    in.getShortArray(myCounters.data(), myCounters.size());
+    in.getShortArray(myCounters);
 
     // The counter registers for the fractional data fetchers
-    in.getIntArray(myFractionalCounters.data(), myFractionalCounters.size());
+    in.getIntArray(myFractionalCounters);
 
     // The fractional registers for the data fetchers
-    in.getByteArray(myFractionalIncrements.data(), myFractionalIncrements.size());
+    in.getByteArray(myFractionalIncrements);
 
     // The Fast Fetcher Enabled flag
     myFastFetch = in.getBool();
     myLDAimmediate = in.getBool();
 
     // Control Byte to update
-    in.getByteArray(myParameter.data(), myParameter.size());
+    in.getByteArray(myParameter);
 
     // The music mode counters for the data fetchers
-    in.getIntArray(myMusicCounters.data(), myMusicCounters.size());
+    in.getIntArray(myMusicCounters);
 
     // The music mode frequency addends for the data fetchers
-    in.getIntArray(myMusicFrequencies.data(), myMusicFrequencies.size());
+    in.getIntArray(myMusicFrequencies);
 
     // The music waveforms
-    in.getShortArray(myMusicWaveforms.data(), myMusicWaveforms.size());
+    in.getShortArray(myMusicWaveforms);
 
     // The random number generator register
     myRandomNumber = in.getInt();

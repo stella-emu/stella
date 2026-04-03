@@ -239,7 +239,7 @@ string RewindManager::saveAllStates()
       << myOSystem.console().properties().get(PropType::Cart_Name)
       << ".sta";
 
-    Serializer out(buf.view(), Serializer::Mode::ReadWriteTrunc);
+    Serializer out(buf.view(), Serializer::FileMode::ReadWriteTrunc);
     if (!out)
       return "Can't save to all states file";
 
@@ -265,8 +265,8 @@ string RewindManager::saveAllStates()
 
       // Save state
       ByteArray buffer(stateSize);
-      s.getByteArray(buffer.data(), stateSize);
-      out.putByteArray(buffer.data(), stateSize);
+      s.getByteArray(buffer);
+      out.putByteArray(buffer);
       out.putString(state.message);
       out.putLong(state.cycles);
 
@@ -296,7 +296,7 @@ string RewindManager::loadAllStates()
       << ".sta";
 
     // Make sure the file can be opened for reading
-    const Serializer in(buf.view(), Serializer::Mode::ReadOnly);
+    Serializer in(buf.view(), Serializer::FileMode::ReadOnly);
     if (!in)
       return "Can't load from all states file";
 
@@ -328,8 +328,8 @@ string RewindManager::loadAllStates()
 
       // Fill new state with saved values
       ByteArray buffer(stateSize);
-      in.getByteArray(buffer.data(), stateSize);
-      s.putByteArray(buffer.data(), stateSize);
+      in.getByteArray(buffer);
+      s.putByteArray(buffer);
       state.message = in.getString();
       state.cycles = in.getLong();
     }

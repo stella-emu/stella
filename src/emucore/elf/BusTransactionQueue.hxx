@@ -38,7 +38,7 @@ class BusTransactionQueue: public Serializable {
       bool yield{false};
 
       void serialize(Serializer& out) const;
-      void deserialize(const Serializer& in);
+      void deserialize(Serializer& in);
     };
 
   public:

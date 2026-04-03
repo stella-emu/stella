@@ -131,7 +131,7 @@ bool DelayQueue<length, capacity>::save(Serializer& out) const
       myMembers[i].save(out);
 
     out.putByte(myIndex);
-    out.putByteArray(myIndices.data(), myIndices.size());
+    out.putByteArray(myIndices);
   }
   catch(...)
   {
@@ -154,7 +154,7 @@ bool DelayQueue<length, capacity>::load(Serializer& in)
       myMembers[i].load(in);
 
     myIndex = in.getByte();
-    in.getByteArray(myIndices.data(), myIndices.size());
+    in.getByteArray(myIndices);
   }
   catch(...)
   {

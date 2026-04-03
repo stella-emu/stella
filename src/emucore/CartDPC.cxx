@@ -357,16 +357,16 @@ bool CartridgeDPC::save(Serializer& out) const
   try
   {
     // The top registers for the data fetchers
-    out.putByteArray(myTops.data(), myTops.size());
+    out.putByteArray(myTops);
 
     // The bottom registers for the data fetchers
-    out.putByteArray(myBottoms.data(), myBottoms.size());
+    out.putByteArray(myBottoms);
 
     // The counter registers for the data fetchers
-    out.putShortArray(myCounters.data(), myCounters.size());
+    out.putShortArray(myCounters);
 
     // The flag registers for the data fetchers
-    out.putByteArray(myFlags.data(), myFlags.size());
+    out.putByteArray(myFlags);
 
     // The music mode flags for the data fetchers
     for(const auto& mode: myMusicMode)
@@ -396,16 +396,16 @@ bool CartridgeDPC::load(Serializer& in)
   try
   {
     // The top registers for the data fetchers
-    in.getByteArray(myTops.data(), myTops.size());
+    in.getByteArray(myTops);
 
     // The bottom registers for the data fetchers
-    in.getByteArray(myBottoms.data(), myBottoms.size());
+    in.getByteArray(myBottoms);
 
     // The counter registers for the data fetchers
-    in.getShortArray(myCounters.data(), myCounters.size());
+    in.getShortArray(myCounters);
 
     // The flag registers for the data fetchers
-    in.getByteArray(myFlags.data(), myFlags.size());
+    in.getByteArray(myFlags);
 
     // The music mode flags for the data fetchers
     for(auto& mode: myMusicMode)

@@ -331,8 +331,8 @@ bool PlusROM::save(Serializer& out) const
 {
   try
   {
-    out.putByteArray(myRxBuffer.data(), myRxBuffer.size());
-    out.putByteArray(myTxBuffer.data(), myTxBuffer.size());
+    out.putByteArray(myRxBuffer);
+    out.putByteArray(myTxBuffer);
     out.putInt(myRxReadPos);
     out.putInt(myRxWritePos);
     out.putInt(myTxPos);
@@ -353,8 +353,8 @@ bool PlusROM::load(Serializer& in)
 
   try
   {
-    in.getByteArray(myRxBuffer.data(), myRxBuffer.size());
-    in.getByteArray(myTxBuffer.data(), myTxBuffer.size());
+    in.getByteArray(myRxBuffer);
+    in.getByteArray(myTxBuffer);
     myRxReadPos = in.getInt();
     myRxWritePos = in.getInt();
     myTxPos = in.getInt();

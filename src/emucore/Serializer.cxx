@@ -18,234 +18,311 @@
 #include "FSNode.hxx"
 #include "Serializer.hxx"
 
-using std::ios;
-using std::ios_base;
-
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Serializer::Serializer(string_view filename, Mode m)
+Serializer::Serializer(string_view filename, FileMode fm)
 {
-  if(m == Mode::ReadOnly)
-  {
-    const FSNode node(filename);
-    if(node.isFile() && node.isReadable())
-    {
-      unique_ptr<fstream> str = make_unique<fstream>(
-          string{filename}, ios::in | ios::binary);
-      if(str && str->is_open())
-      {
-        myStream = std::move(str);
-        rewind();
-        myStream->exceptions( ios_base::failbit | ios_base::badbit |
-                              ios_base::eofbit );
-      }
-    }
-  }
+  std::ios::openmode mode = std::ios::binary;
+
+  if(fm == FileMode::ReadOnly)
+    mode |= std::ios::in;
   else
   {
-    // When using fstreams, we need to manually create the file first
-    // if we want to use it in read/write mode, since it won't be created
-    // if it doesn't already exist
-    // However, if it *does* exist, we don't want to overwrite it
-    // So we open in write and append mode - the write creates the file
-    // when necessary, and the append doesn't delete any data if it
-    // already exists
-    const string f{filename};
-    fstream temp(f, ios::out | ios::app);
-    temp.close();
-
-    ios_base::openmode stream_mode = ios::in | ios::out | ios::binary;
-    if(m == Mode::ReadWriteTrunc)
-      stream_mode |= ios::trunc;
-    unique_ptr<fstream> str = make_unique<fstream>(f, stream_mode);
-    if(str && str->is_open())
-    {
-      myStream = std::move(str);
-      rewind();
-      myStream->exceptions( ios_base::failbit | ios_base::badbit |
-                            ios_base::eofbit );
-    }
+    mode |= std::ios::in | std::ios::out;
+    if(fm == FileMode::ReadWriteTrunc)
+      mode |= std::ios::trunc;
   }
+
+  myFile.emplace();
+  myFile->stream.open(string(filename), mode);
+  if(!myFile->stream.is_open())
+    throw std::runtime_error("Failed to open file");
+
+  myFile->stream.exceptions(std::ios::failbit | std::ios::badbit);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Serializer::Serializer()
-  : myStream{make_unique<stringstream>(ios::in | ios::out | ios::binary)}
 {
-  // For some reason, Windows and possibly macOS needs to store something in
-  // the stream before it is used for the first time
-  if(myStream)
-  {
-    putBool(true);
-    rewind();
-    myStream->exceptions( ios_base::failbit | ios_base::badbit | ios_base::eofbit );
-  }
+  myMemory.emplace();
+  myMemory->buffer.reserve(4_KB);  // tweak or remove as needed
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Serializer::setPosition(size_t pos)
 {
-  myStream->clear();
-  myStream->seekg(pos);
-  myStream->seekp(pos);
+  if(myMemory)
+  {
+    if(pos > myMemory->size)
+      throw std::out_of_range("Memory position out of bounds");
+    myMemory->pos = pos;
+  }
+  else if(myFile)
+  {
+    myFile->flushBuffer();
+    myFile->stream.clear();  // clear any eof/fail flags
+    myFile->stream.seekg(pos, std::ios::beg);
+    myFile->stream.seekp(pos, std::ios::beg);
+    if(!myFile->stream)
+      throw std::runtime_error("Failed to set file position");
+  }
+  else
+    throw std::runtime_error("Serializer not initialized");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Serializer::rewind()
 {
-  myStream->clear();
-  myStream->seekg(ios_base::beg);
-  myStream->seekp(ios_base::beg);
+  setPosition(0);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 size_t Serializer::size()
 {
-  const std::streampos oldPos = myStream->tellp();
-
-  myStream->seekp(0, std::ios::end);
-  const size_t s = myStream->tellp();
-  myStream->seekp(oldPos);
-
-  return s;
+  if(myMemory)
+  {
+    return myMemory->size;
+  }
+  else if(myFile)
+  {
+    myFile->flushBuffer();
+    const auto curG = myFile->stream.tellg();
+    const auto curP = myFile->stream.tellp();
+    myFile->stream.seekg(0, std::ios::end);
+    const auto end = myFile->stream.tellg();
+    myFile->stream.seekg(curG);
+    myFile->stream.seekp(curP);
+    return static_cast<size_t>(end);
+  }
+  else
+    return 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt8 Serializer::getByte() const
+template<typename T>
+inline T Serializer::readRaw()
 {
-  char buf{0};
-  myStream->read(&buf, 1);
+  if constexpr(std::is_same_v<T, double>)
+  {
+    const auto raw = readRaw<uInt64>();
+    return std::bit_cast<double>(raw);
+  }
+  else
+  {
+    T value{};
 
-  return buf;
+    if(myMemory)
+    {
+      if(myMemory->pos + sizeof(T) > myMemory->size)
+        throw std::runtime_error("Out of bounds");
+
+      std::memcpy(&value, myMemory->buffer.data() + myMemory->pos, sizeof(T));
+      myMemory->pos += sizeof(T);
+    }
+    else if(myFile)
+    {
+      myFile->stream.read(reinterpret_cast<char*>(&value), sizeof(T));
+    }
+    else
+      throw std::runtime_error("Serializer not initialized");
+
+    return fromLittle(value);
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Serializer::getByteArray(uInt8* array, size_t size) const
+template<typename T>
+inline void Serializer::writeRaw(T value)
 {
-  myStream->read(reinterpret_cast<char*>(array), size);
+  if constexpr(std::is_same_v<T, double>)
+  {
+    writeRaw<uInt64>(std::bit_cast<uInt64>(value));
+    return;
+  }
+  else
+  {
+    value = toLittle(value);
+
+    if(myMemory)
+    {
+      myMemory->ensureCapacity(sizeof(T));
+      std::memcpy(myMemory->buffer.data() + myMemory->pos, &value, sizeof(T));
+      myMemory->pos += sizeof(T);
+      myMemory->size = std::max(myMemory->size, myMemory->pos);
+    }
+    else if(myFile)
+    {
+      myFile->writeBuffered(reinterpret_cast<const uInt8*>(&value), sizeof(T));
+    }
+    else
+      throw std::runtime_error("Serializer not initialized");
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt16 Serializer::getShort() const
+uInt8 Serializer::getByte()
 {
-  uInt16 val{0};
-  myStream->read(reinterpret_cast<char*>(&val), sizeof(uInt16));
-
-  return val;
+  return readRaw<uInt8>();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Serializer::getShortArray(uInt16* array, size_t size) const
+void Serializer::getByteArray(std::span<uInt8> array)
 {
-  myStream->read(reinterpret_cast<char*>(array), sizeof(uInt16)*size);
+  if(myMemory)
+  {
+    if(myMemory->pos + array.size() > myMemory->size)
+      throw std::runtime_error("Out of bounds");
+
+    std::memcpy(array.data(), myMemory->buffer.data() + myMemory->pos, array.size());
+    myMemory->pos += array.size();
+  }
+  else if(myFile)
+  {
+    myFile->stream.read(reinterpret_cast<char*>(array.data()), array.size());
+  }
+  else
+    throw std::runtime_error("Serializer not initialized");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt32 Serializer::getInt() const
+uInt16 Serializer::getShort()
 {
-  uInt32 val{0};
-  myStream->read(reinterpret_cast<char*>(&val), sizeof(uInt32));
-
-  return val;
+  return readRaw<uInt16>();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Serializer::getIntArray(uInt32* array, size_t size) const
+void Serializer::getShortArray(std::span<uInt16> array)
 {
-  myStream->read(reinterpret_cast<char*>(array), sizeof(uInt32)*size);
+  getByteArray(std::span<uInt8>(reinterpret_cast<uInt8*>(array.data()),
+                                                         array.size_bytes()));
+  if constexpr(std::endian::native != std::endian::little)
+    for(auto& val: array)
+      val = byteswap(val);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt64 Serializer::getLong() const
+uInt32 Serializer::getInt()
 {
-  uInt64 val{0};
-  myStream->read(reinterpret_cast<char*>(&val), sizeof(uInt64));
-
-  return val;
+  return readRaw<uInt32>();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-double Serializer::getDouble() const
+void Serializer::getIntArray(std::span<uInt32> array)
 {
-  double val{0.0};
-  myStream->read(reinterpret_cast<char*>(&val), sizeof(double));
-
-  return val;
+  getByteArray(std::span<uInt8>(reinterpret_cast<uInt8*>(array.data()),
+                                                         array.size_bytes()));
+  if constexpr(std::endian::native != std::endian::little)
+    for(auto& val: array)
+      val = byteswap(val);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string Serializer::getString() const
+uInt64 Serializer::getLong()
 {
-  const int len = getInt();
-  string str;
-  str.resize(len);
-  myStream->read(str.data(), len);
-
-  return str;
+  return readRaw<uInt64>();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool Serializer::getBool() const
+double Serializer::getDouble()
+{
+  return readRaw<double>();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool Serializer::getBool()
 {
   return getByte() == TruePattern;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Serializer::putByte(uInt8 value)
+string Serializer::getString()
 {
-  myStream->write(reinterpret_cast<char*>(&value), 1);
+  const uInt32 len = getInt();
+  string result(len, '\0');
+
+  getByteArray(std::span<uInt8>(reinterpret_cast<uInt8*>(result.data()), len));
+  return result;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Serializer::putByteArray(const uInt8* array, size_t size)
+void Serializer::putByte(uInt8 value)
 {
-  myStream->write(reinterpret_cast<const char*>(array), size);
+  writeRaw<uInt8>(value);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Serializer::putByteArray(std::span<const uInt8> array)
+{
+  if(myMemory)
+  {
+    myMemory->ensureCapacity(array.size());
+    std::memcpy(myMemory->buffer.data() + myMemory->pos, array.data(), array.size());
+    myMemory->pos += array.size();
+    myMemory->size = std::max(myMemory->size, myMemory->pos);
+  }
+  else if(myFile)
+  {
+    myFile->writeBuffered(array.data(), array.size());
+  }
+  else
+    throw std::runtime_error("Serializer not initialized");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Serializer::putShort(uInt16 value)
 {
-  myStream->write(reinterpret_cast<char*>(&value), sizeof(uInt16));
+  writeRaw<uInt16>(value);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Serializer::putShortArray(const uInt16* array, size_t size)
+void Serializer::putShortArray(std::span<const uInt16> array)
 {
-  myStream->write(reinterpret_cast<const char*>(array), sizeof(uInt16)*size);
+  if constexpr(std::endian::native == std::endian::little)
+    putByteArray(std::span<const uInt8>(
+        reinterpret_cast<const uInt8*>(array.data()), array.size_bytes()));
+  else
+    for(const auto& val: array)
+      writeRaw<uInt16>(val);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Serializer::putInt(uInt32 value)
 {
-  myStream->write(reinterpret_cast<char*>(&value), sizeof(uInt32));
+  writeRaw<uInt32>(value);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Serializer::putIntArray(const uInt32* array, size_t size)
+void Serializer::putIntArray(std::span<const uInt32> array)
 {
-  myStream->write(reinterpret_cast<const char*>(array), sizeof(uInt32)*size);
+  if constexpr(std::endian::native == std::endian::little)
+    putByteArray(std::span<const uInt8>(
+        reinterpret_cast<const uInt8*>(array.data()), array.size_bytes()));
+  else
+    for(const auto& val: array)
+      writeRaw<uInt32>(val);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Serializer::putLong(uInt64 value)
 {
-  myStream->write(reinterpret_cast<char*>(&value), sizeof(uInt64));
+  writeRaw<uInt64>(value);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Serializer::putDouble(double value)
 {
-  myStream->write(reinterpret_cast<char*>(&value), sizeof(double));
+  writeRaw<double>(value);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Serializer::putString(string_view str)
 {
   putInt(static_cast<uInt32>(str.size()));
-  myStream->write(str.data(), str.size());
+  putByteArray(std::span<const uInt8>(
+      reinterpret_cast<const uInt8*>(str.data()), str.size()));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Serializer::putBool(bool b)
 {
-  putByte(b ? TruePattern: FalsePattern);
+  putByte(b ? TruePattern : FalsePattern);
 }

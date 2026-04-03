@@ -308,7 +308,7 @@ bool CartridgeCTY::save(Serializer& out) const
   try
   {
     out.putShort(getBank());
-    out.putByteArray(myRAM.data(), myRAM.size());
+    out.putByteArray(myRAM);
 
     out.putByte(myOperationType);
     out.putShort(myTunePosition);
@@ -316,8 +316,8 @@ bool CartridgeCTY::save(Serializer& out) const
     out.putInt(myRandomNumber);
     out.putLong(myAudioCycles);
     out.putDouble(myFractionalClocks);
-    out.putIntArray(myMusicCounters.data(), myMusicCounters.size());
-    out.putIntArray(myMusicFrequencies.data(), myMusicFrequencies.size());
+    out.putIntArray(myMusicCounters);
+    out.putIntArray(myMusicFrequencies);
     out.putLong(myFrequencyImage - myTuneData.data()); // FIXME - storing pointer diff!
   }
   catch(...)
@@ -336,7 +336,7 @@ bool CartridgeCTY::load(Serializer& in)
   {
     // Remember what bank we were in
     bank(in.getShort());
-    in.getByteArray(myRAM.data(), myRAM.size());
+    in.getByteArray(myRAM);
 
     myOperationType = in.getByte();
     myTunePosition = in.getShort();
@@ -344,8 +344,8 @@ bool CartridgeCTY::load(Serializer& in)
     myRandomNumber = in.getInt();
     myAudioCycles = in.getLong();
     myFractionalClocks = in.getDouble();
-    in.getIntArray(myMusicCounters.data(), myMusicCounters.size());
-    in.getIntArray(myMusicFrequencies.data(), myMusicFrequencies.size());
+    in.getIntArray(myMusicCounters);
+    in.getIntArray(myMusicFrequencies);
     myFrequencyImage = myTuneData.data() + in.getLong();
   }
   catch(...)
@@ -512,13 +512,13 @@ void CartridgeCTY::updateTune()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeCTY::loadScore(uInt8 index)
 {
-  const Serializer serializer(myEEPROMFile, Serializer::Mode::ReadOnly);
+  Serializer serializer(myEEPROMFile, Serializer::FileMode::ReadOnly);
   if(serializer)
   {
     std::array<uInt8, 256> scoreRAM{};
     try
     {
-      serializer.getByteArray(scoreRAM.data(), scoreRAM.size());
+      serializer.getByteArray(scoreRAM);
     }
     catch(...)
     {
@@ -540,7 +540,7 @@ void CartridgeCTY::saveScore(uInt8 index)
     std::array<uInt8, 256> scoreRAM{};
     try
     {
-      serializer.getByteArray(scoreRAM.data(), scoreRAM.size());
+      serializer.getByteArray(scoreRAM);
     }
     catch(...)
     {
@@ -554,7 +554,7 @@ void CartridgeCTY::saveScore(uInt8 index)
     serializer.rewind();
     try
     {
-      serializer.putByteArray(scoreRAM.data(), scoreRAM.size());
+      serializer.putByteArray(scoreRAM);
     }
     catch(...)
     {
@@ -574,7 +574,7 @@ void CartridgeCTY::wipeAllScores()
     std::array<uInt8, 256> scoreRAM{};
     try
     {
-      serializer.putByteArray(scoreRAM.data(), scoreRAM.size());
+      serializer.putByteArray(scoreRAM);
     }
     catch(...)
     {

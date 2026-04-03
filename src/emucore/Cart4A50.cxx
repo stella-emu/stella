@@ -363,7 +363,7 @@ bool Cartridge4A50::save(Serializer& out) const
   try
   {
     // The 32K bytes of RAM
-    out.putByteArray(myRAM.data(), myRAM.size());
+    out.putByteArray(myRAM);
 
     // Index pointers
     out.putShort(mySliceLow);
@@ -393,7 +393,7 @@ bool Cartridge4A50::load(Serializer& in)
 {
   try
   {
-    in.getByteArray(myRAM.data(), myRAM.size());
+    in.getByteArray(myRAM);
 
     // Index pointers
     mySliceLow = in.getShort();

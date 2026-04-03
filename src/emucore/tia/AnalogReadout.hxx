@@ -35,7 +35,7 @@ class AnalogReadout : public Serializable
       uInt32 resistance{0};
 
       bool save(Serializer& out) const;
-      bool load(const Serializer& in);
+      bool load(Serializer& in);
 
       friend bool operator==(const AnalogReadout::Connection& c1, const AnalogReadout::Connection& c2);
     };

@@ -207,7 +207,7 @@ void StateManager::loadState(int slot)
         << ".st" << slot;
 
     // Make sure the file can be opened in read-only mode
-    Serializer in(buf.view(), Serializer::Mode::ReadOnly);
+    Serializer in(buf.view(), Serializer::FileMode::ReadOnly);
     if(!in)
     {
       buf.str("");
@@ -253,7 +253,7 @@ void StateManager::saveState(int slot)
         << ".st" << slot;
 
     // Make sure the file can be opened for writing
-    Serializer out(buf.view(), Serializer::Mode::ReadWriteTrunc);
+    Serializer out(buf.view(), Serializer::FileMode::ReadWriteTrunc);
     if(!out)
     {
       buf.str("");

@@ -120,7 +120,7 @@ bool Audio::save(Serializer& out) const
 
   #ifdef GUI_SUPPORT
     out.putLong(static_cast<uInt64>(mySamples.size()));
-    out.putByteArray(mySamples.data(), mySamples.size());
+    out.putByteArray(mySamples);
 
     // TODO: check if this improves sound of playback for larger state gaps
     //out.putInt(mySampleIndex);
@@ -155,7 +155,7 @@ bool Audio::load(Serializer& in)
   #ifdef GUI_SUPPORT
     const uInt64 sampleSize = in.getLong();
     ByteArray samples(sampleSize);
-    in.getByteArray(samples.data(), sampleSize);
+    in.getByteArray(samples);
 
     //mySampleIndex = in.getInt();
     //in.getShortArray((uInt16*)myCurrentFragment, myAudioQueue->fragmentSize());

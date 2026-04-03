@@ -52,7 +52,7 @@ class StringParser
       @param str    The string to split
       @param maxlen The maximum length of string to generate
     */
-    StringParser(string_view str, uInt32 maxlen)
+    StringParser(string_view str, size_t maxlen)
       : myBuffer(str)
     {
       parseWrapped(maxlen);

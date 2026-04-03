@@ -56,8 +56,8 @@ namespace {
       StreamReader() = default;
 
       bool open(string_view path) {
-        myFile = Serializer(path, Serializer::Mode::ReadOnly);
-        myFileSize = myFile ? myFile.size() : 0;
+        myFile = make_unique<Serializer>(path, Serializer::FileMode::ReadOnly);
+        myFileSize = myFile ? myFile->size() : 0;
 
         return static_cast<bool>(myFile);
       }
@@ -162,11 +162,11 @@ namespace {
 
           if(offset + CartridgeMVC::MVC_FIELD_SIZE <= myFileSize)
           {
-            myFile.setPosition(offset);
+            myFile->setPosition(offset);
             if(index)
-              myFile.getByteArray(myBuffer1.data(), myBuffer1.size());
+              myFile->getByteArray(myBuffer1);
             else
-              myFile.getByteArray(myBuffer2.data(), myBuffer2.size());
+              myFile->getByteArray(myBuffer2);
 
             return true;
           }
@@ -197,8 +197,8 @@ namespace {
       bool save(Serializer& out) const override {
         try
         {
-          out.putByteArray(myBuffer1.data(), myBuffer1.size());
-          out.putByteArray(myBuffer2.data(), myBuffer2.size());
+          out.putByteArray(myBuffer1);
+          out.putByteArray(myBuffer2);
 
         #if 0  // FIXME - determine whether we need to load/save this
           const uInt8*  myAudio
@@ -219,8 +219,8 @@ namespace {
       bool load(Serializer& in) override {
         try
         {
-          in.getByteArray(myBuffer1.data(), myBuffer1.size());
-          in.getByteArray(myBuffer2.data(), myBuffer2.size());
+          in.getByteArray(myBuffer1);
+          in.getByteArray(myBuffer2);
 
         #if 0  // FIXME - determine whether we need to load/save this
           const uInt8*  myAudio
@@ -254,7 +254,7 @@ namespace {
       uInt8         myOverscanLines{30};
       uInt8         myEmbeddedFrame{0};
 
-      Serializer myFile;
+      unique_ptr<Serializer> myFile;
       size_t myFileSize{0};
 
       std::array<uInt8, CartridgeMVC::MVC_FIELD_SIZE> myBuffer1{};
@@ -1528,7 +1528,7 @@ bool MovieCart::save(Serializer& out) const
 {
   try
   {
-    out.putByteArray(myROM.data(), myROM.size());
+    out.putByteArray(myROM);
 
     // title screen state
     out.putInt(myTitleCycles);
@@ -1582,7 +1582,7 @@ bool MovieCart::load(Serializer& in)
 {
   try
   {
-    in.getByteArray(myROM.data(), myROM.size());
+    in.getByteArray(myROM);
 
     // title screen state
     myTitleCycles = in.getInt();
