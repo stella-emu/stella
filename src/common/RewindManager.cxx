@@ -470,9 +470,8 @@ IntArray RewindManager::cyclesList() const
   IntArray arr;
 
   const uInt64 firstCycle = getFirstCycles();
-  // NOLINTNEXTLINE (TODO: convert myStateList to use range-for)
-  for(auto it = myStateList.cbegin(); it != myStateList.cend(); ++it)
-    arr.push_back(static_cast<uInt32>(it->cycles - firstCycle));
+  for(const auto& it: myStateList)
+    arr.push_back(static_cast<uInt32>(it.cycles - firstCycle));
 
   return arr;
 }

@@ -202,6 +202,8 @@ class LinkedObjectPool
     */
     iter begin() { return iter(this, myHead); }
     iter end()   { return iter(this, npos);   }
+    const_iter begin()  const { return const_iter(this, myHead); }
+    const_iter end()    const { return const_iter(this, npos);   }
     const_iter cbegin() const { return const_iter(this, myHead); }
     const_iter cend()   const { return const_iter(this, npos);   }
 
