@@ -17,6 +17,8 @@
 
 #ifdef IMAGE_SUPPORT
 
+#include <fstream>
+
 #include "OSystem.hxx"
 #include "FrameBuffer.hxx"
 #include "FBSurface.hxx"

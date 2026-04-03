@@ -19,6 +19,7 @@
 #define ELF_LINKER
 
 #include <optional>
+#include <unordered_map>
 
 #include "bspf.hxx"
 #include "ElfFile.hxx"

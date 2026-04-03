@@ -20,6 +20,7 @@
 #ifndef ZIP_HANDLER_HXX
 #define ZIP_HANDLER_HXX
 
+#include <fstream>
 #include <tuple>
 
 #include "bspf.hxx"

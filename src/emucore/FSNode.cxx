@@ -15,6 +15,8 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
+#include <fstream>
+
 #include "FSNodeFactory.hxx"
 #include "FSNode.hxx"
 

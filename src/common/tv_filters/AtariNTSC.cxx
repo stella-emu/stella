@@ -15,7 +15,9 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
+#include <cstring>
 #include <thread>
+
 #include "AtariNTSC.hxx"
 #include "PhosphorHandler.hxx"
 
@@ -126,7 +128,7 @@ void AtariNTSC::render(const uInt8* atari_in, uInt32 in_width, uInt32 in_height,
 
   // Copy phosphor values into out buffer
   if(rgb_in != nullptr)
-    memcpy(rgb_out, rgb_in, static_cast<size_t>(in_height) * out_pitch);
+    std::memcpy(rgb_out, rgb_in, static_cast<size_t>(in_height) * out_pitch);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

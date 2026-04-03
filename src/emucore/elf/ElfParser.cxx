@@ -18,6 +18,7 @@
 #include "ElfParser.hxx"
 
 #include <cstring>
+#include <iomanip>
 
 namespace {
   constexpr uInt32 ELF_MAGIC = 0x7f454c46;

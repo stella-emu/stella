@@ -19,8 +19,10 @@
 #define SERIALIZER_HXX
 
 #include <bit>
-#include <span>
+#include <cstring>
+#include <fstream>
 #include <optional>
+#include <span>
 
 #include "bspf.hxx"
 

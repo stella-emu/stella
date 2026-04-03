@@ -28,6 +28,8 @@ class TabWidget;
 class CommandSender;
 class ToolTip;
 
+#include <functional>
+
 #include "Widget.hxx"
 #include "GuiObject.hxx"
 #include "StellaKeys.hxx"

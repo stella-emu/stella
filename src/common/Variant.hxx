@@ -18,6 +18,7 @@
 #ifndef VARIANT_HXX
 #define VARIANT_HXX
 
+#include <optional>
 #include <variant>
 
 #include "Rect.hxx"
