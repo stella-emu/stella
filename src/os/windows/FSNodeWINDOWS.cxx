@@ -15,12 +15,14 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#include <cassert>
-#pragma warning(disable : 4091)
+#ifndef WIN32_LEAN_AND_MEAN
+  #define WIN32_LEAN_AND_MEAN
+#endif
+#ifndef NOMINMAX
+  #define NOMINMAX
+#endif
 #include <shlobj.h>
 #include <io.h>
-#include <stdio.h>
-#include <tchar.h>
 
 #include "Windows.hxx"
 #include "HomeFinder.hxx"
@@ -74,11 +76,15 @@ string FSNodeWINDOWS::getShortPath() const
 {
   // If the path starts with the home directory, replace it with '~'
   const string& home = HomeFinder::getHomePath();
-  if (home != "" && BSPF::startsWithIgnoreCase(_path, home))
+  if (!home.empty() && BSPF::startsWithIgnoreCase(_path, home))
   {
-    string path = "~";
     const char* const offset = _path.c_str() + home.size();
-    if (*offset != FSNode::PATH_SEPARATOR)
+    const bool needsSeparator = (*offset != FSNode::PATH_SEPARATOR);
+
+    string path;
+    path.reserve(1 + (needsSeparator ? 1 : 0) + (_path.size() - home.size()));
+    path = '~';
+    if (needsSeparator)
       path += FSNode::PATH_SEPARATOR;
     path += offset;
     return path;
@@ -89,14 +95,13 @@ string FSNodeWINDOWS::getShortPath() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 size_t FSNodeWINDOWS::getSize() const
 {
-  if (_size == 0 && _isFile)
+  if (!_size && _isFile)
   {
     struct _stat st;
-    _size = _stat(_path.c_str(), &st) == 0 ? st.st_size : 0;
+    _size = (_stat(_path.c_str(), &st) == 0) ? st.st_size : 0;
   }
-  return _size;
+  return _size.value_or(0);
 }
-
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 AbstractFSNodePtr FSNodeWINDOWS::getParent() const
 {
@@ -114,8 +119,9 @@ bool FSNodeWINDOWS::getChildren(AbstractFSList& myList, ListMode mode) const
   if (!_isPseudoRoot) [[likely]]
   {
     // Files enumeration
-    WIN32_FIND_DATA desc{};
-    HANDLE handle = FindFirstFileEx((_path + "*").c_str(), FindExInfoBasic,
+    WIN32_FIND_DATA desc;
+    const string search = _path + '*';
+    HANDLE handle = FindFirstFileEx(search.c_str(), FindExInfoBasic,
         &desc, FindExSearchNameMatch, NULL, FIND_FIRST_EX_LARGE_FETCH);
     if (handle == INVALID_HANDLE_VALUE)
       return false;
@@ -138,14 +144,13 @@ bool FSNodeWINDOWS::getChildren(AbstractFSList& myList, ListMode mode) const
       entry._isDirectory = isDirectory;
       entry._isFile = isFile;
       entry._displayName = asciiName;
-      entry._path = _path;
-      entry._path += asciiName;
+      entry._path = _path + asciiName;
       if (entry._isDirectory)
         entry._path += FSNode::PATH_SEPARATOR;
       entry._isPseudoRoot = false;
       entry._size = desc.nFileSizeHigh * (static_cast<size_t>(MAXDWORD) + 1) + desc.nFileSizeLow;
 
-      myList.emplace_back(std::make_unique<FSNodeWINDOWS>(entry));
+      myList.emplace_back(std::make_unique<FSNodeWINDOWS>(std::move(entry)));
     } while (FindNextFile(handle, &desc));
 
     FindClose(handle);
@@ -153,22 +158,22 @@ bool FSNodeWINDOWS::getChildren(AbstractFSList& myList, ListMode mode) const
   else
   {
     // Drives enumeration
-    static std::array<TCHAR, 100> drive_buffer;
-    GetLogicalDriveStrings(static_cast<DWORD>(drive_buffer.size()), drive_buffer.data());
-
-    static char drive_name[2] = { '\0', '\0' };
-    for (TCHAR* current_drive = drive_buffer.data(); *current_drive;
-         current_drive += _tcslen(current_drive) + 1)
+    const DWORD driveMask = GetLogicalDrives();
+    for (int i = 0; i < 26; ++i)
     {
-      FSNodeWINDOWS entry;
+      if (!(driveMask & (1 << i)))
+        continue;
 
-      drive_name[0] = current_drive[0];
-      entry._displayName = drive_name;
+      const char letter = static_cast<char>('A' + i);
+
+      FSNodeWINDOWS entry;
+      entry._displayName = letter;
       entry._isDirectory = true;
       entry._isFile = false;
       entry._isPseudoRoot = false;
-      entry._path = current_drive;
-      myList.emplace_back(std::make_unique<FSNodeWINDOWS>(entry));
+      entry._path = { letter, ':', FSNode::PATH_SEPARATOR };
+
+      myList.emplace_back(std::make_unique<FSNodeWINDOWS>(std::move(entry)));
     }
   }
 
@@ -205,14 +210,17 @@ bool FSNodeWINDOWS::makeDir()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool FSNodeWINDOWS::rename(string_view newfile)
 {
-  if (!_isPseudoRoot && MoveFile(_path.c_str(), string{newfile}.c_str()) != 0)
+  if (!_isPseudoRoot)
   {
-    _path = newfile;
-    if (_path[0] == '~')
-      _path.replace(0, 1, HomeFinder::getHomePath());
+    string newfilePath{ newfile };
+    if (MoveFile(_path.c_str(), newfilePath.c_str()) != 0) {
+      _path = std::move(newfilePath);
+      _size.reset();
+      if (_path[0] == '~')
+        _path.replace(0, 1, HomeFinder::getHomePath());
 
-    return setFlags();
+      return setFlags();
+    }
   }
-
   return false;
 }

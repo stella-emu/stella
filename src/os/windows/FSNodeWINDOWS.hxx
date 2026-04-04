@@ -18,6 +18,8 @@
 #ifndef FS_NODE_WINDOWS_HXX
 #define FS_NODE_WINDOWS_HXX
 
+#include <optional>
+
 #include "FSNode.hxx"
 
 // TODO - fix isFile() functionality so that it actually determines if something
@@ -79,7 +81,7 @@ class FSNodeWINDOWS : public AbstractFSNode
   private:
     string _displayName, _path;
     bool _isPseudoRoot{false}, _isDirectory{false}, _isFile{false};
-    mutable size_t _size{0};
+    mutable std::optional<size_t> _size{std::nullopt};
 };
 
 #endif
