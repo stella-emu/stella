@@ -53,7 +53,10 @@ void Serializer::setPosition(size_t pos)
   if(myMemory)
   {
     if(pos > myMemory->size)
-      throw std::out_of_range("Memory position out of bounds");
+    {
+      myMemory->ensureSize(pos);
+      myMemory->size = pos;
+    }
     myMemory->pos = pos;
   }
   else if(myFile)
@@ -113,8 +116,10 @@ inline T Serializer::readRaw()
     if(myMemory)
     {
       if(myMemory->pos + sizeof(T) > myMemory->size)
-        throw std::runtime_error("Out of bounds");
-
+      {
+        myMemory->ensureSize(myMemory->pos + sizeof(T));
+        myMemory->size = myMemory->pos + sizeof(T);
+      }
       std::memcpy(&value, myMemory->buffer.data() + myMemory->pos, sizeof(T));
       myMemory->pos += sizeof(T);
     }
@@ -170,8 +175,10 @@ void Serializer::getByteArray(std::span<uInt8> array)
   if(myMemory)
   {
     if(myMemory->pos + array.size() > myMemory->size)
-      throw std::runtime_error("Out of bounds");
-
+    {
+      myMemory->ensureSize(myMemory->pos + array.size());
+      myMemory->size = myMemory->pos + array.size();
+    }
     std::memcpy(array.data(), myMemory->buffer.data() + myMemory->pos, array.size());
     myMemory->pos += array.size();
   }
