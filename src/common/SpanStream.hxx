@@ -27,6 +27,8 @@
   memory span.  This is used to avoid copying data into a string and
   then injecting into a stringstream, just to get a stream interface.
 
+  This is only until we get proper support for this in C++23.
+
   @author  Stephen Anthony
  */
 class SpanStreamBuf : public std::streambuf
@@ -45,16 +47,16 @@ class SpanStreamBuf : public std::streambuf
                      std::ios_base::openmode which) override
     {
       if(!(which & std::ios_base::in))
-        return pos_type(off_type(-1));
+        return static_cast<pos_type>(off_type(-1));
 
       char* target = nullptr;
       if(dir == std::ios_base::beg)       target = eback() + off;
       else if(dir == std::ios_base::cur)  target = gptr()  + off;
       else if(dir == std::ios_base::end)  target = egptr() + off;
-      else                                return pos_type(off_type(-1));
+      else                                return static_cast<pos_type>(off_type(-1));
 
       if(target < eback() || target > egptr())
-        return pos_type(off_type(-1));
+        return static_cast<pos_type>(off_type(-1));
 
       setg(eback(), target, egptr());
       return pos_type(target - eback());
