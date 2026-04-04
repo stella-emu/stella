@@ -15,87 +15,77 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#ifndef __HOME_FINDER_
-#define __HOME_FINDER_
+#ifndef HOME_FINDER_HXX
+#define HOME_FINDER_HXX
 
-#pragma warning( disable : 4091 )
+#ifndef WIN32_LEAN_AND_MEAN
+  #define WIN32_LEAN_AND_MEAN
+#endif
+#ifndef NOMINMAX
+  #define NOMINMAX
+#endif
 #include <shlobj.h>
+
+#include <mutex>
 #include "bspf.hxx"
 
-/*
- * Used to determine the location of the various Win32 user/system folders.
- */
-class HomeFinder
+struct HomeFinder
 {
-  public:
-    HomeFinder() = default;
-    ~HomeFinder() = default;
+  HomeFinder() = delete;
 
-    // Return the 'APPDATA' folder, or an empty string if the folder couldn't be determined.
-    static const string& getAppDataPath()
-    {
-      if(ourAppDataPath == "")
-      {
-        char folder_path[MAX_PATH];
-        HRESULT const result = SHGetFolderPathA(NULL, CSIDL_APPDATA | CSIDL_FLAG_CREATE,
-          NULL, 0, folder_path);
-        ourAppDataPath = (result == S_OK) ? folder_path : EmptyString();
-      }
-      return ourAppDataPath;
-    }
+  static const string& getAppDataPath() {
+    std::call_once(ourAppDataFlag, [] {
+      initPath(ourAppDataPath, FOLDERID_RoamingAppData); });
+    return ourAppDataPath;
+  }
+  static const string& getDesktopPath() {
+    std::call_once(ourDesktopFlag, [] {
+      initPath(ourDesktopPath, FOLDERID_Desktop); });
+    return ourDesktopPath;
+  }
+  static const string& getDocumentsPath() {
+    std::call_once(ourDocumentsFlag, [] {
+      initPath(ourDocumentsPath, FOLDERID_Documents); });
+    return ourDocumentsPath;
+  }
+  static const string& getHomePath() {
+    std::call_once(ourHomeFlag, [] {
+      initPath(ourHomePath, FOLDERID_Profile); });
+    return ourHomePath;
+  }
 
-    // Return the 'Desktop' folder, or an empty string if the folder couldn't be determined.
-    static const string& getDesktopPath()
-    {
-      if(ourDesktopPath == "")
-      {
-        char folder_path[MAX_PATH];
-        HRESULT const result = SHGetFolderPathA(NULL, CSIDL_DESKTOPDIRECTORY | CSIDL_FLAG_CREATE,
-          NULL, 0, folder_path);
-        ourDesktopPath = (result == S_OK) ? folder_path : EmptyString();
-      }
-      return ourDesktopPath;
-    }
+private:
+  static void initPath(string& cache, const KNOWNFOLDERID& id)
+  {
+    PWSTR raw = nullptr;
+    if (FAILED(SHGetKnownFolderPath(id, KF_FLAG_CREATE, nullptr, &raw)))
+      return;
 
-    // Return the 'My Documents' folder, or an empty string if the folder couldn't be determined.
-    static const string& getDocumentsPath()
-    {
-      if(ourDocumentsPath == "")
-      {
-        char folder_path[MAX_PATH];
-        HRESULT const result = SHGetFolderPathA(NULL, CSIDL_MYDOCUMENTS | CSIDL_FLAG_CREATE,
-          NULL, 0, folder_path);
-        ourDocumentsPath = (result == S_OK) ? folder_path : EmptyString();
-      }
-      return ourDocumentsPath;
-    }
+    // Ensure raw is freed however we exit
+    struct CoTaskDeleter {
+      void operator()(void* p) const { CoTaskMemFree(p); }
+    };
+    std::unique_ptr<std::remove_pointer_t<PWSTR>, CoTaskDeleter> path{raw};
 
-    // Return the 'HOME/User' folder, or an empty string if the folder couldn't be determined.
-    static const string& getHomePath()
-    {
-      if(ourHomePath == "")
-      {
-        char folder_path[MAX_PATH];
-        HRESULT const result = SHGetFolderPathA(NULL, CSIDL_PROFILE | CSIDL_FLAG_CREATE,
-          NULL, 0, folder_path);
-        ourHomePath = (result == S_OK) ? folder_path : EmptyString();
-      }
-      return ourHomePath;
-    }
+    // First call: query the required UTF-8 buffer size (includes null terminator)
+    int needed = WideCharToMultiByte(CP_UTF8, 0, path.get(), -1,
+                                     nullptr, 0, nullptr, nullptr);
+    if (needed <= 0)
+      return;
 
-  private:
-    static string ourHomePath, ourAppDataPath, ourDesktopPath, ourDocumentsPath;
+    // Second call: do the actual conversion into a right-sized string
+    string result(needed - 1, '\0');
+    int written = WideCharToMultiByte(CP_UTF8, 0, path.get(), -1,
+                                      result.data(), needed,
+                                      nullptr, nullptr);
+    if (written > 0)
+      cache = std::move(result);
+  }
 
-    // Following constructors and assignment operators not supported
-    HomeFinder(const HomeFinder&) = delete;
-    HomeFinder(HomeFinder&&) = delete;
-    HomeFinder& operator=(const HomeFinder&) = delete;
-    HomeFinder& operator=(HomeFinder&&) = delete;
+  inline static std::once_flag ourHomeFlag, ourAppDataFlag,
+                               ourDesktopFlag, ourDocumentsFlag;
+  inline static string ourHomePath, ourAppDataPath,
+                       ourDesktopPath, ourDocumentsPath;
 };
 
-__declspec(selectany) string HomeFinder::ourHomePath = "";
-__declspec(selectany) string HomeFinder::ourAppDataPath = "";
-__declspec(selectany) string HomeFinder::ourDesktopPath = "";
-__declspec(selectany) string HomeFinder::ourDocumentsPath = "";
-
-#endif
+#endif // HOME_FINDER_HXX
