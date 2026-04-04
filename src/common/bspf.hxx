@@ -41,14 +41,12 @@ using uInt64 = uint64_t;
 #include <array>
 #include <algorithm>
 #include <bit>
-#include <compare>
 #include <iostream>
 #include <memory>
 #include <string>
 #include <string_view>
 #include <charconv>
 #include <sstream>
-#include <cctype>
 #include <ctime>
 #include <numbers>
 #include <ranges>

@@ -23,6 +23,8 @@
 class OSystem;
 class FBSurface;
 
+#include <span>
+
 #include "Variant.hxx"
 #include "bspf.hxx"
 
@@ -50,37 +52,34 @@ class JPGLibrary
              std::runtime_error is thrown containing a more detailed
              error message.
     */
-    void loadImage(const string& filename, FBSurface& surface,
-                   VariantList& metaData);
+    void loadImage(string_view filename, FBSurface& surface, VariantList& metaData);
 
   private:
-    // Global OSystem object
     OSystem& myOSystem;
 
-    // The following data remains between invocations of allocateStorage,
-    // and is only changed when absolutely necessary.
-    struct ReadInfoType {
-      unsigned char* buffer{nullptr};
-      uInt32 width{0}, height{0}, pitch{0};
-    };
-    ReadInfoType myReadInfo;
-    static std::vector<char> myFileBuffer;
+    // Holds the decoded bytes from the JPG file
+    static vector<std::byte> myFileBuffer;
 
     /**
-      Load the JPG data from 'ReadInfo' into the FBSurface.  The surface
-      is resized as necessary to accommodate the data.
+      Load the decoded JPG data into the FBSurface.  The surface is
+      resized as necessary to accommodate the data.
 
       @param surface  The FBSurface into which to place the JPG data
+      @param pixels   The decoded RGB pixel data
+      @param width    The image width in pixels
+      @param height   The image height in pixels
     */
-    void loadImagetoSurface(FBSurface& surface);
+    void loadImagetoSurface(FBSurface& surface, std::span<const uInt8> pixels,
+                            uInt32 width, uInt32 height);
 
     /**
       Read EXIF meta data chunks from the image.
 
-      @param filename  The filename to load the JPG image
+      @param file      The entire data of the JPG image
       @param metaData  The meta data of the JPG image
     */
-    static void readMetaData(const string& filename, VariantList& metaData);
+    static void readMetaData(std::span<const std::byte> file,
+                             VariantList& metaData);
 
   private:
     // Following constructors and assignment operators not supported
