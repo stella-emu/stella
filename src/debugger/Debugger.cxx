@@ -924,6 +924,7 @@ bool Debugger::canExit() const
   return baseDialogIsActive();
 }
 
+// NOLINTBEGIN(bugprone-throwing-static-initialization)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 std::array<Debugger::BuiltinFunction, 18> Debugger::ourBuiltinFunctions = { {
   // left joystick:
@@ -979,4 +980,4 @@ std::array<Debugger::PseudoRegister, 18> Debugger::ourPseudoRegisters = {{
   { "__lastBaseRead", "last CPU read base address" },
   { "__lastBaseWrite", "last CPU write base address" }*/
 } };
-//
+// NOLINTEND(bugprone-throwing-static-initialization)
