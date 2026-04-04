@@ -34,10 +34,10 @@ Serializer::Serializer(string_view filename, FileMode fm)
 
   myFile.emplace();
   myFile->stream.open(string(filename), mode);
-  if(!myFile->stream.is_open())
-    throw std::runtime_error("Failed to open file");
-
-  myFile->stream.exceptions(std::ios::failbit | std::ios::badbit);
+  if(myFile->stream.is_open())
+    myFile->stream.exceptions(std::ios::failbit | std::ios::badbit);
+  else
+    myFile.reset();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
