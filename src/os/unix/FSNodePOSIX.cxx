@@ -34,14 +34,11 @@ FSNodePOSIX::FSNodePOSIX(string_view path, bool verify)
     if (const string& home = homeDir(); !home.empty())
       _path.replace(0, 1, home);
   }
-  // Get absolute path (only used for relative directories)
   else if (_path[0] == '.')
   {
-    if(char* resolved = realpath(_path.c_str(), nullptr))
-    {
-      _path = resolved;
-      free(resolved);
-    }
+    if (auto resolved = std::unique_ptr<char, decltype(&free)>
+          (realpath(_path.c_str(), nullptr), free))
+      _path = resolved.get();
   }
 
   _displayName = lastPathComponent(_path);
@@ -54,7 +51,7 @@ FSNodePOSIX::FSNodePOSIX(string_view path, bool verify)
 const string& FSNodePOSIX::homeDir()
 {
   static const string dir = []() -> string {
-    const char* home = std::getenv("HOME");
+    const char* home = std::getenv("HOME");  // NOLINT(concurrency-mt-unsafe)
     return home ? home : "/";
   }();
   return dir;
@@ -193,12 +190,10 @@ bool FSNodePOSIX::makeDir()
 {
   if (mkdir(_path.c_str(), 0777) == 0)
   {
-    // Get absolute path
-    if (char* resolved = realpath(_path.c_str(), nullptr))
-    {
-      _path = resolved;
-      free(resolved);
-    }
+    if (auto resolved = std::unique_ptr<char, decltype(&free)>
+          (realpath(_path.c_str(), nullptr), free))
+      _path = resolved.get();
+
     _displayName = lastPathComponent(_path);
     return setFlags();
   }
@@ -213,12 +208,10 @@ bool FSNodePOSIX::rename(string_view newfile)
   {
     _path = std::move(newPath);
 
-    // Get absolute path
-    if (char* resolved = realpath(_path.c_str(), nullptr))
-    {
-      _path = resolved;
-      free(resolved);
-    }
+    if (auto resolved = std::unique_ptr<char, decltype(&free)>
+          (realpath(_path.c_str(), nullptr), free))
+      _path = resolved.get();
+
     _displayName = lastPathComponent(_path);
     return setFlags();
   }
