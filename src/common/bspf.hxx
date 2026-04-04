@@ -252,6 +252,7 @@ namespace BSPF
 
   // Find location (if any) of the second string within the first,
   // starting from 'startpos' in the first string
+  // Returns the absolute position in s1, or string_view::npos if not found.
   constexpr size_t findIgnoreCase(string_view s1, string_view s2,
                                   size_t startpos = 0)
   {
@@ -284,7 +285,7 @@ namespace BSPF
         const size_t found = findIgnoreCase(s1, s2.substr(j, 1), pos);
         if(found == string_view::npos)
           return false;
-        pos += found + 1;
+        pos = found + 1;
       }
       return true;
     }
@@ -327,7 +328,7 @@ namespace BSPF
           if(found == string_view::npos)
             return false;
 
-          pos += found + 1;
+          pos = found + 1;
         }
       }
       return true;
