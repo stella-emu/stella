@@ -182,15 +182,26 @@ namespace BSPF
     return std::ranges::find(c, elem) != c.end();
   }
 
+  // Convert character to upper/lower case (ASCII only)
+  constexpr char toUpperAscii(char c) {
+    return (c >= 'a' && c <= 'z') ? (c - 'a' + 'A') : c;
+  }
+  constexpr char toLowerAscii(char c) {
+    return (c >= 'A' && c <= 'Z') ? (c - 'A' + 'a') : c;
+  }
+  // Test whether a character is upper/ower case (ASCII only)
+  constexpr bool isUpperAscii(char c) { return c >= 'A' && c <= 'Z'; }
+  constexpr bool isLowerAscii(char c) { return c >= 'a' && c <= 'z'; }
+
   // Convert string to given case
   inline const string& toUpperCase(string& s)
   {
-    std::ranges::transform(s, s.begin(), ::toupper);
+    std::ranges::transform(s, s.begin(), [](char c){ return toUpperAscii(c); });
     return s;
   }
   inline const string& toLowerCase(string& s)
   {
-    std::ranges::transform(s, s.begin(), ::tolower);
+    std::ranges::transform(s, s.begin(), [](char c){ return toLowerAscii(c); });
     return s;
   }
 
@@ -207,11 +218,6 @@ namespace BSPF
     int i{};
     const auto result = std::from_chars(s.data(), s.data() + s.size(), i, BASE);
     return (result.ec == std::errc()) ? i : defaultValue;
-  }
-
-  // Convert character to uppercase (ASCII only)
-  constexpr char toUpperAscii(char c) {
-    return (c >= 'a' && c <= 'z') ? (c - 'a' + 'A') : c;
   }
 
   // Compare two strings (case insensitive)
@@ -275,65 +281,76 @@ namespace BSPF
   // Test whether the first string matches the second one (case insensitive)
   // - the first character must match
   // - the following characters must appear in the order of the first string
-  inline bool matchesIgnoreCase(string_view s1, string_view s2)
+  constexpr bool matchesIgnoreCase(string_view s1, string_view s2)
   {
-    if(startsWithIgnoreCase(s1, s2.substr(0, 1)))
+    if(s2.empty()) return true;
+    if(s1.empty()) return false;
+
+    // First character must match
+    if(toUpperAscii(s1[0]) != toUpperAscii(s2[0]))
+      return false;
+
+    // Remaining characters must appear in order
+    size_t pos = 1;
+    for(size_t j = 1; j < s2.size(); ++j)
     {
-      size_t pos = 1;
-      for(uInt32 j = 1; j < s2.size(); ++j)
-      {
-        const size_t found = findIgnoreCase(s1, s2.substr(j, 1), pos);
-        if(found == string_view::npos)
-          return false;
-        pos = found + 1;
-      }
-      return true;
+      const char target = toUpperAscii(s2[j]);
+      while(pos < s1.size() && toUpperAscii(s1[pos]) != target)
+        ++pos;
+      if(pos == s1.size())
+        return false;
+      ++pos;
     }
-    return false;
+    return true;
   }
 
   // Test whether the first string matches the second one
   //  (case sensitive for upper case characters in second string, except first one)
   // - the first character must match
   // - the following characters must appear in the order of the first string
-  inline bool matchesCamelCase(string_view s1, string_view s2)
+  constexpr bool matchesCamelCase(string_view s1, string_view s2)
   {
-    // skip leading '_' for matching
-    const uInt32 ofs = (s1[0] == '_' && s2[0] == '_') ? 1 : 0;
+    if(s1.empty() || s2.empty()) return false;
 
-    if(startsWithIgnoreCase(s1.substr(ofs), s2.substr(ofs, 1)))
+    // Skip leading '_' for both strings if both start with it
+    const size_t ofs = (s1[0] == '_' && s2[0] == '_') ? 1 : 0;
+
+    // First character must match (case insensitive)
+    if(toUpperAscii(s1[ofs]) != toUpperAscii(s2[ofs]))
+      return false;
+
+    size_t pos = 1 + ofs;  // current search position in s1 (absolute)
+
+    for(size_t j = 1 + ofs; j < s2.size(); ++j)
     {
-      size_t lastUpper = ofs, pos = 1;
+      const char c2 = s2[j];
 
-      for(uInt32 j = 1 + ofs; j < s2.size(); ++j)
+      if(isUpperAscii(c2))
       {
-        if(std::isupper(s2[j]))
+        // Scan forward in s1; fail if we encounter an uppercase char
+        // before finding c2 (which must be an exact case match)
+        while(pos < s1.size() && s1[pos] != c2)
         {
-          const size_t found = s1.find_first_of(s2[j], pos + ofs);
-
-          if(found == string_view::npos)
-            return false;
-          // make sure no upper case characters are skipped
-          for(size_t k = lastUpper + 1; k < found; ++k)
-            if(isupper(s1[k]))
-              return false;
-
-          pos = found + 1;
-          lastUpper = found;
+          if(isUpperAscii(s1[pos]))
+            return false;  // skipped an uppercase — not a valid match
+          ++pos;
         }
-        else
-        {
-          const size_t found = findIgnoreCase(s1, s2.substr(j, 1), pos + ofs);
-
-          if(found == string_view::npos)
-            return false;
-
-          pos = found + 1;
-        }
+        if(pos == s1.size())
+          return false;
       }
-      return true;
+      else
+      {
+        // Case-insensitive scan for a lowercase pattern char;
+        // uppercase chars in s1 are not a barrier here
+        const char c2u = toUpperAscii(c2);
+        while(pos < s1.size() && toUpperAscii(s1[pos]) != c2u)
+          ++pos;
+        if(pos == s1.size())
+          return false;
+      }
+      ++pos;
     }
-    return false;
+    return true;
   }
 
   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -341,27 +358,46 @@ namespace BSPF
   // @param str      The searched string
   // @param pattern  The pattern to search for
   // @return  Position of pattern in string.
-  inline size_t matchWithJoker(string_view str, string_view pattern)
+  constexpr size_t matchWithJoker(string_view str, string_view pattern)
   {
-    if(str.length() >= pattern.length())
+    if(str.length() < pattern.length())
+      return string_view::npos;
+
+    // Find the first literal (non-'?') character in the pattern to use as
+    // a fast-skip anchor; if none exists every position trivially matches
+    size_t anchorPat = 0;
+    while(anchorPat < pattern.length() && pattern[anchorPat] == '?')
+      ++anchorPat;
+
+    if(anchorPat == pattern.length())
+      return 0;  // pattern is all '?', matches at position 0
+
+    const char anchor = pattern[anchorPat];
+    const size_t maxPos = str.length() - pattern.length();
+
+    for(size_t pos = 0; pos <= maxPos; )
     {
-      // optimize a bit
-      if(pattern.find('?') != string_view::npos)
+      // Jump ahead to next occurrence of the anchor character
+      const size_t found = str.find(anchor, pos + anchorPat);
+      if(found == string_view::npos || found - anchorPat > maxPos)
+        return string_view::npos;
+
+      pos = found - anchorPat;
+
+      // Verify the full pattern at this position
+      bool match = true;
+      for(size_t i = 0; i < pattern.length(); ++i)
       {
-        for(size_t pos = 0; pos < str.length() - pattern.length() + 1; ++pos)
+        if(pattern[i] != '?' && pattern[i] != str[pos + i])
         {
-          bool found = true;
-
-          for(size_t i = 0; found && i < pattern.length(); ++i)
-            if(pattern[i] != str[pos + i] && pattern[i] != '?')
-              found = false;
-
-          if(found)
-            return pos;
+          match = false;
+          break;
         }
       }
-      else
-        return str.find(pattern);
+      if(match)
+        return pos;
+
+      ++pos;
     }
     return string_view::npos;
   }
@@ -372,40 +408,48 @@ namespace BSPF
   // @param str      The searched string
   // @param pattern  The pattern to search for
   // @return  True if pattern was found.
-  inline bool matchWithWildcards(string_view str, string_view pattern)
+  constexpr bool matchWithWildcards(string_view str, string_view pattern)
   {
-    string pat{pattern};  // TODO: don't use copy
+    size_t si = 0;        // current position in str
+    size_t pi = 0;        // current position in pattern
+    size_t starPi = string_view::npos;  // position of last '*' in pattern
+    size_t starSi = 0;    // position in str when last '*' was matched
 
-    // remove leading and trailing '*'
-    size_t i = 0;
-    while(pat[i++] == '*');
-    pat = pat.substr(i - 1);
-
-    i = pat.length();
-    while(pat[--i] == '*');
-    pat.erase(i + 1);
-
-    // Search for first '*'
-    const size_t pos = pat.find('*');
-
-    if(pos != string_view::npos)
+    while(si < str.length())
     {
-      // '*' found, split pattern into left and right part, search recursively
-      const string leftPat = pat.substr(0, pos);
-      const string rightPat = pat.substr(pos + 1);
-      const size_t posLeft = matchWithJoker(str, leftPat);
-
-      if(posLeft != string::npos)
-        return matchWithWildcards(str.substr(pos + posLeft), rightPat);
+      if(pi < pattern.length() &&
+        (pattern[pi] == '?' || pattern[pi] == str[si]))
+      {
+        // Direct match or joker: advance both
+        ++si;
+        ++pi;
+      }
+      else if(pi < pattern.length() && pattern[pi] == '*')
+      {
+        // '*' matches zero characters for now; remember position to backtrack
+        starPi = pi++;
+        starSi = si;
+      }
+      else if(starPi != string_view::npos)
+      {
+        // Mismatch, but we have a previous '*' to backtrack to;
+        // let it consume one more character from str
+        pi = starPi + 1;
+        si = ++starSi;
+      }
       else
-        return false;
+        return false;  // Mismatch with no '*' to backtrack to
     }
-    // no further '*' found
-    return matchWithJoker(str, pat) != string::npos;
+
+    // Consume any remaining '*' in pattern (they match empty string)
+    while(pi < pattern.length() && pattern[pi] == '*')
+      ++pi;
+
+    return pi == pattern.length();
   }
 
   // Modify 'str', replacing all occurrences of 'from' with 'to'
-  inline void replaceAll(string& str, string_view from, string_view to)
+  constexpr void replaceAll(string& str, string_view from, string_view to)
   {
     if(from.empty()) return;
     size_t start_pos = 0;
@@ -418,11 +462,14 @@ namespace BSPF
   }
 
   // Trim leading and trailing whitespace from a string
-  inline string trim(string_view str)
+  constexpr string trim(string_view str)
   {
     const auto first = str.find_first_not_of(' ');
-    return (first == string_view::npos) ? EmptyString() :
-            string{str.substr(first, str.find_last_not_of(' ')-first+1)};
+    if(first == string_view::npos)
+      return {};
+
+    const auto last = str.find_last_not_of(' ');
+    return string{str.substr(first, last - first + 1)};
   }
 
   // C++11 way to get local time
