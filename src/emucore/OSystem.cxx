@@ -828,19 +828,9 @@ ByteBuffer OSystem::openROM(const FSNode& rom, size_t& size,
   // Next check for a proper file size
   // Streaming ROMs read only a portion of the file
   // Otherwise the size to read is 0 (meaning read the entire file)
-  size_t sizeToRead = 0;
-  try
-  {
-    sizeToRead = CartDetector::isProbablyMVC(rom);
-  }
-  catch(const std::runtime_error&)
-  {
-    if(showErrorMessage)
-      throw std::runtime_error("File not found/readable");
-    else
-      return nullptr;
-  }
+  const size_t sizeToRead = CartDetector::isProbablyMVC(rom);  // TODO: optimize this
   const bool isStreaming = sizeToRead > 0;
+
   // Make sure we only read up to the maximum supported cart size
   const bool isValidSize = isValidROM && (isStreaming ||
                            rom.getSize() <= Cartridge::maxSize());

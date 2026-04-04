@@ -771,17 +771,27 @@ size_t CartDetector::isProbablyMVC(const FSNode& rom)
   if(Bankswitch::typeFromExtension(rom) == Bankswitch::Type::MVC)
     return frameSize;
 
-  Serializer s(rom.getPath(), Serializer::FileMode::ReadOnly);
-  if(s)
+  // TODO: Maybe we can determine whether a ROM is MVC before opening it
+  //       Perhaps based on size??  This call is made for every attempt
+  //       to open _any_ ROM, and most of the time they won't be MVC
+  try
   {
-    if(s.size() < frameSize)
-      return 0;
+    Serializer s(rom.getPath(), Serializer::FileMode::ReadOnly);
+    if(s)
+    {
+      if(s.size() < frameSize)
+        return 0;
 
-    uInt8 image[frameSize];
-    s.getByteArray(image);
+      uInt8 image[frameSize];
+      s.getByteArray(image);
 
-    static constexpr uInt8 sig[] = { 'M', 'V', 'C', 0 };  // MVC version 0
-    return searchForBytes(image, frameSize, sig, 4) ? frameSize : 0;
+      static constexpr uInt8 sig[] = { 'M', 'V', 'C', 0 };  // MVC version 0
+      return searchForBytes(image, frameSize, sig, 4) ? frameSize : 0;
+    }
+  }
+  catch(const std::runtime_error&)
+  {
+    // Any errors here, we just assume the ROM isn't MVC
   }
   return 0;
 }
