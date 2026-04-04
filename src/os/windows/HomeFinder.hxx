@@ -68,16 +68,16 @@ private:
     std::unique_ptr<std::remove_pointer_t<PWSTR>, CoTaskDeleter> path{raw};
 
     // First call: query the required UTF-8 buffer size (includes null terminator)
-    int needed = WideCharToMultiByte(CP_UTF8, 0, path.get(), -1,
-                                     nullptr, 0, nullptr, nullptr);
+    const int needed = WideCharToMultiByte(CP_UTF8, 0, path.get(), -1,
+                                           nullptr, 0, nullptr, nullptr);
     if (needed <= 0)
       return;
 
     // Second call: do the actual conversion into a right-sized string
     string result(needed - 1, '\0');
-    int written = WideCharToMultiByte(CP_UTF8, 0, path.get(), -1,
-                                      result.data(), needed,
-                                      nullptr, nullptr);
+    const int written = WideCharToMultiByte(CP_UTF8, 0, path.get(), -1,
+                                            result.data(), needed,
+                                            nullptr, nullptr);
     if (written > 0)
       cache = std::move(result);
   }
