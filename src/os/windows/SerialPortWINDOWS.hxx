@@ -18,6 +18,8 @@
 #ifndef SERIALPORT_WINDOWS_HXX
 #define SERIALPORT_WINDOWS_HXX
 
+#include <concepts>
+
 #include "Windows.hxx"
 #include "SerialPort.hxx"
 
@@ -70,8 +72,15 @@ class SerialPortWINDOWS : public SerialPort
     StringList portNames() override;
 
   private:
+    template<std::invocable F>
+    struct ScopeExit {
+      F fn;
+      ~ScopeExit() { fn(); }
+    };
+
     // Handle to serial port
     HANDLE myHandle{INVALID_HANDLE_VALUE};
+    [[nodiscard]] bool isOpen() const { return myHandle != INVALID_HANDLE_VALUE; }
 
   private:
     // Following constructors and assignment operators not supported
