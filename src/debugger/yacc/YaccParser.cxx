@@ -70,17 +70,14 @@ Expression* getResult()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void setInput(string_view in)
+void setInput(const string& in)
 {
-  // FIXME: For now, just convert to a string to get the C-string
-  //        For the eventual re-write, we can use string_view directly
-  string s = string{in};
-  input = c = s.c_str();
+  input = c = in.c_str();
   state = State::DEFAULT;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int parse(string_view in)
+int parse(const string& in)
 {
   lastExp = nullptr;
   errMsg = "(no error)";

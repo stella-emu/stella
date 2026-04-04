@@ -32,8 +32,8 @@ namespace YaccParser
   Expression* getResult();
   const string& errorMessage();
 
-  void setInput(string_view in);
-  int parse(string_view in);
+  void setInput(const string& in);
+  int parse(const string& in);
   int const_to_int(char* ch);
 
   CartMethod getCartSpecial(const char* ch);

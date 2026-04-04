@@ -345,7 +345,6 @@ class Debugger : public DialogContainer
     unique_ptr<TIADebug>       myTiaDebug;
 
     static Debugger* myStaticDebugger;
-    bool myFirstLog{true};
 
     FunctionMap myFunctions;
     FunctionDefMap myFunctionDefs;
@@ -354,62 +353,18 @@ class Debugger : public DialogContainer
     Common::Size mySize{DebuggerDialog::kSmallFontMinW,
                         DebuggerDialog::kSmallFontMinH};
 
-    static constexpr Int8 ANY_BANK = -1;
-
     // Various builtin functions and operations
-    struct BuiltinFunction { string_view name, defn, help; };
-    static constexpr std::array<BuiltinFunction, 18> ourBuiltinFunctions = { {
-      // left joystick:
-      { "_joy0Left",    "!(*SWCHA & $40)", "Left joystick moved left" },
-      { "_joy0Right",   "!(*SWCHA & $80)", "Left joystick moved right" },
-      { "_joy0Up",      "!(*SWCHA & $10)", "Left joystick moved up" },
-      { "_joy0Down",    "!(*SWCHA & $20)", "Left joystick moved down" },
-      { "_joy0Fire",    "!(*INPT4 & $80)", "Left joystick fire button pressed" },
+    struct BuiltinFunction {
+      string name, defn, help;
+    };
+    struct PseudoRegister {
+      string name, help;
+    };
+    static std::array<BuiltinFunction, 18> ourBuiltinFunctions;
+    static std::array<PseudoRegister, 18> ourPseudoRegisters;
 
-      // right joystick:
-      { "_joy1Left",    "!(*SWCHA & $04)", "Right joystick moved left" },
-      { "_joy1Right",   "!(*SWCHA & $08)", "Right joystick moved right" },
-      { "_joy1Up",      "!(*SWCHA & $01)", "Right joystick moved up" },
-      { "_joy1Down",    "!(*SWCHA & $02)", "Right joystick moved down" },
-      { "_joy1Fire",    "!(*INPT5 & $80)", "Right joystick fire button pressed" },
-
-      // console switches:
-      { "_select",    "!(*SWCHB & $02)",  "Game Select pressed" },
-      { "_reset",     "!(*SWCHB & $01)",  "Game Reset pressed" },
-      { "_color",     "*SWCHB & $08",     "Color/BW set to Color" },
-      { "_bw",        "!(*SWCHB & $08)",  "Color/BW set to BW" },
-      { "_diff0B",    "!(*SWCHB & $40)",  "Left diff. set to B (easy)" },
-      { "_diff0A",    "*SWCHB & $40",     "Left diff. set to A (hard)" },
-      { "_diff1B",    "!(*SWCHB & $80)",  "Right diff. set to B (easy)" },
-      { "_diff1A",    "*SWCHB & $80",     "Right diff. set to A (hard)" }
-    } };
-
-    struct PseudoRegister { string_view name, help; };
-    static constexpr std::array<PseudoRegister, 18> ourPseudoRegisters = {{
-      { "_bank",          "Currently selected bank" },
-      { "_cClocks",       "Color clocks on current scanline" },
-      { "_cyclesHi",      "Higher 32 bits of number of cycles since emulation started" },
-      { "_cyclesLo",      "Lower 32 bits of number of cycles since emulation started" },
-      { "_fCount",        "Number of frames since emulation started" },
-      { "_fCycles",       "Number of cycles since frame started" },
-      { "_fTimReadCycles","Number of cycles used by timer reads since frame started" },
-      { "_fWsyncCycles",  "Number of cycles skipped by WSYNC since frame started" },
-      { "_iCycles",       "Number of cycles of last instruction" },
-      { "_inTim",         "Curent INTIM value" },
-      { "_scan",          "Current scanline count" },
-      { "_scanEnd",       "Scanline count at end of last frame" },
-      { "_sCycles",       "Number of cycles in current scanline" },
-      { "_timInt",        "Current TIMINT value" },
-      { "_timWrapRead",   "Timer read wrapped on this cycle" },
-      { "_timWrapWrite",  "Timer write wrapped on this cycle" },
-      { "_vBlank",        "Whether vertical blank is enabled (1 or 0)" },
-      { "_vSync",         "Whether vertical sync is enabled (1 or 0)" }
-      // CPU address access functions:
-      /*{ "_lastRead", "last CPU read address" },
-      { "_lastWrite", "last CPU write address" },
-      { "__lastBaseRead", "last CPU read base address" },
-      { "__lastBaseWrite", "last CPU write base address" }*/
-    } };
+    static constexpr Int8 ANY_BANK = -1;
+    bool myFirstLog{true};
 
   private:
     // rewind/unwind n states
