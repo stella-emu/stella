@@ -475,25 +475,28 @@ void HighScoresDialog::deleteRank(int rank)
 {
   for (uInt32 r = rank; r < NUM_RANKS - 1; ++r)
   {
-    myScores.scores[r].score = myScores.scores[r + 1].score;
+    myScores.scores[r].score   = myScores.scores[r + 1].score;
     myScores.scores[r].special = myScores.scores[r + 1].special;
-    myScores.scores[r].name = myScores.scores[r + 1].name;
-    myScores.scores[r].date = myScores.scores[r + 1].date;
+    myScores.scores[r].name    = myScores.scores[r + 1].name;
+    myScores.scores[r].date    = myScores.scores[r + 1].date;
   }
-  myScores.scores[NUM_RANKS - 1].score = 0;
+  myScores.scores[NUM_RANKS - 1].score   = 0;
   myScores.scores[NUM_RANKS - 1].special = 0;
-  myScores.scores[NUM_RANKS - 1].name = "";
-  myScores.scores[NUM_RANKS - 1].date = "";
+  myScores.scores[NUM_RANKS - 1].name   = "";
+  myScores.scores[NUM_RANKS - 1].date   = "";
 
   if (myEditRank == rank)
   {
     myHighScoreRank = myEditRank = -1;
   }
-  if (myEditRank > rank)
+  else if (myEditRank > rank)
   {
-    myHighScoreRank--;
-    myEditRank--;
-    myEditNameWidgets[myEditRank]->setText(myEditNameWidgets[myEditRank + 1]->getText());
+    --myHighScoreRank;
+    --myEditRank;
+    // Guard: myEditRank + 1 is now the old position, still valid after decrement
+    if (std::cmp_less(myEditRank + 1, static_cast<int>(NUM_RANKS)))
+      myEditNameWidgets[myEditRank]->setText(
+          myEditNameWidgets[myEditRank + 1]->getText());
   }
   myDirty = true;
 }
