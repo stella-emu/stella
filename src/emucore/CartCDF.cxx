@@ -751,10 +751,12 @@ uInt8 CartridgeCDF::readFromDatastream(uInt8 index)
 //  - 0xFFFFFFFF if not found
 uInt32 CartridgeCDF::scanCDFDriver(uInt32 searchValue)
 {
-  for (int i = 0; i < 2048; i += 4)
-    if (getUInt32(myImage.get(), i) == searchValue)
-      return i;
-
+  if (mySize >= 2048)
+  {
+    for (int i = 0; i < 2048; i += 4)
+      if (getUInt32(myImage.get(), i) == searchValue)
+        return i;
+  }
   return 0xFFFFFFFF;
 }
 
@@ -762,6 +764,8 @@ uInt32 CartridgeCDF::scanCDFDriver(uInt32 searchValue)
 void CartridgeCDF::setupVersion()
 {
   // CDFJ+ detection
+  if (mySize < 2048)
+    return;  // can't detect version, leave defaults
 
   if (const uInt32 cdfjOffset = scanCDFDriver(0x53554c50); // offset of CDFJPlus ID
       cdfjOffset != 0xFFFFFFFF &&                               // Plus
@@ -792,7 +796,7 @@ void CartridgeCDF::setupVersion()
   }
 
   uInt8 subversion = 0;
-  for(uInt32 i = 0; i < 2048; i += 4)
+  for (uInt32 i = 0; i < 2048; i += 4)
   {
     // CDF signature occurs 3 times in a row, i+3 (+7 or +11) is version
     if (    myImage[i+0] == 0x43 && myImage[i + 4] == 0x43 && myImage[i + 8] == 0x43) // C
