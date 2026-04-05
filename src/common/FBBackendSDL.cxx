@@ -37,6 +37,7 @@ FBBackendSDL::FBBackendSDL(OSystem& osystem)
   ASSERT_MAIN_THREAD;
 
   // Initialize SDL context
+  SDL_SetHint("SDL_WINDOWS_DPI_AWARENESS", "unaware");
   if(!SDL_InitSubSystem(SDL_INIT_VIDEO))
   {
     std::ostringstream buf;
