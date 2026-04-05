@@ -4,7 +4,7 @@ MODULE_OBJS := \
 	src/common/AudioQueue.o \
 	src/common/AudioSettings.o \
 	src/common/Base.o \
-  src/common/Bezel.o \
+	src/common/Bezel.o \
 	src/common/DevSettingsHandler.o \
 	src/common/EventHandlerSDL.o \
 	src/common/FBBackendSDL.o \

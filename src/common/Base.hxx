@@ -18,8 +18,7 @@
 #ifndef BASE_HXX
 #define BASE_HXX
 
-#include <iostream>
-#include <iomanip>
+#include <iomanip>  // Not needed here, but for classes that include this one
 
 #include "bspf.hxx"
 
@@ -61,49 +60,63 @@ class Base
 
   public:
     /** Get/set the number base when parsing numeric values */
-    static void setFormat(Base::Fmt base) { myDefaultBase = base; }
-    static Base::Fmt format()             { return myDefaultBase; }
+    static void setFormat(Fmt base) { myDefaultBase = base; }
+    static Base::Fmt format()       { return myDefaultBase; }
 
     /** Get/set HEX output to be upper/lower case */
     static void setHexUppercase(bool enable) {
-      if(enable) myHexflags |= std::ios_base::uppercase;
-      else       myHexflags &= ~std::ios_base::uppercase;
+      myHexUppercase = enable;
+      myHexFlags = std::ios_base::hex |
+        (myHexUppercase ? std::ios_base::uppercase : std::ios_base::fmtflags(0));
     }
-    static bool hexUppercase() { return myHexflags & std::ios_base::uppercase; }
-
-    /** Output HEX digits in 0.5/1/2/4 byte format */
-    static std::ostream& HEX1(std::ostream& os) {
-      os.flags(myHexflags);
-      return os << std::setw(1);
-    }
-    static std::ostream& HEX2(std::ostream& os) {
-      os.flags(myHexflags);
-      return os << std::setw(2) << std::setfill('0');
-    }
-    static std::ostream& HEX3(std::ostream& os)
-    {
-      os.flags(myHexflags);
-      return os << std::setw(3) << std::setfill('0');
-    }
-    static std::ostream& HEX4(std::ostream& os) {
-      os.flags(myHexflags);
-      return os << std::setw(4) << std::setfill('0');
-    }
-    static std::ostream& HEX8(std::ostream& os) {
-      os.flags(myHexflags);
-      return os << std::setw(8) << std::setfill('0');
-    }
+    static bool hexUppercase() { return myHexUppercase; }
 
     /** Convert integer to a string in the given base format */
-    static string toString(int value,
-      Common::Base::Fmt outputBase = Common::Base::Fmt::DEFAULT);
+    static string toString(int value, Fmt outputBase = Fmt::DEFAULT)
+    {
+      array<char, 32> buf{};
+      auto* end = toChars(buf.data(), value, outputBase);
+      return {buf.data(), end};
+    }
+
+    /** Output HEX digits in 0.5/1/2/4 byte format */
+    template<int WIDTH>
+    static std::ostream& HEX(std::ostream& os) {
+      os.setf(myHexFlags, std::ios_base::basefield | std::ios_base::uppercase);
+      os.width(WIDTH);
+      os.fill('0');
+      return os;
+    }
+    static std::ostream& HEX1(std::ostream& os) { return HEX<1>(os); }
+    static std::ostream& HEX2(std::ostream& os) { return HEX<2>(os); }
+    static std::ostream& HEX3(std::ostream& os) { return HEX<3>(os); }
+    static std::ostream& HEX4(std::ostream& os) { return HEX<4>(os); }
+    static std::ostream& HEX8(std::ostream& os) { return HEX<8>(os); }
+
+  private:
+    // Core fast path
+    static char* toChars(char* out, int value, Fmt fmt = Fmt::DEFAULT);
+
+    // HEX (fast lookup table)
+    static char* writeHex(char* out, uInt32 v, int width);
+
+    // DECIMAL (no division for small widths is possible,
+    // but keeping it simple and still fast)
+    static char* writeDec(char* out, int value, int width, char padChar);
+
+    // BINARY (branch-free inner loop)
+    static char* writeBinary(char* out, int value, Fmt fmt);
 
   private:
     // Default format to use when none is specified
-    static Base::Fmt myDefaultBase;
+    static inline Fmt myDefaultBase = Fmt::_16;
 
-    // Upper or lower case for HEX digits
-    static std::ios_base::fmtflags myHexflags;
+    // Upper or lower case for HEX digits (default to lowercase)
+    static inline bool myHexUppercase = false;
+    static std::ios_base::fmtflags myHexFlags;
+
+    static constexpr char HEX_LOWER[] = "0123456789abcdef";
+    static constexpr char HEX_UPPER[] = "0123456789ABCDEF";
 
   private:
     // Following constructors and assignment operators not supported

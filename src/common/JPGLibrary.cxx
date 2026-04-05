@@ -62,7 +62,8 @@ void JPGLibrary::loadImage(string_view filename, FBSurface& surface,
     throw std::runtime_error{"JPG image data reading failed"};
 
   // RAII guard: ensures njDone() is always called on scope exit
-  struct NJGuard { ~NJGuard() { njDone(); } } guard;
+  // NOLINTNEXTLINE: we don't care about the other c'tors/operators
+  const struct NJGuard { ~NJGuard() { njDone(); } } guard;
 
   if(njDecode(reinterpret_cast<const char*>(myFileBuffer.data()),
               static_cast<int>(size)))
@@ -106,7 +107,7 @@ void JPGLibrary::loadImagetoSurface(FBSurface& surface,
   for(uInt32 irow = 0; irow < height; ++irow, i_buf += i_pitch, s_buf += s_pitch)
   {
     const uInt8* i_ptr = i_buf;
-    uInt32*      s_ptr = s_buf;
+    uInt32*      s_ptr = s_buf;  // NOLINT(misc-const-correctness)
     for(uInt32 icol = 0; icol < width; ++icol, i_ptr += 3)
       *s_ptr++ = fb.mapRGB(*i_ptr, *(i_ptr+1), *(i_ptr+2));
   }
