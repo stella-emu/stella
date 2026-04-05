@@ -2757,7 +2757,7 @@ void DebuggerParser::executeUHex()
   const bool enable = !Base::hexUppercase();
   Base::setHexUppercase(enable);
 
-  settings.setValue("dbg.uHex", enable);
+  settings.setValue("dbg.uhex", enable);
   debugger.rom().invalidate();
 
   commandResult << "uppercase HEX " << (enable ? "enabled" : "disabled");
