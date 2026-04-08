@@ -176,7 +176,7 @@ void ListWidget::recalc()
       _currentPos = size - _rows;
   }
   _currentPos = std::max(_currentPos, 0);
-  _selectedItem = BSPF::clamp(_selectedItem, 0, size - 1);
+  _selectedItem = BSPF::clamp(_selectedItem, 0, std::max(size - 1, 0));
   _editMode = false;
 
   if(_useScrollbar)
