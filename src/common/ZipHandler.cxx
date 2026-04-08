@@ -452,8 +452,10 @@ void ZipHandler::ZipFile::decompressDataType8(
   {
     // Read in the next chunk of data
     uInt64 read_length = 0;
-    const bool success = readStream(myBuffer, offset,
-          std::min(input_remaining, static_cast<uInt64>(sizeof(myBuffer.get()))), read_length);
+    const uInt64 chunkSize = std::min(input_remaining,
+                                      static_cast<uInt64>(DECOMPRESS_BUFSIZE));
+
+    const bool success = readStream(myBuffer, offset, chunkSize, read_length);
     if(!success)
     {
       inflateEnd(&stream);
