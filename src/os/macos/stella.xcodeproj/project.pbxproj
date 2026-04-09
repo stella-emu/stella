@@ -454,6 +454,7 @@
 		DC70065C241EC97900A459AB /* Stella12x24tFont.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC700659241EC97900A459AB /* Stella12x24tFont.hxx */; };
 		DC70065D241EC97900A459AB /* Stella16x32tFont.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC70065A241EC97900A459AB /* Stella16x32tFont.hxx */; };
 		DC70065E241EC97900A459AB /* Stella14x28tFont.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC70065B241EC97900A459AB /* Stella14x28tFont.hxx */; };
+		DC70D8FD2F87DAF300484BD8 /* SpanStream.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC70D8FC2F87DAF300484BD8 /* SpanStream.hxx */; };
 		DC71C399221623D9005DE92F /* ControllerDetector.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC71C397221623D8005DE92F /* ControllerDetector.hxx */; };
 		DC71C39A221623D9005DE92F /* ControllerDetector.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC71C398221623D9005DE92F /* ControllerDetector.cxx */; };
 		DC73BD891915E5E3003FAFAD /* FBSurface.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC73BD871915E5E3003FAFAD /* FBSurface.cxx */; };
@@ -1340,6 +1341,7 @@
 		DC700659241EC97900A459AB /* Stella12x24tFont.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Stella12x24tFont.hxx; sourceTree = "<group>"; };
 		DC70065A241EC97900A459AB /* Stella16x32tFont.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Stella16x32tFont.hxx; sourceTree = "<group>"; };
 		DC70065B241EC97900A459AB /* Stella14x28tFont.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Stella14x28tFont.hxx; sourceTree = "<group>"; };
+		DC70D8FC2F87DAF300484BD8 /* SpanStream.hxx */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = SpanStream.hxx; sourceTree = "<group>"; };
 		DC71C397221623D8005DE92F /* ControllerDetector.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = ControllerDetector.hxx; sourceTree = "<group>"; };
 		DC71C398221623D9005DE92F /* ControllerDetector.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ControllerDetector.cxx; sourceTree = "<group>"; };
 		DC73BD871915E5E3003FAFAD /* FBSurface.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FBSurface.cxx; sourceTree = "<group>"; };
@@ -2074,6 +2076,7 @@
 				DCF467B40F93993B00B25D7A /* SoundNull.hxx */,
 				DC39F29E2DC107F3006D74A8 /* SoundSDL.hxx */,
 				DC39F29F2DC107F3006D74A8 /* SoundSDL.cxx */,
+				DC70D8FC2F87DAF300484BD8 /* SpanStream.hxx */,
 				DC5D1AA6102C6FC900E59AC1 /* Stack.hxx */,
 				DCF8621821C9D43300F95F52 /* StaggeredLogger.hxx */,
 				DCF8621721C9D43300F95F52 /* StaggeredLogger.cxx */,
@@ -3079,6 +3082,7 @@
 				DCEC585E1E945175002F0246 /* DelayQueueIterator.hxx in Headers */,
 				DC6F394A21B897C700897AD8 /* FatalEmulationError.hxx in Headers */,
 				DCA23AEA0D75B22500F77B33 /* CartX07.hxx in Headers */,
+				DC70D8FD2F87DAF300484BD8 /* SpanStream.hxx in Headers */,
 				DC4613680D92C03600D8DAB9 /* RomAuditDialog.hxx in Headers */,
 				DC0EF9512C5D4B900007F3B5 /* json.hpp in Headers */,
 				DC487FB70DA5350900E12499 /* AtariVox.hxx in Headers */,

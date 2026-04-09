@@ -394,7 +394,7 @@ void ZipHandler::ZipFile::decompressDataType8(std::span<uInt8> out,
   if(!myStream)
     throw std::runtime_error(errorMessage(ZipError::FILE_ERROR));
 
-  uInt64 input_remaining = myHeader.compressedLength;
+  size_t input_remaining = myHeader.compressedLength;
 
   // Setup zlib stream
   z_stream stream{};
