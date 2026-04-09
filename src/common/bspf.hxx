@@ -45,6 +45,7 @@ using uInt64 = uint64_t;
 #include <memory>
 #include <string>
 #include <string_view>
+#include <format>
 #include <charconv>
 #include <sstream>
 #include <ctime>
@@ -489,6 +490,23 @@ namespace BSPF
     constexpr string_view spaces{" ,.;:+-*&/\\'"};
     return spaces.find(c) != string_view::npos;
   }
+
+  // Cross-platform 32-bit byte swap (TODO: C++23 std::byteswap)
+  constexpr uInt32 bswap32(uInt32 x)
+  {
+  #if defined(__GNUC__) || defined(__clang__)
+    return __builtin_bswap32(x);
+  #elif defined(_MSC_VER)
+    return _byteswap_ulong(x);
+  #else
+    // Fallback if no intrinsic available
+    return ((x & 0x000000FFU) << 24) |
+           ((x & 0x0000FF00U) <<  8) |
+           ((x & 0x00FF0000U) >>  8) |
+           ((x & 0xFF000000U) >> 24);
+  #endif
+}
+
 } // namespace BSPF
 
 #endif

@@ -115,9 +115,6 @@ class Base
     static inline bool myHexUppercase = false;
     static std::ios_base::fmtflags myHexFlags;
 
-    static constexpr char HEX_LOWER[] = "0123456789abcdef";
-    static constexpr char HEX_UPPER[] = "0123456789ABCDEF";
-
   private:
     // Following constructors and assignment operators not supported
     Base() = delete;
