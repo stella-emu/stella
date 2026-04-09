@@ -492,7 +492,7 @@ namespace BSPF
   }
 
   // Cross-platform 32-bit byte swap (TODO: C++23 std::byteswap)
-  constexpr uInt32 bswap32(uInt32 x)
+  inline uInt32 bswap32(uInt32 x)
   {
   #if defined(__GNUC__) || defined(__clang__)
     return __builtin_bswap32(x);
