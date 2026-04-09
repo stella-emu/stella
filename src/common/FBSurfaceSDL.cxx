@@ -15,11 +15,11 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#include "FBSurfaceSDL.hxx"
-
 #include "Logger.hxx"
 #include "ThreadDebugging.hxx"
 #include "sdl_blitter/BlitterFactory.hxx"
+
+#include "FBSurfaceSDL.hxx"
 
 namespace {
   BlitterFactory::ScalingAlgorithm scalingAlgorithm(ScalingInterpolation inter)
@@ -34,7 +34,7 @@ namespace {
       case ScalingInterpolation::sharp:
         return BlitterFactory::ScalingAlgorithm::quasiInteger;
 
-      default:
+      default:  // TODO: use std::unreachable() in C++23
         throw std::runtime_error("unreachable");
     }
   }
@@ -48,8 +48,8 @@ FBSurfaceSDL::FBSurfaceSDL(FBBackendSDL& backend,
   : myBackend{backend},
     myInterpolationMode{inter}
 {
-  //cerr << width << " x " << height << '\n';
   createSurface(width, height, staticData);
+  reinitializeBlitter(true);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -154,23 +154,19 @@ void FBSurfaceSDL::setVisible(bool visible)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FBSurfaceSDL::translateCoords(Int32& x, Int32& y) const
 {
-  x -= myDstR.x;  x /= myDstR.w / mySrcR.w;
-  y -= myDstR.y;  y /= myDstR.h / mySrcR.h;
+  x = static_cast<Int32>((x - myDstR.x) * mySrcR.w / static_cast<float>(myDstR.w));
+  y = static_cast<Int32>((y - myDstR.y) * mySrcR.h / static_cast<float>(myDstR.h));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool FBSurfaceSDL::render()
 {
-  if(!myBlitter)
-    reinitializeBlitter();
+  assert(myBlitter);
 
-  if(myIsVisible && myBlitter)
-  {
+  if(myIsVisible)
     myBlitter->blit(*mySurface);
 
-    return true;
-  }
-  return false;
+  return myIsVisible;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -212,6 +208,7 @@ void FBSurfaceSDL::resize(uInt32 width, uInt32 height)
     Logger::error("Resizing static texture!");
 
   createSurface(width, height, nullptr);
+  reinitializeBlitter(true);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -224,6 +221,8 @@ void FBSurfaceSDL::createSurface(uInt32 width, uInt32 height, const uInt32* data
   // Create a surface in the same format as the parent GL class
   const SDL_PixelFormatDetails& pf = myBackend.pixelFormat();
   mySurface = SDL_CreateSurface(width, height, pf.format);
+  if(!mySurface)
+    throw std::runtime_error(SDL_GetError());
 
   // We start out with the src and dst rectangles containing the same
   // dimensions, indicating no scaling or re-positioning
@@ -235,15 +234,14 @@ void FBSurfaceSDL::createSurface(uInt32 width, uInt32 height, const uInt32* data
   ////////////////////////////////////////////////////
   // These *must* be set for the parent class
   myPixels = static_cast<uInt32*>(mySurface->pixels);
+  assert(mySurface->pitch % pf.bytes_per_pixel == 0);
   myPitch = mySurface->pitch / pf.bytes_per_pixel;
   ////////////////////////////////////////////////////
 
   myIsStatic = data != nullptr;
   if(myIsStatic)
-    SDL_memcpy(mySurface->pixels, data,
-               static_cast<size_t>(mySurface->w) * mySurface->h * 4);
-
-  reload();  // NOLINT
+    SDL_memcpy(mySurface->pixels, data, static_cast<size_t>
+              (mySurface->w) * mySurface->h * pf.bytes_per_pixel);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
