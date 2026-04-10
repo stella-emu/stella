@@ -68,6 +68,9 @@ char* Base::toChars(char* out, int value, Fmt fmt)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 char* Base::writeHex(char* out, uInt32 v, int width)
 {
+  static constexpr char HEX_LOWER[] = "0123456789abcdef";
+  static constexpr char HEX_UPPER[] = "0123456789ABCDEF";
+
   const char* table = myHexUppercase ? HEX_UPPER : HEX_LOWER;
 
   for(int i = (width - 1) * 4; i >= 0; i -= 4)

@@ -45,6 +45,7 @@ using uInt64 = uint64_t;
 #include <memory>
 #include <string>
 #include <string_view>
+#include <format>
 #include <charconv>
 #include <sstream>
 #include <ctime>

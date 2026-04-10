@@ -62,8 +62,16 @@ void JPGLibrary::loadImage(string_view filename, FBSurface& surface,
     throw std::runtime_error{"JPG image data reading failed"};
 
   // RAII guard: ensures njDone() is always called on scope exit
-  // NOLINTNEXTLINE: we don't care about the other c'tors/operators
-  const struct NJGuard { ~NJGuard() { njDone(); } } guard;
+  struct NJGuard {
+    NJGuard() = default;
+    ~NJGuard() { njDone(); }
+    NJGuard(const NJGuard&) = delete;
+    NJGuard(NJGuard&&) = delete;
+    NJGuard& operator=(const NJGuard&) = delete;
+    NJGuard& operator=(NJGuard&&) = delete;
+  };
+
+  const NJGuard guard;
 
   if(njDecode(reinterpret_cast<const char*>(myFileBuffer.data()),
               static_cast<int>(size)))

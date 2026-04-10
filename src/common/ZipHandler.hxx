@@ -21,7 +21,10 @@
 #define ZIP_HANDLER_HXX
 
 #include <fstream>
+#include <span>
 #include <tuple>
+#include <list>
+#include <unordered_map>
 
 #include "bspf.hxx"
 
@@ -49,6 +52,8 @@ class ZipHandler
 
     // Decompress the currently selected file and return its length
     // An exception will be thrown on any errors
+    // TODO: move to vector instead of allocating unique_ptr each time
+    //       will require changes to FSNode and friends
     uInt64 decompress(ByteBuffer& image);
 
     // Answer the number of ROM files (with a valid extension) found
@@ -101,6 +106,8 @@ class ZipHandler
     // Describes an open ZIP file
     struct ZipFile
     {
+      static constexpr size_t DECOMPRESS_BUFSIZE = 128_KB;
+
       string  myFilename;     // copy of ZIP filename (for caching)
       std::fstream myStream;  // C++ fstream file handle
       uInt64  myLength{0};    // length of zip file
@@ -108,11 +115,11 @@ class ZipHandler
 
       ZipEcd  myEcd;          // end of central directory
 
-      ByteBuffer myCd;        // central directory raw data
+      vector<uInt8> myCd;     // central directory raw data
       uInt64    myCdPos{0};   // position in central directory
       ZipHeader myHeader;     // current file header
 
-      ByteBuffer myBuffer;    // buffer for decompression
+      array<uInt8, DECOMPRESS_BUFSIZE> myBuffer{}; // buffer for decompression
 
       /** Constructor */
       explicit ZipFile(const string& filename);
@@ -126,26 +133,29 @@ class ZipHandler
       /** Close previously opened internal stream buffer */
       void close();
 
+      /** Answers whether the next file is a valid ROM based on filename */
+      bool nextFileIsValidRom();
+
       /** Read the ECD data */
       void readEcd();
 
       /** Read data from stream */
-      bool readStream(const ByteBuffer& out, uInt64 offset, uInt64 length, uInt64& actual);
+      bool readStream(uInt8* out, uInt64 offset, uInt64 length, uInt64& actual);
 
       /** Return the next entry in the ZIP file */
       const ZipHeader* nextFile();
 
       /** Decompress the most recently found file in the ZIP into target buffer */
-      void decompress(const ByteBuffer& out, uInt64 length);
+      void decompress(std::span<uInt8> out);
 
       /** Return the offset of the compressed data */
       uInt64 getCompressedDataOffset();
 
       /** Decompress type 0 data (which is uncompressed) */
-      void decompressDataType0(uInt64 offset, const ByteBuffer& out, uInt64 length);
+      void decompressDataType0(std::span<uInt8> out, uInt64 offset);
 
       /** Decompress type 8 data (which is deflated) */
-      void decompressDataType8(uInt64 offset, const ByteBuffer& out, uInt64 length);
+      void decompressDataType8(std::span<uInt8> out, uInt64 offset);
     };
     using ZipFilePtr = unique_ptr<ZipFile>;
 
@@ -164,7 +174,7 @@ class ZipHandler
           return (static_cast<uInt16>(myBuf[offs + 1]) << 8) |
                  (static_cast<uInt16>(myBuf[offs + 0]) << 0);
         }
-        uInt32 read_dword(std::size_t offs) const
+        uInt32 read_dword(size_t offs) const
         {
           return (static_cast<uInt32>(myBuf[offs + 3]) << 24) |
                  (static_cast<uInt32>(myBuf[offs + 2]) << 16) |
@@ -182,9 +192,9 @@ class ZipHandler
                  (static_cast<uInt64>(myBuf[offs + 1]) << 8)  |
                  (static_cast<uInt64>(myBuf[offs + 0]) << 0);
         }
-        string read_string(size_t offs, size_t len = string::npos) const
+        string_view read_string(size_t offs, size_t len = string_view::npos) const
         {
-          return {reinterpret_cast<char const *>(myBuf + offs), len};
+          return {reinterpret_cast<const char*>(myBuf + offs), len};
         }
 
       private:
@@ -208,12 +218,14 @@ class ZipHandler
         uInt32  uncompressedSize() const  { return read_dword(0x16); }
         uInt16  filenameLength() const    { return read_word(0x1a);  }
         uInt16  extraFieldLength() const  { return read_word(0x1c);  }
-        string  filename() const          { return read_string(0x1e, filenameLength()); }
+        string_view filename() const {
+          return read_string(0x1e, filenameLength());
+        }
 
         bool signatureCorrect() const  { return signature() == 0x04034b50; }
 
         size_t totalLength() const { return minimumLength() + filenameLength() + extraFieldLength(); }
-        static size_t minimumLength() { return 0x1e; }
+        static constexpr size_t minimumLength() { return 0x1e; }
     };
 
     class CentralDirEntryReader : public ReaderBase
@@ -240,13 +252,18 @@ class ZipHandler
         uInt16 intFileAttr() const        { return read_word(0x24);  }
         uInt32 extFileAttr() const        { return read_dword(0x26); }
         uInt32 headerOffset() const       { return read_dword(0x2a); }
-        string filename() const           { return read_string(0x2e, filenameLength()); }
-        string fileComment() const        { return read_string(0x2e + filenameLength() + extraFieldLength(), fileCommentLength()); }
+        string_view filename() const {
+          return read_string(0x2e, filenameLength());
+        }
+        string_view fileComment() const {
+          return read_string(0x2e + filenameLength() + extraFieldLength(),
+                             fileCommentLength());
+        }
 
         bool signatureCorrect() const { return signature() == 0x02014b50; }
 
         size_t totalLength() const { return minimumLength() + filenameLength() + extraFieldLength() + fileCommentLength(); }
-        static size_t minimumLength() { return 0x2e; }
+        static constexpr size_t minimumLength() { return 0x2e; }
     };
 
     class EcdReader : public ReaderBase
@@ -262,12 +279,14 @@ class ZipHandler
         uInt32 dirSize() const         { return read_dword(0x0c); }
         uInt32 dirOffset() const       { return read_dword(0x10); }
         uInt16 commentLength() const   { return read_word(0x14);  }
-        string comment() const         { return read_string(0x16, commentLength()); }
+        string_view comment() const {
+          return read_string(0x16, commentLength());
+        }
 
         bool signatureCorrect() const  { return signature() == 0x06054b50; }
 
         size_t totalLength() const { return minimumLength() + commentLength(); }
-        static size_t minimumLength() { return 0x16; }
+        static constexpr size_t minimumLength() { return 0x16; }
     };
 
     class GeneralFlagReader
@@ -292,7 +311,21 @@ class ZipHandler
 
   private:
     /** Get message for given ZipError enumeration */
-    static string errorMessage(ZipError err);
+    static constexpr const char* errorMessage(ZipError err) {
+      constexpr std::array<const char*, 10> zip_error_s = {
+        "ZIP NONE",
+        "ZIP OUT_OF_MEMORY",
+        "ZIP FILE_ERROR",
+        "ZIP BAD_SIGNATURE",
+        "ZIP DECOMPRESS_ERROR",
+        "ZIP FILE_TRUNCATED",
+        "ZIP FILE_CORRUPT",
+        "ZIP UNSUPPORTED",
+        "ZIP LZMA_UNSUPPORTED",
+        "ZIP BUFFER_TOO_SMALL"
+      };
+      return zip_error_s[static_cast<size_t>(err)];
+    }
 
     /** Search cache for given ZIP file */
     ZipFilePtr findCached(const string& filename);
@@ -301,11 +334,14 @@ class ZipHandler
     void addToCache();
 
   private:
-    static constexpr size_t DECOMPRESS_BUFSIZE = 128_KB;
     static constexpr size_t CACHE_SIZE = 64; // number of open files to cache
 
     ZipFilePtr myZip;
-    std::array<ZipFilePtr, CACHE_SIZE> myZipCache;
+
+    // LRU cache: map filename -> (ZipFilePtr, iterator in list)
+    std::unordered_map<string, std::pair<ZipFilePtr,
+                       std::list<string>::iterator>> myZipCache;
+    std::list<string> myCacheOrder; // front = oldest, back = newest
 
   private:
     // Following constructors and assignment operators not supported
