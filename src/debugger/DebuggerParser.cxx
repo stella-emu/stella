@@ -218,109 +218,92 @@ void DebuggerParser::getCompletions(string_view in, StringList& completions)
 // internally by DebuggerParser::run()
 int DebuggerParser::decipher_arg(string_view str)
 {
-  bool derefByte=false, derefWord=false, lobyte=false, hibyte=false, bin=false, dec=false;
-  string arg{str};
+  bool derefByte = false, derefWord = false;
+  bool lobyte = false, hibyte = false;
+  bool bin = false, dec = false;
+
+  // Work with a string_view throughout to avoid allocation
+  string_view arg = str;
 
   const Base::Fmt defaultBase = Base::format();
+  if     (defaultBase == Base::Fmt::_2)  { bin = true;  dec = false; }
+  else if(defaultBase == Base::Fmt::_10) { bin = false; dec = true;  }
+  else                                   { bin = false; dec = false; }
 
-  if(defaultBase == Base::Fmt::_2) {
-    bin=true; dec=false;
-  } else if(defaultBase == Base::Fmt::_10) {
-    bin=false; dec=true;
-  } else {
-    bin=false; dec=false;
-  }
+  // Dereference prefixes
+  if     (arg.starts_with('*')) { derefByte = true; arg.remove_prefix(1); }
+  else if(arg.starts_with('@')) { derefWord = true; arg.remove_prefix(1); }
 
-  if(arg.starts_with("*")) {
-    derefByte = true;
-    arg.erase(0, 1);
-  } else if(arg.starts_with("@")) {
-    derefWord = true;
-    arg.erase(0, 1);
-  }
+  // Byte-select prefixes
+  if     (arg.starts_with('<')) { lobyte = true; arg.remove_prefix(1); }
+  else if(arg.starts_with('>')) { hibyte = true; arg.remove_prefix(1); }
 
-  if(arg.starts_with("<")) {
-    lobyte = true;
-    arg.erase(0, 1);
-  } else if(arg.starts_with(">")) {
-    hibyte = true;
-    arg.erase(0, 1);
-  }
+  // Base-override prefixes
+  if     (arg.starts_with('\\')) { bin = true;  dec = false; arg.remove_prefix(1); }
+  else if(arg.starts_with('#'))  { bin = false; dec = true;  arg.remove_prefix(1); }
+  else if(arg.starts_with('$'))  { bin = false; dec = false; arg.remove_prefix(1); }
 
-  if(arg.starts_with("\\")) {
-    dec = false;
-    bin = true;
-    arg.erase(0, 1);
-  } else if(arg.starts_with("#")) {
-    dec = true;
-    bin = false;
-    arg.erase(0, 1);
-  } else if(arg.starts_with("$")) {
-    dec = false;
-    bin = false;
-    arg.erase(0, 1);
-  }
-
-  // Special cases (registers):
+  // Special case: registers
+  // Note: "$a" must not match the 'a' register, hence the original str check
   const auto& state = static_cast<const CpuState&>(debugger.cpuDebug().getState());
   int result = 0;
-  if(arg == "a" && str != "$a") result = state.A;
-  else if(arg == "x") result = state.X;
-  else if(arg == "y") result = state.Y;
-  else if(arg == "p") result = state.PS;
-  else if(arg == "s") result = state.SP;
-  else if(arg == "pc" || arg == ".") result = state.PC;
-  else { // Not a special, must be a regular arg: check for label first
-    const char* a = arg.c_str();
-    result = debugger.cartDebug().getAddress(arg);
+  bool resolved = false;
 
-    if(result < 0) { // if not label, must be a number
-      if(bin) { // treat as binary
-        result = 0;
-        while(*a != '\0') {
-          result <<= 1;
-          switch(*a++) {
-            case '1':
-              result++;
-              break;
+  // Use a small table to avoid a chain of string comparisons
+  // Only checked when no base-override prefix was present (arg == original suffix)
+  if(!bin && !dec && arg != str.substr(str.size() - arg.size(), arg.size()))
+  {
+    // A base prefix was consumed — can't be a register name, fall through
+  }
+  else
+  {
+    // Register name lookup — only valid when no base-override stripped a leading char
+    // We check str to detect the "$a" case (str starts_with '$' means arg=="a" but
+    // the user typed a hex literal, not the A register)
+    const bool hexDollar = str.starts_with('$');
+    if     (!hexDollar &&  arg == "a")  { result = state.A;  resolved = true; }
+    else if(               arg == "x")  { result = state.X;  resolved = true; }
+    else if(               arg == "y")  { result = state.Y;  resolved = true; }
+    else if(               arg == "p")  { result = state.PS; resolved = true; }
+    else if(               arg == "s")  { result = state.SP; resolved = true; }
+    else if(arg == "pc" || arg == ".")  { result = state.PC; resolved = true; }
+  }
 
-            case '0':
-              break;
-
-            default:
-              return -1;
-          }
-        }
-      } else if(dec) {
-        result = 0;
-        while(*a != '\0') {
-          const int digit = (*a++) - '0';
-          if(digit < 0 || digit > 9)
-            return -1;
-
-          result = (result * 10) + digit;
-        }
-      } else { // must be hex.
-        result = 0;
-        while(*a != '\0') {
-          int hex = -1;
-          const char d = *a++;
-          if(d >= '0' && d <= '9')  hex = d - '0';
-          else if(d >= 'a' && d <= 'f') hex = d - 'a' + 10;
-          else if(d >= 'A' && d <= 'F') hex = d - 'A' + 10;
-          if(hex < 0)
-            return -1;
-
-          result = (result << 4) + hex;
-        }
-      }
+  // Label lookup
+  if(!resolved)
+  {
+    const int labelAddr = debugger.cartDebug().getAddress(arg);
+    if(labelAddr >= 0)
+    {
+      result = labelAddr;
+      resolved = true;
     }
   }
 
-  if(lobyte) result &= 0xff;
-  else if(hibyte) result = (result >> 8) & 0xff;
+  // Numeric parsing via std::from_chars (no allocation, no exceptions, no UB)
+  if(!resolved)
+  {
+    if(arg.empty())
+      return -1;
 
-  // dereference if we're supposed to:
+    int base = 0;
+    if     (bin) base = 2;
+    else if(dec) base = 10;
+    else         base = 16;
+
+    const auto [ptr, ec] = std::from_chars(arg.data(), arg.data() + arg.size(),
+                                           result, base);
+
+    // from_chars succeeds only if it consumed the entire input
+    if (ec != std::errc{} || ptr != arg.data() + arg.size())
+      return -1;
+  }
+
+  // Byte-select
+  if     (lobyte) result = result & 0xFF;
+  else if(hibyte) result = (result >> 8) & 0xFF;
+
+  // Dereference
   if(derefByte) result = debugger.peek(result);
   if(derefWord) result = debugger.dpeek(result);
 

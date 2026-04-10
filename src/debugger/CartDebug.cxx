@@ -788,11 +788,13 @@ string CartDebug::getLabel(uInt16 addr, bool isRead, int places, bool isRam) con
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int CartDebug::getAddress(const string& label) const
+int CartDebug::getAddress(string_view label) const
 {
-  if(const auto it1 = mySystemAddresses.find(label); it1 != mySystemAddresses.end())
+  string l{label};  // TODO: Fixed in C++23
+
+  if(const auto it1 = mySystemAddresses.find(l); it1 != mySystemAddresses.end())
     return it1->second;
-  else if(const auto it2 = myUserAddresses.find(label); it2 != myUserAddresses.end())
+  else if(const auto it2 = myUserAddresses.find(l); it2 != myUserAddresses.end())
     return it2->second;
   else
     return -1;
