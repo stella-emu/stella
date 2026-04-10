@@ -43,11 +43,11 @@ class TimerMap
       uInt16 addr{0};
       uInt8  bank{ANY_BANK};
 
-      TimerPoint() = default;
+      constexpr TimerPoint() = default;
       explicit constexpr TimerPoint(uInt16 c_addr, uInt8 c_bank)
-        : addr{c_addr}, bank{c_bank} {}
+        : addr{c_addr}, bank{c_bank} { }
 
-      bool operator<(const TimerPoint& other) const
+      constexpr bool operator<(const TimerPoint& other) const
       {
         if(bank == ANY_BANK || other.bank == ANY_BANK)
           return addr < other.addr;
@@ -74,22 +74,24 @@ class TimerMap
 
       explicit constexpr Timer(const TimerPoint& c_from, const TimerPoint& c_to,
                                bool c_mirrors = false, bool c_anyBank = false)
-        : from{c_from}, to{c_to}, mirrors{c_mirrors}, anyBank{c_anyBank} {}
+        : from{c_from}, to{c_to}, mirrors{c_mirrors}, anyBank{c_anyBank} { }
 
-      Timer(uInt16 fromAddr, uInt16 toAddr, uInt8 fromBank, uInt8 toBank,
-            bool c_mirrors = false, bool c_anyBank = false)
+      constexpr Timer(uInt16 fromAddr, uInt16 toAddr, uInt8 fromBank, uInt8 toBank,
+                      bool c_mirrors = false, bool c_anyBank = false)
         : Timer(TimerPoint{fromAddr, fromBank}, TimerPoint{fromAddr, fromBank},
                 c_mirrors, c_anyBank)
-      {}
+      {
+      }
 
-      explicit Timer(const TimerPoint& tp, bool c_mirrors = false,
-                     bool c_anyBank = false)
-        : from{tp}, mirrors{c_mirrors}, anyBank{c_anyBank}, isPartial{true} {}
+      explicit constexpr Timer(const TimerPoint& tp, bool c_mirrors = false,
+                               bool c_anyBank = false)
+        : from{tp}, mirrors{c_mirrors}, anyBank{c_anyBank}, isPartial{true} { }
 
-      Timer(uInt16 addr, uInt8 bank, bool c_mirrors = false,
-            bool c_anyBank = false)
+      constexpr Timer(uInt16 addr, uInt8 bank, bool c_mirrors = false,
+                      bool c_anyBank = false)
         : Timer(TimerPoint{addr, bank}, c_mirrors, c_anyBank)
-      {}
+      {
+      }
 
       void setTo(const TimerPoint& tp, bool c_mirrors = false,
                  bool c_anyBank = false)
@@ -100,21 +102,21 @@ class TimerMap
         isPartial = false;
       }
 
-      void reset()
+      constexpr void reset()
       {
         execs = lastCycles = totalCycles = maxCycles = 0;
         minCycles = ULONG_MAX;
       }
 
       // Start the timer
-      void start(uInt64 cycles)
+      constexpr void start(uInt64 cycles)
       {
         lastCycles = cycles;
         isStarted = true;
       }
 
       // Stop the timer and update stats
-      void stop(uInt64 cycles)
+      constexpr void stop(uInt64 cycles)
       {
         if(isStarted)
         {
@@ -128,8 +130,10 @@ class TimerMap
         }
       }
 
-      uInt32 averageCycles() const {
-        return execs ? std::round(totalCycles / execs) : 0; }
+      constexpr uInt32 averageCycles() const {
+        return execs ? static_cast<uInt32>(std::llround(
+            static_cast<double>(totalCycles) / execs)) : 0;
+      }
     }; // Timer
 
     explicit TimerMap() = default;
