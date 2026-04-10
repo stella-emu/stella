@@ -34,237 +34,82 @@ TIADebug::TIADebug(Debugger& dbg, Console& console)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const DebuggerState& TIADebug::getState()
 {
-  // Color registers
-  myState.coluRegs.clear();
-  myState.coluRegs.push_back(coluP0());
-  myState.coluRegs.push_back(coluP1());
-  myState.coluRegs.push_back(coluPF());
-  myState.coluRegs.push_back(coluBK());
-
-  // Debug Colors
-  const int timing = myConsole.timing() == ConsoleTiming::ntsc ? 0
-    : myConsole.timing() == ConsoleTiming::pal ? 1 : 2;
-
-  myState.fixedCols.clear();
-  myState.fixedCols.push_back(myTIA.myFixedColorPalette[timing][TIA::P0]);
-  myState.fixedCols.push_back(myTIA.myFixedColorPalette[timing][TIA::P1]);
-  myState.fixedCols.push_back(myTIA.myFixedColorPalette[timing][TIA::PF]);
-  myState.fixedCols.push_back(myTIA.myFixedColorPalette[timing][TIA::BK]);
-  myState.fixedCols.push_back(myTIA.myFixedColorPalette[timing][TIA::M0]);
-  myState.fixedCols.push_back(myTIA.myFixedColorPalette[timing][TIA::M1]);
-  myState.fixedCols.push_back(myTIA.myFixedColorPalette[timing][TIA::BL]);
-  myState.fixedCols.push_back(TIA::FixedColor::HBLANK_WHITE);
-
-  // Collisions
-  myState.cx.clear();
-  myState.cx.push_back(collP0_PF());
-  myState.cx.push_back(collP0_BL());
-  myState.cx.push_back(collM1_P0());
-  myState.cx.push_back(collM0_P0());
-  myState.cx.push_back(collP0_P1());
-  myState.cx.push_back(collP1_PF());
-  myState.cx.push_back(collP1_BL());
-  myState.cx.push_back(collM1_P1());
-  myState.cx.push_back(collM0_P1());
-  myState.cx.push_back(collM0_PF());
-  myState.cx.push_back(collM0_BL());
-  myState.cx.push_back(collM0_M1());
-  myState.cx.push_back(collM1_PF());
-  myState.cx.push_back(collM1_BL());
-  myState.cx.push_back(collBL_PF());
-
-  // Player 0 & 1 and Ball graphics registers
-  myState.gr.clear();
-  myState.gr.push_back(myTIA.myPlayer0.getGRPNew());
-  myState.gr.push_back(myTIA.myPlayer1.getGRPNew());
-  myState.gr.push_back(myTIA.myPlayer0.getGRPOld());
-  myState.gr.push_back(myTIA.myPlayer1.getGRPOld());
-  myState.gr.push_back(myTIA.myBall.getENABLNew());
-  myState.gr.push_back(myTIA.myBall.getENABLOld());
-  myState.gr.push_back(enaM0());
-  myState.gr.push_back(enaM1());
-
-  // Player 0 & 1, Missile 0 & 1 and Ball graphics status registers
-  myState.ref.clear();
-  myState.ref.push_back(refP0());
-  myState.ref.push_back(refP1());
-  myState.vdel.clear();
-  myState.vdel.push_back(vdelP0());
-  myState.vdel.push_back(vdelP1());
-  myState.vdel.push_back(vdelBL());
-  myState.resm.clear();
-  myState.resm.push_back(resMP0());
-  myState.resm.push_back(resMP1());
-
-  // Position registers
-  myState.pos.clear();
-  myState.pos.push_back(posP0());
-  myState.pos.push_back(posP1());
-  myState.pos.push_back(posM0());
-  myState.pos.push_back(posM1());
-  myState.pos.push_back(posBL());
-
-  // Horizontal move registers
-  myState.hm.clear();
-  myState.hm.push_back(hmP0());
-  myState.hm.push_back(hmP1());
-  myState.hm.push_back(hmM0());
-  myState.hm.push_back(hmM1());
-  myState.hm.push_back(hmBL());
-
-  // Playfield registers
-  myState.pf.clear();
-  myState.pf.push_back(pf0());
-  myState.pf.push_back(pf1());
-  myState.pf.push_back(pf2());
-  myState.pf.push_back(refPF());
-  myState.pf.push_back(scorePF());
-  myState.pf.push_back(priorityPF());
-
-  // Size registers
-  myState.size.clear();
-  myState.size.push_back(nusizP0());
-  myState.size.push_back(nusizP1());
-  myState.size.push_back(nusizM0());
-  myState.size.push_back(nusizM1());
-  myState.size.push_back(sizeBL());
-
-  // VSync/VBlank registers
-  myState.vsb.clear();
-  myState.vsb.push_back(vsync());
-  myState.vsb.push_back(vblank());
-
-  // Audio registers
-  myState.aud.clear();
-  myState.aud.push_back(audF0());
-  myState.aud.push_back(audF1());
-  myState.aud.push_back(audC0());
-  myState.aud.push_back(audC1());
-  myState.aud.push_back(audV0());
-  myState.aud.push_back(audV1());
-
-  // internal TIA state
-  myState.info.clear();
-  myState.info.push_back(frameCount());
-  myState.info.push_back(frameCycles());
-  myState.info.push_back(cyclesLo());
-  myState.info.push_back(cyclesHi());
-  myState.info.push_back(scanlines());
-  myState.info.push_back(scanlinesLastFrame());
-  myState.info.push_back(clocksThisLine());
-  myState.info.push_back(frameWsyncCycles());
-
+  populateState(myState);
   return myState;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TIADebug::saveOldState()
 {
+  populateState(myOldState);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TIADebug::populateState(TiaState& s)
+{
   // Color registers
-  myOldState.coluRegs.clear();
-  myOldState.coluRegs.push_back(coluP0());
-  myOldState.coluRegs.push_back(coluP1());
-  myOldState.coluRegs.push_back(coluPF());
-  myOldState.coluRegs.push_back(coluBK());
+  s.coluRegs = { coluP0(), coluP1(), coluPF(), coluBK() };
+
+  // Debug Colors (only needed for myState, not myOldState, but harmless)
+  const int timing = myConsole.timing() == ConsoleTiming::ntsc ? 0
+    : myConsole.timing() == ConsoleTiming::pal ? 1 : 2;
+
+  s.fixedCols = {
+    myTIA.myFixedColorPalette[timing][TIA::P0],
+    myTIA.myFixedColorPalette[timing][TIA::P1],
+    myTIA.myFixedColorPalette[timing][TIA::PF],
+    myTIA.myFixedColorPalette[timing][TIA::BK],
+    myTIA.myFixedColorPalette[timing][TIA::M0],
+    myTIA.myFixedColorPalette[timing][TIA::M1],
+    myTIA.myFixedColorPalette[timing][TIA::BL],
+    TIA::FixedColor::HBLANK_WHITE
+  };
 
   // Collisions
-  myOldState.cx.clear();
-  myOldState.cx.push_back(collP0_PF());
-  myOldState.cx.push_back(collP0_BL());
-  myOldState.cx.push_back(collM1_P0());
-  myOldState.cx.push_back(collM0_P0());
-  myOldState.cx.push_back(collP0_P1());
-  myOldState.cx.push_back(collP1_PF());
-  myOldState.cx.push_back(collP1_BL());
-  myOldState.cx.push_back(collM1_P1());
-  myOldState.cx.push_back(collM0_P1());
-  myOldState.cx.push_back(collM0_PF());
-  myOldState.cx.push_back(collM0_BL());
-  myOldState.cx.push_back(collM0_M1());
-  myOldState.cx.push_back(collM1_PF());
-  myOldState.cx.push_back(collM1_BL());
-  myOldState.cx.push_back(collBL_PF());
+  s.cx = {
+    collP0_PF(), collP0_BL(), collM1_P0(), collM0_P0(), collP0_P1(),
+    collP1_PF(), collP1_BL(), collM1_P1(), collM0_P1(), collM0_PF(),
+    collM0_BL(), collM0_M1(), collM1_PF(), collM1_BL(), collBL_PF()
+  };
 
-  // Player 0 & 1 graphics registers
-  myOldState.gr.clear();
-  myOldState.gr.push_back(myTIA.myPlayer0.getGRPNew());
-  myOldState.gr.push_back(myTIA.myPlayer1.getGRPNew());
-  myOldState.gr.push_back(myTIA.myPlayer0.getGRPOld());
-  myOldState.gr.push_back(myTIA.myPlayer1.getGRPOld());
-  myOldState.gr.push_back(myTIA.myBall.getENABLNew());
-  myOldState.gr.push_back(myTIA.myBall.getENABLOld());
-  myOldState.gr.push_back(enaM0());
-  myOldState.gr.push_back(enaM1());
+  // Graphics registers
+  s.gr = {
+    myTIA.myPlayer0.getGRPNew(), myTIA.myPlayer1.getGRPNew(),
+    myTIA.myPlayer0.getGRPOld(), myTIA.myPlayer1.getGRPOld(),
+    myTIA.myBall.getENABLNew(),  myTIA.myBall.getENABLOld(),
+    enaM0(), enaM1()
+  };
 
-  // Player 0 & 1, Missile 0 & 1 and Ball graphics status registers
-  myOldState.ref.clear();
-  myOldState.ref.push_back(refP0());
-  myOldState.ref.push_back(refP1());
-  myOldState.vdel.clear();
-  myOldState.vdel.push_back(vdelP0());
-  myOldState.vdel.push_back(vdelP1());
-  myOldState.vdel.push_back(vdelBL());
-  myOldState.resm.clear();
-  myOldState.resm.push_back(resMP0());
-  myOldState.resm.push_back(resMP1());
+  // Reflect / VDel / ResetMissile
+  s.ref  = { refP0(),   refP1() };
+  s.vdel = { vdelP0(),  vdelP1(), vdelBL() };
+  s.resm = { resMP0(),  resMP1() };
 
   // Position registers
-  myOldState.pos.clear();
-  myOldState.pos.push_back(posP0());
-  myOldState.pos.push_back(posP1());
-  myOldState.pos.push_back(posM0());
-  myOldState.pos.push_back(posM1());
-  myOldState.pos.push_back(posBL());
+  s.pos = { posP0(), posP1(), posM0(), posM1(), posBL() };
 
   // Horizontal move registers
-  myOldState.hm.clear();
-  myOldState.hm.push_back(hmP0());
-  myOldState.hm.push_back(hmP1());
-  myOldState.hm.push_back(hmM0());
-  myOldState.hm.push_back(hmM1());
-  myOldState.hm.push_back(hmBL());
+  s.hm = { hmP0(), hmP1(), hmM0(), hmM1(), hmBL() };
 
   // Playfield registers
-  myOldState.pf.clear();
-  myOldState.pf.push_back(pf0());
-  myOldState.pf.push_back(pf1());
-  myOldState.pf.push_back(pf2());
-  myOldState.pf.push_back(refPF());
-  myOldState.pf.push_back(scorePF());
-  myOldState.pf.push_back(priorityPF());
+  s.pf = { pf0(), pf1(), pf2(), refPF(), scorePF(), priorityPF() };
 
   // Size registers
-  myOldState.size.clear();
-  myOldState.size.push_back(nusizP0());
-  myOldState.size.push_back(nusizP1());
-  myOldState.size.push_back(nusizM0());
-  myOldState.size.push_back(nusizM1());
-  myOldState.size.push_back(sizeBL());
+  s.size = { nusizP0(), nusizP1(), nusizM0(), nusizM1(), sizeBL() };
 
-  // VSync/VBlank registers
-  myOldState.vsb.clear();
-  myOldState.vsb.push_back(vsync());
-  myOldState.vsb.push_back(vblank());
+  // VSync/VBlank
+  s.vsb = { vsync(), vblank() };
 
   // Audio registers
-  myOldState.aud.clear();
-  myOldState.aud.push_back(audF0());
-  myOldState.aud.push_back(audF1());
-  myOldState.aud.push_back(audC0());
-  myOldState.aud.push_back(audC1());
-  myOldState.aud.push_back(audV0());
-  myOldState.aud.push_back(audV1());
+  s.aud = { audF0(), audF1(), audC0(), audC1(), audV0(), audV1() };
 
-  // internal TIA state
-  myOldState.info.clear();
-  myOldState.info.push_back(frameCount());
-  myOldState.info.push_back(frameCycles());
-  myOldState.info.push_back(cyclesLo());
-  myOldState.info.push_back(cyclesHi());
-  myOldState.info.push_back(scanlines());
-  myOldState.info.push_back(scanlinesLastFrame());
-  myOldState.info.push_back(clocksThisLine());
-  myOldState.info.push_back(frameWsyncCycles());
+  // Internal TIA state
+  s.info = {
+    frameCount(), frameCycles(),
+    cyclesLo(),   cyclesHi(),
+    scanlines(),  scanlinesLastFrame(),
+    clocksThisLine(), frameWsyncCycles()
+  };
 }
 
 /* the set methods now use mySystem.pokeOob(). This will save us the
@@ -1023,154 +868,171 @@ string TIADebug::audFreq1()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string TIADebug::audFreq(uInt8 dist, uInt8 div) const
 {
-  static constexpr uInt16 dist_div[16] = {
+  static constexpr array<uInt16, 16> dist_div = {
       1, 15, 465, 465, 2, 2, 31, 31,
     511, 31,  31,   1, 6, 6, 93, 93
   };
+
   const double hz =
     (myConsole.timing() == ConsoleTiming::ntsc ? 31440.0 : 31200.0)
     / dist_div[dist] / (div + 1);
-  std::ostringstream buf;
 
-  buf.setf(std::ios_base::fixed, std::ios_base::floatfield);
-  buf << std::setw(7) << std::setprecision(1) << hz << "Hz";
-
-  return buf.str();
+  return std::format("{:7.1f}Hz", hz);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string TIADebug::stringOnly(string_view value, bool changed)
 {
-  std::ostringstream buf;
-
-  buf << value;
-
   if(changed)
-    return static_cast<char>(kDbgColorRed & 0xff) + buf.str() +
+    return static_cast<char>(kDbgColorRed & 0xff) + string{value} +
            static_cast<char>(kTextColor & 0xff);
-  else
-    return buf.str();
+
+  return string{value};
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string TIADebug::decWithLabel(string_view label, uInt16 value,
                               bool changed, uInt16 width)
 {
-  std::ostringstream buf;
+  string result;
+  result.reserve(label.size() + width + 4);
 
-  buf << label;
-  if(label != EmptyString())
-    buf << "=";
-  buf << "#" << std::setw(width) << std::dec << std::left << value;
+  result += label;
+  if(!label.empty())
+    result += '=';
+  result += std::format("#{:<{}}", value, width);
 
   if(changed)
-    return static_cast<char>(kDbgColorRed & 0xff) + buf.str() +
+    return static_cast<char>(kDbgColorRed & 0xff) + result +
            static_cast<char>(kTextColor & 0xff);
-  else
-    return buf.str();
+
+  return result;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string TIADebug::hexWithLabel(string_view label, uInt16 value,
                               bool changed, uInt16 width)
 {
-  std::ostringstream buf;
+  string result;
+  result.reserve(label.size() + width + 3);
 
-  buf << label;
-  if(label != EmptyString())
-    buf << "=";
-  buf << "$" << (width == 1 ? Common::Base::HEX1 : Common::Base::HEX2) << value;
+  result += label;
+  if(!label.empty())
+    result += '=';
+  result += (width == 1)
+    ? std::format("${:01X}", value)
+    : std::format("${:02X}", value);
 
   if(changed)
-    return static_cast<char>(kDbgColorRed & 0xff) + buf.str() +
+    return static_cast<char>(kDbgColorRed & 0xff) + result +
            static_cast<char>(kTextColor & 0xff);
-  else
-    return buf.str();
+
+  return result;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string TIADebug::binWithLabel(string_view label, uInt16 value, bool changed)
 {
-  std::ostringstream buf;
+  string result;
+  result.reserve(label.size() + 10);  // % + 8 binary digits + = + label
 
-  buf << label;
-  if(label != EmptyString())
-    buf << "=";
-  buf << "%" << Common::Base::toString(value, Common::Base::Fmt::_2_8);
+  result += label;
+  if(!label.empty())
+    result += '=';
+  result += '%';
+  result += Common::Base::toString(value, Common::Base::Fmt::_2_8);
 
   if(changed)
-    return static_cast<char>(kDbgColorRed & 0xff) + buf.str() +
+    return static_cast<char>(kDbgColorRed & 0xff) + result +
            static_cast<char>(kTextColor & 0xff);
-  else
-    return buf.str();
+
+  return result;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string TIADebug::boolWithLabel(string_view label, bool value, bool changed)
 {
-  std::ostringstream buf;
+  string result;
+  result.reserve(label.size() + 4);  // +4 for the two \177 chars + 2 color chars worst case
 
   if(value)
   {
-    string l{label};
-    buf << "\177" << BSPF::toUpperCase(l) << "\177";
-    //return "+" + BSPF::toUpperCase(label);
+    string l{label};  // TODO: BSPF::toUpperCase takes a string reference
+    result += '\177';  result += BSPF::toUpperCase(l);  result += '\177';
   }
   else
-    buf << label;
-    //return "-" + BSPF::toLowerCase(label);
+    result += label;
 
   if(changed)
-    return static_cast<char>(kDbgColorRed & 0xff) + buf.str() +
+    return static_cast<char>(kDbgColorRed & 0xff) + result +
            static_cast<char>(kTextColor & 0xff);
-  else
-    return buf.str();
+
+  return result;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string TIADebug::debugColors() const
 {
-  std::ostringstream buf;
-
   const int timing = myConsole.timing() == ConsoleTiming::ntsc ? 0
     : myConsole.timing() == ConsoleTiming::pal ? 1 : 2;
 
-  buf << " " << myTIA.myFixedColorNames[TIA::P0] << " " << colorSwatch(myTIA.myFixedColorPalette[timing][TIA::P0])
-      << " Player 0\n"
-      << " " << myTIA.myFixedColorNames[TIA::M0] << " " << colorSwatch(myTIA.myFixedColorPalette[timing][TIA::M0])
-      << " Missile 0\n"
-      << " " << myTIA.myFixedColorNames[TIA::P1] << " " << colorSwatch(myTIA.myFixedColorPalette[timing][TIA::P1])
-      << " Player 1\n"
-      << " " << myTIA.myFixedColorNames[TIA::M1] << " " << colorSwatch(myTIA.myFixedColorPalette[timing][TIA::M1])
-      << " Missile 1\n"
-      << " " << myTIA.myFixedColorNames[TIA::PF] << " " << colorSwatch(myTIA.myFixedColorPalette[timing][TIA::PF])
-      << " Playfield\n"
-      << " " << myTIA.myFixedColorNames[TIA::BL] << " " << colorSwatch(myTIA.myFixedColorPalette[timing][TIA::BL])
-      << " Ball\n"
-      << " Grey   " << colorSwatch(myTIA.myFixedColorPalette[timing][TIA::BK])
-      << " Background\n"
-      << " White  " << colorSwatch(TIA::FixedColor::HBLANK_WHITE)
-      << " HMOVE\n";
+  static constexpr array<std::pair<int, string_view>, 6> entries = {{
+    { TIA::P0, "Player 0"  },
+    { TIA::M0, "Missile 0" },
+    { TIA::P1, "Player 1"  },
+    { TIA::M1, "Missile 1" },
+    { TIA::PF, "Playfield" },
+    { TIA::BL, "Ball"      }
+  }};
 
-  return buf.str();
+  string result;
+  result.reserve(256);  // fits comfortably within known output size
+
+  for(const auto& [index, label]: entries)
+  {
+    result += " ";  result += myTIA.myFixedColorNames[index];
+    result += " ";  result += colorSwatch(myTIA.myFixedColorPalette[timing][index]);
+    result += " ";  result += label;
+    result += "\n";
+  }
+
+  result += " Grey   ";
+  result += colorSwatch(myTIA.myFixedColorPalette[timing][TIA::BK]);
+  result += " Background\n";
+  result += " White  ";
+  result += colorSwatch(TIA::FixedColor::HBLANK_WHITE);
+  result += " HMOVE\n";
+
+  return result;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string TIADebug::palette()
 {
-  std::ostringstream buf;
+  // colorSwatch() returns 9 chars, 8 swatches per row = 72
+  // row prefix " X " = 3 chars, newline = 1, total per row = 76
+  // 16 rows = 1216, plus header line = 1216 + 49 = 1265
+  static constexpr size_t bufSize =
+    49 +                // header line incl. \n
+    (3 + 72 + 1) * 16;  // rows
 
-  buf << "     0     2     4     6     8     A     C     E\n";
+  static constexpr string_view header = "     0     2     4     6     8     A     C     E\n";
+  static constexpr string_view hexChars = "0123456789ABCDEF";
+
+  string result;
+  result.reserve(bufSize);
+  result += header;
+
   uInt8 c = 0;
   for(uInt16 row = 0; row < 16; ++row)
   {
-    buf << " " << Common::Base::HEX1 << row << " ";
+    result += ' ';  result += hexChars[row];  result += ' ';
     for(uInt16 col = 0; col < 8; ++col, c += 2)
-      buf << colorSwatch(c);
-
-    buf << '\n';
+      result += colorSwatch(c);
+    result += '\n';
   }
-  return buf.str();
+
+  return result;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1187,6 +1049,20 @@ string TIADebug::toString()
   const auto& state = static_cast<const TiaState&>(getState());
   const auto& oldState = static_cast<const TiaState&>(getOldState());
 
+  static constexpr array<string_view, 15> cxLabels = {
+    "p0_pf", "p0_bl", "m1_p0", "m0_p0", "p0_p1",
+    "p1_pf", "p1_bl", "m1_p1", "m0_p1", "m0_pf",
+    "m0_bl", "m0_m1", "m1_pf", "m1_bl", "bl_pf"
+  };
+  auto writeCx = [&](int start, int end)
+  {
+    for(int i = start; i < end; ++i)
+    {
+      buf << boolWithLabel(cxLabels[i], state.cx[i], state.cx[i] != oldState.cx[i]);
+      if(i + 1 < end) buf << " ";
+    }
+  };
+
   // build up output, then return it.
   buf << std::setfill(' ') << std::left
       << decWithLabel("scanline", myTIA.scanlines(),
@@ -1196,24 +1072,12 @@ string TIADebug::toString()
       << boolWithLabel("vblank", vblank(),
                        state.vsb[1] != oldState.vsb[1])
       << '\n'
-      << "Collisions: "
-      << boolWithLabel("p0_pf", collP0_PF(), state.cx[0] != oldState.cx[0]) << " "
-      << boolWithLabel("p0_bl", collP0_BL(), state.cx[1] != oldState.cx[1]) << " "
-      << boolWithLabel("m1_p0", collM1_P0(), state.cx[2] != oldState.cx[2]) << " "
-      << boolWithLabel("m0_p0", collM0_P0(), state.cx[3] != oldState.cx[3]) << " "
-      << boolWithLabel("p0_p1", collP0_P1(), state.cx[4] != oldState.cx[4]) << " "
-      << boolWithLabel("p1_pf", collP1_PF(), state.cx[5] != oldState.cx[5]) << " "
-      << boolWithLabel("p1_bl", collP1_BL(), state.cx[6] != oldState.cx[6]) << " "
-      << boolWithLabel("m1_p1", collM1_P1(), state.cx[7] != oldState.cx[7])
-      << '\n' << "            "
-      << boolWithLabel("m0_p1", collM0_P1(), state.cx[8] != oldState.cx[8]) << " "
-      << boolWithLabel("m0_pf", collM0_PF(), state.cx[9] != oldState.cx[9]) << " "
-      << boolWithLabel("m0_bl", collM0_BL(), state.cx[10] != oldState.cx[10]) << " "
-      << boolWithLabel("m0_m1", collM0_M1(), state.cx[11] != oldState.cx[11]) << " "
-      << boolWithLabel("m1_pf", collM1_PF(), state.cx[12] != oldState.cx[12]) << " "
-      << boolWithLabel("m1_bl", collM1_BL(), state.cx[13] != oldState.cx[13]) << " "
-      << boolWithLabel("bl_pf", collBL_PF(), state.cx[14] != oldState.cx[14])
-      << '\n'
+      << "Collisions: ";
+      writeCx(0, 8);
+      buf << '\n' << "            ";
+      writeCx(8, 15);
+
+  buf << '\n'
       << "COLUxx: "
       << hexWithLabel("P0", state.coluRegs[TiaState::P0],
                       state.coluRegs[TiaState::P0] != oldState.coluRegs[TiaState::P0]) << "/"
@@ -1276,7 +1140,7 @@ string TIADebug::toString()
                       state.hm[TiaState::M1] != oldState.hm[TiaState::M1], 1) << " "
       << decWithLabel("size", state.size[TiaState::M1],
                       state.size[TiaState::M1] != oldState.size[TiaState::M1], 1) << " "
-      << boolWithLabel("reset", resMP0(), state.resm[TiaState::P1] != oldState.resm[TiaState::P1])
+      << boolWithLabel("reset", resMP1(), state.resm[TiaState::P1] != oldState.resm[TiaState::P1])
       << '\n'
       << "BL: "
       << stringOnly(enaBL() ? "ENABLED " : "disabled",

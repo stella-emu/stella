@@ -321,26 +321,34 @@ bool RiotDebug::reset(int newVal)
 string RiotDebug::dirP0String()
 {
   const uInt8 reg = swcha();
-  std::ostringstream buf;
-  buf << ((reg & 0x80) ? "" : "right ")
-      << ((reg & 0x40) ? "" : "left ")
-      << ((reg & 0x20) ? "" : "left ")
-      << ((reg & 0x10) ? "" : "left ")
-      << ((reg & 0xf0) == 0xf0 ? "(no directions) " : "");
-  return buf.str();
+
+  if((reg & 0xf0) == 0xf0)
+    return "(no directions) ";
+
+  string result;
+  result.reserve(24);
+  if (!(reg & 0x80)) result += "right ";
+  if (!(reg & 0x40)) result += "left ";
+  if (!(reg & 0x20)) result += "down ";
+  if (!(reg & 0x10)) result += "up ";
+  return result;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string RiotDebug::dirP1String()
 {
   const uInt8 reg = swcha();
-  std::ostringstream buf;
-  buf << ((reg & 0x08) ? "" : "right ")
-      << ((reg & 0x04) ? "" : "left ")
-      << ((reg & 0x02) ? "" : "left ")
-      << ((reg & 0x01) ? "" : "left ")
-      << ((reg & 0x0f) == 0x0f ? "(no directions) " : "");
-  return buf.str();
+
+  if((reg & 0x0F) == 0x0F)
+    return "(no directions) ";
+
+  string result;
+  result.reserve(24);
+  if (!(reg & 0x08)) result += "right ";
+  if (!(reg & 0x04)) result += "left ";
+  if (!(reg & 0x02)) result += "down ";
+  if (!(reg & 0x01)) result += "up ";
+  return result;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -364,10 +372,10 @@ string RiotDebug::tvTypeString()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string RiotDebug::switchesString()
 {
-  std::ostringstream buf;
-  buf << ((swchb() & 0x2) ? "-" : "+") << "select "
-      << ((swchb() & 0x1) ? "-" : "+") << "reset";
-  return buf.str();
+  const auto reg = swchb();
+  return std::format("{}select {}reset",
+    (reg & 0x2) ? "-" : "+",
+    (reg & 0x1) ? "-" : "+");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

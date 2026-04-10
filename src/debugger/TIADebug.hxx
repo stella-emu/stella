@@ -185,6 +185,8 @@ class TIADebug : public DebuggerSystem
 
     shared_ptr<DelayQueueIterator> delayQueueIterator() const;
 
+    void populateState(TiaState& s);
+
   private:
     /** Display a color patch for color at given index in the palette */
     static string colorSwatch(uInt8 c);
