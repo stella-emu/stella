@@ -45,10 +45,7 @@ class System;
 
   To map ROM, the desired bank number of the first 2K segment is selected
   by storing its value into $3F. To map RAM in the first 2K segment
-  instead, store the RAM bank number into $3E. (*)
-
-  (*) 1/2025: Updated to emulate the new 3E board. Now reads and writes and
-  all mirror addresses are considered. This breaks previous Boulder Dash ROMs!
+  instead, store the RAM bank number into $3E.
 
   This implementation of 3E bankswitching numbers the RAM banks (up to 32)
   after the ROM banks (up to 256).

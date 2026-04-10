@@ -36,27 +36,25 @@ void Cartridge3E::install(System& system)
 {
   CartridgeEnhanced::install(system);
 
-  const System::PageAccess access(this, System::PageAccessType::READWRITE);
+  const System::PageAccess access(this, System::PageAccessType::WRITE);
 
-  // The hotspots ($3E and $3F) are in TIA address space (plus mirrors), so we claim them here
-  for(uInt16 addr = 0x0000; addr < 0x0800; addr += 0x100)
+  // The hotspots ($3E and $3F) are in TIA address space, so we claim them here
+  for(uInt16 addr = 0x00; addr < 0x40; addr += System::PAGE_SIZE)
     mySystem->setPageAccess(addr, access);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool Cartridge3E::checkSwitchBank(uInt16 address, uInt8 value)
 {
-  // Tigervision bankswitching checks only A12, A11, A7, A6 and A0
-  address &= 0b1100011000001; // 0x18c1;
-
   // Switch banks if necessary
-  if(address == 0x01) // $3F
+  address &= ROM_MASK;
+  if(address == 0x3F)
   {
     // Switch ROM bank into segment <value>
     bank(value);
     return true;
   }
-  if(address == 0x00) // $3E
+  if(address == 0x3E)
   {
     // Switch RAM bank into segment <value>
     bank(value + romBankCount());

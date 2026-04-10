@@ -238,7 +238,8 @@ void TIA::reset()
         cycle(1 + (mySystem->randGenerator().next() & 7)); // process delay queue
       }
     }
-    cycle(76); // just to be sure :)
+    cycle(76 * 3); // just to be sure :)
+    myTimestamp = 0;
   }
 }
 
