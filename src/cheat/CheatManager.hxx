@@ -92,12 +92,12 @@ class CheatManager
     /**
       Returns the game cheatlist.
     */
-    const CheatList& list() { return myCheatList; }
+    const CheatList& list() const { return myCheatList; }
 
     /**
       Returns the per-frame cheatlist (needed to evaluate cheats each frame)
     */
-    const CheatList& perFrame() { return myPerFrameList; }
+    const CheatList& perFrame() const { return myPerFrameList; }
 
     /**
       Load all cheats (for all ROMs) from disk to internal database.

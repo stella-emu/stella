@@ -144,12 +144,10 @@ void CheatCodeDialog::saveConfig()
 {
   // Inspect checkboxes for enable/disable codes
   const CheatList& list = instance().cheat().list();
-  for(uInt32 i = 0; i < myCheatList->getList().size(); ++i)
+  for(uInt32 i = 0; const auto& cheat : list)
   {
-    if(myCheatList->getState(i))
-      list[i]->enable();
-    else
-      list[i]->disable();
+    const bool enabled = myCheatList->getState(i++);
+    enabled ? cheat->enable() : cheat->disable();
   }
 }
 
