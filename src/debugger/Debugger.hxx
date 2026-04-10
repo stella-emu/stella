@@ -67,6 +67,7 @@ class Debugger : public DialogContainer
   friend class M6502;
 
   public:
+    // TODO: move to unordered_map in C++23
     using FunctionMap = std::map<string, unique_ptr<Expression>, std::less<>>;
     using FunctionDefMap = std::map<string, string, std::less<>>;
 
@@ -202,14 +203,14 @@ class Debugger : public DialogContainer
     int stringToValue(string_view stringval);
 
     /* Convenience methods to get/set bit(s) in an 8-bit register */
-    static uInt8 set_bit(uInt8 input, uInt8 bit, bool on)
+    static constexpr uInt8 set_bit(uInt8 input, uInt8 bit, bool on)
     {
       if(on)
         return static_cast<uInt8>(input | (1 << bit));
       else
         return static_cast<uInt8>(input & ~(1 << bit));
     }
-    static void set_bits(uInt8 reg, BoolArray& bits)
+    static constexpr void set_bits(uInt8 reg, BoolArray& bits)
     {
       bits.clear();
       for(int i = 0; i < 8; ++i)
@@ -220,7 +221,7 @@ class Debugger : public DialogContainer
           bits.push_back(false);
       }
     }
-    static uInt8 get_bits(const BoolArray& bits)
+    static constexpr uInt8 get_bits(const BoolArray& bits)
     {
       uInt8 result = 0x0;
       for(int i = 0; i < 8; ++i)
@@ -324,7 +325,7 @@ class Debugger : public DialogContainer
     void log(string_view triggerMsg);
 
     // Set a bunch of RAM locations at once
-    string setRAM(IntArray& args);
+    string setRAM(const IntArray& args);
 
     void reset();
 
