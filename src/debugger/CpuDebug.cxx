@@ -72,79 +72,79 @@ void CpuDebug::saveOldState()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 int CpuDebug::pc() const
 {
-  return mySystem.m6502().PC;
+  return my6502.PC;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 int CpuDebug::sp() const
 {
-  return mySystem.m6502().SP;
+  return my6502.SP;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 int CpuDebug::a() const
 {
-  return mySystem.m6502().A;
+  return my6502.A;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 int CpuDebug::x() const
 {
-  return mySystem.m6502().X;
+  return my6502.X;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 int CpuDebug::y() const
 {
-  return mySystem.m6502().Y;
+  return my6502.Y;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 int CpuDebug::n() const
 {
-  return mySystem.m6502().N;
+  return my6502.N;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 int CpuDebug::v() const
 {
-  return mySystem.m6502().V;
+  return my6502.V;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 int CpuDebug::b() const
 {
-  return mySystem.m6502().B;
+  return my6502.B;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 int CpuDebug::d() const
 {
-  return mySystem.m6502().D;
+  return my6502.D;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 int CpuDebug::i() const
 {
-  return mySystem.m6502().I;
+  return my6502.I;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 int CpuDebug::z() const
 {
-  return !mySystem.m6502().notZ;
+  return !my6502.notZ;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 int CpuDebug::c() const
 {
-  return mySystem.m6502().C;
+  return my6502.C;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 int CpuDebug::icycles() const
 {
-  return mySystem.m6502().icycles;
+  return my6502.icycles;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
