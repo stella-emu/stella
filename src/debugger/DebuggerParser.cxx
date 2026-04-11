@@ -68,7 +68,7 @@ string DebuggerParser::run(string_view command)
   getArgs(command, verb);
   commandResult.str("");
 
-  const auto it = std::ranges::find_if(commands,
+  const auto it = std::ranges::find_if(commands,  // NOLINT(readability-qualified-auto)
     [&](const Command& cmd) { return BSPF::equalsIgnoreCase(verb, cmd.cmdString); });
 
   if(it == commands.end())
