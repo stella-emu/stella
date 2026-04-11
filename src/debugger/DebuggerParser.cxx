@@ -68,7 +68,7 @@ string DebuggerParser::run(string_view command)
   getArgs(command, verb);
   commandResult.str("");
 
-  auto* const it = std::ranges::find_if(commands,
+  const auto it = std::ranges::find_if(commands,
     [&](const Command& cmd) { return BSPF::equalsIgnoreCase(verb, cmd.cmdString); });
 
   if(it == commands.end())
@@ -314,7 +314,7 @@ bool DebuggerParser::getArgs(string_view command, string& verb)
   verb.clear();
 
   // Extract verb as everything up to the first space
-  const size_t verbEnd = command.find(' ');
+  const auto verbEnd = command.find(' ');
   if(verbEnd == string_view::npos)
   {
     verb = command;
@@ -326,7 +326,7 @@ bool DebuggerParser::getArgs(string_view command, string& verb)
 
   // Walk the remainder parsing space-separated tokens,
   // with {brace} quoting for tokens containing spaces
-  string_view rest = command.substr(verbEnd + 1);
+  auto rest = command.substr(verbEnd + 1);
   string curArg;
   curArg.reserve(32);
   ParseState state = ParseState::IN_SPACE;
@@ -395,7 +395,7 @@ bool DebuggerParser::getArgs(string_view command, string& verb)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool DebuggerParser::validateArgs(int cmd)
 {
-  const Command& command = commands[cmd];
+  const auto& command = commands[cmd];
   const auto& parms = command.parms;
 
   if(argCount == 0)
@@ -410,7 +410,7 @@ bool DebuggerParser::validateArgs(int cmd)
 
   // Count fixed parameters up to ARG_END_ARGS or ARG_MULTI_BYTE
   uInt32 fixedCount = 0;
-  const Parameters* p = parms.data();
+  const auto* p = parms.data();
   while(*p != Parameters::ARG_END_ARGS && *p != Parameters::ARG_MULTI_BYTE)
   {
     ++fixedCount;
@@ -558,9 +558,9 @@ void DebuggerParser::printTimer(uInt32 idx, bool showHeader)
     return;
   }
 
-  const TimerMap::Timer& timer = debugger.m6502().getTimer(idx);
+  const auto& timer = debugger.m6502().getTimer(idx);
   const bool banked = debugger.cartDebug().romBankCount() > 1;
-  const int  colWidth = banked ? 12 : 15;
+  const int colWidth = banked ? 12 : 15;
 
   // Helper to build a fixed-width label string for an address
   const auto makeLabel = [&](uInt16 addr) -> string
@@ -578,8 +578,8 @@ void DebuggerParser::printTimer(uInt32 idx, bool showHeader)
     return label;
   };
 
-  const string labelFrom = makeLabel(timer.from.addr);
-  const string labelTo   = makeLabel(timer.to.addr);
+  const auto labelFrom = makeLabel(timer.from.addr);
+  const auto labelTo   = makeLabel(timer.to.addr);
 
   if(showHeader)
     commandResult << (banked
@@ -631,7 +631,7 @@ void DebuggerParser::printTimer(uInt32 idx, bool showHeader)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string DebuggerParser::getTimerCmds()
 {
-  const uInt32 numTimers = debugger.m6502().numTimers();
+  const auto numTimers = debugger.m6502().numTimers();
   if(numTimers == 0)
     return {};
 
@@ -661,7 +661,7 @@ string DebuggerParser::getTimerCmds()
 
   for(uInt32 idx = 0; idx < numTimers; ++idx)
   {
-    const TimerMap::Timer& timer = debugger.m6502().getTimer(idx);
+    const auto& timer = debugger.m6502().getTimer(idx);
 
     out += "timer ";
     out += makeAddrStr(timer.from.addr, timer.from.bank,
@@ -681,7 +681,7 @@ string DebuggerParser::getTimerCmds()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DebuggerParser::listTimers()
 {
-  const uInt32 numTimers = debugger.m6502().numTimers();
+  const auto numTimers = debugger.m6502().numTimers();
   if(numTimers == 0)
   {
     commandResult << "no timers set";
@@ -696,7 +696,7 @@ void DebuggerParser::listTimers()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DebuggerParser::listTraps(bool listCond)
 {
-  const auto names = debugger.m6502().getCondTrapNames();
+  const auto& names = debugger.m6502().getCondTrapNames();
   const auto numNames = static_cast<uInt32>(names.size());
 
   commandResult << (listCond ? "trapifs:" : "traps:") << '\n';
@@ -708,7 +708,7 @@ void DebuggerParser::listTraps(bool listCond)
     if(hasCond != listCond)
       continue;
 
-    const Trap& trap = *myTraps[i];
+    const auto& trap = *myTraps[i];
 
     if(!firstLine)
       commandResult << '\n';
@@ -740,8 +740,8 @@ void DebuggerParser::listTraps(bool listCond)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string DebuggerParser::trapStatus(const Trap& trap)
 {
-  const string lblb = debugger.cartDebug().getLabel(trap.begin, !trap.write);
-  const string lble = (trap.begin != trap.end)
+  const auto lblb = debugger.cartDebug().getLabel(trap.begin, !trap.write);
+  const auto lble = (trap.begin != trap.end)
     ? debugger.cartDebug().getLabel(trap.end, !trap.write)
     : string{};
 
@@ -809,7 +809,7 @@ string DebuggerParser::saveScriptFile(string file)
     out += '\n';
   }
 
-  const auto breakConds = debugger.m6502().getCondBreakNames();
+  const auto& breakConds = debugger.m6502().getCondBreakNames();
   for(const auto& cond: breakConds)
   {
     out += "breakIf {";
@@ -817,7 +817,7 @@ string DebuggerParser::saveScriptFile(string file)
     out += "}\n";
   }
 
-  const auto saveConds = debugger.m6502().getCondSaveStateNames();
+  const auto& saveConds = debugger.m6502().getCondSaveStateNames();
   for(const auto& cond: saveConds)
   {
     out += "saveStateIf {";
@@ -825,10 +825,10 @@ string DebuggerParser::saveScriptFile(string file)
     out += "}\n";
   }
 
-  const auto names = debugger.m6502().getCondTrapNames();
+  const auto& names = debugger.m6502().getCondTrapNames();
   for(uInt32 i = 0; i < myTraps.size(); ++i)
   {
-    const Trap& trap = *myTraps[i];
+    const auto& trap = *myTraps[i];
     const bool hasCond = !names[i].empty();
 
     if(trap.read && trap.write) out += "trap";
@@ -1254,7 +1254,7 @@ void DebuggerParser::executeDelTrap()
     return;
   }
 
-  const Trap& trap = *myTraps[index];
+  const auto& trap = *myTraps[index];
   for(uInt32 addr = trap.begin; addr <= trap.end; ++addr)
     executeTrapRW(addr, trap.read, trap.write, false);
 
@@ -1288,8 +1288,8 @@ void DebuggerParser::executeDisAsm()
     return;
   }
 
-  const int start = (argCount == 0) ? debugger.cpuDebug().pc() : args[0];
-  const int lines = (argCount == 2) ? args[1] : 20;
+  const auto start = (argCount == 0) ? debugger.cpuDebug().pc() : args[0];
+  const auto lines = (argCount == 2) ? args[1] : 20;
 
   commandResult << debugger.cartDebug().disassembleLines(start, lines);
 }
@@ -1680,7 +1680,7 @@ void DebuggerParser::executeListBreaks()
 {
   const uInt32 romBankCount = debugger.cartDebug().romBankCount();
   const auto& breakpoints = debugger.breakPoints().getBreakpoints();
-  const auto conds = debugger.m6502().getCondBreakNames();
+  const auto& conds = debugger.m6502().getCondBreakNames();
 
   if(breakpoints.empty() && conds.empty())
   {
@@ -1756,7 +1756,7 @@ void DebuggerParser::executeListFunctions()
 // "listSaveStateIfs"
 void DebuggerParser::executeListSaveStateIfs()
 {
-  const auto conds = debugger.m6502().getCondSaveStateNames();
+  const auto& conds = debugger.m6502().getCondSaveStateNames();
   if(conds.empty())
   {
     commandResult << "no savestateifs defined";
@@ -1783,7 +1783,7 @@ void DebuggerParser::executeListTimers()
 // "listTraps"
 void DebuggerParser::executeListTraps()
 {
-  const auto names = debugger.m6502().getCondTrapNames();
+  const auto& names = debugger.m6502().getCondTrapNames();
   if(myTraps.size() != names.size())
   {
     commandResult << "Internal error! Different trap sizes.";
@@ -1998,7 +1998,7 @@ void DebuggerParser::executeRunTo()
 {
   const auto& cartdbg = debugger.cartDebug();
   const auto& list = cartdbg.disassembly().list;
-  const size_t max_iterations = list.size();
+  const auto max_iterations = list.size();
   const string_view target = argStrings[0];
 
   debugger.saveOldState();
@@ -2290,8 +2290,7 @@ void DebuggerParser::executeScanLine()
 // "step"
 void DebuggerParser::executeStep()
 {
-  commandResult
-    << "executed " << dec << debugger.step() << " cycles";
+  commandResult << "executed " << dec << debugger.step() << " cycles";
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -2331,7 +2330,8 @@ void DebuggerParser::executeStepWhile()
 void DebuggerParser::executeSwchb()
 {
   debugger.riotDebug().switches(args[0]);
-  commandResult << "SWCHB set to " << std::hex << std::setw(2) << std::setfill('0') << args[0];
+  commandResult << "SWCHB set to " << std::hex << std::setw(2)
+                << std::setfill('0') << args[0];
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -2417,7 +2417,7 @@ void DebuggerParser::executeTimer()
     }
   }
 
-  const uInt32 idx = (numAddrs < 2)
+  const auto idx = (numAddrs < 2)
     ? debugger.m6502().addTimer(addr[0], bank[0], mirrors, anyBank)
     : debugger.m6502().addTimer(addr[0], addr[1],
                                 bank[0], numBanks < 2 ? bank[0] : bank[1],
@@ -2593,7 +2593,7 @@ void DebuggerParser::executeTraps(bool read, bool write, string_view command,
 
   if(it != myTraps.end())
   {
-    const uInt32 i = static_cast<uInt32>(it - myTraps.begin());
+    const auto i = static_cast<uInt32>(it - myTraps.begin());
     if(!debugger.m6502().delCondTrap(i))
     {
       commandResult << "Internal error! Duplicate trap removal failed!";
@@ -2607,7 +2607,7 @@ void DebuggerParser::executeTraps(bool read, bool write, string_view command,
   }
   else
   {
-    const uInt32 ret = debugger.m6502().addCondTrap(
+    const auto ret = debugger.m6502().addCondTrap(
       YaccParser::getResult(), hasCond ? argStrings[0] : "");
     commandResult << "added trap " << Base::toString(ret);
     myTraps.emplace_back(std::make_unique<Trap>(read, write, begin, end, condition));
