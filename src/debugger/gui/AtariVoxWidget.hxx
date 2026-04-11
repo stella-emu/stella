@@ -20,18 +20,28 @@
 
 class Controller;
 
+#include "AtariVox.hxx"
 #include "FlashWidget.hxx"
 
 class AtariVoxWidget : public FlashWidget
 {
   public:
     AtariVoxWidget(GuiObject* boss, const GUI::Font& font, int x, int y,
-                   Controller& controller, bool embedded = false);
+                   Controller& controller, bool embedded = false)
+      : FlashWidget(boss, font, x, y, controller) { init(boss, font, x, y, embedded); }
+
     ~AtariVoxWidget() override = default;
 
   private:
-    void eraseCurrent() override;
-    bool isPageUsed(uInt32 page) override;
+    void eraseCurrent() override {
+      auto& avox = static_cast<AtariVox&>(controller());
+      avox.eraseCurrent();
+    }
+
+    bool isPageUsed(uInt32 page) override {
+      const auto& avox = static_cast<AtariVox&>(controller());
+      return avox.isPageUsed(page);
+    }
 
     // Following constructors and assignment operators not supported
     AtariVoxWidget() = delete;

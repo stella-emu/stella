@@ -26,7 +26,9 @@ class AtariMouseWidget : public PointingDeviceWidget
 {
   public:
     AtariMouseWidget(GuiObject* boss, const GUI::Font& font, int x, int y,
-                     Controller& controller);
+                     Controller& controller)
+      : PointingDeviceWidget(boss, font, x, y, controller) { }
+
     ~AtariMouseWidget() override = default;
 
   private:
@@ -34,7 +36,9 @@ class AtariMouseWidget : public PointingDeviceWidget
       0b00, 0b01, 0b11, 0b10
     };
 
-    uInt8 getGrayCodeTable(int index, int direction) const override;
+    uInt8 getGrayCodeTable(int index, int /*direction*/) const override {
+      return myGrayCodeTable[index];
+    }
 
     // Following constructors and assignment operators not supported
     AtariMouseWidget() = delete;
