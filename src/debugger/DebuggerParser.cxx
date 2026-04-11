@@ -41,7 +41,6 @@
 
 #include "Base.hxx"
 using Common::Base;
-using std::hex;
 using std::dec;
 using std::setfill;
 using std::setw;
@@ -54,8 +53,6 @@ using std::right;
 
 #include "DebuggerParser.hxx"
 
-// TODO - use C++ streams instead of nasty C-strings and pointers
-
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 DebuggerParser::DebuggerParser(Debugger& d, Settings& s)
   : debugger{d},
@@ -67,125 +64,92 @@ DebuggerParser::DebuggerParser(Debugger& d, Settings& s)
 // main entry point: PromptWidget calls this method.
 string DebuggerParser::run(string_view command)
 {
-#if 0
-  // this was our parser test code. Left for reference.
-  static Expression *lastExpression;
-
-  // special case: parser testing
-  if(strncmp(command.c_str(), "expr ", 5) == 0) {
-    delete lastExpression;
-    commandResult = "parser test: status==";
-    int status = YaccParser::parse(command.c_str() + 5);
-    commandResult += debugger.valueToString(status);
-    commandResult += ", result==";
-    if(status == 0) {
-      lastExpression = YaccParser::getResult();
-      commandResult += debugger.valueToString(lastExpression->evaluate());
-    } else {
-      //  delete lastExpression; // NO! lastExpression isn't valid (not 0 either)
-                                // It's the result of casting the last token
-                                // to Expression* (because of yacc's union).
-                                // As such, we can't and don't need to delete it
-                                // (However, it means yacc leaks memory on error)
-      commandResult += "ERROR - ";
-      commandResult += YaccParser::errorMessage();
-    }
-    return commandResult;
-  }
-
-  if(command == "expr") {
-    if(lastExpression)
-      commandResult = "result==" + debugger.valueToString(lastExpression->evaluate());
-    else
-      commandResult = "no valid expr";
-    return commandResult;
-  }
-#endif
-
   string verb;
   getArgs(command, verb);
   commandResult.str("");
 
-  for(int i = 0; std::cmp_less(i, commands.size()); ++i)
+  auto* const it = std::ranges::find_if(commands,
+    [&](const Command& cmd) { return BSPF::equalsIgnoreCase(verb, cmd.cmdString); });
+
+  if(it == commands.end())
+    return red("No such command (try \"help\")");
+
+  const int i = static_cast<int>(it - commands.begin());
+  if(validateArgs(i))
   {
-    if(BSPF::equalsIgnoreCase(verb, commands[i].cmdString))
-    {
-      if(validateArgs(i))
-      {
-        myCommand = i;
-        if(commands[i].refreshRequired)
-          debugger.baseDialog()->saveConfig();
-        commands[i].executor(this);
-      }
-
-      if(commands[i].refreshRequired)
-        debugger.baseDialog()->loadConfig();
-
-      return commandResult.str();
-    }
+    myCommand = i;
+    if(it->refreshRequired)
+      debugger.baseDialog()->saveConfig();
+    (this->*it->executor)();
   }
+  if(it->refreshRequired)
+    debugger.baseDialog()->loadConfig();
 
-  return red("No such command (try \"help\")");
+  return commandResult.str();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string DebuggerParser::exec(const FSNode& file, StringList* history)
 {
-  const bool logExec = settings.getBool("dbg.logexec");
-
-  if(file.exists())
-  {
-    std::stringstream in;
-    try        { file.read(in); }
-    catch(...) { return red("script file \'" + file.getShortPath() + "\' not found"); }
-
-    std::ostringstream buf;
-    std::ostringstream logBuf; // used to log the results of commands, if enabled
-    int count = 0;
-    string command;
-    while( !in.eof() )
-    {
-      if(!getline(in, command))
-        break;
-
-      // skip empty/comment lines
-      command = BSPF::trim(command);
-      if(command.empty() || command[0] == ';')
-        continue;
-
-      ++execDepth;
-      if(logExec)
-      {
-        logBuf << "> " << command << '\n';
-        const string result = run(command);
-        if(!result.empty() && result != "_EXIT_DEBUGGER" && result != "_NO_PROMPT")
-          logBuf << result << '\n';
-      }
-      else
-      {
-        run(command);
-      }
-      --execDepth;
-      if (history != nullptr)
-        history->push_back(command);
-      count++;
-    }
-
-    // write execution log if enabled
-    if(logExec && !logBuf.str().empty())
-    {
-      const FSNode logNode(file.getPath() + ".output.txt");
-      try        { logNode.write(logBuf);}
-      catch(...) { buf << red("\nUnable to write exec output to file \'" + logNode.getShortPath() + "\'\n"); }
-    }
-
-    buf << "\nExecuted " << count << " command" << (count != 1 ? "s" : "") << " from \""
-        << file.getShortPath() << "\"";
-
-    return buf.str();
-  }
-  else
+  if(!file.exists())
     return red("script file \'" + file.getShortPath() + "\' not found");
+
+  std::stringstream in;
+  try        { file.read(in); }
+  catch(...) { return red("script file \'" + file.getShortPath() + "\' not found"); }
+
+  const bool logExec = settings.getBool("dbg.logexec");
+  string buf;     buf.reserve(256);
+  string logBuf;  logBuf.reserve(4096);  // log output tends to be large
+  int count = 0;
+
+  string command;
+  while(getline(in, command))
+  {
+    // Skip empty/comment lines
+    command = BSPF::trim(command);
+    if(command.empty() || command[0] == ';')
+      continue;
+
+    ++execDepth;
+    if(logExec)
+    {
+      logBuf += "> ";
+      logBuf += command;
+      logBuf += '\n';
+      const string result = run(command);
+      if(!result.empty() && result != "_EXIT_DEBUGGER" && result != "_NO_PROMPT")
+      {
+        logBuf += result;
+        logBuf += '\n';
+      }
+    }
+    else
+      run(command);
+    --execDepth;
+
+    if(history != nullptr)
+      history->push_back(command);
+    ++count;
+  }
+
+  // Write execution log if enabled
+  if(logExec && !logBuf.empty())
+  {
+    const FSNode logNode(file.getPath() + ".output.txt");
+    // FSNode::write needs a stream, so we materialise one only here
+    const std::ostringstream logStream(std::move(logBuf));
+    try        { logNode.write(logStream); }
+    catch(...) { buf += red("\nUnable to write exec output to file \'"
+                            + logNode.getShortPath() + "\'\n"); }
+  }
+
+  buf += "\nExecuted ";
+  buf += std::to_string(count);
+  buf += count != 1 ? " commands from \"" : " command from \"";
+  buf += file.getShortPath();
+  buf += '"';
+  return buf;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -193,6 +157,7 @@ void DebuggerParser::outputCommandError(string_view errorMsg, int command)
 {
   const string example = commands[command].extendedDesc.substr(commands[command].extendedDesc.find("Example:"));
 
+  commandResult.str("");
   commandResult << red(errorMsg);
   if(!example.empty())
     commandResult << '\n' << example;
@@ -313,25 +278,28 @@ int DebuggerParser::decipher_arg(string_view str)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string DebuggerParser::showWatches()
 {
-  std::ostringstream buf;
+  string buf;
+  buf.reserve(myWatches.size() * 32);  // rough estimate per watch line
+
   for(uInt32 i = 0; i < myWatches.size(); ++i)
   {
-    if(!myWatches[i].empty())
-    {
-      // Clear the args, since we're going to pass them to eval()
-      argStrings.clear();
-      args.clear();
+    const string& watch = myWatches[i];
+    if(watch.empty())
+      continue;
 
-      argCount = 1;
-      argStrings.push_back(myWatches[i]);
-      args.push_back(decipher_arg(argStrings[0]));
-      if(args[0] < 0)
-        buf << "BAD WATCH " << (i+1) << ": " << argStrings[0] << '\n';
-      else
-        buf << " watch #" << (i+1) << " (" << argStrings[0] << ") -> " << eval() << '\n';
-    }
+    // Clear the args, since we're going to pass them to eval()
+    argStrings.clear();
+    args.clear();
+    argCount = 1;
+    argStrings.push_back(watch);
+    args.push_back(decipher_arg(watch));
+
+    if(args[0] < 0)
+      std::format_to(std::back_inserter(buf), "BAD WATCH {}: {}\n", i + 1, watch);
+    else
+      std::format_to(std::back_inserter(buf), " watch #{} ({}) -> {}\n", i + 1, watch, eval());
   }
-  return buf.str();
+  return buf;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -341,72 +309,78 @@ string DebuggerParser::showWatches()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool DebuggerParser::getArgs(string_view command, string& verb)
 {
-  ParseState state = ParseState::IN_COMMAND;
-  size_t i = 0;
-  const size_t length = command.length();
-  string curArg;
-  verb = "";
-
   argStrings.clear();
   args.clear();
+  verb.clear();
 
-  // cerr << "Parsing \"" << command << "\"" << ", length = " << command.length() << '\n';
-
-  // First, pick apart string into space-separated tokens.
-  // The first token is the command verb, the rest go in an array
-  do
+  // Extract verb as everything up to the first space
+  const size_t verbEnd = command.find(' ');
+  if(verbEnd == string_view::npos)
   {
-    const char c = command[i++];
+    verb = command;
+    argCount = 0;
+    return true;
+  }
+
+  verb = command.substr(0, verbEnd);
+
+  // Walk the remainder parsing space-separated tokens,
+  // with {brace} quoting for tokens containing spaces
+  string_view rest = command.substr(verbEnd + 1);
+  string curArg;
+  curArg.reserve(32);
+  ParseState state = ParseState::IN_SPACE;
+
+  for(const char c: rest)
+  {
     switch(state)
     {
-      case ParseState::IN_COMMAND:
-        if(c == ' ')
-          state = ParseState::IN_SPACE;
-        else
-          verb += c;
-        break;
       case ParseState::IN_SPACE:
         if(c == '{')
           state = ParseState::IN_BRACE;
-        else if(c != ' ') {
+        else if(c != ' ')
+        {
           state = ParseState::IN_ARG;
           curArg += c;
         }
         break;
-      case ParseState::IN_BRACE:
-        if(c == '}') {
-          state = ParseState::IN_SPACE;
-          argStrings.push_back(curArg);
-          //  cerr << "{" << curArg << "}\n";
-          curArg = "";
-        } else {
-          curArg += c;
-        }
-        break;
-      case ParseState::IN_ARG:
-        if(c == ' ') {
-          state = ParseState::IN_SPACE;
-          argStrings.push_back(curArg);
-          curArg = "";
-        } else {
-          curArg += c;
-        }
-        break;
-      default:
-        break;  // Not supposed to get here
-    }  // switch(state)
-  }
-  while(i < length);
 
-  // Take care of the last argument, if there is one
+      case ParseState::IN_BRACE:
+        if(c == '}')
+        {
+          state = ParseState::IN_SPACE;
+          argStrings.push_back(std::move(curArg));
+          curArg.clear();
+        }
+        else
+          curArg += c;
+        break;
+
+      case ParseState::IN_ARG:
+        if(c == ' ')
+        {
+          state = ParseState::IN_SPACE;
+          argStrings.push_back(std::move(curArg));
+          curArg.clear();
+        }
+        else
+          curArg += c;
+        break;
+
+      default:
+        break;
+    }
+  }
+
   if(!curArg.empty())
-    argStrings.push_back(curArg);
+    argStrings.push_back(std::move(curArg));
 
   argCount = static_cast<uInt32>(argStrings.size());
 
-  for(uInt32 arg = 0; arg < argCount; ++arg)
+  args.reserve(argCount);
+  for(const auto& argStr: argStrings)
   {
-    if(!YaccParser::parse(argStrings[arg]))
+    if(!YaccParser::parse(argStr))
     {
       unique_ptr<Expression> expr(YaccParser::getResult());
       args.push_back(expr->evaluate());
@@ -421,56 +395,46 @@ bool DebuggerParser::getArgs(string_view command, string& verb)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool DebuggerParser::validateArgs(int cmd)
 {
-  // cerr << "entering validateArgs(" << cmd << ")\n";
-  const bool required = commands[cmd].parmsRequired;
-  const Parameters* p = commands[cmd].parms.data();
+  const Command& command = commands[cmd];
+  const auto& parms = command.parms;
 
   if(argCount == 0)
   {
-    if(required)
+    if(command.parmsRequired)
     {
-      void(commandResult.str());
       outputCommandError("missing required argument(s)", cmd);
-      return false; // needed args. didn't get 'em.
+      return false;
     }
-    else
-      return true;  // no args needed, no args got
+    return true;
   }
 
-  // Figure out how many arguments are required by the command
-  uInt32 count = 0, argRequiredCount = 0;
+  // Count fixed parameters up to ARG_END_ARGS or ARG_MULTI_BYTE
+  uInt32 fixedCount = 0;
+  const Parameters* p = parms.data();
   while(*p != Parameters::ARG_END_ARGS && *p != Parameters::ARG_MULTI_BYTE)
   {
-    ++count;
+    ++fixedCount;
     ++p;
   }
 
   // Evil hack: some commands intentionally take multiple arguments
   // In this case, the required number of arguments is unbounded
-  argRequiredCount = (*p == Parameters::ARG_END_ARGS) ? count : argCount;
+  // Only ARG_MULTI_BYTE triggers unbounded mode
+  const bool isMulti = (*p == Parameters::ARG_MULTI_BYTE);
+  const uInt32 argRequiredCount = isMulti ? argCount : fixedCount;
 
-  p = commands[cmd].parms.data();
+  p = parms.data();
   uInt32 curCount = 0;
 
   do {
     if(curCount >= argCount)
       break;
 
-    const uInt32 curArgInt  = args[curCount];
+    const uInt32  curArgInt = args[curCount];
     const string& curArgStr = argStrings[curCount];
 
     switch(*p)
     {
-      case Parameters::ARG_DWORD:
-      #if 0   // TODO - do we need error checking at all here?
-        if(curArgInt > 0xffffffff)
-        {
-          commandResult.str(red("invalid word argument (must be 0-$ffffffff)"));
-          return false;
-        }
-      #endif
-        break;
-
       case Parameters::ARG_WORD:
         if(curArgInt > 0xffff)
         {
@@ -500,8 +464,7 @@ bool DebuggerParser::validateArgs(int cmd)
            && curArgStr != "hex" && curArgStr != "dec" && curArgStr != "bin")
         {
           commandResult.str(red(
-            R"(invalid base (must be #2, #10, #16, "bin", "dec", or "hex"))"
-          ));
+            R"(invalid base (must be #2, #10, #16, "bin", "dec", or "hex"))"));
           return false;
         }
         break;
@@ -522,67 +485,62 @@ bool DebuggerParser::validateArgs(int cmd)
     }
     ++curCount;
     ++p;
-
   } while(*p != Parameters::ARG_END_ARGS && curCount < argRequiredCount);
-
-/*
-cerr << "curCount         = " << curCount << '\n'
-     << "argRequiredCount = " << argRequiredCount << '\n'
-     << "*p               = " << *p << "\n\n";
-*/
 
   if(curCount < argRequiredCount)
   {
-    void(commandResult.str());
     outputCommandError("missing required argument(s)", cmd);
     return false;
   }
-  else if(argCount > curCount)
+  if(argCount > curCount)
   {
-    void(commandResult.str());
     outputCommandError("too many arguments", cmd);
     return false;
   }
-
   return true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string DebuggerParser::eval()
 {
-  std::ostringstream buf;
+  string buf;
+  buf.reserve(static_cast<size_t>(argCount) * 64);  // rough estimate per arg line
+
   for(uInt32 i = 0; i < argCount; ++i)
   {
-    if(args[i] < 0x10000)
+    const int arg = args[i];
+
+    if(arg < 0x10000)
     {
-      string rlabel = debugger.cartDebug().getLabel(args[i], true);
-      string wlabel = debugger.cartDebug().getLabel(args[i], false);
-      const bool validR = !rlabel.empty() && rlabel[0] != '$',
-                 validW = !wlabel.empty() && wlabel[0] != '$';
+      const string rlabel = debugger.cartDebug().getLabel(arg, true);
+      const string wlabel = debugger.cartDebug().getLabel(arg, false);
+      const bool validR = !rlabel.empty() && rlabel[0] != '$';
+      const bool validW = !wlabel.empty() && wlabel[0] != '$';
+
       if(validR && validW)
       {
         if(rlabel == wlabel)
-          buf << rlabel << "(R/W): ";
+          std::format_to(std::back_inserter(buf), "{}(R/W): ", rlabel);
         else
-          buf << rlabel << "(R) / " << wlabel << "(W): ";
+          std::format_to(std::back_inserter(buf), "{}(R) / {}(W): ", rlabel, wlabel);
       }
       else if(validR)
-        buf << rlabel << "(R): ";
+        std::format_to(std::back_inserter(buf), "{}(R): ", rlabel);
       else if(validW)
-        buf << wlabel << "(W): ";
+        std::format_to(std::back_inserter(buf), "{}(W): ", wlabel);
     }
 
-    buf << "$" << Base::toString(args[i], Base::Fmt::_16);
+    std::format_to(std::back_inserter(buf), "${}", Base::toString(arg, Base::Fmt::_16));
 
-    if(args[i] < 0x10000)
-      buf << " %" << Base::toString(args[i], Base::Fmt::_2);
+    if(arg < 0x10000)
+      std::format_to(std::back_inserter(buf), " %{}", Base::toString(arg, Base::Fmt::_2));
 
-    buf << " #" << static_cast<int>(args[i]);
+    std::format_to(std::back_inserter(buf), " #{}", static_cast<int>(arg));
+
     if(i != argCount - 1)
-      buf << '\n';
+      buf += '\n';
   }
-
-  return buf.str();
+  return buf;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -602,226 +560,213 @@ void DebuggerParser::printTimer(uInt32 idx, bool showHeader)
 
   const TimerMap::Timer& timer = debugger.m6502().getTimer(idx);
   const bool banked = debugger.cartDebug().romBankCount() > 1;
-  std::ostringstream buf;
+  const int  colWidth = banked ? 12 : 15;
 
-  if(!debugger.cartDebug().getLabel(buf, timer.from.addr, true))
-    buf << "    $" << setw(4) << Base::HEX4 << timer.from.addr;
-  string labelFrom{buf.view()};
-  labelFrom = labelFrom.substr(0, (banked ? 12 : 15) - (timer.mirrors ? 1 : 0));
-  labelFrom += (timer.mirrors ? "+" : "");
-  labelFrom = (labelFrom + "              ").substr(0, banked ? 12 : 15);
+  // Helper to build a fixed-width label string for an address
+  const auto makeLabel = [&](uInt16 addr) -> string
+  {
+    std::ostringstream buf;
+    if(!debugger.cartDebug().getLabel(buf, addr, true))
+      buf << "    $" << setw(4) << Base::HEX4 << addr;
 
-  buf.str("");
-  if(!debugger.cartDebug().getLabel(buf, timer.to.addr, true))
-    buf << "    $" << setw(4) << Base::HEX4 << timer.to.addr;
-  string labelTo{buf.view()};
-  labelTo   = labelTo.substr(0, (banked ? 12 : 15) - (timer.mirrors ? 1 : 0));
-  labelTo += (timer.mirrors ? "+" : "");
-  labelTo   = (labelTo   + "              ").substr(0, banked ? 12 : 15);
+    string label{buf.view()};
+    const int trimWidth = colWidth - (timer.mirrors ? 1 : 0);
+    if(std::cmp_greater(label.size(), trimWidth))
+      label.resize(trimWidth);
+    label += timer.mirrors ? "+" : "";
+    label.resize(colWidth, ' ');  // pad to fixed width
+    return label;
+  };
+
+  const string labelFrom = makeLabel(timer.from.addr);
+  const string labelTo   = makeLabel(timer.to.addr);
 
   if(showHeader)
-  {
-    if(banked)
-      commandResult << " #|    From    /Bk|     To     /Bk| Execs| Avg. | Min. | Max. |";
-    else
-      commandResult << " #|     From      |      To       | Execs| Avg. | Min. | Max. |";
-  }
-  commandResult << '\n' << Base::toString(idx) << "|" << labelFrom;
+    commandResult << (banked
+      ? " #|    From    /Bk|     To     /Bk| Execs| Avg. | Min. | Max. |"
+      : " #|     From      |      To       | Execs| Avg. | Min. | Max. |");
+
+  commandResult << '\n' << Base::toString(idx) << '|' << labelFrom;
+
   if(banked)
   {
-    commandResult << "/" << setw(2) << setfill(' ');
     if(timer.anyBank)
-      commandResult << "*";
+      commandResult << "/ *";
     else
-      commandResult << dec << static_cast<uInt16>(timer.from.bank);
+      std::format_to(std::ostreambuf_iterator(commandResult),
+                     "/{:2}", static_cast<uInt16>(timer.from.bank));
   }
-  commandResult << "|";
+
+  commandResult << '|';
+
   if(timer.isPartial)
+  {
     commandResult << (banked ? "       -       " : "      -        ")
-      << "|     -|     -|     -|     -|";
+                  << "|     -|     -|     -|     -|";
+  }
   else
   {
     commandResult << labelTo;
     if(banked)
     {
-      commandResult << "/" << setw(2) << setfill(' ');
       if(timer.anyBank)
-        commandResult << "*";
+        commandResult << "/ *";
       else
-        commandResult << dec << static_cast<uInt16>(timer.to.bank);
+        std::format_to(std::ostreambuf_iterator(commandResult),
+                       "/{:2}", static_cast<uInt16>(timer.to.bank));
     }
-    commandResult << "|"
-      << setw(6) << setfill(' ') << dec << timer.execs << "|";
+
+    std::format_to(std::ostreambuf_iterator(commandResult),
+                   "|{:6}|", timer.execs);
+
     if(!timer.execs)
       commandResult << "     -|     -|     -|";
     else
-      commandResult
-      << setw(6) << dec << timer.averageCycles() << "|"
-      << setw(6) << dec << timer.minCycles << "|"
-      << setw(6) << dec << timer.maxCycles << "|";
+      std::format_to(std::ostreambuf_iterator(commandResult),
+                     "{:6}|{:6}|{:6}|",
+                     timer.averageCycles(), timer.minCycles, timer.maxCycles);
   }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string DebuggerParser::getTimerCmds()
 {
-  std::ostringstream out;
+  const uInt32 numTimers = debugger.m6502().numTimers();
+  if(numTimers == 0)
+    return {};
 
-  for(uInt32 idx = 0; idx < debugger.m6502().numTimers(); ++idx)
+  const bool banked = debugger.cartDebug().romBankCount() > 1;
+  string out;
+  out.reserve(static_cast<size_t>(numTimers) * 32);
+
+  // Helper to build an address label with optional mirror/bank suffix
+  std::ostringstream buf;
+  const auto makeAddrStr = [&](uInt16 addr, uInt8 bank, bool mirrors, bool anyBank) -> string
+  {
+    buf.str("");
+    if(!debugger.cartDebug().getLabel(buf, addr, true))
+      buf << Base::HEX4 << addr;
+    if(mirrors)
+      buf << '+';
+    if(banked)
+    {
+      if(anyBank)
+        buf << '*';
+      else
+        std::format_to(std::ostreambuf_iterator(buf),
+                       "{}", static_cast<uInt16>(bank));
+    }
+    return string{buf.view()};
+  };
+
+  for(uInt32 idx = 0; idx < numTimers; ++idx)
   {
     const TimerMap::Timer& timer = debugger.m6502().getTimer(idx);
-    const bool banked = debugger.cartDebug().romBankCount() > 1;
-    std::ostringstream fromBuf;
 
-    if(!debugger.cartDebug().getLabel(fromBuf, timer.from.addr, true))
-      fromBuf << Base::HEX4 << timer.from.addr;
-    fromBuf << (timer.mirrors ? "+" : "");
+    out += "timer ";
+    out += makeAddrStr(timer.from.addr, timer.from.bank,
+                       timer.mirrors, timer.anyBank);
 
-    out << "timer " << fromBuf.str();
-
-    if(banked) {
-      if(timer.anyBank)
-        fromBuf << "*";
-      else
-        fromBuf << dec << static_cast<uInt16>(timer.from.bank);
+    if(!timer.isPartial)
+    {
+      out += ' ';
+      out += makeAddrStr(timer.to.addr, timer.to.bank,
+                         timer.mirrors, timer.anyBank);
     }
-    if(!timer.isPartial) {
-      std::ostringstream toBuf;
-
-      if(!debugger.cartDebug().getLabel(toBuf, timer.to.addr, true))
-        toBuf << Base::HEX4 << timer.to.addr;
-      toBuf << (timer.mirrors ? "+" : "");
-
-      if(banked) {
-        if(timer.anyBank)
-          toBuf << "*";
-        else
-          toBuf << dec << static_cast<uInt16>(timer.to.bank);
-      }
-      out << " " << toBuf.str();
-    }
-    out << "\n";
-  } // for
-  return out.str();
+    out += '\n';
+  }
+  return out;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DebuggerParser::listTimers()
 {
-  commandResult << "timers:\n";
+  const uInt32 numTimers = debugger.m6502().numTimers();
+  if(numTimers == 0)
+  {
+    commandResult << "no timers set";
+    return;
+  }
 
-  for(uInt32 i = 0; i < debugger.m6502().numTimers(); ++i)
+  commandResult << "timers:\n";
+  for(uInt32 i = 0; i < numTimers; ++i)
     printTimer(i, i == 0);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DebuggerParser::listTraps(bool listCond)
 {
-  StringList names = debugger.m6502().getCondTrapNames();
+  const auto names = debugger.m6502().getCondTrapNames();
+  const auto numNames = static_cast<uInt32>(names.size());
 
   commandResult << (listCond ? "trapifs:" : "traps:") << '\n';
-  for(uInt32 i = 0; i < names.size(); ++i)
+
+  bool firstLine = true;
+  for(uInt32 i = 0; i < numNames; ++i)
   {
     const bool hasCond = !names[i].empty();
-    if(hasCond == listCond)
-    {
-      commandResult << Base::toString(i) << ": ";
-      if(myTraps[i]->read && myTraps[i]->write)
-        commandResult << "read|write";
-      else if(myTraps[i]->read)
-        commandResult << "read      ";
-      else if(myTraps[i]->write)
-        commandResult << "     write";
-      else
-        commandResult << "none";
+    if(hasCond != listCond)
+      continue;
 
-      if(hasCond)
-        commandResult << " " << names[i];
-      commandResult << " " << debugger.cartDebug().getLabel(myTraps[i]->begin, true, 4);
-      if(myTraps[i]->begin != myTraps[i]->end)
-        commandResult << " " << debugger.cartDebug().getLabel(myTraps[i]->end, true, 4);
-      commandResult << trapStatus(*myTraps[i]);
-      commandResult << " + mirrors";
-      if(i != (names.size() - 1)) commandResult << '\n';
-    }
+    const Trap& trap = *myTraps[i];
+
+    if(!firstLine)
+      commandResult << '\n';
+    firstLine = false;
+
+    commandResult << Base::toString(i) << ": ";
+
+    if(trap.read && trap.write)
+      commandResult << "read|write";
+    else if(trap.read)
+      commandResult << "read      ";
+    else if(trap.write)
+      commandResult << "     write";
+    else
+      commandResult << "none";
+
+    if(hasCond)
+      commandResult << ' ' << names[i];
+
+    commandResult << ' ' << debugger.cartDebug().getLabel(trap.begin, true, 4);
+
+    if(trap.begin != trap.end)
+      commandResult << ' ' << debugger.cartDebug().getLabel(trap.end, true, 4);
+
+    commandResult << trapStatus(trap) << " + mirrors";
   }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string DebuggerParser::trapStatus(const Trap& trap)
 {
-  std::ostringstream result;
   const string lblb = debugger.cartDebug().getLabel(trap.begin, !trap.write);
-  const string lble = debugger.cartDebug().getLabel(trap.end, !trap.write);
+  const string lble = (trap.begin != trap.end)
+    ? debugger.cartDebug().getLabel(trap.end, !trap.write)
+    : string{};
 
-  if(!lblb.empty()) {
-    result << " (";
-    result << lblb;
-  }
+  if(lblb.empty() && lble.empty())
+    return {};
 
-  if(trap.begin != trap.end)
+  string result;
+  result.reserve(lblb.size() + lble.size() + 4);
+
+  result += " (";
+  if(!lblb.empty())
+    result += lblb;
+  if(!lble.empty())
   {
-    if(!lble.empty())
-    {
-      if(!lblb.empty())
-        result << " ";
-      else
-        result << " (";
-      result << lble;
-    }
+    if(!lblb.empty())
+      result += ' ';
+    result += lble;
   }
-  if(!lblb.empty() || !lble.empty())
-    result << ")";
-
-  return result.str();
+  result += ')';
+  return result;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string DebuggerParser::saveScriptFile(string file)
 {
-  std::ostringstream out;
-  const Debugger::FunctionDefMap funcs = debugger.getFunctionDefMap();
-  for(const auto& [name, cmd]: funcs)
-    if (!Debugger::isBuiltinFunction(name))
-      out << "function " << name << " {" << cmd << "}\n";
-
-  for(const auto& w: myWatches)
-    out << "watch " << w << '\n';
-
-  for(const auto& bp: debugger.breakPoints().getBreakpoints())
-    out << "break " << Base::toString(bp.addr) << " " << Base::toString(bp.bank) << '\n';
-
-  StringList conds = debugger.m6502().getCondBreakNames();
-  for(const auto& cond : conds)
-    out << "breakIf {" << cond << "}\n";
-
-  conds = debugger.m6502().getCondSaveStateNames();
-  for(const auto& cond : conds)
-    out << "saveStateIf {" << cond << "}\n";
-
-  StringList names = debugger.m6502().getCondTrapNames();
-  for(uInt32 i = 0; i < myTraps.size(); ++i)
-  {
-    const bool read = myTraps[i]->read,
-               write = myTraps[i]->write,
-               hasCond = !names[i].empty();
-
-    if(read && write)
-      out << "trap";
-    else if(read)
-      out << "trapRead";
-    else if(write)
-      out << "trapWrite";
-    if(hasCond)
-      out << "if {" << names[i] << "}";
-    out << " " << Base::toString(myTraps[i]->begin);
-    if(myTraps[i]->begin != myTraps[i]->end)
-      out << " " << Base::toString(myTraps[i]->end);
-    out << '\n';
-  }
-
-  out << getTimerCmds();
-
   // Append 'script' extension when necessary
   if(file.find_last_of('.') == string::npos)
     file += ".script";
@@ -832,21 +777,97 @@ string DebuggerParser::saveScriptFile(string file)
 
   const FSNode node(file);
 
-  if(node.exists() || !out.view().empty())
+  string out;
+  out.reserve(4096);
+
+  const auto& funcs = debugger.getFunctionDefMap();
+  for(const auto& [name, cmd]: funcs)
   {
-    try
+    if(!Debugger::isBuiltinFunction(name))
     {
-      node.write(out);
+      out += "function ";
+      out += name;
+      out += " {";
+      out += cmd;
+      out += "}\n";
     }
-    catch(...)
+  }
+
+  for(const auto& w: myWatches)
+  {
+    out += "watch ";
+    out += w;
+    out += '\n';
+  }
+
+  for(const auto& bp: debugger.breakPoints().getBreakpoints())
+  {
+    out += "break ";
+    out += Base::toString(bp.addr);
+    out += ' ';
+    out += Base::toString(bp.bank);
+    out += '\n';
+  }
+
+  const auto breakConds = debugger.m6502().getCondBreakNames();
+  for(const auto& cond: breakConds)
+  {
+    out += "breakIf {";
+    out += cond;
+    out += "}\n";
+  }
+
+  const auto saveConds = debugger.m6502().getCondSaveStateNames();
+  for(const auto& cond: saveConds)
+  {
+    out += "saveStateIf {";
+    out += cond;
+    out += "}\n";
+  }
+
+  const auto names = debugger.m6502().getCondTrapNames();
+  for(uInt32 i = 0; i < myTraps.size(); ++i)
+  {
+    const Trap& trap = *myTraps[i];
+    const bool hasCond = !names[i].empty();
+
+    if(trap.read && trap.write) out += "trap";
+    else if(trap.read)          out += "trapRead";
+    else if(trap.write)         out += "trapWrite";
+
+    if(hasCond)
     {
-      return "Unable to save script to " + node.getShortPath();
+      out += "if {";
+      out += names[i];
+      out += '}';
     }
 
-    return "saved " + node.getShortPath() + " OK";
+    out += ' ';
+    out += Base::toString(trap.begin);
+    if(trap.begin != trap.end)
+    {
+      out += ' ';
+      out += Base::toString(trap.end);
+    }
+    out += '\n';
   }
-  else
+
+  out += getTimerCmds();
+
+  if(!node.exists() && out.empty())
     return "nothing to save";
+
+  // FSNode::write needs a stream
+  const std::ostringstream stream(std::move(out));
+  try
+  {
+    node.write(stream);
+  }
+  catch(...)
+  {
+    return "Unable to save script to " + node.getShortPath();
+  }
+  return "saved " + node.getShortPath() + " OK";
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -872,7 +893,7 @@ void DebuggerParser::executeDirective(Device::AccessType type)
     outputCommandError("specify start and end of range only", myCommand);
     return;
   }
-  else if(args[1] < args[0])
+  if(args[1] < args[0])
   {
     commandResult << red("start address must be <= end address");
     return;
@@ -882,8 +903,9 @@ void DebuggerParser::executeDirective(Device::AccessType type)
 
   commandResult << (result ? "added " : "removed ");
   CartDebug::AccessTypeAsString(commandResult, type);
-  commandResult << " directive on range $"
-    << hex << args[0] << " $" << hex << args[1];
+  std::format_to(std::ostreambuf_iterator(commandResult),
+                 " directive on range ${:x} ${:x}", args[0], args[1]);
+
   debugger.rom().invalidate();
 }
 
@@ -927,22 +949,12 @@ void DebuggerParser::executeBase()
     Base::setFormat(Base::Fmt::_16);
 
   commandResult << "default number base set to ";
-  switch(Base::format()) {
-    case Base::Fmt::_2:
-      commandResult << "#2/bin";
-      break;
-
-    case Base::Fmt::_10:
-      commandResult << "#10/dec";
-      break;
-
-    case Base::Fmt::_16:
-      commandResult << "#16/hex";
-      break;
-
-    default:
-      commandResult << red("UNKNOWN");
-      break;
+  switch(Base::format())
+  {
+    case Base::Fmt::_2:   commandResult << "#2/bin";        break;
+    case Base::Fmt::_10:  commandResult << "#10/dec";       break;
+    case Base::Fmt::_16:  commandResult << "#16/hex";       break;
+    default:              commandResult << red("UNKNOWN");  break;
   }
 }
 
@@ -972,36 +984,29 @@ void DebuggerParser::executeBreak()
       return;
     }
   }
+
+  // Helper to format a single breakpoint result line
+  const auto formatBreak = [&](int b)
+  {
+    const bool set = debugger.toggleBreakPoint(addr, b);
+    std::format_to(std::ostreambuf_iterator(commandResult),
+                   "{} breakpoint at ${:04x} + mirrors",
+                   set ? "set" : "cleared", addr);
+    if(romBankCount > 1)
+      std::format_to(std::ostreambuf_iterator(commandResult),
+                     " in bank #{}", b);
+  };
+
   if(bank != 0xff)
   {
-    const bool set = debugger.toggleBreakPoint(addr, bank);
-
-    if(set)
-      commandResult << "set";
-    else
-      commandResult << "cleared";
-
-    commandResult << " breakpoint at $" << Base::HEX4 << addr << " + mirrors";
-    if(romBankCount > 1)
-      commandResult << " in bank #" << std::dec << static_cast<int>(bank);
+    formatBreak(bank);
   }
   else
   {
-    for(int i = 0; i < debugger.cartDebug().romBankCount(); ++i)
+    for(int i = 0; std::cmp_less(i, romBankCount); ++i)
     {
-      const bool set = debugger.toggleBreakPoint(addr, i);
-
-      if(i)
-        commandResult << '\n';
-
-      if(set)
-        commandResult << "set";
-      else
-        commandResult << "cleared";
-
-      commandResult << " breakpoint at $" << Base::HEX4 << addr << " + mirrors";
-      if(romBankCount > 1)
-        commandResult << " in bank #" << std::dec << static_cast<int>(bank);
+      if(i) commandResult << '\n';
+      formatBreak(i);
     }
   }
 }
@@ -1010,25 +1015,26 @@ void DebuggerParser::executeBreak()
 // "breakIf"
 void DebuggerParser::executeBreakIf()
 {
-  const int res = YaccParser::parse(argStrings[0]);
-  if(res == 0)
+  if(YaccParser::parse(argStrings[0]) != 0)
   {
-    const string condition = argStrings[0];
-    for(uInt32 i = 0; i < debugger.m6502().getCondBreakNames().size(); ++i)
-    {
-      if(condition == debugger.m6502().getCondBreakNames()[i])
-      {
-        args[0] = i;
-        executeDelBreakIf();
-        return;
-      }
-    }
-    const uInt32 ret = debugger.m6502().addCondBreak(
-                          YaccParser::getResult(), argStrings[0]);
-    commandResult << "added breakIf " << Base::toString(ret);
-  }
-  else
     commandResult << red("invalid expression");
+    return;
+  }
+
+  const string_view condition = argStrings[0];
+  const auto& condNames = debugger.m6502().getCondBreakNames();
+
+  const auto it = std::ranges::find(condNames, condition);
+  if(it != condNames.end())
+  {
+    args[0] = static_cast<int>(it - condNames.begin());
+    executeDelBreakIf();
+    return;
+  }
+
+  const uInt32 ret = debugger.m6502().addCondBreak(
+                       YaccParser::getResult(), argStrings[0]);
+  commandResult << "added breakIf " << Base::toString(ret);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1046,10 +1052,8 @@ void DebuggerParser::executeBreakLabel()
 // "c"
 void DebuggerParser::executeC()
 {
-  if(argCount == 0)
-    debugger.cpuDebug().toggleC();
-  else if(argCount == 1)
-    debugger.cpuDebug().setC(args[0]);
+  if(argCount == 0)       debugger.cpuDebug().toggleC();
+  else if(argCount == 1)  debugger.cpuDebug().setC(args[0]);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1064,9 +1068,8 @@ void DebuggerParser::executeCheat()
     return;
   }
 
-  for(uInt32 arg = 0; arg < argCount; ++arg)
+  for(const auto& cheat: argStrings)
   {
-    const string& cheat = argStrings[arg];
     if(debugger.myOSystem.cheat().add("DBG", cheat))
       commandResult << "cheat code " << cheat << " enabled\n";
     else
@@ -1090,10 +1093,8 @@ void DebuggerParser::executeClearBreaks()
 // "clearConfig"
 void DebuggerParser::executeClearConfig()
 {
-  if(argCount == 1)
-    commandResult << debugger.cartDebug().clearConfig(args[0]);
-  else
-    commandResult << debugger.cartDebug().clearConfig();
+  if(argCount == 1)  commandResult << debugger.cartDebug().clearConfig(args[0]);
+  else               commandResult << debugger.cartDebug().clearConfig();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1101,7 +1102,7 @@ void DebuggerParser::executeClearConfig()
 void DebuggerParser::executeClearHistory()
 {
   debugger.prompt().clearHistory();
-  commandResult << "";
+  commandResult.str("");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1173,10 +1174,8 @@ void DebuggerParser::executeColorTest()
 // "d"
 void DebuggerParser::executeD()
 {
-  if(argCount == 0)
-    debugger.cpuDebug().toggleD();
-  else if(argCount == 1)
-    debugger.cpuDebug().setD(args[0]);
+  if(argCount == 0)       debugger.cpuDebug().toggleD();
+  else if(argCount == 1)  debugger.cpuDebug().setD(args[0]);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1206,7 +1205,7 @@ void DebuggerParser::executeDefine()
 // "delBreakIf"
 void DebuggerParser::executeDelBreakIf()
 {
-  if (debugger.m6502().delCondBreak(args[0]))
+  if(debugger.m6502().delCondBreak(args[0]))
     commandResult << "removed breakIf " << Base::toString(args[0]);
   else
     commandResult << red("no such breakIf");
@@ -1249,16 +1248,19 @@ void DebuggerParser::executeDelTrap()
 {
   const int index = args[0];
 
-  if(debugger.m6502().delCondTrap(index))
+  if(!debugger.m6502().delCondTrap(index))
   {
-    for(uInt32 addr = myTraps[index]->begin; addr <= myTraps[index]->end; ++addr)
-      executeTrapRW(addr, myTraps[index]->read, myTraps[index]->write, false);
-    // @sa666666: please check this:
-    Vec::removeAt(myTraps, index);
-    commandResult << "removed trap " << Base::toString(index);
-  }
-  else
     commandResult << red("no such trap");
+    return;
+  }
+
+  const Trap& trap = *myTraps[index];
+  for(uInt32 addr = trap.begin; addr <= trap.end; ++addr)
+    executeTrapRW(addr, trap.read, trap.write, false);
+
+  // @sa666666: please check this:
+  Vec::removeAt(myTraps, index);
+  commandResult << "removed trap " << Base::toString(index);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1266,32 +1268,28 @@ void DebuggerParser::executeDelTrap()
 void DebuggerParser::executeDelWatch()
 {
   const int which = args[0] - 1;
-  if(which >= 0 && std::cmp_less(which, myWatches.size()))
+  if(which < 0 || std::cmp_greater_equal(which, myWatches.size()))
   {
-    Vec::removeAt(myWatches, which);
-    commandResult << "removed watch";
-  }
-  else
     commandResult << red("no such watch");
+    return;
+  }
+
+  Vec::removeAt(myWatches, which);
+  commandResult << "removed watch";
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // "disAsm"
 void DebuggerParser::executeDisAsm()
 {
-  int start = 0, lines = 20;
-
-  if(argCount == 0) {
-    start = debugger.cpuDebug().pc();
-  } else if(argCount == 1) {
-    start = args[0];
-  } else if(argCount == 2) {
-    start = args[0];
-    lines = args[1];
-  } else {
+  if(argCount > 2)
+  {
     outputCommandError("wrong number of arguments", myCommand);
     return;
   }
+
+  const int start = (argCount == 0) ? debugger.cpuDebug().pc() : args[0];
+  const int lines = (argCount == 2) ? args[1] : 20;
 
   commandResult << debugger.cartDebug().disassembleLines(start, lines);
 }
@@ -1302,21 +1300,18 @@ void DebuggerParser::executeDump()
 {
   const auto dump = [&](std::ostream& os, int start, int end)
   {
-    for(int i = start; i <= end; i += 16)  // NOLINT (i is not a const)
+    for(int i = start; i <= end; i += 16)
     {
-      // Print label every 16 bytes
       os << Base::toString(i) << ": ";
-
-      for(int j = i; j < i+16 && j <= end; ++j)  // NOLINT (j is not a const)
+      for(int j = i; j < i + 16 && j <= end; ++j)
       {
-        os << Base::toString(debugger.peek(j)) << " ";
-        if(j == i+7 && j != end) os << "- ";
+        os << Base::toString(debugger.peek(j)) << ' ';
+        if(j == i + 7 && j != end) os << "- ";
       }
       os << '\n';
     }
   };
 
-  // Error checking
   if(argCount == 0 || argCount > 4)
   {
     outputCommandError("wrong number of arguments", myCommand);
@@ -1329,126 +1324,119 @@ void DebuggerParser::executeDump()
   }
 
   if(argCount == 1)
-    dump(commandResult, args[0], args[0] + 127);
-  else if(argCount == 2 || args[2] == 0)
-    dump(commandResult, args[0], args[1]);
-  else
   {
-    if((args[2] & 0x07) == 0)
-    {
-      commandResult << red("dump flags must be 1..7");
-      return;
-    }
-    if(argCount == 4 && argStrings[3] != "?")
-    {
-      commandResult << red("browser dialog parameter must be '?'");
-      return;
-    }
-
-    std::ostringstream path;  // NOLINT (path is not a const)
-    path << debugger.myOSystem.userDir() << cartName() << "_dbg_";
-    if(execDepth > 0)
-      path << execPrefix;
-    else
-      path << std::hex << std::setw(8) << std::setfill('0')
-           << static_cast<uInt32>(TimerManager::getTicks() / 1000);
-    path << ".dump";
-
-    commandResult << "dumped ";
-
-    std::ostringstream out;  // NOLINT (out is not a const)
-    if((args[2] & 0x01) != 0)
-    {
-      // dump memory
-      dump(out, args[0], args[1]);
-      commandResult << "bytes from $" << hex << args[0] << " to $" << hex << args[1];
-      if((args[2] & 0x06) != 0)
-        commandResult << ", ";
-    }
-    if((args[2] & 0x02) != 0)
-    {
-      // dump CPU state
-      const CpuDebug& cpu = debugger.cpuDebug();
-      out << "   <PC>PC SP  A  X  Y  -  -    N  V  B  D  I  Z  C  -\n";
-      out << "XC: "
-        << Base::toString(cpu.pc() & 0xff) << " "    // PC lsb
-        << Base::toString(cpu.pc() >> 8) << " "    // PC msb
-        << Base::toString(cpu.sp()) << " "    // SP
-        << Base::toString(cpu.a()) << " "    // A
-        << Base::toString(cpu.x()) << " "    // X
-        << Base::toString(cpu.y()) << " "    // Y
-        << Base::toString(0) << " "    // unused
-        << Base::toString(0) << " - "  // unused
-        << Base::toString(cpu.n()) << " "    // N (flag)
-        << Base::toString(cpu.v()) << " "    // V (flag)
-        << Base::toString(cpu.b()) << " "    // B (flag)
-        << Base::toString(cpu.d()) << " "    // D (flag)
-        << Base::toString(cpu.i()) << " "    // I (flag)
-        << Base::toString(cpu.z()) << " "    // Z (flag)
-        << Base::toString(cpu.c()) << " "    // C (flag)
-        << Base::toString(0) << " "    // unused
-        << '\n';
-      commandResult << "CPU state";
-      if((args[2] & 0x04) != 0)
-        commandResult << ", ";
-    }
-    if((args[2] & 0x04) != 0)
-    {
-      // dump SWCHx/INPTx state
-      out << "   SWA - SWB  - IT  -  -  -   I0 I1 I2 I3 I4 I5 -  -\n";
-      out << "XS: "
-        << Base::toString(debugger.peek(0x280)) << " "    // SWCHA
-        << Base::toString(0) << " "    // unused
-        << Base::toString(debugger.peek(0x282)) << " "    // SWCHB
-        << Base::toString(0) << " "    // unused
-        << Base::toString(debugger.peek(0x284)) << " "    // INTIM
-        << Base::toString(0) << " "    // unused
-        << Base::toString(0) << " "    // unused
-        << Base::toString(0) << " - "  // unused
-        << Base::toString(debugger.peek(TIARegister::INPT0)) << " "
-        << Base::toString(debugger.peek(TIARegister::INPT1)) << " "
-        << Base::toString(debugger.peek(TIARegister::INPT2)) << " "
-        << Base::toString(debugger.peek(TIARegister::INPT3)) << " "
-        << Base::toString(debugger.peek(TIARegister::INPT4)) << " "
-        << Base::toString(debugger.peek(TIARegister::INPT5)) << " "
-        << Base::toString(0) << " "    // unused
-        << Base::toString(0) << " "    // unused
-        << '\n';
-      commandResult << "switches and fire buttons";
-    }
-
-    if(argCount == 4)
-    {
-      // FIXME: C++ doesn't currently allow capture of stringstreams
-      //        So we pass a copy of its contents, then re-create the
-      //        stream inside the lambda
-      //        Maybe this will change in a future version
-      const string outStr{out.view()};
-      const string resultStr{commandResult.view()};
-
-      DebuggerDialog* dlg = debugger.myDialog;
-      BrowserDialog::show(dlg, "Save Dump as", path.view(),
-                          BrowserDialog::Mode::FileSave,
-                          [dlg, outStr, resultStr]
-                          (bool OK, const FSNode& node)
-      {
-        if(OK)
-        {
-          const std::ostringstream localOut(outStr);
-          // NOLINTNEXTLINE (localOut is not a const)
-          std::ostringstream localResult(resultStr, std::ios_base::app);
-
-          saveDump(node, localOut, localResult);
-          dlg->prompt().print(localResult.str() + '\n');
-        }
-        dlg->prompt().printPrompt();
-      });
-      // avoid printing a new prompt
-      commandResult.str("_NO_PROMPT");
-    }
-    else
-      saveDump(FSNode(path.view()), out, commandResult);
+    dump(commandResult, args[0], args[0] + 127);
+    return;
   }
+  if(argCount == 2 || args[2] == 0)
+  {
+    dump(commandResult, args[0], args[1]);
+    return;
+  }
+
+  if((args[2] & 0x07) == 0)
+  {
+    commandResult << red("dump flags must be 1..7");
+    return;
+  }
+  if(argCount == 4 && argStrings[3] != "?")
+  {
+    commandResult << red("browser dialog parameter must be '?'");
+    return;
+  }
+
+  string path = debugger.myOSystem.userDir().getPath() + cartName() + "_dbg_";
+  if(execDepth > 0)
+    path += execPrefix;
+  else
+    std::format_to(std::back_inserter(path), "{:08x}",
+                   static_cast<uInt32>(TimerManager::getTicks() / 1000));
+  path += ".dump";
+
+  commandResult << "dumped ";
+
+  std::ostringstream out;
+  if((args[2] & 0x01) != 0)
+  {
+    dump(out, args[0], args[1]);
+    std::format_to(std::ostreambuf_iterator(commandResult),
+                   "bytes from ${:x} to ${:x}", args[0], args[1]);
+    if((args[2] & 0x06) != 0)
+      commandResult << ", ";
+  }
+  if((args[2] & 0x02) != 0)
+  {
+    const CpuDebug& cpu = debugger.cpuDebug();
+    out << "   <PC>PC SP  A  X  Y  -  -    N  V  B  D  I  Z  C  -\n"
+           "XC: "
+        << Base::toString(cpu.pc() & 0xff) << ' ' // PC lsb
+        << Base::toString(cpu.pc() >> 8)   << ' ' // PC msb
+        << Base::toString(cpu.sp()) << ' '        // SP
+        << Base::toString(cpu.a())  << ' '        // A
+        << Base::toString(cpu.x())  << ' '        // X
+        << Base::toString(cpu.y())  << ' '        // Y
+        << Base::toString(0) << ' '               // unused
+        << Base::toString(0) << " - "             // unused
+        << Base::toString(cpu.n()) << ' '         // N (flag)
+        << Base::toString(cpu.v()) << ' '         // V (flag)
+        << Base::toString(cpu.b()) << ' '         // B (flag)
+        << Base::toString(cpu.d()) << ' '         // D (flag)
+        << Base::toString(cpu.i()) << ' '         // I (flag)
+        << Base::toString(cpu.z()) << ' '         // Z (flag)
+        << Base::toString(cpu.c()) << ' '         // C (flag)
+        << Base::toString(0) << '\n';             // unused
+    commandResult << "CPU state";
+    if((args[2] & 0x04) != 0)
+      commandResult << ", ";
+  }
+  if((args[2] & 0x04) != 0)
+  {
+    out << "   SWA - SWB  - IT  -  -  -   I0 I1 I2 I3 I4 I5 -  -\n"
+           "XS: "
+        << Base::toString(debugger.peek(0x280)) << ' '  // SWCHA
+        << Base::toString(0) << ' '                     // unused
+        << Base::toString(debugger.peek(0x282)) << ' '  // SWCHB
+        << Base::toString(0) << ' '                     // unused
+        << Base::toString(debugger.peek(0x284)) << ' '  // INTIM
+        << Base::toString(0) << ' '                     // unused
+        << Base::toString(0) << ' '                     // unused
+        << Base::toString(0) << " - "                   // unused
+        << Base::toString(debugger.peek(TIARegister::INPT0)) << ' '
+        << Base::toString(debugger.peek(TIARegister::INPT1)) << ' '
+        << Base::toString(debugger.peek(TIARegister::INPT2)) << ' '
+        << Base::toString(debugger.peek(TIARegister::INPT3)) << ' '
+        << Base::toString(debugger.peek(TIARegister::INPT4)) << ' '
+        << Base::toString(debugger.peek(TIARegister::INPT5)) << ' '
+        << Base::toString(0) << ' '                     // unused
+        << Base::toString(0) << '\n';                   // unused
+    commandResult << "switches and fire buttons";
+  }
+
+  if(argCount == 4)
+  {
+    string outStr{out.view()};
+    string resultStr{commandResult.view()};
+
+    DebuggerDialog* dlg = debugger.myDialog;
+    BrowserDialog::show(dlg, "Save Dump as", path,
+                        BrowserDialog::Mode::FileSave,
+                        [dlg, outStr = std::move(outStr),
+                              resultStr = std::move(resultStr)]
+                        (bool OK, const FSNode& node) mutable
+    {
+      if(OK)
+      {
+        const std::ostringstream localOut(std::move(outStr));
+        std::ostringstream localResult(std::move(resultStr), std::ios_base::app);
+        saveDump(node, localOut, localResult);
+        dlg->prompt().print(localResult.str() + '\n');
+      }
+      dlg->prompt().printPrompt();
+    });
+    commandResult.str("_NO_PROMPT");
+  }
+  else
+    saveDump(FSNode(path), out, commandResult);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1459,23 +1447,18 @@ void DebuggerParser::executeExec()
   string file = argStrings[0];
   if(file.find_last_of('.') == string::npos)
     file += ".script";
+
   FSNode node(file);
-  if (!node.exists())
+  if(!node.exists())
     node = FSNode(debugger.myOSystem.userDir().getPath() + file);
 
-  if (argCount == 2) {
+  if(argCount == 2)
     execPrefix = argStrings[1];
-  }
-  else {
-    std::ostringstream prefix;
-    prefix << std::hex << std::setw(8) << std::setfill('0')
-           << static_cast<uInt32>(TimerManager::getTicks()/1000);
-    execPrefix = prefix.view();
-  }
+  else
+    execPrefix = std::format("{:08x}",
+                             static_cast<uInt32>(TimerManager::getTicks() / 1000));
 
-  // make sure the commands are added to prompt history
   StringList history;
-
   commandResult << exec(node, &history);
 
   for(const auto& item: history)
@@ -1494,7 +1477,8 @@ void DebuggerParser::executeExitRom()
 void DebuggerParser::executeFrame()
 {
   int count = 1;
-  if(argCount != 0) count = args[0];
+  if(argCount != 0)
+    count = args[0];
   debugger.nextFrame(count);
   commandResult << "advanced " << dec << count << " frame(s)";
 }
@@ -1509,14 +1493,14 @@ void DebuggerParser::executeFunction()
     return;
   }
 
-  const int res = YaccParser::parse(argStrings[1]);
-  if(res == 0)
+  if(YaccParser::parse(argStrings[1]) != 0)
   {
-    debugger.addFunction(argStrings[0], argStrings[1], YaccParser::getResult());
-    commandResult << "added function " << argStrings[0] << " -> " << argStrings[1];
-  }
-  else
     commandResult << red("invalid expression");
+    return;
+  }
+
+  debugger.addFunction(argStrings[0], argStrings[1], YaccParser::getResult());
+  commandResult << "added function " << argStrings[0] << " -> " << argStrings[1];
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1671,55 +1655,68 @@ void DebuggerParser::executeJoy1Fire()
 // "jump"
 void DebuggerParser::executeJump()
 {
-  int line = -1;
   int address = args[0];
+  int line = -1;
 
   // The specific address we want may not exist (it may be part of a data section)
   // If so, scroll backward a little until we find it
-  while(((line = debugger.cartDebug().addressToLine(address)) == -1) &&
-        (address >= 0))
-    address--;
+  while(address >= 0 && (line = debugger.cartDebug().addressToLine(address)) == -1)
+    --address;
 
   if(line >= 0 && address >= 0)
   {
     debugger.rom().scrollTo(line);
-    commandResult << "disassembly scrolled to address $" << Base::HEX4 << address;
+    std::format_to(std::ostreambuf_iterator(commandResult),
+                   "disassembly scrolled to address ${:04x}", address);
   }
   else
-    commandResult << "address $" << Base::HEX4 << args[0] << " doesn't exist";
+    std::format_to(std::ostreambuf_iterator(commandResult),
+                   "address ${:04x} doesn't exist", args[0]);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // "listBreaks"
 void DebuggerParser::executeListBreaks()
 {
-  std::ostringstream buf;
-  int count = 0;
   const uInt32 romBankCount = debugger.cartDebug().romBankCount();
+  const auto& breakpoints = debugger.breakPoints().getBreakpoints();
+  const auto conds = debugger.m6502().getCondBreakNames();
 
-  for(const auto& bp: debugger.breakPoints().getBreakpoints())
+  if(breakpoints.empty() && conds.empty())
   {
-    if(romBankCount == 1)
-    {
-      buf << debugger.cartDebug().getLabel(bp.addr, true, 4) << " ";
-      if(!(++count % 8)) buf << '\n';
-    }
-    else
-    {
-      if(count % 6)
-        buf << ", ";
-      buf << debugger.cartDebug().getLabel(bp.addr, true, 4);
-      if(bp.bank != 255)
-        buf << " #" << static_cast<int>(bp.bank);
-      else
-        buf << " *";
-      if(!(++count % 6)) buf << '\n';
-    }
+    commandResult << "no breakpoints set";
+    return;
   }
-  if(count)
-    commandResult << "breaks:\n" << buf.view();
 
-  StringList conds = debugger.m6502().getCondBreakNames();
+  int count = 0;
+  if(!breakpoints.empty())
+  {
+    string buf;
+    buf.reserve(breakpoints.size() * 8);
+
+    for(const auto& bp: breakpoints)
+    {
+      if(romBankCount == 1)
+      {
+        buf += debugger.cartDebug().getLabel(bp.addr, true, 4);
+        buf += ' ';
+        if(!(++count % 8)) buf += '\n';
+      }
+      else
+      {
+        if(count % 6)
+          buf += ", ";
+        buf += debugger.cartDebug().getLabel(bp.addr, true, 4);
+        if(bp.bank != 255)
+          std::format_to(std::back_inserter(buf), " #{}", static_cast<int>(bp.bank));
+        else
+          buf += " *";
+        if(!(++count % 6)) buf += '\n';
+      }
+    }
+
+    commandResult << "breaks:\n" << buf;
+  }
 
   if(!conds.empty())
   {
@@ -1729,22 +1726,17 @@ void DebuggerParser::executeListBreaks()
     for(uInt32 i = 0; i < conds.size(); ++i)
     {
       commandResult << Base::toString(i) << ": " << conds[i];
-      if(i != (conds.size() - 1)) commandResult << '\n';
+      if(i != conds.size() - 1) commandResult << '\n';
     }
   }
-
-  if(commandResult.view().empty())
-    commandResult << "no breakpoints set";
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // "listConfig"
 void DebuggerParser::executeListConfig()
 {
-  if(argCount == 1)
-    commandResult << debugger.cartDebug().listConfig(args[0]);
-  else
-    commandResult << debugger.cartDebug().listConfig();
+  if(argCount == 1)  commandResult << debugger.cartDebug().listConfig(args[0]);
+  else               commandResult << debugger.cartDebug().listConfig();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1764,59 +1756,50 @@ void DebuggerParser::executeListFunctions()
 // "listSaveStateIfs"
 void DebuggerParser::executeListSaveStateIfs()
 {
-  StringList conds = debugger.m6502().getCondSaveStateNames();
-  if(!conds.empty())
+  const auto conds = debugger.m6502().getCondSaveStateNames();
+  if(conds.empty())
   {
-    commandResult << "saveStateIf:\n";
-    for(uInt32 i = 0; i < conds.size(); ++i)
-    {
-      commandResult << Base::toString(i) << ": " << conds[i];
-      if(i != (conds.size() - 1)) commandResult << '\n';
-    }
+    commandResult << "no savestateifs defined";
+    return;
   }
 
-  if(commandResult.view().empty())
-    commandResult << "no savestateifs defined";
+  commandResult << "saveStateIf:\n";
+  for(uInt32 i = 0; i < conds.size(); ++i)
+  {
+    commandResult << Base::toString(i) << ": " << conds[i];
+    if(i != conds.size() - 1) commandResult << '\n';
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // "listTimers"
 void DebuggerParser::executeListTimers()
 {
-  if(debugger.m6502().numTimers())
-    listTimers();
-  else
-    commandResult << "no timers set";
+  if(debugger.m6502().numTimers())  listTimers();
+  else                              commandResult << "no timers set";
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // "listTraps"
 void DebuggerParser::executeListTraps()
 {
-  const StringList names = debugger.m6502().getCondTrapNames();
-
+  const auto names = debugger.m6502().getCondTrapNames();
   if(myTraps.size() != names.size())
   {
     commandResult << "Internal error! Different trap sizes.";
     return;
   }
-
-  if(!names.empty())
+  if(names.empty())
   {
-    bool trapFound = false, trapifFound = false;
-    for(const auto& name: names)
-      if(name.empty())
-        trapFound = true;
-      else
-        trapifFound = true;
-
-    if(trapFound)
-      listTraps(false);
-    if(trapifFound)
-      listTraps(true);
-  }
-  else
     commandResult << "no traps set";
+    return;
+  }
+
+  const bool trapFound   = std::ranges::any_of(names, &string::empty);
+  const bool trapifFound = std::ranges::any_of(names, std::not_fn(&string::empty));
+
+  if(trapFound)   listTraps(false);
+  if(trapifFound) listTraps(true);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1876,10 +1859,8 @@ void DebuggerParser::executeLogTrace()
 // "n"
 void DebuggerParser::executeN()
 {
-  if(argCount == 0)
-    debugger.cpuDebug().toggleN();
-  else if(argCount == 1)
-    debugger.cpuDebug().setN(args[0]);
+  if(argCount == 0)       debugger.cpuDebug().toggleN();
+  else if(argCount == 1)  debugger.cpuDebug().setN(args[0]);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1893,11 +1874,8 @@ void DebuggerParser::executePalette()
 // "pc"
 void DebuggerParser::executePc()
 {
-  std::ostringstream msg;
-
   debugger.cpuDebug().setPC(args[0]);
-  msg << "Set PC @ " << Base::HEX4 << args[0];
-  debugger.addState(msg.view());
+  debugger.addState(std::format("Set PC @ {:04x}", args[0]));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1932,10 +1910,8 @@ void DebuggerParser::executePrintTimer()
 // "ram"
 void DebuggerParser::executeRam()
 {
-  if(argCount == 0)
-    commandResult << debugger.cartDebug().toString();
-  else
-    commandResult << debugger.setRAM(args);
+  if(argCount == 0)  commandResult << debugger.cartDebug().toString();
+  else               commandResult << debugger.setRAM(args);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1982,7 +1958,7 @@ void DebuggerParser::executeRom()
   uInt16 addr = args[0];
   for(uInt32 i = 1; i < argCount; ++i)
   {
-    if(!(debugger.patchROM(addr++, args[i])))
+    if(!debugger.patchROM(addr++, args[i]))
     {
       commandResult << red("patching ROM unsupported for this cart type");
       return;
@@ -1996,7 +1972,8 @@ void DebuggerParser::executeRom()
   // method ...
   debugger.rom().invalidate();
 
-  commandResult << "changed " << (args.size() - 1) << " location(s)";
+  std::format_to(std::ostreambuf_iterator(commandResult),
+                 "changed {} location(s)", args.size() - 1);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -2019,25 +1996,23 @@ void DebuggerParser::executeRun()
 // "runTo"
 void DebuggerParser::executeRunTo()
 {
-  const CartDebug& cartdbg = debugger.cartDebug();
-  const CartDebug::DisassemblyList& list = cartdbg.disassembly().list;
+  const auto& cartdbg = debugger.cartDebug();
+  const auto& list = cartdbg.disassembly().list;
+  const size_t max_iterations = list.size();
+  const string_view target = argStrings[0];
 
   debugger.saveOldState();
 
-  size_t count = 0;
-  const size_t max_iterations = list.size();
-
   // Create a progress dialog box to show the progress searching through the
   // disassembly, since this may be a time-consuming operation
-  std::ostringstream buf;
   ProgressDialog progress(debugger.baseDialog(), debugger.lfont());
-
-  buf << "runTo searching through " << max_iterations << " disassembled instructions"
-    << progress.ELLIPSIS;
-  progress.setMessage(buf.view());
+  progress.setMessage(std::format(
+    "runTo searching through {} disassembled instructions{}",
+    max_iterations, progress.ELLIPSIS));
   progress.setRange(0, static_cast<int>(max_iterations), 5);
   progress.open();
 
+  size_t count = 0;
   bool done = false;
   do {
     debugger.step(false);
@@ -2045,10 +2020,8 @@ void DebuggerParser::executeRunTo()
     // Update romlist to point to current PC
     const int pcline = cartdbg.addressToLine(debugger.cpuDebug().pc());
     if(pcline >= 0)
-    {
-      const string& next = list[pcline].disasm;
-      done = (BSPF::findIgnoreCase(next, argStrings[0]) != string::npos);
-    }
+      done = (BSPF::findIgnoreCase(list[pcline].disasm, target) != string::npos);
+
     // Update the progress bar
     progress.incProgress();
   } while(!done && ++count < max_iterations && !progress.isCancelled());
@@ -2056,36 +2029,32 @@ void DebuggerParser::executeRunTo()
   progress.close();
 
   if(done)
-    commandResult
-      << "found " << argStrings[0] << " in " << dec << count
-      << " disassembled instructions";
+    std::format_to(std::ostreambuf_iterator(commandResult),
+                   "found {} in {} disassembled instructions", target, count);
   else
-    commandResult
-      << argStrings[0] << " not found in " << dec << count
-      << " disassembled instructions";
+    std::format_to(std::ostreambuf_iterator(commandResult),
+                   "{} not found in {} disassembled instructions", target, count);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // "runToPc"
 void DebuggerParser::executeRunToPc()
 {
-  const CartDebug& cartdbg = debugger.cartDebug();
-  const CartDebug::DisassemblyList& list = cartdbg.disassembly().list;
+  const auto& cartdbg = debugger.cartDebug();
+  const auto& list = cartdbg.disassembly().list;
 
   debugger.saveOldState();
 
-  uInt32 count = 0;
-  bool done = false;
   // Create a progress dialog box to show the progress searching through the
   // disassembly, since this may be a time-consuming operation
-  std::ostringstream buf;
   ProgressDialog progress(debugger.baseDialog(), debugger.lfont());
-
-  buf << "        runTo PC running" << progress.ELLIPSIS << "        ";
-  progress.setMessage(buf.view());
+  progress.setMessage(std::format("        runTo PC running{}        ",
+                                  progress.ELLIPSIS));
   progress.setRange(0, 100000, 5);
   progress.open();
 
+  uInt32 count = 0;
+  bool done = false;
   do {
     debugger.step(false);
 
@@ -2095,22 +2064,19 @@ void DebuggerParser::executeRunToPc()
     progress.incProgress();
     ++count;
   } while(!done && !progress.isCancelled());
+
   progress.close();
 
   if(done)
   {
-    std::ostringstream msg;
-
-    commandResult
-      << "Set PC to $" << Base::HEX4 << args[0] << " in "
-      << dec << count << " instructions";
-    msg << "RunTo PC @ " << Base::HEX4 << args[0];
-    debugger.addState(msg.view());
+    std::format_to(std::ostreambuf_iterator(commandResult),
+                   "Set PC to ${:04x} in {} instructions", args[0], count);
+    debugger.addState(std::format("RunTo PC @ {:04x}", args[0]));
   }
   else
-    commandResult
-      << "PC $" << Base::HEX4 << args[0] << " not reached or found in "
-      << dec << count << " instructions";
+    std::format_to(std::ostreambuf_iterator(commandResult),
+                   "PC ${:04x} not reached or found in {} instructions",
+                   args[0], count);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -2124,29 +2090,25 @@ void DebuggerParser::executeS()
 // "save"
 void DebuggerParser::executeSave()
 {
-  DebuggerDialog* dlg = debugger.myDialog;
+  auto* dlg = debugger.myDialog;
   const string fileName = dlg->instance().userDir().getPath() + cartName() + ".script";
 
-  if(argCount)
+  if(argCount && argStrings[0] == "?")
   {
-    if(argStrings[0] == "?")
+    BrowserDialog::show(dlg, "Save Workbench as", fileName,
+                        BrowserDialog::Mode::FileSave,
+                        [this, dlg](bool OK, const FSNode& node)
     {
-      BrowserDialog::show(dlg, "Save Workbench as", fileName,
-                          BrowserDialog::Mode::FileSave,
-                          [this, dlg](bool OK, const FSNode& node)
-      {
-        if(OK)
-          dlg->prompt().print(saveScriptFile(node.getPath()) + '\n');
-        dlg->prompt().printPrompt();
-      });
-      // avoid printing a new prompt
-      commandResult.str("_NO_PROMPT");
-    }
-    else
-      commandResult << saveScriptFile(argStrings[0]);
+      if(OK)
+        dlg->prompt().print(saveScriptFile(node.getPath()) + '\n');
+      dlg->prompt().printPrompt();
+    });
+
+    // avoid printing a new prompt
+    commandResult.str("_NO_PROMPT");
   }
   else
-    commandResult << saveScriptFile(fileName);
+    commandResult << saveScriptFile(argCount ? argStrings[0] : fileName);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -2166,6 +2128,7 @@ void DebuggerParser::executeSaveAccess()
         dlg->prompt().print(debugger.cartDebug().saveAccessFile(node.getPath()) + '\n');
       dlg->prompt().printPrompt();
     });
+
     // avoid printing a new prompt
     commandResult.str("_NO_PROMPT");
   }
@@ -2232,16 +2195,17 @@ void DebuggerParser::executeSaveRom()
 // "saveSes"
 void DebuggerParser::executeSaveSes()
 {
-  std::ostringstream filename;  // NOLINT (filename is not a const)
   const auto timeinfo = BSPF::localTime();
-  filename << std::put_time(&timeinfo, "session_%F_%H-%M-%S.txt");
+  char timebuf[32];
+  std::ignore = std::strftime(timebuf, sizeof(timebuf),
+                              "session_%F_%H-%M-%S.txt", &timeinfo);
+  const string filename{timebuf};
 
   if(argCount && argStrings[0] == "?")
   {
     DebuggerDialog* dlg = debugger.myDialog;
-
     BrowserDialog::show(dlg, "Save Session as",
-                        dlg->instance().userDir().getPath() + filename.str(),
+                        dlg->instance().userDir().getPath() + filename,
                         BrowserDialog::Mode::FileSave,
                         [this, dlg](bool OK, const FSNode& node)
     {
@@ -2254,14 +2218,10 @@ void DebuggerParser::executeSaveSes()
   }
   else
   {
-    std::ostringstream path;  // NOLINT (path is not a const)
-
-    if(argCount)
-      path << argStrings[0];
-    else
-      path << debugger.myOSystem.userDir() << filename.view();
-
-    commandResult << debugger.prompt().saveBuffer(FSNode(path.view()));
+    const string path = argCount
+      ? argStrings[0]
+      : debugger.myOSystem.userDir().getPath() + filename;
+    commandResult << debugger.prompt().saveBuffer(FSNode(path));
   }
 }
 
@@ -2293,25 +2253,26 @@ void DebuggerParser::executeSaveState()
 // "saveStateIf"
 void DebuggerParser::executeSaveStateIf()
 {
-  const int res = YaccParser::parse(argStrings[0]);
-  if(res == 0)
+  if(YaccParser::parse(argStrings[0]) != 0)
   {
-    const string condition = argStrings[0];
-    for(uInt32 i = 0; i < debugger.m6502().getCondSaveStateNames().size(); ++i)
-    {
-      if(condition == debugger.m6502().getCondSaveStateNames()[i])
-      {
-        args[0] = i;
-        executeDelSaveStateIf();
-        return;
-      }
-    }
-    const uInt32 ret = debugger.m6502().addCondSaveState(
-      YaccParser::getResult(), argStrings[0]);
-    commandResult << "added saveStateIf " << Base::toString(ret);
-  }
-  else
     commandResult << red("invalid expression");
+    return;
+  }
+
+  const string_view condition = argStrings[0];
+  const auto& condNames = debugger.m6502().getCondSaveStateNames();
+
+  const auto it = std::ranges::find(condNames, condition);
+  if(it != condNames.end())
+  {
+    args[0] = static_cast<int>(it - condNames.begin());
+    executeDelSaveStateIf();
+    return;
+  }
+
+  const uInt32 ret = debugger.m6502().addCondSaveState(
+    YaccParser::getResult(), argStrings[0]);
+  commandResult << "added saveStateIf " << Base::toString(ret);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -2319,7 +2280,8 @@ void DebuggerParser::executeSaveStateIf()
 void DebuggerParser::executeScanLine()
 {
   int count = 1;
-  if(argCount != 0) count = args[0];
+  if(argCount != 0)
+    count = args[0];
   debugger.nextScanline(count);
   commandResult << "advanced " << dec << count << " scanLine(s)";
 }
@@ -2336,32 +2298,32 @@ void DebuggerParser::executeStep()
 // "stepWhile"
 void DebuggerParser::executeStepWhile()
 {
-  const int res = YaccParser::parse(argStrings[0]);
-  if(res != 0) {
+  if(YaccParser::parse(argStrings[0]) != 0)
+  {
     commandResult << red("invalid expression");
     return;
   }
+
   const Expression* expr = YaccParser::getResult();
   int ncycles = 0;
 
   // Create a progress dialog box to show the progress searching through the
   // disassembly, since this may be a time-consuming operation
-  std::ostringstream buf;
   ProgressDialog progress(debugger.baseDialog(), debugger.lfont());
-
-  buf << "stepWhile running through disassembled instructions"
-    << progress.ELLIPSIS;
-  progress.setMessage(buf.view());
+  progress.setMessage(std::format(
+    "stepWhile running through disassembled instructions{}",
+    progress.ELLIPSIS));
   progress.setRange(0, 100000, 5);
   progress.open();
 
   do {
     ncycles += debugger.step(false);
     progress.incProgress();
-  } while (expr->evaluate() && !progress.isCancelled());
+  } while(expr->evaluate() && !progress.isCancelled());
 
   progress.close();
-  commandResult << "executed " << ncycles << " cycles";
+  std::format_to(std::ostreambuf_iterator(commandResult),
+                 "executed {} cycles", ncycles);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -2405,25 +2367,27 @@ void DebuggerParser::executeTimer()
   // timer addr addr bank bank +   addr, addr + mirrors @ bank, bank
   const uInt32 romBankCount = debugger.cartDebug().romBankCount();
   const bool banked = romBankCount > 1;
-  bool mirrors = (argCount >= 1 && argStrings[argCount - 1] == "+")
-              || (argCount >= 2 && argStrings[argCount - 2] == "+");
-  bool anyBank = banked
-    && ((argCount >= 1 && argStrings[argCount - 1] == "*")
-     || (argCount >= 2 && argStrings[argCount - 2] == "*"));
+
+  bool mirrors = (argCount >= 1 && argStrings[argCount - 1] == "+") ||
+                 (argCount >= 2 && argStrings[argCount - 2] == "+");
+  bool anyBank = banked &&
+     ((argCount >= 1 && argStrings[argCount - 1] == "*") ||
+      (argCount >= 2 && argStrings[argCount - 2] == "*"));
 
   argCount -= ((mirrors ? 1 : 0) + (anyBank ? 1 : 0));
+
   if(argCount > 4)
   {
     outputCommandError("too many arguments", myCommand);
     return;
   }
 
-  uInt32 numAddrs = 0, numBanks = 0;
   uInt16 addr[2]{};
-  uInt8 bank[2]{};
+  uInt8  bank[2]{};
+  uInt32 numAddrs = 0, numBanks = 0;
 
   // set defaults:
-  addr[0] = debugger.cpuDebug().pc() ;
+  addr[0] = debugger.cpuDebug().pc();
   bank[0] = debugger.cartDebug().getBank(addr[0]);
 
   for(uInt32 i = 0; i < argCount; ++i)
@@ -2453,17 +2417,11 @@ void DebuggerParser::executeTimer()
     }
   }
 
-  uInt32 idx = 0;
-  if(numAddrs < 2)
-  {
-    idx = debugger.m6502().addTimer(addr[0], bank[0], mirrors, anyBank);
-  }
-  else
-  {
-    idx = debugger.m6502().addTimer(addr[0], addr[1],
-                                    bank[0], numBanks < 2 ? bank[0] : bank[1],
-                                    mirrors, anyBank);
-  }
+  const uInt32 idx = (numAddrs < 2)
+    ? debugger.m6502().addTimer(addr[0], bank[0], mirrors, anyBank)
+    : debugger.m6502().addTimer(addr[0], addr[1],
+                                bank[0], numBanks < 2 ? bank[0] : bank[1],
+                                mirrors, anyBank);
 
   const bool isPartial = debugger.m6502().getTimer(idx).isPartial;
   if(numAddrs < 2 && !isPartial)
@@ -2471,22 +2429,26 @@ void DebuggerParser::executeTimer()
     mirrors |= debugger.m6502().getTimer(idx).mirrors;
     anyBank |= debugger.m6502().getTimer(idx).anyBank;
   }
+
   commandResult << "set timer " << Base::toString(idx)
     << (numAddrs < 2 ? (isPartial ? " start" : " end") : "")
     << " at $" << Base::HEX4 << addr[0];
+
   if(numAddrs == 2)
     commandResult << ", $" << Base::HEX4 << addr[1];
+
   if(mirrors)
     commandResult << " + mirrors";
+
   if(banked)
   {
     if(anyBank)
       commandResult << " in all banks";
     else
     {
-      commandResult << " in bank #" << std::dec << static_cast<int>(bank[0]);
+      commandResult << " in bank #" << dec << static_cast<int>(bank[0]);
       if(numBanks == 2)
-        commandResult << ", #" << std::dec << static_cast<int>(bank[1]);
+        commandResult << ", #" << dec << static_cast<int>(bank[1]);
     }
   }
 }
@@ -2545,9 +2507,9 @@ void DebuggerParser::executeTrapWriteIf()
 void DebuggerParser::executeTraps(bool read, bool write, string_view command,
                                   bool hasCond)
 {
-  const uInt32 ofs = hasCond ? 1 : 0,
-               begin = args[ofs],
-               end = argCount == 2 + ofs ? args[1 + ofs] : begin;
+  const uInt32 ofs   = hasCond ? 1 : 0;
+  const uInt32 begin = args[ofs];
+  const uInt32 end   = (argCount == 2 + ofs) ? args[1 + ofs] : begin;
 
   if(argCount < 1 + ofs)
   {
@@ -2575,73 +2537,82 @@ void DebuggerParser::executeTraps(bool read, bool write, string_view command,
   const uInt32 endRead    = Debugger::getBaseAddress(end, true);
   const uInt32 beginWrite = Debugger::getBaseAddress(begin, false);
   const uInt32 endWrite   = Debugger::getBaseAddress(end, false);
-  std::ostringstream conditionBuf;
+
+  string condition;
+  condition.reserve(128);
 
   // parenthesize provided and address range condition(s) (begin)
   if(hasCond)
-    conditionBuf << "(" << argStrings[0] << ")&&(";
+  {
+    condition += '(';
+    condition += argStrings[0];
+    condition += ")&&(";
+  }
 
   // add address range condition(s) to provided condition
   if(read)
   {
     if(beginRead != endRead)
-      conditionBuf << "__lastBaseRead>=" << Base::toString(beginRead) << "&&__lastBaseRead<=" << Base::toString(endRead);
+      std::format_to(std::back_inserter(condition),
+                     "__lastBaseRead>={0}&&__lastBaseRead<={1}",
+                     Base::toString(beginRead), Base::toString(endRead));
     else
-      conditionBuf << "__lastBaseRead==" << Base::toString(beginRead);
+      std::format_to(std::back_inserter(condition),
+                     "__lastBaseRead=={}", Base::toString(beginRead));
   }
   if(read && write)
-    conditionBuf << "||";
+    condition += "||";
   if(write)
   {
     if(beginWrite != endWrite)
-      conditionBuf << "__lastBaseWrite>=" << Base::toString(beginWrite) << "&&__lastBaseWrite<=" << Base::toString(endWrite);
+      std::format_to(std::back_inserter(condition),
+                     "__lastBaseWrite>={0}&&__lastBaseWrite<={1}",
+                     Base::toString(beginWrite), Base::toString(endWrite));
     else
-      conditionBuf << "__lastBaseWrite==" << Base::toString(beginWrite);
+      std::format_to(std::back_inserter(condition),
+                     "__lastBaseWrite=={}", Base::toString(beginWrite));
   }
   // parenthesize provided condition (end)
   if(hasCond)
-    conditionBuf << ")";
+    condition += ')';
 
-  const string condition{conditionBuf.view()};
-
-  const int res = YaccParser::parse(condition);
-  if(res == 0)
+  if(YaccParser::parse(condition) != 0)
   {
-    // duplicates will remove each other
-    bool add = true;
-    for(uInt32 i = 0; i < myTraps.size(); ++i)
-    {
-      if(myTraps[i]->begin == begin && myTraps[i]->end == end &&
-         myTraps[i]->read == read && myTraps[i]->write == write &&
-         myTraps[i]->condition == condition)
-      {
-        if(debugger.m6502().delCondTrap(i))
-        {
-          add = false;
-          // @sa666666: please check this:
-          Vec::removeAt(myTraps, i);
-          commandResult << "removed trap " << Base::toString(i);
-          break;
-        }
-        commandResult << "Internal error! Duplicate trap removal failed!";
-        return;
-      }
-    }
-    if(add)
-    {
-      const uInt32 ret = debugger.m6502().addCondTrap(
-        YaccParser::getResult(), hasCond ? argStrings[0] : "");
-      commandResult << "added trap " << Base::toString(ret);
+    commandResult << red("invalid expression");
+    return;
+  }
 
-      myTraps.emplace_back(std::make_unique<Trap>(read, write, begin, end, condition));
-    }
+  // Check for duplicate — duplicates remove each other
+  const auto it = std::ranges::find_if(myTraps,
+    [&](const unique_ptr<Trap>& trap)
+    {
+      return trap->begin == begin && trap->end == end &&
+             trap->read == read   && trap->write == write &&
+             trap->condition == condition;
+    });
 
+  if(it != myTraps.end())
+  {
+    const uInt32 i = static_cast<uInt32>(it - myTraps.begin());
+    if(!debugger.m6502().delCondTrap(i))
+    {
+      commandResult << "Internal error! Duplicate trap removal failed!";
+      return;
+    }
+    // @sa666666: please check this:
+    Vec::removeAt(myTraps, i);
+    commandResult << "removed trap " << Base::toString(i);
     for(uInt32 addr = begin; addr <= end; ++addr)
-      executeTrapRW(addr, read, write, add);
+      executeTrapRW(addr, read, write, false);
   }
   else
   {
-    commandResult << red("invalid expression");
+    const uInt32 ret = debugger.m6502().addCondTrap(
+      YaccParser::getResult(), hasCond ? argStrings[0] : "");
+    commandResult << "added trap " << Base::toString(ret);
+    myTraps.emplace_back(std::make_unique<Trap>(read, write, begin, end, condition));
+    for(uInt32 addr = begin; addr <= end; ++addr)
+      executeTrapRW(addr, read, write, true);
   }
 }
 
@@ -2649,68 +2620,47 @@ void DebuggerParser::executeTraps(bool read, bool write, string_view command,
 // wrapper function for trap(if)/trapRead(if)/trapWrite(if) commands
 void DebuggerParser::executeTrapRW(uInt32 addr, bool read, bool write, bool add)
 {
+  // Helper to add or remove read/write traps for a given address
+  const auto setTraps = [&](uInt32 i)
+  {
+    if(read)  add ? debugger.addReadTrap(i)  : debugger.removeReadTrap(i);
+    if(write) add ? debugger.addWriteTrap(i) : debugger.removeWriteTrap(i);
+  };
+
   switch(CartDebug::addressType(addr))
   {
     case CartDebug::AddrType::TIA:
-    {
       for(uInt32 i = 0; i <= 0xFFFF; ++i)
       {
-        if((i & 0x1080) == 0x0000)
-        {
-          // @sa666666: This seems wrong. E.g. trapRead 40 4f will never trigger
-          if(read && (i & 0x000F) == (addr & 0x000F))
-            add ? debugger.addReadTrap(i) : debugger.removeReadTrap(i);
-          if(write && (i & 0x003F) == (addr & 0x003F))
-            add ? debugger.addWriteTrap(i) : debugger.removeWriteTrap(i);
-        }
+        if((i & 0x1080) != 0x0000)
+          continue;
+        // @sa666666: This seems wrong. E.g. trapRead 40 4f will never trigger
+        if(read && (i & 0x000F) == (addr & 0x000F))
+          add ? debugger.addReadTrap(i) : debugger.removeReadTrap(i);
+        if(write && (i & 0x003F) == (addr & 0x003F))
+          add ? debugger.addWriteTrap(i) : debugger.removeWriteTrap(i);
       }
       break;
-    }
+
     case CartDebug::AddrType::IO:
-    {
       for(uInt32 i = 0; i <= 0xFFFF; ++i)
-      {
         if((i & 0x1280) == 0x0280 && (i & 0x029F) == (addr & 0x029F))
-        {
-          if(read)
-            add ? debugger.addReadTrap(i) : debugger.removeReadTrap(i);
-          if(write)
-            add ? debugger.addWriteTrap(i) : debugger.removeWriteTrap(i);
-        }
-      }
+          setTraps(i);
       break;
-    }
+
     case CartDebug::AddrType::ZPRAM:
-    {
       for(uInt32 i = 0; i <= 0xFFFF; ++i)
-      {
         if((i & 0x1280) == 0x0080 && (i & 0x00FF) == (addr & 0x00FF))
-        {
-          if(read)
-            add ? debugger.addReadTrap(i) : debugger.removeReadTrap(i);
-          if(write)
-            add ? debugger.addWriteTrap(i) : debugger.removeWriteTrap(i);
-        }
-      }
+          setTraps(i);
       break;
-    }
+
     case CartDebug::AddrType::ROM:
-    {
       if(addr >= 0x1000 && addr <= 0xFFFF)
-      {
         for(uInt32 i = 0x1000; i <= 0xFFFF; ++i)
-        {
           if((i % 0x2000 >= 0x1000) && (i & 0x0FFF) == (addr & 0x0FFF))
-          {
-            if(read)
-              add ? debugger.addReadTrap(i) : debugger.removeReadTrap(i);
-            if(write)
-              add ? debugger.addWriteTrap(i) : debugger.removeWriteTrap(i);
-          }
-        }
-      }
+            setTraps(i);
       break;
-    }
+
     default:
       break;  // Not supposed to get here
   }
@@ -2722,11 +2672,11 @@ void DebuggerParser::executeType()
 {
   uInt32 beg = args[0];
   uInt32 end = argCount >= 2 ? args[1] : beg;
-  if(beg > end)  std::swap(beg, end);
+  if(beg > end) std::swap(beg, end);
 
   for(uInt32 i = beg; i <= end; ++i)
   {
-    commandResult << Base::HEX4 << i << ": ";
+    std::format_to(std::ostreambuf_iterator(commandResult), "{:04x}: ", i);
     debugger.cartDebug().accessTypeAsString(commandResult, i);
     commandResult << '\n';
   }
@@ -2769,10 +2719,8 @@ void DebuggerParser::executeUnwind()
 // "v"
 void DebuggerParser::executeV()
 {
-  if(argCount == 0)
-    debugger.cpuDebug().toggleV();
-  else if(argCount == 1)
-    debugger.cpuDebug().setV(args[0]);
+  if(argCount == 0)       debugger.cpuDebug().toggleV();
+  else if(argCount == 1)  debugger.cpuDebug().setV(args[0]);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -2788,19 +2736,22 @@ void DebuggerParser::executeWatch()
 void DebuggerParser::executeWinds(bool unwind)
 {
   const uInt16 states = (argCount == 0) ? 1 : args[0];
-  const string type = unwind ? "unwind" : "rewind";
+  const string_view type = unwind ? "unwind" : "rewind";
   string message;
 
   const uInt16 winds = unwind ? debugger.unwindStates(states, message)
                               : debugger.rewindStates(states, message);
+
   if(winds > 0)
   {
     debugger.rom().invalidate();
-    commandResult << type << " by " << winds << " state" << (winds > 1 ? "s" : "");
-    commandResult << " (~" << message << ")";
+    std::format_to(std::ostreambuf_iterator(commandResult),
+                   "{} by {} state{} (~{})",
+                   type, winds, winds > 1 ? "s" : "", message);
   }
   else
-    commandResult << "no states left to " << type;
+    std::format_to(std::ostreambuf_iterator(commandResult),
+                   "no states left to {}", type);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -2821,10 +2772,8 @@ void DebuggerParser::executeY()
 // "z"
 void DebuggerParser::executeZ()
 {
-  if(argCount == 0)
-    debugger.cpuDebug().toggleZ();
-  else if(argCount == 1)
-    debugger.cpuDebug().setZ(args[0]);
+  if(argCount == 0)       debugger.cpuDebug().toggleZ();
+  else if(argCount == 1)  debugger.cpuDebug().setZ(args[0]);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -2838,7 +2787,7 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
     true,
     true,
     { Parameters::ARG_BYTE, Parameters::ARG_END_ARGS },
-    std::mem_fn(&DebuggerParser::executeA)
+    &DebuggerParser::executeA
   },
 
   {
@@ -2848,7 +2797,7 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
     true,
     false,
     { Parameters::ARG_WORD, Parameters::ARG_MULTI_BYTE },
-    std::mem_fn(&DebuggerParser::executeAud)
+    &DebuggerParser::executeAud
   },
 
   {
@@ -2858,7 +2807,7 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
     false,
     true,
     { Parameters::ARG_END_ARGS },
-    std::mem_fn(&DebuggerParser::executeAutoSave)
+    &DebuggerParser::executeAutoSave
   },
 
   {
@@ -2868,7 +2817,7 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
     true,
     true,
     { Parameters::ARG_BASE_SPCL, Parameters::ARG_END_ARGS },
-    std::mem_fn(&DebuggerParser::executeBase)
+    &DebuggerParser::executeBase
   },
 
   {
@@ -2878,7 +2827,7 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
     true,
     false,
     { Parameters::ARG_WORD, Parameters::ARG_MULTI_BYTE },
-    std::mem_fn(&DebuggerParser::executeBCol)
+    &DebuggerParser::executeBCol
   },
 
 
@@ -2890,7 +2839,7 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
     false,
     true,
     { Parameters::ARG_WORD, Parameters::ARG_MULTI_BYTE },
-    std::mem_fn(&DebuggerParser::executeBreak)
+    &DebuggerParser::executeBreak
   },
 
   {
@@ -2900,7 +2849,7 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
     true,
     true,
     { Parameters::ARG_WORD, Parameters::ARG_END_ARGS },
-    std::mem_fn(&DebuggerParser::executeBreakIf)
+    &DebuggerParser::executeBreakIf
   },
 
   {
@@ -2910,7 +2859,7 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
     false,
     true,
     { Parameters::ARG_WORD, Parameters::ARG_END_ARGS },
-    std::mem_fn(&DebuggerParser::executeBreakLabel)
+    &DebuggerParser::executeBreakLabel
   },
 
   {
@@ -2920,7 +2869,7 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
     false,
     true,
     { Parameters::ARG_BOOL, Parameters::ARG_END_ARGS },
-    std::mem_fn(&DebuggerParser::executeC)
+    &DebuggerParser::executeC
   },
 
   {
@@ -2930,7 +2879,7 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
     false,
     false,
     { Parameters::ARG_LABEL, Parameters::ARG_END_ARGS },
-    std::mem_fn(&DebuggerParser::executeCheat)
+    &DebuggerParser::executeCheat
   },
 
   {
@@ -2940,7 +2889,7 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
     false,
     true,
     { Parameters::ARG_END_ARGS },
-    std::mem_fn(&DebuggerParser::executeClearBreaks)
+    &DebuggerParser::executeClearBreaks
   },
 
   {
@@ -2950,7 +2899,7 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
     false,
     false,
     { Parameters::ARG_WORD, Parameters::ARG_MULTI_BYTE },
-    std::mem_fn(&DebuggerParser::executeClearConfig)
+    &DebuggerParser::executeClearConfig
   },
 
   {
@@ -2960,7 +2909,7 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
     false,
     true,
     { Parameters::ARG_END_ARGS },
-    std::mem_fn(&DebuggerParser::executeClearHistory)
+    &DebuggerParser::executeClearHistory
   },
 
   {
@@ -2970,7 +2919,7 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
     false,
     true,
     { Parameters::ARG_END_ARGS },
-    std::mem_fn(&DebuggerParser::executeClearSaveStateIfs)
+    &DebuggerParser::executeClearSaveStateIfs
   },
 
   {
@@ -2980,7 +2929,7 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
     false,
     false,
     { Parameters::ARG_END_ARGS },
-    std::mem_fn(&DebuggerParser::executeClearTimers)
+    &DebuggerParser::executeClearTimers
   },
 
   {
@@ -2990,7 +2939,7 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
     false,
     false,
     { Parameters::ARG_END_ARGS },
-    std::mem_fn(&DebuggerParser::executeClearTraps)
+    &DebuggerParser::executeClearTraps
   },
 
   {
@@ -3000,7 +2949,7 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
     false,
     false,
     { Parameters::ARG_END_ARGS },
-    std::mem_fn(&DebuggerParser::executeClearWatches)
+    &DebuggerParser::executeClearWatches
   },
 
   {
@@ -3010,7 +2959,7 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
     false,
     false,
     { Parameters::ARG_END_ARGS },
-    std::mem_fn(&DebuggerParser::executeCls)
+    &DebuggerParser::executeCls
   },
 
   {
@@ -3020,7 +2969,7 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
     true,
     false,
     { Parameters::ARG_WORD, Parameters::ARG_MULTI_BYTE },
-    std::mem_fn(&DebuggerParser::executeCode)
+    &DebuggerParser::executeCode
   },
 
   {
@@ -3030,7 +2979,7 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
     true,
     false,
     { Parameters::ARG_WORD, Parameters::ARG_MULTI_BYTE },
-    std::mem_fn(&DebuggerParser::executeCol)
+    &DebuggerParser::executeCol
   },
 
   {
@@ -3040,7 +2989,7 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
     true,
     false,
     { Parameters::ARG_BYTE, Parameters::ARG_END_ARGS },
-    std::mem_fn(&DebuggerParser::executeColorTest)
+    &DebuggerParser::executeColorTest
   },
 
   {
@@ -3050,7 +2999,7 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
     false,
     true,
     { Parameters::ARG_BOOL, Parameters::ARG_END_ARGS },
-    std::mem_fn(&DebuggerParser::executeD)
+    &DebuggerParser::executeD
   },
 
   {
@@ -3060,7 +3009,7 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
     true,
     false,
     { Parameters::ARG_WORD, Parameters::ARG_MULTI_BYTE },
-    std::mem_fn(&DebuggerParser::executeData)
+    &DebuggerParser::executeData
   },
 
   {
@@ -3070,7 +3019,7 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
     false,
     false,
     { Parameters::ARG_END_ARGS },
-    std::mem_fn(&DebuggerParser::executeDebugColors)
+    &DebuggerParser::executeDebugColors
   },
 
   {
@@ -3080,7 +3029,7 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
     true,
     true,
     { Parameters::ARG_LABEL, Parameters::ARG_WORD, Parameters::ARG_END_ARGS },
-    std::mem_fn(&DebuggerParser::executeDefine)
+    &DebuggerParser::executeDefine
   },
 
   {
@@ -3090,7 +3039,7 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
     true,
     false,
     { Parameters::ARG_WORD, Parameters::ARG_END_ARGS },
-    std::mem_fn(&DebuggerParser::executeDelBreakIf)
+    &DebuggerParser::executeDelBreakIf
   },
 
   {
@@ -3100,7 +3049,7 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
     true,
     false,
     { Parameters::ARG_LABEL, Parameters::ARG_END_ARGS },
-    std::mem_fn(&DebuggerParser::executeDelFunction)
+    &DebuggerParser::executeDelFunction
   },
 
   {
@@ -3110,7 +3059,7 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
     true,
     false,
     { Parameters::ARG_WORD, Parameters::ARG_END_ARGS },
-    std::mem_fn(&DebuggerParser::executeDelSaveStateIf)
+    &DebuggerParser::executeDelSaveStateIf
   },
 
   {
@@ -3120,7 +3069,7 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
     true,
     false,
     { Parameters::ARG_WORD, Parameters::ARG_END_ARGS },
-    std::mem_fn(&DebuggerParser::executeDelTimer)
+    &DebuggerParser::executeDelTimer
   },
 
   {
@@ -3130,7 +3079,7 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
     true,
     false,
     { Parameters::ARG_WORD, Parameters::ARG_END_ARGS },
-    std::mem_fn(&DebuggerParser::executeDelTrap)
+    &DebuggerParser::executeDelTrap
   },
 
   {
@@ -3140,7 +3089,7 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
     true,
     false,
     { Parameters::ARG_WORD, Parameters::ARG_END_ARGS },
-    std::mem_fn(&DebuggerParser::executeDelWatch)
+    &DebuggerParser::executeDelWatch
   },
 
   {
@@ -3151,7 +3100,7 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
     false,
     false,
     { Parameters::ARG_WORD, Parameters::ARG_MULTI_BYTE },
-    std::mem_fn(&DebuggerParser::executeDisAsm)
+    &DebuggerParser::executeDisAsm
   },
 
   {
@@ -3166,7 +3115,7 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
     true,
     false,
     { Parameters::ARG_WORD, Parameters::ARG_WORD, Parameters::ARG_BYTE, Parameters::ARG_LABEL },
-    std::mem_fn(&DebuggerParser::executeDump)
+    &DebuggerParser::executeDump
   },
 
   {
@@ -3176,7 +3125,7 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
     true,
     true,
     { Parameters::ARG_FILE, Parameters::ARG_LABEL, Parameters::ARG_MULTI_BYTE },
-    std::mem_fn(&DebuggerParser::executeExec)
+    &DebuggerParser::executeExec
   },
 
   {
@@ -3186,7 +3135,7 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
     false,
     false,
     { Parameters::ARG_END_ARGS },
-    std::mem_fn(&DebuggerParser::executeExitRom)
+    &DebuggerParser::executeExitRom
   },
 
   {
@@ -3196,7 +3145,7 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
     false,
     true,
     { Parameters::ARG_WORD, Parameters::ARG_END_ARGS },
-    std::mem_fn(&DebuggerParser::executeFrame)
+    &DebuggerParser::executeFrame
   },
 
   {
@@ -3206,7 +3155,7 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
     true,
     false,
     { Parameters::ARG_LABEL, Parameters::ARG_WORD, Parameters::ARG_END_ARGS },
-    std::mem_fn(&DebuggerParser::executeFunction)
+    &DebuggerParser::executeFunction
   },
 
   {
@@ -3216,7 +3165,7 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
     true,
     false,
     { Parameters::ARG_WORD, Parameters::ARG_MULTI_BYTE },
-    std::mem_fn(&DebuggerParser::executeGfx)
+    &DebuggerParser::executeGfx
   },
 
   {
@@ -3227,7 +3176,7 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
     false,
     false,
     { Parameters::ARG_LABEL, Parameters::ARG_END_ARGS },
-    std::mem_fn(&DebuggerParser::executeHelp)
+    &DebuggerParser::executeHelp
   },
 
   {
@@ -3237,7 +3186,7 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
     false,
     true,
     { Parameters::ARG_BOOL, Parameters::ARG_END_ARGS },
-    std::mem_fn(&DebuggerParser::executeJoy0Up)
+    &DebuggerParser::executeJoy0Up
   },
 
   {
@@ -3247,7 +3196,7 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
     false,
     true,
     { Parameters::ARG_BOOL, Parameters::ARG_END_ARGS },
-    std::mem_fn(&DebuggerParser::executeJoy0Down)
+    &DebuggerParser::executeJoy0Down
   },
 
   {
@@ -3257,7 +3206,7 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
     false,
     true,
     { Parameters::ARG_BOOL, Parameters::ARG_END_ARGS },
-    std::mem_fn(&DebuggerParser::executeJoy0Left)
+    &DebuggerParser::executeJoy0Left
   },
 
   {
@@ -3267,7 +3216,7 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
     false,
     true,
     { Parameters::ARG_BOOL, Parameters::ARG_END_ARGS },
-    std::mem_fn(&DebuggerParser::executeJoy0Right)
+    &DebuggerParser::executeJoy0Right
   },
 
   {
@@ -3277,7 +3226,7 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
     false,
     true,
     { Parameters::ARG_BOOL, Parameters::ARG_END_ARGS },
-    std::mem_fn(&DebuggerParser::executeJoy0Fire)
+    &DebuggerParser::executeJoy0Fire
   },
 
   {
@@ -3287,7 +3236,7 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
     false,
     true,
     { Parameters::ARG_BOOL, Parameters::ARG_END_ARGS },
-    std::mem_fn(&DebuggerParser::executeJoy1Up)
+    &DebuggerParser::executeJoy1Up
   },
 
   {
@@ -3297,7 +3246,7 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
     false,
     true,
     { Parameters::ARG_BOOL, Parameters::ARG_END_ARGS },
-    std::mem_fn(&DebuggerParser::executeJoy1Down)
+    &DebuggerParser::executeJoy1Down
   },
 
   {
@@ -3307,7 +3256,7 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
     false,
     true,
     { Parameters::ARG_BOOL, Parameters::ARG_END_ARGS },
-    std::mem_fn(&DebuggerParser::executeJoy1Left)
+    &DebuggerParser::executeJoy1Left
   },
 
   {
@@ -3317,7 +3266,7 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
     false,
     true,
     { Parameters::ARG_BOOL, Parameters::ARG_END_ARGS },
-    std::mem_fn(&DebuggerParser::executeJoy1Right)
+    &DebuggerParser::executeJoy1Right
   },
 
   {
@@ -3327,7 +3276,7 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
     false,
     true,
     { Parameters::ARG_BOOL, Parameters::ARG_END_ARGS },
-    std::mem_fn(&DebuggerParser::executeJoy1Fire)
+    &DebuggerParser::executeJoy1Fire
   },
 
   {
@@ -3337,7 +3286,7 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
     true,
     false,
     { Parameters::ARG_WORD, Parameters::ARG_END_ARGS },
-    std::mem_fn(&DebuggerParser::executeJump)
+    &DebuggerParser::executeJump
   },
 
   {
@@ -3347,7 +3296,7 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
     false,
     false,
     { Parameters::ARG_END_ARGS },
-    std::mem_fn(&DebuggerParser::executeListBreaks)
+    &DebuggerParser::executeListBreaks
   },
 
   {
@@ -3357,7 +3306,7 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
     false,
     false,
     { Parameters::ARG_WORD, Parameters::ARG_MULTI_BYTE },
-    std::mem_fn(&DebuggerParser::executeListConfig)
+    &DebuggerParser::executeListConfig
   },
 
   {
@@ -3367,7 +3316,7 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
     false,
     false,
     { Parameters::ARG_END_ARGS },
-    std::mem_fn(&DebuggerParser::executeListFunctions)
+    &DebuggerParser::executeListFunctions
   },
 
   {
@@ -3377,7 +3326,7 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
     false,
     false,
     { Parameters::ARG_END_ARGS },
-    std::mem_fn(&DebuggerParser::executeListSaveStateIfs)
+    &DebuggerParser::executeListSaveStateIfs
   },
 
   {
@@ -3387,7 +3336,7 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
     false,
     false,
     { Parameters::ARG_END_ARGS },
-    std::mem_fn(&DebuggerParser::executeListTimers)
+    &DebuggerParser::executeListTimers
   },
 
   {
@@ -3397,7 +3346,7 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
     false,
     false,
     { Parameters::ARG_END_ARGS },
-    std::mem_fn(&DebuggerParser::executeListTraps)
+    &DebuggerParser::executeListTraps
   },
 
   {
@@ -3407,7 +3356,7 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
     false,
     true,
     { Parameters::ARG_END_ARGS },
-    std::mem_fn(&DebuggerParser::executeLoadConfig)
+    &DebuggerParser::executeLoadConfig
   },
 
   {
@@ -3417,7 +3366,7 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
     false,
     true,
     { Parameters::ARG_END_ARGS },
-    std::mem_fn(&DebuggerParser::executeLoadAllStates)
+    &DebuggerParser::executeLoadAllStates
   },
 
   {
@@ -3427,7 +3376,7 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
     true,
     true,
     { Parameters::ARG_BYTE, Parameters::ARG_END_ARGS },
-    std::mem_fn(&DebuggerParser::executeLoadState)
+    &DebuggerParser::executeLoadState
   },
 
   {
@@ -3437,7 +3386,7 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
     false,
     true,
     { Parameters::ARG_END_ARGS },
-    std::mem_fn(&DebuggerParser::executeLogBreaks)
+    &DebuggerParser::executeLogBreaks
   },
 
   {
@@ -3447,7 +3396,7 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
     false,
     true,
     { Parameters::ARG_END_ARGS },
-    std::mem_fn(&DebuggerParser::executeLogExec)
+    &DebuggerParser::executeLogExec
   },
 
   {
@@ -3457,7 +3406,7 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
     false,
     true,
     { Parameters::ARG_END_ARGS },
-    std::mem_fn(&DebuggerParser::executeLogTrace)
+    &DebuggerParser::executeLogTrace
   },
 
   {
@@ -3467,7 +3416,7 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
     false,
     true,
     { Parameters::ARG_BOOL, Parameters::ARG_END_ARGS },
-    std::mem_fn(&DebuggerParser::executeN)
+    &DebuggerParser::executeN
   },
 
   {
@@ -3477,7 +3426,7 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
     false,
     false,
     { Parameters::ARG_END_ARGS },
-    std::mem_fn(&DebuggerParser::executePalette)
+    &DebuggerParser::executePalette
   },
 
   {
@@ -3487,7 +3436,7 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
     true,
     true,
     { Parameters::ARG_WORD, Parameters::ARG_END_ARGS },
-    std::mem_fn(&DebuggerParser::executePc)
+    &DebuggerParser::executePc
   },
 
   {
@@ -3497,7 +3446,7 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
     true,
     false,
     { Parameters::ARG_WORD, Parameters::ARG_MULTI_BYTE },
-    std::mem_fn(&DebuggerParser::executePCol)
+    &DebuggerParser::executePCol
   },
 
   {
@@ -3507,7 +3456,7 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
     true,
     false,
     { Parameters::ARG_WORD, Parameters::ARG_MULTI_BYTE },
-    std::mem_fn(&DebuggerParser::executePGfx)
+    &DebuggerParser::executePGfx
   },
 
   {
@@ -3518,7 +3467,7 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
     true,
     false,
     { Parameters::ARG_DWORD, Parameters::ARG_END_ARGS },
-    std::mem_fn(&DebuggerParser::executePrint)
+    &DebuggerParser::executePrint
   },
 
   {
@@ -3528,7 +3477,7 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
     true,
     false,
     { Parameters::ARG_WORD, Parameters::ARG_END_ARGS },
-    std::mem_fn(&DebuggerParser::executePrintTimer)
+    &DebuggerParser::executePrintTimer
   },
 
   {
@@ -3538,7 +3487,7 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
     false,
     true,
     { Parameters::ARG_WORD, Parameters::ARG_MULTI_BYTE },
-    std::mem_fn(&DebuggerParser::executeRam)
+    &DebuggerParser::executeRam
   },
 
   {
@@ -3548,7 +3497,7 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
     false,
     true,
     { Parameters::ARG_END_ARGS },
-    std::mem_fn(&DebuggerParser::executeReset)
+    &DebuggerParser::executeReset
   },
 
   {
@@ -3558,7 +3507,7 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
     false,
     false,
     { Parameters::ARG_END_ARGS },
-    std::mem_fn(&DebuggerParser::executeResetTimers)
+    &DebuggerParser::executeResetTimers
   },
 
   {
@@ -3568,7 +3517,7 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
     false,
     true,
     { Parameters::ARG_WORD, Parameters::ARG_END_ARGS },
-    std::mem_fn(&DebuggerParser::executeRewind)
+    &DebuggerParser::executeRewind
   },
 
   {
@@ -3578,7 +3527,7 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
     false,
     false,
     { Parameters::ARG_END_ARGS },
-    std::mem_fn(&DebuggerParser::executeRiot)
+    &DebuggerParser::executeRiot
   },
 
   {
@@ -3589,7 +3538,7 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
     true,
     true,
     { Parameters::ARG_WORD, Parameters::ARG_MULTI_BYTE },
-    std::mem_fn(&DebuggerParser::executeRom)
+    &DebuggerParser::executeRom
   },
 
   {
@@ -3599,7 +3548,7 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
     true,
     false,
     { Parameters::ARG_WORD, Parameters::ARG_MULTI_BYTE },
-    std::mem_fn(&DebuggerParser::executeRow)
+    &DebuggerParser::executeRow
   },
 
   {
@@ -3609,7 +3558,7 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
     false,
     false,
     { Parameters::ARG_END_ARGS },
-    std::mem_fn(&DebuggerParser::executeRun)
+    &DebuggerParser::executeRun
   },
 
   {
@@ -3620,7 +3569,7 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
     true,
     true,
     { Parameters::ARG_LABEL, Parameters::ARG_END_ARGS },
-    std::mem_fn(&DebuggerParser::executeRunTo)
+    &DebuggerParser::executeRunTo
   },
 
   {
@@ -3630,7 +3579,7 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
     true,
     true,
     { Parameters::ARG_WORD, Parameters::ARG_END_ARGS },
-    std::mem_fn(&DebuggerParser::executeRunToPc)
+    &DebuggerParser::executeRunToPc
   },
 
   {
@@ -3640,7 +3589,7 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
     true,
     true,
     { Parameters::ARG_BYTE, Parameters::ARG_END_ARGS },
-    std::mem_fn(&DebuggerParser::executeS)
+    &DebuggerParser::executeS
   },
 
   {
@@ -3651,7 +3600,7 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
     false,
     false,
     { Parameters::ARG_FILE, Parameters::ARG_END_ARGS },
-    std::mem_fn(&DebuggerParser::executeSave)
+    &DebuggerParser::executeSave
   },
 
   {
@@ -3662,7 +3611,7 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
       false,
       false,
     { Parameters::ARG_LABEL, Parameters::ARG_END_ARGS },
-      std::mem_fn(&DebuggerParser::executeSaveAccess)
+      &DebuggerParser::executeSaveAccess
   },
 
   {
@@ -3672,7 +3621,7 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
     false,
     false,
     { Parameters::ARG_END_ARGS },
-    std::mem_fn(&DebuggerParser::executeSaveConfig)
+    &DebuggerParser::executeSaveConfig
   },
 
   {
@@ -3683,7 +3632,7 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
     false,
     false,
     { Parameters::ARG_LABEL, Parameters::ARG_END_ARGS },
-    std::mem_fn(&DebuggerParser::executeSaveDisassembly)
+    &DebuggerParser::executeSaveDisassembly
   },
 
   {
@@ -3694,7 +3643,7 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
     false,
     false,
     { Parameters::ARG_LABEL, Parameters::ARG_END_ARGS },
-    std::mem_fn(&DebuggerParser::executeSaveRom)
+    &DebuggerParser::executeSaveRom
   },
 
   {
@@ -3705,7 +3654,7 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
     false,
     false,
     { Parameters::ARG_LABEL, Parameters::ARG_END_ARGS },
-    std::mem_fn(&DebuggerParser::executeSaveSes)
+    &DebuggerParser::executeSaveSes
   },
 
   {
@@ -3716,7 +3665,7 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
     false,
     false,
     { Parameters::ARG_END_ARGS },
-    std::mem_fn(&DebuggerParser::executeSaveSnap)
+    &DebuggerParser::executeSaveSnap
   },
 
   {
@@ -3726,7 +3675,7 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
     false,
     false,
     { Parameters::ARG_END_ARGS },
-    std::mem_fn(&DebuggerParser::executeSaveAllStates)
+    &DebuggerParser::executeSaveAllStates
   },
 
   {
@@ -3736,7 +3685,7 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
     true,
     false,
     { Parameters::ARG_BYTE, Parameters::ARG_END_ARGS },
-    std::mem_fn(&DebuggerParser::executeSaveState)
+    &DebuggerParser::executeSaveState
   },
 
   {
@@ -3746,7 +3695,7 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
     true,
     false,
     { Parameters::ARG_WORD, Parameters::ARG_END_ARGS },
-    std::mem_fn(&DebuggerParser::executeSaveStateIf)
+    &DebuggerParser::executeSaveStateIf
   },
 
   {
@@ -3756,7 +3705,7 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
     false,
     true,
     { Parameters::ARG_WORD, Parameters::ARG_END_ARGS },
-    std::mem_fn(&DebuggerParser::executeScanLine)
+    &DebuggerParser::executeScanLine
   },
 
   {
@@ -3766,7 +3715,7 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
     false,
     true,
     { Parameters::ARG_WORD, Parameters::ARG_END_ARGS },
-    std::mem_fn(&DebuggerParser::executeStep)
+    &DebuggerParser::executeStep
   },
 
   {
@@ -3776,7 +3725,7 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
     true,
     true,
     { Parameters::ARG_WORD, Parameters::ARG_END_ARGS },
-    std::mem_fn(&DebuggerParser::executeStepWhile)
+    &DebuggerParser::executeStepWhile
   },
 
   {
@@ -3786,7 +3735,7 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
     true,
     true,
     { Parameters::ARG_WORD, Parameters::ARG_END_ARGS },
-    std::mem_fn(&DebuggerParser::executeSwchb)
+    &DebuggerParser::executeSwchb
   },
 
   {
@@ -3796,7 +3745,7 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
     false,
     false,
     { Parameters::ARG_END_ARGS },
-    std::mem_fn(&DebuggerParser::executeTia)
+    &DebuggerParser::executeTia
   },
 
   {
@@ -3807,7 +3756,7 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
     true,
     { Parameters::ARG_LABEL, Parameters::ARG_LABEL, Parameters::ARG_LABEL,
       Parameters::ARG_LABEL, Parameters::ARG_LABEL, Parameters::ARG_MULTI_BYTE },
-    std::mem_fn(&DebuggerParser::executeTimer)
+    &DebuggerParser::executeTimer
   },
 
   {
@@ -3817,7 +3766,7 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
     false,
     true,
     { Parameters::ARG_WORD, Parameters::ARG_END_ARGS },
-    std::mem_fn(&DebuggerParser::executeTrace)
+    &DebuggerParser::executeTrace
   },
 
   {
@@ -3828,7 +3777,7 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
     true,
     false,
     { Parameters::ARG_WORD, Parameters::ARG_MULTI_BYTE },
-    std::mem_fn(&DebuggerParser::executeTrap)
+    &DebuggerParser::executeTrap
   },
 
   {
@@ -3839,7 +3788,7 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
       true,
       false,
       { Parameters::ARG_WORD, Parameters::ARG_MULTI_BYTE },
-      std::mem_fn(&DebuggerParser::executeTrapIf)
+      &DebuggerParser::executeTrapIf
   },
 
   {
@@ -3850,7 +3799,7 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
     true,
     false,
     { Parameters::ARG_WORD, Parameters::ARG_MULTI_BYTE },
-    std::mem_fn(&DebuggerParser::executeTrapRead)
+    &DebuggerParser::executeTrapRead
   },
 
   {
@@ -3861,7 +3810,7 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
       true,
       false,
       { Parameters::ARG_WORD, Parameters::ARG_MULTI_BYTE },
-      std::mem_fn(&DebuggerParser::executeTrapReadIf)
+      &DebuggerParser::executeTrapReadIf
   },
 
   {
@@ -3872,7 +3821,7 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
     true,
     false,
     { Parameters::ARG_WORD, Parameters::ARG_MULTI_BYTE },
-    std::mem_fn(&DebuggerParser::executeTrapWrite)
+    &DebuggerParser::executeTrapWrite
   },
 
   {
@@ -3883,7 +3832,7 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
       true,
       false,
       { Parameters::ARG_WORD, Parameters::ARG_MULTI_BYTE },
-      std::mem_fn(&DebuggerParser::executeTrapWriteIf)
+      &DebuggerParser::executeTrapWriteIf
   },
 
   {
@@ -3893,7 +3842,7 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
     true,
     false,
     { Parameters::ARG_WORD, Parameters::ARG_MULTI_BYTE },
-    std::mem_fn(&DebuggerParser::executeType)
+    &DebuggerParser::executeType
   },
 
   {
@@ -3904,7 +3853,7 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
     false,
     true,
     { Parameters::ARG_END_ARGS },
-    std::mem_fn(&DebuggerParser::executeUHex)
+    &DebuggerParser::executeUHex
   },
 
   {
@@ -3914,7 +3863,7 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
     true,
     true,
     { Parameters::ARG_LABEL, Parameters::ARG_END_ARGS },
-    std::mem_fn(&DebuggerParser::executeUndef)
+    &DebuggerParser::executeUndef
   },
 
   {
@@ -3924,7 +3873,7 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
     false,
     true,
     { Parameters::ARG_WORD, Parameters::ARG_END_ARGS },
-    std::mem_fn(&DebuggerParser::executeUnwind)
+    &DebuggerParser::executeUnwind
   },
 
   {
@@ -3934,7 +3883,7 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
     false,
     true,
     { Parameters::ARG_BOOL, Parameters::ARG_END_ARGS },
-    std::mem_fn(&DebuggerParser::executeV)
+    &DebuggerParser::executeV
   },
 
   {
@@ -3944,7 +3893,7 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
     true,
     false,
     { Parameters::ARG_WORD, Parameters::ARG_END_ARGS },
-    std::mem_fn(&DebuggerParser::executeWatch)
+    &DebuggerParser::executeWatch
   },
 
   {
@@ -3954,7 +3903,7 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
     true,
     true,
     { Parameters::ARG_BYTE, Parameters::ARG_END_ARGS },
-    std::mem_fn(&DebuggerParser::executeX)
+    &DebuggerParser::executeX
   },
 
   {
@@ -3964,7 +3913,7 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
     true,
     true,
     { Parameters::ARG_BYTE, Parameters::ARG_END_ARGS },
-    std::mem_fn(&DebuggerParser::executeY)
+    &DebuggerParser::executeY
   },
 
   {
@@ -3974,6 +3923,6 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
     false,
     true,
     { Parameters::ARG_BOOL, Parameters::ARG_END_ARGS },
-    std::mem_fn(&DebuggerParser::executeZ)
+    &DebuggerParser::executeZ
   }
 } };

@@ -18,7 +18,6 @@
 #ifndef DEBUGGER_PARSER_HXX
 #define DEBUGGER_PARSER_HXX
 
-#include <functional>
 #include <set>
 
 class Debugger;
@@ -73,12 +72,7 @@ class DebuggerParser
 
   private:
     // Constants for argument processing
-    enum class ParseState: uInt8 {
-      IN_COMMAND,
-      IN_SPACE,
-      IN_BRACE,
-      IN_ARG
-    };
+    enum class ParseState: uInt8 { IN_SPACE, IN_BRACE, IN_ARG };
 
     enum class Parameters: uInt8 {
       ARG_WORD,        // single 16-bit value
@@ -100,10 +94,10 @@ class DebuggerParser
       string extendedDesc;
       bool parmsRequired{false};
       bool refreshRequired{false};
-      std::array<Parameters, 10> parms;
-      std::function<void (DebuggerParser*)> executor;
+      array<Parameters, 10> parms;
+      void (DebuggerParser::*executor)();
     };
-    using CommandArray = std::array<Command, 112>;
+    using CommandArray = array<Command, 112>;
     static CommandArray commands;
 
     struct Trap
@@ -140,7 +134,7 @@ class DebuggerParser
     StringList myWatches;
 
     // Keep track of traps (read and/or write)
-    vector<unique_ptr<Trap>> myTraps;
+    vector<unique_ptr<Trap>> myTraps;  // TODO: do these really need to be pointers?
     void listTraps(bool listCond);
     string trapStatus(const Trap& trap);
 
