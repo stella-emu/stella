@@ -83,7 +83,7 @@ void CheatManager::addPerFrame(string_view name, string_view code, bool enable)
   if(it == myCheatList.end())
     return;
 
-  const shared_ptr<Cheat> cheat = *it;
+  const shared_ptr<Cheat>& cheat = *it;
 
   // Make sure there are no duplicates
   const auto perFrameIt = std::ranges::find_if(myPerFrameList,
@@ -228,8 +228,10 @@ void CheatManager::loadCheats(string_view md5sum)
     myCurrentCheat = iter->second;
 
   // Parse the cheat list, constructing cheats and adding them to the manager
-  const string_view mapCheats = (iter != myCheatMap.end()) ? iter->second : "";
-  parse(cheats.empty() ? mapCheats : string{mapCheats} + cheats);
+  const string& mapCheats = (iter != myCheatMap.end())
+    ? iter->second
+    : EmptyString();
+  parse(cheats.empty() ? mapCheats : mapCheats + cheats);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
