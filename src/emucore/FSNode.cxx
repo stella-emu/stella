@@ -339,71 +339,78 @@ size_t FSNode::getSize() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 size_t FSNode::read(ByteBuffer& buffer, size_t size) const
 {
-  size_t sizeRead = 0;
-
   // File must actually exist
   if (!(exists() && isReadable()))
     throw std::runtime_error("File not found/readable");
 
   // First let the private subclass attempt to open the file
   if (_realNode)
-    if (sizeRead = _realNode->read(buffer, size); sizeRead > 0)
+  {
+    const size_t sizeRead = _realNode->read(buffer, size);
+    if(sizeRead > 0)
       return sizeRead;
+  }
 
   // Otherwise, the default behaviour is to read from a normal C++ ifstream
   std::ifstream in(getPath(), std::ios::binary);
-  if (in)
-  {
-    in.seekg(0, std::ios::end);
-    sizeRead = static_cast<size_t>(in.tellg());
-    in.seekg(0, std::ios::beg);
-
-    if (sizeRead == 0)
-      throw std::runtime_error("Zero-byte file");
-    else if (size > 0)  // If a requested size to read is provided, honour it
-      sizeRead = std::min(sizeRead, size);
-
-    buffer = std::make_unique<uInt8[]>(sizeRead);
-    in.read(reinterpret_cast<char*>(buffer.get()), sizeRead);
-  }
-  else
+  if (!in)
     throw std::runtime_error("File open/read error");
 
-  return sizeRead;
+  in.seekg(0, std::ios::end);
+  const std::streampos fileSize = in.tellg();
+  if (fileSize <= 0)
+    throw std::runtime_error("Zero-byte file");
+  in.seekg(0, std::ios::beg);
+
+  // If a requested size to read is provided (size > 0), honour it
+  const size_t sizeRead = (size > 0)
+    ? std::min(static_cast<size_t>(fileSize), size)
+    : static_cast<size_t>(fileSize);
+
+  buffer = std::make_unique<uInt8[]>(sizeRead);
+  in.read(reinterpret_cast<char*>(buffer.get()),
+          static_cast<std::streamsize>(sizeRead));
+
+  if(!in)
+    throw std::runtime_error("File read error");
+
+  return static_cast<size_t>(in.gcount());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 size_t FSNode::read(std::stringstream& buffer) const
 {
-  size_t sizeRead = 0;
-
   // File must actually exist
   if (!(exists() && isReadable()))
     throw std::runtime_error("File not found/readable");
 
   // First let the private subclass attempt to open the file
   if (_realNode)
-    if (sizeRead = _realNode->read(buffer); sizeRead > 0)
+  {
+    const size_t sizeRead = _realNode->read(buffer);
+    if(sizeRead > 0)
       return sizeRead;
+  }
 
   // Otherwise, the default behaviour is to read from a normal C++ ifstream
   // and convert to a stringstream
   std::ifstream in(getPath());
-  if (in)
-  {
-    in.seekg(0, std::ios::end);
-    sizeRead = static_cast<size_t>(in.tellg());
-    in.seekg(0, std::ios::beg);
-
-    if (sizeRead == 0)
-      throw std::runtime_error("Zero-byte file");
-
-    buffer << in.rdbuf();
-  }
-  else
+  if(!in)
     throw std::runtime_error("File open/read error");
 
-  return sizeRead;
+  // Get file size
+  in.seekg(0, std::ios::end);
+  const std::streampos fileSize = in.tellg();
+  if(fileSize <= 0)
+    throw std::runtime_error("Zero-byte file");
+  in.seekg(0, std::ios::beg);
+
+  // Read into buffer and verify
+  buffer << in.rdbuf();
+  if(!in)
+    throw std::runtime_error("File read error");
+
+  return static_cast<size_t>(fileSize);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -420,13 +427,15 @@ size_t FSNode::write(const ByteBuffer& buffer, size_t size) const
   std::ofstream out(getPath(), std::ios::binary);
   if (out)
   {
-    out.write(reinterpret_cast<const char*>(buffer.get()), size);
-
-    out.seekp(0, std::ios::end);
-    sizeWritten = static_cast<size_t>(out.tellp());
+    out.write(reinterpret_cast<const char*>(buffer.get()),
+              static_cast<std::streamsize>(size));
+    if(out)
+      sizeWritten = size;
+    else
+      throw std::runtime_error("File write error");
   }
   else
-    throw std::runtime_error("File open/write error");
+    throw std::runtime_error("File open error");
 
   return sizeWritten;
 }
@@ -445,10 +454,9 @@ size_t FSNode::write(const std::ostringstream& buffer) const
   std::ofstream out(getPath());
   if (out)
   {
-    out << buffer.rdbuf();
-
-    out.seekp(0, std::ios::end);
-    sizeWritten = static_cast<size_t>(out.tellp());
+    const auto view = buffer.view();
+    out.write(view.data(), static_cast<std::streamsize>(view.size()));
+    sizeWritten = view.size();
   }
   else
     throw std::runtime_error("File open/write error");
