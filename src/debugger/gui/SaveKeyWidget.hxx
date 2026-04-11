@@ -21,17 +21,27 @@
 class Controller;
 
 #include "FlashWidget.hxx"
+#include "SaveKey.hxx"
 
 class SaveKeyWidget : public FlashWidget
 {
   public:
     SaveKeyWidget(GuiObject* boss, const GUI::Font& font, int x, int y,
-                  Controller& controller, bool embedded = false);
+                  Controller& controller, bool embedded = false)
+      : FlashWidget(boss, font, x, y, controller) { init(boss, font, x, y, embedded); }
+
     ~SaveKeyWidget() override = default;
 
   private:
-    void eraseCurrent() override;
-    bool isPageUsed(uInt32 page) override;
+    void eraseCurrent() override {
+      auto& skey = static_cast<SaveKey&>(controller());
+      skey.eraseCurrent();
+    }
+
+    bool isPageUsed(uInt32 page) override {
+      const auto& skey = static_cast<SaveKey&>(controller());
+      return skey.isPageUsed(page);
+    }
 
     // Following constructors and assignment operators not supported
     SaveKeyWidget() = delete;

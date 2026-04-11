@@ -1053,9 +1053,6 @@
     <ClCompile Include="..\..\debugger\gui\RomWidget.cxx">
       <Filter>Source Files\debugger\gui</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\debugger\gui\SaveKeyWidget.cxx">
-      <Filter>Source Files\debugger\gui</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\debugger\gui\TiaInfoWidget.cxx">
       <Filter>Source Files\debugger\gui</Filter>
     </ClCompile>

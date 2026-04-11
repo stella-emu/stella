@@ -385,7 +385,6 @@
 		DC5EE7C214F7C165001C628C /* NTSCFilter.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC5EE7C014F7C165001C628C /* NTSCFilter.cxx */; };
 		DC5EE7C314F7C165001C628C /* NTSCFilter.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC5EE7C114F7C165001C628C /* NTSCFilter.hxx */; };
 		DC62E6481960E87B007AEF05 /* AtariVoxWidget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC62E6441960E87B007AEF05 /* AtariVoxWidget.hxx */; };
-		DC62E6491960E87B007AEF05 /* SaveKeyWidget.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC62E6451960E87B007AEF05 /* SaveKeyWidget.cxx */; };
 		DC62E64A1960E87B007AEF05 /* SaveKeyWidget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC62E6461960E87B007AEF05 /* SaveKeyWidget.hxx */; };
 		DC67270B1556F4860023653B /* CartCTY.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC6727081556F4860023653B /* CartCTY.cxx */; };
 		DC67270C1556F4860023653B /* CartCTY.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC6727091556F4860023653B /* CartCTY.hxx */; };
@@ -1268,7 +1267,6 @@
 		DC5EE7C014F7C165001C628C /* NTSCFilter.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = NTSCFilter.cxx; sourceTree = "<group>"; };
 		DC5EE7C114F7C165001C628C /* NTSCFilter.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = NTSCFilter.hxx; sourceTree = "<group>"; };
 		DC62E6441960E87B007AEF05 /* AtariVoxWidget.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = AtariVoxWidget.hxx; sourceTree = "<group>"; };
-		DC62E6451960E87B007AEF05 /* SaveKeyWidget.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SaveKeyWidget.cxx; sourceTree = "<group>"; };
 		DC62E6461960E87B007AEF05 /* SaveKeyWidget.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = SaveKeyWidget.hxx; sourceTree = "<group>"; };
 		DC6727081556F4860023653B /* CartCTY.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CartCTY.cxx; sourceTree = "<group>"; };
 		DC6727091556F4860023653B /* CartCTY.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = CartCTY.hxx; sourceTree = "<group>"; };
@@ -1980,7 +1978,6 @@
 				2D20F9F508C603EC00A73076 /* RomWidget.hxx */,
 				2D20F9F408C603EC00A73076 /* RomWidget.cxx */,
 				DC62E6461960E87B007AEF05 /* SaveKeyWidget.hxx */,
-				DC62E6451960E87B007AEF05 /* SaveKeyWidget.cxx */,
 				2D20F9F708C603EC00A73076 /* TiaInfoWidget.hxx */,
 				2D20F9F608C603EC00A73076 /* TiaInfoWidget.cxx */,
 				2D20F9F908C603EC00A73076 /* TiaOutputWidget.hxx */,
@@ -3491,7 +3488,6 @@
 				2D9174CC09BA90380026E9FF /* TIADebug.cxx in Sources */,
 				2D9174CD09BA90380026E9FF /* YaccParser.cxx in Sources */,
 				DC6A18F819B3E65500DEB242 /* CartMDMWidget.cxx in Sources */,
-				DC62E6491960E87B007AEF05 /* SaveKeyWidget.cxx in Sources */,
 				2D9174CE09BA90380026E9FF /* Cart3E.cxx in Sources */,
 				2D9174CF09BA90380026E9FF /* CpuDebug.cxx in Sources */,
 				2D9174F109BA90380026E9FF /* InputTextDialog.cxx in Sources */,
