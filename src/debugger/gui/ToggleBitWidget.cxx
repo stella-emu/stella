@@ -68,8 +68,15 @@ void ToggleBitWidget::setList(const StringList& off, const StringList& on)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ToggleBitWidget::setState(const BoolArray& state, const BoolArray& changed)
 {
-  if(!std::ranges::equal(_changedList, changed))
+  // Widget has to be updated in two cases:
+  // 1. some bit has changed
+  // 2. the changed state compared to the previous changed state has changed
+  if(!std::ranges::equal(_changedList, changed)
+     //|| changed.end() != std::find(changed.begin(), changed.end(), true)) {
+     || !std::ranges::none_of(changed, [](bool b){ return b; }))
+  {
     setDirty();
+  }
 
   _stateList.clear();
   _stateList = state;
