@@ -42,7 +42,8 @@ void CartridgeFE::install(System& system)
 
   // The hotspot $01FE is in a mirror of zero-page RAM
   // We need to claim access to it here, and deal with it in peek/poke below
-  mySystem->setPageAccess(0x1c0, System::PageAccess(this, System::PageAccessType::READWRITE));
+  mySystem->setPageAccess(0x1c0,
+      System::PageAccess(this, System::PageAccessType::READWRITE));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -61,8 +62,10 @@ bool CartridgeFE::checkSwitchBank(uInt16 address, uInt8 value)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 CartridgeFE::peek(uInt16 address)
 {
-  const uInt8 value = (address < 0x200) ? mySystem->m6532().peek(address) :
-    myImage[myCurrentSegOffset[(address & myBankMask) >> myBankShift] + (address & myBankMask)];
+  const uInt8 value = (address < 0x200)
+    ? mySystem->m6532().peek(address)
+    : myImage[myCurrentSegOffset[(address & myBankMask) >> myBankShift] +
+              (address & myBankMask)];
 
   // Check if we hit hotspot
   checkSwitchBank(address, value);
