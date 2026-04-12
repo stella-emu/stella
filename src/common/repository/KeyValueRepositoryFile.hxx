@@ -84,7 +84,7 @@ bool KeyValueRepositoryFile<T>::save(const KVRMap& values)
 
   try {
     T::save(out, values);
-    myNode.write(out);
+    myNode.write(out.view());
 
     return true;
   }

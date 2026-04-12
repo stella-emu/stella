@@ -205,7 +205,7 @@ void CheatManager::saveCheatDatabase()
   for(const auto& [md5, cheat]: myCheatMap)
     out << std::quoted(md5) << ' ' << std::quoted(cheat) << '\n';
 
-  try         { myOSystem.cheatFile().write(out); }
+  try         { myOSystem.cheatFile().write(out.view()); }
   catch(...)  { return; }
 }
 

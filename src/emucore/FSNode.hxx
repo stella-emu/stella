@@ -285,17 +285,6 @@ class FSNode
     size_t write(const ByteBuffer& buffer, size_t size) const;
 
     /**
-     * Write data (text format) from the given stream.
-     *
-     * @param buffer  The buffer stream that contains the data.
-     *
-     * @return  The number of bytes written (0 in the case of failure)
-     *          This method can throw exceptions, and should be used inside
-     *          a try-catch block.
-     */
-    size_t write(const std::ostringstream& buffer) const;
-
-    /**
      * Write data (binary format) from the given buffer.
      *
      * @param buffer  The buffer that contains the data.
@@ -498,20 +487,9 @@ class AbstractFSNode
     virtual size_t write(const ByteBuffer& buffer, size_t size) const { return 0; }
 
     /**
-     * Write data (text format) from the given stream.
+     * Write data (text format) from the given buffer.
      *
-     * @param buffer  The buffer stream that contains the data.
-     *
-     * @return  The number of bytes written (0 in the case of failure)
-     *          This method can throw exceptions, and should be used inside
-     *          a try-catch block.
-     */
-    virtual size_t write(const std::ostringstream& buffer) const { return 0; }
-
-    /**
-     * Write data (text format) from the given stream.
-     *
-     * @param buffer  The buffer stream that contains the data.
+     * @param buffer  The buffer that contains the data.
      *
      * @return  The number of bytes written (0 in the case of failure)
      *          This method can throw exceptions, and should be used inside

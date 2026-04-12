@@ -267,10 +267,10 @@ class CartDebug : public DebuggerSystem
     void getCompletions(string_view in, StringList& completions) const;
 
     // Convert given address to corresponding access type and append to buf
-    void accessTypeAsString(std::ostream& buf, uInt16 addr) const;
+    string accessTypeAsString(uInt16 addr) const;
 
     // Convert access enum type to corresponding string and append to buf
-    static void AccessTypeAsString(std::ostream& buf, Device::AccessType type);
+    static string_view AccessTypeAsString(Device::AccessType type);
 
   private:
     using AddrToLineList = std::map<uInt16, int>;
@@ -331,14 +331,14 @@ class CartDebug : public DebuggerSystem
 
     // Analyze of bank of ROM, generating a list of Distella directives
     // based on its disassembly
-    void getBankDirectives(std::ostream& buf, const BankInfo& info) const;
+    string getBankDirectives(const BankInfo& info) const;
 
     // Get access enum type from 'flags', taking precendence into account
     static Device::AccessType accessTypeAbsolute(Device::AccessFlags flags);
 
     // Convert all access types in 'flags' to corresponding string and
     // append to buf
-    static void AccessTypeAsString(std::ostream& buf, Device::AccessFlags flags);
+    static string AccessTypeAsString(Device::AccessFlags flags);
 
   private:
     const OSystem& myOSystem;

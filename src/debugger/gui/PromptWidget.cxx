@@ -939,30 +939,32 @@ void PromptWidget::scrollToCurrent()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string PromptWidget::saveBuffer(const FSNode& file)
 {
-  std::ostringstream out;
+  string out;
+  out.reserve(_promptStartPos);  // reasonable upper bound
+
   for(int start = 0; start < _promptStartPos; start += _lineWidth)
   {
     int end = start + _lineWidth - 1;
-
     // Look for first non-space, printing char from end of line
-    while(static_cast<char>(_buffer[end] & 0xff) <= ' ' && end >= start)
+    while(end >= start && static_cast<char>(_buffer[end] & 0xff) <= ' ')
       end--;
 
     // Spit out the line minus its trailing junk
     // Strip off any color/inverse bits
     for(int j = start; j <= end; ++j)
-      out << static_cast<char>(_buffer[j] & 0xff);
+      out += static_cast<char>(_buffer[j] & 0xff);
 
-    out << '\n';
+    out += '\n';
   }
-
-  try {
+  try
+  {
     if(file.write(out) > 0)
       return "saved " + file.getShortPath() + " OK";
     else
       return "unable to save session";
   }
-  catch(...) {
+  catch(...)
+  {
     return "unable to save session";
   }
 }

@@ -1051,38 +1051,40 @@ string CartDebug::saveConfigFile()
   // on the actual ROM filename
 
   const string& name = myConsole.properties().get(PropType::Cart_Name);
-  const string& md5 = myConsole.properties().get(PropType::Cart_MD5);
+  const string& md5  = myConsole.properties().get(PropType::Cart_MD5);
+
+  // Build config file content directly into a string
+  string out;
+  out.reserve(512);
+  std::format_to(std::back_inserter(out), "// Stella.pro: \"{}\"\n// MD5: {}\n\n", name, md5);
 
   // Store all bank information
-  std::ostringstream out;
-  out << "// Stella.pro: \"" << name << "\"\n"
-      << "// MD5: " << md5 << "\n\n";
   for(uInt32 b = 0; b < myConsole.cartridge().romBankCount(); ++b)
-  {
-    out << "[" << b << "]\n";
-    getBankDirectives(out, myBankInfo[b]);
-  }
+    std::format_to(std::back_inserter(out), "[{}]\n{}", b,
+                   getBankDirectives(myBankInfo[b]));
 
-  std::ostringstream retVal;
   try
   {
     const FSNode romNode(myOSystem.romFile().getPathWithExt(".cfg"));
     FSNode cfg = myOSystem.cfgDir();  cfg /= romNode.getName();
+
     if(!cfg.getParent().isWritable())
       return DebuggerParser::red("config file \'" + cfg.getShortPath() + "\' not writable");
-
     if(cfg.write(out) == 0)
       return "Unable to save directives to " + cfg.getShortPath();
 
+    string retVal;
     if(myConsole.cartridge().romBankCount() > 1)
-      retVal << DebuggerParser::red("config file for multi-bank ROM not fully supported\n");
-    retVal << "config file '" << cfg.getShortPath() << "' saved OK";
+      retVal += DebuggerParser::red("config file for multi-bank ROM not fully supported\n");
+    retVal += "config file '";
+    retVal += cfg.getShortPath();
+    retVal += "' saved OK";
+    return retVal;
   }
   catch(const std::runtime_error& e)
   {
-    retVal << "Unable to save directives: " << e.what();
+    return "Unable to save directives: " + string{e.what()};
   }
-  return retVal.str();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1407,7 +1409,7 @@ string CartDebug::saveDisassembly(string path)
   std::ostringstream retVal;
   try
   {
-    node.write(out);
+    node.write(out.view());  // FIXME: revisit this (for view())
 
     if(myConsole.cartridge().romBankCount() > 1)
       retVal << DebuggerParser::red("disassembly for multi-bank ROM not fully supported\n");
@@ -1442,23 +1444,21 @@ string CartDebug::saveRom(string path)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string CartDebug::saveAccessFile(string path)
 {
-  std::ostringstream out;
-  out << myConsole.tia().getAccessCounters();
-  out << myConsole.riot().getAccessCounters();
-  out << myConsole.cartridge().getAccessCounters();
+  string out;
+  out.reserve(512);
+  out += myConsole.tia().getAccessCounters();
+  out += myConsole.riot().getAccessCounters();
+  out += myConsole.cartridge().getAccessCounters();
 
   try
   {
     if(path.empty())
       path = myOSystem.userDir().getPath()
         + myConsole.properties().get(PropType::Cart_Name) + ".csv";
-    else
-      // Append default extension when missing
-      if(path.find_last_of('.') == string::npos)
-        path += ".csv";
+    else if(path.find_last_of('.') == string::npos)
+      path += ".csv";
 
     const FSNode node(path);
-
     node.write(out);
     return "saved access counters as " + node.getShortPath();
   }
@@ -1471,35 +1471,34 @@ string CartDebug::saveAccessFile(string path)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string CartDebug::listConfig(int bank)
 {
-  uInt32 startbank = 0, endbank = romBankCount();
-  if(bank >= 0 && bank < romBankCount())
-  {
-    startbank = bank;
-    endbank = startbank + 1;
-  }
+  const bool singleBank  = (bank >= 0 && bank < romBankCount());
+  const uInt32 startbank = singleBank ? static_cast<uInt32>(bank) : 0;
+  const uInt32 endbank   = singleBank ? startbank + 1 : romBankCount();
 
-  std::ostringstream buf;
-  buf << "(items marked '*' are user-defined)\n";
+  string out;
+  out.reserve(512);
+  out += "(items marked '*' are user-defined)\n";
+
   for(uInt32 b = startbank; b < endbank; ++b)
   {
     const BankInfo& info = myBankInfo[b];
-    buf << "Bank [" << b << "]\n";
+    std::format_to(std::back_inserter(out), "Bank [{}]\n", b);
     for(const auto& i: info.directiveList)
     {
       if(i.type != Device::NONE)
-      {
-        buf << "(*) ";
-        AccessTypeAsString(buf, i.type);
-        buf << " " << Base::HEX4 << i.start << " " << Base::HEX4 << i.end << '\n';
-      }
+        std::format_to(std::back_inserter(out), "(*) {} {:04X} {:04X}\n",
+                       AccessTypeAsString(i.type), i.start, i.end);
     }
-    getBankDirectives(buf, info);
+    out += getBankDirectives(info);
   }
 
   if(myConsole.cartridge().romBankCount() > 1)
-    buf << DebuggerParser::red("config file for multi-bank ROM not fully supported") << '\n';
+  {
+    out += DebuggerParser::red("config file for multi-bank ROM not fully supported");
+    out += '\n';
+  }
 
-  return buf.str();
+  return out;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1583,24 +1582,25 @@ CartDebug::AddrType CartDebug::addressType(uInt16 addr)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartDebug::getBankDirectives(std::ostream& buf, const BankInfo& info) const
+string CartDebug::getBankDirectives(const BankInfo& info) const
 {
+  string out;
+  out.reserve(512);
+
   // Start with the offset for this bank
-  buf << "ORG " << Base::HEX4 << info.offset << '\n';
+  std::format_to(std::back_inserter(out), "ORG {:04X}\n", info.offset);
 
   // Now consider each byte
   uInt32 prev = info.offset, addr = prev + 1;
   Device::AccessType prevType = accessTypeAbsolute(mySystem.getAccessFlags(prev));
+
   for( ; addr < info.offset + info.size; ++addr)
   {
     const Device::AccessType currType = accessTypeAbsolute(mySystem.getAccessFlags(addr));
-
-    // Have we changed to a new type?
     if(currType != prevType)
     {
-      AccessTypeAsString(buf, prevType);
-      buf << " " << Base::HEX4 << prev << " " << Base::HEX4 << (addr-1) << '\n';
-
+      std::format_to(std::back_inserter(out), "{} {:04X} {:04X}\n",
+                     AccessTypeAsString(prevType), prev, addr - 1);
       prev = addr;
       prevType = currType;
     }
@@ -1608,32 +1608,38 @@ void CartDebug::getBankDirectives(std::ostream& buf, const BankInfo& info) const
 
   // Grab the last directive, making sure it accounts for all remaining space
   if(prev != addr)
-  {
-    AccessTypeAsString(buf, prevType);
-    buf << " " << Base::HEX4 << prev << " " << Base::HEX4 << (addr-1) << '\n';
-  }
+    std::format_to(std::back_inserter(out), "{} {:04X} {:04X}\n",
+                   AccessTypeAsString(prevType), prev, addr - 1);
+
+  return out;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartDebug::accessTypeAsString(std::ostream& buf, uInt16 addr) const
+string CartDebug::accessTypeAsString(uInt16 addr) const
 {
   if(!(addr & 0x1000))
-  {
-    buf << DebuggerParser::red("type only defined for cart address space");
-    return;
-  }
+    return DebuggerParser::red("type only defined for cart address space");
 
   const uInt8 directive = myDisDirectives[addr & 0xFFF] & 0xFC,
               debugger  = myDebugger.getAccessFlags(addr) & 0xFC,
               label     = myDisLabels[addr & 0xFFF];
 
-  buf << "\ndirective: " << Base::toString(directive, Base::Fmt::_2_8) << " ";
-  AccessTypeAsString(buf, directive);
-  buf << "\nemulation: " << Base::toString(debugger, Base::Fmt::_2_8) << " ";
-  AccessTypeAsString(buf, debugger);
-  buf << "\ntentative: " << Base::toString(label, Base::Fmt::_2_8) << " ";
-  AccessTypeAsString(buf, label);
-  buf << '\n';
+  string out;
+  out.reserve(128);
+  out += "\ndirective: ";
+  out += Base::toString(directive, Base::Fmt::_2_8);
+  out += ' ';
+  out += AccessTypeAsString(directive);
+  out += "\nemulation: ";
+  out += Base::toString(debugger, Base::Fmt::_2_8);
+  out += ' ';
+  out += AccessTypeAsString(debugger);
+  out += "\ntentative: ";
+  out += Base::toString(label, Base::Fmt::_2_8);
+  out += ' ';
+  out += AccessTypeAsString(label);
+  out += '\n';
+  return out;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1662,56 +1668,47 @@ Device::AccessType CartDebug::accessTypeAbsolute(Device::AccessFlags flags)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartDebug::AccessTypeAsString(std::ostream& buf, Device::AccessType type)
+string_view CartDebug::AccessTypeAsString(Device::AccessType type)
 {
   switch(type)
   {
-    case Device::CODE:   buf << "CODE";   break;
-    case Device::TCODE:  buf << "TCODE";  break;
-    case Device::GFX:    buf << "GFX";    break;
-    case Device::PGFX:   buf << "PGFX";   break;
-    case Device::COL:    buf << "COL";    break;
-    case Device::PCOL:   buf << "PCOL";   break;
-    case Device::BCOL:   buf << "BCOL";   break;
-    case Device::AUD:    buf << "AUD";    break;
-    case Device::DATA:   buf << "DATA";   break;
-    case Device::ROW:    buf << "ROW";    break;
-    default:                              break;
+    case Device::CODE:  return "CODE";
+    case Device::TCODE: return "TCODE";
+    case Device::GFX:   return "GFX";
+    case Device::PGFX:  return "PGFX";
+    case Device::COL:   return "COL";
+    case Device::PCOL:  return "PCOL";
+    case Device::BCOL:  return "BCOL";
+    case Device::AUD:   return "AUD";
+    case Device::DATA:  return "DATA";
+    case Device::ROW:   return "ROW";
+    default:            return "";
   }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartDebug::AccessTypeAsString(std::ostream& buf, Device::AccessFlags flags)
+string CartDebug::AccessTypeAsString(Device::AccessFlags flags)
 {
-  if(flags)
-  {
-    if(flags & Device::CODE)
-      buf << "CODE ";
-    if(flags & Device::TCODE)
-      buf << "TCODE ";
-    if(flags & Device::GFX)
-      buf << "GFX ";
-    if(flags & Device::PGFX)
-      buf << "PGFX ";
-    if(flags & Device::COL)
-      buf << "COL ";
-    if(flags & Device::PCOL)
-      buf << "PCOL ";
-    if(flags & Device::BCOL)
-      buf << "BCOL ";
-    if(flags & Device::AUD)
-      buf << "AUD ";
-    if(flags & Device::DATA)
-      buf << "DATA ";
-    if(flags & Device::ROW)
-      buf << "ROW ";
-    if(flags & Device::REFERENCED)
-      buf << "*REFERENCED ";
-    if(flags & Device::VALID_ENTRY)
-      buf << "*VALID_ENTRY ";
-  }
-  else
-    buf << "no flags set";
+  if(!flags)
+    return "no flags set";
+
+  string out;
+  out.reserve(64);
+
+  if(flags & Device::CODE)        out += "CODE ";
+  if(flags & Device::TCODE)       out += "TCODE ";
+  if(flags & Device::GFX)         out += "GFX ";
+  if(flags & Device::PGFX)        out += "PGFX ";
+  if(flags & Device::COL)         out += "COL ";
+  if(flags & Device::PCOL)        out += "PCOL ";
+  if(flags & Device::BCOL)        out += "BCOL ";
+  if(flags & Device::AUD)         out += "AUD ";
+  if(flags & Device::DATA)        out += "DATA ";
+  if(flags & Device::ROW)         out += "ROW ";
+  if(flags & Device::REFERENCED)  out += "*REFERENCED ";
+  if(flags & Device::VALID_ENTRY) out += "*VALID_ENTRY ";
+
+  return out;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

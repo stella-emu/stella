@@ -117,9 +117,7 @@ void LoggerDialog::saveLogFile(const FSNode& node)
 {
   try
   {
-    std::ostringstream out;
-    out << Logger::instance().logMessages();
-    node.write(out);
+    node.write(Logger::instance().logMessages());
     instance().frameBuffer().showTextMessage("System log saved");
   }
   catch(...)

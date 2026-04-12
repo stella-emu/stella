@@ -137,9 +137,7 @@ string DebuggerParser::exec(const FSNode& file, StringList* history)
   if(logExec && !logBuf.empty())
   {
     const FSNode logNode(file.getPath() + ".output.txt");
-    // FSNode::write needs a stream, so we materialise one only here
-    const std::ostringstream logStream(std::move(logBuf));
-    try        { logNode.write(logStream); }
+    try        { logNode.write(logBuf); }
     catch(...) { buf += red("\nUnable to write exec output to file \'"
                             + logNode.getShortPath() + "\'\n"); }
   }
@@ -857,11 +855,9 @@ string DebuggerParser::saveScriptFile(string file)
   if(!node.exists() && out.empty())
     return "nothing to save";
 
-  // FSNode::write needs a stream
-  const std::ostringstream stream(std::move(out));
   try
   {
-    node.write(stream);
+    node.write(out);
   }
   catch(...)
   {
@@ -876,7 +872,7 @@ void DebuggerParser::saveDump(const FSNode& node, const std::ostringstream& out,
 {
   try
   {
-    node.write(out);
+    node.write(out.view());  // FIXME: can we eliminate the stream?
     result << " to file " << node.getShortPath();
   }
   catch(...)
@@ -901,10 +897,11 @@ void DebuggerParser::executeDirective(Device::AccessType type)
 
   const bool result = debugger.cartDebug().addDirective(type, args[0], args[1]);
 
-  commandResult << (result ? "added " : "removed ");
-  CartDebug::AccessTypeAsString(commandResult, type);
   std::format_to(std::ostreambuf_iterator(commandResult),
-                 " directive on range ${:x} ${:x}", args[0], args[1]);
+                 "{}{} directive on range ${:x} ${:x}",
+                 result ? "added " : "removed ",
+                 CartDebug::AccessTypeAsString(type),
+                 args[0], args[1]);
 
   debugger.rom().invalidate();
 }
@@ -2676,9 +2673,8 @@ void DebuggerParser::executeType()
 
   for(uInt32 i = beg; i <= end; ++i)
   {
-    std::format_to(std::ostreambuf_iterator(commandResult), "{:04x}: ", i);
-    debugger.cartDebug().accessTypeAsString(commandResult, i);
-    commandResult << '\n';
+    std::format_to(std::ostreambuf_iterator(commandResult), "{:04x}: {}\n", i,
+        debugger.cartDebug().accessTypeAsString(i));
   }
 }
 

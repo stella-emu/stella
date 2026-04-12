@@ -424,14 +424,6 @@ size_t FSNode::write(const ByteBuffer& buffer, size_t size) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-size_t FSNode::write(const std::ostringstream& buffer) const
-{
-  // FIX: Delegate to the string_view overload to avoid duplicating the
-  // ofstream logic. ostringstream::view() is zero-copy in C++20.
-  return write(buffer.view());
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 size_t FSNode::write(string_view buffer) const
 {
   size_t sizeWritten = 0;

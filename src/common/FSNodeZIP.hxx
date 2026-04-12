@@ -65,13 +65,10 @@ class FSNodeZIP : public AbstractFSNode
 
     size_t read(ByteBuffer& buffer, size_t) const override;
     size_t read(std::stringstream& buffer) const override;
-    size_t write(const ByteBuffer& buffer, size_t) const override {
+    size_t write(const ByteBuffer&, size_t) const override {
       throw std::runtime_error("ZIP file writing not implemented");
     }
-    size_t write(const std::ostringstream& buffer) const override {
-      throw std::runtime_error("ZIP file writing not implemented");
-    }
-    size_t write(string_view buffer) const override {
+    size_t write(string_view) const override {
       throw std::runtime_error("ZIP file writing not implemented");
     }
 
