@@ -154,11 +154,12 @@ void Properties::setDefaults()
 PropType Properties::getPropType(string_view name)
 {
   // Binary search over the sorted table
-  const auto it = std::lower_bound(
-    ourNameToPropType.begin(), ourNameToPropType.end(), name,
-    [](const PropTypeEntry& entry, string_view val) {
-      return BSPF::compareIgnoreCase(entry.first, val) < 0;
-    });
+  const auto it = std::ranges::lower_bound( // NOLINT(readability-qualified-auto)
+    ourNameToPropType, name,
+    [](string_view a, string_view b) {
+      return BSPF::compareIgnoreCase(a, b) < 0;
+    },
+    &PropTypeEntry::first);  // projection: extract the key from each element
 
   if(it != ourNameToPropType.end() &&
      BSPF::compareIgnoreCase(it->first, name) == 0)

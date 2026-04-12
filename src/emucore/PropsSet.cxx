@@ -76,18 +76,22 @@ bool PropertiesSet::getMD5(string_view md5, Properties& properties,
   // Otherwise, search the internal database using binary search
   if(!found)
   {
-    const auto it = std::lower_bound(DefProps.begin(), DefProps.end(), md5,
-        [](const auto& entry, string_view val) {
-          return BSPF::compareIgnoreCase(
-              entry[static_cast<uInt8>(PropType::Cart_MD5)], val) < 0;
-        });
+    const auto it = std::ranges::lower_bound( // NOLINT(readability-qualified-auto)
+      DefProps, md5,
+      [](string_view a, string_view b) {
+          return BSPF::compareIgnoreCase(a, b) < 0;
+      },
+      [](const auto& entry) {
+          return entry[static_cast<uInt8>(PropType::Cart_MD5)];
+      });
 
     if(it != DefProps.end() &&
        BSPF::compareIgnoreCase((*it)[static_cast<uInt8>(PropType::Cart_MD5)], md5) == 0)
     {
+      const auto& entry = *it;
       for(uInt8 p = 0; p < static_cast<uInt8>(PropType::NumTypes); ++p)
-        if((*it)[p][0] != 0)
-          properties.set(PropType{p}, (*it)[p]);
+        if(entry[p][0] != 0)
+          properties.set(PropType{p}, entry[p]);
 
       found = true;
     }
