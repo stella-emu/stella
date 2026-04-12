@@ -90,13 +90,11 @@ class PropertiesSet
     void print() const;
 
   private:
+    // std::less<> enables heterogeneous lookup with string_view keys,
+    // avoiding string construction on every find/contains call
     using PropsList = std::map<string, Properties, std::less<>>;
 
-    // The properties read from an external 'stella.pro' file
-    PropsList myExternalProps;
-
-    // The properties temporarily inserted by the program, which should
-    // be discarded when the program ends
+    // Properties temporarily inserted by the program, discarded on exit
     PropsList myTempProps;
 
     shared_ptr<CompositeKeyValueRepository> myRepository;

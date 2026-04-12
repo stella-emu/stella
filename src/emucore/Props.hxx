@@ -63,26 +63,27 @@ enum class PropType : uInt8 {
   object as its "defaults"; this second properties object is searched
   if the property key is not found in the original property list.
 
-  @author  Bradford W. Mott
+  @author  Bradford W. Mott and Stephen Anthony
 */
 class Properties
 {
   friend class PropertiesSet;
 
   public:
+    static constexpr size_t NUM_PROPS = static_cast<size_t>(PropType::NumTypes);
+
     /**
-      Creates an empty properties object with the specified defaults.  The
-      new properties object does not claim ownership of the defaults.
+      Creates an empty properties object with the specified defaults.
     */
     Properties();
     ~Properties() = default;
 
-    /**
-      Creates a properties list by copying another one
+    Properties(const Properties&) = default;
+    Properties& operator=(const Properties&) = default;
 
-      @param properties The properties to copy
-    */
-    Properties(const Properties& properties);
+    // Enable move semantics for efficient storage in PropsList maps
+    Properties(Properties&&) = default;
+    Properties& operator=(Properties&&) = default;
 
   public:
     void load(KeyValueRepository& repo);
@@ -97,15 +98,15 @@ class Properties
       @return     The value of the property
     */
     const string& get(PropType key) const {
-      const auto pos = static_cast<uInt8>(key);
-      return pos < static_cast<uInt8>(PropType::NumTypes) ? myProperties[pos] : EmptyString();
+      const auto pos = static_cast<size_t>(key);
+      return pos < NUM_PROPS ? myProperties[pos] : EmptyString();
     }
 
     /**
       Set the value associated with key to the given value.
 
-      @param key      The key of the property to set
-      @param value    The value to assign to the property
+      @param key    The key of the property to set
+      @param value  The value to assign to the property
     */
     void set(PropType key, string_view value);
 
@@ -122,45 +123,24 @@ class Properties
     /**
       Resets the property of the given key to its default
 
-      @param key      The key of the property to set
+      @param key  The key of the property to reset
     */
     void reset(PropType key);
 
     /**
-      Overloaded equality operator(s)
+      Overloaded equality operators
 
       @param properties The properties object to compare to
       @return True if the properties are equal, else false
     */
-    bool operator == (const Properties& properties) const;
-    bool operator != (const Properties& properties) const;
-
-    /**
-      Overloaded assignment operator
-
-      @param properties The properties object to set myself equal to
-      @return Myself after assignment has taken place
-    */
-    Properties& operator = (const Properties& properties);
-
-    /**
-      Set the default value associated with key to the given value.
-
-      @param key      The key of the property to set
-      @param value    The value to assign to the property
-    */
-    static void setDefault(PropType key, string_view value);
+    bool operator==(const Properties& properties) const {
+      return myProperties == properties.myProperties;
+    }
+    bool operator!=(const Properties& properties) const {
+      return !(*this == properties);
+    }
 
   private:
-    /**
-      Helper function to perform a deep copy of the specified
-      properties.  Assumes that old properties have already been
-      freed.
-
-      @param properties The properties object to copy myself from
-    */
-    void copy(const Properties& properties);
-
     /**
       Get the property type associated with the named property
 
@@ -176,21 +156,113 @@ class Properties
     static void printHeader();
 
   private:
-    static constexpr size_t NUM_PROPS = static_cast<size_t>(PropType::NumTypes);
-
-    // The array of properties
+    // The array of properties for this instance (mutable runtime values)
     std::array<string, NUM_PROPS> myProperties;
 
-    // List of default properties to use when none have been provided
-    static std::array<string, NUM_PROPS> ourDefaultProperties;
+    // Default property values — constexpr string_view, no heap allocation
+    static constexpr std::array<string_view, NUM_PROPS> ourDefaultProperties = {{
+      "",       // Cart.MD5
+      "",       // Cart.Manufacturer
+      "",       // Cart.ModelNo
+      "",       // Cart.Name
+      "",       // Cart.Note
+      "",       // Cart.Rarity
+      "MONO",   // Cart.Sound
+      "AUTO",   // Cart.StartBank
+      "AUTO",   // Cart.Type
+      "",       // Cart.Highscore
+      "",       // Cart.Url
+      "B",      // Console.LeftDiff
+      "B",      // Console.RightDiff
+      "COLOR",  // Console.TVType
+      "NO",     // Console.SwapPorts
+      "AUTO",   // Controller.Left
+      "AUTO",   // Controller.Left1
+      "AUTO",   // Controller.Left2
+      "AUTO",   // Controller.Right
+      "AUTO",   // Controller.Right1
+      "AUTO",   // Controller.Right2
+      "NO",     // Controller.SwapPaddles
+      "12",     // Controller.PaddlesXCenter
+      "12",     // Controller.PaddlesYCenter
+      "AUTO",   // Controller.MouseAxis
+      "AUTO",   // Display.Format
+      "0",      // Display.VCenter
+      "NO",     // Display.Phosphor
+      "0",      // Display.PPBlend
+      ""        // Bezel.Name
+    }};
 
-    // The text strings associated with each property type
-    static std::array<string, NUM_PROPS> ourPropertyNames;
+    // Property name strings — constexpr string_view, no heap allocation
+    static constexpr std::array<string_view, NUM_PROPS> ourPropertyNames = {{
+      "Cart.MD5",
+      "Cart.Manufacturer",
+      "Cart.ModelNo",
+      "Cart.Name",
+      "Cart.Note",
+      "Cart.Rarity",
+      "Cart.Sound",
+      "Cart.StartBank",
+      "Cart.Type",
+      "Cart.Highscore",
+      "Cart.Url",
+      "Console.LeftDiff",
+      "Console.RightDiff",
+      "Console.TVType",
+      "Console.SwapPorts",
+      "Controller.Left",
+      "Controller.Left1",
+      "Controller.Left2",
+      "Controller.Right",
+      "Controller.Right1",
+      "Controller.Right2",
+      "Controller.SwapPaddles",
+      "Controller.PaddlesXCenter",
+      "Controller.PaddlesYCenter",
+      "Controller.MouseAxis",
+      "Display.Format",
+      "Display.VCenter",
+      "Display.Phosphor",
+      "Display.PPBlend",
+      "Bezel.Name"
+    }};
 
-  private:
-    // Following constructors and assignment operators not supported
-    Properties(Properties&&) = delete;
-    Properties& operator=(Properties&&) = delete;
+    // Sorted lookup table for getPropType() binary search.
+    // Each entry maps a property name to its PropType.
+    // MUST remain in case-insensitive sorted order.
+    using PropTypeEntry = std::pair<string_view, PropType>;
+    static constexpr std::array<PropTypeEntry, NUM_PROPS> ourNameToPropType = {{
+      { "Bezel.Name"                , PropType::Bezel_Name                },
+      { "Cart.Highscore"            , PropType::Cart_Highscore            },
+      { "Cart.MD5"                  , PropType::Cart_MD5                  },
+      { "Cart.Manufacturer"         , PropType::Cart_Manufacturer         },
+      { "Cart.ModelNo"              , PropType::Cart_ModelNo              },
+      { "Cart.Name"                 , PropType::Cart_Name                 },
+      { "Cart.Note"                 , PropType::Cart_Note                 },
+      { "Cart.Rarity"               , PropType::Cart_Rarity               },
+      { "Cart.Sound"                , PropType::Cart_Sound                },
+      { "Cart.StartBank"            , PropType::Cart_StartBank            },
+      { "Cart.Type"                 , PropType::Cart_Type                 },
+      { "Cart.Url"                  , PropType::Cart_Url                  },
+      { "Console.LeftDiff"          , PropType::Console_LeftDiff          },
+      { "Console.RightDiff"         , PropType::Console_RightDiff         },
+      { "Console.SwapPorts"         , PropType::Console_SwapPorts         },
+      { "Console.TVType"            , PropType::Console_TVType            },
+      { "Controller.Left"           , PropType::Controller_Left           },
+      { "Controller.Left1"          , PropType::Controller_Left1          },
+      { "Controller.Left2"          , PropType::Controller_Left2          },
+      { "Controller.MouseAxis"      , PropType::Controller_MouseAxis      },
+      { "Controller.PaddlesXCenter" , PropType::Controller_PaddlesXCenter },
+      { "Controller.PaddlesYCenter" , PropType::Controller_PaddlesYCenter },
+      { "Controller.Right"          , PropType::Controller_Right          },
+      { "Controller.Right1"         , PropType::Controller_Right1         },
+      { "Controller.Right2"         , PropType::Controller_Right2         },
+      { "Controller.SwapPaddles"    , PropType::Controller_SwapPaddles    },
+      { "Display.Format"            , PropType::Display_Format            },
+      { "Display.PPBlend"           , PropType::Display_PPBlend           },
+      { "Display.Phosphor"          , PropType::Display_Phosphor          },
+      { "Display.VCenter"           , PropType::Display_VCenter           },
+    }};
 };
 
 #endif

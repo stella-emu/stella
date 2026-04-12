@@ -15,7 +15,7 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#include <map>
+#include <algorithm>
 
 #include "bspf.hxx"
 #include "FSNode.hxx"
@@ -45,23 +45,25 @@ bool PropertiesSet::getMD5(string_view md5, Properties& properties,
   bool found = false;
 
   // There are three lists to search when looking for a properties entry,
-  // which must be done in the following order
-  // If 'useDefaults' is specified, only use the built-in list
+  // which must be done in the following order.
+  // If 'useDefaults' is specified, only use the built-in list.
   //
   //  'save': entries previously inserted that are saved on program exit
   //  'temp': entries previously inserted that are discarded
   //  'builtin': the defaults compiled into the program
 
-  // First check properties from external file
+  // First check properties from external repository
   if(!useDefaults)
   {
-    if (myRepository->has(md5)) {
+    if(myRepository->has(md5))
+    {
       properties.load(*myRepository->get(md5));
-
       found = true;
     }
     else  // Search temp list
     {
+      // std::less<> on the map allows heterogeneous lookup with string_view,
+      // so no string construction occurs here
       const auto tmp = myTempProps.find(md5);
       if(tmp != myTempProps.end())
       {
@@ -74,26 +76,20 @@ bool PropertiesSet::getMD5(string_view md5, Properties& properties,
   // Otherwise, search the internal database using binary search
   if(!found)
   {
-    int low = 0, high = DEF_PROPS_SIZE - 1;
-    while(low <= high)
+    const auto it = std::lower_bound(DefProps.begin(), DefProps.end(), md5,
+        [](const auto& entry, string_view val) {
+          return BSPF::compareIgnoreCase(
+              entry[static_cast<uInt8>(PropType::Cart_MD5)], val) < 0;
+        });
+
+    if(it != DefProps.end() &&
+       BSPF::compareIgnoreCase((*it)[static_cast<uInt8>(PropType::Cart_MD5)], md5) == 0)
     {
-      const int i = (low + high) / 2;
-      const int cmp = BSPF::compareIgnoreCase(md5,
-          DefProps[i][static_cast<uInt8>(PropType::Cart_MD5)]);
+      for(uInt8 p = 0; p < static_cast<uInt8>(PropType::NumTypes); ++p)
+        if((*it)[p][0] != 0)
+          properties.set(PropType{p}, (*it)[p]);
 
-      if(cmp == 0)  // found it
-      {
-        for(uInt8 p = 0; p < static_cast<uInt8>(PropType::NumTypes); ++p)
-          if(DefProps[i][p][0] != 0)
-            properties.set(PropType{p}, DefProps[i][p]);
-
-        found = true;
-        break;
-      }
-      else if(cmp < 0)
-        high = i - 1; // look at lower range
-      else
-        low = i + 1;  // look at upper range
+      found = true;
     }
   }
 
@@ -103,15 +99,14 @@ bool PropertiesSet::getMD5(string_view md5, Properties& properties,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PropertiesSet::insert(const Properties& properties, bool save)
 {
-  // TODO
   // Note that the following code is optimized for insertion when an item
   // doesn't already exist, and when the external properties file is
   // relatively small (which is the case with current versions of Stella,
-  // as the properties are built-in)
-  // If an item does exist, it will be removed and insertion done again
+  // as the properties are built-in).
+  // If an item does exist, it will be removed and insertion done again.
   // This shouldn't be a speed issue, as insertions will only fail with
   // duplicates when you're changing the current ROM properties, which
-  // most people tend not to do
+  // most people tend not to do.
 
   // Since the PropSet is keyed by md5, we can't insert without a valid one
   const string& md5 = properties.get(PropType::Cart_MD5);
@@ -124,40 +119,29 @@ void PropertiesSet::insert(const Properties& properties, bool save)
     return;
   else if(getMD5(md5, defaultProps, true) && defaultProps == properties)
   {
-    cerr << "DELETE" << '\n' << std::flush;
     myRepository->remove(md5);
     return;
   }
 
-  if (save) {
+  if(save)
     properties.save(*myRepository->get(md5));
-  } else {
-    const auto ret = myTempProps.emplace(md5, properties);
-    if(!ret.second)
-    {
-      // Remove old item and insert again
-      myTempProps.erase(ret.first);
-      myTempProps.emplace(md5, properties);
-    }
-  }
+  else
+    myTempProps.insert_or_assign(md5, properties);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PropertiesSet::loadPerROM(const FSNode& rom, string_view md5)
 {
   Properties props;
-
-  // Handle ROM properties, do some error checking
-  // Only add to the database when necessary
   bool toInsert = false;
 
   // First, does this ROM have a per-ROM properties entry?
   // If so, load it into the database
   const FSNode propsNode(rom.getPathWithExt(".pro"));
-  if (propsNode.exists()) {
+  if(propsNode.exists())
+  {
     KeyValueRepositoryPropertyFile repo(propsNode);
     props.load(repo);
-
     insert(props, false);
   }
 
@@ -181,20 +165,13 @@ void PropertiesSet::loadPerROM(const FSNode& rom, string_view md5)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PropertiesSet::print() const
 {
-  // We only look at the external properties and the built-in ones;
-  // the temp properties are ignored
-  // Also, any properties entries in the external file override the built-in
-  // ones
-  // The easiest way to merge the lists is to create another temporary one
-  // This isn't fast, but I suspect this method isn't used too often (or at all)
+  // We only look at the temp properties and the built-in ones;
+  // any temp entries override the built-in ones.
+  // The easiest way to merge the lists is to create a temporary merged map.
+  // This isn't fast, but this method is only used for debugging/export.
 
-  // First insert all external props
-  PropsList list = myExternalProps;
-
-  // Now insert all the built-in ones
-  // Note that if we try to insert a duplicate, the insertion will fail
-  // This is fine, since a duplicate in the built-in list means it should
-  // be overrided anyway (and insertion shouldn't be done)
+  // Start with all built-in props
+  PropsList list;
   Properties properties;
   for(uInt32 i = 0; i < DEF_PROPS_SIZE; ++i)
   {
@@ -206,8 +183,12 @@ void PropertiesSet::print() const
     list.emplace(DefProps[i][static_cast<uInt8>(PropType::Cart_MD5)], properties);
   }
 
-  // Now, print the resulting list
+  // Merge temp props, overriding any built-in duplicates
+  for(const auto& [md5, props] : myTempProps)
+    list.insert_or_assign(md5, props);
+
+  // Print the merged result
   Properties::printHeader();
-  for(const auto& i: list)
-    i.second.print();
+  for(const auto& [md5, props] : list)
+    props.print();
 }

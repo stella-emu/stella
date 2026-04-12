@@ -132,9 +132,11 @@ void EventHandler::initialize()
   // Integer to string conversions (for HEX) use upper or lower-case
   Common::Base::setHexUppercase(myOSystem.settings().getBool("dbg.uhex"));
 
-  // Default phosphor blend
-  Properties::setDefault(PropType::Display_PPBlend,
-                         myOSystem.settings().getString(PhosphorHandler::SETTING_BLEND));
+// FIXME: setDefault no longer present in Properties
+//        we need to pass this in another way
+//   // Default phosphor blend
+//   Properties::setDefault(PropType::Display_PPBlend,
+//                          myOSystem.settings().getString(PhosphorHandler::SETTING_BLEND));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
