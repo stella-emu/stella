@@ -52,10 +52,10 @@ class VideoModeHandler
       Mode(uInt32 iw, uInt32 ih, uInt32 sw, uInt32 sh, Stretch smode,
            bool fs = false, string_view desc = "",
            double zoomLevel = 1., double overscan = 1.,
-           Bezel::Info bezelInfo = Bezel::Info());
+           const Bezel::Info& bezelInfo = Bezel::Info());
       Mode(uInt32 iw, uInt32 ih, Stretch smode, bool fs = false,
            string_view desc = "", double zoomLevel = 1.,
-           Bezel::Info bezelInfo = Bezel::Info());
+           const Bezel::Info& bezelInfo = Bezel::Info());
 
       friend std::ostream& operator<<(std::ostream& os, const Mode& vm)
       {
@@ -93,13 +93,14 @@ class VideoModeHandler
       Build a video mode based on the given parameters, assuming that
       setImageSize and setDisplaySize have been previously called.
 
-      @param settings  Used to query various options that affect video mode
-      @param inTIAMode Whether the video mode is being used for TIA emulation
+      @param settings    Used to query various options that affect video mode
+      @param inTIAMode   Whether the video mode is being used for TIA emulation
+      @param bezelInfo   Bezel layout information
 
       @return  A video mode based on the given criteria
     */
     const VideoModeHandler::Mode& buildMode(const Settings& settings, bool inTIAMode,
-                                            Bezel::Info bezelInfo = Bezel::Info());
+                                            const Bezel::Info& bezelInfo = Bezel::Info());
 
   private:
     Common::Size myImage, myDisplay;
