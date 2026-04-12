@@ -18,7 +18,7 @@
 #ifndef BANKSWITCH_HXX
 #define BANKSWITCH_HXX
 
-#include <map>
+#include <algorithm>
 
 #include "FSNode.hxx"
 #include "bspf.hxx"
@@ -48,11 +48,21 @@ class Bankswitch
       GL,     JANE,   MDM,     MVC,    SB,    TVBOY, UA,    UASW,
       WD,     WDSW,   WF8,     X07,
     #ifdef CUSTOM_ARM
-      CUSTOM,
+      CUSTOM
     #endif
-      NumSchemes,
-      NumMulti = _128IN1 - _2IN1 + 1,
     };
+
+    // Number of schemes (excluding sentinel enum values)
+    static constexpr size_t NumSchemes =
+    #ifdef CUSTOM_ARM
+      static_cast<size_t>(Type::CUSTOM) + 1;
+    #else
+      static_cast<size_t>(Type::X07) + 1;
+    #endif
+
+    // Number of multi-cart schemes
+    static constexpr size_t NumMulti =
+      static_cast<size_t>(Type::_128IN1) - static_cast<size_t>(Type::_2IN1) + 1;
 
     struct SizesType {
       size_t minSize{0};
@@ -60,72 +70,75 @@ class Bankswitch
     };
     static constexpr size_t any_KB{0};
 
-    static constexpr std::array<SizesType, static_cast<uInt8>(Type::NumSchemes)>
-      Sizes= {{
-        { Bankswitch::any_KB, Bankswitch::any_KB }, // AUTO
-        {    8_KB,   8_KB }, // _03E0
-        {    8_KB,   8_KB }, // _0840
-        {    8_KB,   8_KB }, // _0FA0
-        {    4_KB,  64_KB }, // _2IN1
-        {    8_KB,  64_KB }, // _4IN1
-        {   16_KB,  64_KB }, // _8IN1
-        {   32_KB, 128_KB }, // _16IN1
-        {   64_KB, 128_KB }, // _32IN1
-        {  128_KB, 256_KB }, // _64IN1
-        {  256_KB, 512_KB }, // _128IN1
-        {    0_KB,   4_KB }, // _2K
-        {    8_KB, 512_KB }, // _3E
-        {    8_KB, 512_KB }, // _3EX
-        {    8_KB,  64_KB }, // _3EP
-        {    8_KB, 512_KB }, // _3F
-        {   64_KB,  64_KB }, // _4A50
-        {    4_KB,   4_KB }, // _4K
-        {    4_KB,   4_KB }, // _4KSC
-        {    6_KB,  33_KB }, // _AR
-        {  256_KB, 256_KB }, // _BF
-        {  256_KB, 256_KB }, // _BFSC
-        {   32_KB,  32_KB }, // _BUS
-        {   32_KB, 512_KB }, // _CDF
-        {   16_KB,  16_KB }, // _CM
-        {   32_KB,  32_KB }, // _CTY
-        {    0_KB,   4_KB }, // _CV
-        {  128_KB, 128_KB }, // _DF
-        {  128_KB, 128_KB }, // _DFSC
-        {   10_KB,  11_KB }, // _DPC
-        {   16_KB,  64_KB }, // _DPCP
-        {    8_KB,   8_KB }, // _E0
-        {    8_KB,  16_KB }, // _E7
-        {   64_KB,  64_KB }, // _EF
-        {   64_KB,  64_KB }, // _EFF
-        {   64_KB,  64_KB }, // _EFSC
-        {   Bankswitch::any_KB,  Bankswitch::any_KB }, // _ELF
-        {   64_KB,  64_KB }, // _F0
-        {   32_KB,  32_KB }, // _F4
-        {   32_KB,  32_KB }, // _F4SC
-        {   16_KB,  16_KB }, // _F6
-        {   16_KB,  16_KB }, // _F6SC
-        {    8_KB,   8_KB }, // _F8
-        {    8_KB,   8_KB }, // _F8SC
-        {   12_KB,  12_KB }, // _FA
-        {   24_KB,  32_KB }, // _FA2
-        {   32_KB,  32_KB }, // _FC
-        {    8_KB,   8_KB }, // _FE
-        {    4_KB,   6_KB }, // _GL
-        {   16_KB,  16_KB }, // _JANE
-        {    8_KB, Bankswitch::any_KB }, // _MDM
-        { 1024_KB, Bankswitch::any_KB }, // _MVC
-        {  128_KB, 256_KB }, // _SB
-        {  512_KB, 512_KB }, // _TVBOY
-        {    8_KB,   8_KB }, // _UA
-        {    8_KB,   8_KB }, // _UASW
-        {    8_KB,   8_KB }, // _WD
-        {    8_KB,   8_KB+5 }, // _WDSW
-        {    8_KB,   8_KB }, // _WF8
-        {   64_KB,  64_KB }, // _X07
-      #ifdef CUSTOM_ARM
-        { Bankswitch::any_KB, Bankswitch::any_KB }
-      #endif
-      }};
+    static constexpr std::array<SizesType, NumSchemes> Sizes = {{
+      { Bankswitch::any_KB, Bankswitch::any_KB }, // AUTO
+      {    8_KB,   8_KB },    // _03E0
+      {    8_KB,   8_KB },    // _0840
+      {    8_KB,   8_KB },    // _0FA0
+      {    4_KB,  64_KB },    // _2IN1
+      {    8_KB,  64_KB },    // _4IN1
+      {   16_KB,  64_KB },    // _8IN1
+      {   32_KB, 128_KB },    // _16IN1
+      {   64_KB, 128_KB },    // _32IN1
+      {  128_KB, 256_KB },    // _64IN1
+      {  256_KB, 512_KB },    // _128IN1
+      {    0_KB,   4_KB },    // _2K
+      {    8_KB, 512_KB },    // _3E
+      {    8_KB, 512_KB },    // _3EX
+      {    8_KB,  64_KB },    // _3EP
+      {    8_KB, 512_KB },    // _3F
+      {   64_KB,  64_KB },    // _4A50
+      {    4_KB,   4_KB },    // _4K
+      {    4_KB,   4_KB },    // _4KSC
+      {    6_KB,  33_KB },    // AR
+      {  256_KB, 256_KB },    // BF
+      {  256_KB, 256_KB },    // BFSC
+      {   32_KB,  32_KB },    // BUS
+      {   32_KB, 512_KB },    // CDF
+      {   16_KB,  16_KB },    // CM
+      {   32_KB,  32_KB },    // CTY
+      {    0_KB,   4_KB },    // CV
+      {  128_KB, 128_KB },    // DF
+      {  128_KB, 128_KB },    // DFSC
+      {   10_KB,  11_KB },    // DPC
+      {   16_KB,  64_KB },    // DPCP
+      {    8_KB,   8_KB },    // E0
+      {    8_KB,  16_KB },    // E7
+      {   64_KB,  64_KB },    // EF
+      {   64_KB,  64_KB },    // EFF
+      {   64_KB,  64_KB },    // EFSC
+      { Bankswitch::any_KB,
+        Bankswitch::any_KB }, // ELF
+      {   64_KB,  64_KB },    // F0
+      {   32_KB,  32_KB },    // F4
+      {   32_KB,  32_KB },    // F4SC
+      {   16_KB,  16_KB },    // F6
+      {   16_KB,  16_KB },    // F6SC
+      {    8_KB,   8_KB },    // F8
+      {    8_KB,   8_KB },    // F8SC
+      {   12_KB,  12_KB },    // FA
+      {   24_KB,  32_KB },    // FA2
+      {   32_KB,  32_KB },    // FC
+      {    8_KB,   8_KB },    // FE
+      {    4_KB,   6_KB },    // GL
+      {   16_KB,  16_KB },    // JANE
+      {    8_KB,
+        Bankswitch::any_KB }, // MDM
+      { 1024_KB,
+        Bankswitch::any_KB }, // MVC
+      {  128_KB, 256_KB },    // SB
+      {  512_KB, 512_KB },    // TVBOY
+      {    8_KB,   8_KB },    // UA
+      {    8_KB,   8_KB },    // UASW
+      {    8_KB,   8_KB },    // WD
+      {    8_KB,   8_KB+5 },  // WDSW
+      {    8_KB,   8_KB },    // WF8
+      {   64_KB,  64_KB },    // X07
+    #ifdef CUSTOM_ARM
+      { Bankswitch::any_KB,
+        Bankswitch::any_KB }  // CUSTOM
+    #endif
+    }};
 
     // Info about the various bankswitch schemes, useful for displaying
     // in GUI dropdown boxes, etc
@@ -133,102 +146,111 @@ class Bankswitch
       string_view name;
       string_view desc;
     };
-    static constexpr std::array<Description, static_cast<uInt8>(Type::NumSchemes)>
-      BSList = {{
-        { "AUTO"    , "Auto-detect"                 },
-        { "03E0"    , "03E0 (8K Braz. Parker Bros)" },
-        { "0840"    , "0840 (8K EconoBanking)"      },
-        { "0FA0"    , "0FA0 (8K Fotomania)"         },
-        { "2IN1"    , "2in1 Multicart (4-64K)"      },
-        { "4IN1"    , "4in1 Multicart (8-64K)"      },
-        { "8IN1"    , "8in1 Multicart (16-64K)"     },
-        { "16IN1"   , "16in1 Multicart (32-128K)"   },
-        { "32IN1"   , "32in1 Multicart (64/128K)"   },
-        { "64IN1"   , "64in1 Multicart (128/256K)"  },
-        { "128IN1"  , "128in1 Multicart (256/512K)" },
-        { "2K"      , "2K (32-2048 bytes Atari)"    },
-        { "3E"      , "3E (Tigervision, 32K RAM)"   },
-        { "3EX"     , "3EX (Tigervision, 256K RAM)" },
-        { "3E+"     , "3E+ (TJ modified 3E)"        },
-        { "3F"      , "3F (512K Tigervision)"       },
-        { "4A50"    , "4A50 (64K 4A50 + RAM)"       },
-        { "4K"      , "4K (4K Atari)"               },
-        { "4KSC"    , "4KSC (CPUWIZ 4K + RAM)"      },
-        { "AR"      , "AR (Supercharger)"           },
-        { "BF"      , "BF (CPUWIZ 256K)"            },
-        { "BFSC"    , "BFSC (CPUWIZ 256K + RAM)"    },
-        { "BUS"     , "BUS (Experimental)"          },
-        { "CDF"     , "CDF (Chris, Darrell, Fred)"  },
-        { "CM"      , "CM (SpectraVideo CompuMate)" },
-        { "CTY"     , "CTY (CDW - Chetiry)"         },
-        { "CV"      , "CV (Commavid extra RAM)"     },
-        { "DF"      , "DF (CPUWIZ 128K)"            },
-        { "DFSC"    , "DFSC (CPUWIZ 128K + RAM)"    },
-        { "DPC"     , "DPC (Pitfall II)"            },
-        { "DPC+"    , "DPC+ (Enhanced DPC)"         },
-        { "E0"      , "E0 (8K Parker Bros)"         },
-        { "E7"      , "E7 (8-16K M Network)"        },
-        { "EF"      , "EF (64K H. Runner)"          },
-        { "EFF"     , "EFF (64K+2Kee/Grizzards)"    },
-        { "EFSC"    , "EFSC (64K H. Runner + RAM)"  },
-        { "ELF"     , "ELF (ARM bus stuffing)"      },
-        { "F0"      , "F0 (Dynacom Megaboy)"        },
-        { "F4"      , "F4 (32K Atari)"              },
-        { "F4SC"    , "F4SC (32K Atari + RAM)"      },
-        { "F6"      , "F6 (16K Atari)"              },
-        { "F6SC"    , "F6SC (16K Atari + RAM)"      },
-        { "F8"      , "F8 (8K Atari)"               },
-        { "F8SC"    , "F8SC (8K Atari + RAM)"       },
-        { "FA"      , "FA (CBS RAM Plus)"           },
-        { "FA2"     , "FA2 (CBS RAM Plus 24-32K)"   },
-        { "FC"      , "FC (32K Amiga)"              },
-        { "FE"      , "FE (8K Activision)"          },
-        { "GL"      , "GL (GameLine Master Module)" },
-        { "JANE"    , "JANE (16K Tarzan prototype)" },
-        { "MDM"     , "MDM (Menu Driven Megacart)"  },
-        { "MVC"     , "MVC (Movie Cart)"            },
-        { "SB"      , "SB (128-256K SUPERbank)"     },
-        { "TVBOY"   , "TV Boy (512K)"               },
-        { "UA"      , "UA (8K UA Ltd.)"             },
-        { "UASW"    , "UASW (8K UA swapped banks)"  },
-        { "WD"      , "WD (Pink Panther)"           },
-        { "WDSW"    , "WDSW (Pink Panther, bad)"    },
-        { "WF8"     , "WF8 (Coleco, white carts)"   },
-        { "X07"     , "X07 (64K AtariAge)"          },
-      #ifdef CUSTOM_ARM
-        { "CUSTOM"  , "CUSTOM (ARM)"                }
-      #endif
-      }};
+    static constexpr std::array<Description, NumSchemes> BSList = {{
+      { "AUTO"    , "Auto-detect"                 },
+      { "03E0"    , "03E0 (8K Braz. Parker Bros)" },
+      { "0840"    , "0840 (8K EconoBanking)"      },
+      { "0FA0"    , "0FA0 (8K Fotomania)"         },
+      { "2IN1"    , "2in1 Multicart (4-64K)"      },
+      { "4IN1"    , "4in1 Multicart (8-64K)"      },
+      { "8IN1"    , "8in1 Multicart (16-64K)"     },
+      { "16IN1"   , "16in1 Multicart (32-128K)"   },
+      { "32IN1"   , "32in1 Multicart (64/128K)"   },
+      { "64IN1"   , "64in1 Multicart (128/256K)"  },
+      { "128IN1"  , "128in1 Multicart (256/512K)" },
+      { "2K"      , "2K (32-2048 bytes Atari)"    },
+      { "3E"      , "3E (Tigervision, 32K RAM)"   },
+      { "3EX"     , "3EX (Tigervision, 256K RAM)" },
+      { "3E+"     , "3E+ (TJ modified 3E)"        },
+      { "3F"      , "3F (512K Tigervision)"       },
+      { "4A50"    , "4A50 (64K 4A50 + RAM)"       },
+      { "4K"      , "4K (4K Atari)"               },
+      { "4KSC"    , "4KSC (CPUWIZ 4K + RAM)"      },
+      { "AR"      , "AR (Supercharger)"           },
+      { "BF"      , "BF (CPUWIZ 256K)"            },
+      { "BFSC"    , "BFSC (CPUWIZ 256K + RAM)"    },
+      { "BUS"     , "BUS (Experimental)"          },
+      { "CDF"     , "CDF (Chris, Darrell, Fred)"  },
+      { "CM"      , "CM (SpectraVideo CompuMate)" },
+      { "CTY"     , "CTY (CDW - Chetiry)"         },
+      { "CV"      , "CV (Commavid extra RAM)"     },
+      { "DF"      , "DF (CPUWIZ 128K)"            },
+      { "DFSC"    , "DFSC (CPUWIZ 128K + RAM)"    },
+      { "DPC"     , "DPC (Pitfall II)"            },
+      { "DPC+"    , "DPC+ (Enhanced DPC)"         },
+      { "E0"      , "E0 (8K Parker Bros)"         },
+      { "E7"      , "E7 (8-16K M Network)"        },
+      { "EF"      , "EF (64K H. Runner)"          },
+      { "EFF"     , "EFF (64K+2Kee/Grizzards)"    },
+      { "EFSC"    , "EFSC (64K H. Runner + RAM)"  },
+      { "ELF"     , "ELF (ARM bus stuffing)"      },
+      { "F0"      , "F0 (Dynacom Megaboy)"        },
+      { "F4"      , "F4 (32K Atari)"              },
+      { "F4SC"    , "F4SC (32K Atari + RAM)"      },
+      { "F6"      , "F6 (16K Atari)"              },
+      { "F6SC"    , "F6SC (16K Atari + RAM)"      },
+      { "F8"      , "F8 (8K Atari)"               },
+      { "F8SC"    , "F8SC (8K Atari + RAM)"       },
+      { "FA"      , "FA (CBS RAM Plus)"           },
+      { "FA2"     , "FA2 (CBS RAM Plus 24-32K)"   },
+      { "FC"      , "FC (32K Amiga)"              },
+      { "FE"      , "FE (8K Activision)"          },
+      { "GL"      , "GL (GameLine Master Module)" },
+      { "JANE"    , "JANE (16K Tarzan prototype)" },
+      { "MDM"     , "MDM (Menu Driven Megacart)"  },
+      { "MVC"     , "MVC (Movie Cart)"            },
+      { "SB"      , "SB (128-256K SUPERbank)"     },
+      { "TVBOY"   , "TV Boy (512K)"               },
+      { "UA"      , "UA (8K UA Ltd.)"             },
+      { "UASW"    , "UASW (8K UA swapped banks)"  },
+      { "WD"      , "WD (Pink Panther)"           },
+      { "WDSW"    , "WDSW (Pink Panther, bad)"    },
+      { "WF8"     , "WF8 (Coleco, white carts)"   },
+      { "X07"     , "X07 (64K AtariAge)"          },
+    #ifdef CUSTOM_ARM
+      { "CUSTOM"  , "CUSTOM (ARM)"                }
+    #endif
+    }};
 
   public:
-    // Convert BSType enum to string
-    static string typeToName(Bankswitch::Type type) {
-      return string{BSList[static_cast<int>(type)].name};
+    // Convert BSType enum to string_view
+    static constexpr string_view typeToName(Bankswitch::Type type) {
+      return BSList[static_cast<size_t>(type)].name;
     }
 
-    // Convert string to BSType enum
+    // Convert BSType enum to description string_view
+    static constexpr string_view typeToDesc(Bankswitch::Type type) {
+      return BSList[static_cast<size_t>(type)].desc;
+    }
+
+    // Convert string to BSType enum via binary search on sorted constexpr table
     static Bankswitch::Type nameToType(string_view name) {
-      const auto it = ourNameToTypes.find(name);
-      if(it != ourNameToTypes.end())
+      const auto it = std::lower_bound(
+        ourNameToTypes.begin(), ourNameToTypes.end(), name,
+        [](const auto& entry, string_view val) {
+          return BSPF::compareIgnoreCase(entry.first, val) < 0;
+        });
+      if(it != ourNameToTypes.end() &&
+         BSPF::compareIgnoreCase(it->first, name) == 0)
         return it->second;
 
       return Bankswitch::Type::AUTO;
     }
 
-    // Convert BSType enum to description string
-    static string typeToDesc(Bankswitch::Type type) {
-      return string{BSList[static_cast<int>(type)].desc};
-    }
-
     // Determine bankswitch type by filename extension
     // Use 'AUTO' if unknown
     static Bankswitch::Type typeFromExtension(const FSNode& file) {
-      const string_view name = file.getPath();
-      const auto idx = name.find_last_of('.');
+      const string_view path = file.getPath();
+      const auto idx = path.find_last_of('.');
       if(idx != string_view::npos)
       {
-        const auto it = ourExtensions.find(name.substr(idx + 1));
-        if(it != ourExtensions.end())
+        const auto it = std::lower_bound(
+          ourExtensions.begin(), ourExtensions.end(), path.substr(idx + 1),
+          [](const auto& entry, string_view val) {
+            return BSPF::compareIgnoreCase(entry.first, val) < 0;
+          });
+        if(it != ourExtensions.end() &&
+           BSPF::compareIgnoreCase(it->first, path.substr(idx + 1)) == 0)
           return it->second;
       }
 
@@ -246,8 +268,13 @@ class Bankswitch
       if(idx != string_view::npos)
       {
         const auto e = name.substr(idx + 1);
-        const auto it = ourExtensions.find(e);
-        if(it != ourExtensions.end())
+        const auto it = std::lower_bound(
+          ourExtensions.begin(), ourExtensions.end(), e,
+          [](const auto& entry, string_view val) {
+            return BSPF::compareIgnoreCase(entry.first, val) < 0;
+          });
+        if(it != ourExtensions.end() &&
+           BSPF::compareIgnoreCase(it->first, e) == 0)
         {
           ext = e;
           return true;
@@ -257,7 +284,7 @@ class Bankswitch
     }
 
     /**
-      Convenience functions for different parameter types.
+      Convenience overloads for different parameter types.
      */
     static bool isValidRomName(const FSNode& name, string& ext) {
       return isValidRomName(name.getPath(), ext);
@@ -277,61 +304,58 @@ class Bankswitch
     }
 
   private:
-    struct TypeComparator {
-      bool operator() (string_view a, string_view b) const {
-        return BSPF::compareIgnoreCase(a, b) < 0;
-      }
-    };
-    using ExtensionMap = const std::map<string_view, Bankswitch::Type,
-                                        TypeComparator>;
-    inline static const ExtensionMap ourExtensions = {  // NOLINT
-      // Normal file extensions that don't actually tell us anything
-      // about the bankswitch type to use
-      { "a26"   , Bankswitch::Type::AUTO    },
-      { "bin"   , Bankswitch::Type::AUTO    },
-      { "rom"   , Bankswitch::Type::AUTO    },
-    #ifdef ZIP_SUPPORT
-      { "zip"   , Bankswitch::Type::AUTO    },
-    #endif
-      { "cu"    , Bankswitch::Type::AUTO    },
+    // Key-value pair used in both sorted lookup tables
+    using TypeEntry = std::pair<string_view, Bankswitch::Type>;
 
-      // All bankswitch types (those that UnoCart and HarmonyCart support have the same name)
+    // Comparator used with std::lower_bound on sorted TypeEntry arrays
+    static constexpr auto entryCmp = [](const TypeEntry& a, const TypeEntry& b) {
+      return BSPF::compareIgnoreCase(a.first, b.first) < 0;
+    };
+
+    // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    // Extension table — sorted case-insensitively for binary search.
+    // Precondition: entries below MUST remain in case-insensitive sorted order.
+    // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    static constexpr std::array<TypeEntry, 112> ourExtensions = {{
       { "03E"   , Bankswitch::Type::_03E0   },
       { "03E0"  , Bankswitch::Type::_03E0   },
       { "084"   , Bankswitch::Type::_0840   },
       { "0840"  , Bankswitch::Type::_0840   },
       { "0FA"   , Bankswitch::Type::_0FA0   },
       { "0FA0"  , Bankswitch::Type::_0FA0   },
-      { "2N1"   , Bankswitch::Type::_2IN1   },
-      { "4N1"   , Bankswitch::Type::_4IN1   },
-      { "8N1"   , Bankswitch::Type::_8IN1   },
-      { "16N"   , Bankswitch::Type::_16IN1  },
-      { "16N1"  , Bankswitch::Type::_16IN1  },
-      { "32N"   , Bankswitch::Type::_32IN1  },
-      { "32N1"  , Bankswitch::Type::_32IN1  },
-      { "64N"   , Bankswitch::Type::_64IN1  },
-      { "64N1"  , Bankswitch::Type::_64IN1  },
       { "128"   , Bankswitch::Type::_128IN1 },
       { "128N1" , Bankswitch::Type::_128IN1 },
+      { "16N"   , Bankswitch::Type::_16IN1  },
+      { "16N1"  , Bankswitch::Type::_16IN1  },
       { "2K"    , Bankswitch::Type::_2K     },
+      { "2N1"   , Bankswitch::Type::_2IN1   },
+      { "32N"   , Bankswitch::Type::_32IN1  },
+      { "32N1"  , Bankswitch::Type::_32IN1  },
       { "3E"    , Bankswitch::Type::_3E     },
-      { "3EX"   , Bankswitch::Type::_3EX    },
-      { "3EP"   , Bankswitch::Type::_3EP    },
       { "3E+"   , Bankswitch::Type::_3EP    },
+      { "3EP"   , Bankswitch::Type::_3EP    },
+      { "3EX"   , Bankswitch::Type::_3EX    },
       { "3F"    , Bankswitch::Type::_3F     },
       { "4A5"   , Bankswitch::Type::_4A50   },
       { "4A50"  , Bankswitch::Type::_4A50   },
       { "4K"    , Bankswitch::Type::_4K     },
       { "4KS"   , Bankswitch::Type::_4KSC   },
       { "4KSC"  , Bankswitch::Type::_4KSC   },
+      { "4N1"   , Bankswitch::Type::_4IN1   },
+      { "64N"   , Bankswitch::Type::_64IN1  },
+      { "64N1"  , Bankswitch::Type::_64IN1  },
+      { "8N1"   , Bankswitch::Type::_8IN1   },
+      { "a26"   , Bankswitch::Type::AUTO    },
       { "AR"    , Bankswitch::Type::AR      },
       { "BF"    , Bankswitch::Type::BF      },
       { "BFS"   , Bankswitch::Type::BFSC    },
       { "BFSC"  , Bankswitch::Type::BFSC    },
+      { "bin"   , Bankswitch::Type::AUTO    },
       { "BUS"   , Bankswitch::Type::BUS     },
       { "CDF"   , Bankswitch::Type::CDF     },
       { "CM"    , Bankswitch::Type::CM      },
       { "CTY"   , Bankswitch::Type::CTY     },
+      { "cu"    , Bankswitch::Type::AUTO    },
       { "CV"    , Bankswitch::Type::CV      },
       { "DF"    , Bankswitch::Type::DF      },
       { "DFS"   , Bankswitch::Type::DFSC    },
@@ -367,6 +391,7 @@ class Bankswitch
       { "JANE"  , Bankswitch::Type::JANE    },
       { "MDM"   , Bankswitch::Type::MDM     },
       { "MVC"   , Bankswitch::Type::MVC     },
+      { "rom"   , Bankswitch::Type::AUTO    },
       { "SB"    , Bankswitch::Type::SB      },
       { "TVB"   , Bankswitch::Type::TVBOY   },
       { "TVBOY" , Bankswitch::Type::TVBOY   },
@@ -375,32 +400,37 @@ class Bankswitch
       { "WD"    , Bankswitch::Type::WD      },
       { "WDSW"  , Bankswitch::Type::WDSW    },
       { "WF8"   , Bankswitch::Type::WF8     },
-      { "X07"   , Bankswitch::Type::X07     }
-    };
+      { "X07"   , Bankswitch::Type::X07     },
+    #ifdef ZIP_SUPPORT
+      { "zip"   , Bankswitch::Type::AUTO    }
+    #endif
+    }};
 
-    using NameToTypeMap = const std::map<string_view, Bankswitch::Type,
-                                         TypeComparator>;
-    inline static const NameToTypeMap ourNameToTypes = {  // NOLINT
-      { "AUTO"    , Bankswitch::Type::AUTO    },
+    // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    // Name-to-type table — sorted case-insensitively for binary search.
+    // Precondition: entries below MUST remain in case-insensitive sorted order.
+    // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    static constexpr std::array<TypeEntry, 61> ourNameToTypes = {{
       { "03E0"    , Bankswitch::Type::_03E0   },
       { "0840"    , Bankswitch::Type::_0840   },
       { "0FA0"    , Bankswitch::Type::_0FA0   },
-      { "2IN1"    , Bankswitch::Type::_2IN1   },
-      { "4IN1"    , Bankswitch::Type::_4IN1   },
-      { "8IN1"    , Bankswitch::Type::_8IN1   },
-      { "16IN1"   , Bankswitch::Type::_16IN1  },
-      { "32IN1"   , Bankswitch::Type::_32IN1  },
-      { "64IN1"   , Bankswitch::Type::_64IN1  },
       { "128IN1"  , Bankswitch::Type::_128IN1 },
+      { "16IN1"   , Bankswitch::Type::_16IN1  },
+      { "2IN1"    , Bankswitch::Type::_2IN1   },
       { "2K"      , Bankswitch::Type::_2K     },
+      { "32IN1"   , Bankswitch::Type::_32IN1  },
       { "3E"      , Bankswitch::Type::_3E     },
       { "3E+"     , Bankswitch::Type::_3EP    },
       { "3EX"     , Bankswitch::Type::_3EX    },
       { "3F"      , Bankswitch::Type::_3F     },
       { "4A50"    , Bankswitch::Type::_4A50   },
+      { "4IN1"    , Bankswitch::Type::_4IN1   },
       { "4K"      , Bankswitch::Type::_4K     },
       { "4KSC"    , Bankswitch::Type::_4KSC   },
+      { "64IN1"   , Bankswitch::Type::_64IN1  },
+      { "8IN1"    , Bankswitch::Type::_8IN1   },
       { "AR"      , Bankswitch::Type::AR      },
+      { "AUTO"    , Bankswitch::Type::AUTO    },
       { "BF"      , Bankswitch::Type::BF      },
       { "BFSC"    , Bankswitch::Type::BFSC    },
       { "BUS"     , Bankswitch::Type::BUS     },
@@ -440,8 +470,11 @@ class Bankswitch
       { "WD"      , Bankswitch::Type::WD      },
       { "WDSW"    , Bankswitch::Type::WDSW    },
       { "WF8"     , Bankswitch::Type::WF8     },
-      { "X07"     , Bankswitch::Type::X07     }
-    };
+      { "X07"     , Bankswitch::Type::X07     },
+    #ifdef CUSTOM_ARM
+      { "CUSTOM"  , Bankswitch::Type::CUSTOM  }
+    #endif
+    }};
 
   private:
     // Following constructors and assignment operators not supported

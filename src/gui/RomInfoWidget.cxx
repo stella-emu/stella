@@ -162,9 +162,10 @@ void RomInfoWidget::parseProperties(const FSNode& node, bool full)
         else
           buf << (std::round(size / static_cast<float>(1_KB))) << "K";
       }
-      myRomInfo.push_back("Type: " + Bankswitch::typeToDesc(Bankswitch::nameToType(bsDetected))
-                          + (isPlusCart ? " - PlusROM" : "")
-                          + buf.str());
+      myRomInfo.push_back(std::format("Type: {}{}{}",
+          Bankswitch::typeToDesc(Bankswitch::nameToType(bsDetected)),
+          isPlusCart ? " - PlusROM" : "",
+          buf.str()));
     }
 #if defined(DEBUG_BUILD) && defined(IMAGE_SUPPORT)
     // Debug bezel properties:

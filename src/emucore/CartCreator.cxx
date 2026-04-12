@@ -170,7 +170,8 @@ unique_ptr<Cartridge> CartCreator::create(const FSNode& file,
     if(validMultiSize)
       cartridge = createFromMultiCart(image, size, numMultiRoms, md5, detectedType, id, settings);
     else
-      throw std::runtime_error("Invalid cart size for type '" + Bankswitch::typeToName(type) + "'");
+      throw std::runtime_error(std::format(
+          "Invalid cart size for type '{}'", Bankswitch::typeToName(type)));
 
     //type = detectedType;
     buf << id;

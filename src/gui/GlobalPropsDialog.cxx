@@ -53,8 +53,8 @@ GlobalPropsDialog::GlobalPropsDialog(GuiObject* boss, const GUI::Font& font)
 
   // Bankswitch type
   new StaticTextWidget(this, font, xpos, ypos+1, "Bankswitch type");
-  for(uInt32 i = 0; i < static_cast<uInt32>(Bankswitch::Type::NumSchemes); ++i)
-    VarList::push_back(items, Bankswitch::BSList[i].desc, Bankswitch::BSList[i].name);
+  for(const auto& [name, desc] : Bankswitch::BSList)
+    VarList::push_back(items, desc, name);
   myBSType = new PopUpWidget(this, font, xpos+lwidth, ypos,
                              pwidth, lineHeight, items, "");
   wid.push_back(myBSType);

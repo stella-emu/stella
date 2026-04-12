@@ -768,8 +768,8 @@ void GameInfoDialog::loadEmulationProperties(const Properties& props)
       if(myGameFile.exists() && !myGameFile.isDirectory())
         if(const ByteBuffer image = instance().openROM(myGameFile, md5, size);
            image != nullptr)
-          bsDetected = Bankswitch::typeToDesc(
-              CartDetector::autodetectType(image, size)) + " detected";
+          bsDetected = std::format("{} detected",
+              Bankswitch::typeToDesc(CartDetector::autodetectType(image, size)));
     }
   }
   myTypeDetected->setLabel(bsDetected);
@@ -1174,26 +1174,19 @@ void GameInfoDialog::setDefaults()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void GameInfoDialog::updateMultiCart()
 {
-  const std::array<string, static_cast<size_t>(Bankswitch::Type::NumMulti)> MultiCart
-    = { "2IN1", "4IN1", "8IN1", "16IN1", "32IN1", "64IN1", "128IN1" };
+  static constexpr std::array<string_view, Bankswitch::NumMulti> MultiCart = {
+    "2IN1", "4IN1", "8IN1", "16IN1", "32IN1", "64IN1", "128IN1"
+  };
   const string& selected = myBSType->getSelectedTag().toString();
   const string& detected = myTypeDetected->getLabel();
 
-  bool isMulti = false;
-  bool isInMulti = false;
-  for (const auto& entry: MultiCart)
-  {
-    if(entry == selected)
-    {
-      isMulti = true;
-      break;
-    }
-    if(detected.find(entry + " [") != string::npos)
-    {
-      isInMulti = true;
-      break;
-    }
-  }
+  const bool isMulti = std::ranges::any_of(MultiCart,
+      [&](string_view entry) { return entry == selected; });
+
+  const bool isInMulti = !isMulti && std::ranges::any_of(MultiCart,
+      [&](string_view entry) {
+          return detected.find(std::format("{} [", entry)) != string::npos;
+      });
 
   // en/disable Emulation tab widgets
   myBSTypeLabel->setEnabled(!isInMulti);
@@ -1222,14 +1215,18 @@ void GameInfoDialog::updateBSTypes()
 {
   VariantList items;
 
-  // Bankswitching type
-  for(uInt32 i = 0; i < static_cast<uInt32>(Bankswitch::Type::NumSchemes); ++i)
-    if(!myBSFilter->getState() ||
-      ((Bankswitch::Sizes[i].minSize == Bankswitch::any_KB || myGameFile.getSize() >= Bankswitch::Sizes[i].minSize) &&
-       (Bankswitch::Sizes[i].maxSize == Bankswitch::any_KB || myGameFile.getSize() <= Bankswitch::Sizes[i].maxSize)))
-    {
-      VarList::push_back(items, Bankswitch::BSList[i].desc, Bankswitch::BSList[i].name);
-    }
+  const size_t gameSize = myGameFile.getSize();
+  for(const auto i : std::views::iota(0U, Bankswitch::NumSchemes))
+  {
+      const auto& [minSize, maxSize] = Bankswitch::Sizes[i];
+      if(!myBSFilter->getState() ||
+        ((minSize == Bankswitch::any_KB || gameSize >= minSize) &&
+         (maxSize == Bankswitch::any_KB || gameSize <= maxSize)))
+      {
+          const auto& [name, desc] = Bankswitch::BSList[i];
+          VarList::push_back(items, desc, name);
+      }
+  }
   myBSType->addItems(items);
 }
 
