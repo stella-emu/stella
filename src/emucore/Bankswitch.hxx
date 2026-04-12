@@ -225,13 +225,13 @@ class Bankswitch
 
     // Convert string to BSType enum via binary search on sorted constexpr table
     static Bankswitch::Type nameToType(string_view name) {
-      const auto it = std::lower_bound(
-        ourNameToTypes.begin(), ourNameToTypes.end(), name,
-        [](const auto& entry, string_view val) {
-          return BSPF::compareIgnoreCase(entry.first, val) < 0;
-        });
-      if(it != ourNameToTypes.end() &&
-         BSPF::compareIgnoreCase(it->first, name) == 0)
+      const auto it = std::ranges::lower_bound( // NOLINT(readability-qualified-auto)
+        ourNameToTypes, name,
+        [](string_view a, string_view b) {
+          return BSPF::compareIgnoreCase(a, b) < 0;
+        },
+        &TypeEntry::first);  // projection: extract the key from each element
+      if(it != ourNameToTypes.end() && BSPF::compareIgnoreCase(it->first, name) == 0)
         return it->second;
 
       return Bankswitch::Type::AUTO;
@@ -244,11 +244,12 @@ class Bankswitch
       const auto idx = path.find_last_of('.');
       if(idx != string_view::npos)
       {
-        const auto it = std::lower_bound(
-          ourExtensions.begin(), ourExtensions.end(), path.substr(idx + 1),
-          [](const auto& entry, string_view val) {
-            return BSPF::compareIgnoreCase(entry.first, val) < 0;
-          });
+        const auto it = std::ranges::lower_bound( // NOLINT(readability-qualified-auto)
+          ourExtensions, path.substr(idx + 1),
+          [](string_view a, string_view b) {
+            return BSPF::compareIgnoreCase(a, b) < 0;
+          },
+          &TypeEntry::first);
         if(it != ourExtensions.end() &&
            BSPF::compareIgnoreCase(it->first, path.substr(idx + 1)) == 0)
           return it->second;
@@ -268,13 +269,13 @@ class Bankswitch
       if(idx != string_view::npos)
       {
         const auto e = name.substr(idx + 1);
-        const auto it = std::lower_bound(
-          ourExtensions.begin(), ourExtensions.end(), e,
-          [](const auto& entry, string_view val) {
-            return BSPF::compareIgnoreCase(entry.first, val) < 0;
-          });
-        if(it != ourExtensions.end() &&
-           BSPF::compareIgnoreCase(it->first, e) == 0)
+        const auto it = std::ranges::lower_bound( // NOLINT(readability-qualified-auto)
+          ourExtensions, e,
+          [](string_view a, string_view b) {
+            return BSPF::compareIgnoreCase(a, b) < 0;
+          },
+          &TypeEntry::first);
+        if(it != ourExtensions.end() && BSPF::compareIgnoreCase(it->first, e) == 0)
         {
           ext = e;
           return true;
