@@ -64,7 +64,7 @@ class FSNode
     /** Function used to filter the file listing.  Returns true if the filename
         should be included, else false.*/
     using NameFilter = std::function<bool(const FSNode& node)>;
-    using CancelCheck = std::function<bool()> const;
+    using CancelCheck = std::function<bool()>;
 
     /**
      * Create a new pathless FSNode. Since there's no path associated
@@ -125,8 +125,8 @@ class FSNode
     bool exists() const;
 
     /**
-     * Return a list of child nodes of this and all sub-directories. If called on a node
-     * that does not represent a directory, false is returned.
+     * Return a list of child nodes of this and all sub-directories. If called on
+     * a node that does not represent a directory, false is returned.
      *
      * @return true if successful, false otherwise (e.g. when the directory
      *         does not exist).
@@ -294,6 +294,17 @@ class FSNode
      *          a try-catch block.
      */
     size_t write(const std::ostringstream& buffer) const;
+
+    /**
+     * Write data (binary format) from the given buffer.
+     *
+     * @param buffer  The buffer that contains the data.
+     *
+     * @return  The number of bytes written (0 in the case of failure)
+     *          This method can throw exceptions, and should be used inside
+     *          a try-catch block.
+     */
+    size_t write(string_view buffer) const;
 
     /**
      * The following methods are almost exactly the same as the various
@@ -496,6 +507,17 @@ class AbstractFSNode
      *          a try-catch block.
      */
     virtual size_t write(const std::ostringstream& buffer) const { return 0; }
+
+    /**
+     * Write data (text format) from the given stream.
+     *
+     * @param buffer  The buffer stream that contains the data.
+     *
+     * @return  The number of bytes written (0 in the case of failure)
+     *          This method can throw exceptions, and should be used inside
+     *          a try-catch block.
+     */
+    virtual size_t write(string_view buffer) const { return 0; }
 
   protected:
     /**

@@ -251,20 +251,6 @@ size_t FSNodeZIP::read(std::stringstream& buffer) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-size_t FSNodeZIP::write(const ByteBuffer& buffer, size_t) const
-{
-  // TODO: Not yet implemented
-  throw std::runtime_error("ZIP file not writable");
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-size_t FSNodeZIP::write(const std::ostringstream& buffer) const
-{
-  // TODO: Not yet implemented
-  throw std::runtime_error("ZIP file not writable");
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 AbstractFSNodePtr FSNodeZIP::getParent() const
 {
   if(_virtualPath.empty())
