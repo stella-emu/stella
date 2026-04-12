@@ -28,16 +28,14 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 StateManager::StateManager(OSystem& osystem)
-  : myOSystem{osystem}
+  : myOSystem{osystem},
+    myRewindManager{std::make_unique<RewindManager>(osystem, *this)}
 {
-  myRewindManager = std::make_unique<RewindManager>(myOSystem, *this);
   reset();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-StateManager::~StateManager()  // NOLINT (we need an empty d'tor)
-{
-}
+StateManager::~StateManager() = default;
 
 #if 0
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -127,56 +125,58 @@ void StateManager::toggleTimeMachine()
 {
   const bool devSettings = myOSystem.settings().getBool("dev.settings");
 
-  myActiveMode = myActiveMode == Mode::TimeMachine ? Mode::Off : Mode::TimeMachine;
-  if(myActiveMode == Mode::TimeMachine)
-    myOSystem.frameBuffer().showTextMessage("Time Machine enabled");
-  else
-    myOSystem.frameBuffer().showTextMessage("Time Machine disabled");
-  myOSystem.settings().setValue(devSettings ? "dev.timemachine" : "plr.timemachine", myActiveMode == Mode::TimeMachine);
+  myActiveMode = (myActiveMode == Mode::TimeMachine)
+    ? Mode::Off
+    : Mode::TimeMachine;
+  const bool enabled = (myActiveMode == Mode::TimeMachine);
+
+  myOSystem.frameBuffer().showTextMessage(
+    enabled ? "Time Machine enabled" : "Time Machine disabled");
+
+  myOSystem.settings().setValue(
+    devSettings ? "dev.timemachine" : "plr.timemachine", enabled);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool StateManager::addExtraState(string_view message)
 {
   if(myActiveMode == Mode::TimeMachine)
-  {
-    RewindManager& r = myOSystem.state().rewindManager();
-    return r.addState(message);
-  }
+    return myRewindManager->addState(message);
+
   return false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool StateManager::rewindStates(uInt32 numStates)
 {
-  RewindManager& r = myOSystem.state().rewindManager();
-  return r.rewindStates(numStates);
+  return myRewindManager->rewindStates(numStates);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool StateManager::unwindStates(uInt32 numStates)
 {
-  RewindManager& r = myOSystem.state().rewindManager();
-  return r.unwindStates(numStates);
+  return myRewindManager->unwindStates(numStates);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool StateManager::windStates(uInt32 numStates, bool unwind)
 {
-  RewindManager& r = myOSystem.state().rewindManager();
-  return r.windStates(numStates, unwind);
+  return myRewindManager->windStates(numStates, unwind);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void StateManager::update()
 {
+  if(myActiveMode == Mode::TimeMachine)
+    myRewindManager->addState("Time Machine", true);
+
+#if 0
   switch(myActiveMode)
   {
     case Mode::TimeMachine:
       myRewindManager->addState("Time Machine", true);
       break;
 
-#if 0
     case Mode::MovieRecord:
       myOSystem.console().controller(Controller::Jack::Left).save(myMovieWriter);
       myOSystem.console().controller(Controller::Jack::Right).save(myMovieWriter);
@@ -188,108 +188,110 @@ void StateManager::update()
       myOSystem.console().controller(Controller::Jack::Right).load(myMovieReader);
       myOSystem.console().switches().load(myMovieReader);
       break;
-#endif
     default:
       break;
   }
+#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void StateManager::loadState(int slot)
 {
-  if(myOSystem.hasConsole())
+  if(!myOSystem.hasConsole())
+    return;
+
+  if(slot < 0)
+    slot = myCurrentSlot;
+
+  const auto path = std::format("{}{}.st{}",
+    myOSystem.stateDir().getPath(),
+    myOSystem.console().properties().get(PropType::Cart_Name),
+    slot);
+
+  Serializer in(path, Serializer::FileMode::ReadOnly);
+  if(!in)
   {
-    if(slot < 0) slot = myCurrentSlot;
+    myOSystem.frameBuffer().showTextMessage(
+      std::format("Can't open/load from state file {}", slot));
+    return;
+  }
 
-    std::ostringstream buf;
-    buf << myOSystem.stateDir()
-        << myOSystem.console().properties().get(PropType::Cart_Name)
-        << ".st" << slot;
-
-    // Make sure the file can be opened in read-only mode
-    Serializer in(buf.view(), Serializer::FileMode::ReadOnly);
-    if(!in)
-    {
-      buf.str("");
-      buf << "Can't open/load from state file " << slot;
-      myOSystem.frameBuffer().showTextMessage(buf.view());
-      return;
-    }
-
+  try
+  {
     // First test if we have a valid header
     // If so, do a complete state load using the Console
-    buf.str("");
-    try
-    {
-      if(in.getString() != STATE_HEADER)
-        buf << "Incompatible state " << slot << " file";
-      else
-      {
-        if(myOSystem.console().load(in))
-          buf << "State " << slot << " loaded";
-        else
-          buf << "Invalid data in state " << slot << " file";
-      }
-    }
-    catch(...)
-    {
-      buf << "Invalid data in state " << slot << " file";
-    }
-
-    myOSystem.frameBuffer().showTextMessage(buf.view());
+    const auto header = in.getString();
+    if(header != STATE_HEADER)
+      myOSystem.frameBuffer().showTextMessage(
+        std::format("Incompatible state {} file", slot));
+    else if(myOSystem.console().load(in))
+      myOSystem.frameBuffer().showTextMessage(
+        std::format("State {} loaded", slot));
+    else
+      myOSystem.frameBuffer().showTextMessage(
+        std::format("Invalid data in state {} file", slot));
+  }
+  catch(...)
+  {
+    myOSystem.frameBuffer().showTextMessage(
+      std::format("Invalid data in state {} file", slot));
   }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void StateManager::saveState(int slot)
 {
-  if(myOSystem.hasConsole())
+  if(!myOSystem.hasConsole())
+    return;
+
+  if(slot < 0)
+    slot = myCurrentSlot;
+
+  const auto path = std::format("{}{}.st{}",
+    myOSystem.stateDir().getPath(),
+    myOSystem.console().properties().get(PropType::Cart_Name),
+    slot);
+
+  Serializer out(path, Serializer::FileMode::ReadWriteTrunc);
+  if(!out)
   {
-    if(slot < 0) slot = myCurrentSlot;
+    myOSystem.frameBuffer().showTextMessage(
+      std::format("Can't open/save to state file {}", slot));
+    return;
+  }
 
-    std::ostringstream buf;
-    buf << myOSystem.stateDir()
-        << myOSystem.console().properties().get(PropType::Cart_Name)
-        << ".st" << slot;
+  try
+  {
+    // Add header so that if the state format changes in the future,
+    // we'll know right away, without having to parse the rest of the file
+    out.putString(STATE_HEADER);
+  }
+  catch(...)
+  {
+    myOSystem.frameBuffer().showTextMessage(
+      std::format("Error saving state {}", slot));
+    return;
+  }
 
-    // Make sure the file can be opened for writing
-    Serializer out(buf.view(), Serializer::FileMode::ReadWriteTrunc);
-    if(!out)
+  // Do a complete state save using the Console
+  if(myOSystem.console().save(out))
+  {
+    if(myOSystem.settings().getBool("autoslot"))
     {
-      buf.str("");
-      buf << "Can't open/save to state file " << slot;
-      myOSystem.frameBuffer().showTextMessage(buf.view());
-      return;
-    }
-
-    try
-    {
-      // Add header so that if the state format changes in the future,
-      // we'll know right away, without having to parse the rest of the file
-      out.putString(STATE_HEADER);
-    }
-    catch(...)
-    {
-      buf << "Error saving state " << slot;
-      myOSystem.frameBuffer().showTextMessage(buf.view());
-      return;
-    }
-
-    // Do a complete state save using the Console
-    buf.str("");
-    if(myOSystem.console().save(out))
-    {
-      buf << "State " << slot << " saved";
-      if(myOSystem.settings().getBool("autoslot"))
-      {
-        myCurrentSlot = (slot + 1) % 10;
-        buf << ", switching to slot " << myCurrentSlot;
-      }
+      myCurrentSlot = (slot + 1) % 10;
+      myOSystem.frameBuffer().showTextMessage(
+        std::format("State {} saved, switching to slot {}", slot, myCurrentSlot));
     }
     else
-      buf << "Error saving state " << slot;
-
-    myOSystem.frameBuffer().showTextMessage(buf.view());
+    {
+      myOSystem.frameBuffer().showTextMessage(
+        std::format("State {} saved", slot));
+    }
+  }
+  else
+  {
+    myOSystem.frameBuffer().showTextMessage(
+      std::format("Error saving state {}", slot));
   }
 }
 
@@ -298,13 +300,10 @@ void StateManager::changeState(int direction)
 {
   myCurrentSlot = BSPF::clampw(myCurrentSlot + direction, 0, 9);
 
-  // Print appropriate message
-  std::ostringstream buf;
-  if(direction)
-    buf << "Changed to state slot " << myCurrentSlot;
-  else
-    buf << "State slot " << myCurrentSlot;
-  myOSystem.frameBuffer().showTextMessage(buf.view());
+  myOSystem.frameBuffer().showTextMessage(
+    direction != 0
+      ? std::format("Changed to state slot {}", myCurrentSlot)
+      : std::format("State slot {}", myCurrentSlot));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -312,10 +311,8 @@ void StateManager::toggleAutoSlot()
 {
   const bool autoSlot = !myOSystem.settings().getBool("autoslot");
 
-  // Print appropriate message
-  std::ostringstream buf;
-  buf << "Automatic slot change " << (autoSlot ? "enabled" : "disabled");
-  myOSystem.frameBuffer().showTextMessage(buf.view());
+  myOSystem.frameBuffer().showTextMessage(
+    std::format("Automatic slot change {}", autoSlot ? "enabled" : "disabled"));
 
   myOSystem.settings().setValue("autoslot", autoSlot);
 }
@@ -323,19 +320,14 @@ void StateManager::toggleAutoSlot()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool StateManager::loadState(Serializer& in)
 {
+  if(!myOSystem.hasConsole() || !in)
+    return false;
+
   try
   {
-    if(myOSystem.hasConsole())
-    {
-      // Make sure the file can be opened for reading
-      if(in)
-      {
-        // First test if we have a valid header
-        // If so, do a complete state load using the Console
-        return in.getString() == STATE_HEADER &&
-               myOSystem.console().load(in);
-      }
-    }
+    // First test if we have a valid header
+    // If so, do a complete state load using the Console
+    return in.getString() == STATE_HEADER && myOSystem.console().load(in);
   }
   catch(...)
   {
@@ -347,22 +339,17 @@ bool StateManager::loadState(Serializer& in)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool StateManager::saveState(Serializer& out)
 {
+  if(!myOSystem.hasConsole() || !out)
+    return false;
+
   try
   {
-    if(myOSystem.hasConsole())
-    {
-      // Make sure the file can be opened for writing
-      if(out)
-      {
-        // Add header so that if the state format changes in the future,
-        // we'll know right away, without having to parse the rest of the file
-        out.putString(STATE_HEADER);
+    // Add header so that if the state format changes in the future,
+    // we'll know right away, without having to parse the rest of the file
+    out.putString(STATE_HEADER);
 
-        // Do a complete state save using the Console
-        if(myOSystem.console().save(out))
-          return true;
-      }
-    }
+    // Do a complete state save using the Console
+    return myOSystem.console().save(out);
   }
   catch(...)
   {
@@ -374,9 +361,14 @@ bool StateManager::saveState(Serializer& out)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void StateManager::reset()
 {
+  myCurrentSlot = 0;
   myRewindManager->clear();
-  myActiveMode = myOSystem.settings().getBool(
-    myOSystem.settings().getBool("dev.settings") ? "dev.timemachine" : "plr.timemachine") ? Mode::TimeMachine : Mode::Off;
+
+  const bool devSettings = myOSystem.settings().getBool("dev.settings");
+  const bool timeMachine = myOSystem.settings().getBool(
+    devSettings ? "dev.timemachine" : "plr.timemachine");
+
+  myActiveMode = timeMachine ? Mode::TimeMachine : Mode::Off;
 
 #if 0
   myCurrentSlot = 0;

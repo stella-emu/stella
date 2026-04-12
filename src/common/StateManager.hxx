@@ -35,9 +35,9 @@ class StateManager
   public:
     enum class Mode: uInt8 {
       Off,
-      TimeMachine,
-      MovieRecord,
-      MoviePlayback
+      TimeMachine
+//       MovieRecord,
+//       MoviePlayback
     };
     static constexpr string_view STATE_HEADER = "07000001state";
 
