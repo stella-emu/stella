@@ -46,6 +46,6 @@ namespace CartCreator
   unique_ptr<Cartridge> create(const FSNode& file,
       const ByteBuffer& image, size_t size, string& md5,
       string_view dtype, Settings& settings);
-};
+};  // namespace CartCreator
 
 #endif

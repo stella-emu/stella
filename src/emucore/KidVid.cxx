@@ -29,9 +29,9 @@ KidVid::KidVid(Jack jack, const Event& event, const OSystem& osystem,
                const System& system, string_view romMd5,
                const onMessageCallbackForced& callback)
   : Controller(jack, event, system, Controller::Type::KidVid),
-    myEnabled{myJack == Jack::Right},
     myOSystem{osystem},
-    myCallback{callback}
+    myCallback{callback},
+    myEnabled{myJack == Jack::Right}
 {
   // Right now, there are only two games that use the KidVid
   if(romMd5 == "ee6665683ebdb539e89ba620981cb0f6")
@@ -45,17 +45,9 @@ KidVid::KidVid(Jack jack, const Event& event, const OSystem& osystem,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void KidVid::write(DigitalPin pin, bool value)
 {
-  // Change the pin state based on value
-  switch(pin)
-  {
-    // Pin 1: Signal tape running or stopped
-    case DigitalPin::One:
-      setPin(DigitalPin::One, value);
-      break;
-
-    default:
-      break;
-  }
+  // Pin 1: Signal tape running or stopped; all other pins ignored
+  if(pin == DigitalPin::One)
+    setPin(DigitalPin::One, value);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -68,6 +60,7 @@ void KidVid::update()
   {
     // Continue playing song after state load
     const uInt8 temp = ourSongPositions[mySongPointer - 1] & 0x7f;
+    assert(std::cmp_less(temp + 1, ourSongStart.size()));
     const uInt32 songLength = ourSongStart[temp + 1] - ourSongStart[temp] - (262 * ClickFrames);
 
     // Play the remaining WAV file
@@ -93,6 +86,7 @@ void KidVid::update()
         ourSongPositions[mySongPointer - 1] != 11)  // First song of Harmony Smurf
       myOSystem.sound().stopWav();
   }
+
   if(!myTape)
   {
     if(myEvent.get(Event::RightKeyboard1))
@@ -116,9 +110,9 @@ void KidVid::update()
       else if(myTape == 1 && myGame == Game::BBears)
         myTape = 4;
     }
+
     if(myTape)
     {
-      static constexpr std::array<uInt32, 4> gameNumber = { 3, 1, 2, 3 };
       static constexpr std::array<string_view, 6> gameName = {
         "Harmony Smurf", "Handy Smurf", "Greedy Smurf",
         "Big Number Hunt", "Great Letter Roundup", "Spooky Spelling Bee"
@@ -129,20 +123,19 @@ void KidVid::update()
       myBlock = 0;
       openSampleFiles();
 
-      std::ostringstream msg;
-      msg << "Game #" << gameNumber[myTape - 1] << " - \""
-        << gameName[gameNumber[myTape - 1] + (myGame == Game::Smurfs ? -1 : 2)] << "\"";
-      myCallback(msg.view(), true);
+      myCallback(std::format("Game #{} - \"{}\"",
+        gameNumber(), gameName[tapeIndex()]), true);
     }
   }
 
   // Is the tape running?
   if(myTape && getPin(DigitalPin::One) && !myTapeBusy)
   {
-    setPin(DigitalPin::Four, (ourData[myIdx >> 3] << (myIdx & 0x07)) & 0x80);
+    setPin(DigitalPin::Four,
+           static_cast<uInt8>(ourData[myIdx >> 3] << (myIdx & 0x07)) & 0x80U);
 
   #ifdef DEBUG_BUILD
-    cerr << (DigitalPin::Four, (ourData[myIdx >> 3] << (myIdx & 0x07)) & 0x80 ? "X" : ".");
+    cerr << (static_cast<uInt8>(ourData[myIdx >> 3] << (myIdx & 0x07)) & 0x80U ? "X" : ".");
   #endif
 
     // increase to next bit
@@ -156,14 +149,11 @@ void KidVid::update()
         myIdx = ((myTape * 6) + 12 - NumBlocks) * 8; // KVData00 - ourData = 12 (2 * 6)
       else
       {
-        const uInt32 lastBlock = myGame == Game::Smurfs
-          ? ourBlocks[myTape - 1]
-          : ourBlocks[myTape + 2 - 1];
-        if(myBlock >= lastBlock)
-          myIdx = 42 * 8; // KVData80 - ourData = 42 (7 * 6)
+        if(myBlock >= ourBlocks[tapeIndex()])
+          myIdx = KVData80Offset;
         else
         {
-          myIdx = 36 * 8; // KVPause - ourData = 36 (6 * 6)
+          myIdx = KVPauseOffset;
           setNextSong();
         }
       }
@@ -246,10 +236,25 @@ string KidVid::getFileName() const
     "KVB3.WAV", "KVB1.WAV", "KVB2.WAV"
   };
 
-  int i = myGame == Game::Smurfs ? myTape - 1 : myTape + 2;
-  if(myTape == 4) i = 3;
+  return string{fileNames[tapeIndex()]};
+}
 
-  return string{fileNames[i]};
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt32 KidVid::tapeIndex() const
+{
+  assert(myTape >= 1 && myTape <= 4);
+  if(myTape == 4) return 3;
+  return myGame == Game::Smurfs ? myTape - 1 : myTape + 2;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt32 KidVid::gameNumber() const
+{
+  // Tape selection order is 2,3,1 (keyboard) or 1-4 (select button)
+  // but games are numbered 1,2,3 on the cassette labels
+  assert(myTape >= 1 && myTape <= 4);
+  static constexpr std::array<uInt32, 4> mapping = { 3, 1, 2, 3 };
+  return mapping[myTape - 1];
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -267,9 +272,6 @@ void KidVid::openSampleFiles()
 
   if(!myFilesFound)
   {
-    int i = myGame == Game::Smurfs ? myTape - 1 : myTape + 2;
-    if(myTape == 4) i = 3;
-
     myFilesFound = FSNode(myOSystem.baseDir().getPath() + getFileName()).exists() &&
                    FSNode(myOSystem.baseDir().getPath() + "KVSHARED.WAV").exists();
 
@@ -280,7 +282,7 @@ void KidVid::openSampleFiles()
   #endif
 
     mySongLength = 0;
-    mySongPointer = firstSongPointer[i];
+    mySongPointer = firstSongPointer[tapeIndex()];
   }
   myTapeBusy = false;
 #endif
@@ -294,15 +296,15 @@ void KidVid::setNextSong()
     myBeep = (ourSongPositions[mySongPointer] & 0x80) == 0;
 
     const uInt8 temp = ourSongPositions[mySongPointer] & 0x7f;
+    assert(std::cmp_less(temp + 1, ourSongStart.size()));
     mySongLength = ourSongStart[temp + 1] - ourSongStart[temp] - (262 * ClickFrames);
 
     // Play the WAV file
     const string& fileName = (temp < 10) ? "KVSHARED.WAV" : getFileName();
     myOSystem.sound().playWav(myOSystem.baseDir().getPath() + fileName,
                               ourSongStart[temp], mySongLength);
-    std::ostringstream msg;
-    msg << "Read song #" << mySongPointer << " (" << fileName << ")";
-    myCallback(msg.view(), false);
+    myCallback(std::format("Read song #{} ({})",
+                           mySongPointer, fileName), false);
 
   #ifdef DEBUG_BUILD
     cerr << fileName << ": " << (ourSongPositions[mySongPointer] & 0x7f) << '\n';
@@ -318,234 +320,3 @@ void KidVid::setNextSong()
     mySongLength = TapeFrames + 32;   /* delay needed for Harmony without tape */
   }
 }
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const std::array<uInt8, KidVid::NumBlocks> KidVid::ourBlocks = {
-  2+40, 2+21, 2+35,     /* Smurfs tapes 3, 1, 2 */
-  42+60, 42+78, 42+60   /* BBears tapes 1, 2, 3 (40 extra blocks for intro) */
-};
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const std::array<uInt8, KidVid::NumBlockBits> KidVid::ourData = {
-/* KVData44, Smurfs */
-  0x7b,  // 0111 1011b  ; (1)0
-  0x1e,  // 0001 1110b  ; 1
-  0xc6,  // 1100 0110b  ; 00
-  0x31,  // 0011 0001b  ; 01
-  0xec,  // 1110 1100b  ; 0
-  0x60,  // 0110 0000b  ; 0+
-
-/* KVData48, BBears */
-  0x7b,  // 0111 1011b  ; (1)0
-  0x1e,  // 0001 1110b  ; 1
-  0xc6,  // 1100 0110b  ; 00
-  0x3d,  // 0011 1101b  ; 10
-  0x8c,  // 1000 1100b  ; 0
-  0x60,  // 0110 0000b  ; 0+
-
-/* KVData00 */
-  0xf6,  // 1111 0110b
-  0x31,  // 0011 0001b
-  0x8c,  // 1000 1100b
-  0x63,  // 0110 0011b
-  0x18,  // 0001 1000b
-  0xc0,  // 1100 0000b
-
-/* KVData01 */
-  0xf6,  // 1111 0110b
-  0x31,  // 0011 0001b
-  0x8c,  // 1000 1100b
-  0x63,  // 0110 0011b
-  0x18,  // 0001 1000b
-  0xf0,  // 1111 0000b
-
-/* KVData02 */
-  0xf6,  // 1111 0110b
-  0x31,  // 0011 0001b
-  0x8c,  // 1000 1100b
-  0x63,  // 0110 0011b
-  0x1e,  // 0001 1110b
-  0xc0,  // 1100 0000b
-
-/* KVData03 */
-  0xf6,  // 1111 0110b
-  0x31,  // 0011 0001b
-  0x8c,  // 1000 1100b
-  0x63,  // 0110 0011b
-  0x1e,  // 0001 1110b
-  0xf0,  // 1111 0000b
-
-/* KVPause */
-  0x3f,  // 0011 1111b
-  0xf0,  // 1111 0000b
-  0x00,  // 0000 0000b
-  0x00,  // 0000 0000b
-  0x00,  // 0000 0000b
-  0x00,  // 0000 0000b
-
-/* KVData80 */
-  0xf7,  // 1111 0111b  ; marks end of tape (green/yellow screen)
-  0xb1,  // 1011 0001b
-  0x8c,  // 1000 1100b
-  0x63,  // 0110 0011b
-  0x18,  // 0001 1000b
-  0xc0   // 1100 0000b
-};
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const std::array<uInt8, KidVid::SongPosSize> KidVid::ourSongPositions = {
-/* kvs1 44 */
-  11, 12+0x80, 13+0x80, 14, 15+0x80, 16, 8+0x80, 17, 18+0x80, 19, 20+0x80,
-  21, 8+0x80, 22, 15+0x80, 23, 18+0x80, 14, 20+0x80, 16, 18+0x80,
-  17, 15+0x80, 19, 8+0x80, 21, 20+0x80, 22, 18+0x80, 23, 15+0x80,
-  14, 20+0x80, 16, 8+0x80, 22, 15+0x80, 23, 18+0x80, 14, 20+0x80,
-  16, 8+0x80, 9,
-
-/* kvs2 38 */
-  25+0x80, 26, 27, 28, 8, 29, 30, 26, 27, 28, 8, 29, 30, 26, 27, 28, 8, 29,
-  30, 26, 27, 28, 8, 29, 30, 26, 27, 28, 8, 29, 30, 26, 27, 28, 8, 29,
-  30+0x80, 9,
-
-/* kvs3 42 */
-  32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 34, 42, 36, 43, 40, 39, 38, 37,
-  34, 43, 36, 39, 40, 37, 38, 43, 34, 37, 36, 43, 40, 39, 38, 37, 34, 43,
-  36, 39, 40, 37, 38+0x80, 9,
-
-/* kvb1 62 */
-  0, 1, 45, 2, 3, 46, 4, 5, 47, 6, 7, 48, 4, 3, 49, 2, 1, 50, 6, 7, 51,
-  4, 5, 52, 6, 1, 53, 2, 7, 54, 6, 5, 45, 2, 1, 46, 4, 3, 47, 2, 5, 48,
-  4, 7, 49, 6, 1, 50, 2, 5, 51, 6, 3, 52, 4, 7, 53, 2, 1, 54, 6+0x80, 9,
-
-/* kvb2 80 */
-  0, 1, 56, 4, 3, 57, 2, 5, 58, 6, 7, 59, 2, 3, 60, 4, 1, 61, 6, 7, 62,
-  2, 5, 63, 6, 1, 64, 4, 7, 65, 6, 5, 66, 4, 1, 67, 2, 3, 68, 6, 5, 69,
-  2, 7, 70, 4, 1, 71, 2, 5, 72, 4, 3, 73, 6, 7, 74, 2, 1, 75, 6, 3, 76,
-  4, 5, 77, 6, 7, 78, 2, 3, 79, 4, 1, 80, 2, 7, 81, 4+0x80, 9,
-
-/* kvb3 62 */
-  0, 1, 83, 2, 3, 84, 4, 5, 85, 6, 7, 86, 4, 3, 87, 2, 1, 88, 6, 7, 89,
-  2, 5, 90, 6, 1, 91, 4, 7, 92, 6, 5, 93, 4, 1, 94, 2, 3, 95, 6, 5, 96,
-  2, 7, 97, 4, 1, 98, 6, 5, 99, 4, 3, 100, 2, 7, 101, 4, 1, 102, 2+0x80, 9
-};
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const std::array<uInt32, KidVid::SongStartSize> KidVid::ourSongStart = {
-/* kvshared */
-  44,          /* Welcome + intro Berenstain Bears */
-  980829,      /* boulders in the road */
-  1178398,     /* standing ovations */
-  1430063,     /* brother bear */
-  1691136,     /* good work */
-  1841665,     /* crossing a bridge */
-  2100386,     /* not bad (applause) */
-  2283843,     /* ourgame */
-  2629588,     /* start the parade */
-  2824805,     /* rewind */
-  3059116,
-
-/* kvs1 */
-  44,          /* Harmony intro 1 */
-  164685,      /* falling notes (intro 2) */
-  395182,      /* instructions */
-  750335,      /* high notes are high */
-  962016,      /* my hat's off to you */
-  1204273,     /* 1 2 3 do re mi */
-  1538258,     /* Harmony */
-  1801683,     /* congratulations (all of the Smurfs voted) */
-  2086276,     /* line or space */
-  2399093,     /* hooray */
-  2589606,     /* hear yeeh */
-  2801287,     /* over the river */
-  3111752,     /* musical deduction */
-  3436329,
-
-/* kvs2 */
-  44,          /* Handy intro + instructions */
-  778557,      /* place in shape */
-  1100782,     /* sailor mate + whistle */
-//  1281887,
-  1293648,     /* attention */
-  1493569,     /* colours */
-  1801682,     /* congratulations (Handy and friends voted) */
-  2086275,
-
-/* kvs3 */
-  44,          /* Greedy and Clumsy intro + instructions */
-  686829,      /* red */
-  893806,      /* don't count your chicken */
-  1143119,     /* yellow */
-  1385376,     /* thank you */
-  1578241,     /* mixin' and matchin' */
-  1942802,     /* fun / colour shake */
-  2168595,     /* colours can be usefull */
-  2493172,     /* hip hip horay */
-  2662517,     /* green */
-  3022374,     /* purple */
-  3229351,     /* white */
-  3720920,
-
-/* kvb1 */
-  44,          /* 3 */ // can be one too late!
-  592749,      /* 5 */
-  936142,      /* 2 */
-  1465343,     /* 4 */
-  1787568,     /* 1 */
-  2145073,     /* 7 */
-  2568434,     /* 9 */
-  2822451,     /* 8 */
-  3045892,     /* 6 */
-  3709157,     /* 0 */
-  4219542,
-
-/* kvb2 */
-  44,          /* A */
-  303453,      /* B */
-  703294,      /* C */
-  1150175,     /* D */
-  1514736,     /* E */
-  2208577,     /* F */
-  2511986,     /* G */
-  2864787,     /* H */
-  3306964,     /* I */
-  3864389,     /* J */
-  4148982,     /* K */
-  4499431,     /* L */
-  4824008,     /* M */
-  5162697,     /* N */
-  5581354,     /* O */
-  5844779,     /* P */
-  6162300,     /* Q */
-  6590365,     /* R */
-  6839678,     /* S */
-  7225407,     /* T */
-  7552336,     /* U */
-  7867505,     /* V */
-  8316738,     /* W */
-  8608387,     /* X */
-  8940020,     /* Y */
-  9274005,     /* Z */
-  9593878,
-
-/* kvb3 */
-  44,          /* cat */
-  341085,      /* one */
-  653902,      /* red */
-  1018463,     /* two */
-  1265424,     /* dog */
-  1669969,     /* six */
-  1919282,     /* hat */
-  2227395,     /* ten */
-  2535508,     /* mom */
-  3057653,     /* dad */
-  3375174,     /* ball */
-  3704455,     /* fish */
-  4092536,     /* nine */
-  4487673,     /* bear */
-  5026282,     /* four */
-  5416715,     /* bird */
-  5670732,     /* tree */
-  6225805,     /* rock */
-  6736190,     /* book */
-  7110159,     /* road */
-  7676992
-};

@@ -198,7 +198,7 @@ namespace  // anonymous namespace, to keep these functions private
 
     return createFromImage(slice, size, type, md5, settings);
   }
-};
+};  // namespace
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 unique_ptr<Cartridge> CartCreator::create(const FSNode& file,
