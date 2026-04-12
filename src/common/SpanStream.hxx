@@ -42,6 +42,12 @@ class SpanStreamBuf : public std::streambuf
       setg(begin, begin, begin + data.size());
     }
 
+    // Convenience constructor for raw pointer + size (e.g. uInt8* buffers
+    // common in emulator code), avoids casting at every call site.
+    explicit SpanStreamBuf(const void* data, size_t size)
+      : SpanStreamBuf{std::span<const char>{
+          static_cast<const char*>(data), size}} { }
+
   protected:
     pos_type seekoff(off_type off, std::ios_base::seekdir dir,
                      std::ios_base::openmode which) override
@@ -68,14 +74,30 @@ class SpanStreamBuf : public std::streambuf
     }
 };
 
-class SpanStream: public std::istream
+/**
+  SpanStream wraps SpanStreamBuf as a std::istream.
+
+  Member declaration order matters here: myBuf must be listed BEFORE the
+  std::istream base in any initialiser list reasoning, but because
+  std::istream stores only a pointer to the streambuf (never dereferencing
+  it during its own construction), passing &myBuf while myBuf is not yet
+  fully constructed is safe — the address is stable from the moment the
+  object's storage is allocated.  The declaration order below (istream base
+  first, then myBuf) matches C++ base-then-member initialisation order and
+  is the canonical pattern for embedded-buffer streams.
+ */
+class SpanStream : public std::istream
 {
   public:
     explicit SpanStream(std::span<const char> data)
       : std::istream{&myBuf}, myBuf{data} { }
 
+    // Convenience constructor matching SpanStreamBuf(const void*, size_t).
+    explicit SpanStream(const void* data, size_t size)
+      : std::istream{&myBuf}, myBuf{data, size} { }
+
   private:
     SpanStreamBuf myBuf;
 };
 
-#endif
+#endif // SPANSTREAM_HXX
