@@ -22,8 +22,7 @@
 
 /**
   Emulates a Microchip Technology Inc. 24LC256, a 32KB Serial Electrically
-  Erasable PROM accessed using the I2C protocol.  Thanks to J. Payson
-  (aka Supercat) for the bulk of this code.
+  Erasable PROM accessed using the I2C protocol.
 
   @author Stephen Anthony & J. Payson
 */

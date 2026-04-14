@@ -38,9 +38,7 @@ SaveKey::SaveKey(Jack jack, const Event& event, const System& system,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-SaveKey::~SaveKey()  // NOLINT (we need an empty d'tor)
-{
-}
+SaveKey::~SaveKey() = default;
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool SaveKey::read(DigitalPin pin)

@@ -42,9 +42,7 @@ AtariVox::AtariVox(Jack jack, const Event& event, const System& system,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-AtariVox::~AtariVox()  // NOLINT (we need an empty d'tor)
-{
-}
+AtariVox::~AtariVox() = default;
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool AtariVox::read(DigitalPin pin)
