@@ -57,8 +57,8 @@ class CompuMate
     /**
       Return the left and right CompuMate controllers
     */
-    unique_ptr<Controller>& leftController()  { return myLeftController;  }
-    unique_ptr<Controller>& rightController() { return myRightController; }
+    [[nodiscard]] unique_ptr<Controller>& leftController()  { return myLeftController;  }
+    [[nodiscard]] unique_ptr<Controller>& rightController() { return myRightController; }
 
 
     /** Needed for communication with CartCM class */
