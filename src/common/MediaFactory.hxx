@@ -27,13 +27,13 @@
 #include "Settings.hxx"
 #include "SerialPort.hxx"
 #ifdef BSPF_UNIX
-  #include "SerialPortUNIX.hxx"
+  #include "SerialPortPOSIX.hxx"
   #include "OSystemUNIX.hxx"
 #elif defined(BSPF_WINDOWS)
   #include "SerialPortWINDOWS.hxx"
   #include "OSystemWINDOWS.hxx"
 #elif defined(BSPF_MACOS)
-  #include "SerialPortMACOS.hxx"
+  #include "SerialPortPOSIX.hxx"
   #include "OSystemMACOS.hxx"
 #elif defined(__LIB_RETRO__)
   #include "OSystemLIBRETRO.hxx"
@@ -98,11 +98,11 @@ class MediaFactory
     static unique_ptr<SerialPort> createSerialPort()
     {
     #ifdef BSPF_UNIX
-      return std::make_unique<SerialPortUNIX>();
+      return std::make_unique<SerialPortPOSIX>();
     #elif defined(BSPF_WINDOWS)
       return std::make_unique<SerialPortWINDOWS>();
     #elif defined(BSPF_MACOS)
-      return std::make_unique<SerialPortMACOS>();
+      return std::make_unique<SerialPortPOSIX>();
     #else
       return std::make_unique<SerialPort>();
     #endif

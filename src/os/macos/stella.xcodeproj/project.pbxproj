@@ -240,8 +240,6 @@
 		DC1E89092C4033280033E15F /* ElfUtil.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC1E89002C4033280033E15F /* ElfUtil.hxx */; };
 		DC21E5BF21CA903E007D0E1A /* OSystemMACOS.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC21E5B921CA903E007D0E1A /* OSystemMACOS.cxx */; };
 		DC21E5C021CA903E007D0E1A /* OSystemMACOS.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC21E5BA21CA903E007D0E1A /* OSystemMACOS.hxx */; };
-		DC21E5C121CA903E007D0E1A /* SerialPortMACOS.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC21E5BB21CA903E007D0E1A /* SerialPortMACOS.cxx */; };
-		DC21E5C221CA903E007D0E1A /* SerialPortMACOS.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC21E5BC21CA903E007D0E1A /* SerialPortMACOS.hxx */; };
 		DC22F12D2507D20800AB43E9 /* QuadTari.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC22F12B2507D20800AB43E9 /* QuadTari.hxx */; };
 		DC22F12E2507D20800AB43E9 /* QuadTari.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC22F12C2507D20800AB43E9 /* QuadTari.cxx */; };
 		DC22F1312507D22500AB43E9 /* QuadTariWidget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC22F12F2507D22500AB43E9 /* QuadTariWidget.hxx */; };
@@ -630,6 +628,8 @@
 		DCCE0355225104BF008C246F /* StellaSettingsDialog.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCCE0353225104BE008C246F /* StellaSettingsDialog.cxx */; };
 		DCCE0356225104BF008C246F /* StellaSettingsDialog.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCCE0354225104BF008C246F /* StellaSettingsDialog.hxx */; };
 		DCCE03582251050C008C246F /* ControlLowLevel.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCCE03572251050C008C246F /* ControlLowLevel.hxx */; };
+		DCCE57862F8FF759009D8036 /* SerialPortPOSIX.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCCE57842F8FF759009D8036 /* SerialPortPOSIX.hxx */; };
+		DCCE57872F8FF759009D8036 /* SerialPortPOSIX.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCCE57852F8FF759009D8036 /* SerialPortPOSIX.cxx */; };
 		DCCF47DE14B60DEE00814FAB /* ControllerWidget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCCF47DB14B60DEE00814FAB /* ControllerWidget.hxx */; };
 		DCCF47DF14B60DEE00814FAB /* JoystickWidget.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCCF47DC14B60DEE00814FAB /* JoystickWidget.cxx */; };
 		DCCF47E014B60DEE00814FAB /* JoystickWidget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCCF47DD14B60DEE00814FAB /* JoystickWidget.hxx */; };
@@ -838,7 +838,7 @@
 			isEditable = 1;
 			outputFiles = (
 			);
-			script = "";
+			script = "# Type a script or drag a script file from your workspace to insert its path.\n";
 		};
 		DC5EE7DF14F7C32D001C628C /* PBXBuildRule */ = {
 			isa = PBXBuildRule;
@@ -849,7 +849,7 @@
 			isEditable = 1;
 			outputFiles = (
 			);
-			script = "";
+			script = "# Type a script or drag a script file from your workspace to insert its path.\n";
 		};
 		DC5EE7E014F7C32D001C628C /* PBXBuildRule */ = {
 			isa = PBXBuildRule;
@@ -860,7 +860,7 @@
 			isEditable = 1;
 			outputFiles = (
 			);
-			script = "";
+			script = "# Type a script or drag a script file from your workspace to insert its path.\n";
 		};
 /* End PBXBuildRule section */
 
@@ -1120,8 +1120,6 @@
 		DC1E89002C4033280033E15F /* ElfUtil.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = ElfUtil.hxx; sourceTree = "<group>"; };
 		DC21E5B921CA903E007D0E1A /* OSystemMACOS.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = OSystemMACOS.cxx; sourceTree = SOURCE_ROOT; };
 		DC21E5BA21CA903E007D0E1A /* OSystemMACOS.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = OSystemMACOS.hxx; sourceTree = SOURCE_ROOT; };
-		DC21E5BB21CA903E007D0E1A /* SerialPortMACOS.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SerialPortMACOS.cxx; sourceTree = SOURCE_ROOT; };
-		DC21E5BC21CA903E007D0E1A /* SerialPortMACOS.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = SerialPortMACOS.hxx; sourceTree = SOURCE_ROOT; };
 		DC22F12B2507D20800AB43E9 /* QuadTari.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = QuadTari.hxx; sourceTree = "<group>"; };
 		DC22F12C2507D20800AB43E9 /* QuadTari.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = QuadTari.cxx; sourceTree = "<group>"; };
 		DC22F12F2507D22500AB43E9 /* QuadTariWidget.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = QuadTariWidget.hxx; sourceTree = "<group>"; };
@@ -1514,6 +1512,8 @@
 		DCCE0353225104BE008C246F /* StellaSettingsDialog.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = StellaSettingsDialog.cxx; sourceTree = "<group>"; };
 		DCCE0354225104BF008C246F /* StellaSettingsDialog.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = StellaSettingsDialog.hxx; sourceTree = "<group>"; };
 		DCCE03572251050C008C246F /* ControlLowLevel.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = ControlLowLevel.hxx; sourceTree = "<group>"; };
+		DCCE57842F8FF759009D8036 /* SerialPortPOSIX.hxx */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = SerialPortPOSIX.hxx; sourceTree = "<group>"; };
+		DCCE57852F8FF759009D8036 /* SerialPortPOSIX.cxx */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = SerialPortPOSIX.cxx; sourceTree = "<group>"; };
 		DCCF47DB14B60DEE00814FAB /* ControllerWidget.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = ControllerWidget.hxx; sourceTree = "<group>"; };
 		DCCF47DC14B60DEE00814FAB /* JoystickWidget.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = JoystickWidget.cxx; sourceTree = "<group>"; };
 		DCCF47DD14B60DEE00814FAB /* JoystickWidget.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = JoystickWidget.hxx; sourceTree = "<group>"; };
@@ -2091,8 +2091,6 @@
 			children = (
 				DC21E5B921CA903E007D0E1A /* OSystemMACOS.cxx */,
 				DC21E5BA21CA903E007D0E1A /* OSystemMACOS.hxx */,
-				DC21E5BB21CA903E007D0E1A /* SerialPortMACOS.cxx */,
-				DC21E5BC21CA903E007D0E1A /* SerialPortMACOS.hxx */,
 				E0D4153A25A120340031A8D6 /* SettingsRepositoryMACOS.hxx */,
 				E0D4153B25A120340031A8D6 /* SettingsRepositoryMACOS.mm */,
 			);
@@ -2102,8 +2100,10 @@
 		2D6050C90898774B00C6DE89 /* unix */ = {
 			isa = PBXGroup;
 			children = (
-				2DDBEA0C0845708800812C11 /* FSNodePOSIX.cxx */,
 				DCE395DA16CB0B2B008DB1E5 /* FSNodePOSIX.hxx */,
+				2DDBEA0C0845708800812C11 /* FSNodePOSIX.cxx */,
+				DCCE57842F8FF759009D8036 /* SerialPortPOSIX.hxx */,
+				DCCE57852F8FF759009D8036 /* SerialPortPOSIX.cxx */,
 			);
 			path = unix;
 			sourceTree = "<group>";
@@ -3002,6 +3002,7 @@
 				2D91745509BA90380026E9FF /* CpuWidget.hxx in Headers */,
 				2D91745609BA90380026E9FF /* DataGridOpsWidget.hxx in Headers */,
 				2D91745709BA90380026E9FF /* DataGridWidget.hxx in Headers */,
+				DCCE57862F8FF759009D8036 /* SerialPortPOSIX.hxx in Headers */,
 				DCC6A4B120A2622500863C59 /* Resampler.hxx in Headers */,
 				DCF3A6EC1DFC75E3008A8AF3 /* DelayQueue.hxx in Headers */,
 				DC2ABA7125A0C9B2007E57D3 /* KeyValueRepositoryFile.hxx in Headers */,
@@ -3117,7 +3118,6 @@
 				DCC527D310B9DA19005E1287 /* M6502.hxx in Headers */,
 				DCAA68432A3CD026006A1E5F /* CartGL.hxx in Headers */,
 				DC3EE8661E2C0E6D00905161 /* inflate.h in Headers */,
-				DC21E5C221CA903E007D0E1A /* SerialPortMACOS.hxx in Headers */,
 				E0D4153C25A120340031A8D6 /* SettingsRepositoryMACOS.hxx in Headers */,
 				DC6DC5DF273C2A5E00F64413 /* PlusRomsMenu.hxx in Headers */,
 				DCC527D510B9DA19005E1287 /* NullDev.hxx in Headers */,
@@ -3387,6 +3387,7 @@
 				2D91747809BA90380026E9FF /* Cart3F.cxx in Sources */,
 				2D91747909BA90380026E9FF /* Cart4K.cxx in Sources */,
 				2D91747A09BA90380026E9FF /* CartAR.cxx in Sources */,
+				DCCE57872F8FF759009D8036 /* SerialPortPOSIX.cxx in Sources */,
 				2D91747B09BA90380026E9FF /* CartCV.cxx in Sources */,
 				DC5ACB5E1FBFCEB800A213FD /* CartDebugWidget.cxx in Sources */,
 				DCF3A6FC1DFC75E3008A8AF3 /* Playfield.cxx in Sources */,
@@ -3513,7 +3514,6 @@
 				DC8573532C10A389007AB2FE /* CartJANE.cxx in Sources */,
 				DCDFF08120B781B0001227C0 /* DispatchResult.cxx in Sources */,
 				2D9174FC09BA90380026E9FF /* RamWidget.cxx in Sources */,
-				DC21E5C121CA903E007D0E1A /* SerialPortMACOS.cxx in Sources */,
 				E007231F210FBF5E002CF343 /* FpsMeter.cxx in Sources */,
 				2D9174FD09BA90380026E9FF /* RomListWidget.cxx in Sources */,
 				DC22F1362507D24E00AB43E9 /* QuadTariDialog.cxx in Sources */,

@@ -15,8 +15,8 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#ifndef SERIALPORT_UNIX_HXX
-#define SERIALPORT_UNIX_HXX
+#ifndef SERIALPORT_POSIX_HXX
+#define SERIALPORT_POSIX_HXX
 
 #include <termios.h>
 
@@ -29,11 +29,11 @@
 
   @author  Stephen Anthony
 */
-class SerialPortUNIX : public SerialPort
+class SerialPortPOSIX : public SerialPort
 {
   public:
-    SerialPortUNIX() = default;
-    ~SerialPortUNIX() override;
+    SerialPortPOSIX() = default;
+    ~SerialPortPOSIX() override;
 
     /**
       Open the given serial port with the specified attributes.
@@ -85,10 +85,10 @@ class SerialPortUNIX : public SerialPort
 
   private:
     // Following constructors and assignment operators not supported
-    SerialPortUNIX(const SerialPortUNIX&) = delete;
-    SerialPortUNIX(SerialPortUNIX&&) = delete;
-    SerialPortUNIX& operator=(const SerialPortUNIX&) = delete;
-    SerialPortUNIX& operator=(SerialPortUNIX&&) = delete;
+    SerialPortPOSIX(const SerialPortPOSIX&) = delete;
+    SerialPortPOSIX(SerialPortPOSIX&&) = delete;
+    SerialPortPOSIX& operator=(const SerialPortPOSIX&) = delete;
+    SerialPortPOSIX& operator=(SerialPortPOSIX&&) = delete;
 };
 
-#endif
+#endif  // SERIALPORT_POSIX_HXX

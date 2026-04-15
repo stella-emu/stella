@@ -31,10 +31,10 @@
 #include <unistd.h>
 
 #include "FSNode.hxx"
-#include "SerialPortUNIX.hxx"
+#include "SerialPortPOSIX.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-SerialPortUNIX::~SerialPortUNIX()
+SerialPortPOSIX::~SerialPortPOSIX()
 {
   if(isOpen())
   {
@@ -48,7 +48,7 @@ SerialPortUNIX::~SerialPortUNIX()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool SerialPortUNIX::openPort(const string& device)
+bool SerialPortPOSIX::openPort(const string& device)
 {
   myHandle = open(device.c_str(), O_RDWR | O_NOCTTY | O_NONBLOCK);
   if(!isOpen())
@@ -112,19 +112,19 @@ bool SerialPortUNIX::openPort(const string& device)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool SerialPortUNIX::readByte(uInt8& data)
+bool SerialPortPOSIX::readByte(uInt8& data)
 {
   return isOpen() ? (read(myHandle, &data, 1) == 1) : false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool SerialPortUNIX::writeByte(uInt8 data)
+bool SerialPortPOSIX::writeByte(uInt8 data)
 {
   return isOpen() ? (write(myHandle, &data, 1) == 1) : false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool SerialPortUNIX::isCTS()
+bool SerialPortPOSIX::isCTS()
 {
   if(isOpen())
   {
@@ -137,7 +137,7 @@ bool SerialPortUNIX::isCTS()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-StringList SerialPortUNIX::portNames()
+StringList SerialPortPOSIX::portNames()
 {
   StringList ports;  // NOLINT: cannot be const, but clang-tidy suggests it
 
