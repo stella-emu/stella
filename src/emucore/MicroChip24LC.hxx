@@ -537,7 +537,7 @@ void MicroChip24LC<FLASH_SIZE, PAGE_SIZE>
   {
     case JPEEState::ByteIn:
       jpee_nb <<= 1;
-      jpee_nb |= jpee_mdat;
+      jpee_nb |= static_cast<int>(jpee_mdat);
       if(jpee_nb & 256)
       {
         if(!jpee_pptr)
@@ -679,7 +679,17 @@ bool MicroChip24LC<FLASH_SIZE, PAGE_SIZE>
     myCyclesWhenTimerSet = mySystem.cycles();
     return myTimerActive = true;
   }
-  if constexpr(jpee_smallmode)
+
+  if constexpr(!jpee_smallmode)
+  {
+    if(myTimerActive)  // TimerMode::Check
+    {
+      const uInt64 elapsed = mySystem.cycles() - myCyclesWhenTimerSet;
+      myTimerActive = elapsed < TIMER_CYCLES;
+    }
+    return myTimerActive;
+  }
+  else
   {
     /*
       Not sure why this timer isn't working with EFF/Grizzards but
@@ -688,13 +698,6 @@ bool MicroChip24LC<FLASH_SIZE, PAGE_SIZE>
     */
     return false;
   }
-
-  if(myTimerActive)  // TimerMode::Check
-  {
-    const uInt64 elapsed = mySystem.cycles() - myCyclesWhenTimerSet;
-    myTimerActive = elapsed < TIMER_CYCLES;
-  }
-  return myTimerActive;
 }
 
 #endif  // MICROCHIP24LC_HXX
