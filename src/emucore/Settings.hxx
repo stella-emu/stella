@@ -18,7 +18,7 @@
 #ifndef SETTINGS_HXX
 #define SETTINGS_HXX
 
-#include <map>
+#include <unordered_map>
 
 #include "Variant.hxx"
 #include "bspf.hxx"
@@ -42,6 +42,22 @@
 */
 class Settings
 {
+  // Transparent hashing for heterogeneous lookup
+  struct TransparentHash {
+    using is_transparent = void;
+    template <typename T>
+    requires std::is_convertible_v<T, string_view>
+    size_t operator()(const T& key) const noexcept {
+      return std::hash<string_view>{}(string_view(key));
+    }
+  };
+  struct TransparentEqual {
+    using is_transparent = void;
+    bool operator()(string_view a, string_view b) const noexcept {
+      return a == b;
+    }
+  };
+
   public:
     /**
       Create a new settings abstract class
@@ -49,7 +65,8 @@ class Settings
     explicit Settings();
     virtual ~Settings() = default;
 
-    using Options = std::map<string, Variant, std::less<>>;
+    using Options = std::unordered_map<string, Variant,
+                    TransparentHash, TransparentEqual>;
 
     static constexpr int SETTINGS_VERSION = 1;
     static constexpr string_view SETTINGS_VERSION_KEY = "settings.version";
@@ -129,16 +146,6 @@ class Settings
     */
     void validate();
 
-    /**
-      Migrate settings over one version.
-     */
-    void migrateOne();
-
-    /**
-     Migrate settings.
-     */
-    void migrate();
-
   private:
     // Holds key/value pairs that are necessary for Stella to
     // function and must be saved on each program exit.
@@ -148,7 +155,7 @@ class Settings
     // program exit.
     Options myTemporarySettings;
 
-    shared_ptr<KeyValueRepository> myRespository;
+    shared_ptr<KeyValueRepository> myRepository;
 
   private:
     // Following constructors and assignment operators not supported

@@ -48,14 +48,8 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Settings::Settings()
-  : myRespository{std::make_shared<KeyValueRepositoryNoop>()}
+  : myRepository{std::make_shared<KeyValueRepositoryNoop>()}
 {
-  // If no version is recorded with the persisted settings, we set it to zero
-  setPermanent(SETTINGS_VERSION_KEY, 0);
-  setPermanent("stella.version", "6.2.1");
-
-  //setTemporary("minimal_ui", 1); // enable for minimal UI testing only
-
   // Video-related options
   setPermanent("video", "");
   setPermanent("speed", "1.0");
@@ -331,21 +325,22 @@ Settings::Settings()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Settings::setRepository(shared_ptr<KeyValueRepository> repository)
 {
-  myRespository = std::move(repository);
+  myRepository = std::move(repository);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Settings::load(const Options& options)
 {
-  const Options fromFile = myRespository->load();
-  for (const auto& opt: fromFile)
-    setValue(opt.first, opt.second, false);
+  // Load from repository (std::map)
+  const auto fromFile = myRepository->load();
 
-  migrate();
+  // Apply file settings (no persistence writes)
+  for(const auto& [key, value]: fromFile)
+    setValue(key, value, false);
 
-  // Apply commandline options, which override those from settings file
-  for(const auto& opt: options)
-    setValue(opt.first, opt.second, false);
+  // Apply command-line overrides (still non-persistent)
+  for(const auto& [key, value]: options)
+    setValue(key, value, false);
 
   // Finally, validate some settings, so the rest of the codebase
   // can assume the values are valid
@@ -355,157 +350,91 @@ void Settings::load(const Options& options)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Settings::save()
 {
-  myRespository->save(myPermanentSettings);
+  // Convert unordered_map → map only at the boundary
+  // TODO: maybe KVRMap can be converted to unordered_map too?
+  KVRMap out;
+  out.insert(myPermanentSettings.begin(), myPermanentSettings.end());
+  myRepository->save(out);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Settings::validate()
 {
-  const float f = getFloat("speed");
-  if (f <= 0) setValue("speed", "1.0");
+  auto clampSetting = [&](string_view key, int lo, int hi, int def) {
+    int v = getInt(key);
+    BSPF::clamp(v, lo, hi, def);
+    setValue(key, v);
+  };
+  auto requireOneOf = [&](string_view key,
+                          std::initializer_list<string_view> valid,
+                          string_view def) {
+    string_view s = getString(key);
+    if(std::ranges::none_of(valid, [&](string_view v){ return s == v; }))
+      setValue(key, def);
+  };
 
-  int i = getInt("tia.vsizeadjust");
-  if(i < -5 || i > 5)  setValue("tia.vsizeadjust", 0);
+  if (getFloat("speed") <= 0) setValue("speed", "1.0");
 
-  string s = getString("tia.dbgcolors");
+  clampSetting("tia.vsizeadjust", -5, 5, 0);
+
+  string s{getString("tia.dbgcolors")};
   std::ranges::sort(s);
-  if(s != "bgopry")  setValue("tia.dbgcolors", "roygpb");
+  if(s != "bgopry") setValue("tia.dbgcolors", "roygpb");
 
   if(PhosphorHandler::toPhosphorMode(getString(PhosphorHandler::SETTING_MODE)) == PhosphorHandler::ByRom)
     setValue(PhosphorHandler::SETTING_MODE, PhosphorHandler::VALUE_BYROM);
-
-  i = getInt(PhosphorHandler::SETTING_BLEND);
-  if(i < 0 || i > 100)
+  if(const int v = getInt(PhosphorHandler::SETTING_BLEND); v < 0 || v > 100)
     setValue(PhosphorHandler::SETTING_BLEND, PhosphorHandler::DEFAULT_BLEND);
 
-  s = getString("tv.scanmask");
-  if(s != TIASurface::SETTING_STANDARD
-      && s != TIASurface::SETTING_THIN
-      && s != TIASurface::SETTING_PIXELS
-      && s != TIASurface::SETTING_APERTURE
-      && s != TIASurface::SETTING_MAME)
-    setValue("tv.scanmask", TIASurface::SETTING_STANDARD);
+  requireOneOf("tv.scanmask", {
+    TIASurface::SETTING_STANDARD, TIASurface::SETTING_THIN,
+    TIASurface::SETTING_PIXELS,   TIASurface::SETTING_APERTURE,
+    TIASurface::SETTING_MAME
+  }, TIASurface::SETTING_STANDARD);
+  clampSetting("tv.filter", 0, 5, 0);
 
-  i = getInt("tv.filter");
-  if(i < 0 || i > 5)  setValue("tv.filter", "0");
-
-#ifdef GUI_SUPPORT
-  i = getInt("dev.tv.jitter_sense");
-  if(i < JitterEmulation::MIN_SENSITIVITY || i > JitterEmulation::MAX_SENSITIVITY)
-    setValue("dev.tv.jitter_sense", JitterEmulation::DEV_SENSITIVITY);
-
-  i = getInt("dev.tv.jitter_recovery");
-  if(i < JitterEmulation::MIN_RECOVERY || i > JitterEmulation::MAX_RECOVERY)
-    setValue("dev.tv.jitter_recovery", JitterEmulation::DEV_RECOVERY);
-#endif
-
-  int size = getInt("dev.tm.size");
-  if(size < 20 || size > 1000)
-  {
-    setValue("dev.tm.size", 20);
-    size = 20;
-  }
-
-  i = getInt("dev.tm.uncompressed");
-  if(i < 0 || i > size) setValue("dev.tm.uncompressed", size);
-
-  /*i = getInt("dev.tm.interval");
-  if(i < 0 || i > 5) setValue("dev.tm.interval", 0);
-
-  i = getInt("dev.tm.horizon");
-  if(i < 0 || i > 6) setValue("dev.tm.horizon", 1);*/
+  requireOneOf("palette", {
+    PaletteHandler::SETTING_STANDARD, PaletteHandler::SETTING_Z26,
+    PaletteHandler::SETTING_USER,     PaletteHandler::SETTING_CUSTOM
+  }, PaletteHandler::SETTING_STANDARD);
 
 #ifdef GUI_SUPPORT
-  i = getInt("plr.tv.jitter_sense");
-  if(i < JitterEmulation::MIN_SENSITIVITY || i > JitterEmulation::MAX_SENSITIVITY)
-    setValue("plr.tv.jitter_sense", JitterEmulation::PLR_SENSITIVITY);
-
-  i = getInt("plr.tv.jitter_recovery");
-  if(i < 1 || i > 20) setValue("plr.tv.jitter_recovery", JitterEmulation::PLR_RECOVERY);
+  clampSetting("dev.tv.jitter_sense",    JitterEmulation::MIN_SENSITIVITY, JitterEmulation::MAX_SENSITIVITY, JitterEmulation::DEV_SENSITIVITY);
+  clampSetting("dev.tv.jitter_recovery", JitterEmulation::MIN_RECOVERY,    JitterEmulation::MAX_RECOVERY,    JitterEmulation::DEV_RECOVERY);
+  clampSetting("plr.tv.jitter_sense",    JitterEmulation::MIN_SENSITIVITY, JitterEmulation::MAX_SENSITIVITY, JitterEmulation::PLR_SENSITIVITY);
+  clampSetting("plr.tv.jitter_recovery", 1, 20,                                                              JitterEmulation::PLR_RECOVERY);
 #endif
 
-  size = getInt("plr.tm.size");
-  if(size < 20 || size > 1000)
-  {
-    setValue("plr.tm.size", 20);
-    size = 20;
-  }
-
-  i = getInt("plr.tm.uncompressed");
-  if(i < 0 || i > size) setValue("plr.tm.uncompressed", size);
-
-  /*i = getInt("plr.tm.interval");
-  if(i < 0 || i > 5) setValue("plr.tm.interval", 3);
-
-  i = getInt("plr.tm.horizon");
-  if(i < 0 || i > 6) setValue("plr.tm.horizon", 5);*/
+  clampSetting("dev.tm.size", 20, 1000, 20);
+  clampSetting("dev.tm.uncompressed", 0, getInt("dev.tm.size"), getInt("dev.tm.size"));
+  clampSetting("plr.tm.size", 20, 1000, 20);
+  clampSetting("plr.tm.uncompressed", 0, getInt("plr.tm.size"), getInt("plr.tm.size"));
 
 #ifdef SOUND_SUPPORT
   AudioSettings::normalize(*this);
 #endif
 
-  setValue("joydeadzone", BSPF::clamp(getInt("joydeadzone"),
-           Controller::MIN_DIGITAL_DEADZONE, Joystick::MAX_DIGITAL_DEADZONE));
+  setValue("joydeadzone",   BSPF::clamp(getInt("joydeadzone"),   Controller::MIN_DIGITAL_DEADZONE, Joystick::MAX_DIGITAL_DEADZONE));
+  setValue("adeadzone",     BSPF::clamp(getInt("adeadzone"),     Controller::MIN_ANALOG_DEADZONE,  Controller::MAX_ANALOG_DEADZONE));
+  setValue("psense",        BSPF::clamp(getInt("psense"),        Paddles::MIN_ANALOG_SENSE,        Paddles::MAX_ANALOG_SENSE));
+  setValue("plinear",       BSPF::clamp(getInt("plinear"),       Paddles::MIN_ANALOG_LINEARITY,    Paddles::MAX_ANALOG_LINEARITY));
+  setValue("dejitter.base", BSPF::clamp(getInt("dejitter.base"), Paddles::MIN_DEJITTER,            Paddles::MAX_DEJITTER));
+  setValue("dejitter.diff", BSPF::clamp(getInt("dejitter.diff"), Paddles::MIN_DEJITTER,            Paddles::MAX_DEJITTER));
+  setValue("dsense",        BSPF::clamp(getInt("dsense"),        Paddles::MIN_DIGITAL_SENSE,       Paddles::MAX_DIGITAL_SENSE));
+  setValue("msense",        BSPF::clamp(getInt("msense"),        Controller::MIN_MOUSE_SENSE,       Controller::MAX_MOUSE_SENSE));
 
-  setValue("adeadzone", BSPF::clamp(getInt("adeadzone"),
-           Controller::MIN_ANALOG_DEADZONE, Controller::MAX_ANALOG_DEADZONE));
+  clampSetting("cursor",     0, 3,  2);
+  clampSetting("tsense",     1, 20, 10);
+  clampSetting("dcsense",    1, 20, 10);
+  clampSetting("ssinterval", 1, 10, 2);
+  clampSetting("loglevel",   static_cast<int>(Logger::Level::MIN),
+                             static_cast<int>(Logger::Level::MAX),
+                             static_cast<int>(Logger::Level::INFO));
+  if(getInt("romviewer") < 0) setValue("romviewer", 0);
 
-  setValue("psense", BSPF::clamp(getInt("psense"),
-           Paddles::MIN_ANALOG_SENSE, Paddles::MAX_ANALOG_SENSE));
-
-  setValue("plinear", BSPF::clamp(getInt("plinear"),
-           Paddles::MIN_ANALOG_LINEARITY, Paddles::MAX_ANALOG_LINEARITY));
-
-  setValue("dejitter.base", BSPF::clamp(getInt("dejitter.base"),
-           Paddles::MIN_DEJITTER, Paddles::MAX_DEJITTER));
-
-  setValue("dejitter.diff", BSPF::clamp(getInt("dejitter.diff"),
-           Paddles::MIN_DEJITTER, Paddles::MAX_DEJITTER));
-
-  setValue("dsense", BSPF::clamp(getInt("dsense"),
-           Paddles::MIN_DIGITAL_SENSE, Paddles::MAX_DIGITAL_SENSE));
-
-  setValue("msense", BSPF::clamp(getInt("msense"),
-           Controller::MIN_MOUSE_SENSE, Controller::MAX_MOUSE_SENSE));
-
-  i = getInt("cursor");
-  if(i < 0 || i > 3)
-    setValue("cursor", "2");
-
-  i = getInt("tsense");
-  if(i < 1 || i > 20)
-    setValue("tsense", "10");
-
-  i = getInt("dcsense");
-  if(i < 1 || i > 20)
-    setValue("dcsense", "10");
-
-  i = getInt("ssinterval");
-  if(i < 1)        setValue("ssinterval", "2");
-  else if(i > 10)  setValue("ssinterval", "10");
-
-  s = getString("palette");
-  if(s != PaletteHandler::SETTING_STANDARD
-     && s != PaletteHandler::SETTING_Z26
-     && s != PaletteHandler::SETTING_USER
-     && s != PaletteHandler::SETTING_CUSTOM)
-    setValue("palette", PaletteHandler::SETTING_STANDARD);
-
-  s = getString("launcherfont");
-  if(s != "small" && s != "low_medium" && s != "medium" && s != "large"
-     && s != "large12" && s != "large14" && s != "large16")
-    setValue("launcherfont", "medium");
-
-  s = getString("dbg.fontsize");
-  if(s != "small" && s != "medium" && s != "large")
-    setValue("dbg.fontsize", "medium");
-
-  i = getInt("romviewer");
-  if(i < 0) setValue("romviewer", "0");
-
-  i = getInt("loglevel");
-  if(i < static_cast<int>(Logger::Level::MIN) || i > static_cast<int>(Logger::Level::MAX))
-    setValue("loglevel", static_cast<int>(Logger::Level::INFO));
+  requireOneOf("launcherfont", {"small", "low_medium", "medium", "large",
+                                "large12", "large14", "large16"}, "medium");
+  requireOneOf("dbg.fontsize", {"small", "medium", "large"}, "medium");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -877,70 +806,42 @@ void Settings::usage()
 const Variant& Settings::value(string_view key) const
 {
   // Try to find the named setting and answer its value
-  auto it = myPermanentSettings.find(key);
-  if(it != myPermanentSettings.end())
+  if(auto it = myPermanentSettings.find(key); it != myPermanentSettings.end())
     return it->second;
-  else
-  {
-    it = myTemporarySettings.find(key);
-    if(it != myTemporarySettings.end())
-      return it->second;
-  }
+
+  if(auto it = myTemporarySettings.find(key); it != myTemporarySettings.end())
+    return it->second;
+
   return EmptyVariant();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Settings::setValue(string_view key, const Variant& value, bool persist)
 {
-  const auto it = myPermanentSettings.find(key);
+  auto* atomic = persist ? myRepository->atomic() : nullptr;
 
-  if(it != myPermanentSettings.end()) {
-    if (persist && it->second != value && myRespository->atomic())
-      myRespository->atomic()->save(key, value);
-    it->second = value;
+  if(const auto it = myPermanentSettings.find(key); it != myPermanentSettings.end())
+  {
+    if(it->second != value)
+    {
+      if(atomic)
+        atomic->save(key, value);
+
+      it->second = value;
+    }
   }
   else
-    myTemporarySettings[string{key}] = value;
+    myTemporarySettings.insert_or_assign(string(key), value);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Settings::setPermanent(string_view key, const Variant& value)
 {
-  myPermanentSettings[string{key}] = value;
+  myPermanentSettings.emplace(key, value);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Settings::setTemporary(string_view key, const Variant& value)
 {
-  myTemporarySettings[string{key}] = value;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Settings::migrateOne()
-{
-  const int version = getInt(SETTINGS_VERSION_KEY);
-  if (version >= SETTINGS_VERSION) return;
-
-  // NOLINTBEGIN: could be written as IF/ELSE, bugprone-branch-clone
-  switch (version) {
-    case 0:
-      #if defined BSPF_MACOS || defined DARWIN
-        setPermanent("video", "");
-      #endif
-      break;
-    default:
-      break;
-  }
-  // NOLINTEND
-
-  setPermanent(SETTINGS_VERSION_KEY, version + 1);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Settings::migrate()
-{
-  while (getInt(SETTINGS_VERSION_KEY) < SETTINGS_VERSION) migrateOne();
-
-  if (myRespository->atomic())
-    myRespository->atomic()->save(SETTINGS_VERSION_KEY, SETTINGS_VERSION);
+  myTemporarySettings.emplace(key, value);
 }
