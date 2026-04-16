@@ -478,6 +478,10 @@ bool M6502::save(Serializer& out) const
 
     out.putBool(myHaltRequested);
     out.putLong(myLastBreakCycle);
+
+  #ifdef DEBUGGER_SUPPORT
+    myTimer.save(out);
+  #endif
   }
   catch(...)
   {
@@ -527,6 +531,8 @@ bool M6502::load(Serializer& in)
     myLastBreakCycle = in.getLong();
 
   #ifdef DEBUGGER_SUPPORT
+    myTimer.load(in);
+
     updateStepStateByInstruction();
   #endif
   }

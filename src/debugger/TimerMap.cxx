@@ -191,3 +191,37 @@ void TimerMap::update(uInt16 addr, uInt8 bank, uInt64 cycles)
     if(!it->second->isPartial)
       it->second->stop(cycles);
 }
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool TimerMap::save(Serializer& out) const
+{
+  try
+  {
+    for(auto it = myList.begin(); it != myList.end(); ++it)
+      it->save(out);
+  }
+  catch(...)
+  {
+    cerr << "ERROR: TimerMap::save\n";
+    return false;
+  }
+
+  return true;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool TimerMap::load(Serializer& in)
+{
+  try
+  {
+    for(auto it = myList.begin(); it != myList.end(); ++it)
+      it->load(in);
+  }
+  catch(...)
+  {
+    cerr << "ERROR: TimerMap::load\n";
+    return false;
+  }
+
+  return true;
+}

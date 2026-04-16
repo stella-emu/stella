@@ -24,6 +24,7 @@
 #include <deque>
 
 #include "bspf.hxx"
+#include "Serializable.hxx"
 
 /**
   This class handles debugger timers. Each timer needs a 'from' and a 'to'
@@ -31,7 +32,7 @@
 
   @author  Thomas Jentzsch
 */
-class TimerMap
+class TimerMap : public Serializable
 {
   private:
     static constexpr uInt16 ADDRESS_MASK = 0x1fff;  // either 0x1fff or 0xffff (not needed then)
@@ -57,7 +58,7 @@ class TimerMap
     };
 
   public:
-    struct Timer
+    struct Timer : public Serializable
     {
       TimerPoint from;
       TimerPoint to;
@@ -72,27 +73,24 @@ class TimerMap
       uInt64 maxCycles{0};
       bool   isStarted{false};
 
+      /*
+        Create full timer
+      */
+
       explicit constexpr Timer(const TimerPoint& c_from, const TimerPoint& c_to,
                                bool c_mirrors = false, bool c_anyBank = false)
         : from{c_from}, to{c_to}, mirrors{c_mirrors}, anyBank{c_anyBank} { }
 
-      constexpr Timer(uInt16 fromAddr, uInt16 toAddr, uInt8 fromBank, uInt8 toBank,
-                      bool c_mirrors = false, bool c_anyBank = false)
-        : Timer(TimerPoint{fromAddr, fromBank}, TimerPoint{fromAddr, fromBank},
-                c_mirrors, c_anyBank)
-      {
-      }
-
+      /*
+        Create half timer (start point only)
+      */
       explicit constexpr Timer(const TimerPoint& tp, bool c_mirrors = false,
                                bool c_anyBank = false)
         : from{tp}, mirrors{c_mirrors}, anyBank{c_anyBank}, isPartial{true} { }
 
-      constexpr Timer(uInt16 addr, uInt8 bank, bool c_mirrors = false,
-                      bool c_anyBank = false)
-        : Timer(TimerPoint{addr, bank}, c_mirrors, c_anyBank)
-      {
-      }
-
+      /*
+        Define timer end point
+      */
       void setTo(const TimerPoint& tp, bool c_mirrors = false,
                  bool c_anyBank = false)
       {
@@ -102,20 +100,27 @@ class TimerMap
         isPartial = false;
       }
 
+      /*
+        Reset the timer
+      */
       constexpr void reset()
       {
         execs = lastCycles = totalCycles = maxCycles = 0;
         minCycles = ULONG_MAX;
       }
 
-      // Start the timer
+      /*
+        Start the timer
+      */
       constexpr void start(uInt64 cycles)
       {
         lastCycles = cycles;
         isStarted = true;
       }
 
-      // Stop the timer and update stats
+      /*
+        Stop the timer and update stats
+      */
       constexpr void stop(uInt64 cycles)
       {
         if(isStarted)
@@ -133,6 +138,64 @@ class TimerMap
       constexpr uInt32 averageCycles() const {
         return execs ? static_cast<uInt32>(std::llround(
             static_cast<double>(totalCycles) / execs)) : 0;
+      }
+
+      bool save(Serializer& out) const
+      {
+        try
+        {
+          out.putInt(from.addr);
+          out.putShort(from.bank);
+          out.putInt(to.addr);
+          out.putShort(to.bank);
+
+          out.putBool(mirrors);
+          out.putBool(anyBank);
+          out.putBool(isPartial);
+
+          out.putLong(execs);
+          out.putLong(lastCycles);
+          out.putLong(totalCycles);
+          out.putLong(minCycles);
+          out.putLong(maxCycles);
+          out.putBool(isStarted);
+        }
+        catch(...)
+        {
+          cerr << "ERROR: Timer::save\n";
+          return false;
+        }
+
+        return true;
+      }
+
+      bool load(Serializer& in)
+      {
+        try
+        {
+          from.addr = in.getInt();
+          from.bank = in.getShort();
+          to.addr = in.getInt();
+          to.bank = in.getShort();
+
+          mirrors = in.getBool();
+          anyBank = in.getBool();
+          isPartial = in.getBool();
+
+          execs = in.getLong();
+          lastCycles = in.getLong();
+          totalCycles = in.getLong();
+          minCycles = in.getLong();
+          maxCycles = in.getLong();
+          isStarted = in.getBool();
+        }
+        catch(...)
+        {
+          cerr << "ERROR: Timer::load\n";
+          return false;
+        }
+
+        return true;
       }
     }; // Timer
 
@@ -163,6 +226,22 @@ class TimerMap
 
     /** Update timer */
     void update(uInt16 addr, uInt8 bank, uInt64 cycles);
+
+    /**
+    Save the current state of this cart to the given Serializer.
+
+    @param out  The Serializer object to use
+    @return  False on any errors, else true
+    */
+    bool save(Serializer& out) const override;
+
+    /**
+    Load the current state of this cart from the given Serializer.
+
+    @param in  The Serializer object to use
+    @return  False on any errors, else true
+    */
+    bool load(Serializer& in) override;
 
   private:
     static void toKey(TimerPoint& tp, bool mirrors, bool anyBank);
