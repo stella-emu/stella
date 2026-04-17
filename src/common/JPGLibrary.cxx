@@ -17,13 +17,13 @@
 
 #ifdef IMAGE_SUPPORT
 
-#include <fstream>
 #include <limits>
 #include <span>
 
 #include "OSystem.hxx"
 #include "FrameBuffer.hxx"
 #include "FBSurface.hxx"
+#include "FSNode.hxx"
 #include "SpanStream.hxx"
 #include "nanojpeg_lib.hxx"
 #include "tinyexif_lib.hxx"
@@ -41,8 +41,8 @@ JPGLibrary::JPGLibrary(OSystem& osystem)
 void JPGLibrary::loadImage(string_view filename, FBSurface& surface,
                            VariantList& metaData)
 {
-  std::ifstream in{string{filename},  // TODO: C++23 for string_view
-                   std::ios_base::binary | std::ios_base::ate};
+  auto in = FSNode(filename).openIFStream(std::ios_base::binary |
+                                          std::ios_base::ate);
   if(!in.is_open())
     throw std::runtime_error{"No image found"};
 

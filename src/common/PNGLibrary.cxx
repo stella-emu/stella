@@ -23,6 +23,7 @@
 #include "Console.hxx"
 #include "FrameBuffer.hxx"
 #include "FBSurface.hxx"
+#include "FSNode.hxx"
 #include "Props.hxx"
 #include "TIASurface.hxx"
 #include "Version.hxx"
@@ -50,7 +51,8 @@ void PNGLibrary::loadImage(const string& filename, FBSurface& surface,
     throw std::runtime_error(string{s});
   };
 
-  std::ifstream in(filename, std::ios_base::binary);
+  // TODO: can we pass in FSNode directly
+  auto in = FSNode(filename).openIFStream(std::ios_base::binary);
   if(!in.is_open())
     loadImageERROR("No image found");
 

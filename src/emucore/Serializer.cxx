@@ -33,7 +33,7 @@ Serializer::Serializer(string_view filename, FileMode fm)
   }
 
   myFile.emplace();
-  myFile->stream.open(string(filename), mode);
+  myFile->stream = FSNode(filename).openFStream(mode);
   if(myFile->stream.is_open())
     myFile->stream.exceptions(std::ios::failbit | std::ios::badbit);
   else

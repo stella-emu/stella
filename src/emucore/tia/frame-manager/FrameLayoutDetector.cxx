@@ -61,7 +61,7 @@ FrameLayout FrameLayoutDetector::detectedLayout(bool detectPal60,
   cerr << '\n';
 #endif
 #if 0 // save sampled color values
-  std::ofstream file;
+  std::ofstream file;  // If this is ever reactivated, use FSNode().openOFStream()
 
   file.open("d:/Users/Thomas/Documents/Atari/Games/test/autodetect/colors.csv", std::ios::app);
   if(file.is_open())
@@ -181,13 +181,13 @@ void FrameLayoutDetector::onNextLine()
       if (myCurrentFrameTotalLines > frameLines - 3 || myTotalFrames == 0)
         ++myLinesWaitingForVsyncToStart;
 
-      if (myLinesWaitingForVsyncToStart > Metrics::waitForVsync) 
+      if (myLinesWaitingForVsyncToStart > Metrics::waitForVsync)
         setState(State::waitForVsyncEnd);
 
       break;
 
     case State::waitForVsyncEnd:
-      if (++myLinesWaitingForVsyncToStart > Metrics::waitForVsync) 
+      if (++myLinesWaitingForVsyncToStart > Metrics::waitForVsync)
         setState(State::waitForVsyncStart);
 
       break;
@@ -234,9 +234,9 @@ void FrameLayoutDetector::finalizeFrame()
 {
   notifyFrameComplete();
 
-  if (myTotalFrames <= Metrics::initialGarbageFrames) 
+  if (myTotalFrames <= Metrics::initialGarbageFrames)
     return;
-  if (myCurrentFrameFinalLines > Metrics::frameLinesPAL + Metrics::waitForVsync) 
+  if (myCurrentFrameFinalLines > Metrics::frameLinesPAL + Metrics::waitForVsync)
     return;
 
   // Calculate how close a frame is to PAL and NTSC based on scanlines. An odd scanline count

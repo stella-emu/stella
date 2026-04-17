@@ -18,6 +18,7 @@
 #ifndef FS_NODE_HXX
 #define FS_NODE_HXX
 
+#include <fstream>
 #include <functional>
 
 #include "bspf.hxx"
@@ -304,6 +305,21 @@ class FSNode
     string getNameWithExt(string_view ext = "") const;
     string getPathWithExt(string_view ext = "") const;
 
+    /**
+     * Get a platform-specific stream based on the backend in use.
+     * Whenever possible, subsystems should ::read and ::write from this
+     * class, rather than requesting a stream themselves.
+     *
+     * See comments in AbstractFSNode below for more information.
+     *
+     * @return  The given stream type based on the backend being used.
+     *          The calling method is still responsible for checking
+     *          whether the stream was opened properly, etc.
+     */
+    std::ifstream openIFStream(std::ios::openmode mode = std::ios_base::binary) const;
+    std::ofstream openOFStream(std::ios::openmode mode = std::ios_base::binary) const;
+    std::fstream  openFStream (std::ios::openmode mode = std::ios_base::binary) const;
+
   private:
     explicit FSNode(const AbstractFSNodePtr& realNode);
     AbstractFSNodePtr _realNode;
@@ -496,6 +512,21 @@ class AbstractFSNode
      *          a try-catch block.
      */
     virtual size_t write(string_view buffer) const { return 0; }
+
+    /**
+     * Get a platform-specific stream based on the backend in use.
+     * Some systems (notably Windows) use UTF-16 in filenames, and if we
+     * try to open a stream with a UTF-8 string, the open will fail.
+     * Whenever possible, subsystems should ::read and ::write from this
+     * class, rather than requesting a stream themselves.
+     *
+     * @return  The given stream type based on the backend being used.
+     *          The calling method is still responsible for checking
+     *          whether the stream was opened properly, etc.
+     */
+    virtual std::ifstream openIFStream(std::ios::openmode mode) const { return {}; }
+    virtual std::ofstream openOFStream(std::ios::openmode mode) const { return {}; }
+    virtual std::fstream  openFStream (std::ios::openmode mode) const { return {}; }
 
   protected:
     /**

@@ -172,6 +172,9 @@ ZipHandler::ZipFile::ZipFile(const string& filename)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool ZipHandler::ZipFile::open()
 {
+  // NOTE: This can't be opened with FSNode::openFStream(), since we're
+  //       already in FSNode when accessing a ZIP file, and this leads to
+  //       recursion.
   myStream.open(myFilename, std::fstream::in | std::fstream::binary);
   if(!myStream.is_open())
   {

@@ -74,6 +74,16 @@ class FSNodePOSIX : public AbstractFSNode
     AbstractFSNodePtr getParent() const override;
     bool getChildren(AbstractFSList& list, ListMode mode) const override;
 
+    std::ifstream openIFStream(std::ios::openmode mode) const override {
+      return std::ifstream(_path, mode);
+    }
+    std::ofstream openOFStream(std::ios::openmode mode) const override {
+      return std::ofstream(_path, mode);
+    }
+    std::fstream openFStream(std::ios::openmode mode) const override {
+      return std::fstream(_path, mode);
+    }
+
   private:
     /**
      * Set the _isDirectory/_isFile/_size flags using stat().

@@ -322,7 +322,7 @@ size_t FSNode::read(ByteBuffer& buffer, size_t size) const
   }
 
   // Otherwise, the default behaviour is to read from a normal C++ ifstream
-  std::ifstream in(getPath(), std::ios::binary);
+  auto in = openIFStream(std::ios::binary);
   if(!in)
     throw std::runtime_error("File open/read error");
 
@@ -371,7 +371,7 @@ size_t FSNode::read(std::stringstream& buffer) const
 
   // Otherwise, the default behaviour is to read from a normal C++ ifstream
   // and pipe into the stringstream
-  std::ifstream in(getPath());
+  auto in = openIFStream();
   if(!in)
     throw std::runtime_error("File open/read error");
 
@@ -407,7 +407,7 @@ size_t FSNode::write(const ByteBuffer& buffer, size_t size) const
       return sizeWritten;
 
   // Otherwise, the default behaviour is to write to a normal C++ ofstream
-  std::ofstream out(getPath(), std::ios::binary);
+  auto out = openOFStream(std::ios::binary);
   if(out)
   {
     out.write(reinterpret_cast<const char*>(buffer.get()),
@@ -434,7 +434,7 @@ size_t FSNode::write(string_view buffer) const
       return sizeWritten;
 
   // Otherwise, the default behaviour is to write to a normal C++ ofstream
-  std::ofstream out(getPath());
+  auto out = openOFStream();
   if(out)
   {
     out.write(buffer.data(), static_cast<std::streamsize>(buffer.size()));
@@ -447,4 +447,22 @@ size_t FSNode::write(string_view buffer) const
     throw std::runtime_error("File open/write error");
 
   return sizeWritten;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+std::ifstream FSNode::openIFStream(std::ios::openmode mode) const
+{
+  return _realNode ? _realNode->openIFStream(mode) : std::ifstream{};
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+std::ofstream FSNode::openOFStream(std::ios::openmode mode) const
+{
+  return _realNode ? _realNode->openOFStream(mode) : std::ofstream{};
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+std::fstream FSNode::openFStream(std::ios::openmode mode) const
+{
+  return _realNode ? _realNode->openFStream(mode) : std::fstream{};
 }

@@ -16,8 +16,8 @@
 //============================================================================
 
 #include <sstream>
-#include <fstream>
 
+#include "FSNode.hxx"
 #include "System.hxx"
 #include "ElfLinker.hxx"
 #include "ElfEnvironment.hxx"
@@ -170,9 +170,7 @@ namespace {
       );
 
     {
-      std::ofstream binaryFile;
-
-      binaryFile.open(IMAGE_FILE_NAME);
+      auto binaryFile = FSNode(IMAGE_FILE_NAME).openOFStream();
       binaryFile.write(reinterpret_cast<const char*>(binary.get()), 4L * 0x00100000);
     }
 

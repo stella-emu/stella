@@ -20,10 +20,10 @@
 
 #include <bit>
 #include <cstring>
-#include <fstream>
 #include <optional>
 #include <span>
 
+#include "FSNode.hxx"
 #include "bspf.hxx"
 
 /**
