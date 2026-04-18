@@ -16,7 +16,7 @@
 //============================================================================
 
 #include "bspf.hxx"
-#include "FSNode.hxx"
+#include "FSNodeWINDOWS.hxx"
 #include "HomeFinder.hxx"
 
 #include "OSystemWINDOWS.hxx"
@@ -25,7 +25,7 @@
 void OSystemWINDOWS::getBaseDirectories(string& basedir, string& homedir,
                                         bool useappdir, string_view usedir)
 {
-  const FSNode appdata(HomeFinder::getAppDataPath());
+  const FSNodeWINDOWS appdata(HomeFinder::getAppDataPathW());
 
   if(appdata.isDirectory())
   {
@@ -35,15 +35,18 @@ void OSystemWINDOWS::getBaseDirectories(string& basedir, string& homedir,
     basedir += "Stella\\";
   }
 
-  const FSNode defaultHomeDir(HomeFinder::getDesktopPath());
+  const FSNodeWINDOWS defaultHomeDir(HomeFinder::getDesktopPathW());
   homedir = defaultHomeDir.getShortPath();
 
   // Check to see if basedir overrides are active
   if(useappdir)
   {
-    char filename[MAX_PATH];
-    GetModuleFileNameA(NULL, filename, sizeof(filename));
-    FSNode appdir(filename);
+    std::wstring filename;
+    DWORD len = GetModuleFileNameW(nullptr, filename.data(),
+      static_cast<DWORD>(filename.size()));
+    filename.resize(len);
+
+    FSNode appdir(FSNodeWINDOWS::wideToUtf8(filename));
 
     appdir = appdir.getParent();
     if(appdir.isDirectory())
