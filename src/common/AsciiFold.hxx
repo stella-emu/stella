@@ -87,13 +87,13 @@ private:
   static constexpr array<char, 256> LUT = [] {
     array<char, 256> lut{};
 
-    // Default everything to '?'
-    for(int i = 0; i < 256; ++i)
-      lut[i] = '?';
-
     // ASCII passthrough
     for(int i = 0; i < 128; ++i)
       lut[i] = static_cast<char>(i);
+
+    // Default everything else to '?'
+    for(int i = 128; i < 256; ++i)
+      lut[i] = '?';
 
     // --- Uppercase Latin-1 accents ---
     lut[0xC0] = lut[0xC1] = lut[0xC2] = lut[0xC3] =
@@ -139,7 +139,7 @@ private:
     array<char, 0x0150> lut{};
 
     // Default everything to '?'
-    for(auto& c : lut) c = '?';
+    for(auto& c: lut) c = '?';
 
     // --- Latin Extended-A (U+0100–U+017F) ---
     lut[0x0100 - 0x0100] = 'A'; lut[0x0101 - 0x0100] = 'a'; // Āā
@@ -281,10 +281,474 @@ private:
     return lut;
   }();
 
+  /**
+   * Compile-time transliteration table for Greek (U+0370–U+03FF).
+   * Indexed by (cp - 0x0370). Covers the modern Greek alphabet including
+   * accented vowels (tonos/dialytika). Unrecognised codepoints default to '?'.
+   */
+  static constexpr array<char, 0x0090> greekLUT = [] {
+    array<char, 0x0090> lut{};
+    for(auto& c: lut) c = '?';
+
+    // Uppercase
+    lut[0x0391 - 0x0370] = 'A'; // Α
+    lut[0x0392 - 0x0370] = 'B'; // Β
+    lut[0x0393 - 0x0370] = 'G'; // Γ
+    lut[0x0394 - 0x0370] = 'D'; // Δ
+    lut[0x0395 - 0x0370] = 'E'; // Ε
+    lut[0x0396 - 0x0370] = 'Z'; // Ζ
+    lut[0x0397 - 0x0370] = 'I'; // Η
+    lut[0x0398 - 0x0370] = 'T'; // Θ
+    lut[0x0399 - 0x0370] = 'I'; // Ι
+    lut[0x039A - 0x0370] = 'K'; // Κ
+    lut[0x039B - 0x0370] = 'L'; // Λ
+    lut[0x039C - 0x0370] = 'M'; // Μ
+    lut[0x039D - 0x0370] = 'N'; // Ν
+    lut[0x039E - 0x0370] = 'X'; // Ξ
+    lut[0x039F - 0x0370] = 'O'; // Ο
+    lut[0x03A0 - 0x0370] = 'P'; // Π
+    lut[0x03A1 - 0x0370] = 'R'; // Ρ
+    lut[0x03A3 - 0x0370] = 'S'; // Σ
+    lut[0x03A4 - 0x0370] = 'T'; // Τ
+    lut[0x03A5 - 0x0370] = 'Y'; // Υ
+    lut[0x03A6 - 0x0370] = 'F'; // Φ
+    lut[0x03A7 - 0x0370] = 'X'; // Χ
+    lut[0x03A8 - 0x0370] = 'P'; // Ψ
+    lut[0x03A9 - 0x0370] = 'O'; // Ω
+
+    // Uppercase with tonos/dialytika (U+0386, U+0388–U+038F)
+    lut[0x0386 - 0x0370] = 'A'; // Ά
+    lut[0x0388 - 0x0370] = 'E'; // Έ
+    lut[0x0389 - 0x0370] = 'I'; // Ή
+    lut[0x038A - 0x0370] = 'I'; // Ί
+    lut[0x038C - 0x0370] = 'O'; // Ό
+    lut[0x038E - 0x0370] = 'Y'; // Ύ
+    lut[0x038F - 0x0370] = 'O'; // Ώ
+
+    // Lowercase
+    lut[0x03B1 - 0x0370] = 'a'; // α
+    lut[0x03B2 - 0x0370] = 'b'; // β
+    lut[0x03B3 - 0x0370] = 'g'; // γ
+    lut[0x03B4 - 0x0370] = 'd'; // δ
+    lut[0x03B5 - 0x0370] = 'e'; // ε
+    lut[0x03B6 - 0x0370] = 'z'; // ζ
+    lut[0x03B7 - 0x0370] = 'i'; // η
+    lut[0x03B8 - 0x0370] = 't'; // θ
+    lut[0x03B9 - 0x0370] = 'i'; // ι
+    lut[0x03BA - 0x0370] = 'k'; // κ
+    lut[0x03BB - 0x0370] = 'l'; // λ
+    lut[0x03BC - 0x0370] = 'm'; // μ
+    lut[0x03BD - 0x0370] = 'n'; // ν
+    lut[0x03BE - 0x0370] = 'x'; // ξ
+    lut[0x03BF - 0x0370] = 'o'; // ο
+    lut[0x03C0 - 0x0370] = 'p'; // π
+    lut[0x03C1 - 0x0370] = 'r'; // ρ
+    lut[0x03C2 - 0x0370] = 's'; // ς (final sigma)
+    lut[0x03C3 - 0x0370] = 's'; // σ
+    lut[0x03C4 - 0x0370] = 't'; // τ
+    lut[0x03C5 - 0x0370] = 'y'; // υ
+    lut[0x03C6 - 0x0370] = 'f'; // φ
+    lut[0x03C7 - 0x0370] = 'x'; // χ
+    lut[0x03C8 - 0x0370] = 'p'; // ψ
+    lut[0x03C9 - 0x0370] = 'o'; // ω
+
+    // Lowercase with tonos/dialytika (U+03AC–U+03CE)
+    lut[0x03AC - 0x0370] = 'a'; // ά
+    lut[0x03AD - 0x0370] = 'e'; // έ
+    lut[0x03AE - 0x0370] = 'i'; // ή
+    lut[0x03AF - 0x0370] = 'i'; // ί
+    lut[0x03CC - 0x0370] = 'o'; // ό
+    lut[0x03CD - 0x0370] = 'y'; // ύ
+    lut[0x03CE - 0x0370] = 'o'; // ώ
+
+    // Lowercase with dialytika and tonos
+    lut[0x03CA - 0x0370] = 'i'; // ϊ
+    lut[0x03CB - 0x0370] = 'y'; // ϋ
+
+    return lut;
+  }();
+
+/**
+   * Compile-time transliteration table for Cyrillic (U+0400–U+04FF).
+   * Indexed by (cp - 0x0400). Covers Russian, Ukrainian, Bulgarian, and
+   * Serbian. Unrecognised codepoints default to '?'.
+   */
+  static constexpr array<char, 0x0100> cyrillicLUT = [] {
+    array<char, 0x0100> lut{};
+    for(auto& c: lut) c = '?';
+
+    // Uppercase Russian/Bulgarian/Serbian
+    lut[0x0410 - 0x0400] = 'A'; // А
+    lut[0x0411 - 0x0400] = 'B'; // Б
+    lut[0x0412 - 0x0400] = 'V'; // В
+    lut[0x0413 - 0x0400] = 'G'; // Г
+    lut[0x0414 - 0x0400] = 'D'; // Д
+    lut[0x0415 - 0x0400] = 'E'; // Е
+    lut[0x0416 - 0x0400] = 'Z'; // Ж
+    lut[0x0417 - 0x0400] = 'Z'; // З
+    lut[0x0418 - 0x0400] = 'I'; // И
+    lut[0x0419 - 0x0400] = 'Y'; // Й
+    lut[0x041A - 0x0400] = 'K'; // К
+    lut[0x041B - 0x0400] = 'L'; // Л
+    lut[0x041C - 0x0400] = 'M'; // М
+    lut[0x041D - 0x0400] = 'N'; // Н
+    lut[0x041E - 0x0400] = 'O'; // О
+    lut[0x041F - 0x0400] = 'P'; // П
+    lut[0x0420 - 0x0400] = 'R'; // Р
+    lut[0x0421 - 0x0400] = 'S'; // С
+    lut[0x0422 - 0x0400] = 'T'; // Т
+    lut[0x0423 - 0x0400] = 'U'; // У
+    lut[0x0424 - 0x0400] = 'F'; // Ф
+    lut[0x0425 - 0x0400] = 'K'; // Х
+    lut[0x0426 - 0x0400] = 'T'; // Ц
+    lut[0x0427 - 0x0400] = 'C'; // Ч
+    lut[0x0428 - 0x0400] = 'S'; // Ш
+    lut[0x0429 - 0x0400] = 'S'; // Щ
+    lut[0x042A - 0x0400] = 'S'; // Ъ (hard sign → approx)
+    lut[0x042B - 0x0400] = 'Y'; // Ы
+    lut[0x042C - 0x0400] = 'S'; // Ь (soft sign → approx)
+    lut[0x042D - 0x0400] = 'E'; // Э
+    lut[0x042E - 0x0400] = 'Y'; // Ю
+    lut[0x042F - 0x0400] = 'Y'; // Я
+
+    // Lowercase Russian/Bulgarian/Serbian
+    lut[0x0430 - 0x0400] = 'a'; // а
+    lut[0x0431 - 0x0400] = 'b'; // б
+    lut[0x0432 - 0x0400] = 'v'; // в
+    lut[0x0433 - 0x0400] = 'g'; // г
+    lut[0x0434 - 0x0400] = 'd'; // д
+    lut[0x0435 - 0x0400] = 'e'; // е
+    lut[0x0436 - 0x0400] = 'z'; // ж
+    lut[0x0437 - 0x0400] = 'z'; // з
+    lut[0x0438 - 0x0400] = 'i'; // и
+    lut[0x0439 - 0x0400] = 'y'; // й
+    lut[0x043A - 0x0400] = 'k'; // к
+    lut[0x043B - 0x0400] = 'l'; // л
+    lut[0x043C - 0x0400] = 'm'; // м
+    lut[0x043D - 0x0400] = 'n'; // н
+    lut[0x043E - 0x0400] = 'o'; // о
+    lut[0x043F - 0x0400] = 'p'; // п
+    lut[0x0440 - 0x0400] = 'r'; // р
+    lut[0x0441 - 0x0400] = 's'; // с
+    lut[0x0442 - 0x0400] = 't'; // т
+    lut[0x0443 - 0x0400] = 'u'; // у
+    lut[0x0444 - 0x0400] = 'f'; // ф
+    lut[0x0445 - 0x0400] = 'k'; // х
+    lut[0x0446 - 0x0400] = 't'; // ц
+    lut[0x0447 - 0x0400] = 'c'; // ч
+    lut[0x0448 - 0x0400] = 's'; // ш
+    lut[0x0449 - 0x0400] = 's'; // щ
+    lut[0x044A - 0x0400] = 's'; // ъ (hard sign → approx)
+    lut[0x044B - 0x0400] = 'y'; // ы
+    lut[0x044C - 0x0400] = 's'; // ь (soft sign → approx)
+    lut[0x044D - 0x0400] = 'e'; // э
+    lut[0x044E - 0x0400] = 'y'; // ю
+    lut[0x044F - 0x0400] = 'y'; // я
+
+    // Ukrainian extras
+    lut[0x0400 - 0x0400] = 'I'; // Ѐ (Е with grave)
+    lut[0x0401 - 0x0400] = 'Y'; // Ё
+    lut[0x0404 - 0x0400] = 'E'; // Є
+    lut[0x0406 - 0x0400] = 'I'; // І
+    lut[0x0407 - 0x0400] = 'I'; // Ї
+    lut[0x0408 - 0x0400] = 'J'; // Ј
+    lut[0x0450 - 0x0400] = 'i'; // ѐ (е with grave)
+    lut[0x0451 - 0x0400] = 'y'; // ё
+    lut[0x0454 - 0x0400] = 'e'; // є
+    lut[0x0456 - 0x0400] = 'i'; // і
+    lut[0x0457 - 0x0400] = 'i'; // ї
+    lut[0x0458 - 0x0400] = 'j'; // ј
+
+    // Serbian extras
+    lut[0x0402 - 0x0400] = 'D'; // Ђ
+    lut[0x0403 - 0x0400] = 'G'; // Ѓ
+    lut[0x0409 - 0x0400] = 'L'; // Љ
+    lut[0x040A - 0x0400] = 'N'; // Њ
+    lut[0x040B - 0x0400] = 'T'; // Ћ
+    lut[0x040C - 0x0400] = 'K'; // Ќ
+    lut[0x040F - 0x0400] = 'D'; // Џ
+    lut[0x0452 - 0x0400] = 'd'; // ђ
+    lut[0x0453 - 0x0400] = 'g'; // ѓ
+    lut[0x0459 - 0x0400] = 'l'; // љ
+    lut[0x045A - 0x0400] = 'n'; // њ
+    lut[0x045B - 0x0400] = 't'; // ћ
+    lut[0x045C - 0x0400] = 'k'; // ќ
+    lut[0x045F - 0x0400] = 'd'; // џ
+
+    return lut;
+  }();
+
+/**
+   * Compile-time folding table for Latin Extended Additional (U+1E00–U+1EFF).
+   * Indexed by (cp - 0x1E00). Covers precomposed characters used in
+   * Vietnamese, Welsh, and academic transliterations of ancient languages.
+   * Unrecognised codepoints default to '?'.
+   */
+  static constexpr array<char, 0x0100> latinExtAddLUT = [] {
+    array<char, 0x0100> lut{};
+    for(auto& c: lut) c = '?';
+
+    // Ḁḁ A/a with ring below
+    lut[0x1E00 - 0x1E00] = 'A'; lut[0x1E01 - 0x1E00] = 'a';
+    // Ḃḃ B/b with dot above
+    lut[0x1E02 - 0x1E00] = 'B'; lut[0x1E03 - 0x1E00] = 'b';
+    // Ḅḅ B/b with dot below
+    lut[0x1E04 - 0x1E00] = 'B'; lut[0x1E05 - 0x1E00] = 'b';
+    // Ḇḇ B/b with line below
+    lut[0x1E06 - 0x1E00] = 'B'; lut[0x1E07 - 0x1E00] = 'b';
+    // Ḉḉ C/c with cedilla and acute
+    lut[0x1E08 - 0x1E00] = 'C'; lut[0x1E09 - 0x1E00] = 'c';
+    // Ḋḋ D/d with dot above
+    lut[0x1E0A - 0x1E00] = 'D'; lut[0x1E0B - 0x1E00] = 'd';
+    // Ḍḍ D/d with dot below
+    lut[0x1E0C - 0x1E00] = 'D'; lut[0x1E0D - 0x1E00] = 'd';
+    // Ḏḏ D/d with line below
+    lut[0x1E0E - 0x1E00] = 'D'; lut[0x1E0F - 0x1E00] = 'd';
+    // Ḑḑ D/d with cedilla
+    lut[0x1E10 - 0x1E00] = 'D'; lut[0x1E11 - 0x1E00] = 'd';
+    // Ḓḓ D/d with circumflex below
+    lut[0x1E12 - 0x1E00] = 'D'; lut[0x1E13 - 0x1E00] = 'd';
+    // Ḕḕ E/e with macron and grave
+    lut[0x1E14 - 0x1E00] = 'E'; lut[0x1E15 - 0x1E00] = 'e';
+    // Ḗḗ E/e with macron and acute
+    lut[0x1E16 - 0x1E00] = 'E'; lut[0x1E17 - 0x1E00] = 'e';
+    // Ḙḙ E/e with circumflex below
+    lut[0x1E18 - 0x1E00] = 'E'; lut[0x1E19 - 0x1E00] = 'e';
+    // Ḛḛ E/e with tilde below
+    lut[0x1E1A - 0x1E00] = 'E'; lut[0x1E1B - 0x1E00] = 'e';
+    // Ḝḝ E/e with cedilla and breve
+    lut[0x1E1C - 0x1E00] = 'E'; lut[0x1E1D - 0x1E00] = 'e';
+    // Ḟḟ F/f with dot above
+    lut[0x1E1E - 0x1E00] = 'F'; lut[0x1E1F - 0x1E00] = 'f';
+    // Ḡḡ G/g with macron
+    lut[0x1E20 - 0x1E00] = 'G'; lut[0x1E21 - 0x1E00] = 'g';
+    // Ḣḣ H/h with dot above
+    lut[0x1E22 - 0x1E00] = 'H'; lut[0x1E23 - 0x1E00] = 'h';
+    // Ḥḥ H/h with dot below
+    lut[0x1E24 - 0x1E00] = 'H'; lut[0x1E25 - 0x1E00] = 'h';
+    // Ḧḧ H/h with diaeresis
+    lut[0x1E26 - 0x1E00] = 'H'; lut[0x1E27 - 0x1E00] = 'h';
+    // Ḩḩ H/h with cedilla
+    lut[0x1E28 - 0x1E00] = 'H'; lut[0x1E29 - 0x1E00] = 'h';
+    // Ḫḫ H/h with breve below
+    lut[0x1E2A - 0x1E00] = 'H'; lut[0x1E2B - 0x1E00] = 'h';
+    // Ḭḭ I/i with tilde below
+    lut[0x1E2C - 0x1E00] = 'I'; lut[0x1E2D - 0x1E00] = 'i';
+    // Ḯḯ I/i with diaeresis and acute
+    lut[0x1E2E - 0x1E00] = 'I'; lut[0x1E2F - 0x1E00] = 'i';
+    // Ḱḱ K/k with acute
+    lut[0x1E30 - 0x1E00] = 'K'; lut[0x1E31 - 0x1E00] = 'k';
+    // Ḳḳ K/k with dot below
+    lut[0x1E32 - 0x1E00] = 'K'; lut[0x1E33 - 0x1E00] = 'k';
+    // Ḵḵ K/k with line below
+    lut[0x1E34 - 0x1E00] = 'K'; lut[0x1E35 - 0x1E00] = 'k';
+    // Ḷḷ L/l with dot below
+    lut[0x1E36 - 0x1E00] = 'L'; lut[0x1E37 - 0x1E00] = 'l';
+    // Ḹḹ L/l with dot below and macron
+    lut[0x1E38 - 0x1E00] = 'L'; lut[0x1E39 - 0x1E00] = 'l';
+    // Ḻḻ L/l with line below
+    lut[0x1E3A - 0x1E00] = 'L'; lut[0x1E3B - 0x1E00] = 'l';
+    // Ḽḽ L/l with circumflex below
+    lut[0x1E3C - 0x1E00] = 'L'; lut[0x1E3D - 0x1E00] = 'l';
+    // Ḿḿ M/m with acute
+    lut[0x1E3E - 0x1E00] = 'M'; lut[0x1E3F - 0x1E00] = 'm';
+    // Ṁṁ M/m with dot above
+    lut[0x1E40 - 0x1E00] = 'M'; lut[0x1E41 - 0x1E00] = 'm';
+    // Ṃṃ M/m with dot below
+    lut[0x1E42 - 0x1E00] = 'M'; lut[0x1E43 - 0x1E00] = 'm';
+    // Ṅṅ N/n with dot above
+    lut[0x1E44 - 0x1E00] = 'N'; lut[0x1E45 - 0x1E00] = 'n';
+    // Ṇṇ N/n with dot below
+    lut[0x1E46 - 0x1E00] = 'N'; lut[0x1E47 - 0x1E00] = 'n';
+    // Ṉṉ N/n with line below
+    lut[0x1E48 - 0x1E00] = 'N'; lut[0x1E49 - 0x1E00] = 'n';
+    // Ṋṋ N/n with circumflex below
+    lut[0x1E4A - 0x1E00] = 'N'; lut[0x1E4B - 0x1E00] = 'n';
+    // Ṍṍ O/o with tilde and acute
+    lut[0x1E4C - 0x1E00] = 'O'; lut[0x1E4D - 0x1E00] = 'o';
+    // Ṏṏ O/o with tilde and diaeresis
+    lut[0x1E4E - 0x1E00] = 'O'; lut[0x1E4F - 0x1E00] = 'o';
+    // Ṑṑ O/o with macron and grave
+    lut[0x1E50 - 0x1E00] = 'O'; lut[0x1E51 - 0x1E00] = 'o';
+    // Ṓṓ O/o with macron and acute
+    lut[0x1E52 - 0x1E00] = 'O'; lut[0x1E53 - 0x1E00] = 'o';
+    // Ṕṕ P/p with acute
+    lut[0x1E54 - 0x1E00] = 'P'; lut[0x1E55 - 0x1E00] = 'p';
+    // Ṗṗ P/p with dot above
+    lut[0x1E56 - 0x1E00] = 'P'; lut[0x1E57 - 0x1E00] = 'p';
+    // Ṙṙ R/r with dot above
+    lut[0x1E58 - 0x1E00] = 'R'; lut[0x1E59 - 0x1E00] = 'r';
+    // Ṛṛ R/r with dot below
+    lut[0x1E5A - 0x1E00] = 'R'; lut[0x1E5B - 0x1E00] = 'r';
+    // Ṝṝ R/r with dot below and macron
+    lut[0x1E5C - 0x1E00] = 'R'; lut[0x1E5D - 0x1E00] = 'r';
+    // Ṟṟ R/r with line below
+    lut[0x1E5E - 0x1E00] = 'R'; lut[0x1E5F - 0x1E00] = 'r';
+    // Ṡṡ S/s with dot above
+    lut[0x1E60 - 0x1E00] = 'S'; lut[0x1E61 - 0x1E00] = 's';
+    // Ṣṣ S/s with dot below
+    lut[0x1E62 - 0x1E00] = 'S'; lut[0x1E63 - 0x1E00] = 's';
+    // Ṥṥ S/s with acute and dot above
+    lut[0x1E64 - 0x1E00] = 'S'; lut[0x1E65 - 0x1E00] = 's';
+    // Ṧṧ S/s with caron and dot above
+    lut[0x1E66 - 0x1E00] = 'S'; lut[0x1E67 - 0x1E00] = 's';
+    // Ṩṩ S/s with dot below and dot above
+    lut[0x1E68 - 0x1E00] = 'S'; lut[0x1E69 - 0x1E00] = 's';
+    // Ṫṫ T/t with dot above
+    lut[0x1E6A - 0x1E00] = 'T'; lut[0x1E6B - 0x1E00] = 't';
+    // Ṭṭ T/t with dot below
+    lut[0x1E6C - 0x1E00] = 'T'; lut[0x1E6D - 0x1E00] = 't';
+    // Ṯṯ T/t with line below
+    lut[0x1E6E - 0x1E00] = 'T'; lut[0x1E6F - 0x1E00] = 't';
+    // Ṱṱ T/t with circumflex below
+    lut[0x1E70 - 0x1E00] = 'T'; lut[0x1E71 - 0x1E00] = 't';
+    // Ṳṳ U/u with diaeresis below
+    lut[0x1E72 - 0x1E00] = 'U'; lut[0x1E73 - 0x1E00] = 'u';
+    // Ṵṵ U/u with tilde below
+    lut[0x1E74 - 0x1E00] = 'U'; lut[0x1E75 - 0x1E00] = 'u';
+    // Ṷṷ U/u with circumflex below
+    lut[0x1E76 - 0x1E00] = 'U'; lut[0x1E77 - 0x1E00] = 'u';
+    // Ṹṹ U/u with tilde and acute
+    lut[0x1E78 - 0x1E00] = 'U'; lut[0x1E79 - 0x1E00] = 'u';
+    // Ṻṻ U/u with macron and diaeresis
+    lut[0x1E7A - 0x1E00] = 'U'; lut[0x1E7B - 0x1E00] = 'u';
+    // Ṽṽ V/v with tilde
+    lut[0x1E7C - 0x1E00] = 'V'; lut[0x1E7D - 0x1E00] = 'v';
+    // Ṿṿ V/v with dot below
+    lut[0x1E7E - 0x1E00] = 'V'; lut[0x1E7F - 0x1E00] = 'v';
+    // Ẁẁ W/w with grave
+    lut[0x1E80 - 0x1E00] = 'W'; lut[0x1E81 - 0x1E00] = 'w';
+    // Ẃẃ W/w with acute
+    lut[0x1E82 - 0x1E00] = 'W'; lut[0x1E83 - 0x1E00] = 'w';
+    // Ẅẅ W/w with diaeresis
+    lut[0x1E84 - 0x1E00] = 'W'; lut[0x1E85 - 0x1E00] = 'w';
+    // Ẇẇ W/w with dot above
+    lut[0x1E86 - 0x1E00] = 'W'; lut[0x1E87 - 0x1E00] = 'w';
+    // Ẉẉ W/w with dot below
+    lut[0x1E88 - 0x1E00] = 'W'; lut[0x1E89 - 0x1E00] = 'w';
+    // Ẋẋ X/x with dot above
+    lut[0x1E8A - 0x1E00] = 'X'; lut[0x1E8B - 0x1E00] = 'x';
+    // Ẍẍ X/x with diaeresis
+    lut[0x1E8C - 0x1E00] = 'X'; lut[0x1E8D - 0x1E00] = 'x';
+    // Ẏẏ Y/y with dot above
+    lut[0x1E8E - 0x1E00] = 'Y'; lut[0x1E8F - 0x1E00] = 'y';
+    // Ẑẑ Z/z with circumflex
+    lut[0x1E90 - 0x1E00] = 'Z'; lut[0x1E91 - 0x1E00] = 'z';
+    // Ẓẓ Z/z with dot below
+    lut[0x1E92 - 0x1E00] = 'Z'; lut[0x1E93 - 0x1E00] = 'z';
+    // Ẕẕ Z/z with line below
+    lut[0x1E94 - 0x1E00] = 'Z'; lut[0x1E95 - 0x1E00] = 'z';
+    // ẖ h with line below
+    lut[0x1E96 - 0x1E00] = 'h';
+    // ẗ t with diaeresis
+    lut[0x1E97 - 0x1E00] = 't';
+    // ẘ w with ring above
+    lut[0x1E98 - 0x1E00] = 'w';
+    // ẙ y with ring above
+    lut[0x1E99 - 0x1E00] = 'y';
+
+    // --- Vietnamese (U+1EA0–U+1EF9) ---
+    // Ạạ A/a with dot below
+    lut[0x1EA0 - 0x1E00] = 'A'; lut[0x1EA1 - 0x1E00] = 'a';
+    // Ảả A/a with hook above
+    lut[0x1EA2 - 0x1E00] = 'A'; lut[0x1EA3 - 0x1E00] = 'a';
+    // Ấấ A/a with circumflex and acute
+    lut[0x1EA4 - 0x1E00] = 'A'; lut[0x1EA5 - 0x1E00] = 'a';
+    // Ầầ A/a with circumflex and grave
+    lut[0x1EA6 - 0x1E00] = 'A'; lut[0x1EA7 - 0x1E00] = 'a';
+    // Ẩẩ A/a with circumflex and hook
+    lut[0x1EA8 - 0x1E00] = 'A'; lut[0x1EA9 - 0x1E00] = 'a';
+    // Ẫẫ A/a with circumflex and tilde
+    lut[0x1EAA - 0x1E00] = 'A'; lut[0x1EAB - 0x1E00] = 'a';
+    // Ậậ A/a with circumflex and dot below
+    lut[0x1EAC - 0x1E00] = 'A'; lut[0x1EAD - 0x1E00] = 'a';
+    // Ắắ A/a with breve and acute
+    lut[0x1EAE - 0x1E00] = 'A'; lut[0x1EAF - 0x1E00] = 'a';
+    // Ằằ A/a with breve and grave
+    lut[0x1EB0 - 0x1E00] = 'A'; lut[0x1EB1 - 0x1E00] = 'a';
+    // Ẳẳ A/a with breve and hook
+    lut[0x1EB2 - 0x1E00] = 'A'; lut[0x1EB3 - 0x1E00] = 'a';
+    // Ẵẵ A/a with breve and tilde
+    lut[0x1EB4 - 0x1E00] = 'A'; lut[0x1EB5 - 0x1E00] = 'a';
+    // Ặặ A/a with breve and dot below
+    lut[0x1EB6 - 0x1E00] = 'A'; lut[0x1EB7 - 0x1E00] = 'a';
+    // Ẹẹ E/e with dot below
+    lut[0x1EB8 - 0x1E00] = 'E'; lut[0x1EB9 - 0x1E00] = 'e';
+    // Ẻẻ E/e with hook above
+    lut[0x1EBA - 0x1E00] = 'E'; lut[0x1EBB - 0x1E00] = 'e';
+    // Ẽẽ E/e with tilde
+    lut[0x1EBC - 0x1E00] = 'E'; lut[0x1EBD - 0x1E00] = 'e';
+    // Ếế E/e with circumflex and acute
+    lut[0x1EBE - 0x1E00] = 'E'; lut[0x1EBF - 0x1E00] = 'e';
+    // Ềề E/e with circumflex and grave
+    lut[0x1EC0 - 0x1E00] = 'E'; lut[0x1EC1 - 0x1E00] = 'e';
+    // Ểể E/e with circumflex and hook
+    lut[0x1EC2 - 0x1E00] = 'E'; lut[0x1EC3 - 0x1E00] = 'e';
+    // Ễễ E/e with circumflex and tilde
+    lut[0x1EC4 - 0x1E00] = 'E'; lut[0x1EC5 - 0x1E00] = 'e';
+    // Ệệ E/e with circumflex and dot below
+    lut[0x1EC6 - 0x1E00] = 'E'; lut[0x1EC7 - 0x1E00] = 'e';
+    // Ỉỉ I/i with hook above
+    lut[0x1EC8 - 0x1E00] = 'I'; lut[0x1EC9 - 0x1E00] = 'i';
+    // Ịị I/i with dot below
+    lut[0x1ECA - 0x1E00] = 'I'; lut[0x1ECB - 0x1E00] = 'i';
+    // Ọọ O/o with dot below
+    lut[0x1ECC - 0x1E00] = 'O'; lut[0x1ECD - 0x1E00] = 'o';
+    // Ỏỏ O/o with hook above
+    lut[0x1ECE - 0x1E00] = 'O'; lut[0x1ECF - 0x1E00] = 'o';
+    // Ốố O/o with circumflex and acute
+    lut[0x1ED0 - 0x1E00] = 'O'; lut[0x1ED1 - 0x1E00] = 'o';
+    // Ồồ O/o with circumflex and grave
+    lut[0x1ED2 - 0x1E00] = 'O'; lut[0x1ED3 - 0x1E00] = 'o';
+    // Ổổ O/o with circumflex and hook
+    lut[0x1ED4 - 0x1E00] = 'O'; lut[0x1ED5 - 0x1E00] = 'o';
+    // Ỗỗ O/o with circumflex and tilde
+    lut[0x1ED6 - 0x1E00] = 'O'; lut[0x1ED7 - 0x1E00] = 'o';
+    // Ộộ O/o with circumflex and dot below
+    lut[0x1ED8 - 0x1E00] = 'O'; lut[0x1ED9 - 0x1E00] = 'o';
+    // Ớớ O/o with horn and acute
+    lut[0x1EDA - 0x1E00] = 'O'; lut[0x1EDB - 0x1E00] = 'o';
+    // Ờờ O/o with horn and grave
+    lut[0x1EDC - 0x1E00] = 'O'; lut[0x1EDD - 0x1E00] = 'o';
+    // Ởở O/o with horn and hook
+    lut[0x1EDE - 0x1E00] = 'O'; lut[0x1EDF - 0x1E00] = 'o';
+    // Ỡỡ O/o with horn and tilde
+    lut[0x1EE0 - 0x1E00] = 'O'; lut[0x1EE1 - 0x1E00] = 'o';
+    // Ợợ O/o with horn and dot below
+    lut[0x1EE2 - 0x1E00] = 'O'; lut[0x1EE3 - 0x1E00] = 'o';
+    // Ụụ U/u with dot below
+    lut[0x1EE4 - 0x1E00] = 'U'; lut[0x1EE5 - 0x1E00] = 'u';
+    // Ủủ U/u with hook above
+    lut[0x1EE6 - 0x1E00] = 'U'; lut[0x1EE7 - 0x1E00] = 'u';
+    // Ứứ U/u with horn and acute
+    lut[0x1EE8 - 0x1E00] = 'U'; lut[0x1EE9 - 0x1E00] = 'u';
+    // Ừừ U/u with horn and grave
+    lut[0x1EEA - 0x1E00] = 'U'; lut[0x1EEB - 0x1E00] = 'u';
+    // Ửử U/u with horn and hook
+    lut[0x1EEC - 0x1E00] = 'U'; lut[0x1EED - 0x1E00] = 'u';
+    // Ữữ U/u with horn and tilde
+    lut[0x1EEE - 0x1E00] = 'U'; lut[0x1EEF - 0x1E00] = 'u';
+    // Ựự U/u with horn and dot below
+    lut[0x1EF0 - 0x1E00] = 'U'; lut[0x1EF1 - 0x1E00] = 'u';
+    // Ỳỳ Y/y with grave
+    lut[0x1EF2 - 0x1E00] = 'Y'; lut[0x1EF3 - 0x1E00] = 'y';
+    // Ỵỵ Y/y with dot below
+    lut[0x1EF4 - 0x1E00] = 'Y'; lut[0x1EF5 - 0x1E00] = 'y';
+    // Ỷỷ Y/y with hook above
+    lut[0x1EF6 - 0x1E00] = 'Y'; lut[0x1EF7 - 0x1E00] = 'y';
+    // Ỹỹ Y/y with tilde
+    lut[0x1EF8 - 0x1E00] = 'Y'; lut[0x1EF9 - 0x1E00] = 'y';
+
+    return lut;
+  }();
+
   static constexpr char foldExtended(uInt32 cp) noexcept
   {
-    if(cp < 0x0100 || cp > 0x024F) return '?';
-    return extLUT[cp - 0x0100];
+    if(cp <= 0x024F) return extLUT[cp - 0x0100];
+    if(cp <= 0x03FF) return greekLUT[cp - 0x0370];
+    if(cp <= 0x04FF) return cyrillicLUT[cp - 0x0400];
+    if(cp >= 0x1E00 && cp <= 0x1EFF) return latinExtAddLUT[cp - 0x1E00];
+    return '?';
   }
 };
 
