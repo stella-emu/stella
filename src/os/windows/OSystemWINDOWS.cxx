@@ -41,17 +41,18 @@ void OSystemWINDOWS::getBaseDirectories(string& basedir, string& homedir,
   // Check to see if basedir overrides are active
   if(useappdir)
   {
-    std::wstring filename;
-    DWORD len = GetModuleFileNameW(nullptr, filename.data(),
-      static_cast<DWORD>(filename.size()));
-    filename.resize(len);
+    wchar_t filename[MAX_PATH];
+    const DWORD len = GetModuleFileNameW(nullptr, filename, MAX_PATH);
 
-    FSNode appdir(FSNodeWINDOWS::wideToUtf8(filename));
+    if(len > 0 && len < MAX_PATH)
+    {
+      const FSNode appdir(FSNodeWINDOWS::wideToUtf8(std::wstring_view{filename, len}));
+      const FSNode parent = appdir.getParent();
 
-    appdir = appdir.getParent();
-    if(appdir.isDirectory())
-      basedir = appdir.getPath();
+      if(parent.isDirectory())
+        basedir = parent.getPath();
+    }
   }
-  else if(usedir != "")
-    basedir = FSNode(usedir).getPath();
+  else if(!usedir.empty())
+    basedir = FSNodeWINDOWS(usedir).getPath();
 }

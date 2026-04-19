@@ -15,12 +15,13 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
+#include "AsciiFold.hxx"
 #include "FSNodePOSIX.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FSNodePOSIX::FSNodePOSIX()
   : _path{"/"},
-    _displayName{_path}
+    _displayName{AsciiFold::toAscii(_path)}
 {
 }
 
@@ -41,7 +42,7 @@ FSNodePOSIX::FSNodePOSIX(string_view path, bool verify)
       _path = resolved.get();
   }
 
-  _displayName = lastPathComponent(_path);
+  _displayName = AsciiFold::toAscii(lastPathComponent(_path));
 
   if (verify)
     setFlags();
@@ -194,7 +195,7 @@ bool FSNodePOSIX::makeDir()
           (realpath(_path.c_str(), nullptr), free))
       _path = resolved.get();
 
-    _displayName = lastPathComponent(_path);
+    _displayName = AsciiFold::toAscii(lastPathComponent(_path));
     return setFlags();
   }
   return false;
@@ -212,7 +213,7 @@ bool FSNodePOSIX::rename(string_view newfile)
           (realpath(_path.c_str(), nullptr), free))
       _path = resolved.get();
 
-    _displayName = lastPathComponent(_path);
+    _displayName = AsciiFold::toAscii(lastPathComponent(_path));
     return setFlags();
   }
   return false;

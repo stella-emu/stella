@@ -18,6 +18,7 @@
 #include <array>
 #include <io.h>
 
+#include "AsciiFold.hxx"
 #include "HomeFinder.hxx"
 #include "FSNodeWINDOWS.hxx"
 
@@ -67,28 +68,26 @@ bool FSNodeWINDOWS::setFlags()
 
   const DWORD fileAttribs = GetFileAttributesW(_pathW.c_str());
 
-  if(fileAttribs == INVALID_FILE_ATTRIBUTES)
+  _isPseudoRoot = false;
+  if(fileAttribs != INVALID_FILE_ATTRIBUTES) [[likely]]
   {
-    _isDirectory = _isFile = false;
-    return false;
+    // Check whether it is a directory, and whether the file actually exists
+    _isDirectory = (fileAttribs & FILE_ATTRIBUTE_DIRECTORY) != 0;
+    _isFile = !_isDirectory;
+
+    // Add a trailing backslash, if necessary
+    if (_isDirectory && !_pathW.empty() && _pathW.back() != L'\\')
+      _pathW += L'\\';
   }
-
-  // Check whether it is a directory, and whether the file actually exists
-  _isDirectory = (fileAttribs & FILE_ATTRIBUTE_DIRECTORY) != 0;
-  _isFile = !_isDirectory;
-
-  // Add a trailing backslash, if necessary
-  if(_isDirectory && !_pathW.empty() && _pathW.back() != L'\\')
-    _pathW += L'\\';
+  else
+    _isDirectory = _isFile = false;
 
   // Only after making sure that there's a trailing backslash
   // will we update the UTF8 paths
   _pathUtf8 = wideToUtf8(_pathW);
-  _displayName = lastPathComponent(_pathUtf8);
+  _displayName = AsciiFold::toAscii(lastPathComponent(_pathUtf8));
 
-  _isPseudoRoot = false;
-
-  return true;
+  return _isDirectory || _isFile;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -178,7 +177,7 @@ bool FSNodeWINDOWS::getChildren(AbstractFSList& fslist, ListMode mode) const
       entry._isFile       = isFile;
       entry._pathW        = std::move(full);
       entry._pathUtf8     = wideToUtf8(entry._pathW);
-      entry._displayName  = lastPathComponent(entry._pathUtf8);
+      entry._displayName  = AsciiFold::toAscii(lastPathComponent(entry._pathUtf8));
       entry._size         = (static_cast<size_t>(desc.nFileSizeHigh) << 32) |
                                                  desc.nFileSizeLow;
 

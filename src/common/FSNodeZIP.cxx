@@ -23,6 +23,7 @@
   #include "HomeFinder.hxx"
 #endif
 #include "bspf.hxx"
+#include "AsciiFold.hxx"
 #include "Bankswitch.hxx"
 #include "FSNodeFactory.hxx"
 #include "FSNodeZIP.hxx"
@@ -138,7 +139,7 @@ void FSNodeZIP::setFlags(const string& zipfile, const string& virtualpath,
     _path += ("/" + _virtualPath);
     _shortPath += ("/" + _virtualPath);
   }
-  _name = lastPathComponent(_path);
+  _name = AsciiFold::toAscii(lastPathComponent(_path));
 
   if(!_realNode->isFile())
     _error = zip_error::NOT_A_FILE;
