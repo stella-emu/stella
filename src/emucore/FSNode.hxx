@@ -151,10 +151,10 @@ class FSNode
                      const CancelCheck& isCancelled = []() { return false; }) const;
 
     /**
-     * Set/get a string representation of the name of the file. This is can be
+     * Set/get a string representation of the name of the file. This can be
      * used e.g. by detection code that relies on matching the name of a given
      * file. But it is *not* suitable for use with fopen / File::open, nor
-     * should it be archived.
+     * should it be archived.  It is meant to be used for display in the UI.
      *
      * @return the file name
      */
@@ -165,6 +165,8 @@ class FSNode
      * Return a string representation of the file which can be passed to fopen().
      * This will usually be a 'path' (hence the name of the method), but can
      * be anything that fulfills the above criterions.
+     * Ideally, you wouldn't use this to open a file, but instead request
+     * an appropriate FStream, described below.
      *
      * @return the 'path' represented by this filesystem node
      */

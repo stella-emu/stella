@@ -38,6 +38,7 @@
   #include "TimeMachine.hxx"
 #endif
 
+#include "AsciiFold.hxx"
 #include "FSNode.hxx"
 #include "MD5.hxx"
 #include "Cart.hxx"
@@ -129,17 +130,17 @@ bool OSystem::initialize(const Settings::Options& options)
       << "  Features: " << myFeatures << '\n'
       << "  " << myBuildInfo << "\n\n"
       << "Base directory:     '"
-      << myBaseDir.getShortPath() << "'\n"
+      << AsciiFold::toAscii(myBaseDir.getShortPath()) << "'\n"
       << "State directory:    '"
-      << myStateDir.getShortPath() << "'\n"
+      << AsciiFold::toAscii(myStateDir.getShortPath()) << "'\n"
       << "NVRam directory:    '"
-      << myNVRamDir.getShortPath() << "'\n"
+      << AsciiFold::toAscii(myNVRamDir.getShortPath()) << "'\n"
       << "Persistence:        '"
-      << describePresistence() << "'\n"
+      << AsciiFold::toAscii(describePresistence()) << "'\n"
       << "Cheat file:         '"
-      << myCheatFile.getShortPath() << "'\n"
+      << AsciiFold::toAscii(myCheatFile.getShortPath()) << "'\n"
       << "Palette file:       '"
-      << myPaletteFile.getShortPath() << "'\n";
+      << AsciiFold::toAscii(myPaletteFile.getShortPath()) << "'\n";
   Logger::info(buf.view());
 
   // NOTE: The framebuffer MUST be created before any other object!!!

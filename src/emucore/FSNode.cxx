@@ -315,11 +315,8 @@ size_t FSNode::read(ByteBuffer& buffer, size_t size) const
 
   // First let the private subclass attempt to open the file
   if(_realNode)
-  {
-    const size_t sizeRead = _realNode->read(buffer, size);
-    if(sizeRead > 0)
+    if(const auto sizeRead = _realNode->read(buffer, size); sizeRead > 0)
       return sizeRead;
-  }
 
   // Otherwise, the default behaviour is to read from a normal C++ ifstream
   auto in = openIFStream(std::ios::binary);
@@ -340,7 +337,7 @@ size_t FSNode::read(ByteBuffer& buffer, size_t size) const
     throw std::runtime_error("File seek error");
 
   // If a requested size to read is provided (size > 0), honour it
-  const size_t sizeRead = (size > 0)
+  const auto sizeRead = (size > 0)
     ? std::min(static_cast<size_t>(fileSize), size)
     : static_cast<size_t>(fileSize);
 
@@ -363,11 +360,8 @@ size_t FSNode::read(std::stringstream& buffer) const
 
   // First let the private subclass attempt to open the file
   if(_realNode)
-  {
-    const size_t sizeRead = _realNode->read(buffer);
-    if(sizeRead > 0)
+    if(const auto sizeRead = _realNode->read(buffer); sizeRead > 0)
       return sizeRead;
-  }
 
   // Otherwise, the default behaviour is to read from a normal C++ ifstream
   // and pipe into the stringstream
@@ -377,7 +371,7 @@ size_t FSNode::read(std::stringstream& buffer) const
 
   // Get file size, guarding against seek failures
   in.seekg(0, std::ios::end);
-  if (!in)
+  if(!in)
     throw std::runtime_error("File seek error");
 
   const std::streampos fileSize = in.tellg();
@@ -385,7 +379,7 @@ size_t FSNode::read(std::stringstream& buffer) const
     throw std::runtime_error("Zero-byte file");
 
   in.seekg(0, std::ios::beg);
-  if (!in)
+  if(!in)
     throw std::runtime_error("File seek error");
 
   // Read into buffer and verify

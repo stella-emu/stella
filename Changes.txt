@@ -27,11 +27,15 @@
 
   * Added developer option for disabling PlusROM support.
 
+  * For the Windows port:
+    - Added support for UTF-16 filenames, allowing such files to be
+      properly loaded and saved in Stella.
+
   * For the Mac port:
     - Minimum OS version is macOS 26, and compilation requires Xcode 26.
 
   * For the Linux/UNIX port:
-    - Minimum supported compilers are g++ 12 and Clang 19.
+    - Minimum supported compilers are g++12 and Clang 19.
 
 -Have fun!
 
