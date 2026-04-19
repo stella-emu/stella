@@ -28,6 +28,12 @@ public:
    * - ASCII characters pass through unchanged
    * - Latin-1 accents are folded (é → e, ö → o, etc.)
    * - Latin Extended-A/B (U+0100–U+024F) accents are folded where possible
+   * - Greek (U+0370–U+03FF) is transliterated
+   * - Cyrillic (U+0400–U+04FF) is transliterated
+   * - Latin Extended Additional (U+1E00–U+1EFF) accents are folded
+   * - Fullwidth Latin (U+FF01–U+FF5E) is mapped to ASCII equivalent
+   * - Common punctuation (en/em dash, smart quotes, ellipsis) is approximated
+   * - Combining diacritical marks (U+0300–U+036F, U+1DC0–U+1DFF) are dropped
    * - Everything else becomes '?'
    */
   static string toAscii(string_view input)
@@ -75,7 +81,8 @@ public:
       }
 
       // Branch-minimized folding
-      out.push_back(cp <= 0xFF ? LUT[cp] : foldExtended(cp));
+      const char c = cp <= 0xFF ? LUT[cp] : foldExtended(cp);
+      if(c != '\0') out.push_back(c);
     }
     return out;
   }
@@ -368,7 +375,7 @@ private:
     return lut;
   }();
 
-/**
+  /**
    * Compile-time transliteration table for Cyrillic (U+0400–U+04FF).
    * Indexed by (cp - 0x0400). Covers Russian, Ukrainian, Bulgarian, and
    * Serbian. Unrecognised codepoints default to '?'.
@@ -478,7 +485,7 @@ private:
     return lut;
   }();
 
-/**
+  /**
    * Compile-time folding table for Latin Extended Additional (U+1E00–U+1EFF).
    * Indexed by (cp - 0x1E00). Covers precomposed characters used in
    * Vietnamese, Welsh, and academic transliterations of ancient languages.
@@ -744,11 +751,32 @@ private:
 
   static constexpr char foldExtended(uInt32 cp) noexcept
   {
-    if(cp <= 0x024F) return extLUT[cp - 0x0100];
-    if(cp <= 0x03FF) return greekLUT[cp - 0x0370];
-    if(cp <= 0x04FF) return cyrillicLUT[cp - 0x0400];
+    // Most common ranges first
+    if(cp >= 0x0100 && cp <= 0x024F) return extLUT[cp - 0x0100];
+    if(cp >= 0x0370 && cp <= 0x03FF) return greekLUT[cp - 0x0370];
+    if(cp >= 0x0400 && cp <= 0x04FF) return cyrillicLUT[cp - 0x0400];
     if(cp >= 0x1E00 && cp <= 0x1EFF) return latinExtAddLUT[cp - 0x1E00];
-    return '?';
+
+    // Rare: combining diacritics (drop)
+    if((cp - 0x0300U) <= (0x036FU - 0x0300U)) return '\0';
+    if((cp - 0x1DC0U) <= (0x1DFFU - 0x1DC0U)) return '\0';
+
+    // Fullwidth Latin (U+FF01–U+FF5E) → ASCII equivalent via direct subtraction
+    if(cp >= 0xFF01 && cp <= 0xFF5E)
+      return static_cast<char>(cp - 0xFEE0);
+
+    // Common Unicode punctuation appearing in Windows folder names
+    switch(cp)
+    {
+      case 0x2013: return '-';  // en dash
+      case 0x2014: return '-';  // em dash
+      case 0x2018: return '\''; // left single quotation mark
+      case 0x2019: return '\''; // right single quotation mark
+      case 0x201C: return '"';  // left double quotation mark
+      case 0x201D: return '"';  // right double quotation mark
+      case 0x2026: return '.';  // horizontal ellipsis
+      default:     return '?';
+    }
   }
 };
 
