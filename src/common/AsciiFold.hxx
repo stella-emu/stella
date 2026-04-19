@@ -36,12 +36,12 @@ public:
    * - Combining diacritical marks (U+0300–U+036F, U+1DC0–U+1DFF) are dropped
    * - Everything else becomes '?'
    */
-  static string toAscii(string_view input)
+  static string toAscii(string_view input) noexcept
   {
     string out;
     out.reserve(input.size());
 
-    const unsigned char* s =
+    const auto* s =
       reinterpret_cast<const unsigned char*>(input.data());
     const unsigned char* const end = s + input.size();
 
@@ -149,7 +149,7 @@ private:
     for(auto& c: lut) c = '?';
 
     // --- Latin Extended-A (U+0100–U+017F) ---
-    lut[0x0100 - 0x0100] = 'A'; lut[0x0101 - 0x0100] = 'a'; // Āā
+    lut[              0] = 'A'; lut[0x0101 - 0x0100] = 'a'; // Āā
     lut[0x0102 - 0x0100] = 'A'; lut[0x0103 - 0x0100] = 'a'; // Ăă
     lut[0x0104 - 0x0100] = 'A'; lut[0x0105 - 0x0100] = 'a'; // Ąą
     lut[0x0106 - 0x0100] = 'C'; lut[0x0107 - 0x0100] = 'c'; // Ćć
@@ -453,7 +453,7 @@ private:
     lut[0x044F - 0x0400] = 'y'; // я
 
     // Ukrainian extras
-    lut[0x0400 - 0x0400] = 'I'; // Ѐ (Е with grave)
+    lut[              0] = 'I'; // Ѐ (Е with grave)
     lut[0x0401 - 0x0400] = 'Y'; // Ё
     lut[0x0404 - 0x0400] = 'E'; // Є
     lut[0x0406 - 0x0400] = 'I'; // І
@@ -496,7 +496,7 @@ private:
     for(auto& c: lut) c = '?';
 
     // Ḁḁ A/a with ring below
-    lut[0x1E00 - 0x1E00] = 'A'; lut[0x1E01 - 0x1E00] = 'a';
+    lut[              0] = 'A'; lut[0x1E01 - 0x1E00] = 'a';
     // Ḃḃ B/b with dot above
     lut[0x1E02 - 0x1E00] = 'B'; lut[0x1E03 - 0x1E00] = 'b';
     // Ḅḅ B/b with dot below

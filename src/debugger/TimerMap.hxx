@@ -140,7 +140,7 @@ class TimerMap : public Serializable
             static_cast<double>(totalCycles) / execs)) : 0;
       }
 
-      bool save(Serializer& out) const
+      bool save(Serializer& out) const override
       {
         try
         {
@@ -169,7 +169,7 @@ class TimerMap : public Serializable
         return true;
       }
 
-      bool load(Serializer& in)
+      bool load(Serializer& in) override
       {
         try
         {
@@ -199,8 +199,8 @@ class TimerMap : public Serializable
       }
     }; // Timer
 
-    explicit TimerMap() = default;
-    ~TimerMap() = default;
+    TimerMap() = default;
+    ~TimerMap() override = default;
 
     bool isInitialized() const { return !myList.empty(); }
 

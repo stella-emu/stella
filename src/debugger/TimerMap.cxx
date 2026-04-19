@@ -197,8 +197,8 @@ bool TimerMap::save(Serializer& out) const
 {
   try
   {
-    for(auto it = myList.begin(); it != myList.end(); ++it)
-      it->save(out);
+    for(const auto& it: myList)
+      it.save(out);
   }
   catch(...)
   {
@@ -214,8 +214,8 @@ bool TimerMap::load(Serializer& in)
 {
   try
   {
-    for(auto it = myList.begin(); it != myList.end(); ++it)
-      it->load(in);
+    for(auto& it: myList)
+      it.load(in);
   }
   catch(...)
   {
