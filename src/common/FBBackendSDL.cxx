@@ -205,6 +205,7 @@ bool FBBackendSDL::setVideoMode(const VideoModeHandler::Mode& mode,
   if(SDL_WasInit(SDL_INIT_VIDEO) == 0)
     return false;
 
+  // TODO SDL3:  uses IDs
   const uInt32 displayIndex = std::min<uInt32>(myNumDisplays, winIdx);
   int posX = 0, posY = 0;
 
@@ -218,12 +219,13 @@ bool FBBackendSDL::setVideoMode(const VideoModeHandler::Mode& mode,
 
     // Make sure the window is at least partially visibile
     int x0 = INT_MAX, y0 = INT_MAX, x1 = 0, y1 = 0;
+    SDL_DisplayID* ids = SDL_GetDisplays(NULL);
 
-    for(int display = myNumDisplays - 1; display >= 0; --display)
+    for(int i = myNumDisplays - 1; i >= 0; --i)
     {
       SDL_Rect rect;
 
-      if(SDL_GetDisplayUsableBounds(display, &rect))
+      if(SDL_GetDisplayUsableBounds(ids[i], &rect))
       {
         x0 = std::min(x0, rect.x);
         y0 = std::min(y0, rect.y);
@@ -341,6 +343,7 @@ bool FBBackendSDL::setVideoMode(const VideoModeHandler::Mode& mode,
 bool FBBackendSDL::adaptRefreshRate(Int32 displayIndex,
                                     SDL_DisplayMode& adaptedSdlMode)
 {
+  // TODO SDL3: uses IDs (displayIndex)
   ASSERT_MAIN_THREAD;
 
   const SDL_DisplayMode* sdlMode = SDL_GetCurrentDisplayMode(displayIndex);
