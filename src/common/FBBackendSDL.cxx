@@ -90,7 +90,9 @@ void FBBackendSDL::queryHardware(vector<Common::Size>& fullscreenRes,
   {
     // Fullscreen mode
     const SDL_DisplayMode* display = SDL_GetDesktopDisplayMode(displays[i]);
-    fullscreenRes.emplace_back(display->w, display->h);
+    SDL_Rect bounds;
+    SDL_GetDisplayBounds(displays[i], &bounds);
+    fullscreenRes.emplace_back(bounds.w, bounds.h);
 
     // Windowed mode
     SDL_Rect r{};
@@ -116,8 +118,10 @@ void FBBackendSDL::queryHardware(vector<Common::Size>& fullscreenRes,
       }
 
       const bool isDesktopMode =
-        mode->w == display->w &&
-        mode->h == display->h &&
+        //mode->w == display->w &&
+        //mode->h == display->h &&
+        mode->w == bounds.w &&
+        mode->h == bounds.h &&
         std::equal_to()(mode->refresh_rate, display->refresh_rate);
       log += std::format("{:>7}{}", std::format("{}Hz", mode->refresh_rate),
                          isDesktopMode ? "* " : "  ");
@@ -218,14 +222,14 @@ bool FBBackendSDL::setVideoMode(const VideoModeHandler::Mode& mode,
     posY = winPos.y;
 
     // Make sure the window is at least partially visibile
+    SDL_DisplayID* displayIds = SDL_GetDisplays(NULL);
     int x0 = INT_MAX, y0 = INT_MAX, x1 = 0, y1 = 0;
-    SDL_DisplayID* ids = SDL_GetDisplays(NULL);
 
     for(int i = myNumDisplays - 1; i >= 0; --i)
     {
       SDL_Rect rect;
 
-      if(SDL_GetDisplayUsableBounds(ids[i], &rect))
+      if(SDL_GetDisplayUsableBounds(displayIds[i], &rect))
       {
         x0 = std::min(x0, rect.x);
         y0 = std::min(y0, rect.y);
@@ -233,6 +237,7 @@ bool FBBackendSDL::setVideoMode(const VideoModeHandler::Mode& mode,
         y1 = std::max(y1, rect.y + rect.h);
       }
     }
+    SDL_free(displayIds);
     posX = BSPF::clamp(posX, x0 - static_cast<Int32>(mode.screenS.w) + 50, x1 - 50);
     posY = BSPF::clamp(posY, y0 + 50, y1 - 50);
   }
