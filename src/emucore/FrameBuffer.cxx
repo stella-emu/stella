@@ -1329,7 +1329,7 @@ FBInitStatus FrameBuffer::applyVideoMode()
 {
   // Update display size, in case windowed/fullscreen mode has changed
   const Settings& s = myOSystem.settings();
-  const int ID = displayId();
+  const int ID = displayId(); // TODO SDL 3:
 
   if(s.getBool("fullscreen"))
     myVidModeHandler.setDisplaySize(myFullscreenDisplays[ID], true);

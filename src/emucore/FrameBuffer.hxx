@@ -553,10 +553,10 @@ class FrameBuffer
     // The resolution of the attached displays in fullscreen mode
     // The primary display is typically the first in the array
     // Windowed modes use myDesktopSize directly
-    vector<Common::Size> myFullscreenDisplays;
+    std::map<uInt32, Common::Size> myFullscreenDisplays;
 
     // The resolution of the attached displays in windowed mode
-    vector<Common::Size> myWindowedDisplays;
+    std::map<uInt32, Common::Size> myWindowedDisplays;
 
     // Supported renderers
     VariantList myRenderers;

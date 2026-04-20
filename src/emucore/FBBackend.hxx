@@ -25,6 +25,7 @@ class FBSurface;
 #include "FrameBufferConstants.hxx"
 #include "VideoModeHandler.hxx"
 #include "bspf.hxx"
+#include <map>
 
 /**
   This class provides an interface/abstraction for platform-specific,
@@ -62,8 +63,8 @@ class FBBackend
       @param windowedRes    Maximum resolution supported in windowed mode
       @param renderers      List of renderer names (internal name -> end-user name)
     */
-    virtual void queryHardware(vector<Common::Size>& fullscreenRes,
-                               vector<Common::Size>& windowedRes,
+    virtual void queryHardware(std::map<uInt32, Common::Size>& fullscreenRes,
+                               std::map<uInt32, Common::Size>& windowedRes,
                                VariantList& renderers) = 0;
 
     /**

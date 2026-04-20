@@ -182,8 +182,8 @@ class FBBackendSDL : public FBBackend
       @param windowedRes    Maximum resolution supported in windowed mode
       @param renderers      List of renderer names (internal name -> end-user name)
     */
-    void queryHardware(vector<Common::Size>& fullscreenRes,
-                       vector<Common::Size>& windowedRes,
+    void queryHardware(std::map<uInt32, Common::Size>& fullscreenRes,
+                       std::map<uInt32, Common::Size>& windowedRes,
                        VariantList& renderers) override;
 
     /**
@@ -271,7 +271,7 @@ class FBBackendSDL : public FBBackend
 
       @return  True if the refresh rate should be changed
     */
-    bool adaptRefreshRate(Int32 displayIndex, SDL_DisplayMode& adaptedSdlMode);
+    bool adaptRefreshRate(SDL_DisplayID displayId, SDL_DisplayMode& adaptedSdlMode);
 
     /**
       After the renderer has been created, detect the features it supports.
