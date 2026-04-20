@@ -20,6 +20,9 @@
 #ifndef PNGLIBRARY_HXX
 #define PNGLIBRARY_HXX
 
+#include <fstream>
+#include <span>
+#include <bit>
 #include <png.h>
 
 #include "bspf.hxx"
@@ -27,11 +30,11 @@
 
 class OSystem;
 class FBSurface;
+class FSNode;
 
 /**
   This class implements a thin wrapper around the libpng library, and
-  abstracts all the irrelevant details other loading and saving an
-  actual image.
+  abstracts all the irrelevant details of loading and saving an actual image.
 
   @author  Stephen Anthony
 */
@@ -53,7 +56,7 @@ class PNGLibrary
              std::runtime_error is thrown containing a more detailed
              error message.
     */
-    void loadImage(const string& filename, FBSurface& surface,
+    void loadImage(string_view filename, FBSurface& surface,
                    VariantList& metaData);
 
     /**
@@ -62,13 +65,13 @@ class PNGLibrary
       *any* mode.
 
       @param filename  The filename to save the PNG image
-      @param metaData  The meta data s to add to the PNG image
+      @param metaData  The meta data to add to the PNG image
 
       @post  On success, the PNG file has been saved to 'filename',
              otherwise a std::runtime_error is thrown containing a
              more detailed error message.
     */
-    void saveImage(const string& filename,
+    void saveImage(string_view filename,
                    const VariantList& metaData = VariantList{});
 
     /**
@@ -83,9 +86,9 @@ class PNGLibrary
              otherwise a std::runtime_error is thrown containing a
              more detailed error message.
     */
-    static void saveImage(const string& filename, const FBSurface& surface,
-                          const Common::Rect& rect = Common::Rect{},
-                          const VariantList& metaData = VariantList{});
+    void saveImage(const FSNode& filename, const FBSurface& surface,
+                   const Common::Rect& rect = Common::Rect{},
+                   const VariantList& metaData = VariantList{});
 
     /**
       Called at regular intervals, and used to determine whether a
@@ -136,48 +139,22 @@ class PNGLibrary
     uInt32 mySnapInterval{0};
     uInt32 mySnapCounter{0};
 
-    // The following data remains between invocations of allocateStorage,
-    // and is only changed when absolutely necessary.
-    struct ReadInfoType {
-      vector<png_byte> buffer;
-      vector<png_bytep> row_pointers;
-      png_uint_32 width{0}, height{0}, pitch{0};
-    };
-    static ReadInfoType ReadInfo;
+    // Reusable row buffer for PNG read/write operations; retained between
+    // calls to loadImage() and saveImage() to avoid repeated heap allocation.
+    vector<png_bytep> myRowPointers;
 
     /**
-      Allocate memory for PNG read operations.  This is used to provide a
-      basic memory manager, so that we don't constantly allocate and deallocate
-      memory for each image loaded.
-
-      The method fills the 'ReadInfo' struct with valid memory locations
-      dependent on the given dimensions.  If memory has been previously
-      allocated and it can accommodate the given dimensions, it is used directly.
-
-      @param width   The width of the PNG image
-      @param height  The height of the PNG image
-    */
-    static bool allocateStorage(size_t width, size_t height, bool hasAlpha);
-
-    /** The actual method which saves a PNG image.
+      The actual method which saves a PNG image.
 
       @param out       The output stream for writing PNG data
-      @param rows      Pointer into PNG RGB data for each row
+      @param rows      span/range of the PNG RGB data for each row
       @param width     The width of the PNG image
       @param height    The height of the PNG image
       @param metaData  The meta data to add to the PNG image
     */
-    static void saveImageToDisk(std::ofstream& out, const vector<png_bytep>& rows,
+    static void saveImageToDisk(std::ofstream& out, std::span<png_bytep> rows,
                                 size_t width, size_t height,
                                 const VariantList& metaData);
-
-    /**
-      Load the PNG data from 'ReadInfo' into the FBSurface.  The surface
-      is resized as necessary to accommodate the data.
-
-      @param surface  The FBSurface into which to place the PNG data
-    */
-    void loadImagetoSurface(FBSurface& surface, bool hasAlpha);
 
     /**
       Write PNG tEXt chunks to the image.
@@ -192,11 +169,39 @@ class PNGLibrary
                              VariantList& metaData);
 
     /** PNG library callback functions */
-    static void png_read_data(png_structp ctx, png_bytep area, png_size_t size);
-    static void png_write_data(png_structp ctx, png_bytep area, png_size_t size);
-    static void png_io_flush(png_structp ctx);
-    [[noreturn]] static void png_user_warn(png_structp ctx, png_const_charp str);
-    [[noreturn]] static void png_user_error(png_structp ctx, png_const_charp str);
+    static void png_read_data(png_structp ctx, png_bytep area, png_size_t size) {
+      (static_cast<std::ifstream*>(png_get_io_ptr(ctx)))->read(
+                                   reinterpret_cast<char*>(area), size);
+    }
+    static void png_write_data(png_structp ctx, png_bytep area, png_size_t size) {
+      (static_cast<std::ofstream*>(png_get_io_ptr(ctx)))->write(
+                                   reinterpret_cast<const char*>(area), size);
+    }
+    static void png_io_flush(png_structp ctx) {
+      (static_cast<std::ofstream*>(png_get_io_ptr(ctx)))->flush();
+    }
+    static void png_user_warn(png_structp, png_const_charp str) {
+      // Optional: log, but DO NOT throw
+      cerr << "libpng warning: " << str << '\n';
+    }
+    [[noreturn]] static void png_user_error(png_structp, png_const_charp msg) {
+      throw std::runtime_error(msg);
+    }
+
+    // Endian conversion helpers
+    // TODO: until we can use C++23 std::byteswap
+    template<typename T> static constexpr T byteswap(T v) {
+      static_assert(sizeof(T) == 1 || sizeof(T) == 2 ||
+                    sizeof(T) == 4 || sizeof(T) == 8,
+                    "Unsupported type size for byteswap");
+
+      if constexpr(sizeof(T) > 1) {
+        auto src = std::bit_cast<std::array<std::byte, sizeof(T)>>(v);
+        std::reverse(src.begin(), src.end());
+        return std::bit_cast<T>(src);
+      }
+      return v;
+    }
 
   private:
     // Following constructors and assignment operators not supported

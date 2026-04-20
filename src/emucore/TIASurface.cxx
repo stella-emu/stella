@@ -31,7 +31,7 @@ namespace {
       ? ScalingInterpolation::blur
       : ScalingInterpolation::sharp;
   }
-} // namespace
+}  // namespace
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 TIASurface::TIASurface(OSystem& system)
@@ -70,9 +70,7 @@ TIASurface::TIASurface(OSystem& system)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-TIASurface::~TIASurface()  // NOLINT (we need an empty d'tor)
-{
-}
+TIASurface::~TIASurface() = default;
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TIASurface::initialize(const Console& console,
@@ -169,7 +167,7 @@ void TIASurface::changeNTSC(int direction)
     else
       preset++;
   }
-  else if (direction == -1)
+  else if(direction == -1)
   {
     if(preset == static_cast<int>(NTSCFilter::Preset::OFF))
       preset = static_cast<int>(NTSCFilter::Preset::CUSTOM);
@@ -395,7 +393,7 @@ void TIASurface::createScanlineSurface()
   const auto mask = static_cast<int>(scanlineMaskType());
   const auto pWidth = static_cast<uInt32>(Patterns[mask].data[0].size());
   const auto pHeight = static_cast<uInt32>(Patterns[mask].data.size() / Patterns[mask].vRepeats);
-  const uInt32 vRepeats = Patterns[mask].vRepeats;
+  const auto vRepeats = Patterns[mask].vRepeats;
   // Single width pattern need no horizontal repeats
   const uInt32 width = pWidth > 1 ? TIAConstants::frameBufferWidth * pWidth : 1;
   // TODO: Idea, alternative mask pattern if destination is scaled smaller than mask height?
@@ -428,9 +426,9 @@ void TIASurface::enableNTSC(bool enable)
   const uInt32 surfaceWidth = enable ?
     AtariNTSC::outWidth(TIAConstants::frameBufferWidth) : TIAConstants::frameBufferWidth;
 
-  if (surfaceWidth != myTiaSurface->srcRect().w() || myTIA->height() != myTiaSurface->srcRect().h()) {
+  if(surfaceWidth != myTiaSurface->srcRect().w() || myTIA->height() != myTiaSurface->srcRect().h())
+  {
     myTiaSurface->setSrcSize(surfaceWidth, myTIA->height());
-
     myTiaSurface->invalidate();
   }
 
@@ -466,7 +464,7 @@ string TIASurface::effectsInfo() const
   }
   if(mySLineSurface->blendLevel() > 0)
     buf << ", scanlines=" << mySLineSurface->blendLevel()
-      << "/" << myOSystem.settings().getString("tv.scanmask");
+        << "/" << myOSystem.settings().getString("tv.scanmask");
   buf << ", inter=" << (myOSystem.settings().getBool("tia.inter") ? "enabled" : "disabled");
   buf << ", aspect correction=" << (correctAspect() ? "enabled" : "disabled");
   buf << ", palette=" << myOSystem.settings().getString("palette");
@@ -477,6 +475,11 @@ string TIASurface::effectsInfo() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 inline uInt32 TIASurface::averageBuffers(uInt32 bufOfs)
 {
+  // TODO: if we keep this method, then the following is much more efficient
+//   const uInt32 c = myRGBFramebuffer[bufOfs];
+//   const uInt32 p = myPrevRGBFramebuffer[bufOfs];
+//   return (((c ^ p) >> 1) & 0x7F7F7FU) + (c & p);
+
   const uInt32 c = myRGBFramebuffer[bufOfs];
   const uInt32 p = myPrevRGBFramebuffer[bufOfs];
 
@@ -530,7 +533,7 @@ void TIASurface::render(bool shade)
       const uInt8* tiaIn = myTIA->frameBuffer();
       uInt32* rgbIn = myRGBFramebuffer.data();
 
-      if (mySaveSnapFlag)
+      if(mySaveSnapFlag)
         std::copy_n(myRGBFramebuffer.begin(), width * height,
                     myPrevRGBFramebuffer.begin());
 

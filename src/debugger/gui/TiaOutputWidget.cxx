@@ -116,7 +116,8 @@ void TiaOutputWidget::saveSnapshot(int execDepth, string_view execPrefix,
   string message = "Snapshot saved";
   try
   {
-    PNGLibrary::saveImage(sspath.str(), s, rect);
+    const FSNode pngfile(sspath.str());
+    instance().png().saveImage(pngfile, s, rect);
   }
   catch(const std::runtime_error& e)
   {
