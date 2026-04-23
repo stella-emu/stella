@@ -88,6 +88,9 @@ void FBBackendSDL::queryHardware(std::map<uInt32, Common::Size>& fullscreenRes,
   // Get the maximum fullscreen and windowed desktop resolutions
   for(uInt32 i = 0; i < myNumDisplays; ++i)
   {
+SDL_DisplayID instance_id = displays[i];
+cerr << std::format("Display {} -> {}\n", instance_id, SDL_GetDisplayName(instance_id));
+
     // Fullscreen mode
     const SDL_DisplayMode* display = SDL_GetDesktopDisplayMode(displays[i]);
     SDL_Rect bounds;
@@ -199,20 +202,16 @@ uInt32 FBBackendSDL::getCurrentDisplayID() const
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool FBBackendSDL::setVideoMode(const VideoModeHandler::Mode& mode,
-                                int winIdx, const Common::Point& winPos)
+                                uInt32 winIdx, const Common::Point& winPos)
 {
   ASSERT_MAIN_THREAD;
-
-// cerr << mode << '\n';
 
   // If not initialized by this point, then immediately fail
   if(SDL_WasInit(SDL_INIT_VIDEO) == 0)
     return false;
 
-  // TODO SDL3:  uses IDs
-  //const uInt32 displayIndex = std::min<uInt32>(myNumDisplays, winIdx);
   SDL_DisplayID* displayIds = SDL_GetDisplays(NULL);
-  SDL_DisplayID displayId = winIdx;// displayIds[displayIndex];
+  SDL_DisplayID displayId = winIdx;
   int posX = 0, posY = 0;
 
   myCenter = myOSystem.settings().getBool("center");

@@ -103,6 +103,19 @@ std::ostream& operator<< (std::ostream& out, const std::vector<T>& v) {
   return out;
 }
 
+// Output contents of a map
+template<typename T>
+concept MapLike = requires(T m) {
+  typename T::key_type;
+  typename T::mapped_type;
+};
+template<MapLike M>
+std::ostream& operator<<(std::ostream& out, const M& m) {
+  for(const auto& [key, value]: m)
+    out << key << ": " << value << '\n';
+  return out;
+}
+
 // This is so we can return empty string references with creating temporaries
 inline const string& EmptyString() { static const string empty; return empty; }
 

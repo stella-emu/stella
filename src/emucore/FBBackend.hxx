@@ -77,7 +77,7 @@ class FBBackend
       @return  False on any errors, else true
     */
     virtual bool setVideoMode(const VideoModeHandler::Mode& mode,
-                              int winIdx, const Common::Point& winPos) = 0;
+                              uInt32 winIdx, const Common::Point& winPos) = 0;
 
     /**
       Clear the framebuffer.

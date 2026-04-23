@@ -67,9 +67,7 @@ FrameBuffer::FrameBuffer(OSystem& osystem)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FrameBuffer::~FrameBuffer()  // NOLINT (we need an empty d'tor)
-{
-}
+FrameBuffer::~FrameBuffer() = default;
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBuffer::initialize()
@@ -81,11 +79,13 @@ void FrameBuffer::initialize()
   // Get desktop resolution and supported renderers
   myBackend->queryHardware(myFullscreenDisplays, myWindowedDisplays, myRenderers);
 
-  const size_t numDisplays = myWindowedDisplays.size();
+cerr << "Fullscreen\n" << myFullscreenDisplays;
+cerr << "Windowed\n" << myWindowedDisplays;
 
-  for(size_t display = 0; display < numDisplays; ++display)
+  for(const auto& display: myWindowedDisplays)
   {
-    uInt32 query_w = myWindowedDisplays[display].w, query_h = myWindowedDisplays[display].h;
+    uInt32 query_w = display.second.w, query_h = display.second.h;
+cerr << "query_w: " << query_w << ", query_h: " << query_h << '\n';
 
     // Check the 'maxres' setting, which is an undocumented developer feature
     // that specifies the desktop size (not normally set)
@@ -97,21 +97,25 @@ void FrameBuffer::initialize()
     }
     // Various parts of the codebase assume a minimum screen size
     Common::Size size(std::max(query_w, FBMinimum::Width), std::max(query_h, FBMinimum::Height));
-    myAbsDesktopSize.push_back(size);
+    myAbsDesktopSize[display.first] = size;
+cerr << "myAbsDesktopSize\n" << myAbsDesktopSize;
 
     // Check for HiDPI mode (is it activated, and can we use it?)
-    myHiDPIAllowed.push_back(((size.w / 2) >= FBMinimum::Width) &&
-                             ((size.h / 2) >= FBMinimum::Height));
-    myHiDPIEnabled.push_back(myHiDPIAllowed.back() && myOSystem.settings().getBool("hidpi"));
+    const bool hidpi = (((size.w / 2) >= FBMinimum::Width) &&
+                        ((size.h / 2) >= FBMinimum::Height));
+    myHiDPIAllowed[display.first] = hidpi;
+    myHiDPIEnabled[display.first] = hidpi && myOSystem.settings().getBool("hidpi");
+cerr << "myHiDPIEnabled\n" << myHiDPIEnabled;
 
     // In HiDPI mode, the desktop resolution is essentially halved
     // Later, the output is scaled and rendered in 2x mode
-    if(myHiDPIEnabled.back())
+    if(myHiDPIEnabled[display.first])
     {
       size.w /= hidpiScaleFactor();
       size.h /= hidpiScaleFactor();
     }
-    myDesktopSize.push_back(size);
+    myDesktopSize[display.first] = size;
+cerr << "myDesktopSize\n" << myDesktopSize;
   }
 
 #ifdef GUI_SUPPORT
@@ -130,19 +134,25 @@ void FrameBuffer::initialize()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int FrameBuffer::displayId(BufferType bufferType) const
+uInt32 FrameBuffer::displayId(BufferType bufferType) const
 {
-  // TODO SDL3
-  const int maxDisplay = static_cast<int>(myWindowedDisplays.size()) - 1;
-  int display = 0;
+  uInt32 display = 0;
 
   if(bufferType == myBufferType)
     display = myBackend->getCurrentDisplayID();
   else
-    display = myOSystem.settings().getInt(getDisplayKey(bufferType != BufferType::None
-                                          ? bufferType : myBufferType));
+    display = myOSystem.settings().getInt(
+      getDisplayKey(bufferType != BufferType::None
+        ? bufferType
+        : myBufferType)
+    );
 
-  return std::min(std::max(0, display), maxDisplay);
+  // If the requested display ID is not available, default to the first one
+  // in the container (normally the primary display)
+  if(!myWindowedDisplays.contains(display))
+    display = myWindowedDisplays.begin()->first;
+
+  return display;
 }
 
 #ifdef GUI_SUPPORT
@@ -1396,7 +1406,7 @@ FBInitStatus FrameBuffer::applyVideoMode()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 double FrameBuffer::maxWindowZoom() const
 {
-  const int display = displayId(BufferType::Emulator);
+  const uInt32 display = displayId(BufferType::Emulator);
   double multiplier = 1;
 
   for(;;)
@@ -1405,8 +1415,8 @@ double FrameBuffer::maxWindowZoom() const
     const uInt32 width  = static_cast<double>(TIAConstants::viewableWidth)  * myBezel->ratioW() * multiplier;
     const uInt32 height = static_cast<double>(TIAConstants::viewableHeight) * myBezel->ratioH() * multiplier;
 
-    if((width > myAbsDesktopSize[display].w) ||
-       (height > myAbsDesktopSize[display].h))
+    if((width > myAbsDesktopSize.at(display).w) ||
+       (height > myAbsDesktopSize.at(display).h))
       break;
 
     multiplier += ZOOM_STEPS;

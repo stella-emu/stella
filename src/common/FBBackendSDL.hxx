@@ -196,7 +196,7 @@ class FBBackendSDL : public FBBackend
       @return  False on any errors, else true
     */
     bool setVideoMode(const VideoModeHandler::Mode& mode,
-                      int winIdx, const Common::Point& winPos) override;
+                      uInt32 winIdx, const Common::Point& winPos) override;
 
     /**
       This method is called to create a surface with the given attributes.

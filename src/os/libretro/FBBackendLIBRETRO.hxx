@@ -60,12 +60,12 @@ class FBBackendLIBRETRO : public FBBackend
       @param windowedRes    Maximum resolution supported in windowed mode
       @param renderers      List of renderer names (internal name -> end-user name)
     */
-    void queryHardware(vector<Common::Size>& fullscreenRes,
-                       vector<Common::Size>& windowedRes,
+    void queryHardware(std::map<uInt32, Common::Size>& fullscreenRes,
+                       std::map<uInt32, Common::Size>& windowedRes,
                        VariantList& renderers) override
     {
-      fullscreenRes.emplace_back(1920, 1080);
-      windowedRes.emplace_back(1920, 1080);
+      fullscreenRes.emplace(0, Common::Size{1920, 1080});
+      windowedRes.emplace(0, Common::Size{1920, 1080});
 
       VarList::push_back(renderers, "software", "Software");
     }
@@ -107,7 +107,7 @@ class FBBackendLIBRETRO : public FBBackend
     uInt32 getCurrentDisplayID() const override { return 0; }
     void clear() override { }
     bool setVideoMode(const VideoModeHandler::Mode&,
-                      int, const Common::Point&) override { return true; }
+                      uInt32, const Common::Point&) override { return true; }
     void grabMouse(bool) override { }
     void enableTextEvents(bool enable) override { }
     void renderToScreen() override { }

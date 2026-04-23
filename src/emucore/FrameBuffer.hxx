@@ -19,6 +19,7 @@
 #define FRAMEBUFFER_HXX
 
 #include <list>
+#include <map>
 
 class OSystem;
 class Console;
@@ -206,7 +207,7 @@ class FrameBuffer
       Returns the dimensions of the mode specific users' desktop.
     */
     const Common::Size& desktopSize(BufferType bufferType) const {
-      return myDesktopSize[displayId(bufferType)];
+      return myDesktopSize.at(displayId(bufferType));
     }
 
     /**
@@ -316,14 +317,14 @@ class FrameBuffer
       Answer whether hidpi mode is allowed.  In this mode, all FBSurfaces
       are scaled to 2x normal size.
     */
-    bool hidpiAllowed() const { return myHiDPIAllowed[displayId()]; }
+    bool hidpiAllowed() const { return myHiDPIAllowed.at(displayId()); }
 
     /**
       Answer whether hidpi mode is enabled.  In this mode, all FBSurfaces
       are scaled to 2x normal size.
     */
-    bool hidpiEnabled() const { return myHiDPIEnabled[displayId()]; }
-    uInt32 hidpiScaleFactor() const { return myHiDPIEnabled[displayId()] ? 2 : 1; }
+    bool hidpiEnabled() const { return myHiDPIEnabled.at(displayId()); }
+    uInt32 hidpiScaleFactor() const { return myHiDPIEnabled.at(displayId()) ? 2 : 1; }
 
     /**
       This method should be called to save the current settings of all
@@ -500,7 +501,7 @@ class FrameBuffer
     /**
       Get the display used for the current mode.
     */
-    int displayId(BufferType bufferType = BufferType::None) const;
+    uInt32 displayId(BufferType bufferType = BufferType::None) const;
 
     /**
       Build an applicable video mode based on the current settings in
@@ -542,20 +543,19 @@ class FrameBuffer
     // Used to set intervals between messages while in pause mode
     Int32 myPausedCount{0};
 
-    // Maximum dimensions of the desktop area
+    // Maximum dimensions of each attached display desktop area
     // Note that this takes 'hidpi' mode into account, so in some cases
     // it will be less than the absolute desktop size
-    vector<Common::Size> myDesktopSize;
+    std::map<uInt32, Common::Size> myDesktopSize;
 
-    // Maximum absolute dimensions of the desktop area
-    vector<Common::Size> myAbsDesktopSize;
+    // Maximum absolute dimensions of each attached display desktop area
+    std::map<uInt32, Common::Size> myAbsDesktopSize;
 
-    // The resolution of the attached displays in fullscreen mode
-    // The primary display is typically the first in the array
+    // The resolution of each attached display in fullscreen mode
     // Windowed modes use myDesktopSize directly
     std::map<uInt32, Common::Size> myFullscreenDisplays;
 
-    // The resolution of the attached displays in windowed mode
+    // The resolution of each attached display in windowed mode
     std::map<uInt32, Common::Size> myWindowedDisplays;
 
     // Supported renderers
@@ -613,8 +613,10 @@ class FrameBuffer
     uInt32 myLastScanlines{0};
 
     bool myGrabMouse{false};
-    vector<bool> myHiDPIAllowed;
-    vector<bool> myHiDPIEnabled;
+
+    // HiDPI settings of each attached display
+    std::map<uInt32, bool> myHiDPIAllowed;
+    std::map<uInt32, bool> myHiDPIEnabled;
 
     // Minimum TIA zoom level that can be used for this framebuffer
     double myTIAMinZoom{2.};
