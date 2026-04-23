@@ -21,6 +21,13 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 SaveKey::SaveKey(Jack jack, const Event& event, const System& system,
+                 const FSNode& eepromfile, const onMessageCallback& callback)
+  : SaveKey(jack, event, system, eepromfile, callback, Controller::Type::SaveKey)
+{
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+SaveKey::SaveKey(Jack jack, const Event& event, const System& system,
                  const FSNode& eepromfile, const onMessageCallback& callback,
                  Type type)
   : Controller(jack, event, system, type),
@@ -28,13 +35,6 @@ SaveKey::SaveKey(Jack jack, const Event& event, const System& system,
 {
   setPin(DigitalPin::One, true);
   setPin(DigitalPin::Two, true);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-SaveKey::SaveKey(Jack jack, const Event& event, const System& system,
-                 const FSNode& eepromfile, const onMessageCallback& callback)
-  : SaveKey(jack, event, system, eepromfile, callback, Controller::Type::SaveKey)
-{
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

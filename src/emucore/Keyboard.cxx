@@ -55,16 +55,19 @@ Keyboard::Keyboard(Jack jack, const Event& event, const System& system)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Keyboard::ColumnState Keyboard::processColumn(const Event::Type buttons[])
+Keyboard::ColumnState
+Keyboard::processColumn(std::span<const Event::Type, 4> buttons)
 {
-  static constexpr DigitalPin signals[] =
-    {DigitalPin::One, DigitalPin::Two, DigitalPin::Three, DigitalPin::Four};
+  static constexpr std::array<DigitalPin, 4> signals = {
+    DigitalPin::One, DigitalPin::Two, DigitalPin::Three, DigitalPin::Four
+  };
 
-  for (uInt8 i = 0; i < 4; i++)
-    if (myEvent.get(buttons[i]) && !getPin(signals[i])) return ColumnState::gnd;
-
-  for (uInt8 i = 0; i < 4; i++)
-    if (myEvent.get(buttons[i]) && getPin(signals[i])) return ColumnState::vcc;
+  for(uInt8 i = 0; i < 4; i++)
+    if(myEvent.get(buttons[i]) && !getPin(signals[i]))
+      return ColumnState::gnd;
+  for(uInt8 i = 0; i < 4; i++)
+    if(myEvent.get(buttons[i]) &&  getPin(signals[i]))
+      return ColumnState::vcc;
 
   return ColumnState::notConnected;
 }
@@ -73,7 +76,7 @@ Keyboard::ColumnState Keyboard::processColumn(const Event::Type buttons[])
 AnalogReadout::Connection
 Keyboard::columnStateToAnalogSignal(ColumnState state)
 {
-  switch (state)
+  switch(state)
   {
     case ColumnState::gnd:
       return AnalogReadout::connectToGround();
@@ -94,9 +97,15 @@ void Keyboard::write(DigitalPin pin, bool value)
 {
   setPin(pin, value);
 
-  const Event::Type col0[] = {myOneEvent, myFourEvent, mySevenEvent, myStarEvent};
-  const Event::Type col1[] = {myTwoEvent, myFiveEvent, myEightEvent, myZeroEvent};
-  const Event::Type col2[] = {myThreeEvent, mySixEvent, myNineEvent, myPoundEvent};
+  const std::array<Event::Type, 4> col0 = {
+    myOneEvent, myFourEvent, mySevenEvent, myStarEvent
+  };
+  const std::array<Event::Type, 4> col1 = {
+    myTwoEvent, myFiveEvent, myEightEvent, myZeroEvent
+  };
+  const std::array<Event::Type, 4> col2 = {
+    myThreeEvent, mySixEvent, myNineEvent, myPoundEvent
+  };
 
   const ColumnState stateCol0 = processColumn(col0);
   const ColumnState stateCol1 = processColumn(col1);

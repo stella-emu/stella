@@ -68,7 +68,7 @@ class Keyboard : public Controller
     };
 
   private:
-    ColumnState processColumn(const Event::Type buttons[]);
+    ColumnState processColumn(std::span<const Event::Type, 4> buttons);
 
     static AnalogReadout::Connection columnStateToAnalogSignal(ColumnState state);
 

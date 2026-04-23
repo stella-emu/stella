@@ -48,6 +48,10 @@ void Joy2BPlus::updateButtons()
   updateMouseButtons(firePressed, buttonCPressed);
 
   setPin(DigitalPin::Six, !getAutoFireState(firePressed));
-  setPin(AnalogPin::Five, buttonCPressed ? AnalogReadout::connectToGround() : AnalogReadout::connectToVcc());
-  setPin(AnalogPin::Nine, button3Pressed ? AnalogReadout::connectToGround() : AnalogReadout::connectToVcc());
+  setPin(AnalogPin::Five, buttonCPressed
+                            ? AnalogReadout::connectToGround()
+                            : AnalogReadout::connectToVcc());
+  setPin(AnalogPin::Nine, button3Pressed
+                            ? AnalogReadout::connectToGround()
+                            : AnalogReadout::connectToVcc());
 }

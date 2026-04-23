@@ -112,6 +112,7 @@ class KidVid : public Controller
 
   private:
     const OSystem& myOSystem;
+    const string myBasePath;
 
     // Sends messages back to the parent class
     Controller::onMessageCallbackForced myCallback;
@@ -127,6 +128,7 @@ class KidVid : public Controller
       SongStartSize  = 104,
       TapeFrames     = 60,
       ClickFrames    = 3,              // eliminate click noise at song end
+      KVData00Offset = 12 * 8,         // KVData00 - ourData = 12 (2 * 6)
       KVData80Offset = 42 * 8,         // KVData80 - ourData = 42 (7 * 6)
       KVPauseOffset  = 36 * 8          // KVPause  - ourData = 36 (6 * 6)
     ;

@@ -82,7 +82,6 @@ void PointingDevice::update()
     return;
 
   // Update horizontal direction
-  //cerr << myEvent.get(Event::MouseAxisXMove) << ", " << myHCounterRemainder << '\n';
   updateDirection( myEvent.get(Event::MouseAxisXMove), myHCounterRemainder,
       myTrackBallLeft, myTrackBallLinesH, myScanCountH, myFirstScanOffsetH);
 
@@ -133,7 +132,8 @@ void PointingDevice::updateDirection(int counter, float& counterRemainder,
     trackBallLines = mySystem.tia().scanlinesLastFrame() / trackBallCount;
 
     // Set lower limit in case of (unrealistic) ultra fast mouse movements
-    if (trackBallLines == 0) trackBallLines = 1;
+    if(trackBallLines == 0)
+      trackBallLines = 1;
 
     // Define scanline of first change
     scanCount = (trackBallLines * firstScanOffset) >> 12;
@@ -150,4 +150,4 @@ void PointingDevice::updateDirection(int counter, float& counterRemainder,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-float PointingDevice::TB_SENSITIVITY = 1.0;
+float PointingDevice::TB_SENSITIVITY = 1.F;

@@ -71,7 +71,7 @@ class Lightgun : public Controller
   private:
     const FrameBuffer& myFrameBuffer;
 
-    // targetting compensation values
+    // Targeting compensation values
     Int32 myOfsX{0}, myOfsY{0};
 
   private:

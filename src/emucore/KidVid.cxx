@@ -30,6 +30,7 @@ KidVid::KidVid(Jack jack, const Event& event, const OSystem& osystem,
                const onMessageCallbackForced& callback)
   : Controller(jack, event, system, Controller::Type::KidVid),
     myOSystem{osystem},
+    myBasePath{osystem.baseDir().getPath()},
     myCallback{callback},
     myEnabled{myJack == Jack::Right}
 {
@@ -64,8 +65,7 @@ void KidVid::update()
     const uInt32 songLength = ourSongStart[temp + 1] - ourSongStart[temp] - (262 * ClickFrames);
 
     // Play the remaining WAV file
-    const string& fileName = myOSystem.baseDir().getPath() +
-      ((temp < 10) ? "KVSHARED.WAV": getFileName());
+    const string fileName = myBasePath + ((temp < 10) ? "KVSHARED.WAV": getFileName());
     myOSystem.sound().playWav(fileName, ourSongStart[temp] + (songLength - mySongLength), mySongLength);
 
     myContinueSong = false;
@@ -146,7 +146,7 @@ void KidVid::update()
     if(!myBlockIdx)
     {
       if(!myBlock)
-        myIdx = ((myTape * 6) + 12 - NumBlocks) * 8; // KVData00 - ourData = 12 (2 * 6)
+        myIdx = KVData00Offset + (myTape - 1) * NumBlockBits;
       else
       {
         if(myBlock >= ourBlocks[tapeIndex()])
@@ -272,8 +272,8 @@ void KidVid::openSampleFiles()
 
   if(!myFilesFound)
   {
-    myFilesFound = FSNode(myOSystem.baseDir().getPath() + getFileName()).exists() &&
-                   FSNode(myOSystem.baseDir().getPath() + "KVSHARED.WAV").exists();
+    myFilesFound = FSNode(myBasePath + getFileName()).exists() &&
+                   FSNode(myBasePath + "KVSHARED.WAV").exists();
 
   #ifdef DEBUG_BUILD
     if(myFilesFound)
@@ -300,8 +300,8 @@ void KidVid::setNextSong()
     mySongLength = ourSongStart[temp + 1] - ourSongStart[temp] - (262 * ClickFrames);
 
     // Play the WAV file
-    const string& fileName = (temp < 10) ? "KVSHARED.WAV" : getFileName();
-    myOSystem.sound().playWav(myOSystem.baseDir().getPath() + fileName,
+    const string fileName = (temp < 10) ? "KVSHARED.WAV" : getFileName();
+    myOSystem.sound().playWav(myBasePath + fileName,
                               ourSongStart[temp], mySongLength);
     myCallback(std::format("Read song #{} ({})",
                            mySongPointer, fileName), false);

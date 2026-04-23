@@ -39,11 +39,9 @@ class PointingDevice : public Controller
                    float sensitivity);
     ~PointingDevice() override = default;
 
-  public:
     static constexpr int MIN_SENSE = 1;
     static constexpr int MAX_SENSE = 20;
 
-  public:
     using Controller::read;
 
     /**
@@ -132,7 +130,7 @@ class PointingDevice : public Controller
     // mouse speeds
     static float TB_SENSITIVITY;
 
-private:
+  private:
     // Following constructors and assignment operators not supported
     PointingDevice() = delete;
     PointingDevice(const PointingDevice&) = delete;

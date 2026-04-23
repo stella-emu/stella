@@ -48,6 +48,10 @@ void BoosterGrip::updateButtons()
   updateMouseButtons(firePressed, boosterPressed);
 
   setPin(DigitalPin::Six, !getAutoFireState(firePressed));
-  setPin(AnalogPin::Five, boosterPressed ? AnalogReadout::connectToVcc() : AnalogReadout::disconnect());
-  setPin(AnalogPin::Nine, triggerPressed ? AnalogReadout::connectToVcc() : AnalogReadout::disconnect());
+  setPin(AnalogPin::Five, boosterPressed
+                            ? AnalogReadout::connectToVcc()
+                            : AnalogReadout::disconnect());
+  setPin(AnalogPin::Nine, triggerPressed
+                            ? AnalogReadout::connectToVcc()
+                            : AnalogReadout::disconnect());
 }

@@ -35,9 +35,10 @@ void MindLink::update()
   if(!myMouseEnabled)
     return;
 
-  myMindlinkPos = BSPF::clamp((myMindlinkPos & ~TRIGGER_VALUE) +
-                              myEvent.get(Event::MouseAxisXMove) * MOUSE_SENSITIVITY,
-                              MIN_POS, MAX_POS);
+  myMindlinkPos = static_cast<uInt32>(BSPF::clamp(
+    (static_cast<int>(myMindlinkPos) & ~TRIGGER_VALUE) +
+     myEvent.get(Event::MouseAxisXMove) * MOUSE_SENSITIVITY, MIN_POS, MAX_POS));
+
   // Additional option for trigger (NOT existing in orginal hardware!)
   if(myEvent.get(Event::MouseButtonLeftValue) ||
      myEvent.get(Event::MouseButtonRightValue))

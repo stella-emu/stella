@@ -51,7 +51,7 @@ class QuadTari : public Controller
     ~QuadTari() override = default;
 
   public:
-     using Controller::read;
+    using Controller::read;
 
     /**
       Read the value of the specified digital pin for this controller.

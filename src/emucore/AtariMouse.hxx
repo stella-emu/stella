@@ -50,7 +50,7 @@ class AtariMouse : public PointingDevice
         0b0000, 0b0100, 0b1100, 0b1000
       };
 
-      return ourTableH[countH] | ourTableV[countV];
+      return ourTableH[countH & 0b11] | ourTableV[countV & 0b11];
     }
 
     static constexpr float trackballSensitivity = 0.8F;

@@ -50,7 +50,7 @@ class AmigaMouse : public PointingDevice
         0b0000, 0b0100, 0b0101, 0b0001
       };
 
-      return ourTableH[countH] | ourTableV[countV];
+      return ourTableH[countH & 0b11] | ourTableV[countV & 0b11];
     }
 
     static constexpr float trackballSensitivity = 0.8F;

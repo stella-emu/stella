@@ -95,7 +95,7 @@ bool CartridgeCM::poke(uInt16 address, uInt8 value)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 CartridgeCM::column() const
 {
-  return myCompuMate->column();
+  return myCompuMate ? myCompuMate->column() : 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -119,10 +119,11 @@ bool CartridgeCM::bank(uInt16 bank, uInt16)
   // Lower 2K (always ROM)
   for(uInt16 addr = 0x1000; addr < 0x1800; addr += System::PAGE_SIZE)
   {
-    access.directPeekBase = &myImage[myBankOffset + (addr & 0x0FFF)];
-    access.romAccessBase = &myRomAccessBase[myBankOffset + (addr & 0x0FFF)];
-    access.romPeekCounter = &myRomAccessCounter[myBankOffset + (addr & 0x0FFF)];
-    access.romPokeCounter = &myRomAccessCounter[myBankOffset + (addr & 0x0FFF) + myAccessSize];
+    const uInt16 offset = myBankOffset + (addr & 0x0FFF);
+    access.directPeekBase  = &myImage[offset];
+    access.romAccessBase   = &myRomAccessBase[offset];
+    access.romPeekCounter  = &myRomAccessCounter[offset];
+    access.romPokeCounter  = &myRomAccessCounter[offset + myAccessSize];
     mySystem->setPageAccess(addr, access);
   }
 
@@ -133,23 +134,25 @@ bool CartridgeCM::bank(uInt16 bank, uInt16)
 
     if(mySWCHA & 0x10)
     {
-      access.directPeekBase = &myImage[myBankOffset + (addr & 0x0FFF)];
-      access.romAccessBase = &myRomAccessBase[myBankOffset + (addr & 0x0FFF)];
-      access.romPeekCounter = &myRomAccessCounter[myBankOffset + (addr & 0x0FFF)];
-      access.romPokeCounter = &myRomAccessCounter[myBankOffset + (addr & 0x0FFF) + myAccessSize];
+      const uInt16 offset = myBankOffset + (addr & 0x0FFF);
+      access.directPeekBase  = &myImage[offset];
+      access.romAccessBase   = &myRomAccessBase[offset];
+      access.romPeekCounter  = &myRomAccessCounter[offset];
+      access.romPokeCounter  = &myRomAccessCounter[offset + myAccessSize];
     }
     else
     {
-      access.directPeekBase = &myRAM[addr & 0x7FF];
-      access.romAccessBase = &myRomAccessBase[myBankOffset + (addr & 0x07FF)];
-      access.romPeekCounter = &myRomAccessCounter[myBankOffset + (addr & 0x07FF)];
-      access.romPokeCounter = &myRomAccessCounter[myBankOffset + (addr & 0x07FF) + myAccessSize];
+      const uInt16 ramOffset = addr & 0x7FF;
+      const uInt16 offset    = myBankOffset + ramOffset;
+      access.directPeekBase  = &myRAM[ramOffset];
+      access.romAccessBase   = &myRomAccessBase[offset];
+      access.romPeekCounter  = &myRomAccessCounter[offset];
+      access.romPokeCounter  = &myRomAccessCounter[offset + myAccessSize];
     }
 
-    if((mySWCHA & 0x30) == 0x20)
-      access.directPokeBase = &myRAM[addr & 0x7FF];
-    else
-      access.directPokeBase = nullptr;
+    access.directPokeBase = ((mySWCHA & 0x30) == 0x20)
+      ? &myRAM[addr & 0x7FF]
+      : nullptr;
 
     mySystem->setPageAccess(addr, access);
   }
@@ -198,7 +201,7 @@ bool CartridgeCM::save(Serializer& out) const
   {
     out.putShort(myBankOffset);
     out.putByte(mySWCHA);
-    out.putByte(myCompuMate->column());
+    out.putByte(myCompuMate ? myCompuMate->column() : 0);
     out.putByteArray(myRAM);
   }
   catch(...)
@@ -217,7 +220,8 @@ bool CartridgeCM::load(Serializer& in)
   {
     myBankOffset = in.getShort();
     mySWCHA = in.getByte();
-    myCompuMate->column() = in.getByte();
+    const uInt8 column = in.getByte();
+    if(myCompuMate) myCompuMate->column() = column;
     in.getByteArray(myRAM);
   }
   catch(...)

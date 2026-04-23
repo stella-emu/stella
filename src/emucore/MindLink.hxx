@@ -116,10 +116,10 @@ class MindLink : public Controller
   private:
     // Position value in Mindlink controller
     // Gets transferred bitwise (16 bits)
-    int myMindlinkPos{0x2a00};
+    uInt32 myMindlinkPos{0x2a00};
 
     // Which bit to transfer next
-    int myMindlinkShift{1};
+    uInt32 myMindlinkShift{1};
 
     // Whether to use the mouse to emulate this controller
     bool myMouseEnabled{false};

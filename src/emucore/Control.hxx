@@ -462,6 +462,36 @@ class Controller : public Serializable
     std::array<AnalogReadout::Connection, 2>
       myAnalogPinValue{AnalogReadout::disconnect(), AnalogReadout::disconnect()};
 
+    // Must match Controller::Type enum order; size enforced by static_assert below
+    struct ControllerInfo {
+      string_view name;
+      string_view propName;
+    };
+    static constexpr auto CONTROLLER_INFO = std::to_array<ControllerInfo>({
+        { "Unknown",       "AUTO"          },
+        { "Amiga mouse",   "AMIGAMOUSE"    },
+        { "Atari mouse",   "ATARIMOUSE"    },
+        { "AtariVox",      "ATARIVOX"      },
+        { "Booster Grip",  "BOOSTERGRIP"   },
+        { "CompuMate",     "COMPUMATE"     },
+        { "Driving",       "DRIVING"       },
+        { "Sega Genesis",  "GENESIS"       },
+        { "Joystick",      "JOYSTICK"      },
+        { "Keyboard",      "KEYBOARD"      },
+        { "Kid Vid",       "KIDVID"        },
+        { "MindLink",      "MINDLINK"      },
+        { "Paddles",       "PADDLES"       },
+        { "Paddles_IAxis", "PADDLES_IAXIS" },
+        { "Paddles_IAxDr", "PADDLES_IAXDR" },
+        { "SaveKey",       "SAVEKEY"       },
+        { "Trak-Ball",     "TRAKBALL"      },
+        { "Light Gun",     "LIGHTGUN"      },
+        { "QuadTari",      "QUADTARI"      },
+        { "Joy 2B+",       "JOY_2B+"       }
+    });
+    static_assert(CONTROLLER_INFO.size() == static_cast<size_t>(Type::LastType),
+        "CONTROLLER_INFO must have an entry for each Controller::Type");
+
   private:
     // Following constructors and assignment operators not supported
     Controller() = delete;

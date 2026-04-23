@@ -91,6 +91,34 @@ class Driving : public Controller
     static void setSensitivity(int sensitivity);
 
   private:
+    /**
+      Update the button pin states.
+    */
+    void updateButtons();
+
+    /**
+      Update the button states from the mouse button events currently set.
+    */
+    void updateMouseButtons(bool& firePressed);
+
+    /**
+      Update the axes pin states according to the keyboard
+      or joystick events currently set.
+    */
+    void updateControllerAxes();
+
+    /**
+      Update the axes pin states according to the Stelladaptor axes value
+      events currently set.
+    */
+    void updateStelladaptorAxes();
+
+    /**
+      Update the axes pin states according to mouse events currently set.
+    */
+    void updateMouseAxes();
+
+  private:
     // Counter to iterate through the gray codes
     Int32 myCounter{0};
 
@@ -125,34 +153,8 @@ class Driving : public Controller
     // speeds
     static float SENSITIVITY;
 
-  private:
-    /**
-      Update the button pin states.
-    */
-    void updateButtons();
-
-    /**
-      Update the button states from the mouse button events currently set.
-    */
-    void updateMouseButtons(bool& firePressed);
-
-    /**
-      Update the axes pin states according to the keyboard
-      or joystick events currently set.
-    */
-    void updateControllerAxes();
-
-    /**
-      Update the axes pin states according to the Stelladaptor axes value
-      events currently set.
-    */
-    void updateStelladaptorAxes();
-
-    /**
-      Update the axes pin states according to mouse events currently set.
-    */
-    void updateMouseAxes();
-
+    // Subdivisions of each gray code interval for high-resolution tracking
+    static constexpr float COUNTER_SCALE = 256.F;
 
   private:
     // Following constructors and assignment operators not supported

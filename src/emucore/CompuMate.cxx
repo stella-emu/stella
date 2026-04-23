@@ -44,7 +44,7 @@ void CompuMate::update()
   Controller& lp = myConsole.leftController();
   Controller& rp = myConsole.rightController();
 
-  using E = Event::Type;
+  using E  = Event::Type;
   using DP = Controller::DigitalPin;
   using AP = Controller::AnalogPin;
 
@@ -65,8 +65,8 @@ void CompuMate::update()
   // LUT for CompuMate keys; faster than manual if statements
   struct ColMap {
     E lp6, rp3, rp6, rp4;
-    E shiftAlias;  // key that mimics Shift+lp6 (sets RP.A5 high)
-    E funcAlias;   // key that mimics Func+rp4  (sets LP.A9 high)
+    E shiftKey;  // key that mimics Shift+lp6 (sets RP.A5 high)
+    E funcKey;   // key that mimics Func+rp4  (sets LP.A9 high)
   };
 
   /**
@@ -119,11 +119,12 @@ void CompuMate::update()
     rp.setPin(DP::Six,   false);
   if(col.rp4        != E::NoType && myEvent.get(col.rp4))
     rp.setPin(DP::Four,  false);
-  if(col.shiftAlias != E::NoType && myEvent.get(col.shiftAlias)) {
+
+  if(col.shiftKey != E::NoType && myEvent.get(col.shiftKey)) {
     rp.setPin(AP::Five, AnalogReadout::connectToVcc());
     lp.setPin(DP::Six,  false);
   }
-  if(col.funcAlias  != E::NoType && myEvent.get(col.funcAlias)) {
+  if(col.funcKey  != E::NoType && myEvent.get(col.funcKey)) {
     lp.setPin(AP::Nine, AnalogReadout::connectToVcc());
     rp.setPin(DP::Four, false);
   }

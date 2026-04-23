@@ -15,6 +15,8 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
+#include <cassert>
+
 #include "System.hxx"
 #include "Control.hxx"
 
@@ -31,12 +33,10 @@ Controller::Controller(Jack jack, const Event& event, const System& system,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 Controller::read()
 {
-  uInt8 ioport = 0b0000;
-  if(read(DigitalPin::One))   ioport |= 0b0001;
-  if(read(DigitalPin::Two))   ioport |= 0b0010;
-  if(read(DigitalPin::Three)) ioport |= 0b0100;
-  if(read(DigitalPin::Four))  ioport |= 0b1000;
-  return ioport;
+  return (static_cast<uInt8>(read(DigitalPin::One))   << 0) |
+         (static_cast<uInt8>(read(DigitalPin::Two))   << 1) |
+         (static_cast<uInt8>(read(DigitalPin::Three)) << 2) |
+         (static_cast<uInt8>(read(DigitalPin::Four))  << 3);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -102,40 +102,22 @@ bool Controller::load(Serializer& in)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string Controller::getName(const Type type)
 {
-  static constexpr std::array<string_view,
-    static_cast<int>(Controller::Type::LastType)> NAMES =
-  {
-    "Unknown",
-    "Amiga mouse", "Atari mouse", "AtariVox", "Booster Grip", "CompuMate",
-    "Driving", "Sega Genesis", "Joystick", "Keyboard", "Kid Vid", "MindLink",
-    "Paddles", "Paddles_IAxis", "Paddles_IAxDr", "SaveKey", "Trak-Ball",
-    "Light Gun", "QuadTari", "Joy 2B+"
-  };
-
-  return string{NAMES[static_cast<int>(type)]};
+  assert(static_cast<std::size_t>(type) < CONTROLLER_INFO.size());
+  return string{CONTROLLER_INFO[static_cast<int>(type)].name};
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string Controller::getPropName(const Type type)
 {
-  static constexpr std::array<string_view,
-    static_cast<int>(Controller::Type::LastType)> PROP_NAMES =
-  {
-    "AUTO",
-    "AMIGAMOUSE", "ATARIMOUSE", "ATARIVOX", "BOOSTERGRIP", "COMPUMATE",
-    "DRIVING", "GENESIS", "JOYSTICK", "KEYBOARD", "KIDVID", "MINDLINK",
-    "PADDLES", "PADDLES_IAXIS", "PADDLES_IAXDR", "SAVEKEY", "TRAKBALL",
-    "LIGHTGUN", "QUADTARI", "JOY_2B+"
-  };
-
-  return string{PROP_NAMES[static_cast<int>(type)]};
+  assert(static_cast<std::size_t>(type) < CONTROLLER_INFO.size());
+  return string{CONTROLLER_INFO[static_cast<int>(type)].propName};
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Controller::Type Controller::getType(string_view propName)
 {
   for(uInt8 i = 0; i < static_cast<uInt8>(Type::LastType); ++i)
-    if (BSPF::equalsIgnoreCase(propName, getPropName(Type{i})))
+    if(BSPF::equalsIgnoreCase(propName, CONTROLLER_INFO[i].propName))
       return Type{i};
 
   // special case

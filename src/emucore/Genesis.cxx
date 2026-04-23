@@ -21,10 +21,9 @@
 Genesis::Genesis(Jack jack, const Event& event, const System& system)
   : Joystick(jack, event, system, Controller::Type::Genesis)
 {
-  if(myJack == Jack::Left)
-    myButtonCEvent = Event::LeftJoystickFire5;
-  else
-    myButtonCEvent = Event::RightJoystickFire5;
+  myButtonCEvent = (myJack == Jack::Left)
+    ? Event::LeftJoystickFire5
+    : Event::RightJoystickFire5;
 
   setPin(AnalogPin::Five, AnalogReadout::connectToVcc());
   setPin(AnalogPin::Nine, AnalogReadout::connectToVcc());
@@ -42,5 +41,7 @@ void Genesis::updateButtons()
   updateMouseButtons(firePressed, buttonCPressed);
 
   setPin(DigitalPin::Six, !getAutoFireState(firePressed));
-  setPin(AnalogPin::Five, buttonCPressed ? AnalogReadout::connectToGround() : AnalogReadout::connectToVcc());
+  setPin(AnalogPin::Five, buttonCPressed
+                            ? AnalogReadout::connectToGround()
+                            : AnalogReadout::connectToVcc());
 }
