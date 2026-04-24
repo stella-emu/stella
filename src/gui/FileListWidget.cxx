@@ -78,7 +78,7 @@ void FileListWidget::setLocation(const FSNode& node, string_view select)
 {
   progress().resetProgress();
   progress().open();
-  FSNode::CancelCheck isCancelled = [this]() {
+  const FSNode::CancelCheck isCancelled = [this]() {
     return myProgressDialog->isCancelled();
   };
 

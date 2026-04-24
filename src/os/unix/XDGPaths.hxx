@@ -27,20 +27,18 @@ class XDGPaths
   public:
     static XDGPaths& instance() { static XDGPaths inst; return inst; }
 
-    const std::string& home() const        { return myHome; }
-    const std::string& configHome() const  { return myConfigHome; }
-    const std::string& dataHome() const    { return myDataHome; }
-    const std::string& cacheHome() const   { return myCacheHome; }
+    const std::string& home() const       { return myHome;       }
+    const std::string& configHome() const { return myConfigHome; }
+    const std::string& dataHome() const   { return myDataHome;   }
+    const std::string& cacheHome() const  { return myCacheHome;  }
 
     // Optional convenience helpers
     std::string configDir(const std::string& app) const {
       return myConfigHome + normalizeApp(app) + '/';
     }
-
     std::string dataDir(const std::string& app) const {
       return myDataHome + normalizeApp(app) + '/';
     }
-
     std::string cacheDir(const std::string& app) const {
       return myCacheHome + normalizeApp(app) + '/';
     }

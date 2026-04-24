@@ -166,9 +166,7 @@ OptionsDialog::OptionsDialog(OSystem& osystem, DialogContainer& parent,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-OptionsDialog::~OptionsDialog()  // NOLINT (we need an empty d'tor)
-{
-}
+OptionsDialog::~OptionsDialog() = default;
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void OptionsDialog::loadConfig()

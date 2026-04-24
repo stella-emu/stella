@@ -19,12 +19,10 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Genesis::Genesis(Jack jack, const Event& event, const System& system)
-  : Joystick(jack, event, system, Controller::Type::Genesis)
+  : Joystick(jack, event, system, Controller::Type::Genesis),
+    myButtonCEvent{(myJack == Jack::Left) ? Event::LeftJoystickFire5
+                                          : Event::RightJoystickFire5}
 {
-  myButtonCEvent = (myJack == Jack::Left)
-    ? Event::LeftJoystickFire5
-    : Event::RightJoystickFire5;
-
   setPin(AnalogPin::Five, AnalogReadout::connectToVcc());
   setPin(AnalogPin::Nine, AnalogReadout::connectToVcc());
 }

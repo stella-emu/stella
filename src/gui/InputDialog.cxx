@@ -91,9 +91,7 @@ InputDialog::InputDialog(OSystem& osystem, DialogContainer& parent,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-InputDialog::~InputDialog()  // NOLINT (we need an empty d'tor)
-{
-}
+InputDialog::~InputDialog() = default;
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void InputDialog::addDevicePortTab()

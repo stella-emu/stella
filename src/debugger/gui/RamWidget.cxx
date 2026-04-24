@@ -193,9 +193,7 @@ RamWidget::RamWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& n
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-RamWidget::~RamWidget()  // NOLINT (we need an empty d'tor)
-{
-}
+RamWidget::~RamWidget() = default;
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void RamWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)

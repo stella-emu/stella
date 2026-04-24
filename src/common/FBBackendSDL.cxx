@@ -210,8 +210,8 @@ bool FBBackendSDL::setVideoMode(const VideoModeHandler::Mode& mode,
   if(SDL_WasInit(SDL_INIT_VIDEO) == 0)
     return false;
 
-  SDL_DisplayID* displayIds = SDL_GetDisplays(NULL);
-  SDL_DisplayID displayId = winIdx;
+  SDL_DisplayID* displayIds = SDL_GetDisplays(nullptr);
+  const SDL_DisplayID displayId = winIdx;
   int posX = 0, posY = 0;
 
   myCenter = myOSystem.settings().getBool("center");

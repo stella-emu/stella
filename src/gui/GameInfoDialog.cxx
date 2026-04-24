@@ -705,9 +705,7 @@ void GameInfoDialog::addHighScoresTab()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-GameInfoDialog::~GameInfoDialog()  // NOLINT (we need an empty d'tor)
-{
-}
+GameInfoDialog::~GameInfoDialog() = default;
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void GameInfoDialog::loadConfig()

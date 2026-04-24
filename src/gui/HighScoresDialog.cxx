@@ -212,9 +212,7 @@ HighScoresDialog::HighScoresDialog(OSystem& osystem, DialogContainer& parent,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-HighScoresDialog::~HighScoresDialog()  // NOLINT (we need an empty d'tor)
-{
-}
+HighScoresDialog::~HighScoresDialog() = default;
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void HighScoresDialog::loadConfig()

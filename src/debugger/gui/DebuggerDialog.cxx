@@ -72,9 +72,7 @@ DebuggerDialog::DebuggerDialog(OSystem& osystem, DialogContainer& parent,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-DebuggerDialog::~DebuggerDialog()  // NOLINT (we need an empty d'tor)
-{
-}
+DebuggerDialog::~DebuggerDialog() = default;
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DebuggerDialog::loadConfig()

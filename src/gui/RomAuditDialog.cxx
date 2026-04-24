@@ -86,9 +86,7 @@ RomAuditDialog::RomAuditDialog(OSystem& osystem, DialogContainer& parent,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-RomAuditDialog::~RomAuditDialog()  // NOLINT (we need an empty d'tor)
-{
-}
+RomAuditDialog::~RomAuditDialog() = default;
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void RomAuditDialog::loadConfig()

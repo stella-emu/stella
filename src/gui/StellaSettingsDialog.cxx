@@ -87,9 +87,7 @@ StellaSettingsDialog::StellaSettingsDialog(OSystem& osystem, DialogContainer& pa
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-StellaSettingsDialog::~StellaSettingsDialog() // NOLINT (we need an empty d'tor)
-{
-}
+StellaSettingsDialog::~StellaSettingsDialog() = default;
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void StellaSettingsDialog::addUIOptions(WidgetArray& wid, int xpos, int& ypos)

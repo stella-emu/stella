@@ -1645,9 +1645,7 @@ CartridgeMVC::CartridgeMVC(string_view path, size_t size,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CartridgeMVC::~CartridgeMVC()  // NOLINT (we need an empty d'tor)
-{
-}
+CartridgeMVC::~CartridgeMVC() = default;
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeMVC::install(System& system)

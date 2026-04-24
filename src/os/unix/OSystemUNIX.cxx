@@ -19,13 +19,9 @@
 #include <cstdlib>
 #include <cstring>
 
-#if defined(__linux__)
-  #include <unistd.h>
-#elif defined(__FreeBSD__) || defined(__DragonFly__)
+#if defined(__FreeBSD__) || defined(__DragonFly__)
   #include <sys/sysctl.h>
-#elif defined(__NetBSD__)
-  #include <unistd.h>
-#elif defined(__sun)
+#elif defined(__linux__) || defined(__NetBSD__) || defined(__sun)
   #include <unistd.h>
 #endif
 
@@ -40,7 +36,7 @@ namespace
   {
     char resolved[PATH_MAX];
 
-  #if defined(__linux__)
+  #ifdef __linux__
     const ssize_t len = readlink("/proc/self/exe", resolved, PATH_MAX - 1);
     if(len > 0)
     {

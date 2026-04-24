@@ -77,9 +77,7 @@ EventHandler::EventHandler(OSystem& osystem)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-EventHandler::~EventHandler()  // NOLINT (we need an empty d'tor)
-{
-}
+EventHandler::~EventHandler() = default;
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventHandler::initialize()
