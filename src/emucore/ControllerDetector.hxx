@@ -75,65 +75,46 @@ class ControllerDetector
 
       @return   The detected controller type
     */
-    static Controller::Type autodetectPort(const ByteBuffer& image, size_t size,
+    static Controller::Type autodetectPort(ByteSpan image,
         Controller::Jack port, const Settings& settings, bool isQuadTari);
 
-    /**
-      Search the image for the specified byte signature.
-
-      @param image      A pointer to the ROM image
-      @param imagesize  The size of the ROM image
-      @param signature  The byte sequence to search for
-      @param sigsize    The number of bytes in the signature
-
-      @return  True if the signature was found, else false
-    */
-    static bool searchForBytes(const ByteBuffer& image, size_t imagesize,
-                               const uInt8* signature, uInt32 sigsize);
-
     // Returns true if the port's joystick button access code is found.
-    static bool usesJoystickButton(const ByteBuffer& image, size_t size,
-                                   Controller::Jack port);
+    static bool usesJoystickButton(ByteSpan image, Controller::Jack port);
 
     // Returns true if joystick direction access code is found.
-    static bool usesJoystickDirections(const ByteBuffer& image, size_t size);
+    static bool usesJoystickDirections(ByteSpan image);
 
     // Returns true if the port's keyboard access code is found.
-    static bool usesKeyboard(const ByteBuffer& image, size_t size,
-                             Controller::Jack port);
+    static bool usesKeyboard(ByteSpan image, Controller::Jack port);
 
     // Returns true if the port's 2nd Genesis button access code is found.
-    static bool usesGenesisButton(const ByteBuffer& image, size_t size,
-                                  Controller::Jack port);
+    static bool usesGenesisButton(ByteSpan image, Controller::Jack port);
 
     // Returns true if the port's paddle button access code is found.
-    static bool usesPaddle(const ByteBuffer& image, size_t size,
-                           Controller::Jack port, const Settings& settings);
+    static bool usesPaddle(ByteSpan image, Controller::Jack port,
+                           const Settings& settings);
 
     // Returns true if a Trak-Ball table is found.
-    static bool isProbablyTrakBall(const ByteBuffer& image, size_t size);
+    static bool isProbablyTrakBall(ByteSpan image);
 
     // Returns true if an Atari Mouse table is found.
-    static bool isProbablyAtariMouse(const ByteBuffer& image, size_t size);
+    static bool isProbablyAtariMouse(ByteSpan image);
 
     // Returns true if an Amiga Mouse table is found.
-    static bool isProbablyAmigaMouse(const ByteBuffer& image, size_t size);
+    static bool isProbablyAmigaMouse(ByteSpan image);
 
     // Returns true if a SaveKey code pattern is found.
-    static bool isProbablySaveKey(const ByteBuffer& image, size_t size,
-                                  Controller::Jack port);
+    static bool isProbablySaveKey(ByteSpan image, Controller::Jack port);
 
     // Returns true if a Lightgun code pattern is found
-    static bool isProbablyLightGun(const ByteBuffer& image, size_t size,
-                                   Controller::Jack port);
+    static bool isProbablyLightGun(ByteSpan image, Controller::Jack port);
 
     // Returns true if a QuadTari code pattern is found.
-    static bool isProbablyQuadTari(const ByteBuffer& image, size_t size,
-                                   Controller::Jack port);
+    static bool isProbablyQuadTari(ByteSpan image, Controller::Jack port);
 
     // Returns true if a Kid Vid code pattern is found.
-    static bool isProbablyKidVid(const ByteBuffer& image, size_t size,
-                                   Controller::Jack port);
+    static bool isProbablyKidVid(ByteSpan image, Controller::Jack port);
+
   private:
     // Following constructors and assignment operators not supported
     ControllerDetector() = delete;
@@ -144,4 +125,4 @@ class ControllerDetector
     ControllerDetector& operator=(ControllerDetector&&) = delete;
 };
 
-#endif
+#endif  // CONTROLLER_DETECTOR_HXX

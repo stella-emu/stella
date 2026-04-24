@@ -22,6 +22,8 @@
 #include "CartDetector.hxx"
 #include "CartMVC.hxx"
 
+using BSPF::searchForBytes;
+
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Bankswitch::Type CartDetector::autodetectType(const ByteBuffer& image, size_t size)
 {
@@ -195,32 +197,6 @@ Bankswitch::Type CartDetector::autodetectType(const ByteBuffer& image, size_t si
                             Bankswitch::typeToDesc(type)));
 
   return type;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool CartDetector::searchForBytes(ByteSpan image, ByteSpan signature,
-                                  uInt32 minhits)
-{
-  uInt32 count{0};
-  const auto sigsize = signature.size();
-
-  for(uInt32 i = 0; i < image.size() - sigsize; ++i)
-  {
-    uInt32 j{0};
-    for(j = 0; j < sigsize; ++j)
-    {
-      if(image[i + j] != signature[j])
-        break;
-    }
-    if(j == sigsize)
-    {
-      if(++count == minhits)
-        break;
-      i += sigsize - 1;  // -1 because the loop will increment i
-    }
-  }
-
-  return (count == minhits);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

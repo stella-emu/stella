@@ -54,17 +54,6 @@ class CartDetector
 
   private:
     /**
-      Search the image for the specified byte signature
-
-      @param image      The ROM image as a span
-      @param signature  The byte sequence to search for as a span
-      @param minhits    The minimum number of times a signature is to be found
-
-      @return  True if the signature was found at least 'minhits' time, else false
-    */
-    static bool searchForBytes(ByteSpan image, ByteSpan signature, uInt32 minhits = 1);
-
-    /**
       Returns true if the image is probably a SuperChip (128 bytes RAM)
       Note: should be called only on ROMs with size multiple of 4K
     */

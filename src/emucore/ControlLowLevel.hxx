@@ -35,7 +35,7 @@ class ControllerLowLevel
 {
   public:
     explicit ControllerLowLevel(Controller& controller)
-      : myController(controller) { }
+      : myController{controller} { }
     virtual ~ControllerLowLevel() = default;
 
     bool setPin(Controller::DigitalPin pin, bool value) {

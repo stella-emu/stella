@@ -391,43 +391,21 @@ string Console::formatFromFilename() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string Console::formatFromSignature() const
 {
-  static constexpr uInt8 PAL60_v1[] = { 'P', 'A', 'L', '6', '0'};
-  static constexpr uInt8 PAL60_v2[] = { 'P', 'A', 'L', ' ', '6', '0'};
-  static constexpr uInt8 PAL60_v3[] = { 'P', 'A', 'L', '-', '6', '0'};
+  static constexpr std::array<uInt8, 5> PAL60_v1 = { 'P', 'A', 'L', '6', '0' };
+  static constexpr std::array<uInt8, 6> PAL60_v2 = { 'P', 'A', 'L', ' ', '6', '0' };
+  static constexpr std::array<uInt8, 6> PAL60_v3 = { 'P', 'A', 'L', '-', '6', '0' };
 
   size_t size = 0;
   const ByteBuffer& image = myCart->getImage(size);
+  const ByteSpan imageSpan{image.get(), size};
 
-  if(searchForBytes(image, size, PAL60_v1, 5) ||
-     searchForBytes(image, size, PAL60_v2, 6) ||
-     searchForBytes(image, size, PAL60_v3, 6))
+  if(BSPF::searchForBytes(imageSpan, PAL60_v1) ||
+     BSPF::searchForBytes(imageSpan, PAL60_v2) ||
+     BSPF::searchForBytes(imageSpan, PAL60_v3))
     return "PAL60";
 
   // Nothing found
   return "AUTO";
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool Console::searchForBytes(const ByteBuffer& image, size_t imagesize,
-                             const uInt8* signature, uInt32 sigsize)
-{
-  if(imagesize >= sigsize)
-  {
-    for(uInt32 i = 0; i < imagesize - sigsize; ++i)
-    {
-      uInt32 matches = 0;
-      for(uInt32 j = 0; j < sigsize; ++j)
-      {
-        if(image[i + j] == signature[j])
-          ++matches;
-        else
-          break;
-      }
-      if(matches == sigsize)
-        return true;
-    }
-  }
-  return false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

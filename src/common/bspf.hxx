@@ -525,6 +525,39 @@ namespace BSPF
     constexpr string_view spaces{" ,.;:+-*&/\\'"};
     return spaces.find(c) != string_view::npos;
   }
-} // namespace BSPF
+
+  // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  // Search the image for the specified byte signature
+  //
+  // @param image      The ROM image as a span
+  // @param signature  The byte sequence to search for as a span
+  // @param minhits    The minimum number of times a signature is to be found
+  // @return  True if the signature was found at least 'minhits' times, else false
+  constexpr bool searchForBytes(ByteSpan image, ByteSpan signature,
+                                uInt32 minhits = 1)
+  {
+    const auto sigsize = signature.size();
+    if(image.size() < sigsize)
+      return false;
+
+    uInt32 count{0};
+    for(uInt32 i = 0; i < image.size() - sigsize; ++i)
+    {
+      uInt32 j{0};
+      for(j = 0; j < sigsize; ++j)
+      {
+        if(image[i + j] != signature[j])
+          break;
+      }
+      if(j == sigsize)
+      {
+        if(++count == minhits)
+          break;
+        i += sigsize - 1;  // -1 because the loop will increment i
+      }
+    }
+    return (count == minhits);
+  }
+}  // namespace BSPF
 
 #endif
