@@ -21,7 +21,6 @@
 #include <bit>
 #include <cstring>
 #include <optional>
-#include <span>
 
 #include "FSNode.hxx"
 #include "bspf.hxx"
@@ -98,7 +97,7 @@ class Serializer
 
       @param array  The storage space to write bytes to
     */
-    void getByteArray(std::span<uInt8> array);
+    void getByteArray(ByteMSpan array);
 
     /**
       Reads a short value (unsigned 16-bit) from the current input stream.
@@ -112,7 +111,7 @@ class Serializer
 
       @param array  The storage space to write shorts to
     */
-    void getShortArray(std::span<uInt16> array);
+    void getShortArray(ShortMSpan array);
 
     /**
       Reads an int value (unsigned 32-bit) from the current input stream.
@@ -126,7 +125,7 @@ class Serializer
 
       @param array  The storage space to write ints to
     */
-    void getIntArray(std::span<uInt32> array);
+    void getIntArray(IntMSpan array);
 
     /**
       Reads a long int value (unsigned 64-bit) from the current input stream.
@@ -168,7 +167,7 @@ class Serializer
 
       @param array  The storage space to read bytes from
     */
-    void putByteArray(std::span<const uInt8> array);
+    void putByteArray(ByteSpan array);
 
     /**
       Writes a short value (unsigned 16-bit) to the current output stream.
@@ -182,7 +181,7 @@ class Serializer
 
       @param array  The storage space to read shorts from
     */
-    void putShortArray(std::span<const uInt16> array);
+    void putShortArray(ShortSpan array);
 
     /**
       Writes an int value (unsigned 32-bit) to the current output stream.
@@ -196,7 +195,7 @@ class Serializer
 
       @param array  The storage space to read ints from
     */
-    void putIntArray(std::span<const uInt32> array);
+    void putIntArray(IntSpan array);
 
     /**
       Writes a long int value (unsigned 64-bit) to the current output stream.

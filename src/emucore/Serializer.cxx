@@ -170,7 +170,7 @@ uInt8 Serializer::getByte()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Serializer::getByteArray(std::span<uInt8> array)
+void Serializer::getByteArray(ByteMSpan array)
 {
   if(myMemory)
   {
@@ -197,10 +197,10 @@ uInt16 Serializer::getShort()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Serializer::getShortArray(std::span<uInt16> array)
+void Serializer::getShortArray(ShortMSpan array)
 {
-  getByteArray(std::span<uInt8>(reinterpret_cast<uInt8*>(array.data()),
-                                                         array.size_bytes()));
+  getByteArray(ByteMSpan(reinterpret_cast<uInt8*>(array.data()),
+                                                  array.size_bytes()));
   if constexpr(std::endian::native != std::endian::little)
     for(auto& val: array)
       val = byteswap(val);
@@ -213,10 +213,10 @@ uInt32 Serializer::getInt()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Serializer::getIntArray(std::span<uInt32> array)
+void Serializer::getIntArray(IntMSpan array)
 {
-  getByteArray(std::span<uInt8>(reinterpret_cast<uInt8*>(array.data()),
-                                                         array.size_bytes()));
+  getByteArray(ByteMSpan(reinterpret_cast<uInt8*>(array.data()),
+                         array.size_bytes()));
   if constexpr(std::endian::native != std::endian::little)
     for(auto& val: array)
       val = byteswap(val);
@@ -246,7 +246,7 @@ string Serializer::getString()
   const uInt32 len = getInt();
   string result(len, '\0');
 
-  getByteArray(std::span<uInt8>(reinterpret_cast<uInt8*>(result.data()), len));
+  getByteArray(ByteMSpan(reinterpret_cast<uInt8*>(result.data()), len));
   return result;
 }
 
@@ -257,7 +257,7 @@ void Serializer::putByte(uInt8 value)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Serializer::putByteArray(std::span<const uInt8> array)
+void Serializer::putByteArray(ByteSpan array)
 {
   if(myMemory)
   {
@@ -281,11 +281,11 @@ void Serializer::putShort(uInt16 value)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Serializer::putShortArray(std::span<const uInt16> array)
+void Serializer::putShortArray(ShortSpan array)
 {
   if constexpr(std::endian::native == std::endian::little)
-    putByteArray(std::span<const uInt8>(
-        reinterpret_cast<const uInt8*>(array.data()), array.size_bytes()));
+    putByteArray(ByteSpan(reinterpret_cast<const uInt8*>(array.data()),
+                          array.size_bytes()));
   else
     for(const auto& val: array)
       writeRaw<uInt16>(val);
@@ -298,11 +298,11 @@ void Serializer::putInt(uInt32 value)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Serializer::putIntArray(std::span<const uInt32> array)
+void Serializer::putIntArray(IntSpan array)
 {
   if constexpr(std::endian::native == std::endian::little)
-    putByteArray(std::span<const uInt8>(
-        reinterpret_cast<const uInt8*>(array.data()), array.size_bytes()));
+    putByteArray(ByteSpan(reinterpret_cast<const uInt8*>(array.data()),
+                          array.size_bytes()));
   else
     for(const auto& val: array)
       writeRaw<uInt32>(val);
@@ -324,8 +324,7 @@ void Serializer::putDouble(double value)
 void Serializer::putString(string_view str)
 {
   putInt(static_cast<uInt32>(str.size()));
-  putByteArray(std::span<const uInt8>(
-      reinterpret_cast<const uInt8*>(str.data()), str.size()));
+  putByteArray(ByteSpan(reinterpret_cast<const uInt8*>(str.data()), str.size()));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -219,8 +219,7 @@ void PNGLibrary::saveImage(const FSNode& filename, const FBSurface& surface,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PNGLibrary::saveImageToDisk(std::ofstream& out,
-                                 std::span<png_bytep> rows,
+void PNGLibrary::saveImageToDisk(std::ofstream& out, MSpanOf<png_bytep> rows,
                                  size_t width, size_t height,
                                  const VariantList& metaData)
 {

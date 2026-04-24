@@ -23,8 +23,6 @@
 class OSystem;
 class FBSurface;
 
-#include <span>
-
 #include "Variant.hxx"
 #include "bspf.hxx"
 
@@ -69,7 +67,7 @@ class JPGLibrary
       @param width    The image width in pixels
       @param height   The image height in pixels
     */
-    void loadImagetoSurface(FBSurface& surface, std::span<const uInt8> pixels,
+    void loadImagetoSurface(FBSurface& surface, ByteSpan pixels,
                             uInt32 width, uInt32 height);
 
     /**
@@ -78,8 +76,7 @@ class JPGLibrary
       @param file      The entire data of the JPG image
       @param metaData  The meta data of the JPG image
     */
-    static void readMetaData(std::span<const std::byte> file,
-                             VariantList& metaData);
+    static void readMetaData(SpanOf<std::byte> file, VariantList& metaData);
 
   private:
     // Following constructors and assignment operators not supported

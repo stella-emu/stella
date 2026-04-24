@@ -21,7 +21,6 @@
 #define ZIP_HANDLER_HXX
 
 #include <fstream>
-#include <span>
 #include <tuple>
 #include <list>
 #include <unordered_map>
@@ -146,16 +145,16 @@ class ZipHandler
       const ZipHeader* nextFile();
 
       /** Decompress the most recently found file in the ZIP into target buffer */
-      void decompress(std::span<uInt8> out);
+      void decompress(ByteMSpan out);
 
       /** Return the offset of the compressed data */
       uInt64 getCompressedDataOffset();
 
       /** Decompress type 0 data (which is uncompressed) */
-      void decompressDataType0(std::span<uInt8> out, uInt64 offset);
+      void decompressDataType0(ByteMSpan out, uInt64 offset);
 
       /** Decompress type 8 data (which is deflated) */
-      void decompressDataType8(std::span<uInt8> out, uInt64 offset);
+      void decompressDataType8(ByteMSpan out, uInt64 offset);
     };
     using ZipFilePtr = unique_ptr<ZipFile>;
 

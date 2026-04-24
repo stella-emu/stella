@@ -109,7 +109,7 @@ uInt64 ZipHandler::decompress(ByteBuffer& image)
   const uInt64 length = myZip->myHeader.uncompressedLength;
   image = std::make_unique<uInt8[]>(length);
 
-  myZip->decompress(std::span<uInt8>(image.get(), static_cast<size_t>(length)));
+  myZip->decompress(ByteMSpan(image.get(), static_cast<size_t>(length)));
   return length;
 }
 
@@ -321,7 +321,7 @@ const ZipHandler::ZipHeader* ZipHandler::ZipFile::nextFile()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void ZipHandler::ZipFile::decompress(std::span<uInt8> out)
+void ZipHandler::ZipFile::decompress(ByteMSpan out)
 {
   // If we don't have enough buffer, error
   if(out.size() < myHeader.uncompressedLength)
@@ -375,8 +375,7 @@ uInt64 ZipHandler::ZipFile::getCompressedDataOffset()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void ZipHandler::ZipFile::decompressDataType0(std::span<uInt8> out,
-                                              uInt64 offset)
+void ZipHandler::ZipFile::decompressDataType0(ByteMSpan out, uInt64 offset)
 {
   // The data is uncompressed; just read it
   uInt64 read_length = 0;
@@ -389,8 +388,7 @@ void ZipHandler::ZipFile::decompressDataType0(std::span<uInt8> out,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void ZipHandler::ZipFile::decompressDataType8(std::span<uInt8> out,
-                                              uInt64 offset)
+void ZipHandler::ZipFile::decompressDataType8(ByteMSpan out, uInt64 offset)
 {
   // Seek ONCE to start of compressed data
   myStream.seekg(offset, std::ios::beg);

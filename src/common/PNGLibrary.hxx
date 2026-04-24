@@ -21,7 +21,6 @@
 #define PNGLIBRARY_HXX
 
 #include <fstream>
-#include <span>
 #include <bit>
 #include <png.h>
 
@@ -152,7 +151,7 @@ class PNGLibrary
       @param height    The height of the PNG image
       @param metaData  The meta data to add to the PNG image
     */
-    static void saveImageToDisk(std::ofstream& out, std::span<png_bytep> rows,
+    static void saveImageToDisk(std::ofstream& out, MSpanOf<png_bytep> rows,
                                 size_t width, size_t height,
                                 const VariantList& metaData);
 

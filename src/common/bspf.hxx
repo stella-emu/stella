@@ -51,6 +51,7 @@ using uInt64 = uint64_t;
 #include <ctime>
 #include <numbers>
 #include <ranges>
+#include <span>
 #include <utility>
 #include <vector>
 
@@ -80,13 +81,34 @@ using std::array;
 using std::vector;
 
 // Common array types
-using IntArray = std::vector<Int32>;
-using uIntArray = std::vector<uInt32>;
-using BoolArray = std::vector<bool>;
-using ByteArray = std::vector<uInt8>;
+using BoolArray  = std::vector<bool>;
+using ByteArray  = std::vector<uInt8>;
 using ShortArray = std::vector<uInt16>;
+using IntArray   = std::vector<Int32>;
+using uIntArray  = std::vector<uInt32>;
 using StringList = std::vector<std::string>;
-using ByteBuffer = std::unique_ptr<uInt8[]>;
+
+// Common const span types
+template<typename T>
+using SpanOf = std::span<const T>;
+
+using BoolSpan  = SpanOf<bool>;
+using ByteSpan  = SpanOf<uInt8>;
+using ShortSpan = SpanOf<uInt16>;
+using IntSpan   = SpanOf<uInt32>;
+using sIntSpan  = SpanOf<Int32>;
+
+// Common mutable span types
+template<typename T>
+using MSpanOf = std::span<T>;
+
+using BoolMSpan  = MSpanOf<bool>;
+using ByteMSpan  = MSpanOf<uInt8>;
+using ShortMSpan = MSpanOf<uInt16>;
+using IntMSpan   = MSpanOf<uInt32>;
+using sIntMSpan  = MSpanOf<Int32>;
+
+using ByteBuffer  = std::unique_ptr<uInt8[]>;
 using DWordBuffer = std::unique_ptr<uInt32[]>;
 
 // We use KB a lot; let's make a literal for it

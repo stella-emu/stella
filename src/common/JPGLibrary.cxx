@@ -18,7 +18,6 @@
 #ifdef IMAGE_SUPPORT
 
 #include <limits>
-#include <span>
 
 #include "OSystem.hxx"
 #include "FrameBuffer.hxx"
@@ -80,7 +79,7 @@ void JPGLibrary::loadImage(string_view filename, FBSurface& surface,
   // Read the entire image in one go
   const auto width  = static_cast<uInt32>(njGetWidth());
   const auto height = static_cast<uInt32>(njGetHeight());
-  const auto pixels = std::span<const uInt8>{ njGetImage(),
+  const auto pixels = ByteSpan{ njGetImage(),
       static_cast<size_t>(width) * static_cast<size_t>(height) * 3 };
 
   // Read the meta data we got
@@ -91,8 +90,7 @@ void JPGLibrary::loadImage(string_view filename, FBSurface& surface,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void JPGLibrary::loadImagetoSurface(FBSurface& surface,
-                                    std::span<const uInt8> pixels,
+void JPGLibrary::loadImagetoSurface(FBSurface& surface, ByteSpan pixels,
                                     uInt32 width, uInt32 height)
 {
   // First determine if we need to resize the surface
@@ -122,11 +120,10 @@ void JPGLibrary::loadImagetoSurface(FBSurface& surface,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void JPGLibrary::readMetaData(std::span<const std::byte> file,
-                              VariantList& metaData)
+void JPGLibrary::readMetaData(SpanOf<std::byte> file, VariantList& metaData)
 {
   metaData.clear();
-  SpanStream stream{std::span<const char>{
+  SpanStream stream{SpanOf<char>{
     reinterpret_cast<const char*>(file.data()), file.size()}};
   const TinyEXIF::EXIFInfo imageEXIF{stream};
   if(imageEXIF.Fields && !imageEXIF.ImageDescription.empty())
