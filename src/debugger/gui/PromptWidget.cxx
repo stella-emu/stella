@@ -942,20 +942,33 @@ string PromptWidget::saveBuffer(const FSNode& file)
   string out;
   out.reserve(_promptStartPos);  // reasonable upper bound
 
+  const auto buf = std::span{_buffer}.first(
+      static_cast<size_t>(_promptStartPos));  // hard upper bound the analyzer can see
+
   for(int start = 0; start < _promptStartPos; start += _lineWidth)
   {
-    int end = start + _lineWidth - 1;
+    // Clamp end to the last valid position in the buffer
+    int end = std::min(start + _lineWidth, _promptStartPos) - 1;
+
     // Look for first non-space, printing char from end of line
-    while(end >= start && static_cast<char>(_buffer[end] & 0xff) <= ' ')
+    while(end >= start && static_cast<char>(buf[end] & 0xff) <= ' ')
       end--;
+
+    // Skip entirely blank lines rather than letting end stay < start
+    if(end < start)
+    {
+      out += '\n';
+      continue;
+    }
 
     // Spit out the line minus its trailing junk
     // Strip off any color/inverse bits
     for(int j = start; j <= end; ++j)
-      out += static_cast<char>(_buffer[j] & 0xff);
+      out += static_cast<char>(buf[j] & 0xff);
 
     out += '\n';
   }
+
   try
   {
     if(file.write(out) > 0)
