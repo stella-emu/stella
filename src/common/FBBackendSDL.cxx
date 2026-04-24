@@ -337,8 +337,19 @@ bool FBBackendSDL::setVideoMode(const VideoModeHandler::Mode& mode,
 #endif
   if (mode.fullscreen)
   {
-    // make sure FS uses the correct display's parameters:
-    SDL_SetWindowFullscreenMode(myWindow, SDL_GetWindowFullscreenMode(myWindow));
+    SDL_Rect r;
+    SDL_GetDisplayBounds(displayId, &r);
+
+    // Ensure the window fits entirely inside the target monitor.
+    // This prevents SDL from assigning fullscreen to the wrong display.
+    SDL_SetWindowSize(myWindow, r.w, r.h);
+    // Place the window exactly at the top-left corner of the target monitor.
+    // This guarantees the window lies fully inside that monitor.
+    SDL_SetWindowPosition(myWindow, r.x, r.y);
+    // Activate fullscreen on that monitor.
+    // In SDL3 this is borderless fullscreen unless you set a specific mode.
+    SDL_SetWindowFullscreenMode(myWindow, NULL);
+    //SDL_SetWindowFullscreen(myWindow, true);
   }
 
   const bool result = createRenderer();
