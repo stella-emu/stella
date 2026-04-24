@@ -206,6 +206,8 @@ bool FBBackendSDL::setVideoMode(const VideoModeHandler::Mode& mode,
 {
   ASSERT_MAIN_THREAD;
 
+  cerr << "winIdx: " << winIdx << "\n";
+
   // If not initialized by this point, then immediately fail
   if(SDL_WasInit(SDL_INIT_VIDEO) == 0)
     return false;
@@ -262,6 +264,7 @@ bool FBBackendSDL::setVideoMode(const VideoModeHandler::Mode& mode,
   if(myWindow)
   {
     const uInt32 d = getCurrentDisplayID();
+    cerr << "d: " << d << "\n";
     int w{0}, h{0};
 
     SDL_GetWindowSize(myWindow, &w, &h);
@@ -330,7 +333,13 @@ bool FBBackendSDL::setVideoMode(const VideoModeHandler::Mode& mode,
 //       cerr << setSdlMode->refresh_rate << "Hz\n";
     }
   }
+  else
 #endif
+  if (mode.fullscreen)
+  {
+    // make sure FS uses the correct display's parameters:
+    SDL_SetWindowFullscreenMode(myWindow, SDL_GetWindowFullscreenMode(myWindow));
+  }
 
   const bool result = createRenderer();
   if(result)
