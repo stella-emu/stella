@@ -534,16 +534,16 @@ namespace BSPF
   // @param minhits    The minimum number of times a signature is to be found
   // @return  True if the signature was found at least 'minhits' times, else false
   constexpr bool searchForBytes(ByteSpan image, ByteSpan signature,
-                                uInt32 minhits = 1)
+                                size_t minhits = 1)
   {
     const auto sigsize = signature.size();
     if(image.size() < sigsize)
       return false;
 
-    uInt32 count{0};
-    for(uInt32 i = 0; i < image.size() - sigsize; ++i)
+    size_t count{0};
+    for(size_t i = 0; i < image.size() - sigsize; ++i)
     {
-      uInt32 j{0};
+      size_t j{0};
       for(j = 0; j < sigsize; ++j)
       {
         if(image[i + j] != signature[j])

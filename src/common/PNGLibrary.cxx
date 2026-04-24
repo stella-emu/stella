@@ -144,9 +144,9 @@ void PNGLibrary::loadImage(string_view filename, FBSurface& surface,
     // Swap ARGB32 -> ABGR32 on big-endian CPUs
     for(uInt32 y = 0; y < height; ++y)
     {
-      auto* row = reinterpret_cast<uInt32*>(myRowPointers[y]);
+      auto* r = reinterpret_cast<uInt32*>(myRowPointers[y]);
       for(uInt32 x = 0; x < width; ++x)
-        row[x] = byteswap<uInt32>(row[x]);
+        r[x] = byteswap<uInt32>(r[x]);
     }
   }
 }
