@@ -36,6 +36,7 @@
 
   * For the Linux/UNIX port:
     - Minimum supported compilers are g++12 and Clang 19.
+    - Implemented -baseinappdir (previously Windows-only feature)
 
 -Have fun!
 

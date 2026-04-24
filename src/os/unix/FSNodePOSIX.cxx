@@ -16,6 +16,7 @@
 //============================================================================
 
 #include "AsciiFold.hxx"
+#include "XDGPaths.hxx"
 #include "FSNodePOSIX.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -30,47 +31,35 @@ FSNodePOSIX::FSNodePOSIX(string_view path, bool verify)
   : _path{!path.empty() ? path : "~"}  // Default to home directory
 {
   // Expand '~' to the HOME environment variable
-  if (_path[0] == '~')
+  if(_path[0] == '~')
   {
-    if (const string& home = homeDir(); !home.empty())
-      _path.replace(0, 1, home);
+    _path.replace(0, 1, XDGPaths::instance().home());
   }
-  else if (_path[0] == '.')
+  else if(_path[0] == '.')
   {
-    if (auto resolved = std::unique_ptr<char, decltype(&free)>
-          (realpath(_path.c_str(), nullptr), free))
+    if(auto resolved = std::unique_ptr<char, decltype(&free)>
+        (realpath(_path.c_str(), nullptr), free))
       _path = resolved.get();
   }
 
   _displayName = AsciiFold::toAscii(lastPathComponent(_path));
 
-  if (verify)
+  if(verify)
     setFlags();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const string& FSNodePOSIX::homeDir()
-{
-  static const string dir = []() -> string {
-    const char* home = std::getenv("HOME");  // NOLINT(concurrency-mt-unsafe)
-    return home ? home : "/";
-  }();
-  return dir;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool FSNodePOSIX::setFlags()
 {
   struct stat st{};
-  if (stat(_path.c_str(), &st) == 0)
+  if(stat(_path.c_str(), &st) == 0)
   {
     _isDirectory = S_ISDIR(st.st_mode);
     _isFile = S_ISREG(st.st_mode);
     _size = st.st_size;
 
     // Add a trailing slash, if necessary
-    if (_isDirectory && !_path.empty() &&
-        _path.back() != FSNode::PATH_SEPARATOR)
+    if(_isDirectory && !_path.empty() && _path.back() != FSNode::PATH_SEPARATOR)
       _path += FSNode::PATH_SEPARATOR;
 
     return true;
@@ -88,13 +77,13 @@ bool FSNodePOSIX::setFlags()
 string FSNodePOSIX::getShortPath() const
 {
   // If the path starts with the home directory, replace it with '~'
-  const string& home = homeDir();
+  const string& home = XDGPaths::instance().home();
 
-  if (!home.empty() && BSPF::startsWithIgnoreCase(_path, home))
+  if(BSPF::startsWithIgnoreCase(_path, home))
   {
     string path = "~";
     const char* const offset = _path.c_str() + home.size();
-    if (*offset != FSNode::PATH_SEPARATOR)
+    if(*offset != FSNode::PATH_SEPARATOR)
       path += FSNode::PATH_SEPARATOR;
     path += offset;
     return path;
@@ -105,12 +94,12 @@ string FSNodePOSIX::getShortPath() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 size_t FSNodePOSIX::getSize() const
 {
-  if (_size == 0 && _isFile)
+  if(_size == 0 && _isFile)
   {
     struct stat st{};
     _size = (stat(_path.c_str(), &st) == 0) ? st.st_size : 0;
   }
-  return _size;
+  return _size.value_or(0);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -122,7 +111,7 @@ bool FSNodePOSIX::hasParent() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 AbstractFSNodePtr FSNodePOSIX::getParent() const
 {
-  if (_path == "/")
+  if(_path == "/")
     return nullptr;
 
   return std::make_unique<FSNodePOSIX>(stemPathComponent(_path));
@@ -131,30 +120,30 @@ AbstractFSNodePtr FSNodePOSIX::getParent() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool FSNodePOSIX::getChildren(AbstractFSList& myList, ListMode mode) const
 {
-  if (!_isDirectory)
+  if(!_isDirectory)
     return false;
 
   DIR* dirp = opendir(_path.c_str());
-  if (dirp == nullptr)
+  if(dirp == nullptr)
     return false;
 
   // Loop over dir entries using readdir
   struct dirent* dp = nullptr;
-  while ((dp = readdir(dirp)) != nullptr)  // NOLINT (not thread safe)
+  while((dp = readdir(dirp)) != nullptr)  // NOLINT (not thread safe)
   {
     // Ignore all hidden files
-    if (dp->d_name[0] == '.')
+    if(dp->d_name[0] == '.')
       continue;
 
     string newPath(_path);
-    if (!newPath.empty() && newPath.back() != FSNode::PATH_SEPARATOR)
+    if(!newPath.empty() && newPath.back() != FSNode::PATH_SEPARATOR)
       newPath += FSNode::PATH_SEPARATOR;
     newPath += dp->d_name;
 
     FSNodePOSIX entry(newPath, false);
     bool valid = true;
 
-    if (dp->d_type == DT_UNKNOWN || dp->d_type == DT_LNK)
+    if(dp->d_type == DT_UNKNOWN || dp->d_type == DT_LNK)
     {
       // Fall back to stat()
       valid = entry.setFlags();
@@ -165,18 +154,18 @@ bool FSNodePOSIX::getChildren(AbstractFSList& myList, ListMode mode) const
       entry._isFile = (dp->d_type == DT_REG);
       // entry._size will be calculated first time ::getSize() is called
 
-      if (entry._isDirectory)
+      if(entry._isDirectory)
         entry._path += FSNode::PATH_SEPARATOR;
     }
 
     // Skip files that are invalid for some reason (e.g. because we couldn't
     // properly stat them).
-    if (!valid)
+    if(!valid)
       continue;
 
     // Honor the chosen mode
-    if ((mode == FSNode::ListMode::FilesOnly && !entry._isFile) ||
-        (mode == FSNode::ListMode::DirectoriesOnly && !entry._isDirectory))
+    if((mode == FSNode::ListMode::FilesOnly && !entry._isFile) ||
+       (mode == FSNode::ListMode::DirectoriesOnly && !entry._isDirectory))
       continue;
 
     myList.emplace_back(std::make_unique<FSNodePOSIX>(std::move(entry)));
@@ -189,10 +178,10 @@ bool FSNodePOSIX::getChildren(AbstractFSList& myList, ListMode mode) const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool FSNodePOSIX::makeDir()
 {
-  if (mkdir(_path.c_str(), 0777) == 0)
+  if(mkdir(_path.c_str(), 0777) == 0)
   {
-    if (auto resolved = std::unique_ptr<char, decltype(&free)>
-          (realpath(_path.c_str(), nullptr), free))
+    if(auto resolved = std::unique_ptr<char, decltype(&free)>
+        (realpath(_path.c_str(), nullptr), free))
       _path = resolved.get();
 
     _displayName = AsciiFold::toAscii(lastPathComponent(_path));
@@ -205,12 +194,12 @@ bool FSNodePOSIX::makeDir()
 bool FSNodePOSIX::rename(string_view newfile)
 {
   string newPath{newfile};
-  if (std::rename(_path.c_str(), newPath.c_str()) == 0)
+  if(std::rename(_path.c_str(), newPath.c_str()) == 0)
   {
     _path = std::move(newPath);
 
-    if (auto resolved = std::unique_ptr<char, decltype(&free)>
-          (realpath(_path.c_str(), nullptr), free))
+    if(auto resolved = std::unique_ptr<char, decltype(&free)>
+        (realpath(_path.c_str(), nullptr), free))
       _path = resolved.get();
 
     _displayName = AsciiFold::toAscii(lastPathComponent(_path));

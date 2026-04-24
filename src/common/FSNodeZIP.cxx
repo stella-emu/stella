@@ -21,7 +21,10 @@
 
 #ifdef BSPF_WINDOWS
   #include "HomeFinder.hxx"
+#else
+  #include "XDGPaths.hxx"
 #endif
+
 #include "bspf.hxx"
 #include "AsciiFold.hxx"
 #include "Bankswitch.hxx"
@@ -42,9 +45,7 @@ FSNodeZIP::FSNodeZIP(string_view p)
   if(_zipFile[0] == '~')
   {
 #if defined(BSPF_UNIX) || defined(BSPF_MACOS)
-    const char* const home = std::getenv("HOME");  // NOLINT (not thread safe)
-    if(home != nullptr)
-      _zipFile.replace(0, 1, home);
+    _zipFile.replace(0, 1, XDGPaths::instance().home());
 #elif defined(BSPF_WINDOWS)
     _zipFile.replace(0, 1, HomeFinder::getHomePath());
 #endif

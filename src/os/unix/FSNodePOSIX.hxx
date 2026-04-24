@@ -18,7 +18,7 @@
 #ifndef FS_NODE_POSIX_HXX
 #define FS_NODE_POSIX_HXX
 
-#include "FSNode.hxx"
+#include <optional>
 
 #ifdef BSPF_MACOS
   #include <sys/types.h>
@@ -32,6 +32,8 @@
 #include <cstring>
 #include <cstdlib>
 #include <unistd.h>
+
+#include "FSNode.hxx"
 
 /*
  * Implementation of the Stella file system API based on POSIX (for Linux
@@ -92,12 +94,10 @@ class FSNodePOSIX : public AbstractFSNode
      */
     bool setFlags();
 
-    static const string& homeDir();
-
   private:
     string _path, _displayName;
     bool _isFile{false}, _isDirectory{true};
-    mutable size_t _size{0};
+    mutable std::optional<size_t> _size{std::nullopt};
 };
 
 #endif
