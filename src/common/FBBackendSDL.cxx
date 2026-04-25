@@ -335,7 +335,7 @@ bool FBBackendSDL::setVideoMode(const VideoModeHandler::Mode& mode,
   }
   else
 #endif
-  if (mode.fullscreen)
+  if(mode.fullscreen)
   {
     SDL_Rect r;
     SDL_GetDisplayBounds(displayId, &r);
@@ -348,11 +348,11 @@ bool FBBackendSDL::setVideoMode(const VideoModeHandler::Mode& mode,
     SDL_SetWindowPosition(myWindow, r.x, r.y);
     // Activate fullscreen on that monitor.
     // In SDL3 this is borderless fullscreen unless you set a specific mode.
-    SDL_SetWindowFullscreenMode(myWindow, NULL);
+    SDL_SetWindowFullscreenMode(myWindow, nullptr);
     //SDL_SetWindowFullscreen(myWindow, true);
   }
 
-  const bool result = createRenderer();
+  const bool result = createRenderer();  // NOLINT(readability-misleading-indentation)
   if(result)
   {
     // TODO: Checking for fullscreen status later returns invalid results,
@@ -644,7 +644,7 @@ const FBSurface& FBBackendSDL::compositedSurface()
   // Make sure we have a 'clean' image, with no onscreen messages
   fb.enableMessages(false);
 
-  SDL_Rect surfaceRect = ToSDLRect(rect);
+  const SDL_Rect surfaceRect = ToSDLRect(rect);
   SDL_Surface* tmp = SDL_RenderReadPixels(myRenderer, &surfaceRect);
   SDL_Surface* sdlSurface = SDL_ConvertSurface(tmp, myPixelFormat->format);
   SDL_DestroySurface(tmp);
@@ -653,7 +653,7 @@ const FBSurface& FBBackendSDL::compositedSurface()
   fb.enableMessages(true);
 
   if(!sdlSurface)
-    throw(std::format("Snapshot failed: {}", SDL_GetError()));
+    throw(std::runtime_error(std::format("Snapshot failed: {}", SDL_GetError())));
 
   // Only create a surface when absolutely necessary
   const uInt32 w = surfaceRect.w, h = surfaceRect.h;

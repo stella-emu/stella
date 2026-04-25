@@ -305,7 +305,7 @@ bool RomImageWidget::loadPng(const string& fileName)
   try
   {
     VariantList metaData;
-    instance().png().loadImage(fileName, *mySurface, metaData);
+    PNGLibrary::loadImage(fileName, *mySurface, metaData);
 
     // Retrieve label for loaded image
     myLabel.clear();

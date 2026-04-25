@@ -150,7 +150,7 @@ bool Bezel::load()
           if(node.exists())
           {
             isValid = true;
-            myOSystem.png().loadImage(imagePath, *mySurface, metaData);
+            PNGLibrary::loadImage(imagePath, *mySurface, metaData);
             break;
           }
         }

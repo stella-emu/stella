@@ -55,8 +55,8 @@ class PNGLibrary
              std::runtime_error is thrown containing a more detailed
              error message.
     */
-    void loadImage(string_view filename, FBSurface& surface,
-                   VariantList& metaData);
+    static void loadImage(string_view filename, FBSurface& surface,
+                          VariantList& metaData);
 
     /**
       Save the given surface to a PNG file.
@@ -70,9 +70,9 @@ class PNGLibrary
              otherwise a std::runtime_error is thrown containing a
              more detailed error message.
     */
-    void saveImage(string_view filename, const FBSurface& surface,
-                   const Common::Rect& rect = Common::Rect{},
-                   const VariantList& metaData = VariantList{});
+    static void saveImage(string_view filename, const FBSurface& surface,
+                          const Common::Rect& rect = Common::Rect{},
+                          const VariantList& metaData = VariantList{});
 
     /**
       Called at regular intervals, and used to determine whether a
