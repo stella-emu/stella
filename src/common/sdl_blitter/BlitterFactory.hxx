@@ -26,6 +26,7 @@
 
 class BlitterFactory {
   public:
+    BlitterFactory() = delete;
 
     enum class ScalingAlgorithm: uInt8 {
       nearestNeighbour,
@@ -34,8 +35,8 @@ class BlitterFactory {
     };
 
   public:
-
-    static unique_ptr<Blitter> createBlitter(FBBackendSDL& fb, ScalingAlgorithm scaling);
+    static unique_ptr<Blitter> createBlitter(FBBackendSDL& fb,
+                                             ScalingAlgorithm scaling);
 };
 
-#endif // BLITTER_FACTORY_HXX
+#endif  // BLITTER_FACTORY_HXX

@@ -41,9 +41,12 @@ class BilinearBlitter : public Blitter {
   private:
     FBBackendSDL& myFB;
 
-    SDL_Texture *myTexture{nullptr}, *mySecondaryTexture{nullptr};
-    SDL_Rect mySrcRect{0, 0, 0, 0}, myDstRect{0, 0, 0, 0};
-    SDL_FRect mySrcFRect{0.F, 0.F, 0.F, 0.F}, myDstFRect{0.F, 0.F, 0.F, 0.F};
+    SDL_Texture* myTexture{nullptr};
+    SDL_Texture* mySecondaryTexture{nullptr};
+    SDL_Rect mySrcRect{};
+    SDL_Rect myDstRect{};
+    SDL_FRect mySrcFRect{};
+    SDL_FRect myDstFRect{};
 
     bool myEnableBlend{false};
     uInt8 myBlendLevel{100};
@@ -60,14 +63,10 @@ class BilinearBlitter : public Blitter {
     void recreateTexturesIfNecessary();
 
   private:
-
     BilinearBlitter(const BilinearBlitter&) = delete;
-
     BilinearBlitter(BilinearBlitter&&) = delete;
-
     BilinearBlitter& operator=(const BilinearBlitter&) = delete;
-
     BilinearBlitter& operator=(BilinearBlitter&&) = delete;
 };
 
-#endif // BILINEAR_BLITTER_HXX
+#endif  // BILINEAR_BLITTER_HXX

@@ -49,14 +49,14 @@ class QisBlitter : public Blitter {
     SDL_Texture* myIntermediateTexture{nullptr};
     SDL_Texture* mySecondaryIntermediateTexture{nullptr};
 
-    SDL_Rect mySrcRect{0, 0, 0, 0},
-             myIntermediateRect{0, 0, 0, 0},
-             myDstRect{0, 0, 0, 0};
-    SDL_FRect mySrcFRect{0.F, 0.F, 0.F, 0.F},
-              myIntermediateFRect{0.F, 0.F, 0.F, 0.F},
-              myDstFRect{0.F, 0.F, 0.F, 0.F};
+    SDL_Rect  mySrcRect{};
+    SDL_Rect  myIntermediateRect{};
+    SDL_Rect  myDstRect{};
+    SDL_FRect mySrcFRect{};
+    SDL_FRect myIntermediateFRect{};
+    SDL_FRect myDstFRect{};
 
-    uInt32 myBlendLevel{100};
+    uInt8 myBlendLevel{100};
     bool myEnableBlend{false};
     bool myTexturesAreAllocated{false};
     bool myRecreateTextures{false};
@@ -72,14 +72,10 @@ class QisBlitter : public Blitter {
     void blitToIntermediate();
 
   private:
-
     QisBlitter(const QisBlitter&) = delete;
-
     QisBlitter(QisBlitter&&) = delete;
-
     QisBlitter& operator=(const QisBlitter&) = delete;
-
     QisBlitter& operator=(QisBlitter&&) = delete;
 };
 
-#endif // QIS_BLITTER_HXX
+#endif  // QIS_BLITTER_HXX

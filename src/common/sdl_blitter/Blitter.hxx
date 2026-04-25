@@ -40,14 +40,10 @@ class Blitter {
     Blitter() = default;
 
   private:
-
     Blitter(const Blitter&) = delete;
-
     Blitter(Blitter&&) = delete;
-
     Blitter& operator=(const Blitter&) = delete;
-
     Blitter& operator=(Blitter&&) = delete;
 };
 
-#endif // BLITTER_HXX
+#endif  // BLITTER_HXX

@@ -19,6 +19,10 @@
 #include "ThreadDebugging.hxx"
 #include "BilinearBlitter.hxx"
 
+namespace {
+  constexpr float ALPHA_SCALE = 255.F / 100.F;
+}  // namespace
+
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 BilinearBlitter::BilinearBlitter(FBBackendSDL& fb, bool interpolate)
   : myFB{fb},
@@ -71,13 +75,11 @@ void BilinearBlitter::free()
 
   ASSERT_MAIN_THREAD;
 
-  const std::array<SDL_Texture*, 2> textures = {
-    myTexture, mySecondaryTexture
-  };
-  for (SDL_Texture* texture: textures) {
-    if (!texture) continue;
-
-    SDL_DestroyTexture(texture);
+  if (myTexture) {
+    SDL_DestroyTexture(myTexture);  myTexture = nullptr;
+  }
+  if (mySecondaryTexture) {
+    SDL_DestroyTexture(mySecondaryTexture);  mySecondaryTexture = nullptr;
   }
 
   myTexturesAreAllocated = false;
@@ -142,7 +144,7 @@ void BilinearBlitter::recreateTexturesIfNecessary()
 
     if (myEnableBlend) {
       SDL_SetTextureBlendMode(texture, SDL_BLENDMODE_BLEND);
-      SDL_SetTextureAlphaMod(texture, myBlendLevel * 2.55);
+      SDL_SetTextureAlphaMod(texture, myBlendLevel * ALPHA_SCALE);
     } else {
       SDL_SetTextureBlendMode(texture, SDL_BLENDMODE_NONE);
     }
