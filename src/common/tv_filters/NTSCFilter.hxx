@@ -139,7 +139,7 @@ class NTSCFilter
 
     // This setup is used only in custom mode (after it is modified,
     // it is copied to mySetup)
-    static AtariNTSC::Setup myCustomSetup;
+    static inline AtariNTSC::Setup myCustomSetup = AtariNTSC::TV_Composite;
 
     // Current preset in use
     Preset myPreset{Preset::OFF};
@@ -166,4 +166,4 @@ class NTSCFilter
     NTSCFilter& operator=(NTSCFilter&&) = delete;
 };
 
-#endif
+#endif  // NTSC_FILTER_HXX

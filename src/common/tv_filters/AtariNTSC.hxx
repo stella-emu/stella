@@ -169,11 +169,6 @@ class AtariNTSC
       float fringing{0.F};
       std::array<float, static_cast<size_t>
                  (rescale_out * kernel_size * 2)> kernel{0.F};
-
-      init_t() {
-        to_rgb.fill(0.0);
-        kernel.fill(0.0);
-      }
     };
     init_t myImpl;
 
@@ -300,4 +295,4 @@ class AtariNTSC
   #endif
 };
 
-#endif
+#endif  // ATARI_NTSC_HXX

@@ -20,9 +20,18 @@
 #include "NTSCFilter.hxx"
 
 namespace {
-  constexpr float scaleFrom100(float x) { return (x / 50.F) - 1.F;     }
-  constexpr uInt32 scaleTo100(float x)  { return static_cast<uInt32>(50.0001F * (x + 1.F)); }
-} // namespace
+  template<typename T>
+    requires std::is_arithmetic_v<T>
+  constexpr float scaleFrom100(T x) {
+    return (static_cast<float>(x) / 50.F) - 1.F;
+  }
+
+  template<typename T>
+    requires std::is_arithmetic_v<T>
+  constexpr uInt32 scaleTo100(T x) {
+    return static_cast<uInt32>(50.0001F * (static_cast<float>(x) + 1.F));
+  }
+}  // namespace
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string NTSCFilter::setPreset(Preset preset)
@@ -76,24 +85,23 @@ string NTSCFilter::getPreset() const
 void NTSCFilter::selectAdjustable(int direction,
                                   string& text, string& valueText, Int32& value)
 {
+  constexpr uInt32 numAdjustables = ourCustomAdjustables.size();
+
   if(direction == +1)
   {
-    myCurrentAdjustable = (myCurrentAdjustable + 1) % 5;
+    myCurrentAdjustable = (myCurrentAdjustable + 1) % numAdjustables;
   }
   else if(direction == -1)
   {
-    if(myCurrentAdjustable == 0) myCurrentAdjustable = 4;
+    if(myCurrentAdjustable == 0) myCurrentAdjustable = numAdjustables - 1;
     else                         --myCurrentAdjustable;
   }
 
-  std::ostringstream msg, val;
-
   value = scaleTo100(*ourCustomAdjustables[myCurrentAdjustable].value);
-  msg << "Custom " << ourCustomAdjustables[myCurrentAdjustable].type;
-  val << value << "%";
 
-  text = msg.view();
-  valueText = val.view();
+  text = std::format("Custom {}",
+                     ourCustomAdjustables[myCurrentAdjustable].type);
+  valueText = std::format("{}%", value);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -108,29 +116,21 @@ void NTSCFilter::changeAdjustable(int adjustable, int direction,
 void NTSCFilter::changeCurrentAdjustable(int direction,
                                          string& text, string& valueText, Int32& newValue)
 {
-  //if(myPreset != Preset::CUSTOM)
-  //  return "'Custom' TV mode not selected";
-
   newValue = scaleTo100(*ourCustomAdjustables[myCurrentAdjustable].value);
-  newValue = BSPF::clamp(newValue + direction * 1, 0, 100);
+  newValue = BSPF::clamp(newValue + direction, 0, 100);
 
   *ourCustomAdjustables[myCurrentAdjustable].value = scaleFrom100(newValue);
 
   setPreset(myPreset);
 
-  std::ostringstream msg, val;
-
-  msg << "Custom " << ourCustomAdjustables[myCurrentAdjustable].type;
-  val << newValue << "%";
-
-  text = msg.view();
-  valueText = val.view();
+  text = std::format("Custom {}",
+                     ourCustomAdjustables[myCurrentAdjustable].type);
+  valueText = std::format("{}%", newValue);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void NTSCFilter::loadConfig(const Settings& settings)
 {
-
   // Load adjustables for custom mode
   myCustomSetup.sharpness = BSPF::clamp(settings.getFloat("tv.sharpness"), -1.0F, 1.0F);
   myCustomSetup.resolution = BSPF::clamp(settings.getFloat("tv.resolution"), -1.0F, 1.0F);
@@ -156,15 +156,20 @@ void NTSCFilter::getAdjustables(Adjustable& adjustable, Preset preset)
   switch(preset)
   {
     case Preset::RGB:
-      convertToAdjustable(adjustable, AtariNTSC::TV_RGB);  break;
+      convertToAdjustable(adjustable, AtariNTSC::TV_RGB);
+      break;
     case Preset::SVIDEO:
-      convertToAdjustable(adjustable, AtariNTSC::TV_SVideo);  break;
+      convertToAdjustable(adjustable, AtariNTSC::TV_SVideo);
+      break;
     case Preset::COMPOSITE:
-      convertToAdjustable(adjustable, AtariNTSC::TV_Composite);  break;
+      convertToAdjustable(adjustable, AtariNTSC::TV_Composite);
+      break;
     case Preset::BAD:
-      convertToAdjustable(adjustable, AtariNTSC::TV_Bad);  break;
+      convertToAdjustable(adjustable, AtariNTSC::TV_Bad);
+      break;
     case Preset::CUSTOM:
-      convertToAdjustable(adjustable, myCustomSetup);  break;
+      convertToAdjustable(adjustable, myCustomSetup);
+      break;
     default:
       break;
   }
@@ -173,11 +178,11 @@ void NTSCFilter::getAdjustables(Adjustable& adjustable, Preset preset)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void NTSCFilter::setCustomAdjustables(const Adjustable& adjustable)
 {
-  myCustomSetup.sharpness = scaleFrom100(adjustable.sharpness);
+  myCustomSetup.sharpness  = scaleFrom100(adjustable.sharpness);
   myCustomSetup.resolution = scaleFrom100(adjustable.resolution);
-  myCustomSetup.artifacts = scaleFrom100(adjustable.artifacts);
-  myCustomSetup.fringing = scaleFrom100(adjustable.fringing);
-  myCustomSetup.bleed = scaleFrom100(adjustable.bleed);
+  myCustomSetup.artifacts  = scaleFrom100(adjustable.artifacts);
+  myCustomSetup.fringing   = scaleFrom100(adjustable.fringing);
+  myCustomSetup.bleed      = scaleFrom100(adjustable.bleed);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -190,6 +195,3 @@ void NTSCFilter::convertToAdjustable(Adjustable& adjustable,
   adjustable.fringing    = scaleTo100(setup.fringing);
   adjustable.bleed       = scaleTo100(setup.bleed);
 }
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-AtariNTSC::Setup NTSCFilter::myCustomSetup = AtariNTSC::TV_Composite;
