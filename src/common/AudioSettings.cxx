@@ -19,7 +19,7 @@
 #include "Settings.hxx"
 
 namespace {
-  constexpr uInt32 lboundInt(int x, int defaultValue)
+  constexpr uInt32 valueOrDefault(int x, int defaultValue)
   {
     return x <= 0 ? defaultValue : x;
   }
@@ -68,10 +68,13 @@ void AudioSettings::normalize(Settings& settings)
   }
 
   const int settingBufferSize = settings.getInt(SETTING_BUFFER_SIZE);
-  if (settingBufferSize < 0 || settingBufferSize > MAX_BUFFER_SIZE) settings.setValue(SETTING_BUFFER_SIZE, DEFAULT_BUFFER_SIZE);
+  if (settingBufferSize < 0 ||
+      settingBufferSize > MAX_BUFFER_SIZE)
+    settings.setValue(SETTING_BUFFER_SIZE, DEFAULT_BUFFER_SIZE);
 
   const int settingHeadroom = settings.getInt(SETTING_HEADROOM);
-  if (settingHeadroom < 0 || settingHeadroom > MAX_HEADROOM) settings.setValue(SETTING_HEADROOM, DEFAULT_HEADROOM);
+  if (settingHeadroom < 0 || settingHeadroom > MAX_HEADROOM)
+    settings.setValue(SETTING_HEADROOM, DEFAULT_HEADROOM);
 
   const int settingResamplingQuality = settings.getInt(SETTING_RESAMPLING_QUALITY);
   const ResamplingQuality resamplingQuality =
@@ -80,7 +83,8 @@ void AudioSettings::normalize(Settings& settings)
     settings.setValue(SETTING_RESAMPLING_QUALITY, static_cast<int>(DEFAULT_RESAMPLING_QUALITY));
 
   const int settingVolume = settings.getInt(SETTING_VOLUME);
-  if (settingVolume < 0 || settingVolume > 100) settings.setValue(SETTING_VOLUME, DEFAULT_VOLUME);
+  if (settingVolume < 0 || settingVolume > 100)
+    settings.setValue(SETTING_VOLUME, DEFAULT_VOLUME);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -94,7 +98,9 @@ AudioSettings::Preset AudioSettings::preset()
 uInt32 AudioSettings::sampleRate()
 {
   updatePresetFromSettings();
-  return customSettings() ? lboundInt(mySettings.getInt(SETTING_SAMPLE_RATE), DEFAULT_SAMPLE_RATE) : myPresetSampleRate;
+  return customSettings()
+    ? valueOrDefault(mySettings.getInt(SETTING_SAMPLE_RATE), DEFAULT_SAMPLE_RATE)
+    : myPresetSampleRate;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -109,7 +115,9 @@ uInt32 AudioSettings::bufferSize()
 {
   updatePresetFromSettings();
   // 0 is a valid value -> keep it
-  return customSettings() ? lboundInt(mySettings.getInt(SETTING_BUFFER_SIZE), 0) : myPresetBufferSize;
+  return customSettings()
+    ? valueOrDefault(mySettings.getInt(SETTING_BUFFER_SIZE), 0)
+    : myPresetBufferSize;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -117,14 +125,18 @@ uInt32 AudioSettings::headroom()
 {
   updatePresetFromSettings();
   // 0 is a valid value -> keep it
-  return customSettings() ? lboundInt(mySettings.getInt(SETTING_HEADROOM), 0) : myPresetHeadroom;
+  return customSettings()
+    ? valueOrDefault(mySettings.getInt(SETTING_HEADROOM), 0)
+    : myPresetHeadroom;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 AudioSettings::ResamplingQuality AudioSettings::resamplingQuality()
 {
   updatePresetFromSettings();
-  return customSettings() ? normalizeResamplingQuality(mySettings.getInt(SETTING_RESAMPLING_QUALITY)) : myPresetResamplingQuality;
+  return customSettings()
+    ? normalizeResamplingQuality(mySettings.getInt(SETTING_RESAMPLING_QUALITY))
+    : myPresetResamplingQuality;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -138,7 +150,7 @@ bool AudioSettings::stereo() const
 uInt32 AudioSettings::volume() const
 {
   // 0 is a valid value -> keep it
-  return lboundInt(mySettings.getInt(SETTING_VOLUME), 0);
+  return valueOrDefault(mySettings.getInt(SETTING_VOLUME), 0);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -150,7 +162,7 @@ bool AudioSettings::enabled() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt32 AudioSettings::dpcPitch() const
 {
-  return lboundInt(mySettings.getInt(SETTING_DPC_PITCH), 10000);
+  return valueOrDefault(mySettings.getInt(SETTING_DPC_PITCH), MIN_DPC_PITCH);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -42,7 +42,7 @@ string Bezel::getName(const string& path, const Properties& props)
   do
   {
     imageName = getName(props, index);
-    if(imageName != EmptyString())
+    if(!imageName.empty())
     {
       // Note: JPG does not support transparency
       const string imagePath = path + imageName + ".png";
@@ -62,28 +62,32 @@ string Bezel::getName(const Properties& props, int& index)
     return props.get(PropType::Bezel_Name);
 
   // Try to generate bezel name from cart name
-  const string& cartName = props.get(PropType::Cart_Name);
+  const string_view cartName = props.get(PropType::Cart_Name);
   size_t pos = cartName.find_first_of('(');
-  if(pos == std::string::npos)
+  if(pos == string_view::npos)
     pos = cartName.length() + 1;
-  if(index < 10 && pos != std::string::npos && pos > 0)
+
+  // The following suffixes are from "The Official No-Intro Convention",
+  // covering all used combinations by "The Bezel Project" (except single ones)
+  // (Unl) = unlicensed (Homebrews)
+  static constexpr std::array<string_view, 8> suffixes = {
+    " (USA)", " (USA) (Proto)", " (USA) (Unl)", " (USA) (Hack)",
+    " (Europe)", " (Germany)", " (France) (Unl)", " (Australia)"
+  };
+  static constexpr int SUFFIX_START = 2;
+  static constexpr int SUFFIX_END = SUFFIX_START + static_cast<int>(suffixes.size());
+
+  if(index < SUFFIX_END && pos != string_view::npos && pos > 0)
   {
-    // The following suffixes are from "The Official No-Intro Convention",
-    // covering all used combinations by "The Bezel Project" (except single ones)
-    // (Unl) = unlicensed (Homebrews)
-    const std::array<string, 8> suffixes = {
-      " (USA)", " (USA) (Proto)", " (USA) (Unl)", " (USA) (Hack)",
-      " (Europe)", " (Germany)", " (France) (Unl)", " (Australia)"
-    };
-    return cartName.substr(0, pos - 1) + suffixes[index - 2];
+    string result{cartName.substr(0, pos - 1)};
+    result += suffixes[index - SUFFIX_START];
+    return result;
   }
 
-  if(index == 10)
-  {
+  if(index == SUFFIX_END)
     return "Atari-2600";
-  }
 
-  if(index == 11)
+  if(index == SUFFIX_END + 1)
   {
     index = -1;
     return "default";
@@ -100,9 +104,10 @@ string Bezel::getName(int& index) const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt32 Bezel::borderSize(uInt32 x, uInt32 y, uInt32 size, Int32 step) const
 {
-  uInt32 *pixels{nullptr}, pitch{0};  // NOLINT (erroneously marked as const)
-
+  uInt32* pixels{nullptr};
+  uInt32  pitch{0};
   mySurface->basePtr(pixels, pitch);
+
   pixels += x + y * pitch;
 
   for(uInt32 i = 0; i < size; ++i, pixels += step)
@@ -142,7 +147,7 @@ bool Bezel::load()
       do
       {
         imageName = getName(index);
-        if(imageName != EmptyString())
+        if(!imageName.empty())
         {
           // Note: JPG does not support transparency
           const string imagePath = path + imageName + ".png";
@@ -156,7 +161,9 @@ bool Bezel::load()
         }
       } while(index != -1);
     }
-    catch(const std::runtime_error&) { cerr << "ERROR: Bezel load\n"; }
+    catch(const std::runtime_error& e) {
+      cerr << "ERROR: Bezel load: " << e.what() << '\n';
+    }
   }
 #else
   const bool show = false;
@@ -183,10 +190,14 @@ bool Bezel::load()
       // HY: 12, 12,  0,  0%
       // P1: 25, 25, 11, 22%
       // P2: 23, 23,  7, 20%
-      left = std::min(w - 1, static_cast<Int32>(w * settings.getInt("bezel.win.left") / 100. + .5)); // NOLINT
-      right = w - 1 - std::min(w - 1, static_cast<Int32>(w * settings.getInt("bezel.win.right") / 100. + .5)); // NOLINT
-      top = std::min(h - 1, static_cast<Int32>(h * settings.getInt("bezel.win.top") / 100. + .5)); // NOLINT
-      bottom = h - 1 - std::min(h - 1, static_cast<Int32>(h * settings.getInt("bezel.win.bottom") / 100. + .5)); // NOLINT
+      left = std::min(w - 1, static_cast<Int32>(
+        std::lround(w * settings.getInt("bezel.win.left") / 100.F)));
+      right = w - 1 - std::min(w - 1, static_cast<Int32>(
+        std::lround(w * settings.getInt("bezel.win.right") / 100.F)));
+      top = std::min(h - 1, static_cast<Int32>(
+        std::lround(h * settings.getInt("bezel.win.top") / 100.F)));
+      bottom = h - 1 - std::min(h - 1, static_cast<Int32>(
+        std::lround(h * settings.getInt("bezel.win.bottom") / 100.F)));
     }
 
     //cerr << (int)(right - left + 1) << " x " << (int)(bottom - top + 1) << " = "

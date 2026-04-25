@@ -125,4 +125,4 @@ char* Base::writeBinary(char* out, int value, Fmt fmt)
 std::ios_base::fmtflags Base::myHexFlags =
   std::ios_base::fmtflags{std::ios_base::hex};
 
-} // namespace Common
+}  // namespace Common

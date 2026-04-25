@@ -15,8 +15,8 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#ifndef AUDIO_PARAMTERS_HXX
-#define AUDIO_PARAMTERS_HXX
+#ifndef AUDIO_PARAMETERS_HXX
+#define AUDIO_PARAMETERS_HXX
 
 #include "bspf.hxx"
 
@@ -65,6 +65,8 @@ class AudioSettings
     static constexpr int MAX_BUFFER_SIZE = 10;
     static constexpr int MAX_HEADROOM    = 10;
 
+    static constexpr uInt32 MIN_DPC_PITCH = 10000;
+
   public:
 
     explicit AudioSettings(Settings& mySettings);
@@ -86,8 +88,6 @@ class AudioSettings
     bool stereo() const;
 
     uInt32 volume() const;
-
-    uInt32 device() const;
 
     bool enabled() const;
 
@@ -139,4 +139,4 @@ class AudioSettings
     bool myIsPersistent{true};
 };
 
-#endif // AUDIO_PARAMTERS_HXX
+#endif  // AUDIO_PARAMETERS_HXX

@@ -68,8 +68,8 @@ class Bezel
       Common::Rect _window{1, 1}; // Area of transparent TIA window inside bezel
 
   public:
-      explicit Info() = default;
-      explicit Info(Common::Size size, Common::Rect window)
+      Info() = default;
+      Info(Common::Size size, Common::Rect window)
         : _isShown{true}, _size{size}, _window{window} { }
 
       bool isShown() const { return _isShown; }
@@ -148,4 +148,4 @@ class Bezel
     Bezel& operator=(Bezel&&) = delete;
 };
 
-#endif
+#endif  // BEZEL_HXX

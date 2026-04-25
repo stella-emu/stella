@@ -125,6 +125,6 @@ class Base
     Base& operator=(Base&&) = delete;
 };
 
-} // Namespace Common
+}  // Namespace Common
 
 #endif
