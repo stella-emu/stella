@@ -80,4 +80,4 @@ class Resampler {
 
 };
 
-#endif // RESAMPLER_HXX
+#endif  // RESAMPLER_HXX

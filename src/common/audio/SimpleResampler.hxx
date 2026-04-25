@@ -44,7 +44,7 @@ class SimpleResampler : public Resampler
     SimpleResampler(const SimpleResampler&) = delete;
     SimpleResampler(SimpleResampler&&) = delete;
     SimpleResampler& operator=(const SimpleResampler&) = delete;
-    SimpleResampler& operator=(const SimpleResampler&&) = delete;
+    SimpleResampler& operator=(SimpleResampler&&) = delete;
 };
 
-#endif // SIMPLE_RESAMPLER_HXX
+#endif  // SIMPLE_RESAMPLER_HXX

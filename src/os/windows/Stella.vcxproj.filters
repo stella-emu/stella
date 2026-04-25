@@ -672,9 +672,6 @@
     <ClCompile Include="..\..\common\audio\SimpleResampler.cxx">
       <Filter>Source Files\common\audio</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\common\audio\ConvolutionBuffer.cxx">
-      <Filter>Source Files\common\audio</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\common\audio\LanczosResampler.cxx">
       <Filter>Source Files\common\audio</Filter>
     </ClCompile>
@@ -683,9 +680,6 @@
     </ClCompile>
     <ClCompile Include="..\..\emucore\EmulationWorker.cxx">
       <Filter>Source Files\emucore</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\common\audio\HighPass.cxx">
-      <Filter>Source Files\common\audio</Filter>
     </ClCompile>
     <ClCompile Include="..\..\emucore\ControllerDetector.cxx">
       <Filter>Source Files\emucore</Filter>

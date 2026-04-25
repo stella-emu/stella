@@ -23,12 +23,25 @@
 class ConvolutionBuffer
 {
   public:
-    explicit ConvolutionBuffer(uInt32 size);
+    explicit ConvolutionBuffer(uInt32 size)
+      : myData{std::make_unique<float[]>(size)},
+        mySize{size} { }
+
     ~ConvolutionBuffer() = default;
 
-    void shift(float nextValue);
+    void shift(float nextValue) {
+      myData[myFirstIndex] = nextValue;
+      myFirstIndex = (myFirstIndex + 1) % mySize;
+    }
 
-    float convoluteWith(const float* kernel) const;
+    float convoluteWith(const float* kernel) const {
+      float result = 0.F;
+
+      for(uInt32 i = 0; i < mySize; ++i)
+        result += kernel[i] * myData[(myFirstIndex + i) % mySize];
+
+      return result;
+    }
 
   private:
 
@@ -47,4 +60,4 @@ class ConvolutionBuffer
 
 };
 
-#endif // CONVOLUTION_BUFFER_HXX
+#endif  // CONVOLUTION_BUFFER_HXX

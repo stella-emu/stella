@@ -23,6 +23,7 @@ namespace {
 
   constexpr float CLIPPING_FACTOR = 0.75;
   constexpr float HIGH_PASS_CUT_OFF = 10;
+  constexpr float SAMPLE_SCALE = 1.F / static_cast<float>(0x7FFF);
 
   constexpr uInt32 reducedDenominator(uInt32 n, uInt32 d)
   {
@@ -50,7 +51,7 @@ namespace {
     return sinc(x) * sinc(x / static_cast<float>(a));
   }
 
-} // namespace
+}  // namespace
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 LanczosResampler::LanczosResampler(
@@ -142,18 +143,21 @@ void LanczosResampler::fillFragment(float* fragment, uInt32 length)
     return;
   }
 
-  const size_t outputSamples = myFormatTo.stereo ? (length >> 1) : length;
+  const bool stereoIn  = myFormatFrom.stereo;
+  const bool stereoOut = myFormatTo.stereo;
+  const size_t outputSamples = stereoOut ? (length >> 1) : length;
 
   for (size_t i = 0; i < outputSamples; ++i) {
     const float* kernel = myPrecomputedKernels.get() +
         static_cast<size_t>(myCurrentKernelIndex) * myKernelSize;
-    myCurrentKernelIndex = (myCurrentKernelIndex + 1) % myPrecomputedKernelCount;
+    if (++myCurrentKernelIndex == myPrecomputedKernelCount)
+      myCurrentKernelIndex = 0;
 
-    if (myFormatFrom.stereo) {
+    if (stereoIn) {
       const float sampleL = myBufferL->convoluteWith(kernel);
       const float sampleR = myBufferR->convoluteWith(kernel);
 
-      if (myFormatTo.stereo) {
+      if (stereoOut) {
         fragment[2*i] = sampleL;
         fragment[2*i + 1] = sampleR;
       }
@@ -162,7 +166,7 @@ void LanczosResampler::fillFragment(float* fragment, uInt32 length)
     } else {
       const float sample = myBuffer->convoluteWith(kernel);
 
-      if (myFormatTo.stereo)
+      if (stereoOut)
         fragment[2*i] = fragment[2*i + 1] = sample;
       else
         fragment[i] = sample;
@@ -181,18 +185,17 @@ void LanczosResampler::fillFragment(float* fragment, uInt32 length)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FORCE_INLINE void LanczosResampler::shiftSamples(uInt32 samplesToShift)
 {
+  const bool stereoIn  = myFormatFrom.stereo;
+
   while (samplesToShift-- > 0) {
-    if (myFormatFrom.stereo) {
+    if (stereoIn) {
       myBufferL->shift(myHighPassL.apply(
-        myCurrentFragment[2 * static_cast<size_t>(myFragmentIndex)] /
-            static_cast<float>(0x7fff)));
+        myCurrentFragment[2 * static_cast<size_t>(myFragmentIndex)] * SAMPLE_SCALE));
       myBufferR->shift(myHighPassR.apply(
-        myCurrentFragment[2 * static_cast<size_t>(myFragmentIndex) + 1] /
-            static_cast<float>(0x7fff)));
+        myCurrentFragment[2 * static_cast<size_t>(myFragmentIndex) + 1] * SAMPLE_SCALE));
     }
     else
-      myBuffer->shift(myHighPass.apply(myCurrentFragment[myFragmentIndex] /
-          static_cast<float>(0x7fff)));
+      myBuffer->shift(myHighPass.apply(myCurrentFragment[myFragmentIndex] * SAMPLE_SCALE));
 
     ++myFragmentIndex;
 

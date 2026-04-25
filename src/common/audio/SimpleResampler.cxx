@@ -17,6 +17,10 @@
 
 #include "SimpleResampler.hxx"
 
+namespace {
+  constexpr float SAMPLE_SCALE = 1.F / static_cast<float>(0x7FFF);
+}  //namespace
+
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 SimpleResampler::SimpleResampler(
   Resampler::Format formatFrom,
@@ -44,29 +48,28 @@ void SimpleResampler::fillFragment(float* fragment, uInt32 length)
     return;
   }
 
-  const size_t outputSamples = myFormatTo.stereo ? (length >> 1) : length;
+  const bool stereoIn  = myFormatFrom.stereo;
+  const bool stereoOut = myFormatTo.stereo;
+  const size_t outputSamples = stereoOut ? (length >> 1) : length;
 
   // For the following math, remember that myTimeIndex = time * myFormatFrom.sampleRate * myFormatTo.sampleRate
   for (size_t i = 0; i < outputSamples; ++i) {
-    if (myFormatFrom.stereo) {
+    if (stereoIn) {
       const float sampleL = static_cast<float>(
-          myCurrentFragment[2*static_cast<size_t>(myFragmentIndex)]) /
-          static_cast<float>(0x7fff);
+          myCurrentFragment[2*static_cast<size_t>(myFragmentIndex)]) * SAMPLE_SCALE;
       const float sampleR = static_cast<float>(
-          myCurrentFragment[2*static_cast<size_t>(myFragmentIndex) + 1]) /
-          static_cast<float>(0x7fff);
+          myCurrentFragment[2*static_cast<size_t>(myFragmentIndex) + 1]) * SAMPLE_SCALE;
 
-      if (myFormatTo.stereo) {
+      if (stereoOut) {
         fragment[2*i] = sampleL;
         fragment[2*i + 1] = sampleR;
       }
       else
         fragment[i] = (sampleL + sampleR) / 2.F;
     } else {
-      const auto sample = static_cast<float>(myCurrentFragment[myFragmentIndex] /
-          static_cast<float>(0x7fff));
+      const auto sample = static_cast<float>(myCurrentFragment[myFragmentIndex]) * SAMPLE_SCALE;
 
-      if (myFormatTo.stereo)
+      if (stereoOut)
         fragment[2*i] = fragment[2*i + 1] = sample;
       else
         fragment[i] = sample;

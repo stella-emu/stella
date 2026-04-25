@@ -18,13 +18,24 @@
 #ifndef HIGH_PASS_HXX
 #define HIGH_PASS_HXX
 
+#include "bspf.hxx"
+
 class HighPass
 {
   public:
 
-    HighPass(float cutOffFrequency, float frequency);
+    HighPass(float cutOffFrequency, float frequency)
+      : myAlpha{1.F / (1.F + 2.F*BSPF::PI_f*cutOffFrequency/frequency)} { }
+    HighPass() = delete;
 
-    float apply(float value);
+    float apply(float valueIn) {
+      const float valueOut = myAlpha * (myLastValueOut + valueIn - myLastValueIn);
+
+      myLastValueIn = valueIn;
+      myLastValueOut = valueOut;
+
+      return valueOut;
+    }
 
   private:
 
@@ -33,10 +44,6 @@ class HighPass
     float myLastValueOut{0.F};
 
     float myAlpha{0.F};
-
-  private:
-
-    HighPass() = delete;
 };
 
-#endif // HIGH_PASS_HXX
+#endif  // HIGH_PASS_HXX

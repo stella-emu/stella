@@ -33,6 +33,8 @@ class LanczosResampler : public Resampler
       uInt32 kernelParameter
     );
 
+    ~LanczosResampler() override = default;
+
     void fillFragment(float* fragment, uInt32 length) override;
 
   private:
@@ -45,24 +47,29 @@ class LanczosResampler : public Resampler
 
     uInt32 myPrecomputedKernelCount{0};
     uInt32 myKernelSize{0};
-    uInt32 myCurrentKernelIndex{0};
-    unique_ptr<float[]> myPrecomputedKernels;
-
     uInt32 myKernelParameter{0};
+    uInt32 myCurrentKernelIndex{0};
+    uInt32 myFragmentIndex{0};
+    uInt32 myTimeIndex{0};
+
+    unique_ptr<float[]> myPrecomputedKernels;
 
     unique_ptr<ConvolutionBuffer> myBuffer;
     unique_ptr<ConvolutionBuffer> myBufferL;
     unique_ptr<ConvolutionBuffer> myBufferR;
 
     Int16* myCurrentFragment{nullptr};
-    uInt32 myFragmentIndex{0};
     bool myIsUnderrun{true};
 
     HighPass myHighPassL;
     HighPass myHighPassR;
     HighPass myHighPass;
 
-    uInt32 myTimeIndex{0};
+  private:
+    LanczosResampler(const LanczosResampler&) = delete;
+    LanczosResampler(LanczosResampler&&) = delete;
+    LanczosResampler& operator=(const LanczosResampler&) = delete;
+    LanczosResampler& operator=(LanczosResampler&&) = delete;
 };
 
-#endif // LANCZOS_RESAMPLER_HXX
+#endif  // LANCZOS_RESAMPLER_HXX

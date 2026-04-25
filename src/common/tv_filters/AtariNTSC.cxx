@@ -21,18 +21,6 @@
 #include "AtariNTSC.hxx"
 #include "PhosphorHandler.hxx"
 
-// blitter related
-#ifndef restrict
-  #ifdef __GNUC__
-    #define restrict __restrict__
-  #elif defined (_MSC_VER) && _MSC_VER > 1300
-    #define restrict __restrict
-  #else
-    /* no support for restricted pointers */
-    #define restrict
-  #endif
-#endif
-
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void AtariNTSC::initialize(const Setup& setup)
 {
@@ -148,7 +136,7 @@ void AtariNTSC::renderThread(const uInt8* atari_in, uInt32 in_width,
   {
     const uInt8* line_in = atari_in;
     ATARI_NTSC_BEGIN_ROW(NTSC_black, line_in[0]);
-    auto* restrict line_out = static_cast<uInt32*>(rgb_out);
+    auto* FORCE_RESTRICT line_out = static_cast<uInt32*>(rgb_out);
     ++line_in;
 
     // shift right by 2 pixel
@@ -224,7 +212,7 @@ void AtariNTSC::renderWithPhosphorThread(const uInt8* atari_in, uInt32 in_width,
   {
     const uInt8* line_in = atari_in;
     ATARI_NTSC_BEGIN_ROW(NTSC_black, line_in[0]);
-    auto* restrict line_out = static_cast<uInt32*>(rgb_out);
+    auto* FORCE_RESTRICT line_out = static_cast<uInt32*>(rgb_out);
     ++line_in;
 
     // shift right by 2 pixel

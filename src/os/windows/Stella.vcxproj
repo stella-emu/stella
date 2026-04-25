@@ -409,8 +409,6 @@
   <ItemGroup>
     <ClCompile Include="..\..\common\AudioQueue.cxx" />
     <ClCompile Include="..\..\common\AudioSettings.cxx" />
-    <ClCompile Include="..\..\common\audio\ConvolutionBuffer.cxx" />
-    <ClCompile Include="..\..\common\audio\HighPass.cxx" />
     <ClCompile Include="..\..\common\audio\LanczosResampler.cxx" />
     <ClCompile Include="..\..\common\audio\SimpleResampler.cxx" />
     <ClCompile Include="..\..\common\Base.cxx" />

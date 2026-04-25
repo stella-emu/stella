@@ -782,7 +782,6 @@
 		E07DF4442C0A819D00E1FB07 /* CartWF8.cxx in Sources */ = {isa = PBXBuildFile; fileRef = E07DF4422C0A819D00E1FB07 /* CartWF8.cxx */; };
 		E07DF4472C0A81ED00E1FB07 /* CartWF8Widget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = E07DF4452C0A81ED00E1FB07 /* CartWF8Widget.hxx */; };
 		E07DF4482C0A81ED00E1FB07 /* CartWF8Widget.cxx in Sources */ = {isa = PBXBuildFile; fileRef = E07DF4462C0A81ED00E1FB07 /* CartWF8Widget.cxx */; };
-		E0893AF2211B9842008B170D /* HighPass.cxx in Sources */ = {isa = PBXBuildFile; fileRef = E0893AF0211B9841008B170D /* HighPass.cxx */; };
 		E0893AF3211B9842008B170D /* HighPass.hxx in Headers */ = {isa = PBXBuildFile; fileRef = E0893AF1211B9841008B170D /* HighPass.hxx */; };
 		E08B1C18231FF97B00EEF922 /* BreakpointMap.cxx in Sources */ = {isa = PBXBuildFile; fileRef = E08B1C16231FF97B00EEF922 /* BreakpointMap.cxx */; };
 		E08B1C19231FF97B00EEF922 /* BreakpointMap.hxx in Headers */ = {isa = PBXBuildFile; fileRef = E08B1C17231FF97B00EEF922 /* BreakpointMap.hxx */; };
@@ -818,7 +817,6 @@
 		E0DCD3A720A64E96000B614E /* LanczosResampler.hxx in Headers */ = {isa = PBXBuildFile; fileRef = E0DCD3A320A64E95000B614E /* LanczosResampler.hxx */; };
 		E0DCD3A820A64E96000B614E /* LanczosResampler.cxx in Sources */ = {isa = PBXBuildFile; fileRef = E0DCD3A420A64E95000B614E /* LanczosResampler.cxx */; };
 		E0DCD3A920A64E96000B614E /* ConvolutionBuffer.hxx in Headers */ = {isa = PBXBuildFile; fileRef = E0DCD3A520A64E96000B614E /* ConvolutionBuffer.hxx */; };
-		E0DCD3AA20A64E96000B614E /* ConvolutionBuffer.cxx in Sources */ = {isa = PBXBuildFile; fileRef = E0DCD3A620A64E96000B614E /* ConvolutionBuffer.cxx */; };
 		E0EA1FFF227A42D0008BA944 /* Logger.hxx in Headers */ = {isa = PBXBuildFile; fileRef = E0EA1FFD227A42D0008BA944 /* Logger.hxx */; };
 		E0EA2000227A42D0008BA944 /* Logger.cxx in Sources */ = {isa = PBXBuildFile; fileRef = E0EA1FFE227A42D0008BA944 /* Logger.cxx */; };
 		E0EA57AA2DE8E9E30040BE24 /* SDL3.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = E0EA57A92DE8E9E30040BE24 /* SDL3.xcframework */; };
@@ -1665,7 +1663,6 @@
 		E07DF4422C0A819D00E1FB07 /* CartWF8.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CartWF8.cxx; sourceTree = "<group>"; };
 		E07DF4452C0A81ED00E1FB07 /* CartWF8Widget.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = CartWF8Widget.hxx; sourceTree = "<group>"; };
 		E07DF4462C0A81ED00E1FB07 /* CartWF8Widget.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CartWF8Widget.cxx; sourceTree = "<group>"; };
-		E0893AF0211B9841008B170D /* HighPass.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = HighPass.cxx; path = audio/HighPass.cxx; sourceTree = "<group>"; };
 		E0893AF1211B9841008B170D /* HighPass.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = HighPass.hxx; path = audio/HighPass.hxx; sourceTree = "<group>"; };
 		E08B1C16231FF97B00EEF922 /* BreakpointMap.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = BreakpointMap.cxx; sourceTree = "<group>"; };
 		E08B1C17231FF97B00EEF922 /* BreakpointMap.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = BreakpointMap.hxx; sourceTree = "<group>"; };
@@ -1701,7 +1698,6 @@
 		E0DCD3A320A64E95000B614E /* LanczosResampler.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = LanczosResampler.hxx; path = audio/LanczosResampler.hxx; sourceTree = "<group>"; };
 		E0DCD3A420A64E95000B614E /* LanczosResampler.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = LanczosResampler.cxx; path = audio/LanczosResampler.cxx; sourceTree = "<group>"; };
 		E0DCD3A520A64E96000B614E /* ConvolutionBuffer.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = ConvolutionBuffer.hxx; path = audio/ConvolutionBuffer.hxx; sourceTree = "<group>"; };
-		E0DCD3A620A64E96000B614E /* ConvolutionBuffer.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ConvolutionBuffer.cxx; path = audio/ConvolutionBuffer.cxx; sourceTree = "<group>"; };
 		E0DFDD781F81A358000F3505 /* AbstractFrameManager.cxx */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = AbstractFrameManager.cxx; sourceTree = "<group>"; };
 		E0DFDD7B1F81A358000F3505 /* FrameManager.cxx */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = FrameManager.cxx; sourceTree = "<group>"; };
 		E0EA1FFD227A42D0008BA944 /* Logger.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Logger.hxx; sourceTree = "<group>"; };
@@ -2641,9 +2637,7 @@
 		DCC6A4AD20A2620D00863C59 /* audio */ = {
 			isa = PBXGroup;
 			children = (
-				E0DCD3A620A64E96000B614E /* ConvolutionBuffer.cxx */,
 				E0DCD3A520A64E96000B614E /* ConvolutionBuffer.hxx */,
-				E0893AF0211B9841008B170D /* HighPass.cxx */,
 				E0893AF1211B9841008B170D /* HighPass.hxx */,
 				E0DCD3A420A64E95000B614E /* LanczosResampler.cxx */,
 				E0DCD3A320A64E95000B614E /* LanczosResampler.hxx */,
@@ -3394,7 +3388,6 @@
 				2D91747C09BA90380026E9FF /* CartDPC.cxx in Sources */,
 				2D91747D09BA90380026E9FF /* CartE0.cxx in Sources */,
 				DCF8621921C9D43300F95F52 /* StaggeredLogger.cxx in Sources */,
-				E0DCD3AA20A64E96000B614E /* ConvolutionBuffer.cxx in Sources */,
 				DC6DC5E1273C2A5E00F64413 /* OptionsMenu.cxx in Sources */,
 				DCAA68422A3CD026006A1E5F /* CartGL.cxx in Sources */,
 				DCE1FF47286DFB98003568AD /* Joy2BPlus.cxx in Sources */,
@@ -3581,7 +3574,6 @@
 				DC5AAC2C1FCB24DF00C420A6 /* RadioButtonWidget.cxx in Sources */,
 				DC816D0325757DC300FBCCDA /* HighScoresDialog.cxx in Sources */,
 				DC9EA8870F729A36000452B5 /* KidVid.cxx in Sources */,
-				E0893AF2211B9842008B170D /* HighPass.cxx in Sources */,
 				DCF467C20F939A1400B25D7A /* CartEF.cxx in Sources */,
 				DC85734F2C10A371007AB2FE /* CartJANEWidget.cxx in Sources */,
 				DCF467C40F939A1400B25D7A /* CartEFSC.cxx in Sources */,

@@ -180,6 +180,17 @@ namespace BSPF
     #define FORCE_INLINE inline __attribute__((always_inline))
   #endif
 
+  // Portable restrict hint — tells the compiler that pointer arguments
+  // do not alias each other, enabling auto-vectorization of hot loops.
+  #if defined(__clang__) || defined(__GNUC__)
+    #define FORCE_RESTRICT __restrict__
+  #elif defined(_MSC_VER)
+    #define FORCE_RESTRICT __restrict
+  #else
+    /* no support for restricted pointers */
+    #define FORCE_RESTRICT
+  #endif
+
   // Get next power of two greater than or equal to the given value
   constexpr size_t nextPowerOfTwo(size_t size) {
     return std::bit_ceil(size);
