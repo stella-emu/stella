@@ -34,6 +34,8 @@ class FBSurfaceSDL : public FBSurface
   public:
     FBSurfaceSDL(FBBackendSDL& backend, uInt32 width, uInt32 height,
                  ScalingInterpolation inter, const uInt32* staticData);
+    FBSurfaceSDL(FBBackendSDL& backend, SDL_Surface* surface,
+                 ScalingInterpolation inter);
     ~FBSurfaceSDL() override;
 
     // Most of the surface drawing primitives are implemented in FBSurface;

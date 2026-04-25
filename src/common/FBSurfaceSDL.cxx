@@ -41,14 +41,34 @@ namespace {
 } // namespace
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FBSurfaceSDL::FBSurfaceSDL(FBBackendSDL& backend,
-                           uInt32 width, uInt32 height,
-                           ScalingInterpolation inter,
-                           const uInt32* staticData)
+FBSurfaceSDL::FBSurfaceSDL(FBBackendSDL& backend, uInt32 width, uInt32 height,
+                           ScalingInterpolation inter, const uInt32* staticData)
   : myBackend{backend},
     myInterpolationMode{inter}
 {
   createSurface(width, height, staticData);
+  reinitializeBlitter(true);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+FBSurfaceSDL::FBSurfaceSDL(FBBackendSDL& backend, SDL_Surface* surface,
+                           ScalingInterpolation inter)
+  : myBackend{backend},
+    myInterpolationMode{inter},
+    mySurface{surface}
+{
+  const SDL_PixelFormatDetails& pf = myBackend.pixelFormat();
+  myPixels = static_cast<uInt32*>(mySurface->pixels);
+  assert(mySurface->pitch % pf.bytes_per_pixel == 0);
+  myPitch = mySurface->pitch / pf.bytes_per_pixel;
+
+  // We start out with the src and dst rectangles containing the same
+  // dimensions, indicating no scaling or re-positioning
+  setSrcPosInternal(0, 0);
+  setDstPosInternal(0, 0);
+  setSrcSizeInternal(mySurface->w, mySurface->h);
+  setDstSizeInternal(mySurface->w, mySurface->h);
+
   reinitializeBlitter(true);
 }
 

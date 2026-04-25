@@ -178,18 +178,6 @@ class TIASurface
     void render(bool shade = false);
 
     /**
-      This method prepares the current frame for taking a snapshot.
-      In particular, in phosphor modes the blending is adjusted slightly to
-      generate better images.
-    */
-    void renderForSnapshot();
-
-    /**
-      Save a snapshot after rendering.
-    */
-    void saveSnapShot() { mySaveSnapFlag = true; }
-
-    /**
       Update surface settings.
      */
     void updateSurfaceSettings();
@@ -214,11 +202,6 @@ class TIASurface
     };
 
   private:
-    /**
-      Average current calculated buffer's pixel with previous calculated buffer's pixel (50:50).
-    */
-    uInt32 averageBuffers(uInt32 bufOfs);
-
     // Is plain video mode enabled?
     bool correctAspect() const;
 
@@ -259,9 +242,6 @@ class TIASurface
 
     // Palette for normal TIA rendering mode
     PaletteArray myPalette{};
-
-    // Flag for saving a snapshot
-    bool mySaveSnapFlag{false};
 
     // The palette handler
     unique_ptr<PaletteHandler> myPaletteHandler;

@@ -180,9 +180,9 @@ class FBBackend
       that may be in use; it should return the actual data as it is currently
       seen onscreen.
 
-      @param surface  The surface used to store the current framebuffer.
+      @return  The surface used to store the current framebuffer.
     */
-    virtual void getSurface(FBSurface& surface) const = 0;
+    virtual const FBSurface& compositedSurface() = 0;
 
     /**
       This method is called to query if the current window is not

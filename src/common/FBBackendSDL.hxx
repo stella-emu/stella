@@ -140,9 +140,9 @@ class FBBackendSDL : public FBBackend
       that may be in use; it should return the actual data as it is currently
       seen onscreen.
 
-      @param surface  The surface used to store the current framebuffer.
+      @return  The surface used to store the current framebuffer.
     */
-    void getSurface(FBSurface& surface) const override;
+    const FBSurface& compositedSurface() override;
 
     /**
       This method is called to query if the current window is not centered
@@ -328,6 +328,10 @@ class FBBackendSDL : public FBBackend
 
     // Window and renderer dimensions
     int myWindowW{0}, myWindowH{0}, myRenderW{0}, myRenderH{0};
+
+    // Used by compositedSurface() when a surface representing the complete
+    // renderer image is needed
+    unique_ptr<FBSurface> myCompositedSurface;
 
   private:
     // Following constructors and assignment operators not supported

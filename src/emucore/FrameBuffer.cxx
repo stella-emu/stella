@@ -817,7 +817,11 @@ void FrameBuffer::enableMessages(bool enable)
     // Erase old messages on the screen
     hideMessage();
 
-    update();  // update immediately
+    // Update immediately
+    if(myOSystem.eventHandler().state() == EventHandlerState::EMULATION)
+      renderTIA();
+    else
+      update();
   }
 }
 

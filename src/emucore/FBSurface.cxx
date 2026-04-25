@@ -26,30 +26,6 @@
 #endif
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FBSurface::readPixels(uInt8* buffer, uInt32 pitch, const Common::Rect& rect) const
-{
-  auto* src = reinterpret_cast<uInt8*>(myPixels +
-      (rect.y() * static_cast<size_t>(myPitch)) + rect.x());
-
-  if(rect.empty())
-    std::copy_n(src, width() * height() * 4, buffer);
-  else
-  {
-    const uInt32 w = std::min(rect.w(), width());
-    uInt32 h = std::min(rect.h(), height());
-
-    // Copy 'height' lines of width 'pitch' (in bytes for both)
-    uInt8* dst = buffer;
-    while(h--)
-    {
-      std::copy_n(src, w * 4, dst);
-      src += static_cast<size_t>(myPitch) * 4;
-      dst += static_cast<size_t>(pitch) * 4;
-    }
-  }
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FBSurface::pixel(uInt32 x, uInt32 y, ColorId color)
 {
   // Note: checkbounds() must be done in calling method

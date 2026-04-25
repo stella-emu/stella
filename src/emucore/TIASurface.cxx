@@ -394,10 +394,13 @@ void TIASurface::createScanlineSurface()
   const auto pWidth = static_cast<uInt32>(Patterns[mask].data[0].size());
   const auto pHeight = static_cast<uInt32>(Patterns[mask].data.size() / Patterns[mask].vRepeats);
   const auto vRepeats = Patterns[mask].vRepeats;
+
   // Single width pattern need no horizontal repeats
   const uInt32 width = pWidth > 1 ? TIAConstants::frameBufferWidth * pWidth : 1;
+
   // TODO: Idea, alternative mask pattern if destination is scaled smaller than mask height?
   const uInt32 height = myTIA->height()* pHeight; // vRepeats are not used here
+
   // Copy repeated pattern into surface data
   std::vector<uInt32> data(static_cast<size_t>(width) * height);
 
@@ -473,34 +476,6 @@ string TIASurface::effectsInfo() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-inline uInt32 TIASurface::averageBuffers(uInt32 bufOfs)
-{
-  // TODO: if we keep this method, then the following is much more efficient
-//   const uInt32 c = myRGBFramebuffer[bufOfs];
-//   const uInt32 p = myPrevRGBFramebuffer[bufOfs];
-//   return (((c ^ p) >> 1) & 0x7F7F7FU) + (c & p);
-
-  const uInt32 c = myRGBFramebuffer[bufOfs];
-  const uInt32 p = myPrevRGBFramebuffer[bufOfs];
-
-  // Split into RGB values
-  const auto rc = static_cast<uInt8>(c >> 16),
-             gc = static_cast<uInt8>(c >> 8),
-             bc = static_cast<uInt8>(c),
-             rp = static_cast<uInt8>(p >> 16),
-             gp = static_cast<uInt8>(p >> 8),
-             bp = static_cast<uInt8>(p);
-
-  // Mix current calculated buffer with previous calculated buffer (50:50)
-  const uInt8 rn = (rc + rp) / 2;
-  const uInt8 gn = (gc + gp) / 2;
-  const uInt8 bn = (bc + bp) / 2;
-
-  // return averaged value
-  return (rn << 16) | (gn << 8) | bn;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TIASurface::render(bool shade)
 {
   const uInt32 width = myTIA->width(), height = myTIA->height();
@@ -518,7 +493,7 @@ void TIASurface::render(bool shade)
       for(uInt32 y = 0; y < height; ++y)
       {
         uInt32 pos = screenofsY;
-        for (uInt32 x = width / 2; x; --x)
+        for(uInt32 x = width / 2; x; --x)
         {
           out[pos++] = myPalette[tiaIn[bufofs++]];
           out[pos++] = myPalette[tiaIn[bufofs++]];
@@ -532,10 +507,6 @@ void TIASurface::render(bool shade)
     {
       const uInt8* tiaIn = myTIA->frameBuffer();
       uInt32* rgbIn = myRGBFramebuffer.data();
-
-      if(mySaveSnapFlag)
-        std::copy_n(myRGBFramebuffer.begin(), width * height,
-                    myPrevRGBFramebuffer.begin());
 
       uInt32 bufofs = 0, screenofsY = 0;
       for(uInt32 y = height; y ; --y)
@@ -562,10 +533,6 @@ void TIASurface::render(bool shade)
 
     case Filter::BlarggPhosphor:
     {
-      if(mySaveSnapFlag)
-        std::copy_n(myRGBFramebuffer.begin(), height * outPitch,
-                    myPrevRGBFramebuffer.begin());
-
       myNTSCFilter.render(myTIA->frameBuffer(), width, height, out, outPitch << 2, myRGBFramebuffer.data());
       break;
     }
@@ -585,78 +552,6 @@ void TIASurface::render(bool shade)
   {
     myShadeSurface->setDstRect(myTiaSurface->dstRect());
     myShadeSurface->render();
-  }
-
-  if(mySaveSnapFlag)
-  {
-    mySaveSnapFlag = false;
-  #ifdef IMAGE_SUPPORT
-    myOSystem.png().takeSnapshot();
-  #endif
-  }
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void TIASurface::renderForSnapshot()
-{
-  // TODO: This is currently called from PNGLibrary::takeSnapshot() only
-  // Therefore the code could be simplified.
-  // At some point, we will probably merge some of the functionality.
-  // Furthermore, toggling the variable 'mySaveSnapFlag' in different places
-  // is brittle, especially since rendering can happen in a different thread.
-
-  const uInt32 width = myTIA->width(), height = myTIA->height();
-  uInt32 pos{0};
-  uInt32 *outPtr{nullptr}, outPitch{0};
-  myTiaSurface->basePtr(outPtr, outPitch);
-
-  mySaveSnapFlag = false;
-  switch(myFilter)
-  {
-    // For non-phosphor modes, render the frame again
-    case Filter::Normal:
-    case Filter::BlarggNormal:
-      render();
-      break;
-
-    // For phosphor modes, copy the phosphor framebuffer
-    case Filter::Phosphor:
-    {
-      uInt32 bufofs = 0, screenofsY = 0;
-      for(uInt32 y = height; y; --y)
-      {
-        pos = screenofsY;
-        for(uInt32 x = width / 2; x; --x)
-        {
-          outPtr[pos++] = averageBuffers(bufofs++);
-          outPtr[pos++] = averageBuffers(bufofs++);
-        }
-        screenofsY += outPitch;
-      }
-      break;
-    }
-
-    case Filter::BlarggPhosphor:
-    {
-      uInt32 bufofs = 0;
-      for(uInt32 y = height; y; --y)
-        for(uInt32 x = outPitch; x; --x)
-          outPtr[pos++] = averageBuffers(bufofs++);
-      break;
-    }
-
-    default:
-      break;  // Not supposed to get here
-  }
-
-  if(myPhosphorHandler.phosphorEnabled())
-  {
-    // Draw TIA image
-    myTiaSurface->render();
-
-    // Draw overlaying scanlines
-    if(myScanlinesEnabled)
-      mySLineSurface->render();
   }
 }
 

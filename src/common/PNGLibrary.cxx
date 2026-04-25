@@ -55,7 +55,6 @@ void PNGLibrary::loadImage(string_view filename, FBSurface& surface,
     PNGReadGuard& operator=(PNGReadGuard&&) = delete;
   };
 
-  // TODO: can we pass in FSNode directly in parameter?
   auto in = FSNode(filename).openIFStream(std::ios_base::binary);
   if(!in.is_open())
     throw std::runtime_error("No image found");
@@ -113,116 +112,36 @@ void PNGLibrary::loadImage(string_view filename, FBSurface& surface,
   // set by whoever owns the surface
   surface.setSrcPos(0, 0);
   surface.setSrcSize(width, height);
-  myRowPointers.resize(height);
 
-  // Format is SDL_PIXELFORMAT_ARGB8888
-  uInt32* base{};
-  uInt32 pitch{};
+  uInt32* base{nullptr};
+  uInt32  pitch{0};
   surface.basePtr(base, pitch);
 
-  // Set row pointers into surface buffer
   const uInt32 rowStride = pitch * sizeof(uInt32);
-  png_bytep* dst = myRowPointers.data();  // NOLINT(misc-const-correctness)
-  auto*      row = reinterpret_cast<png_bytep>(base);
-  for(uInt32 y = 0; y < height; ++y, row += rowStride)
-    *dst++ = row;
 
   // And read directly into the surface buffer
-  png_read_image(png_ptr, myRowPointers.data());
+  auto* row = reinterpret_cast<png_bytep>(base);
+  for(size_t y = 0; y < height; ++y, row += rowStride)
+    png_read_row(png_ptr, reinterpret_cast<png_bytep>(row), nullptr);
 
   // We're finished reading
   png_read_end(png_ptr, info_ptr);
 
   // Read the meta data we got
   readMetaData(png_ptr, info_ptr, metaData);
-
-  // Handle big-endian architectures; maybe SDL can do this directly?
-  // Big-endian: byte-swap in-place. Callers must treat the pixel buffer
-  // as consumed after this call — the data is not preserved.
-  if constexpr(std::endian::native == std::endian::big)
-  {
-    // Swap ARGB32 -> ABGR32 on big-endian CPUs
-    for(uInt32 y = 0; y < height; ++y)
-    {
-      auto* r = reinterpret_cast<uInt32*>(myRowPointers[y]);
-      for(uInt32 x = 0; x < width; ++x)
-        r[x] = byteswap<uInt32>(r[x]);
-    }
-  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PNGLibrary::saveImage(string_view filename, const VariantList& metaData)
-{
-#if 0  // FIXME: disabled for now, other parts of the codebase need work
-  // FIXME: leave this for now saveImage(filename, , Common::Rect{}, metaData);
-
-  const FrameBuffer& fb = myOSystem.frameBuffer();
-
-  const Common::Rect& rectUnscaled = fb.imageRect();
-  const Common::Rect rect(
-    Common::Point(fb.scaleX(rectUnscaled.x()), fb.scaleY(rectUnscaled.y())),
-    fb.scaleX(rectUnscaled.w()), fb.scaleY(rectUnscaled.h())
-  );
-
-  const size_t width = rect.w(), height = rect.h();
-
-  // Get framebuffer pixel data (we get ABGR format)
-  const size_t bufferSize = width * height * 4;
-  if(bufferSize > myPNGReadBuffer.size())
-    myPNGReadBuffer.resize(bufferSize);
-
-  fb.readPixels(myPNGReadBuffer.data(), width * 4, rect);
-
-  // Create a span of row pointers
-  std::vector<png_bytep> rowPointers(height);
-  for(size_t y = 0; y < height; ++y)
-    rowPointers[y] = myPNGReadBuffer.data() + y * width * 4;
-
-  std::ofstream out(string{filename}, std::ios_base::binary);
-  if(!out.is_open())
-    throw std::runtime_error("ERROR: Couldn't create snapshot file");
-
-  saveImageToDisk(out, std::span<png_bytep>(rowPointers), width, height, metaData);
-#endif
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PNGLibrary::saveImage(const FSNode& filename, const FBSurface& surface,
+void PNGLibrary::saveImage(string_view filename, const FBSurface& surface,
                            const Common::Rect& rect, const VariantList& metaData)
 {
-#if 0
-  size_t width = rect.w(), height = rect.h();
-  if(rect.empty())
-  {
-    width  = surface.width();
-    height = surface.height();
-  }
+  const Common::Rect srcRect = rect.empty()
+    ? Common::Rect{0, 0, surface.width(), surface.height()}
+    : rect;
 
-  const size_t bufferSize = width * height * 4;
-  if(bufferSize > myPNGReadBuffer.size())
-    myPNGReadBuffer.resize(bufferSize);
+  const size_t width  = srcRect.w();
+  const size_t height = srcRect.h();
 
-  surface.readPixels(myPNGReadBuffer.data(), static_cast<uInt32>(width), rect);
-
-  // Create a span of row pointers
-  std::vector<png_bytep> rowPointers(height);
-  for(size_t y = 0; y < height; ++y)
-    rowPointers[y] = myPNGReadBuffer.data() + y * width * 4;
-
-  std::ofstream out(string{filename}, std::ios_base::binary);
-  if(!out.is_open())
-    throw std::runtime_error("ERROR: Couldn't create snapshot file");
-
-  saveImageToDisk(out, std::span<png_bytep>(rowPointers), width, height, metaData);
-#endif
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PNGLibrary::saveImageToDisk(std::ofstream& out, MSpanOf<png_bytep> rows,
-                                 size_t width, size_t height,
-                                 const VariantList& metaData)
-{
   png_structp png_ptr{nullptr};
   png_infop info_ptr{nullptr};
 
@@ -255,6 +174,9 @@ void PNGLibrary::saveImageToDisk(std::ofstream& out, MSpanOf<png_bytep> rows,
     throw std::runtime_error("Couldn't create PNG info struct");
 
   // Set up the output control
+  auto out = FSNode(filename).openOFStream(std::ios_base::binary);
+  if(!out.is_open())
+    throw std::runtime_error("ERROR: Couldn't create snapshot file");
   png_set_write_fn(png_ptr, &out, png_write_data, png_io_flush);
 
   // Write PNG header info
@@ -272,37 +194,43 @@ void PNGLibrary::saveImageToDisk(std::ofstream& out, MSpanOf<png_bytep> rows,
   // Metadata
   writeMetaData(png_ptr, info_ptr, metaData);
 
-  // Write the file header information.  REQUIRED
+  // Write the file header information
   png_write_info(png_ptr, info_ptr);
 
   // Pack pixels into bytes
   png_set_packing(png_ptr);
 
-  // Swap location of alpha bytes from ARGB to RGBA
-  png_set_swap_alpha(png_ptr);
-
   // Pack ARGB into RGB
   png_set_filler(png_ptr, 0, PNG_FILLER_AFTER);
 
-  // Flip BGR pixels to RGB
-  png_set_bgr(png_ptr);
-
-  // Handle big-endian architectures; maybe SDL can do this directly?
-  // Big-endian: byte-swap in-place. Callers must treat the pixel buffer
-  // as consumed after this call — the data is not preserved.
-  if constexpr(std::endian::native == std::endian::big)
+  // Little-endian architectures needs bytes swapped; big-endian seems to
+  // have the data in the correct order already
+  // TODO: test this on a real big-endian machine
+  if constexpr(std::endian::native == std::endian::little)
   {
-    // Swap ARGB32 -> ABGR32 on big-endian CPUs
-    for(size_t y = 0; y < height; ++y)
-    {
-      auto* row = reinterpret_cast<uInt32*>(rows[y]);
-      for(size_t x = 0; x < width; ++x)
-        row[x] = byteswap<uInt32>(row[x]);
-    }
+    // Flip BGR pixels to RGB
+    png_set_bgr(png_ptr);
   }
 
-  // Write the entire image in one go
-  png_write_image(png_ptr, const_cast<png_bytep*>(rows.data()));
+  // TODO: Experiment with compression levels to speed up saving
+  //       For snapshots (interactive, possibly frequent): 1
+  //       For continuous snapshots (ssinterval): 0
+  //       For user-triggered (save snapshot): 3
+//   png_set_compression_level(png_ptr, 0);
+//   png_set_filter(png_ptr, 0, PNG_FILTER_NONE);
+
+  // Direct access to surface memory
+  uInt32* base{nullptr};
+  uInt32  pitch{0};
+  surface.basePtr(base, pitch);
+
+  const size_t rowStride = pitch * sizeof(uInt32);
+  auto* row = reinterpret_cast<png_bytep>(base)
+            + srcRect.y() * rowStride
+            + srcRect.x() * sizeof(uInt32);
+
+  for(size_t y = 0; y < height; ++y, row += rowStride)
+    png_write_row(png_ptr, reinterpret_cast<png_bytep>(row));
 
   // We're finished writing
   png_write_end(png_ptr, info_ptr);
@@ -410,8 +338,7 @@ void PNGLibrary::takeSnapshot(uInt32 number)
       Common::Rect rect;
       const FBSurface& surface =
         myOSystem.frameBuffer().tiaSurface().baseSurface(rect);
-      const FSNode pngfile(filename);
-      saveImage(pngfile, surface, rect, metaData);
+      saveImage(filename, surface, rect, metaData);
     }
     catch(const std::runtime_error& e)
     {
@@ -420,21 +347,15 @@ void PNGLibrary::takeSnapshot(uInt32 number)
   }
   else
   {
-    // Make sure we have a 'clean' image, with no onscreen messages
-    myOSystem.frameBuffer().enableMessages(false);
-    myOSystem.frameBuffer().tiaSurface().renderForSnapshot();
-
     try
     {
-      saveImage(filename, metaData);
+      saveImage(filename, myOSystem.frameBuffer().compositedSurface(),
+                {}, metaData);
     }
     catch(const std::runtime_error& e)
     {
       message = e.what();
     }
-
-    // Re-enable old messages
-    myOSystem.frameBuffer().enableMessages(true);
   }
   myOSystem.frameBuffer().showTextMessage(message);
 }

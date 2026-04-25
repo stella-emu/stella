@@ -60,16 +60,6 @@ class FBSurface
       pitch = myPitch;
     }
 
-    /**
-      This method is called to get a copy of the specified ARGB data from
-      the behind-the-scenes surface.
-
-      @param buffer  A copy of the pixel data in ARGB8888 format
-      @param pitch   The pitch (in bytes) for the pixel data
-      @param rect    The bounding rectangle for the buffer
-    */
-    void readPixels(uInt8* buffer, uInt32 pitch, const Common::Rect& rect) const;
-
     //////////////////////////////////////////////////////////////////////////
     // Note:  The drawing primitives below will work, but do not take
     //        advantage of any acceleration whatsoever.  The methods are

@@ -630,18 +630,40 @@ unique_ptr<FBSurface> FBBackendSDL::createSurface(
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FBBackendSDL::getSurface(FBSurface& surface) const
+const FBSurface& FBBackendSDL::compositedSurface()
 {
-#if 0
   ASSERT_MAIN_THREAD;
 
-  const SDL_Rect r = ToSDLRect(rect);
-  SDL_Surface* surface = SDL_RenderReadPixels(myRenderer, &r);
+  FrameBuffer& fb = myOSystem.frameBuffer();
+  const Common::Rect& rectUnscaled = fb.imageRect();
+  const Common::Rect rect(
+    Common::Point(fb.scaleX(rectUnscaled.x()), fb.scaleY(rectUnscaled.y())),
+    fb.scaleX(rectUnscaled.w()), fb.scaleY(rectUnscaled.h())
+  );
 
+  // Make sure we have a 'clean' image, with no onscreen messages
+  fb.enableMessages(false);
 
+  SDL_Rect surfaceRect = ToSDLRect(rect);
+  SDL_Surface* tmp = SDL_RenderReadPixels(myRenderer, &surfaceRect);
+  SDL_Surface* sdlSurface = SDL_ConvertSurface(tmp, myPixelFormat->format);
+  SDL_DestroySurface(tmp);
 
-  SDL_DestroySurface(surface);
-#endif
+  // Re-enable old messages
+  fb.enableMessages(true);
+
+  if(!sdlSurface)
+    throw(std::format("Snapshot failed: {}", SDL_GetError()));
+
+  // Only create a surface when absolutely necessary
+  const uInt32 w = surfaceRect.w, h = surfaceRect.h;
+  if(!myCompositedSurface ||
+      std::cmp_not_equal(myCompositedSurface->width(), w) ||
+      std::cmp_not_equal(myCompositedSurface->height(), h))
+    myCompositedSurface = std::make_unique<FBSurfaceSDL>
+      (const_cast<FBBackendSDL&>(*this), sdlSurface, ScalingInterpolation::none);
+
+  return *myCompositedSurface;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

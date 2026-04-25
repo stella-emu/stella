@@ -231,17 +231,18 @@ class FrameBuffer
     */
     TIASurface& tiaSurface() const { return *myTIASurface; }
 
-#if 0
     /**
-      Get the viewable surface associated with the framebuffer, minus any
-      centering/blank space.  Note that this takes into account any post-processing,
-      including Blargg filtering, scanlines, etc.
+      This method is called to get the specified ARGB data from the viewable
+      FrameBuffer area.  Note that this isn't the same as any internal
+      surfaces that may be in use; it should return the actual data as it
+      is currently seen onscreen.
 
       Currently this is used only for taking PNG snapshots.  As such, it is slow
       and should not be used for anything else.
     */
-    const FBSurface& renderedTIASurface();
-#endif
+    const FBSurface& compositedSurface() {
+      return myBackend->compositedSurface();
+    }
 
     /**
       Toggles between fullscreen and window mode.
@@ -417,22 +418,6 @@ class FrameBuffer
     uInt32 mapRGBA(uInt8 r, uInt8 g, uInt8 b, uInt8 a) const {
       return myBackend->mapRGBA(r, g, b, a);
     }
-
-#if 0
-    /**
-      This method is called to get the specified ARGB data from the viewable
-      FrameBuffer area.  Note that this isn't the same as any internal
-      surfaces that may be in use; it should return the actual data as it
-      is currently seen onscreen.
-
-      @param buffer  The actual pixel data in ARGB8888 format
-      @param pitch   The pitch (in bytes) for the pixel data
-      @param rect    The bounding rectangle for the buffer
-    */
-    void readPixels(uInt8* buffer, size_t pitch, const Common::Rect& rect) const {
-      myBackend->readPixels(buffer, pitch, rect);
-    }
-#endif
 
     /**
       Clear the framebuffer.

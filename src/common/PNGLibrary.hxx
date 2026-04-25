@@ -59,21 +59,6 @@ class PNGLibrary
                    VariantList& metaData);
 
     /**
-      Save the current FrameBuffer image to a PNG file.  Note that in most
-      cases this will be a TIA image, but it could actually be used for
-      *any* mode.
-
-      @param filename  The filename to save the PNG image
-      @param metaData  The meta data to add to the PNG image
-
-      @post  On success, the PNG file has been saved to 'filename',
-             otherwise a std::runtime_error is thrown containing a
-             more detailed error message.
-    */
-    void saveImage(string_view filename,
-                   const VariantList& metaData = VariantList{});
-
-    /**
       Save the given surface to a PNG file.
 
       @param filename  The filename to save the PNG image
@@ -85,7 +70,7 @@ class PNGLibrary
              otherwise a std::runtime_error is thrown containing a
              more detailed error message.
     */
-    void saveImage(const FSNode& filename, const FBSurface& surface,
+    void saveImage(string_view filename, const FBSurface& surface,
                    const Common::Rect& rect = Common::Rect{},
                    const VariantList& metaData = VariantList{});
 
@@ -120,9 +105,6 @@ class PNGLibrary
     void setContinuousSnapInterval(uInt32 interval);
 
     /**
-      NOTE: This method will be made private soon, so all calls from
-            external code should be refactored
-
       Create a new snapshot based on the name of the ROM, and also
       optionally using the number given as a parameter.
 
@@ -137,23 +119,6 @@ class PNGLibrary
     // Used for continuous snapshot mode
     uInt32 mySnapInterval{0};
     uInt32 mySnapCounter{0};
-
-    // Reusable row buffer for PNG read/write operations; retained between
-    // calls to loadImage() and saveImage() to avoid repeated heap allocation.
-    vector<png_bytep> myRowPointers;
-
-    /**
-      The actual method which saves a PNG image.
-
-      @param out       The output stream for writing PNG data
-      @param rows      span/range of the PNG RGB data for each row
-      @param width     The width of the PNG image
-      @param height    The height of the PNG image
-      @param metaData  The meta data to add to the PNG image
-    */
-    static void saveImageToDisk(std::ofstream& out, MSpanOf<png_bytep> rows,
-                                size_t width, size_t height,
-                                const VariantList& metaData);
 
     /**
       Write PNG tEXt chunks to the image.
@@ -185,21 +150,6 @@ class PNGLibrary
     }
     [[noreturn]] static void png_user_error(png_structp, png_const_charp msg) {
       throw std::runtime_error(msg);
-    }
-
-    // Endian conversion helpers
-    // TODO: until we can use C++23 std::byteswap
-    template<typename T> static constexpr T byteswap(T v) {
-      static_assert(sizeof(T) == 1 || sizeof(T) == 2 ||
-                    sizeof(T) == 4 || sizeof(T) == 8,
-                    "Unsupported type size for byteswap");
-
-      if constexpr(sizeof(T) > 1) {
-        auto src = std::bit_cast<std::array<std::byte, sizeof(T)>>(v);
-        std::reverse(src.begin(), src.end());
-        return std::bit_cast<T>(src);
-      }
-      return v;
     }
 
   private:
