@@ -85,7 +85,7 @@ string NTSCFilter::getPreset() const
 void NTSCFilter::selectAdjustable(int direction,
                                   string& text, string& valueText, Int32& value)
 {
-  constexpr uInt32 numAdjustables = ourCustomAdjustables.size();
+  constexpr auto numAdjustables = static_cast<uInt32>(ourCustomAdjustables.size());
 
   if(direction == +1)
   {
