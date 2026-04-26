@@ -28,23 +28,16 @@ EventHandlerSDL::EventHandlerSDL(OSystem& osystem)
   ASSERT_MAIN_THREAD;
 
 #ifdef GUI_SUPPORT
-  {
-    std::ostringstream buf;
-    myQwertz = int{'y'} == static_cast<int>
-      (SDL_GetKeyFromScancode(static_cast<SDL_Scancode>(KBDK_Z), static_cast<SDL_Keymod>(StellaMod::KBDM_NONE), false));
-    buf << "Keyboard: " << (myQwertz ? "QWERTZ" : "QWERTY");
-    Logger::debug(buf.view());
-  }
+  myQwertz = int{'y'} == static_cast<int>
+    (SDL_GetKeyFromScancode(static_cast<SDL_Scancode>(KBDK_Z),
+                            static_cast<SDL_Keymod>(StellaMod::KBDM_NONE), false));
+  Logger::debug(std::format("Keyboard: {}", myQwertz ? "QWERTZ" : "QWERTY"));
 #endif
 
 #ifdef JOYSTICK_SUPPORT
   if(!SDL_InitSubSystem(SDL_INIT_JOYSTICK))
-  {
-    std::ostringstream buf;
-    buf << "ERROR: Couldn't initialize SDL joystick support: "
-        << SDL_GetError() << '\n';
-    Logger::error(buf.view());
-  }
+    Logger::error(std::format("ERROR: Couldn't initialize SDL joystick support: {}\n",
+                              SDL_GetError()));
   Logger::debug("EventHandlerSDL::EventHandlerSDL SDL_INIT_JOYSTICK");
 #endif
 
@@ -66,7 +59,7 @@ EventHandlerSDL::~EventHandlerSDL()
 void EventHandlerSDL::copyText(const string& text) const
 {
   SDL_SetClipboardText(text.c_str());
-};
+}
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string EventHandlerSDL::pasteText(string& text) const
@@ -77,7 +70,7 @@ string EventHandlerSDL::pasteText(string& text) const
     text = "";
 
   return text;
-};
+}
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventHandlerSDL::pollEvent()
@@ -214,11 +207,11 @@ void EventHandlerSDL::pollEvent()
         break;
       case SDL_EVENT_WINDOW_MOVED:
         handleSystemEvent(SystemEvent::WINDOW_MOVED,
-                          myEvent.window.data1, myEvent.window.data1);
+                          myEvent.window.data1, myEvent.window.data2);
         break;
       case SDL_EVENT_WINDOW_RESIZED:
         handleSystemEvent(SystemEvent::WINDOW_RESIZED,
-                          myEvent.window.data1, myEvent.window.data1);
+                          myEvent.window.data1, myEvent.window.data2);
         break;
       case SDL_EVENT_WINDOW_MINIMIZED:
         handleSystemEvent(SystemEvent::WINDOW_MINIMIZED);
@@ -266,8 +259,8 @@ EventHandlerSDL::JoystickSDL::JoystickSDL(int idx)
     // havoc with the idea that a joystick will always have the same name.
     // So we truncate the number.
     const char* const sdlname = SDL_GetJoystickName(myStick);
-    const string& desc = BSPF::startsWithIgnoreCase(sdlname, "XInput Controller")
-                         ? "XInput Controller" : sdlname;
+    const string desc = BSPF::startsWithIgnoreCase(sdlname, "XInput Controller")
+        ? "XInput Controller" : sdlname;
 
     initialize(SDL_GetJoystickID(myStick), desc,
                SDL_GetNumJoystickAxes(myStick),

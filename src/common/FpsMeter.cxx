@@ -17,7 +17,9 @@
 
 #include "FpsMeter.hxx"
 
-using namespace std::chrono;
+using std::chrono::duration;
+using std::chrono::duration_cast;
+using std::chrono::high_resolution_clock;
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FpsMeter::FpsMeter(uInt32 queueSize)
@@ -32,7 +34,7 @@ void FpsMeter::reset(uInt32 garbageFrameLimit)
   myQueue.clear();
   myQueueOffset = 0;
   myFrameCount = 0;
-  myFps = 0;
+  myFps = 0.F;
   myGarbageFrameCounter = 0;
   myGarbageFrameLimit = garbageFrameLimit;
 }
@@ -46,27 +48,22 @@ void FpsMeter::render(uInt32 frameCount)
   }
 
   const size_t queueSize = myQueue.capacity();
-  entry e_first, e_last;
-
-  e_last.frames = frameCount;
-  e_last.timestamp = high_resolution_clock::now();
+  const Entry e_last{frameCount, high_resolution_clock::now()};
 
   if (myQueue.size() < queueSize) {
     myQueue.push_back(e_last);
     myFrameCount += frameCount;
-
-    e_first = myQueue.at(myQueueOffset);
   } else {
-    myFrameCount = myFrameCount - myQueue.at(myQueueOffset).frames + frameCount;
-    myQueue.at(myQueueOffset) = e_last;
+    myFrameCount = myFrameCount - myQueue[myQueueOffset].frames + frameCount;
+    myQueue[myQueueOffset] = e_last;
 
-    myQueueOffset = (myQueueOffset + 1) % queueSize;
-    e_first = myQueue.at(myQueueOffset);
+    if(++myQueueOffset == queueSize) myQueueOffset = 0;
   }
+  const Entry& e_first = myQueue[myQueueOffset];
 
-  const float myTimeInterval =
-    duration_cast<duration<float>>(e_last.timestamp - e_first.timestamp).count();
+  const float timeInterval = duration_cast<duration<float>>
+    (e_last.timestamp - e_first.timestamp).count();
 
-  if (myTimeInterval > 0)
-    myFps = (myFrameCount - e_first.frames) / myTimeInterval;
+  if (timeInterval > 0)
+    myFps = (myFrameCount - e_first.frames) / timeInterval;
 }

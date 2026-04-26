@@ -20,6 +20,8 @@
 
 class AbstractFSNode;
 
+#include <cassert>
+
 #ifdef ZIP_SUPPORT
   #include "FSNodeZIP.hxx"
 #endif
@@ -41,6 +43,8 @@ class AbstractFSNode;
 class FSNodeFactory
 {
   public:
+    FSNodeFactory() = delete;
+
     enum class Type: uInt8 { SYSTEM, ZIP };
 
   public:
@@ -56,26 +60,17 @@ class FSNodeFactory
         #elif defined(__LIB_RETRO__)
           return std::make_unique<FSNodeLIBRETRO>(path);
         #endif
-          break;
         case Type::ZIP:
         #ifdef ZIP_SUPPORT
           return std::make_unique<FSNodeZIP>(path);
+        #else
+          throw std::runtime_error("ZIP support not compiled in");
         #endif
-          break;
         default:
-          break;
+          assert(false);  // all Type values handled above
       }
       return nullptr;  // satisfy compiler
     }
-
-  private:
-    // Following constructors and assignment operators not supported
-    FSNodeFactory() = delete;
-    ~FSNodeFactory() = delete;
-    FSNodeFactory(const FSNodeFactory&) = delete;
-    FSNodeFactory(FSNodeFactory&&) = delete;
-    FSNodeFactory& operator=(const FSNodeFactory&) = delete;
-    FSNodeFactory& operator=(FSNodeFactory&&) = delete;
 };
 
 #endif

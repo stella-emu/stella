@@ -38,14 +38,14 @@ DevSettingsHandler::DevSettingsHandler(OSystem& osystem)
 void DevSettingsHandler::loadSettings(SettingsSet set)
 {
   const bool devSettings = set == SettingsSet::developer;
-  const string& prefix = devSettings ? "dev." : "plr.";
+  const string prefix = devSettings ? "dev." : "plr.";
   const Settings& settings = myOSystem.settings();
 
   myFrameStats[set] = settings.getBool(prefix + "stats");
   myDetectedInfo[set] = settings.getBool(prefix + "detectedinfo");
   // AtariVox/SaveKey/PlusROM access
   myExternAccess[set] = settings.getBool(prefix + "extaccess");
-  myConsole[set] = settings.getString(prefix + "console") == "7800" ? 1 : 0;
+  myConsole[set] = settings.getString(prefix + "console") == "7800";
   myPlusROM[set] = devSettings ? settings.getBool("dev.plusroms.on") : true;
   // Randomization
   myRandomBank[set] = settings.getBool(prefix + "bankrandom");
@@ -102,12 +102,12 @@ void DevSettingsHandler::loadSettings(SettingsSet set)
 void DevSettingsHandler::saveSettings(SettingsSet set)
 {
   const bool devSettings = set == SettingsSet::developer;
-  const string& prefix = devSettings ? "dev." : "plr.";
+  const string prefix = devSettings ? "dev." : "plr.";
   Settings& settings = myOSystem.settings();
 
   settings.setValue(prefix + "stats", myFrameStats[set]);
   settings.setValue(prefix + "detectedinfo", myDetectedInfo[set]);
-  settings.setValue(prefix + "console", myConsole[set] == 1 ? "7800" : "2600");
+  settings.setValue(prefix + "console", myConsole[set] ? "7800" : "2600");
   if(myOSystem.hasConsole())
     myOSystem.eventHandler().set7800Mode();
 
@@ -181,11 +181,16 @@ void DevSettingsHandler::applySettings(SettingsSet set)
   // *** Emulation tab ***
   myOSystem.frameBuffer().showFrameStats(myFrameStats[set]);
 
-  if(myOSystem.hasConsole())
+  const bool hasConsole = myOSystem.hasConsole();
+
+  if(hasConsole)
   {
-    myOSystem.console().cartridge().enableRandomHotspots(myRandomHotspots[set]);
-    myOSystem.console().tia().driveUnusedPinsRandom(myUndrivenPins[set]);
-    myOSystem.console().cartridge().enablePlusROM(myPlusROM[set]);
+    auto& console = myOSystem.console();
+    auto& tia = console.tia();
+
+    console.cartridge().enableRandomHotspots(myRandomHotspots[set]);
+    tia.driveUnusedPinsRandom(myUndrivenPins[set]);
+    console.cartridge().enablePlusROM(myPlusROM[set]);
     // Notes:
     // - thumb exceptions not updated, because set in cart constructor
     // - other missing settings are used on-the-fly
@@ -193,39 +198,46 @@ void DevSettingsHandler::applySettings(SettingsSet set)
 
 #ifdef DEBUGGER_SUPPORT
   // Read from write ports and write to read ports breaks
-  if(myOSystem.hasConsole())
+  if(hasConsole)
   {
-    myOSystem.console().system().m6502().setReadFromWritePortBreak(myRWPortBreak[set]);
-    myOSystem.console().system().m6502().setWriteToReadPortBreak(myWRPortBreak[set]);
+    auto& m6502 = myOSystem.console().system().m6502();
+
+    m6502.setReadFromWritePortBreak(myRWPortBreak[set]);
+    m6502.setWriteToReadPortBreak(myWRPortBreak[set]);
   }
 #endif
 
   // *** TIA tab ***
-  if(myOSystem.hasConsole())
+  if(hasConsole)
   {
-    myOSystem.console().tia().setPlInvertedPhaseClock(myPlInvPhase[set]);
-    myOSystem.console().tia().setMsInvertedPhaseClock(myMsInvPhase[set]);
-    myOSystem.console().tia().setBlInvertedPhaseClock(myBlInvPhase[set]);
-    myOSystem.console().tia().setPlShortLateHMove(myPlLateHMove[set]);
-    myOSystem.console().tia().setMsShortLateHMove(myMsLateHMove[set]);
-    myOSystem.console().tia().setBlShortLateHMove(myBlLateHMove[set]);
-    myOSystem.console().tia().setPFBitsDelay(myPFBits[set]);
-    myOSystem.console().tia().setPFColorDelay(myPFColor[set]);
-    myOSystem.console().tia().setPFScoreGlitch(myPFScore[set]);
-    myOSystem.console().tia().setBKColorDelay(myBKColor[set]);
-    myOSystem.console().tia().setPlSwapDelay(myPlSwap[set]);
-    myOSystem.console().tia().setBlSwapDelay(myBlSwap[set]);
+    auto& tia = myOSystem.console().tia();
+
+    tia.setPlInvertedPhaseClock(myPlInvPhase[set]);
+    tia.setMsInvertedPhaseClock(myMsInvPhase[set]);
+    tia.setBlInvertedPhaseClock(myBlInvPhase[set]);
+    tia.setPlShortLateHMove(myPlLateHMove[set]);
+    tia.setMsShortLateHMove(myMsLateHMove[set]);
+    tia.setBlShortLateHMove(myBlLateHMove[set]);
+    tia.setPFBitsDelay(myPFBits[set]);
+    tia.setPFColorDelay(myPFColor[set]);
+    tia.setPFScoreGlitch(myPFScore[set]);
+    tia.setBKColorDelay(myBKColor[set]);
+    tia.setPlSwapDelay(myPlSwap[set]);
+    tia.setBlSwapDelay(myBlSwap[set]);
   }
 
   // *** Video tab ***
-  if(myOSystem.hasConsole())
+  if(hasConsole)
   {
+    auto& console = myOSystem.console();
+    auto& tia = console.tia();
+
     // TV Jitter
-    myOSystem.console().tia().toggleJitter(myTVJitter[set] ? 1 : 0);
-    myOSystem.console().tia().setJitterSensitivity(myTVJitterSense[set]);
-    myOSystem.console().tia().setJitterRecoveryFactor(myTVJitterRec[set]);
+    tia.toggleJitter(myTVJitter[set] ? 1 : 0);
+    tia.setJitterSensitivity(myTVJitterSense[set]);
+    tia.setJitterRecoveryFactor(myTVJitterRec[set]);
     // PAL color loss
-    myOSystem.console().enableColorLoss(myColorLoss[set]);
+    console.enableColorLoss(myColorLoss[set]);
   }
 
   // Debug colours

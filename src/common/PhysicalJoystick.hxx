@@ -51,7 +51,7 @@ class PhysicalJoystick
     };
 
     PhysicalJoystick() = default;
-    ~PhysicalJoystick() = default;
+    virtual ~PhysicalJoystick() = default;
 
     nlohmann::json getMap() const;
     bool setMap(const nlohmann::json& map);

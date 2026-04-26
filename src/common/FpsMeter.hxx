@@ -37,14 +37,14 @@ class FpsMeter
 
   private:
 
-    struct entry {
+    struct Entry {
       uInt32 frames{0};
-      std::chrono::time_point<std::chrono::high_resolution_clock> timestamp;
+      std::chrono::time_point<std::chrono::high_resolution_clock> timestamp{};
     };
 
   private:
 
-    vector<entry> myQueue;
+    vector<Entry> myQueue;
 
     uInt32 myQueueOffset{0};
 

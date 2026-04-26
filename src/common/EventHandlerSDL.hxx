@@ -60,7 +60,7 @@ class EventHandlerSDL : public EventHandler
     {
       public:
         explicit JoystickSDL(int idx);
-        virtual ~JoystickSDL();
+        ~JoystickSDL() override;
 
       private:
         SDL_Joystick* myStick{nullptr};
