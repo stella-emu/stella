@@ -234,8 +234,8 @@ class Properties
     static constexpr std::array<PropTypeEntry, NUM_PROPS> ourNameToPropType = {{
       { "Bezel.Name"                , PropType::Bezel_Name                },
       { "Cart.Highscore"            , PropType::Cart_Highscore            },
-      { "Cart.MD5"                  , PropType::Cart_MD5                  },
       { "Cart.Manufacturer"         , PropType::Cart_Manufacturer         },
+      { "Cart.MD5"                  , PropType::Cart_MD5                  },
       { "Cart.ModelNo"              , PropType::Cart_ModelNo              },
       { "Cart.Name"                 , PropType::Cart_Name                 },
       { "Cart.Note"                 , PropType::Cart_Note                 },
@@ -259,8 +259,8 @@ class Properties
       { "Controller.Right2"         , PropType::Controller_Right2         },
       { "Controller.SwapPaddles"    , PropType::Controller_SwapPaddles    },
       { "Display.Format"            , PropType::Display_Format            },
-      { "Display.PPBlend"           , PropType::Display_PPBlend           },
       { "Display.Phosphor"          , PropType::Display_Phosphor          },
+      { "Display.PPBlend"           , PropType::Display_PPBlend           },
       { "Display.VCenter"           , PropType::Display_VCenter           },
     }};
 };
