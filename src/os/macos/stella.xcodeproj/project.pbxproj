@@ -609,6 +609,7 @@
 		DCBDDE9B1D6A5F0E009DF1E9 /* Cart3EPlusWidget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCBDDE991D6A5F0E009DF1E9 /* Cart3EPlusWidget.hxx */; };
 		DCBDDE9E1D6A5F2F009DF1E9 /* Cart3EPlus.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCBDDE9C1D6A5F2F009DF1E9 /* Cart3EPlus.cxx */; };
 		DCBDDE9F1D6A5F2F009DF1E9 /* Cart3EPlus.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCBDDE9D1D6A5F2F009DF1E9 /* Cart3EPlus.hxx */; };
+		DCBE0DCC2F9F9B9900D48AD2 /* XDGPaths.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCBE0DCB2F9F9B9900D48AD2 /* XDGPaths.hxx */; };
 		DCC2FDF5255EB82500FA5E81 /* ToolTip.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCC2FDF3255EB82500FA5E81 /* ToolTip.hxx */; };
 		DCC2FDF6255EB82500FA5E81 /* ToolTip.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCC2FDF4255EB82500FA5E81 /* ToolTip.cxx */; };
 		DCC2FDF92566AD8800FA5E81 /* DataGridRamWidget.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCC2FDF72566AD8800FA5E81 /* DataGridRamWidget.cxx */; };
@@ -1491,6 +1492,7 @@
 		DCBDDE991D6A5F0E009DF1E9 /* Cart3EPlusWidget.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Cart3EPlusWidget.hxx; sourceTree = "<group>"; };
 		DCBDDE9C1D6A5F2F009DF1E9 /* Cart3EPlus.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Cart3EPlus.cxx; sourceTree = "<group>"; };
 		DCBDDE9D1D6A5F2F009DF1E9 /* Cart3EPlus.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Cart3EPlus.hxx; sourceTree = "<group>"; };
+		DCBE0DCB2F9F9B9900D48AD2 /* XDGPaths.hxx */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = XDGPaths.hxx; sourceTree = "<group>"; };
 		DCC2FDF3255EB82500FA5E81 /* ToolTip.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = ToolTip.hxx; sourceTree = "<group>"; };
 		DCC2FDF4255EB82500FA5E81 /* ToolTip.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ToolTip.cxx; sourceTree = "<group>"; };
 		DCC2FDF72566AD8800FA5E81 /* DataGridRamWidget.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DataGridRamWidget.cxx; sourceTree = "<group>"; };
@@ -2100,6 +2102,7 @@
 				2DDBEA0C0845708800812C11 /* FSNodePOSIX.cxx */,
 				DCCE57842F8FF759009D8036 /* SerialPortPOSIX.hxx */,
 				DCCE57852F8FF759009D8036 /* SerialPortPOSIX.cxx */,
+				DCBE0DCB2F9F9B9900D48AD2 /* XDGPaths.hxx */,
 			);
 			path = unix;
 			sourceTree = "<group>";
@@ -3247,6 +3250,7 @@
 				DCAACAFB188D631500A4D282 /* CartBFSC.hxx in Headers */,
 				DCAACAFD188D631500A4D282 /* CartDF.hxx in Headers */,
 				DCAACAFF188D631500A4D282 /* CartDFSC.hxx in Headers */,
+				DCBE0DCC2F9F9B9900D48AD2 /* XDGPaths.hxx in Headers */,
 				DC84397B247B294E00C6A4FC /* CartTVBoy.hxx in Headers */,
 				DCAACB0F188D636F00A4D282 /* Cart4KSCWidget.hxx in Headers */,
 				DCAACB11188D636F00A4D282 /* CartBFSCWidget.hxx in Headers */,
