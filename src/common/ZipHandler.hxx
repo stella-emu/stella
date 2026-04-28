@@ -23,6 +23,7 @@
 #include <cassert>
 #include <fstream>
 #include <list>
+#include <optional>
 #include <unordered_map>
 
 #include "bspf.hxx"
