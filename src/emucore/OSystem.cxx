@@ -516,7 +516,7 @@ string OSystem::createConsole(const FSNode& rom, string_view md5sum, bool newrom
     }
     buf << "Game console created:\n"
         << "  ROM file: " << myRomFile.getShortPath() << '\n';
-    const FSNode propsFile(myRomFile.getPathWithExt(".pro"));
+    const FSNode propsFile = myRomFile.getSiblingNode(".pro");
     if(propsFile.exists())
       buf << "  PRO file: " << propsFile.getShortPath() << '\n';
     buf << '\n' << getROMInfo(*myConsole);
@@ -714,7 +714,7 @@ unique_ptr<Console> OSystem::openConsole(const FSNode& romfile, string& md5)
 
     // Some properties may not have a name set; we can't leave it blank
     if(props.get(PropType::Cart_Name) == EmptyString())
-      props.set(PropType::Cart_Name, romfile.getNameWithExt(""));
+      props.set(PropType::Cart_Name, romfile.getBaseName());
 
     // It's possible that the cart created was from a piece of the image,
     // and that the md5 (and hence the cart) has changed

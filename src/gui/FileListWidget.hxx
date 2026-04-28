@@ -148,7 +148,7 @@ class FileListWidget : public StringListWidget
     void selectNextHistory();
     virtual void getChildren(const FSNode::CancelCheck& isCancelled);
     virtual void extendLists(StringList& list) { }
-    virtual IconType getIconType(string_view path) const;
+    virtual IconType getIconType(const FSNode& node) const;
     virtual const Icon* getIcon(int i) const;
     int iconWidth() const;
     virtual bool fullPathToolTip() const { return false; }

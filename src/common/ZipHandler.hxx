@@ -20,8 +20,8 @@
 #ifndef ZIP_HANDLER_HXX
 #define ZIP_HANDLER_HXX
 
+#include <cassert>
 #include <fstream>
-#include <tuple>
 #include <list>
 #include <unordered_map>
 
@@ -37,34 +37,12 @@
 class ZipHandler
 {
   public:
-    ZipHandler() = default;
-    ~ZipHandler() = default;
-
-    // Open ZIP file for processing
-    // An exception will be thrown on any errors
-    void open(const string& filename);
-
-    // The following form an iterator for processing the filenames in the ZIP file
-    void reset();          // Reset iterator to first file
-    bool hasNext() const;  // Answer whether there are more files present
-    std::tuple<string, size_t> next();  // Get information on next file
-
-    // Decompress the currently selected file and return its length
-    // An exception will be thrown on any errors
-    // TODO: move to vector instead of allocating unique_ptr each time
-    //       will require changes to FSNode and friends
-    uInt64 decompress(ByteBuffer& image);
-
-    // Answer the number of ROM files (with a valid extension) found
-    uInt16 romFiles() const { return myZip ? myZip->myRomfiles : 0; }
-
-  private:
-    // Error types
-    enum class ZipError: uInt8
-    {
-      NONE = 0,
+    enum class ZipError: uInt8 {
+      NONE,
+      NO_ROMS,
       OUT_OF_MEMORY,
       FILE_ERROR,
+      FILE_NOT_FOUND,
       BAD_SIGNATURE,
       DECOMPRESS_ERROR,
       FILE_TRUNCATED,
@@ -74,6 +52,67 @@ class ZipHandler
       BUFFER_TOO_SMALL
     };
 
+    class ZipException : public std::runtime_error
+    {
+      public:
+        explicit ZipException(ZipError err)
+          : std::runtime_error(toString(err)), myError{err} { }
+
+        ZipError code() const noexcept { return myError; }
+
+      private:
+        ZipError myError;
+
+        static constexpr const char* toString(ZipError err) noexcept
+        {
+          switch (err)
+          {
+            case ZipError::NONE: return "ZIP NONE";
+            case ZipError::NO_ROMS: return "ZIP NO_ROMS";
+            case ZipError::OUT_OF_MEMORY: return "ZIP OUT_OF_MEMORY";
+            case ZipError::FILE_ERROR: return "ZIP FILE_ERROR";
+            case ZipError::FILE_NOT_FOUND: return "ZIP FILE_NOT_FOUND";
+            case ZipError::BAD_SIGNATURE: return "ZIP BAD_SIGNATURE";
+            case ZipError::DECOMPRESS_ERROR: return "ZIP DECOMPRESS_ERROR";
+            case ZipError::FILE_TRUNCATED: return "ZIP FILE_TRUNCATED";
+            case ZipError::FILE_CORRUPT: return "ZIP FILE_CORRUPT";
+            case ZipError::UNSUPPORTED: return "ZIP UNSUPPORTED";
+            case ZipError::LZMA_UNSUPPORTED: return "ZIP LZMA_UNSUPPORTED";
+            case ZipError::BUFFER_TOO_SMALL: return "ZIP BUFFER_TOO_SMALL";
+          }
+          return "ZIP UNKNOWN_ERROR";
+        }
+    };
+
+  public:
+    ZipHandler() = default;
+    ~ZipHandler() = default;
+
+    // Open ZIP file for processing
+    // An exception will be thrown on any errors
+    void open(string_view filename);
+
+    // Find a file by name in the currently opened ZIP
+    // Returns {size, true} if found, {0, false} otherwise
+    std::pair<size_t, bool> find(string_view name);
+
+    // Iterate over each entry in the ZIP and apply the given function
+    template<typename F>
+    void forEachEntry(F&& fn);
+
+    // Decompress the currently selected file and return its length
+    // An exception will be thrown on any errors
+    // TODO: move to vector instead of allocating unique_ptr each time
+    //       will require changes to FSNode and friends
+    uInt64 decompress(string_view name, ByteBuffer& image);
+
+    // Give the first ROM file (with a valid extension) found
+    std::optional<std::pair<string_view, size_t>> firstRom() const;
+
+    // Answer the number of ROM files (with a valid extension) found
+    uInt16 romFiles() const { return myZip ? myZip->myRomfiles : 0; }
+
+  private:
     // Contains extracted file header information
     struct ZipHeader
     {
@@ -88,7 +127,7 @@ class ZipHandler
       uInt64 uncompressedLength{0};  // uncompressed size
       uInt32 startDiskNumber{0};     // disk number start
       uInt64 localHeaderOffset{0};   // relative offset of local header
-      string filename;               // filename
+      string_view filename;          // view into myCd — valid for ZipFile lifetime
     };
 
     // Contains extracted end of central directory information
@@ -112,18 +151,25 @@ class ZipHandler
       uInt64  myLength{0};    // length of zip file
       uInt16  myRomfiles{0};  // number of ROM files in central directory
 
-      ZipEcd  myEcd;          // end of central directory
+      // Used when only one ROM is present
+      std::optional<string_view> myFirstRomName;
+      size_t myFirstRomSize{0};
 
-      vector<uInt8> myCd;     // central directory raw data
-      uInt64    myCdPos{0};   // position in central directory
-      ZipHeader myHeader;     // current file header
+      ZipEcd  myEcd;  // end of central directory
+
+      vector<uInt8>     myCd;       // central directory raw data
+      vector<ZipHeader> myHeaders;  // stable parsed headers
 
       array<uInt8, DECOMPRESS_BUFSIZE> myBuffer{}; // buffer for decompression
 
-      /** Constructor */
-      explicit ZipFile(const string& filename);
+      /** Lookup support */
+      mutable std::unordered_map<string_view, size_t> myHeaderIndex;
+      mutable bool myIndexBuilt{false};
 
-      /** Open the file and set up the internal stream buffer*/
+      /** Constructor */
+      explicit ZipFile(string_view filename);
+
+      /** Open the file and set up the internal stream buffer */
       bool open();
 
       /** Read the ZIP contents from the internal stream buffer */
@@ -132,29 +178,29 @@ class ZipHandler
       /** Close previously opened internal stream buffer */
       void close();
 
-      /** Answers whether the next file is a valid ROM based on filename */
-      bool nextFileIsValidRom();
-
       /** Read the ECD data */
       void readEcd();
 
       /** Read data from stream */
       bool readStream(uInt8* out, uInt64 offset, uInt64 length, uInt64& actual);
 
-      /** Return the next entry in the ZIP file */
-      const ZipHeader* nextFile();
+      /** Ensure index exists (lazy) */
+      void ensureIndex() const;
+
+      /** Find header by name */
+      const ZipHeader* findHeader(string_view name) const;
 
       /** Decompress the most recently found file in the ZIP into target buffer */
-      void decompress(ByteMSpan out);
+      void decompress(const ZipHeader& header, ByteMSpan out);
 
       /** Return the offset of the compressed data */
-      uInt64 getCompressedDataOffset();
+      uInt64 getCompressedDataOffset(const ZipHeader& header);
 
       /** Decompress type 0 data (which is uncompressed) */
-      void decompressDataType0(ByteMSpan out, uInt64 offset);
+      void decompressDataType0(const ZipHeader& header, ByteMSpan out, uInt64 offset);
 
       /** Decompress type 8 data (which is deflated) */
-      void decompressDataType8(ByteMSpan out, uInt64 offset);
+      void decompressDataType8(const ZipHeader& header, ByteMSpan out, uInt64 offset);
     };
     using ZipFilePtr = unique_ptr<ZipFile>;
 
@@ -164,23 +210,23 @@ class ZipHandler
       protected:
         explicit ReaderBase(const uInt8* const b) : myBuf{b} { }
 
-        uInt8 read_byte(size_t offs) const
+        constexpr uInt8 read_byte(size_t offs) const
         {
           return myBuf[offs];
         }
-        uInt16 read_word(size_t offs) const
+        constexpr uInt16 read_word(size_t offs) const
         {
           return (static_cast<uInt16>(myBuf[offs + 1]) << 8) |
                  (static_cast<uInt16>(myBuf[offs + 0]) << 0);
         }
-        uInt32 read_dword(size_t offs) const
+        constexpr uInt32 read_dword(size_t offs) const
         {
           return (static_cast<uInt32>(myBuf[offs + 3]) << 24) |
                  (static_cast<uInt32>(myBuf[offs + 2]) << 16) |
                  (static_cast<uInt32>(myBuf[offs + 1]) << 8)  |
                  (static_cast<uInt32>(myBuf[offs + 0]) << 0);
         }
-        uInt64 read_qword(size_t offs) const
+        constexpr uInt64 read_qword(size_t offs) const
         {
           return (static_cast<uInt64>(myBuf[offs + 7]) << 56) |
                  (static_cast<uInt64>(myBuf[offs + 6]) << 48) |
@@ -309,25 +355,8 @@ class ZipHandler
     };
 
   private:
-    /** Get message for given ZipError enumeration */
-    static constexpr const char* errorMessage(ZipError err) {
-      constexpr std::array<const char*, 10> zip_error_s = {
-        "ZIP NONE",
-        "ZIP OUT_OF_MEMORY",
-        "ZIP FILE_ERROR",
-        "ZIP BAD_SIGNATURE",
-        "ZIP DECOMPRESS_ERROR",
-        "ZIP FILE_TRUNCATED",
-        "ZIP FILE_CORRUPT",
-        "ZIP UNSUPPORTED",
-        "ZIP LZMA_UNSUPPORTED",
-        "ZIP BUFFER_TOO_SMALL"
-      };
-      return zip_error_s[static_cast<size_t>(err)];
-    }
-
     /** Search cache for given ZIP file */
-    ZipFilePtr findCached(const string& filename);
+    ZipFilePtr findCached(string_view filename);
 
     /** Close a ZIP file and add it to the cache */
     void addToCache();
@@ -337,9 +366,19 @@ class ZipHandler
 
     ZipFilePtr myZip;
 
+    // Transparent hasher to allow string_view lookups in unordered_map keyed by string
+    struct StringHash {
+      using is_transparent = void;
+      size_t operator()(string_view sv) const {
+        return std::hash<string_view>{}(sv);
+      }
+    };
+
     // LRU cache: map filename -> (ZipFilePtr, iterator in list)
-    std::unordered_map<string, std::pair<ZipFilePtr,
-                       std::list<string>::iterator>> myZipCache;
+    std::unordered_map<string,
+      std::pair<ZipFilePtr, std::list<string>::iterator>,
+      StringHash,
+      std::equal_to<>> myZipCache;
     std::list<string> myCacheOrder; // front = oldest, back = newest
 
   private:
@@ -350,6 +389,15 @@ class ZipHandler
     ZipHandler& operator=(ZipHandler&&) = delete;
 };
 
-#endif  /* ZIP_HANDLER_HXX */
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+template<typename F>
+void ZipHandler::forEachEntry(F&& fn)
+{
+  assert(myZip && "forEachEntry called without open()");
+  for(const auto& header: myZip->myHeaders)
+    fn(header.filename, header.uncompressedLength);
+}
 
-#endif  /* ZIP_SUPPORT */
+#endif  // ZIP_HANDLER_HXX
+
+#endif  // ZIP_SUPPORT

@@ -214,38 +214,49 @@ string FSNode::getShortPath() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string FSNode::getNameWithExt(string_view ext) const
+FSNode FSNode::getSiblingNode(string_view ext) const
 {
-  if(!_realNode)
-    return EmptyString();
+  if(_realNode)
+    if(const auto sibling = _realNode->getSiblingNode(ext); sibling)
+      return FSNode(sibling);
 
-  const string& name = _realNode->getName();
-  const size_t sep = name.find_last_of("/\\");
-  string s = (sep == string::npos) ? name : name.substr(sep + 1);
-
+  string s = getPath();
   const size_t dot = s.find_last_of('.');
   if(dot != string::npos)
     s.replace(dot, string::npos, ext);
   else
     s.append(ext);
 
-  return s;
+  return FSNode(s);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string FSNode::getPathWithExt(string_view ext) const
+string FSNode::getBaseName() const
 {
   if(!_realNode)
-    return EmptyString();
+    return {};
 
-  string s = _realNode->getPath();
-  const size_t dot = s.find_last_of('.');
+  const string& name = _realNode->getName();
+  const size_t dot = name.find_last_of('.');
+  return dot != string::npos ? name.substr(0, dot) : name;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+string FSNode::getNameWithExt(string_view ext) const
+{
+  if(!_realNode)
+    return {};
+  if(ext.empty())
+    return _realNode->getName();
+
+  string name = _realNode->getName();
+  const size_t dot = name.find_last_of('.');
   if(dot != string::npos)
-    s.replace(dot, string::npos, ext);
+    name.replace(dot, string::npos, ext);
   else
-    s.append(ext);
+    name.append(ext);
 
-  return s;
+  return name;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

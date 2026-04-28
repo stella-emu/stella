@@ -17,7 +17,7 @@
 
 #ifdef ZIP_SUPPORT
 
-#include <set>
+#include <unordered_set>
 
 #ifdef BSPF_WINDOWS
   #include "HomeFinder.hxx"
@@ -45,30 +45,30 @@ FSNodeZIP::FSNodeZIP(string_view p)
   if(_zipFile[0] == '~')
   {
 #if defined(BSPF_UNIX) || defined(BSPF_MACOS)
-    _zipFile.replace(0, 1, XDGPaths::instance().home());
+    // Skip the '/' after '~' if present to avoid double slash
+    const size_t replaceLen = (_zipFile.size() > 1 && _zipFile[1] == '/') ? 2 : 1;
+    _zipFile.replace(0, replaceLen, XDGPaths::instance().home());
 #elif defined(BSPF_WINDOWS)
-    _zipFile.replace(0, 1, HomeFinder::getHomePath());
+    // Skip the '\\' after '~' if present to avoid double slash
+    const size_t replaceLen = (_zipFile.size() > 1 && _zipFile[1] == '\\') ? 2 : 1;
+    _zipFile.replace(0, replaceLen, HomeFinder::getHomePath());
 #endif
   }
-
-// cerr << " => p: " << p << '\n';
 
   // Open file at least once to initialize the virtual file count
   try
   {
     zipHandler()->open(_zipFile);
+
+    // Count ROMs
+    _numFiles = zipHandler()->romFiles();
   }
-  catch(const std::runtime_error&)
+  catch(const ZipException&)
   {
-    // TODO: Actually present the error passed in back to the user
-    //       For now, we just indicate that no ROMs were found
-    _error = zip_error::NO_ROMS;
+    return;
   }
-  _numFiles = zipHandler()->romFiles();
   if(_numFiles == 0)
-  {
-    _error = zip_error::NO_ROMS;
-  }
+    return;
 
   // We always need a virtual file/path
   // Either one is given, or we use the first one
@@ -80,21 +80,19 @@ FSNodeZIP::FSNodeZIP(string_view p)
   }
   else if(_numFiles == 1)
   {
-    bool found = false;
-    while(zipHandler()->hasNext() && !found)
+    try
     {
-      const auto& [name, size] = zipHandler()->next();
-      if(Bankswitch::isValidRomName(name))
+      if(const auto rom = zipHandler()->firstRom(); rom)
       {
-        _virtualPath = name;
-        _size = size;
+        _virtualPath = rom->first;
+        _size = rom->second;
         _isFile = true;
-
-        found = true;
       }
     }
-    if(!found)
+    catch(const ZipException&)
+    {
       return;
+    }
   }
   else if(_numFiles > 1)
     _isDirectory = true;
@@ -104,27 +102,23 @@ FSNodeZIP::FSNodeZIP(string_view p)
   // has direct access to the actual filesystem (aka, a 'System' node)
   // Behind the scenes, this node is actually a platform-specific object
   // for whatever system we are running on
-  _realNode = FSNodeFactory::create(_zipFile,
-      FSNodeFactory::Type::SYSTEM);
+  _realNode = FSNodeFactory::create(_zipFile, FSNodeFactory::Type::SYSTEM);
 
   setFlags(_zipFile, _virtualPath, _realNode);
-// cerr << "==============================================================\n";
-// cerr << _name << ", file: " << _isFile << ", dir: " << _isDirectory << "\n\n";
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FSNodeZIP::FSNodeZIP(const string& zipfile, const string& virtualpath,
+FSNodeZIP::FSNodeZIP(string_view zipfile, string_view virtualpath,
                      const AbstractFSNodePtr& realnode, size_t size, bool isdir)
   : _size{size},
     _isDirectory{isdir},
     _isFile{!isdir}
 {
-// cerr << "=> c'tor 2: " << zipfile << ", " << virtualpath << ", " << isdir << '\n';
   setFlags(zipfile, virtualpath, realnode);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FSNodeZIP::setFlags(const string& zipfile, const string& virtualpath,
+void FSNodeZIP::setFlags(string_view zipfile, string_view virtualpath,
                          const AbstractFSNodePtr& realnode)
 {
   _zipFile = zipfile;
@@ -137,77 +131,108 @@ void FSNodeZIP::setFlags(const string& zipfile, const string& virtualpath,
   // Is a file component present?
   if(!_virtualPath.empty())
   {
-    _path += ("/" + _virtualPath);
-    _shortPath += ("/" + _virtualPath);
+    _path += '/';
+    _path += _virtualPath;
+    _shortPath += '/';
+    _shortPath += _virtualPath;
   }
   _name = AsciiFold::toAscii(lastPathComponent(_path));
 
   if(!_realNode->isFile())
-    _error = zip_error::NOT_A_FILE;
+    throw ZipException(ZipError::FILE_ERROR);
   if(!_realNode->isReadable())
-    _error = zip_error::NOT_READABLE;
+    throw ZipException(ZipError::FILE_ERROR);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool FSNodeZIP::exists() const
 {
-  if(_realNode && _realNode->exists())
-  {
-    // We need to inspect the actual path, not just the ZIP file itself
-    try
-    {
-      zipHandler()->open(_zipFile);
-      while(zipHandler()->hasNext())
-      {
-        const auto& [name, size] = zipHandler()->next();
-        if(BSPF::startsWithIgnoreCase(name, _virtualPath))
-          return true;
-      }
-    }
-    catch(const std::runtime_error&)
-    {
-      // TODO: Actually present the error passed in back to the user
-      cerr << "ERROR: FSNodeZIP::exists()\n";
-    }
-  }
+  if(!_realNode || !_realNode->exists())
+    return false;
 
-  return false;
+  // An empty virtual path means the ZIP itself is the node (directory case)
+  if(_virtualPath.empty() || _isDirectory)
+    return true;
+
+  // We need to inspect the actual path, not just the ZIP file itself
+  try
+  {
+    zipHandler()->open(_zipFile);
+    return zipHandler()->find(_virtualPath).second;
+  }
+  catch(const ZipException&)
+  {
+    return false;
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool FSNodeZIP::getChildren(AbstractFSList& myList, ListMode mode) const
+bool FSNodeZIP::getChildren(AbstractFSList& myList, ListMode) const
 {
   // Files within ZIP archives don't contain children
-  if(!isDirectory() || _error != zip_error::NONE)
+  if(!isDirectory())
     return false;
 
-  std::set<string> dirs;
-  zipHandler()->open(_zipFile);
-  while(zipHandler()->hasNext())
+  std::unordered_set<string> dirs;
+
+  try
   {
-    // Only consider entries that start with '_virtualPath'
-    // Ignore empty filenames and '__MACOSX' virtual directories
-    const auto& [name, size] = zipHandler()->next();
-    if(BSPF::startsWithIgnoreCase(name, "__MACOSX") || name == EmptyString())
-      continue;
-    if(BSPF::startsWithIgnoreCase(name, _virtualPath))
+    zipHandler()->open(_zipFile);
+    zipHandler()->forEachEntry([&](string_view name, uInt64 size)
     {
-      // First strip off the leading directory
-      const string& curr = name.substr(
-          _virtualPath.empty() ? 0 : _virtualPath.size()+1);
+      // Ignore empty filenames and '__MACOSX' virtual directories
+      if(name.empty() || BSPF::startsWithIgnoreCase(name, "__MACOSX"))
+        return;
+
+      string_view remainder = name;
+
+      // Handle virtual path cleanly
+      if(!_virtualPath.empty())
+      {
+        if(!BSPF::startsWithIgnoreCase(name, _virtualPath))
+          return;
+
+        const size_t baseLen = _virtualPath.size();
+
+        // Must be exact match or followed by '/'
+        if(name.size() == baseLen)
+          return;  // directory itself
+
+        if(name[baseLen] != '/' && name[baseLen] != '\\')
+          return;
+
+        remainder = name.substr(baseLen + 1);
+      }
+
+      if(remainder.empty())
+        return;
 
       // Only add sub-directory entries once
-      const auto pos = curr.find_first_of("/\\");
-      if(pos != string::npos)
-        dirs.emplace(curr.substr(0, pos));
+      const auto pos = remainder.find_first_of("/\\");
+      if(pos != string_view::npos)
+        dirs.emplace(remainder.substr(0, pos));
       else
         myList.emplace_back(new FSNodeZIP(_zipFile, name, _realNode, size, false));
-    }
+    });
   }
+  catch(const ZipException&)
+  {
+    return false;
+  }
+
   for(const auto& dir: dirs)
   {
-    // Prepend previous path
-    const string& vpath = !_virtualPath.empty() ? _virtualPath + "/" + dir : dir;
+    string vpath;
+    if(_virtualPath.empty())
+      vpath = dir;
+    else
+    {
+      vpath.reserve(_virtualPath.size() + 1 + dir.size());
+      vpath = _virtualPath;
+      vpath += '/';
+      vpath += dir;
+    }
+
     myList.emplace_back(new FSNodeZIP(_zipFile, vpath, _realNode, 0, true));
   }
 
@@ -217,26 +242,8 @@ bool FSNodeZIP::getChildren(AbstractFSList& myList, ListMode mode) const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 size_t FSNodeZIP::read(ByteBuffer& buffer, size_t) const
 {
-  switch(_error)
-  {
-    using enum zip_error;
-    case NONE:         break;
-    case NOT_A_FILE:   throw std::runtime_error("ZIP file contains errors/not found");
-    case NOT_READABLE: throw std::runtime_error("ZIP file not readable");
-    case NO_ROMS:      throw std::runtime_error("ZIP file doesn't contain any ROMs");
-    default: throw std::runtime_error("FSNodeZIP::read default case hit");
-  }
-
   zipHandler()->open(_zipFile);
-
-  bool found = false;
-  while(zipHandler()->hasNext() && !found)
-  {
-    const auto& [name, size] = zipHandler()->next();
-    found = name == _virtualPath;
-  }
-
-  return found ? zipHandler()->decompress(buffer) : 0;
+  return zipHandler()->decompress(_virtualPath, buffer);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -258,19 +265,30 @@ AbstractFSNodePtr FSNodeZIP::getParent() const
   if(_virtualPath.empty())
     return _realNode ? _realNode->getParent() : nullptr;
 
-  // TODO: For some reason, getting the stem for normal paths and zip paths
-  //       behaves differently.  For now, we'll use the old method here.
-  auto STEM_FOR_ZIP = [](string_view s) {
-    const char* const start = s.data();
-    const char* cur = start + s.size() - 2;
+  const auto stem = stemPathComponent(_path);
+  // stemPathComponent includes trailing slash; strip it for ZIP constructor
+  return std::make_unique<FSNodeZIP>(
+    stem.empty() ? stem : stem.substr(0, stem.size() - 1));
+}
 
-    while (cur >= start && !(*cur == '/' || *cur == '\\'))
-      --cur;
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+AbstractFSNodePtr FSNodeZIP::getSiblingNode(string_view ext) const
+{
+  // Replace extension of the virtual path component
+  const string_view stem = stemPathComponent(_virtualPath);
+  const string_view name = lastPathComponent(_virtualPath);
+  const size_t dot = name.find_last_of('.');
 
-    return s.substr(0, (cur + 1) - start - 1);
-  };
+  string newVirtual;
+  newVirtual.reserve(stem.size() + name.size() + ext.size());
+  newVirtual = stem;
+  if(dot != string_view::npos)
+    newVirtual += name.substr(0, dot);
+  else
+    newVirtual += name;
+  newVirtual += ext;
 
-  return std::make_unique<FSNodeZIP>(STEM_FOR_ZIP(_path));
+  return AbstractFSNodePtr(new FSNodeZIP(_zipFile, newVirtual, _realNode, 0, false));
 }
 
 #endif  // ZIP_SUPPORT

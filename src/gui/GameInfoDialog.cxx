@@ -1626,7 +1626,7 @@ void GameInfoDialog::handleCommand(CommandSender* sender, int cmd,
                           [this](bool OK, const FSNode& node) {
                             if(OK)
                             {
-                              myBezelName->setText(node.getNameWithExt(""));
+                              myBezelName->setText(node.getBaseName());
                               myBezelDetected->setLabel("");
                             }
                           },

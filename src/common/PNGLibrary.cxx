@@ -289,7 +289,7 @@ void PNGLibrary::takeSnapshot(uInt32 number)
   string filename;
   const string sspath = myOSystem.snapshotSaveDir().getPath() +
       (myOSystem.settings().getString("snapname") != "int"
-        ? myOSystem.romFile().getNameWithExt("")
+        ? myOSystem.romFile().getBaseName()
         : myOSystem.console().properties().get(PropType::Cart_Name));
 
   // Check whether we want multiple snapshots created

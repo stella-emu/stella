@@ -166,7 +166,7 @@ void RomImageWidget::parseProperties(const FSNode& node, bool full)
 
     // Try to find all snapshots by property and ROM file name
     myImageList.clear();
-    getImageList(myProperties.get(PropType::Cart_Name), node.getNameWithExt(),
+    getImageList(myProperties.get(PropType::Cart_Name), node.getBaseName(),
       oldFileName);
 
     // The first file found before must not be the first file now, if files by
@@ -242,7 +242,7 @@ bool RomImageWidget::getImageList(const string& propName, const string& romName,
     (const FSNode& node1, const FSNode& node2)
     {
       const int compare = BSPF::compareIgnoreCase(
-        node1.getNameWithExt(), node2.getNameWithExt());
+        node1.getBaseName(), node2.getBaseName());
       return
         compare < 0 ||
         // PNGs first!

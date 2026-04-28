@@ -299,13 +299,22 @@ class FSNode
     size_t write(string_view buffer) const;
 
     /**
-     * The following methods are almost exactly the same as the various
-     * getXXXX() methods above.  Internally, they call the respective methods
-     * and replace the extension (if present) with the given one.  If no
-     * extension is present, the given one is appended instead.
+     * Get a node representing a sibling file with a different extension.
+     * More efficient than getPathWithExt() when the node is a ZIP, as it
+     * avoids re-parsing the path.
      */
-    string getNameWithExt(string_view ext = "") const;
-    string getPathWithExt(string_view ext = "") const;
+    FSNode getSiblingNode(string_view ext) const;
+
+    /**
+     * Returns the filename with its extension stripped.
+     */
+    string getBaseName() const;
+
+    /**
+     * Returns the filename with its extension replaced by ext.
+     * If ext is empty, the original string is returned.
+     */
+    string getNameWithExt(string_view ext) const;
 
     /**
      * Get a platform-specific stream based on the backend in use.
@@ -514,6 +523,13 @@ class AbstractFSNode
      *          a try-catch block.
      */
     virtual size_t write(string_view buffer) const { return 0; }
+
+
+    /**
+     * Return a node representing a sibling file with a different extension.
+     * Default implementation returns nullptr.
+     */
+    virtual AbstractFSNodePtr getSiblingNode(string_view ext) const { return nullptr; }
 
     /**
      * Get a platform-specific stream based on the backend in use.

@@ -114,14 +114,14 @@ void FileListWidget::setLocation(const FSNode& node, string_view select)
       if(name == "..")
         _iconTypeList.push_back(IconType::updir);
       else
-        _iconTypeList.push_back(getIconType(file.getPath()));
+        _iconTypeList.push_back(getIconType(file));
     }
     else
     {
-      const string& displayName = _showFileExtensions ? name : file.getNameWithExt(EmptyString());
+      const string& displayName = _showFileExtensions ? name : file.getBaseName();
 
       list.push_back(displayName);
-      _iconTypeList.push_back(getIconType(file.getPath()));
+      _iconTypeList.push_back(getIconType(file));
     }
   }
   extendLists(list);
@@ -156,15 +156,11 @@ void FileListWidget::getChildren(const FSNode::CancelCheck& isCancelled)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FileListWidget::IconType FileListWidget::getIconType(string_view path) const
+FileListWidget::IconType FileListWidget::getIconType(const FSNode& node) const
 {
-  const FSNode node(path);
-
   if(node.isDirectory())
-  {
     return BSPF::endsWithIgnoreCase(node.getName(), ".zip")
       ? IconType::zip : IconType::directory;
-  }
   else
     return node.isFile() && Bankswitch::isValidRomName(node)
       ? IconType::rom : IconType::unknown;
@@ -275,7 +271,7 @@ void FileListWidget::reload()
   {
     _selectedFile = _showFileExtensions
       ? selected().getName()
-      : selected().getNameWithExt(EmptyString());
+      : selected().getBaseName();
     setLocation(_node, _selectedFile);
   }
 }

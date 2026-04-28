@@ -806,7 +806,7 @@ string CartDebug::loadListFile()
   // The default naming/location for list files is the ROM dir based on the
   // actual ROM filename
 
-  const FSNode lst(myOSystem.romFile().getPathWithExt(".lst"));
+  const FSNode lst = myOSystem.romFile().getSiblingNode(".lst");
   if(!lst.isReadable())
     return DebuggerParser::red("list file \'" + lst.getShortPath() + "\' not found");
 
@@ -867,7 +867,7 @@ string CartDebug::loadSymbolFile()
   // The default naming/location for symbol files is the ROM dir based on the
   // actual ROM filename
 
-  const FSNode sym(myOSystem.romFile().getPathWithExt(".sym"));
+  const FSNode sym = myOSystem.romFile().getSiblingNode(".sym");
   if(!sym.isReadable())
     return DebuggerParser::red("symbol file \'" + sym.getShortPath() + "\' not found");
 
@@ -928,7 +928,7 @@ string CartDebug::loadConfigFile()
   // The default naming/location for config files is the CFG dir and based
   // on the actual ROM filename
 
-  const FSNode romNode(myOSystem.romFile().getPathWithExt(".cfg"));
+  const FSNode romNode = myOSystem.romFile().getSiblingNode(".cfg");
   FSNode cfg = myOSystem.cfgDir();  cfg /= romNode.getName();
   if(!cfg.isReadable())
     return DebuggerParser::red("config file \'" + cfg.getShortPath() + "\' not found");
@@ -1065,7 +1065,7 @@ string CartDebug::saveConfigFile()
 
   try
   {
-    const FSNode romNode(myOSystem.romFile().getPathWithExt(".cfg"));
+    const FSNode romNode = myOSystem.romFile().getSiblingNode(".cfg");
     FSNode cfg = myOSystem.cfgDir();  cfg /= romNode.getName();
 
     if(!cfg.getParent().isWritable())

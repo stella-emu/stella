@@ -232,7 +232,7 @@ void LauncherFileListWidget::userFavor(string_view path)
     pos++;
   }
   if(pos < _iconTypeList.size())
-    _iconTypeList[pos] = getIconType(path);
+    _iconTypeList[pos] = getIconType(FSNode(path));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -254,12 +254,12 @@ void LauncherFileListWidget::removeAllRecent()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FileListWidget::IconType LauncherFileListWidget::getIconType(string_view path) const
+FileListWidget::IconType
+LauncherFileListWidget::getIconType(const FSNode& node) const
 {
-  if(!isUserFavorite(path))
-    return FileListWidget::getIconType(path);
+  if(!isUserFavorite(node.getPath()))
+    return FileListWidget::getIconType(node);
 
-  const FSNode node(path);
   if(node.isDirectory())
     return BSPF::endsWithIgnoreCase(node.getName(), ".zip")
       ? IconType::favzip : IconType::favdir;
