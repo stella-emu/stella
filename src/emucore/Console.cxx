@@ -160,7 +160,7 @@ Console::Console(OSystem& osystem, unique_ptr<Cartridge>& cart,
   // Let the cart know how to query for the 'Cartridge.StartBank' property
   myCart->setStartBankFromPropsFunc([this]() {
     const string_view startbank = myProperties.get(PropType::Cart_StartBank);
-    return (startbank == EmptyString() || BSPF::equalsIgnoreCase(startbank, "AUTO"))
+    return (startbank.empty() || BSPF::equalsIgnoreCase(startbank, "AUTO"))
         ? -1 : BSPF::stoi(startbank);
   });
 

@@ -333,20 +333,20 @@ void CpuWidget::loadConfig()
 
   // Update the data sources for the SP/A/X/Y registers
   const string& srcS = state.srcS < 0 ? "IMM" : cart.getLabel(state.srcS, true);
-  myCpuDataSrc[0]->setText((srcS != EmptyString() ? srcS : Common::Base::toString(state.srcS)),
+  myCpuDataSrc[0]->setText((!srcS.empty() ? srcS : Common::Base::toString(state.srcS)),
                            state.srcS != oldstate.srcS);
   const string& srcA = state.srcA < 0 ? "IMM" : cart.getLabel(state.srcA, true);
-  myCpuDataSrc[1]->setText((srcA != EmptyString() ? srcA : Common::Base::toString(state.srcA)),
+  myCpuDataSrc[1]->setText((!srcA.empty() ? srcA : Common::Base::toString(state.srcA)),
                            state.srcA != oldstate.srcA);
   const string& srcX = state.srcX < 0 ? "IMM" : cart.getLabel(state.srcX, true);
-  myCpuDataSrc[2]->setText((srcX != EmptyString() ? srcX : Common::Base::toString(state.srcX)),
+  myCpuDataSrc[2]->setText((!srcX.empty() ? srcX : Common::Base::toString(state.srcX)),
                            state.srcX != oldstate.srcX);
   const string& srcY = state.srcY < 0 ? "IMM" : cart.getLabel(state.srcY, true);
-  myCpuDataSrc[3]->setText((srcY != EmptyString() ? srcY : Common::Base::toString(state.srcY)),
+  myCpuDataSrc[3]->setText((!srcY.empty() ? srcY : Common::Base::toString(state.srcY)),
                            state.srcY != oldstate.srcY);
 
   const string& dest = state.dest < 0 ? "" : cart.getLabel(state.dest, false);
-  myCpuDataDest->setText((dest != EmptyString() ? dest : Common::Base::toString(state.dest)),
+  myCpuDataDest->setText((!dest.empty() ? dest : Common::Base::toString(state.dest)),
                          state.dest != oldstate.dest);
 
   // Update the PS register booleans

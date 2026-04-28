@@ -55,8 +55,8 @@ DataGridWidget::DataGridWidget(GuiObject* boss, const GUI::Font& font,
   {
     _addrList.push_back(0);
     _valueList.push_back(0);
-    _valueStringList.push_back(EmptyString());
-    _toolTipList.push_back(EmptyString());
+    _valueStringList.emplace_back(string{});
+    _toolTipList.emplace_back(string{});
     _changedList.push_back(false);
     _hiliteList.push_back(false);
   }
@@ -604,12 +604,12 @@ string DataGridWidget::getToolTip(const Common::Point& pos) const
   const int idx = getToolTipIndex(pos);
 
   if(idx < 0)
-    return EmptyString();
+    return string{};
 
   const Int32 val = _valueList[idx];
   std::ostringstream buf;
 
-  if(_toolTipList[idx] != EmptyString())
+  if(!_toolTipList[idx].empty())
     buf << _toolTipList[idx];
   else
     buf << _toolTipText;

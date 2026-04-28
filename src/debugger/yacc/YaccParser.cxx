@@ -341,7 +341,7 @@ int yylex() {
           } else if( (tiaMeth = getTiaSpecial(idbuf)) ) {
             yylval.tiaMethod = tiaMeth;
             return TIA_METHOD;
-          } else if( Debugger::debugger().getFunctionDef(idbuf) != EmptyString() ) {
+          } else if( !Debugger::debugger().getFunctionDef(idbuf).empty() ) {
             yylval.DefinedFunction = idbuf;
             return FUNCTION;
           } else {

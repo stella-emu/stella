@@ -53,7 +53,7 @@ void LauncherFileListWidget::getChildren(const FSNode::CancelCheck& isCancelled)
   if(_node.exists() || !_node.hasParent())
   {
     myInVirtualDir = false;
-    myVirtualDir = EmptyString();
+    myVirtualDir.clear();
     FileListWidget::getChildren(isCancelled);
   }
   else if(instance().settings().getBool("favorites"))

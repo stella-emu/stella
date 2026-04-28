@@ -227,7 +227,7 @@ string Dialog::getHelpURL() const
       return "https://stella-emu.github.io/docs/index.html#" + _helpAnchor;
   }
   // no help found
-  return EmptyString();
+  return string{};
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

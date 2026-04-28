@@ -57,7 +57,7 @@ class CartDebugWidget : public Widget, public CommandSender
     // the following 9 functions for cartridges with internal RAM
     virtual uInt32 internalRamSize() { return 0; }
     virtual uInt32 internalRamRPort(int start) { return 0; }
-    virtual string internalRamDescription() { return EmptyString(); }
+    virtual string internalRamDescription() { return string{}; }
     virtual const ByteArray& internalRamOld(int start, int count) { return myRamOld; }
     virtual const ByteArray& internalRamCurrent(int start, int count) { return myRamCurrent; }
     virtual void internalRamSetValue(int addr, uInt8 value) { }

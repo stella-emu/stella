@@ -98,13 +98,13 @@ void RomInfoWidget::parseProperties(const FSNode& node, bool full)
 
   string value;
 
-  if(value = myProperties.get(PropType::Cart_Manufacturer); value != EmptyString())
+  if(value = myProperties.get(PropType::Cart_Manufacturer); !value.empty())
     myRomInfo.push_back("Manufacturer: " + value);
-  if(value = myProperties.get(PropType::Cart_ModelNo); value != EmptyString())
+  if(value = myProperties.get(PropType::Cart_ModelNo); !value.empty())
     myRomInfo.push_back("Model: " + value);
-  if(value = myProperties.get(PropType::Cart_Rarity); value != EmptyString())
+  if(value = myProperties.get(PropType::Cart_Rarity); !value.empty())
     myRomInfo.push_back("Rarity: " + value);
-  if(value = myProperties.get(PropType::Cart_Note); value != EmptyString())
+  if(value = myProperties.get(PropType::Cart_Note); !value.empty())
     myRomInfo.push_back("Note: " + value);
 
   if(full)
@@ -224,7 +224,7 @@ void RomInfoWidget::drawWidget(bool hilite)
 
     int lines = 0;
 
-    if(BSPF::startsWithIgnoreCase(info, "Name: ") && myUrl != EmptyString())
+    if(BSPF::startsWithIgnoreCase(info, "Name: ") && !myUrl.empty())
     {
       lines = s.drawString(_font, info, xpos, ypos, _w - 16, _font.getFontHeight() * 3,
                            _textcolor, TextAlign::Left, 0, true, kNone,

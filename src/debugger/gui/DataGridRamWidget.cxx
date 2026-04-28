@@ -37,7 +37,7 @@ string DataGridRamWidget::getToolTip(const Common::Point& pos) const
   const int idx = getToolTipIndex(pos);
 
   if(idx < 0)
-    return EmptyString();
+    return string{};
 
   const Int32 addr = _addrList[idx];
   const string label = _ram.getLabel(addr);

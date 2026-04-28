@@ -274,10 +274,10 @@ void OSystem::setConfigPaths()
   // Make sure all required directories actually exist
   const auto buildDirIfRequired = [](FSNode& path,
                                      const FSNode& initialPath,
-                                     string_view pathToAppend = EmptyString())
+                                     string_view pathToAppend = {})
   {
     path = initialPath;
-    if(pathToAppend != EmptyString())
+    if(!pathToAppend.empty())
       path /= pathToAppend;
     if(!path.isDirectory())
       path.makeDir();
@@ -315,7 +315,7 @@ void OSystem::setConfigPaths()
 const FSNode& OSystem::snapshotSaveDir()
 {
   const string_view ssSaveDir = mySettings->getString("snapsavedir");
-  if(ssSaveDir == EmptyString())
+  if(ssSaveDir.empty())
     mySnapshotSaveDir = userDir();
   else
     mySnapshotSaveDir = FSNode(ssSaveDir);
@@ -329,7 +329,7 @@ const FSNode& OSystem::snapshotSaveDir()
 const FSNode& OSystem::snapshotLoadDir()
 {
   const string_view ssLoadDir = mySettings->getString("snaploaddir");
-  if(ssLoadDir == EmptyString())
+  if(ssLoadDir.empty())
     mySnapshotLoadDir = userDir();
   else
     mySnapshotLoadDir = FSNode(ssLoadDir);
@@ -343,7 +343,7 @@ const FSNode& OSystem::snapshotLoadDir()
 const FSNode& OSystem::bezelDir()
 {
   const string_view bezelDir = mySettings->getString("bezel.dir");
-  if(bezelDir == EmptyString())
+  if(bezelDir.empty())
     myBezelDir = userDir();
   else
     myBezelDir = FSNode(bezelDir);
@@ -556,7 +556,7 @@ string OSystem::createConsole(const FSNode& rom, string_view md5sum, bool newrom
     // Check for first PlusROM start
     if(myConsole->cartridge().isPlusROM())
     {
-      if(settings().getString("plusroms.fixedid") == EmptyString())
+      if(settings().getString("plusroms.fixedid").empty())
       {
         // Make sure there always is an id
         constexpr int ID_LEN = 32;
@@ -574,14 +574,14 @@ string OSystem::createConsole(const FSNode& rom, string_view md5sum, bool newrom
 
       string id = settings().getString("plusroms.id");
 
-      if(id == EmptyString())
+      if(id.empty())
         id = settings().getString("plusroms.fixedid");
 
       Logger::info("PlusROM Nick: " + settings().getString("plusroms.nick") + ", ID: " + id);
     }
   }
 
-  return EmptyString();
+  return string{};
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -589,9 +589,9 @@ std::optional<string> OSystem::reloadConsole(bool nextrom)
 {
   mySettings->setValue("romloadprev", !nextrom);
 
-  const string result = createConsole(myRomFile, myRomMD5, false);
+  const auto result = createConsole(myRomFile, myRomMD5, false);
 
-  return result == EmptyString() ? std::nullopt : std::optional<string>(result);
+  return result.empty() ? std::nullopt : std::optional<string>(result);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -713,7 +713,7 @@ unique_ptr<Console> OSystem::openConsole(const FSNode& romfile, string& md5)
     cart->setMessageCallback(callback);
 
     // Some properties may not have a name set; we can't leave it blank
-    if(props.get(PropType::Cart_Name) == EmptyString())
+    if(props.get(PropType::Cart_Name).empty())
       props.set(PropType::Cart_Name, romfile.getBaseName());
 
     // It's possible that the cart created was from a piece of the image,
@@ -814,7 +814,7 @@ string OSystem::getROMMD5(const FSNode& rom)
   size_t size = 0;
   const ByteBuffer image = openROM(rom, size, false);  // ignore error message
 
-  return image ? MD5::hash(image, size) : EmptyString();
+  return image ? MD5::hash(image, size) : string{};
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

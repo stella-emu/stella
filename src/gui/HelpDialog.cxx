@@ -246,7 +246,7 @@ void HelpDialog::handleCommand(CommandSender* sender, int cmd,
     {
       const string url = myDesc[id]->getUrl();
 
-      if(url != EmptyString())
+      if(!url.empty())
         MediaFactory::openURL(url);
       break;
     }

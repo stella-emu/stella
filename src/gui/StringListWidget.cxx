@@ -64,7 +64,7 @@ string StringListWidget::getToolTip(const Common::Point& pos) const
   const int idx = getToolTipIndex(pos);
 
   if(idx < 0)
-    return EmptyString();
+    return string{};
 
   const string value = _list[idx];
 

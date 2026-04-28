@@ -51,11 +51,11 @@ void FSNode::setPath(string_view path)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FSNode& FSNode::operator/=(string_view path)
 {
-  if(path != EmptyString())
+  if(!path.empty())
   {
     string newPath = getPath();
     newPath.reserve(newPath.size() + 1 + path.size());
-    if(newPath != EmptyString() && newPath[newPath.length()-1] != PATH_SEPARATOR)
+    if(!newPath.empty() && newPath[newPath.length()-1] != PATH_SEPARATOR)
       newPath += PATH_SEPARATOR;
     newPath += path;
     setPath(newPath);
@@ -210,7 +210,7 @@ const string& FSNode::getPath() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string FSNode::getShortPath() const
 {
-  return _realNode ? _realNode->getShortPath() : EmptyString();
+  return _realNode ? _realNode->getShortPath() : string{};
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

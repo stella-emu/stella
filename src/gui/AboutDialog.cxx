@@ -302,7 +302,7 @@ void AboutDialog::handleCommand(CommandSender* sender, int cmd, int data, int id
     {
       const string& url = myDesc[id]->getUrl();
 
-      if(url != EmptyString())
+      if(!url.empty())
         MediaFactory::openURL(url);
       break;
     }
@@ -341,9 +341,6 @@ string AboutDialog::getUrl(string_view text)
         len++;
     }
   }
-  if(len)
-    return string{text.substr(start, len)};
-  else
-    return EmptyString();
+  return len ? string{text.substr(start, len)} : string{};
 }
 

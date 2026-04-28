@@ -224,7 +224,7 @@ string ToggleWidget::getToolTip(const Common::Point& pos) const
   const int idx = getToolTipIndex(pos).y * _cols;
 
   if(idx < 0)
-    return EmptyString();
+    return string{};
 
   Int32 val = 0;
   std::ostringstream buf;

@@ -792,7 +792,7 @@ string EditableWidget::selectString() const
     }
     return _editString.substr(caretPos, selectSize);
   }
-  return EmptyString();
+  return string{};
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

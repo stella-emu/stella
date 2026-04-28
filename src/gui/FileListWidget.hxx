@@ -82,7 +82,7 @@ class FileListWidget : public StringListWidget
                           will instead be used, and the file will be selected
         @param select     An optional entry to select (if applicable)
     */
-    void setDirectory(const FSNode& node, string_view select = EmptyString());
+    void setDirectory(const FSNode& node, string_view select = {});
 
     /** Descend into currently selected directory */
     void selectDirectory();

@@ -90,7 +90,7 @@ string ToggleBitWidget::getToolTip(const Common::Point& pos) const
   const Common::Point& idx = getToolTipIndex(pos);
 
   if(idx.y < 0)
-    return EmptyString();
+    return string{};
 
   if(std::cmp_less(idx.x, _labelList.size()))
   {

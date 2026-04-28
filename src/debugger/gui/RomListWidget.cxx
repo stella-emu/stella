@@ -454,12 +454,12 @@ string RomListWidget::getToolTip(const Common::Point& pos) const
   const Common::Point& idx = getToolTipIndex(pos);
 
   if(idx.y < 0)
-    return EmptyString();
+    return string{};
 
   const string bytes = myDisasm->list[idx.y].bytes;
 
   if(static_cast<Int32>(bytes.length()) < idx.x + 1)
-    return EmptyString();
+    return string{};
 
   Int32 val = 0;
   if(bytes.length() == 8 && bytes[2] != ' ')
@@ -472,7 +472,7 @@ string RomListWidget::getToolTip(const Common::Point& pos) const
     // 1..3 hex values
     if(idx.x == 2)
       // Skip gap after first byte
-      return EmptyString();
+      return string{};
 
     string valStr;
 

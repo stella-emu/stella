@@ -555,7 +555,7 @@ class AbstractFSNode
      */
     static constexpr string_view lastPathComponent(string_view s)
     {
-      if(s.empty())  return EmptyString();
+      if(s.empty())  return s;
       const auto pos = s.find_last_of("/\\", s.size() - 2);
       return s.substr(pos + 1);
     }
@@ -568,7 +568,7 @@ class AbstractFSNode
      */
     static constexpr string_view stemPathComponent(string_view s)
     {
-      if(s.empty())  return EmptyString();
+      if(s.empty())  return s;
       const auto pos = s.find_last_of("/\\", s.size() - 2);
       return s.substr(0, pos + 1);
     }
