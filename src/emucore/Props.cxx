@@ -99,44 +99,6 @@ void Properties::set(PropType key, string_view value)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Properties::print() const
-{
-  cout << std::format(
-    "{}|{}|{}|{}|{}|{}|{}|{}|{}|{}|{}|{}|{}|{}|{}|{}|{}|{}|{}|{}|{}|{}|{}|{}|{}|{}|{}|{}|{}|{}\n",
-    get(PropType::Cart_MD5),
-    get(PropType::Cart_Name),
-    get(PropType::Cart_Manufacturer),
-    get(PropType::Cart_ModelNo),
-    get(PropType::Cart_Note),
-    get(PropType::Cart_Rarity),
-    get(PropType::Cart_Sound),
-    get(PropType::Cart_StartBank),
-    get(PropType::Cart_Type),
-    get(PropType::Cart_Highscore),
-    get(PropType::Cart_Url),
-    get(PropType::Console_LeftDiff),
-    get(PropType::Console_RightDiff),
-    get(PropType::Console_TVType),
-    get(PropType::Console_SwapPorts),
-    get(PropType::Controller_Left),
-    get(PropType::Controller_Left1),
-    get(PropType::Controller_Left2),
-    get(PropType::Controller_Right),
-    get(PropType::Controller_Right1),
-    get(PropType::Controller_Right2),
-    get(PropType::Controller_SwapPaddles),
-    get(PropType::Controller_PaddlesXCenter),
-    get(PropType::Controller_PaddlesYCenter),
-    get(PropType::Controller_MouseAxis),
-    get(PropType::Display_Format),
-    get(PropType::Display_VCenter),
-    get(PropType::Display_Phosphor),
-    get(PropType::Display_PPBlend),
-    get(PropType::Bezel_Name)
-  );
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Properties::reset(PropType key)
 {
   const auto pos = static_cast<size_t>(key);
@@ -169,37 +131,23 @@ PropType Properties::getPropType(string_view name)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Properties::print() const
+{
+  for(size_t i = 0; i < NUM_PROPS; ++i)
+  {
+    if(i > 0) cout << '|';
+    cout << myProperties[i];
+  }
+  cout << '\n';
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Properties::printHeader()
 {
-  cout <<
-    "Cart_MD5|"
-    "Cart_Name|"
-    "Cart_Manufacturer|"
-    "Cart_ModelNo|"
-    "Cart_Note|"
-    "Cart_Rarity|"
-    "Cart_Sound|"
-    "Cart_StartBank|"
-    "Cart_Type|"
-    "Cart_Highscore|"
-    "Cart_Url|"
-    "Console_LeftDiff|"
-    "Console_RightDiff|"
-    "Console_TVType|"
-    "Console_SwapPorts|"
-    "Controller_Left|"
-    "Controller_Left1|"
-    "Controller_Left2|"
-    "Controller_Right|"
-    "Controller_Right1|"
-    "Controller_Right2|"
-    "Controller_SwapPaddles|"
-    "Controller_PaddlesXCenter|"
-    "Controller_PaddlesYCenter|"
-    "Controller_MouseAxis|"
-    "Display_Format|"
-    "Display_VCenter|"
-    "Display_Phosphor|"
-    "Display_PPBlend|"
-    "Bezel_Name\n";
+  for(size_t i = 0; i < NUM_PROPS; ++i)
+  {
+    if(i > 0) cout << '|';
+    cout << ourPropertyNames[i];
+  }
+  cout << '\n';
 }
