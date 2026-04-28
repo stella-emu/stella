@@ -101,7 +101,7 @@ class FBBackendLIBRETRO : public FBBackend
     bool fullScreen() const override { return true; }
     void getRGB(uInt32, uInt8*, uInt8*, uInt8*) const override { }
     void getRGBA(uInt32, uInt8*, uInt8*, uInt8*, uInt8*) const override { }
-    void getSurface(FBSurface&) const override { }
+    const FBSurface& compositedSurface() { static FBSurfaceLIBRETRO tmp(0, 0); return tmp; }
     bool isCurrentWindowPositioned() const override { return true; }
     Common::Point getCurrentWindowPos() const override { return Common::Point{}; }
     uInt32 getCurrentDisplayID() const override { return 0; }
