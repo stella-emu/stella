@@ -347,7 +347,7 @@ void TiaZoomWidget::drawWidget(bool hilite)
   {
     for(int x = myOffX >> 1, col = 0; x < (myNumCols+myOffX) >> 1; ++x, col += wzoom)
     {
-      const uInt32 idx = y*width + x;
+      const uInt32 idx = std::max(y * width + x, 0);
       const auto color = static_cast<ColorId>(currentFrame[idx] | (idx > scanoffset ? 1 : 0));
       s.fillRect(_x + col + 1, _y + row + 1, wzoom, hzoom, color);
     }
