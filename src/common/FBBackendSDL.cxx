@@ -380,7 +380,7 @@ bool FBBackendSDL::adaptRefreshRate(SDL_DisplayID displayId,
   const int wantedRefreshRate =
       myOSystem.hasConsole() ? myOSystem.console().gameRefreshRate() : 0;
   // Take care of rounded refresh rates (e.g. 59.94 Hz)
-  float factor = std::min(
+  const float factor = std::min(
       static_cast<float>(currentRefreshRate) / wantedRefreshRate,
       static_cast<float>(currentRefreshRate) / (wantedRefreshRate - 1));
   // Calculate difference taking care of integer factors (e.g. 100/120)
@@ -392,22 +392,22 @@ bool FBBackendSDL::adaptRefreshRate(SDL_DisplayID displayId,
   // Now find the display mode whose refresh rate is closest to an integer
   // multiple of the target refresh rate. If two modes have the same error, the
   // one matching the current resolution is preferred.
-  const float epsilon = 0.001f;  // floating point rounding tolerance
+  const float epsilon = 0.001F;  // floating point rounding tolerance
   bool bestSameRes = false;
   SDL_DisplayMode** modes = SDL_GetFullscreenDisplayModes(displayId, &numModes);  // NOLINT
   // Wrap raw pointer into a span so we can use range-based for
-  std::span<SDL_DisplayMode*> span(modes, numModes);
+  const std::span<SDL_DisplayMode*> span(modes, numModes);
 
-  for (SDL_DisplayMode* m : span)
+  for(const auto* m: span)
   {
     // Determine nearest integer multiple of desired wantedRefreshRate
-    float nearestInt = std::round(m->refresh_rate / wantedRefreshRate);
+    const float nearestInt = std::round(m->refresh_rate / wantedRefreshRate);
     // Compute ideal rate for multiple
-    float ideal = nearestInt * wantedRefreshRate;
+    const float ideal = nearestInt * wantedRefreshRate;
     // diff = delta betweem actual rate and ideal multiple
-    float diff = std::fabs(m->refresh_rate - ideal) / ideal;
+    const float diff = std::fabs(m->refresh_rate - ideal) / ideal;
     // Check if mode is same as current resolution
-    bool sameRes = (m->w == sdlMode->w && m->h == sdlMode->h);
+    const bool sameRes = (m->w == sdlMode->w && m->h == sdlMode->h);
     // 1. Prefer smaller error
     // 2. If error is equal (within epsilon), prefer same resolution
     if (diff < bestDiff - epsilon ||

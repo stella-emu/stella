@@ -39,7 +39,7 @@ class FpsMeter
 
     struct Entry {
       uInt32 frames{0};
-      std::chrono::time_point<std::chrono::high_resolution_clock> timestamp{};
+      std::chrono::time_point<std::chrono::high_resolution_clock> timestamp;
     };
 
   private:

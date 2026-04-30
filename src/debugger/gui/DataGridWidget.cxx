@@ -55,8 +55,8 @@ DataGridWidget::DataGridWidget(GuiObject* boss, const GUI::Font& font,
   {
     _addrList.push_back(0);
     _valueList.push_back(0);
-    _valueStringList.emplace_back(string{});
-    _toolTipList.emplace_back(string{});
+    _valueStringList.emplace_back();
+    _toolTipList.emplace_back();
     _changedList.push_back(false);
     _hiliteList.push_back(false);
   }

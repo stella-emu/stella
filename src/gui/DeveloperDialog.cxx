@@ -965,7 +965,7 @@ void DeveloperDialog::setDefaults()
       myDetectedInfo[set] = devSettings;
       // AtariVox/SaveKey/PlusROM access
       myExternAccess[set] = devSettings;
-      myConsole[set] = 0;
+      myConsole[set] = false;
       myPlusROM[set] = true;
       // Randomization
       myRandomBank[set] = devSettings;

@@ -99,7 +99,7 @@ class ZipHandler
 
     // Iterate over each entry in the ZIP and apply the given function
     template<typename F>
-    void forEachEntry(F&& fn);
+    void forEachEntry(F fn);
 
     // Decompress the currently selected file and return its length
     // An exception will be thrown on any errors
@@ -392,7 +392,7 @@ class ZipHandler
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 template<typename F>
-void ZipHandler::forEachEntry(F&& fn)
+void ZipHandler::forEachEntry(F fn)
 {
   assert(myZip && "forEachEntry called without open()");
   for(const auto& header: myZip->myHeaders)

@@ -215,7 +215,7 @@ void ZipHandler::ZipFile::initialize()
       throw ZipException(ZipError::FILE_CORRUPT);
 
     // Extract file header info
-    ZipHeader header {
+    const ZipHeader header {
       reader.versionCreated(),
       reader.versionNeeded(),
       reader.generalFlag(),
@@ -244,7 +244,7 @@ void ZipHandler::ZipFile::initialize()
       }
     }
 
-    myHeaders.emplace_back(std::move(header));
+    myHeaders.emplace_back(header);
     pos += reader.totalLength();
   }
 }
