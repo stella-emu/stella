@@ -177,7 +177,7 @@ class SoundSDL : public Sound
     class WavHandler
     {
       public:
-        explicit WavHandler() = default;
+        WavHandler() = default;
         ~WavHandler();
 
         bool play(SDL_AudioDeviceID device, const string& fileName,

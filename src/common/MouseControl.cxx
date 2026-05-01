@@ -206,21 +206,21 @@ void MouseControl::addPaddleModes(int lport, int rport, int lname, int rname)
   const Controller::Type type = Controller::Type::Paddles;
   std::ostringstream msg;
   msg << "Mouse is Paddle " << lname << " controller";
-  const MouseMode mode0(type, lport, type, lport, msg.view());
+  MouseMode mode0(type, lport, type, lport, msg.view());
 
   msg.str("");
   msg << "Mouse is Paddle " << rname << " controller";
-  const MouseMode mode1(type, rport, type, rport, msg.view());
+  MouseMode mode1(type, rport, type, rport, msg.view());
 
   if(BSPF::equalsIgnoreCase(myProps.get(PropType::Controller_SwapPaddles), "NO"))
   {
-    myModeList.push_back(mode0);
-    myModeList.push_back(mode1);
+    myModeList.push_back(std::move(mode0));
+    myModeList.push_back(std::move(mode1));
   }
   else
   {
-    myModeList.push_back(mode1);
-    myModeList.push_back(mode0);
+    myModeList.push_back(std::move(mode1));
+    myModeList.push_back(std::move(mode0));
   }
 }
 

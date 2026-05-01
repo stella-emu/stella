@@ -122,25 +122,29 @@ VideoModeHandler::Mode::Mode(uInt32 iw, uInt32 ih, uInt32 sw, uInt32 sh,
   // Now resize based on windowed/fullscreen mode and stretch factor
   if(fullscreen)
   {
+    auto rounded = [](double v) noexcept -> uInt32 {
+        return static_cast<uInt32>(std::round(v));
+    };
+
     switch(stretch)
     {
       case Stretch::Preserve:
-        iw = static_cast<uInt32>(std::round(iw * overscan * zoomLevel));
-        ih = static_cast<uInt32>(std::round(ih * overscan * zoomLevel));
+        iw = rounded(iw * overscan * zoomLevel);
+        ih = rounded(ih * overscan * zoomLevel);
         break;
 
       case Stretch::Fill:
         // Scale to all available space
-        iw = static_cast<uInt32>(std::round(screenS.w * overscan / bezelInfo.ratioW()));
-        ih = static_cast<uInt32>(std::round(screenS.h * overscan / bezelInfo.ratioH()));
+        iw = rounded(screenS.w * overscan / bezelInfo.ratioW());
+        ih = rounded(screenS.h * overscan / bezelInfo.ratioH());
         break;
 
       case Stretch::None: // UI Mode
         // Don't do any scaling at all
-        iw = static_cast<uInt32>(
-               std::round(std::min(static_cast<uInt32>(iw * zoomLevel), screenS.w) * overscan));
-        ih = static_cast<uInt32>(
-               std::round(std::min(static_cast<uInt32>(ih * zoomLevel), screenS.h) * overscan));
+        iw = rounded(std::min(static_cast<uInt32>
+            (iw * zoomLevel), screenS.w) * overscan);
+        ih = rounded(std::min(static_cast<uInt32>
+            (ih * zoomLevel), screenS.h) * overscan);
         break;
 
       default:

@@ -138,11 +138,11 @@ void checkForCustomBaseDir(Settings::Options& options)
   Checks whether the commandline contains an argument corresponding to
   starting a profile session.
 */
-bool isProfilingRun(int ac, char* av[])
+bool isProfilingRun(int ac, const char* const av[])
 {
   if (ac <= 1) return false;
 
-  return string(av[1]) == "-profile";
+  return string_view(av[1]) == "-profile";
 }
 
 /**
@@ -254,7 +254,7 @@ int main(int ac, char* av[])
     freeConsole();
     return Cleanup();
   }
-  else if(localOpts["rominfo"].toBool())
+  if(localOpts["rominfo"].toBool())
   {
     attachConsole();
     Logger::debug("Showing output from 'rominfo' ...");
@@ -263,7 +263,7 @@ int main(int ac, char* av[])
     freeConsole();
     return Cleanup();
   }
-  else if(localOpts["help"].toBool())
+  if(localOpts["help"].toBool())
   {
     attachConsole();
     Logger::debug("Displaying usage");
