@@ -98,12 +98,11 @@ void JPGLibrary::loadImage(string_view filename, FBSurface& surface,
   const size_t  i_pitch = static_cast<size_t>(width) * 3;
   const uInt8*  i_buf   = pixels.data();
 
-  // Get the shift values for each colour component once, instead
-  // of calling mapRGB per-pixel
-  const uInt32 rShift = std::countr_zero(fb.mapRGB(0xFF, 0x00, 0x00));
-  const uInt32 gShift = std::countr_zero(fb.mapRGB(0x00, 0xFF, 0x00));
-  const uInt32 bShift = std::countr_zero(fb.mapRGB(0x00, 0x00, 0xFF));
-  const uInt32 aMask  = fb.mapRGB(0x00, 0x00, 0x00);
+  // Get the shift values for each colour component
+  const uInt32 rShift = std::countr_zero(fb.rMask());
+  const uInt32 gShift = std::countr_zero(fb.gMask());
+  const uInt32 bShift = std::countr_zero(fb.bMask());
+  const uInt32 aMask  = fb.aMask();
 
   // Convert RGB triples into pixels and store in the surface
   for(uInt32 irow = 0; irow < height; ++irow, i_buf += i_pitch, s_buf += s_pitch)

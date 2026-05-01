@@ -372,52 +372,12 @@ class FrameBuffer
     bool updateTheme();
 
     /**
-      This method is called to retrieve the R/G/B data from the given pixel.
-
-      @param pixel  The pixel containing R/G/B data
-      @param r      The red component of the color
-      @param g      The green component of the color
-      @param b      The blue component of the color
+      Retrieve the R/G/B/A masks from the FrameBuffer backend renderer.
     */
-    void getRGB(uInt32 pixel, uInt8* r, uInt8* g, uInt8* b) const {
-      myBackend->getRGB(pixel, r, g, b);
-    }
-
-    /**
-      This method is called to retrieve the R/G/B/A data from the given pixel.
-
-      @param pixel  The pixel containing R/G/B data
-      @param r      The red component of the color
-      @param g      The green component of the color
-      @param b      The blue component of the color
-      @param a      The alpha component of the color.
-    */
-    void getRGBA(uInt32 pixel, uInt8* r, uInt8* g, uInt8* b, uInt8* a) const {
-      myBackend->getRGBA(pixel, r, g, b, a);
-    }
-
-    /**
-      This method is called to map a given R/G/B triple to the screen palette.
-
-      @param r  The red component of the color.
-      @param g  The green component of the color.
-      @param b  The blue component of the color.
-    */
-    uInt32 mapRGB(uInt8 r, uInt8 g, uInt8 b) const {
-      return myBackend->mapRGB(r, g, b);
-    }
-
-    /**
-      This method is called to map a given R/G/B/A triple to the screen palette.
-
-    @param r  The red component of the color.
-    @param g  The green component of the color.
-    @param b  The blue component of the color.
-      @param a  The alpha component of the color.
-    */
-    uInt32 mapRGBA(uInt8 r, uInt8 g, uInt8 b, uInt8 a) const {
-      return myBackend->mapRGBA(r, g, b, a);
-    }
+    uInt32 rMask() const { return myBackend->rMask(); }
+    uInt32 gMask() const { return myBackend->gMask(); }
+    uInt32 bMask() const { return myBackend->bMask(); }
+    uInt32 aMask() const { return myBackend->aMask(); }
 
     /**
       Clear the framebuffer.
@@ -425,7 +385,7 @@ class FrameBuffer
     void clear() { myBackend->clear(); }
 
     /**
-      Transform from window to renderer coordinates, x/y direction
+      Transform from window to renderer coordinates, x/y direction.
      */
     int scaleX(int x) const { return myBackend->scaleX(x); }
     int scaleY(int y) const { return myBackend->scaleY(y); }

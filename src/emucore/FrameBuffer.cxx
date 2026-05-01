@@ -1001,17 +1001,22 @@ void FrameBuffer::renderTIA(bool doClear, bool shade)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBuffer::setTIAPalette(const PaletteArray& rgb_palette)
 {
+  // Hoist shift values — surface format is constant
+  const uInt32 rShift = std::countr_zero(rMask());
+  const uInt32 gShift = std::countr_zero(gMask());
+  const uInt32 bShift = std::countr_zero(bMask());
+  const uInt32 aMask_ = aMask();  // fully transparent; no alpha in RGB palette
+
   // Create a TIA palette from the raw RGB data
   PaletteArray tia_palette = {0};
   for(int i = 0; i < 256; ++i)
   {
-    const uInt8 r = (rgb_palette[i] >> 16) & 0xff;
-    const uInt8 g = (rgb_palette[i] >> 8) & 0xff;
-    const uInt8 b =  rgb_palette[i] & 0xff;
-
-    tia_palette[i] = mapRGB(r, g, b);
+    const uInt32 rgb = rgb_palette[i];
+    tia_palette[i] = aMask_
+                   | (((rgb >> 16) & 0xFF) << rShift)
+                   | (((rgb >>  8) & 0xFF) << gShift)
+                   | (( rgb        & 0xFF) << bShift);
   }
-
   // Remember the TIA palette; place it at the beginning of the full palette
   std::copy_n(tia_palette.begin(), tia_palette.size(), myFullPalette.begin());
 
@@ -1034,14 +1039,20 @@ void FrameBuffer::setUIPalette()
      (settings.getString(key) == "dark")    ? ourDarkUIPalette :
       ourStandardUIPalette;
 
+  // Hoist shift values — surface format is constant
+  const uInt32 rShift = std::countr_zero(rMask());
+  const uInt32 gShift = std::countr_zero(gMask());
+  const uInt32 bShift = std::countr_zero(bMask());
+  const uInt32 aMask_ = aMask();
+
   for(size_t i = 0, j = myFullPalette.size() - ui_palette.size();
       i < ui_palette.size(); ++i, ++j)
   {
-    const uInt8 r = (ui_palette[i] >> 16) & 0xff,
-                g = (ui_palette[i] >> 8) & 0xff,
-                b =  ui_palette[i] & 0xff;
-
-    myFullPalette[j] = mapRGB(r, g, b);
+    const uInt32 rgb = ui_palette[i];
+    myFullPalette[j] = aMask_
+                     | (((rgb >> 16) & 0xFF) << rShift)
+                     | (((rgb >>  8) & 0xFF) << gShift)
+                     | (( rgb        & 0xFF) << bShift);
   }
   FBSurface::setPalette(myFullPalette);
 }

@@ -91,48 +91,12 @@ class FBBackendSDL : public FBBackend
     bool fullScreen() const override;
 
     /**
-      This method is called to retrieve the R/G/B data from the given pixel.
-
-      @param pixel  The pixel containing R/G/B data
-      @param r      The red component of the color
-      @param g      The green component of the color
-      @param b      The blue component of the color
+      Retrieve the R/G/B/A masks from the FrameBuffer backend renderer.
     */
-    FORCE_INLINE void getRGB(uInt32 pixel, uInt8* r, uInt8* g, uInt8* b) const override
-      { SDL_GetRGB(pixel, myPixelFormat, nullptr, r, g, b); }
-
-    /**
-      This method is called to retrieve the R/G/B/A data from the given pixel.
-
-      @param pixel  The pixel containing R/G/B data
-      @param r      The red component of the color
-      @param g      The green component of the color
-      @param b      The blue component of the color
-      @param a      The alpha component of the color.
-    */
-    FORCE_INLINE void getRGBA(uInt32 pixel, uInt8* r, uInt8* g, uInt8* b, uInt8* a) const override
-      { SDL_GetRGBA(pixel, myPixelFormat, nullptr, r, g, b, a); }
-
-    /**
-      This method is called to map a given R/G/B triple to the screen palette.
-
-      @param r  The red component of the color.
-      @param g  The green component of the color.
-      @param b  The blue component of the color.
-    */
-    uInt32 mapRGB(uInt8 r, uInt8 g, uInt8 b) const override
-      { return SDL_MapRGB(myPixelFormat, nullptr, r, g, b); }
-
-    /**
-      This method is called to map a given R/G/B/A triple to the screen palette.
-
-      @param r  The red component of the color.
-      @param g  The green component of the color.
-      @param b  The blue component of the color.
-      @param a  The alpha component of the color.
-    */
-    uInt32 mapRGBA(uInt8 r, uInt8 g, uInt8 b, uInt8 a) const override
-      { return SDL_MapRGBA(myPixelFormat, nullptr, r, g, b, a); }
+    FORCE_INLINE uInt32 rMask() const override { return myPixelFormat->Rmask; }
+    FORCE_INLINE uInt32 gMask() const override { return myPixelFormat->Gmask; }
+    FORCE_INLINE uInt32 bMask() const override { return myPixelFormat->Bmask; }
+    FORCE_INLINE uInt32 aMask() const override { return myPixelFormat->Amask; }
 
     /**
       This method is called to get a copy of the viewable framebuffer area
@@ -300,7 +264,7 @@ class FBBackendSDL : public FBBackend
     SDL_Window* myWindow{nullptr};
     SDL_Renderer* myRenderer{nullptr};
 
-    // Used by mapRGB (when palettes are created)
+    // Used when palettes and textures are created
     const SDL_PixelFormatDetails* myPixelFormat{nullptr};
 
     // Are we in fullscreen mode?

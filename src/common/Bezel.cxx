@@ -110,12 +110,10 @@ uInt32 Bezel::borderSize(uInt32 x, uInt32 y, uInt32 size, Int32 step) const
 
   pixels += x + y * pitch;
 
+  const uInt32 aMask = myFB.aMask();
   for(uInt32 i = 0; i < size; ++i, pixels += step)
   {
-    uInt8 r{0}, g{0}, b{0}, a{0};
-
-    myFB.getRGBA(*pixels, &r, &g, &b, &a);
-    if(a < 255) // transparent pixel?
+    if((*pixels & aMask) != aMask)  // transparent pixel?
       return i;
   }
   return size - 1;
