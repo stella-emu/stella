@@ -17,6 +17,7 @@
 
 #ifdef IMAGE_SUPPORT
 
+#include <bit>
 #include <limits>
 
 #include "OSystem.hxx"
@@ -48,15 +49,15 @@ void JPGLibrary::loadImage(string_view filename, FBSurface& surface,
   const auto rawPos = in.tellg();
   if(rawPos < 0)
     throw std::runtime_error{"Failed to determine JPG file size"};
-  const auto size = static_cast<std::size_t>(rawPos);
-  in.seekg(0);
 
+  const auto size = static_cast<size_t>(rawPos);
   if(size > static_cast<size_t>(std::numeric_limits<int>::max()))
     throw std::runtime_error{"JPG file too large"};
 
-  myFileBuffer.resize(size);
+  in.seekg(0);
 
-  if(!in.read(reinterpret_cast<char*>(myFileBuffer.data()),
+  vector<std::byte> fileBuffer(size);
+  if(!in.read(reinterpret_cast<char*>(fileBuffer.data()),
               static_cast<std::streamsize>(size)))
     throw std::runtime_error{"JPG image data reading failed"};
 
@@ -69,68 +70,60 @@ void JPGLibrary::loadImage(string_view filename, FBSurface& surface,
     NJGuard& operator=(const NJGuard&) = delete;
     NJGuard& operator=(NJGuard&&) = delete;
   };
-
   const NJGuard guard;
 
-  if(njDecode(reinterpret_cast<const char*>(myFileBuffer.data()),
+  if(njDecode(reinterpret_cast<const char*>(fileBuffer.data()),
               static_cast<int>(size)))
     throw std::runtime_error{"Error decoding the JPG image"};
 
   // Read the entire image in one go
   const auto width  = static_cast<uInt32>(njGetWidth());
   const auto height = static_cast<uInt32>(njGetHeight());
-  const auto pixels = ByteSpan{ njGetImage(),
+
+  // njGetImage() points into nanojpeg's internal buffer — no extra copy needed
+  const ByteSpan pixels{ njGetImage(),
       static_cast<size_t>(width) * static_cast<size_t>(height) * 3 };
 
-  // Read the meta data we got
-  readMetaData({myFileBuffer.data(), size}, metaData);
-
-  // Load image into the surface, setting the correct dimensions
-  loadImagetoSurface(surface, pixels, width, height);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void JPGLibrary::loadImagetoSurface(FBSurface& surface, ByteSpan pixels,
-                                    uInt32 width, uInt32 height)
-{
-  // First determine if we need to resize the surface
   if(width > surface.width() || height > surface.height())
     surface.resize(width, height);
 
-  // The source dimensions are set here; the destination dimensions are
-  // set by whoever owns the surface
   surface.setSrcPos(0, 0);
   surface.setSrcSize(width, height);
 
-  // Convert RGB triples into pixels and store in the surface
-  uInt32 *s_buf{nullptr}, s_pitch{0};
+  uInt32* s_buf{nullptr};
+  uInt32  s_pitch{0};
   surface.basePtr(s_buf, s_pitch);
 
   const FrameBuffer& fb = myOSystem.frameBuffer();
-  const size_t i_pitch  = static_cast<size_t>(width) * 3;
-  const uInt8* i_buf    = pixels.data();
+  const size_t  i_pitch = static_cast<size_t>(width) * 3;
+  const uInt8*  i_buf   = pixels.data();
 
+  // Get the shift values for each colour component once, instead
+  // of calling mapRGB per-pixel
+  const uInt32 rShift = std::countr_zero(fb.mapRGB(0xFF, 0x00, 0x00));
+  const uInt32 gShift = std::countr_zero(fb.mapRGB(0x00, 0xFF, 0x00));
+  const uInt32 bShift = std::countr_zero(fb.mapRGB(0x00, 0x00, 0xFF));
+  const uInt32 aMask  = fb.mapRGB(0x00, 0x00, 0x00);
+
+  // Convert RGB triples into pixels and store in the surface
   for(uInt32 irow = 0; irow < height; ++irow, i_buf += i_pitch, s_buf += s_pitch)
   {
     const uInt8* i_ptr = i_buf;
     uInt32*      s_ptr = s_buf;  // NOLINT(misc-const-correctness)
     for(uInt32 icol = 0; icol < width; ++icol, i_ptr += 3)
-      *s_ptr++ = fb.mapRGB(*i_ptr, *(i_ptr+1), *(i_ptr+2));
+      *s_ptr++ = aMask
+               | (static_cast<uInt32>(i_ptr[0]) << rShift)
+               | (static_cast<uInt32>(i_ptr[1]) << gShift)
+               | (static_cast<uInt32>(i_ptr[2]) << bShift);
   }
-}
 
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void JPGLibrary::readMetaData(SpanOf<std::byte> file, VariantList& metaData)
-{
+  // Read the meta data we got
   metaData.clear();
   SpanStream stream{SpanOf<char>{
-    reinterpret_cast<const char*>(file.data()), file.size()}};
+      reinterpret_cast<const char*>(fileBuffer.data()), size}};
   const TinyEXIF::EXIFInfo imageEXIF{stream};
   if(imageEXIF.Fields && !imageEXIF.ImageDescription.empty())
     VarList::push_back(metaData, "ImageDescription", imageEXIF.ImageDescription);
 }
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-vector<std::byte> JPGLibrary::myFileBuffer;
 
 #endif  // IMAGE_SUPPORT

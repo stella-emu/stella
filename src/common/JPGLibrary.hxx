@@ -55,29 +55,6 @@ class JPGLibrary
   private:
     OSystem& myOSystem;
 
-    // Holds the decoded bytes from the JPG file
-    static vector<std::byte> myFileBuffer;
-
-    /**
-      Load the decoded JPG data into the FBSurface.  The surface is
-      resized as necessary to accommodate the data.
-
-      @param surface  The FBSurface into which to place the JPG data
-      @param pixels   The decoded RGB pixel data
-      @param width    The image width in pixels
-      @param height   The image height in pixels
-    */
-    void loadImagetoSurface(FBSurface& surface, ByteSpan pixels,
-                            uInt32 width, uInt32 height);
-
-    /**
-      Read EXIF meta data chunks from the image.
-
-      @param file      The entire data of the JPG image
-      @param metaData  The meta data of the JPG image
-    */
-    static void readMetaData(SpanOf<std::byte> file, VariantList& metaData);
-
   private:
     // Following constructors and assignment operators not supported
     JPGLibrary() = delete;
