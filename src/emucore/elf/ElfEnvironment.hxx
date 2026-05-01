@@ -123,4 +123,4 @@ namespace elfEnvironment {
   vector<ElfLinker::ExternalSymbol> externalSymbols(SystemType systemType);
 }  // namespace elfEnvironment
 
-#endif // ELF_ENVIRONMENT
+#endif  // ELF_ENVIRONMENT

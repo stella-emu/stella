@@ -100,4 +100,4 @@ class SpanStream : public std::istream
     SpanStreamBuf myBuf;
 };
 
-#endif // SPANSTREAM_HXX
+#endif  // SPANSTREAM_HXX

@@ -65,4 +65,4 @@ class Background : public Serializable
     Background& operator=(Background&&) = delete;
 };
 
-#endif // TIA_BACKGROUND
+#endif  // TIA_BACKGROUND

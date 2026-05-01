@@ -140,4 +140,4 @@ class FrameManager: public AbstractFrameManager
     FrameManager& operator=(FrameManager&&) = delete;
 };
 
-#endif // TIA_FRAME_MANAGER
+#endif  // TIA_FRAME_MANAGER

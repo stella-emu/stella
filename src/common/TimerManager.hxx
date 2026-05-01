@@ -215,4 +215,4 @@ class TimerManager
     TimerManager& operator=(TimerManager&&) = delete;
 };
 
-#endif // TIMERTHREAD_H
+#endif  // TIMERTHREAD_H

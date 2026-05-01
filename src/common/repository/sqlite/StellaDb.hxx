@@ -65,4 +65,4 @@ class StellaDb
     unique_ptr<CompositeKeyValueRepositoryAtomic> myHighscoreRepository;
 };
 
-#endif // STELLA_DB_HXX
+#endif  // STELLA_DB_HXX

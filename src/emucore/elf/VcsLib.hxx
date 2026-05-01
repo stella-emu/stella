@@ -91,4 +91,4 @@ class VcsLib: public CortexM0::BusTransactionDelegate, public Serializable {
     const VcsLib& operator=(VcsLib&&) = delete;
 };
 
-#endif // VCSLIB_H
+#endif  // VCSLIB_H

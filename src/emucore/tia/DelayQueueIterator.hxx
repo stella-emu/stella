@@ -45,4 +45,4 @@ class DelayQueueIterator
     DelayQueueIterator& operator=(DelayQueueIterator&&) = delete;
 };
 
-#endif // TIA_DELAY_QUEUE_ITERATOR
+#endif  // TIA_DELAY_QUEUE_ITERATOR

@@ -74,4 +74,4 @@ class Logger {
     Logger& operator=(const Logger&&) = delete;
 };
 
-#endif // LOGGER_HXX
+#endif  // LOGGER_HXX

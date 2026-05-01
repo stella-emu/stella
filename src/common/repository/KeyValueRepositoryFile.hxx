@@ -99,4 +99,4 @@ bool KeyValueRepositoryFile<T>::save(const KVRMap& values)
   }
 }
 
-#endif // KEY_VALUE_REPOSITORY_FILE
+#endif  // KEY_VALUE_REPOSITORY_FILE

@@ -216,7 +216,7 @@ void TIA::initialize()
 
 #ifdef DEBUGGER_SUPPORT
   createAccessArrays();
-#endif // DEBUGGER_SUPPORT
+#endif  // DEBUGGER_SUPPORT
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -2335,4 +2335,4 @@ string TIA::getAccessCounters() const
 
   return out.str();
 }
-#endif // DEBUGGER_SUPPORT
+#endif  // DEBUGGER_SUPPORT

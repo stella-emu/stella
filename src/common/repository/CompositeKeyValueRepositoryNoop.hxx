@@ -38,4 +38,4 @@ class CompositeKeyValueRepositoryNoop : public CompositeKeyValueRepositoryAtomic
     void remove(string_view key) override {}
 };
 
-#endif // COMPOSITE_KEY_VALUE_REPOSITORY_NOOP_HXX
+#endif  // COMPOSITE_KEY_VALUE_REPOSITORY_NOOP_HXX

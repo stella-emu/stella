@@ -62,4 +62,4 @@ class FpsMeter
     FpsMeter& operator=(FpsMeter&&) = delete;
 };
 
-#endif // FPS_METER_HXX
+#endif  // FPS_METER_HXX

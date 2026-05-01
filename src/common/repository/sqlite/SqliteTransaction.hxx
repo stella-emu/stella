@@ -45,4 +45,4 @@ class SqliteTransaction {
     SqliteTransaction& operator=(SqliteTransaction&&) = delete;
 };
 
-#endif // SQLITE_TRANSACTION_HXX
+#endif  // SQLITE_TRANSACTION_HXX

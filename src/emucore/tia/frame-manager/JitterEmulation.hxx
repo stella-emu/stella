@@ -113,4 +113,4 @@ class JitterEmulation : public Serializable
     JitterEmulation& operator=(JitterEmulation&&) = delete;
 };
 
-#endif // TIA_JITTER_EMULATION
+#endif  // TIA_JITTER_EMULATION

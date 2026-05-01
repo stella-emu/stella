@@ -3150,7 +3150,7 @@ void Thumbulator::incSCycles(uInt32 addr, AccessType accessType)
     //if(_lastCycleType[_pipeIdx ^ 1] == CycleType::I || _lastCycleType[_pipeIdx ^ 2] == CycleType::I)
     //  _lastCycleType[_pipeIdx ^ 1] = _lastCycleType[_pipeIdx ^ 2] = CycleType::S;
   }
-#endif // MERGE_I_S
+#endif  // MERGE_I_S
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -3209,7 +3209,7 @@ void Thumbulator::incICycles(uInt32 m)
   _totalCycles += m;
 }
 
-#endif // THUMB_CYCLE_COUNT
+#endif  // THUMB_CYCLE_COUNT
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool Thumbulator::searchPattern(uInt32 pattern, uInt32 repeats) const

@@ -54,4 +54,4 @@ class DrawCounterDecodes
     DrawCounterDecodes& operator=(DrawCounterDecodes&&) = delete;
 };
 
-#endif // TIA_DRAW_COUNTER_DECODES
+#endif  // TIA_DRAW_COUNTER_DECODES

@@ -78,4 +78,4 @@ class AudioChannel : public Serializable
     AudioChannel& operator=(AudioChannel&&) = delete;
 };
 
-#endif // TIA_AUDIO_CHANNEL_HXX
+#endif  // TIA_AUDIO_CHANNEL_HXX

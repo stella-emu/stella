@@ -142,4 +142,4 @@ enum TIARegister: uInt8 {  // NOLINT / TODO masks can't be 'enum class'
   INPT5   = 0x0d   // Read P2 joystick trigger: D7
 };
 
-#endif // TIA_CONSTANTS_HXX
+#endif  // TIA_CONSTANTS_HXX

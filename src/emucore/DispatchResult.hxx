@@ -90,4 +90,4 @@ class DispatchResult
     string myToolTip;
 };
 
-#endif // DISPATCH_RESULT_HXX
+#endif  // DISPATCH_RESULT_HXX

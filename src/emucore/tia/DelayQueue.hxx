@@ -165,4 +165,4 @@ bool DelayQueue<length, capacity>::load(Serializer& in)
   return true;
 }
 
-#endif //  TIA_DELAY_QUEUE
+#endif  // TIA_DELAY_QUEUE

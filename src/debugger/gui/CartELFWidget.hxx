@@ -54,4 +54,4 @@ class CartridgeELFWidget: public CartDebugWidget
     CartridgeELFWidget& operator=(CartridgeELFWidget&&) = delete;
 };
 
-#endif // CART_ELF_WIDGET_HXX
+#endif  // CART_ELF_WIDGET_HXX

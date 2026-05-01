@@ -1922,7 +1922,7 @@ bool EventHandler::changeStateByEvent(Event::Type type)
         handled = false;
       break;
 
-#endif // GUI_SUPPORT
+#endif  // GUI_SUPPORT
 
     case Event::TimeMachineMode:
       if(myState == EventHandlerState::EMULATION || myState == EventHandlerState::PAUSE

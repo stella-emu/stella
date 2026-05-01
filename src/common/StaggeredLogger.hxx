@@ -92,4 +92,4 @@ class StaggeredLogger
     StaggeredLogger& operator=(StaggeredLogger&&) = delete;
 };
 
-#endif // STAGGERED_LOGGER
+#endif  // STAGGERED_LOGGER

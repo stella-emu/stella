@@ -53,4 +53,4 @@ class LatchedInput : public Serializable
     LatchedInput& operator=(LatchedInput&&) = delete;
 };
 
-#endif // TIA_LATCHED_INPUT
+#endif  // TIA_LATCHED_INPUT

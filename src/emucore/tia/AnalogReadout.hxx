@@ -112,4 +112,4 @@ class AnalogReadout : public Serializable
 bool operator==(const AnalogReadout::Connection& c1, const AnalogReadout::Connection& c2);
 bool operator!=(const AnalogReadout::Connection& c1, const AnalogReadout::Connection& c2);
 
-#endif // TIA_ANALOG_READOUT
+#endif  // TIA_ANALOG_READOUT

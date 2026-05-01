@@ -139,4 +139,4 @@ class PointingDevice : public Controller
     PointingDevice& operator=(PointingDevice&&) = delete;
 };
 
-#endif // POINTING_DEVICE_HXX
+#endif  // POINTING_DEVICE_HXX

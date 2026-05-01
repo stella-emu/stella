@@ -217,4 +217,4 @@ void Missile::tick(uInt8 hclock, bool isReceivingMclock)
   if (++myCounter >= TIAConstants::H_PIXEL) myCounter = 0;
 }
 
-#endif // TIA_MISSILE
+#endif  // TIA_MISSILE

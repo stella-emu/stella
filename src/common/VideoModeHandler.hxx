@@ -115,4 +115,4 @@ class VideoModeHandler
     VideoModeHandler& operator=(const VideoModeHandler&&) = delete;
 };
 
-#endif // VIDEO_MODE_HANDLER_HXX
+#endif  // VIDEO_MODE_HANDLER_HXX

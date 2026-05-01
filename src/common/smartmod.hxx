@@ -83,4 +83,4 @@ constexpr uInt8 smartmod<256>(uInt8 x)
   return x & 0xFF;
 }
 
-#endif // SMARTMOD_HXX
+#endif  // SMARTMOD_HXX

@@ -94,4 +94,4 @@ class PhosphorHandler
     PhosphorHandler& operator=(const PhosphorHandler&&) = delete;
 };
 
-#endif // PHOSPHOR_HANDLER_HXX
+#endif  // PHOSPHOR_HANDLER_HXX

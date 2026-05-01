@@ -194,4 +194,4 @@ class CartridgeELF: public Cartridge {
 
 };
 
-#endif // CARTRIDGE_ELF
+#endif  // CARTRIDGE_ELF

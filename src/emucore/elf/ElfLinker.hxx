@@ -156,4 +156,4 @@ class ElfLinker {
     ElfLinker& operator=(ElfLinker&&) = delete;
 };
 
-#endif // ELF_LINKER
+#endif  // ELF_LINKER

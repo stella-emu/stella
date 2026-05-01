@@ -113,4 +113,4 @@ class ElfFile {
     ElfFile& operator=(ElfFile&&) = delete;
 };
 
-#endif // ELF_FILE
+#endif  // ELF_FILE

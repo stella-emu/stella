@@ -28,4 +28,4 @@ class SettingsRepositoryMACOS : public KeyValueRepository
     bool save(const KVRMap& values) override;
 };
 
-#endif // SETTINGS_REPOSITORY_MACOS_HXX
+#endif  // SETTINGS_REPOSITORY_MACOS_HXX

@@ -329,4 +329,4 @@ class AbstractFrameManager : public Serializable
 
 };
 
-#endif // TIA_ABSTRACT_FRAME_MANAGER
+#endif  // TIA_ABSTRACT_FRAME_MANAGER

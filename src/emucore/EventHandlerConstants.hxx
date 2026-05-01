@@ -112,4 +112,4 @@ namespace GUI {
   static constexpr std::string_view RIGHT_DIFF_B = "Right Diff B";
 }  // namespace GUI
 
-#endif // EVENTHANDLER_CONSTANTS_HXX
+#endif  // EVENTHANDLER_CONSTANTS_HXX

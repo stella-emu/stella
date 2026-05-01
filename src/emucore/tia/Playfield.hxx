@@ -291,4 +291,4 @@ void Playfield::tick(uInt32 x)
   collision = currentPixel ? myCollisionMaskEnabled : myCollisionMaskDisabled;
 }
 
-#endif // TIA_PLAYFIELD
+#endif  // TIA_PLAYFIELD

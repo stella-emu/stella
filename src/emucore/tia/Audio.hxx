@@ -124,4 +124,4 @@ void Audio::tick()
   if (++myCounter == 228) myCounter = 0;
 }
 
-#endif // TIA_AUDIO_HXX
+#endif  // TIA_AUDIO_HXX

@@ -49,4 +49,4 @@ class AbstractKeyValueRepositorySqlite : public KeyValueRepositoryAtomic
     virtual SqliteDatabase& database() = 0;
 };
 
-#endif // ABSTRACT_KEY_VALUE_REPOSITORY_SQLITE_HXX
+#endif  // ABSTRACT_KEY_VALUE_REPOSITORY_SQLITE_HXX

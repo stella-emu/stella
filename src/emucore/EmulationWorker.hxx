@@ -210,4 +210,4 @@ class EmulationWorker
     EmulationWorker& operator=(EmulationWorker&&) = delete;
 };
 
-#endif // EMULATION_WORKER_HXX
+#endif  // EMULATION_WORKER_HXX

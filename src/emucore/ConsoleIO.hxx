@@ -50,4 +50,4 @@ class ConsoleIO
     ConsoleIO& operator=(ConsoleIO&&) = delete;
 };
 
-#endif // CONSOLE_IO_HXX
+#endif  // CONSOLE_IO_HXX

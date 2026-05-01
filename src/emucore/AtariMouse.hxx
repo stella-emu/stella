@@ -63,4 +63,4 @@ class AtariMouse : public PointingDevice
     AtariMouse& operator=(AtariMouse&&) = delete;
 };
 
-#endif // ATARIMOUSE_HXX
+#endif  // ATARIMOUSE_HXX

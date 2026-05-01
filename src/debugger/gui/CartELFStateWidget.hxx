@@ -58,4 +58,4 @@ class CartridgeELFStateWidget : public CartDebugWidget {
     CartridgeELFStateWidget& operator=(CartridgeELFStateWidget&&) = delete;
 };
 
-#endif // CART_ELF_INFO_WIDGET_HXX
+#endif  // CART_ELF_INFO_WIDGET_HXX

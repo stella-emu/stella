@@ -82,4 +82,4 @@ void SqliteDatabase::exec(string_view sql, T arg1, Ts... args)
 #pragma clang diagnostic pop
 #endif
 
-#endif // SQLITE_DATABASE_HXX
+#endif  // SQLITE_DATABASE_HXX

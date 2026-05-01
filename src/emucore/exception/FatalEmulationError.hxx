@@ -35,4 +35,4 @@ class FatalEmulationError : public std::exception
     string myMessage;
 };
 
-#endif // FATAL_EMULATION_ERROR_HXX
+#endif  // FATAL_EMULATION_ERROR_HXX

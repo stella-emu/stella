@@ -89,4 +89,4 @@ SqliteStatement::SqliteStatement(sqlite3* handle, string_view sql, T arg1, Ts...
   #pragma clang diagnostic pop
 #endif
 
-#endif // SQLITE_STATEMENT_HXX
+#endif  // SQLITE_STATEMENT_HXX

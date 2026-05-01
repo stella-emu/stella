@@ -68,4 +68,4 @@ class CompositeKeyValueRepositoryAtomic : public CompositeKeyValueRepository
     CompositeKeyValueRepositoryAtomic* atomic() override { return this; }
 };
 
-#endif // COMPOSITE_KEY_VALUE_REPOSITORY_HXX
+#endif  // COMPOSITE_KEY_VALUE_REPOSITORY_HXX

@@ -63,4 +63,4 @@ class KeyValueRepositorySqlite : public AbstractKeyValueRepositorySqlite
     KeyValueRepositorySqlite& operator=(KeyValueRepositorySqlite&&) = delete;
 };
 
-#endif // KEY_VALUE_REPOSITORY_SQLITE_HXX
+#endif  // KEY_VALUE_REPOSITORY_SQLITE_HXX

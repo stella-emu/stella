@@ -46,4 +46,4 @@ class DelayQueueWidget : public Widget
     DelayQueueWidget& operator=(DelayQueueWidget&&) = delete;
 };
 
-#endif // DELAY_QUEUE_WIDGET_HXX
+#endif  // DELAY_QUEUE_WIDGET_HXX

@@ -79,7 +79,7 @@ void M6532::reset()
 
 #ifdef DEBUGGER_SUPPORT
   createAccessBases();
-#endif // DEBUGGER_SUPPORT
+#endif  // DEBUGGER_SUPPORT
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -573,4 +573,4 @@ string M6532::getAccessCounters() const
   return out.str();
 }
 
-#endif // DEBUGGER_SUPPORT
+#endif  // DEBUGGER_SUPPORT

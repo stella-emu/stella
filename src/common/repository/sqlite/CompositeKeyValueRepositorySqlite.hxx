@@ -102,4 +102,4 @@ class CompositeKeyValueRepositorySqlite : public CompositeKeyValueRepositoryAtom
     CompositeKeyValueRepositorySqlite& operator=(CompositeKeyValueRepositorySqlite&&) = delete;
 };
 
-#endif // COMPOSITE_KEY_VALUE_REPOSITORY_SQLITE_HXX
+#endif  // COMPOSITE_KEY_VALUE_REPOSITORY_SQLITE_HXX

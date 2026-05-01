@@ -37,4 +37,4 @@ class KeyValueRepositoryNoop : public KeyValueRepositoryAtomic
     void remove(string_view key) override {}
 };
 
-#endif // KEY_VALUE_REPOSITORY_NOOP_HXX
+#endif  // KEY_VALUE_REPOSITORY_NOOP_HXX

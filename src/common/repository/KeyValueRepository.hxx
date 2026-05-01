@@ -62,4 +62,4 @@ class KeyValueRepositoryAtomic : public KeyValueRepository {
     KeyValueRepositoryAtomic* atomic() override { return this; }
 };
 
-#endif // KEY_VALUE_REPOSITORY_HXX
+#endif  // KEY_VALUE_REPOSITORY_HXX

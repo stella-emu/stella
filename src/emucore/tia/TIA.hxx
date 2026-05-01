@@ -15,8 +15,8 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#ifndef TIA_TIA
-#define TIA_TIA
+#ifndef TIA_HXX
+#define TIA_HXX
 
 #include <functional>
 
@@ -358,7 +358,7 @@ class TIA : public Device
     uInt32 frameWSyncCycles() const {
       return static_cast<uInt32>(myFrameWsyncCycles);
     }
-  #endif // DEBUGGER_SUPPORT
+  #endif  // DEBUGGER_SUPPORT
 
     /**
      * Get the CPU cycles since the last dump ports change.
@@ -629,7 +629,7 @@ class TIA : public Device
       @return  The access counters as comma separated string
     */
     string getAccessCounters() const override;
-  #endif // DEBUGGER_SUPPORT
+  #endif  // DEBUGGER_SUPPORT
 
   private:
     /**
@@ -787,7 +787,7 @@ class TIA : public Device
 
   #ifdef DEBUGGER_SUPPORT
     void createAccessArrays();
-  #endif // DEBUGGER_SUPPORT
+  #endif  // DEBUGGER_SUPPORT
 
   private:
     ConsoleIO& myConsole;
@@ -1023,7 +1023,7 @@ class TIA : public Device
      * System cycles used by WSYNC during current frame.
      */
     uInt64 myFrameWsyncCycles{0};
-  #endif // DEBUGGER_SUPPORT
+  #endif  // DEBUGGER_SUPPORT
 
     /**
      * The frame manager can change during our lifetime, so we buffer those two.
@@ -1047,7 +1047,7 @@ class TIA : public Device
 
     // The array used to skip the first two TIA access trackings
     std::array<uInt8, TIA_SIZE> myAccessDelay{};
-  #endif // DEBUGGER_SUPPORT
+  #endif  // DEBUGGER_SUPPORT
 
   private:
     TIA() = delete;
@@ -1057,4 +1057,4 @@ class TIA : public Device
     TIA& operator=(TIA&&) = delete;
 };
 
-#endif // TIA_TIA
+#endif  // TIA_HXX

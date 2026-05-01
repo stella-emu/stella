@@ -116,4 +116,4 @@ private:
   inline static std::string  ourHomePath;
 };
 
-#endif // HOME_FINDER_HXX
+#endif  // HOME_FINDER_HXX

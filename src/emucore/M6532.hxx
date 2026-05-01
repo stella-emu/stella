@@ -179,7 +179,7 @@ class M6532 : public Device
     uInt32 timerClocks() const;
 
     void createAccessBases();
-  #endif // DEBUGGER_SUPPORT
+  #endif  // DEBUGGER_SUPPORT
 
   private:
     // Reference to the console
@@ -263,7 +263,7 @@ class M6532 : public Device
     bool myTimWrappedOnWrite{false};
     // Timer read CPU cycles
     uInt16 myTimReadCycles{0};
-#endif // DEBUGGER_SUPPORT
+#endif  // DEBUGGER_SUPPORT
 
   private:
     // Following constructors and assignment operators not supported
@@ -274,4 +274,4 @@ class M6532 : public Device
     M6532& operator=(M6532&&) = delete;
 };
 
-#endif
+#endif  // M6532_HXX

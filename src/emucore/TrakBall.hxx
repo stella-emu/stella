@@ -64,4 +64,4 @@ class TrakBall : public PointingDevice
     TrakBall& operator=(TrakBall&&) = delete;
 };
 
-#endif // TRAKBALL_HXX
+#endif  // TRAKBALL_HXX

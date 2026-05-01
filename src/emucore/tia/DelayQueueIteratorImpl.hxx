@@ -129,4 +129,4 @@ uInt8 DelayQueueIteratorImpl<length, capacity>::currentIndex() const
   return (myDelayQueue.myIndex + myDelayCycle) % length;
 }
 
-#endif // TIA_DELAY_QUEUE_ITERATOR_IMPL
+#endif  // TIA_DELAY_QUEUE_ITERATOR_IMPL

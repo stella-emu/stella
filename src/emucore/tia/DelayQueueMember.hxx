@@ -150,4 +150,4 @@ bool DelayQueueMember<capacity>::load(Serializer& in)
   return true;
 }
 
-#endif // TIA_DELAY_QUEUE_MEMBER
+#endif  // TIA_DELAY_QUEUE_MEMBER

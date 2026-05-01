@@ -36,4 +36,4 @@ class KeyValueRepositoryJsonFile : public KeyValueRepositoryFile<KeyValueReposit
     static bool save(std::ostream& out, const KVRMap& values);
 };
 
-#endif // KEY_VALUE_REPOSITORY_JSON_FILE_HXX
+#endif  // KEY_VALUE_REPOSITORY_JSON_FILE_HXX

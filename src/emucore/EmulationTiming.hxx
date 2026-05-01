@@ -96,4 +96,4 @@ class EmulationTiming {
 
 };
 
-#endif // EMULATION_TIMING_HXX
+#endif  // EMULATION_TIMING_HXX

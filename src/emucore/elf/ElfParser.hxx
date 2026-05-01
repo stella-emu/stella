@@ -103,4 +103,4 @@ std::ostream& operator<<(std::ostream& os, const ElfParser::Section& section);
 std::ostream& operator<<(std::ostream& os, const ElfParser::Symbol& symbol);
 std::ostream& operator<<(std::ostream& os, const ElfParser::Relocation& relocation);
 
-#endif // ELF_PARSER
+#endif  // ELF_PARSER

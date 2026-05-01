@@ -29,4 +29,4 @@ enum class ConsoleTiming: uInt8
   numTimings
 };
 
-#endif // CONSOLE_TIMING_HXX
+#endif  // CONSOLE_TIMING_HXX

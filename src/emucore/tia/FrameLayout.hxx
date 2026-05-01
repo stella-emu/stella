@@ -25,4 +25,4 @@ enum class FrameLayout: uInt8 {
   ntsc50  // ROM display has PAL timings (~50Hz, ~312 scanlines, etc), but uses NTSC colors
 };
 
-#endif // FRAME_LAYOUT
+#endif  // FRAME_LAYOUT

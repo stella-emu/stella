@@ -331,4 +331,4 @@ class PaletteHandler
     PaletteHandler& operator=(const PaletteHandler&&) = delete;
 };
 
-#endif // PALETTE_HANDLER_HXX
+#endif  // PALETTE_HANDLER_HXX

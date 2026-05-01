@@ -132,4 +132,4 @@ enum class FrameStyle: uInt8 {
   Dashed
 };
 
-#endif // FRAMEBUFFER_CONSTANTS_HXX
+#endif  // FRAMEBUFFER_CONSTANTS_HXX

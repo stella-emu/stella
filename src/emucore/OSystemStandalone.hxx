@@ -49,4 +49,4 @@ class OSystemStandalone : public OSystem
 
 };
 
-#endif // OSYSTEM_STANDALONE_HXX
+#endif  // OSYSTEM_STANDALONE_HXX

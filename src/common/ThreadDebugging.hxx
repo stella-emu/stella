@@ -63,4 +63,4 @@ class ThreadDebuggingHelper {
     ThreadDebuggingHelper& operator=(ThreadDebuggingHelper&&) = delete;
 };
 
-#endif // THREADING_DEBUGGER_HXX
+#endif  // THREADING_DEBUGGER_HXX

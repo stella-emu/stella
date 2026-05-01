@@ -63,4 +63,4 @@ class AmigaMouse : public PointingDevice
     AmigaMouse& operator=(AmigaMouse&&) = delete;
 };
 
-#endif // AMIGAMOUSE_HXX
+#endif  // AMIGAMOUSE_HXX

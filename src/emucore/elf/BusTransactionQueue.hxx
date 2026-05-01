@@ -88,4 +88,4 @@ class BusTransactionQueue: public Serializable {
     BusTransactionQueue& operator=(BusTransactionQueue&&) = delete;
 };
 
-#endif // BUS_TRANSACTION_QUEUE
+#endif  // BUS_TRANSACTION_QUEUE

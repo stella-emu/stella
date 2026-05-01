@@ -33,4 +33,4 @@ class SqliteError : public std::exception
     string myMessage;
 };
 
-#endif // SQLITE_ERROR_HXX
+#endif  // SQLITE_ERROR_HXX

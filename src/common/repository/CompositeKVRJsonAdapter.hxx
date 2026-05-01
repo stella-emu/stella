@@ -38,4 +38,4 @@ class CompositeKVRJsonAdapter : public CompositeKeyValueRepository {
     KeyValueRepositoryAtomic& myKvr;
 };
 
-#endif // COMPOSITE_KVR_JSON_ADAPTER_HXX
+#endif  // COMPOSITE_KVR_JSON_ADAPTER_HXX

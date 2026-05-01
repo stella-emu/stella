@@ -35,4 +35,4 @@ class EmulationWarning : public std::exception
     string myMessage;
 };
 
-#endif // EMULATION_WARNING_HXX
+#endif  // EMULATION_WARNING_HXX

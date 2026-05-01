@@ -229,4 +229,4 @@ void Player::tick()
   if (++myCounter >= TIAConstants::H_PIXEL) myCounter = 0;
 }
 
-#endif // TIA_PLAYER
+#endif  // TIA_PLAYER

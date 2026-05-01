@@ -143,4 +143,4 @@ class FrameLayoutDetector: public AbstractFrameManager
 
 };
 
-#endif // TIA_FRAME_LAYOUT_DETECTOR
+#endif  // TIA_FRAME_LAYOUT_DETECTOR

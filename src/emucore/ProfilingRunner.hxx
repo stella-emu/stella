@@ -62,4 +62,4 @@ class ProfilingRunner {
     Properties myProps;
 };
 
-#endif // PROFILING_RUNNER
+#endif  // PROFILING_RUNNER

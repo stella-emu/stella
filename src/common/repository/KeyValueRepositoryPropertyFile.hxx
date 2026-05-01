@@ -36,4 +36,4 @@ class KeyValueRepositoryPropertyFile : public KeyValueRepositoryFile<KeyValueRep
     static bool save(std::ostream& out, const KVRMap& values);
 };
 
-#endif // KEY_VALUE_REPOSITORY_PROPERTY_FILE_HXX
+#endif  // KEY_VALUE_REPOSITORY_PROPERTY_FILE_HXX

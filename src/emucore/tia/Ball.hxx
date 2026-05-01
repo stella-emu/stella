@@ -417,4 +417,4 @@ void Ball::tick(bool isReceivingRegularClock)
       myCounter = 0;
 }
 
-#endif // TIA_BALL
+#endif  // TIA_BALL

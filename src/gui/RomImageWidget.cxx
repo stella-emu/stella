@@ -530,7 +530,7 @@ void RomImageWidget::tick()
 
   Widget::tick();
 }
-#endif // IMAGE_SUPPORT
+#endif  // IMAGE_SUPPORT
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void RomImageWidget::drawWidget(bool hilite)
