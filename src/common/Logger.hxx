@@ -19,51 +19,44 @@
 #define LOGGER_HXX
 
 #include <mutex>
-
 #include "bspf.hxx"
 
-class Logger {
-
+class Logger
+{
   public:
-
-    enum class Level: uInt8 {
-      ERR = 0, // cannot use ERROR???
-      INFO = 1,
-      DEBUG = 2,
+    enum class Level: uInt8
+    {
+      ERR    = 0,  // cannot use ERROR on some platforms
+      INFO   = 1,
+      DEBUG  = 2,
       ALWAYS = 3,
-      MIN = ERR,
-      MAX = DEBUG
+      MIN    = ERR,
+      MAX    = DEBUG
     };
 
   public:
-
     static Logger& instance();
 
     static void log(string_view message, Level level = Level::ALWAYS);
-
     static void error(string_view message);
-
     static void info(string_view message);
-
     static void debug(string_view message);
 
     void setLogParameters(int logLevel, bool logToConsole);
     void setLogParameters(Level logLevel, bool logToConsole);
 
-    const string& logMessages() const { return myLogMessages; }
+    [[nodiscard]] const string& logMessages() const { return myLogMessages; }
 
   protected:
-    Logger() = default;
+    Logger()  = default;
     ~Logger() = default;
 
   private:
-    int myLogLevel{static_cast<int>(Level::MAX)};
+    int  myLogLevel{static_cast<int>(Level::MAX)};
     bool myLogToConsole{true};
 
-    // The list of log messages
-    string myLogMessages;
-
-    std::mutex mutex;
+    string     myLogMessages;
+    std::mutex myMutex;
 
   private:
     void logMessage(string_view message, Level level);
@@ -71,7 +64,7 @@ class Logger {
     Logger(const Logger&) = delete;
     Logger(Logger&&) = delete;
     Logger& operator=(const Logger&) = delete;
-    Logger& operator=(const Logger&&) = delete;
+    Logger& operator=(Logger&&) = delete;
 };
 
 #endif  // LOGGER_HXX

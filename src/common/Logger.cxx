@@ -18,14 +18,13 @@
 #include "Logger.hxx"
 
 #ifdef __LIB_RETRO__
-extern void libretro_logger(int log_level, const char *string);
+extern void libretro_logger(int log_level, const char* string);
 #endif
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Logger& Logger::instance()
 {
   static Logger loggerInstance;
-
   return loggerInstance;
 }
 
@@ -46,6 +45,7 @@ void Logger::info(string_view message)
 {
   instance().logMessage(message, Level::INFO);
 }
+
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Logger::debug(string_view message)
 {
@@ -55,35 +55,34 @@ void Logger::debug(string_view message)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Logger::logMessage(string_view message, Level level)
 {
-  const std::scoped_lock lock(mutex);
+  const std::scoped_lock lock(myMutex);
+
+  // ALWAYS and ERR bypass the level filter; others must be within myLogLevel
+  const bool shouldLog = level == Level::ERR
+                      || level == Level::ALWAYS
+                      || static_cast<int>(level) <= myLogLevel;
+  if (!shouldLog) return;
+
+  // ERR always goes to console regardless of myLogToConsole
+  if (myLogToConsole || level == Level::ERR)
+    cout << message << '\n' << std::flush;
+
+  // Single append call per chunk avoids repeated reallocation
+  myLogMessages.append(message).append(1, '\n');
 
 #ifdef __LIB_RETRO__
+  // libretro needs a null-terminated string; construct only when needed
   libretro_logger(static_cast<int>(level), string{message}.c_str());
 #endif
-
-  if(level == Logger::Level::ERR)
-  {
-    cout << message << '\n' << std::flush;
-    myLogMessages += message;
-    myLogMessages += "\n";
-  }
-  else if(static_cast<int>(level) <= myLogLevel ||
-          level == Logger::Level::ALWAYS)
-  {
-    if(myLogToConsole)
-      cout << message << '\n' << std::flush;
-    myLogMessages += message;
-    myLogMessages += "\n";
-  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Logger::setLogParameters(int logLevel, bool logToConsole)
 {
-  if(logLevel >= static_cast<int>(Level::MIN) &&
-     logLevel <= static_cast<int>(Level::MAX))
+  if (logLevel >= static_cast<int>(Level::MIN) &&
+      logLevel <= static_cast<int>(Level::MAX))
   {
-    myLogLevel = logLevel;
+    myLogLevel     = logLevel;
     myLogToConsole = logToConsole;
   }
 }

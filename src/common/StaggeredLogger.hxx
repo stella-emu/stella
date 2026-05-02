@@ -15,17 +15,15 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#ifndef STAGGERED_LOGGER
-#define STAGGERED_LOGGER
+#ifndef STAGGERED_LOGGER_HXX
+#define STAGGERED_LOGGER_HXX
 
-#include <functional>
 #include <chrono>
-#include <thread>
 #include <mutex>
 
 #include "bspf.hxx"
-#include "TimerManager.hxx"
 #include "Logger.hxx"
+#include "TimerManager.hxx"
 
 /**
  * This class buffers log events and logs them after a certain time window has
@@ -33,63 +31,58 @@
  * a maximum is reached.  If no events are reported, the window size decreases
  * again.
  */
-
 class StaggeredLogger
 {
   public:
-
     StaggeredLogger(string_view message, Logger::Level level);
     ~StaggeredLogger();
 
     void log();
 
   private:
+    // Clock aliases: steady_clock is guaranteed monotonic, unlike
+    // high_resolution_clock which may alias system_clock on some platforms.
+    using Clock     = std::chrono::steady_clock;
+    using TimePoint = Clock::time_point;
+    using Ms        = std::chrono::milliseconds;
 
     void _log();
-
     void onTimerExpired(uInt32 timerCallbackId);
-
     void startInterval();
-
     void increaseInterval();
-
     void decreaseInterval();
-
     void logLine();
 
-    string myMessage;
-    Logger::Level myLevel;
+    string         myMessage;
+    Logger::Level  myLevel;
 
-    uInt32 myCurrentEventCount{0};
-    bool myIsCurrentlyCollecting{false};
+    uInt32  myCurrentEventCount{0};
+    bool    myIsCurrentlyCollecting{false};
 
-    std::chrono::high_resolution_clock::time_point myLastIntervalStartTimestamp;
-    std::chrono::high_resolution_clock::time_point myLastIntervalEndTimestamp;
+    TimePoint  myLastIntervalStartTimestamp;
+    TimePoint  myLastIntervalEndTimestamp;
 
-    uInt32 myCurrentIntervalSize{100};
-    uInt32 myMaxIntervalFactor{9};
-    uInt32 myCurrentIntervalFactor{1};
-    uInt32 myCooldownTime{1000};
+    uInt32  myCurrentIntervalSize{100};   // milliseconds
+    uInt32  myMaxIntervalFactor{9};
+    uInt32  myCurrentIntervalFactor{1};
+    uInt32  myCooldownTime{1000};         // milliseconds
 
     std::mutex myMutex;
 
-    // We need control over the destruction porcess and over the exact point where
-    // the worker thread joins -> allocate on the heap end delete explicitly in
-    // our destructor.
+    // Heap-allocated so we control the exact point the worker thread joins
+    // (TimerManager join happens in its destructor, called explicitly below).
     unique_ptr<TimerManager> myTimer{std::make_unique<TimerManager>()};
-    TimerManager::TimerId myTimerId{0};
+    TimerManager::TimerId    myTimerId{0};
 
-    // It is possible that the timer callback is running even after TimerManager::clear
-    // returns. This id is unique per timer and is used to return from the callback
-    // early in case the time is stale.
-    uInt32 myTimerCallbackId{0};
+    // Incremented each time a new timer is armed.  The callback captures this
+    // value; a mismatch means the timer is stale and the callback is a no-op.
+    uInt32  myTimerCallbackId{0};
 
   private:
-    // Following constructors and assignment operators not supported
     StaggeredLogger(const StaggeredLogger&) = delete;
     StaggeredLogger(StaggeredLogger&&) = delete;
     StaggeredLogger& operator=(const StaggeredLogger&) = delete;
     StaggeredLogger& operator=(StaggeredLogger&&) = delete;
 };
 
-#endif  // STAGGERED_LOGGER
+#endif  // STAGGERED_LOGGER_HXX
