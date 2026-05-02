@@ -41,19 +41,15 @@ FSNodeZIP::FSNodeZIP(string_view p)
 
   _zipFile = p.substr(0, pos+4);
 
-  // Expand '~' to the users 'home' directory
-  if(_zipFile[0] == '~')
-  {
-#if defined(BSPF_UNIX) || defined(BSPF_MACOS)
-    // Skip the '/' after '~' if present to avoid double slash
-    const size_t replaceLen = (_zipFile.size() > 1 && _zipFile[1] == '/') ? 2 : 1;
-    _zipFile.replace(0, replaceLen, XDGPaths::instance().home());
-#elif defined(BSPF_WINDOWS)
-    // Skip the '\\' after '~' if present to avoid double slash
-    const size_t replaceLen = (_zipFile.size() > 1 && _zipFile[1] == '\\') ? 2 : 1;
-    _zipFile.replace(0, replaceLen, HomeFinder::getHomePath());
-#endif
-  }
+  // Create a concrete FSNode to use
+  // This *must not* be a ZIP file; it must be a real FSNode object that
+  // has direct access to the actual filesystem (aka, a 'System' node)
+  // Behind the scenes, this node is actually a platform-specific object
+  // for whatever system we are running on
+  _realNode = FSNodeFactory::create(_zipFile, FSNodeFactory::Type::SYSTEM);
+
+  // Update _zipFile with the fully resolved path from the real node
+  _zipFile = _realNode->getPath();
 
   // Open file at least once to initialize the virtual file count
   try
@@ -96,13 +92,6 @@ FSNodeZIP::FSNodeZIP(string_view p)
   }
   else if(_numFiles > 1)
     _isDirectory = true;
-
-  // Create a concrete FSNode to use
-  // This *must not* be a ZIP file; it must be a real FSNode object that
-  // has direct access to the actual filesystem (aka, a 'System' node)
-  // Behind the scenes, this node is actually a platform-specific object
-  // for whatever system we are running on
-  _realNode = FSNodeFactory::create(_zipFile, FSNodeFactory::Type::SYSTEM);
 
   setFlags(_zipFile, _virtualPath, _realNode);
 }
