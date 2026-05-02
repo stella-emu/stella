@@ -1573,7 +1573,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       return;
 
     case Event::TakeSnapshot:
-      if(pressed && !repeated) myOSystem.png().takeSnapshot();
+      if(pressed && !repeated) myOSystem.frameBuffer().tiaSurface().saveSnapShot();
       return;
   #endif
 

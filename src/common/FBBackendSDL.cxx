@@ -26,6 +26,7 @@
 #include "Settings.hxx"
 
 #include "ThreadDebugging.hxx"
+#include "TIASurface.hxx"
 #include "FBSurfaceSDL.hxx"
 #include "FBBackendSDL.hxx"
 
@@ -640,27 +641,55 @@ const FBSurface& FBBackendSDL::compositedSurface()
     fb.scaleX(rectUnscaled.w()), fb.scaleY(rectUnscaled.h())
   );
 
-  // Make sure we have a 'clean' image, with no onscreen messages
-  fb.enableMessages(false);
-
   const SDL_Rect surfaceRect = ToSDLRect(rect);
   SDL_Surface* tmp = SDL_RenderReadPixels(myRenderer, &surfaceRect);
+  if(!tmp)
+    throw(std::runtime_error(std::format("Snapshot failed: {}", SDL_GetError())));
+
   SDL_Surface* sdlSurface = SDL_ConvertSurface(tmp, myPixelFormat->format);
   SDL_DestroySurface(tmp);
-
-  // Re-enable old messages
-  fb.enableMessages(true);
 
   if(!sdlSurface)
     throw(std::runtime_error(std::format("Snapshot failed: {}", SDL_GetError())));
 
-  // Only create a surface when absolutely necessary
-  const uInt32 w = surfaceRect.w, h = surfaceRect.h;
-  if(!myCompositedSurface ||
-      std::cmp_not_equal(myCompositedSurface->width(), w) ||
-      std::cmp_not_equal(myCompositedSurface->height(), h))
-    myCompositedSurface = std::make_unique<FBSurfaceSDL>
-      (const_cast<FBBackendSDL&>(*this), sdlSurface, ScalingInterpolation::none);
+  // SDL3's OpenGL renderer converts sRGB textures to linear space for blending,
+  // and SDL_RenderReadPixels returns these linear values. For phosphor mode,
+  // the averaged pixel values go through this conversion and come back darker.
+  // Apply sRGB gamma correction to restore correct brightness.
+  // NOTE: this correction may need revisiting for other renderers (e.g. Metal).
+  if(fb.tiaSurface().phosphorEnabled())
+  {
+    static const std::array<uInt8, 256> gammaLUT = [] {
+      std::array<uInt8, 256> lut{};
+      for(int i = 0; i < 256; ++i)
+        lut[i] = static_cast<uInt8>(
+          std::pow(i / 255.0, 1.0 / 1.35) * 255.0 + 0.5);
+      return lut;
+    }();
+
+    const uInt32 rShift = std::countr_zero(rMask());
+    const uInt32 gShift = std::countr_zero(gMask());
+    const uInt32 bShift = std::countr_zero(bMask());
+    const uInt32 aMask_ = aMask();
+
+    const uInt32 w = static_cast<uInt32>(surfaceRect.w);
+    const uInt32 h = static_cast<uInt32>(surfaceRect.h);
+    const uInt32 pitch = sdlSurface->pitch / sizeof(uInt32);
+    auto* pixels = static_cast<uInt32*>(sdlSurface->pixels);
+
+    const auto applyGamma = [rShift, gShift, bShift, aMask_](uInt32 px) -> uInt32 {
+      const uInt8 r = gammaLUT[(px >> rShift) & 0xFF];
+      const uInt8 g = gammaLUT[(px >> gShift) & 0xFF];
+      const uInt8 b = gammaLUT[(px >> bShift) & 0xFF];
+      return aMask_ | (r << rShift) | (g << gShift) | (b << bShift);
+    };
+
+    auto* row = pixels;
+    for(uInt32 y = 0; y < h; ++y, row += pitch)
+      std::transform(row, row + w, row, applyGamma);
+  }
+  myCompositedSurface = std::make_unique<FBSurfaceSDL>
+    (const_cast<FBBackendSDL&>(*this), sdlSurface, ScalingInterpolation::none);
 
   return *myCompositedSurface;
 }

@@ -347,6 +347,8 @@ void PNGLibrary::takeSnapshot(uInt32 number)
   }
   else
   {
+    myOSystem.frameBuffer().tiaSurface().renderForSnapshot();
+
     try
     {
       saveImage(filename, myOSystem.frameBuffer().compositedSurface(),

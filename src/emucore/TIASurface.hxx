@@ -182,6 +182,17 @@ class TIASurface
      */
     void updateSurfaceSettings();
 
+    /**
+      Prepare the current frame for taking a snapshot.
+      In phosphor modes, blends current and previous frames for a better image.
+     */
+    void renderForSnapshot();
+
+    /**
+      Signal that a snapshot should be taken on the next render.
+     */
+    void saveSnapShot() { mySaveSnapFlag = true; }
+
   private:
     enum class ScanlineMask: uInt8 {
       Standard,
@@ -202,6 +213,10 @@ class TIASurface
     };
 
   private:
+
+    // Average current and previous RGB framebuffer pixels at the given offset.
+    uInt32 averageBuffers(uInt32 bufOfs) const;
+
     // Is plain video mode enabled?
     bool correctAspect() const;
 
@@ -229,12 +244,14 @@ class TIASurface
     // Phosphor blend
     int myPBlend{0};
 
-    std::array<uInt32, static_cast<std::size_t>
+    std::array<uInt32, static_cast<size_t>
       (AtariNTSC::outWidth(TIAConstants::frameBufferWidth) *
-      TIAConstants::frameBufferHeight)> myRGBFramebuffer{};
-    std::array<uInt32, static_cast<std::size_t>
+      TIAConstants::frameBufferHeight)> myRGBFramebuffer0{};
+    std::array<uInt32, static_cast<size_t>
       (AtariNTSC::outWidth(TIAConstants::frameBufferWidth) *
-        TIAConstants::frameBufferHeight)> myPrevRGBFramebuffer{};
+        TIAConstants::frameBufferHeight)> myRGBFramebuffer1{};
+    uInt32* myRGBFramebuffer{myRGBFramebuffer0.data()};
+    uInt32* myPrevRGBFramebuffer{myRGBFramebuffer1.data()};
     /////////////////////////////////////////////////////////////
 
     // Use scanlines in TIA rendering mode
@@ -245,6 +262,9 @@ class TIASurface
 
     // The palette handler
     unique_ptr<PaletteHandler> myPaletteHandler;
+
+    // Flag for saving a snapshot
+    bool mySaveSnapFlag{false};
 
   private:
     // Following constructors and assignment operators not supported

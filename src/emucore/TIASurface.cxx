@@ -60,7 +60,8 @@ TIASurface::TIASurface(OSystem& system)
   myShadeSurface->enableBlend(true);
   myShadeSurface->setBlendLevel(35); // darken stopped emulation by 35%
 
-  myRGBFramebuffer.fill(0);
+  myRGBFramebuffer0.fill(0);
+  myRGBFramebuffer1.fill(0);
 
   // Enable/disable threading in the NTSC TV effects renderer
   myNTSCFilter.enableThreading(myOSystem.settings().getBool("threads"));
@@ -291,7 +292,8 @@ void TIASurface::enablePhosphor(bool enable, int blend)
     myFilter = static_cast<Filter>(
         enable ? static_cast<uInt8>(myFilter) | 0x01
                : static_cast<uInt8>(myFilter) & 0x10);
-    myRGBFramebuffer.fill(0);
+    myRGBFramebuffer0.fill(0);
+    myRGBFramebuffer1.fill(0);
   }
 }
 
@@ -441,7 +443,8 @@ void TIASurface::enableNTSC(bool enable)
   myScanlinesEnabled = scanlines > 0;
   mySLineSurface->setBlendLevel(scanlines);
 
-  myRGBFramebuffer.fill(0);
+  myRGBFramebuffer0.fill(0);
+  myRGBFramebuffer1.fill(0);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -479,7 +482,6 @@ string TIASurface::effectsInfo() const
 void TIASurface::render(bool shade)
 {
   const uInt32 width = myTIA->width(), height = myTIA->height();
-
   uInt32 *out{nullptr}, outPitch{0};
   myTiaSurface->basePtr(out, outPitch);
 
@@ -488,7 +490,6 @@ void TIASurface::render(bool shade)
     case Filter::Normal:
     {
       const uInt8* tiaIn = myTIA->frameBuffer();
-
       uInt32 bufofs = 0, screenofsY = 0;
       for(uInt32 y = 0; y < height; ++y)
       {
@@ -506,18 +507,23 @@ void TIASurface::render(bool shade)
     case Filter::Phosphor:
     {
       const uInt8* tiaIn = myTIA->frameBuffer();
-      uInt32* rgbIn = myRGBFramebuffer.data();
 
+      if(mySaveSnapFlag)
+        std::swap(myRGBFramebuffer, myPrevRGBFramebuffer);
+
+      uInt32* rgbIn = myRGBFramebuffer;
       uInt32 bufofs = 0, screenofsY = 0;
-      for(uInt32 y = height; y ; --y)
+      for(uInt32 y = height; y; --y)
       {
         uInt32 pos = screenofsY;
-        for(uInt32 x = width / 2; x ; --x)
+        for(uInt32 x = width / 2; x; --x)
         {
           // Store back into displayed frame buffer (for next frame)
-          rgbIn[bufofs] = out[pos++] = PhosphorHandler::getPixel(myPalette[tiaIn[bufofs]], rgbIn[bufofs]);
+          rgbIn[bufofs] = out[pos++] =
+            PhosphorHandler::getPixel(myPalette[tiaIn[bufofs]], rgbIn[bufofs]);
           ++bufofs;
-          rgbIn[bufofs] = out[pos++] = PhosphorHandler::getPixel(myPalette[tiaIn[bufofs]], rgbIn[bufofs]);
+          rgbIn[bufofs] = out[pos++] =
+            PhosphorHandler::getPixel(myPalette[tiaIn[bufofs]], rgbIn[bufofs]);
           ++bufofs;
         }
         screenofsY += outPitch;
@@ -533,7 +539,11 @@ void TIASurface::render(bool shade)
 
     case Filter::BlarggPhosphor:
     {
-      myNTSCFilter.render(myTIA->frameBuffer(), width, height, out, outPitch << 2, myRGBFramebuffer.data());
+      if(mySaveSnapFlag)
+        std::swap(myRGBFramebuffer, myPrevRGBFramebuffer);
+
+      myNTSCFilter.render(myTIA->frameBuffer(), width, height, out, outPitch << 2,
+                          myRGBFramebuffer);
       break;
     }
 
@@ -552,6 +562,76 @@ void TIASurface::render(bool shade)
   {
     myShadeSurface->setDstRect(myTiaSurface->dstRect());
     myShadeSurface->render();
+  }
+
+  if(mySaveSnapFlag)
+  {
+    mySaveSnapFlag = false;
+  #ifdef IMAGE_SUPPORT
+    myOSystem.png().takeSnapshot();
+  #endif
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+FORCE_INLINE uInt32 TIASurface::averageBuffers(uInt32 bufOfs) const
+{
+  const uInt32 c = myRGBFramebuffer[bufOfs];
+  const uInt32 p = myPrevRGBFramebuffer[bufOfs];
+  return (((c ^ p) >> 1) & 0x7F7F7FU) + (c & p);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TIASurface::renderForSnapshot()
+{
+  const uInt32 width = myTIA->width(), height = myTIA->height();
+  uInt32 pos{0};
+  uInt32 *outPtr{nullptr}, outPitch{0};
+  myTiaSurface->basePtr(outPtr, outPitch);
+
+  mySaveSnapFlag = false;
+
+  switch(myFilter)
+  {
+    case Filter::Normal:
+    case Filter::BlarggNormal:
+      render();
+      break;
+
+    case Filter::Phosphor:
+    {
+      uInt32 bufofs = 0, screenofsY = 0;
+      for(uInt32 y = height; y; --y)
+      {
+        pos = screenofsY;
+        for(uInt32 x = width / 2; x; --x)
+        {
+          outPtr[pos++] = averageBuffers(bufofs++);
+          outPtr[pos++] = averageBuffers(bufofs++);
+        }
+        screenofsY += outPitch;
+      }
+      break;
+    }
+
+    case Filter::BlarggPhosphor:
+    {
+      uInt32 bufofs = 0;
+      for(uInt32 y = height; y; --y)
+        for(uInt32 x = outPitch; x; --x)
+          outPtr[pos++] = averageBuffers(bufofs++);
+      break;
+    }
+
+    default:
+      break;  // Not supposed to get here
+  }
+
+  if(myPhosphorHandler.phosphorEnabled())
+  {
+    myTiaSurface->render();
+    if(myScanlinesEnabled)
+      mySLineSurface->render();
   }
 }
 
