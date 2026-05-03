@@ -356,4 +356,4 @@ class WordDerefExpression : public Expression
       { return Debugger::debugger().dpeekAsInt(myLHS->evaluate()); }
 };
 
-#endif
+#endif  // DEBUGGER_EXPRESSIONS_HXX

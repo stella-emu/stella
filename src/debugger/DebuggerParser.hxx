@@ -273,4 +273,4 @@ class DebuggerParser
     DebuggerParser& operator=(DebuggerParser&&) = delete;
 };
 
-#endif
+#endif  // DEBUGGER_PARSER_HXX

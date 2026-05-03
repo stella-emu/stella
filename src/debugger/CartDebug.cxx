@@ -1712,13 +1712,13 @@ string CartDebug::AccessTypeAsString(Device::AccessFlags flags)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-std::array<string_view, 16> CartDebug::ourTIAMnemonicR = {
+const std::array<string_view, 16> CartDebug::ourTIAMnemonicR = {
   "CXM0P", "CXM1P", "CXP0FB", "CXP1FB", "CXM0FB", "CXM1FB", "CXBLPF", "CXPPMM",
   "INPT0", "INPT1", "INPT2", "INPT3", "INPT4", "INPT5", "$1e", "$1f"
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-std::array<string_view, 64> CartDebug::ourTIAMnemonicW = {
+const std::array<string_view, 64> CartDebug::ourTIAMnemonicW = {
   "VSYNC", "VBLANK", "WSYNC", "RSYNC", "NUSIZ0", "NUSIZ1", "COLUP0", "COLUP1",
   "COLUPF", "COLUBK", "CTRLPF", "REFP0", "REFP1", "PF0", "PF1", "PF2",
   "RESP0", "RESP1", "RESM0", "RESM1", "RESBL", "AUDC0", "AUDC1", "AUDF0",
@@ -1730,7 +1730,7 @@ std::array<string_view, 64> CartDebug::ourTIAMnemonicW = {
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-std::array<string_view, 32> CartDebug::ourIOMnemonic = {
+const std::array<string_view, 32> CartDebug::ourIOMnemonic = {
   "SWCHA", "SWACNT", "SWCHB", "SWBCNT", "INTIM", "TIMINT",
   "$286", "$287", "$288", "$289", "$28a", "$28b", "$28c",
   "$28d", "$28e", "$28f", "$290", "$291", "$292", "$293",
@@ -1740,7 +1740,7 @@ std::array<string_view, 32> CartDebug::ourIOMnemonic = {
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-std::array<string_view, 128> CartDebug::ourZPMnemonic = {
+const std::array<string_view, 128> CartDebug::ourZPMnemonic = {
   "ram_80", "ram_81", "ram_82", "ram_83", "ram_84", "ram_85", "ram_86", "ram_87",
   "ram_88", "ram_89", "ram_8A", "ram_8B", "ram_8C", "ram_8D", "ram_8E", "ram_8F",
   "ram_90", "ram_91", "ram_92", "ram_93", "ram_94", "ram_95", "ram_96", "ram_97",

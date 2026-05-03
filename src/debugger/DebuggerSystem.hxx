@@ -71,4 +71,4 @@ class DebuggerSystem
     DebuggerSystem& operator=(DebuggerSystem&&) = delete;
 };
 
-#endif
+#endif  // DEBUGGER_SYSTEM_HXX

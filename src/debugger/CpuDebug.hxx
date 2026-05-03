@@ -104,4 +104,4 @@ class CpuDebug : public DebuggerSystem
     CpuDebug& operator=(CpuDebug&&) = delete;
 };
 
-#endif
+#endif  // CPU_DEBUG_HXX

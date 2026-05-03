@@ -263,4 +263,4 @@ class TimerMap : public Serializable
     TimerMap& operator=(TimerMap&&) = delete;
 };
 
-#endif
+#endif  // TIMER_MAP_HXX

@@ -228,4 +228,4 @@ class TIADebug : public DebuggerSystem
     TIADebug& operator=(TIADebug&&) = delete;
 };
 
-#endif
+#endif  // TIA_DEBUG_HXX

@@ -52,4 +52,4 @@ inline const Expression& EmptyExpression() {
   static const Expression empty; return empty;
 }
 
-#endif
+#endif  // EXPRESSION_HXX

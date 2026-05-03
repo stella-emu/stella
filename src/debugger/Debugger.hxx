@@ -381,4 +381,4 @@ class Debugger : public DialogContainer
     Debugger& operator=(Debugger&&) = delete;
 };
 
-#endif
+#endif  // DEBUGGER_HXX

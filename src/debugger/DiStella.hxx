@@ -219,4 +219,4 @@ class DiStella
     DiStella& operator=(DiStella&&) = delete;
 };
 
-#endif
+#endif  // DISTELLA_HXX

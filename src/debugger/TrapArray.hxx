@@ -58,4 +58,4 @@ class TrapArray
     TrapArray& operator=(TrapArray&&) = delete;
 };
 
-#endif
+#endif  // TRAP_ARRAY_HXX

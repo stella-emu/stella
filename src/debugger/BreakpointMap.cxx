@@ -15,16 +15,13 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#include <map>
 #include "BreakpointMap.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void BreakpointMap::add(const Breakpoint& breakpoint, uInt32 flags)
 {
-  const Breakpoint bp = convertBreakpoint(breakpoint);
-
   myInitialized = true;
-  myMap[bp] = flags;
+  myMap[masked(breakpoint)] = flags;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -40,9 +37,7 @@ void BreakpointMap::erase(const Breakpoint& breakpoint)
   if(!myMap.erase(breakpoint))
   {
     // 13 bit breakpoint
-    const Breakpoint bp13(breakpoint.addr & ADDRESS_MASK, breakpoint.bank);
-
-    myMap.erase(bp13);
+    myMap.erase(masked(breakpoint));
   }
 }
 
@@ -55,19 +50,8 @@ void BreakpointMap::erase(uInt16 addr, uInt8 bank)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt32 BreakpointMap::get(const Breakpoint& breakpoint) const
 {
-  // 16 bit breakpoint
-  auto find = myMap.find(breakpoint);
-  if(find != myMap.end())
-    return find->second;
-
-  // 13 bit breakpoint
-  const Breakpoint bp13(breakpoint.addr & ADDRESS_MASK, breakpoint.bank);
-
-  find = myMap.find(bp13);
-  if(find != myMap.end())
-    return find->second;
-
-  return 0;
+  const auto it = find(breakpoint);
+  return it != myMap.end() ? it->second : 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -79,16 +63,7 @@ uInt32 BreakpointMap::get(uInt16 addr, uInt8 bank) const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool BreakpointMap::check(const Breakpoint& breakpoint) const
 {
-  // 16 bit breakpoint
-  auto find = myMap.find(breakpoint);
-  if(find != myMap.end())
-    return true;
-
-  // 13 bit breakpoint
-  const Breakpoint bp13(breakpoint.addr & ADDRESS_MASK, breakpoint.bank);
-
-  find = myMap.find(bp13);
-  return (find != myMap.end());
+  return find(breakpoint) != myMap.end();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -100,21 +75,10 @@ bool BreakpointMap::check(uInt16 addr, uInt8 bank) const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 BreakpointMap::BreakpointList BreakpointMap::getBreakpoints() const
 {
-  BreakpointList map;
-  const std::map<Breakpoint, uInt32> ordered(myMap.begin(), myMap.end());
-
-  for(const auto& item : ordered)
-    map.push_back(item.first);
-
-  return map;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-BreakpointMap::Breakpoint BreakpointMap::convertBreakpoint(
-    const Breakpoint& breakpoint)
-{
-  if(breakpoint.bank == ANY_BANK)
-    return Breakpoint(breakpoint.addr, ANY_BANK);
-  else
-    return Breakpoint(breakpoint.addr & ADDRESS_MASK, breakpoint.bank);
+  BreakpointList list;
+  list.reserve(myMap.size());
+  for(const auto& [bp, _]: myMap)
+    list.push_back(bp);
+  std::ranges::sort(list);
+  return list;
 }
