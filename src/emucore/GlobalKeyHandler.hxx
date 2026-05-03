@@ -15,8 +15,8 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#ifndef GLOBALKEYHANDLER_HXX
-#define GLOBALKEYHANDLER_HXX
+#ifndef GLOBAL_KEY_HANDLER_HXX
+#define GLOBAL_KEY_HANDLER_HXX
 
 #include "EventHandler.hxx"
 
@@ -156,8 +156,8 @@ class GlobalKeyHandler
 
     struct GroupData
     {
-      Setting start{Setting::NONE};
-      string  name;
+      Setting     start{Setting::NONE};
+      string_view name;
     };
 
     struct SettingData
@@ -191,6 +191,8 @@ class GlobalKeyHandler
     bool skipInputSetting() const;
     bool skipDebugSetting() const;
 
+    void buildSettingMap();
+
   private:
     // Global OSystem object
     OSystem& myOSystem;
@@ -207,6 +209,9 @@ class GlobalKeyHandler
     //  displayed
     Setting myDirectSetting{Setting::NONE};
 
+    std::unordered_map<Setting, SettingData> mySettingMap;
+
+  private:
     // Following constructors and assignment operators not supported
     GlobalKeyHandler() = delete;
     GlobalKeyHandler(const GlobalKeyHandler&) = delete;
@@ -215,4 +220,4 @@ class GlobalKeyHandler
     GlobalKeyHandler& operator=(GlobalKeyHandler&&) = delete;
 };
 
-#endif
+#endif  // GLOBAL_KEY_HANDLER_HXX
