@@ -519,4 +519,4 @@ class Console : public Serializable, public ConsoleIO
     Console& operator=(Console&&) = delete;
 };
 
-#endif
+#endif  // CONSOLE_HXX

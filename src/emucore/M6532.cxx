@@ -47,7 +47,7 @@ void M6532::reset()
   // Initialize the 128 bytes of memory
   const bool devSettings = mySettings.getBool("dev.settings");
   if(mySettings.getString(devSettings ? "dev.console" : "plr.console") == "7800")
-    std::copy_n(RAM_7800.begin(), RAM_7800.size(), myRAM.begin());
+    std::ranges::copy(RAM_7800, myRAM.begin());
   else if(mySettings.getBool(devSettings ? "dev.ramrandom" : "plr.ramrandom"))
     for(auto& ram: myRAM)
       ram = mySystem->randGenerator().next();
@@ -113,12 +113,12 @@ void M6532::updateEmulation()
 
   // Guard against further state changes if the debugger alread forwarded emulation
   // state (in particular myWrappedThisCycle)
-  if (cycles == 0) return;
+  if(cycles == 0) return;
 
   myWrappedThisCycle = false;
   mySubTimer = (cycles + mySubTimer) % myDivider;
 
-  if ((myInterruptFlag & TimerBit) == 0)
+  if((myInterruptFlag & TimerBit) == 0)
   {
     const uInt32 timerTicks = (cycles + subTimer) / myDivider;
 
@@ -137,7 +137,8 @@ void M6532::updateEmulation()
     }
   }
 
-  if((myInterruptFlag & TimerBit) != 0) {
+  if((myInterruptFlag & TimerBit) != 0)
+  {
     myTimer = (myTimer - cycles) & 0xFF;
     myWrappedThisCycle = myTimer == 0xFF;
   }
@@ -171,8 +172,8 @@ void M6532::installDelegate(System& system, Device& device)
   //    (addr & 0x0200) == 0x0200 is IO     (A9 is 1)
   //    (addr & 0x0300) == 0x0100 is Stack  (A8 is 1, A9 is 0)
   //    (addr & 0x0300) == 0x0000 is ZP RAM (A8 is 0, A9 is 0)
-  for (uInt16 addr = 0; addr < 0x1000; addr += System::PAGE_SIZE)
-    if ((addr & 0x0080) == 0x0080) {
+  for(uInt16 addr = 0; addr < 0x1000; addr += System::PAGE_SIZE)
+    if((addr & 0x0080) == 0x0080) {
       mySystem->setPageAccess(addr, access);
     }
 }
@@ -221,7 +222,8 @@ uInt8 M6532::peek(uInt16 addr)
     case 0x06:
     {
       // Timer Flag is always cleared when accessing INTIM
-      if (!myWrappedThisCycle) myInterruptFlag &= ~TimerBit;
+      if(!myWrappedThisCycle)
+        myInterruptFlag &= ~TimerBit;
   #ifdef DEBUGGER_SUPPORT
       myTimWrappedOnRead = myWrappedThisCycle;
       myTimReadCycles += 7;
@@ -488,9 +490,9 @@ void M6532::createAccessBases()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Device::AccessFlags M6532::getAccessFlags(uInt16 address) const
 {
-  if (address & IO_BIT)
+  if(address & IO_BIT)
     return myIOAccessBase[address & IO_MASK];
-  else if (address & STACK_BIT)
+  else if(address & STACK_BIT)
     return myStackAccessBase[address & STACK_MASK];
   else
     return myRAMAccessBase[address & RAM_MASK];
@@ -500,14 +502,16 @@ Device::AccessFlags M6532::getAccessFlags(uInt16 address) const
 void M6532::setAccessFlags(uInt16 address, Device::AccessFlags flags)
 {
   // ignore none flag
-  if (flags != Device::NONE) {
-    if (address & IO_BIT)
+  if(flags != Device::NONE)
+  {
+    if(address & IO_BIT)
       myIOAccessBase[address & IO_MASK] |= flags;
-    else {
-      // the first access, either by direct RAM or stack access is assumed as initialization
-      if (myZPAccessDelay[address & RAM_MASK])
+    else
+    {
+      // The first access, either by direct RAM or stack access is assumed as initialization
+      if(myZPAccessDelay[address & RAM_MASK])
         myZPAccessDelay[address & RAM_MASK]--;
-      else if (address & STACK_BIT)
+      else if(address & STACK_BIT)
         myStackAccessBase[address & STACK_MASK] |= flags;
       else
         myRAMAccessBase[address & RAM_MASK] |= flags;
@@ -518,13 +522,14 @@ void M6532::setAccessFlags(uInt16 address, Device::AccessFlags flags)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void M6532::increaseAccessCounter(uInt16 address, bool isWrite)
 {
-  if (address & IO_BIT)
+  if(address & IO_BIT)
     myIOAccessCounter[(isWrite ? IO_SIZE : 0) + (address & IO_MASK)]++;
-  else {
-    // the first access, either by direct RAM or stack access is assumed as initialization
-    if (myZPAccessDelay[address & RAM_MASK])
+  else
+  {
+    // The first access, either by direct RAM or stack access is assumed as initialization
+    if(myZPAccessDelay[address & RAM_MASK])
       myZPAccessDelay[address & RAM_MASK]--;
-    else if (address & STACK_BIT)
+    else if(address & STACK_BIT)
       myStackAccessCounter[(isWrite ? STACK_SIZE : 0) + (address & STACK_MASK)]++;
     else
       myRAMAccessCounter[(isWrite ? RAM_SIZE : 0) + (address & RAM_MASK)]++;
@@ -546,7 +551,6 @@ string M6532::getAccessCounters() const
     out << Common::Base::HEX4 << (addr | 0x80) << ","
     << Common::Base::toString(myRAMAccessCounter[RAM_SIZE + addr], Common::Base::Fmt::_10_8) << ", ";
   out << "\n";
-
 
   out << "Stack reads:\n";
   for(uInt16 addr = 0x00; addr < STACK_SIZE; ++addr)
