@@ -18,7 +18,7 @@
 #ifndef CHEAT_MANAGER_HXX
 #define CHEAT_MANAGER_HXX
 
-#include <map>
+#include <unordered_map>
 
 class Cheat;
 class OSystem;
@@ -148,7 +148,7 @@ class CheatManager
     CheatList myCheatList;
     CheatList myPerFrameList;
 
-    std::map<string,string, std::less<>> myCheatMap;
+    std::unordered_map<string, string, BSPF::StringHash, std::equal_to<>> myCheatMap;
     string myCheatFile;
 
     // This is set each time a new cheat/ROM is loaded, for later
@@ -167,4 +167,4 @@ class CheatManager
     CheatManager& operator=(CheatManager&&) = delete;
 };
 
-#endif
+#endif  // CHEAT_MANAGER_HXX

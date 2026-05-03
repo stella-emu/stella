@@ -76,4 +76,4 @@ class CheatCodeDialog : public Dialog
     CheatCodeDialog& operator=(CheatCodeDialog&&) = delete;
 };
 
-#endif
+#endif  // CHEAT_CODE_DIALOG_HXX

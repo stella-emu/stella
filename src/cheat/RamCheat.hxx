@@ -43,4 +43,4 @@ class RamCheat : public Cheat
     RamCheat& operator=(RamCheat&&) = delete;
 };
 
-#endif
+#endif  // RAM_CHEAT_HXX

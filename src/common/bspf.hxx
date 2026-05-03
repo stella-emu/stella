@@ -569,6 +569,17 @@ namespace BSPF
     }
     return (count == minhits);
   }
+
+  // Used with various map objects to accept string_view
+  struct StringHash {
+    using is_transparent = void;
+    size_t operator()(string_view sv) const noexcept {
+      return std::hash<string_view>{}(sv);
+    }
+    size_t operator()(const string& s) const noexcept {
+      return std::hash<string>{}(s);
+    }
+  };
 }  // namespace BSPF
 
 #endif  // BSPF_HXX

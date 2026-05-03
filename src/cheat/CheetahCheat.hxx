@@ -45,4 +45,4 @@ class CheetahCheat : public Cheat
     CheetahCheat& operator=(CheetahCheat&&) = delete;
 };
 
-#endif
+#endif  // CHEETAH_CHEAT_HXX

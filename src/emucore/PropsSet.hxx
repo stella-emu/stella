@@ -90,17 +90,8 @@ class PropertiesSet
     void print() const;
 
   private:
-    // If you want heterogeneous lookup to avoid string construction on find():
-    struct string_hash {
-        using is_transparent = void;
-        size_t operator()(string_view sv) const noexcept {
-            return std::hash<string_view>{}(sv);
-        }
-        size_t operator()(const string& s) const noexcept {
-            return std::hash<string>{}(s);
-        }
-    };
-    using PropsList = std::unordered_map<string, Properties, string_hash, std::equal_to<>>;
+    using PropsList = std::unordered_map<string, Properties,
+                          BSPF::StringHash, std::equal_to<>>;
 
     // Properties temporarily inserted by the program, discarded on exit
     PropsList myTempProps;
@@ -115,4 +106,4 @@ class PropertiesSet
     PropertiesSet& operator=(PropertiesSet&&) = delete;
 };
 
-#endif
+#endif  // PROPERTIES_SET_HXX

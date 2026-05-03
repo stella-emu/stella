@@ -57,4 +57,4 @@ class Cheat
     Cheat& operator=(Cheat&&) = delete;
 };
 
-#endif
+#endif  // CHEAT_HXX

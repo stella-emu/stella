@@ -367,18 +367,10 @@ class ZipHandler
 
     ZipFilePtr myZip;
 
-    // Transparent hasher to allow string_view lookups in unordered_map keyed by string
-    struct StringHash {
-      using is_transparent = void;
-      size_t operator()(string_view sv) const {
-        return std::hash<string_view>{}(sv);
-      }
-    };
-
     // LRU cache: map filename -> (ZipFilePtr, iterator in list)
     std::unordered_map<string,
       std::pair<ZipFilePtr, std::list<string>::iterator>,
-      StringHash,
+      BSPF::StringHash,
       std::equal_to<>> myZipCache;
     std::list<string> myCacheOrder; // front = oldest, back = newest
 

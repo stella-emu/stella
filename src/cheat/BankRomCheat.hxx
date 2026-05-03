@@ -46,4 +46,4 @@ class BankRomCheat : public Cheat
     BankRomCheat& operator=(BankRomCheat&&) = delete;
 };
 
-#endif
+#endif  // BANK_ROM_CHEAT_HXX
