@@ -18,7 +18,7 @@
 #ifndef PROPERTIES_SET_HXX
 #define PROPERTIES_SET_HXX
 
-#include <map>
+#include <unordered_map>
 
 class FSNode;
 class OSystem;
@@ -90,9 +90,17 @@ class PropertiesSet
     void print() const;
 
   private:
-    // std::less<> enables heterogeneous lookup with string_view keys,
-    // avoiding string construction on every find/contains call
-    using PropsList = std::map<string, Properties, std::less<>>;
+    // If you want heterogeneous lookup to avoid string construction on find():
+    struct string_hash {
+        using is_transparent = void;
+        size_t operator()(string_view sv) const noexcept {
+            return std::hash<string_view>{}(sv);
+        }
+        size_t operator()(const string& s) const noexcept {
+            return std::hash<string>{}(s);
+        }
+    };
+    using PropsList = std::unordered_map<string, Properties, string_hash, std::equal_to<>>;
 
     // Properties temporarily inserted by the program, discarded on exit
     PropsList myTempProps;
