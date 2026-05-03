@@ -46,8 +46,8 @@ class FBBackendLIBRETRO : public FBBackend
       @param windowedRes    Maximum resolution supported in windowed mode
       @param renderers      List of renderer names (internal name -> end-user name)
     */
-    void queryHardware(std::map<uInt32, Common::Size>& fullscreenRes,
-                       std::map<uInt32, Common::Size>& windowedRes,
+    void queryHardware(std::unordered_map<uInt32, Common::Size>& fullscreenRes,
+                       std::unordered_map<uInt32, Common::Size>& windowedRes,
                        VariantList& renderers) override
     {
       fullscreenRes.emplace(0, Common::Size{1920, 1080});
