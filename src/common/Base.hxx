@@ -74,7 +74,7 @@ class Base
     /** Convert integer to a string in the given base format */
     static string toString(int value, Fmt outputBase = Fmt::DEFAULT)
     {
-      array<char, 32> buf{};
+      std::array<char, 32> buf{};
       auto* end = toChars(buf.data(), value, outputBase);
       return {buf.data(), end};
     }

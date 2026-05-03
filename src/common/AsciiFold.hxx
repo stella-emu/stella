@@ -91,8 +91,8 @@ private:
   /**
    * Compile-time ASCII folding lookup table (Latin-1 range).
    */
-  static constexpr array<char, 256> LUT = [] {
-    array<char, 256> lut{};
+  static constexpr std::array<char, 256> LUT = [] {
+    std::array<char, 256> lut{};
 
     // ASCII passthrough
     for(int i = 0; i < 128; ++i)
@@ -142,8 +142,8 @@ private:
    * Compile-time folding table for Latin Extended-A/B (U+0100–U+024F).
    * Indexed by (cp - 0x0100). Unrecognised codepoints default to '?'.
    */
-  static constexpr array<char, 0x0150> extLUT = [] {
-    array<char, 0x0150> lut{};
+  static constexpr std::array<char, 0x0150> extLUT = [] {
+    std::array<char, 0x0150> lut{};
 
     // Default everything to '?'
     for(auto& c: lut) c = '?';
@@ -293,8 +293,8 @@ private:
    * Indexed by (cp - 0x0370). Covers the modern Greek alphabet including
    * accented vowels (tonos/dialytika). Unrecognised codepoints default to '?'.
    */
-  static constexpr array<char, 0x0090> greekLUT = [] {
-    array<char, 0x0090> lut{};
+  static constexpr std::array<char, 0x0090> greekLUT = [] {
+    std::array<char, 0x0090> lut{};
     for(auto& c: lut) c = '?';
 
     // Uppercase
@@ -380,8 +380,8 @@ private:
    * Indexed by (cp - 0x0400). Covers Russian, Ukrainian, Bulgarian, and
    * Serbian. Unrecognised codepoints default to '?'.
    */
-  static constexpr array<char, 0x0100> cyrillicLUT = [] {
-    array<char, 0x0100> lut{};
+  static constexpr std::array<char, 0x0100> cyrillicLUT = [] {
+    std::array<char, 0x0100> lut{};
     for(auto& c: lut) c = '?';
 
     // Uppercase Russian/Bulgarian/Serbian
@@ -491,8 +491,8 @@ private:
    * Vietnamese, Welsh, and academic transliterations of ancient languages.
    * Unrecognised codepoints default to '?'.
    */
-  static constexpr array<char, 0x0100> latinExtAddLUT = [] {
-    array<char, 0x0100> lut{};
+  static constexpr std::array<char, 0x0100> latinExtAddLUT = [] {
+    std::array<char, 0x0100> lut{};
     for(auto& c: lut) c = '?';
 
     // Ḁḁ A/a with ring below

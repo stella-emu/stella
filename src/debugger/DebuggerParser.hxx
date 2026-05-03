@@ -94,7 +94,7 @@ class DebuggerParser
       string extendedDesc;
       bool parmsRequired{false};
       bool refreshRequired{false};
-      array<Parameters, 10> parms;
+      std::array<Parameters, 10> parms;
       void (DebuggerParser::*executor)();
     };
     using CommandArray = std::array<Command, 112>;

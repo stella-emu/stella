@@ -868,7 +868,7 @@ string TIADebug::audFreq1()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string TIADebug::audFreq(uInt8 dist, uInt8 div) const
 {
-  static constexpr array<uInt16, 16> dist_div = {
+  static constexpr std::array<uInt16, 16> dist_div = {
       1, 15, 465, 465, 2, 2, 31, 31,
     511, 31,  31,   1, 6, 6, 93, 93
   };
@@ -976,7 +976,7 @@ string TIADebug::debugColors() const
   const int timing = myConsole.timing() == ConsoleTiming::ntsc ? 0
     : myConsole.timing() == ConsoleTiming::pal ? 1 : 2;
 
-  static constexpr array<std::pair<int, string_view>, 6> entries = {{
+  static constexpr std::array<std::pair<int, string_view>, 6> entries = {{
     { TIA::P0, "Player 0"  },
     { TIA::M0, "Missile 0" },
     { TIA::P1, "Player 1"  },
@@ -1049,7 +1049,7 @@ string TIADebug::toString()
   const auto& state = static_cast<const TiaState&>(getState());
   const auto& oldState = static_cast<const TiaState&>(getOldState());
 
-  static constexpr array<string_view, 15> cxLabels = {
+  static constexpr std::array<string_view, 15> cxLabels = {
     "p0_pf", "p0_bl", "m1_p0", "m0_p0", "p0_p1",
     "p1_pf", "p1_bl", "m1_p1", "m0_p1", "m0_pf",
     "m0_bl", "m0_m1", "m1_pf", "m1_bl", "bl_pf"

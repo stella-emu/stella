@@ -161,7 +161,7 @@ class ZipHandler
       vector<uInt8>     myCd;       // central directory raw data
       vector<ZipHeader> myHeaders;  // stable parsed headers
 
-      array<uInt8, DECOMPRESS_BUFSIZE> myBuffer{}; // buffer for decompression
+      std::array<uInt8, DECOMPRESS_BUFSIZE> myBuffer{}; // buffer for decompression
 
       /** Lookup support */
       mutable std::unordered_map<string_view, size_t> myHeaderIndex;

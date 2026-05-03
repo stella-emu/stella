@@ -46,7 +46,7 @@ namespace HSM {
 
   static constexpr Int32 NO_VALUE = -1;
 
-  using ScoreAddresses = array<Int16, MAX_SCORE_ADDR>;
+  using ScoreAddresses = std::array<Int16, MAX_SCORE_ADDR>;
 
   static constexpr uInt32 NUM_RANKS = 10;
 
