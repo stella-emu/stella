@@ -111,7 +111,7 @@ using ByteBuffer  = std::unique_ptr<uInt8[]>;
 using DWordBuffer = std::unique_ptr<uInt32[]>;
 
 // We use KB a lot; let's make a literal for it
-constexpr size_t operator ""_KB(unsigned long long size)
+[[nodiscard]] constexpr size_t operator ""_KB(unsigned long long size)
 {
   return static_cast<size_t>(size * 1024);
 }
@@ -552,7 +552,7 @@ namespace BSPF
       return false;
 
     size_t count{0};
-    for(size_t i = 0; i < image.size() - sigsize; ++i)
+    for(size_t i = 0; i <= image.size() - sigsize; ++i)
     {
       size_t j{0};
       for(j = 0; j < sigsize; ++j)

@@ -1036,12 +1036,11 @@ string CartDebug::loadConfigFile()
   }
   myDebugger.rom().invalidate();
 
-  std::ostringstream retVal;
+  string retVal;
   if(myConsole.cartridge().romBankCount() > 1)
-    retVal << DebuggerParser::red("config file for multi-bank ROM not fully supported\n");
-  retVal << "config file '" << cfg.getShortPath() << "' loaded OK";
-  return retVal.str();
-
+    retVal = DebuggerParser::red("config file for multi-bank ROM not fully supported\n");
+  retVal += std::format("config file '{}' loaded OK", cfg.getShortPath());
+  return retVal;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1406,20 +1405,19 @@ string CartDebug::saveDisassembly(string path)
       path += ".asm";
 
   const FSNode node(path);
-  std::ostringstream retVal;
   try
   {
     node.write(out.view());  // FIXME: revisit this (for view())
-
+    string retVal;
     if(myConsole.cartridge().romBankCount() > 1)
-      retVal << DebuggerParser::red("disassembly for multi-bank ROM not fully supported\n");
-    retVal << "saved " << node.getShortPath() << " OK";
+      retVal = DebuggerParser::red("disassembly for multi-bank ROM not fully supported\n");
+    retVal += std::format("saved {} OK", node.getShortPath());
+    return retVal;
   }
   catch(...)
   {
-    retVal << "Unable to save disassembly to " << node.getShortPath();
+    return std::format("Unable to save disassembly to {}", node.getShortPath());
   }
-  return retVal.str();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1518,13 +1516,10 @@ string CartDebug::clearConfig(int bank)
     myBankInfo[b].directiveList.clear();
   }
 
-  std::ostringstream buf;
   if(count > 0)
-    buf << "removed " << dec << count << " directives from "
-        << dec << (endbank - startbank) << " banks";
-  else
-    buf << "no directives present";
-  return buf.str();
+    return std::format("removed {} directives from {} banks",
+      count, endbank - startbank);
+  return "no directives present";
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

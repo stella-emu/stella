@@ -79,7 +79,7 @@ PhysicalKeyboardHandler::PhysicalKeyboardHandler(OSystem& system, EventHandler& 
 #ifdef DEBUG_BUILD
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PhysicalKeyboardHandler::verifyDefaultMapping(
-  PhysicalKeyboardHandler::EventMappingArray mapping, EventMode mode, string_view name)
+  std::span<const EventMapping> mapping, EventMode mode, string_view name)
 {
   for(const auto& item1 : mapping)
     for(const auto& item2 : mapping)
@@ -610,10 +610,9 @@ void PhysicalKeyboardHandler::toggleModKeys(bool toggle)
     myOSystem.settings().setValue("modcombo", modCombo);
   }
 
-  std::ostringstream ss;
-  ss << "Modifier key combos ";
-  ss << (modCombo ? "enabled" : "disabled");
-  myOSystem.frameBuffer().showTextMessage(ss.view());
+  myOSystem.frameBuffer().showTextMessage(
+    std::format("Modifier key combos {}", modCombo ? "enabled" : "disabled")
+  );
 }
 
 // NOLINTBEGIN(bugprone-throwing-static-initialization)

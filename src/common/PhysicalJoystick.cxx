@@ -49,12 +49,11 @@ void PhysicalJoystick::initialize(int index, string_view desc,
   axisLastValue.resize(numAxes, 0);
 
   // Erase the mappings
-  eraseMap(EventMode::kMenuMode);
-  eraseMap(EventMode::kJoystickMode);
-  eraseMap(EventMode::kPaddlesMode);
-  eraseMap(EventMode::kKeyboardMode);
-  eraseMap(EventMode::kDrivingMode);
-  eraseMap(EventMode::kCommonMode);
+  for(const auto mode: {
+    EventMode::kMenuMode, EventMode::kJoystickMode, EventMode::kPaddlesMode,
+    EventMode::kKeyboardMode, EventMode::kDrivingMode, EventMode::kCommonMode
+  })
+    eraseMap(mode);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -90,16 +89,17 @@ bool PhysicalJoystick::setMap(const json& map)
     try {
       joyMap.loadMapping(entry.value(), eventModeFromJsonName(entry.key()));
     } catch (const json::exception&) {
-      Logger::error("ignoring invalid json mapping for " + entry.key());
+      Logger::error(std::format("ignoring invalid json mapping for {}", entry.key()));
     }
     i++;
   }
 
   if(i != 6)
   {
-    Logger::error("invalid controller mappings found for " +
-      ((map.contains("name") && map.at("name").is_string()) ? ("stick " + map["name"].get<string>()) : "unknown stick")
-    );
+    Logger::error(std::format("invalid controller mappings found for {}",
+      (map.contains("name") && map.at("name").is_string())
+        ? std::format("stick {}", map["name"].get<string>())
+        : "unknown stick"));
 
     return false;
   }
@@ -110,7 +110,7 @@ bool PhysicalJoystick::setMap(const json& map)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 json PhysicalJoystick::convertLegacyMapping(string_view mapping, string_view name)
 {
-  std::istringstream buf(string{mapping});  // TODO: fixed in C++23
+  std::istringstream buf(string{mapping});  // TODO: fixed in C++26
   json convertedMapping = json::object();
   string lmap;
 
@@ -154,24 +154,11 @@ void PhysicalJoystick::eraseEvent(Event::Type event, EventMode mode)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string PhysicalJoystick::about() const
 {
-  std::ostringstream buf;
-
-  buf << "'" << name << "' in ";
-  switch(port)
-  {
-    case Port::LEFT:
-      buf << "left";
-      break;
-    case Port::RIGHT:
-      buf << "right";
-      break;
-    default:
-      buf << "auto";
-      break;
-  }
-  buf << " port with: "
-    << numAxes << " axes, " << numButtons << " buttons, "
-    << numHats << " hats";
-
-  return buf.str();
+  static constexpr std::array<string_view, 3> PORT_NAMES = {
+    "auto", "left", "right"
+  };
+  return std::format("'{}' in {} port with: {} axes, {} buttons, {} hats",
+    name,
+    PORT_NAMES[static_cast<uInt8>(port)],
+    numAxes, numButtons, numHats);
 }

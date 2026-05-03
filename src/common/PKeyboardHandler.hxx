@@ -126,7 +126,7 @@ class PhysicalKeyboardHandler
     static EventMode getMode(Controller::Type type);
 
 #ifdef DEBUG_BUILD
-    void verifyDefaultMapping(PhysicalKeyboardHandler::EventMappingArray mapping,
+    void verifyDefaultMapping(std::span<const EventMapping> mapping,
       EventMode mode, string_view name);
 #endif
 
@@ -175,4 +175,4 @@ class PhysicalKeyboardHandler
     static EventMappingArray CompuMateMapping;
 };
 
-#endif
+#endif  // PHYSICAL_KEYBOARD_HANDLER_HXX

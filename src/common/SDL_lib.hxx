@@ -46,13 +46,11 @@
 
 static inline string SDLVersion()
 {
-  std::ostringstream buf;
   const int ver = SDL_GetVersion();
-  buf << "SDL "
-      << SDL_VERSIONNUM_MAJOR(ver) << "."
-      << SDL_VERSIONNUM_MINOR(ver) << "."
-      << SDL_VERSIONNUM_MICRO(ver);
-  return buf.str();
+  return std::format("SDL {}.{}.{}",
+    SDL_VERSIONNUM_MAJOR(ver),
+    SDL_VERSIONNUM_MINOR(ver),
+    SDL_VERSIONNUM_MICRO(ver));
 }
 
 static inline bool SDLOpenURL(const string& url)

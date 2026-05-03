@@ -136,4 +136,4 @@ class KeyMap
     KeyMap& operator=(KeyMap&&) = delete;
 };
 
-#endif
+#endif  // KEYMAP_HXX

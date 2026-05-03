@@ -133,50 +133,54 @@ bool KeyMap::check(EventMode mode, int key, int mod) const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string KeyMap::getDesc(const Mapping& mapping)
 {
-  std::ostringstream buf;
 #if defined(BSPF_MACOS) || defined(MACOS_KEYS)
-  const string mod2 = "Option";
-  constexpr int MOD2 = KBDM_ALT;
-  constexpr int LMOD2 = KBDM_LALT;
-  constexpr int RMOD2 = KBDM_RALT;
-  const string mod3 = "Cmd";
-  constexpr int MOD3 = KBDM_GUI;
-  constexpr int LMOD3 = KBDM_LGUI;
-  constexpr int RMOD3 = KBDM_RGUI;
+  static constexpr string_view mod2 = "Option";
+  static constexpr int MOD2  = KBDM_ALT;
+  static constexpr int LMOD2 = KBDM_LALT;
+  static constexpr int RMOD2 = KBDM_RALT;
+  static constexpr string_view mod3 = "Cmd";
+  static constexpr int MOD3  = KBDM_GUI;
+  static constexpr int LMOD3 = KBDM_LGUI;
+  static constexpr int RMOD3 = KBDM_RGUI;
 #else
-  const string mod2 = "Windows";
-  constexpr int MOD2 = KBDM_GUI;
-  constexpr int LMOD2 = KBDM_LGUI;
-  constexpr int RMOD2 = KBDM_RGUI;
-  const string mod3 = "Alt";
-  constexpr int MOD3 = KBDM_ALT;
-  constexpr int LMOD3 = KBDM_LALT;
-  constexpr int RMOD3 = KBDM_RALT;
+  static constexpr string_view mod2 = "Windows";
+  static constexpr int MOD2  = KBDM_GUI;
+  static constexpr int LMOD2 = KBDM_LGUI;
+  static constexpr int RMOD2 = KBDM_RGUI;
+  static constexpr string_view mod3 = "Alt";
+  static constexpr int MOD3  = KBDM_ALT;
+  static constexpr int LMOD3 = KBDM_LALT;
+  static constexpr int RMOD3 = KBDM_RALT;
 #endif
 
-  if((mapping.mod & KBDM_CTRL) == KBDM_CTRL) buf << "Ctrl";
-  else if(mapping.mod & KBDM_LCTRL) buf << "Left Ctrl";
-  else if(mapping.mod & KBDM_RCTRL) buf << "Right Ctrl";
+  string buf;
+  buf.reserve(32);
 
-  if((mapping.mod & MOD2) && buf.tellp()) buf << "-";
-  if((mapping.mod & MOD2) == MOD2) buf << mod2;
-  else if(mapping.mod & LMOD2) buf << "Left " << mod2;
-  else if(mapping.mod & RMOD2) buf << "Right " << mod2;
+  const auto append = [&](string_view part) {
+    if(!buf.empty()) buf += '-';
+    buf += part;
+  };
 
-  if((mapping.mod & MOD3) && buf.tellp()) buf << "-";
-  if((mapping.mod & MOD3) == MOD3) buf << mod3;
-  else if(mapping.mod & LMOD3) buf << "Left " << mod3;
-  else if(mapping.mod & RMOD3) buf << "Right " << mod3;
+  if((mapping.mod & KBDM_CTRL) == KBDM_CTRL) append("Ctrl");
+  else if(mapping.mod & KBDM_LCTRL) append("Left Ctrl");
+  else if(mapping.mod & KBDM_RCTRL) append("Right Ctrl");
 
-  if((mapping.mod & KBDM_SHIFT) && buf.tellp()) buf << "-";
-  if((mapping.mod & KBDM_SHIFT) == KBDM_SHIFT) buf << "Shift";
-  else if(mapping.mod & KBDM_LSHIFT) buf << "Left Shift";
-  else if(mapping.mod & KBDM_RSHIFT) buf << "Right Shift";
+  if((mapping.mod & MOD2) == MOD2) append(mod2);
+  else if(mapping.mod & LMOD2) append(std::format("Left {}", mod2));
+  else if(mapping.mod & RMOD2) append(std::format("Right {}", mod2));
 
-  if(buf.tellp()) buf << "+";
-  buf << StellaKeyName::forKey(mapping.key);
+  if((mapping.mod & MOD3) == MOD3) append(mod3);
+  else if(mapping.mod & LMOD3) append(std::format("Left {}", mod3));
+  else if(mapping.mod & RMOD3) append(std::format("Right {}", mod3));
 
-  return buf.str();
+  if((mapping.mod & KBDM_SHIFT) == KBDM_SHIFT) append("Shift");
+  else if(mapping.mod & KBDM_LSHIFT) append("Left Shift");
+  else if(mapping.mod & KBDM_RSHIFT) append("Right Shift");
+
+  if(!buf.empty()) buf += '+';
+  buf += StellaKeyName::forKey(mapping.key);
+
+  return buf;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -188,18 +192,17 @@ string KeyMap::getDesc(EventMode mode, int key, int mod)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string KeyMap::getEventMappingDesc(Event::Type event, EventMode mode) const
 {
-  std::ostringstream buf;
+  string buf;
 
-  for (const auto& [_mapping, _event]: myMap)
+  for(const auto& [_mapping, _event]: myMap)
   {
-    if (_event == event && _mapping.mode == mode)
+    if(_event == event && _mapping.mode == mode)
     {
-      if(!buf.view().empty())
-        buf << ", ";
-      buf << getDesc(_mapping);
+      if(!buf.empty()) buf += ", ";
+      buf += getDesc(_mapping);
     }
   }
-  return buf.str();
+  return buf;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -314,23 +317,17 @@ json KeyMap::convertLegacyMapping(string_view lm)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void KeyMap::eraseMode(EventMode mode)
 {
-  for(auto item = myMap.begin(); item != myMap.end();)
-    if(item->first.mode == mode) {
-      const auto _item = item++;
-      erase(_item->first);
-    }
-    else item++;
+  std::erase_if(myMap, [mode](const auto& item) {
+    return item.first.mode == mode;
+  });
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void KeyMap::eraseEvent(Event::Type event, EventMode mode)
 {
-  for(auto item = myMap.begin(); item != myMap.end();)
-    if(item->second == event && item->first.mode == mode) {
-      const auto _item = item++;
-      erase(_item->first);
-    }
-    else item++;
+  std::erase_if(myMap, [event, mode](const auto& item) {
+    return item.second == event && item.first.mode == mode;
+  });
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

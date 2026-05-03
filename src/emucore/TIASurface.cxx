@@ -135,21 +135,18 @@ uInt32 TIASurface::mapIndexedPixel(uInt8 indexedColor, uInt8 shift) const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TIASurface::setNTSC(NTSCFilter::Preset preset, bool show)
 {
-  std::ostringstream buf;
   if(preset == NTSCFilter::Preset::OFF)
   {
     enableNTSC(false);
-    buf << "TV filtering disabled";
+    if(show) myFB.showTextMessage("TV filtering disabled");
   }
   else
   {
     enableNTSC(true);
     const string& mode = myNTSCFilter.setPreset(preset);
-    buf << "TV filtering (" << mode << " mode)";
+    if(show) myFB.showTextMessage(std::format("TV filtering ({} mode)", mode));
   }
   myOSystem.settings().setValue("tv.filter", static_cast<int>(preset));
-
-  if(show) myFB.showTextMessage(buf.view());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -223,12 +220,8 @@ void TIASurface::changeScanlineIntensity(int direction)
   myOSystem.settings().setValue("tv.scanlines", intensity);
   enableNTSC(ntscEnabled());
 
-  std::ostringstream buf;
-  if(intensity)
-    buf << intensity << "%";
-  else
-    buf << "Off";
-  myFB.showGaugeMessage("Scanline intensity", buf.view(), intensity);
+  myFB.showGaugeMessage("Scanline intensity",
+    intensity ? std::format("{}%", intensity) : "Off", intensity);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -277,10 +270,8 @@ void TIASurface::cycleScanlineMask(int direction)
   if(direction)
     createScanlineSurface();
 
-  std::ostringstream msg;
-
-  msg << "Scanline data '" << Names[i] << "'";
-  myOSystem.frameBuffer().showTextMessage(msg.view());
+  myOSystem.frameBuffer().showTextMessage(
+    std::format("Scanline data '{}'", Names[i]));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -316,7 +307,7 @@ void TIASurface::createScanlineSurface()
       : vRepeats(c_vRepeats), data(c_data)
     {}
   };
-  static std::array<Pattern, static_cast<int>(ScanlineMask::NumMasks)> Patterns = {{
+  static const std::array<Pattern, static_cast<int>(ScanlineMask::NumMasks)> Patterns = {{
     Pattern(1,  // standard
     {
       { 0x00000000 },
@@ -450,32 +441,35 @@ void TIASurface::enableNTSC(bool enable)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string TIASurface::effectsInfo() const
 {
-  std::ostringstream buf;
+  string buf;
   switch(myFilter)
   {
     case Filter::Normal:
-      buf << "Disabled, normal mode";
+      buf = "Disabled, normal mode";
       break;
     case Filter::Phosphor:
-      buf << "Disabled, phosphor=" << myPBlend;
+      buf = std::format("Disabled, phosphor={}", myPBlend);
       break;
     case Filter::BlarggNormal:
-      buf << myNTSCFilter.getPreset();
+      buf = myNTSCFilter.getPreset();
       break;
     case Filter::BlarggPhosphor:
-      buf << myNTSCFilter.getPreset() << ", phosphor=" << myPBlend;
+      buf = std::format("{}, phosphor={}", myNTSCFilter.getPreset(), myPBlend);
       break;
     default:
       break;  // Not supposed to get here
   }
   if(mySLineSurface->blendLevel() > 0)
-    buf << ", scanlines=" << mySLineSurface->blendLevel()
-        << "/" << myOSystem.settings().getString("tv.scanmask");
-  buf << ", inter=" << (myOSystem.settings().getBool("tia.inter") ? "enabled" : "disabled");
-  buf << ", aspect correction=" << (correctAspect() ? "enabled" : "disabled");
-  buf << ", palette=" << myOSystem.settings().getString("palette");
+    buf += std::format(", scanlines={}/{}",
+      mySLineSurface->blendLevel(),
+      myOSystem.settings().getString("tv.scanmask"));
 
-  return buf.str();
+  buf += std::format(", inter={}, aspect correction={}, palette={}",
+    myOSystem.settings().getBool("tia.inter") ? "enabled" : "disabled",
+    correctAspect() ? "enabled" : "disabled",
+    myOSystem.settings().getString("palette"));
+
+  return buf;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -571,14 +565,6 @@ void TIASurface::render(bool shade)
     myOSystem.png().takeSnapshot();
   #endif
   }
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FORCE_INLINE uInt32 TIASurface::averageBuffers(uInt32 bufOfs) const
-{
-  const uInt32 c = myRGBFramebuffer[bufOfs];
-  const uInt32 p = myPrevRGBFramebuffer[bufOfs];
-  return (((c ^ p) >> 1) & 0x7F7F7FU) + (c & p);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

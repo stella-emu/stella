@@ -79,8 +79,8 @@ class PlusROMRequest {
       memcpy(myRequest.data(), request, myRequestSize);
     }
     PlusROMRequest()
-      : myDestination{Destination("", "")},
-        myId{PlusStoreId("", "")}
+      : myDestination{Destination({}, {})},
+        myId{PlusStoreId({}, {})}
     {
     }
     ~PlusROMRequest() = default;
@@ -89,15 +89,10 @@ class PlusROMRequest {
     void execute() {
       myState = State::pending;
 
-      std::ostringstream content;
-      content << "agent=Stella; "
-        << "ver=" << STELLA_VERSION << "; "
-        << "id=" << myId.id << "; "
-        << "nick=" << myId.nick;
-
       httplib::Client client(myDestination.host);
       const httplib::Headers headers = {
-        {"PlusROM-Info", content.str()}  // httplib can't accept string_view
+        {"PlusROM-Info", std::format("agent=Stella; ver={}; id={}; nick={}",
+          STELLA_VERSION, myId.id, myId.nick)}
       };
 
       client.set_connection_timeout(milliseconds(CONNECTION_TIMEOUT_MSEC));
@@ -113,15 +108,8 @@ class PlusROMRequest {
       );
 
       if (!response) {
-        std::ostringstream ss;
-        ss
-          << "PlusCart: request to "
-          << myDestination.host
-          << "/"
-          << myDestination.path
-          << ": failed";
-
-        Logger::error(ss.view());
+        Logger::error(std::format("PlusCart: request to {}/{}: failed",
+          myDestination.host, myDestination.path));
 
         myState = State::failed;
 
@@ -129,16 +117,9 @@ class PlusROMRequest {
       }
 
       if (response->status != 200) {
-        std::ostringstream ss;
-        ss
-          << "PlusCart: request to "
-          << myDestination.host
-          << "/"
-          << myDestination.path
-          << ": failed with HTTP status "
-          << response->status;
-
-        Logger::error(ss.view());
+        Logger::error(std::format(
+          "PlusCart: request to {}/{}: failed with HTTP status {}",
+          myDestination.host, myDestination.path, response->status));
 
         myState = State::failed;
 
@@ -146,10 +127,8 @@ class PlusROMRequest {
       }
 
       if (response->body.empty() || static_cast<unsigned char>(response->body[0]) != (response->body.size() - 1)) {
-        std::ostringstream ss;
-        ss << "PlusCart: request to " << myDestination.host << "/" << myDestination.path << ": invalid response";
-
-        Logger::error(ss.view());
+        Logger::error(std::format("PlusCart: request to {}/{}: invalid response",
+          myDestination.host, myDestination.path));
 
         myState = State::failed;
 
@@ -393,8 +372,8 @@ bool PlusROM::isValidPath(string_view path)
   // TODO: This isn't 100%
   //  Perhaps a better function will be included with whatever network
   //  library we decide to use
-  return std::ranges::all_of(path, [](auto c) {
-    return (c > 44 && c < 58) || (c > 64 && c < 91) || (c > 96 && c < 122);
+  return std::ranges::all_of(path, [](unsigned char c) {
+    return (c > ',' && c < ':') || (c > '@' && c < '[') || (c > '`' && c < 'z');
   });
 }
 
@@ -426,7 +405,7 @@ void PlusROM::send()
   {
     const string nick = mySettings.getString("plusroms.nick");
     myRequest = std::make_shared<PlusROMRequest>(
-      PlusROMRequest::Destination(myHost, "/" + myPath),
+      PlusROMRequest::Destination(myHost, std::format("/{}", myPath)),
       PlusROMRequest::PlusStoreId(nick, id),
       myTxBuffer.data(),
       myTxPos
