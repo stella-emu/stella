@@ -137,7 +137,7 @@ std::ostream& operator<<(std::ostream& out, const M& m) {
   return out;
 }
 
-// This is so we can return empty string references with creating temporaries
+// This is so we can return empty string references without creating temporaries
 inline const string& EmptyString() { static const string empty; return empty; }
 
 // This is defined by some systems, but Stella has other uses for it
@@ -221,6 +221,7 @@ namespace BSPF
   }
 
   // Test whether a container contains the given value
+  // NOTE: Only needed until std::vector gets a contains() method
   template<typename Container>
   bool contains(const Container& c, typename Container::const_reference elem) {
     return std::ranges::find(c, elem) != c.end();
@@ -506,14 +507,14 @@ namespace BSPF
   }
 
   // Trim leading and trailing whitespace from a string
-  constexpr string trim(string_view str)
+  constexpr string_view trim(string_view str)
   {
     const auto first = str.find_first_not_of(' ');
     if(first == string_view::npos)
       return {};
 
     const auto last = str.find_last_not_of(' ');
-    return string{str.substr(first, last - first + 1)};
+    return str.substr(first, last - first + 1);
   }
 
   // C++11 way to get local time
@@ -570,4 +571,4 @@ namespace BSPF
   }
 }  // namespace BSPF
 
-#endif
+#endif  // BSPF_HXX
