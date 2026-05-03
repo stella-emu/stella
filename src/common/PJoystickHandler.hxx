@@ -47,16 +47,16 @@ using PhysicalJoystickPtr = shared_ptr<PhysicalJoystick>;
 class PhysicalJoystickHandler
 {
   public:
-    struct MinStrickInfo
+    struct MinStickInfo
     {
-      string                    name;
-      int                       ID;
-      PhysicalJoystick::Port    port;
+      string                 name;
+      int                    ID;
+      PhysicalJoystick::Port port;
 
-      explicit MinStrickInfo(string_view _name, int _id, PhysicalJoystick::Port _port)
+      explicit MinStickInfo(string_view _name, int _id, PhysicalJoystick::Port _port)
         : name{_name}, ID{_id}, port{_port} {}
     };
-    using MinStrickInfoList = std::vector<MinStrickInfo>;
+    using MinStickInfoList = std::vector<MinStickInfo>;
 
   private:
     struct StickInfo
@@ -128,7 +128,7 @@ class PhysicalJoystickHandler
     }
 
     /** Returns a list containing minimal controller info (name, ID, port). */
-    MinStrickInfoList minStickList() const;
+    MinStickInfoList minStickList() const;
 
     void changeDigitalDeadZone(int direction = +1);
     void changeAnalogPaddleDeadZone(int direction = +1);
@@ -191,11 +191,15 @@ class PhysicalJoystickHandler
       JoyHatDir hdir{JoyHatDir::CENTER};
     };
     using EventMappingArray = std::vector<EventMapping>;
+    using EventMappingSpan  = std::span<const EventMapping>;
 
     void setDefaultAction(int stick,
                           EventMapping map, Event::Type event = Event::NoType,
                           EventMode mode = EventMode::kEmulationMode,
                           bool updateDefaults = false);
+
+    void applyDefaultActions(int stick, EventMappingSpan mappings,
+      Event::Type event, EventMode mode, bool updateDefaults);
 
     /** return event mode for given property */
     static EventMode getMode(const Properties& properties, PropType propType);
@@ -248,4 +252,4 @@ class PhysicalJoystickHandler
     };
 };
 
-#endif
+#endif  // PHYSICAL_JOYSTICK_HANDLER_HXX

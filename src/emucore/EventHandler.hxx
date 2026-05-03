@@ -340,7 +340,7 @@ class EventHandler
     /**
       Return a simple list of all physical joysticks currently in the internal database
     */
-    PhysicalJoystickHandler::MinStrickInfoList physicalJoystickList() const {
+    PhysicalJoystickHandler::MinStickInfoList physicalJoystickList() const {
       return myPJoyHandler->minStickList();
     }
 

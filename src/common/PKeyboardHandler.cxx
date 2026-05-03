@@ -79,7 +79,7 @@ PhysicalKeyboardHandler::PhysicalKeyboardHandler(OSystem& system, EventHandler& 
 #ifdef DEBUG_BUILD
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PhysicalKeyboardHandler::verifyDefaultMapping(
-  std::span<const EventMapping> mapping, EventMode mode, string_view name)
+  EventMappingSpan mapping, EventMode mode, string_view name)
 {
   for(const auto& item1 : mapping)
     for(const auto& item2 : mapping)
@@ -193,38 +193,37 @@ void PhysicalKeyboardHandler::setDefaultMapping(Event::Type event, EventMode mod
   switch(mode)
   {
     case EventMode::kEmulationMode:
-      for (const auto& item: DefaultCommonMapping)
-        setDefaultKey(item, event, EventMode::kCommonMode, updateDefaults);
-      // put all controller events into their own mode's mappings
-      for (const auto& item: DefaultJoystickMapping)
-        setDefaultKey(item, event, EventMode::kJoystickMode, updateDefaults);
-      for (const auto& item: DefaultPaddleMapping)
-        setDefaultKey(item, event, EventMode::kPaddlesMode, updateDefaults);
-      for (const auto& item: DefaultKeyboardMapping)
-        setDefaultKey(item, event, EventMode::kKeyboardMode, updateDefaults);
-      for (const auto& item: DefaultDrivingMapping )
-        setDefaultKey(item, event, EventMode::kDrivingMode, updateDefaults);
-      for (const auto& item : CompuMateMapping)
-        setDefaultKey(item, event, EventMode::kCompuMateMode, updateDefaults);
+      applyDefaultMappings(DefaultCommonMapping, event,
+                           EventMode::kCommonMode, updateDefaults);
+      applyDefaultMappings(DefaultJoystickMapping, event,
+                           EventMode::kJoystickMode, updateDefaults);
+      applyDefaultMappings(DefaultPaddleMapping, event,
+                           EventMode::kPaddlesMode, updateDefaults);
+      applyDefaultMappings(DefaultKeyboardMapping, event,
+                           EventMode::kKeyboardMode, updateDefaults);
+      applyDefaultMappings(DefaultDrivingMapping, event,
+                           EventMode::kDrivingMode, updateDefaults);
+      applyDefaultMappings(CompuMateMapping, event,
+                           EventMode::kCompuMateMode, updateDefaults);
       break;
 
     case EventMode::kMenuMode:
-      for (const auto& item: DefaultMenuMapping)
-        setDefaultKey(item, event, EventMode::kMenuMode, updateDefaults);
+      applyDefaultMappings(DefaultMenuMapping, event,
+                           EventMode::kMenuMode, updateDefaults);
       break;
 
   #ifdef GUI_SUPPORT
     case EventMode::kEditMode:
       // Edit mode events are always set because they are not saved
-      for(const auto& item: FixedEditMapping)
-        setDefaultKey(item, event, EventMode::kEditMode);
+      applyDefaultMappings(FixedEditMapping, event,
+                           EventMode::kEditMode, false);
       break;
   #endif
   #ifdef DEBUGGER_SUPPORT
     case EventMode::kPromptMode:
       // Edit mode events are always set because they are not saved
-      for(const auto& item : FixedPromptMapping)
-        setDefaultKey(item, event, EventMode::kPromptMode);
+      applyDefaultMappings(FixedPromptMapping, event,
+                           EventMode::kPromptMode, false);
       break;
   #endif
 
@@ -415,6 +414,14 @@ void PhysicalKeyboardHandler::enableMapping(Event::Type event, EventMode mode)
 
   for (const auto& mapping : mappings)
     myKeyMap.add(event, EventMode::kEmulationMode, mapping.key, mapping.mod);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void PhysicalKeyboardHandler::applyDefaultMappings(EventMappingSpan mappings,
+  Event::Type event, EventMode mode, bool updateDefaults)
+{
+  for (const auto& item : mappings)
+    setDefaultKey(item, event, mode, updateDefaults);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

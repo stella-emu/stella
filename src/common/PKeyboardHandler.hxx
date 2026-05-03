@@ -99,6 +99,7 @@ class PhysicalKeyboardHandler
       int mod{KBDM_NONE};
     };
     using EventMappingArray = std::vector<EventMapping>;
+    using EventMappingSpan  = std::span<const EventMapping>;
 
     // Checks if the given mapping is used by any event mode
     bool isMappingUsed(EventMode mode, const EventMapping& map) const;
@@ -120,13 +121,16 @@ class PhysicalKeyboardHandler
     void enableMappings(const Event::EventSet& events, EventMode mode);
     void enableMapping(Event::Type event, EventMode mode);
 
+    void applyDefaultMappings(EventMappingSpan mappings,
+      Event::Type event, EventMode mode, bool updateDefaults);
+
     /** return event mode for given property */
     static EventMode getMode(const Properties& properties, PropType propType);
     /** return event mode for given controller type */
     static EventMode getMode(Controller::Type type);
 
 #ifdef DEBUG_BUILD
-    void verifyDefaultMapping(std::span<const EventMapping> mapping,
+    void verifyDefaultMapping(EventMappingSpan mapping,
       EventMode mode, string_view name);
 #endif
 
