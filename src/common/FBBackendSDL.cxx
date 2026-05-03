@@ -634,7 +634,7 @@ const FBSurface& FBBackendSDL::compositedSurface()
 {
   ASSERT_MAIN_THREAD;
 
-  FrameBuffer& fb = myOSystem.frameBuffer();
+  const FrameBuffer& fb = myOSystem.frameBuffer();
   const Common::Rect& rectUnscaled = fb.imageRect();
   const Common::Rect rect(
     Common::Point(fb.scaleX(rectUnscaled.x()), fb.scaleY(rectUnscaled.y())),
@@ -663,7 +663,7 @@ const FBSurface& FBBackendSDL::compositedSurface()
       std::array<uInt8, 256> lut{};
       for(int i = 0; i < 256; ++i)
         lut[i] = static_cast<uInt8>(
-          std::pow(i / 255.0, 1.0 / 1.35) * 255.0 + 0.5);
+          std::lround(std::pow(i / 255.0, 1.0 / 1.35) * 255.0));
       return lut;
     }();
 
@@ -672,8 +672,8 @@ const FBSurface& FBBackendSDL::compositedSurface()
     const uInt32 bShift = std::countr_zero(bMask());
     const uInt32 aMask_ = aMask();
 
-    const uInt32 w = static_cast<uInt32>(surfaceRect.w);
-    const uInt32 h = static_cast<uInt32>(surfaceRect.h);
+    const auto w = static_cast<uInt32>(surfaceRect.w);
+    const auto h = static_cast<uInt32>(surfaceRect.h);
     const uInt32 pitch = sdlSurface->pitch / sizeof(uInt32);
     auto* pixels = static_cast<uInt32*>(sdlSurface->pixels);
 
