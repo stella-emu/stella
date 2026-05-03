@@ -48,7 +48,7 @@ class BreakpointMap
       }
       auto operator<=>(const Breakpoint& other) const
       {
-        if(const auto c = bank <=> other.bank; c != nullptr) return c;
+        if(const auto c = bank <=> other.bank; c != 0) return c;
         return addr <=> other.addr;
       }
     };
