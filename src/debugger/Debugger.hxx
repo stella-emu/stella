@@ -41,7 +41,7 @@ class TIADebug;
 class DebuggerParser;
 class RewindManager;
 
-#include <map>
+#include <unordered_map>
 
 #include "Base.hxx"
 #include "Rect.hxx"
@@ -67,9 +67,10 @@ class Debugger : public DialogContainer
   friend class M6502;
 
   public:
-    // TODO: move to unordered_map in C++23
-    using FunctionMap = std::map<string, unique_ptr<Expression>, std::less<>>;
-    using FunctionDefMap = std::map<string, string, std::less<>>;
+    using FunctionMap    = std::unordered_map<string, unique_ptr<Expression>,
+                             BSPF::StringHash, std::equal_to<>>;
+    using FunctionDefMap = std::unordered_map<string, string,
+                             BSPF::StringHash, std::equal_to<>>;
 
     /**
       Create a new debugger parent object

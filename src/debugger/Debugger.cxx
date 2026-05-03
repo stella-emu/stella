@@ -824,12 +824,12 @@ bool Debugger::delFunction(string_view name)
   if(isBuiltinFunction(name))
       return false;
 
-  myFunctions.erase(string{name});    // TODO: temp string fixed in C++23
+  myFunctions.erase(string{name});    // TODO: temp string fixed in C++26
 
   if(!myFunctionDefs.contains(name))
     return false;
 
-  myFunctionDefs.erase(string{name}); // TODO: temp string fixed in C++23
+  myFunctionDefs.erase(string{name}); // TODO: temp string fixed in C++26
   return true;
 }
 
