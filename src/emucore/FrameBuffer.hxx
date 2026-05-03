@@ -19,7 +19,7 @@
 #define FRAMEBUFFER_HXX
 
 #include <list>
-#include <map>
+#include <unordered_map>
 
 class OSystem;
 class Console;
@@ -491,17 +491,17 @@ class FrameBuffer
     // Maximum dimensions of each attached display desktop area
     // Note that this takes 'hidpi' mode into account, so in some cases
     // it will be less than the absolute desktop size
-    std::map<uInt32, Common::Size> myDesktopSize;
+    std::unordered_map<uInt32, Common::Size> myDesktopSize;
 
     // Maximum absolute dimensions of each attached display desktop area
-    std::map<uInt32, Common::Size> myAbsDesktopSize;
+    std::unordered_map<uInt32, Common::Size> myAbsDesktopSize;
 
     // The resolution of each attached display in fullscreen mode
     // Windowed modes use myDesktopSize directly
-    std::map<uInt32, Common::Size> myFullscreenDisplays;
+    std::unordered_map<uInt32, Common::Size> myFullscreenDisplays;
 
     // The resolution of each attached display in windowed mode
-    std::map<uInt32, Common::Size> myWindowedDisplays;
+    std::unordered_map<uInt32, Common::Size> myWindowedDisplays;
 
     // Supported renderers
     VariantList myRenderers;
@@ -560,8 +560,8 @@ class FrameBuffer
     bool myGrabMouse{false};
 
     // HiDPI settings of each attached display
-    std::map<uInt32, bool> myHiDPIAllowed;
-    std::map<uInt32, bool> myHiDPIEnabled;
+    std::unordered_map<uInt32, bool> myHiDPIAllowed;
+    std::unordered_map<uInt32, bool> myHiDPIEnabled;
 
     // Minimum TIA zoom level that can be used for this framebuffer
     double myTIAMinZoom{2.};

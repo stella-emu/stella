@@ -73,8 +73,8 @@ FBBackendSDL::~FBBackendSDL()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FBBackendSDL::queryHardware(std::map<uInt32, Common::Size>& fullscreenRes,
-                                 std::map<uInt32, Common::Size>& windowedRes,
+void FBBackendSDL::queryHardware(std::unordered_map<uInt32, Common::Size>& fullscreenRes,
+                                 std::unordered_map<uInt32, Common::Size>& windowedRes,
                                  VariantList& renderers)
 {
   ASSERT_MAIN_THREAD;

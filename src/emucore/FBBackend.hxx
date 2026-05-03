@@ -20,12 +20,13 @@
 
 class FBSurface;
 
+#include <unordered_map>
+
 #include "Rect.hxx"
 #include "Variant.hxx"
 #include "FrameBufferConstants.hxx"
 #include "VideoModeHandler.hxx"
 #include "bspf.hxx"
-#include <map>
 
 /**
   This class provides an interface/abstraction for platform-specific,
@@ -63,8 +64,8 @@ class FBBackend
       @param windowedRes    Maximum resolution supported in windowed mode
       @param renderers      List of renderer names (internal name -> end-user name)
     */
-    virtual void queryHardware(std::map<uInt32, Common::Size>& fullscreenRes,
-                               std::map<uInt32, Common::Size>& windowedRes,
+    virtual void queryHardware(std::unordered_map<uInt32, Common::Size>& fullscreenRes,
+                               std::unordered_map<uInt32, Common::Size>& windowedRes,
                                VariantList& renderers) = 0;
 
     /**
