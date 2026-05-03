@@ -18,8 +18,6 @@
 #ifndef EVENTHANDLER_HXX
 #define EVENTHANDLER_HXX
 
-#include <map>
-
 class Console;
 class OSystem;
 class MouseControl;

@@ -18,8 +18,6 @@
 #ifndef PHYSICAL_KEYBOARD_HANDLER_HXX
 #define PHYSICAL_KEYBOARD_HANDLER_HXX
 
-#include <map>
-
 class OSystem;
 class EventHandler;
 

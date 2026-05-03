@@ -15,27 +15,27 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-
 #ifndef FAVORITES_MANAGER_HXX
 #define FAVORITES_MANAGER_HXX
 
 class Settings;
 
-#include "bspf.hxx"
-#include <map>
+#include <deque>
+#include <unordered_map>
 #include <unordered_set>
+
+#include "bspf.hxx"
 
 /**
   Manages user defined favorites, recently played ROMs and most popular ROMs.
 
   @author  Thomas Jentzsch
 */
-
 class FavoritesManager
 {
   public:
-    using UserList = std::vector<string>;
-    using RecentList = std::vector<string>;
+    using UserList    = std::vector<string>;
+    using RecentList  = std::deque<string>;
     using PopularType = std::pair<string, uInt32>;
     using PopularList = std::vector<PopularType>;
 
@@ -68,8 +68,10 @@ class FavoritesManager
 
 
   private:
-    using PopularMap = std::map<string, uInt32, std::less<>>;
-    using UserSet = std::unordered_set<string>;
+    using PopularMap = std::unordered_map<
+        string, uInt32, BSPF::StringHash, std::equal_to<>>;
+    using UserSet = std::unordered_set<
+        string, BSPF::StringHash, std::equal_to<>>;
 
     UserSet myUserSet;
     RecentList myRecentList;
@@ -92,4 +94,4 @@ class FavoritesManager
     FavoritesManager& operator=(FavoritesManager&&) = delete;
 };
 
-#endif
+#endif  // FAVORITES_MANAGER_HXX

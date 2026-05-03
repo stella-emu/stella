@@ -144,7 +144,7 @@ void FavoritesManager::addUser(string_view path)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FavoritesManager::removeUser(string_view path)
 {
-  myUserSet.erase(string{path});  // TODO: fixed in C++20
+  myUserSet.erase(string{path});  // TODO: heterogeneous erase fixed in C++26
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -169,7 +169,7 @@ bool FavoritesManager::toggleUser(string_view path)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool FavoritesManager::existsUser(string_view path) const
 {
-  return myUserSet.contains(string{path});
+  return myUserSet.contains(path);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -214,7 +214,7 @@ void FavoritesManager::addRecent(string_view path)
 
   // Limit size
   while(myRecentList.size() > myMaxRecent)
-    myRecentList.erase(myRecentList.begin());
+    myRecentList.pop_front();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -262,7 +262,7 @@ const FavoritesManager::RecentList& FavoritesManager::recentList() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool FavoritesManager::removePopular(string_view path)
 {
-  return myPopularMap.erase(string{path});  // TODO: fixed in C++20
+  return myPopularMap.erase(string{path}) > 0;  // TODO: heterogeneous erase fixed in C++26
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
