@@ -119,9 +119,10 @@ inline uInt8 M6502::peek(uInt16 address, Device::AccessFlags flags)
   icycles += SYSTEM_CYCLES_PER_CPU;
   myFlags = flags;
   const uInt8 result = mySystem->peek(address, flags);
-  myLastPeekAddress = address;
 
 #ifdef DEBUGGER_SUPPORT
+  myLastPeekAddress = address;
+
   if(myReadTraps.isInitialized() && myReadTraps.isSet(address)
      && (myGhostReadsTrap || flags != DISASM_NONE))
   {
@@ -130,10 +131,11 @@ inline uInt8 M6502::peek(uInt16 address, Device::AccessFlags flags)
     if(cond > -1)
     {
       myJustHitReadTrapFlag = true;
-      std::ostringstream msg;
-      msg << "RTrap" << (flags == DISASM_NONE ? "G[" : "[") << Common::Base::HEX2 << cond << "]"
-        << (myTrapCondNames[cond].empty() ? ": " : "If: {" + myTrapCondNames[cond] + "} ");
-      myHitTrapInfo.message = msg.view();
+
+      myHitTrapInfo.message = std::format("RTrap{}[{:02x}]{}",
+        flags == DISASM_NONE ? "G" : "", cond,
+        myTrapCondNames[cond].empty() ? ": " : "If: {" + myTrapCondNames[cond] + "} ");
+
       myHitTrapInfo.address = address;
     }
   }
@@ -156,9 +158,10 @@ inline void M6502::poke(uInt16 address, uInt8 value, Device::AccessFlags flags)
   mySystem->incrementCycles(SYSTEM_CYCLES_PER_CPU);
   icycles += SYSTEM_CYCLES_PER_CPU;
   mySystem->poke(address, value, flags);
-  myLastPokeAddress = address;
 
 #ifdef DEBUGGER_SUPPORT
+  myLastPokeAddress = address;
+
   if(myWriteTraps.isInitialized() && myWriteTraps.isSet(address))
   {
     myLastPokeBaseAddress = Debugger::getBaseAddress(myLastPokeAddress, false); // mirror handling
@@ -166,9 +169,11 @@ inline void M6502::poke(uInt16 address, uInt8 value, Device::AccessFlags flags)
     if(cond > -1)
     {
       myJustHitWriteTrapFlag = true;
-      std::ostringstream msg;
-      msg << "WTrap[" << Common::Base::HEX2 << cond << "]" << (myTrapCondNames[cond].empty() ? ":" : "If: {" + myTrapCondNames[cond] + "}");
-      myHitTrapInfo.message = msg.view();
+
+      myHitTrapInfo.message = std::format("WTrap[{:02x}]{}",
+        cond,
+        myTrapCondNames[cond].empty() ? ":" : "If: {" + myTrapCondNames[cond] + "}");
+
       myHitTrapInfo.address = address;
     }
   }
@@ -178,14 +183,16 @@ inline void M6502::poke(uInt16 address, uInt8 value, Device::AccessFlags flags)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void M6502::requestHalt()
 {
-  if (!myOnHaltCallback) throw std::runtime_error("onHaltCallback not configured");
+  if(!myOnHaltCallback)
+    throw std::runtime_error("onHaltCallback not configured");
   myHaltRequested = true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 inline void M6502::handleHalt()
 {
-  if (myHaltRequested) {
+  if(myHaltRequested)
+  {
     myOnHaltCallback();
     myHaltRequested = false;
   }
@@ -287,11 +294,9 @@ inline void M6502::_execute(uInt64 cycles, DispatchResult& result)
               }
               else
               {
-                std::ostringstream msg;
-
-                msg << "BP: $" << Common::Base::HEX4 << PC << ", bank #"
-                    << std::dec << static_cast<int>(bank);
-                result.setDebugger(currentCycles, msg.view(), "Breakpoint");
+                result.setDebugger(currentCycles,
+                  std::format("BP: ${:04x}, bank #{}", PC, static_cast<int>(bank)),
+                  "Breakpoint");
                 return;
               }
             }
@@ -304,19 +309,16 @@ inline void M6502::_execute(uInt64 cycles, DispatchResult& result)
         const int cond = evalCondBreaks();
         if(cond > -1)
         {
-          std::ostringstream msg;
-
           myLastBreakCycle = mySystem->cycles();
-
           if(myLogBreaks)
           {
-            msg << "CBP[" << Common::Base::HEX2 << cond << "]:";
-            myDebugger->log(msg.view());
+            myDebugger->log(std::format("CBP[{:02x}]:", cond));
           }
           else
           {
-            msg << "CBP[" << Common::Base::HEX2 << cond << "]: " << myCondBreakNames[cond];
-            result.setDebugger(currentCycles, msg.view(), "Conditional breakpoint");
+            result.setDebugger(currentCycles,
+              std::format("CBP[{:02x}]: {}", cond, myCondBreakNames[cond]),
+              "Conditional breakpoint");
             return;
           }
         }
@@ -332,17 +334,13 @@ inline void M6502::_execute(uInt64 cycles, DispatchResult& result)
 
       const int cond = evalCondSaveStates();
       if(cond > -1)
-      {
-        std::ostringstream msg;
-        msg << "conditional savestate [" << Common::Base::HEX2 << cond << "]";
-        myDebugger->addState(msg.view());
-      }
+        myDebugger->addState(std::format("conditional savestate [{:02x}]", cond));
 
       mySystem->cart().clearAllRAMAccesses();
-  #endif  // DEBUGGER_SUPPORT
 
       // Reset the data poke address pointer
       myDataAddressForPoke = 0;
+  #endif  // DEBUGGER_SUPPORT
 
       try {
         uInt16 operandAddress = 0, intermediateAddress = 0;
@@ -376,21 +374,21 @@ inline void M6502::_execute(uInt64 cycles, DispatchResult& result)
           const uInt16 rwpAddr = mySystem->cart().getIllegalRAMReadAccess();
           if(rwpAddr)
           {
-            std::ostringstream msg;
-            msg << "RWP[@ $" << Common::Base::HEX4 << rwpAddr << "]: ";
-            result.setDebugger(currentCycles, msg.view(), "Read from write port", oldPC);
+            result.setDebugger(currentCycles,
+              std::format("RWP[@ ${:04x}]: ", rwpAddr),
+              "Read from write port", oldPC);
             return;
           }
         }
 
-        if (myWriteToReadPortBreak)
+        if(myWriteToReadPortBreak)
         {
           const uInt16 wrpAddr = mySystem->cart().getIllegalRAMWriteAccess();
-          if (wrpAddr)
+          if(wrpAddr)
           {
-            std::ostringstream msg;
-            msg << "WRP[@ $" << Common::Base::HEX4 << wrpAddr << "]: ";
-            result.setDebugger(currentCycles, msg.view(), "Write to read port", oldPC);
+            result.setDebugger(currentCycles,
+              std::format("WRP[@ ${:04x}]: ", wrpAddr),
+              "Write to read port", oldPC);
             return;
           }
         }
@@ -692,8 +690,7 @@ uInt32 M6502::addTimer(uInt16 fromAddr, uInt16 toAddr,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt32 M6502::addTimer(uInt16 addr, uInt8 bank,
-                       bool mirrors, bool anyBank)
+uInt32 M6502::addTimer(uInt16 addr, uInt8 bank, bool mirrors, bool anyBank)
 {
   return myTimer.add(addr, bank, mirrors, anyBank);
 }

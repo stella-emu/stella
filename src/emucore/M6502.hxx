@@ -130,12 +130,30 @@ class M6502 : public Serializable
     bool fatalError() const { return myExecutionStatus & FatalErrorBit; }
 
     /**
-      Get the 16-bit value of the Program Counter register.
+      Get the number of memory accesses to distinct memory locations
 
-      @return The program counter register
+      @return The number of memory accesses to distinct memory locations
     */
-    // uInt16 getPC() const { return PC; }
+    uInt32 distinctAccesses() const { return myNumberOfDistinctAccesses; }
 
+    /**
+      Saves the current state of this device to the given Serializer.
+
+      @param out The serializer device to save to.
+      @return The result of the save.  True on success, false on failure.
+    */
+    bool save(Serializer& out) const override;
+
+    /**
+      Loads the current state of this device from the given Serializer.
+
+      @param in The Serializer device to load from.
+      @return The result of the load.  True on success, false on failure.
+    */
+    bool load(Serializer& in) override;
+
+#ifdef DEBUGGER_SUPPORT
+  public:
     /**
       Check the type of the last peek().
 
@@ -192,31 +210,6 @@ class M6502 : public Serializable
     Int32 lastSrcAddressX() const { return myLastSrcAddressX; }
     Int32 lastSrcAddressY() const { return myLastSrcAddressY; }
 
-    /**
-      Get the number of memory accesses to distinct memory locations
-
-      @return The number of memory accesses to distinct memory locations
-    */
-    uInt32 distinctAccesses() const { return myNumberOfDistinctAccesses; }
-
-    /**
-      Saves the current state of this device to the given Serializer.
-
-      @param out The serializer device to save to.
-      @return The result of the save.  True on success, false on failure.
-    */
-    bool save(Serializer& out) const override;
-
-    /**
-      Loads the current state of this device from the given Serializer.
-
-      @param in The Serializer device to load from.
-      @return The result of the load.  True on success, false on failure.
-    */
-    bool load(Serializer& in) override;
-
-#ifdef DEBUGGER_SUPPORT
-  public:
     // Attach the specified debugger.
     void attach(Debugger& debugger);
 
@@ -413,7 +406,8 @@ class M6502 : public Serializable
     bool myHaltRequested{false};
 
 #ifdef DEBUGGER_SUPPORT
-    Int32 evalCondBreaks() {
+    Int32 evalCondBreaks()
+    {
       for(Int32 i = static_cast<Int32>(myCondBreaks.size()) - 1; i >= 0; --i)
         if(myCondBreaks[i]->evaluate())
           return i;
@@ -463,7 +457,6 @@ class M6502 : public Serializable
     StringList myTrapCondNames;
 
     TimerMap myTimer;
-
 #endif  // DEBUGGER_SUPPORT
 
     bool myGhostReadsTrap{false};          // trap on ghost reads
@@ -482,4 +475,4 @@ class M6502 : public Serializable
     M6502& operator=(M6502&&) = delete;
 };
 
-#endif
+#endif  // M6502_HXX
