@@ -121,14 +121,12 @@ uInt8 Cartridge::peekRAM(uInt8& dest, uInt16 address)
 void Cartridge::pokeRAM(uInt8& dest, uInt16 address, uInt8 value)
 {
 #ifdef DEBUGGER_SUPPORT
-  for(auto i = myRamReadAccesses.begin(); i != myRamReadAccesses.end(); ++i)
+  // Compare with target address and with one page before (in case of page crossed while indexing)
+  if(const auto it = std::ranges::find_if(myRamReadAccesses,
+      [address](uInt16 a) { return a == address || a == address - 256; });
+      it != myRamReadAccesses.end())
   {
-    // Compare with target address and with one page before (in case of page crossed while indexing)
-    if(*i == address || *i == address - 256)
-    {
-      myRamReadAccesses.erase(i);
-      break;
-    }
+    myRamReadAccesses.erase(it);
   }
 #endif
   dest = value;
@@ -151,35 +149,38 @@ void Cartridge::createRomAccessArrays(size_t size)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string Cartridge::getAccessCounters() const
 {
-  std::ostringstream out;
+  string out;
   uInt32 offset = 0;
+
+  const string lastBank = Common::Base::toString(romBankCount() - 1,
+    Common::Base::Fmt::_10_8);
 
   for(uInt16 bank = 0; bank < romBankCount(); ++bank)
   {
-    const uInt16 origin = bankOrigin(bank);
-    const uInt16 bankSize = this->bankSize(bank);
+    const uInt16 origin  = bankOrigin(bank);
+    const uInt16 bankSz  = this->bankSize(bank);
+    const string bankStr = Common::Base::toString(bank, Common::Base::Fmt::_10_8);
+    const string header  = std::format("Bank {} / 0..{}", bankStr, lastBank);
 
-    out << "Bank " << Common::Base::toString(bank, Common::Base::Fmt::_10_8) << " / 0.."
-      << Common::Base::toString(romBankCount() - 1, Common::Base::Fmt::_10_8) << " reads:\n";
-    for(uInt16 addr = 0; addr < bankSize; ++addr)
-    {
-      out << Common::Base::HEX4 << (addr | origin) << ","
-        << Common::Base::toString(myRomAccessCounter[offset + addr], Common::Base::Fmt::_10_8) << ", ";
-    }
-    out << "\n";
-    out << "Bank " << Common::Base::toString(bank, Common::Base::Fmt::_10_8) << " / 0.."
-      << Common::Base::toString(romBankCount() - 1, Common::Base::Fmt::_10_8) << " writes:\n";
-    for(uInt16 addr = 0; addr < bankSize; ++addr)
-    {
-      out << Common::Base::HEX4 << (addr | origin) << ","
-        << Common::Base::toString(myRomAccessCounter[offset + addr + myAccessSize], Common::Base::Fmt::_10_8) << ", ";
-    }
-    out << "\n";
+    out += header + " reads:\n";
+    for(uInt16 addr = 0; addr < bankSz; ++addr)
+      out += std::format("{},{}, ",
+        Common::Base::toString(addr | origin, Common::Base::Fmt::_16_4),
+        Common::Base::toString(myRomAccessCounter[offset + addr],
+                              Common::Base::Fmt::_10_8));
+    out += "\n";
 
-    offset += bankSize;
+    out += header + " writes:\n";
+    for(uInt16 addr = 0; addr < bankSz; ++addr)
+      out += std::format("{},{}, ",
+        Common::Base::toString(addr | origin, Common::Base::Fmt::_16_4),
+        Common::Base::toString(myRomAccessCounter[offset + addr + myAccessSize],
+                              Common::Base::Fmt::_10_8));
+    out += "\n";
+
+    offset += bankSz;
   }
-
-  return out.str();
+  return out;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -227,8 +228,8 @@ uInt16 Cartridge::bankOrigin(uInt16 bank, uInt16 PC) const
 void Cartridge::initializeRAM(uInt8* arr, size_t size, uInt8 val) const
 {
   if(randomInitialRAM())
-    for(size_t i = 0; i < size; ++i)
-      arr[i] = mySystem->randGenerator().next();
+    std::ranges::generate(std::span{arr, size},
+      [this]{ return mySystem->randGenerator().next(); });
   else
     std::fill_n(arr, size, val);
 }

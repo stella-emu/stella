@@ -48,6 +48,7 @@ class BreakpointMap
       }
       auto operator<=>(const Breakpoint& other) const
       {
+        // NOLINTNEXTLINE(hicpp-use-nullptr,modernize-use-nullptr)
         if(const auto c = bank <=> other.bank; c != 0) return c;
         return addr <=> other.addr;
       }

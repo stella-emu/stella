@@ -352,7 +352,7 @@ class FrameBuffer
       @return  The description of the font
     */
     static FontDesc getFontDesc(string_view name);
-  #endif
+  #endif  // GUI_SUPPORT
 
     /**
       Shows or hides the cursor based on the given boolean value.
@@ -423,7 +423,7 @@ class FrameBuffer
     */
     void createMessage(string_view message, MessagePosition position,
                        bool force = false);
-  #endif
+  #endif  // GUI_SUPPORT
 
     /**
       Draw pending messages.
@@ -473,7 +473,7 @@ class FrameBuffer
       Setup the UI fonts
     */
     void setupFonts();
-  #endif
+  #endif  // GUI_SUPPORT
 
   private:
     // The parent system for the framebuffer
@@ -503,6 +503,10 @@ class FrameBuffer
     // The resolution of each attached display in windowed mode
     std::unordered_map<uInt32, Common::Size> myWindowedDisplays;
 
+    // HiDPI settings of each attached display
+    std::unordered_map<uInt32, bool> myHiDPIAllowed;
+    std::unordered_map<uInt32, bool> myHiDPIEnabled;
+
     // Supported renderers
     VariantList myRenderers;
 
@@ -529,7 +533,7 @@ class FrameBuffer
 
     // The font object to use for the ROM launcher
     unique_ptr<GUI::Font> myLauncherFont;
-  #endif
+  #endif  // GUI_SUPPORT
 
     // The TIASurface class takes responsibility for TIA rendering
     shared_ptr<TIASurface> myTIASurface;
@@ -559,10 +563,6 @@ class FrameBuffer
 
     bool myGrabMouse{false};
 
-    // HiDPI settings of each attached display
-    std::unordered_map<uInt32, bool> myHiDPIAllowed;
-    std::unordered_map<uInt32, bool> myHiDPIEnabled;
-
     // Minimum TIA zoom level that can be used for this framebuffer
     double myTIAMinZoom{2.};
 
@@ -588,4 +588,4 @@ class FrameBuffer
     FrameBuffer& operator=(FrameBuffer&&) = delete;
 };
 
-#endif
+#endif  // FRAMEBUFFER_HXX

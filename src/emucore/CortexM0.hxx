@@ -84,7 +84,7 @@ class CortexM0: public Serializable
       return (err & 0xffffffff) >> 8;
     }
 
-    static constexpr uInt8 getErrInstrinsic(err_t err)  {
+    static constexpr uInt8 getErrIntrinsic(err_t err)  {
       return err;
     }
 
@@ -165,7 +165,7 @@ class CortexM0: public Serializable
 
     struct MemoryRegionAccessCode {
       uInt8* backingStore;
-      unique_ptr<uInt8[]> ops;
+      ByteBuffer ops;
     };
 
     struct MemoryRegion {
@@ -219,7 +219,7 @@ class CortexM0: public Serializable
     uInt32 vFlag{0};
 
     std::array<MemoryRegion, 0x100> myRegions{};
-    unique_ptr<uInt8[]> myPageMap;
+    ByteBuffer myPageMap;
     uInt8 myNextRegionIndex{0};
     BusTransactionDelegate* myDefaultDelegate{nullptr};
 

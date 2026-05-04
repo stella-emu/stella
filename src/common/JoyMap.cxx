@@ -108,65 +108,69 @@ bool JoyMap::check(EventMode mode, int button, JoyAxis axis, JoyDir adir,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string JoyMap::getDesc(Event::Type event, const JoyMapping& mapping)
 {
-  std::ostringstream buf;
+  string desc;
 
   // button description
   if(mapping.button != JOY_CTRL_NONE)
-    buf << "/B" << mapping.button;
+    desc += std::format("/B{}", mapping.button);
 
   // axis description
   if(mapping.axis != JoyAxis::NONE)
   {
-    buf << "/A";
-    switch(mapping.axis)
-    {
-      case JoyAxis::X: buf << "X"; break;
-      case JoyAxis::Y: buf << "Y"; break;
-      case JoyAxis::Z: buf << "Z"; break;
-      default:         buf << static_cast<int>(mapping.axis); break;
-    }
+    const string_view axisName = [&]() -> string_view {
+      switch(mapping.axis)
+      {
+        case JoyAxis::X: return "X";
+        case JoyAxis::Y: return "Y";
+        case JoyAxis::Z: return "Z";
+        default:         return "";
+      }
+    }();
 
-    if(Event::isAnalog(event))
-      buf << "+|-";
-    else if(mapping.adir == JoyDir::NEG)
-      buf << "-";
+    const string_view axisDir = Event::isAnalog(event) ? "+|-"
+      : mapping.adir == JoyDir::NEG ? "-" : "+";
+
+    if(axisName.empty())
+      desc += std::format("/A{}{}", static_cast<int>(mapping.axis), axisDir);
     else
-      buf << "+";
+      desc += std::format("/A{}{}", axisName, axisDir);
   }
 
   // hat description
   if(mapping.hat != JOY_CTRL_NONE)
   {
-    buf << "/H" << mapping.hat;
-    switch(mapping.hdir)
-    {
-      case JoyHatDir::UP:    buf << "Y+"; break;
-      case JoyHatDir::DOWN:  buf << "Y-"; break;
-      case JoyHatDir::LEFT:  buf << "X-"; break;
-      case JoyHatDir::RIGHT: buf << "X+"; break;
-      default:                            break;
-    }
+    const string_view hatDir = [&]() -> string_view {
+      switch(mapping.hdir)
+      {
+        case JoyHatDir::UP:    return "Y+";
+        case JoyHatDir::DOWN:  return "Y-";
+        case JoyHatDir::LEFT:  return "X-";
+        case JoyHatDir::RIGHT: return "X+";
+        default:               return "";
+      }
+    }();
+    desc += std::format("/H{}{}", mapping.hat, hatDir);
   }
 
-  return buf.str();
+  return desc;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string JoyMap::getEventMappingDesc(int stick, Event::Type event,
                                    EventMode mode) const
 {
-  std::ostringstream buf;
+  string desc;
 
-  for (const auto& [_mapping, _event]: myMap)
+  for(const auto& [_mapping, _event]: myMap)
   {
-    if (_event == event && _mapping.mode == mode)
+    if(_event == event && _mapping.mode == mode)
     {
-      if(!buf.view().empty())
-        buf << ", ";
-      buf << "C" << stick << getDesc(event, _mapping);
+      if(!desc.empty())
+        desc += ", ";
+      desc += std::format("C{}{}", stick, getDesc(event, _mapping));
     }
   }
-  return buf.str();
+  return desc;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -174,9 +178,10 @@ JoyMap::JoyMappingArray JoyMap::getEventMapping(Event::Type event,
                                                 EventMode mode) const
 {
   JoyMappingArray map;
+  map.reserve(myMap.size());  // upper bound, avoids reallocations
 
-  for (const auto& [_mapping, _event]: myMap)
-    if (_event == event && _mapping.mode == mode)
+  for(const auto& [_mapping, _event]: myMap)
+    if(_event == event && _mapping.mode == mode)
       map.push_back(_mapping);
 
   return map;
@@ -326,21 +331,15 @@ json JoyMap::convertLegacyMapping(string lst)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void JoyMap::eraseMode(EventMode mode)
 {
-  for(auto item = myMap.begin(); item != myMap.end();)
-    if(item->first.mode == mode) {
-      const auto _item = item++;
-      erase(_item->first);
-    }
-    else item++;
+  std::erase_if(myMap, [mode](const auto& item) {
+    return item.first.mode == mode;
+  });
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void JoyMap::eraseEvent(Event::Type event, EventMode mode)
 {
-  for(auto item = myMap.begin(); item != myMap.end();)
-    if(item->second == event && item->first.mode == mode) {
-      const auto _item = item++;
-      erase(_item->first);
-    }
-    else item++;
+  std::erase_if(myMap, [event, mode](const auto& item) {
+    return item.second == event && item.first.mode == mode;
+  });
 }

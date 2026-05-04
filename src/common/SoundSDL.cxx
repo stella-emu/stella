@@ -45,11 +45,8 @@ SoundSDL::SoundSDL(OSystem& osystem, AudioSettings& audioSettings)
 
   if(!SDL_InitSubSystem(SDL_INIT_AUDIO))
   {
-    std::ostringstream buf;
-
-    buf << "WARNING: Failed to initialize SDL audio system! \n"
-        << "         " << SDL_GetError() << '\n';
-    Logger::error(buf.view());
+    Logger::error(std::format("WARNING: Failed to initialize SDL audio system! \n"
+      "         {}\n", SDL_GetError()));
     return;
   }
 
@@ -83,12 +80,8 @@ bool SoundSDL::openDevice()
 
   auto SOUND_ERROR = [this]() -> bool
   {
-    std::ostringstream buf;
-
-    buf << "WARNING: Couldn't open SDL audio device! \n"
-        << "         " << SDL_GetError() << '\n';
-    Logger::error(buf.view());
-
+    Logger::error(std::format("WARNING: Couldn't open SDL audio device! \n"
+      "         {}\n", SDL_GetError()));
     return myIsInitializedFlag = false;
   };
 
@@ -181,15 +174,13 @@ void SoundSDL::mute(bool enable)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void SoundSDL::toggleMute()
 {
-  const bool wasMuted = std::equal_to()(myVolumeFactor, 0);
+  const bool wasMuted = (myVolumeFactor == 0.F);
   mute(!wasMuted);
 
-  string message = "Sound ";
-  message += !myAudioSettings.enabled()
-    ? "disabled"
-    : (wasMuted ? "unmuted" : "muted");
-
-  myOSystem.frameBuffer().showTextMessage(message);
+  myOSystem.frameBuffer().showTextMessage(
+    std::format("Sound {}", !myAudioSettings.enabled()
+      ? "disabled"
+      : (wasMuted ? "unmuted" : "muted")));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -242,63 +233,56 @@ void SoundSDL::adjustVolume(int direction)
   setVolume(percent);
 
   // Now show an onscreen message
-  std::ostringstream strval;
-  percent ? strval << percent << "%" : strval << "Off";
-  myOSystem.frameBuffer().showGaugeMessage("Volume", strval.view(), percent);
+  myOSystem.frameBuffer().showGaugeMessage("Volume",
+    percent ? std::format("{}%", percent) : "Off",
+    percent);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string SoundSDL::about() const
 {
-  std::ostringstream buf;
-  buf << "Sound enabled:\n"
-      << "  Volume:   " << myAudioSettings.volume() << "%\n"
-      << "  Channels: " << static_cast<uInt32>(mySpec.channels)
-      << (myAudioQueue->isStereo() ? " (Stereo)" : " (Mono)") << '\n'
-      << "  Preset:   ";
-  switch(myAudioSettings.preset())
-  {
-    using enum AudioSettings::Preset;
-    case custom:
-      buf << "Custom\n";
-      break;
-    case lowQualityMediumLag:
-      buf << "Low quality, medium lag\n";
-      break;
-    case highQualityMediumLag:
-      buf << "High quality, medium lag\n";
-      break;
-    case highQualityLowLag:
-      buf << "High quality, low lag\n";
-      break;
-    case ultraQualityMinimalLag:
-      buf << "Ultra quality, minimal lag\n";
-      break;
-    default:
-      break;  // Not supposed to get here
-  }
-  buf << "    Sample rate:   " << static_cast<uInt32>(mySpec.freq) << " Hz\n";
-  buf << "    Resampling:    ";
-  switch(myAudioSettings.resamplingQuality())
-  {
-    using enum AudioSettings::ResamplingQuality;
-    case nearestNeighbour:
-      buf << "Quality 1, nearest neighbor\n";
-      break;
-    case lanczos_2:
-      buf << "Quality 2, Lanczos (a = 2)\n";
-      break;
-    case lanczos_3:
-      buf << "Quality 3, Lanczos (a = 3)\n";
-      break;
-    default:
-      break;  // Not supposed to get here
-  }
-  buf << "    Headroom:      " << std::fixed << std::setprecision(1)
-      << (0.5 * myAudioSettings.headroom()) << " frames\n"
-      << "    Buffer size:   " << std::fixed << std::setprecision(1)
-      << (0.5 * myAudioSettings.bufferSize()) << " frames\n";
-  return buf.str();
+  const string_view presetStr = [this]() -> string_view {
+    switch(myAudioSettings.preset())
+    {
+      using enum AudioSettings::Preset;
+      case custom:                  return "Custom\n";
+      case lowQualityMediumLag:     return "Low quality, medium lag\n";
+      case highQualityMediumLag:    return "High quality, medium lag\n";
+      case highQualityLowLag:       return "High quality, low lag\n";
+      case ultraQualityMinimalLag:  return "Ultra quality, minimal lag\n";
+      default:                      return "\n";
+    }
+  }();
+
+  const string_view resampleStr = [this]() -> string_view {
+    switch(myAudioSettings.resamplingQuality())
+    {
+      using enum AudioSettings::ResamplingQuality;
+      case nearestNeighbour: return "Quality 1, nearest neighbor\n";
+      case lanczos_2:        return "Quality 2, Lanczos (a = 2)\n";
+      case lanczos_3:        return "Quality 3, Lanczos (a = 3)\n";
+      default:               return "\n";
+    }
+  }();
+
+  return std::format(
+    "Sound enabled:\n"
+    "  Volume:   {}%\n"
+    "  Channels: {}{}\n"
+    "  Preset:   {}"
+    "    Sample rate:   {} Hz\n"
+    "    Resampling:    {}"
+    "    Headroom:      {:.1f} frames\n"
+    "    Buffer size:   {:.1f} frames\n",
+    myAudioSettings.volume(),
+    static_cast<uInt32>(mySpec.channels),
+    myAudioQueue->isStereo() ? " (Stereo)" : " (Mono)",
+    presetStr,
+    static_cast<uInt32>(mySpec.freq),
+    resampleStr,
+    0.5 * myAudioSettings.headroom(),
+    0.5 * myAudioSettings.bufferSize()
+  );
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

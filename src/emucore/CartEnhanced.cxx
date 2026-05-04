@@ -31,19 +31,11 @@ CartridgeEnhanced::CartridgeEnhanced(const ByteBuffer& image, size_t size,
 
   // Is the ROM too large?  If so, we cap it
   if(size > bsSize)
-  {
-    std::ostringstream buf;
-    buf << "ROM larger than expected (" << size << " > " << bsSize
-        << "), truncating " << (size - bsSize) << " bytes\n";
-    Logger::info(buf.view());
-  }
+    Logger::info(std::format("ROM larger than expected ({} > {}), truncating {} bytes\n",
+      size, bsSize, size - bsSize));
   else if(size < bsSize)
-  {
-    std::ostringstream buf;
-    buf << "ROM smaller than expected (" << size << " < " << bsSize
-        << "), appending " << (bsSize - size) << " bytes\n";
-    Logger::info(buf.view());
-  }
+    Logger::info(std::format("ROM smaller than expected ({} < {}), appending {} bytes\n",
+      size, bsSize, bsSize - size));
 
   mySize = bsSize;
 
@@ -146,7 +138,7 @@ void CartridgeEnhanced::reset()
   bank(startBank());
 
   if (myPlusROM->isValid())
-    (*myPlusROM).reset();  // Make sure to call ::reset, not smartptr reset
+    (*myPlusROM).reset();  // calls PlusROM::reset(), not unique_ptr::reset()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -349,7 +341,6 @@ uInt16 CartridgeEnhanced::ramBankCount() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt16 CartridgeEnhanced::calcNumSegments() const
 {
-
   // Either the bankswitching supports multiple segments
   //  or the ROM is < 4K (-> 1 segment)
   return std::min(1 << (MAX_BANK_SHIFT - myBankShift),
@@ -359,7 +350,7 @@ uInt16 CartridgeEnhanced::calcNumSegments() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CartridgeEnhanced::isRamBank(uInt16 address) const
 {
-  return myRamBankCount > 0 ? getBank(address) >= romBankCount() : false;
+  return myRamBankCount > 0 && getBank(address) >= romBankCount();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -407,7 +398,7 @@ bool CartridgeEnhanced::save(Serializer& out) const
   }
   catch(...)
   {
-    cerr << "ERROR: << " << name() << "::save\n";
+    cerr << "ERROR: " << name() << "::save\n";
     return false;
   }
 

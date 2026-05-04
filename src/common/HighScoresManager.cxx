@@ -373,24 +373,23 @@ Int32 HighScoresManager::score() const
 string HighScoresManager::formattedScore(Int32 score, Int32 width) const
 {
   if(score <= 0)
-    return "";
+    return {};
 
-  std::ostringstream buf;
   json jprops;
-  Int32 digits = numDigits(properties(jprops));
+  const Int32 digits = numDigits(properties(jprops));
 
   if(scoreBCD(jprops))
   {
-    digits = std::max(width, digits);
-    buf << std::setw(digits) << std::setfill(' ') << score;
+    const Int32 w = std::max(width, digits);
+    return std::format("{:{}}", score, w);
   }
-  else {
+  else
+  {
+    string hexStr = std::format("{:0{}x}", score, digits);
     if(width > digits)
-      buf << std::setw(width - digits) << std::setfill(' ') << "";
-    buf << std::hex << std::setw(digits) << std::setfill('0') << score;
+      return std::format("{:>{}}", hexStr, width);
+    return hexStr;
   }
-
-  return buf.str();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -398,22 +397,26 @@ string HighScoresManager::md5Props() const
 {
   json jprops;
   properties(jprops);
-  std::ostringstream buf;
-
-  buf << varAddress(jprops) << numVariations() << varBCD(jprops)
-    << varZeroBased(jprops);
 
   const uInt32 addrBytes = numAddrBytes(jprops);
-  HSM::ScoreAddresses addr = getPropScoreAddr(jprops);
+  const HSM::ScoreAddresses addr = getPropScoreAddr(jprops);
+
+  string buf = std::format("{}{}{}{}",
+    varAddress(jprops), numVariations(), varBCD(jprops), varZeroBased(jprops));
+
   for(uInt32 a = 0; a < addrBytes; ++a)
-    buf << addr[a];
-  buf << numDigits(jprops) << trailingZeroes(jprops) << scoreBCD(jprops)
-    << scoreInvert(jprops) << specialAddress(jprops) << specialBCD(jprops)
-    << specialZeroBased(jprops);
+    buf += std::format("{}", addr[a]);
 
-  buf << specialAddress(jprops) << specialBCD(jprops) << specialZeroBased(jprops);
+  buf += std::format("{}{}{}{}{}{}{}",
+    numDigits(jprops), trailingZeroes(jprops), scoreBCD(jprops),
+    scoreInvert(jprops), specialAddress(jprops), specialBCD(jprops),
+    specialZeroBased(jprops));
 
-  return MD5::hash(buf.view());
+  // FIXME: ask thrust26 about this -> specialAddress/BCD/zeroBased are duplicated here — likely a bug?
+  buf += std::format("{}{}{}",
+    specialAddress(jprops), specialBCD(jprops), specialZeroBased(jprops));
+
+  return MD5::hash(buf);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -538,8 +541,9 @@ HSM::ScoreAddresses HighScoresManager::getPropScoreAddr(const json& jprops)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt16 HighScoresManager::fromHexStr(string_view addr)
 {
-  if(const auto pos = addr.find("0x") != std::string::npos)
-    addr = addr.substr(pos + 1);
+  // FIXME: ask thrust26 about this
+  if(const auto pos = addr.find("0x"); pos != std::string::npos)
+    addr = addr.substr(pos + 2);  // also +2, not +1, to skip "0x"
 
   return static_cast<uInt16>(BSPF::stoi<16>(addr));
 }
@@ -557,19 +561,15 @@ Int32 HighScoresManager::fromBCD(uInt8 bcd)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string HighScoresManager::hash(const ScoresData& data) const
 {
-  std::ostringstream buf;
-
-  buf << HIGHSCORE_HEADER << data.md5 << md5Props() << data.variation;
+  string buf = std::format("{}{}{}{}", HIGHSCORE_HEADER, data.md5,
+                           md5Props(), data.variation);
 
   for(uInt32 r = 0; r < NUM_RANKS && data.scores[r].score; ++r)
-  {
-    buf << data.scores[r].score
-      << data.scores[r].special
-      << data.scores[r].name
-      << data.scores[r].date;
-  }
+    buf += std::format("{}{}{}{}",
+      data.scores[r].score, data.scores[r].special,
+      data.scores[r].name, data.scores[r].date);
 
-  return MD5::hash(buf.view());
+  return MD5::hash(buf);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -616,7 +616,7 @@ void HighScoresManager::saveHighScores(ScoresData& data) const
 void HighScoresManager::loadHighScores(ScoresData& data)
 {
   bool invalid = false;
-  std::ostringstream buf;
+  string errorMsg;
 
   clearHighScores(data);
 
@@ -630,7 +630,8 @@ void HighScoresManager::loadHighScores(ScoresData& data)
       // First test if we have a valid header
       // If so, do a complete high score data load
       if(!hsObject.contains(VERSION) || hsObject.at(VERSION) != HIGHSCORE_HEADER)
-        buf << "Error: Incompatible high scores data for variation " << data.variation << ".";
+        errorMsg = std::format("Error: Incompatible high scores data for variation {}.",
+                               data.variation);
       else if(hsObject.contains(DATA))
       {
         const json& hsData = hsObject.at(DATA);
@@ -654,9 +655,11 @@ void HighScoresManager::loadHighScores(ScoresData& data)
   if(invalid)
   {
     clearHighScores(data);
-    buf << "Error: Invalid high scores data for variation " << data.variation << ".";
+    errorMsg = std::format("Error: Invalid high scores data for variation {}.",
+                           data.variation);
   }
-  myOSystem.frameBuffer().showTextMessage(buf.view());
+  if(!errorMsg.empty())
+    myOSystem.frameBuffer().showTextMessage(errorMsg);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -693,10 +696,5 @@ bool HighScoresManager::load(const json& hsData, ScoresData& data)
 void HighScoresManager::clearHighScores(ScoresData& data)
 {
   for(auto& s: data.scores)
-  {
-    s.score = 0;
-    s.special = 0;
-    s.name = "";
-    s.date = "";
-  }
+    s = ScoreEntry{};  // value-initializes all members to defaults
 }

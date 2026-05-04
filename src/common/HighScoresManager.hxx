@@ -266,4 +266,4 @@ class HighScoresManager
     HighScoresManager& operator=(HighScoresManager&&) = delete;
 };
 
-#endif
+#endif  // HIGHSCORES_MANAGER_HXX

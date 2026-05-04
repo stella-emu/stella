@@ -19,7 +19,7 @@
 #define EVENT_HXX
 
 #include <mutex>
-#include <set>
+#include <unordered_set>
 
 #include "bspf.hxx"
 
@@ -199,13 +199,13 @@ class Event
     // Event list version, update only if the id of existing(!) event types changed
     static constexpr Int32 VERSION = 6;
 
-    using EventSet = std::set<Event::Type>;
+    using EventSet = std::unordered_set<Event::Type>;
 
   public:
     /**
       Create a new event object.
     */
-    Event() { clear(); }  // NOLINT: myValues is initialized in clear()
+    Event() { clear(); }  // NOLINT(cppcoreguidelines-pro-type-member-init,hicpp-member-init)
     ~Event() = default;
 
   public:
@@ -273,33 +273,33 @@ class Event
 // Hold controller related events
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // NOLINTNEXTLINE(bugprone-throwing-static-initialization)
-static const Event::EventSet LeftJoystickEvents = {
+inline const Event::EventSet LeftJoystickEvents = {
   Event::LeftJoystickUp, Event::LeftJoystickDown, Event::LeftJoystickLeft, Event::LeftJoystickRight,
   Event::LeftJoystickFire, Event::LeftJoystickFire5, Event::LeftJoystickFire9,
 };
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // NOLINTNEXTLINE(bugprone-throwing-static-initialization)
-static const Event::EventSet QTJoystick3Events = {
+inline const Event::EventSet QTJoystick3Events = {
   Event::QTJoystickThreeUp, Event::QTJoystickThreeDown, Event::QTJoystickThreeLeft, Event::QTJoystickThreeRight,
   Event::QTJoystickThreeFire
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // NOLINTNEXTLINE(bugprone-throwing-static-initialization)
-static const Event::EventSet RightJoystickEvents = {
+inline const Event::EventSet RightJoystickEvents = {
   Event::RightJoystickUp, Event::RightJoystickDown, Event::RightJoystickLeft, Event::RightJoystickRight,
   Event::RightJoystickFire, Event::RightJoystickFire5, Event::RightJoystickFire9,
 };
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // NOLINTNEXTLINE(bugprone-throwing-static-initialization)
-static const Event::EventSet QTJoystick4Events = {
+inline const Event::EventSet QTJoystick4Events = {
   Event::QTJoystickFourUp, Event::QTJoystickFourDown, Event::QTJoystickFourLeft, Event::QTJoystickFourRight,
   Event::QTJoystickFourFire
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // NOLINTNEXTLINE(bugprone-throwing-static-initialization)
-static const Event::EventSet LeftPaddlesEvents = {
+inline const Event::EventSet LeftPaddlesEvents = {
   Event::LeftPaddleADecrease, Event::LeftPaddleAIncrease, Event::LeftPaddleAAnalog,
   Event::LeftPaddleAFire, Event::LeftPaddleAButton1, Event::LeftPaddleAButton2,
   Event::LeftPaddleBDecrease, Event::LeftPaddleBIncrease, Event::LeftPaddleBAnalog,
@@ -307,14 +307,14 @@ static const Event::EventSet LeftPaddlesEvents = {
 };
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // NOLINTNEXTLINE(bugprone-throwing-static-initialization)
-static const Event::EventSet QTPaddles3Events = {
+inline const Event::EventSet QTPaddles3Events = {
   // Only fire buttons supported by QuadTari
   Event::QTPaddle3AFire, Event::QTPaddle3BFire
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // NOLINTNEXTLINE(bugprone-throwing-static-initialization)
-static const Event::EventSet RightPaddlesEvents = {
+inline const Event::EventSet RightPaddlesEvents = {
   Event::RightPaddleADecrease, Event::RightPaddleAIncrease, Event::RightPaddleAAnalog,
   Event::RightPaddleAFire, Event::RightPaddleAButton1, Event::RightPaddleAButton2,
   Event::RightPaddleBDecrease, Event::RightPaddleBIncrease, Event::RightPaddleBAnalog,
@@ -322,14 +322,14 @@ static const Event::EventSet RightPaddlesEvents = {
 };
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // NOLINTNEXTLINE(bugprone-throwing-static-initialization)
-static const Event::EventSet QTPaddles4Events = {
+inline const Event::EventSet QTPaddles4Events = {
   // Only fire buttons supported by QuadTari
   Event::QTPaddle4AFire, Event::QTPaddle4BFire
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // NOLINTNEXTLINE(bugprone-throwing-static-initialization)
-static const Event::EventSet LeftKeyboardEvents = {
+inline const Event::EventSet LeftKeyboardEvents = {
   Event::LeftKeyboard1, Event::LeftKeyboard2, Event::LeftKeyboard3,
   Event::LeftKeyboard4, Event::LeftKeyboard5, Event::LeftKeyboard6,
   Event::LeftKeyboard7, Event::LeftKeyboard8, Event::LeftKeyboard9,
@@ -338,7 +338,7 @@ static const Event::EventSet LeftKeyboardEvents = {
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // NOLINTNEXTLINE(bugprone-throwing-static-initialization)
-static const Event::EventSet RightKeyboardEvents = {
+inline const Event::EventSet RightKeyboardEvents = {
   Event::RightKeyboard1, Event::RightKeyboard2, Event::RightKeyboard3,
   Event::RightKeyboard4, Event::RightKeyboard5, Event::RightKeyboard6,
   Event::RightKeyboard7, Event::RightKeyboard8, Event::RightKeyboard9,
@@ -347,16 +347,16 @@ static const Event::EventSet RightKeyboardEvents = {
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // NOLINTNEXTLINE(bugprone-throwing-static-initialization)
-static const Event::EventSet LeftDrivingEvents = {
+inline const Event::EventSet LeftDrivingEvents = {
   Event::LeftDrivingAnalog, Event::LeftDrivingCCW, Event::LeftDrivingCW,
   Event::LeftDrivingFire, Event::LeftDrivingButton1, Event::LeftDrivingButton2,
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // NOLINTNEXTLINE(bugprone-throwing-static-initialization)
-static const Event::EventSet RightDrivingEvents = {
+inline const Event::EventSet RightDrivingEvents = {
   Event::RightDrivingAnalog, Event::RightDrivingCCW, Event::RightDrivingCW,
   Event::RightDrivingFire, Event::RightDrivingButton1, Event::RightDrivingButton2,
 };
 
-#endif
+#endif  // EVENT_HXX

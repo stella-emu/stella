@@ -214,7 +214,7 @@ void CheatManager::loadCheats(string_view md5sum)
 {
   myPerFrameList.clear();
   myCheatList.clear();
-  myCurrentCheat = "";
+  myCurrentCheat.clear();
 
   // Set up any cheatcodes that were on the command line
   // (and remove the key from the settings, so they won't get set again)
@@ -223,15 +223,16 @@ void CheatManager::loadCheats(string_view md5sum)
     myOSystem.settings().setValue("cheat", "");
 
   // Remember the cheats for this ROM
-  const auto& iter = myCheatMap.find(md5sum);
+  const auto iter = myCheatMap.find(md5sum);
   if(iter != myCheatMap.end())
+  {
     myCurrentCheat = iter->second;
 
-  // Parse the cheat list, constructing cheats and adding them to the manager
-  const string& mapCheats = (iter != myCheatMap.end())
-    ? iter->second
-    : EmptyString();
-  parse(cheats.empty() ? mapCheats : mapCheats + cheats);
+    // Parse the cheat list, constructing cheats and adding them to the manager
+    parse(cheats.empty() ? iter->second : iter->second + cheats);
+  }
+  else if(!cheats.empty())
+    parse(cheats);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -249,11 +250,8 @@ void CheatManager::saveCheats(string_view md5sum)
   // Only update the list if absolutely necessary
   if(changed)
   {
-    const auto iter = myCheatMap.find(md5sum);
-
     // Erase old entry and add a new one only if it's changed
-    if(iter != myCheatMap.end())
-      myCheatMap.erase(iter);
+    myCheatMap.erase(string{md5sum});  // TODO: heterogeneous erase fixed in C++26
     // Add new entry only if there are any cheats defined
     if(!serialized.empty())
       myCheatMap.emplace(md5sum, serialized);

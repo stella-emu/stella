@@ -74,6 +74,7 @@ bool GlobalKeyHandler::handleEvent(Event::Type event, bool pressed, bool repeate
           {Group::INPUT, {Setting::START_INPUT_ADJ, "Input Devices & Ports"}},
           {Group::DEBUG, {Setting::START_DEBUG_ADJ, "Debug"}},
         }};
+        // NOLINTNEXTLINE(readability-qualified-auto)
         const auto result = std::ranges::find_if(GroupMap,
             [group](const auto& entry) { return entry.first == group; });
 

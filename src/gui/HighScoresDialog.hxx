@@ -122,4 +122,4 @@ class HighScoresDialog : public Dialog
     HighScoresDialog& operator=(HighScoresDialog&&) = delete;
 };
 
-#endif
+#endif  // HIGHSCORE_DIALOG_HXX

@@ -15,8 +15,8 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#ifndef CONTROLLERMAP_HXX
-#define CONTROLLERMAP_HXX
+#ifndef JOY_MAP_HXX
+#define JOY_MAP_HXX
 
 #include <unordered_map>
 
@@ -58,22 +58,7 @@ class JoyMap
           axis{JoyAxis::NONE}, adir{JoyDir::NONE},
           hat{c_hat}, hdir{c_hdir} { }
 
-      ~JoyMapping() = default;
-      JoyMapping(const JoyMapping&) = default;
-      JoyMapping& operator=(const JoyMapping&) = default;
-      JoyMapping(JoyMapping&&) = default;
-      JoyMapping& operator=(JoyMapping&&) = default;
-
-      bool operator==(const JoyMapping& other) const
-      {
-        return (mode == other.mode
-          && button == other.button
-          && axis == other.axis
-          && adir == other.adir
-          && hat == other.hat
-          && hdir == other.hdir
-        );
-      }
+      bool operator==(const JoyMapping& other) const = default;
     };
     using JoyMappingArray = std::vector<JoyMapping>;
 
@@ -147,4 +132,4 @@ class JoyMap
     JoyMap& operator=(JoyMap&&) = delete;
 };
 
-#endif
+#endif  // JOY_MAP_HXX

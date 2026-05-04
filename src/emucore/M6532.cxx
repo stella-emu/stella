@@ -539,42 +539,35 @@ void M6532::increaseAccessCounter(uInt16 address, bool isWrite)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string M6532::getAccessCounters() const
 {
-  std::ostringstream out;
+  string out;
 
-  out << "RAM reads:\n";
-  for(uInt16 addr = 0x00; addr < RAM_SIZE; ++addr)
-    out << Common::Base::HEX4 << (addr | 0x80) << ","
-    << Common::Base::toString(myRAMAccessCounter[addr], Common::Base::Fmt::_10_8) << ", ";
-  out << "\n";
-  out << "RAM writes:\n";
-  for(uInt16 addr = 0x00; addr < RAM_SIZE; ++addr)
-    out << Common::Base::HEX4 << (addr | 0x80) << ","
-    << Common::Base::toString(myRAMAccessCounter[RAM_SIZE + addr], Common::Base::Fmt::_10_8) << ", ";
-  out << "\n";
+  // Helper: append one address+counter entry
+  const auto addEntry = [&out](uInt16 addr, Device::AccessCounter counter) {
+    out += std::format("{},{}, ",
+      Common::Base::toString(addr, Common::Base::Fmt::_16_4),
+      Common::Base::toString(counter, Common::Base::Fmt::_10_8));
+  };
 
-  out << "Stack reads:\n";
-  for(uInt16 addr = 0x00; addr < STACK_SIZE; ++addr)
-    out << Common::Base::HEX4 << (addr | 0x180) << ","
-    << Common::Base::toString(myStackAccessCounter[addr], Common::Base::Fmt::_10_8) << ", ";
-  out << "\n";
-  out << "Stack writes:\n";
-  for(uInt16 addr = 0x00; addr < STACK_SIZE; ++addr)
-    out << Common::Base::HEX4 << (addr | 0x180) << ","
-    << Common::Base::toString(myStackAccessCounter[STACK_SIZE + addr], Common::Base::Fmt::_10_8) << ", ";
-  out << "\n";
+  // Helper: append a labeled section
+  const auto addSection = [&](string_view label, uInt16 baseAddr,
+                              uInt16 size, const auto& counters,
+                              uInt16 offset = 0)
+  {
+    out += label;
+    out += '\n';
+    for(uInt16 addr = 0x00; addr < size; ++addr)
+      addEntry(addr | baseAddr, counters[offset + addr]);
+    out += '\n';
+  };
 
-  out << "IO reads:\n";
-  for(uInt16 addr = 0x00; addr < IO_SIZE; ++addr)
-    out << Common::Base::HEX4 << (addr | 0x280) << ","
-    << Common::Base::toString(myIOAccessCounter[addr], Common::Base::Fmt::_10_8) << ", ";
-  out << "\n";
-  out << "IO writes:\n";
-  for(uInt16 addr = 0x00; addr < IO_SIZE; ++addr)
-    out << Common::Base::HEX4 << (addr | 0x280) << ","
-    << Common::Base::toString(myIOAccessCounter[IO_SIZE + addr], Common::Base::Fmt::_10_8) << ", ";
-  out << "\n";
+  addSection("RAM reads:\n",   0x080, RAM_SIZE,   myRAMAccessCounter,   0);
+  addSection("RAM writes:\n",  0x080, RAM_SIZE,   myRAMAccessCounter,   RAM_SIZE);
+  addSection("Stack reads:\n", 0x180, STACK_SIZE, myStackAccessCounter, 0);
+  addSection("Stack writes:\n",0x180, STACK_SIZE, myStackAccessCounter, STACK_SIZE);
+  addSection("IO reads:\n",    0x280, IO_SIZE,    myIOAccessCounter,    0);
+  addSection("IO writes:\n",   0x280, IO_SIZE,    myIOAccessCounter,    IO_SIZE);
 
-  return out.str();
+  return out;
 }
 
 #endif  // DEBUGGER_SUPPORT

@@ -114,4 +114,4 @@ class MouseControl
     MouseControl& operator=(MouseControl&&) = delete;
 };
 
-#endif
+#endif  // MOUSE_CONTROL_HXX

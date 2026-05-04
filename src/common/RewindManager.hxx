@@ -64,7 +64,7 @@ class RewindManager
       76 * 262 * 60 * 10
     };
     // settings values for the intervals
-    const std::array<string, NUM_INTERVALS> INT_SETTINGS = {
+    static constexpr std::array<string_view, NUM_INTERVALS> INT_SETTINGS = {
       "1f",
       "3f",
       "10f",
@@ -87,7 +87,7 @@ class RewindManager
       uInt64{76} * 262 * 60 * 60 * 60
     };
     // settings values for the horzions
-    const std::array<string, NUM_HORIZONS> HOR_SETTINGS = {
+    static constexpr std::array<string_view, NUM_HORIZONS> HOR_SETTINGS = {
       "3s",
       "10s",
       "30s",
@@ -224,4 +224,4 @@ class RewindManager
     RewindManager& operator=(RewindManager&&) = delete;
 };
 
-#endif
+#endif  // REWIND_MANAGER_HXX

@@ -240,7 +240,7 @@ FontDesc FrameBuffer::getFontDesc(string_view name)
   else // "large16"
     return GUI::stella16x32tDesc;   // 16x32
 }
-#endif
+#endif  // GUI_SUPPORT
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FBInitStatus FrameBuffer::createDisplay(string_view title, BufferType type,
@@ -323,7 +323,7 @@ FBInitStatus FrameBuffer::createDisplay(string_view title, BufferType type,
     myMsg.surface = allocateSurface(fontWidth * MESSAGE_WIDTH + HBORDER * 2,
                                     font().getFontHeight() * 1.5);
   }
-#endif
+#endif  // GUI_SUPPORT
 
   // Initialize video mode handler, so it can know what video modes are
   // appropriate for the requested image size
@@ -570,7 +570,7 @@ void FrameBuffer::update(UpdateMode mode)
         myOSystem.launcher().render();
       break;  // EventHandlerState::LAUNCHER
     }
-  #endif
+  #endif  // GUI_SUPPORT
 
   #ifdef DEBUGGER_SUPPORT
     case EventHandlerState::DEBUGGER:
@@ -583,7 +583,7 @@ void FrameBuffer::update(UpdateMode mode)
         myOSystem.debugger().render();
       break;  // EventHandlerState::DEBUGGER
     }
-  #endif
+  #endif  // DEBUGGER_SUPPORT
     default:
       break;
   }
@@ -654,7 +654,7 @@ void FrameBuffer::createMessage(string_view message, MessagePosition position,
   myMsg.surface->setSrcSize(myMsg.w, myMsg.h);
   myMsg.surface->setDstSize(myMsg.w * hidpiScaleFactor(), myMsg.h * hidpiScaleFactor());
 }
-#endif
+#endif  // GUI_SUPPORT
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBuffer::showTextMessage(string_view message,
@@ -669,7 +669,7 @@ void FrameBuffer::showTextMessage(string_view message,
                              font().getStringWidth(message) + HBORDER * 2);
 
   createMessage(message, position, force);
-#endif
+#endif  // GUI_SUPPORT
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -681,7 +681,7 @@ void FrameBuffer::showGaugeMessage(string_view message, string_view valueText,
   const int HBORDER = fontWidth * 1.25 / 2.0;
 
   myMsg.showGauge  = true;
-  if(std::not_equal_to()(maxValue - minValue, 0))
+  if(maxValue != minValue)
     myMsg.value = (value - minValue) / (maxValue - minValue) * 100.F;
   else
     myMsg.value = 100.F;
@@ -693,7 +693,7 @@ void FrameBuffer::showGaugeMessage(string_view message, string_view valueText,
                               + HBORDER * 2;
 
   createMessage(message, MessagePosition::BottomCenter);
-#endif
+#endif  // GUI_SUPPORT
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -716,63 +716,47 @@ void FrameBuffer::drawFrameStats(float framesPerSecond)
   const GUI::Font& f = hidpiEnabled() ? infoFont() : font();
   const int dy = f.getFontHeight() + 2;
 
-  std::ostringstream ss;
-
   myStatsMsg.surface->invalidate();
 
-  // draw scanlines
+  // Draw scanlines / framerate / format
   ColorId color = myOSystem.console().tia().frameBufferScanlinesLastFrame() !=
     myLastScanlines ? kDbgColorRed : myStatsMsg.color;
 
-  ss
-    << myOSystem.console().tia().frameBufferScanlinesLastFrame()
-    << " / "
-    << std::fixed << std::setprecision(1)
-    << myOSystem.console().currentFrameRate()
-    << "Hz => "
-    << info.DisplayFormat;
+  const string line1 = std::format("{} / {:.1f}Hz => {}",
+    myOSystem.console().tia().frameBufferScanlinesLastFrame(),
+    myOSystem.console().currentFrameRate(),
+    info.DisplayFormat);
 
-  myStatsMsg.surface->drawString(f, ss.view(), xPos, yPos,
-                                 myStatsMsg.w, color, TextAlign::Left, 0, true, kBGColor);
+  myStatsMsg.surface->drawString(f, line1, xPos, yPos,
+    myStatsMsg.w, color, TextAlign::Left, 0, true, kBGColor);
 
   yPos += dy;
-  ss.str("");
 
-  ss
-    << std::fixed << std::setprecision(1) << framesPerSecond
-    << "fps @ "
-    << std::fixed << std::setprecision(0) << 100 *
-      (myOSystem.settings().getBool("turbo")
-        ? 50.0F
-        : myOSystem.settings().getFloat("speed"))
-    << "% speed";
+  // Draw fps / speed
+  const float speed = myOSystem.settings().getBool("turbo")
+    ? 50.0F
+    : myOSystem.settings().getFloat("speed");
+  const string line2 = std::format("{:.1f}fps @ {:.0f}% speed",
+    framesPerSecond, 100 * speed);
 
-  myStatsMsg.surface->drawString(f, ss.view(), xPos, yPos,
-      myStatsMsg.w, myStatsMsg.color, TextAlign::Left, 0, true, kBGColor);
+  myStatsMsg.surface->drawString(f, line2, xPos, yPos,
+    myStatsMsg.w, myStatsMsg.color, TextAlign::Left, 0, true, kBGColor);
 
   yPos += dy;
-  ss.str("");
 
-  ss << info.BankSwitch;
-  int xPosEnd =
-    myStatsMsg.surface->drawString(f, ss.view(), xPos, yPos,
-                                   myStatsMsg.w, myStatsMsg.color, TextAlign::Left, 0, true, kBGColor);
+  // Draw bankswitch info, and optionally developer/vsync status
+  int xPosEnd = myStatsMsg.surface->drawString(f, info.BankSwitch, xPos, yPos,
+    myStatsMsg.w, myStatsMsg.color, TextAlign::Left, 0, true, kBGColor);
 
   if(myOSystem.settings().getBool("dev.settings"))
   {
     xPosEnd = myStatsMsg.surface->drawString(f, "| ", xPosEnd, yPos,
-                                  myStatsMsg.w, color, TextAlign::Left, 0, true, kBGColor);
-    ss.str("");
-    color = myStatsMsg.color;
-    if(myOSystem.console().vsyncCorrect())
-      ss << "Developer";
-    else
-    {
-      color = kDbgColorRed;
-      ss << "VSYNC!";
-    }
-    myStatsMsg.surface->drawString(f, ss.view(), xPosEnd, yPos,
-        myStatsMsg.w, color, TextAlign::Left, 0, true, kBGColor);
+      myStatsMsg.w, color, TextAlign::Left, 0, true, kBGColor);
+
+    const bool vsyncCorrect = myOSystem.console().vsyncCorrect();
+    color = vsyncCorrect ? myStatsMsg.color : kDbgColorRed;
+    myStatsMsg.surface->drawString(f, vsyncCorrect ? "Developer" : "VSYNC!",
+      xPosEnd, yPos, myStatsMsg.w, color, TextAlign::Left, 0, true, kBGColor);
   }
 
   myStatsMsg.surface->setDstPos(imageRect().x() + imageRect().w() / 64,
@@ -780,7 +764,7 @@ void FrameBuffer::drawFrameStats(float framesPerSecond)
   myStatsMsg.surface->setDstSize(myStatsMsg.w * hidpiScaleFactor(),
                                  myStatsMsg.h * hidpiScaleFactor());
   myStatsMsg.surface->render();
-#endif
+#endif  // GUI_SUPPORT
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -791,8 +775,8 @@ void FrameBuffer::toggleFrameStats(bool toggle)
   myOSystem.settings().setValue(
     myOSystem.settings().getBool("dev.settings") ? "dev.stats" : "plr.stats", myStatsEnabled);
 
-  myOSystem.frameBuffer().showTextMessage(string("Console info ") +
-                                          (myStatsEnabled ? "enabled" : "disabled"));
+  myOSystem.frameBuffer().showTextMessage(
+    std::format("Console info {}", myStatsEnabled ? "enabled" : "disabled"));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -952,7 +936,7 @@ inline bool FrameBuffer::drawMessage()
 
   myMsg.counter--;
   myMsg.surface->render();
-#endif
+#endif  // GUI_SUPPORT
 
   return false;
 }
@@ -1162,7 +1146,7 @@ void FrameBuffer::setFullscreen(bool enable)
   myOSystem.settings().setValue("fullscreen", enable);
   saveCurrentWindowPosition();
   applyVideoMode();
-#endif
+#endif  // WINDOWED_SUPPORT
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1182,25 +1166,21 @@ void FrameBuffer::toggleFullscreen(bool toggle)
 
       if(state != EventHandlerState::LAUNCHER)
       {
-        std::ostringstream msg;
-        msg << "Fullscreen ";
+        const string_view state_str = isFullscreen ? "enabled" : "disabled";
 
         if(state != EventHandlerState::DEBUGGER)
         {
-          if(isFullscreen)
-            msg << "enabled (" << myBackend->refreshRate() << " Hz, ";
-          else
-            msg << "disabled (";
-          msg << "Zoom " << round(myActiveVidMode.zoom * 100) << "%)";
+          const string msg = isFullscreen
+            ? std::format("Fullscreen {} ({} Hz, Zoom {}%)",
+                state_str, myBackend->refreshRate(),
+                static_cast<int>(round(myActiveVidMode.zoom * 100)))
+            : std::format("Fullscreen {} (Zoom {}%)",
+                state_str,
+                static_cast<int>(round(myActiveVidMode.zoom * 100)));
+          showTextMessage(msg);
         }
         else
-        {
-          if(isFullscreen)
-            msg << "enabled";
-          else
-            msg << "disabled";
-        }
-        showTextMessage(msg.view());
+          showTextMessage(std::format("Fullscreen {}", state_str));
       }
       break;
     }
@@ -1208,13 +1188,6 @@ void FrameBuffer::toggleFullscreen(bool toggle)
       break;
   }
 }
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-#if 0
-const FBSurface& FrameBuffer::renderedTIASurface()
-{
-}
-#endif
 
 #ifdef ADAPTABLE_REFRESH_SUPPORT
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1234,26 +1207,22 @@ void FrameBuffer::toggleAdaptRefresh(bool toggle)
       myOSystem.createFrameBuffer();
     }
 
-    std::ostringstream msg;
-
-    msg << "Adapt refresh rate ";
-    msg << (isAdaptRefresh ? "enabled" : "disabled");
-    msg << " (" << myBackend->refreshRate() << " Hz)";
-
-    showTextMessage(msg.view());
+    showTextMessage(std::format("Adapt refresh rate {} ({} Hz)",
+      isAdaptRefresh ? "enabled" : "disabled",
+      myBackend->refreshRate()));
   }
 }
-#endif
+#endif  // ADAPTABLE_REFRESH_SUPPORT
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBuffer::changeOverscan(int direction)
 {
-  if (fullScreen())
+  if(fullScreen())
   {
     const int oldOverscan = myOSystem.settings().getInt("tia.fs_overscan");
     const int overscan = BSPF::clamp(oldOverscan + direction, 0, 10);
 
-    if (overscan != oldOverscan)
+    if(overscan != oldOverscan)
     {
       myOSystem.settings().setValue("tia.fs_overscan", overscan);
 
@@ -1261,12 +1230,10 @@ void FrameBuffer::changeOverscan(int direction)
       myOSystem.createFrameBuffer();
     }
 
-    std::ostringstream val;
-    if(overscan)
-      val << (overscan > 0 ? "+" : "" ) << overscan << "%";
-    else
-      val << "Off";
-    myOSystem.frameBuffer().showGaugeMessage("Overscan", val.view(), overscan, 0, 10);
+    const string val = overscan
+      ? std::format("{}{}{}", overscan > 0 ? "+" : "", overscan, "%")
+      : "Off";
+    myOSystem.frameBuffer().showGaugeMessage("Overscan", val, overscan, 0, 10);
   }
 }
 

@@ -38,7 +38,6 @@
 
 using Common::Base;
 using std::hex;
-using std::dec;
 using std::setfill;
 using std::setw;
 using std::left;

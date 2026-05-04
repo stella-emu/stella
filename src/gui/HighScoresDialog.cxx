@@ -228,11 +228,7 @@ void HighScoresDialog::loadConfig()
   // fill drown down with all variation numbers of current game
   items.clear();
   for (Int32 i = 1; i <= instance().highScores().numVariations(); ++i)
-  {
-    std::ostringstream buf;
-    buf << std::setw(3) << std::setfill(' ') << i;
-    VarList::push_back(items, buf.view(), i);
-  }
+    VarList::push_back(items, std::format("{:3}", i), i);
   myVariationPopup->addItems(items);
 
   Int32 variation = 0;
@@ -263,8 +259,8 @@ void HighScoresDialog::loadConfig()
     label = label.substr(label.length() - 5);
   mySpecialLabelWidget->setLabel(label);
 
-  if(!instance().highScores().notes().empty())
-    myNotesWidget->setLabel("Note: " + instance().highScores().notes());
+  if (!instance().highScores().notes().empty())
+    myNotesWidget->setLabel(std::format("Note: {}", instance().highScores().notes()));
   else
     myNotesWidget->setLabel("");
 
@@ -273,8 +269,9 @@ void HighScoresDialog::loadConfig()
   else
     myScores.md5 = instance().launcher().selectedRomMD5();
 
-  myMD5Widget->setLabel("MD5: " + myScores.md5);
-  myCheckSumWidget->setLabel("Props: " + instance().highScores().md5Props());
+  myMD5Widget->setLabel(std::format("MD5: {}", myScores.md5));
+  myCheckSumWidget->setLabel(std::format("Props: {}",
+                                         instance().highScores().md5Props()));
 
   // requires the current MD5
   myGameNameWidget->setLabel(cartName());
@@ -380,8 +377,6 @@ void HighScoresDialog::updateWidgets(bool init)
 
   for (uInt32 r = 0; r < NUM_RANKS; ++r)
   {
-    std::ostringstream buf;
-
     if(myScores.scores[r].score > 0)
     {
       myRankWidgets[r]->clearFlags(Widget::FLAG_INVISIBLE);
@@ -397,10 +392,10 @@ void HighScoresDialog::updateWidgets(bool init)
     myScoreWidgets[r]->setLabel(instance().highScores().formattedScore(myScores.scores[r].score,
                                 HSM::MAX_SCORE_DIGITS));
 
-    if (myScores.scores[r].special > 0)
-      buf << std::setw(HSM::MAX_SPECIAL_DIGITS) << std::setfill(' ')
-      << myScores.scores[r].special;
-    mySpecialWidgets[r]->setLabel(buf.view());
+    mySpecialWidgets[r]->setLabel(
+      myScores.scores[r].special > 0
+        ? std::format("{:{}}", myScores.scores[r].special, HSM::MAX_SPECIAL_DIGITS)
+        : "");
 
     myNameWidgets[r]->setLabel(myScores.scores[r].name);
     myDateWidgets[r]->setLabel(myScores.scores[r].date);
@@ -480,8 +475,8 @@ void HighScoresDialog::deleteRank(int rank)
   }
   myScores.scores[NUM_RANKS - 1].score   = 0;
   myScores.scores[NUM_RANKS - 1].special = 0;
-  myScores.scores[NUM_RANKS - 1].name   = "";
-  myScores.scores[NUM_RANKS - 1].date   = "";
+  myScores.scores[NUM_RANKS - 1].name.clear();
+  myScores.scores[NUM_RANKS - 1].date.clear();
 
   if (myEditRank == rank)
   {
@@ -541,15 +536,12 @@ string HighScoresDialog::cartName() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string HighScoresDialog::now()
 {
-  const std::tm now = BSPF::localTime();
-  std::ostringstream ss;
+  const std::tm t = BSPF::localTime();
 
-  ss << std::setfill('0') << std::right
-     << std::setw(2) << (now.tm_year - 100) << '-'
-     << std::setw(2) << (now.tm_mon + 1) << '-'
-     << std::setw(2) << now.tm_mday << " "
-     << std::setw(2) << now.tm_hour << ":"
-     << std::setw(2) << now.tm_min;
-
-  return ss.str();
+  return std::format("{:02}-{:02}-{:02} {:02}:{:02}",
+    t.tm_year - 100,
+    t.tm_mon + 1,
+    t.tm_mday,
+    t.tm_hour,
+    t.tm_min);
 }

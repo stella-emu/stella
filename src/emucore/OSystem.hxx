@@ -511,7 +511,7 @@ class OSystem
 
     virtual void initPersistence(FSNode& basedir) = 0;
 
-    virtual string describePresistence() = 0;
+    virtual string describePersistence() = 0;
 
   protected:
     // Pointer to the EventHandler object
@@ -669,6 +669,7 @@ class OSystem
 
     double dispatchEmulation(EmulationWorker& emulationWorker);
 
+  private:
     // Following constructors and assignment operators not supported
     OSystem(const OSystem&) = delete;
     OSystem(OSystem&&) = delete;
@@ -676,4 +677,4 @@ class OSystem
     OSystem& operator=(OSystem&&) = delete;
 };
 
-#endif
+#endif  // OSYSTEM_HXX

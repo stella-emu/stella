@@ -648,7 +648,7 @@ class TIA : public Device
      */
     enum FixedObject: uInt8 { P0, M0, P1, M1, PF, BL, BK };
     BSPF::array2D<FixedColor, 3, 7> myFixedColorPalette{};
-    std::array<string, 7> myFixedColorNames{};
+    std::array<string_view, 7> myFixedColorNames{};
 
   private:
     /**

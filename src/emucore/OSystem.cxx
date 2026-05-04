@@ -94,10 +94,8 @@ OSystem::OSystem()
   #endif
 
   // Get build info
-  std::ostringstream info;
-  info << "Build " << STELLA_BUILD << ", using " << MediaFactory::backendName()
-       << " [" << BSPF::ARCH << "]";
-  myBuildInfo = info.view();
+  myBuildInfo = std::format("Build {}, using {} [{}]",
+    STELLA_BUILD, MediaFactory::backendName(), BSPF::ARCH);
 
   mySettings = MediaFactory::createSettings();
 
@@ -125,23 +123,25 @@ bool OSystem::initialize(const Settings::Options& options)
 
   Logger::debug("Creating the OSystem ...");
 
-  std::ostringstream buf;
-  buf << "Stella " << STELLA_VERSION << '\n'
-      << "  Features: " << myFeatures << '\n'
-      << "  " << myBuildInfo << "\n\n"
-      << "Base directory:     '"
-      << AsciiFold::toAscii(myBaseDir.getShortPath()) << "'\n"
-      << "State directory:    '"
-      << AsciiFold::toAscii(myStateDir.getShortPath()) << "'\n"
-      << "NVRam directory:    '"
-      << AsciiFold::toAscii(myNVRamDir.getShortPath()) << "'\n"
-      << "Persistence:        '"
-      << AsciiFold::toAscii(describePresistence()) << "'\n"
-      << "Cheat file:         '"
-      << AsciiFold::toAscii(myCheatFile.getShortPath()) << "'\n"
-      << "Palette file:       '"
-      << AsciiFold::toAscii(myPaletteFile.getShortPath()) << "'\n";
-  Logger::info(buf.view());
+  Logger::info(std::format(
+    "Stella {}\n"
+    "  Features: {}\n"
+    "  {}\n\n"
+    "Base directory:     '{}'\n"
+    "State directory:    '{}'\n"
+    "NVRam directory:    '{}'\n"
+    "Persistence:        '{}'\n"
+    "Cheat file:         '{}'\n"
+    "Palette file:       '{}'\n",
+    STELLA_VERSION,
+    myFeatures,
+    myBuildInfo,
+    AsciiFold::toAscii(myBaseDir.getShortPath()),
+    AsciiFold::toAscii(myStateDir.getShortPath()),
+    AsciiFold::toAscii(myNVRamDir.getShortPath()),
+    AsciiFold::toAscii(describePersistence()),
+    AsciiFold::toAscii(myCheatFile.getShortPath()),
+    AsciiFold::toAscii(myPaletteFile.getShortPath())));
 
   // NOTE: The framebuffer MUST be created before any other object!!!
   // Get relevant information about the video hardware
@@ -291,23 +291,6 @@ void OSystem::setConfigPaths()
 
   myCheatFile = myBaseDir;  myCheatFile /= "stella.cht";
   myPaletteFile = myBaseDir;  myPaletteFile /= "stella.pal";
-
-#if 0
-  // Debug code
-  auto dbgPath = [](string_view desc, const FSNode& location)
-  {
-    cerr << desc << ": " << location << '\n';
-  };
-  dbgPath("base dir  ", myBaseDir);
-  dbgPath("state dir ", myStateDir);
-  dbgPath("nvram dir ", myNVRamDir);
-  dbgPath("cfg dir   ", myCfgDir);
-  dbgPath("ssave dir ", mySnapshotSaveDir);
-  dbgPath("sload dir ", mySnapshotLoadDir);
-  dbgPath("bezel dir ", myBezelDir);
-  dbgPath("cheat file", myCheatFile);
-  dbgPath("pal file  ", myPaletteFile);
-#endif
 }
 
 #ifdef IMAGE_SUPPORT
@@ -352,7 +335,7 @@ const FSNode& OSystem::bezelDir()
 
   return myBezelDir;
 }
-#endif
+#endif  // IMAGE_SUPPORT
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void OSystem::setUserDir(string_view path)
@@ -461,10 +444,7 @@ string OSystem::createConsole(const FSNode& rom, string_view md5sum, bool newrom
   }
 
   // Create an instance of the 2600 game console
-  std::ostringstream buf;
-
   myEventHandler->handleConsoleStartupEvents();
-
   try
   {
     closeConsole();
@@ -472,9 +452,9 @@ string OSystem::createConsole(const FSNode& rom, string_view md5sum, bool newrom
   }
   catch(const std::runtime_error& e)
   {
-    buf << "ERROR: " << e.what();
-    Logger::error(buf.view());
-    return buf.str();
+    const string err = std::format("ERROR: {}", e.what());
+    Logger::error(err);
+    return err;
   }
 
   if(myConsole)
@@ -514,13 +494,14 @@ string OSystem::createConsole(const FSNode& rom, string_view md5sum, bool newrom
         myFrameBuffer->showTextMessage("Multicart " +
           myConsole->cartridge().detectedType() + ", loading ROM" + id);
     }
-    buf << "Game console created:\n"
-        << "  ROM file: " << myRomFile.getShortPath() << '\n';
     const FSNode propsFile = myRomFile.getSiblingNode(".pro");
+    string info = std::format("Game console created:\n  ROM file: {}\n",
+      myRomFile.getShortPath());
     if(propsFile.exists())
-      buf << "  PRO file: " << propsFile.getShortPath() << '\n';
-    buf << '\n' << getROMInfo(*myConsole);
-    Logger::info(buf.view());
+      info += std::format("  PRO file: {}\n", propsFile.getShortPath());
+    info += '\n';
+    info += getROMInfo(*myConsole);
+    Logger::info(info);
 
     myFrameBuffer->setCursorState();
 
@@ -536,21 +517,15 @@ string OSystem::createConsole(const FSNode& rom, string_view md5sum, bool newrom
     {
       if(settings().getBool(devSettings ? "dev.detectedinfo" : "plr.detectedinfo"))
       {
-        std::ostringstream msg;
-
-        msg << myConsole->leftController().name() << "/" << myConsole->rightController().name()
-          << " - " << myConsole->cartridge().detectedType()
-          << (myConsole->cartridge().isPlusROM() ? " PlusROM " : "")
-          << " - " << myConsole->getFormatString();
-        myFrameBuffer->showTextMessage(msg.view());
+        myFrameBuffer->showTextMessage(std::format("{}/{} - {}{} - {}",
+          myConsole->leftController().name(),
+          myConsole->rightController().name(),
+          myConsole->cartridge().detectedType(),
+          myConsole->cartridge().isPlusROM() ? " PlusROM " : "",
+          myConsole->getFormatString()));
       }
       else if(!myLauncherUsed)
-      {
-        std::ostringstream msg;
-
-        msg << "Stella " << STELLA_VERSION;
-        myFrameBuffer->showTextMessage(msg.view());
-      }
+        myFrameBuffer->showTextMessage(std::format("Stella {}", STELLA_VERSION));
     }
 
     // Check for first PlusROM start
@@ -559,15 +534,14 @@ string OSystem::createConsole(const FSNode& rom, string_view md5sum, bool newrom
       if(settings().getString("plusroms.fixedid").empty())
       {
         // Make sure there always is an id
-        constexpr int ID_LEN = 32;
-        constexpr string_view HEX_DIGITS{ "0123456789ABCDEF" };
-        char id_chr[ID_LEN] = { 0 };
+        constexpr string_view HEX_DIGITS{"0123456789ABCDEF"};
+        std::array<char, 32> id_chr{};
         const Random rnd;
+        std::ranges::generate(id_chr,
+          [&]{ return HEX_DIGITS[rnd.next() % 16]; });
 
-        for(char& c : id_chr)
-          c = HEX_DIGITS[rnd.next() % 16];
-
-        settings().setValue("plusroms.fixedid", string(id_chr, ID_LEN));
+        settings().setValue("plusroms.fixedid",
+                            string_view{id_chr.data(), id_chr.size()});
 
         myEventHandler->changeStateByEvent(Event::PlusRomsSetupMode);
       }
@@ -576,6 +550,9 @@ string OSystem::createConsole(const FSNode& rom, string_view md5sum, bool newrom
 
       if(id.empty())
         id = settings().getString("plusroms.fixedid");
+
+      Logger::info(std::format("PlusROM Nick: {}, ID: {}",
+        settings().getString("plusroms.nick"), id));
 
       Logger::info("PlusROM Nick: " + settings().getString("plusroms.nick") + ", ID: " + id);
     }
@@ -651,9 +628,7 @@ string OSystem::getROMInfo(const FSNode& romfile)
   }
   catch(const std::runtime_error& e)
   {
-    std::ostringstream buf;
-    buf << "ERROR: Couldn't get ROM info (" << e.what() << ")";
-    return buf.str();
+    return std::format("ERROR: Couldn't get ROM info ({})", e.what());
   }
 
   return getROMInfo(*console);
@@ -863,16 +838,17 @@ ByteBuffer OSystem::openROM(const FSNode& rom, size_t& size,
 string OSystem::getROMInfo(const Console& console)
 {
   const ConsoleInfo& info = console.about();
-  std::ostringstream buf;
 
-  buf << "  Cart Name:       " << info.CartName << '\n'
-      << "  Cart MD5:        " << info.CartMD5 << '\n'
-      << "  Controller 0:    " << info.Control0 << '\n'
-      << "  Controller 1:    " << info.Control1 << '\n'
-      << "  Display Format:  " << info.DisplayFormat << '\n'
-      << "  Bankswitch Type: " << info.BankSwitch << '\n';
-
-  return buf.str();
+  return std::format(
+    "  Cart Name:       {}\n"
+    "  Cart MD5:        {}\n"
+    "  Controller 0:    {}\n"
+    "  Controller 1:    {}\n"
+    "  Display Format:  {}\n"
+    "  Bankswitch Type: {}\n",
+    info.CartName, info.CartMD5,
+    info.Control0, info.Control1,
+    info.DisplayFormat, info.BankSwitch);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

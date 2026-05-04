@@ -496,4 +496,4 @@ class Cartridge : public Device
     Cartridge& operator=(Cartridge&&) = delete;
 };
 
-#endif
+#endif  // CARTRIDGE_HXX

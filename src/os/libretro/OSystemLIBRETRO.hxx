@@ -78,7 +78,7 @@ class OSystemLIBRETRO : public OSystem
 
   protected:
     void initPersistence(FSNode& basedir) override { }
-    string describePresistence() override { return "none"; }
+    string describePersistence() override { return "none"; }
 
   private:
     // Following constructors and assignment operators not supported
@@ -88,4 +88,4 @@ class OSystemLIBRETRO : public OSystem
     OSystemLIBRETRO& operator=(OSystemLIBRETRO&&) = delete;
 };
 
-#endif
+#endif  // OSYSTEM_LIBRETRO_HXX

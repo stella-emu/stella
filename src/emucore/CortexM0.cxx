@@ -20,55 +20,48 @@
 // Code is public domain and used with the author's consent
 //============================================================================
 
-#include "CortexM0.hxx"
-
 #include <algorithm>
+#include <bit>
 
 #include "Serializable.hxx"
 #include "Base.hxx"
+#include "CortexM0.hxx"
 
 namespace {
-#ifdef __BIG_ENDIAN__
   FORCE_INLINE uInt32 READ32(const uInt8* data, uInt32 addr) {
-    return
-      (((uInt8*)(data))[(addr)]) |
-      (((uInt8*)(data))[(addr) + 1]  << 8) |
-      (((uInt8*)(data))[(addr) + 2] << 16) |
-      (((uInt8*)(data))[(addr) + 3] << 24);
+    if constexpr(std::endian::native == std::endian::big)
+      return data[addr]           |
+            (data[addr+1] << 8)   |
+            (data[addr+2] << 16)  |
+            (data[addr+3] << 24);
+    else
+      return (reinterpret_cast<const uInt32*>(data))[addr >> 2];
   }
 
   FORCE_INLINE uInt16 READ16(const uInt8* data, uInt32 addr) {
-    return (((uInt8*)(data))[(addr)]) | (((uInt8*)(data))[(addr) + 1]  << 8);
+    if constexpr(std::endian::native == std::endian::big)
+      return data[addr] | (data[addr+1] << 8);
+    else
+      return (reinterpret_cast<const uInt16*>(data))[addr >> 1];
   }
 
   FORCE_INLINE void WRITE32(uInt8* data, uInt32 addr, uInt32 value) {
-    ((uInt8*)(data))[(addr)] = (value);
-    ((uInt8*)(data))[(addr) + 1] = (value) >> 8;
-    ((uInt8*)(data))[(addr) + 2] = (value) >> 16;
-    ((uInt8*)(data))[(addr) + 3] = (value) >> 24;
+    if constexpr(std::endian::native == std::endian::big) {
+      data[addr]   = value;
+      data[addr+1] = value >> 8;
+      data[addr+2] = value >> 16;
+      data[addr+3] = value >> 24;
+    } else
+      (reinterpret_cast<uInt32*>(data))[addr >> 2] = value;
   }
 
   FORCE_INLINE void WRITE16(uInt8* data, uInt32 addr, uInt16 value) {
-    ((uInt8*)(data))[(addr)] = value;
-    ((uInt8*)(data))[(addr) + 1] = (value) >> 8;
+    if constexpr(std::endian::native == std::endian::big) {
+      data[addr]   = value;
+      data[addr+1] = value >> 8;
+    } else
+      (reinterpret_cast<uInt16*>(data))[addr >> 1] = value;
   }
-#else
-  FORCE_INLINE uInt32 READ32(const uInt8* data, uInt32 addr) {
-    return (reinterpret_cast<const uInt32*>(data))[addr >> 2];
-  }
-
-  FORCE_INLINE uInt16 READ16(const uInt8* data, uInt32 addr) {
-    return (reinterpret_cast<const uInt16*>(data))[addr >> 1];
-  }
-
-  FORCE_INLINE void WRITE32(uInt8* data, uInt32 addr, uInt32 value) {
-    (reinterpret_cast<uInt32*>(data))[addr >> 2] = value;
-  }
-
-  FORCE_INLINE void WRITE16(uInt8* data, uInt32 addr, uInt16 value) {
-    (reinterpret_cast<uInt16*>(data))[addr >> 1] = value;
-  }
-#endif
 }  // namespace
 
 // #define THUMB_DISS
@@ -430,14 +423,10 @@ namespace {
   }
 
   string describeErrorCode(CortexM0::err_t err) {
-    if (CortexM0::isErrCustom(err)) {
-      std::ostringstream s;
-      s << "custom error " << CortexM0::getErrCustom(err);
+    if (CortexM0::isErrCustom(err))
+      return std::format("custom error {}", CortexM0::getErrCustom(err));
 
-      return s.str();
-    }
-
-    switch (CortexM0::getErrInstrinsic(err)) {
+    switch (CortexM0::getErrIntrinsic(err)) {
       case CortexM0::ERR_UNMAPPED_READ32:
         return "unmapped read32";
 
@@ -484,13 +473,10 @@ namespace {
         break;
     }
 
-    std::ostringstream s;
-    s << "unknown instrinsic error "
-      << static_cast<uInt32>(CortexM0::getErrInstrinsic(err));
-
-    return s.str();
+    return std::format("unknown intrinsic error {}",
+      static_cast<uInt32>(CortexM0::getErrIntrinsic(err)));
   }
-} // namespace
+}  // namespace
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CortexM0::err_t CortexM0::BusTransactionDelegate::read32(uInt32 address, uInt32& value, CortexM0& cortex)
@@ -541,16 +527,11 @@ CortexM0::err_t CortexM0::BusTransactionDelegate::fetch16(
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string CortexM0::describeError(err_t err) {
+string CortexM0::describeError(err_t err)
+{
   if (err == ERR_NONE) return "no error";
 
-  std::ostringstream s;
-  s
-    << describeErrorCode(err) << " : 0x"
-    << std::hex << std::setw(8) << std::setfill('0')
-    << getErrExtra(err);
-
-  return s.str();
+  return std::format("{} : 0x{:08x}", describeErrorCode(err), getErrExtra(err));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -719,7 +700,7 @@ CortexM0& CortexM0::mapRegionData(uInt32 pageBase, uInt32 pageCount,
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CortexM0& CortexM0::mapRegionCode(uInt32 pageBase, uInt32 pageCount,
-                                  bool readOnly, uInt8* backingStore)  // NOLINT
+                                  bool readOnly, uInt8* backingStore)  // NOLINT(readability-non-const-parameter)
 {
   MemoryRegion& region =
     setupMapping(pageBase, pageCount, readOnly, MemoryRegionType::directCode);
@@ -856,8 +837,7 @@ CortexM0::MemoryRegion& CortexM0::setupMapping(uInt32 pageBase, uInt32 pageCount
   region.size = pageCount * PAGE_SIZE;
   region.readOnly = readOnly;
 
-  for (uInt32 page = pageBase; page < pageBase + pageCount; page++)
-    myPageMap[page] = regionIndex;
+  std::fill_n(myPageMap.get() + pageBase, pageCount, regionIndex);
 
   return region;
 }

@@ -20,6 +20,8 @@
 
 #include <string>
 
+#include "bspf.hxx"
+
 // Enumeration representing the different states of operation
 enum class EventHandlerState: uInt8 {
   EMULATION,

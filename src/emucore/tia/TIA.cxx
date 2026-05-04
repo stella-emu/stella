@@ -192,12 +192,12 @@ void TIA::initialize()
   myFramebuffer.fill(0);
 
   // Prepare variables for auto-phosphor
-  memset(&myPosP0, 0, sizeof(ObjectPos));
-  memset(&myPosP1, 0, sizeof(ObjectPos));
-  memset(&myPosM0, 0, sizeof(ObjectPos));
-  memset(&myPosM1, 0, sizeof(ObjectPos));
-  memset(&myPosBL, 0, sizeof(ObjectPos));
-  memset(&myPatPF, 0, sizeof(ObjectGfx));
+  myPosP0 = {};
+  myPosP1 = {};
+  myPosM0 = {};
+  myPosM1 = {};
+  myPosBL = {};
+  myPatPF = {};
   myFrameEnd = 0;
 
   applyDeveloperSettings();
@@ -971,37 +971,45 @@ void TIA::applyDeveloperSettings()
   const bool devSettings = mySettings.getBool("dev.settings");
   if(devSettings)
   {
-    const bool custom =
-      BSPF::equalsIgnoreCase("custom", mySettings.getString("dev.tia.type"));
+    const string tiaType = mySettings.getString("dev.tia.type");
+    const bool custom = BSPF::equalsIgnoreCase("custom", tiaType);
 
     setPlInvertedPhaseClock(custom
-                            ? mySettings.getBool("dev.tia.plinvphase")
-                            : BSPF::equalsIgnoreCase("koolaidman", mySettings.getString("dev.tia.type")));
+      ? mySettings.getBool("dev.tia.plinvphase")
+      : BSPF::equalsIgnoreCase("koolaidman", tiaType));
     setMsInvertedPhaseClock(custom
-                            ? mySettings.getBool("dev.tia.msinvphase")
-                            : BSPF::equalsIgnoreCase("cosmicark", mySettings.getString("dev.tia.type")));
-    setBlInvertedPhaseClock(custom ? mySettings.getBool("dev.tia.blinvphase") : false);
+      ? mySettings.getBool("dev.tia.msinvphase")
+      : BSPF::equalsIgnoreCase("cosmicark", tiaType));
+    setBlInvertedPhaseClock(custom
+      ? mySettings.getBool("dev.tia.blinvphase")
+      : false);
     setPlShortLateHMove(custom
-                        ? mySettings.getBool("dev.tia.pllatehmove")
-                        : BSPF::equalsIgnoreCase("flashmenu", mySettings.getString("dev.tia.type")));
-    setMsShortLateHMove(custom ? mySettings.getBool("dev.tia.mslatehmove") : false);
-    setBlShortLateHMove(custom ? mySettings.getBool("dev.tia.bllatehmove") : false);
+      ? mySettings.getBool("dev.tia.pllatehmove")
+      : BSPF::equalsIgnoreCase("flashmenu", tiaType));
+    setMsShortLateHMove(custom
+      ? mySettings.getBool("dev.tia.mslatehmove")
+      : false);
+    setBlShortLateHMove(custom
+      ? mySettings.getBool("dev.tia.bllatehmove")
+      : false);
     setPFBitsDelay(custom
-                   ? mySettings.getBool("dev.tia.delaypfbits")
-                   : BSPF::equalsIgnoreCase("pesco", mySettings.getString("dev.tia.type")));
+      ? mySettings.getBool("dev.tia.delaypfbits")
+      : BSPF::equalsIgnoreCase("pesco", tiaType));
     setPFColorDelay(custom
-                    ? mySettings.getBool("dev.tia.delaypfcolor")
-                    : BSPF::equalsIgnoreCase("quickstep", mySettings.getString("dev.tia.type")));
+      ? mySettings.getBool("dev.tia.delaypfcolor")
+      : BSPF::equalsIgnoreCase("quickstep", tiaType));
     setPFScoreGlitch(custom
-                     ? mySettings.getBool("dev.tia.pfscoreglitch")
-                     : BSPF::equalsIgnoreCase("matchie", mySettings.getString("dev.tia.type")));
+      ? mySettings.getBool("dev.tia.pfscoreglitch")
+      : BSPF::equalsIgnoreCase("matchie", tiaType));
     setBKColorDelay(custom
-                    ? mySettings.getBool("dev.tia.delaybkcolor")
-                    : BSPF::equalsIgnoreCase("indy500", mySettings.getString("dev.tia.type")));
+      ? mySettings.getBool("dev.tia.delaybkcolor")
+      : BSPF::equalsIgnoreCase("indy500", tiaType));
     setPlSwapDelay(custom
-                   ? mySettings.getBool("dev.tia.delayplswap")
-                   : BSPF::equalsIgnoreCase("heman", mySettings.getString("dev.tia.type")));
-    setBlSwapDelay(custom ? mySettings.getBool("dev.tia.delayblswap") : false);
+      ? mySettings.getBool("dev.tia.delayplswap")
+      : BSPF::equalsIgnoreCase("heman", tiaType));
+    setBlSwapDelay(custom
+      ? mySettings.getBool("dev.tia.delayblswap")
+      : false);
   }
   else
   {
@@ -1192,8 +1200,9 @@ bool TIA::toggleCollisions(bool toggle)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool TIA::enableFixedColors(bool enable)
 {
-  const int timing = myTimingProvider() == ConsoleTiming::ntsc ? 0
-    : myTimingProvider() == ConsoleTiming::pal ? 1 : 2;
+  const ConsoleTiming timing_type = myTimingProvider();
+  const int timing = timing_type == ConsoleTiming::ntsc ? 0
+    : timing_type == ConsoleTiming::pal ? 1 : 2;
 
   myMissile0.setDebugColor(myFixedColorPalette[timing][FixedObject::M0]);
   myMissile1.setDebugColor(myFixedColorPalette[timing][FixedObject::M1]);
@@ -2320,19 +2329,25 @@ void TIA::increaseAccessCounter(uInt16 address, bool isWrite)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string TIA::getAccessCounters() const
 {
-  std::ostringstream out;
+  string out;
 
-  out << "TIA reads:\n";
+  out += "TIA reads:\n";
   for(uInt16 addr = 0x00; addr < TIA_READ_SIZE; ++addr)
-    out << Common::Base::HEX4 << addr << ","
-    << Common::Base::toString(myAccessCounter[TIA_SIZE + addr], Common::Base::Fmt::_10_8) << ", ";
-  out << "\n";
-  out << "TIA writes:\n";
-  for(uInt16 addr = 0x00; addr < TIA_SIZE; ++addr)
-    out << Common::Base::HEX4 << addr << ","
-    << Common::Base::toString(myAccessCounter[addr], Common::Base::Fmt::_10_8) << ", ";
-  out << "\n";
+    out += std::format("{},{}, ",
+      Common::Base::toString(addr, Common::Base::Fmt::_16_4),
+      Common::Base::toString(myAccessCounter[TIA_SIZE + addr],
+                             Common::Base::Fmt::_10_8));
+  out += "\n";
 
-  return out.str();
+  out += "TIA writes:\n";
+  for(uInt16 addr = 0x00; addr < TIA_SIZE; ++addr)
+    out += std::format("{},{}, ",
+      Common::Base::toString(addr, Common::Base::Fmt::_16_4),
+      Common::Base::toString(myAccessCounter[addr],
+                             Common::Base::Fmt::_10_8));
+  out += "\n";
+
+  return out;
 }
+
 #endif  // DEBUGGER_SUPPORT

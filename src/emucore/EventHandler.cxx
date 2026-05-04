@@ -102,7 +102,6 @@ void EventHandler::initialize()
   Paddles::setAnalogLinearity(myOSystem.settings().getInt("plinear"));
   Paddles::setDejitterDiff(myOSystem.settings().getInt("dejitter.diff"));
   Paddles::setDejitterBase(myOSystem.settings().getInt("dejitter.base"));
-  Paddles::setDejitterDiff(myOSystem.settings().getInt("dejitter.diff"));
   Paddles::setDigitalSensitivity(myOSystem.settings().getInt("dsense"));
   Controller::setMouseSensitivity(myOSystem.settings().getInt("msense"));
   PointingDevice::setSensitivity(myOSystem.settings().getInt("tsense"));
@@ -202,10 +201,9 @@ void EventHandler::toggleAllow4JoyDirections(bool toggle)
     myOSystem.settings().setValue("joyallow4", joyAllow4);
   }
 
-  std::ostringstream ss;
-  ss << "Allow all 4 joystick directions ";
-  ss << (joyAllow4 ? "enabled" : "disabled");
-  myOSystem.frameBuffer().showTextMessage(ss.view());
+  myOSystem.frameBuffer().showTextMessage(
+    std::format("Allow all 4 joystick directions {}",
+      joyAllow4 ? "enabled" : "disabled"));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -2267,18 +2265,17 @@ void EventHandler::saveComboMapping()
 StringList EventHandler::getActionList(EventMode mode)
 {
   StringList l;
+
+  const auto collectActions = [&l](const auto& list) {
+    std::ranges::transform(list, std::back_inserter(l),
+      [](const auto& item) { return item.action; });
+  };
+
   switch(mode)
   {
-    case EventMode::kEmulationMode:
-      for(const auto& item: ourEmulActionList)
-        l.push_back(item.action);
-      break;
-    case EventMode::kMenuMode:
-      for(const auto& item: ourMenuActionList)
-        l.push_back(item.action);
-      break;
-    default:
-      break;
+    case EventMode::kEmulationMode: collectActions(ourEmulActionList); break;
+    case EventMode::kMenuMode:      collectActions(ourMenuActionList); break;
+    default:                        break;
   }
   return l;
 }
@@ -2312,26 +2309,16 @@ StringList EventHandler::getActionList(const Event::EventSet& events,
 {
   StringList l;
 
+  const auto collectMatchingActions = [&l, &events](const auto& list) {
+    for(const auto& item : list)
+      if(events.contains(item.event))
+        l.push_back(item.action);
+  };
+
   switch(mode)
   {
-    case EventMode::kMenuMode:
-      for(const auto& item: ourMenuActionList)
-        for(const auto& event : events)
-          if(item.event == event)
-          {
-            l.push_back(item.action);
-            break;
-          }
-      break;
-
-    default:
-      for(const auto& item: ourEmulActionList)
-        for(const auto& event : events)
-          if(item.event == event)
-          {
-            l.push_back(item.action);
-            break;
-          }
+    case EventMode::kMenuMode: collectMatchingActions(ourMenuActionList); break;
+    default:                   collectMatchingActions(ourEmulActionList); break;
   }
   return l;
 }
@@ -2341,19 +2328,14 @@ VariantList EventHandler::getComboList()
 {
   // For now, this only works in emulation mode
   VariantList l;
-  std::ostringstream buf;
-
   VarList::push_back(l, "None", "-1");
   for(uInt32 i = 0; i < ourEmulActionList.size(); ++i)
   {
     const Event::Type event = EventHandler::ourEmulActionList[i].event;
     // exclude combos events
     if(event < Event::Combo1 || event > Event::Combo16)
-    {
-      buf << i;
-      VarList::push_back(l, EventHandler::ourEmulActionList[i].action, buf.view());
-      buf.str("");
-    }
+      VarList::push_back(l, EventHandler::ourEmulActionList[i].action,
+        std::to_string(i));
   }
   return l;
 }
@@ -2362,7 +2344,6 @@ VariantList EventHandler::getComboList()
 StringList EventHandler::getComboListForEvent(Event::Type event) const
 {
   StringList l;
-  std::ostringstream buf;
   if(event >= Event::Combo1 && event <= Event::Combo16)
   {
     const int combo = event - Event::Combo1;
@@ -2370,14 +2351,9 @@ StringList EventHandler::getComboListForEvent(Event::Type event) const
     {
       const Event::Type e = myComboTable[combo][i];
       for(uInt32 j = 0; j < ourEmulActionList.size(); ++j)
-      {
         if(EventHandler::ourEmulActionList[j].event == e)
-        {
-          buf << j;
-          l.push_back(buf.str());
-          buf.str("");
-        }
-      }
+          l.push_back(std::to_string(j));
+
       // Make sure entries are 1-to-1, using '-1' to indicate Event::NoType
       if(i == l.size())
         l.emplace_back("-1");
@@ -2546,9 +2522,12 @@ void EventHandler::setMouseControllerMode(string_view enable)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventHandler::changeMouseControllerMode(int direction)
 {
-  constexpr int NUM_MODES = 3;
-  const string MODES[NUM_MODES] = {"always", "analog", "never"};
-  const string MSG[NUM_MODES] = {"all", "analog", "no"};
+  static constexpr std::array<string_view, 3> MODES = {
+    "always", "analog", "never"
+  };
+  static constexpr std::array<string_view, 3> MSG = {
+    "all", "analog", "no"
+  };
   string usemouse = myOSystem.settings().getString("usemouse");
 
   int i = 0;
@@ -2556,7 +2535,7 @@ void EventHandler::changeMouseControllerMode(int direction)
   {
     if(mode == usemouse)
     {
-      i = BSPF::clampw(i + direction, 0, NUM_MODES - 1);
+      i = BSPF::clampw(i + direction, 0, 2);
       usemouse = MODES[i];
       break;
     }
@@ -2566,9 +2545,8 @@ void EventHandler::changeMouseControllerMode(int direction)
   setMouseControllerMode(usemouse);
   myOSystem.frameBuffer().setCursorState(); // if necessary change grab mouse
 
-  std::ostringstream ss;
-  ss << "Mouse controls " << MSG[i] << " devices";
-  myOSystem.frameBuffer().showTextMessage(ss.view());
+  myOSystem.frameBuffer().showTextMessage(
+    std::format("Mouse controls {} devices", MSG[i]));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -2579,11 +2557,10 @@ void EventHandler::changeMouseCursor(int direction)
   myOSystem.settings().setValue("cursor", cursor);
   myOSystem.frameBuffer().setCursorState();
 
-  std::ostringstream ss;
-  ss << "Mouse cursor visibilility: "
-    << ((cursor & 2) ? "+" : "-") << "UI, "
-    << ((cursor & 1) ? "+" : "-") << "Emulation";
-  myOSystem.frameBuffer().showTextMessage(ss.view());
+  myOSystem.frameBuffer().showTextMessage(
+    std::format("Mouse cursor visibility: {}UI, {}Emulation",
+      (cursor & 2) ? "+" : "-",
+      (cursor & 1) ? "+" : "-"));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -2793,7 +2770,7 @@ void EventHandler::exitEmulation(bool checkLauncher)
   else if (saveOnExit == "current")
     handleEvent(Event::SaveState);
 
-#if DEBUGGER_SUPPORT
+#ifdef DEBUGGER_SUPPORT
   myOSystem.debugger().quit();
 #endif
 

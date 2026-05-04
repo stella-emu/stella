@@ -156,7 +156,7 @@ class CartridgeELF: public Cartridge {
     uInt32 myConfigMips{100};
     elfEnvironment::SystemType myConfigSystemType{elfEnvironment::SystemType::ntsc};
 
-    unique_ptr<uint8_t[]> myLastPeekResult;
+    ByteBuffer myLastPeekResult;
     BusTransactionQueue myTransactionQueue;
 
     bool myIsBusDriven{false};
@@ -168,11 +168,11 @@ class CartridgeELF: public Cartridge {
     ElfParser myElfParser;
     unique_ptr<ElfLinker> myLinker;
 
-    unique_ptr<uInt8[]> mySectionStack;
-    unique_ptr<uInt8[]> mySectionText;
-    unique_ptr<uInt8[]> mySectionData;
-    unique_ptr<uInt8[]> mySectionRodata;
-    unique_ptr<uInt8[]> mySectionTables;
+    ByteBuffer mySectionStack;
+    ByteBuffer mySectionText;
+    ByteBuffer mySectionData;
+    ByteBuffer mySectionRodata;
+    ByteBuffer mySectionTables;
 
     VcsLib myVcsLib;
     BusFallbackDelegate myFallbackDelegate;
@@ -191,7 +191,6 @@ class CartridgeELF: public Cartridge {
     CartridgeELF(CartridgeELF&&) = delete;
     CartridgeELF& operator=(const CartridgeELF&) = delete;
     CartridgeELF& operator=(CartridgeELF&&) = delete;
-
 };
 
 #endif  // CARTRIDGE_ELF

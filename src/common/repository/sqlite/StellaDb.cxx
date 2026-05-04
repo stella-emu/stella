@@ -72,7 +72,8 @@ void StellaDb::initialize()
     }
   }
   catch (const SqliteError& err) {
-    Logger::error("sqlite DB " + databaseFileName() + " failed to initialize: " + err.what());
+    Logger::error(std::format("sqlite DB {} failed to initialize: {}",
+      databaseFileName(), err.what()));
 
     mySettingsRepository = std::make_unique<KeyValueRepositoryNoop>();
     myPropertyRepository = std::make_unique<CompositeKeyValueRepositoryNoop>();
@@ -118,9 +119,9 @@ void StellaDb::importOldSettings()
     mySettingsRepository->save(SettingsRepositoryMACOS().load());
   #else
     #ifdef BSPF_WINDOWS
-      constexpr char LEGACY_SETTINGS_FILE[] = "stella.ini";
+      constexpr string_view LEGACY_SETTINGS_FILE = "stella.ini";
     #else
-      constexpr char LEGACY_SETTINGS_FILE[] = "stellarc";
+      constexpr string_view LEGACY_SETTINGS_FILE = "stellarc";
     #endif
 
     FSNode legacyConfigFile{myDatabaseDirectory};
@@ -139,7 +140,7 @@ void StellaDb::importOldSettings()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void StellaDb::importStellarc(const FSNode& node)
 {
-  Logger::info("importing old settings from " + node.getPath());
+  Logger::info(std::format("importing old settings from {}", node.getPath()));
 
   mySettingsRepository->save(KeyValueRepositoryConfigfile(node).load());
 }
@@ -147,7 +148,7 @@ void StellaDb::importStellarc(const FSNode& node)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void StellaDb::importOldStellaDb(const FSNode& node)
 {
-  Logger::info("importing old settings from " + node.getPath());
+  Logger::info(std::format("importing old settings from {}", node.getPath()));
 
   try {
     SqliteStatement(
@@ -168,7 +169,7 @@ void StellaDb::importOldStellaDb(const FSNode& node)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void StellaDb::importOldPropset(const FSNode& node)
 {
-  Logger::info("importing old game properties from " + node.getPath());
+  Logger::info(std::format("importing old game properties from {}", node.getPath()));
 
   std::stringstream in;
 
@@ -202,15 +203,8 @@ void StellaDb::importOldPropset(const FSNode& node)
 void StellaDb::migrate()
 {
   const Int32 version = myDb->getUserVersion();
-  switch (version) {  // NOLINT (could be written as IF/ELSE)
-    case 1:
-      return;
+  if(version == CURRENT_VERSION)
+    return;
 
-    default: {
-      std::ostringstream ss;
-      ss << "invalid database version " << version;
-
-      throw SqliteError(ss.str());
-    }
-  }
+  throw SqliteError(std::format("invalid database version {}", version));
 }
