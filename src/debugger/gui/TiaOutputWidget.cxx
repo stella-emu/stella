@@ -15,8 +15,6 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#include <sstream>
-
 #include "OSystem.hxx"
 #include "FrameBuffer.hxx"
 #include "FBSurface.hxx"
@@ -70,41 +68,34 @@ void TiaOutputWidget::saveSnapshot(int execDepth, string_view execPrefix,
   if(execDepth > 0)
     drawWidget(false);
 
-  std::ostringstream sspath;
-  sspath << instance().snapshotSaveDir()
-         << instance().console().properties().get(PropType::Cart_Name);
-
+  string sspath = instance().snapshotSaveDir().getPath() +
+                  instance().console().properties().get(PropType::Cart_Name);
   if(mark)
   {
-    sspath << "_dbg_";
-    if(execDepth > 0 && !execPrefix.empty()) {
-      sspath << execPrefix << "_";
-    }
-    sspath << std::hex << std::setw(8) << std::setfill('0')
-      << static_cast<uInt32>(TimerManager::getTicks() / 1000);
+    sspath += "_dbg_";
+    if(execDepth > 0 && !execPrefix.empty())
+      sspath += std::format("{}_", execPrefix);
+    sspath += std::format("{:08X}",
+      static_cast<uInt32>(TimerManager::getTicks() / 1000));
   }
   else
   {
     // Determine if the file already exists, checking each successive filename
     // until one doesn't exist
-    const FSNode node(sspath.str() + ".png");
-    if(node.exists())
+    if(FSNode(sspath + ".png").exists())
     {
-      std::ostringstream suffix, buf;
-      for(uInt32 i = 1; ; ++i)
+      for(const uInt32 i: std::views::iota(1U))
       {
-        buf.str("");
-        suffix.str("");
-        suffix << "_" << i;
-        buf << sspath.view() << suffix.view() << ".png";
-        const FSNode next(buf.view());
-        if(!next.exists())
+        const string candidate = std::format("{}_{}.png", sspath, i);
+        if(!FSNode(candidate).exists())
+        {
+          sspath += std::format("_{}", i);
           break;
+        }
       }
-      sspath << suffix.view();
     }
   }
-  sspath << ".png";
+  sspath += ".png";
 
   const uInt32 width  = instance().console().tia().width(),
                height = instance().console().tia().height();
@@ -116,15 +107,14 @@ void TiaOutputWidget::saveSnapshot(int execDepth, string_view execPrefix,
   string message = "Snapshot saved";
   try
   {
-    PNGLibrary::saveImage(sspath.str(), s, rect);
+    PNGLibrary::saveImage(sspath, s, rect);
   }
   catch(const std::runtime_error& e)
   {
     message = e.what();
   }
-  if (execDepth == 0) {
+  if(execDepth == 0)
     instance().frameBuffer().showTextMessage(message);
-  }
 #else
   instance().frameBuffer().showTextMessage("PNG image saving not supported");
 #endif
@@ -157,24 +147,22 @@ void TiaOutputWidget::handleCommand(CommandSender* sender, int cmd, int data, in
 
     if(rmb == "scanline")
     {
-      std::ostringstream command;
       int lines = myClickY + startLine - instance().console().tia().scanlines();
 
       if(lines < 0)
         lines += instance().console().tia().scanlinesLastFrame();
       if(lines > 0)
       {
-        command << "scanLine #" << lines;
-        const string message = instance().debugger().parser().run(command.view());
+        const string message = instance().debugger().parser().run(
+          std::format("scanLine #{}", lines));
         instance().frameBuffer().showTextMessage(message);
       }
     }
     else if(rmb == "bp")
     {
-      std::ostringstream command;
       const int scanline = myClickY + startLine;
-      command << "breakIf _scan==#" << scanline;
-      const string& message = instance().debugger().parser().run(command.view());
+      const string message = instance().debugger().parser().run(
+        std::format("breakIf _scan==#{}", scanline));
       instance().frameBuffer().showTextMessage(message);
     }
     else if(rmb == "zoom")
@@ -218,14 +206,12 @@ string TiaOutputWidget::getToolTip(const Common::Point& pos) const
     ? 0 : (height - FrameManager::Metrics::baseHeightPAL) >> 1;
   const Int32 i = idx.x + (yStart + idx.y) * instance().console().tia().width();
   const uInt8* tiaOutputBuffer = instance().console().tia().outputBuffer();
-  std::ostringstream buf;
 
-  buf << _toolTipText
-    << "X: #" << idx.x
-    << "\nY: #" << idx.y + startLine
-    << "\nC: $" << Common::Base::toString(tiaOutputBuffer[i], Common::Base::Fmt::_16);
-
-  return buf.str();
+  return std::format("{}X: #{}\nY: #{}\nC: ${}",
+    _toolTipText,
+    idx.x,
+    idx.y + startLine,
+    Common::Base::toString(tiaOutputBuffer[i], Common::Base::Fmt::_16));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -259,15 +245,16 @@ void TiaOutputWidget::drawWidget(bool hilite)
   const uInt8* tiaOutputBuffer = instance().console().tia().outputBuffer();
   const TIASurface& tiaSurface = instance().frameBuffer().tiaSurface();
 
+  const std::span<uInt32> line{myLineBuffer};
   for(uInt32 y = 0, i = yStart * width; y < height; ++y)
   {
-    uInt32* line_ptr = myLineBuffer.data();  // NOLINT (erroneously marked as const)
+    uInt32 lineIdx = 0;
     for(uInt32 x = 0; x < width; ++x, ++i)
     {
-      const uInt8 shift = i >= scanoffset ? 1 : 0;
-      const uInt32 pixel = tiaSurface.mapIndexedPixel(tiaOutputBuffer[i], shift);
-      *line_ptr++ = pixel;
-      *line_ptr++ = pixel;
+      const uInt32 pixel = tiaSurface.mapIndexedPixel(
+        tiaOutputBuffer[i], i >= scanoffset ? 1 : 0);
+      line[lineIdx++] = pixel;
+      line[lineIdx++] = pixel;
     }
     s.drawPixels(myLineBuffer.data(), _x + 1, _y + 1 + y, width << 1);
   }

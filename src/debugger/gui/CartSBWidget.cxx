@@ -30,13 +30,14 @@ CartridgeSBWidget::CartridgeSBWidget(
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string CartridgeSBWidget::description()
 {
-  std::ostringstream info;
-
-  info << "SB SUPERbanking, " << myCart.romBankCount() << " 4K banks\n"
-       << "Hotspots are from $800 to $"
-       << Common::Base::HEX2 << (0x800 + myCart.romBankCount() - 1) << ", including\n"
-       << "mirrors ($900, $" << 0xA00 << ", $" << 0xB00 << ", ...)\n"
-       << CartridgeEnhancedWidget::description();
-
-  return info.str();
+  return std::format(
+    "SB SUPERbanking, {} 4K banks\n"
+    "Hotspots are from $800 to ${:X}, including\n"
+    "mirrors ($900, ${:X}, ${:X}, ...)\n"
+    "{}",
+    myCart.romBankCount(),
+    0x800 + myCart.romBankCount() - 1,
+    0xA00,
+    0xB00,
+    CartridgeEnhancedWidget::description());
 }

@@ -31,18 +31,17 @@ Cartridge3FWidget::Cartridge3FWidget(
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string Cartridge3FWidget::description()
 {
-  std::ostringstream info;
   size_t size = 0;
   const ByteBuffer& image = myCart.getImage(size);
+  const uInt16 start = ((image[size-3] << 8) | image[size-4]) & ~0xFFF;
 
-  info << "Tigervision 3F cartridge, 2 - 256 2K banks\n"
-       << "First 2K bank selected by writing to " << hotspotStr() << "\n"
-       << "Last 2K always points to last 2K of ROM\n"
-       << "Startup bank = " << myCart.startBank() << " or undetermined\n";
-  // Eventually, we should query this from the debugger/disassembler
-  uInt16 start = (image[size-3] << 8) | image[size-4];
-  start -= start % 0x1000;
-  info << "Bank RORG $" << Common::Base::HEX4 << start << "\n";
-
-  return info.str();
+  return std::format(
+    "Tigervision 3F cartridge, 2 - 256 2K banks\n"
+    "First 2K bank selected by writing to {}\n"
+    "Last 2K always points to last 2K of ROM\n"
+    "Startup bank = {} or undetermined\n"
+    "Bank RORG ${}\n",
+    hotspotStr(),
+    myCart.startBank(),
+    Common::Base::toString(start, Common::Base::Fmt::_16_4));
 }

@@ -45,12 +45,11 @@ class NullControlWidget : public ControllerWidget
       }
       else
       {
-        std::ostringstream buf;
-        buf << getHeader();
-        const int lwidth = std::max(font.getStringWidth(buf.view()),
+        const string header = getHeader();
+        const int lwidth = std::max(font.getStringWidth(header),
                                     font.getStringWidth("Controller input"));
 
-        new StaticTextWidget(boss, font, x, y + 2, lwidth, fontHeight, buf.view());
+        new StaticTextWidget(boss, font, x, y + 2, lwidth, fontHeight, header);
         y += 2 + lineHeight * 2;
         new StaticTextWidget(boss, font, x, y, lwidth,
                              fontHeight, "Controller input", TextAlign::Center);

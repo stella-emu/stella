@@ -49,17 +49,13 @@ DataGridWidget::DataGridWidget(GuiObject* boss, const GUI::Font& font,
   _editMode = false;
 
   // Make sure all lists contain some default values
-  _hiliteList.clear();
-  int size = _rows * _cols;
-  while(size--)
-  {
-    _addrList.push_back(0);
-    _valueList.push_back(0);
-    _valueStringList.emplace_back();
-    _toolTipList.emplace_back();
-    _changedList.push_back(false);
-    _hiliteList.push_back(false);
-  }
+  const int size = _rows * _cols;
+  _addrList.assign(size, 0);
+  _valueList.assign(size, 0);
+  _valueStringList.assign(size, {});
+  _toolTipList.assign(size, {});
+  _changedList.assign(size, false);
+  _hiliteList.assign(size, false);
 
   // Set lower and upper bounds to sane values
   setRange(0, 1 << bits);
@@ -109,14 +105,6 @@ DataGridWidget::DataGridWidget(GuiObject* boss, const GUI::Font& font,
 void DataGridWidget::setList(const IntArray& alist, const IntArray& vlist,
                              const BoolArray& changed)
 {
-  /*
-  cerr << "alist.size() = "     << alist.size()
-       << ", vlist.size() = "   << vlist.size()
-       << ", changed.size() = " << changed.size()
-       << ", _rows*_cols = "    << _rows * _cols << "\n\n";
-  */
-  const size_t size = vlist.size();  // assume the alist is the same size
-
   const bool dirty = _editMode
     || !std::ranges::equal(_valueList, vlist)
     || !std::ranges::equal(_changedList, changed);
@@ -131,16 +119,9 @@ void DataGridWidget::setList(const IntArray& alist, const IntArray& vlist,
   _changedList = changed;
 
   // An efficiency thing
-  for(size_t i = 0; i < size; ++i)
-    _valueStringList.push_back(Common::Base::toString(_valueList[i], _base));
+  std::ranges::transform(_valueList, std::back_inserter(_valueStringList),
+    [this](int v) { return Common::Base::toString(v, _base); });
 
-  /*
-  cerr << "_addrList.size() = "     << _addrList.size()
-       << ", _valueList.size() = "   << _valueList.size()
-       << ", _changedList.size() = " << _changedList.size()
-       << ", _valueStringList.size() = " << _valueStringList.size()
-       << ", _rows*_cols = "    << _rows * _cols << "\n\n";
-  */
   enableEditMode(false);
 
   if(dirty)
@@ -607,22 +588,18 @@ string DataGridWidget::getToolTip(const Common::Point& pos) const
     return string{};
 
   const Int32 val = _valueList[idx];
-  std::ostringstream buf;
 
-  if(!_toolTipList[idx].empty())
-    buf << _toolTipList[idx];
-  else
-    buf << _toolTipText;
-   buf << "$" << Common::Base::toString(val, Common::Base::Fmt::_16)
-       << " = #" << val;
+  string buf = !_toolTipList[idx].empty() ? _toolTipList[idx] : _toolTipText;
+  buf += std::format("${} = #{}",
+    Common::Base::toString(val, Common::Base::Fmt::_16), val);
   if(val < 0x100)
   {
     if(val >= 0x80)
-      buf << '/' << -(0x100 - val);
-    buf << " = %" << Common::Base::toString(val, Common::Base::Fmt::_2);
+      buf += std::format("/{}", -(0x100 - val));
+    buf += std::format(" = %{}",
+      Common::Base::toString(val, Common::Base::Fmt::_2));
   }
-
-  return buf.str();
+  return buf;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -331,13 +331,13 @@ class CartridgeCDF : public CartridgeARM
       r14 = timer base  */
 
     // The music counters, ARM FIQ shadow registers r8, r9, r10
-    std::array<uInt32, 3> myMusicCounters{0};
+    std::array<uInt32, 3> myMusicCounters{};
 
     // The music frequency, ARM FIQ shadow registers r11, r12, r13
-    std::array<uInt32, 3> myMusicFrequencies{0};
+    std::array<uInt32, 3> myMusicFrequencies{};
 
     // The music waveform sizes
-    std::array<uInt8, 3> myMusicWaveformSize{0};
+    std::array<uInt8, 3> myMusicWaveformSize{};
 
     // Fractional CDF music, OSC clocks unused during the last update
     double myFractionalClocks{0.0};

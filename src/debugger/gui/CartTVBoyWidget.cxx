@@ -32,14 +32,14 @@ CartridgeTVBoyWidget::CartridgeTVBoyWidget(
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string CartridgeTVBoyWidget::description()
 {
-  std::ostringstream info;
-
-  info << "TV Boy, " << myCart.romBankCount() << " 4K banks\n"
-       << "Hotspots are from $" << Common::Base::HEX2 << 0xf800 << " to $"
-       << Common::Base::HEX2 << (0xf800 + myCart.romBankCount() - 1) << "\n"
-       << CartridgeEnhancedWidget::description();
-
-  return info.str();
+  return std::format(
+    "TV Boy, {} 4K banks\n"
+    "Hotspots are from ${:X} to ${:X}\n"
+    "{}",
+    myCart.romBankCount(),
+    0xf800,
+    0xf800 + myCart.romBankCount() - 1,
+    CartridgeEnhancedWidget::description());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

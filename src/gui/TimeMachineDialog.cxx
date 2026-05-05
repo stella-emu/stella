@@ -291,10 +291,8 @@ TimeMachineDialog::TimeMachineDialog(OSystem& osystem, DialogContainer& parent,
 
   // Add message
   const int mWidth = (myLastTimeWidget->getLeft() - xpos) / font.getMaxCharWidth();
-  const string blanks = "                                             ";
-
   myMessageWidget = new StaticTextWidget(this, font, xpos, ypos_s,
-                                         blanks.substr(0, mWidth),
+                                         string(mWidth, ' '),
                                          TextAlign::Left, kBGColor);
   myMessageWidget->setFlags(Widget::FLAG_CLEARBG | Widget::FLAG_NOBG);
   myMessageWidget->setTextColor(kColorInfo);
@@ -505,12 +503,7 @@ string TimeMachineDialog::getTimeString(uInt64 cycles) const
   cycles -= seconds * freq;
   const auto frames  = static_cast<uInt32>(cycles / (scanlines * 76));
 
-  std::ostringstream time;
-  time << Common::Base::toString(minutes, Common::Base::Fmt::_10_02) << ":";
-  time << Common::Base::toString(seconds, Common::Base::Fmt::_10_02) << ".";
-  time << Common::Base::toString(frames, Common::Base::Fmt::_10_02);
-
-  return time.str();
+  return std::format("{:02}:{:02}.{:02}", minutes, seconds, frames);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -530,7 +523,8 @@ void TimeMachineDialog::handleWinds(Int32 numWinds)
       const string message = r.getUnitString(elapsed);
 
       // TODO: add message text from addState()
-      myMessageWidget->setLabel((numWinds < 0 ? "(-" : "(+") + message + ")");
+      myMessageWidget->setLabel(std::format("({}{})", numWinds < 0 ? '-' : '+',
+                                            message));
     }
   }
 

@@ -249,24 +249,22 @@ void TiaZoomWidget::handleCommand(CommandSender* sender, int cmd, int data, int 
 
     if(rmb == "scanline")
     {
-      std::ostringstream command;
       int lines = myClickY / myZoomLevel + myOffY + startLine - instance().console().tia().scanlines();
 
       if (lines < 0)
         lines += instance().console().tia().scanlinesLastFrame();
       if(lines > 0)
       {
-        command << "scanline #" << lines;
-        const string& message = instance().debugger().parser().run(command.view());
+        const string message = instance().debugger().parser().run(
+          std::format("scanline #{}", lines));
         instance().frameBuffer().showTextMessage(message);
       }
     }
     else if(rmb == "bp")
     {
-      std::ostringstream command;
       const int scanline = myClickY / myZoomLevel + myOffY + startLine;
-      command << "breakif _scan==#" << scanline;
-      const string& message = instance().debugger().parser().run(command.view());
+      const string message = instance().debugger().parser().run(
+        std::format("breakif _scan==#{}", scanline));
       instance().frameBuffer().showTextMessage(message);
     }
     else
@@ -303,14 +301,12 @@ string TiaZoomWidget::getToolTip(const Common::Point& pos) const
   const Int32 i = idx.x + idx.y * instance().console().tia().width();
   const uInt32 startLine = instance().console().tia().startLine();
   const uInt8* tiaOutputBuffer = instance().console().tia().outputBuffer();
-  std::ostringstream buf;
 
-  buf << _toolTipText
-    << "X: #" << idx.x
-    << "\nY: #" << idx.y + startLine
-    << "\nC: $" << Common::Base::toString(tiaOutputBuffer[i], Common::Base::Fmt::_16);
-
-  return buf.str();
+  return std::format("{}X: #{}\nY: #{}\nC: ${}",
+    _toolTipText,
+    idx.x,
+    idx.y + startLine,
+    Common::Base::toString(tiaOutputBuffer[i], Common::Base::Fmt::_16));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
