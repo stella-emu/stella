@@ -200,4 +200,4 @@ class VideoAudioDialog : public Dialog
     VideoAudioDialog& operator=(VideoAudioDialog&&) = delete;
 };
 
-#endif
+#endif  // VIDEOAUDIO_DIALOG_HXX

@@ -278,4 +278,4 @@ namespace VarList {
   }
 }  // namespace VarList
 
-#endif
+#endif  // VARIANT_HXX

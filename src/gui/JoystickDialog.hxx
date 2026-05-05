@@ -21,7 +21,7 @@
 class CommandSender;
 class GuiObject;
 class ButtonWidget;
-class EditTextWidgetWidget;
+class EditTextWidget;
 class PopUpWidget;
 class StringListWidget;
 
@@ -72,4 +72,4 @@ class JoystickDialog : public Dialog
     JoystickDialog& operator=(JoystickDialog&&) = delete;
 };
 
-#endif
+#endif  // JOYSTICK_DIALOG_HXX

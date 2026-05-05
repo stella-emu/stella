@@ -15,8 +15,6 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#include <iomanip>
-
 #include "OSystem.hxx"
 #include "Console.hxx"
 #include "FrameBuffer.hxx"
@@ -54,15 +52,9 @@ namespace {
   }
 
   string formatSpeed(int speed) {
-    std::ostringstream ss;
-
-    ss
-      << std::setw(3) << std::fixed << std::setprecision(0)
-      << (unmapSpeed(speed) * 100);
-
-    return ss.str();
+    return std::format("{:3.0f}", unmapSpeed(speed) * 100);
   }
-} // namespace
+}  // namespace
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 EmulationDialog::EmulationDialog(OSystem& osystem, DialogContainer& parent,
@@ -103,7 +95,6 @@ EmulationDialog::EmulationDialog(OSystem& osystem, DialogContainer& parent,
   myUseVSync->setToolTip("Check to enable vertical synced display updates.");
   wid.push_back(myUseVSync);
   ypos += lineHeight + VGAP;
-
 
   myTurbo = new CheckboxWidget(this, _font, xpos, ypos + 1, "Turbo mode");
   myTurbo->setToolTip(Event::ToggleTurbo);

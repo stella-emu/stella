@@ -56,7 +56,6 @@ class LauncherDialog : public Dialog, CommandSender
       kFavChangedCmd   = 'favc',  // Favorite tracking changed
       kExtChangedCmd   = 'extc',  // File extension display changed
     };
-    using FileList = std::unordered_set<string>;
 
   public:
     LauncherDialog(OSystem& osystem, DialogContainer& parent,
@@ -233,4 +232,4 @@ class LauncherDialog : public Dialog, CommandSender
     LauncherDialog& operator=(LauncherDialog&&) = delete;
 };
 
-#endif
+#endif  // LAUNCHER_DIALOG_HXX

@@ -259,11 +259,8 @@ void CommandDialog::processCancel()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CommandDialog::updateSlot(int slot)
 {
-  std::ostringstream buf;
-  buf << " " << slot;
-
-  mySaveStateButton->setLabel("Save State" + buf.str());
-  myLoadStateButton->setLabel("Load State" + buf.str());
+  mySaveStateButton->setLabel(std::format("Save State {}", slot));
+  myLoadStateButton->setLabel(std::format("Load State {}", slot));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -275,9 +272,8 @@ void CommandDialog::updateTVFormat()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CommandDialog::updatePalette()
 {
-  string palette, label;
-
-  palette = instance().settings().getString("palette");
+  const string palette = instance().settings().getString("palette");
+  string label;
   if(BSPF::equalsIgnoreCase(palette, PaletteHandler::SETTING_STANDARD))
     label = "Stella Palette";
   else if(BSPF::equalsIgnoreCase(palette, PaletteHandler::SETTING_Z26))

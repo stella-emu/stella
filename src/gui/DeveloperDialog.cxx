@@ -369,9 +369,8 @@ void DeveloperDialog::addTiaTab(const GUI::Font& font)
   wid.push_back(myBKColorWidget);
   ypos += lineHeight + VGAP * 1;
 
-  std::ostringstream ss;
-  ss << "Delayed VDEL" << ELLIPSIS << " swap for";
-  mySwapLabel = new StaticTextWidget(myTab, font, HBORDER + INDENT * 2, ypos + 1, ss.view());
+  mySwapLabel = new StaticTextWidget(myTab, font, HBORDER + INDENT * 2, ypos + 1,
+    std::format("Delayed VDEL{} swap for", ELLIPSIS));
   mySwapLabel->setToolTip("VDELed objects react one color clock slower to updates.");
   wid.push_back(mySwapLabel);
   ypos += lineHeight + VGAP * 1;
@@ -753,11 +752,10 @@ void DeveloperDialog::getWidgetStates(SettingsSet set)
   myRandomizeTIA[set] = myRandomizeTIAWidget->getState();
   myRandomizeRAM[set] = myRandomizeRAMWidget->getState();
   string cpurandom;
-  const std::array<string, 5> cpuregs = {"S", "A", "X", "Y", "P"};
 
   for(int i = 0; i < 5; ++i)
     if(myRandomizeCPUWidget[i]->getState())
-      cpurandom += cpuregs[i];
+      cpurandom += ourCPURegs[i];
   myRandomizeCPU[set] = cpurandom;
   // Random hotspot peeks
   myRandomHotspots[set] = myRandomHotspotsWidget->getState();
@@ -819,10 +817,9 @@ void DeveloperDialog::setWidgetStates(SettingsSet set)
   myRandomizeRAMWidget->setState(myRandomizeRAM[set]);
 
   const string_view cpurandom = myRandomizeCPU[set];
-  const std::array<string, 5> cpuregs = {"S", "A", "X", "Y", "P"};
 
   for(int i = 0; i < 5; ++i)
-    myRandomizeCPUWidget[i]->setState(BSPF::containsIgnoreCase(cpurandom, cpuregs[i]));
+    myRandomizeCPUWidget[i]->setState(BSPF::containsIgnoreCase(cpurandom, ourCPURegs[i]));
   // Random hotspot peeks
   myRandomHotspotsWidget->setState(myRandomHotspots[set]);
   // Undriven TIA pins
@@ -1201,7 +1198,8 @@ void DeveloperDialog::handleConsole()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DeveloperDialog::handleTia()
 {
-  const bool enable = BSPF::equalsIgnoreCase("custom", myTIATypeWidget->getSelectedTag().toString());
+  const string tiaType = myTIATypeWidget->getSelectedTag().toString();
+  const bool enable = BSPF::equalsIgnoreCase("custom", tiaType);
 
   myTIATypeWidget->setEnabled(mySettings);
   myInvPhaseLabel->setEnabled(enable);
@@ -1222,7 +1220,7 @@ void DeveloperDialog::handleTia()
   myPlSwapWidget->setEnabled(enable);
   myBlSwapWidget->setEnabled(enable);
 
-  if(BSPF::equalsIgnoreCase("custom", myTIATypeWidget->getSelectedTag().toString()))
+  if(BSPF::equalsIgnoreCase("custom", tiaType))
   {
     const SettingsSet set = SettingsSet::developer;
 
@@ -1241,17 +1239,17 @@ void DeveloperDialog::handleTia()
   }
   else
   {
-    myPlInvPhaseWidget->setState(BSPF::equalsIgnoreCase("koolaidman", myTIATypeWidget->getSelectedTag().toString()));
-    myMsInvPhaseWidget->setState(BSPF::equalsIgnoreCase("cosmicark", myTIATypeWidget->getSelectedTag().toString()));
+    myPlInvPhaseWidget->setState(BSPF::equalsIgnoreCase("koolaidman", tiaType));
+    myMsInvPhaseWidget->setState(BSPF::equalsIgnoreCase("cosmicark", tiaType));
     myBlInvPhaseWidget->setState(false);
-    myPlLateHMoveWidget->setState(BSPF::equalsIgnoreCase("flashmenu", myTIATypeWidget->getSelectedTag().toString()));
+    myPlLateHMoveWidget->setState(BSPF::equalsIgnoreCase("flashmenu", tiaType));
     myMsLateHMoveWidget->setState(false);
     myBlLateHMoveWidget->setState(false);
-    myPFBitsWidget->setState(BSPF::equalsIgnoreCase("pesco", myTIATypeWidget->getSelectedTag().toString()));
-    myPFColorWidget->setState(BSPF::equalsIgnoreCase("quickstep", myTIATypeWidget->getSelectedTag().toString()));
-    myPFScoreWidget->setState(BSPF::equalsIgnoreCase("matchie", myTIATypeWidget->getSelectedTag().toString()));
-    myBKColorWidget->setState(BSPF::equalsIgnoreCase("indy500", myTIATypeWidget->getSelectedTag().toString()));
-    myPlSwapWidget->setState(BSPF::equalsIgnoreCase("heman", myTIATypeWidget->getSelectedTag().toString()));
+    myPFBitsWidget->setState(BSPF::equalsIgnoreCase("pesco", tiaType));
+    myPFColorWidget->setState(BSPF::equalsIgnoreCase("quickstep", tiaType));
+    myPFScoreWidget->setState(BSPF::equalsIgnoreCase("matchie", tiaType));
+    myBKColorWidget->setState(BSPF::equalsIgnoreCase("indy500", tiaType));
+    myPlSwapWidget->setState(BSPF::equalsIgnoreCase("heman", tiaType));
     myBlSwapWidget->setState(false);
   }
 }

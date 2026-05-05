@@ -216,4 +216,4 @@ class GameInfoDialog : public Dialog, public CommandSender
     GameInfoDialog& operator=(GameInfoDialog&&) = delete;
 };
 
-#endif
+#endif  // GAME_INFO_DIALOG_HXX

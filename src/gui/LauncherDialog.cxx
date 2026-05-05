@@ -100,10 +100,8 @@ void LauncherDialog::addTitleWidget(int &ypos)
   const int fontHeight   = Dialog::fontHeight(),
             VGAP         = Dialog::vGap();
   // App information
-  std::ostringstream ver;
-  ver << "Stella " << STELLA_VERSION;
   new StaticTextWidget(this, _font, 1, ypos, _w - 2, fontHeight,
-                       ver.view(), TextAlign::Center);
+                       std::format("Stella {}", STELLA_VERSION), TextAlign::Center);
   ypos += fontHeight + VGAP;
 }
 
@@ -272,8 +270,8 @@ void LauncherDialog::addPathWidgets(int& ypos)
     xpos = _w - HBORDER - (buttonWidth + BTN_GAP - 2);
     myHelpButton = new ButtonWidget(this, _font, xpos, ypos - btnYOfs,
                                     buttonWidth, buttonHeight, helpIcon, kHelpCmd);
-    const string key = instance().eventHandler().getMappingDesc(Event::UIHelp, EventMode::kMenuMode);
-    myHelpButton->setToolTip("Click for help. (" + key + ")");
+    myHelpButton->setToolTip(std::format("Click for help. ({})",
+      instance().eventHandler().getMappingDesc(Event::UIHelp, EventMode::kMenuMode)));
     myHelpButton->setEnabled(true);
     wid.push_back(myHelpButton);
   }
@@ -423,10 +421,11 @@ const string& LauncherDialog::selectedRomMD5()
     myMD5List.clear();
 
   // Lookup MD5, and if not present, cache it
-  if(!myMD5List.contains(currentNode().getPath()))
-    myMD5List[currentNode().getPath()] = OSystem::getROMMD5(currentNode());
-
-  return myMD5List[currentNode().getPath()];
+  const auto [it, _] = myMD5List.try_emplace(
+    currentNode().getPath(), "");
+  if(it->second.empty())
+    it->second = OSystem::getROMMD5(currentNode());
+  return it->second;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -543,10 +542,9 @@ void LauncherDialog::updateUI()
   myNavigationBar->updateUI();
 
   // Indicate how many files were found
-  std::ostringstream buf;
-  buf << (myList->getList().size() - (currentDir().hasParent() ? 1 : 0))
-    << (myShortCount ? " items" : " items found");
-  myRomCount->setLabel(buf.view());
+  myRomCount->setLabel(std::format("{} {}",
+    myList->getList().size() - (currentDir().hasParent() ? 1 : 0),
+    myShortCount ? "items" : "items found"));
 
   loadRomInfo();
 }
@@ -1359,12 +1357,13 @@ void LauncherDialog::removeAll(string_view name)
   StringList msg;
 
   msg.emplace_back("This will remove ALL ROMs from");
-  msg.emplace_back("your '" + string{name} + "' list!");
+  msg.emplace_back(std::format("your '{}' list!", name));
   msg.emplace_back("");
   msg.emplace_back("Are you sure?");
-  myConfirmMsg = std::make_unique<GUI::MessageBox>
-    (this, _font, msg, _w, _h, kRmAllPop,
-      "Yes", "No", "Remove all " + string{name}, false);
+
+  myConfirmMsg = std::make_unique<GUI::MessageBox>(
+    this, _font, msg, _w, _h, kRmAllPop,
+    "Yes", "No", std::format("Remove all {}", name), false);
   myConfirmMsg->show();
 }
 

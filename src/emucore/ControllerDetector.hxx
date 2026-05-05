@@ -68,7 +68,6 @@ class ControllerDetector
       Detects the controller type at the given port.
 
       @param image       A reference to the ROM image
-      @param size        The size of the ROM image
       @param port        The port to be checked
       @param settings    A reference to the various settings (read-only)
       @param isQuadTari  If true, try to detect the QuadTari's controllers

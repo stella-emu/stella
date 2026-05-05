@@ -125,6 +125,6 @@ class Base
     Base& operator=(Base&&) = delete;
 };
 
-}  // Namespace Common
+}  // namespace Common
 
-#endif
+#endif  // BASE_HXX

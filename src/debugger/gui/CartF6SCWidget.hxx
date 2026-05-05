@@ -44,4 +44,4 @@ class CartridgeF6SCWidget : public CartridgeEnhancedWidget
     CartridgeF6SCWidget& operator=(CartridgeF6SCWidget&&) = delete;
 };
 
-#endif
+#endif  // CARTRIDGEF6SC_WIDGET_HXX

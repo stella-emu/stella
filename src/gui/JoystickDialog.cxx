@@ -89,11 +89,11 @@ void JoystickDialog::loadConfig()
   myJoyIDs.clear();
 
   StringList sticks;
-  for(const auto& _entry : instance().eventHandler().physicalJoystickList())
+  for(const auto& entry: instance().eventHandler().physicalJoystickList())
   {
-    sticks.push_back(_entry.name);
-    myJoyIDs.push_back(_entry.ID);
-    myJoyPorts.push_back(static_cast<int>(_entry.port));
+    sticks.push_back(entry.name);
+    myJoyIDs.push_back(entry.ID);
+    myJoyPorts.push_back(static_cast<int>(entry.port));
   }
   myJoyList->setList(sticks);
   myJoyList->setSelected(0);
@@ -138,9 +138,7 @@ void JoystickDialog::handleCommand(CommandSender* sender, int cmd, int data, int
       const bool isPlugged = myJoyIDs[data] >= 0;
       if(isPlugged)
       {
-        std::ostringstream buf;
-        buf << "C" << myJoyIDs[data];
-        myJoyText->setText(buf.view());
+        myJoyText->setText(std::format("C{}", myJoyIDs[data]));
         myJoyPort->setSelected(myJoyPorts[data]);
       }
       else

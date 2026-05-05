@@ -161,4 +161,4 @@ class RomImageWidget : public Widget
     RomImageWidget& operator=(RomImageWidget&&) = delete;
 };
 
-#endif
+#endif  // ROM_IMAGE_WIDGET_HXX

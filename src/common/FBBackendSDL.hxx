@@ -229,7 +229,7 @@ class FBBackendSDL : public FBBackend
       Checks if the display refresh rate should be adapted to game refresh
       rate in (real) fullscreen mode.
 
-      @param displayIndex   The display which should be checked
+      @param displayId      The display which should be checked
       @param adaptedSdlMode The best matching mode if the refresh rate
                             should be changed
 

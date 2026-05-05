@@ -72,7 +72,6 @@ class MinUICommandDialog : public Dialog
       kSaveStateCmd  = 'Csst',
       kStateSlotCmd  = 'Ccst',
       kLoadStateCmd  = 'Clst',
-      kSnapshotCmd   = 'Csnp',
       kRewindCmd     = 'Crew',
       kUnwindCmd     = 'Cunw',
       kFormatCmd     = 'Cfmt',
@@ -92,4 +91,4 @@ class MinUICommandDialog : public Dialog
     MinUICommandDialog& operator=(MinUICommandDialog&&) = delete;
 };
 
-#endif
+#endif  // MIN_UI_COMMAND_DIALOG_HXX

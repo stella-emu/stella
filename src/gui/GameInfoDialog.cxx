@@ -755,7 +755,7 @@ void GameInfoDialog::loadEmulationProperties(const Properties& props)
       // remove '*':
       if(pos != string::npos)
         bs = bs.substr(0, pos) + bs.substr(pos + 1);
-      bsDetected = bs + "detected";
+      bsDetected = std::format("{} detected", bs);
     }
     else
     {
@@ -928,8 +928,6 @@ void GameInfoDialog::loadHighScoresProperties(const Properties& props)
 
   myVariations->setText(to_string(numVariations));
 
-  std::ostringstream ss;
-
   myScoreDigits->setSelected(info.numDigits);
   myTrailingZeroes->setSelected(info.trailingZeroes);
   myScoreBCD->setState(info.scoreBCD);
@@ -942,26 +940,15 @@ void GameInfoDialog::loadHighScoresProperties(const Properties& props)
 
   myHighScoreNotes->setText(info.notes);
 
-  ss.str("");
-  ss << hex << right // << setw(HSM::MAX_ADDR_CHARS) << setfill(' ')
-    << uppercase << info.varsAddr;
-  myVarAddress->setText(ss.view());
-
-  ss.str("");
-  ss << hex << right // << setw(HSM::MAX_ADDR_CHARS) << setfill(' ')
-    << uppercase << info.specialAddr;
-  mySpecialAddress->setText(ss.view());
-
+  myVarAddress->setText(std::format("{:X}", info.varsAddr));
+  mySpecialAddress->setText(std::format("{:X}", info.specialAddr));
 
   for (uInt32 a = 0; a < HSM::MAX_SCORE_ADDR; ++a)
   {
-    ss.str("");
     if(a < HighScoresManager::numAddrBytes(info.numDigits, info.trailingZeroes))
-    {
-      ss << hex << right // << setw(HSM::MAX_ADDR_CHARS) << setfill(' ')
-        << uppercase << info.scoreAddr[a];
-    }
-    myScoreAddress[a]->setText(ss.view());
+      myScoreAddress[a]->setText(std::format("{:X}", info.scoreAddr[a]));
+    else
+      myScoreAddress[a]->setText("");
   }
   updateHighScoresWidgets();
 }
@@ -1081,16 +1068,9 @@ void GameInfoDialog::saveHighScoresProperties()
 
   if (myHighScores->getState())
   {
-    string strText;
-
     // limit variants and special size
-    strText = myVariations->getText();
-    strText = strText.substr(0, 3);
-    myVariations->setText(strText);
-
-    strText = mySpecialName->getText();
-    strText = strText.substr(0, HSM::MAX_SPECIAL_NAME);
-    mySpecialName->setText(strText);
+    myVariations->setText(myVariations->getText().substr(0, 3));
+    mySpecialName->setText(mySpecialName->getText().substr(0, HSM::MAX_SPECIAL_NAME));
 
     // fill format
     info.varsZeroBased = myVarsZeroBased->getState();
@@ -1472,19 +1452,13 @@ void GameInfoDialog::setAddressVal(const EditTextWidget* addressWidget, EditText
 
   if (instance().hasConsole() && valWidget->isEnabled())
   {
-    std::ostringstream ss;
-
     // convert to number and read from memory
     const uInt16 addr = BSPF::stoi<16>(strAddr, HSM::DEFAULT_ADDRESS);
     uInt8 val = instance().highScores().peek(addr);
     val = HighScoresManager::convert(val, maxVal, isBCD, zeroBased);
 
     // format output and display in value widget
-    // if (isBCD)
-    //  ss << hex;
-    ss << right // << setw(2) << setfill(' ')
-      << uppercase << static_cast<uInt16>(val);
-    valWidget->setText(ss.view());
+    valWidget->setText(std::format("{}", static_cast<uInt16>(val)));
   }
   else
     valWidget->setText("");

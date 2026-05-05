@@ -61,4 +61,4 @@ class EmulationDialog : public Dialog
     EmulationDialog& operator=(EmulationDialog&&) = delete;
 };
 
-#endif
+#endif  // EMULATION_DIALOG_HXX

@@ -48,12 +48,12 @@ void EditableWidget::setText(string_view str, bool changed)
   const string oldEditString = _editString;
   _backupString = str;
   // Filter input string
-  _editString = "";
-  for(const auto c: str)
-    if(_filter(tolower(c)))
-      _editString.push_back(c);
-  if(_maxLen)
-    _editString = _editString.substr(0, _maxLen);
+  _editString.clear();
+  _editString.reserve(str.size());
+  std::ranges::copy_if(str, std::back_inserter(_editString),
+    [this](char c) { return _filter(tolower(c)); });
+  if(_maxLen && std::cmp_greater(_editString.size(), _maxLen))
+    _editString.resize(_maxLen);
 
   if(oldEditString != _editString)
     setDirty();
@@ -461,8 +461,8 @@ bool EditableWidget::handleKeyDown(StellaKey key, StellaMod mod)
 int EditableWidget::getCaretOffset() const
 {
   int caretOfs = 0;
-  for (int i = 0; i < _caretPos; i++)
-    caretOfs += _font.getCharWidth(_editString[i]);
+  for(const char c : _editString | std::views::take(_caretPos))
+    caretOfs += _font.getCharWidth(c);
 
   caretOfs -= _editScrollOffset;
 
@@ -782,15 +782,9 @@ string EditableWidget::selectString() const
 {
   if(_selectSize)
   {
-    int caretPos = _caretPos;
-    int selectSize = _selectSize;
-
-    if(selectSize < 0)
-    {
-      caretPos += selectSize;
-      selectSize = -selectSize;
-    }
-    return _editString.substr(caretPos, selectSize);
+    const int absSelect = std::abs(_selectSize);
+    const int start = (_selectSize < 0) ? _caretPos + _selectSize : _caretPos;
+    return _editString.substr(start, absSelect);
   }
   return string{};
 }
@@ -861,25 +855,27 @@ bool EditableWidget::pasteSelectedText()
   // remove the currently selected text
   killSelectedText(false);
   // insert filtered paste text instead
-  std::ostringstream buf;
+  string filtered;
+  filtered.reserve(pasted.size());
   bool lastOk = true; // only one filler char per invalid character (block)
-
-  for(const auto c : pasted)
+  for(const char c : pasted)
+  {
     if(_filter(tolower(c)))
     {
-      buf << c;
+      filtered += c;
       lastOk = true;
     }
     else
     {
       if(lastOk)
-        buf << '_';
+        filtered += '_';
       lastOk = false;
     }
-
-  _editString.insert(_caretPos, buf.view());
+  }
+  const auto filteredLen = static_cast<int>(filtered.size());
+  _editString.insert(_caretPos, filtered);
   // position cursor at the end of pasted text
-  setCaretPos(_caretPos + static_cast<int>(buf.view().length()));
+  setCaretPos(_caretPos + filteredLen);
 
   if(selected || !pasted.empty())
   {

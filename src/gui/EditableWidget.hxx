@@ -169,4 +169,4 @@ class EditableWidget : public Widget, public CommandSender
     EditableWidget& operator=(EditableWidget&&) = delete;
 };
 
-#endif
+#endif  // EDITABLE_WIDGET_HXX

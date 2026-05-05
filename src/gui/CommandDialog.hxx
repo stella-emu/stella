@@ -82,4 +82,4 @@ class CommandDialog : public Dialog
     CommandDialog& operator=(CommandDialog&&) = delete;
 };
 
-#endif
+#endif  // COMMAND_DIALOG_HXX

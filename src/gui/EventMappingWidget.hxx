@@ -126,6 +126,15 @@ class EventMappingWidget : public Widget, public CommandSender
     bool myFirstTime{true};
 
   private:
+    void resetLastEvent() {
+      myLastStick  = myLastHat = -1;
+      myLastButton = JOY_CTRL_NONE;
+      myLastAxis   = JoyAxis::NONE;
+      myLastDir    = JoyDir::NONE;
+      myLastHatDir = JoyHatDir::CENTER;
+    }
+
+  private:
     // Following constructors and assignment operators not supported
     EventMappingWidget() = delete;
     EventMappingWidget(const EventMappingWidget&) = delete;
@@ -134,4 +143,4 @@ class EventMappingWidget : public Widget, public CommandSender
     EventMappingWidget& operator=(EventMappingWidget&&) = delete;
 };
 
-#endif
+#endif  // EVENT_MAPPING_WIDGET_HXX

@@ -159,6 +159,9 @@ class DeveloperDialog : public Dialog, DevSettingsHandler
 #endif
 
     bool mySettings{false};
+    static constexpr std::array<string_view, 5> ourCPURegs = {
+      "S", "A", "X", "Y", "P"
+    };
 
   private:
     void addEmulationTab(const GUI::Font& font);
@@ -186,6 +189,7 @@ class DeveloperDialog : public Dialog, DevSettingsHandler
     void handleHorizon();
     void handleFontSize();
 
+  private:
     // Following constructors and assignment operators not supported
     DeveloperDialog() = delete;
     DeveloperDialog(const DeveloperDialog&) = delete;
@@ -194,4 +198,4 @@ class DeveloperDialog : public Dialog, DevSettingsHandler
     DeveloperDialog& operator=(DeveloperDialog&&) = delete;
 };
 
-#endif
+#endif  // DEVELOPER_DIALOG_HXX

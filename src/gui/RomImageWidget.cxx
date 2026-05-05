@@ -51,7 +51,7 @@ void RomImageWidget::setProperties(const FSNode& node,
   myProperties = properties;
 
   // Decide whether the information should be shown immediately
-  if(instance().eventHandler().state() == EventHandlerState::LAUNCHER)
+  if(instance().eventHandler().state() == EventHandlerState::LAUNCHER) [[likely]]
     parseProperties(node, full);
 #ifdef DEBUGGER_SUPPORT
   else
@@ -70,7 +70,7 @@ void RomImageWidget::clearProperties()
     mySurface->setVisible(false);
 
   // Decide whether the information should be shown immediately
-  if(instance().eventHandler().state() == EventHandlerState::LAUNCHER)
+  if(instance().eventHandler().state() == EventHandlerState::LAUNCHER) [[likely]]
     setDirty();
 #ifdef DEBUGGER_SUPPORT
   else
@@ -247,8 +247,7 @@ bool RomImageWidget::getImageList(const string& propName, const string& romName,
         compare < 0 ||
         // PNGs first!
         (compare == 0 &&
-          node1.getName().substr(node1.getName().find_last_of('.') + 1) >
-          node2.getName().substr(node2.getName().find_last_of('.') + 1)) ||
+          node2.getName().ends_with(".png") && !node1.getName().ends_with(".png")) ||
         // Make sure that first image found in initial load is first image now too
         node1.getName() == oldFileName;
     }
@@ -277,9 +276,7 @@ bool RomImageWidget::loadImage(const string& fileName)
 {
   mySurfaceErrorMsg.clear();
 
-  const string::size_type idx = fileName.find_last_of('.');
-
-  if(idx != string::npos && fileName.substr(idx + 1) == "png")
+  if(fileName.ends_with(".png"))
     mySurfaceIsValid = loadPng(fileName);
   else
     mySurfaceIsValid = loadJpg(fileName);
@@ -499,7 +496,7 @@ void RomImageWidget::handleMouseMoved(int x, int y)
 {
   const Area oldArea = myMouseArea;
 
-  myMousePos = Common::Point(x, y);
+  myMousePos = Common::Point{x, y};
 
   if(myZoomRect.contains(x, y))
     myMouseArea = Area::ZOOM;
@@ -565,16 +562,15 @@ void RomImageWidget::drawWidget(bool hilite)
     }
 
   // Draw the image label and counter
-  std::ostringstream buf;
-  buf << myImageIdx + 1 << "/" << myImageList.size();
+  const string buf = std::format("{}/{}", myImageIdx + 1, myImageList.size());
+  const int wText = _font.getStringWidth(buf) + 8;
   const int yText = _y + _h - _font.getFontHeight() * 10 / 8;
-  const int wText = _font.getStringWidth(buf.view()) + 8;
 
   s.fillRect(_x, yText, _w, _font.getFontHeight(), _bgcolor);
   if(!myLabel.empty())
     s.drawString(_font, myLabel, _x + 8, yText, _w - wText - 16 - _font.getMaxCharWidth() * 2, _textcolor);
   if(!myImageList.empty())
-    s.drawString(_font, buf.view(), _x + _w - wText, yText, wText, _textcolor);
+    s.drawString(_font, buf, _x + _w - wText, yText, wText, _textcolor);
 
   // Draw the navigation icons
   myNavSurface->invalidate();

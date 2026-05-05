@@ -186,13 +186,7 @@ void EventMappingWidget::startRemapping()
   myRemapStatus = true;
 
   // Reset all previous events for determining correct axis/hat values
-  myLastStick = -1;
-  myLastButton = JOY_CTRL_NONE;
-  myLastAxis = JoyAxis::NONE;
-  myLastDir = JoyDir::NONE;
-  myLastHat = -1;
-  myLastHatDir = JoyHatDir::CENTER;
-
+  resetLastEvent();
   // Reset the previously aggregated key mappings
   myMod = myLastKey = 0;
 
@@ -200,12 +194,9 @@ void EventMappingWidget::startRemapping()
   enableButtons(false);
 
   // And show a message indicating which key is being remapped
-  std::ostringstream buf;
-  buf << "Select action for '"
-      << EventHandler::actionAtIndex(myActionSelected, myEventGroup)
-      << "' event";
+  myKeyMapping->setText(std::format("Select action for '{}' event",
+    EventHandler::actionAtIndex(myActionSelected, myEventGroup)));
   myKeyMapping->setTextColor(kTextColorEm);
-  myKeyMapping->setText(buf.view());
 
   // Make sure that this widget receives all raw data, before any
   // pre-processing occurs
@@ -245,13 +236,7 @@ void EventMappingWidget::stopRemapping()
   myRemapStatus = false;
 
   // Reset all previous events for determining correct axis/hat values
-  myLastStick = -1;
-  myLastButton = JOY_CTRL_NONE;
-  myLastAxis = JoyAxis::NONE;
-  myLastDir = JoyDir::NONE;
-  myLastHat = -1;
-  myLastHatDir = JoyHatDir::CENTER;
-
+  resetLastEvent();
   // And re-enable all the widgets
   enableButtons(true);
 
@@ -316,6 +301,7 @@ bool EventMappingWidget::handleKeyUp(StellaKey key, StellaMod mod)
     // if not pressed alone, map left and right modifier keys
     if(myLastKey < KBDK_LCTRL || myLastKey > KBDK_RGUI)
     {
+      // FIXME: this seems like dead code (assign flag to itself?)
       if(myMod & KBDM_CTRL)
         myMod |= KBDM_CTRL;
       if(myMod & KBDM_SHIFT)
