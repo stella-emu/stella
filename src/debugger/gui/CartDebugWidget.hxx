@@ -94,4 +94,4 @@ class CartDebugWidget : public Widget, public CommandSender
     CartDebugWidget& operator=(CartDebugWidget&&) = delete;
 };
 
-#endif
+#endif  // CART_DEBUG_WIDGET_HXX

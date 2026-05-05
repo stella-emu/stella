@@ -15,8 +15,8 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#ifndef POINTINGDEVICE_WIDGET_HXX
-#define POINTINGDEVICE_WIDGET_HXX
+#ifndef POINTING_DEVICE_WIDGET_HXX
+#define POINTING_DEVICE_WIDGET_HXX
 
 class Controller;
 class DataGridWidget;
@@ -64,4 +64,4 @@ class PointingDeviceWidget : public ControllerWidget
     PointingDeviceWidget& operator=(PointingDeviceWidget&&) = delete;
 };
 
-#endif
+#endif  // POINTING_DEVICE_WIDGET_HXX

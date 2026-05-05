@@ -15,8 +15,8 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#ifndef TIA_FRAME_MANAGER
-#define TIA_FRAME_MANAGER
+#ifndef FRAME_MANAGER_HXX
+#define FRAME_MANAGER_HXX
 
 #include "AbstractFrameManager.hxx"
 #include "TIAConstants.hxx"
@@ -140,4 +140,4 @@ class FrameManager: public AbstractFrameManager
     FrameManager& operator=(FrameManager&&) = delete;
 };
 
-#endif  // TIA_FRAME_MANAGER
+#endif  // FRAME_MANAGER_HXX

@@ -15,8 +15,8 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#ifndef CARTRIDGE_DETECTOR_HXX
-#define CARTRIDGE_DETECTOR_HXX
+#ifndef CART_DETECTOR_HXX
+#define CART_DETECTOR_HXX
 
 #include "Bankswitch.hxx"
 #include "FSNode.hxx"
@@ -250,4 +250,4 @@ class CartDetector
     CartDetector& operator=(CartDetector&&) = delete;
 };
 
-#endif
+#endif  // CART_DETECTOR_HXX

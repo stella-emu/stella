@@ -48,4 +48,4 @@ class DataGridRamWidget : public DataGridWidget
     DataGridRamWidget& operator=(DataGridRamWidget&&) = delete;
 };
 
-#endif
+#endif  // DATA_GRID_RAM_WIDGET_HXX

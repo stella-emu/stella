@@ -85,4 +85,4 @@ class ToggleWidget : public Widget, public CommandSender
     ToggleWidget& operator=(ToggleWidget&&) = delete;
 };
 
-#endif
+#endif  // TOGGLE_WIDGET_HXX

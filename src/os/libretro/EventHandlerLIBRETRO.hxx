@@ -15,8 +15,8 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#ifndef EVENTHANDLER_LIBRETRO_HXX
-#define EVENTHANDLER_LIBRETRO_HXX
+#ifndef EVENT_HANDLER_LIBRETRO_HXX
+#define EVENT_HANDLER_LIBRETRO_HXX
 
 #include "EventHandler.hxx"
 
@@ -51,4 +51,4 @@ class EventHandlerLIBRETRO : public EventHandler
     EventHandlerLIBRETRO& operator=(EventHandlerLIBRETRO&&) = delete;
 };
 
-#endif
+#endif  // EVENT_HANDLER_LIBRETRO_HXX

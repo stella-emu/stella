@@ -15,8 +15,8 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#ifndef CARTRIDGECM_WIDGET_HXX
-#define CARTRIDGECM_WIDGET_HXX
+#ifndef CARTRIDGE_CM_WIDGET_HXX
+#define CARTRIDGE_CM_WIDGET_HXX
 
 class CartridgeCM;
 class CheckboxWidget;
@@ -86,4 +86,4 @@ class CartridgeCMWidget : public CartDebugWidget
     CartridgeCMWidget& operator=(CartridgeCMWidget&&) = delete;
 };
 
-#endif
+#endif  // CARTRIDGE_CM_WIDGET_HXX

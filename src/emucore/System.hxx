@@ -456,4 +456,4 @@ class System : public Serializable
     System& operator=(System&&) = delete;
 };
 
-#endif
+#endif  // SYSTEM_HXX

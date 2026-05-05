@@ -286,4 +286,4 @@ class Dialog : public GuiObject
     Dialog& operator=(Dialog&&) = delete;
 };
 
-#endif
+#endif  // DIALOG_HXX

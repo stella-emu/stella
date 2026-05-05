@@ -130,4 +130,4 @@ class RamWidget : public Widget, public CommandSender
     RamWidget& operator=(RamWidget&&) = delete;
 };
 
-#endif
+#endif  // RAM_WIDGET_HXX

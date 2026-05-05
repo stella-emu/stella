@@ -15,8 +15,8 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#ifndef TIA_AUDIO_HXX
-#define TIA_AUDIO_HXX
+#ifndef AUDIO_HXX
+#define AUDIO_HXX
 
 class AudioQueue;
 
@@ -124,4 +124,4 @@ void Audio::tick()
   if (++myCounter == 228) myCounter = 0;
 }
 
-#endif  // TIA_AUDIO_HXX
+#endif  // AUDIO_HXX

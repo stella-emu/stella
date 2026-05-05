@@ -431,4 +431,4 @@ static_assert(std::bidirectional_iterator<LinkedObjectPool<int>::const_iter>);
 
 } // namespace Common
 
-#endif
+#endif  // LINKED_OBJECT_POOL_HXX

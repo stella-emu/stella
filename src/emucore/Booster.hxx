@@ -15,8 +15,8 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#ifndef BOOSTERGRIP_HXX
-#define BOOSTERGRIP_HXX
+#ifndef BOOSTER_GRIP_HXX
+#define BOOSTER_GRIP_HXX
 
 #include "Joystick.hxx"
 
@@ -65,4 +65,4 @@ class BoosterGrip : public Joystick
     BoosterGrip& operator=(BoosterGrip&&) = delete;
 };
 
-#endif
+#endif  // BOOSTER_GRIP_HXX

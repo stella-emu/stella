@@ -15,8 +15,8 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#ifndef CARTRIDGE_CREATOR_HXX
-#define CARTRIDGE_CREATOR_HXX
+#ifndef CART_CREATOR_HXX
+#define CART_CREATOR_HXX
 
 class Cartridge;
 class Settings;
@@ -48,4 +48,4 @@ namespace CartCreator
       string_view dtype, Settings& settings);
 };  // namespace CartCreator
 
-#endif
+#endif  // CART_CREATOR_HXX

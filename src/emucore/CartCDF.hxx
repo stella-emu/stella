@@ -402,4 +402,4 @@ class CartridgeCDF : public CartridgeARM
     CartridgeCDF& operator=(CartridgeCDF&&) = delete;
 };
 
-#endif
+#endif  // CARTRIDGE_CDF_HXX

@@ -72,4 +72,4 @@ class AboutDialog : public Dialog
     AboutDialog& operator=(AboutDialog&&) = delete;
 };
 
-#endif
+#endif  // ABOUT_DIALOG_HXX

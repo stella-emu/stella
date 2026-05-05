@@ -15,8 +15,8 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#ifndef AUDIO_PARAMETERS_HXX
-#define AUDIO_PARAMETERS_HXX
+#ifndef AUDIO_SETTINGS_HXX
+#define AUDIO_SETTINGS_HXX
 
 #include "bspf.hxx"
 
@@ -139,4 +139,4 @@ class AudioSettings
     bool myIsPersistent{true};
 };
 
-#endif  // AUDIO_PARAMETERS_HXX
+#endif  // AUDIO_SETTINGS_HXX

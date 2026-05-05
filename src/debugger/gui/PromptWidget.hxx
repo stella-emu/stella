@@ -146,4 +146,4 @@ class PromptWidget : public Widget, public CommandSender
     PromptWidget& operator=(PromptWidget&&) = delete;
 };
 
-#endif
+#endif  // PROMPT_WIDGET_HXX

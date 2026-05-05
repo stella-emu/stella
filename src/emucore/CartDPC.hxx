@@ -199,4 +199,4 @@ class CartridgeDPC : public CartridgeF8
     CartridgeDPC& operator=(CartridgeDPC&&) = delete;
 };
 
-#endif
+#endif  // CARTRIDGE_DPC_HXX

@@ -15,8 +15,8 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#ifndef EVENTHANDLER_CONSTANTS_HXX
-#define EVENTHANDLER_CONSTANTS_HXX
+#ifndef EVENT_HANDLER_CONSTANTS_HXX
+#define EVENT_HANDLER_CONSTANTS_HXX
 
 #include <string>
 
@@ -114,4 +114,4 @@ namespace GUI {
   static constexpr std::string_view RIGHT_DIFF_B = "Right Diff B";
 }  // namespace GUI
 
-#endif  // EVENTHANDLER_CONSTANTS_HXX
+#endif  // EVENT_HANDLER_CONSTANTS_HXX

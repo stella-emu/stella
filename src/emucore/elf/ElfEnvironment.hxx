@@ -15,8 +15,8 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#ifndef ELF_ENVIRONMENT
-#define ELF_ENVIRONMENT
+#ifndef ELF_ENVIRONMENT_HXX
+#define ELF_ENVIRONMENT_HXX
 
 #include "bspf.hxx"
 #include "ElfLinker.hxx"
@@ -123,4 +123,4 @@ namespace elfEnvironment {
   vector<ElfLinker::ExternalSymbol> externalSymbols(SystemType systemType);
 }  // namespace elfEnvironment
 
-#endif  // ELF_ENVIRONMENT
+#endif  // ELF_ENVIRONMENT_HXX

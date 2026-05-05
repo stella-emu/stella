@@ -92,4 +92,4 @@ class CartridgeARMWidget : public CartDebugWidget
     CartridgeARMWidget& operator=(CartridgeARMWidget&&) = delete;
 };
 
-#endif
+#endif  // CARTRIDGE_ARM_WIDGET_HXX

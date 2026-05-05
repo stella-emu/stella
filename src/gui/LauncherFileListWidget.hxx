@@ -89,4 +89,4 @@ class LauncherFileListWidget : public FileListWidget
     LauncherFileListWidget& operator=(LauncherFileListWidget&&) = delete;
 };
 
-#endif
+#endif  // LAUNCHER_FILE_LIST_WIDGET_HXX

@@ -52,4 +52,4 @@ class JoystickWidget : public ControllerWidget
     JoystickWidget& operator=(JoystickWidget&&) = delete;
 };
 
-#endif
+#endif  // JOYSTICK_WIDGET_HXX

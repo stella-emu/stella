@@ -15,8 +15,8 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#ifndef CARTRIDGEBUS_WIDGET_HXX
-#define CARTRIDGEBUS_WIDGET_HXX
+#ifndef CARTRIDGE_BUS_WIDGET_HXX
+#define CARTRIDGE_BUS_WIDGET_HXX
 
 class CartridgeBUS;
 class PopUpWidget;
@@ -97,4 +97,4 @@ class CartridgeBUSWidget : public CartridgeARMWidget
     CartridgeBUSWidget& operator=(CartridgeBUSWidget&&) = delete;
 };
 
-#endif
+#endif  // CARTRIDGE_BUS_WIDGET_HXX

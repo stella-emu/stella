@@ -165,4 +165,4 @@ class Driving : public Controller
     Driving& operator=(Driving&&) = delete;
 };
 
-#endif
+#endif  // DRIVING_HXX

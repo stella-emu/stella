@@ -79,4 +79,4 @@ class TiaZoomWidget : public Widget, public CommandSender
     TiaZoomWidget& operator=(TiaZoomWidget&&) = delete;
 };
 
-#endif
+#endif  // TIA_ZOOM_WIDGET_HXX

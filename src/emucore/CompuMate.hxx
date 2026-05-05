@@ -142,4 +142,4 @@ class CompuMate
     CompuMate& operator=(CompuMate&&) = delete;
 };
 
-#endif
+#endif  // COMPUMATE_HXX

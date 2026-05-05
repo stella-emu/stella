@@ -15,8 +15,8 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#ifndef MICROCHIP24LC_HXX
-#define MICROCHIP24LC_HXX
+#ifndef MICRO_CHIP_24LC_HXX
+#define MICRO_CHIP_24LC_HXX
 
 // #define DEBUG_EEPROM 1
 
@@ -700,4 +700,4 @@ bool MicroChip24LC<FLASH_SIZE, PAGE_SIZE>
   }
 }
 
-#endif  // MICROCHIP24LC_HXX
+#endif  // MICRO_CHIP_24LC_HXX

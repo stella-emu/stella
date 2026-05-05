@@ -114,4 +114,4 @@ class TabWidget : public Widget, public CommandSender
     TabWidget& operator=(TabWidget&&) = delete;
 };
 
-#endif
+#endif  // TAB_WIDGET_HXX

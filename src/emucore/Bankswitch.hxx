@@ -487,4 +487,4 @@ class Bankswitch
     Bankswitch& operator=(Bankswitch&&) = delete;
 };
 
-#endif
+#endif  // BANKSWITCH_HXX

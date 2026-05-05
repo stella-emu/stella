@@ -15,8 +15,8 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#ifndef CARTRIDGECHETIRY_HXX
-#define CARTRIDGECHETIRY_HXX
+#ifndef CARTRIDGE_CTY_HXX
+#define CARTRIDGE_CTY_HXX
 
 class System;
 
@@ -334,4 +334,4 @@ class CartridgeCTY : public Cartridge
     CartridgeCTY& operator=(CartridgeCTY&&) = delete;
 };
 
-#endif
+#endif  // CARTRIDGE_CTY_HXX

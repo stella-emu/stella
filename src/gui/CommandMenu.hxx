@@ -54,4 +54,4 @@ class CommandMenu : public DialogContainer
     CommandMenu& operator=(CommandMenu&&) = delete;
 };
 
-#endif
+#endif  // COMMAND_MENU_HXX

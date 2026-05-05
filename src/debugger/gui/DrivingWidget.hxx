@@ -64,4 +64,4 @@ class DrivingWidget : public ControllerWidget
     DrivingWidget& operator=(DrivingWidget&&) = delete;
 };
 
-#endif
+#endif  // DRIVING_WIDGET_HXX

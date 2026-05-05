@@ -6401,4 +6401,4 @@ static const FontDesc stella14x28tDesc = {
 
 } // End of namespace GUI
 
-#endif
+#endif  // STELLA14X28T_FONT_DATA_HXX

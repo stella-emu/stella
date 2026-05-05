@@ -165,4 +165,4 @@ class DataGridWidget : public EditableWidget
     DataGridWidget& operator=(DataGridWidget&&) = delete;
 };
 
-#endif
+#endif  // DATA_GRID_WIDGET_HXX

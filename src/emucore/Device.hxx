@@ -175,4 +175,4 @@ class Device : public Serializable
     Device& operator=(Device&&) = delete;
 };
 
-#endif
+#endif  // DEVICE_HXX

@@ -15,8 +15,8 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#ifndef CARTRIDGE3F_HXX
-#define CARTRIDGE3F_HXX
+#ifndef CARTRIDGE_3F_HXX
+#define CARTRIDGE_3F_HXX
 
 class System;
 
@@ -103,4 +103,4 @@ class Cartridge3F : public CartridgeEnhanced
     Cartridge3F& operator=(Cartridge3F&&) = delete;
 };
 
-#endif
+#endif  // CARTRIDGE_3F_HXX

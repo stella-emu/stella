@@ -54,4 +54,4 @@ class BoosterWidget : public ControllerWidget
     BoosterWidget& operator=(BoosterWidget&&) = delete;
 };
 
-#endif
+#endif  // BOOSTER_WIDGET_HXX

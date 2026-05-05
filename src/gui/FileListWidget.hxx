@@ -197,4 +197,4 @@ class FileListWidget : public StringListWidget
     FileListWidget& operator=(FileListWidget&&) = delete;
 };
 
-#endif
+#endif  // FILE_LIST_WIDGET_HXX

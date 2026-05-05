@@ -75,4 +75,4 @@ class OptionsDialog : public Dialog
     OptionsDialog& operator=(OptionsDialog&&) = delete;
 };
 
-#endif
+#endif  // OPTIONS_DIALOG_HXX

@@ -15,8 +15,8 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#ifndef HIGHSCORES_MANAGER_HXX
-#define HIGHSCORES_MANAGER_HXX
+#ifndef HIGH_SCORES_MANAGER_HXX
+#define HIGH_SCORES_MANAGER_HXX
 
 class OSystem;
 
@@ -266,4 +266,4 @@ class HighScoresManager
     HighScoresManager& operator=(HighScoresManager&&) = delete;
 };
 
-#endif  // HIGHSCORES_MANAGER_HXX
+#endif  // HIGH_SCORES_MANAGER_HXX

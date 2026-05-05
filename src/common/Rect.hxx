@@ -228,4 +228,4 @@ public:
 
 } // namespace Common
 
-#endif
+#endif  // RECT_HXX

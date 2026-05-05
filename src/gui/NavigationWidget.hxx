@@ -117,4 +117,4 @@ class NavigationWidget : public Widget
     NavigationWidget& operator=(NavigationWidget&&) = delete;
 }; // NavigationWidget
 
-#endif
+#endif  // NAVIGATION_WIDGET_HXX

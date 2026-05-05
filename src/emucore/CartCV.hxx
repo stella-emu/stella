@@ -15,8 +15,8 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#ifndef CARTRIDGECV_HXX
-#define CARTRIDGECV_HXX
+#ifndef CARTRIDGE_CV_HXX
+#define CARTRIDGE_CV_HXX
 
 class System;
 
@@ -101,4 +101,4 @@ class CartridgeCV : public CartridgeEnhanced
     CartridgeCV& operator=(CartridgeCV&&) = delete;
 };
 
-#endif
+#endif  // CARTRIDGE_CV_HXX

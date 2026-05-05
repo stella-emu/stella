@@ -53,4 +53,4 @@ class ToggleBitWidget : public ToggleWidget
     ToggleBitWidget& operator=(ToggleBitWidget&&) = delete;
 };
 
-#endif
+#endif  // TOGGLE_BIT_WIDGET_HXX

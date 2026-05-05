@@ -173,4 +173,4 @@ class GuiObject : public CommandReceiver
     GuiObject& operator=(GuiObject&&) = delete;
 };
 
-#endif
+#endif  // GUI_OBJECT_HXX

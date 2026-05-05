@@ -15,8 +15,8 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#ifndef CARTRIDGEFA_HXX
-#define CARTRIDGEFA_HXX
+#ifndef CARTRIDGE_FA_HXX
+#define CARTRIDGE_FA_HXX
 
 #include "bspf.hxx"
 #include "CartEnhanced.hxx"
@@ -89,4 +89,4 @@ class CartridgeFA : public CartridgeEnhanced
     CartridgeFA& operator=(CartridgeFA&&) = delete;
 };
 
-#endif
+#endif  // CARTRIDGE_FA_HXX

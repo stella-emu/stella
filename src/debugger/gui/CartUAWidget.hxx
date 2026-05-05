@@ -15,8 +15,8 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#ifndef CARTRIDGEUA_WIDGET_HXX
-#define CARTRIDGEUA_WIDGET_HXX
+#ifndef CARTRIDGE_UA_WIDGET_HXX
+#define CARTRIDGE_UA_WIDGET_HXX
 
 class CartridgeUA;
 
@@ -48,4 +48,4 @@ class CartridgeUAWidget : public CartridgeEnhancedWidget
     CartridgeUAWidget& operator=(CartridgeUAWidget&&) = delete;
 };
 
-#endif
+#endif  // CARTRIDGE_UA_WIDGET_HXX

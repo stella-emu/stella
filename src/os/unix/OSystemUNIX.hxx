@@ -58,4 +58,4 @@ class OSystemUNIX : public OSystemStandalone
     OSystemUNIX& operator=(OSystemUNIX&&) = delete;
 };
 
-#endif
+#endif  // OSYSTEM_UNIX_HXX

@@ -15,8 +15,8 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#ifndef CARTRIDGEF8_WIDGET_HXX
-#define CARTRIDGEF8_WIDGET_HXX
+#ifndef CARTRIDGE_F8_WIDGET_HXX
+#define CARTRIDGE_F8_WIDGET_HXX
 
 class CartridgeF8;
 class PopUpWidget;
@@ -45,4 +45,4 @@ class CartridgeF8Widget : public CartridgeEnhancedWidget
     CartridgeF8Widget& operator=(CartridgeF8Widget&&) = delete;
 };
 
-#endif
+#endif  // CARTRIDGE_F8_WIDGET_HXX

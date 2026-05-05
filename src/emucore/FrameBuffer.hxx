@@ -15,8 +15,8 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#ifndef FRAMEBUFFER_HXX
-#define FRAMEBUFFER_HXX
+#ifndef FRAME_BUFFER_HXX
+#define FRAME_BUFFER_HXX
 
 #include <list>
 #include <unordered_map>
@@ -588,4 +588,4 @@ class FrameBuffer
     FrameBuffer& operator=(FrameBuffer&&) = delete;
 };
 
-#endif  // FRAMEBUFFER_HXX
+#endif  // FRAME_BUFFER_HXX

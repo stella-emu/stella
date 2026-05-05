@@ -15,8 +15,8 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#ifndef CARTRIDGEJANE_HXX
-#define CARTRIDGEJANE_HXX
+#ifndef CARTRIDGE_JANE_HXX
+#define CARTRIDGE_JANE_HXX
 
 #include "CartEnhanced.hxx"
 #ifdef DEBUGGER_SUPPORT
@@ -83,4 +83,4 @@ class CartridgeJANE : public CartridgeEnhanced
     CartridgeJANE& operator=(CartridgeJANE&&) = delete;
 };
 
-#endif
+#endif  // CARTRIDGE_JANE_HXX

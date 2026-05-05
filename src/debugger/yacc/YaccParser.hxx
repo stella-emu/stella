@@ -42,4 +42,4 @@ namespace YaccParser
   TiaMethod getTiaSpecial(const char* ch);
 }  // namespace YaccParser
 
-#endif
+#endif  // YACC_PARSER_HXX

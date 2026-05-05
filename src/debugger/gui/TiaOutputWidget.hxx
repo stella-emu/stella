@@ -81,4 +81,4 @@ class TiaOutputWidget : public Widget, public CommandSender
     TiaOutputWidget& operator=(TiaOutputWidget&&) = delete;
 };
 
-#endif
+#endif  // TIA_OUTPUT_WIDGET_HXX

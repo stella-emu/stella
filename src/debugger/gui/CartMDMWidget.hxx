@@ -15,8 +15,8 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#ifndef CARTRIDGEMDM_WIDGET_HXX
-#define CARTRIDGEMDM_WIDGET_HXX
+#ifndef CARTRIDGE_MDM_WIDGET_HXX
+#define CARTRIDGE_MDM_WIDGET_HXX
 
 class CartridgeMDM;
 class CheckboxWidget;
@@ -55,4 +55,4 @@ class CartridgeMDMWidget : public CartridgeEnhancedWidget
     CartridgeMDMWidget& operator=(CartridgeMDMWidget&&) = delete;
 };
 
-#endif
+#endif  // CARTRIDGE_MDM_WIDGET_HXX

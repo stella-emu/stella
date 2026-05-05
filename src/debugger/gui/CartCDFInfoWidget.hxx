@@ -15,8 +15,8 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#ifndef CARTRIDGECDF_INFO_WIDGET_HXX
-#define CARTRIDGECDF_INFO_WIDGET_HXX
+#ifndef CARTRIDGE_CDF_INFO_WIDGET_HXX
+#define CARTRIDGE_CDF_INFO_WIDGET_HXX
 
 #include "CartCDF.hxx"
 #include "CartDebugWidget.hxx"
@@ -40,4 +40,4 @@ class CartridgeCDFInfoWidget : public CartDebugWidget
     CartridgeCDFInfoWidget& operator=(const CartridgeCDFInfoWidget&) = delete;
     CartridgeCDFInfoWidget& operator=(CartridgeCDFInfoWidget&&) = delete;
 };
-#endif
+#endif  // CARTRIDGE_CDF_INFO_WIDGET_HXX

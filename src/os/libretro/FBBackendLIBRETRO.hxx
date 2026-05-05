@@ -112,4 +112,4 @@ class FBBackendLIBRETRO : public FBBackend
     FBBackendLIBRETRO& operator=(FBBackendLIBRETRO&&) = delete;
 };
 
-#endif
+#endif  // FB_BACKEND_LIBRETRO_HXX

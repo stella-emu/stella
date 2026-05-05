@@ -31,4 +31,4 @@ class MT24LC16B : public MicroChip24LC<2_KB, 16>
   using MicroChip24LC::MicroChip24LC;
 };
 
-#endif
+#endif  // MT24LC16B_HXX

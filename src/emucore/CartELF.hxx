@@ -15,8 +15,8 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#ifndef CARTRIDGE_ELF
-#define CARTRIDGE_ELF
+#ifndef CARTRIDGE_ELF_HXX
+#define CARTRIDGE_ELF_HXX
 
 #include "bspf.hxx"
 #include "Cart.hxx"
@@ -193,4 +193,4 @@ class CartridgeELF: public Cartridge {
     CartridgeELF& operator=(CartridgeELF&&) = delete;
 };
 
-#endif  // CARTRIDGE_ELF
+#endif  // CARTRIDGE_ELF_HXX

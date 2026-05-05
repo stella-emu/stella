@@ -102,4 +102,4 @@ class TimeMachineDialog : public Dialog
     TimeMachineDialog& operator=(TimeMachineDialog&&) = delete;
 };
 
-#endif
+#endif  // TIME_MACHINE_DIALOG_HXX

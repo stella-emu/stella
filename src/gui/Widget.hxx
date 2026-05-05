@@ -441,4 +441,4 @@ class SliderWidget : public ButtonWidget
     SliderWidget& operator=(SliderWidget&&) = delete;
 };
 
-#endif
+#endif  // WIDGET_HXX

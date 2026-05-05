@@ -137,4 +137,4 @@ class QuadTari : public Controller
     QuadTari& operator=(QuadTari&&) = delete;
   };
 
-#endif
+#endif  // QUADTARI_HXX

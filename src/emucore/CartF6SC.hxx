@@ -15,8 +15,8 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#ifndef CARTRIDGEF6SC_HXX
-#define CARTRIDGEF6SC_HXX
+#ifndef CARTRIDGE_F6SC_HXX
+#define CARTRIDGE_F6SC_HXX
 
 #include "CartF6.hxx"
 #ifdef DEBUGGER_SUPPORT
@@ -88,4 +88,4 @@ class CartridgeF6SC : public CartridgeF6
     CartridgeF6SC& operator=(CartridgeF6SC&&) = delete;
 };
 
-#endif
+#endif  // CARTRIDGE_F6SC_HXX

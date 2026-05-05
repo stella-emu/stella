@@ -53,4 +53,4 @@ class OptionsMenu : public DialogContainer
     OptionsMenu& operator=(OptionsMenu&&) = delete;
 };
 
-#endif
+#endif  // OPTIONS_MENU_HXX

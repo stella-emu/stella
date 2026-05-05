@@ -57,4 +57,4 @@ class OSystemWINDOWS : public OSystemStandalone
     OSystemWINDOWS& operator=(OSystemWINDOWS&&) = delete;
 };
 
-#endif
+#endif  // OSYSTEM_WINDOWS_HXX

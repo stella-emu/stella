@@ -59,4 +59,4 @@ class KeyboardWidget : public ControllerWidget
     KeyboardWidget& operator=(KeyboardWidget&&) = delete;
 };
 
-#endif
+#endif  // KEYBOARD_WIDGET_HXX

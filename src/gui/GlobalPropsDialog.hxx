@@ -72,4 +72,4 @@ class GlobalPropsDialog : public Dialog, public CommandSender
     GlobalPropsDialog& operator=(GlobalPropsDialog&&) = delete;
 };
 
-#endif
+#endif  // GLOBAL_PROPS_DIALOG_HXX

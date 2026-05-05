@@ -501,4 +501,4 @@ class Controller : public Serializable
     Controller& operator=(Controller&&) = delete;
 };
 
-#endif
+#endif  // CONTROLLER_HXX

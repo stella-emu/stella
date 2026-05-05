@@ -15,8 +15,8 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#ifndef AMIGAMOUSE_HXX
-#define AMIGAMOUSE_HXX
+#ifndef AMIGA_MOUSE_HXX
+#define AMIGA_MOUSE_HXX
 
 #include "PointingDevice.hxx"
 
@@ -63,4 +63,4 @@ class AmigaMouse : public PointingDevice
     AmigaMouse& operator=(AmigaMouse&&) = delete;
 };
 
-#endif  // AMIGAMOUSE_HXX
+#endif  // AMIGA_MOUSE_HXX

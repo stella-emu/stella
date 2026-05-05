@@ -52,4 +52,4 @@ class Joy2BPlusWidget : public ControllerWidget
     Joy2BPlusWidget& operator=(Joy2BPlusWidget&&) = delete;
 };
 
-#endif
+#endif  // JOY2BPLUS_WIDGET_HXX

@@ -256,4 +256,4 @@ class DialogContainer
     DialogContainer& operator=(DialogContainer&&) = delete;
 };
 
-#endif
+#endif  // DIALOG_CONTAINER_HXX

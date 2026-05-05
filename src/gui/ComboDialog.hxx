@@ -54,4 +54,4 @@ class ComboDialog : public Dialog
     ComboDialog& operator=(ComboDialog&&) = delete;
 };
 
-#endif
+#endif  // COMBO_DIALOG_HXX

@@ -22,4 +22,4 @@ static constexpr string_view STELLA_FULL_TITLE = "Stella 8.0_pre";
 static constexpr string_view STELLA_VERSION = "8.0_pre";
 static constexpr string_view STELLA_BUILD = "8005";
 
-#endif
+#endif  // VERSION_HXX

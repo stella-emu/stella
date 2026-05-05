@@ -84,4 +84,4 @@ class ScrollBarWidget : public Widget, public CommandSender
     ScrollBarWidget& operator=(ScrollBarWidget&&) = delete;
 };
 
-#endif
+#endif  // SCROLL_BAR_WIDGET_HXX

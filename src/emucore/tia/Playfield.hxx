@@ -15,8 +15,8 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#ifndef TIA_PLAYFIELD
-#define TIA_PLAYFIELD
+#ifndef PLAYFIELD_HXX
+#define PLAYFIELD_HXX
 
 class TIA;
 
@@ -291,4 +291,4 @@ void Playfield::tick(uInt32 x)
   collision = currentPixel ? myCollisionMaskEnabled : myCollisionMaskDisabled;
 }
 
-#endif  // TIA_PLAYFIELD
+#endif  // PLAYFIELD_HXX

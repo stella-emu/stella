@@ -15,8 +15,8 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#ifndef FRAMEBUFFER_CONSTANTS_HXX
-#define FRAMEBUFFER_CONSTANTS_HXX
+#ifndef FRAME_BUFFER_CONSTANTS_HXX
+#define FRAME_BUFFER_CONSTANTS_HXX
 
 #include "TIAConstants.hxx"
 #include "bspf.hxx"
@@ -132,4 +132,4 @@ enum class FrameStyle: uInt8 {
   Dashed
 };
 
-#endif  // FRAMEBUFFER_CONSTANTS_HXX
+#endif  // FRAME_BUFFER_CONSTANTS_HXX

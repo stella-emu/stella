@@ -55,4 +55,4 @@ class Serializable
     virtual bool load(Serializer& in) = 0;
 };
 
-#endif
+#endif  // SERIALIZABLE_HXX

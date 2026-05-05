@@ -15,8 +15,8 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#ifndef TIA_AUDIO_CHANNEL_HXX
-#define TIA_AUDIO_CHANNEL_HXX
+#ifndef AUDIO_CHANNEL_HXX
+#define AUDIO_CHANNEL_HXX
 
 #include "bspf.hxx"
 #include "Serializable.hxx"
@@ -78,4 +78,4 @@ class AudioChannel : public Serializable
     AudioChannel& operator=(AudioChannel&&) = delete;
 };
 
-#endif  // TIA_AUDIO_CHANNEL_HXX
+#endif  // AUDIO_CHANNEL_HXX

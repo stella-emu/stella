@@ -15,8 +15,8 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#ifndef CARTRIDGEX07_HXX
-#define CARTRIDGEX07_HXX
+#ifndef CARTRIDGE_X07_HXX
+#define CARTRIDGE_X07_HXX
 
 class System;
 
@@ -117,4 +117,4 @@ class CartridgeX07 : public CartridgeEnhanced
     CartridgeX07& operator=(CartridgeX07&&) = delete;
 };
 
-#endif
+#endif  // CARTRIDGE_X07_HXX

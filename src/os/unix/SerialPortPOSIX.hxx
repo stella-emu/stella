@@ -15,8 +15,8 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#ifndef SERIALPORT_POSIX_HXX
-#define SERIALPORT_POSIX_HXX
+#ifndef SERIAL_PORT_POSIX_HXX
+#define SERIAL_PORT_POSIX_HXX
 
 #include <termios.h>
 
@@ -91,4 +91,4 @@ class SerialPortPOSIX : public SerialPort
     SerialPortPOSIX& operator=(SerialPortPOSIX&&) = delete;
 };
 
-#endif  // SERIALPORT_POSIX_HXX
+#endif  // SERIAL_PORT_POSIX_HXX

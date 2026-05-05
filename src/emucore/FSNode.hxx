@@ -574,4 +574,4 @@ class AbstractFSNode
     }
 };
 
-#endif
+#endif  // FS_NODE_HXX

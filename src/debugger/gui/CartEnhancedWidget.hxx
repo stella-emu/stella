@@ -15,8 +15,8 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#ifndef CART_ENHANCED_WIDGET_HXX
-#define CART_ENHANCED_WIDGET_HXX
+#ifndef CARTRIDGE_ENHANCED_WIDGET_HXX
+#define CARTRIDGE_ENHANCED_WIDGET_HXX
 
 class CartridgeEnhanced;
 class EditTextWidget;
@@ -105,4 +105,4 @@ class CartridgeEnhancedWidget : public CartDebugWidget
     CartridgeEnhancedWidget& operator=(CartridgeEnhancedWidget&&) = delete;
 };
 
-#endif
+#endif  // CARTRIDGE_ENHANCED_WIDGET_HXX

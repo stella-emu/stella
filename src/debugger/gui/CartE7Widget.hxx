@@ -84,4 +84,4 @@ class CartridgeE7Widget : public CartDebugWidget
     CartridgeE7Widget& operator=(CartridgeE7Widget&&) = delete;
 };
 
-#endif
+#endif  // CARTRIDGE_E7_WIDGET_HXX

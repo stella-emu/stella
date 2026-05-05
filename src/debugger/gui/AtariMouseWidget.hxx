@@ -15,8 +15,8 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#ifndef ATARIMOUSE_WIDGET_HXX
-#define ATARIMOUSE_WIDGET_HXX
+#ifndef ATARI_MOUSE_WIDGET_HXX
+#define ATARI_MOUSE_WIDGET_HXX
 
 class Controller;
 
@@ -48,4 +48,4 @@ class AtariMouseWidget : public PointingDeviceWidget
     AtariMouseWidget& operator=(AtariMouseWidget&&) = delete;
 };
 
-#endif
+#endif  // ATARI_MOUSE_WIDGET_HXX

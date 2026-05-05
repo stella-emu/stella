@@ -524,4 +524,4 @@ static const Icon icon_help_large(
 
 } // namespace GUI
 
-#endif
+#endif  // ICONS_HXX

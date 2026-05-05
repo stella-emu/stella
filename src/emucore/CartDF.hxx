@@ -15,8 +15,8 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#ifndef CARTRIDGEDF_HXX
-#define CARTRIDGEDF_HXX
+#ifndef CARTRIDGE_DF_HXX
+#define CARTRIDGE_DF_HXX
 
 class System;
 
@@ -86,4 +86,4 @@ private:
     CartridgeDF& operator=(CartridgeDF&&) = delete;
 };
 
-#endif
+#endif  // CARTRIDGE_DF_HXX

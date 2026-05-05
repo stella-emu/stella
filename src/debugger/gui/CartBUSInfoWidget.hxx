@@ -15,8 +15,8 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#ifndef CARTRIDGEBUS_INFO_WIDGET_HXX
-#define CARTRIDGEBUS_INFO_WIDGET_HXX
+#ifndef CARTRIDGE_BUS_INFO_WIDGET_HXX
+#define CARTRIDGE_BUS_INFO_WIDGET_HXX
 
 #include "CartBUS.hxx"
 #include "CartDebugWidget.hxx"
@@ -40,4 +40,4 @@ class CartridgeBUSInfoWidget : public CartDebugWidget
     CartridgeBUSInfoWidget& operator=(const CartridgeBUSInfoWidget&) = delete;
     CartridgeBUSInfoWidget& operator=(CartridgeBUSInfoWidget&&) = delete;
 };
-#endif
+#endif  // CARTRIDGE_BUS_INFO_WIDGET_HXX

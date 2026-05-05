@@ -15,8 +15,8 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#ifndef CARTRIDGE4K_WIDGET_HXX
-#define CARTRIDGE4K_WIDGET_HXX
+#ifndef CARTRIDGE_4K_WIDGET_HXX
+#define CARTRIDGE_4K_WIDGET_HXX
 
 class Cartridge4K;
 
@@ -44,4 +44,4 @@ class Cartridge4KWidget : public CartridgeEnhancedWidget
     Cartridge4KWidget& operator=(Cartridge4KWidget&&) = delete;
 };
 
-#endif
+#endif  // CARTRIDGE_4K_WIDGET_HXX

@@ -15,8 +15,8 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#ifndef CARTRIDGEAR_HXX
-#define CARTRIDGEAR_HXX
+#ifndef CARTRIDGE_AR_HXX
+#define CARTRIDGE_AR_HXX
 
 class System;
 
@@ -285,4 +285,4 @@ class CartridgeAR : public Cartridge
     CartridgeAR& operator=(CartridgeAR&&) = delete;
 };
 
-#endif
+#endif  // CARTRIDGE_AR_HXX

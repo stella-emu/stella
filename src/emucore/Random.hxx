@@ -123,4 +123,4 @@ class Random : public Serializable
     Random& operator=(Random&&) = delete;
 };
 
-#endif
+#endif  // RANDOM_HXX

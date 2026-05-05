@@ -138,4 +138,4 @@ class InputDialog : public Dialog
     InputDialog& operator=(InputDialog&&) = delete;
 };
 
-#endif
+#endif  // INPUT_DIALOG_HXX

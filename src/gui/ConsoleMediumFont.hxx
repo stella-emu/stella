@@ -3789,4 +3789,4 @@ static const FontDesc consoleMediumDesc = {
 
 } // End of namespace GUI
 
-#endif
+#endif  // CONSOLEMEDIUM_FONT_DATA_HXX

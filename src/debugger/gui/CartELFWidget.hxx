@@ -15,8 +15,8 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#ifndef CART_ELF_WIDGET_HXX
-#define CART_ELF_WIDGET_HXX
+#ifndef CARTRIDGE_ELF_WIDGET_HXX
+#define CARTRIDGE_ELF_WIDGET_HXX
 
 #include "CartDebugWidget.hxx"
 
@@ -54,4 +54,4 @@ class CartridgeELFWidget: public CartDebugWidget
     CartridgeELFWidget& operator=(CartridgeELFWidget&&) = delete;
 };
 
-#endif  // CART_ELF_WIDGET_HXX
+#endif  // CARTRIDGE_ELF_WIDGET_HXX

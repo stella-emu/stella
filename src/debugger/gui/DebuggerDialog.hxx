@@ -155,4 +155,4 @@ class DebuggerDialog : public Dialog
     DebuggerDialog& operator=(DebuggerDialog&&) = delete;
 };
 
-#endif
+#endif  // DEBUGGER_DIALOG_HXX

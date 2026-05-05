@@ -233,4 +233,4 @@ class Paddles : public Controller
     Paddles& operator=(Paddles&&) = delete;
 };
 
-#endif
+#endif  // PADDLES_HXX

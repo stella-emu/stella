@@ -99,4 +99,4 @@ class FixedStack
 
 } // namespace Common
 
-#endif
+#endif  // STACK_HXX

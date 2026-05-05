@@ -15,8 +15,8 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#ifndef TIA_LATCHED_INPUT
-#define TIA_LATCHED_INPUT
+#ifndef LATCHED_INPUT_HXX
+#define LATCHED_INPUT_HXX
 
 #include "bspf.hxx"
 #include "Serializable.hxx"
@@ -53,4 +53,4 @@ class LatchedInput : public Serializable
     LatchedInput& operator=(LatchedInput&&) = delete;
 };
 
-#endif  // TIA_LATCHED_INPUT
+#endif  // LATCHED_INPUT_HXX

@@ -15,8 +15,8 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#ifndef CARTRIDGECM_HXX
-#define CARTRIDGECM_HXX
+#ifndef CARTRIDGE_CM_HXX
+#define CARTRIDGE_CM_HXX
 
 class CompuMate;
 class System;
@@ -270,4 +270,4 @@ class CartridgeCM : public Cartridge
     CartridgeCM& operator=(CartridgeCM&&) = delete;
 };
 
-#endif
+#endif  // CARTRIDGE_CM_HXX

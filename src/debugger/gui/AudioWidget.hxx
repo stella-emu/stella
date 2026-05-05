@@ -75,4 +75,4 @@ class AudioWidget : public Widget, public CommandSender
     AudioWidget& operator=(AudioWidget&&) = delete;
 };
 
-#endif
+#endif  // AUDIO_WIDGET_HXX

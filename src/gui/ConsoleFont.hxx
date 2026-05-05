@@ -3397,4 +3397,4 @@ static const FontDesc consoleDesc = {
 
 } // End of namespace GUI
 
-#endif
+#endif  // CONSOLE_FONT_DATA_HXX

@@ -81,4 +81,4 @@ class CommandSender
     CommandSender& operator=(CommandSender&&) = delete;
 };
 
-#endif
+#endif  // COMMAND_HXX

@@ -51,4 +51,4 @@ class PaddleWidget : public ControllerWidget
     PaddleWidget& operator=(PaddleWidget&&) = delete;
 };
 
-#endif
+#endif  // PADDLE_WIDGET_HXX

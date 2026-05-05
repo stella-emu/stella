@@ -15,8 +15,8 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#ifndef FBSURFACE_LIBRETRO_HXX
-#define FBSURFACE_LIBRETRO_HXX
+#ifndef FB_SURFACE_LIBRETRO_HXX
+#define FB_SURFACE_LIBRETRO_HXX
 
 #include "bspf.hxx"
 #include "FBSurface.hxx"
@@ -85,4 +85,4 @@ class FBSurfaceLIBRETRO : public FBSurface
     FBSurfaceLIBRETRO& operator=(FBSurfaceLIBRETRO&&) = delete;
 };
 
-#endif
+#endif  // FB_SURFACE_LIBRETRO_HXX

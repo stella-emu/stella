@@ -150,4 +150,4 @@ class ContextMenu : public Dialog, public CommandSender
     ContextMenu& operator=(ContextMenu&&) = delete;
 };
 
-#endif
+#endif  // CONTEXT_MENU_HXX

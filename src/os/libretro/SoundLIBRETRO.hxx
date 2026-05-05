@@ -51,7 +51,7 @@ class SoundLIBRETRO : public Sound
     SoundLIBRETRO(OSystem& osystem, AudioSettings& audioSettings)
       : Sound(osystem),
         myAudioSettings{audioSettings}
-    { 
+    {
     }
     ~SoundLIBRETRO() override = default;
 
@@ -148,6 +148,6 @@ class SoundLIBRETRO : public Sound
     SoundLIBRETRO& operator=(SoundLIBRETRO&&) = delete;
 };
 
-#endif
+#endif  // SOUND_LIBRETRO_HXX
 
 #endif  // SOUND_SUPPORT

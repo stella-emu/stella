@@ -74,4 +74,4 @@ class RomAuditDialog : public Dialog
     RomAuditDialog& operator=(RomAuditDialog&&) = delete;
 };
 
-#endif
+#endif  // ROM_AUDIT_DIALOG_HXX

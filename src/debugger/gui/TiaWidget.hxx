@@ -169,4 +169,4 @@ class TiaWidget : public Widget, public CommandSender
     TiaWidget& operator=(TiaWidget&&) = delete;
 };
 
-#endif
+#endif  // TIA_WIDGET_HXX

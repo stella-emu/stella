@@ -44,4 +44,4 @@ class QuadTariWidget: public ControllerWidget
     QuadTariWidget& operator=(QuadTariWidget&&) = delete;
 };
 
-#endif
+#endif  // QUADTARI_WIDGET_HXX

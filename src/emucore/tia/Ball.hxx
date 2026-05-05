@@ -15,8 +15,8 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#ifndef TIA_BALL
-#define TIA_BALL
+#ifndef BALL_HXX
+#define BALL_HXX
 
 class TIA;
 
@@ -417,4 +417,4 @@ void Ball::tick(bool isReceivingRegularClock)
       myCounter = 0;
 }
 
-#endif  // TIA_BALL
+#endif  // BALL_HXX

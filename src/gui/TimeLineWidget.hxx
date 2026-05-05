@@ -15,8 +15,8 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#ifndef TIMELINE_WIDGET_HXX
-#define TIMELINE_WIDGET_HXX
+#ifndef TIME_LINE_WIDGET_HXX
+#define TIME_LINE_WIDGET_HXX
 
 #include "Widget.hxx"
 
@@ -70,4 +70,4 @@ class TimeLineWidget : public ButtonWidget
     TimeLineWidget& operator=(TimeLineWidget&&) = delete;
 };
 
-#endif
+#endif  // TIME_LINE_WIDGET_HXX

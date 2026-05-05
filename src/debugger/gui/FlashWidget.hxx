@@ -64,4 +64,4 @@ class FlashWidget : public ControllerWidget
     FlashWidget& operator=(FlashWidget&&) = delete;
 };
 
-#endif
+#endif  // FLASH_WIDGET_HXX

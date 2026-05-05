@@ -112,4 +112,4 @@ class ToolTip
     ToolTip& operator=(ToolTip&&) = delete;
 };
 
-#endif
+#endif  // TOOL_TIP_HXX

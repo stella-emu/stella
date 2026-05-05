@@ -15,8 +15,8 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#ifndef CARTRIDGEE0_HXX
-#define CARTRIDGEE0_HXX
+#ifndef CARTRIDGE_E0_HXX
+#define CARTRIDGE_E0_HXX
 
 class System;
 
@@ -102,4 +102,4 @@ class CartridgeE0 : public CartridgeEnhanced
     CartridgeE0& operator=(CartridgeE0&&) = delete;
 };
 
-#endif
+#endif  // CARTRIDGE_E0_HXX

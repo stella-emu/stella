@@ -15,8 +15,8 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#ifndef ELF_LINKER
-#define ELF_LINKER
+#ifndef ELF_LINKER_HXX
+#define ELF_LINKER_HXX
 
 #include <optional>
 #include <unordered_map>
@@ -156,4 +156,4 @@ class ElfLinker {
     ElfLinker& operator=(ElfLinker&&) = delete;
 };
 
-#endif  // ELF_LINKER
+#endif  // ELF_LINKER_HXX

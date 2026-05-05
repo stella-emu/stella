@@ -133,4 +133,4 @@ class StringParser
     StringParser& operator=(StringParser&&) = delete;
 };
 
-#endif
+#endif  // STRING_PARSER_HXX

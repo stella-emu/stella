@@ -203,4 +203,4 @@ class StellaLIBRETRO
     bool phosphor_default{false};
 };
 
-#endif
+#endif  // STELLA_LIBRETRO_HXX

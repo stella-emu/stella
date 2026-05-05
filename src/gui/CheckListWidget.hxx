@@ -63,4 +63,4 @@ class CheckListWidget : public ListWidget
     CheckListWidget& operator=(CheckListWidget&&) = delete;
 };
 
-#endif
+#endif  // CHECK_LIST_WIDGET_HXX

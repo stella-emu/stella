@@ -114,6 +114,6 @@ class FSNodeZIP : public AbstractFSNode
     }
 };
 
-#endif
+#endif  // FS_NODE_ZIP_HXX
 
 #endif  // ZIP_SUPPORT

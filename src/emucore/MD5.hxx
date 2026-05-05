@@ -134,4 +134,4 @@ class MD5
     MD5& operator=(MD5&&) = delete;
 };
 
-#endif
+#endif  // MD5_HXX

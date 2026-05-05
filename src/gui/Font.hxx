@@ -82,4 +82,4 @@ class Font
 
 } // namespace GUI
 
-#endif
+#endif  // FONT_HXX

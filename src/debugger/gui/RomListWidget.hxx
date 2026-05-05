@@ -117,4 +117,4 @@ class RomListWidget : public EditableWidget
     RomListWidget& operator=(RomListWidget&&) = delete;
 };
 
-#endif
+#endif  // ROM_LIST_WIDGET_HXX

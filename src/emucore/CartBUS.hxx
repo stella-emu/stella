@@ -316,4 +316,4 @@ class CartridgeBUS : public CartridgeARM
     CartridgeBUS& operator=(CartridgeBUS&&) = delete;
 };
 
-#endif
+#endif  // CARTRIDGE_BUS_HXX

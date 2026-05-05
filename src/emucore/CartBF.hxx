@@ -15,8 +15,8 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#ifndef CARTRIDGEBF_HXX
-#define CARTRIDGEBF_HXX
+#ifndef CARTRIDGE_BF_HXX
+#define CARTRIDGE_BF_HXX
 
 class System;
 
@@ -86,4 +86,4 @@ class CartridgeBF : public CartridgeEnhanced
     CartridgeBF& operator=(CartridgeBF&&) = delete;
 };
 
-#endif
+#endif  // CARTRIDGE_BF_HXX

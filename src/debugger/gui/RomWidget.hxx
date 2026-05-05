@@ -73,4 +73,4 @@ class RomWidget : public Widget, public CommandSender
     RomWidget& operator=(RomWidget&&) = delete;
 };
 
-#endif
+#endif  // ROM_WIDGET_HXX

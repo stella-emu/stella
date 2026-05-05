@@ -165,4 +165,4 @@ class Settings
     Settings& operator=(Settings&&) = delete;
 };
 
-#endif
+#endif  // SETTINGS_HXX

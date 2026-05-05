@@ -15,8 +15,8 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#ifndef TIA_DELAY_QUEUE_ITERATOR
-#define TIA_DELAY_QUEUE_ITERATOR
+#ifndef DELAY_QUEUE_ITERATOR_HXX
+#define DELAY_QUEUE_ITERATOR_HXX
 
 #include "bspf.hxx"
 
@@ -45,4 +45,4 @@ class DelayQueueIterator
     DelayQueueIterator& operator=(DelayQueueIterator&&) = delete;
 };
 
-#endif  // TIA_DELAY_QUEUE_ITERATOR
+#endif  // DELAY_QUEUE_ITERATOR_HXX

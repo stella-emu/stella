@@ -15,8 +15,8 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#ifndef HIGHSCORE_DIALOG_HXX
-#define HIGHSCORE_DIALOG_HXX
+#ifndef HIGH_SCORES_DIALOG_HXX
+#define HIGH_SCORES_DIALOG_HXX
 
 class CommandSender;
 class DialogContainer;
@@ -122,4 +122,4 @@ class HighScoresDialog : public Dialog
     HighScoresDialog& operator=(HighScoresDialog&&) = delete;
 };
 
-#endif  // HIGHSCORE_DIALOG_HXX
+#endif  // HIGH_SCORES_DIALOG_HXX

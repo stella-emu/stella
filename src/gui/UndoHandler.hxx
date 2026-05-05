@@ -78,4 +78,4 @@ class UndoHandler
     UndoHandler& operator=(UndoHandler&&) = delete;
 };
 
-#endif
+#endif  // UNDO_HANDLER_HXX

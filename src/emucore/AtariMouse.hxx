@@ -15,8 +15,8 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#ifndef ATARIMOUSE_HXX
-#define ATARIMOUSE_HXX
+#ifndef ATARI_MOUSE_HXX
+#define ATARI_MOUSE_HXX
 
 #include "PointingDevice.hxx"
 
@@ -63,4 +63,4 @@ class AtariMouse : public PointingDevice
     AtariMouse& operator=(AtariMouse&&) = delete;
 };
 
-#endif  // ATARIMOUSE_HXX
+#endif  // ATARI_MOUSE_HXX

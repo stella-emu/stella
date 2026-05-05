@@ -180,4 +180,4 @@ class MediaFactory
     MediaFactory& operator=(MediaFactory&&) = delete;
 };
 
-#endif
+#endif  // MEDIA_FACTORY_HXX

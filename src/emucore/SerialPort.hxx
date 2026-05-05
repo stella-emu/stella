@@ -15,8 +15,8 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#ifndef SERIALPORT_HXX
-#define SERIALPORT_HXX
+#ifndef SERIAL_PORT_HXX
+#define SERIAL_PORT_HXX
 
 #include "bspf.hxx"
 
@@ -80,4 +80,4 @@ class SerialPort
     SerialPort& operator=(SerialPort&&) = delete;
 };
 
-#endif
+#endif  // SERIAL_PORT_HXX

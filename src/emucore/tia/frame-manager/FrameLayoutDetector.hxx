@@ -15,8 +15,8 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#ifndef TIA_FRAME_LAYOUT_DETECTOR
-#define TIA_FRAME_LAYOUT_DETECTOR
+#ifndef FRAME_LAYOUT_DETECTOR_HXX
+#define FRAME_LAYOUT_DETECTOR_HXX
 
 class M6532;
 class EventHandler;
@@ -143,4 +143,4 @@ class FrameLayoutDetector: public AbstractFrameManager
 
 };
 
-#endif  // TIA_FRAME_LAYOUT_DETECTOR
+#endif  // FRAME_LAYOUT_DETECTOR_HXX

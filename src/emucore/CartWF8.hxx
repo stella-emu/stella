@@ -15,8 +15,8 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#ifndef CARTWF8_HXX
-#define CARTWF8_HXX
+#ifndef CARTRIDGE_WF8_HXX
+#define CARTRIDGE_WF8_HXX
 
 #include "CartEnhanced.hxx"
 #ifdef DEBUGGER_SUPPORT
@@ -81,4 +81,4 @@ class CartridgeWF8 : public CartridgeEnhanced
     CartridgeWF8& operator=(CartridgeWF8&&) = delete;
 };
 
-#endif
+#endif  // CARTRIDGE_WF8_HXX

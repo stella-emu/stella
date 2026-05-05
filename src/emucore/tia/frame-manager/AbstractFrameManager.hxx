@@ -15,8 +15,8 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#ifndef TIA_ABSTRACT_FRAME_MANAGER
-#define TIA_ABSTRACT_FRAME_MANAGER
+#ifndef ABSTRACT_FRAME_MANAGER_HXX
+#define ABSTRACT_FRAME_MANAGER_HXX
 
 #include <functional>
 
@@ -329,4 +329,4 @@ class AbstractFrameManager : public Serializable
 
 };
 
-#endif  // TIA_ABSTRACT_FRAME_MANAGER
+#endif  // ABSTRACT_FRAME_MANAGER_HXX

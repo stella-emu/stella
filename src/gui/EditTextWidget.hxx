@@ -68,4 +68,4 @@ class EditTextWidget : public EditableWidget
     EditTextWidget& operator=(EditTextWidget&&) = delete;
 };
 
-#endif
+#endif  // EDIT_TEXT_WIDGET_HXX

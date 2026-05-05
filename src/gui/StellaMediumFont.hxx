@@ -4425,4 +4425,4 @@ static const FontDesc stellaMediumDesc = {
 
 } // End of namespace GUI
 
-#endif
+#endif  // STELLAMEDIUM_FONT_DATA_HXX

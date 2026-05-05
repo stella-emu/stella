@@ -128,4 +128,4 @@ class Joystick : public Controller
     Joystick& operator=(Joystick&&) = delete;
 };
 
-#endif
+#endif  // JOYSTICK_HXX

@@ -66,4 +66,4 @@ class ColorWidget : public Widget, public CommandSender
     ColorWidget& operator=(ColorWidget&&) = delete;
 };
 
-#endif
+#endif  // COLOR_WIDGET_HXX

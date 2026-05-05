@@ -15,8 +15,8 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#ifndef CARTRIDGEJANE_WIDGET_HXX
-#define CARTRIDGEJANE_WIDGET_HXX
+#ifndef CARTRIDGE_JANE_WIDGET_HXX
+#define CARTRIDGE_JANE_WIDGET_HXX
 
 class CartridgeJANE;
 
@@ -45,4 +45,4 @@ class CartridgeJANEWidget : public CartridgeEnhancedWidget
     CartridgeJANEWidget& operator=(CartridgeJANEWidget&&) = delete;
 };
 
-#endif
+#endif  // CARTRIDGE_JANE_WIDGET_HXX

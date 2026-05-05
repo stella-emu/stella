@@ -15,8 +15,8 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#ifndef CARTRIDGESB_HXX
-#define CARTRIDGESB_HXX
+#ifndef CARTRIDGE_SB_HXX
+#define CARTRIDGE_SB_HXX
 
 #include "bspf.hxx"
 #include "CartEnhanced.hxx"
@@ -116,4 +116,4 @@ class CartridgeSB : public CartridgeEnhanced
     CartridgeSB& operator=(CartridgeSB&&) = delete;
 };
 
-#endif
+#endif  // CARTRIDGE_SB_HXX

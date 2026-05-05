@@ -3433,4 +3433,4 @@ static const FontDesc consoleBDesc = {
 
 } // End of namespace GUI
 
-#endif
+#endif  // CONSOLEB_FONT_DATA_HXX

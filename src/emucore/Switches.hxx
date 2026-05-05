@@ -140,4 +140,4 @@ class Switches : public Serializable
     Switches& operator=(Switches&&) = delete;
 };
 
-#endif
+#endif  // SWITCHES_HXX

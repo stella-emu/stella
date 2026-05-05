@@ -15,8 +15,8 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#ifndef NULLDEVICE_HXX
-#define NULLDEVICE_HXX
+#ifndef NULL_DEVICE_HXX
+#define NULL_DEVICE_HXX
 
 class System;
 
@@ -99,4 +99,4 @@ class NullDevice : public Device
     NullDevice& operator=(NullDevice&&) = delete;
 };
 
-#endif
+#endif  // NULL_DEVICE_HXX

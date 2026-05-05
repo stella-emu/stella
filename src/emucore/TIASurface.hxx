@@ -15,8 +15,8 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#ifndef TIASURFACE_HXX
-#define TIASURFACE_HXX
+#ifndef TIA_SURFACE_HXX
+#define TIA_SURFACE_HXX
 
 class TIA;
 class Console;
@@ -279,4 +279,4 @@ class TIASurface
     TIASurface& operator=(TIASurface&&) = delete;
 };
 
-#endif
+#endif  // TIA_SURFACE_HXX

@@ -15,8 +15,8 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#ifndef FBSURFACE_HXX
-#define FBSURFACE_HXX
+#ifndef FB_SURFACE_HXX
+#define FB_SURFACE_HXX
 
 class FrameBuffer;
 class TIASurface;
@@ -419,4 +419,4 @@ class FBSurface
     FBSurface& operator=(FBSurface&&) = delete;
 };
 
-#endif
+#endif  // FB_SURFACE_HXX

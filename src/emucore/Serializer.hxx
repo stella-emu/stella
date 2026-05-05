@@ -336,4 +336,4 @@ class Serializer
     Serializer& operator=(Serializer&&) = delete;
 };
 
-#endif
+#endif  // SERIALIZER_HXX

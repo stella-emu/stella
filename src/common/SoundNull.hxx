@@ -124,4 +124,4 @@ class SoundNull : public Sound
     SoundNull& operator=(SoundNull&&) = delete;
 };
 
-#endif
+#endif  // SOUND_NULL_HXX

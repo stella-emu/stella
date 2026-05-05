@@ -15,8 +15,8 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#ifndef TIA_DELAY_QUEUE_ITERATOR_IMPL
-#define TIA_DELAY_QUEUE_ITERATOR_IMPL
+#ifndef DELAY_QUEUE_ITERATOR_IMPL_HXX
+#define DELAY_QUEUE_ITERATOR_IMPL_HXX
 
 #include "bspf.hxx"
 #include "DelayQueue.hxx"
@@ -129,4 +129,4 @@ uInt8 DelayQueueIteratorImpl<length, capacity>::currentIndex() const
   return (myDelayQueue.myIndex + myDelayCycle) % length;
 }
 
-#endif  // TIA_DELAY_QUEUE_ITERATOR_IMPL
+#endif  // DELAY_QUEUE_ITERATOR_IMPL_HXX

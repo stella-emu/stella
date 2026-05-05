@@ -124,4 +124,4 @@ class SaveKey : public Controller
     SaveKey& operator=(SaveKey&&) = delete;
 };
 
-#endif
+#endif  // SAVEKEY_HXX

@@ -15,8 +15,8 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#ifndef CARTRIDGETVBOY_WIDGET_HXX
-#define CARTRIDGETVBOY_WIDGET_HXX
+#ifndef CARTRIDGE_TVBOY_WIDGET_HXX
+#define CARTRIDGE_TVBOY_WIDGET_HXX
 
 class CartridgeTVBoy;
 class CheckboxWidget;
@@ -55,4 +55,4 @@ class CartridgeTVBoyWidget : public CartridgeEnhancedWidget
     CartridgeTVBoyWidget& operator=(CartridgeTVBoyWidget&&) = delete;
 };
 
-#endif
+#endif  // CARTRIDGE_TVBOY_WIDGET_HXX

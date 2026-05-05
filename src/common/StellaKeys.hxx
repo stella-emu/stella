@@ -470,4 +470,4 @@ namespace StellaKeyName
   }
 }  // namespace StellaKeyName
 
-#endif /* StellaKeys */
+#endif  // STELLA_KEYS_HXX

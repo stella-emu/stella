@@ -15,8 +15,8 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#ifndef CARTRIDGE0840_HXX
-#define CARTRIDGE0840_HXX
+#ifndef CARTRIDGE_0840_HXX
+#define CARTRIDGE_0840_HXX
 
 #include "bspf.hxx"
 #include "CartEnhanced.hxx"
@@ -113,4 +113,4 @@ class Cartridge0840 : public CartridgeEnhanced
     Cartridge0840& operator=(Cartridge0840&&) = delete;
 };
 
-#endif
+#endif  // CARTRIDGE_0840_HXX

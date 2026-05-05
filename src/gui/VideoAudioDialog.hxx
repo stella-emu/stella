@@ -15,8 +15,8 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#ifndef VIDEOAUDIO_DIALOG_HXX
-#define VIDEOAUDIO_DIALOG_HXX
+#ifndef VIDEO_AUDIO_DIALOG_HXX
+#define VIDEO_AUDIO_DIALOG_HXX
 
 class CommandSender;
 class CheckboxWidget;
@@ -200,4 +200,4 @@ class VideoAudioDialog : public Dialog
     VideoAudioDialog& operator=(VideoAudioDialog&&) = delete;
 };
 
-#endif  // VIDEOAUDIO_DIALOG_HXX
+#endif  // VIDEO_AUDIO_DIALOG_HXX

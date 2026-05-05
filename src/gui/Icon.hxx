@@ -60,4 +60,4 @@ class Icon
 
 } // namespace GUI
 
-#endif
+#endif  // ICON_HXX

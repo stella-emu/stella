@@ -95,4 +95,4 @@ class RiotWidget : public Widget, public CommandSender
     RiotWidget& operator=(RiotWidget&&) = delete;
 };
 
-#endif
+#endif  // RIOT_WIDGET_HXX

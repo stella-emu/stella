@@ -52,4 +52,4 @@ class GenesisWidget : public ControllerWidget
     GenesisWidget& operator=(GenesisWidget&&) = delete;
 };
 
-#endif
+#endif  // GENESIS_WIDGET_HXX

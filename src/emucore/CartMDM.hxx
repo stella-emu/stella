@@ -15,8 +15,8 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#ifndef CARTRIDGEMDM_HXX
-#define CARTRIDGEMDM_HXX
+#ifndef CARTRIDGE_MDM_HXX
+#define CARTRIDGE_MDM_HXX
 
 #include "bspf.hxx"
 #include "CartEnhanced.hxx"
@@ -163,4 +163,4 @@ class CartridgeMDM : public CartridgeEnhanced
     CartridgeMDM& operator=(CartridgeMDM&&) = delete;
 };
 
-#endif
+#endif  // CARTRIDGE_MDM_HXX

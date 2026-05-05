@@ -67,4 +67,4 @@ class SnapshotDialog : public Dialog
     SnapshotDialog& operator=(SnapshotDialog&&) = delete;
 };
 
-#endif
+#endif  // SNAPSHOT_DIALOG_HXX

@@ -306,4 +306,4 @@ class FBBackendSDL : public FBBackend
     FBBackendSDL& operator=(FBBackendSDL&&) = delete;
 };
 
-#endif
+#endif  // FB_BACKEND_SDL_HXX

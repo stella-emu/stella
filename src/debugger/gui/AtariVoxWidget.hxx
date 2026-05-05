@@ -51,4 +51,4 @@ class AtariVoxWidget : public FlashWidget
     AtariVoxWidget& operator=(AtariVoxWidget&&) = delete;
 };
 
-#endif
+#endif  // ATARIVOX_WIDGET_HXX

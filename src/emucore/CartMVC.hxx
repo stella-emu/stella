@@ -15,8 +15,8 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#ifndef CARTRIDGEMVC_HXX
-#define CARTRIDGEMVC_HXX
+#ifndef CARTRIDGE_MVC_HXX
+#define CARTRIDGE_MVC_HXX
 
 class System;
 class MovieCart;
@@ -149,4 +149,4 @@ class CartridgeMVC : public Cartridge
     CartridgeMVC& operator=(CartridgeMVC&&) = delete;
 };
 
-#endif
+#endif  // CARTRIDGE_MVC_HXX

@@ -15,8 +15,8 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#ifndef HIGHSCORES_MENU_HXX
-#define HIGHSCORES_MENU_HXX
+#ifndef HIGH_SCORES_MENU_HXX
+#define HIGH_SCORES_MENU_HXX
 
 class OSystem;
 class HighScoresDialog;
@@ -50,4 +50,4 @@ class HighScoresMenu : public DialogContainer
     HighScoresMenu& operator=(const HighScoresMenu&) = delete;
     HighScoresMenu& operator=(HighScoresMenu&&) = delete;
 };
-#endif
+#endif  // HIGH_SCORES_MENU_HXX

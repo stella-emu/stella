@@ -15,8 +15,8 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#ifndef WHATSNEW_DIALOG_HXX
-#define WHATSNEW_DIALOG_HXX
+#ifndef WHATS_NEW_DIALOG_HXX
+#define WHATS_NEW_DIALOG_HXX
 
 #include "Dialog.hxx"
 
@@ -38,4 +38,4 @@ class WhatsNewDialog : public Dialog
     WhatsNewDialog& operator=(WhatsNewDialog&&) = delete;
 };
 
-#endif
+#endif  // WHATS_NEW_DIALOG_HXX

@@ -265,4 +265,4 @@ class Properties
     }};
 };
 
-#endif
+#endif  // PROPERTIES_HXX

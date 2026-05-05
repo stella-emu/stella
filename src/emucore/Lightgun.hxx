@@ -83,4 +83,4 @@ class Lightgun : public Controller
     Lightgun& operator=(Lightgun&&) = delete;
 };
 
-#endif
+#endif  // LIGHTGUN_HXX

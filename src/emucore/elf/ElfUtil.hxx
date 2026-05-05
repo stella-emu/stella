@@ -15,8 +15,8 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#ifndef ELF_UTIL
-#define ELF_UTIL
+#ifndef ELF_UTIL_HXX
+#define ELF_UTIL_HXX
 
 #include "bspf.hxx"
 
@@ -26,4 +26,4 @@ namespace elfUtil {
   uInt32 encode_B_BL(Int32 offset, bool link);
 }  // namespace elfUtil
 
-#endif  // ELF_UTIL
+#endif  // ELF_UTIL_HXX

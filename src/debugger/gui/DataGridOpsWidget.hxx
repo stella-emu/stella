@@ -59,4 +59,4 @@ class DataGridOpsWidget : public Widget, public CommandSender
     DataGridOpsWidget& operator=(DataGridOpsWidget&&) = delete;
 };
 
-#endif
+#endif  // DATA_GRID_OPS_WIDGET_HXX

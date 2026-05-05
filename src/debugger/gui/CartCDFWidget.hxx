@@ -15,8 +15,8 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#ifndef CARTRIDGECDF_WIDGET_HXX
-#define CARTRIDGECDF_WIDGET_HXX
+#ifndef CARTRIDGE_CDF_WIDGET_HXX
+#define CARTRIDGE_CDF_WIDGET_HXX
 
 class PopUpWidget;
 class CheckboxWidget;
@@ -106,4 +106,4 @@ class CartridgeCDFWidget : public CartridgeARMWidget
     CartridgeCDFWidget& operator=(CartridgeCDFWidget&&) = delete;
 };
 
-#endif
+#endif  // CARTRIDGE_CDF_WIDGET_HXX

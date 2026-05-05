@@ -3701,4 +3701,4 @@ static constexpr BSPF::array2D<const char*, DEF_PROPS_SIZE, 30> DefProps = {{
 
 // NOLINTEND
 
-#endif
+#endif  // DEF_PROPS_HXX

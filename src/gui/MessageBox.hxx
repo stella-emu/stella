@@ -80,4 +80,4 @@ class MessageBox : public Dialog, public CommandSender
 
 } // namespace GUI
 
-#endif
+#endif  // MESSAGE_BOX_HXX

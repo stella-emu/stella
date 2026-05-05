@@ -15,8 +15,8 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#ifndef CARTRIDGEAR_WIDGET_HXX
-#define CARTRIDGEAR_WIDGET_HXX
+#ifndef CARTRIDGE_AR_WIDGET_HXX
+#define CARTRIDGE_AR_WIDGET_HXX
 
 class CartridgeAR;
 class PopUpWidget;
@@ -53,4 +53,4 @@ class CartridgeARWidget : public CartDebugWidget
     CartridgeARWidget& operator=(CartridgeARWidget&&) = delete;
 };
 
-#endif
+#endif  // CARTRIDGE_AR_WIDGET_HXX

@@ -59,4 +59,4 @@ class RiotRamWidget : public RamWidget
     RiotRamWidget& operator=(RiotRamWidget&&) = delete;
 };
 
-#endif
+#endif  // RIOT_RAM_WIDGET_HXX

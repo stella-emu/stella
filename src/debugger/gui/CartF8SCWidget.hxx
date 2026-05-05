@@ -15,8 +15,8 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#ifndef CARTRIDGEF8SC_WIDGET_HXX
-#define CARTRIDGEF8SC_WIDGET_HXX
+#ifndef CARTRIDGE_F8SC_WIDGET_HXX
+#define CARTRIDGE_F8SC_WIDGET_HXX
 
 class CartridgeF8SC;
 
@@ -44,4 +44,4 @@ class CartridgeF8SCWidget : public CartridgeEnhancedWidget
     CartridgeF8SCWidget& operator=(CartridgeF8SCWidget&&) = delete;
 };
 
-#endif
+#endif  // CARTRIDGE_F8SC_WIDGET_HXX

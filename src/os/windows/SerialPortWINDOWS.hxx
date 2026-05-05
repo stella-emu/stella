@@ -15,8 +15,8 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#ifndef SERIALPORT_WINDOWS_HXX
-#define SERIALPORT_WINDOWS_HXX
+#ifndef SERIAL_PORT_WINDOWS_HXX
+#define SERIAL_PORT_WINDOWS_HXX
 
 #include <concepts>
 
@@ -90,4 +90,4 @@ class SerialPortWINDOWS : public SerialPort
     SerialPortWINDOWS& operator=(SerialPortWINDOWS&&) = delete;
 };
 
-#endif
+#endif  // SERIAL_PORT_WINDOWS_HXX

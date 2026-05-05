@@ -60,4 +60,4 @@ class StringListWidget : public ListWidget
     StringListWidget& operator=(StringListWidget&&) = delete;
 };
 
-#endif
+#endif  // STRING_LIST_WIDGET_HXX

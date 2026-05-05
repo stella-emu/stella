@@ -17,8 +17,8 @@
 
 #ifdef IMAGE_SUPPORT
 
-#ifndef PNGLIBRARY_HXX
-#define PNGLIBRARY_HXX
+#ifndef PNG_LIBRARY_HXX
+#define PNG_LIBRARY_HXX
 
 #include <fstream>
 #include <bit>
@@ -161,6 +161,6 @@ class PNGLibrary
     PNGLibrary& operator=(PNGLibrary&&) = delete;
 };
 
-#endif
+#endif  // PNG_LIBRARY_HXX
 
 #endif  // IMAGE_SUPPORT

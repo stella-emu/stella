@@ -100,4 +100,4 @@ class FSNodePOSIX : public AbstractFSNode
     mutable std::optional<size_t> _size{std::nullopt};
 };
 
-#endif
+#endif  // FS_NODE_POSIX_HXX

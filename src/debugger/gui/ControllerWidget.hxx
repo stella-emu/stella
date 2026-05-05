@@ -68,4 +68,4 @@ class ControllerWidget : public Widget, public CommandSender, public ControllerL
     ControllerWidget& operator=(ControllerWidget&&) = delete;
 };
 
-#endif
+#endif  // CONTROLLER_WIDGET_HXX

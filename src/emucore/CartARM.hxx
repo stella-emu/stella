@@ -129,4 +129,4 @@ class CartridgeARM : public Cartridge
     CartridgeARM& operator=(CartridgeARM&&) = delete;
 };
 
-#endif
+#endif  // CARTRIDGE_ARM_HXX

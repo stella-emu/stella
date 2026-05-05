@@ -91,4 +91,4 @@ class Keyboard : public Controller
     Keyboard& operator=(Keyboard&&) = delete;
 };
 
-#endif
+#endif  // KEYBOARD_HXX

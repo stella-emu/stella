@@ -15,8 +15,8 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#ifndef CARTRIDGE4A50_HXX
-#define CARTRIDGE4A50_HXX
+#ifndef CARTRIDGE_4A50_HXX
+#define CARTRIDGE_4A50_HXX
 
 class System;
 
@@ -244,4 +244,4 @@ class Cartridge4A50 : public Cartridge
     Cartridge4A50& operator=(Cartridge4A50&&) = delete;
 };
 
-#endif
+#endif  // CARTRIDGE_4A50_HXX

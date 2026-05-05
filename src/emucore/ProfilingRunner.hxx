@@ -15,8 +15,8 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#ifndef PROFILING_RUNNER
-#define PROFILING_RUNNER
+#ifndef PROFILING_RUNNER_HXX
+#define PROFILING_RUNNER_HXX
 
 #include "bspf.hxx"
 #include "Control.hxx"
@@ -62,4 +62,4 @@ class ProfilingRunner {
     Properties myProps;
 };
 
-#endif  // PROFILING_RUNNER
+#endif  // PROFILING_RUNNER_HXX

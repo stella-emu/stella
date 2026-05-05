@@ -7192,4 +7192,4 @@ static const FontDesc stella16x32tDesc = {
 
 } // End of namespace GUI
 
-#endif
+#endif  // STELLA16X32T_FONT_DATA_HXX

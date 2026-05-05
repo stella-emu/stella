@@ -140,4 +140,4 @@ class Sound
     Sound& operator=(Sound&&) = delete;
 };
 
-#endif
+#endif  // SOUND_HXX

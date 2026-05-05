@@ -68,4 +68,4 @@ class HelpDialog : public Dialog
     HelpDialog& operator=(HelpDialog&&) = delete;
 };
 
-#endif
+#endif  // HELP_DIALOG_HXX

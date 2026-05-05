@@ -67,4 +67,4 @@ class RomListSettings : public Dialog, public CommandSender
     RomListSettings& operator=(RomListSettings&&) = delete;
 };
 
-#endif
+#endif  // ROM_LIST_SETTINGS_HXX

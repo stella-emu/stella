@@ -15,8 +15,8 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#ifndef PLUSROM_HXX
-#define PLUSROM_HXX
+#ifndef PLUS_ROM_HXX
+#define PLUS_ROM_HXX
 
 #include <deque>
 
@@ -206,4 +206,4 @@ class PlusROM : public Serializable
     PlusROM& operator=(PlusROM&&) = delete;
 };
 
-#endif
+#endif  // PLUS_ROM_HXX

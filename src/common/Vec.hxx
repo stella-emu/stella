@@ -59,4 +59,4 @@ void removeAt(vector<T>& dst, size_t idx)
 
 } // namespace Vec
 
-#endif
+#endif  // VECTOR_OPS_HXX

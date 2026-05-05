@@ -15,8 +15,8 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#ifndef FSNODE_FACTORY_HXX
-#define FSNODE_FACTORY_HXX
+#ifndef FS_NODE_FACTORY_HXX
+#define FS_NODE_FACTORY_HXX
 
 class AbstractFSNode;
 
@@ -73,4 +73,4 @@ class FSNodeFactory
     }
 };
 
-#endif
+#endif  // FS_NODE_FACTORY_HXX

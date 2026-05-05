@@ -15,8 +15,8 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#ifndef TIA_DELAY_QUEUE
-#define TIA_DELAY_QUEUE
+#ifndef DELAY_QUEUE_HXX
+#define DELAY_QUEUE_HXX
 
 #include "Serializable.hxx"
 #include "bspf.hxx"
@@ -165,4 +165,4 @@ bool DelayQueue<length, capacity>::load(Serializer& in)
   return true;
 }
 
-#endif  // TIA_DELAY_QUEUE
+#endif  // DELAY_QUEUE_HXX

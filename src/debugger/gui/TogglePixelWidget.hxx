@@ -57,4 +57,4 @@ class TogglePixelWidget : public ToggleWidget
     TogglePixelWidget& operator=(TogglePixelWidget&&) = delete;
 };
 
-#endif
+#endif  // TOGGLE_PIXEL_WIDGET_HXX

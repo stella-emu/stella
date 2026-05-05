@@ -71,4 +71,4 @@ class ControllerLowLevel
     ControllerLowLevel& operator=(ControllerLowLevel&&) = delete;
 };
 
-#endif
+#endif  // CONTROLLER_LOW_LEVEL_HXX

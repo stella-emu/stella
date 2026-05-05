@@ -18,8 +18,8 @@
 //   Copyright (C) 2002-2004 The ScummVM project
 //============================================================================
 
-#ifndef RADIOBUTTON_WIDGET_HXX
-#define RADIOBUTTON_WIDGET_HXX
+#ifndef RADIO_BUTTON_WIDGET_HXX
+#define RADIO_BUTTON_WIDGET_HXX
 
 #include "bspf.hxx"
 #include "Widget.hxx"
@@ -83,4 +83,4 @@ class RadioButtonGroup
     RadioButtonGroup& operator=(RadioButtonGroup&&) = delete;
 };
 
-#endif
+#endif  // RADIO_BUTTON_WIDGET_HXX

@@ -15,8 +15,8 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#ifndef CARTRIDGEDFSC_HXX
-#define CARTRIDGEDFSC_HXX
+#ifndef CARTRIDGE_DFSC_HXX
+#define CARTRIDGE_DFSC_HXX
 
 class System;
 
@@ -84,4 +84,4 @@ private:
     CartridgeDFSC& operator=(CartridgeDFSC&&) = delete;
 };
 
-#endif
+#endif  // CARTRIDGE_DFSC_HXX

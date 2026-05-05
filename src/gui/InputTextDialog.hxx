@@ -87,4 +87,4 @@ class InputTextDialog : public Dialog, public CommandSender
     InputTextDialog& operator=(InputTextDialog&&) = delete;
 };
 
-#endif
+#endif  // INPUT_TEXT_DIALOG_HXX

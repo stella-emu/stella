@@ -15,8 +15,8 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#ifndef THREADING_DEBUGGER_HXX
-#define THREADING_DEBUGGER_HXX
+#ifndef THREAD_DEBUGGING_HELPER_HXX
+#define THREAD_DEBUGGING_HELPER_HXX
 
 #include <thread>
 
@@ -63,4 +63,4 @@ class ThreadDebuggingHelper {
     ThreadDebuggingHelper& operator=(ThreadDebuggingHelper&&) = delete;
 };
 
-#endif  // THREADING_DEBUGGER_HXX
+#endif  // THREAD_DEBUGGING_HELPER_HXX

@@ -145,4 +145,4 @@ class BrowserDialog : public Dialog
     BrowserDialog& operator=(BrowserDialog&&) = delete;
 };
 
-#endif
+#endif  // BROWSER_DIALOG_HXX

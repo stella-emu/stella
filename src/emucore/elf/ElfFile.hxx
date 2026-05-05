@@ -15,8 +15,8 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#ifndef ELF_FILE
-#define ELF_FILE
+#ifndef ELF_FILE_HXX
+#define ELF_FILE_HXX
 
 #include <optional>
 
@@ -113,4 +113,4 @@ class ElfFile {
     ElfFile& operator=(ElfFile&&) = delete;
 };
 
-#endif  // ELF_FILE
+#endif  // ELF_FILE_HXX

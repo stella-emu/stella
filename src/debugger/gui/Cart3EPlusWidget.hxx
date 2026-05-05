@@ -15,8 +15,8 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#ifndef CARTRIDGE3EPLUS_WIDGET_HXX
-#define CARTRIDGE3EPLUS_WIDGET_HXX
+#ifndef CARTRIDGE_3EPLUS_WIDGET_HXX
+#define CARTRIDGE_3EPLUS_WIDGET_HXX
 
 class Cartridge3EPlus;
 class ButtonWidget;
@@ -67,4 +67,4 @@ class Cartridge3EPlusWidget : public CartridgeEnhancedWidget
     Cartridge3EPlusWidget& operator=(Cartridge3EPlusWidget&&) = delete;
 };
 
-#endif
+#endif  // CARTRIDGE_3EPLUS_WIDGET_HXX

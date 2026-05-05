@@ -15,8 +15,8 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#ifndef BUS_TRANSACTION_QUEUE
-#define BUS_TRANSACTION_QUEUE
+#ifndef BUS_TRANSACTION_QUEUE_HXX
+#define BUS_TRANSACTION_QUEUE_HXX
 
 #include "Serializable.hxx"
 #include "bspf.hxx"
@@ -88,4 +88,4 @@ class BusTransactionQueue: public Serializable {
     BusTransactionQueue& operator=(BusTransactionQueue&&) = delete;
 };
 
-#endif  // BUS_TRANSACTION_QUEUE
+#endif  // BUS_TRANSACTION_QUEUE_HXX

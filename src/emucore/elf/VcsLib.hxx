@@ -15,8 +15,8 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#ifndef VCSLIB_H
-#define VCSLIB_H
+#ifndef VCSLIB_HXX
+#define VCSLIB_HXX
 
 #include "bspf.hxx"
 #include "Random.hxx"
@@ -91,4 +91,4 @@ class VcsLib: public CortexM0::BusTransactionDelegate, public Serializable {
     const VcsLib& operator=(VcsLib&&) = delete;
 };
 
-#endif  // VCSLIB_H
+#endif  // VCSLIB_HXX

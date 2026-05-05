@@ -15,8 +15,8 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#ifndef TIA_BACKGROUND
-#define TIA_BACKGROUND
+#ifndef BACKGROUND_HXX
+#define BACKGROUND_HXX
 
 class TIA;
 
@@ -65,4 +65,4 @@ class Background : public Serializable
     Background& operator=(Background&&) = delete;
 };
 
-#endif  // TIA_BACKGROUND
+#endif  // BACKGROUND_HXX

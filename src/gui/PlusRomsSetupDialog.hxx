@@ -15,8 +15,8 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#ifndef PLUSROMS_SETUP_DIALOG_HXX
-#define PLUSROMS_SETUP_DIALOG_HXX
+#ifndef PLUS_ROMS_SETUP_DIALOG_HXX
+#define PLUS_ROMS_SETUP_DIALOG_HXX
 
 #include "InputTextDialog.hxx"
 
@@ -46,4 +46,4 @@ class PlusRomsSetupDialog: public InputTextDialog
     PlusRomsSetupDialog& operator=(PlusRomsSetupDialog&&) = delete;
   };
 
-#endif
+#endif  // PLUS_ROMS_SETUP_DIALOG_HXX

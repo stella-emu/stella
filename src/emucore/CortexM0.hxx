@@ -20,8 +20,8 @@
 // Code is public domain and used with the author's consent
 //============================================================================
 
-#ifndef CORTEX_M0
-#define CORTEX_M0
+#ifndef CORTEX_M0_HXX
+#define CORTEX_M0_HXX
 
 #include <variant>
 
@@ -239,4 +239,4 @@ class CortexM0: public Serializable
     CortexM0& operator=(CortexM0&&) = delete;
 };
 
-#endif  // CORTEX_M0
+#endif  // CORTEX_M0_HXX

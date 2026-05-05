@@ -95,4 +95,4 @@ class CartRamWidget : public Widget, public CommandSender
     InternalRamWidget* myRam{nullptr};
 };
 
-#endif
+#endif  // CART_RAM_WIDGET_HXX

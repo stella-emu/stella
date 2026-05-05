@@ -184,4 +184,4 @@ class Cartridge3EPlus: public Cartridge3E
     Cartridge3EPlus& operator=(Cartridge3EPlus&&) = delete;
 };
 
-#endif
+#endif  // CARTRIDGE_3EPLUS_HXX

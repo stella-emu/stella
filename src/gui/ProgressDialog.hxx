@@ -61,4 +61,4 @@ class ProgressDialog : public Dialog
     ProgressDialog& operator=(ProgressDialog&&) = delete;
 };
 
-#endif
+#endif  // PROGRESS_DIALOG_HXX

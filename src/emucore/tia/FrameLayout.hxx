@@ -15,8 +15,8 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#ifndef FRAME_LAYOUT
-#define FRAME_LAYOUT
+#ifndef FRAME_LAYOUT_HXX
+#define FRAME_LAYOUT_HXX
 
 enum class FrameLayout: uInt8 {
   ntsc,   // ROM display has NTSC timings (~60Hz, ~262 scanlines, etc)
@@ -25,4 +25,4 @@ enum class FrameLayout: uInt8 {
   ntsc50  // ROM display has PAL timings (~50Hz, ~312 scanlines, etc), but uses NTSC colors
 };
 
-#endif  // FRAME_LAYOUT
+#endif  // FRAME_LAYOUT_HXX

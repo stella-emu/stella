@@ -15,8 +15,8 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#ifndef TIA_PLAYER
-#define TIA_PLAYER
+#ifndef PLAYER_HXX
+#define PLAYER_HXX
 
 class TIA;
 
@@ -229,4 +229,4 @@ void Player::tick()
   if (++myCounter >= TIAConstants::H_PIXEL) myCounter = 0;
 }
 
-#endif  // TIA_PLAYER
+#endif  // PLAYER_HXX

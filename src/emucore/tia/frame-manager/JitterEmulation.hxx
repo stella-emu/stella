@@ -15,8 +15,8 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#ifndef TIA_JITTER_EMULATION
-#define TIA_JITTER_EMULATION
+#ifndef JITTER_EMULATION_HXX
+#define JITTER_EMULATION_HXX
 
 //#define VSYNC_LINE_JITTER // makes e.g. Alien jitter, but not on my TV (TJ)
 
@@ -113,4 +113,4 @@ class JitterEmulation : public Serializable
     JitterEmulation& operator=(JitterEmulation&&) = delete;
 };
 
-#endif  // TIA_JITTER_EMULATION
+#endif  // JITTER_EMULATION_HXX

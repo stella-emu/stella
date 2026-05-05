@@ -4820,4 +4820,4 @@ static const FontDesc stellaLargeDesc = {
 
 } // End of namespace GUI
 
-#endif
+#endif  // STELLALARGE_FONT_DATA_HXX

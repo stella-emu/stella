@@ -51,4 +51,4 @@ class SaveKeyWidget : public FlashWidget
     SaveKeyWidget& operator=(SaveKeyWidget&&) = delete;
 };
 
-#endif
+#endif  // SAVEKEY_WIDGET_HXX

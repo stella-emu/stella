@@ -15,8 +15,8 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#ifndef CARTRIDGEWD_HXX
-#define CARTRIDGEWD_HXX
+#ifndef CARTRIDGE_WD_HXX
+#define CARTRIDGE_WD_HXX
 
 class System;
 
@@ -209,4 +209,4 @@ class CartridgeWD : public CartridgeEnhanced
     CartridgeWD& operator=(CartridgeWD&&) = delete;
 };
 
-#endif
+#endif  // CARTRIDGE_WD_HXX

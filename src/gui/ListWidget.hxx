@@ -116,4 +116,4 @@ class ListWidget : public EditableWidget
     ListWidget& operator=(ListWidget&&) = delete;
 };
 
-#endif
+#endif  // LIST_WIDGET_HXX

@@ -87,4 +87,4 @@ class CpuWidget : public Widget, public CommandSender
     CpuWidget& operator=(CpuWidget&&) = delete;
 };
 
-#endif
+#endif  // CPU_WIDGET_HXX

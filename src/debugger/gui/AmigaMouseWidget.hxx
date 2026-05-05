@@ -15,8 +15,8 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#ifndef AMIGAMOUSE_WIDGET_HXX
-#define AMIGAMOUSE_WIDGET_HXX
+#ifndef AMIGA_MOUSE_WIDGET_HXX
+#define AMIGA_MOUSE_WIDGET_HXX
 
 class Controller;
 
@@ -48,4 +48,4 @@ class AmigaMouseWidget : public PointingDeviceWidget
     AmigaMouseWidget& operator=(AmigaMouseWidget&&) = delete;
 };
 
-#endif
+#endif  // AMIGA_MOUSE_WIDGET_HXX

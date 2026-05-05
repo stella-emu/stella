@@ -15,8 +15,8 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#ifndef CARTRIDGE4A50_WIDGET_HXX
-#define CARTRIDGE4A50_WIDGET_HXX
+#ifndef CARTRIDGE_4A50_WIDGET_HXX
+#define CARTRIDGE_4A50_WIDGET_HXX
 
 class Cartridge4A50;
 class PopUpWidget;
@@ -62,4 +62,4 @@ class Cartridge4A50Widget : public CartDebugWidget
     Cartridge4A50Widget& operator=(Cartridge4A50Widget&&) = delete;
 };
 
-#endif
+#endif  // CARTRIDGE_4A50_WIDGET_HXX

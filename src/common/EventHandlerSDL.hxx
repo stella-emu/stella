@@ -15,8 +15,8 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#ifndef EVENTHANDLER_SDL_HXX
-#define EVENTHANDLER_SDL_HXX
+#ifndef EVENT_HANDLER_SDL_HXX
+#define EVENT_HANDLER_SDL_HXX
 
 #include "SDL_lib.hxx"
 #include "EventHandler.hxx"
@@ -84,4 +84,4 @@ class EventHandlerSDL : public EventHandler
     EventHandlerSDL& operator=(EventHandlerSDL&&) = delete;
 };
 
-#endif
+#endif  // EVENT_HANDLER_SDL_HXX

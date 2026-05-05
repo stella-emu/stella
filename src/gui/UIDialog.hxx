@@ -93,4 +93,4 @@ class UIDialog : public Dialog, public CommandSender
     UIDialog& operator=(UIDialog&&) = delete;
 };
 
-#endif
+#endif  // UI_DIALOG_HXX

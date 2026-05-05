@@ -63,4 +63,4 @@ class TimeMachine : public DialogContainer
     TimeMachine& operator=(TimeMachine&&) = delete;
 };
 
-#endif
+#endif  // TIME_MACHINE_HXX

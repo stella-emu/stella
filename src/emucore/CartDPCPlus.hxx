@@ -318,4 +318,4 @@ class CartridgeDPCPlus : public CartridgeARM
     CartridgeDPCPlus& operator=(CartridgeDPCPlus&&) = delete;
 };
 
-#endif
+#endif  // CARTRIDGE_DPC_PLUS_HXX

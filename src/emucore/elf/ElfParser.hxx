@@ -15,8 +15,8 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#ifndef ELF_PARSER
-#define ELF_PARSER
+#ifndef ELF_PARSER_HXX
+#define ELF_PARSER_HXX
 
 #include <unordered_map>
 #include <optional>
@@ -103,4 +103,4 @@ std::ostream& operator<<(std::ostream& os, const ElfParser::Section& section);
 std::ostream& operator<<(std::ostream& os, const ElfParser::Symbol& symbol);
 std::ostream& operator<<(std::ostream& os, const ElfParser::Relocation& relocation);
 
-#endif  // ELF_PARSER
+#endif  // ELF_PARSER_HXX

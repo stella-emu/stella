@@ -206,4 +206,4 @@ class FBBackend
     FBBackend& operator=(FBBackend&&) = delete;
 };
 
-#endif
+#endif  // FB_BACKEND_HXX

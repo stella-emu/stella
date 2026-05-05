@@ -15,8 +15,8 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#ifndef CARTRIDGETVBOY_HXX
-#define CARTRIDGETVBOY_HXX
+#ifndef CARTRIDGE_TVBOY_HXX
+#define CARTRIDGE_TVBOY_HXX
 
 #include "bspf.hxx"
 #include "CartEnhanced.hxx"
@@ -114,4 +114,4 @@ class CartridgeTVBoy : public CartridgeEnhanced
     CartridgeTVBoy& operator=(CartridgeTVBoy&&) = delete;
 };
 
-#endif
+#endif  // CARTRIDGE_TVBOY_HXX

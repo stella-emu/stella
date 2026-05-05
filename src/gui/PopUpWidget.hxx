@@ -108,4 +108,4 @@ class PopUpWidget : public EditableWidget
     PopUpWidget& operator=(PopUpWidget&&) = delete;
 };
 
-#endif
+#endif  // POPUP_WIDGET_HXX

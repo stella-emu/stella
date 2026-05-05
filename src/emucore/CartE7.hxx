@@ -289,4 +289,4 @@ class CartridgeE7 : public Cartridge
     CartridgeE7& operator=(CartridgeE7&&) = delete;
 };
 
-#endif
+#endif  // CARTRIDGE_E7_HXX

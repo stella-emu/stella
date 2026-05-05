@@ -15,8 +15,8 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#ifndef TIA_ANALOG_READOUT
-#define TIA_ANALOG_READOUT
+#ifndef ANALOG_READOUT_HXX
+#define ANALOG_READOUT_HXX
 
 #include "bspf.hxx"
 #include "Serializable.hxx"
@@ -112,4 +112,4 @@ class AnalogReadout : public Serializable
 bool operator==(const AnalogReadout::Connection& c1, const AnalogReadout::Connection& c2);
 bool operator!=(const AnalogReadout::Connection& c1, const AnalogReadout::Connection& c2);
 
-#endif  // TIA_ANALOG_READOUT
+#endif  // ANALOG_READOUT_HXX

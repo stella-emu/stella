@@ -190,4 +190,4 @@ class StateManager
     StateManager& operator=(StateManager&&) = delete;
 };
 
-#endif
+#endif  // STATE_MANAGER_HXX

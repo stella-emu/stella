@@ -60,4 +60,4 @@ class FSNodeLIBRETRO : public AbstractFSNode
     bool _isValid{true};
 };
 
-#endif
+#endif  // FS_NODE_LIBRETRO_HXX

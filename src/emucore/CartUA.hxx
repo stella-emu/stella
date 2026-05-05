@@ -15,8 +15,8 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#ifndef CARTRIDGEUA_HXX
-#define CARTRIDGEUA_HXX
+#ifndef CARTRIDGE_UA_HXX
+#define CARTRIDGE_UA_HXX
 
 #include "bspf.hxx"
 #include "CartEnhanced.hxx"
@@ -119,4 +119,4 @@ class CartridgeUA : public CartridgeEnhanced
     CartridgeUA& operator=(CartridgeUA&&) = delete;
 };
 
-#endif
+#endif  // CARTRIDGE_UA_HXX

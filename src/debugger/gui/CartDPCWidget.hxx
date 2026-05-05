@@ -15,8 +15,8 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#ifndef CARTRIDGEDPC_WIDGET_HXX
-#define CARTRIDGEDPC_WIDGET_HXX
+#ifndef CARTRIDGE_DPC_WIDGET_HXX
+#define CARTRIDGE_DPC_WIDGET_HXX
 
 class CartridgeDPC;
 class PopUpWidget;
@@ -85,4 +85,4 @@ class CartridgeDPCWidget : public CartDebugWidget
     CartridgeDPCWidget& operator=(CartridgeDPCWidget&&) = delete;
 };
 
-#endif
+#endif  // CARTRIDGE_DPC_WIDGET_HXX

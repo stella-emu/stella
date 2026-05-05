@@ -15,8 +15,8 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#ifndef MINDLINK_HXX
-#define MINDLINK_HXX
+#ifndef MIND_LINK_HXX
+#define MIND_LINK_HXX
 
 #include "bspf.hxx"
 #include "Control.hxx"
@@ -133,4 +133,4 @@ class MindLink : public Controller
     MindLink& operator=(MindLink&&) = delete;
 };
 
-#endif
+#endif  // MIND_LINK_HXX

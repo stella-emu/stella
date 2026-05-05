@@ -15,8 +15,8 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#ifndef CARTRIDGEFA2_HXX
-#define CARTRIDGEFA2_HXX
+#ifndef CARTRIDGE_FA2_HXX
+#define CARTRIDGE_FA2_HXX
 
 class System;
 
@@ -150,4 +150,4 @@ class CartridgeFA2 : public CartridgeFA
     CartridgeFA2& operator=(CartridgeFA2&&) = delete;
 };
 
-#endif
+#endif  // CARTRIDGE_FA2_HXX

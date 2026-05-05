@@ -64,6 +64,6 @@ class JPGLibrary
     JPGLibrary& operator=(JPGLibrary&&) = delete;
 };
 
-#endif
+#endif  // JPG_LIBRARY_HXX
 
 #endif  // IMAGE_SUPPORT

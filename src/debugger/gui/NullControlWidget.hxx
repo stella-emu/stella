@@ -15,8 +15,8 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#ifndef NULLCONTROL_WIDGET_HXX
-#define NULLCONTROL_WIDGET_HXX
+#ifndef NULL_CONTROL_WIDGET_HXX
+#define NULL_CONTROL_WIDGET_HXX
 
 class GuiObject;
 
@@ -71,4 +71,4 @@ class NullControlWidget : public ControllerWidget
     NullControlWidget& operator=(NullControlWidget&&) = delete;
 };
 
-#endif
+#endif  // NULL_CONTROL_WIDGET_HXX

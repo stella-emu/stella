@@ -66,4 +66,4 @@ class Genesis : public Joystick
     Genesis& operator=(Genesis&&) = delete;
 };
 
-#endif
+#endif  // GENESIS_HXX

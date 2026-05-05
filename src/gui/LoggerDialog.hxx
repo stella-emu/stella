@@ -57,4 +57,4 @@ class LoggerDialog : public Dialog
     LoggerDialog& operator=(LoggerDialog&&) = delete;
 };
 
-#endif
+#endif  // LOGGER_DIALOG_HXX

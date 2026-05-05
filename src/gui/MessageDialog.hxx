@@ -61,4 +61,4 @@ class MessageDialog : public Dialog
     MessageDialog& operator=(MessageDialog&&) = delete;
 };
 
-#endif
+#endif  // MESSAGE_DIALOG_HXX

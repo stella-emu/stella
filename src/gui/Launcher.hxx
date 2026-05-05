@@ -90,4 +90,4 @@ class Launcher : public DialogContainer
     Launcher& operator=(Launcher&&) = delete;
 };
 
-#endif
+#endif  // LAUNCHER_HXX

@@ -48,4 +48,4 @@ class TrakBallWidget : public PointingDeviceWidget
     TrakBallWidget& operator=(TrakBallWidget&&) = delete;
 };
 
-#endif
+#endif  // TRAKBALL_WIDGET_HXX

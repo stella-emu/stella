@@ -15,8 +15,8 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#ifndef PLUSROMS_MENU_HXX
-#define PLUSROMS_MENU_HXX
+#ifndef PLUS_ROMS_MENU_HXX
+#define PLUS_ROMS_MENU_HXX
 
 class OSystem;
 class PlusRomsSetupDialog;
@@ -57,4 +57,4 @@ class PlusRomsMenu : public DialogContainer
     PlusRomsMenu& operator=(PlusRomsMenu&&) = delete;
 };
 
-#endif
+#endif  // PLUS_ROMS_MENU_HXX

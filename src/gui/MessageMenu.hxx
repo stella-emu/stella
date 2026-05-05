@@ -57,4 +57,4 @@ class MessageMenu : public DialogContainer
     MessageMenu& operator=(MessageMenu&&) = delete;
 };
 
-#endif
+#endif  // MESSAGE_MENU_HXX

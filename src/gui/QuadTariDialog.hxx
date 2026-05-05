@@ -15,8 +15,8 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#ifndef JOYSTICK_DIALOG_HXX
-#define JOYSTICK_DIALOG_HXX
+#ifndef QUADTARI_DIALOG_HXX
+#define QUADTARI_DIALOG_HXX
 
 class CommandSender;
 class PopUpWidget;
@@ -73,4 +73,4 @@ class QuadTariDialog: public Dialog
     QuadTariDialog& operator=(QuadTariDialog&&) = delete;
 };
 
-#endif
+#endif  // QUADTARI_DIALOG_HXX

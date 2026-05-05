@@ -15,8 +15,8 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#ifndef EVENTHANDLER_HXX
-#define EVENTHANDLER_HXX
+#ifndef EVENT_HANDLER_HXX
+#define EVENT_HANDLER_HXX
 
 class Console;
 class OSystem;
@@ -565,4 +565,4 @@ class EventHandler
     EventHandler& operator=(EventHandler&&) = delete;
 };
 
-#endif  // EVENTHANDLER_HXX
+#endif  // EVENT_HANDLER_HXX

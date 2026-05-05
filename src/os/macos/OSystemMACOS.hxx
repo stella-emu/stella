@@ -57,4 +57,4 @@ class OSystemMACOS : public OSystemStandalone
     OSystemMACOS& operator=(OSystemMACOS&&) = delete;
 };
 
-#endif
+#endif  // OSYSTEM_MACOS_HXX

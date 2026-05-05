@@ -15,8 +15,8 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#ifndef TIA_MISSILE
-#define TIA_MISSILE
+#ifndef MISSILE_HXX
+#define MISSILE_HXX
 
 class TIA;
 class Player;
@@ -217,4 +217,4 @@ void Missile::tick(uInt8 hclock, bool isReceivingMclock)
   if (++myCounter >= TIAConstants::H_PIXEL) myCounter = 0;
 }
 
-#endif  // TIA_MISSILE
+#endif  // MISSILE_HXX

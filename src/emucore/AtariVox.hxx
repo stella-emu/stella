@@ -138,4 +138,4 @@ class AtariVox : public SaveKey
     AtariVox& operator=(AtariVox&&) = delete;
 };
 
-#endif
+#endif  // ATARIVOX_HXX
