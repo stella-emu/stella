@@ -31,17 +31,15 @@ CartridgeWF8Widget::CartridgeWF8Widget(
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string CartridgeWF8Widget::description()
 {
-  std::ostringstream info;
   size_t size = 0;
   const ByteBuffer& image = myCart.getImage(size);
+  const uInt16 start = ((image[size-3] << 8) | image[size-4]) & ~0xFFF;
 
-  info << "Coleco (some white carts) 8K cartridge, two 4K banks\n"
-    << "Banks selected by D3 of value written to " << hotspotStr() << "\n"
-    << "Startup bank = undetermined\n";
-
-  uInt16 start = (image[size - 3] << 8) | image[size - 4];
-  start -= start % 0x1000;
-  info << "Bank RORG $" << Common::Base::HEX4 << start << "\n";
-
-  return info.str();
+  return std::format(
+    "Coleco (some white carts) 8K cartridge, two 4K banks\n"
+    "Banks selected by D3 of value written to {}\n"
+    "Startup bank = undetermined\n"
+    "Bank RORG ${}\n",
+    hotspotStr(),
+    Common::Base::toString(start, Common::Base::Fmt::_16_4));
 }

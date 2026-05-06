@@ -75,15 +75,15 @@ void FlashWidget::handleCommand(CommandSender*, int cmd, int, int)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-// display the pages used by the current ROM and update erase button status
 void FlashWidget::loadConfig()
 {
+  // display the pages used by the current ROM and update erase button status
   int useCount = 0, startPage = -1;
   for(uInt32 page = 0; page < MT24LC256::PAGE_NUM; ++page)
   {
     if(isPageUsed(page))
     {
-      if (startPage == -1)
+      if(startPage == -1)
         startPage = page;
     }
     else
@@ -91,28 +91,22 @@ void FlashWidget::loadConfig()
       if(startPage != -1)
       {
         const int from = startPage * MT24LC256::PAGE_SIZE;
-        const int to = page * MT24LC256::PAGE_SIZE - 1;
-        std::ostringstream label;
-
-        label.str("");
-        label << Common::Base::HEX3 << startPage;
-
+        const int to   = page * MT24LC256::PAGE_SIZE - 1;
+        string label = std::format("{:03X}", startPage);
         if(!myEmbedded)
         {
           if(static_cast<int>(page) - 1 != startPage)
-            label << "-" << Common::Base::HEX3 << page - 1;
+            label += std::format("-{:03X}", page - 1);
           else
-            label << "    ";
-          label << ": " << Common::Base::HEX4 << from << "-" << Common::Base::HEX4 << to;
+            label += "    ";
+          label += std::format(": {:03X}-{:04X}", from, to);
         }
-        myPage[useCount]->setLabel(label.view());
-
+        myPage[useCount]->setLabel(label);
         startPage = -1;
         if(std::cmp_equal(++useCount, MAX_PAGES))
           break;
       }
     }
   }
-
   myEEPROMEraseCurrent->setEnabled(useCount != 0);
 }

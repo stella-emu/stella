@@ -29,41 +29,39 @@ CartridgeDPCWidget::CartridgeDPCWidget(
 {
   constexpr int V_GAP = 4;
   const size_t size = cart.mySize;
-  std::ostringstream info;
 
-  info << "DPC cartridge, two 4K banks + 2K display bank\n"
-       << "DPC registers accessible @ $" << Common::Base::HEX4 << 0xF000 << " - $" << 0xF07F << "\n"
-       << "  $" << 0xF000 << " - " << 0xF03F << " (R), $" << 0xF040 << " - $" << 0xF07F << " (W)\n"
-
-       << "Startup bank = " << cart.startBank() << " or undetermined\n";
+  const auto bankStart = [&](uInt32 offset) -> uInt16 {
+    const uInt16 s = (cart.myImage[offset + 1] << 8) | cart.myImage[offset];
+    return s - s % 0x1000;
+  };
+  string info =
+    std::format(
+      "DPC cartridge, two 4K banks + 2K display bank\n"
+      "DPC registers accessible @ $F000 - $F07F\n"
+      "  $F000 - F03F (R), $F040 - $F07F (W)\n"
+      "Startup bank = {} or undetermined\n",
+      cart.startBank());
 
   // Eventually, we should query this from the debugger/disassembler
   constexpr uInt32 spot = 0xFF8;
   for(uInt32 i = 0, offset = 0xFFC; i < 2; ++i, offset += 0x1000)
   {
-    uInt16 start = (cart.myImage[offset+1] << 8) | cart.myImage[offset];
-    start -= start % 0x1000;
-    info << "Bank " << i << " @ $" << Common::Base::HEX4 << (start + 0x80) << " - "
-         << "$" << (start + 0xFFF) << " (hotspot = $" << (0xF000 + spot + i) << ")\n";
+    const uInt16 start = bankStart(offset);
+    info += std::format("Bank {} @ ${:X} - ${:X} (hotspot = ${:X})\n",
+      i, start + 0x80, start + 0xFFF, 0xF000 + spot + i);
   }
 
   int xpos = 2,
-      ypos = addBaseInformation(size, "Activision (Pitfall II)", info.view()) +
+      ypos = addBaseInformation(size, "Activision (Pitfall II)", info) +
               myLineHeight;
 
   VariantList items;
   for(int bank = 0; bank < 2; ++bank)
-  {
-    std::ostringstream buf;
+    VarList::push_back(items, std::format("#{} (${:X})", bank, 0xFFF8 + bank));
 
-    buf << "#" << std::dec << bank << " ($" << Common::Base::HEX4 << (0xFFF8 + bank) << ")";
-    VarList::push_back(items, buf.view());
-  }
-
-  myBank =
-    new PopUpWidget(boss, _font, xpos, ypos-2, _font.getStringWidth("#0 ($FFFx)"),
-                    myLineHeight, items, "Set bank     ",
-                    0, kBankChanged);
+  myBank = new PopUpWidget(boss, _font, xpos, ypos-2, _font.getStringWidth("#0 ($FFFx)"),
+                           myLineHeight, items, "Set bank     ",
+                           0, kBankChanged);
   myBank->setTarget(this);
   addFocusWidget(myBank);
   ypos += myLineHeight + V_GAP * 3;
@@ -137,20 +135,16 @@ void CartridgeDPCWidget::saveOldState()
   myOldState.flags.clear();
   myOldState.music.clear();
 
-  for(uInt32 i = 0; i < 8; ++i)
-  {
-    myOldState.tops.push_back(myCart.myTops[i]);
-    myOldState.bottoms.push_back(myCart.myBottoms[i]);
-    myOldState.counters.push_back(myCart.myCounters[i]);
-    myOldState.flags.push_back(myCart.myFlags[i]);
-  }
-  for(uInt32 i = 0; i < 3; ++i)
-    myOldState.music.push_back(myCart.myMusicMode[i]);
+  std::ranges::copy(myCart.myTops,      std::back_inserter(myOldState.tops));
+  std::ranges::copy(myCart.myBottoms,   std::back_inserter(myOldState.bottoms));
+  std::ranges::copy(myCart.myCounters,  std::back_inserter(myOldState.counters));
+  std::ranges::copy(myCart.myFlags,     std::back_inserter(myOldState.flags));
+  std::ranges::copy(myCart.myMusicMode, std::back_inserter(myOldState.music));
 
   myOldState.random = myCart.myRandomNumber;
 
-  for(uInt32 i = 0; i < internalRamSize(); ++i)
-    myOldState.internalram.push_back(myCart.myDisplayImage[i]);
+  myOldState.internalram.assign(myCart.myDisplayImage,
+                                myCart.myDisplayImage + internalRamSize());
 
   myOldState.bank = myCart.getBank();
 }
@@ -165,7 +159,11 @@ void CartridgeDPCWidget::loadConfig()
   IntArray vlist;
   BoolArray changed;
 
-  alist.clear();  vlist.clear();  changed.clear();
+  const auto clearAll = [&]() {
+    alist.clear(); vlist.clear(); changed.clear();
+  };
+
+  clearAll();
   for(int i = 0; i < 8; ++i)
   {
     alist.push_back(0);  vlist.push_back(myCart.myTops[i]);
@@ -174,7 +172,7 @@ void CartridgeDPCWidget::loadConfig()
   }
   myTops->setList(alist, vlist, changed);
 
-  alist.clear();  vlist.clear();  changed.clear();
+  clearAll();
   for(int i = 0; i < 8; ++i)
   {
     alist.push_back(0);  vlist.push_back(myCart.myBottoms[i]);
@@ -183,7 +181,7 @@ void CartridgeDPCWidget::loadConfig()
   }
   myBottoms->setList(alist, vlist, changed);
 
-  alist.clear();  vlist.clear();  changed.clear();
+  clearAll();
   for(int i = 0; i < 8; ++i)
   {
     alist.push_back(0);  vlist.push_back(myCart.myCounters[i]);
@@ -192,7 +190,7 @@ void CartridgeDPCWidget::loadConfig()
   }
   myCounters->setList(alist, vlist, changed);
 
-  alist.clear();  vlist.clear();  changed.clear();
+  clearAll();
   for(int i = 0; i < 8; ++i)
   {
     alist.push_back(0);  vlist.push_back(myCart.myFlags[i]);
@@ -201,7 +199,7 @@ void CartridgeDPCWidget::loadConfig()
   }
   myFlags->setList(alist, vlist, changed);
 
-  alist.clear();  vlist.clear();  changed.clear();
+  clearAll();
   for(int i = 0; i < 3; ++i)
   {
     alist.push_back(0);  vlist.push_back(myCart.myMusicMode[i]);
@@ -231,12 +229,8 @@ void CartridgeDPCWidget::handleCommand(CommandSender* sender,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string CartridgeDPCWidget::bankState()
 {
-  std::ostringstream& buf = buffer();
-
-  buf << "Bank #" << std::dec << myCart.getBank()
-      << " (hotspot $" << Common::Base::HEX4 << (0xFFF8 + myCart.getBank()) << ")";
-
-  return buf.str();
+  return std::format("Bank #{} (hotspot ${:X})",
+    myCart.getBank(), 0xFFF8 + myCart.getBank());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -254,12 +248,10 @@ uInt32 CartridgeDPCWidget::internalRamRPort(int start)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string CartridgeDPCWidget::internalRamDescription()
 {
-  std::ostringstream desc;
-  desc << "2K display data @ $0000 - $" << Common::Base::HEX4 << 0x07FF << "\n"
-    << "  indirectly accessible to 6507 via DPC's\n"
-    << "  data fetcher registers\n";
-
-  return desc.str();
+  return
+    "2K display data @ $0000 - $07FF\n"
+    "  indirectly accessible to 6507 via DPC's\n"
+    "  data fetcher registers\n";
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

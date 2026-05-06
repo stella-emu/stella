@@ -31,30 +31,29 @@ Cartridge3EWidget::Cartridge3EWidget(
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string Cartridge3EWidget::description()
 {
-  std::ostringstream info;
   size_t size{0};
   const ByteBuffer& image = myCart.getImage(size);
   const uInt16 numRomBanks = myCart.romBankCount();
   const uInt16 numRamBanks = myCart.ramBankCount();
+  const uInt16 start = ((image[size-3] << 8) | image[size-4]) & ~0xFFF;
 
-  info << "3E cartridge (3F + RAM),\n"
-       << "  " << numRomBanks << " 2K ROM banks, " << numRamBanks << " 1K RAM banks\n"
-       << "First 2K (ROM) selected by writing to $3F\n"
-          "First 2K (RAM) selected by writing to $3E\n";
-  info << CartridgeEnhancedWidget::ramDescription();
-  info << "Last 2K always points to last 2K of ROM\n";
+  const string startupLine = myCart.startBank() < numRomBanks
+    ? std::format("Startup bank = {} (ROM)\n", myCart.startBank())
+    : std::format("Startup bank = {} (RAM)\n", myCart.startBank() - numRomBanks);
 
-  if(myCart.startBank() < numRomBanks)
-    info << "Startup bank = " << myCart.startBank() << " (ROM)\n";
-  else
-    info << "Startup bank = " << (myCart.startBank() - numRomBanks) << " (RAM)\n";
-
-  // Eventually, we should query this from the debugger/disassembler
-  uInt16 start = (image[size-3] << 8) | image[size-4];
-  start -= start % 0x1000;
-  info << "Bank RORG" << " = $" << Common::Base::HEX4 << start << "\n";
-
-  return info.str();
+  return std::format(
+    "3E cartridge (3F + RAM),\n"
+    "  {} 2K ROM banks, {} 1K RAM banks\n"
+    "First 2K (ROM) selected by writing to $3F\n"
+    "First 2K (RAM) selected by writing to $3E\n"
+    "{}"
+    "Last 2K always points to last 2K of ROM\n"
+    "{}"
+    "Bank RORG = ${:X}\n",
+    numRomBanks, numRamBanks,
+    CartridgeEnhancedWidget::ramDescription(),
+    startupLine,
+    start);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -160,14 +159,12 @@ void Cartridge3EWidget::handleCommand(CommandSender* sender, int cmd, int data, 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string Cartridge3EWidget::bankState()
 {
-  std::ostringstream& buf = buffer();
   const uInt16 bank = myCart.getBank();
 
   if(bank < myCart.romBankCount())
-    buf << "ROM bank #" << std::dec << bank % myCart.romBankCount() << ", RAM inactive";
+    return std::format("ROM bank #{}, RAM inactive",
+      bank % myCart.romBankCount());
   else
-    buf << "ROM inactive, RAM bank #"
-        << std::dec << (bank - myCart.romBankCount()) % myCart.ramBankCount();
-
-  return buf.str();
+    return std::format("ROM inactive, RAM bank #{}",
+      (bank - myCart.romBankCount()) % myCart.ramBankCount());
 }

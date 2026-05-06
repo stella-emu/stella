@@ -41,8 +41,6 @@ CartRamWidget::CartRamWidget(
   const int lwidth = lfont.getStringWidth("Description "),
             fwidth = w - lwidth - 20;
 
-  EditTextWidget* etw = nullptr;
-  std::ostringstream buf;
   constexpr int xpos = 2;
   int ypos = 8;
 
@@ -50,12 +48,12 @@ CartRamWidget::CartRamWidget(
   new StaticTextWidget(_boss, _font, xpos, ypos + 1, "RAM size ");
 
   const uInt32 ramsize = cartDebug.internalRamSize();
-  buf << ramsize << " bytes";
-  if(ramsize >= 1024)
-    buf << " / " << (ramsize/1024) << "KB";
+  const string ramsizeStr = ramsize >= 1024
+    ? std::format("{} bytes / {}KB", ramsize, ramsize / 1024)
+    : std::format("{} bytes", ramsize);
 
-  etw = new EditTextWidget(boss, nfont, xpos+lwidth, ypos - 1,
-                           fwidth, myLineHeight, buf.view());
+  auto* etw = new EditTextWidget(boss, nfont, xpos+lwidth, ypos - 1,
+                                 fwidth, myLineHeight, ramsizeStr);
   etw->setEditable(false);
   ypos += myLineHeight + 4;
 
@@ -143,15 +141,15 @@ string CartRamWidget::InternalRamWidget::getLabel(int addr) const
 void CartRamWidget::InternalRamWidget::fillList(uInt32 start, uInt32 size,
           IntArray& alist, IntArray& vlist, BoolArray& changed) const
 {
-  const ByteArray& oldRam = myCart.internalRamOld(start, size);
+  const ByteArray& oldRam  = myCart.internalRamOld(start, size);
   const ByteArray& currRam = myCart.internalRamCurrent(start, size);
 
   for(uInt32 i = 0; i < size; ++i)
-  {
-    alist.push_back(i+start);
-    vlist.push_back(currRam[i]);
-    changed.push_back(currRam[i] != oldRam[i]);
-  }
+    alist.push_back(i + start);
+
+  std::ranges::copy(currRam, std::back_inserter(vlist));
+  std::ranges::transform(currRam, oldRam, std::back_inserter(changed),
+                         std::not_equal_to{});
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

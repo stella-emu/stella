@@ -23,24 +23,28 @@ CartridgeCDFInfoWidget::CartridgeCDFInfoWidget(
     int x, int y, int w, int h, CartridgeCDF& cart)
   : CartDebugWidget(boss, lfont, nfont, x, y, w, h)
 {
-  std::ostringstream info;
+  string fetchers = "LDA #";
+  if(cart.myLDXenabled)
+    fetchers += ", LDX #";
+  if(cart.myLDYenabled)
+    fetchers += ", LDY #";
 
-  info << describeCDFVersion(cart.myCDFSubtype) << " cartridge\n"
-       << (cart.romSize() / 1024) << "K ROM\n"
-       << (cart.ramSize() / 1024) << "K RAM\n"
-       << "Seven 4K banks are available to 2600\n"
-       << "Functions accessible @ $FFF0 - $FFF3\n"
-       << (cart.isCDFJplus() ? "Banks accessible @ $FFF4 to $FFFA\n" : "Banks accessible @ $FFF5 to $FFFB\n")
-       << "Startup bank = " << cart.startBank() << "\n"
-       << "Fast Fetcher(s): LDA #";
-
-  if (cart.myLDXenabled)
-    info << ", LDX #";
-
-  if (cart.myLDYenabled)
-    info << ", LDY #";
-
-  info << "\n";
+  const string info = std::format(
+    "{} cartridge\n"
+    "{}K ROM\n"
+    "{}K RAM\n"
+    "Seven 4K banks are available to 2600\n"
+    "Functions accessible @ $FFF0 - $FFF3\n"
+    "{}"
+    "Startup bank = {}\n"
+    "Fast Fetcher(s): {}\n",
+    describeCDFVersion(cart.myCDFSubtype),
+    cart.romSize() / 1024,
+    cart.ramSize() / 1024,
+    cart.isCDFJplus() ? "Banks accessible @ $FFF4 to $FFFA\n"
+                      : "Banks accessible @ $FFF5 to $FFFB\n",
+    cart.startBank(),
+    fetchers);
 
 #if 0
   // Eventually, we should query this from the debugger/disassembler
@@ -52,20 +56,5 @@ CartridgeCDFInfoWidget::CartridgeCDFInfoWidget(
     << "$" << (start + 0xFFF) << " (hotspot = $" << (spot+i) << ")\n";
   }
 #endif
-
-  addBaseInformation(cart.romSize(), "AtariAge", info.view());
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string CartridgeCDFInfoWidget::describeCDFVersion(CartridgeCDF::CDFSubtype subtype)
-{
-  switch(subtype)
-  {
-    using enum CartridgeCDF::CDFSubtype;
-    case CDF0:      return "CDF (v0)";
-    case CDF1:      return "CDF (v1)";
-    case CDFJ:      return "CDFJ";
-    case CDFJplus:  return "CDFJ+";
-    default:        throw std::runtime_error("unreachable");
-  }
+  addBaseInformation(cart.romSize(), "AtariAge", info);
 }

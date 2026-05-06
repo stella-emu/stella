@@ -31,8 +31,20 @@ class CartridgeBUSInfoWidget : public CartDebugWidget
     ~CartridgeBUSInfoWidget() override = default;
 
   private:
-    static string describeBUSVersion(CartridgeBUS::BUSSubtype subtype);
+    static constexpr string_view describeBUSVersion(
+        CartridgeBUS::BUSSubtype subtype) {
+      switch(subtype)
+      {
+        using enum CartridgeBUS::BUSSubtype;
+        case BUS0:  return "BUS (v0)";
+        case BUS1:  return "BUS (v1)";
+        case BUS2:  return "BUS (v2)";
+        case BUS3:  return "BUS (v3)";
+        default:    throw std::runtime_error("unreachable");
+      }
+    }
 
+  private:
     // Following constructors and assignment operators not supported
     CartridgeBUSInfoWidget() = delete;
     CartridgeBUSInfoWidget(const CartridgeBUSInfoWidget&) = delete;
@@ -40,4 +52,5 @@ class CartridgeBUSInfoWidget : public CartDebugWidget
     CartridgeBUSInfoWidget& operator=(const CartridgeBUSInfoWidget&) = delete;
     CartridgeBUSInfoWidget& operator=(CartridgeBUSInfoWidget&&) = delete;
 };
+
 #endif  // CARTRIDGE_BUS_INFO_WIDGET_HXX

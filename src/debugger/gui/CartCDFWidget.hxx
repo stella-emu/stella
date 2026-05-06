@@ -96,8 +96,20 @@ class CartridgeCDFWidget : public CartridgeARMWidget
     bool isCDFJ() const;
     bool isCDFJplus() const;
 
-    static string describeCDFVersion(CartridgeCDF::CDFSubtype subtype);
+    static constexpr string_view describeCDFVersion(
+        CartridgeCDF::CDFSubtype subtype) {
+      switch(subtype)
+      {
+        using enum CartridgeCDF::CDFSubtype;
+        case CDF0:      return "CDF (v0)";
+        case CDF1:      return "CDF (v1)";
+        case CDFJ:      return "CDFJ";
+        case CDFJplus:  return "CDFJ+";
+        default:        throw std::runtime_error("unreachable");
+      }
+    }
 
+  private:
     // Following constructors and assignment operators not supported
     CartridgeCDFWidget() = delete;
     CartridgeCDFWidget(const CartridgeCDFWidget&) = delete;

@@ -20,37 +20,36 @@
 
 namespace {
   class ProxyRepository : public KeyValueRepository {
-      public:
-        ProxyRepository(KeyValueRepositoryAtomic& kvr, string_view key)
-          : myKvr{kvr}, myKey{key}
-        {}
+    public:
+      ProxyRepository(KeyValueRepositoryAtomic& kvr, string_view key)
+        : myKvr{kvr}, myKey{key}
+      {}
 
-        KVRMap load() override {
-          if (!myKvr.has(myKey)) return {};
+      KVRMap load() override {
+        if (!myKvr.has(myKey)) return {};
 
-          Variant serialized;
-          myKvr.get(myKey, serialized);
+        Variant serialized;
+        myKvr.get(myKey, serialized);
 
-          std::istringstream in{serialized.toString()};
+        std::istringstream in{serialized.toString()};
 
-          return KeyValueRepositoryJsonFile::load(in);
-        }
+        return KeyValueRepositoryJsonFile::load(in);
+      }
 
-        bool save(const KVRMap& values) override {
-          std::ostringstream out;
+      bool save(const KVRMap& values) override {
+        std::ostringstream out;
 
-          if (!KeyValueRepositoryJsonFile::save(out, values)) return false;
+        if (!KeyValueRepositoryJsonFile::save(out, values)) return false;
 
-          return myKvr.save(myKey, out.view());
-        }
+        return myKvr.save(myKey, out.view());
+      }
 
       private:
 
-        // NOLINT: cppcoreguidelines-avoid-const-or-ref-data-members
-        KeyValueRepositoryAtomic& myKvr;  // NOLINT
+        KeyValueRepositoryAtomic& myKvr;
         string myKey;
     };
-} // namespace
+}  // namespace
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CompositeKVRJsonAdapter::CompositeKVRJsonAdapter(KeyValueRepositoryAtomic& kvr)

@@ -454,12 +454,12 @@ string RomListWidget::getToolTip(const Common::Point& pos) const
   const Common::Point& idx = getToolTipIndex(pos);
 
   if(idx.y < 0)
-    return string{};
+    return {};
 
   const string bytes = myDisasm->list[idx.y].bytes;
 
   if(static_cast<Int32>(bytes.length()) < idx.x + 1)
-    return string{};
+    return {};
 
   Int32 val = 0;
   if(bytes.length() == 8 && bytes[2] != ' ')
@@ -472,7 +472,7 @@ string RomListWidget::getToolTip(const Common::Point& pos) const
     // 1..3 hex values
     if(idx.x == 2)
       // Skip gap after first byte
-      return string{};
+      return {};
 
     string valStr;
 
@@ -485,19 +485,19 @@ string RomListWidget::getToolTip(const Common::Point& pos) const
 
     val = static_cast<Int32>(stol(valStr, nullptr, 16));
   }
-  std::ostringstream buf;
 
-  buf << _toolTipText
-    << "$" << Common::Base::toString(val, Common::Base::Fmt::_16)
-    << " = #" << val;
+  string result = std::format("{}${} = #{}",
+    _toolTipText,
+    Common::Base::toString(val, Common::Base::Fmt::_16),
+    val);
   if(val < 0x100)
   {
     if(val >= 0x80)
-      buf << '/' << -(0x100 - val);
-    buf << " = %" << Common::Base::toString(val, Common::Base::Fmt::_2);
+      result += std::format("/{}", -(0x100 - val));
+    result += std::format(" = %{}",
+      Common::Base::toString(val, Common::Base::Fmt::_2));
   }
-
-  return buf.str();
+  return result;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

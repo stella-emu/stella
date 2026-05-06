@@ -26,7 +26,7 @@ Cartridge4A50Widget::Cartridge4A50Widget(
   : CartDebugWidget(boss, lfont, nfont, x, y, w, h),
     myCart{cart}
 {
-  const string info =
+  constexpr string_view info =
     "4A50 cartridge - 128K ROM and 32K RAM, split in various bank configurations\n"
     "Multiple hotspots, see documentation for further details\n"
     "Lower bank region (2K)   : $F000 - $F7FF\n"
@@ -55,9 +55,9 @@ Cartridge4A50Widget::Cartridge4A50Widget(
     VarList::push_back(items256, i);
   VarList::push_back(items256, "Inactive", "");
 
-  const string lowerlabel  = "Set lower 2K region ($F000 - $F7FF): ";
-  const string middlelabel = "Set middle 1.5K region ($F800 - $FDFF): ";
-  const string highlabel   = "Set high 256B region ($FE00 - $FEFF): ";
+  constexpr string_view lowerlabel  = "Set lower 2K region ($F000 - $F7FF): ";
+  constexpr string_view middlelabel = "Set middle 1.5K region ($F800 - $FDFF): ";
+  constexpr string_view highlabel   = "Set high 256B region ($FE00 - $FEFF): ";
   const int lwidth  = _font.getStringWidth(middlelabel),
             fwidth  = _font.getStringWidth("Inactive"),
             flwidth = _font.getStringWidth("ROM ");
@@ -126,41 +126,21 @@ Cartridge4A50Widget::Cartridge4A50Widget(
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Cartridge4A50Widget::loadConfig()
 {
+  const auto setRomRam = [](PopUpWidget* rom, PopUpWidget* ram,
+                            bool isRom, int romIdx, int ramIdx) {
+    if(isRom) { rom->setSelectedIndex(romIdx); ram->setSelectedMax(); }
+    else      { rom->setSelectedMax(); ram->setSelectedIndex(ramIdx); }
+  };
+
   // Lower bank
-  if(myCart.myIsRomLow) // ROM active
-  {
-    myROMLower->setSelectedIndex((myCart.mySliceLow >> 11) & 0x1F);
-    myRAMLower->setSelectedMax();
-  }
-  else                  // RAM active
-  {
-    myROMLower->setSelectedMax();
-    myRAMLower->setSelectedIndex((myCart.mySliceLow >> 11) & 0x0F);
-  }
-
+  setRomRam(myROMLower,  myRAMLower,  myCart.myIsRomLow,
+    (myCart.mySliceLow    >> 11) & 0x1F, (myCart.mySliceLow    >> 11) & 0x0F);
   // Middle bank
-  if(myCart.myIsRomMiddle)  // ROM active
-  {
-    myROMMiddle->setSelectedIndex((myCart.mySliceMiddle >> 11) & 0x1F);
-    myRAMMiddle->setSelectedMax();
-  }
-  else                      // RAM active
-  {
-    myROMMiddle->setSelectedMax();
-    myRAMMiddle->setSelectedIndex((myCart.mySliceMiddle >> 11) & 0x0F);
-  }
-
+  setRomRam(myROMMiddle, myRAMMiddle, myCart.myIsRomMiddle,
+    (myCart.mySliceMiddle >> 11) & 0x1F, (myCart.mySliceMiddle >> 11) & 0x0F);
   // High bank
-  if(myCart.myIsRomHigh)   // ROM active
-  {
-    myROMHigh->setSelectedIndex((myCart.mySliceHigh >> 11) & 0xFF);
-    myRAMHigh->setSelectedMax();
-  }
-  else                      // RAM active
-  {
-    myROMHigh->setSelectedMax();
-    myRAMHigh->setSelectedIndex((myCart.mySliceHigh >> 11) & 0x7F);
-  }
+  setRomRam(myROMHigh,   myRAMHigh,   myCart.myIsRomHigh,
+    (myCart.mySliceHigh   >> 11) & 0xFF, (myCart.mySliceHigh   >> 11) & 0x7F);
 
   CartDebugWidget::loadConfig();
 }
@@ -268,21 +248,14 @@ void Cartridge4A50Widget::handleCommand(CommandSender* sender,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string Cartridge4A50Widget::bankState()
 {
-  std::ostringstream& buf = buffer();
-
-  buf << "L/M/H = " << std::dec;
-  if(myCart.myIsRomLow)
-    buf << "ROM bank " << ((myCart.mySliceLow >> 11) & 0x1F) << " / ";
-  else
-    buf << "RAM bank " << ((myCart.mySliceLow >> 11) & 0x0F) << " / ";
-  if(myCart.myIsRomMiddle)
-    buf << "ROM bank " << ((myCart.mySliceMiddle >> 11) & 0x1F) << " / ";
-  else
-    buf << "RAM bank " << ((myCart.mySliceMiddle >> 11) & 0x0F) << " / ";
-  if(myCart.myIsRomHigh)
-    buf << "ROM bank " << ((myCart.mySliceHigh >> 11) & 0xFF);
-  else
-    buf << "RAM bank " << ((myCart.mySliceHigh >> 11) & 0x7F);
-
-  return buf.str();
+  return std::format("L/M/H = {} bank {} / {} bank {} / {} bank {}",
+    myCart.myIsRomLow    ? "ROM" : "RAM",
+    myCart.myIsRomLow    ? (myCart.mySliceLow    >> 11) & 0x1F
+                         : (myCart.mySliceLow    >> 11) & 0x0F,
+    myCart.myIsRomMiddle ? "ROM" : "RAM",
+    myCart.myIsRomMiddle ? (myCart.mySliceMiddle >> 11) & 0x1F
+                         : (myCart.mySliceMiddle >> 11) & 0x0F,
+    myCart.myIsRomHigh   ? "ROM" : "RAM",
+    myCart.myIsRomHigh   ? (myCart.mySliceHigh   >> 11) & 0xFF
+                         : (myCart.mySliceHigh   >> 11) & 0x7F);
 }

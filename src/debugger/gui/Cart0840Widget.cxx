@@ -31,10 +31,6 @@ Cartridge0840Widget::Cartridge0840Widget(
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string Cartridge0840Widget::description()
 {
-  std::ostringstream info;
-
-  info << "0840 EconoBanking, two 4K banks\n"
-       << CartridgeEnhancedWidget::description();
-
-  return info.str();
+  return std::format("0840 EconoBanking, two 4K banks\n{}",
+    CartridgeEnhancedWidget::description());
 }

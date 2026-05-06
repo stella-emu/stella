@@ -289,22 +289,26 @@ int JoyMap::loadMapping(const json& eventMappings, EventMode mode)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-json JoyMap::convertLegacyMapping(string lst)
+json JoyMap::convertLegacyMapping(string_view lst)
 {
   json eventMappings = json::array();
 
-  // Since istringstream swallows whitespace, we have to make the
-  // delimiters be spaces
-  std::ranges::replace(lst, '|', ' ');
-  std::ranges::replace(lst, ':', ' ');
-  std::ranges::replace(lst, ',', ' ');
+  const char* p = lst.data();
+  const char* end = p + lst.size();
 
-  std::istringstream buf(lst);
+  const auto nextInt = [&](int& val) -> bool {
+    while(p < end && (*p == ' ' || *p == '|' || *p == ':' || *p == ',')) ++p;
+    auto [next, ec] = std::from_chars(p, end, val);
+    if(ec != std::errc{}) return false;
+    p = next;
+    return true;
+  };
+
   int event = 0, button = 0, axis = 0, adir = 0, hat = 0, hdir = 0;
 
-  while(buf >> event && buf >> button
-        && buf >> axis && buf >> adir
-        && buf >> hat && buf >> hdir)
+  while(nextInt(event) && nextInt(button)
+        && nextInt(axis) && nextInt(adir)
+        && nextInt(hat)  && nextInt(hdir))
   {
     json eventMapping = json::object();
 

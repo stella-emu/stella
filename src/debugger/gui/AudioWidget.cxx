@@ -100,13 +100,17 @@ void AudioWidget::loadConfig()
   IntArray vlist;
   BoolArray changed;
 
+  const auto clearAll = [&]() {
+    alist.clear(); vlist.clear(); changed.clear();
+  };
+
   const Debugger& dbg = instance().debugger();
   TIADebug& tia = dbg.tiaDebug();
   const auto& state    = static_cast<const TiaState&>(tia.getState());
   const auto& oldstate = static_cast<const TiaState&>(tia.getOldState());
 
   // AUDF0/1
-  alist.clear();  vlist.clear();  changed.clear();
+  clearAll();
   for(uInt32 i = 0; i < 2; ++i)
   {
     alist.push_back(i);
@@ -116,20 +120,20 @@ void AudioWidget::loadConfig()
   myAudF->setList(alist, vlist, changed);
 
   // AUDC0/1
-  alist.clear();  vlist.clear();  changed.clear();
+  clearAll();
   for(uInt32 i = 2; i < 4; ++i)
   {
-    alist.push_back(i-2);
+    alist.push_back(i - 2);
     vlist.push_back(state.aud[i]);
     changed.push_back(state.aud[i] != oldstate.aud[i]);
   }
   myAudC->setList(alist, vlist, changed);
 
   // AUDV0/1
-  alist.clear();  vlist.clear();  changed.clear();
+  clearAll();
   for(uInt32 i = 4; i < 6; ++i)
   {
-    alist.push_back(i-4);
+    alist.push_back(i - 4);
     vlist.push_back(state.aud[i]);
     changed.push_back(state.aud[i] != oldstate.aud[i]);
   }
@@ -146,14 +150,10 @@ void AudioWidget::handleFrequencies()
   myAud1F->setLabel(instance().debugger().tiaDebug().audFreq1());
 }
 
-
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void AudioWidget::handleVolume()
 {
-  std::ostringstream s;
-
-  s << getEffectiveVolume() << "% (eff. volume)";
-  myAudEffV->setLabel(s.view());
+  myAudEffV->setLabel(std::format("{}% (eff. volume)", getEffectiveVolume()));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -259,6 +259,8 @@ uInt32 AudioWidget::getEffectiveVolume()
     89, 91, 93, 95, 97, 98, 100
   };
 
-  return EFF_VOL[(instance().debugger().tiaDebug().audC0() ? instance().debugger().tiaDebug().audV0() : 0) +
-    (instance().debugger().tiaDebug().audC1() ? instance().debugger().tiaDebug().audV1() : 0)];
+  TIADebug& tia = instance().debugger().tiaDebug();
+  const uInt32 vol = (tia.audC0() ? tia.audV0() : 0)
+                   + (tia.audC1() ? tia.audV1() : 0);
+  return EFF_VOL[vol];
 }

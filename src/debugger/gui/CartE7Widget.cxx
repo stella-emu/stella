@@ -27,27 +27,26 @@ CartridgeE7Widget::CartridgeE7Widget(
   : CartDebugWidget(boss, lfont, nfont, x, y, w, h),
     myCart{cart}
 {
-  std::ostringstream info;
-
-  info << "E7 cartridge, "
-    << (myCart.romBankCount() == 4 ? "four"
-        : myCart.romBankCount() == 6 ? "six" : "eight")
-    << " 2K banks ROM + 2K RAM, \n"
-    << "  mapped into three segments\n"
-    << "Lower 2K accessible @ $F000 - $F7FF\n"
-    << (myCart.romBankCount() == 4
-        ? "  ROM banks 0 - 2 (hotspots $FFE4 - $FFE6)\n"
-        : myCart.romBankCount() == 6
-          ? "  ROM Banks 0 - 4 (hotspots $FFE0/$FFE1\n    and $FFE4 - $FFE6)\n"
-          : "  ROM Banks 0 - 6 (hotspots $FFE0 - $FFE6)\n")
-    << "  1K RAM bank 3 (hotspot $FFE7)\n"
-    << "    $F400 - $F7FF (R), $F000 - $F3FF (W)\n"
-    << "256B RAM accessible @ $F800 - $F9FF\n"
-    << "  RAM banks 0 - 3 (hotspots $FFE8 - $FFEB)\n"
-    << "    $F900 - $F9FF (R), $F800 - $F8FF (W)\n"
-    << "Upper 1.5K ROM accessible @ $FA00 - $FFFF\n"
-    << "  Always points to last 1.5K of ROM\n"
-    << "Startup segments = 0 / 0 or undetermined\n";
+  const string info = std::format(
+    "E7 cartridge, {} 2K banks ROM + 2K RAM, \n"
+    "  mapped into three segments\n"
+    "Lower 2K accessible @ $F000 - $F7FF\n"
+    "{}"
+    "  1K RAM bank 3 (hotspot $FFE7)\n"
+    "    $F400 - $F7FF (R), $F000 - $F3FF (W)\n"
+    "256B RAM accessible @ $F800 - $F9FF\n"
+    "  RAM banks 0 - 3 (hotspots $FFE8 - $FFEB)\n"
+    "    $F900 - $F9FF (R), $F800 - $F8FF (W)\n"
+    "Upper 1.5K ROM accessible @ $FA00 - $FFFF\n"
+    "  Always points to last 1.5K of ROM\n"
+    "Startup segments = 0 / 0 or undetermined\n",
+    myCart.romBankCount() == 4 ? "four"
+      : myCart.romBankCount() == 6 ? "six" : "eight",
+    myCart.romBankCount() == 4
+      ? "  ROM banks 0 - 2 (hotspots $FFE4 - $FFE6)\n"
+      : myCart.romBankCount() == 6
+        ? "  ROM Banks 0 - 4 (hotspots $FFE0/$FFE1\n    and $FFE4 - $FFE6)\n"
+        : "  ROM Banks 0 - 6 (hotspots $FFE0 - $FFE6)\n");
 #if 0
   // Eventually, we should query this from the debugger/disassembler
   uInt16 start = (cart.myImage[size - 3] << 8) | cart.myImage[size - 4];
@@ -56,17 +55,16 @@ CartridgeE7Widget::CartridgeE7Widget(
 #endif
 
   initialize(boss, cart, info);
-
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeE7Widget::initialize(GuiObject* boss,
-    const CartridgeE7& cart, const std::ostringstream& info)
+    const CartridgeE7& cart, string_view info)
 {
   const uInt32 size = cart.romBankCount() * CartridgeE7::BANK_SIZE;
 
   constexpr int xpos = 2;
-  int ypos = addBaseInformation(size, "M Network", info.view(), 15) + myLineHeight;
+  int ypos = addBaseInformation(size, "M Network", info, 15) + myLineHeight;
 
   VariantList items0, items1;
   for(int i = 0; std::cmp_less(i, cart.romBankCount()); ++i)
@@ -94,9 +92,8 @@ void CartridgeE7Widget::initialize(GuiObject* boss,
 void CartridgeE7Widget::saveOldState()
 {
   myOldState.internalram.clear();
-
-  for(uInt32 i = 0; i < internalRamSize(); ++i)
-    myOldState.internalram.push_back(myCart.myRAM[i]);
+  myOldState.internalram.assign(myCart.myRAM.data(),
+                                myCart.myRAM.data() + internalRamSize());
 
   myOldState.lowerBank = myCart.myCurrentBank[0];
   myOldState.upperBank = myCart.myCurrentRAM;
@@ -136,13 +133,9 @@ void CartridgeE7Widget::handleCommand(CommandSender* sender,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string CartridgeE7Widget::bankState()
 {
-  std::ostringstream& buf = buffer();
-
-  buf << "Segments: " << std::dec
-    << getSpotLower(myCart.myCurrentBank[0], myCart.romBankCount()) << " / "
-    << getSpotUpper(myCart.myCurrentRAM);
-
-  return buf.str();
+  return std::format("Segments: {} / {}",
+    getSpotLower(myCart.myCurrentBank[0], myCart.romBankCount()),
+    getSpotUpper(myCart.myCurrentRAM));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -160,23 +153,21 @@ uInt32 CartridgeE7Widget::internalRamRPort(int start)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string CartridgeE7Widget::internalRamDescription()
 {
-  std::ostringstream desc;
-  desc << "First 1K accessible via:\n"
-    << "  $F000 - $F3FF used for write access\n"
-    << "  $F400 - $F7FF used for read access\n"
-    << "256 bytes of second 1K accessible via:\n"
-    << "  $F800 - $F8FF used for write access\n"
-    << "  $F900 - $F9FF used for read access";
-
-  return desc.str();
+  return
+    "First 1K accessible via:\n"
+    "  $F000 - $F3FF used for write access\n"
+    "  $F400 - $F7FF used for read access\n"
+    "256 bytes of second 1K accessible via:\n"
+    "  $F800 - $F8FF used for write access\n"
+    "  $F900 - $F9FF used for read access";
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const ByteArray& CartridgeE7Widget::internalRamOld(int start, int count)
 {
   myRamOld.clear();
-  for(int i = 0; i < count; i++)
-    myRamOld.push_back(myOldState.internalram[start + i]);
+  myRamOld.assign(myOldState.internalram.data() + start,
+                  myOldState.internalram.data() + start + count);
   return myRamOld;
 }
 
@@ -184,8 +175,8 @@ const ByteArray& CartridgeE7Widget::internalRamOld(int start, int count)
 const ByteArray& CartridgeE7Widget::internalRamCurrent(int start, int count)
 {
   myRamCurrent.clear();
-  for(int i = 0; i < count; i++)
-    myRamCurrent.push_back(myCart.myRAM[start + i]);
+  myRamCurrent.assign(myCart.myRAM.data() + start,
+                      myCart.myRAM.data() + start + count);
   return myRamCurrent;
 }
 
@@ -222,7 +213,6 @@ string_view CartridgeE7Widget::getSpotLower(int idx, int bankcount)
       ? spot_lower_12K[idx]
       : spot_lower_16K[idx];
 }
-
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string_view CartridgeE7Widget::getSpotUpper(int idx)

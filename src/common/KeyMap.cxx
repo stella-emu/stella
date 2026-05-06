@@ -289,16 +289,20 @@ json KeyMap::convertLegacyMapping(string_view lm)
 {
   json convertedMapping = json::array();
 
-  // Since istringstream swallows whitespace, we have to make the
-  // delimiters be spaces
-  string lst{lm};
-  std::ranges::replace(lst, '|', ' ');
-  std::ranges::replace(lst, ':', ' ');
-  std::ranges::replace(lst, ',', ' ');
-  std::istringstream buf(lst);
+  const char* p = lm.data();
+  const char* end = p + lm.size();
+
+  const auto nextInt = [&](int& val) -> bool {
+    while(p < end && (*p == ' ' || *p == '|' || *p == ':' || *p == ',')) ++p;
+    auto [next, ec] = std::from_chars(p, end, val);
+    if(ec != std::errc{}) return false;
+    p = next;
+    return true;
+  };
+
   int event = 0, key = 0, mod = 0;
 
-  while(buf >> event && buf >> key && buf >> mod)
+  while(nextInt(event) && nextInt(key) && nextInt(mod))
   {
     json mapping = json::object();
 

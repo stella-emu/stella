@@ -30,10 +30,6 @@ CartridgeFAWidget::CartridgeFAWidget(
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string CartridgeFAWidget::description()
 {
-  std::ostringstream info;
-
-  info << "CBS RAM+ FA cartridge, three 4K banks\n"
-       << CartridgeEnhancedWidget::description();
-
-  return info.str();
+  return std::format("CBS RAM+ FA cartridge, three 4K banks\n{}",
+    CartridgeEnhancedWidget::description());
 }

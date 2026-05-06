@@ -72,18 +72,16 @@ DiStella::DiStella(const CartDebug& dbg, CartDebug::DisassemblyList& list,
   disasm(myOffset, 2);
 
   // Add reserved line equates
-  std::ostringstream reservedLabel;
-  for (int k = 0; std::cmp_less_equal(k, myAppData.end); k++) {
-    if ((myLabels[k] & (Device::REFERENCED | Device::VALID_ENTRY)) == Device::REFERENCED) {
+  for(int k = 0; std::cmp_less_equal(k, myAppData.end); k++) {
+    if((myLabels[k] & (Device::REFERENCED | Device::VALID_ENTRY)) == Device::REFERENCED) {
       // If we have a piece of code referenced somewhere else, but cannot
       // locate the label in code (i.e because the address is inside of a
       // multi-byte instruction, then we make note of that address for reference
       //
       // However, we only do this for labels pointing to ROM (above $1000)
-      if (CartDebug::addressType(k + myOffset) == CartDebug::AddrType::ROM) {
-        reservedLabel.str("");
-        reservedLabel << "L" << Base::HEX4 << (k + myOffset);
-        myReserved.Label.emplace(k + myOffset, reservedLabel.view());
+      if(CartDebug::addressType(k + myOffset) == CartDebug::AddrType::ROM) {
+        myReserved.Label.emplace(k + myOffset,
+          std::format("L{:04X}", k + myOffset));
       }
     }
   }
@@ -1156,42 +1154,29 @@ void DiStella::outputColors()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string DiStella::getColor(uInt8 byte)
 {
-  const string NTSC_COLOR[16] = {
+  static constexpr std::array<string_view, 16> NTSC_COLOR = {
     "BLACK", "YELLOW", "BROWN", "ORANGE",
     "RED", "MAUVE", "VIOLET", "PURPLE",
     "BLUE", "BLUE_CYAN", "CYAN", "CYAN_GREEN",
     "GREEN", "GREEN_YELLOW", "GREEN_BEIGE", "BEIGE"
   };
-  const string PAL_COLOR[16] = {
+  static constexpr std::array<string_view, 16> PAL_COLOR = {
     "BLACK0", "BLACK1", "YELLOW", "GREEN_YELLOW",
     "ORANGE", "GREEN", "RED", "CYAN_GREEN",
     "MAUVE", "CYAN", "VIOLET", "BLUE_CYAN",
     "PURPLE", "BLUE", "BLACKE", "BLACKF"
   };
-  const string SECAM_COLOR[8] = {
+  static constexpr std::array<string_view, 8> SECAM_COLOR = {
     "BLACK", "BLUE", "RED", "PURPLE",
     "GREEN", "CYAN", "YELLOW", "WHITE"
   };
 
-  string color;
-  std::ostringstream buf;
-
-  if (myDbg.myConsole.timing() == ConsoleTiming::ntsc)
-  {
-    color = NTSC_COLOR[byte >> 4];
-    buf << color << "|$" << Base::HEX1 << (byte & 0xf);
-  }
-  else if (myDbg.myConsole.timing() == ConsoleTiming::pal)
-  {
-    color = PAL_COLOR[byte >> 4];
-    buf << color << "|$" << Base::HEX1 << (byte & 0xf);
-  }
+  if(myDbg.myConsole.timing() == ConsoleTiming::ntsc)
+    return std::format("{}|${:X}", NTSC_COLOR[byte >> 4], byte & 0xf);
+  else if(myDbg.myConsole.timing() == ConsoleTiming::pal)
+    return std::format("{}|${:X}", PAL_COLOR[byte >> 4], byte & 0xf);
   else
-  {
-    color = SECAM_COLOR[(byte >> 1) & 0x7];
-    buf << "$" << Base::HEX1 << (byte >> 4) << "|" << color;
-  }
-  return buf.str();
+    return std::format("${:X}|{}", byte >> 4, SECAM_COLOR[(byte >> 1) & 0x7]);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

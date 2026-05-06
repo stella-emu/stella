@@ -31,7 +31,7 @@ CartridgeARWidget::CartridgeARWidget(
 {
   const size_t size = myCart.mySize;
 
-  const string info =
+  constexpr string_view info =
     "Supercharger cartridge, four 2K slices (3 RAM, 1 ROM)\n"
     "\nTHIS SCHEME IS NOT FULLY IMPLEMENTED OR TESTED\n";
 
@@ -39,42 +39,11 @@ CartridgeARWidget::CartridgeARWidget(
   const int ypos = addBaseInformation(size, "Starpath", info) + myLineHeight;
 
   VariantList items;
-  VarList::push_back(items, "  0");
-  VarList::push_back(items, "  1");
-  VarList::push_back(items, "  2");
-  VarList::push_back(items, "  3");
-  VarList::push_back(items, "  4");
-  VarList::push_back(items, "  5");
-  VarList::push_back(items, "  6");
-  VarList::push_back(items, "  7");
-  VarList::push_back(items, "  8");
-  VarList::push_back(items, "  9");
-  VarList::push_back(items, " 10");
-  VarList::push_back(items, " 11");
-  VarList::push_back(items, " 12");
-  VarList::push_back(items, " 13");
-  VarList::push_back(items, " 14");
-  VarList::push_back(items, " 15");
-  VarList::push_back(items, " 16");
-  VarList::push_back(items, " 17");
-  VarList::push_back(items, " 18");
-  VarList::push_back(items, " 19");
-  VarList::push_back(items, " 20");
-  VarList::push_back(items, " 21");
-  VarList::push_back(items, " 22");
-  VarList::push_back(items, " 23");
-  VarList::push_back(items, " 24");
-  VarList::push_back(items, " 25");
-  VarList::push_back(items, " 26");
-  VarList::push_back(items, " 27");
-  VarList::push_back(items, " 28");
-  VarList::push_back(items, " 29");
-  VarList::push_back(items, " 30");
-  VarList::push_back(items, " 31");
-  myBank =
-    new PopUpWidget(boss, _font, xpos, ypos-2, _font.getStringWidth(" XX"),
-                    myLineHeight, items, "Set bank     ",
-                    0, kBankChanged);
+  for(int i = 0; i < 32; ++i)
+    VarList::push_back(items, std::format("{:3}", i));
+  myBank = new PopUpWidget(boss, _font, xpos, ypos-2, _font.getStringWidth(" XX"),
+                           myLineHeight, items, "Set bank     ",
+                           0, kBankChanged);
   myBank->setTarget(this);
   addFocusWidget(myBank);
 }
@@ -107,9 +76,5 @@ void CartridgeARWidget::handleCommand(CommandSender* sender,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string CartridgeARWidget::bankState()
 {
-  std::ostringstream& buf = buffer();
-
-  buf << "Bank = " << std::dec << myCart.myCurrentBank;
-
-  return buf.str();
+  return std::format("Bank = {}", myCart.myCurrentBank);
 }

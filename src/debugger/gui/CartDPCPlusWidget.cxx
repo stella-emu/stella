@@ -29,14 +29,15 @@ CartridgeDPCPlusWidget::CartridgeDPCPlusWidget(
 {
   const size_t size = cart.mySize;
 
-  std::ostringstream info;
-  info << "Extended DPC cartridge, six 4K banks, 4K display bank, 1K frequency table, "
-       << "8K DPC RAM\n"
-       << "DPC registers accessible @ $F000 - $F07F\n"
-       << "  $F000 - $F03F (R), $F040 - $F07F (W)\n"
-       << "Banks accessible at hotspots $FFF6 to $FFFB\n"
-       << "Startup bank = " << cart.startBank() << "\n"
-       << "Ver = " << cart.myDriverMD5;
+  const string info = std::format(
+    "Extended DPC cartridge, six 4K banks, 4K display bank, 1K frequency table, "
+    "8K DPC RAM\n"
+    "DPC registers accessible @ $F000 - $F07F\n"
+    "  $F000 - $F03F (R), $F040 - $F07F (W)\n"
+    "Banks accessible at hotspots $FFF6 to $FFFB\n"
+    "Startup bank = {}\n"
+    "Ver = {}",
+    cart.startBank(), cart.myDriverMD5);
 
 #if 0
   // Eventually, we should query this from the debugger/disassembler
@@ -50,7 +51,7 @@ CartridgeDPCPlusWidget::CartridgeDPCPlusWidget(
 #endif
 
   int xpos = 2,
-      ypos = addBaseInformation(size, "Activision (Pitfall II)", info.view()) +
+      ypos = addBaseInformation(size, "Activision (Pitfall II)", info) +
               myLineHeight;
 
   VariantList items;
@@ -197,26 +198,29 @@ void CartridgeDPCPlusWidget::saveOldState()
   myOldState.mwaves.clear();
   myOldState.internalram.clear();
 
-  for(uInt32 i = 0; i < 8; ++i)
-  {
-    myOldState.tops.push_back(myCart.myTops[i]);
-    myOldState.bottoms.push_back(myCart.myBottoms[i]);
-    myOldState.counters.push_back(myCart.myCounters[i]);
-    myOldState.fraccounters.push_back(myCart.myFractionalCounters[i]);
-    myOldState.fracinc.push_back(myCart.myFractionalIncrements[i]);
-    myOldState.param.push_back(myCart.myParameter[i]);
-  }
-  for(uInt32 i = 0; i < 3; ++i)
-  {
-    myOldState.mcounters.push_back(myCart.myMusicCounters[i]);
-    myOldState.mfreqs.push_back(myCart.myMusicFrequencies[i]);
-    myOldState.mwaves.push_back(myCart.myMusicWaveforms[i]);
-  }
+  std::ranges::copy(myCart.myTops,
+                    std::back_inserter(myOldState.tops));
+  std::ranges::copy(myCart.myBottoms,
+                    std::back_inserter(myOldState.bottoms));
+  std::ranges::copy(myCart.myCounters,
+                    std::back_inserter(myOldState.counters));
+  std::ranges::copy(myCart.myFractionalCounters,
+                    std::back_inserter(myOldState.fraccounters));
+  std::ranges::copy(myCart.myFractionalIncrements,
+                    std::back_inserter(myOldState.fracinc));
+  std::ranges::copy(myCart.myParameter,
+                    std::back_inserter(myOldState.param));
+  std::ranges::copy(myCart.myMusicCounters,
+                    std::back_inserter(myOldState.mcounters));
+  std::ranges::copy(myCart.myMusicFrequencies,
+                    std::back_inserter(myOldState.mfreqs));
+  std::ranges::copy(myCart.myMusicWaveforms,
+                    std::back_inserter(myOldState.mwaves));
 
   myOldState.random = myCart.myRandomNumber;
 
-  for(uInt32 i = 0; i < internalRamSize(); ++i)
-    myOldState.internalram.push_back(myCart.myDisplayImage[i]);
+  myOldState.internalram.assign(myCart.myDisplayImage,
+                                myCart.myDisplayImage + internalRamSize());
 
   myOldState.bank = myCart.getBank();
 
@@ -233,7 +237,11 @@ void CartridgeDPCPlusWidget::loadConfig()
   IntArray vlist;
   BoolArray changed;
 
-  alist.clear();  vlist.clear();  changed.clear();
+  const auto clearAll = [&]() {
+    alist.clear(); vlist.clear(); changed.clear();
+  };
+
+  clearAll();
   for(int i = 0; i < 8; ++i)
   {
     alist.push_back(0);  vlist.push_back(myCart.myTops[i]);
@@ -241,7 +249,7 @@ void CartridgeDPCPlusWidget::loadConfig()
   }
   myTops->setList(alist, vlist, changed);
 
-  alist.clear();  vlist.clear();  changed.clear();
+  clearAll();
   for(int i = 0; i < 8; ++i)
   {
     alist.push_back(0);  vlist.push_back(myCart.myBottoms[i]);
@@ -249,7 +257,7 @@ void CartridgeDPCPlusWidget::loadConfig()
   }
   myBottoms->setList(alist, vlist, changed);
 
-  alist.clear();  vlist.clear();  changed.clear();
+  clearAll();
   for(int i = 0; i < 8; ++i)
   {
     alist.push_back(0);  vlist.push_back(myCart.myCounters[i]);
@@ -257,7 +265,7 @@ void CartridgeDPCPlusWidget::loadConfig()
   }
   myCounters->setList(alist, vlist, changed);
 
-  alist.clear();  vlist.clear();  changed.clear();
+  clearAll();
   for(int i = 0; i < 8; ++i)
   {
     alist.push_back(0);  vlist.push_back(myCart.myFractionalCounters[i]);
@@ -266,7 +274,7 @@ void CartridgeDPCPlusWidget::loadConfig()
   }
   myFracCounters->setList(alist, vlist, changed);
 
-  alist.clear();  vlist.clear();  changed.clear();
+  clearAll();
   for(int i = 0; i < 8; ++i)
   {
     alist.push_back(0);  vlist.push_back(myCart.myFractionalIncrements[i]);
@@ -274,7 +282,7 @@ void CartridgeDPCPlusWidget::loadConfig()
   }
   myFracIncrements->setList(alist, vlist, changed);
 
-  alist.clear();  vlist.clear();  changed.clear();
+  clearAll();
   for(int i = 0; i < 8; ++i)
   {
     alist.push_back(0);  vlist.push_back(myCart.myParameter[i]);
@@ -282,7 +290,7 @@ void CartridgeDPCPlusWidget::loadConfig()
   }
   myParameter->setList(alist, vlist, changed);
 
-  alist.clear();  vlist.clear();  changed.clear();
+  clearAll();
   for(int i = 0; i < 3; ++i)
   {
     alist.push_back(0);  vlist.push_back(myCart.myMusicCounters[i]);
@@ -291,7 +299,7 @@ void CartridgeDPCPlusWidget::loadConfig()
   }
   myMusicCounters->setList(alist, vlist, changed);
 
-  alist.clear();  vlist.clear();  changed.clear();
+  clearAll();
   for(int i = 0; i < 3; ++i)
   {
     alist.push_back(0);  vlist.push_back(myCart.myMusicFrequencies[i]);
@@ -300,7 +308,7 @@ void CartridgeDPCPlusWidget::loadConfig()
   }
   myMusicFrequencies->setList(alist, vlist, changed);
 
-  alist.clear();  vlist.clear();  changed.clear();
+  clearAll();
   for(int i = 0; i < 3; ++i)
   {
     alist.push_back(0);  vlist.push_back(myCart.myMusicWaveforms[i]);
@@ -336,15 +344,11 @@ void CartridgeDPCPlusWidget::handleCommand(CommandSender* sender,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string CartridgeDPCPlusWidget::bankState()
 {
-  std::ostringstream& buf = buffer();
-
   static constexpr std::array<string_view, 6> spot = {
     "$FFF6", "$FFF7", "$FFF8", "$FFF9", "$FFFA", "$FFFB"
   };
-  buf << "Bank = " << std::dec << myCart.getBank()
-      << ", hotspot = " << spot[myCart.getBank()];
-
-  return buf.str();
+  return std::format("Bank = {}, hotspot = {}",
+    myCart.getBank(), spot[myCart.getBank()]);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -362,23 +366,21 @@ uInt32 CartridgeDPCPlusWidget::internalRamRPort(int start)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string CartridgeDPCPlusWidget::internalRamDescription()
 {
-  std::ostringstream desc;
-  desc << "$0000 - $0FFF - 4K display data\n"
-       << "                indirectly accessible to 6507\n"
-       << "                via DPC+'s Data Fetcher registers\n"
-       << "$1000 - $13FF - 1K frequency table,\n"
-       << "                C variables and C stack\n"
-       << "                not accessible to 6507";
-
-  return desc.str();
+  return
+    "$0000 - $0FFF - 4K display data\n"
+    "                indirectly accessible to 6507\n"
+    "                via DPC+'s Data Fetcher registers\n"
+    "$1000 - $13FF - 1K frequency table,\n"
+    "                C variables and C stack\n"
+    "                not accessible to 6507";
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const ByteArray& CartridgeDPCPlusWidget::internalRamOld(int start, int count)
 {
   myRamOld.clear();
-  for(int i = 0; i < count; i++)
-    myRamOld.push_back(myOldState.internalram[start + i]);
+  myRamOld.assign(myOldState.internalram.data() + start,
+                  myOldState.internalram.data() + start + count);
   return myRamOld;
 }
 
@@ -386,8 +388,8 @@ const ByteArray& CartridgeDPCPlusWidget::internalRamOld(int start, int count)
 const ByteArray& CartridgeDPCPlusWidget::internalRamCurrent(int start, int count)
 {
   myRamCurrent.clear();
-  for(int i = 0; i < count; i++)
-    myRamCurrent.push_back(myCart.myDisplayImage[start + i]);
+  myRamCurrent.assign(myCart.myDisplayImage + start,
+                      myCart.myDisplayImage + start + count);
   return myRamCurrent;
 }
 

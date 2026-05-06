@@ -30,22 +30,17 @@ CartridgeFEWidget::CartridgeFEWidget(
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string CartridgeFEWidget::description()
 {
-  std::ostringstream info;
-
-  info << "FE (aka SCABS) cartridge, up to eight 4K banks\n"
-       << "Monitors access to hotspot $01FE, and uses "
-       << "upper 3 bits of databus for bank number:\n"
-       << CartridgeEnhancedWidget::description();
-
-  return info.str();
+  return std::format(
+    "FE (aka SCABS) cartridge, up to eight 4K banks\n"
+    "Monitors access to hotspot $01FE, and uses "
+    "upper 3 bits of databus for bank number:\n"
+    "{}",
+    CartridgeEnhancedWidget::description());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string CartridgeFEWidget::hotspotStr(int bank, int, bool)
 {
-  std::ostringstream info;
-
-  info << "(DATA = 11" << !bank << ", D5 = " << !bank << ")";
-
-  return info.str();
+  return std::format("(DATA = 11{}, D5 = {})",
+    static_cast<int>(!bank), static_cast<int>(!bank));
 }

@@ -51,14 +51,6 @@ class CartRamWidget : public Widget, public CommandSender
     int myFontWidth{0}, myFontHeight{0}, myLineHeight{0}, myButtonHeight{0};
 
   private:
-    // Following constructors and assignment operators not supported
-    CartRamWidget() = delete;
-    CartRamWidget(const CartRamWidget&) = delete;
-    CartRamWidget(CartRamWidget&&) = delete;
-    CartRamWidget& operator=(const CartRamWidget&) = delete;
-    CartRamWidget& operator=(CartRamWidget&&) = delete;
-
-  private:
     class InternalRamWidget : public RamWidget
     {
       public:
@@ -93,6 +85,14 @@ class CartRamWidget : public Widget, public CommandSender
   private:
     StringListWidget* myDesc{nullptr};
     InternalRamWidget* myRam{nullptr};
+
+  private:
+    // Following constructors and assignment operators not supported
+    CartRamWidget() = delete;
+    CartRamWidget(const CartRamWidget&) = delete;
+    CartRamWidget(CartRamWidget&&) = delete;
+    CartRamWidget& operator=(const CartRamWidget&) = delete;
+    CartRamWidget& operator=(CartRamWidget&&) = delete;
 };
 
 #endif  // CART_RAM_WIDGET_HXX

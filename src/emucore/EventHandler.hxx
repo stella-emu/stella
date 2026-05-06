@@ -474,7 +474,7 @@ class EventHandler
     void setActionMappings(EventMode mode);
     void setDefaultKeymap(Event::Type, EventMode mode);
     void setDefaultJoymap(Event::Type, EventMode mode);
-    static nlohmann::json convertLegacyComboMapping(string lst);
+    static nlohmann::json convertLegacyComboMapping(string_view lst);
     void saveComboMapping();
 
     static StringList getActionList(EventMode mode);

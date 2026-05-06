@@ -151,21 +151,18 @@ void RomInfoWidget::parseProperties(const FSNode& node, bool full)
 
     if(!bsDetected.empty())
     {
-      std::ostringstream buf;
-
       // Display actual ROM size in developer mode
+      string sizeSuffix;
       if(instance().settings().getBool("dev.settings"))
       {
-        buf << " - ";
-        if(size < 1_KB)
-          buf << size << "B";
-        else
-          buf << (std::round(size / static_cast<float>(1_KB))) << "K";
+        sizeSuffix = size < 1_KB
+          ? std::format(" - {}B", size)
+          : std::format(" - {}K", std::lround(size / static_cast<float>(1_KB)));
       }
       myRomInfo.push_back(std::format("Type: {}{}{}",
           Bankswitch::typeToDesc(Bankswitch::nameToType(bsDetected)),
           isPlusCart ? " - PlusROM" : "",
-          buf.str()));
+          sizeSuffix));
     }
 #if defined(DEBUG_BUILD) && defined(IMAGE_SUPPORT)
     // Debug bezel properties:
@@ -208,8 +205,8 @@ void RomInfoWidget::drawWidget(bool hilite)
   int ypos = _y + 5;
   for(const auto& info : myRomInfo)
   {
-    if(info.length() * _font.getMaxCharWidth() <= static_cast<size_t>(_w - 16))
-
+    if(info.length() * _font.getMaxCharWidth() <=
+       static_cast<size_t>(std::max(_w - 16, 0)))
     {
       // 1 line for next entry
       if(ypos + _font.getFontHeight() > _h + _y)

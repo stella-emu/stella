@@ -231,7 +231,7 @@ void CartridgeCDFWidget::saveOldState()
   myOldState.internalram.clear();
   myOldState.samplepointer.clear();
 
-  if (isCDFJplus())
+  if(isCDFJplus())
     myOldState.fastfetchoffset.push_back(myCart.myRAM[myCart.myFastFetcherOffset]);
 
   for(uInt32 i = 0; i < (isCDFJ() || isCDFJplus() ? 35U : 34U); ++i)
@@ -246,12 +246,13 @@ void CartridgeCDFWidget::saveOldState()
     // I = Increment
     // F = Fractional
 
-    myOldState.datastreampointers.push_back(myCart.getDatastreamPointer(i)>>(isCDFJplus() ? 8 : 12));
+    myOldState.datastreampointers.push_back(
+      myCart.getDatastreamPointer(i) >> (isCDFJplus() ? 8 : 12));
     myOldState.datastreamincrements.push_back(myCart.getDatastreamIncrement(i));
   }
 
-  for(uInt32 i = 0; i < 3; ++i)
-    myOldState.mcounters.push_back(myCart.myMusicCounters[i]);
+  std::ranges::copy(myCart.myMusicCounters,
+    std::back_inserter(myOldState.mcounters));
 
   for(uInt32 i = 0; i < 3; ++i)
   {
@@ -260,8 +261,8 @@ void CartridgeCDFWidget::saveOldState()
     myOldState.mwavesizes.push_back(myCart.getWaveformSize(i));
   }
 
-  for(uInt32 i = 0; i < internalRamSize(); ++i)
-    myOldState.internalram.push_back(myCart.myRAM[i]);
+  myOldState.internalram.assign(myCart.myRAM.data(),
+                                myCart.myRAM.data() + internalRamSize());
 
   myOldState.samplepointer.push_back(myCart.getSample());
 
@@ -439,16 +440,12 @@ void CartridgeCDFWidget::handleCommand(CommandSender* sender,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string CartridgeCDFWidget::bankState()
 {
-  std::ostringstream& buf = buffer();
-
   static constexpr std::array<string_view, 8> spot = {
     "$FFF4", "$FFF5", "$FFF6", "$FFF7", "$FFF8", "$FFF9", "$FFFA", "$FFFB"
   };
-
-  buf << "Bank = " << std::dec << myCart.getBank()
-  << ", hotspot = " << spot[myCart.getBank() + (isCDFJplus() ? 0 : 1)];
-
-  return buf.str();
+  return std::format("Bank = {}, hotspot = {}",
+    myCart.getBank(),
+    spot[myCart.getBank() + (isCDFJplus() ? 0 : 1)]);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -488,8 +485,8 @@ string CartridgeCDFWidget::internalRamDescription()
 const ByteArray& CartridgeCDFWidget::internalRamOld(int start, int count)
 {
   myRamOld.clear();
-  for(int i = 0; i < count; i++)
-    myRamOld.push_back(myOldState.internalram[start + i]);
+  myRamOld.assign(myOldState.internalram.data() + start,
+                  myOldState.internalram.data() + start + count);
   return myRamOld;
 }
 
@@ -497,8 +494,8 @@ const ByteArray& CartridgeCDFWidget::internalRamOld(int start, int count)
 const ByteArray& CartridgeCDFWidget::internalRamCurrent(int start, int count)
 {
   myRamCurrent.clear();
-  for(int i = 0; i < count; i++)
-    myRamCurrent.push_back(myCart.myRAM[start + i]);
+  myRamCurrent.assign(myCart.myRAM.data() + start,
+                      myCart.myRAM.data() + start + count);
   return myRamCurrent;
 }
 
@@ -512,20 +509,6 @@ void CartridgeCDFWidget::internalRamSetValue(int addr, uInt8 value)
 uInt8 CartridgeCDFWidget::internalRamGetValue(int addr)
 {
   return myCart.myRAM[addr];
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string CartridgeCDFWidget::describeCDFVersion(CartridgeCDF::CDFSubtype subtype)
-{
-  switch(subtype)
-  {
-    using enum CartridgeCDF::CDFSubtype;
-    case CDF0:      return "CDF (v0)";
-    case CDF1:      return "CDF (v1)";
-    case CDFJ:      return "CDFJ";
-    case CDFJplus:  return "CDFJ+";
-    default:        throw std::runtime_error("unreachable");
-  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

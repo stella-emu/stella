@@ -37,9 +37,6 @@ DelayQueueWidget::DelayQueueWidget(
 
   _w = 20 * font.getMaxCharWidth() + 6;
   _h = static_cast<int>(myLines.size() * font.getLineHeight() + 6);
-
-  for (auto&& line : myLines)
-    line = "";
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -58,38 +55,33 @@ void DelayQueueWidget::loadConfig() {
       continue;
     }
 
-    std::ostringstream ss;
+    string newLine;
     const auto address = delayQueueIterator->address();
     const int delay = delayQueueIterator->delay();
-
-    switch (address) {
+    switch(address) {
       using enum TIA::DummyRegisters;
       case shuffleP0:
-        ss << delay << " clk, shuffle GRP0";
+        newLine = std::format("{} clk, shuffle GRP0", delay);
         break;
-
       case shuffleP1:
-        ss << delay << " clk, shuffle GRP1";
+        newLine = std::format("{} clk, shuffle GRP1", delay);
         break;
-
       case shuffleBL:
-        ss << delay << " clk, shuffle ENABL";
+        newLine = std::format("{} clk, shuffle ENABL", delay);
         break;
-
       default:
-        if (address < 64) ss
-          << delay
-          << " clk, $"
-          << Base::toString(delayQueueIterator->value(), Base::Fmt::_16_2)
-          << " -> "
-          << instance().debugger().cartDebug().getLabel(address, false);
+        if(address < 64)
+          newLine = std::format("{} clk, ${} -> {}",
+            delay,
+            Base::toString(delayQueueIterator->value(), Base::Fmt::_16_2),
+            instance().debugger().cartDebug().getLabel(address, false));
         break;
     }
 
-    if(line != ss.view())
+    if(line != newLine)
     {
       setDirty();
-      line = ss.view();
+      line = std::move(newLine);
     }
     delayQueueIterator->next();
   }

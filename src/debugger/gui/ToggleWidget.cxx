@@ -224,10 +224,9 @@ string ToggleWidget::getToolTip(const Common::Point& pos) const
   const int idx = getToolTipIndex(pos).y * _cols;
 
   if(idx < 0)
-    return string{};
+    return {};
 
   Int32 val = 0;
-  std::ostringstream buf;
 
   if(_swapBits)
     for(int col = _cols - 1; col >= 0; --col)
@@ -243,13 +242,15 @@ string ToggleWidget::getToolTip(const Common::Point& pos) const
     }
   val <<= _shiftBits;
 
-  buf << _toolTipText
-    << "$" << Common::Base::toString(val, Common::Base::Fmt::_16)
-    << " = #" << val;
+  string result = std::format("{}${} = #{}",
+    _toolTipText,
+    Common::Base::toString(val, Common::Base::Fmt::_16),
+    val);
   if(val < 0x100)
-    buf << " = %" << Common::Base::toString(val, Common::Base::Fmt::_2);
+    result += std::format(" = %{}",
+      Common::Base::toString(val, Common::Base::Fmt::_2));
 
-  return buf.str();
+  return result;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

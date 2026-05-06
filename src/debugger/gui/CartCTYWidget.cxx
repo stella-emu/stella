@@ -31,7 +31,7 @@ CartridgeCTYWidget::CartridgeCTYWidget(
 {
   constexpr uInt16 size = 8 * 4096;
 
-  const string info =
+  constexpr string_view info =
     "Chetiry cartridge, eight 4K banks (bank 0 is ARM code and is ignored)\n"
     "64 bytes RAM @ $F000 - $F080\n"
     "  $F040 - $F07F (R), $F000 - $F03F (W)\n"
@@ -60,10 +60,8 @@ CartridgeCTYWidget::CartridgeCTYWidget(
 void CartridgeCTYWidget::saveOldState()
 {
   myOldState.internalram.clear();
-
-  for(uInt32 i = 0; i < internalRamSize(); ++i)
-    myOldState.internalram.push_back(myCart.myRAM[i]);
-
+  myOldState.internalram.assign(myCart.myRAM.data(),
+                                myCart.myRAM.data() + internalRamSize());
   myOldState.bank = myCart.getBank();
 }
 
@@ -91,15 +89,11 @@ void CartridgeCTYWidget::handleCommand(CommandSender* sender,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string CartridgeCTYWidget::bankState()
 {
-  std::ostringstream& buf = buffer();
-
   static constexpr std::array<string_view, 8> spot = {
     "", "$FFF5", "$FFF6", "$FFF7", "$FFF8", "$FFF9", "$FFFA", "$FFFB"
   };
   const uInt16 bank = myCart.getBank();
-  buf << "Bank = " << std::dec << bank << ", hotspot = " << spot[bank];
-
-  return buf.str();
+  return std::format("Bank = {}, hotspot = {}", bank, spot[bank]);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -117,19 +111,16 @@ uInt32 CartridgeCTYWidget::internalRamRPort(int start)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string CartridgeCTYWidget::internalRamDescription()
 {
-  std::ostringstream desc;
-  desc << "$F000 - $F03F used for Write Access\n"
-       << "$F040 - $F07F used for Read Access";
-
-  return desc.str();
+  return "$F000 - $F03F used for Write Access\n"
+         "$F040 - $F07F used for Read Access";
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const ByteArray& CartridgeCTYWidget::internalRamOld(int start, int count)
 {
   myRamOld.clear();
-  for(int i = 0; i < count; i++)
-    myRamOld.push_back(myOldState.internalram[start + i]);
+  myRamOld.assign(myOldState.internalram.data() + start,
+                  myOldState.internalram.data() + start + count);
   return myRamOld;
 }
 
@@ -137,8 +128,8 @@ const ByteArray& CartridgeCTYWidget::internalRamOld(int start, int count)
 const ByteArray& CartridgeCTYWidget::internalRamCurrent(int start, int count)
 {
   myRamCurrent.clear();
-  for(int i = 0; i < count; i++)
-    myRamCurrent.push_back(myCart.myRAM[start + i]);
+  myRamCurrent.assign(myCart.myRAM.data() + start,
+                      myCart.myRAM.data() + start + count);
   return myRamCurrent;
 }
 

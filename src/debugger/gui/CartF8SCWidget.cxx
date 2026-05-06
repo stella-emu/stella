@@ -30,10 +30,6 @@ CartridgeF8SCWidget::CartridgeF8SCWidget(
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string CartridgeF8SCWidget::description()
 {
-  std::ostringstream info;
-
-  info << "Standard F8SC cartridge, two 4K banks\n"
-       << CartridgeEnhancedWidget::description();
-
-  return info.str();
+  return std::format("Standard F8SC cartridge, two 4K banks\n{}",
+    CartridgeEnhancedWidget::description());
 }

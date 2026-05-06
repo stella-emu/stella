@@ -24,28 +24,27 @@ CartridgeBUSInfoWidget::CartridgeBUSInfoWidget(
   : CartDebugWidget(boss, lfont, nfont, x, y, w, h)
 {
   constexpr uInt16 size = 8 * 4096;
-  std::ostringstream info;
 
-  if (cart.myBUSSubtype == CartridgeBUS::BUSSubtype::BUS0)
-  {
-    info << "BUS Stuffing cartridge (EXPERIMENTAL)\n"
-         << "32K ROM, six 4K banks are accessible to 2600\n"
-         << "8K BUS RAM\n"
-         << "BUS registers accessible @ $F000 - $F03F\n"
-         << "Banks accessible at hotspots $FFF6 to $FFFB\n"
-         << "Startup bank = " << cart.startBank() << "\n";
-  }
-  else
-  {
-    info << "BUS Stuffing cartridge (EXPERIMENTAL)\n"
-         << "32K ROM, seven 4K banks are accessible to 2600\n"
-         << "8K BUS RAM\n"
-         <<  (cart.myBUSSubtype == CartridgeBUS::BUSSubtype::BUS3 ?
-             "BUS registers accessible @ $FFEE - $FFF3\n" : // BUS3
-             "BUS registers accessible @ $F000 - $F01A\n")  // BUS1, BUS2
-         << "Banks accessible at hotspots $FFF5 to $FFFB\n"
-         << "Startup bank = " << cart.startBank() << "\n";
-  }
+  const string info = (cart.myBUSSubtype == CartridgeBUS::BUSSubtype::BUS0)
+    ? std::format(
+        "BUS Stuffing cartridge (EXPERIMENTAL)\n"
+        "32K ROM, six 4K banks are accessible to 2600\n"
+        "8K BUS RAM\n"
+        "BUS registers accessible @ $F000 - $F03F\n"
+        "Banks accessible at hotspots $FFF6 to $FFFB\n"
+        "Startup bank = {}\n",
+        cart.startBank())
+    : std::format(
+        "BUS Stuffing cartridge (EXPERIMENTAL)\n"
+        "32K ROM, seven 4K banks are accessible to 2600\n"
+        "8K BUS RAM\n"
+        "{}"
+        "Banks accessible at hotspots $FFF5 to $FFFB\n"
+        "Startup bank = {}\n",
+        cart.myBUSSubtype == CartridgeBUS::BUSSubtype::BUS3
+          ? "BUS registers accessible @ $FFEE - $FFF3\n"  // BUS3
+          : "BUS registers accessible @ $F000 - $F01A\n", // BUS1, BUS2
+        cart.startBank());
 #if 0
   // Eventually, we should query this from the debugger/disassembler
   for(uInt32 i = 0, offset = 0xFFC, spot = 0xFF5; i < 7; ++i, offset += 0x1000)
@@ -57,19 +56,5 @@ CartridgeBUSInfoWidget::CartridgeBUSInfoWidget(
   }
 #endif
 
-  addBaseInformation(size, "AtariAge", info.view());
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string CartridgeBUSInfoWidget::describeBUSVersion(CartridgeBUS::BUSSubtype subtype)
-{
-  switch(subtype)
-  {
-    using enum CartridgeBUS::BUSSubtype;
-    case BUS0:  return "BUS (v0)";
-    case BUS1:  return "BUS (v1)";
-    case BUS2:  return "BUS (v2)";
-    case BUS3:  return "BUS (v3)";
-    default:    throw std::runtime_error("unreachable");
-  }
+  addBaseInformation(size, "AtariAge", info);
 }

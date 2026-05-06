@@ -30,10 +30,6 @@ CartridgeEFWidget::CartridgeEFWidget(
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string CartridgeEFWidget::description()
 {
-  std::ostringstream info;
-
-  info << "64K H. Runner EF cartridge, 16 4K banks\n"
-       << CartridgeEnhancedWidget::description();
-
-  return info.str();
+  return std::format("64K H. Runner EF cartridge, 16 4K banks\n{}",
+    CartridgeEnhancedWidget::description());
 }

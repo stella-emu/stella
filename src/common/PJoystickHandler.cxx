@@ -70,19 +70,28 @@ json PhysicalJoystickHandler::convertLegacyMapping(string_view mapping)
 {
   constexpr char CTRL_DELIM = '^';
 
-  std::istringstream buf(string{mapping});  // TODO: fixed in C++23
-  string joymap, joyname;
-
-  getline(buf, joymap, CTRL_DELIM); // event list size, ignore
-
   json convertedMapping = json::array();
 
-  while(getline(buf, joymap, CTRL_DELIM))
-  {
-    std::istringstream namebuf(joymap);
-    getline(namebuf, joyname, PhysicalJoystick::MODE_DELIM);
+  // Skip the first segment (event list size)
+  auto pos = mapping.find(CTRL_DELIM);
+  if(pos == string_view::npos)
+    return convertedMapping;
 
-    convertedMapping.push_back(PhysicalJoystick::convertLegacyMapping(joymap, joyname));
+  mapping = mapping.substr(pos + 1);
+
+  while(!mapping.empty())
+  {
+    pos = mapping.find(CTRL_DELIM);
+    const string_view joymap = mapping.substr(0, pos);
+
+    const auto nameEnd = joymap.find(PhysicalJoystick::MODE_DELIM);
+    const string_view joyname = joymap.substr(0, nameEnd);
+
+    convertedMapping.push_back(
+      PhysicalJoystick::convertLegacyMapping(joymap, joyname));
+
+    if(pos == string_view::npos) break;
+    mapping = mapping.substr(pos + 1);
   }
 
   return convertedMapping;

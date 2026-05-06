@@ -57,7 +57,7 @@ class CartDebugWidget : public Widget, public CommandSender
     // the following 9 functions for cartridges with internal RAM
     virtual uInt32 internalRamSize() { return 0; }
     virtual uInt32 internalRamRPort(int start) { return 0; }
-    virtual string internalRamDescription() { return string{}; }
+    virtual string internalRamDescription() { return {}; }
     virtual const ByteArray& internalRamOld(int start, int count) { return myRamOld; }
     virtual const ByteArray& internalRamCurrent(int start, int count) { return myRamCurrent; }
     virtual void internalRamSetValue(int addr, uInt8 value) { }
@@ -79,11 +79,8 @@ class CartDebugWidget : public Widget, public CommandSender
     // we may as well make them protected variables
     int myFontWidth{0}, myFontHeight{0}, myLineHeight{0}, myButtonHeight{0};
 
-    std::ostringstream& buffer() { myBuffer.str(""); return myBuffer; }
-
   private:
     StringListWidget* myDesc{nullptr};
-    std::ostringstream myBuffer;
 
   private:
     // Following constructors and assignment operators not supported

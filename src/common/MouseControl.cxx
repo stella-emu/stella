@@ -28,9 +28,8 @@ MouseControl::MouseControl(Console& console, string_view mode)
     myLeftController{console.leftController()},
     myRightController{console.rightController()}
 {
-  std::istringstream m_axis(string{mode});  // TODO: fixed in C++23
-  string m_mode;
-  m_axis >> m_mode;
+  const auto spacePos = mode.find(' ');
+  const string_view m_mode = mode.substr(0, spacePos);
 
   if(BSPF::equalsIgnoreCase(m_mode, "none"))
   {
@@ -99,18 +98,16 @@ MouseControl::MouseControl(Console& console, string_view mode)
   // Set range information (currently only for paddles, but may be used
   // for other controllers in the future)
   int m_range = 100;
-  if(!(m_axis >> m_range))
-    m_range = 100;
+  if(spacePos != string_view::npos)
+  {
+    const string_view rangeStr = mode.substr(spacePos + 1);
+    std::from_chars(rangeStr.data(), rangeStr.data() + rangeStr.size(), m_range);
+  }
   Paddles::setDigitalPaddleRange(m_range);
 
   // If the mouse isn't used at all, we still need one item in the list
   if(myModeList.empty())
     myModeList.emplace_back("Mouse not used for current controllers");
-
-#if 0
-  for(const auto& m: myModeList)
-    cerr << m << '\n';
-#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -161,29 +161,17 @@ void CartridgeARMWidget::loadConfig()
   myCycleFactor->setValue(std::round(instance().settings().getFloat("dev.thumb.cyclefactor") * 100.F));
   handleArmCycles();
 
-  alist.clear();  vlist.clear();  changed.clear();
-  alist.push_back(0);  vlist.push_back(myCart.prevCycles());
-  changed.push_back(myCart.prevCycles() !=
-    static_cast<uInt32>(myOldState.armPrevRun[0]));
-  myPrevThumbCycles->setList(alist, vlist, changed);
-
-  alist.clear();  vlist.clear();  changed.clear();
-  alist.push_back(0);  vlist.push_back(myCart.prevStats().instructions);
-  changed.push_back(myCart.prevStats().instructions !=
-    static_cast<uInt32>(myOldState.armPrevRun[1]));
-  myPrevThumbInstructions->setList(alist, vlist, changed);
-
-  alist.clear();  vlist.clear();  changed.clear();
-  alist.push_back(0);  vlist.push_back(myCart.cycles());
-  changed.push_back(myCart.cycles() !=
-    static_cast<uInt32>(myOldState.armRun[0]));
-  myThumbCycles->setList(alist, vlist, changed);
-
-  alist.clear();  vlist.clear();  changed.clear();
-  alist.push_back(0);  vlist.push_back(myCart.stats().instructions);
-  changed.push_back(myCart.stats().instructions !=
-    static_cast<uInt32>(myOldState.armRun[1]));
-  myThumbInstructions->setList(alist, vlist, changed);
+  const auto setSingle = [&](auto* widget, uInt32 cur, uInt32 old) {
+    alist.clear(); vlist.clear(); changed.clear();
+    alist.push_back(0);
+    vlist.push_back(static_cast<int>(cur));
+    changed.push_back(cur != old);
+    widget->setList(alist, vlist, changed);
+  };
+  setSingle(myPrevThumbCycles, myCart.prevCycles(), myOldState.armPrevRun[0]);
+  setSingle(myPrevThumbInstructions, myCart.prevStats().instructions, myOldState.armPrevRun[1]);
+  setSingle(myThumbCycles, myCart.cycles(), myOldState.armRun[0]);
+  setSingle(myThumbInstructions, myCart.stats().instructions, myOldState.armRun[1]);
 
   CartDebugWidget::loadConfig();
 }
@@ -233,16 +221,15 @@ void CartridgeARMWidget::handleChipType()
       (myChipType->getSelectedTag().toInt()));
 
     // update tooltip with currently selecte chip's properties
-    string tip = myChipType->getToolTip(Common::Point(0, 0));
-    std::ostringstream buf;
-    tip = tip.substr(0, 25);
-
-    buf << tip << "\nCurrent: " << chipProps.name << "\n"
-      << chipProps.flashBanks << " flash bank"
-      << (chipProps.flashBanks > 1 ? "s" : "") << ", "
-      << chipProps.MHz << " MHz, "
-      << chipProps.flashCycles - 1 << " wait states";
-    myChipType->setToolTip(buf.view());
+    const string tip = myChipType->getToolTip(Common::Point(0, 0)).substr(0, 25);
+    myChipType->setToolTip(std::format(
+      "{}\nCurrent: {}\n{} flash bank{}, {} MHz, {} wait states",
+      tip,
+      chipProps.name,
+      chipProps.flashBanks,
+      chipProps.flashBanks > 1 ? "s" : "",
+      chipProps.MHz,
+      chipProps.flashCycles - 1));
   }
 }
 

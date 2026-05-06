@@ -2070,22 +2070,27 @@ void EventHandler::setComboMap()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-json EventHandler::convertLegacyComboMapping(string lst)
+json EventHandler::convertLegacyComboMapping(string_view lst)
 {
   json convertedMapping = json::array();
 
-  // Since istringstream swallows whitespace, we have to make the
-  // delimiters be spaces
-  std::ranges::replace(lst, ':', ' ');
-  std::ranges::replace(lst, ',', ' ');
-  std::istringstream buf(lst);
-
   try
   {
+    const char* p = lst.data();
+    const char* end = p + lst.size();
+
+    const auto nextInt = [&](int& val) -> bool {
+      while(p < end && (*p == ' ' || *p == ':' || *p == ',')) ++p;
+      auto [next, ec] = std::from_chars(p, end, val);
+      if(ec != std::errc{}) return false;
+      p = next;
+      return true;
+    };
+
     int numCombos{0};
     // Get combo count, which should be the first int in the list
     // If it isn't, then we treat the entire list as invalid
-    buf >> numCombos;
+    if(!nextInt(numCombos)) return convertedMapping;
 
     if(numCombos == COMBO_SIZE)
     {
@@ -2096,7 +2101,7 @@ json EventHandler::convertLegacyComboMapping(string lst)
         for(int j = 0; j < EVENTS_PER_COMBO; ++j)
         {
           int event{0};
-          buf >> event;
+          if(!nextInt(event)) break;
           // skip all NoType events
           if(event != Event::NoType)
             events.push_back(static_cast<Event::Type>(event));

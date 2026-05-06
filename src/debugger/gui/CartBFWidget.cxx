@@ -30,10 +30,6 @@ CartridgeBFWidget::CartridgeBFWidget(
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string CartridgeBFWidget::description()
 {
-  std::ostringstream info;
-
-  info << "256K BF cartridge, 64 4K banks\n"
-       << CartridgeEnhancedWidget::description();
-
-  return info.str();
+  return std::format("256K BF cartridge, 64 4K banks\n{}",
+    CartridgeEnhancedWidget::description());
 }

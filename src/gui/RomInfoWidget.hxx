@@ -18,9 +18,10 @@
 #ifndef ROM_INFO_WIDGET_HXX
 #define ROM_INFO_WIDGET_HXX
 
+class FSNode;
 class FBSurface;
-class Properties;
 
+#include "Props.hxx"
 #include "Widget.hxx"
 
 class RomInfoWidget : public Widget, public CommandSender

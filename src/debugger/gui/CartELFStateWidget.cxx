@@ -15,15 +15,13 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#include "CartELFStateWidget.hxx"
-
-#include <sstream>
-
 #include "CartELF.hxx"
 #include "BusTransactionQueue.hxx"
 #include "DataGridWidget.hxx"
 #include "ToggleBitWidget.hxx"
 #include "EditTextWidget.hxx"
+
+#include "CartELFStateWidget.hxx"
 
 namespace {
   string registerName(uInt8 reg) {
@@ -43,25 +41,14 @@ namespace {
       case 15:
         return "PC (R15) = ";
 
-      default: {
-        std::ostringstream s;
-        s << "R" << static_cast<int>(reg) << " = ";
-
-        return s.str();
-      }
+      default:
+        return std::format("R{} = ", static_cast<int>(reg));
     }
   }
 
   string describeTransaction(uInt16 address, uInt16 mask, uInt64 timestamp) {
-    std::ostringstream s;
-
-    s
-      << std::hex << std::setfill('0')
-      << "waiting for 0x" << std::setw(4) << address
-      << " mask 0x" << std::setw(4) << mask
-      << " time " << std::dec << timestamp;
-
-    return s.str();
+    return std::format("waiting for 0x{:04X} mask 0x{:04X} time {}",
+      address, mask, timestamp);
   }
 }  // namespace
 
@@ -144,17 +131,9 @@ void CartridgeELFStateWidget::loadConfig()
 
   myFlags->setState(flags, flagsChanged);
 
-  std::ostringstream s;
-  s << myCart.getVcsCyclesArm();
-  myCurrentCyclesVcs->setText(s.str());
-
-  s.str("");
-  s << myCart.getArmCycles();
-  myCurrentCyclesArm->setText(s.str());
-
-  s.str("");
-  s << myCart.myTransactionQueue.size();
-  myQueueSize->setText(s.str());
+  myCurrentCyclesVcs->setText(std::to_string(myCart.getVcsCyclesArm()));
+  myCurrentCyclesArm->setText(std::to_string(myCart.getArmCycles()));
+  myQueueSize->setText(std::to_string(myCart.myTransactionQueue.size()));
 
   const BusTransactionQueue::Transaction* nextTransaction =
       myCart.myTransactionQueue.peekNextTransaction();

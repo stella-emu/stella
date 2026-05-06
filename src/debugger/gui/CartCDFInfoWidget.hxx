@@ -31,8 +31,20 @@ class CartridgeCDFInfoWidget : public CartDebugWidget
     ~CartridgeCDFInfoWidget() override = default;
 
   private:
-    static string describeCDFVersion(CartridgeCDF::CDFSubtype subtype);
+    static constexpr string_view describeCDFVersion(
+        CartridgeCDF::CDFSubtype subtype) {
+      switch(subtype)
+      {
+        using enum CartridgeCDF::CDFSubtype;
+        case CDF0:      return "CDF (v0)";
+        case CDF1:      return "CDF (v1)";
+        case CDFJ:      return "CDFJ";
+        case CDFJplus:  return "CDFJ+";
+        default:        throw std::runtime_error("unreachable");
+      }
+    }
 
+  private:
     // Following constructors and assignment operators not supported
     CartridgeCDFInfoWidget() = delete;
     CartridgeCDFInfoWidget(const CartridgeCDFInfoWidget&) = delete;
@@ -40,4 +52,5 @@ class CartridgeCDFInfoWidget : public CartDebugWidget
     CartridgeCDFInfoWidget& operator=(const CartridgeCDFInfoWidget&) = delete;
     CartridgeCDFInfoWidget& operator=(CartridgeCDFInfoWidget&&) = delete;
 };
+
 #endif  // CARTRIDGE_CDF_INFO_WIDGET_HXX

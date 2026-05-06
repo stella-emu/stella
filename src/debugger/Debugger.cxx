@@ -106,10 +106,9 @@ void Debugger::initialize()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FBInitStatus Debugger::initializeVideo()
 {
-  const string title = string{STELLA_FULL_TITLE} + ": Debugger mode";
   return myOSystem.frameBuffer().createDisplay(
-      title, BufferType::Debugger, mySize
-  );
+    string{STELLA_FULL_TITLE} + ": Debugger mode",
+    BufferType::Debugger, mySize);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

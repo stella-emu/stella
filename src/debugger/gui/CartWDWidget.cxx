@@ -30,29 +30,26 @@ CartridgeWDWidget::CartridgeWDWidget(
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string CartridgeWDWidget::description()
 {
-  std::ostringstream info;
-
-  info << "8K + RAM Wickstead Design cartridge, \n"
-       << "  eight 1K banks, mapped into four segments\n"
-       << "Hotspots $" << Common::Base::HEX1 << myCart.hotspot() << " - $" << (myCart.hotspot() + 7) << ", "
-       << "each hotspot selects a [predefined bank mapping]\n"
-       << ramDescription();
-
-  return info.str();
+  return std::format(
+    "8K + RAM Wickstead Design cartridge, \n"
+    "  eight 1K banks, mapped into four segments\n"
+    "Hotspots ${:X} - ${:X}, "
+    "each hotspot selects a [predefined bank mapping]\n"
+    "{}",
+    myCart.hotspot(),
+    myCart.hotspot() + 7,
+    ramDescription());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string CartridgeWDWidget::hotspotStr(int bank, int segment, bool prefix)
+string CartridgeWDWidget::hotspotStr(int bank, int, bool prefix)
 {
-  std::ostringstream info;
   const CartridgeWD::BankOrg banks = CartridgeWD::ourBankOrg[bank];
-
-  info << "(" << (prefix ? "hotspot " : "")
-       << "$" << Common::Base::HEX1 << (myCart.hotspot() + bank) << ") ["
-       << static_cast<uInt16>(banks.zero) << ", "
-       << static_cast<uInt16>(banks.one) << ", "
-       << static_cast<uInt16>(banks.two) << ", "
-       << static_cast<uInt16>(banks.three) << "]";
-
-  return info.str();
+  return std::format("({}${:X}) [{}, {}, {}, {}]",
+    prefix ? "hotspot " : "",
+    myCart.hotspot() + bank,
+    static_cast<uInt16>(banks.zero),
+    static_cast<uInt16>(banks.one),
+    static_cast<uInt16>(banks.two),
+    static_cast<uInt16>(banks.three));
 }

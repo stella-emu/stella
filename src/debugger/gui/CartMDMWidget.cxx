@@ -32,14 +32,13 @@ CartridgeMDMWidget::CartridgeMDMWidget(
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string CartridgeMDMWidget::description()
 {
-  std::ostringstream info;
-
-  info << "Menu Driven Megacart, " << myCart.romBankCount() << " 4K banks\n"
-       << "Banks are selected by reading from $800 - $" << Common::Base::HEX1 << 0xBFF
-       << ", where the lower byte determines the 4K bank to use.\n"
-       << CartridgeEnhancedWidget::description();
-
-  return info.str();
+  return std::format(
+    "Menu Driven Megacart, {} 4K banks\n"
+    "Banks are selected by reading from $800 - ${:X}, "
+    "where the lower byte determines the 4K bank to use.\n"
+    "{}",
+    myCart.romBankCount(), 0xBFF,
+    CartridgeEnhancedWidget::description());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -35,7 +35,7 @@ CartridgeCMWidget::CartridgeCMWidget(
 {
   constexpr uInt16 size = 4 * 4096;
 
-  const string info =
+  constexpr string_view info =
     "CM cartridge, four 4K banks + 2K RAM\n"
     "2K RAM accessible @ $1800 - $1FFF in read or write-only mode "
     "(no separate ports)\n"
@@ -51,10 +51,9 @@ CartridgeCMWidget::CartridgeCMWidget(
   VarList::push_back(items, " 1 ");
   VarList::push_back(items, " 2 ");
   VarList::push_back(items, " 3 ");
-  myBank =
-    new PopUpWidget(boss, _font, xpos, ypos-2, _font.getStringWidth(" 0 "),
-                    myLineHeight, items, "Set bank     ",
-                    0, kBankChanged);
+  myBank = new PopUpWidget(boss, _font, xpos, ypos-2, _font.getStringWidth(" 0 "),
+                           myLineHeight, items, "Set bank     ",
+                           0, kBankChanged);
   myBank->setTarget(this);
   addFocusWidget(myBank);
 
@@ -154,8 +153,8 @@ void CartridgeCMWidget::saveOldState()
   myOldState.column = myCart.column();
 
   myOldState.internalram.clear();
-  for(uInt32 i = 0; i < internalRamSize(); ++i)
-    myOldState.internalram.push_back(myCart.myRAM[i]);
+  myOldState.internalram.assign(myCart.myRAM.data(),
+                                myCart.myRAM.data() + internalRamSize());
 
   myOldState.bank = myCart.getBank();
 }
@@ -197,8 +196,8 @@ void CartridgeCMWidget::loadConfig()
   myAudOut->setState(swcha & 0x40);
 
   // RAM state (several bits from SWCHA)
-  const string& ram = (swcha & 0x10) ? " Inactive" :
-                      (swcha & 0x20) ? " Read-only" : " Write-only";
+  const string_view ram = (swcha & 0x10) ? " Inactive" :
+                          (swcha & 0x20) ? " Read-only" : " Write-only";
   myRAM->setText(ram, (swcha & 0x30) != (myOldState.swcha & 0x30));
 
   CartDebugWidget::loadConfig();
@@ -222,15 +221,11 @@ void CartridgeCMWidget::handleCommand(CommandSender* sender,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string CartridgeCMWidget::bankState()
 {
-  std::ostringstream& buf = buffer();
-
-  buf << "Bank = " << std::dec << myCart.getBank()
-      << ", RAM is" << ((myCart.mySWCHA & 0x10) ? " Inactive" :
-         (myCart.mySWCHA & 0x20) ? " Read-only" : " Write-only");
-
-  return buf.str();
+  return std::format("Bank = {}, RAM is{}",
+    myCart.getBank(),
+    (myCart.mySWCHA & 0x10) ? " Inactive" :
+    (myCart.mySWCHA & 0x20) ? " Read-only" : " Write-only");
 }
-
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt32 CartridgeCMWidget::internalRamSize()
@@ -247,19 +242,16 @@ uInt32 CartridgeCMWidget::internalRamRPort(int start)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string CartridgeCMWidget::internalRamDescription()
 {
-  std::ostringstream desc;
-  desc << "$F800 - $FFFF used for Exclusive Read\n"
-       << "              or Exclusive Write Access";
-
-  return desc.str();
+  return "$F800 - $FFFF used for Exclusive Read\n"
+         "              or Exclusive Write Access";
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const ByteArray& CartridgeCMWidget::internalRamOld(int start, int count)
 {
   myRamOld.clear();
-  for(int i = 0; i < count; i++)
-    myRamOld.push_back(myOldState.internalram[start + i]);
+  myRamOld.assign(myOldState.internalram.data() + start,
+                  myOldState.internalram.data() + start + count);
   return myRamOld;
 }
 
@@ -267,8 +259,8 @@ const ByteArray& CartridgeCMWidget::internalRamOld(int start, int count)
 const ByteArray& CartridgeCMWidget::internalRamCurrent(int start, int count)
 {
   myRamCurrent.clear();
-  for(int i = 0; i < count; i++)
-    myRamCurrent.push_back(myCart.myRAM[start + i]);
+  myRamCurrent.assign(myCart.myRAM.data() + start,
+                      myCart.myRAM.data() + start + count);
   return myRamCurrent;
 }
 

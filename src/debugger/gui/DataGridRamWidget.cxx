@@ -35,22 +35,13 @@ DataGridRamWidget::DataGridRamWidget(GuiObject* boss, const RamWidget& ram,
 string DataGridRamWidget::getToolTip(const Common::Point& pos) const
 {
   const int idx = getToolTipIndex(pos);
-
   if(idx < 0)
-    return string{};
+    return {};
 
   const Int32 addr = _addrList[idx];
   const string label = _ram.getLabel(addr);
-
   if(label.empty())
-  {
     return DataGridWidget::getToolTip(pos);
-  }
-  else
-  {
-    std::ostringstream buf;
-    buf << label << '\n' << DataGridWidget::getToolTip(pos);
 
-    return buf.str();
-  }
+  return label + '\n' + DataGridWidget::getToolTip(pos);
 }

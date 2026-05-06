@@ -129,6 +129,7 @@ class KeyMap
     // a Ctrl combo when it isn't wanted)
     bool myModEnabled{true};
 
+  private:
     // Following constructors and assignment operators not supported
     KeyMap(const KeyMap&) = delete;
     KeyMap(KeyMap&&) = delete;

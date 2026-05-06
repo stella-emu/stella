@@ -31,23 +31,15 @@ Cartridge0FA0Widget::Cartridge0FA0Widget(
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string Cartridge0FA0Widget::description()
 {
-  std::ostringstream info;
-
-  info << "8K BR cartridge, two 4K banks\n"
-    << CartridgeEnhancedWidget::description();
-
-  return info.str();
+  return std::format("8K BR cartridge, two 4K banks\n{}",
+    CartridgeEnhancedWidget::description());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string Cartridge0FA0Widget::hotspotStr(int bank, int, bool prefix)
 {
-  std::ostringstream info;
   const uInt16 hotspot = myCart.hotspot() + bank * myHotspotDelta;
-
-  info << "(" << (prefix ? "hotspot " : "")
-    << "$" << Common::Base::HEX1 << hotspot
-    << ", $" << (hotspot | 0xf80) << ")";
-
-  return info.str();
+  return std::format("({}${:X}, ${:X})",
+    prefix ? "hotspot " : "",
+    hotspot, hotspot | 0xf80);
 }

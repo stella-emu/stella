@@ -281,8 +281,8 @@ void CartridgeBUSWidget::saveOldState()
     myOldState.mwavesizes.push_back(myCart.getWaveformSize(i));
   }
 
-  for(uInt32 i = 0; i < internalRamSize(); ++i)
-    myOldState.internalram.push_back(myCart.myRAM[i]);
+  myOldState.internalram.assign(myCart.myRAM.data(),
+                                myCart.myRAM.data() + internalRamSize());
 
   myOldState.samplepointer.push_back(myCart.getSample());
 
@@ -302,7 +302,11 @@ void CartridgeBUSWidget::loadConfig()
   IntArray vlist;
   BoolArray changed;
 
-  alist.clear();  vlist.clear();  changed.clear();
+  const auto clearAll = [&]() {
+    alist.clear(); vlist.clear(); changed.clear();
+  };
+
+  clearAll();
   for(int i = 0; i < 16; ++i)
   {
     // Pointers are stored as:
@@ -321,7 +325,7 @@ void CartridgeBUSWidget::loadConfig()
   }
   myDatastreamPointers->setList(alist, vlist, changed);
 
-  alist.clear();  vlist.clear();  changed.clear();
+  clearAll();
   for(int i = 16; i < myDatastreamCount; ++i)
   {
     const Int32 pointervalue = myCart.getDatastreamPointer(i) >> 12;
@@ -330,7 +334,7 @@ void CartridgeBUSWidget::loadConfig()
   }
   myDatastreamPointers2->setList(alist, vlist, changed);
 
-  alist.clear();  vlist.clear();  changed.clear();
+  clearAll();
   for(int i = 0; i < 16; ++i)
   {
     const Int32 incrementvalue = myCart.getDatastreamIncrement(i);
@@ -339,7 +343,7 @@ void CartridgeBUSWidget::loadConfig()
   }
   myDatastreamIncrements->setList(alist, vlist, changed);
 
-  alist.clear();  vlist.clear();  changed.clear();
+  clearAll();
   for(int i = 16; i < myDatastreamCount; ++i)
   {
     constexpr Int32 incrementvalue = 0x100;
@@ -348,7 +352,7 @@ void CartridgeBUSWidget::loadConfig()
   }
   myDatastreamIncrements2->setList(alist, vlist, changed);
 
-  alist.clear();  vlist.clear();  changed.clear();
+  clearAll();
   for(int i = 0; i < 37; ++i) // only 37 map values
   {
     const Int32 mapvalue = myCart.getAddressMap(i);
@@ -363,7 +367,7 @@ void CartridgeBUSWidget::loadConfig()
   }
   myAddressMaps->setList(alist, vlist, changed);
 
-  alist.clear();  vlist.clear();  changed.clear();
+  clearAll();
   for(int i = 0; i < 3; ++i)
   {
     alist.push_back(0);  vlist.push_back(myCart.myMusicCounters[i]);
@@ -372,7 +376,7 @@ void CartridgeBUSWidget::loadConfig()
   }
   myMusicCounters->setList(alist, vlist, changed);
 
-  alist.clear();  vlist.clear();  changed.clear();
+  clearAll();
   for(int i = 0; i < 3; ++i)
   {
     alist.push_back(0);  vlist.push_back(myCart.myMusicFrequencies[i]);
@@ -381,7 +385,7 @@ void CartridgeBUSWidget::loadConfig()
   }
   myMusicFrequencies->setList(alist, vlist, changed);
 
-  alist.clear();  vlist.clear();  changed.clear();
+  clearAll();
   for(int i = 0; i < 3; ++i)
   {
     alist.push_back(0);  vlist.push_back(myCart.getWaveform(i) >> 5);
@@ -390,7 +394,7 @@ void CartridgeBUSWidget::loadConfig()
   }
   myMusicWaveforms->setList(alist, vlist, changed);
 
-  alist.clear();  vlist.clear();  changed.clear();
+  clearAll();
   for(int i = 0; i < 3; ++i)
   {
     alist.push_back(0);  vlist.push_back(myCart.getWaveformSize(i));
@@ -401,7 +405,7 @@ void CartridgeBUSWidget::loadConfig()
 
   if (myCart.myBUSSubtype == CartridgeBUS::BUSSubtype::BUS3)
   {
-    alist.clear();  vlist.clear();  changed.clear();
+    clearAll();
     alist.push_back(0);  vlist.push_back(myCart.getSample());
     changed.push_back(std::cmp_not_equal(myCart.getSample(),
                                          myOldState.samplepointer[0]));
@@ -448,26 +452,14 @@ void CartridgeBUSWidget::handleCommand(CommandSender* sender,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string CartridgeBUSWidget::bankState()
 {
-  std::ostringstream& buf = buffer();
-
-  if (myCart.myBUSSubtype == CartridgeBUS::BUSSubtype::BUS0)
-  {
-    static constexpr std::array<string_view, 6> spot = {
-      "$FFF6", "$FFF7", "$FFF8", "$FFF9", "$FFFA", "$FFFB"
-    };
-    buf << "Bank = " << std::dec << myCart.getBank()
-        << ", hotspot = " << spot[myCart.getBank()];
-  }
-  else
-  {
-    static constexpr std::array<string_view, 7> spot = {
-      "$FFF5", "$FFF6", "$FFF7", "$FFF8", "$FFF9", "$FFFA", "$FFFB"
-    };
-    buf << "Bank = " << std::dec << myCart.getBank()
-        << ", hotspot = " << spot[myCart.getBank()];
-  }
-
-  return buf.str();
+  const uInt16 bank = myCart.getBank();
+  const bool isBUS0 = myCart.myBUSSubtype == CartridgeBUS::BUSSubtype::BUS0;
+  static constexpr std::array<string_view, 7> allSpots = {
+    "$FFF5", "$FFF6", "$FFF7", "$FFF8", "$FFF9", "$FFFA", "$FFFB"
+  };
+  // BUS0 starts at index 1 ($FFF6), others start at index 0 ($FFF5)
+  return std::format("Bank = {}, hotspot = {}",
+    bank, allSpots[bank + (isBUS0 ? 1 : 0)]);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -485,16 +477,14 @@ uInt32 CartridgeBUSWidget::internalRamRPort(int start)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string CartridgeBUSWidget::internalRamDescription()
 {
-  std::ostringstream desc;
-  desc << "$0000 - $07FF - BUS driver\n"
-       << "                not accessible to 6507\n"
-       << "$0800 - $17FF - 4K Data Stream storage\n"
-       << "                indirectly accessible to 6507\n"
-       << "                via BUS's Data Stream registers\n"
-       << "$1800 - $1FFF - 2K C variable storage and stack\n"
-       << "                not accessible to 6507";
-
-  return desc.str();
+  return
+    "$0000 - $07FF - BUS driver\n"
+    "                not accessible to 6507\n"
+    "$0800 - $17FF - 4K Data Stream storage\n"
+    "                indirectly accessible to 6507\n"
+    "                via BUS's Data Stream registers\n"
+    "$1800 - $1FFF - 2K C variable storage and stack\n"
+    "                not accessible to 6507";
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

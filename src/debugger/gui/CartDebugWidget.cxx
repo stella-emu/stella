@@ -44,19 +44,17 @@ int CartDebugWidget::addBaseInformation(size_t bytes, string_view manufacturer,
   const int lwidth = _font.getStringWidth("Manufacturer "),
             fwidth = _w - lwidth - 12;
   EditTextWidget* w = nullptr;
-  std::ostringstream buf;
 
   constexpr int x = 2;
   int y = 8;
 
   // Add ROM size, manufacturer and bankswitch info
   new StaticTextWidget(_boss, _font, x, y + 1, "ROM size ");
-  buf << bytes << " bytes";
-  if(bytes >= 1024)
-    buf << " / " << (bytes/1024) << "KB";
 
-  w = new EditTextWidget(_boss, _nfont, x+lwidth, y - 1,
-                         fwidth, myLineHeight, buf.view());
+  w = new EditTextWidget(_boss, _nfont, x+lwidth, y - 1, fwidth, myLineHeight,
+    bytes >= 1024
+      ? std::format("{} bytes / {}KB", bytes, bytes / 1024)
+      : std::format("{} bytes", bytes));
   w->setEditable(false);
   y += myLineHeight + 4;
 
@@ -69,13 +67,8 @@ int CartDebugWidget::addBaseInformation(size_t bytes, string_view manufacturer,
   const StringParser bs(desc, (fwidth - ScrollBarWidget::scrollBarWidth(_font)) /
     myFontWidth);
   const StringList& sl = bs.stringList();
-  size_t lines = std::max<size_t>(sl.size(), 3);
-  bool useScrollbar = false;
-  if(lines > maxlines)
-  {
-    lines = maxlines;
-    useScrollbar = true;
-  }
+  const bool useScrollbar = sl.size() > maxlines;
+  const size_t lines = useScrollbar ? maxlines : std::max<size_t>(sl.size(), 3);
 
   new StaticTextWidget(_boss, _font, x, y + 1, "Description ");
   myDesc = new StringListWidget(_boss, _nfont, x+lwidth, y - 1,

@@ -110,32 +110,41 @@ bool PhysicalJoystick::setMap(const json& map)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 json PhysicalJoystick::convertLegacyMapping(string_view mapping, string_view name)
 {
-  std::istringstream buf(string{mapping});  // TODO: fixed in C++26
   json convertedMapping = json::object();
-  string lmap;
 
-  // Skip joystick name
-  getline(buf, lmap, MODE_DELIM);
-
-  while (getline(buf, lmap, MODE_DELIM))
+  // Skip joystick name (first segment)
+  auto pos = mapping.find(MODE_DELIM);
+  if(pos == string_view::npos)
   {
+    convertedMapping["name"] = name;
+    return convertedMapping;
+  }
+  mapping = mapping.substr(pos + 1);
+
+  while(!mapping.empty())
+  {
+    pos = mapping.find(MODE_DELIM);
+    string_view segment = mapping.substr(0, pos);
+
+    // Get event mode from leading integer before '|'
     int mode{0};
+    const auto pipePos = segment.find('|');
+    if(pipePos != string_view::npos)
+    {
+      const string_view modeStr = segment.substr(0, pipePos);
+      std::from_chars(modeStr.data(), modeStr.data() + modeStr.size(), mode);
+      // Remove leading "<mode>|" string
+      segment = segment.substr(pipePos + 1);
+    }
 
-    // Get event mode
-    std::ranges::replace(lmap, '|', ' ');
-    std::istringstream modeBuf(lmap);
-    modeBuf >> mode;
-
-    // Remove leading "<mode>|" string
-    lmap.erase(0, 2);
-
-    const json lmappingForMode = JoyMap::convertLegacyMapping(lmap);
-
+    const json lmappingForMode = JoyMap::convertLegacyMapping(segment);
     convertedMapping[jsonName(static_cast<EventMode>(mode))] = lmappingForMode;
+
+    if(pos == string_view::npos) break;
+    mapping = mapping.substr(pos + 1);
   }
 
   convertedMapping["name"] = name;
-
   return convertedMapping;
 }
 

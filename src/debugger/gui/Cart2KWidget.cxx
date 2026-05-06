@@ -30,10 +30,6 @@ Cartridge2KWidget::Cartridge2KWidget(
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string Cartridge2KWidget::description()
 {
-  std::ostringstream info;
-
-  info << "Standard 2K cartridge, non-bankswitched\n";
-  info << CartridgeEnhancedWidget::description();
-
-  return info.str();
+  return std::format("Standard 2K cartridge, non-bankswitched\n{}",
+    CartridgeEnhancedWidget::description());
 }

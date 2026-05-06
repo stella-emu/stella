@@ -58,14 +58,12 @@ CartridgeFA2Widget::CartridgeFA2Widget(
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string CartridgeFA2Widget::description()
 {
-  std::ostringstream info;
-
-  info << "Modified FA RAM+, six or seven 4K banks\n"
-       << "RAM+ can be loaded/saved to Harmony flash memory by accessing $"
-       << Common::Base::HEX4 << 0xFFF4 << "\n"
-       << CartridgeEnhancedWidget::description();
-
-  return info.str();
+  return std::format(
+    "Modified FA RAM+, six or seven 4K banks\n"
+    "RAM+ can be loaded/saved to Harmony flash memory by accessing ${:X}\n"
+    "{}",
+    0xFFF4,
+    CartridgeEnhancedWidget::description());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

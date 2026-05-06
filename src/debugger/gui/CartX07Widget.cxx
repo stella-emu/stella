@@ -30,12 +30,10 @@ CartridgeX07Widget::CartridgeX07Widget(
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string CartridgeX07Widget::description()
 {
-  std::ostringstream info;
-
-  info << "64K X07 cartridge, 16 4K banks\n"
-       << "Multiple hotspots, all below $1000\n"
-       << "See documentation for further details\n"
-       << CartridgeEnhancedWidget::description();
-
-  return info.str();
+  return std::format(
+    "64K X07 cartridge, 16 4K banks\n"
+    "Multiple hotspots, all below $1000\n"
+    "See documentation for further details\n"
+    "{}",
+    CartridgeEnhancedWidget::description());
 }

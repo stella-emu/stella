@@ -703,10 +703,9 @@ FBInitStatus Console::initializeVideo(bool full)
       Common::Size(2 * myTIA->width(), myTIA->height());
 
     const bool devSettings = myOSystem.settings().getBool("dev.settings");
-    const string title = string{STELLA_FULL_TITLE} + ": \"" +
-        myProperties.get(PropType::Cart_Name) + "\"";
-    fbstatus = myOSystem.frameBuffer().createDisplay(title,
-        BufferType::Emulator, size, false);
+    fbstatus = myOSystem.frameBuffer().createDisplay(
+      string{STELLA_FULL_TITLE} + ": \"" + myProperties.get(PropType::Cart_Name) + "\"",
+      BufferType::Emulator, size, false);
     if(fbstatus != FBInitStatus::Success)
       return fbstatus;
 
@@ -1168,13 +1167,17 @@ void Console::changePaddleCenterY(int direction)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Console::changePaddleAxesRange(int direction)
 {
-  std::istringstream m_axis(myProperties.get(PropType::Controller_MouseAxis));
+  const string_view axisStr = myProperties.get(PropType::Controller_MouseAxis);
   string mode = "AUTO";
-  int range{0};
+  int range = Paddles::MAX_MOUSE_RANGE;
 
-  m_axis >> mode;
-  if(!(m_axis >> range))
-    range = Paddles::MAX_MOUSE_RANGE;
+  // Format is "MODE" or "MODE range"
+  const auto spacePos = axisStr.find(' ');
+  if(spacePos != string_view::npos)
+  {
+    const string_view rangeStr = axisStr.substr(spacePos + 1);
+    std::from_chars(rangeStr.data(), rangeStr.data() + rangeStr.size(), range);
+  }
 
   range = BSPF::clamp(range + direction,
                       Paddles::MIN_MOUSE_RANGE, Paddles::MAX_MOUSE_RANGE);
@@ -1320,7 +1323,8 @@ void Console::toggleFixedColors(bool toggle) const
 void Console::toggleJitter(bool toggle) const
 {
   const bool enabled = myTIA->toggleJitter(toggle ? 2 : 3);
-  const string message = string("TV scanline jitter ") + (enabled ? "enabled" : "disabled");
+  const string message = std::format("TV scanline jitter {}",
+                                     enabled ? "enabled" : "disabled");
 
   myOSystem.settings().setValue(
     myOSystem.settings().getBool("dev.settings") ? "dev.tv.jitter" : "plr.tv.jitter", enabled);

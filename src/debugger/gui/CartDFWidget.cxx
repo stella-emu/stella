@@ -30,10 +30,6 @@ CartridgeDFWidget::CartridgeDFWidget(
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string CartridgeDFWidget::description()
 {
-  std::ostringstream info;
-
-  info << "128K DF, 32 4K banks\n"
-       << CartridgeEnhancedWidget::description();
-
-  return info.str();
+  return std::format("128K DF, 32 4K banks\n{}",
+    CartridgeEnhancedWidget::description());
 }

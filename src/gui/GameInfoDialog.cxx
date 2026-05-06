@@ -855,10 +855,10 @@ void GameInfoDialog::loadControllerProperties(const Properties& props)
   myPaddleYCenter->setValue(BSPF::stoi(props.get(PropType::Controller_PaddlesYCenter)));
 
   // MouseAxis property (potentially contains 'range' information)
-  istringstream m_axis(props.get(PropType::Controller_MouseAxis));
-  string m_control, m_range;
-  m_axis >> m_control;
-  const bool autoAxis = equalsIgnoreCase(m_control, "AUTO");
+  const string_view axisStr = props.get(PropType::Controller_MouseAxis);
+  const bool autoAxis = equalsIgnoreCase(axisStr, "AUTO") ||
+                        axisStr.empty() ||
+                        axisStr[0] == 'A';
   myMouseControl->setState(!autoAxis);
   if(autoAxis)
   {
@@ -867,19 +867,23 @@ void GameInfoDialog::loadControllerProperties(const Properties& props)
   }
   else
   {
-    myMouseX->setSelected(m_control[0] - '0');
-    myMouseY->setSelected(m_control[1] - '0');
+    myMouseX->setSelected(axisStr[0] - '0');
+    myMouseY->setSelected(axisStr[1] - '0');
   }
   myMouseX->setEnabled(!autoAxis);
   myMouseY->setEnabled(!autoAxis);
-  if(m_axis >> m_range)
+
+  // Parse optional range value after the control string
+  const auto spacePos = axisStr.find(' ');
+  if(spacePos != string_view::npos)
   {
-    myMouseRange->setValue(BSPF::stoi(m_range));
+    int range = 100;
+    const string_view rangeStr = axisStr.substr(spacePos + 1);
+    std::from_chars(rangeStr.data(), rangeStr.data() + rangeStr.size(), range);
+    myMouseRange->setValue(range);
   }
   else
-  {
     myMouseRange->setValue(100);
-  }
 
   updateControllerStates();
 }

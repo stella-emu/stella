@@ -30,11 +30,6 @@ Cartridge4KWidget::Cartridge4KWidget(
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string Cartridge4KWidget::description()
 {
-  std::ostringstream info;
-
-  info << "Standard 4K cartridge, non-bankswitched\n"
-       << CartridgeEnhancedWidget::description();
-
-  return info.str();
+  return std::format("Standard 4K cartridge, non-bankswitched\n{}",
+    CartridgeEnhancedWidget::description());
 }
-

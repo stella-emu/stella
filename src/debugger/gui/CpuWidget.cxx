@@ -129,14 +129,14 @@ CpuWidget::CpuWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& n
 
   // Set the strings to be used in the PSRegister
   // We only do this once because it's the state that changes, not the strings
-  const std::array<string, 8> offstr = { "n", "v", "-", "b", "d", "i", "z", "c" };
-  const std::array<string, 8> onstr  = { "N", "V", "-", "B", "D", "I", "Z", "C" };
-  StringList off, on;
-  for(int i = 0; i < 8; ++i)
-  {
-    off.push_back(offstr[i]);
-    on.push_back(onstr[i]);
-  }
+  static constexpr std::array<string_view, 8> offstr = {
+    "n", "v", "-", "b", "d", "i", "z", "c"
+  };
+  static constexpr std::array<string_view, 8> onstr  = {
+    "N", "V", "-", "B", "D", "I", "Z", "C"
+  };
+  const StringList off(offstr.begin(), offstr.end());
+  const StringList on(onstr.begin(), onstr.end());
   myPSRegister->setList(off, on);
 
   // Last write destination address
@@ -198,14 +198,10 @@ void CpuWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
       switch(addr)
       {
         case kPCRegAddr:
-        {
           // Use the parser to set PC, since we want to propagate the
           // event the rest of the debugger widgets
-          std::ostringstream command;
-          command << "pc #" << value;
-          instance().debugger().run(command.view());
+          instance().debugger().run(std::format("pc #{}", value));
           break;
-        }
 
         case kSPRegAddr:
           dbg.setSP(value);
@@ -332,18 +328,16 @@ void CpuWidget::loadConfig()
   myCpuGridBinValue->setList(alist, vlist, changed);
 
   // Update the data sources for the SP/A/X/Y registers
-  const string& srcS = state.srcS < 0 ? "IMM" : cart.getLabel(state.srcS, true);
-  myCpuDataSrc[0]->setText((!srcS.empty() ? srcS : Common::Base::toString(state.srcS)),
-                           state.srcS != oldstate.srcS);
-  const string& srcA = state.srcA < 0 ? "IMM" : cart.getLabel(state.srcA, true);
-  myCpuDataSrc[1]->setText((!srcA.empty() ? srcA : Common::Base::toString(state.srcA)),
-                           state.srcA != oldstate.srcA);
-  const string& srcX = state.srcX < 0 ? "IMM" : cart.getLabel(state.srcX, true);
-  myCpuDataSrc[2]->setText((!srcX.empty() ? srcX : Common::Base::toString(state.srcX)),
-                           state.srcX != oldstate.srcX);
-  const string& srcY = state.srcY < 0 ? "IMM" : cart.getLabel(state.srcY, true);
-  myCpuDataSrc[3]->setText((!srcY.empty() ? srcY : Common::Base::toString(state.srcY)),
-                           state.srcY != oldstate.srcY);
+  const auto setSrc = [&](int idx, int cur, int old, bool isTrue = true) {
+    const string& label = cur < 0 ? "IMM" : cart.getLabel(cur, isTrue);
+    myCpuDataSrc[idx]->setText(
+      !label.empty() ? label : Common::Base::toString(cur),
+      cur != old);
+  };
+  setSrc(0, state.srcS, oldstate.srcS);
+  setSrc(1, state.srcA, oldstate.srcA);
+  setSrc(2, state.srcX, oldstate.srcX);
+  setSrc(3, state.srcY, oldstate.srcY);
 
   const string& dest = state.dest < 0 ? "" : cart.getLabel(state.dest, false);
   myCpuDataDest->setText((!dest.empty() ? dest : Common::Base::toString(state.dest)),

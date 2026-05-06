@@ -59,13 +59,11 @@ size_t CartridgeEnhancedWidget::size()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string CartridgeEnhancedWidget::description()
 {
-  std::ostringstream info;
-
-  if (myCart.myRamSize > 0)
-    info << ramDescription();
-  info << romDescription();
-
-  return info.str();
+  string info;
+  if(myCart.myRamSize > 0)
+    info = ramDescription();
+  info += romDescription();
+  return info;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -77,25 +75,25 @@ int CartridgeEnhancedWidget::descriptionLines()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string CartridgeEnhancedWidget::ramDescription()
 {
-  std::ostringstream info;
-
+  string info;
   if(myCart.ramBankCount() == 0)
-    info << myCart.myRamSize << " bytes RAM @ "
-      << "$" << Common::Base::HEX4 << ADDR_BASE << " - "
-      << "$" << (ADDR_BASE | (myCart.myRamSize * 2 - 1)) << "\n";
+    info = std::format("{} bytes RAM @ ${:X} - ${:X}\n",
+      myCart.myRamSize,
+      ADDR_BASE,
+      ADDR_BASE | (myCart.myRamSize * 2 - 1));
 
-  info << "  $" << Common::Base::HEX4 << (ADDR_BASE | myCart.myReadOffset)
-    << " - $" << (ADDR_BASE | (myCart.myReadOffset + myCart.myRamMask)) << " (R)"
-    << ", $" << (ADDR_BASE | myCart.myWriteOffset)
-    << " - $" << (ADDR_BASE | (myCart.myWriteOffset + myCart.myRamMask)) << " (W)\n";
-
-  return info.str();
+  info += std::format("  ${:X} - ${:X} (R), ${:X} - ${:X} (W)\n",
+    ADDR_BASE | myCart.myReadOffset,
+    ADDR_BASE | (myCart.myReadOffset + myCart.myRamMask),
+    ADDR_BASE | myCart.myWriteOffset,
+    ADDR_BASE | (myCart.myWriteOffset + myCart.myRamMask));
+  return info;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string CartridgeEnhancedWidget::romDescription()
 {
-  std::ostringstream info;
+  string info;
   size_t size{0};
   const ByteBuffer& image = myCart.getImage(size);
 
@@ -106,20 +104,19 @@ string CartridgeEnhancedWidget::romDescription()
     {
       uInt16 start = (image[offset + 1] << 8) | image[offset];
       start -= start % 0x1000;
-      const string hash = myCart.romBankCount() > 10 && bank < 10 ? " #" : "#";
-
-      info << "Bank " << hash << std::dec << bank << " @ $"
-        << Common::Base::HEX4 << (start + myCart.myRomOffset) << " - $" << (start + 0xFFF);
+      const string_view hash = myCart.romBankCount() > 10 && bank < 10 ? " #" : "#";
+      info += std::format("Bank {}{} @ ${:X} - ${:X}",
+        hash, bank, start + myCart.myRomOffset, start + 0xFFF);
       if(myCart.hotspot() != 0)
       {
         const string hs = hotspotStr(bank, 0, true);
         if(hs.length() > 22)
-          info << "\n ";
-        info << " " << hs;
+          info += "\n ";
+        info += " " + hs;
       }
-      info << "\n";
+      info += "\n";
     }
-    info << "Startup bank = #" << std::dec << myCart.startBank() << " or undetermined\n";
+    info += std::format("Startup bank = #{} or undetermined\n", myCart.startBank());
   }
   else
   {
@@ -128,15 +125,10 @@ string CartridgeEnhancedWidget::romDescription()
     const uInt16 end = start + static_cast<uInt16>(myCart.mySize) - 1;
     // special check for ROMs where the extra RAM is not included in the image (e.g. CV).
     if((start & 0xFFFU) < size)
-    {
       start += myCart.myRomOffset;
-    }
-    info << "ROM accessible @ $"
-         << Common::Base::HEX4 << start << " - $"
-         << Common::Base::HEX4 << end;
+    info += std::format("ROM accessible @ ${:X} - ${:X}", start, end);
   }
-
-  return info.str();
+  return info;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -178,28 +170,25 @@ void CartridgeEnhancedWidget::plusROMInfo(int& ypos)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgeEnhancedWidget::bankList(uInt16 bankCount, int seg, VariantList& items, int& width)
+void CartridgeEnhancedWidget::bankList(uInt16 bankCount, int seg,
+                                       VariantList& items, int& width)
 {
   width = 0;
-
   const bool hasRamBanks = myCart.myRamBankCount > 0;
 
   for(int bank = 0; std::cmp_less(bank, bankCount); ++bank)
   {
-    std::ostringstream buf;
     const bool isRamBank = std::cmp_greater_equal(bank, myCart.romBankCount());
-    const int bankNum = (bank - (isRamBank ? myCart.romBankCount() : 0));
+    const int bankNum = bank - (isRamBank ? myCart.romBankCount() : 0);
 
-    buf << std::setw(bankNum < 10 ? 2 : 1) << "#" << std::dec << bankNum;
-    if(isRamBank) // was RAM mapped here?
-      buf << " RAM";
-    else if (hasRamBanks)
-      buf << " ROM";
-
+    string label = std::format("{}{}", bankNum < 10 ? " #" : "#", bankNum);
+    if(isRamBank)        label += " RAM"; // was RAM mapped here?
+    else if(hasRamBanks) label += " ROM";
     if(myCart.hotspot() != 0 && myHotspotDelta > 0)
-      buf << " " << hotspotStr(bank, seg);
-    VarList::push_back(items, buf.view());
-    width = std::max(width, _font.getStringWidth(buf.view()));
+      label += " " + hotspotStr(bank, seg);
+
+    VarList::push_back(items, label);
+    width = std::max(width, _font.getStringWidth(label));
   }
 }
 
@@ -221,16 +210,14 @@ void CartridgeEnhancedWidget::bankSelect(int& ypos)
       bankList(myCart.romBankCount() + myCart.ramBankCount(), seg, items, pw);
 
       // create widgets
-      std::ostringstream buf;
-
-      buf << "Set bank";
+      string label = "Set bank";
       if(bankSegs() > 1)
-        buf << " for segment #" << seg << " ";
+        label += std::format(" for segment #{} ", seg);
       else
-        buf << "     "; // align with info
+        label += "     "; // align with info
 
       myBankWidgets[seg] = new PopUpWidget(_boss, _font, xpos, ypos - 2,
-                                           pw, myLineHeight, items, buf.view(),
+                                           pw, myLineHeight, items, label,
                                            0, kBankChanged);
       myBankWidgets[seg]->setTarget(this);
       myBankWidgets[seg]->setID(seg);
@@ -244,62 +231,47 @@ void CartridgeEnhancedWidget::bankSelect(int& ypos)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string CartridgeEnhancedWidget::bankState()
 {
-  if(myCart.romBankCount() > 1)
+  if(myCart.romBankCount() <= 1)
+    return "non-bankswitched";
+
+  const uInt16 hotspot = myCart.hotspot();
+  const bool hasRamBanks = myCart.myRamBankCount > 0;
+  string result;
+
+  if(bankSegs() > 1)
   {
-    std::ostringstream& buf = buffer();
-    const uInt16 hotspot = myCart.hotspot();
-    const bool hasRamBanks = myCart.myRamBankCount > 0;
-
-    if(bankSegs() > 1)
+    result = "Segments: ";
+    for(int seg = 0; std::cmp_less(seg, bankSegs()); ++seg)
     {
-      buf << "Segments: ";
-
-      for(int seg = 0; std::cmp_less(seg, bankSegs()); ++seg)
-      {
-        const int bank = myCart.getSegmentBank(seg);
-        const bool isRamBank = std::cmp_greater_equal(bank, myCart.romBankCount());
-
-        if(seg > 0)
-          buf << " / ";
-
-        buf << "#" << std::dec << (bank - (isRamBank ? myCart.romBankCount() : 0));
-
-        if(isRamBank) // was RAM mapped here?
-          buf << " RAM";
-        else if (hasRamBanks)
-          buf << " ROM";
-
-        //if(hotspot >= 0x100)
-        if(hotspot != 0 && myHotspotDelta > 0)
-          buf << " " << hotspotStr(bank, seg, bankSegs() < 3);
-      }
-    }
-    else
-    {
-      buf << "Bank #" << std::dec << myCart.getBank();
-
+      const int bank = myCart.getSegmentBank(seg);
+      const bool isRamBank = std::cmp_greater_equal(bank, myCart.romBankCount());
+      if(seg > 0) result += " / ";
+      result += std::format("#{}", bank - (isRamBank ? myCart.romBankCount() : 0));
+      if(isRamBank)        result += " RAM"; // was RAM mapped here?
+      else if(hasRamBanks) result += " ROM";
+      //if(hotspot >= 0x100)
       if(hotspot != 0 && myHotspotDelta > 0)
-        buf << " " << hotspotStr(myCart.getBank(), 0, true);
+        result += " " + hotspotStr(bank, seg, bankSegs() < 3);
     }
-    return buf.str();
   }
-  return "non-bankswitched";
+  else
+  {
+    result = std::format("Bank #{}", myCart.getBank());
+    if(hotspot != 0 && myHotspotDelta > 0)
+      result += " " + hotspotStr(myCart.getBank(), 0, true);
+  }
+  return result;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string CartridgeEnhancedWidget::hotspotStr(int bank, int segment, bool prefix)
 {
-  std::ostringstream info;
   uInt16 hotspot = myCart.hotspot();
-
   if(hotspot & 0x1000)
     hotspot |= ADDR_BASE;
-
-  info << "(" << (prefix ? "hotspot " : "");
-  info << "$" << Common::Base::HEX1 << (hotspot + bank * myHotspotDelta);
-  info << ")";
-
-  return info.str();
+  return std::format("({}${:X})",
+    prefix ? "hotspot " : "",
+    hotspot + bank * myHotspotDelta);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -312,8 +284,8 @@ uInt16 CartridgeEnhancedWidget::bankSegs()
 void CartridgeEnhancedWidget::saveOldState()
 {
   myOldState.internalRam.clear();
-  for(uInt32 i = 0; i < myCart.myRamSize; ++i)
-    myOldState.internalRam.push_back(myCart.myRAM[i]);
+  myOldState.internalRam.assign(myCart.myRAM.get(),
+                                myCart.myRAM.get() + myCart.myRamSize);
 
   if(myCart.isPlusROM())
   {
@@ -334,20 +306,21 @@ void CartridgeEnhancedWidget::loadConfig()
 {
   if(myCart.isPlusROM())
   {
-    std::ostringstream buf;
-    ByteArray arr = myCart.myPlusROM->getSend();
+    const auto formatBytes = [](const ByteArray& arr) {
+      string result;
+      result.reserve(arr.size() * 3);
+      for(auto i : arr)
+        result += std::format("{:02X} ", static_cast<int>(i));
+      return result;
+    };
 
-    for(auto i: arr)
-      buf << Common::Base::HEX2 << static_cast<int>(i) << " ";
-    myPlusROMSendWidget->setText(buf.view(), arr != myOldState.send);
+    const ByteArray& sendArr = myCart.myPlusROM->getSend();
+    myPlusROMSendWidget->setText(formatBytes(sendArr), sendArr != myOldState.send);
 
-    buf.str("");
-    arr = myCart.myPlusROM->getReceive();
-
-    for(auto i: arr)
-      buf << Common::Base::HEX2 << static_cast<int>(i) << " ";
-    myPlusROMReceiveWidget->setText(buf.view(), arr != myOldState.receive);
+    const ByteArray& recvArr = myCart.myPlusROM->getReceive();
+    myPlusROMReceiveWidget->setText(formatBytes(recvArr), recvArr != myOldState.receive);
   }
+
   if(myBankWidgets != nullptr)
   {
     if(bankSegs() > 1)
@@ -392,48 +365,45 @@ uInt32 CartridgeEnhancedWidget::internalRamRPort(int start)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string CartridgeEnhancedWidget::internalRamDescription()
 {
-  std::ostringstream desc;
-  string indent;
+  string desc;
+  string_view indent;
 
   if(myCart.ramBankCount())
   {
-    desc << "Accessible ";
-    if (myCart.bankSize() >> 1 >= 1024)
-      desc << ((myCart.bankSize() >> 1) / 1024) << "K";
-    else
-      desc << (myCart.bankSize() >> 1) << " bytes";
-    desc << " at a time via:\n";
+    const int halfBank = myCart.bankSize() >> 1;
+    desc = halfBank >= 1024
+      ? std::format("Accessible {}K at a time via:\n", halfBank / 1024)
+      : std::format("Accessible {} bytes at a time via:\n", halfBank);
     indent = "  ";
   }
 
   // order RW by addresses
   if(myCart.myReadOffset <= myCart.myWriteOffset)
-  {
-    desc << indent << "$" << Common::Base::HEX4 << (ADDR_BASE | myCart.myReadOffset)
-      << " - $" << (ADDR_BASE | (myCart.myReadOffset + myCart.myRamMask))
-      << " used for read access\n";
-  }
+    desc += std::format("{}${:X} - ${:X} used for read access\n",
+      indent,
+      ADDR_BASE | myCart.myReadOffset,
+      ADDR_BASE | (myCart.myReadOffset + myCart.myRamMask));
 
-  desc << indent << "$" << Common::Base::HEX4 << (ADDR_BASE | myCart.myWriteOffset)
-    << " - $" << (ADDR_BASE | (myCart.myWriteOffset + myCart.myRamMask))
-    << " used for write access";
+  desc += std::format("{}${:X} - ${:X} used for write access",
+    indent,
+    ADDR_BASE | myCart.myWriteOffset,
+    ADDR_BASE | (myCart.myWriteOffset + myCart.myRamMask));
 
   if(myCart.myReadOffset > myCart.myWriteOffset)
-  {
-    desc << indent << "\n$" << Common::Base::HEX4 << (ADDR_BASE | myCart.myReadOffset)
-      << " - $" << (ADDR_BASE | (myCart.myReadOffset + myCart.myRamMask))
-      << " used for read access";
-  }
+    desc += std::format("\n{}${:X} - ${:X} used for read access",
+      indent,
+      ADDR_BASE | myCart.myReadOffset,
+      ADDR_BASE | (myCart.myReadOffset + myCart.myRamMask));
 
-  return desc.str();
+  return desc;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const ByteArray& CartridgeEnhancedWidget::internalRamOld(int start, int count)
 {
   myRamOld.clear();
-  for(int i = 0; i < count; i++)
-    myRamOld.push_back(myOldState.internalRam[start + i]);
+  myRamOld.assign(myOldState.internalRam.data() + start,
+                  myOldState.internalRam.data() + start + count);
   return myRamOld;
 }
 
@@ -441,8 +411,8 @@ const ByteArray& CartridgeEnhancedWidget::internalRamOld(int start, int count)
 const ByteArray& CartridgeEnhancedWidget::internalRamCurrent(int start, int count)
 {
   myRamCurrent.clear();
-  for(int i = 0; i < count; i++)
-    myRamCurrent.push_back(myCart.myRAM[start + i]);
+  const uInt8* begin = myCart.myRAM.get() + start;
+  myRamCurrent.assign(begin, begin + count);
   return myRamCurrent;
 }
 

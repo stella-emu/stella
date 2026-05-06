@@ -30,21 +30,13 @@ CartridgeGLWidget::CartridgeGLWidget(
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string CartridgeGLWidget::description()
 {
-  std::ostringstream info;
-
-  info << "GameLine Master Module cartridge, 4K ROM, 10/12K RAM\n"
-    << "mapped into four 1K segments\n"
-    << "THIS SCHEME IS NOT FULLY IMPLEMENTED OR TESTED";
-
-  return info.str();
+  return "GameLine Master Module cartridge, 4K ROM, 10/12K RAM\n"
+         "mapped into four 1K segments\n"
+         "THIS SCHEME IS NOT FULLY IMPLEMENTED OR TESTED";
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string CartridgeGLWidget::internalRamDescription()
 {
-  std::ostringstream desc;
-
-  desc << "Accessible 1K" << " at a time";
-
-  return desc.str();
+  return "Accessible 1K at a time";
 }

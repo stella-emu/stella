@@ -178,11 +178,7 @@ void RomWidget::setPC(int disasm_line)
   const uInt16 address = getAddress(disasm_line);
 
   if(address != 0)
-  {
-    std::ostringstream command;
-    command << "pc #" << address;
-    instance().debugger().run(command.view());
-  }
+    instance().debugger().run(std::format("pc #{}", address));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -191,12 +187,9 @@ void RomWidget::runtoPC(int disasm_line)
   const uInt16 address = getAddress(disasm_line);
 
   if(address != 0)
-  {
-    std::ostringstream command;
-    command << "runtopc #" << address;
-    const string& msg = instance().debugger().run(command.view());
-    instance().frameBuffer().showTextMessage(msg);
-  }
+    instance().frameBuffer().showTextMessage(
+      instance().debugger().run(std::format("runtopc #{}", address))
+    );
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -206,9 +199,9 @@ void RomWidget::setTimer(int disasm_line)
 
   if(address != 0)
   {
-    std::ostringstream command;
-    command << "timer #" << address << " " << instance().debugger().cartDebug().getBank(address);
-    const string& msg = instance().debugger().run(command.view());
+    Debugger& dbg = instance().debugger();
+    const string& msg = dbg.run(std::format("timer #{} {}",
+      address, dbg.cartDebug().getBank(address)));
     instance().frameBuffer().showTextMessage(msg);
   }
 }
@@ -236,15 +229,12 @@ void RomWidget::patchROM(int disasm_line, string_view bytes,
 
   if(address != 0)
   {
-    std::ostringstream command;
-
     // Temporarily set to correct base, so we don't have to prefix each byte
     // with the type of data
     const Common::Base::Fmt oldbase = Common::Base::format();
 
     Common::Base::setFormat(base);
-    command << "rom #" << address << " " << bytes;
-    instance().debugger().run(command.view());
+    instance().debugger().run(std::format("rom #{} {}", address, bytes));
 
     // Restore previous base
     Common::Base::setFormat(oldbase);
