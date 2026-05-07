@@ -34,6 +34,7 @@ class DispatchResult;
   #include "TimerMap.hxx"
 #endif
 
+#include <climits>
 #include "bspf.hxx"
 #include "Device.hxx"
 #include "Serializable.hxx"
