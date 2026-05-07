@@ -85,10 +85,10 @@ class FBBackendLIBRETRO : public FBBackend
     void setTitle(string_view) override { }
     void showCursor(bool) override { }
     bool fullScreen() const override { return true; }
-    uInt32 rMask() const override { return 0; }
-    uInt32 gMask() const override { return 0; }
-    uInt32 bMask() const override { return 0; }
-    uInt32 aMask() const override { return 0; }
+    uInt32 rMask() const override { return 0x00FF0000; }
+    uInt32 gMask() const override { return 0x0000FF00; }
+    uInt32 bMask() const override { return 0x000000FF; }
+    uInt32 aMask() const override { return 0xFF000000; }
     const FBSurface& compositedSurface() { static FBSurfaceLIBRETRO tmp(0, 0); return tmp; }
     bool isCurrentWindowPositioned() const override { return true; }
     Common::Point getCurrentWindowPos() const override { return Common::Point{}; }
