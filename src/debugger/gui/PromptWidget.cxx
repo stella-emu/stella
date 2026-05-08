@@ -57,7 +57,8 @@ PromptWidget::PromptWidget(GuiObject* boss, const GUI::Font& font,
   _linesInBuffer = kBufferSize / _lineWidth;
 
   // Add scrollbar
-  // NOLINTNEXTLINE: we want to initialize here, not in the member list
+  // We want to initialize here, not in the member list
+  // NOLINTNEXTLINE(cppcoreguidelines-prefer-member-initializer)
   _scrollBar = new ScrollBarWidget(boss, font, _x + _w, _y,
                                    ScrollBarWidget::scrollBarWidth(_font), _h);
   _scrollBar->setTarget(this);
@@ -839,8 +840,8 @@ void PromptWidget::updateScrollBuffer()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-// TODO: rewrite this (cert-dcl50-cpp)
-int PromptWidget::printf(const char* format, ...)  // NOLINT
+// NOLINTNEXTLINE(cert-dcl50-cpp,modernize-avoid-variadic-functions)
+int PromptWidget::printf(const char* format, ...)
 {
   va_list argptr;
 
@@ -853,7 +854,7 @@ int PromptWidget::printf(const char* format, ...)  // NOLINT
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 int PromptWidget::vprintf(const char* format, va_list argptr)
 {
-  char buf[2048];  // NOLINT  (will be rewritten soon)
+  char buf[2048];
   const int count = std::vsnprintf(buf, sizeof(buf), format, argptr);
 
   print(buf);

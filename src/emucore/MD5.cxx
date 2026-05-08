@@ -181,7 +181,7 @@ void MD5::update(const uInt8* input, uInt32 length)
   auto index = count[0] / 8 % BLOCKSIZE;
 
   // Update number of bits
-  if ((count[0] += (length << 3)) < (length << 3)) // NOLINT
+  if ((count[0] += (length << 3)) < (length << 3))
     count[1]++;
   count[1] += (length >> 29);
 

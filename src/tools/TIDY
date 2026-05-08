@@ -16,6 +16,7 @@ time run-clang-tidy-22 -header-filter=\(.*\.hxx\) \
 -clang-analyzer-cplusplus.NewDeleteLeaks,\
 -clang-analyzer-optin.performance.Padding,\
 -cppcoreguidelines-avoid-c-arrays,\
+-cppcoreguidelines-avoid-const-or-ref-data-members,\
 -cppcoreguidelines-avoid-do-while,\
 -cppcoreguidelines-avoid-magic-numbers,\
 -cppcoreguidelines-narrowing-conversions,\

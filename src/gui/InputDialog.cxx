@@ -721,13 +721,13 @@ void InputDialog::handleCommand(CommandSender* sender, int cmd,
     case kDDeadzoneChanged:
       myDigitalDeadzone->setValueLabel(std::round(
           Controller::digitalDeadZoneValue(myDigitalDeadzone->getValue()) *
-          100.F / (Paddles::ANALOG_RANGE / 2)));  // NOLINT
+          100.F / (Paddles::ANALOG_RANGE / 2.F)));
       break;
 
     case kADeadzoneChanged:
       myAnalogDeadzone->setValueLabel(std::round(
           Controller::analogDeadZoneValue(myAnalogDeadzone->getValue()) *
-          100.F / (Paddles::ANALOG_RANGE / 2)));  // NOLINT
+          100.F / (Paddles::ANALOG_RANGE / 2.F)));
       break;
 
     case kPSpeedChanged:

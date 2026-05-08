@@ -113,7 +113,7 @@ CartridgeBUS::CartridgeBUS(const ByteBuffer& image, size_t size,
       this);
   }
 
-  this->setInitialState();  // NOLINT
+  this->setInitialState();  // NOLINT(clang-analyzer-optin.cplusplus.VirtualCall)
 
   myPlusROM = std::make_unique<PlusROM>(mySettings, *this);
 

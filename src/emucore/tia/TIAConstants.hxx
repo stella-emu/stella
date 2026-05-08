@@ -36,7 +36,7 @@ namespace TIAConstants {
     H_BLANK_CLOCKS = H_CLOCKS - H_PIXEL;  // = 68
 } // namespace TIAConstants
 
-enum TIABit: uInt8 {  // NOLINT / TODO masks can't be 'enum class'
+enum TIABit: uInt8 {
   P0Bit       = 0x01,  // Bit for Player 0
   M0Bit       = 0x02,  // Bit for Missle 0
   P1Bit       = 0x04,  // Bit for Player 1
@@ -48,7 +48,7 @@ enum TIABit: uInt8 {  // NOLINT / TODO masks can't be 'enum class'
   AllBits     = 0xff
 };
 
-enum TIAColor: uInt8 {  // NOLINT / TODO masks can't be 'enum class'
+enum TIAColor: uInt8 {
   BKColor     = 0,  // Color index for Background
   PFColor     = 1,  // Color index for Playfield
   P0Color     = 2,  // Color index for Player 0
@@ -79,7 +79,7 @@ enum class CollisionBit: uInt16
 };
 
 // TIA Write/Read register names
-enum TIARegister: uInt8 {  // NOLINT / TODO masks can't be 'enum class'
+enum TIARegister: uInt8 {
   VSYNC   = 0x00,  // Write: vertical sync set-clear (D1)
   VBLANK  = 0x01,  // Write: vertical blank set-clear (D7-6,D1)
   WSYNC   = 0x02,  // Write: wait for leading edge of hrz. blank (strobe)

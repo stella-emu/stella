@@ -73,7 +73,7 @@ Int16* AudioQueue::enqueue(Int16* fragment)
 {
   const std::scoped_lock guard(myMutex);
 
-  Int16* newFragment = nullptr;  // NOLINT (must not be const)
+  Int16* newFragment = nullptr;
 
   if (!fragment) {
     if (!myFirstFragmentForEnqueue) throw std::runtime_error("enqueue called empty");
@@ -113,7 +113,7 @@ Int16* AudioQueue::dequeue(Int16* fragment)
     myFirstFragmentForDequeue = nullptr;
   }
 
-  Int16* nextFragment = myFragmentQueue[myNextFragment];  // NOLINT (must not be const)
+  Int16* nextFragment = myFragmentQueue[myNextFragment];
   myFragmentQueue[myNextFragment] = fragment;
 
   --mySize;

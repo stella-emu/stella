@@ -41,7 +41,7 @@ class ControllerLowLevel
     bool setPin(Controller::DigitalPin pin, bool value) {
       return myController.setPin(pin, value);
     }
-    bool togglePin(Controller::DigitalPin pin) { return false; }  // NOLINT (is this required?)
+    bool togglePin(Controller::DigitalPin pin) { return false; }  //FIXME: not implemented??
     bool getPin(Controller::DigitalPin pin) const {
       return myController.getPin(pin);
     }

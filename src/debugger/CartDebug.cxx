@@ -215,11 +215,10 @@ string CartDebug::toString()
     // bytes have been previously output
     if(state.rport[i] - curraddr > bytesPerLine || bytesSoFar >= 256)
     {
-      char port[37];  // NOLINT (convert to stringstream)
-      std::ignore = std::snprintf(port, 36, "%04x: (rport = %04x, wport = %04x)\n",
-              state.rport[i], state.rport[i], state.wport[i]);
-      port[2] = port[3] = 'x';
-      buf << DebuggerParser::red(port);
+      buf << DebuggerParser::red(std::format(
+        "{0:02x}xx: (rport = {1:04x}, wport = {2:04x})\n",
+        state.rport[i] >> 8, state.rport[i], state.wport[i]
+      ));
       bytesSoFar = 0;
     }
     curraddr = state.rport[i];
@@ -1088,7 +1087,8 @@ string CartDebug::saveConfigFile()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string CartDebug::saveDisassembly(string path)
 {
-#define ALIGN(x) setfill(' ') << left << setw(x)  // NOLINT no easier way to do this
+// NOLINTNEXTLINE(cppcoreguidelines-macro-usage)  FIXME: find a better way for this
+#define ALIGN(x) setfill(' ') << left << setw(x)
 
   // We can't print the header to the disassembly until it's actually
   // been processed; therefore buffer output to a string first

@@ -20,7 +20,7 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 DrawCounterDecodes::DrawCounterDecodes()
 {
-  uInt8* decodeTables[] = {  // NOLINT (erroneously marked as const)
+  uInt8* decodeTables[] = {
     myDecodes0, myDecodes1, myDecodes2, myDecodes3, myDecodes4, myDecodes6
   };
 

@@ -22,7 +22,7 @@
 // Code is public domain and used with the author's consent
 //============================================================================
 
-// NOLINTBEGIN (cppcoreguidelines-macro-usage)  TODO: Too many macros for now
+// NOLINTBEGIN(cppcoreguidelines-macro-usage)  TODO: Too many macros for now
 #include "bspf.hxx"
 #include "Base.hxx"
 #include "Cart.hxx"
@@ -45,16 +45,17 @@ using Common::Base;
   #define DO_DBUG(statement)
 #endif
 
+namespace {
 #ifdef __BIG_ENDIAN__
-  static constexpr uInt32 CONV_DATA(uInt32 d) {
+  constexpr uInt32 CONV_DATA(uInt32 d) {
     return (((d & 0xFFFF)>>8) | ((d & 0xFFFF)<<8)) & 0xFFFF;
   }
-  static constexpr uInt32 CONV_RAMROM(uInt32 d) {
+  constexpr uInt32 CONV_RAMROM(uInt32 d) {
     return ((d>>8) | (d<<8)) & 0xFFFF;
   }
 #else
-  static constexpr uInt32 CONV_DATA(uInt32 d)   { return d & 0xFFFF; }
-  static constexpr uInt32 CONV_RAMROM(uInt32 d) { return d; }
+  constexpr uInt32 CONV_DATA(uInt32 d)   { return d & 0xFFFF; }
+  constexpr uInt32 CONV_RAMROM(uInt32 d) { return d; }
 #endif
 
 #ifdef THUMB_CYCLE_COUNT
@@ -138,6 +139,8 @@ using Common::Base;
 #define do_cflag_bit(x) cFlag = (x)
 #define do_vflag_bit(x) vFlag = (x)
 
+}  // namespace
+
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Thumbulator::Thumbulator(const uInt16* rom_ptr, uInt16* ram_ptr, uInt32 rom_size,
                          uInt32 c_base, uInt32 c_start, uInt32 c_stack,
@@ -149,8 +152,8 @@ Thumbulator::Thumbulator(const uInt16* rom_ptr, uInt16* ram_ptr, uInt32 rom_size
     cBase{c_base},
     cStart{c_start},
     cStack{c_stack},
-    decodedRom{std::make_unique<Op[]>(romSize / 2)},  // NOLINT
-    decodedParam{std::make_unique<uInt32[]>(romSize / 2)},  // NOLINT
+    decodedRom{std::make_unique<Op[]>(romSize / 2)},
+    decodedParam{std::make_unique<uInt32[]>(romSize / 2)},
     ram{ram_ptr},
     configuration{configurefor},
     myCartridge{cartridge}
@@ -600,7 +603,7 @@ uInt32 Thumbulator::read16(uInt32 addr)
     fatalError("read16", addr, "abort - misaligned");
   THUMB_STAT(_stats.reads)
 
-  switch(addr & 0xF0000000)
+  switch(addr & 0xF0000000)  // NOLINT(bugprone-switch-missing-default-case)
   {
     case 0x00000000: //ROM
       if(isInvalidROM(addr))
@@ -683,15 +686,17 @@ uInt32 Thumbulator::read32(uInt32 addr)
 
         case 0xE0004008:  // T0TC - Timer 0 Counter
         #ifdef THUMB_CYCLE_COUNT
+          // NOLINTBEGIN(clang-analyzer-deadcode.DeadStores)
           if(T0TCR & 1)
             // timer is counting
-            data = T0TC + (tim0Total + (_totalCycles - tim0Start)) * _armCyclesFactor;  // NOLINT
+            data = T0TC + (tim0Total + (_totalCycles - tim0Start)) * _armCyclesFactor;
           else
             // timer is disabled
-            data = T0TC + tim0Total * _armCyclesFactor;  // NOLINT
+            data = T0TC + tim0Total * _armCyclesFactor;
         #else
-          data = T0TC;  // NOLINT
+          data = T0TC;
         #endif
+          // NOLINTEND(clang-analyzer-deadcode.DeadStores)
           break;
       #endif
         case 0xE0008004:  // T1TCR - Timer 1 Control Register
@@ -1095,9 +1100,11 @@ Thumbulator::Op Thumbulator::decodeInstructionWord(uint16_t inst, uInt32 pc) {
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FORCE_INLINE int Thumbulator::execute()  // NOLINT (readability-function-size)
+FORCE_INLINE int Thumbulator::execute()  // NOLINT(readability-function-size,
+                                         // google-readability-function-size,
+                                         // hicpp-function-size)
 {
-  uInt32 sp, inst, ra, rb, rc, rm, rd, rn, rs;  // NOLINT
+  uInt32 sp{0}, inst{0}, ra{0}, rb{0}, rc{0}, rm{0}, rd{0}, rn{0}, rs{0};
 
   uInt32 pc = read_register(15);
 
@@ -2744,7 +2751,7 @@ FORCE_INLINE int Thumbulator::execute()  // NOLINT (readability-function-size)
 
     //SWI
     case Op::swi: { // never used
-//      rb = inst & 0xFF;  // NOLINT: clang-analyzer-deadcode.DeadStores
+//      rb = inst & 0xFF;  // NOLINT(clang-analyzer-deadcode.DeadStores)
 //      DO_DISS(statusMsg << "swi 0x" << Base::HEX2 << rb << '\n');
 //
 //      if(rb == 0xCC)
@@ -3228,4 +3235,4 @@ bool Thumbulator::searchPattern(uInt32 pattern, uInt32 repeats) const
   }
   return false;
 }
-// NOLINTEND
+// NOLINTEND(cppcoreguidelines-macro-usage)

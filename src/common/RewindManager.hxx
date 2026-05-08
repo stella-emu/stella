@@ -189,7 +189,11 @@ class RewindManager
       RewindState() = default;
       ~RewindState() = default;
       RewindState(const RewindState& rs) : cycles(rs.cycles) { }
-      RewindState& operator= (const RewindState& rs) { cycles = rs.cycles; return *this; }  // NOLINT: we don't worry about self-assignment here
+      RewindState& operator=(const RewindState& rs) {
+        if(this != &rs)
+          cycles = rs.cycles;
+        return *this;
+      }
       RewindState(RewindState&&) = delete;
       RewindState& operator=(RewindState&&) = delete;
 

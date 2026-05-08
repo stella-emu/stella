@@ -42,7 +42,7 @@
 namespace GUI {
 
 // Font character bitmap data.
-static const uInt16 stella12x24t_font_bits[] = {  // NOLINT : too complicated to convert
+static const uInt16 stella12x24t_font_bits[] = {
 
 /* Character 28 (0x1c):
    width 12

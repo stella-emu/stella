@@ -276,7 +276,7 @@ void Playfield::tick(uInt32 x)
 
   if (x & 0x03) return;
 
-  uInt32 currentPixel;  // NOLINT (cppcoreguidelines-init-variables)
+  uInt32 currentPixel;  // NOLINT(cppcoreguidelines-init-variables)
 
   if (myEffectivePattern == 0) {
       currentPixel = 0;

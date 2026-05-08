@@ -31,7 +31,7 @@ void AtariNTSC::initialize(const Setup& setup)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void AtariNTSC::setPalette(const PaletteArray& palette)
 {
-  uInt8* ptr = myRGBPalette.data();  // NOLINT (erroneously marked as const)
+  uInt8* ptr = myRGBPalette.data();  // NOLINT(misc-const-correctness)
   for(auto p: palette)
   {
     *ptr++ = (p >> 16) & 0xff;
@@ -52,10 +52,10 @@ void AtariNTSC::generateKernels()
     const float r = (*ptr++) * PALETTE_SCALE + rgb_offset,
                 g = (*ptr++) * PALETTE_SCALE + rgb_offset,
                 b = (*ptr++) * PALETTE_SCALE + rgb_offset;
-    float y, i, q;  RGB_TO_YIQ( r, g, b, y, i, q );  // NOLINT
+    float y{0.F}, i{0.F}, q{0.F};  RGB_TO_YIQ( r, g, b, y, i, q );
 
     // Generate kernel
-    int ir, ig, ib;  YIQ_TO_RGB( y, i, q, myImpl.to_rgb.data(), ir, ig, ib );  //NOLINT
+    int ir{0}, ig{0}, ib{0};  YIQ_TO_RGB( y, i, q, myImpl.to_rgb.data(), ir, ig, ib );
     const uInt32 rgb = PACK_RGB( ir, ig, ib );
 
     uInt32* kernel = myColorTable[entry].data();
@@ -87,7 +87,7 @@ void AtariNTSC::enableThreading(bool enable)
     myWorkerThreads = systemThreads - 1;
     myTotalThreads  = systemThreads;
 
-    myThreads = std::make_unique<std::thread[]>(myWorkerThreads);  // NOLINT
+    myThreads = std::make_unique<std::thread[]>(myWorkerThreads);
   }
 }
 
@@ -331,7 +331,7 @@ void AtariNTSC::init(init_t& impl, const Setup& setup)
 
   /* setup decoder matricies */
   {
-    float* out = impl.to_rgb.data();  // NOLINT (erroneously marked as const)
+    float* out = impl.to_rgb.data();  // NOLINT(misc-const-correctness)
 
     int n = burst_count;
     do
@@ -397,7 +397,7 @@ void AtariNTSC::initFilters(init_t& impl, const Setup& setup)
     }
 
     /* normalize kernel */
-    sum = 1.0F / sum;
+    sum = 1.F / sum;
     for ( int i = 0; i < kernel_half * 2 + 1; i++ )
     {
       const int x = kernel_size * 3 / 2 - kernel_half + i;
@@ -416,7 +416,7 @@ void AtariNTSC::initFilters(init_t& impl, const Setup& setup)
       cutoff *= cutoff;
       cutoff *= cutoff;
       cutoff *= cutoff;
-      cutoff *= -30.0F / 0.65F;
+      cutoff *= -30.F / 0.65F;
     }
     cutoff = cutoff_factor - 0.65F * cutoff_factor * cutoff;
 
@@ -430,7 +430,7 @@ void AtariNTSC::initFilters(init_t& impl, const Setup& setup)
       for ( int x = i; x < kernel_size; x += 2 )
         sum += kernels [x];
 
-      sum = 1.0F / sum;
+      sum = 1.F / sum;
       for ( int x = i; x < kernel_size; x += 2 )
       {
         kernels [x] *= sum;
@@ -439,13 +439,13 @@ void AtariNTSC::initFilters(init_t& impl, const Setup& setup)
   }
 
   /* generate linear rescale kernels */
-  float weight = 1.0F;
-  float* out = impl.kernel.data();  // NOLINT (erroneously marked as const)
+  float weight = 1.F;
+  float* out = impl.kernel.data();  // NOLINT(misc-const-correctness)
   int n = rescale_out;
   do
   {
     float remain = 0;
-    weight -= 1.0F / rescale_in;
+    weight -= 1.F / rescale_in;
     for ( int i = 0; i < kernel_size * 2; i++ )
     {
       const float cur = kernels [i];
@@ -505,7 +505,7 @@ void AtariNTSC::genKernel(init_t& impl, float y, float i, float q, uInt32* out)
         else
           k -= kernel_size * 2 * (rescale_out - 1) + 2;
         {
-          int r, g, b;  YIQ_TO_RGB( fy, fi, fq, to_rgb, r, g, b );  // NOLINT
+          int r{0}, g{0}, b{0};  YIQ_TO_RGB( fy, fi, fq, to_rgb, r, g, b );
           *out++ = PACK_RGB( r, g, b ) - rgb_bias;
         }
       }

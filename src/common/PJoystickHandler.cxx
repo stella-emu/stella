@@ -152,9 +152,9 @@ int PhysicalJoystickHandler::add(const PhysicalJoystickPtr& stick)
   // We're potentially swapping out an input device behind the back of
   // the Event system, so we make sure all Stelladaptor-generated events
   // are reset
-  for(int port = 0; port < NUM_PORTS; ++port)     // NOLINT
-    for(int axis = 0; axis < NUM_SA_AXIS; ++axis) // NOLINT
-      myEvent.set(SA_Axis[port][axis], 0);
+  for(const auto& axisList : SA_Axis)
+    for(const auto axis : axisList)
+      myEvent.set(axis, 0);
 
   return stick->ID;
 }
@@ -879,8 +879,6 @@ void PhysicalJoystickHandler::handleAxisEvent(int stick, int axis, int value)
 
   if(j)
   {
-    //int button = j->buttonLast;
-
     switch(j->type)
     {
       using enum PhysicalJoystick::Type;
@@ -891,29 +889,24 @@ void PhysicalJoystickHandler::handleAxisEvent(int stick, int axis, int value)
       // they can never be remapped
       case LEFT_STELLADAPTOR:
       case LEFT_2600DAPTOR:
-        if(myOSystem.hasConsole()
-           && myOSystem.console().leftController().type() == Controller::Type::Driving)
-        {
-          if(axis < NUM_SA_AXIS)
-            myEvent.set(SA_Axis[0][axis], value);
-        }
-        else
-          handleRegularAxisEvent(j, stick, axis, value);
-        break;  // axis on left controller (0)
-
       case RIGHT_STELLADAPTOR:
       case RIGHT_2600DAPTOR:
-        if(myOSystem.hasConsole()
-           && myOSystem.console().rightController().type() == Controller::Type::Driving)
+      {
+        const bool isLeft = (j->type == LEFT_STELLADAPTOR ||
+                             j->type == LEFT_2600DAPTOR);
+        const size_t port = isLeft ? 0 : 1;
+        const auto& ctrl = isLeft ? myOSystem.console().leftController()
+                                  : myOSystem.console().rightController();
+        if(myOSystem.hasConsole() && ctrl.type() == Controller::Type::Driving)
         {
-          if(axis < NUM_SA_AXIS)
-            myEvent.set(SA_Axis[1][axis], value);
+          if(std::cmp_less(axis, SA_Axis[port].size()))
+            myEvent.set(SA_Axis[port][axis], value);
         }
         else
           handleRegularAxisEvent(j, stick, axis, value);
-        break;  // axis on right controller (1)
-
-      default: // PhysicalJoystick::Type::REGULAR
+        break;
+      }
+      default:  // PhysicalJoystick::Type::REGULAR
         handleRegularAxisEvent(j, stick, axis, value);
     }
   }

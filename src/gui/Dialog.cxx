@@ -159,10 +159,10 @@ void Dialog::initHelp()
       const string key = instance().eventHandler().getMappingDesc(
         Event::UIHelp, EventMode::kMenuMode);
 
-      _helpWidget = new ButtonWidget(this, _font,
-          _w - _font.getMaxCharWidth() * 3.5, 0,
-          _font.getMaxCharWidth() * 3.5 + 0.5, buttonHeight(), "?",  // NOLINT
-          kHelpCmd);
+      const int helpWidth = static_cast<int>(std::lround(_font.getMaxCharWidth() *
+                                                         3.5));
+      _helpWidget = new ButtonWidget(this, _font, _w - helpWidth, 0,
+        helpWidth, buttonHeight(), "?", kHelpCmd);
       _helpWidget->setBGColor(kColorTitleBar);
       _helpWidget->setTextColor(kColorTitleText);
       _helpWidget->setToolTip("Click or press " + key + " for help.");

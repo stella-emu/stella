@@ -21,6 +21,7 @@
 class M6532;
 class EventHandler;
 
+#include "bspf.hxx"
 #include "FrameLayout.hxx"
 #include "AbstractFrameManager.hxx"
 #include "TIAConstants.hxx"
@@ -87,7 +88,7 @@ class FrameLayoutDetector: public AbstractFrameManager
     /**
      * Misc. numeric constants used in the algorithm.
      */
-    enum Metrics: uInt32 {  // NOLINT: use 32-bit, even though 16-bit is sufficient
+    enum Metrics: uInt16 {
       // ideal frame heights
       frameLinesNTSC            = 262,
       frameLinesPAL             = 312,

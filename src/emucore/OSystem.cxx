@@ -955,7 +955,7 @@ void OSystem::mainLoop()
       virtualTime = high_resolution_clock::now();
     }
 
-    double timesliceSeconds;  // NOLINT
+    double timesliceSeconds;  // NOLINT(cppcoreguidelines-init-variables)
 
     if (myEventHandler->state() == EventHandlerState::EMULATION)
       // Dispatch emulation and render frame (if applicable)

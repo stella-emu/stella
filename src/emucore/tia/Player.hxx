@@ -208,7 +208,7 @@ void Player::tick()
         if (myRenderCounter > 0)
           ++mySampleCounter;
 
-        if (myRenderCounter >= 0 && myDividerChangeCounter >= 0 && myDividerChangeCounter-- == 0)  // NOLINT (bugprone-inc-dec-in-conditions)
+        if (myRenderCounter >= 0 && myDividerChangeCounter >= 0 && myDividerChangeCounter-- == 0)  // NOLINT(bugprone-inc-dec-in-conditions)
           setDivider(myDividerPending);
 
         break;
@@ -217,7 +217,7 @@ void Player::tick()
         if (myRenderCounter > 1 && (((myRenderCounter - 1) % myDivider) == 0))
           ++mySampleCounter;
 
-        if (myRenderCounter > 0 && myDividerChangeCounter >= 0 && myDividerChangeCounter-- == 0)  // NOLINT (bugprone-inc-dec-in-conditions)
+        if (myRenderCounter > 0 && myDividerChangeCounter >= 0 && myDividerChangeCounter-- == 0)  // NOLINT(bugprone-inc-dec-in-conditions)
           setDivider(myDividerPending);
 
         break;

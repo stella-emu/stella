@@ -131,7 +131,7 @@ bool FSNodePOSIX::getChildren(AbstractFSList& myList, ListMode mode) const
 
   // Loop over dir entries using readdir
   struct dirent* dp = nullptr;
-  while((dp = readdir(dirp)) != nullptr)  // NOLINT (not thread safe)
+  while((dp = readdir(dirp)) != nullptr)  // NOLINT(concurrency-mt-unsafe)
   {
     // Ignore all hidden files
     if(dp->d_name[0] == '.')

@@ -46,7 +46,6 @@ RamWidget::RamWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& n
             bheight = myLineHeight + 2;
   //const int VGAP = 4;
   const int VGAP = myFontHeight / 4;
-  StaticTextWidget* s = nullptr;  // NOLINT (erroneously marked as const)
   WidgetArray wid;
 
   int ypos = y + myLineHeight;
@@ -138,7 +137,7 @@ RamWidget::RamWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& n
 
   // Add Binary display of selected RAM cell
   xpos = x + w - 9.6 * myFontWidth - 9;
-  s = new StaticTextWidget(boss, lfont, xpos, ypos, "%");
+  auto* s = new StaticTextWidget(boss, lfont, xpos, ypos, "%");
   myBinValue = new DataGridWidget(boss, nfont, s->getRight() + myFontWidth * 0.1, ypos-2,
                                   1, 1, 8, 8, Common::Base::Fmt::_2);
   myBinValue->setHelpAnchor(helpAnchor, true);

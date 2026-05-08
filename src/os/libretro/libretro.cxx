@@ -1,4 +1,4 @@
-// NOLINTBEGIN (misc-use-anonymous-namespace)
+// NOLINTBEGIN: Not under Stella control
 
 #ifndef _MSC_VER
 #include <sched.h>

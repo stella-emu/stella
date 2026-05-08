@@ -139,7 +139,7 @@ bool SerialPortPOSIX::isCTS()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 StringList SerialPortPOSIX::portNames()
 {
-  StringList ports;  // NOLINT: cannot be const, but clang-tidy suggests it
+  StringList ports;
 
   // Check if port is valid; for now that means if it can be opened
   // Eventually we may extend this to do more intensive checks
@@ -161,7 +161,7 @@ StringList SerialPortPOSIX::portNames()
            BSPF::startsWithIgnoreCase(node.getPath(), "/dev/ttyS");
 #endif
   };
-  FSList portList;  // NOLINT: cannot be const, but clang-tidy suggests it
+  FSList portList;
   portList.reserve(5);
 
   const FSNode dev("/dev/");

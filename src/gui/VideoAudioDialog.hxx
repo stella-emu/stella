@@ -128,8 +128,8 @@ class VideoAudioDialog : public Dialog
     SliderWidget*     myTVBright{nullptr};
     SliderWidget*     myTVContrast{nullptr};
     SliderWidget*     myTVGamma{nullptr};
-    std::array<StaticTextWidget*, 16> myColorLbl{nullptr};
-    ColorWidget*      myColor[16][8]{{nullptr}};
+    std::array<StaticTextWidget*, 16> myColorLbl{};
+    BSPF::array2D<ColorWidget*, 16, 8> myColor{};
 
     // Bezels
     CheckboxWidget*   myBezelEnableCheckbox{nullptr};

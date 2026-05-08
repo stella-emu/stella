@@ -49,7 +49,9 @@ class Variant
 
     Variant() = default;
 
-    // NOLINTBEGIN: we don't want c'tors to be explicit here, so disable the warning
+
+    // We don't want c'tors to be explicit here, so disable the warning
+    // NOLINTBEGIN(google-explicit-constructor,hicpp-explicit-conversions)
     // String constructors
     Variant(const string& s) : myValue{s} { }
     Variant(string&& s)      : myValue{std::move(s)} { }
@@ -64,7 +66,7 @@ class Variant
     Variant(bool v)                 : myValue{v} { }
     Variant(const Common::Size& v)  : myValue{v} { }
     Variant(const Common::Point& v) : myValue{v} { }
-    // NOLINTEND
+    // NOLINTEND(google-explicit-constructor,hicpp-explicit-conversions)
 
     Variant& operator=(const Value& v) {
       myValue = v;

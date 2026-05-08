@@ -58,7 +58,6 @@ RiotWidget::RiotWidget(GuiObject* boss, const GUI::Font& lfont,
             vBorder = 10;
   int xpos = hBorder, ypos = vBorder + _lineHeight,
     lwidth = _fontWidth * 8 + hGap;
-  StaticTextWidget* t = nullptr;  // NOLINT (erroneously marked as const)
   VariantList items;
 
   // Set the strings to be used in the various bit registers
@@ -144,9 +143,9 @@ RiotWidget::RiotWidget(GuiObject* boss, const GUI::Font& lfont,
   myTimWrite->setID(kTimWriteID);
   addFocusWidget(myTimWrite);
 
-  t = new StaticTextWidget(boss, lfont,
-                           myTimWrite->getRight() + hGap * 3,
-                           ypos + _lineHeight * 1.5 + 2 , "#");
+  auto* t = new StaticTextWidget(boss, lfont,
+                                 myTimWrite->getRight() + hGap * 3,
+                                 ypos + _lineHeight * 1.5 + 2 , "#");
   myTimAvail = new DataGridWidget(boss, nfont, t->getRight(), t->getTop() - 2,
                                    1, 1, 6, 30, Common::Base::Fmt::_10_6);
   myTimAvail->setToolTip("Number of CPU cycles available for current timer interval.\n");

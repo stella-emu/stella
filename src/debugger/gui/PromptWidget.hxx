@@ -106,7 +106,7 @@ class PromptWidget : public Widget, public CommandSender
       kHistorySize = 1000
     };
 
-    int  _buffer[kBufferSize]{};  // NOLINT  (will be rewritten soon)
+    int  _buffer[kBufferSize]{};
     int  _linesInBuffer{0};
 
     int  _lineWidth{0};

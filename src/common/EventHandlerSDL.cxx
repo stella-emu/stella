@@ -249,7 +249,7 @@ EventHandlerSDL::JoystickSDL::JoystickSDL(int idx)
 {
   ASSERT_MAIN_THREAD;
 
-  // NOLINTNEXTLINE: we want to initialize here, not in the member list
+  // NOLINTNEXTLINE(cppcoreguidelines-prefer-member-initializer)
   myStick = SDL_OpenJoystick(idx);
   if(myStick)
   {

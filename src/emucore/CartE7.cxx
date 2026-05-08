@@ -40,7 +40,7 @@ void CartridgeE7::initialize(const ByteBuffer& image, size_t size)
   myRAM.fill(0xFF);
   myCurrentBank.fill(0);
 
-  myRAMBank = romBankCount() - 1;  // NOLINT
+  myRAMBank = romBankCount() - 1;  // NOLINT(clang-analyzer-optin.cplusplus.VirtualCall)
 
   myPlusROM = std::make_unique<PlusROM>(mySettings, *this);
 
@@ -381,5 +381,5 @@ uInt16 CartridgeE7::romBankCount() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt16 CartridgeE7::romSize() const
 {
-  return romBankCount() * BANK_SIZE;  // NOLINT
+  return romBankCount() * BANK_SIZE;  // NOLINT(clang-analyzer-optin.cplusplus.VirtualCall)
 }

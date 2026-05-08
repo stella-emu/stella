@@ -173,7 +173,7 @@ void AboutDialog::updateStrings(int page, int lines, string& title)
       return;
   }
 
-  while(i < lines)  // NOLINT : i changes in lambda above
+  while(i < lines)
     ADD_ALINE();
 }
 

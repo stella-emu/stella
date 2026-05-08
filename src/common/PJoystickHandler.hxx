@@ -25,8 +25,10 @@ class EventHandler;
 class Event;
 
 #include "bspf.hxx"
+#include "Control.hxx"
 #include "EventHandlerConstants.hxx"
 #include "PhysicalJoystick.hxx"
+#include "Props.hxx"
 #include "Variant.hxx"
 #include "json_lib.hxx"
 
@@ -66,7 +68,7 @@ class PhysicalJoystickHandler
       //       on the 'mapping' instance variable; there lay dragons ...
       // https://json.nlohmann.me/home/faq/#brace-initialization-yields-arrays
       explicit StickInfo(nlohmann::json map, PhysicalJoystickPtr stick = nullptr)
-        : mapping(map), joy{std::move(stick)} {}  // NOLINT
+        : mapping(map), joy{std::move(stick)} {} // NOLINT(performance-unnecessary-value-param)
 
       nlohmann::json mapping;
       PhysicalJoystickPtr joy;
@@ -145,9 +147,9 @@ class PhysicalJoystickHandler
     using StickDatabase = std::map<string, StickInfo, std::less<>>;
     using StickList = std::map<int, PhysicalJoystickPtr>;
 
-    OSystem& myOSystem;      // NOLINT: we want a reference here
-    EventHandler& myHandler; // NOLINT: we want a reference here
-    Event& myEvent;          // NOLINT: we want a reference here
+    OSystem& myOSystem;
+    EventHandler& myHandler;
+    Event& myEvent;
 
     // Contains all joysticks that Stella knows about, indexed by name
     StickDatabase myDatabase;
@@ -244,12 +246,10 @@ class PhysicalJoystickHandler
     static EventMappingArray DefaultLeftDrivingMapping;
     static EventMappingArray DefaultRightDrivingMapping;
 
-    static constexpr int NUM_PORTS = 2;
-    static constexpr int NUM_SA_AXIS = 2;
-    static constexpr Event::Type SA_Axis[NUM_PORTS][NUM_SA_AXIS] = {
+    static constexpr BSPF::array2D<Event::Type, 2, 2> SA_Axis = {{
       { Event::SALeftAxis0Value,  Event::SALeftAxis1Value  },
       { Event::SARightAxis0Value, Event::SARightAxis1Value }
-    };
+    }};
 };
 
 #endif  // PHYSICAL_JOYSTICK_HANDLER_HXX

@@ -43,7 +43,7 @@ CheatCodeDialog::CheatCodeDialog(OSystem& osystem, DialogContainer& parent,
             VBORDER      = Dialog::vBorder(),
             HBORDER      = Dialog::hBorder();
   WidgetArray wid;
-  ButtonWidget* b = nullptr;  // NOLINT (erroneously marked as const)
+  ButtonWidget* b = nullptr;
 
   // Set real dimensions
   _w = 45 * fontWidth + HBORDER * 2;

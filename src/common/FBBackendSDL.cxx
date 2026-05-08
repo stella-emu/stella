@@ -104,7 +104,7 @@ cerr << std::format("Display {} -> {}\n", instance_id, SDL_GetDisplayName(instan
       windowedRes.try_emplace(displays[i], r.w, r.h);
 
     int numModes = 0;
-    SDL_DisplayMode** modes = SDL_GetFullscreenDisplayModes(displays[i], &numModes);  // NOLINT
+    SDL_DisplayMode** modes = SDL_GetFullscreenDisplayModes(displays[i], &numModes);
 
     string log = std::format("Supported video modes ({}) for display {} ({}):",
                              numModes, i, SDL_GetDisplayName(displays[i]));
@@ -395,7 +395,7 @@ bool FBBackendSDL::adaptRefreshRate(SDL_DisplayID displayId,
   // one matching the current resolution is preferred.
   const float epsilon = 0.001F;  // floating point rounding tolerance
   bool bestSameRes = false;
-  SDL_DisplayMode** modes = SDL_GetFullscreenDisplayModes(displayId, &numModes);  // NOLINT
+  SDL_DisplayMode** modes = SDL_GetFullscreenDisplayModes(displayId, &numModes);
   // Wrap raw pointer into a span so we can use range-based for
   const std::span<SDL_DisplayMode*> span(modes, numModes);
 

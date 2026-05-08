@@ -102,7 +102,7 @@ void FBSurface::hLine(uInt32 x, uInt32 y, uInt32 x2, ColorId color)
   if(!checkBounds(x, y) || !checkBounds(x2, 2))
     return;
 
-  // NOLINTNEXTLINE (erroneously marked as const)
+  // NOLINTNEXTLINE(misc-const-correctness)
   uInt32* buffer = myPixels + (y * static_cast<size_t>(myPitch)) + x;
   while(x++ <= x2)
     *buffer++ = myPalette[color];
@@ -162,10 +162,10 @@ void FBSurface::drawChar(const GUI::Font& font, uInt8 chr,
   }
   else
   {
-    bbw = desc.bbx[chr].w;  // NOLINT
-    bbh = desc.bbx[chr].h;  // NOLINT
-    bbx = desc.bbx[chr].x;  // NOLINT
-    bby = desc.bbx[chr].y;  // NOLINT
+    bbw = desc.bbx[chr].w;
+    bbh = desc.bbx[chr].h;
+    bbx = desc.bbx[chr].x;  // NOLINT(bugprone-signed-char-misuse,cert-str34-c)
+    bby = desc.bbx[chr].y;  // NOLINT(bugprone-signed-char-misuse,cert-str34-c)
   }
 
   const uInt32 cx = tx + bbx;
@@ -224,7 +224,7 @@ void FBSurface::drawPixels(const uInt32* data, uInt32 tx, uInt32 ty, uInt32 nump
   if(!checkBounds(tx, ty) || !checkBounds(tx + numpixels - 1, ty))
     return;
 
-  // NOLINTNEXTLINE (erroneously marked as const)
+  // NOLINTNEXTLINE(misc-const-correctness)
   uInt32* buffer = myPixels + (ty * static_cast<size_t>(myPitch)) + tx;
 
   for(uInt32 i = 0; i < numpixels; ++i)

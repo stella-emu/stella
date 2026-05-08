@@ -308,7 +308,8 @@ namespace BSPF
                                   size_t startpos = 0)
   {
     if(startpos > s1.size()) return string_view::npos;
-    const auto pos = std::search(s1.begin() + startpos, s1.end(), // NOLINT: issues with auto
+    // NOLINTNEXTLINE(readability-qualified-auto): issues in Windows with '*'
+    const auto pos = std::search(s1.begin() + startpos, s1.end(),
                                  s2.begin(), s2.end(),
             [&](char ch1, char ch2) {
               return toUpperAscii(ch1) == toUpperAscii(ch2);

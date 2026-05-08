@@ -66,8 +66,8 @@ namespace {
 
 // #define THUMB_DISS
 
-// NOLINTBEGIN  FIXME: Perhaps come back to this, to see if inline functions
-//                     are just as fast as define's
+// NOLINTBEGIN(cppcoreguidelines-macro-usage)
+// TODO: Perhaps come back to this and replace DEFINE with inline functions
 #ifdef THUMB_DISS
   #define DO_DISS(statement)          \
     {                                 \
@@ -88,7 +88,7 @@ namespace {
 
 #define branch_target_9(inst) (read_register(15) + 2 + ((static_cast<Int32>(inst) << 24) >> 23))
 #define branch_target_12(inst) (read_register(15) + 2 + ((static_cast<Int32>(inst) << 21) >> 20))
-// NOLINTEND
+// NOLINTEND(cppcoreguidelines-macro-usage)
 
 namespace {
   constexpr uInt32 PAGEMAP_SIZE = 0x100000000 / 4096;
@@ -1100,10 +1100,11 @@ void CortexM0::do_cvflag(uInt32 a, uInt32 b, uInt32 c)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-// NOLINTNEXTLINE: function exceeds recommended size/complexity thresholds
+// NOLINTNEXTLINE(google-readability-function-size,
+//                hicpp-function-size,readability-function-size)
 CortexM0::err_t CortexM0::execute(uInt16 inst, uInt8 op)
 {
-  uInt32 sp, ra, rb, rc, rm, rd, rn, rs;  // NOLINT: don't need to initialize
+  uInt32 sp{0}, ra{0}, rb{0}, rc{0}, rm{0}, rd{0}, rn{0}, rs{0};
 
   #ifdef THUMB_DISS
     cout << "0x" << std::hex << std::setw(8) << std::setfill('0') << (read_register(15) - 4) << " " << std::dec;

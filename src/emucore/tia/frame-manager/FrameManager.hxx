@@ -26,7 +26,7 @@
 class FrameManager: public AbstractFrameManager
 {
   public:
-    enum Metrics: uInt32 {  // NOLINT: use 32-bit, even though 16-bit is sufficient
+    enum Metrics: uInt16 {
       vblankNTSC = 37,
       vblankPAL = 45,
       vsync = 3,
@@ -34,7 +34,7 @@ class FrameManager: public AbstractFrameManager
       frameSizePAL = 312,
       baseHeightNTSC = 228, // 217..239
       baseHeightPAL = 274, // 260..288
-      // NOLINTNEXTLINE: lround suggested, but not constexpr until C++23
+      // NOLINTNEXTLINE(bugprone-incorrect-roundings) lround not constexpr until C++23
       maxHeight = static_cast<uInt32>(baseHeightPAL * 1.05 + 0.5), // 288
       maxLinesVsync = 50,
       initialGarbageFrames = TIAConstants::initialGarbageFrames,

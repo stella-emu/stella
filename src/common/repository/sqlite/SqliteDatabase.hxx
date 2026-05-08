@@ -34,7 +34,9 @@ class SqliteDatabase
 
     const string& fileName() const { return myDatabaseFile; }
 
-    operator sqlite3*() const { return myHandle; }  // NOLINT: explicit not required
+    // NOLINTBEGIN(google-explicit-constructor, hicpp-explicit-conversions)
+    operator sqlite3*() const { return myHandle; }
+    // NOLINTEND(google-explicit-constructor, hicpp-explicit-conversions)
 
     void exec(string_view sql);
 

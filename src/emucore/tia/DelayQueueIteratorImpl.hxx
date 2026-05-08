@@ -44,7 +44,7 @@ class DelayQueueIteratorImpl : public DelayQueueIterator
     uInt8 currentIndex() const;
 
   private:
-    const DelayQueue<length, capacity>& myDelayQueue;  // NOLINT: we want a reference here
+    const DelayQueue<length, capacity>& myDelayQueue;
     uInt8 myDelayCycle{0};
     uInt8 myIndex{0};
 };
@@ -60,7 +60,7 @@ DelayQueueIteratorImpl<length, capacity>::DelayQueueIteratorImpl(
 )
   : myDelayQueue(delayQueue)
 {
-  while (myDelayQueue.myMembers[currentIndex()].mySize == 0 && isValid()) // NOLINT
+  while (myDelayQueue.myMembers[currentIndex()].mySize == 0 && isValid())
     myDelayCycle++;
 }
 

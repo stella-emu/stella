@@ -49,8 +49,10 @@ TiaZoomWidget::TiaZoomWidget(GuiObject* boss, const GUI::Font& font,
   addFocusWidget(this);
 
   // Initialize positions
-  myNumCols = (_w - 4) / myZoomLevel;  // NOLINT: must initialize after _w
-  myNumRows = (_h - 4) / myZoomLevel;  // NOLINT: must initialize after _h
+  // NOLINTBEGIN(cppcoreguidelines-prefer-member-initializer)
+  myNumCols = (_w - 4) / myZoomLevel;  // must initialize after _w
+  myNumRows = (_h - 4) / myZoomLevel;  // must initialize after _h
+  // NOLINTEND(cppcoreguidelines-prefer-member-initializer)
 
   // Create context menu for zoom levels
   VariantList l;

@@ -262,8 +262,9 @@ class Serializer
       size_t pos{0};
       size_t size{0};
 
-      MemoryStream() { }  // NOLINT: can't use = default here
-                          // possible clang bug; fails to compile with default
+      MemoryStream() { }  // NOLINT(modernize-use-equals-default,
+                          //        hicpp-use-equals-default)
+                          // possible clang bug; fails to compile with '= default'
 
       void ensureCapacity(size_t additional) {
         ensureSize(pos + additional);

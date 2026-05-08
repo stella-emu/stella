@@ -34,7 +34,7 @@ Cartridge3EPlus::Cartridge3EPlus(const ByteBuffer& image, size_t size,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Cartridge3EPlus::install(System& system)
 {
-  CartridgeEnhanced::install(system); // NOLINT (bugprone-parent-virtual-call)
+  CartridgeEnhanced::install(system); // NOLINT(bugprone-parent-virtual-call)
 
   const System::PageAccess access(this, System::PageAccessType::WRITE);
 

@@ -176,17 +176,10 @@ void NavigationWidget::updateUI()
 void NavigationWidget::handleCommand(CommandSender* sender, int cmd, int data,
                                      int id)
 {
-  switch(cmd)  // NOLINT (could be written as IF/ELSE)
+  if(cmd == kFolderClicked)
   {
-    case kFolderClicked:
-    {
-      const FSNode node(myPath->getPath(id));
-      myList->selectDirectory(node);
-      break;
-    }
-
-    default:
-      break;
+    const FSNode node(myPath->getPath(id));
+    myList->selectDirectory(node);
   }
 }
 

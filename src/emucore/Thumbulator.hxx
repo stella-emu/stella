@@ -112,7 +112,7 @@ class Thumbulator
     double cycleFactor() const { return _armCyclesFactor; }
   #else
     void cycleFactor(double) { }
-    double cycleFactor() const { return 1.0; }  // NOLINT: we don't want static
+    double cycleFactor() const { return 1.0; }
   #endif
 
     /**
@@ -253,8 +253,8 @@ class Thumbulator
     uInt32 cBase{0};
     uInt32 cStart{0};
     uInt32 cStack{0};
-    const unique_ptr<Op[]> decodedRom;  // NOLINT
-    const unique_ptr<uInt32[]> decodedParam;  // NOLINT
+    const unique_ptr<Op[]> decodedRom;
+    const unique_ptr<uInt32[]> decodedParam;
     uInt16* ram{nullptr};
     std::array<uInt32, 16> reg_norm{}; // normal execution mode, do not have a thread mode
     uInt32 znFlags{0};

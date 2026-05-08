@@ -18,6 +18,8 @@
 #ifndef STACK_HXX
 #define STACK_HXX
 
+#include <cassert>
+
 #include "bspf.hxx"
 
 /**

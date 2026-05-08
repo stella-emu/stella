@@ -105,7 +105,7 @@ void AbstractFrameManager::layout(FrameLayout layout)
 
   myLayout = layout;
 
-  onLayoutChange();  // NOLINT
+  onLayoutChange();  // NOLINT(clang-analyzer-optin.cplusplus.VirtualCall)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -1153,13 +1153,6 @@ void VideoAudioDialog::handlePaletteUpdate()
     for(auto& row: myColor)
       for(auto* w: row)
         w->setDirty();
-
-//     constexpr int NUM_LUMA = 8;
-//     constexpr int NUM_CHROMA = 16;
-//
-//     for(int idx = 0; idx < NUM_CHROMA; ++idx)  // NOLINT
-//       for(int lum = 0; lum < NUM_LUMA; ++lum)  // NOLINT
-//         myColor[idx][lum]->setDirty();
   }
 }
 
@@ -1387,8 +1380,8 @@ void VideoAudioDialog::addPalette(int x, int y, int w, int h)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void VideoAudioDialog::colorPalette()
 {
-  constexpr int NUM_LUMA = 8;
-  constexpr int NUM_CHROMA = 16;
+  constexpr int NUM_CHROMA = std::tuple_size_v<decltype(myColor)>;
+  constexpr int NUM_LUMA = std::tuple_size_v<decltype(myColor)::value_type>;
 
   if(instance().hasConsole())
   {
@@ -1410,9 +1403,9 @@ void VideoAudioDialog::colorPalette()
   }
   else
     // disable palette
-    for(int idx = 0; idx < NUM_CHROMA; ++idx)  // NOLINT
-      for(int lum = 0; lum < NUM_LUMA; ++lum)  // NOLINT
-        myColor[idx][lum]->setEnabled(false);
+    for(const auto& row: myColor)
+      for(auto* w: row)
+        w->setEnabled(false);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

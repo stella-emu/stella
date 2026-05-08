@@ -96,7 +96,7 @@ HelpDialog::HelpDialog(OSystem& osystem, DialogContainer& parent,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void HelpDialog::updateStrings(uInt8 page, uInt8 lines, string& title)
+void HelpDialog::updateStrings(int page, int lines, string& title)
 {
   int i = 0;
   const auto ADD_BIND = [&](string_view k, string_view d)
@@ -186,7 +186,7 @@ void HelpDialog::updateStrings(uInt8 page, uInt8 lines, string& title)
       break;
   }
 
-  while(i < lines)  // NOLINT : i changes in lambda above
+  while(i < lines)
     ADD_LINE();
 }
 

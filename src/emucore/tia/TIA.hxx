@@ -256,7 +256,8 @@ class TIA : public Device
     /**
       Answers dimensional info about the framebuffer.
     */
-    uInt32 width() const { return TIAConstants::H_PIXEL; }  // NOLINT
+    // NOLINTNEXTLINE(readability-convert-member-functions-to-static)
+    uInt32 width() const { return TIAConstants::H_PIXEL; }
     uInt32 height() const { return myFrameManager->height(); }
     Int32 vcenter() const { return myFrameManager->vcenter(); }
     Int32 minVcenter() const { return myFrameManager->minVcenter(); }

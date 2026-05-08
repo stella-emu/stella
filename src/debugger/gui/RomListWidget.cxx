@@ -50,7 +50,8 @@ RomListWidget::RomListWidget(GuiObject* boss, const GUI::Font& lfont,
   _h = h + 2;
 
   // Create scrollbar and attach to the list
-  // NOLINTNEXTLINE: we want to initialize here, not in the member list
+  // We want to initialize here, not in the member list
+  // NOLINTNEXTLINE(cppcoreguidelines-prefer-member-initializer)
   myScrollBar = new ScrollBarWidget(boss, lfont, _x + _w, _y,
                                     ScrollBarWidget::scrollBarWidth(_font), _h);
   myScrollBar->setTarget(this);
@@ -72,7 +73,8 @@ RomListWidget::RomListWidget(GuiObject* boss, const GUI::Font& lfont,
   // rowheight is determined by largest item on a line,
   // possibly meaning that number of rows will change
   _lineHeight = std::max(_lineHeight, CheckboxWidget::boxSize(_font));
-  _rows = h / _lineHeight;  // NOLINT: must be initialized after _lineHeight
+  // The following must be initialized after _lineHeight
+  _rows = h / _lineHeight;  // NOLINT(cppcoreguidelines-prefer-member-initializer)
 
   // Create a CheckboxWidget for each row in the list
   for(int i = 0; i < _rows; ++i)

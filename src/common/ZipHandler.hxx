@@ -244,7 +244,7 @@ class ZipHandler
         }
 
       private:
-        const uInt8* const myBuf{nullptr};  // NOLINT: we want const here
+        const uInt8* myBuf{nullptr};
     };
 
     class LocalFileHeaderReader : public ReaderBase

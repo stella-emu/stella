@@ -47,7 +47,6 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
             hBorder = 10,
             vBorder = 10;
   int xpos = hBorder, ypos = vBorder;
-  StaticTextWidget* t = nullptr;  // NOLINT (erroneously marked as const)
   ButtonWidget* b = nullptr;
 
   ////////////////////////////
@@ -111,7 +110,7 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
   for(uInt32 row = 0; row <= 3; ++row)
   {
     ypos += lineHeight;
-    t = new StaticTextWidget(boss, lfont, xpos, ypos + 2, dbgLabels[row]);
+    auto* t = new StaticTextWidget(boss, lfont, xpos, ypos + 2, dbgLabels[row]);
     myFixedColors[row] = new ColorWidget(boss, nfont, t->getRight() + hGap,
                                          ypos + 2, static_cast<uInt32>(1.5 * lineHeight), lineHeight - 4);
     myFixedColors[row]->setTarget(this);
@@ -121,7 +120,7 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
   for(uInt32 row = 4; row <= 7; ++row)
   {
     ypos += lineHeight;
-    t = new StaticTextWidget(boss, lfont, xpos, ypos + 2, dbgLabels[row]);
+    auto* t = new StaticTextWidget(boss, lfont, xpos, ypos + 2, dbgLabels[row]);
     myFixedColors[row] = new ColorWidget(boss, nfont, t->getRight() + hGap,
                                          ypos + 2, static_cast<uInt32>(1.5 * lineHeight), lineHeight - 4);
     myFixedColors[row]->setTarget(this);
@@ -139,7 +138,7 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
   for(uInt32 row = 0; row < 5; ++row)
   {
     // Add vertical label
-    t = new StaticTextWidget(boss, lfont, xpos, ypos, rowLabel[row]);
+    auto* t = new StaticTextWidget(boss, lfont, xpos, ypos, rowLabel[row]);
     int collX = t->getRight() + hGap;
 
     for(uInt32 col = 0; col < 5 - row; ++col, ++idx)
@@ -172,7 +171,7 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
   ////////////////////////////
   // grP0 (new)
   ypos = std::max(myFixedColors[3]->getBottom(), b->getBottom()) + vGap * 1.5;
-  t = new StaticTextWidget(boss, lfont, hBorder, ypos + 2, "P0");
+  auto* t = new StaticTextWidget(boss, lfont, hBorder, ypos + 2, "P0");
   myGRP0 = new TogglePixelWidget(boss, nfont, t->getRight() + hGap, ypos + 1, 8, 1);
   myGRP0->setTarget(this);
   myGRP0->setID(kGRP0ID);

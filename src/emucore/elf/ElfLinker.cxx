@@ -23,6 +23,7 @@
 
 #include "ElfLinker.hxx"
 
+// NOLINTBEGIN(bugprone-unchecked-optional-access)
 namespace {
   std::optional<ElfLinker::SegmentType> determineSegmentType(const ElfFile::Section& section)
   {
@@ -168,7 +169,7 @@ ElfLinker::RelocatedSymbol ElfLinker::findRelocatedSymbol(string_view name) cons
     if (!myRelocatedSymbols[i])
       ElfSymbolResolutionError::raise("symbol could not be relocated");
 
-    return myRelocatedSymbols[i].value();  // NOLINT: we know the value is valid
+    return myRelocatedSymbols[i].value();
   }
 
   ElfSymbolResolutionError::raise("symbol not found");
@@ -425,7 +426,7 @@ void ElfLinker::copyInitArrays(vector<uInt32>& initArray, const std::unordered_m
 void ElfLinker::applyRelocationToSection(const ElfFile::Relocation& relocation, size_t iSection)
 {
   const auto& targetSection = myElf.getSections()[iSection];
-  const auto& targetSectionRelocated = myRelocatedSections[iSection].value(); // NOLINT
+  const auto& targetSectionRelocated = myRelocatedSections[iSection].value();
   const auto& symbol = myElf.getSymbols()[relocation.symbol];
   const auto& relocatedSymbol = myRelocatedSymbols[relocation.symbol];
 
@@ -529,3 +530,4 @@ void ElfLinker::applyRelocationsToInitArrays(uInt8 initArrayType, vector<uInt32>
     }
   }
 }
+// NOLINTEND(bugprone-unchecked-optional-access)

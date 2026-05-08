@@ -189,7 +189,7 @@ class AtariNTSC
       float negate{0.F};
       std::array<float, 4> kernel{};
     };
-    // NOLINTNEXTLINE: seems we can't do constexpr on std::array inside another
+    // NOLINTNEXTLINE(bugprone-throwing-static-initialization)
     static inline const std::array<pixel_info_t, alignment_count> atari_ntsc_pixels = {{
       { PIXEL_OFFSET1(-4, -9), PIXEL_OFFSET2(-4), { 1, 1, 1, 1            } },
       { PIXEL_OFFSET1( 0, -5), PIXEL_OFFSET2( 0), {            1, 1, 1, 1 } }
@@ -204,7 +204,7 @@ class AtariNTSC
     // Generate pixel at all burst phases and column alignments
     static void genKernel(init_t& impl, float y, float i, float q, uInt32* out);
 
-    // NOLINTBEGIN: leave as macro's for now
+    // NOLINTBEGIN(cppcoreguidelines-macro-usage) : leave as macro's for now
     // Begins outputting row and starts two pixels. First pixel will be cut
     // off a bit.  Use atari_ntsc_black for unused pixels.
     #define ATARI_NTSC_BEGIN_ROW( pixel0, pixel1 ) \
@@ -231,7 +231,7 @@ class AtariNTSC
       ATARI_NTSC_CLAMP( raw_, 0 );\
       (rgb_out) = (raw_>>5 & 0x00FF0000)|(raw_>>3 & 0x0000FF00)|(raw_>>1 & 0x000000FF);\
     }
-    // NOLINTEND
+    // NOLINTEND(cppcoreguidelines-macro-usage)
 
     // Common ntsc macros
     static constexpr void ATARI_NTSC_CLAMP( uInt32& io, uInt32 shift ) {

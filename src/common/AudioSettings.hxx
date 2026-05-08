@@ -125,7 +125,7 @@ class AudioSettings
 
   private:
 
-    Settings& mySettings;  // NOLINT: we want a reference here
+    Settings& mySettings;
 
     Preset myPreset{Preset::custom};
 

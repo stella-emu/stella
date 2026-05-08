@@ -100,7 +100,7 @@ std::size_t TimerManager::size() const noexcept
 bool TimerManager::empty() const noexcept
 {
   const ScopedLock lock(sync);
-  return active.empty();  // NOLINT: bugprone-standalone-empty
+  return active.empty();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

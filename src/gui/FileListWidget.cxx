@@ -288,7 +288,7 @@ const FSNode& FileListWidget::selected()
   {
     // This should never happen, but we'll error-check out-of-bounds
     // array access anyway
-    return ourDefaultNode;
+    return defaultNode();
   }
 }
 

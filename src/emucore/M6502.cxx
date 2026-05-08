@@ -229,7 +229,7 @@ bool M6502::execute(uInt64 cycles)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-// NOLINTNEXTLINE (readability-function-size)
+// NOLINTNEXTLINE(google-readability-function-size,hicpp-function-size,readability-function-size)
 inline void M6502::_execute(uInt64 cycles, DispatchResult& result)
 {
   myExecutionStatus = 0;

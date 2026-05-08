@@ -39,7 +39,7 @@ class HelpDialog : public Dialog
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 
   private:
-    void updateStrings(uInt8 page, uInt8 lines, string& title);
+    void updateStrings(int page, int lines, string& title);
     void displayInfo();
 
   private:
@@ -54,8 +54,8 @@ class HelpDialog : public Dialog
     std::array<string, LINES_PER_PAGE> myKeyStr;
     std::array<string, LINES_PER_PAGE> myDescStr;
 
-    uInt8 myPage{1};
-    uInt8 myNumPages{5};
+    int myPage{1};
+    int myNumPages{5};
 
     enum { kUpdateCmd = 'upCm' };
 

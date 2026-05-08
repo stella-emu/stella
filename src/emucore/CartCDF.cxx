@@ -70,7 +70,7 @@ CartridgeCDF::CartridgeCDF(const ByteBuffer& image, size_t size,
 
   // Pointer to the program ROM
   // which starts after the 2K driver (and 2K C Code for CDF)
-  // NOLINTNEXTLINE: we want to initialize here, not in the member list
+  // NOLINTNEXTLINE(cppcoreguidelines-prefer-member-initializer)
   myProgramImage = myImage.get() + (isCDFJplus() ? 2_KB : 4_KB);
 
   // Pointer to CDF driver in RAM
@@ -104,7 +104,7 @@ CartridgeCDF::CartridgeCDF(const ByteBuffer& image, size_t size,
     thumulatorConfiguration(myCDFSubtype),
     this);
 
-  this->setInitialState();  // NOLINT
+  this->setInitialState();  // NOLINT(clang-analyzer-optin.cplusplus.VirtualCall)
 
   myPlusROM = std::make_unique<PlusROM>(mySettings, *this);
 
