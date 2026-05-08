@@ -214,6 +214,7 @@ void MD5::update(const uInt8* input, uInt32 length)
 // the message digest and zeroizing the context.
 void MD5::finalize()
 {
+  // 0x80 leading byte is required by the MD5 spec — it's the padding sentinel
   static constexpr std::array<uInt8, BLOCKSIZE> padding = { 0x80 };
 
   if (!finalized)
@@ -250,6 +251,7 @@ string MD5::hexdigest() const
 
   static constexpr char hex[] = "0123456789abcdef";
   string result;
+  result.reserve(32);
   for (auto c: digest)
   {
     result += hex[(c >> 4) & 0x0f];
@@ -274,11 +276,11 @@ string MD5::hash(const ByteBuffer& buffer, size_t length)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string MD5::hash(const uInt8* buffer, size_t length)
 {
-  static MD5 ourMD5;  // singleton
+  MD5 md5;
 
-  ourMD5.init();
-  ourMD5.update(buffer, static_cast<uInt32>(length));
-  ourMD5.finalize();
+  md5.init();
+  md5.update(buffer, static_cast<uInt32>(length));
+  md5.finalize();
 
-  return ourMD5.hexdigest();
+  return md5.hexdigest();
 }
