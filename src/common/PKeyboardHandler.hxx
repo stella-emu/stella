@@ -27,6 +27,7 @@ class EventHandler;
 #include "EventHandlerConstants.hxx"
 #include "Props.hxx"
 #include "KeyMap.hxx"
+#include "StellaKeys.hxx"
 
 /**
   This class handles all physical keyboard-related operations in Stella.
@@ -95,8 +96,8 @@ class PhysicalKeyboardHandler
     // Structure used for action menu items
     struct EventMapping {
       Event::Type event{Event::NoType};
-      StellaKey key{StellaKey(0)};
-      int mod{KBDM_NONE};
+      StellaKey key{KBDK_UNKNOWN};
+      StellaMod mod{StellaMod::NONE};
     };
     using EventMappingArray = std::vector<EventMapping>;
     using EventMappingSpan  = std::span<const EventMapping>;

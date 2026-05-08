@@ -30,7 +30,7 @@ EventHandlerSDL::EventHandlerSDL(OSystem& osystem)
 #ifdef GUI_SUPPORT
   myQwertz = int{'y'} == static_cast<int>
     (SDL_GetKeyFromScancode(static_cast<SDL_Scancode>(KBDK_Z),
-                            static_cast<SDL_Keymod>(StellaMod::KBDM_NONE), false));
+                            static_cast<SDL_Keymod>(StellaMod::NONE), false));
   Logger::debug(std::format("Keyboard: {}", myQwertz ? "QWERTZ" : "QWERTY"));
 #endif
 

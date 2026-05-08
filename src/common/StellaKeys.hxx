@@ -36,7 +36,7 @@
 */
 
 // This comes directly from SDL_scancode.h
-enum StellaKey  // NOLINT: use 32-bit, even though 16-bit is sufficient
+enum StellaKey: uInt16
 {
     KBDK_UNKNOWN = 0,
 
@@ -411,50 +411,72 @@ enum StellaKey  // NOLINT: use 32-bit, even though 16-bit is sufficient
 
     KBDK_COUNT = 512 /**< not a key, just marks the number of scancodes for array bounds */
 };
+namespace StellaKeyTest
+{
+  constexpr bool isModifierKey(StellaKey key) {
+    return key >= KBDK_LCTRL && key <= KBDK_RGUI;
+  }
+}  // namespace StellaKeyTest
 
 // This comes directly from SDL_keycode.h
-enum StellaMod: uInt16  // NOLINT / TODO masks can't be 'enum class'
+enum class StellaMod: uInt16
 {
-  KBDM_NONE   = 0x0000U, /**< no modifier is applicable. */
-  KBDM_LSHIFT = 0x0001U, /**< the left Shift key is down. */
-  KBDM_RSHIFT = 0x0002U, /**< the right Shift key is down. */
-  KBDM_LEVEL5 = 0x0004U, /**< the Level 5 Shift key is down. */
-  KBDM_LCTRL  = 0x0040U, /**< the left Ctrl (Control) key is down. */
-  KBDM_RCTRL  = 0x0080U, /**< the right Ctrl (Control) key is down. */
-  KBDM_LALT   = 0x0100U, /**< the left Alt key is down. */
-  KBDM_RALT   = 0x0200U, /**< the right Alt key is down. */
-  KBDM_LGUI   = 0x0400U, /**< the left GUI key (often the Windows key) is down. */
-  KBDM_RGUI   = 0x0800U, /**< the right GUI key (often the Windows key) is down. */
-  KBDM_NUM    = 0x1000U, /**< the Num Lock key (may be located on an extended keypad) is down. */
-  KBDM_CAPS   = 0x2000U, /**< the Caps Lock key is down. */
-  KBDM_MODE   = 0x4000U, /**< the !AltGr key is down. */
-  KBDM_SCROLL = 0x8000U, /**< the Scroll Lock key is down. */
-  KBDM_CTRL   = (KBDM_LCTRL | KBDM_RCTRL),   /**< Any Ctrl key is down. */
-  KBDM_SHIFT  = (KBDM_LSHIFT | KBDM_RSHIFT), /**< Any Shift key is down. */
-  KBDM_ALT    = (KBDM_LALT | KBDM_RALT),     /**< Any Alt key is down. */
-  KBDM_GUI    = (KBDM_LGUI | KBDM_RGUI)      /**< Any GUI key is down. */
+  NONE   = 0x0000U, /**< no modifier is applicable. */
+  LSHIFT = 0x0001U, /**< the left Shift key is down. */
+  RSHIFT = 0x0002U, /**< the right Shift key is down. */
+  LEVEL5 = 0x0004U, /**< the Level 5 Shift key is down. */
+  LCTRL  = 0x0040U, /**< the left Ctrl (Control) key is down. */
+  RCTRL  = 0x0080U, /**< the right Ctrl (Control) key is down. */
+  LALT   = 0x0100U, /**< the left Alt key is down. */
+  RALT   = 0x0200U, /**< the right Alt key is down. */
+  LGUI   = 0x0400U, /**< the left GUI key (often the Windows key) is down. */
+  RGUI   = 0x0800U, /**< the right GUI key (often the Windows key) is down. */
+  NUM    = 0x1000U, /**< the Num Lock key (may be located on an extended keypad) is down. */
+  CAPS   = 0x2000U, /**< the Caps Lock key is down. */
+  MODE   = 0x4000U, /**< the !AltGr key is down. */
+  SCROLL = 0x8000U, /**< the Scroll Lock key is down. */
+  CTRL   = (LCTRL | RCTRL),   /**< Any Ctrl key is down. */
+  SHIFT  = (LSHIFT | RSHIFT), /**< Any Shift key is down. */
+  ALT    = (LALT | RALT),     /**< Any Alt key is down. */
+  GUI    = (LGUI | RGUI)      /**< Any GUI key is down. */
 };
+// StellaMod is a bitmask type; bitwise operations on valid values always
+// produce valid values. The EnumCastOutOfRange warning is a false positive here.
+// NOLINTBEGIN(clang-analyzer-optin.core.EnumCastOutOfRange)
+constexpr StellaMod operator|(StellaMod a, StellaMod b) {
+  return static_cast<StellaMod>(static_cast<uInt16>(a) | static_cast<uInt16>(b));
+}
+constexpr StellaMod operator&(StellaMod a, StellaMod b) {
+  return static_cast<StellaMod>(static_cast<uInt16>(a) & static_cast<uInt16>(b));
+}
+constexpr StellaMod operator~(StellaMod a) {
+  return static_cast<StellaMod>(~static_cast<uInt16>(a));
+}
+constexpr StellaMod& operator&=(StellaMod& a, StellaMod b) {
+  a = a & b;
+  return a;
+}
+constexpr StellaMod& operator|=(StellaMod& a, StellaMod b) {
+  a = a | b;
+  return a;
+}
+// NOLINTEND(clang-analyzer-optin.core.EnumCastOutOfRange)
 
 // Test if specified modifier is pressed
 namespace StellaModTest
 {
-  constexpr bool isAlt(int mod)
-  {
+  constexpr bool isAlt(StellaMod mod) {
 #if defined(BSPF_MACOS) || defined(MACOS_KEYS)
-    return (mod & KBDM_GUI);
+    return (mod & StellaMod::GUI) != StellaMod::NONE;
 #else
-    return (mod & KBDM_ALT);
+    return (mod & StellaMod::ALT) != StellaMod::NONE;
 #endif
   }
-
-  constexpr bool isControl(int mod)
-  {
-    return (mod & KBDM_CTRL);
+  constexpr bool isControl(StellaMod mod) {
+    return (mod & StellaMod::CTRL) != StellaMod::NONE;
   }
-
-  constexpr bool isShift(int mod)
-  {
-    return (mod & KBDM_SHIFT);
+  constexpr bool isShift(StellaMod mod) {
+    return (mod & StellaMod::SHIFT) != StellaMod::NONE;
   }
 }  // namespace StellaModTest
 

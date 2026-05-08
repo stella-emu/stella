@@ -22,28 +22,28 @@
 using json = nlohmann::json;
 
 namespace {
-  json serializeModkeyMask(int mask)
+  json serializeModkeyMask(StellaMod mask)
   {
-    if(mask == StellaMod::KBDM_NONE) return {};
+    if(mask == StellaMod::NONE) return {};
 
     json serializedMask = json::array();
 
     for(const StellaMod mod: {
-      StellaMod::KBDM_CTRL,
-      StellaMod::KBDM_SHIFT,
-      StellaMod::KBDM_ALT,
-      StellaMod::KBDM_GUI,
-      StellaMod::KBDM_LSHIFT,
-      StellaMod::KBDM_RSHIFT,
-      StellaMod::KBDM_LCTRL,
-      StellaMod::KBDM_RCTRL,
-      StellaMod::KBDM_LALT,
-      StellaMod::KBDM_RALT,
-      StellaMod::KBDM_LGUI,
-      StellaMod::KBDM_RGUI,
-      StellaMod::KBDM_NUM,
-      StellaMod::KBDM_CAPS,
-      StellaMod::KBDM_MODE
+      StellaMod::CTRL,
+      StellaMod::SHIFT,
+      StellaMod::ALT,
+      StellaMod::GUI,
+      StellaMod::LSHIFT,
+      StellaMod::RSHIFT,
+      StellaMod::LCTRL,
+      StellaMod::RCTRL,
+      StellaMod::LALT,
+      StellaMod::RALT,
+      StellaMod::LGUI,
+      StellaMod::RGUI,
+      StellaMod::NUM,
+      StellaMod::CAPS,
+      StellaMod::MODE
     }) {
       if((mask & mod) != mod) continue;
 
@@ -54,26 +54,32 @@ namespace {
     return serializedMask.size() == 1 ? serializedMask.at(0) : serializedMask;
   }
 
-  int deserializeModkeyMask(const json& serializedMask)
+  StellaMod deserializeModkeyMask(const json& serializedMask)
   {
-    if(serializedMask.is_null()) return StellaMod::KBDM_NONE;
+    if(serializedMask.is_null()) return StellaMod::NONE;
     if(!serializedMask.is_array()) return serializedMask.get<StellaMod>();
 
-    int mask = 0;
-    for(const json& mod: serializedMask) mask |= mod.get<StellaMod>();
+    StellaMod mask{StellaMod::NONE};
+    for(const json& mod: serializedMask)
+      mask = static_cast<StellaMod>(mask | mod.get<StellaMod>());
 
     return mask;
   }
-} // namespace
+}  // namespace
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void KeyMap::add(Event::Type event, const Mapping& mapping)
 {
-  myMap[convertMod(mapping)] = event;
+  const Mapping m = convertMod(mapping);
+  const auto it = std::ranges::lower_bound(myMap, m, std::less{}, &MapEntry::first);
+  if(it != myMap.end() && it->first == m)
+    it->second = event;
+  else
+    myMap.insert(it, {m, event});
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void KeyMap::add(Event::Type event, EventMode mode, int key, int mod)
+void KeyMap::add(Event::Type event, EventMode mode, StellaKey key, StellaMod mod)
 {
   add(event, Mapping(mode, key, mod));
 }
@@ -81,11 +87,14 @@ void KeyMap::add(Event::Type event, EventMode mode, int key, int mod)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void KeyMap::erase(const Mapping& mapping)
 {
-  myMap.erase(convertMod(mapping));
+  const Mapping m = convertMod(mapping);
+  const auto it = std::ranges::lower_bound(myMap, m, std::less{}, &MapEntry::first);
+  if(it != myMap.end() && it->first == m)
+    myMap.erase(it);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void KeyMap::erase(EventMode mode, int key, int mod)
+void KeyMap::erase(EventMode mode, StellaKey key, StellaMod mod)
 {
   erase(Mapping(mode, key, mod));
 }
@@ -97,23 +106,22 @@ Event::Type KeyMap::get(const Mapping& mapping) const
 
   if(myModEnabled)
   {
-    const auto find = myMap.find(m);
-    if(find != myMap.end())
-      return find->second;
+    const auto it = std::ranges::lower_bound(myMap, m, std::less{}, &MapEntry::first);
+    if(it != myMap.end() && it->first == m)
+      return it->second;
   }
 
   // mapping not found, try without modifiers
-  m.mod = static_cast<StellaMod>(0);
-
-  const auto find = myMap.find(m);
-  if(find != myMap.end())
-    return find->second;
+  m.mod = StellaMod::NONE;
+  const auto it = std::ranges::lower_bound(myMap, m, std::less{}, &MapEntry::first);
+  if(it != myMap.end() && it->first == m)
+    return it->second;
 
   return Event::Type::NoType;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Event::Type KeyMap::get(EventMode mode, int key, int mod) const
+Event::Type KeyMap::get(EventMode mode, StellaKey key, StellaMod mod) const
 {
   return get(Mapping(mode, key, mod));
 }
@@ -121,11 +129,13 @@ Event::Type KeyMap::get(EventMode mode, int key, int mod) const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool KeyMap::check(const Mapping& mapping) const
 {
-  return myMap.contains(convertMod(mapping));
+  const Mapping m = convertMod(mapping);
+  const auto it = std::ranges::lower_bound(myMap, m, std::less{}, &MapEntry::first);
+  return it != myMap.end() && it->first == m;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool KeyMap::check(EventMode mode, int key, int mod) const
+bool KeyMap::check(EventMode mode, StellaKey key, StellaMod mod) const
 {
   return check(Mapping(mode, key, mod));
 }
@@ -135,22 +145,22 @@ string KeyMap::getDesc(const Mapping& mapping)
 {
 #if defined(BSPF_MACOS) || defined(MACOS_KEYS)
   static constexpr string_view mod2 = "Option";
-  static constexpr int MOD2  = KBDM_ALT;
-  static constexpr int LMOD2 = KBDM_LALT;
-  static constexpr int RMOD2 = KBDM_RALT;
+  static constexpr StellaMod MOD2   = StellaMod::ALT;
+  static constexpr StellaMod LMOD2  = StellaMod::LALT;
+  static constexpr StellaMod RMOD2  = StellaMod::RALT;
   static constexpr string_view mod3 = "Cmd";
-  static constexpr int MOD3  = KBDM_GUI;
-  static constexpr int LMOD3 = KBDM_LGUI;
-  static constexpr int RMOD3 = KBDM_RGUI;
+  static constexpr StellaMod MOD3   = StellaMod::GUI;
+  static constexpr StellaMod LMOD3  = StellaMod::LGUI;
+  static constexpr StellaMod RMOD3  = StellaMod::RGUI;
 #else
   static constexpr string_view mod2 = "Windows";
-  static constexpr int MOD2  = KBDM_GUI;
-  static constexpr int LMOD2 = KBDM_LGUI;
-  static constexpr int RMOD2 = KBDM_RGUI;
+  static constexpr StellaMod MOD2   = StellaMod::GUI;
+  static constexpr StellaMod LMOD2  = StellaMod::LGUI;
+  static constexpr StellaMod RMOD2  = StellaMod::RGUI;
   static constexpr string_view mod3 = "Alt";
-  static constexpr int MOD3  = KBDM_ALT;
-  static constexpr int LMOD3 = KBDM_LALT;
-  static constexpr int RMOD3 = KBDM_RALT;
+  static constexpr StellaMod MOD3   = StellaMod::ALT;
+  static constexpr StellaMod LMOD3  = StellaMod::LALT;
+  static constexpr StellaMod RMOD3  = StellaMod::RALT;
 #endif
 
   string buf;
@@ -161,21 +171,21 @@ string KeyMap::getDesc(const Mapping& mapping)
     buf += part;
   };
 
-  if((mapping.mod & KBDM_CTRL) == KBDM_CTRL) append("Ctrl");
-  else if(mapping.mod & KBDM_LCTRL) append("Left Ctrl");
-  else if(mapping.mod & KBDM_RCTRL) append("Right Ctrl");
+  if((mapping.mod & StellaMod::CTRL) == StellaMod::CTRL) append("Ctrl");
+  else if((mapping.mod & StellaMod::LCTRL) != StellaMod::NONE) append("Left Ctrl");
+  else if((mapping.mod & StellaMod::RCTRL) != StellaMod::NONE) append("Right Ctrl");
 
   if((mapping.mod & MOD2) == MOD2) append(mod2);
-  else if(mapping.mod & LMOD2) append(std::format("Left {}", mod2));
-  else if(mapping.mod & RMOD2) append(std::format("Right {}", mod2));
+  else if((mapping.mod & LMOD2) != StellaMod::NONE) append(std::format("Left {}", mod2));
+  else if((mapping.mod & RMOD2) != StellaMod::NONE) append(std::format("Right {}", mod2));
 
   if((mapping.mod & MOD3) == MOD3) append(mod3);
-  else if(mapping.mod & LMOD3) append(std::format("Left {}", mod3));
-  else if(mapping.mod & RMOD3) append(std::format("Right {}", mod3));
+  else if((mapping.mod & LMOD3) != StellaMod::NONE) append(std::format("Left {}", mod3));
+  else if((mapping.mod & RMOD3) != StellaMod::NONE) append(std::format("Right {}", mod3));
 
-  if((mapping.mod & KBDM_SHIFT) == KBDM_SHIFT) append("Shift");
-  else if(mapping.mod & KBDM_LSHIFT) append("Left Shift");
-  else if(mapping.mod & KBDM_RSHIFT) append("Right Shift");
+  if((mapping.mod & StellaMod::SHIFT) == StellaMod::SHIFT) append("Shift");
+  else if((mapping.mod & StellaMod::LSHIFT) != StellaMod::NONE) append("Left Shift");
+  else if((mapping.mod & StellaMod::RSHIFT) != StellaMod::NONE) append("Right Shift");
 
   if(!buf.empty()) buf += '+';
   buf += StellaKeyName::forKey(mapping.key);
@@ -184,7 +194,7 @@ string KeyMap::getDesc(const Mapping& mapping)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string KeyMap::getDesc(EventMode mode, int key, int mod)
+string KeyMap::getDesc(EventMode mode, StellaKey key, StellaMod mod)
 {
   return getDesc(Mapping(mode, key, mod));
 }
@@ -221,35 +231,17 @@ KeyMap::MappingArray KeyMap::getEventMapping(Event::Type event,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 json KeyMap::saveMapping(EventMode mode) const
 {
-  using MapType = std::pair<Mapping, Event::Type>;
-  std::vector<MapType> sortedMap(myMap.begin(), myMap.end());
-
-  std::ranges::sort(sortedMap, [](const MapType& a, const MapType& b)
-  {
-    // Event::Type first
-    if(a.first.key != b.first.key)
-      return a.first.key < b.first.key;
-
-    if(a.first.mod != b.first.mod)
-      return a.first.mod < b.first.mod;
-
-    return a.second < b.second;
-  }
-  );
-
   json mappings = json::array();
 
-  for (const auto& [_mapping, _event]: sortedMap) {
-    if (_mapping.mode != mode || _event == Event::NoType) continue;
+  for(const auto& [_mapping, _event]: myMap)
+  {
+    if(_mapping.mode != mode || _event == Event::NoType) continue;
 
     json mapping = json::object();
-
     mapping["event"] = _event;
-    mapping["key"] = _mapping.key;
-
-    if (_mapping.mod != StellaMod::KBDM_NONE)
+    mapping["key"]   = _mapping.key;
+    if(_mapping.mod != StellaMod::NONE)
       mapping["mod"] = serializeModkeyMask(_mapping.mod);
-
     mappings.push_back(mapping);
   }
 
@@ -272,7 +264,7 @@ int KeyMap::loadMapping(const json& mappings, EventMode mode)
         mapping.at("event").get<Event::Type>(),
         mode,
         mapping.at("key").get<StellaKey>(),
-        mapping.contains("mod") ? deserializeModkeyMask(mapping.at("mod")) : StellaMod::KBDM_NONE
+        mapping.contains("mod") ? deserializeModkeyMask(mapping.at("mod")) : StellaMod::NONE
       );
 
       i++;
@@ -309,7 +301,7 @@ json KeyMap::convertLegacyMapping(string_view lm)
     mapping["event"] = static_cast<Event::Type>(event);
     mapping["key"] = static_cast<StellaKey>(key);
 
-    if(static_cast<StellaMod>(mod) != StellaMod::KBDM_NONE)
+    if(static_cast<StellaMod>(mod) != StellaMod::NONE)
       mapping["mod"] = serializeModkeyMask(static_cast<StellaMod>(mod));
 
     convertedMapping.push_back(mapping);
@@ -339,14 +331,10 @@ KeyMap::Mapping KeyMap::convertMod(const Mapping& mapping)
 {
   Mapping m = mapping;
 
-  if(m.key >= KBDK_LCTRL && m.key <= KBDK_RGUI)
-    // handle solo modifier keys differently
-    m.mod = KBDM_NONE;
-  else
-  {
-    // limit to modifiers we want to support
-    m.mod = static_cast<StellaMod>(m.mod & (KBDM_SHIFT | KBDM_CTRL | KBDM_ALT | KBDM_GUI));
-  }
+  if(StellaKeyTest::isModifierKey(m.key))  // handle solo modifier keys differently
+    m.mod = StellaMod::NONE;
+  else  // limit to modifiers we want to support
+    m.mod = m.mod & (StellaMod::SHIFT | StellaMod::CTRL | StellaMod::ALT | StellaMod::GUI);
 
   return m;
 }

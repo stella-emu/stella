@@ -188,7 +188,8 @@ void EventMappingWidget::startRemapping()
   // Reset all previous events for determining correct axis/hat values
   resetLastEvent();
   // Reset the previously aggregated key mappings
-  myMod = myLastKey = 0;
+  myLastKey = StellaKey{};
+  myMod = StellaMod{};
 
   // Disable all other widgets while in remap mode, except enable 'Cancel'
   enableButtons(false);
@@ -278,8 +279,8 @@ bool EventMappingWidget::handleKeyDown(StellaKey key, StellaMod mod)
   if (myRemapStatus && myActionSelected >= 0)
   {
     // Mod keys are only recorded if no other key has been recorded before
-    if (key < KBDK_LCTRL || key > KBDK_RGUI
-      || (!myLastKey || (myLastKey >= KBDK_LCTRL && myLastKey <= KBDK_RGUI)))
+    if (!StellaKeyTest::isModifierKey(key)
+      || (myLastKey == KBDK_UNKNOWN || StellaKeyTest::isModifierKey(myLastKey)))
     {
       myLastKey = key;
     }
@@ -293,26 +294,28 @@ bool EventMappingWidget::handleKeyUp(StellaKey key, StellaMod mod)
 {
   // Remap keys in remap mode
   if (myRemapStatus && myActionSelected >= 0
-    && (mod & (KBDM_CTRL | KBDM_SHIFT | KBDM_ALT | KBDM_GUI)) == 0)
+    && (mod & (StellaMod::CTRL | StellaMod::SHIFT |
+               StellaMod::ALT  | StellaMod::GUI)) == StellaMod::NONE)
   {
     const Event::Type event =
       EventHandler::eventAtIndex(myActionSelected, myEventGroup);
 
+  #if 0  // FIXME: this doesn't seem to actually do anything
     // if not pressed alone, map left and right modifier keys
-    if(myLastKey < KBDK_LCTRL || myLastKey > KBDK_RGUI)
+    if(!isModifierKey(myLastKey))
     {
-      // FIXME: this seems like dead code (assign flag to itself?)
-      if(myMod & KBDM_CTRL)
-        myMod |= KBDM_CTRL;
-      if(myMod & KBDM_SHIFT)
-        myMod |= KBDM_SHIFT;
-      if(myMod & KBDM_ALT)
-        myMod |= KBDM_ALT;
-      if(myMod & KBDM_GUI)
-        myMod |= KBDM_GUI;
+      if(myMod & CTRL)
+        myMod |= CTRL;
+      if(myMod & SHIFT)
+        myMod |= SHIFT;
+      if(myMod & ALT)
+        myMod |= ALT;
+      if(myMod & GUI)
+        myMod |= GUI;
     }
+  #endif
     if (instance().eventHandler().addKeyMapping(event, myEventMode,
-        static_cast<StellaKey>(myLastKey), static_cast<StellaMod>(myMod)))
+        myLastKey, myMod))
       stopRemapping();
   }
   return true;

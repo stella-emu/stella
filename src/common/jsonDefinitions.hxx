@@ -753,22 +753,22 @@ NLOHMANN_JSON_SERIALIZE_ENUM(StellaKey, {
 })
 
 NLOHMANN_JSON_SERIALIZE_ENUM(StellaMod, {
-  {StellaMod::KBDM_NONE, "none"},
-  {StellaMod::KBDM_LSHIFT, "lshift"},
-  {StellaMod::KBDM_RSHIFT, "rshift"},
-  {StellaMod::KBDM_LCTRL, "lctrl"},
-  {StellaMod::KBDM_RCTRL, "rctrl"},
-  {StellaMod::KBDM_LALT, "lalt"},
-  {StellaMod::KBDM_RALT, "ralt"},
-  {StellaMod::KBDM_LGUI, "lgui"},
-  {StellaMod::KBDM_RGUI, "rgui"},
-  {StellaMod::KBDM_NUM, "num"},
-  {StellaMod::KBDM_CAPS, "caps"},
-  {StellaMod::KBDM_MODE, "mode"},
-  {StellaMod::KBDM_CTRL, "ctrl"},
-  {StellaMod::KBDM_SHIFT, "shift"},
-  {StellaMod::KBDM_ALT, "alt"},
-  {StellaMod::KBDM_GUI, "gui"}
+  {StellaMod::NONE, "none"},
+  {StellaMod::LSHIFT, "lshift"},
+  {StellaMod::RSHIFT, "rshift"},
+  {StellaMod::LCTRL, "lctrl"},
+  {StellaMod::RCTRL, "rctrl"},
+  {StellaMod::LALT, "lalt"},
+  {StellaMod::RALT, "ralt"},
+  {StellaMod::LGUI, "lgui"},
+  {StellaMod::RGUI, "rgui"},
+  {StellaMod::NUM, "num"},
+  {StellaMod::CAPS, "caps"},
+  {StellaMod::MODE, "mode"},
+  {StellaMod::CTRL, "ctrl"},
+  {StellaMod::SHIFT, "shift"},
+  {StellaMod::ALT, "alt"},
+  {StellaMod::GUI, "gui"}
 })
 
 // NOLINTEND

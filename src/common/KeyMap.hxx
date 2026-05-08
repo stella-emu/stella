@@ -18,7 +18,6 @@
 #ifndef KEYMAP_HXX
 #define KEYMAP_HXX
 
-#include <unordered_map>
 #include "Event.hxx"
 #include "EventHandlerConstants.hxx"
 #include "StellaKeys.hxx"
@@ -34,29 +33,36 @@ class KeyMap
   public:
     struct Mapping
     {
-      EventMode mode{EventMode(0)};
-      StellaKey key{StellaKey(0)};
-      StellaMod mod{StellaMod(0)};
+      EventMode mode{};
+      StellaKey key{KBDK_UNKNOWN};
+      StellaMod mod{StellaMod::NONE};
 
       explicit Mapping(EventMode c_mode, StellaKey c_key, StellaMod c_mod)
         : mode{c_mode}, key{c_key}, mod{c_mod} { }
       explicit Mapping(EventMode c_mode, int c_key, int c_mod)
         : mode{c_mode}, key{static_cast<StellaKey>(c_key)}, mod{static_cast<StellaMod>(c_mod)} { }
-      ~Mapping() = default;
-      Mapping(const Mapping&) = default;
-      Mapping& operator=(const Mapping&) = default;
-      Mapping(Mapping&&) = default;
-      Mapping& operator=(Mapping&&) = default;
 
-      bool operator==(const Mapping& other) const
-      {
+      bool operator==(const Mapping& other) const {
         return (key == other.key
           && mode == other.mode
-          && (((mod | other.mod) & KBDM_SHIFT) ? (mod & other.mod & KBDM_SHIFT) : true)
-          && (((mod | other.mod) & KBDM_CTRL ) ? (mod & other.mod & KBDM_CTRL ) : true)
-          && (((mod | other.mod) & KBDM_ALT  ) ? (mod & other.mod & KBDM_ALT  ) : true)
-          && (((mod | other.mod) & KBDM_GUI  ) ? (mod & other.mod & KBDM_GUI  ) : true)
+          && (((mod | other.mod) & StellaMod::SHIFT) != StellaMod::NONE
+            ? (mod & other.mod & StellaMod::SHIFT) != StellaMod::NONE
+            : true)
+          && (((mod | other.mod) & StellaMod::CTRL ) != StellaMod::NONE
+            ? (mod & other.mod & StellaMod::CTRL ) != StellaMod::NONE
+            : true)
+          && (((mod | other.mod) & StellaMod::ALT  ) != StellaMod::NONE
+            ? (mod & other.mod & StellaMod::ALT  ) != StellaMod::NONE
+            : true)
+          && (((mod | other.mod) & StellaMod::GUI  ) != StellaMod::NONE
+            ? (mod & other.mod & StellaMod::GUI  ) != StellaMod::NONE
+            : true)
           );
+      }
+      bool operator<(const Mapping& other) const {
+        if(mode != other.mode) return mode < other.mode;
+        if(key  != other.key)  return key  < other.key;
+        return mod < other.mod;
       }
     };
     using MappingArray = std::vector<Mapping>;
@@ -66,23 +72,23 @@ class KeyMap
 
     /** Add new mapping for given event */
     void add(Event::Type event, const Mapping& mapping);
-    void add(Event::Type event, EventMode mode, int key, int mod);
+    void add(Event::Type event, EventMode mode, StellaKey key, StellaMod mod);
 
     /** Erase mapping */
     void erase(const Mapping& mapping);
-    void erase(EventMode mode, int key, int mod);
+    void erase(EventMode mode, StellaKey key, StellaMod mod);
 
     /** Get event for mapping */
     Event::Type get(const Mapping& mapping) const;
-    Event::Type get(EventMode mode, int key, int mod) const;
+    Event::Type get(EventMode mode, StellaKey key, StellaMod mod) const;
 
     /** Check if a mapping exists */
     bool check(const Mapping& mapping) const;
-    bool check(EventMode mode, int key, int mod) const;
+    bool check(EventMode mode, StellaKey key, StellaMod mod) const;
 
     /** Get mapping description */
     static string getDesc(const Mapping& mapping);
-    static string getDesc(EventMode mode, int key, int mod);
+    static string getDesc(EventMode mode, StellaKey key, StellaMod mod);
 
     /** Get the mapping description(s) for given event and mode */
     string getEventMappingDesc(Event::Type event, EventMode mode) const;
@@ -100,7 +106,7 @@ class KeyMap
     void eraseEvent(Event::Type event, EventMode mode);
     /** clear all mappings for a modes */
     // void clear() { myMap.clear(); }
-    size_t size() { return myMap.size(); }
+    size_t size() const { return myMap.size(); }
 
     bool& enableMod() { return myModEnabled;  }
 
@@ -108,20 +114,11 @@ class KeyMap
     //** Convert modifiers */
     static Mapping convertMod(const Mapping& mapping);
 
-    struct KeyHash {
-      size_t operator()(const Mapping& m) const {
-        return std::hash<uInt64>()((static_cast<uInt64>(m.mode))    // 3 bits
-          + ((static_cast<uInt64>(m.key)) * 7)                      // 8 bits
-          + ((static_cast<uInt64>((m.mod & KBDM_SHIFT) != 0) << 0)  // 1 bit
-           | (static_cast<uInt64>((m.mod & KBDM_ALT  ) != 0) << 1)  // 1 bit
-           | (static_cast<uInt64>((m.mod & KBDM_GUI  ) != 0) << 2)  // 1 bit
-           | (static_cast<uInt64>((m.mod & KBDM_CTRL ) != 0) << 3)  // 1 bit
-            ) * 2047
-        );
-      }
-    };
-
-    std::unordered_map<Mapping, Event::Type, KeyHash> myMap;
+    // IMPORTANT: myMap must always be kept sorted by Mapping::operator<.
+    // All access must go through convertMod() first to normalise modifiers,
+    // ensuring operator== and operator< are consistent for binary search.
+    using MapEntry = std::pair<Mapping, Event::Type>;
+    std::vector<MapEntry> myMap;
 
     // Indicates whether the key-combos tied to a modifier key are
     // being used or not (e.g. Ctrl by default is the fire button,

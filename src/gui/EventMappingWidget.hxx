@@ -117,9 +117,9 @@ class EventMappingWidget : public Widget, public CommandSender
     JoyHatDir myLastHatDir{JoyHatDir::CENTER};
 
     // Aggregates the modifier flags of the mapping
-    int myMod{0};
+    StellaMod myMod{StellaMod::NONE};
     // Saves the last *pressed* key
-    int myLastKey{0};
+    StellaKey myLastKey{KBDK_UNKNOWN};
     // Saves the last *pressed* button
     int myLastButton{JOY_CTRL_NONE};
 
