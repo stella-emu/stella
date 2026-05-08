@@ -22,11 +22,19 @@
   #include "SDL_lib.hxx"
 #endif
 
+// These are defined keys from SDL, but are also leaky defines from some
+// Windows headers; undefine them here
+#undef DELETE
+#undef PAUSE
+#undef OUT
+#undef HELP
+#undef FIND
+
 /**
   This class implements a thin wrapper around the SDL keysym enumerations,
   such that SDL-specific code doesn't have to go into the internal parts of
   the codebase.  The keycodes are exactly the same, but from the POV of the
-  rest of the code, they are *KBD* (keyboard) keys, not *SDL* keys.
+  rest of the code, they are StellaKey keys, not *SDL* keys.
 
   If the codebase is ported to future SDL versions or to some other toolkit,
   the intent is to simply change this file without having to modify all
