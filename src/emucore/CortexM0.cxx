@@ -1100,8 +1100,7 @@ void CortexM0::do_cvflag(uInt32 a, uInt32 b, uInt32 c)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-// NOLINTNEXTLINE(google-readability-function-size,
-//                hicpp-function-size,readability-function-size)
+// NOLINTNEXTLINE(google-readability-function-size,hicpp-function-size,readability-function-size)
 CortexM0::err_t CortexM0::execute(uInt16 inst, uInt8 op)
 {
   uInt32 sp{0}, ra{0}, rb{0}, rc{0}, rm{0}, rd{0}, rn{0}, rs{0};

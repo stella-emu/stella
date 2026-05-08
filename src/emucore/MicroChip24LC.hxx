@@ -325,7 +325,7 @@ MicroChip24LC<FLASH_SIZE, PAGE_SIZE>
   // A valid file must be FLASH_FIZE bytes; otherwise we create a new one
   bool fileValid = false;
   try { fileValid = (myDataFile.read(myData) == FLASH_SIZE); }
-  catch(...) { /* Any read error means we create a new buffer below */ }
+  catch(...) { /* NOLINT(bugprone-empty-catch): error and fallthrough below*/ }
 
   if(!fileValid)
   {

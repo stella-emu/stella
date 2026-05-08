@@ -61,7 +61,7 @@ namespace {
 
     StellaMod mask{StellaMod::NONE};
     for(const json& mod: serializedMask)
-      mask = static_cast<StellaMod>(mask | mod.get<StellaMod>());
+      mask = mask | mod.get<StellaMod>();
 
     return mask;
   }

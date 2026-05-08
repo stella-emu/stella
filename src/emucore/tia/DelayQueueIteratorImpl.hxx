@@ -60,7 +60,7 @@ DelayQueueIteratorImpl<length, capacity>::DelayQueueIteratorImpl(
 )
   : myDelayQueue(delayQueue)
 {
-  while (myDelayQueue.myMembers[currentIndex()].mySize == 0 && isValid())
+  while (myDelayCycle < length && myDelayQueue.myMembers[currentIndex()].mySize == 0)
     myDelayCycle++;
 }
 
