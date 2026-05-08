@@ -385,7 +385,7 @@ void TimeMachineDialog::handleKeyUp(StellaKey key, StellaMod mod)
 
   const Event::Type event = instance().eventHandler().eventForKey(EventMode::kEmulationMode, key, mod);
 
-  if(event == Event::TogglePlayBackMode || key == KBDK_SPACE)
+  if(event == Event::TogglePlayBackMode || key == StellaKey::SPACE)
     handleCommand(nullptr, kPlayBack, 0, 0);
   else
     Dialog::handleKeyUp(key, mod);

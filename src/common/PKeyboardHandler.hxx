@@ -96,7 +96,7 @@ class PhysicalKeyboardHandler
     // Structure used for action menu items
     struct EventMapping {
       Event::Type event{Event::NoType};
-      StellaKey key{KBDK_UNKNOWN};
+      StellaKey key{StellaKey::UNKNOWN};
       StellaMod mod{StellaMod::NONE};
     };
     using EventMappingArray = std::vector<EventMapping>;

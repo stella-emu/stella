@@ -97,8 +97,8 @@ bool ToggleWidget::handleKeyDown(StellaKey key, StellaMod mod)
 
   switch(key)
   {
-    case KBDK_RETURN:
-    case KBDK_KP_ENTER:
+    case StellaKey::RETURN:
+    case StellaKey::KP_ENTER:
       if (_currentRow >= 0 && _currentCol >= 0)
       {
         dirty = true;
@@ -106,7 +106,7 @@ bool ToggleWidget::handleKeyDown(StellaKey key, StellaMod mod)
       }
       break;
 
-    case KBDK_UP:
+    case StellaKey::UP:
       if (_currentRow > 0)
       {
         _currentRow--;
@@ -114,7 +114,7 @@ bool ToggleWidget::handleKeyDown(StellaKey key, StellaMod mod)
       }
       break;
 
-    case KBDK_DOWN:
+    case StellaKey::DOWN:
       if (_currentRow < _rows - 1)
       {
         _currentRow++;
@@ -122,7 +122,7 @@ bool ToggleWidget::handleKeyDown(StellaKey key, StellaMod mod)
       }
       break;
 
-    case KBDK_LEFT:
+    case StellaKey::LEFT:
       if (_currentCol > 0)
       {
         _currentCol--;
@@ -130,7 +130,7 @@ bool ToggleWidget::handleKeyDown(StellaKey key, StellaMod mod)
       }
       break;
 
-    case KBDK_RIGHT:
+    case StellaKey::RIGHT:
       if (_currentCol < _cols - 1)
       {
         _currentCol++;
@@ -138,7 +138,7 @@ bool ToggleWidget::handleKeyDown(StellaKey key, StellaMod mod)
       }
       break;
 
-    case KBDK_PAGEUP:
+    case StellaKey::PAGEUP:
       if (_currentRow > 0)
       {
         _currentRow = 0;
@@ -146,7 +146,7 @@ bool ToggleWidget::handleKeyDown(StellaKey key, StellaMod mod)
       }
       break;
 
-    case KBDK_PAGEDOWN:
+    case StellaKey::PAGEDOWN:
       if (_currentRow < _rows - 1)
       {
         _currentRow = _rows - 1;
@@ -154,7 +154,7 @@ bool ToggleWidget::handleKeyDown(StellaKey key, StellaMod mod)
       }
       break;
 
-    case KBDK_HOME:
+    case StellaKey::HOME:
       if (_currentCol > 0)
       {
         _currentCol = 0;
@@ -162,7 +162,7 @@ bool ToggleWidget::handleKeyDown(StellaKey key, StellaMod mod)
       }
       break;
 
-    case KBDK_END:
+    case StellaKey::END:
       if (_currentCol < _cols - 1)
       {
         _currentCol = _cols - 1;

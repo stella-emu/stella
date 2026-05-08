@@ -119,7 +119,7 @@ class EventMappingWidget : public Widget, public CommandSender
     // Aggregates the modifier flags of the mapping
     StellaMod myMod{StellaMod::NONE};
     // Saves the last *pressed* key
-    StellaKey myLastKey{KBDK_UNKNOWN};
+    StellaKey myLastKey{StellaKey::UNKNOWN};
     // Saves the last *pressed* button
     int myLastButton{JOY_CTRL_NONE};
 

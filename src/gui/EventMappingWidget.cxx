@@ -280,7 +280,7 @@ bool EventMappingWidget::handleKeyDown(StellaKey key, StellaMod mod)
   {
     // Mod keys are only recorded if no other key has been recorded before
     if (!StellaKeyTest::isModifierKey(key)
-      || (myLastKey == KBDK_UNKNOWN || StellaKeyTest::isModifierKey(myLastKey)))
+      || (myLastKey == StellaKey::UNKNOWN || StellaKeyTest::isModifierKey(myLastKey)))
     {
       myLastKey = key;
     }

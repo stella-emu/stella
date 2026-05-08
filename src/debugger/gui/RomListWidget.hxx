@@ -102,7 +102,7 @@ class RomListWidget : public EditableWidget
     int  _currentPos{0}; // position of first line in visible window
     int  _selectedItem{-1};
     int  _highlightedItem{-1};
-    StellaKey _currentKeyDown{KBDK_UNKNOWN};
+    StellaKey _currentKeyDown{StellaKey::UNKNOWN};
     Common::Base::Fmt _base{Common::Base::Fmt::DEFAULT};  // base used during editing
 
     const CartDebug::Disassembly* myDisasm{nullptr};

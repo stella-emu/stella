@@ -276,7 +276,7 @@ bool ListWidget::handleKeyDown(StellaKey key, StellaMod mod)
   {
     switch(key)
     {
-      case KBDK_SPACE:
+      case StellaKey::SPACE:
         // Snap list back to currently highlighted line
         if(_highlightedItem >= 0)
         {

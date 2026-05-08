@@ -311,7 +311,7 @@ bool RomListWidget::handleKeyDown(StellaKey key, StellaMod mod)
   {
     switch (key)
     {
-      case KBDK_SPACE:
+      case StellaKey::SPACE:
         // Snap list back to currently highlighted line
         if(_highlightedItem >= 0)
         {
@@ -339,7 +339,7 @@ bool RomListWidget::handleKeyDown(StellaKey key, StellaMod mod)
 bool RomListWidget::handleKeyUp(StellaKey key, StellaMod mod)
 {
   if (key == _currentKeyDown)
-    _currentKeyDown = KBDK_UNKNOWN;
+    _currentKeyDown = StellaKey::UNKNOWN;
   return true;
 }
 

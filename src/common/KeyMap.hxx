@@ -34,7 +34,7 @@ class KeyMap
     struct Mapping
     {
       EventMode mode{};
-      StellaKey key{KBDK_UNKNOWN};
+      StellaKey key{StellaKey::UNKNOWN};
       StellaMod mod{StellaMod::NONE};
 
       explicit Mapping(EventMode c_mode, StellaKey c_key, StellaMod c_mod)

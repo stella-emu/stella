@@ -357,7 +357,7 @@ bool EditableWidget::handleKeyDown(StellaKey key, StellaMod mod)
       if(!handled)
         handled = killChar(-1);
       if(handled)
-        sendCommand(EditableWidget::kChangedCmd, key, _id);
+        sendCommand(EditableWidget::kChangedCmd, static_cast<int>(key), _id);
       break;
 
     case Event::Delete:
@@ -365,37 +365,37 @@ bool EditableWidget::handleKeyDown(StellaKey key, StellaMod mod)
       if(!handled)
         handled = killChar(+1);
       if(handled)
-        sendCommand(EditableWidget::kChangedCmd, key, _id);
+        sendCommand(EditableWidget::kChangedCmd, static_cast<int>(key), _id);
       break;
 
     case Event::DeleteLeftWord:
       handled = killWord(-1);
       if(handled)
-        sendCommand(EditableWidget::kChangedCmd, key, _id);
+        sendCommand(EditableWidget::kChangedCmd, static_cast<int>(key), _id);
       break;
 
     case Event::DeleteRightWord:
       handled = killWord(+1);
       if(handled)
-        sendCommand(EditableWidget::kChangedCmd, key, _id);
+        sendCommand(EditableWidget::kChangedCmd, static_cast<int>(key), _id);
       break;
 
     case Event::DeleteEnd:
       handled = killLine(+1);
       if(handled)
-        sendCommand(EditableWidget::kChangedCmd, key, _id);
+        sendCommand(EditableWidget::kChangedCmd, static_cast<int>(key), _id);
       break;
 
     case Event::DeleteHome:
       handled = killLine(-1);
       if(handled)
-        sendCommand(EditableWidget::kChangedCmd, key, _id);
+        sendCommand(EditableWidget::kChangedCmd, static_cast<int>(key), _id);
       break;
 
     case Event::Cut:
       handled = cutSelectedText();
       if(handled)
-        sendCommand(EditableWidget::kChangedCmd, key, _id);
+        sendCommand(EditableWidget::kChangedCmd, static_cast<int>(key), _id);
       break;
 
     case Event::Copy:
@@ -405,7 +405,7 @@ bool EditableWidget::handleKeyDown(StellaKey key, StellaMod mod)
     case Event::Paste:
       handled = pasteSelectedText();
       if(handled)
-        sendCommand(EditableWidget::kChangedCmd, key, _id);
+        sendCommand(EditableWidget::kChangedCmd, static_cast<int>(key), _id);
       break;
 
     case Event::Undo:
@@ -426,7 +426,7 @@ bool EditableWidget::handleKeyDown(StellaKey key, StellaMod mod)
         UndoHandler::lastDiff(_editString, oldString);
         setCaretPos(UndoHandler::lastDiff(_editString, oldString));
         _selectSize = 0;
-        sendCommand(EditableWidget::kChangedCmd, key, _id);
+        sendCommand(EditableWidget::kChangedCmd, static_cast<int>(key), _id);
       }
       break;
     }

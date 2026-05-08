@@ -152,7 +152,7 @@ void MinUICommandDialog::handleKeyDown(StellaKey key, StellaMod mod, bool repeat
 {
   switch (key)
   {
-    case KBDK_F8: // front  ("Skill P2")
+    case StellaKey::F8: // front  ("Skill P2")
       instance().eventHandler().leaveMenuMode();
       break;
 

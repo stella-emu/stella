@@ -800,44 +800,44 @@ void LauncherDialog::handleKeyDown(StellaKey key, StellaMod mod, bool repeated)
       handled = true;
       switch(key)
       {
-        case KBDK_D:
+        case StellaKey::D:
           sendCommand(kSubDirsCmd, 0, 0);
           break;
 
-        case KBDK_E:
+        case StellaKey::E:
           toggleExtensions();
           break;
 
-        case KBDK_F:
+        case StellaKey::F:
           myList->toggleUserFavorite();
           break;
 
-        case KBDK_G:
+        case StellaKey::G:
           openGameProperties();
           break;
 
-        case KBDK_H:
+        case StellaKey::H:
           if(instance().highScores().enabled())
             openHighScores();
           break;
 
-        case KBDK_O:
+        case StellaKey::O:
           openSettings();
           break;
 
-        case KBDK_P:
+        case StellaKey::P:
           openGlobalProps();
           break;
 
-        case KBDK_R:
+        case StellaKey::R:
           reload();
           break;
 
-        case KBDK_S:
+        case StellaKey::S:
           toggleSorting();
           break;
 
-        case KBDK_X:
+        case StellaKey::X:
           myList->removeFavorite();
           reload();
           break;
@@ -847,7 +847,7 @@ void LauncherDialog::handleKeyDown(StellaKey key, StellaMod mod, bool repeated)
           break;
       }
     }
-    else if(StellaModTest::isAlt(mod) && key == KBDK_R)
+    else if(StellaModTest::isAlt(mod) && key == StellaKey::R)
     {
       loadRandomRom();
       handled = true;

@@ -319,23 +319,23 @@ bool FileListWidget::handleKeyDown(StellaKey key, StellaMod mod)
     handled = true;
     switch(key)
     {
-      case KBDK_HOME:
+      case StellaKey::HOME:
         sendCommand(kHomeDirCmd, 0, 0);
         break;
 
-      case KBDK_LEFT:
+      case StellaKey::LEFT:
         sendCommand(kPrevDirCmd, 0, 0);
         break;
 
-      case KBDK_RIGHT:
+      case StellaKey::RIGHT:
         sendCommand(kNextDirCmd, 0, 0);
         break;
 
-      case KBDK_UP:
+      case StellaKey::UP:
         sendCommand(kParentDirCmd, 0, 0);
         break;
 
-      case KBDK_DOWN:
+      case StellaKey::DOWN:
         sendCommand(kActivatedCmd, _selected, 0);
         break;
 
@@ -348,7 +348,7 @@ bool FileListWidget::handleKeyDown(StellaKey key, StellaMod mod)
   _lastKey = key; _lastMod = mod;
   if(_quickSelectTime < TimerManager::getTicks() / 1000)
     _firstMod = mod;
-  else if(key == KBDK_SPACE) // allow searching ROMs with a space without selecting/starting
+  else if(key == StellaKey::SPACE) // allow searching ROMs with a space without selecting/starting
     handled = true;
 
   return handled;

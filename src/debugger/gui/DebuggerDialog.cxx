@@ -103,7 +103,7 @@ void DebuggerDialog::saveConfig()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DebuggerDialog::handleKeyDown(StellaKey key, StellaMod mod, bool repeated)
 {
-  if(key == KBDK_GRAVE && !StellaModTest::isShift(mod))
+  if(key == StellaKey::GRAVE && !StellaModTest::isShift(mod))
   {
     // Swallow backtick, so we don't see it when exiting the debugger
     instance().eventHandler().enableTextEvents(false);
@@ -118,16 +118,16 @@ void DebuggerDialog::handleKeyDown(StellaKey key, StellaMod mod, bool repeated)
   {
     switch (key)
     {
-      case KBDK_S:
+      case StellaKey::S:
         doStep();
         return;
-      case KBDK_T:
+      case StellaKey::T:
         doTrace();
         return;
-      case KBDK_L:
+      case StellaKey::L:
         doScanlineAdvance();
         return;
-      case KBDK_F:
+      case StellaKey::F:
         doAdvance();
         return;
       default:

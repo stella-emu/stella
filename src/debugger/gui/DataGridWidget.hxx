@@ -137,7 +137,7 @@ class DataGridWidget : public EditableWidget
     BoolArray   _hiliteList;
 
     int       _selectedItem{0};
-    StellaKey _currentKeyDown{KBDK_UNKNOWN};
+    StellaKey _currentKeyDown{StellaKey::UNKNOWN};
     string    _backupString;
 
     DataGridOpsWidget* _opsWidget{nullptr};
