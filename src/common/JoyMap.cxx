@@ -24,7 +24,12 @@ using json = nlohmann::json;
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void JoyMap::add(Event::Type event, const JoyMapping& mapping)
 {
-  myMap[mapping] = event;
+  const auto it = std::ranges::lower_bound(myMap, mapping,
+                                           std::less{}, &MapEntry::first);
+  if(it != myMap.end() && it->first == mapping)
+    it->second = event;
+  else
+    myMap.insert(it, {mapping, event});
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -44,7 +49,10 @@ void JoyMap::add(Event::Type event, EventMode mode, int button,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void JoyMap::erase(const JoyMapping& mapping)
 {
-  myMap.erase(mapping);
+  const auto it = std::ranges::lower_bound(myMap, mapping,
+                                           std::less{}, &MapEntry::first);
+  if(it != myMap.end() && it->first == mapping)
+    myMap.erase(it);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -62,18 +70,18 @@ void JoyMap::erase(EventMode mode, int button, int hat, JoyHatDir hdir)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Event::Type JoyMap::get(const JoyMapping& mapping) const
 {
-  auto find = myMap.find(mapping);
-  if(find != myMap.end())
-    return find->second;
+  const auto it = std::ranges::lower_bound(myMap, mapping,
+                                           std::less{}, &MapEntry::first);
+  if(it != myMap.end() && it->first == mapping)
+    return it->second;
 
   // try without button as modifier
   JoyMapping m = mapping;
-
   m.button = JOY_CTRL_NONE;
-
-  find = myMap.find(m);
-  if(find != myMap.end())
-    return find->second;
+  const auto it2 = std::ranges::lower_bound(myMap, m,
+                                            std::less{}, &MapEntry::first);
+  if(it2 != myMap.end() && it2->first == m)
+    return it2->second;
 
   return Event::Type::NoType;
 }
@@ -95,7 +103,9 @@ Event::Type JoyMap::get(EventMode mode, int button,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool JoyMap::check(const JoyMapping& mapping) const
 {
-  return myMap.contains(mapping);
+  const auto it = std::ranges::lower_bound(myMap, mapping,
+                                           std::less{}, &MapEntry::first);
+  return it != myMap.end() && it->first == mapping;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -178,7 +188,6 @@ JoyMap::JoyMappingArray JoyMap::getEventMapping(Event::Type event,
                                                 EventMode mode) const
 {
   JoyMappingArray map;
-  map.reserve(myMap.size());  // upper bound, avoids reallocations
 
   for(const auto& [_mapping, _event]: myMap)
     if(_event == event && _mapping.mode == mode)
@@ -190,34 +199,9 @@ JoyMap::JoyMappingArray JoyMap::getEventMapping(Event::Type event,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 json JoyMap::saveMapping(EventMode mode) const
 {
-  using MapType = std::pair<JoyMapping, Event::Type>;
-  std::vector<MapType> sortedMap(myMap.begin(), myMap.end());
-
-  std::ranges::sort(sortedMap, [](const MapType& a, const MapType& b)
-    {
-      // Event::Type first
-      if(a.first.button != b.first.button)
-        return a.first.button < b.first.button;
-
-      if(a.first.axis != b.first.axis)
-        return a.first.axis < b.first.axis;
-
-      if(a.first.adir != b.first.adir)
-        return a.first.adir < b.first.adir;
-
-      if(a.first.hat != b.first.hat)
-        return a.first.hat < b.first.hat;
-
-      if(a.first.hdir != b.first.hdir)
-        return a.first.hdir < b.first.hdir;
-
-      return a.second < b.second;
-    }
-  );
-
   json eventMappings = json::array();
 
-  for (const auto& [_mapping, _event]: sortedMap) {
+  for(const auto& [_mapping, _event]: myMap) {
     if(_mapping.mode != mode || _event == Event::NoType) continue;
 
     json eventMapping = json::object();

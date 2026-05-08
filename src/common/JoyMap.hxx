@@ -18,8 +18,6 @@
 #ifndef JOY_MAP_HXX
 #define JOY_MAP_HXX
 
-#include <unordered_map>
-
 #include "Event.hxx"
 #include "EventHandlerConstants.hxx"
 #include "json_lib.hxx"
@@ -34,12 +32,12 @@ class JoyMap
   public:
     struct JoyMapping
     {
-      EventMode mode{EventMode(0)};
-      int button{0};                // button number
-      JoyAxis axis{JoyAxis(0)};     // horizontal/vertical
-      JoyDir adir{JoyDir(0)};       // axis direction (neg/pos)
-      int hat{0};                   // hat number
-      JoyHatDir hdir{JoyHatDir(0)}; // hat direction (left/right/up/down)
+      EventMode mode{};
+      int button{JOY_CTRL_NONE};         // button number
+      JoyAxis axis{JoyAxis::NONE};       // horizontal/vertical
+      JoyDir adir{JoyDir::NONE};         // axis direction (neg/pos)
+      int hat{JOY_CTRL_NONE};            // hat number
+      JoyHatDir hdir{JoyHatDir::CENTER}; // hat direction (left/right/up/down)
 
       explicit JoyMapping(EventMode c_mode, int c_button,
                           JoyAxis c_axis, JoyDir c_adir,
@@ -59,6 +57,14 @@ class JoyMap
           hat{c_hat}, hdir{c_hdir} { }
 
       bool operator==(const JoyMapping& other) const = default;
+      bool operator<(const JoyMapping& other) const {
+        if(mode   != other.mode)   return mode   < other.mode;
+        if(button != other.button) return button < other.button;
+        if(axis   != other.axis)   return axis   < other.axis;
+        if(adir   != other.adir)   return adir   < other.adir;
+        if(hat    != other.hat)    return hat    < other.hat;
+        return hdir < other.hdir;
+      }
     };
     using JoyMappingArray = std::vector<JoyMapping>;
 
@@ -110,20 +116,10 @@ class JoyMap
   private:
     static string getDesc(Event::Type event, const JoyMapping& mapping);
 
-    struct JoyHash {
-      size_t operator()(const JoyMapping& m)const {
-        return std::hash<uInt64>()((static_cast<uInt64>(m.mode)) // 3 bits
-          + ((static_cast<uInt64>(m.button)) * 7)  // 3 bits
-          + (((static_cast<uInt64>(m.axis)) << 0)  // 3 bits
-           | ((static_cast<uInt64>(m.adir)) << 3)  // 2 bits
-           | ((static_cast<uInt64>(m.hat )) << 5)  // 1 bit
-           | ((static_cast<uInt64>(m.hdir)) << 6)  // 2 bits
-            ) * 61
-        );
-      }
-    };
-
-    std::unordered_map<JoyMapping, Event::Type, JoyHash> myMap;
+    using MapEntry = std::pair<JoyMapping, Event::Type>;
+    // IMPORTANT: myMap must always be kept sorted by JoyMapping::operator<.
+    // All access must go through add/erase/get which maintain sort order.
+    std::vector<MapEntry> myMap;
 
     // Following constructors and assignment operators not supported
     JoyMap(const JoyMap&) = delete;
