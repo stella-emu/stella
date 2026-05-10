@@ -259,7 +259,7 @@ class CartridgeEnhanced : public Cartridge
     ByteArray myImage;
 
     // Contains the offset into the ROM image for each of the bank segments
-    DWordBuffer myCurrentSegOffset{nullptr};
+    uIntArray myCurrentSegOffset;
 
     // Indicates whether to use direct ROM peeks or not
     bool myDirectPeek{true};

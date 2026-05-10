@@ -74,7 +74,7 @@ void CartridgeEnhanced::install(System& system)
   createRomAccessArrays(myImage.size() + (myRomOffset > 0 ? 0 : myRamSize));
 
   // Allocate array for the segment's current bank offset
-  myCurrentSegOffset = std::make_unique<uInt32[]>(myBankSegs);
+  myCurrentSegOffset.resize(myBankSegs);
 
   // Allocate array for the RAM area
   if(myRamSize > 0)
@@ -386,7 +386,7 @@ bool CartridgeEnhanced::save(Serializer& out) const
 {
   try
   {
-    out.putIntArray(std::span{myCurrentSegOffset.get(), myBankSegs});
+    out.putIntArray(myCurrentSegOffset);
     if(myRamSize > 0)
       out.putByteArray(myRAM);
 
@@ -407,7 +407,7 @@ bool CartridgeEnhanced::load(Serializer& in)
 {
   try
   {
-    in.getIntArray(std::span{myCurrentSegOffset.get(), myBankSegs});
+    in.getIntArray(myCurrentSegOffset);
     if(myRamSize > 0)
       in.getByteArray(myRAM);
 
