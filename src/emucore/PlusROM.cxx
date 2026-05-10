@@ -474,20 +474,16 @@ void PlusROM::receive()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ByteArray PlusROM::getSend() const
 {
-  ByteArray arr;
   const uInt8 txPos = myTxPos != 0 ? myTxPos : myLastTxPos;
-
-  for(int i = 0; std::cmp_less(i, txPos); ++i)
-    arr.push_back(myTxBuffer[i]);
-
-  return arr;
+  return ByteArray(myTxBuffer.begin(), myTxBuffer.begin() + txPos);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ByteArray PlusROM::getReceive() const
 {
-  ByteArray arr;
   const uInt8 txReadPos = myRxReadPos != myRxWritePos ? myRxReadPos : myLastRxReadPos;
+  ByteArray arr;
+  arr.reserve(static_cast<uInt8>(myRxWritePos - txReadPos));  // wrapping subtraction gives correct count
 
   for(uInt8 i = txReadPos; i != myRxWritePos; ++i)
     arr.push_back(myRxBuffer[i]);
