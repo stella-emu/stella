@@ -475,7 +475,7 @@ void PlusROM::receive()
 ByteArray PlusROM::getSend() const
 {
   const uInt8 txPos = myTxPos != 0 ? myTxPos : myLastTxPos;
-  return ByteArray(myTxBuffer.begin(), myTxBuffer.begin() + txPos);
+  return {myTxBuffer.begin(), myTxBuffer.begin() + txPos};
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
