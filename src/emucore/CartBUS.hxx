@@ -237,11 +237,11 @@ class CartridgeBUS : public CartridgeARM
     // Subspan into myImage for the program ROM
     ByteMSpan myProgramImage{};
 
-    // Pointer to the 4K display ROM image of the cartridge
-    uInt8* myDisplayImage{nullptr};
+    // Subspan into the 4K display data in myRAM
+    ByteMSpan myDisplayImage{};
 
-    // Pointer to the 2K BUS driver image in RAM
-    uInt8* myDriverImage{nullptr};
+    // Subspan into the BUS driver image in myRAM
+    ByteMSpan myDriverImage{};
 
     // The BUS 8k RAM image, used as:
     //   $0000 - 2K BUS driver

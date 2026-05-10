@@ -57,8 +57,8 @@ CartridgeBUS::CartridgeBUS(ByteSpan image, string_view md5,
   // Detect cart version
   setupVersion();
 
-  // Pointer to BUS driver in RAM
-  myDriverImage = myRAM.data();
+  // Subspan for the BUS driver in RAM (always at start of myRAM)
+  myDriverImage = ByteMSpan{myRAM};
 
   const bool devSettings = settings.getBool("dev.settings");
 
@@ -70,8 +70,8 @@ CartridgeBUS::CartridgeBUS(ByteSpan image, string_view md5,
     // Pointer to the program ROM (28K @ 0 byte offset)
     myProgramImage = ByteMSpan{myImage}.subspan(3_KB);
 
-    // Pointer to the display RAM
-    myDisplayImage = myRAM.data() + 0x0C00;
+    // Subspan for the display RAM (@ 0x0C00 offset)
+    myDisplayImage = ByteMSpan{myRAM}.subspan(0x0C00);
 
     // Create Thumbulator ARM emulator
     myThumbEmulator = std::make_unique<Thumbulator>(
@@ -95,8 +95,8 @@ CartridgeBUS::CartridgeBUS(ByteSpan image, string_view md5,
     // Pointer to the program ROM (28K @ 0 byte offset)
     myProgramImage = ByteMSpan{myImage}.subspan(4_KB);
 
-    // Pointer to the display RAM
-    myDisplayImage = myRAM.data() + 0x0800;
+    // Subspan for the display RAM (@ 0x0800 offset)
+    myDisplayImage = ByteMSpan{myRAM}.subspan(0x0800);
 
     // Create Thumbulator ARM emulator
     myThumbEmulator = std::make_unique<Thumbulator>(
@@ -150,9 +150,9 @@ void CartridgeBUS::setInitialState()
 {
   // Copy initial BUS driver to Harmony RAM
   if (myBUSSubtype == BUSSubtype::BUS0)
-    std::copy_n(myImage.data(), 3_KB, myDriverImage);
+    std::copy_n(myImage.data(), 3_KB, myDriverImage.begin());
   else
-    std::copy_n(myImage.data(), 2_KB, myDriverImage);
+    std::copy_n(myImage.data(), 2_KB, myDriverImage.begin());
 
   myMusicWaveformSize.fill(27);
 

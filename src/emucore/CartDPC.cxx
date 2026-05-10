@@ -60,8 +60,8 @@ void CartridgeDPC::install(System& system)
 
   myRomOffset = 0x80;
 
-  // Pointer to the display ROM (2K @ 8K offset)
-  myDisplayImage = myImage.data() + 8_KB;
+  // Subspan for the display ROM (2K @ 8K offset)
+  myDisplayImage = ByteMSpan{myImage}.subspan(8_KB, 2_KB);
 
   createRomAccessArrays(8_KB);
 

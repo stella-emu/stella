@@ -282,9 +282,8 @@ class CartridgeCTY : public Cartridge
     // Operation type (written to $1000, used by hotspot $1FF4)
     uInt8 myOperationType{0};
 
-    // Pointer to the 28K frequency table (points to the start of one
-    // of seven 4K tunes in myTuneData)
-    const uInt8* myFrequencyImage{nullptr};
+    // Subspan into myTuneData pointing to the current 4K tune
+    ByteSpan myFrequencyImage{};
 
     // The counter register for the data fetcher
     uInt16 myTunePosition{0};

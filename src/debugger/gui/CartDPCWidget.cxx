@@ -143,8 +143,8 @@ void CartridgeDPCWidget::saveOldState()
 
   myOldState.random = myCart.myRandomNumber;
 
-  myOldState.internalram.assign(myCart.myDisplayImage,
-                                myCart.myDisplayImage + internalRamSize());
+  myOldState.internalram.assign(myCart.myDisplayImage.begin(),
+                                myCart.myDisplayImage.begin() + internalRamSize());
 
   myOldState.bank = myCart.getBank();
 }

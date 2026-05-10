@@ -219,8 +219,8 @@ void CartridgeDPCPlusWidget::saveOldState()
 
   myOldState.random = myCart.myRandomNumber;
 
-  myOldState.internalram.assign(myCart.myDisplayImage,
-                                myCart.myDisplayImage + internalRamSize());
+  myOldState.internalram.assign(myCart.myDisplayImage.begin(),
+                                myCart.myDisplayImage.begin() + internalRamSize());
 
   myOldState.bank = myCart.getBank();
 
@@ -388,8 +388,8 @@ const ByteArray& CartridgeDPCPlusWidget::internalRamOld(int start, int count)
 const ByteArray& CartridgeDPCPlusWidget::internalRamCurrent(int start, int count)
 {
   myRamCurrent.clear();
-  myRamCurrent.assign(myCart.myDisplayImage + start,
-                      myCart.myDisplayImage + start + count);
+  myRamCurrent.assign(myCart.myDisplayImage.begin() + start,
+                      myCart.myDisplayImage.begin() + start + count);
   return myRamCurrent;
 }
 

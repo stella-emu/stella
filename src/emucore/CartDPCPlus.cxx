@@ -38,11 +38,11 @@ CartridgeDPCPlus::CartridgeDPCPlus(ByteSpan image, string_view md5,
   // Subspan for the program ROM (24K @ 3K offset; ignore first 3K)
   myProgramImage = ByteMSpan{myImage}.subspan(3_KB);
 
-  // Pointer to the display RAM
-  myDisplayImage = myDPCRAM.data() + 3_KB;
+  // Subspan for the display RAM (4K @ 3K offset)
+  myDisplayImage = ByteMSpan{myDPCRAM}.subspan(3_KB, 4_KB);
 
-  // Pointer to the Frequency RAM
-  myFrequencyImage = myDisplayImage + 4_KB;
+  // Subspan for the frequency table (1K @ 7K offset)
+  myFrequencyImage = ByteSpan{myDPCRAM}.subspan(7_KB, 1_KB);
 
   // Create Thumbulator ARM emulator
   const bool devSettings = settings.getBool("dev.settings");
@@ -104,7 +104,7 @@ void CartridgeDPCPlus::setInitialState()
   myDPCRAM.fill(0);
 
   // Copy initial DPC display data and Frequency table state to Harmony RAM
-  std::copy_n(myProgramImage.data() + 24_KB, 5_KB, myDisplayImage);
+  std::copy_n(myProgramImage.data() + 24_KB, 5_KB, myDisplayImage.begin());
 
   // Initialize the DPC data fetcher registers
   myTops.fill(0);

@@ -38,8 +38,8 @@ CartridgeCTY::CartridgeCTY(ByteSpan image, string_view md5,
   if(size > 32_KB)
     std::copy_n(image.data() + 32_KB, size - 32_KB, myTuneData.begin());
 
-  // Point to the first tune
-  myFrequencyImage = myTuneData.data();
+  // Subspan pointing to the first tune
+  myFrequencyImage = myTuneData;
 
   myMusicCounters.fill(0);
   myMusicFrequencies.fill(0);
@@ -317,7 +317,7 @@ bool CartridgeCTY::save(Serializer& out) const
     out.putDouble(myFractionalClocks);
     out.putIntArray(myMusicCounters);
     out.putIntArray(myMusicFrequencies);
-    out.putLong(myFrequencyImage - myTuneData.data()); // FIXME - storing pointer diff!
+    out.putLong(myFrequencyImage.data() - myTuneData.data());
   }
   catch(...)
   {
@@ -345,7 +345,7 @@ bool CartridgeCTY::load(Serializer& in)
     myFractionalClocks = in.getDouble();
     in.getIntArray(myMusicCounters);
     in.getIntArray(myMusicFrequencies);
-    myFrequencyImage = myTuneData.data() + in.getLong();
+    myFrequencyImage = ByteSpan{myTuneData}.subspan(in.getLong());
   }
   catch(...)
   {
@@ -450,7 +450,7 @@ void CartridgeCTY::loadTune(uInt8 index)
   // Each tune is offset by 4096 bytes
   // Instead of copying non-modifiable data around (as would happen on the
   // Harmony), we simply point to the appropriate tune
-  myFrequencyImage = myTuneData.data() + (index << 12);
+  myFrequencyImage = ByteSpan{myTuneData}.subspan(index << 12);
 
   // Reset to beginning of tune
   myTunePosition = 0;

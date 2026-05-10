@@ -284,11 +284,11 @@ class CartridgeCDF : public CartridgeARM
     // Subspan into myImage for the program ROM
     ByteMSpan myProgramImage{};
 
-    // Pointer to the display ROM image of the cartridge
-    uInt8* myDisplayImage{nullptr};
+    // Subspan into the display data in myRAM
+    ByteMSpan myDisplayImage{};
 
-    // Pointer to the driver image in RAM
-    uInt8* myDriverImage{nullptr};
+    // Subspan into the driver image in myRAM
+    ByteMSpan myDriverImage{};
 
     // The CDFJ 8K RAM image, used as:
     //   $0000 - 2K Driver

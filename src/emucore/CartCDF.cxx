@@ -73,11 +73,11 @@ CartridgeCDF::CartridgeCDF(ByteSpan image, string_view md5,
   // NOLINTNEXTLINE(cppcoreguidelines-prefer-member-initializer)
   myProgramImage = ByteMSpan{myImage}.subspan(isCDFJplus() ? 2_KB : 4_KB);
 
-  // Pointer to CDF driver in RAM
-  myDriverImage = myRAM.data();
+  // Subspan for the CDF driver in RAM
+  myDriverImage = ByteMSpan{myRAM};
 
-  // Pointer to the display RAM (starts after 2K driver)
-  myDisplayImage = myRAM.data() + 2_KB;
+  // Subspan for the display RAM (starts after 2K driver)
+  myDisplayImage = ByteMSpan{myRAM}.subspan(2_KB);
 
   // C addresses
   uInt32 cBase = 0, cStart = 0, cStack = 0;
@@ -135,7 +135,7 @@ void CartridgeCDF::reset()
 void CartridgeCDF::setInitialState()
 {
   // Copy initial CDF driver to Harmony RAM
-  std::copy_n(myImage.data(), 2_KB, myDriverImage);
+  std::copy_n(myImage.data(), 2_KB, myDriverImage.begin());
 
   myMusicWaveformSize.fill(27);
 
