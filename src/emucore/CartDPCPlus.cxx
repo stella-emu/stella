@@ -28,7 +28,6 @@
 CartridgeDPCPlus::CartridgeDPCPlus(ByteSpan image, string_view md5,
                                    const Settings& settings)
   : CartridgeARM(settings, md5),
-    myImage(32_KB, 0),
     mySize{std::min(image.size(), 32_KB)}
 {
   // Image is always 32K, but in the case of ROM < 32K, the image is
@@ -71,7 +70,7 @@ CartridgeDPCPlus::CartridgeDPCPlus(ByteSpan image, string_view md5,
   //
   // The default mask for DFxFRACLOW implements the Jitter behavior. This
   // changes the mask to implement the Stable behavior.
-  myDriverMD5 = MD5::hash(ByteSpan{image.data(), 3_KB});
+  myDriverMD5 = MD5::hash(image.first(3_KB));
   if(myDriverMD5 == "5f80b5a5adbe483addc3f6e6f1b472f8" ||
      myDriverMD5 == "8dd73b44fd11c488326ce507cbeb19d1" )
     myFractionalLowMask = 0x0F0000;

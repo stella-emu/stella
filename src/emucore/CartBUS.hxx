@@ -232,7 +232,7 @@ class CartridgeBUS : public CartridgeARM
 
   private:
     // The 32K ROM image of the cartridge
-    ByteArray myImage;
+    std::array<uInt8, 32_KB> myImage{};
 
     // Subspan into myImage for the program ROM
     ByteMSpan myProgramImage{};

@@ -109,7 +109,7 @@ CartridgeCDF::CartridgeCDF(ByteSpan image, string_view md5,
   myPlusROM = std::make_unique<PlusROM>(mySettings, *this);
 
   // Determine whether we have a PlusROM cart
-  myPlusROM->initialize(ByteSpan{myImage});
+  myPlusROM->initialize(myImage);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

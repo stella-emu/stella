@@ -268,7 +268,7 @@ class CartridgeCTY : public Cartridge
 
   private:
     // The 32K ROM image of the cartridge
-    ByteArray myImage;
+    std::array<uInt8, 32_KB> myImage{};
 
     // The 28K ROM image of the music
     std::array<uInt8, 28_KB> myTuneData{};

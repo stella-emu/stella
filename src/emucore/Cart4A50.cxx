@@ -24,7 +24,6 @@
 Cartridge4A50::Cartridge4A50(ByteSpan image, string_view md5,
                              const Settings& settings)
   : Cartridge(settings, md5),
-    myImage(128_KB, 0),
     mySize{image.size()}
 {
   // Copy the ROM image into my buffer

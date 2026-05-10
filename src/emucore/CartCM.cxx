@@ -23,8 +23,7 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartridgeCM::CartridgeCM(ByteSpan image, string_view md5,
                          const Settings& settings)
-  : Cartridge(settings, md5),
-    myImage(16_KB, 0)
+  : Cartridge(settings, md5)
 {
   // Copy the ROM image into my buffer
   std::copy_n(image.data(), std::min(16_KB, image.size()), myImage.begin());

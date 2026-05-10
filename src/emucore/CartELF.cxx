@@ -275,7 +275,7 @@ bool CartridgeELF::save(Serializer& out) const
     out.putInt(myInitFunctionIndex);
     out.putByte(static_cast<uInt8>(myConsoleTiming));
 
-    out.putByteArray(ByteSpan{myLastPeekResult});
+    out.putByteArray(myLastPeekResult);
 
     if (!myTransactionQueue.save(out)) return false;
     if (!myCortexEmu.save(out)) return false;

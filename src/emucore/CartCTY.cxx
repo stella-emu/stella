@@ -24,8 +24,7 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartridgeCTY::CartridgeCTY(ByteSpan image, string_view md5,
                            const Settings& settings)
-  : Cartridge(settings, md5),
-    myImage(32_KB, 0)
+  : Cartridge(settings, md5)
 {
   // Copy the ROM image into my buffer
   const size_t size = image.size();

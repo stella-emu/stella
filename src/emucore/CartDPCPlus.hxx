@@ -226,7 +226,7 @@ class CartridgeDPCPlus : public CartridgeARM
 
   private:
     // The ROM image and size
-    ByteArray myImage;
+    std::array<uInt8, 32_KB> myImage{};
     size_t mySize{0};
 
     // Subspan into myImage for the 24K program ROM (starts at 3K offset)

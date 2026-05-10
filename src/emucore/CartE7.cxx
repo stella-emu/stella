@@ -42,7 +42,7 @@ void CartridgeE7::initialize(ByteSpan image)
   myPlusROM = std::make_unique<PlusROM>(mySettings, *this);
 
   // Determine whether we have a PlusROM cart
-  myPlusROM->initialize(ByteSpan{myImage});
+  myPlusROM->initialize(myImage);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
