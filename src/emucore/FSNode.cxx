@@ -478,7 +478,7 @@ size_t FSNode::write(ByteSpan buffer) const
 {
   // First let the private subclass attempt to open the file
   if(_realNode)
-    if(size_t sizeWritten = _realNode->write(buffer); sizeWritten > 0)
+    if(const size_t sizeWritten = _realNode->write(buffer); sizeWritten > 0)
       return sizeWritten;
 
   // Otherwise, the default behaviour is to write to a normal C++ ofstream

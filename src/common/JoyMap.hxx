@@ -42,18 +42,15 @@ class JoyMap
       explicit JoyMapping(EventMode c_mode, int c_button,
                           JoyAxis c_axis, JoyDir c_adir,
                           int c_hat, JoyHatDir c_hdir)
-        : mode{c_mode}, button{c_button},
-          axis{c_axis}, adir{c_adir},
+        : mode{c_mode}, button{c_button}, axis{c_axis}, adir{c_adir},
           hat{c_hat}, hdir{c_hdir} { }
       explicit JoyMapping(EventMode c_mode, int c_button,
                           JoyAxis c_axis, JoyDir c_adir)
-        : mode{c_mode}, button{c_button},
-          axis{c_axis}, adir{c_adir},
-          hat{JOY_CTRL_NONE}, hdir{JoyHatDir::CENTER} { }
+        : mode{c_mode}, button{c_button}, axis{c_axis}, adir{c_adir},
+          hat{}, hdir{} { }
       explicit JoyMapping(EventMode c_mode, int c_button,
                           int c_hat, JoyHatDir c_hdir)
-        : mode{c_mode}, button{c_button},
-          axis{JoyAxis::NONE}, adir{JoyDir::NONE},
+        : mode{c_mode}, button{c_button}, axis{}, adir{},
           hat{c_hat}, hdir{c_hdir} { }
 
       bool operator==(const JoyMapping& other) const = default;

@@ -64,13 +64,10 @@ class MD5
       given length.  The digest consists of 32 hexadecimal digits.
 
       @param buffer  The message to compute the digest of
-      @param length  The length of the message
 
       @return   The message-digest
     */
-    static string hash(const ByteBuffer& buffer, size_t length);
     static string hash(ByteSpan buffer);
-    static string hash(const uInt8* buffer, size_t length);
     static string hash(string_view buffer);
 
   public:
@@ -78,12 +75,17 @@ class MD5
 
   private:
     void init();
-    void update(const uInt8* input, uInt32 length);
+    void update(ByteSpan input);
     void finalize();
     string hexdigest() const;
-    void transform(const uInt8* block);
-    static void decode(uInt32* output, const uInt8* input, uInt32 len);
-    static void encode(uInt8* output, const uInt32* input, uInt32 len);
+
+    static constexpr uInt32 BLOCKSIZE = 64;
+    using BlockSpan  = std::span<const uInt8, BLOCKSIZE>;
+    using BlockMSpan = std::span<uInt32, 16>;
+
+    void transform(BlockSpan block);
+    static void decode(BlockMSpan output, BlockSpan input);
+    static void encode(ByteMSpan output, IntSpan input);
 
     // F, G, H and I are basic MD5 functions.
     static constexpr uInt32 F(uInt32 x, uInt32 y, uInt32 z) {
@@ -118,8 +120,8 @@ class MD5
     }
 
   private:
-    static constexpr uInt32 BLOCKSIZE = 64;
     bool finalized{false};
+
     std::array<uInt8, BLOCKSIZE> buffer{}; // bytes that didn't fit in last chunk
     std::array<uInt32, 2> count{};   // 64bit counter for number of bits (lo, hi)
     std::array<uInt32, 4> state{};   // digest so far

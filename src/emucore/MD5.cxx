@@ -39,7 +39,7 @@ namespace {
     S42 = 10,
     S43 = 15,
     S44 = 21;
-} // namespace
+}  // namespace
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // MD5 initialization. Begins an MD5 operation, writing a new context.
@@ -60,9 +60,9 @@ void MD5::init()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // Decodes input (uInt8) into output (uInt32).
 // Assumes len is a multiple of 4.
-void MD5::decode(uInt32* output, const uInt8* input, uInt32 len)
+void MD5::decode(BlockMSpan output, BlockSpan input)
 {
-  for (uInt32 i = 0, j = 0; j < len; ++i, j += 4)
+  for(uInt32 i = 0, j = 0; j < BLOCKSIZE; ++i, j += 4)
     output[i] =  (static_cast<uInt32>(input[j]))
               | ((static_cast<uInt32>(input[j+1])) << 8)
               | ((static_cast<uInt32>(input[j+2])) << 16)
@@ -72,9 +72,10 @@ void MD5::decode(uInt32* output, const uInt8* input, uInt32 len)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // Encodes input (uInt32) into output (uInt8).
 // Assumes len is a multiple of 4.
-void MD5::encode(uInt8* output, const uInt32* input, uInt32 len)
+void MD5::encode(ByteMSpan output, IntSpan input)
 {
-  for (uInt32 i = 0, j = 0; j < len; ++i, j += 4) {
+  for(uInt32 i = 0, j = 0; j < output.size(); ++i, j += 4)
+  {
     output[j]   = static_cast<uInt8>(input[i] & 0xff);
     output[j+1] = static_cast<uInt8>((input[i] >> 8) & 0xff);
     output[j+2] = static_cast<uInt8>((input[i] >> 16) & 0xff);
@@ -84,10 +85,10 @@ void MD5::encode(uInt8* output, const uInt32* input, uInt32 len)
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // Apply MD5 algo on a block.
-void MD5::transform(const uInt8* block)
+void MD5::transform(BlockSpan block)
 {
   std::array<uInt32, 16> x{};
-  decode(x.data(), block, BLOCKSIZE);
+  decode(x, block);
 
   uInt32 a = state[0], b = state[1], c = state[2], d = state[3];
 
@@ -175,13 +176,15 @@ void MD5::transform(const uInt8* block)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // MD5 block update operation.
 // Continues an MD5 message-digest operation, processing another message block.
-void MD5::update(const uInt8* input, uInt32 length)
+void MD5::update(ByteSpan input)
 {
   // Compute number of bytes mod 64
   auto index = count[0] / 8 % BLOCKSIZE;
 
   // Update number of bits
-  if ((count[0] += (length << 3)) < (length << 3))
+  const auto length = static_cast<uInt32>(input.size());
+  count[0] += (length << 3);
+  if(count[0] < (length << 3))
     count[1]++;
   count[1] += (length >> 29);
 
@@ -190,15 +193,15 @@ void MD5::update(const uInt8* input, uInt32 length)
 
   // Transform as many times as possible.
   uInt32 i = 0;
-  if (length >= firstpart)
+  if(length >= firstpart)
   {
     // Fill buffer first, transform
-    std::copy_n(input, firstpart, buffer.data() + index);
-    transform(buffer.data());
+    std::copy_n(input.data(), firstpart, buffer.data() + index);
+    transform(buffer);
 
     // Transform chunks of BLOCKSIZE (64 bytes)
-    for (i = firstpart; i + BLOCKSIZE <= length; i += BLOCKSIZE)
-      transform(&input[i]);
+    for(i = firstpart; i + BLOCKSIZE <= length; i += BLOCKSIZE)
+      transform(std::span<const uInt8, BLOCKSIZE>{input.data() + i, BLOCKSIZE});
 
     index = 0;
   }
@@ -206,7 +209,7 @@ void MD5::update(const uInt8* input, uInt32 length)
     i = 0;
 
   // Buffer remaining input
-  std::copy_n(input + i, length - i, buffer.data() + index);
+  std::copy_n(input.data() + i, length - i, buffer.data() + index);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -217,22 +220,22 @@ void MD5::finalize()
   // 0x80 leading byte is required by the MD5 spec — it's the padding sentinel
   static constexpr std::array<uInt8, BLOCKSIZE> padding = { 0x80 };
 
-  if (!finalized)
+  if(!finalized)
   {
     // Save number of bits
     std::array<uInt8, 8> bits{};
-    encode(bits.data(), count.data(), 8);
+    encode(bits, count);
 
     // Pad out to 56 mod 64
     const uInt32 index = count[0] / 8 % 64;
     const uInt32 padLen = (index < 56) ? (56 - index) : (120 - index);
-    update(padding.data(), padLen);
+    update(ByteSpan{padding}.first(padLen));
 
     // Append length (before padding)
-    update(bits.data(), 8);
+    update(bits);
 
     // Store state in digest
-    encode(digest.data(), state.data(), 16);
+    encode(digest, state);
 
     // Zeroize sensitive information (not required for Stella)
     // buffer.fill(0);
@@ -264,28 +267,17 @@ string MD5::hexdigest() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string MD5::hash(string_view buffer)
 {
-  return MD5::hash(reinterpret_cast<const uInt8*>(buffer.data()), buffer.size());
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string MD5::hash(const ByteBuffer& buffer, size_t length)
-{
-  return MD5::hash(buffer.get(), length);
+  return MD5::hash(
+    ByteSpan{reinterpret_cast<const uInt8*>(buffer.data()), buffer.size()});
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string MD5::hash(ByteSpan buffer)
 {
-  return MD5::hash(buffer.data(), buffer.size());
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string MD5::hash(const uInt8* buffer, size_t length)
-{
   MD5 md5;
 
   md5.init();
-  md5.update(buffer, static_cast<uInt32>(length));
+  md5.update(buffer);
   md5.finalize();
 
   return md5.hexdigest();
