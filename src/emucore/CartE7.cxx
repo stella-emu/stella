@@ -51,7 +51,7 @@ void CartridgeE7::initialize(ByteSpan image)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeE7::reset()
 {
-  initializeRAM(myRAM.data(), myRAM.size());
+  initializeRAM(myRAM);
 
   initializeStartBank(0);
   const uInt32 ramBank = randomStartBank() ?

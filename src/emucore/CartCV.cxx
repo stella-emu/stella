@@ -41,22 +41,21 @@ CartridgeCV::CartridgeCV(ByteSpan image, string_view md5,
     // Copy the ROM image into my buffer
     std::copy_n(image.data() + 2_KB, 2_KB, myImage.get());
 
-    myInitialRAM = std::make_unique<uInt8[]>(1_KB);
     // Copy the RAM image into a buffer for use in reset()
-    std::copy_n(image.data(), 1_KB, myInitialRAM.get());
+    myInitialRAM.assign(image.begin(), image.begin() + 1_KB);
   }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeCV::reset()
 {
-  if(myInitialRAM != nullptr)
+  if(!myInitialRAM.empty())
   {
     // Copy the RAM image into my buffer
-    std::copy_n(myInitialRAM.get(), 1_KB, myRAM.get());
+    std::copy_n(myInitialRAM.begin(), 1_KB, myRAM.begin());
   }
   else
-    initializeRAM(myRAM.get(), myRamSize);
+    initializeRAM(myRAM);
 
   myBankChanged = true;
 }

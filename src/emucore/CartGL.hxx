@@ -115,7 +115,7 @@ class CartridgeGL : public CartridgeEnhanced
 
   private:
     // Initial RAM data from the cart (doesn't always exist)
-    ByteBuffer myInitialRAM{nullptr};
+    ByteArray myInitialRAM;
 
     bool myEnablePROM{false};
 

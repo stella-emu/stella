@@ -24,17 +24,17 @@
 CartridgeCM::CartridgeCM(ByteSpan image, string_view md5,
                          const Settings& settings)
   : Cartridge(settings, md5),
-    myImage{std::make_unique<uInt8[]>(16_KB)}
+    myImage(16_KB, 0)
 {
   // Copy the ROM image into my buffer
-  std::copy_n(image.data(), std::min(16_KB, image.size()), myImage.get());
+  std::copy_n(image.data(), std::min(16_KB, image.size()), myImage.begin());
   createRomAccessArrays(16_KB);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeCM::reset()
 {
-  initializeRAM(myRAM.data(), myRAM.size());
+  initializeRAM(myRAM);
 
   // On powerup, the last bank of ROM is enabled and RAM is disabled
   mySWCHA = 0xFF;
@@ -190,7 +190,7 @@ bool CartridgeCM::patch(uInt16 address, uInt8 value)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ByteSpan CartridgeCM::getImage() const
 {
-  return {myImage.get(), 16_KB};
+  return myImage;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

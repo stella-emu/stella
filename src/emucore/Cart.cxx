@@ -221,13 +221,13 @@ uInt16 Cartridge::bankOrigin(uInt16 bank, uInt16 PC) const
 #endif
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Cartridge::initializeRAM(uInt8* arr, size_t size, uInt8 val) const
+void Cartridge::initializeRAM(ByteMSpan arr, uInt8 val) const
 {
   if(randomInitialRAM())
-    std::ranges::generate(std::span{arr, size},
+    std::ranges::generate(arr,
       [this]{ return mySystem->randGenerator().next(); });
   else
-    std::fill_n(arr, size, val);
+    std::fill(arr.begin(), arr.end(), val);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

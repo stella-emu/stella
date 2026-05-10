@@ -24,18 +24,17 @@ CartridgeFA2::CartridgeFA2(ByteSpan image, string_view md5,
   : CartridgeFA(image, md5, settings, bsSize)
 {
   // 29/32K version of FA2 has valid data @ 1K - 29K
-  const uInt8* img_ptr = image.data();
+  const size_t offset = (image.size() >= 29_KB) ? 1_KB : 0;
   if(image.size() >= 29_KB)
-  {
-    img_ptr += 1_KB;
     mySize = 28_KB;
-  }
 
   // Allocate array for the ROM image
   myImage = std::make_unique<uInt8[]>(mySize);
-
   // Copy the ROM image into my buffer
-  std::copy_n(img_ptr, mySize, myImage.get());
+  std::copy_n(image.data() + offset, mySize, myImage.get());
+
+//   // Copy the ROM image into my buffer
+//   myImage.assign(image.begin() + offset, image.begin() + offset + mySize);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -119,11 +118,11 @@ uInt8 CartridgeFA2::ramReadWrite()
       {
         try
         {
-          serializer.getByteArray(std::span{myRAM.get(), myRamSize});
+          serializer.getByteArray(myRAM);
         }
         catch(...)
         {
-          std::fill_n(myRAM.get(), myRamSize, 0);
+          std::fill(myRAM.begin(), myRAM.end(), 0);
         }
         myRamAccessTimeout += 500;  // Add 0.5 ms delay for read
       }
@@ -131,7 +130,7 @@ uInt8 CartridgeFA2::ramReadWrite()
       {
         try
         {
-          serializer.putByteArray(std::span{myRAM.get(), myRamSize});
+          serializer.putByteArray(myRAM);
         }
         catch(...)
         {
@@ -171,7 +170,7 @@ void CartridgeFA2::flash(uInt8 operation)
     {
       try
       {
-        std::array<uInt8, 256> buf = {};
+        std::array<uInt8, 256> buf{};
         serializer.putByteArray(buf);
       }
       catch(...)
@@ -184,18 +183,18 @@ void CartridgeFA2::flash(uInt8 operation)
     {
       try
       {
-        serializer.getByteArray(std::span{myRAM.get(), myRamSize});
+        serializer.getByteArray(myRAM);
       }
       catch(...)
       {
-        std::fill_n(myRAM.get(), myRamSize, 0);
+        std::fill(myRAM.begin(), myRAM.end(), 0);
       }
     }
     else if(operation == 2)  // write
     {
       try
       {
-        serializer.putByteArray(std::span{myRAM.get(), myRamSize});
+        serializer.putByteArray(myRAM);
       }
       catch(...)
       {

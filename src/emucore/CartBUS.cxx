@@ -127,12 +127,12 @@ void CartridgeBUS::reset()
 {
   if (myBUSSubtype == BUSSubtype::BUS0)
   {
-    initializeRAM(myRAM.data() + 3_KB, 5_KB);
+    initializeRAM(ByteMSpan{myRAM}.subspan(3_KB, 5_KB));
     initializeStartBank(5); // BUS0 always starts in bank 5
   }
   else
   {
-    initializeRAM(myRAM.data() + 2_KB, 6_KB);
+    initializeRAM(ByteMSpan{myRAM}.subspan(2_KB, 6_KB));
     initializeStartBank(6); // BUS1+ always starts in bank 6
   }
 

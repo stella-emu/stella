@@ -264,8 +264,8 @@ class CartridgeEnhanced : public Cartridge
     // Indicates whether to use direct ROM peeks or not
     bool myDirectPeek{true};
 
-    // Pointer to a dynamically allocated RAM area of the cartridge
-    ByteBuffer myRAM{nullptr};
+    // The RAM area of the cartridge (may be empty)
+    ByteArray myRAM;
 
     // The size of the ROM image
     size_t mySize{0};

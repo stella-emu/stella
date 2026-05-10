@@ -81,7 +81,7 @@ void CartridgeEnhanced::install(System& system)
 
   // Allocate array for the RAM area
   if(myRamSize > 0)
-    myRAM = std::make_unique<uInt8[]>(myRamSize);
+    myRAM.resize(myRamSize);
 
   mySystem = &system;
 
@@ -130,14 +130,14 @@ void CartridgeEnhanced::install(System& system)
 void CartridgeEnhanced::reset()
 {
   if(myRamSize > 0)
-    initializeRAM(myRAM.get(), myRamSize);
+    initializeRAM(myRAM);
 
   initializeStartBank(getStartBank());
 
   // Upon reset we switch to the reset bank
   bank(startBank());
 
-  if (myPlusROM->isValid())
+  if(myPlusROM->isValid())
     (*myPlusROM).reset();  // calls PlusROM::reset(), not unique_ptr::reset()
 }
 
@@ -384,13 +384,14 @@ ByteSpan CartridgeEnhanced::getImage() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CartridgeEnhanced::save(Serializer& out) const
 {
   try
   {
     out.putIntArray(std::span{myCurrentSegOffset.get(), myBankSegs});
     if(myRamSize > 0)
-      out.putByteArray(std::span{myRAM.get(), myRamSize});
+      out.putByteArray(myRAM);
 
     if(myPlusROM->isValid() && !myPlusROM->save(out))
       return false;
@@ -411,7 +412,7 @@ bool CartridgeEnhanced::load(Serializer& in)
   {
     in.getIntArray(std::span{myCurrentSegOffset.get(), myBankSegs});
     if(myRamSize > 0)
-      in.getByteArray(std::span{myRAM.get(), myRamSize});
+      in.getByteArray(myRAM);
 
     if(myPlusROM->isValid() && !myPlusROM->load(in))
       return false;

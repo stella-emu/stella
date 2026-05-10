@@ -82,7 +82,7 @@ class CartridgeCV : public CartridgeEnhanced
 
   protected:
     // Initial RAM data from the cart (doesn't always exist)
-    ByteBuffer myInitialRAM{nullptr};
+    ByteArray myInitialRAM;
 
   private:
     // RAM size

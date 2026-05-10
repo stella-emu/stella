@@ -397,11 +397,10 @@ class Cartridge : public Device
     /**
       Fill the given RAM array with (possibly random) data.
 
-      @param arr  Pointer to the RAM array
-      @param size The size of the RAM array
+      @param arr  Span of the RAM array
       @param val  If provided, the value to store in the RAM array
     */
-    void initializeRAM(uInt8* arr, size_t size, uInt8 val = 0) const;
+    void initializeRAM(ByteMSpan arr, uInt8 val = 0) const;
 
     /**
       Set the start bank to be used when the cart is reset.  This method

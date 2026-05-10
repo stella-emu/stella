@@ -247,7 +247,7 @@ class CartridgeCM : public Cartridge
     shared_ptr<CompuMate> myCompuMate;
 
     // The 16K ROM image of the cartridge
-    ByteBuffer myImage;
+    ByteArray myImage;
 
     // The 2K of RAM
     std::array<uInt8, 2_KB> myRAM{};

@@ -115,7 +115,7 @@ CartridgeCDF::CartridgeCDF(ByteSpan image, string_view md5,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeCDF::reset()
 {
-  initializeRAM(myRAM.data()+2_KB, myRAM.size()-2_KB);
+  initializeRAM(ByteMSpan{myRAM}.subspan(2_KB));
 
   // CDF always starts in bank 6, CDFJ+ in bank 0
   initializeStartBank(isCDFJplus() ? 0 : 6);

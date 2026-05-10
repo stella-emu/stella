@@ -276,9 +276,7 @@ uInt16 CartridgeEnhancedWidget::bankSegs()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeEnhancedWidget::saveOldState()
 {
-  myOldState.internalRam.clear();
-  myOldState.internalRam.assign(myCart.myRAM.get(),
-                                myCart.myRAM.get() + myCart.myRamSize);
+  myOldState.internalRam.assign(myCart.myRAM.begin(), myCart.myRAM.end());
 
   if(myCart.isPlusROM())
   {
@@ -403,9 +401,9 @@ const ByteArray& CartridgeEnhancedWidget::internalRamOld(int start, int count)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const ByteArray& CartridgeEnhancedWidget::internalRamCurrent(int start, int count)
 {
-  myRamCurrent.clear();
-  const uInt8* begin = myCart.myRAM.get() + start;
-  myRamCurrent.assign(begin, begin + count);
+  myRamCurrent.assign(myCart.myRAM.begin() + start,
+                      myCart.myRAM.begin() + start + count);
+
   return myRamCurrent;
 }
 
