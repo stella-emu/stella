@@ -136,7 +136,7 @@ class MicroChip24LC
     Controller::onMessageCallback myCallback;
 
     // The EEPROM data buffer, allocated on first use
-    ByteBuffer myData;
+    ByteArray myData;
 
     // Tracks which EEPROM pages have been accessed by the current ROM
     std::array<bool, PAGE_NUM> myPageHit{};
@@ -329,8 +329,7 @@ MicroChip24LC<FLASH_SIZE, PAGE_SIZE>
 
   if(!fileValid)
   {
-    myData = std::make_unique<uInt8[]>(FLASH_SIZE);
-    std::fill_n(myData.get(), FLASH_SIZE, INITIAL_VALUE);
+    myData.assign(FLASH_SIZE, INITIAL_VALUE);
     myDataChanged = true;
   }
 
@@ -345,7 +344,7 @@ MicroChip24LC<FLASH_SIZE, PAGE_SIZE>
   // Save EEPROM data to external file only when necessary
   if(myDataChanged)
   {
-    try { myDataFile.write(myData, FLASH_SIZE); }
+    try { myDataFile.write(myData); }
     catch(...) {
       cerr << "ERROR writing MT24LC flash data file " << myDataFile.getPath() << '\n';
     }
@@ -413,7 +412,7 @@ template<size_t FLASH_SIZE, size_t PAGE_SIZE>
 void MicroChip24LC<FLASH_SIZE, PAGE_SIZE>
 ::eraseAll()
 {
-  std::fill_n(myData.get(), FLASH_SIZE, INITIAL_VALUE);
+  myData.assign(FLASH_SIZE, INITIAL_VALUE);
   myDataChanged = true;
 }
 
@@ -426,7 +425,7 @@ void MicroChip24LC<FLASH_SIZE, PAGE_SIZE>
   {
     if(myPageHit[page])
     {
-      std::fill_n(myData.get() + page * PAGE_SIZE, PAGE_SIZE, INITIAL_VALUE);
+      std::fill_n(myData.data() + page * PAGE_SIZE, PAGE_SIZE, INITIAL_VALUE);
       myDataChanged = true;
     }
   }

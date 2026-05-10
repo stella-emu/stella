@@ -49,7 +49,6 @@ class FSNodeLIBRETRO : public AbstractFSNode
     bool getChildren(AbstractFSList& list, ListMode mode) const override;
     AbstractFSNodePtr getParent() const override;
 
-    [[deprecated]] size_t read(ByteBuffer& image, size_t) const override { return 0; }
     size_t read(ByteArray& image, size_t) const override;
     size_t read(std::stringstream& buffer) const override;
 

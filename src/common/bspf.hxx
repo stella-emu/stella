@@ -107,7 +107,6 @@ using ShortMSpan = MSpanOf<uInt16>;
 using IntMSpan   = MSpanOf<uInt32>;
 using sIntMSpan  = MSpanOf<Int32>;
 
-using ByteBuffer  = std::unique_ptr<uInt8[]>;
 using DWordBuffer = std::unique_ptr<uInt32[]>;
 
 // We use KB a lot; let's make a literal for it

@@ -165,7 +165,7 @@ class CortexM0: public Serializable
 
     struct MemoryRegionAccessCode {
       uInt8* backingStore;
-      ByteBuffer ops;
+      ByteArray ops;
     };
 
     struct MemoryRegion {
@@ -219,7 +219,7 @@ class CortexM0: public Serializable
     uInt32 vFlag{0};
 
     std::array<MemoryRegion, 0x100> myRegions{};
-    ByteBuffer myPageMap;
+    ByteArray myPageMap;
     uInt8 myNextRegionIndex{0};
     BusTransactionDelegate* myDefaultDelegate{nullptr};
 

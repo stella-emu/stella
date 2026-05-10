@@ -59,7 +59,7 @@ class StellaLIBRETRO
     const char* getCoreName() const { return "Stella"; }
     const char* getROMExtensions() const { return "a26|bin"; }
 
-    void*  getROM() const { return rom_image.get(); }
+    const void*  getROM() const { return rom_image.data(); }
     uInt32 getROMSize() const { return rom_size; }
     constexpr uInt32 getROMMax() const {
       return static_cast<uInt32>(Cartridge::maxSize());
@@ -169,7 +169,7 @@ class StellaLIBRETRO
     unique_ptr<OSystemLIBRETRO> myOSystem;
     uInt32 system_ready{false};
 
-    ByteBuffer rom_image;
+    ByteArray rom_image;
     uInt32 rom_size{0};
     string rom_path;
 

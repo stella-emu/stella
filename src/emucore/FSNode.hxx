@@ -255,18 +255,6 @@ class FSNode
     /**
      * Read data (binary format) into the given buffer.
      *
-     * @param buffer  The buffer to contain the data (allocated in this method).
-     * @param size    The amount of data to read (0 means read all data).
-     *
-     * @return  The number of bytes read (0 in the case of failure)
-     *          This method can throw exceptions, and should be used inside
-     *          a try-catch block.
-     */
-    [[deprecated]] size_t read(ByteBuffer& buffer, size_t size = 0) const;
-
-    /**
-     * Read data (binary format) into the given buffer.
-     *
      * @param buffer  The buffer to contain the data
      * @param size    The amount of data to read (0 means read all data).
      *
@@ -286,18 +274,6 @@ class FSNode
      *          a try-catch block.
      */
     size_t read(std::stringstream& buffer) const;
-
-    /**
-     * Write data (binary format) from the given buffer.
-     *
-     * @param buffer  The buffer that contains the data.
-     * @param size    The size of the buffer.
-     *
-     * @return  The number of bytes written (0 in the case of failure)
-     *          This method can throw exceptions, and should be used inside
-     *          a try-catch block.
-     */
-    [[deprecated]] size_t write(const ByteBuffer& buffer, size_t size) const;
 
     /**
      * Write data (binary format) from the given buffer.
@@ -504,18 +480,6 @@ class AbstractFSNode
     /**
      * Read data (binary format) into the given buffer.
      *
-     * @param buffer  The buffer to contain the data (allocated in this method).
-     * @param size    The amount of data to read (0 means read all data).
-     *
-     * @return  The number of bytes read (0 in the case of failure)
-     *          This method can throw exceptions, and should be used inside
-     *          a try-catch block.
-     */
-    virtual size_t read(ByteBuffer& buffer, size_t size) const { return 0; }
-
-    /**
-     * Read data (binary format) into the given buffer.
-     *
      * @param buffer  The buffer to contain the data
      * @param size    The amount of data to read (0 means read all data).
      *
@@ -535,18 +499,6 @@ class AbstractFSNode
      *          a try-catch block.
      */
     virtual size_t read(std::stringstream& buffer) const { return 0; }
-
-    /**
-     * Write data (binary format) from the given buffer.
-     *
-     * @param buffer  The buffer that contains the data.
-     * @param size    The size of the buffer.
-     *
-     * @return  The number of bytes written (0 in the case of failure)
-     *          This method can throw exceptions, and should be used inside
-     *          a try-catch block.
-     */
-    virtual size_t write(const ByteBuffer& buffer, size_t size) const { return 0; }
 
     /**
      * Write data (binary format) from the given buffer.

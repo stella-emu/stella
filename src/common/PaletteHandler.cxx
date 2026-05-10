@@ -403,11 +403,11 @@ void PaletteHandler::loadUserPalette()
   if(!myOSystem.checkUserPalette(true))
     return;
 
-  ByteBuffer in;
+  ByteArray in;
   try        { myOSystem.paletteFile().read(in); }
   catch(...) { return; }
 
-  uInt8* pixbuf = in.get();  // NOLINT(misc-const-correctness)
+  const uInt8* pixbuf = in.data();
   for(int i = 0; i < 128; i++, pixbuf += 3)  // NTSC palette
   {
     const uInt32 pixel = (static_cast<int>(pixbuf[0]) << 16) +

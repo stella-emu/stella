@@ -350,7 +350,7 @@ bool OSystem::checkUserPalette(bool outputError) const
 {
   try
   {
-    ByteBuffer palette;
+    ByteArray palette;
     const size_t size = paletteFile().read(palette);
 
     // Make sure the contains enough data for the NTSC, PAL and SECAM palettes

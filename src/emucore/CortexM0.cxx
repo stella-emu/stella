@@ -536,7 +536,6 @@ string CortexM0::describeError(err_t err)
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CortexM0::CortexM0()
-  : myPageMap{std::make_unique<uInt8[]>(PAGEMAP_SIZE)}
 {
   resetMappings();
   reset();
@@ -681,7 +680,7 @@ CortexM0& CortexM0::resetMappings()
   for (auto& region: myRegions) region.reset();
 
   myNextRegionIndex = 0;
-  std::fill_n(myPageMap.get(), PAGEMAP_SIZE, 0xff);
+  myPageMap.assign(PAGEMAP_SIZE, 0xff);
 
   return *this;
 }
@@ -706,7 +705,7 @@ CortexM0& CortexM0::mapRegionCode(uInt32 pageBase, uInt32 pageCount,
     setupMapping(pageBase, pageCount, readOnly, MemoryRegionType::directCode);
 
   region.access.emplace<1>(MemoryRegionAccessCode{backingStore,
-                           std::make_unique<uInt8[]>((pageCount * PAGE_SIZE) >> 1)});
+                           ByteArray((pageCount * PAGE_SIZE) >> 1)});
 
   return *this;
 }
@@ -837,7 +836,7 @@ CortexM0::MemoryRegion& CortexM0::setupMapping(uInt32 pageBase, uInt32 pageCount
   region.size = pageCount * PAGE_SIZE;
   region.readOnly = readOnly;
 
-  std::fill_n(myPageMap.get() + pageBase, pageCount, regionIndex);
+  std::fill_n(myPageMap.data() + pageBase, pageCount, regionIndex);
 
   return region;
 }
@@ -845,7 +844,7 @@ CortexM0::MemoryRegion& CortexM0::setupMapping(uInt32 pageBase, uInt32 pageCount
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CortexM0::recompileCodeRegions()
 {
-  for (const auto& region: myRegions) {
+  for (auto& region: myRegions) {
     if (!std::holds_alternative<MemoryRegionAccessCode>(region.access))
       continue;
 

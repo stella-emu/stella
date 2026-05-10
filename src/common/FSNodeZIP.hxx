@@ -69,12 +69,8 @@ class FSNodeZIP : public AbstractFSNode
     AbstractFSNodePtr getParent() const override;
     AbstractFSNodePtr getSiblingNode(string_view ext) const override;
 
-    [[deprecated]] size_t read(ByteBuffer& buffer, size_t) const override { return 0; }
     size_t read(ByteArray& buffer, size_t) const override;
     size_t read(std::stringstream& buffer) const override;
-    [[deprecated]] size_t write(const ByteBuffer&, size_t) const override {
-      throw std::runtime_error("ZIP file writing not implemented");
-    }
     size_t write(ByteSpan) const override {
       throw std::runtime_error("ZIP file writing not implemented");
     }
