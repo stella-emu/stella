@@ -205,11 +205,8 @@ class CartridgeAR : public Cartridge
     // The 256 byte header for the current 8448 byte load
     std::array<uInt8, 256> myHeader{};
 
-    // Size of the ROM image
-    size_t mySize{0};
-
     // All of the 8448 byte loads associated with the game
-    ByteBuffer myLoadImages;
+    ByteArray myLoadImages;
 
     // Indicates how many 8448 loads there are
     uInt8 myNumberOfLoadImages{0};

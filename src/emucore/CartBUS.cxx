@@ -49,11 +49,11 @@ namespace {
 CartridgeBUS::CartridgeBUS(ByteSpan image, string_view md5,
                            const Settings& settings)
   : CartridgeARM(settings, md5),
-    myImage{std::make_unique<uInt8[]>(32_KB)}
+    myImage(32_KB, 0)
 {
   // Copy the ROM image into my buffer
   const size_t size = image.size();
-  std::copy_n(image.data(), std::min(32_KB, size), myImage.get());
+  std::copy_n(image.data(), std::min(32_KB, size), myImage.data());
 
   // Detect cart version
   setupVersion();
@@ -69,14 +69,14 @@ CartridgeBUS::CartridgeBUS(ByteSpan image, string_view md5,
     createRomAccessArrays(24_KB);
 
     // Pointer to the program ROM (28K @ 0 byte offset)
-    myProgramImage = myImage.get() + 3_KB;
+    myProgramImage = ByteMSpan{myImage}.subspan(3_KB);
 
     // Pointer to the display RAM
     myDisplayImage = myRAM.data() + 0x0C00;
 
     // Create Thumbulator ARM emulator
     myThumbEmulator = std::make_unique<Thumbulator>(
-      reinterpret_cast<uInt16*>(myImage.get()),
+      reinterpret_cast<uInt16*>(myImage.data()),
       reinterpret_cast<uInt16*>(myRAM.data()),
       static_cast<uInt32>(32_KB),
       0x00000C00,
@@ -94,14 +94,14 @@ CartridgeBUS::CartridgeBUS(ByteSpan image, string_view md5,
     createRomAccessArrays(28_KB);
 
     // Pointer to the program ROM (28K @ 0 byte offset)
-    myProgramImage = myImage.get() + 4_KB;
+    myProgramImage = ByteMSpan{myImage}.subspan(4_KB);
 
     // Pointer to the display RAM
     myDisplayImage = myRAM.data() + 0x0800;
 
     // Create Thumbulator ARM emulator
     myThumbEmulator = std::make_unique<Thumbulator>(
-      reinterpret_cast<uInt16*>(myImage.get()),
+      reinterpret_cast<uInt16*>(myImage.data()),
       reinterpret_cast<uInt16*>(myRAM.data()),
       static_cast<uInt32>(32_KB),
       0x00000800,
@@ -119,7 +119,7 @@ CartridgeBUS::CartridgeBUS(ByteSpan image, string_view md5,
   myPlusROM = std::make_unique<PlusROM>(mySettings, *this);
 
   // Determine whether we have a PlusROM cart
-  myPlusROM->initialize(ByteSpan{myImage.get(), size});
+  myPlusROM->initialize(ByteSpan{myImage}.first(size));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -151,9 +151,9 @@ void CartridgeBUS::setInitialState()
 {
   // Copy initial BUS driver to Harmony RAM
   if (myBUSSubtype == BUSSubtype::BUS0)
-    std::copy_n(myImage.get(), 3_KB, myDriverImage);
+    std::copy_n(myImage.data(), 3_KB, myDriverImage);
   else
-    std::copy_n(myImage.get(), 2_KB, myDriverImage);
+    std::copy_n(myImage.data(), 2_KB, myDriverImage);
 
   myMusicWaveformSize.fill(27);
 
@@ -838,7 +838,7 @@ bool CartridgeBUS::patch(uInt16 address, uInt8 value)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ByteSpan CartridgeBUS::getImage() const
 {
-  return {myImage.get(), 32_KB};
+  return myImage;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1145,7 +1145,7 @@ uInt32 CartridgeBUS::scanBUSDriver(uInt32 searchValue)
 {
   // original BUS driver is 3K in size. Later BUS drivers are 2K in size.
   for (int i = 0; i < 3072; i += 4)
-    if (getUInt32(myImage.get(), i) == searchValue)
+    if (getUInt32(myImage.data(), i) == searchValue)
       return i;
 
   return 0xFFFFFFFF;

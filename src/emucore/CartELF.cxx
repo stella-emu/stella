@@ -225,15 +225,13 @@ namespace {
 CartridgeELF::CartridgeELF(ByteSpan image, string_view md5,
                            const Settings& settings)
   : Cartridge(settings, md5),
-    myImageSize{image.size()},
     myTransactionQueue{TRANSACTION_QUEUE_CAPACITY},
     myVcsLib{myTransactionQueue}
 {
-  myImage = std::make_unique<uInt8[]>(image.size());
-  std::copy_n(image.data(), image.size(), myImage.get());
+  myImage.assign(image.size(), 0);
+  std::copy_n(image.data(), image.size(), myImage.data());
 
-  myLastPeekResult = std::make_unique<uInt8[]>(0x1000);
-  std::fill_n(myLastPeekResult.get(), 0x1000, 0);
+  myLastPeekResult.assign(0x1000, 0);
 
   createRomAccessArrays(0x1000);
 
@@ -277,7 +275,7 @@ bool CartridgeELF::save(Serializer& out) const
     out.putInt(myInitFunctionIndex);
     out.putByte(static_cast<uInt8>(myConsoleTiming));
 
-    out.putByteArray(std::span{myLastPeekResult.get(), 0x1000});
+    out.putByteArray(ByteSpan{myLastPeekResult});
 
     if (!myTransactionQueue.save(out)) return false;
     if (!myCortexEmu.save(out)) return false;
@@ -310,7 +308,7 @@ bool CartridgeELF::load(Serializer& in)
     myInitFunctionIndex = in.getInt();
     myConsoleTiming = static_cast<ConsoleTiming>(in.getByte());
 
-    in.getByteArray(std::span{myLastPeekResult.get(), 0x1000});
+    in.getByteArray(ByteMSpan{myLastPeekResult});
 
     if (!myTransactionQueue.load(in)) return false;
     if (!myCortexEmu.load(in)) return false;
@@ -354,7 +352,7 @@ void CartridgeELF::consoleChanged(ConsoleTiming timing)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ByteSpan CartridgeELF::getImage() const
 {
-  return {myImage.get(), myImageSize};
+  return myImage;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -410,20 +408,18 @@ string CartridgeELF::getDebugLog() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-std::pair<ByteBuffer, size_t> CartridgeELF::getArmImage() const
+ByteArray CartridgeELF::getArmImage() const
 {
   constexpr size_t imageSize = ADDR_TABLES_BASE + TABLES_SIZE;
-  ByteBuffer image = std::make_unique<uInt8[]>(imageSize);
+  ByteArray image(imageSize, 0);
 
-  std::fill_n(image.get(), imageSize, uInt8{0});
+  std::copy_n(mySectionStack.data(),  STACK_SIZE,  image.data() + ADDR_STACK_BASE);
+  std::copy_n(mySectionText.data(),   TEXT_SIZE,   image.data() + ADDR_TEXT_BASE);
+  std::copy_n(mySectionData.data(),   DATA_SIZE,   image.data() + ADDR_DATA_BASE);
+  std::copy_n(mySectionRodata.data(), RODATA_SIZE, image.data() + ADDR_RODATA_BASE);
+  std::copy_n(mySectionTables.data(), TABLES_SIZE, image.data() + ADDR_TABLES_BASE);
 
-  std::copy_n(mySectionStack.get(),  STACK_SIZE,  image.get() + ADDR_STACK_BASE);
-  std::copy_n(mySectionText.get(),   TEXT_SIZE,   image.get() + ADDR_TEXT_BASE);
-  std::copy_n(mySectionData.get(),   DATA_SIZE,   image.get() + ADDR_DATA_BASE);
-  std::copy_n(mySectionRodata.get(), RODATA_SIZE, image.get() + ADDR_RODATA_BASE);
-  std::copy_n(mySectionTables.get(), TABLES_SIZE, image.get() + ADDR_TABLES_BASE);
-
-  return {std::move(image), imageSize};
+  return image;
 }
 #endif
 
@@ -458,7 +454,7 @@ void CartridgeELF::parseAndLinkElf()
   const bool dump = mySettings.getBool("elf.dump");
 
   try {
-    myElfParser.parse(myImage.get(), myImageSize);
+    myElfParser.parse(myImage.data(), myImage.size());
   } catch (const ElfParser::ElfParseError& e) {
     throw std::runtime_error("failed to initialize ELF: " + string(e.what()));
   }
@@ -505,11 +501,11 @@ void CartridgeELF::parseAndLinkElf()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeELF::allocationSections()
 {
-  mySectionStack = std::make_unique<uInt8[]>(STACK_SIZE);
-  mySectionText = std::make_unique<uInt8[]>(TEXT_SIZE);
-  mySectionData = std::make_unique<uInt8[]>(DATA_SIZE);
-  mySectionRodata = std::make_unique<uInt8[]>(RODATA_SIZE);
-  mySectionTables = std::make_unique<uInt8[]>(TABLES_SIZE);
+  mySectionStack.assign(STACK_SIZE, 0);
+  mySectionText.assign(TEXT_SIZE, 0);
+  mySectionData.assign(DATA_SIZE, 0);
+  mySectionRodata.assign(RODATA_SIZE, 0);
+  mySectionTables.assign(TABLES_SIZE, 0);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -518,15 +514,15 @@ void CartridgeELF::setupMemoryMap(bool strictMode)
   myCortexEmu
     .resetMappings()
     .mapRegionData(ADDR_STACK_BASE / CortexM0::PAGE_SIZE,
-                   STACK_SIZE / CortexM0::PAGE_SIZE, false, mySectionStack.get())
+                   STACK_SIZE / CortexM0::PAGE_SIZE, false, mySectionStack.data())
     .mapRegionCode(ADDR_TEXT_BASE / CortexM0::PAGE_SIZE,
-                   TEXT_SIZE / CortexM0::PAGE_SIZE, strictMode, mySectionText.get())
+                   TEXT_SIZE / CortexM0::PAGE_SIZE, strictMode, mySectionText.data())
     .mapRegionData(ADDR_DATA_BASE / CortexM0::PAGE_SIZE,
-                   DATA_SIZE / CortexM0::PAGE_SIZE, false, mySectionData.get())
+                   DATA_SIZE / CortexM0::PAGE_SIZE, false, mySectionData.data())
     .mapRegionData(ADDR_RODATA_BASE / CortexM0::PAGE_SIZE,
-                   RODATA_SIZE / CortexM0::PAGE_SIZE, strictMode, mySectionRodata.get())
+                   RODATA_SIZE / CortexM0::PAGE_SIZE, strictMode, mySectionRodata.data())
     .mapRegionData(ADDR_TABLES_BASE / CortexM0::PAGE_SIZE,
-                   TABLES_SIZE / CortexM0::PAGE_SIZE, strictMode, mySectionTables.get())
+                   TABLES_SIZE / CortexM0::PAGE_SIZE, strictMode, mySectionTables.data())
     .mapRegionDelegate(ADDR_STUB_BASE / CortexM0::PAGE_SIZE,
                        STUB_SIZE / CortexM0::PAGE_SIZE, true, &myVcsLib)
     .mapDefault(&myFallbackDelegate);
@@ -715,7 +711,7 @@ void CartridgeELF::setupConfig()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeELF::resetWithConfig()
 {
-  std::fill_n(myLastPeekResult.get(), 0x1000, 0);
+  std::fill_n(myLastPeekResult.data(), 0x1000, 0);
   myIsBusDriven = false;
   myDriveBusValue = 0;
   myArmCyclesOffset = 0;
@@ -723,22 +719,22 @@ void CartridgeELF::resetWithConfig()
 
   myLinker->relink(externalSymbols(myConfigSystemType));
 
-  std::fill_n(mySectionStack.get(), STACK_SIZE, 0);
-  std::fill_n(mySectionText.get(), TEXT_SIZE, 0);
-  std::fill_n(mySectionData.get(), DATA_SIZE, 0);
-  std::fill_n(mySectionRodata.get(), RODATA_SIZE, 0);
-  std::fill_n(mySectionTables.get(), TABLES_SIZE, 0);
+  std::fill_n(mySectionStack.data(), STACK_SIZE, 0);
+  std::fill_n(mySectionText.data(), TEXT_SIZE, 0);
+  std::fill_n(mySectionData.data(), DATA_SIZE, 0);
+  std::fill_n(mySectionRodata.data(), RODATA_SIZE, 0);
+  std::fill_n(mySectionTables.data(), TABLES_SIZE, 0);
 
   std::copy_n(myLinker->getSegmentData(ElfLinker::SegmentType::text),
               myLinker->getSegmentSize(ElfLinker::SegmentType::text),
-              mySectionText.get());
+              mySectionText.data());
   std::copy_n(myLinker->getSegmentData(ElfLinker::SegmentType::data),
               myLinker->getSegmentSize(ElfLinker::SegmentType::data),
-              mySectionData.get());
+              mySectionData.data());
   std::copy_n(myLinker->getSegmentData(ElfLinker::SegmentType::rodata),
               myLinker->getSegmentSize(ElfLinker::SegmentType::rodata),
-              mySectionRodata.get());
-  std::copy_n(LOOKUP_TABLES, sizeof(LOOKUP_TABLES), mySectionTables.get());
+              mySectionRodata.data());
+  std::copy_n(LOOKUP_TABLES, sizeof(LOOKUP_TABLES), mySectionTables.data());
 
   setupMemoryMap(myConfigStrictMode);
   myCortexEmu.reset();

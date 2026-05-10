@@ -42,7 +42,7 @@ CartridgeELFWidget::CartridgeELFWidget(GuiObject* boss,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeELFWidget::initialize()
 {
-  addBaseInformation(myCart.myImageSize, "AtariAge", "see log below", 1);
+  addBaseInformation(myCart.myImage.size(), "AtariAge", "see log below", 1);
 
   const auto lineHeight = _font.getLineHeight();
   const auto width = _w - 12;
@@ -83,10 +83,10 @@ void CartridgeELFWidget::initialize()
 void CartridgeELFWidget::saveArmImage(const FSNode& node)
 {
   try {
-    const auto [buffer, size] = myCart.getArmImage();
+    const ByteArray buffer = myCart.getArmImage();
 
-    const size_t sizeWritten = node.write(buffer, size);
-    if (sizeWritten != size) throw std::runtime_error("failed to write arm image");
+    const size_t sizeWritten = node.write(buffer);
+    if (sizeWritten != buffer.size()) throw std::runtime_error("failed to write arm image");
 
     instance().frameBuffer().showTextMessage("Successfully exported ARM executable image", MessagePosition::BottomCenter, true);
   }

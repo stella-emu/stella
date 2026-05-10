@@ -232,10 +232,10 @@ class CartridgeBUS : public CartridgeARM
 
   private:
     // The 32K ROM image of the cartridge
-    ByteBuffer myImage;
+    ByteArray myImage;
 
-    // Pointer to the 28K program ROM image of the cartridge
-    uInt8* myProgramImage{nullptr};
+    // Subspan into myImage for the program ROM
+    ByteMSpan myProgramImage{};
 
     // Pointer to the 4K display ROM image of the cartridge
     uInt8* myDisplayImage{nullptr};

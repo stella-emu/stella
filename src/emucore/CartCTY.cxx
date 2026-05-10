@@ -25,11 +25,11 @@
 CartridgeCTY::CartridgeCTY(ByteSpan image, string_view md5,
                            const Settings& settings)
   : Cartridge(settings, md5),
-    myImage{std::make_unique<uInt8[]>(32_KB)}
+    myImage(32_KB, 0)
 {
   // Copy the ROM image into my buffer
   const size_t size = image.size();
-  std::copy_n(image.data(), std::min(32_KB, size), myImage.get());
+  std::copy_n(image.data(), std::min(32_KB, size), myImage.data());
   createRomAccessArrays(32_KB);
 
   // Default to no tune data in case user is utilizing an old ROM
@@ -299,7 +299,7 @@ bool CartridgeCTY::patch(uInt16 address, uInt8 value)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ByteSpan CartridgeCTY::getImage() const
 {
-  return {myImage.get(), 32_KB};
+  return myImage;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

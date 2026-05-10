@@ -28,18 +28,16 @@
 CartridgeDPCPlus::CartridgeDPCPlus(ByteSpan image, string_view md5,
                                    const Settings& settings)
   : CartridgeARM(settings, md5),
-    myImage{std::make_unique<uInt8[]>(32_KB)},
+    myImage(32_KB, 0),
     mySize{std::min(image.size(), 32_KB)}
 {
   // Image is always 32K, but in the case of ROM < 32K, the image is
   // copied to the end of the buffer
-  if(mySize < 32_KB)
-    std::fill_n(myImage.get(), mySize, 0);
-  std::copy_n(image.data(), image.size(), myImage.get() + (32_KB - mySize));
+  std::copy_n(image.data(), image.size(), myImage.data() + (32_KB - mySize));
   createRomAccessArrays(24_KB);
 
-  // Pointer to the program ROM (24K @ 3K offset; ignore first 3K)
-  myProgramImage = myImage.get() + 3_KB;
+  // Subspan for the program ROM (24K @ 3K offset; ignore first 3K)
+  myProgramImage = ByteMSpan{myImage}.subspan(3_KB);
 
   // Pointer to the display RAM
   myDisplayImage = myDPCRAM.data() + 3_KB;
@@ -50,7 +48,7 @@ CartridgeDPCPlus::CartridgeDPCPlus(ByteSpan image, string_view md5,
   // Create Thumbulator ARM emulator
   const bool devSettings = settings.getBool("dev.settings");
   myThumbEmulator = std::make_unique<Thumbulator>
-      (reinterpret_cast<uInt16*>(myImage.get()),
+      (reinterpret_cast<uInt16*>(myImage.data()),
        reinterpret_cast<uInt16*>(myDPCRAM.data()),
        static_cast<uInt32>(32_KB),
       0x00000C00,
@@ -83,7 +81,7 @@ CartridgeDPCPlus::CartridgeDPCPlus(ByteSpan image, string_view md5,
   myPlusROM = std::make_unique<PlusROM>(mySettings, *this);
 
   // Determine whether we have a PlusROM cart
-  myPlusROM->initialize(ByteSpan{myImage.get(), mySize});
+  myPlusROM->initialize(ByteSpan{myImage}.first(mySize));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -107,7 +105,7 @@ void CartridgeDPCPlus::setInitialState()
   myDPCRAM.fill(0);
 
   // Copy initial DPC display data and Frequency table state to Harmony RAM
-  std::copy_n(myProgramImage + 24_KB, 5_KB, myDisplayImage);
+  std::copy_n(myProgramImage.data() + 24_KB, 5_KB, myDisplayImage);
 
   // Initialize the DPC data fetcher registers
   myTops.fill(0);
@@ -664,7 +662,7 @@ bool CartridgeDPCPlus::patch(uInt16 address, uInt8 value)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ByteSpan CartridgeDPCPlus::getImage() const
 {
-  return {myImage.get(), mySize};
+  return ByteSpan{myImage}.first(mySize);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

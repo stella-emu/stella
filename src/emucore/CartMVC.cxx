@@ -1636,8 +1636,7 @@ CartridgeMVC::CartridgeMVC(string_view path, size_t size,
                            string_view md5, const Settings& settings,
                            size_t bsSize)
   : Cartridge(settings, md5),
-    myImage{std::make_unique<uInt8[]>(bsSize)},  // not used
-    mySize{bsSize},
+    myImage(bsSize, 0),  // not used
     myMovie{std::make_unique<MovieCart>()},
     myPath{path}
 {
@@ -1674,7 +1673,7 @@ void CartridgeMVC::consoleChanged(ConsoleTiming timing)
 ByteSpan CartridgeMVC::getImage() const
 {
   // not used
-  return {myImage.get(), mySize};
+  return myImage;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

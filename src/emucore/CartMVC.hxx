@@ -132,9 +132,8 @@ class CartridgeMVC : public Cartridge
 
   private:
     // Currently not used:
-    // Pointer to a dynamically allocated ROM image of the cartridge
-    ByteBuffer myImage;
-    size_t mySize{0};
+    // Placeholder ROM image of the cartridge
+    ByteArray myImage;
 
     unique_ptr<MovieCart> myMovie;
     string myPath;

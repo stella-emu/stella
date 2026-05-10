@@ -58,20 +58,20 @@ CartridgeCDF::CartridgeCDF(ByteSpan image, string_view md5,
   : CartridgeARM(settings, md5)
 {
   // Copy the ROM image into my buffer
-  mySize = std::min(image.size(), 512_KB);
-  myImage = std::make_unique<uInt8[]>(mySize);
-  std::copy_n(image.data(), mySize, myImage.get());
+  const size_t romSize = std::min(image.size(), 512_KB);
+  myImage.assign(romSize, 0);
+  std::copy_n(image.data(), romSize, myImage.data());
 
   // Detect cart version
   setupVersion();
 
   // The lowest 2K is not accessible to the debugger
-  createRomAccessArrays(isCDFJplus() ? mySize - 2_KB : 28_KB);
+  createRomAccessArrays(isCDFJplus() ? myImage.size() - 2_KB : 28_KB);
 
-  // Pointer to the program ROM
+  // Subspan for the program ROM
   // which starts after the 2K driver (and 2K C Code for CDF)
   // NOLINTNEXTLINE(cppcoreguidelines-prefer-member-initializer)
-  myProgramImage = myImage.get() + (isCDFJplus() ? 2_KB : 4_KB);
+  myProgramImage = ByteMSpan{myImage}.subspan(isCDFJplus() ? 2_KB : 4_KB);
 
   // Pointer to CDF driver in RAM
   myDriverImage = myRAM.data();
@@ -82,9 +82,9 @@ CartridgeCDF::CartridgeCDF(ByteSpan image, string_view md5,
   // C addresses
   uInt32 cBase = 0, cStart = 0, cStack = 0;
   if (isCDFJplus()) {
-    cBase = getUInt32(myImage.get(), 0x17F8) & 0xFFFFFFFE;    // C Base Address
+    cBase = getUInt32(myImage.data(), 0x17F8) & 0xFFFFFFFE;    // C Base Address
     cStart = cBase;                                           // C Start Address
-    cStack = getUInt32(myImage.get(), 0x17F4);                // C Stack
+    cStack = getUInt32(myImage.data(), 0x17F4);                // C Stack
   } else {
     cBase = 0x800;          // C Base Address
     cStart = 0x808;         // C Start Address (skip ARM header)
@@ -94,9 +94,9 @@ CartridgeCDF::CartridgeCDF(ByteSpan image, string_view md5,
   // Create Thumbulator ARM emulator
   const bool devSettings = settings.getBool("dev.settings");
   myThumbEmulator = std::make_unique<Thumbulator>(
-    reinterpret_cast<uInt16*>(myImage.get()),
+    reinterpret_cast<uInt16*>(myImage.data()),
     reinterpret_cast<uInt16*>(myRAM.data()),
-    static_cast<uInt32>(mySize),
+    static_cast<uInt32>(myImage.size()),
     cBase, cStart, cStack,
     devSettings ? settings.getBool("dev.thumb.trapfatal") : false,
     devSettings ? static_cast<double>(
@@ -109,7 +109,7 @@ CartridgeCDF::CartridgeCDF(ByteSpan image, string_view md5,
   myPlusROM = std::make_unique<PlusROM>(mySettings, *this);
 
   // Determine whether we have a PlusROM cart
-  myPlusROM->initialize(ByteSpan{myImage.get(), mySize});
+  myPlusROM->initialize(ByteSpan{myImage});
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -135,7 +135,7 @@ void CartridgeCDF::reset()
 void CartridgeCDF::setInitialState()
 {
   // Copy initial CDF driver to Harmony RAM
-  std::copy_n(myImage.get(), 2_KB, myDriverImage);
+  std::copy_n(myImage.data(), 2_KB, myDriverImage);
 
   myMusicWaveformSize.fill(27);
 
@@ -506,7 +506,7 @@ bool CartridgeCDF::patch(uInt16 address, uInt8 value)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ByteSpan CartridgeCDF::getImage() const
 {
-  return {myImage.get(), mySize};
+  return myImage;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -750,10 +750,10 @@ uInt8 CartridgeCDF::readFromDatastream(uInt8 index)
 //  - 0xFFFFFFFF if not found
 uInt32 CartridgeCDF::scanCDFDriver(uInt32 searchValue)
 {
-  if (mySize >= 2048)
+  if (myImage.size() >= 2048)
   {
     for (int i = 0; i < 2048; i += 4)
-      if (getUInt32(myImage.get(), i) == searchValue)
+      if (getUInt32(myImage.data(), i) == searchValue)
         return i;
   }
   return 0xFFFFFFFF;
@@ -763,13 +763,13 @@ uInt32 CartridgeCDF::scanCDFDriver(uInt32 searchValue)
 void CartridgeCDF::setupVersion()
 {
   // CDFJ+ detection
-  if (mySize < 2048)
+  if (myImage.size() < 2048)
     return;  // can't detect version, leave defaults
 
   if (const uInt32 cdfjOffset = scanCDFDriver(0x53554c50); // offset of CDFJPlus ID
       cdfjOffset != 0xFFFFFFFF &&                               // Plus
-      getUInt32(myImage.get(), cdfjOffset+4) == 0x4a464443 &&   // CDFJ
-      getUInt32(myImage.get(), cdfjOffset+8) == 0x00000001) {   // V1
+      getUInt32(myImage.data(), cdfjOffset+4) == 0x4a464443 &&   // CDFJ
+      getUInt32(myImage.data(), cdfjOffset+8) == 0x00000001) {   // V1
     myCDFSubtype = CDFSubtype::CDFJplus;
     myAmplitudeStream = 0x23;
     myFastjumpStreamIndexMask = 0xfe;
@@ -780,7 +780,7 @@ void CartridgeCDF::setupVersion()
 
     for (int i = 0; i < 2048; i += 4)
     {
-      const uInt32 cdfjValue = getUInt32(myImage.get(), i);
+      const uInt32 cdfjValue = getUInt32(myImage.data(), i);
       if (cdfjValue == 0x135200A2)
         myLDXenabled = true;
       if (cdfjValue == 0x135200A0)
@@ -875,7 +875,7 @@ uInt32 CartridgeCDF::ramSize() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt32 CartridgeCDF::romSize() const
 {
-  return static_cast<uInt32>(isCDFJplus() ? mySize : 32_KB);
+  return static_cast<uInt32>(isCDFJplus() ? myImage.size() : 32_KB);
 }
 
 #ifdef DEBUGGER_SUPPORT

@@ -256,11 +256,8 @@ class CartridgeE7 : public Cartridge
                    System::PageAccessType type, uInt16 addrMask = 0);
 
   private:
-    // Pointer to a dynamically allocated ROM image of the cartridge
-    ByteBuffer myImage;
-
-    // Size of the ROM image
-    size_t mySize{0};
+    // The ROM image of the cartridge
+    ByteArray myImage;
 
     // The 2K of RAM
     std::array<uInt8, RAM_SIZE> myRAM{};

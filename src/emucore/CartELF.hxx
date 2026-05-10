@@ -95,7 +95,7 @@ class CartridgeELF: public Cartridge {
   public:
     string getDebugLog() const;
 
-    std::pair<unique_ptr<uInt8[]>, size_t> getArmImage() const;
+    ByteArray getArmImage() const;
 
   private:
     class BusFallbackDelegate: public CortexM0::BusTransactionDelegate {
@@ -148,14 +148,13 @@ class CartridgeELF: public Cartridge {
     void runArm();
 
   private:
-    ByteBuffer myImage;
-    size_t myImageSize{0};
+    ByteArray myImage;
 
     bool myConfigStrictMode{false};
     uInt32 myConfigMips{100};
     elfEnvironment::SystemType myConfigSystemType{elfEnvironment::SystemType::ntsc};
 
-    ByteBuffer myLastPeekResult;
+    ByteArray myLastPeekResult;
     BusTransactionQueue myTransactionQueue;
 
     bool myIsBusDriven{false};
@@ -167,11 +166,11 @@ class CartridgeELF: public Cartridge {
     ElfParser myElfParser;
     unique_ptr<ElfLinker> myLinker;
 
-    ByteBuffer mySectionStack;
-    ByteBuffer mySectionText;
-    ByteBuffer mySectionData;
-    ByteBuffer mySectionRodata;
-    ByteBuffer mySectionTables;
+    ByteArray mySectionStack;
+    ByteArray mySectionText;
+    ByteArray mySectionData;
+    ByteArray mySectionRodata;
+    ByteArray mySectionTables;
 
     VcsLib myVcsLib;
     BusFallbackDelegate myFallbackDelegate;

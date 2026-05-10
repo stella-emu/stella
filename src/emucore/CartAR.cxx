@@ -32,18 +32,17 @@ namespace {
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartridgeAR::CartridgeAR(ByteSpan image, string_view md5,
                          const Settings& settings)
-  : Cartridge(settings, md5),
-    mySize{std::max(image.size(), LOAD_SIZE)},
-    myNumberOfLoadImages{static_cast<uInt8>(mySize / LOAD_SIZE)}
+  : Cartridge(settings, md5)
 {
-  // Create a load image buffer and copy the given image
-  myLoadImages = std::make_unique<uInt8[]>(mySize);
-  std::copy_n(image.data(), image.size(), myLoadImages.get());
+  const size_t loadSize = std::max(image.size(), LOAD_SIZE);
+  myLoadImages.assign(loadSize, 0);
+  myNumberOfLoadImages = static_cast<uInt8>(myLoadImages.size() / LOAD_SIZE);
 
-  // Add header if image doesn't include it
+  // Copy the given image and add header if not present
+  std::copy_n(image.data(), image.size(), myLoadImages.data());
   if(image.size() < LOAD_SIZE)
     std::copy_n(ourDefaultHeader.data(), ourDefaultHeader.size(),
-                myLoadImages.get() + myImage.size());
+                myLoadImages.data() + myImage.size());
 
   // We use System::PageAccess.romAccessBase, but don't allow its use
   // through a pointer, since the AR scheme doesn't support bankswitching
@@ -51,7 +50,7 @@ CartridgeAR::CartridgeAR(ByteSpan image, string_view md5,
   //
   // Instead, access will be through the getAccessFlags and setAccessFlags
   // methods below
-  createRomAccessArrays(mySize);
+  createRomAccessArrays(myLoadImages.size());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -299,7 +298,7 @@ void CartridgeAR::loadIntoRAM(uInt8 load)
     if(myLoadImages[image_off + myImage.size() + 5] == load)
     {
       // Copy the load's header
-      std::copy_n(myLoadImages.get() + image_off + myImage.size(),
+      std::copy_n(myLoadImages.data() + image_off + myImage.size(),
                   myHeader.size(), myHeader.data());
 
       // Verify the load's header
@@ -317,7 +316,7 @@ void CartridgeAR::loadIntoRAM(uInt8 load)
       {
         const size_t bank = myHeader[16 + j] & 0b00011;
         const size_t page = (myHeader[16 + j] & 0b11100) >> 2;
-        const uInt8* const src = myLoadImages.get() + image_off + j * 256;
+        const uInt8* const src = myLoadImages.data() + image_off + j * 256;
         const uInt8 sum = checksum(src, 256) + myHeader[16 + j] + myHeader[64 + j];
 
         if(!invalidPageChecksumSeen && (sum != 0x55))
@@ -384,7 +383,7 @@ bool CartridgeAR::patch(uInt16 address, uInt8 value)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ByteSpan CartridgeAR::getImage() const
 {
-  return {myLoadImages.get(), mySize};
+  return myLoadImages;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -403,7 +402,7 @@ bool CartridgeAR::save(Serializer& out) const
 
     // All of the 8448 byte loads associated with the game
     // Note that the size of this array is myNumberOfLoadImages * 8448
-    out.putByteArray(std::span{myLoadImages.get(), myNumberOfLoadImages * LOAD_SIZE});
+    out.putByteArray(ByteSpan{myLoadImages}.first(myNumberOfLoadImages * LOAD_SIZE));
 
     // Indicates how many 8448 loads there are
     out.putByte(myNumberOfLoadImages);
@@ -448,7 +447,7 @@ bool CartridgeAR::load(Serializer& in)
 
     // All of the 8448 byte loads associated with the game
     // Note that the size of this array is myNumberOfLoadImages * 8448
-    in.getByteArray(std::span{myLoadImages.get(), myNumberOfLoadImages * LOAD_SIZE});
+    in.getByteArray(ByteMSpan{myLoadImages}.first(myNumberOfLoadImages * LOAD_SIZE));
 
     // Indicates how many 8448 loads there are
     myNumberOfLoadImages = in.getByte();

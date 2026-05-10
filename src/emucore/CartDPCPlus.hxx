@@ -226,11 +226,11 @@ class CartridgeDPCPlus : public CartridgeARM
 
   private:
     // The ROM image and size
-    ByteBuffer myImage;
+    ByteArray myImage;
     size_t mySize{0};
 
-    // Pointer to the 24K program ROM image of the cartridge
-    uInt8* myProgramImage{nullptr};
+    // Subspan into myImage for the 24K program ROM (starts at 3K offset)
+    ByteMSpan myProgramImage{};
 
     // Pointer to the 4K display ROM image of the cartridge
     uInt8* myDisplayImage{nullptr};
