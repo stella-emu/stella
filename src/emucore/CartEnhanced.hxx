@@ -255,8 +255,8 @@ class CartridgeEnhanced : public Cartridge
     // Flag, true if write port is at high and read port is at low address
     bool myRamWpHigh{RAM_HIGH_WP};
 
-    // Pointer to a dynamically allocated ROM image of the cartridge
-    ByteBuffer myImage{nullptr};
+    // Dynamically allocated ROM image of the cartridge
+    ByteArray myImage;
 
     // Contains the offset into the ROM image for each of the bank segments
     DWordBuffer myCurrentSegOffset{nullptr};
@@ -266,9 +266,6 @@ class CartridgeEnhanced : public Cartridge
 
     // The RAM area of the cartridge (may be empty)
     ByteArray myRAM;
-
-    // The size of the ROM image
-    size_t mySize{0};
 
     // Handle PlusROM functionality, if available
     unique_ptr<PlusROM> myPlusROM;
@@ -340,7 +337,7 @@ class CartridgeEnhanced : public Cartridge
     */
     uInt16 ramAddressSegmentOffset(uInt16 address) const {
       return static_cast<uInt16>(
-        (myCurrentSegOffset[((address & ROM_MASK) >> myBankShift) % myBankSegs] - mySize)
+        (myCurrentSegOffset[((address & ROM_MASK) >> myBankShift) % myBankSegs] - myImage.size())
         >> (myBankShift - myRamBankShift));
     }
 

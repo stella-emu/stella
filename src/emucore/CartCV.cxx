@@ -31,7 +31,7 @@ CartridgeCV::CartridgeCV(ByteSpan image, string_view md5,
     for(size_t i = 0; i < 2_KB; i += size)
       // Copy the ROM of <=2K files to the 2nd half of the 4K ROM
       // The 1st half is used for RAM
-      std::copy_n(image.data(), size, myImage.get() + 2_KB + i);
+      std::copy_n(image.data(), size, myImage.data() + 2_KB + i);
   }
   else if(size == 4_KB)
   {
@@ -39,7 +39,7 @@ CartridgeCV::CartridgeCV(ByteSpan image, string_view md5,
     // Useful for MagiCard program listings
 
     // Copy the ROM image into my buffer
-    std::copy_n(image.data() + 2_KB, 2_KB, myImage.get());
+    std::copy_n(image.data() + 2_KB, 2_KB, myImage.data());
 
     // Copy the RAM image into a buffer for use in reset()
     myInitialRAM.assign(image.begin(), image.begin() + 1_KB);

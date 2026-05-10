@@ -37,21 +37,18 @@ CartridgeEnhanced::CartridgeEnhanced(ByteSpan image, string_view md5,
     Logger::info(std::format("ROM smaller than expected ({} < {}), appending {} bytes\n",
       size, bsSize, bsSize - size));
 
-  mySize = bsSize;
-
   // Initialize ROM with all 0's, to fill areas that the ROM may not cover
-  myImage = std::make_unique<uInt8[]>(mySize);
-  std::fill_n(myImage.get(), mySize, 0);
+  myImage.assign(bsSize, 0);
 
   // Directly copy the ROM image into the buffer
   // Only copy up to the amount of data the ROM provides; extra unused
   // space will be filled with 0's from above
-  std::copy_n(image.data(), std::min(mySize, size), myImage.get());
+  std::copy_n(image.data(), std::min(bsSize, size), myImage.begin());
 
   myPlusROM = std::make_unique<PlusROM>(mySettings, *this);
 
   // Determine whether we have a PlusROM cart
-  myPlusROM->initialize(ByteSpan{myImage.get(), mySize});
+  myPlusROM->initialize(ByteSpan{myImage});
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -74,7 +71,7 @@ void CartridgeEnhanced::install(System& system)
   myWriteOffset = myRamWpHigh ? ramSize : 0;        // e.g. = 0x0000
   myReadOffset  = myRamWpHigh ? 0 : ramSize;        // e.g. = 0x0080
   // Allocate more space only if RAM has its own bank(s)
-  createRomAccessArrays(mySize + (myRomOffset > 0 ? 0 : myRamSize));
+  createRomAccessArrays(myImage.size() + (myRomOffset > 0 ? 0 : myRamSize));
 
   // Allocate array for the segment's current bank offset
   myCurrentSegOffset = std::make_unique<uInt32[]>(myBankSegs);
@@ -121,7 +118,7 @@ void CartridgeEnhanced::install(System& system)
 
   // Install pages for the startup bank (TODO: currently only in first bank segment)
   bank(startBank(), 0);
-  if(mySize >= 4_KB && myBankSegs > 1)
+  if(myImage.size() >= 4_KB && myBankSegs > 1)
     // Setup the last bank segment to always point to the last ROM segment
     bank(romBankCount() - 1, myBankSegs - 1);
 }
@@ -247,7 +244,7 @@ bool CartridgeEnhanced::bank(uInt16 bank, uInt16 segment)
     // Skip extra RAM; if existing it is only mapped into first segment
     const uInt16 fromAddr = (ROM_OFFSET + segmentOffset + (segment == 0 ? myRomOffset : 0)) & ~System::PAGE_MASK;
     // for ROMs < 4_KB, the whole address space will be mapped.
-    const uInt16 toAddr   = (ROM_OFFSET + segmentOffset + (mySize < 4_KB ? 4_KB : myBankSize)) & ~System::PAGE_MASK;
+    const uInt16 toAddr   = (ROM_OFFSET + segmentOffset + (myImage.size() < 4_KB ? 4_KB : myBankSize)) & ~System::PAGE_MASK;
 
     System::PageAccess access(this, System::PageAccessType::READ);
     // Setup the page access methods for the current bank
@@ -270,11 +267,11 @@ bool CartridgeEnhanced::bank(uInt16 bank, uInt16 segment)
     // Setup RAM bank
     const uInt16 ramBank = (bank - romBankCount()) % myRamBankCount;
     // The RAM banks follow the ROM banks and are half the size of a ROM bank
-    const uInt32 bankOffset = static_cast<uInt32>(mySize) +
+    const uInt32 bankOffset = static_cast<uInt32>(myImage.size()) +
       (ramBank << myRamBankShift);
 
     // Remember what bank is in this segment
-    myCurrentSegOffset[segment] = static_cast<uInt32>(mySize) +
+    myCurrentSegOffset[segment] = static_cast<uInt32>(myImage.size()) +
       (ramBank << myBankShift);
 
     // Set the page accessing method for the RAM writing pages
@@ -304,7 +301,7 @@ bool CartridgeEnhanced::bank(uInt16 bank, uInt16 segment)
     {
       const uInt32 offset = bankOffset + (addr & myRamMask);
 
-      access.directPeekBase = &myRAM[offset - mySize];
+      access.directPeekBase = &myRAM[offset - myImage.size()];
       access.romAccessBase = &myRomAccessBase[offset];
       access.romPeekCounter = &myRomAccessCounter[offset];
       access.romPokeCounter = &myRomAccessCounter[offset + myAccessSize];
@@ -329,7 +326,7 @@ uInt16 CartridgeEnhanced::getSegmentBank(uInt16 segment) const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt16 CartridgeEnhanced::romBankCount() const
 {
-  return static_cast<uInt16>(mySize >> myBankShift);
+  return static_cast<uInt16>(myImage.size() >> myBankShift);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -344,7 +341,7 @@ uInt16 CartridgeEnhanced::calcNumSegments() const
   // Either the bankswitching supports multiple segments
   //  or the ROM is < 4K (-> 1 segment)
   return std::min(1 << (MAX_BANK_SHIFT - myBankShift),
-                  static_cast<int>(mySize) / myBankSize);  // e.g. = 1
+                  static_cast<int>(myImage.size()) / myBankSize);  // e.g. = 1
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -380,7 +377,7 @@ bool CartridgeEnhanced::patch(uInt16 address, uInt8 value)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ByteSpan CartridgeEnhanced::getImage() const
 {
-  return {myImage.get(), mySize};
+  return ByteSpan{myImage};
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

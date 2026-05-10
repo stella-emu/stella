@@ -24,17 +24,8 @@ CartridgeFA2::CartridgeFA2(ByteSpan image, string_view md5,
   : CartridgeFA(image, md5, settings, bsSize)
 {
   // 29/32K version of FA2 has valid data @ 1K - 29K
-  const size_t offset = (image.size() >= 29_KB) ? 1_KB : 0;
   if(image.size() >= 29_KB)
-    mySize = 28_KB;
-
-  // Allocate array for the ROM image
-  myImage = std::make_unique<uInt8[]>(mySize);
-  // Copy the ROM image into my buffer
-  std::copy_n(image.data() + offset, mySize, myImage.get());
-
-//   // Copy the ROM image into my buffer
-//   myImage.assign(image.begin() + offset, image.begin() + offset + mySize);
+    myImage.assign(image.begin() + 1_KB, image.begin() + 29_KB);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -55,7 +46,7 @@ uInt8 CartridgeFA2::peek(uInt16 address)
   if((address & ROM_MASK) == 0x0FF4)
   {
     // Load/save RAM to/from Harmony cart flash
-    if(mySize == 28_KB && !hotspotsLocked())
+    if(myImage.size() == 28_KB && !hotspotsLocked())
       return ramReadWrite();
   }
 
@@ -68,7 +59,7 @@ bool CartridgeFA2::poke(uInt16 address, uInt8 value)
   if((address & ROM_MASK) == 0x0FF4)
   {
     // Load/save RAM to/from Harmony cart flash
-    if(mySize == 28_KB && !hotspotsLocked())
+    if(myImage.size() == 28_KB && !hotspotsLocked())
       ramReadWrite();
     return false;
   }
