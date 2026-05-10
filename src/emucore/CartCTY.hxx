@@ -283,7 +283,7 @@ class CartridgeCTY : public Cartridge
     uInt8 myOperationType{0};
 
     // Subspan into myTuneData pointing to the current 4K tune
-    ByteSpan myFrequencyImage{};
+    ByteSpan myFrequencyImage;
 
     // The counter register for the data fetcher
     uInt16 myTunePosition{0};

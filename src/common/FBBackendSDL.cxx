@@ -686,7 +686,7 @@ const FBSurface& FBBackendSDL::compositedSurface()
 
     auto* row = pixels;
     for(uInt32 y = 0; y < h; ++y, row += pitch)
-      std::transform(row, row + w, row, applyGamma);
+      std::ranges::transform(std::span{row, w}, row, applyGamma);
   }
   myCompositedSurface = std::make_unique<FBSurfaceSDL>
     (const_cast<FBBackendSDL&>(*this), sdlSurface, ScalingInterpolation::none);

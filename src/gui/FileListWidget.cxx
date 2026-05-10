@@ -65,7 +65,7 @@ void FileListWidget::setDirectory(const FSNode& node, string_view select)
     tmp = tmp.getParent();
   }
   // History is in reverse order; we need to fix that
-  std::reverse(_history.begin(), _history.end());
+  std::ranges::reverse(_history);
   _currentHistory = std::prev(_history.end(), 1);
   _historyHome = static_cast<int>(_currentHistory - _history.begin());
 

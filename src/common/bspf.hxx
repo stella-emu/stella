@@ -307,14 +307,14 @@ namespace BSPF
                                   size_t startpos = 0)
   {
     if(startpos > s1.size()) return string_view::npos;
-    // NOLINTNEXTLINE(readability-qualified-auto): issues in Windows with '*'
-    const auto pos = std::search(s1.begin() + startpos, s1.end(),
-                                 s2.begin(), s2.end(),
+    const auto sub = s1.substr(startpos);
+    const auto found = std::ranges::search(sub, s2,
             [&](char ch1, char ch2) {
               return toUpperAscii(ch1) == toUpperAscii(ch2);
             }
     );
-    return pos == s1.end() ? string_view::npos : pos - s1.begin();
+    return (found.empty() && !s2.empty()) ? string_view::npos
+                                          : startpos + (found.begin() - sub.begin());
   }
 
   // Test whether the first string contains the second one (case insensitive)

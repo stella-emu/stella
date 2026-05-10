@@ -239,7 +239,7 @@ class Serializer
 
       if constexpr(sizeof(T) > 1) {
         auto src = std::bit_cast<std::array<std::byte, sizeof(T)>>(v);
-        std::reverse(src.begin(), src.end());
+        std::ranges::reverse(src);
         return std::bit_cast<T>(src);
       }
       return v;

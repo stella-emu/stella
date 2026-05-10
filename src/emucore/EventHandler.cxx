@@ -421,7 +421,7 @@ void EventHandler::handleSystemEvent(SystemEvent e, int, int)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-// NOLINTNEXTLINE(readability-function-size)
+// NOLINTNEXTLINE(readability-function-size,google-readability-function-size,hicpp-function-size)
 void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
 {
   // Take care of special events that aren't part of the emulation core

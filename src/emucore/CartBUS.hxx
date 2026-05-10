@@ -235,13 +235,13 @@ class CartridgeBUS : public CartridgeARM
     std::array<uInt8, 32_KB> myImage{};
 
     // Subspan into myImage for the program ROM
-    ByteMSpan myProgramImage{};
+    ByteMSpan myProgramImage;
 
     // Subspan into the 4K display data in myRAM
-    ByteMSpan myDisplayImage{};
+    ByteMSpan myDisplayImage;
 
     // Subspan into the BUS driver image in myRAM
-    ByteMSpan myDriverImage{};
+    ByteMSpan myDriverImage;
 
     // The BUS 8k RAM image, used as:
     //   $0000 - 2K BUS driver

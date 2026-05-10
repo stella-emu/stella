@@ -160,7 +160,7 @@ class CartridgeDPC : public CartridgeF8
     double myClockRate{1193191.66666667};
 
     // Subspan into the 2K display ROM image of the cartridge
-    ByteMSpan myDisplayImage{};
+    ByteMSpan myDisplayImage;
 
     // The top registers for the data fetchers
     std::array<uInt8, 8> myTops{0};

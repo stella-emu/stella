@@ -227,7 +227,7 @@ void Cartridge::initializeRAM(ByteMSpan arr, uInt8 val) const
     std::ranges::generate(arr,
       [this]{ return mySystem->randGenerator().next(); });
   else
-    std::fill(arr.begin(), arr.end(), val);
+    std::ranges::fill(arr, val);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

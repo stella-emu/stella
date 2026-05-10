@@ -113,7 +113,7 @@ uInt8 CartridgeFA2::ramReadWrite()
         }
         catch(...)
         {
-          std::fill(myRAM.begin(), myRAM.end(), 0);
+          std::ranges::fill(myRAM, 0);
         }
         myRamAccessTimeout += 500;  // Add 0.5 ms delay for read
       }
@@ -178,7 +178,7 @@ void CartridgeFA2::flash(uInt8 operation)
       }
       catch(...)
       {
-        std::fill(myRAM.begin(), myRAM.end(), 0);
+        std::ranges::fill(myRAM, 0);
       }
     }
     else if(operation == 2)  // write

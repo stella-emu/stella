@@ -36,6 +36,8 @@ CartridgeAR::CartridgeAR(ByteSpan image, string_view md5,
 {
   const size_t loadSize = std::max(image.size(), LOAD_SIZE);
   myLoadImages.assign(loadSize, 0);
+
+  // NOLINTNEXTLINE(cppcoreguidelines-prefer-member-initializer)
   myNumberOfLoadImages = static_cast<uInt8>(myLoadImages.size() / LOAD_SIZE);
 
   // Copy the given image and add header if not present

@@ -230,10 +230,10 @@ class CartridgeDPCPlus : public CartridgeARM
     size_t mySize{0};
 
     // Subspan into myImage for the 24K program ROM (starts at 3K offset)
-    ByteMSpan myProgramImage{};
+    ByteMSpan myProgramImage;
 
     // Subspan into the 4K display data in myDPCRAM
-    ByteMSpan myDisplayImage{};
+    ByteMSpan myDisplayImage;
 
     // The DPC 8k RAM image, used as:
     //   3K DPC+ driver
@@ -242,7 +242,7 @@ class CartridgeDPCPlus : public CartridgeARM
     std::array<uInt8, 8_KB> myDPCRAM{};
 
     // Subspan into the 1K frequency table in myDPCRAM
-    ByteSpan myFrequencyImage{};
+    ByteSpan myFrequencyImage;
 
     // The top registers for the data fetchers
     std::array<uInt8, 8> myTops{};
