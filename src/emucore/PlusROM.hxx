@@ -61,12 +61,11 @@ class PlusROM : public Serializable
       and initialize all state variables it will use.  This includes
       whether there is a valid hostname and path embedded in the ROM.
 
-      @param image  Pointer to the ROM image
-      @param size   The size of the ROM image
+      @param image  Span of the ROM image
 
       @return  Whether this is actually a valid PlusROM cart
     */
-    bool initialize(const ByteBuffer& image, size_t size);
+    bool initialize(ByteSpan image);
 
     /**
       Answer whether this is a PlusROM cart.  Note that until the

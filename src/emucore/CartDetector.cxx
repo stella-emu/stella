@@ -25,38 +25,36 @@
 using BSPF::searchForBytes;
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Bankswitch::Type CartDetector::autodetectType(const ByteBuffer& image, size_t size)
+Bankswitch::Type CartDetector::autodetectType(ByteSpan image)
 {
-  // Single span construction point for the entire class
-  const ByteSpan imageSpan{image.get(), size};
-
   // Guess type based on size
   Bankswitch::Type type = Bankswitch::Type::AUTO;
 
-  if(isProbablyELF(imageSpan)) {
-    type =Bankswitch::Type::ELF;
-  }
-  else if((size % 8448) == 0 || size == 6_KB)
+  if(isProbablyELF(image))
   {
-    if(size == 6_KB && isProbablyGL(imageSpan))
+    type = Bankswitch::Type::ELF;
+  }
+  else if((image.size() % 8448) == 0 || image.size() == 6_KB)
+  {
+    if(image.size() == 6_KB && isProbablyGL(image))
       type = Bankswitch::Type::GL;
     else
       type = Bankswitch::Type::AR;
   }
-  else if((size <= 2_KB) ||
-          (size == 4_KB && std::memcmp(image.get(), image.get() + 2_KB, 2_KB) == 0))
+  else if((image.size() <= 2_KB) ||
+          (image.size() == 4_KB && std::memcmp(image.data(), image.data() + 2_KB, 2_KB) == 0))
   {
-    type = isProbablyCV(imageSpan) ? Bankswitch::Type::CV : Bankswitch::Type::_2K;
+    type = isProbablyCV(image) ? Bankswitch::Type::CV : Bankswitch::Type::_2K;
   }
-  else if(size == 4_KB)
+  else if(image.size() == 4_KB)
   {
-    if(     isProbablyCV(imageSpan))    type = Bankswitch::Type::CV;
-    else if(isProbably4KSC(imageSpan))  type = Bankswitch::Type::_4KSC;
-    else if(isProbablyFC(imageSpan))    type = Bankswitch::Type::FC;
-    else if(isProbablyGL(imageSpan))    type = Bankswitch::Type::GL;
-    else                                type = Bankswitch::Type::_4K;
+    if(     isProbablyCV(image))    type = Bankswitch::Type::CV;
+    else if(isProbably4KSC(image))  type = Bankswitch::Type::_4KSC;
+    else if(isProbablyFC(image))    type = Bankswitch::Type::FC;
+    else if(isProbablyGL(image))    type = Bankswitch::Type::GL;
+    else                            type = Bankswitch::Type::_4K;
   }
-  else if(size == 8_KB)
+  else if(image.size() == 8_KB)
   {
     // First check for *potential* F8
     static constexpr BSPF::array2D<uInt8, 2, 3> f8sig = {{
@@ -64,130 +62,130 @@ Bankswitch::Type CartDetector::autodetectType(const ByteBuffer& image, size_t si
       { 0x8D, 0xF9, 0xFF }   // STA $FFF9
     }};
     const bool f8 = std::ranges::any_of(f8sig, [&](const auto& sig) {
-      return searchForBytes(imageSpan, sig, 2);
+      return searchForBytes(image, sig, 2);
     });
 
-    if(     isProbablySC(imageSpan))        type = Bankswitch::Type::F8SC;
-    else if(std::memcmp(image.get(),
-        image.get() + 4_KB, 4_KB) == 0)     type = Bankswitch::Type::_4K;
-    else if(isProbablyE0(imageSpan))        type = Bankswitch::Type::E0;
-    else if(isProbably3EX(imageSpan))       type = Bankswitch::Type::_3EX;
-    else if(isProbably3E(imageSpan))        type = Bankswitch::Type::_3E;
-    else if(isProbably3F(imageSpan))        type = Bankswitch::Type::_3F;
-    else if(isProbablyUA(imageSpan))        type = Bankswitch::Type::UA;
-    else if(isProbably0FA0(imageSpan))      type = Bankswitch::Type::_0FA0;
-    else if(isProbablyFE(imageSpan) && !f8) type = Bankswitch::Type::FE;
-    else if(isProbably0840(imageSpan))      type = Bankswitch::Type::_0840;
-    else if(isProbablyE78K(imageSpan))      type = Bankswitch::Type::E7;
-    else if(isProbablyWD(imageSpan))        type = Bankswitch::Type::WD;
-    else if(isProbablyFC(imageSpan))        type = Bankswitch::Type::FC;
-    else if(isProbably03E0(imageSpan))      type = Bankswitch::Type::_03E0;
-    else                                    type = Bankswitch::Type::F8;
+    if(     isProbablySC(image))          type = Bankswitch::Type::F8SC;
+    else if(std::memcmp(image.data(),
+        image.data() + 4_KB, 4_KB) == 0)  type = Bankswitch::Type::_4K;
+    else if(isProbablyE0(image))          type = Bankswitch::Type::E0;
+    else if(isProbably3EX(image))         type = Bankswitch::Type::_3EX;
+    else if(isProbably3E(image))          type = Bankswitch::Type::_3E;
+    else if(isProbably3F(image))          type = Bankswitch::Type::_3F;
+    else if(isProbablyUA(image))          type = Bankswitch::Type::UA;
+    else if(isProbably0FA0(image))        type = Bankswitch::Type::_0FA0;
+    else if(isProbablyFE(image) && !f8)   type = Bankswitch::Type::FE;
+    else if(isProbably0840(image))        type = Bankswitch::Type::_0840;
+    else if(isProbablyE78K(image))        type = Bankswitch::Type::E7;
+    else if(isProbablyWD(image))          type = Bankswitch::Type::WD;
+    else if(isProbablyFC(image))          type = Bankswitch::Type::FC;
+    else if(isProbably03E0(image))        type = Bankswitch::Type::_03E0;
+    else                                  type = Bankswitch::Type::F8;
   }
-  else if(size == 8_KB + 3)  // 8195 bytes (Experimental)
+  else if(image.size() == 8_KB + 3)  // 8195 bytes (Experimental)
   {
     type = Bankswitch::Type::WDSW;
   }
-  else if(size >= 10_KB && size <= 10_KB + 256)  // ~10K - Pitfall2
+  else if(image.size() >= 10_KB && image.size() <= 10_KB + 256)  // ~10K - Pitfall2
   {
     type = Bankswitch::Type::DPC;
   }
-  else if(size == 12_KB)
+  else if(image.size() == 12_KB)
   {
-    if(isProbablyE7(imageSpan))  type = Bankswitch::Type::E7;
+    if(isProbablyE7(image))  type = Bankswitch::Type::E7;
     else                         type = Bankswitch::Type::FA;
   }
-  else if(size == 16_KB)
+  else if(image.size() == 16_KB)
   {
-    if(     isProbablySC(imageSpan))    type = Bankswitch::Type::F6SC;
-    else if(isProbablyE7(imageSpan))    type = Bankswitch::Type::E7;
-    else if(isProbablyFC(imageSpan))    type = Bankswitch::Type::FC;
-    else if(isProbably3EX(imageSpan))   type = Bankswitch::Type::_3EX;
-    else if(isProbably3E(imageSpan))    type = Bankswitch::Type::_3E;
+    if(     isProbablySC(image))    type = Bankswitch::Type::F6SC;
+    else if(isProbablyE7(image))    type = Bankswitch::Type::E7;
+    else if(isProbablyFC(image))    type = Bankswitch::Type::FC;
+    else if(isProbably3EX(image))   type = Bankswitch::Type::_3EX;
+    else if(isProbably3E(image))    type = Bankswitch::Type::_3E;
   /* no known 16K 3F ROMS
-    else if(isProbably3F(imageSpan))    type = Bankswitch::Type::3F;
+    else if(isProbably3F(image))    type = Bankswitch::Type::3F;
   */
-    else if(isProbablyJANE(imageSpan))  type = Bankswitch::Type::JANE;
-    else                                type = Bankswitch::Type::F6;
+    else if(isProbablyJANE(image))  type = Bankswitch::Type::JANE;
+    else                            type = Bankswitch::Type::F6;
   }
-  else if(size == 24_KB || size == 28_KB)
+  else if(image.size() == 24_KB || image.size() == 28_KB)
   {
     type = Bankswitch::Type::FA2;
   }
-  else if(size == 29_KB)
+  else if(image.size() == 29_KB)
   {
-    if(isProbablyARM(imageSpan))              type = Bankswitch::Type::FA2;
-    else /*if(isProbablyDPCplus(imageSpan))*/ type = Bankswitch::Type::DPCP;
+    if(isProbablyARM(image))              type = Bankswitch::Type::FA2;
+    else /*if(isProbablyDPCplus(image))*/ type = Bankswitch::Type::DPCP;
   }
-  else if(size == 32_KB)
+  else if(image.size() == 32_KB)
   {
-    if(     isProbablyCTY(imageSpan))      type = Bankswitch::Type::CTY;
-    else if(isProbablyCDF(imageSpan))      type = Bankswitch::Type::CDF;
-    else if(isProbablyDPCplus(imageSpan))  type = Bankswitch::Type::DPCP;
-    else if(isProbablySC(imageSpan))       type = Bankswitch::Type::F4SC;
-    else if(isProbably3EX(imageSpan))      type = Bankswitch::Type::_3EX;
-    else if(isProbably3E(imageSpan))       type = Bankswitch::Type::_3E;
-    else if(isProbably3F(imageSpan))       type = Bankswitch::Type::_3F;
-    else if(isProbablyBUS(imageSpan))      type = Bankswitch::Type::BUS;
-    else if(isProbablyFA2(imageSpan))      type = Bankswitch::Type::FA2;
-    else if(isProbablyFC(imageSpan))       type = Bankswitch::Type::FC;
-    else                                   type = Bankswitch::Type::F4;
+    if(     isProbablyCTY(image))      type = Bankswitch::Type::CTY;
+    else if(isProbablyCDF(image))      type = Bankswitch::Type::CDF;
+    else if(isProbablyDPCplus(image))  type = Bankswitch::Type::DPCP;
+    else if(isProbablySC(image))       type = Bankswitch::Type::F4SC;
+    else if(isProbably3EX(image))      type = Bankswitch::Type::_3EX;
+    else if(isProbably3E(image))       type = Bankswitch::Type::_3E;
+    else if(isProbably3F(image))       type = Bankswitch::Type::_3F;
+    else if(isProbablyBUS(image))      type = Bankswitch::Type::BUS;
+    else if(isProbablyFA2(image))      type = Bankswitch::Type::FA2;
+    else if(isProbablyFC(image))       type = Bankswitch::Type::FC;
+    else                               type = Bankswitch::Type::F4;
   }
-  else if(size == 60_KB)
+  else if(image.size() == 60_KB)
   {
-    if(isProbablyCTY(imageSpan))  type = Bankswitch::Type::CTY;
-    else                          type = Bankswitch::Type::F4;
+    if(isProbablyCTY(image))  type = Bankswitch::Type::CTY;
+    else                      type = Bankswitch::Type::F4;
   }
-  else if(size == 64_KB)
+  else if(image.size() == 64_KB)
   {
-    if(     isProbablyEFF(imageSpan))       type = Bankswitch::Type::EFF;
-    else if(isProbablyCDF(imageSpan))       type = Bankswitch::Type::CDF;
-    else if(isProbably3EX(imageSpan))       type = Bankswitch::Type::_3EX;
-    else if(isProbably3E(imageSpan))        type = Bankswitch::Type::_3E;
-    else if(isProbably3F(imageSpan))        type = Bankswitch::Type::_3F;
-    else if(isProbably4A50(imageSpan))      type = Bankswitch::Type::_4A50;
-    else if(isProbablyEF(imageSpan, type))  ; // type has been set directly in the function
-    else if(isProbablyX07(imageSpan))       type = Bankswitch::Type::X07;
-    else                                    type = Bankswitch::Type::F0;
+    if(     isProbablyEFF(image))       type = Bankswitch::Type::EFF;
+    else if(isProbablyCDF(image))       type = Bankswitch::Type::CDF;
+    else if(isProbably3EX(image))       type = Bankswitch::Type::_3EX;
+    else if(isProbably3E(image))        type = Bankswitch::Type::_3E;
+    else if(isProbably3F(image))        type = Bankswitch::Type::_3F;
+    else if(isProbably4A50(image))      type = Bankswitch::Type::_4A50;
+    else if(isProbablyEF(image, type))  ; // type has been set directly in the function
+    else if(isProbablyX07(image))       type = Bankswitch::Type::X07;
+    else                                type = Bankswitch::Type::F0;
   }
-  else if(size == 128_KB)
+  else if(image.size() == 128_KB)
   {
-    if(     isProbablyCDF(imageSpan))       type = Bankswitch::Type::CDF;
-    else if(isProbably3EX(imageSpan))       type = Bankswitch::Type::_3EX;
-    else if(isProbably3E(imageSpan))        type = Bankswitch::Type::_3E;
-    else if(isProbablyDF(imageSpan, type))  ; // type has been set directly in the function
-    else if(isProbably3F(imageSpan))        type = Bankswitch::Type::_3F;
-    else if(isProbably4A50(imageSpan))      type = Bankswitch::Type::_4A50;
-    else /*if(isProbablySB(imageSpan))*/    type = Bankswitch::Type::SB;
+    if(     isProbablyCDF(image))       type = Bankswitch::Type::CDF;
+    else if(isProbably3EX(image))       type = Bankswitch::Type::_3EX;
+    else if(isProbably3E(image))        type = Bankswitch::Type::_3E;
+    else if(isProbablyDF(image, type))  ; // type has been set directly in the function
+    else if(isProbably3F(image))        type = Bankswitch::Type::_3F;
+    else if(isProbably4A50(image))      type = Bankswitch::Type::_4A50;
+    else /*if(isProbablySB(image))*/    type = Bankswitch::Type::SB;
   }
-  else if(size == 256_KB)
+  else if(image.size() == 256_KB)
   {
-    if(     isProbablyCDF(imageSpan))       type = Bankswitch::Type::CDF;
-    else if(isProbably3EX(imageSpan))       type = Bankswitch::Type::_3EX;
-    else if(isProbably3E(imageSpan))        type = Bankswitch::Type::_3E;
-    else if(isProbablyBF(imageSpan, type))  ; // type has been set directly in the function
-    else if(isProbably3F(imageSpan))        type = Bankswitch::Type::_3F;
-    else /*if(isProbablySB(imageSpan))*/    type = Bankswitch::Type::SB;
+    if(     isProbablyCDF(image))       type = Bankswitch::Type::CDF;
+    else if(isProbably3EX(image))       type = Bankswitch::Type::_3EX;
+    else if(isProbably3E(image))        type = Bankswitch::Type::_3E;
+    else if(isProbablyBF(image, type))  ; // type has been set directly in the function
+    else if(isProbably3F(image))        type = Bankswitch::Type::_3F;
+    else /*if(isProbablySB(image))*/    type = Bankswitch::Type::SB;
   }
-  else if(size == 512_KB)
+  else if(image.size() == 512_KB)
   {
-    if(     isProbablyTVBoy(imageSpan))  type = Bankswitch::Type::TVBOY;
-    else if(isProbablyCDF(imageSpan))    type = Bankswitch::Type::CDF;
-    else if(isProbably3EX(imageSpan))    type = Bankswitch::Type::_3EX;
-    else if(isProbably3E(imageSpan))     type = Bankswitch::Type::_3E;
-    else if(isProbably3F(imageSpan))     type = Bankswitch::Type::_3F;
+    if(     isProbablyTVBoy(image))  type = Bankswitch::Type::TVBOY;
+    else if(isProbablyCDF(image))    type = Bankswitch::Type::CDF;
+    else if(isProbably3EX(image))    type = Bankswitch::Type::_3EX;
+    else if(isProbably3E(image))     type = Bankswitch::Type::_3E;
+    else if(isProbably3F(image))     type = Bankswitch::Type::_3F;
   }
   else  // what else can we do?
   {
-    if(     isProbably3EX(imageSpan))  type = Bankswitch::Type::_3EX;
-    else if(isProbably3E(imageSpan))   type = Bankswitch::Type::_3E;
-    else if(isProbably3F(imageSpan))   type = Bankswitch::Type::_3F;
+    if(     isProbably3EX(image))  type = Bankswitch::Type::_3EX;
+    else if(isProbably3E(image))   type = Bankswitch::Type::_3E;
+    else if(isProbably3F(image))   type = Bankswitch::Type::_3F;
   }
 
-  // Variable sized ROM formats are independent of image size and come last
-  if(     isProbably3EPlus(imageSpan))  type = Bankswitch::Type::_3EP;
-  else if(isProbablyMDM(imageSpan))     type = Bankswitch::Type::MDM;
-  else if(isProbablyMVC(imageSpan))     type = Bankswitch::Type::MVC;
+  // Variable image.size()d ROM formats are independent of image image.size() and come last
+  if(     isProbably3EPlus(image))  type = Bankswitch::Type::_3EP;
+  else if(isProbablyMDM(image))     type = Bankswitch::Type::MDM;
+  else if(isProbablyMVC(image))     type = Bankswitch::Type::MVC;
 
   // If we get here and autodetection failed, then we force '4K'
   if(type == Bankswitch::Type::AUTO)
@@ -774,9 +772,9 @@ bool CartDetector::isProbablyELF(ByteSpan image)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool CartDetector::isProbablyPlusROM(const ByteBuffer& image, size_t size)
+bool CartDetector::isProbablyPlusROM(ByteSpan image)
 {
   // PlusCart uses this pattern to detect a PlusROM
   static constexpr std::array<uInt8, 3> signature = { 0x8d, 0xf1, 0x1f };  // STA $1FF1
-  return searchForBytes({image.get(), size}, signature);
+  return searchForBytes(image, signature);
 }

@@ -18,10 +18,9 @@
 #include "CartF6.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CartridgeF6::CartridgeF6(const ByteBuffer& image, size_t size,
-                         string_view md5, const Settings& settings,
-                         size_t bsSize)
-  : CartridgeEnhanced(image, size, md5, settings, bsSize)
+CartridgeF6::CartridgeF6(ByteSpan image, string_view md5,
+                         const Settings& settings, size_t bsSize)
+  : CartridgeEnhanced(image, md5, settings, bsSize)
 {
 }
 

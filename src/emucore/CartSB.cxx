@@ -19,11 +19,10 @@
 #include "CartSB.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CartridgeSB::CartridgeSB(const ByteBuffer& image, size_t size,
-                         string_view md5, const Settings& settings,
-                         size_t bsSize)
-  : CartridgeEnhanced(image, size, md5, settings,
-                      bsSize == 0 ? BSPF::nextPowerOfTwo(size) : bsSize)
+CartridgeSB::CartridgeSB(ByteSpan image, string_view md5,
+                         const Settings& settings, size_t bsSize)
+  : CartridgeEnhanced(image, md5, settings,
+                      bsSize == 0 ? BSPF::nextPowerOfTwo(image.size()) : bsSize)
 {
 }
 

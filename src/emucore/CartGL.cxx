@@ -19,20 +19,19 @@
 #include "CartGL.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CartridgeGL::CartridgeGL(const ByteBuffer& image, size_t size,
-                         string_view md5, const Settings& settings,
-                         size_t bsSize)
-  : CartridgeEnhanced(image, size, md5, settings, bsSize)
+CartridgeGL::CartridgeGL(ByteSpan image, string_view md5,
+                         const Settings& settings, size_t bsSize)
+  : CartridgeEnhanced(image, md5, settings, bsSize)
 {
   myBankShift = myRamBankShift = BANK_SHIFT;
   myRamSize = RAM_SIZE;
   myRamBankCount = RAM_BANKS;
 
-  if(size == 4_KB + 2_KB) // ROM containing RAM data?
+  if(image.size() == 4_KB + 2_KB) // ROM containing RAM data?
   {
     myInitialRAM = std::make_unique<uInt8[]>(2_KB);
     // Copy the RAM image into a buffer for use in reset()
-    std::copy_n(image.get() + 4_KB, 2_KB, myInitialRAM.get());
+    std::copy_n(image.data() + 4_KB, 2_KB, myInitialRAM.get());
   }
 }
 

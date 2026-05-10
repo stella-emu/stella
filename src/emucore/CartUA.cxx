@@ -19,10 +19,9 @@
 #include "CartUA.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CartridgeUA::CartridgeUA(const ByteBuffer& image, size_t size,
-                         string_view md5, const Settings& settings,
-                         bool swapHotspots)
-  : CartridgeEnhanced(image, size, md5, settings, 8_KB),
+CartridgeUA::CartridgeUA(ByteSpan image, string_view md5,
+                         const Settings& settings, bool swapHotspots)
+  : CartridgeEnhanced(image, md5, settings, 8_KB),
     mySwappedHotspots{swapHotspots}
 {
 }

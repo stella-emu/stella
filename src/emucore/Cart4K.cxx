@@ -18,9 +18,8 @@
 #include "Cart4K.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Cartridge4K::Cartridge4K(const ByteBuffer& image, size_t size,
-                         string_view md5, const Settings& settings,
-                         size_t bsSize)
-  : CartridgeEnhanced(image, size, md5, settings, bsSize)
+Cartridge4K::Cartridge4K(ByteSpan image, string_view md5,
+                         const Settings& settings, size_t bsSize)
+  : CartridgeEnhanced(image, md5, settings, bsSize)
 {
 }

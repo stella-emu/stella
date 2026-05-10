@@ -41,13 +41,12 @@ class CartridgeDF : public CartridgeEnhanced
     /**
       Create a new cartridge using the specified image
 
-      @param image     Pointer to the ROM image
-      @param size      The size of the ROM image
+      @param image     Span of the ROM image
       @param md5       The md5sum of the ROM image
       @param settings  A reference to the various settings (read-only)
       @param bsSize    The size specified by the bankswitching scheme
     */
-    CartridgeDF(const ByteBuffer& image, size_t size, string_view md5,
+    CartridgeDF(ByteSpan image, string_view md5,
                 const Settings& settings, size_t bsSize = 128_KB);
     ~CartridgeDF() override = default;
 

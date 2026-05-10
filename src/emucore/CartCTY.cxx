@@ -22,13 +22,14 @@
 #include "CartCTY.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CartridgeCTY::CartridgeCTY(const ByteBuffer& image, size_t size,
-                           string_view md5, const Settings& settings)
+CartridgeCTY::CartridgeCTY(ByteSpan image, string_view md5,
+                           const Settings& settings)
   : Cartridge(settings, md5),
     myImage{std::make_unique<uInt8[]>(32_KB)}
 {
   // Copy the ROM image into my buffer
-  std::copy_n(image.get(), std::min(32_KB, size), myImage.get());
+  const size_t size = image.size();
+  std::copy_n(image.data(), std::min(32_KB, size), myImage.get());
   createRomAccessArrays(32_KB);
 
   // Default to no tune data in case user is utilizing an old ROM
@@ -36,7 +37,7 @@ CartridgeCTY::CartridgeCTY(const ByteBuffer& image, size_t size,
 
   // Extract tune data if it exists
   if(size > 32_KB)
-    std::copy_n(image.get() + 32_KB, size - 32_KB, myTuneData.begin());
+    std::copy_n(image.data() + 32_KB, size - 32_KB, myTuneData.begin());
 
   // Point to the first tune
   myFrequencyImage = myTuneData.data();
@@ -296,10 +297,9 @@ bool CartridgeCTY::patch(uInt16 address, uInt8 value)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const ByteBuffer& CartridgeCTY::getImage(size_t& size) const
+ByteSpan CartridgeCTY::getImage() const
 {
-  size = 32_KB;
-  return myImage;
+  return {myImage.get(), 32_KB};
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

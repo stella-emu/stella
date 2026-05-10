@@ -512,27 +512,25 @@ void StellaSettingsDialog::openHelp()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void StellaSettingsDialog::updateControllerStates()
 {
-  bool autoDetect = false;
-  ByteBuffer image;
+  ByteArray image;
   string md5 = myGameProperties.get(PropType::Cart_MD5);
-  size_t size = 0;
 
   // try to load the image for auto detection
   if(!instance().hasConsole())
   {
     const FSNode& node = FSNode(instance().launcher().selectedRom());
-
-    autoDetect = node.exists() && !node.isDirectory() && (image = instance().openROM(node, md5, size)) != nullptr;
+    if(node.exists() && !node.isDirectory())
+      image = instance().openROM(node, md5);
   }
+
   string label;
   Controller::Type type = Controller::getType(myLeftPort->getSelectedTag().toString());
-
   if(type == Controller::Type::Unknown)
   {
     if(instance().hasConsole())
       label = (instance().console().leftController().name()) + " detected";
-    else if(autoDetect)
-      label = ControllerDetector::detectName(image, size, type,
+    else if(!image.empty())
+      label = ControllerDetector::detectName(image, type,
                                              Controller::Jack::Left,
                                              instance().settings()) + " detected";
   }
@@ -540,13 +538,12 @@ void StellaSettingsDialog::updateControllerStates()
 
   label = "";
   type = Controller::getType(myRightPort->getSelectedTag().toString());
-
   if(type == Controller::Type::Unknown)
   {
     if(instance().hasConsole())
       label = (instance().console().rightController().name()) + " detected";
-    else if(autoDetect)
-      label = ControllerDetector::detectName(image, size, type,
+    else if(!image.empty())
+      label = ControllerDetector::detectName(image, type,
                                              Controller::Jack::Right,
                                              instance().settings()) + " detected";
   }
@@ -554,10 +551,8 @@ void StellaSettingsDialog::updateControllerStates()
 
   // Compumate bankswitching scheme doesn't allow to select controllers
   const bool enableSelectControl = myGameProperties.get(PropType::Cart_Type) != "CM";
-
   myLeftPortLabel->setEnabled(enableSelectControl);
   myRightPortLabel->setEnabled(enableSelectControl);
   myLeftPort->setEnabled(enableSelectControl);
   myRightPort->setEnabled(enableSelectControl);
 }
-

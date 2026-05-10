@@ -21,13 +21,13 @@
 #include "CartCM.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CartridgeCM::CartridgeCM(const ByteBuffer& image, size_t size,
-                         string_view md5, const Settings& settings)
+CartridgeCM::CartridgeCM(ByteSpan image, string_view md5,
+                         const Settings& settings)
   : Cartridge(settings, md5),
     myImage{std::make_unique<uInt8[]>(16_KB)}
 {
   // Copy the ROM image into my buffer
-  std::copy_n(image.get(), std::min(16_KB, size), myImage.get());
+  std::copy_n(image.data(), std::min(16_KB, image.size()), myImage.get());
   createRomAccessArrays(16_KB);
 }
 
@@ -188,10 +188,9 @@ bool CartridgeCM::patch(uInt16 address, uInt8 value)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const ByteBuffer& CartridgeCM::getImage(size_t& size) const
+ByteSpan CartridgeCM::getImage() const
 {
-  size = 16_KB;
-  return myImage;
+  return {myImage.get(), 16_KB};
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

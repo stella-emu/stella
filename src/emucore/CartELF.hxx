@@ -46,8 +46,7 @@ class CartridgeELF: public Cartridge {
     static constexpr uInt32 MIPS_DEF = 150;
 
   public:
-    CartridgeELF(const ByteBuffer& image, size_t size, string_view md5,
-                 const Settings& settings);
+    CartridgeELF(ByteSpan image, string_view md5, const Settings& settings);
     ~CartridgeELF() override = default;
 
   // Methods from Device
@@ -73,7 +72,7 @@ class CartridgeELF: public Cartridge {
 
     bool patch(uInt16 address, uInt8 value) override { return false; }
 
-    const ByteBuffer& getImage(size_t& size) const override;
+    ByteSpan getImage() const override;
 
     string name() const override { return "CartridgeELF"; }
 

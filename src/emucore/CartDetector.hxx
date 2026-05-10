@@ -34,12 +34,11 @@ class CartDetector
     /**
       Try to auto-detect the bankswitching type of the cartridge
 
-      @param image  A pointer to the ROM image
-      @param size   The size of the ROM image
+      @param image  A const span of the ROM image
 
       @return The "best guess" for the cartridge type
     */
-    static Bankswitch::Type autodetectType(const ByteBuffer& image, size_t size);
+    static Bankswitch::Type autodetectType(ByteSpan image);
 
     /**
       MVC cartridges are of arbitary large length
@@ -50,7 +49,7 @@ class CartDetector
     /**
       Returns true if the image is probably a HSC PlusROM
     */
-    static bool isProbablyPlusROM(const ByteBuffer& image, size_t size);
+    static bool isProbablyPlusROM(ByteSpan image);
 
   private:
     /**

@@ -31,9 +31,10 @@ Cartridge3FWidget::Cartridge3FWidget(
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string Cartridge3FWidget::description()
 {
-  size_t size = 0;
-  const ByteBuffer& image = myCart.getImage(size);
-  const uInt16 start = ((image[size-3] << 8) | image[size-4]) & ~0xFFF;
+  const ByteSpan image = myCart.getImage();
+  const auto* end = image.data() + image.size();
+  const uInt16 start = ((static_cast<uInt16>(end[-3]) << 8) |
+                            end[-4]) & ~uInt16{0xFFF};
 
   return std::format(
     "Tigervision 3F cartridge, 2 - 256 2K banks\n"

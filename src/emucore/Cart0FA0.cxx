@@ -19,9 +19,9 @@
 #include "Cart0FA0.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Cartridge0FA0::Cartridge0FA0(const ByteBuffer& image, size_t size,
-    string_view md5, const Settings& settings)
-  : CartridgeEnhanced(image, size, md5, settings, 8_KB)
+Cartridge0FA0::Cartridge0FA0(ByteSpan image, string_view md5,
+                             const Settings& settings)
+  : CartridgeEnhanced(image, md5, settings, 8_KB)
 {
 }
 

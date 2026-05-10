@@ -46,13 +46,14 @@ namespace {
 } // namespace
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CartridgeBUS::CartridgeBUS(const ByteBuffer& image, size_t size,
-                           string_view md5, const Settings& settings)
+CartridgeBUS::CartridgeBUS(ByteSpan image, string_view md5,
+                           const Settings& settings)
   : CartridgeARM(settings, md5),
     myImage{std::make_unique<uInt8[]>(32_KB)}
 {
   // Copy the ROM image into my buffer
-  std::copy_n(image.get(), std::min(32_KB, size), myImage.get());
+  const size_t size = image.size();
+  std::copy_n(image.data(), std::min(32_KB, size), myImage.get());
 
   // Detect cart version
   setupVersion();
@@ -118,7 +119,7 @@ CartridgeBUS::CartridgeBUS(const ByteBuffer& image, size_t size,
   myPlusROM = std::make_unique<PlusROM>(mySettings, *this);
 
   // Determine whether we have a PlusROM cart
-  myPlusROM->initialize(myImage, size);
+  myPlusROM->initialize(ByteSpan{myImage.get(), size});
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -835,10 +836,9 @@ bool CartridgeBUS::patch(uInt16 address, uInt8 value)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const ByteBuffer& CartridgeBUS::getImage(size_t& size) const
+ByteSpan CartridgeBUS::getImage() const
 {
-  size = 32_KB;
-  return myImage;
+  return {myImage.get(), 32_KB};
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -97,7 +97,6 @@ void RomInfoWidget::parseProperties(const FSNode& node, bool full)
   myRomInfo.push_back("Name: " + myProperties.get(PropType::Cart_Name));
 
   string value;
-
   if(value = myProperties.get(PropType::Cart_Manufacturer); !value.empty())
     myRomInfo.push_back("Manufacturer: " + value);
   if(value = myProperties.get(PropType::Cart_ModelNo); !value.empty())
@@ -118,25 +117,26 @@ void RomInfoWidget::parseProperties(const FSNode& node, bool full)
     const Controller::Type rightType = Controller::getType(right);
     string bsDetected = myProperties.get(PropType::Cart_Type);
     bool isPlusCart = false;
-    size_t size = 0;
+    ByteArray image;
+
     try
     {
       if(node.exists() && !node.isDirectory())
       {
         string md5;
-        if(const ByteBuffer image = instance().openROM(node, md5, size); image != nullptr)
+        image = instance().openROM(node, md5);
+        if(!image.empty())
         {
           Logger::debug(myProperties.get(PropType::Cart_Name) + ":");
-          left = ControllerDetector::detectName(image, size, leftType,
+          left = ControllerDetector::detectName(image, leftType,
             !swappedPorts ? Controller::Jack::Left : Controller::Jack::Right,
               instance().settings());
-          right = ControllerDetector::detectName(image, size, rightType,
+          right = ControllerDetector::detectName(image, rightType,
             !swappedPorts ? Controller::Jack::Right : Controller::Jack::Left,
               instance().settings());
           if(bsDetected == "AUTO")
-            bsDetected = Bankswitch::typeToName(CartDetector::autodetectType(image, size));
-
-          isPlusCart = CartDetector::isProbablyPlusROM(image, size);
+            bsDetected = Bankswitch::typeToName(CartDetector::autodetectType(image));
+          isPlusCart = CartDetector::isProbablyPlusROM(image);
         }
       }
     }
@@ -146,6 +146,7 @@ void RomInfoWidget::parseProperties(const FSNode& node, bool full)
       // failed for any reason
       left = right = "";
     }
+
     if(!left.empty() && !right.empty())
       myRomInfo.push_back("Controllers: " + (left + " (left), " + right + " (right)"));
 
@@ -155,6 +156,7 @@ void RomInfoWidget::parseProperties(const FSNode& node, bool full)
       string sizeSuffix;
       if(instance().settings().getBool("dev.settings"))
       {
+        const size_t size = image.size();
         sizeSuffix = size < 1_KB
           ? std::format(" - {}B", size)
           : std::format(" - {}K", std::lround(size / static_cast<float>(1_KB)));
@@ -164,6 +166,7 @@ void RomInfoWidget::parseProperties(const FSNode& node, bool full)
           isPlusCart ? " - PlusROM" : "",
           sizeSuffix));
     }
+
 #if defined(DEBUG_BUILD) && defined(IMAGE_SUPPORT)
     // Debug bezel properties:
     if(myProperties.get(PropType::Bezel_Name).empty())

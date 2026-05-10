@@ -69,6 +69,7 @@ class MD5
       @return   The message-digest
     */
     static string hash(const ByteBuffer& buffer, size_t length);
+    static string hash(ByteSpan buffer);
     static string hash(const uInt8* buffer, size_t length);
     static string hash(string_view buffer);
 

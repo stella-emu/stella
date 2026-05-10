@@ -103,9 +103,7 @@ class ZipHandler
 
     // Decompress the currently selected file and return its length
     // An exception will be thrown on any errors
-    // TODO: move to vector instead of allocating unique_ptr each time
-    //       will require changes to FSNode and friends
-    uInt64 decompress(string_view name, ByteBuffer& image);
+    uInt64 decompress(string_view name, ByteArray& image);
 
     // Give the first ROM file (with a valid extension) found
     std::optional<std::pair<string_view, size_t>> firstRom() const;

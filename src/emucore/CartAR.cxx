@@ -30,18 +30,18 @@ namespace {
 } // namespace
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CartridgeAR::CartridgeAR(const ByteBuffer& image, size_t size,
-                         string_view md5, const Settings& settings)
+CartridgeAR::CartridgeAR(ByteSpan image, string_view md5,
+                         const Settings& settings)
   : Cartridge(settings, md5),
-    mySize{std::max(size, LOAD_SIZE)},
+    mySize{std::max(image.size(), LOAD_SIZE)},
     myNumberOfLoadImages{static_cast<uInt8>(mySize / LOAD_SIZE)}
 {
   // Create a load image buffer and copy the given image
   myLoadImages = std::make_unique<uInt8[]>(mySize);
-  std::copy_n(image.get(), size, myLoadImages.get());
+  std::copy_n(image.data(), image.size(), myLoadImages.get());
 
   // Add header if image doesn't include it
-  if(size < LOAD_SIZE)
+  if(image.size() < LOAD_SIZE)
     std::copy_n(ourDefaultHeader.data(), ourDefaultHeader.size(),
                 myLoadImages.get() + myImage.size());
 
@@ -382,10 +382,9 @@ bool CartridgeAR::patch(uInt16 address, uInt8 value)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const ByteBuffer& CartridgeAR::getImage(size_t& size) const
+ByteSpan CartridgeAR::getImage() const
 {
-  size = mySize;
-  return myLoadImages;
+  return {myLoadImages.get(), mySize};
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

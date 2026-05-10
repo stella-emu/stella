@@ -18,10 +18,9 @@
 #include "CartEFSC.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CartridgeEFSC::CartridgeEFSC(const ByteBuffer& image, size_t size,
-                             string_view md5, const Settings& settings,
-                             size_t bsSize)
-  : CartridgeEF(image, size, md5, settings, bsSize)
+CartridgeEFSC::CartridgeEFSC(ByteSpan image, string_view md5,
+                             const Settings& settings, size_t bsSize)
+  : CartridgeEF(image, md5, settings, bsSize)
 {
   myRamSize = RAM_SIZE;
 }

@@ -72,11 +72,10 @@ CartDebug::CartDebug(Debugger& dbg, Console& console, const OSystem& osystem)
   // ROM sizes greater than 4096 indicate multi-bank ROMs, but we handle only
   // 4K pieces at a time
   // ROM sizes less than 4K use the actual value
-  size_t romSize = 0;
-  myConsole.cartridge().getImage(romSize);
+  auto image = myConsole.cartridge().getImage();
 
   BankInfo info;
-  info.size = std::min<size_t>(romSize, myConsole.cartridge().bankSize());
+  info.size = std::min<size_t>(image.size(), myConsole.cartridge().bankSize());
 
   for(uInt32 i = 0; i < myConsole.cartridge().romBankCount(); ++i)
     myBankInfo.push_back(info);

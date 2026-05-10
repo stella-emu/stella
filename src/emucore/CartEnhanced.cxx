@@ -21,15 +21,15 @@
 #include "CartEnhanced.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CartridgeEnhanced::CartridgeEnhanced(const ByteBuffer& image, size_t size,
-                                     string_view md5, const Settings& settings,
-                                     size_t bsSize)
+CartridgeEnhanced::CartridgeEnhanced(ByteSpan image, string_view md5,
+                                     const Settings& settings, size_t bsSize)
   : Cartridge(settings, md5)
 {
   // ROMs are not always at the 'legal' size for their associated
   // bankswitching scheme; here we deal with the differing sizes
 
   // Is the ROM too large?  If so, we cap it
+  const size_t size = image.size();
   if(size > bsSize)
     Logger::info(std::format("ROM larger than expected ({} > {}), truncating {} bytes\n",
       size, bsSize, size - bsSize));
@@ -46,12 +46,12 @@ CartridgeEnhanced::CartridgeEnhanced(const ByteBuffer& image, size_t size,
   // Directly copy the ROM image into the buffer
   // Only copy up to the amount of data the ROM provides; extra unused
   // space will be filled with 0's from above
-  std::copy_n(image.get(), std::min(mySize, size), myImage.get());
+  std::copy_n(image.data(), std::min(mySize, size), myImage.get());
 
   myPlusROM = std::make_unique<PlusROM>(mySettings, *this);
 
   // Determine whether we have a PlusROM cart
-  myPlusROM->initialize(myImage, mySize);
+  myPlusROM->initialize(ByteSpan{myImage.get(), mySize});
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -378,10 +378,9 @@ bool CartridgeEnhanced::patch(uInt16 address, uInt8 value)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const ByteBuffer& CartridgeEnhanced::getImage(size_t& size) const
+ByteSpan CartridgeEnhanced::getImage() const
 {
-  size = mySize;
-  return myImage;
+  return {myImage.get(), mySize};
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

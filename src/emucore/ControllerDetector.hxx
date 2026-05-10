@@ -42,7 +42,7 @@ class ControllerDetector
       @param isQuadTari  If true, try to detect the QuadTari's controllers
       @return   The detected controller type
     */
-    static Controller::Type detectType(const ByteBuffer& image, size_t size,
+    static Controller::Type detectType(ByteSpan image,
         Controller::Type type, Controller::Jack port,
         const Settings& settings, bool isQuadTari = false);
 
@@ -59,7 +59,7 @@ class ControllerDetector
 
       @return   The (detected) controller name
     */
-    static string detectName(const ByteBuffer& image, size_t size,
+    static string detectName(ByteSpan image,
         Controller::Type type, Controller::Jack port,
         const Settings& settings, bool isQuadTari = false);
 

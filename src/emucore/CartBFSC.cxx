@@ -18,10 +18,9 @@
 #include "CartBFSC.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CartridgeBFSC::CartridgeBFSC(const ByteBuffer& image, size_t size,
-                             string_view md5, const Settings& settings,
-                             size_t bsSize)
-  : CartridgeBF(image, size, md5, settings, bsSize)
+CartridgeBFSC::CartridgeBFSC(ByteSpan image, string_view md5,
+                             const Settings& settings, size_t bsSize)
+  : CartridgeBF(image, md5, settings, bsSize)
 {
   myRamSize = RAM_SIZE;
 }

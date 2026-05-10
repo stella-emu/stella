@@ -69,10 +69,9 @@ class CartridgeMVC : public Cartridge
     /**
       Access the internal ROM image for this cartridge.
 
-      @param size  Set to the size of the internal ROM image data
-      @return  A reference to the internal ROM image data
+      @return  A const span to the internal ROM image data
     */
-    const ByteBuffer& getImage(size_t& size) const override;
+    ByteSpan getImage() const override;
 
     /**
       Patch the cartridge ROM.

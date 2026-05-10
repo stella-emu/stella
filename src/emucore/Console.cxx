@@ -355,13 +355,10 @@ string Console::formatFromSignature() const
   static constexpr std::array<uInt8, 6> PAL60_v2 = { 'P', 'A', 'L', ' ', '6', '0' };
   static constexpr std::array<uInt8, 6> PAL60_v3 = { 'P', 'A', 'L', '-', '6', '0' };
 
-  size_t size = 0;
-  const ByteBuffer& image = myCart->getImage(size);
-  const ByteSpan imageSpan{image.get(), size};
-
-  if(BSPF::searchForBytes(imageSpan, PAL60_v1) ||
-     BSPF::searchForBytes(imageSpan, PAL60_v2) ||
-     BSPF::searchForBytes(imageSpan, PAL60_v3))
+  const ByteSpan image = myCart->getImage();
+  if(BSPF::searchForBytes(image, PAL60_v1) ||
+     BSPF::searchForBytes(image, PAL60_v2) ||
+     BSPF::searchForBytes(image, PAL60_v3))
     return "PAL60";
 
   // Nothing found
@@ -889,18 +886,17 @@ void Console::setControllers(string_view romMd5)
         Controller::getType(myProperties.get(PropType::Controller_Left));
     Controller::Type rightType =
         Controller::getType(myProperties.get(PropType::Controller_Right));
-    size_t size = 0;
-    const ByteBuffer& image = myCart->getImage(size);
     const bool swappedPorts =
         myProperties.get(PropType::Console_SwapPorts) == "YES";
 
     // Try to detect controllers
-    if(image != nullptr && size != 0)
+    const ByteSpan image = myCart->getImage();
+    if(!image.empty())
     {
       Logger::debug(myProperties.get(PropType::Cart_Name) + ":");
-      leftType = ControllerDetector::detectType(image, size, leftType,
+      leftType = ControllerDetector::detectType(image, leftType,
           !swappedPorts ? Controller::Jack::Left : Controller::Jack::Right, myOSystem.settings());
-      rightType = ControllerDetector::detectType(image, size, rightType,
+      rightType = ControllerDetector::detectType(image, rightType,
           !swappedPorts ? Controller::Jack::Right : Controller::Jack::Left, myOSystem.settings());
     }
 

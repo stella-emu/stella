@@ -19,16 +19,15 @@
 #include "Cart2K.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Cartridge2K::Cartridge2K(const ByteBuffer& image, size_t size,
-                         string_view md5, const Settings& settings,
-                         size_t bsSize)
-  : CartridgeEnhanced(image, size, md5, settings, bsSize)
+Cartridge2K::Cartridge2K(ByteSpan image, string_view md5,
+                         const Settings& settings, size_t bsSize)
+  : CartridgeEnhanced(image, md5, settings, bsSize)
 {
   // When creating a 2K cart, we always initially create a buffer of size 2_KB
   // Sometimes we only use a portion of that buffer; we check for that now
 
   // Size can be a maximum of 2K
-  size = std::min(size, bsSize);
+  const size_t size = std::min(image.size(), bsSize);
 
   // Set image size to closest power-of-two for the given size
   mySize = 1; myBankShift = 0;
@@ -44,7 +43,7 @@ Cartridge2K::Cartridge2K(const ByteBuffer& image, size_t size,
   {
     // Manually 'mirror' the ROM image into the buffer
     for(size_t i = 0; i < System::PAGE_SIZE; i += mySize)
-      std::copy_n(image.get(), mySize, myImage.get() + i);
+      std::copy_n(image.data(), mySize, myImage.get() + i);
     mySize = System::PAGE_SIZE;
     myBankShift = System::PAGE_SHIFT;
   }

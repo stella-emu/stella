@@ -20,11 +20,10 @@
 #include "Cart3EPlus.hxx"
 
 //  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Cartridge3EPlus::Cartridge3EPlus(const ByteBuffer& image, size_t size,
-                                 string_view md5, const Settings& settings,
-                                 size_t bsSize)
-  : Cartridge3E(image, size, md5, settings,
-                bsSize == 0 ? std::max(4_KB, BSPF::nextMultipleOf(size, 1_KB)) : bsSize)
+Cartridge3EPlus::Cartridge3EPlus(ByteSpan image, string_view md5,
+                                 const Settings& settings, size_t bsSize)
+  : Cartridge3E(image, md5, settings, bsSize == 0 ?
+                std::max(4_KB, BSPF::nextMultipleOf(image.size(), 1_KB)) : bsSize)
 {
   myBankShift = BANK_SHIFT;
   myRamSize = RAM_SIZE;

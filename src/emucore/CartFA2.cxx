@@ -19,14 +19,13 @@
 #include "CartFA2.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CartridgeFA2::CartridgeFA2(const ByteBuffer& image, size_t size,
-                           string_view md5, const Settings& settings,
-                           size_t bsSize)
-  : CartridgeFA(image, size, md5, settings, bsSize)
+CartridgeFA2::CartridgeFA2(ByteSpan image, string_view md5,
+                           const Settings& settings, size_t bsSize)
+  : CartridgeFA(image, md5, settings, bsSize)
 {
   // 29/32K version of FA2 has valid data @ 1K - 29K
-  const uInt8* img_ptr = image.get();
-  if(size >= 29_KB)
+  const uInt8* img_ptr = image.data();
+  if(image.size() >= 29_KB)
   {
     img_ptr += 1_KB;
     mySize = 28_KB;

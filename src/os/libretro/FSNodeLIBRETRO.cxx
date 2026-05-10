@@ -92,14 +92,15 @@ AbstractFSNodePtr FSNodeLIBRETRO::getParent() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-size_t FSNodeLIBRETRO::read(ByteBuffer& image, size_t) const
+size_t FSNodeLIBRETRO::read(ByteArray& image, size_t) const
 {
-  image = std::make_unique<uInt8[]>(Cartridge::maxSize());
+  image.resize(Cartridge::maxSize());
 
   extern uInt32 libretro_read_rom(void* data);
-  return libretro_read_rom(image.get());
+  return libretro_read_rom(image.data());
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 size_t FSNodeLIBRETRO::read(std::stringstream& buffer) const
 {
   extern uInt32 libretro_get_rom_size(void);

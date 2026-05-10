@@ -31,11 +31,12 @@ Cartridge3EWidget::Cartridge3EWidget(
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string Cartridge3EWidget::description()
 {
-  size_t size{0};
-  const ByteBuffer& image = myCart.getImage(size);
+  const ByteSpan image = myCart.getImage();
   const uInt16 numRomBanks = myCart.romBankCount();
   const uInt16 numRamBanks = myCart.ramBankCount();
-  const uInt16 start = ((image[size-3] << 8) | image[size-4]) & ~0xFFF;
+  const auto* end = image.data() + image.size();
+  const uInt16 start = ((static_cast<uInt16>(end[-3]) << 8) |
+                                             end[-4]) & ~uInt16{0xFFF};
 
   const string startupLine = myCart.startBank() < numRomBanks
     ? std::format("Startup bank = {} (ROM)\n", myCart.startBank())

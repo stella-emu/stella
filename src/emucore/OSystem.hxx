@@ -342,11 +342,10 @@ class OSystem
       @param rom    The file node of the ROM to open (contains path)
       @param md5    The md5 calculated from the ROM file
                     (will be recalculated if necessary)
-      @param size   The amount of data read into the image array
 
       @return  Unique pointer to the array
     */
-    ByteBuffer openROM(const FSNode& rom, string& md5, size_t& size);
+    ByteArray openROM(const FSNode& rom, string& md5);
 
     /**
       Open the given ROM and return the MD5sum of the data.
@@ -635,14 +634,12 @@ class OSystem
       This method takes care of using only a valid size for the
 
       @param romfile  The file node of the ROM to open (contains path)
-      @param size     The amount of data read into the image array
       @param showErrorMessage  Whether to show (or ignore) any errors
                                when opening the ROM
 
       @return  Unique pointer to the array, otherwise nullptr
     */
-    static ByteBuffer openROM(const FSNode& romfile, size_t& size,
-                              bool showErrorMessage);
+    static ByteArray openROM(const FSNode& romfile, bool showErrorMessage);
 
     /**
       Creates an actual Console object based on the given info.

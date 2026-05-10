@@ -222,15 +222,15 @@ namespace {
 }  // namespace
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CartridgeELF::CartridgeELF(const ByteBuffer& image, size_t size, string_view md5,
+CartridgeELF::CartridgeELF(ByteSpan image, string_view md5,
                            const Settings& settings)
   : Cartridge(settings, md5),
-    myImageSize{size},
+    myImageSize{image.size()},
     myTransactionQueue{TRANSACTION_QUEUE_CAPACITY},
     myVcsLib{myTransactionQueue}
 {
-  myImage = std::make_unique<uInt8[]>(size);
-  std::copy_n(image.get(), size, myImage.get());
+  myImage = std::make_unique<uInt8[]>(image.size());
+  std::copy_n(image.data(), image.size(), myImage.get());
 
   myLastPeekResult = std::make_unique<uInt8[]>(0x1000);
   std::fill_n(myLastPeekResult.get(), 0x1000, 0);
@@ -352,10 +352,9 @@ void CartridgeELF::consoleChanged(ConsoleTiming timing)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const ByteBuffer& CartridgeELF::getImage(size_t& size) const
+ByteSpan CartridgeELF::getImage() const
 {
-  size = myImageSize;
-  return myImage;
+  return {myImage.get(), myImageSize};
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

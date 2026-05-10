@@ -304,10 +304,9 @@ class Cartridge : public Device
     /**
       Access the internal ROM image for this cartridge.
 
-      @param size  Set to the size of the internal ROM image data
-      @return  A reference to the internal ROM image data
+      @return  A const span of the internal ROM image data
     */
-    virtual const ByteBuffer& getImage(size_t& size) const = 0;
+    virtual ByteSpan getImage() const = 0;
 
     /**
       Get a descriptor for the cart name.

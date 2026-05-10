@@ -363,6 +363,51 @@ size_t FSNode::read(ByteBuffer& buffer, size_t size) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+size_t FSNode::read(ByteArray& buffer, size_t size) const
+{
+  // File must actually exist
+  if(!(exists() && isReadable()))
+    throw std::runtime_error("File not found/readable");
+
+  // First let the private subclass attempt to open the file
+  if(_realNode)
+    if(const auto sizeRead = _realNode->read(buffer, size); sizeRead > 0)
+      return sizeRead;
+
+  // Otherwise, the default behaviour is to read from a normal C++ ifstream
+  auto in = openIFStream(std::ios::binary);
+  if(!in)
+    throw std::runtime_error("File open/read error");
+
+  // Guard against seek failures
+  in.seekg(0, std::ios::end);
+  if(!in)
+    throw std::runtime_error("File seek error");
+
+  const std::streampos fileSize = in.tellg();
+  if(fileSize <= 0)
+    throw std::runtime_error("Zero-byte file");
+
+  in.seekg(0, std::ios::beg);
+  if(!in)
+    throw std::runtime_error("File seek error");
+
+  // If a requested size to read is provided (size > 0), honour it
+  const auto sizeRead = (size > 0)
+    ? std::min(static_cast<size_t>(fileSize), size)
+    : static_cast<size_t>(fileSize);
+
+  buffer.resize(sizeRead);
+  in.read(reinterpret_cast<char*>(buffer.data()),
+          static_cast<std::streamsize>(sizeRead));
+
+  if(!in)
+    throw std::runtime_error("File read error");
+
+  return static_cast<size_t>(in.gcount());
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 size_t FSNode::read(std::stringstream& buffer) const
 {
   // File must actually exist
@@ -426,6 +471,27 @@ size_t FSNode::write(const ByteBuffer& buffer, size_t size) const
     throw std::runtime_error("File open error");
 
   return sizeWritten;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+size_t FSNode::write(ByteSpan buffer) const
+{
+  // First let the private subclass attempt to open the file
+  if(_realNode)
+    if(size_t sizeWritten = _realNode->write(buffer); sizeWritten > 0)
+      return sizeWritten;
+
+  // Otherwise, the default behaviour is to write to a normal C++ ofstream
+  auto out = openOFStream(std::ios::binary);
+  if(!out)
+    throw std::runtime_error("File open error");
+
+  out.write(reinterpret_cast<const char*>(buffer.data()),
+            static_cast<std::streamsize>(buffer.size()));
+  if(!out)
+    throw std::runtime_error("File write error");
+
+  return buffer.size();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

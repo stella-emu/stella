@@ -653,8 +653,7 @@ unique_ptr<Console> OSystem::openConsole(const FSNode& romfile, string& md5)
   unique_ptr<Console> console;
 
   // Open the cartridge image and read it in
-  size_t size = 0;
-  if(const ByteBuffer image = openROM(romfile, md5, size); image != nullptr)
+  if(ByteArray image = openROM(romfile, md5); !image.empty())
   {
     // Get a valid set of properties, including any entered on the commandline
     // For initial creation of the Cart, we're only concerned with the BS type
@@ -684,7 +683,7 @@ unique_ptr<Console> OSystem::openConsole(const FSNode& romfile, string& md5)
     };
 
     unique_ptr<Cartridge> cart =
-      CartCreator::create(romfile, image, size, cartmd5, type, *mySettings);
+      CartCreator::create(romfile, image, cartmd5, type, *mySettings);
     cart->setMessageCallback(callback);
 
     // Some properties may not have a name set; we can't leave it blank
@@ -760,41 +759,38 @@ void OSystem::closeConsole()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-ByteBuffer OSystem::openROM(const FSNode& rom, string& md5, size_t& size)
+ByteArray OSystem::openROM(const FSNode& rom, string& md5)
 {
   // This method has a documented side-effect:
   // It not only loads a ROM and creates an array with its contents,
   // but also adds a properties entry if the one for the ROM doesn't
   // contain a valid name
 
-  ByteBuffer image = openROM(rom, size, true);  // handle error message here
-  if(image)
+  ByteArray image = openROM(rom, true);  // handle error message here
+  if(!image.empty())
   {
     // If we get to this point, we know we have a valid file to open
     // Now we make sure that the file has a valid properties entry
     // To save time, only generate an MD5 if we really need one
     if(md5.empty())
-      md5 = MD5::hash(image, size);
+      md5 = MD5::hash(image);
 
     // Make sure to load a per-ROM properties entry, if one exists
     myPropSet->loadPerROM(rom, md5);
   }
-
   return image;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string OSystem::getROMMD5(const FSNode& rom)
 {
-  size_t size = 0;
-  const ByteBuffer image = openROM(rom, size, false);  // ignore error message
+  const ByteArray image = openROM(rom, false);  // ignore error message
 
-  return image ? MD5::hash(image, size) : string{};
+  return image.empty() ? string{} : MD5::hash(image);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-ByteBuffer OSystem::openROM(const FSNode& rom, size_t& size,
-                            bool showErrorMessage)
+ByteArray OSystem::openROM(const FSNode& rom, bool showErrorMessage)
 {
   // First check if this is a valid ROM filename
   const bool isValidROM = rom.isFile() && Bankswitch::isValidRomName(rom);
@@ -805,7 +801,7 @@ ByteBuffer OSystem::openROM(const FSNode& rom, size_t& size,
   // Streaming ROMs read only a portion of the file
   // Otherwise the size to read is 0 (meaning read the entire file)
   const size_t sizeToRead = CartDetector::isProbablyMVC(rom);  // TODO: optimize this
-  const bool isStreaming = sizeToRead > 0;
+  const bool isStreaming  = sizeToRead > 0;
 
   // Make sure we only read up to the maximum supported cart size
   const bool isValidSize = isValidROM && (isStreaming ||
@@ -815,22 +811,21 @@ ByteBuffer OSystem::openROM(const FSNode& rom, size_t& size,
     if(showErrorMessage)
       throw std::runtime_error("ROM file too large");
     else
-      return nullptr;
+      return {};
   }
 
   // Now we can try to open the file
-  ByteBuffer image;
+  ByteArray image;
   try
   {
-    if(size = rom.read(image, sizeToRead); size == 0)
-      return nullptr;
+    if(rom.read(image, sizeToRead) == 0)
+      return {};
   }
   catch(const std::runtime_error&)
   {
     if(showErrorMessage)  // If caller wants error messages, pass it back
       throw;
   }
-
   return image;
 }
 

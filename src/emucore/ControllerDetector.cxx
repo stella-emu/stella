@@ -24,17 +24,13 @@ using BSPF::searchForBytes;
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Controller::Type ControllerDetector::detectType(
-    const ByteBuffer& image, size_t size,
-    Controller::Type type, Controller::Jack port,
+    ByteSpan image, Controller::Type type, Controller::Jack port,
     const Settings& settings, bool isQuadTari)
 {
-  // Single span construction point for the entire class
-  const ByteSpan imageSpan{image.get(), size};
-
   if(type == Controller::Type::Unknown || settings.getBool("rominfo"))
   {
     const Controller::Type detectedType
-      = autodetectPort(imageSpan, port, settings, isQuadTari);
+      = autodetectPort(image, port, settings, isQuadTari);
 
     if(type != Controller::Type::Unknown && type != detectedType)
     {
@@ -50,11 +46,11 @@ Controller::Type ControllerDetector::detectType(
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string ControllerDetector::detectName(const ByteBuffer& image, size_t size,
+string ControllerDetector::detectName(ByteSpan image,
     Controller::Type type, Controller::Jack port,
     const Settings& settings, bool isQuadTari)
 {
-  return Controller::getName(detectType(image, size, type, port, settings, isQuadTari));
+  return Controller::getName(detectType(image, type, port, settings, isQuadTari));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

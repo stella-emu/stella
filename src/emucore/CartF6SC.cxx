@@ -18,10 +18,9 @@
 #include "CartF6SC.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CartridgeF6SC::CartridgeF6SC(const ByteBuffer& image, size_t size,
-                             string_view md5, const Settings& settings,
-                             size_t bsSize)
-  : CartridgeF6(image, size, md5, settings, bsSize)
+CartridgeF6SC::CartridgeF6SC(ByteSpan image, string_view md5,
+                             const Settings& settings, size_t bsSize)
+  : CartridgeF6(image, md5, settings, bsSize)
 {
   myRamSize = RAM_SIZE;
   myRamMask = RAM_SIZE - 1;

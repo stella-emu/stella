@@ -21,10 +21,9 @@
 #include "CartX07.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CartridgeX07::CartridgeX07(const ByteBuffer& image, size_t size,
-                           string_view md5, const Settings& settings,
-                           size_t bsSize)
-  : CartridgeEnhanced(image, size, md5, settings, bsSize)
+CartridgeX07::CartridgeX07(ByteSpan image, string_view md5,
+                           const Settings& settings, size_t bsSize)
+  : CartridgeEnhanced(image, md5, settings, bsSize)
 {
 }
 

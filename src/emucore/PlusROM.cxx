@@ -191,9 +191,11 @@ PlusROM::PlusROM(const Settings& settings, const Cartridge& cart)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool PlusROM::initialize(const ByteBuffer& image, size_t size)
+bool PlusROM::initialize(ByteSpan image)
 {
 #ifdef HTTP_LIB_SUPPORT
+  const size_t size = image.size();
+
   // Host and path are stored at the NMI vector
   size_t i = ((image[size - 5] - 16) << 8) | image[size - 6];  // NMI @ $FFFA
   if(i >= size)
@@ -225,7 +227,7 @@ bool PlusROM::initialize(const ByteBuffer& image, size_t size)
   reset();
 
   myIsEnabled = mySettings.getBool("dev.settings") ? mySettings.getBool("dev.plusroms.on") : true;
-  return myIsPlusROM = CartDetector::isProbablyPlusROM(image, size);
+  return myIsPlusROM = CartDetector::isProbablyPlusROM(image);
 #else
   return myIsPlusROM = false;
 #endif

@@ -151,24 +151,21 @@ void QuadTariDialog::loadControllerProperties(const Properties& props)
   }
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void QuadTariDialog::defineController(const Properties& props, PropType key,
   Controller::Jack jack, PopUpWidget* popupWidget, StaticTextWidget* labelWidget, bool first)
 {
-  bool autoDetect = false;
-  ByteBuffer image;
-  size_t size = 0;
-
+  ByteArray image;
   const string& controllerName = props.get(key);
   popupWidget->setSelected(controllerName, "AUTO");
 
-  // try to load the image for auto detection
+  // Try to load the image for auto detection
   if(!instance().hasConsole())
   {
     const FSNode& node = FSNode(instance().launcher().selectedRom());
     string md5 = myGameProperties.get(PropType::Cart_MD5);
-
-    autoDetect = node.exists() && !node.isDirectory()
-      && (image = instance().openROM(node, md5, size)) != nullptr;
+    if(node.exists() && !node.isDirectory())
+      image = instance().openROM(node, md5);
   }
   string label;
   const Controller::Type type = Controller::getType(popupWidget->getSelectedTag().toString());
@@ -180,7 +177,6 @@ void QuadTariDialog::defineController(const Properties& props, PropType key,
       const Controller& controller = (jack == Controller::Jack::Left
         ? instance().console().leftController()
         : instance().console().rightController());
-
       if(BSPF::startsWithIgnoreCase(controller.name(), "QT"))
       {
         const auto& qt = static_cast<const QuadTari&>(controller);
@@ -192,9 +188,9 @@ void QuadTariDialog::defineController(const Properties& props, PropType key,
       else
         label = "nothing detected";
     }
-    else if(autoDetect)
+    else if(!image.empty())
       label = ControllerDetector::detectName(
-        image, size, type, jack, instance().settings(), true) + " detected";
+        image, type, jack, instance().settings(), true) + " detected";
   }
   labelWidget->setLabel(label);
 }

@@ -760,14 +760,12 @@ void GameInfoDialog::loadEmulationProperties(const Properties& props)
     else
     {
       string md5 = props.get(PropType::Cart_MD5);
-      size_t size = 0;
 
       // Try to load the image for auto detection
       if(myGameFile.exists() && !myGameFile.isDirectory())
-        if(const ByteBuffer image = instance().openROM(myGameFile, md5, size);
-           image != nullptr)
+        if(ByteArray image = instance().openROM(myGameFile, md5); !image.empty())
           bsDetected = std::format("{} detected",
-              Bankswitch::typeToDesc(CartDetector::autodetectType(image, size)));
+              Bankswitch::typeToDesc(CartDetector::autodetectType(image)));
     }
   }
   myTypeDetected->setLabel(bsDetected);
@@ -1216,17 +1214,16 @@ void GameInfoDialog::updateBSTypes()
 void GameInfoDialog::updateControllerStates()
 {
   const bool swapPorts = mySwapPorts->getState();
-  bool autoDetect = false;
-  ByteBuffer image;
+  ByteArray image;
   string md5 = myGameProperties.get(PropType::Cart_MD5);
-  size_t size = 0;
 
   // try to load the image for auto detection
   if(!instance().hasConsole())
   {
     const FSNode& node = FSNode(instance().launcher().selectedRom());
 
-    autoDetect = node.exists() && !node.isDirectory() && (image = instance().openROM(node, md5, size)) != nullptr;
+    if(node.exists() && !node.isDirectory())
+      image = instance().openROM(node, md5);
   }
   string label;
   Controller::Type type = Controller::getType(myLeftPort->getSelectedTag().toString());
@@ -1240,8 +1237,8 @@ void GameInfoDialog::updateControllerStates()
       if(BSPF::startsWithIgnoreCase(label, "QT"))
         label = "QuadTari detected"; // remove plugged-in controller names
     }
-    else if(autoDetect)
-      label = ControllerDetector::detectName(image, size, type,
+    else if(!image.empty())
+      label = ControllerDetector::detectName(image, type,
                                              !swapPorts ? Controller::Jack::Left : Controller::Jack::Right,
                                              instance().settings()) + " detected";
   }
@@ -1259,8 +1256,8 @@ void GameInfoDialog::updateControllerStates()
       if(BSPF::startsWithIgnoreCase(label, "QT"))
         label = "QuadTari detected"; // remove plugged-in controller names
     }
-    else if(autoDetect)
-      label = ControllerDetector::detectName(image, size, type,
+    else if(!image.empty())
+      label = ControllerDetector::detectName(image, type,
                                              !swapPorts ? Controller::Jack::Right : Controller::Jack::Left,
                                              instance().settings()) + " detected";
   }

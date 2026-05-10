@@ -229,7 +229,7 @@ bool FSNodeZIP::getChildren(AbstractFSList& myList, ListMode) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-size_t FSNodeZIP::read(ByteBuffer& buffer, size_t) const
+size_t FSNodeZIP::read(ByteArray& buffer, size_t) const
 {
   zipHandler()->open(_zipFile);
   return zipHandler()->decompress(_virtualPath, buffer);
@@ -240,10 +240,10 @@ size_t FSNodeZIP::read(std::stringstream& buffer) const
 {
   // For now, we just read into a buffer and store in the stream
   // TODO: maybe there's a more efficient way to do this?
-  ByteBuffer read_buf;
+  ByteArray read_buf;
   const size_t size = read(read_buf, 0);
   if(size > 0)
-    buffer.write(reinterpret_cast<char*>(read_buf.get()), size);
+    buffer.write(reinterpret_cast<const char*>(read_buf.data()), size);
 
   return size;
 }

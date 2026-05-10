@@ -19,22 +19,22 @@
 #include "CartE7.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CartridgeE7::CartridgeE7(const ByteBuffer& image, size_t size,
-                         string_view md5, const Settings& settings)
+CartridgeE7::CartridgeE7(ByteSpan image, string_view md5,
+                         const Settings& settings)
   : Cartridge(settings, md5),
-    mySize{size}
+    mySize{image.size()}
 {
-  initialize(image, size);
+  initialize(image);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgeE7::initialize(const ByteBuffer& image, size_t size)
+void CartridgeE7::initialize(ByteSpan image)
 {
   // Allocate array for the ROM image
-  myImage = std::make_unique<uInt8[]>(size);
+  myImage = std::make_unique<uInt8[]>(image.size());
 
   // Copy the ROM image into my buffer
-  std::copy_n(image.get(), std::min<size_t>(romSize(), size), myImage.get());
+  std::copy_n(image.data(), std::min<size_t>(romSize(), image.size()), myImage.get());
   createRomAccessArrays(romSize() + myRAM.size());
 
   myRAM.fill(0xFF);
@@ -45,7 +45,7 @@ void CartridgeE7::initialize(const ByteBuffer& image, size_t size)
   myPlusROM = std::make_unique<PlusROM>(mySettings, *this);
 
   // Determine whether we have a PlusROM cart
-  myPlusROM->initialize(myImage, mySize);
+  myPlusROM->initialize(ByteSpan{myImage.get(), mySize});
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -322,10 +322,9 @@ bool CartridgeE7::patch(uInt16 address, uInt8 value)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const ByteBuffer& CartridgeE7::getImage(size_t& size) const
+ByteSpan CartridgeE7::getImage() const
 {
-  size = romBankCount() * BANK_SIZE;
-  return myImage;
+  return {myImage.get(), romBankCount() * BANK_SIZE};
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

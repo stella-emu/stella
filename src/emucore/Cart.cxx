@@ -61,14 +61,13 @@ bool Cartridge::saveROM(const FSNode& out) const
 {
   try
   {
-    size_t size = 0;
-    const ByteBuffer& image = getImage(size);
-    if(size == 0)
+    const ByteSpan image = getImage();
+    if(image.empty())
     {
       cerr << "save not supported\n";
       return false;
     }
-    out.write(image, size);
+    out.write(image);
   }
   catch(...)
   {
@@ -89,11 +88,8 @@ bool Cartridge::bankChanged()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt16 Cartridge::bankSize(uInt16 bank) const
 {
-  size_t size{0};
-  getImage(size);
-
   return static_cast<uInt16>(
-     std::min(size / romBankCount(), 4_KB)); // assuming that each bank has the same size
+    std::min(getImage().size() / romBankCount(), 4_KB)); // assuming that each bank has the same size
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

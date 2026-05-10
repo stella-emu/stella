@@ -77,13 +77,11 @@ class CartridgeCDF : public CartridgeARM
     /**
       Create a new cartridge using the specified image
 
-      @param image     Pointer to the ROM image
-      @param size      The size of the ROM image
+      @param image     Span of the ROM image
       @param md5       The md5sum of the ROM image
       @param settings  A reference to the various settings (read-only)
     */
-    CartridgeCDF(const ByteBuffer& image, size_t size, string_view md5,
-                 const Settings& settings);
+    CartridgeCDF(ByteSpan image, string_view md5, const Settings& settings);
     ~CartridgeCDF() override = default;
 
     /**
@@ -133,10 +131,9 @@ class CartridgeCDF : public CartridgeARM
     /**
       Access the internal ROM image for this cartridge.
 
-      @param size  Set to the size of the internal ROM image data
-      @return  A reference to the internal ROM image data
+      @return  A const span to the internal ROM image data
     */
-    const ByteBuffer& getImage(size_t& size) const override;
+    ByteSpan getImage() const override;
 
     /**
       Save the current state of this cart to the given Serializer.

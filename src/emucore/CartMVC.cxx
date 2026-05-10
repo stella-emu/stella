@@ -1671,11 +1671,10 @@ void CartridgeMVC::consoleChanged(ConsoleTiming timing)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const ByteBuffer& CartridgeMVC::getImage(size_t& size) const
+ByteSpan CartridgeMVC::getImage() const
 {
   // not used
-  size = mySize;
-  return myImage;
+  return {myImage.get(), mySize};
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

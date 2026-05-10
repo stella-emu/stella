@@ -25,17 +25,17 @@
 #include "exception/FatalEmulationError.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CartridgeDPCPlus::CartridgeDPCPlus(const ByteBuffer& image, size_t size,
-                                   string_view md5, const Settings& settings)
+CartridgeDPCPlus::CartridgeDPCPlus(ByteSpan image, string_view md5,
+                                   const Settings& settings)
   : CartridgeARM(settings, md5),
     myImage{std::make_unique<uInt8[]>(32_KB)},
-    mySize{std::min(size, 32_KB)}
+    mySize{std::min(image.size(), 32_KB)}
 {
   // Image is always 32K, but in the case of ROM < 32K, the image is
   // copied to the end of the buffer
   if(mySize < 32_KB)
     std::fill_n(myImage.get(), mySize, 0);
-  std::copy_n(image.get(), size, myImage.get() + (32_KB - mySize));
+  std::copy_n(image.data(), image.size(), myImage.get() + (32_KB - mySize));
   createRomAccessArrays(24_KB);
 
   // Pointer to the program ROM (24K @ 3K offset; ignore first 3K)
@@ -73,7 +73,7 @@ CartridgeDPCPlus::CartridgeDPCPlus(const ByteBuffer& image, size_t size,
   //
   // The default mask for DFxFRACLOW implements the Jitter behavior. This
   // changes the mask to implement the Stable behavior.
-  myDriverMD5 = MD5::hash(image, 3_KB);
+  myDriverMD5 = MD5::hash(ByteSpan{image.data(), 3_KB});
   if(myDriverMD5 == "5f80b5a5adbe483addc3f6e6f1b472f8" ||
      myDriverMD5 == "8dd73b44fd11c488326ce507cbeb19d1" )
     myFractionalLowMask = 0x0F0000;
@@ -83,7 +83,7 @@ CartridgeDPCPlus::CartridgeDPCPlus(const ByteBuffer& image, size_t size,
   myPlusROM = std::make_unique<PlusROM>(mySettings, *this);
 
   // Determine whether we have a PlusROM cart
-  myPlusROM->initialize(myImage, mySize);
+  myPlusROM->initialize(ByteSpan{myImage.get(), mySize});
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -662,10 +662,9 @@ bool CartridgeDPCPlus::patch(uInt16 address, uInt8 value)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const ByteBuffer& CartridgeDPCPlus::getImage(size_t& size) const
+ByteSpan CartridgeDPCPlus::getImage() const
 {
-  size = mySize;
-  return myImage;
+  return {myImage.get(), mySize};
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

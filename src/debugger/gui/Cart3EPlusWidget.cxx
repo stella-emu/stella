@@ -33,14 +33,13 @@ Cartridge3EPlusWidget::Cartridge3EPlusWidget(
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string Cartridge3EPlusWidget::description()
 {
-  size_t size{0};
-  const ByteBuffer& image = myCart.getImage(size);
+  const ByteSpan image = myCart.getImage();
   const uInt16 numRomBanks = myCart.romBankCount();
   const uInt16 numRamBanks = myCart.ramBankCount();
 
   // Eventually, we should query this from the debugger/disassembler
-  uInt16 start = (image[0x400 - 3] << 8) | image[0x400 - 4];
-  start -= start % 0x1000;
+  const uInt16 start = (((static_cast<uInt16>(image[0x400 - 3]) << 8) |
+                                image[0x400 - 4]) / 0x1000) * 0x1000;
 
   return std::format(
     "3E+ cartridge - (1{}64K ROM + RAM)\n"
@@ -58,8 +57,7 @@ string Cartridge3EPlusWidget::description()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Cartridge3EPlusWidget::bankSelect(int& ypos)
 {
-  size_t size{0};
-  const ByteBuffer& image = myCart.getImage(size);
+  const ByteSpan image = myCart.getImage();
   const int VGAP = myFontHeight / 4;
   VariantList banktype;
 
@@ -110,8 +108,8 @@ void Cartridge3EPlusWidget::bankSelect(int& ypos)
 
     const int xpos_s = myBankCommit[seg]->getRight() + _font.getMaxCharWidth() * 2;
 
-    uInt16 start = (image[0x400 - 3] << 8) | image[0x400 - 4];
-    start -= start % 0x1000;
+    const uInt16 start = (((static_cast<uInt16>(image[0x400 - 3]) << 8) |
+                                image[0x400 - 4]) / 0x1000) * 0x1000;
     const int addr1 = start + (seg * 0x400), addr2 = addr1 + 0x200;
 
     const string addrLabel1 = std::format("${:04X}-${:04X}", addr1, addr1 + 0x1FF);

@@ -102,17 +102,17 @@ bool ProfilingRunner::runOne(const ProfilingRun& run)
     return false;
   }
 
-  ByteBuffer image;
+  ByteArray image;
   const size_t size = imageFile.read(image);
   if (size == 0) {
     cout << "ERROR: unable to read " << run.romFile << '\n';
     return false;
   }
 
-  string md5 = MD5::hash(image, size);
+  string md5 = MD5::hash(ByteSpan{image.data(), size});
   const string type;
   unique_ptr<Cartridge> cartridge = CartCreator::create(
-      imageFile, image, size, md5, type, mySettings);
+      imageFile, image, md5, type, mySettings);
 
   if (!cartridge) {
     cout << "ERROR: unable to determine cartridge type\n";

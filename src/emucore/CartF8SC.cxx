@@ -18,10 +18,9 @@
 #include "CartF8SC.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CartridgeF8SC::CartridgeF8SC(const ByteBuffer& image, size_t size,
-                             string_view md5, const Settings& settings,
-                             size_t bsSize)
-  : CartridgeF8(image, size, md5, settings, bsSize)
+CartridgeF8SC::CartridgeF8SC(ByteSpan image, string_view md5,
+                             const Settings& settings, size_t bsSize)
+  : CartridgeF8(image, md5, settings, bsSize)
 {
   myRamSize = RAM_SIZE;
 }

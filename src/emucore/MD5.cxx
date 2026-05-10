@@ -274,6 +274,12 @@ string MD5::hash(const ByteBuffer& buffer, size_t length)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+string MD5::hash(ByteSpan buffer)
+{
+  return MD5::hash(buffer.data(), buffer.size());
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string MD5::hash(const uInt8* buffer, size_t length)
 {
   MD5 md5;

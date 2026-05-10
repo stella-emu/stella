@@ -18,11 +18,11 @@
 #include "Cart3EX.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Cartridge3EX::Cartridge3EX(const ByteBuffer& image, size_t size,
-                           string_view md5, const Settings& settings)
-  : Cartridge3E(image, size, md5, settings)
+Cartridge3EX::Cartridge3EX(ByteSpan image, string_view md5,
+                           const Settings& settings)
+  : Cartridge3E(image, md5, settings)
 {
   // 0xFFFA contains RAM bank count - 1;
-  myRamBankCount = image[size - 6] + 1;
+  myRamBankCount = image[image.size() - 6] + 1;
   myRamSize = static_cast<size_t>(myBankSize >> 1) * myRamBankCount;
 }

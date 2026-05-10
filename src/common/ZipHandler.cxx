@@ -75,7 +75,7 @@ std::pair<size_t, bool> ZipHandler::find(string_view name)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt64 ZipHandler::decompress(string_view name, ByteBuffer& image)
+uInt64 ZipHandler::decompress(string_view name, ByteArray& image)
 {
   if(!myZip)
     throw ZipException(ZipError::FILE_ERROR);
@@ -86,10 +86,10 @@ uInt64 ZipHandler::decompress(string_view name, ByteBuffer& image)
   if(header->uncompressedLength == 0)
     throw ZipException(ZipError::FILE_ERROR);
 
-  const uInt64 length = header->uncompressedLength;
-  image = std::make_unique<uInt8[]>(length);
+  const size_t length = header->uncompressedLength;
+  image.resize(length);
 
-  myZip->decompress(*header, ByteMSpan{image.get(), static_cast<size_t>(length)});
+  myZip->decompress(*header, ByteMSpan{image.data(), length});
 
   return length;
 }

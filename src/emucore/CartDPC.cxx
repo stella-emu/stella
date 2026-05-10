@@ -21,10 +21,9 @@
 #include "CartDPC.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CartridgeDPC::CartridgeDPC(const ByteBuffer& image, size_t size,
-                           string_view md5, const Settings& settings,
-                           size_t bsSize)
-  : CartridgeF8(image, size, md5, settings, bsSize)
+CartridgeDPC::CartridgeDPC(ByteSpan image, string_view md5,
+                           const Settings& settings, size_t bsSize)
+  : CartridgeF8(image, md5, settings, bsSize)
 {
 }
 

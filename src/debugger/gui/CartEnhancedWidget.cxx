@@ -49,11 +49,7 @@ int CartridgeEnhancedWidget::initialize()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 size_t CartridgeEnhancedWidget::size()
 {
-  size_t size{0};
-
-  myCart.getImage(size);
-
-  return size;
+  return myCart.getImage().size();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -94,16 +90,13 @@ string CartridgeEnhancedWidget::ramDescription()
 string CartridgeEnhancedWidget::romDescription()
 {
   string info;
-  size_t size{0};
-  const ByteBuffer& image = myCart.getImage(size);
-
+  const ByteSpan image = myCart.getImage();
   if(myCart.romBankCount() > 1)
   {
     for(int bank = 0, offset = 0xFFC; std::cmp_less(bank, myCart.romBankCount());
         ++bank, offset += 0x1000)
     {
-      uInt16 start = (image[offset + 1] << 8) | image[offset];
-      start -= start % 0x1000;
+      const uInt16 start = (((static_cast<uInt16>(image[offset + 1]) << 8) | image[offset]) / 0x1000) * 0x1000;
       const string_view hash = myCart.romBankCount() > 10 && bank < 10 ? " #" : "#";
       info += std::format("Bank {}{} @ ${:X} - ${:X}",
         hash, bank, start + myCart.myRomOffset, start + 0xFFF);
@@ -120,13 +113,13 @@ string CartridgeEnhancedWidget::romDescription()
   }
   else
   {
-    uInt16 start = (image[myCart.mySize - 3] << 8) | image[myCart.mySize - 4];
-    start -= start % std::min(static_cast<int>(size), 0x1000);
-    const uInt16 end = start + static_cast<uInt16>(myCart.mySize) - 1;
+    const auto* end = image.data() + image.size();
+    uInt16 start = (((static_cast<uInt16>(end[-3]) << 8) | end[-4]) / 0x1000) * 0x1000;
+    const uInt16 last = start + static_cast<uInt16>(image.size()) - 1;
     // special check for ROMs where the extra RAM is not included in the image (e.g. CV).
-    if((start & 0xFFFU) < size)
+    if((start & 0xFFFU) < image.size())
       start += myCart.myRomOffset;
-    info += std::format("ROM accessible @ ${:X} - ${:X}", start, end);
+    info += std::format("ROM accessible @ ${:X} - ${:X}", start, last);
   }
   return info;
 }

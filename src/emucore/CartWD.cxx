@@ -21,17 +21,16 @@
 #include "CartWD.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CartridgeWD::CartridgeWD(const ByteBuffer& image, size_t size,
-                         string_view md5, const Settings& settings,
-                         size_t bsSize)
-  : CartridgeEnhanced(image, size, md5, settings, bsSize)
+CartridgeWD::CartridgeWD(ByteSpan image, string_view md5,
+                         const Settings& settings, size_t bsSize)
+  : CartridgeEnhanced(image, md5, settings, bsSize)
 {
   // Copy the ROM image into my buffer
-  if(size == 8_KB + 3)
+  if(image.size() == 8_KB + 3)
   {
     // swap banks 2 & 3 of bad dump and correct size
-    std::copy_n(image.get() + 1_KB * 3, 1_KB * 1, myImage.get() + 1_KB * 2);
-    std::copy_n(image.get() + 1_KB * 2, 1_KB * 1, myImage.get() + 1_KB * 3);
+    std::copy_n(image.data() + 1_KB * 3, 1_KB * 1, myImage.get() + 1_KB * 2);
+    std::copy_n(image.data() + 1_KB * 2, 1_KB * 1, myImage.get() + 1_KB * 3);
     mySize = 8_KB;
   }
   myDirectPeek = false;

@@ -19,11 +19,10 @@
 #include "Cart3F.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Cartridge3F::Cartridge3F(const ByteBuffer& image, size_t size,
-                         string_view md5, const Settings& settings,
-                         size_t bsSize)
-  : CartridgeEnhanced(image, size, md5, settings,
-                      bsSize == 0 ? BSPF::nextPowerOfTwo(size) : bsSize)
+Cartridge3F::Cartridge3F(ByteSpan image, string_view md5,
+                         const Settings& settings, size_t bsSize)
+  : CartridgeEnhanced(image, md5, settings,
+                      bsSize == 0 ? BSPF::nextPowerOfTwo(image.size()) : bsSize)
 {
   myBankShift = BANK_SHIFT;
 }

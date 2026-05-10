@@ -18,10 +18,9 @@
 #include "Cart4KSC.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Cartridge4KSC::Cartridge4KSC(const ByteBuffer& image, size_t size,
-                             string_view md5, const Settings& settings,
-                             size_t bsSize)
-  : Cartridge4K(image, size, md5, settings, bsSize)
+Cartridge4KSC::Cartridge4KSC(ByteSpan image, string_view md5,
+                             const Settings& settings, size_t bsSize)
+  : Cartridge4K(image, md5, settings, bsSize)
 {
   myRamSize = RAM_SIZE;
 }
