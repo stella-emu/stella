@@ -26,6 +26,14 @@
 template<unsigned length, unsigned capacity>
 class DelayQueueIteratorImpl;
 
+/**
+  Fixed-length circular queue for scheduling deferred TIA register writes.
+  Each push schedules a (address, value) write `delay` color clocks into
+  the future; execute dispatches all writes due at the current clock,
+  advancing the queue by one slot.
+
+  @author  Christian Speckner (DirtyHairy)
+*/
 template<unsigned length, unsigned capacity>
 class DelayQueue : public Serializable
 {
@@ -36,12 +44,23 @@ class DelayQueue : public Serializable
     DelayQueue();
     ~DelayQueue() override = default;
 
-  public:
-
+    /**
+      Schedule a register write to occur after the given number of clocks.
+      If a write to the same address is already pending, it is replaced.
+      Throws if delay >= length.
+     */
     void push(uInt8 address, uInt8 value, uInt8 delay);
 
+    /**
+      Clear all pending writes and reset the queue to its initial state.
+     */
     void reset();
 
+    /**
+      Execute all writes scheduled for the current clock and advance the
+      queue by one slot. The executor callable receives (address, value)
+      for each due write.
+     */
     template<typename T> void execute(T executor);
 
     /**
@@ -51,11 +70,15 @@ class DelayQueue : public Serializable
     bool load(Serializer& in) override;
 
   private:
+    // Circular buffer of time slots
     std::array<DelayQueueMember<capacity>, length> myMembers;
+    // Index of the "current" slot (next to execute)
     uInt8 myIndex{0};
+    // Maps each register address to its pending slot (0xFF = none)
     std::array<uInt8, 0xFF> myIndices{};
 
   private:
+    // Following constructors and assignment operators not supported
     DelayQueue(const DelayQueue&) = delete;
     DelayQueue(DelayQueue&&) = delete;
     DelayQueue& operator=(const DelayQueue&) = delete;

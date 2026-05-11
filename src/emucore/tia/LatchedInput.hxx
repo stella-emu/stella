@@ -21,19 +21,41 @@
 #include "bspf.hxx"
 #include "Serializable.hxx"
 
+/**
+  Models the TIA latched digital input circuit for INPT4 and INPT5
+  (joystick fire buttons). When latch mode is enabled via VBLANK bit 6,
+  a low signal is captured and held until the latch is explicitly cleared
+  by a subsequent VBLANK write with bit 6 cleared.
+
+  @author  Christian Speckner (DirtyHairy)
+*/
 class LatchedInput : public Serializable
 {
   public:
     LatchedInput() = default;
     ~LatchedInput() override = default;
 
-  public:
-
+    /**
+      Reset to initial state.
+     */
     void reset();
 
+    /**
+      Process a VBLANK write. Bit 6 controls latching: when set, a low signal
+      is captured and held until the latch is cleared by a subsequent VBLANK
+      write with bit 6 cleared.
+     */
     void vblank(uInt8 value);
+
+    /**
+      Is the input currently in latched mode?
+     */
     bool vblankLatched() const { return myModeLatched; }
 
+    /**
+      Read INPT4 or INPT5. Returns 0x80 while the pin is high (button not
+      pressed), or 0x00 if low (or latched low). Result is in bit 7.
+     */
     uInt8 inpt(bool pinState);
 
     /**
@@ -43,10 +65,13 @@ class LatchedInput : public Serializable
     bool load(Serializer& in) override;
 
   private:
+    // Whether latched mode is active (VBLANK bit 6)
     bool myModeLatched{false};
+    // Held at 0x00 once a low signal is captured
     uInt8 myLatchedValue{0};
 
   private:
+    // Following constructors and assignment operators not supported
     LatchedInput(const LatchedInput&) = delete;
     LatchedInput(LatchedInput&&) = delete;
     LatchedInput& operator=(const LatchedInput&) = delete;

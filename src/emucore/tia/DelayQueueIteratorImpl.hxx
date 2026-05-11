@@ -22,6 +22,13 @@
 #include "DelayQueue.hxx"
 #include "DelayQueueIterator.hxx"
 
+/**
+  Concrete iterator over a DelayQueue<length, capacity>. Traverses all
+  pending register writes in chronological order, exposing the remaining
+  delay, TIA register address, and write value for each entry.
+
+  @author  Christian Speckner (DirtyHairy)
+*/
 template<unsigned length, unsigned capacity>
 class DelayQueueIteratorImpl : public DelayQueueIterator
 {
@@ -29,23 +36,24 @@ class DelayQueueIteratorImpl : public DelayQueueIterator
     explicit DelayQueueIteratorImpl(const DelayQueue<length, capacity>& delayQueue);
 
   public:
-
     bool isValid() const override;
-
     uInt8 delay() const override;
-
     uInt8 address() const override;
-
     uInt8 value() const override;
-
     bool next() override;
 
   private:
+    /**
+      Compute the actual circular-buffer index for the current delay cycle.
+     */
     uInt8 currentIndex() const;
 
   private:
+    // The queue being iterated
     const DelayQueue<length, capacity>& myDelayQueue;
+    // How many clocks ahead of myDelayQueue.myIndex we currently are
     uInt8 myDelayCycle{0};
+    // Entry index within the current delay slot
     uInt8 myIndex{0};
 };
 

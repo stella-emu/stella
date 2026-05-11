@@ -24,21 +24,25 @@
 #include "FrameLayout.hxx"
 #include "bspf.hxx"
 
+/**
+  Abstract base class for TIA frame managers. Manages the vsync/vblank/scanline
+  lifecycle, drives frame-start and frame-complete callbacks, and tracks basic
+  frame metrics. Concrete subclasses implement timing rules for layout
+  auto-detection (FrameLayoutDetector) or full frame rendering (FrameManager).
+
+  @author  Christian Speckner (DirtyHairy)
+*/
 class AbstractFrameManager : public Serializable
 {
   public:
-
     using callback = std::function<void()>;
 
   public:
-
     AbstractFrameManager();
     ~AbstractFrameManager() override = default;
 
-  public:
-
     /**
-     * Configure the various handler callbacks.
+      Configure the frame-start and frame-complete handler callbacks.
      */
     void setHandlers(
       const callback& frameStartCallback,
@@ -46,168 +50,173 @@ class AbstractFrameManager : public Serializable
     );
 
     /**
-     * Clear the configured handler callbacks.
+      Clear the configured handler callbacks.
      */
     void clearHandlers();
 
     /**
-     * Reset.
+      Reset to initial state.
      */
     void reset();
 
     /**
-     * Called by TIA to notify the start of the next scanline.
+      Called by TIA to notify the start of the next scanline.
      */
     void nextLine();
 
     /**
-     * Called by TIA on VBLANK writes.
+      Called by TIA on VBLANK writes.
      */
     void setVblank(bool vblank, uInt64 cycles);
 
     /**
-     * Called by TIA on VSYNC writes.
+      Called by TIA on VSYNC writes.
      */
     void setVsync(bool vsync, uInt64 cycles);
 
     /**
-     * Called when a pixel is rendered.
-    */
+      Called when a pixel is rendered.
+     */
     virtual void pixelColor(uInt8 color) {}
 
     /**
-     * Should the TIA render its frame? This is buffered in a flag for
-     * performance reasons; descendants must update the flag.
+      Should the TIA render its frame? Buffered in a flag for performance;
+      descendants must update it.
      */
     bool isRendering() const { return myIsRendering; }
 
     /**
-     * Is vsync on?
+      Is vsync on?
      */
     bool vsync() const { return myVsync; }
 
     /**
-     * Is vblank on?
+      Is vblank on?
      */
     bool vblank() const { return myVblank; }
 
     /**
-     * The number of scanlines in the last finished frame.
+      The number of scanlines in the last finished frame.
      */
     uInt32 scanlinesLastFrame() const { return myCurrentFrameFinalLines; }
 
     /**
-     * Did the number of scanlines switch between even / odd (used for color loss
-     * emulation).
+      Did the number of scanlines switch between even and odd? Used for
+      color loss emulation.
      */
     bool scanlineParityChanged() const {
       return (myPreviousFrameFinalLines & 0x1) != (myCurrentFrameFinalLines & 0x1);
     }
 
     /**
-     * The total number of frames. 32 bit should be good for > 2 years :)
+      The total number of frames rendered.
      */
     uInt32 frameCount() const { return myTotalFrames; }
 
     /**
-     * The configured (our autodetected) frame layout (PAL / NTSC).
+      The configured or auto-detected frame layout (PAL / NTSC).
      */
     FrameLayout layout() const { return myLayout; }
 
     /**
-     * Save state.
+      Save state.
      */
     bool save(Serializer& out) const override;
 
     /**
-     * Restore state.
+      Restore state.
      */
     bool load(Serializer& in) override;
 
   public:
-    // The following methods are implement as noops and should be overriden as
+    // The following methods are implemented as noops and should be overridden as
     // required. All of these are irrelevant if nothing is displayed (during
     // autodetect).
 
     /**
-    * The jitter sensitivity determines jitter simulation sensitivity to unstable video signals.
-    */
+      Set the jitter simulation sensitivity to unstable video signals.
+     */
     virtual void setJitterSensitivity(uInt8 sensitivity) {}
 
     /**
-     * The jitter factor determines the time jitter simulation takes to recover.
+      Set the jitter recovery factor (how quickly jitter simulation recovers).
      */
     virtual void setJitterRecovery(uInt8 factor) {}
 
     /**
-     * Is jitter simulation enabled?
+      Is jitter simulation enabled?
      */
     virtual bool jitterEnabled() const { return false; }
 
     /**
-     * Enable jitter simulation
+      Enable or disable jitter simulation.
      */
     virtual void enableJitter(bool enabled) {}
 
     /**
-     * Is vsync according to spec?
+      Is vsync within spec?
      */
     virtual bool vsyncCorrect() const { return true; }
 
     /**
-     * The scanline difference between the last two frames. Used in the TIA to
-     * clear any scanlines that were not repainted.
+      The scanline difference between the last two frames. Used by TIA to
+      clear any scanlines that were not repainted.
      */
     virtual Int32 missingScanlines() const { return 0; }
 
     /**
-     * Frame height.
+      Frame height in visible scanlines.
      */
     virtual uInt32 height() const { return 0; }
 
     /**
-     * The current y coordinate (valid only during rendering).
+      The current y coordinate (valid only during rendering).
      */
     virtual uInt32 getY() const { return 0; }
 
     /**
-     * The current number of scanlines in the current frame (including invisible
-     * lines).
+      The current number of scanlines in the current frame, including
+      invisible lines.
      */
     virtual uInt32 scanlines() const { return 0; }
 
     /**
-     * Configure the vcenter value.
+      Set the vcenter offset.
      */
     virtual void setVcenter(Int32 vcenter) {}
 
     /**
-     * The configured vcenter value.
+      The configured vcenter offset.
      */
     virtual Int32 vcenter() const { return 0; }
 
     /**
-     * The calculated minimal vcenter value.
+      The calculated minimum vcenter value.
      */
     virtual Int32 minVcenter() const { return 0; }
 
     /**
-     * The calculated maximal vcenter value.
+      The calculated maximum vcenter value.
      */
     virtual Int32 maxVcenter() const { return 0; }
 
-
+    /**
+      Set the vertical size adjustment (in scanlines).
+     */
     virtual void setAdjustVSize(Int32 adjustVSize) {}
 
+    /**
+      The configured vertical size adjustment.
+     */
     virtual Int32 adjustVSize() const { return 0; }
 
     /**
-     * The corresponding start line.
+      The frame start scanline.
      */
     virtual uInt32 startLine() const { return 0; }
 
     /**
-     * Set the frame layout. This may be a noop (on the autodetection manager).
+      Set the frame layout. May be a no-op on the auto-detection manager.
      */
     virtual void setLayout(FrameLayout mode) {}
 
@@ -216,117 +225,100 @@ class AbstractFrameManager : public Serializable
     // the frame logic.
 
     /**
-     * Called if vblank changes.
+      Called when vblank changes.
      */
     virtual void onSetVblank(uInt64 cycles) {}
 
     /**
-     * Called if vsync changes.
+      Called when vsync changes.
      */
     virtual void onSetVsync(uInt64 cycles) {}
 
     /**
-     * Called if the next line is signalled, after the internal bookkeeping has
-     * been updated.
+      Called when the next line is signalled, after internal bookkeeping
+      has been updated.
      */
     virtual void onNextLine() {}
 
     /**
-     * Called on reset (after the base class has reset).
+      Called on reset, after the base class has reset.
      */
     virtual void onReset() {}
 
     /**
-     * Called after a frame layout change.
+      Called after a frame layout change.
      */
     virtual void onLayoutChange() {}
 
     /**
-     * Called during state save (after the base class has serialized its state).
+      Called during state save, after the base class has serialized its state.
      */
-    virtual bool onSave(Serializer& out) const { throw std::runtime_error("cannot be serialized"); }
+    virtual bool onSave(Serializer& out) const {
+      throw std::runtime_error("cannot be serialized");
+    }
 
     /**
-     * Called during state restore (after the base class has restored its state).
+      Called during state restore, after the base class has restored its state.
      */
-    virtual bool onLoad(Serializer& in) { throw std::runtime_error("cannot be serialized"); }
+    virtual bool onLoad(Serializer& in) {
+      throw std::runtime_error("cannot be serialized");
+    }
 
   protected:
     // These need to be called in order to drive the frame lifecycle of the
     // emulation.
 
     /**
-     * Signal frame start.
+      Signal frame start to the registered callback.
      */
     void notifyFrameStart();
 
     /**
-     * Signal frame stop.
+      Signal frame completion to the registered callback.
      */
     void notifyFrameComplete();
 
     /**
-     * The internal setter to update the frame layout.
+      Internal setter to update the frame layout.
      */
     void layout(FrameLayout layout);
 
   protected:
-
-    /**
-     * Rendering flag.
-     */
+    // Whether the TIA should currently be rendering (buffered for performance)
     bool myIsRendering{false};
 
-    /**
-     * Vsync flag.
-     */
+    // Vsync flag
     bool myVsync{false};
 
-    /**
-     * Vblank flag.
-     */
+    // Vblank flag
     bool myVblank{false};
 
-    /**
-     * Current scanline count in the current frame.
-     */
+    // Current scanline count in the current frame
     uInt32 myCurrentFrameTotalLines{0};
 
-    /**
-     * Total number of scanlines in the last complete frame.
-     */
+    // Total number of scanlines in the last complete frame
     uInt32 myCurrentFrameFinalLines{0};
 
-    /**
-     * Total number of scanlines in the second last complete frame.
-     */
+    // Total number of scanlines in the second last complete frame
     uInt32 myPreviousFrameFinalLines{0};
 
-    /**
-     * Total frame count.
-     */
+    // Total frame count
     uInt32 myTotalFrames{0};
 
   private:
-
-    /**
-     * Current frame layout.
-     */
+    // Current frame layout
     FrameLayout myLayout{FrameLayout::pal};
 
-    /**
-     * The various lifecycle callbacks.
-     */
+    // Frame lifecycle callbacks
     callback myOnFrameStart{nullptr};
     callback myOnFrameComplete{nullptr};
 
   private:
-
+    // Following constructors and assignment operators not supported
     AbstractFrameManager(const AbstractFrameManager&) = delete;
     AbstractFrameManager(AbstractFrameManager&&) = delete;
     AbstractFrameManager& operator=(const AbstractFrameManager&) = delete;
     AbstractFrameManager& operator=(AbstractFrameManager&&) = delete;
-
 };
 
 #endif  // ABSTRACT_FRAME_MANAGER_HXX

@@ -20,21 +20,42 @@
 
 #include "bspf.hxx"
 
+/**
+  Abstract iterator for inspecting pending entries in a DelayQueue without
+  modifying it. Exposes the delay, address, and value for each pending
+  write; concrete implementations are provided by DelayQueueIteratorImpl.
+
+  @author  Christian Speckner (DirtyHairy)
+*/
 class DelayQueueIterator
 {
   public:
     DelayQueueIterator() = default;
     virtual ~DelayQueueIterator() = default;
 
-  public:
+    /**
+      Is the iterator positioned on a valid entry?
+     */
     virtual bool isValid() const = 0;
 
+    /**
+      Number of clocks until the current entry's write executes.
+     */
     virtual uInt8 delay() const = 0;
 
+    /**
+      TIA register address of the current entry.
+     */
     virtual uInt8 address() const = 0;
 
+    /**
+      Value to be written for the current entry.
+     */
     virtual uInt8 value() const = 0;
 
+    /**
+      Advance to the next entry. Returns false when there are no more entries.
+     */
     virtual bool next() = 0;
 
   private:

@@ -21,24 +21,40 @@
 #include "bspf.hxx"
 #include "Serializable.hxx"
 
+/**
+  A single time slot within a DelayQueue. Stores up to `capacity` pending
+  TIA register-write entries (address + value pairs) that are all due at
+  the same color clock.
+
+  @author  Christian Speckner (DirtyHairy)
+*/
 template<unsigned capacity>
 class DelayQueueMember : public Serializable {
 
   public:
     struct Entry {
-      uInt8 address{0};
-      uInt8 value{0};
+      uInt8 address{0};  // TIA register address to write
+      uInt8 value{0};    // Value to write
     };
 
   public:
     DelayQueueMember();
     ~DelayQueueMember() override = default;
 
-  public:
+    /**
+      Add a pending write for the given register address and value.
+      Throws if the slot is already at capacity.
+     */
     void push(uInt8 address, uInt8 value);
 
+    /**
+      Remove the pending write for the given register address, if any.
+     */
     void remove(uInt8 address);
 
+    /**
+      Discard all pending writes in this slot.
+     */
     void clear();
 
     /**
@@ -48,10 +64,13 @@ class DelayQueueMember : public Serializable {
     bool load(Serializer& in) override;
 
   public:
+    // Pending write entries for this time slot
     std::array<Entry, capacity> myEntries;
+    // Number of active entries
     uInt8 mySize{0};
 
   private:
+    // Following constructors and assignment operators not supported
     DelayQueueMember(const DelayQueueMember<capacity>&) = delete;
     DelayQueueMember(DelayQueueMember<capacity>&&) = delete;
     DelayQueueMember<capacity>& operator=(const DelayQueueMember<capacity>&) = delete;

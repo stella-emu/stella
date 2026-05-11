@@ -20,21 +20,39 @@
 
 #include "bspf.hxx"
 
+/**
+  Compile-time TIA geometry and timing constants: pixel dimensions, clock
+  frequencies, and blanking intervals. Also defines register name and
+  collision bit enumerations used throughout the emulation core.
+*/
 namespace TIAConstants {
-
+  // TIA output pixels per scanline (visible area)
   static constexpr uInt32 frameBufferWidth = 160;
+  // Maximum scanlines in the internal pixel buffer (2x PAL height)
   static constexpr uInt32 frameBufferHeight = 320;
-  static constexpr Int32  minVcenter = -20; // limit to reasonable values
-  static constexpr Int32  maxVcenter = 20; // limit to reasonable values
+  // Lower bound on vertical centering offset
+  static constexpr Int32  minVcenter = -20;
+  // Upper bound on vertical centering offset
+  static constexpr Int32  maxVcenter = 20;
+  // Display width after 2x horizontal scaling
   static constexpr uInt32 viewableWidth = 320;
+  // Display height for the viewable region
   static constexpr uInt32 viewableHeight = 240;
+  // Frames to discard at startup while the ROM stabilizes
   static constexpr uInt32 initialGarbageFrames = 10;
 
   static constexpr uInt16
-    H_PIXEL = 160, H_CYCLES = 76, CYCLE_CLOCKS = 3,
-    H_CLOCKS = H_CYCLES * CYCLE_CLOCKS,   // = 228
-    H_BLANK_CLOCKS = H_CLOCKS - H_PIXEL;  // = 68
-} // namespace TIAConstants
+    // Visible color clocks per scanline
+    H_PIXEL = 160,
+    // Total CPU cycles per scanline
+    H_CYCLES = 76,
+    // Color clocks per CPU cycle
+    CYCLE_CLOCKS = 3,
+    // Total color clocks per scanline (= 228)
+    H_CLOCKS = H_CYCLES * CYCLE_CLOCKS,
+    // Color clocks in the horizontal blank region (= 68)
+    H_BLANK_CLOCKS = H_CLOCKS - H_PIXEL;
+}  // namespace TIAConstants
 
 enum TIABit: uInt8 {
   P0Bit       = 0x01,  // Bit for Player 0

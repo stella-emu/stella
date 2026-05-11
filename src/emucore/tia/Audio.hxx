@@ -24,14 +24,28 @@ class AudioQueue;
 #include "AudioChannel.hxx"
 #include "Serializable.hxx"
 
+/**
+  TIA audio subsystem. Drives the two-phase audio clock at the correct
+  points in each scanline, accumulates per-clock channel volumes for
+  downsampling, and pushes mixed 16-bit samples to the host audio layer
+  via an AudioQueue.
+
+  @author  Christian Speckner (DirtyHairy)
+*/
 class Audio : public Serializable
 {
   public:
     Audio();
     ~Audio() override = default;
 
+    /**
+      Reset to initial state.
+     */
     void reset();
 
+    /**
+      Set the audio output queue used to pass samples to the host audio system.
+     */
     void setAudioQueue(const shared_ptr<AudioQueue>& queue);
 
     /**
@@ -45,10 +59,20 @@ class Audio : public Serializable
     #endif
     }
 
+    /**
+      Tick one color clock: accumulate channel volumes and drive the two-phase
+      audio clock at the appropriate points in the scanline.
+     */
     FORCE_INLINE void tick();
 
+    /**
+      Access audio channel 0.
+     */
     AudioChannel& channel0() { return myChannel0; }
 
+    /**
+      Access audio channel 1.
+     */
     AudioChannel& channel1() { return myChannel1; }
 
     /**
@@ -58,25 +82,43 @@ class Audio : public Serializable
     bool load(Serializer& in) override;
 
   private:
+    /**
+      Build and push the next audio sample from the accumulated channel sums.
+     */
     void createSample();
+
+    /**
+      Mix sample0 and sample1 via the precomputed lookup table and append to
+      the current audio fragment.
+     */
     void addSample(uInt8 sample0, uInt8 sample1);
 
   private:
+    // Output queue shared with the host audio layer
     shared_ptr<AudioQueue> myAudioQueue;
 
+    // Color clock position (0-227); drives the two-phase audio clock
     uInt8 myCounter{0};
 
+    // Left and right audio channels
     AudioChannel myChannel0;
     AudioChannel myChannel1;
 
+    // Accumulated volume samples for channel 0 (for downsampling)
     uInt32 mySumChannel0{0};
+    // Accumulated volume samples for channel 1 (for downsampling)
     uInt32 mySumChannel1{0};
+    // Number of samples in the current accumulation window
     uInt32 mySumCt{0};
 
+    // Precomputed output levels for combined channel sums (indices 0-30)
     std::array<Int16, 0x1e + 1> myMixingTableSum{};
+    // Precomputed output levels for a single channel (indices 0-15)
     std::array<Int16, 0x0f + 1> myMixingTableIndividual{};
 
+    // Pointer to the audio output fragment currently being filled
     Int16* myCurrentFragment{nullptr};
+    // Write index within the current fragment
     uInt32 mySampleIndex{0};
   #ifdef GUI_SUPPORT
     bool myRewindMode{false};
@@ -84,6 +126,7 @@ class Audio : public Serializable
   #endif
 
   private:
+    // Following constructors and assignment operators not supported
     Audio(const Audio&) = delete;
     Audio(Audio&&) = delete;
     Audio& operator=(const Audio&) = delete;
@@ -121,7 +164,8 @@ void Audio::tick()
       break;
   }
 
-  if (++myCounter == 228) myCounter = 0;
+  if (++myCounter == 228)
+    myCounter = 0;
 }
 
 #endif  // AUDIO_HXX
