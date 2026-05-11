@@ -184,14 +184,14 @@ void getopts(int *pac, char ***pav)
       case 'o':     /* set output file*/
         oflag = 1;
         if (*p) {
-          strcpy(outfile, p);
+          snprintf(outfile, sizeof(outfile), "%s", p);
           while (*p && *p != ' ')
             p++;
         }
         else {
           av++; ac--;
           if (ac > 0)
-            strcpy(outfile, av[0]);
+            snprintf(outfile, sizeof(outfile), "%s", av[0]);
         }
         break;
       case 'l':     /* set encoding limit*/
@@ -220,18 +220,18 @@ void getopts(int *pac, char ***pav)
         break;
       case 'f':     /* set font name*/
         if (*p) {
-          strcpy(fontname, p);
+          snprintf(fontname, sizeof(fontname), "%s", p);
           while (*p && *p != ' ')
             p++;
         }
         else {
           av++; ac--;
           if (ac > 0)
-            strcpy(fontname, av[0]);
+            snprintf(fontname, sizeof(fontname), "%s", av[0]);
         }
         {
           char* u;
-          strcpy(fontnameU, fontname);
+          snprintf(fontnameU, sizeof(fontnameU), "%s", fontname);
           u = fontnameU;
           while(*u=toupper(*u))
             *u++;
@@ -259,7 +259,7 @@ char *basename(char *path)
     if (*p == '/')
       b = p + 1;
   }
-  strcpy(base, b);
+  snprintf(base, sizeof(base), "%s", b);
   for (p = base; *p; ++p) {
     if (*p == '.') {
       *p = 0;
@@ -279,8 +279,7 @@ int convbdf(char *path)
     exit(1);
 
   if (!oflag) {
-    strcpy(outfile, basename(path));
-    strcat(outfile, ".hxx");
+    snprintf(outfile, sizeof(outfile), "%s.hxx", basename(path));
   }
   ret |= gen_c_source(pf, outfile);
 
@@ -486,9 +485,9 @@ int bdf_read_header(FILE *fp, struct font* pf)
 
   /* allocate bits, offset, and width arrays*/
   pf->bits = (uInt16 *)malloc(pf->bits_size * sizeof(uInt16) + EXTRA);
-  pf->offset = (unsigned long *)malloc(pf->size * sizeof(unsigned long));
-  pf->width = (unsigned char *)malloc(pf->size * sizeof(unsigned char));
-  pf->bbx = (BBX *)malloc(pf->size * sizeof(BBX));
+  pf->offset = (unsigned long *)calloc(pf->size, sizeof(unsigned long));
+  pf->width = (unsigned char *)calloc(pf->size, sizeof(unsigned char));
+  pf->bbx = (BBX *)calloc(pf->size, sizeof(BBX));
 
   if (!pf->bits || !pf->offset || !pf->width) {
     fprintf(stderr, "Error: no memory for font load\n");
@@ -808,7 +807,7 @@ int gen_c_source(struct font* pf, char *path)
     return 1;
   }
 
-  strcpy(buf, ctime(&t));
+  snprintf(buf, sizeof(buf), "%s", ctime(&t));
   buf[strlen(buf) - 1] = 0;
 
   fprintf(ofp, hdr1, buf,
@@ -934,19 +933,19 @@ int gen_c_source(struct font* pf, char *path)
 
   /* output struct font struct*/
   if (pf->offset)
-    sprintf(obuf, "%s_sysfont_offset,", fontname);
+    snprintf(obuf, sizeof(obuf), "%s_sysfont_offset,", fontname);
   else
-    sprintf(obuf, "nullptr,  /* no encode table*/");
+    snprintf(obuf, sizeof(obuf), "nullptr,  /* no encode table*/");
 
   if (pf->width)
-    sprintf(buf, "%s_sysfont_width,", fontname);
+    snprintf(buf, sizeof(buf), "%s_sysfont_width,", fontname);
   else
-    sprintf(buf, "nullptr,  /* fixed width*/");
+    snprintf(buf, sizeof(buf), "nullptr,  /* fixed width*/");
 
   if (pf->bbx)
-    sprintf(bbuf, "%s_sysfont_bbx,", fontname);
+    snprintf(bbuf, sizeof(bbuf), "%s_sysfont_bbx,", fontname);
   else
-    sprintf(bbuf, "nullptr,  /* fixed bbox*/");
+    snprintf(bbuf, sizeof(bbuf), "nullptr,  /* fixed bbox*/");
 
   fprintf(ofp,
       "/* Exported structure definition. */\n"
