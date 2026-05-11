@@ -18,25 +18,23 @@
 #ifndef DEF_PROPS_HXX
 #define DEF_PROPS_HXX
 
+// Static analyzer can't tell the following is data
+// NOLINTBEGIN(modernize-raw-string-literal)
+
+#include "bspf.hxx"
+
 /**
   This code is generated using the 'create_props.pl' script,
   located in the src/tools directory.  All properties changes
   should be made in stella.pro, and then this file should be
   regenerated and the application recompiled.
-*/
 
-// NOLINTBEGIN: static analyzer can't tell the following is data
-
-static constexpr uInt32 DEF_PROPS_SIZE = 3660;
-
-/**
-  FIXME
-  We need to use 'const char*' instead of 'string_view' here,
-  since clang is not optimized to create so many constexpr
+  FIXME: We need to use 'const char*' instead of 'string_view'
+  here, since clang is not optimized to create so many constexpr
   'string_view's.  It *can* do it by using
   -fconstexpr-steps=2710000, which increases binary size.
 */
-static constexpr BSPF::array2D<const char*, DEF_PROPS_SIZE, 30> DefProps = {{
+static constexpr BSPF::array2D<const char*, 3660, 30> DefProps = {{
   { "000509d1ed2b8d30a9d94be1b3b5febb", "Greg Zumwalt", "", "Jungle Jane (2003) (Greg Zumwalt) (Hack)", "Hack of Pitfall!", "Hack", "", "", "", "{\"score_addresses\":[\"0xd5\",\"0xd6\",\"0xd7\"],\"score_digits\":6,\"variations_count\":1}", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "Pitfall! - Pitfall Harry's Jungle Adventure (USA)" },
   { "0060a89b4c956b9c703a59b181cb3018", "CommaVid, Irwin Gaines - Ariola", "CM-008 - 712 008-720", "Cakewalk (1983) (CommaVid) (PAL)", "AKA Alarm in der Backstube", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "007d18dedc1f0565f09c42aa61a6f585", "CCE", "C-843", "Worm War I (1983) (CCE)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
@@ -3699,6 +3697,6 @@ static constexpr BSPF::array2D<const char*, DEF_PROPS_SIZE, 30> DefProps = {{
   { "ffebb0070689b9d322687edd9c0a2bae", "", "", "Spitfire Attack (1983) (Milton Bradley) [h1]", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }
 }};
 
-// NOLINTEND
+// NOLINTEND(modernize-raw-string-literal)
 
 #endif  // DEF_PROPS_HXX

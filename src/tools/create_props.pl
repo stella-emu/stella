@@ -60,25 +60,25 @@ print OUTFILE "\n";
 print OUTFILE "#ifndef DEF_PROPS_HXX\n";
 print OUTFILE "#define DEF_PROPS_HXX\n";
 print OUTFILE "\n";
+print OUTFILE "// Static analyzer can't tell the following is data\n";
+print OUTFILE "// NOLINTBEGIN(modernize-raw-string-literal)\n";
+print OUTFILE "\n";
+print OUTFILE "#include \"bspf.hxx\"\n";
+print OUTFILE "\n";
 print OUTFILE "/**\n";
 print OUTFILE "  This code is generated using the 'create_props.pl' script,\n";
 print OUTFILE "  located in the src/tools directory.  All properties changes\n";
 print OUTFILE "  should be made in stella.pro, and then this file should be\n";
 print OUTFILE "  regenerated and the application recompiled.\n";
-print OUTFILE "*/\n";
-print OUTFILE "\n// NOLINTBEGIN: static analyzer can't tell the following is data\n";
-print OUTFILE "\nstatic constexpr uInt32 DEF_PROPS_SIZE = " . $setsize . ";";
-print OUTFILE "\n\n";
-print OUTFILE "/**\n";
+print OUTFILE "\n";
 # FIXME: Remove this once clang properly supports constexpr string_view
-print OUTFILE "  FIXME\n";
-print OUTFILE "  We need to use 'const char*' instead of 'string_view' here,\n";
-print OUTFILE "  since clang is not optimized to create so many constexpr\n";
+print OUTFILE "  FIXME: We need to use 'const char*' instead of 'string_view'\n";
+print OUTFILE "  here, since clang is not optimized to create so many constexpr\n";
 print OUTFILE "  'string_view's.  It *can* do it by using\n";
 print OUTFILE "  -fconstexpr-steps=2710000, which increases binary size.\n";
 print OUTFILE "*/\n";
 #######################################################################
-print OUTFILE "static constexpr BSPF::array2D<const char*, DEF_PROPS_SIZE, " . $typesize . "> DefProps = {{\n";
+print OUTFILE "static constexpr BSPF::array2D<const char*, " . $setsize . ", " . $typesize . "> DefProps = {{\n";
 
 # Walk the hash map and print each item in order of md5sum
 my $idx = 0;
@@ -94,8 +94,8 @@ for my $key ( sort keys %propset )
 }
 
 print OUTFILE "}};\n";
-print OUTFILE "\n// NOLINTEND\n\n";
-print OUTFILE "#endif\n";
+print OUTFILE "\n// NOLINTEND(modernize-raw-string-literal)\n\n";
+print OUTFILE "#endif  // DEF_PROPS_HXX\n";
 
 close(OUTFILE);
 

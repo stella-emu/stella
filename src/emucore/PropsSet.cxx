@@ -177,14 +177,14 @@ void PropertiesSet::print() const
   // Start with all built-in props
   PropsList list;
   Properties properties;
-  for(uInt32 i = 0; i < DEF_PROPS_SIZE; ++i)
+  for(const auto& DefProp: DefProps)
   {
     properties.setDefaults();
     for(uInt8 p = 0; p < static_cast<uInt8>(PropType::NumTypes); ++p)
-      if(DefProps[i][p][0] != 0)
-        properties.set(PropType{p}, DefProps[i][p]);
+      if(DefProp[p][0] != 0)
+        properties.set(PropType{p}, DefProp[p]);
 
-    list.emplace(DefProps[i][static_cast<uInt8>(PropType::Cart_MD5)], properties);
+    list.emplace(DefProp[static_cast<uInt8>(PropType::Cart_MD5)], properties);
   }
 
   // Merge temp props, overriding any built-in duplicates
