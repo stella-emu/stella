@@ -57,7 +57,7 @@ SoundSDL::SoundSDL(OSystem& osystem, AudioSettings& audioSettings)
   Logger::debug("SoundSDL::SoundSDL initialized");
 
   // Reserve 8K for the audio buffer; seems to be enough on most systems
-  myBuffer.reserve(8_KB);
+  myBuffer.resize(8_KB);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -343,7 +343,7 @@ void SoundSDL::audioCallback(void* object, SDL_AudioStream* stream,
     std::vector<uInt8>& buf = self->myBuffer;
 
     // Make sure we always have enough room in the buffer
-    if(std::cmp_greater(additional_amt, buf.capacity()))
+    if(std::cmp_greater(additional_amt, buf.size()))
       buf.resize(additional_amt);
 
     // The stream is 32-bit float (even though this callback is 8-bits), since
