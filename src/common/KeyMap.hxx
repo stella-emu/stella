@@ -37,15 +37,27 @@ class KeyMap
       StellaKey key{StellaKey::UNKNOWN};
       StellaMod mod{StellaMod::NONE};
 
-      explicit Mapping(EventMode c_mode, StellaKey c_key, StellaMod c_mod)
+      Mapping(EventMode c_mode, int c_key, int c_mod)
+        : Mapping{c_mode, static_cast<StellaKey>(c_key), static_cast<StellaMod>(c_mod)} { }
+
+      Mapping(EventMode c_mode, StellaKey c_key, StellaMod c_mod)
         : mode{c_mode}, key{c_key},
           mod{StellaKeyTest::isModifierKey(c_key)
               ? StellaMod::NONE
-              : c_mod & (StellaMod::SHIFT | StellaMod::CTRL | StellaMod::ALT | StellaMod::GUI)} { }
-      explicit Mapping(EventMode c_mode, int c_key, int c_mod)
-        : Mapping{c_mode, static_cast<StellaKey>(c_key), static_cast<StellaMod>(c_mod)} { }
+              : groupMod(c_mod)} { }
 
       auto operator<=>(const Mapping&) const = default;
+
+    private:
+      // Collapse L/R modifier variants to their combined group so that e.g.
+      // LCTRL (0x0040) matches a mapping stored as CTRL (LCTRL|RCTRL = 0x00C0).
+      static constexpr StellaMod groupMod(StellaMod m)
+      {
+        return ((m & StellaMod::SHIFT) != StellaMod::NONE ? StellaMod::SHIFT : StellaMod::NONE)
+             | ((m & StellaMod::CTRL ) != StellaMod::NONE ? StellaMod::CTRL  : StellaMod::NONE)
+             | ((m & StellaMod::ALT  ) != StellaMod::NONE ? StellaMod::ALT   : StellaMod::NONE)
+             | ((m & StellaMod::GUI  ) != StellaMod::NONE ? StellaMod::GUI   : StellaMod::NONE);
+      }
     };
     using MappingArray = std::vector<Mapping>;
 
