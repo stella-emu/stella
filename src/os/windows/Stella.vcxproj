@@ -1362,6 +1362,7 @@
     <ClInclude Include="..\..\common\audio\SimpleResampler.hxx" />
     <ClInclude Include="..\..\common\Base.hxx" />
     <ClInclude Include="..\..\common\Bezel.hxx" />
+    <ClInclude Include="..\..\common\BitmaskEnum.hxx" />
     <ClInclude Include="..\..\common\bspf.hxx" />
     <ClInclude Include="..\..\common\DevSettingsHandler.hxx" />
     <ClInclude Include="..\..\common\EventHandlerSDL.hxx" />
