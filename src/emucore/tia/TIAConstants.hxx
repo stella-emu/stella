@@ -18,6 +18,7 @@
 #ifndef TIA_CONSTANTS_HXX
 #define TIA_CONSTANTS_HXX
 
+#include "BitmaskEnum.hxx"
 #include "bspf.hxx"
 
 /**
@@ -54,17 +55,26 @@ namespace TIAConstants {
     H_BLANK_CLOCKS = H_CLOCKS - H_PIXEL;
 }  // namespace TIAConstants
 
-enum TIABit: uInt8 {
-  P0Bit       = 0x01,  // Bit for Player 0
-  M0Bit       = 0x02,  // Bit for Missle 0
-  P1Bit       = 0x04,  // Bit for Player 1
-  M1Bit       = 0x08,  // Bit for Missle 1
-  BLBit       = 0x10,  // Bit for Ball
-  PFBit       = 0x20,  // Bit for Playfield
-  ScoreBit    = 0x40,  // Bit for Playfield score mode
-  PriorityBit = 0x80,  // Bit for Playfield priority
-  AllBits     = 0xff
+enum class BitState: uInt8 {
+  Off    = 0,
+  On     = 1,
+  Toggle = 2,
+  Query  = 3
 };
+
+enum class TIABit: uInt8 {
+  None     = 0,
+  P0       = 1 << 0,  // Bit for Player 0
+  M0       = 1 << 1,  // Bit for Missle 0
+  P1       = 1 << 2,  // Bit for Player 1
+  M1       = 1 << 3,  // Bit for Missle 1
+  BL       = 1 << 4,  // Bit for Ball
+  PF       = 1 << 5,  // Bit for Playfield
+  Score    = 1 << 6,  // Bit for Playfield score mode
+  Priority = 1 << 7,  // Bit for Playfield priority
+  All      = 0xff
+};
+template<> inline constexpr bool Bitmask::is_enum_v<TIABit> = true;
 
 enum TIAColor: uInt8 {
   BKColor     = 0,  // Color index for Background

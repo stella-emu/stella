@@ -386,28 +386,32 @@ class TIA : public Device
     bool electronBeamPos(uInt32& x, uInt32& y) const;
 
     /**
-      Enables/disable/toggle the specified (or all) TIA bit(s).  Note that
-      disabling a graphical object also disables its collisions.
+      Enables/disables/toggles/queries the specified TIA bit(s).
+      Disabling a graphical object also disables its collisions.
 
-      @param mode  1/0 indicates on/off, and values greater than 1 mean
-                   2 means flip the bit from its current state
-                   and values greater than 2 mean return current state
+      @param b     The bit(s) to operate on
+      @param mode  Off    = force off
+                   On     = force on
+                   Toggle = flip current state (default)
+                   Query  = return current state without modifying
 
-      @return  Whether the bit was enabled or disabled
+      @return  Whether the bit is enabled after the operation
     */
-    bool toggleBit(TIABit b, uInt8 mode = 2);
+    bool toggleBit(TIABit b, BitState mode = BitState::Toggle);
     bool toggleBits(bool toggle = true);
 
     /**
-      Enables/disable/toggle the specified (or all) TIA bit collision(s).
+      Enables/disables/toggles/queries the specified TIA bit collision(s).
 
-      @param mode  1/0 indicates on/off,
-                   2 means flip the collision from its current state
-                   and values greater than 2 mean return current state
+      @param b     The bit(s) to operate on
+      @param mode  Off    = force off
+                   On     = force on
+                   Toggle = flip current state (default)
+                   Query  = return current state without modifying
 
-      @return  Whether the collision was enabled or disabled
+      @return  Whether the collision is enabled after the operation
     */
-    bool toggleCollision(TIABit b, uInt8 mode = 2);
+    bool toggleCollision(TIABit b, BitState mode = BitState::Toggle);
     bool toggleCollisions(bool toggle = true);
 
     /**
@@ -961,8 +965,8 @@ class TIA : public Device
     /**
      * Bitmasks that track which sprites / collisions are enabled / disabled.
      */
-    uInt8 mySpriteEnabledBits{0xFF};
-    uInt8 myCollisionsEnabledBits{0xFF};
+    TIABit mySpriteEnabledBits{TIABit::All};
+    TIABit myCollisionsEnabledBits{TIABit::All};
 
     /**
      * The color used to highlight HMOVE blanks (if enabled).

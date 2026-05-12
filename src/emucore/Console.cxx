@@ -1272,7 +1272,8 @@ void Console::toggleDeveloperSet(bool toggle)
 void Console::toggleTIABit(TIABit bit, string_view bitname,
                            bool show, bool toggle) const
 {
-  const bool result = myTIA->toggleBit(bit, toggle ? 2 : 3);
+  const bool result = myTIA->toggleBit(bit,
+                          toggle ? BitState::Toggle : BitState::Query);
 
   myOSystem.frameBuffer().showTextMessage(
     std::format("{} {}", bitname, result ? "enabled" : "disabled"));
@@ -1291,7 +1292,8 @@ void Console::toggleBits(bool toggle) const
 void Console::toggleTIACollision(TIABit bit, string_view bitname,
                                  bool show, bool toggle) const
 {
-  const bool result = myTIA->toggleCollision(bit, toggle ? 2 : 3);
+  const bool result = myTIA->toggleCollision(bit,
+                          toggle ? BitState::Toggle : BitState::Query);
 
   myOSystem.frameBuffer().showTextMessage(
     std::format("{} collision {}", bitname, result ? "enabled" : "disabled"));

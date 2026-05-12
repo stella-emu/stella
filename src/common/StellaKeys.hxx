@@ -21,6 +21,7 @@
 #ifdef SDL_SUPPORT
   #include "SDL_lib.hxx"
 #endif
+#include "BitmaskEnum.hxx"
 
 // These are defined keys from SDL, but are also leaky defines from some
 // Windows headers; undefine them here
@@ -448,43 +449,23 @@ enum class StellaMod: uInt16
   ALT    = (LALT | RALT),     /**< Any Alt key is down. */
   GUI    = (LGUI | RGUI)      /**< Any GUI key is down. */
 };
-// StellaMod is a bitmask type; bitwise operations on valid values always
-// produce valid values. The EnumCastOutOfRange warning is a false positive here.
-// NOLINTBEGIN(clang-analyzer-optin.core.EnumCastOutOfRange)
-constexpr StellaMod operator|(StellaMod a, StellaMod b) {
-  return static_cast<StellaMod>(static_cast<uInt16>(a) | static_cast<uInt16>(b));
-}
-constexpr StellaMod operator&(StellaMod a, StellaMod b) {
-  return static_cast<StellaMod>(static_cast<uInt16>(a) & static_cast<uInt16>(b));
-}
-constexpr StellaMod operator~(StellaMod a) {
-  return static_cast<StellaMod>(~static_cast<uInt16>(a));
-}
-constexpr StellaMod& operator&=(StellaMod& a, StellaMod b) {
-  a = a & b;
-  return a;
-}
-constexpr StellaMod& operator|=(StellaMod& a, StellaMod b) {
-  a = a | b;
-  return a;
-}
-// NOLINTEND(clang-analyzer-optin.core.EnumCastOutOfRange)
+template<> inline constexpr bool Bitmask::is_enum_v<StellaMod> = true;
 
 // Test if specified modifier is pressed
 namespace StellaModTest
 {
   constexpr bool isAlt(StellaMod mod) {
 #if defined(BSPF_MACOS) || defined(MACOS_KEYS)
-    return (mod & StellaMod::GUI) != StellaMod::NONE;
+    return Bitmask::Enum{mod}.any_of(StellaMod::GUI);
 #else
-    return (mod & StellaMod::ALT) != StellaMod::NONE;
+    return Bitmask::Enum{mod}.any_of(StellaMod::ALT);
 #endif
   }
   constexpr bool isControl(StellaMod mod) {
-    return (mod & StellaMod::CTRL) != StellaMod::NONE;
+    return Bitmask::Enum{mod}.any_of(StellaMod::CTRL);
   }
   constexpr bool isShift(StellaMod mod) {
-    return (mod & StellaMod::SHIFT) != StellaMod::NONE;
+    return Bitmask::Enum{mod}.any_of(StellaMod::SHIFT);
   }
 }  // namespace StellaModTest
 

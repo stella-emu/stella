@@ -333,23 +333,47 @@ class Console : public Serializable, public ConsoleIO
     /**
       Toggles the TIA bit specified in the method name.
     */
-    void toggleP0Bit(bool toggle = true) const { toggleTIABit(P0Bit, "P0", true, toggle); }
-    void toggleP1Bit(bool toggle = true) const { toggleTIABit(P1Bit, "P1", true, toggle); }
-    void toggleM0Bit(bool toggle = true) const { toggleTIABit(M0Bit, "M0", true, toggle); }
-    void toggleM1Bit(bool toggle = true) const { toggleTIABit(M1Bit, "M1", true, toggle); }
-    void toggleBLBit(bool toggle = true) const { toggleTIABit(BLBit, "BL", true, toggle); }
-    void togglePFBit(bool toggle = true) const { toggleTIABit(PFBit, "PF", true, toggle); }
+    void toggleP0Bit(bool toggle = true) const {
+      toggleTIABit(TIABit::P0, "P0", true, toggle);
+    }
+    void toggleP1Bit(bool toggle = true) const {
+      toggleTIABit(TIABit::P1, "P1", true, toggle);
+    }
+    void toggleM0Bit(bool toggle = true) const {
+      toggleTIABit(TIABit::M0, "M0", true, toggle);
+    }
+    void toggleM1Bit(bool toggle = true) const {
+      toggleTIABit(TIABit::M1, "M1", true, toggle);
+    }
+    void toggleBLBit(bool toggle = true) const {
+      toggleTIABit(TIABit::BL, "BL", true, toggle);
+    }
+    void togglePFBit(bool toggle = true) const {
+      toggleTIABit(TIABit::PF, "PF", true, toggle);
+    }
     void toggleBits(bool toggle = true) const;
 
     /**
       Toggles the TIA collisions specified in the method name.
     */
-    void toggleP0Collision(bool toggle = true) const { toggleTIACollision(P0Bit, "P0", true, toggle); }
-    void toggleP1Collision(bool toggle = true) const { toggleTIACollision(P1Bit, "P1", true, toggle); }
-    void toggleM0Collision(bool toggle = true) const { toggleTIACollision(M0Bit, "M0", true, toggle); }
-    void toggleM1Collision(bool toggle = true) const { toggleTIACollision(M1Bit, "M1", true, toggle); }
-    void toggleBLCollision(bool toggle = true) const { toggleTIACollision(BLBit, "BL", true, toggle); }
-    void togglePFCollision(bool toggle = true) const { toggleTIACollision(PFBit, "PF", true, toggle); }
+    void toggleP0Collision(bool toggle = true) const {
+      toggleTIACollision(TIABit::P0, "P0", true, toggle);
+    }
+    void toggleP1Collision(bool toggle = true) const {
+      toggleTIACollision(TIABit::P1, "P1", true, toggle);
+    }
+    void toggleM0Collision(bool toggle = true) const {
+      toggleTIACollision(TIABit::M0, "M0", true, toggle);
+    }
+    void toggleM1Collision(bool toggle = true) const {
+      toggleTIACollision(TIABit::M1, "M1", true, toggle);
+    }
+    void toggleBLCollision(bool toggle = true) const {
+      toggleTIACollision(TIABit::BL, "BL", true, toggle);
+    }
+    void togglePFCollision(bool toggle = true) const {
+      toggleTIACollision(TIABit::PF, "PF", true, toggle);
+    }
     void toggleCollisions(bool toggle = true) const;
 
     /**

@@ -57,6 +57,9 @@ namespace {
     lateHblank = 158,
     frame = 157
   };
+
+  template<Bitmask::Type T>
+  constexpr bool bmBool(T v) noexcept { return Bitmask::Enum{v}.any(); }
 }  // namespace
 
 // This parameter still has room for tuning. If we go lower than 73, long005 will show
@@ -316,8 +319,8 @@ bool TIA::save(Serializer& out) const
     out.putByte(mySubClock);
     out.putLong(myLastCycle);
 
-    out.putByte(mySpriteEnabledBits);
-    out.putByte(myCollisionsEnabledBits);
+    out.putByte(Bitmask::to_underlying(mySpriteEnabledBits));
+    out.putByte(Bitmask::to_underlying(myCollisionsEnabledBits));
 
     out.putByte(myColorHBlank);
 
@@ -391,8 +394,8 @@ bool TIA::load(Serializer& in)
     mySubClock = in.getByte();
     myLastCycle = in.getLong();
 
-    mySpriteEnabledBits = in.getByte();
-    myCollisionsEnabledBits = in.getByte();
+    mySpriteEnabledBits = Bitmask::from_underlying<TIABit>(in.getByte());
+    myCollisionsEnabledBits = Bitmask::from_underlying<TIABit>(in.getByte());
 
     myColorHBlank = in.getByte();
 
@@ -1108,93 +1111,85 @@ bool TIA::electronBeamPos(uInt32& x, uInt32& y) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool TIA::toggleBit(TIABit b, uInt8 mode)
+bool TIA::toggleBit(TIABit b, BitState mode)
 {
-  uInt8 mask = 0;
+  auto mask = TIABit{};
 
   switch (mode) {
-    case 0:
-      mask = 0;
+    case BitState::Off:
       break;
-
-    case 1:
+    case BitState::On:
       mask = b;
       break;
-
-    case 2:
-      mask = (~mySpriteEnabledBits & b);
+    case BitState::Toggle:
+      mask = ~mySpriteEnabledBits & b;
       break;
-
-    default:
-      mask = (mySpriteEnabledBits & b);
+    case BitState::Query:
+      mask = mySpriteEnabledBits & b;
       break;
   }
 
   mySpriteEnabledBits = (mySpriteEnabledBits & ~b) | mask;
 
-  myMissile0.toggleEnabled(mySpriteEnabledBits & TIABit::M0Bit);
-  myMissile1.toggleEnabled(mySpriteEnabledBits & TIABit::M1Bit);
-  myPlayer0.toggleEnabled(mySpriteEnabledBits & TIABit::P0Bit);
-  myPlayer1.toggleEnabled(mySpriteEnabledBits & TIABit::P1Bit);
-  myBall.toggleEnabled(mySpriteEnabledBits & TIABit::BLBit);
-  myPlayfield.toggleEnabled(mySpriteEnabledBits & TIABit::PFBit);
+  myMissile0.toggleEnabled(bmBool(mySpriteEnabledBits & TIABit::M0));
+  myMissile1.toggleEnabled(bmBool(mySpriteEnabledBits & TIABit::M1));
+  myPlayer0.toggleEnabled(bmBool(mySpriteEnabledBits & TIABit::P0));
+  myPlayer1.toggleEnabled(bmBool(mySpriteEnabledBits & TIABit::P1));
+  myBall.toggleEnabled(bmBool(mySpriteEnabledBits & TIABit::BL));
+  myPlayfield.toggleEnabled(bmBool(mySpriteEnabledBits & TIABit::PF));
 
-  return mask;
+  return Bitmask::to_underlying(mask) != 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool TIA::toggleBits(bool toggle)
 {
-  toggleBit(TIABit::AllBits, toggle
-    ? mySpriteEnabledBits > 0 ? 0 : 1
-    : mySpriteEnabledBits);
+  toggleBit(TIABit::All, toggle
+    ? Bitmask::Enum{mySpriteEnabledBits}.any() ? BitState::Off : BitState::On
+    : BitState::Query);
 
-  return mySpriteEnabledBits;
+  return Bitmask::Enum{mySpriteEnabledBits}.any();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool TIA::toggleCollision(TIABit b, uInt8 mode)
+bool TIA::toggleCollision(TIABit b, BitState mode)
 {
-  uInt8 mask = 0;
+  auto mask = TIABit{};
 
   switch (mode) {
-    case 0:
-      mask = 0;
+    case BitState::Off:
       break;
-
-    case 1:
+    case BitState::On:
       mask = b;
       break;
-
-    case 2:
-      mask = (~myCollisionsEnabledBits & b);
+    case BitState::Toggle:
+      mask = ~myCollisionsEnabledBits & b;
       break;
-
-    default:
-      mask = (myCollisionsEnabledBits & b);
+    case BitState::Query:
+      mask = myCollisionsEnabledBits & b;
       break;
   }
 
   myCollisionsEnabledBits = (myCollisionsEnabledBits & ~b) | mask;
 
-  myMissile0.toggleCollisions(myCollisionsEnabledBits & TIABit::M0Bit);
-  myMissile1.toggleCollisions(myCollisionsEnabledBits & TIABit::M1Bit);
-  myPlayer0.toggleCollisions(myCollisionsEnabledBits & TIABit::P0Bit);
-  myPlayer1.toggleCollisions(myCollisionsEnabledBits & TIABit::P1Bit);
-  myBall.toggleCollisions(myCollisionsEnabledBits & TIABit::BLBit);
-  myPlayfield.toggleCollisions(myCollisionsEnabledBits & TIABit::PFBit);
+  myMissile0.toggleCollisions(bmBool(myCollisionsEnabledBits & TIABit::M0));
+  myMissile1.toggleCollisions(bmBool(myCollisionsEnabledBits & TIABit::M1));
+  myPlayer0.toggleCollisions(bmBool(myCollisionsEnabledBits & TIABit::P0));
+  myPlayer1.toggleCollisions(bmBool(myCollisionsEnabledBits & TIABit::P1));
+  myBall.toggleCollisions(bmBool(myCollisionsEnabledBits & TIABit::BL));
+  myPlayfield.toggleCollisions(bmBool(myCollisionsEnabledBits & TIABit::PF));
 
-  return mask;
+  return Bitmask::BitmaskEnum{mask}.any();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool TIA::toggleCollisions(bool toggle)
 {
-  toggleCollision(TIABit::AllBits, toggle
-    ? myCollisionsEnabledBits > 0 ? 0 : 1
-    : myCollisionsEnabledBits);
+  toggleCollision(TIABit::All, toggle
+    ? Bitmask::Enum{myCollisionsEnabledBits}.any() ? BitState::Off : BitState::On
+    : BitState::Query);
 
-  return myCollisionsEnabledBits;
+  return Bitmask::BitmaskEnum{myCollisionsEnabledBits}.any();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
