@@ -53,15 +53,7 @@ class JoyMap
         : mode{c_mode}, button{c_button}, axis{}, adir{},
           hat{c_hat}, hdir{c_hdir} { }
 
-      bool operator==(const JoyMapping& other) const = default;
-      bool operator<(const JoyMapping& other) const {
-        if(mode   != other.mode)   return mode   < other.mode;
-        if(button != other.button) return button < other.button;
-        if(axis   != other.axis)   return axis   < other.axis;
-        if(adir   != other.adir)   return adir   < other.adir;
-        if(hat    != other.hat)    return hat    < other.hat;
-        return hdir < other.hdir;
-      }
+      auto operator<=>(const JoyMapping&) const = default;
     };
     using JoyMappingArray = std::vector<JoyMapping>;
 

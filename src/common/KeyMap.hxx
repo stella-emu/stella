@@ -38,32 +38,14 @@ class KeyMap
       StellaMod mod{StellaMod::NONE};
 
       explicit Mapping(EventMode c_mode, StellaKey c_key, StellaMod c_mod)
-        : mode{c_mode}, key{c_key}, mod{c_mod} { }
+        : mode{c_mode}, key{c_key},
+          mod{StellaKeyTest::isModifierKey(c_key)
+              ? StellaMod::NONE
+              : c_mod & (StellaMod::SHIFT | StellaMod::CTRL | StellaMod::ALT | StellaMod::GUI)} { }
       explicit Mapping(EventMode c_mode, int c_key, int c_mod)
-        : mode{c_mode}, key{static_cast<StellaKey>(c_key)}, mod{static_cast<StellaMod>(c_mod)} { }
+        : Mapping{c_mode, static_cast<StellaKey>(c_key), static_cast<StellaMod>(c_mod)} { }
 
-      bool operator==(const Mapping& other) const {
-        return (key == other.key
-          && mode == other.mode
-          && (((mod | other.mod) & StellaMod::SHIFT) != StellaMod::NONE
-            ? (mod & other.mod & StellaMod::SHIFT) != StellaMod::NONE
-            : true)
-          && (((mod | other.mod) & StellaMod::CTRL ) != StellaMod::NONE
-            ? (mod & other.mod & StellaMod::CTRL ) != StellaMod::NONE
-            : true)
-          && (((mod | other.mod) & StellaMod::ALT  ) != StellaMod::NONE
-            ? (mod & other.mod & StellaMod::ALT  ) != StellaMod::NONE
-            : true)
-          && (((mod | other.mod) & StellaMod::GUI  ) != StellaMod::NONE
-            ? (mod & other.mod & StellaMod::GUI  ) != StellaMod::NONE
-            : true)
-          );
-      }
-      bool operator<(const Mapping& other) const {
-        if(mode != other.mode) return mode < other.mode;
-        if(key  != other.key)  return key  < other.key;
-        return mod < other.mod;
-      }
+      auto operator<=>(const Mapping&) const = default;
     };
     using MappingArray = std::vector<Mapping>;
 
@@ -111,12 +93,9 @@ class KeyMap
     bool& enableMod() { return myModEnabled;  }
 
   private:
-    //** Convert modifiers */
-    static Mapping convertMod(const Mapping& mapping);
-
-    // IMPORTANT: myMap must always be kept sorted by Mapping::operator<.
-    // All access must go through convertMod() first to normalise modifiers,
-    // ensuring operator== and operator< are consistent for binary search.
+    // myMap must always be kept sorted by Mapping::operator<.
+    // Mapping constructors normalise modifiers, ensuring operator== and
+    // operator< are consistent for binary search.
     using MapEntry = std::pair<Mapping, Event::Type>;
     std::vector<MapEntry> myMap;
 

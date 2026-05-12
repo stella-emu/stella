@@ -232,26 +232,26 @@ int JoyMap::loadMapping(const json& eventMappings, EventMode mode)
   int i = 0;
 
   for(const json& eventMapping : eventMappings) {
-    const int button = eventMapping.contains("button")
-      ? eventMapping.at("button").get<int>()
-      : JOY_CTRL_NONE;
-    const JoyAxis axis = eventMapping.contains("axis")
-      ? eventMapping.at("axis").get<JoyAxis>()
-      : JoyAxis::NONE;
-    const JoyDir axisDirection = eventMapping.contains("axis")
-      ? eventMapping.at("axisDirection").get<JoyDir>()
-      : JoyDir::NONE;
-    const int hat = eventMapping.contains("hat")
-      ? eventMapping.at("hat").get<int>()
-      : -1;
-    const JoyHatDir hatDirection = eventMapping.contains("hat")
-      ? eventMapping.at("hatDirection").get<JoyHatDir>()
-      : JoyHatDir::CENTER;
-
     try {
       // avoid blocking mappings for NoType events
       if(eventMapping.at("event").get<Event::Type>() == Event::NoType)
         continue;
+
+      const int button = eventMapping.contains("button")
+        ? eventMapping.at("button").get<int>()
+        : JOY_CTRL_NONE;
+      const JoyAxis axis = eventMapping.contains("axis")
+        ? eventMapping.at("axis").get<JoyAxis>()
+        : JoyAxis::NONE;
+      const JoyDir axisDirection = eventMapping.contains("axis")
+        ? eventMapping.at("axisDirection").get<JoyDir>()
+        : JoyDir::NONE;
+      const int hat = eventMapping.contains("hat")
+        ? eventMapping.at("hat").get<int>()
+        : -1;
+      const JoyHatDir hatDirection = eventMapping.contains("hat")
+        ? eventMapping.at("hatDirection").get<JoyHatDir>()
+        : JoyHatDir::CENTER;
 
       add(
         eventMapping.at("event").get<Event::Type>(),

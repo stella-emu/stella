@@ -70,12 +70,11 @@ namespace {
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void KeyMap::add(Event::Type event, const Mapping& mapping)
 {
-  const Mapping m = convertMod(mapping);
-  const auto it = std::ranges::lower_bound(myMap, m, std::less{}, &MapEntry::first);
-  if(it != myMap.end() && it->first == m)
+  const auto it = std::ranges::lower_bound(myMap, mapping, std::less{}, &MapEntry::first);
+  if(it != myMap.end() && it->first == mapping)
     it->second = event;
   else
-    myMap.insert(it, {m, event});
+    myMap.insert(it, {mapping, event});
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -87,9 +86,8 @@ void KeyMap::add(Event::Type event, EventMode mode, StellaKey key, StellaMod mod
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void KeyMap::erase(const Mapping& mapping)
 {
-  const Mapping m = convertMod(mapping);
-  const auto it = std::ranges::lower_bound(myMap, m, std::less{}, &MapEntry::first);
-  if(it != myMap.end() && it->first == m)
+  const auto it = std::ranges::lower_bound(myMap, mapping, std::less{}, &MapEntry::first);
+  if(it != myMap.end() && it->first == mapping)
     myMap.erase(it);
 }
 
@@ -102,19 +100,17 @@ void KeyMap::erase(EventMode mode, StellaKey key, StellaMod mod)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Event::Type KeyMap::get(const Mapping& mapping) const
 {
-  Mapping m = convertMod(mapping);
-
   if(myModEnabled)
   {
-    const auto it = std::ranges::lower_bound(myMap, m, std::less{}, &MapEntry::first);
-    if(it != myMap.end() && it->first == m)
+    const auto it = std::ranges::lower_bound(myMap, mapping, std::less{}, &MapEntry::first);
+    if(it != myMap.end() && it->first == mapping)
       return it->second;
   }
 
   // mapping not found, try without modifiers
-  m.mod = StellaMod::NONE;
-  const auto it = std::ranges::lower_bound(myMap, m, std::less{}, &MapEntry::first);
-  if(it != myMap.end() && it->first == m)
+  const Mapping noMod{mapping.mode, mapping.key, StellaMod::NONE};
+  const auto it = std::ranges::lower_bound(myMap, noMod, std::less{}, &MapEntry::first);
+  if(it != myMap.end() && it->first == noMod)
     return it->second;
 
   return Event::Type::NoType;
@@ -129,9 +125,8 @@ Event::Type KeyMap::get(EventMode mode, StellaKey key, StellaMod mod) const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool KeyMap::check(const Mapping& mapping) const
 {
-  const Mapping m = convertMod(mapping);
-  const auto it = std::ranges::lower_bound(myMap, m, std::less{}, &MapEntry::first);
-  return it != myMap.end() && it->first == m;
+  const auto it = std::ranges::lower_bound(myMap, mapping, std::less{}, &MapEntry::first);
+  return it != myMap.end() && it->first == mapping;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -326,15 +321,3 @@ void KeyMap::eraseEvent(Event::Type event, EventMode mode)
   });
 }
 
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-KeyMap::Mapping KeyMap::convertMod(const Mapping& mapping)
-{
-  Mapping m = mapping;
-
-  if(StellaKeyTest::isModifierKey(m.key))  // handle solo modifier keys differently
-    m.mod = StellaMod::NONE;
-  else  // limit to modifiers we want to support
-    m.mod = m.mod & (StellaMod::SHIFT | StellaMod::CTRL | StellaMod::ALT | StellaMod::GUI);
-
-  return m;
-}
