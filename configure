@@ -14,13 +14,13 @@
 CXXFLAGS="$CXXFLAGS $CPPFLAGS"
 
 if test -n "$CXXFLAGS_TEST"; then
-	CXXFLAGS_TEST="$CXXFLAGS_TEST $CPPFLAGS"
+  CXXFLAGS_TEST="$CXXFLAGS_TEST $CPPFLAGS"
 else
-	CXXFLAGS_TEST="$CXXFLAGS"
+  CXXFLAGS_TEST="$CXXFLAGS"
 fi
 
 if test -z "$LDFLAGS_TEST"; then
-	LDFLAGS_TEST="$LDFLAGS"
+  LDFLAGS_TEST="$LDFLAGS"
 fi
 
 # default option behaviour yes/no
@@ -74,32 +74,32 @@ _host_os=""
 _host_prefix=""
 
 cc_check() {
-	echo >> "$TMPLOG"
-	cat "$TMPC" >> "$TMPLOG"
-	echo >> "$TMPLOG"
-	echo "$CXX $TMPC $CXXFLAGS $LDFLAGS -o $TMPO$EXEEXT $@" >> "$TMPLOG"
-	rm -f "$TMPO$EXEEXT"
-	( $CXX "$TMPC" $CXXFLAGS $LDFLAGS -o "$TMPO$EXEEXT" "$@" ) >> "$TMPLOG" 2>&1
-	TMP="$?"
-	echo >> "$TMPLOG"
-	return "$TMP"
+  echo >> "$TMPLOG"
+  cat "$TMPC" >> "$TMPLOG"
+  echo >> "$TMPLOG"
+  echo "$CXX $TMPC $CXXFLAGS $LDFLAGS -o $TMPO$EXEEXT $@" >> "$TMPLOG"
+  rm -f "$TMPO$EXEEXT"
+  ( $CXX "$TMPC" $CXXFLAGS $LDFLAGS -o "$TMPO$EXEEXT" "$@" ) >> "$TMPLOG" 2>&1
+  TMP="$?"
+  echo >> "$TMPLOG"
+  return "$TMP"
 }
 
 cc_check_define() {
 cat > $TMPC << EOF
 int main(void) {
-	#ifndef $1
-	syntax error
-	#endif
-	return 0;
+  #ifndef $1
+  syntax error
+  #endif
+  return 0;
 }
 EOF
-	cc_check -c
-	return $?
+  cc_check -c
+  return $?
 }
 
 echocheck () {
-	echo_n "Checking for $@... "
+  echo_n "Checking for $@... "
 }
 
 #
@@ -110,64 +110,27 @@ test_compiler ()
 cat <<EOF >tmp_cxx_compiler.cpp
 #include <memory>
 class Foo {
-	int a;
+  int a;
 };
 int main(int argc, char* argv[])
 {
-	std::shared_ptr<Foo> a = std::make_shared<Foo>();
-	return 0;
+  std::shared_ptr<Foo> a = std::make_shared<Foo>();
+  return 0;
 }
 EOF
 
 if test -n "$_host"; then
-	# In cross-compiling mode, we cannot run the result
-	eval "$1 $CXXFLAGS $LDFLAGS -o tmp_cxx_compiler$EXEEXT tmp_cxx_compiler.cpp 2> /dev/null" && rm -f tmp_cxx_compiler$EXEEXT tmp_cxx_compiler.cpp
+  # In cross-compiling mode, we cannot run the result
+  eval "$1 $CXXFLAGS $LDFLAGS -o tmp_cxx_compiler$EXEEXT tmp_cxx_compiler.cpp 2> /dev/null" && rm -f tmp_cxx_compiler$EXEEXT tmp_cxx_compiler.cpp
 else
-	eval "$1 $CXXFLAGS $LDFLAGS -o tmp_cxx_compiler$EXEEXT tmp_cxx_compiler.cpp 2> /dev/null" && eval "./tmp_cxx_compiler 2> /dev/null" && rm -f tmp_cxx_compiler$EXEEXT tmp_cxx_compiler.cpp
+  eval "$1 $CXXFLAGS $LDFLAGS -o tmp_cxx_compiler$EXEEXT tmp_cxx_compiler.cpp 2> /dev/null" && eval "./tmp_cxx_compiler 2> /dev/null" && rm -f tmp_cxx_compiler$EXEEXT tmp_cxx_compiler.cpp
 fi
 }
 
 # Add a line of data to config.mk.
 add_line_to_config_mk() {
-	_config_mk_data="$_config_mk_data"'
+  _config_mk_data="$_config_mk_data"'
 '"$1"
-}
-
-
-#
-# Determine sdl2-config
-#
-# TODO: small bit of code to test sdl useability
-find_sdlconfig()
-{
-	echo_n "Looking for sdl2-config... "
-	sdlconfigs="$_sdlconfig"
-	_sdlconfig=
-
-	IFS="${IFS=   }"; ac_save_ifs="$IFS"; IFS="$SEPARATOR"
-	done=0
-	for path_dir in $_sdlpath; do
-                #reset separator to parse sdlconfigs
-                IFS=":"
-		for sdlconfig in $sdlconfigs; do
-			if test -x "$path_dir/$sdlconfig" ; then
-				_sdlconfig="$path_dir/$sdlconfig"
-				done=1
-				break
-			fi
-		done
-		if test $done -eq 1 ; then
-			echo $_sdlconfig
-			break
-		fi
-	done
-
-	IFS="$ac_save_ifs"
-
-	if test -z "$_sdlconfig"; then
-		echo "none found!"
-		exit 1
-	fi
 }
 
 #
@@ -175,7 +138,7 @@ find_sdlconfig()
 #
 echo_n()
 {
-	printf "$@"
+  printf "$@"
 }
 
 #
@@ -237,15 +200,15 @@ Optional Libraries:
   --with-sdl-prefix=DIR    Prefix where the sdl2-config script is installed (optional)
   --with-libpng-prefix=DIR Prefix where libpng is installed (optional)
   --with-zlib-prefix=DIR   Prefix where zlib is installed (optional)
-  --with-gtest-prefix=DIR	 Prefix where googletest is installed (optional)
+  --with-gtest-prefix=DIR  Prefix where googletest is installed (optional)
 
 Some influential environment variables:
-  LDFLAGS	linker flags, e.g. -L<lib dir> if you have libraries in a
-  		nonstandard directory <lib dir>
-  CXX		C++ compiler command
-  CXXFLAGS	C++ compiler flags
-  CPPFLAGS	C++ preprocessor flags, e.g. -I<include dir> if you have
-  		headers in a nonstandard directory <include dir>
+  LDFLAGS linker flags, e.g. -L<lib dir> if you have libraries in a
+      nonstandard directory <lib dir>
+  CXX   C++ compiler command
+  CXXFLAGS  C++ compiler flags
+  CPPFLAGS  C++ preprocessor flags, e.g. -I<include dir> if you have
+      headers in a nonstandard directory <include dir>
   LDFLAGS_TEST linker flags for unit tests
   CXXFLAGS_TEST C++ compiler flags for unit tests
 
@@ -284,20 +247,22 @@ for ac_option in $@; do
       --use-mold-linker)        _build_mold=yes      ;;
       --use-full-warnings)      _build_full_warn=yes ;;
       --with-sdl-prefix=*)
-        arg=`echo $ac_option | cut -d '=' -f 2`
-        _sdlpath="$arg:$arg/bin"
-        ;;
+          arg=`echo $ac_option | cut -d '=' -f 2`
+          PKG_CONFIG_PATH="$arg/lib/pkgconfig:$PKG_CONFIG_PATH"
+          ;;
       --with-libpng-prefix=*)
-        _prefix=`echo $ac_option | cut -d '=' -f 2`
-        LIBPNG_CFLAGS="-I$_prefix/include"
-        LIBPNG_LIBS="-L$_prefix/lib"
-        ;;
+          arg=`echo $ac_option | cut -d '=' -f 2`
+          PKG_CONFIG_PATH="$arg/lib/pkgconfig:$PKG_CONFIG_PATH"
+          ;;
       --with-zlib-prefix=*)
-        _prefix=`echo $ac_option | cut -d '=' -f 2`
-        ZLIB_CFLAGS="-I$_prefix/include"
-        ZLIB_LIBS="-L$_prefix/lib"
-        ;;
-			--with-gtest-prefix=*)
+          arg=`echo $ac_option | cut -d '=' -f 2`
+          PKG_CONFIG_PATH="$arg/lib/pkgconfig:$PKG_CONFIG_PATH"
+          ;;
+      --with-sqlite3-prefix=*)
+          arg=`echo $ac_option | cut -d '=' -f 2`
+          PKG_CONFIG_PATH="$arg/lib/pkgconfig:$PKG_CONFIG_PATH"
+          ;;
+      --with-gtest-prefix=*)
         _prefix=`echo $ac_option | cut -d '=' -f 2`
         CXXFLAGS_TEST="$CXXFLAGS_TEST -I$_prefix/include"
         LDFLAGS_TEST="$LDFLAGS_TEST -L$_prefix/lib"
@@ -327,33 +292,33 @@ CXXFLAGS="$CXXFLAGS $DEBFLAGS"
 
 case $_host in
 #linupy)
-#	_host_os=linux
-#	_host_cpu=arm
-#	;;
+# _host_os=linux
+# _host_cpu=arm
+# ;;
 #arm-riscos-aof)
-#	_host_os=riscos
-#	_host_cpu=arm
-#	;;
+# _host_os=riscos
+# _host_cpu=arm
+# ;;
 #ppc-amigaos)
-#	_host_os=amigaos
-#	_host_cpu=ppc
-#	;;
+# _host_os=amigaos
+# _host_cpu=ppc
+# ;;
 mingw32-cross)
-	_host_os=mingw32msvc
-	_host_cpu=i386
-	_host_prefix=i386-mingw32msvc
-	;;
+  _host_os=mingw32msvc
+  _host_cpu=i386
+  _host_prefix=i386-mingw32msvc
+  ;;
 "")
-	guessed_host=`$_srcdir/config.guess`
-	_host_cpu=`echo $guessed_host | sed 's/^\([^-]*\)-\([^-]*\)-\(.*\)$/\1/'`
-	_host_os=`echo $guessed_host | sed 's/^\([^-]*\)-\([^-]*\)-\(.*\)$/\3/'`
-	_host_vendor=`echo $guessed_host | sed 's/^\([^-]*\)-\([^-]*\)-\(.*\)$/\2/'`
-	;;
+  guessed_host=`$_srcdir/config.guess`
+  _host_cpu=`echo $guessed_host | sed 's/^\([^-]*\)-\([^-]*\)-\(.*\)$/\1/'`
+  _host_os=`echo $guessed_host | sed 's/^\([^-]*\)-\([^-]*\)-\(.*\)$/\3/'`
+  _host_vendor=`echo $guessed_host | sed 's/^\([^-]*\)-\([^-]*\)-\(.*\)$/\2/'`
+  ;;
 *)
-	_host_cpu=`echo "$_host" | sed 's/^\([^-]*\)-.*/\1/'`
-	_host_os=`echo "$_host" | sed 's/-\([^-]*\)-[^-]*$/\1/'`
-	_host_prefix="$_host"
-	;;
+  _host_cpu=`echo "$_host" | sed 's/^\([^-]*\)-.*/\1/'`
+  _host_os=`echo "$_host" | sed 's/-\([^-]*\)-[^-]*$/\1/'`
+  _host_prefix="$_host"
+  ;;
 esac
 
 #
@@ -361,17 +326,17 @@ esac
 #
 case $_host_os in
 mingw* | cygwin* |os2-emx*)
-	EXEEXT=".exe"
-	;;
+  EXEEXT=".exe"
+  ;;
 arm-riscos-aof)
-	EXEEXT=",ff8"
-	;;
+  EXEEXT=",ff8"
+  ;;
 psp)
-	EXEEXT=".elf"
-	;;
+  EXEEXT=".elf"
+  ;;
 *)
-	EXEEXT=""
-	;;
+  EXEEXT=""
+  ;;
 esac
 
 #
@@ -392,25 +357,25 @@ esac
 #
 echo_n "Looking for C++ compiler... "
 if test -n "$CXX"; then
-	echo $CXX
+  echo $CXX
 else
-	if test -n "$_host"; then
-		compilers="$_host_prefix-g++ $_host_prefix-c++ $_host_cpu-$_host_os-g++ $_host_cpu-$_host_os-c++ g++ c++"
-	else
-		compilers="g++ c++"
-	fi
+  if test -n "$_host"; then
+    compilers="$_host_prefix-g++ $_host_prefix-c++ $_host_cpu-$_host_os-g++ $_host_cpu-$_host_os-c++ g++ c++"
+  else
+    compilers="g++ c++"
+  fi
 
-	for compiler in $compilers; do
-		if test_compiler "$compiler -std=c++20"; then
-			CXX=$compiler
-			echo $CXX
-			break
-		fi
-	done
-	if test -z "$CXX"; then
-		echo "none found!"
-		exit 1
-	fi
+  for compiler in $compilers; do
+    if test_compiler "$compiler -std=c++20"; then
+      CXX=$compiler
+      echo $CXX
+      break
+    fi
+  done
+  if test -z "$CXX"; then
+    echo "none found!"
+    exit 1
+  fi
 fi
 
 #
@@ -421,127 +386,127 @@ echocheck "compiler version"
 have_clang=no
 cc_check_define __clang_version__ && have_clang=yes
 if test $have_clang = no; then
-	cc_check_define __clang__ && have_clang=yes
+  cc_check_define __clang__ && have_clang=yes
 fi
 have_gcc=no
 cc_check_define __GNUC__ && have_gcc=yes
 
 if test "$have_clang" = yes; then
 
-	clang_minor=$( $CXX -dM -E -x c /dev/null | grep __clang_minor__ | sed -E 's/.* ([0-9]+).*/\1/' )
-	clang_patch=$( $CXX -dM -E -x c /dev/null | grep __clang_patchlevel__ | sed -E 's/.* ([0-9]+).*/\1/' )
-	clang_major=$( $CXX -dM -E -x c /dev/null | grep __clang_major__ | sed -E 's/.* ([0-9]+).*/\1/' )
+  clang_minor=$( $CXX -dM -E -x c /dev/null | grep __clang_minor__ | sed -E 's/.* ([0-9]+).*/\1/' )
+  clang_patch=$( $CXX -dM -E -x c /dev/null | grep __clang_patchlevel__ | sed -E 's/.* ([0-9]+).*/\1/' )
+  clang_major=$( $CXX -dM -E -x c /dev/null | grep __clang_major__ | sed -E 's/.* ([0-9]+).*/\1/' )
 
-	cxx_version="$clang_major.$clang_minor.$clang_patch"
+  cxx_version="$clang_major.$clang_minor.$clang_patch"
 
-	is_xcode=$( $CXX -dM -E -x c /dev/null | grep __apple_build_version__ )
+  is_xcode=$( $CXX -dM -E -x c /dev/null | grep __apple_build_version__ )
 
   # Need at least version 8
-	if test -n "$is_xcode"; then
-		cxx_name="XCode $cxx_version"
+  if test -n "$is_xcode"; then
+    cxx_name="XCode $cxx_version"
 
-		if test $clang_major -ge 8; then
-			cxx_version="$cxx_version, ok"
-			cxx_verc_fail=no
-		else
-			cxx_version="$cxx_version, bad"
-			cxx_verc_fail=yes
-		fi
-	else
+    if test $clang_major -ge 8; then
+      cxx_version="$cxx_version, ok"
+      cxx_verc_fail=no
+    else
+      cxx_version="$cxx_version, bad"
+      cxx_verc_fail=yes
+    fi
+  else
     # Need at least version 3.5
-		if [ $clang_major -ge 4 ] || [ $clang_major -eq 3 -a $clang_minor -ge 5 ]; then
-			cxx_version="$cxx_version, ok"
-			cxx_verc_fail=no
-		else
-			cxx_version="$cxx_version, bad"
-			cxx_verc_fail=yes
-		fi
-	fi
-	CXXFLAGS="$CXXFLAGS"
-	_make_def_HAVE_CLANG='HAVE_CLANG = 1'
-	add_line_to_config_mk 'CXX_UPDATE_DEP_FLAG = -MMD -MF "$(*D)/$(DEPDIR)/$(*F).d" -MQ "$@" -MP'
-	echo "$cxx_version"
+    if [ $clang_major -ge 4 ] || [ $clang_major -eq 3 -a $clang_minor -ge 5 ]; then
+      cxx_version="$cxx_version, ok"
+      cxx_verc_fail=no
+    else
+      cxx_version="$cxx_version, bad"
+      cxx_verc_fail=yes
+    fi
+  fi
+  CXXFLAGS="$CXXFLAGS"
+  _make_def_HAVE_CLANG='HAVE_CLANG = 1'
+  add_line_to_config_mk 'CXX_UPDATE_DEP_FLAG = -MMD -MF "$(*D)/$(DEPDIR)/$(*F).d" -MQ "$@" -MP'
+  echo "$cxx_version"
 
 elif test "$have_gcc" = yes; then
-	cxx_name=`( $cc -v ) 2>&1 | tail -n 1 | cut -d ' ' -f 1`
-	cxx_version=`( $CXX -dumpversion ) 2>&1`
-	if test "$?" -gt 0; then
-		cxx_version="not found"
-	fi
+  cxx_name=`( $cc -v ) 2>&1 | tail -n 1 | cut -d ' ' -f 1`
+  cxx_version=`( $CXX -dumpversion ) 2>&1`
+  if test "$?" -gt 0; then
+    cxx_version="not found"
+  fi
 
-	case $cxx_version in
-		[1-9]*)
-			_cxx_major=`echo $cxx_version | cut -d '.' -f 1`
-			_cxx_minor=`echo $cxx_version | cut -d '.' -f 2`
-			# Need at least version 4.7
-			if [ $_cxx_major -ge 5 ] || [ $_cxx_major -eq 4 -a $_cxx_minor -ge 7 ]; then
-				cxx_version="$cxx_version, ok"
-				cxx_verc_fail=no
-			else
-				cxx_version="$cxx_version, bad"
-				cxx_verc_fail=yes
-			fi
-			;;
-		'not found')
-			cxx_verc_fail=yes
-			;;
-		*)
-			cxx_version="$cxx_version, bad"
-			cxx_verc_fail=yes
-			;;
-	esac
-	CXXFLAGS="$CXXFLAGS"
-	add_line_to_config_mk 'CXX_UPDATE_DEP_FLAG = -MMD -MF "$(*D)/$(DEPDIR)/$(*F).d" -MQ "$@" -MP'
-	_make_def_HAVE_GCC='HAVE_GCC = 1'
-	echo "$cxx_version"
+  case $cxx_version in
+    [1-9]*)
+      _cxx_major=`echo $cxx_version | cut -d '.' -f 1`
+      _cxx_minor=`echo $cxx_version | cut -d '.' -f 2`
+      # Need at least version 4.7
+      if [ $_cxx_major -ge 5 ] || [ $_cxx_major -eq 4 -a $_cxx_minor -ge 7 ]; then
+        cxx_version="$cxx_version, ok"
+        cxx_verc_fail=no
+      else
+        cxx_version="$cxx_version, bad"
+        cxx_verc_fail=yes
+      fi
+      ;;
+    'not found')
+      cxx_verc_fail=yes
+      ;;
+    *)
+      cxx_version="$cxx_version, bad"
+      cxx_verc_fail=yes
+      ;;
+  esac
+  CXXFLAGS="$CXXFLAGS"
+  add_line_to_config_mk 'CXX_UPDATE_DEP_FLAG = -MMD -MF "$(*D)/$(DEPDIR)/$(*F).d" -MQ "$@" -MP'
+  _make_def_HAVE_GCC='HAVE_GCC = 1'
+  echo "$cxx_version"
 
 else
-	cxx_version=`( $CXX -version ) 2>&1`
-	if test "$?" -eq 0; then
-		cxx_version="`echo "${cxx_version}" | sed -ne 's/^.*[^0-9]\([0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*\).*$/\1/gp'`"
-		if test -z "${cxx_version}"; then
-			cxx_version="not found"
-			cxx_verc_fail=yes
-		fi
-		echo non-gcc compiler version ${cxx_version}
-	else
-		cxx_version="not found"
-		cxx_verc_fail=yes
-		echo found non-gcc compiler version ${cxx_version}
-	fi
+  cxx_version=`( $CXX -version ) 2>&1`
+  if test "$?" -eq 0; then
+    cxx_version="`echo "${cxx_version}" | sed -ne 's/^.*[^0-9]\([0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*\).*$/\1/gp'`"
+    if test -z "${cxx_version}"; then
+      cxx_version="not found"
+      cxx_verc_fail=yes
+    fi
+    echo non-gcc compiler version ${cxx_version}
+  else
+    cxx_version="not found"
+    cxx_verc_fail=yes
+    echo found non-gcc compiler version ${cxx_version}
+  fi
 
-	CXXFLAGS="$CXXFLAGS"
-	case $_host_os in
-		irix*)
-			case $cxx_version in
-				7.4.4*)
-					# We just assume this is SGI MIPSpro
-					_cxx_major=7
-					_cxx_minor=4
-					cxx_verc_fail=no
-					add_line_to_config_mk 'CXX_UPDATE_DEP_FLAG = -MDupdate "$(*D)/$(DEPDIR)/$(*F).d"'
-					add_line_to_config_mk '-include Makedepend'
-					;;
-				*)
-					cxx_version="$cxx_version, bad"
-					cxx_verc_fail=yes
-					;;
-			esac
-		;;
-		*)
-			cxx_version="$cxx_version, bad"
-			cxx_verc_fail=yes
-		;;
-	esac
+  CXXFLAGS="$CXXFLAGS"
+  case $_host_os in
+    irix*)
+      case $cxx_version in
+        7.4.4*)
+          # We just assume this is SGI MIPSpro
+          _cxx_major=7
+          _cxx_minor=4
+          cxx_verc_fail=no
+          add_line_to_config_mk 'CXX_UPDATE_DEP_FLAG = -MDupdate "$(*D)/$(DEPDIR)/$(*F).d"'
+          add_line_to_config_mk '-include Makedepend'
+          ;;
+        *)
+          cxx_version="$cxx_version, bad"
+          cxx_verc_fail=yes
+          ;;
+      esac
+    ;;
+    *)
+      cxx_version="$cxx_version, bad"
+      cxx_verc_fail=yes
+    ;;
+  esac
 
 fi
 
 
 if test "$cxx_verc_fail" = yes ; then
-	echo
-	echo "The version of your compiler is not supported at this time"
-	echo "Please ensure you are using GCC 5.0 / Clang 3.8 or above"
-	exit 1
+  echo
+  echo "The version of your compiler is not supported at this time"
+  echo "Please ensure you are using GCC 5.0 / Clang 3.8 or above"
+  exit 1
 fi
 
 #
@@ -549,76 +514,99 @@ fi
 #
 
 if test -n "$_host"; then
-	# Cross-compiling mode - add your target here if needed
-	case "$_host" in
-		mingw32-cross)
-			echo "Cross-compiling for Windows using MinGW."
-			DEFINES="$DEFINES -DWIN32"
-			_host_os=win32
-			;;
-		*linux*)
-			echo "Cross-compiling to $_host target"
-			DEFINES="$DEFINES -DUNIX"
-			_host_os=unix
-			;;
-		*)
-			echo "Cross-compiling to unknown target, please add your target to configure."
-			exit 1
-			;;
-	esac
+  # Cross-compiling mode - add your target here if needed
+  case "$_host" in
+    mingw32-cross)
+      echo "Cross-compiling for Windows using MinGW."
+      DEFINES="$DEFINES -DWIN32"
+      _host_os=win32
+      ;;
+    *linux*)
+      echo "Cross-compiling to $_host target"
+      DEFINES="$DEFINES -DUNIX"
+      _host_os=unix
+      ;;
+    *)
+      echo "Cross-compiling to unknown target, please add your target to configure."
+      exit 1
+      ;;
+  esac
 
 else
-	#
-	# Determine build settings
-	#
-	# TODO - also add an command line option to override this?!?
-	echo_n "Checking hosttype... "
-	echo $_host_os
-	case $_host_os in
-		linux* | openbsd* | freebsd* | kfreebsd* | netbsd* | bsd* | gnu0.* | sunos* | hpux* | beos*)
-			DEFINES="$DEFINES -DUNIX"
-			_host_os=unix
-			;;
-		darwin*)
-			DEFINES="$DEFINES -DUNIX -DDARWIN"
-			_host_os=darwin
-			;;
-		irix*)
-			DEFINES="$DEFINES -DUNIX"
-			_ranlib=:
-			_host_os=unix
-			;;
-		mingw*)
-			DEFINES="$DEFINES -DWIN32"
-			_host_os=win32
-			;;
-		os2*)
-			DEFINES="$DEFINES -DUNIX -DOS2"
-			_host_os=unix
-			;;
-		cygwin*)
-			DEFINES="$DEFINES -mno-cygwin -DWIN32"
-			LIBS="$LIBS -mno-cygwin -lmingw32 -lwinmm"
-			_host_os=win32
-			;;
-		os2*)
-			DEFINES="$DEFINES -DUNIX -DOS2"
-			_host_os=unix
-			;;
-		# given this is a shell script assume some type of unix
-		*)
-			echo "WARNING: could not establish system type, assuming unix like"
-			DEFINES="$DEFINES -DUNIX"
-			;;
-	esac
+  #
+  # Determine build settings
+  #
+  # TODO - also add an command line option to override this?!?
+  echo_n "Checking hosttype... "
+  echo $_host_os
+  case $_host_os in
+    linux* | openbsd* | freebsd* | kfreebsd* | netbsd* | bsd* | gnu0.* | sunos* | hpux* | beos*)
+      DEFINES="$DEFINES -DUNIX"
+      _host_os=unix
+      ;;
+    darwin*)
+      DEFINES="$DEFINES -DUNIX -DDARWIN"
+      _host_os=darwin
+      ;;
+    irix*)
+      DEFINES="$DEFINES -DUNIX"
+      _ranlib=:
+      _host_os=unix
+      ;;
+    mingw*)
+      DEFINES="$DEFINES -DWIN32"
+      _host_os=win32
+      ;;
+    os2*)
+      DEFINES="$DEFINES -DUNIX -DOS2"
+      _host_os=unix
+      ;;
+    cygwin*)
+      DEFINES="$DEFINES -mno-cygwin -DWIN32"
+      LIBS="$LIBS -mno-cygwin -lmingw32 -lwinmm"
+      _host_os=win32
+      ;;
+    os2*)
+      DEFINES="$DEFINES -DUNIX -DOS2"
+      _host_os=unix
+      ;;
+    # given this is a shell script assume some type of unix
+    *)
+      echo "WARNING: could not establish system type, assuming unix like"
+      DEFINES="$DEFINES -DUNIX"
+      ;;
+  esac
 fi
 
 # Cross-compilers use their own commands for the following functions
 if test -n "$_host_prefix"; then
-	_strip="$_host_prefix-$_strip"
-	if command -v "$_host_prefix-$_pkg_config" >/dev/null 2>&1; then
-		_pkg_config="$_host_prefix-$_pkg_config"
-	fi
+  _strip="$_host_prefix-$_strip"
+  if command -v "$_host_prefix-$_pkg_config" >/dev/null 2>&1; then
+    _pkg_config="$_host_prefix-$_pkg_config"
+  fi
+fi
+
+export PKG_CONFIG_PATH
+
+#
+# Check for SDL3 (required)
+#
+echocheck "SDL3"
+_sdl3=no
+cat > $TMPC << EOF
+#include <SDL3/SDL.h>
+int main(void) { return SDL_Init(0); }
+EOF
+cc_check $LDFLAGS $CXXFLAGS `$_pkg_config --cflags sdl3` `$_pkg_config --libs sdl3` && _sdl3=yes
+
+if test "$_sdl3" = yes ; then
+    echo "`$_pkg_config --modversion sdl3`"
+    SDL3_CFLAGS="`$_pkg_config --cflags sdl3`"
+    SDL3_LIBS="`$_pkg_config --libs sdl3`"
+else
+    echo "not found"
+    echo "SDL3 is required to build Stella. Install libsdl3-dev or equivalent."
+    exit 1
 fi
 
 #
@@ -626,25 +614,20 @@ fi
 #
 echocheck "zlib"
 if test "$_build_zip" = yes ; then
-	_zlib=no
-	cat > $TMPC << EOF
-#include <string.h>
-#include <zlib.h>
-int main(void) { return strcmp(ZLIB_VERSION, zlibVersion()); }
-EOF
-	cc_check $LDFLAGS $CXXFLAGS $ZLIB_CFLAGS $ZLIB_LIBS `$_pkg_config --libs zlib` && _zlib=yes
+    _zlib=no
+    $_pkg_config --exists zlib && _zlib=yes
 
-  if test "$_zlib" = yes ; then
-    echo "$_zlib"
-  else
+    if test "$_zlib" = yes ; then
+        echo "`$_pkg_config --modversion zlib`"
+    else
+        echo "disabled"
+        _build_png=no
+        _build_zip=no
+    fi
+else
     echo "disabled"
     _build_png=no
     _build_zip=no
-  fi
-else
-  echo "disabled"
-  _build_png=no
-  _build_zip=no
 fi
 
 #
@@ -652,23 +635,18 @@ fi
 #
 echocheck "libpng"
 if test "$_build_png" = yes ; then
-  _libpng=no
-  cat > $TMPC << EOF
-#include <stdio.h>
-#include <png.h>
-int main(void) { return printf("%s\n", PNG_HEADER_VERSION_STRING); }
-EOF
-  cc_check $LDFLAGS $CXXFLAGS $LIBPNG_CFLAGS $LIBPNG_LIBS `$_pkg_config --libs libpng` && _libpng=yes
+    _libpng=no
+    $_pkg_config --exists libpng && _libpng=yes
 
-  if test "$_libpng" = yes ; then
-    echo "$_libpng"
-  else
+    if test "$_libpng" = yes ; then
+        echo "`$_pkg_config --modversion libpng`"
+    else
+        echo "disabled"
+        _build_png=no
+    fi
+else
     echo "disabled"
     _build_png=no
-  fi
-else
-  echo "disabled"
-  _build_png=no
 fi
 
 #
@@ -676,23 +654,18 @@ fi
 #
 echocheck "libsqlite3"
 if test "$_build_sqlite3" = yes ; then
-  _libsqlite3=no
-  cat > $TMPC << EOF
-#include <stdio.h>
-#include <sqlite3.h>
-int main(void) { return printf("%s\n", SQLITE_VERSION); }
-EOF
-  cc_check $LDFLAGS $CXXFLAGS `$_pkg_config --libs sqlite3` && _libsqlite3=yes
+    _libsqlite3=no
+    $_pkg_config --exists sqlite3 && _libsqlite3=yes
 
-  if test "$_libsqlite3" = yes ; then
-    echo "$_libsqlite3"
-  else
+    if test "$_libsqlite3" = yes ; then
+        echo "`$_pkg_config --modversion sqlite3`"
+    else
+        echo "built-in"
+        _build_sqlite3=yes
+    fi
+else
     echo "built-in"
     _build_sqlite3=yes
-  fi
-else
-  echo "built-in"
-  _build_sqlite3=yes
 fi
 
 #
@@ -707,95 +680,95 @@ echo_n "Summary:"
 echo
 
 if test "$_build_gui" = "yes" ; then
-	echo_n "   GUI enabled"
-	echo
+  echo_n "   GUI enabled"
+  echo
 else
-	echo_n "   GUI disabled"
-	echo
+  echo_n "   GUI disabled"
+  echo
   _build_debugger=no
   _build_cheats=no
 fi
 
 if test "$_build_sound" = "yes" ; then
-	echo_n "   Sound support enabled"
-	echo
+  echo_n "   Sound support enabled"
+  echo
 else
-	echo_n "   Sound support disabled"
-	echo
+  echo_n "   Sound support disabled"
+  echo
 fi
 
 if test "$_build_debugger" = "yes" ; then
-	echo_n "   Debugger support enabled"
-	echo
+  echo_n "   Debugger support enabled"
+  echo
 else
-	echo_n "   Debugger support disabled"
-	echo
+  echo_n "   Debugger support disabled"
+  echo
 fi
 
 if test "$_build_joystick" = yes ; then
-	echo_n "   Joystick support enabled"
-	echo
+  echo_n "   Joystick support enabled"
+  echo
 else
-	echo_n "   Joystick support disabled"
-	echo
+  echo_n "   Joystick support disabled"
+  echo
 fi
 
 if test "$_build_cheats" = yes ; then
-	echo_n "   Cheatcode support enabled"
-	echo
+  echo_n "   Cheatcode support enabled"
+  echo
 else
-	echo_n "   Cheatcode support disabled"
-	echo
+  echo_n "   Cheatcode support disabled"
+  echo
 fi
 
 if test "$_build_png" = yes ; then
-	echo_n "   PNG image support enabled"
-	echo
+  echo_n "   PNG image support enabled"
+  echo
 else
-	echo_n "   PNG image support disabled"
-	echo
+  echo_n "   PNG image support disabled"
+  echo
 fi
 
 if test "$_build_zip" = yes ; then
-	echo_n "   ZIP file support enabled"
-	echo
+  echo_n "   ZIP file support enabled"
+  echo
 else
-	echo_n "   ZIP file support disabled"
-	echo
+  echo_n "   ZIP file support disabled"
+  echo
 fi
 
 if test "$_build_windowed" = "yes" ; then
-	echo_n "   Windowed rendering modes enabled"
-	echo
+  echo_n "   Windowed rendering modes enabled"
+  echo
 else
-	echo_n "   Windowed rendering modes disabled"
-	echo
+  echo_n "   Windowed rendering modes disabled"
+  echo
 fi
 
 if test "$_build_static" = yes ; then
-	echo_n "   Static binary enabled"
-	echo
+  echo_n "   Static binary enabled"
+  echo
 else
-	echo_n "   Static binary disabled"
-	echo
+  echo_n "   Static binary disabled"
+  echo
 fi
 
 if test "$_build_profile" = yes ; then
-	echo_n "   Profiling enabled"
-	echo
+  echo_n "   Profiling enabled"
+  echo
 
-	_build_debug=yes
+  _build_debug=yes
 else
-	echo_n "   Profiling disabled"
-	echo
+  echo_n "   Profiling disabled"
+  echo
 fi
 
 if test "$_build_debug" = yes ; then
-	echo_n "   Debug symbols enabled"
-	echo
+  echo_n "   Debug symbols enabled"
+  echo
 else
-	echo_n "   Debug symbols disabled"
-	echo
+  echo_n "   Debug symbols disabled"
+  echo
 fi
 
 #
@@ -828,91 +801,80 @@ JSON="$SRC_LIB/json"
 HTTP_LIB="$SRC_LIB/httplib"
 
 INCLUDES="-I$CORE -I$COMMON -I$TV -I$TIA -I$TIA_FRAME_MANAGER -I$ELF -I$JSON -I$SQLITE_REPO"
-
-#INCLUDES="$INCLUDES `$_sdlconfig --cflags`"
-#if test "$_build_static" = yes ; then
-#	_sdl_conf_libs="--static-libs"
-#	LDFLAGS="-static $LDFLAGS"
-#else
-#	_sdl_conf_libs="--libs"
-#fi
-
-#if test "$_libpng" = yes ; then  #FIXME:
-		LIBS="$LIBS `$_pkg_config --libs sdl3`"
-		INCLUDES="$INCLUDES `$_pkg_config --cflags sdl3`"
-#fi
+LIBS="$LIBS `$_pkg_config --libs sdl3`"
+INCLUDES="$INCLUDES `$_pkg_config --cflags sdl3`"
 
 LD=$CXX
 
 case $_host_os in
-		unix)
-			DEFINES="$DEFINES -DBSPF_UNIX"
-			MODULES="$MODULES $SRC_OS/unix"
-			INCLUDES="$INCLUDES -I$SRC_OS/unix"
-			;;
-		darwin)
-			DEFINES="$DEFINES -DBSPF_UNIX -DMACOS_KEYS"
-			MODULES="$MODULES $SRC_OS/unix"
-			INCLUDES="$INCLUDES -I$SRC_OS/unix"
-			if test "$have_clang" == yes; then
-				CXXFLAGS="$CXXFLAGS -Wno-poison-system-directories"
-				if test -n "$CXXFLAGS_TEST"; then
-					CXXFLAGS_TEST="$CXXFLAGS_TEST -Wno-poison-system-directories"
-				fi
-			fi
-			_libsqlite3=no
-			;;
-		win32)
-			DEFINES="$DEFINES -DBSPF_WINDOWS"
-			MODULES="$MODULES $SRC_OS/windows"
-			INCLUDES="$INCLUDES -I$SRC_OS/windows"
-			LIBS="$LIBS -lmingw32 -lwinmm"
-			;;
-		*)
-			echo "WARNING: host system not currently supported"
-			exit
-			;;
+    unix)
+      DEFINES="$DEFINES -DBSPF_UNIX"
+      MODULES="$MODULES $SRC_OS/unix"
+      INCLUDES="$INCLUDES -I$SRC_OS/unix"
+      ;;
+    darwin)
+      DEFINES="$DEFINES -DBSPF_UNIX -DMACOS_KEYS"
+      MODULES="$MODULES $SRC_OS/unix"
+      INCLUDES="$INCLUDES -I$SRC_OS/unix"
+      if test "$have_clang" == yes; then
+        CXXFLAGS="$CXXFLAGS -Wno-poison-system-directories"
+        if test -n "$CXXFLAGS_TEST"; then
+          CXXFLAGS_TEST="$CXXFLAGS_TEST -Wno-poison-system-directories"
+        fi
+      fi
+      _libsqlite3=no
+      ;;
+    win32)
+      DEFINES="$DEFINES -DBSPF_WINDOWS"
+      MODULES="$MODULES $SRC_OS/windows"
+      INCLUDES="$INCLUDES -I$SRC_OS/windows"
+      LIBS="$LIBS -lmingw32 -lwinmm"
+      ;;
+    *)
+      echo "WARNING: host system not currently supported"
+      exit
+      ;;
 esac
 
 if test "$_build_gui" = yes ; then
-	DEFINES="$DEFINES -DGUI_SUPPORT"
-	MODULES="$MODULES $GUI"
-	INCLUDES="$INCLUDES -I$GUI"
+  DEFINES="$DEFINES -DGUI_SUPPORT"
+  MODULES="$MODULES $GUI"
+  INCLUDES="$INCLUDES -I$GUI"
 fi
 
 if test "$_build_windowed" = yes ; then
-	DEFINES="$DEFINES -DWINDOWED_SUPPORT"
+  DEFINES="$DEFINES -DWINDOWED_SUPPORT"
 fi
 
 if test "$_build_sound" = yes ; then
-	DEFINES="$DEFINES -DSOUND_SUPPORT"
+  DEFINES="$DEFINES -DSOUND_SUPPORT"
 fi
 
 if test "$_build_debugger" = yes ; then
-	DEFINES="$DEFINES -DDEBUGGER_SUPPORT"
-	MODULES="$MODULES $DBG $DBGGUI $YACC"
-	INCLUDES="$INCLUDES -I$DBG -I$DBGGUI -I$YACC"
+  DEFINES="$DEFINES -DDEBUGGER_SUPPORT"
+  MODULES="$MODULES $DBG $DBGGUI $YACC"
+  INCLUDES="$INCLUDES -I$DBG -I$DBGGUI -I$YACC"
 fi
 
 if test "$_build_joystick" = yes ; then
-	DEFINES="$DEFINES -DJOYSTICK_SUPPORT"
+  DEFINES="$DEFINES -DJOYSTICK_SUPPORT"
 fi
 
 if test "$_build_cheats" = yes ; then
-	DEFINES="$DEFINES -DCHEATCODE_SUPPORT"
-	MODULES="$MODULES $CHEAT"
-	INCLUDES="$INCLUDES -I$CHEAT"
+  DEFINES="$DEFINES -DCHEATCODE_SUPPORT"
+  MODULES="$MODULES $CHEAT"
+  INCLUDES="$INCLUDES -I$CHEAT"
 fi
 
 if test "$_build_httplib" = yes ; then
-	DEFINES="$DEFINES -DHTTP_LIB_SUPPORT"
-	INCLUDES="$INCLUDES -I$HTTP_LIB"
+  DEFINES="$DEFINES -DHTTP_LIB_SUPPORT"
+  INCLUDES="$INCLUDES -I$HTTP_LIB"
 fi
 
 if test "$_build_png" = yes ; then
-	DEFINES="$DEFINES -DIMAGE_SUPPORT"
-	INCLUDES="$INCLUDES -I$LIBJPG -I$LIBJPGEXIF"
-	MODULES="$MODULES $LIBJPGEXIF"
+  DEFINES="$DEFINES -DIMAGE_SUPPORT"
+  INCLUDES="$INCLUDES -I$LIBJPG -I$LIBJPGEXIF"
+  MODULES="$MODULES $LIBJPGEXIF"
   if test "$_libpng" = yes ; then
     LIBS="$LIBS `$_pkg_config --libs libpng`"
     INCLUDES="$INCLUDES `$_pkg_config --cflags libpng`"
@@ -931,7 +893,7 @@ else
 fi
 
 if test "$_build_zip" = yes ; then
-	DEFINES="$DEFINES -DZIP_SUPPORT"
+  DEFINES="$DEFINES -DZIP_SUPPORT"
   if test "$_zlib" = yes ; then
     LIBS="$LIBS `$_pkg_config --libs zlib`"
     INCLUDES="$INCLUDES `$_pkg_config --cflags zlib`"
@@ -942,29 +904,29 @@ if test "$_build_zip" = yes ; then
 fi
 
 if test "$_build_profile" = no ; then
-	_build_profile=
+  _build_profile=
 fi
 
 if test "$_build_debug" = no ; then
-	_build_debug=
+  _build_debug=
 fi
 
 if test "$_build_release" = no ; then
-	_build_release=
+  _build_release=
 fi
 
 if test "$_build_mold" = yes ; then
-	LDFLAGS="-fuse-ld=mold"
+  LDFLAGS="-fuse-ld=mold"
 fi
 
 if test "$_build_full_warn" = yes ; then
-	_make_def_FULL_WARNINGS='USE_FULL_WARNINGS = 1'
+  _make_def_FULL_WARNINGS='USE_FULL_WARNINGS = 1'
 fi
 
 # Workaround until we deal with autodetection of C compiler properly
 # Or we remove C files from Stella entirely, by making them C++
 if test -z "$CC"; then
-	CC=cc
+  CC=cc
 fi
 
 echo "Creating config.mak"
@@ -1020,7 +982,7 @@ EOF
 rm -f stella-conf stella-conf.cxx
 
 if test "$_host_os" = darwin; then
-	cat <<EOI
+  cat <<EOI
 
 WARNING: plain UNIX-style builds on macOS without XCode are unsupported. Continue on your own risk...
 EOI
