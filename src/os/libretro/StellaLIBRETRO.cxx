@@ -189,6 +189,7 @@ bool StellaLIBRETRO::loadState(const void* data, size_t size)
   Serializer state;
 
   state.putByteArray(std::span{reinterpret_cast<const uInt8*>(data), size});
+  state.rewind();
 
   if(!myOSystem->state().loadState(state))
     return false;
@@ -208,6 +209,7 @@ bool StellaLIBRETRO::saveState(void* data, size_t size) const
   if (state.size() > size)
     return false;
 
+  state.rewind();
   state.getByteArray(std::span{reinterpret_cast<uInt8*>(data), state.size()});
   return true;
 }
