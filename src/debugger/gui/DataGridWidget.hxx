@@ -71,7 +71,7 @@ class DataGridWidget : public EditableWidget
     int getSelectedValue() const  { return _valueList[_selectedItem]; }
     bool getSelectedChanged() const { return _changedList[_selectedItem]; }
 
-    void setRange(int lower, int upper);
+    void setRange(Int64 lower, Int64 upper);
 
     bool wantsFocus() const override { return true; }
 
@@ -116,16 +116,16 @@ class DataGridWidget : public EditableWidget
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 
   protected:
-    int  _rows{0};
-    int  _cols{0};
-    int  _currentRow{0};
-    int  _currentCol{0};
-    int  _rowHeight{0};
-    int  _colWidth{0};
-    int  _bits{0};
-    int  _lowerBound{0};
-    int  _upperBound{0};
-    bool _crossGrid{false};
+    int   _rows{0};
+    int   _cols{0};
+    int   _currentRow{0};
+    int   _currentCol{0};
+    int   _rowHeight{0};
+    int   _colWidth{0};
+    int   _bits{0};
+    Int64 _lowerBound{0};
+    Int64 _upperBound{0};
+    bool  _crossGrid{false};
 
     Common::Base::Fmt _base;
 

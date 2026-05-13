@@ -58,7 +58,7 @@ DataGridWidget::DataGridWidget(GuiObject* boss, const GUI::Font& font,
   _hiliteList.assign(size, false);
 
   // Set lower and upper bounds to sane values
-  setRange(0, 1 << bits);
+  setRange(0, Int64{1} << bits);
   // Limit number of chars allowed
   setMaxLen(colchars);
 
@@ -223,10 +223,10 @@ void DataGridWidget::setValue(int position, int value, bool changed,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void DataGridWidget::setRange(int lower, int upper)
+void DataGridWidget::setRange(Int64 lower, Int64 upper)
 {
-  _lowerBound = std::max(0, lower);
-  _upperBound = std::min(1 << _bits, upper);
+  _lowerBound = std::max(Int64{0}, lower);
+  _upperBound = std::min(Int64{1} << _bits, upper);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
