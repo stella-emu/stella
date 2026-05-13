@@ -79,13 +79,9 @@ void FrameBuffer::initialize()
   // Get desktop resolution and supported renderers
   myBackend->queryHardware(myFullscreenDisplays, myWindowedDisplays, myRenderers);
 
-cerr << "Fullscreen\n" << myFullscreenDisplays;
-cerr << "Windowed\n" << myWindowedDisplays;
-
   for(const auto& display: myWindowedDisplays)
   {
     uInt32 query_w = display.second.w, query_h = display.second.h;
-cerr << "query_w: " << query_w << ", query_h: " << query_h << '\n';
 
     // Check the 'maxres' setting, which is an undocumented developer feature
     // that specifies the desktop size (not normally set)
@@ -98,14 +94,12 @@ cerr << "query_w: " << query_w << ", query_h: " << query_h << '\n';
     // Various parts of the codebase assume a minimum screen size
     Common::Size size(std::max(query_w, FBMinimum::Width), std::max(query_h, FBMinimum::Height));
     myAbsDesktopSize[display.first] = size;
-cerr << "myAbsDesktopSize\n" << myAbsDesktopSize;
 
     // Check for HiDPI mode (is it activated, and can we use it?)
     const bool hidpi = (((size.w / 2) >= FBMinimum::Width) &&
                         ((size.h / 2) >= FBMinimum::Height));
     myHiDPIAllowed[display.first] = hidpi;
     myHiDPIEnabled[display.first] = hidpi && myOSystem.settings().getBool("hidpi");
-cerr << "myHiDPIEnabled\n" << myHiDPIEnabled;
 
     // In HiDPI mode, the desktop resolution is essentially halved
     // Later, the output is scaled and rendered in 2x mode
@@ -115,7 +109,6 @@ cerr << "myHiDPIEnabled\n" << myHiDPIEnabled;
       size.h /= hidpiScaleFactor();
     }
     myDesktopSize[display.first] = size;
-cerr << "myDesktopSize\n" << myDesktopSize;
   }
 
 #ifdef GUI_SUPPORT

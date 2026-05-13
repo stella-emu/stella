@@ -89,9 +89,6 @@ void FBBackendSDL::queryHardware(std::unordered_map<uInt32, Common::Size>& fulls
   // Get the maximum fullscreen and windowed desktop resolutions
   for(uInt32 i = 0; i < myNumDisplays; ++i)
   {
-SDL_DisplayID instance_id = displays[i];
-cerr << std::format("Display {} -> {}\n", instance_id, SDL_GetDisplayName(instance_id));
-
     // Fullscreen mode
     const SDL_DisplayMode* display = SDL_GetDesktopDisplayMode(displays[i]);
     SDL_Rect bounds;
