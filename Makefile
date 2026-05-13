@@ -106,6 +106,16 @@ else
   endif
 endif
 
+ifdef ASAN
+  SANITIZERS := -fsanitize=address,undefined
+  CXXFLAGS += $(SANITIZERS) -fno-omit-frame-pointer -O1 -g3
+  CFLAGS += $(SANITIZERS) -fno-omit-frame-pointer -O1 -g3
+  CXXFLAGS_TEST += $(SANITIZERS) -fno-omit-frame-pointer -O1 -g3
+  CFLAGS_TEST += $(SANITIZERS) -fno-omit-frame-pointer -O1 -g3
+  LDFLAGS += $(SANITIZERS)
+  LDFLAGS_TEST += $(SANITIZERS)
+endif
+
 ifdef RELEASE
   CXXFLAGS += -flto=auto -fno-rtti
   CFLAGS += -flto=auto

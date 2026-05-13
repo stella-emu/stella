@@ -44,7 +44,7 @@ Serializer::Serializer(string_view filename, FileMode fm)
 Serializer::Serializer()
 {
   myMemory.emplace();
-  myMemory->buffer.reserve(4_KB);  // tweak or remove as needed
+  myMemory->buffer.resize(4_KB);  // tweak or remove as needed
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -170,21 +170,24 @@ uInt8 Serializer::getByte()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Serializer::getByteArray(ByteMSpan array)
+void Serializer::getByteArray(ByteMSpan arr)
 {
+  if(arr.empty())
+    return;
+
   if(myMemory)
   {
-    if(myMemory->pos + array.size() > myMemory->size)
+    if(myMemory->pos + arr.size() > myMemory->size)
     {
-      myMemory->ensureSize(myMemory->pos + array.size());
-      myMemory->size = myMemory->pos + array.size();
+      myMemory->ensureSize(myMemory->pos + arr.size());
+      myMemory->size = myMemory->pos + arr.size();
     }
-    std::memcpy(array.data(), myMemory->buffer.data() + myMemory->pos, array.size());
-    myMemory->pos += array.size();
+    std::memcpy(arr.data(), myMemory->buffer.data() + myMemory->pos, arr.size());
+    myMemory->pos += arr.size();
   }
   else if(myFile)
   {
-    myFile->stream.read(reinterpret_cast<char*>(array.data()), array.size());
+    myFile->stream.read(reinterpret_cast<char*>(arr.data()), arr.size());
   }
   else
     throw std::runtime_error("Serializer not initialized");
@@ -197,12 +200,12 @@ uInt16 Serializer::getShort()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Serializer::getShortArray(ShortMSpan array)
+void Serializer::getShortArray(ShortMSpan arr)
 {
-  getByteArray(ByteMSpan(reinterpret_cast<uInt8*>(array.data()),
-                                                  array.size_bytes()));
+  getByteArray(ByteMSpan(reinterpret_cast<uInt8*>(arr.data()),
+                                                  arr.size_bytes()));
   if constexpr(std::endian::native != std::endian::little)
-    for(auto& val: array)
+    for(auto& val: arr)
       val = byteswap(val);
 }
 
@@ -213,12 +216,12 @@ uInt32 Serializer::getInt()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Serializer::getIntArray(IntMSpan array)
+void Serializer::getIntArray(IntMSpan arr)
 {
-  getByteArray(ByteMSpan(reinterpret_cast<uInt8*>(array.data()),
-                         array.size_bytes()));
+  getByteArray(ByteMSpan(reinterpret_cast<uInt8*>(arr.data()),
+                         arr.size_bytes()));
   if constexpr(std::endian::native != std::endian::little)
-    for(auto& val: array)
+    for(auto& val: arr)
       val = byteswap(val);
 }
 
@@ -257,18 +260,21 @@ void Serializer::putByte(uInt8 value)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Serializer::putByteArray(ByteSpan array)
+void Serializer::putByteArray(ByteSpan arr)
 {
+  if(arr.empty())
+    return;
+
   if(myMemory)
   {
-    myMemory->ensureCapacity(array.size());
-    std::memcpy(myMemory->buffer.data() + myMemory->pos, array.data(), array.size());
-    myMemory->pos += array.size();
+    myMemory->ensureCapacity(arr.size());
+    std::memcpy(myMemory->buffer.data() + myMemory->pos, arr.data(), arr.size());
+    myMemory->pos += arr.size();
     myMemory->size = std::max(myMemory->size, myMemory->pos);
   }
   else if(myFile)
   {
-    myFile->writeBuffered(array.data(), array.size());
+    myFile->writeBuffered(arr.data(), arr.size());
   }
   else
     throw std::runtime_error("Serializer not initialized");
@@ -281,13 +287,13 @@ void Serializer::putShort(uInt16 value)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Serializer::putShortArray(ShortSpan array)
+void Serializer::putShortArray(ShortSpan arr)
 {
   if constexpr(std::endian::native == std::endian::little)
-    putByteArray(ByteSpan(reinterpret_cast<const uInt8*>(array.data()),
-                          array.size_bytes()));
+    putByteArray(ByteSpan(reinterpret_cast<const uInt8*>(arr.data()),
+                          arr.size_bytes()));
   else
-    for(const auto& val: array)
+    for(const auto& val: arr)
       writeRaw<uInt16>(val);
 }
 
@@ -298,13 +304,13 @@ void Serializer::putInt(uInt32 value)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Serializer::putIntArray(IntSpan array)
+void Serializer::putIntArray(IntSpan arr)
 {
   if constexpr(std::endian::native == std::endian::little)
-    putByteArray(ByteSpan(reinterpret_cast<const uInt8*>(array.data()),
-                          array.size_bytes()));
+    putByteArray(ByteSpan(reinterpret_cast<const uInt8*>(arr.data()),
+                          arr.size_bytes()));
   else
-    for(const auto& val: array)
+    for(const auto& val: arr)
       writeRaw<uInt32>(val);
 }
 

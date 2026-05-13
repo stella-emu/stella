@@ -131,6 +131,7 @@ cerr << std::format("Display {} -> {}\n", instance_id, SDL_GetDisplayName(instan
                          isDesktopMode ? "* " : "  ");
     }
     Logger::debug(log);
+    SDL_free(modes);
   }
   SDL_free(displays);
 

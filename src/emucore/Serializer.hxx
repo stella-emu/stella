@@ -95,9 +95,9 @@ class Serializer
     /**
       Reads a byte array (unsigned 8-bit) from the current input stream.
 
-      @param array  The storage space to write bytes to
+      @param arr  The storage space to write bytes to
     */
-    void getByteArray(ByteMSpan array);
+    void getByteArray(ByteMSpan arr);
 
     /**
       Reads a short value (unsigned 16-bit) from the current input stream.
@@ -109,9 +109,9 @@ class Serializer
     /**
       Reads a short array (unsigned 16-bit) from the current input stream.
 
-      @param array  The storage space to write shorts to
+      @param arr  The storage space to write shorts to
     */
-    void getShortArray(ShortMSpan array);
+    void getShortArray(ShortMSpan arr);
 
     /**
       Reads an int value (unsigned 32-bit) from the current input stream.
@@ -123,9 +123,9 @@ class Serializer
     /**
       Reads an integer array (unsigned 32-bit) from the current input stream.
 
-      @param array  The storage space to write ints to
+      @param arr  The storage space to write ints to
     */
-    void getIntArray(IntMSpan array);
+    void getIntArray(IntMSpan arr);
 
     /**
       Reads a long int value (unsigned 64-bit) from the current input stream.
@@ -165,9 +165,9 @@ class Serializer
     /**
       Writes a byte array (unsigned 8-bit) to the current output stream.
 
-      @param array  The storage space to read bytes from
+      @param arr  The storage space to read bytes from
     */
-    void putByteArray(ByteSpan array);
+    void putByteArray(ByteSpan arr);
 
     /**
       Writes a short value (unsigned 16-bit) to the current output stream.
@@ -179,9 +179,9 @@ class Serializer
     /**
       Writes a short array (unsigned 16-bit) to the current output stream.
 
-      @param array  The storage space to read shorts from
+      @param arr  The storage space to read shorts from
     */
-    void putShortArray(ShortSpan array);
+    void putShortArray(ShortSpan arr);
 
     /**
       Writes an int value (unsigned 32-bit) to the current output stream.
@@ -193,9 +193,9 @@ class Serializer
     /**
       Writes an integer array (unsigned 32-bit) to the current output stream.
 
-      @param array  The storage space to read ints from
+      @param arr  The storage space to read ints from
     */
-    void putIntArray(IntSpan array);
+    void putIntArray(IntSpan arr);
 
     /**
       Writes a long int value (unsigned 64-bit) to the current output stream.
