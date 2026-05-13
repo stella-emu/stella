@@ -528,6 +528,10 @@ class EventHandler
     // of the 7800 (for now, only the switches are notified)
     bool myIs7800{false};
 
+    // Keep track of when text events are enabled, and don't send such
+    // events when we shouldn't
+    bool myTextEventsEnabled{false};
+
     // These constants are not meant to be used elsewhere; they are only used
     // here to make it easier for the reader to correctly size the list(s)
     static constexpr Int32

@@ -306,6 +306,7 @@ void EventHandler::poll(uInt64 time)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventHandler::enableTextEvents(bool enable)
 {
+  myTextEventsEnabled = enable;
   myOSystem.frameBuffer().enableTextEvents(enable);
 }
 
@@ -314,7 +315,7 @@ void EventHandler::handleTextEvent(char text)
 {
 #ifdef GUI_SUPPORT
   // Text events are only used in GUI mode
-  if(myOverlay)
+  if(myOverlay && myTextEventsEnabled)
     myOverlay->handleTextEvent(text);
 #endif
 }
