@@ -50,14 +50,14 @@ enum class MouseButton: uInt8 {
 static constexpr int JOY_CTRL_NONE = -1;
 
 enum class JoyAxis: Int8 {
-  X = 0,    // make sure these are set correctly,
-  Y = 1,    // since they'll be used as array indices
-  Z = 2,
-  A3 = 3,
-  A4 = 4,
-  A5 = 5,
-  A6 = 6,
-  A7 = 7,
+  X    = 0,    // make sure these are set correctly,
+  Y    = 1,    // since they'll be used as array indices
+  Z    = 2,
+  A3   = 3,
+  A4   = 4,
+  A5   = 5,
+  A6   = 6,
+  A7   = 7,
   NONE = JOY_CTRL_NONE
 };
 
@@ -76,12 +76,13 @@ enum class JoyHatDir: uInt8 {
   CENTER = 4
 };
 
-enum JoyHatMask: uInt8 {
-  EVENT_HATUP_M     = 1<<0,
-  EVENT_HATDOWN_M   = 1<<1,
-  EVENT_HATLEFT_M   = 1<<2,
-  EVENT_HATRIGHT_M  = 1<<3,
-  EVENT_HATCENTER_M = 1<<4
+enum JoyHatMask: uInt8 {  // TODO: candidate for BitmaskEnum
+  EVENT_NONE        = 0,
+  EVENT_HATUP_M     = 1 << 0,
+  EVENT_HATDOWN_M   = 1 << 1,
+  EVENT_HATLEFT_M   = 1 << 2,
+  EVENT_HATRIGHT_M  = 1 << 3,
+  EVENT_HATCENTER_M = 1 << 4
 };
 
 enum class EventMode: uInt8 {

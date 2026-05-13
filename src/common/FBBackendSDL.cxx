@@ -558,6 +558,7 @@ void FBBackendSDL::enableTextEvents(bool enable)
     SDL_StartTextInput(myWindow);
   else
     SDL_StopTextInput(myWindow);
+
   // myWindows can still be null, so we remember the state and set again when
   // the window is created
   myTextEventsEnabled = enable;
