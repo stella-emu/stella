@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		2D9173CB09BA90380026E9FF /* SDLMain.h in Headers */ = {isa = PBXBuildFile; fileRef = F5A47A9D01A0482F01D3D55B /* SDLMain.h */; };
 		2D9173CC09BA90380026E9FF /* Booster.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2DE2DF110627AE07006BEC99 /* Booster.hxx */; };
 		2D9173CD09BA90380026E9FF /* Cart.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2DE2DF130627AE07006BEC99 /* Cart.hxx */; };
 		2D9173CE09BA90380026E9FF /* Cart2K.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2DE2DF150627AE07006BEC99 /* Cart2K.hxx */; };
@@ -98,10 +97,8 @@
 		2D91746609BA90380026E9FF /* AudioWidget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2D2331900900B5EF00613B1F /* AudioWidget.hxx */; };
 		2D91746909BA90380026E9FF /* EventMappingWidget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2D05FF5F096E269100A518FE /* EventMappingWidget.hxx */; };
 		2D91746A09BA90380026E9FF /* InputDialog.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2D05FF61096E269100A518FE /* InputDialog.hxx */; };
-		2D91746E09BA90380026E9FF /* SDLMain.nib in Resources */ = {isa = PBXBuildFile; fileRef = B2F367C504C7ADC700A80002 /* SDLMain.nib */; };
 		2D91746F09BA90380026E9FF /* Stella.icns in Resources */ = {isa = PBXBuildFile; fileRef = 2D16A8E106324136005DF364 /* Stella.icns */; };
 		2D91747109BA90380026E9FF /* docs in Resources */ = {isa = PBXBuildFile; fileRef = 2D113E090672BF2100317017 /* docs */; };
-		2D91747409BA90380026E9FF /* SDLMain.m in Sources */ = {isa = PBXBuildFile; fileRef = F5A47A9E01A0483001D3D55B /* SDLMain.m */; };
 		2D91747509BA90380026E9FF /* Booster.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2DE2DF100627AE07006BEC99 /* Booster.cxx */; };
 		2D91747609BA90380026E9FF /* Cart.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2DE2DF120627AE07006BEC99 /* Cart.cxx */; };
 		2D91747709BA90380026E9FF /* Cart2K.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2DE2DF140627AE07006BEC99 /* Cart2K.cxx */; };
@@ -1069,7 +1066,6 @@
 		2DEFB40B09C3386F00754289 /* Cart.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = Cart.icns; sourceTree = SOURCE_ROOT; };
 		2DF971D70892CEA400F64D23 /* DebuggerSystem.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; path = DebuggerSystem.hxx; sourceTree = "<group>"; };
 		2DF971DF0892CEA400F64D23 /* Expression.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; path = Expression.hxx; sourceTree = "<group>"; };
-		B2F367C504C7ADC700A80002 /* SDLMain.nib */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; path = SDLMain.nib; sourceTree = "<group>"; };
 		CFB521D52853A2590083B9CE /* CartBUSInfoWidget.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CartBUSInfoWidget.cxx; sourceTree = "<group>"; };
 		CFB521D62853A2590083B9CE /* CartBUSInfoWidget.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = CartBUSInfoWidget.hxx; sourceTree = "<group>"; };
 		CFE3F6071E84A9A200A8204E /* CartBUSWidget.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CartBUSWidget.cxx; sourceTree = "<group>"; };
@@ -1710,8 +1706,6 @@
 		E0FABEE920E9948000EB8E28 /* AudioSettings.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = AudioSettings.hxx; sourceTree = "<group>"; };
 		E0FABEEA20E9948100EB8E28 /* AudioSettings.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AudioSettings.cxx; sourceTree = "<group>"; };
 		E0FABEED20E994A500EB8E28 /* ConsoleTiming.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = ConsoleTiming.hxx; sourceTree = "<group>"; };
-		F5A47A9D01A0482F01D3D55B /* SDLMain.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = SDLMain.h; sourceTree = SOURCE_ROOT; };
-		F5A47A9E01A0483001D3D55B /* SDLMain.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = SDLMain.m; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1732,8 +1726,6 @@
 		080E96DDFE201D6D7F000001 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
-				F5A47A9D01A0482F01D3D55B /* SDLMain.h */,
-				F5A47A9E01A0483001D3D55B /* SDLMain.m */,
 			);
 			name = Classes;
 			sourceTree = "<group>";
@@ -1796,7 +1788,6 @@
 				2D113E090672BF2100317017 /* docs */,
 				2D16A8E106324136005DF364 /* Stella.icns */,
 				2DEFB40B09C3386F00754289 /* Cart.icns */,
-				B2F367C504C7ADC700A80002 /* SDLMain.nib */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -2833,7 +2824,6 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2D9173CB09BA90380026E9FF /* SDLMain.h in Headers */,
 				E09F4141201E9050004A3391 /* Audio.hxx in Headers */,
 				2D9173CC09BA90380026E9FF /* Booster.hxx in Headers */,
 				E07DF4472C0A81ED00E1FB07 /* CartWF8Widget.hxx in Headers */,
@@ -3285,6 +3275,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 2D91751609BA90380026E9FF /* Build configuration list for PBXNativeTarget "Stella" */;
 			buildPhases = (
+				51DDA2DF83A64ACA883BBB18 /* Strip Quarantine */,
 				2D9173C909BA90380026E9FF /* ShellScript */,
 				2D9173CA09BA90380026E9FF /* Headers */,
 				2D91746C09BA90380026E9FF /* Resources */,
@@ -3313,7 +3304,7 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = YES;
-				LastUpgradeCheck = 2640;
+				LastUpgradeCheck = 2650;
 				ORGANIZATIONNAME = "Stella-emu";
 			};
 			buildConfigurationList = 2D91752109BA903B0026E9FF /* Build configuration list for PBXProject "stella" */;
@@ -3341,7 +3332,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2D91746E09BA90380026E9FF /* SDLMain.nib in Resources */,
 				55FE2A501EE4880500078ADE /* InfoPlist.strings in Resources */,
 				2D91746F09BA90380026E9FF /* Stella.icns in Resources */,
 				2D91747109BA90380026E9FF /* docs in Resources */,
@@ -3354,6 +3344,7 @@
 /* Begin PBXShellScriptBuildPhase section */
 		2D9173C909BA90380026E9FF /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
 			buildActionMask = 2147483647;
 			files = (
 			);
@@ -3365,6 +3356,21 @@
 			shellPath = /bin/sh;
 			shellScript = "m4 ../../emucore/M6502.m4 > M6502.ins\n";
 		};
+		51DDA2DF83A64ACA883BBB18 /* Strip Quarantine */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Strip Quarantine";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "xattr -dr com.apple.quarantine \"${SRCROOT}/Frameworks/SDL3.xcframework\"\n";
+		};
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -3375,7 +3381,6 @@
 				E0406FB61F81A85400A82AE0 /* AbstractFrameManager.cxx in Sources */,
 				E0A755792244294600101889 /* CartCDFInfoWidget.cxx in Sources */,
 				E0406FB81F81A85400A82AE0 /* FrameManager.cxx in Sources */,
-				2D91747409BA90380026E9FF /* SDLMain.m in Sources */,
 				DC3C9BC52469C8F700CF2D47 /* PaletteHandler.cxx in Sources */,
 				2D91747509BA90380026E9FF /* Booster.cxx in Sources */,
 				DC2ABA68259D466C007E57D3 /* KeyValueRepositoryPropertyFile.cxx in Sources */,

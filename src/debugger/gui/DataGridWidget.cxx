@@ -811,7 +811,7 @@ void DataGridWidget::decrementCell()
   const int mask  = (1 << _bits) - 1;
   int value = getSelectedValue();
   if(value <= _lowerBound)        // take care of wrap-around
-    value = _upperBound;
+    value = static_cast<int>(_upperBound);
 
   value = (value - 1) & mask;
   setSelectedValue(value);
@@ -823,7 +823,7 @@ void DataGridWidget::incrementCell()
   const int mask  = (1 << _bits) - 1;
   int value = getSelectedValue();
   if(value >= _upperBound - 1)    // take care of wrap-around
-    value = _lowerBound - 1;
+    value = static_cast<int>(_lowerBound) - 1;
 
   value = (value + 1) & mask;
   setSelectedValue(value);
