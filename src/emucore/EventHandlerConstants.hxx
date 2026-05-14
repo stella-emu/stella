@@ -20,6 +20,7 @@
 
 #include <string>
 
+#include "BitmaskEnum.hxx"
 #include "bspf.hxx"
 
 // Enumeration representing the different states of operation
@@ -76,14 +77,15 @@ enum class JoyHatDir: uInt8 {
   CENTER = 4
 };
 
-enum JoyHatMask: uInt8 {  // TODO: candidate for BitmaskEnum
-  EVENT_NONE        = 0,
-  EVENT_HATUP_M     = 1 << 0,
-  EVENT_HATDOWN_M   = 1 << 1,
-  EVENT_HATLEFT_M   = 1 << 2,
-  EVENT_HATRIGHT_M  = 1 << 3,
-  EVENT_HATCENTER_M = 1 << 4
+enum class JoyHatMask: uInt8 {
+  NONE   = 0,
+  UP     = 1 << 0,
+  DOWN   = 1 << 1,
+  LEFT   = 1 << 2,
+  RIGHT  = 1 << 3,
+  CENTER = 1 << 4
 };
+template<> inline constexpr bool Bitmask::is_enum_v<JoyHatMask> = true;
 
 enum class EventMode: uInt8 {
   kEmulationMode, // active mapping used for emulation

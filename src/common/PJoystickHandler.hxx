@@ -114,7 +114,7 @@ class PhysicalJoystickHandler
     /** Handle a physical joystick event. */
     void handleAxisEvent(int stick, int axis, int value);
     void handleBtnEvent(int stick, int button, bool pressed);
-    void handleHatEvent(int stick, int hat, int value);
+    void handleHatEvent(int stick, int hat, JoyHatMask value);
 
     Event::Type eventForAxis(EventMode mode, int stick, JoyAxis axis, JoyDir adir, int button) const {
       const PhysicalJoystickPtr& j = joy(stick);

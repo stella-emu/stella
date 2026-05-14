@@ -1013,7 +1013,7 @@ void PhysicalJoystickHandler::handleBtnEvent(int stick, int button, bool pressed
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PhysicalJoystickHandler::handleHatEvent(int stick, int hat, int value)
+void PhysicalJoystickHandler::handleHatEvent(int stick, int hat, JoyHatMask value)
 {
   // Preprocess all hat events, converting to Stella JoyHatDir type
   // Generate multiple equivalent hat events representing combined direction
@@ -1024,32 +1024,37 @@ void PhysicalJoystickHandler::handleHatEvent(int stick, int hat, int value)
   if(j)
   {
     const int button = j->buttonLast;
+    const Bitmask::Enum hat_value{value};
 
     if(myHandler.state() == EventHandlerState::EMULATION)
     {
-      myHandler.handleEvent(j->joyMap.get(EventMode::kEmulationMode, button, hat, JoyHatDir::UP),
-                            value & EVENT_HATUP_M);
-      myHandler.handleEvent(j->joyMap.get(EventMode::kEmulationMode, button, hat, JoyHatDir::RIGHT),
-                            value & EVENT_HATRIGHT_M);
-      myHandler.handleEvent(j->joyMap.get(EventMode::kEmulationMode, button, hat, JoyHatDir::DOWN),
-                            value & EVENT_HATDOWN_M);
-      myHandler.handleEvent(j->joyMap.get(EventMode::kEmulationMode, button, hat, JoyHatDir::LEFT),
-                            value & EVENT_HATLEFT_M);
+      myHandler.handleEvent(j->joyMap.get(EventMode::kEmulationMode,
+                                          button, hat, JoyHatDir::UP),
+                                          hat_value.any_of(JoyHatMask::UP));
+      myHandler.handleEvent(j->joyMap.get(EventMode::kEmulationMode,
+                                          button, hat, JoyHatDir::RIGHT),
+                                          hat_value.any_of(JoyHatMask::RIGHT));
+      myHandler.handleEvent(j->joyMap.get(EventMode::kEmulationMode,
+                                          button, hat, JoyHatDir::DOWN),
+                                          hat_value.any_of(JoyHatMask::DOWN));
+      myHandler.handleEvent(j->joyMap.get(EventMode::kEmulationMode,
+                                          button, hat, JoyHatDir::LEFT),
+                                          hat_value.any_of(JoyHatMask::LEFT));
     }
 #ifdef GUI_SUPPORT
     else if(myHandler.hasOverlay())
     {
-      if(value == EVENT_HATCENTER_M)
+      if(value == JoyHatMask::CENTER)
         myHandler.overlay().handleJoyHatEvent(stick, hat, JoyHatDir::CENTER, button);
       else
       {
-        if(value & EVENT_HATUP_M)
+        if(hat_value.any_of(JoyHatMask::UP))
           myHandler.overlay().handleJoyHatEvent(stick, hat, JoyHatDir::UP, button);
-        if(value & EVENT_HATRIGHT_M)
+        if(hat_value.any_of(JoyHatMask::RIGHT))
           myHandler.overlay().handleJoyHatEvent(stick, hat, JoyHatDir::RIGHT, button);
-        if(value & EVENT_HATDOWN_M)
+        if(hat_value.any_of(JoyHatMask::DOWN))
           myHandler.overlay().handleJoyHatEvent(stick, hat, JoyHatDir::DOWN, button);
-        if(value & EVENT_HATLEFT_M)
+        if(hat_value.any_of(JoyHatMask::LEFT))
           myHandler.overlay().handleJoyHatEvent(stick, hat, JoyHatDir::LEFT, button);
       }
     }

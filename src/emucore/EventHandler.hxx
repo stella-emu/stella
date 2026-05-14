@@ -416,7 +416,7 @@ class EventHandler
     void handleJoyAxisEvent(int stick, int axis, int value) {
       myPJoyHandler->handleAxisEvent(stick, axis, value);
     }
-    void handleJoyHatEvent(int stick, int hat, int value) {
+    void handleJoyHatEvent(int stick, int hat, JoyHatMask value) {
       myPJoyHandler->handleHatEvent(stick, hat, value);
     }
 

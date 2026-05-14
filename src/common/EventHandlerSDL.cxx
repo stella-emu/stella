@@ -162,16 +162,16 @@ void EventHandlerSDL::pollEvent()
 
       case SDL_EVENT_JOYSTICK_HAT_MOTION:
       {
-        int value = 0;
+        JoyHatMask value = JoyHatMask::NONE;
         const int v = myEvent.jhat.value;
         if(v == SDL_HAT_CENTERED)
-          value  = EVENT_HATCENTER_M;
+          value  = JoyHatMask::CENTER;
         else
         {
-          if(v & SDL_HAT_UP)    value |= EVENT_HATUP_M;
-          if(v & SDL_HAT_DOWN)  value |= EVENT_HATDOWN_M;
-          if(v & SDL_HAT_LEFT)  value |= EVENT_HATLEFT_M;
-          if(v & SDL_HAT_RIGHT) value |= EVENT_HATRIGHT_M;
+          if(v & SDL_HAT_UP)    value |= JoyHatMask::UP;
+          if(v & SDL_HAT_DOWN)  value |= JoyHatMask::DOWN;
+          if(v & SDL_HAT_LEFT)  value |= JoyHatMask::LEFT;
+          if(v & SDL_HAT_RIGHT) value |= JoyHatMask::RIGHT;
         }
 
         handleJoyHatEvent(myEvent.jhat.which, myEvent.jhat.hat, value);
