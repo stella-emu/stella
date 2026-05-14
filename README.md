@@ -23,3 +23,21 @@ help with them.
 
 Please check out the [issue tracker](https://github.com/stella-emu/stella/issues) for
 a list of all currently known issues.
+
+# macOS Installation
+
+When downloading Stella on macOS, Gatekeeper may block the app from opening with a message like *"Stella cannot be opened because Apple cannot verify it is free from malware."*
+
+To work around this, use either of the following methods:
+
+**Option 1 — Right-click to open (easiest):**
+1. Right-click (or Control-click) `Stella.app`
+2. Select **Open** from the context menu
+3. Click **Open** in the confirmation dialog
+
+You only need to do this once; Stella will open normally after that.
+
+**Option 2 — Terminal:**
+```bash
+xattr -dr com.apple.quarantine /path/to/Stella.app
+```
