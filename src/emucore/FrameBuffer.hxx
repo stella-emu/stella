@@ -383,6 +383,7 @@ class FrameBuffer
       Clear the framebuffer.
     */
     void clear() { myBackend->clear(); }
+    void flush() { myBackend->flush(); }
 
     /**
       Transform from window to renderer coordinates, x/y direction.

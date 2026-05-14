@@ -86,6 +86,14 @@ class FBBackend
     virtual void clear() = 0;
 
     /**
+      Flush pending render commands without presenting.  Used to ensure a
+      clean command-queue boundary before clear() in dialog rendering, so
+      any preceding geometry from the previous frame lands in its own
+      command queue rather than sharing a queue with the subsequent clear.
+    */
+    virtual void flush() = 0;
+
+    /**
       Updates window title.
 
       @param title   The title of the application / window

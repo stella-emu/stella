@@ -127,8 +127,10 @@ void DialogContainer::render()
 #endif
 
   // Make sure we start in a clean state (with zero'ed buffers)
-  if(!myOSystem.eventHandler().inTIAMode())
+  if(!myOSystem.eventHandler().inTIAMode()) {
+    myOSystem.frameBuffer().flush();
     myOSystem.frameBuffer().clear();
+  }
 
   // Render all dialogs
   myDialogStack.applyAll([&](Dialog*& d) {

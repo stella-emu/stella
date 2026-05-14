@@ -136,6 +136,7 @@ class FBBackendSDL : public FBBackend
       Clear the frame buffer.
     */
     void clear() override;
+    void flush() override;
 
     /**
       This method is called to query and initialize the video hardware
