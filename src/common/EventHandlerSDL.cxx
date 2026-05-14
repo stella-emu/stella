@@ -84,26 +84,20 @@ void EventHandlerSDL::pollEvent()
       // keyboard events
       case SDL_EVENT_KEY_UP:
       case SDL_EVENT_KEY_DOWN:
-      {
         handleKeyEvent(static_cast<StellaKey>(myEvent.key.scancode),
                        static_cast<StellaMod>(myEvent.key.mod),
                        myEvent.type == SDL_EVENT_KEY_DOWN,
                        myEvent.key.repeat);
         break;
-      }
 
       case SDL_EVENT_TEXT_INPUT:
-      {
         handleTextEvent(*(myEvent.text.text));
         break;
-      }
 
       case SDL_EVENT_MOUSE_MOTION:
-      {
         handleMouseMotionEvent(myEvent.motion.x, myEvent.motion.y,
                                myEvent.motion.xrel, myEvent.motion.yrel);
         break;
-      }
 
       case SDL_EVENT_MOUSE_BUTTON_DOWN:
       case SDL_EVENT_MOUSE_BUTTON_UP:
@@ -147,18 +141,14 @@ void EventHandlerSDL::pollEvent()
   #ifdef JOYSTICK_SUPPORT
       case SDL_EVENT_JOYSTICK_BUTTON_UP:
       case SDL_EVENT_JOYSTICK_BUTTON_DOWN:
-      {
         handleJoyBtnEvent(myEvent.jbutton.which, myEvent.jbutton.button,
                           myEvent.jbutton.down);
         break;
-      }
 
       case SDL_EVENT_JOYSTICK_AXIS_MOTION:
-      {
         handleJoyAxisEvent(myEvent.jaxis.which, myEvent.jaxis.axis,
                            myEvent.jaxis.value);
         break;
-      }
 
       case SDL_EVENT_JOYSTICK_HAT_MOTION:
       {
@@ -179,22 +169,21 @@ void EventHandlerSDL::pollEvent()
       }
 
       case SDL_EVENT_JOYSTICK_ADDED:
-      {
         addPhysicalJoystick(std::make_shared<JoystickSDL>(myEvent.jdevice.which));
         break;
-      }
+
       case SDL_EVENT_JOYSTICK_REMOVED:
-      {
         removePhysicalJoystick(myEvent.jdevice.which);
         break;
-      }
   #endif
 
       case SDL_EVENT_QUIT:
-      {
         handleEvent(Event::Quit);
         break;
-      }
+
+      case SDL_EVENT_DROP_FILE:
+        handleDropfileEvent(myEvent.drop.data);
+        break;
 
       case SDL_EVENT_WINDOW_SHOWN:
         handleSystemEvent(SystemEvent::WINDOW_SHOWN);

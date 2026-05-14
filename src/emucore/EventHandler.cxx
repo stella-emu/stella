@@ -422,6 +422,12 @@ void EventHandler::handleSystemEvent(SystemEvent e, int, int)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void EventHandler::handleDropfileEvent(string_view file)
+{
+  myOSystem.createConsole(FSNode(file));
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // NOLINTNEXTLINE(readability-function-size,google-readability-function-size,hicpp-function-size)
 void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
 {
