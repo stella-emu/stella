@@ -197,7 +197,7 @@ class Event
     };
 
     // Event list version, update only if the id of existing(!) event types changed
-    static constexpr Int32 VERSION = 7;
+    static constexpr Int32 VERSION = 8;
 
     using EventSet = std::unordered_set<Event::Type>;
 

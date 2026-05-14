@@ -802,8 +802,8 @@ bool PhysicalJoystickHandler::addJoyMapping(Event::Type event, EventMode mode,
   const PhysicalJoystickPtr j = joy(stick);
 
   if(j && event < Event::LastType &&
-      button >= JOY_CTRL_NONE && button < j->numButtons &&
-      axis >= JoyAxis::NONE && static_cast<int>(axis) < j->numAxes)
+      (button == JOY_CTRL_NONE || (button >= 0 && button < j->numButtons)) &&
+      (axis == JoyAxis::NONE || static_cast<int>(axis) < j->numAxes))
   {
     const EventMode evMode = getEventMode(event, mode);
 
@@ -843,7 +843,7 @@ bool PhysicalJoystickHandler::addJoyHatMapping(Event::Type event, EventMode mode
   const PhysicalJoystickPtr j = joy(stick);
 
   if(j && event < Event::LastType &&
-     button >= JOY_CTRL_NONE && button < j->numButtons &&
+     (button == JOY_CTRL_NONE || (button >= 0 && button < j->numButtons)) &&
      hat >= 0 && hat < j->numHats && hdir != JoyHatDir::CENTER)
   {
     const EventMode evMode = getEventMode(event, mode);
