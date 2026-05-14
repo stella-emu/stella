@@ -99,8 +99,7 @@ class PhysicalKeyboardHandler
       StellaKey key{StellaKey::UNKNOWN};
       StellaMod mod{StellaMod::NONE};
     };
-    using EventMappingArray = std::vector<EventMapping>;
-    using EventMappingSpan  = std::span<const EventMapping>;
+    using EventMappingSpan = std::span<const EventMapping>;
 
     // Checks if the given mapping is used by any event mode
     bool isMappingUsed(EventMode mode, const EventMapping& map) const;
@@ -164,20 +163,20 @@ class PhysicalKeyboardHandler
   #endif
 
     // Controller menu and common emulation mappings
-    static EventMappingArray DefaultMenuMapping;
+    static const EventMappingSpan DefaultMenuMapping;
   #ifdef GUI_SUPPORT
-    static EventMappingArray FixedEditMapping;
+    static const EventMappingSpan FixedEditMapping;
   #endif
   #ifdef DEBUGGER_SUPPORT
-    static EventMappingArray FixedPromptMapping;
+    static const EventMappingSpan FixedPromptMapping;
   #endif
-    static EventMappingArray DefaultCommonMapping;
+    static const EventMappingSpan DefaultCommonMapping;
     // Controller specific mappings
-    static EventMappingArray DefaultJoystickMapping;
-    static EventMappingArray DefaultPaddleMapping;
-    static EventMappingArray DefaultKeyboardMapping;
-    static EventMappingArray DefaultDrivingMapping;
-    static EventMappingArray CompuMateMapping;
+    static const EventMappingSpan DefaultJoystickMapping;
+    static const EventMappingSpan DefaultPaddleMapping;
+    static const EventMappingSpan DefaultKeyboardMapping;
+    static const EventMappingSpan DefaultDrivingMapping;
+    static const EventMappingSpan CompuMateMapping;
 };
 
 #endif  // PHYSICAL_KEYBOARD_HANDLER_HXX
