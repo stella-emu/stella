@@ -94,6 +94,7 @@ class FBBackendLIBRETRO : public FBBackend
     Common::Point getCurrentWindowPos() const override { return Common::Point{}; }
     uInt32 getCurrentDisplayID() const override { return 0; }
     void clear() override { }
+    void flush() override { }
     bool setVideoMode(const VideoModeHandler::Mode&,
                       uInt32, const Common::Point&) override { return true; }
     void grabMouse(bool) override { }
