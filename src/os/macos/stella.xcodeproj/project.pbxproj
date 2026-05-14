@@ -285,6 +285,7 @@
 		DC39F2A52DC107F3006D74A8 /* FBBackendSDL.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC39F29A2DC107F3006D74A8 /* FBBackendSDL.hxx */; };
 		DC39F2A62DC107F3006D74A8 /* FBSurfaceSDL.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC39F29C2DC107F3006D74A8 /* FBSurfaceSDL.hxx */; };
 		DC39F2A72DC107F3006D74A8 /* SoundSDL.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC39F29E2DC107F3006D74A8 /* SoundSDL.hxx */; };
+		DC3C95592FB602C600E61C5F /* BitmaskEnum.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC3C95582FB602C600E61C5F /* BitmaskEnum.hxx */; };
 		DC3C9BC52469C8F700CF2D47 /* PaletteHandler.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC3C9BC32469C8F700CF2D47 /* PaletteHandler.cxx */; };
 		DC3C9BC62469C8F700CF2D47 /* PaletteHandler.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC3C9BC42469C8F700CF2D47 /* PaletteHandler.hxx */; };
 		DC3C9BCB2469C93D00CF2D47 /* VideoAudioDialog.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC3C9BC72469C93D00CF2D47 /* VideoAudioDialog.cxx */; };
@@ -1164,6 +1165,7 @@
 		DC39F29D2DC107F3006D74A8 /* FBSurfaceSDL.cxx */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = FBSurfaceSDL.cxx; sourceTree = "<group>"; };
 		DC39F29E2DC107F3006D74A8 /* SoundSDL.hxx */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = SoundSDL.hxx; sourceTree = "<group>"; };
 		DC39F29F2DC107F3006D74A8 /* SoundSDL.cxx */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = SoundSDL.cxx; sourceTree = "<group>"; };
+		DC3C95582FB602C600E61C5F /* BitmaskEnum.hxx */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = BitmaskEnum.hxx; sourceTree = "<group>"; };
 		DC3C9BC32469C8F700CF2D47 /* PaletteHandler.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PaletteHandler.cxx; sourceTree = "<group>"; };
 		DC3C9BC42469C8F700CF2D47 /* PaletteHandler.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = PaletteHandler.hxx; sourceTree = "<group>"; };
 		DC3C9BC72469C93D00CF2D47 /* VideoAudioDialog.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = VideoAudioDialog.cxx; sourceTree = "<group>"; };
@@ -2007,6 +2009,7 @@
 				DC79F81017A88D9E00288B91 /* Base.cxx */,
 				DCE716192AA78BD700B870EA /* Bezel.hxx */,
 				DCE716182AA78BD700B870EA /* Bezel.cxx */,
+				DC3C95582FB602C600E61C5F /* BitmaskEnum.hxx */,
 				DCC527D810B9DA6A005E1287 /* bspf.hxx */,
 				DC6DC5EA273C2C3A00F64413 /* DevSettingsHandler.hxx */,
 				DC6DC5E9273C2C3A00F64413 /* DevSettingsHandler.cxx */,
@@ -3015,6 +3018,7 @@
 				DCFB9FAC1ECA2609004FD69B /* DelayQueueIteratorImpl.hxx in Headers */,
 				E0A3841D2589741A0062AA93 /* KeyValueRepositorySqlite.hxx in Headers */,
 				DC564F6C28C1152100177588 /* nanojpeg_lib.hxx in Headers */,
+				DC3C95592FB602C600E61C5F /* BitmaskEnum.hxx in Headers */,
 				E08FCD5823A037EB0051F59B /* QisBlitter.hxx in Headers */,
 				DCA078351F8C1B04008EFEE5 /* SDL_lib.hxx in Headers */,
 				DCDA03B11A2009BB00711920 /* CartWD.hxx in Headers */,

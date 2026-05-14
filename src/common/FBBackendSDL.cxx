@@ -698,6 +698,12 @@ void FBBackendSDL::clear()
 {
   ASSERT_MAIN_THREAD;
 
+  // SDL3 Metal: flush before clear so any preceding GEOMETRY commands land in
+  // their own command queue.  METAL_RunCommandQueue does not reset the texture
+  // statecache on CLEAR, so a subsequent GEOMETRY with the same scale/address
+  // mode skips sampler re-binding on the freshly-created encoder → Metal API
+  // Validation abort.  Flushing here guarantees a fresh statecache after CLEAR.
+  SDL_FlushRenderer(myRenderer);
   SDL_RenderClear(myRenderer);
 }
 
