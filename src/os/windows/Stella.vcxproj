@@ -1353,6 +1353,7 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\common\AsciiFold.hxx" />
     <ClInclude Include="..\..\common\AudioQueue.hxx" />
     <ClInclude Include="..\..\common\AudioSettings.hxx" />
     <ClInclude Include="..\..\common\audio\ConvolutionBuffer.hxx" />
