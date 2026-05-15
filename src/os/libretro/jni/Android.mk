@@ -15,5 +15,5 @@ include $(CLEAR_VARS)
 LOCAL_MODULE    := retro
 LOCAL_SRC_FILES := $(SOURCES_CXX) $(SOURCES_C)
 LOCAL_CXXFLAGS  := $(COREFLAGS) -std=c++20
-LOCAL_LDFLAGS   := -Wl,-version-script=$(CORE_DIR)/os/libretro/link.T
+LOCAL_LDFLAGS   := -Wl,-version-script=$(CORE_DIR)/os/libretro/link.T,-z,max-page-size=16384
 include $(BUILD_SHARED_LIBRARY)
