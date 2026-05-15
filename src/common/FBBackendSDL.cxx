@@ -128,7 +128,7 @@ void FBBackendSDL::queryHardware(std::unordered_map<uInt32, Common::Size>& fulls
                          isDesktopMode ? "* " : "  ");
     }
     Logger::debug(log);
-    SDL_free(modes);
+    SDL_free(static_cast<void*>(modes));
   }
   SDL_free(displays);
 
