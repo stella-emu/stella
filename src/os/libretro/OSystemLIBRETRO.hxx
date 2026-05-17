@@ -23,11 +23,8 @@
 #include "repository/KeyValueRepositoryNoop.hxx"
 #include "repository/CompositeKeyValueRepositoryNoop.hxx"
 
-#ifdef _WIN32
-  const string SLASH = "\\";
-#else
-  const string SLASH = "/";
-#endif
+// Declared in libretro.cxx; provides the RetroArch save directory
+extern string libretro_save_dir;
 
 /**
   This class defines an OSystem object for libretro.
@@ -58,7 +55,11 @@ class OSystemLIBRETRO : public OSystem
     void getBaseDirectories(string& basedir, string& homedir,
                             bool useappdir, string_view usedir) override
     {
-      basedir = homedir = "." + SLASH;
+      // Use the RetroArch save directory when available; fall back to "./"
+      if(!libretro_save_dir.empty())
+        basedir = homedir = libretro_save_dir;
+      else
+        basedir = homedir = string(".") + FSNode::PATH_SEPARATOR;
     }
 
     shared_ptr<KeyValueRepository>

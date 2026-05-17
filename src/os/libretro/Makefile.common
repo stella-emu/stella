@@ -95,6 +95,7 @@ SOURCES_CXX := \
 	$(CORE_DIR)/emucore/CartWF8.cxx \
 	$(CORE_DIR)/emucore/CartX07.cxx \
 	$(CORE_DIR)/emucore/CompuMate.cxx \
+	$(CORE_DIR)/emucore/CompuMateCassette.cxx \
 	$(CORE_DIR)/emucore/Console.cxx \
 	$(CORE_DIR)/emucore/Control.cxx \
 	$(CORE_DIR)/emucore/ControllerDetector.cxx \

@@ -32,6 +32,11 @@ static retro_audio_sample_t audio_cb;
 static retro_audio_sample_batch_t audio_batch_cb;
 static bool libretro_supports_bitmasks;
 
+// Exposed to FSNodeLIBRETRO for VFS-based file operations
+retro_vfs_interface* libretro_vfs = nullptr;
+string libretro_save_dir;
+string libretro_rom_path;
+
 // libretro UI settings
 static int setting_ntsc, setting_pal;
 static int setting_stereo;
@@ -736,6 +741,11 @@ void retro_set_environment(retro_environment_t cb)
 {
   environ_cb = cb;
 
+  // Request VFS v3 interface (stat/mkdir/opendir support)
+  struct retro_vfs_interface_info vfs_info = { 3, nullptr };
+  if(environ_cb(RETRO_ENVIRONMENT_GET_VFS_INTERFACE, &vfs_info) && vfs_info.iface)
+    libretro_vfs = vfs_info.iface;
+
   static struct retro_core_option_v2_category option_categories[] = {
     { "system", "System", NULL },
     { "video", "Video", NULL },
@@ -1299,6 +1309,16 @@ void retro_init()
 
   environ_cb(RETRO_ENVIRONMENT_SET_PERFORMANCE_LEVEL, &level);
   libretro_supports_bitmasks = environ_cb(RETRO_ENVIRONMENT_GET_INPUT_BITMASKS, NULL);
+
+  // Get save directory for nvram, palette, and other persistent files
+  const char* save_dir_c = nullptr;
+  if(environ_cb(RETRO_ENVIRONMENT_GET_SAVE_DIRECTORY, &save_dir_c) && save_dir_c)
+  {
+    libretro_save_dir = save_dir_c;
+    if(!libretro_save_dir.empty() && libretro_save_dir.back() != FSNode::PATH_SEPARATOR)
+      libretro_save_dir += FSNode::PATH_SEPARATOR;
+    if(log_cb) log_cb(RETRO_LOG_INFO, "Stella save directory: %s\n", libretro_save_dir.c_str());
+  }
 }
 
 static const struct retro_controller_description controllers[] = {
@@ -1369,6 +1389,7 @@ bool retro_load_game(const struct retro_game_info *info)
   }
 
   stella.setROM(info->path, info->data, info->size);
+  libretro_rom_path = info->path ? info->path : "";
 
   return reset_system();
 }
