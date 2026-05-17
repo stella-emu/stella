@@ -827,6 +827,13 @@ static bool reset_system()
   // start system
   if(!stella.create(log_cb ? true : false)) return false;
 
+  // expose RIOT RAM at its native 6502 address for RetroAchievements
+  const retro_memory_descriptor mem_desc = {
+    RETRO_MEMDESC_SYSTEM_RAM, stella.getRAM(), 0, 0x80, 0, 0, stella.getRAMSize(), nullptr
+  };
+  const retro_memory_map mem_map = { &mem_desc, 1 };
+  environ_cb(RETRO_ENVIRONMENT_SET_MEMORY_MAPS, (void*)&mem_map);
+
   // get auto-detect controllers, then apply any user override
   input_type[0] = stella.getLeftControllerType();
   input_type[1] = stella.getRightControllerType();
@@ -1598,6 +1605,9 @@ bool retro_load_game(const struct retro_game_info *info)
 
   stella.setROM(info->path, info->data, info->size);
   libretro_rom_path = info->path ? info->path : "";
+
+  bool supports_achievements = true;
+  environ_cb(RETRO_ENVIRONMENT_SET_SUPPORT_ACHIEVEMENTS, &supports_achievements);
 
   return reset_system();
 }
