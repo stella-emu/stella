@@ -24,7 +24,7 @@
 #include "repository/CompositeKeyValueRepositoryNoop.hxx"
 
 // Declared in libretro.cxx; provides the RetroArch save directory
-extern string libretro_save_dir;
+extern string libretro_save_dir;  // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)
 
 /**
   This class defines an OSystem object for libretro.
@@ -39,6 +39,22 @@ class OSystemLIBRETRO : public OSystem
     OSystemLIBRETRO() = default;
     ~OSystemLIBRETRO() override = default;
 
+    shared_ptr<KeyValueRepository>
+    getSettingsRepository() override {
+      return std::make_shared<KeyValueRepositoryNoop>();
+    }
+
+    shared_ptr<CompositeKeyValueRepository>
+    getPropertyRepository() override {
+      return std::make_shared<CompositeKeyValueRepositoryNoop>();
+    }
+
+    shared_ptr<CompositeKeyValueRepositoryAtomic>
+    getHighscoreRepository() override {
+      return std::make_shared<CompositeKeyValueRepositoryNoop>();
+    }
+
+  protected:
     /**
       Determine the base directory and home directory from the derived
       class.  It can also use hints, as described below.
@@ -62,22 +78,6 @@ class OSystemLIBRETRO : public OSystem
         basedir = homedir = string(".") + FSNode::PATH_SEPARATOR;
     }
 
-    shared_ptr<KeyValueRepository>
-    getSettingsRepository() override {
-      return std::make_shared<KeyValueRepositoryNoop>();
-    }
-
-    shared_ptr<CompositeKeyValueRepository>
-    getPropertyRepository() override {
-      return std::make_shared<CompositeKeyValueRepositoryNoop>();
-    }
-
-    shared_ptr<CompositeKeyValueRepositoryAtomic>
-    getHighscoreRepository() override {
-      return std::make_shared<CompositeKeyValueRepositoryNoop>();
-    }
-
-  protected:
     void initPersistence(FSNode& basedir) override { }
     string describePersistence() override { return "none"; }
 

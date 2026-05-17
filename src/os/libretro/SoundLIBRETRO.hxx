@@ -84,7 +84,7 @@ class SoundLIBRETRO : public Sound
     void dequeue(Int16* stream, uInt32* samples)
     {
       uInt32 outIndex = 0;
-      uInt32 frame    = myAudioSettings.sampleRate() / myOSystem.console().gameRefreshRate();
+      const uInt32 frame = myAudioSettings.sampleRate() / myOSystem.console().gameRefreshRate();
 
       while (myAudioQueue->size() && outIndex <= frame)
       {
@@ -126,12 +126,10 @@ class SoundLIBRETRO : public Sound
     void stopWav() override { myWavHandler.stop(); }
     uInt32 wavSize() const override { return myWavHandler.size(); }
 
-  protected:
     //////////////////////////////////////////////////////////////////////
     // Most methods here aren't used at all.  See Sound class for
     // description, if needed.
     //////////////////////////////////////////////////////////////////////
-
     void setEnabled(bool) override { }
     void setVolume(uInt32, bool) override { }
     void adjustVolume(int) override { }
@@ -158,7 +156,7 @@ class SoundLIBRETRO : public Sound
           auto read16 = [&](uInt16& v) { f.read(reinterpret_cast<char*>(&v), 2); };
 
           char tag[4];
-          uInt32 u32; uInt16 u16;
+          uInt32 u32{}; uInt16 u16{};
 
           f.read(tag, 4); if(std::memcmp(tag, "RIFF", 4) != 0) return false;
           read32(u32);
@@ -170,7 +168,7 @@ class SoundLIBRETRO : public Sound
 
           while(f && !(haveFmt && haveData))
           {
-            char id[4]; uInt32 chunkSize;
+            char id[4]; uInt32 chunkSize{};
             f.read(id, 4);
             read32(chunkSize);
             if(!f) break;
@@ -195,7 +193,9 @@ class SoundLIBRETRO : public Sound
               haveData = true;
             }
 
-            f.seekg(chunkStart + static_cast<std::streamoff>(chunkSize + (chunkSize & 1)));
+            f.seekg(chunkStart +
+                    static_cast<std::streamoff>(chunkSize) +
+                    static_cast<std::streamoff>(chunkSize & 1));
           }
 
           if(!haveFmt || !haveData || audioFormat != 1) return false;
@@ -228,7 +228,7 @@ class SoundLIBRETRO : public Sound
         const uInt32 frameSize = myChannels * (myBitsPerSample / 8);
         const double step = static_cast<double>(mySampleRate) / outputRate;
 
-        for(uInt32 i = 0; i < numSamples && myPos < myEnd; ++i)
+        for(size_t i = 0; i < numSamples && myPos < myEnd; ++i)
         {
           const Int16 wavL = sample(myPos);
           const Int16 wavR = (myChannels > 1) ? sample(myPos + myBitsPerSample / 8) : wavL;

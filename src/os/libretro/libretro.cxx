@@ -33,9 +33,9 @@ static retro_audio_sample_batch_t audio_batch_cb;
 static bool libretro_supports_bitmasks;
 
 // Exposed to FSNodeLIBRETRO for VFS-based file operations
-retro_vfs_interface* libretro_vfs = nullptr;
-string libretro_save_dir;
-string libretro_rom_path;
+retro_vfs_interface* libretro_vfs = nullptr;  // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)
+string libretro_save_dir;                     // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)
+string libretro_rom_path;                     // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)
 
 // libretro UI settings
 static int setting_ntsc, setting_pal;

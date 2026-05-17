@@ -56,17 +56,19 @@ class StellaLIBRETRO
     bool saveState(void* data, size_t size) const;
 
   public:
-    const char* getCoreName() const { return "Stella"; }
-    const char* getROMExtensions() const { return "a26|bin"; }
+    static constexpr const char* getCoreName() { return "Stella"; }
+    static constexpr const char* getROMExtensions() { return "a26|bin"; }
 
     const void*  getROM() const { return rom_image.data(); }
     uInt32 getROMSize() const { return rom_size; }
-    constexpr uInt32 getROMMax() const {
+    static constexpr uInt32 getROMMax() {
       return static_cast<uInt32>(Cartridge::maxSize());
     }
 
-    uInt8* getRAM() { return system_ram; }
-    constexpr uInt32 getRAMSize() const { return 128; }
+    uInt8* getRAM() {
+      return myOSystem->console().system().m6532().getRAM().data();
+    }
+    static constexpr uInt32 getRAMSize() { return 128; }
 
     size_t getStateSize() const;
 
@@ -90,10 +92,10 @@ class StellaLIBRETRO
     uInt32 getVideoHeight() const {
       return myOSystem->console().tia().height();
     }
-    constexpr uInt32 getVideoPitch() const { return getVideoWidthMax() * 4; }
+    static constexpr uInt32 getVideoPitch() { return getVideoWidthMax() * 4; }
 
-    constexpr uInt32 getVideoWidthMax() const  { return AtariNTSC::outWidth(160); }
-    constexpr uInt32 getVideoHeightMax() const { return 312; }
+    static constexpr uInt32 getVideoWidthMax()  { return AtariNTSC::outWidth(160); }
+    static constexpr uInt32 getVideoHeightMax() { return 312; }
 
     uInt32 getRenderWidth() const {
       return getVideoZoom() == 1 ? myOSystem->console().tia().width() * 2
@@ -142,14 +144,14 @@ class StellaLIBRETRO
       return myOSystem->console().rightController().type();
     }
 
-    void setPaddleJoypadSensitivity(int sensitivity)
+    void setPaddleJoypadSensitivity(int sensitivity) const
     {
       if(getLeftControllerType() == Controller::Type::Paddles ||
          getRightControllerType() == Controller::Type::Paddles)
         Paddles::setDigitalSensitivity(sensitivity);
     }
 
-    void setPaddleAnalogSensitivity(int sensitivity)
+    void setPaddleAnalogSensitivity(int sensitivity) const
     {
       if(getLeftControllerType() == Controller::Type::Paddles ||
          getRightControllerType() == Controller::Type::Paddles)
@@ -186,7 +188,6 @@ class StellaLIBRETRO
     unique_ptr<Int16[]> audio_buffer;
     uInt32 audio_samples{0};
 
-    uInt8 system_ram[128];
 
     // (31440 rate / 50 Hz) * 16-bit stereo * 1.25x padding
     static constexpr uInt32 audio_buffer_max = (31440 / 50 * 4 * 5) / 4;

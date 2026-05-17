@@ -120,12 +120,14 @@ class M6532 : public Device
      */
     void updateEmulation();
 
+  #ifdef __LIB_RETRO__
     /**
-      Get the RAM contents.
+      Get mutable RAM contents for direct external access (libretro cheat/memory interface).
 
-      @return  Span over RAM array.
+      @return  Mutable span over RAM array.
     */
-    ByteSpan getRAM() const { return myRAM; }
+    ByteMSpan getRAM() { return myRAM; }
+  #endif
 
   #ifdef DEBUGGER_SUPPORT
     /**

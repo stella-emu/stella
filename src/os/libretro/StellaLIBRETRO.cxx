@@ -126,10 +126,6 @@ void StellaLIBRETRO::destroy()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void StellaLIBRETRO::runFrame()
 {
-  // write ram updates
-  for(int lcv = 0; lcv <= 127; lcv++)
-    myOSystem->console().system().m6532().poke(lcv | 0x80, system_ram[lcv]);
-
   // poll input right at vsync
   updateInput();
 
@@ -138,9 +134,6 @@ void StellaLIBRETRO::runFrame()
 
   // drain generated audio
   updateAudio();
-
-  // refresh ram copy
-  memcpy(system_ram, myOSystem->console().system().m6532().getRAM().data(), 128);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -191,11 +184,7 @@ bool StellaLIBRETRO::loadState(const void* data, size_t size)
   state.putByteArray(std::span{reinterpret_cast<const uInt8*>(data), size});
   state.rewind();
 
-  if(!myOSystem->state().loadState(state))
-    return false;
-
-  memcpy(system_ram, myOSystem->console().system().m6532().getRAM().data(), 128);
-  return true;
+  return myOSystem->state().loadState(state);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -233,14 +222,14 @@ float StellaLIBRETRO::getVideoAspectPar() const
   if (getVideoNTSC())
   {
     if (!video_aspect_ntsc)
-      par = (6.1363635f / 3.579545454f) / 2.0;
+      par = (6.1363635F / 3.579545454F) / 2.0;
     else
       par = video_aspect_ntsc / 100.0;
   }
   else
   {
     if (!video_aspect_pal)
-      par = (7.3750000f / (4.43361875f * 4.0f / 5.0f)) / 2.0f;
+      par = (7.3750000F / (4.43361875F * 4.F / 5.F)) / 2.F;
     else
       par = video_aspect_pal / 100.0;
   }

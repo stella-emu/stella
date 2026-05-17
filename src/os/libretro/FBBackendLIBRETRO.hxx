@@ -36,6 +36,9 @@ class FBBackendLIBRETRO : public FBBackend
     explicit FBBackendLIBRETRO(OSystem&) { }
     ~FBBackendLIBRETRO() override = default;
 
+    int scaleX(int x) const override { return x; }
+    int scaleY(int y) const override { return y; }
+
   protected:
     /**
       This method is called to query and initialize the video hardware
@@ -80,8 +83,6 @@ class FBBackendLIBRETRO : public FBBackend
     // description, if needed.
     //////////////////////////////////////////////////////////////////////
 
-    int scaleX(int x) const override { return x; }
-    int scaleY(int y) const override { return y; }
     void setTitle(string_view) override { }
     void showCursor(bool) override { }
     bool fullScreen() const override { return true; }
@@ -89,7 +90,9 @@ class FBBackendLIBRETRO : public FBBackend
     uInt32 gMask() const override { return 0x0000FF00; }
     uInt32 bMask() const override { return 0x000000FF; }
     uInt32 aMask() const override { return 0xFF000000; }
-    const FBSurface& compositedSurface() { static FBSurfaceLIBRETRO tmp(0, 0); return tmp; }
+    const FBSurface& compositedSurface() override {
+      static const FBSurfaceLIBRETRO tmp(0, 0); return tmp;
+    }
     bool isCurrentWindowPositioned() const override { return true; }
     Common::Point getCurrentWindowPos() const override { return Common::Point{}; }
     uInt32 getCurrentDisplayID() const override { return 0; }

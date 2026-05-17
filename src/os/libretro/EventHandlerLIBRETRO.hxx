@@ -36,7 +36,7 @@ class EventHandlerLIBRETRO : public EventHandler
     explicit EventHandlerLIBRETRO(OSystem& osystem) : EventHandler(osystem) { }
     ~EventHandlerLIBRETRO() override = default;
 
-  private:
+  protected:
     /**
       Collects and dispatches any pending events.
     */

@@ -21,12 +21,12 @@
 #include "libretro.h"
 
 // Declared in libretro.cxx
-extern retro_vfs_interface* libretro_vfs;
-extern string libretro_save_dir;
-extern string libretro_rom_path;
+extern retro_vfs_interface* libretro_vfs;  // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)
+extern string libretro_save_dir;           // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)
+extern string libretro_rom_path;           // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)
 
 extern uInt32 libretro_read_rom(void* data);
-extern uInt32 libretro_get_rom_size(void);
+extern uInt32 libretro_get_rom_size();
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FSNodeLIBRETRO::FSNodeLIBRETRO()
