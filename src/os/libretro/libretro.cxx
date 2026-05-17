@@ -467,6 +467,15 @@ static void update_input()
       break;
     }
 
+    case KidVid:
+      // Tape selection: keyboard keys 8/9/0 or joypad B/A/Y
+      EVENT(Event::RightKeyboard1, key_state[RETROK_8] | (bool)(input_bitmask[pad] & (1 << RETRO_DEVICE_ID_JOYPAD_B)));
+      EVENT(Event::RightKeyboard2, key_state[RETROK_9] | (bool)(input_bitmask[pad] & (1 << RETRO_DEVICE_ID_JOYPAD_A)));
+      EVENT(Event::RightKeyboard3, key_state[RETROK_0] | (bool)(input_bitmask[pad] & (1 << RETRO_DEVICE_ID_JOYPAD_Y)));
+      // Skip/stop song: keyboard key O or joypad X
+      EVENT(Event::RightKeyboard6, key_state[RETROK_o] | (bool)(input_bitmask[pad] & (1 << RETRO_DEVICE_ID_JOYPAD_X)));
+      break;
+
     case Keyboard:
       EVENT(Event::RightKeyboard1,     key_state[RETROK_8]);
       EVENT(Event::RightKeyboard2,     key_state[RETROK_9]);
