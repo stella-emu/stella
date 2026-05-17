@@ -690,6 +690,7 @@
     <ClCompile Include="..\..\emucore\CartWD.cxx" />
     <ClCompile Include="..\..\emucore\CartWF8.cxx" />
     <ClCompile Include="..\..\emucore\CompuMate.cxx" />
+    <ClCompile Include="..\..\emucore\CompuMateCassette.cxx" />
     <ClCompile Include="..\..\emucore\ControllerDetector.cxx" />
     <ClCompile Include="..\..\emucore\CortexM0.cxx" />
     <ClCompile Include="..\..\emucore\DispatchResult.cxx" />
@@ -1669,6 +1670,7 @@
     <ClInclude Include="..\..\emucore\CartWD.hxx" />
     <ClInclude Include="..\..\emucore\CartWF8.hxx" />
     <ClInclude Include="..\..\emucore\CompuMate.hxx" />
+    <ClInclude Include="..\..\emucore\CompuMateCassette.hxx" />
     <ClInclude Include="..\..\emucore\ConsoleIO.hxx" />
     <ClInclude Include="..\..\emucore\ConsoleTiming.hxx" />
     <ClInclude Include="..\..\emucore\ControllerDetector.hxx" />

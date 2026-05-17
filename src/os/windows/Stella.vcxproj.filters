@@ -1248,6 +1248,9 @@
     <ClCompile Include="..\..\emucore\CartEFF.cxx">
       <Filter>Source Files\emucore</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\emucore\CompuMateCassette.cxx">
+      <Filter>Source Files\emucore</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\emucore\AtariVox.hxx">
@@ -2569,6 +2572,9 @@
     </ClInclude>
     <ClInclude Include="..\..\common\AsciiFold.hxx">
       <Filter>Header Files\common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\emucore\CompuMateCassette.hxx">
+      <Filter>Header Files\emucore</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
