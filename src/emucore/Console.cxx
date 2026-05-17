@@ -864,6 +864,7 @@ void Console::setControllers(string_view romMd5)
   if(myCart->detectedType() == "CM")
   {
     myCMHandler = std::make_shared<CompuMate>(*this, myEvent, *mySystem);
+    myCMHandler->loadCassette(myOSystem.romFile());  // TODO: remove this
 
     // A somewhat ugly bit of code that casts to CartridgeCM to
     // add the CompuMate, and then back again for the actual

@@ -59,6 +59,7 @@ MODULE_OBJS := \
 	src/emucore/CartWF8.o \
 	src/emucore/CartX07.o \
 	src/emucore/CompuMate.o \
+	src/emucore/CompuMateCassette.o \
 	src/emucore/Console.o \
 	src/emucore/Control.o \
 	src/emucore/ControllerDetector.o \

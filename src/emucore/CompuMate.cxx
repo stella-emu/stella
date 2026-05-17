@@ -17,6 +17,7 @@
 
 #include "Console.hxx"
 #include "Event.hxx"
+#include "FSNode.hxx"
 #include "System.hxx"
 #include "CompuMate.hxx"
 
@@ -24,7 +25,9 @@
 CompuMate::CompuMate(const Console& console, const Event& event,
                      const System& system)
   : myConsole{console},
-    myEvent{event}
+    myEvent{event},
+    mySystem{system},
+    myCassette(system)
 {
   // These controller pointers will be retrieved by the Console, which will
   // also take ownership of them
@@ -35,6 +38,12 @@ CompuMate::CompuMate(const Console& console, const Event& event,
   myLeftController->setPin(Controller::AnalogPin::Five, AnalogReadout::connectToVcc());
   myRightController->setPin(Controller::AnalogPin::Nine, AnalogReadout::connectToVcc());
   myRightController->setPin(Controller::AnalogPin::Five, AnalogReadout::connectToGround());
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void CompuMate::loadCassette(const FSNode& romFile)
+{
+  myCassette.load(romFile, myConsole.timing());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -128,4 +137,104 @@ void CompuMate::update()
     lp.setPin(AP::Nine, AnalogReadout::connectToVcc());
     rp.setPin(DP::Four, false);
   }
+
+  // Returns true if any non-Enter character key is currently pressed
+  const auto anyCharPressed = [&]() -> bool {
+    return std::ranges::any_of(columns, [&](const auto& cc) {
+      return (cc.lp6     != E::NoType && myEvent.get(cc.lp6))
+          || (cc.rp3     != E::NoType && myEvent.get(cc.rp3))
+          || (cc.rp6     != E::NoType && cc.rp6 != E::CompuMateEnter && myEvent.get(cc.rp6))
+          || (cc.rp4     != E::NoType && myEvent.get(cc.rp4))
+          || (cc.shiftKey != E::NoType && myEvent.get(cc.shiftKey));
+    });
+  };
+
+  // Detect Func+J (LOAD command) followed by Enter to start cassette playback
+  if(!myCassette.isPlaying())
+  {
+    if(myEvent.get(E::CompuMateFunc) && myEvent.get(E::CompuMateJ) && !myLoadArm.seen)
+    {
+      myLoadArm.seen = true;
+      myLoadArm.bufLen = 1;  // LOAD is a single token
+      myLoadArm.waitingForRelease = true;
+      // TODO: open file-browser dialog here; for now use default cassette path
+      myPendingLoadPath = myCassette.defaultCassettePath();
+    }
+
+    // Suppress character tracking until J is released so the J from Func+J
+    // isn't counted as a new character press
+    if(myLoadArm.seen && myLoadArm.waitingForRelease && !myEvent.get(E::CompuMateJ))
+    {
+      myLoadArm.waitingForRelease = false;
+      myLoadArm.prevAnyChar = false;
+    }
+
+    // Backspace removes the last token; if the buffer empties, load is cancelled
+    const bool backspaceNow = myEvent.get(E::CompuMateBackspace) != 0;
+    if(myLoadArm.seen && backspaceNow && !myLoadArm.prevBackspace)
+      if(--myLoadArm.bufLen == 0)
+        myLoadArm.seen = false;
+    myLoadArm.prevBackspace = backspaceNow;
+
+    // Track character keypresses to keep buffer length in sync with the ROM
+    if(myLoadArm.seen && !myLoadArm.waitingForRelease)
+    {
+      const bool anyCharNow = anyCharPressed();
+      if(anyCharNow && !myLoadArm.prevAnyChar)
+        ++myLoadArm.bufLen;
+      myLoadArm.prevAnyChar = anyCharNow;
+    }
+
+    const bool enterNow = myEvent.get(E::CompuMateEnter) != 0;
+    if(enterNow && !myLoadArm.prevEnter && myLoadArm.seen)
+    {
+      myCassette.load(myPendingLoadPath, myConsole.timing());
+      myCassette.startPlayback(mySystem.cycles());
+      myLoadArm.seen = false;
+    }
+    myLoadArm.prevEnter = enterNow;
+  }
+
+  // Detect Func+H (SAVE command) followed by Enter to start cassette save
+  if(!myCassette.isRecording())
+  {
+    if(myEvent.get(E::CompuMateFunc) && myEvent.get(E::CompuMateH) && !mySaveArm.seen)
+    {
+      mySaveArm.seen = true;
+      mySaveArm.bufLen = 1;  // SAVE is a single token
+      mySaveArm.waitingForRelease = true;
+      // TODO: open file-browser dialog here; for now fall back to sibling path
+      myCassette.setSavePath(myCassette.defaultCassettePath());
+    }
+
+    if(mySaveArm.seen && mySaveArm.waitingForRelease && !myEvent.get(E::CompuMateH))
+    {
+      mySaveArm.waitingForRelease = false;
+      mySaveArm.prevAnyChar = false;
+    }
+
+    const bool backspaceNow = myEvent.get(E::CompuMateBackspace) != 0;
+    if(mySaveArm.seen && backspaceNow && !mySaveArm.prevBackspace)
+      if(--mySaveArm.bufLen == 0)
+        mySaveArm.seen = false;
+    mySaveArm.prevBackspace = backspaceNow;
+
+    if(mySaveArm.seen && !mySaveArm.waitingForRelease)
+    {
+      const bool anyCharNow = anyCharPressed();
+      if(anyCharNow && !mySaveArm.prevAnyChar)
+        ++mySaveArm.bufLen;
+      mySaveArm.prevAnyChar = anyCharNow;
+    }
+
+    const bool enterNow = myEvent.get(E::CompuMateEnter) != 0;
+    if(enterNow && !mySaveArm.prevEnter && mySaveArm.seen)
+    {
+      myCassette.startRecord();
+      mySaveArm.seen = false;
+    }
+    mySaveArm.prevEnter = enterNow;
+  }
+  else
+    myCassette.checkTimeout(mySystem.cycles());
 }

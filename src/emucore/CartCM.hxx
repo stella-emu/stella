@@ -28,8 +28,7 @@ class System;
 #endif
 
 /**
-  FIXME: This scheme is not yet fully implemented.  In particular, loading
-         from and saving to the cassette is completely missing.
+  FIXME: Loading directly from WAV files is not yet implemented.
 
   Cartridge class used for SpectraVideo CompuMate bankswitched games.
 

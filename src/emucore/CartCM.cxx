@@ -62,7 +62,13 @@ uInt8 CartridgeCM::peek(uInt16 address)
   // NOTE: This does not handle accessing cart ROM/RAM, however, this method
   // should never be called for ROM/RAM because of the way page accessing
   // has been setup (it will only ever be called for RIOT reads)
-  return mySystem->m6532().peek(address);
+  uInt8 value = mySystem->m6532().peek(address);
+
+  // Inject cassette audio into SWCHA D7 (A9=1 selects I/O; offset 0 = SWCHA)
+  if((address & 0x0200) && !(address & 0x07) && myCompuMate)
+    value = (value & 0x7F) | (myCompuMate->cassetteBit() << 7);
+
+  return value;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -75,6 +81,7 @@ bool CartridgeCM::poke(uInt16 address, uInt8 value)
     // RIOT mirroring, check bankswitch
     if(address == 0x280)
     {
+      const uInt8 prevSWCHA = mySWCHA;
       mySWCHA = value;
       bank(mySWCHA & 0x3);
       if(myCompuMate)
@@ -84,6 +91,9 @@ bool CartridgeCM::poke(uInt16 address, uInt8 value)
           column = 0;
         if(value & 0x40)
           column = (column + 1) % 10;
+
+        if((value ^ prevSWCHA) & 0x40)
+          myCompuMate->cassetteD6Toggled(mySystem->cycles());
       }
     }
     mySystem->m6532().poke(address, value);
