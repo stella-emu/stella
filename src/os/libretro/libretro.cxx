@@ -59,6 +59,20 @@ static unsigned input_devices[4];
 static int32_t input_crosshair[2];
 static Controller::Type input_type[2];
 
+static bool key_state[RETROK_LAST];
+
+// Tracks raw keyboard state for keyboard controller input.
+// Note: retro_keyboard_event_t returns void so we cannot suppress RetroArch
+// hotkeys here. Users should set a Hotkey Enable button in RetroArch settings
+// (Settings -> Input -> Hotkeys -> Hotkey Enable) to prevent conflicts when
+// playing games with keyboard controllers.
+static void keyboard_event_cb(bool down, unsigned keycode,
+                               uint32_t /*character*/, uint16_t /*mod*/)
+{
+  if(keycode < RETROK_LAST)
+    key_state[keycode] = down;
+}
+
 void libretro_logger(int log_level, const char *source)
 {
   retro_log_level log_mode = RETRO_LOG_INFO;
@@ -215,6 +229,8 @@ static void update_input()
       break;
     }
 
+    case PaddlesIAxis:
+    case PaddlesIAxDr:
     case Paddles:
     {
       static int32_t paddle_a = 0;
@@ -234,6 +250,37 @@ static void update_input()
       MASK_EVENT(Event::LeftPaddleBIncrease, pad, RETRO_DEVICE_ID_JOYPAD_LEFT);
       MASK_EVENT(Event::LeftPaddleBDecrease, pad, RETRO_DEVICE_ID_JOYPAD_RIGHT);
       MASK_EVENT(Event::LeftPaddleBFire,     pad, RETRO_DEVICE_ID_JOYPAD_B);
+      break;
+    }
+
+    case Keyboard:
+      EVENT(Event::LeftKeyboard1,     key_state[RETROK_1]);
+      EVENT(Event::LeftKeyboard2,     key_state[RETROK_2]);
+      EVENT(Event::LeftKeyboard3,     key_state[RETROK_3]);
+      EVENT(Event::LeftKeyboard4,     key_state[RETROK_q]);
+      EVENT(Event::LeftKeyboard5,     key_state[RETROK_w]);
+      EVENT(Event::LeftKeyboard6,     key_state[RETROK_e]);
+      EVENT(Event::LeftKeyboard7,     key_state[RETROK_a]);
+      EVENT(Event::LeftKeyboard8,     key_state[RETROK_s]);
+      EVENT(Event::LeftKeyboard9,     key_state[RETROK_d]);
+      EVENT(Event::LeftKeyboardStar,  key_state[RETROK_z]);
+      EVENT(Event::LeftKeyboard0,     key_state[RETROK_x]);
+      EVENT(Event::LeftKeyboardPound, key_state[RETROK_c]);
+      break;
+
+    case QuadTari:
+    {
+      MASK_EVENT(Event::LeftJoystickLeft,  pad, RETRO_DEVICE_ID_JOYPAD_LEFT);
+      MASK_EVENT(Event::LeftJoystickRight, pad, RETRO_DEVICE_ID_JOYPAD_RIGHT);
+      MASK_EVENT(Event::LeftJoystickUp,    pad, RETRO_DEVICE_ID_JOYPAD_UP);
+      MASK_EVENT(Event::LeftJoystickDown,  pad, RETRO_DEVICE_ID_JOYPAD_DOWN);
+      MASK_EVENT(Event::LeftJoystickFire,  pad, RETRO_DEVICE_ID_JOYPAD_B);
+      GET_BITMASK(2)
+      MASK_EVENT(Event::QTJoystickThreeUp,    2, RETRO_DEVICE_ID_JOYPAD_UP);
+      MASK_EVENT(Event::QTJoystickThreeDown,  2, RETRO_DEVICE_ID_JOYPAD_DOWN);
+      MASK_EVENT(Event::QTJoystickThreeLeft,  2, RETRO_DEVICE_ID_JOYPAD_LEFT);
+      MASK_EVENT(Event::QTJoystickThreeRight, 2, RETRO_DEVICE_ID_JOYPAD_RIGHT);
+      MASK_EVENT(Event::QTJoystickThreeFire,  2, RETRO_DEVICE_ID_JOYPAD_B);
       break;
     }
 
@@ -328,6 +375,8 @@ static void update_input()
       break;
     }
 
+    case PaddlesIAxis:
+    case PaddlesIAxDr:
     case Paddles:
     {
       static int32_t paddle_a = 0;
@@ -347,6 +396,37 @@ static void update_input()
       MASK_EVENT(Event::RightPaddleBIncrease, pad, RETRO_DEVICE_ID_JOYPAD_LEFT);
       MASK_EVENT(Event::RightPaddleBDecrease, pad, RETRO_DEVICE_ID_JOYPAD_RIGHT);
       MASK_EVENT(Event::RightPaddleBFire, pad, RETRO_DEVICE_ID_JOYPAD_B);
+      break;
+    }
+
+    case Keyboard:
+      EVENT(Event::RightKeyboard1,     key_state[RETROK_8]);
+      EVENT(Event::RightKeyboard2,     key_state[RETROK_9]);
+      EVENT(Event::RightKeyboard3,     key_state[RETROK_0]);
+      EVENT(Event::RightKeyboard4,     key_state[RETROK_i]);
+      EVENT(Event::RightKeyboard5,     key_state[RETROK_o]);
+      EVENT(Event::RightKeyboard6,     key_state[RETROK_p]);
+      EVENT(Event::RightKeyboard7,     key_state[RETROK_k]);
+      EVENT(Event::RightKeyboard8,     key_state[RETROK_l]);
+      EVENT(Event::RightKeyboard9,     key_state[RETROK_SEMICOLON]);
+      EVENT(Event::RightKeyboardStar,  key_state[RETROK_COMMA]);
+      EVENT(Event::RightKeyboard0,     key_state[RETROK_PERIOD]);
+      EVENT(Event::RightKeyboardPound, key_state[RETROK_SLASH]);
+      break;
+
+    case QuadTari:
+    {
+      MASK_EVENT(Event::RightJoystickLeft,  pad, RETRO_DEVICE_ID_JOYPAD_LEFT);
+      MASK_EVENT(Event::RightJoystickRight, pad, RETRO_DEVICE_ID_JOYPAD_RIGHT);
+      MASK_EVENT(Event::RightJoystickUp,    pad, RETRO_DEVICE_ID_JOYPAD_UP);
+      MASK_EVENT(Event::RightJoystickDown,  pad, RETRO_DEVICE_ID_JOYPAD_DOWN);
+      MASK_EVENT(Event::RightJoystickFire,  pad, RETRO_DEVICE_ID_JOYPAD_B);
+      GET_BITMASK(3)
+      MASK_EVENT(Event::QTJoystickFourUp,    3, RETRO_DEVICE_ID_JOYPAD_UP);
+      MASK_EVENT(Event::QTJoystickFourDown,  3, RETRO_DEVICE_ID_JOYPAD_DOWN);
+      MASK_EVENT(Event::QTJoystickFourLeft,  3, RETRO_DEVICE_ID_JOYPAD_LEFT);
+      MASK_EVENT(Event::QTJoystickFourRight, 3, RETRO_DEVICE_ID_JOYPAD_RIGHT);
+      MASK_EVENT(Event::QTJoystickFourFire,  3, RETRO_DEVICE_ID_JOYPAD_B);
       break;
     }
 
@@ -1309,6 +1389,9 @@ void retro_init()
 
   environ_cb(RETRO_ENVIRONMENT_SET_PERFORMANCE_LEVEL, &level);
   libretro_supports_bitmasks = environ_cb(RETRO_ENVIRONMENT_GET_INPUT_BITMASKS, NULL);
+
+  struct retro_keyboard_callback kb_cb = { keyboard_event_cb };
+  environ_cb(RETRO_ENVIRONMENT_SET_KEYBOARD_CALLBACK, &kb_cb);
 
   // Get save directory for nvram, palette, and other persistent files
   const char* save_dir_c = nullptr;
