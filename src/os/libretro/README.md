@@ -9,11 +9,19 @@ see the [Stella website](https://stella-emu.github.io).
 Stella's internal ROM database identifies the correct controller type for each
 port automatically. No manual configuration is needed for most games.
 
+If a ROM is not in the database, or you need to override the detected type,
+go to **Quick Menu → Controls → Port 1 (or Port 2) Device Type** and select
+the appropriate controller. The setting takes effect immediately without
+reloading the game.
+
 ### Supported controller types
 
 | Controller | Notes |
 |---|---|
-| Joystick | Default. Also covers BoosterGrip, Genesis, Joy2BPlus variants. |
+| Joystick | Default. |
+| BoosterGrip | B = fire, A = booster button, Y = trigger. |
+| Genesis | B = fire, A = button C. |
+| Joy 2B+ | B = fire, A = button C, Y = button 3. |
 | Paddles | Two paddles per port. Uses left analog stick or mouse. |
 | Driving | Uses left analog stick or mouse. |
 | Keyboard (keypad) | See below. |
@@ -22,6 +30,10 @@ port automatically. No manual configuration is needed for most games.
 | Atari Mouse | Uses mouse or analog stick. |
 | Lightgun | Uses RetroArch lightgun device. |
 | QuadTari | Four-player adapter. Players 1+2 use ports 1+2; players 3+4 use ports 3+4. |
+| MindLink | Uses mouse X axis or left analog stick. B/A buttons act as the trigger. |
+| KidVid | Tape selection via keyboard keys `8`/`9`/`0`; also controllable via Select + difficulty switches. |
+| AtariVox | Speech synthesis output device; no user input. EEPROM saves to the nvram directory. |
+| SaveKey | EEPROM storage device; no user input. Saves to the nvram directory. |
 
 ### Keyboard (keypad) controller
 

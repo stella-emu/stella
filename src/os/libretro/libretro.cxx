@@ -61,6 +61,51 @@ static Controller::Type input_type[2];
 
 static bool key_state[RETROK_LAST];
 
+#define STELLA_DEVICE_JOYSTICK    RETRO_DEVICE_SUBCLASS(RETRO_DEVICE_JOYPAD, 0)
+#define STELLA_DEVICE_BOOSTERGRIP RETRO_DEVICE_SUBCLASS(RETRO_DEVICE_JOYPAD, 1)
+#define STELLA_DEVICE_GENESIS     RETRO_DEVICE_SUBCLASS(RETRO_DEVICE_JOYPAD, 2)
+#define STELLA_DEVICE_JOY2BPLUS   RETRO_DEVICE_SUBCLASS(RETRO_DEVICE_JOYPAD, 3)
+#define STELLA_DEVICE_PADDLES     RETRO_DEVICE_SUBCLASS(RETRO_DEVICE_JOYPAD, 4)
+#define STELLA_DEVICE_DRIVING     RETRO_DEVICE_SUBCLASS(RETRO_DEVICE_JOYPAD, 5)
+#define STELLA_DEVICE_KEYBOARD    RETRO_DEVICE_SUBCLASS(RETRO_DEVICE_JOYPAD, 6)
+#define STELLA_DEVICE_TRAKBALL    RETRO_DEVICE_SUBCLASS(RETRO_DEVICE_JOYPAD, 7)
+#define STELLA_DEVICE_AMIGAMOUSE  RETRO_DEVICE_SUBCLASS(RETRO_DEVICE_JOYPAD, 8)
+#define STELLA_DEVICE_ATARIMOUSE  RETRO_DEVICE_SUBCLASS(RETRO_DEVICE_JOYPAD, 9)
+#define STELLA_DEVICE_LIGHTGUN    RETRO_DEVICE_SUBCLASS(RETRO_DEVICE_JOYPAD, 10)
+#define STELLA_DEVICE_QUADTARI    RETRO_DEVICE_SUBCLASS(RETRO_DEVICE_JOYPAD, 11)
+#define STELLA_DEVICE_MINDLINK    RETRO_DEVICE_SUBCLASS(RETRO_DEVICE_JOYPAD, 12)
+#define STELLA_DEVICE_ATARIVOX    RETRO_DEVICE_SUBCLASS(RETRO_DEVICE_JOYPAD, 13)
+#define STELLA_DEVICE_SAVEKEY     RETRO_DEVICE_SUBCLASS(RETRO_DEVICE_JOYPAD, 14)
+#define STELLA_DEVICE_KIDVID      RETRO_DEVICE_SUBCLASS(RETRO_DEVICE_JOYPAD, 15)
+
+// Unknown = use auto-detect from ROM database
+static Controller::Type input_override[2];
+
+static Controller::Type device_to_type(unsigned device)
+{
+  using enum Controller::Type;
+  switch(device)
+  {
+    case STELLA_DEVICE_JOYSTICK:    return Joystick;
+    case STELLA_DEVICE_BOOSTERGRIP: return BoosterGrip;
+    case STELLA_DEVICE_GENESIS:     return Genesis;
+    case STELLA_DEVICE_JOY2BPLUS:   return Joy2BPlus;
+    case STELLA_DEVICE_PADDLES:     return Paddles;
+    case STELLA_DEVICE_DRIVING:     return Driving;
+    case STELLA_DEVICE_KEYBOARD:    return Keyboard;
+    case STELLA_DEVICE_TRAKBALL:    return TrakBall;
+    case STELLA_DEVICE_AMIGAMOUSE:  return AmigaMouse;
+    case STELLA_DEVICE_ATARIMOUSE:  return AtariMouse;
+    case STELLA_DEVICE_LIGHTGUN:    return Lightgun;
+    case STELLA_DEVICE_QUADTARI:    return QuadTari;
+    case STELLA_DEVICE_MINDLINK:    return MindLink;
+    case STELLA_DEVICE_ATARIVOX:    return AtariVox;
+    case STELLA_DEVICE_SAVEKEY:     return SaveKey;
+    case STELLA_DEVICE_KIDVID:      return KidVid;
+    default:                        return Unknown;
+  }
+}
+
 // Tracks raw keyboard state for keyboard controller input.
 // Note: retro_keyboard_event_t returns void so we cannot suppress RetroArch
 // hotkeys here. Users should set a Hotkey Enable button in RetroArch settings
@@ -341,6 +386,29 @@ static void update_input()
       break;
     }
 
+    case MindLink:
+    {
+      int32_t mouse_x = input_state_cb(pad, RETRO_DEVICE_MOUSE, 0, RETRO_DEVICE_ID_MOUSE_X);
+      int32_t analog_x = input_state_cb(pad, RETRO_DEVICE_ANALOG, RETRO_DEVICE_INDEX_ANALOG_LEFT, RETRO_DEVICE_ID_ANALOG_X);
+
+      if (stella_paddle_analog_deadzone && std::abs(analog_x) <= stella_paddle_analog_deadzone * 0x7fff / 100)
+        analog_x = 0;
+
+      mouse_x += analog_x / (80000 / stella_paddle_analog_sensitivity);
+
+      if (input_bitmask[pad] & (1 << RETRO_DEVICE_ID_JOYPAD_LEFT))
+        mouse_x -= stella_paddle_joypad_sensitivity;
+      else if (input_bitmask[pad] & (1 << RETRO_DEVICE_ID_JOYPAD_RIGHT))
+        mouse_x += stella_paddle_joypad_sensitivity;
+
+      EVENT(Event::MouseAxisXMove, mouse_x);
+      EVENT(Event::MouseButtonLeftValue,  input_state_cb(pad, RETRO_DEVICE_MOUSE, 0, RETRO_DEVICE_ID_MOUSE_LEFT)
+                                        | (bool)(input_bitmask[pad] & (1 << RETRO_DEVICE_ID_JOYPAD_B)));
+      EVENT(Event::MouseButtonRightValue, input_state_cb(pad, RETRO_DEVICE_MOUSE, 0, RETRO_DEVICE_ID_MOUSE_RIGHT)
+                                        | (bool)(input_bitmask[pad] & (1 << RETRO_DEVICE_ID_JOYPAD_A)));
+      break;
+    }
+
     case Joy2BPlus:
     case BoosterGrip:
       MASK_EVENT(Event::LeftJoystickFire9, pad, RETRO_DEVICE_ID_JOYPAD_Y);
@@ -427,6 +495,29 @@ static void update_input()
       MASK_EVENT(Event::QTJoystickFourLeft,  3, RETRO_DEVICE_ID_JOYPAD_LEFT);
       MASK_EVENT(Event::QTJoystickFourRight, 3, RETRO_DEVICE_ID_JOYPAD_RIGHT);
       MASK_EVENT(Event::QTJoystickFourFire,  3, RETRO_DEVICE_ID_JOYPAD_B);
+      break;
+    }
+
+    case MindLink:
+    {
+      int32_t mouse_x = input_state_cb(pad, RETRO_DEVICE_MOUSE, 0, RETRO_DEVICE_ID_MOUSE_X);
+      int32_t analog_x = input_state_cb(pad, RETRO_DEVICE_ANALOG, RETRO_DEVICE_INDEX_ANALOG_LEFT, RETRO_DEVICE_ID_ANALOG_X);
+
+      if (stella_paddle_analog_deadzone && std::abs(analog_x) <= stella_paddle_analog_deadzone * 0x7fff / 100)
+        analog_x = 0;
+
+      mouse_x += analog_x / (80000 / stella_paddle_analog_sensitivity);
+
+      if (input_bitmask[pad] & (1 << RETRO_DEVICE_ID_JOYPAD_LEFT))
+        mouse_x -= stella_paddle_joypad_sensitivity;
+      else if (input_bitmask[pad] & (1 << RETRO_DEVICE_ID_JOYPAD_RIGHT))
+        mouse_x += stella_paddle_joypad_sensitivity;
+
+      EVENT(Event::MouseAxisXMove, mouse_x);
+      EVENT(Event::MouseButtonLeftValue,  input_state_cb(pad, RETRO_DEVICE_MOUSE, 0, RETRO_DEVICE_ID_MOUSE_LEFT)
+                                        | (bool)(input_bitmask[pad] & (1 << RETRO_DEVICE_ID_JOYPAD_B)));
+      EVENT(Event::MouseButtonRightValue, input_state_cb(pad, RETRO_DEVICE_MOUSE, 0, RETRO_DEVICE_ID_MOUSE_RIGHT)
+                                        | (bool)(input_bitmask[pad] & (1 << RETRO_DEVICE_ID_JOYPAD_A)));
       break;
     }
 
@@ -727,9 +818,11 @@ static bool reset_system()
   // start system
   if(!stella.create(log_cb ? true : false)) return false;
 
-  // get auto-detect controllers
+  // get auto-detect controllers, then apply any user override
   input_type[0] = stella.getLeftControllerType();
   input_type[1] = stella.getRightControllerType();
+  if(input_override[0] != Controller::Type::Unknown) input_type[0] = input_override[0];
+  if(input_override[1] != Controller::Type::Unknown) input_type[1] = input_override[1];
   stella.setPaddleJoypadSensitivity(stella_paddle_joypad_sensitivity);
   stella.setPaddleAnalogSensitivity(stella_paddle_analog_sensitivity);
 
@@ -800,19 +893,20 @@ void retro_get_system_av_info(struct retro_system_av_info *info)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void retro_set_controller_port_device(unsigned port, unsigned device)
 {
-  if(port < 4)
-  {
-    switch(device)
-    {
-      case RETRO_DEVICE_NONE:
-      case RETRO_DEVICE_JOYPAD:
-        input_devices[port] = device;
-        break;
+  if(port >= 4) return;
 
-      default:
-        input_devices[port] = RETRO_DEVICE_JOYPAD;
-        break;
-    }
+  input_devices[port] = device;
+
+  if(port >= 2) return;
+
+  input_override[port] = device_to_type(device);
+
+  if(stella.isSystemReady())
+  {
+    const auto autoType = (port == 0) ? stella.getLeftControllerType()
+                                      : stella.getRightControllerType();
+    input_type[port] = (input_override[port] != Controller::Type::Unknown)
+                       ? input_override[port] : autoType;
   }
 }
 
@@ -1405,8 +1499,30 @@ void retro_init()
 }
 
 static const struct retro_controller_description controllers[] = {
+    { "Automatic (from ROM database)", RETRO_DEVICE_JOYPAD },
+    { "Joystick",    STELLA_DEVICE_JOYSTICK },
+    { "BoosterGrip", STELLA_DEVICE_BOOSTERGRIP },
+    { "Genesis",     STELLA_DEVICE_GENESIS },
+    { "Joy 2B+",     STELLA_DEVICE_JOY2BPLUS },
+    { "Paddles",     STELLA_DEVICE_PADDLES },
+    { "Driving",     STELLA_DEVICE_DRIVING },
+    { "Keyboard",    STELLA_DEVICE_KEYBOARD },
+    { "TrakBall",    STELLA_DEVICE_TRAKBALL },
+    { "Amiga Mouse", STELLA_DEVICE_AMIGAMOUSE },
+    { "Atari Mouse", STELLA_DEVICE_ATARIMOUSE },
+    { "Lightgun",    STELLA_DEVICE_LIGHTGUN },
+    { "QuadTari",    STELLA_DEVICE_QUADTARI },
+    { "MindLink",    STELLA_DEVICE_MINDLINK },
+    { "AtariVox",    STELLA_DEVICE_ATARIVOX },
+    { "SaveKey",     STELLA_DEVICE_SAVEKEY },
+    { "KidVid",      STELLA_DEVICE_KIDVID },
+    { "None",        RETRO_DEVICE_NONE },
+    { NULL, 0 }
+};
+
+static const struct retro_controller_description simple_controllers[] = {
     { "Automatic", RETRO_DEVICE_JOYPAD },
-    { "None", RETRO_DEVICE_NONE },
+    { "None",      RETRO_DEVICE_NONE },
     { NULL, 0 }
 };
 
@@ -1416,10 +1532,10 @@ bool retro_load_game(const struct retro_game_info *info)
   enum retro_pixel_format fmt = RETRO_PIXEL_FORMAT_XRGB8888;
 
   static const struct retro_controller_info controller_info[] = {
-    { controllers, sizeof(controllers) / sizeof(controllers[0]) },
-    { controllers, sizeof(controllers) / sizeof(controllers[0]) },
-    { controllers, sizeof(controllers) / sizeof(controllers[0]) },
-    { controllers, sizeof(controllers) / sizeof(controllers[0]) },
+    { controllers,        sizeof(controllers)        / sizeof(controllers[0]) },
+    { controllers,        sizeof(controllers)        / sizeof(controllers[0]) },
+    { simple_controllers, sizeof(simple_controllers) / sizeof(simple_controllers[0]) },
+    { simple_controllers, sizeof(simple_controllers) / sizeof(simple_controllers[0]) },
     { NULL, 0 }
   };
 

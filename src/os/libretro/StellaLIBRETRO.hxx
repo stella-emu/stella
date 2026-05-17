@@ -133,6 +133,8 @@ class StellaLIBRETRO
              myOSystem->eventHandler().handleEvent(type, state);
     }
 
+    bool isSystemReady() const { return system_ready; }
+
     Controller::Type getLeftControllerType() const {
       return myOSystem->console().leftController().type();
     }
