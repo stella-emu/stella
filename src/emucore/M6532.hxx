@@ -44,7 +44,6 @@ class M6532 : public Device
     */
     friend class RiotDebug;
 
-  public:
     /**
       Create a new 6532 for the specified console
 
@@ -54,7 +53,6 @@ class M6532 : public Device
     M6532(const ConsoleIO& console, const Settings& settings);
     ~M6532() override = default;
 
-   public:
     /**
       Reset cartridge to its power-on state
     */
@@ -100,7 +98,6 @@ class M6532 : public Device
     */
     bool load(Serializer& in) override;
 
-   public:
     /**
       Get the byte at the specified address
 
@@ -124,11 +121,11 @@ class M6532 : public Device
     void updateEmulation();
 
     /**
-      Get a pointer to the RAM contents.
+      Get the RAM contents.
 
-      @return  Pointer to RAM array.
+      @return  Span over RAM array.
     */
-    const uInt8* getRAM() const { return myRAM.data(); }
+    ByteSpan getRAM() const { return myRAM; }
 
   #ifdef DEBUGGER_SUPPORT
     /**
@@ -168,6 +165,9 @@ class M6532 : public Device
   private:
     void setTimerRegister(uInt8 value, uInt8 interval);
     void setPinState(bool swcha);
+
+    bool samplePA7Raw() const;
+    void updatePA7EdgeDetect();
 
   #ifdef DEBUGGER_SUPPORT
     // The following are used by the debugger to read INTIM/TIMINT
@@ -227,6 +227,10 @@ class M6532 : public Device
     // Used to determine whether an active transition on PA7 has occurred
     // True is positive edge-detect, false is negative edge-detect
     bool myEdgeDetectPositive{false};
+
+    // PA7 synchronizer
+    bool myPA7Sync1{true};      // 1st flip-flop stage
+    bool myPA7LastStable{true}; // last stable sampled value
 
     // Last value written to the timer registers
     std::array<uInt8, 4> myOutTimer{};

@@ -140,7 +140,7 @@ void StellaLIBRETRO::runFrame()
   updateAudio();
 
   // refresh ram copy
-  memcpy(system_ram, myOSystem->console().system().m6532().getRAM(), 128);
+  memcpy(system_ram, myOSystem->console().system().m6532().getRAM().data(), 128);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -194,7 +194,7 @@ bool StellaLIBRETRO::loadState(const void* data, size_t size)
   if(!myOSystem->state().loadState(state))
     return false;
 
-  memcpy(system_ram, myOSystem->console().system().m6532().getRAM(), 128);
+  memcpy(system_ram, myOSystem->console().system().m6532().getRAM().data(), 128);
   return true;
 }
 

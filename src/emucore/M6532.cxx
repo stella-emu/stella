@@ -49,8 +49,7 @@ void M6532::reset()
   if(mySettings.getString(devSettings ? "dev.console" : "plr.console") == "7800")
     std::ranges::copy(RAM_7800, myRAM.begin());
   else if(mySettings.getBool(devSettings ? "dev.ramrandom" : "plr.ramrandom"))
-    for(auto& ram: myRAM)
-      ram = mySystem->randGenerator().next();
+    std::ranges::generate(myRAM, [this]{ return mySystem->randGenerator().next(); });
   else
     myRAM.fill(0);
 
@@ -73,6 +72,9 @@ void M6532::reset()
   // Edge-detect set to negative (high to low)
   myEdgeDetectPositive = false;
 
+  myPA7Sync1 = true;
+  myPA7LastStable = true;
+
   // Let the controllers know about the reset
   myConsole.leftController().reset();
   myConsole.rightController().reset();
@@ -85,24 +87,52 @@ void M6532::reset()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void M6532::update()
 {
-  Controller& lport = myConsole.leftController();
-  Controller& rport = myConsole.rightController();
-
-  // Get current PA7 state
-  const bool prevPA7 = lport.getPin(Controller::DigitalPin::Four);
-
   // Update entire port state
-  lport.update();
-  rport.update();
+  myConsole.leftController().update();
+  myConsole.rightController().update();
   myConsole.switches().update();
+}
 
-  // Get new PA7 state
-  const bool currPA7 = lport.getPin(Controller::DigitalPin::Four);
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+FORCE_INLINE bool M6532::samplePA7Raw() const
+{
+  // If PA7 configured as output, RIOT drives the line
+  if(myDDRA & 0x80)
+    return (myOutA & 0x80) != 0;
 
-  // PA7 Flag is set on active transition in appropriate direction
-  if((!myEdgeDetectPositive && prevPA7 && !currPA7) ||
-     (myEdgeDetectPositive && !prevPA7 && currPA7))
+  // Otherwise sample external input
+  return myConsole.leftController().getPin(Controller::DigitalPin::Four);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+FORCE_INLINE void M6532::updatePA7EdgeDetect()
+{
+  // --------------------------------------------------------------------------
+  // Synchronizer model:
+  //
+  // raw input -> sync1 -> sync2 -> edge detector
+  //
+  // This approximates hardware flip-flop synchronization and prevents
+  // controller jitter or frame-rate dependent edge artifacts.
+  // --------------------------------------------------------------------------
+
+  // Raw input at this emulated time slice
+  const bool pa7Raw = samplePA7Raw();
+
+  // Simple 2-stage synchronizer (cheap, stable, deterministic)
+  const bool sync2 = myPA7Sync1;
+  myPA7Sync1 = pa7Raw;
+  const bool stablePA7 = sync2;
+
+  // Detect transition on stable signal only
+  const bool edge = myEdgeDetectPositive
+    ? (!myPA7LastStable && stablePA7)
+    : (myPA7LastStable && !stablePA7);
+
+  if(edge)
     myInterruptFlag |= PA7Bit;
+
+  myPA7LastStable = stablePA7;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -142,6 +172,8 @@ void M6532::updateEmulation()
     myTimer = (myTimer - cycles) & 0xFF;
     myWrappedThisCycle = myTimer == 0xFF;
   }
+
+  updatePA7EdgeDetect();
 
   myLastCycle = mySystem->cycles();
 
@@ -394,6 +426,9 @@ bool M6532::save(Serializer& out) const
 
     out.putByte(myInterruptFlag);
     out.putBool(myEdgeDetectPositive);
+    out.putBool(myPA7Sync1);
+    out.putBool(myPA7LastStable);
+
     out.putByteArray(myOutTimer);
   }
   catch(...)
@@ -429,6 +464,9 @@ bool M6532::load(Serializer& in)
 
     myInterruptFlag = in.getByte();
     myEdgeDetectPositive = in.getBool();
+    myPA7Sync1 = in.getBool();
+    myPA7LastStable = in.getBool();
+
     in.getByteArray(myOutTimer);
   }
   catch(...)
