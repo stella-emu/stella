@@ -110,7 +110,8 @@ Bankswitch::Type CartDetector::autodetectType(ByteSpan image)
   }
   else if(image.size() == 24_KB || image.size() == 28_KB)
   {
-    type = Bankswitch::Type::FA2;
+    if(isProbablyDCRT(image))  type = Bankswitch::Type::DCRT;
+    else                       type = Bankswitch::Type::FA2;
   }
   else if(image.size() == 29_KB)
   {
@@ -418,6 +419,13 @@ bool CartDetector::isProbablyCV(ByteSpan image)
   return std::ranges::any_of(signature, [&](const auto& sig) {
     return searchForBytes(image, sig);
   });
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool CartDetector::isProbablyDCRT(ByteSpan /*image*/)
+{
+  // TODO: add detection signature once the DevCard ROM format is finalised
+  return false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
