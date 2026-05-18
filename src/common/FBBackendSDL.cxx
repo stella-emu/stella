@@ -138,14 +138,16 @@ void FBBackendSDL::queryHardware(std::unordered_map<uInt32, Common::Size>& fulls
     string_view stellaName;
   };
   // Create name map for all currently known SDL renderers
-  static constexpr std::array<RenderName, 8> RENDERER_NAMES = {{
+  static constexpr std::array<RenderName, 10> RENDERER_NAMES = {{
     { "direct3d",   "Direct3D"    },
     { "direct3d11", "Direct3D 11" },
     { "direct3d12", "Direct3D 12" },
-    { "metal",      "Metal"       },
     { "opengl",     "OpenGL"      },
     { "opengles",   "OpenGL ES"   },
     { "opengles2",  "OpenGL ES 2" },
+    { "metal",      "Metal"       },
+    { "vulkan",     "Vulkan"      },
+    { "gpu",        "GPU"         },
     { "software",   "Software"    }
   }};
 
