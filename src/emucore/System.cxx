@@ -77,8 +77,8 @@ void System::consoleChanged(ConsoleTiming timing)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool System::isPageDirty(uInt16 start_addr, uInt16 end_addr) const
 {
-  const uInt16 start_page = (start_addr & ADDRESS_MASK) >> PAGE_SHIFT;
-  const uInt16 end_page = (end_addr & ADDRESS_MASK) >> PAGE_SHIFT;
+  const uInt16 start_page = (start_addr & myAddressMask) >> PAGE_SHIFT;
+  const uInt16 end_page = (end_addr & myAddressMask) >> PAGE_SHIFT;
 
   for(uInt16 page = start_page; page <= end_page; ++page)
     if(myPageIsDirtyTable[page])
@@ -142,7 +142,7 @@ void System::pokeImpl(uInt16 addr, uInt8 value, Device::AccessFlags flags)
 {
   if (!oob && myCartridgeDoesBusStuffing) value = myCart.overdrivePoke(addr, value);
 
-  const uInt16 page = (addr & ADDRESS_MASK) >> PAGE_SHIFT;
+  const uInt16 page = (addr & myAddressMask) >> PAGE_SHIFT;
   const PageAccess& access = myPageAccessTable[page];
 
 #ifdef DEBUGGER_SUPPORT

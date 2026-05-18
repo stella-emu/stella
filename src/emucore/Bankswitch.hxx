@@ -42,7 +42,8 @@ class Bankswitch
       AUTO,   _03E0,  _0840,   _0FA0,  _2IN1, _4IN1, _8IN1, _16IN1,
       _32IN1, _64IN1, _128IN1, _2K,    _3E,   _3EX,  _3EP,  _3F,
       _4A50,  _4K,    _4KSC,   AR,     BF,    BFSC,  BUS,   CDF,
-      CM,     CTY,    CV,      DF,     DFSC,  DPC,   DPCP,  E0,
+      CM,     CTY,    CV,      DCRT,   DF,    DFSC,  DPC,   DPCP,
+      E0,
       E7,     EF,     EFF,     EFSC,   ELF,   F0,    F4,    F4SC,
       F6,     F6SC,   F8,      F8SC,   FA,    FA2,   FC,    FE,
       GL,     JANE,   MDM,     MVC,    SB,    TVBOY, UA,    UASW,
@@ -98,6 +99,8 @@ class Bankswitch
       {   16_KB,  16_KB },    // CM
       {   32_KB,  32_KB },    // CTY
       {    0_KB,   4_KB },    // CV
+      { Bankswitch::any_KB,
+        Bankswitch::any_KB }, // DCRT
       {  128_KB, 128_KB },    // DF
       {  128_KB, 128_KB },    // DFSC
       {   10_KB,  11_KB },    // DPC
@@ -174,6 +177,7 @@ class Bankswitch
       { "CM"      , "CM (SpectraVideo CompuMate)" },
       { "CTY"     , "CTY (CDW - Chetiry)"         },
       { "CV"      , "CV (Commavid extra RAM)"     },
+      { "DCRT"    , "DCRT (16-bit DevCard RAM)"   },
       { "DF"      , "DF (CPUWIZ 128K)"            },
       { "DFSC"    , "DFSC (CPUWIZ 128K + RAM)"    },
       { "DPC"     , "DPC (Pitfall II)"            },
@@ -317,7 +321,7 @@ class Bankswitch
     // Extension table — sorted case-insensitively for binary search.
     // Precondition: entries below MUST remain in case-insensitive sorted order.
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-    static constexpr std::array<TypeEntry, 112> ourExtensions = {{
+    static constexpr std::array<TypeEntry, 113> ourExtensions = {{
       { "03E"   , Bankswitch::Type::_03E0   },
       { "03E0"  , Bankswitch::Type::_03E0   },
       { "084"   , Bankswitch::Type::_0840   },
@@ -358,6 +362,7 @@ class Bankswitch
       { "CTY"   , Bankswitch::Type::CTY     },
       { "cu"    , Bankswitch::Type::AUTO    },
       { "CV"    , Bankswitch::Type::CV      },
+      { "DCRT"  , Bankswitch::Type::DCRT    },
       { "DF"    , Bankswitch::Type::DF      },
       { "DFS"   , Bankswitch::Type::DFSC    },
       { "DFSC"  , Bankswitch::Type::DFSC    },
@@ -411,7 +416,7 @@ class Bankswitch
     // Name-to-type table — sorted case-insensitively for binary search.
     // Precondition: entries below MUST remain in case-insensitive sorted order.
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-    static constexpr std::array<TypeEntry, 61> ourNameToTypes = {{
+    static constexpr std::array<TypeEntry, 62> ourNameToTypes = {{
       { "03E0"    , Bankswitch::Type::_03E0   },
       { "0840"    , Bankswitch::Type::_0840   },
       { "0FA0"    , Bankswitch::Type::_0FA0   },
@@ -439,6 +444,7 @@ class Bankswitch
       { "CM"      , Bankswitch::Type::CM      },
       { "CTY"     , Bankswitch::Type::CTY     },
       { "CV"      , Bankswitch::Type::CV      },
+      { "DCRT"    , Bankswitch::Type::DCRT    },
       { "DF"      , Bankswitch::Type::DF      },
       { "DFSC"    , Bankswitch::Type::DFSC    },
       { "DPC"     , Bankswitch::Type::DPC     },

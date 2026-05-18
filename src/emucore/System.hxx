@@ -46,14 +46,12 @@ class System : public Serializable
   public:
     /**
       Create a new system with an addressing space of 2^13 bytes and
-      pages of 2^6 bytes.
+      pages of 2^6 bytes.  The address width can be widened to 16 bits
+      by calling setAddressBits(16) from a cartridge's install() method.
     */
     System(Random& random, M6502& m6502, M6532& m6532,
            TIA& mTIA, Cartridge& mCart);
     ~System() override = default;
-
-    // Mask to apply to an address before accessing memory
-    static constexpr uInt16 ADDRESS_MASK = (1 << 13) - 1;
 
     // Amount to shift an address by to determine what page it's on
     static constexpr uInt16 PAGE_SHIFT = 6;
@@ -64,8 +62,30 @@ class System : public Serializable
     // Mask to apply to an address to obtain its page offset
     static constexpr uInt16 PAGE_MASK = PAGE_SIZE - 1;
 
-    // Number of pages in the system
-    static constexpr uInt16 NUM_PAGES = 1 << (13 - PAGE_SHIFT);
+    // Maximum number of pages (sized for full 16-bit address space)
+    static constexpr uInt16 MAX_NUM_PAGES = 1 << (16 - PAGE_SHIFT);
+
+  public:
+    /**
+      Set the number of address bits used by this system.  Must be called
+      from a cartridge's install() method before any pages are installed.
+      Valid values are 13 (default, 6507) and 16 (full 6502 space).
+    */
+    void setAddressBits(uInt16 bits) {
+      myAddressMask = static_cast<uInt16>((1U << bits) - 1);
+      myNumPages    = static_cast<uInt16>(1U << (bits - PAGE_SHIFT));
+    }
+
+    // The current address mask (0x1FFF for 13-bit, 0xFFFF for 16-bit)
+    uInt16 addressMask() const { return myAddressMask; }
+
+    // The number of active pages under the current address mask
+    uInt16 numPages() const { return myNumPages; }
+
+    // The number of address bits in use (13 or 16)
+    uInt16 addressBits() const {
+      return (myAddressMask == 0xFFFF) ? 16 : 13;
+    }
 
   public:
     /**
@@ -307,7 +327,7 @@ class System : public Serializable
       @param access The accessing methods to be used by the page
     */
     void setPageAccess(uInt16 addr, const PageAccess& access) {
-      myPageAccessTable[(addr & ADDRESS_MASK) >> PAGE_SHIFT] = access;
+      myPageAccessTable[(addr & myAddressMask) >> PAGE_SHIFT] = access;
     }
 
     /**
@@ -317,7 +337,7 @@ class System : public Serializable
       @return The accessing methods used by the page
     */
     const PageAccess& getPageAccess(uInt16 addr) const {
-      return myPageAccessTable[(addr & ADDRESS_MASK) >> PAGE_SHIFT];
+      return myPageAccessTable[(addr & myAddressMask) >> PAGE_SHIFT];
     }
 
     /**
@@ -327,7 +347,7 @@ class System : public Serializable
       @return  The type of page that contains the given address
     */
     System::PageAccessType getPageAccessType(uInt16 addr) const {
-      return myPageAccessTable[(addr & ADDRESS_MASK) >> PAGE_SHIFT].type;
+      return myPageAccessTable[(addr & myAddressMask) >> PAGE_SHIFT].type;
     }
 
     /**
@@ -336,7 +356,7 @@ class System : public Serializable
       @param addr  Determines the page that is dirty
     */
     void setDirtyPage(uInt16 addr) {
-      myPageIsDirtyTable[(addr & ADDRESS_MASK) >> PAGE_SHIFT] = true;
+      myPageIsDirtyTable[(addr & myAddressMask) >> PAGE_SHIFT] = true;
     }
 
     /**
@@ -426,11 +446,15 @@ class System : public Serializable
     // Null device to use for page which are not installed
     NullDevice myNullDevice;
 
-    // The list of PageAccess structures
-    std::array<PageAccess, NUM_PAGES> myPageAccessTable;
+    // Runtime address mask and page count (default: 13-bit / 6507)
+    uInt16 myAddressMask{(1U << 13) - 1};    // 0x1FFF
+    uInt16 myNumPages{1U << (13 - PAGE_SHIFT)};  // 128
 
-    // The list of dirty pages
-    std::array<bool, NUM_PAGES> myPageIsDirtyTable{};
+    // The list of PageAccess structures (sized for full 16-bit space)
+    std::array<PageAccess, MAX_NUM_PAGES> myPageAccessTable;
+
+    // The list of dirty pages (sized for full 16-bit space)
+    std::array<bool, MAX_NUM_PAGES> myPageIsDirtyTable{};
 
     // The current state of the Data Bus
     uInt8 myDataBusState{0};

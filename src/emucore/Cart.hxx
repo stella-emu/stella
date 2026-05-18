@@ -210,7 +210,7 @@ class Cartridge : public Device
       @param PC    The current PC
       @return  The origin of the bank
     */
-    uInt16 bankOrigin(uInt16 bank, uInt16 PC = 0) const;
+    virtual uInt16 bankOrigin(uInt16 bank, uInt16 PC = 0) const;
   #endif
 
   public:
