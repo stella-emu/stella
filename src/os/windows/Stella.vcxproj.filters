@@ -1251,6 +1251,12 @@
     <ClCompile Include="..\..\emucore\CompuMateCassette.cxx">
       <Filter>Source Files\emucore</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\emucore\CartDevCard.cxx">
+      <Filter>Source Files\emucore</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\debugger\gui\CartDevCardWidget.cxx">
+      <Filter>Source Files\debugger\gui</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\emucore\AtariVox.hxx">
@@ -2575,6 +2581,12 @@
     </ClInclude>
     <ClInclude Include="..\..\emucore\CompuMateCassette.hxx">
       <Filter>Header Files\emucore</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\emucore\CartDevCard.hxx">
+      <Filter>Header Files\emucore</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\debugger\gui\CartDevCardWidget.hxx">
+      <Filter>Header Files\debugger\gui</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
