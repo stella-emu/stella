@@ -27,6 +27,7 @@
 #include <cstring>
 #include <fstream>
 
+#include "libretro.h"
 #include "bspf.hxx"
 #include "Logger.hxx"
 #include "FrameBuffer.hxx"
@@ -44,6 +45,8 @@
 
   @author Stephen Anthony and Christian Speckner (DirtyHairy)
 */
+extern void post_message(const char* msg, retro_log_level level, unsigned duration_ms);
+
 class SoundLIBRETRO : public Sound
 {
   public:
@@ -121,7 +124,11 @@ class SoundLIBRETRO : public Sound
     }
 
     bool playWav(const string& fileName, uInt32 position, uInt32 length) override {
-      return myWavHandler.play(fileName, position, length);
+      if(myWavHandler.play(fileName, position, length))
+        return true;
+      const string msg = "KidVid: WAV file not found: " + fileName;
+      post_message(msg.c_str(), RETRO_LOG_WARN, 5000);
+      return false;
     }
     void stopWav() override { myWavHandler.stop(); }
     uInt32 wavSize() const override { return myWavHandler.size(); }

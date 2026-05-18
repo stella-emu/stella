@@ -165,7 +165,13 @@ bool FSNodeLIBRETRO::makeDir()
 {
   if(libretro_vfs && libretro_vfs->mkdir)
   {
-    if(libretro_vfs->mkdir(_path.c_str()) == 0)
+    // Strip trailing separator before passing to VFS mkdir
+    string p = _path;
+    if(!p.empty() && p.back() == FSNode::PATH_SEPARATOR)
+      p.pop_back();
+
+    const int result = libretro_vfs->mkdir(p.c_str());
+    if(result == 0 || result == -2)  // 0 = created, -2 = already exists
     {
       _displayName = string(lastPathComponent(_path));
       return setFlags();

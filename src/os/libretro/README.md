@@ -32,8 +32,8 @@ reloading the game.
 | QuadTari | Four-player adapter. Players 1+2 use ports 1+2; players 3+4 use ports 3+4. |
 | MindLink | Uses mouse X axis or left analog stick. B/A buttons act as the trigger. |
 | KidVid | Tape selection via keyboard keys `8`/`9`/`0` or joypad B/A/Y. Skip song via key `O` or joypad X. Also selectable via Select + difficulty switches. Requires user-supplied WAV files; see below. |
-| AtariVox | Speech synthesis output device; no user input. EEPROM saves to the nvram directory. |
-| SaveKey | EEPROM storage device; no user input. Saves to the nvram directory. |
+| AtariVox | Speech synthesis output device; no user input. EEPROM saves to `stella/nvram/` in the RetroArch saves directory. |
+| SaveKey | EEPROM storage device; no user input. Saves to `stella/nvram/` in the RetroArch saves directory. |
 
 ### KidVid
 
@@ -43,8 +43,9 @@ through the TV speaker in sync with gameplay. Two games use it:
 - **Smurfs Save the Day** — requires `KVSHARED.WAV`, `KVS1.WAV`, `KVS2.WAV`, `KVS3.WAV`
 - **Berenstain Bears** — requires `KVSHARED.WAV`, `KVB1.WAV`, `KVB2.WAV`, `KVB3.WAV`
 
-Place these files in the RetroArch save directory for the Stella core. If the
-files are not present the game still runs, but without audio narration.
+Place these files in the `stella/` subdirectory of the RetroArch saves
+directory. If the files are not present the game still runs, but without
+audio narration.
 
 ### Keyboard (keypad) controller
 

@@ -71,9 +71,9 @@ class OSystemLIBRETRO : public OSystem
     void getBaseDirectories(string& basedir, string& homedir,
                             bool useappdir, string_view usedir) override
     {
-      // Use the RetroArch save directory when available; fall back to "./"
+      // Use a Stella subdirectory under the RetroArch save directory; fall back to "./"
       if(!libretro_save_dir.empty())
-        basedir = homedir = libretro_save_dir;
+        basedir = homedir = libretro_save_dir + "stella" + FSNode::PATH_SEPARATOR;
       else
         basedir = homedir = string(".") + FSNode::PATH_SEPARATOR;
     }

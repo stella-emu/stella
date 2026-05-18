@@ -31,10 +31,12 @@ static retro_environment_t environ_cb;
 static retro_audio_sample_t audio_cb;
 static retro_audio_sample_batch_t audio_batch_cb;
 static bool libretro_supports_bitmasks;
+static unsigned message_interface_version;
 
 // Exposed to FSNodeLIBRETRO for VFS-based file operations
 retro_vfs_interface* libretro_vfs = nullptr;  // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)
 string libretro_save_dir;                     // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)
+string libretro_system_dir;                   // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)
 string libretro_rom_path;                     // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)
 
 // libretro UI settings
@@ -54,6 +56,27 @@ static const char* setting_palette;
 static int setting_reload;
 
 static bool system_reset;
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void post_message(const char* msg, retro_log_level level, unsigned duration_ms = 3000)
+{
+  if(log_cb) log_cb(level, "%s\n", msg);
+
+  if(message_interface_version >= 1)
+  {
+    const retro_message_ext ext = {
+      msg, duration_ms,
+      level == RETRO_LOG_ERROR ? 3u : 1u,
+      level, RETRO_MESSAGE_TARGET_ALL, RETRO_MESSAGE_TYPE_NOTIFICATION, -1
+    };
+    environ_cb(RETRO_ENVIRONMENT_SET_MESSAGE_EXT, (void*)&ext);
+  }
+  else
+  {
+    const retro_message legacy = { msg, duration_ms * 60 / 1000 };
+    environ_cb(RETRO_ENVIRONMENT_SET_MESSAGE, (void*)&legacy);
+  }
+}
 
 static unsigned input_devices[4];
 static int32_t input_crosshair[2];
@@ -839,6 +862,11 @@ static bool reset_system()
   input_type[1] = stella.getRightControllerType();
   if(input_override[0] != Controller::Type::Unknown) input_type[0] = input_override[0];
   if(input_override[1] != Controller::Type::Unknown) input_type[1] = input_override[1];
+
+  const string ctrl_msg = "Controllers: Left=" + Controller::getName(input_type[0])
+                        + ", Right=" + Controller::getName(input_type[1]);
+  post_message(ctrl_msg.c_str(), RETRO_LOG_INFO);
+
   stella.setPaddleJoypadSensitivity(stella_paddle_joypad_sensitivity);
   stella.setPaddleAnalogSensitivity(stella_paddle_analog_sensitivity);
 
@@ -1499,6 +1527,10 @@ void retro_init()
 
   environ_cb(RETRO_ENVIRONMENT_SET_PERFORMANCE_LEVEL, &level);
   libretro_supports_bitmasks = environ_cb(RETRO_ENVIRONMENT_GET_INPUT_BITMASKS, NULL);
+  environ_cb(RETRO_ENVIRONMENT_GET_MESSAGE_INTERFACE_VERSION, &message_interface_version);
+
+  uint64_t quirks = RETRO_SERIALIZATION_QUIRK_CORE_VARIABLE_SIZE;
+  environ_cb(RETRO_ENVIRONMENT_SET_SERIALIZATION_QUIRKS, &quirks);
 
   struct retro_keyboard_callback kb_cb = { keyboard_event_cb };
   environ_cb(RETRO_ENVIRONMENT_SET_KEYBOARD_CALLBACK, &kb_cb);
@@ -1511,6 +1543,16 @@ void retro_init()
     if(!libretro_save_dir.empty() && libretro_save_dir.back() != FSNode::PATH_SEPARATOR)
       libretro_save_dir += FSNode::PATH_SEPARATOR;
     if(log_cb) log_cb(RETRO_LOG_INFO, "Stella save directory: %s\n", libretro_save_dir.c_str());
+  }
+
+  // Get system directory for supplemental content (KidVid WAV files, etc.)
+  const char* system_dir_c = nullptr;
+  if(environ_cb(RETRO_ENVIRONMENT_GET_SYSTEM_DIRECTORY, &system_dir_c) && system_dir_c)
+  {
+    libretro_system_dir = system_dir_c;
+    if(!libretro_system_dir.empty() && libretro_system_dir.back() != FSNode::PATH_SEPARATOR)
+      libretro_system_dir += FSNode::PATH_SEPARATOR;
+    if(log_cb) log_cb(RETRO_LOG_INFO, "Stella system directory: %s\n", libretro_system_dir.c_str());
   }
 }
 
@@ -1609,7 +1651,12 @@ bool retro_load_game(const struct retro_game_info *info)
   bool supports_achievements = true;
   environ_cb(RETRO_ENVIRONMENT_SET_SUPPORT_ACHIEVEMENTS, &supports_achievements);
 
-  return reset_system();
+  if(!reset_system())
+  {
+    post_message("Stella: failed to initialize system", RETRO_LOG_ERROR, 5000);
+    return false;
+  }
+  return true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1655,7 +1702,10 @@ void retro_run()
         stella.getVideoHeight() - crop_top * 2,
         stella.getVideoPitch());
 
-  if(stella.getAudioReady())
+  bool fast_forward = false;
+  environ_cb(RETRO_ENVIRONMENT_GET_FASTFORWARDING, &fast_forward);
+
+  if(stella.getAudioReady() && !fast_forward)
     audio_batch_cb(stella.getAudioBuffer(), stella.getAudioSize());
 }
 
