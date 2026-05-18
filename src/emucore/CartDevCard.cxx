@@ -24,7 +24,7 @@ CartridgeDevCard::CartridgeDevCard(ByteSpan image, string_view md5,
   : Cartridge(settings, md5)
 {
   const size_t len = std::min(image.size(), RAM_SIZE);
-  myImage.assign(image.data(), image.data() + len);
+  myImage.assign(image.data() + RAM_SIZE - len, image.data() + RAM_SIZE);
   createRomAccessArrays(RAM_SIZE);
 }
 
@@ -60,18 +60,12 @@ void CartridgeDevCard::install(System& system)
   }
 }
 
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt8 CartridgeDevCard::peek(uInt16 address)
-{
-  return myRAM[ramOffset(address)];
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool CartridgeDevCard::poke(uInt16 address, uInt8 value)
-{
-  myRAM[ramOffset(address)] = value;
-  return true;
-}
+//// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+//uInt16 CartridgeDevCard::bankSize(uInt16 bank) const
+//{
+//  return static_cast<uInt16>(
+//    std::min(getImage().size(), RAM_SIZE)); // assuming that each bank has the same size
+//}
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CartridgeDevCard::patch(uInt16 address, uInt8 value)
@@ -118,8 +112,9 @@ bool CartridgeDevCard::load(Serializer& in)
 
 #ifdef DEBUGGER_SUPPORT
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt16 CartridgeDevCard::bankOrigin(uInt16 /*bank*/, uInt16 /*PC*/) const
+uInt16 CartridgeDevCard::bankOrigin(uInt16 /*bank*/, uInt16 PC) const
 {
-  return WINDOWS[0];  // single bank; origin is the first window
+  int win = ((PC >> 12) - 5U) / 2U;
+  return WINDOWS[win];  // single bank; origin is the first window
 }
 #endif

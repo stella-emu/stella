@@ -60,9 +60,11 @@ class CartridgeDevCard : public Cartridge
   public:
     void reset() override;
     void install(System& system) override;
-    uInt8 peek(uInt16 address) override;
-    bool poke(uInt16 address, uInt8 value) override;
+    uInt8 peek(uInt16) { return 0; }
+    bool poke(uInt16, uInt8) { return false; }
+    //uInt16 bankSize(uInt16 bank) const override;
     bool patch(uInt16 address, uInt8 value) override;
+    //bool bankChanged() { return true; };
     ByteSpan getImage() const override;
     bool save(Serializer& out) const override;
     bool load(Serializer& in) override;

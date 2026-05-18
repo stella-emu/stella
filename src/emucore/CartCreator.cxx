@@ -113,7 +113,7 @@ namespace  // anonymous namespace, to keep these functions private
       case CM:    return std::make_unique<CartridgeCM>(image, md5, settings);
       case CTY:   return std::make_unique<CartridgeCTY>(image, md5, settings);
       case CV:    return std::make_unique<CartridgeCV>(image, md5, settings);
-      case DCRT:  return std::make_unique<CartridgeDevCard>(image, md5, settings);
+      case DEVC:  return std::make_unique<CartridgeDevCard>(image, md5, settings);
       case DF:    return std::make_unique<CartridgeDF>(image, md5, settings);
       case DFSC:  return std::make_unique<CartridgeDFSC>(image, md5, settings);
       case DPC:   return std::make_unique<CartridgeDPC>(image, md5, settings);

@@ -73,7 +73,7 @@ class NullDevice : public Device
       @return The byte at the specified address
     */
     uInt8 peek(uInt16 address) override {
-      cerr << "NullDevice: peek(" << address << ")\n";
+      cerr << "NullDevice: peek(0x" << std::hex << address << ")\n";
       return 0;
     }
 

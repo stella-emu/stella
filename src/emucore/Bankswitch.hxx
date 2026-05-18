@@ -42,7 +42,7 @@ class Bankswitch
       AUTO,   _03E0,  _0840,   _0FA0,  _2IN1, _4IN1, _8IN1, _16IN1,
       _32IN1, _64IN1, _128IN1, _2K,    _3E,   _3EX,  _3EP,  _3F,
       _4A50,  _4K,    _4KSC,   AR,     BF,    BFSC,  BUS,   CDF,
-      CM,     CTY,    CV,      DCRT,   DF,    DFSC,  DPC,   DPCP,
+      CM,     CTY,    CV,      DEVC,   DF,    DFSC,  DPC,   DPCP,
       E0,
       E7,     EF,     EFF,     EFSC,   ELF,   F0,    F4,    F4SC,
       F6,     F6SC,   F8,      F8SC,   FA,    FA2,   FC,    FE,
@@ -100,7 +100,7 @@ class Bankswitch
       {   32_KB,  32_KB },    // CTY
       {    0_KB,   4_KB },    // CV
       { Bankswitch::any_KB,
-        Bankswitch::any_KB }, // DCRT
+        Bankswitch::any_KB }, // DEVC
       {  128_KB, 128_KB },    // DF
       {  128_KB, 128_KB },    // DFSC
       {   10_KB,  11_KB },    // DPC
@@ -177,7 +177,7 @@ class Bankswitch
       { "CM"      , "CM (SpectraVideo CompuMate)" },
       { "CTY"     , "CTY (CDW - Chetiry)"         },
       { "CV"      , "CV (Commavid extra RAM)"     },
-      { "DCRT"    , "DCRT (16-bit DevCard RAM)"   },
+      { "DEVC"    , "DEVC (16-bit DevCard RAM)"   },
       { "DF"      , "DF (CPUWIZ 128K)"            },
       { "DFSC"    , "DFSC (CPUWIZ 128K + RAM)"    },
       { "DPC"     , "DPC (Pitfall II)"            },
@@ -362,7 +362,7 @@ class Bankswitch
       { "CTY"   , Bankswitch::Type::CTY     },
       { "cu"    , Bankswitch::Type::AUTO    },
       { "CV"    , Bankswitch::Type::CV      },
-      { "DCRT"  , Bankswitch::Type::DCRT    },
+      { "DEVC"  , Bankswitch::Type::DEVC    },
       { "DF"    , Bankswitch::Type::DF      },
       { "DFS"   , Bankswitch::Type::DFSC    },
       { "DFSC"  , Bankswitch::Type::DFSC    },
@@ -444,7 +444,7 @@ class Bankswitch
       { "CM"      , Bankswitch::Type::CM      },
       { "CTY"     , Bankswitch::Type::CTY     },
       { "CV"      , Bankswitch::Type::CV      },
-      { "DCRT"    , Bankswitch::Type::DCRT    },
+      { "DEVC"    , Bankswitch::Type::DEVC    },
       { "DF"      , Bankswitch::Type::DF      },
       { "DFSC"    , Bankswitch::Type::DFSC    },
       { "DPC"     , Bankswitch::Type::DPC     },

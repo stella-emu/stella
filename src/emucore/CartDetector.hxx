@@ -134,9 +134,9 @@ class CartDetector
     static bool isProbablyCV(ByteSpan image);
 
     /**
-      Returns true if the image is probably a DevCard (DCRT) cartridge.
+      Returns true if the image is probably a DevCard (DEVC) cartridge.
     */
-    static bool isProbablyDCRT(ByteSpan image);
+    static bool isProbablyDEVC(ByteSpan image);
 
     /**
       Returns true if the image is probably a DF/DFSC bankswitching cartridge

@@ -110,7 +110,7 @@ Bankswitch::Type CartDetector::autodetectType(ByteSpan image)
   }
   else if(image.size() == 24_KB || image.size() == 28_KB)
   {
-    if(isProbablyDCRT(image))  type = Bankswitch::Type::DCRT;
+    if(isProbablyDEVC(image))  type = Bankswitch::Type::DEVC;
     else                       type = Bankswitch::Type::FA2;
   }
   else if(image.size() == 29_KB)
@@ -422,7 +422,7 @@ bool CartDetector::isProbablyCV(ByteSpan image)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool CartDetector::isProbablyDCRT(ByteSpan image)
+bool CartDetector::isProbablyDEVC(ByteSpan image)
 {
   // The DevCard requires a 2600 "lock-in" code as first instruction.
   // Note: The lock-in code is often still present in the final ROMs,
