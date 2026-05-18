@@ -23,29 +23,27 @@ CartridgeDevCard::CartridgeDevCard(ByteSpan image, string_view md5,
                                    const Settings& settings)
   : Cartridge(settings, md5)
 {
-  const size_t len = std::min(image.size(), RAM_SIZE);
-  myImage.assign(image.data() + RAM_SIZE - len, image.data() + RAM_SIZE);
+  std::ranges::copy(image.first(std::min(image.size(), RAM_SIZE)), myImage.begin());
   createRomAccessArrays(RAM_SIZE);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeDevCard::reset()
 {
-  myRAM.fill(0);
-  std::copy(myImage.begin(), myImage.end(), myRAM.begin());
+  myRAM = myImage;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeDevCard::install(System& system)
 {
   mySystem = &system;
-  mySystem->setAddressBits(16);
+  mySystem->setAddressBits(System::AddressSpace::M6502);
 
   System::PageAccess access(this, System::PageAccessType::READWRITE);
 
   for(size_t win = 0; win < NUM_WINDOWS; ++win)
   {
-    const uInt32 winBase = static_cast<uInt32>(win * WINDOW_SIZE);
+    const auto winBase = static_cast<uInt32>(win * WINDOW_SIZE);
     for(uInt32 addr = WINDOWS[win]; addr < WINDOWS[win] + WINDOW_SIZE;
         addr += System::PAGE_SIZE)
     {
@@ -77,7 +75,7 @@ bool CartridgeDevCard::patch(uInt16 address, uInt8 value)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ByteSpan CartridgeDevCard::getImage() const
 {
-  return { myImage.data(), myImage.size() };
+  return myImage;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -114,7 +112,7 @@ bool CartridgeDevCard::load(Serializer& in)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt16 CartridgeDevCard::bankOrigin(uInt16 /*bank*/, uInt16 PC) const
 {
-  int win = ((PC >> 12) - 5U) / 2U;
-  return WINDOWS[win];  // single bank; origin is the first window
+  const uInt32 win = (static_cast<uInt32>(PC >> 12) - 5U) / 2U;
+  return win < NUM_WINDOWS ? WINDOWS[win] : WINDOWS[0];
 }
 #endif

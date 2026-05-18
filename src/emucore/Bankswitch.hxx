@@ -43,11 +43,10 @@ class Bankswitch
       _32IN1, _64IN1, _128IN1, _2K,    _3E,   _3EX,  _3EP,  _3F,
       _4A50,  _4K,    _4KSC,   AR,     BF,    BFSC,  BUS,   CDF,
       CM,     CTY,    CV,      DEVC,   DF,    DFSC,  DPC,   DPCP,
-      E0,
-      E7,     EF,     EFF,     EFSC,   ELF,   F0,    F4,    F4SC,
-      F6,     F6SC,   F8,      F8SC,   FA,    FA2,   FC,    FE,
-      GL,     JANE,   MDM,     MVC,    SB,    TVBOY, UA,    UASW,
-      WD,     WDSW,   WF8,     X07,
+      E0,     E7,     EF,      EFF,    EFSC,  ELF,   F0,    F4,
+      F4SC,   F6,     F6SC,    F8,     F8SC,  FA,    FA2,   FC,
+      FE,     GL,     JANE,    MDM,    MVC,   SB,    TVBOY, UA,
+      UASW,   WD,     WDSW,    WF8,    X07,
     #ifdef CUSTOM_ARM
       CUSTOM
     #endif

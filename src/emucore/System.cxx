@@ -34,6 +34,9 @@ System::System(Random& random, M6502& m6502, M6532& m6532,
     myCart{mCart},
     myCartridgeDoesBusStuffing{myCart.doesBusStuffing()}
 {
+  // default; widened to M6502 by carts like DevCard
+  setAddressBits(AddressSpace::M6507);
+
   // Initialize page access table
   const PageAccess access(&myNullDevice, System::PageAccessType::READ);
   myPageAccessTable.fill(access);
@@ -78,13 +81,10 @@ void System::consoleChanged(ConsoleTiming timing)
 bool System::isPageDirty(uInt16 start_addr, uInt16 end_addr) const
 {
   const uInt16 start_page = (start_addr & myAddressMask) >> PAGE_SHIFT;
-  const uInt16 end_page = (end_addr & myAddressMask) >> PAGE_SHIFT;
-
-  for(uInt16 page = start_page; page <= end_page; ++page)
-    if(myPageIsDirtyTable[page])
-      return true;
-
-  return false;
+  const uInt16 end_page   = (end_addr   & myAddressMask) >> PAGE_SHIFT;
+  const auto pages = std::span{myPageIsDirtyTable}.subspan(
+      start_page, end_page - start_page + 1U);
+  return std::ranges::any_of(pages, std::identity{});
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -93,98 +93,6 @@ void System::clearDirtyPages()
   myPageIsDirtyTable.fill(false);
 }
 
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-template<bool oob>
-uInt8 System::peekImpl(uInt16 addr, Device::AccessFlags flags)
-{
-  const PageAccess& access = getPageAccess(addr);
-
-#ifdef DEBUGGER_SUPPORT
-  // Set access type
-  if(access.romAccessBase)
-    *(access.romAccessBase + (addr & PAGE_MASK)) |= (flags | (addr & Device::HADDR));
-  else
-    access.device->setAccessFlags(addr, flags);
-  // Increase access counter
-  if(flags != Device::NONE)
-  {
-    if(access.romPeekCounter)
-      *(access.romPeekCounter + (addr & PAGE_MASK)) += 1;
-    else
-      access.device->increaseAccessCounter(addr);
-  }
-#endif
-
-  // See if this page uses direct accessing or not
-  uInt8 result = access.directPeekBase
-      ? *(access.directPeekBase + (addr & PAGE_MASK))
-      : (oob ? access.device->peekOob(addr) : access.device->peek(addr));
-
-  if (!oob && myCartridgeDoesBusStuffing) result = myCart.overdrivePeek(addr, result);
-
-#ifdef DEBUGGER_SUPPORT
-  if(!myDataBusLocked)
-#endif
-    myDataBusState = result;
-
-  return result;
-}
-
-template
-uInt8 System::peekImpl<true>(uInt16 addr, Device::AccessFlags flags);
-
-template
-uInt8 System::peekImpl<false>(uInt16 addr, Device::AccessFlags flags);
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-template<bool oob>
-void System::pokeImpl(uInt16 addr, uInt8 value, Device::AccessFlags flags)
-{
-  if (!oob && myCartridgeDoesBusStuffing) value = myCart.overdrivePoke(addr, value);
-
-  const uInt16 page = (addr & myAddressMask) >> PAGE_SHIFT;
-  const PageAccess& access = myPageAccessTable[page];
-
-#ifdef DEBUGGER_SUPPORT
-  // Set access type
-  if(access.romAccessBase)
-    *(access.romAccessBase + (addr & PAGE_MASK)) |= (flags | (addr & Device::HADDR));
-  else
-    access.device->setAccessFlags(addr, flags);
-  // Increase access counter
-  if(flags != Device::NONE)
-  {
-    if(access.romPokeCounter)
-      *(access.romPokeCounter + (addr & PAGE_MASK)) += 1;
-    else
-      access.device->increaseAccessCounter(addr, true);
-  }
-#endif
-
-  // See if this page uses direct accessing or not
-  if(access.directPokeBase)
-  {
-    // Since we have direct access to this poke, we can dirty its page
-    *(access.directPokeBase + (addr & PAGE_MASK)) = value;
-    myPageIsDirtyTable[page] = true;
-  }
-  else
-  {
-    // The specific device informs us if the poke succeeded
-    myPageIsDirtyTable[page] = oob ? access.device->pokeOob(addr, value) : access.device->poke(addr, value);
-  }
-
-#ifdef DEBUGGER_SUPPORT
-  if(!myDataBusLocked)
-#endif
-    myDataBusState = value;
-}
-
-template
-void System::pokeImpl<true>(uInt16 addr, uInt8 value, Device::AccessFlags flags);
-
-template
-void System::pokeImpl<false>(uInt16 addr, uInt8 value, Device::AccessFlags flags);
 
 #ifdef DEBUGGER_SUPPORT
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -214,23 +122,11 @@ void System::increaseAccessCounter(uInt16 addr, bool isWrite) const
 {
   const PageAccess& access = getPageAccess(addr);
 
-  if(isWrite)
-  {
-    if(access.romPokeCounter)
-    {
-      *(access.romPokeCounter + (addr & PAGE_MASK)) += 1;
-      return;
-    }
-  }
+  auto* counter = isWrite ? access.romPokeCounter : access.romPeekCounter;
+  if(counter)
+    *(counter + (addr & PAGE_MASK)) += 1;
   else
-  {
-    if(access.romPeekCounter)
-    {
-      *(access.romPeekCounter + (addr & PAGE_MASK)) += 1;
-      return;
-    }
-  }
-  access.device->increaseAccessCounter(addr, isWrite);
+    access.device->increaseAccessCounter(addr, isWrite);
 }
 #endif
 

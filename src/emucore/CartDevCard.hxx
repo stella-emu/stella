@@ -41,7 +41,7 @@ class System;
   The 24KB ROM image initialises the RAM on reset; the six 4K chunks
   are stored sequentially starting at image offset 0.
 
-  @author  Stephen Anthony
+  @author  Stephen Anthony, Thomas Jentzsch
 */
 class CartridgeDevCard : public Cartridge
 {
@@ -60,8 +60,8 @@ class CartridgeDevCard : public Cartridge
   public:
     void reset() override;
     void install(System& system) override;
-    uInt8 peek(uInt16) { return 0; }
-    bool poke(uInt16, uInt8) { return false; }
+    uInt8 peek(uInt16) override { return 0; }
+    bool poke(uInt16, uInt8) override { return false; }
     //uInt16 bankSize(uInt16 bank) const override;
     bool patch(uInt16 address, uInt8 value) override;
     //bool bankChanged() { return true; };
@@ -84,7 +84,7 @@ class CartridgeDevCard : public Cartridge
     // Six 4K windows: 0x5000, 0x7000, 0x9000, 0xB000, 0xD000, 0xF000
     static constexpr size_t NUM_WINDOWS = 6;
     static constexpr size_t WINDOW_SIZE = 4_KB;
-    static constexpr size_t RAM_SIZE    = NUM_WINDOWS * WINDOW_SIZE;  // 24KB
+    static constexpr size_t RAM_SIZE = NUM_WINDOWS * WINDOW_SIZE;  // 24KB
 
     static constexpr std::array<uInt16, NUM_WINDOWS> WINDOWS = {
       0x5000, 0x7000, 0x9000, 0xB000, 0xD000, 0xF000
@@ -93,7 +93,6 @@ class CartridgeDevCard : public Cartridge
     // Map a CPU address to its RAM offset
     static uInt32 ramOffset(uInt16 address) {
       // Windows are at x000 for x in {5,7,9,B,D,F}:
-      // windowIdx = ((addr >> 12) - 5) / 2
       const uInt32 windowIdx = (static_cast<uInt32>(address >> 12) - 5U) / 2U;
       return windowIdx * WINDOW_SIZE + (address & (WINDOW_SIZE - 1));
     }
@@ -101,8 +100,8 @@ class CartridgeDevCard : public Cartridge
     // Working RAM (initialised from ROM image, writable at runtime)
     std::array<uInt8, RAM_SIZE> myRAM{};
 
-    // Original ROM image for re-initialisation on reset
-    std::vector<uInt8> myImage;
+    // ROM image (zero-padded to RAM_SIZE) for re-initialisation on reset
+    std::array<uInt8, RAM_SIZE> myImage{};
 
   private:
     // Following constructors and assignment operators not supported
