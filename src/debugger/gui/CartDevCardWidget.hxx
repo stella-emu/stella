@@ -1,0 +1,62 @@
+//============================================================================
+//
+//   SSSS    tt          lll  lll
+//  SS  SS   tt           ll   ll
+//  SS     tttttt  eeee   ll   ll   aaaa
+//   SSSS    tt   ee  ee  ll   ll      aa
+//      SS   tt   eeeeee  ll   ll   aaaaa  --  "An Atari 2600 VCS Emulator"
+//  SS  SS   tt   ee      ll   ll  aa  aa
+//   SSSS     ttt  eeeee llll llll  aaaaa
+//
+// Copyright (c) 1995-2026 by Bradford W. Mott, Stephen Anthony
+// and the Stella Team
+//
+// See the file "License.txt" for information on usage and redistribution of
+// this file, and for a DISCLAIMER OF ALL WARRANTIES.
+//============================================================================
+
+#ifndef CARTRIDGE_DEVCARD_WIDGET_HXX
+#define CARTRIDGE_DEVCARD_WIDGET_HXX
+
+class CartridgeDevCard;
+
+#include "CartDebugWidget.hxx"
+
+class CartridgeDevCardWidget : public CartDebugWidget
+{
+  public:
+    CartridgeDevCardWidget(GuiObject* boss, const GUI::Font& lfont,
+                           const GUI::Font& nfont,
+                           int x, int y, int w, int h,
+                           CartridgeDevCard& cart);
+    ~CartridgeDevCardWidget() override = default;
+
+    void saveOldState() override;
+
+    uInt32 internalRamSize() override;
+    uInt32 internalRamRPort(int start) override;
+    string internalRamDescription() override;
+    const ByteArray& internalRamOld(int start, int count) override;
+    const ByteArray& internalRamCurrent(int start, int count) override;
+    void internalRamSetValue(int addr, uInt8 value) override;
+    uInt8 internalRamGetValue(int addr) override;
+    string internalRamLabel(int addr) override;
+
+  private:
+    CartridgeDevCard& myCart;
+
+    struct CartState {
+      ByteArray internalram;
+    };
+    CartState myOldState;
+
+  private:
+    // Following constructors and assignment operators not supported
+    CartridgeDevCardWidget() = delete;
+    CartridgeDevCardWidget(const CartridgeDevCardWidget&) = delete;
+    CartridgeDevCardWidget(CartridgeDevCardWidget&&) = delete;
+    CartridgeDevCardWidget& operator=(const CartridgeDevCardWidget&) = delete;
+    CartridgeDevCardWidget& operator=(CartridgeDevCardWidget&&) = delete;
+};
+
+#endif  // CARTRIDGE_DEVCARD_WIDGET_HXX

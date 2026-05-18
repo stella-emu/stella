@@ -22,6 +22,9 @@ class System;
 
 #include "bspf.hxx"
 #include "Cart.hxx"
+#ifdef DEBUGGER_SUPPORT
+  #include "CartDevCardWidget.hxx"
+#endif
 
 /**
   The DevCard (DevKit) is a 7800 development cartridge that widens the
@@ -42,6 +45,7 @@ class System;
 */
 class CartridgeDevCard : public Cartridge
 {
+  friend class CartridgeDevCardWidget;
   public:
     /**
       Create a new DevCard cartridge using the specified image.
@@ -66,6 +70,12 @@ class CartridgeDevCard : public Cartridge
 
   #ifdef DEBUGGER_SUPPORT
     uInt16 bankOrigin(uInt16 bank, uInt16 PC = 0) const override;
+
+    CartDebugWidget* debugWidget(GuiObject* boss, const GUI::Font& lfont,
+        const GUI::Font& nfont, int x, int y, int w, int h) override
+    {
+      return new CartridgeDevCardWidget(boss, lfont, nfont, x, y, w, h, *this);
+    }
   #endif
 
   private:
