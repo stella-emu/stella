@@ -135,7 +135,6 @@ class CartDetector
 
     /**
       Returns true if the image is probably a DevCard (DCRT) cartridge.
-      TODO: fill in detection signature once known.
     */
     static bool isProbablyDCRT(ByteSpan image);
 

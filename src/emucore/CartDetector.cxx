@@ -422,10 +422,15 @@ bool CartDetector::isProbablyCV(ByteSpan image)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool CartDetector::isProbablyDCRT(ByteSpan /*image*/)
+bool CartDetector::isProbablyDCRT(ByteSpan image)
 {
-  // TODO: add detection signature once the DevCard ROM format is finalised
-  return false;
+  // The DevCard requires a 2600 "lock-in" code as first instruction.
+  // Note: The lock-in code is often still present in the final ROMs,
+  // so this should only be a last resort.
+  static constexpr std::array<uInt8, 4> lock =
+    { 0xa9, 0xfd, 0x85, 0x08 }; // LDA #$FD, STA COLUPF
+
+  return searchForBytes(image, lock);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
