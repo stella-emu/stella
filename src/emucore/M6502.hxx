@@ -280,23 +280,27 @@ class M6502 : public Serializable
     */
     void poke(uInt16 address, uInt8 value, Device::AccessFlags flags = Device::NONE);
 
+    // Returns non-zero if the two addresses are on different pages
+    static constexpr uInt16 NOTSAMEPAGE(uInt16 a, uInt16 b) noexcept {
+      return (a ^ b) & 0xff00;
+    }
+
     /**
       Get the 8-bit value of the Processor Status register.
 
       @return The processor status register
     */
     uInt8 PS() const {
-      uInt8 ps = 0x20;
-
-      if(N)     ps |= 0x80;
-      if(V)     ps |= 0x40;
-      if(B)     ps |= 0x10;
-      if(D)     ps |= 0x08;
-      if(I)     ps |= 0x04;
-      if(!notZ) ps |= 0x02;
-      if(C)     ps |= 0x01;
-
-      return ps;
+      return static_cast<uInt8>(
+        0x20u
+        | (static_cast<uInt8>(N)     << 7)
+        | (static_cast<uInt8>(V)     << 6)
+        | (static_cast<uInt8>(B)     << 4)
+        | (static_cast<uInt8>(D)     << 3)
+        | (static_cast<uInt8>(I)     << 2)
+        | (static_cast<uInt8>(!notZ) << 1)
+        | static_cast<uInt8>(C)
+      );
     }
 
     /**
@@ -396,9 +400,6 @@ class M6502 : public Serializable
     /// If an address wasn't used (ie, as in immediate mode), the address
     /// is set to zero
     uInt16 myDataAddressForPoke{0};
-
-    /// Indicates the number of system cycles per processor cycle
-    static constexpr uInt32 SYSTEM_CYCLES_PER_CPU = 1;
 
     /// Called when the processor enters halt state
     onHaltCallback myOnHaltCallback{nullptr};

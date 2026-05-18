@@ -115,8 +115,8 @@ inline uInt8 M6502::peek(uInt16 address, Device::AccessFlags flags)
     myLastAddress = address;
   }
   ////////////////////////////////////////////////
-  mySystem->incrementCycles(SYSTEM_CYCLES_PER_CPU);
-  icycles += SYSTEM_CYCLES_PER_CPU;
+  mySystem->incrementCycles(1);  // 1 system cycle per CPU cycle on the 6507
+  ++icycles;
   myFlags = flags;
   const uInt8 result = mySystem->peek(address, flags);
 
@@ -155,8 +155,8 @@ inline void M6502::poke(uInt16 address, uInt8 value, Device::AccessFlags flags)
     myLastAddress = address;
   }
   ////////////////////////////////////////////////
-  mySystem->incrementCycles(SYSTEM_CYCLES_PER_CPU);
-  icycles += SYSTEM_CYCLES_PER_CPU;
+  mySystem->incrementCycles(1);  // 1 system cycle per CPU cycle on the 6507
+  ++icycles;
   mySystem->poke(address, value, flags);
 
 #ifdef DEBUGGER_SUPPORT
@@ -191,7 +191,7 @@ void M6502::requestHalt()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 inline void M6502::handleHalt()
 {
-  if(myHaltRequested)
+  if(myHaltRequested) [[unlikely]]
   {
     myOnHaltCallback();
     myHaltRequested = false;
@@ -243,10 +243,8 @@ inline void M6502::_execute(uInt64 cycles, DispatchResult& result)
   uInt64 currentCycles = 0;
 
   // Loop until execution is stopped or a fatal error occurs
-  for(;;)
+  while (!myExecutionStatus && currentCycles < cycles)
   {
-    while (!myExecutionStatus && currentCycles < cycles * SYSTEM_CYCLES_PER_CPU)
-    {
   #ifdef DEBUGGER_SUPPORT
       // Don't break if we haven't actually executed anything yet
       if (myLastBreakCycle != mySystem->cycles()) {
@@ -413,30 +411,26 @@ inline void M6502::_execute(uInt64 cycles, DispatchResult& result)
         riot.updateEmulation();
       }
   #endif
-    }
-
-    // See if a fatal error has occurred
-    if(myExecutionStatus & FatalErrorBit)
-    {
-      // Yes, so answer that something when wrong. The message has already been set when
-      // the exception was handled.
-      result.setFatal(currentCycles);
-      return;
-    }
-
-    // See if execution has been stopped
-    if(myExecutionStatus & StopExecutionBit)
-    {
-      // Yes, so answer that everything finished fine
-      result.setOk(currentCycles);
-      return;
-    }
-
-    if (currentCycles >= cycles * SYSTEM_CYCLES_PER_CPU) {
-      result.setOk(currentCycles);
-      return;
-    }
   }
+
+  // See if a fatal error has occurred
+  if(myExecutionStatus & FatalErrorBit) [[unlikely]]
+  {
+    // Yes, so answer that something when wrong. The message has already been set when
+    // the exception was handled.
+    result.setFatal(currentCycles);
+    return;
+  }
+
+  // See if execution has been stopped
+  if(myExecutionStatus & StopExecutionBit)
+  {
+    // Yes, so answer that everything finished fine
+    result.setOk(currentCycles);
+    return;
+  }
+
+  result.setOk(currentCycles);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

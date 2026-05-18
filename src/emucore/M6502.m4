@@ -24,10 +24,6 @@
   @author  Bradford W. Mott and Stephen Anthony
 */
 
-#ifndef NOTSAMEPAGE
-  #define NOTSAMEPAGE(_addr1, _addr2) (((_addr1) ^ (_addr2)) & 0xff00)
-#endif
-
 #ifndef SET_LAST_PEEK
   #ifdef DEBUGGER_SUPPORT
     #define SET_LAST_PEEK(_addr1, _addr2) _addr1 = _addr2;
@@ -93,7 +89,7 @@ define(M6502_ABSOLUTEX_READ, `{
   const uInt16 low = peek(PC++, DISASM_CODE);
   const uInt16 high = (static_cast<uInt16>(peek(PC++, DISASM_CODE)) << 8);
   intermediateAddress = high | static_cast<uInt8>(low + X);
-  if((low + X) > 0xFF)
+  if((low + X) > 0xFF) [[unlikely]]
   {
     peek(intermediateAddress, DISASM_NONE);
     intermediateAddress = (high | low) + X;
@@ -109,7 +105,7 @@ define(M6502_ABSOLUTEX_READ_DISCARD_OPERAND, `{
   const uInt16 low = peek(PC++, DISASM_CODE);
   const uInt16 high = (static_cast<uInt16>(peek(PC++, DISASM_CODE)) << 8);
   intermediateAddress = high | static_cast<uInt8>(low + X);
-  if((low + X) > 0xFF)
+  if((low + X) > 0xFF) [[unlikely]]
   {
     peek(intermediateAddress, DISASM_NONE);
     intermediateAddress = (high | low) + X;
@@ -141,7 +137,7 @@ define(M6502_ABSOLUTEY_READ, `{
   const uInt16 low = peek(PC++, DISASM_CODE);
   const uInt16 high = (static_cast<uInt16>(peek(PC++, DISASM_CODE)) << 8);
   intermediateAddress = high | static_cast<uInt8>(low + Y);
-  if((low + Y) > 0xFF)
+  if((low + Y) > 0xFF) [[unlikely]]
   {
     peek(intermediateAddress, DISASM_NONE);
     intermediateAddress = (high | low) + Y;
@@ -281,7 +277,7 @@ define(M6502_INDIRECTY_READ, `{
   const uInt16 low = peek(pointer++, DISASM_DATA);
   const uInt16 high = (static_cast<uInt16>(peek(pointer, DISASM_DATA)) << 8);
   intermediateAddress = high | static_cast<uInt8>(low + Y);
-  if((low + Y) > 0xFF)
+  if((low + Y) > 0xFF) [[unlikely]]
   {
     peek(intermediateAddress, DISASM_NONE);
     intermediateAddress = (high | low) + Y;
@@ -402,7 +398,7 @@ define(M6502_BVS, `{
 define(M6502_ADC, `{
   if(!D)
   {
-    const Int32 sum = A + operand + (C ? 1 : 0);
+    const Int32 sum = A + operand + static_cast<uInt8>(C);
     N = sum & 0x80;
     V = ~(A ^ operand) & (A ^ sum) & 0x80;
     notZ = sum & 0xff;
@@ -412,7 +408,7 @@ define(M6502_ADC, `{
   }
   else
   {
-    Int32 lo = (A & 0x0f) + (operand & 0x0f) + (C ? 1 : 0);
+    Int32 lo = (A & 0x0f) + (operand & 0x0f) + static_cast<uInt8>(C);
     Int32 hi = (A & 0xf0) + (operand & 0xf0);
     notZ = (lo+hi) & 0xff;
     if(lo > 0x09)
@@ -459,7 +455,7 @@ define(M6502_ARR, `{
   if(!D)
   {
     A &= operand;
-    A = ((A >> 1) & 0x7f) | (C ? 0x80 : 0x00);
+    A = ((A >> 1) & 0x7f) | (static_cast<uInt8>(C) << 7);
 
     C = A & 0x40;
     V = (A & 0x40) ^ ((A & 0x20) << 1);
@@ -471,7 +467,7 @@ define(M6502_ARR, `{
   {
     const uInt8 value = A & operand;
 
-    A = ((value >> 1) & 0x7f) | (C ? 0x80 : 0x00);
+    A = ((value >> 1) & 0x7f) | (static_cast<uInt8>(C) << 7);
     N = C;
     notZ = A;
     V = (value ^ A) & 0x40;
@@ -651,7 +647,7 @@ define(M6502_ISB, `{
   poke(operandAddress, operand, DISASM_WRITE);
 
   // N, V, Z, C flags are the same in either mode (C calculated at the end)
-  const Int32 sum = A - operand - (C ? 0 : 1);
+  const Int32 sum = A - operand - static_cast<uInt8>(!C);
   N = sum & 0x80;
   V = (A ^ operand) & (A ^ sum) & 0x80;
   notZ = sum & 0xff;
@@ -662,7 +658,7 @@ define(M6502_ISB, `{
   }
   else
   {
-    Int32 lo = (A & 0x0f) - (operand & 0x0f) - (C ? 0 : 1);
+    Int32 lo = (A & 0x0f) - (operand & 0x0f) - static_cast<uInt8>(!C);
     Int32 hi = (A & 0xf0) - (operand & 0xf0);
     if(lo & 0x10)
     {
@@ -785,7 +781,7 @@ define(M6502_PLP, `{
 }')
 
 define(M6502_RLA, `{
-  const uInt8 value = (operand << 1) | (C ? 1 : 0);
+  const uInt8 value = (operand << 1) | static_cast<uInt8>(C);
   poke(operandAddress, value, DISASM_WRITE);
 
   A &= value;
@@ -800,7 +796,7 @@ define(M6502_ROL, `{
   // Set carry flag according to the left-most bit in operand
   C = operand & 0x80;
 
-  operand = (operand << 1) | (oldC ? 1 : 0);
+  operand = (operand << 1) | static_cast<uInt8>(oldC);
   poke(operandAddress, operand, DISASM_WRITE);
 
   notZ = operand;
@@ -813,7 +809,7 @@ define(M6502_ROLA, `{
   // Set carry flag according to the left-most bit
   C = A & 0x80;
 
-  A = (A << 1) | (oldC ? 1 : 0);
+  A = (A << 1) | static_cast<uInt8>(oldC);
 
   notZ = A;
   N = A & 0x80;
@@ -825,7 +821,7 @@ define(M6502_ROR, `{
   // Set carry flag according to the right-most bit
   C = operand & 0x01;
 
-  operand = ((operand >> 1) & 0x7f) | (oldC ? 0x80 : 0x00);
+  operand = ((operand >> 1) & 0x7f) | (static_cast<uInt8>(oldC) << 7);
   poke(operandAddress, operand, DISASM_WRITE);
 
   notZ = operand;
@@ -838,7 +834,7 @@ define(M6502_RORA, `{
   // Set carry flag according to the right-most bit
   C = A & 0x01;
 
-  A = ((A >> 1) & 0x7f) | (oldC ? 0x80 : 0x00);
+  A = ((A >> 1) & 0x7f) | (static_cast<uInt8>(oldC) << 7);
 
   notZ = A;
   N = A & 0x80;
@@ -850,12 +846,12 @@ define(M6502_RRA, `{
   // Set carry flag according to the right-most bit
   C = operand & 0x01;
 
-  operand = ((operand >> 1) & 0x7f) | (oldC ? 0x80 : 0x00);
+  operand = ((operand >> 1) & 0x7f) | (static_cast<uInt8>(oldC) << 7);
   poke(operandAddress, operand, DISASM_WRITE);
 
   if(!D)
   {
-    const Int32 sum = A + operand + (C ? 1 : 0);
+    const Int32 sum = A + operand + static_cast<uInt8>(C);
     N = sum & 0x80;
     V = ~(A ^ operand) & (A ^ sum) & 0x80;
     notZ = sum & 0xff;
@@ -865,7 +861,7 @@ define(M6502_RRA, `{
   }
   else
   {
-    Int32 lo = (A & 0x0f) + (operand & 0x0f) + (C ? 1 : 0);
+    Int32 lo = (A & 0x0f) + (operand & 0x0f) + static_cast<uInt8>(C);
     Int32 hi = (A & 0xf0) + (operand & 0xf0);
     notZ = (lo+hi) & 0xff;
     if(lo > 0x09)
@@ -903,7 +899,7 @@ define(M6502_SAX, `{
 
 define(M6502_SBC, `{
   // N, V, Z, C flags are the same in either mode (C calculated at the end)
-  const Int32 sum = A - operand - (C ? 0 : 1);
+  const Int32 sum = A - operand - static_cast<uInt8>(!C);
   N = sum & 0x80;
   V = (A ^ operand) & (A ^ sum) & 0x80;
   notZ = sum & 0xff;
@@ -914,7 +910,7 @@ define(M6502_SBC, `{
   }
   else
   {
-    Int32 lo = (A & 0x0f) - (operand & 0x0f) - (C ? 0 : 1);
+    Int32 lo = (A & 0x0f) - (operand & 0x0f) - static_cast<uInt8>(!C);
     Int32 hi = (A & 0xf0) - (operand & 0xf0);
     if(lo & 0x10)
     {

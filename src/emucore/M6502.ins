@@ -24,10 +24,6 @@
   @author  Bradford W. Mott and Stephen Anthony
 */
 
-#ifndef NOTSAMEPAGE
-  #define NOTSAMEPAGE(_addr1, _addr2) (((_addr1) ^ (_addr2)) & 0xff00)
-#endif
-
 #ifndef SET_LAST_PEEK
   #ifdef DEBUGGER_SUPPORT
     #define SET_LAST_PEEK(_addr1, _addr2) _addr1 = _addr2;
@@ -285,7 +281,7 @@ case 0x69:
 {
   if(!D)
   {
-    const Int32 sum = A + operand + (C ? 1 : 0);
+    const Int32 sum = A + operand + static_cast<uInt8>(C);
     N = sum & 0x80;
     V = ~(A ^ operand) & (A ^ sum) & 0x80;
     notZ = sum & 0xff;
@@ -295,7 +291,7 @@ case 0x69:
   }
   else
   {
-    Int32 lo = (A & 0x0f) + (operand & 0x0f) + (C ? 1 : 0);
+    Int32 lo = (A & 0x0f) + (operand & 0x0f) + static_cast<uInt8>(C);
     Int32 hi = (A & 0xf0) + (operand & 0xf0);
     notZ = (lo+hi) & 0xff;
     if(lo > 0x09)
@@ -322,7 +318,7 @@ case 0x65:
 {
   if(!D)
   {
-    const Int32 sum = A + operand + (C ? 1 : 0);
+    const Int32 sum = A + operand + static_cast<uInt8>(C);
     N = sum & 0x80;
     V = ~(A ^ operand) & (A ^ sum) & 0x80;
     notZ = sum & 0xff;
@@ -332,7 +328,7 @@ case 0x65:
   }
   else
   {
-    Int32 lo = (A & 0x0f) + (operand & 0x0f) + (C ? 1 : 0);
+    Int32 lo = (A & 0x0f) + (operand & 0x0f) + static_cast<uInt8>(C);
     Int32 hi = (A & 0xf0) + (operand & 0xf0);
     notZ = (lo+hi) & 0xff;
     if(lo > 0x09)
@@ -361,7 +357,7 @@ case 0x75:
 {
   if(!D)
   {
-    const Int32 sum = A + operand + (C ? 1 : 0);
+    const Int32 sum = A + operand + static_cast<uInt8>(C);
     N = sum & 0x80;
     V = ~(A ^ operand) & (A ^ sum) & 0x80;
     notZ = sum & 0xff;
@@ -371,7 +367,7 @@ case 0x75:
   }
   else
   {
-    Int32 lo = (A & 0x0f) + (operand & 0x0f) + (C ? 1 : 0);
+    Int32 lo = (A & 0x0f) + (operand & 0x0f) + static_cast<uInt8>(C);
     Int32 hi = (A & 0xf0) + (operand & 0xf0);
     notZ = (lo+hi) & 0xff;
     if(lo > 0x09)
@@ -399,7 +395,7 @@ case 0x6d:
 {
   if(!D)
   {
-    const Int32 sum = A + operand + (C ? 1 : 0);
+    const Int32 sum = A + operand + static_cast<uInt8>(C);
     N = sum & 0x80;
     V = ~(A ^ operand) & (A ^ sum) & 0x80;
     notZ = sum & 0xff;
@@ -409,7 +405,7 @@ case 0x6d:
   }
   else
   {
-    Int32 lo = (A & 0x0f) + (operand & 0x0f) + (C ? 1 : 0);
+    Int32 lo = (A & 0x0f) + (operand & 0x0f) + static_cast<uInt8>(C);
     Int32 hi = (A & 0xf0) + (operand & 0xf0);
     notZ = (lo+hi) & 0xff;
     if(lo > 0x09)
@@ -433,7 +429,7 @@ case 0x7d:
   const uInt16 low = peek(PC++, DISASM_CODE);
   const uInt16 high = (static_cast<uInt16>(peek(PC++, DISASM_CODE)) << 8);
   intermediateAddress = high | static_cast<uInt8>(low + X);
-  if((low + X) > 0xFF)
+  if((low + X) > 0xFF) [[unlikely]]
   {
     peek(intermediateAddress, DISASM_NONE);
     intermediateAddress = (high | low) + X;
@@ -447,7 +443,7 @@ case 0x7d:
 {
   if(!D)
   {
-    const Int32 sum = A + operand + (C ? 1 : 0);
+    const Int32 sum = A + operand + static_cast<uInt8>(C);
     N = sum & 0x80;
     V = ~(A ^ operand) & (A ^ sum) & 0x80;
     notZ = sum & 0xff;
@@ -457,7 +453,7 @@ case 0x7d:
   }
   else
   {
-    Int32 lo = (A & 0x0f) + (operand & 0x0f) + (C ? 1 : 0);
+    Int32 lo = (A & 0x0f) + (operand & 0x0f) + static_cast<uInt8>(C);
     Int32 hi = (A & 0xf0) + (operand & 0xf0);
     notZ = (lo+hi) & 0xff;
     if(lo > 0x09)
@@ -481,7 +477,7 @@ case 0x79:
   const uInt16 low = peek(PC++, DISASM_CODE);
   const uInt16 high = (static_cast<uInt16>(peek(PC++, DISASM_CODE)) << 8);
   intermediateAddress = high | static_cast<uInt8>(low + Y);
-  if((low + Y) > 0xFF)
+  if((low + Y) > 0xFF) [[unlikely]]
   {
     peek(intermediateAddress, DISASM_NONE);
     intermediateAddress = (high | low) + Y;
@@ -495,7 +491,7 @@ case 0x79:
 {
   if(!D)
   {
-    const Int32 sum = A + operand + (C ? 1 : 0);
+    const Int32 sum = A + operand + static_cast<uInt8>(C);
     N = sum & 0x80;
     V = ~(A ^ operand) & (A ^ sum) & 0x80;
     notZ = sum & 0xff;
@@ -505,7 +501,7 @@ case 0x79:
   }
   else
   {
-    Int32 lo = (A & 0x0f) + (operand & 0x0f) + (C ? 1 : 0);
+    Int32 lo = (A & 0x0f) + (operand & 0x0f) + static_cast<uInt8>(C);
     Int32 hi = (A & 0xf0) + (operand & 0xf0);
     notZ = (lo+hi) & 0xff;
     if(lo > 0x09)
@@ -536,7 +532,7 @@ case 0x61:
 {
   if(!D)
   {
-    const Int32 sum = A + operand + (C ? 1 : 0);
+    const Int32 sum = A + operand + static_cast<uInt8>(C);
     N = sum & 0x80;
     V = ~(A ^ operand) & (A ^ sum) & 0x80;
     notZ = sum & 0xff;
@@ -546,7 +542,7 @@ case 0x61:
   }
   else
   {
-    Int32 lo = (A & 0x0f) + (operand & 0x0f) + (C ? 1 : 0);
+    Int32 lo = (A & 0x0f) + (operand & 0x0f) + static_cast<uInt8>(C);
     Int32 hi = (A & 0xf0) + (operand & 0xf0);
     notZ = (lo+hi) & 0xff;
     if(lo > 0x09)
@@ -571,7 +567,7 @@ case 0x71:
   const uInt16 low = peek(pointer++, DISASM_DATA);
   const uInt16 high = (static_cast<uInt16>(peek(pointer, DISASM_DATA)) << 8);
   intermediateAddress = high | static_cast<uInt8>(low + Y);
-  if((low + Y) > 0xFF)
+  if((low + Y) > 0xFF) [[unlikely]]
   {
     peek(intermediateAddress, DISASM_NONE);
     intermediateAddress = (high | low) + Y;
@@ -585,7 +581,7 @@ case 0x71:
 {
   if(!D)
   {
-    const Int32 sum = A + operand + (C ? 1 : 0);
+    const Int32 sum = A + operand + static_cast<uInt8>(C);
     N = sum & 0x80;
     V = ~(A ^ operand) & (A ^ sum) & 0x80;
     notZ = sum & 0xff;
@@ -595,7 +591,7 @@ case 0x71:
   }
   else
   {
-    Int32 lo = (A & 0x0f) + (operand & 0x0f) + (C ? 1 : 0);
+    Int32 lo = (A & 0x0f) + (operand & 0x0f) + static_cast<uInt8>(C);
     Int32 hi = (A & 0xf0) + (operand & 0xf0);
     notZ = (lo+hi) & 0xff;
     if(lo > 0x09)
@@ -705,7 +701,7 @@ case 0x3d:
   const uInt16 low = peek(PC++, DISASM_CODE);
   const uInt16 high = (static_cast<uInt16>(peek(PC++, DISASM_CODE)) << 8);
   intermediateAddress = high | static_cast<uInt8>(low + X);
-  if((low + X) > 0xFF)
+  if((low + X) > 0xFF) [[unlikely]]
   {
     peek(intermediateAddress, DISASM_NONE);
     intermediateAddress = (high | low) + X;
@@ -728,7 +724,7 @@ case 0x39:
   const uInt16 low = peek(PC++, DISASM_CODE);
   const uInt16 high = (static_cast<uInt16>(peek(PC++, DISASM_CODE)) << 8);
   intermediateAddress = high | static_cast<uInt8>(low + Y);
-  if((low + Y) > 0xFF)
+  if((low + Y) > 0xFF) [[unlikely]]
   {
     peek(intermediateAddress, DISASM_NONE);
     intermediateAddress = (high | low) + Y;
@@ -768,7 +764,7 @@ case 0x31:
   const uInt16 low = peek(pointer++, DISASM_DATA);
   const uInt16 high = (static_cast<uInt16>(peek(pointer, DISASM_DATA)) << 8);
   intermediateAddress = high | static_cast<uInt8>(low + Y);
-  if((low + Y) > 0xFF)
+  if((low + Y) > 0xFF) [[unlikely]]
   {
     peek(intermediateAddress, DISASM_NONE);
     intermediateAddress = (high | low) + Y;
@@ -815,7 +811,7 @@ case 0x6b:
   if(!D)
   {
     A &= operand;
-    A = ((A >> 1) & 0x7f) | (C ? 0x80 : 0x00);
+    A = ((A >> 1) & 0x7f) | (static_cast<uInt8>(C) << 7);
 
     C = A & 0x40;
     V = (A & 0x40) ^ ((A & 0x20) << 1);
@@ -827,7 +823,7 @@ case 0x6b:
   {
     const uInt8 value = A & operand;
 
-    A = ((value >> 1) & 0x7f) | (C ? 0x80 : 0x00);
+    A = ((value >> 1) & 0x7f) | (static_cast<uInt8>(C) << 7);
     N = C;
     notZ = A;
     V = (value ^ A) & 0x40;
@@ -1237,7 +1233,7 @@ case 0xdd:
   const uInt16 low = peek(PC++, DISASM_CODE);
   const uInt16 high = (static_cast<uInt16>(peek(PC++, DISASM_CODE)) << 8);
   intermediateAddress = high | static_cast<uInt8>(low + X);
-  if((low + X) > 0xFF)
+  if((low + X) > 0xFF) [[unlikely]]
   {
     peek(intermediateAddress, DISASM_NONE);
     intermediateAddress = (high | low) + X;
@@ -1262,7 +1258,7 @@ case 0xd9:
   const uInt16 low = peek(PC++, DISASM_CODE);
   const uInt16 high = (static_cast<uInt16>(peek(PC++, DISASM_CODE)) << 8);
   intermediateAddress = high | static_cast<uInt8>(low + Y);
-  if((low + Y) > 0xFF)
+  if((low + Y) > 0xFF) [[unlikely]]
   {
     peek(intermediateAddress, DISASM_NONE);
     intermediateAddress = (high | low) + Y;
@@ -1306,7 +1302,7 @@ case 0xd1:
   const uInt16 low = peek(pointer++, DISASM_DATA);
   const uInt16 high = (static_cast<uInt16>(peek(pointer, DISASM_DATA)) << 8);
   intermediateAddress = high | static_cast<uInt8>(low + Y);
-  if((low + Y) > 0xFF)
+  if((low + Y) > 0xFF) [[unlikely]]
   {
     peek(intermediateAddress, DISASM_NONE);
     intermediateAddress = (high | low) + Y;
@@ -1705,7 +1701,7 @@ case 0x5d:
   const uInt16 low = peek(PC++, DISASM_CODE);
   const uInt16 high = (static_cast<uInt16>(peek(PC++, DISASM_CODE)) << 8);
   intermediateAddress = high | static_cast<uInt8>(low + X);
-  if((low + X) > 0xFF)
+  if((low + X) > 0xFF) [[unlikely]]
   {
     peek(intermediateAddress, DISASM_NONE);
     intermediateAddress = (high | low) + X;
@@ -1728,7 +1724,7 @@ case 0x59:
   const uInt16 low = peek(PC++, DISASM_CODE);
   const uInt16 high = (static_cast<uInt16>(peek(PC++, DISASM_CODE)) << 8);
   intermediateAddress = high | static_cast<uInt8>(low + Y);
-  if((low + Y) > 0xFF)
+  if((low + Y) > 0xFF) [[unlikely]]
   {
     peek(intermediateAddress, DISASM_NONE);
     intermediateAddress = (high | low) + Y;
@@ -1768,7 +1764,7 @@ case 0x51:
   const uInt16 low = peek(pointer++, DISASM_DATA);
   const uInt16 high = (static_cast<uInt16>(peek(pointer, DISASM_DATA)) << 8);
   intermediateAddress = high | static_cast<uInt8>(low + Y);
-  if((low + Y) > 0xFF)
+  if((low + Y) > 0xFF) [[unlikely]]
   {
     peek(intermediateAddress, DISASM_NONE);
     intermediateAddress = (high | low) + Y;
@@ -1894,7 +1890,7 @@ case 0xef:
   poke(operandAddress, operand, DISASM_WRITE);
 
   // N, V, Z, C flags are the same in either mode (C calculated at the end)
-  const Int32 sum = A - operand - (C ? 0 : 1);
+  const Int32 sum = A - operand - static_cast<uInt8>(!C);
   N = sum & 0x80;
   V = (A ^ operand) & (A ^ sum) & 0x80;
   notZ = sum & 0xff;
@@ -1905,7 +1901,7 @@ case 0xef:
   }
   else
   {
-    Int32 lo = (A & 0x0f) - (operand & 0x0f) - (C ? 0 : 1);
+    Int32 lo = (A & 0x0f) - (operand & 0x0f) - static_cast<uInt8>(!C);
     Int32 hi = (A & 0xf0) - (operand & 0xf0);
     if(lo & 0x10)
     {
@@ -1935,7 +1931,7 @@ case 0xff:
   poke(operandAddress, operand, DISASM_WRITE);
 
   // N, V, Z, C flags are the same in either mode (C calculated at the end)
-  const Int32 sum = A - operand - (C ? 0 : 1);
+  const Int32 sum = A - operand - static_cast<uInt8>(!C);
   N = sum & 0x80;
   V = (A ^ operand) & (A ^ sum) & 0x80;
   notZ = sum & 0xff;
@@ -1946,7 +1942,7 @@ case 0xff:
   }
   else
   {
-    Int32 lo = (A & 0x0f) - (operand & 0x0f) - (C ? 0 : 1);
+    Int32 lo = (A & 0x0f) - (operand & 0x0f) - static_cast<uInt8>(!C);
     Int32 hi = (A & 0xf0) - (operand & 0xf0);
     if(lo & 0x10)
     {
@@ -1976,7 +1972,7 @@ case 0xfb:
   poke(operandAddress, operand, DISASM_WRITE);
 
   // N, V, Z, C flags are the same in either mode (C calculated at the end)
-  const Int32 sum = A - operand - (C ? 0 : 1);
+  const Int32 sum = A - operand - static_cast<uInt8>(!C);
   N = sum & 0x80;
   V = (A ^ operand) & (A ^ sum) & 0x80;
   notZ = sum & 0xff;
@@ -1987,7 +1983,7 @@ case 0xfb:
   }
   else
   {
-    Int32 lo = (A & 0x0f) - (operand & 0x0f) - (C ? 0 : 1);
+    Int32 lo = (A & 0x0f) - (operand & 0x0f) - static_cast<uInt8>(!C);
     Int32 hi = (A & 0xf0) - (operand & 0xf0);
     if(lo & 0x10)
     {
@@ -2014,7 +2010,7 @@ case 0xe7:
   poke(operandAddress, operand, DISASM_WRITE);
 
   // N, V, Z, C flags are the same in either mode (C calculated at the end)
-  const Int32 sum = A - operand - (C ? 0 : 1);
+  const Int32 sum = A - operand - static_cast<uInt8>(!C);
   N = sum & 0x80;
   V = (A ^ operand) & (A ^ sum) & 0x80;
   notZ = sum & 0xff;
@@ -2025,7 +2021,7 @@ case 0xe7:
   }
   else
   {
-    Int32 lo = (A & 0x0f) - (operand & 0x0f) - (C ? 0 : 1);
+    Int32 lo = (A & 0x0f) - (operand & 0x0f) - static_cast<uInt8>(!C);
     Int32 hi = (A & 0xf0) - (operand & 0xf0);
     if(lo & 0x10)
     {
@@ -2054,7 +2050,7 @@ case 0xf7:
   poke(operandAddress, operand, DISASM_WRITE);
 
   // N, V, Z, C flags are the same in either mode (C calculated at the end)
-  const Int32 sum = A - operand - (C ? 0 : 1);
+  const Int32 sum = A - operand - static_cast<uInt8>(!C);
   N = sum & 0x80;
   V = (A ^ operand) & (A ^ sum) & 0x80;
   notZ = sum & 0xff;
@@ -2065,7 +2061,7 @@ case 0xf7:
   }
   else
   {
-    Int32 lo = (A & 0x0f) - (operand & 0x0f) - (C ? 0 : 1);
+    Int32 lo = (A & 0x0f) - (operand & 0x0f) - static_cast<uInt8>(!C);
     Int32 hi = (A & 0xf0) - (operand & 0xf0);
     if(lo & 0x10)
     {
@@ -2096,7 +2092,7 @@ case 0xe3:
   poke(operandAddress, operand, DISASM_WRITE);
 
   // N, V, Z, C flags are the same in either mode (C calculated at the end)
-  const Int32 sum = A - operand - (C ? 0 : 1);
+  const Int32 sum = A - operand - static_cast<uInt8>(!C);
   N = sum & 0x80;
   V = (A ^ operand) & (A ^ sum) & 0x80;
   notZ = sum & 0xff;
@@ -2107,7 +2103,7 @@ case 0xe3:
   }
   else
   {
-    Int32 lo = (A & 0x0f) - (operand & 0x0f) - (C ? 0 : 1);
+    Int32 lo = (A & 0x0f) - (operand & 0x0f) - static_cast<uInt8>(!C);
     Int32 hi = (A & 0xf0) - (operand & 0xf0);
     if(lo & 0x10)
     {
@@ -2138,7 +2134,7 @@ case 0xf3:
   poke(operandAddress, operand, DISASM_WRITE);
 
   // N, V, Z, C flags are the same in either mode (C calculated at the end)
-  const Int32 sum = A - operand - (C ? 0 : 1);
+  const Int32 sum = A - operand - static_cast<uInt8>(!C);
   N = sum & 0x80;
   V = (A ^ operand) & (A ^ sum) & 0x80;
   notZ = sum & 0xff;
@@ -2149,7 +2145,7 @@ case 0xf3:
   }
   else
   {
-    Int32 lo = (A & 0x0f) - (operand & 0x0f) - (C ? 0 : 1);
+    Int32 lo = (A & 0x0f) - (operand & 0x0f) - static_cast<uInt8>(!C);
     Int32 hi = (A & 0xf0) - (operand & 0xf0);
     if(lo & 0x10)
     {
@@ -2217,7 +2213,7 @@ case 0xbb:
   const uInt16 low = peek(PC++, DISASM_CODE);
   const uInt16 high = (static_cast<uInt16>(peek(PC++, DISASM_CODE)) << 8);
   intermediateAddress = high | static_cast<uInt8>(low + Y);
-  if((low + Y) > 0xFF)
+  if((low + Y) > 0xFF) [[unlikely]]
   {
     peek(intermediateAddress, DISASM_NONE);
     intermediateAddress = (high | low) + Y;
@@ -2259,7 +2255,7 @@ case 0xbf:
   const uInt16 low = peek(PC++, DISASM_CODE);
   const uInt16 high = (static_cast<uInt16>(peek(PC++, DISASM_CODE)) << 8);
   intermediateAddress = high | static_cast<uInt8>(low + Y);
-  if((low + Y) > 0xFF)
+  if((low + Y) > 0xFF) [[unlikely]]
   {
     peek(intermediateAddress, DISASM_NONE);
     intermediateAddress = (high | low) + Y;
@@ -2337,7 +2333,7 @@ case 0xb3:
   const uInt16 low = peek(pointer++, DISASM_DATA);
   const uInt16 high = (static_cast<uInt16>(peek(pointer, DISASM_DATA)) << 8);
   intermediateAddress = high | static_cast<uInt8>(low + Y);
-  if((low + Y) > 0xFF)
+  if((low + Y) > 0xFF) [[unlikely]]
   {
     peek(intermediateAddress, DISASM_NONE);
     intermediateAddress = (high | low) + Y;
@@ -2422,7 +2418,7 @@ case 0xbd:
   const uInt16 low = peek(PC++, DISASM_CODE);
   const uInt16 high = (static_cast<uInt16>(peek(PC++, DISASM_CODE)) << 8);
   intermediateAddress = high | static_cast<uInt8>(low + X);
-  if((low + X) > 0xFF)
+  if((low + X) > 0xFF) [[unlikely]]
   {
     peek(intermediateAddress, DISASM_NONE);
     intermediateAddress = (high | low) + X;
@@ -2446,7 +2442,7 @@ case 0xb9:
   const uInt16 low = peek(PC++, DISASM_CODE);
   const uInt16 high = (static_cast<uInt16>(peek(PC++, DISASM_CODE)) << 8);
   intermediateAddress = high | static_cast<uInt8>(low + Y);
-  if((low + Y) > 0xFF)
+  if((low + Y) > 0xFF) [[unlikely]]
   {
     peek(intermediateAddress, DISASM_NONE);
     intermediateAddress = (high | low) + Y;
@@ -2488,7 +2484,7 @@ case 0xb1:
   const uInt16 low = peek(pointer++, DISASM_DATA);
   const uInt16 high = (static_cast<uInt16>(peek(pointer, DISASM_DATA)) << 8);
   intermediateAddress = high | static_cast<uInt8>(low + Y);
-  if((low + Y) > 0xFF)
+  if((low + Y) > 0xFF) [[unlikely]]
   {
     peek(intermediateAddress, DISASM_NONE);
     intermediateAddress = (high | low) + Y;
@@ -2571,7 +2567,7 @@ case 0xbe:
   const uInt16 low = peek(PC++, DISASM_CODE);
   const uInt16 high = (static_cast<uInt16>(peek(PC++, DISASM_CODE)) << 8);
   intermediateAddress = high | static_cast<uInt8>(low + Y);
-  if((low + Y) > 0xFF)
+  if((low + Y) > 0xFF) [[unlikely]]
   {
     peek(intermediateAddress, DISASM_NONE);
     intermediateAddress = (high | low) + Y;
@@ -2654,7 +2650,7 @@ case 0xbc:
   const uInt16 low = peek(PC++, DISASM_CODE);
   const uInt16 high = (static_cast<uInt16>(peek(PC++, DISASM_CODE)) << 8);
   intermediateAddress = high | static_cast<uInt8>(low + X);
-  if((low + X) > 0xFF)
+  if((low + X) > 0xFF) [[unlikely]]
   {
     peek(intermediateAddress, DISASM_NONE);
     intermediateAddress = (high | low) + X;
@@ -2861,7 +2857,7 @@ case 0xfc:
   const uInt16 low = peek(PC++, DISASM_CODE);
   const uInt16 high = (static_cast<uInt16>(peek(PC++, DISASM_CODE)) << 8);
   intermediateAddress = high | static_cast<uInt8>(low + X);
-  if((low + X) > 0xFF)
+  if((low + X) > 0xFF) [[unlikely]]
   {
     peek(intermediateAddress, DISASM_NONE);
     intermediateAddress = (high | low) + X;
@@ -2938,7 +2934,7 @@ case 0x1d:
   const uInt16 low = peek(PC++, DISASM_CODE);
   const uInt16 high = (static_cast<uInt16>(peek(PC++, DISASM_CODE)) << 8);
   intermediateAddress = high | static_cast<uInt8>(low + X);
-  if((low + X) > 0xFF)
+  if((low + X) > 0xFF) [[unlikely]]
   {
     peek(intermediateAddress, DISASM_NONE);
     intermediateAddress = (high | low) + X;
@@ -2962,7 +2958,7 @@ case 0x19:
   const uInt16 low = peek(PC++, DISASM_CODE);
   const uInt16 high = (static_cast<uInt16>(peek(PC++, DISASM_CODE)) << 8);
   intermediateAddress = high | static_cast<uInt8>(low + Y);
-  if((low + Y) > 0xFF)
+  if((low + Y) > 0xFF) [[unlikely]]
   {
     peek(intermediateAddress, DISASM_NONE);
     intermediateAddress = (high | low) + Y;
@@ -3004,7 +3000,7 @@ case 0x11:
   const uInt16 low = peek(pointer++, DISASM_DATA);
   const uInt16 high = (static_cast<uInt16>(peek(pointer, DISASM_DATA)) << 8);
   intermediateAddress = high | static_cast<uInt8>(low + Y);
-  if((low + Y) > 0xFF)
+  if((low + Y) > 0xFF) [[unlikely]]
   {
     peek(intermediateAddress, DISASM_NONE);
     intermediateAddress = (high | low) + Y;
@@ -3086,7 +3082,7 @@ case 0x2f:
   poke(operandAddress, operand, DISASM_WRITE);
 }
 {
-  const uInt8 value = (operand << 1) | (C ? 1 : 0);
+  const uInt8 value = (operand << 1) | static_cast<uInt8>(C);
   poke(operandAddress, value, DISASM_WRITE);
 
   A &= value;
@@ -3106,7 +3102,7 @@ case 0x3f:
   poke(operandAddress, operand, DISASM_WRITE);
 }
 {
-  const uInt8 value = (operand << 1) | (C ? 1 : 0);
+  const uInt8 value = (operand << 1) | static_cast<uInt8>(C);
   poke(operandAddress, value, DISASM_WRITE);
 
   A &= value;
@@ -3126,7 +3122,7 @@ case 0x3b:
   poke(operandAddress, operand, DISASM_WRITE);
 }
 {
-  const uInt8 value = (operand << 1) | (C ? 1 : 0);
+  const uInt8 value = (operand << 1) | static_cast<uInt8>(C);
   poke(operandAddress, value, DISASM_WRITE);
 
   A &= value;
@@ -3143,7 +3139,7 @@ case 0x27:
   poke(operandAddress, operand, DISASM_WRITE);
 }
 {
-  const uInt8 value = (operand << 1) | (C ? 1 : 0);
+  const uInt8 value = (operand << 1) | static_cast<uInt8>(C);
   poke(operandAddress, value, DISASM_WRITE);
 
   A &= value;
@@ -3162,7 +3158,7 @@ case 0x37:
   poke(operandAddress, operand, DISASM_WRITE);
 }
 {
-  const uInt8 value = (operand << 1) | (C ? 1 : 0);
+  const uInt8 value = (operand << 1) | static_cast<uInt8>(C);
   poke(operandAddress, value, DISASM_WRITE);
 
   A &= value;
@@ -3183,7 +3179,7 @@ case 0x23:
   poke(operandAddress, operand, DISASM_WRITE);
 }
 {
-  const uInt8 value = (operand << 1) | (C ? 1 : 0);
+  const uInt8 value = (operand << 1) | static_cast<uInt8>(C);
   poke(operandAddress, value, DISASM_WRITE);
 
   A &= value;
@@ -3204,7 +3200,7 @@ case 0x33:
   poke(operandAddress, operand, DISASM_WRITE);
 }
 {
-  const uInt8 value = (operand << 1) | (C ? 1 : 0);
+  const uInt8 value = (operand << 1) | static_cast<uInt8>(C);
   poke(operandAddress, value, DISASM_WRITE);
 
   A &= value;
@@ -3226,7 +3222,7 @@ case 0x2a:
   // Set carry flag according to the left-most bit
   C = A & 0x80;
 
-  A = (A << 1) | (oldC ? 1 : 0);
+  A = (A << 1) | static_cast<uInt8>(oldC);
 
   notZ = A;
   N = A & 0x80;
@@ -3245,7 +3241,7 @@ case 0x26:
   // Set carry flag according to the left-most bit in operand
   C = operand & 0x80;
 
-  operand = (operand << 1) | (oldC ? 1 : 0);
+  operand = (operand << 1) | static_cast<uInt8>(oldC);
   poke(operandAddress, operand, DISASM_WRITE);
 
   notZ = operand;
@@ -3267,7 +3263,7 @@ case 0x36:
   // Set carry flag according to the left-most bit in operand
   C = operand & 0x80;
 
-  operand = (operand << 1) | (oldC ? 1 : 0);
+  operand = (operand << 1) | static_cast<uInt8>(oldC);
   poke(operandAddress, operand, DISASM_WRITE);
 
   notZ = operand;
@@ -3288,7 +3284,7 @@ case 0x2e:
   // Set carry flag according to the left-most bit in operand
   C = operand & 0x80;
 
-  operand = (operand << 1) | (oldC ? 1 : 0);
+  operand = (operand << 1) | static_cast<uInt8>(oldC);
   poke(operandAddress, operand, DISASM_WRITE);
 
   notZ = operand;
@@ -3311,7 +3307,7 @@ case 0x3e:
   // Set carry flag according to the left-most bit in operand
   C = operand & 0x80;
 
-  operand = (operand << 1) | (oldC ? 1 : 0);
+  operand = (operand << 1) | static_cast<uInt8>(oldC);
   poke(operandAddress, operand, DISASM_WRITE);
 
   notZ = operand;
@@ -3331,7 +3327,7 @@ case 0x6a:
   // Set carry flag according to the right-most bit
   C = A & 0x01;
 
-  A = ((A >> 1) & 0x7f) | (oldC ? 0x80 : 0x00);
+  A = ((A >> 1) & 0x7f) | (static_cast<uInt8>(oldC) << 7);
 
   notZ = A;
   N = A & 0x80;
@@ -3350,7 +3346,7 @@ case 0x66:
   // Set carry flag according to the right-most bit
   C = operand & 0x01;
 
-  operand = ((operand >> 1) & 0x7f) | (oldC ? 0x80 : 0x00);
+  operand = ((operand >> 1) & 0x7f) | (static_cast<uInt8>(oldC) << 7);
   poke(operandAddress, operand, DISASM_WRITE);
 
   notZ = operand;
@@ -3372,7 +3368,7 @@ case 0x76:
   // Set carry flag according to the right-most bit
   C = operand & 0x01;
 
-  operand = ((operand >> 1) & 0x7f) | (oldC ? 0x80 : 0x00);
+  operand = ((operand >> 1) & 0x7f) | (static_cast<uInt8>(oldC) << 7);
   poke(operandAddress, operand, DISASM_WRITE);
 
   notZ = operand;
@@ -3393,7 +3389,7 @@ case 0x6e:
   // Set carry flag according to the right-most bit
   C = operand & 0x01;
 
-  operand = ((operand >> 1) & 0x7f) | (oldC ? 0x80 : 0x00);
+  operand = ((operand >> 1) & 0x7f) | (static_cast<uInt8>(oldC) << 7);
   poke(operandAddress, operand, DISASM_WRITE);
 
   notZ = operand;
@@ -3416,7 +3412,7 @@ case 0x7e:
   // Set carry flag according to the right-most bit
   C = operand & 0x01;
 
-  operand = ((operand >> 1) & 0x7f) | (oldC ? 0x80 : 0x00);
+  operand = ((operand >> 1) & 0x7f) | (static_cast<uInt8>(oldC) << 7);
   poke(operandAddress, operand, DISASM_WRITE);
 
   notZ = operand;
@@ -3439,12 +3435,12 @@ case 0x6f:
   // Set carry flag according to the right-most bit
   C = operand & 0x01;
 
-  operand = ((operand >> 1) & 0x7f) | (oldC ? 0x80 : 0x00);
+  operand = ((operand >> 1) & 0x7f) | (static_cast<uInt8>(oldC) << 7);
   poke(operandAddress, operand, DISASM_WRITE);
 
   if(!D)
   {
-    const Int32 sum = A + operand + (C ? 1 : 0);
+    const Int32 sum = A + operand + static_cast<uInt8>(C);
     N = sum & 0x80;
     V = ~(A ^ operand) & (A ^ sum) & 0x80;
     notZ = sum & 0xff;
@@ -3454,7 +3450,7 @@ case 0x6f:
   }
   else
   {
-    Int32 lo = (A & 0x0f) + (operand & 0x0f) + (C ? 1 : 0);
+    Int32 lo = (A & 0x0f) + (operand & 0x0f) + static_cast<uInt8>(C);
     Int32 hi = (A & 0xf0) + (operand & 0xf0);
     notZ = (lo+hi) & 0xff;
     if(lo > 0x09)
@@ -3488,12 +3484,12 @@ case 0x7f:
   // Set carry flag according to the right-most bit
   C = operand & 0x01;
 
-  operand = ((operand >> 1) & 0x7f) | (oldC ? 0x80 : 0x00);
+  operand = ((operand >> 1) & 0x7f) | (static_cast<uInt8>(oldC) << 7);
   poke(operandAddress, operand, DISASM_WRITE);
 
   if(!D)
   {
-    const Int32 sum = A + operand + (C ? 1 : 0);
+    const Int32 sum = A + operand + static_cast<uInt8>(C);
     N = sum & 0x80;
     V = ~(A ^ operand) & (A ^ sum) & 0x80;
     notZ = sum & 0xff;
@@ -3503,7 +3499,7 @@ case 0x7f:
   }
   else
   {
-    Int32 lo = (A & 0x0f) + (operand & 0x0f) + (C ? 1 : 0);
+    Int32 lo = (A & 0x0f) + (operand & 0x0f) + static_cast<uInt8>(C);
     Int32 hi = (A & 0xf0) + (operand & 0xf0);
     notZ = (lo+hi) & 0xff;
     if(lo > 0x09)
@@ -3537,12 +3533,12 @@ case 0x7b:
   // Set carry flag according to the right-most bit
   C = operand & 0x01;
 
-  operand = ((operand >> 1) & 0x7f) | (oldC ? 0x80 : 0x00);
+  operand = ((operand >> 1) & 0x7f) | (static_cast<uInt8>(oldC) << 7);
   poke(operandAddress, operand, DISASM_WRITE);
 
   if(!D)
   {
-    const Int32 sum = A + operand + (C ? 1 : 0);
+    const Int32 sum = A + operand + static_cast<uInt8>(C);
     N = sum & 0x80;
     V = ~(A ^ operand) & (A ^ sum) & 0x80;
     notZ = sum & 0xff;
@@ -3552,7 +3548,7 @@ case 0x7b:
   }
   else
   {
-    Int32 lo = (A & 0x0f) + (operand & 0x0f) + (C ? 1 : 0);
+    Int32 lo = (A & 0x0f) + (operand & 0x0f) + static_cast<uInt8>(C);
     Int32 hi = (A & 0xf0) + (operand & 0xf0);
     notZ = (lo+hi) & 0xff;
     if(lo > 0x09)
@@ -3583,12 +3579,12 @@ case 0x67:
   // Set carry flag according to the right-most bit
   C = operand & 0x01;
 
-  operand = ((operand >> 1) & 0x7f) | (oldC ? 0x80 : 0x00);
+  operand = ((operand >> 1) & 0x7f) | (static_cast<uInt8>(oldC) << 7);
   poke(operandAddress, operand, DISASM_WRITE);
 
   if(!D)
   {
-    const Int32 sum = A + operand + (C ? 1 : 0);
+    const Int32 sum = A + operand + static_cast<uInt8>(C);
     N = sum & 0x80;
     V = ~(A ^ operand) & (A ^ sum) & 0x80;
     notZ = sum & 0xff;
@@ -3598,7 +3594,7 @@ case 0x67:
   }
   else
   {
-    Int32 lo = (A & 0x0f) + (operand & 0x0f) + (C ? 1 : 0);
+    Int32 lo = (A & 0x0f) + (operand & 0x0f) + static_cast<uInt8>(C);
     Int32 hi = (A & 0xf0) + (operand & 0xf0);
     notZ = (lo+hi) & 0xff;
     if(lo > 0x09)
@@ -3631,12 +3627,12 @@ case 0x77:
   // Set carry flag according to the right-most bit
   C = operand & 0x01;
 
-  operand = ((operand >> 1) & 0x7f) | (oldC ? 0x80 : 0x00);
+  operand = ((operand >> 1) & 0x7f) | (static_cast<uInt8>(oldC) << 7);
   poke(operandAddress, operand, DISASM_WRITE);
 
   if(!D)
   {
-    const Int32 sum = A + operand + (C ? 1 : 0);
+    const Int32 sum = A + operand + static_cast<uInt8>(C);
     N = sum & 0x80;
     V = ~(A ^ operand) & (A ^ sum) & 0x80;
     notZ = sum & 0xff;
@@ -3646,7 +3642,7 @@ case 0x77:
   }
   else
   {
-    Int32 lo = (A & 0x0f) + (operand & 0x0f) + (C ? 1 : 0);
+    Int32 lo = (A & 0x0f) + (operand & 0x0f) + static_cast<uInt8>(C);
     Int32 hi = (A & 0xf0) + (operand & 0xf0);
     notZ = (lo+hi) & 0xff;
     if(lo > 0x09)
@@ -3681,12 +3677,12 @@ case 0x63:
   // Set carry flag according to the right-most bit
   C = operand & 0x01;
 
-  operand = ((operand >> 1) & 0x7f) | (oldC ? 0x80 : 0x00);
+  operand = ((operand >> 1) & 0x7f) | (static_cast<uInt8>(oldC) << 7);
   poke(operandAddress, operand, DISASM_WRITE);
 
   if(!D)
   {
-    const Int32 sum = A + operand + (C ? 1 : 0);
+    const Int32 sum = A + operand + static_cast<uInt8>(C);
     N = sum & 0x80;
     V = ~(A ^ operand) & (A ^ sum) & 0x80;
     notZ = sum & 0xff;
@@ -3696,7 +3692,7 @@ case 0x63:
   }
   else
   {
-    Int32 lo = (A & 0x0f) + (operand & 0x0f) + (C ? 1 : 0);
+    Int32 lo = (A & 0x0f) + (operand & 0x0f) + static_cast<uInt8>(C);
     Int32 hi = (A & 0xf0) + (operand & 0xf0);
     notZ = (lo+hi) & 0xff;
     if(lo > 0x09)
@@ -3731,12 +3727,12 @@ case 0x73:
   // Set carry flag according to the right-most bit
   C = operand & 0x01;
 
-  operand = ((operand >> 1) & 0x7f) | (oldC ? 0x80 : 0x00);
+  operand = ((operand >> 1) & 0x7f) | (static_cast<uInt8>(oldC) << 7);
   poke(operandAddress, operand, DISASM_WRITE);
 
   if(!D)
   {
-    const Int32 sum = A + operand + (C ? 1 : 0);
+    const Int32 sum = A + operand + static_cast<uInt8>(C);
     N = sum & 0x80;
     V = ~(A ^ operand) & (A ^ sum) & 0x80;
     notZ = sum & 0xff;
@@ -3746,7 +3742,7 @@ case 0x73:
   }
   else
   {
-    Int32 lo = (A & 0x0f) + (operand & 0x0f) + (C ? 1 : 0);
+    Int32 lo = (A & 0x0f) + (operand & 0x0f) + static_cast<uInt8>(C);
     Int32 hi = (A & 0xf0) + (operand & 0xf0);
     notZ = (lo+hi) & 0xff;
     if(lo > 0x09)
@@ -3847,7 +3843,7 @@ case 0xeb:
 }
 {
   // N, V, Z, C flags are the same in either mode (C calculated at the end)
-  const Int32 sum = A - operand - (C ? 0 : 1);
+  const Int32 sum = A - operand - static_cast<uInt8>(!C);
   N = sum & 0x80;
   V = (A ^ operand) & (A ^ sum) & 0x80;
   notZ = sum & 0xff;
@@ -3858,7 +3854,7 @@ case 0xeb:
   }
   else
   {
-    Int32 lo = (A & 0x0f) - (operand & 0x0f) - (C ? 0 : 1);
+    Int32 lo = (A & 0x0f) - (operand & 0x0f) - static_cast<uInt8>(!C);
     Int32 hi = (A & 0xf0) - (operand & 0xf0);
     if(lo & 0x10)
     {
@@ -3881,7 +3877,7 @@ case 0xe5:
 }
 {
   // N, V, Z, C flags are the same in either mode (C calculated at the end)
-  const Int32 sum = A - operand - (C ? 0 : 1);
+  const Int32 sum = A - operand - static_cast<uInt8>(!C);
   N = sum & 0x80;
   V = (A ^ operand) & (A ^ sum) & 0x80;
   notZ = sum & 0xff;
@@ -3892,7 +3888,7 @@ case 0xe5:
   }
   else
   {
-    Int32 lo = (A & 0x0f) - (operand & 0x0f) - (C ? 0 : 1);
+    Int32 lo = (A & 0x0f) - (operand & 0x0f) - static_cast<uInt8>(!C);
     Int32 hi = (A & 0xf0) - (operand & 0xf0);
     if(lo & 0x10)
     {
@@ -3917,7 +3913,7 @@ case 0xf5:
 }
 {
   // N, V, Z, C flags are the same in either mode (C calculated at the end)
-  const Int32 sum = A - operand - (C ? 0 : 1);
+  const Int32 sum = A - operand - static_cast<uInt8>(!C);
   N = sum & 0x80;
   V = (A ^ operand) & (A ^ sum) & 0x80;
   notZ = sum & 0xff;
@@ -3928,7 +3924,7 @@ case 0xf5:
   }
   else
   {
-    Int32 lo = (A & 0x0f) - (operand & 0x0f) - (C ? 0 : 1);
+    Int32 lo = (A & 0x0f) - (operand & 0x0f) - static_cast<uInt8>(!C);
     Int32 hi = (A & 0xf0) - (operand & 0xf0);
     if(lo & 0x10)
     {
@@ -3952,7 +3948,7 @@ case 0xed:
 }
 {
   // N, V, Z, C flags are the same in either mode (C calculated at the end)
-  const Int32 sum = A - operand - (C ? 0 : 1);
+  const Int32 sum = A - operand - static_cast<uInt8>(!C);
   N = sum & 0x80;
   V = (A ^ operand) & (A ^ sum) & 0x80;
   notZ = sum & 0xff;
@@ -3963,7 +3959,7 @@ case 0xed:
   }
   else
   {
-    Int32 lo = (A & 0x0f) - (operand & 0x0f) - (C ? 0 : 1);
+    Int32 lo = (A & 0x0f) - (operand & 0x0f) - static_cast<uInt8>(!C);
     Int32 hi = (A & 0xf0) - (operand & 0xf0);
     if(lo & 0x10)
     {
@@ -3984,7 +3980,7 @@ case 0xfd:
   const uInt16 low = peek(PC++, DISASM_CODE);
   const uInt16 high = (static_cast<uInt16>(peek(PC++, DISASM_CODE)) << 8);
   intermediateAddress = high | static_cast<uInt8>(low + X);
-  if((low + X) > 0xFF)
+  if((low + X) > 0xFF) [[unlikely]]
   {
     peek(intermediateAddress, DISASM_NONE);
     intermediateAddress = (high | low) + X;
@@ -3997,7 +3993,7 @@ case 0xfd:
 }
 {
   // N, V, Z, C flags are the same in either mode (C calculated at the end)
-  const Int32 sum = A - operand - (C ? 0 : 1);
+  const Int32 sum = A - operand - static_cast<uInt8>(!C);
   N = sum & 0x80;
   V = (A ^ operand) & (A ^ sum) & 0x80;
   notZ = sum & 0xff;
@@ -4008,7 +4004,7 @@ case 0xfd:
   }
   else
   {
-    Int32 lo = (A & 0x0f) - (operand & 0x0f) - (C ? 0 : 1);
+    Int32 lo = (A & 0x0f) - (operand & 0x0f) - static_cast<uInt8>(!C);
     Int32 hi = (A & 0xf0) - (operand & 0xf0);
     if(lo & 0x10)
     {
@@ -4029,7 +4025,7 @@ case 0xf9:
   const uInt16 low = peek(PC++, DISASM_CODE);
   const uInt16 high = (static_cast<uInt16>(peek(PC++, DISASM_CODE)) << 8);
   intermediateAddress = high | static_cast<uInt8>(low + Y);
-  if((low + Y) > 0xFF)
+  if((low + Y) > 0xFF) [[unlikely]]
   {
     peek(intermediateAddress, DISASM_NONE);
     intermediateAddress = (high | low) + Y;
@@ -4042,7 +4038,7 @@ case 0xf9:
 }
 {
   // N, V, Z, C flags are the same in either mode (C calculated at the end)
-  const Int32 sum = A - operand - (C ? 0 : 1);
+  const Int32 sum = A - operand - static_cast<uInt8>(!C);
   N = sum & 0x80;
   V = (A ^ operand) & (A ^ sum) & 0x80;
   notZ = sum & 0xff;
@@ -4053,7 +4049,7 @@ case 0xf9:
   }
   else
   {
-    Int32 lo = (A & 0x0f) - (operand & 0x0f) - (C ? 0 : 1);
+    Int32 lo = (A & 0x0f) - (operand & 0x0f) - static_cast<uInt8>(!C);
     Int32 hi = (A & 0xf0) - (operand & 0xf0);
     if(lo & 0x10)
     {
@@ -4080,7 +4076,7 @@ case 0xe1:
 }
 {
   // N, V, Z, C flags are the same in either mode (C calculated at the end)
-  const Int32 sum = A - operand - (C ? 0 : 1);
+  const Int32 sum = A - operand - static_cast<uInt8>(!C);
   N = sum & 0x80;
   V = (A ^ operand) & (A ^ sum) & 0x80;
   notZ = sum & 0xff;
@@ -4091,7 +4087,7 @@ case 0xe1:
   }
   else
   {
-    Int32 lo = (A & 0x0f) - (operand & 0x0f) - (C ? 0 : 1);
+    Int32 lo = (A & 0x0f) - (operand & 0x0f) - static_cast<uInt8>(!C);
     Int32 hi = (A & 0xf0) - (operand & 0xf0);
     if(lo & 0x10)
     {
@@ -4113,7 +4109,7 @@ case 0xf1:
   const uInt16 low = peek(pointer++, DISASM_DATA);
   const uInt16 high = (static_cast<uInt16>(peek(pointer, DISASM_DATA)) << 8);
   intermediateAddress = high | static_cast<uInt8>(low + Y);
-  if((low + Y) > 0xFF)
+  if((low + Y) > 0xFF) [[unlikely]]
   {
     peek(intermediateAddress, DISASM_NONE);
     intermediateAddress = (high | low) + Y;
@@ -4126,7 +4122,7 @@ case 0xf1:
 }
 {
   // N, V, Z, C flags are the same in either mode (C calculated at the end)
-  const Int32 sum = A - operand - (C ? 0 : 1);
+  const Int32 sum = A - operand - static_cast<uInt8>(!C);
   N = sum & 0x80;
   V = (A ^ operand) & (A ^ sum) & 0x80;
   notZ = sum & 0xff;
@@ -4137,7 +4133,7 @@ case 0xf1:
   }
   else
   {
-    Int32 lo = (A & 0x0f) - (operand & 0x0f) - (C ? 0 : 1);
+    Int32 lo = (A & 0x0f) - (operand & 0x0f) - static_cast<uInt8>(!C);
     Int32 hi = (A & 0xf0) - (operand & 0xf0);
     if(lo & 0x10)
     {
