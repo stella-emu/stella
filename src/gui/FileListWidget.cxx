@@ -64,6 +64,11 @@ void FileListWidget::setDirectory(const FSNode& node, string_view select)
     name = tmp.getName();
     tmp = tmp.getParent();
   }
+  // Ensure at least one entry; without this, _node with no parent leaves
+  // _history empty, causing std::prev(end,1) UB and _historyHome == -1.
+  if(_history.empty())
+    _history.emplace_back(_node, fixPath(name));
+
   // History is in reverse order; we need to fix that
   std::ranges::reverse(_history);
   _currentHistory = std::prev(_history.end(), 1);

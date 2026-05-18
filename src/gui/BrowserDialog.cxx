@@ -163,6 +163,9 @@ void BrowserDialog::show(string_view startpath,
                          const Command& command,
                          const FSNode::NameFilter& namefilter)
 {
+  if(startpath.empty())
+    startpath = "~";
+
   const int fontWidth = Dialog::fontWidth(),
             VGAP      = Dialog::vGap();
   _mode = mode;
