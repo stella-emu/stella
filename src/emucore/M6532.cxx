@@ -55,6 +55,7 @@ void M6532::reset()
 
   myTimer = mySystem->randGenerator().next() & 0xff;
   myDivider = 1024;
+  myDividerShift = 10;
   mySubTimer = 0;
   myWrappedThisCycle = false;
 
@@ -116,18 +117,13 @@ FORCE_INLINE void M6532::updatePA7EdgeDetect()
   // controller jitter or frame-rate dependent edge artifacts.
   // --------------------------------------------------------------------------
 
-  // Raw input at this emulated time slice
-  const bool pa7Raw = samplePA7Raw();
-
   // Simple 2-stage synchronizer (cheap, stable, deterministic)
-  const bool sync2 = myPA7Sync1;
-  myPA7Sync1 = pa7Raw;
-  const bool stablePA7 = sync2;
+  const bool stablePA7 = myPA7Sync1;
+  myPA7Sync1 = samplePA7Raw();
 
-  // Detect transition on stable signal only
-  const bool edge = myEdgeDetectPositive
-    ? (!myPA7LastStable && stablePA7)
-    : (myPA7LastStable && !stablePA7);
+  // Detect transition on the stable (post-sync) signal only
+  const bool edge = (myPA7LastStable != stablePA7) &&
+                    (stablePA7 == myEdgeDetectPositive);
 
   if(edge) [[unlikely]]
     myInterruptFlag |= PA7Bit;
@@ -138,7 +134,8 @@ FORCE_INLINE void M6532::updatePA7EdgeDetect()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void M6532::updateEmulation()
 {
-  auto cycles = static_cast<uInt32>(mySystem->cycles() - myLastCycle);
+  const uInt64 currentCycle = mySystem->cycles();
+  auto cycles = static_cast<uInt32>(currentCycle - myLastCycle);
   const uInt32 subTimer = mySubTimer;
 
   // Guard against further state changes if the debugger alread forwarded emulation
@@ -146,15 +143,15 @@ void M6532::updateEmulation()
   if(cycles == 0) [[unlikely]] return;
 
   myWrappedThisCycle = false;
-  mySubTimer = (cycles + mySubTimer) % myDivider;
+  mySubTimer = (cycles + mySubTimer) & (myDivider - 1);
 
   if((myInterruptFlag & TimerBit) == 0) [[likely]]
   {
-    const uInt32 timerTicks = (cycles + subTimer) / myDivider;
+    const uInt32 timerTicks = (cycles + subTimer) >> myDividerShift;
 
     if(timerTicks > myTimer) [[unlikely]]
     {
-      cycles -= ((myTimer + 1) * myDivider - subTimer);
+      cycles -= ((myTimer + 1) << myDividerShift) - subTimer;
 
       myWrappedThisCycle = cycles == 0;
       myTimer = 0xFF;
@@ -175,7 +172,7 @@ void M6532::updateEmulation()
 
   updatePA7EdgeDetect();
 
-  myLastCycle = mySystem->cycles();
+  myLastCycle = currentCycle;
 
 #ifdef DEBUGGER_SUPPORT
   myTimWrappedOnRead = myTimWrappedOnWrite = false;
@@ -352,8 +349,10 @@ bool M6532::poke(uInt16 addr, uInt8 value)
 void M6532::setTimerRegister(uInt8 value, uInt8 interval)
 {
   static constexpr std::array<uInt32, 4> divider = { 1, 8, 64, 1024 };
+  static constexpr std::array<uInt8,  4> dividerShift = { 0, 3, 6, 10 };
 
   myDivider = divider[interval];
+  myDividerShift = dividerShift[interval];
   myOutTimer[interval] = value;
 
   myTimer = value;
@@ -450,6 +449,7 @@ bool M6532::load(Serializer& in)
     myTimer = in.getInt();
     mySubTimer = in.getInt();
     myDivider = in.getInt();
+    myDividerShift = static_cast<uInt8>(std::bit_width(myDivider) - 1);
     myWrappedThisCycle = in.getBool();
     myLastCycle = in.getLong();
     mySetTimerCycle = in.getLong();
