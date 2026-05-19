@@ -279,7 +279,7 @@ void Missile::tick(uInt8 hclock, bool isReceivingMclock)
 {
   // If we are in inverted movement clock phase mode and a movement tick
   // occurred, it will supress the tick.
-  if(myUseInvertedPhaseClock && myInvertedPhaseClock)
+  if(myUseInvertedPhaseClock && myInvertedPhaseClock) [[unlikely]]
   {
     myInvertedPhaseClock = false;
     return;
@@ -295,7 +295,7 @@ void Missile::tick(uInt8 hclock, bool isReceivingMclock)
     ? myCollisionMaskEnabled
     : myCollisionMaskDisabled;
 
-  if (myDecodes[myCounter] && !myResmp) {
+  if (myDecodes[myCounter] && !myResmp) [[unlikely]] {
     myIsRendering = true;
     myRenderCounter = renderCounterOffset;
     myCopy = myDecodes[myCounter];
@@ -323,12 +323,11 @@ void Missile::tick(uInt8 hclock, bool isReceivingMclock)
         }
       }
 
-      if (std::cmp_greater_equal(++myRenderCounter,
-                                 isMoving ? myEffectiveWidth : myWidth))
+      if (++myRenderCounter >= static_cast<Int8>(isMoving ? myEffectiveWidth : myWidth))
         myIsRendering = false;
   }
 
-  if (++myCounter >= TIAConstants::H_PIXEL)
+  if (++myCounter >= TIAConstants::H_PIXEL) [[unlikely]]
     myCounter = 0;
 }
 

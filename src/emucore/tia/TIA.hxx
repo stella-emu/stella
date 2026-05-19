@@ -691,12 +691,12 @@ class TIA : public Device
     /**
      * Advance a single clock during hblank.
      */
-    void tickHblank();
+    FORCE_INLINE void tickHblank();
 
     /**
      * Advance a single clock duing the visible part of the scanline.
      */
-    void tickHframe();
+    FORCE_INLINE void tickHframe();
 
     /**
      * Update the collision bitfield.
@@ -711,7 +711,7 @@ class TIA : public Device
     /**
      * Render the current pixel into the framebuffer.
      */
-    void renderPixel(uInt32 x, uInt32 y);
+    void renderPixel(uInt32 x);
 
     /**
      * Clear the first 8 pixels of a scanline with black if we are in hblank
@@ -866,6 +866,12 @@ class TIA : public Device
     // The frame is rendered to the backbuffer and only copied to the framebuffer
     // upon completion
     std::array<uInt8, static_cast<size_t>(TIAConstants::H_PIXEL * TIAConstants::frameBufferHeight)> myBackBuffer{};
+
+    // Pointer to the first pixel of the current scanline in myBackBuffer.
+    // Precomputed once per line in nextLine() so renderPixel() avoids a
+    // y*H_PIXEL multiply on every one of the 160 visible clocks per scanline.
+    uInt8* myCurrentRowPtr{nullptr};
+
     std::array<uInt8, static_cast<size_t>(TIAConstants::H_PIXEL * TIAConstants::frameBufferHeight)> myFrontBuffer{};
 
     // We snapshot frame statistics when the back buffer is copied to the front buffer

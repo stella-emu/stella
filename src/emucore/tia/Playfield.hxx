@@ -272,9 +272,9 @@ void Playfield::tick(uInt32 x)
   myX = x;
 
   // Reflected flag is updated only at x = 0 or x = 79
-  if (myX == TIAConstants::H_PIXEL / 2-1 || myX == 0) myRefp = myReflected;
+  if (myX == TIAConstants::H_PIXEL / 2-1 || myX == 0) [[unlikely]] myRefp = myReflected;
 
-  if (x & 0x03) return;
+  if (x & 0x03) [[likely]] return;
 
   uInt32 currentPixel;  // NOLINT(cppcoreguidelines-init-variables)
 

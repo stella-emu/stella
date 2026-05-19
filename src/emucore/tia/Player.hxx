@@ -323,7 +323,7 @@ void Player::tick()
 {
   // If we are in inverted movement clock phase mode and a movement tick
   // occurred, it will supress the tick.
-  if(myUseInvertedPhaseClock && myInvertedPhaseClock)
+  if(myUseInvertedPhaseClock && myInvertedPhaseClock) [[unlikely]]
   {
     myInvertedPhaseClock = false;
     return;
@@ -334,7 +334,7 @@ void Player::tick()
   else
     collision = (myPattern & (1 << mySampleCounter)) ? myCollisionMaskEnabled : myCollisionMaskDisabled;
 
-  if (myDecodes[myCounter]) {
+  if (myDecodes[myCounter]) [[unlikely]] {
     myIsRendering = true;
     mySampleCounter = 0;
     myRenderCounter = renderCounterOffset;
@@ -347,16 +347,20 @@ void Player::tick()
         if (myRenderCounter > 0)
           ++mySampleCounter;
 
-        if (myRenderCounter >= 0 && myDividerChangeCounter >= 0 && myDividerChangeCounter-- == 0)  // NOLINT(bugprone-inc-dec-in-conditions)
+        // NOLINTNEXTLINE(bugprone-inc-dec-in-conditions)
+        if (myRenderCounter >= 0 && myDividerChangeCounter >= 0 && myDividerChangeCounter-- == 0) [[unlikely]]
           setDivider(myDividerPending);
 
         break;
 
       default:
-        if (myRenderCounter > 1 && (((myRenderCounter - 1) % myDivider) == 0))
+        // myDivider is always 2 or 4 in this branch (NUSIZ only produces 1, 2, or 4),
+        // so replace % with a bitmask to avoid an integer divide on the per-pixel path
+        if (myRenderCounter > 1 && (((myRenderCounter - 1) & (myDivider - 1)) == 0))
           ++mySampleCounter;
 
-        if (myRenderCounter > 0 && myDividerChangeCounter >= 0 && myDividerChangeCounter-- == 0)  // NOLINT(bugprone-inc-dec-in-conditions)
+        // NOLINTNEXTLINE(bugprone-inc-dec-in-conditions)
+        if (myRenderCounter > 0 && myDividerChangeCounter >= 0 && myDividerChangeCounter-- == 0) [[unlikely]]
           setDivider(myDividerPending);
 
         break;
@@ -365,7 +369,7 @@ void Player::tick()
     if (mySampleCounter > 7) myIsRendering = false;
   }
 
-  if (++myCounter >= TIAConstants::H_PIXEL) myCounter = 0;
+  if (++myCounter >= TIAConstants::H_PIXEL) [[unlikely]] myCounter = 0;
 }
 
 #endif  // PLAYER_HXX

@@ -199,8 +199,11 @@ class M6532 : public Device
     // Current number of clocks "queued" for the divider
     uInt32 mySubTimer{0};
 
-    // The divider
+    // The divider (always a power of 2: 1, 8, 64, 1024)
     uInt32 myDivider{1};
+
+    // log2 of myDivider; kept in sync so hot-path code can shift instead of divide
+    uInt8 myDividerShift{0};
 
     // Has the timer wrapped this very cycle?
     bool myWrappedThisCycle{false};

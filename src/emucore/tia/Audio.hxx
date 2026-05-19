@@ -146,25 +146,27 @@ void Audio::tick()
   mySumChannel1 += static_cast<uInt32>(myChannel1.actualVolume());
   mySumCt++;
 
+  // Phase clocks fire at only 4 of 228 positions per line (~1.8%); hint the
+  // optimizer that the default (no-op) path is overwhelmingly common
   switch (myCounter) {
-    case 9:
-    case 81:
+    [[unlikely]] case 9:
+    [[unlikely]] case 81:
       myChannel0.phase0();
       myChannel1.phase0();
       break;
 
-    case 37:
-    case 149:
+    [[unlikely]] case 37:
+    [[unlikely]] case 149:
       myChannel0.phase1();
       myChannel1.phase1();
-	  createSample();
+      createSample();
       break;
 
-    default:
+    [[likely]] default:
       break;
   }
 
-  if (++myCounter == 228)
+  if (++myCounter == 228) [[unlikely]]
     myCounter = 0;
 }
 
