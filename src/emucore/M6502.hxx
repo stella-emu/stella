@@ -292,7 +292,7 @@ class M6502 : public Serializable
     */
     uInt8 PS() const {
       return static_cast<uInt8>(
-        0x20u
+        0x20U
         | (static_cast<uInt8>(N)     << 7)
         | (static_cast<uInt8>(V)     << 6)
         | (static_cast<uInt8>(B)     << 4)

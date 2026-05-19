@@ -1547,7 +1547,7 @@ void TIA::cycle(uInt32 colorClocks)
     if (myLinesSinceChange < 2) {
       tickMovement();
 
-      if (myHstate == HState::blank)
+      if (myHstate == HState::blank) [[unlikely]]
         tickHblank();
       else
         tickHframe();
@@ -1610,7 +1610,7 @@ FORCE_INLINE void TIA::tickHblank()
       if (myExtendedHblank) myHstate = HState::frame;
       break;
 
-    default:
+    [[likely]] default:
       break;
   }
 
@@ -1855,7 +1855,7 @@ void TIA::flushLineCache()
     const auto rewindCycles = myHctr;
 
     for (myHctr = 0; myHctr < rewindCycles; ++myHctr) {
-      if (myHstate == HState::blank)
+      if (myHstate == HState::blank) [[unlikely]]
         tickHblank();
       else
         tickHframe();
