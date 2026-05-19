@@ -699,6 +699,10 @@ bool CartDebug::getLabel(std::ostream& buf, uInt16 addr, bool isRead,
       return true;
     }
 
+    case AddrType::STACK:
+      buf << Base::HEX4 << addr;
+      return true;
+
     case AddrType::ZPRAM:
     {
       // RAM can use user-defined labels; otherwise we default to
@@ -1560,7 +1564,9 @@ CartDebug::AddrType CartDebug::addressType(uInt16 addr)
     {
       switch(addr & 0x0f00)
       {
-        case 0x000:  case 0x100:  case 0x400:  case 0x500:
+        case 0x100:
+          return AddrType::STACK;
+        case 0x000:  case 0x400:  case 0x500:
         case 0x800:  case 0x900:  case 0xc00:  case 0xd00:
           return AddrType::ZPRAM;
         case 0x200:  case 0x300:  case 0x600:  case 0x700:
