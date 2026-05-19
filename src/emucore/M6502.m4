@@ -312,7 +312,7 @@ define(M6502_BCC, `{
   {
     peek(PC, DISASM_NONE);
     const uInt16 address = PC + static_cast<Int8>(operand);
-    if(NOTSAMEPAGE(PC, address))
+    if(NOTSAMEPAGE(PC, address)) [[unlikely]]
       peek((PC & 0xFF00) | (address & 0x00FF), DISASM_NONE);
     PC = address;
   }
@@ -323,7 +323,7 @@ define(M6502_BCS, `{
   {
     peek(PC, DISASM_NONE);
     const uInt16 address = PC + static_cast<Int8>(operand);
-    if(NOTSAMEPAGE(PC, address))
+    if(NOTSAMEPAGE(PC, address)) [[unlikely]]
       peek((PC & 0xFF00) | (address & 0x00FF), DISASM_NONE);
     PC = address;
   }
@@ -334,7 +334,7 @@ define(M6502_BEQ, `{
   {
     peek(PC, DISASM_NONE);
     const uInt16 address = PC + static_cast<Int8>(operand);
-    if(NOTSAMEPAGE(PC, address))
+    if(NOTSAMEPAGE(PC, address)) [[unlikely]]
       peek((PC & 0xFF00) | (address & 0x00FF), DISASM_NONE);
     PC = address;
   }
@@ -345,7 +345,7 @@ define(M6502_BMI, `{
   {
     peek(PC, DISASM_NONE);
     const uInt16 address = PC + static_cast<Int8>(operand);
-    if(NOTSAMEPAGE(PC, address))
+    if(NOTSAMEPAGE(PC, address)) [[unlikely]]
       peek((PC & 0xFF00) | (address & 0x00FF), DISASM_NONE);
     PC = address;
   }
@@ -356,7 +356,7 @@ define(M6502_BNE, `{
   {
     peek(PC, DISASM_NONE);
     const uInt16 address = PC + static_cast<Int8>(operand);
-    if(NOTSAMEPAGE(PC, address))
+    if(NOTSAMEPAGE(PC, address)) [[unlikely]]
       peek((PC & 0xFF00) | (address & 0x00FF), DISASM_NONE);
     PC = address;
   }
@@ -367,7 +367,7 @@ define(M6502_BPL, `{
   {
     peek(PC, DISASM_NONE);
     const uInt16 address = PC + static_cast<Int8>(operand);
-    if(NOTSAMEPAGE(PC, address))
+    if(NOTSAMEPAGE(PC, address)) [[unlikely]]
       peek((PC & 0xFF00) | (address & 0x00FF), DISASM_NONE);
     PC = address;
   }
@@ -378,7 +378,7 @@ define(M6502_BVC, `{
   {
     peek(PC, DISASM_NONE);
     const uInt16 address = PC + static_cast<Int8>(operand);
-    if(NOTSAMEPAGE(PC, address))
+    if(NOTSAMEPAGE(PC, address)) [[unlikely]]
       peek((PC & 0xFF00) | (address & 0x00FF), DISASM_NONE);
     PC = address;
   }
@@ -389,14 +389,14 @@ define(M6502_BVS, `{
   {
     peek(PC, DISASM_NONE);
     const uInt16 address = PC + static_cast<Int8>(operand);
-    if(NOTSAMEPAGE(PC, address))
+    if(NOTSAMEPAGE(PC, address)) [[unlikely]]
       peek((PC & 0xFF00) | (address & 0x00FF), DISASM_NONE);
     PC = address;
   }
 }')
 
 define(M6502_ADC, `{
-  if(!D)
+  if(!D) [[likely]]
   {
     const Int32 sum = A + operand + static_cast<uInt8>(C);
     N = sum & 0x80;
@@ -452,7 +452,7 @@ define(M6502_ARR, `{
   // NOTE: The implementation of this instruction is based on
   // information from the 64doc.txt file.  There are mixed
   // reports on its operation!
-  if(!D)
+  if(!D) [[likely]]
   {
     A &= operand;
     A = ((A >> 1) & 0x7f) | (static_cast<uInt8>(C) << 7);
@@ -652,7 +652,7 @@ define(M6502_ISB, `{
   V = (A ^ operand) & (A ^ sum) & 0x80;
   notZ = sum & 0xff;
 
-  if(!D)
+  if(!D) [[likely]]
   {
     A = static_cast<uInt8>(sum);
   }
@@ -849,7 +849,7 @@ define(M6502_RRA, `{
   operand = ((operand >> 1) & 0x7f) | (static_cast<uInt8>(oldC) << 7);
   poke(operandAddress, operand, DISASM_WRITE);
 
-  if(!D)
+  if(!D) [[likely]]
   {
     const Int32 sum = A + operand + static_cast<uInt8>(C);
     N = sum & 0x80;
@@ -904,7 +904,7 @@ define(M6502_SBC, `{
   V = (A ^ operand) & (A ^ sum) & 0x80;
   notZ = sum & 0xff;
 
-  if(!D)
+  if(!D) [[likely]]
   {
     A = static_cast<uInt8>(sum);
   }

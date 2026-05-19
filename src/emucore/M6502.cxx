@@ -240,12 +240,14 @@ inline void M6502::_execute(uInt64 cycles, DispatchResult& result)
 #endif
 
   const uInt64 previousCycles = mySystem->cycles();
+  const uInt64 targetCycles = previousCycles + cycles;
   uInt64 currentCycles = 0;
 
   // Loop until execution is stopped or a fatal error occurs
-  while (!myExecutionStatus && currentCycles < cycles)
+  while (!myExecutionStatus && mySystem->cycles() < targetCycles)
   {
   #ifdef DEBUGGER_SUPPORT
+      currentCycles = mySystem->cycles() - previousCycles;
       // Don't break if we haven't actually executed anything yet
       if (myLastBreakCycle != mySystem->cycles()) {
         if(myJustHitReadTrapFlag || myJustHitWriteTrapFlag)
@@ -395,11 +397,9 @@ inline void M6502::_execute(uInt64 cycles, DispatchResult& result)
         myExecutionStatus |= FatalErrorBit;
         result.setMessage(e.what());
       } catch (const EmulationWarning& e) {
-        result.setDebugger(currentCycles, e.what(), "Emulation exception", PC);
+        result.setDebugger(mySystem->cycles() - previousCycles, e.what(), "Emulation exception", PC);
         return;
       }
-
-      currentCycles = (mySystem->cycles() - previousCycles);
 
   #ifdef DEBUGGER_SUPPORT
       if(myStepStateByInstruction)
@@ -412,6 +412,8 @@ inline void M6502::_execute(uInt64 cycles, DispatchResult& result)
       }
   #endif
   }
+
+  currentCycles = mySystem->cycles() - previousCycles;
 
   // See if a fatal error has occurred
   if(myExecutionStatus & FatalErrorBit) [[unlikely]]
