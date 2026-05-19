@@ -194,6 +194,8 @@ void TIA::initialize()
   myFrontBuffer.fill(0);
   myFramebuffer.fill(0);
 
+  myCurrentRowPtr = myBackBuffer.data();
+
   // Prepare variables for auto-phosphor
   myPosP0 = {};
   myPosP1 = {};
@@ -418,6 +420,12 @@ bool TIA::load(Serializer& in)
 
     // Re-apply dev settings
     applyDeveloperSettings();
+
+    // myCurrentRowPtr is derived state not stored in the save file; recompute
+    // it from the restored y so renderPixel() writes to the correct scanline,
+    // including when the debugger saves and loads state mid-scanline
+    myCurrentRowPtr = myBackBuffer.data() +
+      static_cast<size_t>(myFrameManager->getY()) * TIAConstants::H_PIXEL;
   }
   catch(...)
   {
@@ -1613,7 +1621,6 @@ FORCE_INLINE void TIA::tickHblank()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FORCE_INLINE void TIA::tickHframe()
 {
-  const uInt32 y = myFrameManager->getY();
   const uInt32 x = myHctr - TIAConstants::H_BLANK_CLOCKS - myHctrDelta;
 
   myCollisionUpdateRequired = true;
@@ -1626,7 +1633,7 @@ FORCE_INLINE void TIA::tickHframe()
   myBall.tick();
 
   if (myFrameManager->isRendering()) [[likely]]
-    renderPixel(x, y);
+    renderPixel(x);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1661,6 +1668,11 @@ FORCE_INLINE void TIA::nextLine()
   myHctrDelta = 0;
 
   myFrameManager->nextLine();
+  // y only advances here, so this is the single correct update point for the
+  // precomputed row pointer used in renderPixel()
+  myCurrentRowPtr = myBackBuffer.data() +
+    static_cast<size_t>(myFrameManager->getY()) * TIAConstants::H_PIXEL;
+
   myMissile0.nextLine();
   myMissile1.nextLine();
   myPlayer0.nextLine();
@@ -1729,8 +1741,11 @@ void TIA::cloneLastLine()
 
     if(!myFrameManager->isRendering() || y == 0) return;
 
-    std::copy_n(myBackBuffer.begin() + (y - 1) * TIAConstants::H_PIXEL,
-      TIAConstants::H_PIXEL, myBackBuffer.begin() + y * TIAConstants::H_PIXEL);
+    // myCurrentRowPtr points to row y here: cloneLastLine() is always called
+    // before myFrameManager->nextLine() advances y, so the pointer is still
+    // current and avoids two y*H_PIXEL multiplies
+    std::copy_n(myCurrentRowPtr - TIAConstants::H_PIXEL,
+      TIAConstants::H_PIXEL, myCurrentRowPtr);
 
     // Save positions of objects for auto-phosphor
     if(myAutoPhosphorEnabled) [[unlikely]]
@@ -1765,7 +1780,7 @@ FORCE_INLINE void TIA::updateCollision()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FORCE_INLINE void TIA::renderPixel(uInt32 x, uInt32 y)
+FORCE_INLINE void TIA::renderPixel(uInt32 x)
 {
   if (x >= TIAConstants::H_PIXEL) [[unlikely]] return;
 
@@ -1822,7 +1837,9 @@ FORCE_INLINE void TIA::renderPixel(uInt32 x, uInt32 y)
     }
   }
 
-  myBackBuffer[y * TIAConstants::H_PIXEL + x] = color;
+  // myCurrentRowPtr is precomputed once per scanline in nextLine(), avoiding
+  // a y*H_PIXEL multiply on every one of the 160 visible clocks per line
+  myCurrentRowPtr[x] = color;
   if (myIsLayoutDetector) [[unlikely]]
     myFrameManager->pixelColor(color);
 }

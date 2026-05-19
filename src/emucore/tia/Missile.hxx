@@ -323,8 +323,7 @@ void Missile::tick(uInt8 hclock, bool isReceivingMclock)
         }
       }
 
-      if (std::cmp_greater_equal(++myRenderCounter,
-                                 isMoving ? myEffectiveWidth : myWidth))
+      if (++myRenderCounter >= static_cast<Int8>(isMoving ? myEffectiveWidth : myWidth))
         myIsRendering = false;
   }
 
