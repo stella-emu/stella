@@ -1534,8 +1534,7 @@ void TIA::cycle(uInt32 colorClocks)
       [this] (uInt8 address, uInt8 value) {delayedWrite(address, value);}
     );
 
-    myCollisionUpdateRequired = myCollisionUpdateScheduled;
-    myCollisionUpdateScheduled = false;
+    myCollisionUpdateRequired = std::exchange(myCollisionUpdateScheduled, false);
 
     if (myLinesSinceChange < 2) {
       tickMovement();
@@ -1548,7 +1547,7 @@ void TIA::cycle(uInt32 colorClocks)
       if (myCollisionUpdateRequired && !myFrameManager->vblank()) updateCollision();
     }
 
-    if (++myHctr >= TIAConstants::H_CLOCKS)
+    if (++myHctr >= TIAConstants::H_CLOCKS) [[unlikely]]
       nextLine();
 
   #ifdef SOUND_SUPPORT
@@ -1562,7 +1561,7 @@ void TIA::cycle(uInt32 colorClocks)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FORCE_INLINE void TIA::tickMovement()
 {
-  if (!myMovementInProgress) return;
+  if (!myMovementInProgress) [[likely]] return;
 
   if ((myHctr & 0x03) == 0) {
     const bool hblank = myHstate == HState::blank;
@@ -1588,7 +1587,7 @@ FORCE_INLINE void TIA::tickMovement()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void TIA::tickHblank()
+FORCE_INLINE void TIA::tickHblank()
 {
   switch (myHctr) {
     case 0:
@@ -1612,7 +1611,7 @@ void TIA::tickHblank()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void TIA::tickHframe()
+FORCE_INLINE void TIA::tickHframe()
 {
   const uInt32 y = myFrameManager->getY();
   const uInt32 x = myHctr - TIAConstants::H_BLANK_CLOCKS - myHctrDelta;
@@ -1626,7 +1625,7 @@ void TIA::tickHframe()
   myPlayer1.tick();
   myBall.tick();
 
-  if (myFrameManager->isRendering())
+  if (myFrameManager->isRendering()) [[likely]]
     renderPixel(x, y);
 }
 
@@ -1675,7 +1674,7 @@ FORCE_INLINE void TIA::nextLine()
       flushLineCache();
 
     // Save positions of objects for auto-phosphor
-    if(myAutoPhosphorEnabled)
+    if(myAutoPhosphorEnabled) [[unlikely]]
     {
       // Test ROMs:
       // - missing phosphor:
@@ -1718,7 +1717,7 @@ FORCE_INLINE void TIA::nextLine()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TIA::cloneLastLine()
 {
-  if(myIsLayoutDetector)
+  if(myIsLayoutDetector) [[unlikely]]
   {
     // y is always 0 in FrameLayoutDetector
     for(uInt32 i = 0 ; i < TIAConstants::H_PIXEL; ++i)
@@ -1734,7 +1733,7 @@ void TIA::cloneLastLine()
       TIAConstants::H_PIXEL, myBackBuffer.begin() + y * TIAConstants::H_PIXEL);
 
     // Save positions of objects for auto-phosphor
-    if(myAutoPhosphorEnabled)
+    if(myAutoPhosphorEnabled) [[unlikely]]
     {
       myPosP0[y][myFlickerFrame] = myPosP0[y - 1][myFlickerFrame];
       myPosP1[y][myFlickerFrame] = myPosP1[y - 1][myFlickerFrame];
@@ -1768,7 +1767,7 @@ FORCE_INLINE void TIA::updateCollision()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FORCE_INLINE void TIA::renderPixel(uInt32 x, uInt32 y)
 {
-  if (x >= TIAConstants::H_PIXEL) return;
+  if (x >= TIAConstants::H_PIXEL) [[unlikely]] return;
 
   uInt8 color = 0;
 
@@ -1824,7 +1823,7 @@ FORCE_INLINE void TIA::renderPixel(uInt32 x, uInt32 y)
   }
 
   myBackBuffer[y * TIAConstants::H_PIXEL + x] = color;
-  if (myIsLayoutDetector)
+  if (myIsLayoutDetector) [[unlikely]]
     myFrameManager->pixelColor(color);
 }
 

@@ -97,7 +97,7 @@ void M6532::update()
 FORCE_INLINE bool M6532::samplePA7Raw() const
 {
   // If PA7 configured as output, RIOT drives the line
-  if(myDDRA & 0x80)
+  if(myDDRA & 0x80) [[unlikely]]
     return (myOutA & 0x80) != 0;
 
   // Otherwise sample external input
@@ -129,7 +129,7 @@ FORCE_INLINE void M6532::updatePA7EdgeDetect()
     ? (!myPA7LastStable && stablePA7)
     : (myPA7LastStable && !stablePA7);
 
-  if(edge)
+  if(edge) [[unlikely]]
     myInterruptFlag |= PA7Bit;
 
   myPA7LastStable = stablePA7;
@@ -143,16 +143,16 @@ void M6532::updateEmulation()
 
   // Guard against further state changes if the debugger alread forwarded emulation
   // state (in particular myWrappedThisCycle)
-  if(cycles == 0) return;
+  if(cycles == 0) [[unlikely]] return;
 
   myWrappedThisCycle = false;
   mySubTimer = (cycles + mySubTimer) % myDivider;
 
-  if((myInterruptFlag & TimerBit) == 0)
+  if((myInterruptFlag & TimerBit) == 0) [[likely]]
   {
     const uInt32 timerTicks = (cycles + subTimer) / myDivider;
 
-    if(timerTicks > myTimer)
+    if(timerTicks > myTimer) [[unlikely]]
     {
       cycles -= ((myTimer + 1) * myDivider - subTimer);
 
@@ -167,7 +167,7 @@ void M6532::updateEmulation()
     }
   }
 
-  if((myInterruptFlag & TimerBit) != 0)
+  if((myInterruptFlag & TimerBit) != 0) [[unlikely]]
   {
     myTimer = (myTimer - cycles) & 0xFF;
     myWrappedThisCycle = myTimer == 0xFF;
@@ -218,7 +218,7 @@ uInt8 M6532::peek(uInt16 addr)
   // A9 distinguishes I/O registers from ZP RAM
   // A9 = 1 is read from I/O
   // A9 = 0 is read from RAM
-  if((addr & 0x0200) == 0x0000)
+  if((addr & 0x0200) == 0x0000) [[likely]]
     return myRAM[addr & 0x007f];
 
   switch(addr & 0x07)
@@ -293,7 +293,7 @@ bool M6532::poke(uInt16 addr, uInt8 value)
   // A9 distinguishes I/O registers from ZP RAM
   // A9 = 1 is write to I/O
   // A9 = 0 is write to RAM
-  if((addr & 0x0200) == 0x0000)
+  if((addr & 0x0200) == 0x0000) [[likely]]
   {
     myRAM[addr & 0x007f] = value;
     return true;

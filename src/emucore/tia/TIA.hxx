@@ -691,12 +691,12 @@ class TIA : public Device
     /**
      * Advance a single clock during hblank.
      */
-    void tickHblank();
+    FORCE_INLINE void tickHblank();
 
     /**
      * Advance a single clock duing the visible part of the scanline.
      */
-    void tickHframe();
+    FORCE_INLINE void tickHframe();
 
     /**
      * Update the collision bitfield.
