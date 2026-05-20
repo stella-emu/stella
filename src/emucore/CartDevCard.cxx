@@ -23,7 +23,9 @@ CartridgeDevCard::CartridgeDevCard(ByteSpan image, string_view md5,
                                    const Settings& settings)
   : Cartridge(settings, md5)
 {
-  std::ranges::copy(image.first(std::min(image.size(), RAM_SIZE)), myImage.begin());
+  const size_t len = std::min(image.size(), RAM_SIZE);
+  // copy towards end of buffer (supports smaller ROMs):
+  std::ranges::copy(image.first(len), myImage.end() - len);
   createRomAccessArrays(RAM_SIZE);
 }
 
