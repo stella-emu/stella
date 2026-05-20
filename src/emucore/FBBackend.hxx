@@ -206,6 +206,21 @@ class FBBackend
     */
     virtual string about() const = 0;
 
+    /**
+      Sends a text message to the native display system for onscreen
+      notification.  Backends with their own notification channel (e.g.
+      libretro) override this; the default is a no-op.
+    */
+    virtual void showMessage(string_view) { }
+
+    /**
+      Sends a gauge message to the native display system.  The default
+      is a no-op; backends that support notifications should override both
+      this and showMessage.
+    */
+    virtual void showGaugeMessage(string_view, string_view,
+                                  float, float = 0.F, float = 100.F) { }
+
   private:
     // Following constructors and assignment operators not supported
     FBBackend(const FBBackend&) = delete;
