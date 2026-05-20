@@ -278,6 +278,7 @@ case 0x69:
 {
   operand = peek(PC++, DISASM_CODE);
 }
+CLEAR_LAST_PEEK(myLastSrcAddressA)
 {
   if(!D) [[likely]]
   {
@@ -315,6 +316,7 @@ case 0x65:
   intermediateAddress = peek(PC++, DISASM_CODE);
   operand = peek(intermediateAddress, DISASM_DATA);
 }
+SET_LAST_PEEK(myLastSrcAddressA, intermediateAddress)
 {
   if(!D) [[likely]]
   {
@@ -354,6 +356,7 @@ case 0x75:
   intermediateAddress += X;
   operand = peek(intermediateAddress, DISASM_DATA);
 }
+SET_LAST_PEEK(myLastSrcAddressA, intermediateAddress)
 {
   if(!D) [[likely]]
   {
@@ -392,6 +395,7 @@ case 0x6d:
   intermediateAddress |= (static_cast<uInt16>(peek(PC++, DISASM_CODE)) << 8);
   operand = peek(intermediateAddress, DISASM_DATA);
 }
+SET_LAST_PEEK(myLastSrcAddressA, intermediateAddress)
 {
   if(!D) [[likely]]
   {
@@ -440,6 +444,7 @@ case 0x7d:
     operand = peek(intermediateAddress, DISASM_DATA);
   }
 }
+SET_LAST_PEEK(myLastSrcAddressA, intermediateAddress)
 {
   if(!D) [[likely]]
   {
@@ -488,6 +493,7 @@ case 0x79:
     operand = peek(intermediateAddress, DISASM_DATA);
   }
 }
+SET_LAST_PEEK(myLastSrcAddressA, intermediateAddress)
 {
   if(!D) [[likely]]
   {
@@ -529,6 +535,7 @@ case 0x61:
   intermediateAddress |= (static_cast<uInt16>(peek(pointer, DISASM_DATA)) << 8);
   operand = peek(intermediateAddress, DISASM_DATA);
 }
+SET_LAST_PEEK(myLastSrcAddressA, intermediateAddress)
 {
   if(!D) [[likely]]
   {
@@ -578,6 +585,7 @@ case 0x71:
     operand = peek(intermediateAddress, DISASM_DATA);
   }
 }
+SET_LAST_PEEK(myLastSrcAddressA, intermediateAddress)
 {
   if(!D) [[likely]]
   {
@@ -650,6 +658,7 @@ case 0x29:
 {
   operand = peek(PC++, DISASM_CODE);
 }
+CLEAR_LAST_PEEK(myLastSrcAddressA)
 {
   A &= operand;
   notZ = A;
@@ -662,6 +671,7 @@ case 0x25:
   intermediateAddress = peek(PC++, DISASM_CODE);
   operand = peek(intermediateAddress, DISASM_DATA);
 }
+SET_LAST_PEEK(myLastSrcAddressA, intermediateAddress)
 {
   A &= operand;
   notZ = A;
@@ -676,6 +686,7 @@ case 0x35:
   intermediateAddress += X;
   operand = peek(intermediateAddress, DISASM_DATA);
 }
+SET_LAST_PEEK(myLastSrcAddressA, intermediateAddress)
 {
   A &= operand;
   notZ = A;
@@ -689,6 +700,7 @@ case 0x2d:
   intermediateAddress |= (static_cast<uInt16>(peek(PC++, DISASM_CODE)) << 8);
   operand = peek(intermediateAddress, DISASM_DATA);
 }
+SET_LAST_PEEK(myLastSrcAddressA, intermediateAddress)
 {
   A &= operand;
   notZ = A;
@@ -712,6 +724,7 @@ case 0x3d:
     operand = peek(intermediateAddress, DISASM_DATA);
   }
 }
+SET_LAST_PEEK(myLastSrcAddressA, intermediateAddress)
 {
   A &= operand;
   notZ = A;
@@ -735,6 +748,7 @@ case 0x39:
     operand = peek(intermediateAddress, DISASM_DATA);
   }
 }
+SET_LAST_PEEK(myLastSrcAddressA, intermediateAddress)
 {
   A &= operand;
   notZ = A;
@@ -751,6 +765,7 @@ case 0x21:
   intermediateAddress |= (static_cast<uInt16>(peek(pointer, DISASM_DATA)) << 8);
   operand = peek(intermediateAddress, DISASM_DATA);
 }
+SET_LAST_PEEK(myLastSrcAddressA, intermediateAddress)
 {
   A &= operand;
   notZ = A;
@@ -775,6 +790,7 @@ case 0x31:
     operand = peek(intermediateAddress, DISASM_DATA);
   }
 }
+SET_LAST_PEEK(myLastSrcAddressA, intermediateAddress)
 {
   A &= operand;
   notZ = A;
@@ -1650,6 +1666,7 @@ case 0x49:
 {
   operand = peek(PC++, DISASM_CODE);
 }
+CLEAR_LAST_PEEK(myLastSrcAddressA)
 {
   A ^= operand;
   notZ = A;
@@ -1662,6 +1679,7 @@ case 0x45:
   intermediateAddress = peek(PC++, DISASM_CODE);
   operand = peek(intermediateAddress, DISASM_DATA);
 }
+SET_LAST_PEEK(myLastSrcAddressA, intermediateAddress)
 {
   A ^= operand;
   notZ = A;
@@ -1676,6 +1694,7 @@ case 0x55:
   intermediateAddress += X;
   operand = peek(intermediateAddress, DISASM_DATA);
 }
+SET_LAST_PEEK(myLastSrcAddressA, intermediateAddress)
 {
   A ^= operand;
   notZ = A;
@@ -1689,6 +1708,7 @@ case 0x4d:
   intermediateAddress |= (static_cast<uInt16>(peek(PC++, DISASM_CODE)) << 8);
   operand = peek(intermediateAddress, DISASM_DATA);
 }
+SET_LAST_PEEK(myLastSrcAddressA, intermediateAddress)
 {
   A ^= operand;
   notZ = A;
@@ -1712,6 +1732,7 @@ case 0x5d:
     operand = peek(intermediateAddress, DISASM_DATA);
   }
 }
+SET_LAST_PEEK(myLastSrcAddressA, intermediateAddress)
 {
   A ^= operand;
   notZ = A;
@@ -1735,6 +1756,7 @@ case 0x59:
     operand = peek(intermediateAddress, DISASM_DATA);
   }
 }
+SET_LAST_PEEK(myLastSrcAddressA, intermediateAddress)
 {
   A ^= operand;
   notZ = A;
@@ -1751,6 +1773,7 @@ case 0x41:
   intermediateAddress |= (static_cast<uInt16>(peek(pointer, DISASM_DATA)) << 8);
   operand = peek(intermediateAddress, DISASM_DATA);
 }
+SET_LAST_PEEK(myLastSrcAddressA, intermediateAddress)
 {
   A ^= operand;
   notZ = A;
@@ -1775,6 +1798,7 @@ case 0x51:
     operand = peek(intermediateAddress, DISASM_DATA);
   }
 }
+SET_LAST_PEEK(myLastSrcAddressA, intermediateAddress)
 {
   A ^= operand;
   notZ = A;
@@ -2224,6 +2248,9 @@ case 0xbb:
     operand = peek(intermediateAddress, DISASM_DATA);
   }
 }
+SET_LAST_PEEK(myLastSrcAddressA, intermediateAddress)
+SET_LAST_PEEK(myLastSrcAddressX, intermediateAddress)
+SET_LAST_PEEK(myLastSrcAddressS, intermediateAddress)
 {
   A = X = SP = SP & operand;
   notZ = A;
@@ -2298,7 +2325,7 @@ case 0xb7:
   intermediateAddress += Y;
   operand = peek(intermediateAddress, DISASM_DATA);
 }
-SET_LAST_PEEK(myLastSrcAddressA, intermediateAddress)  // TODO - check this
+SET_LAST_PEEK(myLastSrcAddressA, intermediateAddress)
 SET_LAST_PEEK(myLastSrcAddressX, intermediateAddress)
 {
   A = operand;
@@ -2318,7 +2345,7 @@ case 0xa3:
   operand = peek(intermediateAddress, DISASM_DATA);
 }
 SET_LAST_PEEK(myLastSrcAddressA, intermediateAddress)
-SET_LAST_PEEK(myLastSrcAddressX, intermediateAddress)  // TODO - check this
+SET_LAST_PEEK(myLastSrcAddressX, intermediateAddress)
 {
   A = operand;
   X = operand;
@@ -2345,7 +2372,7 @@ case 0xb3:
   }
 }
 SET_LAST_PEEK(myLastSrcAddressA, intermediateAddress)
-SET_LAST_PEEK(myLastSrcAddressX, intermediateAddress)  // TODO - check this
+SET_LAST_PEEK(myLastSrcAddressX, intermediateAddress)
 {
   A = operand;
   X = operand;
@@ -3038,7 +3065,6 @@ case 0x08:
 {
   peek(PC, DISASM_NONE);
 }
-// TODO - add tracking for this opcode
 {
   poke(0x0100 + SP--, PS(), DISASM_WRITE);
 }
@@ -3050,13 +3076,13 @@ case 0x68:
 {
   peek(PC, DISASM_NONE);
 }
-// TODO - add tracking for this opcode
 {
   peek(0x0100 + SP++, DISASM_NONE);
   A = peek(0x0100 + SP, DISASM_DATA);
   notZ = A;
   N = A & 0x80;
 }
+SET_LAST_PEEK(myLastSrcAddressA, 0x0100 + SP)
 break;
 
 //////////////////////////////////////////////////
@@ -3065,7 +3091,6 @@ case 0x28:
 {
   peek(PC, DISASM_NONE);
 }
-// TODO - add tracking for this opcode
 {
   peek(0x0100 + SP++, DISASM_NONE);
   PS(peek(0x0100 + SP, DISASM_DATA));
@@ -3841,6 +3866,7 @@ case 0xeb:
 {
   operand = peek(PC++, DISASM_CODE);
 }
+CLEAR_LAST_PEEK(myLastSrcAddressA)
 {
   // N, V, Z, C flags are the same in either mode (C calculated at the end)
   const Int32 sum = A - operand - static_cast<uInt8>(!C);
@@ -3875,6 +3901,7 @@ case 0xe5:
   intermediateAddress = peek(PC++, DISASM_CODE);
   operand = peek(intermediateAddress, DISASM_DATA);
 }
+SET_LAST_PEEK(myLastSrcAddressA, intermediateAddress)
 {
   // N, V, Z, C flags are the same in either mode (C calculated at the end)
   const Int32 sum = A - operand - static_cast<uInt8>(!C);
@@ -3911,6 +3938,7 @@ case 0xf5:
   intermediateAddress += X;
   operand = peek(intermediateAddress, DISASM_DATA);
 }
+SET_LAST_PEEK(myLastSrcAddressA, intermediateAddress)
 {
   // N, V, Z, C flags are the same in either mode (C calculated at the end)
   const Int32 sum = A - operand - static_cast<uInt8>(!C);
@@ -3946,6 +3974,7 @@ case 0xed:
   intermediateAddress |= (static_cast<uInt16>(peek(PC++, DISASM_CODE)) << 8);
   operand = peek(intermediateAddress, DISASM_DATA);
 }
+SET_LAST_PEEK(myLastSrcAddressA, intermediateAddress)
 {
   // N, V, Z, C flags are the same in either mode (C calculated at the end)
   const Int32 sum = A - operand - static_cast<uInt8>(!C);
@@ -3991,6 +4020,7 @@ case 0xfd:
     operand = peek(intermediateAddress, DISASM_DATA);
   }
 }
+SET_LAST_PEEK(myLastSrcAddressA, intermediateAddress)
 {
   // N, V, Z, C flags are the same in either mode (C calculated at the end)
   const Int32 sum = A - operand - static_cast<uInt8>(!C);
@@ -4036,6 +4066,7 @@ case 0xf9:
     operand = peek(intermediateAddress, DISASM_DATA);
   }
 }
+SET_LAST_PEEK(myLastSrcAddressA, intermediateAddress)
 {
   // N, V, Z, C flags are the same in either mode (C calculated at the end)
   const Int32 sum = A - operand - static_cast<uInt8>(!C);
@@ -4074,6 +4105,7 @@ case 0xe1:
   intermediateAddress |= (static_cast<uInt16>(peek(pointer, DISASM_DATA)) << 8);
   operand = peek(intermediateAddress, DISASM_DATA);
 }
+SET_LAST_PEEK(myLastSrcAddressA, intermediateAddress)
 {
   // N, V, Z, C flags are the same in either mode (C calculated at the end)
   const Int32 sum = A - operand - static_cast<uInt8>(!C);
@@ -4120,6 +4152,7 @@ case 0xf1:
     operand = peek(intermediateAddress, DISASM_DATA);
   }
 }
+SET_LAST_PEEK(myLastSrcAddressA, intermediateAddress)
 {
   // N, V, Z, C flags are the same in either mode (C calculated at the end)
   const Int32 sum = A - operand - static_cast<uInt8>(!C);
@@ -4601,6 +4634,7 @@ case 0x95:
   peek(operandAddress, DISASM_NONE);
   operandAddress = (operandAddress + X) & 0xFF;
 }
+SET_LAST_POKE(myLastSrcAddressA)
 {
   poke(operandAddress, A, DISASM_WRITE);
 }
@@ -4624,6 +4658,7 @@ case 0x9d:
   peek(high | static_cast<uInt8>(low + X), DISASM_NONE);
   operandAddress = (high | low) + X;
 }
+SET_LAST_POKE(myLastSrcAddressA)
 {
   poke(operandAddress, A, DISASM_WRITE);
 }
@@ -4636,6 +4671,7 @@ case 0x99:
   peek(high | static_cast<uInt8>(low + Y), DISASM_NONE);
   operandAddress = (high | low) + Y;
 }
+SET_LAST_POKE(myLastSrcAddressA)
 {
   poke(operandAddress, A, DISASM_WRITE);
 }
@@ -4649,6 +4685,7 @@ case 0x81:
   operandAddress = peek(pointer++, DISASM_DATA);
   operandAddress |= (static_cast<uInt16>(peek(pointer, DISASM_DATA)) << 8);
 }
+SET_LAST_POKE(myLastSrcAddressA)
 {
   poke(operandAddress, A, DISASM_WRITE);
 }
@@ -4662,6 +4699,7 @@ case 0x91:
   peek(high | static_cast<uInt8>(low + Y), DISASM_NONE);
   operandAddress = (high | low) + Y;
 }
+SET_LAST_POKE(myLastSrcAddressA)
 {
   poke(operandAddress, A, DISASM_WRITE);
 }
@@ -4687,6 +4725,7 @@ case 0x96:
   peek(operandAddress, DISASM_NONE);
   operandAddress = (operandAddress + Y) & 0xFF;
 }
+SET_LAST_POKE(myLastSrcAddressX)
 {
   poke(operandAddress, X, DISASM_WRITE);
 }
@@ -4723,6 +4762,7 @@ case 0x94:
   peek(operandAddress, DISASM_NONE);
   operandAddress = (operandAddress + X) & 0xFF;
 }
+SET_LAST_POKE(myLastSrcAddressY)
 {
   poke(operandAddress, Y, DISASM_WRITE);
 }

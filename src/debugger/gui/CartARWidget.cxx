@@ -33,7 +33,8 @@ CartridgeARWidget::CartridgeARWidget(
 
   constexpr string_view info =
     "Supercharger cartridge, four 2K slices (3 RAM, 1 ROM)\n"
-    "\nTHIS SCHEME IS NOT FULLY IMPLEMENTED OR TESTED\n";
+    "\nNote: on real hardware, RAM contents at power-on are uncertain "
+    "(may be zero or random). Currently emulated as zero-filled.\n";
 
   constexpr int xpos = 2;
   const int ypos = addBaseInformation(size, "Starpath", info) + myLineHeight;

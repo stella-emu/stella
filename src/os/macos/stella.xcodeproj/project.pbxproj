@@ -528,6 +528,12 @@
 		DCA82C721FEB4E780059340F /* TimeMachine.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCA82C6E1FEB4E780059340F /* TimeMachine.hxx */; };
 		DCA82C731FEB4E780059340F /* TimeMachineDialog.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCA82C6F1FEB4E780059340F /* TimeMachineDialog.cxx */; };
 		DCA82C741FEB4E780059340F /* TimeMachineDialog.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCA82C701FEB4E780059340F /* TimeMachineDialog.hxx */; };
+		DCA935482FBDD9B800FA4510 /* CompuMateCassette.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCA935472FBDD9B800FA4510 /* CompuMateCassette.cxx */; };
+		DCA935492FBDD9B800FA4510 /* CompuMateCassette.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCA935462FBDD9B800FA4510 /* CompuMateCassette.hxx */; };
+		DCA9354C2FBDDC1900FA4510 /* CartDevCard.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCA9354B2FBDDC1900FA4510 /* CartDevCard.cxx */; };
+		DCA9354D2FBDDC1900FA4510 /* CartDevCard.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCA9354A2FBDDC1900FA4510 /* CartDevCard.hxx */; };
+		DCA935502FBDDC4200FA4510 /* CartDevCardWidget.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCA9354F2FBDDC4200FA4510 /* CartDevCardWidget.cxx */; };
+		DCA935512FBDDC4200FA4510 /* CartDevCardWidget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCA9354E2FBDDC4200FA4510 /* CartDevCardWidget.hxx */; };
 		DCAA68422A3CD026006A1E5F /* CartGL.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCAA68402A3CD026006A1E5F /* CartGL.cxx */; };
 		DCAA68432A3CD026006A1E5F /* CartGL.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCAA68412A3CD026006A1E5F /* CartGL.hxx */; };
 		DCAA68462A3CD04C006A1E5F /* CartGLWidget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCAA68442A3CD04B006A1E5F /* CartGLWidget.hxx */; };
@@ -1410,6 +1416,12 @@
 		DCA82C6E1FEB4E780059340F /* TimeMachine.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = TimeMachine.hxx; sourceTree = "<group>"; };
 		DCA82C6F1FEB4E780059340F /* TimeMachineDialog.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TimeMachineDialog.cxx; sourceTree = "<group>"; };
 		DCA82C701FEB4E780059340F /* TimeMachineDialog.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = TimeMachineDialog.hxx; sourceTree = "<group>"; };
+		DCA935462FBDD9B800FA4510 /* CompuMateCassette.hxx */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = CompuMateCassette.hxx; sourceTree = "<group>"; };
+		DCA935472FBDD9B800FA4510 /* CompuMateCassette.cxx */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = CompuMateCassette.cxx; sourceTree = "<group>"; };
+		DCA9354A2FBDDC1900FA4510 /* CartDevCard.hxx */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = CartDevCard.hxx; sourceTree = "<group>"; };
+		DCA9354B2FBDDC1900FA4510 /* CartDevCard.cxx */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = CartDevCard.cxx; sourceTree = "<group>"; };
+		DCA9354E2FBDDC4200FA4510 /* CartDevCardWidget.hxx */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = CartDevCardWidget.hxx; sourceTree = "<group>"; };
+		DCA9354F2FBDDC4200FA4510 /* CartDevCardWidget.cxx */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = CartDevCardWidget.cxx; sourceTree = "<group>"; };
 		DCAA68402A3CD026006A1E5F /* CartGL.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CartGL.cxx; sourceTree = "<group>"; };
 		DCAA68412A3CD026006A1E5F /* CartGL.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = CartGL.hxx; sourceTree = "<group>"; };
 		DCAA68442A3CD04B006A1E5F /* CartGLWidget.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = CartGLWidget.hxx; sourceTree = "<group>"; };
@@ -1856,6 +1868,8 @@
 				DCAAE5BA1715887B0080BB82 /* CartCVWidget.cxx */,
 				DCAAE5BC1715887B0080BB82 /* CartDebugWidget.hxx */,
 				DC5ACB5D1FBFCEB800A213FD /* CartDebugWidget.cxx */,
+				DCA9354E2FBDDC4200FA4510 /* CartDevCardWidget.hxx */,
+				DCA9354F2FBDDC4200FA4510 /* CartDevCardWidget.cxx */,
 				DCAACB0B188D636F00A4D282 /* CartDFSCWidget.hxx */,
 				DCAACB0A188D636F00A4D282 /* CartDFSCWidget.cxx */,
 				DCAACB0D188D636F00A4D282 /* CartDFWidget.hxx */,
@@ -2157,6 +2171,8 @@
 				2DE2DF1C0627AE07006BEC99 /* CartCV.cxx */,
 				DCB2ECAD1F0AECA3009738A6 /* CartDetector.hxx */,
 				DCB2ECAC1F0AECA3009738A6 /* CartDetector.cxx */,
+				DCA9354A2FBDDC1900FA4510 /* CartDevCard.hxx */,
+				DCA9354B2FBDDC1900FA4510 /* CartDevCard.cxx */,
 				DCAACAF3188D631500A4D282 /* CartDF.hxx */,
 				DCAACAF2188D631500A4D282 /* CartDF.cxx */,
 				DCAACAF5188D631500A4D282 /* CartDFSC.hxx */,
@@ -2223,6 +2239,8 @@
 				DCA23AE70D75B22500F77B33 /* CartX07.cxx */,
 				DC8C1BAA14B25DE7006440EE /* CompuMate.hxx */,
 				DC8C1BA914B25DE7006440EE /* CompuMate.cxx */,
+				DCA935462FBDD9B800FA4510 /* CompuMateCassette.hxx */,
+				DCA935472FBDD9B800FA4510 /* CompuMateCassette.cxx */,
 				2DE2DF390627AE07006BEC99 /* Console.hxx */,
 				2DE2DF380627AE07006BEC99 /* Console.cxx */,
 				DCF7F125223D795F00701A47 /* ConsoleIO.hxx */,
@@ -2938,6 +2956,7 @@
 				DCBD31E92299ADB400567357 /* Rect.hxx in Headers */,
 				DCBA539925557E2800087DD7 /* UndoHandler.hxx in Headers */,
 				DCE1FF46286DFB98003568AD /* Joy2BPlus.hxx in Headers */,
+				DCA935512FBDDC4200FA4510 /* CartDevCardWidget.hxx in Headers */,
 				2D91741A09BA90380026E9FF /* FSNode.hxx in Headers */,
 				DC2ABA5C259BD544007E57D3 /* CompositeKeyValueRepository.hxx in Headers */,
 				DC816CF72572F92A00FBCCDA /* json_lib.hxx in Headers */,
@@ -3021,6 +3040,7 @@
 				2D91745C09BA90380026E9FF /* RomWidget.hxx in Headers */,
 				2D91745D09BA90380026E9FF /* TiaInfoWidget.hxx in Headers */,
 				2D91745E09BA90380026E9FF /* TiaOutputWidget.hxx in Headers */,
+				DCA9354D2FBDDC1900FA4510 /* CartDevCard.hxx in Headers */,
 				2D91745F09BA90380026E9FF /* TiaWidget.hxx in Headers */,
 				2D91746009BA90380026E9FF /* ToggleBitWidget.hxx in Headers */,
 				2D91746109BA90380026E9FF /* TogglePixelWidget.hxx in Headers */,
@@ -3254,6 +3274,7 @@
 				DC1E89092C4033280033E15F /* ElfUtil.hxx in Headers */,
 				DCAACB13188D636F00A4D282 /* CartBFWidget.hxx in Headers */,
 				DC2ABA7425A0C9B2007E57D3 /* KeyValueRepositoryJsonFile.hxx in Headers */,
+				DCA935492FBDD9B800FA4510 /* CompuMateCassette.hxx in Headers */,
 				DCAACB15188D636F00A4D282 /* CartDFSCWidget.hxx in Headers */,
 				DC44019F1F1A5D01008C08F6 /* ColorWidget.hxx in Headers */,
 				DC96162D1F817830008A2206 /* AmigaMouseWidget.hxx in Headers */,
@@ -3461,6 +3482,7 @@
 				DC3C9BD92469C9C700CF2D47 /* CartEnhancedWidget.cxx in Sources */,
 				CFE3F60D1E84A9A200A8204E /* CartCDFWidget.cxx in Sources */,
 				2D9174B709BA90380026E9FF /* OptionsDialog.cxx in Sources */,
+				DCA9354C2FBDDC1900FA4510 /* CartDevCard.cxx in Sources */,
 				DCE9681727553F1000E99839 /* LauncherFileListWidget.cxx in Sources */,
 				2D9174B809BA90380026E9FF /* PopUpWidget.cxx in Sources */,
 				DCE9681527553F1000E99839 /* FavoritesManager.cxx in Sources */,
@@ -3493,6 +3515,7 @@
 				E0A384142589741A0062AA93 /* KeyValueRepositorySqlite.cxx in Sources */,
 				2D9174C909BA90380026E9FF /* EditTextWidget.cxx in Sources */,
 				2D9174CC09BA90380026E9FF /* TIADebug.cxx in Sources */,
+				DCA935482FBDD9B800FA4510 /* CompuMateCassette.cxx in Sources */,
 				2D9174CD09BA90380026E9FF /* YaccParser.cxx in Sources */,
 				DC6A18F819B3E65500DEB242 /* CartMDMWidget.cxx in Sources */,
 				2D9174CE09BA90380026E9FF /* Cart3E.cxx in Sources */,
@@ -3619,6 +3642,7 @@
 				DCD6FC7511C281ED005DA767 /* pngmem.c in Sources */,
 				DCF3A6F51DFC75E3008A8AF3 /* Missile.cxx in Sources */,
 				DCD6FC7611C281ED005DA767 /* pngpread.c in Sources */,
+				DCA935502FBDDC4200FA4510 /* CartDevCardWidget.cxx in Sources */,
 				DCD6FC7811C281ED005DA767 /* pngread.c in Sources */,
 				DCD6FC7911C281ED005DA767 /* pngrio.c in Sources */,
 				DCD6FC7A11C281ED005DA767 /* pngrtran.c in Sources */,

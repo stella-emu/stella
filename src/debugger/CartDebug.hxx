@@ -65,7 +65,7 @@ class CartDebug : public DebuggerSystem
     };
 
     // Determine 'type' of address (ie, what part of the system accessed)
-    enum class AddrType: uInt8 { TIA, IO, ZPRAM, ROM };
+    enum class AddrType: uInt8 { TIA, IO, ZPRAM, STACK, ROM };
     static AddrType addressType(uInt16 addr);
 
   public:

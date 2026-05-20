@@ -662,6 +662,9 @@ void FrameBuffer::showTextMessage(string_view message,
                              font().getStringWidth(message) + HBORDER * 2);
 
   createMessage(message, position, force);
+#else
+  if(myBackend && (force || myOSystem.settings().getBool("uimessages")))
+    myBackend->showMessage(message);
 #endif  // GUI_SUPPORT
 }
 
@@ -686,6 +689,9 @@ void FrameBuffer::showGaugeMessage(string_view message, string_view valueText,
                               + HBORDER * 2;
 
   createMessage(message, MessagePosition::BottomCenter);
+#else
+  if(myBackend && (myOSystem.settings().getBool("uimessages")))
+    myBackend->showGaugeMessage(message, valueText, value, minValue, maxValue);
 #endif  // GUI_SUPPORT
 }
 
