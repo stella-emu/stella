@@ -27,17 +27,47 @@ class System;
 #endif
 
 /**
-  FIXME: This scheme needs to be be described in more detail.
+  Cartridge class for the Arcadia (aka Starpath) Supercharger.
+  Christopher Salomon provided most of the technical details used in
+  creating this class.  A good description of the Supercharger is
+  provided in the Cuttle Cart's manual.
 
-  This is the cartridge class for Arcadia (aka Starpath) Supercharger
-  games.  Christopher Salomon provided most of the technical details
-  used in creating this class.  A good description of the Supercharger
-  is provided in the Cuttle Cart's manual.
+  The Supercharger plugs into the cartridge port and loads game data
+  from audio cassette tape via the right difficulty switch input.  Game
+  data arrives as one or more 8448-byte "loads", each consisting of
+  8192 bytes of page data followed by a 256-byte header.
 
-  The Supercharger has four 2K banks.  There are three banks of RAM
-  and one bank of ROM.  All 6K of the RAM can be read and written.
+  The hardware contains 6K of RAM (three 2K banks: 0, 1, 2) and 2K of
+  ROM (bank 3, holding the SC BIOS).  These four 2K banks are mapped
+  into the standard 4K cartridge space ($F000-$FFFF) as two independent
+  2K windows:
 
-  @author  Bradford W. Mott
+    $F000-$F7FF  lower window  -> always a RAM bank (0, 1, or 2)
+    $F800-$FFFF  upper window  -> a RAM bank or ROM (bank 3)
+
+  The active banks for each window are selected by writing a 5-bit
+  configuration byte to hotspot $1FF8.  Bits D4-D2 choose one of eight
+  predefined bank-pair configurations; bit D1 enables RAM writes; bit D0
+  controls ROM power.
+
+  RAM writes use an unusual address-bus protocol rather than normal data
+  writes.  A read or write to $F0xx (with write-enable set) loads the low
+  byte of the address into a data-hold register and arms a pending write.
+  Exactly 5 distinct bus accesses later, a read or write to the
+  destination address commits the held byte to that RAM location.  More
+  than 5 intervening accesses cancel the pending write.  The distinct-
+  access count is tracked globally in M6502, since the Supercharger
+  hardware watches the entire address bus, not just the cart window.
+
+  Multi-load games store several 8448-byte loads end-to-end in the ROM
+  image.  The BIOS reads a load number from zero-page address $80 and
+  triggers a load via hotspot $1850 (when the ROM bank is mapped into
+  the upper window).  The SC BIOS is emulated by a small stub of 6502
+  code (ourDummyROMCode) patched at runtime to honour the 'fastscbios'
+  setting and to seed the accumulator with a random value on exit, as
+  the real BIOS does.
+
+  @author  Bradford W. Mott, Stephen Anthony
 */
 class CartridgeAR : public Cartridge
 {
@@ -194,6 +224,9 @@ class CartridgeAR : public Cartridge
 
     // Sets up a "dummy" BIOS ROM in the ROM bank of the cartridge
     void initializeROM();
+
+    // Process the write-pending state machine; returns true if a RAM write occurred
+    bool handleHotspot(uInt16 addr);
 
   private:
     // Indicates the offset within the image for the corresponding bank

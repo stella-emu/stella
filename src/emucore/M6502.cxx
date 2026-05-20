@@ -107,14 +107,12 @@ inline uInt8 M6502::peek(uInt16 address, Device::AccessFlags flags)
 {
   handleHalt();
 
-  ////////////////////////////////////////////////
-  // TODO - move this logic directly into CartAR
   if(address != myLastAddress)
   {
     ++myNumberOfDistinctAccesses;
     myLastAddress = address;
   }
-  ////////////////////////////////////////////////
+
   mySystem->incrementCycles(1);  // 1 system cycle per CPU cycle on the 6507
   ++icycles;
   myFlags = flags;
@@ -147,14 +145,12 @@ inline uInt8 M6502::peek(uInt16 address, Device::AccessFlags flags)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 inline void M6502::poke(uInt16 address, uInt8 value, Device::AccessFlags flags)
 {
-  ////////////////////////////////////////////////
-  // TODO - move this logic directly into CartAR
   if(address != myLastAddress)
   {
     ++myNumberOfDistinctAccesses;
     myLastAddress = address;
   }
-  ////////////////////////////////////////////////
+
   mySystem->incrementCycles(1);  // 1 system cycle per CPU cycle on the 6507
   ++icycles;
   mySystem->poke(address, value, flags);
