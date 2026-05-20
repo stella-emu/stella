@@ -29,9 +29,18 @@ class System;
   THIS BANKSWITCHING SCHEME IS EXPERIMENTAL, AND MAY BE REMOVED
   IN A FUTURE RELEASE.
 
-  There are seven 4K program banks, a 4K Display Data RAM,
-  1K C Variable and Stack, and the BUS chip.
-  BUS chip access is mapped to $1000 - $103F.
+  BUS ("Bus Stuffing") uses an ARM co-processor running on a Harmony-style
+  cartridge alongside the 6502.  The ARM binary occupies the first 4K of the
+  ROM image and is copied to RAM for execution via a Thumb emulator.  Seven 4K
+  program banks hold the 6502 code, a 4K Display Data RAM holds graphics data,
+  and 1K is reserved for C variables and the ARM stack.
+
+  The 6502 communicates with the ARM via registers mapped at $1000-$103F:
+  a communication stream at $1010 and a jump stream at $1011.  The ARM can
+  also perform "bus stuffing" -- injecting values onto the 6502 data bus on
+  precisely timed cycles -- to deliver data or execute synthetic 6502
+  instructions without the CPU fetching from ROM.  Digital audio is optionally
+  supported through a separate mode flag.
 
   @authors: Darrell Spice Jr, Chris Walton, Fred Quimby,
             Stephen Anthony, Bradford W. Mott

@@ -27,8 +27,10 @@ class System;
 #endif
 
 /**
-  This is the standard Atari 4K cartridge.  These cartridges are
-  not bankswitched.
+  This is the standard Atari 4K cartridge, the dominant ROM format for
+  mid-era 2600 titles.  The single 4K image maps directly and without
+  mirroring into the full cartridge address window ($1000-$1FFF).
+  There is no bankswitching.
 
   @author  Bradford W. Mott, Thomas Jentzsch
 */

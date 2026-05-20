@@ -27,11 +27,11 @@ class System;
 #endif
 
 /**
-  This is the standard Atari 2K cartridge.  These cartridges are not
-  bankswitched, however, the data repeats twice in the 2600's 4K cartridge
-  addressing space.  For 'Sub2K' ROMs (ROMs less than 2K in size), the
-  data repeats in intervals based on the size of the ROM (which will
-  always be a power of 2).
+  This is the standard Atari 2K cartridge, used by many of the earliest 2600
+  titles (1977-1979).  These cartridges are not bankswitched; the single 2K
+  image is mirrored twice to fill the 4K cartridge address window ($1000-$1FFF).
+  For 'Sub2K' ROMs (images smaller than 2K, always a power-of-2 in size), the
+  data repeats at power-of-2 intervals to fill the same window.
 
   @author  Stephen Anthony, Thomas Jentzsch
 */

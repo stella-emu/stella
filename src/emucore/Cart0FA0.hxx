@@ -26,11 +26,14 @@
 #endif
 
 /**
-  Cartridge class used for some brazilian 8K bankswitched games. There
-  are two 4K banks, which are switched by accessing
-  (address & $16A0) = $06a0 (bank 0) and = $06c0 (bank 1).
-  Actual addresses used by these carts are e.g. $0FA0, $0FC0 and $EFC0.
-  The code accepts further potential hotspot addresses.
+  Cartridge class used for some Brazilian 8K bankswitched games.  There are
+  two 4K banks whose selection is detected via a bitmask rather than exact
+  addresses: any address satisfying (address & $16A0) == $06A0 triggers bank 0,
+  and (address & $16A0) == $06C0 triggers bank 1.  Known concrete hotspots are
+  $0FA0/$0FC0 (below $1000) and $EFA0/$EFC0 (which map to $1FA0/$1FC0 in cart
+  space), but the mask allows several other aliases.  This permissive matching
+  was presumably required to accommodate address-bus variations across different
+  Brazilian clone hardware.
 
   @author  Thomas Jentzsch
 */

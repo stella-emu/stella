@@ -34,6 +34,25 @@ class ElfLinker;
   class CartridgeELFStateWidget;
 #endif
 
+/**
+  ELF cartridges contain a standard ARM ELF binary that is dynamically linked
+  and loaded at startup into a private ARM address space managed by a CortexM0
+  emulator. Unlike the flat Thumb binaries used by BUS/CDF/DPC+, the image is
+  a proper relocatable object file that the ElfLinker resolves at load time.
+
+  The ARM core runs concurrently with the 6502. Communication between the two
+  CPUs is handled through a BusTransactionQueue: the ARM pushes (address, data)
+  tuples that are replayed to overdrive the 6502 data bus on precisely timed
+  cycles. The ARM code calls standard vcsLib stubs (vcsWrite3, vcsSta3, vcsJmp3,
+  etc.); the linker resolves those stubs to shim addresses that enqueue the
+  corresponding bus transactions.
+
+  There is no fixed bank layout or hotspot in the traditional sense -- the ARM
+  binary drives the entire cartridge address space. ROM size is unbounded by the
+  scheme, limited only by available host memory.
+
+  @author  Christian Speckner (DirtyHairy)
+*/
 class CartridgeELF: public Cartridge {
 #ifdef DEBUGGER_SUPPORT
   friend CartridgeELFWidget;

@@ -28,7 +28,15 @@ class System;
 #endif
 
 /**
-  Enhanced cartridge base class used for multiple cart types.
+  Base class for the majority of bankswitching cartridge types in Stella.
+  CartridgeEnhanced provides the common infrastructure shared by nearly all
+  schemes: ROM/RAM bank management, page-table mapping into the System address
+  space, optional SuperChip (SC) RAM integration, PlusROM network support,
+  and the standard peek/poke dispatch.
+
+  Concrete subclasses implement their specific scheme by overriding
+  checkSwitchBank() (called on every bus access) and, when needed, hotspot()
+  to declare the address range that triggers bank changes.
 
   @author  Thomas Jentzsch
 */

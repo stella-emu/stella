@@ -26,10 +26,14 @@
 #endif
 
 /**
-  Cartridge class used for SB "SUPERbanking" 128k-256k bankswitched games.
-  There are either 32 or 64 4K banks, accessible at hotspots $800 - $81F
-  (32 banks) and $800 - $83F (64 banks).  All mirrors up to $FFF are
-  also used ($900, $A00, ...).
+  Cartridge class used for SB "SUPERbanking" 128K-256K bankswitched games.
+  Like the 0840 and UA schemes, SB places its hotspots in the lower address
+  space (below $1000) rather than near $1FF0: accessing $0800-$081F selects
+  one of 32 banks (128K), and $0800-$083F selects one of 64 banks (256K).
+  The low bits of the hotspot address give the bank number directly.  The
+  entire hotspot block mirrors at $0900, $0A00, etc. through $0FFF.  ROM
+  size is variable; the constructor auto-detects 128K vs. 256K from the
+  image size.
 
   @author  Fred X. Quimby, Thomas Jentzsch
 */

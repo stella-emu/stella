@@ -30,6 +30,11 @@
   are two 4K banks, which are switched by accessing $0800 (bank 0) and
   $0840 (bank 1).
 
+  Unlike most Atari bankswitching schemes whose hotspots live in the upper
+  cartridge window ($1FE0-$1FFF), 0840 triggers on addresses below $1000
+  (outside the cartridge ROM window entirely).  The name "0840" comes from the
+  two hotspot addresses.  Any read or write to either address fires the switch.
+
   @author  Fred X. Quimby, Thomas Jentzsch
 */
 class Cartridge0840 : public CartridgeEnhanced

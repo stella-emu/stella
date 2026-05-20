@@ -26,9 +26,12 @@
 #endif
 
 /**
-  Cartridge class used for TV Boy
-  There are 128 4K banks, accessing $F800..$F87F selects bank and locks any
-  further bankswitching.
+  Cartridge class used for the TV Boy, an Atari-compatible handheld multicart
+  containing 128 built-in games.  Accessing any address in $F800-$F87F
+  (i.e. $1800-$187F in cart space) selects the game whose number equals the
+  low 7 bits of the address, and simultaneously locks further bankswitching
+  until the next hardware reset.  The lock prevents a running game from
+  accidentally switching away from its own bank.
 
   @author  Thomas Jentzsch
 */

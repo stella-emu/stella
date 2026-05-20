@@ -24,9 +24,10 @@
 #endif
 
 /**
-  Cartridge class used for Atari's 8K bankswitched games with 128 bytes of
-  RAM.  There are two 4K banks, accessible by read/write to $1FF8 - $1FF9.
-  RAM read port is $1080 - $10FF, write port is $1000 - $107F.
+  F8SC is F8 with 128 bytes of SuperChip RAM.  Banking works identically to
+  F8: two 4K banks (8K total), selected by accessing $1FF8-$1FF9.  The SC
+  RAM uses the standard split window: write port $1000-$107F, read port
+  $1080-$10FF.
 
   @author  Bradford W. Mott, Thomas Jentzsch
 */

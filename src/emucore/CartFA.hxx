@@ -25,10 +25,16 @@
 #endif
 
 /**
-  Cartridge class used for CBS' RAM Plus cartridges.  There are three 4K
-  banks, accessible by read/write at $1FF8 - $1FFA (note: D0 has to be 1
-  for switching), and 256 bytes of RAM.
-  RAM read port is $1100 - $11FF, write port is $1000 - $10FF.
+  Cartridge class used for CBS' RAM Plus cartridges (used by Tunnel Runner,
+  Omega Race, etc.).  Three 4K banks are selected by accessing $1FF8-$1FFA,
+  but with an unusual constraint: bit D0 of the written value must be 1 for
+  the switch to fire.  This was an intentional design choice to reduce the
+  chance of accidental bank changes from stray writes.
+
+  The 256 bytes of RAM use a larger split window than the SuperChip: write
+  port occupies $1000-$10FF and read port occupies $1100-$11FF.  FA2 is an
+  extended version of this scheme supporting six or seven banks with
+  persistent RAM saved to flash.
 
   @author  Bradford W. Mott, Thomas Jentzsch
 */

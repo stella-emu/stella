@@ -24,9 +24,12 @@
 #endif
 
 /**
-  Cartridge class used for Dynacom Megaboy
-  There are 16 4K banks.
-  Accessing $1FF0 switches to next bank.
+  Cartridge class used for the Dynacom Megaboy (also known as the F0 scheme).
+  The cart holds 16 4K banks (64K total).  Unlike schemes that select a bank
+  by address, F0 uses a sequential "next bank" trigger: any access to $1FF0
+  advances to the next bank in sequence, wrapping from bank 15 back to bank 0.
+  Because the game cannot jump to an arbitrary bank, the program layout must
+  be structured so that each bank is visited in order.
 
   @author  Eckhard Stolberg, Thomas Jentzsch
 */

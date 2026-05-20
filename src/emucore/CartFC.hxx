@@ -28,10 +28,13 @@ class System;
 #endif
 
 /**
-  Cartridge class used for Amiga's 32K Power Play Arcade Video Game Album.
-  There are eight 4K banks, writing to $1FF8 definies the two lowest bits
-  of the wanted bank, writeing to $1FF9 defines the high bits. Accessing
-  $1FFC triggers the bank switching
+  Cartridge class used for Amiga's Power Play Arcade Video Game Album.
+  The album is a multicart containing up to eight 4K games (32K total).
+  FC uses a two-step commit protocol to select the active game: the 6502
+  writes the low 2 bits of the target bank number to $1FF8 and the high
+  bits to $1FF9, then triggers the actual switch by accessing $1FFC.  This
+  staged approach lets code prepare the next bank while still executing from
+  the current one without risk of an accidental mid-sequence switch.
 
   @author  Thomas Jentzsch
 */

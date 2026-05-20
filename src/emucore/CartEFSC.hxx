@@ -27,10 +27,10 @@ class System;
 #endif
 
 /**
-  Cartridge class used for Homestar Runner by Paul Slocum.
-  There are 16 4K banks (total of 64K ROM) with 128 bytes of RAM.
-  Accessing $1FE0 - $1FEF switches to each bank.
-  RAM read port is $1080 - $10FF, write port is $1000 - $107F.
+  EFSC is EF with 128 bytes of SuperChip RAM.  Banking works identically to
+  EF: 16 4K banks (64K total), selected by accessing $1FE0-$1FEF.  The SC
+  RAM uses the standard split window: write port $1000-$107F, read port
+  $1080-$10FF.
 
   @author  Stephen Anthony, Thomas Jentzsch
 */

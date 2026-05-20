@@ -27,9 +27,12 @@ class System;
 #endif
 
 /**
-  Update of EF cartridge class used for Homestar Runner by Paul Slocum.
-  There are 64 4K banks (total of 256K ROM).
-  Accessing $1F80 - $1FBF switches to each bank.
+  BF is a further extension of the EF/DF family, providing 64 4K banks
+  (256K total).  Any access in $1F80-$1FBF switches to the bank whose number
+  equals the low 6 bits of the address (bank 0 at $1F80, bank 63 at $1FBF).
+  "BF" derives from this hotspot range.  The BFSC variant adds 128 bytes of
+  SuperChip RAM at the standard split window ($1000-$107F write, $1080-$10FF
+  read).
 
   @author  Mike Saarna, Thomas Jentzsch
 */

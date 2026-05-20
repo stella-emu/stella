@@ -24,8 +24,12 @@
 #endif
 
 /**
-  Cartridge class used for certain Coleco 8K bankswitched games.  There are two
-  4K banks, banks are selected by D3 of the value written to $1FF8.
+  Cartridge class used for certain Coleco 8K bankswitched games.  WF8 is a
+  variant of F8: it reuses the $1FF8 hotspot address but selects the bank
+  based on bit D3 of the written value rather than by which of two addresses
+  was accessed.  A written value with D3=0 ($00-$07) selects bank 0; D3=1
+  ($08-$0F) selects bank 1.  There is only one hotspot address; $1FF9 is not
+  used.
 
   @author  Thomas Jentzsch
 */

@@ -28,10 +28,13 @@ class System;
 #endif
 
 /**
-   Based on EF, the EFF cartridge adds strobe addresses for i2c access to
-   an EEPROM, like an on-cartridge SaveKey interface.
+  EFF is EF (16 banks, 64K, hotspots $1FE0-$1FEF) extended with an on-board
+  24LC16B EEPROM accessed via I2C.  Two additional strobe addresses in the
+  cartridge space drive the I2C SDA and SCL lines, providing non-volatile
+  storage equivalent to the external SaveKey or AtariVox peripherals but wired
+  permanently onto the PCB.  The banking mechanism is otherwise identical to EF.
 
-   @author Stephen Anthony, Thomas Jentzsch, Bruce-Robert Pocock
+  @author Stephen Anthony, Thomas Jentzsch, Bruce-Robert Pocock
 */
 class CartridgeEFF : public CartridgeEF
 {
