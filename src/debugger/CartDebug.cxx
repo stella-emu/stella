@@ -325,11 +325,11 @@ bool CartDebug::disassemble(int bank, uInt16 PC, Disassembly& disassembly,
     // For example, if the list contains any $fxxx and the address space is now
     // $bxxx, it must be changed
     const uInt16 offset = (PC & 0x1000) ? myConsole.cartridge().bankOrigin(bank, PC) : 0;
-    if (offset && info.offset == 0)
+    if (offset && (info.offset == 0 || mySystem.addressBits() == 16))
       info.offset = offset;
     AddressList& addresses = info.addressList;
     for(auto& i: addresses)
-      i = (i & 0xFFF) + offset;
+      i = (i & 0xFFF) + offset; // due to DiStella we have to limit to 4K addresses
 
     // Only add addresses when absolutely necessary, to cut down on the
     // work that Distella has to do
@@ -387,7 +387,7 @@ bool CartDebug::fillDisassemblyList(BankInfo& info, Disassembly& disassembly,
   for(uInt32 i = 0; i < disassembly.list.size(); ++i)
   {
     const DisassemblyTag& tag = disassembly.list[i];
-    const uInt16 address = tag.address & 0xFFF;
+    const uInt16 address = tag.address & mySystem.addressMask();
 
     // Exclude 'Device::ROW|NONE'; they don't have a valid address
     if(tag.type != Device::ROW && tag.type != Device::NONE)
@@ -396,7 +396,7 @@ bool CartDebug::fillDisassemblyList(BankInfo& info, Disassembly& disassembly,
       addrToLineList.emplace(address, i + lineOfs);
 
       // Did we find the search value?
-      if(address == (search & 0xFFF))
+      if(address == (search & mySystem.addressMask()))
         found = true;
     }
   }
@@ -411,7 +411,7 @@ int CartDebug::addressToLine(uInt16 address) const
   if(!myAddrToLineIsROM != !(address & 0x1000))
     return -1;
 
-  const auto& iter = myAddrToLineList.find(address & 0xFFF);
+  const auto& iter = myAddrToLineList.find(address & mySystem.addressMask());
   return iter != myAddrToLineList.end() ? iter->second : -1;
 }
 
@@ -419,7 +419,7 @@ int CartDebug::addressToLine(uInt16 address) const
 string CartDebug::disassembleLines(uInt16 start, uInt16 lines) const
 {
   // Fill the string with disassembled data
-  start &= 0xFFF;
+  start &= mySystem.addressMask();
   std::ostringstream buffer;
 
   // First find the lines in the range, and determine the longest string
@@ -428,7 +428,7 @@ string CartDebug::disassembleLines(uInt16 start, uInt16 lines) const
   for(end = 0; end < list_size && lines > 0; ++end)
   {
     const CartDebug::DisassemblyTag& tag = myDisassembly.list[end];
-    if((tag.address & 0xfff) >= start)
+    if((tag.address & mySystem.addressMask()) >= start)
     {
       if(begin == list_size) begin = end;
       if(tag.type != Device::ROW)
@@ -1613,9 +1613,9 @@ string CartDebug::accessTypeAsString(uInt16 addr) const
   if(!(addr & 0x1000))
     return DebuggerParser::red("type only defined for cart address space");
 
-  const uInt8 directive = myDisDirectives[addr & 0xFFF] & 0xFC,
+  const uInt8 directive = myDisDirectives[addr & mySystem.addressMask()] & 0xFC,
               debugger  = myDebugger.getAccessFlags(addr) & 0xFC,
-              label     = myDisLabels[addr & 0xFFF];
+              label     = myDisLabels[addr & mySystem.addressMask()];
 
   string out;
   out.reserve(128);

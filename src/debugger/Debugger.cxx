@@ -514,11 +514,11 @@ void Debugger::log(string_view triggerMsg)
 
   // First find the lines in the range, and determine the longest string
   const auto& disasm = myCartDebug->disassembly();
-  const uInt16 start = pc & 0x0FFF;
+  const uInt16 start = pc & mySystem.addressMask();
 
   for(const auto& tag: disasm.list)
   {
-    if((tag.address & 0x0FFF) >= start)
+    if((tag.address & mySystem.addressMask()) >= start)
     {
       const string pcStr = Base::hexUppercase()
         ? std::format("{:04X}", pc)
