@@ -17,7 +17,6 @@
 #include "StellaLIBRETRO.hxx"
 #include "Event.hxx"
 #include "NTSCFilter.hxx"
-#include "PaletteHandler.hxx"
 #include "Version.hxx"
 
 
@@ -34,26 +33,15 @@ static bool libretro_supports_bitmasks;
 static unsigned message_interface_version;
 
 // Exposed to FSNodeLIBRETRO for VFS-based file operations
-retro_vfs_interface* libretro_vfs = nullptr;  // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)
-string libretro_save_dir;                     // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)
-string libretro_system_dir;                   // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)
-string libretro_rom_path;                     // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)
+retro_vfs_interface* libretro_vfs = nullptr;
+string libretro_save_dir;
+string libretro_system_dir;
+string libretro_rom_path;
 
 // libretro UI settings
-static int setting_ntsc, setting_pal;
-static int setting_stereo;
-static int setting_phosphor, setting_console, setting_phosphor_blend;
-static int stella_paddle_joypad_sensitivity;
-static int stella_paddle_analog_sensitivity;
-static int stella_paddle_mouse_sensitivity;
-static int stella_paddle_analog_deadzone;
-static bool stella_paddle_analog_absolute;
-static bool stella_lightgun_crosshair;
-static int setting_crop_hoverscan, crop_left;
-static int setting_crop_voverscan, crop_top;
-static NTSCFilter::Preset setting_filter;
-static const char* setting_palette;
-static int setting_reload;
+static SettingsLIBRETRO stella_settings;
+static int crop_left;
+static int crop_top;
 
 static bool system_reset;
 
@@ -76,6 +64,11 @@ void post_message(const char* msg, retro_log_level level, unsigned duration_ms =
     const retro_message legacy = { msg, duration_ms * 60 / 1000 };
     environ_cb(RETRO_ENVIRONMENT_SET_MESSAGE, (void*)&legacy);
   }
+}
+
+void libretro_show_message(const char* msg)
+{
+  post_message(msg, RETRO_LOG_INFO);
 }
 
 static unsigned input_devices[4];
@@ -185,7 +178,7 @@ uint32_t libretro_get_rom_size(void)
   int32_t mouse_x  = input_state_cb(pad, RETRO_DEVICE_MOUSE, 0, RETRO_DEVICE_ID_MOUSE_X); \
   int32_t analog_x = input_state_cb(pad, RETRO_DEVICE_ANALOG, RETRO_DEVICE_INDEX_ANALOG_LEFT, RETRO_DEVICE_ID_ANALOG_X); \
   *input_bitmask  |= mouse_l << RETRO_DEVICE_ID_JOYPAD_B; \
-  if (stella_paddle_analog_deadzone && abs(analog_x) < stella_paddle_analog_deadzone * 0x7fff / 100) \
+  if (stella_settings.paddle_analog_deadzone && abs(analog_x) < stella_settings.paddle_analog_deadzone * 0x7fff / 100) \
     analog_x = 0; \
   if (mouse_r) \
     mouse_x *= 3; \
@@ -195,8 +188,8 @@ static void retro_analog_paddle(unsigned pad, int32_t *analog_axis, int32_t *inp
   RETRO_ANALOG_COMMON();
 
   if (mouse_x)
-    *analog_axis += mouse_x * stella_paddle_mouse_sensitivity;
-  else if (!stella_paddle_analog_absolute)
+    *analog_axis += mouse_x * stella_settings.paddle_mouse_sensitivity;
+  else if (!stella_settings.paddle_analog_absolute)
     *analog_axis += analog_x / 50;
   else
     *analog_axis  = analog_x;
@@ -208,7 +201,7 @@ static void retro_analog_wheel(unsigned pad, int32_t *analog_axis, int32_t *inpu
   RETRO_ANALOG_COMMON();
 
   if (mouse_x)
-    *analog_axis = mouse_x * stella_paddle_mouse_sensitivity * 50;
+    *analog_axis = mouse_x * stella_settings.paddle_mouse_sensitivity * 50;
   else
     *analog_axis = analog_x;
 
@@ -381,21 +374,21 @@ static void update_input()
       int32_t analog_y = input_state_cb(pad, RETRO_DEVICE_ANALOG, RETRO_DEVICE_INDEX_ANALOG_LEFT, RETRO_DEVICE_ID_ANALOG_Y);
       float analog_mag = sqrt((analog_x * analog_x) + (analog_y * analog_y));
 
-      if (stella_paddle_analog_deadzone && analog_mag <= stella_paddle_analog_deadzone * 0x7fff / 100)
+      if (stella_settings.paddle_analog_deadzone && analog_mag <= stella_settings.paddle_analog_deadzone * 0x7fff / 100)
         analog_x = analog_y = 0;
 
-      mouse_x += analog_x / (80000 / stella_paddle_analog_sensitivity);
-      mouse_y += analog_y / (80000 / stella_paddle_analog_sensitivity);
+      mouse_x += analog_x / (80000 / stella_settings.paddle_analog_sensitivity);
+      mouse_y += analog_y / (80000 / stella_settings.paddle_analog_sensitivity);
 
       if (input_bitmask[pad] & (1 << RETRO_DEVICE_ID_JOYPAD_LEFT))
-        mouse_x -= stella_paddle_joypad_sensitivity;
+        mouse_x -= stella_settings.paddle_joypad_sensitivity;
       else if (input_bitmask[pad] & (1 << RETRO_DEVICE_ID_JOYPAD_RIGHT))
-        mouse_x += stella_paddle_joypad_sensitivity;
+        mouse_x += stella_settings.paddle_joypad_sensitivity;
 
       if (input_bitmask[pad] & (1 << RETRO_DEVICE_ID_JOYPAD_UP))
-        mouse_y -= stella_paddle_joypad_sensitivity;
+        mouse_y -= stella_settings.paddle_joypad_sensitivity;
       else if (input_bitmask[pad] & (1 << RETRO_DEVICE_ID_JOYPAD_DOWN))
-        mouse_y += stella_paddle_joypad_sensitivity;
+        mouse_y += stella_settings.paddle_joypad_sensitivity;
 
       if (input_bitmask[pad] & (1 << RETRO_DEVICE_ID_JOYPAD_B))
         mouse_l = true;
@@ -414,15 +407,15 @@ static void update_input()
       int32_t mouse_x = input_state_cb(pad, RETRO_DEVICE_MOUSE, 0, RETRO_DEVICE_ID_MOUSE_X);
       int32_t analog_x = input_state_cb(pad, RETRO_DEVICE_ANALOG, RETRO_DEVICE_INDEX_ANALOG_LEFT, RETRO_DEVICE_ID_ANALOG_X);
 
-      if (stella_paddle_analog_deadzone && std::abs(analog_x) <= stella_paddle_analog_deadzone * 0x7fff / 100)
+      if (stella_settings.paddle_analog_deadzone && std::abs(analog_x) <= stella_settings.paddle_analog_deadzone * 0x7fff / 100)
         analog_x = 0;
 
-      mouse_x += analog_x / (80000 / stella_paddle_analog_sensitivity);
+      mouse_x += analog_x / (80000 / stella_settings.paddle_analog_sensitivity);
 
       if (input_bitmask[pad] & (1 << RETRO_DEVICE_ID_JOYPAD_LEFT))
-        mouse_x -= stella_paddle_joypad_sensitivity;
+        mouse_x -= stella_settings.paddle_joypad_sensitivity;
       else if (input_bitmask[pad] & (1 << RETRO_DEVICE_ID_JOYPAD_RIGHT))
-        mouse_x += stella_paddle_joypad_sensitivity;
+        mouse_x += stella_settings.paddle_joypad_sensitivity;
 
       EVENT(Event::MouseAxisXMove, mouse_x);
       EVENT(Event::MouseButtonLeftValue,  input_state_cb(pad, RETRO_DEVICE_MOUSE, 0, RETRO_DEVICE_ID_MOUSE_LEFT)
@@ -535,15 +528,15 @@ static void update_input()
       int32_t mouse_x = input_state_cb(pad, RETRO_DEVICE_MOUSE, 0, RETRO_DEVICE_ID_MOUSE_X);
       int32_t analog_x = input_state_cb(pad, RETRO_DEVICE_ANALOG, RETRO_DEVICE_INDEX_ANALOG_LEFT, RETRO_DEVICE_ID_ANALOG_X);
 
-      if (stella_paddle_analog_deadzone && std::abs(analog_x) <= stella_paddle_analog_deadzone * 0x7fff / 100)
+      if (stella_settings.paddle_analog_deadzone && std::abs(analog_x) <= stella_settings.paddle_analog_deadzone * 0x7fff / 100)
         analog_x = 0;
 
-      mouse_x += analog_x / (80000 / stella_paddle_analog_sensitivity);
+      mouse_x += analog_x / (80000 / stella_settings.paddle_analog_sensitivity);
 
       if (input_bitmask[pad] & (1 << RETRO_DEVICE_ID_JOYPAD_LEFT))
-        mouse_x -= stella_paddle_joypad_sensitivity;
+        mouse_x -= stella_settings.paddle_joypad_sensitivity;
       else if (input_bitmask[pad] & (1 << RETRO_DEVICE_ID_JOYPAD_RIGHT))
-        mouse_x += stella_paddle_joypad_sensitivity;
+        mouse_x += stella_settings.paddle_joypad_sensitivity;
 
       EVENT(Event::MouseAxisXMove, mouse_x);
       EVENT(Event::MouseButtonLeftValue,  input_state_cb(pad, RETRO_DEVICE_MOUSE, 0, RETRO_DEVICE_ID_MOUSE_LEFT)
@@ -581,7 +574,7 @@ static void update_input()
   MASK_EVENT(Event::ConsoleBlackWhite, 0, RETRO_DEVICE_ID_JOYPAD_R3);
   MASK_EVENT(Event::ConsoleSelect,     0, RETRO_DEVICE_ID_JOYPAD_SELECT);
   MASK_EVENT(Event::ConsoleReset,      0, RETRO_DEVICE_ID_JOYPAD_START);
-  if (setting_reload)
+  if (stella_settings.reload)
     MASK_EVENT(Event::ReloadConsole,   0, RETRO_DEVICE_ID_JOYPAD_X);
 
 #undef EVENT
@@ -631,206 +624,249 @@ static void update_variables(bool init = false)
     else if(!strcmp(var.value, "rgb"))            value = NTSCFilter::Preset::RGB;
     else if(!strcmp(var.value, "badly adjusted")) value = NTSCFilter::Preset::BAD;
 
-    if(setting_filter != value)
+    if(stella_settings.video_filter != value)
     {
+      stella_settings.video_filter = value;
       stella.setVideoFilter(value);
-
       geometry_update = true;
-      setting_filter = value;
     }
   }
 
   RETRO_GET("stella_crop_hoverscan")
   {
-    setting_crop_hoverscan = !strcmp(var.value, "enabled");
+    stella_settings.crop_hoverscan = !strcmp(var.value, "enabled");
 
     geometry_update = true;
   }
 
-    RETRO_GET("stella_crop_voverscan")
+  RETRO_GET("stella_crop_voverscan")
   {
-    setting_crop_voverscan = atoi(var.value);
+    stella_settings.crop_voverscan = atoi(var.value);
 
     geometry_update = true;
   }
 
   RETRO_GET("stella_ntsc_aspect")
   {
-    int value = 0;
+    uInt32 value = strcmp(var.value, "par") ? static_cast<uInt32>(atoi(var.value)) : 0;
 
-    if(!strcmp(var.value, "par")) value = 0;
-    else value = atoi(var.value);
-
-    if(setting_ntsc != value)
+    if(stella_settings.video_aspect_ntsc != value)
     {
-      stella.setVideoAspectNTSC(value);
-
+      stella_settings.video_aspect_ntsc = value;
       geometry_update = true;
-      setting_ntsc = value;
     }
   }
 
   RETRO_GET("stella_pal_aspect")
   {
-    int value = 0;
+    uInt32 value = strcmp(var.value, "par") ? static_cast<uInt32>(atoi(var.value)) : 0;
 
-    if(!strcmp(var.value, "par")) value = 0;
-    else value = atoi(var.value);
-
-    if(setting_pal != value)
+    if(stella_settings.video_aspect_pal != value)
     {
-      stella.setVideoAspectPAL(value);
-
-      setting_pal = value;
+      stella_settings.video_aspect_pal = value;
       geometry_update = true;
     }
   }
 
   RETRO_GET("stella_palette")
   {
-    if(setting_palette != var.value)
+    if(stella_settings.video_palette != var.value)
     {
-      stella.setVideoPalette(var.value);
-
-      setting_palette = var.value;
+      stella_settings.video_palette = var.value;
+      stella.setVideoPalette(stella_settings.video_palette);
     }
   }
 
   RETRO_GET("stella_console")
   {
-    int value = 0;
+    const char* fmt = "AUTO";
 
-    if(!strcmp(var.value, "auto")) value = 0;
-    else if(!strcmp(var.value, "ntsc")) value = 1;
-    else if(!strcmp(var.value, "pal")) value = 2;
-    else if(!strcmp(var.value, "secam")) value = 3;
-    else if(!strcmp(var.value, "ntsc50")) value = 4;
-    else if(!strcmp(var.value, "pal60")) value = 5;
-    else if(!strcmp(var.value, "secam60")) value = 6;
+    if(!strcmp(var.value, "ntsc"))     fmt = "NTSC";
+    else if(!strcmp(var.value, "pal")) fmt = "PAL";
+    else if(!strcmp(var.value, "secam"))   fmt = "SECAM";
+    else if(!strcmp(var.value, "ntsc50")) fmt = "NTSC50";
+    else if(!strcmp(var.value, "pal60"))   fmt = "PAL60";
+    else if(!strcmp(var.value, "secam60")) fmt = "SECAM60";
 
-    if(setting_console != value)
+    if(stella_settings.console_format != fmt)
     {
-      stella.setConsoleFormat(value);
-
-      setting_console = value;
+      stella_settings.console_format = fmt;
       system_reset = true;
     }
   }
 
   RETRO_GET("stella_stereo")
   {
-    int value = 0;
+    const char* mode = "byrom";
 
-    if(!strcmp(var.value, "auto")) value = 0;
-    else if(!strcmp(var.value, "off")) value = 1;
-    else if(!strcmp(var.value, "on")) value = 2;
+    if(!strcmp(var.value, "off")) mode = "mono";
+    else if(!strcmp(var.value, "on")) mode = "stereo";
 
-    if(setting_stereo != value)
+    if(stella_settings.audio_mode != mode)
     {
-      stella.setAudioStereo(value);
-
-      setting_stereo = value;
+      stella_settings.audio_mode = mode;
+      stella.setAudioStereo(stella_settings.audio_mode);
     }
   }
 
   RETRO_GET("stella_phosphor")
   {
-    int value = 0;
+    const char* phosphor = "byrom";
 
-    if(!strcmp(var.value, "auto")) value = 0;
-    else if(!strcmp(var.value, "off")) value = 1;
-    else if(!strcmp(var.value, "on")) value = 2;
+    if(!strcmp(var.value, "off")) phosphor = "never";
+    else if(!strcmp(var.value, "on")) phosphor = "always";
 
-    if(setting_phosphor != value)
+    if(stella_settings.video_phosphor != phosphor)
     {
-      stella.setVideoPhosphor(value, setting_phosphor_blend);
-
-      setting_phosphor = value;
+      stella_settings.video_phosphor = phosphor;
+      stella.setVideoPhosphor(stella_settings.video_phosphor, stella_settings.video_phosphor_blend);
     }
   }
 
   RETRO_GET("stella_phosphor_blend")
   {
-    int value = 0;
+    uInt32 value = atoi(var.value);
 
-    value = atoi(var.value);
-
-    if(setting_phosphor_blend != value)
+    if(stella_settings.video_phosphor_blend != value)
     {
-      stella.setVideoPhosphor(setting_phosphor, value);
-
-      setting_phosphor_blend = value;
+      stella_settings.video_phosphor_blend = value;
+      stella.setVideoPhosphor(stella_settings.video_phosphor, stella_settings.video_phosphor_blend);
     }
   }
 
   RETRO_GET("stella_paddle_joypad_sensitivity")
   {
-    int value = 0;
+    int value = atoi(var.value);
 
-    value = atoi(var.value);
-
-    if(stella_paddle_joypad_sensitivity != value)
+    if(stella_settings.paddle_joypad_sensitivity != value)
     {
       if(!init) stella.setPaddleJoypadSensitivity(value);
 
-      stella_paddle_joypad_sensitivity = value;
+      stella_settings.paddle_joypad_sensitivity = value;
     }
   }
 
   RETRO_GET("stella_paddle_analog_sensitivity")
   {
-    int value = 0;
+    int value = atoi(var.value);
 
-    value = atoi(var.value);
-
-    if(stella_paddle_analog_sensitivity != value)
+    if(stella_settings.paddle_analog_sensitivity != value)
     {
       if(!init) stella.setPaddleAnalogSensitivity(value);
 
-      stella_paddle_analog_sensitivity = value;
+      stella_settings.paddle_analog_sensitivity = value;
     }
   }
 
   RETRO_GET("stella_reload")
   {
-    int value = 0;
+    stella_settings.reload = !strcmp(var.value, "on");
+  }
 
-    if(!strcmp(var.value, "off")) value = 0;
-    else if(!strcmp(var.value, "on")) value = 1;
+  RETRO_GET("stella_messages")
+  {
+    bool value = !strcmp(var.value, "enabled");
 
-    setting_reload = value;
+    if(stella_settings.info_messages != value)
+    {
+      stella_settings.info_messages = value;
+      stella.setMessages(value);
+    }
+  }
+
+  RETRO_GET("stella_detect_pal60")
+  {
+    bool value = !strcmp(var.value, "enabled");
+
+    if(stella_settings.detect_pal60 != value)
+    {
+      stella_settings.detect_pal60 = value;
+      system_reset = true;
+    }
+  }
+
+  RETRO_GET("stella_detect_ntsc50")
+  {
+    bool value = !strcmp(var.value, "enabled");
+
+    if(stella_settings.detect_ntsc50 != value)
+    {
+      stella_settings.detect_ntsc50 = value;
+      system_reset = true;
+    }
+  }
+
+  bool pal_changed = false;
+
+  RETRO_GET("stella_pal_contrast")
+  {
+    float value = atoi(var.value) * 0.1F;
+    if(stella_settings.pal_contrast != value) { stella_settings.pal_contrast = value; pal_changed = true; }
+  }
+
+  RETRO_GET("stella_pal_brightness")
+  {
+    float value = atoi(var.value) * 0.1F;
+    if(stella_settings.pal_brightness != value) { stella_settings.pal_brightness = value; pal_changed = true; }
+  }
+
+  RETRO_GET("stella_pal_hue")
+  {
+    float value = atoi(var.value) * 0.1F;
+    if(stella_settings.pal_hue != value) { stella_settings.pal_hue = value; pal_changed = true; }
+  }
+
+  RETRO_GET("stella_pal_saturation")
+  {
+    float value = atoi(var.value) * 0.1F;
+    if(stella_settings.pal_saturation != value) { stella_settings.pal_saturation = value; pal_changed = true; }
+  }
+
+  RETRO_GET("stella_pal_gamma")
+  {
+    float value = atoi(var.value) * 0.1F;
+    if(stella_settings.pal_gamma != value) { stella_settings.pal_gamma = value; pal_changed = true; }
+  }
+
+  if(pal_changed)
+    stella.setPaletteAdjust(stella_settings.pal_contrast, stella_settings.pal_brightness,
+                            stella_settings.pal_hue, stella_settings.pal_saturation, stella_settings.pal_gamma);
+
+  RETRO_GET("stella_dpc_pitch")
+  {
+    uInt32 value = atoi(var.value);
+
+    if(stella_settings.dpc_pitch != value)
+    {
+      stella_settings.dpc_pitch = value;
+      stella.setDpcPitch(value);
+    }
   }
 
   RETRO_GET("stella_paddle_mouse_sensitivity")
   {
-    stella_paddle_mouse_sensitivity = atoi(var.value);
+    stella_settings.paddle_mouse_sensitivity = atoi(var.value);
   }
 
   RETRO_GET("stella_paddle_analog_deadzone")
   {
-    stella_paddle_analog_deadzone = atoi(var.value);
+    stella_settings.paddle_analog_deadzone = atoi(var.value);
   }
 
   RETRO_GET("stella_paddle_analog_absolute")
   {
-    stella_paddle_analog_absolute = false;
-
-    if(!strcmp(var.value, "enabled"))
-      stella_paddle_analog_absolute = true;
+    stella_settings.paddle_analog_absolute = !strcmp(var.value, "enabled");
   }
 
   RETRO_GET("stella_lightgun_crosshair")
   {
-    stella_lightgun_crosshair = false;
-
-    if(!strcmp(var.value, "enabled"))
-      stella_lightgun_crosshair = true;
+    stella_settings.lightgun_crosshair = !strcmp(var.value, "enabled");
   }
 
   if(!init && !system_reset)
   {
-    crop_left = setting_crop_hoverscan ? (stella.getVideoZoom() == 2 ? 32 : 8) : 0;
-    crop_top  = setting_crop_voverscan;
+    crop_left = stella_settings.crop_hoverscan ? (stella.getVideoZoom() == 2 ? 32 : 8) : 0;
+    crop_top  = stella_settings.crop_voverscan;
 
     if(geometry_update) update_geometry();
   }
@@ -848,7 +884,7 @@ static bool reset_system()
   update_variables(true);
 
   // start system
-  if(!stella.create(log_cb ? true : false)) return false;
+  if(!stella.create(stella_settings, log_cb ? true : false)) return false;
 
   // expose RIOT RAM at its native 6502 address for RetroAchievements
   const retro_memory_descriptor mem_desc = {
@@ -867,8 +903,8 @@ static bool reset_system()
                         + ", Right=" + Controller::getName(input_type[1]);
   post_message(ctrl_msg.c_str(), RETRO_LOG_INFO);
 
-  stella.setPaddleJoypadSensitivity(stella_paddle_joypad_sensitivity);
-  stella.setPaddleAnalogSensitivity(stella_paddle_analog_sensitivity);
+  stella.setPaddleJoypadSensitivity(stella_settings.paddle_joypad_sensitivity);
+  stella.setPaddleAnalogSensitivity(stella_settings.paddle_analog_sensitivity);
 
   system_reset = false;
 
@@ -930,7 +966,7 @@ void retro_get_system_av_info(struct retro_system_av_info *info)
   info->geometry.max_width    = stella.getVideoWidthMax();
   info->geometry.max_height   = stella.getVideoHeightMax();
 
-  info->geometry.aspect_ratio = stella.getVideoAspectPar() *
+  info->geometry.aspect_ratio = stella.getVideoAspectPar(stella_settings.video_aspect_ntsc, stella_settings.video_aspect_pal) *
       (float)(160 - crop_width) * 2 / (float)(stella.getVideoHeight() - (crop_top * 2));
 }
 
@@ -1469,6 +1505,135 @@ void retro_set_environment(retro_environment_t cb)
       },
       "off",
     },
+    {
+      "stella_detect_pal60",
+      "Auto-detect PAL-60",
+      NULL, NULL, NULL,
+      "video",
+      {
+        { "disabled", NULL },
+        { "enabled",  NULL },
+        { NULL, NULL },
+      },
+      "disabled",
+    },
+    {
+      "stella_detect_ntsc50",
+      "Auto-detect NTSC-50",
+      NULL, NULL, NULL,
+      "video",
+      {
+        { "disabled", NULL },
+        { "enabled",  NULL },
+        { NULL, NULL },
+      },
+      "disabled",
+    },
+    {
+      "stella_pal_contrast",
+      "Palette contrast",
+      NULL, NULL, NULL,
+      "video",
+      {
+        { "0", NULL },
+        { "-10", NULL }, { "-9", NULL }, { "-8", NULL }, { "-7", NULL }, { "-6", NULL },
+        { "-5", NULL }, { "-4", NULL }, { "-3", NULL }, { "-2", NULL }, { "-1", NULL },
+        { "1", NULL }, { "2", NULL }, { "3", NULL }, { "4", NULL }, { "5", NULL },
+        { "6", NULL }, { "7", NULL }, { "8", NULL }, { "9", NULL }, { "10", NULL },
+        { NULL, NULL },
+      },
+      "0",
+    },
+    {
+      "stella_pal_brightness",
+      "Palette brightness",
+      NULL, NULL, NULL,
+      "video",
+      {
+        { "0", NULL },
+        { "-10", NULL }, { "-9", NULL }, { "-8", NULL }, { "-7", NULL }, { "-6", NULL },
+        { "-5", NULL }, { "-4", NULL }, { "-3", NULL }, { "-2", NULL }, { "-1", NULL },
+        { "1", NULL }, { "2", NULL }, { "3", NULL }, { "4", NULL }, { "5", NULL },
+        { "6", NULL }, { "7", NULL }, { "8", NULL }, { "9", NULL }, { "10", NULL },
+        { NULL, NULL },
+      },
+      "0",
+    },
+    {
+      "stella_pal_hue",
+      "Palette hue",
+      NULL, NULL, NULL,
+      "video",
+      {
+        { "0", NULL },
+        { "-10", NULL }, { "-9", NULL }, { "-8", NULL }, { "-7", NULL }, { "-6", NULL },
+        { "-5", NULL }, { "-4", NULL }, { "-3", NULL }, { "-2", NULL }, { "-1", NULL },
+        { "1", NULL }, { "2", NULL }, { "3", NULL }, { "4", NULL }, { "5", NULL },
+        { "6", NULL }, { "7", NULL }, { "8", NULL }, { "9", NULL }, { "10", NULL },
+        { NULL, NULL },
+      },
+      "0",
+    },
+    {
+      "stella_pal_saturation",
+      "Palette saturation",
+      NULL, NULL, NULL,
+      "video",
+      {
+        { "0", NULL },
+        { "-10", NULL }, { "-9", NULL }, { "-8", NULL }, { "-7", NULL }, { "-6", NULL },
+        { "-5", NULL }, { "-4", NULL }, { "-3", NULL }, { "-2", NULL }, { "-1", NULL },
+        { "1", NULL }, { "2", NULL }, { "3", NULL }, { "4", NULL }, { "5", NULL },
+        { "6", NULL }, { "7", NULL }, { "8", NULL }, { "9", NULL }, { "10", NULL },
+        { NULL, NULL },
+      },
+      "0",
+    },
+    {
+      "stella_pal_gamma",
+      "Palette gamma",
+      NULL, NULL, NULL,
+      "video",
+      {
+        { "0", NULL },
+        { "-10", NULL }, { "-9", NULL }, { "-8", NULL }, { "-7", NULL }, { "-6", NULL },
+        { "-5", NULL }, { "-4", NULL }, { "-3", NULL }, { "-2", NULL }, { "-1", NULL },
+        { "1", NULL }, { "2", NULL }, { "3", NULL }, { "4", NULL }, { "5", NULL },
+        { "6", NULL }, { "7", NULL }, { "8", NULL }, { "9", NULL }, { "10", NULL },
+        { NULL, NULL },
+      },
+      "0",
+    },
+    {
+      "stella_dpc_pitch",
+      "Pitfall II music pitch",
+      NULL, NULL, NULL,
+      "audio",
+      {
+        { "20000", NULL }, { "10000", NULL }, { "11000", NULL }, { "12000", NULL },
+        { "13000", NULL }, { "14000", NULL }, { "15000", NULL }, { "16000", NULL },
+        { "17000", NULL }, { "18000", NULL }, { "19000", NULL }, { "21000", NULL },
+        { "22000", NULL }, { "23000", NULL }, { "24000", NULL }, { "25000", NULL },
+        { "26000", NULL }, { "27000", NULL }, { "28000", NULL }, { "29000", NULL },
+        { "30000", NULL },
+        { NULL, NULL },
+      },
+      "20000",
+    },
+    {
+      "stella_messages",
+      "Info messages",
+      NULL,
+      NULL,
+      NULL,
+      "system",
+      {
+        { "disabled", NULL },
+        { "enabled", NULL },
+        { NULL, NULL },
+      },
+      "disabled",
+    },
     { NULL, NULL, NULL, NULL, NULL, NULL, { { NULL, NULL } }, NULL },
   };
 
@@ -1496,6 +1661,15 @@ void retro_set_environment(retro_environment_t cb)
     { "stella_paddle_analog_absolute", "Paddle analog absolute; disabled|enabled" },
     { "stella_lightgun_crosshair", "Lightgun crosshair; disabled|enabled" },
     { "stella_reload", "Enable reload/next game; off|on" },
+    { "stella_detect_pal60",    "Auto-detect PAL-60; disabled|enabled" },
+    { "stella_detect_ntsc50",   "Auto-detect NTSC-50; disabled|enabled" },
+    { "stella_pal_contrast",    "Palette contrast; 0|-1|-2|-3|-4|-5|-6|-7|-8|-9|-10|1|2|3|4|5|6|7|8|9|10" },
+    { "stella_pal_brightness",  "Palette brightness; 0|-1|-2|-3|-4|-5|-6|-7|-8|-9|-10|1|2|3|4|5|6|7|8|9|10" },
+    { "stella_pal_hue",         "Palette hue; 0|-1|-2|-3|-4|-5|-6|-7|-8|-9|-10|1|2|3|4|5|6|7|8|9|10" },
+    { "stella_pal_saturation",  "Palette saturation; 0|-1|-2|-3|-4|-5|-6|-7|-8|-9|-10|1|2|3|4|5|6|7|8|9|10" },
+    { "stella_pal_gamma",       "Palette gamma; 0|-1|-2|-3|-4|-5|-6|-7|-8|-9|-10|1|2|3|4|5|6|7|8|9|10" },
+    { "stella_dpc_pitch",       "Pitfall II music pitch; 20000|10000|11000|12000|13000|14000|15000|16000|17000|18000|19000|21000|22000|23000|24000|25000|26000|27000|28000|29000|30000" },
+    { "stella_messages",        "Info messages; disabled|enabled" },
     { NULL, NULL },
   };
 
@@ -1690,7 +1864,7 @@ void retro_run()
 
   stella.runFrame();
 
-  if(stella_lightgun_crosshair && input_crosshair[0] && input_crosshair[1])
+  if(stella_settings.lightgun_crosshair && input_crosshair[0] && input_crosshair[1])
     draw_crosshair(input_crosshair[0], input_crosshair[1], 0x0000ff);
 
   if(stella.getVideoResize())

@@ -24,10 +24,10 @@
 
 namespace {
   // Compute the sum of the array of bytes
-  uInt8 checksum(const uInt8* s, uInt16 length) {
-    return static_cast<uInt8>(std::accumulate(s, s + length, 0));
+  constexpr uInt8 checksum(ByteSpan s) {
+    return static_cast<uInt8>(std::accumulate(s.begin(), s.end(), 0));
   }
-} // namespace
+}  // namespace
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartridgeAR::CartridgeAR(ByteSpan image, string_view md5,
@@ -41,10 +41,9 @@ CartridgeAR::CartridgeAR(ByteSpan image, string_view md5,
   myNumberOfLoadImages = static_cast<uInt8>(myLoadImages.size() / LOAD_SIZE);
 
   // Copy the given image and add header if not present
-  std::copy_n(image.data(), image.size(), myLoadImages.data());
+  std::ranges::copy(image, myLoadImages.begin());
   if(image.size() < LOAD_SIZE)
-    std::copy_n(ourDefaultHeader.data(), ourDefaultHeader.size(),
-                myLoadImages.data() + myImage.size());
+    std::ranges::copy(ourDefaultHeader, myLoadImages.begin() + myImage.size());
 
   // We use System::PageAccess.romAccessBase, but don't allow its use
   // through a pointer, since the AR scheme doesn't support bankswitching
@@ -103,53 +102,13 @@ uInt8 CartridgeAR::peek(uInt16 addr)
   // Is the "dummy" SC BIOS hotspot for reading a load being accessed?
   if(((addr & 0x1FFF) == 0x1850) && (myImageOffset[1] == RAM_SIZE))
   {
-    // Get load that's being accessed (BIOS places load number at 0x80)
-    const uInt8 load = mySystem->peek(0x0080);
-
-    // Read the specified load into RAM
-    loadIntoRAM(load);
-
+    // BIOS places load number at 0x80
+    loadIntoRAM(mySystem->peek(0x0080));
     return myImage[(addr & 0x07FF) + myImageOffset[1]];
   }
 
-  // Cancel any pending write if more than 5 distinct accesses have occurred
-  // TODO: Modify to handle when the distinct counter wraps around...
-  if(myWritePending &&
-      (mySystem->m6502().distinctAccesses() > myNumberOfDistinctAccesses + 5))
-  {
-    myWritePending = false;
-  }
-
-  // Is the data hold register being set?
-  if(!(addr & 0x0F00) && (!myWriteEnabled || !myWritePending))
-  {
-    myDataHoldRegister = static_cast<uInt8>(addr);  // FIXME - check cast here
-    myNumberOfDistinctAccesses = mySystem->m6502().distinctAccesses();
-    myWritePending = true;
-  }
-  // Is the bank configuration hotspot being accessed?
-  else if((addr & 0x1FFF) == 0x1FF8)
-  {
-    // Yes, so handle bank configuration
-    myWritePending = false;
-    bankConfiguration(myDataHoldRegister);
-  }
-  // Handle poke if writing enabled
-  else if(myWriteEnabled && myWritePending &&
-      (mySystem->m6502().distinctAccesses() == (myNumberOfDistinctAccesses + 5)))
-  {
-    if((addr & 0x0800) == 0)
-    {
-      myImage[(addr & 0x07FF) + myImageOffset[0]] = myDataHoldRegister;
-      mySystem->setDirtyPage(addr);
-    }
-    else if(myImageOffset[1] != (3 * BANK_SIZE))    // Can't poke to ROM :-)
-    {
-      myImage[(addr & 0x07FF) + myImageOffset[1]] = myDataHoldRegister;
-      mySystem->setDirtyPage(addr);
-    }
-    myWritePending = false;
-  }
+  if(handleHotspot(addr))
+    mySystem->setDirtyPage(addr);
 
   return myImage[(addr & 0x07FF) + myImageOffset[(addr & 0x0800) ? 1 : 0]];
 }
@@ -157,10 +116,13 @@ uInt8 CartridgeAR::peek(uInt16 addr)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CartridgeAR::poke(uInt16 addr, uInt8)
 {
-  bool modified = false;
+  return handleHotspot(addr);
+}
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool CartridgeAR::handleHotspot(uInt16 addr)
+{
   // Cancel any pending write if more than 5 distinct accesses have occurred
-  // TODO: Modify to handle when the distinct counter wraps around...
   if(myWritePending &&
       (mySystem->m6502().distinctAccesses() > myNumberOfDistinctAccesses + 5))
   {
@@ -170,35 +132,36 @@ bool CartridgeAR::poke(uInt16 addr, uInt8)
   // Is the data hold register being set?
   if(!(addr & 0x0F00) && (!myWriteEnabled || !myWritePending))
   {
-    myDataHoldRegister = static_cast<uInt8>(addr);  // FIXME - check cast here
+    myDataHoldRegister = static_cast<uInt8>(addr);
     myNumberOfDistinctAccesses = mySystem->m6502().distinctAccesses();
     myWritePending = true;
   }
   // Is the bank configuration hotspot being accessed?
   else if((addr & 0x1FFF) == 0x1FF8)
   {
-    // Yes, so handle bank configuration
     myWritePending = false;
     bankConfiguration(myDataHoldRegister);
   }
-  // Handle poke if writing enabled
+  // Commit write if exactly 5 distinct accesses have passed
   else if(myWriteEnabled && myWritePending &&
       (mySystem->m6502().distinctAccesses() == (myNumberOfDistinctAccesses + 5)))
   {
+    bool written = false;
     if((addr & 0x0800) == 0)
     {
       myImage[(addr & 0x07FF) + myImageOffset[0]] = myDataHoldRegister;
-      modified = true;
+      written = true;
     }
     else if(myImageOffset[1] != (3 * BANK_SIZE))    // Can't poke to ROM :-)
     {
       myImage[(addr & 0x07FF) + myImageOffset[1]] = myDataHoldRegister;
-      modified = true;
+      written = true;
     }
     myWritePending = false;
+    return written;
   }
 
-  return modified;
+  return false;
 }
 
 #ifdef DEBUGGER_SUPPORT
@@ -237,10 +200,14 @@ bool CartridgeAR::bankConfiguration(uInt8 configuration)
   //    to happen.  0 = disabled, and the cart acts like ROM.)
   //  p = ROM Power (0 = enabled, 1 = off.)  Only power the ROM if you're
   //    wanting to access the ROM for multiloads.  Otherwise set to 1.
-  const uInt32 OFFSET_0[8] = {2 * BANK_SIZE, 0 * BANK_SIZE, 2 * BANK_SIZE, 0 * BANK_SIZE,
-                              2 * BANK_SIZE, 1 * BANK_SIZE, 2 * BANK_SIZE, 1 * BANK_SIZE};
-  const uInt32 OFFSET_1[8] = {3 * BANK_SIZE, 3 * BANK_SIZE, 0 * BANK_SIZE, 2 * BANK_SIZE,
-                              3 * BANK_SIZE, 3 * BANK_SIZE, 1 * BANK_SIZE, 2 * BANK_SIZE};
+  static constexpr uInt32 OFFSET_0[8] = {
+    2 * BANK_SIZE, 0 * BANK_SIZE, 2 * BANK_SIZE, 0 * BANK_SIZE,
+    2 * BANK_SIZE, 1 * BANK_SIZE, 2 * BANK_SIZE, 1 * BANK_SIZE
+  };
+  static constexpr uInt32 OFFSET_1[8] = {
+    3 * BANK_SIZE, 3 * BANK_SIZE, 0 * BANK_SIZE, 2 * BANK_SIZE,
+    3 * BANK_SIZE, 3 * BANK_SIZE, 1 * BANK_SIZE, 2 * BANK_SIZE
+  };
   const int bankConfig = (configuration & 0b11100) >> 2;
 
   myCurrentBank = configuration & 0b11111; // remember for the bank() method
@@ -277,7 +244,7 @@ void CartridgeAR::initializeROM()
   std::fill_n(myImage.begin() + RAM_SIZE, BANK_SIZE, 0x02);
 
   // Copy the "dummy" Supercharger BIOS code into the ROM area
-  std::copy_n(ourDummyROMCode.data(), ourDummyROMCode.size(), myImage.data() + RAM_SIZE);
+  std::ranges::copy(ourDummyROMCode, myImage.begin() + RAM_SIZE);
 
   // Finally set 6502 vectors to point to initial load code at 0xF80A of BIOS
   myImage[RAM_SIZE + BANK_SIZE - 4] = 0x0A;
@@ -300,15 +267,14 @@ void CartridgeAR::loadIntoRAM(uInt8 load)
     if(myLoadImages[image_off + myImage.size() + 5] == load)
     {
       // Copy the load's header
-      std::copy_n(myLoadImages.data() + image_off + myImage.size(),
-                  myHeader.size(), myHeader.data());
+      std::ranges::copy(ByteSpan{myLoadImages}.subspan(image_off + myImage.size(),
+                        myHeader.size()), myHeader.begin());
 
       // Verify the load's header
-      if(checksum(myHeader.data(), 8) != 0x55)
+      if(checksum(ByteSpan{myHeader}.first(8)) != 0x55)
       {
-        cerr << "WARNING: The Supercharger header checksum is invalid...\n";
-        myMsgCallback("Supercharger load #" + std::to_string(load) +
-                      " done with hearder checksum error");
+        myMsgCallback(std::format(
+          "Supercharger load #{} done with header checksum error", load));
         success = false;
       }
 
@@ -318,21 +284,19 @@ void CartridgeAR::loadIntoRAM(uInt8 load)
       {
         const size_t bank = myHeader[16 + j] & 0b00011;
         const size_t page = (myHeader[16 + j] & 0b11100) >> 2;
-        const uInt8* const src = myLoadImages.data() + image_off + j * 256;
-        const uInt8 sum = checksum(src, 256) + myHeader[16 + j] + myHeader[64 + j];
+        const ByteSpan src = ByteSpan{myLoadImages}.subspan(image_off + j * 256, 256);
+        const uInt8 sum = checksum(src) + myHeader[16 + j] + myHeader[64 + j];
 
         if(!invalidPageChecksumSeen && (sum != 0x55))
         {
-          cerr << "WARNING: Some Supercharger page checksums are invalid...\n";
-          myMsgCallback("Supercharger load #" + std::to_string(load) +
-                        " done with page #" + std::to_string(j) +
-                        " checksum error");
+          myMsgCallback(std::format(
+            "Supercharger load #{} done with page #{} checksum error", load, j));
           invalidPageChecksumSeen = true;
         }
 
         // Copy page to Supercharger RAM (don't allow a copy into ROM area)
         if(bank < 3)
-          std::copy_n(src, 256, myImage.data() + (bank * BANK_SIZE) + (page * 256));
+          std::ranges::copy(src, myImage.begin() + (bank * BANK_SIZE) + (page * 256));
       }
       success &= !invalidPageChecksumSeen;
 
@@ -344,14 +308,12 @@ void CartridgeAR::loadIntoRAM(uInt8 load)
 
       myBankChanged = true;
       if(success)
-        myMsgCallback("Supercharger load #" + std::to_string(load) + " done");
+        myMsgCallback(std::format("Supercharger load #{} done", load));
       return;
     }
   }
 
-  // TODO: Should probably switch to an internal ROM routine to display
-  // this message to the user...
-  cerr << "ERROR: Supercharger load is missing from ROM image...\n";
+  myMsgCallback(std::format("Supercharger load #{} not found in ROM image", load));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -378,8 +340,8 @@ uInt16 CartridgeAR::romBankCount() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CartridgeAR::patch(uInt16 address, uInt8 value)
 {
-  // TODO - add support for debugger
-  return false;
+  myImage[(address & 0x07FF) + myImageOffset[(address & 0x0800) ? 1 : 0]] = value;
+  return myBankChanged = true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -393,7 +355,7 @@ bool CartridgeAR::save(Serializer& out) const
 {
   try
   {
-    // Indicates the offest within the image for the corresponding bank
+    // Indicates the offset within the image for the corresponding bank
     out.putIntArray(myImageOffset);
 
     // The 6K of RAM and 2K of ROM contained in the Supercharger
@@ -402,12 +364,12 @@ bool CartridgeAR::save(Serializer& out) const
     // The 256 byte header for the current 8448 byte load
     out.putByteArray(myHeader);
 
+    // Indicates how many 8448 loads there are
+    out.putByte(myNumberOfLoadImages);
+
     // All of the 8448 byte loads associated with the game
     // Note that the size of this array is myNumberOfLoadImages * 8448
     out.putByteArray(ByteSpan{myLoadImages}.first(myNumberOfLoadImages * LOAD_SIZE));
-
-    // Indicates how many 8448 loads there are
-    out.putByte(myNumberOfLoadImages);
 
     // Indicates if the RAM is write enabled
     out.putBool(myWriteEnabled);
@@ -423,6 +385,9 @@ bool CartridgeAR::save(Serializer& out) const
 
     // Indicates if a write is pending or not
     out.putBool(myWritePending);
+
+    // Indicates which bank is currently active
+    out.putShort(myCurrentBank);
   }
   catch(...)
   {
@@ -438,7 +403,7 @@ bool CartridgeAR::load(Serializer& in)
 {
   try
   {
-    // Indicates the offest within the image for the corresponding bank
+    // Indicates the offset within the image for the corresponding bank
     in.getIntArray(myImageOffset);
 
     // The 6K of RAM and 2K of ROM contained in the Supercharger
@@ -447,12 +412,12 @@ bool CartridgeAR::load(Serializer& in)
     // The 256 byte header for the current 8448 byte load
     in.getByteArray(myHeader);
 
+    // Indicates how many 8448 loads there are
+    myNumberOfLoadImages = in.getByte();
+
     // All of the 8448 byte loads associated with the game
     // Note that the size of this array is myNumberOfLoadImages * 8448
     in.getByteArray(ByteMSpan{myLoadImages}.first(myNumberOfLoadImages * LOAD_SIZE));
-
-    // Indicates how many 8448 loads there are
-    myNumberOfLoadImages = in.getByte();
 
     // Indicates if the RAM is write enabled
     myWriteEnabled = in.getBool();
@@ -468,6 +433,9 @@ bool CartridgeAR::load(Serializer& in)
 
     // Indicates if a write is pending or not
     myWritePending = in.getBool();
+
+    // Indicates which bank is currently active
+    myCurrentBank = in.getShort();
   }
   catch(...)
   {

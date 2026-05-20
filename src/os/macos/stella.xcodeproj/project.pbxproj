@@ -528,6 +528,8 @@
 		DCA82C721FEB4E780059340F /* TimeMachine.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCA82C6E1FEB4E780059340F /* TimeMachine.hxx */; };
 		DCA82C731FEB4E780059340F /* TimeMachineDialog.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCA82C6F1FEB4E780059340F /* TimeMachineDialog.cxx */; };
 		DCA82C741FEB4E780059340F /* TimeMachineDialog.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCA82C701FEB4E780059340F /* TimeMachineDialog.hxx */; };
+		DCA935482FBDD9B800FA4510 /* CompuMateCassette.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCA935472FBDD9B800FA4510 /* CompuMateCassette.cxx */; };
+		DCA935492FBDD9B800FA4510 /* CompuMateCassette.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCA935462FBDD9B800FA4510 /* CompuMateCassette.hxx */; };
 		DCAA68422A3CD026006A1E5F /* CartGL.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCAA68402A3CD026006A1E5F /* CartGL.cxx */; };
 		DCAA68432A3CD026006A1E5F /* CartGL.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCAA68412A3CD026006A1E5F /* CartGL.hxx */; };
 		DCAA68462A3CD04C006A1E5F /* CartGLWidget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCAA68442A3CD04B006A1E5F /* CartGLWidget.hxx */; };
@@ -1410,6 +1412,8 @@
 		DCA82C6E1FEB4E780059340F /* TimeMachine.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = TimeMachine.hxx; sourceTree = "<group>"; };
 		DCA82C6F1FEB4E780059340F /* TimeMachineDialog.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TimeMachineDialog.cxx; sourceTree = "<group>"; };
 		DCA82C701FEB4E780059340F /* TimeMachineDialog.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = TimeMachineDialog.hxx; sourceTree = "<group>"; };
+		DCA935462FBDD9B800FA4510 /* CompuMateCassette.hxx */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = CompuMateCassette.hxx; sourceTree = "<group>"; };
+		DCA935472FBDD9B800FA4510 /* CompuMateCassette.cxx */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = CompuMateCassette.cxx; sourceTree = "<group>"; };
 		DCAA68402A3CD026006A1E5F /* CartGL.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CartGL.cxx; sourceTree = "<group>"; };
 		DCAA68412A3CD026006A1E5F /* CartGL.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = CartGL.hxx; sourceTree = "<group>"; };
 		DCAA68442A3CD04B006A1E5F /* CartGLWidget.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = CartGLWidget.hxx; sourceTree = "<group>"; };
@@ -2223,6 +2227,8 @@
 				DCA23AE70D75B22500F77B33 /* CartX07.cxx */,
 				DC8C1BAA14B25DE7006440EE /* CompuMate.hxx */,
 				DC8C1BA914B25DE7006440EE /* CompuMate.cxx */,
+				DCA935462FBDD9B800FA4510 /* CompuMateCassette.hxx */,
+				DCA935472FBDD9B800FA4510 /* CompuMateCassette.cxx */,
 				2DE2DF390627AE07006BEC99 /* Console.hxx */,
 				2DE2DF380627AE07006BEC99 /* Console.cxx */,
 				DCF7F125223D795F00701A47 /* ConsoleIO.hxx */,
@@ -3254,6 +3260,7 @@
 				DC1E89092C4033280033E15F /* ElfUtil.hxx in Headers */,
 				DCAACB13188D636F00A4D282 /* CartBFWidget.hxx in Headers */,
 				DC2ABA7425A0C9B2007E57D3 /* KeyValueRepositoryJsonFile.hxx in Headers */,
+				DCA935492FBDD9B800FA4510 /* CompuMateCassette.hxx in Headers */,
 				DCAACB15188D636F00A4D282 /* CartDFSCWidget.hxx in Headers */,
 				DC44019F1F1A5D01008C08F6 /* ColorWidget.hxx in Headers */,
 				DC96162D1F817830008A2206 /* AmigaMouseWidget.hxx in Headers */,
@@ -3493,6 +3500,7 @@
 				E0A384142589741A0062AA93 /* KeyValueRepositorySqlite.cxx in Sources */,
 				2D9174C909BA90380026E9FF /* EditTextWidget.cxx in Sources */,
 				2D9174CC09BA90380026E9FF /* TIADebug.cxx in Sources */,
+				DCA935482FBDD9B800FA4510 /* CompuMateCassette.cxx in Sources */,
 				2D9174CD09BA90380026E9FF /* YaccParser.cxx in Sources */,
 				DC6A18F819B3E65500DEB242 /* CartMDMWidget.cxx in Sources */,
 				2D9174CE09BA90380026E9FF /* Cart3E.cxx in Sources */,

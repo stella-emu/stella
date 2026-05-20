@@ -24,6 +24,9 @@ class OSystem;
 #include "FBBackend.hxx"
 #include "FBSurfaceLIBRETRO.hxx"
 
+// Defined in libretro.cxx; posts an info-level notification to the frontend
+void libretro_show_message(const char* msg);
+
 /**
   This class implements a standard LIBRETRO framebuffer backend.  Most of
   the functionality is not used, since libretro has its own rendering system.
@@ -83,6 +86,25 @@ class FBBackendLIBRETRO : public FBBackend
     // description, if needed.
     //////////////////////////////////////////////////////////////////////
 
+    void showMessage(string_view message) override {
+      if(message != myLastMessage)
+      {
+        myLastMessage = message;
+        libretro_show_message(myLastMessage.c_str());
+      }
+    }
+    void showGaugeMessage(string_view message, string_view valueText,
+                          float /*value*/,
+                          float /*minValue*/, float /*maxValue*/) override {
+      const string combined = valueText.empty()
+        ? string{message}
+        : std::format("{}: {}", message, valueText);
+      if(combined != myLastMessage)
+      {
+        myLastMessage = combined;
+        libretro_show_message(myLastMessage.c_str());
+      }
+    }
     void setTitle(string_view) override { }
     void showCursor(bool) override { }
     bool fullScreen() const override { return true; }
@@ -108,6 +130,8 @@ class FBBackendLIBRETRO : public FBBackend
     bool isDarkTheme() const override { return false; }
 
   private:
+    string myLastMessage;
+
     // Following constructors and assignment operators not supported
     FBBackendLIBRETRO() = delete;
     FBBackendLIBRETRO(const FBBackendLIBRETRO&) = delete;
