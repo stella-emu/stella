@@ -56,19 +56,20 @@ bool FSNodePOSIX::setFlags()
   struct stat st{};
   if(stat(_path.c_str(), &st) == 0)
   {
-    _isDirectory = S_ISDIR(st.st_mode);
-    _isFile = S_ISREG(st.st_mode);
+    _kind = S_ISDIR(st.st_mode) ? NodeKind::Directory
+          : S_ISREG(st.st_mode) ? NodeKind::File
+          : NodeKind::Invalid;
     _size = st.st_size;
 
     // Add a trailing slash, if necessary
-    if(_isDirectory && !_path.empty() && _path.back() != FSNode::PATH_SEPARATOR)
+    if(isDirectory() && !_path.empty() && _path.back() != FSNode::PATH_SEPARATOR)
       _path += FSNode::PATH_SEPARATOR;
 
     return true;
   }
   else
   {
-    _isDirectory = _isFile = false;
+    _kind = NodeKind::Invalid;
     _size = 0;
 
     return false;
@@ -84,10 +85,10 @@ string FSNodePOSIX::getShortPath() const
   if(BSPF::startsWithIgnoreCase(_path, home))
   {
     string path = "~";
-    const char* const offset = _path.c_str() + home.size();
-    if(*offset != FSNode::PATH_SEPARATOR)
+    const string_view suffix = string_view{_path}.substr(home.size());
+    if(!suffix.empty() && suffix[0] != FSNode::PATH_SEPARATOR)
       path += FSNode::PATH_SEPARATOR;
-    path += offset;
+    path += suffix;
     return path;
   }
   return _path;
@@ -96,7 +97,7 @@ string FSNodePOSIX::getShortPath() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 size_t FSNodePOSIX::getSize() const
 {
-  if(_size == 0 && _isFile)
+  if(!_size && isFile())
   {
     struct stat st{};
     _size = (stat(_path.c_str(), &st) == 0) ? st.st_size : 0;
@@ -116,13 +117,13 @@ AbstractFSNodePtr FSNodePOSIX::getParent() const
   if(_path == "/")
     return nullptr;
 
-  return std::make_unique<FSNodePOSIX>(stemPathComponent(_path));
+  return std::make_shared<FSNodePOSIX>(stemPathComponent(_path));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool FSNodePOSIX::getChildren(AbstractFSList& myList, ListMode mode) const
 {
-  if(!_isDirectory)
+  if(!isDirectory())
     return false;
 
   DIR* dirp = opendir(_path.c_str());
@@ -152,11 +153,11 @@ bool FSNodePOSIX::getChildren(AbstractFSList& myList, ListMode mode) const
     }
     else
     {
-      entry._isDirectory = (dp->d_type == DT_DIR);
-      entry._isFile = (dp->d_type == DT_REG);
-      // entry._size will be calculated first time ::getSize() is called
+      entry._kind = (dp->d_type == DT_DIR) ? NodeKind::Directory
+                  : (dp->d_type == DT_REG) ? NodeKind::File
+                  : NodeKind::Invalid;
 
-      if(entry._isDirectory)
+      if(entry.isDirectory())
         entry._path += FSNode::PATH_SEPARATOR;
     }
 
@@ -166,11 +167,11 @@ bool FSNodePOSIX::getChildren(AbstractFSList& myList, ListMode mode) const
       continue;
 
     // Honor the chosen mode
-    if((mode == FSNode::ListMode::FilesOnly && !entry._isFile) ||
-       (mode == FSNode::ListMode::DirectoriesOnly && !entry._isDirectory))
+    if((mode == FSNode::ListMode::FilesOnly && !entry.isFile()) ||
+       (mode == FSNode::ListMode::DirectoriesOnly && !entry.isDirectory()))
       continue;
 
-    myList.emplace_back(std::make_unique<FSNodePOSIX>(std::move(entry)));
+    myList.emplace_back(std::make_shared<FSNodePOSIX>(std::move(entry)));
   }
   closedir(dirp);
 
