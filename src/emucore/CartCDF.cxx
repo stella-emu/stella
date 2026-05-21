@@ -200,9 +200,7 @@ inline void CartridgeCDF::callFunction(uInt8 value)
       }
       catch(const std::runtime_error& e) {
         if(!mySystem->autodetectMode())
-        {
           FatalEmulationError::raise(e.what());
-        }
       }
       break;
     default:
@@ -415,7 +413,7 @@ bool CartridgeCDF::poke(uInt16 address, uInt8 value)
       callFunction(value);
       break;
 
-   case 0x00FF4:
+    case 0x0FF4:
       bank(isCDFJplus() ? 0 : 6);
       break;
 
@@ -470,7 +468,7 @@ bool CartridgeCDF::bank(uInt16 bank, uInt16)
   {
     access.romAccessBase = &myRomAccessBase[myBankOffset + (addr & 0x0FFF)];
     access.romPeekCounter = &myRomAccessCounter[myBankOffset + (addr & 0x0FFF)];
-    access.romPokeCounter = &myRomAccessCounter[myBankOffset + (addr & 0x0FFF) + 28_KB];  // TODO: Change for CDFJ+???
+    access.romPokeCounter = &myRomAccessCounter[myBankOffset + (addr & 0x0FFF) + myAccessSize];
     mySystem->setPageAccess(addr, access);
   }
   return myBankChanged = true;
@@ -499,8 +497,7 @@ bool CartridgeCDF::patch(uInt16 address, uInt8 value)
     myProgramImage[myBankOffset + (address & 0x0FFF)] = value;
     return myBankChanged = true;
   }
-  else
-    return false;
+  return false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -544,10 +541,7 @@ uInt32 CartridgeCDF::thumbCallback(uInt8 function, uInt32 value1, uInt32 value2)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 CartridgeCDF::internalRamGetValue(uInt16 addr) const
 {
-  if(addr < internalRamSize())
-    return myRAM[addr];
-  else
-    return 0;
+  return (addr < internalRamSize()) ? myRAM[addr] : 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -640,12 +634,7 @@ bool CartridgeCDF::load(Serializer& in)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt32 CartridgeCDF::getDatastreamPointer(uInt8 index) const
 {
-  const uInt16 address = myDatastreamBase + index * 4;
-
-  return myRAM[address + 0]        +  // low byte
-        (myRAM[address + 1] << 8)  +
-        (myRAM[address + 2] << 16) +
-        (myRAM[address + 3] << 24) ;  // high byte
+  return getUInt32(myRAM.data(), myDatastreamBase + index * 4);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -662,23 +651,13 @@ void CartridgeCDF::setDatastreamPointer(uInt8 index, uInt32 value)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt32 CartridgeCDF::getDatastreamIncrement(uInt8 index) const
 {
-  const uInt16 address = myDatastreamIncrementBase + index * 4;
-
-  return myRAM[address + 0]        +   // low byte
-        (myRAM[address + 1] << 8)  +
-        (myRAM[address + 2] << 16) +
-        (myRAM[address + 3] << 24) ;   // high byte
+  return getUInt32(myRAM.data(), myDatastreamIncrementBase + index * 4);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt32 CartridgeCDF::getWaveform(uInt8 index) const
 {
-  const uInt16 address = myWaveformBase + index * 4;
-
-  uInt32 result = myRAM[address + 0]        +  // low byte
-                 (myRAM[address + 1] << 8)  +
-                 (myRAM[address + 2] << 16) +
-                 (myRAM[address + 3] << 24);   // high byte
+  uInt32 result = getUInt32(myRAM.data(), myWaveformBase + index * 4);
 
   result -= (0x40000000 + static_cast<uInt32>(2_KB));
 
@@ -693,14 +672,7 @@ uInt32 CartridgeCDF::getWaveform(uInt8 index) const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt32 CartridgeCDF::getSample()
 {
-  const uInt16 address = myWaveformBase;
-
-  const uInt32 result = myRAM[address + 0]        +  // low byte
-                       (myRAM[address + 1] << 8)  +
-                       (myRAM[address + 2] << 16) +
-                       (myRAM[address + 3] << 24);   // high byte
-
-  return result;
+  return getUInt32(myRAM.data(), myWaveformBase);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

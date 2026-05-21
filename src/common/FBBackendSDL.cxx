@@ -353,8 +353,8 @@ bool FBBackendSDL::setVideoMode(const VideoModeHandler::Mode& mode,
   const bool result = createRenderer();  // NOLINT(readability-misleading-indentation)
   if(result)
   {
-    // TODO: Checking for fullscreen status later returns invalid results,
-    //       so we check and cache it here
+    // Cache before SDL_ShowWindow: showing the window causes SDL to process
+    // X11 _NET_WM_STATE notifications that incorrectly reset the fullscreen flag.
     myIsFullscreen = SDL_GetWindowFlags(myWindow) & SDL_WINDOW_FULLSCREEN;
     SDL_ShowWindow(myWindow);
     SDL_RenderPresent(myRenderer);  // commit initial blank frame for Wayland
@@ -468,15 +468,15 @@ bool FBBackendSDL::createRenderer()
     myRenderer = SDL_CreateRendererWithProperties(props);
     SDL_DestroyProperties(props);
 
-    detectFeatures();
-    determineDimensions();
-
     if(myRenderer == nullptr)
     {
       Logger::error(std::format("ERROR: Unable to create SDL renderer: {}",
                                 SDL_GetError()));
       return false;
     }
+
+    detectFeatures();
+    determineDimensions();
   }
   clear();
 
@@ -564,8 +564,7 @@ bool FBBackendSDL::fullScreen() const
   ASSERT_MAIN_THREAD;
 
 #ifdef WINDOWED_SUPPORT
-   return myIsFullscreen;  // TODO: this should query SDL directly (BUG?)
-//   return SDL_GetWindowFlags(myWindow) & SDL_WINDOW_FULLSCREEN;
+  return myIsFullscreen;
 #else
   return true;
 #endif

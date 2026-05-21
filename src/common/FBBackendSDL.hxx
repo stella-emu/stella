@@ -268,11 +268,10 @@ class FBBackendSDL : public FBBackend
     // Used when palettes and textures are created
     const SDL_PixelFormatDetails* myPixelFormat{nullptr};
 
-    // Are we in fullscreen mode?
-    // There seem to be issues with creating the window and renderer separately,
-    // and doing so means we can't query the window for fullscreen status
-    // So we do it at window creation and cache the result
-    // TODO: Is this a bug in SDL?
+    // Cached fullscreen state. SDL_ShowWindow triggers X11 _NET_WM_STATE
+    // PropertyNotify events that SDL processes, resetting SDL_WINDOW_FULLSCREEN
+    // before the WM has applied it. We capture the flag before SDL_ShowWindow
+    // to preserve the correct value; direct SDL queries afterwards are unreliable.
     bool myIsFullscreen{false};
 
     // Text events are sometimes enabled before a window exists
