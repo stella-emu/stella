@@ -36,6 +36,7 @@ class Bezel;
 #include "Variant.hxx"
 #include "TIAConstants.hxx"
 #include "FBBackend.hxx"
+#include "FBMessageHandler.hxx"
 #include "FrameBufferConstants.hxx"
 #include "EventHandlerConstants.hxx"
 #include "VideoModeHandler.hxx"
@@ -414,36 +415,6 @@ class FrameBuffer
     //void renderTIA(bool shade = false, bool doClear = true);
     void renderTIA(bool doClear = true, bool shade = false);
 
-  #ifdef GUI_SUPPORT
-    /**
-      Helps to create a basic message onscreen.
-
-      @param message  The message to be shown
-      @param position Onscreen position for the message
-      @param force    Force showing this message, even if messages are disabled
-    */
-    void createMessage(string_view message, MessagePosition position,
-                       bool force = false);
-  #endif  // GUI_SUPPORT
-
-    /**
-      Draw pending messages.
-
-      @return  Indicates whether any changes actually occurred.
-    */
-    bool drawMessage();
-
-    /**
-      Hide pending messages.
-    */
-    void hideMessage();
-
-    /**
-      Draws the frame stats overlay.
-    */
-    void drawFrameStats(float framesPerSecond);
-
-
     /**
       Get the display used for the current mode.
     */
@@ -485,9 +456,6 @@ class FrameBuffer
 
     // Indicates the number of times the framebuffer was initialized
     uInt32 myInitializedCount{0};
-
-    // Used to set intervals between messages while in pause mode
-    Int32 myPausedCount{0};
 
     // Maximum dimensions of each attached display desktop area
     // Note that this takes 'hidpi' mode into account, so in some cases
@@ -542,25 +510,9 @@ class FrameBuffer
     // The BezelSurface which blends over the TIA surface
     unique_ptr<Bezel> myBezel;
 
-    // Used for onscreen messages and frame statistics
-    // (scanline count and framerate)
-    struct Message {
-      string text;
-      int counter{-1};
-      int x{0}, y{0}, w{0}, h{0};
-      MessagePosition position{MessagePosition::BottomCenter};
-      ColorId color{kNone};
-      shared_ptr<FBSurface> surface;
-      bool enabled{false};
-      bool dirty{false};
-      bool showGauge{false};
-      float value{0.F};
-      string valueText;
-    };
-    Message myMsg;
-    Message myStatsMsg;
-    bool myStatsEnabled{false};
-    uInt32 myLastScanlines{0};
+    // The FBMessageHandler class takes responsibility for all onscreen
+    // message and frame-statistics overlay functionality
+    FBMessageHandler myMsgHandler;
 
     bool myGrabMouse{false};
 
@@ -569,11 +521,6 @@ class FrameBuffer
 
     // Holds a reference to all the surfaces that have been created
     std::list<shared_ptr<FBSurface>> mySurfaceList;
-
-    // Maximum message width [chars]
-    static constexpr int MESSAGE_WIDTH = 56;
-    // Maximum gauge bar width [chars]
-    static constexpr int GAUGEBAR_WIDTH = 30;
 
     FullPaletteArray myFullPalette{0};
     // Holds UI palette data (for each variation)
