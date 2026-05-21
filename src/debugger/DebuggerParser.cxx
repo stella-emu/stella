@@ -1193,9 +1193,12 @@ void DebuggerParser::executeDebugColors()
 // "define"
 void DebuggerParser::executeDefine()
 {
-  // TODO: check if label already defined?
-  debugger.cartDebug().addLabel(argStrings[0], args[1]);
-  debugger.rom().invalidate();
+  if(debugger.cartDebug().getAddress(argStrings[0]) != -1)
+    commandResult << "warning: label '" << argStrings[0] << "' already defined\n";
+  if(!debugger.cartDebug().addLabel(argStrings[0], args[1]))
+    commandResult << red("invalid address");
+  else
+    debugger.rom().invalidate();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
