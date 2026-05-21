@@ -376,12 +376,6 @@ void EventHandler::handleSystemEvent(SystemEvent e, int, int)
       break;
 
     case SystemEvent::WINDOW_FOCUS_GAINED:
-  #ifdef BSPF_UNIX
-      // Used to handle Alt-x key combos; sometimes the key associated with
-      // Alt gets 'stuck'  and is passed to the core for processing
-      if(myPKeyHandler->altKeyCount() > 0)
-        myPKeyHandler->altKeyCount() = 2;
-  #endif
       if(myOSystem.settings().getBool("autopause") && myState == EventHandlerState::PAUSE)
         setState(EventHandlerState::EMULATION);
       break;

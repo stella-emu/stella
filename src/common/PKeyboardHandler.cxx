@@ -548,21 +548,6 @@ bool PhysicalKeyboardHandler::addMapping(Event::Type event, EventMode mode,
 void PhysicalKeyboardHandler::handleEvent(StellaKey key, StellaMod mod,
                                           bool pressed, bool repeated)
 {
-#ifdef BSPF_UNIX
-  // Swallow StellaKey::TAB under certain conditions
-  // See comments on 'myAltKeyCounter' for more information
-  if(myAltKeyCounter > 1 && key == StellaKey::TAB)
-  {
-    myAltKeyCounter = 0;
-    return;
-  }
-  if (key == StellaKey::TAB && pressed && StellaModTest::isAlt(mod))
-  {
-    // Swallow Alt-Tab, but remember that it happened
-    myAltKeyCounter = 1;
-    return;
-  }
-#endif
 
   const EventHandlerState estate = myHandler.state();
 
