@@ -530,6 +530,8 @@
 		DCA82C741FEB4E780059340F /* TimeMachineDialog.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCA82C701FEB4E780059340F /* TimeMachineDialog.hxx */; };
 		DCA935482FBDD9B800FA4510 /* CompuMateCassette.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCA935472FBDD9B800FA4510 /* CompuMateCassette.cxx */; };
 		DCA935492FBDD9B800FA4510 /* CompuMateCassette.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCA935462FBDD9B800FA4510 /* CompuMateCassette.hxx */; };
+		DCA935542FBF3C3000FA4510 /* FBMessageHandler.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCA935522FBF3C3000FA4510 /* FBMessageHandler.hxx */; };
+		DCA935552FBF3C3000FA4510 /* FBMessageHandler.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCA935532FBF3C3000FA4510 /* FBMessageHandler.cxx */; };
 		DCAA68422A3CD026006A1E5F /* CartGL.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCAA68402A3CD026006A1E5F /* CartGL.cxx */; };
 		DCAA68432A3CD026006A1E5F /* CartGL.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCAA68412A3CD026006A1E5F /* CartGL.hxx */; };
 		DCAA68462A3CD04C006A1E5F /* CartGLWidget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCAA68442A3CD04B006A1E5F /* CartGLWidget.hxx */; };
@@ -1414,6 +1416,8 @@
 		DCA82C701FEB4E780059340F /* TimeMachineDialog.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = TimeMachineDialog.hxx; sourceTree = "<group>"; };
 		DCA935462FBDD9B800FA4510 /* CompuMateCassette.hxx */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = CompuMateCassette.hxx; sourceTree = "<group>"; };
 		DCA935472FBDD9B800FA4510 /* CompuMateCassette.cxx */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = CompuMateCassette.cxx; sourceTree = "<group>"; };
+		DCA935522FBF3C3000FA4510 /* FBMessageHandler.hxx */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = FBMessageHandler.hxx; sourceTree = "<group>"; };
+		DCA935532FBF3C3000FA4510 /* FBMessageHandler.cxx */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = FBMessageHandler.cxx; sourceTree = "<group>"; };
 		DCAA68402A3CD026006A1E5F /* CartGL.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CartGL.cxx; sourceTree = "<group>"; };
 		DCAA68412A3CD026006A1E5F /* CartGL.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = CartGL.hxx; sourceTree = "<group>"; };
 		DCAA68442A3CD04B006A1E5F /* CartGLWidget.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = CartGLWidget.hxx; sourceTree = "<group>"; };
@@ -2257,6 +2261,8 @@
 				DC5AAC261FCB24AB00C420A6 /* EventHandlerConstants.hxx */,
 				DC6F394621B897AD00897AD8 /* exception */,
 				DCB60ACB25430FC600A5C1D2 /* FBBackend.hxx */,
+				DCA935522FBF3C3000FA4510 /* FBMessageHandler.hxx */,
+				DCA935532FBF3C3000FA4510 /* FBMessageHandler.cxx */,
 				DC73BD881915E5E3003FAFAD /* FBSurface.hxx */,
 				DC73BD871915E5E3003FAFAD /* FBSurface.cxx */,
 				2D733D71062895B2006265D9 /* FrameBuffer.hxx */,
@@ -3102,6 +3108,7 @@
 				E06508BE2272447200B341AC /* KeyValueRepositoryNoop.hxx in Headers */,
 				DCF467C30F939A1400B25D7A /* CartEF.hxx in Headers */,
 				E06508C02272447200B341AC /* KeyValueRepositoryConfigfile.hxx in Headers */,
+				DCA935542FBF3C3000FA4510 /* FBMessageHandler.hxx in Headers */,
 				DC68F8901FA64C5300F4A2CC /* TIAConstants.hxx in Headers */,
 				DCA82C721FEB4E780059340F /* TimeMachine.hxx in Headers */,
 				DCF467C50F939A1400B25D7A /* CartEFSC.hxx in Headers */,
@@ -3625,6 +3632,7 @@
 				E0A384152589741A0062AA93 /* SqliteTransaction.cxx in Sources */,
 				DCD6FC7411C281ED005DA767 /* pngget.c in Sources */,
 				DCD6FC7511C281ED005DA767 /* pngmem.c in Sources */,
+				DCA935552FBF3C3000FA4510 /* FBMessageHandler.cxx in Sources */,
 				DCF3A6F51DFC75E3008A8AF3 /* Missile.cxx in Sources */,
 				DCD6FC7611C281ED005DA767 /* pngpread.c in Sources */,
 				DCD6FC7811C281ED005DA767 /* pngread.c in Sources */,
