@@ -55,7 +55,7 @@ FSNode& FSNode::operator/=(string_view path)
   {
     string newPath = getPath();
     newPath.reserve(newPath.size() + 1 + path.size());
-    if(!newPath.empty() && newPath[newPath.length()-1] != PATH_SEPARATOR)
+    if(!newPath.empty() && newPath.back() != PATH_SEPARATOR)
       newPath += PATH_SEPARATOR;
     newPath += path;
     setPath(newPath);
@@ -114,7 +114,6 @@ bool FSNode::getChildren(FSList& fslist, ListMode mode,
     return false;
 
   AbstractFSList tmp;
-  tmp.reserve(fslist.capacity());
 
   if(!_realNode->getChildren(tmp, mode))
     return false;
@@ -325,9 +324,8 @@ size_t FSNode::read(ByteArray& buffer, size_t size) const
     throw std::runtime_error("File not found/readable");
 
   // First let the private subclass attempt to open the file
-  if(_realNode)
-    if(const auto sizeRead = _realNode->read(buffer, size); sizeRead > 0)
-      return sizeRead;
+  if(const auto sizeRead = _realNode->read(buffer, size); sizeRead > 0)
+    return sizeRead;
 
   // Otherwise, the default behaviour is to read from a normal C++ ifstream
   auto in = openIFStream(std::ios::binary);
@@ -370,9 +368,8 @@ size_t FSNode::read(std::stringstream& buffer) const
     throw std::runtime_error("File not found/readable");
 
   // First let the private subclass attempt to open the file
-  if(_realNode)
-    if(const auto sizeRead = _realNode->read(buffer); sizeRead > 0)
-      return sizeRead;
+  if(const auto sizeRead = _realNode->read(buffer); sizeRead > 0)
+    return sizeRead;
 
   // Otherwise, the default behaviour is to read from a normal C++ ifstream
   // and pipe into the stringstream
@@ -425,27 +422,23 @@ size_t FSNode::write(ByteSpan buffer) const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 size_t FSNode::write(string_view buffer) const
 {
-  size_t sizeWritten = 0;
-
   // First let the private subclass attempt to open the file
   if(_realNode)
-    if(sizeWritten = _realNode->write(buffer); sizeWritten > 0)
-      return sizeWritten;
+    if(const size_t n = _realNode->write(buffer); n > 0)
+      return n;
 
   // Otherwise, the default behaviour is to write to a normal C++ ofstream
   auto out = openOFStream();
   if(out)
   {
     out.write(buffer.data(), static_cast<std::streamsize>(buffer.size()));
-    if(out)
-      sizeWritten = buffer.size();
-    else
+    if(!out)
       throw std::runtime_error("File write error");
   }
   else
     throw std::runtime_error("File open/write error");
 
-  return sizeWritten;
+  return buffer.size();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

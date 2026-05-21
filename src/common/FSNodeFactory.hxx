@@ -48,21 +48,21 @@ class FSNodeFactory
     enum class Type: uInt8 { SYSTEM, ZIP };
 
   public:
-    static unique_ptr<AbstractFSNode> create(string_view path, Type type)
+    static AbstractFSNodePtr create(string_view path, Type type)
     {
       switch(type)
       {
         case Type::SYSTEM:
         #if defined(BSPF_UNIX) || defined(BSPF_MACOS)
-          return std::make_unique<FSNodePOSIX>(path);
+          return std::make_shared<FSNodePOSIX>(path);
         #elif defined(BSPF_WINDOWS)
-          return std::make_unique<FSNodeWINDOWS>(path);
+          return std::make_shared<FSNodeWINDOWS>(path);
         #elif defined(__LIB_RETRO__)
-          return std::make_unique<FSNodeLIBRETRO>(path);
+          return std::make_shared<FSNodeLIBRETRO>(path);
         #endif
         case Type::ZIP:
         #ifdef ZIP_SUPPORT
-          return std::make_unique<FSNodeZIP>(path);
+          return std::make_shared<FSNodeZIP>(path);
         #else
           throw std::runtime_error("ZIP support not compiled in");
         #endif
