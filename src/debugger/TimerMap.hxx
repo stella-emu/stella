@@ -19,24 +19,32 @@
 #define TIMER_MAP_HXX
 
 #include <cmath>
-#include <climits>
-#include <map>
-#include <deque>
+#include <limits>
 
 #include "bspf.hxx"
 #include "Serializable.hxx"
 
 /**
-  This class handles debugger timers. Each timer needs a 'from' and a 'to'
-  address.
+  Implements the debugger's cycle-counting timer feature. Each timer measures
+  the number of CPU cycles elapsed between two addresses ('from' and 'to').
+  The timer starts when the PC equals the 'from' address and stops when it
+  equals the 'to' address, accumulating execution count and min/max/average
+  cycle statistics across repeated executions.
+
+  A timer can optionally match mirrored addresses (same lower 13 bits) and/or
+  fire regardless of the currently mapped ROM bank.
+
+  Timers can also be defined incrementally: a single-address 'timer' command
+  creates a partial timer (start point only); a second 'timer' command
+  completes it by adding the end point.
 
   @author  Thomas Jentzsch
 */
 class TimerMap : public Serializable
 {
   private:
-    static constexpr uInt16 ADDRESS_MASK = 0x1fff;  // either 0x1fff or 0xffff (not needed then)
-    static constexpr uInt8 ANY_BANK = 255;  // timer point valid in any bank
+    static constexpr uInt16 ADDRESS_MASK = 0x1fff;
+    static constexpr uInt8  ANY_BANK     = 255;  // timer point valid in any bank
 
   private:
     struct TimerPoint
@@ -47,14 +55,6 @@ class TimerMap : public Serializable
       constexpr TimerPoint() = default;
       explicit constexpr TimerPoint(uInt16 c_addr, uInt8 c_bank)
         : addr{c_addr}, bank{c_bank} { }
-
-      constexpr bool operator<(const TimerPoint& other) const
-      {
-        if(bank == ANY_BANK || other.bank == ANY_BANK)
-          return addr < other.addr;
-
-        return bank < other.bank || (bank == other.bank && addr < other.addr);
-      }
     };
 
   public:
@@ -69,14 +69,15 @@ class TimerMap : public Serializable
       uInt64 execs{0};
       uInt64 lastCycles{0};
       uInt64 totalCycles{0};
-      uInt64 minCycles{ULONG_MAX};
+      uInt64 minCycles{std::numeric_limits<uInt64>::max()};
       uInt64 maxCycles{0};
       bool   isStarted{false};
+
+      constexpr Timer() = default;
 
       /*
         Create full timer
       */
-
       explicit constexpr Timer(const TimerPoint& c_from, const TimerPoint& c_to,
                                bool c_mirrors = false, bool c_anyBank = false)
         : from{c_from}, to{c_to}, mirrors{c_mirrors}, anyBank{c_anyBank} { }
@@ -106,7 +107,7 @@ class TimerMap : public Serializable
       constexpr void reset()
       {
         execs = lastCycles = totalCycles = maxCycles = 0;
-        minCycles = ULONG_MAX;
+        minCycles = std::numeric_limits<uInt64>::max();
       }
 
       /*
@@ -135,8 +136,8 @@ class TimerMap : public Serializable
         }
       }
 
-      constexpr uInt32 averageCycles() const {
-        return execs ? static_cast<uInt32>(std::llround(
+      constexpr uInt64 averageCycles() const {
+        return execs ? static_cast<uInt64>(std::llround(
             static_cast<double>(totalCycles) / execs)) : 0;
       }
 
@@ -144,10 +145,10 @@ class TimerMap : public Serializable
       {
         try
         {
-          out.putInt(from.addr);
-          out.putShort(from.bank);
-          out.putInt(to.addr);
-          out.putShort(to.bank);
+          out.putShort(from.addr);
+          out.putByte(from.bank);
+          out.putShort(to.addr);
+          out.putByte(to.bank);
 
           out.putBool(mirrors);
           out.putBool(anyBank);
@@ -173,21 +174,21 @@ class TimerMap : public Serializable
       {
         try
         {
-          from.addr = in.getInt();
-          from.bank = in.getShort();
-          to.addr = in.getInt();
-          to.bank = in.getShort();
+          from.addr = in.getShort();
+          from.bank = in.getByte();
+          to.addr   = in.getShort();
+          to.bank   = in.getByte();
 
-          mirrors = in.getBool();
-          anyBank = in.getBool();
+          mirrors   = in.getBool();
+          anyBank   = in.getBool();
           isPartial = in.getBool();
 
-          execs = in.getLong();
-          lastCycles = in.getLong();
-          totalCycles = in.getLong();
-          minCycles = in.getLong();
-          maxCycles = in.getLong();
-          isStarted = in.getBool();
+          execs        = in.getLong();
+          lastCycles   = in.getLong();
+          totalCycles  = in.getLong();
+          minCycles    = in.getLong();
+          maxCycles    = in.getLong();
+          isStarted    = in.getBool();
         }
         catch(...)
         {
@@ -202,7 +203,7 @@ class TimerMap : public Serializable
     TimerMap() = default;
     ~TimerMap() override = default;
 
-    bool isInitialized() const { return !myList.empty(); }
+    bool hasTimers() const { return !myList.empty(); }
 
     /** Add new timer */
     uInt32 add(uInt16 fromAddr, uInt16 toAddr,
@@ -215,7 +216,7 @@ class TimerMap : public Serializable
     bool erase(uInt32 idx);
 
     /** Clear all timers */
-    void clear();
+    void clear() { myList.clear(); }
 
     /** Reset all timers */
     void reset();
@@ -228,34 +229,25 @@ class TimerMap : public Serializable
     void update(uInt16 addr, uInt8 bank, uInt64 cycles);
 
     /**
-    Save the current state of this cart to the given Serializer.
+      Save the current state of this object to the given Serializer.
 
-    @param out  The Serializer object to use
-    @return  False on any errors, else true
+      @param out  The Serializer object to use
+      @return  False on any errors, else true
     */
     bool save(Serializer& out) const override;
 
     /**
-    Load the current state of this cart from the given Serializer.
+      Load the current state of this object from the given Serializer.
 
-    @param in  The Serializer object to use
-    @return  False on any errors, else true
+      @param in  The Serializer object to use
+      @return  False on any errors, else true
     */
     bool load(Serializer& in) override;
 
   private:
-    static void toKey(TimerPoint& tp, bool mirrors, bool anyBank);
+    vector<Timer> myList;
 
   private:
-    using TimerList = std::deque<Timer>; // makes sure that the element pointers do NOT change
-    using TimerPair = std::pair<TimerPoint, Timer*>;
-    using FromMap = std::multimap<TimerPoint, Timer*>;
-    using ToMap = std::multimap<TimerPoint, Timer*>;
-
-    TimerList myList;
-    FromMap myFromMap;
-    ToMap myToMap;
-
     // Following constructors and assignment operators not supported
     TimerMap(const TimerMap&) = delete;
     TimerMap(TimerMap&&) = delete;

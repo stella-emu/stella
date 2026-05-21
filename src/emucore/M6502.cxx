@@ -299,7 +299,7 @@ inline void M6502::_execute(uInt64 cycles, DispatchResult& result)
           }
         }
 
-        if(myTimer.isInitialized())
+        if(myTimer.hasTimers())
           myTimer.update(PC, mySystem->cart().getBank(PC), mySystem->cycles());
 
         const int cond = evalCondBreaks();
