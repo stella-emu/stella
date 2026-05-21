@@ -440,6 +440,11 @@ class OSystem
     void quit() { myQuitLoop = true; }
 
     /**
+      Take a snapshot after the given number of emulation frames, then quit.
+    */
+    void setSnapshotAfterFrames(uInt32 frames) { mySnapshotFrames = frames; }
+
+    /**
       Reset FPS measurement.
     */
     void resetFps();
@@ -597,6 +602,9 @@ class OSystem
 
     // Indicates whether to stop the main loop
     bool myQuitLoop{false};
+
+    // When non-zero, take a snapshot after this many emulation frames then quit
+    uInt32 mySnapshotFrames{0};
 
   private:
     FSNode myBaseDir, myStateDir, mySnapshotSaveDir, mySnapshotLoadDir,

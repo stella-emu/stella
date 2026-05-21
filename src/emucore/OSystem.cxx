@@ -953,8 +953,15 @@ void OSystem::mainLoop()
     double timesliceSeconds;  // NOLINT(cppcoreguidelines-init-variables)
 
     if (myEventHandler->state() == EventHandlerState::EMULATION)
+    {
       // Dispatch emulation and render frame (if applicable)
       timesliceSeconds = dispatchEmulation(emulationWorker);
+      if(mySnapshotFrames > 0 && --mySnapshotFrames == 0) [[unlikely]]
+      {
+        myPNGLib->takeSnapshot();
+        myQuitLoop = true;
+      }
+    }
     else if(myEventHandler->state() == EventHandlerState::PLAYBACK)
     {
       // Playback at emulation speed

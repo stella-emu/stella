@@ -295,16 +295,8 @@ int main(int ac, char* av[])
       if(!result.empty())
         return Cleanup(1);
 
-#if 0
-      TODO: Fix this to use functionality from OSystem::mainLoop
-      if(localOpts["takesnapshot"].toBool())
-      {
-        for(int i = 0; i < 30; ++i)  theOSystem->frameBuffer().update();
-//        theOSystem->frameBuffer().tiaSurface().saveSnapShot();
-        theOSystem->png().takeSnapshot();
-        return Cleanup();
-      }
-#endif
+      if(localBool("takesnapshot"))
+        theOSystem->setSnapshotAfterFrames(30);
     }
     catch(const std::runtime_error& e)
     {
