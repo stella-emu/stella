@@ -68,26 +68,24 @@ bool FSNodeWINDOWS::setFlags()
 
   const DWORD fileAttribs = GetFileAttributesW(_pathW.c_str());
 
-  _isPseudoRoot = false;
   if(fileAttribs != INVALID_FILE_ATTRIBUTES) [[likely]]
   {
     // Check whether it is a directory, and whether the file actually exists
-    _isDirectory = (fileAttribs & FILE_ATTRIBUTE_DIRECTORY) != 0;
-    _isFile = !_isDirectory;
+    _kind = (fileAttribs & FILE_ATTRIBUTE_DIRECTORY) != 0 ? NodeKind::Directory : NodeKind::File;
 
     // Add a trailing backslash, if necessary
-    if (_isDirectory && !_pathW.empty() && _pathW.back() != L'\\')
+    if(_kind == NodeKind::Directory && !_pathW.empty() && _pathW.back() != L'\\')
       _pathW += L'\\';
   }
   else
-    _isDirectory = _isFile = false;
+    _kind = NodeKind::Invalid;
 
   // Only after making sure that there's a trailing backslash
   // will we update the UTF8 paths
   _pathUtf8 = wideToUtf8(_pathW);
   _displayName = AsciiFold::toAscii(lastPathComponent(_pathUtf8));
 
-  return _isDirectory || _isFile;
+  return _kind != NodeKind::Invalid;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -97,18 +95,17 @@ string FSNodeWINDOWS::getShortPath() const
   const std::wstring& home = HomeFinder::getHomePathW();
   if(!home.empty() && _wcsnicmp(_pathW.data(), home.data(), home.size()) == 0)
   {
-    const wchar_t* const offset = _pathW.c_str() + home.size();
-    const bool needsSeparator = (*offset != L'\0' &&
-      *offset != FSNode::PATH_SEPARATOR);
+    const std::wstring_view suffix = std::wstring_view{_pathW}.substr(home.size());
+    const bool needsSeparator = (!suffix.empty() && suffix[0] != FSNode::PATH_SEPARATOR);
 
     std::wstring pathW;
-    pathW.reserve(1 + (needsSeparator ? 1 : 0) + (_pathW.size() - home.size()));
+    pathW.reserve(1 + (needsSeparator ? 1 : 0) + suffix.size());
 
     pathW.push_back(L'~');
     if(needsSeparator)
       pathW.push_back(FSNode::PATH_SEPARATOR);
 
-    pathW.append(offset);
+    pathW.append(suffix);
 
     return wideToUtf8(pathW);
   }
@@ -119,7 +116,7 @@ string FSNodeWINDOWS::getShortPath() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 size_t FSNodeWINDOWS::getSize() const
 {
-  if(!_size && _isFile)
+  if(!_size && isFile())
   {
     struct _stat st;
     _size = (_wstat(_pathW.c_str(), &st) == 0) ? st.st_size : 0;
@@ -130,23 +127,24 @@ size_t FSNodeWINDOWS::getSize() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 AbstractFSNodePtr FSNodeWINDOWS::getParent() const
 {
-  if(_isPseudoRoot)
+  if(_kind == NodeKind::PseudoRoot)
     return nullptr;
   else if(_pathW.size() > 3)
-    return std::make_unique<FSNodeWINDOWS>(stemPathComponentW(_pathW));
+    return std::make_shared<FSNodeWINDOWS>(stemPathComponentW(_pathW));
   else
-    return std::make_unique<FSNodeWINDOWS>();
+    return std::make_shared<FSNodeWINDOWS>();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool FSNodeWINDOWS::getChildren(AbstractFSList& fslist, ListMode mode) const
 {
-  if(!_isPseudoRoot && _isDirectory) [[likely]]
+  if(_kind == NodeKind::File || _kind == NodeKind::Invalid)
+    return false;
+
+  if(_kind == NodeKind::Directory) [[likely]]
   {
-    std::wstring search = _pathW;
-    if(!search.empty() && search.back() != L'\\')
-      search += L'\\';
-    search += L'*';
+    // _pathW always ends in '\\' for directory nodes (enforced by setFlags())
+    const std::wstring search = _pathW + L'*';
 
     WIN32_FIND_DATAW desc;
     HANDLE handle = FindFirstFileExW(search.c_str(), FindExInfoBasic, &desc,
@@ -160,36 +158,27 @@ bool FSNodeWINDOWS::getChildren(AbstractFSList& fslist, ListMode mode) const
         continue;
 
       const bool isDir = (desc.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) != 0;
-      const bool isFile = !isDir;
 
-      if((isFile && mode == FSNode::ListMode::DirectoriesOnly) ||
-         (isDir && mode == FSNode::ListMode::FilesOnly))
+      if((!isDir && mode == FSNode::ListMode::DirectoriesOnly) ||
+         (isDir  && mode == FSNode::ListMode::FilesOnly))
         continue;
 
-      std::wstring full = _pathW;
-      if(!full.empty() && full.back() != L'\\')
-        full += L'\\';
-      full += desc.cFileName;
-
       FSNodeWINDOWS entry;
-      entry._isPseudoRoot = false;
-      entry._isDirectory  = isDir;
-      entry._isFile       = isFile;
-      entry._pathW        = std::move(full);
-      entry._pathUtf8     = wideToUtf8(entry._pathW);
-      entry._displayName  = AsciiFold::toAscii(lastPathComponent(entry._pathUtf8));
-      entry._size         = (static_cast<size_t>(desc.nFileSizeHigh) << 32) |
-                                                 desc.nFileSizeLow;
+      entry._kind        = isDir ? NodeKind::Directory : NodeKind::File;
+      entry._pathW       = _pathW + desc.cFileName;
+      entry._pathUtf8    = wideToUtf8(entry._pathW);
+      entry._displayName = AsciiFold::toAscii(lastPathComponent(entry._pathUtf8));
+      entry._size        = (static_cast<size_t>(desc.nFileSizeHigh) << 32) |
+                                                desc.nFileSizeLow;
 
-      fslist.emplace_back(std::make_unique<FSNodeWINDOWS>(std::move(entry)));
+      fslist.emplace_back(std::make_shared<FSNodeWINDOWS>(std::move(entry)));
 
     } while(FindNextFileW(handle, &desc));
 
     FindClose(handle);
   }
-  else
+  else  // PseudoRoot: drive enumeration
   {
-    // Drives enumeration
     const DWORD driveMask = GetLogicalDrives();
 
     for(int i = 0; i < 26; ++i)
@@ -198,14 +187,12 @@ bool FSNodeWINDOWS::getChildren(AbstractFSList& fslist, ListMode mode) const
         continue;
 
       FSNodeWINDOWS entry;
-      entry._isPseudoRoot = false;
-      entry._isDirectory  = true;
-      entry._isFile       = false;
-      entry._pathW        = { static_cast<wchar_t>(L'A' + i), L':', L'\\' };
-      entry._pathUtf8     = wideToUtf8(entry._pathW);
-      entry._displayName  = string(1, static_cast<char>('A' + i));
+      entry._kind        = NodeKind::Directory;
+      entry._pathW       = { static_cast<wchar_t>(L'A' + i), L':', L'\\' };
+      entry._pathUtf8    = wideToUtf8(entry._pathW);
+      entry._displayName = string(1, static_cast<char>('A' + i));
 
-      fslist.emplace_back(std::make_unique<FSNodeWINDOWS>(std::move(entry)));
+      fslist.emplace_back(std::make_shared<FSNodeWINDOWS>(std::move(entry)));
     }
   }
 
@@ -233,7 +220,7 @@ bool FSNodeWINDOWS::isWritable() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool FSNodeWINDOWS::makeDir()
 {
-  if(!_isPseudoRoot && CreateDirectoryW(_pathW.c_str(), nullptr) != 0)
+  if(_kind != NodeKind::PseudoRoot && CreateDirectoryW(_pathW.c_str(), nullptr) != 0)
     return setFlags();
 
   return false;
@@ -242,13 +229,13 @@ bool FSNodeWINDOWS::makeDir()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool FSNodeWINDOWS::rename(string_view newfile)
 {
-  if(!_isPseudoRoot)
+  if(_kind != NodeKind::PseudoRoot)
   {
     std::wstring newfilePath = utf8ToWide(newfile);
     if(MoveFileW(_pathW.c_str(), newfilePath.c_str()) != 0) {
       _pathW = std::move(newfilePath);
       _size.reset();
-      if(_pathW[0] == '~')
+      if(_pathW[0] == L'~')
         _pathW.replace(0, 1, HomeFinder::getHomePathW());
 
       return setFlags();

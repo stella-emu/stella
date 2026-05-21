@@ -35,7 +35,7 @@ class FSNodeWINDOWS : public AbstractFSNode
      * Creates a FSNodeWINDOWS with the root node as path.
      * The root node consists of all the drives on the system (A - Z).
      */
-    FSNodeWINDOWS() : _isPseudoRoot{true}, _isDirectory{true} { }
+    FSNodeWINDOWS() : _kind{NodeKind::PseudoRoot} { }
 
     /**
      * Creates a FSNodeWINDOWS for a given path.
@@ -50,15 +50,15 @@ class FSNodeWINDOWS : public AbstractFSNode
     void setName(string_view name) override { _displayName = name; }
     const string& getPath() const override  { return _pathUtf8;    }
     string getShortPath() const override;
-    bool isDirectory() const override { return _isDirectory; }
-    bool isFile() const override      { return _isFile;      }
+    bool isDirectory() const override { return _kind == NodeKind::Directory || _kind == NodeKind::PseudoRoot; }
+    bool isFile()      const override { return _kind == NodeKind::File;      }
     bool isReadable() const override;
     bool isWritable() const override;
     bool makeDir() override;
     bool rename(string_view newfile) override;
 
     size_t getSize() const override;
-    bool hasParent() const override { return !_isPseudoRoot; }
+    bool hasParent() const override { return _kind != NodeKind::PseudoRoot; }
     AbstractFSNodePtr getParent() const override;
     bool getChildren(AbstractFSList& fslist, ListMode mode) const override;
 
@@ -78,7 +78,7 @@ class FSNodeWINDOWS : public AbstractFSNode
 
   private:
     /**
-     * Set the _isDirectory/_isFile/_size flags using GetFileAttributes().
+     * Set the _kind/_size flags using GetFileAttributes().
      *
      * @return  Success/failure of GetFileAttributes() function
      */
@@ -119,11 +119,13 @@ class FSNodeWINDOWS : public AbstractFSNode
     }
 
   private:
+    enum class NodeKind : uInt8 { PseudoRoot, Invalid, File, Directory };
+
     std::wstring _pathW;
     std::string  _pathUtf8;
     std::string  _displayName;
 
-    bool _isPseudoRoot{false}, _isDirectory{false}, _isFile{false};
+    NodeKind _kind{NodeKind::PseudoRoot};
     mutable std::optional<size_t> _size{std::nullopt};
 };
 
