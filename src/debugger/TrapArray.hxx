@@ -31,7 +31,6 @@ class TrapArray
 
     void add(uInt16 address) { myCount[address]++; }
     void remove(uInt16 address) { if(myCount[address]) myCount[address]--; }
-    // void toggle(uInt16 address) { myCount[address] ? remove(address) : add(address); } // TODO condition
 
     // Zero-fills only on first call; subsequent calls are no-ops
     void initialize() {

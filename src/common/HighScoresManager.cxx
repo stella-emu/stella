@@ -412,7 +412,7 @@ string HighScoresManager::md5Props() const
     scoreInvert(jprops), specialAddress(jprops), specialBCD(jprops),
     specialZeroBased(jprops));
 
-  // FIXME: ask thrust26 about this -> specialAddress/BCD/zeroBased are duplicated here — likely a bug?
+  // specialAddress/BCD/zeroBased are duplicated here — but a fix would invalidate existing high scores
   buf += std::format("{}{}{}",
     specialAddress(jprops), specialBCD(jprops), specialZeroBased(jprops));
 
