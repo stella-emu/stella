@@ -706,7 +706,7 @@ void DebuggerParser::listTraps(bool listCond)
     if(hasCond != listCond)
       continue;
 
-    const auto& trap = *myTraps[i];
+    const auto& trap = myTraps[i];
 
     if(!firstLine)
       commandResult << '\n';
@@ -826,7 +826,7 @@ string DebuggerParser::saveScriptFile(string file)
   const auto& names = debugger.m6502().getCondTrapNames();
   for(uInt32 i = 0; i < myTraps.size(); ++i)
   {
-    const auto& trap = *myTraps[i];
+    const auto& trap = myTraps[i];
     const bool hasCond = !names[i].empty();
 
     if(trap.read && trap.write) out += "trap";
@@ -1251,7 +1251,7 @@ void DebuggerParser::executeDelTrap()
     return;
   }
 
-  const auto& trap = *myTraps[index];
+  const auto& trap = myTraps[index];
   for(uInt32 addr = trap.begin; addr <= trap.end; ++addr)
     executeTrapRW(addr, trap.read, trap.write, false);
 
@@ -2581,11 +2581,11 @@ void DebuggerParser::executeTraps(bool read, bool write, string_view command,
 
   // Check for duplicate — duplicates remove each other
   const auto it = std::ranges::find_if(myTraps,
-    [&](const unique_ptr<Trap>& trap)
+    [&](const Trap& trap)
     {
-      return trap->begin == begin && trap->end == end &&
-             trap->read == read   && trap->write == write &&
-             trap->condition == condition;
+      return trap.begin == begin && trap.end == end &&
+             trap.read == read   && trap.write == write &&
+             trap.condition == condition;
     });
 
   if(it != myTraps.end())
@@ -2607,7 +2607,7 @@ void DebuggerParser::executeTraps(bool read, bool write, string_view command,
     const auto ret = debugger.m6502().addCondTrap(
       YaccParser::getResult(), hasCond ? argStrings[0] : "");
     commandResult << "added trap " << Base::toString(ret);
-    myTraps.emplace_back(std::make_unique<Trap>(read, write, begin, end, condition));
+    myTraps.emplace_back(read, write, begin, end, condition);
     for(uInt32 addr = begin; addr <= end; ++addr)
       executeTrapRW(addr, read, write, true);
   }

@@ -134,7 +134,7 @@ class DebuggerParser
     StringList myWatches;
 
     // Keep track of traps (read and/or write)
-    vector<unique_ptr<Trap>> myTraps;  // TODO: do these really need to be pointers?
+    vector<Trap> myTraps;
     void listTraps(bool listCond);
     string trapStatus(const Trap& trap);
 
