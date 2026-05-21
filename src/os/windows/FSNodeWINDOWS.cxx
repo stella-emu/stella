@@ -143,8 +143,10 @@ bool FSNodeWINDOWS::getChildren(AbstractFSList& fslist, ListMode mode) const
 
   if(_kind == NodeKind::Directory) [[likely]]
   {
-    // _pathW always ends in '\\' for directory nodes (enforced by setFlags())
-    const std::wstring search = _pathW + L'*';
+    std::wstring search = _pathW;
+    if (!search.empty() && search.back() != L'\\')
+      search += L'\\';
+    search += L'*';
 
     WIN32_FIND_DATAW desc;
     HANDLE handle = FindFirstFileExW(search.c_str(), FindExInfoBasic, &desc,
@@ -163,9 +165,14 @@ bool FSNodeWINDOWS::getChildren(AbstractFSList& fslist, ListMode mode) const
          (isDir  && mode == FSNode::ListMode::FilesOnly))
         continue;
 
+      std::wstring full = _pathW;
+      if (!full.empty() && full.back() != L'\\')
+        full += L'\\';
+      full += desc.cFileName;
+
       FSNodeWINDOWS entry;
       entry._kind        = isDir ? NodeKind::Directory : NodeKind::File;
-      entry._pathW       = _pathW + desc.cFileName;
+      entry._pathW       = std::move(full);
       entry._pathUtf8    = wideToUtf8(entry._pathW);
       entry._displayName = AsciiFold::toAscii(lastPathComponent(entry._pathUtf8));
       entry._size        = (static_cast<size_t>(desc.nFileSizeHigh) << 32) |

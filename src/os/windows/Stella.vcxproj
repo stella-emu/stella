@@ -704,6 +704,7 @@
     <ClCompile Include="..\..\emucore\elf\VcsLib.cxx" />
     <ClCompile Include="..\..\emucore\EmulationTiming.cxx" />
     <ClCompile Include="..\..\emucore\EmulationWorker.cxx" />
+    <ClCompile Include="..\..\emucore\FBMessageHandler.cxx" />
     <ClCompile Include="..\..\emucore\FBSurface.cxx" />
     <ClCompile Include="..\..\emucore\GlobalKeyHandler.cxx" />
     <ClCompile Include="..\..\emucore\Joy2BPlus.cxx" />
@@ -1694,6 +1695,7 @@
     <ClInclude Include="..\..\emucore\exception\EmulationWarning.hxx" />
     <ClInclude Include="..\..\emucore\exception\FatalEmulationError.hxx" />
     <ClInclude Include="..\..\emucore\FBBackend.hxx" />
+    <ClInclude Include="..\..\emucore\FBMessageHandler.hxx" />
     <ClInclude Include="..\..\emucore\FBSurface.hxx" />
     <ClInclude Include="..\..\emucore\FrameBufferConstants.hxx" />
     <ClInclude Include="..\..\emucore\GlobalKeyHandler.hxx" />
