@@ -53,8 +53,8 @@ class FSNodeZIP : public AbstractFSNode
     const string& getPath() const override { return _path;      }
     string getShortPath() const   override { return _shortPath; }
     bool hasParent() const override   { return true; }
-    bool isDirectory() const override { return _isDirectory; }
-    bool isFile() const      override { return _isFile;      }
+    bool isDirectory() const override { return _kind == NodeKind::Directory; }
+    bool isFile()      const override { return _kind == NodeKind::File;      }
     bool isReadable() const  override { return _realNode && _realNode->isReadable(); }
     bool isWritable() const  override { return false; }
 
@@ -78,12 +78,18 @@ class FSNodeZIP : public AbstractFSNode
       throw std::runtime_error("ZIP file writing not implemented");
     }
 
-  private:
-    FSNodeZIP(string_view zipfile, string_view virtualpath,
+  public:
+    // Passkey: only FSNodeZIP internals can construct Key{}, enabling make_shared
+    struct Key { explicit Key() = default; };
+    FSNodeZIP(Key, string_view zipfile, string_view virtualpath,
         const AbstractFSNodePtr& realnode, size_t size, bool isdir);
 
+  private:
     void setFlags(string_view zipfile, string_view virtualpath,
         const AbstractFSNodePtr& realnode);
+
+    static AbstractFSNodePtr makeShared(string_view zipfile, string_view virtualpath,
+        const AbstractFSNodePtr& realnode, size_t size, bool isdir);
 
     friend std::ostream& operator<<(std::ostream& os, const FSNodeZIP& node) {
       os << "_zipFile:     " << node._zipFile << '\n'
@@ -102,14 +108,14 @@ class FSNodeZIP : public AbstractFSNode
 
     string _zipFile, _virtualPath;
     string _name, _path, _shortPath;
-    uInt16 _numFiles{0};
     size_t _size{0};
 
-    bool _isDirectory{false}, _isFile{false};
+    enum class NodeKind : uInt8 { Invalid, File, Directory };
+    NodeKind _kind{NodeKind::Invalid};
 
     // ZipHandler static reference variable responsible for accessing ZIP files
-    static unique_ptr<ZipHandler>& zipHandler() {
-      static unique_ptr<ZipHandler> z = std::make_unique<ZipHandler>();
+    static ZipHandler& zipHandler() {
+      static ZipHandler z;
       return z;
     }
 };
