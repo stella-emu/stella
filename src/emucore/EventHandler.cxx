@@ -15,8 +15,6 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#include <sstream>
-
 #include "Logger.hxx"
 
 #include "Base.hxx"
@@ -330,13 +328,6 @@ void EventHandler::handleMouseMotionEvent(int x, int y, int xrel, int yrel)
     {
       myEvent.set(Event::MouseAxisXValue, x); // required for Lightgun controller
       myEvent.set(Event::MouseAxisYValue, y); // required for Lightgun controller
-#if 0  // FIXME: remove debug code
-      cerr << "dx " << (x - lastX - xrel) << ": " << x << ", " << xrel <<
-        "   y:" << y << ", " << yrel << "\n";
-      if(x - lastX - xrel != 0)
-        int i = 0;
-      lastX = x;
-#endif
       myEvent.set(Event::MouseAxisXMove, xrel);
       myEvent.set(Event::MouseAxisYMove, yrel);
     }
@@ -383,12 +374,6 @@ void EventHandler::handleSystemEvent(SystemEvent e, int, int)
       // Force full render update
       myOSystem.frameBuffer().update(FrameBuffer::UpdateMode::RERENDER);
       break;
-#if 0
-    case SystemEvent::WINDOW_MINIMIZED:
-      if(myState == EventHandlerState::EMULATION)
-        enterMenuMode(EventHandlerState::OPTIONSMENU);
-      break;
-#endif
 
     case SystemEvent::WINDOW_FOCUS_GAINED:
   #ifdef BSPF_UNIX
@@ -415,8 +400,7 @@ void EventHandler::handleSystemEvent(SystemEvent e, int, int)
       }
       break;
 
-    default:  // handle other events as testing requires
-      // cerr << "handleSystemEvent: " << e << '\n';
+    default:
       break;
   }
 }
@@ -1975,54 +1959,33 @@ bool EventHandler::changeStateByEvent(Event::Type type)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventHandler::setActionMappings(EventMode mode)
 {
+  const auto fillMappings = [this, mode](auto& list) {
+    for(auto& item: list)
+    {
+      const Event::Type event = item.event;
+      item.key = "None";
+      string key = myPKeyHandler->getMappingDesc(event, mode);
+
+    #ifdef JOYSTICK_SUPPORT
+      const string joydesc = myPJoyHandler->getMappingDesc(event, mode);
+      if(!joydesc.empty())
+      {
+        if(!key.empty())
+          key += ", ";
+        key += joydesc;
+      }
+    #endif
+
+      if(!key.empty())
+        item.key = key;
+    }
+  };
+
   switch(mode)
   {
-    case EventMode::kEmulationMode:
-      // Fill the EmulActionList with the current key and joystick mappings
-      for(auto& item: ourEmulActionList)
-      {
-        const Event::Type event = item.event;
-        item.key = "None";
-        string key = myPKeyHandler->getMappingDesc(event, mode);
-
-    #ifdef JOYSTICK_SUPPORT
-        const string joydesc = myPJoyHandler->getMappingDesc(event, mode);
-        if(!joydesc.empty())
-        {
-          if(!key.empty())
-            key += ", ";
-          key += joydesc;
-        }
-    #endif
-
-        if(!key.empty())
-          item.key = key;
-      }
-      break;
-    case EventMode::kMenuMode:
-      // Fill the MenuActionList with the current key and joystick mappings
-      for(auto& item: ourMenuActionList)
-      {
-        const Event::Type event = item.event;
-        item.key = "None";
-        string key = myPKeyHandler->getMappingDesc(event, mode);
-
-    #ifdef JOYSTICK_SUPPORT
-        const string joydesc = myPJoyHandler->getMappingDesc(event, mode);
-        if(!joydesc.empty())
-        {
-          if(!key.empty())
-            key += ", ";
-          key += joydesc;
-        }
-    #endif
-
-        if(!key.empty())
-          item.key = key;
-      }
-      break;
-    default:
-      return;
+    case EventMode::kEmulationMode: fillMappings(ourEmulActionList); break;
+    case EventMode::kMenuMode:      fillMappings(ourMenuActionList); break;
+    default:                        break;
   }
 }
 
@@ -2113,7 +2076,7 @@ json EventHandler::convertLegacyComboMapping(string_view lst)
           if(event != Event::NoType)
             events.push_back(static_cast<Event::Type>(event));
         }
-        // only store if there are any NoType events
+        // only store combos with at least one mapped event
         if(!events.empty())
         {
           json combo;
@@ -2260,7 +2223,7 @@ void EventHandler::saveComboMapping()
       if(event != Event::NoType)
         events.push_back(static_cast<Event::Type>(event));
     }
-    // only store if there are any NoType events
+    // only store if there are any non-NoType events
     if(!events.empty())
     {
       json combo;
@@ -2311,7 +2274,7 @@ StringList EventHandler::getActionList(Event::Group group)
     case Devices:     return getActionList(DevicesEvents);
     case Debug:       return getActionList(DebugEvents);
     case Combo:       return getActionList(ComboEvents);
-    default:          return {}; // ToDo
+    default:          return {}; // LastGroup is a sentinel; empty is correct
   }
 }
 
@@ -2398,24 +2361,8 @@ int EventHandler::getEmulActionListIndex(int idx, const Event::EventSet& events)
 {
   // idx = index into intersection set of 'events' and 'ourEmulActionList'
   //   ordered by 'ourEmulActionList'!
-  Event::Type event = Event::NoType;
-
-  for(auto& alist: ourEmulActionList)
-  {
-    for(const auto& item : events)
-      if(alist.event == item)
-      {
-        idx--;
-        if(idx < 0)
-          event = item;
-        break;
-      }
-    if(idx < 0)
-      break;
-  }
-
-  for(uInt32 i = 0; i < ourEmulActionList.size(); ++i)
-    if(EventHandler::ourEmulActionList[i].event == event)
+  for(int i = 0; i < static_cast<int>(ourEmulActionList.size()); ++i)
+    if(events.contains(ourEmulActionList[i].event) && --idx < 0)
       return i;
 
   return -1;
@@ -2652,11 +2599,10 @@ void EventHandler::enterTimeMachineMenuMode(uInt32 numWinds, bool unwind)
 {
 #ifdef GUI_SUPPORT
   // add one extra state if we are in Time Machine mode
-  // TODO: maybe remove this state if we leave the menu at this new state
   myOSystem.state().addExtraState("enter Time Machine dialog"); // force new state
 
   if(numWinds)
-    // hande winds and display wind message (numWinds != 0) in time machine dialog
+    // handle winds and display wind message (numWinds != 0) in time machine dialog
     myOSystem.timeMachine().setEnterWinds(unwind ? numWinds : -numWinds);
 
   enterMenuMode(EventHandlerState::TIMEMACHINE);
