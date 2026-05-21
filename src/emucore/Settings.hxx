@@ -42,22 +42,6 @@
 */
 class Settings
 {
-  // Transparent hashing for heterogeneous lookup
-  struct TransparentHash {
-    using is_transparent = void;
-    template <typename T>
-    requires std::is_convertible_v<T, string_view>
-    size_t operator()(const T& key) const noexcept {
-      return std::hash<string_view>{}(string_view(key));
-    }
-  };
-  struct TransparentEqual {
-    using is_transparent = void;
-    bool operator()(string_view a, string_view b) const noexcept {
-      return a == b;
-    }
-  };
-
   public:
     /**
       Create a new settings abstract class
@@ -66,7 +50,7 @@ class Settings
     virtual ~Settings() = default;
 
     using Options = std::unordered_map<string, Variant,
-                    TransparentHash, TransparentEqual>;
+                    BSPF::StringHash, std::equal_to<>>;
 
     static constexpr int SETTINGS_VERSION = 1;
     static constexpr string_view SETTINGS_VERSION_KEY = "settings.version";

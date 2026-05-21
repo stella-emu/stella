@@ -60,10 +60,9 @@ void parseCommandLine(int ac, const char* const av[],
 
   for(int i = 1; i < ac; ++i)
   {
-    string key = av[i];
-    if(key[0] == '-')
+    if(av[i][0] == '-')
     {
-      key = key.substr(1);
+      const string key(av[i] + 1);
 
       // Certain options are used only in the main function
       if(key == "help" || key == "listrominfo" || key == "rominfo" || key == "takesnapshot")
@@ -96,17 +95,8 @@ void parseCommandLine(int ac, const char* const av[],
         globalOpts[key] = av[i];
     }
     else
-      localOpts["ROMFILE"] = key;
+      localOpts["ROMFILE"] = av[i];
   }
-
-#if 0
-  cout << "Global opts:\n";
-  for(const auto& [key, value]: globalOpts)
-    cout << " -> " << key << ": " << value << '\n';
-  cout << "Local opts:\n";
-  for(const auto& [key, value]: localOpts)
-    cout << " -> " << key << ": " << value << '\n';
-#endif
 }
 
 /**
@@ -194,7 +184,8 @@ int main(int ac, char* av[])
 
   std::ios_base::sync_with_stdio(false);
 
-  if (isProfilingRun(ac, av)) {
+  if(isProfilingRun(ac, av))
+  {
     ProfilingRunner runner(ac, av);
 
     try
@@ -204,13 +195,13 @@ int main(int ac, char* av[])
     catch(const std::runtime_error& e)
     {
       cerr << e.what() << '\n';
-      return 0;
+      return 1;
     }
   }
 
   unique_ptr<OSystem> theOSystem;
 
-  const auto Cleanup = [&theOSystem]() {
+  const auto Cleanup = [&theOSystem](int exitCode = 0) {
     if(theOSystem)
     {
       Logger::debug("Cleanup from main");
@@ -219,7 +210,7 @@ int main(int ac, char* av[])
     }
     MediaFactory::cleanUp();  // Finish any remaining cleanup
 
-    return 0;
+    return exitCode;
   };
 
   // Parse the commandline arguments
@@ -239,14 +230,18 @@ int main(int ac, char* av[])
   if(!theOSystem->initialize(globalOpts))
   {
     Logger::error("ERROR: Couldn't create OSystem");
-    return Cleanup();
+    return Cleanup(1);
   }
 
   // Check to see if the user requested info about a specific ROM,
   // or the list of internal ROMs
   // If so, show the information and immediately exit
-  const string romfile = localOpts["ROMFILE"].toString();
-  if(localOpts["listrominfo"].toBool())
+  const string romfile = localOpts.at("ROMFILE").toString();
+  const auto localBool = [&localOpts](string_view key) {
+    const auto it = localOpts.find(key);
+    return it != localOpts.end() && it->second.toBool();
+  };
+  if(localBool("listrominfo"))
   {
     attachConsole();
     Logger::debug("Showing output from 'listrominfo' ...");
@@ -254,7 +249,7 @@ int main(int ac, char* av[])
     freeConsole();
     return Cleanup();
   }
-  if(localOpts["rominfo"].toBool())
+  if(localBool("rominfo"))
   {
     attachConsole();
     Logger::debug("Showing output from 'rominfo' ...");
@@ -263,7 +258,7 @@ int main(int ac, char* av[])
     freeConsole();
     return Cleanup();
   }
-  if(localOpts["help"].toBool())
+  if(localBool("help"))
   {
     attachConsole();
     Logger::debug("Displaying usage");
@@ -289,7 +284,7 @@ int main(int ac, char* av[])
     {
       Logger::debug("Launcher could not be started, showing usage");
       Settings::usage();
-      return Cleanup();
+      return Cleanup(1);
     }
   }
   else
@@ -298,7 +293,7 @@ int main(int ac, char* av[])
     {
       const string& result = theOSystem->createConsole(romnode);
       if(!result.empty())
-        return Cleanup();
+        return Cleanup(1);
 
 #if 0
       TODO: Fix this to use functionality from OSystem::mainLoop
@@ -314,16 +309,17 @@ int main(int ac, char* av[])
     catch(const std::runtime_error& e)
     {
       Logger::error(e.what());
-      return Cleanup();
+      return Cleanup(1);
     }
 
 #ifdef DEBUGGER_SUPPORT
     // Set up any breakpoint that was on the command line
-    if(!localOpts["break"].toString().empty())
+    if(const auto it = localOpts.find("break");
+        it != localOpts.end() && !it->second.toString().empty())
     {
       Debugger& dbg = theOSystem->debugger();
       const uInt16 bp =
-        static_cast<uInt16>(dbg.stringToValue(localOpts["break"].toString()));
+        static_cast<uInt16>(dbg.stringToValue(it->second.toString()));
       dbg.setBreakPoint(bp);
     }
 #endif

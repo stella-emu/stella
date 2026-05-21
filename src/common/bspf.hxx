@@ -574,9 +574,6 @@ namespace BSPF
     size_t operator()(string_view sv) const noexcept {
       return std::hash<string_view>{}(sv);
     }
-    size_t operator()(const string& s) const noexcept {
-      return std::hash<string>{}(s);
-    }
   };
 }  // namespace BSPF
 
