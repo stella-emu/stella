@@ -70,7 +70,7 @@ class FBBackendLIBRETRO : public FBBackend
     */
     unique_ptr<FBSurface>
       createSurface(uInt32 w, uInt32 h, ScalingInterpolation,
-                    const uInt32*) const override
+                    const uInt32*) override
     {
       return std::make_unique<FBSurfaceLIBRETRO>(w, h);
     }

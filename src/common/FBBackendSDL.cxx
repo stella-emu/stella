@@ -100,6 +100,7 @@ void FBBackendSDL::queryHardware(std::unordered_map<uInt32, Common::Size>& fulls
     if(SDL_GetDisplayUsableBounds(displays[i], &r))
       windowedRes.try_emplace(displays[i], r.w, r.h);
 
+    constexpr float epsilon = 0.001F;
     int numModes = 0;
     SDL_DisplayMode** modes = SDL_GetFullscreenDisplayModes(displays[i], &numModes);
 
@@ -119,16 +120,15 @@ void FBBackendSDL::queryHardware(std::unordered_map<uInt32, Common::Size>& fulls
       }
 
       const bool isDesktopMode =
-        //mode->w == display->w &&
-        //mode->h == display->h &&
         mode->w == bounds.w &&
         mode->h == bounds.h &&
-        std::equal_to()(mode->refresh_rate, display->refresh_rate);
+        display != nullptr &&
+        std::fabs(mode->refresh_rate - display->refresh_rate) < epsilon;
       log += std::format("{:>7}{}", std::format("{}Hz", mode->refresh_rate),
                          isDesktopMode ? "* " : "  ");
     }
     Logger::debug(log);
-    SDL_free(static_cast<void*>(modes));
+    SDL_free(modes);
   }
   SDL_free(displays);
 
@@ -224,22 +224,25 @@ bool FBBackendSDL::setVideoMode(const VideoModeHandler::Mode& mode,
     posY = winPos.y;
 
     // Make sure the window is at least partially visibile
-    int x0 = INT_MAX, y0 = INT_MAX, x1 = 0, y1 = 0;
-
-    for(int i = myNumDisplays - 1; i >= 0; --i)
+    if(displayIds)
     {
-      SDL_Rect rect;
+      int x0 = INT_MAX, y0 = INT_MAX, x1 = 0, y1 = 0;
 
-      if(SDL_GetDisplayUsableBounds(displayIds[i], &rect))
+      for(int i = myNumDisplays - 1; i >= 0; --i)
       {
-        x0 = std::min(x0, rect.x);
-        y0 = std::min(y0, rect.y);
-        x1 = std::max(x1, rect.x + rect.w);
-        y1 = std::max(y1, rect.y + rect.h);
+        SDL_Rect rect;
+
+        if(SDL_GetDisplayUsableBounds(displayIds[i], &rect))
+        {
+          x0 = std::min(x0, rect.x);
+          y0 = std::min(y0, rect.y);
+          x1 = std::max(x1, rect.x + rect.w);
+          y1 = std::max(y1, rect.y + rect.h);
+        }
       }
+      posX = BSPF::clamp(posX, x0 - static_cast<Int32>(mode.screenS.w) + 50, x1 - 50);
+      posY = BSPF::clamp(posY, y0 + 50, y1 - 50);
     }
-    posX = BSPF::clamp(posX, x0 - static_cast<Int32>(mode.screenS.w) + 50, x1 - 50);
-    posY = BSPF::clamp(posY, y0 + 50, y1 - 50);
   }
 
 #ifdef ADAPTABLE_REFRESH_SUPPORT
@@ -326,9 +329,6 @@ bool FBBackendSDL::setVideoMode(const VideoModeHandler::Mode& mode,
     {
       Logger::info(std::format("Display refresh rate changed to {} Hz ({}x{})",
         adaptedSdlMode.refresh_rate, adaptedSdlMode.w, adaptedSdlMode.h));
-
-//       const SDL_DisplayMode* setSdlMode = SDL_GetWindowFullscreenMode(myWindow);
-//       cerr << setSdlMode->refresh_rate << "Hz\n";
     }
   }
   else
@@ -397,10 +397,8 @@ bool FBBackendSDL::adaptRefreshRate(SDL_DisplayID displayId,
   const float epsilon = 0.001F;  // floating point rounding tolerance
   bool bestSameRes = false;
   SDL_DisplayMode** modes = SDL_GetFullscreenDisplayModes(displayId, &numModes);
-  // Wrap raw pointer into a span so we can use range-based for
-  const std::span<SDL_DisplayMode*> span(modes, numModes);
 
-  for(const auto* m: span)
+  for(const auto* m: std::span(modes, numModes))
   {
     // Determine nearest integer multiple of desired wantedRefreshRate
     const float nearestInt = std::round(m->refresh_rate / wantedRefreshRate);
@@ -422,12 +420,7 @@ bool FBBackendSDL::adaptRefreshRate(SDL_DisplayID displayId,
       adapt = true;
     }
   }
-  //cerr << "refresh rate adapt ";
-  //if(adapt)
-  //  cerr << "(current " << currentRefreshRate << " Hz, required (" << wantedRefreshRate << " Hz -> set to " << adaptedSdlMode.refresh_rate << " Hz)";
-  //else
-  //  cerr << "not required/possible";
-  //cerr << '\n';
+  SDL_free(modes);
 
   // Only change if the display supports a better refresh rate
   return adapt;
@@ -571,7 +564,8 @@ bool FBBackendSDL::fullScreen() const
   ASSERT_MAIN_THREAD;
 
 #ifdef WINDOWED_SUPPORT
-  return myIsFullscreen;  // TODO: this should query SDL directly (BUG?)
+   return myIsFullscreen;  // TODO: this should query SDL directly (BUG?)
+//   return SDL_GetWindowFlags(myWindow) & SDL_WINDOW_FULLSCREEN;
 #else
   return true;
 #endif
@@ -622,10 +616,10 @@ unique_ptr<FBSurface> FBBackendSDL::createSurface(
   uInt32 h,
   ScalingInterpolation inter,
   const uInt32* data
-) const
+)
 {
   unique_ptr<FBSurface> s = std::make_unique<FBSurfaceSDL>
-    (const_cast<FBBackendSDL&>(*this), w, h, inter, data);
+    (*this, w, h, inter, data);
   s->setBlendLevel(100);  // by default, disable shading (use full alpha)
 
   return s;
@@ -691,7 +685,7 @@ const FBSurface& FBBackendSDL::compositedSurface()
       std::ranges::transform(std::span{row, w}, row, applyGamma);
   }
   myCompositedSurface = std::make_unique<FBSurfaceSDL>
-    (const_cast<FBBackendSDL&>(*this), sdlSurface, ScalingInterpolation::none);
+    (*this, sdlSurface, ScalingInterpolation::none);
 
   return *myCompositedSurface;
 }

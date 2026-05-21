@@ -199,7 +199,7 @@ class FBBackend
           uInt32 h,
           ScalingInterpolation inter = ScalingInterpolation::none,
           const uInt32* data = nullptr
-    ) const = 0;
+    ) = 0;
 
     /**
       This method is called to provide information about the backend.

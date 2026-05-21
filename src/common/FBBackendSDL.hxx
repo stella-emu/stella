@@ -177,7 +177,7 @@ class FBBackendSDL : public FBBackend
           uInt32 h,
           ScalingInterpolation inter,
           const uInt32* data
-        ) const override;
+        ) override;
 
     /**
       Grabs or ungrabs the mouse based on the given boolean value.
