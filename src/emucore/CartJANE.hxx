@@ -24,8 +24,13 @@
 #endif
 
 /**
-  Cartridge class used for the Tarzan prototype. There are four 4K banks,
-  accessible by read at $1FF0/1/8/9.
+  Cartridge class used for the Tarzan prototype (scheme name "JANE").  There
+  are four 4K banks selected by reading four non-contiguous hotspots:
+  $1FF0 (bank 0), $1FF1 (bank 1), $1FF8 (bank 2), $1FF9 (bank 3).  The
+  scheme was reverse-engineered from the prototype ROM; "JANE" is the name
+  assigned by Stella.  Note that the hotspots overlap with the standard F8
+  positions ($1FF8/$1FF9) but also include $1FF0/$1FF1, and the cart starts
+  in bank 1 rather than bank 0.
 
   @author  Thomas Jentzsch
 */

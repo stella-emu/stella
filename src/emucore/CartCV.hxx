@@ -29,9 +29,16 @@ class System;
 /**
   Cartridge class used for Commavid's extra-RAM games.
 
-  $F000-$F3FF read from RAM
-  $F400-$F7FF write to RAM
-  $F800-$FFFF ROM
+  The Commavid scheme pairs a 2K ROM (mapped at $F800-$FFFF) with 1K of
+  static RAM (mapped at $F000-$F7FF).  The RAM occupies the lower half of
+  the cartridge address space and uses a split read/write window: reads come
+  from $F000-$F3FF while writes go to $F400-$F7FF (both access the same
+  physical RAM, offset by $400).  There is no bankswitching; the layout is
+  fixed.  Known titles using this scheme: Jawbreaker, Rescue Terra I.
+
+  $F000-$F3FF  read port (RAM)
+  $F400-$F7FF  write port (RAM)
+  $F800-$FFFF  ROM
 
   @author  Eckhard Stolberg, Thomas Jentzsch
 */

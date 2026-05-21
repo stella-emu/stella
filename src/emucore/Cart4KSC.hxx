@@ -27,8 +27,13 @@ class System;
 #endif
 
 /**
-  Cartridge class used for 4K games with 128 bytes of RAM.
-  RAM read port is $1080 - $10FF, write port is $1000 - $107F.
+  Cartridge class used for 4K games with 128 bytes of SuperChip RAM.
+  "SC" denotes the SuperChip, a small static RAM chip present on some Atari
+  PCB revisions.  The 128 bytes are mapped with a split read/write window:
+  the write port occupies $1000-$107F and the read port occupies $1080-$10FF
+  (an $80 offset into the same RAM).  Because of this, ROM addresses in the
+  range $1000-$107F are inaccessible; games using this scheme must place all
+  code and data above $1080.
 
   @author  Stephen Anthony, Thomas Jentzsch
 */

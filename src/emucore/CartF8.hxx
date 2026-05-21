@@ -24,8 +24,12 @@
 #endif
 
 /**
-  Cartridge class used for Atari's 8K bankswitched games.  There are two
-  4K banks, accessible by read/write to $1FF8 - $1FF9.
+  Cartridge class used for Atari's 8K bankswitched games.  F8 is the most
+  widely used Atari bankswitching scheme: two 4K banks selected by accessing
+  $1FF8 (bank 0) or $1FF9 (bank 1).  The switch fires on both reads and
+  writes.  Used by a large fraction of all 8K 2600 titles including Pac-Man,
+  Missile Command, and Pitfall.  F6 (16K) and F4 (32K) are direct extensions
+  of this scheme.  The F8SC variant adds 128 bytes of SuperChip RAM.
 
   @author  Bradford W. Mott, Thomas Jentzsch
 */

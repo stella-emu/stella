@@ -27,9 +27,12 @@ class System;
 #endif
 
 /**
-  Cartridge class used for Homestar Runner by Paul Slocum.
-  There are 16 4K banks (total of 64K ROM).
-  Accessing $1FE0 - $1FEF switches to each bank.
+  Cartridge class used for Homestar Runner by Paul Slocum.  The scheme
+  provides 16 4K banks (64K total), selected by accessing any address in
+  the range $1FE0-$1FEF: the low 4 bits of the address determine the bank
+  number (bank 0 at $1FE0, bank 15 at $1FEF).  The name "EF" derives from
+  this hotspot range.  DF (32 banks) and BF (64 banks) are direct extensions
+  of this same scheme with a wider hotspot window.
 
   @author  Stephen Anthony, Thomas Jentzsch
 */

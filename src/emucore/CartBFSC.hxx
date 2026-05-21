@@ -27,9 +27,10 @@ class System;
 #endif
 
 /**
-  There are 64 4K banks (total of 256K ROM) with 128 bytes of RAM.
-  Accessing $1F80 - $1FBF switches to each bank.
-  RAM read port is $1080 - $10FF, write port is $1000 - $107F.
+  BFSC is BF with 128 bytes of SuperChip RAM.  Banking works identically to
+  BF: 64 4K banks (256K total), selected by accessing $1F80-$1FBF.  The SC
+  RAM uses the standard split window: write port $1000-$107F, read port
+  $1080-$10FF.
 
   @author  Stephen Anthony, Thomas Jentzsch
 */

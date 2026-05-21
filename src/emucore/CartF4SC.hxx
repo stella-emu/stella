@@ -24,9 +24,10 @@
 #endif
 
 /**
-  Cartridge class used for Atari's 32K bankswitched games with 128 bytes of
-  RAM.  There are eight 4K banks, accessible by read/write to $1FF4 - $1FFB.
-  RAM read port is $1080 - $10FF, write port is $1000 - $107F.
+  F4SC is F4 with 128 bytes of SuperChip RAM.  Banking works identically to
+  F4: eight 4K banks (32K total), selected by accessing $1FF4-$1FFB.  The SC
+  RAM uses the standard split window: write port $1000-$107F, read port
+  $1080-$10FF.
 
   @author  Bradford W. Mott, Thomas Jentzsch
 */

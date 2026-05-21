@@ -27,9 +27,12 @@ class System;
 #endif
 
 /**
-  Update of EF cartridge class used for Homestar Runner by Paul Slocum.
-  There are 32 4K banks (total of 128K ROM).
-  Accessing $1FC0 - $1FDF switches to each bank.
+  DF is a direct extension of the EF scheme, doubling the bank count to 32
+  (128K total).  Any access in $1FC0-$1FDF switches to the bank whose number
+  equals the low 5 bits of the address (bank 0 at $1FC0, bank 31 at $1FDF).
+  "DF" derives from this hotspot range.  The DFSC variant adds 128 bytes of
+  SuperChip RAM at the standard split window ($1000-$107F write, $1080-$10FF
+  read).
 
   @author  Mike Saarna, Thomas Jentzsch
 */

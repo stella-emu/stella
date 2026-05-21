@@ -25,10 +25,15 @@ class MovieCart;
 #include "Cart.hxx"
 
 /**
-  Implementation of MovieCart.
-  1K of memory is presented on the bus, but is repeated to fill the 4K image space.
-  Contents are dynamically altered with streaming image and audio content as specific
-  128-byte regions are entered.
+  Implementation of MovieCart, a scheme for playing full-motion video on the
+  2600.  Only 1K of memory is presented on the bus (mirrored to fill the 4K
+  image space), but its contents are continuously replaced on the fly as the
+  6502 enters successive 128-byte "frame" regions.  Data is streamed in 512-
+  byte chunks from a file rather than a static ROM image, so video length is
+  limited only by the source file size.  Audio is single-channel 4-bit PCM;
+  video uses TIA color dithering for image reproduction.  On-screen overlays
+  (OSD) and rewind support are provided by the driver code running in that 1K
+  window.
   Original implementation: github.com/lodefmode/moviecart
 
   @author  Rob Bairos

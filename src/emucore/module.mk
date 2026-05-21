@@ -71,6 +71,7 @@ MODULE_OBJS := \
 	src/emucore/EmulationTiming.o \
 	src/emucore/EmulationWorker.o \
 	src/emucore/FrameBuffer.o \
+	src/emucore/FBMessageHandler.o \
 	src/emucore/FBSurface.o \
 	src/emucore/FSNode.o \
 	src/emucore/Genesis.o \

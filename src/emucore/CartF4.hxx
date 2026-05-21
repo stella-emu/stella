@@ -24,8 +24,12 @@
 #endif
 
 /**
-  Cartridge class used for Atari's 32K bankswitched games.  There are eight
-  4K banks, accessible by read/write to $1FF4 - $1FFB.
+  Cartridge class used for Atari's 32K bankswitched games.  Eight 4K banks
+  are selected by accessing $1FF4-$1FFB: the low 3 bits of the address give
+  the bank number (bank 0 at $1FF4, bank 7 at $1FFB).  F4 is a direct
+  extension of the F6 (16K) and F8 (8K) schemes.  Used by Atari titles such
+  as Mario Bros., Super Breakout, and Star Wars.  The F4SC variant adds 128
+  bytes of SuperChip RAM.
 
   @author  Bradford W. Mott, Thomas Jentzsch
 */

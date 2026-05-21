@@ -24,8 +24,11 @@
 #endif
 
 /**
-  Cartridge class used for Atari's 16K bankswitched games.  There are four
-  4K banks, accessible by read/write to $1FF6 - $1FF9.
+  Cartridge class used for Atari's 16K bankswitched games.  Four 4K banks
+  are selected by accessing $1FF6-$1FF9 (the low 2 bits of the address give
+  the bank number).  F6 is a direct extension of F8 (8K) and is itself
+  extended by F4 (32K).  Used by titles such as Dig Dug, Joust, and Pole
+  Position.  The F6SC variant adds 128 bytes of SuperChip RAM.
 
   @author  Bradford W. Mott, Thomas Jentzsch
 */
