@@ -160,8 +160,8 @@ class LinkedObjectPool
     */
     void moveToPrevious() {
       if(currentIsValid() && myNodes[myCurrentIdx].prev != npos) {
-          myCurrentIdx = myNodes[myCurrentIdx].prev;
-          --myCurrentPos;
+        myCurrentIdx = myNodes[myCurrentIdx].prev;
+        --myCurrentPos;
       }
     }
 
@@ -349,14 +349,6 @@ class LinkedObjectPool
     [[nodiscard]] uInt32 size() const { return mySize; }
     [[nodiscard]] bool empty() const { return mySize == 0; }
     [[nodiscard]] bool full()  const { return mySize == myCapacity; }
-
-  #if 0
-    friend std::ostream& operator<<(std::ostream& os, const LinkedObjectPool<T>& p) {
-      for(const auto& i: p.myList)
-        os << i << (p.current() == i ? "* " : "  ");
-      return os;
-    }
-  #endif
 
   private:
     uInt32 alloc() {

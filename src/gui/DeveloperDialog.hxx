@@ -76,10 +76,6 @@ class DeveloperDialog : public Dialog, DevSettingsHandler
   #endif
     };
 
-    // MUST be aligned with RewindManager!
-    static constexpr int NUM_INTERVALS = 7;
-    static constexpr int NUM_HORIZONS = 8;
-
     static constexpr int DEBUG_COLORS = 6;
 
     TabWidget* myTab{nullptr};
