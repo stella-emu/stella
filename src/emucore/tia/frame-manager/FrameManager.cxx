@@ -74,7 +74,7 @@ void FrameManager::onNextLine()
       const Int32 jitter =
         (myJitterEnabled && myTotalFrames > Metrics::initialGarbageFrames) ? myJitterEmulation.jitter() : 0;
 
-      if (myLineInState >= (myYStart + jitter)) setState(State::frame);
+      if (static_cast<Int32>(myLineInState) >= static_cast<Int32>(myYStart) + jitter) setState(State::frame);
       break;
     }
 
@@ -96,11 +96,8 @@ void FrameManager::onNextLine()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Int32 FrameManager::missingScanlines() const
 {
-  if (myLastY == myYStart + myY)
-    return 0;
-  else {
-    return myHeight - myY;
-  }
+  if (myLastY == myYStart + myY) return 0;
+  return myHeight - myY;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -207,12 +204,7 @@ bool FrameManager::onSave(Serializer& out) const
   out.putInt(myY);
   out.putInt(myLastY);
 
-  out.putInt(myVblankLines);
-  out.putInt(myFrameLines);
-  out.putInt(myHeight);
-  out.putInt(myYStart);
   out.putInt(myVcenter);
-  out.putInt(myMaxVcenter);
   out.putInt(myVSizeAdjust);
 
   out.putBool(myJitterEnabled);
@@ -231,16 +223,12 @@ bool FrameManager::onLoad(Serializer& in)
   myY = in.getInt();
   myLastY = in.getInt();
 
-  myVblankLines = in.getInt();
-  myFrameLines = in.getInt();
-  myHeight = in.getInt();
-  myYStart = in.getInt();
   myVcenter = in.getInt();
-  myMaxVcenter = in.getInt();
   myVSizeAdjust = in.getInt();
 
   myJitterEnabled = in.getBool();
 
+  recalculateMetrics();
   return true;
 }
 
@@ -271,7 +259,9 @@ void FrameManager::recalculateMetrics() {
 
   myHeight = BSPF::clamp<uInt32>(roundf(static_cast<float>(baseHeight) * (1.F - myVSizeAdjust / 100.F)), 0, myFrameLines);
   myYStart = BSPF::clamp<uInt32>(ystartBase + (baseHeight - static_cast<Int32>(myHeight)) / 2 - myVcenter, 0, myFrameLines);
-  // TODO: why "- 1" here: ???
+  // The - 1 keeps myYStart >= 1 when vcenter is at its maximum, preventing
+  // waitForFrameStart from exiting on scanline 0 when a negative vsizeadjust
+  // makes myHeight exceed baseHeight and reduces centerOffset below maxVcenter.
   myMaxVcenter = BSPF::clamp<Int32>(ystartBase + (baseHeight - static_cast<Int32>(myHeight)) / 2 - 1, 0, TIAConstants::maxVcenter);
 
   //cout << "myVSizeAdjust " << myVSizeAdjust << " " << myHeight << '\n' << std::flush;
