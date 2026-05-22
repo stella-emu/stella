@@ -70,12 +70,6 @@ print OUTFILE "  This code is generated using the 'create_props.pl' script,\n";
 print OUTFILE "  located in the src/tools directory.  All properties changes\n";
 print OUTFILE "  should be made in stella.pro, and then this file should be\n";
 print OUTFILE "  regenerated and the application recompiled.\n";
-print OUTFILE "\n";
-# FIXME: Remove this once clang properly supports constexpr string_view
-print OUTFILE "  FIXME: We need to use 'const char*' instead of 'string_view'\n";
-print OUTFILE "  here, since clang is not optimized to create so many constexpr\n";
-print OUTFILE "  'string_view's.  It *can* do it by using\n";
-print OUTFILE "  -fconstexpr-steps=2710000, which increases binary size.\n";
 print OUTFILE "*/\n";
 #######################################################################
 print OUTFILE "static constexpr BSPF::array2D<const char*, " . $setsize . ", " . $typesize . "> DefProps = {{\n";

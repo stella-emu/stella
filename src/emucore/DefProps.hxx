@@ -28,11 +28,6 @@
   located in the src/tools directory.  All properties changes
   should be made in stella.pro, and then this file should be
   regenerated and the application recompiled.
-
-  FIXME: We need to use 'const char*' instead of 'string_view'
-  here, since clang is not optimized to create so many constexpr
-  'string_view's.  It *can* do it by using
-  -fconstexpr-steps=2710000, which increases binary size.
 */
 static constexpr BSPF::array2D<const char*, 3660, 30> DefProps = {{
   { "000509d1ed2b8d30a9d94be1b3b5febb", "Greg Zumwalt", "", "Jungle Jane (2003) (Greg Zumwalt) (Hack)", "Hack of Pitfall!", "Hack", "", "", "", "{\"score_addresses\":[\"0xd5\",\"0xd6\",\"0xd7\"],\"score_digits\":6,\"variations_count\":1}", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "Pitfall! - Pitfall Harry's Jungle Adventure (USA)" },
