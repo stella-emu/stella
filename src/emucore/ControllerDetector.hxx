@@ -59,7 +59,7 @@ class ControllerDetector
 
       @return   The (detected) controller name
     */
-    static string detectName(ByteSpan image,
+    static string_view detectName(ByteSpan image,
         Controller::Type type, Controller::Jack port,
         const Settings& settings, bool isQuadTari = false);
 

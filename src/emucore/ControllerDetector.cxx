@@ -37,8 +37,9 @@ Controller::Type ControllerDetector::detectType(
       cerr << "Controller auto-detection not consistent: "
         << Controller::getName(type) << ", " << Controller::getName(detectedType) << '\n';
     }
-    Logger::debug("'" + Controller::getName(detectedType) + "' detected for " +
-      (port == Controller::Jack::Left ? "left" : "right") + " port");
+    Logger::debug(std::format("'{}' detected for {} port",
+      Controller::getName(detectedType),
+      port == Controller::Jack::Left ? "left" : "right"));
     return detectedType;
   }
 
@@ -46,7 +47,7 @@ Controller::Type ControllerDetector::detectType(
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string ControllerDetector::detectName(ByteSpan image,
+string_view ControllerDetector::detectName(ByteSpan image,
     Controller::Type type, Controller::Jack port,
     const Settings& settings, bool isQuadTari)
 {

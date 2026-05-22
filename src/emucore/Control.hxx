@@ -23,7 +23,6 @@ class ControllerLowLevel;
 class Event;
 class System;
 
-#include <cmath>
 #include <functional>
 
 #include "bspf.hxx"
@@ -67,8 +66,7 @@ class Controller : public Serializable
   /**
     Various classes that need special access to the underlying controller state
   */
-  friend class M6532;     // FIXME - only needs two methods from this class
-  friend class CompuMate; // FIXME - should go through CMControl instead
+  friend class M6532;
   friend class ControllerLowLevel;
 
   public:
@@ -240,8 +238,8 @@ class Controller : public Serializable
     */
     virtual string about(bool swappedPorts) const
     {
-      return name() + " in " + (((myJack == Jack::Left) ^ swappedPorts) ?
-          "left port" : "right port");
+      return std::format("{} in {} port", name(),
+          ((myJack == Jack::Left) ^ swappedPorts) ? "left" : "right");
     }
 
     /**
@@ -263,19 +261,19 @@ class Controller : public Serializable
     /**
       Inject a callback to be notified on analog pin updates.
     */
-    void setOnAnalogPinUpdateCallback(const onAnalogPinUpdateCallback& callback) {
-      myOnAnalogPinUpdateCallback = callback;
+    void setOnAnalogPinUpdateCallback(onAnalogPinUpdateCallback callback) {
+      myOnAnalogPinUpdateCallback = std::move(callback);
     }
 
     /**
       Returns the display name of the given controller type
     */
-    static string getName(Type type);
+    static string_view getName(Type type);
 
     /**
       Returns the property name of the given controller type
     */
-    static string getPropName(Type type);
+    static string_view getPropName(Type type);
 
     /**
       Returns the controller type of the given property name
@@ -310,11 +308,10 @@ class Controller : public Serializable
 
     /**
       Retrieves the effective analog dead zone value
-      TODO: std::round not constexpr until C++23
     */
-    static /*constexpr*/ int analogDeadZoneValue(int deadZone) {
+    static constexpr int analogDeadZoneValue(int deadZone) {
       deadZone = BSPF::clamp(deadZone, MIN_ANALOG_DEADZONE, MAX_ANALOG_DEADZONE);
-      return deadZone * std::round(32768 / 2. / MAX_DIGITAL_DEADZONE);
+      return deadZone * ((32768 / 2 + MAX_DIGITAL_DEADZONE / 2) / MAX_DIGITAL_DEADZONE);
     }
 
     static int digitalDeadZone() { return DIGITAL_DEAD_ZONE; }
@@ -388,37 +385,8 @@ class Controller : public Serializable
       @param pressed  True if the fire button is currently pressed
       @return  The result of the auto fire event check
     */
-    bool getAutoFireState(bool pressed)
-    {
-      if(AUTO_FIRE && AUTO_FIRE_RATE && pressed)
-      {
-        myFireDelay -= AUTO_FIRE_RATE;
-        if(myFireDelay <= 0)
-          myFireDelay += 32 * 1024;
-        return myFireDelay > 16 * 1024;
-      }
-      myFireDelay = 0;
-      return pressed;
-    }
-
-    /**
-      Checks for the next auto fire event for paddle 1.
-
-      @param pressed  True if the fire button is current pressed
-      @return  The result of the auto fire event check
-    */
-    bool getAutoFireStateP1(bool pressed)
-    {
-      if(AUTO_FIRE && AUTO_FIRE_RATE && pressed)
-      {
-        myFireDelayP1 -= AUTO_FIRE_RATE;
-        if(myFireDelayP1 <= 0)
-          myFireDelayP1 += 32 * 1024;
-        return myFireDelayP1 > 16 * 1024;
-      }
-      myFireDelayP1 = 0;
-      return pressed;
-    }
+    bool getAutoFireState(bool pressed)   { return autoFireCheck(pressed, myFireDelay);   }
+    bool getAutoFireStateP1(bool pressed) { return autoFireCheck(pressed, myFireDelayP1); }
 
   protected:
     /// Specifies which jack the controller is plugged in
@@ -437,24 +405,37 @@ class Controller : public Serializable
     onAnalogPinUpdateCallback myOnAnalogPinUpdateCallback{nullptr};
 
     /// Defines the dead zone of analog joysticks for digital Atari controllers
-    static int DIGITAL_DEAD_ZONE;
+    inline static int DIGITAL_DEAD_ZONE{3200};
 
     /// Defines the dead zone of analog joysticks for analog Atari controllers
-    static int ANALOG_DEAD_ZONE;
+    inline static int ANALOG_DEAD_ZONE{0};
 
-    static int MOUSE_SENSITIVITY;
+    inline static int MOUSE_SENSITIVITY{-1};
 
     /// Defines the state of auto fire
-    static bool AUTO_FIRE;
+    inline static bool AUTO_FIRE{false};
 
     /// Defines the speed of auto fire
-    static int AUTO_FIRE_RATE;
+    inline static int AUTO_FIRE_RATE{0};
 
     /// Delay[frames] until the next fire event
     int myFireDelay{0};
     int myFireDelayP1{0}; // required for paddles only
 
   private:
+    static bool autoFireCheck(bool pressed, int& delay)
+    {
+      if(AUTO_FIRE && AUTO_FIRE_RATE && pressed)
+      {
+        delay -= AUTO_FIRE_RATE;
+        if(delay <= 0)
+          delay += 32 * 1024;
+        return delay > 16 * 1024;
+      }
+      delay = 0;
+      return pressed;
+    }
+
     /// The boolean value on each digital pin
     std::array<bool, 5> myDigitalPinState{true, true, true, true, true};
 

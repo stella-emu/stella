@@ -189,8 +189,8 @@ void QuadTariDialog::defineController(const Properties& props, PropType key,
         label = "nothing detected";
     }
     else if(!image.empty())
-      label = ControllerDetector::detectName(
-        image, type, jack, instance().settings(), true) + " detected";
+      label = std::format("{} detected",
+        ControllerDetector::detectName(image, type, jack, instance().settings(), true));
   }
   labelWidget->setLabel(label);
 }

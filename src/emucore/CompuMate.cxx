@@ -33,11 +33,6 @@ CompuMate::CompuMate(const Console& console, const Event& event,
   // also take ownership of them
   myLeftController  = std::make_unique<CMControl>(*this, Controller::Jack::Left, event, system);
   myRightController = std::make_unique<CMControl>(*this, Controller::Jack::Right, event, system);
-
-  myLeftController->setPin(Controller::AnalogPin::Nine, AnalogReadout::connectToGround());
-  myLeftController->setPin(Controller::AnalogPin::Five, AnalogReadout::connectToVcc());
-  myRightController->setPin(Controller::AnalogPin::Nine, AnalogReadout::connectToVcc());
-  myRightController->setPin(Controller::AnalogPin::Five, AnalogReadout::connectToGround());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -50,8 +45,8 @@ void CompuMate::loadCassette(const FSNode& romFile)
 void CompuMate::update()
 {
   // Handle SWCHA changes - the following is modelled on code from z26
-  Controller& lp = myConsole.leftController();
-  Controller& rp = myConsole.rightController();
+  auto& lp = static_cast<CMControl&>(myConsole.leftController());
+  auto& rp = static_cast<CMControl&>(myConsole.rightController());
 
   using E  = Event::Type;
   using DP = Controller::DigitalPin;

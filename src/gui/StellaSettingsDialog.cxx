@@ -530,9 +530,9 @@ void StellaSettingsDialog::updateControllerStates()
     if(instance().hasConsole())
       label = (instance().console().leftController().name()) + " detected";
     else if(!image.empty())
-      label = ControllerDetector::detectName(image, type,
+      label = std::format("{} detected", ControllerDetector::detectName(image, type,
                                              Controller::Jack::Left,
-                                             instance().settings()) + " detected";
+                                             instance().settings()));
   }
   myLeftPortDetected->setLabel(label);
 
@@ -543,9 +543,9 @@ void StellaSettingsDialog::updateControllerStates()
     if(instance().hasConsole())
       label = (instance().console().rightController().name()) + " detected";
     else if(!image.empty())
-      label = ControllerDetector::detectName(image, type,
+      label = std::format("{} detected", ControllerDetector::detectName(image, type,
                                              Controller::Jack::Right,
-                                             instance().settings()) + " detected";
+                                             instance().settings()));
   }
   myRightPortDetected->setLabel(label);
 

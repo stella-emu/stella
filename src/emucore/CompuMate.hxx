@@ -127,8 +127,19 @@ class CompuMate
         CMControl(class CompuMate& handler, Controller::Jack jack, const Event& event,
                   const System& system)
           : Controller(jack, event, system, Controller::Type::CompuMate),
-            myHandler{handler} { }
+            myHandler{handler}
+        {
+          if(jack == Controller::Jack::Left) {
+            setPin(AnalogPin::Nine, AnalogReadout::connectToGround());
+            setPin(AnalogPin::Five, AnalogReadout::connectToVcc());
+          } else {
+            setPin(AnalogPin::Nine, AnalogReadout::connectToVcc());
+            setPin(AnalogPin::Five, AnalogReadout::connectToGround());
+          }
+        }
         ~CMControl() override = default;
+
+        using Controller::setPin;
 
       public:
         /**

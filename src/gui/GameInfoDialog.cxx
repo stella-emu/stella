@@ -1238,9 +1238,9 @@ void GameInfoDialog::updateControllerStates()
         label = "QuadTari detected"; // remove plugged-in controller names
     }
     else if(!image.empty())
-      label = ControllerDetector::detectName(image, type,
+      label = std::format("{} detected", ControllerDetector::detectName(image, type,
                                              !swapPorts ? Controller::Jack::Left : Controller::Jack::Right,
-                                             instance().settings()) + " detected";
+                                             instance().settings()));
   }
   myLeftPortDetected->setLabel(label);
 
@@ -1257,9 +1257,9 @@ void GameInfoDialog::updateControllerStates()
         label = "QuadTari detected"; // remove plugged-in controller names
     }
     else if(!image.empty())
-      label = ControllerDetector::detectName(image, type,
+      label = std::format("{} detected", ControllerDetector::detectName(image, type,
                                              !swapPorts ? Controller::Jack::Right : Controller::Jack::Left,
-                                             instance().settings()) + " detected";
+                                             instance().settings()));
   }
   myRightPortDetected->setLabel(label);
 

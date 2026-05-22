@@ -88,8 +88,11 @@ bool Controller::load(Serializer& in)
     setPin(DigitalPin::Six,   in.getBool());
 
     // Input the analog pins
-    getPin(AnalogPin::Five).load(in);
-    getPin(AnalogPin::Nine).load(in);
+    AnalogReadout::Connection conn;
+    conn.load(in);
+    setPin(AnalogPin::Five, conn);
+    conn.load(in);
+    setPin(AnalogPin::Nine, conn);
   }
   catch(...)
   {
@@ -100,25 +103,26 @@ bool Controller::load(Serializer& in)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string Controller::getName(const Type type)
+string_view Controller::getName(const Type type)
 {
   assert(static_cast<std::size_t>(type) < CONTROLLER_INFO.size());
-  return string{CONTROLLER_INFO[static_cast<int>(type)].name};
+  return CONTROLLER_INFO[static_cast<int>(type)].name;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string Controller::getPropName(const Type type)
+string_view Controller::getPropName(const Type type)
 {
   assert(static_cast<std::size_t>(type) < CONTROLLER_INFO.size());
-  return string{CONTROLLER_INFO[static_cast<int>(type)].propName};
+  return CONTROLLER_INFO[static_cast<int>(type)].propName;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Controller::Type Controller::getType(string_view propName)
 {
-  for(uInt8 i = 0; i < static_cast<uInt8>(Type::LastType); ++i)
-    if(BSPF::equalsIgnoreCase(propName, CONTROLLER_INFO[i].propName))
-      return Type{i};
+  const auto it = std::ranges::find_if(CONTROLLER_INFO,
+      [&](const auto& info) { return BSPF::equalsIgnoreCase(propName, info.propName); });
+  if(it != CONTROLLER_INFO.end())
+    return Type{static_cast<uInt8>(std::distance(CONTROLLER_INFO.begin(), it))};
 
   // special case
   if(BSPF::equalsIgnoreCase(propName, "KEYPAD"))
@@ -127,17 +131,3 @@ Controller::Type Controller::getType(string_view propName)
   return Type::Unknown;
 }
 
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-// int Controller::analogDeadZoneValue(int deadZone)
-// {
-//   deadZone = BSPF::clamp(deadZone, MIN_ANALOG_DEADZONE, MAX_ANALOG_DEADZONE);
-//
-//   return deadZone * std::round(32768 / 2. / MAX_DIGITAL_DEADZONE);
-// }
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int Controller::DIGITAL_DEAD_ZONE = 3200;
-int Controller::ANALOG_DEAD_ZONE = 0;
-int Controller::MOUSE_SENSITIVITY = -1;
-bool Controller::AUTO_FIRE = false;
-int Controller::AUTO_FIRE_RATE = 0;

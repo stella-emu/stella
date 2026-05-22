@@ -41,8 +41,9 @@ class ControllerLowLevel
     bool setPin(Controller::DigitalPin pin, bool value) {
       return myController.setPin(pin, value);
     }
-    // NOLINTNEXTLINE(readability-convert-member-functions-to-static)
-    bool togglePin(Controller::DigitalPin pin) { return false; }  // FIXME: not implemented??
+    bool togglePin(Controller::DigitalPin pin) {
+      return myController.setPin(pin, !myController.getPin(pin));
+    }
     bool getPin(Controller::DigitalPin pin) const {
       return myController.getPin(pin);
     }
