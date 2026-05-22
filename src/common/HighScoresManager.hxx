@@ -80,7 +80,7 @@ namespace HSM {
     string md5;
     ScoreEntry scores[NUM_RANKS];
   };
-} // namespace HSM
+}  // namespace HSM
 
 /**
   This class provides an interface to define, load and save scores. It is meant
@@ -88,13 +88,8 @@ namespace HSM {
 
   @author  Thomas Jentzsch
 */
-
 class HighScoresManager
 {
-  public:
-    // FIXME: Must be const char* and not string_view because of json & VC++2022
-    const char* HIGHSCORE_HEADER = "06050000highscores";
-
   public:
     explicit HighScoresManager(OSystem& osystem);
     virtual ~HighScoresManager() = default;
@@ -256,6 +251,8 @@ class HighScoresManager
 
     shared_ptr<CompositeKeyValueRepositoryAtomic> myHighscoreRepository
       = std::make_shared<CompositeKeyValueRepositoryNoop>();
+
+    static constexpr const char* HIGHSCORE_HEADER = "06050000highscores";
 
   private:
     // Following constructors and assignment operators not supported
