@@ -126,12 +126,6 @@ void EventHandler::initialize()
 
   // Integer to string conversions (for HEX) use upper or lower-case
   Common::Base::setHexUppercase(myOSystem.settings().getBool("dbg.uhex"));
-
-// FIXME: setDefault no longer present in Properties
-//        we need to pass this in another way
-//   // Default phosphor blend
-//   Properties::setDefault(PropType::Display_PPBlend,
-//                          myOSystem.settings().getString(PhosphorHandler::SETTING_BLEND));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -212,10 +206,7 @@ void EventHandler::toggleSAPortOrder(bool toggle)
 
   if(toggle)
   {
-    if(saport == "lr")
-      saport = "rl";
-    else
-      saport = "lr";
+    saport = (saport == "lr") ? "rl" : "lr";
     mapStelladaptors(saport);
   }
 
@@ -2167,13 +2158,13 @@ void EventHandler::setDefaultMapping(Event::Type event, EventMode mode)
 {
   setDefaultKeymap(event, mode);
   setDefaultJoymap(event, mode);
+  setActionMappings(mode);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventHandler::setDefaultKeymap(Event::Type event, EventMode mode)
 {
   myPKeyHandler->setDefaultMapping(event, mode);
-  setActionMappings(mode);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -2181,7 +2172,6 @@ void EventHandler::setDefaultJoymap(Event::Type event, EventMode mode)
 {
 #ifdef JOYSTICK_SUPPORT
   myPJoyHandler->setDefaultMapping(event, mode);
-  setActionMappings(mode);
 #endif
 }
 
@@ -2321,7 +2311,10 @@ StringList EventHandler::getComboListForEvent(Event::Type event) const
       const Event::Type e = myComboTable[combo][i];
       for(uInt32 j = 0; j < ourEmulActionList.size(); ++j)
         if(EventHandler::ourEmulActionList[j].event == e)
+        {
           l.push_back(std::to_string(j));
+          break;
+        }
 
       // Make sure entries are 1-to-1, using '-1' to indicate Event::NoType
       if(i == l.size())
@@ -2694,7 +2687,7 @@ void EventHandler::setState(EventHandlerState state)
     myOSystem.console().stateChanged(myState); // does nothing
 
   // Sometimes an extraneous mouse motion event is generated
-  // after a state change, which should be supressed
+  // after a state change, which should be suppressed
   mySkipMouseMotion = true;
 
   // Erase any previously set events, since a state change implies

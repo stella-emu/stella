@@ -96,8 +96,8 @@ my @prop_defaults = (
   "AUTO",   # Display.Format
   "0",      # Display.VCenter
   "NO",     # Display.Phosphor
-  "0",      # Display.PPBlend
-  "" 	    # Bezel.Name
+  "",       # Display.PPBlend
+  ""        # Bezel.Name
 );
 
 # Load and parse a properties file into an hash table of property

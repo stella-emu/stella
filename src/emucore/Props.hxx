@@ -189,7 +189,7 @@ class Properties
       "AUTO",   // Display.Format
       "0",      // Display.VCenter
       "NO",     // Display.Phosphor
-      "0",      // Display.PPBlend
+      "",       // Display.PPBlend
       ""        // Bezel.Name
     }};
 

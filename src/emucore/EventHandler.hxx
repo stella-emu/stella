@@ -452,7 +452,7 @@ class EventHandler
     void addPhysicalJoystick(const PhysicalJoystickPtr& joy);
 
     /**
-      Remove physical joystick with the givem id.
+      Remove physical joystick with the given id.
     */
     void removePhysicalJoystick(int id);
 

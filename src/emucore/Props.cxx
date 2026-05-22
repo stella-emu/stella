@@ -87,9 +87,12 @@ void Properties::set(PropType key, string_view value)
 
     case PropType::Display_PPBlend:
     {
-      const int blend = BSPF::stoi(myProperties[pos]);
-      if(blend < 0 || blend > 100)
-        myProperties[pos] = ourDefaultProperties[pos];
+      if(!myProperties[pos].empty())
+      {
+        const int blend = BSPF::stoi(myProperties[pos]);
+        if(blend < 0 || blend > 100)
+          myProperties[pos] = ourDefaultProperties[pos];
+      }
       break;
     }
 
