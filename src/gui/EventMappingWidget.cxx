@@ -19,7 +19,6 @@
 #include "OSystem.hxx"
 #include "GuiObject.hxx"
 #include "PopUpWidget.hxx"
-#include "FrameBuffer.hxx"
 #include "EventHandler.hxx"
 #include "Event.hxx"
 #include "EditTextWidget.hxx"
@@ -51,7 +50,6 @@ EventMappingWidget::EventMappingWidget(GuiObject* boss, const GUI::Font& font,
 
   VariantList items;
 
-  items.clear();
   VarList::push_back(items, "Emulation", Event::Group::Emulation);
   VarList::push_back(items, " Miscellaneous", Event::Group::Misc);
   VarList::push_back(items, " Video & Audio", Event::Group::AudioVideo);
@@ -71,8 +69,8 @@ EventMappingWidget::EventMappingWidget(GuiObject* boss, const GUI::Font& font,
                                   lineHeight, items, "Events ", 0, kFilterCmd);
   myFilterPopup->setTarget(this);
   addFocusWidget(myFilterPopup);
-  ypos += lineHeight * 1.5;
-  listHeight -= lineHeight * 1.5;
+  ypos += lineHeight * 3 / 2;
+  listHeight -= lineHeight * 3 / 2;
 
   myActionsList = new StringListWidget(boss, font, xpos, ypos, listWidth, listHeight);
   myActionsList->setTarget(this);
@@ -151,11 +149,6 @@ void EventMappingWidget::loadConfig()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EventMappingWidget::saveConfig()
-{
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventMappingWidget::updateActions()
 {
   myEventGroup = static_cast<Event::Group>(myFilterPopup->getSelectedTag().toInt());
@@ -187,9 +180,6 @@ void EventMappingWidget::startRemapping()
 
   // Reset all previous events for determining correct axis/hat values
   resetLastEvent();
-  // Reset the previously aggregated key mappings
-  myLastKey = StellaKey{};
-  myMod = StellaMod{};
 
   // Disable all other widgets while in remap mode, except enable 'Cancel'
   enableButtons(false);
@@ -276,11 +266,11 @@ void EventMappingWidget::enableButtons(bool state)
 bool EventMappingWidget::handleKeyDown(StellaKey key, StellaMod mod)
 {
   // Remap keys in remap mode
-  if (myRemapStatus && myActionSelected >= 0)
+  if(myRemapStatus && myActionSelected >= 0)
   {
     // Mod keys are only recorded if no other key has been recorded before
-    if (!StellaKeyTest::isModifierKey(key)
-      || (myLastKey == StellaKey::UNKNOWN || StellaKeyTest::isModifierKey(myLastKey)))
+    if(!StellaKeyTest::isModifierKey(key)
+      || myLastKey == StellaKey::UNKNOWN || StellaKeyTest::isModifierKey(myLastKey))
     {
       myLastKey = key;
     }
@@ -293,28 +283,14 @@ bool EventMappingWidget::handleKeyDown(StellaKey key, StellaMod mod)
 bool EventMappingWidget::handleKeyUp(StellaKey key, StellaMod mod)
 {
   // Remap keys in remap mode
-  if (myRemapStatus && myActionSelected >= 0
+  if(myRemapStatus && myActionSelected >= 0
     && (mod & (StellaMod::CTRL | StellaMod::SHIFT |
                StellaMod::ALT  | StellaMod::GUI)) == StellaMod::NONE)
   {
     const Event::Type event =
       EventHandler::eventAtIndex(myActionSelected, myEventGroup);
 
-  #if 0  // FIXME: this doesn't seem to actually do anything
-    // if not pressed alone, map left and right modifier keys
-    if(!isModifierKey(myLastKey))
-    {
-      if(myMod & CTRL)
-        myMod |= CTRL;
-      if(myMod & SHIFT)
-        myMod |= SHIFT;
-      if(myMod & ALT)
-        myMod |= ALT;
-      if(myMod & GUI)
-        myMod |= GUI;
-    }
-  #endif
-    if (instance().eventHandler().addKeyMapping(event, myEventMode,
+    if(instance().eventHandler().addKeyMapping(event, myEventMode,
         myLastKey, myMod))
       stopRemapping();
   }
@@ -336,23 +312,22 @@ void EventMappingWidget::handleJoyDown(int stick, int button, bool longPress)
 void EventMappingWidget::handleJoyUp(int stick, int button)
 {
   // Remap joystick buttons in remap mode
-  if (myRemapStatus && myActionSelected >= 0)
+  if(myRemapStatus && myActionSelected >= 0)
   {
-    if (myLastStick == stick && myLastButton == button)
+    if(myLastStick == stick && myLastButton == button)
     {
       EventHandler& eh = instance().eventHandler();
       const Event::Type event =
           EventHandler::eventAtIndex(myActionSelected, myEventGroup);
 
       // map either button/hat, solo button or button/axis combinations
-      if(myLastHat != -1)
+      if(myLastHat != JOY_CTRL_NONE)
       {
         if(eh.addJoyHatMapping(event, myEventMode, stick, button, myLastHat, myLastHatDir))
           stopRemapping();
       }
-      else
-        if (eh.addJoyMapping(event, myEventMode, stick, button, myLastAxis, myLastDir))
-          stopRemapping();
+      else if(eh.addJoyMapping(event, myEventMode, stick, button, myLastAxis, myLastDir))
+        stopRemapping();
     }
   }
 }
@@ -367,7 +342,7 @@ void EventMappingWidget::handleJoyAxis(int stick, JoyAxis axis, JoyDir adir, int
   if(myRemapStatus && myActionSelected >= 0)
   {
     // Detect the first axis event that represents 'on'
-    if((myLastStick == -1 || myLastStick == stick) && myLastAxis == JoyAxis::NONE && adir != JoyDir::NONE)
+    if((myLastStick == JOY_CTRL_NONE || myLastStick == stick) && myLastAxis == JoyAxis::NONE && adir != JoyDir::NONE)
     {
       myLastStick = stick;
       myLastAxis = axis;
@@ -397,7 +372,7 @@ bool EventMappingWidget::handleJoyHat(int stick, int hat, JoyHatDir hdir, int bu
   if(myRemapStatus && myActionSelected >= 0)
   {
     // Detect the first hat event that represents a valid direction
-    if((myLastStick == -1 || myLastStick == stick) && myLastHat == -1 && hdir != JoyHatDir::CENTER)
+    if((myLastStick == JOY_CTRL_NONE || myLastStick == stick) && myLastHat == JOY_CTRL_NONE && hdir != JoyHatDir::CENTER)
     {
       myLastStick = stick;
       myLastHat = hat;
@@ -435,18 +410,18 @@ void EventMappingWidget::handleCommand(CommandSender* sender, int cmd,
       break;
 
     case ListWidget::kSelectionChangedCmd:
-      if(myActionsList->getSelected() >= 0)
+      if(const int sel = myActionsList->getSelected(); sel >= 0)
       {
-        myActionSelected = myActionsList->getSelected();
+        myActionSelected = sel;
         drawKeyMapping();
         enableButtons(true);
       }
       break;
 
     case ListWidget::kDoubleClickedCmd:
-      if(myActionsList->getSelected() >= 0)
+      if(const int sel = myActionsList->getSelected(); sel >= 0)
       {
-        myActionSelected = myActionsList->getSelected();
+        myActionSelected = sel;
         startRemapping();
       }
       break;

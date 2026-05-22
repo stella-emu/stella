@@ -18,7 +18,6 @@
 #ifndef EVENT_MAPPING_WIDGET_HXX
 #define EVENT_MAPPING_WIDGET_HXX
 
-class DialogContainer;
 class CommandSender;
 class ButtonWidget;
 class EditTextWidget;
@@ -42,7 +41,7 @@ class EventMappingWidget : public Widget, public CommandSender
                        int x, int y, int w, int h);
     ~EventMappingWidget() override = default;
 
-    bool remapMode() const { return myRemapStatus; }
+    bool isRemapping() const { return myRemapStatus; }
 
     void loadConfig() override;
     void setDefaults();
@@ -67,15 +66,11 @@ class EventMappingWidget : public Widget, public CommandSender
       kComboCmd    = 'cmbo'
     };
 
-    void saveConfig();
-
     void updateActions();
     void startRemapping();
     void eraseRemapping();
     void resetRemapping();
     void stopRemapping();
-
-    bool isRemapping() const { return myRemapStatus; }
 
     void drawKeyMapping();
     void enableButtons(bool state);
@@ -111,7 +106,8 @@ class EventMappingWidget : public Widget, public CommandSender
     // Therefore, we map these events when they've been 'released', rather
     // than on their first occurrence (aka, when they're 'pressed')
     // As a result, we need to keep track of their old values
-    int myLastStick{0}, myLastHat{0};
+    int myLastStick{JOY_CTRL_NONE};
+    int myLastHat{JOY_CTRL_NONE};
     JoyAxis myLastAxis{JoyAxis::NONE};
     JoyDir myLastDir{JoyDir::NONE};
     JoyHatDir myLastHatDir{JoyHatDir::CENTER};
@@ -127,11 +123,13 @@ class EventMappingWidget : public Widget, public CommandSender
 
   private:
     void resetLastEvent() {
-      myLastStick  = myLastHat = -1;
+      myLastStick  = myLastHat = JOY_CTRL_NONE;
       myLastButton = JOY_CTRL_NONE;
       myLastAxis   = JoyAxis::NONE;
       myLastDir    = JoyDir::NONE;
       myLastHatDir = JoyHatDir::CENTER;
+      myLastKey    = StellaKey::UNKNOWN;
+      myMod        = StellaMod::NONE;
     }
 
   private:
