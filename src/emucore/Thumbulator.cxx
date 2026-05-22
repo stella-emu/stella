@@ -46,17 +46,18 @@ using Common::Base;
 #endif
 
 namespace {
-#ifdef __BIG_ENDIAN__
   constexpr uInt32 CONV_DATA(uInt32 d) {
-    return (((d & 0xFFFF)>>8) | ((d & 0xFFFF)<<8)) & 0xFFFF;
+    if constexpr(std::endian::native == std::endian::big)
+      return (((d & 0xFFFF)>>8) | ((d & 0xFFFF)<<8)) & 0xFFFF;
+    else
+      return d & 0xFFFF;
   }
   constexpr uInt32 CONV_RAMROM(uInt32 d) {
-    return ((d>>8) | (d<<8)) & 0xFFFF;
+    if constexpr(std::endian::native == std::endian::big)
+      return ((d>>8) | (d<<8)) & 0xFFFF;
+    else
+      return d;
   }
-#else
-  constexpr uInt32 CONV_DATA(uInt32 d)   { return d & 0xFFFF; }
-  constexpr uInt32 CONV_RAMROM(uInt32 d) { return d; }
-#endif
 
 #ifdef THUMB_CYCLE_COUNT
   #define MERGE_I_S

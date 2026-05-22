@@ -872,7 +872,7 @@ void DebuggerParser::saveDump(const FSNode& node, const std::ostringstream& out,
 {
   try
   {
-    node.write(out.view());  // FIXME: can we eliminate the stream?
+    node.write(out.view());
     result << " to file " << node.getShortPath();
   }
   catch(...)

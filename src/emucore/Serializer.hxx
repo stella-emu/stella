@@ -18,7 +18,6 @@
 #ifndef SERIALIZER_HXX
 #define SERIALIZER_HXX
 
-#include <bit>
 #include <cstring>
 #include <optional>
 
