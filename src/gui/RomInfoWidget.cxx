@@ -172,7 +172,7 @@ void RomInfoWidget::parseProperties(const FSNode& node, bool full)
     if(myProperties.get(PropType::Bezel_Name).empty())
       myRomInfo.push_back("*Bezel: " + Bezel::getName(instance().bezelDir().getPath(), myProperties));
     else
-      myRomInfo.push_back(" Bezel: " + myProperties.get(PropType::Bezel_Name));
+      myRomInfo.push_back(std::format(" Bezel: {}", myProperties.get(PropType::Bezel_Name)));
 #endif
   }
 
