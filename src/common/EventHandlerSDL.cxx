@@ -125,8 +125,8 @@ void EventHandlerSDL::pollEvent()
 
       case SDL_EVENT_MOUSE_WHEEL:
       {
-        // TODO: SDL now uses float for mouse coords, but the core still
-        //       uses int throughout; maybe this is sufficient?
+        // SDL now uses float for mouse coords, but the core still
+        // uses int throughout; this is sufficient for our current needs
         float x{0.F}, y{0.F};
         SDL_GetMouseState(&x, &y);  // we need mouse position too
         if(myEvent.wheel.y < 0)

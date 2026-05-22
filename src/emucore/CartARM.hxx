@@ -81,6 +81,19 @@ class CartridgeARM : public Cartridge
     */
     virtual void setInitialState();
 
+    static constexpr uInt32 getUInt32(const uInt8* array, size_t address) {
+      return  static_cast<uInt32>(array[address + 0])        |
+             (static_cast<uInt32>(array[address + 1]) <<  8) |
+             (static_cast<uInt32>(array[address + 2]) << 16) |
+             (static_cast<uInt32>(array[address + 3]) << 24);
+    }
+    static constexpr void putUInt32(uInt8* array, size_t address, uInt32 value) {
+      array[address + 0] =  value        & 0xff;
+      array[address + 1] = (value >>  8) & 0xff;
+      array[address + 2] = (value >> 16) & 0xff;
+      array[address + 3] = (value >> 24) & 0xff;
+    }
+
     void enableCycleCount(bool enable) const { myThumbEmulator->enableCycleCount(enable); }
     // Get number of memory accesses of last and last but one ARM runs.
     void updateCycles(int cycles);

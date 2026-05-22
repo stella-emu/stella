@@ -105,7 +105,7 @@ FORCE_INLINE void CartridgeDPC::updateMusicModeDataFetchers()
     return;
 
   // Let's update counters and flags of the music mode data fetchers
-  for(int x = 5; x <= 7; ++x)
+  for(int x = 5; x < 8; ++x)
   {
     // Update only if the data fetcher is in music mode
     if(myMusicMode[x - 5])

@@ -28,16 +28,22 @@ class System;
 #include "CartARM.hxx"
 
 /**
-  Cartridge class used for DPC+, derived from Pitfall II.  There are six 4K
-  program banks, a 4K display bank, 1K frequency table and the DPC chip.
-  DPC chip access is mapped to $1000 - $1080 ($1000 - $103F is read port,
-  $1040 - $107F is write port).
-  Program banks are accessible by read/write to $1FF6 - $1FFB.
+  Cartridge class used for DPC+, an enhanced version of the DPC scheme from
+  Pitfall II.  DPC+ uses an ARM co-processor running on a Harmony-style
+  cartridge alongside the 6502.  The first 3K of the 32K ROM image holds the
+  ARM driver, which executes in-place via a Thumb emulator.  Six 4K program
+  banks hold the 6502 code, and bank switching is triggered by access to
+  $1FF6-$1FFB.
 
-  FIXME: THIS NEEDS TO BE UPDATED
+  The 8K Harmony RAM is arranged as: 3K reserved for the ARM driver, 4K
+  Display Data (initialised from ROM at startup), and 1K frequency table.
+  DPC register access is mapped to $1000-$107F ($1000-$103F read port,
+  $1040-$107F write port).  Eight data fetchers, three music channels, a
+  32-bit LFSR random number generator, and an optional Fast Fetch mode are
+  provided.
 
-  For complete details on the DPC chip see David P. Crane's United States
-  Patent Number 4,644,495.
+  For complete details on the original DPC chip see David P. Crane's United
+  States Patent Number 4,644,495.
 
   @authors  Darrell Spice Jr, Fred Quimby, Stephen Anthony, Bradford W. Mott
 */

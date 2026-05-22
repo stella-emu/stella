@@ -37,12 +37,6 @@ namespace {
   constexpr bool BUS_STUFF_ON(uInt8 mode) { return (mode & 0x0F) == 0; }
   constexpr bool DIGITAL_AUDIO_ON(uInt8 mode) { return (mode & 0xF0) == 0; }
 
-  constexpr uInt32 getUInt32(const uInt8* _array, size_t _address) {
-    return static_cast<uInt32>(_array[_address + 0]        +
-                              (_array[_address + 1] << 8)  +
-                              (_array[_address + 2] << 16) +
-                              (_array[_address + 3] << 24));
-  }
 } // namespace
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -201,7 +195,7 @@ inline void CartridgeBUS::updateMusicModeDataFetchers()
 
   // Let's update counters and flags of the music mode data fetchers
   if(wholeClocks > 0)
-    for(int x = 0; x <= 2; ++x)
+    for(size_t x = 0; x < myMusicCounters.size(); ++x)
       myMusicCounters[x] += myMusicFrequencies[x] * wholeClocks;
 }
 
@@ -1000,56 +994,31 @@ bool CartridgeBUS::load(Serializer& in)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt32 CartridgeBUS::getDatastreamPointer(uInt8 index) const
 {
-  const uInt16 address = myDatastreamBase + index * 4;
-
-  return myRAM[address + 0]        +  // low byte
-        (myRAM[address + 1] << 8)  +
-        (myRAM[address + 2] << 16) +
-        (myRAM[address + 3] << 24) ;  // high byte
+  return getUInt32(myRAM.data(), myDatastreamBase + index * 4);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeBUS::setDatastreamPointer(uInt8 index, uInt32 value)
 {
-  const uInt16 address = myDatastreamBase + index * 4;
-
-  myRAM[address + 0] = value & 0xff;          // low byte
-  myRAM[address + 1] = (value >> 8) & 0xff;
-  myRAM[address + 2] = (value >> 16) & 0xff;
-  myRAM[address + 3] = (value >> 24) & 0xff;  // high byte
+  putUInt32(myRAM.data(), myDatastreamBase + index * 4, value);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt32 CartridgeBUS::getDatastreamIncrement(uInt8 index) const
 {
-  const uInt16 address = myDatastreamIncrementBase + index * 4;
-
-  return myRAM[address + 0]        +   // low byte
-        (myRAM[address + 1] << 8)  +
-        (myRAM[address + 2] << 16) +
-        (myRAM[address + 3] << 24) ;   // high byte
+  return getUInt32(myRAM.data(), myDatastreamIncrementBase + index * 4);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeBUS::setDatastreamIncrement(uInt8 index, uInt32 value)
 {
-  const uInt16 address = myDatastreamIncrementBase + index * 4;
-
-  myRAM[address + 0] = value & 0xff;          // low byte
-  myRAM[address + 1] = (value >> 8) & 0xff;
-  myRAM[address + 2] = (value >> 16) & 0xff;
-  myRAM[address + 3] = (value >> 24) & 0xff;  // high byte
+  putUInt32(myRAM.data(), myDatastreamIncrementBase + index * 4, value);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt32 CartridgeBUS::getAddressMap(uInt8 index) const
 {
-  const uInt16 address = myDatastreamMapBase + index * 4;
-
-  return myRAM[address + 0]        +   // low byte
-        (myRAM[address + 1] << 8)  +
-        (myRAM[address + 2] << 16) +
-        (myRAM[address + 3] << 24) ;   // high byte
+  return getUInt32(myRAM.data(), myDatastreamMapBase + index * 4);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1061,18 +1030,7 @@ uInt32 CartridgeBUS::getWaveform(uInt8 index) const
   // 0x40000840 for 2
   // ...
 
-//  return myBUSRAM[WAVEFORM + index*4 + 0]        +   // low byte
-//        (myBUSRAM[WAVEFORM + index*4 + 1] << 8)  +
-//        (myBUSRAM[WAVEFORM + index*4 + 2] << 16) +
-//        (myBUSRAM[WAVEFORM + index*4 + 3] << 24) -   // high byte
-//         0x40000800;
-
-  const uInt16 address = myWaveformBase + index * 4;
-
-  uInt32 result = myRAM[address + 0]        +  // low byte
-                 (myRAM[address + 1] << 8)  +
-                 (myRAM[address + 2] << 16) +
-                 (myRAM[address + 3] << 24);   // high byte
+  uInt32 result = getUInt32(myRAM.data(), myWaveformBase + index * 4);
 
   result -= 0x40000800;
 
@@ -1085,13 +1043,7 @@ uInt32 CartridgeBUS::getWaveform(uInt8 index) const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt32 CartridgeBUS::getSample()
 {
-  const uInt16 address = myWaveformBase;
-
-  const uInt32 result = myRAM[address + 0]        +  // low byte
-                       (myRAM[address + 1] << 8)  +
-                       (myRAM[address + 2] << 16) +
-                       (myRAM[address + 3] << 24);   // high byte
-  return result;
+  return getUInt32(myRAM.data(), myWaveformBase);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1103,13 +1055,7 @@ uInt32 CartridgeBUS::getWaveformSize(uInt8 index) const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeBUS::setAddressMap(uInt8 index, uInt32 value)
 {
-  const uInt16 address = myDatastreamMapBase + index * 4;
-
-  myRAM[address + 0] = value & 0xff;          // low byte
-  myRAM[address + 1] = (value >> 8) & 0xff;
-  myRAM[address + 2] = (value >> 16) & 0xff;
-  myRAM[address + 3] = (value >> 24) & 0xff;  // high byte
-
+  putUInt32(myRAM.data(), myDatastreamMapBase + index * 4, value);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

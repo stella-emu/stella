@@ -32,13 +32,6 @@ namespace {
   constexpr bool FAST_FETCH_ON(uInt8 mode)    { return (mode & 0x0F) == 0; }
   constexpr bool DIGITAL_AUDIO_ON(uInt8 mode) { return (mode & 0xF0) == 0; }
 
-  constexpr uInt32 getUInt32(const uInt8* _array, size_t _address) {
-    return static_cast<uInt32>(_array[_address + 0]        +
-                              (_array[_address + 1] << 8)  +
-                              (_array[_address + 2] << 16) +
-                              (_array[_address + 3] << 24));
-  }
-
   Thumbulator::ConfigureFor thumulatorConfiguration(CartridgeCDF::CDFSubtype subtype)
   {
     switch (subtype) {
@@ -178,7 +171,7 @@ FORCE_INLINE void CartridgeCDF::updateMusicModeDataFetchers()
 
   // Let's update counters and flags of the music mode data fetchers
   if(wholeClocks > 0)
-    for(int x = 0; x <= 2; ++x)
+    for(size_t x = 0; x < myMusicCounters.size(); ++x)
       myMusicCounters[x] += myMusicFrequencies[x] * wholeClocks;
 }
 
@@ -640,12 +633,7 @@ uInt32 CartridgeCDF::getDatastreamPointer(uInt8 index) const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeCDF::setDatastreamPointer(uInt8 index, uInt32 value)
 {
-  const uInt16 address = myDatastreamBase + index * 4;
-
-  myRAM[address + 0] = value & 0xff;          // low byte
-  myRAM[address + 1] = (value >> 8) & 0xff;
-  myRAM[address + 2] = (value >> 16) & 0xff;
-  myRAM[address + 3] = (value >> 24) & 0xff;  // high byte
+  putUInt32(myRAM.data(), myDatastreamBase + index * 4, value);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
