@@ -488,10 +488,8 @@ void TimeMachineDialog::initBar()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string TimeMachineDialog::getTimeString(uInt64 cycles) const
+string TimeMachineDialog::getTimeString(uInt64 cycles, size_t scanlines) const
 {
-  const size_t scanlines =
-      std::max<size_t>(instance().console().tia().scanlinesLastFrame(), 240);
   const bool isNTSC = scanlines <= 287;
   constexpr size_t NTSC_FREQ = 1193182; // ~76*262*60
   constexpr size_t PAL_FREQ  = 1182298; // ~76*312*50
@@ -514,23 +512,24 @@ void TimeMachineDialog::handleWinds(Int32 numWinds)
   if(numWinds)
   {
     const uInt64 startCycles = r.getCurrentCycles();
-    if(numWinds < 0)      r.rewindStates(-numWinds);
-    else if(numWinds > 0) r.unwindStates(numWinds);
+    if(numWinds < 0) r.rewindStates(-numWinds);
+    else             r.unwindStates(numWinds);
 
     const uInt64 elapsed = instance().console().system().cycles() - startCycles;
     if(elapsed > 0)
     {
       const string message = r.getUnitString(elapsed);
 
-      // TODO: add message text from addState()
       myMessageWidget->setLabel(std::format("({}{})", numWinds < 0 ? '-' : '+',
                                             message));
     }
   }
 
   // Update time
-  myCurrentTimeWidget->setLabel(getTimeString(r.getCurrentCycles() - r.getFirstCycles()));
-  myLastTimeWidget->setLabel(getTimeString(r.getLastCycles() - r.getFirstCycles()));
+  const size_t scanlines =
+      std::max<size_t>(instance().console().tia().scanlinesLastFrame(), 240);
+  myCurrentTimeWidget->setLabel(getTimeString(r.getCurrentCycles() - r.getFirstCycles(), scanlines));
+  myLastTimeWidget->setLabel(getTimeString(r.getLastCycles() - r.getFirstCycles(), scanlines));
   myTimeline->setValue(r.getCurrentIdx()-1);
   // Update index
   myCurrentIdxWidget->setValue(r.getCurrentIdx());

@@ -49,7 +49,7 @@ class TimeMachineDialog : public Dialog
     /** initialize timeline bar */
     void initBar();
     /** convert cycles into time */
-    string getTimeString(uInt64 cycles) const;
+    string getTimeString(uInt64 cycles, size_t scanlines) const;
     /** re/unwind and update display */
     void handleWinds(Int32 numWinds = 0);
     /** toggle Time Machine mode */

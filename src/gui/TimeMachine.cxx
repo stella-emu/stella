@@ -25,7 +25,7 @@ TimeMachine::TimeMachine(OSystem& osystem)
   : DialogContainer(osystem),
     myWidth{FBMinimum::Width}
 {
-  myBaseDialog = new TimeMachineDialog(myOSystem, *this, myWidth);
+  myBaseDialog = new TimeMachineDialog(myOSystem, *this, static_cast<int>(myWidth));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -47,7 +47,7 @@ void TimeMachine::requestResize()
     Dialog* oldPtr = myBaseDialog;
     const Int32 enterWinds = static_cast<TimeMachineDialog*>(myBaseDialog)->getEnterWinds();
     delete myBaseDialog;
-    myBaseDialog = new TimeMachineDialog(myOSystem, *this, myWidth);
+    myBaseDialog = new TimeMachineDialog(myOSystem, *this, static_cast<int>(myWidth));
     setEnterWinds(enterWinds);
     Dialog* newPtr = myBaseDialog;
 
