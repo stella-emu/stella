@@ -89,9 +89,9 @@ bool PropertiesSet::getMD5(string_view md5, Properties& properties,
        BSPF::compareIgnoreCase((*it)[static_cast<uInt8>(PropType::Cart_MD5)], md5) == 0)
     {
       const auto& entry = *it;
-      for(uInt8 p = 0; p < static_cast<uInt8>(PropType::NumTypes); ++p)
+      for(size_t p = 0; p < Properties::NUM_PROPS; ++p)
         if(entry[p][0] != 0)
-          properties.set(PropType{p}, entry[p]);
+          properties.set(static_cast<PropType>(p), entry[p]);
 
       found = true;
     }
@@ -113,7 +113,7 @@ void PropertiesSet::insert(const Properties& properties, bool save)
   // most people tend not to do.
 
   // Since the PropSet is keyed by md5, we can't insert without a valid one
-  const string& md5 = properties.get(PropType::Cart_MD5);
+  string_view md5 = properties.get(PropType::Cart_MD5);
   if(md5.empty())
     return;
 
@@ -130,7 +130,7 @@ void PropertiesSet::insert(const Properties& properties, bool save)
   if(save)
     properties.save(*myRepository->get(md5));
   else
-    myTempProps.insert_or_assign(md5, properties);
+    myTempProps.insert_or_assign(string{md5}, properties);  // TODO: heterogeneous insert fixed in C++26
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -180,11 +180,11 @@ void PropertiesSet::print() const
   for(const auto& DefProp: DefProps)
   {
     properties.setDefaults();
-    for(uInt8 p = 0; p < static_cast<uInt8>(PropType::NumTypes); ++p)
+    for(size_t p = 0; p < Properties::NUM_PROPS; ++p)
       if(DefProp[p][0] != 0)
-        properties.set(PropType{p}, DefProp[p]);
+        properties.set(static_cast<PropType>(p), DefProp[p]);
 
-    list.emplace(DefProp[static_cast<uInt8>(PropType::Cart_MD5)], properties);
+    list.emplace(DefProp[static_cast<size_t>(PropType::Cart_MD5)], properties);
   }
 
   // Merge temp props, overriding any built-in duplicates

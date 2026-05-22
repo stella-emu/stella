@@ -181,7 +181,7 @@ namespace {
   {
     if (!props) return SystemType::ntsc;
 
-    const string& displayFormat = props->get(PropType::Display_Format);
+    string_view displayFormat = props->get(PropType::Display_Format);
 
     if(displayFormat == "PAL" || displayFormat == "SECAM") return SystemType::pal;
     if(displayFormat == "PAL60") return SystemType::pal60;

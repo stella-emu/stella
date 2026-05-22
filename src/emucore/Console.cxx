@@ -653,7 +653,7 @@ void Console::cyclePhosphorMode(int direction)
 
       default: // PhosphorHandler::ByRom
       {
-        const string& ppblend = myProperties.get(PropType::Display_PPBlend);
+        string_view ppblend = myProperties.get(PropType::Display_PPBlend);
         const int blend = ppblend.empty()
           ? myOSystem.settings().getInt(PhosphorHandler::SETTING_BLEND)
           : BSPF::stoi(ppblend);
@@ -674,7 +674,7 @@ void Console::cyclePhosphorMode(int direction)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Console::changePhosphor(int direction)
 {
-  const string& ppblend = myProperties.get(PropType::Display_PPBlend);
+  string_view ppblend = myProperties.get(PropType::Display_PPBlend);
   int blend = ppblend.empty()
     ? myOSystem.settings().getInt(PhosphorHandler::SETTING_BLEND)
     : BSPF::stoi(ppblend);
@@ -709,7 +709,7 @@ FBInitStatus Console::initializeVideo(bool full)
 
     const bool devSettings = myOSystem.settings().getBool("dev.settings");
     fbstatus = myOSystem.frameBuffer().createDisplay(
-      string{STELLA_FULL_TITLE} + ": \"" + myProperties.get(PropType::Cart_Name) + "\"",
+      std::format("{}: \"{}\"", STELLA_FULL_TITLE, myProperties.get(PropType::Cart_Name)),
       BufferType::Emulator, size, false);
     if(fbstatus != FBInitStatus::Success)
       return fbstatus;
@@ -902,7 +902,7 @@ void Console::setControllers(string_view romMd5)
     const ByteSpan image = myCart->getImage();
     if(!image.empty())
     {
-      Logger::debug(myProperties.get(PropType::Cart_Name) + ":");
+      Logger::debug(std::format("{}:", myProperties.get(PropType::Cart_Name)));
       leftType = ControllerDetector::detectType(image, leftType,
           !swappedPorts ? Controller::Jack::Left : Controller::Jack::Right, myOSystem.settings());
       rightType = ControllerDetector::detectType(image, rightType,

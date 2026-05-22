@@ -156,14 +156,14 @@ void QuadTariDialog::defineController(const Properties& props, PropType key,
   Controller::Jack jack, PopUpWidget* popupWidget, StaticTextWidget* labelWidget, bool first)
 {
   ByteArray image;
-  const string& controllerName = props.get(key);
+  string_view controllerName = props.get(key);
   popupWidget->setSelected(controllerName, "AUTO");
 
   // Try to load the image for auto detection
   if(!instance().hasConsole())
   {
     const FSNode& node = FSNode(instance().launcher().selectedRom());
-    string md5 = myGameProperties.get(PropType::Cart_MD5);
+    string md5{myGameProperties.get(PropType::Cart_MD5)};
     if(node.exists() && !node.isDirectory())
       image = instance().openROM(node, md5);
   }
@@ -235,7 +235,7 @@ void QuadTariDialog::saveConfig()
 void QuadTariDialog::setDefaults()
 {
   // Load the default properties
-  const string& md5 = myGameProperties.get(PropType::Cart_MD5);
+  string_view md5 = myGameProperties.get(PropType::Cart_MD5);
   Properties defaultProperties;
 
   instance().propSet().getMD5(md5, defaultProperties, true);

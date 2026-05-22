@@ -97,9 +97,9 @@ class Properties
       @param key  The key of the property to lookup
       @return     The value of the property
     */
-    const string& get(PropType key) const {
+    string_view get(PropType key) const {
       const auto pos = static_cast<size_t>(key);
-      return pos < NUM_PROPS ? myProperties[pos] : EmptyString();
+      return pos < NUM_PROPS ? string_view{myProperties[pos]} : string_view{};
     }
 
     /**
@@ -135,9 +135,6 @@ class Properties
     */
     bool operator==(const Properties& properties) const {
       return myProperties == properties.myProperties;
-    }
-    bool operator!=(const Properties& properties) const {
-      return !(*this == properties);
     }
 
   private:

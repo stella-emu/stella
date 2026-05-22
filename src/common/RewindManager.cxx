@@ -196,9 +196,9 @@ string RewindManager::saveAllStates()
 
   try
   {
-    const string path = myOSystem.stateDir().getPath()
-      + myOSystem.console().properties().get(PropType::Cart_Name)
-      + ".sta";
+    const string path = std::format("{}{}.sta",
+      myOSystem.stateDir().getPath(),
+      myOSystem.console().properties().get(PropType::Cart_Name));
 
     Serializer out(path, Serializer::FileMode::ReadWriteTrunc);
     if(!out)
@@ -235,9 +235,9 @@ string RewindManager::loadAllStates()
 {
   try
   {
-    const string path = myOSystem.stateDir().getPath()
-      + myOSystem.console().properties().get(PropType::Cart_Name)
-      + ".sta";
+    const string path = std::format("{}{}.sta",
+      myOSystem.stateDir().getPath(),
+      myOSystem.console().properties().get(PropType::Cart_Name));
 
     // Make sure the file can be opened for reading
     Serializer in(path, Serializer::FileMode::ReadOnly);

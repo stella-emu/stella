@@ -135,7 +135,7 @@ void RomAuditDialog::auditRoms()
       const string& md5 = OSystem::getROMMD5(files[idx]);
       if(instance().propSet().getMD5(md5, props))
       {
-        const string& name = props.get(PropType::Cart_Name);
+        string_view name = props.get(PropType::Cart_Name);
 
         // Only rename the file if we found a valid properties entry
         if(!name.empty() && name != files[idx].getName())

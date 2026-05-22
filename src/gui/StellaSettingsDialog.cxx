@@ -325,7 +325,7 @@ void StellaSettingsDialog::setDefaults()
 
   // Load the default game properties
   Properties defaultProperties;
-  const string& md5 = myGameProperties.get(PropType::Cart_MD5);
+  string_view md5 = myGameProperties.get(PropType::Cart_MD5);
 
   instance().propSet().getMD5(md5, defaultProperties, true);
 
@@ -457,7 +457,7 @@ void StellaSettingsDialog::loadControllerProperties(const Properties& props)
 
   if (enable)
   {
-    string controller = props.get(PropType::Controller_Left);
+    string controller{props.get(PropType::Controller_Left)};
     myLeftPort->setSelected(controller, "AUTO");
     controller = props.get(PropType::Controller_Right);
     myRightPort->setSelected(controller, "AUTO");
@@ -513,7 +513,7 @@ void StellaSettingsDialog::openHelp()
 void StellaSettingsDialog::updateControllerStates()
 {
   ByteArray image;
-  string md5 = myGameProperties.get(PropType::Cart_MD5);
+  string md5{myGameProperties.get(PropType::Cart_MD5)};
 
   // try to load the image for auto detection
   if(!instance().hasConsole())

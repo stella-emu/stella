@@ -39,12 +39,13 @@ bool Properties::save(KeyValueRepository& repo) const
 {
   KVRMap props;
 
+  auto* atomic = repo.atomic();
   for(size_t i = 0; i < NUM_PROPS; ++i)
   {
     if(myProperties[i] == ourDefaultProperties[i])
     {
-      if(repo.atomic())
-        repo.atomic()->remove(ourPropertyNames[i]);
+      if(atomic)
+        atomic->remove(ourPropertyNames[i]);
     }
     else
       props[string{ourPropertyNames[i]}] = myProperties[i];
@@ -60,9 +61,7 @@ void Properties::set(PropType key, string_view value)
   if(pos >= NUM_PROPS)
     return;
 
-  myProperties[pos] = value;
-  if(BSPF::equalsIgnoreCase(myProperties[pos], "AUTO-DETECT"))
-    myProperties[pos] = "AUTO";
+  myProperties[pos] = BSPF::equalsIgnoreCase(value, "AUTO-DETECT") ? string_view{"AUTO"} : value;
 
   switch(key)
   {
@@ -105,14 +104,14 @@ void Properties::set(PropType key, string_view value)
 void Properties::reset(PropType key)
 {
   const auto pos = static_cast<size_t>(key);
-  myProperties[pos] = ourDefaultProperties[pos];
+  if(pos < NUM_PROPS)
+    myProperties[pos] = ourDefaultProperties[pos];
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Properties::setDefaults()
 {
-  for(size_t i = 0; i < NUM_PROPS; ++i)
-    myProperties[i] = ourDefaultProperties[i];
+  std::ranges::copy(ourDefaultProperties, myProperties.begin());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

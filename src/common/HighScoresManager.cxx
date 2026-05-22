@@ -87,7 +87,7 @@ Int16 HighScoresManager::peek(uInt16 addr) const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 json HighScoresManager::properties(const Properties& props)
 {
-  const string& property = props.get(PropType::Cart_Highscore);
+  string_view property = props.get(PropType::Cart_Highscore);
 
   if(property.empty())
     return json::array();

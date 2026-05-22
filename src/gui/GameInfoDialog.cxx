@@ -722,7 +722,7 @@ void GameInfoDialog::loadConfig()
     myGameFile = FSNode(instance().launcher().selectedRom());
   }
 
-  string title = "Game properties - " + myGameProperties.get(PropType::Cart_Name);
+  string title = std::format("Game properties - {}", myGameProperties.get(PropType::Cart_Name));
   if(_font.getStringWidth(title) > getWidth() - fontWidth() * 6)
     title = title.substr(0, getWidth() / fontWidth() - 7) + ELLIPSIS;
   setTitle(title);
@@ -759,7 +759,7 @@ void GameInfoDialog::loadEmulationProperties(const Properties& props)
     }
     else
     {
-      string md5 = props.get(PropType::Cart_MD5);
+      string md5{props.get(PropType::Cart_MD5)};
 
       // Try to load the image for auto detection
       if(myGameFile.exists() && !myGameFile.isDirectory())
@@ -781,7 +781,7 @@ void GameInfoDialog::loadEmulationProperties(const Properties& props)
   }
   else
   {
-    const string& startBank = props.get(PropType::Cart_StartBank);
+    string_view startBank = props.get(PropType::Cart_StartBank);
 
     VarList::push_back(items, startBank, startBank);
   }
@@ -815,7 +815,7 @@ void GameInfoDialog::loadEmulationProperties(const Properties& props)
   else
     myPhosphor->setLabel("Phosphor");
 
-  const string& blend = props.get(PropType::Display_PPBlend);
+  string_view blend = props.get(PropType::Display_PPBlend);
   myPPBlend->setValue(BSPF::stoi(blend));
 
   // set vertical center
@@ -840,7 +840,7 @@ void GameInfoDialog::loadConsoleProperties(const Properties& props)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void GameInfoDialog::loadControllerProperties(const Properties& props)
 {
-  string controller = props.get(PropType::Controller_Left);
+  string controller{props.get(PropType::Controller_Left)};
   myLeftPort->setSelected(controller, "AUTO");
   controller = props.get(PropType::Controller_Right);
   myRightPort->setSelected(controller, "AUTO");
@@ -899,7 +899,7 @@ void GameInfoDialog::loadCartridgeProperties(const Properties& props)
 
 #ifdef IMAGE_SUPPORT
   bool autoSelected = false;
-  string bezelName = props.get(PropType::Bezel_Name);
+  string bezelName{props.get(PropType::Bezel_Name)};
   if(bezelName.empty())
   {
     bezelName = Bezel::getName(instance().bezelDir().getPath(), props);
@@ -1119,7 +1119,7 @@ void GameInfoDialog::setDefaults()
 {
   // Load the default properties
   Properties defaultProperties;
-  const string& md5 = myGameProperties.get(PropType::Cart_MD5);
+  string_view md5 = myGameProperties.get(PropType::Cart_MD5);
 
   instance().propSet().getMD5(md5, defaultProperties, true);
 
@@ -1215,7 +1215,7 @@ void GameInfoDialog::updateControllerStates()
 {
   const bool swapPorts = mySwapPorts->getState();
   ByteArray image;
-  string md5 = myGameProperties.get(PropType::Cart_MD5);
+  string md5{myGameProperties.get(PropType::Cart_MD5)};
 
   // try to load the image for auto detection
   if(!instance().hasConsole())

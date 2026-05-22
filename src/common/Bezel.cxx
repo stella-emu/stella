@@ -59,7 +59,7 @@ string Bezel::getName(const string& path, const Properties& props)
 string Bezel::getName(const Properties& props, int& index)
 {
   if(++index == 1)
-    return props.get(PropType::Bezel_Name);
+    return string{props.get(PropType::Bezel_Name)};
 
   // Try to generate bezel name from cart name
   const string_view cartName = props.get(PropType::Cart_Name);

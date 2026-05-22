@@ -68,8 +68,8 @@ void TiaOutputWidget::saveSnapshot(int execDepth, string_view execPrefix,
   if(execDepth > 0)
     drawWidget(false);
 
-  string sspath = instance().snapshotSaveDir().getPath() +
-                  instance().console().properties().get(PropType::Cart_Name);
+  string sspath = std::format("{}{}", instance().snapshotSaveDir().getPath(),
+                              instance().console().properties().get(PropType::Cart_Name));
   if(mark)
   {
     sspath += "_dbg_";

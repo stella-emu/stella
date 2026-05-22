@@ -94,7 +94,7 @@ void RomInfoWidget::parseProperties(const FSNode& node, bool full)
   myUrl = myProperties.get(PropType::Cart_Url);
 
   // Now add some info for the message box below the image
-  myRomInfo.push_back("Name: " + myProperties.get(PropType::Cart_Name));
+  myRomInfo.push_back(std::format("Name: {}", myProperties.get(PropType::Cart_Name)));
 
   string value;
   if(value = myProperties.get(PropType::Cart_Manufacturer); !value.empty())
@@ -111,11 +111,11 @@ void RomInfoWidget::parseProperties(const FSNode& node, bool full)
     const bool swappedPorts = myProperties.get(PropType::Console_SwapPorts) == "YES";
 
     // Load the image for controller and bankswitch type auto detection
-    string left = myProperties.get(PropType::Controller_Left);
-    string right = myProperties.get(PropType::Controller_Right);
+    string left{myProperties.get(PropType::Controller_Left)};
+    string right{myProperties.get(PropType::Controller_Right)};
     const Controller::Type leftType = Controller::getType(left);
     const Controller::Type rightType = Controller::getType(right);
-    string bsDetected = myProperties.get(PropType::Cart_Type);
+    string bsDetected{myProperties.get(PropType::Cart_Type)};
     bool isPlusCart = false;
     ByteArray image;
 
@@ -127,7 +127,7 @@ void RomInfoWidget::parseProperties(const FSNode& node, bool full)
         image = instance().openROM(node, md5);
         if(!image.empty())
         {
-          Logger::debug(myProperties.get(PropType::Cart_Name) + ":");
+          Logger::debug(std::format("{}:", myProperties.get(PropType::Cart_Name)));
           left = ControllerDetector::detectName(image, leftType,
             !swappedPorts ? Controller::Jack::Left : Controller::Jack::Right,
               instance().settings());

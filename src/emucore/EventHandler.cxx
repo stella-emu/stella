@@ -2457,7 +2457,7 @@ void EventHandler::setMouseControllerMode(string_view enable)
                  myOSystem.console().rightController().isAnalog();
     }
 
-    const string& control = usemouse ?
+    string_view control = usemouse ?
       myOSystem.console().properties().get(PropType::Controller_MouseAxis) : "none";
 
     myMouseControl = std::make_unique<MouseControl>(myOSystem.console(), control);

@@ -520,7 +520,7 @@ bool HighScoresDialog::handleDirty()
 string HighScoresDialog::cartName() const
 {
   if(instance().hasConsole())
-    return instance().console().properties().get(PropType::Cart_Name);
+    return string{instance().console().properties().get(PropType::Cart_Name)};
   else
   {
     Properties props;
@@ -529,7 +529,7 @@ string HighScoresDialog::cartName() const
     if(props.get(PropType::Cart_Name).empty())
       return instance().launcher().currentDir().getBaseName();
     else
-      return props.get(PropType::Cart_Name);
+      return string{props.get(PropType::Cart_Name)};
   }
 }
 

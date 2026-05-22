@@ -287,8 +287,9 @@ void PNGLibrary::takeSnapshot(uInt32 number)
 
   // Figure out the correct snapshot name
   string filename;
-  const string sspath = myOSystem.snapshotSaveDir().getPath() +
-      (myOSystem.settings().getString("snapname") != "int"
+  const string sspath = std::format("{}{}",
+      myOSystem.snapshotSaveDir().getPath(),
+      myOSystem.settings().getString("snapname") != "int"
         ? myOSystem.romFile().getBaseName()
         : myOSystem.console().properties().get(PropType::Cart_Name));
 
@@ -322,8 +323,8 @@ void PNGLibrary::takeSnapshot(uInt32 number)
   VarList::push_back(metaData, "Title", "Snapshot");
   VarList::push_back(metaData, "Software",
     std::format("{} (Build {}) [{}]", STELLA_FULL_TITLE, STELLA_BUILD, BSPF::ARCH));
-  const string& name = (myOSystem.settings().getString("snapname") == "int")
-      ? myOSystem.console().properties().get(PropType::Cart_Name)
+  const string name = (myOSystem.settings().getString("snapname") == "int")
+      ? string{myOSystem.console().properties().get(PropType::Cart_Name)}
       : myOSystem.romFile().getName();
   VarList::push_back(metaData, "ROM Name", name);
   VarList::push_back(metaData, "ROM MD5", myOSystem.console().properties().get(PropType::Cart_MD5));

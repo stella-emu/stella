@@ -142,7 +142,7 @@ void RomImageWidget::parseProperties(const FSNode& node, bool full)
     const string& path = instance().snapshotLoadDir().getPath();
 
     // 1. Try to load first snapshot by property name
-    string fileName = path + myProperties.get(PropType::Cart_Name);
+    string fileName = std::format("{}{}", path, myProperties.get(PropType::Cart_Name));
     tryImageFormats(fileName);
     if(!mySurfaceIsValid)
     {
@@ -166,7 +166,7 @@ void RomImageWidget::parseProperties(const FSNode& node, bool full)
 
     // Try to find all snapshots by property and ROM file name
     myImageList.clear();
-    getImageList(myProperties.get(PropType::Cart_Name), node.getBaseName(),
+    getImageList(string{myProperties.get(PropType::Cart_Name)}, node.getBaseName(),
       oldFileName);
 
     // The first file found before must not be the first file now, if files by

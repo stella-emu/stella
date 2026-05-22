@@ -68,7 +68,7 @@ class DebuggerParser
     string saveScriptFile(string file);
     static void saveDump(const FSNode& node, const std::ostringstream& out,
                          std::ostringstream& result);
-    const string& cartName() const;
+    string_view cartName() const;
 
   private:
     // Constants for argument processing

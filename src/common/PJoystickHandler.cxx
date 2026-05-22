@@ -513,7 +513,7 @@ void PhysicalJoystickHandler::defineControllerMappings(
 EventMode PhysicalJoystickHandler::getMode(const Properties& properties,
                                            PropType propType)
 {
-  const string& propName = properties.get(propType);
+  string_view propName = properties.get(propType);
 
   if(!propName.empty())
     return getMode(Controller::getType(propName));

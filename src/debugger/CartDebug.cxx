@@ -1050,8 +1050,8 @@ string CartDebug::saveConfigFile()
   // The default naming/location for config files is the CFG dir and based
   // on the actual ROM filename
 
-  const string& name = myConsole.properties().get(PropType::Cart_Name);
-  const string& md5  = myConsole.properties().get(PropType::Cart_MD5);
+  string_view name = myConsole.properties().get(PropType::Cart_Name);
+  string_view md5  = myConsole.properties().get(PropType::Cart_MD5);
 
   // Build config file content directly into a string
   string out;
@@ -1399,8 +1399,8 @@ string CartDebug::saveDisassembly(string path)
   out << buf.view();
 
   if(path.empty())
-    path = myOSystem.userDir().getPath()
-      + myConsole.properties().get(PropType::Cart_Name) + ".asm";
+    path = std::format("{}{}.asm", myOSystem.userDir().getPath(),
+                       myConsole.properties().get(PropType::Cart_Name));
   else
     // Append default extension when missing
     if(path.find_last_of('.') == string::npos)
@@ -1426,8 +1426,8 @@ string CartDebug::saveDisassembly(string path)
 string CartDebug::saveRom(string path)
 {
   if(path.empty())
-    path = myOSystem.userDir().getPath()
-      + myConsole.properties().get(PropType::Cart_Name) + ".a26";
+    path = std::format("{}{}.a26", myOSystem.userDir().getPath(),
+                       myConsole.properties().get(PropType::Cart_Name));
   else
     // Append default extension when missing
     if(path.find_last_of('.') == string::npos)
@@ -1453,8 +1453,8 @@ string CartDebug::saveAccessFile(string path)
   try
   {
     if(path.empty())
-      path = myOSystem.userDir().getPath()
-        + myConsole.properties().get(PropType::Cart_Name) + ".csv";
+      path = std::format("{}{}.csv", myOSystem.userDir().getPath(),
+                         myConsole.properties().get(PropType::Cart_Name));
     else if(path.find_last_of('.') == string::npos)
       path += ".csv";
 

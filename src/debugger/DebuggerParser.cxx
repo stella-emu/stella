@@ -542,7 +542,7 @@ string DebuggerParser::eval()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const string& DebuggerParser::cartName() const
+string_view DebuggerParser::cartName() const
 {
   return debugger.myOSystem.console().properties().get(PropType::Cart_Name);
 }
@@ -1345,7 +1345,7 @@ void DebuggerParser::executeDump()
     return;
   }
 
-  string path = debugger.myOSystem.userDir().getPath() + cartName() + "_dbg_";
+  string path = std::format("{}{}_dbg_", debugger.myOSystem.userDir().getPath(), cartName());
   if(execDepth > 0)
     path += execPrefix;
   else
@@ -2091,7 +2091,7 @@ void DebuggerParser::executeS()
 void DebuggerParser::executeSave()
 {
   auto* dlg = debugger.myDialog;
-  const string fileName = dlg->instance().userDir().getPath() + cartName() + ".script";
+  const string fileName = std::format("{}{}.script", dlg->instance().userDir().getPath(), cartName());
 
   if(argCount && argStrings[0] == "?")
   {
@@ -2120,7 +2120,7 @@ void DebuggerParser::executeSaveAccess()
     DebuggerDialog* dlg = debugger.myDialog;
 
     BrowserDialog::show(dlg, "Save Access Counters as",
-                        dlg->instance().userDir().getPath() + cartName() + ".csv",
+                        std::format("{}{}.csv", dlg->instance().userDir().getPath(), cartName()),
                         BrowserDialog::Mode::FileSave,
                         [this, dlg](bool OK, const FSNode& node)
     {
@@ -2152,7 +2152,7 @@ void DebuggerParser::executeSaveDisassembly()
     DebuggerDialog* dlg = debugger.myDialog;
 
     BrowserDialog::show(dlg, "Save Disassembly as",
-                        dlg->instance().userDir().getPath() + cartName() + ".asm",
+                        std::format("{}{}.asm", dlg->instance().userDir().getPath(), cartName()),
                         BrowserDialog::Mode::FileSave,
                         [this, dlg](bool OK, const FSNode& node)
     {
@@ -2176,7 +2176,7 @@ void DebuggerParser::executeSaveRom()
     DebuggerDialog* dlg = debugger.myDialog;
 
     BrowserDialog::show(dlg, "Save ROM as",
-                        dlg->instance().userDir().getPath() + cartName() + ".a26",
+                        std::format("{}{}.a26", dlg->instance().userDir().getPath(), cartName()),
                         BrowserDialog::Mode::FileSave,
                         [this, dlg](bool OK, const FSNode& node)
     {
