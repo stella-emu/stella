@@ -575,6 +575,14 @@ namespace BSPF
       return std::hash<string_view>{}(sv);
     }
   };
+
+  // Transparent comparator for case-insensitive std::map/std::set
+  struct CaseInsensitiveLess {
+    using is_transparent = void;
+    bool operator()(string_view a, string_view b) const {
+      return compareIgnoreCase(a, b) < 0;
+    }
+  };
 }  // namespace BSPF
 
 #endif  // BSPF_HXX

@@ -48,18 +48,11 @@ CartDebug::CartDebug(Debugger& dbg, Console& console, const OSystem& osystem)
   : DebuggerSystem(dbg, console),
     myOSystem{osystem}
 {
-  // Add case sensitive compare for user labels
-  // TODO - should user labels be case insensitive too?
-  const auto usrCmp = [](const string& a, const string& b) { return a < b; };
-  myUserAddresses = LabelToAddr(usrCmp);
-
-  // Add case insensitive compare for system labels
-  const auto sysCmp = [](const string& a, const string& b) {
-      return BSPF::compareIgnoreCase(a, b) < 0;
-  };
-  mySystemAddresses = LabelToAddr(sysCmp);
-
   // Add Zero-page RAM addresses
+  myState.rport.reserve(128);
+  myState.wport.reserve(128);
+  myOldState.rport.reserve(128);
+  myOldState.wport.reserve(128);
   for(uInt16 i = 0x80; i <= 0xFF; ++i)
   {
     myState.rport.push_back(i);
@@ -77,6 +70,8 @@ CartDebug::CartDebug(Debugger& dbg, Console& console, const OSystem& osystem)
   BankInfo info;
   info.size = std::min<size_t>(image.size(), myConsole.cartridge().bankSize());
 
+  myBankInfo.reserve(myConsole.cartridge().romBankCount() +
+                     myConsole.cartridge().ramBankCount() + 1);
   for(uInt32 i = 0; i < myConsole.cartridge().romBankCount(); ++i)
     myBankInfo.push_back(info);
 
@@ -89,7 +84,7 @@ CartDebug::CartDebug(Debugger& dbg, Console& console, const OSystem& osystem)
   // We know the address for the startup bank right now
   myBankInfo[myConsole.cartridge().startBank()].addressList.push_front(
     myDebugger.dpeek(0xfffc));
-  addLabel("Start", myDebugger.dpeek(0xfffc, Device::DATA)); // TODO: ::CODE???
+  addLabel("Start", myDebugger.dpeek(0xfffc, Device::DATA));
 
   // Add system equates
   for(uInt16 addr = 0x00; addr <= 0x0F; ++addr)
@@ -277,7 +272,8 @@ bool CartDebug::disassembleAddr(uInt16 address, bool force)
       }
       // Aggregate segment disassemblies
       myDisassembly.list.insert(myDisassembly.list.end(),
-                                disassembly.list.begin(), disassembly.list.end());
+                                std::make_move_iterator(disassembly.list.begin()),
+                                std::make_move_iterator(disassembly.list.end()));
       myDisassembly.fieldwidth = std::max(myDisassembly.fieldwidth, disassembly.fieldwidth);
       myAddrToLineList.insert(addrToLineList.begin(), addrToLineList.end());
     }
@@ -335,14 +331,7 @@ bool CartDebug::disassemble(int bank, uInt16 PC, Disassembly& disassembly,
     // work that Distella has to do
     if(bankChanged || !pcfound)
     {
-      AddressList::const_iterator i;
-      for(i = addresses.cbegin(); i != addresses.cend(); ++i)
-      {
-        if(PC == *i)  // already present
-          break;
-      }
-      // Otherwise, add the item at the end
-      if(i == addresses.end())
+      if(std::ranges::find(addresses, PC) == addresses.cend())
       {
         addresses.push_back(PC);
         if(!DiStella::settings.resolveCode)
@@ -478,25 +467,23 @@ bool CartDebug::addDirective(Device::AccessType type,
   tag.start = start;
   tag.end = end;
 
-  DirectiveList::iterator i;
-
   // If the same directive and range is added, consider it a removal instead
-  for(i = list.begin(); i != list.end(); ++i)
+  if(const auto it = std::ranges::find_if(list, [&tag](const auto& d) {
+        return d.type == tag.type && d.start == tag.start && d.end == tag.end;
+     }); it != list.end())
   {
-    if(i->type == tag.type && i->start == tag.start && i->end == tag.end)
-    {
-      list.erase(i);
-      return false;
-    }
+    list.erase(it);
+    return false;
   }
 
   // Otherwise, scan the list and make space for a 'smart' merge
+  DirectiveList::iterator i;
   // Note that there are 4 possibilities:
   //  1: a range is completely inside the new range
   //  2: a range is completely outside the new range
   //  3: a range overlaps at the beginning of the new range
   //  4: a range overlaps at the end of the new range
-  for(i = list.begin(); i != list.end(); ++i)
+  for(i = list.begin(); i != list.end(); )
   {
     // Case 1: remove range that is completely inside new range
     if(tag.start <= i->start && tag.end >= i->end)
@@ -528,12 +515,16 @@ bool CartDebug::addDirective(Device::AccessType type,
     else if(tag.start >= i->start && tag.start <= i->end)
     {
       i->end = tag.start - 1;
+      ++i;
     }
     // Case 4: truncate start of old range
     else if(tag.end >= i->start && tag.end <= i->end)
     {
       i->start = tag.end + 1;
+      ++i;
     }
+    else
+      ++i;
   }
 
   // We now know that the new range can be inserted without overlap
@@ -631,9 +622,8 @@ string CartDebug::uniqueLabel(const string& label)
   string uniqueLabel = label;
   int count = 0;
 
-  // FIXME: does find return multiple items??
   while(myUserAddresses.find(uniqueLabel) != myUserAddresses.end())
-    uniqueLabel = label + "." + std::to_string(++count);
+    uniqueLabel = std::format("{}.{}", label, ++count);
 
   return uniqueLabel;
 }
@@ -791,11 +781,9 @@ string CartDebug::getLabel(uInt16 addr, bool isRead, int places, bool isRam) con
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 int CartDebug::getAddress(string_view label) const
 {
-  string l{label};  // TODO: Fixed in C++23
-
-  if(const auto it1 = mySystemAddresses.find(l); it1 != mySystemAddresses.end())
+  if(const auto it1 = mySystemAddresses.find(label); it1 != mySystemAddresses.end())
     return it1->second;
-  else if(const auto it2 = myUserAddresses.find(l); it2 != myUserAddresses.end())
+  else if(const auto it2 = myUserAddresses.find(label); it2 != myUserAddresses.end())
     return it2->second;
   else
     return -1;
@@ -822,39 +810,34 @@ string CartDebug::loadListFile()
     return DebuggerParser::red("list file '" + lst.getShortPath() + "' not readable");
   }
 
-  while(!in.eof())
+  string line;
+  while(getline(in, line))
   {
-    string line, addr_s;
-
-    getline(in, line);
-
-    if(!in.good() || line.empty() || line[0] == '-')
+    if(line.empty() || line[0] == '-')
       continue;
-    else  // Search for constants
+
+    // Swallow first value, then get actual numerical value for address
+    // We need to read the address as a string, since it may contain 'U'
+    string addr_s;
+    std::istringstream buf(line);
+    int addr = -1;
+    buf >> addr >> addr_s;
+    if(addr_s.empty())
+      continue;
+
+    addr = BSPF::stoi<16>(addr_s[0] == 'U' ? addr_s.substr(1) : addr_s);
+
+    // For now, completely ignore ROM addresses
+    if(!(addr & 0x1000))
     {
-      std::istringstream buf(line);
-
-      // Swallow first value, then get actual numerical value for address
-      // We need to read the address as a string, since it may contain 'U'
-      int addr = -1;
-      buf >> addr >> addr_s;
-      if(addr_s.empty())
-        continue;
-
-      addr = BSPF::stoi<16>(addr_s[0] == 'U' ? addr_s.substr(1) : addr_s);
-
-      // For now, completely ignore ROM addresses
-      if(!(addr & 0x1000))
-      {
-        // Search for pattern 'xx yy  CONSTANT ='
-        buf.seekg(20);  // skip potential '????'
-        int xx = -1, yy = -1;
-        char eq = '\0';
-        buf >> hex >> xx >> hex >> yy >> line >> eq;
-        if(xx >= 0 && yy >= 0 && eq == '=')
-          //myUserCLabels.emplace(xx*256+yy, line);
-          addLabel(line, xx * 256 + yy);
-      }
+      // Search for pattern 'xx yy  CONSTANT ='
+      buf.seekg(20);  // skip potential '????'
+      int xx = -1, yy = -1;
+      char eq = '\0';
+      buf >> hex >> xx >> hex >> yy >> line >> eq;
+      if(xx >= 0 && yy >= 0 && eq == '=')
+        //myUserCLabels.emplace(xx*256+yy, line);
+        addLabel(line, xx * 256 + yy);
     }
   }
   myDebugger.rom().invalidate();
@@ -886,13 +869,10 @@ string CartDebug::loadSymbolFile()
     return DebuggerParser::red("symbol file '" + sym.getShortPath() + "' not readable");
   }
 
-  while(!in.eof())
+  string label;
+  while(getline(in, label))
   {
-    string label;
     int value = -1;
-
-    getline(in, label);
-    if(!in.good())  continue;
     std::istringstream buf(label);
     buf >> label >> hex >> value;
 
@@ -949,7 +929,7 @@ string CartDebug::loadConfigFile()
     bi.directiveList.clear();
 
   int currentbank = 0;
-  while(!in.eof())
+  while(in.good())
   {
     // Skip leading space
     int c = in.peek();
@@ -1090,9 +1070,6 @@ string CartDebug::saveConfigFile()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string CartDebug::saveDisassembly(string path)
 {
-// NOLINTNEXTLINE(cppcoreguidelines-macro-usage)  FIXME: find a better way for this
-#define ALIGN(x) setfill(' ') << left << setw(x)
-
   // We can't print the header to the disassembly until it's actually
   // been processed; therefore buffer output to a string first
   std::ostringstream buf;
@@ -1157,25 +1134,24 @@ string CartDebug::saveDisassembly(string path)
     origin += static_cast<uInt32>(info.size);
 
     // Format in 'distella' style
-    for(const auto& dt: disasm.list)
+    for(const auto& tag: disasm.list)
     {
-      const DisassemblyTag& tag = dt;
-
       // Add label (if any)
       if(!tag.label.empty())
-        buf << ALIGN(4) << (tag.label) << "\n";
+        buf << std::format("{:<4}\n", tag.label);
       buf << "    ";
 
       switch(tag.type)
       {
         case Device::CODE:
-          buf << ALIGN(32) << tag.disasm << tag.ccount.substr(0, 5) << tag.ctotal << tag.ccount.substr(5, 2);
+          buf << std::format("{:<32}{}{}{}", tag.disasm,
+            tag.ccount.substr(0, 5), tag.ctotal, tag.ccount.substr(5, 2));
           if (tag.disasm.find("WSYNC") != std::string::npos)
             buf << "\n;---------------------------------------";
           break;
 
         case Device::ROW:
-          buf << ".byte   " << ALIGN(32) << tag.disasm.substr(6, 8*4-1) << "; $" << Base::HEX4 << tag.address << " (*)";
+          buf << std::format(".byte   {:<32}; ${:04X} (*)", tag.disasm.substr(6, 8*4-1), tag.address);
           break;
 
         case Device::GFX:
@@ -1183,7 +1159,7 @@ string CartDebug::saveDisassembly(string path)
               << tag.bytes << " ; |";
           for(int c = 12; c < 20; ++c)
             buf << ((tag.disasm[c] == '\x1e') ? "#" : " ");
-          buf << ALIGN(13) << "|" << "$" << Base::HEX4 << tag.address << " (G)";
+          buf << std::format("{:<13}${:04X} (G)", "|", tag.address);
           break;
 
         case Device::PGFX:
@@ -1191,27 +1167,27 @@ string CartDebug::saveDisassembly(string path)
               << tag.bytes << " ; |";
           for(int c = 12; c < 20; ++c)
             buf << ((tag.disasm[c] == '\x1f') ? "*" : " ");
-          buf << ALIGN(13) << "|" << "$" << Base::HEX4 << tag.address << " (P)";
+          buf << std::format("{:<13}${:04X} (P)", "|", tag.address);
           break;
 
         case Device::COL:
-          buf << ".byte   " << ALIGN(32) << tag.disasm.substr(6, 15) << "; $" << Base::HEX4 << tag.address << " (C)";
+          buf << std::format(".byte   {:<32}; ${:04X} (C)", tag.disasm.substr(6, 15), tag.address);
           break;
 
         case Device::PCOL:
-          buf << ".byte   " << ALIGN(32) << tag.disasm.substr(6, 15) << "; $" << Base::HEX4 << tag.address << " (CP)";
+          buf << std::format(".byte   {:<32}; ${:04X} (CP)", tag.disasm.substr(6, 15), tag.address);
           break;
 
         case Device::BCOL:
-          buf << ".byte   " << ALIGN(32) << tag.disasm.substr(6, 15) << "; $" << Base::HEX4 << tag.address << " (CB)";
+          buf << std::format(".byte   {:<32}; ${:04X} (CB)", tag.disasm.substr(6, 15), tag.address);
           break;
 
         case Device::AUD:
-          buf << ".byte   " << ALIGN(32) << tag.disasm.substr(6, 8 * 4 - 1) << "; $" << Base::HEX4 << tag.address << " (A)";
+          buf << std::format(".byte   {:<32}; ${:04X} (A)", tag.disasm.substr(6, 8 * 4 - 1), tag.address);
           break;
 
         case Device::DATA:
-          buf << ".byte   " << ALIGN(32) << tag.disasm.substr(6, 8 * 4 - 1) << "; $" << Base::HEX4 << tag.address << " (D)";
+          buf << std::format(".byte   {:<32}; ${:04X} (D)", tag.disasm.substr(6, 8 * 4 - 1), tag.address);
           break;
 
         case Device::NONE:
@@ -1262,7 +1238,7 @@ string CartDebug::saveDisassembly(string path)
     };
 
     for(int i = 0; i < 16; ++i)
-      out << ALIGN(16) << NTSC_COLOR[i] << " = $" << Base::HEX2 << (i << 4) << "\n";
+      out << std::format("{:<16} = ${:02X}\n", NTSC_COLOR[i], i << 4);
   }
   else if(myConsole.timing() == ConsoleTiming::pal)
   {
@@ -1274,7 +1250,7 @@ string CartDebug::saveDisassembly(string path)
     };
 
     for(int i = 0; i < 16; ++i)
-      out << ALIGN(16) << PAL_COLOR[i] << " = $" << Base::HEX2 << (i << 4) << "\n";
+      out << std::format("{:<16} = ${:02X}\n", PAL_COLOR[i], i << 4);
   }
   else
   {
@@ -1284,7 +1260,7 @@ string CartDebug::saveDisassembly(string path)
     };
 
     for(int i = 0; i < 8; ++i)
-      out << ALIGN(16) << SECAM_COLOR[i] << " = $" << Base::HEX1 << (i << 1) << "\n";
+      out << std::format("{:<16} = ${:X}\n", SECAM_COLOR[i], i << 1);
   }
   out << "\n";
 
@@ -1305,28 +1281,23 @@ string CartDebug::saveDisassembly(string path)
     // TIA read access
     for(uInt16 addr = 0x00; addr <= 0x0F; ++addr)
       if(myReserved.TIARead[addr])
-        out << ALIGN(16) << ourTIAMnemonicR[addr] << "= $"
-            << Base::HEX2 << right << addr << "  ; (R)\n";
+        out << std::format("{:<16}= ${:02X}  ; (R)\n", ourTIAMnemonicR[addr], addr);
       else if (mySystem.getAccessFlags(addr) & Device::DATA)
-        out << ";" << ALIGN(16-1) << ourTIAMnemonicR[addr] << "= $"
-        << Base::HEX2 << right << addr << "  ; (Ri)\n";
+        out << std::format(";{:<15}= ${:02X}  ; (Ri)\n", ourTIAMnemonicR[addr], addr);
     out << "\n";
 
     // TIA write access
     for(uInt16 addr = 0x00; addr <= 0x3F; ++addr)
       if(myReserved.TIAWrite[addr])
-        out << ALIGN(16) << ourTIAMnemonicW[addr] << "= $"
-            << Base::HEX2 << right << addr << "  ; (W)\n";
+        out << std::format("{:<16}= ${:02X}  ; (W)\n", ourTIAMnemonicW[addr], addr);
       else if (mySystem.getAccessFlags(addr) & Device::WRITE)
-        out << ";" << ALIGN(16-1) << ourTIAMnemonicW[addr] << "= $"
-        << Base::HEX2 << right << addr << "  ; (Wi)\n";
+        out << std::format(";{:<15}= ${:02X}  ; (Wi)\n", ourTIAMnemonicW[addr], addr);
     out << "\n";
 
     // RIOT IO access
     for(uInt16 addr = 0x00; addr <= 0x1F; ++addr)
       if(myReserved.IOReadWrite[addr])
-        out << ALIGN(16) << ourIOMnemonic[addr] << "= $"
-            << Base::HEX4 << right << (addr+0x280) << "\n";
+        out << std::format("{:<16}= ${:04X}\n", ourIOMnemonic[addr], addr + 0x280);
   }
 
   addrUsed = false;
@@ -1350,24 +1321,16 @@ string CartDebug::saveDisassembly(string path)
           !myUserLabels.contains(addr)) {
         if (addLine)
           out << "\n";
-        out << ALIGN(16) << ourZPMnemonic[addr - 0x80] << "= $"
-          << Base::HEX2 << right << addr
-          << ((stackUsed || codeUsed) ? "; (" : "")
-          << (codeUsed ? "c" : "")
-          << (stackUsed ? "s" : "")
-          << ((stackUsed || codeUsed) ? ")" : "")
-          << "\n";
+        out << std::format("{:<16}= ${:02X}{}\n", ourZPMnemonic[addr - 0x80], addr,
+          (stackUsed || codeUsed)
+            ? std::format("; ({}{})", codeUsed ? "c" : "", stackUsed ? "s" : "")
+            : std::string{});
         addLine = false;
       } else if (ramUsed || codeUsed || stackUsed) {
         if (addLine)
           out << "\n";
-        out << ALIGN(18) << ";" << "$"
-          << Base::HEX2 << right << addr
-          << "  ("
-          << (ramUsed ? "i" : "")
-          << (codeUsed ? "c" : "")
-          << (stackUsed ? "s" : "")
-          << ")\n";
+        out << std::format("{:<18}${:02X}  ({}{}{})\n", ";", addr,
+          ramUsed ? "i" : "", codeUsed ? "c" : "", stackUsed ? "s" : "");
         addLine = false;
       } else
         addLine = true;
@@ -1379,8 +1342,8 @@ string CartDebug::saveDisassembly(string path)
     out << "\n\n;-----------------------------------------------------------\n"
         << ";      Non Locatable Labels\n"
         << ";-----------------------------------------------------------\n\n";
-    for(const auto& iter: myReserved.Label)
-        out << ALIGN(16) << iter.second << "= $" << iter.first << "\n";
+    for(const auto& [addr, label]: myReserved.Label)
+      out << std::format("{:<16}= ${:04X}\n", label, addr);
   }
 
   if(!myUserLabels.empty())
@@ -1389,10 +1352,10 @@ string CartDebug::saveDisassembly(string path)
         << ";      User Defined Labels\n"
         << ";-----------------------------------------------------------\n\n";
     int max_len = 16;
-    for(const auto& iter: myUserLabels)
-      max_len = std::max(max_len, static_cast<int>(iter.second.size()));
-    for(const auto& iter: myUserLabels)
-      out << ALIGN(max_len) << iter.second << "= $" << iter.first << "\n";
+    for(const auto& [addr, label]: myUserLabels)
+      max_len = std::max(max_len, static_cast<int>(label.size()));
+    for(const auto& [addr, label]: myUserLabels)
+      out << std::format("{:<{}}= ${:04X}\n", label, max_len, addr);
   }
 
   // And finally, output the disassembly
@@ -1409,7 +1372,7 @@ string CartDebug::saveDisassembly(string path)
   const FSNode node(path);
   try
   {
-    node.write(out.view());  // FIXME: revisit this (for view())
+    node.write(out.view());
     string retVal;
     if(myConsole.cartridge().romBankCount() > 1)
       retVal = DebuggerParser::red("disassembly for multi-bank ROM not fully supported\n");
