@@ -299,9 +299,9 @@ Settings::Settings()
   setPermanent("dev.tia.pllatehmove", "true");
   setPermanent("dev.tia.mslatehmove", "true");
   setPermanent("dev.tia.bllatehmove", "true");
-  setPermanent("dev.tia.pllaterespx", "false");
-  setPermanent("dev.tia.mslaterespx", "false");
-  setPermanent("dev.tia.bllaterespx", "false");
+  setPermanent("dev.tia.pllaterespx", "true");
+  setPermanent("dev.tia.mslaterespx", "true");
+  setPermanent("dev.tia.bllaterespx", "true");
   setPermanent("dev.tia.delaypfbits", "true");
   setPermanent("dev.tia.delaypfcolor", "true");
   setPermanent("dev.tia.pfscoreglitch", "true");
