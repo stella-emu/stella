@@ -15,16 +15,18 @@
 7.0 to 8.0 (mmm dd, 2026)
 
   * Ported Stella to SDL3, with all the improvements that the latest
-    version of SDL provides.
+    version of SDL provides (issue #978).
 
   * Added support for 'EFF' bankswitching (Bruce-Robert Pocock) for
     Grizzards, as well as auto-detection of this format.  This board
     features a 2 KiB save-to-cartridge EEPROM (MicroChip 24LC family)
-    connected via I²C, identical in interface to the AtariVox/SaveKey.
+    connected via I²C, identical in interface to the AtariVox/SaveKey
+    (issue #1107).
 
   * Added support for 'DEVC' bankswitching (DevCard), as well
     as auto-detection of this format.  This is a new 16-bit cartridge
-    type with 24 KB of flat RAM across six non-contiguous 4 KB windows.
+    type with 24 KB of flat RAM across six non-contiguous 4 KB windows
+    (issue #1149).
 
   * Added support for CompuMate cassette load/save for binary images;
     WAV load support may be added in a future release.
@@ -32,17 +34,20 @@
   * Paddle / Driving Controller; extra buttons added for both left and
     right paddle.
 
-  * Added option for switching Stella's theme in sync with OS.
+  * Added option for switching Stella's theme in sync with OS
+    (issue #959).
 
   * ASCII folding; non-ASCII characters in filenames and directories
     (including Greek, Cyrillic, Latin Extended) are folded to ASCII
-    equivalents in the UI.
+    equivalents in the UI (issue #1051, #1054, #1084, #1133).
 
   * Emulation accuracy:
-    - Implemented proper PA7 behaviour in M6532
+    - Implemented proper RESMP0 and RESMP1 behaviour (issue #213)
+    - Implemented proper PA7 behaviour in M6532 (issue #108)
     - Properly initialise HMxy shadow registers
     - Enhanced VSYNC emulation, considers VBLANK now too
-    - Enhanced PAL-60 detection, searches for signature (e.g. PAL60) in ROM
+    - Enhanced PAL-60 detection, searches for signature (e.g. PAL60)
+      in ROM (issue #1061)
     - PAL gray colors; aligned gray colors in the standard PAL palette
     - 3E hotspot mirrors; added missing mirrors to 3E hotspot handling
 
@@ -84,6 +89,7 @@
   * For the Windows port:
     - FSNodeWINDOWS now uses UTF-16 internally; fixes corruption and not
       saving to correct directories with non-ASCII filenames
+      (issue #1051, #1054, #1084, #1133)
 
   * For the Mac port:
     - Minimum OS version is macOS 26, and compilation requires Xcode 26;
@@ -103,6 +109,7 @@
     - KidVid WAV playback; libretro port can now play WAV files for KidVid
       carts (files go in saves/stella/)
     - Keyboard/Keypad controller handling added; Star Raiders now playable
+    - SaveKey/AtariVox support added
     - Expanded controller list in RetroArch UI with documentation
     - Core options v2 categories with legacy fallback
     - FSNodeLIBRETRO rewritten as a proper FSNode implementation; fixes
