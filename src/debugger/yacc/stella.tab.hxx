@@ -1,4 +1,8 @@
 // NOLINTBEGIN
+#ifdef _MSC_VER
+#  pragma warning(push)
+#  pragma warning(disable: 4065)  // switch with 'default' but no 'case' labels
+#endif
 // A Bison parser, made by GNU Bison 3.8.2.
 
 // Skeleton interface for Bison LALR(1) parsers in C++
@@ -1891,4 +1895,7 @@ switch (yykind)
 
 
 #endif // !YY_YY_STELLA_TAB_HXX_INCLUDED
+#ifdef _MSC_VER
+#  pragma warning(pop)
+#endif
 // NOLINTEND

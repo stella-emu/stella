@@ -20,10 +20,14 @@
 #include "Base.hxx"
 #include "Debugger.hxx"
 // Suppress warnings from Bison-generated code
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-macros"
+#ifdef __GNUC__
+#  pragma GCC diagnostic push
+#  pragma GCC diagnostic ignored "-Wunused-macros"
+#endif
 #include "stella.tab.hxx"
-#pragma GCC diagnostic pop
+#ifdef __GNUC__
+#  pragma GCC diagnostic pop
+#endif
 #include "YaccParser.hxx"
 
 namespace YaccParser {
