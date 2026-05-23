@@ -107,7 +107,7 @@ void Missile::resm(uInt8 counter, bool hblank)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Missile::resmp(uInt8 value, const Player& player)
+void Missile::resmp(uInt8 value)
 {
   const uInt8 resmp = value & 0x02;
 
@@ -116,9 +116,6 @@ void Missile::resmp(uInt8 value, const Player& player)
   myTIA->flushLineCache();
 
   myResmp = resmp;
-
-  if (!myResmp)
-    myCounter = player.getRespClock();
 
   updateEnabled();
 }

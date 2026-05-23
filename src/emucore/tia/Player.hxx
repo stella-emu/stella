@@ -141,6 +141,15 @@ class Player : public Serializable
     bool isOn() const { return (collision & 0x8000); }
 
     /**
+      True when the player is actively rendering its main copy and the graphics
+      scan counter has just reached pixel 4 — the "FSTOB" condition that triggers
+      RESMP-locked missile repositioning (per Andrew Towers' TIA notes).
+     */
+    bool isDrawingMainCopyAt4() const {
+      return myIsRendering && mySampleCounter == 4 && myCopy == 1;
+    }
+
+    /**
       Get the current player color.
      */
     uInt8 getColor() const;

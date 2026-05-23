@@ -807,12 +807,12 @@ bool TIA::poke(uInt16 address, uInt8 value)
       break;
 
     case RESMP0:
-      myMissile0.resmp(value, myPlayer0);
+      myMissile0.resmp(value);
       myShadowRegisters[address] = value;
       break;
 
     case RESMP1:
-      myMissile1.resmp(value, myPlayer1);
+      myMissile1.resmp(value);
       myShadowRegisters[address] = value;
       break;
 
@@ -1626,10 +1626,10 @@ FORCE_INLINE void TIA::tickHframe()
   myCollisionUpdateRequired = true;
 
   myPlayfield.tick(x);
-  myMissile0.tick(myHctr);
-  myMissile1.tick(myHctr);
   myPlayer0.tick();
   myPlayer1.tick();
+  myMissile0.tick(myHctr, myPlayer0);
+  myMissile1.tick(myHctr, myPlayer1);
   myBall.tick();
 
   if (myFrameManager->isRendering()) [[likely]]
