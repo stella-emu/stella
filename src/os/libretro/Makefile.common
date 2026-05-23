@@ -108,6 +108,7 @@ SOURCES_CXX := \
 	$(CORE_DIR)/emucore/EventHandler.cxx \
 	$(CORE_DIR)/emucore/FBSurface.cxx \
 	$(CORE_DIR)/emucore/FrameBuffer.cxx \
+	$(CORE_DIR)/emucore/FBMessageHandler.cxx \
 	$(CORE_DIR)/emucore/FSNode.cxx \
 	$(CORE_DIR)/emucore/Genesis.cxx \
 	$(CORE_DIR)/emucore/GlobalKeyHandler.cxx \
