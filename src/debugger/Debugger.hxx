@@ -112,7 +112,7 @@ class Debugger : public DialogContainer
     void quit();
 
     bool addFunction(string_view name, string_view def,
-                     Expression* exp, bool builtin = false);
+                     unique_ptr<Expression> exp, bool builtin = false);
     static bool isBuiltinFunction(string_view name);
     bool delFunction(string_view name);
     const Expression& getFunction(string_view name) const;

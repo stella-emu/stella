@@ -194,10 +194,9 @@ string Debugger::autoExec(StringList* history)
   // Init builtins
   for(const auto& func: ourBuiltinFunctions)
   {
-    // TODO - check this for memory leaks
-    const int res = YaccParser::parse(func.defn);
-    if(res == 0)
-      addFunction(func.name, func.defn, YaccParser::getResult(), true);
+    auto expr = YaccParser::parse(func.defn);
+    if(expr)
+      addFunction(func.name, func.defn, std::move(expr), true);
     else
       cerr << std::format("ERROR in builtin function {}!\n", func.name);
   }
@@ -798,9 +797,9 @@ void Debugger::setQuitState()
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool Debugger::addFunction(string_view name, string_view definition,
-                           Expression* exp, bool builtin)
+                           unique_ptr<Expression> exp, bool builtin)
 {
-  myFunctions.emplace(name, unique_ptr<Expression>(exp));
+  myFunctions.emplace(name, std::move(exp));
   myFunctionDefs.emplace(name, definition);
 
   return true;

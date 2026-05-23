@@ -1,7 +1,8 @@
 MODULE := src/debugger/yacc
 
 MODULE_OBJS := \
-	src/debugger/yacc/YaccParser.o
+	src/debugger/yacc/YaccParser.o \
+	src/debugger/yacc/stella.tab.o
 
 MODULE_TEST_OBJS =
 

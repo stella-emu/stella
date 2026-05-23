@@ -544,9 +544,9 @@ void M6502::attach(Debugger& debugger)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt32 M6502::addCondBreak(Expression* e, string_view name, bool oneShot)
+uInt32 M6502::addCondBreak(unique_ptr<Expression> e, string_view name, bool oneShot)
 {
-  myCondBreaks.emplace_back(e);
+  myCondBreaks.emplace_back(std::move(e));
   myCondBreakNames.emplace_back(name);
 
   updateStepStateByInstruction();
@@ -585,9 +585,9 @@ const StringList& M6502::getCondBreakNames() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt32 M6502::addCondSaveState(Expression* e, string_view name)
+uInt32 M6502::addCondSaveState(unique_ptr<Expression> e, string_view name)
 {
-  myCondSaveStates.emplace_back(e);
+  myCondSaveStates.emplace_back(std::move(e));
   myCondSaveStateNames.emplace_back(name);
 
   updateStepStateByInstruction();
@@ -626,9 +626,9 @@ const StringList& M6502::getCondSaveStateNames() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt32 M6502::addCondTrap(Expression* e, string_view name)
+uInt32 M6502::addCondTrap(unique_ptr<Expression> e, string_view name)
 {
-  myTrapConds.emplace_back(e);
+  myTrapConds.emplace_back(std::move(e));
   myTrapCondNames.emplace_back(name);
 
   updateStepStateByInstruction();

@@ -378,11 +378,8 @@ bool DebuggerParser::getArgs(string_view command, string& verb)
   args.reserve(argCount);
   for(const auto& argStr: argStrings)
   {
-    if(!YaccParser::parse(argStr))
-    {
-      unique_ptr<Expression> expr(YaccParser::getResult());
+    if(auto expr = YaccParser::parse(argStr))
       args.push_back(expr->evaluate());
-    }
     else
       args.push_back(-1);
   }
@@ -1012,7 +1009,8 @@ void DebuggerParser::executeBreak()
 // "breakIf"
 void DebuggerParser::executeBreakIf()
 {
-  if(YaccParser::parse(argStrings[0]) != 0)
+  auto expr = YaccParser::parse(argStrings[0]);
+  if(!expr)
   {
     commandResult << red("invalid expression");
     return;
@@ -1030,7 +1028,7 @@ void DebuggerParser::executeBreakIf()
   }
 
   const uInt32 ret = debugger.m6502().addCondBreak(
-                       YaccParser::getResult(), argStrings[0]);
+                       std::move(expr), argStrings[0]);
   commandResult << "added breakIf " << Base::toString(ret);
 }
 
@@ -1493,13 +1491,14 @@ void DebuggerParser::executeFunction()
     return;
   }
 
-  if(YaccParser::parse(argStrings[1]) != 0)
+  auto expr = YaccParser::parse(argStrings[1]);
+  if(!expr)
   {
     commandResult << red("invalid expression");
     return;
   }
 
-  debugger.addFunction(argStrings[0], argStrings[1], YaccParser::getResult());
+  debugger.addFunction(argStrings[0], argStrings[1], std::move(expr));
   commandResult << "added function " << argStrings[0] << " -> " << argStrings[1];
 }
 
@@ -2253,7 +2252,8 @@ void DebuggerParser::executeSaveState()
 // "saveStateIf"
 void DebuggerParser::executeSaveStateIf()
 {
-  if(YaccParser::parse(argStrings[0]) != 0)
+  auto expr = YaccParser::parse(argStrings[0]);
+  if(!expr)
   {
     commandResult << red("invalid expression");
     return;
@@ -2271,7 +2271,7 @@ void DebuggerParser::executeSaveStateIf()
   }
 
   const uInt32 ret = debugger.m6502().addCondSaveState(
-    YaccParser::getResult(), argStrings[0]);
+    std::move(expr), argStrings[0]);
   commandResult << "added saveStateIf " << Base::toString(ret);
 }
 
@@ -2297,13 +2297,12 @@ void DebuggerParser::executeStep()
 // "stepWhile"
 void DebuggerParser::executeStepWhile()
 {
-  if(YaccParser::parse(argStrings[0]) != 0)
+  auto expr = YaccParser::parse(argStrings[0]);
+  if(!expr)
   {
     commandResult << red("invalid expression");
     return;
   }
-
-  const Expression* expr = YaccParser::getResult();
   int ncycles = 0;
 
   // Create a progress dialog box to show the progress searching through the
@@ -2576,7 +2575,8 @@ void DebuggerParser::executeTraps(bool read, bool write, string_view command,
   if(hasCond)
     condition += ')';
 
-  if(YaccParser::parse(condition) != 0)
+  auto expr = YaccParser::parse(condition);
+  if(!expr)
   {
     commandResult << red("invalid expression");
     return;
@@ -2608,7 +2608,7 @@ void DebuggerParser::executeTraps(bool read, bool write, string_view command,
   else
   {
     const auto ret = debugger.m6502().addCondTrap(
-      YaccParser::getResult(), hasCond ? argStrings[0] : "");
+      std::move(expr), hasCond ? argStrings[0] : "");
     commandResult << "added trap " << Base::toString(ret);
     myTraps.emplace_back(read, write, begin, end, condition);
     for(uInt32 addr = begin; addr <= end; ++addr)

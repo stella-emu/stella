@@ -1,27 +1,29 @@
-Makefile.yacc    - Not part of the regular stella build!
-YaccParser.cxx   - C++ wrapper for generated parser, includes hand-coded lexer
-YaccParser.hxx   - Include in user code, declares public "methods" (actually functions)
-calctest.c       - Not part of stella! Used for testing the lexel/parser.
-module.mk        - Used for regular Stella build
-stella.y         - Yacc/Bison source for parser
-y.tab.c, y.tab.h - Generated parser. NOT BUILT AUTOMATICALLY!
+Makefile.yacc    - Not part of the regular Stella build!
+YaccParser.cxx   - C++ wrapper for the generated parser; contains the Lexer class
+YaccParser.hxx   - Public API: YaccParser::parse() and YaccParser::errorMessage()
+calctest.cxx     - Not part of Stella! Used for standalone testing of the lexer/parser.
+module.mk        - Used for the regular Stella build
+stella.y         - Bison C++ grammar source for the expression parser
+stella.tab.cxx   - Generated parser (from stella.y). NOT BUILT AUTOMATICALLY!
+stella.tab.hxx   - Generated parser header (from stella.y). NOT BUILT AUTOMATICALLY!
 
-I've only tested stella.y with GNU bison 1.35 and (once) with Berkeley
-Yacc 1.9. Hopefully your favorite version will work, too :)
+The parser uses the Bison C++ skeleton (lalr1.cc), requiring Bison >= 3.2.
 
-Even though they're generated, y.tab.c and .h are in SVN. This is so that
-people who don't have a local copy of bison or yacc can still compile
-Stella.
+Even though they're generated, stella.tab.cxx and stella.tab.hxx are checked into
+the repository so that people without a local copy of Bison can still compile Stella.
 
 If you modify stella.y, you MUST run "make -f Makefile.yacc" in this directory.
-This will regenerate y.tab.c and y.tab.h. Do this before "svn commit".
+This will regenerate stella.tab.cxx and stella.tab.hxx.  Do this before committing.
 
-If you're hacking the parser, you can test it without the rest of Stella
-by running "make -f Makefile.yacc calctest" in this directory, then running
-calctest with an expression as its argument:
+To test the lexer/parser without the rest of Stella, run:
 
-./calctest '2+2'
-= 4
+  make -f Makefile.yacc calctest
 
-If you're trying to benchmark the lexer/parser, try adding -DBM to the
-g++ command that builds calctest.
+and then pass an expression as its argument:
+
+  ./calctest '2+2'
+  = 4
+
+To benchmark the lexer/parser, build with -DBM:
+
+  g++ -DBM ... -o calctest calctest.cxx ...

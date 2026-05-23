@@ -18,28 +18,16 @@
 #ifndef YACC_PARSER_HXX
 #define YACC_PARSER_HXX
 
-#include "Expression.hxx"
-#include "CartDebug.hxx"
-#include "CpuDebug.hxx"
-#include "RiotDebug.hxx"
-#include "TIADebug.hxx"
-
 #include "bspf.hxx"
+#include "Expression.hxx"
 
-// FIXME - Convert this to a proper C++ class using Bison and Flex C++ mode
 namespace YaccParser
 {
-  Expression* getResult();
+  // Parse the expression string.  Returns the resulting Expression tree on
+  // success, or nullptr on failure (call errorMessage() for the reason).
+  unique_ptr<Expression> parse(string_view in);
+
   const string& errorMessage();
-
-  void setInput(const string& in);
-  int parse(const string& in);
-  int const_to_int(char* ch);
-
-  CartMethod getCartSpecial(const char* ch);
-  CpuMethod getCpuSpecial(const char* ch);
-  RiotMethod getRiotSpecial(const char* ch);
-  TiaMethod getTiaSpecial(const char* ch);
 }  // namespace YaccParser
 
 #endif  // YACC_PARSER_HXX

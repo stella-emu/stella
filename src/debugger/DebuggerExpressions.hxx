@@ -37,7 +37,8 @@
 class BinAndExpression : public Expression
 {
   public:
-    BinAndExpression(Expression* left, Expression* right) : Expression(left, right) { }
+    BinAndExpression(unique_ptr<Expression> left, unique_ptr<Expression> right)
+      : Expression(std::move(left), std::move(right)) { }
     Int32 evaluate() const override
       { return myLHS->evaluate() & myRHS->evaluate(); }
 };
@@ -46,7 +47,8 @@ class BinAndExpression : public Expression
 class BinNotExpression : public Expression
 {
   public:
-    explicit BinNotExpression(Expression* left) : Expression(left) { }
+    explicit BinNotExpression(unique_ptr<Expression> left)
+      : Expression(std::move(left)) { }
     Int32 evaluate() const override
       { return ~(myLHS->evaluate()); }
 };
@@ -55,7 +57,8 @@ class BinNotExpression : public Expression
 class BinOrExpression : public Expression
 {
   public:
-    BinOrExpression(Expression* left, Expression* right) : Expression(left, right) { }
+    BinOrExpression(unique_ptr<Expression> left, unique_ptr<Expression> right)
+      : Expression(std::move(left), std::move(right)) { }
     Int32 evaluate() const override
       { return myLHS->evaluate() | myRHS->evaluate(); }
 };
@@ -64,7 +67,8 @@ class BinOrExpression : public Expression
 class BinXorExpression : public Expression
 {
   public:
-    BinXorExpression(Expression* left, Expression* right) : Expression(left, right) { }
+    BinXorExpression(unique_ptr<Expression> left, unique_ptr<Expression> right)
+      : Expression(std::move(left), std::move(right)) { }
     Int32 evaluate() const override
       { return myLHS->evaluate() ^ myRHS->evaluate(); }
 };
@@ -73,7 +77,8 @@ class BinXorExpression : public Expression
 class ByteDerefExpression : public Expression
 {
   public:
-    explicit ByteDerefExpression(Expression* left): Expression(left) { }
+    explicit ByteDerefExpression(unique_ptr<Expression> left)
+      : Expression(std::move(left)) { }
     Int32 evaluate() const override
       { return Debugger::debugger().peek(myLHS->evaluate()); }
 };
@@ -82,7 +87,8 @@ class ByteDerefExpression : public Expression
 class ByteDerefOffsetExpression : public Expression
 {
   public:
-    ByteDerefOffsetExpression(Expression* left, Expression* right) : Expression(left, right) { }
+    ByteDerefOffsetExpression(unique_ptr<Expression> left, unique_ptr<Expression> right)
+      : Expression(std::move(left), std::move(right)) { }
     Int32 evaluate() const override
       { return Debugger::debugger().peek(myLHS->evaluate() + myRHS->evaluate()); }
 };
@@ -115,7 +121,8 @@ class CpuMethodExpression : public Expression
 class DivExpression : public Expression
 {
   public:
-    DivExpression(Expression* left, Expression* right) : Expression(left, right) { }
+    DivExpression(unique_ptr<Expression> left, unique_ptr<Expression> right)
+      : Expression(std::move(left), std::move(right)) { }
     Int32 evaluate() const override
       { const int denom = myRHS->evaluate();
         return denom == 0 ? 0 : myLHS->evaluate() / denom; }
@@ -125,7 +132,8 @@ class DivExpression : public Expression
 class EqualsExpression : public Expression
 {
   public:
-    EqualsExpression(Expression* left, Expression* right) : Expression(left, right) { }
+    EqualsExpression(unique_ptr<Expression> left, unique_ptr<Expression> right)
+      : Expression(std::move(left), std::move(right)) { }
     Int32 evaluate() const override
       { return myLHS->evaluate() == myRHS->evaluate(); }
 };
@@ -158,7 +166,8 @@ class FunctionExpression : public Expression
 class GreaterEqualsExpression : public Expression
 {
   public:
-    GreaterEqualsExpression(Expression* left, Expression* right) : Expression(left, right) { }
+    GreaterEqualsExpression(unique_ptr<Expression> left, unique_ptr<Expression> right)
+      : Expression(std::move(left), std::move(right)) { }
     Int32 evaluate() const override
       { return myLHS->evaluate() >= myRHS->evaluate(); }
 };
@@ -167,7 +176,8 @@ class GreaterEqualsExpression : public Expression
 class GreaterExpression : public Expression
 {
   public:
-    GreaterExpression(Expression* left, Expression* right) : Expression(left, right) { }
+    GreaterExpression(unique_ptr<Expression> left, unique_ptr<Expression> right)
+      : Expression(std::move(left), std::move(right)) { }
     Int32 evaluate() const override
       { return myLHS->evaluate() > myRHS->evaluate(); }
 };
@@ -176,7 +186,8 @@ class GreaterExpression : public Expression
 class HiByteExpression : public Expression
 {
   public:
-    explicit HiByteExpression(Expression* left) : Expression(left) { }
+    explicit HiByteExpression(unique_ptr<Expression> left)
+      : Expression(std::move(left)) { }
     Int32 evaluate() const override
       { return 0xff & (myLHS->evaluate() >> 8); }
 };
@@ -185,7 +196,8 @@ class HiByteExpression : public Expression
 class LessEqualsExpression : public Expression
 {
   public:
-    LessEqualsExpression(Expression* left, Expression* right) : Expression(left, right) { }
+    LessEqualsExpression(unique_ptr<Expression> left, unique_ptr<Expression> right)
+      : Expression(std::move(left), std::move(right)) { }
     Int32 evaluate() const override
       { return myLHS->evaluate() <= myRHS->evaluate(); }
 };
@@ -194,7 +206,8 @@ class LessEqualsExpression : public Expression
 class LessExpression : public Expression
 {
   public:
-    LessExpression(Expression* left, Expression* right) : Expression(left, right) { }
+    LessExpression(unique_ptr<Expression> left, unique_ptr<Expression> right)
+      : Expression(std::move(left), std::move(right)) { }
     Int32 evaluate() const override
       { return myLHS->evaluate() < myRHS->evaluate(); }
 };
@@ -203,7 +216,8 @@ class LessExpression : public Expression
 class LoByteExpression : public Expression
 {
   public:
-    explicit LoByteExpression(Expression* left) : Expression(left) { }
+    explicit LoByteExpression(unique_ptr<Expression> left)
+      : Expression(std::move(left)) { }
     Int32 evaluate() const override
       { return 0xff & myLHS->evaluate(); }
 };
@@ -212,7 +226,8 @@ class LoByteExpression : public Expression
 class LogAndExpression : public Expression
 {
   public:
-    LogAndExpression(Expression* left, Expression* right) : Expression(left, right) { }
+    LogAndExpression(unique_ptr<Expression> left, unique_ptr<Expression> right)
+      : Expression(std::move(left), std::move(right)) { }
     Int32 evaluate() const override
       { return myLHS->evaluate() && myRHS->evaluate(); }
 };
@@ -221,7 +236,8 @@ class LogAndExpression : public Expression
 class LogNotExpression : public Expression
 {
   public:
-    explicit LogNotExpression(Expression* left) : Expression(left) { }
+    explicit LogNotExpression(unique_ptr<Expression> left)
+      : Expression(std::move(left)) { }
     Int32 evaluate() const override
       { return !(myLHS->evaluate()); }
 };
@@ -230,7 +246,8 @@ class LogNotExpression : public Expression
 class LogOrExpression : public Expression
 {
   public:
-    LogOrExpression(Expression* left, Expression* right) : Expression(left, right) { }
+    LogOrExpression(unique_ptr<Expression> left, unique_ptr<Expression> right)
+      : Expression(std::move(left), std::move(right)) { }
     Int32 evaluate() const override
       { return myLHS->evaluate() || myRHS->evaluate(); }
 };
@@ -239,7 +256,8 @@ class LogOrExpression : public Expression
 class MinusExpression : public Expression
 {
   public:
-    MinusExpression(Expression* left, Expression* right) : Expression(left, right) { }
+    MinusExpression(unique_ptr<Expression> left, unique_ptr<Expression> right)
+      : Expression(std::move(left), std::move(right)) { }
     Int32 evaluate() const override
       { return myLHS->evaluate() - myRHS->evaluate(); }
 };
@@ -248,7 +266,8 @@ class MinusExpression : public Expression
 class ModExpression : public Expression
 {
   public:
-    ModExpression(Expression* left, Expression* right) : Expression(left, right) { }
+    ModExpression(unique_ptr<Expression> left, unique_ptr<Expression> right)
+      : Expression(std::move(left), std::move(right)) { }
     Int32 evaluate() const override
       { const int rhs = myRHS->evaluate();
         return rhs == 0 ? 0 : myLHS->evaluate() % rhs; }
@@ -258,7 +277,8 @@ class ModExpression : public Expression
 class MultExpression : public Expression
 {
   public:
-    MultExpression(Expression* left, Expression* right) : Expression(left, right) { }
+    MultExpression(unique_ptr<Expression> left, unique_ptr<Expression> right)
+      : Expression(std::move(left), std::move(right)) { }
     Int32 evaluate() const override
       { return myLHS->evaluate() * myRHS->evaluate(); }
 };
@@ -267,7 +287,8 @@ class MultExpression : public Expression
 class NotEqualsExpression : public Expression
 {
   public:
-    NotEqualsExpression(Expression* left, Expression* right) : Expression(left, right) { }
+    NotEqualsExpression(unique_ptr<Expression> left, unique_ptr<Expression> right)
+      : Expression(std::move(left), std::move(right)) { }
     Int32 evaluate() const override
       { return myLHS->evaluate() != myRHS->evaluate(); }
 };
@@ -276,7 +297,8 @@ class NotEqualsExpression : public Expression
 class PlusExpression : public Expression
 {
   public:
-    PlusExpression(Expression* left, Expression* right) : Expression(left, right) { }
+    PlusExpression(unique_ptr<Expression> left, unique_ptr<Expression> right)
+      : Expression(std::move(left), std::move(right)) { }
     Int32 evaluate() const override
       { return myLHS->evaluate() + myRHS->evaluate(); }
 };
@@ -298,7 +320,8 @@ class CartMethodExpression : public Expression
 class ShiftLeftExpression : public Expression
 {
   public:
-    ShiftLeftExpression(Expression* left, Expression* right) : Expression(left, right) { }
+    ShiftLeftExpression(unique_ptr<Expression> left, unique_ptr<Expression> right)
+      : Expression(std::move(left), std::move(right)) { }
     Int32 evaluate() const override
       { return myLHS->evaluate() << myRHS->evaluate(); }
 };
@@ -307,7 +330,8 @@ class ShiftLeftExpression : public Expression
 class ShiftRightExpression : public Expression
 {
   public:
-    ShiftRightExpression(Expression* left, Expression* right) : Expression(left, right) { }
+    ShiftRightExpression(unique_ptr<Expression> left, unique_ptr<Expression> right)
+      : Expression(std::move(left), std::move(right)) { }
     Int32 evaluate() const override
       { return myLHS->evaluate() >> myRHS->evaluate(); }
 };
@@ -342,7 +366,8 @@ class TiaMethodExpression : public Expression
 class UnaryMinusExpression : public Expression
 {
   public:
-    explicit UnaryMinusExpression(Expression* left) : Expression(left) { }
+    explicit UnaryMinusExpression(unique_ptr<Expression> left)
+      : Expression(std::move(left)) { }
     Int32 evaluate() const override
       { return -(myLHS->evaluate()); }
 };
@@ -351,7 +376,8 @@ class UnaryMinusExpression : public Expression
 class WordDerefExpression : public Expression
 {
   public:
-    explicit WordDerefExpression(Expression* left) : Expression(left) { }
+    explicit WordDerefExpression(unique_ptr<Expression> left)
+      : Expression(std::move(left)) { }
     Int32 evaluate() const override
       { return Debugger::debugger().dpeekAsInt(myLHS->evaluate()); }
 };

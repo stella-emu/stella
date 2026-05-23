@@ -31,8 +31,9 @@
 class Expression
 {
   public:
-    explicit Expression(Expression* lhs = nullptr, Expression* rhs = nullptr)
-      : myLHS{lhs}, myRHS{rhs} { }
+    explicit Expression(unique_ptr<Expression> lhs = nullptr,
+                        unique_ptr<Expression> rhs = nullptr)
+      : myLHS{std::move(lhs)}, myRHS{std::move(rhs)} { }
     virtual ~Expression() = default;
 
     virtual Int32 evaluate() const { return 0; }

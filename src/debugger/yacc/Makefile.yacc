@@ -1,18 +1,14 @@
 
-### Note: this Makefile not used in building the main Stella binary!
-
-# can use "yacc" instead of "bison -y"
+### Note: this Makefile is not used in building the main Stella binary!
+### Run it here to regenerate stella.tab.cxx and stella.tab.hxx after
+### editing stella.y.  Requires Bison >= 3.2.
 
 all: stella.y
-	bison -y -d stella.y
+	bison stella.y
+	@for f in stella.tab.hxx stella.tab.cxx; do \
+	  { printf '// NOLINTBEGIN\n'; cat $$f; printf '// NOLINTEND\n'; } > $$f.tmp && mv $$f.tmp $$f; \
+	done
 
-
-calctest: stella.y calctest.c YaccParser.cxx YaccParser.hxx
-	bison -y -d stella.y
-	g++ -DPRINT -I../debugger -O2 -c YaccParser.cxx
-	g++ -DBM -I../debugger -O2 -c calctest.c
-	g++ -I../debugger -O2 -Wall -o calctest calctest.o YaccParser.o ../debugger/*Expression.o
-	strip calctest
-
-#clean:
-#	rm -f y.tab.* lex.yy.* *.o calctest
+calctest: stella.y calctest.cxx YaccParser.cxx YaccParser.hxx
+	bison stella.y
+	g++ -DPRINT -I.. -I../.. -std=c++20 -O2 -o calctest calctest.cxx YaccParser.cxx stella.tab.cxx

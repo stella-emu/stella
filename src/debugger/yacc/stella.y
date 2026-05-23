@@ -1,107 +1,149 @@
-%{
-#include <stdio.h>
+//============================================================================
+//
+//   SSSS    tt          lll  lll
+//  SS  SS   tt           ll   ll
+//  SS     tttttt  eeee   ll   ll   aaaa
+//   SSSS    tt   ee  ee  ll   ll      aa
+//      SS   tt   eeeeee  ll   ll   aaaaa  --  "An Atari 2600 VCS Emulator"
+//  SS  SS   tt   ee      ll   ll  aa  aa
+//   SSSS     ttt  eeeee llll llll  aaaaa
+//
+// Copyright (c) 1995-2026 by Bradford W. Mott, Stephen Anthony
+// and the Stella Team
+//
+// See the file "License.txt" for information on usage and redistribution of
+// this file, and for a DISCLAIMER OF ALL WARRANTIES.
+//============================================================================
 
-Expression* lastExp = nullptr;
+// Bison C++ skeleton; requires Bison >= 3.2
+%skeleton "lalr1.cc"
+%require  "3.2"
+%output   "stella.tab.cxx"
+%defines  "stella.tab.hxx"
 
-#define YYERROR_VERBOSE 1
+%define api.namespace    {YaccParser}
+%define api.token.constructor
+%define api.value.type   variant
+%define parse.error      detailed
+%define parse.assert
 
-/* dump Expression stack during parsing? */
-#define DEBUG_EXP 0
-
-int yylex();
-char *yytext;
-
-void yyerror(const char *e) {
-	//if(DEBUG_EXP) fprintf(stderr, "%s at token \"%s\"\n", e, yytext);
-	if(DEBUG_EXP) fprintf(stderr, "%s\n", e);
-	errMsg = e;
-
-	// be extra paranoid about deletion
-	if(lastExp && reinterpret_cast<Expression*>(lastExp))
-		delete lastExp;
-
-	lastExp = nullptr;
+// Types needed in the generated header (stella.tab.hxx)
+%code requires {
+// Suppress clang warnings in Bison-generated code
+#ifdef __clang__
+#  pragma clang system_header
+#endif
+  #include "bspf.hxx"
+  #include "Expression.hxx"
+  #include "CartDebug.hxx"
+  #include "CpuDebug.hxx"
+  #include "RiotDebug.hxx"
+  #include "TIADebug.hxx"
+  namespace YaccParser { class Lexer; }
 }
 
-%}
+// Lexer reference passed to both the parser and yylex()
+%param       { Lexer& lexer }
+// Outputs accessible after parsing
+%parse-param { unique_ptr<Expression>& result }
+%parse-param { string& errorMsg }
 
-%union {
-	int val;
-	char* Equate;
-	CartMethod cartMethod;
-	CpuMethod cpuMethod;
-	RiotMethod riotMethod;
-	TiaMethod tiaMethod;
-	Expression* exp;
-	char* DefinedFunction;
+// Code placed in stella.tab.cxx only (not the header)
+%code {
+  #include "DebuggerExpressions.hxx"
+  namespace YaccParser {
+    parser::symbol_type yylex(Lexer& lexer);
+  }
 }
 
-/* Terminals */
-%token <val> NUMBER
-%token <val> ERR
-%token <Equate> EQUATE
-%token <cartMethod> CART_METHOD
-%token <cpuMethod>  CPU_METHOD
-%token <riotMethod> RIOT_METHOD
-%token <tiaMethod>  TIA_METHOD
-%token <DefinedFunction> FUNCTION
+// ---------------------------------------------------------------------------
+// Token declarations
+// ---------------------------------------------------------------------------
 
-/* Non-terminals */
-%type <exp> expression
+%token <int>        NUMBER
+%token              ERR
+%token <string>     EQUATE
+%token <CartMethod> CART_METHOD
+%token <CpuMethod>  CPU_METHOD
+%token <RiotMethod> RIOT_METHOD
+%token <TiaMethod>  TIA_METHOD
+%token <string>     FUNCTION
 
-/* Operator associativity and precedence */
-%left '-' '+'
-%left '*' '/' '%'
-%left LOG_OR
-%left LOG_AND
-%left LOG_NOT
-%left '|' '^'
-%left '&'
-%left SHR SHL
+// Multi-character operators (no semantic value)
+%token LOG_OR LOG_AND SHR SHL GTE LTE NE EQ
+
+// Pseudo-tokens used only as %prec targets
+%token DEREF UMINUS
+
+// ---------------------------------------------------------------------------
+// Non-terminal types
+// ---------------------------------------------------------------------------
+
+%type <unique_ptr<Expression>> expression
+
+// ---------------------------------------------------------------------------
+// Operator precedence (lowest to highest)
+// ---------------------------------------------------------------------------
+
+%left  '+' '-'
+%left  '*' '/' '%'
+%left  LOG_OR
+%left  LOG_AND
+%left  '|' '^'
+%left  '&'
+%left  SHR SHL
 %nonassoc '<' '>' GTE LTE NE EQ
 %nonassoc DEREF
 %nonassoc UMINUS
 %nonassoc '['
 
+%%
+
+statement:
+    expression  { result = std::move($1); }
+  ;
+
+expression:
+    expression '+' expression  { $$ = std::make_unique<PlusExpression>         (std::move($1), std::move($3)); }
+  | expression '-' expression  { $$ = std::make_unique<MinusExpression>        (std::move($1), std::move($3)); }
+  | expression '*' expression  { $$ = std::make_unique<MultExpression>         (std::move($1), std::move($3)); }
+  | expression '/' expression  { $$ = std::make_unique<DivExpression>          (std::move($1), std::move($3)); }
+  | expression '%' expression  { $$ = std::make_unique<ModExpression>          (std::move($1), std::move($3)); }
+  | expression '&' expression  { $$ = std::make_unique<BinAndExpression>       (std::move($1), std::move($3)); }
+  | expression '|' expression  { $$ = std::make_unique<BinOrExpression>        (std::move($1), std::move($3)); }
+  | expression '^' expression  { $$ = std::make_unique<BinXorExpression>       (std::move($1), std::move($3)); }
+  | expression '<' expression  { $$ = std::make_unique<LessExpression>         (std::move($1), std::move($3)); }
+  | expression '>' expression  { $$ = std::make_unique<GreaterExpression>      (std::move($1), std::move($3)); }
+  | expression GTE expression  { $$ = std::make_unique<GreaterEqualsExpression>(std::move($1), std::move($3)); }
+  | expression LTE expression  { $$ = std::make_unique<LessEqualsExpression>   (std::move($1), std::move($3)); }
+  | expression NE  expression  { $$ = std::make_unique<NotEqualsExpression>    (std::move($1), std::move($3)); }
+  | expression EQ  expression  { $$ = std::make_unique<EqualsExpression>       (std::move($1), std::move($3)); }
+  | expression SHR expression  { $$ = std::make_unique<ShiftRightExpression>   (std::move($1), std::move($3)); }
+  | expression SHL expression  { $$ = std::make_unique<ShiftLeftExpression>    (std::move($1), std::move($3)); }
+  | expression LOG_OR  expression  { $$ = std::make_unique<LogOrExpression>  (std::move($1), std::move($3)); }
+  | expression LOG_AND expression  { $$ = std::make_unique<LogAndExpression> (std::move($1), std::move($3)); }
+  | '-' expression  %prec UMINUS   { $$ = std::make_unique<UnaryMinusExpression>(std::move($2)); }
+  | '~' expression  %prec UMINUS   { $$ = std::make_unique<BinNotExpression>    (std::move($2)); }
+  | '!' expression  %prec UMINUS   { $$ = std::make_unique<LogNotExpression>    (std::move($2)); }
+  | '*' expression  %prec DEREF    { $$ = std::make_unique<ByteDerefExpression> (std::move($2)); }
+  | '@' expression  %prec DEREF    { $$ = std::make_unique<WordDerefExpression> (std::move($2)); }
+  | '<' expression                 { $$ = std::make_unique<LoByteExpression>    (std::move($2)); }
+  | '>' expression                 { $$ = std::make_unique<HiByteExpression>    (std::move($2)); }
+  | '(' expression ')'             { $$ = std::move($2); }
+  | expression '[' expression ']'  { $$ = std::make_unique<ByteDerefOffsetExpression>(std::move($1), std::move($3)); }
+  | NUMBER      { $$ = std::make_unique<ConstExpression>    ($1); }
+  | EQUATE      { $$ = std::make_unique<EquateExpression>   ($1); }
+  | CPU_METHOD  { $$ = std::make_unique<CpuMethodExpression> ($1); }
+  | CART_METHOD { $$ = std::make_unique<CartMethodExpression>($1); }
+  | RIOT_METHOD { $$ = std::make_unique<RiotMethodExpression>($1); }
+  | TIA_METHOD  { $$ = std::make_unique<TiaMethodExpression> ($1); }
+  | FUNCTION    { $$ = std::make_unique<FunctionExpression>  ($1); }
+  | ERR         { error("Invalid label or constant"); YYERROR; }
+  ;
 
 %%
-statement:	expression { if(DEBUG_EXP) fprintf(stderr, "\ndone\n"); result.exp = $1; }
-	;
 
-expression:	expression '+' expression { if(DEBUG_EXP) fprintf(stderr, " +"); $$ = new PlusExpression($1, $3); lastExp = $$; }
-	|	expression '-' expression { if(DEBUG_EXP) fprintf(stderr, " -"); $$ = new MinusExpression($1, $3); lastExp = $$; }
-	|	expression '*' expression { if(DEBUG_EXP) fprintf(stderr, " *"); $$ = new MultExpression($1, $3); lastExp = $$; }
-	|	expression '/' expression { if(DEBUG_EXP) fprintf(stderr, " /"); $$ = new DivExpression($1, $3); lastExp = $$; }
-	|	expression '%' expression { if(DEBUG_EXP) fprintf(stderr, " %%"); $$ = new ModExpression($1, $3);  lastExp = $$; }
-	|	expression '&' expression { if(DEBUG_EXP) fprintf(stderr, " &"); $$ = new BinAndExpression($1, $3); lastExp = $$; }
-	|	expression '|' expression { if(DEBUG_EXP) fprintf(stderr, " |"); $$ = new BinOrExpression($1, $3); lastExp = $$; }
-	|	expression '^' expression { if(DEBUG_EXP) fprintf(stderr, " ^"); $$ = new BinXorExpression($1, $3); lastExp = $$; }
-	|	expression '<' expression { if(DEBUG_EXP) fprintf(stderr, " <"); $$ = new LessExpression($1, $3); lastExp = $$; }
-	|	expression '>' expression { if(DEBUG_EXP) fprintf(stderr, " >"); $$ = new GreaterExpression($1, $3); lastExp = $$; }
-	|	expression GTE expression { if(DEBUG_EXP) fprintf(stderr, " >="); $$ = new GreaterEqualsExpression($1, $3); lastExp = $$; }
-	|	expression LTE expression { if(DEBUG_EXP) fprintf(stderr, " <="); $$ = new LessEqualsExpression($1, $3); lastExp = $$; }
-	|	expression NE  expression { if(DEBUG_EXP) fprintf(stderr, " !="); $$ = new NotEqualsExpression($1, $3); lastExp = $$; }
-	|	expression EQ  expression { if(DEBUG_EXP) fprintf(stderr, " =="); $$ = new EqualsExpression($1, $3); lastExp = $$; }
-	|	expression SHR expression { if(DEBUG_EXP) fprintf(stderr, " >>"); $$ = new ShiftRightExpression($1, $3); lastExp = $$; }
-	|	expression SHL expression { if(DEBUG_EXP) fprintf(stderr, " <<"); $$ = new ShiftLeftExpression($1, $3); lastExp = $$; }
-	|	expression LOG_OR expression { if(DEBUG_EXP) fprintf(stderr, " ||"); $$ = new LogOrExpression($1, $3); lastExp = $$; }
-	|	expression LOG_AND expression { if(DEBUG_EXP) fprintf(stderr, " &&"); $$ = new LogAndExpression($1, $3); lastExp = $$; }
-	|	'-' expression %prec UMINUS	{ if(DEBUG_EXP) fprintf(stderr, " U-"); $$ = new UnaryMinusExpression($2); lastExp = $$; }
-	|	'~' expression %prec UMINUS	{ if(DEBUG_EXP) fprintf(stderr, " ~"); $$ = new BinNotExpression($2); lastExp = $$; }
-	|	'!' expression %prec UMINUS	{ if(DEBUG_EXP) fprintf(stderr, " !"); $$ = new LogNotExpression($2); lastExp = $$; }
-	|	'*' expression %prec DEREF { if(DEBUG_EXP) fprintf(stderr, " U*"); $$ = new ByteDerefExpression($2); lastExp = $$; }
-	|	'@' expression %prec DEREF { if(DEBUG_EXP) fprintf(stderr, " U@"); $$ = new WordDerefExpression($2); lastExp = $$; }
-	|	'<' expression { if(DEBUG_EXP) fprintf(stderr, " U<");  $$ = new LoByteExpression($2);  lastExp = $$; }
-	|	'>' expression { if(DEBUG_EXP) fprintf(stderr, " U>");  $$ = new HiByteExpression($2);  lastExp = $$; }
-	|	'(' expression ')'	{ if(DEBUG_EXP) fprintf(stderr, " ()"); $$ = $2; lastExp = $$; }
-	|	expression '[' expression ']' { if(DEBUG_EXP) fprintf(stderr, " []"); $$ = new ByteDerefOffsetExpression($1, $3); lastExp = $$; }
-	|	NUMBER { if(DEBUG_EXP) fprintf(stderr, "const %d", $1); $$ = new ConstExpression($1); lastExp = $$; }
-	|	EQUATE { if(DEBUG_EXP) fprintf(stderr, "equate %s", $1); $$ = new EquateExpression($1); lastExp = $$; }
-	|	CPU_METHOD { if(DEBUG_EXP) fprintf(stderr, " (CpuMethod)"); $$ = new CpuMethodExpression($1); lastExp = $$; }
-	|	CART_METHOD { if(DEBUG_EXP) fprintf(stderr, " (CartMethod)"); $$ = new CartMethodExpression($1); lastExp = $$; }
-	|	RIOT_METHOD { if(DEBUG_EXP) fprintf(stderr, " (RiotMethod)"); $$ = new RiotMethodExpression($1); lastExp = $$; }
-	|	TIA_METHOD { if(DEBUG_EXP) fprintf(stderr, " (TiaMethod)"); $$ = new TiaMethodExpression($1); lastExp = $$; }
-	|	FUNCTION { if(DEBUG_EXP) fprintf(stderr, " (DefinedFunction)"); $$ = new FunctionExpression($1); lastExp = $$; }
-	|  ERR { if(DEBUG_EXP) fprintf(stderr, " ERR: "); yyerror((const char*)"Invalid label or constant"); return 1; }
-	;
-%%
+void YaccParser::parser::error(const string& msg)
+{
+  errorMsg = msg;
+}

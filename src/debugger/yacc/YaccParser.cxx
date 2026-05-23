@@ -15,401 +15,307 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#include "Base.hxx"
-#include "DebuggerExpressions.hxx"
-
-#include "YaccParser.hxx"
-
-// NOLINTBEGIN: this entire class is due to be rewritten
-
-namespace YaccParser {
 #include <cctype>
 
-#include "y.tab.h"
+#include "Base.hxx"
+#include "Debugger.hxx"
+// Suppress warnings from Bison-generated code
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-macros"
+#include "stella.tab.hxx"
+#pragma GCC diagnostic pop
+#include "YaccParser.hxx"
 
-enum class State : uInt8 {
-  DEFAULT,
-  IDENTIFIER,
-  OPERATOR,
-  SPACE
+namespace YaccParser {
+
+// ============================================================================
+// Lexer
+// ============================================================================
+
+class Lexer
+{
+public:
+  explicit Lexer(string_view input)
+    : myC{input.data()}, myEnd{input.data() + input.size()} { }
+
+  parser::symbol_type yylex();
+
+private:
+  enum class State : uInt8 { DEFAULT, IDENTIFIER, OPERATOR, SPACE };
+
+  const char* myC{nullptr};
+  const char* myEnd{nullptr};
+  State myState{State::DEFAULT};
+  string myIdbuf;
+
+  static constexpr bool is_base_prefix(char x)
+  {
+    return x == '\\' || x == '$' || x == '#';
+  }
+  static constexpr bool is_identifier(char x)
+  {
+    return (x >= '0' && x <= '9') || (x >= 'a' && x <= 'z') ||
+           (x >= 'A' && x <= 'Z') || x == '.' || x == '_';
+  }
+  static constexpr bool is_operator(char x)
+  {
+    return x == '+' || x == '-' || x == '*' || x == '/' ||
+           x == '<' || x == '>' || x == '|' || x == '&' ||
+           x == '^' || x == '!' || x == '~' || x == '(' ||
+           x == ')' || x == '=' || x == '%' || x == '[' || x == ']';
+  }
+
+  static parser::symbol_type make_char_tok(char c)
+  {
+    // NOLINTNEXTLINE(clang-analyzer-optin.core.EnumCastOutOfRange,modernize-return-braced-init-list)
+    return parser::symbol_type(static_cast<int>(c));
+  }
+
+  static int const_to_int(string_view s);
+
+  static CartMethod getCartSpecial(string_view s);
+  static CpuMethod  getCpuSpecial(string_view s);
+  static RiotMethod getRiotSpecial(string_view s);
+  static TiaMethod  getTiaSpecial(string_view s);
 };
 
-namespace {
-  YYSTYPE result;
-  string errMsg;
-
-  State state = State::DEFAULT;
-  const char *input, *c;
-} // namespace
-
-void yyerror(const char* e);
-
-#ifdef __clang__
-  #pragma clang diagnostic push
-  #pragma clang diagnostic ignored "-Wold-style-cast"
-  #pragma clang diagnostic ignored "-Wimplicit-fallthrough"
-  #pragma clang diagnostic ignored "-Wmissing-variable-declarations"
-  #include "y.tab.c"
-  #pragma clang diagnostic pop
-#else
-  #include "y.tab.c"
-#endif
-
-
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const string& errorMessage()
+// const_to_int converts a string to a number in the current or overridden base.
+// Returns -1 on error; negative numbers are the parser's responsibility.
+int Lexer::const_to_int(string_view s)
 {
-  return errMsg;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Expression* getResult()
-{
-  lastExp = nullptr;
-  return result.exp;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void setInput(const string& in)
-{
-  input = c = in.c_str();
-  state = State::DEFAULT;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int parse(const string& in)
-{
-  lastExp = nullptr;
-  errMsg = "(no error)";
-  setInput(in);
-  return yyparse();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-// hand-rolled lexer. Hopefully faster than flex...
-constexpr bool is_base_prefix(char x)
-{
-  return ( (x=='\\' || x=='$' || x=='#') );
-}
-
-constexpr bool is_identifier(char x)
-{
-  return ( (x>='0' && x<='9') ||
-           (x>='a' && x<='z') ||
-           (x>='A' && x<='Z') ||
-            x=='.' || x=='_'  );
-}
-
-constexpr bool is_operator(char x)
-{
-  return ( (x=='+' || x=='-' || x=='*' ||
-            x=='/' || x=='<' || x=='>' ||
-            x=='|' || x=='&' || x=='^' ||
-            x=='!' || x=='~' || x=='(' ||
-            x==')' || x=='=' || x=='%' ||
-            x=='[' || x==']' ) );
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-// const_to_int converts a string into a number, in either the
-// current base, or (if there's a base override) the selected base.
-// Returns -1 on error, since negative numbers are the parser's
-// responsibility, not the lexer's
-int const_to_int(char* ch)
-{
-  // what base is the input in?
   Common::Base::Fmt format = Common::Base::format();
 
-  switch(*ch) {
-    case '\\':
-      format = Common::Base::Fmt::_2;
-      ch++;
-      break;
-
-    case '#':
-      format = Common::Base::Fmt::_10;
-      ch++;
-      break;
-
-    case '$':
-      format = Common::Base::Fmt::_16;
-      ch++;
-      break;
-
-    default: // not a base_prefix, use default base
-      break;
+  if (!s.empty()) {
+    switch (s.front()) {
+      case '\\': format = Common::Base::Fmt::_2;  s.remove_prefix(1); break;
+      case '#':  format = Common::Base::Fmt::_10; s.remove_prefix(1); break;
+      case '$':  format = Common::Base::Fmt::_16; s.remove_prefix(1); break;
+      default: break;
+    }
   }
 
   int ret = 0;
-  switch(format) {
+  switch (format) {
     case Common::Base::Fmt::_2:
-      while(*ch) {
-        if(*ch != '0' && *ch != '1')
-          return -1;
-        ret *= 2;
-        ret += (*ch - '0');
-        ch++;
+      for (const char c : s) {
+        if (c != '0' && c != '1') return -1;
+        ret = ret * 2 + (c - '0');
       }
       return ret;
 
     case Common::Base::Fmt::_10:
-      while(*ch) {
-        if(!isdigit(*ch))
-          return -1;
-        ret *= 10;
-        ret += (*ch - '0');
-        ch++;
+      for (const char c : s) {
+        if (!isdigit(c)) return -1;
+        ret = ret * 10 + (c - '0');
       }
       return ret;
 
     case Common::Base::Fmt::_16:
-      while(*ch) { // FIXME: error check!
-        if(!isxdigit(*ch))
-          return -1;
-        int dig = (*ch - '0');
-        if(dig > 9) dig = tolower(*ch) - 'a' + 10;
-        ret *= 16;
-        ret += dig;
-        ch++;
+      for (const char c : s) {
+        if (!isxdigit(c)) return -1;
+        const int dig = (c - '0');
+        ret = ret * 16 + (dig > 9 ? tolower(c) - 'a' + 10 : dig);
       }
       return ret;
 
     default:
-      cerr << "INVALID BASE in lexer!\n";
       return 0;
   }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-// special methods that get Cart RAM/ROM internal state
-CartMethod getCartSpecial(const char* ch)
+CartMethod Lexer::getCartSpecial(string_view s)
 {
-  if(BSPF::equalsIgnoreCase(ch, "_bank"))
-    return &CartDebug::getPCBank;
-
-  else if(BSPF::equalsIgnoreCase(ch, "__lastBaseRead"))
-    return &CartDebug::lastReadBaseAddress;
-  else if(BSPF::equalsIgnoreCase(ch, "__lastBaseWrite"))
-    return &CartDebug::lastWriteBaseAddress;
-  else if(BSPF::equalsIgnoreCase(ch, "__lastRead"))
-    return &CartDebug::lastReadAddress;
-  else if(BSPF::equalsIgnoreCase(ch, "__lastWrite"))
-    return &CartDebug::lastWriteAddress;
-  else
-    return nullptr;
+  if (BSPF::equalsIgnoreCase(s, "_bank"))           return &CartDebug::getPCBank;
+  if (BSPF::equalsIgnoreCase(s, "__lastBaseRead"))  return &CartDebug::lastReadBaseAddress;
+  if (BSPF::equalsIgnoreCase(s, "__lastBaseWrite")) return &CartDebug::lastWriteBaseAddress;
+  if (BSPF::equalsIgnoreCase(s, "__lastRead"))      return &CartDebug::lastReadAddress;
+  if (BSPF::equalsIgnoreCase(s, "__lastWrite"))     return &CartDebug::lastWriteAddress;
+  return nullptr;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-// special methods that get e.g. CPU registers
-CpuMethod getCpuSpecial(const char* ch)
+CpuMethod Lexer::getCpuSpecial(string_view s)
 {
-  if(BSPF::equalsIgnoreCase(ch, "a"))
-    return &CpuDebug::a;
-  else if(BSPF::equalsIgnoreCase(ch, "x"))
-    return &CpuDebug::x;
-  else if(BSPF::equalsIgnoreCase(ch, "y"))
-    return &CpuDebug::y;
-  else if(BSPF::equalsIgnoreCase(ch, "pc"))
-    return &CpuDebug::pc;
-  else if(BSPF::equalsIgnoreCase(ch, "sp"))
-    return &CpuDebug::sp;
-  else if(BSPF::equalsIgnoreCase(ch, "c"))
-    return &CpuDebug::c;
-  else if(BSPF::equalsIgnoreCase(ch, "z"))
-    return &CpuDebug::z;
-  else if(BSPF::equalsIgnoreCase(ch, "n"))
-    return &CpuDebug::n;
-  else if(BSPF::equalsIgnoreCase(ch, "v"))
-    return &CpuDebug::v;
-  else if(BSPF::equalsIgnoreCase(ch, "d"))
-    return &CpuDebug::d;
-  else if(BSPF::equalsIgnoreCase(ch, "i"))
-    return &CpuDebug::i;
-  else if(BSPF::equalsIgnoreCase(ch, "b"))
-    return &CpuDebug::b;
-  else if(BSPF::equalsIgnoreCase(ch, "_iCycles"))
-    return &CpuDebug::icycles;
-  else
-    return nullptr;
+  if (BSPF::equalsIgnoreCase(s, "a"))        return &CpuDebug::a;
+  if (BSPF::equalsIgnoreCase(s, "x"))        return &CpuDebug::x;
+  if (BSPF::equalsIgnoreCase(s, "y"))        return &CpuDebug::y;
+  if (BSPF::equalsIgnoreCase(s, "pc"))       return &CpuDebug::pc;
+  if (BSPF::equalsIgnoreCase(s, "sp"))       return &CpuDebug::sp;
+  if (BSPF::equalsIgnoreCase(s, "c"))        return &CpuDebug::c;
+  if (BSPF::equalsIgnoreCase(s, "z"))        return &CpuDebug::z;
+  if (BSPF::equalsIgnoreCase(s, "n"))        return &CpuDebug::n;
+  if (BSPF::equalsIgnoreCase(s, "v"))        return &CpuDebug::v;
+  if (BSPF::equalsIgnoreCase(s, "d"))        return &CpuDebug::d;
+  if (BSPF::equalsIgnoreCase(s, "i"))        return &CpuDebug::i;
+  if (BSPF::equalsIgnoreCase(s, "b"))        return &CpuDebug::b;
+  if (BSPF::equalsIgnoreCase(s, "_iCycles")) return &CpuDebug::icycles;
+  return nullptr;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-// special methods that get RIOT internal state
-RiotMethod getRiotSpecial(const char* ch)
+RiotMethod Lexer::getRiotSpecial(string_view s)
 {
-  if(BSPF::equalsIgnoreCase(ch, "_timWrapRead"))
-    return &RiotDebug::timWrappedOnRead;
-  else if(BSPF::equalsIgnoreCase(ch, "_timWrapWrite"))
-    return &RiotDebug::timWrappedOnWrite;
-  else if(BSPF::equalsIgnoreCase(ch, "_fTimReadCycles"))
-    return &RiotDebug::timReadCycles;
-  else if(BSPF::equalsIgnoreCase(ch, "_inTim"))
-    return &RiotDebug::intimAsInt;
-  else if(BSPF::equalsIgnoreCase(ch, "_timInt"))
-    return &RiotDebug::timintAsInt;
-  else
-    return nullptr;
+  if (BSPF::equalsIgnoreCase(s, "_timWrapRead"))    return &RiotDebug::timWrappedOnRead;
+  if (BSPF::equalsIgnoreCase(s, "_timWrapWrite"))   return &RiotDebug::timWrappedOnWrite;
+  if (BSPF::equalsIgnoreCase(s, "_fTimReadCycles")) return &RiotDebug::timReadCycles;
+  if (BSPF::equalsIgnoreCase(s, "_inTim"))          return &RiotDebug::intimAsInt;
+  if (BSPF::equalsIgnoreCase(s, "_timInt"))         return &RiotDebug::timintAsInt;
+  return nullptr;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-// special methods that get TIA internal state
-TiaMethod getTiaSpecial(const char* ch)
+TiaMethod Lexer::getTiaSpecial(string_view s)
 {
-  if(BSPF::equalsIgnoreCase(ch, "_scan"))
-    return &TIADebug::scanlines;
-  else if(BSPF::equalsIgnoreCase(ch, "_scanEnd"))
-    return &TIADebug::scanlinesLastFrame;
-  else if(BSPF::equalsIgnoreCase(ch, "_sCycles"))
-    return &TIADebug::cyclesThisLine;
-  else if(BSPF::equalsIgnoreCase(ch, "_fCount"))
-    return &TIADebug::frameCount;
-  else if(BSPF::equalsIgnoreCase(ch, "_fCycles"))
-    return &TIADebug::frameCycles;
-  else if(BSPF::equalsIgnoreCase(ch, "_fWsyncCycles"))
-    return &TIADebug::frameWsyncCycles;
-  else if(BSPF::equalsIgnoreCase(ch, "_cyclesLo"))
-    return &TIADebug::cyclesLo;
-  else if(BSPF::equalsIgnoreCase(ch, "_cyclesHi"))
-    return &TIADebug::cyclesHi;
-  else if(BSPF::equalsIgnoreCase(ch, "_cClocks"))
-    return &TIADebug::clocksThisLine;
-  else if(BSPF::equalsIgnoreCase(ch, "_vSync"))
-    return &TIADebug::vsyncAsInt;
-  else if(BSPF::equalsIgnoreCase(ch, "_vBlank"))
-    return &TIADebug::vblankAsInt;
-  else
-    return nullptr;
+  if (BSPF::equalsIgnoreCase(s, "_scan"))          return &TIADebug::scanlines;
+  if (BSPF::equalsIgnoreCase(s, "_scanEnd"))       return &TIADebug::scanlinesLastFrame;
+  if (BSPF::equalsIgnoreCase(s, "_sCycles"))       return &TIADebug::cyclesThisLine;
+  if (BSPF::equalsIgnoreCase(s, "_fCount"))        return &TIADebug::frameCount;
+  if (BSPF::equalsIgnoreCase(s, "_fCycles"))       return &TIADebug::frameCycles;
+  if (BSPF::equalsIgnoreCase(s, "_fWsyncCycles"))  return &TIADebug::frameWsyncCycles;
+  if (BSPF::equalsIgnoreCase(s, "_cyclesLo"))      return &TIADebug::cyclesLo;
+  if (BSPF::equalsIgnoreCase(s, "_cyclesHi"))      return &TIADebug::cyclesHi;
+  if (BSPF::equalsIgnoreCase(s, "_cClocks"))       return &TIADebug::clocksThisLine;
+  if (BSPF::equalsIgnoreCase(s, "_vSync"))         return &TIADebug::vsyncAsInt;
+  if (BSPF::equalsIgnoreCase(s, "_vBlank"))        return &TIADebug::vblankAsInt;
+  return nullptr;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int yylex() {
-  static char idbuf[255];
+parser::symbol_type Lexer::yylex()
+{
   char o{0}, p{0};
-  yylval.val = 0;
-  while(*c != '\0') {
-    switch(state) {
-      case State::SPACE:
-        yylval.val = 0;
-        if(isspace(*c)) {
-          c++;
-        } else if(is_identifier(*c) || is_base_prefix(*c)) {
-          state = State::IDENTIFIER;
-        } else if(is_operator(*c)) {
-          state = State::OPERATOR;
-        } else {
-          state = State::DEFAULT;
-        }
 
+  while (*myC != '\0') {
+    switch (myState) {
+      case State::SPACE:
+        if (isspace(*myC))
+          ++myC;
+        else if (is_identifier(*myC) || is_base_prefix(*myC))
+          myState = State::IDENTIFIER;
+        else if (is_operator(*myC))
+          myState = State::OPERATOR;
+        else
+          myState = State::DEFAULT;
         break;
 
-      case State::IDENTIFIER:
-        {
-          CartMethod cartMeth;
-          CpuMethod  cpuMeth;
-          RiotMethod riotMeth;
-          TiaMethod  tiaMeth;
+      case State::IDENTIFIER: {
+        myIdbuf.clear();
+        myIdbuf += *myC++;
+        while (is_identifier(*myC))
+          myIdbuf += *myC++;
+        myState = State::DEFAULT;
 
-          char *bufp = idbuf;
-          *bufp++ = *c++; // might be a base prefix
-          while(is_identifier(*c)) { // may NOT be base prefixes
-            *bufp++ = *c++;
-          }
-          *bufp = '\0';
-          state = State::DEFAULT;
+        // Labels have priority over specials; specials have priority over numbers.
+        // (A bare 'a' always means the accumulator, not hex 0xa. Use '$a' or 'A'
+        // for the literal.)
+        if (Debugger::debugger().cartDebug().getAddress(myIdbuf) > -1)
+          return parser::make_EQUATE(myIdbuf);
 
-          // Note: specials (like "a" for accumulator) have priority over
-          // numbers. So "a" always means accumulator, not hex 0xa. User
-          // is welcome to use a base prefix ("$a"), or a capital "A",
-          // to mean 0xa.
+        CpuMethod  cpuMeth  = nullptr;
+        CartMethod cartMeth = nullptr;
+        RiotMethod riotMeth = nullptr;
+        TiaMethod  tiaMeth  = nullptr;
 
-          // Also, labels have priority over specials, so Bad Things will
-          // happen if the user defines a label that matches one of
-          // the specials. Who would do that, though?
+        cpuMeth  = getCpuSpecial (myIdbuf); if (cpuMeth)  return parser::make_CPU_METHOD (cpuMeth);
+        cartMeth = getCartSpecial(myIdbuf); if (cartMeth) return parser::make_CART_METHOD(cartMeth);
+        riotMeth = getRiotSpecial(myIdbuf); if (riotMeth) return parser::make_RIOT_METHOD(riotMeth);
+        tiaMeth  = getTiaSpecial (myIdbuf); if (tiaMeth)  return parser::make_TIA_METHOD (tiaMeth);
 
-          if(Debugger::debugger().cartDebug().getAddress(idbuf) > -1) {
-            yylval.Equate = idbuf;
-            return EQUATE;
-          } else if( (cpuMeth = getCpuSpecial(idbuf)) ) {
-            yylval.cpuMethod = cpuMeth;
-            return CPU_METHOD;
-          } else if( (cartMeth = getCartSpecial(idbuf)) ) {
-            yylval.cartMethod = cartMeth;
-            return CART_METHOD;
-          } else if( (riotMeth = getRiotSpecial(idbuf)) ) {
-            yylval.riotMethod = riotMeth;
-            return RIOT_METHOD;
-          } else if( (tiaMeth = getTiaSpecial(idbuf)) ) {
-            yylval.tiaMethod = tiaMeth;
-            return TIA_METHOD;
-          } else if( !Debugger::debugger().getFunctionDef(idbuf).empty() ) {
-            yylval.DefinedFunction = idbuf;
-            return FUNCTION;
-          } else {
-            yylval.val = const_to_int(idbuf);
-            if(yylval.val >= 0)
-              return NUMBER;
-            else
-              return ERR;
-          }
-        }
+        if (!Debugger::debugger().getFunctionDef(myIdbuf).empty())
+          return parser::make_FUNCTION(myIdbuf);
+
+        const int val = const_to_int(myIdbuf);
+        return val >= 0 ? parser::make_NUMBER(val) : parser::make_ERR();
+      }
 
       case State::OPERATOR:
-        o = *c++;
-        if(!*c) return o;
-        if(isspace(*c)) {
-          state = State::SPACE;
-          return o;
-        } else if(is_identifier(*c) || is_base_prefix(*c)) {
-          state = State::IDENTIFIER;
-          return o;
-        } else {
-          state = State::DEFAULT;
-          p = *c++;
-          if(o == '>' && p == '=')
-            return GTE;
-          else if(o == '<' && p == '=')
-            return LTE;
-          else if(o == '!' && p == '=')
-            return NE;
-          else if(o == '=' && p == '=')
-            return EQ;
-          else if(o == '|' && p == '|')
-            return LOG_OR;
-          else if(o == '&' && p == '&')
-            return LOG_AND;
-          else if(o == '<' && p == '<')
-            return SHL;
-          else if(o == '>' && p == '>')
-            return SHR;
-          else {
-            c--;
-            return o;
-          }
+        o = *myC++;
+        if (!*myC)
+          return make_char_tok(o);
+        if (isspace(*myC)) {
+          myState = State::SPACE;
+          return make_char_tok(o);
         }
-        // break;  Never executed
+        if (is_identifier(*myC) || is_base_prefix(*myC)) {
+          myState = State::IDENTIFIER;
+          return make_char_tok(o);
+        }
+        myState = State::DEFAULT;
+        p = *myC++;
+        if      (o == '>' && p == '=') return parser::make_GTE();
+        else if (o == '<' && p == '=') return parser::make_LTE();
+        else if (o == '!' && p == '=') return parser::make_NE();
+        else if (o == '=' && p == '=') return parser::make_EQ();
+        else if (o == '|' && p == '|') return parser::make_LOG_OR();
+        else if (o == '&' && p == '&') return parser::make_LOG_AND();
+        else if (o == '<' && p == '<') return parser::make_SHL();
+        else if (o == '>' && p == '>') return parser::make_SHR();
+        else {
+          --myC;
+          return make_char_tok(o);
+        }
 
       case State::DEFAULT:
-        yylval.val = 0;
-        if(isspace(*c)) {
-          state = State::SPACE;
-        } else if(is_identifier(*c) || is_base_prefix(*c)) {
-          state = State::IDENTIFIER;
-        } else if(is_operator(*c)) {
-          state = State::OPERATOR;
-        } else {
-          yylval.val = *c++;
-          return yylval.val;
-        }
+        if (isspace(*myC))
+          myState = State::SPACE;
+        else if (is_identifier(*myC) || is_base_prefix(*myC))
+          myState = State::IDENTIFIER;
+        else if (is_operator(*myC))
+          myState = State::OPERATOR;
+        else
+          return make_char_tok(*myC++);
         break;
-
-      default:
-        break;  // Not supposed to get here
     }
   }
 
-  return 0; // hit NUL, end of input.
+  return parser::make_YYEOF();
 }
 
-} // namespace YaccParser
+// ============================================================================
+// yylex bridge called by the generated parser
+// ============================================================================
 
-// NOLINTEND
+// NOLINTNEXTLINE(misc-use-internal-linkage)
+parser::symbol_type yylex(Lexer& lexer)
+{
+  return lexer.yylex();
+}
+
+// ============================================================================
+// Public API
+// ============================================================================
+
+namespace {
+  string& s_errorMsg()
+  {
+    static string msg;
+    return msg;
+  }
+}  // namespace
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+unique_ptr<Expression> parse(string_view in)
+{
+  unique_ptr<Expression> result;
+  string parseError;
+
+  Lexer lexer{in};
+  parser p{lexer, result, parseError};
+
+  if (p.parse() != 0) {
+    s_errorMsg() = std::move(parseError);
+    return nullptr;
+  }
+  s_errorMsg().clear();
+  return result;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+const string& errorMessage()
+{
+  return s_errorMsg();
+}
+
+}  // namespace YaccParser
