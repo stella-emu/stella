@@ -34,7 +34,7 @@ namespace {
       case ScalingInterpolation::sharp:
         return BlitterFactory::ScalingAlgorithm::quasiInteger;
 
-      default:  // TODO: use std::unreachable() in C++23
+      default:
         throw std::runtime_error("unreachable");
     }
   }

@@ -18,8 +18,6 @@
 #ifndef PLUS_ROM_HXX
 #define PLUS_ROM_HXX
 
-#include <deque>
-
 #include "bspf.hxx"
 #include "Serializable.hxx"
 #include "Cart.hxx"
@@ -150,6 +148,7 @@ class PlusROM : public Serializable
       @return The send data
     */
     ByteArray getSend() const;
+
     /**
       Retrieve receive data.
 
@@ -187,6 +186,7 @@ class PlusROM : public Serializable
     bool myIsEnabled{true};
     string myHost;
     string myPath;
+    string myRequestPath;  // myPath prefixed with '/', built once in initialize()
 
     std::array<uInt8, 256> myRxBuffer{}, myTxBuffer{};
     uInt8 myRxReadPos{0}, myRxWritePos{0}, myTxPos{0};

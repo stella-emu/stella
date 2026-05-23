@@ -355,7 +355,6 @@ void Settings::load(const Options& options)
 void Settings::save()
 {
   // Convert unordered_map → map only at the boundary
-  // TODO: maybe KVRMap can be converted to unordered_map too?
   KVRMap out;
   out.insert(myPermanentSettings.begin(), myPermanentSettings.end());
   myRepository->save(out);
