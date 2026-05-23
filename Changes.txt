@@ -14,10 +14,60 @@
 
 7.0 to 8.0 (mmm dd, 2026)
 
-  * Ported Stella to SDL3.
+  * Ported Stella to SDL3, with all the improvements that the latest
+    version of SDL provides.
 
-  * Added support for 'EFF' bankswitching (Bruce-Robert Pocock), as well
-    as auto-detection of this format.
+  * Added support for 'EFF' bankswitching (Bruce-Robert Pocock) for
+    Grizzards, as well as auto-detection of this format.  The board
+    features a 2 KiB save-to-cartridge EEPROM (MicroChip 24LC family)
+    connected via I²C, identical in interface to the AtariVox/SaveKey.
+
+  * Added support for 'DEVC' bankswitching (DevCard), as well
+    as auto-detection of this format.  This is a new 16-bit cartridge
+    type with 24 KB of flat RAM across six non-contiguous 4 KB windows.
+
+  * Added support for CompuMate cassette load/save for binary images;
+    WAV load support may be added in a future release.
+
+  * Implemented proper PA7 behavior in M6532.
+
+  * Paddle / Driving Controller; extra buttons added for both left and
+    right paddle.
+
+  * Debugger improvements:
+    - dbg.logexec; new option to log debugger script execution output
+      to a file, also adds dbg.script command-line parameter
+    - Debugger timer serialization; timer state now saved/restored with
+      savestates
+    - CPU register address tracking improved; better display of addresses
+      in CPU registers
+    - Duplicate label warning; debugger now warns when a label is defined
+      that already exists.
+    - resMP1() display bug fixed in the debugger output
+    - Yacc/Bison code converted to modern C++
+    - Uppercase hex setting was not being saved; fixed
+    - Cheat code dialog; double-Escape bug fixed, also fixes long-standing
+      debugger "Search RAM" Escape lockup
+
+  * Efficiency improvements:
+    - Serializer completely reworked; much faster state save/load,
+      buffered file writes
+    - ZIP handler reworked: zero-copy reads, no per-read allocations,
+      better caching. Also fixed a critical bug where data was read 8 bytes
+      at a time instead of in bulk
+    - TIA rendering; eliminated per-pixel multiplies and divides in hot path
+    - LinkedObjectPool switched from std::list to std::vector (cache-friendly)
+    - PNGLibrary; zero-copy loading implemented
+    - JPGLibrary; files now loaded once (previously loaded twice: once for
+      image, once for metadata)
+    - Settings class switched to unordered_map
+    - Bankswitch class reworked to use std::array + binary search
+    - Props/PropsSet modernized; binary search, faster copy/move
+    - Multiple internal maps converted from std::map to std::unordered_map
+      (Debugger, CheatManager, FavoritesManager, GlobalKeyHandler, PropsSet,
+      FBBackend)
+    - JoyMap switched from unordered_map to sorted vector with binary search
+      (faster for sizes involved)
 
   * Added option for switching Stella's theme in sync with OS.
 
@@ -27,16 +77,46 @@
 
   * Added developer option for disabling PlusROM support.
 
+  * ASCII folding; non-ASCII characters in filenames and directories
+    (including Greek, Cyrillic, Latin Extended) are folded to ASCII
+    equivalents in the UI.
+
   * For the Windows port:
-    - Added support for UTF-16 filenames, allowing such files to be
-      properly loaded and saved in Stella.
+    - FSNodeWINDOWS now uses UTF-16 internally; fixes corruption with
+      non-ASCII filenames and user directories
 
   * For the Mac port:
-    - Minimum OS version is macOS 26, and compilation requires Xcode 26.
+    - Minimum OS version is macOS 26, and compilation requires Xcode 26;
+      future releases will likely be ARM-only
+    - AboutBox removed; going forward, all UI's will be in Stella directly
+    - ROM drag-and-drop onto the Stella app icon now supported
 
   * For the Linux/UNIX port:
-    - Minimum supported compilers are g++-13 and Clang 19.
+    - Minimum supported compilers are g++-13 and Clang 19
+    - XDGPaths class added; centralizes home/appdir resolution following
+      XDG spec
     - Implemented -baseinappdir (previously Windows-only feature)
+    - Wayland/HiDPI improvements due to SDL3
+
+  * For the libretro port:
+    - RetroAchievements; basic support added
+    - KidVid WAV playback; libretro port can now play WAV files for KidVid
+      carts (files go in saves/stella/)
+    - Keyboard/Keypad controller handling added
+    - Expanded controller list in RetroArch UI with documentation
+    - Core options v2 categories with legacy fallback
+    - FSNodeLIBRETRO rewritten as a proper FSNode implementation; fixes
+      file load/save issues
+    - Android 16 KB page support (#1148)
+    - webOS added to CI (#1129)
+    - Savestates fixed (was saving all zeroes, loading past end of data)
+    - OSD messaging from Stella routed to libretro core
+    - Fast-forward audio suppression
+    - NVRAM path set to saves/stella/nvram/
+
+  * Removed R77 port; SDL3 not supported on that platform.
+
+  * Updated included libraries (libpng, zlib, etc) to latest stable version.
 
 -Have fun!
 
