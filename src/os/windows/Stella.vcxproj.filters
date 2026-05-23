@@ -1257,6 +1257,12 @@
     <ClCompile Include="..\..\debugger\gui\CartDevCardWidget.cxx">
       <Filter>Source Files\debugger\gui</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\emucore\FBMessageHandler.cxx">
+      <Filter>Source Files\emucore</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\debugger\yacc\stella.tab.cxx">
+      <Filter>Source Files\debugger\yacc</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\emucore\AtariVox.hxx">
@@ -2587,6 +2593,12 @@
     </ClInclude>
     <ClInclude Include="..\..\debugger\gui\CartDevCardWidget.hxx">
       <Filter>Header Files\debugger\gui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\emucore\FBMessageHandler.hxx">
+      <Filter>Header Files\emucore</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\debugger\yacc\stella.tab.hxx">
+      <Filter>Header Files\debugger\yacc</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
