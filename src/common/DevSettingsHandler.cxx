@@ -74,6 +74,9 @@ void DevSettingsHandler::loadSettings(SettingsSet set)
   myPlLateHMove[set] = devSettings ? settings.getBool("dev.tia.pllatehmove") : false;
   myMsLateHMove[set] = devSettings ? settings.getBool("dev.tia.mslatehmove") : false;
   myBlLateHMove[set] = devSettings ? settings.getBool("dev.tia.bllatehmove") : false;
+  myPlLateRespx[set] = devSettings ? settings.getBool("dev.tia.pllaterespx") : false;
+  myMsLateRespx[set] = devSettings ? settings.getBool("dev.tia.mslaterespx") : false;
+  myBlLateRespx[set] = devSettings ? settings.getBool("dev.tia.bllaterespx") : false;
   myPFBits[set] = devSettings ? settings.getBool("dev.tia.delaypfbits") : false;
   myPFColor[set] = devSettings ? settings.getBool("dev.tia.delaypfcolor") : false;
   myPFScore[set] = devSettings ? settings.getBool("dev.tia.pfscoreglitch") : false;
@@ -149,6 +152,9 @@ void DevSettingsHandler::saveSettings(SettingsSet set)
       settings.setValue("dev.tia.pllatehmove", myPlLateHMove[set]);
       settings.setValue("dev.tia.mslatehmove", myMsLateHMove[set]);
       settings.setValue("dev.tia.bllatehmove", myBlLateHMove[set]);
+      settings.setValue("dev.tia.pllaterespx", myPlLateRespx[set]);
+      settings.setValue("dev.tia.mslaterespx", myMsLateRespx[set]);
+      settings.setValue("dev.tia.bllaterespx", myBlLateRespx[set]);
       settings.setValue("dev.tia.delaypfbits", myPFBits[set]);
       settings.setValue("dev.tia.delaypfcolor", myPFColor[set]);
       settings.setValue("dev.tia.pfscoreglitch", myPFScore[set]);
@@ -218,6 +224,9 @@ void DevSettingsHandler::applySettings(SettingsSet set)
     tia.setPlShortLateHMove(myPlLateHMove[set]);
     tia.setMsShortLateHMove(myMsLateHMove[set]);
     tia.setBlShortLateHMove(myBlLateHMove[set]);
+    tia.setPlLateRespx(myPlLateRespx[set]);
+    tia.setMsLateRespx(myMsLateRespx[set]);
+    tia.setBlLateRespx(myBlLateRespx[set]);
     tia.setPFBitsDelay(myPFBits[set]);
     tia.setPFColorDelay(myPFColor[set]);
     tia.setPFScoreGlitch(myPFScore[set]);

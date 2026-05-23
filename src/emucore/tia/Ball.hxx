@@ -58,7 +58,7 @@ class Ball : public Serializable
     /**
       RESBL write.
      */
-    void resbl(uInt8 counter);
+    void resbl(uInt8 counter, bool lateRespxCondition = false);
 
     /**
       CTRLPF write.
@@ -109,6 +109,7 @@ class Ball : public Serializable
      */
     void setInvertedPhaseClock(bool enable);
     void setShortLateHMove(bool enable);
+    void setLateRespx(bool enable);
 
     /**
       Start movement --- this is triggered by strobing HMOVE.
@@ -325,6 +326,7 @@ class Ball : public Serializable
     bool myUseInvertedPhaseClock{false};
 
     bool myUseShortLateHMove{false};
+    bool myUseLateRespx{false};
 
     /**
       TIA instance. Required for flushing the line cache and requesting collision updates.

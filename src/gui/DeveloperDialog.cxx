@@ -294,6 +294,8 @@ void DeveloperDialog::addTiaTab(const GUI::Font& font)
   VarList::push_back(items, "Glitched Indy 500 menu", "indy500");
   VarList::push_back(items, "Glitched He-Man title", "heman");
   VarList::push_back(items, "Shifted flashcart menu", "flashmenu");
+  VarList::push_back(items, "Glitched Light Sixer", "lightsixer");
+  VarList::push_back(items, "Glitched Jr. missiles", "juniorbug");
   VarList::push_back(items, "Custom", "custom");
   myTIATypeWidget = new PopUpWidget(myTab, font, HBORDER + INDENT, ypos - 1,
                                     pwidth, lineHeight, items, "Chip type ", 0, kTIAType);
@@ -338,6 +340,24 @@ void DeveloperDialog::addTiaTab(const GUI::Font& font)
   myBlLateHMoveWidget = new CheckboxWidget(myTab, font, myMsLateHMoveWidget->getRight() + fontWidth() * 2.5,
                                            ypos + 1, "Ball");
   wid.push_back(myBlLateHMoveWidget);
+  ypos += lineHeight + VGAP * 1;
+
+  myLateRespxLabel = new StaticTextWidget(myTab, font, HBORDER + INDENT * 2, ypos + 1,
+                                          "Late RESPx for");
+  myLateRespxLabel->setToolTip("RESP/RESM/RESBL strobed during HBLANK at HMOVE start shifts object 1 pixel right");
+  wid.push_back(myLateRespxLabel);
+  ypos += lineHeight + VGAP * 1;
+
+  myPlLateRespxWidget = new CheckboxWidget(myTab, font, HBORDER + INDENT * 3, ypos + 1, "Players");
+  wid.push_back(myPlLateRespxWidget);
+
+  myMsLateRespxWidget = new CheckboxWidget(myTab, font, myPlLateRespxWidget->getRight() + fontWidth() * 2.5,
+                                           ypos + 1, "Missiles");
+  wid.push_back(myMsLateRespxWidget);
+
+  myBlLateRespxWidget = new CheckboxWidget(myTab, font, myMsLateRespxWidget->getRight() + fontWidth() * 2.5,
+                                           ypos + 1, "Ball");
+  wid.push_back(myBlLateRespxWidget);
   ypos += lineHeight + VGAP * 1;
 
   myPlayfieldLabel = new StaticTextWidget(myTab, font, HBORDER + INDENT * 2, ypos + 1,
@@ -759,6 +779,9 @@ void DeveloperDialog::getWidgetStates(SettingsSet set)
   myPlLateHMove[set] = myPlLateHMoveWidget->getState();
   myMsLateHMove[set] = myMsLateHMoveWidget->getState();
   myBlLateHMove[set] = myBlLateHMoveWidget->getState();
+  myPlLateRespx[set] = myPlLateRespxWidget->getState();
+  myMsLateRespx[set] = myMsLateRespxWidget->getState();
+  myBlLateRespx[set] = myBlLateRespxWidget->getState();
   myPFBits[set] = myPFBitsWidget->getState();
   myPFColor[set] = myPFColorWidget->getState();
   myPFScore[set] = myPFScoreWidget->getState();
@@ -1191,6 +1214,10 @@ void DeveloperDialog::handleTia()
   myPlLateHMoveWidget->setEnabled(enable);
   myMsLateHMoveWidget->setEnabled(enable);
   myBlLateHMoveWidget->setEnabled(enable);
+  myLateRespxLabel->setEnabled(enable);
+  myPlLateRespxWidget->setEnabled(enable);
+  myMsLateRespxWidget->setEnabled(enable);
+  myBlLateRespxWidget->setEnabled(enable);
   myPlayfieldLabel->setEnabled(enable);
   myBackgroundLabel->setEnabled(enable);
   myPFBitsWidget->setEnabled(enable);
@@ -1211,6 +1238,9 @@ void DeveloperDialog::handleTia()
     myPlLateHMoveWidget->setState(myPlLateHMove[set]);
     myMsLateHMoveWidget->setState(myMsLateHMove[set]);
     myBlLateHMoveWidget->setState(myBlLateHMove[set]);
+    myPlLateRespxWidget->setState(myPlLateRespx[set]);
+    myMsLateRespxWidget->setState(myMsLateRespx[set]);
+    myBlLateRespxWidget->setState(myBlLateRespx[set]);
     myPFBitsWidget->setState(myPFBits[set]);
     myPFColorWidget->setState(myPFColor[set]);
     myPFScoreWidget->setState(myPFScore[set]);
@@ -1226,6 +1256,10 @@ void DeveloperDialog::handleTia()
     myPlLateHMoveWidget->setState(BSPF::equalsIgnoreCase("flashmenu", tiaType));
     myMsLateHMoveWidget->setState(false);
     myBlLateHMoveWidget->setState(false);
+    myPlLateRespxWidget->setState(BSPF::equalsIgnoreCase("lightsixer", tiaType));
+    myMsLateRespxWidget->setState(BSPF::equalsIgnoreCase("lightsixer", tiaType) ||
+                                  BSPF::equalsIgnoreCase("juniorbug", tiaType));
+    myBlLateRespxWidget->setState(BSPF::equalsIgnoreCase("lightsixer", tiaType));
     myPFBitsWidget->setState(BSPF::equalsIgnoreCase("pesco", tiaType));
     myPFColorWidget->setState(BSPF::equalsIgnoreCase("quickstep", tiaType));
     myPFScoreWidget->setState(BSPF::equalsIgnoreCase("matchie", tiaType));

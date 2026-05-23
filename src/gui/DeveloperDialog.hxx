@@ -116,6 +116,11 @@ class DeveloperDialog : public Dialog, DevSettingsHandler
     CheckboxWidget*     myMsLateHMoveWidget{nullptr};
     CheckboxWidget*     myBlLateHMoveWidget{nullptr};
 
+    StaticTextWidget*   myLateRespxLabel{nullptr};
+    CheckboxWidget*     myPlLateRespxWidget{nullptr};
+    CheckboxWidget*     myMsLateRespxWidget{nullptr};
+    CheckboxWidget*     myBlLateRespxWidget{nullptr};
+
     StaticTextWidget*   myPlayfieldLabel{nullptr};
     CheckboxWidget*     myPFBitsWidget{nullptr};
     CheckboxWidget*     myPFColorWidget{nullptr};

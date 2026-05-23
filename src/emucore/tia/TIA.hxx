@@ -545,6 +545,27 @@ class TIA : public Device
     void setBlShortLateHMove(bool enable);
 
     /**
+      Enables/disables late RESPx for players.
+
+      @param enable   Whether to enable late RESPx for players
+    */
+    void setPlLateRespx(bool enable);
+
+    /**
+      Enables/disables late RESPx for missiles.
+
+      @param enable   Whether to enable late RESPx for missiles
+    */
+    void setMsLateRespx(bool enable);
+
+    /**
+      Enables/disables late RESPx for ball.
+
+      @param enable   Whether to enable late RESPx for ball
+    */
+    void setBlLateRespx(bool enable);
+
+    /**
       This method should be called to update the TIA with a new scanline.
     */
     TIA& updateScanline();

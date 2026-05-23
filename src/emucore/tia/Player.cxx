@@ -48,6 +48,7 @@ void Player::reset()
   myInvertedPhaseClock = false;
   myUseInvertedPhaseClock = false;
   myUseShortLateHMove = false;
+  myUseLateRespx = false;
   myPattern = 0;
 
   setDivider(1);
@@ -171,8 +172,11 @@ void Player::nusiz(uInt8 value, bool hblank)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Player::resp(uInt8 counter)
+void Player::resp(uInt8 counter, bool lateRespxCondition)
 {
+  if (myUseLateRespx && lateRespxCondition)
+    counter = (counter + TIAConstants::H_PIXEL - 1) % TIAConstants::H_PIXEL;
+
   myCounter = counter;
 
   // This tries to account for the effects of RESP during draw counter decode as
@@ -265,6 +269,12 @@ void Player::setInvertedPhaseClock(bool enable)
 void Player::setShortLateHMove(bool enable)
 {
   myUseShortLateHMove = enable;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Player::setLateRespx(bool enable)
+{
+  myUseLateRespx = enable;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -456,6 +466,7 @@ bool Player::save(Serializer& out) const
     out.putBool(myIsReflected);
     out.putBool(myIsDelaying);
     out.putBool(myInvertedPhaseClock);
+    out.putBool(myUseLateRespx);
   }
   catch(...)
   {
@@ -504,6 +515,7 @@ bool Player::load(Serializer& in)
     myIsReflected = in.getBool();
     myIsDelaying = in.getBool();
     myInvertedPhaseClock = in.getBool();
+    myUseLateRespx = in.getBool();
 
     applyColors();
   }

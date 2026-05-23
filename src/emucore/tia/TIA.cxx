@@ -796,13 +796,15 @@ bool TIA::poke(uInt16 address, uInt8 value)
 
     case RESM0:
       flushLineCache();
-      myMissile0.resm(resxCounter(), myHstate == HState::blank);
+      myMissile0.resm(resxCounter(), myHstate == HState::blank,
+        myHstate == HState::blank && myMovementInProgress && myMovementClock == 0);
       myShadowRegisters[address] = value;
       break;
 
     case RESM1:
       flushLineCache();
-      myMissile1.resm(resxCounter(), myHstate == HState::blank);
+      myMissile1.resm(resxCounter(), myHstate == HState::blank,
+        myHstate == HState::blank && myMovementInProgress && myMovementClock == 0);
       myShadowRegisters[address] = value;
       break;
 
@@ -869,13 +871,15 @@ bool TIA::poke(uInt16 address, uInt8 value)
 
     case RESP0:
       flushLineCache();
-      myPlayer0.resp(resxCounter());
+      myPlayer0.resp(resxCounter(),
+        myHstate == HState::blank && myMovementInProgress && myMovementClock == 0);
       myShadowRegisters[address] = value;
       break;
 
     case RESP1:
       flushLineCache();
-      myPlayer1.resp(resxCounter());
+      myPlayer1.resp(resxCounter(),
+        myHstate == HState::blank && myMovementInProgress && myMovementClock == 0);
       myShadowRegisters[address] = value;
       break;
 
@@ -911,7 +915,8 @@ bool TIA::poke(uInt16 address, uInt8 value)
 
     case RESBL:
       flushLineCache();
-      myBall.resbl(resxCounter());
+      myBall.resbl(resxCounter(),
+        myHstate == HState::blank && myMovementInProgress && myMovementClock == 0);
       myShadowRegisters[address] = value;
       break;
 
@@ -1003,6 +1008,15 @@ void TIA::applyDeveloperSettings()
     setBlShortLateHMove(custom
       ? mySettings.getBool("dev.tia.bllatehmove")
       : false);
+    setPlLateRespx(custom
+      ? mySettings.getBool("dev.tia.pllaterespx")
+      : BSPF::equalsIgnoreCase("lightsixer", tiaType));
+    setMsLateRespx(custom
+      ? mySettings.getBool("dev.tia.mslaterespx")
+      : BSPF::equalsIgnoreCase("lightsixer", tiaType) || BSPF::equalsIgnoreCase("juniorbug", tiaType));
+    setBlLateRespx(custom
+      ? mySettings.getBool("dev.tia.bllaterespx")
+      : BSPF::equalsIgnoreCase("lightsixer", tiaType));
     setPFBitsDelay(custom
       ? mySettings.getBool("dev.tia.delaypfbits")
       : BSPF::equalsIgnoreCase("pesco", tiaType));
@@ -1027,6 +1041,9 @@ void TIA::applyDeveloperSettings()
     setPlInvertedPhaseClock(false);
     setMsInvertedPhaseClock(false);
     setBlInvertedPhaseClock(false);
+    setPlLateRespx(false);
+    setMsLateRespx(false);
+    setBlLateRespx(false);
     setPFBitsDelay(false);
     setPFColorDelay(false);
     myPlayfield.setScoreGlitch(false);
@@ -1948,6 +1965,25 @@ void TIA::setBlShortLateHMove(bool enable)
   myBall.setShortLateHMove(enable);
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TIA::setPlLateRespx(bool enable)
+{
+  myPlayer0.setLateRespx(enable);
+  myPlayer1.setLateRespx(enable);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TIA::setMsLateRespx(bool enable)
+{
+  myMissile0.setLateRespx(enable);
+  myMissile1.setLateRespx(enable);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TIA::setBlLateRespx(bool enable)
+{
+  myBall.setLateRespx(enable);
+}
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TIA::delayedWrite(uInt8 address, uInt8 value)

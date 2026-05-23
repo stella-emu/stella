@@ -46,6 +46,7 @@ void Ball::reset()
   myInvertedPhaseClock = false;
   myUseInvertedPhaseClock = false;
   myUseShortLateHMove = false;
+  myUseLateRespx = false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -69,8 +70,11 @@ void Ball::hmbl(uInt8 value)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Ball::resbl(uInt8 counter)
+void Ball::resbl(uInt8 counter, bool lateRespxCondition)
 {
+  if (myUseLateRespx && lateRespxCondition)
+    counter = (counter + TIAConstants::H_PIXEL - 1) % TIAConstants::H_PIXEL;
+
   myCounter = counter;
 
   myIsRendering = true;
@@ -158,6 +162,12 @@ void Ball::setInvertedPhaseClock(bool enable)
 void Ball::setShortLateHMove(bool enable)
 {
   myUseShortLateHMove = enable;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Ball::setLateRespx(bool enable)
+{
+  myUseLateRespx = enable;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -275,6 +285,7 @@ bool Ball::save(Serializer& out) const
     out.putBool(myIsRendering);
     out.putByte(myRenderCounter);
     out.putBool(myInvertedPhaseClock);
+    out.putBool(myUseLateRespx);
   }
   catch(...)
   {
@@ -316,6 +327,7 @@ bool Ball::load(Serializer& in)
     myIsRendering = in.getBool();
     myRenderCounter = in.getByte();
     myInvertedPhaseClock = in.getBool();
+    myUseLateRespx = in.getBool();
 
     applyColors();
   }

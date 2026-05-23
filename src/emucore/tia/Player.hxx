@@ -66,7 +66,7 @@ class Player : public Serializable
     /**
       RESP0/1 write: reset the horizontal position counter.
      */
-    void resp(uInt8 counter);
+    void resp(uInt8 counter, bool lateRespxCondition = false);
 
     /**
       REFP0/1 write: bit 3 reflects the player graphics horizontally.
@@ -119,6 +119,13 @@ class Player : public Serializable
       Enable/disable the "short late HMOVE" quirk.
      */
     void setShortLateHMove(bool enable);
+
+    /**
+      Enable/disable the "late RESPx" quirk. When active and HMOVE has just
+      started (first motion tick not yet fired), RESP shifts the sprite one
+      pixel to the right (Light Sixer behavior).
+     */
+    void setLateRespx(bool enable);
 
     /**
       Called when HMOVE is strobed: arm the movement counter.
@@ -289,6 +296,8 @@ class Player : public Serializable
     bool myUseInvertedPhaseClock{false};
     // Whether the short late HMOVE quirk is active
     bool myUseShortLateHMove{false};
+    // Whether the late RESPx quirk is active
+    bool myUseLateRespx{false};
 
     // Required for flushing the line cache and requesting collision updates
     TIA* myTIA{nullptr};

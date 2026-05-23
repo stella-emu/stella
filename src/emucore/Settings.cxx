@@ -299,6 +299,9 @@ Settings::Settings()
   setPermanent("dev.tia.pllatehmove", "true");
   setPermanent("dev.tia.mslatehmove", "true");
   setPermanent("dev.tia.bllatehmove", "true");
+  setPermanent("dev.tia.pllaterespx", "false");
+  setPermanent("dev.tia.mslaterespx", "false");
+  setPermanent("dev.tia.bllaterespx", "false");
   setPermanent("dev.tia.delaypfbits", "true");
   setPermanent("dev.tia.delaypfcolor", "true");
   setPermanent("dev.tia.pfscoreglitch", "true");
@@ -763,6 +766,9 @@ void Settings::usage()
     << "  -dev.tia.mslatehmove   <1|0>      Enable short late HMOVE for\n"
     << "                                    missiles\n"
     << "  -dev.tia.bllatehmove   <1|0>      Enable short late HMOVE for ball\n"
+    << "  -dev.tia.pllaterespx   <1|0>      Enable late RESPx for players\n"
+    << "  -dev.tia.mslaterespx   <1|0>      Enable late RESPx for missiles\n"
+    << "  -dev.tia.bllaterespx   <1|0>      Enable late RESPx for ball\n"
     << "  -dev.tia.delaypfbits   <1|0>      Enable extra delay cycle for PF bits access\n"
     << "  -dev.tia.delaypfcolor  <1|0>      Enable extra delay cycle for PF color\n"
     << "  -dev.tia.pfscoreglitch <1|0>      Enable PF score mode color glitch\n"

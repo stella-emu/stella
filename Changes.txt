@@ -29,7 +29,7 @@
     (issue #1149).
 
   * Added support for CompuMate cassette load/save for binary images;
-    WAV load support may be added in a future release.
+    WAV load support may be added in a future release (issue# 79).
 
   * Paddle / Driving Controller; extra buttons added for both left and
     right paddle.
@@ -42,8 +42,10 @@
     equivalents in the UI (issue #1051, #1054, #1084, #1133).
 
   * Emulation accuracy:
-    - Implemented proper RESMP0 and RESMP1 behaviour (issue #213)
+    - Implemented more accurate RESMP0/RESMP1 behaviour (issue #213)
     - Implemented proper PA7 behaviour in M6532 (issue #108)
+    - Implemented 'Late RESPx' behaviour exhibited on some consoles
+      (Light sixer, Jr.) (issue #699)
     - Properly initialise HMxy shadow registers
     - Enhanced VSYNC emulation, considers VBLANK now too
     - Enhanced PAL-60 detection, searches for signature (e.g. PAL60)

@@ -62,7 +62,7 @@ class Missile : public Serializable
     /**
       RESM0/1 write: reset the horizontal position counter.
      */
-    void resm(uInt8 counter, bool hblank);
+    void resm(uInt8 counter, bool hblank, bool lateRespxCondition = false);
 
     /**
       RESMP0/1 write: when bit 1 is set, lock the missile position to its
@@ -116,6 +116,11 @@ class Missile : public Serializable
       Enable/disable the "short late HMOVE" quirk.
      */
     void setShortLateHMove(bool enable);
+
+    /**
+      Enable/disable the "late RESPx" quirk.
+     */
+    void setLateRespx(bool enable);
 
     /**
       Enable/disable collision detection (debugging only).
@@ -250,6 +255,8 @@ class Missile : public Serializable
     bool myUseInvertedPhaseClock{false};
     // Whether the short late HMOVE quirk is active
     bool myUseShortLateHMove{false};
+    // Whether the late RESPx quirk is active
+    bool myUseLateRespx{false};
 
     // Required for flushing the line cache and requesting collision updates
     TIA *myTIA{nullptr};
