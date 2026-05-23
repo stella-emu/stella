@@ -957,10 +957,13 @@ void OSystem::mainLoop()
       // Dispatch emulation and render frame (if applicable)
       timesliceSeconds = dispatchEmulation(emulationWorker);
     #ifdef IMAGE_SUPPORT
-      if(mySnapshotFrames > 0 && --mySnapshotFrames == 0) [[unlikely]]
+      if(mySnapshotFrames > 0) [[unlikely]]
       {
-        myPNGLib->takeSnapshot();
-        myQuitLoop = true;
+        if(--mySnapshotFrames == 0)
+        {
+          myPNGLib->takeSnapshot();
+          myQuitLoop = true;
+        }
       }
     #endif
     }

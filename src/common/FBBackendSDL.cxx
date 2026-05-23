@@ -128,7 +128,7 @@ void FBBackendSDL::queryHardware(std::unordered_map<uInt32, Common::Size>& fulls
                          isDesktopMode ? "* " : "  ");
     }
     Logger::debug(log);
-    SDL_free(modes);
+    SDL_free(static_cast<void*>(modes));
   }
   SDL_free(displays);
 
@@ -420,7 +420,7 @@ bool FBBackendSDL::adaptRefreshRate(SDL_DisplayID displayId,
       adapt = true;
     }
   }
-  SDL_free(modes);
+  SDL_free(static_cast<void*>(modes));
 
   // Only change if the display supports a better refresh rate
   return adapt;

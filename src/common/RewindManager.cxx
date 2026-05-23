@@ -50,11 +50,13 @@ void RewindManager::setup()
       myOSystem.settings().getInt(prefix + "tm.uncompressed"), 0, mySize);
 
   myInterval = INTERVAL_CYCLES[0];
+  // NOLINTNEXTLINE(readability-qualified-auto)
   if(const auto it = std::ranges::find(INT_SETTINGS, myOSystem.settings().getString(prefix + "tm.interval"));
      it != INT_SETTINGS.end())
     myInterval = INTERVAL_CYCLES[std::distance(INT_SETTINGS.begin(), it)];
 
   myHorizon = HORIZON_CYCLES[NUM_HORIZONS-1];
+  // NOLINTNEXTLINE(readability-qualified-auto)
   if(const auto it = std::ranges::find(HOR_SETTINGS, myOSystem.settings().getString(prefix + "tm.horizon"));
      it != HOR_SETTINGS.end())
     myHorizon = HORIZON_CYCLES[std::distance(HOR_SETTINGS.begin(), it)];

@@ -488,7 +488,7 @@ void TimeMachineDialog::initBar()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string TimeMachineDialog::getTimeString(uInt64 cycles, size_t scanlines) const
+string TimeMachineDialog::getTimeString(uInt64 cycles, size_t scanlines)
 {
   const bool isNTSC = scanlines <= 287;
   constexpr size_t NTSC_FREQ = 1193182; // ~76*262*60

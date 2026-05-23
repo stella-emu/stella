@@ -38,10 +38,6 @@
 
 using Common::Base;
 using std::hex;
-using std::setfill;
-using std::setw;
-using std::left;
-using std::right;
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartDebug::CartDebug(Debugger& dbg, Console& console, const OSystem& osystem)
@@ -622,7 +618,7 @@ string CartDebug::uniqueLabel(const string& label)
   string uniqueLabel = label;
   int count = 0;
 
-  while(myUserAddresses.find(uniqueLabel) != myUserAddresses.end())
+  while(myUserAddresses.contains(uniqueLabel))
     uniqueLabel = std::format("{}.{}", label, ++count);
 
   return uniqueLabel;

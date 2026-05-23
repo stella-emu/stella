@@ -2348,7 +2348,7 @@ int EventHandler::getEmulActionListIndex(int idx, const Event::EventSet& events)
 {
   // idx = index into intersection set of 'events' and 'ourEmulActionList'
   //   ordered by 'ourEmulActionList'!
-  for(int i = 0; i < static_cast<int>(ourEmulActionList.size()); ++i)
+  for(int i = 0; std::cmp_less(i, ourEmulActionList.size()); ++i)
     if(events.contains(ourEmulActionList[i].event) && --idx < 0)
       return i;
 
