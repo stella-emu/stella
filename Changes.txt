@@ -18,7 +18,7 @@
     version of SDL provides.
 
   * Added support for 'EFF' bankswitching (Bruce-Robert Pocock) for
-    Grizzards, as well as auto-detection of this format.  The board
+    Grizzards, as well as auto-detection of this format.  This board
     features a 2 KiB save-to-cartridge EEPROM (MicroChip 24LC family)
     connected via I²C, identical in interface to the AtariVox/SaveKey.
 
@@ -29,10 +29,22 @@
   * Added support for CompuMate cassette load/save for binary images;
     WAV load support may be added in a future release.
 
-  * Implemented proper PA7 behavior in M6532.
-
   * Paddle / Driving Controller; extra buttons added for both left and
     right paddle.
+
+  * Added option for switching Stella's theme in sync with OS.
+
+  * ASCII folding; non-ASCII characters in filenames and directories
+    (including Greek, Cyrillic, Latin Extended) are folded to ASCII
+    equivalents in the UI.
+
+  * Emulation accuracy:
+    - Implemented proper PA7 behaviour in M6532
+    - Properly initialise HMxy shadow registers
+    - Enhanced VSYNC emulation, considers VBLANK now too
+    - Enhanced PAL-60 detection, searches for signature (e.g. PAL60) in ROM
+    - PAL gray colors; aligned gray colors in the standard PAL palette
+    - 3E hotspot mirrors; added missing mirrors to 3E hotspot handling
 
   * Debugger improvements:
     - dbg.logexec; new option to log debugger script execution output
@@ -42,48 +54,36 @@
     - CPU register address tracking improved; better display of addresses
       in CPU registers
     - Duplicate label warning; debugger now warns when a label is defined
-      that already exists.
+      that already exists
     - resMP1() display bug fixed in the debugger output
-    - Yacc/Bison code converted to modern C++
+    - Yacc/Bison (debugger parsing) code converted to modern C++
     - Uppercase hex setting was not being saved; fixed
     - Cheat code dialog; double-Escape bug fixed, also fixes long-standing
       debugger "Search RAM" Escape lockup
+    - Added developer option for disabling PlusROM support
 
   * Efficiency improvements:
     - Serializer completely reworked; much faster state save/load,
       buffered file writes
-    - ZIP handler reworked: zero-copy reads, no per-read allocations,
-      better caching. Also fixed a critical bug where data was read 8 bytes
+    - ZIP handler reworked; zero-copy reads, no per-read allocations,
+      better caching, fixed a critical bug where data was read 8 bytes
       at a time instead of in bulk
     - TIA rendering; eliminated per-pixel multiplies and divides in hot path
     - LinkedObjectPool switched from std::list to std::vector (cache-friendly)
     - PNGLibrary; zero-copy loading implemented
     - JPGLibrary; files now loaded once (previously loaded twice: once for
       image, once for metadata)
-    - Settings class switched to unordered_map
     - Bankswitch class reworked to use std::array + binary search
     - Props/PropsSet modernized; binary search, faster copy/move
     - Multiple internal maps converted from std::map to std::unordered_map
       (Debugger, CheatManager, FavoritesManager, GlobalKeyHandler, PropsSet,
-      FBBackend)
-    - JoyMap switched from unordered_map to sorted vector with binary search
-      (faster for sizes involved)
-
-  * Added option for switching Stella's theme in sync with OS.
-
-  * Enhanced PAL-60 detection, searches for signature (e.g. PAL60) in ROM.
-
-  * Enhanced VSYNC emulation, considers VBLANK now too.
-
-  * Added developer option for disabling PlusROM support.
-
-  * ASCII folding; non-ASCII characters in filenames and directories
-    (including Greek, Cyrillic, Latin Extended) are folded to ASCII
-    equivalents in the UI.
+      FBBackend. Settings)
+    - Keymap and JoyMap switched from unordered_map to sorted vector with
+      binary search (faster for sizes involved)
 
   * For the Windows port:
-    - FSNodeWINDOWS now uses UTF-16 internally; fixes corruption with
-      non-ASCII filenames and user directories
+    - FSNodeWINDOWS now uses UTF-16 internally; fixes corruption and not
+      saving to correct directories with non-ASCII filenames
 
   * For the Mac port:
     - Minimum OS version is macOS 26, and compilation requires Xcode 26;
@@ -102,13 +102,13 @@
     - RetroAchievements; basic support added
     - KidVid WAV playback; libretro port can now play WAV files for KidVid
       carts (files go in saves/stella/)
-    - Keyboard/Keypad controller handling added
+    - Keyboard/Keypad controller handling added; Star Raiders now playable
     - Expanded controller list in RetroArch UI with documentation
     - Core options v2 categories with legacy fallback
     - FSNodeLIBRETRO rewritten as a proper FSNode implementation; fixes
       file load/save issues
-    - Android 16 KB page support (#1148)
-    - webOS added to CI (#1129)
+    - Android 16 KB page support
+    - webOS added to CI
     - Savestates fixed (was saving all zeroes, loading past end of data)
     - OSD messaging from Stella routed to libretro core
     - Fast-forward audio suppression
