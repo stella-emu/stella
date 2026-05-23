@@ -28,7 +28,7 @@ class FBSurface;
 
 /**
   This class implements a thin wrapper around the nanojpeg library, and
-  abstracts all the irrelevant details other loading an actual image.
+  abstracts all the irrelevant details of loading an actual image.
 
   @author  Thomas Jentzsch
 */

@@ -17,6 +17,9 @@
 
 #ifdef IMAGE_SUPPORT
 
+#include <bit>
+#include <fstream>
+
 #include "OSystem.hxx"
 #include "Console.hxx"
 #include "FrameBuffer.hxx"
@@ -26,6 +29,39 @@
 #include "TIASurface.hxx"
 #include "Version.hxx"
 #include "PNGLibrary.hxx"
+
+namespace {
+  template<typename Fn>
+  struct ScopeExit {
+    explicit ScopeExit(Fn f) : myFn{std::move(f)} {}
+    ~ScopeExit() { myFn(); }
+    ScopeExit(const ScopeExit&) = delete;
+    ScopeExit(ScopeExit&&) = delete;
+    ScopeExit& operator=(const ScopeExit&) = delete;
+    ScopeExit& operator=(ScopeExit&&) = delete;
+  private:
+    Fn myFn;
+  };
+
+  void png_read_data(png_structp ctx, png_bytep area, png_size_t size) {
+    (static_cast<std::ifstream*>(png_get_io_ptr(ctx)))->read(
+                                 reinterpret_cast<char*>(area), size);
+  }
+  void png_write_data(png_structp ctx, png_bytep area, png_size_t size) {
+    (static_cast<std::ofstream*>(png_get_io_ptr(ctx)))->write(
+                                 reinterpret_cast<const char*>(area), size);
+  }
+  void png_io_flush(png_structp ctx) {
+    (static_cast<std::ofstream*>(png_get_io_ptr(ctx)))->flush();
+  }
+  void png_user_warn(png_structp, png_const_charp str) {
+    // Optional: log, but DO NOT throw
+    cerr << "libpng warning: " << str << '\n';
+  }
+  [[noreturn]] void png_user_error(png_structp, png_const_charp msg) {
+    throw std::runtime_error(msg);
+  }
+}  // namespace
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 PNGLibrary::PNGLibrary(OSystem& osystem)
@@ -40,26 +76,14 @@ void PNGLibrary::loadImage(string_view filename, FBSurface& surface,
   png_structp png_ptr{nullptr};
   png_infop info_ptr{nullptr};
 
-  // RAII guard: ensures png read struct is always destroyed on scope exit
-  struct PNGReadGuard {
-    png_structp& png_ptr;
-    png_infop&   info_ptr;
-    PNGReadGuard(png_structp& sp, png_infop& info) : png_ptr{sp}, info_ptr{info} { }
-    ~PNGReadGuard() {
-      if(png_ptr)
-        png_destroy_read_struct(&png_ptr, info_ptr ? &info_ptr : nullptr, nullptr);
-    }
-    PNGReadGuard(const PNGReadGuard&) = delete;
-    PNGReadGuard(PNGReadGuard&&) = delete;
-    PNGReadGuard& operator=(const PNGReadGuard&) = delete;
-    PNGReadGuard& operator=(PNGReadGuard&&) = delete;
-  };
-
   auto in = FSNode(filename).openIFStream(std::ios_base::binary);
   if(!in.is_open())
     throw std::runtime_error("No image found");
 
-  const PNGReadGuard guard{png_ptr, info_ptr};
+  const ScopeExit pngGuard{[&]() {
+    if(png_ptr)
+      png_destroy_read_struct(&png_ptr, info_ptr ? &info_ptr : nullptr, nullptr);
+  }};
 
   // Create the PNG loading context structure
   png_ptr = png_create_read_struct(PNG_LIBPNG_VER_STRING, nullptr,
@@ -117,7 +141,7 @@ void PNGLibrary::loadImage(string_view filename, FBSurface& surface,
   uInt32  pitch{0};
   surface.basePtr(base, pitch);
 
-  const uInt32 rowStride = pitch * sizeof(uInt32);
+  const size_t rowStride = pitch * sizeof(uInt32);
 
   // And read directly into the surface buffer
   auto* row = reinterpret_cast<png_bytep>(base);
@@ -145,22 +169,10 @@ void PNGLibrary::saveImage(string_view filename, const FBSurface& surface,
   png_structp png_ptr{nullptr};
   png_infop info_ptr{nullptr};
 
-  // RAII guard: ensures png write struct is always destroyed on scope exit
-  struct PNGWriteGuard {
-    png_structp& png_ptr;
-    png_infop&   info_ptr;
-    PNGWriteGuard(png_structp& sp, png_infop& info) : png_ptr{sp}, info_ptr{info} { }
-    ~PNGWriteGuard() {
-      if(png_ptr)
-        png_destroy_write_struct(&png_ptr, &info_ptr);
-    }
-    PNGWriteGuard(const PNGWriteGuard&) = delete;
-    PNGWriteGuard(PNGWriteGuard&&) = delete;
-    PNGWriteGuard& operator=(const PNGWriteGuard&) = delete;
-    PNGWriteGuard& operator=(PNGWriteGuard&&) = delete;
-  };
-
-  const PNGWriteGuard guard{png_ptr, info_ptr};
+  const ScopeExit pngGuard{[&]() {
+    if(png_ptr)
+      png_destroy_write_struct(&png_ptr, &info_ptr);
+  }};
 
   // Create the PNG saving context structure
   png_ptr = png_create_write_struct(PNG_LIBPNG_VER_STRING, nullptr,
@@ -239,8 +251,8 @@ void PNGLibrary::saveImage(string_view filename, const FBSurface& surface,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PNGLibrary::updateTime(uInt64 time)
 {
-  if(mySnapInterval > 0 && ++mySnapCounter % mySnapInterval == 0)
-    takeSnapshot(static_cast<uInt32>(time) >> 10);  // not quite milliseconds, but close enough
+  if(mySnapInterval > 0 && (++mySnapCounter) % mySnapInterval == 0)
+    takeSnapshot(static_cast<uInt32>(time >> 10));  // not quite milliseconds, but close enough
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -249,14 +261,14 @@ void PNGLibrary::toggleContinuousSnapshots(bool perFrame)
   if(mySnapInterval == 0)
   {
     string msg;
-    uInt32 interval = myOSystem.settings().getInt("ssinterval");
+    uInt32 interval{1};
     if(perFrame)
     {
       msg = "Enabling snapshots every frame";
-      interval = 1;
     }
     else
     {
+      interval = myOSystem.settings().getInt("ssinterval");
       msg = std::format("Enabling snapshots in {} second intervals", interval);
       interval *= static_cast<uInt32>(myOSystem.frameRate());
     }
@@ -286,10 +298,11 @@ void PNGLibrary::takeSnapshot(uInt32 number)
     return;
 
   // Figure out the correct snapshot name
+  const bool useIntName = myOSystem.settings().getString("snapname") == "int";
   string filename;
   const string sspath = std::format("{}{}",
       myOSystem.snapshotSaveDir().getPath(),
-      myOSystem.settings().getString("snapname") != "int"
+      !useIntName
         ? myOSystem.romFile().getBaseName()
         : myOSystem.console().properties().get(PropType::Cart_Name));
 
@@ -323,7 +336,7 @@ void PNGLibrary::takeSnapshot(uInt32 number)
   VarList::push_back(metaData, "Title", "Snapshot");
   VarList::push_back(metaData, "Software",
     std::format("{} (Build {}) [{}]", STELLA_FULL_TITLE, STELLA_BUILD, BSPF::ARCH));
-  const string name = (myOSystem.settings().getString("snapname") == "int")
+  const string name = useIntName
       ? string{myOSystem.console().properties().get(PropType::Cart_Name)}
       : myOSystem.romFile().getName();
   VarList::push_back(metaData, "ROM Name", name);
@@ -371,8 +384,7 @@ void PNGLibrary::writeMetaData(png_structp png_ptr, png_infop info_ptr,
   if(numMetaData == 0)
     return;
 
-  std::array<png_text, 16> text_ptr{};  // Assume 16 or fewer metadata entries
-  assert(numMetaData <= text_ptr.size());
+  std::vector<png_text> text_ptr(numMetaData);
   for(size_t i = 0; i < numMetaData; ++i)
   {
     text_ptr[i].key         = const_cast<char*>(metaData[i].first.c_str());

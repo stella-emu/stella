@@ -24,17 +24,29 @@
 #include "FrameBuffer.hxx"
 #include "FBSurface.hxx"
 #include "FSNode.hxx"
-#include "SpanStream.hxx"
 #include "nanojpeg_lib.hxx"
 #include "tinyexif_lib.hxx"
 
 #include "JPGLibrary.hxx"
 
+namespace {
+  template<typename Fn>
+  struct ScopeExit {
+    explicit ScopeExit(Fn f) : myFn{std::move(f)} {}
+    ~ScopeExit() { myFn(); }
+    ScopeExit(const ScopeExit&) = delete;
+    ScopeExit(ScopeExit&&) = delete;
+    ScopeExit& operator=(const ScopeExit&) = delete;
+    ScopeExit& operator=(ScopeExit&&) = delete;
+  private:
+    Fn myFn;
+  };
+}  // namespace
+
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 JPGLibrary::JPGLibrary(OSystem& osystem)
   : myOSystem{osystem}
 {
-  njInit();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -56,33 +68,24 @@ void JPGLibrary::loadImage(string_view filename, FBSurface& surface,
 
   in.seekg(0);
 
-  vector<std::byte> fileBuffer(size);
-  if(!in.read(reinterpret_cast<char*>(fileBuffer.data()),
-              static_cast<std::streamsize>(size)))
+  vector<char> fileBuffer(size);
+  if(!in.read(fileBuffer.data(), static_cast<std::streamsize>(size)))
     throw std::runtime_error{"JPG image data reading failed"};
 
-  // RAII guard: ensures njDone() is always called on scope exit
-  struct NJGuard {
-    NJGuard() = default;
-    ~NJGuard() { njDone(); }
-    NJGuard(const NJGuard&) = delete;
-    NJGuard(NJGuard&&) = delete;
-    NJGuard& operator=(const NJGuard&) = delete;
-    NJGuard& operator=(NJGuard&&) = delete;
-  };
-  const NJGuard guard;
+  const ScopeExit njGuard{njDone};
 
-  if(njDecode(reinterpret_cast<const char*>(fileBuffer.data()),
-              static_cast<int>(size)))
+  if(njDecode(fileBuffer.data(), static_cast<int>(size)))
     throw std::runtime_error{"Error decoding the JPG image"};
 
   // Read the entire image in one go
   const auto width  = static_cast<uInt32>(njGetWidth());
   const auto height = static_cast<uInt32>(njGetHeight());
+  const bool   isColor       = njIsColor() != 0;
+  const size_t bytesPerPixel = isColor ? 3 : 1;
 
   // njGetImage() points into nanojpeg's internal buffer — no extra copy needed
   const ByteSpan pixels{ njGetImage(),
-      static_cast<size_t>(width) * static_cast<size_t>(height) * 3 };
+      static_cast<size_t>(width) * static_cast<size_t>(height) * bytesPerPixel };
 
   if(width > surface.width() || height > surface.height())
     surface.resize(width, height);
@@ -95,7 +98,7 @@ void JPGLibrary::loadImage(string_view filename, FBSurface& surface,
   surface.basePtr(s_buf, s_pitch);
 
   const FrameBuffer& fb = myOSystem.frameBuffer();
-  const size_t  i_pitch = static_cast<size_t>(width) * 3;
+  const size_t  i_pitch = static_cast<size_t>(width) * bytesPerPixel;
   const uInt8*  i_buf   = pixels.data();
 
   // Get the shift values for each colour component
@@ -104,23 +107,24 @@ void JPGLibrary::loadImage(string_view filename, FBSurface& surface,
   const uInt32 bShift = std::countr_zero(fb.bMask());
   const uInt32 aMask  = fb.aMask();
 
-  // Convert RGB triples into pixels and store in the surface
   for(uInt32 irow = 0; irow < height; ++irow, i_buf += i_pitch, s_buf += s_pitch)
   {
     const uInt8* i_ptr = i_buf;
     uInt32*      s_ptr = s_buf;  // NOLINT(misc-const-correctness)
-    for(uInt32 icol = 0; icol < width; ++icol, i_ptr += 3)
-      *s_ptr++ = aMask
-               | (static_cast<uInt32>(i_ptr[0]) << rShift)
-               | (static_cast<uInt32>(i_ptr[1]) << gShift)
-               | (static_cast<uInt32>(i_ptr[2]) << bShift);
+    for(uInt32 icol = 0; icol < width; ++icol, i_ptr += bytesPerPixel)
+    {
+      const uInt32 r = static_cast<uInt32>(i_ptr[0]);
+      const uInt32 g = isColor ? static_cast<uInt32>(i_ptr[1]) : r;
+      const uInt32 b = isColor ? static_cast<uInt32>(i_ptr[2]) : r;
+      *s_ptr++ = aMask | (r << rShift) | (g << gShift) | (b << bShift);
+    }
   }
 
   // Read the meta data we got
   metaData.clear();
-  SpanStream stream{SpanOf<char>{
-      reinterpret_cast<const char*>(fileBuffer.data()), size}};
-  const TinyEXIF::EXIFInfo imageEXIF{stream};
+  const TinyEXIF::EXIFInfo imageEXIF{
+      reinterpret_cast<const uint8_t*>(fileBuffer.data()),
+      static_cast<unsigned>(size)};
   if(imageEXIF.Fields && !imageEXIF.ImageDescription.empty())
     VarList::push_back(metaData, "ImageDescription", imageEXIF.ImageDescription);
 }

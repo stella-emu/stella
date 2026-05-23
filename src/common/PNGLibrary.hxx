@@ -20,8 +20,6 @@
 #ifndef PNG_LIBRARY_HXX
 #define PNG_LIBRARY_HXX
 
-#include <fstream>
-#include <bit>
 #include <png.h>
 
 #include "bspf.hxx"
@@ -131,26 +129,6 @@ class PNGLibrary
     */
     static void readMetaData(png_structp png_ptr, png_infop info_ptr,
                              VariantList& metaData);
-
-    /** PNG library callback functions */
-    static void png_read_data(png_structp ctx, png_bytep area, png_size_t size) {
-      (static_cast<std::ifstream*>(png_get_io_ptr(ctx)))->read(
-                                   reinterpret_cast<char*>(area), size);
-    }
-    static void png_write_data(png_structp ctx, png_bytep area, png_size_t size) {
-      (static_cast<std::ofstream*>(png_get_io_ptr(ctx)))->write(
-                                   reinterpret_cast<const char*>(area), size);
-    }
-    static void png_io_flush(png_structp ctx) {
-      (static_cast<std::ofstream*>(png_get_io_ptr(ctx)))->flush();
-    }
-    static void png_user_warn(png_structp, png_const_charp str) {
-      // Optional: log, but DO NOT throw
-      cerr << "libpng warning: " << str << '\n';
-    }
-    [[noreturn]] static void png_user_error(png_structp, png_const_charp msg) {
-      throw std::runtime_error(msg);
-    }
 
   private:
     // Following constructors and assignment operators not supported
