@@ -230,7 +230,8 @@ uInt8 CartridgeCDF::peek(uInt16 address)
     uInt32 pointer = getDatastreamPointer(myFastJumpStream);
     uInt8 value = 0;
     if (isCDFJplus()) {
-      value = myDisplayImage[ pointer >> 16 ];
+      const uInt32 idx = pointer >> 16;
+      value = (idx < myDisplayImage.size()) ? myDisplayImage[idx] : 0;
       pointer += 0x00010000;  // always increment by 1
     } else {
       value = myDisplayImage[ pointer >> 20 ];
@@ -376,7 +377,9 @@ bool CartridgeCDF::poke(uInt16 address, uInt8 value)
     case 0x0FF0:   // DSWRITE
       pointer = getDatastreamPointer(COMMSTREAM);
       if (isCDFJplus()) {
-        myDisplayImage[ pointer >> 16 ] = value;
+        const uInt32 idx = pointer >> 16;
+        if (idx < myDisplayImage.size())
+          myDisplayImage[idx] = value;
         pointer += 0x00010000;  // always increment by 1 when writing
       } else {
         myDisplayImage[ pointer >> 20 ] = value;
@@ -650,9 +653,11 @@ uInt32 CartridgeCDF::getWaveform(uInt8 index) const
   result -= (0x40000000 + static_cast<uInt32>(2_KB));
 
   if (!isCDFJplus()) {
-    if (result >= 4096) {
+    if (result >= 4096)
       result &= 4095;
-    }
+  } else {
+    if (result >= myDisplayImage.size())
+      result = 0;
   }
   return result;
 }
@@ -688,7 +693,8 @@ uInt8 CartridgeCDF::readFromDatastream(uInt8 index)
   uInt8 value = 0;
   if (isCDFJplus())
   {
-    value = myDisplayImage[ pointer >> 16 ];
+    const uInt32 idx = pointer >> 16;
+    value = (idx < myDisplayImage.size()) ? myDisplayImage[idx] : 0;
     pointer += (increment << 8);
   }
   else

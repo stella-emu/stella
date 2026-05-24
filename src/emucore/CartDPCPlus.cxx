@@ -187,15 +187,36 @@ inline void CartridgeDPCPlus::callFunction(uInt8 value)
       myParameterPointer = 0;
       break;
     case 1: // Copy ROM to fetcher
-      for(int i = 0; std::cmp_less(i, myParameter[3]); ++i)
-        myDisplayImage[myCounters[myParameter[2] & 0x7]+i] = myProgramImage[ROMdata+i];
+    {
+      const uInt16 destBase = myCounters[myParameter[2] & 0x7];
+      if(ROMdata < myProgramImage.size() && destBase < myDisplayImage.size())
+      {
+        const uInt32 count = std::min({
+          static_cast<uInt32>(myParameter[3]),
+          static_cast<uInt32>(myProgramImage.size() - ROMdata),
+          static_cast<uInt32>(myDisplayImage.size() - destBase)
+        });
+        for(uInt32 i = 0; i < count; ++i)
+          myDisplayImage[destBase + i] = myProgramImage[ROMdata + i];
+      }
       myParameterPointer = 0;
       break;
+    }
     case 2: // Copy value to fetcher
-      for(int i = 0; std::cmp_less(i, myParameter[3]); ++i)
-        myDisplayImage[myCounters[myParameter[2]]+i] = myParameter[0];
+    {
+      const uInt16 destBase = myCounters[myParameter[2] & 0x7];
+      if(destBase < myDisplayImage.size())
+      {
+        const uInt32 count = std::min(
+          static_cast<uInt32>(myParameter[3]),
+          static_cast<uInt32>(myDisplayImage.size() - destBase)
+        );
+        for(uInt32 i = 0; i < count; ++i)
+          myDisplayImage[destBase + i] = myParameter[0];
+      }
       myParameterPointer = 0;
       break;
+    }
       // Call user written ARM code (most likely be C compiled for ARM)
     case 254: // call with IRQ driven audio, no special handling needed at this
               // time for Stella as ARM code "runs in zero 6507 cycles".
