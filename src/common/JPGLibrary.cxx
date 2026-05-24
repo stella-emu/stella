@@ -113,9 +113,9 @@ void JPGLibrary::loadImage(string_view filename, FBSurface& surface,
     uInt32*      s_ptr = s_buf;  // NOLINT(misc-const-correctness)
     for(uInt32 icol = 0; icol < width; ++icol, i_ptr += bytesPerPixel)
     {
-      const uInt32 r = static_cast<uInt32>(i_ptr[0]);
-      const uInt32 g = isColor ? static_cast<uInt32>(i_ptr[1]) : r;
-      const uInt32 b = isColor ? static_cast<uInt32>(i_ptr[2]) : r;
+      const auto r = static_cast<uInt32>(i_ptr[0]);
+      const auto g = isColor ? static_cast<uInt32>(i_ptr[1]) : r;
+      const auto b = isColor ? static_cast<uInt32>(i_ptr[2]) : r;
       *s_ptr++ = aMask | (r << rShift) | (g << gShift) | (b << bShift);
     }
   }
