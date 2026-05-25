@@ -27,11 +27,10 @@
 %define parse.error      detailed
 %define parse.assert
 
-// Suppress clang warnings in the Bison-generated implementation file
+// Suppress warnings in the Bison-generated implementation file
 %code top {
-#ifdef __clang__
-#  pragma clang system_header
-#endif
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-but-set-variable"
 }
 
 // Types needed in the generated header (stella.tab.hxx)

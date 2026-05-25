@@ -46,7 +46,7 @@
 #ifndef YY_YY_STELLA_TAB_HXX_INCLUDED
 # define YY_YY_STELLA_TAB_HXX_INCLUDED
 // "%code requires" blocks.
-#line 38 "stella.y"
+#line 37 "stella.y"
 
 // Suppress clang warnings in Bison-generated code
 #ifdef __clang__
