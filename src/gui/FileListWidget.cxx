@@ -35,47 +35,35 @@ FileListWidget::FileListWidget(GuiObject* boss, const GUI::Font& font,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FileListWidget::setDirectory(const FSNode& node, string_view select)
+void FileListWidget::setInitialDirectory(const FSNode& node, string_view select)
 {
   _node = node;
 
-  // We always want a directory listing
-  if(_node.isDirectory())
-    _selectedFile = select;
-  else
-  {
-    // Otherwise, keeping going up in the directory name until a valid
-    // one is found
-    while(!_node.isDirectory() && _node.hasParent())
-      _node = _node.getParent();
-
-    _selectedFile = _node.getName();
-  }
+  // We always want a directory listing, keeping going up a node until
+  // a valid one is found
+  while(!_node.isDirectory() && _node.hasParent())
+    _node = _node.getParent();
 
   // Initialize history
-  FSNode tmp = _node;
-  string name{select};
-
   _history.clear();
+  FSNode tmp = _node;
   while(tmp.hasParent())
   {
-    _history.emplace_back(tmp, fixPath(name));
-
-    name = tmp.getName();
+    _history.emplace_back(tmp);
     tmp = tmp.getParent();
   }
   // Ensure at least one entry; without this, _node with no parent leaves
-  // _history empty, causing std::prev(end,1) UB and _historyHome == -1.
+  // _history empty, causing underflow in _currentHistoryIdx and _historyHome.
   if(_history.empty())
-    _history.emplace_back(_node, fixPath(name));
+    _history.emplace_back(_node);
 
   // History is in reverse order; we need to fix that
   std::ranges::reverse(_history);
-  _currentHistory = std::prev(_history.end(), 1);
-  _historyHome = static_cast<int>(_currentHistory - _history.begin());
+  _currentHistoryIdx = _history.size() - 1;
+  _historyHome = _currentHistoryIdx;
 
   // Finally, go to this location
-  setLocation(_node, _selectedFile);
+  setLocation(_node, select);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -91,20 +79,19 @@ void FileListWidget::setLocation(const FSNode& node, string_view select)
 
   // Read in the data from the file system (start with an empty list)
   _fileList.clear();
-
   getChildren(isCancelled);
 
   // Now fill the list widget with the names from the file list,
   // even if cancelled
-  StringList list;
+  StringList fileNames;
   const size_t orgLen = _node.getShortPath().length();
 
   _dirList.clear();
   _iconTypeList.clear();
 
-  for(const auto& file : _fileList)
+  for(const auto& file: _fileList)
   {
-    const string& path = file.getShortPath();
+    auto path = file.getShortPath();
     const string& name = file.getName();
 
     // display only relative path in tooltip
@@ -115,7 +102,7 @@ void FileListWidget::setLocation(const FSNode& node, string_view select)
 
     if(file.isDirectory() && !BSPF::endsWithIgnoreCase(name, ".zip"))
     {
-      list.push_back(name);
+      fileNames.push_back(name);
       if(name == "..")
         _iconTypeList.push_back(IconType::updir);
       else
@@ -123,16 +110,26 @@ void FileListWidget::setLocation(const FSNode& node, string_view select)
     }
     else
     {
-      const string& displayName = _showFileExtensions ? name : file.getBaseName();
-
-      list.push_back(displayName);
+      fileNames.push_back(_showFileExtensions ? name : file.getBaseName());
       _iconTypeList.push_back(getIconType(file));
     }
   }
-  extendLists(list);
+  extendLists(fileNames);
 
-  setList(list);
-  setSelected(select);
+  setList(fileNames);
+
+  // An explicit select overrides stored history
+  const string& nodePath = _node.getPath();
+  if(!select.empty())
+    _selectionHistory[nodePath] = select;
+
+  // Go to previously selected item, if it exists
+  if(const auto it = _selectionHistory.find(nodePath);
+                                       it != _selectionHistory.end())
+    setSelected(it->second);
+  else
+    setSelected(0);
+
   ListWidget::recalc();
 
   progress().close();
@@ -150,12 +147,12 @@ void FileListWidget::getChildren(const FSNode::CancelCheck& isCancelled)
   if(_includeSubDirs)
   {
     // Actually this could become HUGE
-    _fileList.reserve(0x2000);
+    _fileList.reserve(1000);
     _node.getAllChildren(_fileList, _fsmode, _filter, true, isCancelled);
   }
   else
   {
-    _fileList.reserve(0x200);
+    _fileList.reserve(200);
     _node.getChildren(_fileList, _fsmode, _filter, false, true, isCancelled);
   }
 }
@@ -175,7 +172,7 @@ FileListWidget::IconType FileListWidget::getIconType(const FSNode& node) const
 void FileListWidget::selectDirectory()
 {
   addHistory(selected());
-  setLocation(selected(), _selectedFile);
+  setLocation(selected());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -183,7 +180,7 @@ void FileListWidget::selectDirectory(const FSNode& node)
 {
   if(node.getPath() != _node.getPath())
     addHistory(node);
-  setLocation(node, _selectedFile);
+  setLocation(node);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -191,94 +188,81 @@ void FileListWidget::selectParent()
 {
   if(_node.hasParent() && _fsmode != FSNode::ListMode::FilesOnly)
   {
-    string name = _node.getName();
-    const FSNode parent(_node.getParent());
+    const auto parent = _node.getParent();
 
-    _currentHistory->selected = selected().getName();
+    // When going up, land on the child we came from.
+    // getName() can carry a trailing separator when the node was constructed
+    // via getParent() (stemPathComponent keeps it), but list entries don't,
+    // so strip it.  Then apply the same display-name logic setLocation() uses
+    // so the stored name matches what ends up in _list.
+    string_view childName = _node.getName();
+    if(!childName.empty() && childName.back() == FSNode::PATH_SEPARATOR)
+      childName.remove_suffix(1);
+    // Real directories always use getName(); ZIPs and files respect _showFileExtensions.
+    const bool isRealDir = _node.isDirectory() &&
+                           !BSPF::endsWithIgnoreCase(childName, ".zip");
+    if(!isRealDir && !_showFileExtensions)
+    {
+      const size_t dot = childName.find_last_of('.');
+      if(dot != string_view::npos)
+        childName = childName.substr(0, dot);
+    }
+    _selectionHistory[parent.getPath()] = childName;
     addHistory(parent);
-    setLocation(parent, fixPath(name));
+    setLocation(parent);
   }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FileListWidget::selectHomeDir()
 {
-  while(hasPrevHistory())
-    selectPrevHistory();
+  _currentHistoryIdx = _historyHome;
+  setLocation(_history[_currentHistoryIdx]);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FileListWidget::selectPrevHistory()
 {
-  if(_currentHistory != _history.begin() + _historyHome)
-  {
-    _currentHistory->selected = selected().getName();
-    _currentHistory = std::prev(_currentHistory, 1);
-    setLocation(_currentHistory->node, _currentHistory->selected);
-  }
+  if(_currentHistoryIdx != _historyHome)
+    setLocation(_history[--_currentHistoryIdx]);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FileListWidget::selectNextHistory()
 {
-  if(_currentHistory != std::prev(_history.end(), 1))
-  {
-    _currentHistory->selected = selected().getName();
-    _currentHistory = std::next(_currentHistory, 1);
-    setLocation(_currentHistory->node, _currentHistory->selected);
-  }
+  if(_currentHistoryIdx + 1 < _history.size())
+    setLocation(_history[++_currentHistoryIdx]);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool FileListWidget::hasPrevHistory()
+bool FileListWidget::hasPrevHistory() const
 {
-  return _currentHistory != _history.begin() + _historyHome;
+  return _currentHistoryIdx != _historyHome;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool FileListWidget::hasNextHistory()
+bool FileListWidget::hasNextHistory() const
 {
-  return _currentHistory != std::prev(_history.end(), 1);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string& FileListWidget::fixPath(string& path)
-{
-  if(!path.empty() && path.back() == FSNode::PATH_SEPARATOR)
-  {
-    path.pop_back();
-    if(path.length() == 2 && path.back() == ':')
-      path.pop_back();
-  }
-  return path;
+  return _currentHistoryIdx + 1 < _history.size();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FileListWidget::addHistory(const FSNode& node)
 {
   if(!_history.empty())
-  {
-    while(_currentHistory != std::prev(_history.end(), 1))
-      _history.pop_back();
+    _history.resize(_currentHistoryIdx + 1);
 
-    string select = selected().getName();
-    _currentHistory->selected = fixPath(select);
-  }
-
-  _history.emplace_back(node, "..");
-  _currentHistory = std::prev(_history.end(), 1);
+  _history.push_back(node);
+  _currentHistoryIdx = _history.size() - 1;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FileListWidget::reload()
 {
   if(isDirectory(_node))
-  {
-    _selectedFile = _showFileExtensions
+    setLocation(_node, _showFileExtensions
       ? selected().getName()
-      : selected().getBaseName();
-    setLocation(_node, _selectedFile);
-  }
+      : selected().getBaseName());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -286,7 +270,7 @@ const FSNode& FileListWidget::selected()
 {
   if(!_fileList.empty())
   {
-    _selected = BSPF::clamp(_selected, 0U, static_cast<uInt32>(_fileList.size()-1));
+    _selected = std::min(_selected, static_cast<uInt32>(_fileList.size() - 1));
     return _fileList[_selected];
   }
   else
@@ -427,6 +411,8 @@ void FileListWidget::handleCommand(CommandSender* sender, int cmd, int data, int
 
     case ListWidget::kSelectionChangedCmd:
       _selected = data;
+      if(std::cmp_less(data, _list.size()))
+        _selectionHistory[_node.getPath()] = _list[data];
       cmd = ItemChanged;
       break;
 
@@ -434,6 +420,8 @@ void FileListWidget::handleCommand(CommandSender* sender, int cmd, int data, int
       [[fallthrough]];
     case ListWidget::kDoubleClickedCmd:
       _selected = data;
+      if(std::cmp_less(data, _list.size()))
+        _selectionHistory[_node.getPath()] = _list[data];
       if(isDirectory(selected())/* || !selected().exists()*/)
       {
         if(selected().getName() == "..")
@@ -446,7 +434,6 @@ void FileListWidget::handleCommand(CommandSender* sender, int cmd, int data, int
       }
       else
       {
-        _selectedFile = selected().getName();
         cmd = ItemActivated;
       }
       break;
@@ -702,26 +689,18 @@ const FileListWidget::Icon* FileListWidget::getIcon(int i) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int FileListWidget::iconWidth() const
-{
-  const bool smallIcon = _lineHeight < 26;
-
-  return smallIcon ? 16 + 4: 24 + 6;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string FileListWidget::getToolTip(const Common::Point& pos) const
 {
   const Common::Rect& rect = getEditRect();
   const int idx = getToolTipIndex(pos);
 
   if(idx < 0)
-    return string{};
+    return {};
 
   if(_includeSubDirs && std::cmp_greater(_dirList.size(), idx))
     return _toolTipText + _dirList[idx];
 
-  const string value = _list[idx];
+  const string& value = _list[idx];
 
   if(static_cast<uInt32>(_font.getStringWidth(value)) > rect.w() - iconWidth())
     return _toolTipText + value;

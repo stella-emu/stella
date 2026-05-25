@@ -41,6 +41,10 @@
     (including Greek, Cyrillic, Latin Extended) are folded to ASCII
     equivalents in the UI (issue #1051, #1054, #1084, #1133).
 
+  * Selecting entries in various file selection dialogs now remembers
+    selections when moving forward and backward in the filesystem
+    (issue #1039).
+
   * Emulation accuracy:
     - Implemented more accurate RESMP0/RESMP1 behaviour (issue #213)
     - Implemented proper PA7 behaviour in M6532 (issue #108)

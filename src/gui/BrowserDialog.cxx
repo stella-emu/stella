@@ -281,9 +281,9 @@ void BrowserDialog::show(string_view startpath,
 
   // Set start path
   if(_mode != Mode::Directories && !directory.empty())
-    _fileList->setDirectory(FSNode(directory), fileName);
+    _fileList->setInitialDirectory(FSNode(directory), fileName);
   else
-    _fileList->setDirectory(FSNode(startpath));
+    _fileList->setInitialDirectory(FSNode(startpath));
 
   updateUI(fileSelected);
 

@@ -21,6 +21,8 @@
 class CommandSender;
 class ProgressDialog;
 
+#include <unordered_map>
+
 #include "FSNode.hxx"
 #include "Stack.hxx"
 #include "StringListWidget.hxx"
@@ -50,8 +52,6 @@ class FileListWidget : public StringListWidget
       kPrevDirCmd   = 'prvc',  // go back in history to previous directory
       kNextDirCmd   = 'nxtc'   // go back in history to next directory
     };
-    using IconTypeFilter = std::function<bool(const FSNode& node)>;
-
   public:
     FileListWidget(GuiObject* boss, const GUI::Font& font,
                    int x, int y, int w, int h);
@@ -82,7 +82,7 @@ class FileListWidget : public StringListWidget
                           will instead be used, and the file will be selected
         @param select     An optional entry to select (if applicable)
     */
-    void setDirectory(const FSNode& node, string_view select = {});
+    void setInitialDirectory(const FSNode& node, string_view select = {});
 
     /** Descend into currently selected directory */
     void selectDirectory();
@@ -90,10 +90,10 @@ class FileListWidget : public StringListWidget
     void selectDirectory(const FSNode& node);
     /** Select parent directory (if applicable) */
     void selectParent();
-    /** Check if the there is a previous directory in history */
-    bool hasPrevHistory();
-    /** Check if the there is a next directory in history */
-    bool hasNextHistory();
+    /** Check if there is a previous directory in history */
+    bool hasPrevHistory() const;
+    /** Check if there is a next directory in history */
+    bool hasNextHistory() const;
 
     /** Reload current location (file or directory) */
     void reload();
@@ -111,14 +111,6 @@ class FileListWidget : public StringListWidget
     virtual bool isDirectory(const FSNode& node) const;
 
   protected:
-    struct HistoryType
-    {
-      FSNode node;
-      string selected;
-
-      explicit HistoryType(const FSNode& _hnode, string_view _hselected)
-        : node{_hnode}, selected{_hselected} {}
-    };
     enum class IconType: uInt8 {
       unknown,
       rom,
@@ -137,39 +129,42 @@ class FileListWidget : public StringListWidget
     using IconTypeList = std::vector<IconType>;
     using Icon = uIntArray;
 
+    FSNode _node;
+    FSList _fileList;
+    FSNode::NameFilter _filter;
+    StringList _dirList;
+    IconTypeList _iconTypeList;
+
   protected:
-    /** Very similar to setDirectory(), but also updates the history */
-    void setLocation(const FSNode& node, string_view select);
+    virtual void getChildren(const FSNode::CancelCheck& isCancelled);
+    virtual void extendLists(StringList& list) { }
+    virtual IconType getIconType(const FSNode& node) const;
+    virtual const Icon* getIcon(int i) const;
+    virtual bool fullPathToolTip() const { return false; }
+
+    int iconWidth() const { return (_lineHeight < 26) ? 16 + 4: 24 + 6; }
+    int drawIcon(int i, int x, int y, ColorId color) override;
+
+    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+
+  private:
+    /** Very similar to setInitialDirectory(), but also updates selection history */
+    void setLocation(const FSNode& node, string_view select = {});
     /** Select to home directory */
     void selectHomeDir();
     /** Select previous directory in history (if applicable) */
     void selectPrevHistory();
     /** Select next directory in history (if applicable) */
     void selectNextHistory();
-    virtual void getChildren(const FSNode::CancelCheck& isCancelled);
-    virtual void extendLists(StringList& list) { }
-    virtual IconType getIconType(const FSNode& node) const;
-    virtual const Icon* getIcon(int i) const;
-    int iconWidth() const;
-    virtual bool fullPathToolTip() const { return false; }
-    static string& fixPath(string& path);
+
     void addHistory(const FSNode& node);
 
-    int drawIcon(int i, int x, int y, ColorId color) override;
-    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
-
-  protected:
-    FSNode _node;
-    FSList _fileList;
-    FSNode::NameFilter _filter;
-    string _selectedFile;
-    StringList _dirList;
-    std::vector<HistoryType> _history;
-    int _historyHome{0}; // offset into initially created history
-    std::vector<HistoryType>::iterator _currentHistory{_history.begin()};
-    IconTypeList _iconTypeList;
-
   private:
+    std::vector<FSNode> _history;
+    size_t _currentHistoryIdx{0};
+    size_t _historyHome{0}; // offset into initially created history
+    std::unordered_map<string, string> _selectionHistory;
+
     FSNode::ListMode _fsmode{FSNode::ListMode::All};
     bool _includeSubDirs{false};
     bool _showFileExtensions{true};

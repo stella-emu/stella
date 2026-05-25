@@ -506,7 +506,7 @@ void LauncherDialog::loadConfig()
     if(!myList->isDirectory(node))
       node = FSNode("~");
 
-    myList->setDirectory(node, settings.getString("lastrom"));
+    myList->setInitialDirectory(node, settings.getString("lastrom"));
     updateUI();
   }
   Dialog::setFocus(getFocusList()[mySelectedItem]);
@@ -1031,7 +1031,7 @@ void LauncherDialog::handleCommand(CommandSender* sender, int cmd,
 
     case kRomDirChosenCmd:
     {
-      const string romDir = instance().settings().getString("romdir");
+      string_view romDir = instance().settings().getString("romdir");
 
       if(myList->currentDir().getPath() != romDir)
       {
@@ -1040,7 +1040,7 @@ void LauncherDialog::handleCommand(CommandSender* sender, int cmd,
         if(!myList->isDirectory(node))
           node = FSNode("~");
 
-        myList->setDirectory(node);
+        myList->setInitialDirectory(node);
       }
       if(romDir != instance().settings().getString("startromdir"))
       {

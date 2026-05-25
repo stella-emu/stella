@@ -115,6 +115,6 @@ class NavigationWidget : public Widget
     NavigationWidget(NavigationWidget&&) = delete;
     NavigationWidget& operator=(const NavigationWidget&) = delete;
     NavigationWidget& operator=(NavigationWidget&&) = delete;
-}; // NavigationWidget
+};
 
 #endif  // NAVIGATION_WIDGET_HXX
