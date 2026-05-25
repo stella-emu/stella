@@ -632,6 +632,8 @@
 		DCCD9FA62FBF43B600C75466 /* CartDevCard.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCCD9FA32FBF43B600C75466 /* CartDevCard.hxx */; };
 		DCCD9FA92FBF43F100C75466 /* CartDevCardWidget.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCCD9FA82FBF43F100C75466 /* CartDevCardWidget.cxx */; };
 		DCCD9FAA2FBF43F100C75466 /* CartDevCardWidget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCCD9FA72FBF43F100C75466 /* CartDevCardWidget.hxx */; };
+		DCCD9FAD2FC4875400C75466 /* stella.tab.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCCD9FAC2FC4875400C75466 /* stella.tab.cxx */; };
+		DCCD9FAE2FC4875400C75466 /* stella.tab.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCCD9FAB2FC4875400C75466 /* stella.tab.hxx */; };
 		DCCE0355225104BF008C246F /* StellaSettingsDialog.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCCE0353225104BE008C246F /* StellaSettingsDialog.cxx */; };
 		DCCE0356225104BF008C246F /* StellaSettingsDialog.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCCE0354225104BF008C246F /* StellaSettingsDialog.hxx */; };
 		DCCE03582251050C008C246F /* ControlLowLevel.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCCE03572251050C008C246F /* ControlLowLevel.hxx */; };
@@ -1523,6 +1525,8 @@
 		DCCD9FA42FBF43B600C75466 /* CartDevCard.cxx */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = CartDevCard.cxx; sourceTree = "<group>"; };
 		DCCD9FA72FBF43F100C75466 /* CartDevCardWidget.hxx */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = CartDevCardWidget.hxx; sourceTree = "<group>"; };
 		DCCD9FA82FBF43F100C75466 /* CartDevCardWidget.cxx */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = CartDevCardWidget.cxx; sourceTree = "<group>"; };
+		DCCD9FAB2FC4875400C75466 /* stella.tab.hxx */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = stella.tab.hxx; sourceTree = "<group>"; };
+		DCCD9FAC2FC4875400C75466 /* stella.tab.cxx */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = stella.tab.cxx; sourceTree = "<group>"; };
 		DCCE0353225104BE008C246F /* StellaSettingsDialog.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = StellaSettingsDialog.cxx; sourceTree = "<group>"; };
 		DCCE0354225104BF008C246F /* StellaSettingsDialog.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = StellaSettingsDialog.hxx; sourceTree = "<group>"; };
 		DCCE03572251050C008C246F /* ControlLowLevel.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = ControlLowLevel.hxx; sourceTree = "<group>"; };
@@ -2532,8 +2536,10 @@
 		2D60513708987A5400C6DE89 /* yacc */ = {
 			isa = PBXGroup;
 			children = (
-				2D313F0A0879C4C0005BD3E5 /* YaccParser.cxx */,
+				DCCD9FAB2FC4875400C75466 /* stella.tab.hxx */,
+				DCCD9FAC2FC4875400C75466 /* stella.tab.cxx */,
 				2D313F0B0879C4C0005BD3E5 /* YaccParser.hxx */,
+				2D313F0A0879C4C0005BD3E5 /* YaccParser.cxx */,
 			);
 			path = yacc;
 			sourceTree = "<group>";
@@ -3200,6 +3206,7 @@
 				DCE395F116CB0B5F008DB1E5 /* FSNodeZIP.hxx in Headers */,
 				DCE395F316CB0B5F008DB1E5 /* ZipHandler.hxx in Headers */,
 				DC3C9BD42469C9A200CF2D47 /* Cart3EX.hxx in Headers */,
+				DCCD9FAE2FC4875400C75466 /* stella.tab.hxx in Headers */,
 				DCAAE5D41715887B0080BB82 /* Cart2KWidget.hxx in Headers */,
 				DCF7F129223D796000701A47 /* ProfilingRunner.hxx in Headers */,
 				DCAAE5D61715887B0080BB82 /* Cart3FWidget.hxx in Headers */,
@@ -3731,6 +3738,7 @@
 				DCAAE5EA1715887B0080BB82 /* CartF6Widget.cxx in Sources */,
 				DCAAE5EC1715887B0080BB82 /* CartF8SCWidget.cxx in Sources */,
 				DCAAE5EE1715887B0080BB82 /* CartF8Widget.cxx in Sources */,
+				DCCD9FAD2FC4875400C75466 /* stella.tab.cxx in Sources */,
 				DCAAE5F01715887B0080BB82 /* CartFAWidget.cxx in Sources */,
 				DCAAE5F21715887B0080BB82 /* CartUAWidget.cxx in Sources */,
 				DC479403258C56B800F52462 /* PlusROM.cxx in Sources */,

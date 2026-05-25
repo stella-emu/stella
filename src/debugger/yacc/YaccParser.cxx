@@ -282,6 +282,8 @@ parser::symbol_type Lexer::yylex()
 // ============================================================================
 
 // NOLINTNEXTLINE(misc-use-internal-linkage)
+parser::symbol_type yylex(Lexer& lexer);
+// NOLINTNEXTLINE(misc-use-internal-linkage)
 parser::symbol_type yylex(Lexer& lexer)
 {
   return lexer.yylex();

@@ -27,6 +27,13 @@
 %define parse.error      detailed
 %define parse.assert
 
+// Suppress clang warnings in the Bison-generated implementation file
+%code top {
+#ifdef __clang__
+#  pragma clang system_header
+#endif
+}
+
 // Types needed in the generated header (stella.tab.hxx)
 %code requires {
 // Suppress clang warnings in Bison-generated code
