@@ -36,6 +36,8 @@ void FrameManager::onReset()
   myTotalFrames = 0;
   myVsyncLineCount = 0;
   myY = 0;
+  myVsyncPending = false;
+  myVsyncPendingLines = 0;
 
   myJitterEmulation.reset();
 }
@@ -45,6 +47,14 @@ void FrameManager::onNextLine()
 {
   const State previousState = myState;
   ++myLineInState;
+
+  // Promote a pending VSYNC to real once it has lasted the minimum number of
+  // scanlines.  This matches real TV behaviour: pulses shorter than 2 full
+  // scanlines are completely invisible to the state machine.
+  if (myVsyncPending && ++myVsyncPendingLines >= 2) {
+    myVsyncPending = false;
+    setState(State::waitForVsyncEnd);
+  }
 
   switch (myState)
   {
@@ -135,17 +145,31 @@ void FrameManager::onSetVblank(uInt64 cycles)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameManager::onSetVsync(uInt64 cycles)
 {
-  if (myState == State::waitForVsyncEnd) {
+  if (myVsync) {
+    // VSYNC rising edge.  Don't commit to waitForVsyncEnd immediately — real
+    // TVs require at least 2 full scanlines of VSYNC before locking.  Record
+    // timing state and let onNextLine() promote this to waitForVsyncEnd once
+    // the minimum scanline count is reached.  Pulses shorter than 2 scanlines
+    // are ignored entirely.
+    if (myState == State::waitForVsyncEnd || myVsyncPending) return;
+
+    myVsyncStart = cycles;
+    myVblankStart = myVblank ? cycles : INT64_MAX;
+    myVblankCycles = 0;
+    myVsyncPending = true;
+    myVsyncPendingLines = 0;
+  }
+  else {
+    // VSYNC falling edge.
+    myVsyncPending = false;
+
+    if (myState != State::waitForVsyncEnd)
+      return;  // pulse never reached 2 scanlines
+
     myVsyncEnd = cycles;
     if(myVblankStart != INT64_MAX)
       myVblankCycles += cycles - myVblankStart;
     setState(State::waitForFrameStart);
-  }
-  else {
-    myVsyncStart = cycles;
-    myVblankStart = myVblank ? cycles : INT64_MAX;
-    myVblankCycles = 0;
-    setState(State::waitForVsyncEnd);
   }
 }
 
@@ -208,6 +232,8 @@ bool FrameManager::onSave(Serializer& out) const
   out.putInt(myVSizeAdjust);
 
   out.putBool(myJitterEnabled);
+  out.putBool(myVsyncPending);
+  out.putInt(myVsyncPendingLines);
 
   return true;
 }
@@ -227,6 +253,8 @@ bool FrameManager::onLoad(Serializer& in)
   myVSizeAdjust = in.getInt();
 
   myJitterEnabled = in.getBool();
+  myVsyncPending = in.getBool();
+  myVsyncPendingLines = in.getInt();
 
   recalculateMetrics();
   return true;

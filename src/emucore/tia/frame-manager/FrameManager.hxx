@@ -237,6 +237,13 @@ class FrameManager: public AbstractFrameManager
     // Vertical size adjustment in scanlines
     Int32 myVSizeAdjust{0};
 
+    // Pending VSYNC: VSYNC has gone high but hasn't yet lasted the minimum 2
+    // scanlines required to be treated as real.  onNextLine() promotes it to
+    // waitForVsyncEnd once the count is reached; a falling edge before that
+    // is silently discarded.
+    bool myVsyncPending{false};
+    uInt32 myVsyncPendingLines{0};
+
     // Cycle count at vsync rising edge (used by jitter emulation)
     uInt64 myVsyncStart{0};
     // Cycle count at vsync falling edge
