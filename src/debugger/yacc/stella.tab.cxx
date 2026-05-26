@@ -38,10 +38,12 @@
 // "%code top" blocks.
 #line 31 "stella.y"
 
+#ifndef _MSC_VER
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-but-set-variable"
+#endif
 
-#line 44 "stella.tab.cxx"
+#line 46 "stella.tab.cxx"
 
 
 
@@ -50,14 +52,14 @@
 
 
 // Unqualified %code blocks.
-#line 58 "stella.y"
+#line 71 "stella.y"
 
   #include "DebuggerExpressions.hxx"
   namespace YaccParser {
     parser::symbol_type yylex(Lexer& lexer);
   }
 
-#line 60 "stella.tab.cxx"
+#line 62 "stella.tab.cxx"
 
 
 #ifndef YY_
@@ -131,7 +133,7 @@
 
 #line 24 "stella.y"
 namespace YaccParser {
-#line 134 "stella.tab.cxx"
+#line 136 "stella.tab.cxx"
 
   /// Build a parser object.
   parser::parser (Lexer& lexer_yyarg, unique_ptr<Expression>& result_yyarg, string& errorMsg_yyarg)
@@ -658,223 +660,223 @@ namespace YaccParser {
           switch (yyn)
             {
   case 2: // statement: expression
-#line 109 "stella.y"
+#line 122 "stella.y"
                 { result = std::move(yystack_[0].value.as < unique_ptr<Expression> > ()); }
-#line 663 "stella.tab.cxx"
+#line 665 "stella.tab.cxx"
     break;
 
   case 3: // expression: expression '+' expression
-#line 113 "stella.y"
+#line 126 "stella.y"
                                { yylhs.value.as < unique_ptr<Expression> > () = std::make_unique<PlusExpression>         (std::move(yystack_[2].value.as < unique_ptr<Expression> > ()), std::move(yystack_[0].value.as < unique_ptr<Expression> > ())); }
-#line 669 "stella.tab.cxx"
+#line 671 "stella.tab.cxx"
     break;
 
   case 4: // expression: expression '-' expression
-#line 114 "stella.y"
+#line 127 "stella.y"
                                { yylhs.value.as < unique_ptr<Expression> > () = std::make_unique<MinusExpression>        (std::move(yystack_[2].value.as < unique_ptr<Expression> > ()), std::move(yystack_[0].value.as < unique_ptr<Expression> > ())); }
-#line 675 "stella.tab.cxx"
+#line 677 "stella.tab.cxx"
     break;
 
   case 5: // expression: expression '*' expression
-#line 115 "stella.y"
+#line 128 "stella.y"
                                { yylhs.value.as < unique_ptr<Expression> > () = std::make_unique<MultExpression>         (std::move(yystack_[2].value.as < unique_ptr<Expression> > ()), std::move(yystack_[0].value.as < unique_ptr<Expression> > ())); }
-#line 681 "stella.tab.cxx"
+#line 683 "stella.tab.cxx"
     break;
 
   case 6: // expression: expression '/' expression
-#line 116 "stella.y"
+#line 129 "stella.y"
                                { yylhs.value.as < unique_ptr<Expression> > () = std::make_unique<DivExpression>          (std::move(yystack_[2].value.as < unique_ptr<Expression> > ()), std::move(yystack_[0].value.as < unique_ptr<Expression> > ())); }
-#line 687 "stella.tab.cxx"
+#line 689 "stella.tab.cxx"
     break;
 
   case 7: // expression: expression '%' expression
-#line 117 "stella.y"
+#line 130 "stella.y"
                                { yylhs.value.as < unique_ptr<Expression> > () = std::make_unique<ModExpression>          (std::move(yystack_[2].value.as < unique_ptr<Expression> > ()), std::move(yystack_[0].value.as < unique_ptr<Expression> > ())); }
-#line 693 "stella.tab.cxx"
+#line 695 "stella.tab.cxx"
     break;
 
   case 8: // expression: expression '&' expression
-#line 118 "stella.y"
+#line 131 "stella.y"
                                { yylhs.value.as < unique_ptr<Expression> > () = std::make_unique<BinAndExpression>       (std::move(yystack_[2].value.as < unique_ptr<Expression> > ()), std::move(yystack_[0].value.as < unique_ptr<Expression> > ())); }
-#line 699 "stella.tab.cxx"
+#line 701 "stella.tab.cxx"
     break;
 
   case 9: // expression: expression '|' expression
-#line 119 "stella.y"
+#line 132 "stella.y"
                                { yylhs.value.as < unique_ptr<Expression> > () = std::make_unique<BinOrExpression>        (std::move(yystack_[2].value.as < unique_ptr<Expression> > ()), std::move(yystack_[0].value.as < unique_ptr<Expression> > ())); }
-#line 705 "stella.tab.cxx"
+#line 707 "stella.tab.cxx"
     break;
 
   case 10: // expression: expression '^' expression
-#line 120 "stella.y"
+#line 133 "stella.y"
                                { yylhs.value.as < unique_ptr<Expression> > () = std::make_unique<BinXorExpression>       (std::move(yystack_[2].value.as < unique_ptr<Expression> > ()), std::move(yystack_[0].value.as < unique_ptr<Expression> > ())); }
-#line 711 "stella.tab.cxx"
+#line 713 "stella.tab.cxx"
     break;
 
   case 11: // expression: expression '<' expression
-#line 121 "stella.y"
+#line 134 "stella.y"
                                { yylhs.value.as < unique_ptr<Expression> > () = std::make_unique<LessExpression>         (std::move(yystack_[2].value.as < unique_ptr<Expression> > ()), std::move(yystack_[0].value.as < unique_ptr<Expression> > ())); }
-#line 717 "stella.tab.cxx"
+#line 719 "stella.tab.cxx"
     break;
 
   case 12: // expression: expression '>' expression
-#line 122 "stella.y"
+#line 135 "stella.y"
                                { yylhs.value.as < unique_ptr<Expression> > () = std::make_unique<GreaterExpression>      (std::move(yystack_[2].value.as < unique_ptr<Expression> > ()), std::move(yystack_[0].value.as < unique_ptr<Expression> > ())); }
-#line 723 "stella.tab.cxx"
+#line 725 "stella.tab.cxx"
     break;
 
   case 13: // expression: expression GTE expression
-#line 123 "stella.y"
+#line 136 "stella.y"
                                { yylhs.value.as < unique_ptr<Expression> > () = std::make_unique<GreaterEqualsExpression>(std::move(yystack_[2].value.as < unique_ptr<Expression> > ()), std::move(yystack_[0].value.as < unique_ptr<Expression> > ())); }
-#line 729 "stella.tab.cxx"
+#line 731 "stella.tab.cxx"
     break;
 
   case 14: // expression: expression LTE expression
-#line 124 "stella.y"
+#line 137 "stella.y"
                                { yylhs.value.as < unique_ptr<Expression> > () = std::make_unique<LessEqualsExpression>   (std::move(yystack_[2].value.as < unique_ptr<Expression> > ()), std::move(yystack_[0].value.as < unique_ptr<Expression> > ())); }
-#line 735 "stella.tab.cxx"
+#line 737 "stella.tab.cxx"
     break;
 
   case 15: // expression: expression NE expression
-#line 125 "stella.y"
+#line 138 "stella.y"
                                { yylhs.value.as < unique_ptr<Expression> > () = std::make_unique<NotEqualsExpression>    (std::move(yystack_[2].value.as < unique_ptr<Expression> > ()), std::move(yystack_[0].value.as < unique_ptr<Expression> > ())); }
-#line 741 "stella.tab.cxx"
+#line 743 "stella.tab.cxx"
     break;
 
   case 16: // expression: expression EQ expression
-#line 126 "stella.y"
+#line 139 "stella.y"
                                { yylhs.value.as < unique_ptr<Expression> > () = std::make_unique<EqualsExpression>       (std::move(yystack_[2].value.as < unique_ptr<Expression> > ()), std::move(yystack_[0].value.as < unique_ptr<Expression> > ())); }
-#line 747 "stella.tab.cxx"
+#line 749 "stella.tab.cxx"
     break;
 
   case 17: // expression: expression SHR expression
-#line 127 "stella.y"
+#line 140 "stella.y"
                                { yylhs.value.as < unique_ptr<Expression> > () = std::make_unique<ShiftRightExpression>   (std::move(yystack_[2].value.as < unique_ptr<Expression> > ()), std::move(yystack_[0].value.as < unique_ptr<Expression> > ())); }
-#line 753 "stella.tab.cxx"
+#line 755 "stella.tab.cxx"
     break;
 
   case 18: // expression: expression SHL expression
-#line 128 "stella.y"
+#line 141 "stella.y"
                                { yylhs.value.as < unique_ptr<Expression> > () = std::make_unique<ShiftLeftExpression>    (std::move(yystack_[2].value.as < unique_ptr<Expression> > ()), std::move(yystack_[0].value.as < unique_ptr<Expression> > ())); }
-#line 759 "stella.tab.cxx"
+#line 761 "stella.tab.cxx"
     break;
 
   case 19: // expression: expression LOG_OR expression
-#line 129 "stella.y"
+#line 142 "stella.y"
                                    { yylhs.value.as < unique_ptr<Expression> > () = std::make_unique<LogOrExpression>  (std::move(yystack_[2].value.as < unique_ptr<Expression> > ()), std::move(yystack_[0].value.as < unique_ptr<Expression> > ())); }
-#line 765 "stella.tab.cxx"
+#line 767 "stella.tab.cxx"
     break;
 
   case 20: // expression: expression LOG_AND expression
-#line 130 "stella.y"
+#line 143 "stella.y"
                                    { yylhs.value.as < unique_ptr<Expression> > () = std::make_unique<LogAndExpression> (std::move(yystack_[2].value.as < unique_ptr<Expression> > ()), std::move(yystack_[0].value.as < unique_ptr<Expression> > ())); }
-#line 771 "stella.tab.cxx"
+#line 773 "stella.tab.cxx"
     break;
 
   case 21: // expression: '-' expression
-#line 131 "stella.y"
+#line 144 "stella.y"
                                    { yylhs.value.as < unique_ptr<Expression> > () = std::make_unique<UnaryMinusExpression>(std::move(yystack_[0].value.as < unique_ptr<Expression> > ())); }
-#line 777 "stella.tab.cxx"
+#line 779 "stella.tab.cxx"
     break;
 
   case 22: // expression: '~' expression
-#line 132 "stella.y"
+#line 145 "stella.y"
                                    { yylhs.value.as < unique_ptr<Expression> > () = std::make_unique<BinNotExpression>    (std::move(yystack_[0].value.as < unique_ptr<Expression> > ())); }
-#line 783 "stella.tab.cxx"
+#line 785 "stella.tab.cxx"
     break;
 
   case 23: // expression: '!' expression
-#line 133 "stella.y"
+#line 146 "stella.y"
                                    { yylhs.value.as < unique_ptr<Expression> > () = std::make_unique<LogNotExpression>    (std::move(yystack_[0].value.as < unique_ptr<Expression> > ())); }
-#line 789 "stella.tab.cxx"
+#line 791 "stella.tab.cxx"
     break;
 
   case 24: // expression: '*' expression
-#line 134 "stella.y"
+#line 147 "stella.y"
                                    { yylhs.value.as < unique_ptr<Expression> > () = std::make_unique<ByteDerefExpression> (std::move(yystack_[0].value.as < unique_ptr<Expression> > ())); }
-#line 795 "stella.tab.cxx"
+#line 797 "stella.tab.cxx"
     break;
 
   case 25: // expression: '@' expression
-#line 135 "stella.y"
+#line 148 "stella.y"
                                    { yylhs.value.as < unique_ptr<Expression> > () = std::make_unique<WordDerefExpression> (std::move(yystack_[0].value.as < unique_ptr<Expression> > ())); }
-#line 801 "stella.tab.cxx"
+#line 803 "stella.tab.cxx"
     break;
 
   case 26: // expression: '<' expression
-#line 136 "stella.y"
+#line 149 "stella.y"
                                    { yylhs.value.as < unique_ptr<Expression> > () = std::make_unique<LoByteExpression>    (std::move(yystack_[0].value.as < unique_ptr<Expression> > ())); }
-#line 807 "stella.tab.cxx"
+#line 809 "stella.tab.cxx"
     break;
 
   case 27: // expression: '>' expression
-#line 137 "stella.y"
+#line 150 "stella.y"
                                    { yylhs.value.as < unique_ptr<Expression> > () = std::make_unique<HiByteExpression>    (std::move(yystack_[0].value.as < unique_ptr<Expression> > ())); }
-#line 813 "stella.tab.cxx"
+#line 815 "stella.tab.cxx"
     break;
 
   case 28: // expression: '(' expression ')'
-#line 138 "stella.y"
+#line 151 "stella.y"
                                    { yylhs.value.as < unique_ptr<Expression> > () = std::move(yystack_[1].value.as < unique_ptr<Expression> > ()); }
-#line 819 "stella.tab.cxx"
+#line 821 "stella.tab.cxx"
     break;
 
   case 29: // expression: expression '[' expression ']'
-#line 139 "stella.y"
+#line 152 "stella.y"
                                    { yylhs.value.as < unique_ptr<Expression> > () = std::make_unique<ByteDerefOffsetExpression>(std::move(yystack_[3].value.as < unique_ptr<Expression> > ()), std::move(yystack_[1].value.as < unique_ptr<Expression> > ())); }
-#line 825 "stella.tab.cxx"
+#line 827 "stella.tab.cxx"
     break;
 
   case 30: // expression: NUMBER
-#line 140 "stella.y"
+#line 153 "stella.y"
                 { yylhs.value.as < unique_ptr<Expression> > () = std::make_unique<ConstExpression>    (yystack_[0].value.as < int > ()); }
-#line 831 "stella.tab.cxx"
+#line 833 "stella.tab.cxx"
     break;
 
   case 31: // expression: EQUATE
-#line 141 "stella.y"
+#line 154 "stella.y"
                 { yylhs.value.as < unique_ptr<Expression> > () = std::make_unique<EquateExpression>   (yystack_[0].value.as < string > ()); }
-#line 837 "stella.tab.cxx"
+#line 839 "stella.tab.cxx"
     break;
 
   case 32: // expression: CPU_METHOD
-#line 142 "stella.y"
+#line 155 "stella.y"
                 { yylhs.value.as < unique_ptr<Expression> > () = std::make_unique<CpuMethodExpression> (yystack_[0].value.as < CpuMethod > ()); }
-#line 843 "stella.tab.cxx"
+#line 845 "stella.tab.cxx"
     break;
 
   case 33: // expression: CART_METHOD
-#line 143 "stella.y"
+#line 156 "stella.y"
                 { yylhs.value.as < unique_ptr<Expression> > () = std::make_unique<CartMethodExpression>(yystack_[0].value.as < CartMethod > ()); }
-#line 849 "stella.tab.cxx"
+#line 851 "stella.tab.cxx"
     break;
 
   case 34: // expression: RIOT_METHOD
-#line 144 "stella.y"
+#line 157 "stella.y"
                 { yylhs.value.as < unique_ptr<Expression> > () = std::make_unique<RiotMethodExpression>(yystack_[0].value.as < RiotMethod > ()); }
-#line 855 "stella.tab.cxx"
+#line 857 "stella.tab.cxx"
     break;
 
   case 35: // expression: TIA_METHOD
-#line 145 "stella.y"
+#line 158 "stella.y"
                 { yylhs.value.as < unique_ptr<Expression> > () = std::make_unique<TiaMethodExpression> (yystack_[0].value.as < TiaMethod > ()); }
-#line 861 "stella.tab.cxx"
+#line 863 "stella.tab.cxx"
     break;
 
   case 36: // expression: FUNCTION
-#line 146 "stella.y"
+#line 159 "stella.y"
                 { yylhs.value.as < unique_ptr<Expression> > () = std::make_unique<FunctionExpression>  (yystack_[0].value.as < string > ()); }
-#line 867 "stella.tab.cxx"
+#line 869 "stella.tab.cxx"
     break;
 
   case 37: // expression: ERR
-#line 147 "stella.y"
+#line 160 "stella.y"
                 { error("Invalid label or constant"); YYERROR; }
-#line 873 "stella.tab.cxx"
+#line 875 "stella.tab.cxx"
     break;
 
 
-#line 877 "stella.tab.cxx"
+#line 879 "stella.tab.cxx"
 
             default:
               break;
@@ -1328,10 +1330,10 @@ namespace YaccParser {
   const unsigned char
   parser::yyrline_[] =
   {
-       0,   109,   109,   113,   114,   115,   116,   117,   118,   119,
-     120,   121,   122,   123,   124,   125,   126,   127,   128,   129,
-     130,   131,   132,   133,   134,   135,   136,   137,   138,   139,
-     140,   141,   142,   143,   144,   145,   146,   147
+       0,   122,   122,   126,   127,   128,   129,   130,   131,   132,
+     133,   134,   135,   136,   137,   138,   139,   140,   141,   142,
+     143,   144,   145,   146,   147,   148,   149,   150,   151,   152,
+     153,   154,   155,   156,   157,   158,   159,   160
   };
 
   void
@@ -1364,9 +1366,9 @@ namespace YaccParser {
 
 #line 24 "stella.y"
 } // YaccParser
-#line 1367 "stella.tab.cxx"
+#line 1369 "stella.tab.cxx"
 
-#line 150 "stella.y"
+#line 163 "stella.y"
 
 
 void YaccParser::parser::error(const string& msg)

@@ -29,8 +29,10 @@
 
 // Suppress warnings in the Bison-generated implementation file
 %code top {
+#ifndef _MSC_VER
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-but-set-variable"
+#endif
 }
 
 // Types needed in the generated header (stella.tab.hxx)
@@ -39,6 +41,11 @@
 #ifdef __clang__
 #  pragma clang system_header
 #endif
+// Suppress MSVC C4065 in Bison-generated code
+#ifdef _MSC_VER
+#  pragma warning(push)
+#  pragma warning(disable: 4065)
+#endif
   #include "bspf.hxx"
   #include "Expression.hxx"
   #include "CartDebug.hxx"
@@ -46,6 +53,12 @@
   #include "RiotDebug.hxx"
   #include "TIADebug.hxx"
   namespace YaccParser { class Lexer; }
+}
+
+%code provides {
+#ifdef _MSC_VER
+#  pragma warning(pop)
+#endif
 }
 
 // Lexer reference passed to both the parser and yylex()

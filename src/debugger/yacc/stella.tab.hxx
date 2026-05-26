@@ -46,11 +46,16 @@
 #ifndef YY_YY_STELLA_TAB_HXX_INCLUDED
 # define YY_YY_STELLA_TAB_HXX_INCLUDED
 // "%code requires" blocks.
-#line 37 "stella.y"
+#line 39 "stella.y"
 
 // Suppress clang warnings in Bison-generated code
 #ifdef __clang__
 #  pragma clang system_header
+#endif
+// Suppress MSVC C4065 in Bison-generated code
+#ifdef _MSC_VER
+#  pragma warning(push)
+#  pragma warning(disable: 4065)
 #endif
   #include "bspf.hxx"
   #include "Expression.hxx"
@@ -60,7 +65,7 @@
   #include "TIADebug.hxx"
   namespace YaccParser { class Lexer; }
 
-#line 63 "stella.tab.hxx"
+#line 68 "stella.tab.hxx"
 
 # include <cassert>
 # include <cstdlib> // std::abort
@@ -201,7 +206,7 @@
 
 #line 24 "stella.y"
 namespace YaccParser {
-#line 204 "stella.tab.hxx"
+#line 209 "stella.tab.hxx"
 
 
 
@@ -1885,9 +1890,17 @@ switch (yykind)
 
 #line 24 "stella.y"
 } // YaccParser
-#line 1888 "stella.tab.hxx"
+#line 1893 "stella.tab.hxx"
 
 
+// "%code provides" blocks.
+#line 58 "stella.y"
+
+#ifdef _MSC_VER
+#  pragma warning(pop)
+#endif
+
+#line 1903 "stella.tab.hxx"
 
 
 #endif // !YY_YY_STELLA_TAB_HXX_INCLUDED
