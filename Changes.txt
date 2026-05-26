@@ -53,6 +53,8 @@
     - Properly initialise HMxy shadow registers
     - Enhanced VSYNC emulation, considers VBLANK now too, and only
       takes effect when at least 2 scanlines have passed
+    - Enhanced RSYNC emulation, real hardware fires exactly one
+      scanline advance only
     - Enhanced PAL-60 detection, searches for signature (e.g. PAL60)
       in ROM (issue #1061)
     - PAL gray colors; aligned gray colors in the standard PAL palette
