@@ -174,6 +174,7 @@ void TIA::initialize()
   myTimestamp = 0;
   for (AnalogReadout& analogReadout : myAnalogReadouts)
     analogReadout.reset(myTimestamp);
+  myLastAnalogConnections.fill(AnalogReadout::disconnect());
 
   myDelayQueue.reset();
 
@@ -2136,6 +2137,11 @@ void TIA::updateAnalogReadout(uInt8 idx)
       throw std::runtime_error("invalid analog input");
   }
 
+  if (connection == myLastAnalogConnections[idx])
+    return;
+
+  myLastAnalogConnections[idx] = connection;
+  updateEmulation();
   myAnalogReadouts[idx].update(
     connection,
     myTimestamp,

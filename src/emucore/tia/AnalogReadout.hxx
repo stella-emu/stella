@@ -28,6 +28,8 @@
   discharge through R_DUMP when the VBLANK dump bit is set, and reports
   when the capacitor voltage crosses the comparator threshold.
 
+  Part of the four-layer paddle input pipeline; see Paddles for an overview.
+
   @author  Christian Speckner (DirtyHairy)
 */
 class AnalogReadout : public Serializable
@@ -52,8 +54,13 @@ class AnalogReadout : public Serializable
       bool save(Serializer& out) const;
       bool load(Serializer& in);
 
-      friend bool operator==(const AnalogReadout::Connection& c1, const AnalogReadout::Connection& c2);
+      friend bool operator==(const AnalogReadout::Connection& c1,
+                             const AnalogReadout::Connection& c2);
     };
+
+    // Maximum paddle pot resistance (1MΩ); exposed so controllers can express
+    // position as resistance without duplicating this physics constant.
+    static constexpr uInt32 MAX_POT_RESISTANCE = 1'000'000;
 
   public:
     AnalogReadout();
@@ -150,7 +157,6 @@ class AnalogReadout : public Serializable
     static constexpr double
       R0 = 1.8e3,   // 1.8kΩ series resistor in the TIA analog input circuit
       C = 68e-9,    // 68nF timing capacitor
-      R_POT = 1e6,  // 1MΩ maximum pot resistance
       R_DUMP = 50,  // 50Ω dump resistor
       U_SUPP = 5;   // 5V supply voltage
 
@@ -165,7 +171,9 @@ class AnalogReadout : public Serializable
     AnalogReadout& operator=(AnalogReadout&&) = delete;
 };
 
-bool operator==(const AnalogReadout::Connection& c1, const AnalogReadout::Connection& c2);
-bool operator!=(const AnalogReadout::Connection& c1, const AnalogReadout::Connection& c2);
+bool operator==(const AnalogReadout::Connection& c1,
+                const AnalogReadout::Connection& c2);
+bool operator!=(const AnalogReadout::Connection& c1,
+                const AnalogReadout::Connection& c2);
 
 #endif  // ANALOG_READOUT_HXX

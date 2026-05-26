@@ -56,6 +56,11 @@ class DispatchResult;
   This class outputs the serial data into a frame buffer which can then
   be displayed on screen.
 
+  For paddle input, TIA acts as the wiring layer: it reads the resistance
+  Connection set by Paddles, feeds it to AnalogReadout, and exposes the
+  resulting INPT0-3 comparator state to the CPU. See Paddles for an overview
+  of the four-layer input architecture.
+
   @author  Christian Speckner (DirtyHairy) and Stephen Anthony
 */
 class TIA : public Device
@@ -874,6 +879,9 @@ class TIA : public Device
      * The paddle readout circuits.
      */
     std::array<AnalogReadout, 4> myAnalogReadouts;
+    // Last connection seen per readout; guards updateEmulation() from firing
+    // when the controller reports an unchanged resistance.
+    std::array<AnalogReadout::Connection, 4> myLastAnalogConnections;
 
     /**
      * Circuits for the "latched inputs".

@@ -126,8 +126,11 @@ Paddles::Paddles(Jack jack, const Event& event, const System& system,
 
   // The following are independent of whether or not the port
   // is left or right
-  MOUSE_SENSITIVITY = swapdir ? -abs(MOUSE_SENSITIVITY) :
-                                 abs(MOUSE_SENSITIVITY);
+  MOUSE_SENSITIVITY = swapdir ? -std::abs(MOUSE_SENSITIVITY) :
+                                 std::abs(MOUSE_SENSITIVITY);
+  // MOUSE_SENSITIVITY is an integer (1..20) calibrated against the historical
+  // 4096-step accumulator; divide once here to get the normalized per-pixel step.
+  myMouseScale = MOUSE_SENSITIVITY / 4096.F;
   if(!swapaxis)
   {
     myAxisMouseMotion = Event::MouseAxisXMove;
@@ -178,12 +181,8 @@ void Paddles::updateA()
     updateMouseA(firePressedA);
     updateDigitalAxesA();
 
-    // Only change state if the charge has actually changed
-    if(myCharge[0] != myLastCharge[0])
-    {
-      setPin(AnalogPin::Nine, AnalogReadout::connectToVcc(MAX_RESISTANCE * (myCharge[0] / double{TRIGMAX})));
-      myLastCharge[0] = myCharge[0];
-    }
+    setPin(AnalogPin::Nine, AnalogReadout::connectToVcc(
+        AnalogReadout::MAX_POT_RESISTANCE * myPosition[0]));
   }
 
   setPin(DigitalPin::Four, !getAutoFireState(firePressedA));
@@ -194,59 +193,48 @@ void Paddles::updateA()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-AnalogReadout::Connection
-Paddles::getReadOut(int lastAxis,int& newAxis, int center)
+void Paddles::conditionAxisInput(int lastAxis, int& newAxis)
 {
   const float range = ANALOG_RANGE - analogDeadZone() * 2;
 
-  // dead zone, ignore changes inside the dead zone
+  // dead zone: strip center noise, shift remaining range to start at zero
   if(newAxis > analogDeadZone())
     newAxis -= analogDeadZone();
   else if(newAxis < -analogDeadZone())
     newAxis += analogDeadZone();
   else
-    newAxis = 0; // treat any dead zone value as zero
+    newAxis = 0;
 
   static constexpr std::array<float, MAX_DEJITTER - MIN_DEJITTER + 1> bFac = {
     // higher values mean more dejitter strength
     0.F, // off
-    0.50F, 0.59F, 0.67F, 0.74F, 0.80F,
+    0.5F,  0.59F, 0.67F, 0.74F,  0.8F,
     0.85F, 0.89F, 0.92F, 0.94F, 0.95F
   };
   static constexpr std::array<float, MAX_DEJITTER - MIN_DEJITTER + 1> dFac = {
     // lower values mean more dejitter strength
     1.F, // off
-    1.0F / 181, 1.0F / 256, 1.0F / 362, 1.0F / 512, 1.0F / 724,
-    1.0F / 1024, 1.0F / 1448, 1.0F / 2048, 1.0F / 2896, 1.0F / 4096
+    1.F / 181,  1.F /  256, 1.F / 362,  1.F / 512,  1.F / 724,
+    1.F / 1024, 1.F / 1448, 1.F / 2048, 1.F / 2896, 1.F / 4096
   };
   const float baseFactor = bFac[DEJITTER_BASE];
   const float diffFactor = dFac[DEJITTER_DIFF];
 
-  // dejitter, suppress small changes only
-  const float dejitter = powf(baseFactor, std::abs(newAxis - lastAxis) * diffFactor);
+  // dejitter: suppress small noisy changes, blend toward previous value
+  const float dejitter = std::pow(baseFactor, std::abs(newAxis - lastAxis) * diffFactor);
   const int newVal = newAxis * (1 - dejitter) + lastAxis * dejitter;
 
   // only use new dejittered value for larger differences
-  if(abs(newVal - newAxis) > 10)
+  if(std::abs(newVal - newAxis) > 10)
     newAxis = newVal;
 
-  // apply linearity
+  // linearity: warp the response curve
   float linearVal = newAxis / (range / 2); // scale to -1.0..+1.0
+  linearVal = std::copysign(std::pow(std::abs(linearVal), LINEARITY), linearVal);
+  newAxis = linearVal * (range / 2);
 
-  if(newAxis >= 0)
-    linearVal = powf(std::abs(linearVal), LINEARITY);
-  else
-    linearVal = -powf(std::abs(linearVal), LINEARITY);
-
-  newAxis = linearVal * (range / 2); // scale back to ANALOG_RANGE
-
-  // scale axis to range including dead zone
-  const Int32 scaledAxis = newAxis * ANALOG_RANGE / range;
-
-  // scale result
-  return AnalogReadout::connectToVcc(MAX_RESISTANCE *
-        BSPF::clamp((ANALOG_MAX_VALUE - (scaledAxis * SENSITIVITY + center)) /
-                    float{ANALOG_RANGE}, 0.F, 1.F));
+  // rescale to full ANALOG_RANGE to compensate for the dead zone range reduction
+  newAxis = newAxis * ANALOG_RANGE / range;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -261,13 +249,16 @@ bool Paddles::updateAnalogAxesA()
   // previous values by a pre-defined amount)
   // Otherwise, it would always override input from digital and mouse
 
-
   int sa_xaxis = myEvent.get(myAAxisValue);
   bool sa_changed = false;
 
-  if(abs(myLastAxisX - sa_xaxis) > 10)
+  if(std::abs(myLastAxisX - sa_xaxis) > 10)
   {
-    setPin(AnalogPin::Nine, getReadOut(myLastAxisX, sa_xaxis, XCENTER));
+    conditionAxisInput(myLastAxisX, sa_xaxis);
+    setPin(AnalogPin::Nine, AnalogReadout::connectToVcc(
+        AnalogReadout::MAX_POT_RESISTANCE * BSPF::clamp(
+            (ANALOG_MAX_VALUE - (sa_xaxis * SENSITIVITY + XCENTER)) / float{ANALOG_RANGE},
+            0.F, 1.F)));
     sa_changed = true;
   }
 
@@ -283,10 +274,9 @@ void Paddles::updateMouseA(bool& firePressedA)
   if(myMPaddleID == 0)
   {
     // We're in auto mode, where a single axis is used for one paddle only
-    myCharge[myMPaddleID] = BSPF::clamp(myCharge[myMPaddleID] -
-                                        (myEvent.get(myAxisMouseMotion) * MOUSE_SENSITIVITY),
-                                        TRIGMIN, TRIGRANGE);
-
+    myPosition[myMPaddleID] = BSPF::clamp(
+        myPosition[myMPaddleID] - myEvent.get(myAxisMouseMotion) * myMouseScale,
+        0.F, POSITION_LIMIT);
     firePressedA = firePressedA
       || myEvent.get(Event::MouseButtonLeftValue)
       || myEvent.get(Event::MouseButtonRightValue);
@@ -297,17 +287,17 @@ void Paddles::updateMouseA(bool& firePressedA)
     // mapped to a separate paddle
     if(myMPaddleIDX == 0)
     {
-      myCharge[myMPaddleIDX] = BSPF::clamp(myCharge[myMPaddleIDX] -
-                                           (myEvent.get(Event::MouseAxisXMove) * MOUSE_SENSITIVITY),
-                                           TRIGMIN, TRIGRANGE);
+      myPosition[myMPaddleIDX] = BSPF::clamp(
+          myPosition[myMPaddleIDX] - myEvent.get(Event::MouseAxisXMove) * myMouseScale,
+          0.F, POSITION_LIMIT);
       firePressedA = firePressedA
         || myEvent.get(Event::MouseButtonLeftValue);
     }
     if(myMPaddleIDY == 0)
     {
-      myCharge[myMPaddleIDY] = BSPF::clamp(myCharge[myMPaddleIDY] -
-                                           (myEvent.get(Event::MouseAxisYMove) * MOUSE_SENSITIVITY),
-                                           TRIGMIN, TRIGRANGE);
+      myPosition[myMPaddleIDY] = BSPF::clamp(
+          myPosition[myMPaddleIDY] - myEvent.get(Event::MouseAxisYMove) * myMouseScale,
+          0.F, POSITION_LIMIT);
       firePressedA = firePressedA
         || myEvent.get(Event::MouseButtonRightValue);
     }
@@ -320,25 +310,22 @@ void Paddles::updateDigitalAxesA()
   // Finally, consider digital input, where movement happens
   // until a digital event is released
   if(myKeyRepeatA)
-  {
-    myPaddleRepeatA++;
-    if(myPaddleRepeatA > DIGITAL_SENSITIVITY)
-      myPaddleRepeatA = DIGITAL_DISTANCE;
-  }
+    myPaddleRepeatA = std::min(myPaddleRepeatA + DIGITAL_STEP / DIGITAL_SENSITIVITY,
+                               DIGITAL_STEP);
 
   myKeyRepeatA = false;
 
   if(myEvent.get(myADecEvent))
   {
     myKeyRepeatA = true;
-    if(myCharge[myAxisDigitalZero] > myPaddleRepeatA)
-      myCharge[myAxisDigitalZero] -= myPaddleRepeatA;
+    myPosition[myAxisDigitalZero] = std::max(0.F,
+        myPosition[myAxisDigitalZero] - myPaddleRepeatA);
   }
   if(myEvent.get(myAIncEvent))
   {
     myKeyRepeatA = true;
-    if((myCharge[myAxisDigitalZero] + myPaddleRepeatA) < TRIGRANGE)
-      myCharge[myAxisDigitalZero] += myPaddleRepeatA;
+    myPosition[myAxisDigitalZero] = std::min(POSITION_LIMIT,
+        myPosition[myAxisDigitalZero] + myPaddleRepeatA);
   }
 }
 
@@ -355,12 +342,8 @@ void Paddles::updateB()
     updateMouseB(firePressedB);
     updateDigitalAxesB();
 
-    // Only change state if the charge has actually changed
-    if(myCharge[1] != myLastCharge[1])
-    {
-      setPin(AnalogPin::Five, AnalogReadout::connectToVcc(MAX_RESISTANCE * (myCharge[1] / double{TRIGMAX})));
-      myLastCharge[1] = myCharge[1];
-    }
+    setPin(AnalogPin::Five, AnalogReadout::connectToVcc(
+        AnalogReadout::MAX_POT_RESISTANCE * myPosition[1]));
   }
 
   setPin(DigitalPin::Three, !getAutoFireStateP1(firePressedB));
@@ -372,9 +355,13 @@ bool Paddles::updateAnalogAxesB()
   int sa_yaxis = myEvent.get(myBAxisValue);
   bool sa_changed = false;
 
-  if(abs(myLastAxisY - sa_yaxis) > 10)
+  if(std::abs(myLastAxisY - sa_yaxis) > 10)
   {
-    setPin(AnalogPin::Five, getReadOut(myLastAxisY, sa_yaxis, YCENTER));
+    conditionAxisInput(myLastAxisY, sa_yaxis);
+    setPin(AnalogPin::Five, AnalogReadout::connectToVcc(
+        AnalogReadout::MAX_POT_RESISTANCE * BSPF::clamp(
+            (ANALOG_MAX_VALUE - (sa_yaxis * SENSITIVITY + YCENTER)) / float{ANALOG_RANGE},
+            0.F, 1.F)));
     sa_changed = true;
   }
 
@@ -390,10 +377,9 @@ void Paddles::updateMouseB(bool& firePressedB)
   if(myMPaddleID == 1)
   {
     // We're in auto mode, where a single axis is used for one paddle only
-    myCharge[myMPaddleID] = BSPF::clamp(myCharge[myMPaddleID] -
-                                        (myEvent.get(myAxisMouseMotion) * MOUSE_SENSITIVITY),
-                                        TRIGMIN, TRIGRANGE);
-
+    myPosition[myMPaddleID] = BSPF::clamp(
+        myPosition[myMPaddleID] - myEvent.get(myAxisMouseMotion) * myMouseScale,
+        0.F, POSITION_LIMIT);
     firePressedB = firePressedB
       || myEvent.get(Event::MouseButtonLeftValue)
       || myEvent.get(Event::MouseButtonRightValue);
@@ -404,17 +390,17 @@ void Paddles::updateMouseB(bool& firePressedB)
     // mapped to a separate paddle
     if(myMPaddleIDX == 1)
     {
-      myCharge[myMPaddleIDX] = BSPF::clamp(myCharge[myMPaddleIDX] -
-                                           (myEvent.get(Event::MouseAxisXMove) * MOUSE_SENSITIVITY),
-                                           TRIGMIN, TRIGRANGE);
+      myPosition[myMPaddleIDX] = BSPF::clamp(
+          myPosition[myMPaddleIDX] - myEvent.get(Event::MouseAxisXMove) * myMouseScale,
+          0.F, POSITION_LIMIT);
       firePressedB = firePressedB
         || myEvent.get(Event::MouseButtonLeftValue);
     }
     if(myMPaddleIDY == 1)
     {
-      myCharge[myMPaddleIDY] = BSPF::clamp(myCharge[myMPaddleIDY] -
-                                           (myEvent.get(Event::MouseAxisYMove) * MOUSE_SENSITIVITY),
-                                           TRIGMIN, TRIGRANGE);
+      myPosition[myMPaddleIDY] = BSPF::clamp(
+          myPosition[myMPaddleIDY] - myEvent.get(Event::MouseAxisYMove) * myMouseScale,
+          0.F, POSITION_LIMIT);
       firePressedB = firePressedB
         || myEvent.get(Event::MouseButtonRightValue);
     }
@@ -427,25 +413,22 @@ void Paddles::updateDigitalAxesB()
   // Finally, consider digital input, where movement happens
   // until a digital event is released
   if(myKeyRepeatB)
-  {
-    myPaddleRepeatB++;
-    if(myPaddleRepeatB > DIGITAL_SENSITIVITY)
-      myPaddleRepeatB = DIGITAL_DISTANCE;
-  }
+    myPaddleRepeatB = std::min(myPaddleRepeatB + DIGITAL_STEP / DIGITAL_SENSITIVITY,
+                               DIGITAL_STEP);
 
   myKeyRepeatB = false;
 
   if(myEvent.get(myBDecEvent))
   {
     myKeyRepeatB = true;
-    if(myCharge[myAxisDigitalOne] > myPaddleRepeatB)
-      myCharge[myAxisDigitalOne] -= myPaddleRepeatB;
+    myPosition[myAxisDigitalOne] = std::max(0.F,
+        myPosition[myAxisDigitalOne] - myPaddleRepeatB);
   }
   if(myEvent.get(myBIncEvent))
   {
     myKeyRepeatB = true;
-    if((myCharge[myAxisDigitalOne] + myPaddleRepeatB) < TRIGRANGE)
-      myCharge[myAxisDigitalOne] += myPaddleRepeatB;
+    myPosition[myAxisDigitalOne] = std::min(POSITION_LIMIT,
+        myPosition[myAxisDigitalOne] + myPaddleRepeatB);
   }
 }
 
@@ -536,24 +519,13 @@ void Paddles::setDejitterDiff(int strength)
 void Paddles::setDigitalSensitivity(int sensitivity)
 {
   DIGITAL_SENSITIVITY = BSPF::clamp(sensitivity, MIN_DIGITAL_SENSE, MAX_DIGITAL_SENSE);
-  DIGITAL_DISTANCE = 20 + (DIGITAL_SENSITIVITY << 3);
+  // Express the full-speed step directly in normalized [0,1] position units.
+  // The formula (20 + sensitivity*8) / 4096 preserves the historical calibration.
+  DIGITAL_STEP = (20.F + (DIGITAL_SENSITIVITY * 8)) / 4096.F;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Paddles::setDigitalPaddleRange(int range)
 {
-  range = BSPF::clamp(range, MIN_MOUSE_RANGE, MAX_MOUSE_RANGE);
-  TRIGRANGE = static_cast<int>(TRIGMAX * (range / 100.0));
+  POSITION_LIMIT = BSPF::clamp(range, MIN_MOUSE_RANGE, MAX_MOUSE_RANGE) / 100.F;
 }
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int Paddles::XCENTER = 0;
-int Paddles::YCENTER = 0;
-float Paddles::SENSITIVITY = 1.F;
-float Paddles::LINEARITY = 1.F;
-int Paddles::DEJITTER_BASE = 0;
-int Paddles::DEJITTER_DIFF = 0;
-int Paddles::TRIGRANGE = Paddles::TRIGMAX;
-
-int Paddles::DIGITAL_SENSITIVITY = -1;
-int Paddles::DIGITAL_DISTANCE = -1;

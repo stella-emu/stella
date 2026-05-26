@@ -83,25 +83,31 @@ void AnalogReadout::setConsoleTiming(ConsoleTiming consoleTiming)
 {
   myConsoleTiming = consoleTiming;
 
-  myClockFreq = myConsoleTiming == ConsoleTiming::ntsc ? 60 * 228 * 262 : 50 * 228 * 312;
-  myUThresh = U_SUPP * (1. - exp(-TRIPPOINT_LINES * 228 / myClockFreq  / (R_POT + R0) / C));
+  myClockFreq = myConsoleTiming == ConsoleTiming::ntsc
+    ? 60 * 228 * 262
+    : 50 * 228 * 312;
+  myUThresh = U_SUPP * (1. - exp(-TRIPPOINT_LINES * 228 / myClockFreq /
+              (MAX_POT_RESISTANCE + R0) / C));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void AnalogReadout::updateCharge(uInt64 timestamp)
 {
   if (myIsDumped) {
-    myU *= exp(-static_cast<double>(timestamp - myTimestamp) / R_DUMP / C / myClockFreq);
+    myU *= exp(-static_cast<double>(timestamp - myTimestamp) / R_DUMP / C /
+           myClockFreq);
   } else {
     switch (myConnection.type) {
       case ConnectionType::vcc:
         myU = U_SUPP * (1 - (1 - myU / U_SUPP) *
-          exp(-static_cast<double>(timestamp - myTimestamp) / (myConnection.resistance + R0) / C / myClockFreq));
+          exp(-static_cast<double>(timestamp - myTimestamp) /
+              (myConnection.resistance + R0) / C / myClockFreq));
 
         break;
 
       case ConnectionType::ground:
-        myU *= exp(-static_cast<double>(timestamp - myTimestamp) / (myConnection.resistance + R0) / C / myClockFreq);
+        myU *= exp(-static_cast<double>(timestamp - myTimestamp) /
+            (myConnection.resistance + R0) / C / myClockFreq);
 
         break;
 

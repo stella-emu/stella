@@ -25,6 +25,16 @@
 /**
   The standard Atari 2600 pair of paddle controllers.
 
+  Paddle input is handled by four cooperating layers. This class (Paddles)
+  interprets raw input events — analog axis, mouse, or keyboard/digital — and
+  outputs a normalized [0,1] resistance via setPin(AnalogPin, Connection).
+  AnalogReadout owns the RC circuit physics and converts that resistance into
+  the INPT0-3 comparator output. TIA is the wiring layer that connects Paddles
+  output to AnalogReadout input and exposes INPT0-3 to the CPU. LatchedInput
+  handles INPT4/5 (fire buttons) independently. Paddles and AnalogReadout are
+  fully decoupled: they communicate only through the AnalogReadout::Connection
+  type.
+
   @author  Bradford W. Mott
 */
 class Paddles : public Controller
@@ -164,15 +174,11 @@ class Paddles : public Controller
     */
     static void setDigitalPaddleRange(int range);
 
-    // The maximum value of the paddle pot = 1MOhm
-    static constexpr uInt32 MAX_RESISTANCE = 1000000;
 
   private:
-    // Range of values over which digital and mouse movement is scaled
-    // to paddle resistance
-    static constexpr int TRIGMIN = 1;
-    static constexpr int TRIGMAX = 4096;
-    static int TRIGRANGE;  // This one is variable for the upper range
+    // Upper limit of the normalized position range [0.0, POSITION_LIMIT].
+    // Reduced below 1.0 by setDigitalPaddleRange() to shrink effective travel.
+    inline static float POSITION_LIMIT = 1.F;
 
     // Pre-compute the events we care about based on given port
     // This will eliminate test for left or right port in update()
@@ -187,21 +193,24 @@ class Paddles : public Controller
     int myMPaddleID{-1};                    // paddle to emulate in 'automatic' mode
     int myMPaddleIDX{-1}, myMPaddleIDY{-1}; // paddles to emulate in 'specific axis' mode
 
+    float myMouseScale{0.F};
     bool myKeyRepeatA{false}, myKeyRepeatB{false};
-    int myPaddleRepeatA{0}, myPaddleRepeatB{0};
-    std::array<int, 2> myCharge{TRIGRANGE/2, TRIGRANGE/2}, myLastCharge{0};
+    float myPaddleRepeatA{0.F}, myPaddleRepeatB{0.F};
+    std::array<float, 2> myPosition{0.5F, 0.5F};
     int myLastAxisX{0}, myLastAxisY{0};
     int myAxisDigitalZero{0}, myAxisDigitalOne{0};
 
-    static int XCENTER;
-    static int YCENTER;
-    static float SENSITIVITY, LINEARITY;
+    inline static int XCENTER = 0;
+    inline static int YCENTER = 0;
+    inline static float SENSITIVITY = 1.F;
+    inline static float LINEARITY = 1.F;
 
-    static int DIGITAL_SENSITIVITY, DIGITAL_DISTANCE;
-    static int DEJITTER_BASE, DEJITTER_DIFF;
+    inline static int DIGITAL_SENSITIVITY = -1;
+    inline static float DIGITAL_STEP = -1.F;  // full-speed normalized position step per frame
+    inline static int DEJITTER_BASE = 0;
+    inline static int DEJITTER_DIFF = 0;
 
-    static AnalogReadout::Connection getReadOut(int lastAxis,
-                                                int& newAxis, int center);
+    static void conditionAxisInput(int lastAxis, int& newAxis);
 
     void updateA();
     void updateB();

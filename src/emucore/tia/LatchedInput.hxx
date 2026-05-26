@@ -27,6 +27,9 @@
   a low signal is captured and held until the latch is explicitly cleared
   by a subsequent VBLANK write with bit 6 cleared.
 
+  Independent of the AnalogReadout (INPT0–3) paddle RC pipeline; see Paddles
+  for an overview of the four-layer input architecture.
+
   @author  Christian Speckner (DirtyHairy)
 */
 class LatchedInput : public Serializable
