@@ -111,7 +111,7 @@ class DiStella
     void disasmPass1(CartDebug::AddressList& debuggerAddresses);
     void disasmFromAddress(uInt32 distart);
 
-    [[nodiscard]] bool check_range(uInt16 start, uInt16 end) const;
+    [[nodiscard]] bool checkRange(uInt16 start, uInt16 end) const;
     AddressType mark(uInt32 address, uInt16 mask, bool directive = false);
     [[nodiscard]] bool checkBit(uInt16 address, uInt16 mask, bool useDebugger = true) const;
     [[nodiscard]] bool checkBits(uInt16 address, uInt16 mask, uInt16 notMask, bool useDebugger = true) const;
@@ -121,7 +121,7 @@ class DiStella
     void outputBytes(Device::AccessType type);
 
     // Convenience methods to generate appropriate labels
-    void labelA12High(std::ostringstream& buf, uInt8 op, uInt16 addr, AddressType labfound)
+    void labelA12High(std::ostringstream& buf, uInt16 addr)
     {
       if(!myDbg.getLabel(buf, addr, true))
         buf << "L" << Common::Base::HEX4 << addr;
@@ -163,7 +163,7 @@ class DiStella
     uInt16 myOffset{0}, myPC{0}, myPCEnd{0};
     uInt16 mySegType{0};
 
-    struct resource {
+    struct Resource {
       uInt16 start{0};
       uInt16 end{0};
       uInt16 length{0};

@@ -64,9 +64,25 @@ DiStella::DiStella(const CartDebug& dbg, CartDebug::DisassemblyList& list,
 
   myReserved.breakFound = false;
 
-  if (resolve_code)
+  if (resolve_code) {
     // First pass
     disasmPass1(info.addressList);
+  } else if (myOffset == 0) {
+    // ZP RAM: no static recursive analysis; seed myLabels directly from
+    // runtime access flags so pass 2 can classify bytes correctly.
+    // Bytes actually executed get CODE; unaccessed bytes get ROW to prevent
+    // them from falling into the default CODE branch spuriously.
+    constexpr uInt16 dataFlags = Device::DATA | Device::GFX | Device::PGFX |
+                                 Device::COL | Device::PCOL | Device::BCOL | Device::AUD;
+    for (int k = myAppData.start; std::cmp_less_equal(k, myAppData.end); ++k) {
+      const uInt16 addr = static_cast<uInt16>(k);
+      const auto flags = Debugger::debugger().getAccessFlags(addr);
+      if (flags & Device::CODE)
+        mark(addr, Device::CODE);
+      else if (!(flags & dataFlags))
+        mark(addr, Device::ROW);
+    }
+  }
 
   // Second pass
   disasm(myOffset, DisasmPass::MarkValid);
@@ -335,14 +351,14 @@ void DiStella::disasm(uInt32 distart, DisasmPass pass)
               nextLine << "     ";
 
             if(labelFound == AddressType::ROM) {
-              labelA12High(nextLine, opcode, ad, labelFound);
+              labelA12High(nextLine, ad);
               nextLineBytes << Base::HEX2 << static_cast<int>(ad & 0xff) << " "
                             << Base::HEX2 << static_cast<int>(ad >> 8);
             }
             else if(labelFound == AddressType::ROM_MIRROR) {
               if(mySettings.rFlag) {
                 const int tmp = (ad & myAppData.end) + myOffset;
-                labelA12High(nextLine, opcode, tmp, labelFound);
+                labelA12High(nextLine, tmp);
                 nextLineBytes << Base::HEX2 << static_cast<int>(tmp & 0xff) << " "
                               << Base::HEX2 << static_cast<int>(tmp >> 8);
               }
@@ -406,7 +422,7 @@ void DiStella::disasm(uInt32 distart, DisasmPass pass)
               nextLine << "     ";
 
             if(labelFound == AddressType::ROM) {
-              labelA12High(nextLine, opcode, ad, labelFound);
+              labelA12High(nextLine, ad);
               nextLine << ",x";
               nextLineBytes << Base::HEX2 << static_cast<int>(ad & 0xff) << " "
                             << Base::HEX2 << static_cast<int>(ad >> 8);
@@ -414,7 +430,7 @@ void DiStella::disasm(uInt32 distart, DisasmPass pass)
             else if(labelFound == AddressType::ROM_MIRROR) {
               if(mySettings.rFlag) {
                 const int tmp = (ad & myAppData.end) + myOffset;
-                labelA12High(nextLine, opcode, tmp, labelFound);
+                labelA12High(nextLine, tmp);
                 nextLine << ",x";
                 nextLineBytes << Base::HEX2 << static_cast<int>(tmp & 0xff) << " "
                               << Base::HEX2 << static_cast<int>(tmp >> 8);
@@ -453,7 +469,7 @@ void DiStella::disasm(uInt32 distart, DisasmPass pass)
               nextLine << "     ";
 
             if(labelFound == AddressType::ROM) {
-              labelA12High(nextLine, opcode, ad, labelFound);
+              labelA12High(nextLine, ad);
               nextLine << ",y";
               nextLineBytes << Base::HEX2 << static_cast<int>(ad & 0xff) << " "
                             << Base::HEX2 << static_cast<int>(ad >> 8);
@@ -461,7 +477,7 @@ void DiStella::disasm(uInt32 distart, DisasmPass pass)
             else if(labelFound == AddressType::ROM_MIRROR) {
               if(mySettings.rFlag) {
                 const int tmp = (ad & myAppData.end) + myOffset;
-                labelA12High(nextLine, opcode, tmp, labelFound);
+                labelA12High(nextLine, tmp);
                 nextLine << ",y";
                 nextLineBytes << Base::HEX2 << static_cast<int>(tmp & 0xff) << " "
                               << Base::HEX2 << static_cast<int>(tmp >> 8);
@@ -546,7 +562,7 @@ void DiStella::disasm(uInt32 distart, DisasmPass pass)
           if(pass == DisasmPass::Output) {
             if(labelFound == AddressType::ROM) {
               nextLine << "     ";
-              labelA12High(nextLine, opcode, ad, labelFound);
+              labelA12High(nextLine, ad);
             }
             else
               nextLine << "     $" << Base::HEX4 << ad;
@@ -575,14 +591,14 @@ void DiStella::disasm(uInt32 distart, DisasmPass pass)
           }
           if(labelFound == AddressType::ROM) {
             nextLine << "(";
-            labelA12High(nextLine, opcode, ad, labelFound);
+            labelA12High(nextLine, ad);
             nextLine << ")";
           }
           else if(labelFound == AddressType::ROM_MIRROR) {
             nextLine << "(";
             if(mySettings.rFlag) {
               const int tmp = (ad & myAppData.end) + myOffset;
-              labelA12High(nextLine, opcode, tmp, labelFound);
+              labelA12High(nextLine, tmp);
             }
             else {
               labelA12Low(nextLine, opcode, ad, labelFound);
@@ -997,7 +1013,7 @@ bool DiStella::checkBits(uInt16 address, uInt16 mask, uInt16 notMask, bool useDe
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool DiStella::check_range(uInt16 start, uInt16 end) const
+bool DiStella::checkRange(uInt16 start, uInt16 end) const
 {
   if (start > end) {
     cerr << "Beginning of range greater than end: start = " << std::hex << start
@@ -1255,7 +1271,7 @@ void DiStella::outputBytes(Device::AccessType type)
 void DiStella::processDirectives(const CartDebug::DirectiveList& directives)
 {
   for (const auto& tag : directives) {
-    if (check_range(tag.start, tag.end))
+    if (checkRange(tag.start, tag.end))
       for (uInt32 k = tag.start; k <= tag.end; ++k)
         mark(k, tag.type, true);
   }
