@@ -182,9 +182,14 @@ string Cartridge::getAccessCounters() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt16 Cartridge::bankOrigin(uInt16 bank, uInt16 PC) const
 {
+  // For sub-4K banks the HADDR field (top 3 bits) lacks the granularity needed
+  // to distinguish mirrors, so derive the origin directly from the PC alignment.
+  const uInt16 bankSz = bankSize(bank);
+  if (bankSz < 4_KB && PC)
+    return static_cast<uInt16>(PC - (PC % bankSz));
+
   // Isolate the high 3 address bits, count them, include the PC if provided
   // and select the most frequent to define the bank origin
-  // TODO: origin for banks smaller than 4K
   constexpr int intervals = 0x8000 / 0x100;
   const uInt32 offset = bank * bankSize();
   //uInt16 addrMask = (4_KB - 1) & ~(bankSize(bank) - 1);

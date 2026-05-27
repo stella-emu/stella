@@ -61,6 +61,8 @@
     - 3E hotspot mirrors; added missing mirrors to 3E hotspot handling
 
   * Debugger improvements:
+    - Fixed bug with 2K ROMs sometimes not being disassembled correctly
+      (issue #907)
     - dbg.logexec; new option to log debugger script execution output
       to a file, also adds dbg.script command-line parameter
     - Debugger timer serialization; timer state now saved/restored with

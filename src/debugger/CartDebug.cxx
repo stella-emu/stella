@@ -316,12 +316,14 @@ bool CartDebug::disassemble(int bank, uInt16 PC, Disassembly& disassembly,
     // If the offset has changed, all old addresses must be 'converted'
     // For example, if the list contains any $fxxx and the address space is now
     // $bxxx, it must be changed
+    const uInt16 bankSz = myConsole.cartridge().bankSize(bank);
+    const uInt16 addrMask = static_cast<uInt16>(bankSz - 1);
     const uInt16 offset = (PC & 0x1000) ? myConsole.cartridge().bankOrigin(bank, PC) : 0;
     if (offset && (info.offset == 0 || mySystem.addressBits() == 16))
       info.offset = offset;
     AddressList& addresses = info.addressList;
     for(auto& i: addresses)
-      i = (i & 0xFFF) + offset; // due to DiStella we have to limit to 4K addresses
+      i = (i & addrMask) + offset; // due to DiStella we have to limit to bank-size addresses
 
     // Only add addresses when absolutely necessary, to cut down on the
     // work that Distella has to do
