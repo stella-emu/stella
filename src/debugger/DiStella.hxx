@@ -98,8 +98,16 @@ class DiStella
     // Directives are basically the contents of a distella configuration file
     void processDirectives(const CartDebug::DirectiveList& directives);
 
+    enum class DisasmPass : uInt8 { MarkValid = 2, Output = 3 };
+
+    static constexpr uInt8 OP_BRK   = 0x00;
+    static constexpr uInt8 OP_JMP   = 0x4c;
+    static constexpr uInt8 OP_JMP_I = 0x6c;  // JMP (indirect)
+    static constexpr uInt8 OP_RTS   = 0x60;
+    static constexpr uInt8 OP_RTI   = 0x40;
+
     // These functions are part of the original Distella code
-    void disasm(uInt32 distart, int pass);
+    void disasm(uInt32 distart, DisasmPass pass);
     void disasmPass1(CartDebug::AddressList& debuggerAddresses);
     void disasmFromAddress(uInt32 distart);
 
@@ -140,7 +148,17 @@ class DiStella
     CartDebug::DisassemblyList& myList;
     const Settings& mySettings;
     CartDebug::ReservedEquates& myReserved;
-    std::stringstream myDisasmBuf;
+    // Staging area for one disassembly line; populated by disasm/output*,
+    // consumed and reset by addEntry()
+    struct DisasmLine {
+      uInt16 address{0};
+      bool   hasAutoLabel{false};
+      string disasm;
+      string ccount;
+      string ctotal;
+      string bytes;
+    } myLine;
+
     std::queue<uInt16> myAddressQueue;
     uInt16 myOffset{0}, myPC{0}, myPCEnd{0};
     uInt16 mySegType{0};
