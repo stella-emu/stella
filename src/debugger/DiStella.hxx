@@ -161,7 +161,7 @@ class DiStella
 
     std::queue<uInt16> myAddressQueue;
     uInt16 myOffset{0}, myPC{0}, myPCEnd{0};
-    uInt16 mySegType{0};
+    Device::AccessType mySegType{Device::NONE};
 
     struct Resource {
       uInt16 start{0};
@@ -186,7 +186,7 @@ class DiStella
       ZERO_PAGE, ZERO_PAGE_X, ZERO_PAGE_Y,
       ABSOLUTE, ABSOLUTE_X, ABSOLUTE_Y,
       ABS_INDIRECT, INDIRECT_X, INDIRECT_Y,
-      RELATIVE, ASS_CODE
+      RELATIVE
     };
 
     /**
@@ -194,22 +194,14 @@ class DiStella
     */
     enum class AccessMode : uInt8
     {
-      NONE, AC, XR, YR, SP, SR, PC, IMM, ZERO, ZERX, ZERY,
-      ABS, ABSX, ABSY, AIND, INDX, INDY, REL, FC, FD, FI,
-      FV, ADDR,
+      NONE, AC, XR, YR, SP, SR, IMM, ZERO, ZERX, ZERY,
+      ABS, ABSX, ABSY, AIND, INDX, INDY, REL, ADDR,
 
       ACIM, /* Source: AC & IMMED (bus collision) */
       ANXR, /* Source: AC & XR (bus collision) */
       AXIM, /* Source: (AC | #EE) & XR & IMMED (bus collision) */
-      ACNC, /* Dest: AC and Carry = Negative */
-      ACXR, /* Dest: AC, XR */
 
-      SABY, /* Source: (ABS_Y & SP) (bus collision) */
-      ACXS, /* Dest: AC, XR, SP */
-      STH0, /* Dest: Store (src & Addr_Hi+1) to (Addr +0x100) */
-      STH1,
-      STH2,
-      STH3
+      SABY  /* Source: (ABS_Y & SP) (bus collision) */
     };
 
     /**

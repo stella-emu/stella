@@ -648,7 +648,7 @@ void DiStella::disasm(uInt32 distart, DisasmPass pass)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DiStella::disasmPass1(CartDebug::AddressList& debuggerAddresses)
 {
-  auto it = debuggerAddresses.cbegin();
+  auto it = debuggerAddresses.begin();
   const uInt16 start = *it++;
 
   // After we've disassembled from all addresses in the address list,
@@ -701,8 +701,8 @@ void DiStella::disasmPass1(CartDebug::AddressList& debuggerAddresses)
     //
     // Note that we can't simply add all addresses right away, since
     // the processing of a single address can cause others to be added in
-    // the ::disasm method
-    // All of these have to be exhausted before considering a new address
+    // disasmFromAddress; all of these have to be exhausted before
+    // considering a new address
     while (myAddressQueue.empty() && it != debuggerAddresses.end()) {
       const uInt16 addr = *it;
 
@@ -762,10 +762,7 @@ void DiStella::disasmFromAddress(uInt32 distart)
       return;
     }
 
-    // so this should be code now...
-    // get opcode
     opcode = Debugger::debugger().peek(myPC + myOffset);  ++myPC;
-    // get address mode for opcode
     addrMode = ourLookup[opcode].addr_mode;
 
     // Add operand(s) for PC values outside the app data range
@@ -882,7 +879,6 @@ void DiStella::disasmFromAddress(uInt32 distart)
   } // while
 }
 
-
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 DiStella::AddressType DiStella::mark(uInt32 address, uInt16 mask, bool directive)
 {
@@ -954,7 +950,6 @@ DiStella::AddressType DiStella::mark(uInt32 address, uInt16 mask, bool directive
   }
   else if(address > 0x1000 && myOffset != 0 && mySettings.rFlag)  // Exclude zero-page accesses
   {
-    /* 2K & 4K case */
     myLabels[address & myAppData.end] = myLabels[address & myAppData.end] | mask;
     if(directive)
       myDirectives[address & myAppData.end] = mask;
@@ -982,11 +977,10 @@ bool DiStella::checkBit(uInt16 address, uInt16 mask, bool useDebugger) const
   if (directive)
     return (directive | lastbits) & mask;
   // Next, the results from a dynamic/runtime analysis are used (except for pass 1)
-  else if (useDebugger && ((debugger | lastbits) & mask))
+  if (useDebugger && ((debugger | lastbits) & mask))
     return true;
   // Otherwise, default to static analysis from Distella
-  else
-    return label & mask;
+  return label & mask;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
