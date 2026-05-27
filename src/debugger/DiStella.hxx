@@ -19,6 +19,7 @@
 #define DISTELLA_HXX
 
 #include <queue>
+#include <unordered_set>
 
 #include "Base.hxx"
 #include "CartDebug.hxx"
@@ -102,10 +103,10 @@ class DiStella
     void disasmPass1(CartDebug::AddressList& debuggerAddresses);
     void disasmFromAddress(uInt32 distart);
 
-    bool check_range(uInt16 start, uInt16 end) const;
+    [[nodiscard]] bool check_range(uInt16 start, uInt16 end) const;
     AddressType mark(uInt32 address, uInt16 mask, bool directive = false);
-    bool checkBit(uInt16 address, uInt16 mask, bool useDebugger = true) const;
-    bool checkBits(uInt16 address, uInt16 mask, uInt16 notMask, bool useDebugger = true) const;
+    [[nodiscard]] bool checkBit(uInt16 address, uInt16 mask, bool useDebugger = true) const;
+    [[nodiscard]] bool checkBits(uInt16 address, uInt16 mask, uInt16 notMask, bool useDebugger = true) const;
     void outputGraphics();
     void outputColors();
     string getColor(uInt8 byte);

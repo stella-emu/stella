@@ -117,11 +117,23 @@ void DiStella::disasm(uInt32 distart, int pass)
     // since -1 is used in m6502.m4 for clearing the last peek
     // and this results into an access at e.g. 0xffff,
     // we have to fix the consequences here (ugly!).
-    if(myPC == myAppData.end)
-      goto FIX_LAST;  // NOLINT(cppcoreguidelines-avoid-goto,hicpp-avoid-goto)
+    // The end-of-data byte is always treated as ROW regardless of its type flags.
+    if(myPC == myAppData.end ||
+       checkBits(myPC, Device::ROW,
+                 Device::CODE | Device::GFX | Device::PGFX |
+                 Device::COL | Device::PCOL | Device::BCOL |
+                 Device::AUD | Device::DATA))
+    {
+      if(pass == 2)
+        mark(myPC + myOffset, Device::VALID_ENTRY);
 
-    if(checkBits(myPC, Device::GFX | Device::PGFX,
-       Device::CODE))
+      if(pass == 3)
+        outputBytes(Device::ROW);
+      else
+        ++myPC;
+    }
+    else if(checkBits(myPC, Device::GFX | Device::PGFX,
+            Device::CODE))
     {
       if(pass == 2)
         mark(myPC + myOffset, Device::VALID_ENTRY);
@@ -158,19 +170,6 @@ void DiStella::disasm(uInt32 distart, int pass)
         mark(myPC + myOffset, Device::VALID_ENTRY);
       if(pass == 3)
         outputBytes(Device::DATA);
-      else
-        ++myPC;
-    }
-    else if(checkBits(myPC, Device::ROW,
-            Device::CODE | Device::GFX | Device::PGFX |
-            Device::COL | Device::PCOL | Device::BCOL |
-            Device::AUD | Device::DATA)) {
-    FIX_LAST:
-      if(pass == 2)
-        mark(myPC + myOffset, Device::VALID_ENTRY);
-
-      if(pass == 3)
-        outputBytes(Device::ROW);
       else
         ++myPC;
     }
@@ -646,21 +645,18 @@ void DiStella::disasmPass1(CartDebug::AddressList& debuggerAddresses)
   // use all access points determined by Stella during emulation
   int codeAccessPoint = 0;
 
-  // Sometimes we get a circular reference, in that processing a certain
-  // PC address leads us to a sequence of addresses that end up trying
-  // to process the same address again.  We detect such consecutive PC
-  // addresses and only process the first one
-  uInt16 lastPC = 0;
-  bool duplicateFound = false;
+  std::unordered_set<uInt16> visited;
 
-  while (!myAddressQueue.empty())
-    myAddressQueue.pop();
+  myAddressQueue = {};
   myAddressQueue.push(start);
 
-  while (!(myAddressQueue.empty() || duplicateFound)) {
-    const uInt16 pcBeg = myPC = lastPC = myAddressQueue.front();
+  while (!myAddressQueue.empty()) {
+    const uInt16 pcBeg = myAddressQueue.front();
     myAddressQueue.pop();
 
+    if (!visited.insert(pcBeg).second) continue;
+
+    myPC = pcBeg;
     disasmFromAddress(myPC);
 
     if (pcBeg <= myPCEnd) {
@@ -672,7 +668,7 @@ void DiStella::disasmPass1(CartDebug::AddressList& debuggerAddresses)
       // in the emulation core indicate that the CODE range has finished
       // Therefore, we stop at the first such address encountered
       for (uInt32 k = pcBeg; k <= myPCEnd; ++k) {
-        if (checkBits(k, Device::Device::DATA | Device::GFX | Device::PGFX |
+        if (checkBits(k, Device::DATA | Device::GFX | Device::PGFX |
             Device::COL | Device::PCOL | Device::BCOL | Device::AUD,
             Device::CODE)) {
           //if (Debugger::debugger().getAccessFlags(k) &
@@ -722,7 +718,6 @@ void DiStella::disasmPass1(CartDebug::AddressList& debuggerAddresses)
       }
       ++codeAccessPoint;
     }
-    duplicateFound = !myAddressQueue.empty() && (myAddressQueue.front() == lastPC); // TODO: check!
   } // while
 
   for (int k = 0; std::cmp_less_equal(k, myAppData.end); k++) {
@@ -753,7 +748,7 @@ void DiStella::disasmFromAddress(uInt32 distart)
   while (myPC <= myAppData.end) {
 
     // abort when we reach non-code areas
-    if (checkBits(myPC, Device::Device::DATA | Device::GFX | Device::PGFX |
+    if (checkBits(myPC, Device::DATA | Device::GFX | Device::PGFX |
                         Device::COL | Device::PCOL | Device::BCOL |
                         Device::AUD,
                   Device::CODE)) {
@@ -815,9 +810,20 @@ void DiStella::disasmFromAddress(uInt32 distart)
 
       case AddressingMode::ABSOLUTE_X:
       case AddressingMode::ABSOLUTE_Y:
+        ad = Debugger::debugger().dpeek(myPC + myOffset);  myPC += 2;
+        mark(ad, Device::REFERENCED);
+        break;
+
       case AddressingMode::ABS_INDIRECT:
         ad = Debugger::debugger().dpeek(myPC + myOffset);  myPC += 2;
         mark(ad, Device::REFERENCED);
+        // Resolve the jump target when the vector is in ROM (static content known)
+        if (ad > 0xfff) {
+          const uInt16 target = Debugger::debugger().dpeek(ad);
+          if (!checkBit(target & myAppData.end, Device::CODE | Device::ROW, false))
+            myAddressQueue.push(target);
+          mark(target, Device::CODE);
+        }
         break;
 
       case AddressingMode::IMMEDIATE:
@@ -862,7 +868,7 @@ void DiStella::disasmFromAddress(uInt32 distart)
     }
 
     // JMP/RTS/RTI always indicate the end of a block of CODE
-    if (opcode == 0x4c || opcode == 0x60 || opcode == 0x40) {
+    if (opcode == 0x4c || opcode == 0x6c || opcode == 0x60 || opcode == 0x40) {
       // code block end
       myPCEnd = (myPC - 1) + myOffset;
       return;
@@ -962,7 +968,9 @@ bool DiStella::checkBit(uInt16 address, uInt16 mask, bool useDebugger) const
   const uInt16 label = myLabels[address & myAppData.end],
     lastbits = label & (Device::REFERENCED | Device::VALID_ENTRY),
     directive = myDirectives[address & myAppData.end] & ~(Device::REFERENCED | Device::VALID_ENTRY),
-    debugger = Debugger::debugger().getAccessFlags(address | myOffset) & ~(Device::REFERENCED | Device::VALID_ENTRY);
+    // Exclude TCODE: it's output-only annotation from the previous run, not runtime evidence
+    debugger = Debugger::debugger().getAccessFlags(address | myOffset)
+               & ~(Device::REFERENCED | Device::VALID_ENTRY | Device::TCODE);
 
   // Any address marked by a manual directive always takes priority
   if (directive)
@@ -1016,71 +1024,70 @@ void DiStella::addEntry(Device::AccessType type)
     myDisasmBuf >> std::setw(4) >> std::hex >> tag.address;
 
   // Only include addresses within the requested range
-  if (tag.address < myAppData.start)
-    goto DONE_WITH_ADD;  // NOLINT(cppcoreguidelines-avoid-goto,hicpp-avoid-goto)
-
-  // Label (a user-defined label always overrides any auto-generated one)
-  myDisasmBuf.seekg(5, std::ios::beg);
-  if (tag.address) {
-    tag.label = myDbg.getLabel(tag.address, true);
-    tag.hllabel = true;
-    if (tag.label.empty()) {
-      if (myDisasmBuf.peek() != ' ')
-        getline(myDisasmBuf, tag.label, '\'');
-      else if (mySettings.showAddresses && tag.type == Device::CODE) {
-        // Have addresses indented, to differentiate from actual labels
-        tag.label = " " + Base::toString(tag.address, Base::Fmt::_16_4);
-        tag.hllabel = false;
+  if (tag.address >= myAppData.start)
+  {
+    // Label (a user-defined label always overrides any auto-generated one)
+    myDisasmBuf.seekg(5, std::ios::beg);
+    if (tag.address) {
+      tag.label = myDbg.getLabel(tag.address, true);
+      tag.hllabel = true;
+      if (tag.label.empty()) {
+        if (myDisasmBuf.peek() != ' ')
+          getline(myDisasmBuf, tag.label, '\'');
+        else if (mySettings.showAddresses && tag.type == Device::CODE) {
+          // Have addresses indented, to differentiate from actual labels
+          tag.label = " " + Base::toString(tag.address, Base::Fmt::_16_4);
+          tag.hllabel = false;
+        }
       }
     }
+
+    // Disassembly
+    // Up to this point the field sizes are fixed, until we get to
+    // variable length labels, cycle counts, etc
+    myDisasmBuf.seekg(11, std::ios::beg);
+    switch (tag.type) {
+      case Device::CODE:
+        getline(myDisasmBuf, tag.disasm, '\'');
+        getline(myDisasmBuf, tag.ccount, '\'');
+        getline(myDisasmBuf, tag.ctotal, '\'');
+        getline(myDisasmBuf, tag.bytes);
+
+        // Make note of when we override CODE sections from the debugger
+        // It could mean that the code hasn't been accessed up to this point,
+        // but it could also indicate that code will *never* be accessed
+        // Since it is impossible to tell the difference, marking the address
+        // in the disassembly at least tells the user about it
+        if (!(Debugger::debugger().getAccessFlags(tag.address) & Device::CODE)
+            && myOffset != 0) {
+          tag.ccount += " *";
+          Debugger::debugger().setAccessFlags(tag.address, Device::TCODE);
+        }
+        break;
+
+      case Device::GFX:
+      case Device::PGFX:
+      case Device::COL:
+      case Device::PCOL:
+      case Device::BCOL:
+      case Device::DATA:
+      case Device::AUD:
+        getline(myDisasmBuf, tag.disasm, '\'');
+        getline(myDisasmBuf, tag.bytes);
+        break;
+
+      case Device::ROW:
+        getline(myDisasmBuf, tag.disasm);
+        break;
+
+      case Device::NONE:
+      default:  // should never happen
+        tag.disasm = " ";
+        break;
+    }
+    myList.push_back(tag);
   }
 
-  // Disassembly
-  // Up to this point the field sizes are fixed, until we get to
-  // variable length labels, cycle counts, etc
-  myDisasmBuf.seekg(11, std::ios::beg);
-  switch (tag.type) {
-    case Device::CODE:
-      getline(myDisasmBuf, tag.disasm, '\'');
-      getline(myDisasmBuf, tag.ccount, '\'');
-      getline(myDisasmBuf, tag.ctotal, '\'');
-      getline(myDisasmBuf, tag.bytes);
-
-      // Make note of when we override CODE sections from the debugger
-      // It could mean that the code hasn't been accessed up to this point,
-      // but it could also indicate that code will *never* be accessed
-      // Since it is impossible to tell the difference, marking the address
-      // in the disassembly at least tells the user about it
-      if (!(Debugger::debugger().getAccessFlags(tag.address) & Device::CODE)
-          && myOffset != 0) {
-        tag.ccount += " *";
-        Debugger::debugger().setAccessFlags(tag.address, Device::TCODE);
-      }
-      break;
-
-    case Device::GFX:
-    case Device::PGFX:
-    case Device::COL:
-    case Device::PCOL:
-    case Device::BCOL:
-    case Device::DATA:
-    case Device::AUD:
-      getline(myDisasmBuf, tag.disasm, '\'');
-      getline(myDisasmBuf, tag.bytes);
-      break;
-
-    case Device::ROW:
-      getline(myDisasmBuf, tag.disasm);
-      break;
-
-    case Device::NONE:
-    default:  // should never happen
-      tag.disasm = " ";
-      break;
-  }
-  myList.push_back(tag);
-
-DONE_WITH_ADD:
   myDisasmBuf.clear();
   myDisasmBuf.str("");
 }
