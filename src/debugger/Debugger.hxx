@@ -257,6 +257,7 @@ class Debugger : public DialogContainer
     int dpeekAsInt(int addr, Device::AccessFlags flags = Device::NONE);
     Device::AccessFlags getAccessFlags(uInt16 addr) const;
     void setAccessFlags(uInt16 addr, Device::AccessFlags flags);
+    Device::AccessCounter getAccessCounter(uInt16 addr) const;
 
     static uInt32 getBaseAddress(uInt32 addr, bool read);
 

@@ -19,6 +19,7 @@
 #include "Debugger.hxx"
 #include "Device.hxx"
 #include "DiStella.hxx"
+#include "TIAConstants.hxx"
 using Common::Base;
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -320,7 +321,7 @@ void DiStella::disasm(uInt32 distart, DisasmPass pass)
       }
 
       // Add operand(s)
-      ad = d1 = 0; // not WSYNC by default!
+      ad = 0;
       switch(addrMode) {
         case AddressingMode::ACCUMULATOR:
         {
@@ -383,7 +384,7 @@ void DiStella::disasm(uInt32 distart, DisasmPass pass)
           d1 = Debugger::debugger().peek(myPC + myOffset);
           if(pass == DisasmPass::Output) {
             if (checkBits(myPC, Device::COL | Device::PCOL | Device::BCOL,
-                /*Device::CODE |*/ Device::GFX | Device::PGFX))
+                Device::GFX | Device::PGFX))  // CODE does not block color display
               nextLine << "     #" << getColor(d1);
             else
               nextLine << "     #$" << Base::HEX2 << static_cast<int>(d1) << " ";
@@ -618,7 +619,11 @@ void DiStella::disasm(uInt32 distart, DisasmPass pass)
         myLine.ccount = std::format(";{}{}", static_cast<int>(ourLookup[opcode].cycles), branchSuffix);
         if((opcode == OP_RTI || opcode == OP_RTS || opcode == OP_JMP || opcode == OP_BRK // code block end
            || checkBit(myPC, Device::REFERENCED)                              // referenced address
-           || (ourLookup[opcode].rw_mode == RWMode::WRITE && d1 == WSYNC))       // strobe WSYNC
+           || (ourLookup[opcode].rw_mode == RWMode::WRITE                        // strobe WSYNC
+               && (addrMode == AddressingMode::ZERO_PAGE
+                   || addrMode == AddressingMode::ZERO_PAGE_X
+                   || addrMode == AddressingMode::ZERO_PAGE_Y)
+               && d1 == WSYNC))
            && cycles > 0) {
           myLine.ctotal = std::format("= {:3}", cycles);
           cycles = 0;
@@ -651,9 +656,18 @@ void DiStella::disasmPass1(CartDebug::AddressList& debuggerAddresses)
   auto it = debuggerAddresses.begin();
   const uInt16 start = *it++;
 
-  // After we've disassembled from all addresses in the address list,
-  // use all access points determined by Stella during emulation
-  int codeAccessPoint = 0;
+  // Pre-collect runtime CODE hints and sort descending by peek count so that
+  // frequently-executed (high-confidence) addresses seed the disassembler
+  // before rarely-executed or speculatively-flagged ones.
+  using RuntimeHint = std::pair<Device::AccessCounter, uInt16>;
+  std::vector<RuntimeHint> runtimeHints;
+  for (int i = 0; i <= myAppData.end; ++i) {
+    const uInt16 addr = static_cast<uInt16>(i + myOffset);
+    if (Debugger::debugger().getAccessFlags(addr) & Device::CODE)
+      runtimeHints.emplace_back(Debugger::debugger().getAccessCounter(addr), addr);
+  }
+  std::ranges::sort(runtimeHints, std::ranges::greater{}, &RuntimeHint::first);
+  auto runtimeIt = runtimeHints.begin();
 
   std::unordered_set<uInt16> visited;
 
@@ -714,15 +728,14 @@ void DiStella::disasmPass1(CartDebug::AddressList& debuggerAddresses)
     }
 
     // Stella itself can provide hints on whether an address has ever
-    // been referenced as CODE
-    while (myAddressQueue.empty() && std::cmp_less_equal(codeAccessPoint, myAppData.end)) {
-      if ((Debugger::debugger().getAccessFlags(codeAccessPoint + myOffset) & Device::CODE)
-          && !(myLabels[codeAccessPoint & myAppData.end] & Device::CODE)) {
-        myAddressQueue.push(codeAccessPoint + myOffset);
-        ++codeAccessPoint;
+    // been referenced as CODE; process highest-count (most confident) first
+    while (myAddressQueue.empty() && runtimeIt != runtimeHints.end()) {
+      const uInt16 rAddr = runtimeIt->second;
+      ++runtimeIt;
+      if (!(myLabels[rAddr & myAppData.end] & Device::CODE)) {
+        myAddressQueue.push(rAddr);
         break;
       }
-      ++codeAccessPoint;
     }
   } // while
 

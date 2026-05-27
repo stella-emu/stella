@@ -128,6 +128,15 @@ void System::increaseAccessCounter(uInt16 addr, bool isWrite) const
   else
     access.device->increaseAccessCounter(addr, isWrite);
 }
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+Device::AccessCounter System::getAccessCounter(uInt16 addr) const
+{
+  const PageAccess& access = getPageAccess(addr);
+  if(access.romPeekCounter)
+    return *(access.romPeekCounter + (addr & PAGE_MASK));
+  return 0;
+}
 #endif
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

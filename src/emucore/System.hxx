@@ -274,6 +274,14 @@ class System : public Serializable
       @param address The address to modify
     */
     void increaseAccessCounter(uInt16 address, bool isWrite) const;
+
+    /**
+      Get the read-access counter for the given address.
+
+      @param address The address to query
+      @return  Number of times the address has been read; 0 if not tracked
+    */
+    Device::AccessCounter getAccessCounter(uInt16 address) const;
   #endif
 
   public:

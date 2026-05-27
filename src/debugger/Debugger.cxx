@@ -585,6 +585,12 @@ void Debugger::setAccessFlags(uInt16 addr, Device::AccessFlags flags)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+Device::AccessCounter Debugger::getAccessCounter(uInt16 addr) const
+{
+  return mySystem.getAccessCounter(addr);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt32 Debugger::getBaseAddress(uInt32 addr, bool read)
 {
   if((addr & 0x1080) == 0x0000) // (addr & 0b 0001 0000 1000 0000) == 0b 0000 0000 0000 0000
