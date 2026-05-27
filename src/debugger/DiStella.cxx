@@ -1070,7 +1070,7 @@ void DiStella::addEntry(Device::AccessType type)
           }
           // Flag self-modifying code: a location that has been both executed and written
           if ((flags & Device::CODE) && (flags & Device::WRITE))
-            tag.ccount += " !";
+            tag.ccount += " ~";
         }
         break;
 

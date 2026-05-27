@@ -1209,6 +1209,7 @@ string CartDebug::saveDisassembly(string path)
       << "; ROM properties MD5  : " << myConsole.properties().get(PropType::Cart_MD5) << "\n"
       << "; Bankswitch type     : " << myConsole.cartridge().about() << "\n;\n"
       << "; Legend: *  = CODE not yet run (tentative code)\n"
+      << ";         ~  = self-modifying code (address has been both executed and written)\n"
       << ";         D  = DATA directive (referenced in some way)\n"
       << ";         G  = GFX directive, shown as '#' (stored in player, missile, ball)\n"
       << ";         P  = PGFX directive, shown as '*' (stored in playfield)\n"
