@@ -28,8 +28,8 @@
     type with 24 KB of flat RAM across six non-contiguous 4 KB windows
     (issue #1149).
 
-  * Added support for CompuMate cassette load/save for binary images;
-    WAV load support may be added in a future release (issue# 79).
+  * Added support for CompuMate cassette load/save for binary images
+    (issue# 79).
 
   * Paddle / Driving Controller; extra buttons added for both left and
     right paddle.
@@ -50,11 +50,11 @@
     - Implemented proper PA7 behaviour in M6532 (issue #108)
     - Implemented 'Late RESPx' behaviour exhibited on some consoles
       (Light sixer, Jr.) (issue #699)
-    - Properly initialise HMxy shadow registers
+    - Properly initialise HMxy shadow registers (issue #1081)
     - Enhanced VSYNC emulation, considers VBLANK now too, and only
-      takes effect when at least 2 scanlines have passed
+      takes effect when at least 2 scanlines have passed (issue #1150)
     - Enhanced RSYNC emulation, real hardware fires exactly one
-      scanline advance only
+      scanline advance only (issue #1150)
     - Enhanced PAL-60 detection, searches for signature (e.g. PAL60)
       in ROM (issue #1061)
     - PAL gray colors; aligned gray colors in the standard PAL palette
@@ -67,9 +67,9 @@
       multi-bank ROM disassembly files; currently doesn't support all
       bankswitch schemes, and needs further testing (issue #604)
     - dbg.logexec; new option to log debugger script execution output
-      to a file, also adds dbg.script command-line parameter
+      to a file, also adds dbg.script command-line parameter (issue #1121)
     - Debugger timer serialization; timer state now saved/restored with
-      savestates
+      savestates (issue #1116)
     - CPU register address tracking improved; better display of addresses
       in CPU registers
     - Duplicate label warning; debugger now warns when a label is defined
@@ -123,7 +123,7 @@
     - KidVid WAV playback; libretro port can now play WAV files for KidVid
       carts (files go in saves/stella/)
     - Keyboard/Keypad controller handling added; Star Raiders now playable
-    - SaveKey/AtariVox support added
+    - SaveKey/AtariVox support added (NVRAM files go in saves/stella/nvram)
     - Expanded controller list in RetroArch UI with documentation
     - Core options v2 categories with legacy fallback
     - FSNodeLIBRETRO rewritten as a proper FSNode implementation; fixes
@@ -133,7 +133,6 @@
     - Savestates fixed (was saving all zeroes, loading past end of data)
     - OSD messaging from Stella routed to libretro core
     - Fast-forward audio suppression
-    - NVRAM path set to saves/stella/nvram/
 
   * Removed R77 port; SDL3 not supported on that platform.
 
