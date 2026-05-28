@@ -1263,6 +1263,9 @@
     <ClCompile Include="..\..\debugger\yacc\stella.tab.cxx">
       <Filter>Source Files\debugger\yacc</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\debugger\CartDisassemblyWriter.cxx">
+      <Filter>Source Files\debugger</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\emucore\AtariVox.hxx">
@@ -2599,6 +2602,9 @@
     </ClInclude>
     <ClInclude Include="..\..\debugger\yacc\stella.tab.hxx">
       <Filter>Header Files\debugger\yacc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\debugger\CartDisassemblyWriter.hxx">
+      <Filter>Header Files\debugger</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

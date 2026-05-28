@@ -458,6 +458,7 @@
     <ClCompile Include="..\..\debugger\BreakpointMap.cxx">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\..\debugger\CartDisassemblyWriter.cxx" />
     <ClCompile Include="..\..\debugger\Debugger.cxx">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
     </ClCompile>
@@ -1432,6 +1433,7 @@
     <ClInclude Include="..\..\debugger\BreakpointMap.hxx">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
     </ClInclude>
+    <ClInclude Include="..\..\debugger\CartDisassemblyWriter.hxx" />
     <ClInclude Include="..\..\debugger\gui\AmigaMouseWidget.hxx">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
     </ClInclude>
