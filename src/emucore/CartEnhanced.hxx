@@ -188,8 +188,10 @@ class CartridgeEnhanced : public Cartridge
 
       @return  The first hotspot address (usually in ROM) space or 0
     */
-    virtual uInt16 hotspot() const { return 0; }
+    uInt16 hotspot() const override { return 0; }
     // TODO: handle cases where there the hotspots cover multiple pages
+
+    uInt32 internalRamSize() const override { return static_cast<uInt32>(myRamSize); }
 
     /**
       Answer whether this is a PlusROM cart.  Note that until the

@@ -1089,46 +1089,76 @@ string CartDebug::saveDisassembly(string path)
   Cartridge& cart = myConsole.cartridge();
   const uInt16 romBankCount = cart.romBankCount();
   const uInt16 oldBank = cart.getBank();
+  const bool multiBank = romBankCount > 1;
 
   // prepare for switching banks
   uInt32 origin = 0;
 
   for(int bank = 0; std::cmp_less(bank, romBankCount); ++bank)
   {
-    // TODO: not every CartDebugWidget does it like that, we need a method
     cart.unlockHotspots();
     cart.bank(bank);
     cart.lockHotspots();
 
     BankInfo& info = myBankInfo[bank];
 
-    disassembleBank(bank);
-
-    // An empty address list means that DiStella can't do a disassembly
+    // Seed the address list for banks not yet visited during emulation so
+    // DiStella has a valid entry point.  The reset vector in the currently-
+    // mapped bank is the best static approximation we have.
     if(info.addressList.empty())
-      continue;
+    {
+      const uInt16 seed = myDebugger.dpeek(0xFFFC, Device::DATA);
+      info.addressList.push_back(seed >= 0x1000 ? seed : info.offset);
+    }
+
+    // For multi-bank ROMs, label names are based on the physical ORG address
+    // so that each bank produces unique labels (e.g. L0100 / L1100) rather
+    // than colliding RORG-relative names (e.g. LF100 in every bank).
+    if(multiBank)
+    {
+      settings.useOrgLabels = true;
+      settings.orgBase = static_cast<uInt16>(origin);
+    }
+
+    disassembleBank(bank);
 
     buf << "\n\n;***********************************************************\n"
       << ";      Bank " << bank;
-    if (romBankCount > 1)
+    if(multiBank)
       buf << " / 0.." << romBankCount - 1;
     buf << "\n;***********************************************************\n\n";
 
-    // Disassemble bank
+    // Disassemble bank with save-specific settings
     disasm.list.clear();
     const DiStella distella(*this, disasm.list, info, settings,
                             myDisLabels, myDisDirectives, myReserved);
 
-    if (myReserved.breakFound)
+    if(myReserved.breakFound)
       addLabel("Break", myDebugger.dpeek(0xfffe));
+
+    const uInt32 ramSize = cart.internalRamSize();
+
+    if(ramSize > 0)
+    {
+      buf << "    SEG     RAM\n";
+      if(!multiBank)
+        buf << "    ORG     $" << Base::HEX4 << info.offset << "\n\n";
+      else
+        buf << "    ORG     $" << Base::HEX4 << origin << "\n"
+            << "    RORG    $" << Base::HEX4 << info.offset << "\n\n";
+      buf << std::format("    ds.b    {:<8}; write port (${:04X}-${:04X})\n",
+                         ramSize, info.offset, info.offset + ramSize - 1)
+          << std::format("    ds.b    {:<8}; read port  (${:04X}-${:04X})\n\n",
+                         ramSize, info.offset + ramSize, info.offset + 2 * ramSize - 1);
+    }
 
     buf << "    SEG     CODE\n";
 
-    if(romBankCount == 1)
-      buf << "    ORG     $" << Base::HEX4 << info.offset << "\n\n";
+    if(!multiBank)
+      buf << "    ORG     $" << Base::HEX4 << (info.offset + 2 * ramSize) << "\n\n";
     else
-      buf << "    ORG     $" << Base::HEX4 << origin << "\n"
-          << "    RORG    $" << Base::HEX4 << info.offset << "\n\n";
+      buf << "    ORG     $" << Base::HEX4 << (origin + 2 * ramSize) << "\n"
+          << "    RORG    $" << Base::HEX4 << (info.offset + 2 * ramSize) << "\n\n";
     origin += static_cast<uInt32>(info.size);
 
     // Format in 'distella' style
@@ -1207,7 +1237,7 @@ string CartDebug::saveDisassembly(string path)
       << "; Using Stella " << STELLA_VERSION << "\n;\n"
       << "; ROM properties name : " << myConsole.properties().get(PropType::Cart_Name) << "\n"
       << "; ROM properties MD5  : " << myConsole.properties().get(PropType::Cart_MD5) << "\n"
-      << "; Bankswitch type     : " << myConsole.cartridge().about() << "\n;\n"
+      << "; Bankswitch type     : " << cart.about() << "\n;\n"
       << "; Legend: *  = CODE not yet run (tentative code)\n"
       << ";         ~  = self-modifying code (address has been both executed and written)\n"
       << ";         D  = DATA directive (referenced in some way)\n"
@@ -1222,6 +1252,21 @@ string CartDebug::saveDisassembly(string path)
       << ";         s  = used by stack\n"
       << ";         !  = page crossed, 1 cycle penalty\n"
       << "\n    processor 6502\n\n";
+
+  // Bankswitch equates for multi-bank ROMs
+  if(multiBank)
+  {
+    const uInt16 hs = cart.hotspot();
+    if(hs)
+    {
+      out << "\n;-----------------------------------------------------------\n"
+          << ";      Bankswitch equates\n"
+          << ";-----------------------------------------------------------\n\n";
+      for(uInt16 b = 0; b < romBankCount; ++b)
+        out << std::format("{:<16}= ${:04X}\n", "BANK" + std::to_string(b), hs + b);
+      out << "\n";
+    }
+  }
 
   out << "\n;-----------------------------------------------------------\n"
       << ";      Color constants\n"
@@ -1372,11 +1417,9 @@ string CartDebug::saveDisassembly(string path)
   try
   {
     node.write(out.view());
-    string retVal;
-    if(myConsole.cartridge().romBankCount() > 1)
-      retVal = DebuggerParser::red("disassembly for multi-bank ROM not fully supported\n");
-    retVal += std::format("saved {} OK", node.getShortPath());
-    return retVal;
+    if(multiBank && !cart.hotspot())
+      return DebuggerParser::red(std::format("saved {} (multi-bank type not fully supported)", node.getShortPath()));
+    return std::format("saved {} OK", node.getShortPath());
   }
   catch(...)
   {

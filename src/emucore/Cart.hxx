@@ -100,6 +100,13 @@ class Cartridge : public Device
     void enableRandomHotspots(bool enable) { myRandomHotspots = enable; }
 
     /**
+      Get the first bankswitching hotspot address in ROM space, or 0 if none.
+      Successive banks are selected by accessing hotspot(), hotspot()+1, etc.
+      Overridden by cart types that use address-based bankswitching.
+    */
+    virtual uInt16 hotspot() const { return 0; }
+
+    /**
       Get the default startup bank for a cart.  This is the bank where
       the system will look at address 0xFFFC to determine where to
       start running code.

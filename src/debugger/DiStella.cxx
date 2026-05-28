@@ -97,8 +97,11 @@ DiStella::DiStella(const CartDebug& dbg, CartDebug::DisassemblyList& list,
       //
       // However, we only do this for labels pointing to ROM (above $1000)
       if(CartDebug::addressType(k + myOffset) == CartDebug::AddrType::ROM) {
+        const uInt16 labelAddr = mySettings.useOrgLabels
+            ? static_cast<uInt16>(k + mySettings.orgBase)
+            : static_cast<uInt16>(k + myOffset);
         myReserved.Label.emplace(k + myOffset,
-          std::format("L{:04X}", k + myOffset));
+          std::format("L{:04X}", labelAddr));
       }
     }
   }
@@ -1035,8 +1038,12 @@ void DiStella::addEntry(Device::AccessType type)
       tag.label = myDbg.getLabel(tag.address, true);
       tag.hllabel = true;
       if (tag.label.empty()) {
-        if (myLine.hasAutoLabel)
-          tag.label = "L" + Base::toString(tag.address, Base::Fmt::_16_4);
+        if (myLine.hasAutoLabel) {
+          const uInt16 labelAddr = mySettings.useOrgLabels
+              ? static_cast<uInt16>(tag.address - myOffset + mySettings.orgBase)
+              : tag.address;
+          tag.label = "L" + Base::toString(labelAddr, Base::Fmt::_16_4);
+        }
         else if (mySettings.showAddresses && type == Device::CODE) {
           // Indent address-as-label to differentiate from real labels
           tag.label = " " + Base::toString(tag.address, Base::Fmt::_16_4);
