@@ -26,6 +26,7 @@ class CartDisassemblyWriter
 {
   public:
     explicit CartDisassemblyWriter(CartDebug& cartDebug);
+    ~CartDisassemblyWriter() = default;
 
     /**
       Save a DASM-compatible disassembly of the ROM to the given path.

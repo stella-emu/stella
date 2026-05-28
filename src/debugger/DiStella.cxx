@@ -76,7 +76,7 @@ DiStella::DiStella(const CartDebug& dbg, CartDebug::DisassemblyList& list,
     constexpr uInt16 dataFlags = Device::DATA | Device::GFX | Device::PGFX |
                                  Device::COL | Device::PCOL | Device::BCOL | Device::AUD;
     for (int k = myAppData.start; std::cmp_less_equal(k, myAppData.end); ++k) {
-      const uInt16 addr = static_cast<uInt16>(k);
+      const auto addr = static_cast<uInt16>(k);
       const auto flags = Debugger::debugger().getAccessFlags(addr);
       if (flags & Device::CODE)
         mark(addr, Device::CODE);
@@ -664,8 +664,8 @@ void DiStella::disasmPass1(CartDebug::AddressList& debuggerAddresses)
   // before rarely-executed or speculatively-flagged ones.
   using RuntimeHint = std::pair<Device::AccessCounter, uInt16>;
   std::vector<RuntimeHint> runtimeHints;
-  for (int i = 0; i <= myAppData.end; ++i) {
-    const uInt16 addr = static_cast<uInt16>(i + myOffset);
+  for (int i = 0; std::cmp_less_equal(i, myAppData.end); ++i) {
+    const auto addr = static_cast<uInt16>(i + myOffset);
     if (Debugger::debugger().getAccessFlags(addr) & Device::CODE)
       runtimeHints.emplace_back(Debugger::debugger().getAccessCounter(addr), addr);
   }
