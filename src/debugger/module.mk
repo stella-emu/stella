@@ -5,6 +5,7 @@ MODULE_OBJS := \
         src/debugger/Debugger.o \
         src/debugger/DebuggerParser.o \
         src/debugger/CartDebug.o \
+        src/debugger/CartDisassemblyWriter.o \
         src/debugger/CpuDebug.o \
         src/debugger/DiStella.o \
         src/debugger/RiotDebug.o \

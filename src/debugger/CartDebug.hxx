@@ -20,6 +20,7 @@
 
 class Settings;
 class CartDebugWidget;
+class CartDisassemblyWriter;
 
 // Function type for CartDebug instance methods
 class CartDebug;
@@ -44,8 +45,9 @@ class CartState : public DebuggerState
 
 class CartDebug : public DebuggerSystem
 {
-  // The disassembler needs special access to this class
+  // The disassembler and disassembly writer need special access to this class
   friend class DiStella;
+  friend class CartDisassemblyWriter;
 
   public:
     struct DisassemblyTag {
