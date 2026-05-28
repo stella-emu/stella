@@ -107,6 +107,13 @@ class Cartridge : public Device
     virtual uInt16 hotspot() const { return 0; }
 
     /**
+      Whether this cartridge type produces correct output from
+      CartDebug::saveDisassembly().  Returns false by default; override and
+      return true only for schemes whose save path has been verified correct.
+    */
+    virtual bool supportsSaveDisassembly() const { return false; }
+
+    /**
       Get the default startup bank for a cart.  This is the bank where
       the system will look at address 0xFFFC to determine where to
       start running code.

@@ -1117,7 +1117,7 @@ string CartDebug::saveDisassembly(string path)
     if(multiBank)
     {
       settings.useOrgLabels = true;
-      settings.orgBase = static_cast<uInt16>(origin);
+      settings.orgBase = origin;
     }
 
     disassembleBank(bank);
@@ -1257,7 +1257,7 @@ string CartDebug::saveDisassembly(string path)
   if(multiBank)
   {
     const uInt16 hs = cart.hotspot();
-    if(hs)
+    if(hs >= 0x1000)
     {
       out << "\n;-----------------------------------------------------------\n"
           << ";      Bankswitch equates\n"
@@ -1386,7 +1386,7 @@ string CartDebug::saveDisassembly(string path)
     out << "\n\n;-----------------------------------------------------------\n"
         << ";      Non Locatable Labels\n"
         << ";-----------------------------------------------------------\n\n";
-    for(const auto& [addr, label]: myReserved.Label)
+    for(const auto& [label, addr]: myReserved.Label)
       out << std::format("{:<16}= ${:04X}\n", label, addr);
   }
 
@@ -1417,7 +1417,7 @@ string CartDebug::saveDisassembly(string path)
   try
   {
     node.write(out.view());
-    if(multiBank && !cart.hotspot())
+    if(multiBank && !cart.supportsSaveDisassembly())
       return DebuggerParser::red(std::format("saved {} (multi-bank type not fully supported)", node.getShortPath()));
     return std::format("saved {} OK", node.getShortPath());
   }

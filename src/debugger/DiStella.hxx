@@ -59,7 +59,7 @@ class DiStella
       // becomes L1100 rather than LF100, giving unique names across all banks.
       // When false (the default) labels use the runtime address as usual.
       bool useOrgLabels{false};
-      uInt16 orgBase{0};
+      uInt32 orgBase{0};
     };
     static Settings settings;  // Default settings
 
@@ -132,10 +132,10 @@ class DiStella
     void labelA12High(std::ostringstream& buf, uInt16 addr)
     {
       if(!myDbg.getLabel(buf, addr, true)) {
-        const uInt16 la = mySettings.useOrgLabels
-            ? static_cast<uInt16>(addr - myOffset + mySettings.orgBase)
+        const uInt32 la = mySettings.useOrgLabels
+            ? static_cast<uInt32>(addr - myOffset) + mySettings.orgBase
             : addr;
-        buf << "L" << Common::Base::HEX4 << la;
+        buf << std::format("L{:04X}", la);
       }
     }
     void labelA12Low(std::ostringstream& buf, uInt8 op, uInt16 addr, AddressType labfound)

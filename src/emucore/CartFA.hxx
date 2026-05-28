@@ -76,6 +76,7 @@ class CartridgeFA : public CartridgeEnhanced
   #endif
 
     uInt16 hotspot() const override { return 0x1FF8; }
+    bool supportsSaveDisassembly() const override { return true; }
 
   private:
     bool checkSwitchBank(uInt16 address, uInt8) override;
