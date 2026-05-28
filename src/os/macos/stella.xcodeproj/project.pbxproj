@@ -454,6 +454,8 @@
 		DC73BD891915E5E3003FAFAD /* FBSurface.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC73BD871915E5E3003FAFAD /* FBSurface.cxx */; };
 		DC73BD8A1915E5E3003FAFAD /* FBSurface.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC73BD881915E5E3003FAFAD /* FBSurface.hxx */; };
 		DC74D6A2138D4D7E00F05C5C /* StringParser.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC74D6A0138D4D7E00F05C5C /* StringParser.hxx */; };
+		DC7894742FC8984000AF912D /* CartDisassemblyWriter.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC7894732FC8984000AF912D /* CartDisassemblyWriter.cxx */; };
+		DC7894752FC8984000AF912D /* CartDisassemblyWriter.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC7894722FC8984000AF912D /* CartDisassemblyWriter.hxx */; };
 		DC79F81217A88D9E00288B91 /* Base.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC79F81017A88D9E00288B91 /* Base.cxx */; };
 		DC79F81317A88D9E00288B91 /* Base.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC79F81117A88D9E00288B91 /* Base.hxx */; };
 		DC7A24D5173B1CF600B20FE9 /* Variant.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC7A24D4173B1CF600B20FE9 /* Variant.hxx */; };
@@ -1345,6 +1347,8 @@
 		DC73BD871915E5E3003FAFAD /* FBSurface.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FBSurface.cxx; sourceTree = "<group>"; };
 		DC73BD881915E5E3003FAFAD /* FBSurface.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = FBSurface.hxx; sourceTree = "<group>"; };
 		DC74D6A0138D4D7E00F05C5C /* StringParser.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = StringParser.hxx; sourceTree = "<group>"; };
+		DC7894722FC8984000AF912D /* CartDisassemblyWriter.hxx */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = CartDisassemblyWriter.hxx; sourceTree = "<group>"; };
+		DC7894732FC8984000AF912D /* CartDisassemblyWriter.cxx */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = CartDisassemblyWriter.cxx; sourceTree = "<group>"; };
 		DC79F81017A88D9E00288B91 /* Base.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Base.cxx; sourceTree = "<group>"; };
 		DC79F81117A88D9E00288B91 /* Base.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Base.hxx; sourceTree = "<group>"; };
 		DC7A24D4173B1CF600B20FE9 /* Variant.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Variant.hxx; sourceTree = "<group>"; };
@@ -2502,30 +2506,32 @@
 		2D605130089879BA00C6DE89 /* debugger */ = {
 			isa = PBXGroup;
 			children = (
-				E08B1C16231FF97B00EEF922 /* BreakpointMap.cxx */,
 				E08B1C17231FF97B00EEF922 /* BreakpointMap.hxx */,
-				DC6B2BA011037FF200F199A7 /* CartDebug.cxx */,
+				E08B1C16231FF97B00EEF922 /* BreakpointMap.cxx */,
 				DC6B2BA111037FF200F199A7 /* CartDebug.hxx */,
-				2D9555DD0880E79600466554 /* CpuDebug.cxx */,
+				DC6B2BA011037FF200F199A7 /* CartDebug.cxx */,
+				DC7894722FC8984000AF912D /* CartDisassemblyWriter.hxx */,
+				DC7894732FC8984000AF912D /* CartDisassemblyWriter.cxx */,
 				2D9555DE0880E79600466554 /* CpuDebug.hxx */,
-				2D659E2D085D3DD6005D96C8 /* Debugger.cxx */,
+				2D9555DD0880E79600466554 /* CpuDebug.cxx */,
 				2D659E2E085D3DD6005D96C8 /* Debugger.hxx */,
+				2D659E2D085D3DD6005D96C8 /* Debugger.cxx */,
 				DC8078DA0B4BD5F3005E9305 /* DebuggerExpressions.hxx */,
-				2D659E31085D3DD6005D96C8 /* DebuggerParser.cxx */,
 				2D659E32085D3DD6005D96C8 /* DebuggerParser.hxx */,
+				2D659E31085D3DD6005D96C8 /* DebuggerParser.cxx */,
 				2DF971D70892CEA400F64D23 /* DebuggerSystem.hxx */,
-				DC6B2BA211037FF200F199A7 /* DiStella.cxx */,
 				DC6B2BA311037FF200F199A7 /* DiStella.hxx */,
+				DC6B2BA211037FF200F199A7 /* DiStella.cxx */,
 				2DF971DF0892CEA400F64D23 /* Expression.hxx */,
 				2D20F9E308C603C500A73076 /* gui */,
-				DCA00FF50DBABCAD00C3823D /* RiotDebug.cxx */,
 				DCA00FF60DBABCAD00C3823D /* RiotDebug.hxx */,
-				2D30F8750868A4DB00938B9D /* TIADebug.cxx */,
+				DCA00FF50DBABCAD00C3823D /* RiotDebug.cxx */,
 				2D30F8760868A4DB00938B9D /* TIADebug.hxx */,
-				2D6CC10308C811A600B8F642 /* TiaZoomWidget.cxx */,
+				2D30F8750868A4DB00938B9D /* TIADebug.cxx */,
 				2D6CC10408C811A600B8F642 /* TiaZoomWidget.hxx */,
-				DC7C83D428EF2E080097B5AE /* TimerMap.cxx */,
+				2D6CC10308C811A600B8F642 /* TiaZoomWidget.cxx */,
 				DC7C83D528EF2E080097B5AE /* TimerMap.hxx */,
+				DC7C83D428EF2E080097B5AE /* TimerMap.cxx */,
 				DC2874061F8F2278004BF21A /* TrapArray.hxx */,
 				2D60513708987A5400C6DE89 /* yacc */,
 			);
@@ -2876,6 +2882,7 @@
 				DC5AAC281FCB24AB00C420A6 /* EventHandlerConstants.hxx in Headers */,
 				E0A3841E2589741A0062AA93 /* SqliteTransaction.hxx in Headers */,
 				DC73BD8A1915E5E3003FAFAD /* FBSurface.hxx in Headers */,
+				DC7894752FC8984000AF912D /* CartDisassemblyWriter.hxx in Headers */,
 				2D9173D509BA90380026E9FF /* CartE7.hxx in Headers */,
 				2D9173D609BA90380026E9FF /* CartF4.hxx in Headers */,
 				DC84FC522677C62000E60ADE /* CartARM.hxx in Headers */,
@@ -3666,6 +3673,7 @@
 				E0306E0F1F93E916003DDD52 /* JitterEmulation.cxx in Sources */,
 				DCD6FC7C11C281ED005DA767 /* pngset.c in Sources */,
 				DCD6FC7E11C281ED005DA767 /* pngtrans.c in Sources */,
+				DC7894742FC8984000AF912D /* CartDisassemblyWriter.cxx in Sources */,
 				DC84FC562677C64200E60ADE /* CartARMWidget.cxx in Sources */,
 				DC6F394D21B897F300897AD8 /* ThreadDebugging.cxx in Sources */,
 				DCD6FC7F11C281ED005DA767 /* pngwio.c in Sources */,
