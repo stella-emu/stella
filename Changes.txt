@@ -63,6 +63,9 @@
   * Debugger improvements:
     - Fixed bug with 2K ROMs sometimes not being disassembled correctly
       (issue #907)
+    - Several improvements to the disassembler, including ability to save
+      multi-bank ROM disassembly files; currently doesn't support all
+      bankswitch schemes, and needs further testing (issue #604)
     - dbg.logexec; new option to log debugger script execution output
       to a file, also adds dbg.script command-line parameter
     - Debugger timer serialization; timer state now saved/restored with
