@@ -121,7 +121,9 @@ string CartDisassemblyWriter::save(string path)
     if(multiBank)
     {
       settings.useOrgLabels = true;
-      settings.useExtendedLabels = needsExtendedLabels;
+      settings.labelDigits = needsExtendedLabels
+          ? (romBankCount <= 16 ? 5 : 6)
+          : 4;
       settings.orgBase = needsExtendedLabels
           ? bankOrigins[bank] + static_cast<uInt32>(bank) * 0x10000
           : bankOrigins[bank];

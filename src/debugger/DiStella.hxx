@@ -58,11 +58,12 @@ class DiStella
       // $F100 in a bank with orgBase=$F000 becomes LF100, matching the address the
       // CPU and original developer see.  When false (the default) labels also use
       // the runtime address as usual.
-      // When banks share overlapping RORG ranges, useExtendedLabels encodes the
-      // bank index into the upper 16 bits of orgBase, and labels are formatted as
-      // L{:06X} (e.g. L00F100 / L01F100) to guarantee uniqueness across all banks.
+      // When banks share overlapping RORG ranges, the bank index is encoded into
+      // the upper bits of orgBase and labelDigits is widened beyond 4 so that
+      // labels are unique across all banks.  labelDigits=5 handles up to 16 banks
+      // (one leading hex digit for the bank); labelDigits=6 handles up to 256.
       bool useOrgLabels{false};
-      bool useExtendedLabels{false};
+      int  labelDigits{4};   // total hex digits in auto-generated label (4, 5, or 6)
       uInt32 orgBase{0};
     };
     static Settings settings;  // Default settings
@@ -139,7 +140,7 @@ class DiStella
         const uInt32 la = mySettings.useOrgLabels
             ? static_cast<uInt32>(addr - myOffset) + mySettings.orgBase
             : addr;
-        buf << std::format("L{:04X}", la);
+        buf << std::format("L{:0{}X}", la, mySettings.labelDigits);
       }
     }
     void labelA12Low(std::ostringstream& buf, uInt8 op, uInt16 addr, AddressType labfound)
