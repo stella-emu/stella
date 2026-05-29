@@ -90,7 +90,7 @@ string CartDisassemblyWriter::save(string path)
     if(multiBank)
     {
       settings.useOrgLabels = true;
-      settings.orgBase = origin;
+      settings.orgBase = info.offset;
     }
 
     myCartDebug.disassembleBank(bank);
@@ -114,7 +114,7 @@ string CartDisassemblyWriter::save(string path)
 
     if(ramSize > 0)
     {
-      buf << "    SEG     RAM\n";
+      buf << "    SEG.U   RAM\n";
       if(!multiBank)
         buf << "    ORG     $" << Base::HEX4 << info.offset << "\n\n";
       else
@@ -131,8 +131,8 @@ string CartDisassemblyWriter::save(string path)
     if(!multiBank)
       buf << "    ORG     $" << Base::HEX4 << (info.offset + 2 * ramSize) << "\n\n";
     else
-      buf << "    ORG     $" << Base::HEX4 << (origin + 2 * ramSize) << "\n"
-          << "    RORG    $" << Base::HEX4 << (info.offset + 2 * ramSize) << "\n\n";
+      buf << "    ORG     $" << Base::HEX4 << origin << "\n"
+          << "    RORG    $" << Base::HEX4 << info.offset << "\n\n";
     origin += static_cast<uInt32>(info.size);
 
     // Format in 'distella' style

@@ -53,11 +53,11 @@ class DiStella
       bool bFlag{false};        // Process break routine (-b in Distella)
       int bytesWidth{8+1};      // Number of bytes to use per line (with .byte xxx)
 
-      // When saving a multi-bank ROM, each bank's physical ORG base is stored
-      // here so auto-generated labels use the ORG offset instead of the RORG
-      // (runtime) address.  A label at runtime $F100 in a bank with orgBase=$1000
-      // becomes L1100 rather than LF100, giving unique names across all banks.
-      // When false (the default) labels use the runtime address as usual.
+      // When saving a multi-bank ROM, orgBase is set to each bank's RORG base so
+      // auto-generated labels use the runtime (RORG) address.  A label at runtime
+      // $F100 in a bank with orgBase=$F000 becomes LF100, matching the address the
+      // CPU and original developer see.  When false (the default) labels also use
+      // the runtime address as usual.
       bool useOrgLabels{false};
       uInt32 orgBase{0};
     };
