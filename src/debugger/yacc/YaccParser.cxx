@@ -71,8 +71,17 @@ private:
 
   static parser::symbol_type make_char_tok(char c)
   {
-    // NOLINTNEXTLINE(clang-analyzer-optin.core.EnumCastOutOfRange,modernize-return-braced-init-list)
-    return parser::symbol_type(static_cast<int>(c));
+    // The Bison symbol_type(int) constructor asserts that the value is a
+    // grammar-declared token.  Characters not in this set (e.g. '?') must
+    // return ERR so the parser emits a tidy error instead of aborting.
+    static constexpr std::array<int, 17> kValid = {
+      33, 37, 38, 40, 41, 42, 43, 45, 47, 60, 62, 64, 91, 93, 94, 124, 126
+    };
+    const int v = static_cast<unsigned char>(c);
+    if(std::find(kValid.begin(), kValid.end(), v) != kValid.end())
+      // NOLINTNEXTLINE(clang-analyzer-optin.core.EnumCastOutOfRange,modernize-return-braced-init-list)
+      return parser::symbol_type(v);
+    return parser::make_ERR();
   }
 
   static int const_to_int(string_view s);
