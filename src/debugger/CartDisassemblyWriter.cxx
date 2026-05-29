@@ -138,6 +138,13 @@ string CartDisassemblyWriter::save(string path)
     // Format in 'distella' style
     for(const auto& tag: disasm.list)
     {
+      // Skip the RAM area: it holds runtime-modified values, not the original
+      // assembled content. DASM zero-fills the gap, keeping both 128-byte
+      // halves identical so isProbablySC still detects the correct type.
+      if(ramSize > 0 && tag.address >= info.offset &&
+         tag.address < info.offset + 2 * ramSize)
+        continue;
+
       // Add label (if any)
       if(!tag.label.empty())
         buf << std::format("{:<4}\n", tag.label);
