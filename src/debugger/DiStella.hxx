@@ -58,7 +58,11 @@ class DiStella
       // $F100 in a bank with orgBase=$F000 becomes LF100, matching the address the
       // CPU and original developer see.  When false (the default) labels also use
       // the runtime address as usual.
+      // When banks share overlapping RORG ranges, useExtendedLabels encodes the
+      // bank index into the upper 16 bits of orgBase, and labels are formatted as
+      // L{:06X} (e.g. L00F100 / L01F100) to guarantee uniqueness across all banks.
       bool useOrgLabels{false};
+      bool useExtendedLabels{false};
       uInt32 orgBase{0};
     };
     static Settings settings;  // Default settings

@@ -67,6 +67,38 @@ string CartDisassemblyWriter::save(string path)
   // prepare for switching banks
   uInt32 origin = 0;
 
+  // Use cart.bankOrigin() to get each bank's true RORG base regardless of
+  // whether that bank has been visited during emulation (info.offset is only
+  // reliable for visited banks; unvisited banks leave it as 0).
+  vector<uInt16> bankOrigins(romBankCount);
+  for(int b = 0; b < romBankCount; ++b)
+  {
+    cart.unlockHotspots();
+    cart.bank(b);
+    cart.lockHotspots();
+    bankOrigins[b] = cart.bankOrigin(b);
+  }
+
+  // Detect whether any two banks have overlapping RORG ranges.  When they do,
+  // plain RORG-relative labels (e.g. LF103) would collide across banks, so we
+  // encode the bank index into the upper 16 bits of orgBase and use a 6-digit
+  // label format (e.g. L00F103 / L01F103) to guarantee uniqueness.
+  bool needsExtendedLabels = false;
+  for(int b1 = 0; b1 < romBankCount && !needsExtendedLabels; ++b1)
+  {
+    const size_t size1 = myCartDebug.myBankInfo[b1].size;
+    for(int b2 = b1 + 1; b2 < romBankCount; ++b2)
+    {
+      const size_t size2 = myCartDebug.myBankInfo[b2].size;
+      if(bankOrigins[b1] < bankOrigins[b2] + size2 &&
+         bankOrigins[b2] < bankOrigins[b1] + size1)
+      {
+        needsExtendedLabels = true;
+        break;
+      }
+    }
+  }
+
   for(int bank = 0; std::cmp_less(bank, romBankCount); ++bank)
   {
     cart.unlockHotspots();
@@ -84,16 +116,16 @@ string CartDisassemblyWriter::save(string path)
       info.addressList.push_back(seed >= 0x1000 ? seed : info.offset);
     }
 
-    // For multi-bank ROMs, label names are based on the physical ORG address
-    // so that each bank produces unique labels (e.g. L0100 / L1100) rather
-    // than colliding RORG-relative names (e.g. LF100 in every bank).
+    myCartDebug.disassembleBank(bank);
+
     if(multiBank)
     {
       settings.useOrgLabels = true;
-      settings.orgBase = info.offset;
+      settings.useExtendedLabels = needsExtendedLabels;
+      settings.orgBase = needsExtendedLabels
+          ? bankOrigins[bank] + static_cast<uInt32>(bank) * 0x10000
+          : bankOrigins[bank];
     }
-
-    myCartDebug.disassembleBank(bank);
 
     buf << "\n\n;***********************************************************\n"
       << ";      Bank " << bank;
