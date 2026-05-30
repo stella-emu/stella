@@ -98,6 +98,7 @@ string DebuggerParser::run(string_view command)
 
   const int i = static_cast<int>(it - commands.begin());
   myCommand = i;
+  evalArgs(*it);
   if(validateArgs(i))
   {
     if(it->refreshRequired)
@@ -406,17 +407,20 @@ bool DebuggerParser::getArgs(string_view command, string& verb)
     argStrings.push_back(std::move(curArg));
 
   argCount = static_cast<uInt32>(argStrings.size());
-
-  args.reserve(argCount);
-  for(const auto& argStr: argStrings)
-  {
-    if(auto expr = YaccParser::parse(argStr))
-      args.push_back(expr->evaluate());
-    else
-      args.push_back(-1);
-  }
+  args.assign(argCount, -1);
 
   return true;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void DebuggerParser::evalArgs(const Command& cmd)
+{
+  if(cmd.skipEval)
+    return;
+
+  for(uInt32 i = 0; i < argCount; ++i)
+    if(auto expr = YaccParser::parse(argStrings[i]))
+      args[i] = expr->evaluate();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -435,27 +439,16 @@ bool DebuggerParser::validateArgs(int cmd)
     return true;
   }
 
-  // Count fixed parameters up to ARG_END_ARGS or ARG_MULTI_BYTE
-  uInt32 fixedCount = 0;
   const auto* p = parms.data();
-  while(*p != Parameters::ARG_END_ARGS && *p != Parameters::ARG_MULTI_BYTE)
-  {
-    ++fixedCount;
-    ++p;
-  }
-
-  // Evil hack: some commands intentionally take multiple arguments
-  // In this case, the required number of arguments is unbounded
-  // Only ARG_MULTI_BYTE triggers unbounded mode
-  const bool isMulti = (*p == Parameters::ARG_MULTI_BYTE);
-  const uInt32 argRequiredCount = isMulti ? argCount : fixedCount;
-
-  p = parms.data();
   uInt32 curCount = 0;
 
-  do {
-    if(curCount >= argCount)
-      break;
+  while(curCount < argCount)
+  {
+    if(*p == Parameters::ARG_END_ARGS)
+    {
+      outputCommandError("too many arguments", cmd);
+      return false;
+    }
 
     const uInt32  curArgInt = args[curCount];
     const string& curArgStr = argStrings[curCount];
@@ -504,24 +497,19 @@ bool DebuggerParser::validateArgs(int cmd)
       case Parameters::ARG_MULTI_WORD:
         [[fallthrough]]; // FIXME: validate these (for now, any number's allowed)
 
-      case Parameters::ARG_END_ARGS:
-        [[fallthrough]];
-
       default:
-        break;  // Not supposed to get here
+        break;
     }
-    ++curCount;
-    ++p;
-  } while(*p != Parameters::ARG_END_ARGS && curCount < argRequiredCount);
 
-  if(curCount < argRequiredCount)
+    ++curCount;
+    if(*p != Parameters::ARG_MULTI_BYTE && *p != Parameters::ARG_MULTI_WORD)
+      ++p;
+  }
+
+  if(*p != Parameters::ARG_END_ARGS && *p != Parameters::ARG_MULTI_BYTE
+     && *p != Parameters::ARG_MULTI_WORD)
   {
     outputCommandError("missing required argument(s)", cmd);
-    return false;
-  }
-  if(argCount > curCount)
-  {
-    outputCommandError("too many arguments", cmd);
     return false;
   }
   return true;
@@ -2964,7 +2952,8 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
     true,
     true,
     { Parameters::ARG_LABEL, Parameters::ARG_MULTI_BYTE },
-    &DebuggerParser::executeBreakIf
+    &DebuggerParser::executeBreakIf,
+    true
   },
 
   {
@@ -3881,7 +3870,8 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
     true,
     false,
     { Parameters::ARG_LABEL, Parameters::ARG_MULTI_BYTE },
-    &DebuggerParser::executeSaveStateIf
+    &DebuggerParser::executeSaveStateIf,
+    true
   },
 
   {
@@ -3914,7 +3904,8 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
     true,
     true,
     { Parameters::ARG_LABEL, Parameters::ARG_MULTI_BYTE },
-    &DebuggerParser::executeStepWhile
+    &DebuggerParser::executeStepWhile,
+    true
   },
 
   {

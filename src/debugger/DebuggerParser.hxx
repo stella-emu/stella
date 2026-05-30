@@ -102,9 +102,12 @@ class DebuggerParser
       bool refreshRequired{false};
       std::array<Parameters, 10> parms;
       void (DebuggerParser::*executor)();
+      bool skipEval{false};   // true when executor re-parses all args via buildExprStr()
     };
     using CommandArray = std::array<Command, 112>;
     static CommandArray commands;
+
+    void evalArgs(const Command& cmd);
 
     // Reference to our debugger object
     Debugger& debugger;
