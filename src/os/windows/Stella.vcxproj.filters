@@ -151,6 +151,9 @@
     <Filter Include="Source Files\emucore\elf">
       <UniqueIdentifier>{1123de9d-fb61-41e2-b820-44c541aa2687}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\lib\dr_libs">
+      <UniqueIdentifier>{3ae6ce19-97c3-4362-a3ae-176d35cad1f5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\emucore\AtariVox.cxx">
@@ -1265,6 +1268,9 @@
     </ClCompile>
     <ClCompile Include="..\..\debugger\CartDisassemblyWriter.cxx">
       <Filter>Source Files\debugger</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\debugger\gui\DisasmColorsDialog.cxx">
+      <Filter>Source Files\debugger\gui</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -2605,6 +2611,21 @@
     </ClInclude>
     <ClInclude Include="..\..\debugger\CartDisassemblyWriter.hxx">
       <Filter>Header Files\debugger</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\debugger\gui\DisasmColorsDialog.hxx">
+      <Filter>Header Files\debugger\gui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lib\dr_libs\dr_mp3.h">
+      <Filter>Header Files\lib\dr_libs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lib\dr_libs\dr_mp3_lib.hxx">
+      <Filter>Header Files\lib\dr_libs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lib\dr_libs\dr_wav.h">
+      <Filter>Header Files\lib\dr_libs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lib\dr_libs\dr_wav_lib.hxx">
+      <Filter>Header Files\lib\dr_libs</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
