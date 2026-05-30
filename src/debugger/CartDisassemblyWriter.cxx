@@ -43,7 +43,7 @@ string CartDisassemblyWriter::save(string path)
 {
   // We can't print the header to the disassembly until it's actually
   // been processed; therefore buffer output to a string first
-  std::ostringstream buf;
+  string buf;
 
   // Use specific settings for disassembly output
   // This will most likely differ from what you see in the debugger
@@ -129,11 +129,10 @@ string CartDisassemblyWriter::save(string path)
           : bankOrigins[bank];
     }
 
-    buf << "\n\n;***********************************************************\n"
-      << ";      Bank " << bank;
+    buf += std::format("\n\n;***********************************************************\n;      Bank {}", bank);
     if(multiBank)
-      buf << " / 0.." << romBankCount - 1;
-    buf << "\n;***********************************************************\n\n";
+      buf += std::format(" / 0..{}", romBankCount - 1);
+    buf += "\n;***********************************************************\n\n";
 
     // Disassemble bank with save-specific settings
     disasm.list.clear();
@@ -148,27 +147,31 @@ string CartDisassemblyWriter::save(string path)
 
     if(ramSize > 0)
     {
-      buf << "    SEG.U   RAM\n";
+      buf += "    SEG.U   RAM\n";
       if(!multiBank)
-        buf << "    ORG     $" << Base::HEX4 << info.offset << "\n\n";
+        buf += std::format("    ORG     ${}\n\n", Base::hex4(info.offset));
       else
-        buf << "    ORG     $" << Base::HEX4 << origin << "\n"
-            << "    RORG    $" << Base::HEX4 << info.offset << "\n\n";
-      buf << std::format("    ds.b    {:<8}; write port (${}-${})\n",
+      {
+        buf += std::format("    ORG     ${}\n", Base::hex4(origin));
+        buf += std::format("    RORG    ${}\n\n", Base::hex4(info.offset));
+      }
+      buf += std::format("    ds.b    {:<8}; write port (${}-${})\n",
                          ramSize, Base::hex4(info.offset),
-                         Base::hex4(info.offset + ramSize - 1))
-          << std::format("    ds.b    {:<8}; read port  (${}-${})\n\n",
+                         Base::hex4(info.offset + ramSize - 1));
+      buf += std::format("    ds.b    {:<8}; read port  (${}-${})\n\n",
                          ramSize, Base::hex4(info.offset + ramSize),
                          Base::hex4(info.offset + 2 * ramSize - 1));
     }
 
-    buf << "    SEG     CODE\n";
+    buf += "    SEG     CODE\n";
 
     if(!multiBank)
-      buf << "    ORG     $" << Base::HEX4 << (info.offset + 2 * ramSize) << "\n\n";
+      buf += std::format("    ORG     ${}\n\n", Base::hex4(info.offset + 2 * ramSize));
     else
-      buf << "    ORG     $" << Base::HEX4 << origin << "\n"
-          << "    RORG    $" << Base::HEX4 << info.offset << "\n\n";
+    {
+      buf += std::format("    ORG     ${}\n", Base::hex4(origin));
+      buf += std::format("    RORG    ${}\n\n", Base::hex4(info.offset));
+    }
     origin += static_cast<uInt32>(info.size);
 
     // Format in 'distella' style
@@ -183,61 +186,65 @@ string CartDisassemblyWriter::save(string path)
 
       // Add label (if any)
       if(!tag.label.empty())
-        buf << std::format("{:<4}\n", tag.label);
-      buf << "    ";
+        buf += std::format("{:<4}\n", tag.label);
+      buf += "    ";
 
       switch(tag.type)
       {
         case Device::CODE:
-          buf << std::format("{:<32}{}{}{}", tag.disasm,
+          buf += std::format("{:<32}{}{}{}", tag.disasm,
             tag.ccount.substr(0, 5), tag.ctotal, tag.ccount.substr(5, 2));
-          if (tag.disasm.find("WSYNC") != std::string::npos)
-            buf << "\n;---------------------------------------";
+          if(tag.disasm.find("WSYNC") != std::string::npos)
+            buf += "\n;---------------------------------------";
           break;
 
         case Device::ROW:
-          buf << std::format(".byte   {:<32}; ${} (*)", tag.disasm.substr(6, 8*4-1),
+          buf += std::format(".byte   {:<32}; ${} (*)", tag.disasm.substr(6, 8*4-1),
                              Base::hex4(tag.address));
           break;
 
         case Device::GFX:
-          buf << ".byte   " << (settings.gfxFormat == Base::Fmt::_2 ? "%" : "$")
-              << tag.bytes << " ; |";
+          buf += ".byte   ";
+          buf += (settings.gfxFormat == Base::Fmt::_2 ? "%" : "$");
+          buf += tag.bytes;
+          buf += " ; |";
           for(int c = 12; c < 20; ++c)
-            buf << ((tag.disasm[c] == '\x1e') ? "#" : " ");
-          buf << std::format("{:<13}${} (G)", "|", Base::hex4(tag.address));
+            buf += (tag.disasm[c] == '\x1e') ? '#' : ' ';
+          buf += std::format("{:<13}${} (G)", "|", Base::hex4(tag.address));
           break;
 
         case Device::PGFX:
-          buf << ".byte   " << (settings.gfxFormat == Base::Fmt::_2 ? "%" : "$")
-              << tag.bytes << " ; |";
+          buf += ".byte   ";
+          buf += (settings.gfxFormat == Base::Fmt::_2 ? "%" : "$");
+          buf += tag.bytes;
+          buf += " ; |";
           for(int c = 12; c < 20; ++c)
-            buf << ((tag.disasm[c] == '\x1f') ? "*" : " ");
-          buf << std::format("{:<13}${} (P)", "|", Base::hex4(tag.address));
+            buf += (tag.disasm[c] == '\x1f') ? '*' : ' ';
+          buf += std::format("{:<13}${} (P)", "|", Base::hex4(tag.address));
           break;
 
         case Device::COL:
-          buf << std::format(".byte   {:<32}; ${} (C)", tag.disasm.substr(6, 15),
+          buf += std::format(".byte   {:<32}; ${} (C)", tag.disasm.substr(6, 15),
                              Base::hex4(tag.address));
           break;
 
         case Device::PCOL:
-          buf << std::format(".byte   {:<32}; ${} (CP)", tag.disasm.substr(6, 15),
+          buf += std::format(".byte   {:<32}; ${} (CP)", tag.disasm.substr(6, 15),
                              Base::hex4(tag.address));
           break;
 
         case Device::BCOL:
-          buf << std::format(".byte   {:<32}; ${} (CB)", tag.disasm.substr(6, 15),
+          buf += std::format(".byte   {:<32}; ${} (CB)", tag.disasm.substr(6, 15),
                              Base::hex4(tag.address));
           break;
 
         case Device::AUD:
-          buf << std::format(".byte   {:<32}; ${} (A)", tag.disasm.substr(6, 8 * 4 - 1),
+          buf += std::format(".byte   {:<32}; ${} (A)", tag.disasm.substr(6, 8 * 4 - 1),
                              Base::hex4(tag.address));
           break;
 
         case Device::DATA:
-          buf << std::format(".byte   {:<32}; ${} (D)", tag.disasm.substr(6, 8 * 4 - 1),
+          buf += std::format(".byte   {:<32}; ${} (D)", tag.disasm.substr(6, 8 * 4 - 1),
                              Base::hex4(tag.address));
           break;
 
@@ -245,7 +252,7 @@ string CartDisassemblyWriter::save(string path)
         default:
           break;
       }
-      buf << "\n";
+      buf += '\n';
     }
   }
   cart.unlockHotspots();
@@ -445,7 +452,7 @@ string CartDisassemblyWriter::save(string path)
   }
 
   // And finally, output the disassembly
-  out << buf.view();
+  out << buf;
 
   if(path.empty())
     path = std::format("{}{}.asm", myCartDebug.myOSystem.userDir().getPath(),

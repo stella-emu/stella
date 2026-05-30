@@ -176,7 +176,6 @@ int CartDebug::lastWriteBaseAddress()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string CartDebug::toString()
 {
-  std::ostringstream buf;
   uInt32 bytesPerLine = 0;
 
   switch(Base::format())
@@ -198,6 +197,7 @@ string CartDebug::toString()
   const auto& state    = static_cast<const CartState&>(getState());
   const auto& oldstate = static_cast<const CartState&>(getOldState());
 
+  string out;
   uInt32 curraddr = 0, bytesSoFar = 0;
   for(uInt32 i = 0; i < state.ram.size(); i += bytesPerLine, bytesSoFar += bytesPerLine)
   {
@@ -206,25 +206,26 @@ string CartDebug::toString()
     // bytes have been previously output
     if(state.rport[i] - curraddr > bytesPerLine || bytesSoFar >= 256)
     {
-      buf << DebuggerParser::red(std::format(
-        "{0:02x}xx: (rport = {1:04x}, wport = {2:04x})\n",
-        state.rport[i] >> 8, state.rport[i], state.wport[i]
+      out += DebuggerParser::red(std::format(
+        "{}xx: (rport = {}, wport = {})\n",
+        Base::hex2(state.rport[i] >> 8), Base::hex4(state.rport[i]), Base::hex4(state.wport[i])
       ));
       bytesSoFar = 0;
     }
     curraddr = state.rport[i];
-    buf << Base::HEX2 << (curraddr & 0x00ff) << ": ";
+    out += Base::hex2(curraddr & 0x00ff);
+    out += ": ";
 
     for(uInt32 j = 0; j < bytesPerLine; ++j)
     {
-      buf << Debugger::invIfChanged(state.ram[i+j], oldstate.ram[i+j]) << " ";
-
-      if(j == 0x07) buf << " ";
+      out += Debugger::invIfChanged(state.ram[i+j], oldstate.ram[i+j]);
+      out += ' ';
+      if(j == 0x07) out += ' ';
     }
-    buf << '\n';
+    out += '\n';
   }
 
-  return buf.str();
+  return out;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -408,11 +409,8 @@ int CartDebug::addressToLine(uInt16 address) const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string CartDebug::disassembleLines(uInt16 start, uInt16 lines) const
 {
-  // Fill the string with disassembled data
   start &= mySystem.addressMask();
-  std::ostringstream buffer;
 
-  // First find the lines in the range, and determine the longest string
   const size_t list_size = myDisassembly.list.size();
   size_t begin = list_size, end = 0, length = 0;
   for(end = 0; end < list_size && lines > 0; ++end)
@@ -423,29 +421,27 @@ string CartDebug::disassembleLines(uInt16 start, uInt16 lines) const
       if(begin == list_size) begin = end;
       if(tag.type != Device::ROW)
         length = std::max(length, tag.disasm.length());
-
       --lines;
     }
   }
 
-  // Now output the disassembly, using as little space as possible
+  string out;
   for(size_t i = begin; i < end; ++i)
   {
     const CartDebug::DisassemblyTag& tag = myDisassembly.list[i];
     if(tag.type == Device::NONE)
       continue;
-    else if(tag.address)
-      buffer << std::uppercase << std::hex << std::setw(4)
-             << std::setfill('0') << tag.address << ":  ";
-    else
-      buffer << "       ";
 
-    buffer << tag.disasm << std::setw(static_cast<int>(length - tag.disasm.length() + 2))
-           << std::setfill(' ') << " "
-           << std::setw(4) << std::left << tag.ccount << "   " << tag.bytes << '\n';
+    if(tag.address != 0)
+      std::format_to(std::back_inserter(out), "{}:  ", Base::hex4(tag.address));
+    else
+      out.append(7, ' ');
+
+    std::format_to(std::back_inserter(out), "{:<{}}{:<4}   {}\n",
+      tag.disasm, length + 2, tag.ccount, tag.bytes);
   }
 
-  return buffer.str();
+  return out;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
