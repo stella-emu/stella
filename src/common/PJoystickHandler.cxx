@@ -964,20 +964,19 @@ void PhysicalJoystickHandler::handleRegularAxisEvent(const PhysicalJoystickPtr& 
 #ifdef GUI_SUPPORT
   else if(myHandler.hasOverlay())
   {
-    // A value change lower than Controller::digitalDeadzone indicates analog input which is ignored
-    if((abs(j->axisLastValue[axis] - value) > Controller::digitalDeadZone()))
+    // Fixed floor, not digitalDeadZone(), so incremental encoders (spinners) aren't silently blocked.
+    constexpr int OVERLAY_AXIS_THRESHOLD = 200;
+    if((abs(j->axisLastValue[axis] - value) > OVERLAY_AXIS_THRESHOLD))
     {
-      // First, clamp the values to simulate digital input
-      // (the only thing that the underlying code understands)
-      if(value > Controller::digitalDeadZone())
+      // Clamp to simulate digital input (the only thing the underlying code understands)
+      if(value > OVERLAY_AXIS_THRESHOLD)
         value = 32000;
-      else if(value < -Controller::digitalDeadZone())
+      else if(value < -OVERLAY_AXIS_THRESHOLD)
         value = -32000;
       else
         value = 0;
 
-      // Now filter out consecutive, similar values
-      // (only pass on the event if the state has changed)
+      // Only pass on the event if the state has changed
       if(value != j->axisLastValue[axis])
         myHandler.overlay().handleJoyAxisEvent(stick, static_cast<JoyAxis>(axis),
                                                convertAxisValue(value), button);
