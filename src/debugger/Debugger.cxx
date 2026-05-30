@@ -735,7 +735,7 @@ string Debugger::showWatches()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 int Debugger::stringToValue(string_view stringval)
 {
-  return myParser->decipher_arg(stringval);
+  return myParser->decipherArg(stringval);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

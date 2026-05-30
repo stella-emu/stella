@@ -40,13 +40,10 @@
 #include "bspf.hxx"
 
 #include <bitset>
+#include <chrono>
 
 #include "Base.hxx"
 using Common::Base;
-using std::dec;
-using std::setfill;
-using std::setw;
-using std::right;
 
 #ifdef CHEATCODE_SUPPORT
   #include "Cheat.hxx"
@@ -200,9 +197,9 @@ void DebuggerParser::getCompletions(string_view in, StringList& completions)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // Evaluate expression. Expressions always evaluate to a 16-bit value if
 // they're valid, or -1 if they're not.
-// decipher_arg may be called by the GUI as needed. It is also called
+// decipherArg may be called by the GUI as needed. It is also called
 // internally by DebuggerParser::run()
-int DebuggerParser::decipher_arg(string_view str)
+int DebuggerParser::decipherArg(string_view str)
 {
   bool derefByte = false, derefWord = false;
   bool lobyte = false, hibyte = false;
@@ -225,9 +222,10 @@ int DebuggerParser::decipher_arg(string_view str)
   else if(arg.starts_with('>')) { hibyte = true; arg.remove_prefix(1); }
 
   // Base-override prefixes
-  if     (arg.starts_with('\\')) { bin = true;  dec = false; arg.remove_prefix(1); }
-  else if(arg.starts_with('#'))  { bin = false; dec = true;  arg.remove_prefix(1); }
-  else if(arg.starts_with('$'))  { bin = false; dec = false; arg.remove_prefix(1); }
+  bool hadBasePrefix = false;
+  if     (arg.starts_with('\\')) { bin = true;  dec = false; arg.remove_prefix(1); hadBasePrefix = true; }
+  else if(arg.starts_with('#'))  { bin = false; dec = true;  arg.remove_prefix(1); hadBasePrefix = true; }
+  else if(arg.starts_with('$'))  { bin = false; dec = false; arg.remove_prefix(1); hadBasePrefix = true; }
 
   // Special case: registers
   // Note: "$a" must not match the 'a' register, hence the original str check
@@ -235,23 +233,13 @@ int DebuggerParser::decipher_arg(string_view str)
   int result = 0;
   bool resolved = false;
 
-  // Use a small table to avoid a chain of string comparisons
-  // Only checked when no base-override prefix was present (arg == original suffix)
-  if(!bin && !dec && arg != str.substr(str.size() - arg.size(), arg.size()))
+  if(!bin && !dec && !hadBasePrefix)
   {
-    // A base prefix was consumed — can't be a register name, fall through
-  }
-  else
-  {
-    // Register name lookup — only valid when no base-override stripped a leading char
-    // We check str to detect the "$a" case (str starts_with '$' means arg=="a" but
-    // the user typed a hex literal, not the A register)
-    const bool hexDollar = str.starts_with('$');
-    if     (!hexDollar &&  arg == "a")  { result = state.A;  resolved = true; }
-    else if(               arg == "x")  { result = state.X;  resolved = true; }
-    else if(               arg == "y")  { result = state.Y;  resolved = true; }
-    else if(               arg == "p")  { result = state.PS; resolved = true; }
-    else if(               arg == "s")  { result = state.SP; resolved = true; }
+    if     (arg == "a")                 { result = state.A;  resolved = true; }
+    else if(arg == "x")                 { result = state.X;  resolved = true; }
+    else if(arg == "y")                 { result = state.Y;  resolved = true; }
+    else if(arg == "p")                 { result = state.PS; resolved = true; }
+    else if(arg == "s")                 { result = state.SP; resolved = true; }
     else if(arg == "pc" || arg == ".")  { result = state.PC; resolved = true; }
   }
 
@@ -318,7 +306,7 @@ string DebuggerParser::showWatches()
     args.clear();
     argCount = 1;
     argStrings.push_back(watch);
-    args.push_back(decipher_arg(watch));
+    args.push_back(decipherArg(watch));
 
     if(args[0] < 0)
       std::format_to(std::back_inserter(buf), "BAD WATCH {}: {}\n", i + 1, watch);
@@ -565,10 +553,11 @@ string_view DebuggerParser::cartName() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string DebuggerParser::buildExprStr(uInt32 from) const
+string DebuggerParser::buildExprStr(uInt32 from, uInt32 end) const
 {
+  const uInt32 last = (end == ~0u) ? argCount : end;
   string s;
-  for(uInt32 i = from; i < argCount; ++i)
+  for(uInt32 i = from; i < last; ++i)
   {
     if(i > from) s += ' ';
     s += argStrings[i];
@@ -594,7 +583,9 @@ void DebuggerParser::printTimer(uInt32 idx, bool showHeader)
   {
     std::ostringstream buf;
     if(!debugger.cartDebug().getLabel(buf, addr, true))
-      buf << "    $" << setw(4) << Base::HEX4 << addr;
+      buf << (Base::hexUppercase()
+        ? std::format("    ${:04X}", addr)
+        : std::format("    ${:04x}", addr));
 
     string label{buf.view()};
     const int trimWidth = colWidth - (timer.mirrors ? 1 : 0);
@@ -1038,20 +1029,20 @@ void DebuggerParser::executeBreak()
 void DebuggerParser::executeBreakIf()
 {
   const string condition = buildExprStr();
-  auto expr = YaccParser::parse(condition);
-  if(!expr)
-  {
-    commandResult << red("invalid expression");
-    return;
-  }
 
   const auto& condNames = debugger.m6502().getCondBreakNames();
-
   const auto it = std::ranges::find(condNames, condition);
   if(it != condNames.end())
   {
     args[0] = static_cast<int>(it - condNames.begin());
     executeDelBreakIf();
+    return;
+  }
+
+  auto expr = YaccParser::parse(condition);
+  if(!expr)
+  {
+    commandResult << red("invalid expression");
     return;
   }
 
@@ -1509,7 +1500,7 @@ void DebuggerParser::executeFrame()
   if(argCount != 0)
     count = args[0];
   debugger.nextFrame(count);
-  commandResult << "advanced " << dec << count << " frame(s)";
+  std::format_to(std::ostreambuf_iterator(commandResult), "advanced {} frame(s)", count);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1559,10 +1550,9 @@ void DebuggerParser::executeHelp()
       return len;
     }();
 
-    commandResult << setfill(' ');
     for(const auto& c: commands)
-      commandResult << setw(static_cast<int>(clen)) << right << c.cmdString
-                    << " - " << c.description << '\n';
+      std::format_to(std::ostreambuf_iterator(commandResult),
+                     "{:>{}} - {}\n", c.cmdString, clen, c.description);
 
     commandResult << Debugger::builtinHelp();
   }
@@ -1570,7 +1560,7 @@ void DebuggerParser::executeHelp()
   {
     for(auto& c: commands)
     {
-      if(BSPF::toLowerCase(argStrings[0]) == BSPF::toLowerCase(c.cmdString))
+      if(BSPF::equalsIgnoreCase(argStrings[0], c.cmdString))
       {
         commandResult << "  " << red(c.description) << '\n';
         if(!c.extendedDesc.empty())
@@ -2234,11 +2224,9 @@ void DebuggerParser::executeSaveRom()
 // "saveSes"
 void DebuggerParser::executeSaveSes()
 {
-  const auto timeinfo = BSPF::localTime();
-  char timebuf[32];
-  std::ignore = std::strftime(timebuf, sizeof(timebuf),
-                              "session_%F_%H-%M-%S.txt", &timeinfo);
-  const string filename{timebuf};
+  const auto now = std::chrono::floor<std::chrono::seconds>(
+      std::chrono::system_clock::now());
+  const string filename = std::format("session_{:%F_%H-%M-%S}.txt", now);
 
   if(argCount && argStrings[0] == "?")
   {
@@ -2293,20 +2281,20 @@ void DebuggerParser::executeSaveState()
 void DebuggerParser::executeSaveStateIf()
 {
   const string condition = buildExprStr();
-  auto expr = YaccParser::parse(condition);
-  if(!expr)
-  {
-    commandResult << red("invalid expression");
-    return;
-  }
 
   const auto& condNames = debugger.m6502().getCondSaveStateNames();
-
   const auto it = std::ranges::find(condNames, condition);
   if(it != condNames.end())
   {
     args[0] = static_cast<int>(it - condNames.begin());
     executeDelSaveStateIf();
+    return;
+  }
+
+  auto expr = YaccParser::parse(condition);
+  if(!expr)
+  {
+    commandResult << red("invalid expression");
     return;
   }
 
@@ -2322,14 +2310,14 @@ void DebuggerParser::executeScanLine()
   if(argCount != 0)
     count = args[0];
   debugger.nextScanline(count);
-  commandResult << "advanced " << dec << count << " scanLine(s)";
+  std::format_to(std::ostreambuf_iterator(commandResult), "advanced {} scanLine(s)", count);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // "step"
 void DebuggerParser::executeStep()
 {
-  commandResult << "executed " << dec << debugger.step() << " cycles";
+  std::format_to(std::ostreambuf_iterator(commandResult), "executed {} cycles", debugger.step());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -2368,8 +2356,8 @@ void DebuggerParser::executeStepWhile()
 void DebuggerParser::executeSwchb()
 {
   debugger.riotDebug().switches(args[0]);
-  commandResult << "SWCHB set to " << std::hex << std::setw(2)
-                << std::setfill('0') << args[0];
+  std::format_to(std::ostreambuf_iterator(commandResult),
+                 "SWCHB set to {:02x}", static_cast<uInt8>(args[0]));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -2484,9 +2472,9 @@ void DebuggerParser::executeTimer()
       commandResult << " in all banks";
     else
     {
-      commandResult << " in bank #" << dec << static_cast<int>(bank[0]);
+      std::format_to(std::ostreambuf_iterator(commandResult), " in bank #{}", bank[0]);
       if(numBanks == 2)
-        commandResult << ", #" << dec << static_cast<int>(bank[1]);
+        std::format_to(std::ostreambuf_iterator(commandResult), ", #{}", bank[1]);
     }
   }
 }
@@ -2495,7 +2483,7 @@ void DebuggerParser::executeTimer()
 // "trace"
 void DebuggerParser::executeTrace()
 {
-  commandResult << "executed " << dec << debugger.trace() << " cycles";
+  std::format_to(std::ostreambuf_iterator(commandResult), "executed {} cycles", debugger.trace());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -2567,13 +2555,7 @@ void DebuggerParser::executeTraps(bool read, bool write, string_view command,
       if(argCount < n + 1)
         continue;
 
-      string candidate;
-      for(uInt32 i = 0; i + n < argCount; ++i)
-      {
-        if(i > 0) candidate += ' ';
-        candidate += argStrings[i];
-      }
-
+      string candidate = buildExprStr(0, argCount - n);
       if(YaccParser::parse(candidate))
       {
         condStr   = std::move(candidate);

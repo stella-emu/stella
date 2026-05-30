@@ -50,7 +50,7 @@ class DebuggerParser
     static void getCompletions(string_view in, StringList& completions);
 
     /** Evaluate the given expression using operators, current base, etc */
-    int decipher_arg(string_view str);
+    int decipherArg(string_view str);
 
     /** String representation of all watches currently defined */
     string showWatches();
@@ -69,7 +69,7 @@ class DebuggerParser
     bool getArgs(string_view command, string& verb);
     bool validateArgs(int cmd);
     string eval();
-    string buildExprStr(uInt32 from = 0) const;
+    string buildExprStr(uInt32 from = 0, uInt32 end = ~0u) const;
     string saveScriptFile(string file);
     static void saveDump(const FSNode& node, const std::ostringstream& out,
                          std::ostringstream& result);
