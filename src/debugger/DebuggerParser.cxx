@@ -39,6 +39,8 @@
 #include "Vec.hxx"
 #include "bspf.hxx"
 
+#include <bitset>
+
 #include "Base.hxx"
 using Common::Base;
 using std::dec;
@@ -140,7 +142,7 @@ string DebuggerParser::exec(const FSNode& file, StringList* history)
       logBuf += command;
       logBuf += '\n';
       const string result = run(command);
-      if(!result.empty() && result != "_EXIT_DEBUGGER" && result != "_NO_PROMPT")
+      if(!result.empty() && result != kExitDebugger && result != kNoPrompt)
       {
         logBuf += result;
         logBuf += '\n';
@@ -463,7 +465,7 @@ bool DebuggerParser::validateArgs(int cmd)
       case Parameters::ARG_WORD:
         if(curArgInt > 0xffff)
         {
-          commandResult.str(red("invalid word argument (must be 0-$ffff)"));
+          outputCommandError("invalid word argument (must be 0-$ffff)", cmd);
           return false;
         }
         break;
@@ -471,7 +473,7 @@ bool DebuggerParser::validateArgs(int cmd)
       case Parameters::ARG_BYTE:
         if(curArgInt > 0xff)
         {
-          commandResult.str(red("invalid byte argument (must be 0-$ff)"));
+          outputCommandError("invalid byte argument (must be 0-$ff)", cmd);
           return false;
         }
         break;
@@ -479,7 +481,7 @@ bool DebuggerParser::validateArgs(int cmd)
       case Parameters::ARG_BOOL:
         if(curArgInt != 0 && curArgInt != 1)
         {
-          commandResult.str(red("invalid boolean argument (must be 0 or 1)"));
+          outputCommandError("invalid boolean argument (must be 0 or 1)", cmd);
           return false;
         }
         break;
@@ -488,8 +490,8 @@ bool DebuggerParser::validateArgs(int cmd)
         if(curArgInt != 2 && curArgInt != 10 && curArgInt != 16
            && curArgStr != "hex" && curArgStr != "dec" && curArgStr != "bin")
         {
-          commandResult.str(red(
-            R"(invalid base (must be #2, #10, #16, "bin", "dec", or "hex"))"));
+          outputCommandError(
+            R"(invalid base (must be #2, #10, #16, "bin", "dec", or "hex"))", cmd);
           return false;
         }
         break;
@@ -1295,8 +1297,7 @@ void DebuggerParser::executeDelTrap()
 
   debugger.m6502().delCondTrap(static_cast<uInt32>(index));
 
-  for(uInt32 addr = b; addr <= e; ++addr)
-    executeTrapRW(addr, r, w, false);
+  executeTrapRW(b, e, r, w, false);
 
   commandResult << "removed trap " << Base::toString(index);
 }
@@ -1471,7 +1472,7 @@ void DebuggerParser::executeDump()
       }
       dlg->prompt().printPrompt();
     });
-    commandResult.str("_NO_PROMPT");
+    commandResult.str(string{kNoPrompt});
   }
   else
     saveDump(FSNode(path), out, commandResult);
@@ -1563,10 +1564,12 @@ void DebuggerParser::executeHelp()
 {
   if(argCount == 0)  // normal help, show all commands
   {
-    // Find length of longest command
-    size_t clen = 0;
-    for(const auto& c: commands)
-      clen = std::max(clen, c.cmdString.length());
+    static const size_t clen = []() {
+      size_t len = 0;
+      for(const auto& c: commands)
+        len = std::max(len, c.cmdString.length());
+      return len;
+    }();
 
     commandResult << setfill(' ');
     for(const auto& c: commands)
@@ -2037,7 +2040,7 @@ void DebuggerParser::executeRun()
 {
   debugger.saveOldState();
   debugger.exit(false);
-  commandResult << "_EXIT_DEBUGGER";  // See PromptWidget for more info
+  commandResult << kExitDebugger;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -2153,7 +2156,7 @@ void DebuggerParser::executeSave()
     });
 
     // avoid printing a new prompt
-    commandResult.str("_NO_PROMPT");
+    commandResult.str(string{kNoPrompt});
   }
   else
     commandResult << saveScriptFile(argCount ? argStrings[0] : fileName);
@@ -2178,7 +2181,7 @@ void DebuggerParser::executeSaveAccess()
     });
 
     // avoid printing a new prompt
-    commandResult.str("_NO_PROMPT");
+    commandResult.str(string{kNoPrompt});
   }
   else
     commandResult << debugger.cartDebug().saveAccessFile();
@@ -2209,7 +2212,7 @@ void DebuggerParser::executeSaveDisassembly()
       dlg->prompt().printPrompt();
     });
     // avoid printing a new prompt
-    commandResult.str("_NO_PROMPT");
+    commandResult.str(string{kNoPrompt});
   }
   else
     commandResult << debugger.cartDebug().saveDisassembly();
@@ -2233,7 +2236,7 @@ void DebuggerParser::executeSaveRom()
       dlg->prompt().printPrompt();
     });
     // avoid printing a new prompt
-    commandResult.str("_NO_PROMPT");
+    commandResult.str(string{kNoPrompt});
   }
   else
     commandResult << debugger.cartDebug().saveRom();
@@ -2262,7 +2265,7 @@ void DebuggerParser::executeSaveSes()
       dlg->prompt().printPrompt();
     });
     // avoid printing a new prompt
-    commandResult.str("_NO_PROMPT");
+    commandResult.str(string{kNoPrompt});
   }
   else
   {
@@ -2699,66 +2702,77 @@ void DebuggerParser::executeTraps(bool read, bool write, string_view command,
       return;
     }
     commandResult << "removed trap " << Base::toString(i);
-    for(uInt32 addr = begin; addr <= end; ++addr)
-      executeTrapRW(addr, read, write, false);
+    executeTrapRW(begin, end, read, write, false);
   }
   else
   {
     const auto ret = debugger.m6502().addCondTrap(
       read, write, begin, end, condition, hasCond ? condStr : "", std::move(expr));
     commandResult << "added trap " << Base::toString(ret);
-    for(uInt32 addr = begin; addr <= end; ++addr)
-      executeTrapRW(addr, read, write, true);
+    executeTrapRW(begin, end, read, write, true);
   }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // wrapper function for trap(if)/trapRead(if)/trapWrite(if) commands
-void DebuggerParser::executeTrapRW(uInt32 addr, bool read, bool write, bool add)
+void DebuggerParser::executeTrapRW(uInt32 begin, uInt32 end,
+                                   bool read, bool write, bool add)
 {
-  // Helper to add or remove read/write traps for a given address
   const auto setTraps = [&](uInt32 i)
   {
     if(read)  add ? debugger.addReadTrap(i)  : debugger.removeReadTrap(i);
     if(write) add ? debugger.addWriteTrap(i) : debugger.removeWriteTrap(i);
   };
 
-  switch(CartDebug::addressType(addr))
+  // Precompute which mirror-keys are covered by any address in [begin, end].
+  // One pass over the range + one pass over the mirror space = O(N + 65536)
+  // instead of the previous O(N * 65536).
+  uInt16 tiaReadKeys  = 0;        // bit k: some addr has (addr & 0x000F) == k
+  uInt64 tiaWriteKeys = 0;        // bit k: some addr has (addr & 0x003F) == k
+  std::bitset<0x02A0> ioKeys;     // bit k: some IO addr has (addr & 0x029F) == k
+  std::bitset<0x0100> zpramKeys;  // bit k: some ZPRAM addr has (addr & 0x00FF) == k
+  std::bitset<0x1000> romKeys;    // bit k: some ROM addr has (addr & 0x0FFF) == k
+
+  for(uInt32 addr = begin; addr <= end; ++addr)
   {
-    case CartDebug::AddrType::TIA:
-      for(uInt32 i = 0; i <= 0xFFFF; ++i)
-      {
-        if((i & 0x1080) != 0x0000)
-          continue;
-        // @sa666666: This seems wrong. E.g. trapRead 40 4f will never trigger
-        if(read && (i & 0x000F) == (addr & 0x000F))
-          add ? debugger.addReadTrap(i) : debugger.removeReadTrap(i);
-        if(write && (i & 0x003F) == (addr & 0x003F))
-          add ? debugger.addWriteTrap(i) : debugger.removeWriteTrap(i);
-      }
-      break;
+    switch(CartDebug::addressType(static_cast<uInt16>(addr)))
+    {
+      case CartDebug::AddrType::TIA:
+        tiaReadKeys  |= static_cast<uInt16>(1u << (addr & 0x000F));
+        tiaWriteKeys |= 1ull << (addr & 0x003F);
+        break;
+      case CartDebug::AddrType::IO:
+        ioKeys.set(addr & 0x029F);
+        break;
+      case CartDebug::AddrType::ZPRAM:
+        zpramKeys.set(addr & 0x00FF);
+        break;
+      case CartDebug::AddrType::ROM:
+        if(addr >= 0x1000)
+          romKeys.set(addr & 0x0FFF);
+        break;
+      default:
+        break;
+    }
+  }
 
-    case CartDebug::AddrType::IO:
-      for(uInt32 i = 0; i <= 0xFFFF; ++i)
-        if((i & 0x1280) == 0x0280 && (i & 0x029F) == (addr & 0x029F))
-          setTraps(i);
-      break;
-
-    case CartDebug::AddrType::ZPRAM:
-      for(uInt32 i = 0; i <= 0xFFFF; ++i)
-        if((i & 0x1280) == 0x0080 && (i & 0x00FF) == (addr & 0x00FF))
-          setTraps(i);
-      break;
-
-    case CartDebug::AddrType::ROM:
-      if(addr >= 0x1000 && addr <= 0xFFFF)
-        for(uInt32 i = 0x1000; i <= 0xFFFF; ++i)
-          if((i % 0x2000 >= 0x1000) && (i & 0x0FFF) == (addr & 0x0FFF))
-            setTraps(i);
-      break;
-
-    default:
-      break;  // Not supposed to get here
+  // Single pass through the mirror space to apply traps
+  for(uInt32 i = 0; i <= 0xFFFF; ++i)
+  {
+    if((i & 0x1080) == 0x0000)  // TIA mirror
+    {
+      // @sa666666: read mirror uses 4-bit key, write uses 6-bit key
+      if(read  && (tiaReadKeys  & (1u   << (i & 0x000F))))
+        add ? debugger.addReadTrap(i)  : debugger.removeReadTrap(i);
+      if(write && (tiaWriteKeys & (1ull << (i & 0x003F))))
+        add ? debugger.addWriteTrap(i) : debugger.removeWriteTrap(i);
+    }
+    else if((i & 0x1280) == 0x0280 && ioKeys.test(i & 0x029F))
+      setTraps(i);
+    else if((i & 0x1280) == 0x0080 && zpramKeys.test(i & 0x00FF))
+      setTraps(i);
+    else if((i % 0x2000 >= 0x1000) && romKeys.test(i & 0x0FFF))
+      setTraps(i);
   }
 }
 

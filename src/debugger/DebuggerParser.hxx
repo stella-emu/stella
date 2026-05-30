@@ -35,6 +35,10 @@ class DebuggerParser
     DebuggerParser(Debugger& debugger, Settings& settings);
     ~DebuggerParser() = default;
 
+    // Sentinel values returned by run() and checked by PromptWidget
+    static constexpr string_view kExitDebugger{"_EXIT_DEBUGGER"};
+    static constexpr string_view kNoPrompt{"_NO_PROMPT"};
+
     /** Run the given command, and return the result */
     string run(string_view command);
 
@@ -240,7 +244,7 @@ class DebuggerParser
     void executeTrapWrite();
     void executeTrapWriteIf();
     void executeTraps(bool read, bool write, string_view command, bool cond = false);
-    void executeTrapRW(uInt32 addr, bool read, bool write, bool add = true);  // not exposed by debugger
+    void executeTrapRW(uInt32 begin, uInt32 end, bool read, bool write, bool add = true);  // not exposed by debugger
     void executeType();
     void executeUHex();
     void executeUndef();

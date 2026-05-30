@@ -692,16 +692,14 @@ bool PromptWidget::execute()
     // Pass the command to the debugger, and print the result
     const string result = instance().debugger().run(command);
 
-    // This is a bit of a hack
     // Certain commands remove the debugger dialog from underneath us,
     // so we shouldn't print any messages
-    // Those commands will return '_EXIT_DEBUGGER' as their result
-    if(result == "_EXIT_DEBUGGER")
+    if(result == DebuggerParser::kExitDebugger)
     {
       _exitedEarly = true;
       return true;
     }
-    else if(result == "_NO_PROMPT")
+    else if(result == DebuggerParser::kNoPrompt)
       return true;
     else if(!result.empty())
       print(result + "\n");
