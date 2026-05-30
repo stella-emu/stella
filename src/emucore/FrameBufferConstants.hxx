@@ -110,13 +110,35 @@ static constexpr ColorId
   kColorInfo = 288,
   kColorTitleBar = 289,
   kColorTitleText = 290,
-  kNumColors = 291,
+  // Boundary: UI palette ends here; disassembly palette begins
+  kUINColors = 291,
+  // *** Disassembly syntax colors (independent of UI theme) ***
+  // Named by hue; actual shades are set per disasm palette so they can be
+  // tuned independently for light vs dark UI backgrounds.
+  kDisasmBlack   = 291,
+  kDisasmRed     = 292,
+  kDisasmOrange  = 293,
+  kDisasmYellow  = 294,
+  kDisasmLime    = 295,
+  kDisasmGreen   = 296,
+  kDisasmTeal    = 297,
+  kDisasmCyan    = 298,
+  kDisasmBlue    = 299,
+  kDisasmIndigo  = 300,
+  kDisasmViolet  = 301,
+  kDisasmMagenta = 302,
+  kDisasmPink    = 303,
+  kDisasmBrown   = 304,
+  kDisasmGray    = 305,
+  kDisasmWhite   = 306,
+  kNumColors = 307,
   kNone = 0  // placeholder to represent default/no color
 ;
 
 // Palette for normal TIA, UI and both combined
-using PaletteArray = std::array<uInt32, kColor>;
-using UIPaletteArray = std::array<uInt32, kNumColors-kColor>;
+using PaletteArray     = std::array<uInt32, kColor>;
+using UIPaletteArray   = std::array<uInt32, kUINColors - kColor>;
+using DisasmPaletteArray = std::array<uInt32, kNumColors - kUINColors>;
 using FullPaletteArray = std::array<uInt32, kNumColors>;
 
 // Text alignment modes for drawString()

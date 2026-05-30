@@ -65,6 +65,7 @@ MODULE_OBJS := \
         src/debugger/gui/DataGridWidget.o \
         src/debugger/gui/DebuggerDialog.o \
         src/debugger/gui/DelayQueueWidget.o \
+        src/debugger/gui/DisasmColorsDialog.o \
         src/debugger/gui/DrivingWidget.o \
         src/debugger/gui/FlashWidget.o \
         src/debugger/gui/GenesisWidget.o \

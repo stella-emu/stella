@@ -26,7 +26,9 @@
 #include "FBSurface.hxx"
 #include "Font.hxx"
 #include "ScrollBarWidget.hxx"
+#include "Settings.hxx"
 #include "RomListSettings.hxx"
+#include "DisasmColorsDialog.hxx"
 #include "RomListWidget.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -58,6 +60,10 @@ RomListWidget::RomListWidget(GuiObject* boss, const GUI::Font& lfont,
 
   // Add settings menu
   myMenu = std::make_unique<RomListSettings>(this, lfont);
+
+  // Disassembly colour dialog and initial colour map
+  myDisasmColorsDialog = std::make_unique<DisasmColorsDialog>(this, lfont);
+  loadDisasmColorMap();
 
   // Take advantage of a wide debugger window when possible
   const int fontWidth = lfont.getMaxCharWidth(),
@@ -421,6 +427,15 @@ void RomListWidget::handleCommand(CommandSender* sender, int cmd, int data, int 
       }
       break;
 
+    case kDisasmColorsCmd:
+      myDisasmColorsDialog->open();
+      break;
+
+    case kDisasmColorsChangedCmd:
+      loadDisasmColorMap();
+      setDirty();
+      break;
+
     default:
       // Let the parent class handle all other commands directly
       sendCommand(cmd, data, id);
@@ -510,6 +525,49 @@ bool RomListWidget::changedToolTip(const Common::Point& oldPos,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void RomListWidget::loadDisasmColorMap()
+{
+  // Index 0 (Default role) always uses the UI text colour, never the palette
+  myDisasmColorMap[0] = CartDebug::DISASM_COLOR_TEXT;
+
+  const string raw = instance().settings().getString("dis.color");
+  if(raw.empty())
+  {
+    for(int i = 1; i <= CartDebug::NUM_DISASM_ROLES; ++i)
+      myDisasmColorMap[i] = CartDebug::ourDisasmThemes[0].map[i];
+    return;
+  }
+
+  std::istringstream ss(raw);
+  string token;
+  int i = 1;
+  while(i <= CartDebug::NUM_DISASM_ROLES && std::getline(ss, token, ','))
+  {
+    try {
+      const int v = std::stoi(token);
+      myDisasmColorMap[i] = (v == CartDebug::DISASM_COLOR_TEXT || (v >= 0 && v <= 15))
+                            ? static_cast<uInt8>(v)
+                            : CartDebug::ourDisasmThemes[0].map[i];
+    } catch(...) {
+      myDisasmColorMap[i] = CartDebug::ourDisasmThemes[0].map[i];
+    }
+    ++i;
+  }
+  // Fill any roles not covered by a short/malformed string
+  for(; i <= CartDebug::NUM_DISASM_ROLES; ++i)
+    myDisasmColorMap[i] = CartDebug::ourDisasmThemes[0].map[i];
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+ColorId RomListWidget::segColor(CartDebug::DisasmSegColor seg) const
+{
+  const uInt8 idx = myDisasmColorMap[static_cast<uInt8>(seg)];
+  return (idx == CartDebug::DISASM_COLOR_TEXT)
+         ? kTextColor
+         : static_cast<ColorId>(kDisasmBlack + idx);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void RomListWidget::drawWidget(bool hilite)
 {
   FBSurface& s = _boss->dialog().surface();
@@ -564,7 +622,7 @@ void RomListWidget::drawWidget(bool hilite)
 
     // Draw labels
     s.drawString(_font, dlist[pos].label, xpos, ypos, _labelWidth,
-                  dlist[pos].hllabel ? textColor : kColor);
+                  segColor(dlist[pos].labelColor));
 
     // Bytes are only editable if they represent code, graphics, or accessible data
     // Otherwise, the disassembly should get all remaining space
@@ -575,11 +633,11 @@ void RomListWidget::drawWidget(bool hilite)
       {
         // Draw mnemonic
         s.drawString(_font, dlist[pos].disasm.substr(0, 7), xpos + _labelWidth, ypos,
-                      7 * _fontWidth, textColor);
+                      7 * _fontWidth, segColor(dlist[pos].mnemonicColor));
         // Draw operand
         if(dlist[pos].disasm.length() > 8)
           s.drawString(_font, dlist[pos].disasm.substr(8), xpos + _labelWidth + 7 * _fontWidth, ypos,
-                        codeDisasmW - 7 * _fontWidth, textColor);
+                        codeDisasmW - 7 * _fontWidth, segColor(dlist[pos].operandColor));
         // Draw cycle count
         s.drawString(_font, dlist[pos].ccount, xpos + _labelWidth + codeDisasmW, ypos,
                       cycleCountW, textColor);

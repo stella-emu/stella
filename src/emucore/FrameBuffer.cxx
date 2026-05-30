@@ -743,14 +743,38 @@ void FrameBuffer::setUIPalette()
   const uInt32 bShift = std::countr_zero(bMask());
   const uInt32 aMask_ = aMask();
 
-  for(size_t i = 0, j = myFullPalette.size() - ui_palette.size();
-      i < ui_palette.size(); ++i, ++j)
+  for(size_t i = 0; i < ui_palette.size(); ++i)
   {
     const uInt32 rgb = ui_palette[i];
-    myFullPalette[j] = aMask_
-                     | (((rgb >> 16) & 0xFF) << rShift)
-                     | (((rgb >>  8) & 0xFF) << gShift)
-                     | (( rgb        & 0xFF) << bShift);
+    myFullPalette[kColor + i] = aMask_
+                              | (((rgb >> 16) & 0xFF) << rShift)
+                              | (((rgb >>  8) & 0xFF) << gShift)
+                              | (( rgb        & 0xFF) << bShift);
+  }
+  setDisasmPalette();  // fills disasm slots and calls FBSurface::setPalette
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FrameBuffer::setDisasmPalette()
+{
+  const Settings& settings = myOSystem.settings();
+  const string& key = settings.getBool("altuipalette") ? "uipalette2" : "uipalette";
+  const string& name = settings.getString(key);
+  const bool isDark = (name == "dark" || name == "classic");
+  const DisasmPaletteArray& dp = isDark ? ourDarkDisasmPalette : ourStandardDisasmPalette;
+
+  const uInt32 rShift = std::countr_zero(rMask());
+  const uInt32 gShift = std::countr_zero(gMask());
+  const uInt32 bShift = std::countr_zero(bMask());
+  const uInt32 aMask_ = aMask();
+
+  for(size_t i = 0; i < dp.size(); ++i)
+  {
+    const uInt32 rgb = dp[i];
+    myFullPalette[kUINColors + i] = aMask_
+                                  | (((rgb >> 16) & 0xFF) << rShift)
+                                  | (((rgb >>  8) & 0xFF) << gShift)
+                                  | (( rgb        & 0xFF) << bShift);
   }
   FBSurface::setPalette(myFullPalette);
 }
@@ -1329,3 +1353,43 @@ UIPaletteArray FrameBuffer::ourDarkUIPalette = {
     0x000000, 0x404040, 0xc0c0c0                                // other
   }
 };
+
+// Disassembly palettes — entry order matches kDisasmBlack..kDisasmWhite
+// "standard": muted shades readable on light UI backgrounds (Standard, Light)
+DisasmPaletteArray FrameBuffer::ourStandardDisasmPalette = {{
+  0x202020,  // Black
+  0xbb1100,  // Red
+  0xcc5500,  // Orange
+  0xaa7700,  // Yellow  (amber)
+  0x558800,  // Lime
+  0x226600,  // Green
+  0x006666,  // Teal
+  0x007799,  // Cyan
+  0x2255cc,  // Blue
+  0x333399,  // Indigo
+  0x6633aa,  // Violet
+  0x882288,  // Magenta
+  0xaa2266,  // Pink
+  0x774422,  // Brown
+  0x666666,  // Gray
+  0xf0f0f0,  // White
+}};
+// "dark": vivid shades readable on dark UI backgrounds (Classic, Dark)
+DisasmPaletteArray FrameBuffer::ourDarkDisasmPalette = {{
+  0x101010,  // Black
+  0xff6060,  // Red
+  0xff9944,  // Orange
+  0xffdd00,  // Yellow
+  0xaaff44,  // Lime
+  0x44dd44,  // Green
+  0x22ddbb,  // Teal
+  0x44ddff,  // Cyan
+  0x6699ff,  // Blue
+  0x8888ff,  // Indigo
+  0xbb77ff,  // Violet
+  0xff66ff,  // Magenta
+  0xff66aa,  // Pink
+  0xcc8855,  // Brown
+  0xaaaaaa,  // Gray
+  0xffffff,  // White
+}};

@@ -50,6 +50,66 @@ class CartDebug : public DebuggerSystem
   friend class CartDisassemblyWriter;
 
   public:
+    // Semantic colour category for each part of a disassembly line.
+    // The renderer maps these to actual ColorIds so re-theming is automatic.
+    enum class DisasmSegColor : uInt8 {
+      Default,
+      // Label column
+      UserLabel,     // user-defined label
+      AutoLabel,     // auto-generated Lxxxx label
+      AddressLabel,  // raw address shown when no label exists
+      // Mnemonic column
+      Branch,        // Bxx conditional branches
+      Jump,          // JMP / JSR / RTS / RTI / BRK
+      LoadStore,     // LDA / LDX / LDY / STA / STX / STY
+      ALU,           // everything else (arithmetic, logic, stack, flags…)
+      // Operand column
+      TIAEquate,     // TIA register reference (built-in or user name)
+      RIOTEquate,    // RIOT / I-O register reference
+      UserEquate,    // user-defined equate or label as operand
+      AutoEquate,    // auto-generated Lxxxx label as operand
+      Immediate,     // immediate constant (#$xx)
+      ZeroPage,      // zero-page RAM with no named equate
+      ROM,           // bare ROM address with no label
+    };
+
+    // Number of configurable roles (all DisasmSegColor values except Default)
+    static constexpr int NUM_DISASM_ROLES = 14;
+
+    // Sentinel stored in DisasmColorMap meaning "use kTextColor" (no highlighting)
+    static constexpr uInt8 DISASM_COLOR_TEXT = 0xFF;
+
+    // Maps DisasmSegColor (index 0..14) → DisasmPaletteArray index (0..15),
+    // or DISASM_COLOR_TEXT to use the UI text colour with no special highlighting.
+    // Index 0 (Default role) is reserved and not used by themes.
+    using DisasmColorMap = std::array<uInt8, NUM_DISASM_ROLES + 1>;
+
+    // A named colour theme: description string plus a full DisasmColorMap.
+    struct DisasmTheme {
+      string_view name;
+      DisasmColorMap map;
+    };
+
+    // Built-in themes.  Values 0x00..0x0F are DisasmPaletteArray indices
+    // (0=Black…15=White); 0xFF (DISASM_COLOR_TEXT) means use the UI text colour.
+    // Entry 0 in each map is unused (reserved for the Default role).
+    static constexpr std::array<DisasmTheme, 4> ourDisasmThemes = {{
+      // clang-format off
+      // Default: no highlighting — reproduces pre-coloring behaviour.
+      // AddressLabel (role 3) uses gray to match the original kColor shade
+      // that raw address labels were drawn in before syntax colours were added.
+      {"Default",    {0, 0xFF, 0xFF,  14, 0xFF, 0xFF, 0xFF, 0xFF,
+                         0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF}},
+      // Colorful: full syntax highlighting
+      //              UL   AL   Ad   Br   Jm   LS   AL   TI   RI   UE   AE   Im   ZP  ROM
+      {"Colorful",  {0,  5,   6,  14,   3,   2,   8,   8,   1,  11,   5,   6,   7,  10,  9}},
+      // Reduced: labels and control flow coloured; operands mostly neutral
+      {"Reduced",   {0,  5,   6,  14,   3,   2,   8,  14,   1,   1,   5,   6,  14,  14, 14}},
+      // Monochrome: everything in gray
+      {"Monochrome",{0, 14,  14,  14,  14,  14,  14,  14,  14,  14,  14,  14,  14,  14, 14}},
+      // clang-format on
+    }};
+
     struct DisassemblyTag {
       Device::AccessType type{Device::NONE};
       uInt16 address{0};
@@ -58,7 +118,9 @@ class CartDebug : public DebuggerSystem
       string ccount;
       string ctotal;
       string bytes;
-      bool hllabel{false};
+      DisasmSegColor labelColor{DisasmSegColor::Default};
+      DisasmSegColor mnemonicColor{DisasmSegColor::Default};
+      DisasmSegColor operandColor{DisasmSegColor::Default};
     };
     using DisassemblyList = vector<DisassemblyTag>;
     struct Disassembly {

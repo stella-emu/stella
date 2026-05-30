@@ -114,6 +114,7 @@ class DiStella
     enum class DisasmPass : uInt8 { MarkValid = 2, Output = 3 };
 
     static constexpr uInt8 OP_BRK   = 0x00;
+    static constexpr uInt8 OP_JSR   = 0x20;
     static constexpr uInt8 OP_JMP   = 0x4c;
     static constexpr uInt8 OP_JMP_I = 0x6c;  // JMP (indirect)
     static constexpr uInt8 OP_RTS   = 0x60;
@@ -160,6 +161,13 @@ class DiStella
         myReserved.ZPRAM[addr & 0x7F] = true;
     }
 
+    // Colour helpers: called from disasm() during the Output pass to assign
+    // semantic colour categories to mnemonic and operand fields.
+    [[nodiscard]] CartDebug::DisasmSegColor mnemonicColorForOpcode(uInt8 opcode) const;
+    [[nodiscard]] CartDebug::DisasmSegColor colorA12High(uInt16 addr) const;
+    [[nodiscard]] CartDebug::DisasmSegColor colorA12Low(uInt16 addr, AddressType labfound,
+                                                        bool isRead) const;
+
   private:
     const CartDebug& myDbg;
     CartDebug::DisassemblyList& myList;
@@ -174,6 +182,8 @@ class DiStella
       string ccount;
       string ctotal;
       string bytes;
+      CartDebug::DisasmSegColor mnemonicColor{CartDebug::DisasmSegColor::Default};
+      CartDebug::DisasmSegColor operandColor{CartDebug::DisasmSegColor::Default};
     } myLine;
 
     std::queue<uInt16> myAddressQueue;

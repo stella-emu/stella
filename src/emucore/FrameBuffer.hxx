@@ -190,6 +190,15 @@ class FrameBuffer
     void setUIPalette();
 
     /**
+      Set disassembly syntax colors.  The active UI theme determines which
+      disasm palette is used: light themes (standard, light) use the standard
+      disasm palette; dark themes (classic, dark) use the dark one.
+      Called automatically by setUIPalette(); can also be called standalone
+      when only the disassembly palette needs refreshing.
+    */
+    void setDisasmPalette();
+
+    /**
       Returns the current dimensions of the framebuffer image.
       Note that this will take into account the current scaling (if any)
       as well as image 'centering'.
@@ -526,6 +535,8 @@ class FrameBuffer
     // Holds UI palette data (for each variation)
     static UIPaletteArray ourStandardUIPalette, ourClassicUIPalette,
                           ourLightUIPalette, ourDarkUIPalette;
+    // Holds disassembly palette data (independent of UI theme)
+    static DisasmPaletteArray ourStandardDisasmPalette, ourDarkDisasmPalette;
 
   private:
     // Following constructors and assignment operators not supported

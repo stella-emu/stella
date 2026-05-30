@@ -21,6 +21,7 @@
 class ScrollBarWidget;
 class CheckListWidget;
 class RomListSettings;
+class DisasmColorsDialog;
 
 #include "Base.hxx"
 #include "CartDebug.hxx"
@@ -42,7 +43,9 @@ class RomListWidget : public EditableWidget
       kTentativeCodeCmd  = 'TEcd',  // 'data' will be boolean
       kPCAddressesCmd    = 'PCad',  // 'data' will be boolean
       kGfxAsBinaryCmd    = 'GFXb',  // 'data' will be boolean
-      kAddrRelocationCmd = 'ADre'   // 'data' will be boolean
+      kAddrRelocationCmd      = 'ADre',  // 'data' will be boolean
+      kDisasmColorsCmd        = 'DCop',  // open disasm colours dialog
+      kDisasmColorsChangedCmd = 'DCch'   // disasm colour map updated; reload and redraw
     };
 
   public:
@@ -88,12 +91,23 @@ class RomListWidget : public EditableWidget
     void scrollToSelected()    { scrollToCurrent(_selectedItem);    }
     void scrollToHighlighted() { scrollToCurrent(_highlightedItem); }
 
+    // Load the disassembly colour map from Settings (called on construction and
+    // after DisasmColorsDialog saves new values).
+    void loadDisasmColorMap();
+
+    // Map a semantic DisasmSegColor to the cached ColorId for rendering.
+    ColorId segColor(CartDebug::DisasmSegColor seg) const;
+
   private:
     void scrollToCurrent(int item);
     Common::Point getToolTipIndex(const Common::Point& pos) const;
 
   private:
-    unique_ptr<RomListSettings> myMenu;
+    unique_ptr<RomListSettings>    myMenu;
+    unique_ptr<DisasmColorsDialog> myDisasmColorsDialog;
+
+    // Cached rendering colours, indexed by DisasmSegColor (0..14).
+    CartDebug::DisasmColorMap myDisasmColorMap{};
     ScrollBarWidget* myScrollBar{nullptr};
 
     int  _labelWidth{0};
