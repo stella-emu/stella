@@ -77,10 +77,12 @@ string DebuggerParser::run(string_view command)
   const int i = static_cast<int>(it - commands.begin());
   if(validateArgs(i))
   {
+    const int savedCommand = myCommand;
     myCommand = i;
     if(it->refreshRequired)
       debugger.baseDialog()->saveConfig();
     (this->*it->executor)();
+    myCommand = savedCommand;
   }
   if(it->refreshRequired)
     debugger.baseDialog()->loadConfig();
@@ -153,12 +155,10 @@ string DebuggerParser::exec(const FSNode& file, StringList* history)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DebuggerParser::outputCommandError(string_view errorMsg, int command)
 {
-  const string example = commands[command].extendedDesc.substr(commands[command].extendedDesc.find("Example:"));
-
   commandResult.str("");
   commandResult << red(errorMsg);
-  if(!example.empty())
-    commandResult << '\n' << example;
+  if(!commands[command].example.empty())
+    commandResult << "\nExample: " << commands[command].example;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -542,6 +542,18 @@ string DebuggerParser::eval()
 string_view DebuggerParser::cartName() const
 {
   return debugger.myOSystem.console().properties().get(PropType::Cart_Name);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+string DebuggerParser::buildExprStr(uInt32 from) const
+{
+  string s;
+  for(uInt32 i = from; i < argCount; ++i)
+  {
+    if(i > from) s += ' ';
+    s += argStrings[i];
+  }
+  return s;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1009,14 +1021,14 @@ void DebuggerParser::executeBreak()
 // "breakIf"
 void DebuggerParser::executeBreakIf()
 {
-  auto expr = YaccParser::parse(argStrings[0]);
+  const string condition = buildExprStr();
+  auto expr = YaccParser::parse(condition);
   if(!expr)
   {
     commandResult << red("invalid expression");
     return;
   }
 
-  const string_view condition = argStrings[0];
   const auto& condNames = debugger.m6502().getCondBreakNames();
 
   const auto it = std::ranges::find(condNames, condition);
@@ -1027,8 +1039,7 @@ void DebuggerParser::executeBreakIf()
     return;
   }
 
-  const uInt32 ret = debugger.m6502().addCondBreak(
-                       std::move(expr), argStrings[0]);
+  const uInt32 ret = debugger.m6502().addCondBreak(std::move(expr), condition);
   commandResult << "added breakIf " << Base::toString(ret);
 }
 
@@ -1256,7 +1267,6 @@ void DebuggerParser::executeDelTrap()
   for(uInt32 addr = trap.begin; addr <= trap.end; ++addr)
     executeTrapRW(addr, trap.read, trap.write, false);
 
-  // @sa666666: please check this:
   Vec::removeAt(myTraps, index);
   commandResult << "removed trap " << Base::toString(index);
 }
@@ -1457,7 +1467,9 @@ void DebuggerParser::executeExec()
                              static_cast<uInt32>(TimerManager::getTicks() / 1000));
 
   StringList history;
-  commandResult << exec(node, &history);
+  const string execResult = exec(node, &history);
+  commandResult.str("");
+  commandResult << execResult;
 
   for(const auto& item: history)
     debugger.prompt().addToHistory(item.c_str());
@@ -1485,21 +1497,27 @@ void DebuggerParser::executeFrame()
 // "function"
 void DebuggerParser::executeFunction()
 {
+  if(argCount < 2)
+  {
+    outputCommandError("missing expression", myCommand);
+    return;
+  }
   if(args[0] >= 0)
   {
     commandResult << red("name already in use");
     return;
   }
 
-  auto expr = YaccParser::parse(argStrings[1]);
+  const string exprStr = buildExprStr(1);
+  auto expr = YaccParser::parse(exprStr);
   if(!expr)
   {
     commandResult << red("invalid expression");
     return;
   }
 
-  debugger.addFunction(argStrings[0], argStrings[1], std::move(expr));
-  commandResult << "added function " << argStrings[0] << " -> " << argStrings[1];
+  debugger.addFunction(argStrings[0], exprStr, std::move(expr));
+  commandResult << "added function " << argStrings[0] << " -> " << exprStr;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1533,7 +1551,11 @@ void DebuggerParser::executeHelp()
     {
       if(BSPF::toLowerCase(argStrings[0]) == BSPF::toLowerCase(c.cmdString))
       {
-        commandResult << "  " << red(c.description) << '\n' << c.extendedDesc;
+        commandResult << "  " << red(c.description) << '\n';
+        if(!c.extendedDesc.empty())
+          commandResult << c.extendedDesc << '\n';
+        if(!c.example.empty())
+          commandResult << "Example: " << c.example;
         break;
       }
     }
@@ -2252,14 +2274,14 @@ void DebuggerParser::executeSaveState()
 // "saveStateIf"
 void DebuggerParser::executeSaveStateIf()
 {
-  auto expr = YaccParser::parse(argStrings[0]);
+  const string condition = buildExprStr();
+  auto expr = YaccParser::parse(condition);
   if(!expr)
   {
     commandResult << red("invalid expression");
     return;
   }
 
-  const string_view condition = argStrings[0];
   const auto& condNames = debugger.m6502().getCondSaveStateNames();
 
   const auto it = std::ranges::find(condNames, condition);
@@ -2270,8 +2292,7 @@ void DebuggerParser::executeSaveStateIf()
     return;
   }
 
-  const uInt32 ret = debugger.m6502().addCondSaveState(
-    std::move(expr), argStrings[0]);
+  const uInt32 ret = debugger.m6502().addCondSaveState(std::move(expr), condition);
   commandResult << "added saveStateIf " << Base::toString(ret);
 }
 
@@ -2297,7 +2318,7 @@ void DebuggerParser::executeStep()
 // "stepWhile"
 void DebuggerParser::executeStepWhile()
 {
-  auto expr = YaccParser::parse(argStrings[0]);
+  auto expr = YaccParser::parse(buildExprStr());
   if(!expr)
   {
     commandResult << red("invalid expression");
@@ -2506,20 +2527,70 @@ void DebuggerParser::executeTrapWriteIf()
 void DebuggerParser::executeTraps(bool read, bool write, string_view command,
                                   bool hasCond)
 {
-  const uInt32 ofs   = hasCond ? 1 : 0;
-  const uInt32 begin = args[ofs];
-  const uInt32 end   = (argCount == 2 + ofs) ? args[1 + ofs] : begin;
+  // Determine the condition string and which argStrings slots are addresses.
+  // For conditional traps the condition may contain spaces (no braces needed),
+  // so we try taking the last 2 tokens as addresses first, then last 1, and
+  // validate by parsing whatever remains as the condition expression.
+  string condStr;
+  uInt32 addrFirst = 0;  // index of first address token in argStrings/args
+  uInt32 addrCount = 0;
 
-  if(argCount < 1 + ofs)
+  if(hasCond)
   {
-    outputCommandError("missing required argument(s)", myCommand);
-    return;
+    if(argCount < 2)
+    {
+      outputCommandError("missing required argument(s)", myCommand);
+      return;
+    }
+
+    bool found = false;
+    for(const uInt32 n : {2u, 1u})
+    {
+      if(argCount < n + 1)
+        continue;
+
+      string candidate;
+      for(uInt32 i = 0; i + n < argCount; ++i)
+      {
+        if(i > 0) candidate += ' ';
+        candidate += argStrings[i];
+      }
+
+      if(YaccParser::parse(candidate))
+      {
+        condStr   = std::move(candidate);
+        addrFirst = argCount - n;
+        addrCount = n;
+        found = true;
+        break;
+      }
+    }
+
+    if(!found)
+    {
+      commandResult << red("invalid expression");
+      return;
+    }
   }
-  if(argCount > 2 + ofs)
+  else
   {
-    outputCommandError("too many arguments", myCommand);
-    return;
+    if(argCount < 1)
+    {
+      outputCommandError("missing required argument(s)", myCommand);
+      return;
+    }
+    if(argCount > 2)
+    {
+      outputCommandError("too many arguments", myCommand);
+      return;
+    }
+    addrFirst = 0;
+    addrCount = argCount;
   }
+
+  const uInt32 begin = args[addrFirst];
+  const uInt32 end   = (addrCount == 2) ? args[addrFirst + 1] : begin;
+
   if(begin > 0xFFFF || end > 0xFFFF)
   {
     commandResult << red("invalid word argument(s) (must be 0-$ffff)");
@@ -2544,7 +2615,7 @@ void DebuggerParser::executeTraps(bool read, bool write, string_view command,
   if(hasCond)
   {
     condition += '(';
-    condition += argStrings[0];
+    condition += condStr;
     condition += ")&&(";
   }
 
@@ -2599,7 +2670,6 @@ void DebuggerParser::executeTraps(bool read, bool write, string_view command,
       commandResult << "Internal error! Duplicate trap removal failed!";
       return;
     }
-    // @sa666666: please check this:
     Vec::removeAt(myTraps, i);
     commandResult << "removed trap " << Base::toString(i);
     for(uInt32 addr = begin; addr <= end; ++addr)
@@ -2608,7 +2678,7 @@ void DebuggerParser::executeTraps(bool read, bool write, string_view command,
   else
   {
     const auto ret = debugger.m6502().addCondTrap(
-      std::move(expr), hasCond ? argStrings[0] : "");
+      std::move(expr), hasCond ? condStr : "");
     commandResult << "added trap " << Base::toString(ret);
     myTraps.emplace_back(read, write, begin, end, condition);
     for(uInt32 addr = begin; addr <= end; ++addr)
@@ -2782,7 +2852,8 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
   {
     "a",
     "Set Accumulator to <value>",
-    "Valid value is 0 - ff\nExample: a ff, a #10",
+    "Valid value is 0 - ff",
+    "a ff, a #10",
     true,
     true,
     { Parameters::ARG_BYTE, Parameters::ARG_END_ARGS },
@@ -2792,7 +2863,8 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
   {
     "aud",
     "Mark 'AUD' range in disassembly",
-    "Start and end of range required\nExample: aud f000 f010",
+    "Start and end of range required",
+    "aud f000 f010",
     true,
     false,
     { Parameters::ARG_WORD, Parameters::ARG_MULTI_BYTE },
@@ -2802,7 +2874,8 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
   {
     "autoSave",
     "Toggle automatic saving of commands (see 'save')",
-    "Example: autoSave (no parameters)",
+    "",
+    "autoSave (no parameters)",
     false,
     true,
     { Parameters::ARG_END_ARGS },
@@ -2812,7 +2885,8 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
   {
     "base",
     "Set default number base to <base>",
-    "Base is #2, #10, #16, bin, dec or hex\nExample: base hex",
+    "Base is #2, #10, #16, bin, dec or hex",
+    "base hex",
     true,
     true,
     { Parameters::ARG_BASE_SPCL, Parameters::ARG_END_ARGS },
@@ -2822,7 +2896,8 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
   {
     "bCol",
     "Mark 'bCol' range in disassembly",
-    "Start and end of range required\nExample: bCol f000 f010",
+    "Start and end of range required",
+    "bCol f000 f010",
     true,
     false,
     { Parameters::ARG_WORD, Parameters::ARG_MULTI_BYTE },
@@ -2833,8 +2908,8 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
   {
     "break",
     "Break at <address> and <bank>",
-    "Set/clear breakpoint on address (and all mirrors) and bank\nDefault are current PC and bank, valid address is 0 - ffff\n"
-    "Example: break, break f000, break 7654 3\n         break ff00 ff (= all banks)",
+    "Set/clear breakpoint on address (and all mirrors) and bank\nDefault are current PC and bank, valid address is 0 - ffff",
+    "break, break f000, break 7654 3\n         break ff00 ff (= all banks)",
     false,
     true,
     { Parameters::ARG_WORD, Parameters::ARG_MULTI_BYTE },
@@ -2844,17 +2919,19 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
   {
     "breakIf",
     "Set/clear breakpoint on <condition>",
-    "Condition can include multiple items, see documentation\nExample: breakIf _scan>100",
+    "Condition can include multiple items, see documentation",
+    "breakIf _scan > 100",
     true,
     true,
-    { Parameters::ARG_WORD, Parameters::ARG_END_ARGS },
+    { Parameters::ARG_LABEL, Parameters::ARG_MULTI_BYTE },
     &DebuggerParser::executeBreakIf
   },
 
   {
     "breakLabel",
     "Set/clear breakpoint on <address> (no mirrors, all banks)",
-    "Example: breakLabel, breakLabel MainLoop",
+    "",
+    "breakLabel, breakLabel MainLoop",
     false,
     true,
     { Parameters::ARG_WORD, Parameters::ARG_END_ARGS },
@@ -2864,7 +2941,8 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
   {
     "c",
     "Carry Flag: set (0 or 1), or toggle (no arg)",
-    "Example: c, c 0, c 1",
+    "",
+    "c, c 0, c 1",
     false,
     true,
     { Parameters::ARG_BOOL, Parameters::ARG_END_ARGS },
@@ -2874,7 +2952,8 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
   {
     "cheat",
     "Use a cheat code (see manual for cheat types)",
-    "Example: cheat 0040, cheat abff00",
+    "",
+    "cheat 0040, cheat abff00",
     false,
     false,
     { Parameters::ARG_LABEL, Parameters::ARG_END_ARGS },
@@ -2884,7 +2963,8 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
   {
     "clearBreaks",
     "Clear all breakpoints",
-    "Example: clearBreaks (no parameters)",
+    "",
+    "clearBreaks (no parameters)",
     false,
     true,
     { Parameters::ARG_END_ARGS },
@@ -2894,7 +2974,8 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
   {
     "clearConfig",
     "Clear Distella config directives [bank xx]",
-    "Example: clearConfig 0, clearConfig 1",
+    "",
+    "clearConfig 0, clearConfig 1",
     false,
     false,
     { Parameters::ARG_WORD, Parameters::ARG_MULTI_BYTE },
@@ -2904,7 +2985,8 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
   {
     "clearHistory",
     "Clear the prompt history",
-    "Example: clearhisotry (no parameters)",
+    "",
+    "clearHistory (no parameters)",
     false,
     true,
     { Parameters::ARG_END_ARGS },
@@ -2914,7 +2996,8 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
   {
     "clearSaveStateIfs",
     "Clear all saveState points",
-    "Example: ClearSaveStateIfss (no parameters)",
+    "",
+    "clearSaveStateIfs (no parameters)",
     false,
     true,
     { Parameters::ARG_END_ARGS },
@@ -2924,7 +3007,8 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
   {
     "clearTimers",
     "Clear all timers",
-    "All timers cleared\nExample: clearTimers (no parameters)",
+    "All timers cleared",
+    "clearTimers (no parameters)",
     false,
     false,
     { Parameters::ARG_END_ARGS },
@@ -2934,7 +3018,8 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
   {
     "clearTraps",
     "Clear all traps",
-    "All traps cleared, including any mirrored ones\nExample: clearTraps (no parameters)",
+    "All traps cleared, including any mirrored ones",
+    "clearTraps (no parameters)",
     false,
     false,
     { Parameters::ARG_END_ARGS },
@@ -2944,7 +3029,8 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
   {
     "clearWatches",
     "Clear all watches",
-    "Example: clearWatches (no parameters)",
+    "",
+    "clearWatches (no parameters)",
     false,
     false,
     { Parameters::ARG_END_ARGS },
@@ -2955,6 +3041,7 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
     "cls",
     "Clear prompt area of text",
     "Completely clears screen, but keeps history of commands",
+    "",
     false,
     false,
     { Parameters::ARG_END_ARGS },
@@ -2964,7 +3051,8 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
   {
     "code",
     "Mark 'CODE' range in disassembly",
-    "Start and end of range required\nExample: code f000 f010",
+    "Start and end of range required",
+    "code f000 f010",
     true,
     false,
     { Parameters::ARG_WORD, Parameters::ARG_MULTI_BYTE },
@@ -2974,7 +3062,8 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
   {
     "col",
     "Mark 'COL' range in disassembly",
-    "Start and end of range required\nExample: col f000 f010",
+    "Start and end of range required",
+    "col f000 f010",
     true,
     false,
     { Parameters::ARG_WORD, Parameters::ARG_MULTI_BYTE },
@@ -2984,7 +3073,8 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
   {
     "colorTest",
     "Show value xx as TIA color",
-    "Shows a color swatch for the given value\nExample: colorTest 1f",
+    "Shows a color swatch for the given value",
+    "colorTest 1f",
     true,
     false,
     { Parameters::ARG_BYTE, Parameters::ARG_END_ARGS },
@@ -2994,7 +3084,8 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
   {
     "d",
     "Decimal Flag: set (0 or 1), or toggle (no arg)",
-    "Example: d, d 0, d 1",
+    "",
+    "d, d 0, d 1",
     false,
     true,
     { Parameters::ARG_BOOL, Parameters::ARG_END_ARGS },
@@ -3004,7 +3095,8 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
   {
     "data",
     "Mark 'DATA' range in disassembly",
-    "Start and end of range required\nExample: data f000 f010",
+    "Start and end of range required",
+    "data f000 f010",
     true,
     false,
     { Parameters::ARG_WORD, Parameters::ARG_MULTI_BYTE },
@@ -3014,7 +3106,8 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
   {
     "debugColors",
     "Show Fixed Debug Colors information",
-    "Example: debugColors (no parameters)",
+    "",
+    "debugColors (no parameters)",
     false,
     false,
     { Parameters::ARG_END_ARGS },
@@ -3024,7 +3117,8 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
   {
     "define",
     "Define label xx for address yy",
-    "Example: define LABEL1 f100",
+    "",
+    "define LABEL1 f100",
     true,
     true,
     { Parameters::ARG_LABEL, Parameters::ARG_WORD, Parameters::ARG_END_ARGS },
@@ -3034,7 +3128,8 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
   {
     "delBreakIf",
     "Delete conditional breakIf <xx>",
-    "Example: delBreakIf 0",
+    "",
+    "delBreakIf 0",
     true,
     false,
     { Parameters::ARG_WORD, Parameters::ARG_END_ARGS },
@@ -3044,7 +3139,8 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
   {
     "delFunction",
     "Delete function with label xx",
-    "Example: delFunction FUNC1",
+    "",
+    "delFunction FUNC1",
     true,
     false,
     { Parameters::ARG_LABEL, Parameters::ARG_END_ARGS },
@@ -3054,7 +3150,8 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
   {
     "delSaveStateIf",
     "Delete conditional saveState point <xx>",
-    "Example: delSaveStateIf 0",
+    "",
+    "delSaveStateIf 0",
     true,
     false,
     { Parameters::ARG_WORD, Parameters::ARG_END_ARGS },
@@ -3064,7 +3161,8 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
   {
     "delTimer",
     "Delete timer <xx>",
-    "Example: delTimer 0",
+    "",
+    "delTimer 0",
     true,
     false,
     { Parameters::ARG_WORD, Parameters::ARG_END_ARGS },
@@ -3074,7 +3172,8 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
   {
     "delTrap",
     "Delete trap <xx>",
-    "Example: delTrap 0",
+    "",
+    "delTrap 0",
     true,
     false,
     { Parameters::ARG_WORD, Parameters::ARG_END_ARGS },
@@ -3084,7 +3183,8 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
   {
     "delWatch",
     "Delete watch <xx>",
-    "Example: delWatch 0",
+    "",
+    "delWatch 0",
     true,
     false,
     { Parameters::ARG_WORD, Parameters::ARG_END_ARGS },
@@ -3094,8 +3194,8 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
   {
     "disAsm",
     "Disassemble address xx [yy lines] (default=PC)",
-    "Disassembles from starting address <xx> (default=PC) for <yy> lines\n"
-    "Example: disAsm, disAsm f000 100",
+    "Disassembles from starting address <xx> (default=PC) for <yy> lines",
+    "disAsm, disAsm f000 100",
     false,
     false,
     { Parameters::ARG_WORD, Parameters::ARG_MULTI_BYTE },
@@ -3105,12 +3205,12 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
   {
     "dump",
     "Dump data at address <xx> [to yy] [1: memory; 2: CPU state; 4: input regs] [?]",
-    "Example:\n"
-    "  dump f000 - dumps 128 bytes from f000\n"
+    "",
+    "dump f000 - dumps 128 bytes from f000\n"
     "  dump f000 f0ff - dumps all bytes from f000 to f0ff\n"
     "  dump f000 f0ff 7 - dumps all bytes from f000 to f0ff,\n"
     "    CPU state and input registers into a file in user dir,\n"
-    "  dump f000 f0ff 7 ? - same, but with a browser dialog\n",
+    "  dump f000 f0ff 7 ? - same, but with a browser dialog",
     true,
     false,
     { Parameters::ARG_WORD, Parameters::ARG_WORD, Parameters::ARG_BYTE, Parameters::ARG_LABEL },
@@ -3120,7 +3220,8 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
   {
     "exec",
     "Execute script file <xx> [prefix]",
-    "Example: exec script.dat, exec auto.txt",
+    "",
+    "exec script.dat, exec auto.txt",
     true,
     true,
     { Parameters::ARG_FILE, Parameters::ARG_LABEL, Parameters::ARG_MULTI_BYTE },
@@ -3131,6 +3232,7 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
     "exitRom",
     "Exit emulator, return to ROM launcher",
     "Self-explanatory",
+    "",
     false,
     false,
     { Parameters::ARG_END_ARGS },
@@ -3140,7 +3242,8 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
   {
     "frame",
     "Advance emulation by <xx> frames (default=1)",
-    "Example: frame, frame 100",
+    "",
+    "frame, frame 100",
     false,
     true,
     { Parameters::ARG_WORD, Parameters::ARG_END_ARGS },
@@ -3150,17 +3253,19 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
   {
     "function",
     "Define function name xx for expression yy",
-    "Example: function FUNC1 { ... }",
+    "",
+    "function FUNC1 x + y",
     true,
     false,
-    { Parameters::ARG_LABEL, Parameters::ARG_WORD, Parameters::ARG_END_ARGS },
+    { Parameters::ARG_LABEL, Parameters::ARG_MULTI_BYTE },
     &DebuggerParser::executeFunction
   },
 
   {
     "gfx",
     "Mark 'GFX' range in disassembly",
-    "Start and end of range required\nExample: gfx f000 f010",
+    "Start and end of range required",
+    "gfx f000 f010",
     true,
     false,
     { Parameters::ARG_WORD, Parameters::ARG_MULTI_BYTE },
@@ -3170,8 +3275,8 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
   {
     "help",
     "help <command>",
-    "Show all commands, or give function for help on that command\n"
-    "Example: help, help code",
+    "Show all commands, or give function for help on that command",
+    "help, help code",
     false,
     false,
     { Parameters::ARG_LABEL, Parameters::ARG_END_ARGS },
@@ -3181,7 +3286,8 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
   {
     "joy0Up",
     "Set joystick 0 up direction to value <x> (0 or 1), or toggle (no arg)",
-    "Example: joy0Up 0",
+    "",
+    "joy0Up 0",
     false,
     true,
     { Parameters::ARG_BOOL, Parameters::ARG_END_ARGS },
@@ -3191,7 +3297,8 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
   {
     "joy0Down",
     "Set joystick 0 down direction to value <x> (0 or 1), or toggle (no arg)",
-    "Example: joy0Down 0",
+    "",
+    "joy0Down 0",
     false,
     true,
     { Parameters::ARG_BOOL, Parameters::ARG_END_ARGS },
@@ -3201,7 +3308,8 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
   {
     "joy0Left",
     "Set joystick 0 left direction to value <x> (0 or 1), or toggle (no arg)",
-    "Example: joy0Left 0",
+    "",
+    "joy0Left 0",
     false,
     true,
     { Parameters::ARG_BOOL, Parameters::ARG_END_ARGS },
@@ -3211,7 +3319,8 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
   {
     "joy0Right",
     "Set joystick 0 right direction to value <x> (0 or 1), or toggle (no arg)",
-    "Example: joy0Left 0",
+    "",
+    "joy0Right 0",
     false,
     true,
     { Parameters::ARG_BOOL, Parameters::ARG_END_ARGS },
@@ -3221,7 +3330,8 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
   {
     "joy0Fire",
     "Set joystick 0 fire button to value <x> (0 or 1), or toggle (no arg)",
-    "Example: joy0Fire 0",
+    "",
+    "joy0Fire 0",
     false,
     true,
     { Parameters::ARG_BOOL, Parameters::ARG_END_ARGS },
@@ -3231,7 +3341,8 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
   {
     "joy1Up",
     "Set joystick 1 up direction to value <x> (0 or 1), or toggle (no arg)",
-    "Example: joy1Up 0",
+    "",
+    "joy1Up 0",
     false,
     true,
     { Parameters::ARG_BOOL, Parameters::ARG_END_ARGS },
@@ -3241,7 +3352,8 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
   {
     "joy1Down",
     "Set joystick 1 down direction to value <x> (0 or 1), or toggle (no arg)",
-    "Example: joy1Down 0",
+    "",
+    "joy1Down 0",
     false,
     true,
     { Parameters::ARG_BOOL, Parameters::ARG_END_ARGS },
@@ -3251,7 +3363,8 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
   {
     "joy1Left",
     "Set joystick 1 left direction to value <x> (0 or 1), or toggle (no arg)",
-    "Example: joy1Left 0",
+    "",
+    "joy1Left 0",
     false,
     true,
     { Parameters::ARG_BOOL, Parameters::ARG_END_ARGS },
@@ -3261,7 +3374,8 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
   {
     "joy1Right",
     "Set joystick 1 right direction to value <x> (0 or 1), or toggle (no arg)",
-    "Example: joy1Left 0",
+    "",
+    "joy1Right 0",
     false,
     true,
     { Parameters::ARG_BOOL, Parameters::ARG_END_ARGS },
@@ -3271,7 +3385,8 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
   {
     "joy1Fire",
     "Set joystick 1 fire button to value <x> (0 or 1), or toggle (no arg)",
-    "Example: joy1Fire 0",
+    "",
+    "joy1Fire 0",
     false,
     true,
     { Parameters::ARG_BOOL, Parameters::ARG_END_ARGS },
@@ -3281,7 +3396,8 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
   {
     "jump",
     "Scroll disassembly to address xx",
-    "Moves disassembly listing to address <xx>\nExample: jump f400",
+    "Moves disassembly listing to address <xx>",
+    "jump f400",
     true,
     false,
     { Parameters::ARG_WORD, Parameters::ARG_END_ARGS },
@@ -3291,7 +3407,8 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
   {
     "listBreaks",
     "List breakpoints",
-    "Example: listBreaks (no parameters)",
+    "",
+    "listBreaks (no parameters)",
     false,
     false,
     { Parameters::ARG_END_ARGS },
@@ -3301,7 +3418,8 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
   {
     "listConfig",
     "List Distella config directives [bank xx]",
-    "Example: listConfig 0, listConfig 1",
+    "",
+    "listConfig 0, listConfig 1",
     false,
     false,
     { Parameters::ARG_WORD, Parameters::ARG_MULTI_BYTE },
@@ -3311,7 +3429,8 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
   {
     "listFunctions",
     "List user-defined functions",
-    "Example: listFunctions (no parameters)",
+    "",
+    "listFunctions (no parameters)",
     false,
     false,
     { Parameters::ARG_END_ARGS },
@@ -3321,7 +3440,8 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
   {
     "listSaveStateIfs",
     "List saveState points",
-    "Example: listSaveStateIfs (no parameters)",
+    "",
+    "listSaveStateIfs (no parameters)",
     false,
     false,
     { Parameters::ARG_END_ARGS },
@@ -3331,7 +3451,8 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
   {
     "listTimers",
     "List timers",
-    "Lists all timers\nExample: listTimers (no parameters)",
+    "Lists all timers",
+    "listTimers (no parameters)",
     false,
     false,
     { Parameters::ARG_END_ARGS },
@@ -3341,7 +3462,8 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
   {
     "listTraps",
     "List traps",
-    "Lists all traps (read and/or write)\nExample: listTraps (no parameters)",
+    "Lists all traps (read and/or write)",
+    "listTraps (no parameters)",
     false,
     false,
     { Parameters::ARG_END_ARGS },
@@ -3351,7 +3473,8 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
   {
     "loadConfig",
     "Load Distella config file",
-    "Example: loadConfig",
+    "",
+    "loadConfig",
     false,
     true,
     { Parameters::ARG_END_ARGS },
@@ -3361,7 +3484,8 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
   {
     "loadAllStates",
     "Load all emulator states",
-    "Example: loadAllStates (no parameters)",
+    "",
+    "loadAllStates (no parameters)",
     false,
     true,
     { Parameters::ARG_END_ARGS },
@@ -3371,7 +3495,8 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
   {
     "loadState",
     "Load emulator state xx (0-9)",
-    "Example: loadState 0, loadState 9",
+    "",
+    "loadState 0, loadState 9",
     true,
     true,
     { Parameters::ARG_BYTE, Parameters::ARG_END_ARGS },
@@ -3381,7 +3506,8 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
   {
     "logBreaks",
     "Toggle logging of breaks/traps and continue emulation",
-    "Example: logBreaks (no parameters)",
+    "",
+    "logBreaks (no parameters)",
     false,
     true,
     { Parameters::ARG_END_ARGS },
@@ -3391,7 +3517,8 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
   {
     "logExec",
     "Toggle script execution logging to file",
-    "Example: logExec (no parameters)",
+    "",
+    "logExec (no parameters)",
     false,
     true,
     { Parameters::ARG_END_ARGS },
@@ -3401,7 +3528,8 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
   {
     "logTrace",
     "Toggle emulation logging",
-    "Example: logBreaks",
+    "",
+    "logTrace (no parameters)",
     false,
     true,
     { Parameters::ARG_END_ARGS },
@@ -3411,7 +3539,8 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
   {
     "n",
     "Negative Flag: set (0 or 1), or toggle (no arg)",
-    "Example: n, n 0, n 1",
+    "",
+    "n, n 0, n 1",
     false,
     true,
     { Parameters::ARG_BOOL, Parameters::ARG_END_ARGS },
@@ -3421,7 +3550,8 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
   {
     "palette",
     "Show current TIA palette",
-    "Example: palette (no parameters)",
+    "",
+    "palette (no parameters)",
     false,
     false,
     { Parameters::ARG_END_ARGS },
@@ -3431,7 +3561,8 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
   {
     "pc",
     "Set Program Counter to address xx",
-    "Example: pc f000",
+    "",
+    "pc f000",
     true,
     true,
     { Parameters::ARG_WORD, Parameters::ARG_END_ARGS },
@@ -3441,7 +3572,8 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
   {
     "pCol",
     "Mark 'pCol' range in disassembly",
-    "Start and end of range required\nExample: col f000 f010",
+    "Start and end of range required",
+    "pCol f000 f010",
     true,
     false,
     { Parameters::ARG_WORD, Parameters::ARG_MULTI_BYTE },
@@ -3451,7 +3583,8 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
   {
     "pGfx",
     "Mark 'pGfx' range in disassembly",
-    "Start and end of range required\nExample: pGfx f000 f010",
+    "Start and end of range required",
+    "pGfx f000 f010",
     true,
     false,
     { Parameters::ARG_WORD, Parameters::ARG_MULTI_BYTE },
@@ -3461,8 +3594,8 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
   {
     "print",
     "Evaluate/print expression xx in hex/dec/binary",
-    "Almost anything can be printed (constants, expressions, registers)\n"
-    "Example: print pc, print f000",
+    "Almost anything can be printed (constants, expressions, registers)",
+    "print pc, print f000",
     true,
     false,
     { Parameters::ARG_DWORD, Parameters::ARG_END_ARGS },
@@ -3472,7 +3605,8 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
   {
     "printTimer",
     "Print statistics for timer <xx>",
-    "Example: printTimer 0",
+    "",
+    "printTimer 0",
     true,
     false,
     { Parameters::ARG_WORD, Parameters::ARG_END_ARGS },
@@ -3482,7 +3616,8 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
   {
     "ram",
     "Show ZP RAM, or set address xx to yy1 [yy2 ...]",
-    "Example: ram, ram 80 00 ...",
+    "",
+    "ram, ram 80 00 ...",
     false,
     true,
     { Parameters::ARG_WORD, Parameters::ARG_MULTI_BYTE },
@@ -3493,6 +3628,7 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
     "reset",
     "Reset system to power-on state",
     "System is completely reset, just as if it was just powered on",
+    "",
     false,
     true,
     { Parameters::ARG_END_ARGS },
@@ -3501,8 +3637,9 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
 
   {
     "resetTimers",
-    "Reset all timers' statistics" ,
-    "All timers resetted\nExample: resetTimers (no parameters)",
+    "Reset all timers' statistics",
+    "All timers resetted",
+    "resetTimers (no parameters)",
     false,
     false,
     { Parameters::ARG_END_ARGS },
@@ -3512,7 +3649,8 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
   {
     "rewind",
     "Rewind state by one or [xx] steps/traces/scanlines/frames...",
-    "Example: rewind, rewind 5",
+    "",
+    "rewind, rewind 5",
     false,
     true,
     { Parameters::ARG_WORD, Parameters::ARG_END_ARGS },
@@ -3523,6 +3661,7 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
     "riot",
     "Show RIOT timer/input status",
     "Display text-based output of the contents of the RIOT tab",
+    "",
     false,
     false,
     { Parameters::ARG_END_ARGS },
@@ -3532,8 +3671,8 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
   {
     "rom",
     "Set ROM address xx to yy1 [yy2 ...]",
-    "What happens here depends on the current bankswitching scheme\n"
-    "Example: rom f000 00 01 ff ...",
+    "What happens here depends on the current bankswitching scheme",
+    "rom f000 00 01 ff ...",
     true,
     true,
     { Parameters::ARG_WORD, Parameters::ARG_MULTI_BYTE },
@@ -3543,7 +3682,8 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
   {
     "row",
     "Mark 'ROW' range in disassembly",
-    "Start and end of range required\nExample: row f000 f010",
+    "Start and end of range required",
+    "row f000 f010",
     true,
     false,
     { Parameters::ARG_WORD, Parameters::ARG_MULTI_BYTE },
@@ -3554,6 +3694,7 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
     "run",
     "Exit debugger, return to emulator",
     "Self-explanatory",
+    "",
     false,
     false,
     { Parameters::ARG_END_ARGS },
@@ -3563,8 +3704,8 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
   {
     "runTo",
     "Run until string xx in disassembly",
-    "Advance until the given string is detected in the disassembly\n"
-    "Example: runTo lda",
+    "Advance until the given string is detected in the disassembly",
+    "runTo lda",
     true,
     true,
     { Parameters::ARG_LABEL, Parameters::ARG_END_ARGS },
@@ -3574,7 +3715,8 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
   {
     "runToPc",
     "Run until PC is set to value xx",
-    "Example: runToPc f200",
+    "",
+    "runToPc f200",
     true,
     true,
     { Parameters::ARG_WORD, Parameters::ARG_END_ARGS },
@@ -3584,7 +3726,8 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
   {
     "s",
     "Set Stack Pointer to value xx",
-    "Accepts 8-bit value, Example: s f0",
+    "Accepts 8-bit value",
+    "s f0",
     true,
     true,
     { Parameters::ARG_BYTE, Parameters::ARG_END_ARGS },
@@ -3594,8 +3737,8 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
   {
     "save",
     "Save breaks, watches, traps and functions to file [xx or ?]",
-    "Example: save, save commands.script, save ?\n"
     "NOTE: saves to user dir by default",
+    "save, save commands.script, save ?",
     false,
     false,
     { Parameters::ARG_FILE, Parameters::ARG_END_ARGS },
@@ -3605,18 +3748,19 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
   {
     "saveAccess",
     "Save the access counters to CSV file [?]",
-    "Example: saveAccess, saveAccess ?\n"
     "NOTE: saves to user dir by default",
-      false,
-      false,
+    "saveAccess, saveAccess ?",
+    false,
+    false,
     { Parameters::ARG_LABEL, Parameters::ARG_END_ARGS },
-      &DebuggerParser::executeSaveAccess
+    &DebuggerParser::executeSaveAccess
   },
 
   {
     "saveConfig",
     "Save Distella config file (with default name)",
-    "Example: saveConfig",
+    "",
+    "saveConfig",
     false,
     false,
     { Parameters::ARG_END_ARGS },
@@ -3626,8 +3770,8 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
   {
     "saveDis",
     "Save Distella disassembly to file [?]",
-    "Example: saveDis, saveDis ?\n"
     "NOTE: saves to user dir by default",
+    "saveDis, saveDis ?",
     false,
     false,
     { Parameters::ARG_LABEL, Parameters::ARG_END_ARGS },
@@ -3637,8 +3781,8 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
   {
     "saveRom",
     "Save (possibly patched) ROM to file [?]",
-    "Example: saveRom, saveRom ?\n"
     "NOTE: saves to user dir by default",
+    "saveRom, saveRom ?",
     false,
     false,
     { Parameters::ARG_LABEL, Parameters::ARG_END_ARGS },
@@ -3648,8 +3792,8 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
   {
     "saveSes",
     "Save console session to file [?]",
-    "Example: saveSes, saveSes ?\n"
     "NOTE: saves to user dir by default",
+    "saveSes, saveSes ?",
     false,
     false,
     { Parameters::ARG_LABEL, Parameters::ARG_END_ARGS },
@@ -3659,8 +3803,8 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
   {
     "saveSnap",
     "Save current TIA image to PNG file",
-    "Save snapshot to current snapshot save directory\n"
-    "Example: saveSnap (no parameters)",
+    "Save snapshot to current snapshot save directory",
+    "saveSnap (no parameters)",
     false,
     false,
     { Parameters::ARG_END_ARGS },
@@ -3670,7 +3814,8 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
   {
     "saveAllStates",
     "Save all emulator states",
-    "Example: saveAllStates (no parameters)",
+    "",
+    "saveAllStates (no parameters)",
     false,
     false,
     { Parameters::ARG_END_ARGS },
@@ -3680,7 +3825,8 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
   {
     "saveState",
     "Save emulator state xx (valid args 0-9)",
-    "Example: saveState 0, saveState 9",
+    "",
+    "saveState 0, saveState 9",
     true,
     false,
     { Parameters::ARG_BYTE, Parameters::ARG_END_ARGS },
@@ -3690,17 +3836,19 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
   {
     "saveStateIf",
     "Create saveState on <condition>",
-    "Condition can include multiple items, see documentation\nExample: saveStateIf pc==f000",
+    "Condition can include multiple items, see documentation",
+    "saveStateIf pc == f000",
     true,
     false,
-    { Parameters::ARG_WORD, Parameters::ARG_END_ARGS },
+    { Parameters::ARG_LABEL, Parameters::ARG_MULTI_BYTE },
     &DebuggerParser::executeSaveStateIf
   },
 
   {
     "scanLine",
     "Advance emulation by <xx> scanlines (default=1)",
-    "Example: scanLine, scanLine 100",
+    "",
+    "scanLine, scanLine 100",
     false,
     true,
     { Parameters::ARG_WORD, Parameters::ARG_END_ARGS },
@@ -3710,7 +3858,8 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
   {
     "step",
     "Single step CPU [with count xx]",
-    "Example: step, step 100",
+    "",
+    "step, step 100",
     false,
     true,
     { Parameters::ARG_WORD, Parameters::ARG_END_ARGS },
@@ -3720,17 +3869,19 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
   {
     "stepWhile",
     "Single step CPU while <condition> is true",
-    "Example: stepWhile pc!=$f2a9",
+    "",
+    "stepWhile pc != $f2a9",
     true,
     true,
-    { Parameters::ARG_WORD, Parameters::ARG_END_ARGS },
+    { Parameters::ARG_LABEL, Parameters::ARG_MULTI_BYTE },
     &DebuggerParser::executeStepWhile
   },
 
   {
     "swchb",
     "Set SWCHB to xx",
-    "Example: swchb fe",
+    "",
+    "swchb fe",
     true,
     true,
     { Parameters::ARG_WORD, Parameters::ARG_END_ARGS },
@@ -3741,6 +3892,7 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
     "tia",
     "Show TIA state",
     "Display text-based output of the contents of the TIA tab",
+    "",
     false,
     false,
     { Parameters::ARG_END_ARGS },
@@ -3750,7 +3902,8 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
   {
     "timer",
     "Set a cycle counting timer from addresses xx to yy [banks aa bb]",
-    "Example: timer, timer 1000 + *, timer f000 f800 1 +",
+    "",
+    "timer, timer 1000 + *, timer f000 f800 1 +",
     false,
     true,
     { Parameters::ARG_LABEL, Parameters::ARG_LABEL, Parameters::ARG_LABEL,
@@ -3761,7 +3914,8 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
   {
     "trace",
     "Single step CPU over subroutines [with count xx]",
-    "Example: trace, trace 100",
+    "",
+    "trace, trace 100",
     false,
     true,
     { Parameters::ARG_WORD, Parameters::ARG_END_ARGS },
@@ -3771,8 +3925,8 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
   {
     "trap",
     "Trap read/write access to address(es) xx [yy]",
-    "Set/clear a R/W trap on the given address(es) and all mirrors\n"
-    "Example: trap f000, trap f000 f100",
+    "Set/clear a R/W trap on the given address(es) and all mirrors",
+    "trap f000, trap f000 f100",
     true,
     false,
     { Parameters::ARG_WORD, Parameters::ARG_MULTI_BYTE },
@@ -3782,19 +3936,19 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
   {
     "trapIf",
     "On <condition> trap R/W access to address(es) xx [yy]",
-    "Set/clear a conditional R/W trap on the given address(es) and all mirrors\nCondition can include multiple items.\n"
-    "Example: trapIf _scan>#100 GRP0, trapIf _bank==1 f000 f100",
-      true,
-      false,
-      { Parameters::ARG_WORD, Parameters::ARG_MULTI_BYTE },
-      &DebuggerParser::executeTrapIf
+    "Set/clear a conditional R/W trap on the given address(es) and all mirrors\nCondition can include multiple items.",
+    "trapIf _scan > #100 GRP0, trapIf _bank == 1 f000 f100",
+    true,
+    false,
+    { Parameters::ARG_LABEL, Parameters::ARG_MULTI_BYTE },
+    &DebuggerParser::executeTrapIf
   },
 
   {
     "trapRead",
     "Trap read access to address(es) xx [yy]",
-    "Set/clear a read trap on the given address(es) and all mirrors\n"
-    "Example: trapRead f000, trapRead f000 f100",
+    "Set/clear a read trap on the given address(es) and all mirrors",
+    "trapRead f000, trapRead f000 f100",
     true,
     false,
     { Parameters::ARG_WORD, Parameters::ARG_MULTI_BYTE },
@@ -3804,19 +3958,19 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
   {
     "trapReadIf",
     "On <condition> trap read access to address(es) xx [yy]",
-    "Set/clear a conditional read trap on the given address(es) and all mirrors\nCondition can include multiple items.\n"
-    "Example: trapReadIf _scan>#100 GRP0, trapReadIf _bank==1 f000 f100",
-      true,
-      false,
-      { Parameters::ARG_WORD, Parameters::ARG_MULTI_BYTE },
-      &DebuggerParser::executeTrapReadIf
+    "Set/clear a conditional read trap on the given address(es) and all mirrors\nCondition can include multiple items.",
+    "trapReadIf _scan > #100 GRP0, trapReadIf _bank == 1 f000 f100",
+    true,
+    false,
+    { Parameters::ARG_LABEL, Parameters::ARG_MULTI_BYTE },
+    &DebuggerParser::executeTrapReadIf
   },
 
   {
     "trapWrite",
     "Trap write access to address(es) xx [yy]",
-    "Set/clear a write trap on the given address(es) and all mirrors\n"
-    "Example: trapWrite f000, trapWrite f000 f100",
+    "Set/clear a write trap on the given address(es) and all mirrors",
+    "trapWrite f000, trapWrite f000 f100",
     true,
     false,
     { Parameters::ARG_WORD, Parameters::ARG_MULTI_BYTE },
@@ -3826,18 +3980,19 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
   {
     "trapWriteIf",
     "On <condition> trap write access to address(es) xx [yy]",
-    "Set/clear a conditional write trap on the given address(es) and all mirrors\nCondition can include multiple items.\n"
-    "Example: trapWriteIf _scan>#100 GRP0, trapWriteIf _bank==1 f000 f100",
-      true,
-      false,
-      { Parameters::ARG_WORD, Parameters::ARG_MULTI_BYTE },
-      &DebuggerParser::executeTrapWriteIf
+    "Set/clear a conditional write trap on the given address(es) and all mirrors\nCondition can include multiple items.",
+    "trapWriteIf _scan > #100 GRP0, trapWriteIf _bank == 1 f000 f100",
+    true,
+    false,
+    { Parameters::ARG_LABEL, Parameters::ARG_MULTI_BYTE },
+    &DebuggerParser::executeTrapWriteIf
   },
 
   {
     "type",
     "Show access type for address xx [yy]",
-    "Example: type f000, type f000 f010",
+    "",
+    "type f000, type f000 f010",
     true,
     false,
     { Parameters::ARG_WORD, Parameters::ARG_MULTI_BYTE },
@@ -3847,8 +4002,8 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
   {
     "uHex",
     "Toggle upper/lowercase HEX display",
-    "Note: not all hex output can be changed\n"
-    "Example: uHex (no parameters)",
+    "Note: not all hex output can be changed",
+    "uHex (no parameters)",
     false,
     true,
     { Parameters::ARG_END_ARGS },
@@ -3858,7 +4013,8 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
   {
     "undef",
     "Undefine label xx (if defined)",
-    "Example: undef LABEL1",
+    "",
+    "undef LABEL1",
     true,
     true,
     { Parameters::ARG_LABEL, Parameters::ARG_END_ARGS },
@@ -3868,7 +4024,8 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
   {
     "unwind",
     "Unwind state by one or [xx] steps/traces/scanlines/frames...",
-    "Example: unwind, unwind 5",
+    "",
+    "unwind, unwind 5",
     false,
     true,
     { Parameters::ARG_WORD, Parameters::ARG_END_ARGS },
@@ -3878,7 +4035,8 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
   {
     "v",
     "Overflow Flag: set (0 or 1), or toggle (no arg)",
-    "Example: v, v 0, v 1",
+    "",
+    "v, v 0, v 1",
     false,
     true,
     { Parameters::ARG_BOOL, Parameters::ARG_END_ARGS },
@@ -3888,7 +4046,8 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
   {
     "watch",
     "Print contents of address xx before every prompt",
-    "Example: watch ram_80",
+    "",
+    "watch ram_80",
     true,
     false,
     { Parameters::ARG_WORD, Parameters::ARG_END_ARGS },
@@ -3898,7 +4057,8 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
   {
     "x",
     "Set X Register to value xx",
-    "Valid value is 0 - ff\nExample: x ff, x #10",
+    "Valid value is 0 - ff",
+    "x ff, x #10",
     true,
     true,
     { Parameters::ARG_BYTE, Parameters::ARG_END_ARGS },
@@ -3908,7 +4068,8 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
   {
     "y",
     "Set Y Register to value xx",
-    "Valid value is 0 - ff\nExample: y ff, y #10",
+    "Valid value is 0 - ff",
+    "y ff, y #10",
     true,
     true,
     { Parameters::ARG_BYTE, Parameters::ARG_END_ARGS },
@@ -3918,7 +4079,8 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
   {
     "z",
     "Zero Flag: set (0 or 1), or toggle (no arg)",
-    "Example: z, z 0, z 1",
+    "",
+    "z, z 0, z 1",
     false,
     true,
     { Parameters::ARG_BOOL, Parameters::ARG_END_ARGS },

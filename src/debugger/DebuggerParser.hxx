@@ -65,6 +65,7 @@ class DebuggerParser
     bool getArgs(string_view command, string& verb);
     bool validateArgs(int cmd);
     string eval();
+    string buildExprStr(uInt32 from = 0) const;
     string saveScriptFile(string file);
     static void saveDump(const FSNode& node, const std::ostringstream& out,
                          std::ostringstream& result);
@@ -92,6 +93,7 @@ class DebuggerParser
       string cmdString;
       string description;
       string extendedDesc;
+      string example;
       bool parmsRequired{false};
       bool refreshRequired{false};
       std::array<Parameters, 10> parms;
