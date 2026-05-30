@@ -102,18 +102,6 @@ class DebuggerParser
     using CommandArray = std::array<Command, 112>;
     static CommandArray commands;
 
-    struct Trap
-    {
-      bool read{false};
-      bool write{false};
-      uInt32 begin{0};
-      uInt32 end{0};
-      string condition;
-
-      Trap(bool r, bool w, uInt32 b, uInt32 e, string_view c)
-        : read(r), write(w), begin(b), end(e), condition(c) {}
-    };
-
     // Reference to our debugger object
     Debugger& debugger;
 
@@ -135,10 +123,8 @@ class DebuggerParser
 
     StringList myWatches;
 
-    // Keep track of traps (read and/or write)
-    vector<Trap> myTraps;
     void listTraps(bool listCond);
-    string trapStatus(const Trap& trap);
+    string trapStatus(uInt32 begin, uInt32 end, bool read, bool write) const;
 
     void printTimer(uInt32 idx,bool showHeader = true);
     void listTimers();

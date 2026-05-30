@@ -132,7 +132,7 @@ inline uInt8 M6502::peek(uInt16 address, Device::AccessFlags flags)
 
       myHitTrapInfo.message = std::format("RTrap{}[{:02x}]{}",
         flags == DISASM_NONE ? "G" : "", cond,
-        myTrapCondNames[cond].empty() ? ": " : "If: {" + myTrapCondNames[cond] + "} ");
+        myCondTraps[cond].name.empty() ? ": " : "If: {" + myCondTraps[cond].name + "} ");
 
       myHitTrapInfo.address = address;
     }
@@ -168,7 +168,7 @@ inline void M6502::poke(uInt16 address, uInt8 value, Device::AccessFlags flags)
 
       myHitTrapInfo.message = std::format("WTrap[{:02x}]{}",
         cond,
-        myTrapCondNames[cond].empty() ? ":" : "If: {" + myTrapCondNames[cond] + "}");
+        myCondTraps[cond].name.empty() ? ":" : "If: {" + myCondTraps[cond].name + "}");
 
       myHitTrapInfo.address = address;
     }
@@ -626,26 +626,23 @@ const StringList& M6502::getCondSaveStateNames() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt32 M6502::addCondTrap(unique_ptr<Expression> e, string_view name)
+uInt32 M6502::addCondTrap(bool read, bool write, uInt32 begin, uInt32 end,
+                           string_view condition, string_view name,
+                           unique_ptr<Expression> expr)
 {
-  myTrapConds.emplace_back(std::move(e));
-  myTrapCondNames.emplace_back(name);
-
+  myCondTraps.emplace_back(read, write, begin, end, condition, name,
+                            std::move(expr));
   updateStepStateByInstruction();
-
-  return static_cast<uInt32>(myTrapConds.size() - 1);
+  return static_cast<uInt32>(myCondTraps.size() - 1);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool M6502::delCondTrap(uInt32 idx)
 {
-  if(idx < myTrapConds.size())
+  if(idx < myCondTraps.size())
   {
-    Vec::removeAt(myTrapConds, idx);
-    Vec::removeAt(myTrapCondNames, idx);
-
+    Vec::removeAt(myCondTraps, idx);
     updateStepStateByInstruction();
-
     return true;
   }
   return false;
@@ -654,23 +651,15 @@ bool M6502::delCondTrap(uInt32 idx)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void M6502::clearCondTraps()
 {
-  myTrapConds.clear();
-  myTrapCondNames.clear();
-
+  myCondTraps.clear();
   updateStepStateByInstruction();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const StringList& M6502::getCondTrapNames() const
-{
-  return myTrapCondNames;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void M6502::updateStepStateByInstruction()
 {
   myStepStateByInstruction =
-    !myCondBreaks.empty() || !myCondSaveStates.empty() || !myTrapConds.empty();
+    !myCondBreaks.empty() || !myCondSaveStates.empty() || !myCondTraps.empty();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

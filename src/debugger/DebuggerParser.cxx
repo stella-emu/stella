@@ -733,19 +733,17 @@ void DebuggerParser::listTimers()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DebuggerParser::listTraps(bool listCond)
 {
-  const auto& names = debugger.m6502().getCondTrapNames();
-  const auto numNames = static_cast<uInt32>(names.size());
+  const auto& traps = debugger.m6502().getCondTraps();
 
   commandResult << (listCond ? "trapifs:" : "traps:") << '\n';
 
   bool firstLine = true;
-  for(uInt32 i = 0; i < numNames; ++i)
+  for(uInt32 i = 0; i < traps.size(); ++i)
   {
-    const bool hasCond = !names[i].empty();
+    const auto& trap = traps[i];
+    const bool hasCond = !trap.name.empty();
     if(hasCond != listCond)
       continue;
-
-    const auto& trap = myTraps[i];
 
     if(!firstLine)
       commandResult << '\n';
@@ -763,23 +761,25 @@ void DebuggerParser::listTraps(bool listCond)
       commandResult << "none";
 
     if(hasCond)
-      commandResult << ' ' << names[i];
+      commandResult << ' ' << trap.name;
 
     commandResult << ' ' << debugger.cartDebug().getLabel(trap.begin, true, 4);
 
     if(trap.begin != trap.end)
       commandResult << ' ' << debugger.cartDebug().getLabel(trap.end, true, 4);
 
-    commandResult << trapStatus(trap) << " + mirrors";
+    commandResult << trapStatus(trap.begin, trap.end, trap.read, trap.write)
+                  << " + mirrors";
   }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string DebuggerParser::trapStatus(const Trap& trap)
+string DebuggerParser::trapStatus(uInt32 begin, uInt32 end,
+                                   bool read, bool write) const
 {
-  const auto lblb = debugger.cartDebug().getLabel(trap.begin, !trap.write);
-  const auto lble = (trap.begin != trap.end)
-    ? debugger.cartDebug().getLabel(trap.end, !trap.write)
+  const auto lblb = debugger.cartDebug().getLabel(begin, !write);
+  const auto lble = (begin != end)
+    ? debugger.cartDebug().getLabel(end, !write)
     : string{};
 
   if(lblb.empty() && lble.empty())
@@ -862,20 +862,16 @@ string DebuggerParser::saveScriptFile(string file)
     out += "}\n";
   }
 
-  const auto& names = debugger.m6502().getCondTrapNames();
-  for(uInt32 i = 0; i < myTraps.size(); ++i)
+  for(const auto& trap: debugger.m6502().getCondTraps())
   {
-    const auto& trap = myTraps[i];
-    const bool hasCond = !names[i].empty();
-
     if(trap.read && trap.write) out += "trap";
     else if(trap.read)          out += "trapRead";
     else if(trap.write)         out += "trapWrite";
 
-    if(hasCond)
+    if(!trap.name.empty())
     {
       out += "if {";
-      out += names[i];
+      out += trap.name;
       out += '}';
     }
 
@@ -1163,7 +1159,6 @@ void DebuggerParser::executeClearTraps()
 {
   debugger.clearAllTraps();
   debugger.m6502().clearCondTraps();
-  myTraps.clear();
   commandResult << "all traps cleared";
 }
 
@@ -1286,18 +1281,23 @@ void DebuggerParser::executeDelTimer()
 void DebuggerParser::executeDelTrap()
 {
   const int index = args[0];
+  const auto& traps = debugger.m6502().getCondTraps();
 
-  if(!debugger.m6502().delCondTrap(index))
+  if(std::cmp_greater_equal(index, traps.size()) || index < 0)
   {
     commandResult << red("no such trap");
     return;
   }
 
-  const auto& trap = myTraps[index];
-  for(uInt32 addr = trap.begin; addr <= trap.end; ++addr)
-    executeTrapRW(addr, trap.read, trap.write, false);
+  // Capture address range before the remove invalidates the reference
+  const bool  r = traps[index].read,  w = traps[index].write;
+  const uInt32 b = traps[index].begin, e = traps[index].end;
 
-  Vec::removeAt(myTraps, index);
+  debugger.m6502().delCondTrap(static_cast<uInt32>(index));
+
+  for(uInt32 addr = b; addr <= e; ++addr)
+    executeTrapRW(addr, r, w, false);
+
   commandResult << "removed trap " << Base::toString(index);
 }
 
@@ -1834,20 +1834,17 @@ void DebuggerParser::executeListTimers()
 // "listTraps"
 void DebuggerParser::executeListTraps()
 {
-  const auto& names = debugger.m6502().getCondTrapNames();
-  if(myTraps.size() != names.size())
-  {
-    commandResult << "Internal error! Different trap sizes.";
-    return;
-  }
-  if(names.empty())
+  const auto& traps = debugger.m6502().getCondTraps();
+  if(traps.empty())
   {
     commandResult << "no traps set";
     return;
   }
 
-  const bool trapFound   = std::ranges::any_of(names, &string::empty);
-  const bool trapifFound = std::ranges::any_of(names, std::not_fn(&string::empty));
+  const bool trapFound   = std::ranges::any_of(traps,
+    [](const auto& t) { return t.name.empty(); });
+  const bool trapifFound = std::ranges::any_of(traps,
+    [](const auto& t) { return !t.name.empty(); });
 
   if(trapFound)   listTraps(false);
   if(trapifFound) listTraps(true);
@@ -2684,23 +2681,23 @@ void DebuggerParser::executeTraps(bool read, bool write, string_view command,
   }
 
   // Check for duplicate — duplicates remove each other
-  const auto it = std::ranges::find_if(myTraps,
-    [&](const Trap& trap)
+  const auto& traps = debugger.m6502().getCondTraps();
+  const auto it = std::ranges::find_if(traps,
+    [&](const M6502::CondTrap& trap)
     {
       return trap.begin == begin && trap.end == end &&
              trap.read == read   && trap.write == write &&
              trap.condition == condition;
     });
 
-  if(it != myTraps.end())
+  if(it != traps.end())
   {
-    const auto i = static_cast<uInt32>(it - myTraps.begin());
+    const auto i = static_cast<uInt32>(it - traps.begin());
     if(!debugger.m6502().delCondTrap(i))
     {
       commandResult << "Internal error! Duplicate trap removal failed!";
       return;
     }
-    Vec::removeAt(myTraps, i);
     commandResult << "removed trap " << Base::toString(i);
     for(uInt32 addr = begin; addr <= end; ++addr)
       executeTrapRW(addr, read, write, false);
@@ -2708,9 +2705,8 @@ void DebuggerParser::executeTraps(bool read, bool write, string_view command,
   else
   {
     const auto ret = debugger.m6502().addCondTrap(
-      std::move(expr), hasCond ? condStr : "");
+      read, write, begin, end, condition, hasCond ? condStr : "", std::move(expr));
     commandResult << "added trap " << Base::toString(ret);
-    myTraps.emplace_back(read, write, begin, end, condition);
     for(uInt32 addr = begin; addr <= end; ++addr)
       executeTrapRW(addr, read, write, true);
   }

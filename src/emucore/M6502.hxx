@@ -232,10 +232,26 @@ class M6502 : public Serializable
     const StringList& getCondSaveStateNames() const;
 
     // methods for 'trapif' handling
-    uInt32 addCondTrap(unique_ptr<Expression> e, string_view name);
+    struct CondTrap {
+      bool read{false};
+      bool write{false};
+      uInt32 begin{0};
+      uInt32 end{0};
+      string condition;  // elaborated full expression (used for duplicate detection)
+      string name;       // user-visible condition string, or "" for unconditional traps
+      unique_ptr<Expression> expr;
+
+      CondTrap(bool r, bool w, uInt32 b, uInt32 e,
+               string_view cond, string_view nm, unique_ptr<Expression> ex)
+        : read(r), write(w), begin(b), end(e),
+          condition(cond), name(nm), expr(std::move(ex)) {}
+    };
+    uInt32 addCondTrap(bool read, bool write, uInt32 begin, uInt32 end,
+                       string_view condition, string_view name,
+                       unique_ptr<Expression> expr);
     bool delCondTrap(uInt32 idx);
     void clearCondTraps();
-    const StringList& getCondTrapNames() const;
+    const vector<CondTrap>& getCondTraps() const { return myCondTraps; }
 
     // methods for 'timer' handling:
     uInt32 addTimer(uInt16 fromAddr, uInt16 toAddr, uInt8 fromBank, uInt8 toBank,
@@ -428,8 +444,8 @@ class M6502 : public Serializable
 
     Int32 evalCondTraps()
     {
-      for(Int32 i = static_cast<Int32>(myTrapConds.size()) - 1; i >= 0; --i)
-        if(myTrapConds[i]->evaluate())
+      for(Int32 i = static_cast<Int32>(myCondTraps.size()) - 1; i >= 0; --i)
+        if(myCondTraps[i].expr->evaluate())
           return i;
 
       return -1; // no trapif hit
@@ -455,8 +471,7 @@ class M6502 : public Serializable
     StringList myCondBreakNames;
     vector<unique_ptr<Expression>> myCondSaveStates;
     StringList myCondSaveStateNames;
-    vector<unique_ptr<Expression>> myTrapConds;
-    StringList myTrapCondNames;
+    vector<CondTrap> myCondTraps;
 
     TimerMap myTimer;
 #endif  // DEBUGGER_SUPPORT
