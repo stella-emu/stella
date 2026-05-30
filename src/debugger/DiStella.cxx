@@ -101,7 +101,7 @@ DiStella::DiStella(const CartDebug& dbg, CartDebug::DisassemblyList& list,
             ? static_cast<uInt32>(k) + mySettings.orgBase
             : static_cast<uInt32>(k + myOffset);
         myReserved.Label.emplace(
-          std::format("L{:0{}X}", labelAddr, mySettings.labelDigits),
+          'L' + Base::hexN(static_cast<int>(labelAddr), mySettings.labelDigits),
           static_cast<uInt16>(k + myOffset));
       }
     }
@@ -1043,7 +1043,7 @@ void DiStella::addEntry(Device::AccessType type)
           const uInt32 labelAddr = mySettings.useOrgLabels
               ? static_cast<uInt32>(tag.address - myOffset) + mySettings.orgBase
               : tag.address;
-          tag.label = std::format("L{:0{}X}", labelAddr, mySettings.labelDigits);
+          tag.label = 'L' + Base::hexN(static_cast<int>(labelAddr), mySettings.labelDigits);
         }
         else if (mySettings.showAddresses && type == Device::CODE) {
           // Indent address-as-label to differentiate from real labels

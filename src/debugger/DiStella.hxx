@@ -140,7 +140,7 @@ class DiStella
         const uInt32 la = mySettings.useOrgLabels
             ? static_cast<uInt32>(addr - myOffset) + mySettings.orgBase
             : addr;
-        buf << std::format("L{:0{}X}", la, mySettings.labelDigits);
+        buf << 'L' << Common::Base::hexN(static_cast<int>(la), mySettings.labelDigits);
       }
     }
     void labelA12Low(std::ostringstream& buf, uInt8 op, uInt16 addr, AddressType labfound)
