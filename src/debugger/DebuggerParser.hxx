@@ -29,6 +29,18 @@ struct Command;
 #include "Device.hxx"
 #include "FrameBufferConstants.hxx"
 
+/**
+  Interprets and dispatches commands typed at the debugger prompt.
+
+  Each call to run() tokenizes the input, evaluates numeric arguments
+  through YaccParser, validates them against the command's parameter table,
+  and invokes the corresponding execute* method.  exec() extends this to
+  read a sequence of commands from a script file.
+
+  Shared mutable state (args, argStrings, argCount, commandResult, myCommand)
+  is saved and restored on each run() invocation so that recursive calls
+  originating from executeExec() are safe.
+*/
 class DebuggerParser
 {
   public:
@@ -55,91 +67,134 @@ class DebuggerParser
     /** String representation of all watches currently defined */
     string showWatches();
 
-    static string red(string_view msg = "")
-    {
+    /** Prefix msg with the PromptWidget color-red control byte */
+    static string red(string_view msg = {}) {
       return static_cast<char>(kDbgColorRed & 0xff) + string{msg};
     }
-    static string inverse(string_view msg = "")
-    {
-      // ASCII DEL char, decimal 127
+    /** Prefix msg with the PromptWidget inverse-video control byte (ASCII DEL, 0x7f) */
+    static string inverse(string_view msg = {}) {
       return "\177" + string{msg};
     }
 
   private:
-    bool getArgs(string_view command, string& verb);
+    /** Tokenize command into verb (returned via ref) and argStrings/argCount members.
+        Tokens separated by spaces; {braces} allow spaces within a single token. */
+    void getArgs(string_view command, string& verb);
+
+    /** Validate argCount and arg values against commands[cmd].parms.
+        Writes an error to commandResult and returns false on failure. */
     bool validateArgs(int cmd);
+
+    /** Format all current args in hex, binary, and decimal with label lookups.
+        Operates on the args/argStrings/argCount member state set by getArgs(). */
     string eval();
-    string buildExprStr(uInt32 from = 0, uInt32 end = ~0u) const;
+
+    /** Join argStrings[from .. end) with spaces.
+        Used by skipEval executors that need to re-parse the full expression. */
+    string buildExprStr(uInt32 from = 0, uInt32 end = ~0U) const;
+
+    /** Serialize the current session (functions, watches, breakpoints, traps,
+        timers) to a .script file, creating or overwriting it. */
     string saveScriptFile(string file);
+
+    /** Write out to node; append " to <path>" or a red error to result. */
     static void saveDump(const FSNode& node, const std::ostringstream& out,
                          std::ostringstream& result);
+
     string_view cartName() const;
 
   private:
-    // Constants for argument processing
+    // Tokenizer state for getArgs(): between tokens, inside {braces}, inside a token
     enum class ParseState: uInt8 { IN_SPACE, IN_BRACE, IN_ARG };
 
     enum class Parameters: uInt8 {
-      ARG_WORD,        // single 16-bit value
-      ARG_DWORD,       // single 32-bit value
-      ARG_MULTI_WORD,  // multiple 16-bit values (must occur last)
-      ARG_BYTE,        // single 8-bit value
-      ARG_MULTI_BYTE,  // multiple 8-bit values (must occur last)
-      ARG_BOOL,        // 0 or 1 only
-      ARG_LABEL,       // label (need not be defined, treated as string)
-      ARG_FILE,        // filename
-      ARG_BASE_SPCL,   // base specifier: 2, 10, or 16 (or "bin" "dec" "hex")
-      ARG_END_ARGS     // sentinel, occurs at end of list
+      ARG_WORD,       // single 16-bit value
+      ARG_DWORD,      // single 32-bit value
+      ARG_BYTE,       // single 8-bit value
+      ARG_MULTI_BYTE, // multiple 8-bit values (must occur last)
+      ARG_BOOL,       // 0 or 1 only
+      ARG_LABEL,      // label (need not be defined, treated as string)
+      ARG_FILE,       // filename
+      ARG_BASE_SPCL,  // base specifier: 2, 10, or 16 (or "bin" "dec" "hex")
+      ARG_END_ARGS    // sentinel, occurs at end of list
     };
 
     // List of commands available
     struct Command {
-      string cmdString;
-      string description;
-      string extendedDesc;
-      string example;
+      // Name typed at the prompt (e.g. "breakIf")
+      string_view cmdString;
+      // One-line description shown in the full help listing
+      string_view description;
+      // Extended help shown for "help <command>"; may be empty
+      string_view extendedDesc;
+      // Usage example shown in help and appended to argument errors; may be empty
+      string_view example;
+      // True when at least one argument is required
       bool parmsRequired{false};
+      // True when the debugger UI must reload its config before and after execution
       bool refreshRequired{false};
+      // True when the executor re-parses all args itself via buildExprStr();
+      // suppresses the normal YaccParser evaluation pass in evalArgs()
+      bool skipEval{false};
+      // Expected argument types, in order, terminated by ARG_END_ARGS;
+      // MULTI_* entries repeat for all remaining arguments
       std::array<Parameters, 10> parms;
+      // Member function that carries out the command
       void (DebuggerParser::*executor)();
-      bool skipEval{false};   // true when executor re-parses all args via buildExprStr()
     };
     using CommandArray = std::array<Command, 112>;
-    static CommandArray commands;
+    static const CommandArray commands;
 
+    /** Evaluate each argString through YaccParser and store results in
+        args[]. No-op when cmd.skipEval is true (executor will re-parse via
+        buildExprStr). */
     void evalArgs(const Command& cmd);
 
-    // Reference to our debugger object
     Debugger& debugger;
-
-    // Reference to settings object (required for saving certain options)
     Settings& settings;
 
-    // The results of the currently running command
+    // Output buffer written by execute* methods; returned as a string by run()
     std::ostringstream commandResult;
 
-    // currently execute command id
+    // Index into commands[] for the currently executing command
     int myCommand{0};
-    // Arguments in 'int' and 'string' format for the currently running command
+
+    // Evaluated (int) and raw (string) forms of the current command's arguments
     IntArray args;
     StringList argStrings;
     uInt32 argCount{0};
 
+    // Nesting depth of exec() calls; nonzero while a script is running
     uInt32 execDepth{0};
+    // Filename prefix used by saveSnap/dump during script execution
     string execPrefix;
 
     StringList myWatches;
 
+    /** List either plain traps (listCond=false) or conditional trapIfs
+        (listCond=true) */
     void listTraps(bool listCond);
+
+    /** Return a parenthesized label annotation for the address range,
+        or an empty string if neither endpoint has a user-defined label */
     string trapStatus(uInt32 begin, uInt32 end, bool read, bool write) const;
 
-    void printTimer(uInt32 idx,bool showHeader = true);
+    /** Emit one timer row into commandResult in fixed-width tabular format */
+    void printTimer(uInt32 idx, bool showHeader = true);
+
+    /** Emit the full timer table (header + all rows) into commandResult */
     void listTimers();
+
+    /** Return a sequence of "timer …" command strings that recreate all
+        current timers; suitable for embedding in a saved script file */
     string getTimerCmds();
 
-    // output the error with the example provided for the command
+    /** Clear commandResult, write the error message (red), and append the
+        command's example string if one is defined */
     void outputCommandError(string_view errorMsg, int command);
 
+    /** Shared implementation for the disassembly-annotation commands
+        (code, data, gfx, col, …); applies the given access type to args[0..1] */
     void executeDirective(Device::AccessType type);
 
     // List of available command methods
@@ -246,8 +301,12 @@ class DebuggerParser
     void executeTrapReadIf();
     void executeTrapWrite();
     void executeTrapWriteIf();
-    void executeTraps(bool read, bool write, string_view command, bool cond = false);
-    void executeTrapRW(uInt32 begin, uInt32 end, bool read, bool write, bool add = true);  // not exposed by debugger
+    void executeTraps(bool read, bool write, string_view command,
+                      bool cond = false);
+    /** Apply or remove read/write traps for [begin, end] and all their mirrors
+        across the full 64K address space */
+    void executeTrapRW(uInt32 begin, uInt32 end, bool read, bool write,
+                       bool add = true);
     void executeType();
     void executeUHex();
     void executeUndef();

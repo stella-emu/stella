@@ -507,11 +507,12 @@ namespace BSPF
   // Trim leading and trailing whitespace from a string
   constexpr string_view trim(string_view str)
   {
-    const auto first = str.find_first_not_of(' ');
+    constexpr string_view WS = " \t\r\n";
+    const auto first = str.find_first_not_of(WS);
     if(first == string_view::npos)
       return {};
 
-    const auto last = str.find_last_not_of(' ');
+    const auto last = str.find_last_not_of(WS);
     return str.substr(first, last - first + 1);
   }
 
