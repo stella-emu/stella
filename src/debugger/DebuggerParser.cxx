@@ -64,6 +64,23 @@ DebuggerParser::DebuggerParser(Debugger& d, Settings& s)
 // main entry point: PromptWidget calls this method.
 string DebuggerParser::run(string_view command)
 {
+  // Save per-invocation state so recursive calls (e.g. executeExec->exec->run) are safe.
+  // Each invocation works on its own args/result; outer state is restored on return.
+  IntArray     outerArgs       = std::move(args);
+  StringList   outerArgStrings = std::move(argStrings);
+  const uInt32 outerArgCount   = argCount;
+  const int    outerCommand    = myCommand;
+  std::ostringstream outerResult;
+  outerResult.swap(commandResult);
+
+  const auto restoreCtx = [&]() {
+    args       = std::move(outerArgs);
+    argStrings = std::move(outerArgStrings);
+    argCount   = outerArgCount;
+    myCommand  = outerCommand;
+    commandResult.swap(outerResult);
+  };
+
   string verb;
   getArgs(command, verb);
   commandResult.str("");
@@ -72,22 +89,25 @@ string DebuggerParser::run(string_view command)
     [&](const Command& cmd) { return BSPF::equalsIgnoreCase(verb, cmd.cmdString); });
 
   if(it == commands.end())
+  {
+    restoreCtx();
     return red("No such command (try \"help\")");
+  }
 
   const int i = static_cast<int>(it - commands.begin());
+  myCommand = i;
   if(validateArgs(i))
   {
-    const int savedCommand = myCommand;
-    myCommand = i;
     if(it->refreshRequired)
       debugger.baseDialog()->saveConfig();
     (this->*it->executor)();
-    myCommand = savedCommand;
   }
   if(it->refreshRequired)
     debugger.baseDialog()->loadConfig();
 
-  return commandResult.str();
+  const string result = commandResult.str();
+  restoreCtx();
+  return result;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -276,6 +296,12 @@ int DebuggerParser::decipher_arg(string_view str)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string DebuggerParser::showWatches()
 {
+  // eval() reads args/argStrings/argCount; save and restore so we don't
+  // permanently stomp any outer-call state.
+  IntArray     savedArgs       = std::move(args);
+  StringList   savedArgStrings = std::move(argStrings);
+  const uInt32 savedArgCount   = argCount;
+
   string buf;
   buf.reserve(myWatches.size() * 32);  // rough estimate per watch line
 
@@ -285,7 +311,6 @@ string DebuggerParser::showWatches()
     if(watch.empty())
       continue;
 
-    // Clear the args, since we're going to pass them to eval()
     argStrings.clear();
     args.clear();
     argCount = 1;
@@ -297,6 +322,11 @@ string DebuggerParser::showWatches()
     else
       std::format_to(std::back_inserter(buf), " watch #{} ({}) -> {}\n", i + 1, watch, eval());
   }
+
+  args       = std::move(savedArgs);
+  argStrings = std::move(savedArgStrings);
+  argCount   = savedArgCount;
+
   return buf;
 }
 
