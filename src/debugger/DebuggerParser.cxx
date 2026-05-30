@@ -589,8 +589,7 @@ void DebuggerParser::printTimer(uInt32 idx, bool showHeader)
   {
     string label = debugger.cartDebug().getLabel(addr, true);
     if(label.empty() || label[0] == '$')
-      label = Base::hexUppercase() ? std::format("    ${:04X}", addr)
-                                   : std::format("    ${:04x}", addr);
+      label = std::format("    ${}", Base::hex4(addr));
 
     const int trimWidth = colWidth - (timer.mirrors ? 1 : 0);
     if(std::cmp_greater(label.size(), trimWidth))
@@ -1905,7 +1904,7 @@ void DebuggerParser::executePalette()
 void DebuggerParser::executePc()
 {
   debugger.cpuDebug().setPC(args[0]);
-  debugger.addState(std::format("Set PC @ {:04x}", args[0]));
+  debugger.addState(std::format("Set PC @ {}", Base::hex4(args[0])));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -2100,8 +2099,8 @@ void DebuggerParser::executeRunToPc()
   if(done)
   {
     std::format_to(std::ostreambuf_iterator(commandResult),
-                   "Set PC to ${:04x} in {} instructions", args[0], count);
-    debugger.addState(std::format("RunTo PC @ {:04x}", args[0]));
+                   "Set PC to ${} in {} instructions", Base::hex4(args[0]), count);
+    debugger.addState(std::format("RunTo PC @ {}", Base::hex4(args[0])));
   }
   else
     std::format_to(std::ostreambuf_iterator(commandResult),
@@ -2756,7 +2755,7 @@ void DebuggerParser::executeType()
 
   for(uInt32 i = beg; i <= end; ++i)
   {
-    std::format_to(std::ostreambuf_iterator(commandResult), "{:04x}: {}\n", i,
+    std::format_to(std::ostreambuf_iterator(commandResult), "{}: {}\n", Base::hex4(i),
         debugger.cartDebug().accessTypeAsString(i));
   }
 }

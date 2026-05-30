@@ -18,6 +18,8 @@
 #include "CartUA.hxx"
 #include "CartUAWidget.hxx"
 
+using Common::Base;
+
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartridgeUAWidget::CartridgeUAWidget(
       GuiObject* boss, const GUI::Font& lfont, const GUI::Font& nfont,
@@ -41,7 +43,7 @@ string CartridgeUAWidget::description()
 string CartridgeUAWidget::hotspotStr(int bank, int, bool prefix)
 {
   const uInt16 hotspot = myCart.hotspot() + (bank ^ (mySwappedHotspots ? 1 : 0)) * myHotspotDelta;
-  return std::format("({}${:X}, ${:X})",
+  return std::format("({}${}, ${})",
     prefix ? "hotspot " : "",
-    hotspot, hotspot | 0x80);
+    Base::hex4(hotspot), Base::hex4(hotspot | 0x80));
 }

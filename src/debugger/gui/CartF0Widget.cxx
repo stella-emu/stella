@@ -18,6 +18,8 @@
 #include "CartF0.hxx"
 #include "CartF0Widget.hxx"
 
+using Common::Base;
+
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartridgeF0Widget::CartridgeF0Widget(
       GuiObject* boss, const GUI::Font& lfont, const GUI::Font& nfont,
@@ -34,13 +36,13 @@ string CartridgeF0Widget::description()
   return std::format(
     "Megaboy F0 cartridge, 16 4K banks\n"
     "Startup bank = #{} or undetermined\n"
-    "Bankswitch triggered by accessing ${:X}\n",
-    myCart.startBank(), 0xFFF0);
+    "Bankswitch triggered by accessing ${}\n",
+    myCart.startBank(), Base::hex4(0xFFF0));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string CartridgeF0Widget::bankState()
 {
-  return std::format("Bank #{} (hotspot ${:X})",
-    myCart.getBank(), 0xFFF0);
+  return std::format("Bank #{} (hotspot ${})",
+    myCart.getBank(), Base::hex4(0xFFF0));
 }

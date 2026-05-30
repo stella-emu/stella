@@ -18,6 +18,8 @@
 #include "CartE0.hxx"
 #include "CartE0Widget.hxx"
 
+using Common::Base;
+
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartridgeE0Widget::CartridgeE0Widget(
       GuiObject* boss, const GUI::Font& lfont, const GUI::Font& nfont,
@@ -42,10 +44,10 @@ string CartridgeE0Widget::romDescription()
   for(int seg = 0; seg < 4; ++seg)
   {
     const uInt16 segmentOffset = seg << 10; // myCart.myBankShift;
-    info += std::format("Segment #{} accessible @ ${:X} - ${:X},\n",
+    info += std::format("Segment #{} accessible @ ${} - ${},\n",
       seg,
-      ADDR_BASE | segmentOffset,
-      ADDR_BASE | (segmentOffset + /*myCart.myBankSize - 1*/ 0x3FF));
+      Base::hex4(ADDR_BASE | segmentOffset),
+      Base::hex4(ADDR_BASE | (segmentOffset + /*myCart.myBankSize - 1*/ 0x3FF)));
     if(seg < 3)
       info += std::format("  Hotspots {} - {}\n",
         hotspotStr(0, seg, true), hotspotStr(7, seg, true));
@@ -60,8 +62,8 @@ string CartridgeE0Widget::romDescription()
 string CartridgeE0Widget::hotspotStr(int bank, int segment, bool noBrackets)
 {
   const uInt16 hotspot = myCart.hotspot();
-  return std::format("{0}${1:X}{2}",
+  return std::format("{}${}{}",
     noBrackets ? "" : "(",
-    hotspot + bank + segment * 8,
+    Base::hex4(hotspot + bank + segment * 8),
     noBrackets ? "" : ")");
 }

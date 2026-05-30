@@ -21,6 +21,8 @@
   #include "Device.hxx"
   #include "Base.hxx"
 
+  using Common::Base;
+
   // Flags for access types
   #define DISASM_CODE  Device::CODE
   #define DISASM_DATA  Device::DATA
@@ -130,8 +132,8 @@ inline uInt8 M6502::peek(uInt16 address, Device::AccessFlags flags)
     {
       myJustHitReadTrapFlag = true;
 
-      myHitTrapInfo.message = std::format("RTrap{}[{:02x}]{}",
-        flags == DISASM_NONE ? "G" : "", cond,
+      myHitTrapInfo.message = std::format("RTrap{}[{}]{}",
+        flags == DISASM_NONE ? "G" : "", Base::hex2(cond),
         myCondTraps[cond].name.empty() ? ": " : "If: {" + myCondTraps[cond].name + "} ");
 
       myHitTrapInfo.address = address;
@@ -166,8 +168,8 @@ inline void M6502::poke(uInt16 address, uInt8 value, Device::AccessFlags flags)
     {
       myJustHitWriteTrapFlag = true;
 
-      myHitTrapInfo.message = std::format("WTrap[{:02x}]{}",
-        cond,
+      myHitTrapInfo.message = std::format("WTrap[{}]{}",
+        Base::hex2(cond),
         myCondTraps[cond].name.empty() ? ":" : "If: {" + myCondTraps[cond].name + "}");
 
       myHitTrapInfo.address = address;
@@ -291,7 +293,7 @@ inline void M6502::_execute(uInt64 cycles, DispatchResult& result)
               else
               {
                 result.setDebugger(currentCycles,
-                  std::format("BP: ${:04x}, bank #{}", PC, static_cast<int>(bank)),
+                  std::format("BP: ${}, bank #{}", Base::hex4(PC), static_cast<int>(bank)),
                   "Breakpoint");
                 return;
               }
@@ -308,12 +310,12 @@ inline void M6502::_execute(uInt64 cycles, DispatchResult& result)
           myLastBreakCycle = mySystem->cycles();
           if(myLogBreaks)
           {
-            myDebugger->log(std::format("CBP[{:02x}]:", cond));
+            myDebugger->log(std::format("CBP[{}]:", Base::hex2(cond)));
           }
           else
           {
             result.setDebugger(currentCycles,
-              std::format("CBP[{:02x}]: {}", cond, myCondBreakNames[cond]),
+              std::format("CBP[{}]: {}", Base::hex2(cond), myCondBreakNames[cond]),
               "Conditional breakpoint");
             return;
           }
@@ -330,7 +332,7 @@ inline void M6502::_execute(uInt64 cycles, DispatchResult& result)
 
       const int cond = evalCondSaveStates();
       if(cond > -1)
-        myDebugger->addState(std::format("conditional savestate [{:02x}]", cond));
+        myDebugger->addState(std::format("conditional savestate [{}]", Base::hex2(cond)));
 
       mySystem->cart().clearAllRAMAccesses();
 
@@ -371,7 +373,7 @@ inline void M6502::_execute(uInt64 cycles, DispatchResult& result)
           if(rwpAddr)
           {
             result.setDebugger(currentCycles,
-              std::format("RWP[@ ${:04x}]: ", rwpAddr),
+              std::format("RWP[@ ${}]: ", Base::hex4(rwpAddr)),
               "Read from write port", oldPC);
             return;
           }
@@ -383,7 +385,7 @@ inline void M6502::_execute(uInt64 cycles, DispatchResult& result)
           if(wrpAddr)
           {
             result.setDebugger(currentCycles,
-              std::format("WRP[@ ${:04x}]: ", wrpAddr),
+              std::format("WRP[@ ${}]: ", Base::hex4(wrpAddr)),
               "Write to read port", oldPC);
             return;
           }

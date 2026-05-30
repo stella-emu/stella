@@ -18,6 +18,8 @@
 #include "Cart0FA0.hxx"
 #include "Cart0FA0Widget.hxx"
 
+using Common::Base;
+
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Cartridge0FA0Widget::Cartridge0FA0Widget(
       GuiObject* boss, const GUI::Font& lfont, const GUI::Font& nfont,
@@ -39,7 +41,7 @@ string Cartridge0FA0Widget::description()
 string Cartridge0FA0Widget::hotspotStr(int bank, int, bool prefix)
 {
   const uInt16 hotspot = myCart.hotspot() + bank * myHotspotDelta;
-  return std::format("({}${:X}, ${:X})",
+  return std::format("({}${}, ${})",
     prefix ? "hotspot " : "",
-    hotspot, hotspot | 0xf80);
+    Base::hex4(hotspot), Base::hex4(hotspot | 0xf80));
 }

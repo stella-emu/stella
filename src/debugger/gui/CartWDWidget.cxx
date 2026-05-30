@@ -18,6 +18,8 @@
 #include "CartWD.hxx"
 #include "CartWDWidget.hxx"
 
+using Common::Base;
+
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartridgeWDWidget::CartridgeWDWidget(
       GuiObject* boss, const GUI::Font& lfont, const GUI::Font& nfont,
@@ -33,11 +35,11 @@ string CartridgeWDWidget::description()
   return std::format(
     "8K + RAM Wickstead Design cartridge, \n"
     "  eight 1K banks, mapped into four segments\n"
-    "Hotspots ${:X} - ${:X}, "
+    "Hotspots ${} - ${}, "
     "each hotspot selects a [predefined bank mapping]\n"
     "{}",
-    myCart.hotspot(),
-    myCart.hotspot() + 7,
+    Base::hex4(myCart.hotspot()),
+    Base::hex4(myCart.hotspot() + 7),
     ramDescription());
 }
 
@@ -45,9 +47,9 @@ string CartridgeWDWidget::description()
 string CartridgeWDWidget::hotspotStr(int bank, int, bool prefix)
 {
   const CartridgeWD::BankOrg banks = CartridgeWD::ourBankOrg[bank];
-  return std::format("({}${:X}) [{}, {}, {}, {}]",
+  return std::format("({}${}) [{}, {}, {}, {}]",
     prefix ? "hotspot " : "",
-    myCart.hotspot() + bank,
+    Base::hex4(myCart.hotspot() + bank),
     static_cast<uInt16>(banks.zero),
     static_cast<uInt16>(banks.one),
     static_cast<uInt16>(banks.two),

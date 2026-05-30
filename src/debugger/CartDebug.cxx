@@ -1139,8 +1139,9 @@ string CartDebug::listConfig(int bank)
     for(const auto& i: info.directiveList)
     {
       if(i.type != Device::NONE)
-        std::format_to(std::back_inserter(out), "(*) {} {:04X} {:04X}\n",
-                       AccessTypeAsString(i.type), i.start, i.end);
+        std::format_to(std::back_inserter(out), "(*) {} {} {}\n",
+                       AccessTypeAsString(i.type),
+                       Base::hex4(i.start), Base::hex4(i.end));
     }
     out += getBankDirectives(info);
   }
@@ -1240,7 +1241,7 @@ string CartDebug::getBankDirectives(const BankInfo& info) const
   out.reserve(512);
 
   // Start with the offset for this bank
-  std::format_to(std::back_inserter(out), "ORG {:04X}\n", info.offset);
+  std::format_to(std::back_inserter(out), "ORG {}\n", Base::hex4(info.offset));
 
   // Now consider each byte
   uInt32 prev = info.offset, addr = prev + 1;
@@ -1251,8 +1252,9 @@ string CartDebug::getBankDirectives(const BankInfo& info) const
     const Device::AccessType currType = accessTypeAbsolute(mySystem.getAccessFlags(addr));
     if(currType != prevType)
     {
-      std::format_to(std::back_inserter(out), "{} {:04X} {:04X}\n",
-                     AccessTypeAsString(prevType), prev, addr - 1);
+      std::format_to(std::back_inserter(out), "{} {} {}\n",
+                     AccessTypeAsString(prevType), Base::hex4(prev),
+                     Base::hex4(addr - 1));
       prev = addr;
       prevType = currType;
     }
@@ -1260,8 +1262,9 @@ string CartDebug::getBankDirectives(const BankInfo& info) const
 
   // Grab the last directive, making sure it accounts for all remaining space
   if(prev != addr)
-    std::format_to(std::back_inserter(out), "{} {:04X} {:04X}\n",
-                   AccessTypeAsString(prevType), prev, addr - 1);
+    std::format_to(std::back_inserter(out), "{} {} {}\n",
+                   AccessTypeAsString(prevType), Base::hex4(prev),
+                   Base::hex4(addr - 1));
 
   return out;
 }

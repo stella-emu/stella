@@ -44,6 +44,7 @@ char* Base::toChars(char* out, int value, Fmt fmt)
 
     case Fmt::_16_1:  return writeHex(out, value, 1);
     case Fmt::_16_2:  return writeHex(out, value, 2);
+    case Fmt::_16_3:  return writeHex(out, value, 3);
     case Fmt::_16_4:  return writeHex(out, value, 4);
     case Fmt::_16_8:  return writeHex(out, value, 8);
 

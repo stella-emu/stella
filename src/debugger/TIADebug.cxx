@@ -22,6 +22,8 @@
 #include "DelayQueueIterator.hxx"
 #include "RiotDebug.hxx"
 
+using Common::Base;
+
 #include "TIADebug.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -920,8 +922,8 @@ string TIADebug::hexWithLabel(string_view label, uInt16 value,
   if(!label.empty())
     result += '=';
   result += (width == 1)
-    ? std::format("${:01X}", value)
-    : std::format("${:02X}", value);
+    ? std::format("${}", Base::hex1(value))
+    : std::format("${}", Base::hex2(value));
 
   if(changed)
     return static_cast<char>(kDbgColorRed & 0xff) + result +

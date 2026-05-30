@@ -18,6 +18,8 @@
 #include "CartJANE.hxx"
 #include "CartJANEWidget.hxx"
 
+using Common::Base;
+
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartridgeJANEWidget::CartridgeJANEWidget(
       GuiObject* boss, const GUI::Font& lfont, const GUI::Font& nfont,
@@ -38,7 +40,7 @@ string CartridgeJANEWidget::description()
 string CartridgeJANEWidget::hotspotStr(int bank, int, bool prefix)
 {
   const uInt16 hotspot = myCart.hotspot() | ADDR_BASE;
-  return std::format("{}${:X})",
+  return std::format("{}${})",
     prefix ? "(hotspot " : "(",
-    hotspot + (bank < 2 ? bank : bank + 6));
+    Base::hex4(hotspot + (bank < 2 ? bank : bank + 6)));
 }

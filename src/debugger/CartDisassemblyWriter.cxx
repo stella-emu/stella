@@ -154,10 +154,12 @@ string CartDisassemblyWriter::save(string path)
       else
         buf << "    ORG     $" << Base::HEX4 << origin << "\n"
             << "    RORG    $" << Base::HEX4 << info.offset << "\n\n";
-      buf << std::format("    ds.b    {:<8}; write port (${:04X}-${:04X})\n",
-                         ramSize, info.offset, info.offset + ramSize - 1)
-          << std::format("    ds.b    {:<8}; read port  (${:04X}-${:04X})\n\n",
-                         ramSize, info.offset + ramSize, info.offset + 2 * ramSize - 1);
+      buf << std::format("    ds.b    {:<8}; write port (${}-${})\n",
+                         ramSize, Base::hex4(info.offset),
+                         Base::hex4(info.offset + ramSize - 1))
+          << std::format("    ds.b    {:<8}; read port  (${}-${})\n\n",
+                         ramSize, Base::hex4(info.offset + ramSize),
+                         Base::hex4(info.offset + 2 * ramSize - 1));
     }
 
     buf << "    SEG     CODE\n";
@@ -194,7 +196,8 @@ string CartDisassemblyWriter::save(string path)
           break;
 
         case Device::ROW:
-          buf << std::format(".byte   {:<32}; ${:04X} (*)", tag.disasm.substr(6, 8*4-1), tag.address);
+          buf << std::format(".byte   {:<32}; ${} (*)", tag.disasm.substr(6, 8*4-1),
+                             Base::hex4(tag.address));
           break;
 
         case Device::GFX:
@@ -202,7 +205,7 @@ string CartDisassemblyWriter::save(string path)
               << tag.bytes << " ; |";
           for(int c = 12; c < 20; ++c)
             buf << ((tag.disasm[c] == '\x1e') ? "#" : " ");
-          buf << std::format("{:<13}${:04X} (G)", "|", tag.address);
+          buf << std::format("{:<13}${} (G)", "|", Base::hex4(tag.address));
           break;
 
         case Device::PGFX:
@@ -210,32 +213,32 @@ string CartDisassemblyWriter::save(string path)
               << tag.bytes << " ; |";
           for(int c = 12; c < 20; ++c)
             buf << ((tag.disasm[c] == '\x1f') ? "*" : " ");
-          buf << std::format("{:<13}${:04X} (P)", "|", tag.address);
+          buf << std::format("{:<13}${} (P)", "|", Base::hex4(tag.address));
           break;
 
         case Device::COL:
-          buf << std::format(".byte   {:<32}; ${:04X} (C)", tag.disasm.substr(6, 15),
-                             tag.address);
+          buf << std::format(".byte   {:<32}; ${} (C)", tag.disasm.substr(6, 15),
+                             Base::hex4(tag.address));
           break;
 
         case Device::PCOL:
-          buf << std::format(".byte   {:<32}; ${:04X} (CP)", tag.disasm.substr(6, 15),
-                             tag.address);
+          buf << std::format(".byte   {:<32}; ${} (CP)", tag.disasm.substr(6, 15),
+                             Base::hex4(tag.address));
           break;
 
         case Device::BCOL:
-          buf << std::format(".byte   {:<32}; ${:04X} (CB)", tag.disasm.substr(6, 15),
-                             tag.address);
+          buf << std::format(".byte   {:<32}; ${} (CB)", tag.disasm.substr(6, 15),
+                             Base::hex4(tag.address));
           break;
 
         case Device::AUD:
-          buf << std::format(".byte   {:<32}; ${:04X} (A)", tag.disasm.substr(6, 8 * 4 - 1),
-                             tag.address);
+          buf << std::format(".byte   {:<32}; ${} (A)", tag.disasm.substr(6, 8 * 4 - 1),
+                             Base::hex4(tag.address));
           break;
 
         case Device::DATA:
-          buf << std::format(".byte   {:<32}; ${:04X} (D)", tag.disasm.substr(6, 8 * 4 - 1),
-                             tag.address);
+          buf << std::format(".byte   {:<32}; ${} (D)", tag.disasm.substr(6, 8 * 4 - 1),
+                             Base::hex4(tag.address));
           break;
 
         case Device::NONE:
@@ -285,7 +288,8 @@ string CartDisassemblyWriter::save(string path)
           << ";      Bankswitch equates\n"
           << ";-----------------------------------------------------------\n\n";
       for(uInt16 b = 0; b < romBankCount; ++b)
-        out << std::format("{:<16}= ${:04X}\n", "BANK" + std::to_string(b), hs + b);
+        out << std::format("{:<16}= ${}\n", "BANK" + std::to_string(b),
+                           Base::hex4(hs + b));
       out << "\n";
     }
   }
@@ -304,7 +308,7 @@ string CartDisassemblyWriter::save(string path)
     };
 
     for(int i = 0; i < 16; ++i)
-      out << std::format("{:<16} = ${:02X}\n", NTSC_COLOR[i], i << 4);
+      out << std::format("{:<16} = ${}\n", NTSC_COLOR[i], Base::hex2(i << 4));
   }
   else if(myCartDebug.myConsole.timing() == ConsoleTiming::pal)
   {
@@ -316,7 +320,7 @@ string CartDisassemblyWriter::save(string path)
     };
 
     for(int i = 0; i < 16; ++i)
-      out << std::format("{:<16} = ${:02X}\n", PAL_COLOR[i], i << 4);
+      out << std::format("{:<16} = ${}\n", PAL_COLOR[i], Base::hex2(i << 4));
   }
   else
   {
@@ -326,7 +330,7 @@ string CartDisassemblyWriter::save(string path)
     };
 
     for(int i = 0; i < 8; ++i)
-      out << std::format("{:<16} = ${:X}\n", SECAM_COLOR[i], i << 1);
+      out << std::format("{:<16} = ${}\n", SECAM_COLOR[i], Base::hex1(i << 1));
   }
   out << "\n";
 
@@ -349,28 +353,28 @@ string CartDisassemblyWriter::save(string path)
     // TIA read access
     for(uInt16 addr = 0x00; addr <= 0x0F; ++addr)
       if(myCartDebug.myReserved.TIARead[addr])
-        out << std::format("{:<16}= ${:02X}  ; (R)\n",
-                           CartDebug::ourTIAMnemonicR[addr], addr);
+        out << std::format("{:<16}= ${}  ; (R)\n",
+                           CartDebug::ourTIAMnemonicR[addr], Base::hex2(addr));
       else if (myCartDebug.mySystem.getAccessFlags(addr) & Device::DATA)
-        out << std::format(";{:<15}= ${:02X}  ; (Ri)\n",
-                           CartDebug::ourTIAMnemonicR[addr], addr);
+        out << std::format(";{:<15}= ${}  ; (Ri)\n",
+                           CartDebug::ourTIAMnemonicR[addr], Base::hex2(addr));
     out << "\n";
 
     // TIA write access
     for(uInt16 addr = 0x00; addr <= 0x3F; ++addr)
       if(myCartDebug.myReserved.TIAWrite[addr])
-        out << std::format("{:<16}= ${:02X}  ; (W)\n",
-                           CartDebug::ourTIAMnemonicW[addr], addr);
+        out << std::format("{:<16}= ${}  ; (W)\n",
+                           CartDebug::ourTIAMnemonicW[addr], Base::hex2(addr));
       else if (myCartDebug.mySystem.getAccessFlags(addr) & Device::WRITE)
-        out << std::format(";{:<15}= ${:02X}  ; (Wi)\n",
-                           CartDebug::ourTIAMnemonicW[addr], addr);
+        out << std::format(";{:<15}= ${}  ; (Wi)\n",
+                           CartDebug::ourTIAMnemonicW[addr], Base::hex2(addr));
     out << "\n";
 
     // RIOT IO access
     for(uInt16 addr = 0x00; addr <= 0x1F; ++addr)
       if(myCartDebug.myReserved.IOReadWrite[addr])
-        out << std::format("{:<16}= ${:04X}\n",
-                           CartDebug::ourIOMnemonic[addr], addr + 0x280);
+        out << std::format("{:<16}= ${}\n",
+                           CartDebug::ourIOMnemonic[addr], Base::hex4(addr + 0x280));
   }
 
   addrUsed = false;
@@ -399,8 +403,8 @@ string CartDisassemblyWriter::save(string path)
       {
         if(addLine)
           out << "\n";
-        out << std::format("{:<16}= ${:02X}{}\n", CartDebug::ourZPMnemonic[addr - 0x80],
-          addr,
+        out << std::format("{:<16}= ${}{}\n", CartDebug::ourZPMnemonic[addr - 0x80],
+          Base::hex2(addr),
           (stackUsed || codeUsed)
             ? std::format("; ({}{})", codeUsed ? "c" : "", stackUsed ? "s" : "")
             : std::string{});
@@ -410,7 +414,7 @@ string CartDisassemblyWriter::save(string path)
       {
         if(addLine)
           out << "\n";
-        out << std::format("{:<18}${:02X}  ({}{}{})\n", ";", addr,
+        out << std::format("{:<18}${}  ({}{}{})\n", ";", Base::hex2(addr),
           ramUsed ? "i" : "", codeUsed ? "c" : "", stackUsed ? "s" : "");
         addLine = false;
       }
@@ -425,7 +429,7 @@ string CartDisassemblyWriter::save(string path)
         << ";      Non Locatable Labels\n"
         << ";-----------------------------------------------------------\n\n";
     for(const auto& [label, addr]: myCartDebug.myReserved.Label)
-      out << std::format("{:<16}= ${:04X}\n", label, addr);
+      out << std::format("{:<16}= ${}\n", label, Base::hex4(addr));
   }
 
   if(!myCartDebug.myUserLabels.empty())
@@ -437,7 +441,7 @@ string CartDisassemblyWriter::save(string path)
     for(const auto& [addr, label]: myCartDebug.myUserLabels)
       max_len = std::max(max_len, static_cast<int>(label.size()));
     for(const auto& [addr, label]: myCartDebug.myUserLabels)
-      out << std::format("{:<{}}= ${:04X}\n", label, max_len, addr);
+      out << std::format("{:<{}}= ${}\n", label, max_len, Base::hex4(addr));
   }
 
   // And finally, output the disassembly

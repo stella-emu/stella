@@ -20,6 +20,8 @@
 #include "PopUpWidget.hxx"
 #include "CartEnhancedWidget.hxx"
 
+using Common::Base;
+
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Cartridge3EPlusWidget::Cartridge3EPlusWidget(
       GuiObject* boss, const GUI::Font& lfont, const GUI::Font& nfont,
@@ -112,8 +114,10 @@ void Cartridge3EPlusWidget::bankSelect(int& ypos)
                                 image[0x400 - 4]) / 0x1000) * 0x1000;
     const int addr1 = start + (seg * 0x400), addr2 = addr1 + 0x200;
 
-    const string addrLabel1 = std::format("${:04X}-${:04X}", addr1, addr1 + 0x1FF);
-    const auto* t = new StaticTextWidget(_boss, _font, xpos_s, ypos_s + 2, addrLabel1);
+    const string addrLabel1 = std::format("${}-${}", Base::hex4(addr1),
+                                          Base::hex4(addr1 + 0x1FF));
+    const auto* t = new StaticTextWidget(_boss, _font, xpos_s, ypos_s + 2,
+                                         addrLabel1);
 
     const int xoffset = t->getRight() + _font.getMaxCharWidth();
     const size_t bank_off = static_cast<size_t>(seg) * 2;
@@ -122,7 +126,8 @@ void Cartridge3EPlusWidget::bankSelect(int& ypos)
     myBankState[bank_off]->setEditable(false, true);
     ypos_s += myLineHeight + VGAP;
 
-    const string addrLabel2 = std::format("${:04X}-${:04X}", addr2, addr2 + 0x1FF);
+    const string addrLabel2 = std::format("${}-${}", Base::hex4(addr2),
+                                          Base::hex4(addr2 + 0x1FF));
     new StaticTextWidget(_boss, _font, xpos_s, ypos_s + 2, addrLabel2);
 
     myBankState[bank_off + 1] = new EditTextWidget(_boss, _font,
@@ -199,20 +204,20 @@ void Cartridge3EPlusWidget::updateUIState()
     {
       const uInt16 ramBank = bank - myCart.romBankCount();
 
-      myBankState[bank_off]->setText(std::format("RAM @ ${:04X} (R)",
-        ramBank << myCart3EP.myBankShift));
-      myBankState[bank_off + 1]->setText(std::format("RAM @ ${:04X} (W)",
-        (ramBank << myCart3EP.myBankShift) + myCart3EP.myBankSize));
+      myBankState[bank_off]->setText(std::format("RAM @ ${} (R)",
+          Base::hex4(ramBank << myCart3EP.myBankShift)));
+      myBankState[bank_off + 1]->setText(std::format("RAM @ ${} (W)",
+          Base::hex4((ramBank << myCart3EP.myBankShift) + myCart3EP.myBankSize)));
 
       myBankWidgets[seg]->setSelectedIndex(ramBank);
       myBankType[seg]->setSelected("RAM");
     }
     else
     {
-      myBankState[bank_off]->setText(std::format("ROM @ ${:04X}",
-        bank << myCart3EP.myBankShift));
-      myBankState[bank_off + 1]->setText(std::format("ROM @ ${:04X}",
-        (bank << myCart3EP.myBankShift) + myCart3EP.myBankSize));
+      myBankState[bank_off]->setText(std::format("ROM @ ${}",
+          Base::hex4(bank << myCart3EP.myBankShift)));
+      myBankState[bank_off + 1]->setText(std::format("ROM @ ${}",
+          Base::hex4((bank << myCart3EP.myBankShift) + myCart3EP.myBankSize)));
 
       myBankWidgets[seg]->setSelectedIndex(bank);
       myBankType[seg]->setSelected("ROM");

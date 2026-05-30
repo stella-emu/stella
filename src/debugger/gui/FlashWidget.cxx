@@ -19,6 +19,8 @@
 #include "MT24LC256.hxx"
 #include "FlashWidget.hxx"
 
+using Common::Base;
+
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FlashWidget::FlashWidget(GuiObject* boss, const GUI::Font& font,
                          int x, int y, Controller& controller)
@@ -92,14 +94,14 @@ void FlashWidget::loadConfig()
       {
         const int from = startPage * MT24LC256::PAGE_SIZE;
         const int to   = page * MT24LC256::PAGE_SIZE - 1;
-        string label = std::format("{:03X}", startPage);
+        string label = Base::hex3(startPage);
         if(!myEmbedded)
         {
           if(static_cast<int>(page) - 1 != startPage)
-            label += std::format("-{:03X}", page - 1);
+            label += std::format("-{}", Base::hex3(page - 1));
           else
             label += "    ";
-          label += std::format(": {:03X}-{:04X}", from, to);
+          label += std::format(": {}-{}", Base::hex3(from), Base::hex4(to));
         }
         myPage[useCount]->setLabel(label);
         startPage = -1;

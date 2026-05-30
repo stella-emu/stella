@@ -18,6 +18,8 @@
 #include "CartFC.hxx"
 #include "CartFCWidget.hxx"
 
+using Common::Base;
+
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartridgeFCWidget::CartridgeFCWidget(
       GuiObject* boss, const GUI::Font& lfont, const GUI::Font& nfont,
@@ -34,11 +36,11 @@ string CartridgeFCWidget::description()
   return std::format(
     "FC cartridge, up to eight 4K banks\n"
     "Bank selected by hotspots\n"
-    "  ${:04X} (defines low 2 bits)\n"
-    "  ${:04X} (defines high bits)\n"
-    "  ${:04X} (triggers bank switch)\n"
+    "  ${} (defines low 2 bits)\n"
+    "  ${} (defines high bits)\n"
+    "  ${} (triggers bank switch)\n"
     "{}",
-    hotspot, hotspot + 1, hotspot + 4,
+    Base::hex4(hotspot), Base::hex4(hotspot + 1), Base::hex4(hotspot + 4),
     CartridgeEnhancedWidget::description());
 }
 
@@ -46,8 +48,8 @@ string CartridgeFCWidget::description()
 string CartridgeFCWidget::hotspotStr(int bank, int, bool prefix)
 {
   const uInt16 hotspot = myCart.hotspot() | ADDR_BASE;
-  return std::format("({}${:04X} = {}, ${:04X} = {})",
+  return std::format("({}${} = {}, ${} = {})",
     prefix ? "hotspots " : "",
-    hotspot, bank & 0b11,
-    hotspot + 1, bank >> 2);
+    Base::hex4(hotspot), bank & 0b11,
+    Base::hex4(hotspot + 1), bank >> 2);
 }

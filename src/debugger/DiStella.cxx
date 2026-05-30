@@ -1197,11 +1197,11 @@ string DiStella::getColor(uInt8 byte)
   };
 
   if(myDbg.myConsole.timing() == ConsoleTiming::ntsc)
-    return std::format("{}|${:X}", NTSC_COLOR[byte >> 4], byte & 0xf);
+    return std::format("{}|${}", NTSC_COLOR[byte >> 4], Base::hex1(byte & 0xf));
   else if(myDbg.myConsole.timing() == ConsoleTiming::pal)
-    return std::format("{}|${:X}", PAL_COLOR[byte >> 4], byte & 0xf);
+    return std::format("{}|${}", PAL_COLOR[byte >> 4], Base::hex1(byte & 0xf));
   else
-    return std::format("${:X}|{}", byte >> 4, SECAM_COLOR[(byte >> 1) & 0x7]);
+    return std::format("${}|{}", Base::hex1(byte >> 4), SECAM_COLOR[(byte >> 1) & 0x7]);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -20,6 +20,8 @@
 #include "PopUpWidget.hxx"
 #include "CartDPCWidget.hxx"
 
+using Common::Base;
+
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartridgeDPCWidget::CartridgeDPCWidget(
       GuiObject* boss, const GUI::Font& lfont, const GUI::Font& nfont,
@@ -47,8 +49,8 @@ CartridgeDPCWidget::CartridgeDPCWidget(
   for(uInt32 i = 0, offset = 0xFFC; i < 2; ++i, offset += 0x1000)
   {
     const uInt16 start = bankStart(offset);
-    info += std::format("Bank {} @ ${:X} - ${:X} (hotspot = ${:X})\n",
-      i, start + 0x80, start + 0xFFF, 0xF000 + spot + i);
+    info += std::format("Bank {} @ ${} - ${} (hotspot = ${})\n",
+      i, Base::hex4(start + 0x80), Base::hex4(start + 0xFFF), Base::hex4(0xF000 + spot + i));
   }
 
   int xpos = 2,
@@ -57,7 +59,7 @@ CartridgeDPCWidget::CartridgeDPCWidget(
 
   VariantList items;
   for(int bank = 0; bank < 2; ++bank)
-    VarList::push_back(items, std::format("#{} (${:X})", bank, 0xFFF8 + bank));
+    VarList::push_back(items, std::format("#{} (${})", bank, Base::hex4(0xFFF8 + bank)));
 
   myBank = new PopUpWidget(boss, _font, xpos, ypos-2, _font.getStringWidth("#0 ($FFFx)"),
                            myLineHeight, items, "Set bank     ",
@@ -229,8 +231,8 @@ void CartridgeDPCWidget::handleCommand(CommandSender* sender,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string CartridgeDPCWidget::bankState()
 {
-  return std::format("Bank #{} (hotspot ${:X})",
-    myCart.getBank(), 0xFFF8 + myCart.getBank());
+  return std::format("Bank #{} (hotspot ${})",
+    myCart.getBank(), Base::hex4(0xFFF8 + myCart.getBank()));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

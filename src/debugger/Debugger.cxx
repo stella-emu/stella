@@ -519,9 +519,7 @@ void Debugger::log(string_view triggerMsg)
   {
     if((tag.address & mySystem.addressMask()) >= start)
     {
-      const string pcStr = Base::hexUppercase()
-        ? std::format("{:04X}", pc)
-        : std::format("{:04x}", pc);
+      const string pcStr = Base::hex4(pc);
       msg += std::format("{} {:<8} {}", pcStr, tag.bytes, tag.disasm.substr(0, 7));
 
       if(tag.disasm.size() > 8)
