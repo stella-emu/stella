@@ -38,8 +38,6 @@ TIASurface::TIASurface(OSystem& system)
   : myOSystem{system},
     myFB{system.frameBuffer()}
 {
-  // Load NTSC filter settings
-  NTSCFilter::loadConfig(myOSystem.settings());
 
   // Create a surface for the TIA image and scanlines; we'll need them eventually
   myTiaSurface = myFB.allocateSurface(
@@ -66,6 +64,7 @@ TIASurface::TIASurface(OSystem& system)
   myPaletteHandler = std::make_unique<PaletteHandler>(myOSystem);
   myPaletteHandler->loadConfig(myOSystem.settings());
   myTVSignal = std::make_unique<TVSignal>(*myPaletteHandler);
+  myTVSignal->loadConfig(myOSystem.settings());
   myTVSignal->enableThreading(myOSystem.settings().getBool("threads"));
 }
 
@@ -85,12 +84,7 @@ void TIASurface::initialize(const Console& console,
   myPaletteHandler->setPalette();
 
   createScanlineSurface();
-  // Blargg NTSC filter is meaningless for SECAM's 8-colour palette; force it
-  // off so the surface stays narrow and TVSignal renders at correct geometry
-  const auto ntscPreset = console.timing() == ConsoleTiming::secam
-    ? NTSCFilter::Preset::OFF
-    : static_cast<NTSCFilter::Preset>(myOSystem.settings().getInt("tv.filter"));
-  setNTSC(ntscPreset, false);
+  setSignalQuality(static_cast<TVSignal::SignalQuality>(myOSystem.settings().getInt("tv.filter")), false);
 
 #if 0
 cerr << "INITIALIZE:\n"
@@ -138,48 +132,44 @@ uInt32 TIASurface::mapIndexedPixel(uInt8 indexedColor, uInt8 shift) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void TIASurface::setNTSC(NTSCFilter::Preset preset, bool show)
+void TIASurface::setSignalQuality(TVSignal::SignalQuality quality, bool show)
 {
-  if(preset == NTSCFilter::Preset::OFF)
+  myTVSignal->setSignalQuality(quality);
+  enableNTSC();
+  if(show)
   {
-    myTVSignal->setNTSCPreset(preset);
-    enableNTSC(false);
-    if(show) myFB.showTextMessage("TV filtering disabled");
+    if(quality == TVSignal::SignalQuality::Off)
+      myFB.showTextMessage("TV filtering disabled");
+    else
+      myFB.showTextMessage(std::format("TV filtering ({} mode)", myTVSignal->getPreset()));
   }
-  else
-  {
-    myTVSignal->setNTSCPreset(preset);
-    enableNTSC(true);
-    const string& mode = myTVSignal->ntscFilter().getPreset();
-    if(show) myFB.showTextMessage(std::format("TV filtering ({} mode)", mode));
-  }
-  myOSystem.settings().setValue("tv.filter", static_cast<int>(preset));
+  myOSystem.settings().setValue("tv.filter", static_cast<int>(quality));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TIASurface::changeNTSC(int direction)
 {
-  static constexpr std::array<NTSCFilter::Preset, 6> PRESETS = {
-    NTSCFilter::Preset::OFF, NTSCFilter::Preset::RGB, NTSCFilter::Preset::SVIDEO,
-    NTSCFilter::Preset::COMPOSITE, NTSCFilter::Preset::BAD, NTSCFilter::Preset::CUSTOM
+  using SQ = TVSignal::SignalQuality;
+  static constexpr std::array<SQ, 6> PRESETS = {
+    SQ::Off, SQ::RGB, SQ::SVideo, SQ::Composite, SQ::Bad, SQ::Custom
   };
   int preset = myOSystem.settings().getInt("tv.filter");
 
   if(direction == +1)
   {
-    if(preset == static_cast<int>(NTSCFilter::Preset::CUSTOM))
-      preset = static_cast<int>(NTSCFilter::Preset::OFF);
+    if(preset == static_cast<int>(SQ::Custom))
+      preset = static_cast<int>(SQ::Off);
     else
       preset++;
   }
   else if(direction == -1)
   {
-    if(preset == static_cast<int>(NTSCFilter::Preset::OFF))
-      preset = static_cast<int>(NTSCFilter::Preset::CUSTOM);
+    if(preset == static_cast<int>(SQ::Off))
+      preset = static_cast<int>(SQ::Custom);
     else
       preset--;
   }
-  setNTSC(PRESETS[preset], true);
+  setSignalQuality(PRESETS[preset], true);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -188,8 +178,8 @@ void TIASurface::setNTSCAdjustable(int direction)
   string text, valueText;
   Int32 value{0};
 
-  setNTSC(NTSCFilter::Preset::CUSTOM);
-  ntsc().selectAdjustable(direction, text, valueText, value);
+  setSignalQuality(TVSignal::SignalQuality::Custom);
+  myTVSignal->selectAdjustable(direction, text, valueText, value);
   myOSystem.frameBuffer().showGaugeMessage(text, valueText, value);
 }
 
@@ -199,9 +189,9 @@ void TIASurface::changeNTSCAdjustable(int adjustable, int direction)
   string text, valueText;
   Int32 newValue{0};
 
-  setNTSC(NTSCFilter::Preset::CUSTOM);
-  ntsc().changeAdjustable(adjustable, direction, text, valueText, newValue);
-  NTSCFilter::saveConfig(myOSystem.settings());
+  setSignalQuality(TVSignal::SignalQuality::Custom);
+  myTVSignal->changeAdjustable(adjustable, direction, text, valueText, newValue);
+  myTVSignal->saveConfig(myOSystem.settings());
   myOSystem.frameBuffer().showGaugeMessage(text, valueText, newValue);
 }
 
@@ -211,9 +201,9 @@ void TIASurface::changeCurrentNTSCAdjustable(int direction)
   string text, valueText;
   Int32 newValue{0};
 
-  setNTSC(NTSCFilter::Preset::CUSTOM);
-  ntsc().changeCurrentAdjustable(direction, text, valueText, newValue);
-  NTSCFilter::saveConfig(myOSystem.settings());
+  setSignalQuality(TVSignal::SignalQuality::Custom);
+  myTVSignal->changeCurrentAdjustable(direction, text, valueText, newValue);
+  myTVSignal->saveConfig(myOSystem.settings());
   myOSystem.frameBuffer().showGaugeMessage(text, valueText, newValue);
 }
 
@@ -225,7 +215,7 @@ void TIASurface::changeScanlineIntensity(int direction)
   mySLineSurface->setBlendLevel(intensity);
 
   myOSystem.settings().setValue("tv.scanlines", intensity);
-  enableNTSC(ntscEnabled());
+  enableNTSC();
 
   myFB.showGaugeMessage("Scanline intensity",
     intensity ? std::format("{}%", intensity) : "Off", intensity);
@@ -287,9 +277,6 @@ void TIASurface::enablePhosphor(bool enable, int blend)
   if(myPhosphorHandler.initialize(enable, blend))
   {
     myPBlend = blend;
-    myFilter = static_cast<Filter>(
-        enable ? static_cast<uInt8>(myFilter) | 0x01
-               : static_cast<uInt8>(myFilter) & 0x10);
     myRGBFramebuffer0.fill(0);
     myRGBFramebuffer1.fill(0);
   }
@@ -416,16 +403,12 @@ void TIASurface::createScanlineSurface()
   mySLineSurface->setDstRect(myTiaSurface->dstRect());
   updateSurfaceSettings();
 
-  enableNTSC(ntscEnabled());
+  enableNTSC();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void TIASurface::enableNTSC(bool enable)
+void TIASurface::enableNTSC()
 {
-  myFilter = static_cast<Filter>(
-      enable ? static_cast<uInt8>(myFilter) | 0x10
-             : static_cast<uInt8>(myFilter) & 0x01);
-
   const uInt32 surfaceWidth = myTVSignal->outputWidth();
 
   if(surfaceWidth != myTiaSurface->srcRect().w() || myTIA->height() != myTiaSurface->srcRect().h())
@@ -448,23 +431,12 @@ void TIASurface::enableNTSC(bool enable)
 string TIASurface::effectsInfo() const
 {
   string buf;
-  switch(myFilter)
-  {
-    case Filter::Normal:
-      buf = "Disabled, normal mode";
-      break;
-    case Filter::Phosphor:
-      buf = std::format("Disabled, phosphor={}", myPBlend);
-      break;
-    case Filter::BlarggNormal:
-      buf = myTVSignal->ntscFilter().getPreset();
-      break;
-    case Filter::BlarggPhosphor:
-      buf = std::format("{}, phosphor={}", myTVSignal->ntscFilter().getPreset(), myPBlend);
-      break;
-    default:
-      break;  // Not supposed to get here
-  }
+  if(myPhosphorHandler.phosphorEnabled())
+    buf = ntscEnabled()
+      ? std::format("{}, phosphor={}", myTVSignal->getPreset(), myPBlend)
+      : std::format("Disabled, phosphor={}", myPBlend);
+  else
+    buf = ntscEnabled() ? myTVSignal->getPreset() : "Disabled, normal mode";
   if(mySLineSurface->blendLevel() > 0)
     buf += std::format(", scanlines={}/{}",
       mySLineSurface->blendLevel(),
@@ -485,72 +457,28 @@ void TIASurface::render(bool shade)
   uInt32 *out{nullptr}, outPitch{0};
   myTiaSurface->basePtr(out, outPitch);
 
-  switch(myFilter)
+  myTVSignal->render(myTIA->frameBuffer(), width, height, out, outPitch,
+                     myTIA->scanlinesLastFrame());
+
+  if(myPhosphorHandler.phosphorEnabled())
   {
-    case Filter::Normal:
-    {
-      myTVSignal->render(myTIA->frameBuffer(), width, height, out, outPitch,
-                         myTIA->scanlinesLastFrame());
-      break;
-    }
+    if(mySaveSnapFlag)
+      std::swap(myRGBFramebuffer, myPrevRGBFramebuffer);
 
-    case Filter::Phosphor:
+    const uInt32 renderWidth = myTVSignal->outputWidth();
+    uInt32* rgbIn = myRGBFramebuffer;
+    uInt32 bufofs = 0, screenofsY = 0;
+    for(uInt32 y = 0; y < height; ++y)
     {
-      if(mySaveSnapFlag)
-        std::swap(myRGBFramebuffer, myPrevRGBFramebuffer);
-
-      myTVSignal->render(myTIA->frameBuffer(), width, height, out, outPitch,
-                         myTIA->scanlinesLastFrame());
-      const uInt32 renderWidth = myTVSignal->outputWidth();
-      uInt32* rgbIn = myRGBFramebuffer;
-      uInt32 bufofs = 0, screenofsY = 0;
-      for(uInt32 y = 0; y < height; ++y)
+      uInt32 pos = screenofsY;
+      for(uInt32 x = 0; x < renderWidth; ++x, ++bufofs)
       {
-        uInt32 pos = screenofsY;
-        for(uInt32 x = 0; x < renderWidth; ++x, ++bufofs)
-        {
-          rgbIn[bufofs] = out[pos] =
-            PhosphorHandler::getPixel(out[pos], rgbIn[bufofs]);
-          ++pos;
-        }
-        screenofsY += outPitch;
+        rgbIn[bufofs] = out[pos] =
+          PhosphorHandler::getPixel(out[pos], rgbIn[bufofs]);
+        ++pos;
       }
-      break;
+      screenofsY += outPitch;
     }
-
-    case Filter::BlarggNormal:
-    {
-      myTVSignal->render(myTIA->frameBuffer(), width, height, out, outPitch,
-                         myTIA->scanlinesLastFrame());
-      break;
-    }
-
-    case Filter::BlarggPhosphor:
-    {
-      if(mySaveSnapFlag)
-        std::swap(myRGBFramebuffer, myPrevRGBFramebuffer);
-
-      myTVSignal->render(myTIA->frameBuffer(), width, height, out, outPitch,
-                         myTIA->scanlinesLastFrame());
-      const uInt32 renderWidth = myTVSignal->outputWidth();
-      uInt32* rgbIn = myRGBFramebuffer;
-      uInt32 bufofs = 0, screenofsY = 0;
-      for(uInt32 y = 0; y < height; ++y)
-      {
-        uInt32 pos = screenofsY;
-        for(uInt32 x = 0; x < renderWidth; ++x, ++bufofs)
-        {
-          rgbIn[bufofs] = out[pos] =
-            PhosphorHandler::getPixel(out[pos], rgbIn[bufofs]);
-          ++pos;
-        }
-        screenofsY += outPitch;
-      }
-      break;
-    }
-
-    default:
-      break;  // Not supposed to get here
   }
 
   // Draw TIA image
@@ -578,48 +506,27 @@ void TIASurface::render(bool shade)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TIASurface::renderForSnapshot()
 {
-  const uInt32 width = myTIA->width(), height = myTIA->height();
+  const uInt32 height = myTIA->height();
   uInt32 pos{0};
   uInt32 *outPtr{nullptr}, outPitch{0};
   myTiaSurface->basePtr(outPtr, outPitch);
 
   mySaveSnapFlag = false;
 
-  switch(myFilter)
+  if(myPhosphorHandler.phosphorEnabled())
   {
-    case Filter::Normal:
-    case Filter::BlarggNormal:
-      render();
-      break;
-
-    case Filter::Phosphor:
+    const uInt32 renderWidth = myTVSignal->outputWidth();
+    uInt32 bufofs = 0, screenofsY = 0;
+    for(uInt32 y = 0; y < height; ++y)
     {
-      uInt32 bufofs = 0, screenofsY = 0;
-      for(uInt32 y = height; y; --y)
-      {
-        pos = screenofsY;
-        for(uInt32 x = width / 2; x; --x)
-        {
-          outPtr[pos++] = averageBuffers(bufofs++);
-          outPtr[pos++] = averageBuffers(bufofs++);
-        }
-        screenofsY += outPitch;
-      }
-      break;
+      pos = screenofsY;
+      for(uInt32 x = 0; x < renderWidth; ++x)
+        outPtr[pos++] = averageBuffers(bufofs++);
+      screenofsY += outPitch;
     }
-
-    case Filter::BlarggPhosphor:
-    {
-      uInt32 bufofs = 0;
-      for(uInt32 y = height; y; --y)
-        for(uInt32 x = outPitch; x; --x)
-          outPtr[pos++] = averageBuffers(bufofs++);
-      break;
-    }
-
-    default:
-      break;  // Not supposed to get here
   }
+  else
+    render();
 
   if(myPhosphorHandler.phosphorEnabled())
   {

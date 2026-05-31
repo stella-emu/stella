@@ -16,12 +16,25 @@
 //============================================================================
 
 #include "PaletteHandler.hxx"
+#include "Settings.hxx"
 #include "TVSignal.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 TVSignal::TVSignal(const PaletteHandler& paletteHandler)
   : myPaletteHandler{paletteHandler}
 {
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TVSignal::loadConfig(const Settings& settings)
+{
+  NTSCFilter::loadConfig(settings);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TVSignal::saveConfig(Settings& settings)
+{
+  NTSCFilter::saveConfig(settings);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -40,17 +53,29 @@ void TVSignal::setPalette(const PaletteArray& tiaPalette,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void TVSignal::setNTSCPreset(NTSCFilter::Preset preset)
+void TVSignal::setSignalQuality(SignalQuality quality)
 {
-  myNTSCPreset = preset;
-  if(preset != NTSCFilter::Preset::OFF)
-    myNTSCFilter.setPreset(preset);
+  mySignalQuality = quality;
+  if(quality == SignalQuality::Off)
+    return;
+
+  NTSCFilter::Preset preset;
+  switch(quality)
+  {
+    case SignalQuality::RGB:       preset = NTSCFilter::Preset::RGB;       break;
+    case SignalQuality::SVideo:    preset = NTSCFilter::Preset::SVIDEO;    break;
+    case SignalQuality::Composite: preset = NTSCFilter::Preset::COMPOSITE; break;
+    case SignalQuality::Bad:       preset = NTSCFilter::Preset::BAD;       break;
+    case SignalQuality::Custom:    preset = NTSCFilter::Preset::CUSTOM;    break;
+    default:                       return;
+  }
+  myNTSCFilter.setPreset(preset);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt32 TVSignal::outputWidth() const
 {
-  return (myTiming == ConsoleTiming::ntsc && myNTSCPreset != NTSCFilter::Preset::OFF)
+  return (myTiming == ConsoleTiming::ntsc && mySignalQuality != SignalQuality::Off)
     ? AtariNTSC::outWidth(TIAConstants::frameBufferWidth)
     : TIAConstants::frameBufferWidth;
 }
@@ -87,7 +112,7 @@ void TVSignal::render(const uInt8* tiaSrc, uInt32 srcWidth, uInt32 srcHeight,
 void TVSignal::renderNTSC(const uInt8* tiaSrc, uInt32 srcWidth, uInt32 srcHeight,
                            uInt32* rgbDst, uInt32 dstPitch)
 {
-  if(myNTSCPreset != NTSCFilter::Preset::OFF)
+  if(mySignalQuality != SignalQuality::Off)
   {
     // Blargg filter takes byte pitch; dstPitch here is pixel pitch
     myNTSCFilter.render(tiaSrc, srcWidth, srcHeight, rgbDst, dstPitch << 2);

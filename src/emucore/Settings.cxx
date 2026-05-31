@@ -103,11 +103,11 @@ Settings::Settings()
   setPermanent("tv.scanlines", "0");
   setPermanent("tv.scanmask", TIASurface::SETTING_STANDARD);
   // TV options when using 'custom' mode
-  setPermanent("tv.sharpness", "0.0");
-  setPermanent("tv.resolution", "0.0");
-  setPermanent("tv.artifacts", "0.0");
-  setPermanent("tv.fringing", "0.0");
-  setPermanent("tv.bleed", "0.0");
+  setPermanent("ntsc.sharpness", "0.0");
+  setPermanent("ntsc.resolution", "0.0");
+  setPermanent("ntsc.artifacts", "0.0");
+  setPermanent("ntsc.fringing", "0.0");
+  setPermanent("ntsc.bleed", "0.0");
 
   setPermanent("detectpal60", "false");
   setPermanent("detectntsc50", "false");
@@ -529,11 +529,11 @@ void Settings::usage()
     << "  -tv.scanmask  <standard|       Use the specified scanline mask\n"
     << "                 thin|pixel|\n"
     << "                 mame>\n"
-    << "  -tv.sharpness   <-1.0 - 1.0>   Set TV effects custom sharpness\n"
-    << "  -tv.resolution  <-1.0 - 1.0>   Set TV effects custom resolution\n"
-    << "  -tv.artifacts   <-1.0 - 1.0>   Set TV effects custom artifacts\n"
-    << "  -tv.fringing    <-1.0 - 1.0>   Set TV effects custom fringing\n"
-    << "  -tv.bleed       <-1.0 - 1.0>   Set TV effects custom bleed\n\n"
+    << "  -ntsc.sharpness   <-1.0 - 1.0>   Set NTSC custom sharpness\n"
+    << "  -ntsc.resolution  <-1.0 - 1.0>   Set NTSC custom resolution\n"
+    << "  -ntsc.artifacts   <-1.0 - 1.0>   Set NTSC custom artifacts\n"
+    << "  -ntsc.fringing    <-1.0 - 1.0>   Set NTSC custom fringing\n"
+    << "  -ntsc.bleed       <-1.0 - 1.0>   Set NTSC custom bleed\n\n"
     << "  -cheat        <code>           Use the specified cheatcode (see manual for\n"
     << "                                  description)\n"
     << "  -loglevel     <0|1|2>          Set level of logging during application run\n\n"

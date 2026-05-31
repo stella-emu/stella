@@ -245,7 +245,7 @@ void EmulationDialog::saveConfig()
     instance().console().initializeVideo();
     instance().createFrameBuffer();
 
-    instance().frameBuffer().tiaSurface().ntsc().enableThreading(myUseThreads->getState());
+    instance().frameBuffer().tiaSurface().enableThreading(myUseThreads->getState());
   }
 }
 

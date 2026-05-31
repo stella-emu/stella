@@ -16,7 +16,7 @@
 
 #include "StellaLIBRETRO.hxx"
 #include "Event.hxx"
-#include "NTSCFilter.hxx"
+#include "TVSignal.hxx"
 #include "Version.hxx"
 
 
@@ -616,13 +616,13 @@ static void update_variables(bool init = false)
 
   RETRO_GET("stella_filter")
   {
-    NTSCFilter::Preset value = NTSCFilter::Preset::OFF;
+    TVSignal::SignalQuality value = TVSignal::SignalQuality::Off;
 
-    if(!strcmp(var.value, "disabled"))            value = NTSCFilter::Preset::OFF;
-    else if(!strcmp(var.value, "composite"))      value = NTSCFilter::Preset::COMPOSITE;
-    else if(!strcmp(var.value, "s-video"))        value = NTSCFilter::Preset::SVIDEO;
-    else if(!strcmp(var.value, "rgb"))            value = NTSCFilter::Preset::RGB;
-    else if(!strcmp(var.value, "badly adjusted")) value = NTSCFilter::Preset::BAD;
+    if(!strcmp(var.value, "disabled"))            value = TVSignal::SignalQuality::Off;
+    else if(!strcmp(var.value, "composite"))      value = TVSignal::SignalQuality::Composite;
+    else if(!strcmp(var.value, "s-video"))        value = TVSignal::SignalQuality::SVideo;
+    else if(!strcmp(var.value, "rgb"))            value = TVSignal::SignalQuality::RGB;
+    else if(!strcmp(var.value, "badly adjusted")) value = TVSignal::SignalQuality::Bad;
 
     if(stella_settings.video_filter != value)
     {

@@ -32,7 +32,7 @@ class OSystem;
 
 #include "Dialog.hxx"
 #include "PaletteHandler.hxx"
-#include "NTSCFilter.hxx"
+#include "TVSignal.hxx"
 #include "bspf.hxx"
 
 class VideoAudioDialog : public Dialog
@@ -56,8 +56,8 @@ class VideoAudioDialog : public Dialog
     void addBezelTab();
     void addAudioTab();
 
-    void handleTVModeChange(NTSCFilter::Preset);
-    void loadTVAdjustables(NTSCFilter::Preset preset);
+    void handleTVModeChange(TVSignal::SignalQuality);
+    void loadTVAdjustables(TVSignal::SignalQuality preset);
     void handleRendererChanged();
     void handlePaletteChange();
     void handleShiftChanged(SliderWidget* widget);

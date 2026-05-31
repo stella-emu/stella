@@ -43,6 +43,17 @@
 class TVSignal
 {
   public:
+    // Universal signal quality presets, applicable to all TV standards.
+    // Numeric values are stored in the "tv.filter" setting — do not reorder.
+    enum class SignalQuality {
+      Off       = 0,
+      RGB       = 1,
+      SVideo    = 2,
+      Composite = 3,
+      Bad       = 4,
+      Custom    = 5
+    };
+
     explicit TVSignal(const PaletteHandler& paletteHandler);
     ~TVSignal() = default;
 
@@ -53,9 +64,9 @@ class TVSignal
     // (for the Blargg filter's internal YIQ calculation)
     void setPalette(const PaletteArray& tiaPalette, const PaletteArray& rgbPalette);
 
-    // Set the NTSC signal quality preset; OFF disables Blargg and uses plain
-    // palette lookup, any other value activates the Blargg renderer
-    void setNTSCPreset(NTSCFilter::Preset preset);
+    // Set the signal quality preset; Off disables Blargg for NTSC and uses
+    // plain palette lookup; any other value activates the Blargg renderer
+    void setSignalQuality(SignalQuality quality);
 
     // Enable or disable multi-threaded Blargg rendering
     void enableThreading(bool enable) { myNTSCFilter.enableThreading(enable); }
@@ -64,8 +75,30 @@ class TVSignal
     // timing/preset combination.  568 when NTSC+Blargg is active, 160 otherwise.
     uInt32 outputWidth() const;
 
-    // Access the underlying NTSCFilter for preset/adjustable management
-    NTSCFilter& ntscFilter() { return myNTSCFilter; }
+    // Load and save NTSC custom-adjustable settings
+    static void loadConfig(const Settings& settings);
+    static void saveConfig(Settings& settings);
+
+    // Get the current NTSC preset as a display string
+    string getPreset() const { return myNTSCFilter.getPreset(); }
+
+    // Cycle through the NTSC adjustable list; changes which one is "current"
+    void selectAdjustable(int direction,
+                          string& text, string& valueText, Int32& value) {
+      myNTSCFilter.selectAdjustable(direction, text, valueText, value);
+    }
+
+    // Change a specific NTSC adjustable by index
+    void changeAdjustable(int adjustable, int direction,
+                          string& text, string& valueText, Int32& newValue) {
+      myNTSCFilter.changeAdjustable(adjustable, direction, text, valueText, newValue);
+    }
+
+    // Change the currently selected NTSC adjustable
+    void changeCurrentAdjustable(int direction,
+                                 string& text, string& valueText, Int32& newValue) {
+      myNTSCFilter.changeCurrentAdjustable(direction, text, valueText, newValue);
+    }
 
     // Process one complete TIA frame.  Reads raw TIA colour-index bytes from
     // tiaSrc and writes 32-bit 0x00RRGGBB pixels to rgbDst.  For PAL, applies
@@ -93,7 +126,7 @@ class TVSignal
     ConsoleTiming myTiming{ConsoleTiming::ntsc};
 
     NTSCFilter myNTSCFilter;
-    NTSCFilter::Preset myNTSCPreset{NTSCFilter::Preset::OFF};
+    SignalQuality mySignalQuality{SignalQuality::Off};
 
     // Display palette used for NTSC non-Blargg pixel lookup
     PaletteArray myPalette{};

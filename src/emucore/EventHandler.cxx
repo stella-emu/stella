@@ -665,7 +665,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
     case Event::VidmodeStd:
       if(pressed && !repeated)
       {
-        myOSystem.frameBuffer().tiaSurface().setNTSC(NTSCFilter::Preset::OFF);
+        myOSystem.frameBuffer().tiaSurface().setSignalQuality(TVSignal::SignalQuality::Off);
         myGlobalKeyHandler->setSetting(GlobalKeyHandler::Setting::NTSC_PRESET);
       }
       return;
@@ -673,7 +673,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
     case Event::VidmodeRGB:
       if(pressed && !repeated)
       {
-        myOSystem.frameBuffer().tiaSurface().setNTSC(NTSCFilter::Preset::RGB);
+        myOSystem.frameBuffer().tiaSurface().setSignalQuality(TVSignal::SignalQuality::RGB);
         myGlobalKeyHandler->setSetting(GlobalKeyHandler::Setting::NTSC_PRESET);
       }
       return;
@@ -681,7 +681,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
     case Event::VidmodeSVideo:
       if(pressed && !repeated)
       {
-        myOSystem.frameBuffer().tiaSurface().setNTSC(NTSCFilter::Preset::SVIDEO);
+        myOSystem.frameBuffer().tiaSurface().setSignalQuality(TVSignal::SignalQuality::SVideo);
         myGlobalKeyHandler->setSetting(GlobalKeyHandler::Setting::NTSC_PRESET);
       }
       return;
@@ -689,7 +689,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
     case Event::VidModeComposite:
       if(pressed && !repeated)
       {
-        myOSystem.frameBuffer().tiaSurface().setNTSC(NTSCFilter::Preset::COMPOSITE);
+        myOSystem.frameBuffer().tiaSurface().setSignalQuality(TVSignal::SignalQuality::Composite);
         myGlobalKeyHandler->setSetting(GlobalKeyHandler::Setting::NTSC_PRESET);
       }
       return;
@@ -697,7 +697,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
     case Event::VidModeBad:
       if(pressed && !repeated)
       {
-        myOSystem.frameBuffer().tiaSurface().setNTSC(NTSCFilter::Preset::BAD);
+        myOSystem.frameBuffer().tiaSurface().setSignalQuality(TVSignal::SignalQuality::Bad);
         myGlobalKeyHandler->setSetting(GlobalKeyHandler::Setting::NTSC_PRESET);
       }
       return;
@@ -705,7 +705,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
     case Event::VidModeCustom:
       if(pressed && !repeated)
       {
-        myOSystem.frameBuffer().tiaSurface().setNTSC(NTSCFilter::Preset::CUSTOM);
+        myOSystem.frameBuffer().tiaSurface().setSignalQuality(TVSignal::SignalQuality::Custom);
         myGlobalKeyHandler->setSetting(GlobalKeyHandler::Setting::NTSC_PRESET);
       }
       return;

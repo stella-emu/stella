@@ -205,7 +205,7 @@ bool GlobalKeyHandler::skipAVSetting() const
   const bool isCustomPalette =
     myOSystem.settings().getString("palette") == PaletteHandler::SETTING_CUSTOM;
   const bool isCustomFilter =
-    myOSystem.settings().getInt("tv.filter") == static_cast<int>(NTSCFilter::Preset::CUSTOM);
+    myOSystem.settings().getInt("tv.filter") == static_cast<int>(TVSignal::SignalQuality::Custom);
   const bool hasScanlines =
     myOSystem.settings().getInt("tv.scanlines") > 0;
   const bool isSoftwareRenderer =

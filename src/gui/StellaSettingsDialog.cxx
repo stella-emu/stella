@@ -21,7 +21,7 @@
 #include "Launcher.hxx"
 #include "PropsSet.hxx"
 #include "ControllerDetector.hxx"
-#include "NTSCFilter.hxx"
+#include "TVSignal.hxx"
 #include "PopUpWidget.hxx"
 #include "MessageBox.hxx"
 #include "TIASurface.hxx"
@@ -131,11 +131,11 @@ void StellaSettingsDialog::addVideoOptions(WidgetArray& wid, int xpos, int& ypos
   const int swidth = _font.getMaxCharWidth() * 11;
 
   // TV Mode
-  VarList::push_back(items, "Disabled", static_cast<uInt32>(NTSCFilter::Preset::OFF));
-  VarList::push_back(items, "RGB", static_cast<uInt32>(NTSCFilter::Preset::RGB));
-  VarList::push_back(items, "S-Video", static_cast<uInt32>(NTSCFilter::Preset::SVIDEO));
-  VarList::push_back(items, "Composite", static_cast<uInt32>(NTSCFilter::Preset::COMPOSITE));
-  VarList::push_back(items, "Bad adjust", static_cast<uInt32>(NTSCFilter::Preset::BAD));
+  VarList::push_back(items, "Disabled", static_cast<uInt32>(TVSignal::SignalQuality::Off));
+  VarList::push_back(items, "RGB", static_cast<uInt32>(TVSignal::SignalQuality::RGB));
+  VarList::push_back(items, "S-Video", static_cast<uInt32>(TVSignal::SignalQuality::SVideo));
+  VarList::push_back(items, "Composite", static_cast<uInt32>(TVSignal::SignalQuality::Composite));
+  VarList::push_back(items, "Bad adjust", static_cast<uInt32>(TVSignal::SignalQuality::Bad));
   const int pwidth = _font.getStringWidth("Right bottom");
   const int lwidth = _font.getStringWidth("Scanline intensity ");
 
@@ -315,7 +315,7 @@ void StellaSettingsDialog::setDefaults()
   myPositionPopup->setSelected("0");
 
   // TV effects
-  myTVMode->setSelected("RGB", static_cast<uInt32>(NTSCFilter::Preset::RGB));
+  myTVMode->setSelected("RGB", static_cast<uInt32>(TVSignal::SignalQuality::RGB));
   // TV scanline intensity
   myTVScanIntense->setValue(3); // 18
   // TV phosphor blend

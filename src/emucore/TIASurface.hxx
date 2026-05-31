@@ -97,14 +97,14 @@ class TIASurface
     uInt32 mapIndexedPixel(uInt8 indexedColor, uInt8 shift = 0) const;
 
     /**
-      Get the NTSCFilter object associated with the framebuffer
+      Enable or disable multi-threaded Blargg rendering.
     */
-    NTSCFilter& ntsc() { return myTVSignal->ntscFilter(); }
+    void enableThreading(bool enable) { myTVSignal->enableThreading(enable); }
 
     /**
       Use NTSC filtering effects specified by the given preset.
     */
-    void setNTSC(NTSCFilter::Preset preset, bool show = true);
+    void setSignalQuality(TVSignal::SignalQuality quality, bool show = true);
 
     /**
       Switch to next/previous NTSC filtering effect.
@@ -166,10 +166,14 @@ class TIASurface
     void createScanlineSurface();
 
     /**
-      Enable/disable/query NTSC filtering effects.
+      Resize/reset the TIA surface for the current signal quality setting,
+      and apply the current scanline blend level.  Call after any change to
+      the active preset or timing.
     */
-    void enableNTSC(bool enable);
-    bool ntscEnabled() const { return static_cast<uInt8>(myFilter) & 0x10; }
+    void enableNTSC();
+    bool ntscEnabled() const {
+      return myTVSignal->outputWidth() != TIAConstants::frameBufferWidth;
+    }
     string effectsInfo() const;
 
     /**
@@ -203,15 +207,6 @@ class TIASurface
       NumMasks
     };
 
-    // Enumeration created such that phosphor off/on is in LSB,
-    // and Blargg off/on is in MSB
-    enum class Filter: uInt8 {
-      Normal         = 0x00,
-      Phosphor       = 0x01,
-      BlarggNormal   = 0x10,
-      BlarggPhosphor = 0x11
-    };
-
   private:
     // Average current and previous RGB framebuffer pixels at the given offset.
     FORCE_INLINE uInt32 averageBuffers(uInt32 bufOfs) const {
@@ -225,8 +220,6 @@ class TIASurface
 
     // Convert scanline mask setting name into type
     ScanlineMask scanlineMaskType(int direction = 0);
-
-    Filter myFilter{Filter::Normal};
 
   private:
     OSystem& myOSystem;
