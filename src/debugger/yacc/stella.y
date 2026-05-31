@@ -25,7 +25,6 @@
 %define api.token.constructor
 %define api.value.type   variant
 %define parse.error      detailed
-%define parse.assert
 
 // Suppress warnings in the Bison-generated implementation file
 %code top {
