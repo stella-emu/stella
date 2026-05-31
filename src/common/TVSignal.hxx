@@ -32,13 +32,16 @@
   PAL: The delay line averages U and V from the current and previous
   scanlines.  When the total scanline count is odd the V-axis is phase-
   inverted, causing V to cancel rather than reinforce for same-colour lines
-  (the classic "colour-loss" greyscale effect).
+  (the classic "colour-loss" greyscale effect).  RGB and S-Video connections
+  bypass the chroma decoder, so the delay line and colour-loss effect are
+  skipped for those signal quality settings.
 
   SECAM: The signal alternates between transmitting Db (even lines) and Dr
   (odd lines).  The delay line holds the missing component from the previous
   line, so the decoder always has both Db and Dr regardless of which line it
   is on.  Mixing two different colours across adjacent scanlines produces
-  new blended colours beyond the 8-entry SECAM palette.
+  new blended colours beyond the 8-entry SECAM palette.  The delay line is
+  always active except when signal quality is Off.
 */
 class TVSignal
 {
@@ -75,9 +78,9 @@ class TVSignal
     // timing/preset combination.  568 when NTSC+Blargg is active, 160 otherwise.
     uInt32 outputWidth() const;
 
-    // Load and save NTSC custom-adjustable settings
-    static void loadConfig(const Settings& settings);
-    static void saveConfig(Settings& settings);
+    // Load and save custom-adjustable settings
+    void loadConfig(const Settings& settings);
+    void saveConfig(Settings& settings);
 
     // Get the current NTSC preset as a display string
     string getPreset() const { return myNTSCFilter.getPreset(); }
@@ -127,6 +130,10 @@ class TVSignal
 
     NTSCFilter myNTSCFilter;
     SignalQuality mySignalQuality{SignalQuality::Off};
+
+    // PAL chroma delay-line blend [0..1]; derived from preset or custom setting
+    float myPALBlend{0.5F};
+    float myPALCustomBlend{0.5F};
 
     // Display palette used for NTSC non-Blargg pixel lookup
     PaletteArray myPalette{};

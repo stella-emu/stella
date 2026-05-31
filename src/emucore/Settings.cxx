@@ -108,6 +108,7 @@ Settings::Settings()
   setPermanent("ntsc.artifacts", "0.0");
   setPermanent("ntsc.fringing", "0.0");
   setPermanent("ntsc.bleed", "0.0");
+  setPermanent("pal.blend", "0.5");
 
   setPermanent("detectpal60", "false");
   setPermanent("detectntsc50", "false");
@@ -533,7 +534,8 @@ void Settings::usage()
     << "  -ntsc.resolution  <-1.0 - 1.0>   Set NTSC custom resolution\n"
     << "  -ntsc.artifacts   <-1.0 - 1.0>   Set NTSC custom artifacts\n"
     << "  -ntsc.fringing    <-1.0 - 1.0>   Set NTSC custom fringing\n"
-    << "  -ntsc.bleed       <-1.0 - 1.0>   Set NTSC custom bleed\n\n"
+    << "  -ntsc.bleed       <-1.0 - 1.0>   Set NTSC custom bleed\n"
+    << "  -pal.blend        <0.0 - 1.0>    Set PAL custom chroma blend\n\n"
     << "  -cheat        <code>           Use the specified cheatcode (see manual for\n"
     << "                                  description)\n"
     << "  -loglevel     <0|1|2>          Set level of logging during application run\n\n"

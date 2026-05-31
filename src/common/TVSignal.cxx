@@ -29,12 +29,14 @@ TVSignal::TVSignal(const PaletteHandler& paletteHandler)
 void TVSignal::loadConfig(const Settings& settings)
 {
   NTSCFilter::loadConfig(settings);
+  myPALCustomBlend = BSPF::clamp(settings.getFloat("pal.blend"), 0.0F, 1.0F);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TVSignal::saveConfig(Settings& settings)
 {
   NTSCFilter::saveConfig(settings);
+  settings.setValue("pal.blend", myPALCustomBlend);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -56,6 +58,21 @@ void TVSignal::setPalette(const PaletteArray& tiaPalette,
 void TVSignal::setSignalQuality(SignalQuality quality)
 {
   mySignalQuality = quality;
+
+  // Off/RGB/SVideo: component/separated signal, no delay-line needed.
+  // Composite/Bad: mixed signal requires delay-line decoding.
+  // Custom: user-defined blend.
+  switch(quality)
+  {
+    case SignalQuality::Off:
+    case SignalQuality::RGB:
+    case SignalQuality::SVideo:    myPALBlend = 0.0F;            break;
+    case SignalQuality::Composite:
+    case SignalQuality::Bad:       myPALBlend = 0.5F;            break;
+    case SignalQuality::Custom:    myPALBlend = myPALCustomBlend; break;
+    default:                       break;
+  }
+
   if(quality == SignalQuality::Off)
     return;
 
@@ -137,8 +154,22 @@ void TVSignal::renderNTSC(const uInt8* tiaSrc, uInt32 srcWidth, uInt32 srcHeight
 void TVSignal::renderPAL(const uInt8* tiaSrc, uInt32 srcWidth, uInt32 srcHeight,
                           uInt32* rgbDst, uInt32 dstPitch, bool phaseInverted)
 {
+  if(myPALBlend == 0.0F)
+  {
+    for(uInt32 y = 0; y < srcHeight; ++y)
+    {
+      const uInt8* src = tiaSrc + y * srcWidth;
+      uInt32* dst      = rgbDst + y * dstPitch;
+      for(uInt32 x = 0; x < srcWidth; ++x)
+        dst[x] = myPalette[src[x]];
+    }
+    return;
+  }
+
   const auto& yuv = myPaletteHandler.palYUVTable();
   const float vSign = phaseInverted ? -1.F : 1.F;
+  const float blend    = myPALBlend;
+  const float invBlend = 1.0F - blend;
 
   for(uInt32 y = 0; y < srcHeight; ++y)
   {
@@ -154,8 +185,8 @@ void TVSignal::renderPAL(const uInt8* tiaSrc, uInt32 srcWidth, uInt32 srcHeight,
       // U is always averaged.  V is averaged (normal) or differenced
       // (phase-inverted, producing the colour-loss greyscale effect).
       const float yo = curr.y;
-      const float uo = (curr.u + prev.u) * 0.5F;
-      const float vo = (curr.v + vSign * prev.v) * 0.5F;
+      const float uo = curr.u * invBlend + prev.u * blend;
+      const float vo = curr.v * invBlend + vSign * prev.v * blend;
 
       dst[x] = yuvToRGB(yo, uo, vo);
     }
@@ -168,6 +199,18 @@ void TVSignal::renderPAL(const uInt8* tiaSrc, uInt32 srcWidth, uInt32 srcHeight,
 void TVSignal::renderSECAM(const uInt8* tiaSrc, uInt32 srcWidth, uInt32 srcHeight,
                             uInt32* rgbDst, uInt32 dstPitch)
 {
+  if(mySignalQuality == SignalQuality::Off)
+  {
+    for(uInt32 y = 0; y < srcHeight; ++y)
+    {
+      const uInt8* src = tiaSrc + y * srcWidth;
+      uInt32* dst      = rgbDst + y * dstPitch;
+      for(uInt32 x = 0; x < srcWidth; ++x)
+        dst[x] = myPalette[src[x]];
+    }
+    return;
+  }
+
   const auto& ydbdr = myPaletteHandler.secamYDbDrTable();
 
   for(uInt32 y = 0; y < srcHeight; ++y)
