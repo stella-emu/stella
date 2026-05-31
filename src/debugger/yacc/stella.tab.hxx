@@ -46,7 +46,7 @@
 #ifndef YY_YY_STELLA_TAB_HXX_INCLUDED
 # define YY_YY_STELLA_TAB_HXX_INCLUDED
 // "%code requires" blocks.
-#line 39 "stella.y"
+#line 38 "stella.y"
 
 // Suppress clang warnings in Bison-generated code
 #ifdef __clang__
@@ -67,7 +67,7 @@
 
 #line 68 "stella.tab.hxx"
 
-# include <cassert>
+
 # include <cstdlib> // std::abort
 # include <iostream>
 # include <stdexcept>
@@ -111,11 +111,6 @@
 # define YY_CONSTEXPR
 #endif
 
-#include <typeinfo>
-#ifndef YY_ASSERT
-# include <cassert>
-# define YY_ASSERT assert
-#endif
 
 
 #ifndef YY_ATTRIBUTE_PURE
@@ -206,7 +201,7 @@
 
 #line 24 "stella.y"
 namespace YaccParser {
-#line 209 "stella.tab.hxx"
+#line 204 "stella.tab.hxx"
 
 
 
@@ -235,15 +230,12 @@ namespace YaccParser {
     /// Empty construction.
     value_type () YY_NOEXCEPT
       : yyraw_ ()
-      , yytypeid_ (YY_NULLPTR)
     {}
 
     /// Construct and fill.
     template <typename T>
     value_type (YY_RVREF (T) t)
-      : yytypeid_ (&typeid (T))
     {
-      YY_ASSERT (sizeof (T) <= size);
       new (yyas_<T> ()) T (YY_MOVE (t));
     }
 
@@ -256,9 +248,7 @@ namespace YaccParser {
 
     /// Destruction, allowed only if empty.
     ~value_type () YY_NOEXCEPT
-    {
-      YY_ASSERT (!yytypeid_);
-    }
+    {}
 
 # if 201103L <= YY_CPLUSPLUS
     /// Instantiate a \a T in here from \a t.
@@ -266,9 +256,6 @@ namespace YaccParser {
     T&
     emplace (U&&... u)
     {
-      YY_ASSERT (!yytypeid_);
-      YY_ASSERT (sizeof (T) <= size);
-      yytypeid_ = & typeid (T);
       return *new (yyas_<T> ()) T (std::forward <U>(u)...);
     }
 # else
@@ -277,9 +264,6 @@ namespace YaccParser {
     T&
     emplace ()
     {
-      YY_ASSERT (!yytypeid_);
-      YY_ASSERT (sizeof (T) <= size);
-      yytypeid_ = & typeid (T);
       return *new (yyas_<T> ()) T ();
     }
 
@@ -288,9 +272,6 @@ namespace YaccParser {
     T&
     emplace (const T& t)
     {
-      YY_ASSERT (!yytypeid_);
-      YY_ASSERT (sizeof (T) <= size);
-      yytypeid_ = & typeid (T);
       return *new (yyas_<T> ()) T (t);
     }
 # endif
@@ -318,9 +299,6 @@ namespace YaccParser {
     T&
     as () YY_NOEXCEPT
     {
-      YY_ASSERT (yytypeid_);
-      YY_ASSERT (*yytypeid_ == typeid (T));
-      YY_ASSERT (sizeof (T) <= size);
       return *yyas_<T> ();
     }
 
@@ -329,9 +307,6 @@ namespace YaccParser {
     const T&
     as () const YY_NOEXCEPT
     {
-      YY_ASSERT (yytypeid_);
-      YY_ASSERT (*yytypeid_ == typeid (T));
-      YY_ASSERT (sizeof (T) <= size);
       return *yyas_<T> ();
     }
 
@@ -347,8 +322,6 @@ namespace YaccParser {
     void
     swap (self_type& that) YY_NOEXCEPT
     {
-      YY_ASSERT (yytypeid_);
-      YY_ASSERT (*yytypeid_ == *that.yytypeid_);
       std::swap (as<T> (), that.as<T> ());
     }
 
@@ -393,7 +366,6 @@ namespace YaccParser {
     destroy ()
     {
       as<T> ().~T ();
-      yytypeid_ = YY_NULLPTR;
     }
 
   private:
@@ -459,9 +431,6 @@ namespace YaccParser {
       /// A buffer large enough to store any of the semantic values.
       char yyraw_[size];
     };
-
-    /// Whether the content is built: if defined, the name of the stored type.
-    const std::type_info *yytypeid_;
   };
 
 #endif
@@ -882,30 +851,7 @@ switch (yykind)
       symbol_type (int tok)
         : super_type (token_kind_type (tok))
 #endif
-      {
-#if !defined _MSC_VER || defined __clang__
-        YY_ASSERT (tok == token::YYEOF
-                   || (token::YYerror <= tok && tok <= token::YYUNDEF)
-                   || tok == token::ERR
-                   || (token::LOG_OR <= tok && tok <= token::UMINUS)
-                   || tok == 43
-                   || tok == 45
-                   || tok == 42
-                   || tok == 47
-                   || tok == 37
-                   || tok == 124
-                   || tok == 94
-                   || tok == 38
-                   || tok == 60
-                   || tok == 62
-                   || tok == 91
-                   || tok == 126
-                   || tok == 33
-                   || tok == 64
-                   || (40 <= tok && tok <= 41)
-                   || tok == 93);
-#endif
-      }
+      {}
 #if 201103L <= YY_CPLUSPLUS
       symbol_type (int tok, CartMethod v)
         : super_type (token_kind_type (tok), std::move (v))
@@ -913,11 +859,7 @@ switch (yykind)
       symbol_type (int tok, const CartMethod& v)
         : super_type (token_kind_type (tok), v)
 #endif
-      {
-#if !defined _MSC_VER || defined __clang__
-        YY_ASSERT (tok == token::CART_METHOD);
-#endif
-      }
+      {}
 #if 201103L <= YY_CPLUSPLUS
       symbol_type (int tok, CpuMethod v)
         : super_type (token_kind_type (tok), std::move (v))
@@ -925,11 +867,7 @@ switch (yykind)
       symbol_type (int tok, const CpuMethod& v)
         : super_type (token_kind_type (tok), v)
 #endif
-      {
-#if !defined _MSC_VER || defined __clang__
-        YY_ASSERT (tok == token::CPU_METHOD);
-#endif
-      }
+      {}
 #if 201103L <= YY_CPLUSPLUS
       symbol_type (int tok, RiotMethod v)
         : super_type (token_kind_type (tok), std::move (v))
@@ -937,11 +875,7 @@ switch (yykind)
       symbol_type (int tok, const RiotMethod& v)
         : super_type (token_kind_type (tok), v)
 #endif
-      {
-#if !defined _MSC_VER || defined __clang__
-        YY_ASSERT (tok == token::RIOT_METHOD);
-#endif
-      }
+      {}
 #if 201103L <= YY_CPLUSPLUS
       symbol_type (int tok, TiaMethod v)
         : super_type (token_kind_type (tok), std::move (v))
@@ -949,11 +883,7 @@ switch (yykind)
       symbol_type (int tok, const TiaMethod& v)
         : super_type (token_kind_type (tok), v)
 #endif
-      {
-#if !defined _MSC_VER || defined __clang__
-        YY_ASSERT (tok == token::TIA_METHOD);
-#endif
-      }
+      {}
 #if 201103L <= YY_CPLUSPLUS
       symbol_type (int tok, int v)
         : super_type (token_kind_type (tok), std::move (v))
@@ -961,11 +891,7 @@ switch (yykind)
       symbol_type (int tok, const int& v)
         : super_type (token_kind_type (tok), v)
 #endif
-      {
-#if !defined _MSC_VER || defined __clang__
-        YY_ASSERT (tok == token::NUMBER);
-#endif
-      }
+      {}
 #if 201103L <= YY_CPLUSPLUS
       symbol_type (int tok, string v)
         : super_type (token_kind_type (tok), std::move (v))
@@ -973,12 +899,7 @@ switch (yykind)
       symbol_type (int tok, const string& v)
         : super_type (token_kind_type (tok), v)
 #endif
-      {
-#if !defined _MSC_VER || defined __clang__
-        YY_ASSERT (tok == token::EQUATE
-                   || tok == token::FUNCTION);
-#endif
-      }
+      {}
     };
 
     /// Build a parser object.
@@ -1890,17 +1811,17 @@ switch (yykind)
 
 #line 24 "stella.y"
 } // YaccParser
-#line 1893 "stella.tab.hxx"
+#line 1814 "stella.tab.hxx"
 
 
 // "%code provides" blocks.
-#line 58 "stella.y"
+#line 57 "stella.y"
 
 #ifdef _MSC_VER
 #  pragma warning(pop)
 #endif
 
-#line 1903 "stella.tab.hxx"
+#line 1824 "stella.tab.hxx"
 
 
 #endif // !YY_YY_STELLA_TAB_HXX_INCLUDED
