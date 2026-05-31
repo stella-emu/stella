@@ -119,7 +119,7 @@ class StellaLIBRETRO
   public:
     void   setROM(const char* path, const void* data, size_t size);
 
-    void   setVideoFilter(TVSignal::SignalQuality mode);
+    void   setVideoFilter(TVMode mode);
     void   setVideoPalette(string_view mode);
     void   setVideoPhosphor(string_view phosphor, uInt32 blend);
 

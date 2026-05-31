@@ -20,6 +20,7 @@
 
 #include "bspf.hxx"
 #include "AudioSettings.hxx"
+#include "TVMode.hxx"
 #include "TVSignal.hxx"
 #include "PaletteHandler.hxx"
 
@@ -31,7 +32,7 @@
 struct SettingsLIBRETRO {
   string console_format{"AUTO"};
 
-  TVSignal::SignalQuality video_filter{TVSignal::SignalQuality::Off};
+  TVMode video_filter{TVMode::None};
   string video_palette{PaletteHandler::SETTING_STANDARD};
   string video_phosphor{"byrom"};
   uInt32 video_phosphor_blend{60};

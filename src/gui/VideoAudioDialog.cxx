@@ -35,6 +35,7 @@
 #include "Widget.hxx"
 #include "Font.hxx"
 #include "TabWidget.hxx"
+#include "TVMode.hxx"
 #include "TVSignal.hxx"
 #include "TIASurface.hxx"
 
@@ -356,12 +357,12 @@ void VideoAudioDialog::addTVEffectsTab()
   const int tabID = myTab->addTab("TV Effects", TabWidget::AUTO_WIDTH);
 
   items.clear();
-  VarList::push_back(items, "Disabled", static_cast<uInt32>(TVSignal::SignalQuality::Off));
-  VarList::push_back(items, "RGB", static_cast<uInt32>(TVSignal::SignalQuality::RGB));
-  VarList::push_back(items, "S-Video", static_cast<uInt32>(TVSignal::SignalQuality::SVideo));
-  VarList::push_back(items, "Composite", static_cast<uInt32>(TVSignal::SignalQuality::Composite));
-  VarList::push_back(items, "Bad adjust", static_cast<uInt32>(TVSignal::SignalQuality::Bad));
-  VarList::push_back(items, "Custom", static_cast<uInt32>(TVSignal::SignalQuality::Custom));
+  VarList::push_back(items, "Disabled", static_cast<uInt32>(TVMode::None));
+  VarList::push_back(items, "RGB", static_cast<uInt32>(TVMode::RGB));
+  VarList::push_back(items, "S-Video", static_cast<uInt32>(TVMode::SVideo));
+  VarList::push_back(items, "Composite", static_cast<uInt32>(TVMode::Composite));
+  VarList::push_back(items, "Bad adjust", static_cast<uInt32>(TVMode::Bad));
+  VarList::push_back(items, "Custom", static_cast<uInt32>(TVMode::Custom));
   myTVMode = new PopUpWidget(myTab, _font, xpos, ypos, pwidth, lineHeight,
                              items, "TV mode ", 0, kTVModeChanged);
   myTVMode->setToolTip(Event::PreviousVideoMode, Event::NextVideoMode);
@@ -736,10 +737,10 @@ void VideoAudioDialog::loadConfig()
   myTVMode->setSelected(
     settings.getString("tv.filter"), "0");
   const int preset = settings.getInt("tv.filter");
-  handleTVModeChange(static_cast<TVSignal::SignalQuality>(preset));
+  handleTVModeChange(static_cast<TVMode>(preset));
 
   // TV Custom adjustables
-  loadTVAdjustables(TVSignal::SignalQuality::Custom);
+  loadTVAdjustables(TVMode::Custom);
 
   // TV phosphor mode & blend
   myTVPhosphor->setSelected(settings.getString(PhosphorHandler::SETTING_MODE), PhosphorHandler::VALUE_BYROM);
@@ -859,16 +860,16 @@ void VideoAudioDialog::saveConfig()
   // TV Mode
   settings.setValue("tv.filter", myTVMode->getSelectedTag().toString());
   // TV Custom adjustables
-  NTSCFilter::Adjustable ntscAdj;
+  NTSCSignal::Adjustable ntscAdj;
   ntscAdj.sharpness = myTVSharp->getValue();
   ntscAdj.resolution = myTVRes->getValue();
   ntscAdj.artifacts = myTVArtifacts->getValue();
   ntscAdj.fringing = myTVFringe->getValue();
   ntscAdj.bleed = myTVBleed->getValue();
-  NTSCFilter::setCustomAdjustables(ntscAdj);
+  NTSCSignal::setCustomAdjustables(ntscAdj);
 
   Logger::debug("Saving TV effects options ...");
-  NTSCFilter::saveConfig(settings);
+  NTSCSignal::saveConfig(settings);
 
   // TV phosphor mode & blend
   settings.setValue(PhosphorHandler::SETTING_MODE, myTVPhosphor->getSelectedTag());
@@ -1017,9 +1018,9 @@ void VideoAudioDialog::setDefaults()
       myTVScanMask->setSelected(TIASurface::SETTING_STANDARD);
 
       // Make sure that mutually-exclusive items are not enabled at the same time
-      handleTVModeChange(TVSignal::SignalQuality::Off);
+      handleTVModeChange(TVMode::None);
       handlePhosphorChange();
-      loadTVAdjustables(TVSignal::SignalQuality::Custom);
+      loadTVAdjustables(TVMode::Custom);
       break;
     }
     case 3: // Bezels
@@ -1056,9 +1057,9 @@ void VideoAudioDialog::setDefaults()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void VideoAudioDialog::handleTVModeChange(TVSignal::SignalQuality preset)
+void VideoAudioDialog::handleTVModeChange(TVMode preset)
 {
-  const bool enable = preset == TVSignal::SignalQuality::Custom;
+  const bool enable = preset == TVMode::Custom;
 
   myTVSharp->setEnabled(enable);
   myTVRes->setEnabled(enable);
@@ -1073,10 +1074,10 @@ void VideoAudioDialog::handleTVModeChange(TVSignal::SignalQuality preset)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void VideoAudioDialog::loadTVAdjustables(TVSignal::SignalQuality preset)
+void VideoAudioDialog::loadTVAdjustables(TVMode preset)
 {
-  NTSCFilter::Adjustable adj;
-  NTSCFilter::getAdjustables(adj, static_cast<NTSCFilter::Preset>(static_cast<int>(preset)));
+  NTSCSignal::Adjustable adj;
+  NTSCSignal::getAdjustables(adj, preset);
   myTVSharp->setValue(adj.sharpness);
   myTVRes->setValue(adj.resolution);
   myTVArtifacts->setValue(adj.artifacts);
@@ -1273,18 +1274,18 @@ void VideoAudioDialog::handleCommand(CommandSender* sender, int cmd,
       break;
 
     case kTVModeChanged:
-      handleTVModeChange(static_cast<TVSignal::SignalQuality>(myTVMode->getSelectedTag().toInt()));
+      handleTVModeChange(static_cast<TVMode>(myTVMode->getSelectedTag().toInt()));
       break;
 
-    case kCloneCompositeCmd: loadTVAdjustables(TVSignal::SignalQuality::Composite);
+    case kCloneCompositeCmd: loadTVAdjustables(TVMode::Composite);
       break;
-    case kCloneSvideoCmd: loadTVAdjustables(TVSignal::SignalQuality::SVideo);
+    case kCloneSvideoCmd: loadTVAdjustables(TVMode::SVideo);
       break;
-    case kCloneRGBCmd: loadTVAdjustables(TVSignal::SignalQuality::RGB);
+    case kCloneRGBCmd: loadTVAdjustables(TVMode::RGB);
       break;
-    case kCloneBadCmd: loadTVAdjustables(TVSignal::SignalQuality::Bad);
+    case kCloneBadCmd: loadTVAdjustables(TVMode::Bad);
       break;
-    case kCloneCustomCmd: loadTVAdjustables(TVSignal::SignalQuality::Custom);
+    case kCloneCustomCmd: loadTVAdjustables(TVMode::Custom);
       break;
 
     case kScanlinesChanged:

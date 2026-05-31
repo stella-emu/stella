@@ -19,6 +19,20 @@
 #include "Settings.hxx"
 #include "TVSignal.hxx"
 
+namespace {
+  template<typename T>
+    requires std::is_arithmetic_v<T>
+  constexpr float scaleFrom100(T x) {
+    return (static_cast<float>(x) / 50.F) - 1.F;
+  }
+
+  template<typename T>
+    requires std::is_arithmetic_v<T>
+  constexpr uInt32 scaleTo100(T x) {
+    return static_cast<uInt32>(50.0001F * (static_cast<float>(x) + 1.F));
+  }
+}  // namespace
+
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 TVSignal::TVSignal(const PaletteHandler& paletteHandler)
   : myPaletteHandler{paletteHandler}
@@ -28,14 +42,14 @@ TVSignal::TVSignal(const PaletteHandler& paletteHandler)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TVSignal::loadConfig(const Settings& settings)
 {
-  NTSCFilter::loadConfig(settings);
+  NTSCSignal::loadConfig(settings);
   myPALCustomBlend = BSPF::clamp(settings.getFloat("pal.blend"), 0.0F, 1.0F);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TVSignal::saveConfig(Settings& settings)
 {
-  NTSCFilter::saveConfig(settings);
+  NTSCSignal::saveConfig(settings);
   settings.setValue("pal.blend", myPALCustomBlend);
 }
 
@@ -51,50 +65,109 @@ void TVSignal::setPalette(const PaletteArray& tiaPalette,
                           const PaletteArray& rgbPalette)
 {
   myPalette = tiaPalette;
-  myNTSCFilter.setPalette(rgbPalette);
+  myNTSCSignal.setPalette(rgbPalette);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void TVSignal::setSignalQuality(SignalQuality quality)
+void TVSignal::setTVMode(TVMode type)
 {
-  mySignalQuality = quality;
+  myTVMode = type;
 
   // Off/RGB/SVideo: component/separated signal, no delay-line needed.
   // Composite/Bad: mixed signal requires delay-line decoding.
   // Custom: user-defined blend.
-  switch(quality)
+  switch(type)
   {
-    case SignalQuality::Off:
-    case SignalQuality::RGB:
-    case SignalQuality::SVideo:    myPALBlend = 0.0F;            break;
-    case SignalQuality::Composite:
-    case SignalQuality::Bad:       myPALBlend = 0.5F;            break;
-    case SignalQuality::Custom:    myPALBlend = myPALCustomBlend; break;
-    default:                       break;
+    case TVMode::None:
+    case TVMode::RGB:
+    case TVMode::SVideo:    myPALBlend = 0.0F;             break;
+    case TVMode::Composite:
+    case TVMode::Bad:       myPALBlend = 0.5F;             break;
+    case TVMode::Custom:    myPALBlend = myPALCustomBlend; break;
+    default:                    break;
   }
 
-  if(quality == SignalQuality::Off)
+  if(type == TVMode::None)
     return;
 
-  NTSCFilter::Preset preset;
-  switch(quality)
+  myNTSCSignal.initialize(type);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+string TVSignal::getPreset() const
+{
+  switch(myTVMode)
   {
-    case SignalQuality::RGB:       preset = NTSCFilter::Preset::RGB;       break;
-    case SignalQuality::SVideo:    preset = NTSCFilter::Preset::SVIDEO;    break;
-    case SignalQuality::Composite: preset = NTSCFilter::Preset::COMPOSITE; break;
-    case SignalQuality::Bad:       preset = NTSCFilter::Preset::BAD;       break;
-    case SignalQuality::Custom:    preset = NTSCFilter::Preset::CUSTOM;    break;
-    default:                       return;
+    case TVMode::RGB:       return "RGB";
+    case TVMode::SVideo:    return "S-VIDEO";
+    case TVMode::Composite: return "COMPOSITE";
+    case TVMode::Bad:       return "BAD ADJUST";
+    case TVMode::Custom:    return "CUSTOM";
+    default:                    return "Disabled";
   }
-  myNTSCFilter.setPreset(preset);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt32 TVSignal::outputWidth() const
 {
-  return (myTiming == ConsoleTiming::ntsc && mySignalQuality != SignalQuality::Off)
-    ? AtariNTSC::outWidth(TIAConstants::frameBufferWidth)
+  return (myTiming == ConsoleTiming::ntsc && myTVMode != TVMode::None)
+    ? NTSCSignal::outWidth(TIAConstants::frameBufferWidth)
     : TIAConstants::frameBufferWidth;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+SpanOf<NTSCSignal::AdjustableTag> TVSignal::currentAdjustableTags() const
+{
+  // Dispatch to the active filter's tag list based on current timing.
+  // PAL and SECAM filter adjustables will be added when those filters exist.
+  if(myTiming == ConsoleTiming::ntsc)
+    return myNTSCSignal.adjustableTags();
+  return {};
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TVSignal::selectAdjustable(int direction,
+                                string& text, string& valueText, Int32& value)
+{
+  const auto tags = currentAdjustableTags();
+  const auto n    = static_cast<uInt32>(tags.size());
+  if(n == 0) return;
+
+  if(direction == +1)
+    myCurrentAdjustable = (myCurrentAdjustable + 1) % n;
+  else if(direction == -1)
+    myCurrentAdjustable = (myCurrentAdjustable == 0) ? n - 1 : myCurrentAdjustable - 1;
+
+  value     = static_cast<Int32>(scaleTo100(*tags[myCurrentAdjustable].value));
+  text      = std::format("Custom {}", tags[myCurrentAdjustable].type);
+  valueText = std::format("{}%", value);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TVSignal::changeAdjustable(int adjustable, int direction,
+                                string& text, string& valueText, Int32& newValue)
+{
+  myCurrentAdjustable = static_cast<uInt32>(adjustable);
+  changeCurrentAdjustable(direction, text, valueText, newValue);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TVSignal::changeCurrentAdjustable(int direction,
+                                       string& text, string& valueText, Int32& newValue)
+{
+  const auto tags = currentAdjustableTags();
+  if(tags.empty()) return;
+
+  newValue = static_cast<Int32>(scaleTo100(*tags[myCurrentAdjustable].value));
+  newValue = BSPF::clamp(newValue + direction, 0, 100);
+  *tags[myCurrentAdjustable].value = scaleFrom100(newValue);
+
+  // Re-apply the custom setup so the filter sees the updated parameter
+  if(myTiming == ConsoleTiming::ntsc)
+    myNTSCSignal.reinitializeCustom();
+
+  text      = std::format("Custom {}", tags[myCurrentAdjustable].type);
+  valueText = std::format("{}%", newValue);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -129,10 +202,10 @@ void TVSignal::render(const uInt8* tiaSrc, uInt32 srcWidth, uInt32 srcHeight,
 void TVSignal::renderNTSC(const uInt8* tiaSrc, uInt32 srcWidth, uInt32 srcHeight,
                            uInt32* rgbDst, uInt32 dstPitch)
 {
-  if(mySignalQuality != SignalQuality::Off)
+  if(myTVMode != TVMode::None)
   {
     // Blargg filter takes byte pitch; dstPitch here is pixel pitch
-    myNTSCFilter.render(tiaSrc, srcWidth, srcHeight, rgbDst, dstPitch << 2);
+    myNTSCSignal.render(tiaSrc, srcWidth, srcHeight, rgbDst, dstPitch << 2);
   }
   else
   {
@@ -167,7 +240,7 @@ void TVSignal::renderPAL(const uInt8* tiaSrc, uInt32 srcWidth, uInt32 srcHeight,
   }
 
   const auto& yuv = myPaletteHandler.palYUVTable();
-  const float vSign = phaseInverted ? -1.F : 1.F;
+  const float vSign    = phaseInverted ? -1.F : 1.F;
   const float blend    = myPALBlend;
   const float invBlend = 1.0F - blend;
 
@@ -199,7 +272,7 @@ void TVSignal::renderPAL(const uInt8* tiaSrc, uInt32 srcWidth, uInt32 srcHeight,
 void TVSignal::renderSECAM(const uInt8* tiaSrc, uInt32 srcWidth, uInt32 srcHeight,
                             uInt32* rgbDst, uInt32 dstPitch)
 {
-  if(mySignalQuality == SignalQuality::Off)
+  if(myTVMode == TVMode::None)
   {
     for(uInt32 y = 0; y < srcHeight; ++y)
     {

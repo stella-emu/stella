@@ -299,12 +299,12 @@ void StellaLIBRETRO::setROM(const char* path, const void* data, size_t size)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void StellaLIBRETRO::setVideoFilter(TVSignal::SignalQuality mode)
+void StellaLIBRETRO::setVideoFilter(TVMode mode)
 {
   if (system_ready)
   {
     myOSystem->settings().setValue("tv.filter", static_cast<int>(mode));
-    myOSystem->frameBuffer().tiaSurface().setSignalQuality(mode);
+    myOSystem->frameBuffer().tiaSurface().setTVMode(mode);
   }
 }
 

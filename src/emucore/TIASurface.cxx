@@ -84,7 +84,7 @@ void TIASurface::initialize(const Console& console,
   myPaletteHandler->setPalette();
 
   createScanlineSurface();
-  setSignalQuality(static_cast<TVSignal::SignalQuality>(myOSystem.settings().getInt("tv.filter")), false);
+  setTVMode(static_cast<TVMode>(myOSystem.settings().getInt("tv.filter")), false);
 
 #if 0
 cerr << "INITIALIZE:\n"
@@ -132,44 +132,44 @@ uInt32 TIASurface::mapIndexedPixel(uInt8 indexedColor, uInt8 shift) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void TIASurface::setSignalQuality(TVSignal::SignalQuality quality, bool show)
+void TIASurface::setTVMode(TVMode type, bool show)
 {
-  myTVSignal->setSignalQuality(quality);
+  myTVSignal->setTVMode(type);
   enableNTSC();
   if(show)
   {
-    if(quality == TVSignal::SignalQuality::Off)
+    if(type == TVMode::None)
       myFB.showTextMessage("TV filtering disabled");
     else
       myFB.showTextMessage(std::format("TV filtering ({} mode)", myTVSignal->getPreset()));
   }
-  myOSystem.settings().setValue("tv.filter", static_cast<int>(quality));
+  myOSystem.settings().setValue("tv.filter", static_cast<int>(type));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TIASurface::changeNTSC(int direction)
 {
-  using SQ = TVSignal::SignalQuality;
-  static constexpr std::array<SQ, 6> PRESETS = {
-    SQ::Off, SQ::RGB, SQ::SVideo, SQ::Composite, SQ::Bad, SQ::Custom
+  using ST = TVMode;
+  static constexpr std::array<ST, 6> PRESETS = {
+    ST::None, ST::RGB, ST::SVideo, ST::Composite, ST::Bad, ST::Custom
   };
   int preset = myOSystem.settings().getInt("tv.filter");
 
   if(direction == +1)
   {
-    if(preset == static_cast<int>(SQ::Custom))
-      preset = static_cast<int>(SQ::Off);
+    if(preset == static_cast<int>(ST::Custom))
+      preset = static_cast<int>(ST::None);
     else
       preset++;
   }
   else if(direction == -1)
   {
-    if(preset == static_cast<int>(SQ::Off))
-      preset = static_cast<int>(SQ::Custom);
+    if(preset == static_cast<int>(ST::None))
+      preset = static_cast<int>(ST::Custom);
     else
       preset--;
   }
-  setSignalQuality(PRESETS[preset], true);
+  setTVMode(PRESETS[preset], true);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -178,7 +178,7 @@ void TIASurface::setNTSCAdjustable(int direction)
   string text, valueText;
   Int32 value{0};
 
-  setSignalQuality(TVSignal::SignalQuality::Custom);
+  setTVMode(TVMode::Custom);
   myTVSignal->selectAdjustable(direction, text, valueText, value);
   myOSystem.frameBuffer().showGaugeMessage(text, valueText, value);
 }
@@ -189,7 +189,7 @@ void TIASurface::changeNTSCAdjustable(int adjustable, int direction)
   string text, valueText;
   Int32 newValue{0};
 
-  setSignalQuality(TVSignal::SignalQuality::Custom);
+  setTVMode(TVMode::Custom);
   myTVSignal->changeAdjustable(adjustable, direction, text, valueText, newValue);
   myTVSignal->saveConfig(myOSystem.settings());
   myOSystem.frameBuffer().showGaugeMessage(text, valueText, newValue);
@@ -201,7 +201,7 @@ void TIASurface::changeCurrentNTSCAdjustable(int direction)
   string text, valueText;
   Int32 newValue{0};
 
-  setSignalQuality(TVSignal::SignalQuality::Custom);
+  setTVMode(TVMode::Custom);
   myTVSignal->changeCurrentAdjustable(direction, text, valueText, newValue);
   myTVSignal->saveConfig(myOSystem.settings());
   myOSystem.frameBuffer().showGaugeMessage(text, valueText, newValue);

@@ -1,7 +1,7 @@
 MODULE := src/common/tv_filters
 
 MODULE_OBJS := \
-	src/common/tv_filters/NTSCFilter.o \
+	src/common/tv_filters/NTSCSignal.o \
 	src/common/tv_filters/AtariNTSC.o
 
 MODULE_TEST_OBJS =

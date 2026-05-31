@@ -20,43 +20,36 @@
 
 #include "bspf.hxx"
 #include "ConsoleTiming.hxx"
-#include "NTSCFilter.hxx"
+#include "NTSCSignal.hxx"
 #include "PaletteHandler.hxx"
 
 /**
-  Emulates the TV signal delay-line circuitry present in PAL and SECAM
-  televisions.  On each rendered frame, blends adjacent scanlines in the
-  appropriate chroma colour space — YUV for PAL, YDbDr for SECAM — to
-  reproduce the colour mixing that a real delay-line TV would produce.
+  Converts raw TIA colour-index data into RGB pixels, applying the
+  appropriate TV standard emulation for NTSC, PAL, or SECAM.  The active
+  standard is set by setTiming(); the TVMode controls which signal path
+  within that standard is emulated (composite, S-Video, RGB, etc.).
 
-  PAL: The delay line averages U and V from the current and previous
-  scanlines.  When the total scanline count is odd the V-axis is phase-
-  inverted, causing V to cancel rather than reinforce for same-colour lines
-  (the classic "colour-loss" greyscale effect).  RGB and S-Video connections
-  bypass the chroma decoder, so the delay line and colour-loss effect are
-  skipped for those signal quality settings.
+  NTSC: Delegates to NTSCSignal, which wraps the Blargg NTSC engine.
+  TVMode::None bypasses the engine and performs a plain palette lookup.
 
-  SECAM: The signal alternates between transmitting Db (even lines) and Dr
-  (odd lines).  The delay line holds the missing component from the previous
-  line, so the decoder always has both Db and Dr regardless of which line it
-  is on.  Mixing two different colours across adjacent scanlines produces
-  new blended colours beyond the 8-entry SECAM palette.  The delay line is
-  always active except when signal quality is Off.
+  PAL: Emulates the chroma delay-line present in PAL televisions.  The
+  delay line averages U and V from the current and previous scanlines.
+  When the total scanline count is odd the V-axis is phase-inverted,
+  causing V to cancel rather than reinforce for same-colour lines (the
+  classic "colour-loss" greyscale effect).  TVMode::RGB and TVMode::SVideo
+  bypass the chroma decoder entirely, so the delay line is skipped for
+  those modes.
+
+  SECAM: Emulates the chroma delay-line present in SECAM televisions.  The
+  signal alternates between transmitting Db (even lines) and Dr (odd lines);
+  the delay line holds the missing component from the previous line so the
+  decoder always has both.  Mixing two colours across adjacent scanlines
+  produces blended colours beyond the 8-entry SECAM palette.  The delay
+  line is always active except when TVMode::None is selected.
 */
 class TVSignal
 {
   public:
-    // Universal signal quality presets, applicable to all TV standards.
-    // Numeric values are stored in the "tv.filter" setting — do not reorder.
-    enum class SignalQuality {
-      Off       = 0,
-      RGB       = 1,
-      SVideo    = 2,
-      Composite = 3,
-      Bad       = 4,
-      Custom    = 5
-    };
-
     explicit TVSignal(const PaletteHandler& paletteHandler);
     ~TVSignal() = default;
 
@@ -67,41 +60,35 @@ class TVSignal
     // (for the Blargg filter's internal YIQ calculation)
     void setPalette(const PaletteArray& tiaPalette, const PaletteArray& rgbPalette);
 
-    // Set the signal quality preset; Off disables Blargg for NTSC and uses
-    // plain palette lookup; any other value activates the Blargg renderer
-    void setSignalQuality(SignalQuality quality);
+    // Set the signal type
+    void setTVMode(TVMode type);
 
     // Enable or disable multi-threaded Blargg rendering
-    void enableThreading(bool enable) { myNTSCFilter.enableThreading(enable); }
+    void enableThreading(bool enable) { myNTSCSignal.enableThreading(enable); }
 
     // Return the pixel width of one rendered scanline for the current
-    // timing/preset combination.  568 when NTSC+Blargg is active, 160 otherwise.
+    // timing/type combination.  568 when NTSC+Blargg is active, 160 otherwise.
     uInt32 outputWidth() const;
 
     // Load and save custom-adjustable settings
     void loadConfig(const Settings& settings);
     void saveConfig(Settings& settings);
 
-    // Get the current NTSC preset as a display string
-    string getPreset() const { return myNTSCFilter.getPreset(); }
+    // Get the current signal type as a display string
+    string getPreset() const;
 
-    // Cycle through the NTSC adjustable list; changes which one is "current"
+    // Cycle through the adjustable list for the active signal standard;
+    // changes which one is "current"
     void selectAdjustable(int direction,
-                          string& text, string& valueText, Int32& value) {
-      myNTSCFilter.selectAdjustable(direction, text, valueText, value);
-    }
+                          string& text, string& valueText, Int32& value);
 
-    // Change a specific NTSC adjustable by index
+    // Change a specific adjustable by index
     void changeAdjustable(int adjustable, int direction,
-                          string& text, string& valueText, Int32& newValue) {
-      myNTSCFilter.changeAdjustable(adjustable, direction, text, valueText, newValue);
-    }
+                          string& text, string& valueText, Int32& newValue);
 
-    // Change the currently selected NTSC adjustable
+    // Change the currently selected adjustable
     void changeCurrentAdjustable(int direction,
-                                 string& text, string& valueText, Int32& newValue) {
-      myNTSCFilter.changeCurrentAdjustable(direction, text, valueText, newValue);
-    }
+                                 string& text, string& valueText, Int32& newValue);
 
     // Process one complete TIA frame.  Reads raw TIA colour-index bytes from
     // tiaSrc and writes 32-bit 0x00RRGGBB pixels to rgbDst.  For PAL, applies
@@ -118,6 +105,9 @@ class TVSignal
     void renderSECAM(const uInt8* tiaSrc, uInt32 srcWidth, uInt32 srcHeight,
                      uInt32* rgbDst, uInt32 dstPitch);
 
+    // Returns the adjustable tag span for the currently active filter
+    SpanOf<NTSCSignal::AdjustableTag> currentAdjustableTags() const;
+
     // BT.601 YUV → packed 0x00RRGGBB (values in linear [0..1])
     static FORCE_INLINE uInt32 yuvToRGB(float y, float u, float v);
 
@@ -128,10 +118,13 @@ class TVSignal
     const PaletteHandler& myPaletteHandler;
     ConsoleTiming myTiming{ConsoleTiming::ntsc};
 
-    NTSCFilter myNTSCFilter;
-    SignalQuality mySignalQuality{SignalQuality::Off};
+    NTSCSignal myNTSCSignal;
+    TVMode myTVMode{TVMode::None};
 
-    // PAL chroma delay-line blend [0..1]; derived from preset or custom setting
+    // Index of the currently selected custom adjustable
+    uInt32 myCurrentAdjustable{0};
+
+    // PAL chroma delay-line blend [0..1]; derived from type or custom setting
     float myPALBlend{0.5F};
     float myPALCustomBlend{0.5F};
 

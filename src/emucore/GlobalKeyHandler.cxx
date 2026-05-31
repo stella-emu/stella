@@ -205,7 +205,7 @@ bool GlobalKeyHandler::skipAVSetting() const
   const bool isCustomPalette =
     myOSystem.settings().getString("palette") == PaletteHandler::SETTING_CUSTOM;
   const bool isCustomFilter =
-    myOSystem.settings().getInt("tv.filter") == static_cast<int>(TVSignal::SignalQuality::Custom);
+    myOSystem.settings().getInt("tv.filter") == static_cast<int>(TVMode::Custom);
   const bool hasScanlines =
     myOSystem.settings().getInt("tv.scanlines") > 0;
   const bool isSoftwareRenderer =
@@ -366,11 +366,11 @@ void GlobalKeyHandler::buildSettingMap()
     {Setting::PALETTE_GAMMA,          {true,  [this](int d) { myOSystem.frameBuffer().tiaSurface().paletteHandler().changeAdjustable(PaletteHandler::GAMMA, d); }}},
     // NTSC filter adjustables
     {Setting::NTSC_PRESET,            {false, [this](int d) { myOSystem.frameBuffer().tiaSurface().changeNTSC(d); }}},
-    {Setting::NTSC_SHARPNESS,         {true,  [this](int d) { myOSystem.frameBuffer().tiaSurface().changeNTSCAdjustable(static_cast<int>(NTSCFilter::Adjustables::SHARPNESS), d); }}},
-    {Setting::NTSC_RESOLUTION,        {true,  [this](int d) { myOSystem.frameBuffer().tiaSurface().changeNTSCAdjustable(static_cast<int>(NTSCFilter::Adjustables::RESOLUTION), d); }}},
-    {Setting::NTSC_ARTIFACTS,         {true,  [this](int d) { myOSystem.frameBuffer().tiaSurface().changeNTSCAdjustable(static_cast<int>(NTSCFilter::Adjustables::ARTIFACTS), d); }}},
-    {Setting::NTSC_FRINGING,          {true,  [this](int d) { myOSystem.frameBuffer().tiaSurface().changeNTSCAdjustable(static_cast<int>(NTSCFilter::Adjustables::FRINGING), d); }}},
-    {Setting::NTSC_BLEEDING,          {true,  [this](int d) { myOSystem.frameBuffer().tiaSurface().changeNTSCAdjustable(static_cast<int>(NTSCFilter::Adjustables::BLEEDING), d); }}},
+    {Setting::NTSC_SHARPNESS,         {true,  [this](int d) { myOSystem.frameBuffer().tiaSurface().changeNTSCAdjustable(static_cast<int>(NTSCSignal::Adjustables::SHARPNESS), d); }}},
+    {Setting::NTSC_RESOLUTION,        {true,  [this](int d) { myOSystem.frameBuffer().tiaSurface().changeNTSCAdjustable(static_cast<int>(NTSCSignal::Adjustables::RESOLUTION), d); }}},
+    {Setting::NTSC_ARTIFACTS,         {true,  [this](int d) { myOSystem.frameBuffer().tiaSurface().changeNTSCAdjustable(static_cast<int>(NTSCSignal::Adjustables::ARTIFACTS), d); }}},
+    {Setting::NTSC_FRINGING,          {true,  [this](int d) { myOSystem.frameBuffer().tiaSurface().changeNTSCAdjustable(static_cast<int>(NTSCSignal::Adjustables::FRINGING), d); }}},
+    {Setting::NTSC_BLEEDING,          {true,  [this](int d) { myOSystem.frameBuffer().tiaSurface().changeNTSCAdjustable(static_cast<int>(NTSCSignal::Adjustables::BLEEDING), d); }}},
     // Other TV effects adjustables
     {Setting::PHOSPHOR_MODE,          {true,  [this](int d) { myOSystem.console().cyclePhosphorMode(d); }}},
     {Setting::PHOSPHOR,               {true,  [this](int d) { myOSystem.console().changePhosphor(d); }}},

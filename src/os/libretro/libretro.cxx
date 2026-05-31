@@ -16,6 +16,7 @@
 
 #include "StellaLIBRETRO.hxx"
 #include "Event.hxx"
+#include "TVMode.hxx"
 #include "TVSignal.hxx"
 #include "Version.hxx"
 
@@ -616,13 +617,13 @@ static void update_variables(bool init = false)
 
   RETRO_GET("stella_filter")
   {
-    TVSignal::SignalQuality value = TVSignal::SignalQuality::Off;
+    TVMode value = TVMode::None;
 
-    if(!strcmp(var.value, "disabled"))            value = TVSignal::SignalQuality::Off;
-    else if(!strcmp(var.value, "composite"))      value = TVSignal::SignalQuality::Composite;
-    else if(!strcmp(var.value, "s-video"))        value = TVSignal::SignalQuality::SVideo;
-    else if(!strcmp(var.value, "rgb"))            value = TVSignal::SignalQuality::RGB;
-    else if(!strcmp(var.value, "badly adjusted")) value = TVSignal::SignalQuality::Bad;
+    if(!strcmp(var.value, "disabled"))            value = TVMode::None;
+    else if(!strcmp(var.value, "composite"))      value = TVMode::Composite;
+    else if(!strcmp(var.value, "s-video"))        value = TVMode::SVideo;
+    else if(!strcmp(var.value, "rgb"))            value = TVMode::RGB;
+    else if(!strcmp(var.value, "badly adjusted")) value = TVMode::Bad;
 
     if(stella_settings.video_filter != value)
     {

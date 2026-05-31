@@ -28,8 +28,9 @@ class PaletteHandler;
 
 #include "Rect.hxx"
 #include "FrameBuffer.hxx"
-#include "NTSCFilter.hxx"
+#include "NTSCSignal.hxx"
 #include "PhosphorHandler.hxx"
+#include "TVMode.hxx"
 #include "TVSignal.hxx"
 #include "bspf.hxx"
 #include "TIAConstants.hxx"
@@ -104,7 +105,7 @@ class TIASurface
     /**
       Use NTSC filtering effects specified by the given preset.
     */
-    void setSignalQuality(TVSignal::SignalQuality quality, bool show = true);
+    void setTVMode(TVMode type, bool show = true);
 
     /**
       Switch to next/previous NTSC filtering effect.

@@ -131,11 +131,11 @@ void StellaSettingsDialog::addVideoOptions(WidgetArray& wid, int xpos, int& ypos
   const int swidth = _font.getMaxCharWidth() * 11;
 
   // TV Mode
-  VarList::push_back(items, "Disabled", static_cast<uInt32>(TVSignal::SignalQuality::Off));
-  VarList::push_back(items, "RGB", static_cast<uInt32>(TVSignal::SignalQuality::RGB));
-  VarList::push_back(items, "S-Video", static_cast<uInt32>(TVSignal::SignalQuality::SVideo));
-  VarList::push_back(items, "Composite", static_cast<uInt32>(TVSignal::SignalQuality::Composite));
-  VarList::push_back(items, "Bad adjust", static_cast<uInt32>(TVSignal::SignalQuality::Bad));
+  VarList::push_back(items, "Disabled", static_cast<uInt32>(TVMode::None));
+  VarList::push_back(items, "RGB", static_cast<uInt32>(TVMode::RGB));
+  VarList::push_back(items, "S-Video", static_cast<uInt32>(TVMode::SVideo));
+  VarList::push_back(items, "Composite", static_cast<uInt32>(TVMode::Composite));
+  VarList::push_back(items, "Bad adjust", static_cast<uInt32>(TVMode::Bad));
   const int pwidth = _font.getStringWidth("Right bottom");
   const int lwidth = _font.getStringWidth("Scanline intensity ");
 
@@ -315,7 +315,7 @@ void StellaSettingsDialog::setDefaults()
   myPositionPopup->setSelected("0");
 
   // TV effects
-  myTVMode->setSelected("RGB", static_cast<uInt32>(TVSignal::SignalQuality::RGB));
+  myTVMode->setSelected("RGB", static_cast<uInt32>(TVMode::RGB));
   // TV scanline intensity
   myTVScanIntense->setValue(3); // 18
   // TV phosphor blend
