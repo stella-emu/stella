@@ -21,6 +21,7 @@
 #include "bspf.hxx"
 #include "ConsoleTiming.hxx"
 #include "NTSCSignal.hxx"
+#include "PALSignal.hxx"
 #include "PaletteHandler.hxx"
 
 /**
@@ -106,7 +107,7 @@ class TVSignal
                      uInt32* rgbDst, uInt32 dstPitch);
 
     // Returns the adjustable tag span for the currently active filter
-    SpanOf<NTSCSignal::AdjustableTag> currentAdjustableTags() const;
+    SpanOf<AdjustableTag> currentAdjustableTags() const;
 
     // BT.601 YUV → packed 0x00RRGGBB (values in linear [0..1])
     static FORCE_INLINE uInt32 yuvToRGB(float y, float u, float v);
@@ -119,14 +120,11 @@ class TVSignal
     ConsoleTiming myTiming{ConsoleTiming::ntsc};
 
     NTSCSignal myNTSCSignal;
+    PALSignal  myPALSignal;
     TVMode myTVMode{TVMode::None};
 
     // Index of the currently selected custom adjustable
     uInt32 myCurrentAdjustable{0};
-
-    // PAL chroma delay-line blend [0..1]; derived from type or custom setting
-    float myPALBlend{0.5F};
-    float myPALCustomBlend{0.5F};
 
     // Display palette used for NTSC non-Blargg pixel lookup
     PaletteArray myPalette{};

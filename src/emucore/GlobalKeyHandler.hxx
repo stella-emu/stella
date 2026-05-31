@@ -69,6 +69,9 @@ class GlobalKeyHandler
       NTSC_ARTIFACTS,
       NTSC_FRINGING,
       NTSC_BLEEDING,
+      // PAL filter adjustables
+      PAL_SHARPNESS,
+      PAL_BLEND,
       // Other TV effects adjustables
       PHOSPHOR_MODE,
       PHOSPHOR,

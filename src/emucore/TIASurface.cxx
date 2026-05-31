@@ -173,7 +173,7 @@ void TIASurface::changeNTSC(int direction)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void TIASurface::setNTSCAdjustable(int direction)
+void TIASurface::selectTVAdjustable(int direction)
 {
   string text, valueText;
   Int32 value{0};
@@ -184,7 +184,7 @@ void TIASurface::setNTSCAdjustable(int direction)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void TIASurface::changeNTSCAdjustable(int adjustable, int direction)
+void TIASurface::changeTVAdjustable(int adjustable, int direction)
 {
   string text, valueText;
   Int32 newValue{0};
@@ -196,7 +196,7 @@ void TIASurface::changeNTSCAdjustable(int adjustable, int direction)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void TIASurface::changeCurrentNTSCAdjustable(int direction)
+void TIASurface::changeCurrentTVAdjustable(int direction)
 {
   string text, valueText;
   Int32 newValue{0};

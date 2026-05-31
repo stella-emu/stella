@@ -17,6 +17,8 @@
 
 #include "Console.hxx"
 #include "FrameBuffer.hxx"
+#include "NTSCSignal.hxx"
+#include "PALSignal.hxx"
 #include "PaletteHandler.hxx"
 #include "QuadTari.hxx"
 #include "Sound.hxx"
@@ -206,6 +208,10 @@ bool GlobalKeyHandler::skipAVSetting() const
     myOSystem.settings().getString("palette") == PaletteHandler::SETTING_CUSTOM;
   const bool isCustomFilter =
     myOSystem.settings().getInt("tv.filter") == static_cast<int>(TVMode::Custom);
+  const ConsoleTiming timing = myOSystem.hasConsole()
+    ? myOSystem.console().timing() : ConsoleTiming::ntsc;
+  const bool isNTSC = (timing == ConsoleTiming::ntsc);
+  const bool isPAL  = (timing == ConsoleTiming::pal);
   const bool hasScanlines =
     myOSystem.settings().getInt("tv.scanlines") > 0;
   const bool isSoftwareRenderer =
@@ -225,7 +231,10 @@ bool GlobalKeyHandler::skipAVSetting() const
       && !isCustomPalette)
     || (mySetting >= Setting::NTSC_SHARPNESS
       && mySetting <= Setting::NTSC_BLEEDING
-      && !isCustomFilter)
+      && (!isCustomFilter || !isNTSC))
+    || (mySetting >= Setting::PAL_SHARPNESS
+      && mySetting <= Setting::PAL_BLEND
+      && (!isCustomFilter || !isPAL))
     || (mySetting == Setting::SCANLINE_MASK && !hasScanlines)
     || (mySetting == Setting::INTERPOLATION && isSoftwareRenderer)
     || (mySetting == Setting::BEZEL && !allowBezel);
@@ -366,11 +375,14 @@ void GlobalKeyHandler::buildSettingMap()
     {Setting::PALETTE_GAMMA,          {true,  [this](int d) { myOSystem.frameBuffer().tiaSurface().paletteHandler().changeAdjustable(PaletteHandler::GAMMA, d); }}},
     // NTSC filter adjustables
     {Setting::NTSC_PRESET,            {false, [this](int d) { myOSystem.frameBuffer().tiaSurface().changeNTSC(d); }}},
-    {Setting::NTSC_SHARPNESS,         {true,  [this](int d) { myOSystem.frameBuffer().tiaSurface().changeNTSCAdjustable(static_cast<int>(NTSCSignal::Adjustables::SHARPNESS), d); }}},
-    {Setting::NTSC_RESOLUTION,        {true,  [this](int d) { myOSystem.frameBuffer().tiaSurface().changeNTSCAdjustable(static_cast<int>(NTSCSignal::Adjustables::RESOLUTION), d); }}},
-    {Setting::NTSC_ARTIFACTS,         {true,  [this](int d) { myOSystem.frameBuffer().tiaSurface().changeNTSCAdjustable(static_cast<int>(NTSCSignal::Adjustables::ARTIFACTS), d); }}},
-    {Setting::NTSC_FRINGING,          {true,  [this](int d) { myOSystem.frameBuffer().tiaSurface().changeNTSCAdjustable(static_cast<int>(NTSCSignal::Adjustables::FRINGING), d); }}},
-    {Setting::NTSC_BLEEDING,          {true,  [this](int d) { myOSystem.frameBuffer().tiaSurface().changeNTSCAdjustable(static_cast<int>(NTSCSignal::Adjustables::BLEEDING), d); }}},
+    {Setting::NTSC_SHARPNESS,         {true,  [this](int d) { myOSystem.frameBuffer().tiaSurface().changeTVAdjustable(static_cast<int>(NTSCSignal::Adjustables::SHARPNESS), d); }}},
+    {Setting::NTSC_RESOLUTION,        {true,  [this](int d) { myOSystem.frameBuffer().tiaSurface().changeTVAdjustable(static_cast<int>(NTSCSignal::Adjustables::RESOLUTION), d); }}},
+    {Setting::NTSC_ARTIFACTS,         {true,  [this](int d) { myOSystem.frameBuffer().tiaSurface().changeTVAdjustable(static_cast<int>(NTSCSignal::Adjustables::ARTIFACTS), d); }}},
+    {Setting::NTSC_FRINGING,          {true,  [this](int d) { myOSystem.frameBuffer().tiaSurface().changeTVAdjustable(static_cast<int>(NTSCSignal::Adjustables::FRINGING), d); }}},
+    {Setting::NTSC_BLEEDING,          {true,  [this](int d) { myOSystem.frameBuffer().tiaSurface().changeTVAdjustable(static_cast<int>(NTSCSignal::Adjustables::BLEEDING), d); }}},
+    // PAL filter adjustables
+    {Setting::PAL_SHARPNESS,          {true,  [this](int d) { myOSystem.frameBuffer().tiaSurface().changeTVAdjustable(static_cast<int>(PALSignal::Adjustables::SHARPNESS), d); }}},
+    {Setting::PAL_BLEND,              {true,  [this](int d) { myOSystem.frameBuffer().tiaSurface().changeTVAdjustable(static_cast<int>(PALSignal::Adjustables::BLEND), d); }}},
     // Other TV effects adjustables
     {Setting::PHOSPHOR_MODE,          {true,  [this](int d) { myOSystem.console().cyclePhosphorMode(d); }}},
     {Setting::PHOSPHOR,               {true,  [this](int d) { myOSystem.console().changePhosphor(d); }}},
@@ -428,7 +440,7 @@ void GlobalKeyHandler::buildSettingMap()
     // *** Following functions are not used when cycling settings, but for "direct only" hotkeys ***
     {Setting::STATE,                  {true,  [this](int d) { myOSystem.state().changeState(d); }}}, // temporary, not persisted
     {Setting::PALETTE_ATTRIBUTE,      {true,  [this](int d) { myOSystem.frameBuffer().tiaSurface().paletteHandler().changeCurrentAdjustable(d); }}},
-    {Setting::NTSC_ATTRIBUTE,         {true,  [this](int d) { myOSystem.frameBuffer().tiaSurface().changeCurrentNTSCAdjustable(d); }}},
+    {Setting::NTSC_ATTRIBUTE,         {true,  [this](int d) { myOSystem.frameBuffer().tiaSurface().changeCurrentTVAdjustable(d); }}},
     {Setting::CHANGE_SPEED,           {true,  [this](int d) { myOSystem.console().changeSpeed(d); }}},
   };
 }

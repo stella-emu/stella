@@ -29,6 +29,7 @@ class PaletteHandler;
 #include "Rect.hxx"
 #include "FrameBuffer.hxx"
 #include "NTSCSignal.hxx"
+#include "PALSignal.hxx"
 #include "PhosphorHandler.hxx"
 #include "TVMode.hxx"
 #include "TVSignal.hxx"
@@ -115,26 +116,27 @@ class TIASurface
     void changeNTSC(int direction = +1);
 
     /**
-      Switch to next/previous NTSC filtering adjustable.
+      Switch to next/previous TV filtering adjustable for the current timing.
 
       @param direction  +1 indicates increase, -1 indicates decrease.
     */
-    void setNTSCAdjustable(int direction = +1);
+    void selectTVAdjustable(int direction = +1);
 
     /**
-      Increase/decrease given NTSC filtering adjustable.
+      Increase/decrease a specific TV filtering adjustable.
+      Routes to the active timing's adjustable table (NTSC or PAL).
 
-      @param adjustable  The adjustable to change
+      @param adjustable  Index into the current timing's adjustable table
       @param direction   +1 indicates increase, -1 indicates decrease.
     */
-    void changeNTSCAdjustable(int adjustable, int direction);
+    void changeTVAdjustable(int adjustable, int direction);
 
     /**
-      Increase/decrease current NTSC filtering adjustable.
+      Increase/decrease the currently-selected TV filtering adjustable.
 
       @param direction  +1 indicates increase, -1 indicates decrease.
     */
-    void changeCurrentNTSCAdjustable(int direction = +1);
+    void changeCurrentTVAdjustable(int direction = +1);
 
     /**
       Retrieve palette handler.

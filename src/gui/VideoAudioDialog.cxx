@@ -860,16 +860,30 @@ void VideoAudioDialog::saveConfig()
   // TV Mode
   settings.setValue("tv.filter", myTVMode->getSelectedTag().toString());
   // TV Custom adjustables
-  NTSCSignal::Adjustable ntscAdj;
-  ntscAdj.sharpness = myTVSharp->getValue();
-  ntscAdj.resolution = myTVRes->getValue();
-  ntscAdj.artifacts = myTVArtifacts->getValue();
-  ntscAdj.fringing = myTVFringe->getValue();
-  ntscAdj.bleed = myTVBleed->getValue();
-  NTSCSignal::setCustomAdjustables(ntscAdj);
+  const ConsoleTiming timing = instance().hasConsole()
+    ? instance().console().timing() : ConsoleTiming::ntsc;
+
+  if(timing == ConsoleTiming::ntsc)
+  {
+    NTSCSignal::Adjustable ntscAdj;
+    ntscAdj.sharpness  = myTVSharp->getValue();
+    ntscAdj.resolution = myTVRes->getValue();
+    ntscAdj.artifacts  = myTVArtifacts->getValue();
+    ntscAdj.fringing   = myTVFringe->getValue();
+    ntscAdj.bleed      = myTVBleed->getValue();
+    NTSCSignal::setCustomAdjustables(ntscAdj);
+  }
+  else if(timing == ConsoleTiming::pal)
+  {
+    PALSignal::Adjustable palAdj;
+    palAdj.sharpness = myTVSharp->getValue();
+    palAdj.blend     = myTVBleed->getValue();
+    PALSignal::setCustomAdjustables(palAdj);
+  }
 
   Logger::debug("Saving TV effects options ...");
   NTSCSignal::saveConfig(settings);
+  PALSignal::saveConfig(settings);
 
   // TV phosphor mode & blend
   settings.setValue(PhosphorHandler::SETTING_MODE, myTVPhosphor->getSelectedTag());
@@ -1059,30 +1073,63 @@ void VideoAudioDialog::setDefaults()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void VideoAudioDialog::handleTVModeChange(TVMode preset)
 {
-  const bool enable = preset == TVMode::Custom;
+  const ConsoleTiming timing = instance().hasConsole()
+    ? instance().console().timing() : ConsoleTiming::ntsc;
+  const bool isSECAM = timing == ConsoleTiming::secam;
+  const bool isPAL   = timing == ConsoleTiming::pal;
+  const bool enable  = preset == TVMode::Custom;
 
-  myTVSharp->setEnabled(enable);
-  myTVRes->setEnabled(enable);
-  myTVArtifacts->setEnabled(enable);
-  myTVFringe->setEnabled(enable);
-  myTVBleed->setEnabled(enable);
-  myCloneComposite->setEnabled(enable);
-  myCloneSvideo->setEnabled(enable);
-  myCloneRGB->setEnabled(enable);
-  myCloneBad->setEnabled(enable);
-  myCloneCustom->setEnabled(enable);
+  myTVMode->setEnabled(!isSECAM);
+  // PAL exposes only sharpness and blend; the NTSC-specific middle three are N/A
+  myTVSharp->setEnabled(enable && !isSECAM);
+  myTVRes->setEnabled(enable && !isPAL && !isSECAM);
+  myTVArtifacts->setEnabled(enable && !isPAL && !isSECAM);
+  myTVFringe->setEnabled(enable && !isPAL && !isSECAM);
+  myTVBleed->setEnabled(enable && !isSECAM);
+  myCloneComposite->setEnabled(enable && !isSECAM);
+  myCloneSvideo->setEnabled(enable && !isSECAM);
+  myCloneRGB->setEnabled(enable && !isSECAM);
+  myCloneBad->setEnabled(enable && !isSECAM);
+  myCloneCustom->setEnabled(enable && !isSECAM);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void VideoAudioDialog::loadTVAdjustables(TVMode preset)
 {
-  NTSCSignal::Adjustable adj;
-  NTSCSignal::getAdjustables(adj, preset);
-  myTVSharp->setValue(adj.sharpness);
-  myTVRes->setValue(adj.resolution);
-  myTVArtifacts->setValue(adj.artifacts);
-  myTVFringe->setValue(adj.fringing);
-  myTVBleed->setValue(adj.bleed);
+  const ConsoleTiming timing = instance().hasConsole()
+    ? instance().console().timing() : ConsoleTiming::ntsc;
+
+  if(timing == ConsoleTiming::ntsc)
+  {
+    NTSCSignal::Adjustable adj;
+    NTSCSignal::getAdjustables(adj, preset);
+    myTVSharp->setLabel("Sharpness ");
+    myTVRes->setLabel("Resolution ");
+    myTVArtifacts->setLabel("Artifacts ");
+    myTVFringe->setLabel("Fringing ");
+    myTVBleed->setLabel("Bleeding ");
+    myTVSharp->setValue(adj.sharpness);
+    myTVRes->setValue(adj.resolution);
+    myTVArtifacts->setValue(adj.artifacts);
+    myTVFringe->setValue(adj.fringing);
+    myTVBleed->setValue(adj.bleed);
+  }
+  else if(timing == ConsoleTiming::pal)
+  {
+    PALSignal::Adjustable adj;
+    PALSignal::getAdjustables(adj, preset);
+    myTVSharp->setLabel("Sharpness ");
+    myTVRes->setLabel("n/a ");
+    myTVArtifacts->setLabel("n/a ");
+    myTVFringe->setLabel("n/a ");
+    myTVBleed->setLabel("Blend ");
+    myTVSharp->setValue(adj.sharpness);
+    myTVRes->setValue(0);
+    myTVArtifacts->setValue(0);
+    myTVFringe->setValue(0);
+    myTVBleed->setValue(adj.blend);
+  }
+  // SECAM: no signal adjustables; enable/disable handled by handleTVModeChange
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

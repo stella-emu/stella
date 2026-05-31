@@ -85,7 +85,7 @@ class AtariNTSC
     void initialize(const Setup& setup);
 
     // Set palette for normal Blarrg mode
-    void setPalette(const PaletteArray& palette);
+    void setPalette(IntSpan palette);
 
     // Set up threading
     void enableThreading(bool enable);

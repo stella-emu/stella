@@ -21,6 +21,7 @@
 class Settings;
 
 #include "bspf.hxx"
+#include "TVAdjustable.hxx"
 #include "AtariNTSC.hxx"
 #include "FrameBufferConstants.hxx"
 #include "TVMode.hxx"
@@ -56,14 +57,9 @@ class NTSCSignal
       uInt32 sharpness{0}, resolution{0}, artifacts{0}, fringing{0}, bleed{0};
     };
 
-    // A single tweakable parameter: display name + pointer to its float storage
-    struct AdjustableTag {
-      string_view type;
-      float* value{nullptr};
-    };
 
   public:
-    void setPalette(const PaletteArray& palette) {
+    void setPalette(IntSpan palette) {
       myNTSC.setPalette(palette);
     }
 

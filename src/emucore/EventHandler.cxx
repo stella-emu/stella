@@ -827,7 +827,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
     case Event::PreviousAttribute:
       if(pressed)
       {
-        myOSystem.frameBuffer().tiaSurface().setNTSCAdjustable(-1);
+        myOSystem.frameBuffer().tiaSurface().selectTVAdjustable(-1);
         myGlobalKeyHandler->setDirectSetting(GlobalKeyHandler::Setting::NTSC_ATTRIBUTE);
       }
       return;
@@ -835,7 +835,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
     case Event::NextAttribute:
       if(pressed)
       {
-        myOSystem.frameBuffer().tiaSurface().setNTSCAdjustable(+1);
+        myOSystem.frameBuffer().tiaSurface().selectTVAdjustable(+1);
         myGlobalKeyHandler->setDirectSetting(GlobalKeyHandler::Setting::NTSC_ATTRIBUTE);
       }
       return;
@@ -843,7 +843,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
     case Event::DecreaseAttribute:
       if(pressed)
       {
-        myOSystem.frameBuffer().tiaSurface().changeCurrentNTSCAdjustable(-1);
+        myOSystem.frameBuffer().tiaSurface().changeCurrentTVAdjustable(-1);
         myGlobalKeyHandler->setDirectSetting(GlobalKeyHandler::Setting::NTSC_ATTRIBUTE);
       }
       return;
@@ -851,7 +851,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
     case Event::IncreaseAttribute:
       if(pressed)
       {
-        myOSystem.frameBuffer().tiaSurface().changeCurrentNTSCAdjustable(+1);
+        myOSystem.frameBuffer().tiaSurface().changeCurrentTVAdjustable(+1);
         myGlobalKeyHandler->setDirectSetting(GlobalKeyHandler::Setting::NTSC_ATTRIBUTE);
       }
       return;

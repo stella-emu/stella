@@ -20,18 +20,6 @@
 #include "NTSCSignal.hxx"
 
 namespace {
-  template<typename T>
-    requires std::is_arithmetic_v<T>
-  constexpr float scaleFrom100(T x) {
-    return (static_cast<float>(x) / 50.F) - 1.F;
-  }
-
-  template<typename T>
-    requires std::is_arithmetic_v<T>
-  constexpr uInt32 scaleTo100(T x) {
-    return static_cast<uInt32>(50.0001F * (static_cast<float>(x) + 1.F));
-  }
-
   // Map a TVMode to the corresponding AtariNTSC setup.
   // Custom returns myCustomSetup; None and unknown fall back to Composite.
   const AtariNTSC::Setup& setupFor(TVMode mode,
