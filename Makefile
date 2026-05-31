@@ -200,7 +200,7 @@ MODULES := $(MODULES)
 MODULES += \
 	src/common \
 	src/common/audio \
-	src/common/tv_filters \
+	src/common/television \
 	src/emucore \
 	src/emucore/tia \
 	src/emucore/tia/frame-manager \

@@ -54,7 +54,7 @@ Stella is a classic emulation architecture centered on `OSystem` owning everythi
 
 **GUI** (`src/gui/`): Dialog/widget system for launcher, options, high scores, etc.
 
-**Common utilities** (`src/common/`): Audio pipeline (`AudioQueue`, `AudioSettings`), filesystem abstraction (`FSNode`), state/rewind managers, high scores, palette, TV filters (`tv_filters/`), SDL blitters (`sdl_blitter/`), persistence layer (`repository/` — JSON, properties, SQLite).
+**Common utilities** (`src/common/`): Audio pipeline (`AudioQueue`, `AudioSettings`), filesystem abstraction (`FSNode`), state/rewind managers, high scores, palette, TV filters (`television/`), SDL blitters (`sdl_blitter/`), persistence layer (`repository/` — JSON, properties, SQLite).
 
 **Platform code** (`src/os/unix/`, `src/os/windows/`, `src/os/macos/`): OSystem subclasses and filesystem implementations per platform.
 

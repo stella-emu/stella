@@ -1,5 +1,5 @@
 LIBRETRO_COMM_DIR = $(CORE_DIR)/../libretro-common
-INCFLAGS := -I. -I$(CORE_DIR) -I$(CORE_DIR)/os/libretro -I$(CORE_DIR)/emucore -I$(CORE_DIR)/emucore/elf -I$(CORE_DIR)/emucore/tia -I$(CORE_DIR)/common -I$(CORE_DIR)/common/audio -I$(CORE_DIR)/common/tv_filters -I$(CORE_DIR)/common/repository/sqlite -I$(CORE_DIR)/lib/json -I$(CORE_DIR)/lib/httplib -I$(CORE_DIR)/lib/sqlite
+INCFLAGS := -I. -I$(CORE_DIR) -I$(CORE_DIR)/os/libretro -I$(CORE_DIR)/emucore -I$(CORE_DIR)/emucore/elf -I$(CORE_DIR)/emucore/tia -I$(CORE_DIR)/common -I$(CORE_DIR)/common/audio -I$(CORE_DIR)/common/television -I$(CORE_DIR)/common/repository/sqlite -I$(CORE_DIR)/lib/json -I$(CORE_DIR)/lib/httplib -I$(CORE_DIR)/lib/sqlite
 
 ifneq (,$(findstring msvc2003,$(platform)))
 INCFLAGS += -I$(LIBRETRO_COMM_DIR)/include/compat/msvc
@@ -30,8 +30,9 @@ SOURCES_CXX := \
 	$(CORE_DIR)/common/StateManager.cxx \
 	$(CORE_DIR)/common/TimerManager.cxx \
 	$(CORE_DIR)/common/VideoModeHandler.cxx \
-	$(CORE_DIR)/common/tv_filters/AtariNTSC.cxx \
-	$(CORE_DIR)/common/tv_filters/NTSCFilter.cxx \
+	$(CORE_DIR)/common/television/AtariNTSC.cxx \
+	$(CORE_DIR)/common/television/NTSCSignal.cxx \
+	$(CORE_DIR)/common/television/TVSignal.cxx \
 	$(CORE_DIR)/common/repository/CompositeKeyValueRepository.cxx \
 	$(CORE_DIR)/common/repository/CompositeKVRJsonAdapter.cxx \
 	$(CORE_DIR)/common/repository/KeyValueRepositoryConfigfile.cxx \

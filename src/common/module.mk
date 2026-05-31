@@ -30,7 +30,6 @@ MODULE_OBJS := \
 	src/common/StateManager.o \
 	src/common/ThreadDebugging.o \
 	src/common/TimerManager.o \
-	src/common/TVSignal.o \
 	src/common/VideoModeHandler.o \
 	src/common/ZipHandler.o \
 	src/common/sdl_blitter/BilinearBlitter.o \
