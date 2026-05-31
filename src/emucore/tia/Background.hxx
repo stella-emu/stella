@@ -62,11 +62,6 @@ class Background : public Serializable
     void enableDebugColors(bool enabled);
 
     /**
-      Update internal state to reflect PAL color loss.
-     */
-    void applyColorLoss();
-
-    /**
       Get the current background color index.
      */
     uInt8 getColor() const { return myColor; }
@@ -79,7 +74,7 @@ class Background : public Serializable
 
   private:
     /**
-      Recalculate myColor from COLUBK, debug colors, and color loss.
+      Recalculate myColor from COLUBK and debug colors.
      */
     void applyColors();
 

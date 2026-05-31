@@ -148,7 +148,6 @@ void TIA::initialize()
   myCollisionMask = 0;
   myLinesSinceChange = 0;
   myCollisionUpdateRequired = myCollisionUpdateScheduled = false;
-  myColorLossEnabled = myColorLossActive = false;
   myColorHBlank = 0;
   myLastCycle = 0;
   mySubClock = 0;
@@ -1060,8 +1059,6 @@ void TIA::applyDeveloperSettings()
   myJitterSensitivity = mySettings.getInt(devSettings ? "dev.tv.jitter_sense" : "plr.tv.jitter_sense");
   myJitterRecovery = mySettings.getInt(devSettings ? "dev.tv.jitter_recovery" : "plr.tv.jitter_recovery");
 
-  if(myFrameManager)
-    enableColorLoss(mySettings.getBool(devSettings ? "dev.colorloss" : "plr.colorloss"));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1097,32 +1094,6 @@ void TIA::update(uInt64 maxCycles)
   DispatchResult dispatchResult;
 
   update(dispatchResult, maxCycles);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool TIA::enableColorLoss(bool enabled)
-{
-  const bool allowColorLoss = myTimingProvider() == ConsoleTiming::pal;
-
-  if(allowColorLoss && enabled)
-  {
-    myColorLossEnabled = true;
-    myColorLossActive = myFrameManager->scanlinesLastFrame() & 0x1;
-  }
-  else
-  {
-    myColorLossEnabled = myColorLossActive = false;
-
-    myMissile0.applyColorLoss();
-    myMissile1.applyColorLoss();
-    myPlayer0.applyColorLoss();
-    myPlayer1.applyColorLoss();
-    myBall.applyColorLoss();
-    myPlayfield.applyColorLoss();
-    myBackground.applyColorLoss();
-  }
-
-  return allowColorLoss;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1417,24 +1388,6 @@ void TIA::onFrameStart()
   mySystem->m6532().resetTimReadCycles();
 #endif
 
-  // Check for colour-loss emulation
-  if (myColorLossEnabled)
-  {
-    // Only activate it when necessary, since changing colours in
-    // the graphical object forces the TIA cached line to be flushed
-    if (myFrameManager->scanlineParityChanged())
-    {
-      myColorLossActive = myFrameManager->scanlinesLastFrame() & 0x1;
-
-      myMissile0.applyColorLoss();
-      myMissile1.applyColorLoss();
-      myPlayer0.applyColorLoss();
-      myPlayer1.applyColorLoss();
-      myBall.applyColorLoss();
-      myPlayfield.applyColorLoss();
-      myBackground.applyColorLoss();
-    }
-  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

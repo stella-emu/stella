@@ -189,13 +189,6 @@ void Missile::enableDebugColors(bool enabled)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Missile::applyColorLoss()
-{
-  myTIA->flushLineCache();
-  applyColors();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Missile::setInvertedPhaseClock(bool enable)
 {
   myUseInvertedPhaseClock = enable;
@@ -225,14 +218,7 @@ void Missile::updateEnabled()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Missile::applyColors()
 {
-  if (!myDebugEnabled)
-  {
-    if (myTIA->colorLossActive()) myObjectColor |= 0x01;
-    else                          myObjectColor &= 0xfe;
-    myColor = myObjectColor;
-  }
-  else
-    myColor = myDebugColor;
+  myColor = myDebugEnabled ? myDebugColor : myObjectColor;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

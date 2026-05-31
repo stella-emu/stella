@@ -500,42 +500,11 @@ void Console::setFormat(uInt32 format, bool force)
     initializeAudio();    // ensure that audio synthesis is set up to match emulation rate
     myOSystem.resetFps(); // Reset FPS measurement
 
-    enableColorLoss(myOSystem.settings().getBool(
-      myOSystem.settings().getBool("dev.settings") ? "dev.colorloss" : "plr.colorloss"));
-
     myOSystem.frameBuffer().showTextMessage(message);
   }
 
   // Let the other devices know about the console change
   mySystem->consoleChanged(myConsoleTiming);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Console::toggleColorLoss(bool toggle)
-{
-  bool colorloss = myTIA->colorLossEnabled();
-  if(toggle)
-  {
-    colorloss = !colorloss;
-    if(myTIA->enableColorLoss(colorloss))
-      myOSystem.settings().setValue(
-        myOSystem.settings().getBool("dev.settings") ? "dev.colorloss" : "plr.colorloss", colorloss);
-    else
-    {
-      myOSystem.frameBuffer().showTextMessage(
-        "PAL color-loss not available in non PAL modes");
-      return;
-    }
-  }
-
-  myOSystem.frameBuffer().showTextMessage(
-    std::format("PAL color-loss {}", colorloss ? "enabled" : "disabled"));
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Console::enableColorLoss(bool state)
-{
-  myTIA->enableColorLoss(state);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

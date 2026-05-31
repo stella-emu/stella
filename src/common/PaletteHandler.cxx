@@ -337,7 +337,9 @@ void PaletteHandler::setPalette()
     if(paletteType == PaletteType::Custom)
       generateCustomPalette(timing);
 
-    myOSystem.frameBuffer().setTIAPalette(adjustedPalette(*palette));
+    const PaletteArray adjusted = adjustedPalette(*palette);
+    myOSystem.frameBuffer().setTIAPalette(adjusted);
+    buildDecompositionTables(adjusted);
   }
 }
 
@@ -398,6 +400,29 @@ PaletteArray PaletteHandler::adjustedPalette(const PaletteArray& palette) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void PaletteHandler::buildDecompositionTables(const PaletteArray& adjusted)
+{
+  constexpr float inv255 = 1.F / 255.F;
+
+  for(size_t i = 0; i < adjusted.size(); ++i)
+  {
+    const float r = static_cast<float>((adjusted[i] >> 16) & 0xff) * inv255;
+    const float g = static_cast<float>((adjusted[i] >>  8) & 0xff) * inv255;
+    const float b = static_cast<float>((adjusted[i] >>  0) & 0xff) * inv255;
+
+    // BT.601 RGB → YUV (PAL delay-line operates in this space)
+    myPALYUVTable[i].y =  0.299F * r + 0.587F * g + 0.114F * b;
+    myPALYUVTable[i].u = -0.147F * r - 0.289F * g + 0.436F * b;
+    myPALYUVTable[i].v =  0.615F * r - 0.515F * g - 0.100F * b;
+
+    // BT.601 RGB → YDbDr (SECAM delay-line operates in this space)
+    mySecamYDbDrTable[i].y  =  0.299F * r + 0.587F * g + 0.114F * b;
+    mySecamYDbDrTable[i].db = -0.450F * r - 0.883F * g + 1.333F * b;
+    mySecamYDbDrTable[i].dr = -1.333F * r + 1.116F * g + 0.217F * b;
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PaletteHandler::loadUserPalette()
 {
   if(!myOSystem.checkUserPalette(true))
@@ -423,7 +448,7 @@ void PaletteHandler::loadUserPalette()
     ourUserPALPalette[(i<<1)] = pixel;
   }
 
-  std::array<uInt32, 16> secam{0};  // All 8 24-bit pixels, plus 8 colorloss pixels
+  std::array<uInt32, 16> secam{0};  // 8 colours, interleaved with greyscale in odd entries
   for(int i = 0; i < 8; i++, pixbuf += 3)    // SECAM palette
   {
     const uInt32 pixel = (static_cast<int>(pixbuf[0]) << 16) +

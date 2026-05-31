@@ -51,23 +51,9 @@ void Background::enableDebugColors(bool enabled)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Background::applyColorLoss()
-{
-  myTIA->flushLineCache();
-  applyColors();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Background::applyColors()
 {
-  if (!myDebugEnabled)
-  {
-    if (myTIA->colorLossActive()) myObjectColor |= 0x01;
-    else                          myObjectColor &= 0xfe;
-    myColor = myObjectColor;
-  }
-  else
-    myColor = myDebugColor;
+  myColor = myDebugEnabled ? myDebugColor : myObjectColor;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

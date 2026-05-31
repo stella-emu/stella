@@ -265,12 +265,6 @@ class Console : public Serializable, public ConsoleIO
     void changePhosphor(int direction = +1);
 
     /**
-      Toggles the PAL color-loss effect.
-    */
-    void toggleColorLoss(bool toggle = true);
-    void enableColorLoss(bool state);
-
-    /**
       Initialize the video subsystem wrt this class.
       This is required for changing window size, title, etc.
 

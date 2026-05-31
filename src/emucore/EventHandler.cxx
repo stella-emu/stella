@@ -985,14 +985,6 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       }
       return;
 
-    case Event::ToggleColorLoss:
-      if(pressed && !repeated)
-      {
-        myOSystem.console().toggleColorLoss();
-        myGlobalKeyHandler->setSetting(GlobalKeyHandler::Setting::COLOR_LOSS);
-      }
-      return;
-
     case Event::ToggleDeveloperSet:
       if(pressed && !repeated)
       {
@@ -3018,7 +3010,6 @@ EventHandler::EmulActionList EventHandler::ourEmulActionList = { {
   { Event::ToggleBits,              "Toggle all TIA objects"                },
   { Event::ToggleCollisions,        "Toggle all TIA collisions"             },
   { Event::ToggleFixedColors,       "Toggle TIA 'Fixed Debug Colors' mode"  },
-  { Event::ToggleColorLoss,         "Toggle PAL color-loss effect"          },
   { Event::ToggleJitter,            "Toggle TV scanline 'Jitter' effect"    },
   { Event::JitterSenseDecrease,     "Decrease TV 'Jitter' sensitivity"      },
   { Event::JitterSenseIncrease,     "Increase TV 'Jitter' sensitivity"      },
@@ -3232,7 +3223,6 @@ const Event::EventSet EventHandler::DebugEvents = {
   Event::ToggleM0Collision, Event::ToggleM0Bit, Event::ToggleM1Collision, Event::ToggleM1Bit,
   Event::ToggleBLCollision, Event::ToggleBLBit, Event::TogglePFCollision, Event::TogglePFBit,
   Event::ToggleCollisions, Event::ToggleBits, Event::ToggleFixedColors,
-  Event::ToggleColorLoss,
   Event::ToggleJitter, Event::JitterSenseDecrease,Event::JitterSenseIncrease,
   Event::JitterRecDecrease,Event::JitterRecIncrease,
 };

@@ -1,0 +1,86 @@
+//============================================================================
+//
+//   SSSS    tt          lll  lll
+//  SS  SS   tt           ll   ll
+//  SS     tttttt  eeee   ll   ll   aaaa
+//   SSSS    tt   ee  ee  ll   ll      aa
+//      SS   tt   eeeeee  ll   ll   aaaaa  --  "An Atari 2600 VCS Emulator"
+//  SS  SS   tt   ee      ll   ll  aa  aa
+//   SSSS     ttt  eeeee llll llll  aaaaa
+//
+// Copyright (c) 1995-2026 by Bradford W. Mott, Stephen Anthony
+// and the Stella Team
+//
+// See the file "License.txt" for information on usage and redistribution of
+// this file, and for a DISCLAIMER OF ALL WARRANTIES.
+//============================================================================
+
+#ifndef TV_SIGNAL_HXX
+#define TV_SIGNAL_HXX
+
+#include "bspf.hxx"
+#include "ConsoleTiming.hxx"
+#include "PaletteHandler.hxx"
+
+/**
+  Emulates the TV signal delay-line circuitry present in PAL and SECAM
+  televisions.  On each rendered frame, blends adjacent scanlines in the
+  appropriate chroma colour space — YUV for PAL, YDbDr for SECAM — to
+  reproduce the colour mixing that a real delay-line TV would produce.
+
+  PAL: The delay line averages U and V from the current and previous
+  scanlines.  When the total scanline count is odd the V-axis is phase-
+  inverted, causing V to cancel rather than reinforce for same-colour lines
+  (the classic "colour-loss" greyscale effect).
+
+  SECAM: The signal alternates between transmitting Db (even lines) and Dr
+  (odd lines).  The delay line holds the missing component from the previous
+  line, so the decoder always has both Db and Dr regardless of which line it
+  is on.  Mixing two different colours across adjacent scanlines produces
+  new blended colours beyond the 8-entry SECAM palette.
+*/
+class TVSignal
+{
+  public:
+    explicit TVSignal(const PaletteHandler& paletteHandler);
+    ~TVSignal() = default;
+
+    // Called whenever the console timing changes
+    void setTiming(ConsoleTiming timing);
+
+    // Process one complete TIA frame.  Reads raw TIA colour-index bytes from
+    // tiaSrc and writes 32-bit 0x00RRGGBB pixels to rgbDst, applying the
+    // delay-line model for the current timing.  scanlinesLastFrame is used to
+    // derive the PAL V-axis phase for colour-loss detection.
+    void render(const uInt8* tiaSrc, uInt32 srcWidth, uInt32 srcHeight,
+                uInt32* rgbDst, uInt32 dstPitch, uInt32 scanlinesLastFrame);
+
+  private:
+    void renderPAL(const uInt8* tiaSrc, uInt32 srcWidth, uInt32 srcHeight,
+                   uInt32* rgbDst, uInt32 dstPitch, bool phaseInverted);
+    void renderSECAM(const uInt8* tiaSrc, uInt32 srcWidth, uInt32 srcHeight,
+                     uInt32* rgbDst, uInt32 dstPitch);
+
+    // BT.601 YUV → packed 0x00RRGGBB (values in linear [0..1])
+    static FORCE_INLINE uInt32 yuvToRGB(float y, float u, float v);
+
+    // SECAM YDbDr → packed 0x00RRGGBB (values in linear [0..1])
+    static FORCE_INLINE uInt32 yDbDrToRGB(float y, float db, float dr);
+
+  private:
+    const PaletteHandler& myPaletteHandler;
+    ConsoleTiming myTiming{ConsoleTiming::ntsc};
+
+    // Delay-line buffer: TIA colour-index bytes for the previous scanline
+    static constexpr uInt32 MAX_LINE_WIDTH = 160;
+    std::array<uInt8, MAX_LINE_WIDTH> myPrevLine{};
+
+  private:
+    TVSignal() = delete;
+    TVSignal(const TVSignal&) = delete;
+    TVSignal(TVSignal&&) = delete;
+    TVSignal& operator=(const TVSignal&) = delete;
+    TVSignal& operator=(TVSignal&&) = delete;
+};
+
+#endif  // TV_SIGNAL_HXX

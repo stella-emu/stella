@@ -252,7 +252,6 @@ Settings::Settings()
   setPermanent("plr.ramrandom", "true");
   setPermanent("plr.cpurandom", "AXYP");
   setPermanent("plr.tiarandom", "false");
-  setPermanent("plr.colorloss", "false");
 #ifdef GUI_SUPPORT
   setPermanent("plr.tv.jitter", "true");
   setPermanent("plr.tv.jitter_sense", JitterEmulation::PLR_SENSITIVITY);
@@ -280,7 +279,6 @@ Settings::Settings()
   setPermanent("dev.cpurandom", "SAXYP");
   setPermanent("dev.tiarandom", "true");
   setPermanent("dev.hsrandom", "true");
-  setPermanent("dev.colorloss", "true");
 #ifdef GUI_SUPPORT
   setPermanent("dev.tv.jitter", "true");
   setPermanent("dev.tv.jitter_sense", JitterEmulation::DEV_SENSITIVITY);
@@ -716,7 +714,6 @@ void Settings::usage()
     << "  -plr.tiarandom    <1|0>          Randomize the TIA registers on reset\n"
     << "  -plr.ramrandom    <1|0>          Randomize the contents of RAM on reset\n"
     << "  -plr.debugcolors  <1|0>          Enable debug colors\n"
-    << "  -plr.colorloss    <1|0>          Enable PAL color-loss effect\n"
     << "  -plr.tv.jitter    <1|0>          Enable TV jitter effect\n"
     << "  -plr.tv.jitter_sense <1-10>      Set TV jitter effect sensitivity\n"
     << "  -plr.tv.jitter_recovery <1-20>   Set recovery time for TV jitter effect\n"
@@ -732,7 +729,6 @@ void Settings::usage()
     << "                                    reset\n"
     << "  -dev.tiarandom    <1|0>          Randomize the TIA registers on reset\n"
     << "  -dev.debugcolors  <1|0>          Enable debug colors\n"
-    << "  -dev.colorloss    <1|0>          Enable PAL color-loss effect\n"
     << "  -dev.tv.jitter    <1|0>          Enable TV jitter effect\n"
     << "  -dev.tv.jitter_sense <1-10>      Set TV jitter effect sensitivity\n"
     << "  -dev.tv.jitter_recovery <1-20>   Set recovery time for TV jitter effect\n"

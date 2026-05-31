@@ -184,13 +184,6 @@ void Playfield::enableDebugColors(bool enabled)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Playfield::applyColorLoss()
-{
-  myTIA->flushLineCache();
-  applyColors();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Playfield::nextLine()
 {
   collision = myCollisionMaskDisabled;
@@ -206,23 +199,12 @@ void Playfield::applyColors()
     switch (myColorMode)
     {
       case ColorMode::normal:
-        if (myTIA->colorLossActive())
-          myColorLeft = myColorRight = myObjectColor |= 0x01;
-        else
-          myColorLeft = myColorRight = myObjectColor &= 0xfe;
+        myColorLeft = myColorRight = myObjectColor;
         break;
 
       case ColorMode::score:
-        if (myTIA->colorLossActive())
-        {
-          myColorLeft  = myColorP0 |= 0x01;
-          myColorRight = myColorP1 |= 0x01;
-        }
-        else
-        {
-          myColorLeft  = myColorP0 &= 0xfe;
-          myColorRight = myColorP1 &= 0xfe;
-        }
+        myColorLeft  = myColorP0;
+        myColorRight = myColorP1;
         break;
 
       default:

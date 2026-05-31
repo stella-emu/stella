@@ -30,6 +30,7 @@ class PaletteHandler;
 #include "FrameBuffer.hxx"
 #include "NTSCFilter.hxx"
 #include "PhosphorHandler.hxx"
+#include "TVSignal.hxx"
 #include "bspf.hxx"
 #include "TIAConstants.hxx"
 
@@ -41,7 +42,6 @@ class PaletteHandler;
 
   @author  Stephen Anthony
 */
-
 class TIASurface
 {
   public:
@@ -213,7 +213,6 @@ class TIASurface
     };
 
   private:
-
     // Average current and previous RGB framebuffer pixels at the given offset.
     FORCE_INLINE uInt32 averageBuffers(uInt32 bufOfs) const {
       const uInt32 c = myRGBFramebuffer[bufOfs];
@@ -266,6 +265,9 @@ class TIASurface
 
     // The palette handler
     unique_ptr<PaletteHandler> myPaletteHandler;
+
+    // TV signal delay-line processor for PAL and SECAM
+    unique_ptr<TVSignal> myTVSignal;
 
     // Flag for saving a snapshot
     bool mySaveSnapFlag{false};

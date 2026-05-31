@@ -679,7 +679,6 @@ PhysicalKeyboardHandler::DefaultCommonMapping = []() noexcept {
     { Event::NextPaletteAttribute,     StellaKey::_9, MOD3 },
     { Event::PaletteAttributeDecrease, StellaKey::_0, StellaMod::SHIFT | MOD3 },
     { Event::PaletteAttributeIncrease, StellaKey::_0, MOD3 },
-    { Event::ToggleColorLoss,          StellaKey::L, StellaMod::CTRL },
     { Event::PaletteDecrease,          StellaKey::P, StellaMod::SHIFT | StellaMod::CTRL },
     { Event::PaletteIncrease,          StellaKey::P, StellaMod::CTRL },
     { Event::FormatDecrease,           StellaKey::F, StellaMod::SHIFT | StellaMod::CTRL },

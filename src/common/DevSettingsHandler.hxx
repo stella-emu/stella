@@ -56,7 +56,6 @@ class DevSettingsHandler
     std::array<bool, numSets>   myRandomizeTIA{};
     std::array<bool, numSets>   myRandomizeRAM{};
     std::array<string, numSets> myRandomizeCPU{};
-    std::array<bool, numSets>   myColorLoss{};
     std::array<bool, numSets>   myTVJitter{};
     std::array<int, numSets>    myTVJitterSense{};
     std::array<int, numSets>    myTVJitterRec{};

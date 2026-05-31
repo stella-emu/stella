@@ -253,13 +253,6 @@ void Player::enableDebugColors(bool enabled)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Player::applyColorLoss()
-{
-  myTIA->flushLineCache();
-  applyColors();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Player::setInvertedPhaseClock(bool enable)
 {
   myUseInvertedPhaseClock = enable;
@@ -372,14 +365,7 @@ void Player::setDivider(uInt8 divider)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Player::applyColors()
 {
-  if (!myDebugEnabled)
-  {
-    if (myTIA->colorLossActive()) myObjectColor |= 0x01;
-    else                          myObjectColor &= 0xfe;
-    myColor = myObjectColor;
-  }
-  else
-    myColor = myDebugColor;
+  myColor = myDebugEnabled ? myDebugColor : myObjectColor;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

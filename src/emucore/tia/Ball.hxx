@@ -97,11 +97,6 @@ class Ball : public Serializable
     void enableDebugColors(bool enabled);
 
     /**
-      Update internal state to use the color loss palette.
-     */
-    void applyColorLoss();
-
-    /**
       Switch to "inverted phase" mode. This mode emulates the phase shift
       between movement and ordinary clock pulses that is exhibited by some
       TIA revisions and that give rise to glitches like the infamous Cool
@@ -202,7 +197,7 @@ class Ball : public Serializable
     void updateEnabled();
 
     /**
-      Recalculate ball color based on COLUPF, debug colors, color loss, etc.
+      Recalculate ball color based on COLUPF and debug colors.
      */
     void applyColors();
 

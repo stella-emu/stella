@@ -137,7 +137,6 @@ class DeveloperDialog : public Dialog, DevSettingsHandler
     CheckboxWidget*     myTVJitterWidget{nullptr};
     SliderWidget*       myTVJitterRecWidget{nullptr};
     SliderWidget*       myTVJitterSenseWidget{nullptr};
-    CheckboxWidget*     myColorLossWidget{nullptr};
     CheckboxWidget*     myDebugColorsWidget{nullptr};
     std::array<PopUpWidget*, DEBUG_COLORS> myDbgColour{nullptr};
     std::array<ColorWidget*, DEBUG_COLORS> myDbgColourSwatch{nullptr};

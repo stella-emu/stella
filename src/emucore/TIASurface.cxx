@@ -68,6 +68,7 @@ TIASurface::TIASurface(OSystem& system)
 
   myPaletteHandler = std::make_unique<PaletteHandler>(myOSystem);
   myPaletteHandler->loadConfig(myOSystem.settings());
+  myTVSignal = std::make_unique<TVSignal>(*myPaletteHandler);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -82,10 +83,16 @@ void TIASurface::initialize(const Console& console,
   myTiaSurface->setDstPos(mode.imageR.x(), mode.imageR.y());
   myTiaSurface->setDstSize(mode.imageR.w(), mode.imageR.h());
 
+  myTVSignal->setTiming(console.timing());
   myPaletteHandler->setPalette();
 
   createScanlineSurface();
-  setNTSC(static_cast<NTSCFilter::Preset>(myOSystem.settings().getInt("tv.filter")), false);
+  // Blargg NTSC filter is meaningless for SECAM's 8-colour palette; force it
+  // off so the surface stays narrow and TVSignal renders at correct geometry
+  const auto ntscPreset = console.timing() == ConsoleTiming::secam
+    ? NTSCFilter::Preset::OFF
+    : static_cast<NTSCFilter::Preset>(myOSystem.settings().getInt("tv.filter"));
+  setNTSC(ntscPreset, false);
 
 #if 0
 cerr << "INITIALIZE:\n"
@@ -484,16 +491,25 @@ void TIASurface::render(bool shade)
     case Filter::Normal:
     {
       const uInt8* tiaIn = myTIA->frameBuffer();
-      uInt32 bufofs = 0, screenofsY = 0;
-      for(uInt32 y = 0; y < height; ++y)
+      const ConsoleTiming timing = myOSystem.console().timing();
+      if(timing == ConsoleTiming::pal || timing == ConsoleTiming::secam)
       {
-        uInt32 pos = screenofsY;
-        for(uInt32 x = width / 2; x; --x)
+        myTVSignal->render(tiaIn, width, height, out, outPitch,
+                           myTIA->scanlinesLastFrame());
+      }
+      else
+      {
+        uInt32 bufofs = 0, screenofsY = 0;
+        for(uInt32 y = 0; y < height; ++y)
         {
-          out[pos++] = myPalette[tiaIn[bufofs++]];
-          out[pos++] = myPalette[tiaIn[bufofs++]];
+          uInt32 pos = screenofsY;
+          for(uInt32 x = width / 2; x; --x)
+          {
+            out[pos++] = myPalette[tiaIn[bufofs++]];
+            out[pos++] = myPalette[tiaIn[bufofs++]];
+          }
+          screenofsY += outPitch;
         }
-        screenofsY += outPitch;
       }
       break;
     }
@@ -505,29 +521,57 @@ void TIASurface::render(bool shade)
       if(mySaveSnapFlag)
         std::swap(myRGBFramebuffer, myPrevRGBFramebuffer);
 
-      uInt32* rgbIn = myRGBFramebuffer;
-      uInt32 bufofs = 0, screenofsY = 0;
-      for(uInt32 y = height; y; --y)
+      const ConsoleTiming timing = myOSystem.console().timing();
+      if(timing == ConsoleTiming::pal || timing == ConsoleTiming::secam)
       {
-        uInt32 pos = screenofsY;
-        for(uInt32 x = width / 2; x; --x)
+        // Pass 1: TV-process the current frame into the display surface
+        myTVSignal->render(tiaIn, width, height, out, outPitch,
+                           myTIA->scanlinesLastFrame());
+        // Pass 2: apply phosphor blend in-place, accumulating into rgbIn
+        uInt32* rgbIn = myRGBFramebuffer;
+        uInt32 bufofs = 0, screenofsY = 0;
+        for(uInt32 y = 0; y < height; ++y)
         {
-          // Store back into displayed frame buffer (for next frame)
-          rgbIn[bufofs] = out[pos++] =
-            PhosphorHandler::getPixel(myPalette[tiaIn[bufofs]], rgbIn[bufofs]);
-          ++bufofs;
-          rgbIn[bufofs] = out[pos++] =
-            PhosphorHandler::getPixel(myPalette[tiaIn[bufofs]], rgbIn[bufofs]);
-          ++bufofs;
+          uInt32 pos = screenofsY;
+          for(uInt32 x = 0; x < width; ++x, ++bufofs)
+          {
+            rgbIn[bufofs] = out[pos] =
+              PhosphorHandler::getPixel(out[pos], rgbIn[bufofs]);
+            ++pos;
+          }
+          screenofsY += outPitch;
         }
-        screenofsY += outPitch;
+      }
+      else
+      {
+        uInt32* rgbIn = myRGBFramebuffer;
+        uInt32 bufofs = 0, screenofsY = 0;
+        for(uInt32 y = height; y; --y)
+        {
+          uInt32 pos = screenofsY;
+          for(uInt32 x = width / 2; x; --x)
+          {
+            // Store back into displayed frame buffer (for next frame)
+            rgbIn[bufofs] = out[pos++] =
+              PhosphorHandler::getPixel(myPalette[tiaIn[bufofs]], rgbIn[bufofs]);
+            ++bufofs;
+            rgbIn[bufofs] = out[pos++] =
+              PhosphorHandler::getPixel(myPalette[tiaIn[bufofs]], rgbIn[bufofs]);
+            ++bufofs;
+          }
+          screenofsY += outPitch;
+        }
       }
       break;
     }
 
     case Filter::BlarggNormal:
     {
-      myNTSCFilter.render(myTIA->frameBuffer(), width, height, out, outPitch << 2);
+      if(myOSystem.console().timing() == ConsoleTiming::secam)
+        myTVSignal->render(myTIA->frameBuffer(), width, height, out, outPitch,
+                           myTIA->scanlinesLastFrame());
+      else
+        myNTSCFilter.render(myTIA->frameBuffer(), width, height, out, outPitch << 2);
       break;
     }
 
@@ -536,8 +580,29 @@ void TIASurface::render(bool shade)
       if(mySaveSnapFlag)
         std::swap(myRGBFramebuffer, myPrevRGBFramebuffer);
 
-      myNTSCFilter.render(myTIA->frameBuffer(), width, height, out, outPitch << 2,
-                          myRGBFramebuffer);
+      if(myOSystem.console().timing() == ConsoleTiming::secam)
+      {
+        myTVSignal->render(myTIA->frameBuffer(), width, height, out, outPitch,
+                           myTIA->scanlinesLastFrame());
+        uInt32* rgbIn = myRGBFramebuffer;
+        uInt32 bufofs = 0, screenofsY = 0;
+        for(uInt32 y = 0; y < height; ++y)
+        {
+          uInt32 pos = screenofsY;
+          for(uInt32 x = 0; x < width; ++x, ++bufofs)
+          {
+            rgbIn[bufofs] = out[pos] =
+              PhosphorHandler::getPixel(out[pos], rgbIn[bufofs]);
+            ++pos;
+          }
+          screenofsY += outPitch;
+        }
+      }
+      else
+      {
+        myNTSCFilter.render(myTIA->frameBuffer(), width, height, out, outPitch << 2,
+                            myRGBFramebuffer);
+      }
       break;
     }
 

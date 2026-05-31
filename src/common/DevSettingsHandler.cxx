@@ -86,8 +86,6 @@ void DevSettingsHandler::loadSettings(SettingsSet set)
 
   // Debug colors
   myDebugColors[set] = settings.getBool(prefix + "debugcolors");
-  // PAL color-loss effect
-  myColorLoss[set] = settings.getBool(prefix + "colorloss");
   // Jitter
   myTVJitter[set] = settings.getBool(prefix + "tv.jitter");
   myTVJitterSense[set] = settings.getInt(prefix + "tv.jitter_sense");
@@ -166,8 +164,6 @@ void DevSettingsHandler::saveSettings(SettingsSet set)
 
   // Debug colors
   settings.setValue(prefix + "debugcolors", myDebugColors[set]);
-  // PAL color loss
-  settings.setValue(prefix + "colorloss", myColorLoss[set]);
   // Jitter
   settings.setValue(prefix + "tv.jitter", myTVJitter[set]);
   settings.setValue(prefix + "tv.jitter_sense", myTVJitterSense[set]);
@@ -245,8 +241,6 @@ void DevSettingsHandler::applySettings(SettingsSet set)
     tia.toggleJitter(myTVJitter[set] ? 1 : 0);
     tia.setJitterSensitivity(myTVJitterSense[set]);
     tia.setJitterRecoveryFactor(myTVJitterRec[set]);
-    // PAL color loss
-    console.enableColorLoss(myColorLoss[set]);
   }
 
   // Debug colours

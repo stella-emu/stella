@@ -339,7 +339,6 @@ NLOHMANN_JSON_SERIALIZE_ENUM(Event::Type, {
   {Event::FormatIncrease, "FormatIncrease"},
   {Event::PaletteDecrease, "PaletteDecrease"},
   {Event::PaletteIncrease, "PaletteIncrease"},
-  {Event::ToggleColorLoss, "ToggleColorLoss"},
   {Event::PreviousPaletteAttribute, "PreviousPaletteAttribute"},
   {Event::NextPaletteAttribute, "NextPaletteAttribute"},
   {Event::PaletteAttributeDecrease, "PaletteAttributeDecrease"},

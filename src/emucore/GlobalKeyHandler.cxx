@@ -283,9 +283,7 @@ bool GlobalKeyHandler::skipInputSetting() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool GlobalKeyHandler::skipDebugSetting() const
 {
-  const bool isPAL = myOSystem.console().timing() == ConsoleTiming::pal;
-
-  return (mySetting == Setting::COLOR_LOSS && !isPAL);
+  return false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -425,7 +423,6 @@ void GlobalKeyHandler::buildSettingMap()
     {Setting::PF_CX,                  {false, [this](int d) { myOSystem.console().togglePFCollision(d); }}}, // debug, not persisted
     {Setting::ALL_CX,                 {false, [this](int d) { myOSystem.console().toggleCollisions(d); }}}, // debug, not persisted
     {Setting::FIXED_COL,              {false, [this](int d) { myOSystem.console().toggleFixedColors(d); }}}, // debug, not persisted
-    {Setting::COLOR_LOSS,             {false, [this](int d) { myOSystem.console().toggleColorLoss(d); }}},
     {Setting::JITTER_SENSE,           {true,  [this](int d) { myOSystem.console().changeJitterSense(d); }}},
     {Setting::JITTER_REC,             {true,  [this](int d) { myOSystem.console().changeJitterRecovery(d); }}},
     // *** Following functions are not used when cycling settings, but for "direct only" hotkeys ***

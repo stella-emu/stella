@@ -101,11 +101,6 @@ class Missile : public Serializable
     void enableDebugColors(bool enabled);
 
     /**
-      Update internal state to reflect PAL color loss.
-     */
-    void applyColorLoss();
-
-    /**
       Enable/disable the "inverted movement clock phase" quirk. This emulates
       a phase difference between movement and ordinary clock pulses found in
       some TIA revisions (e.g. the Kool Aid Man bug on Jr. models).
@@ -191,7 +186,7 @@ class Missile : public Serializable
     void updateEnabled();
 
     /**
-      Recalculate myColor from COLUP0/1, debug colors, and color loss.
+      Recalculate myColor from COLUP0/1 and debug colors.
      */
     void applyColors();
 

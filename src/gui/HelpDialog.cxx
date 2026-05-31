@@ -163,7 +163,6 @@ void HelpDialog::updateStrings(int page, int lines, string& title)
       ADD_EVENT(Event::DebuggerMode,        "Toggle debugger mode");
       ADD_EVENT(Event::ToggleFrameStats,    "Toggle frame stats");
       ADD_EVENT(Event::ToggleJitter,        "Toggle TV 'jitter'");
-      ADD_EVENT(Event::ToggleColorLoss,     "Toggle PAL color loss");
       ADD_EVENT(Event::ToggleCollisions,    "Toggle collisions");
       ADD_EVENT(Event::ToggleFixedColors,   "Toggle 'Debug colors' mode");
       ADD_LINE();

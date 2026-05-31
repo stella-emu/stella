@@ -106,11 +106,6 @@ class Playfield : public Serializable
     void enableDebugColors(bool enabled);
 
     /**
-      Update internal state to use the color loss palette.
-     */
-    void applyColorLoss();
-
-    /**
       Notify playfield of line change,
      */
     void nextLine();
@@ -157,7 +152,7 @@ class Playfield : public Serializable
   private:
 
     /**
-      Recalculate playfield color based on COLUPF, debug colors, color loss, etc.
+      Recalculate playfield color based on COLUPF and debug colors.
      */
     void applyColors();
 

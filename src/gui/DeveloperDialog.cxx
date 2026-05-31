@@ -472,13 +472,6 @@ void DeveloperDialog::addVideoTab(const GUI::Font& font)
   wid.push_back(myTVJitterRecWidget);
   ypos += lineHeight + VGAP * 2;
 
-  myColorLossWidget = new CheckboxWidget(myTab, font, HBORDER + INDENT * 1, ypos + 1,
-                                         "PAL color-loss");
-  myColorLossWidget->setToolTip("PAL games with odd scanline count\n"
-                                "will be displayed without color.", Event::ToggleColorLoss);
-  wid.push_back(myColorLossWidget);
-  ypos += lineHeight + VGAP;
-
   // debug colors
   myDebugColorsWidget = new CheckboxWidget(myTab, font, HBORDER + INDENT * 1, ypos + 1,
                                            "Debug colors (*)");
@@ -791,8 +784,6 @@ void DeveloperDialog::getWidgetStates(SettingsSet set)
 
   // Debug colors
   myDebugColors[set] = myDebugColorsWidget->getState();
-  // PAL color-loss effect
-  myColorLoss[set] = myColorLossWidget->getState();
   // Jitter
   myTVJitter[set] = myTVJitterWidget->getState();
   myTVJitterSense[set] = myTVJitterSenseWidget->getValue();
@@ -844,8 +835,6 @@ void DeveloperDialog::setWidgetStates(SettingsSet set)
 
   // Debug colors
   myDebugColorsWidget->setState(myDebugColors[set]);
-  // PAL color-loss effect
-  myColorLossWidget->setState(myColorLoss[set]);
   // Jitter
   myTVJitterWidget->setState(myTVJitter[set]);
   myTVJitterSenseWidget->setValue(myTVJitterSense[set]);
@@ -1012,8 +1001,6 @@ void DeveloperDialog::setDefaults()
         ? JitterEmulation::DEV_SENSITIVITY
         : JitterEmulation::PLR_SENSITIVITY;
       myTVJitterRec[set] = devSettings ? 2 : 10;
-      // PAL color-loss effect
-      myColorLoss[set] = devSettings;
       // Debug colors
       myDebugColors[set] = false;
       handleDebugColours("roygpb");

@@ -146,13 +146,6 @@ void Ball::enableDebugColors(bool enabled)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Ball::applyColorLoss()
-{
-  myTIA->flushLineCache();
-  applyColors();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Ball::setInvertedPhaseClock(bool enable)
 {
   myUseInvertedPhaseClock = enable;
@@ -220,14 +213,7 @@ void Ball::updateEnabled()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Ball::applyColors()
 {
-  if (!myDebugEnabled)
-  {
-    if (myTIA->colorLossActive()) myObjectColor |= 0x01;
-    else                          myObjectColor &= 0xfe;
-    myColor = myObjectColor;
-  }
-  else
-    myColor = myDebugColor;
+  myColor = myDebugEnabled ? myDebugColor : myObjectColor;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

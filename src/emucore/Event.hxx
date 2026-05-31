@@ -108,7 +108,7 @@ class Event
       Unwind1Menu, Unwind10Menu, UnwindAllMenu,
       RewindPause, UnwindPause,
 
-      FormatDecrease, FormatIncrease, PaletteDecrease, PaletteIncrease, ToggleColorLoss,
+      FormatDecrease, FormatIncrease, PaletteDecrease, PaletteIncrease,
       PreviousPaletteAttribute, NextPaletteAttribute,
       PaletteAttributeDecrease, PaletteAttributeIncrease,
       ToggleFullScreen, VidmodeDecrease, VidmodeIncrease,

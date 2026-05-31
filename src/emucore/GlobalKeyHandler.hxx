@@ -120,7 +120,6 @@ class GlobalKeyHandler
       PF_CX,
       ALL_CX,
       FIXED_COL,
-      COLOR_LOSS,
       JITTER_SENSE,
       JITTER_REC,
       // *** Only used via direct hotkeys ***

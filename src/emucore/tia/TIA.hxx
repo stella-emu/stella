@@ -281,29 +281,6 @@ class TIA : public Device
     Int32 adjustVSize() const { return myFrameManager->adjustVSize(); }
 
     /**
-      Enables/disables color-loss for PAL modes only.
-
-      @param enabled  Whether to enable or disable PAL color-loss mode
-
-      @return  True if color-loss got enabled
-    */
-    bool enableColorLoss(bool enabled);
-
-    /**
-      Answers whether color-loss is enabled.
-
-      @return  Colour-loss is enabled
-    */
-    bool colorLossEnabled() const { return myColorLossEnabled; }
-
-    /**
-      Answers whether colour-loss is applicable for the current frame.
-
-      @return  Colour-loss is active for this frame
-    */
-    bool colorLossActive() const { return myColorLossActive; }
-
-    /**
       Enables/disables auto-phosphor.
 
       @param enabled  Whether to use auto-phosphor mode
@@ -1028,14 +1005,6 @@ class TIA : public Device
      * debugger.
      */
     std::array<uInt8, 64> myShadowRegisters{};
-
-    /**
-     * Indicates if color loss should be enabled or disabled.  Color loss
-     * occurs on PAL-like systems when the previous frame contains an odd
-     * number of scanlines.
-     */
-    bool myColorLossEnabled{false};
-    bool myColorLossActive{false};
 
     /**
     * Auto-phosphor detection variables.
