@@ -20,6 +20,7 @@
 
 #include "bspf.hxx"
 #include "ConsoleTiming.hxx"
+#include "NTSCFilter.hxx"
 #include "PaletteHandler.hxx"
 
 /**
@@ -48,14 +49,34 @@ class TVSignal
     // Called whenever the console timing changes
     void setTiming(ConsoleTiming timing);
 
+    // Set the display palette (for NTSC non-Blargg lookup) and RGB palette
+    // (for the Blargg filter's internal YIQ calculation)
+    void setPalette(const PaletteArray& tiaPalette, const PaletteArray& rgbPalette);
+
+    // Set the NTSC signal quality preset; OFF disables Blargg and uses plain
+    // palette lookup, any other value activates the Blargg renderer
+    void setNTSCPreset(NTSCFilter::Preset preset);
+
+    // Enable or disable multi-threaded Blargg rendering
+    void enableThreading(bool enable) { myNTSCFilter.enableThreading(enable); }
+
+    // Return the pixel width of one rendered scanline for the current
+    // timing/preset combination.  568 when NTSC+Blargg is active, 160 otherwise.
+    uInt32 outputWidth() const;
+
+    // Access the underlying NTSCFilter for preset/adjustable management
+    NTSCFilter& ntscFilter() { return myNTSCFilter; }
+
     // Process one complete TIA frame.  Reads raw TIA colour-index bytes from
-    // tiaSrc and writes 32-bit 0x00RRGGBB pixels to rgbDst, applying the
-    // delay-line model for the current timing.  scanlinesLastFrame is used to
-    // derive the PAL V-axis phase for colour-loss detection.
+    // tiaSrc and writes 32-bit 0x00RRGGBB pixels to rgbDst.  For PAL, applies
+    // the delay-line model; for NTSC, applies Blargg or plain palette lookup.
+    // scanlinesLastFrame is used to derive the PAL V-axis phase.
     void render(const uInt8* tiaSrc, uInt32 srcWidth, uInt32 srcHeight,
                 uInt32* rgbDst, uInt32 dstPitch, uInt32 scanlinesLastFrame);
 
   private:
+    void renderNTSC(const uInt8* tiaSrc, uInt32 srcWidth, uInt32 srcHeight,
+                    uInt32* rgbDst, uInt32 dstPitch);
     void renderPAL(const uInt8* tiaSrc, uInt32 srcWidth, uInt32 srcHeight,
                    uInt32* rgbDst, uInt32 dstPitch, bool phaseInverted);
     void renderSECAM(const uInt8* tiaSrc, uInt32 srcWidth, uInt32 srcHeight,
@@ -70,6 +91,12 @@ class TVSignal
   private:
     const PaletteHandler& myPaletteHandler;
     ConsoleTiming myTiming{ConsoleTiming::ntsc};
+
+    NTSCFilter myNTSCFilter;
+    NTSCFilter::Preset myNTSCPreset{NTSCFilter::Preset::OFF};
+
+    // Display palette used for NTSC non-Blargg pixel lookup
+    PaletteArray myPalette{};
 
     // Delay-line buffer: TIA colour-index bytes for the previous scanline
     static constexpr uInt32 MAX_LINE_WIDTH = 160;

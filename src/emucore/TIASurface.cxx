@@ -63,12 +63,10 @@ TIASurface::TIASurface(OSystem& system)
   myRGBFramebuffer0.fill(0);
   myRGBFramebuffer1.fill(0);
 
-  // Enable/disable threading in the NTSC TV effects renderer
-  myNTSCFilter.enableThreading(myOSystem.settings().getBool("threads"));
-
   myPaletteHandler = std::make_unique<PaletteHandler>(myOSystem);
   myPaletteHandler->loadConfig(myOSystem.settings());
   myTVSignal = std::make_unique<TVSignal>(*myPaletteHandler);
+  myTVSignal->enableThreading(myOSystem.settings().getBool("threads"));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -113,7 +111,7 @@ void TIASurface::setPalette(const PaletteArray& tia_palette,
 
   // The NTSC filtering needs access to the raw RGB data, since it calculates
   // its own internal palette
-  myNTSCFilter.setPalette(rgb_palette);
+  myTVSignal->setPalette(tia_palette, rgb_palette);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -144,13 +142,15 @@ void TIASurface::setNTSC(NTSCFilter::Preset preset, bool show)
 {
   if(preset == NTSCFilter::Preset::OFF)
   {
+    myTVSignal->setNTSCPreset(preset);
     enableNTSC(false);
     if(show) myFB.showTextMessage("TV filtering disabled");
   }
   else
   {
+    myTVSignal->setNTSCPreset(preset);
     enableNTSC(true);
-    const string& mode = myNTSCFilter.setPreset(preset);
+    const string& mode = myTVSignal->ntscFilter().getPreset();
     if(show) myFB.showTextMessage(std::format("TV filtering ({} mode)", mode));
   }
   myOSystem.settings().setValue("tv.filter", static_cast<int>(preset));
@@ -426,8 +426,7 @@ void TIASurface::enableNTSC(bool enable)
       enable ? static_cast<uInt8>(myFilter) | 0x10
              : static_cast<uInt8>(myFilter) & 0x01);
 
-  const uInt32 surfaceWidth = enable ?
-    AtariNTSC::outWidth(TIAConstants::frameBufferWidth) : TIAConstants::frameBufferWidth;
+  const uInt32 surfaceWidth = myTVSignal->outputWidth();
 
   if(surfaceWidth != myTiaSurface->srcRect().w() || myTIA->height() != myTiaSurface->srcRect().h())
   {
@@ -458,10 +457,10 @@ string TIASurface::effectsInfo() const
       buf = std::format("Disabled, phosphor={}", myPBlend);
       break;
     case Filter::BlarggNormal:
-      buf = myNTSCFilter.getPreset();
+      buf = myTVSignal->ntscFilter().getPreset();
       break;
     case Filter::BlarggPhosphor:
-      buf = std::format("{}, phosphor={}", myNTSCFilter.getPreset(), myPBlend);
+      buf = std::format("{}, phosphor={}", myTVSignal->ntscFilter().getPreset(), myPBlend);
       break;
     default:
       break;  // Not supposed to get here
@@ -490,88 +489,39 @@ void TIASurface::render(bool shade)
   {
     case Filter::Normal:
     {
-      const uInt8* tiaIn = myTIA->frameBuffer();
-      const ConsoleTiming timing = myOSystem.console().timing();
-      if(timing == ConsoleTiming::pal || timing == ConsoleTiming::secam)
-      {
-        myTVSignal->render(tiaIn, width, height, out, outPitch,
-                           myTIA->scanlinesLastFrame());
-      }
-      else
-      {
-        uInt32 bufofs = 0, screenofsY = 0;
-        for(uInt32 y = 0; y < height; ++y)
-        {
-          uInt32 pos = screenofsY;
-          for(uInt32 x = width / 2; x; --x)
-          {
-            out[pos++] = myPalette[tiaIn[bufofs++]];
-            out[pos++] = myPalette[tiaIn[bufofs++]];
-          }
-          screenofsY += outPitch;
-        }
-      }
+      myTVSignal->render(myTIA->frameBuffer(), width, height, out, outPitch,
+                         myTIA->scanlinesLastFrame());
       break;
     }
 
     case Filter::Phosphor:
     {
-      const uInt8* tiaIn = myTIA->frameBuffer();
-
       if(mySaveSnapFlag)
         std::swap(myRGBFramebuffer, myPrevRGBFramebuffer);
 
-      const ConsoleTiming timing = myOSystem.console().timing();
-      if(timing == ConsoleTiming::pal || timing == ConsoleTiming::secam)
+      myTVSignal->render(myTIA->frameBuffer(), width, height, out, outPitch,
+                         myTIA->scanlinesLastFrame());
+      const uInt32 renderWidth = myTVSignal->outputWidth();
+      uInt32* rgbIn = myRGBFramebuffer;
+      uInt32 bufofs = 0, screenofsY = 0;
+      for(uInt32 y = 0; y < height; ++y)
       {
-        // Pass 1: TV-process the current frame into the display surface
-        myTVSignal->render(tiaIn, width, height, out, outPitch,
-                           myTIA->scanlinesLastFrame());
-        // Pass 2: apply phosphor blend in-place, accumulating into rgbIn
-        uInt32* rgbIn = myRGBFramebuffer;
-        uInt32 bufofs = 0, screenofsY = 0;
-        for(uInt32 y = 0; y < height; ++y)
+        uInt32 pos = screenofsY;
+        for(uInt32 x = 0; x < renderWidth; ++x, ++bufofs)
         {
-          uInt32 pos = screenofsY;
-          for(uInt32 x = 0; x < width; ++x, ++bufofs)
-          {
-            rgbIn[bufofs] = out[pos] =
-              PhosphorHandler::getPixel(out[pos], rgbIn[bufofs]);
-            ++pos;
-          }
-          screenofsY += outPitch;
+          rgbIn[bufofs] = out[pos] =
+            PhosphorHandler::getPixel(out[pos], rgbIn[bufofs]);
+          ++pos;
         }
-      }
-      else
-      {
-        uInt32* rgbIn = myRGBFramebuffer;
-        uInt32 bufofs = 0, screenofsY = 0;
-        for(uInt32 y = height; y; --y)
-        {
-          uInt32 pos = screenofsY;
-          for(uInt32 x = width / 2; x; --x)
-          {
-            // Store back into displayed frame buffer (for next frame)
-            rgbIn[bufofs] = out[pos++] =
-              PhosphorHandler::getPixel(myPalette[tiaIn[bufofs]], rgbIn[bufofs]);
-            ++bufofs;
-            rgbIn[bufofs] = out[pos++] =
-              PhosphorHandler::getPixel(myPalette[tiaIn[bufofs]], rgbIn[bufofs]);
-            ++bufofs;
-          }
-          screenofsY += outPitch;
-        }
+        screenofsY += outPitch;
       }
       break;
     }
 
     case Filter::BlarggNormal:
     {
-      if(myOSystem.console().timing() == ConsoleTiming::secam)
-        myTVSignal->render(myTIA->frameBuffer(), width, height, out, outPitch,
-                           myTIA->scanlinesLastFrame());
-      else
-        myNTSCFilter.render(myTIA->frameBuffer(), width, height, out, outPitch << 2);
+      myTVSignal->render(myTIA->frameBuffer(), width, height, out, outPitch,
+                         myTIA->scanlinesLastFrame());
       break;
     }
 
@@ -580,28 +530,21 @@ void TIASurface::render(bool shade)
       if(mySaveSnapFlag)
         std::swap(myRGBFramebuffer, myPrevRGBFramebuffer);
 
-      if(myOSystem.console().timing() == ConsoleTiming::secam)
+      myTVSignal->render(myTIA->frameBuffer(), width, height, out, outPitch,
+                         myTIA->scanlinesLastFrame());
+      const uInt32 renderWidth = myTVSignal->outputWidth();
+      uInt32* rgbIn = myRGBFramebuffer;
+      uInt32 bufofs = 0, screenofsY = 0;
+      for(uInt32 y = 0; y < height; ++y)
       {
-        myTVSignal->render(myTIA->frameBuffer(), width, height, out, outPitch,
-                           myTIA->scanlinesLastFrame());
-        uInt32* rgbIn = myRGBFramebuffer;
-        uInt32 bufofs = 0, screenofsY = 0;
-        for(uInt32 y = 0; y < height; ++y)
+        uInt32 pos = screenofsY;
+        for(uInt32 x = 0; x < renderWidth; ++x, ++bufofs)
         {
-          uInt32 pos = screenofsY;
-          for(uInt32 x = 0; x < width; ++x, ++bufofs)
-          {
-            rgbIn[bufofs] = out[pos] =
-              PhosphorHandler::getPixel(out[pos], rgbIn[bufofs]);
-            ++pos;
-          }
-          screenofsY += outPitch;
+          rgbIn[bufofs] = out[pos] =
+            PhosphorHandler::getPixel(out[pos], rgbIn[bufofs]);
+          ++pos;
         }
-      }
-      else
-      {
-        myNTSCFilter.render(myTIA->frameBuffer(), width, height, out, outPitch << 2,
-                            myRGBFramebuffer);
+        screenofsY += outPitch;
       }
       break;
     }

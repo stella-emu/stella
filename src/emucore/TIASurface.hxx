@@ -99,7 +99,7 @@ class TIASurface
     /**
       Get the NTSCFilter object associated with the framebuffer
     */
-    NTSCFilter& ntsc() { return myNTSCFilter; }
+    NTSCFilter& ntsc() { return myTVSignal->ntscFilter(); }
 
     /**
       Use NTSC filtering effects specified by the given preset.
@@ -235,9 +235,6 @@ class TIASurface
 
     shared_ptr<FBSurface> myTiaSurface, mySLineSurface,
                           myBaseTiaSurface, myShadeSurface;
-
-    // NTSC object to use in TIA rendering mode
-    NTSCFilter myNTSCFilter;
 
     /////////////////////////////////////////////////////////////
     // Phosphor mode items (aka reduced flicker on 30Hz screens)

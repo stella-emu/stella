@@ -32,6 +32,30 @@ void TVSignal::setTiming(ConsoleTiming timing)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TVSignal::setPalette(const PaletteArray& tiaPalette,
+                          const PaletteArray& rgbPalette)
+{
+  myPalette = tiaPalette;
+  myNTSCFilter.setPalette(rgbPalette);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TVSignal::setNTSCPreset(NTSCFilter::Preset preset)
+{
+  myNTSCPreset = preset;
+  if(preset != NTSCFilter::Preset::OFF)
+    myNTSCFilter.setPreset(preset);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt32 TVSignal::outputWidth() const
+{
+  return (myTiming == ConsoleTiming::ntsc && myNTSCPreset != NTSCFilter::Preset::OFF)
+    ? AtariNTSC::outWidth(TIAConstants::frameBufferWidth)
+    : TIAConstants::frameBufferWidth;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TVSignal::render(const uInt8* tiaSrc, uInt32 srcWidth, uInt32 srcHeight,
                       uInt32* rgbDst, uInt32 dstPitch, uInt32 scanlinesLastFrame)
 {
@@ -41,6 +65,10 @@ void TVSignal::render(const uInt8* tiaSrc, uInt32 srcWidth, uInt32 srcHeight,
 
   switch(myTiming)
   {
+    case ConsoleTiming::ntsc:
+      renderNTSC(tiaSrc, srcWidth, srcHeight, rgbDst, dstPitch);
+      break;
+
     case ConsoleTiming::pal:
       renderPAL(tiaSrc, srcWidth, srcHeight, rgbDst, dstPitch,
                 (scanlinesLastFrame & 1) != 0);
@@ -51,8 +79,32 @@ void TVSignal::render(const uInt8* tiaSrc, uInt32 srcWidth, uInt32 srcHeight,
       break;
 
     default:
-      // TVSignal is not called for NTSC; TIASurface handles that path directly
       break;
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TVSignal::renderNTSC(const uInt8* tiaSrc, uInt32 srcWidth, uInt32 srcHeight,
+                           uInt32* rgbDst, uInt32 dstPitch)
+{
+  if(myNTSCPreset != NTSCFilter::Preset::OFF)
+  {
+    // Blargg filter takes byte pitch; dstPitch here is pixel pitch
+    myNTSCFilter.render(tiaSrc, srcWidth, srcHeight, rgbDst, dstPitch << 2);
+  }
+  else
+  {
+    uInt32 bufofs = 0, screenofsY = 0;
+    for(uInt32 y = 0; y < srcHeight; ++y)
+    {
+      uInt32 pos = screenofsY;
+      for(uInt32 x = srcWidth / 2; x; --x)
+      {
+        rgbDst[pos++] = myPalette[tiaSrc[bufofs++]];
+        rgbDst[pos++] = myPalette[tiaSrc[bufofs++]];
+      }
+      screenofsY += dstPitch;
+    }
   }
 }
 
