@@ -451,6 +451,7 @@
     <ClCompile Include="..\..\common\StateManager.cxx" />
     <ClCompile Include="..\..\common\ThreadDebugging.cxx" />
     <ClCompile Include="..\..\common\TimerManager.cxx" />
+    <ClCompile Include="..\..\common\TVSignal.cxx" />
     <ClCompile Include="..\..\common\tv_filters\AtariNTSC.cxx" />
     <ClCompile Include="..\..\common\tv_filters\NTSCFilter.cxx" />
     <ClCompile Include="..\..\common\VideoModeHandler.cxx" />
@@ -1425,6 +1426,7 @@
     <ClInclude Include="..\..\common\StringParser.hxx" />
     <ClInclude Include="..\..\common\ThreadDebugging.hxx" />
     <ClInclude Include="..\..\common\TimerManager.hxx" />
+    <ClInclude Include="..\..\common\TVSignal.hxx" />
     <ClInclude Include="..\..\common\tv_filters\AtariNTSC.hxx" />
     <ClInclude Include="..\..\common\tv_filters\NTSCFilter.hxx" />
     <ClInclude Include="..\..\common\Variant.hxx" />

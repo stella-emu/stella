@@ -1272,6 +1272,9 @@
     <ClCompile Include="..\..\debugger\gui\DisasmColorsDialog.cxx">
       <Filter>Source Files\debugger\gui</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\common\TVSignal.cxx">
+      <Filter>Source Files\common</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\emucore\AtariVox.hxx">
@@ -2626,6 +2629,9 @@
     </ClInclude>
     <ClInclude Include="..\..\lib\dr_libs\dr_wav_lib.hxx">
       <Filter>Header Files\lib\dr_libs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\common\TVSignal.hxx">
+      <Filter>Header Files\common</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
