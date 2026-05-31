@@ -130,14 +130,8 @@
     <Filter Include="Header Files\common\sdl_blitter">
       <UniqueIdentifier>{ee0eac0c-bfb9-4009-bfe2-1da3c7392a3b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\common\tv_filters">
-      <UniqueIdentifier>{5825497d-8a3a-4d66-8f1a-b8f381d22204}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\common\sdl_blitter">
       <UniqueIdentifier>{ea74c030-5085-43da-9800-64525764ad3b}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\common\tv_filters">
-      <UniqueIdentifier>{30c7f8db-f036-4f42-8edf-88d7773a05b0}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\os">
       <UniqueIdentifier>{a9d4d5d2-ca26-4636-a96d-fb7f2d22cd2f}</UniqueIdentifier>
@@ -153,6 +147,12 @@
     </Filter>
     <Filter Include="Header Files\lib\dr_libs">
       <UniqueIdentifier>{3ae6ce19-97c3-4362-a3ae-176d35cad1f5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\common\television">
+      <UniqueIdentifier>{af8e0e2f-8410-4756-8b9a-c7cf46466c7d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\common\television">
+      <UniqueIdentifier>{8ed4d42f-c318-400c-884e-815ea3581f19}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -1074,12 +1074,6 @@
     <ClCompile Include="..\..\debugger\gui\CpuWidget.cxx">
       <Filter>Source Files\debugger\gui</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\common\tv_filters\AtariNTSC.cxx">
-      <Filter>Source Files\common\tv_filters</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\common\tv_filters\NTSCFilter.cxx">
-      <Filter>Source Files\common\tv_filters</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\common\sdl_blitter\BilinearBlitter.cxx">
       <Filter>Source Files\common\sdl_blitter</Filter>
     </ClCompile>
@@ -1272,8 +1266,14 @@
     <ClCompile Include="..\..\debugger\gui\DisasmColorsDialog.cxx">
       <Filter>Source Files\debugger\gui</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\common\TVSignal.cxx">
-      <Filter>Source Files\common</Filter>
+    <ClCompile Include="..\..\common\television\AtariNTSC.cxx">
+      <Filter>Source Files\common\television</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\common\television\NTSCSignal.cxx">
+      <Filter>Source Files\common\television</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\common\television\TVSignal.cxx">
+      <Filter>Source Files\common\television</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -2351,12 +2351,6 @@
     <ClInclude Include="..\..\debugger\gui\RomListSettings.hxx">
       <Filter>Header Files\debugger\gui</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\common\tv_filters\AtariNTSC.hxx">
-      <Filter>Header Files\common\tv_filters</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\common\tv_filters\NTSCFilter.hxx">
-      <Filter>Header Files\common\tv_filters</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\common\sdl_blitter\BilinearBlitter.hxx">
       <Filter>Header Files\common\sdl_blitter</Filter>
     </ClInclude>
@@ -2630,8 +2624,17 @@
     <ClInclude Include="..\..\lib\dr_libs\dr_wav_lib.hxx">
       <Filter>Header Files\lib\dr_libs</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\common\TVSignal.hxx">
-      <Filter>Header Files\common</Filter>
+    <ClInclude Include="..\..\common\television\AtariNTSC.hxx">
+      <Filter>Header Files\common\television</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\common\television\NTSCSignal.hxx">
+      <Filter>Header Files\common\television</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\common\television\TVMode.hxx">
+      <Filter>Header Files\common\television</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\common\television\TVSignal.hxx">
+      <Filter>Header Files\common\television</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
