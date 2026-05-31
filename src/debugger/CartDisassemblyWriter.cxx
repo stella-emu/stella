@@ -81,7 +81,7 @@ string CartDisassemblyWriter::save(string path)
 
   // Detect whether any two banks have overlapping RORG ranges.  When they do,
   // plain RORG-relative labels (e.g. LF103) would collide across banks, so we
-  // encode the bank index into the upper 16 bits of orgBase and use a 6-digit
+  // encode the bank index into the upper 16 bits of orgBase and use a 5/6-digit
   // label format (e.g. L00F103 / L01F103) to guarantee uniqueness.
   bool needsExtendedLabels = false;
   for(int b1 = 0; b1 < romBankCount && !needsExtendedLabels; ++b1)
@@ -98,6 +98,11 @@ string CartDisassemblyWriter::save(string path)
       }
     }
   }
+
+  // JTZ: SEG.U makes only sense if we want to define the SC-RAM constants
+  // before the actual code, which would be here. IMO we should not get that
+  // complicated.
+  //buf += "    SEG.U   RAM\n";
 
   for(int bank = 0; std::cmp_less(bank, romBankCount); ++bank)
   {
@@ -124,6 +129,12 @@ string CartDisassemblyWriter::save(string path)
       settings.labelDigits = needsExtendedLabels
           ? (romBankCount <= 16 ? 5 : 6)
           : 4;
+      // JTZ: here the code makes a mistake.
+      // - the bankorigins must not affect absolute addresses (this was also a problem
+      //   in the old code)
+      // - labels outside the current bank (e.g. hotspots, SC-RAM, references to other
+      //   banks in segmented schemes) must have their individual bank label extension
+      //   This won't work with the current, naive approach but is much more complicated!
       settings.orgBase = needsExtendedLabels
           ? bankOrigins[bank] + static_cast<uInt32>(bank) * 0x10000
           : bankOrigins[bank];
@@ -143,46 +154,45 @@ string CartDisassemblyWriter::save(string path)
     if(myCartDebug.myReserved.breakFound)
       myCartDebug.addLabel("Break", myCartDebug.myDebugger.dpeek(0xfffe));
 
-    const uInt32 ramSize = cart.internalRamSize();
-
-    if(ramSize > 0)
-    {
-      buf += "    SEG.U   RAM\n";
-      if(!multiBank)
-        buf += std::format("    ORG     ${}\n\n", Base::hex4(info.offset));
-      else
-      {
-        buf += std::format("    ORG     ${}\n", Base::hex4(origin));
-        buf += std::format("    RORG    ${}\n\n", Base::hex4(info.offset));
-      }
-      buf += std::format("    ds.b    {:<8}; write port (${}-${})\n",
-                         ramSize, Base::hex4(info.offset),
-                         Base::hex4(info.offset + ramSize - 1));
-      buf += std::format("    ds.b    {:<8}; read port  (${}-${})\n\n",
-                         ramSize, Base::hex4(info.offset + ramSize),
-                         Base::hex4(info.offset + 2 * ramSize - 1));
-    }
+    //const uInt32 ramSize = cart.internalRamSize();
 
     buf += "    SEG     CODE\n";
 
     if(!multiBank)
-      buf += std::format("    ORG     ${}\n\n", Base::hex4(info.offset + 2 * ramSize));
+      buf += std::format("    ORG     ${}\n\n", Base::hex4(info.offset));
     else
     {
       buf += std::format("    ORG     ${}\n", Base::hex4(origin));
       buf += std::format("    RORG    ${}\n\n", Base::hex4(info.offset));
     }
+
+    // JTZ: this cannot work, except if we define the SC-RAM before the code (see above)
+    // BUT: While this may work with SC-RAM, we will most likely face major problems with
+    // schemes which have RAM-banks/segments.
+    // IMO we should not make this overly complicated, maybe only add a tweak to double
+    // SC-RAM data for autodetection
+    //if(ramSize > 0) {
+    //  buf += std::format("    ds.b    {:<8}; write port (${}-${})\n",
+    //                      ramSize, Base::hex4(info.offset),
+    //                      Base::hex4(info.offset + ramSize - 1));
+    //  buf += std::format("    ds.b    {:<8}; read port  (${}-${})\n\n",
+    //                      ramSize, Base::hex4(info.offset + ramSize),
+    //                      Base::hex4(info.offset + 2 * ramSize - 1));
+
+    //}
+
     origin += static_cast<uInt32>(info.size);
 
     // Format in 'distella' style
     for(const auto& tag: disasm.list)
     {
-      // Skip the RAM area: it holds runtime-modified values, not the original
-      // assembled content. DASM zero-fills the gap, keeping both 128-byte
-      // halves identical so isProbablySC still detects the correct type.
-      if(ramSize > 0 && tag.address >= info.offset &&
-         tag.address < info.offset + 2 * ramSize)
-        continue;
+      // JTZ: Nope, see above
+      //// Skip the RAM area: it holds runtime-modified values, not the original
+      //// assembled content. DASM zero-fills the gap, keeping both 128-byte
+      //// halves identical so isProbablySC still detects the correct type.
+      //if(ramSize > 0 && tag.address >= info.offset &&
+      //   tag.address < info.offset + 2 * ramSize && bank > 0)
+      //  continue;
 
       // Add label (if any)
       if(!tag.label.empty())
