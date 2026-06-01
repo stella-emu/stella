@@ -153,9 +153,13 @@ class PALSignal
     // Render one complete frame.
     //   tiaSrc   : raw TIA colour-index bytes, srcWidth × srcHeight
     //   rgbDst   : destination 0x00RRGGBB pixels, dstPitch pixels wide
-    //   evenField: true for even field (affects PAL V-phase alternation)
+    //   phaseInverted: true when the previous frame had an odd scanline count.
+    //              Drives PAL V-phase alternation, and also PAL colour loss:
+    //              an odd count gives an inconsistent PAL field/burst sequence,
+    //              so a real set's colour-killer cuts chroma and the frame is
+    //              rendered as luma-only greyscale.
     void render(const uInt8* tiaSrc, uInt32 srcWidth, uInt32 srcHeight,
-                uInt32* rgbDst, uInt32 dstPitch, bool evenField);
+                uInt32* rgbDst, uInt32 dstPitch, bool phaseInverted);
 
     // Width of one TIA colour-clock scanline in pixels (input to render)
     static constexpr uInt32 TIA_WIDTH = 160;

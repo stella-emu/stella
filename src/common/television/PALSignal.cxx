@@ -416,9 +416,13 @@ void PALSignal::applyChromaFilter(float* buf, uInt32 n)
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PALSignal::render(const uInt8* tiaSrc, uInt32 srcWidth, uInt32 srcHeight,
-                          uInt32* rgbDst, uInt32 dstPitch, bool evenField)
+                          uInt32* rgbDst, uInt32 dstPitch, bool phaseInverted)
 {
-  const bool   svideo   = mySVideo;
+  // phaseInverted is true when the previous frame had an odd scanline count.
+  // It drives both the PAL V-phase alternation below and PAL colour loss: an
+  // odd count breaks the PAL field/burst sequence, so a real set's colour-
+  // killer cuts chroma and the frame is rendered luma-only (greyscale).
+  const bool   svideo    = mySVideo;
   // S-Video has separate Y/C wires, so there is no 1-line comb (blend = 0).
   const float  blend    = svideo ? 0.F : (mySetup.blend * 0.5F + 0.5F);
   const float  invBlend = 1.F - blend;
@@ -439,9 +443,9 @@ void PALSignal::render(const uInt8* tiaSrc, uInt32 srcWidth, uInt32 srcHeight,
     uInt32*      dst = rgbDst + y * dstPitch;
 
     // PAL V-phase alternation: even lines (relative to field start) use +V,
-    // odd lines −V.  evenField tracks absolute field parity so the phase is
-    // consistent across frames regardless of variable scanline counts.
-    const bool   isEvenLine = ((y & 1u) == 0u) ^ !evenField;
+    // odd lines −V.  phaseInverted tracks absolute field parity so the phase
+    // is consistent across frames regardless of variable scanline counts.
+    const bool   isEvenLine = ((y & 1u) == 0u) ^ phaseInverted;
     const uInt32 vi = isEvenLine ? 0u : 1u;
 
     std::fill(myAccY.begin(), myAccY.begin() + outW, 0.F);
@@ -475,7 +479,16 @@ void PALSignal::render(const uInt8* tiaSrc, uInt32 srcWidth, uInt32 srcHeight,
     // applies the PAL 1-line comb blend with the previous line's chroma.
     // (The previous line was encoded with the opposite V-sign, so adding its
     // own-sign filtered chroma reinforces U and cancels chroma noise on V.)
-    if(svideo)
+    if(phaseInverted)
+    {
+      // PAL colour loss: the set's colour-killer has cut chroma for this
+      // frame, so emit luma only.  The subcarrier residual still present in
+      // the luma channel shows as faint dot-crawl in the greyscale image,
+      // as on real hardware.
+      for(uInt32 j = 0; j < outW; ++j)
+        dst[j] = toRGB(myAccY[j], 0.F, 0.F);
+    }
+    else if(svideo)
     {
       for(uInt32 j = 0; j < outW; ++j)
         dst[j] = toRGB(myAccY[j], myAccU[j], myAccV[j]);

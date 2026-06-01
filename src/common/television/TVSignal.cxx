@@ -222,9 +222,9 @@ void TVSignal::renderPAL(const uInt8* tiaSrc, uInt32 srcWidth, uInt32 srcHeight,
     return;
   }
 
-  // Composite, Bad, Custom: full PALSignal composite pipeline.
-  // evenField is the complement of phaseInverted (see TVSignal::render).
-  myPALSignal.render(tiaSrc, srcWidth, srcHeight, rgbDst, dstPitch, !phaseInverted);
+  // Composite, Bad, Custom: full PALSignal composite pipeline.  phaseInverted
+  // (an odd scanline count) drives both V-phase alternation and PAL colour loss.
+  myPALSignal.render(tiaSrc, srcWidth, srcHeight, rgbDst, dstPitch, phaseInverted);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
