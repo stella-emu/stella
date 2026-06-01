@@ -373,8 +373,9 @@ void GlobalKeyHandler::buildSettingMap()
     {Setting::PALETTE_CONTRAST,       {true,  [this](int d) { myOSystem.frameBuffer().tiaSurface().paletteHandler().changeAdjustable(PaletteHandler::CONTRAST, d); }}},
     {Setting::PALETTE_BRIGHTNESS,     {true,  [this](int d) { myOSystem.frameBuffer().tiaSurface().paletteHandler().changeAdjustable(PaletteHandler::BRIGHTNESS, d); }}},
     {Setting::PALETTE_GAMMA,          {true,  [this](int d) { myOSystem.frameBuffer().tiaSurface().paletteHandler().changeAdjustable(PaletteHandler::GAMMA, d); }}},
+    // TV filter preset (cycles the active timing's presets)
+    {Setting::TV_PRESET,              {false, [this](int d) { myOSystem.frameBuffer().tiaSurface().changeTVEffect(d); }}},
     // NTSC filter adjustables
-    {Setting::NTSC_PRESET,            {false, [this](int d) { myOSystem.frameBuffer().tiaSurface().changeNTSC(d); }}},
     {Setting::NTSC_SHARPNESS,         {true,  [this](int d) { myOSystem.frameBuffer().tiaSurface().changeTVAdjustable(static_cast<int>(NTSCSignal::Adjustables::SHARPNESS), d); }}},
     {Setting::NTSC_RESOLUTION,        {true,  [this](int d) { myOSystem.frameBuffer().tiaSurface().changeTVAdjustable(static_cast<int>(NTSCSignal::Adjustables::RESOLUTION), d); }}},
     {Setting::NTSC_ARTIFACTS,         {true,  [this](int d) { myOSystem.frameBuffer().tiaSurface().changeTVAdjustable(static_cast<int>(NTSCSignal::Adjustables::ARTIFACTS), d); }}},
@@ -440,7 +441,7 @@ void GlobalKeyHandler::buildSettingMap()
     // *** Following functions are not used when cycling settings, but for "direct only" hotkeys ***
     {Setting::STATE,                  {true,  [this](int d) { myOSystem.state().changeState(d); }}}, // temporary, not persisted
     {Setting::PALETTE_ATTRIBUTE,      {true,  [this](int d) { myOSystem.frameBuffer().tiaSurface().paletteHandler().changeCurrentAdjustable(d); }}},
-    {Setting::NTSC_ATTRIBUTE,         {true,  [this](int d) { myOSystem.frameBuffer().tiaSurface().changeCurrentTVAdjustable(d); }}},
+    {Setting::TV_ATTRIBUTE,         {true,  [this](int d) { myOSystem.frameBuffer().tiaSurface().changeCurrentTVAdjustable(d); }}},
     {Setting::CHANGE_SPEED,           {true,  [this](int d) { myOSystem.console().changeSpeed(d); }}},
   };
 }

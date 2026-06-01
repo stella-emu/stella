@@ -39,9 +39,11 @@ TIASurface::TIASurface(OSystem& system)
     myFB{system.frameBuffer()}
 {
 
-  // Create a surface for the TIA image and scanlines; we'll need them eventually
+  // Create a surface for the TIA image and scanlines; we'll need them
+  // eventually.  Size it for the widest filter output across timings (PAL
+  // composite's 5× grid is wider than NTSC Blargg's).
   myTiaSurface = myFB.allocateSurface(
-    AtariNTSC::outWidth(TIAConstants::frameBufferWidth),
+    maxOutputWidth,
     TIAConstants::frameBufferHeight,
     !correctAspect()
       ? ScalingInterpolation::none
@@ -103,7 +105,7 @@ void TIASurface::setPalette(const PaletteArray& tia_palette,
 {
   myPalette = tia_palette;
 
-  // The NTSC filtering needs access to the raw RGB data, since it calculates
+  // The TV filtering needs access to the raw RGB data, since it calculates
   // its own internal palette
   myTVSignal->setPalette(tia_palette, rgb_palette);
 }
@@ -135,7 +137,7 @@ uInt32 TIASurface::mapIndexedPixel(uInt8 indexedColor, uInt8 shift) const
 void TIASurface::setTVMode(TVMode type, bool show)
 {
   myTVSignal->setTVMode(type);
-  enableNTSC();
+  enableTVEffects();
   if(show)
   {
     if(type == TVMode::None)
@@ -147,7 +149,7 @@ void TIASurface::setTVMode(TVMode type, bool show)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void TIASurface::changeNTSC(int direction)
+void TIASurface::changeTVEffect(int direction)
 {
   using ST = TVMode;
   static constexpr std::array<ST, 6> PRESETS = {
@@ -215,7 +217,7 @@ void TIASurface::changeScanlineIntensity(int direction)
   mySLineSurface->setBlendLevel(intensity);
 
   myOSystem.settings().setValue("tv.scanlines", intensity);
-  enableNTSC();
+  enableTVEffects();
 
   myFB.showGaugeMessage("Scanline intensity",
     intensity ? std::format("{}%", intensity) : "Off", intensity);
@@ -403,11 +405,11 @@ void TIASurface::createScanlineSurface()
   mySLineSurface->setDstRect(myTiaSurface->dstRect());
   updateSurfaceSettings();
 
-  enableNTSC();
+  enableTVEffects();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void TIASurface::enableNTSC()
+void TIASurface::enableTVEffects()
 {
   const uInt32 surfaceWidth = myTVSignal->outputWidth();
 
@@ -432,11 +434,11 @@ string TIASurface::effectsInfo() const
 {
   string buf;
   if(myPhosphorHandler.phosphorEnabled())
-    buf = ntscEnabled()
+    buf = tvEffectsEnabled()
       ? std::format("{}, phosphor={}", myTVSignal->getPreset(), myPBlend)
       : std::format("Disabled, phosphor={}", myPBlend);
   else
-    buf = ntscEnabled() ? myTVSignal->getPreset() : "Disabled, normal mode";
+    buf = tvEffectsEnabled() ? myTVSignal->getPreset() : "Disabled, normal mode";
   if(mySLineSurface->blendLevel() > 0)
     buf += std::format(", scanlines={}/{}",
       mySLineSurface->blendLevel(),

@@ -104,16 +104,16 @@ class TIASurface
     void enableThreading(bool enable) { myTVSignal->enableThreading(enable); }
 
     /**
-      Use NTSC filtering effects specified by the given preset.
+      Use the TV filtering effects specified by the given preset.
     */
     void setTVMode(TVMode type, bool show = true);
 
     /**
-      Switch to next/previous NTSC filtering effect.
+      Switch to next/previous TV filtering effect.
 
       @param direction  +1 indicates increase, -1 indicates decrease.
     */
-    void changeNTSC(int direction = +1);
+    void changeTVEffect(int direction = +1);
 
     /**
       Switch to next/previous TV filtering adjustable for the current timing.
@@ -173,8 +173,8 @@ class TIASurface
       and apply the current scanline blend level.  Call after any change to
       the active preset or timing.
     */
-    void enableNTSC();
-    bool ntscEnabled() const {
+    void enableTVEffects();
+    bool tvEffectsEnabled() const {
       return myTVSignal->outputWidth() != TIAConstants::frameBufferWidth;
     }
     string effectsInfo() const;
@@ -240,12 +240,19 @@ class TIASurface
     // Phosphor blend
     int myPBlend{0};
 
+    // The render surface and phosphor buffers must accommodate the widest
+    // filter output across timings: NTSC Blargg (≈568) or PAL composite,
+    // which renders to its 5× oversampled grid (800).
+    static constexpr uInt32 maxOutputWidth =
+      AtariNTSC::outWidth(TIAConstants::frameBufferWidth) >
+        PALSignal::outWidth(TIAConstants::frameBufferWidth)
+          ? AtariNTSC::outWidth(TIAConstants::frameBufferWidth)
+          : PALSignal::outWidth(TIAConstants::frameBufferWidth);
+
     std::array<uInt32, static_cast<size_t>
-      (AtariNTSC::outWidth(TIAConstants::frameBufferWidth) *
-      TIAConstants::frameBufferHeight)> myRGBFramebuffer0{};
+      (maxOutputWidth * TIAConstants::frameBufferHeight)> myRGBFramebuffer0{};
     std::array<uInt32, static_cast<size_t>
-      (AtariNTSC::outWidth(TIAConstants::frameBufferWidth) *
-        TIAConstants::frameBufferHeight)> myRGBFramebuffer1{};
+      (maxOutputWidth * TIAConstants::frameBufferHeight)> myRGBFramebuffer1{};
     uInt32* myRGBFramebuffer{myRGBFramebuffer0.data()};
     uInt32* myPrevRGBFramebuffer{myRGBFramebuffer1.data()};
     /////////////////////////////////////////////////////////////

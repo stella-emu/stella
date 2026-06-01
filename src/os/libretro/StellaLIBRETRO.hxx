@@ -80,7 +80,7 @@ class StellaLIBRETRO
 
     bool   getVideoReady() const { return video_ready; }
     uInt32 getVideoZoom() const {
-      return myOSystem->frameBuffer().tiaSurface().ntscEnabled() ? 2 : 1;
+      return myOSystem->frameBuffer().tiaSurface().tvEffectsEnabled() ? 2 : 1;
     }
     bool   getVideoResize();
 

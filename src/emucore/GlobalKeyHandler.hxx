@@ -62,8 +62,9 @@ class GlobalKeyHandler
       PALETTE_CONTRAST,
       PALETTE_BRIGHTNESS,
       PALETTE_GAMMA,
+      // TV filter preset (cycles the active timing's presets: NTSC or PAL)
+      TV_PRESET,
       // NTSC filter adjustables
-      NTSC_PRESET,
       NTSC_SHARPNESS,
       NTSC_RESOLUTION,
       NTSC_ARTIFACTS,
@@ -128,7 +129,7 @@ class GlobalKeyHandler
       // *** Only used via direct hotkeys ***
       STATE,
       PALETTE_ATTRIBUTE,
-      NTSC_ATTRIBUTE,
+      TV_ATTRIBUTE,
       CHANGE_SPEED,
       // *** Ranges ***
       NUM_ADJ,

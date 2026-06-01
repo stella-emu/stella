@@ -97,13 +97,13 @@ class PALSignal
     //   saturation : neutral 0.0  → physical ×1.0 (sat + 1.0)
     //   hue        : neutral 0.0  → physical 0°   (hue × 180°)
     //   gamma      : neutral 0.0  → physical 1.75  (gamma × 0.75 + 1.75)
-    //   bleed      : [-1..1]      comb blend;  physical = bleed × 0.5 + 0.5
+    //   blend      : [-1..1]      comb blend;  physical = blend × 0.5 + 0.5
     struct Setup {
       float sharpness  { 0.2F };
       float saturation { 0.0F };
       float hue        { 0.0F };
       float gamma      { 0.0F };
-      float bleed      { 0.0F };
+      float blend      { 0.0F };
     };
 
     // Indices into the adjustableTags() span; used by GlobalKeyHandler
@@ -157,8 +157,17 @@ class PALSignal
     void render(const uInt8* tiaSrc, uInt32 srcWidth, uInt32 srcHeight,
                 uInt32* rgbDst, uInt32 dstPitch, bool evenField);
 
-    // Width of one output scanline in pixels (== srcWidth passed to render)
+    // Width of one TIA colour-clock scanline in pixels (input to render)
     static constexpr uInt32 TIA_WIDTH = 160;
+
+    // Output width for a given input width.  The output is the internal
+    // oversampled grid itself (SAMPLES_PER_CLOCK output pixels per TIA colour
+    // clock), with no downsample, so the composite artifacts (dot crawl,
+    // subcarrier beat, fringing) survive to the display instead of being
+    // averaged away.
+    static constexpr uInt32 outWidth(uInt32 inWidth) {
+      return inWidth * SAMPLES_PER_CLOCK;
+    }
 
   private:
     // ── Frequency constants ───────────────────────────────────────────────
@@ -219,16 +228,79 @@ class PALSignal
     // Aperture correction kernel strength (3-tap: [−k/2, 1+k, −k/2])
     float myApertureK{};
 
-    // ── Line buffers ──────────────────────────────────────────────────────
+    // ── Per-output-pixel kernels (AtariNTSC-style precomputation) ─────────
+    //
+    // Every stage from composite encode through comb/low-pass decode and
+    // 5:1 downsampling is *linear* in each input clock's (Y, U, V).  So the
+    // contribution of one input clock to the YUV of the output pixels around
+    // it is a fixed kernel that depends only on the clock's colour, its
+    // column phase (x & 3) and the PAL V-sign.  At render time we simply
+    // scatter-add each clock's kernel into the line accumulators; no per-
+    // pixel filtering is performed.  See buildCoeff() and expandKernels().
 
-    // Composite waveform for current and previous scanline (SAMPLES_PER_LINE each)
+    // Sample-domain reach of one clock's energy: the luma FIR half-width plus
+    // one for aperture correction, or the chroma FIR half-width, whichever is
+    // larger.  The FIRs have finite support, so beyond this there is exactly
+    // zero overlap — the kernel is not merely small but identically zero.
+    static constexpr int SAMPLE_REACH =
+      (LUMA_TAPS / 2 + 1) > (CHROMA_TAPS / 2)
+        ? (LUMA_TAPS / 2 + 1) : (CHROMA_TAPS / 2);
+
+    // Since the output is the oversampled grid itself, one clock contributes
+    // to its own SAMPLES_PER_CLOCK output samples plus SAMPLE_REACH on each
+    // side.  KERNEL_LEFT is the offset of the first tap relative to the
+    // clock's first output sample.
+    static constexpr int KERNEL_LEFT  = SAMPLE_REACH;
+    static constexpr int KERNEL_WIDTH =
+      static_cast<int>(SAMPLES_PER_CLOCK) + 2 * SAMPLE_REACH;
+
+    // One clock's YUV contribution across KERNEL_WIDTH output samples.
+    struct Kernel {
+      std::array<float, KERNEL_WIDTH> y{};
+      std::array<float, KERNEL_WIDTH> u{};
+      std::array<float, KERNEL_WIDTH> v{};
+    };
+
+    // Palette-independent linear decode coefficients: each output component
+    // (Y, U, V) at a given offset as a linear combination of the clock's
+    // input (y, u, v).  Depends only on the filters (sharpness/bandwidth),
+    // so it is rebuilt only when those change, not on every palette change.
+    struct DecodeCoeff {
+      float yy{}, yu{}, yv{};   // Yout = yy·y + yu·u + yv·v
+      float uy{}, uu{}, uv{};   // Uout = uy·y + uu·u + uv·v
+      float vy{}, vu{}, vv{};   // Vout = vy·y + vu·u + vv·v
+    };
+
+    // Composite coefficients: [columnPhase 0..3][vSign 0..1][offset]
+    std::array<std::array<std::array<DecodeCoeff, KERNEL_WIDTH>, 2>, 4> myCoeff{};
+    // S-Video coefficients (no subcarrier → phase/vSign independent)
+    std::array<DecodeCoeff, KERNEL_WIDTH> mySVCoeff{};
+
+    // Per-colour expanded kernels, rebuilt on any palette or coeff change.
+    // Composite: [colour][columnPhase 0..3][vSign 0..1]
+    std::array<std::array<std::array<Kernel, 2>, 4>, 256> myKernel{};
+    // S-Video: [colour]
+    std::array<Kernel, 256> mySVKernel{};
+
+    // ── Scratch buffers (used only while building coefficients) ───────────
+
+    // Isolated-clock composite waveform (SAMPLES_PER_LINE)
     std::vector<float> myCurrentLine;
-    std::vector<float> myPreviousLine;
 
-    // Per-line YUV sample buffers used by the S-Video path (VISIBLE_SAMPLES each)
-    std::vector<float> mySVideoY;
-    std::vector<float> mySVideoU;
-    std::vector<float> mySVideoV;
+    // FIR work buffers (VISIBLE_SAMPLES)
+    std::vector<float> myYBuf, myUBuf, myVBuf, myFilterTmp;
+
+    // ── Per-line render accumulators (output-width = VISIBLE_SAMPLES) ─────
+    std::vector<float> myAccY, myAccU, myAccV;
+    // Previous line's filtered chroma, for the 1-line PAL comb blend
+    std::vector<float> myPrevU, myPrevV;
+
+    // ── Pre-baked lookup tables ───────────────────────────────────────────
+
+    // Gamma LUT: quantized linear light [0..1023] → gamma-encoded display [0..255].
+    // Rebuilt whenever mySetup.gamma changes.
+    static constexpr uInt32 GAMMA_LUT_SIZE = 1024;
+    std::array<uInt8, GAMMA_LUT_SIZE> myGammaLUT{};
 
     // True when the active mode bypasses composite encoding (S-Video)
     bool mySVideo{false};
@@ -244,7 +316,7 @@ class PALSignal
     // AdjustableTags pointing into myCustomSetup for the cycling UI
     static constexpr std::array<AdjustableTag, 2> ourCustomAdjustables = {{
       { "sharpness", &myCustomSetup.sharpness },
-      { "blend",     &myCustomSetup.bleed     }
+      { "blend",     &myCustomSetup.blend     }
     }};
 
     // ── Private methods ───────────────────────────────────────────────────
@@ -253,24 +325,22 @@ class PALSignal
     void buildLumaKernel();
     void buildChromaKernel();
 
-    // Encode one visible scanline of TIA colour clocks into the composite
-    // waveform buffer (myCurrentLine).  vSign is +1 for normal V phase, -1
-    // for phase-inverted lines (PAL alternation).
-    void encodeLine(const uInt8* src, uInt32 width, float vSign);
+    // Build gamma LUT from mySetup.gamma; call after any setup change
+    void buildGammaLUT();
 
-    // Decode myCurrentLine + myPreviousLine through the comb filter and
-    // low-pass filters into one row of 0x00RRGGBB pixels.
-    void decodeLine(uInt32* dst, uInt32 width, float vSign);
+    // Build the palette-independent decode coefficients (myCoeff/mySVCoeff)
+    // from the current filters; call after buildLumaKernel/buildChromaKernel.
+    void buildCoeff();
 
-    // S-Video path: apply luma + chroma bandwidth filters directly in YUV
-    // (no composite encode/decode, so no crosstalk artifacts).
-    void renderLineSVideo(const uInt8* src, uInt32* dst, uInt32 width);
+    // Expand myClockTable + coefficients into the per-colour kernels
+    // (myKernel/mySVKernel); call after setPalette() or buildCoeff().
+    void expandKernels();
 
     // Apply the luma FIR and aperture correction to a sample buffer in-place
-    void applyLumaFilter(float* buf, uInt32 n) const;
+    void applyLumaFilter(float* buf, uInt32 n);
 
     // Apply the chroma FIR to a sample buffer in-place
-    void applyChromaFilter(float* buf, uInt32 n) const;
+    void applyChromaFilter(float* buf, uInt32 n);
 
     // Gamma-correct and pack to 0x00RRGGBB
     FORCE_INLINE uInt32 toRGB(float y, float u, float v) const;

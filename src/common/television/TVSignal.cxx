@@ -84,9 +84,14 @@ string TVSignal::getPreset() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt32 TVSignal::outputWidth() const
 {
-  return (myTiming == ConsoleTiming::ntsc && myTVMode != TVMode::None)
-    ? NTSCSignal::outWidth(TIAConstants::frameBufferWidth)
-    : TIAConstants::frameBufferWidth;
+  // NTSC composite/S-Video and PAL composite/S-Video render to a wider,
+  // oversampled grid; None and (for PAL) RGB pass through at native width.
+  if(myTiming == ConsoleTiming::ntsc && myTVMode != TVMode::None)
+    return NTSCSignal::outWidth(TIAConstants::frameBufferWidth);
+  if(myTiming == ConsoleTiming::pal &&
+     myTVMode != TVMode::None && myTVMode != TVMode::RGB)
+    return PALSignal::outWidth(TIAConstants::frameBufferWidth);
+  return TIAConstants::frameBufferWidth;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

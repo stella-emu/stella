@@ -650,16 +650,16 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
     case Event::PreviousVideoMode:
       if(pressed && !repeated)
       {
-        myOSystem.frameBuffer().tiaSurface().changeNTSC(-1);
-        myGlobalKeyHandler->setSetting(GlobalKeyHandler::Setting::NTSC_PRESET);
+        myOSystem.frameBuffer().tiaSurface().changeTVEffect(-1);
+        myGlobalKeyHandler->setSetting(GlobalKeyHandler::Setting::TV_PRESET);
       }
       return;
 
     case Event::NextVideoMode:
       if(pressed && !repeated)
       {
-        myOSystem.frameBuffer().tiaSurface().changeNTSC(+1);
-        myGlobalKeyHandler->setSetting(GlobalKeyHandler::Setting::NTSC_PRESET);
+        myOSystem.frameBuffer().tiaSurface().changeTVEffect(+1);
+        myGlobalKeyHandler->setSetting(GlobalKeyHandler::Setting::TV_PRESET);
       }
       return;
 
@@ -667,7 +667,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed && !repeated)
       {
         myOSystem.frameBuffer().tiaSurface().setTVMode(TVMode::None);
-        myGlobalKeyHandler->setSetting(GlobalKeyHandler::Setting::NTSC_PRESET);
+        myGlobalKeyHandler->setSetting(GlobalKeyHandler::Setting::TV_PRESET);
       }
       return;
 
@@ -675,7 +675,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed && !repeated)
       {
         myOSystem.frameBuffer().tiaSurface().setTVMode(TVMode::RGB);
-        myGlobalKeyHandler->setSetting(GlobalKeyHandler::Setting::NTSC_PRESET);
+        myGlobalKeyHandler->setSetting(GlobalKeyHandler::Setting::TV_PRESET);
       }
       return;
 
@@ -683,7 +683,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed && !repeated)
       {
         myOSystem.frameBuffer().tiaSurface().setTVMode(TVMode::SVideo);
-        myGlobalKeyHandler->setSetting(GlobalKeyHandler::Setting::NTSC_PRESET);
+        myGlobalKeyHandler->setSetting(GlobalKeyHandler::Setting::TV_PRESET);
       }
       return;
 
@@ -691,7 +691,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed && !repeated)
       {
         myOSystem.frameBuffer().tiaSurface().setTVMode(TVMode::Composite);
-        myGlobalKeyHandler->setSetting(GlobalKeyHandler::Setting::NTSC_PRESET);
+        myGlobalKeyHandler->setSetting(GlobalKeyHandler::Setting::TV_PRESET);
       }
       return;
 
@@ -699,7 +699,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed && !repeated)
       {
         myOSystem.frameBuffer().tiaSurface().setTVMode(TVMode::Bad);
-        myGlobalKeyHandler->setSetting(GlobalKeyHandler::Setting::NTSC_PRESET);
+        myGlobalKeyHandler->setSetting(GlobalKeyHandler::Setting::TV_PRESET);
       }
       return;
 
@@ -707,7 +707,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed && !repeated)
       {
         myOSystem.frameBuffer().tiaSurface().setTVMode(TVMode::Custom);
-        myGlobalKeyHandler->setSetting(GlobalKeyHandler::Setting::NTSC_PRESET);
+        myGlobalKeyHandler->setSetting(GlobalKeyHandler::Setting::TV_PRESET);
       }
       return;
     case Event::PhosphorDecrease:
@@ -828,7 +828,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed)
       {
         myOSystem.frameBuffer().tiaSurface().selectTVAdjustable(-1);
-        myGlobalKeyHandler->setDirectSetting(GlobalKeyHandler::Setting::NTSC_ATTRIBUTE);
+        myGlobalKeyHandler->setDirectSetting(GlobalKeyHandler::Setting::TV_ATTRIBUTE);
       }
       return;
 
@@ -836,7 +836,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed)
       {
         myOSystem.frameBuffer().tiaSurface().selectTVAdjustable(+1);
-        myGlobalKeyHandler->setDirectSetting(GlobalKeyHandler::Setting::NTSC_ATTRIBUTE);
+        myGlobalKeyHandler->setDirectSetting(GlobalKeyHandler::Setting::TV_ATTRIBUTE);
       }
       return;
 
@@ -844,7 +844,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed)
       {
         myOSystem.frameBuffer().tiaSurface().changeCurrentTVAdjustable(-1);
-        myGlobalKeyHandler->setDirectSetting(GlobalKeyHandler::Setting::NTSC_ATTRIBUTE);
+        myGlobalKeyHandler->setDirectSetting(GlobalKeyHandler::Setting::TV_ATTRIBUTE);
       }
       return;
 
@@ -852,7 +852,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed)
       {
         myOSystem.frameBuffer().tiaSurface().changeCurrentTVAdjustable(+1);
-        myGlobalKeyHandler->setDirectSetting(GlobalKeyHandler::Setting::NTSC_ATTRIBUTE);
+        myGlobalKeyHandler->setDirectSetting(GlobalKeyHandler::Setting::TV_ATTRIBUTE);
       }
       return;
 
