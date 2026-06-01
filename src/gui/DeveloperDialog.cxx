@@ -659,7 +659,8 @@ void DeveloperDialog::addDebuggerTab(const GUI::Font& font)
             HBORDER    = Dialog::hBorder(),
             VGAP       = Dialog::vGap();
   VariantList items;
-  const Common::Size& ds = instance().frameBuffer().desktopSize(BufferType::Debugger);
+  const Common::Size& ds = instance().frameBuffer().desktopSize();
+
   const int xpos = HBORDER;
   int ypos = VBORDER;
 

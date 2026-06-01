@@ -214,9 +214,10 @@ class FrameBuffer
     const Common::Rect& screenRect() const { return myActiveVidMode.screenR; }
 
     /**
-      Returns the dimensions of the mode specific users' desktop.
+      Returns the dimensions of the mode specific users' desktop, or if
+      BufferType::None, return the dimensions of the current active screen.
     */
-    const Common::Size& desktopSize(BufferType bufferType) const {
+    const Common::Size& desktopSize(BufferType bufferType = BufferType::None) const {
       return myDesktopSize.at(displayId(bufferType));
     }
 

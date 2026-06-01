@@ -130,7 +130,7 @@ uInt32 FrameBuffer::displayId(BufferType bufferType) const
 {
   uInt32 display = 0;
 
-  if(bufferType == myBufferType)
+  if(bufferType == myBufferType || bufferType == BufferType::None)
     display = myBackend->getCurrentDisplayID();
   else
     display = myOSystem.settings().getInt(

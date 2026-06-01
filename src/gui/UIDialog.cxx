@@ -55,7 +55,7 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
             INDENT       = Dialog::indent();
   WidgetArray wid;
   VariantList items;
-  const Common::Size& ds = instance().frameBuffer().desktopSize(BufferType::Launcher);
+  const Common::Size& ds = instance().frameBuffer().desktopSize();
 
   // Set real dimensions
   setSize(64 * fontWidth + HBORDER * 2,
