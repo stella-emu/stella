@@ -1275,6 +1275,9 @@
     <ClCompile Include="..\..\common\television\TVSignal.cxx">
       <Filter>Source Files\common\television</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\common\television\PALSignal.cxx">
+      <Filter>Source Files\common\television</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\emucore\AtariVox.hxx">
@@ -2634,6 +2637,12 @@
       <Filter>Header Files\common\television</Filter>
     </ClInclude>
     <ClInclude Include="..\..\common\television\TVSignal.hxx">
+      <Filter>Header Files\common\television</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\common\television\PALSignal.hxx">
+      <Filter>Header Files\common\television</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\common\television\TVAdjustable.hxx">
       <Filter>Header Files\common\television</Filter>
     </ClInclude>
   </ItemGroup>
