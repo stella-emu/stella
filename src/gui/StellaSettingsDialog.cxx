@@ -433,17 +433,14 @@ void StellaSettingsDialog::loadControllerProperties(const Properties& props)
   // in launcher mode
   bool enable = false;
 
-  // Note: The state returned seems not consistent here
   switch (instance().eventHandler().state())
   {
-    case EventHandlerState::OPTIONSMENU: // game is running!
-    case EventHandlerState::CMDMENU: // game is running!
-      enable = true;
-      break;
     case EventHandlerState::LAUNCHER:
       enable = !instance().launcher().selectedRomMD5().empty();
       break;
     default:
+      // Any in-game menu: enabled whenever a console is running behind it
+      enable = instance().hasConsole();
       break;
   }
 

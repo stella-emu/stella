@@ -7,7 +7,6 @@ MODULE_OBJS := \
         src/gui/ColorWidget.o \
         src/gui/ComboDialog.o \
         src/gui/CommandDialog.o \
-        src/gui/CommandMenu.o \
         src/gui/ContextMenu.o \
         src/gui/DeveloperDialog.o \
         src/gui/DialogContainer.o \
@@ -23,7 +22,6 @@ MODULE_OBJS := \
         src/gui/GlobalPropsDialog.o \
         src/gui/HelpDialog.o \
         src/gui/HighScoresDialog.o \
-        src/gui/HighScoresMenu.o \
         src/gui/InputDialog.o \
         src/gui/InputTextDialog.o \
         src/gui/JoystickDialog.o \
@@ -34,12 +32,10 @@ MODULE_OBJS := \
         src/gui/LoggerDialog.o \
         src/gui/MessageBox.o \
         src/gui/MessageDialog.o \
-        src/gui/MessageMenu.o \
         src/gui/MinUICommandDialog.o \
         src/gui/NavigationWidget.o \
         src/gui/OptionsDialog.o \
-        src/gui/OptionsMenu.o \
-        src/gui/PlusRomsMenu.o\
+        src/gui/OverlayMenu.o \
         src/gui/PlusRomsSetupDialog.o \
         src/gui/PopUpWidget.o \
         src/gui/ProgressDialog.o \

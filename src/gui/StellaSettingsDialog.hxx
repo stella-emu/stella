@@ -21,7 +21,6 @@
 class PopUpWidget;
 
 #include "Props.hxx"
-#include "OptionsMenu.hxx"
 #include "Dialog.hxx"
 
 #include "HelpDialog.hxx"

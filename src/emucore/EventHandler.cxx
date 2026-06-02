@@ -54,12 +54,8 @@
 #endif
 #ifdef GUI_SUPPORT
   #include "BrowserDialog.hxx"
-  #include "OptionsMenu.hxx"
-  #include "CommandMenu.hxx"
-  #include "HighScoresMenu.hxx"
-  #include "MessageMenu.hxx"
+  #include "MessageDialog.hxx"
   #include "OverlayMenu.hxx"
-  #include "PlusRomsMenu.hxx"
   #include "DialogContainer.hxx"
   #include "Launcher.hxx"
   #include "TimeMachine.hxx"
@@ -1592,7 +1588,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
                 msg.emplace_back("");
                 msg.emplace_back("You will lose all your progress.");
               }
-              MessageMenu::setMessage("Exit Emulation", msg, true);
+              MessageDialog::setMessage("Exit Emulation", msg, true);
               enterMenuMode(EventHandlerState::MESSAGEMENU);
             }
             else
@@ -1607,7 +1603,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
           if(pressed && !repeated)
           {
             leaveMenuMode();
-            if (myOSystem.messageMenu().confirmed())
+            if (MessageDialog::confirmed())
               exitEmulation(true);
           }
           return;
@@ -2656,31 +2652,13 @@ void EventHandler::setState(EventHandlerState state)
       break;
 
   #ifdef GUI_SUPPORT
+    // All built-in menus and any transient dialog opened over TIA mode share
+    // the single OverlayMenu container; it picks the right dialog by state
     case EventHandlerState::OPTIONSMENU:
-      myOverlay = &myOSystem.optionsMenu();
-      enableTextEvents(true);
-      break;
-
     case EventHandlerState::CMDMENU:
-      myOverlay = &myOSystem.commandMenu();
-      enableTextEvents(true);
-      break;
-
     case EventHandlerState::HIGHSCORESMENU:
-      myOverlay = &myOSystem.highscoresMenu();
-      enableTextEvents(true);
-      break;
-
     case EventHandlerState::MESSAGEMENU:
-      myOverlay = &myOSystem.messageMenu();
-      enableTextEvents(true);
-      break;
-
     case EventHandlerState::PLUSROMSMENU:
-      myOverlay = &myOSystem.plusRomsMenu();
-      enableTextEvents(true);
-      break;
-
     case EventHandlerState::OVERLAYMENU:
       myOverlay = &myOSystem.overlayMenu();
       enableTextEvents(true);

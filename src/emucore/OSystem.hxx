@@ -37,13 +37,8 @@ class AudioSettings;
   class Debugger;
 #endif
 #ifdef GUI_SUPPORT
-  class CommandMenu;
-  class HighScoresMenu;
   class Launcher;
-  class OptionsMenu;
-  class MessageMenu;
   class OverlayMenu;
-  class PlusRomsMenu;
   class TimeMachine;
   class VideoAudioDialog;
 #endif
@@ -203,42 +198,9 @@ class OSystem
 
   #ifdef GUI_SUPPORT
     /**
-      Get the option menu of the system.
-
-      @return The option menu object
-    */
-    OptionsMenu& optionsMenu() const { return *myOptionsMenu; }
-
-    /**
-      Get the command menu of the system.
-
-      @return The command menu object
-    */
-    CommandMenu& commandMenu() const { return *myCommandMenu; }
-
-      /**
-      Get the highscores menu of the system.
-
-      @return The highscores menu object
-      */
-    HighScoresMenu& highscoresMenu() const { return *myHighScoresMenu; }
-
-    /**
-      Get the message menu of the system.
-
-      @return The message menu object
-    */
-    MessageMenu& messageMenu() const { return *myMessageMenu; }
-
-    /**
-      Get the Plus ROM menu of the system.
-
-      @return The Plus ROM menu object
-    */
-    PlusRomsMenu& plusRomsMenu() const { return *myPlusRomMenu; }
-
-    /**
-      Get the generic overlay menu of the system.
+      Get the overlay menu of the system.  This single container hosts all
+      dialogs shown over TIA mode (options, command, high scores, message,
+      PlusROM, and any transient dialog opened via EventHandler::openDialog).
 
       @return The overlay menu object
     */
@@ -561,25 +523,11 @@ class OSystem
   #endif
 
   #ifdef GUI_SUPPORT
-    // Pointer to the OptionMenu object
-    unique_ptr<OptionsMenu> myOptionsMenu;
-
-    // Pointer to the CommandMenu object
-    unique_ptr<CommandMenu> myCommandMenu;
-
-    // Pointer to the HighScoresMenu object
-    unique_ptr<HighScoresMenu> myHighScoresMenu;
-
     // Pointer to the Launcher object
     unique_ptr<Launcher> myLauncher;
 
-    // Pointer to the MessageMenu object
-    unique_ptr<MessageMenu> myMessageMenu;
-
-    // Pointer to the PlusRomsMenu object
-    unique_ptr<PlusRomsMenu> myPlusRomMenu;
-
-    // Pointer to the OverlayMenu object
+    // Pointer to the OverlayMenu object: the single container for all
+    // dialogs shown over TIA mode
     unique_ptr<OverlayMenu> myOverlayMenu;
 
     // Pointer to the TimeMachine object

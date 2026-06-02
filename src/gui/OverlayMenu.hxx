@@ -21,30 +21,71 @@
 class OSystem;
 class Dialog;
 
+#include <array>
+
+#include "bspf.hxx"
 #include "DialogContainer.hxx"
 
 /**
-  A generic DialogContainer for opening any single dialog over TIA mode,
-  without requiring a dedicated subclass per dialog type.
+  The single DialogContainer for all dialogs that overlay TIA mode.
+
+  It serves two roles:
+    - The built-in menus (options, command, high scores, message, PlusROM)
+      are selected by the current EventHandler state in baseDialog() and
+      lazily created/cached on first use.
+    - Any other dialog can be shown over TIA via setDialog() (see
+      EventHandler::openDialog), which takes ownership of a transient dialog.
+
+  Adding a new overlay:
+
+    A) Transient/one-off dialog (the common case) - nothing to change here.
+       Just call eventHandler().openDialog(new FooDialog(...)) for an owned
+       dialog, or eventHandler().openBrowserDialog(...) for a file browser.
+       It is shown via the generic OVERLAYMENU state and freed on replacement.
+
+    B) A new persistent built-in menu (its own hotkey/toggle, like options):
+       1. Add an EventHandlerState value in EventHandlerConstants.hxx.
+       2. Add a Cached enum entry below and a matching createDialog() case.
+       3. Add a case to baseDialog() mapping the new state to that cached
+          dialog (in OverlayMenu.cxx).
+       4. In EventHandler::setState(), add the new state to the fall-through
+          group that sets myOverlay = &overlayMenu().
+       5. Add the open/toggle handler for its Event::XxxMenuMode in
+          EventHandler::handleEvent().
+       FrameBuffer needs no change: the generic GUI-overlay render case and
+       OSystem::createFrameBuffer() (which keys off hasConsole()) cover it.
 
   @author  Stephen Anthony
 */
 class OverlayMenu : public DialogContainer
 {
   public:
-    explicit OverlayMenu(OSystem& osystem) : DialogContainer(osystem) { }
-    ~OverlayMenu() override { delete myBaseDialog; }
+    explicit OverlayMenu(OSystem& osystem);
+    ~OverlayMenu() override;
 
-    // Takes ownership of the dialog; deletes any previously held dialog
-    void setDialog(Dialog* dialog) {
-      delete myBaseDialog;
-      myBaseDialog = dialog;
-    }
+    // Take ownership of a transient dialog (deletes any previously held one)
+    // and make it the active base dialog for the OVERLAYMENU state.
+    void setDialog(Dialog* dialog);
 
-    Dialog* baseDialog() override { return myBaseDialog; }
+    // Return the base dialog for the current EventHandler state, lazily
+    // creating and caching the matching built-in menu dialog as needed.
+    Dialog* baseDialog() override;
 
   private:
-    Dialog* myBaseDialog{nullptr};
+    // The concrete built-in menu dialogs, each cached on first use
+    enum class Cached: uInt8 {
+      Options, StellaSettings, Command, MinUICommand,
+      HighScores, Message, PlusRoms, NumCached
+    };
+
+    // Return the cached dialog for 'id', creating it on first access
+    Dialog& cached(Cached id);
+    Dialog* createDialog(Cached id);
+
+  private:
+    std::array<unique_ptr<Dialog>,
+               static_cast<size_t>(Cached::NumCached)> myCached;
+    unique_ptr<Dialog> myTransientDialog;
 
   private:
     // Following constructors and assignment operators not supported

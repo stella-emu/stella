@@ -35,7 +35,6 @@
 #include "OptionsDialog.hxx"
 #include "Launcher.hxx"
 #include "Settings.hxx"
-#include "OptionsMenu.hxx"
 
 #ifdef CHEATCODE_SUPPORT
   #include "CheatCodeDialog.hxx"

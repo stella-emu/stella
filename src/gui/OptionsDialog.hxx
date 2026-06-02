@@ -23,7 +23,6 @@ class DialogContainer;
 class GuiObject;
 class OSystem;
 
-#include "OptionsMenu.hxx"
 #include "Dialog.hxx"
 
 class OptionsDialog : public Dialog
