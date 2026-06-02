@@ -28,7 +28,6 @@ namespace GUI {
 }  // namespace GUI
 class Serializer;
 
-#include "OptionsMenu.hxx"
 #include "Dialog.hxx"
 #include "HighScoresManager.hxx"
 #include "json_lib.hxx"

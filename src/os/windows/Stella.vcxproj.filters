@@ -363,9 +363,6 @@
     <ClCompile Include="..\..\gui\CommandDialog.cxx">
       <Filter>Source Files\gui</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\gui\CommandMenu.cxx">
-      <Filter>Source Files\gui</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\gui\ContextMenu.cxx">
       <Filter>Source Files\gui</Filter>
     </ClCompile>
@@ -409,9 +406,6 @@
       <Filter>Source Files\gui</Filter>
     </ClCompile>
     <ClCompile Include="..\..\gui\ListWidget.cxx">
-      <Filter>Source Files\gui</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\gui\OptionsMenu.cxx">
       <Filter>Source Files\gui</Filter>
     </ClCompile>
     <ClCompile Include="..\..\gui\MessageBox.cxx">
@@ -705,13 +699,7 @@
     <ClCompile Include="..\..\emucore\Lightgun.cxx">
       <Filter>Source Files\emucore</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\gui\MessageMenu.cxx">
-      <Filter>Source Files\gui</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\gui\MessageDialog.cxx">
-      <Filter>Source Files\gui</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\gui\HighScoresMenu.cxx">
       <Filter>Source Files\gui</Filter>
     </ClCompile>
     <ClCompile Include="..\..\gui\HighScoresDialog.cxx">
@@ -800,9 +788,6 @@
     </ClCompile>
     <ClCompile Include="..\..\emucore\CartARM.cxx">
       <Filter>Source Files\emucore</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\gui\PlusRomsMenu.cxx">
-      <Filter>Source Files\gui</Filter>
     </ClCompile>
     <ClCompile Include="..\..\gui\PlusRomsSetupDialog.cxx">
       <Filter>Source Files\gui</Filter>
@@ -1272,6 +1257,9 @@
     <ClCompile Include="..\..\debugger\gui\DisasmColorsDialog.cxx">
       <Filter>Source Files\debugger\gui</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\gui\OverlayMenu.cxx">
+      <Filter>Source Files\gui</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\emucore\AtariVox.hxx">
@@ -1523,9 +1511,6 @@
     <ClInclude Include="..\..\gui\CommandDialog.hxx">
       <Filter>Header Files\gui</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\gui\CommandMenu.hxx">
-      <Filter>Header Files\gui</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\gui\ConsoleFont.hxx">
       <Filter>Header Files\gui</Filter>
     </ClInclude>
@@ -1575,9 +1560,6 @@
       <Filter>Header Files\gui</Filter>
     </ClInclude>
     <ClInclude Include="..\..\gui\ListWidget.hxx">
-      <Filter>Header Files\gui</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\gui\OptionsMenu.hxx">
       <Filter>Header Files\gui</Filter>
     </ClInclude>
     <ClInclude Include="..\..\gui\MessageBox.hxx">
@@ -1910,13 +1892,7 @@
     <ClInclude Include="..\..\emucore\Lightgun.hxx">
       <Filter>Header Files\emucore</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\gui\MessageMenu.hxx">
-      <Filter>Header Files\gui</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\gui\MessageDialog.hxx">
-      <Filter>Header Files\gui</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\gui\HighScoresMenu.hxx">
       <Filter>Header Files\gui</Filter>
     </ClInclude>
     <ClInclude Include="..\..\gui\HighScoresDialog.hxx">
@@ -2038,9 +2014,6 @@
     </ClInclude>
     <ClInclude Include="..\..\emucore\CartARM.hxx">
       <Filter>Header Files\emucore</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\gui\PlusRomsMenu.hxx">
-      <Filter>Header Files\gui</Filter>
     </ClInclude>
     <ClInclude Include="..\..\gui\PlusRomsSetupDialog.hxx">
       <Filter>Header Files\gui</Filter>
@@ -2626,6 +2599,9 @@
     </ClInclude>
     <ClInclude Include="..\..\lib\dr_libs\dr_wav_lib.hxx">
       <Filter>Header Files\lib\dr_libs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\gui\OverlayMenu.hxx">
+      <Filter>Header Files\gui</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
