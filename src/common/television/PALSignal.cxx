@@ -97,6 +97,17 @@ void PALSignal::initialize(TVMode mode)
 {
   mySVideo = (mode == TVMode::SVideo);
   mySetup  = setupFor(mode, myCustomSetup);
+
+  // Reset the colour-killer to its powered-up (colour-active) state.  This is
+  // the receiver-reset chokepoint: TIASurface::initialize() routes here via
+  // setTVMode on a TV-mode change and on a mid-game console reset / ROM
+  // reload, so stale killer state never survives a reset.  (A soft Reset
+  // switch does not re-initialise the surface — correctly, since a real TV's
+  // killer is unaware of it — and the hysteresis self-heals within a frame
+  // or two regardless.)
+  myColourKilled = false;
+  myKillerRun    = 0;
+
   buildLumaKernel();
   buildChromaKernel();
   buildGammaLUT();
@@ -451,9 +462,24 @@ void PALSignal::render(const uInt8* tiaSrc, uInt32 srcWidth, uInt32 srcHeight,
                        uInt32* rgbDst, uInt32 dstPitch, bool phaseInverted)
 {
   // phaseInverted is true when the previous frame had an odd scanline count.
-  // It drives both the PAL V-phase alternation below and PAL colour loss: an
-  // odd count breaks the PAL field/burst sequence, so a real set's colour-
-  // killer cuts chroma and the frame is rendered luma-only (greyscale).
+  // It drives two independent things: the per-line PAL V-phase alternation
+  // (always, from the real parity — see the loop below), and PAL colour loss
+  // via the hysteretic colour-killer updated here.  An odd count breaks the
+  // PAL field/burst sequence, so a real set's colour-killer cuts chroma and
+  // the frame renders luma-only (greyscale) — but only once the break has
+  // persisted, never on a single malformed frame (see COLOUR_KILLER_FRAMES).
+  if(phaseInverted != myColourKilled)
+  {
+    if(++myKillerRun >= COLOUR_KILLER_FRAMES)
+    {
+      myColourKilled = phaseInverted;
+      myKillerRun    = 0;
+    }
+  }
+  else
+    myKillerRun = 0;
+  const bool   colourKilled = myColourKilled;
+
   const bool   svideo    = mySVideo;
   // S-Video has separate Y/C wires, so there is no 1-line comb (blend = 0).
   const float  blend    = svideo ? 0.F : (mySetup.blend * 0.5F + 0.5F);
@@ -511,13 +537,13 @@ void PALSignal::render(const uInt8* tiaSrc, uInt32 srcWidth, uInt32 srcHeight,
     // applies the PAL 1-line comb blend with the previous line's chroma.
     // (The previous line was encoded with the opposite V-sign, so adding its
     // own-sign filtered chroma reinforces U and cancels chroma noise on V.)
-    if(phaseInverted && !svideo)
+    if(colourKilled && !svideo)
     {
       // PAL colour loss (composite modes only): the set's colour-killer has
-      // cut chroma for this frame, so emit luma only.  S-Video is immune
-      // because Y and C are carried on separate wires with no phase dependency.
-      // The subcarrier residual still present in the luma channel shows as
-      // faint dot-crawl in the greyscale image, as on real hardware.
+      // cut chroma, so emit luma only.  S-Video is immune because Y and C are
+      // carried on separate wires with no phase dependency.  The subcarrier
+      // residual still present in the luma channel shows as faint dot-crawl in
+      // the greyscale image, as on real hardware.
       for(uInt32 j = 0; j < outW; ++j)
         dst[j] = toRGB(myAccY[j], 0.F, 0.F);
     }

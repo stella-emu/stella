@@ -122,7 +122,8 @@ class Settings;
     • Colour fringing at sharp horizontal edges
     • Bandwidth softening on both luma and chroma
     • PAL Hanover-bar suppression via the comb filter
-    • Per-frame colour loss on an odd scanline count (see render())
+    • Colour loss on a sustained odd scanline count, via a hysteretic
+      colour-killer that ignores single malformed frames (see render())
 
   OUTPUT
   ─────────────────────────────────────────────────────────────────────────
@@ -211,12 +212,15 @@ class PALSignal
     //   tiaSrc   : raw TIA colour-index bytes, srcWidth × srcHeight
     //   rgbDst   : destination 0x00RRGGBB pixels, dstPitch pixels wide
     //   phaseInverted: true when the previous frame had an odd scanline count.
-    //              Drives PAL V-phase alternation on all modes.  Also triggers
-    //              PAL colour loss on composite modes (Composite, Bad, Custom):
-    //              an odd count gives an inconsistent PAL field/burst sequence,
-    //              so a real set's colour-killer cuts chroma and the frame is
-    //              rendered as luma-only greyscale.  S-Video is immune (Y and C
-    //              are carried on separate wires; no colour-killer mechanism).
+    //              Drives PAL V-phase alternation on all modes (per-line, from
+    //              the real parity).  Also feeds the hysteretic colour-killer
+    //              that triggers PAL colour loss on composite modes (Composite,
+    //              Bad, Custom): a sustained odd count gives an inconsistent
+    //              PAL field/burst sequence, so a real set's colour-killer cuts
+    //              chroma and the frame is rendered as luma-only greyscale.  A
+    //              single malformed frame is ignored (see COLOUR_KILLER_FRAMES).
+    //              S-Video is immune (Y and C are carried on separate wires; no
+    //              colour-killer mechanism).
     void render(const uInt8* tiaSrc, uInt32 srcWidth, uInt32 srcHeight,
                 uInt32* rgbDst, uInt32 dstPitch, bool phaseInverted);
 
@@ -367,6 +371,24 @@ class PALSignal
 
     // True when the active mode bypasses composite encoding (S-Video)
     bool mySVideo{false};
+
+    // ── Colour-killer hysteresis ──────────────────────────────────────────
+    //
+    // A real PAL receiver's colour-killer is an analog integrator with a time
+    // constant of a few fields and built-in on/off hysteresis, so it ignores a
+    // single malformed (odd-scanline) frame and does not chatter when the
+    // scanline count alternates odd/even.  We model that minimally: the
+    // killed/active state flips only after COLOUR_KILLER_FRAMES consecutive
+    // frames demand the opposite state.  This is decoupled from the per-line
+    // V-sign parity, which always tracks the real frame parity (see render()).
+    //
+    // COLOUR_KILLER_FRAMES is the transient-rejection floor, NOT a measured
+    // hardware figure: 2 is the minimum that rejects a one-frame glitch and
+    // prevents field-rate flicker on an alternating count.  Real killer time
+    // constants are receiver-specific, so a larger value has no basis.
+    static constexpr uInt32 COLOUR_KILLER_FRAMES = 2;
+    bool   myColourKilled{false};   // current killer state (true = chroma cut)
+    uInt32 myKillerRun{0};          // consecutive frames demanding the flip
 
     // ── Active and custom setups ──────────────────────────────────────────
 
