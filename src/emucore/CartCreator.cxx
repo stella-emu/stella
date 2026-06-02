@@ -387,26 +387,31 @@ namespace  // anonymous namespace, to keep these functions private
     };
 
     ByteArray biosData;
-    for(const auto& name : biosNames)
+    for(const FSNode& searchDir : { file.getParent(), baseDir })
     {
-      FSNode biosFile{baseDir};
-      biosFile /= name;
-      ByteArray tmp;
-      if(biosFile.isFile() && biosFile.read(tmp) == 2048)
+      for(const auto& name : biosNames)
       {
-        biosData = std::move(tmp);
-        break;
+        FSNode biosFile{searchDir};
+        biosFile /= name;
+        ByteArray tmp;
+        if(biosFile.isFile() && biosFile.read(tmp) == 2048)
+        {
+          biosData = std::move(tmp);
+          break;
+        }
       }
+      if(!biosData.empty())
+        break;
     }
 
     if(biosData.empty())
     {
       cerr << std::format(
-        "CartCreator: Supercharger BIOS not found in '{}'\n"
+        "CartCreator: Supercharger BIOS not found in '{}' or '{}'\n"
         "  (looked for: Supercharger BIOS.bin, Supercharger.BIOS.bin, "
-        "Supercharger_BIOS.bin, supercharger_bios.bin)\n",
-        baseDir.getPath());
-      return nullptr;
+        "Supercharger_BIOS.bin, supercharger_bios.bin)",
+        file.getParent().getPath(), baseDir.getPath());
+      throw std::runtime_error("Supercharger BIOS not found");
     }
 
     auto [pcmData, sampleRate] = CartridgeAR::loadPCM(file);
