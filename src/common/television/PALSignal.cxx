@@ -119,16 +119,20 @@ void PALSignal::convertToAdjustable(Adjustable& adjustable, const Setup& setup)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PALSignal::setPalette(IntSpan palette)
 {
-  // Denormalize [-1..1] setup fields to physical units before encoding
+  // Denormalize [-1..1] setup fields to physical units before encoding.
+  // (saturation/hue/gamma are held neutral here; PaletteHandler owns those
+  // dimensions for the user, but the mappings are kept for completeness.)
   const float gamma  = mySetup.gamma * 0.75F + 1.75F;          // → [1.0..2.5]
   const float sat    = mySetup.saturation + 1.0F;               // → [0..2]
   const float hueRad = mySetup.hue * std::numbers::pi_v<float>; // → [-π..+π]
   const float cosHue = std::cos(hueRad);
   const float sinHue = std::sin(hueRad);
 
-  // Convert each palette entry to linear-light YUV.
-  // The palette is already in display gamma; we linearise before encoding
-  // and re-apply gamma on decode, giving physically correct blending.
+  // Convert each palette entry to linear-light BT.601 Y′UV.
+  // The palette is already display-gamma encoded, so we linearise with
+  // pow(value, gamma) before encoding and re-apply 1/gamma on decode
+  // (toRGB/myGammaLUT).  Filtering then averages light, not code values,
+  // which is what a real CRT does.
   for(uInt32 i = 0; i < std::min(static_cast<uInt32>(palette.size()), 256U); ++i)
   {
     // Unpack 0x00RRGGBB and linearise from display gamma
@@ -136,14 +140,15 @@ void PALSignal::setPalette(IntSpan palette)
     const float g = std::pow(((palette[i] >>  8) & 0xFF) / 255.F, gamma);
     const float b = std::pow(( palette[i]        & 0xFF) / 255.F, gamma);
 
-    // BT.601 luma
+    // BT.601 luma weights (0.299 / 0.587 / 0.114)
     const float y =  0.299F * r + 0.587F * g + 0.114F * b;
 
-    // BT.601 colour differences, scaled by saturation
+    // BT.601 colour differences with the analogue U,V scale factors
+    // (Umax = 0.436, Vmax = 0.615), then scaled by saturation
     const float u = sat * (-0.147F * r - 0.289F * g + 0.436F * b);
     const float v = sat * ( 0.615F * r - 0.515F * g - 0.100F * b);
 
-    // Apply global hue rotation in the UV plane
+    // Apply global hue rotation as a 2-D rotation in the (U,V) plane
     myClockTable[i] = {
       .y = y,
       .u = u * cosHue - v * sinHue,
@@ -155,9 +160,19 @@ void PALSignal::setPalette(IntSpan palette)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-// Sinc-windowed (Hann) low-pass FIR kernel.
+// Windowed-sinc low-pass FIR design (the textbook method).
+//
+// The ideal brick-wall low-pass with normalised cutoff fc (= cutoff_Hz /
+// SAMPLE_RATE) has the impulse response  h[n] = 2·fc · sinc(2·fc·n), an
+// infinitely long, non-causal sequence.  We truncate it to `taps` samples
+// and multiply by a Hann window to tame the truncation (Gibbs) ripple,
+// trading a little transition-band sharpness for much lower stopband
+// ripple.  The Hann window here is  0.5 + 0.5·cos(π·n/(half+1)),  centred
+// at n = 0 and reaching ~0 just past the kernel edge.  Finally we normalise
+// to unit DC gain (Σ = 1) so the filter neither brightens nor darkens.
+//
 // cutoffNorm: normalised cutoff = cutoff_Hz / SAMPLE_RATE
-// taps: total kernel length (should be odd)
+// taps: total kernel length (should be odd so it is symmetric about n = 0)
 // kernel: output array of length taps, normalised to unit DC gain
 static void buildFIR(float cutoffNorm, uInt32 taps, float* kernel)
 {
@@ -168,6 +183,7 @@ static void buildFIR(float cutoffNorm, uInt32 taps, float* kernel)
   {
     const int   n = i - half;
     const float hann = 0.5F + 0.5F * std::cos(std::numbers::pi_v<float> * n / (half + 1));
+    // sinc(0) is the 2·fc limit; the else branch is sin(2π·fc·n)/(π·n)
     const float sinc = (n == 0)
       ? 2.F * cutoffNorm
       : std::sin(2.F * std::numbers::pi_v<float> * cutoffNorm * n) /
@@ -175,6 +191,7 @@ static void buildFIR(float cutoffNorm, uInt32 taps, float* kernel)
     kernel[i] = sinc * hann;
     sum += kernel[i];
   }
+  // Normalise to unit DC gain
   for(uInt32 i = 0; i < taps; ++i)
     kernel[i] /= sum;
 }
@@ -182,24 +199,32 @@ static void buildFIR(float cutoffNorm, uInt32 taps, float* kernel)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PALSignal::buildLumaKernel()
 {
-  // PAL-B/G luma bandwidth: 5.0 MHz
+  // PAL-B/G luma video baseband is nominally 5.0 MHz; band-limit luma there.
   buildFIR(5.0e6F / SAMPLE_RATE, LUMA_TAPS, myLumaKernel.data());
 
-  // Aperture correction: 3-tap kernel [-k/2, 1+k, -k/2]
-  // sharpness is in [-1..1]; positive = boost highs
+  // Aperture (peaking) correction models the high-frequency boost circuit in
+  // a real TV's luma path.  It is an unsharp-mask: a 3-tap [-k/2, 1+k, -k/2]
+  // kernel, which leaves DC untouched (taps sum to 1) but lifts edges.
+  // sharpness in [-1..1] maps to k = sharpness/2; positive sharpens, negative
+  // softens.  Applied after the low-pass in applyLumaFilter().
   myApertureK = mySetup.sharpness * 0.5F;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PALSignal::buildChromaKernel()
 {
-  // PAL chroma bandwidth: ±1.3 MHz per axis
+  // PAL colour-difference bandwidth is ~1.3 MHz per axis (U and V share the
+  // same limit in PAL, unlike NTSC's asymmetric I/Q); band-limit chroma there.
   buildFIR(1.3e6F / SAMPLE_RATE, CHROMA_TAPS, myChromaKernel.data());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PALSignal::buildGammaLUT()
 {
+  // Output stage: re-encode the linear-light result to display gamma, the
+  // inverse of the pow(value, gamma) linearisation done in setPalette().
+  // Precomputed over GAMMA_LUT_SIZE quantised linear levels so toRGB() is a
+  // table lookup instead of a per-pixel pow().
   const float invGamma = 1.F / (mySetup.gamma * 0.75F + 1.75F);
   for(uInt32 i = 0; i < GAMMA_LUT_SIZE; ++i)
   {
@@ -231,6 +256,11 @@ void PALSignal::buildCoeff()
       const uInt32 lineIdx = HBLANK_SAMPLES + i;
       const uInt32 phase   = lineIdx & 3u;
       const float  curr    = myCurrentLine[lineIdx];
+      // Synchronous demodulation: multiply by the quadrature carrier to bring
+      // the wanted sideband to baseband.  The ×2 restores unity gain, since a
+      // product of matched carriers averages to ½ (cos²θ = ½(1+cos2θ)); the
+      // 2·fsc term it leaves behind is removed by the chroma low-pass below.
+      // Luma is just the composite itself (its low-pass runs separately).
       myUBuf[i] = curr * SUBCARRIER_COS[phase] * 2.F;
       myVBuf[i] = curr * (-vSign * SUBCARRIER_SIN[phase]) * 2.F;
       myYBuf[i] = curr;
@@ -386,7 +416,11 @@ void PALSignal::applyLumaFilter(float* buf, uInt32 n)
     myFilterTmp[i] = acc;
   }
 
-  // Aperture correction (sharpness): 3-tap [-k/2, 1+k, -k/2]
+  // Aperture correction (sharpness): unsharp-mask with the 3-tap kernel
+  // [-k/2, 1+k, -k/2].  Centre weight 1+k boosts the sample, the neighbour
+  // weights subtract a blurred estimate; the three sum to 1 so flat areas
+  // (DC) are unchanged and only edges are emphasised.  Endpoints have no
+  // pair of neighbours, so they pass through unmodified.
   for(uInt32 i = 1; i < n - 1; ++i)
     buf[i] = myFilterTmp[i] * (1.F + myApertureK)
            - myApertureK * 0.5F * (myFilterTmp[i-1] + myFilterTmp[i+1]);
@@ -512,7 +546,9 @@ void PALSignal::render(const uInt8* tiaSrc, uInt32 srcWidth, uInt32 srcHeight,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt32 PALSignal::toRGB(float y, float u, float v) const
 {
-  // BT.601 inverse matrix (linear light)
+  // Exact inverse of the BT.601 Y′UV matrix used in setPalette() (still in
+  // linear light): R = Y + 1.140·V, G = Y − 0.395·U − 0.581·V, B = Y + 2.032·U.
+  // Clamp to the legal gamut before the gamma re-encode.
   const float r = BSPF::clamp(y              + 1.140F * v, 0.F, 1.F);
   const float g = BSPF::clamp(y - 0.395F * u - 0.581F * v, 0.F, 1.F);
   const float b = BSPF::clamp(y + 2.032F * u,              0.F, 1.F);

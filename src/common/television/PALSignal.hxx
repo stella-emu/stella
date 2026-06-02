@@ -27,59 +27,109 @@ class Settings;
 /**
   Accurate PAL video encoder/decoder for the Atari 2600 TIA.
 
-  SIGNAL MODEL
+  Unlike a palette-based "fake TV" filter, this class models the real signal
+  chain: it builds the analogue composite waveform a PAL TIA would emit, then
+  decodes it the way a PAL receiver would.  Every visible artifact (dot crawl,
+  colour fringing, bandwidth softening, Hanover-bar suppression, colour loss
+  on malformed fields) therefore falls out of the physics rather than being
+  hand-drawn.  The math below is standard analogue-television theory; the
+  specific numbers and their sources are called out so they can be checked.
+
+  SIGNAL MODEL — the 5/4 sample grid
   ─────────────────────────────────────────────────────────────────────────
-  The PAL TIA colour clock runs at 3.546894 MHz.  The PAL colour subcarrier
-  is 4.433618 MHz.  Their ratio is exactly 5/4:
+  The PAL colour subcarrier is fsc = 4.43361875 MHz (the value defined by the
+  PAL standard, ITU-R BT.470).  The PAL-TIA colour clock is 3.546894 MHz.
+  Their ratio is 5/4 to within ~3e-5 %:
 
-      fsc  =  TIA_clock × 5/4   →   4×fsc = TIA_clock × 5
+      fsc  =  TIA_clock × 5/4   →   4·fsc = TIA_clock × 5
 
-  We therefore work at an internal sample rate of 4×fsc = 17.734476 MHz,
-  which gives exactly 5 internal samples per TIA colour clock, and exactly
-  4 samples per subcarrier cycle — the minimal integer grid on which the
-  composite waveform can be represented without fractional-sample error.
+  We *idealise* it as exactly 5/4 and work at an internal sample rate of
+  4·fsc = 5·TIA_clock = 17.734476 MHz.  That choice is what makes the whole
+  model cheap and exact:
+    • exactly 4 samples per subcarrier cycle  → quadrature carrier is the
+      trivial integer sequence cos = {1,0,−1,0}, sin = {0,1,0,−1} (no
+      trig at sample time, no fractional-phase error);
+    • exactly 5 samples per TIA colour clock  → every TIA pixel maps to a
+      whole number of samples, so encode/decode never straddle a sample.
+  The price of the idealisation: the tiny real ~3e-5 % residual between fsc
+  and 5/4·clock is what makes dot-crawl slowly *move* on real hardware.  On
+  our integer grid the artifacts are spatially correct but stationary; we do
+  not model their slow drift.  (This is also why colour loss has to be added
+  explicitly — see render() — rather than emerging from grid arithmetic.)
+
+  COLOUR SPACE — BT.601 Y′UV
+  ─────────────────────────────────────────────────────────────────────────
+  RGB is converted to luma + colour-difference using the BT.601 weightings,
+  with the classic analogue U,V scale factors (U = 0.436·(B−Y)/0.886,
+  V = 0.615·(R−Y)/0.701) that bound the composite amplitude:
+
+      Y =  0.299 R + 0.587 G + 0.114 B
+      U = −0.147 R − 0.289 G + 0.436 B
+      V =  0.615 R − 0.515 G − 0.100 B
+
+  toRGB() applies the exact inverse of this matrix.  All of this is done in
+  *linear* light: the incoming palette is already display-gamma encoded, so
+  setPalette() linearises it before encoding and toRGB() re-applies gamma on
+  output, so the FIR/comb blending (which is a weighted average) mixes light
+  the way a real CRT's beam current does, not gamma-compressed code values.
 
   ENCODING
   ─────────────────────────────────────────────────────────────────────────
-  Each TIA colour-index byte is mapped to a phase angle (hue) and an
-  amplitude (saturation × luma).  The encoder generates the composite
-  waveform:
+  Each TIA colour-clock sample becomes one point of the composite waveform:
 
-      s(t) = Y(t) + U(t)·cos(2π·fsc·t) − V(t)·sin(2π·fsc·t)
+      s(t) = Y + U·cos(2π·fsc·t) − V·sin(2π·fsc·t)
 
-  where U and V are the BT.601 colour-difference signals.  The V component
-  is negated on alternate scanlines (the PAL phase-alternation law).
+  On our grid 2π·fsc·t collapses to the 4-entry cos/sin tables above.  The V
+  term is negated on alternate scanlines — the defining "Phase Alternating
+  Line" law, tracked here by the vSign / isEvenLine logic.
 
   DECODING
   ─────────────────────────────────────────────────────────────────────────
-  A one-line comb filter separates Y, U, and V:
+  Chroma is recovered by synchronous demodulation: multiply the composite by
+  cos (→ U) and −sin (→ V), which shifts the wanted sideband to baseband and
+  the unwanted products to 2·fsc, then low-pass filter them away.  A one-line
+  (PAL-D delay-line) comb then averages the current line against the previous
+  one.  Because the previous line carried −V, adding its same-axis filtered
+  chroma reinforces the signal and cancels the line-to-line phase error that
+  would otherwise show up as Hanover bars:
 
-      U_out = (U_current + U_delayed) / 2       ← averages (reinforces)
-      V_out = (V_current − V_delayed_inv) / 2   ← cancels noise
+      U_out = (U_current + U_previous) / 2     ← reinforces, removes noise
+      V_out = (V_current + V_previous) / 2     ← (V sign handled at encode)
 
-  The bandwidth of each channel is limited by separate low-pass filters
-  tuned to PAL-B/G specifications:
+  Per-channel bandwidth is set by separate windowed-sinc low-pass filters at
+  PAL-B/G specifications:
 
-      Luma bandwidth:   5.0 MHz  (PAL-B/G standard)
-      Chroma bandwidth: 1.3 MHz  (each colour-difference axis)
+      Luma bandwidth:   5.0 MHz  (PAL-B/G video baseband)
+      Chroma bandwidth: 1.3 MHz  (each colour-difference axis, ~U/V limit)
 
-  ARTIFACTS
+  PERFORMANCE — precomputed per-colour kernels
   ─────────────────────────────────────────────────────────────────────────
-  Because encoding and decoding are performed in the composite domain, the
-  following artifacts emerge naturally without special-casing:
+  The whole chain (encode → demodulate → FIR → comb) is *linear* in each
+  input clock's (Y,U,V).  By superposition, one clock's contribution to the
+  output samples around it is therefore a fixed kernel that depends only on
+  its colour, its column phase (x & 3) and the PAL V-sign.  We characterise
+  the chain once with unit impulses (buildCoeff), bake those into per-colour
+  kernels (expandKernels), and at render time merely scatter-add kernels —
+  no per-pixel filtering.  This mirrors the approach used by AtariNTSC for
+  the NTSC (Blargg) path.
 
-    • Chroma/luma crosstalk (dot crawl pattern, correctly offset from NTSC)
+  ARTIFACTS (emergent, not special-cased)
+  ─────────────────────────────────────────────────────────────────────────
+    • Chroma/luma crosstalk (dot crawl, correctly offset from NTSC)
     • Colour fringing at sharp horizontal edges
     • Bandwidth softening on both luma and chroma
-    • Correct PAL Hanover bar suppression via the comb filter
+    • PAL Hanover-bar suppression via the comb filter
+    • Per-frame colour loss on an odd scanline count (see render())
 
   OUTPUT
   ─────────────────────────────────────────────────────────────────────────
-  The output pixel width is TIA_WIDTH pixels (one per TIA colour clock).
-  Luma bandwidth limiting produces mild horizontal softening consistent with
-  a real PAL composite display.  A "sharpness" control applies aperture
-  correction to the luma channel, matching the peaking circuits found in
-  real PAL television sets.
+  render() emits the internal oversampled grid directly — SAMPLES_PER_CLOCK
+  output pixels per TIA colour clock (see outWidth()) — rather than box-
+  averaging back to 160.  The subcarrier-rate detail that carries the
+  artifacts lives above 1 sample/clock, so downsampling to 160 would average
+  it away and collapse Composite into S-Video; keeping the 5× grid preserves
+  it for the display.  A "sharpness" control adds aperture correction to the
+  luma channel, matching the peaking circuits in real PAL television sets.
 */
 class PALSignal
 {
@@ -147,7 +197,11 @@ class PALSignal
     static void loadConfig(const Settings& settings);
     static void saveConfig(Settings& settings);
 
-    // Rebuild internal lookup tables from the given RGB palette.
+    // Rebuild the per-colour YUV table (and the dependent kernels) from the
+    // given RGB palette.  The palette is display-gamma encoded, so each entry
+    // is linearised, converted to BT.601 Y′UV, and scaled by saturation/hue
+    // before encoding; see PALSignal.cxx for the matrices.  Cheap relative to
+    // buildCoeff(), so this is the path the palette/sat/hue sliders take.
     void setPalette(IntSpan palette);
 
     // Render one complete frame.
@@ -325,28 +379,35 @@ class PALSignal
 
     // ── Private methods ───────────────────────────────────────────────────
 
-    // Build sinc-windowed low-pass FIR kernels
+    // Build the windowed-sinc low-pass FIR kernels (luma 5.0 MHz, chroma
+    // 1.3 MHz at SAMPLE_RATE).  buildLumaKernel() also sets the 3-tap
+    // aperture-correction strength from the sharpness control.
     void buildLumaKernel();
     void buildChromaKernel();
 
-    // Build gamma LUT from mySetup.gamma; call after any setup change
+    // Rebuild the linear-light → display-gamma output LUT from mySetup.gamma.
+    // Call after any setup change (the active gamma feeds toRGB()).
     void buildGammaLUT();
 
-    // Build the palette-independent decode coefficients (myCoeff/mySVCoeff)
-    // from the current filters; call after buildLumaKernel/buildChromaKernel.
+    // Characterise the linear encode→demod→FIR chain with unit (y,u,v)
+    // impulses to get the palette-independent decode coefficients
+    // (myCoeff/mySVCoeff).  Depends only on the filters, so call after
+    // buildLumaKernel/buildChromaKernel and re-run only when those change.
     void buildCoeff();
 
-    // Expand myClockTable + coefficients into the per-colour kernels
-    // (myKernel/mySVKernel); call after setPalette() or buildCoeff().
+    // Fold the per-colour palette YUV (myClockTable) through the decode
+    // coefficients to produce the ready-to-scatter per-colour kernels
+    // (myKernel/mySVKernel).  Cheap; call after setPalette() or buildCoeff().
     void expandKernels();
 
-    // Apply the luma FIR and aperture correction to a sample buffer in-place
+    // Apply the luma FIR then the aperture-correction (unsharp) pass to a
+    // sample buffer in-place.  Used only while building coefficients.
     void applyLumaFilter(float* buf, uInt32 n);
 
-    // Apply the chroma FIR to a sample buffer in-place
+    // Apply the chroma FIR to a sample buffer in-place (build-time only).
     void applyChromaFilter(float* buf, uInt32 n);
 
-    // Gamma-correct and pack to 0x00RRGGBB
+    // Inverse BT.601 (linear light) + gamma LUT, packed to 0x00RRGGBB.
     FORCE_INLINE uInt32 toRGB(float y, float u, float v) const;
 
     static void convertToAdjustable(Adjustable& adjustable, const Setup& setup);
