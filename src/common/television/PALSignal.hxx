@@ -44,7 +44,7 @@ class Settings;
       fsc  =  TIA_clock × 5/4   →   4·fsc = TIA_clock × 5
 
   We *idealise* it as exactly 5/4 and work at an internal sample rate of
-  4·fsc = 5·TIA_clock = 17.734476 MHz.  That choice is what makes the whole
+  4·fsc = 5·TIA_clock = 17.734472 MHz.  That choice is what makes the whole
   model cheap and exact:
     • exactly 4 samples per subcarrier cycle  → quadrature carrier is the
       trivial integer sequence cos = {1,0,−1,0}, sin = {0,1,0,−1} (no
