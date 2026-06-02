@@ -21,7 +21,7 @@
 class OSystem;
 
 #include "Props.hxx"
-#include "json_lib.hxx"
+#include "json/json_lib.hxx"
 #include "FSNode.hxx"
 #include "repository/CompositeKeyValueRepository.hxx"
 #include "repository/CompositeKeyValueRepositoryNoop.hxx"

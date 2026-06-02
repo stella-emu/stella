@@ -24,8 +24,8 @@
 #include "FrameBuffer.hxx"
 #include "FBSurface.hxx"
 #include "FSNode.hxx"
-#include "nanojpeg_lib.hxx"
-#include "tinyexif_lib.hxx"
+#include "nanojpeg/nanojpeg_lib.hxx"
+#include "tinyexif/tinyexif_lib.hxx"
 
 #include "JPGLibrary.hxx"
 

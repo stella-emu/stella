@@ -792,16 +792,10 @@ DBGGUI="$SRC/debugger/gui"
 YACC="$SRC/debugger/yacc"
 CHEAT="$SRC/cheat"
 LIBPNG="$SRC_LIB/libpng"
-LIBJPG="$SRC_LIB/nanojpeg"
 LIBJPGEXIF="$SRC_LIB/tinyexif"
 ZLIB="$SRC_LIB/zlib"
-SQLITE_REPO="$SRC/common/repository/sqlite"
 SQLITE_LIB="$SRC_LIB/sqlite"
-JSON="$SRC_LIB/json"
-HTTP_LIB="$SRC_LIB/httplib"
-DR_LIBS="$SRC_LIB/dr_libs"
-
-INCLUDES="-I$CORE -I$COMMON -I$TV -I$TIA -I$TIA_FRAME_MANAGER -I$ELF -I$JSON -I$SQLITE_REPO -I$DR_LIBS"
+INCLUDES="-I$CORE -I$COMMON -I$TV -I$TIA -I$TIA_FRAME_MANAGER -I$ELF -I$SRC_LIB"
 LIBS="$LIBS `$_pkg_config --libs sdl3`"
 INCLUDES="$INCLUDES `$_pkg_config --cflags sdl3`"
 
@@ -869,12 +863,10 @@ fi
 
 if test "$_build_httplib" = yes ; then
   DEFINES="$DEFINES -DHTTP_LIB_SUPPORT"
-  INCLUDES="$INCLUDES -I$HTTP_LIB"
 fi
 
 if test "$_build_png" = yes ; then
   DEFINES="$DEFINES -DIMAGE_SUPPORT"
-  INCLUDES="$INCLUDES -I$LIBJPG -I$LIBJPGEXIF"
   MODULES="$MODULES $LIBJPGEXIF"
   if test "$_libpng" = yes ; then
     LIBS="$LIBS `$_pkg_config --libs libpng`"

@@ -25,14 +25,14 @@
 #ifdef __clang__
   #pragma clang diagnostic push
   #pragma clang diagnostic ignored "-Weverything"
-  #include "httplib.h"  // NOLINT
+  #include "httplib/httplib.h"  // NOLINT
   #pragma clang diagnostic pop
 #elif defined(BSPF_WINDOWS)
   #pragma warning(push, 0)
-  #include "httplib.h"  // NOLINT
+  #include "httplib/httplib.h"  // NOLINT
   #pragma warning(pop)
 #else
-  #include "httplib.h"  // NOLINT
+  #include "httplib/httplib.h"  // NOLINT
 #endif
 
 #endif  // HTTPLIB_LIB_HXX
