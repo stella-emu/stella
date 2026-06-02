@@ -55,10 +55,6 @@ void CompuMate::update()
   using DP = Controller::DigitalPin;
   using AP = Controller::AnalogPin;
 
-  // Cycles to hold an injected Backspace so the ROM scans it at column 5 and
-  // sees a clean press/release (~1 NTSC frame); used by the cancel callbacks
-  static constexpr uInt32 BACKSPACE_HOLD_CYCLES = 20000;
-
   lp.setPin(AP::Nine,  AnalogReadout::connectToGround());
   lp.setPin(AP::Five,  AnalogReadout::connectToVcc());
   lp.setPin(DP::Six,   true);

@@ -211,6 +211,12 @@ class CompuMate
     // column 5, then auto-released in update().
     uInt64   myBackspaceReleaseCycle{0};
 
+  #ifdef GUI_SUPPORT
+    // Cycles to hold an injected Backspace so the ROM scans it at column 5 and
+    // sees a clean press/release (~1 NTSC frame); used by the cancel callbacks
+    static constexpr uInt32 BACKSPACE_HOLD_CYCLES = 20000;
+  #endif
+
   private:
     // Following constructors and assignment operators not supported
     CompuMate() = delete;
