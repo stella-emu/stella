@@ -17,9 +17,9 @@
 
 // Activate dr_libs implementations in this translation unit only
 #define DR_WAV_IMPLEMENTATION
-#include "dr_wav_lib.hxx"
+#include "dr_libs/dr_wav_lib.hxx"
 #define DR_MP3_IMPLEMENTATION
-#include "dr_mp3_lib.hxx"
+#include "dr_libs/dr_mp3_lib.hxx"
 
 #include <cmath>
 #include <numeric>
