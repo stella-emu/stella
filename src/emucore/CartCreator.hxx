@@ -22,6 +22,7 @@ class Cartridge;
 class Settings;
 
 #include "Bankswitch.hxx"
+#include "FSNode.hxx"
 #include "bspf.hxx"
 
 /**
@@ -40,11 +41,12 @@ namespace CartCreator
     @param md5      The md5sum for the given ROM image (can be updated)
     @param dtype    The detected bankswitch type of the ROM image
     @param settings The settings container
+    @param baseDir  Base directory searched for auxiliary files (e.g. BIOS ROMs)
     @return   Pointer to the new cartridge object allocated on the heap
   */
   unique_ptr<Cartridge> create(const FSNode& file, ByteSpan image,
                                string& md5, string_view dtype,
-                               Settings& settings);
+                               Settings& settings, const FSNode& baseDir);
 };  // namespace CartCreator
 
 #endif  // CART_CREATOR_HXX

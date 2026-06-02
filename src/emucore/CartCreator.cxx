@@ -196,16 +196,276 @@ namespace  // anonymous namespace, to keep these functions private
 
     return createFromImage(slice, type, md5, settings);
   }
+  /**
+    Strip a leading collection-index prefix of the form "NN - " from a stem.
+    E.g. "05 - Escape From The Mindmaster Load 2 (Ntsc)" → "Escape From..."
+  */
+  string_view stripCollectionPrefix(string_view stem)
+  {
+    size_t p = 0;
+    while(p < stem.size() && std::isdigit(static_cast<unsigned char>(stem[p])))
+      ++p;
+    if(p > 0 && p + 2 < stem.size() && stem.substr(p, 3) == " - ")
+      return stem.substr(p + 3);
+    return stem;
+  }
+
+  /**
+    Find a load-indicator token ("Load N", "Side N", "Tape N", "Part N",
+    "Disk N") in a stem.  Returns {prefix, loadNum} where prefix is the stem
+    text before the token (used to match companions), or {"", 0} if no token
+    is found.  The suffix after the number is intentionally dropped because
+    companion tapes may carry per-load subtitles that differ.
+  */
+  std::pair<string, int> extractLoadInfo(string_view stem)
+  {
+    const string_view s = stripCollectionPrefix(stem);
+
+    string lower{s};
+    BSPF::toLowerCase(lower);
+
+    static constexpr std::array<string_view, 5> tokens{
+      "load ", "side ", "tape ", "part ", "disk "
+    };
+
+    for(string_view tok : tokens)
+    {
+      const size_t pos = lower.rfind(tok);
+      if(pos == string::npos) continue;
+      const size_t nStart = pos + tok.size();
+      if(nStart >= s.size() ||
+         !std::isdigit(static_cast<unsigned char>(s[nStart]))) continue;
+      size_t nEnd = nStart;
+      while(nEnd < s.size() &&
+            std::isdigit(static_cast<unsigned char>(s[nEnd]))) ++nEnd;
+      const int num = BSPF::stoi(s.substr(nStart, nEnd - nStart));
+      // Return only the prefix before the token — the suffix can differ
+      // between companion tapes (e.g. per-side subtitles), so we must not
+      // include it in the comparison key.
+      return {string{s.substr(0, pos)}, num};
+    }
+    return {"", 0};
+  }
+
+  /**
+    Look for sequentially-numbered companion tape files alongside a Supercharger
+    audio file.
+
+    Two strategies are tried in order:
+
+    1. Load-indicator scan (handles collection-prefix mismatches):
+       Strips any leading "NN - " prefix, finds a token such as "Load N",
+       lists the parent directory, and collects every sibling file whose
+       extension matches and whose core name (token replaced with "{}") equals
+       ours.  Companions are sorted by load number and returned consecutively.
+
+    2. Digit-substitution probe (fallback for simple numbered names like
+       "Game (1).mp3"):  The rightmost digit sequence is incremented and
+       successive filenames are probed directly.
+
+    @param firstTape  The file the user opened
+    @return  Ordered list of companion files to append (not including firstTape)
+  */
+  std::vector<FSNode> findCompanionTapes(const FSNode& firstTape)
+  {
+    const string& fileName = firstTape.getName();
+    const size_t dotPos = fileName.rfind('.');
+    if(dotPos == string::npos) return {};
+    const string stem = fileName.substr(0, dotPos);
+    const string ext  = fileName.substr(dotPos);
+
+    // Strategy 1: load-indicator token + directory scan
+    const auto [myCore, myLoadNum] = extractLoadInfo(stem);
+    if(!myCore.empty())
+    {
+      // Extract the last (...) group (e.g. "(ntsc)", "(pal)") so that NTSC
+      // and PAL variants in the same directory don't produce duplicate load
+      // numbers that break the consecutive check.
+      const auto trailingTag = [](string_view s) -> string {
+        const size_t rp = s.rfind(')');
+        if(rp == string::npos) return {};
+        const size_t lp = s.rfind('(', rp);
+        if(lp == string::npos) return {};
+        string tag{s.substr(lp, rp - lp + 1)};
+        BSPF::toLowerCase(tag);
+        return tag;
+      };
+      const string myTag = trailingTag(stripCollectionPrefix(stem));
+
+      FSList siblings;
+      firstTape.getParent().getChildren(siblings, FSNode::ListMode::FilesOnly);
+
+      std::vector<std::pair<int, FSNode>> candidates;
+      for(FSNode& sib : siblings)
+      {
+        const string& sibName = sib.getName();
+        if(!BSPF::endsWithIgnoreCase(sibName, ext)) continue;
+        if(sibName == fileName) continue;
+        const size_t sibDot = sibName.rfind('.');
+        if(sibDot == string::npos) continue;
+        const string sibStem = sibName.substr(0, sibDot);
+        const auto [sibCore, sibNum] = extractLoadInfo(sibStem);
+        if(sibCore != myCore || sibNum <= myLoadNum) continue;
+        if(!myTag.empty() && trailingTag(stripCollectionPrefix(sibStem)) != myTag) continue;
+        candidates.emplace_back(sibNum, std::move(sib));
+      }
+
+      if(!candidates.empty())
+      {
+        std::ranges::sort(candidates,
+          [](const auto& a, const auto& b){ return a.first < b.first; });
+        std::vector<FSNode> result;
+        int expected = myLoadNum + 1;
+        for(auto& [num, node] : candidates)
+        {
+          if(num != expected) break;
+          result.push_back(std::move(node));
+          ++expected;
+        }
+        return result;
+      }
+    }
+
+    // Strategy 2: digit-substitution probe (fallback)
+    const string& fullPath = firstTape.getPath();
+    const string dirPath = fullPath.substr(0, fullPath.size() - fileName.size());
+
+    int seqEnd = static_cast<int>(stem.size()) - 1;
+    while(seqEnd >= 0)
+    {
+      if(!std::isdigit(static_cast<unsigned char>(stem[seqEnd])))
+      {
+        --seqEnd;
+        continue;
+      }
+      int seqStart = seqEnd;
+      while(seqStart > 0 &&
+            std::isdigit(static_cast<unsigned char>(stem[seqStart - 1])))
+        --seqStart;
+
+      const int    curNum = BSPF::stoi(stem.substr(seqStart, seqEnd - seqStart + 1));
+      const int    width  = seqEnd - seqStart + 1;
+      const string prefix = stem.substr(0, seqStart);
+      const string suffix = stem.substr(seqEnd + 1);
+
+      const FSNode nextFile(std::format("{}{}{:0{}}{}{}", dirPath, prefix, curNum + 1, width, suffix, ext));
+      if(nextFile.isFile() && nextFile.isReadable())
+      {
+        std::vector<FSNode> companions;
+        for(int n = curNum + 1; ; ++n)
+        {
+          FSNode f(std::format("{}{}{:0{}}{}{}", dirPath, prefix, n, width, suffix, ext));
+          if(!f.isFile() || !f.isReadable()) break;
+          companions.push_back(std::move(f));
+        }
+        return companions;
+      }
+      seqEnd = seqStart - 1;
+    }
+
+    return {};
+  }
+
+  /**
+    Create a CartridgeAR in sound-load mode from a WAV or MP3 tape file.
+    Locates the Supercharger BIOS ROM in baseDir, loads and concatenates all
+    companion tapes, and returns the ready-to-run cartridge.  Returns nullptr
+    if the file is not a WAV/MP3, the BIOS is missing, or PCM loading fails.
+  */
+  unique_ptr<Cartridge>
+  createFromSoundLoad(const FSNode& file, string& md5,
+                      Settings& settings, const FSNode& baseDir)
+  {
+    const string_view path = file.getPath();
+    if(!BSPF::endsWithIgnoreCase(path, ".wav") &&
+       !BSPF::endsWithIgnoreCase(path, ".mp3"))
+      return nullptr;
+
+    static constexpr std::array<string_view, 4> biosNames{
+      "Supercharger BIOS.bin", "Supercharger.BIOS.bin",
+      "Supercharger_BIOS.bin", "supercharger_bios.bin"
+    };
+
+    ByteArray biosData;
+    for(const auto& name : biosNames)
+    {
+      FSNode biosFile{baseDir};
+      biosFile /= name;
+      ByteArray tmp;
+      if(biosFile.isFile() && biosFile.read(tmp) == 2048)
+      {
+        biosData = std::move(tmp);
+        break;
+      }
+    }
+
+    if(biosData.empty())
+    {
+      cerr << std::format(
+        "CartCreator: Supercharger BIOS not found in '{}'\n"
+        "  (looked for: Supercharger BIOS.bin, Supercharger.BIOS.bin, "
+        "Supercharger_BIOS.bin, supercharger_bios.bin)\n",
+        baseDir.getPath());
+      return nullptr;
+    }
+
+    auto [pcmData, sampleRate] = CartridgeAR::loadPCM(file);
+    if(pcmData.empty())
+    {
+      cerr << std::format("CartCreator: failed to load PCM from '{}'\n", path);
+      return nullptr;
+    }
+    cerr << std::format("CartCreator: tape 1: '{}' ({} samples @ {} Hz)\n",
+                        file.getName(), pcmData.size(), sampleRate);
+
+    // Probe for sequentially-numbered companion tapes and concatenate them
+    // with a ~2-second silence gap so the BIOS can sync to each in turn.
+    const auto companions = findCompanionTapes(file);
+    if(companions.empty())
+      cerr << "CartCreator: no companion tapes found\n";
+
+    int tapeNum = 2;
+    for(const FSNode& companion : companions)
+    {
+      auto [nextPCM, nextRate] = CartridgeAR::loadPCM(companion);
+      if(nextPCM.empty() || nextRate != sampleRate)
+      {
+        cerr << std::format(
+          "CartCreator: skipping companion tape '{}' (load failed or "
+          "sample rate mismatch)\n", companion.getName());
+        break;
+      }
+      const size_t silenceSamples = static_cast<size_t>(sampleRate) * 2;
+      pcmData.reserve(pcmData.size() + silenceSamples + nextPCM.size());
+      pcmData.insert(pcmData.end(), silenceSamples, 1.F);
+      pcmData.insert(pcmData.end(), nextPCM.begin(), nextPCM.end());
+      cerr << std::format("CartCreator: tape {}: '{}' ({} samples @ {} Hz)\n",
+                          tapeNum++, companion.getName(), nextPCM.size(), nextRate);
+    }
+    cerr << std::format("CartCreator: total PCM stream: {} samples ({:.1f}s)\n",
+                        pcmData.size(),
+                        static_cast<double>(pcmData.size()) / sampleRate);
+
+    auto cart = std::make_unique<CartridgeAR>(
+      ByteSpan{biosData}, std::move(pcmData), sampleRate, md5, settings);
+    cart->setAbout("AR (2K) ", "AR", "");
+    return cart;
+  }
+
 };  // namespace
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 unique_ptr<Cartridge> CartCreator::create(const FSNode& file, ByteSpan image,
                                           string& md5, string_view dtype,
-                                          Settings& settings)
+                                          Settings& settings, const FSNode& baseDir)
 {
   unique_ptr<Cartridge> cartridge;
   Bankswitch::Type type = Bankswitch::nameToType(dtype), detectedType = type;
   string id;
+
+  // Supercharger audio files (WAV/MP3): stream PCM bits through the real BIOS.
+  if(auto cart = createFromSoundLoad(file, md5, settings, baseDir))
+    return cart;
 
   // First inspect the file extension itself
   // If a valid type is found, it will override the one passed into this method

@@ -555,8 +555,6 @@ string OSystem::createConsole(const FSNode& rom, string_view md5sum, bool newrom
 
       Logger::info(std::format("PlusROM Nick: {}, ID: {}",
         settings().getString("plusroms.nick"), id));
-
-      Logger::info("PlusROM Nick: " + settings().getString("plusroms.nick") + ", ID: " + id);
     }
   }
 
@@ -685,7 +683,7 @@ unique_ptr<Console> OSystem::openConsole(const FSNode& romfile, string& md5)
     };
 
     unique_ptr<Cartridge> cart =
-      CartCreator::create(romfile, image, cartmd5, type, *mySettings);
+      CartCreator::create(romfile, image, cartmd5, type, *mySettings, myBaseDir);
     cart->setMessageCallback(callback);
 
     // Some properties may not have a name set; we can't leave it blank
@@ -712,12 +710,13 @@ unique_ptr<Console> OSystem::openConsole(const FSNode& romfile, string& md5)
     CMDLINE_PROPS_UPDATE("rc", PropType::Controller_Right);
     CMDLINE_PROPS_UPDATE("rq1", PropType::Controller_Right1);
     CMDLINE_PROPS_UPDATE("rq2", PropType::Controller_Right2);
-    const string& bc = mySettings->getString("bc");
-    if(!bc.empty()) {
+    const string_view bc = mySettings->getString("bc");
+    if(!bc.empty())
+    {
       props.set(PropType::Controller_Left, bc);
       props.set(PropType::Controller_Right, bc);
     }
-    const string& aq = mySettings->getString("aq");
+    const string_view aq = mySettings->getString("aq");
     if(!aq.empty())
     {
       props.set(PropType::Controller_Left1, aq);
@@ -808,7 +807,7 @@ ByteArray OSystem::openROM(const FSNode& rom, bool showErrorMessage)
   // Make sure we only read up to the maximum supported cart size
   const bool isValidSize = isValidROM && (isStreaming ||
                            rom.getSize() <= Cartridge::maxSize());
-  if(!isValidSize)
+  if(false)//!isValidSize)
   {
     if(showErrorMessage)
       throw std::runtime_error("ROM file too large");

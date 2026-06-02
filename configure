@@ -799,8 +799,9 @@ SQLITE_REPO="$SRC/common/repository/sqlite"
 SQLITE_LIB="$SRC_LIB/sqlite"
 JSON="$SRC_LIB/json"
 HTTP_LIB="$SRC_LIB/httplib"
+DR_LIBS="$SRC_LIB/dr_libs"
 
-INCLUDES="-I$CORE -I$COMMON -I$TV -I$TIA -I$TIA_FRAME_MANAGER -I$ELF -I$JSON -I$SQLITE_REPO"
+INCLUDES="-I$CORE -I$COMMON -I$TV -I$TIA -I$TIA_FRAME_MANAGER -I$ELF -I$JSON -I$SQLITE_REPO -I$DR_LIBS"
 LIBS="$LIBS `$_pkg_config --libs sdl3`"
 INCLUDES="$INCLUDES `$_pkg_config --cflags sdl3`"
 

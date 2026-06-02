@@ -96,6 +96,7 @@ using ByteSpan  = SpanOf<uInt8>;
 using ShortSpan = SpanOf<uInt16>;
 using IntSpan   = SpanOf<uInt32>;
 using sIntSpan  = SpanOf<Int32>;
+using FloatSpan = SpanOf<float>;
 
 // Common mutable span types
 template<typename T>
@@ -106,6 +107,7 @@ using ByteMSpan  = MSpanOf<uInt8>;
 using ShortMSpan = MSpanOf<uInt16>;
 using IntMSpan   = MSpanOf<uInt32>;
 using sIntMSpan  = MSpanOf<Int32>;
+using FloatMSpan = MSpanOf<float>;
 
 // We use KB a lot; let's make a literal for it
 [[nodiscard]] constexpr size_t operator ""_KB(unsigned long long size)
