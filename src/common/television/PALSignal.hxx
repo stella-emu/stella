@@ -51,10 +51,13 @@ class Settings;
       trig at sample time, no fractional-phase error);
     • exactly 5 samples per TIA colour clock  → every TIA pixel maps to a
       whole number of samples, so encode/decode never straddle a sample.
-  The price of the idealisation: the tiny real ~3e-5 % residual between fsc
-  and 5/4·clock is what makes dot-crawl slowly *move* on real hardware.  On
-  our integer grid the artifacts are spatially correct but stationary; we do
-  not model their slow drift.  (This is also why colour loss has to be added
+  The published fsc and 5/4·clock differ by only ~3e-5 % (crystal tolerance);
+  on the real console the subcarrier is derived coherently from the colour
+  clock, so treating the ratio as exactly 5/4 costs us nothing visible.  The
+  artifacts therefore sit on a fixed integer grid and are spatially correct
+  but temporally static — which matches real PAL, where the subcarrier returns
+  to phase every frame and line alternation suppresses the crawling motion
+  seen on NTSC.  (The static grid is also why colour loss has to be added
   explicitly — see render() — rather than emerging from grid arithmetic.)
 
   COLOUR SPACE — BT.601 Y′UV
