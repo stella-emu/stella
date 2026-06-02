@@ -17,7 +17,7 @@
 
 #include "FSNode.hxx"
 #include "Settings.hxx"
-#include "json_lib.hxx"
+#include "json/json_lib.hxx"
 
 #include "FavoritesManager.hxx"
 
