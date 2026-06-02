@@ -30,7 +30,7 @@ CompuMate::CompuMate(OSystem& osystem, const Console& console,
     myConsole{console},
     myEvent{event},
     mySystem{system},
-    myCassette(system)
+    myCassette(osystem, system)
 {
   // These controller pointers will be retrieved by the Console, which will
   // also take ownership of them

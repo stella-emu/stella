@@ -18,6 +18,7 @@
 #ifndef COMPUMATE_CASSETTE_HXX
 #define COMPUMATE_CASSETTE_HXX
 
+class OSystem;
 class System;
 
 #include "bspf.hxx"
@@ -68,7 +69,7 @@ class System;
 class CompuMateCassette
 {
   public:
-    explicit CompuMateCassette(const System& system);
+    CompuMateCassette(OSystem& osystem, const System& system);
     ~CompuMateCassette() = default;
 
     /**
@@ -164,6 +165,7 @@ class CompuMateCassette
     static constexpr uInt32 SAVE_TIMEOUT_CYCLES  = 60'000;
 
   private:
+    OSystem&      myOSystem;
     const System& mySystem;
 
     // Playback
