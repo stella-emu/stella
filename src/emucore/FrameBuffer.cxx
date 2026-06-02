@@ -54,6 +54,7 @@
   #include "CommandMenu.hxx"
   #include "HighScoresMenu.hxx"
   #include "MessageMenu.hxx"
+  #include "OverlayMenu.hxx"
   #include "PlusRomsMenu.hxx"
   #include "TimeMachine.hxx"
 #endif
@@ -469,6 +470,23 @@ void FrameBuffer::update(UpdateMode mode)
         myOSystem.plusRomsMenu().draw(forceRedraw);
       }
       break;  // EventHandlerState::PLUSROMSMENU
+    }
+
+    case EventHandlerState::OVERLAYMENU:
+    {
+      myOSystem.overlayMenu().tick();
+      redraw |= myOSystem.overlayMenu().needsRedraw();
+      if(redraw)
+      {
+        renderTIA(true, true);
+        myOSystem.overlayMenu().draw(forceRedraw);
+      }
+      else if(rerender)
+      {
+        renderTIA(true, true);
+        myOSystem.overlayMenu().render();
+      }
+      break;  // EventHandlerState::OVERLAYMENU
     }
 
     case EventHandlerState::TIMEMACHINE:

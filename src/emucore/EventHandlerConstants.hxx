@@ -35,6 +35,7 @@ enum class EventHandlerState: uInt8 {
   HIGHSCORESMENU,
   MESSAGEMENU,
   PLUSROMSMENU,
+  OVERLAYMENU,
   DEBUGGER,
   NONE
 };

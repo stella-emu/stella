@@ -47,9 +47,11 @@ class BrowserDialog : public Dialog
     using Command = std::function<void(bool, const FSNode&)>;
 
   public:
-    // NOTE: Do not call this c'tor directly!  Use the static show method below
+    // NOTE: Do not call these c'tors directly!  Use the static show methods below
     //       There is no point in doing so, since the result can't be returned
     BrowserDialog(GuiObject* boss, const GUI::Font& font, int max_w, int max_h);
+    BrowserDialog(OSystem& osystem, DialogContainer& parent,
+                  const GUI::Font& font, int max_w, int max_h);
     ~BrowserDialog() override = default;
 
     /**
@@ -88,6 +90,24 @@ class BrowserDialog : public Dialog
                       [](const FSNode&) { return true; } });
 
     /**
+      Place the browser window onscreen with no parent dialog (e.g. from TIA
+      emulation mode).  Uses the overlay menu as the DialogContainer.
+
+      @param osystem    The OSystem instance
+      @param title      The title of the browser window
+      @param startpath  The initial path to select in the browser
+      @param mode       The functionality to use (load/save/display)
+      @param command    The command to run when 'OK' or 'Cancel' is clicked
+      @param namefilter Filter files/directories in browser display
+    */
+    static void show(OSystem& osystem,
+                     string_view title, string_view startpath,
+                     BrowserDialog::Mode mode,
+                     const Command& command,
+                     const FSNode::NameFilter& namefilter = {
+                      [](const FSNode&) { return true; } });
+
+    /**
       Since the show methods allocate a static BrowserDialog, at some
       point we need to manually de-allocate it.  This method must be
       called from one of the lowest-level destructors to do that.
@@ -100,6 +120,8 @@ class BrowserDialog : public Dialog
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 
   private:
+    void initialize(int max_w, int max_h);
+
     /** Place the browser window onscreen, using the given attributes */
     void show(string_view startpath,
               BrowserDialog::Mode mode,

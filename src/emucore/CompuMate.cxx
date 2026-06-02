@@ -17,14 +17,17 @@
 
 #include "Console.hxx"
 #include "Event.hxx"
+#include "EventHandler.hxx"
 #include "FSNode.hxx"
+#include "OSystem.hxx"
 #include "System.hxx"
 #include "CompuMate.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CompuMate::CompuMate(const Console& console, const Event& event,
-                     const System& system)
-  : myConsole{console},
+CompuMate::CompuMate(OSystem& osystem, const Console& console,
+                     const Event& event, const System& system)
+  : myOSystem{osystem},
+    myConsole{console},
     myEvent{event},
     mySystem{system},
     myCassette(system)
@@ -152,8 +155,23 @@ void CompuMate::update()
       myLoadArm.seen = true;
       myLoadArm.bufLen = 1;  // LOAD is a single token
       myLoadArm.waitingForRelease = true;
-      // TODO: open file-browser dialog here; for now use default cassette path
+  #ifdef GUI_SUPPORT
+      myOSystem.eventHandler().openBrowserDialog("Load Cassette",
+        myCassette.defaultCassettePath().getPath(),
+        BrowserDialog::Mode::FileLoad,
+        [this](bool ok, const FSNode& node) {
+          if(ok)
+            myPendingLoadPath = node;
+          else
+            cancelCassetteLoad();
+          myOSystem.eventHandler().leaveMenuMode();
+        },
+        [](const FSNode& node) {
+          return node.isDirectory() || BSPF::endsWithIgnoreCase(node.getName(), ".bin");
+        });
+  #else
       myPendingLoadPath = myCassette.defaultCassettePath();
+  #endif
     }
 
     // Suppress character tracking until J is released so the J from Func+J
@@ -198,8 +216,23 @@ void CompuMate::update()
       mySaveArm.seen = true;
       mySaveArm.bufLen = 1;  // SAVE is a single token
       mySaveArm.waitingForRelease = true;
-      // TODO: open file-browser dialog here; for now fall back to sibling path
+  #ifdef GUI_SUPPORT
+      myOSystem.eventHandler().openBrowserDialog("Save Cassette",
+        myCassette.defaultCassettePath().getPath(),
+        BrowserDialog::Mode::FileSave,
+        [this](bool ok, const FSNode& node) {
+          if(ok)
+            myCassette.setSavePath(node);
+          else
+            cancelCassetteSave();
+          myOSystem.eventHandler().leaveMenuMode();
+        },
+        [](const FSNode& node) {
+          return node.isDirectory() || BSPF::endsWithIgnoreCase(node.getName(), ".bin");
+        });
+  #else
       myCassette.setSavePath(myCassette.defaultCassettePath());
+  #endif
     }
 
     if(mySaveArm.seen && mySaveArm.waitingForRelease && !myEvent.get(E::CompuMateH))

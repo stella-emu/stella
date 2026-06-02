@@ -42,6 +42,7 @@ class AudioSettings;
   class Launcher;
   class OptionsMenu;
   class MessageMenu;
+  class OverlayMenu;
   class PlusRomsMenu;
   class TimeMachine;
   class VideoAudioDialog;
@@ -235,6 +236,13 @@ class OSystem
       @return The Plus ROM menu object
     */
     PlusRomsMenu& plusRomsMenu() const { return *myPlusRomMenu; }
+
+    /**
+      Get the generic overlay menu of the system.
+
+      @return The overlay menu object
+    */
+    OverlayMenu& overlayMenu() const { return *myOverlayMenu; }
 
     /**
       Get the ROM launcher of the system.
@@ -570,6 +578,9 @@ class OSystem
 
     // Pointer to the PlusRomsMenu object
     unique_ptr<PlusRomsMenu> myPlusRomMenu;
+
+    // Pointer to the OverlayMenu object
+    unique_ptr<OverlayMenu> myOverlayMenu;
 
     // Pointer to the TimeMachine object
     unique_ptr<TimeMachine> myTimeMachine;

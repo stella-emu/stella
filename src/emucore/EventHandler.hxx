@@ -21,6 +21,7 @@
 class Console;
 class OSystem;
 class MouseControl;
+class Dialog;
 class DialogContainer;
 class PhysicalJoystick;
 class Variant;
@@ -30,8 +31,12 @@ namespace GUI {
   class Font;
 }  // namespace GUI
 
+#ifdef GUI_SUPPORT
+  #include "BrowserDialog.hxx"
+#endif
 #include "Event.hxx"
 #include "EventHandlerConstants.hxx"
+#include "FSNode.hxx"
 #include "Control.hxx"
 #include "PKeyboardHandler.hxx"
 #include "PJoystickHandler.hxx"
@@ -154,6 +159,14 @@ class EventHandler
 
     void enterMenuMode(EventHandlerState state);
     void leaveMenuMode();
+    void openDialog(Dialog* dialog);
+  #ifdef GUI_SUPPORT
+    void openBrowserDialog(string_view title, string_view startpath,
+                           BrowserDialog::Mode mode,
+                           const BrowserDialog::Command& command,
+                           const FSNode::NameFilter& namefilter = {
+                            [](const FSNode&) { return true; } });
+  #endif
     bool enterDebugMode();
     void leaveDebugMode();
     void enterTimeMachineMenuMode(uInt32 numWinds, bool unwind);

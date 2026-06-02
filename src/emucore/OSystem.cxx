@@ -33,6 +33,7 @@
   #include "CommandMenu.hxx"
   #include "HighScoresMenu.hxx"
   #include "MessageMenu.hxx"
+  #include "OverlayMenu.hxx"
   #include "PlusRomsMenu.hxx"
   #include "Launcher.hxx"
   #include "TimeMachine.hxx"
@@ -187,6 +188,7 @@ bool OSystem::initialize(const Settings::Options& options)
   myHighScoresManager = std::make_unique<HighScoresManager>(*this);
   myHighScoresMenu = std::make_unique<HighScoresMenu>(*this);
   myMessageMenu = std::make_unique<MessageMenu>(*this);
+  myOverlayMenu = std::make_unique<OverlayMenu>(*this);
   myPlusRomMenu = std::make_unique<PlusRomsMenu>(*this);
   myTimeMachine = std::make_unique<TimeMachine>(*this);
   myLauncher = std::make_unique<Launcher>(*this);

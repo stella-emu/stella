@@ -21,6 +21,7 @@
 class Console;
 class Event;
 class FSNode;
+class OSystem;
 class System;
 
 #include "bspf.hxx"
@@ -55,7 +56,8 @@ class CompuMate
       @param event    The event object to use for events
       @param system   The system using this controller
     */
-    CompuMate(const Console& console, const Event& event, const System& system);
+    CompuMate(OSystem& osystem, const Console& console,
+              const Event& event, const System& system);
     ~CompuMate() = default;
 
     /**
@@ -174,7 +176,8 @@ class CompuMate
     };
 
   private:
-    // Console, Event, and System objects
+    // OSystem, Console, Event, and System objects
+    OSystem&       myOSystem;
     const Console& myConsole;
     const Event&   myEvent;
     const System&  mySystem;

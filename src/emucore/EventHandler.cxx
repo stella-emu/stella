@@ -53,10 +53,12 @@
   #include "DebuggerParser.hxx"
 #endif
 #ifdef GUI_SUPPORT
+  #include "BrowserDialog.hxx"
   #include "OptionsMenu.hxx"
   #include "CommandMenu.hxx"
   #include "HighScoresMenu.hxx"
   #include "MessageMenu.hxx"
+  #include "OverlayMenu.hxx"
   #include "PlusRomsMenu.hxx"
   #include "DialogContainer.hxx"
   #include "Launcher.hxx"
@@ -2520,6 +2522,30 @@ void EventHandler::enterMenuMode(EventHandlerState state)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void EventHandler::openDialog(Dialog* dialog)
+{
+#ifdef GUI_SUPPORT
+  myOSystem.overlayMenu().setDialog(dialog);
+  enterMenuMode(EventHandlerState::OVERLAYMENU);
+#endif
+}
+
+#ifdef GUI_SUPPORT
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void EventHandler::openBrowserDialog(string_view title, string_view startpath,
+                                     BrowserDialog::Mode mode,
+                                     const BrowserDialog::Command& command,
+                                     const FSNode::NameFilter& namefilter)
+{
+  // Use setState directly to avoid reStack(), which would call baseDialog()
+  // on the overlayMenu before BrowserDialog has pushed itself onto the stack
+  setState(EventHandlerState::OVERLAYMENU);
+  myOSystem.sound().pause(true);
+  BrowserDialog::show(myOSystem, title, startpath, mode, command, namefilter);
+}
+#endif
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventHandler::leaveMenuMode()
 {
 #ifdef GUI_SUPPORT
@@ -2652,6 +2678,11 @@ void EventHandler::setState(EventHandlerState state)
 
     case EventHandlerState::PLUSROMSMENU:
       myOverlay = &myOSystem.plusRomsMenu();
+      enableTextEvents(true);
+      break;
+
+    case EventHandlerState::OVERLAYMENU:
+      myOverlay = &myOSystem.overlayMenu();
       enableTextEvents(true);
       break;
 
