@@ -18,9 +18,12 @@
 #ifndef TV_MODE_HXX
 #define TV_MODE_HXX
 
+#include "bspf.hxx"
+
 // The type of TV video connection being emulated.
 // Numeric values are stored in the "tv.filter" setting — do not reorder.
-enum class TVMode {
+enum class TVMode: uInt8
+{
   None      = 0,
   RGB       = 1,
   SVideo    = 2,

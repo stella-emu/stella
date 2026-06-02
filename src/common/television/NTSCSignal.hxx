@@ -71,7 +71,7 @@ class NTSCSignal
 
     // Span of {name, float*} entries for the custom adjustables.
     // Pointers are into the static myCustomSetup, so they remain valid.
-    SpanOf<AdjustableTag> adjustableTags() const { return ourCustomAdjustables; }
+    static SpanOf<AdjustableTag> adjustableTags() { return ourCustomAdjustables; }
 
     // Get the named adjustables for a given TV mode (for GUI dialogs)
     static void getAdjustables(Adjustable& adjustable, TVMode mode);

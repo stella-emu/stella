@@ -153,14 +153,14 @@ class PALSignal
     //   blend      : [-1..1]      comb blend;  physical = blend × 0.5 + 0.5
     struct Setup {
       float sharpness  { 0.2F };
-      float saturation { 0.0F };
-      float hue        { 0.0F };
-      float gamma      { 0.0F };
-      float blend      { 0.0F };
+      float saturation { 0.F  };
+      float hue        { 0.F  };
+      float gamma      { 0.F  };
+      float blend      { 0.F  };
     };
 
     // Indices into the adjustableTags() span; used by GlobalKeyHandler
-    enum class Adjustables : uInt8 {
+    enum class Adjustables: uInt8 {
       SHARPNESS,
       BLEND,
       NUM_ADJUSTABLES
@@ -172,9 +172,9 @@ class PALSignal
     };
 
     // Preset Setup values for each TVMode
-    static constexpr Setup TV_Composite{  0.2F, 0.0F, 0.0F, 0.0F, 0.0F };
-    static constexpr Setup TV_SVideo   {  0.3F, 0.0F, 0.0F, 0.0F, 0.0F };
-    static constexpr Setup TV_Bad      { -0.3F, 0.0F, 0.0F, 0.0F, 0.6F };
+    static constexpr Setup TV_Composite{  0.2F, 0.F, 0.F, 0.F, 0.F  };
+    static constexpr Setup TV_SVideo   {  0.3F, 0.F, 0.F, 0.F, 0.F  };
+    static constexpr Setup TV_Bad      { -0.3F, 0.F, 0.F, 0.F, 0.6F };
 
   public:
     PALSignal();
@@ -188,7 +188,7 @@ class PALSignal
 
     // Span of {name, float*} entries for the custom adjustables.
     // Pointers are into the static myCustomSetup, so they remain valid.
-    SpanOf<AdjustableTag> adjustableTags() const { return ourCustomAdjustables; }
+    static SpanOf<AdjustableTag> adjustableTags() { return ourCustomAdjustables; }
 
     // Get the named adjustables for a given TVMode (for GUI dialogs)
     static void getAdjustables(Adjustable& adjustable, TVMode mode);
@@ -211,10 +211,12 @@ class PALSignal
     //   tiaSrc   : raw TIA colour-index bytes, srcWidth × srcHeight
     //   rgbDst   : destination 0x00RRGGBB pixels, dstPitch pixels wide
     //   phaseInverted: true when the previous frame had an odd scanline count.
-    //              Drives PAL V-phase alternation, and also PAL colour loss:
+    //              Drives PAL V-phase alternation on all modes.  Also triggers
+    //              PAL colour loss on composite modes (Composite, Bad, Custom):
     //              an odd count gives an inconsistent PAL field/burst sequence,
     //              so a real set's colour-killer cuts chroma and the frame is
-    //              rendered as luma-only greyscale.
+    //              rendered as luma-only greyscale.  S-Video is immune (Y and C
+    //              are carried on separate wires; no colour-killer mechanism).
     void render(const uInt8* tiaSrc, uInt32 srcWidth, uInt32 srcHeight,
                 uInt32* rgbDst, uInt32 dstPitch, bool phaseInverted);
 
@@ -234,14 +236,14 @@ class PALSignal
     // ── Frequency constants ───────────────────────────────────────────────
 
     // PAL TIA colour clock (crystal frequency)
-    static constexpr float TIA_FREQ    = 3'546'894.0F;   // Hz
+    static constexpr float TIA_FREQ    = 3'546'894.F;   // Hz
 
     // PAL colour subcarrier = TIA_FREQ × 5/4
-    static constexpr float FSC         = 4'433'618.0F;   // Hz  (= TIA_FREQ × 1.25)
+    static constexpr float FSC         = 4'433'618.F;   // Hz  (= TIA_FREQ × 1.25)
 
     // Internal sample rate = 4 × fsc = 5 × TIA_FREQ
     // → 4 samples/subcarrier cycle, 5 samples/TIA colour clock
-    static constexpr float SAMPLE_RATE = 4.0F * FSC;     // 17,734,472 Hz
+    static constexpr float SAMPLE_RATE = 4.F * FSC;     // 17,734,472 Hz
 
     // Samples per TIA colour clock at SAMPLE_RATE (exact integer = 5)
     static constexpr uInt32 SAMPLES_PER_CLOCK = 5;
