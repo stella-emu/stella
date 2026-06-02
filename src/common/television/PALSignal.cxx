@@ -362,7 +362,7 @@ void PALSignal::buildCoeff()
     for(uInt32 s = 0; s < SAMPLES_PER_CLOCK; ++s) myUBuf[base + s] = 1.F;
     applyChromaFilter(myUBuf.data(), vis);
 
-    const int capBase = xref * static_cast<int>(SAMPLES_PER_CLOCK) - KERNEL_LEFT;
+    constexpr int capBase = xref * static_cast<int>(SAMPLES_PER_CLOCK) - KERNEL_LEFT;
     for(int t = 0; t < KERNEL_WIDTH; ++t)
     {
       const auto idx = static_cast<uInt32>(capBase + t);
@@ -411,7 +411,7 @@ void PALSignal::expandKernels()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PALSignal::applyLumaFilter(float* buf, uInt32 n)
 {
-  const int half = static_cast<int>(LUMA_TAPS) / 2;
+  constexpr int half = static_cast<int>(LUMA_TAPS) / 2;
 
   for(uInt32 i = 0; i < n; ++i)
   {
@@ -441,7 +441,7 @@ void PALSignal::applyLumaFilter(float* buf, uInt32 n)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PALSignal::applyChromaFilter(float* buf, uInt32 n)
 {
-  const int half = static_cast<int>(CHROMA_TAPS) / 2;
+  constexpr int half = static_cast<int>(CHROMA_TAPS) / 2;
 
   for(uInt32 i = 0; i < n; ++i)
   {
@@ -579,7 +579,7 @@ uInt32 PALSignal::toRGB(float y, float u, float v) const
   const float b = BSPF::clamp(y + 2.032F * u,              0.F, 1.F);
 
   // LUT lookup: linear [0..1] → quantized index → gamma-encoded [0..255]
-  const auto scale = static_cast<float>(GAMMA_LUT_SIZE - 1);
+  constexpr auto scale = static_cast<float>(GAMMA_LUT_SIZE - 1);
   const uInt32 ri = myGammaLUT[static_cast<uInt32>(std::lround(r * scale))];
   const uInt32 gi = myGammaLUT[static_cast<uInt32>(std::lround(g * scale))];
   const uInt32 bi = myGammaLUT[static_cast<uInt32>(std::lround(b * scale))];
