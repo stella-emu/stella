@@ -205,6 +205,11 @@ class CompuMate
     FSNode   myPendingLoadPath;  // set by dialog (or default sibling) at Func+J time
     ArmState myLoadArm;
     ArmState mySaveArm;
+    // Cycle at which to release a virtually-injected Backspace keypress
+    // (0 = none pending).  Used on LOAD/SAVE cancel to erase the command from
+    // the ROM screen; the event is held briefly so the ROM scans it at
+    // column 5, then auto-released in update().
+    uInt64   myBackspaceReleaseCycle{0};
 
   private:
     // Following constructors and assignment operators not supported

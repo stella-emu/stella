@@ -27,6 +27,7 @@ CompuMateCassette::CompuMateCassette(const System& system)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CompuMateCassette::load(const FSNode& romFile, ConsoleTiming timing)
 {
+  myCasStartCycle = UINT64_MAX;  // stop any current playback
   myCasRomPath = romFile;
 
   double cpuFreq{};
