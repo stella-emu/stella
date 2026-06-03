@@ -397,55 +397,6 @@ namespace BSPF
   }
 
   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-  // Search if string contains pattern including '?' as joker.
-  // @param str      The searched string
-  // @param pattern  The pattern to search for
-  // @return  Position of pattern in string.
-  constexpr size_t matchWithJoker(string_view str, string_view pattern)
-  {
-    if(str.length() < pattern.length())
-      return string_view::npos;
-
-    // Find the first literal (non-'?') character in the pattern to use as
-    // a fast-skip anchor; if none exists every position trivially matches
-    size_t anchorPat = 0;
-    while(anchorPat < pattern.length() && pattern[anchorPat] == '?')
-      ++anchorPat;
-
-    if(anchorPat == pattern.length())
-      return 0;  // pattern is all '?', matches at position 0
-
-    const char anchor = pattern[anchorPat];
-    const size_t maxPos = str.length() - pattern.length();
-
-    for(size_t pos = 0; pos <= maxPos; )
-    {
-      // Jump ahead to next occurrence of the anchor character
-      const size_t found = str.find(anchor, pos + anchorPat);
-      if(found == string_view::npos || found - anchorPat > maxPos)
-        return string_view::npos;
-
-      pos = found - anchorPat;
-
-      // Verify the full pattern at this position
-      bool match = true;
-      for(size_t i = 0; i < pattern.length(); ++i)
-      {
-        if(pattern[i] != '?' && pattern[i] != str[pos + i])
-        {
-          match = false;
-          break;
-        }
-      }
-      if(match)
-        return pos;
-
-      ++pos;
-    }
-    return string_view::npos;
-  }
-
-  // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   // Search if string contains pattern including wildcard '*'
   // and '?' as joker.
   // @param str      The searched string
@@ -453,6 +404,21 @@ namespace BSPF
   // @return  True if pattern was found.
   constexpr bool matchWithWildcards(string_view str, string_view pattern)
   {
+    // Restore substring-match semantics: a pattern without an explicit
+    // leading '*' matches anywhere in str, and one without a trailing '*'
+    // need not consume str's tail.  "PAL" behaves like "*PAL*".
+    const bool needLeading  = pattern.empty() || pattern.front() != '*';
+    const bool needTrailing = pattern.empty() || pattern.back()  != '*';
+    string effectivePat;
+    if(needLeading || needTrailing)
+    {
+      effectivePat.reserve(pattern.size() + needLeading + needTrailing);
+      if(needLeading)  effectivePat += '*';
+      effectivePat += pattern;
+      if(needTrailing) effectivePat += '*';
+      pattern = effectivePat;
+    }
+
     size_t si = 0;        // current position in str
     size_t pi = 0;        // current position in pattern
     size_t starPi = string_view::npos;  // position of last '*' in pattern
