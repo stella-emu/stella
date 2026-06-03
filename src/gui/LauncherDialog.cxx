@@ -675,25 +675,29 @@ void LauncherDialog::loadRomInfo()
   myPendingRomInfo = true;
 
   const string& md5 = selectedRomMD5();
+  Properties properties;
   if(!md5.empty())
   {
-    // The properties for the currently selected ROM
-    Properties properties;
-
     // Make sure to load a per-ROM properties entry, if one exists
     instance().propSet().loadPerROM(currentNode(), md5);
 
     // And now get the properties for this ROM
     instance().propSet().getMD5(md5, properties);
-
-    myRomImageWidget->setProperties(currentNode(), properties, false);
-    myRomInfoWidget->setProperties(currentNode(), properties, false);
   }
   else
   {
-    myRomImageWidget->clearProperties();
-    myRomInfoWidget->clearProperties();
+    const Bankswitch::Type type = Bankswitch::typeFromExtension(currentNode());
+    if(type == Bankswitch::Type::AUTO)
+    {
+      myRomImageWidget->clearProperties();
+      myRomInfoWidget->clearProperties();
+      return;
+    }
+    properties.set(PropType::Cart_Name, currentNode().getBaseName());
+    properties.set(PropType::Cart_Type, Bankswitch::typeToName(type));
   }
+  myRomImageWidget->setProperties(currentNode(), properties, false);
+  myRomInfoWidget->setProperties(currentNode(), properties, false);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -705,19 +709,25 @@ void LauncherDialog::loadPendingRomInfo()
     return;
 
   const string& md5 = selectedRomMD5();
+  Properties properties;
   if(!md5.empty())
   {
-    // The properties for the currently selected ROM
-    Properties properties;
-
     // Make sure to load a per-ROM properties entry, if one exists
     instance().propSet().loadPerROM(currentNode(), md5);
 
     // And now get the properties for this ROM
     instance().propSet().getMD5(md5, properties);
-    myRomImageWidget->setProperties(currentNode(), properties);
-    myRomInfoWidget->setProperties(currentNode(), properties);
   }
+  else
+  {
+    const Bankswitch::Type type = Bankswitch::typeFromExtension(currentNode());
+    if(type == Bankswitch::Type::AUTO)
+      return;
+    properties.set(PropType::Cart_Name, currentNode().getBaseName());
+    properties.set(PropType::Cart_Type, Bankswitch::typeToName(type));
+  }
+  myRomImageWidget->setProperties(currentNode(), properties);
+  myRomInfoWidget->setProperties(currentNode(), properties);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -639,8 +639,18 @@ unique_ptr<Console> OSystem::openConsole(const FSNode& romfile, string& md5)
 {
   unique_ptr<Console> console;
 
+  // WAV/MP3 files don't need a ROM image; CartCreator handles them via PCM loading
+  const string_view rompath = romfile.getPath();
+  const bool isSoundLoad = BSPF::endsWithIgnoreCase(rompath, ".wav") ||
+                           BSPF::endsWithIgnoreCase(rompath, ".mp3");
+
   // Open the cartridge image and read it in
-  if(ByteArray image = openROM(romfile, md5); !image.empty())
+  ByteArray image;
+  if(isSoundLoad)
+    md5 = MD5::hash(romfile.getPath());  // no image to hash; derive from path
+  else
+    image = openROM(romfile, md5);
+  if(isSoundLoad || !image.empty())
   {
     // Get a valid set of properties, including any entered on the commandline
     // For initial creation of the Cart, we're only concerned with the BS type
@@ -780,6 +790,11 @@ string OSystem::getROMMD5(const FSNode& rom)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ByteArray OSystem::openROM(const FSNode& rom, bool showErrorMessage)
 {
+  // WAV/MP3 files are loaded via CartCreator::createFromSoundLoad, not as raw images
+  const string_view path = rom.getPath();
+  if(BSPF::endsWithIgnoreCase(path, ".wav") || BSPF::endsWithIgnoreCase(path, ".mp3"))
+    return {};
+
   // First check if this is a valid ROM filename
   const bool isValidROM = rom.isFile() && Bankswitch::isValidRomName(rom);
   if(!isValidROM && showErrorMessage)
@@ -788,13 +803,13 @@ ByteArray OSystem::openROM(const FSNode& rom, bool showErrorMessage)
   // Next check for a proper file size
   // Streaming ROMs read only a portion of the file
   // Otherwise the size to read is 0 (meaning read the entire file)
-  const size_t sizeToRead = CartDetector::isProbablyMVC(rom);  // TODO: optimize this
+  const size_t sizeToRead = CartDetector::isProbablyMVC(rom);
   const bool isStreaming  = sizeToRead > 0;
 
   // Make sure we only read up to the maximum supported cart size
   const bool isValidSize = isValidROM && (isStreaming ||
                            rom.getSize() <= Cartridge::maxSize());
-  if(false)//!isValidSize)
+  if(!isValidSize)
   {
     if(showErrorMessage)
       throw std::runtime_error("ROM file too large");
