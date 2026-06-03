@@ -20,7 +20,7 @@
 
 #include "Event.hxx"
 #include "EventHandlerConstants.hxx"
-#include "json_lib.hxx"
+#include "json/json_lib.hxx"
 
 /**
   This class handles controller mappings in Stella.
