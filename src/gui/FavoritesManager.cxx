@@ -188,10 +188,10 @@ const FavoritesManager::UserList& FavoritesManager::userList() const
       const FSNode aNode(a);
       const FSNode bNode(b);
       const bool realDir = aNode.isDirectory() &&
-        !BSPF::endsWithIgnoreCase(aNode.getPath(), ".zip");
+        !aNode.hasExtension(".zip");
 
       if(realDir != (bNode.isDirectory() &&
-          !BSPF::endsWithIgnoreCase(bNode.getPath(), ".zip")))
+          !bNode.hasExtension(".zip")))
         return realDir;
       return BSPF::compareIgnoreCase(aNode.getName(), bNode.getName()) < 0;
     });

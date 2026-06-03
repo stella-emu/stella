@@ -100,7 +100,7 @@ void FileListWidget::setLocation(const FSNode& node, string_view select)
     else
       _dirList.push_back(path);
 
-    if(file.isDirectory() && !BSPF::endsWithIgnoreCase(name, ".zip"))
+    if(file.isDirectory() && !file.hasExtension(".zip"))
     {
       fileNames.push_back(name);
       if(name == "..")
@@ -161,7 +161,7 @@ void FileListWidget::getChildren(const FSNode::CancelCheck& isCancelled)
 FileListWidget::IconType FileListWidget::getIconType(const FSNode& node) const
 {
   if(node.isDirectory())
-    return BSPF::endsWithIgnoreCase(node.getName(), ".zip")
+    return node.hasExtension(".zip")
       ? IconType::zip : IconType::directory;
   else
     return node.isFile() && Bankswitch::isValidRomName(node)

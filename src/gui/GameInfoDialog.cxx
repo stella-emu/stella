@@ -1606,7 +1606,7 @@ void GameInfoDialog::handleCommand(CommandSender* sender, int cmd,
                             }
                           },
                           [](const FSNode& node) {
-                            return BSPF::endsWithIgnoreCase(node.getName(), ".png");
+                            return node.hasExtension(".png");
                           });
       break;
 #endif
