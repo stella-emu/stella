@@ -78,7 +78,7 @@ string CartridgeEnhancedWidget::ramDescription()
     info = std::format("{} bytes RAM @ ${} - ${}\n",
       myCart.myRamSize,
       Base::hex4(ADDR_BASE),
-      Base::hex4(ADDR_BASE | (myCart.myRamSize * 2 - 1)));
+      Base::hex4(static_cast<int>(ADDR_BASE | (myCart.myRamSize * 2 - 1))));
 
   info += std::format("  ${} - ${} (R), ${} - ${} (W)\n",
     Base::hex4(ADDR_BASE | myCart.myReadOffset),
