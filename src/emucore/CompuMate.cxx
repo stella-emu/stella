@@ -191,7 +191,7 @@ void CompuMate::update()
           }
         },
         [](const FSNode& node) {
-          return node.isDirectory() || BSPF::endsWithIgnoreCase(node.getName(), ".bin");
+          return node.isDirectory() || node.hasExtension(".bin");
         });
   #else
       myPendingLoadPath = myCassette.defaultCassettePath();
@@ -259,7 +259,7 @@ void CompuMate::update()
           }
         },
         [](const FSNode& node) {
-          return node.isDirectory() || BSPF::endsWithIgnoreCase(node.getName(), ".bin");
+          return node.isDirectory() || node.hasExtension(".bin");
         });
   #else
       myCassette.setSavePath(myCassette.defaultCassettePath());

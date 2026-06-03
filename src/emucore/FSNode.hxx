@@ -20,6 +20,7 @@
 
 #include <fstream>
 #include <functional>
+#include <initializer_list>
 
 #include "bspf.hxx"
 
@@ -230,6 +231,24 @@ class FSNode
      * @return bool true if the object can be written to, false otherwise.
      */
     bool isWritable() const;
+
+    /**
+     * Test whether getName() ends with the given extension (case-insensitive).
+     * The extension should include the leading dot, e.g. ".zip".
+     */
+    bool hasExtension(string_view ext) const {
+      return BSPF::endsWithIgnoreCase(getName(), ext);
+    }
+
+    /**
+     * Test whether getName() ends with any of the given extensions (case-insensitive).
+     * Each extension should include the leading dot, e.g. {".zip", ".gz"}.
+     */
+    bool hasExtension(std::initializer_list<string_view> exts) const {
+      return std::ranges::any_of(exts, [this](string_view ext) {
+        return BSPF::endsWithIgnoreCase(getName(), ext);
+      });
+    }
 
     /**
      * Create a directory from the current node path.

@@ -90,7 +90,7 @@ bool FSNode::getAllChildren(FSList& fslist, ListMode mode,
     // Convert system nodes for ZIP paths into proper FSNodeZIP nodes
     for(auto& i: fslist)
     {
-      if(BSPF::endsWithIgnoreCase(i.getPath(), ".zip"))
+      if(i.hasExtension(".zip"))
       {
         const AbstractFSNodePtr ptr = FSNodeFactory::create(
             i.getPath(), FSNodeFactory::Type::ZIP);
