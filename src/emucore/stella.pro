@@ -17363,6 +17363,8 @@
 "Cart.Type" "CM"
 "Controller.Left" "COMPUMATE"
 "Controller.Right" "COMPUMATE"
+"Display.Format" "NTSC"
+"Display.PPBlend" "80"
 "Display.Phosphor" "YES"
 ""
 
@@ -21918,6 +21920,7 @@
 "Cart.Type" "CM"
 "Controller.Left" "COMPUMATE"
 "Controller.Right" "COMPUMATE"
+"Display.Format" "PAL"
 "Display.Phosphor" "YES"
 "Display.PPBlend" "80"
 ""
