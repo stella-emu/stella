@@ -131,7 +131,7 @@ void LauncherFileListWidget::extendLists(StringList& list)
   //  "romNode" is virtual or "romNode" is a ZIP
   //  Then show virtual dirs in parent of "romNode".
   if(_node == romNode
-      && (myInVirtualDir || BSPF::endsWithIgnoreCase(_node.getPath(), ".zip")))
+      && (myInVirtualDir || _node.hasExtension(".zip")))
   {
     romNode = _node.getParent();
     instance().settings().setValue("startromdir", romNode.getPath());
@@ -261,7 +261,7 @@ LauncherFileListWidget::getIconType(const FSNode& node) const
     return FileListWidget::getIconType(node);
 
   if(node.isDirectory())
-    return BSPF::endsWithIgnoreCase(node.getName(), ".zip")
+    return node.hasExtension(".zip")
       ? IconType::favzip : IconType::favdir;
   else
     return IconType::favrom;
