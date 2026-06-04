@@ -80,6 +80,7 @@ Bankswitch::Type CartDetector::autodetectType(ByteSpan image)
     else if(isProbablyWD(image))          type = Bankswitch::Type::WD;
     else if(isProbablyFC(image))          type = Bankswitch::Type::FC;
     else if(isProbably03E0(image))        type = Bankswitch::Type::_03E0;
+    else if(isProbablyDV(image))          type = Bankswitch::Type::DV;
     else                                  type = Bankswitch::Type::F8;
   }
   else if(image.size() == 8_KB + 3)  // 8195 bytes (Experimental)
@@ -790,4 +791,17 @@ bool CartDetector::isProbablyPlusROM(ByteSpan image)
   // PlusCart uses this pattern to detect a PlusROM
   static constexpr std::array<uInt8, 3> signature = { 0x8d, 0xf1, 0x1f };  // STA $1FF1
   return searchForBytes(image, signature);
+}
+
+bool CartDetector::isProbablyDV(ByteSpan image)
+{
+  static constexpr BSPF::array2D<uInt8, 4, 3> signature = {{
+    { 0x2C, 0xD0, 0x0F },  // BIT $0FD0 (Beamrider)
+    { 0xAD, 0xD0, 0x0F },  // LDA $0FD0 (???)
+    { 0x2C, 0xB0, 0x0F },  // BIT $0FB0 (Beamrider)
+    { 0xAD, 0xB0, 0x0F },  // LDA $0FB0 (???)
+  }};
+  return std::ranges::any_of(signature, [&](const auto& sig) {
+    return searchForBytes(image, sig);
+  });
 }
