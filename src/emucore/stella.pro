@@ -11682,6 +11682,12 @@
 "Cart.Highscore" "{\"score_addresses\":[\"0x8b\",\"0x8a\",\"0x89\"],\"score_digits\":6,\"special_address\":\"0x80\",\"special_label\":\"Sect.\",\"variations_count\":1}"
 ""
 
+"Cart.MD5" "dbc5ea6b259b1419c26c71ddb051fab2"
+"Cart.Manufacturer" "Digivision"
+"Cart.Name" "Beamrider (1984) (Digivision)"
+"Cart.Type" "UASW"
+""
+
 "Cart.MD5" "79b649fb812c50b4347d12e7ddbb8400"
 "Cart.Name" "Red Pong Number 2 Demo 2 (PD)"
 "Display.Phosphor" "YES"

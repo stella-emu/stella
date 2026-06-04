@@ -29,7 +29,7 @@
   should be made in stella.pro, and then this file should be
   regenerated and the application recompiled.
 */
-static constexpr BSPF::array2D<const char*, 3660, 30> DefProps = {{
+static constexpr BSPF::array2D<const char*, 3661, 30> DefProps = {{
   { "000509d1ed2b8d30a9d94be1b3b5febb", "Greg Zumwalt", "", "Jungle Jane (2003) (Greg Zumwalt) (Hack)", "Hack of Pitfall!", "Hack", "", "", "", "{\"score_addresses\":[\"0xd5\",\"0xd6\",\"0xd7\"],\"score_digits\":6,\"variations_count\":1}", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "Pitfall! - Pitfall Harry's Jungle Adventure (USA)" },
   { "0060a89b4c956b9c703a59b181cb3018", "CommaVid, Irwin Gaines - Ariola", "CM-008 - 712 008-720", "Cakewalk (1983) (CommaVid) (PAL)", "AKA Alarm in der Backstube", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "007d18dedc1f0565f09c42aa61a6f585", "CCE", "C-843", "Worm War I (1983) (CCE)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
@@ -3128,6 +3128,7 @@ static constexpr BSPF::array2D<const char*, 3660, 30> DefProps = {{
   { "dbabb80e92ff18d8eecf615c0539151e", "", "", "Sprite Demo 3 (PD)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "dbb10b904242fcfb8428f372e00c01af", "Atari, John Dunn", "CX2631, CX2631P", "Superman (1979) (Atari) (PAL)", "", "", "", "", "", "{\"score_addresses\":[\"0xe3\",\"0xe2\"],\"variations_count\":1}", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "dbba14a0f69f0e13fdccb3fde3baedca", "Thomas Jentzsch", "", "Reactor - Atari Trak-Ball Hack v1.3 (NTSC) (Full-Speed) (Thomas Jentzsch)", "Uses Atari Trak-Ball Controller", "", "", "", "", "", "https://atariage.com/store/index.php?l=product_detail&p=1186", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "YES", "", "Reactor (USA)" },
+  { "dbc5ea6b259b1419c26c71ddb051fab2", "Digivision", "", "Beamrider (1984) (Digivision)", "", "", "", "", "UASW", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "dbc7485ad5814d466de780a3e7ed3b46", "Kyle Pittman", "", "Pink Floyd (Kyle Pittman) (PD)", "Hack of Adventures of Tron (Mattel)", "New Release (Hack)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "Adventures of TRON (USA)" },
   { "dbc8829ef6f12db8f463e30f60af209f", "Data Age", "DA1001", "Encounter at L-5 (1982) (Data Age)", "Uses the Paddle Controllers", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "15", "15", "AUTO 50", "", "", "", "", "" },
   { "dbdaf82f4f0c415a94d1030271a9ef44", "CCE", "", "Kaboom! (CCE)", "Uses the Paddle Controllers (left only)", "", "", "", "", "{\"score_addresses\":[\"0xa3\",\"0xa4\",\"0xa5\"],\"score_digits\":6,\"special_address\":\"0xa2\",\"special_bcd\":false,\"special_label\":\"Group\",\"variations_count\":1,\"variations_zero_based\":true}", "", "", "", "", "", "", "", "", "", "", "", "", "17", "17", "01 50", "", "", "", "", "" },
