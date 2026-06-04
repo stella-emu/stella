@@ -404,9 +404,10 @@ namespace BSPF
   // @return  True if pattern was found.
   constexpr bool matchWithWildcards(string_view str, string_view pattern)
   {
-    // Restore substring-match semantics: a pattern without an explicit
-    // leading '*' matches anywhere in str, and one without a trailing '*'
-    // need not consume str's tail.  "PAL" behaves like "*PAL*".
+    // A pattern without an explicit leading '*' matches anywhere in str,
+    // and one without a trailing '*' need not consume str's tail.
+    // "PAL" behaves like "*PAL*", and internal '*'/'?' are matched as
+    // you'd expect; "1984*Atari" filters for Atari games from 1984.
     const bool needLeading  = pattern.empty() || pattern.front() != '*';
     const bool needTrailing = pattern.empty() || pattern.back()  != '*';
     string effectivePat;
