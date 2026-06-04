@@ -41,6 +41,7 @@
 #include "CartDFSC.hxx"
 #include "CartDPC.hxx"
 #include "CartDPCPlus.hxx"
+#include "CartDV.hxx"
 #include "CartE0.hxx"
 #include "CartE7.hxx"
 #include "CartEF.hxx"
@@ -146,6 +147,7 @@ namespace  // anonymous namespace, to keep these functions private
       case WF8:   return std::make_unique<CartridgeWF8>(image, md5, settings);
       case X07:   return std::make_unique<CartridgeX07>(image, md5, settings);
       case ELF:   return std::make_unique<CartridgeELF>(image, md5, settings);
+      case DV:    return std::make_unique<CartridgeDV>(image, md5, settings);
       default:    return nullptr;  // The remaining types have already been handled
     }
   }

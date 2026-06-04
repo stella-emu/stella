@@ -244,6 +244,11 @@ class CartDetector
     */
     static bool isProbablyELF(ByteSpan image);
 
+    /**
+      Returns true if the image is probably a DV (Digivision 8K) bankswitching cartridge
+    */
+    static bool isProbablyDV(ByteSpan image);
+
   private:
     // Following constructors and assignment operators not supported
     CartDetector() = delete;

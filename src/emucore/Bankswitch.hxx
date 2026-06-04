@@ -46,7 +46,7 @@ class Bankswitch
       E0,     E7,     EF,      EFF,    EFSC,  ELF,   F0,    F4,
       F4SC,   F6,     F6SC,    F8,     F8SC,  FA,    FA2,   FC,
       FE,     GL,     JANE,    MDM,    MVC,   SB,    TVBOY, UA,
-      UASW,   WD,     WDSW,    WF8,    X07,
+      UASW,   DV,     WD,      WDSW,   WF8,   X07,
     #ifdef CUSTOM_ARM
       CUSTOM
     #endif
@@ -132,6 +132,7 @@ class Bankswitch
       {  512_KB, 512_KB },    // TVBOY
       {    8_KB,   8_KB },    // UA
       {    8_KB,   8_KB },    // UASW
+      {    8_KB,   8_KB },    // DV
       {    8_KB,   8_KB },    // WD
       {    8_KB,   8_KB+5 },  // WDSW
       {    8_KB,   8_KB },    // WF8
@@ -206,6 +207,7 @@ class Bankswitch
       { "TVBOY"   , "TV Boy (512K)"               },
       { "UA"      , "UA (8K UA Ltd.)"             },
       { "UASW"    , "UASW (8K UA swapped banks)"  },
+      { "DV"      , "DV (Digivision 8K)"          },
       { "WD"      , "WD (Pink Panther)"           },
       { "WDSW"    , "WDSW (Pink Panther, bad)"    },
       { "WF8"     , "WF8 (Coleco, white carts)"   },
@@ -402,6 +404,7 @@ class Bankswitch
       { "TVBOY" , Bankswitch::Type::TVBOY   },
       { "UA"    , Bankswitch::Type::UA      },
       { "UASW"  , Bankswitch::Type::UASW    },
+      { "DV"    , Bankswitch::Type::DV      },
       { "WD"    , Bankswitch::Type::WD      },
       { "WDSW"  , Bankswitch::Type::WDSW    },
       { "WF8"   , Bankswitch::Type::WF8     },
@@ -444,6 +447,7 @@ class Bankswitch
       { "CTY"     , Bankswitch::Type::CTY     },
       { "CV"      , Bankswitch::Type::CV      },
       { "DEVC"    , Bankswitch::Type::DEVC    },
+      { "DV"      , Bankswitch::Type::DV      },
       { "DF"      , Bankswitch::Type::DF      },
       { "DFSC"    , Bankswitch::Type::DFSC    },
       { "DPC"     , Bankswitch::Type::DPC     },
