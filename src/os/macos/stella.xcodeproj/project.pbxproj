@@ -185,6 +185,8 @@
 		2D91751209BA90380026E9FF /* ApplicationServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2D17D98E08BC398400E47F69 /* ApplicationServices.framework */; };
 		2DEFB40C09C3386F00754289 /* Cart.icns in Resources */ = {isa = PBXBuildFile; fileRef = 2DEFB40B09C3386F00754289 /* Cart.icns */; };
 		55FE2A501EE4880500078ADE /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 55FE2A3C1EE487CA00078ADE /* InfoPlist.strings */; };
+		AA111111AA111111AA111111 /* MacOSUtils.hxx in Headers */ = {isa = PBXBuildFile; fileRef = AA333333AA333333AA333333 /* MacOSUtils.hxx */; };
+		AA222222AA222222AA222222 /* MacOSUtils.mm in Sources */ = {isa = PBXBuildFile; fileRef = AA444444AA444444AA444444 /* MacOSUtils.mm */; };
 		CFB521D72853A2590083B9CE /* CartBUSInfoWidget.cxx in Sources */ = {isa = PBXBuildFile; fileRef = CFB521D52853A2590083B9CE /* CartBUSInfoWidget.cxx */; };
 		CFB521D82853A2590083B9CE /* CartBUSInfoWidget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = CFB521D62853A2590083B9CE /* CartBUSInfoWidget.hxx */; };
 		CFE3F60B1E84A9A200A8204E /* CartBUSWidget.cxx in Sources */ = {isa = PBXBuildFile; fileRef = CFE3F6071E84A9A200A8204E /* CartBUSWidget.cxx */; };
@@ -1070,6 +1072,8 @@
 		2DEFB40B09C3386F00754289 /* Cart.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = Cart.icns; sourceTree = SOURCE_ROOT; };
 		2DF971D70892CEA400F64D23 /* DebuggerSystem.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; path = DebuggerSystem.hxx; sourceTree = "<group>"; };
 		2DF971DF0892CEA400F64D23 /* Expression.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; path = Expression.hxx; sourceTree = "<group>"; };
+		AA333333AA333333AA333333 /* MacOSUtils.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = MacOSUtils.hxx; sourceTree = SOURCE_ROOT; };
+		AA444444AA444444AA444444 /* MacOSUtils.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = MacOSUtils.mm; sourceTree = SOURCE_ROOT; };
 		CFB521D52853A2590083B9CE /* CartBUSInfoWidget.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CartBUSInfoWidget.cxx; sourceTree = "<group>"; };
 		CFB521D62853A2590083B9CE /* CartBUSInfoWidget.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = CartBUSInfoWidget.hxx; sourceTree = "<group>"; };
 		CFE3F6071E84A9A200A8204E /* CartBUSWidget.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CartBUSWidget.cxx; sourceTree = "<group>"; };
@@ -2097,8 +2101,10 @@
 		2D6050C60898771C00C6DE89 /* macos */ = {
 			isa = PBXGroup;
 			children = (
-				DC21E5B921CA903E007D0E1A /* OSystemMACOS.cxx */,
+				AA333333AA333333AA333333 /* MacOSUtils.hxx */,
+				AA444444AA444444AA444444 /* MacOSUtils.mm */,
 				DC21E5BA21CA903E007D0E1A /* OSystemMACOS.hxx */,
+				DC21E5B921CA903E007D0E1A /* OSystemMACOS.cxx */,
 				E0D4153A25A120340031A8D6 /* SettingsRepositoryMACOS.hxx */,
 				E0D4153B25A120340031A8D6 /* SettingsRepositoryMACOS.mm */,
 			);
@@ -3021,6 +3027,7 @@
 				DC0E98E12801CC8900097C68 /* Cart0FA0Widget.hxx in Headers */,
 				DCBD31E82299ADB400567357 /* KeyMap.hxx in Headers */,
 				DCF3A6E81DFC75E3008A8AF3 /* Background.hxx in Headers */,
+				AA111111AA111111AA111111 /* MacOSUtils.hxx in Headers */,
 				DC21E5C021CA903E007D0E1A /* OSystemMACOS.hxx in Headers */,
 				DCFB9FAC1ECA2609004FD69B /* DelayQueueIteratorImpl.hxx in Headers */,
 				E0A3841D2589741A0062AA93 /* KeyValueRepositorySqlite.hxx in Headers */,
@@ -3702,6 +3709,7 @@
 				DC39F2A22DC107F3006D74A8 /* SoundSDL.cxx in Sources */,
 				DC39F2A32DC107F3006D74A8 /* FBBackendSDL.cxx in Sources */,
 				DCA6A9162C7E0ADD00EEB5FF /* CartELFStateWidget.cxx in Sources */,
+				AA222222AA222222AA222222 /* MacOSUtils.mm in Sources */,
 				DC21E5BF21CA903E007D0E1A /* OSystemMACOS.cxx in Sources */,
 				DC84397C247B294E00C6A4FC /* CartTVBoy.cxx in Sources */,
 				DCAAE5D91715887B0080BB82 /* Cart0840Widget.cxx in Sources */,
