@@ -162,7 +162,7 @@ class Missile : public Serializable
     /**
       Tick one color clock. Inline for performance (implementation below).
      */
-    FORCE_INLINE void tick(uInt8 hclock, bool isReceivingMclock = true);
+    FORCE_INLINE void tick(uInt8 hclock, bool isReceivingRegularClock = true);
 
     /**
       Per-clock RESMP tracking: while locked, snap the missile counter to the
@@ -296,7 +296,7 @@ void Missile::movementTick(uInt8 clock, uInt8 hclock, bool hblank)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Missile::tick(uInt8 hclock, bool isReceivingMclock)
+void Missile::tick(uInt8 hclock, bool isReceivingRegularClock)
 {
   // If we are in inverted movement clock phase mode and a movement tick
   // occurred, it will supress the tick.
@@ -306,9 +306,13 @@ void Missile::tick(uInt8 hclock, bool isReceivingMclock)
     return;
   }
 
+  // The missile seems to become visible one clock early in starfield mode
+  // and during hblank.
   myIsVisible =
     myIsRendering &&
-    (myRenderCounter >= 0 || (isMoving && isReceivingMclock && myRenderCounter == -1 && myWidth < 4 && ((hclock + 1) % 4 == 3)));
+    (myRenderCounter >= 0 || (isMoving && myRenderCounter == -1 && (
+      (myWidth < 4 && ((hclock + 1) % 4 == 3)) || !isReceivingRegularClock
+    )));
 
   // Consider enabled status and the signal to determine visibility
   // (as represented by the collision mask)
@@ -324,7 +328,7 @@ void Missile::tick(uInt8 hclock, bool isReceivingMclock)
 
       if (myRenderCounter == -1) {
         // Regular clock pulse during movement -> starfield mode
-        if (isMoving && isReceivingMclock) {
+        if (isMoving && isReceivingRegularClock) {
           switch ((hclock + 1) % 4) {
             case 3:
               myEffectiveWidth = myWidth == 1 ? 2 : myWidth;
