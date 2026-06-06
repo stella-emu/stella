@@ -67,14 +67,6 @@ class CompuMate
     unique_ptr<Controller>& rightController() { return myRightController; }
 
     /**
-      Load a cassette .bin image from the given ROM's sibling file.
-      Called by Console immediately after construction.
-      NOTE: eventually we'll use a BrowserWidget to ask the user for the
-            file to load.
-    */
-    void loadCassette(const FSNode& romFile);
-
-    /**
       Called by CartCM whenever SWCHA bit 6 (D6, audio-out/CLK) changes.
       Forwarded to CompuMateCassette's FSK decoder during save.
     */
@@ -202,7 +194,7 @@ class CompuMate
 
       void reset() { *this = {}; }
     };
-    FSNode   myPendingLoadPath;  // set by dialog (or default sibling) at Func+J time
+    FSNode myPendingLoadPath;  // set by dialog at Func+J time
     ArmState myLoadArm;
     ArmState mySaveArm;
     // Cycle at which to release a virtually-injected Backspace keypress

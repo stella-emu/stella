@@ -73,7 +73,7 @@ class CompuMateCassette
     ~CompuMateCassette() = default;
 
     /**
-      Load program bytes from romFile's .bin sibling.
+      Load program bytes from romFile.
       Also stores the ROM path for deriving the default save destination.
     */
     void load(const FSNode& romFile, ConsoleTiming timing);
@@ -119,16 +119,9 @@ class CompuMateCassette
 
     /**
       Set the destination path for the next save.  Called when the
-      file-browser dialog confirms a filename; for now set automatically
-      to the default sibling path.
+      file-browser dialog confirms a filename.
     */
     void setSavePath(const FSNode& path) { mySavePath = path; }
-
-    /**
-      The default save destination: the .bin sibling of the loaded ROM.
-      Used until a file-browser dialog is available to provide a real path.
-    */
-    FSNode defaultCassettePath() const { return myCasRomPath.getSiblingNode(".bin"); }
 
     /**
       Write the current cassette data (myCasData) to destFile.
@@ -172,7 +165,6 @@ class CompuMateCassette
     ByteArray      myCasData;
     double         myCasFreqRatio{0.0};
     uInt64         myCasStartCycle{UINT64_MAX};
-    FSNode         myCasRomPath;
     mutable uInt64 myCasLastPct{UINT64_MAX};
 
     // Save (transport-layer FSK decoder; writes into myCasData)

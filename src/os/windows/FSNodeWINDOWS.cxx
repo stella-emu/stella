@@ -169,12 +169,21 @@ bool FSNodeWINDOWS::getChildren(AbstractFSList& fslist, ListMode mode) const
       if (!full.empty() && full.back() != L'\\')
         full += L'\\';
       full += desc.cFileName;
+      // Directories must end with a separator, matching setFlags() and the
+      // POSIX backend.  BrowserDialog::getResult() builds child paths by
+      // concatenating the directory path with a filename, so a missing
+      // trailing separator produces an invalid path (e.g. "dircassette.bin").
+      if(isDir)
+        full += L'\\';
 
       FSNodeWINDOWS entry;
       entry._kind        = isDir ? NodeKind::Directory : NodeKind::File;
       entry._pathW       = std::move(full);
       entry._pathUtf8    = wideToUtf8(entry._pathW);
-      entry._displayName = AsciiFold::toAscii(lastPathComponent(entry._pathUtf8));
+      // Derive the display name from the bare filename, not the full path:
+      // directory paths carry a trailing separator (for internal path joins)
+      // that must not leak into the name shown to the user.
+      entry._displayName = AsciiFold::toAscii(wideToUtf8(desc.cFileName));
       entry._size        = (static_cast<size_t>(desc.nFileSizeHigh) << 32) |
                                                 desc.nFileSizeLow;
 

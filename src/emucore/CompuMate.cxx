@@ -39,12 +39,6 @@ CompuMate::CompuMate(OSystem& osystem, const Console& console,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CompuMate::loadCassette(const FSNode& romFile)
-{
-  myCassette.load(romFile, myConsole.timing());
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CompuMate::update()
 {
   // Handle SWCHA changes - the following is modelled on code from z26
@@ -173,7 +167,7 @@ void CompuMate::update()
       myLoadArm.prevAnyChar = false;
   #ifdef GUI_SUPPORT
       myOSystem.eventHandler().openBrowserDialog("Load Cassette",
-        myCassette.defaultCassettePath().getPath(),
+        "~",
         BrowserDialog::Mode::FileLoad,
         [this](bool ok, const FSNode& node) {
           if(ok)
@@ -193,8 +187,6 @@ void CompuMate::update()
         [](const FSNode& node) {
           return node.isDirectory() || node.hasExtension(".bin");
         });
-  #else
-      myPendingLoadPath = myCassette.defaultCassettePath();
   #endif
     }
 
@@ -218,7 +210,10 @@ void CompuMate::update()
     if(enterNow && !myLoadArm.prevEnter && myLoadArm.seen)
     {
       myCassette.load(myPendingLoadPath, myConsole.timing());
-      myCassette.startPlayback(mySystem.cycles());
+      // Only begin playback if the load produced data; otherwise the
+      // synthesised "Loading cassette" gauge would mask load()'s error message.
+      if(myCassette.isLoaded())
+        myCassette.startPlayback(mySystem.cycles());
       myLoadArm.seen = false;
     }
     myLoadArm.prevEnter = enterNow;
@@ -242,7 +237,7 @@ void CompuMate::update()
       mySaveArm.prevAnyChar = false;
   #ifdef GUI_SUPPORT
       myOSystem.eventHandler().openBrowserDialog("Save Cassette",
-        myCassette.defaultCassettePath().getPath(),
+        myPendingLoadPath.getParent().getPath(),
         BrowserDialog::Mode::FileSave,
         [this](bool ok, const FSNode& node) {
           if(ok)
@@ -261,8 +256,6 @@ void CompuMate::update()
         [](const FSNode& node) {
           return node.isDirectory() || node.hasExtension(".bin");
         });
-  #else
-      myCassette.setSavePath(myCassette.defaultCassettePath());
   #endif
     }
 
