@@ -40,9 +40,10 @@ bool LauncherFileListWidget::isDirectory(const FSNode& node) const
 
   // Check for virtual directories
   if(!isDir && !node.exists())
-    return node.getName() == user_name
-      || node.getName() == recent_name
-      || node.getName() == popular_name;
+  {
+    const string& name = node.getName();
+    return name == user_name || name == recent_name || name == popular_name;
+  }
 
   return isDir;
 }
@@ -61,9 +62,9 @@ void LauncherFileListWidget::getChildren(const FSNode::CancelCheck& isCancelled)
     myInVirtualDir = true;
     myVirtualDir = _node.getName();
 
-    FSNode parent(_node.getParent());
+    FSNode parent = _node.getParent();
     parent.setName("..");
-    _fileList.emplace_back(parent);
+    _fileList.emplace_back(std::move(parent));
 
     if(myVirtualDir == user_name)
     {
@@ -78,7 +79,7 @@ void LauncherFileListWidget::getChildren(const FSNode::CancelCheck& isCancelled)
           node.setName(name);
         }
         if(_filter(node))
-          _fileList.emplace_back(node);
+          _fileList.emplace_back(std::move(node));
       }
     }
     else if(myVirtualDir == popular_name)
@@ -106,12 +107,12 @@ void LauncherFileListWidget::getChildren(const FSNode::CancelCheck& isCancelled)
 void LauncherFileListWidget::addFolder(StringList& list, int& offset,
                                        string_view name, IconType icon)
 {
-  const string n = string{name};
+  const string folderName{name};
   _fileList.insert(_fileList.begin() + offset,
-    FSNode(_node.getPath() + n));
-  list.insert(list.begin() + offset, n);
+    FSNode(_node.getPath() + folderName));
+  list.insert(list.begin() + offset, folderName);
   _dirList.insert(_dirList.begin() + offset, "");
-  _iconTypeList.insert((_iconTypeList.begin() + offset), icon);
+  _iconTypeList.insert(_iconTypeList.begin() + offset, icon);
 
   ++offset;
 }
@@ -161,7 +162,7 @@ void LauncherFileListWidget::loadFavorites()
   {
     myFavorites->load();
 
-    for (const auto& path : myFavorites->userList())
+    for(const auto& path : myFavorites->userList())
       userFavor(path);
   }
 }
@@ -169,20 +170,20 @@ void LauncherFileListWidget::loadFavorites()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void LauncherFileListWidget::saveFavorites(bool force)
 {
-  if (force || instance().settings().getBool("favorites"))
+  if(force || instance().settings().getBool("favorites"))
     myFavorites->save();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void LauncherFileListWidget::clearFavorites()
 {
-    myFavorites->clear();
+  myFavorites->clear();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void LauncherFileListWidget::updateFavorites()
 {
-  if (instance().settings().getBool("favorites"))
+  if(instance().settings().getBool("favorites"))
     myFavorites->update(selected().getPath());
 }
 
@@ -211,11 +212,11 @@ void LauncherFileListWidget::toggleUserFavorite()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void LauncherFileListWidget::removeFavorite()
 {
-  if (instance().settings().getBool("favorites"))
+  if(instance().settings().getBool("favorites"))
   {
-    if (inRecentDir())
+    if(inRecentDir())
       myFavorites->removeRecent(selected().getPath());
-    else if (inPopularDir())
+    else if(inPopularDir())
       myFavorites->removePopular(selected().getPath());
   }
 }
@@ -223,16 +224,14 @@ void LauncherFileListWidget::removeFavorite()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void LauncherFileListWidget::userFavor(string_view path)
 {
-  size_t pos = 0;
-
-  for(const auto& file : _fileList)
+  const auto it = std::ranges::find_if(_fileList,
+    [&path](const FSNode& f) { return f.getPath() == path; });
+  if(it != _fileList.end())
   {
-    if(file.getPath() == path)
-      break;
-    pos++;
+    const size_t pos = static_cast<size_t>(it - _fileList.begin());
+    if(pos < _iconTypeList.size())
+      _iconTypeList[pos] = getIconType(*it);
   }
-  if(pos < _iconTypeList.size())
-    _iconTypeList[pos] = getIconType(FSNode(path));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -175,11 +175,9 @@ void BrowserDialog::show(OSystem& osystem,
   const GUI::Font& font = osystem.frameBuffer().font();
   const Common::Rect& r = osystem.frameBuffer().imageRect();
   const uInt32 scale = osystem.frameBuffer().hidpiScaleFactor();
-  uInt32 w = static_cast<uInt32>(0.95 * r.w() / scale);
-  uInt32 h = static_cast<uInt32>(0.95 * r.h() / scale);
-
-  if(std::cmp_greater(w, font.getMaxCharWidth() * 80))
-    w = font.getMaxCharWidth() * 80;
+  const auto w = std::min(static_cast<uInt32>(0.95 * r.w() / scale),
+                          static_cast<uInt32>(font.getMaxCharWidth() * 80));
+  const auto h = static_cast<uInt32>(0.95 * r.h() / scale);
 
   auto& overlay = osystem.overlayMenu();
   if(ourBrowser == nullptr || &ourBrowser->parent() != &overlay ||
@@ -211,17 +209,17 @@ void BrowserDialog::show(string_view startpath,
             VGAP      = Dialog::vGap();
   _mode = mode;
   _command = command;
+  bool fileSelected = true;
   string directory;
   string fileName;
-  bool fileSelected = true;
 
   // Set start path
   if(_mode != Mode::Directories)
   {
     // split startpath into path and filename
-    const FSNode fs = FSNode(startpath);
+    const FSNode fs{startpath};
     fileName = fs.getName();
-    directory = fs.isDirectory() ? "" : fs.getParent().getPath();
+    directory = fs.isDirectory() ? string{} : fs.getParent().getPath();
   }
 
   // Default navigation settings:
@@ -235,42 +233,39 @@ void BrowserDialog::show(string_view startpath,
   _homeDirButton->clearFlags(Widget::FLAG_INVISIBLE);
   _homeDirButton->setEnabled(true);
 
+  // Common setup for all file-selection modes
+  if(_mode != Mode::Directories)
+  {
+    _fileList->setNameFilter(namefilter);
+    _fileList->setHeight(_selected->getTop() - VGAP * 2 - _fileList->getTop());
+    _name->clearFlags(Widget::FLAG_INVISIBLE);
+    _selected->clearFlags(Widget::FLAG_INVISIBLE);
+    _selected->setEditable(false);
+    _selected->setEnabled(false);
+  }
+
   switch(_mode)
   {
     case Mode::FileLoad:
       _fileList->setListMode(FSNode::ListMode::All);
-      _fileList->setNameFilter(namefilter);
-      _fileList->setHeight(_selected->getTop() - VGAP * 2 - _fileList->getTop());
       // Show "save" checkbox
       _navigationBar->setWidth(_savePathBox->getLeft() - _navigationBar->getLeft() - fontWidth);
       _savePathBox->setEnabled(true);
       _savePathBox->clearFlags(Widget::FLAG_INVISIBLE);
       _savePathBox->setState(instance().settings().getBool("saveuserdir"));
-
-      _name->clearFlags(Widget::FLAG_INVISIBLE);
-      _selected->clearFlags(Widget::FLAG_INVISIBLE);
-      _selected->setEditable(false);
-      _selected->setEnabled(false);
       _okWidget->setLabel("Load");
       break;
 
     case Mode::FileLoadNoDirs:
       _fileList->setListMode(FSNode::ListMode::FilesOnly);
-      _fileList->setNameFilter(namefilter);
-      _fileList->setHeight(_selected->getTop() - VGAP * 2 - _fileList->getTop());
       _fileList->setShowFileExtensions(false);
 
       _navigationBar->setVisible(false);
       _navigationBar->setEnabled(false);
       // Hide "save" checkbox
-      //_navigationBar->setWidth(_savePathBox->getRight() - _navigationBar->getLeft());
       _savePathBox->setEnabled(false);
       _savePathBox->setFlags(Widget::FLAG_INVISIBLE);
 
-      _name->clearFlags(Widget::FLAG_INVISIBLE);
-      _selected->clearFlags(Widget::FLAG_INVISIBLE);
-      _selected->setEditable(false);
-      _selected->setEnabled(false);
       _goUpButton->setFlags(Widget::FLAG_INVISIBLE);
       _goUpButton->setEnabled(false);
       _baseDirButton->setFlags(Widget::FLAG_INVISIBLE);
@@ -282,16 +277,12 @@ void BrowserDialog::show(string_view startpath,
 
     case Mode::FileSave:
       _fileList->setListMode(FSNode::ListMode::All);
-      _fileList->setNameFilter(namefilter);
-      _fileList->setHeight(_selected->getTop() - VGAP * 2 - _fileList->getTop());
       // Show "save" checkbox
       _navigationBar->setWidth(_savePathBox->getLeft() - _navigationBar->getLeft() - fontWidth);
       _savePathBox->setEnabled(true);
       _savePathBox->clearFlags(Widget::FLAG_INVISIBLE);
       _savePathBox->setState(instance().settings().getBool("saveuserdir"));
 
-      _name->clearFlags(Widget::FLAG_INVISIBLE);
-      _selected->clearFlags(Widget::FLAG_INVISIBLE);
       _selected->setEditable(true);
       _selected->setEnabled(true);
       _selected->setText(fileName);
@@ -334,15 +325,10 @@ void BrowserDialog::show(string_view startpath,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const FSNode& BrowserDialog::getResult() const
+FSNode BrowserDialog::getResult() const
 {
   if(_mode != Mode::Directories)
-  {
-    static FSNode node;
-
-    return node
-      = FSNode(_fileList->currentDir().getPath() + _selected->getText());
-  }
+    return FSNode(_fileList->currentDir().getPath() + _selected->getText());
   else
     return _fileList->currentDir();
 }
@@ -374,13 +360,13 @@ void BrowserDialog::handleCommand(CommandSender* sender, int cmd,
         if(savePath)
           instance().setUserDir(_fileList->currentDir().getShortPath());
       }
-      _command(true, getResult());
+      if(_command) _command(true, getResult());
       close();
       break;
 
     case kCloseCmd:
       // Send a signal to the calling class that the dialog was closed without selection
-      _command(false, getResult());
+      if(_command) _command(false, getResult());
       close();
       break;
 

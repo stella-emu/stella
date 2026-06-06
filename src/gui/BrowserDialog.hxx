@@ -129,7 +129,7 @@ class BrowserDialog : public Dialog
               const FSNode::NameFilter& namefilter);
 
     /** Get resulting file node (called after receiving kChooseCmd) */
-    const FSNode& getResult() const;
+    FSNode getResult() const;
 
     void updateUI(bool fileSelected);
 
@@ -143,7 +143,7 @@ class BrowserDialog : public Dialog
 
     // Called when the user selects OK (bool is true) or Cancel (bool is false)
     // FSNode will be set to whatever is active (basically, getResult())
-    Command _command{[](bool, const FSNode&){}};
+    Command _command;
 
     FileListWidget*   _fileList{nullptr};
     NavigationWidget* _navigationBar{nullptr};
