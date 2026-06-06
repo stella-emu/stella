@@ -40,7 +40,7 @@ ComboDialog::ComboDialog(GuiObject* boss, const GUI::Font& font,
 
   // Get maximum width of popupwidget
   int pwidth = 0;
-  for (const auto& s : combolist)
+  for(const auto& s: combolist)
     pwidth = std::max(font.getStringWidth(s.first), pwidth);
 
   // Set real dimensions
@@ -49,7 +49,6 @@ ComboDialog::ComboDialog(GuiObject* boss, const GUI::Font& font,
   int xpos = HBORDER, ypos = VBORDER + _th;
 
   // Add event popup for 8 events
-  myEvents.fill(nullptr);
   const auto ADD_EVENT_POPUP = [&](int idx, string_view label)
   {
     myEvents[idx] = new PopUpWidget(this, font, xpos, ypos,
@@ -107,8 +106,9 @@ void ComboDialog::loadConfig()
 void ComboDialog::saveConfig()
 {
   StringList events;
-  for(int i = 0; i < 8; ++i)
-    events.push_back(myEvents[i]->getSelectedTag().toString());
+  events.reserve(myEvents.size());
+  for(const auto* e: myEvents)
+    events.push_back(e->getSelectedTag().toString());
 
   instance().eventHandler().setComboListForEvent(myComboEvent, events);
 }
@@ -116,8 +116,8 @@ void ComboDialog::saveConfig()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ComboDialog::setDefaults()
 {
-  for(int i = 0; i < 8; ++i)
-    myEvents[i]->setSelected("None", "-1");
+  for(auto* e: myEvents)
+    e->setSelected("None", "-1");
 
   setDirty();
 }

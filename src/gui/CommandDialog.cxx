@@ -39,7 +39,6 @@ CommandDialog::CommandDialog(OSystem& osystem, DialogContainer& parent)
             VBORDER      = Dialog::vBorder(),
             HBORDER      = Dialog::hBorder(),
             VGAP         = Dialog::vGap();
-            //INDENT       = Dialog::indent();
   const int HGAP      = Dialog::buttonGap(),
             rowHeight = buttonHeight + VGAP;
   // Set real dimensions
@@ -272,7 +271,7 @@ void CommandDialog::updateTVFormat()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CommandDialog::updatePalette()
 {
-  const string palette = instance().settings().getString("palette");
+  const string& palette = instance().settings().getString("palette");
   string label;
   if(BSPF::equalsIgnoreCase(palette, PaletteHandler::SETTING_STANDARD))
     label = "Stella Palette";

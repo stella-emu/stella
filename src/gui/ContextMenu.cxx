@@ -42,7 +42,6 @@ ContextMenu::ContextMenu(GuiObject* boss, const GUI::Font& font,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ContextMenu::addItems(const VariantList& items)
 {
-  _entries.clear();
   _entries = items;
 
   // Resize to largest string
@@ -105,7 +104,7 @@ void ContextMenu::recalc(const Common::Rect& image)
   else
   {
     _numEntries = static_cast<int>(_entries.size());
-    _h = static_cast<int>(_entries.size()) * _rowHeight + 2;
+    _h = _numEntries * _rowHeight + 2;
     _showScroll = false;
   }
   _isScrolling = false;

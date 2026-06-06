@@ -186,13 +186,13 @@ void AboutDialog::displayInfo()
   myTitle->setLabel(titleStr);
   for(int i = 0; i < myLinesPerPage; i++)
   {
-    const char* str = myDescStr[i].c_str();
+    string_view sv = myDescStr[i];
     TextAlign align = TextAlign::Center;
     ColorId color  = kTextColor;
 
-    while (str[0] == '\\')
+    while(sv.size() >= 2 && sv[0] == '\\')
     {
-      switch (str[1])
+      switch(sv[1])
       {
         case 'C':
           align = TextAlign::Center;
@@ -207,58 +207,47 @@ void AboutDialog::displayInfo()
           break;
 
         case 'c':
-          switch (str[2])
+          if(sv.size() >= 3)
           {
-            case '0':
-              color = kTextColor;
-              break;
-            case '1':
-              color = kTextColorHi;
-              break;
-            case '2':
-              color = kColor;
-              break;
-            case '3':
-              color = kShadowColor;
-              break;
-            case '4':
-              color = kBGColor;
-              break;
-            case '5':
-              color = kTextColorEm;
-              break;
-            default:
-              break;
+            switch(sv[2])
+            {
+              case '0':  color = kTextColor;   break;
+              case '1':  color = kTextColorHi; break;
+              case '2':  color = kColor;        break;
+              case '3':  color = kShadowColor;  break;
+              case '4':  color = kBGColor;      break;
+              case '5':  color = kTextColorEm;  break;
+              default:                           break;
+            }
           }
-          str++;
+          sv.remove_prefix(1);
           break;
 
         default:
           break;
       }
-      str += 2;
+      sv.remove_prefix(2);
     }
 
     myDesc[i]->setAlign(align);
     myDesc[i]->setTextColor(color);
-    myDesc[i]->setLabel(str);
+    myDesc[i]->setLabel(sv);
     // add some labeled links
-    if(BSPF::containsIgnoreCase(str, "see manual"))
+    if(BSPF::containsIgnoreCase(sv, "see manual"))
       myDesc[i]->setUrl("https://stella-emu.github.io/docs/index.html#License", "manual");
-    else if(BSPF::containsIgnoreCase(str, "Stephen Anthony"))
+    else if(BSPF::containsIgnoreCase(sv, "Stephen Anthony"))
       myDesc[i]->setUrl("http://minbar.org", "Stephen Anthony");
-    else if(BSPF::containsIgnoreCase(str, "Bradford W. Mott"))
+    else if(BSPF::containsIgnoreCase(sv, "Bradford W. Mott"))
       myDesc[i]->setUrl("www.intellimedia.ncsu.edu/people/bwmott", "Bradford W. Mott");
-    else if(BSPF::containsIgnoreCase(str, "ScummVM project"))
+    else if(BSPF::containsIgnoreCase(sv, "ScummVM project"))
       myDesc[i]->setUrl("www.scummvm.org", "ScummVM");
-    else if(BSPF::containsIgnoreCase(str, "Ian Bogost"))
+    else if(BSPF::containsIgnoreCase(sv, "Ian Bogost"))
       myDesc[i]->setUrl("http://bogost.com", "Ian Bogost");
-    else if(BSPF::containsIgnoreCase(str, "CRT Simulation"))
+    else if(BSPF::containsIgnoreCase(sv, "CRT Simulation"))
       myDesc[i]->setUrl("http://blargg.8bitalley.com/libs/ntsc.html", "CRT Simulation effects");
-    else if(BSPF::containsIgnoreCase(str, "<AtariAge>"))
+    else if(BSPF::containsIgnoreCase(sv, "<AtariAge>"))
       myDesc[i]->setUrl("www.atariage.com", "AtariAge", "<AtariAge>");
     else
-      // extract URL from label
       myDesc[i]->setUrl();
   }
 
@@ -312,35 +301,4 @@ void AboutDialog::handleCommand(CommandSender* sender, int cmd, int data, int id
   }
 }
 
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string AboutDialog::getUrl(string_view text)
-{
-  bool isUrl = false;
-  size_t start = 0, len = 0;
-
-  for(size_t i = 0; i < text.size(); ++i)
-  {
-    const string_view remainder = text.substr(i);
-    const char ch = text[i];
-
-    if(!isUrl
-       && (BSPF::startsWithIgnoreCase(remainder, "http://")
-       || BSPF::startsWithIgnoreCase(remainder, "https://")
-       || BSPF::startsWithIgnoreCase(remainder, "www.")))
-    {
-      isUrl = true;
-      start = i;
-    }
-
-    // hack, change mode without changing string length
-    if(isUrl)
-    {
-      if((ch == ' ' || ch == ')' || ch == '>'))
-        isUrl = false;
-      else
-        len++;
-    }
-  }
-  return len ? string{text.substr(start, len)} : string{};
-}
 
