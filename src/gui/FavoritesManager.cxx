@@ -110,19 +110,19 @@ void FavoritesManager::save()
 {
   // User Favorites
   json jUser = json::array();
-  for(const auto& path : myUserSet)
+  for(const auto& path: myUserSet)
     jUser.push_back(path);
   mySettings.setValue("_favoriteroms", jUser.dump(2));
 
   // Recently Played
   json jRecent = json::array();
-  for(const auto& path : myRecentList)
+  for(const auto& path: myRecentList)
     jRecent.push_back(path);
   mySettings.setValue("_recentroms", jRecent.dump(2));
 
   // Most Popular
   json jPopular = json::array();
-  for(const auto& path : myPopularMap)
+  for(const auto& path: myPopularMap)
     jPopular.emplace_back(path);
   mySettings.setValue("_popularroms", jPopular.dump(2));
 }

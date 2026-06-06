@@ -211,13 +211,13 @@ void AboutDialog::displayInfo()
           {
             switch(sv[2])
             {
-              case '0':  color = kTextColor;   break;
-              case '1':  color = kTextColorHi; break;
+              case '0':  color = kTextColor;    break;
+              case '1':  color = kTextColorHi;  break;
               case '2':  color = kColor;        break;
               case '3':  color = kShadowColor;  break;
               case '4':  color = kBGColor;      break;
               case '5':  color = kTextColorEm;  break;
-              default:                           break;
+              default:                          break;
             }
           }
           sv.remove_prefix(1);

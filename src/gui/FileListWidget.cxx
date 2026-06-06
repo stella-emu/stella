@@ -389,7 +389,7 @@ bool FileListWidget::handleText(char text)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FileListWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
 {
-  switch (cmd)
+  switch(cmd)
   {
     case FileListWidget::kHomeDirCmd:
       // Do not let the boss know
