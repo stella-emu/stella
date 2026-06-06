@@ -190,7 +190,6 @@ void VideoAudioDialog::addDisplayTab()
     Event::VSizeAdjustDecrease, Event::VSizeAdjustIncrease);
   wid.push_back(myVSizeAdjust);
 
-
   // Add message concerning usage
   ypos = myTab->getHeight() - fontHeight - ifont.getFontHeight() - VGAP - VBORDER;
   const int iwidth =
@@ -226,7 +225,7 @@ void VideoAudioDialog::addPaletteTab()
   items.clear();
   VarList::push_back(items, "Standard", PaletteHandler::SETTING_STANDARD);
   VarList::push_back(items, "z26", PaletteHandler::SETTING_Z26);
-  if (instance().checkUserPalette())
+  if(instance().checkUserPalette())
     VarList::push_back(items, "User", PaletteHandler::SETTING_USER);
   VarList::push_back(items, "Custom", PaletteHandler::SETTING_CUSTOM);
   myTIAPalette = new PopUpWidget(myTab, _font, xpos, ypos, pwidth,
@@ -928,7 +927,7 @@ void VideoAudioDialog::saveConfig()
   // DPC Pitch
   audioSettings.setDpcPitch(myDpcPitch->getValue());
   // update if current cart is Pitfall II
-  if (instance().hasConsole() &&
+  if(instance().hasConsole() &&
       instance().console().cartridge().name() == "CartridgeDPC")
   {
     auto& cart = static_cast<CartridgeDPC&>(instance().console().cartridge());
@@ -939,7 +938,7 @@ void VideoAudioDialog::saveConfig()
       (myModePopup->getSelectedTag().toInt());
   audioSettings.setPreset(preset);
 
-  if (preset == AudioSettings::Preset::custom) {
+  if(preset == AudioSettings::Preset::custom) {
     // Fragsize
     audioSettings.setSampleRate(myFreqPopup->getSelectedTag().toInt());
     audioSettings.setHeadroom(myHeadroomSlider->getValue());
@@ -1170,7 +1169,7 @@ void VideoAudioDialog::handleFullScreenChange()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void VideoAudioDialog::handleOverscanChange()
 {
-  if (myTVOverscan->getValue() == 0)
+  if(myTVOverscan->getValue() == 0)
   {
     myTVOverscan->setValueLabel("Off");
     myTVOverscan->setValueUnit("");
@@ -1204,7 +1203,7 @@ void VideoAudioDialog::handleBezelChange()
 void VideoAudioDialog::handleCommand(CommandSender* sender, int cmd,
                                      int data, int id)
 {
-  switch (cmd)
+  switch(cmd)
   {
     case GuiObject::kOKCmd:
       saveConfig();
@@ -1255,7 +1254,7 @@ void VideoAudioDialog::handleCommand(CommandSender* sender, int cmd,
     {
       const int adjust = myVSizeAdjust->getValue();
 
-      if (!adjust)
+      if(!adjust)
       {
         myVSizeAdjust->setValueLabel("Default");
         myVSizeAdjust->setValueUnit("");
@@ -1288,7 +1287,7 @@ void VideoAudioDialog::handleCommand(CommandSender* sender, int cmd,
       break;
 
     case kScanlinesChanged:
-      if (myTVScanIntense->getValue() == 0)
+      if(myTVScanIntense->getValue() == 0)
       {
         myTVScanIntense->setValueLabel("Off");
         myTVScanIntense->setValueUnit("");
@@ -1306,7 +1305,7 @@ void VideoAudioDialog::handleCommand(CommandSender* sender, int cmd,
       break;
 
     case kPhosBlendChanged:
-      if (myTVPhosLevel->getValue() == 0)
+      if(myTVPhosLevel->getValue() == 0)
       {
         myTVPhosLevel->setValueLabel("Off");
         myTVPhosLevel->setValueUnit("");

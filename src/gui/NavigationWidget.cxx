@@ -212,7 +212,7 @@ void NavigationWidget::PathWidget::setPath(string_view path)
   bool cutFirst = false;
   while(node.hasParent() && w >= fontWidth)
   {
-    const string& name = node.getName();
+    string_view name = node.getName();
     int l = static_cast<int>(name.length() + 2);
 
     if(name.back() == FSNode::PATH_SEPARATOR)
@@ -260,7 +260,6 @@ void NavigationWidget::PathWidget::setPath(string_view path)
       s->setID(static_cast<uInt32>(idx));
       s->setTarget(myTarget);
       myFolderList.push_back(s);
-      //_boss->addFocusWidget(s); // TODO: allow adding/inserting focus dynamically
     }
     x += width;
   }

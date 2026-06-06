@@ -218,7 +218,7 @@ void RomInfoWidget::drawWidget(bool hilite)
     else
     {
       // assume 2 lines for next entry
-      if(ypos + _font.getLineHeight() + _font.getFontHeight() > _h + _y )
+      if(ypos + _font.getLineHeight() + _font.getFontHeight() > _h + _y)
         break;
     }
 

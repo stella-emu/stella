@@ -100,7 +100,7 @@ void TabWidget::setActiveTab(int tabID, bool show)
 {
   assert(0 <= tabID && std::cmp_less(tabID, _tabs.size()));
 
-  if (_activeTab != -1)
+  if(_activeTab != -1)
   {
     // Exchange the widget lists, and switch to the new tab
     _tabs[_activeTab].firstWidget = _firstWidget;
@@ -221,7 +221,7 @@ void TabWidget::handleMouseDown(int x, int y, MouseButton b, int clickCount)
   }
 
   // If a tab was clicked, switch to that pane
-  if (tabID >= 0 && _tabs[tabID].enabled)
+  if(tabID >= 0 && _tabs[tabID].enabled)
   {
     setActiveTab(tabID, true);
     updateActiveTab();
@@ -240,7 +240,7 @@ bool TabWidget::handleEvent(Event::Type event)
 {
   bool handled = false;
 
-  switch (event)
+  switch(event)
   {
     case Event::UIRight:
     case Event::UIPgDown:
@@ -318,7 +318,7 @@ void TabWidget::drawWidget(bool hilite)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Widget* TabWidget::findWidget(int x, int y)
 {
-  if (y < _tabHeight)
+  if(y < _tabHeight)
   {
     // Click was in the tab area
     return this;

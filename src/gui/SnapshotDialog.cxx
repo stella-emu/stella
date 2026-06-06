@@ -133,7 +133,7 @@ void SnapshotDialog::setDefaults()
 void SnapshotDialog::handleCommand(CommandSender* sender, int cmd,
                                    int data, int id)
 {
-  switch (cmd)
+  switch(cmd)
   {
     case GuiObject::kOKCmd:
       saveConfig();

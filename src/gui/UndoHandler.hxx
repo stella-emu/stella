@@ -51,10 +51,10 @@ class UndoHandler
     static constexpr uInt32 lastDiff(string_view text, string_view oldText) {
       auto pos = static_cast<uInt32>(text.size());
 
-      for (auto itn = text.crbegin(), ito = oldText.crbegin();
+      for(auto itn = text.crbegin(), ito = oldText.crbegin();
         itn != text.crend() && ito != oldText.crend(); ++itn, ++ito)
       {
-        if (*itn != *ito)
+        if(*itn != *ito)
           break;
         pos--;
       }

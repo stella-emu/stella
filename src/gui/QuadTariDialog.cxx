@@ -46,7 +46,6 @@ QuadTariDialog::QuadTariDialog(GuiObject* boss, const GUI::Font& font, int max_w
 
   int xpos = HBORDER, ypos = VBORDER + _th;
 
-  ctrls.clear();
   VarList::push_back(ctrls, "Auto-detect", "AUTO");
   VarList::push_back(ctrls, "Joystick", "JOYSTICK");
   VarList::push_back(ctrls, "Paddles", "PADDLES");
@@ -103,7 +102,6 @@ QuadTariDialog::QuadTariDialog(GuiObject* boss, const GUI::Font& font, int max_w
     myRight1Port->getLeft() + fontWidth * 3, ypos, "                 ");
   ypos += lineHeight + VGAP;
 
-  //ypos += lineHeight + VGAP * 2;
   myRight2Port = new PopUpWidget(this, font, xpos, ypos,
                                 pwidth, lineHeight, ctrls, "P4 ");
   wid.push_back(myRight2Port);

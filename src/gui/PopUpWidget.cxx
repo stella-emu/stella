@@ -100,7 +100,6 @@ void PopUpWidget::setSelectedMax(bool changed)
     _changed = changed;
     setDirty();
   }
-  _changed = changed;
   myMenu->setSelectedMax();
   setText(myMenu->getSelectedName());
 }

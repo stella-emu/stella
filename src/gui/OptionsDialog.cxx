@@ -66,7 +66,7 @@ OptionsDialog::OptionsDialog(OSystem& osystem, DialogContainer& parent,
   WidgetArray wid;
   ButtonWidget* b{nullptr};
 
-  if (minSettings)
+  if(minSettings)
   {
     auto* bw = new ButtonWidget(this, _font, xoffset, yoffset,
         _w - HBORDER * 2, buttonHeight, "Use Basic Settings", kBasSetCmd);
@@ -106,7 +106,6 @@ OptionsDialog::OptionsDialog(OSystem& osystem, DialogContainer& parent,
     "Define snapshot save location, format" + ELLIPSIS);
   wid.push_back(b);
 
-  //yoffset += rowHeight;
   b = ADD_OD_BUTTON("Developer" + ELLIPSIS, kDevelopCmd,
     "Change options which support programming Atari 2600 games.");
   wid.push_back(b);
@@ -198,7 +197,7 @@ void OptionsDialog::handleCommand(CommandSender* sender, int cmd,
     case kBasSetCmd:
       // enable basic settings
       instance().settings().setValue("basic_settings", true);
-      if (myMode != AppMode::emulator)
+      if(myMode != AppMode::emulator)
         close();
       else
         instance().eventHandler().leaveMenuMode();

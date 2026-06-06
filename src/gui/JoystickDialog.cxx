@@ -32,7 +32,6 @@ JoystickDialog::JoystickDialog(GuiObject* boss, const GUI::Font& font,
 {
   WidgetArray wid;
   const int lineHeight   = Dialog::lineHeight(),
-            //fontHeight   = Dialog::fontHeight(),
             fontWidth    = Dialog::fontWidth(),
             buttonHeight = Dialog::buttonHeight(),
             buttonWidth  = Dialog::buttonWidth("Remove"),

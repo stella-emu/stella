@@ -383,7 +383,6 @@ string Widget::getHelpURL() const
   return {};
 }
 
-
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Widget* Widget::findWidgetInChain(Widget* start, int x, int y)
 {
@@ -672,7 +671,6 @@ void StaticTextWidget::handleMouseUp(int x, int y, MouseButton b, int clickCount
   }
 }
 
-
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void StaticTextWidget::drawWidget(bool hilite)
 {
@@ -802,7 +800,7 @@ void ButtonWidget::handleMouseDown(int x, int y, MouseButton b, int clickCount)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ButtonWidget::handleMouseUp(int x, int y, MouseButton b, int clickCount)
 {
-  if (!_repeat && isEnabled() && x >= 0 && x < _w && y >= 0 && y < _h)
+  if(!_repeat && isEnabled() && x >= 0 && x < _w && y >= 0 && y < _h)
   {
     clearFlags(Widget::FLAG_HILITED);
     sendCommand(_cmd, 0, _id);
@@ -1047,7 +1045,7 @@ void SliderWidget::setValue(int value)
   {
     _value = value;
     setDirty();
-    if (_valueLabelWidth)
+    if(_valueLabelWidth)
       setValueLabel(_value); // update label
     sendCommand(_cmd, _value, _id);
   }
