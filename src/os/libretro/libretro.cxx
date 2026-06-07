@@ -899,11 +899,6 @@ static bool reset_system()
   if(input_override[0] != Controller::Type::Unknown) input_type[0] = input_override[0];
   if(input_override[1] != Controller::Type::Unknown) input_type[1] = input_override[1];
 
-  const string ctrl_msg = std::format("Controllers: Left={}, Right={}",
-                        Controller::getName(input_type[0]),
-                        Controller::getName(input_type[1]));
-  post_message(ctrl_msg.c_str(), RETRO_LOG_INFO);
-
   stella.setPaddleJoypadSensitivity(stella_settings.paddle_joypad_sensitivity);
   stella.setPaddleAnalogSensitivity(stella_settings.paddle_analog_sensitivity);
 
