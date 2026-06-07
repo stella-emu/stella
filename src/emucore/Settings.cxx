@@ -179,6 +179,7 @@ Settings::Settings()
   setPermanent("launcherextensions", "false");
   setPermanent("launcherbuttons", "false");
   setPermanent("romviewer", "1");
+  setPermanent("romwidth", "0");  // ROM info width fraction; 0 = derive from romviewer
   setPermanent("lastrom", "");
   setPermanent("favorites", "true");
   setPermanent("_favoriteroms", "");  // internal only

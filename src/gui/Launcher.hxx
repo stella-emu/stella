@@ -76,6 +76,15 @@ class Launcher : public DialogContainer
     Dialog* baseDialog() override;
 
   private:
+    /**
+      (Re)load the launcher window size from the 'launcherres' setting,
+      clamping it to the allowed bounds.  Called both at construction and each
+      time the launcher video is (re)initialized, so a size the user changed
+      by resizing the window is picked up again.
+    */
+    void loadSize();
+
+  private:
     Dialog* myBaseDialog{nullptr};
 
     // The dimensions of this dialog

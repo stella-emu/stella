@@ -333,6 +333,14 @@ FBInitStatus FrameBuffer::createDisplay(string_view title, BufferType type,
   if(status != FBInitStatus::Success)
     return status;
 
+  // The (full) launcher window may be freely resized by the user; all other
+  // UI/TIA windows keep their fixed size
+  const bool resizable = myBufferType == BufferType::Launcher &&
+                         !myOSystem.settings().getBool("minimal_ui");
+  myBackend->setWindowResizable(resizable,
+    Common::Size(FBMinimum::Width * hidpiScaleFactor(),
+                 FBMinimum::Height * hidpiScaleFactor()));
+
   // Print initial usage message, but only print it later if the status has changed
   if(myInitializedCount == 1)
   {
@@ -346,6 +354,31 @@ FBInitStatus FrameBuffer::createDisplay(string_view title, BufferType type,
   }
 
   return status;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FrameBuffer::setWindowMinSize(const Common::Size& size)
+{
+  const uInt32 scale = hidpiScaleFactor();
+  myBackend->setWindowMinSize(Common::Size(size.w * scale, size.h * scale));
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FrameBuffer::handleResize(int width, int height)
+{
+  // Only the launcher window is user-resizable for now
+  if(myBufferType != BufferType::Launcher)
+    return;
+
+  // The new window size becomes the new UI image/screen size
+  myVidModeHandler.setImageSize(Common::Size(width, height));
+  myActiveVidMode = myVidModeHandler.buildMode(
+      myOSystem.settings(), false, myBezel->info());
+
+  // The window already has its new size; refresh the backend's cached
+  // dimensions so the blitters scale correctly, then reload all surfaces
+  myBackend->refreshDimensions();
+  resetSurfaces();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

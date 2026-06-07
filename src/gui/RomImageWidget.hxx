@@ -39,6 +39,10 @@ class RomImageWidget : public Widget
                        bool full = true);
     void clearProperties();
     void reloadProperties(const FSNode& node);
+
+    // Reposition and resize the widget, rescaling the current image to fit.
+    // Used when the launcher (and thus this widget) is resized.
+    void setArea(int x, int y, int w, int h);
     bool changeImage(int direction = 1);
     // Toggle zoom via keyboard
     void toggleImageZoom();

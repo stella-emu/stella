@@ -63,6 +63,66 @@
 #include "LauncherDialog.hxx"
 #include "Random.hxx"
 
+namespace {
+
+// A thin draggable vertical divider.  While dragged it reports its new
+// (dialog-relative) x position via the given command, so the owning dialog
+// can resize the areas on either side of it.
+class DividerWidget : public Widget, public CommandSender
+{
+  public:
+    DividerWidget(GuiObject* boss, const GUI::Font& font,
+                  int x, int y, int w, int h, int cmd)
+      : Widget(boss, font, x, y, w, h),
+        CommandSender(boss),
+        myCmd{cmd}
+    {
+      // FLAG_TRACK_MOUSE is required for handleMouseMoved() to be delivered
+      // (Dialog only forwards moves to widgets that request mouse tracking)
+      _flags = Widget::FLAG_ENABLED | Widget::FLAG_TRACK_MOUSE;
+    }
+
+    void handleMouseDown(int x, int y, MouseButton b, int clickCount) override
+    {
+      if(b == MouseButton::LEFT)
+        myDragging = true;
+    }
+    void handleMouseUp(int x, int y, MouseButton b, int clickCount) override
+    {
+      myDragging = false;
+    }
+    void handleMouseMoved(int x, int y) override
+    {
+      if(myDragging)
+        sendCommand(myCmd, _x + x, 0);  // dialog-relative cursor x
+    }
+
+  protected:
+    void drawWidget(bool hilite) override
+    {
+      FBSurface& s = dialog().surface();
+      const int x = _x + _w / 2;
+      const ColorId color = (isHighlighted() || myDragging)
+                            ? kWidColorHi : kShadowColor;
+
+      s.vLine(x - 1, _y, _y + _h - 1, color);
+      s.vLine(x + 1, _y, _y + _h - 1, color);
+    }
+
+  private:
+    bool myDragging{false};
+    int  myCmd{0};
+
+  private:
+    DividerWidget() = delete;
+    DividerWidget(const DividerWidget&) = delete;
+    DividerWidget(DividerWidget&&) = delete;
+    DividerWidget& operator=(const DividerWidget&) = delete;
+    DividerWidget& operator=(DividerWidget&&) = delete;
+};
+
+}  // namespace
+
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 LauncherDialog::LauncherDialog(OSystem& osystem, DialogContainer& parent,
                                int x, int y, int w, int h)
@@ -298,9 +358,22 @@ int LauncherDialog::addRomWidgets(int ypos)
   // Before we add the list, we need to know the size of the RomInfoWidget
   const int listHeight = _h - ypos - VBORDER - buttonHeight - VGAP * 3;
 
-  const float imgZoom = getRomInfoZoom(listHeight);
-  const int imageWidth = imgZoom * TIAConstants::viewableWidth;
+  // Use the persisted ROM info width (set by dragging the divider) if present,
+  // otherwise fall back to the configured zoom level
+  const float savedFraction = instance().settings().getFloat("romwidth");
+  int imageWidth = 0;
+  if(savedFraction > 0.F && instance().settings().getFloat("romviewer") > 0.F)
+    imageWidth = clampRomInfoWidth(
+      static_cast<int>(std::round(savedFraction * (_w - HBORDER * 2))), listHeight);
+  else
+    imageWidth = static_cast<int>(getRomInfoZoom(listHeight)
+                                  * TIAConstants::viewableWidth);
   const int listWidth = _w - (imageWidth > 0 ? imageWidth + fontWidth : 0) - HBORDER * 2;
+
+  // Remember the ROM info width as a fraction of the content width, so it
+  // scales proportionally when the window is resized (see layout())
+  myRomInfoFraction = imageWidth > 0
+    ? static_cast<float>(imageWidth) / (_w - HBORDER * 2) : 0.F;
 
   // remember initial ROM directory for returning there via home button
   instance().settings().setValue("startromdir", getRomDir());
@@ -318,8 +391,7 @@ int LauncherDialog::addRomWidgets(int ypos)
     xpos += myList->getWidth() + fontWidth;
 
     // Initial surface size is the viewable area's width squared
-    const Common::Size imgSize(TIAConstants::viewableWidth * imgZoom,
-      TIAConstants::viewableWidth * imgZoom);
+    const Common::Size imgSize(imageWidth, imageWidth);
 
     // Calculate font area, and in the process the font that can be used
     // Infofont is unknown yet, but used in image label too. Assuming maximum font height.
@@ -339,6 +411,10 @@ int LauncherDialog::addRomWidgets(int ypos)
     const int yofs = imageHeight + myROMInfoFont->getFontHeight() / 2;
     myRomInfoWidget = new RomInfoWidget(this, *myROMInfoFont,
       xpos, ypos + yofs, imageWidth, myList->getHeight() - yofs);
+
+    // Draggable divider in the gap between the list and the ROM info column
+    myDivider = new DividerWidget(this, _font, xpos - fontWidth, ypos,
+                                  fontWidth, myList->getHeight(), kRomWidthCmd);
   }
   return addToFocusList(wid);
 }
@@ -402,6 +478,192 @@ void LauncherDialog::addButtonWidgets(int& ypos)
 #endif
   myStartButton->setToolTip("Start emulation of selected ROM\nor switch to selected directory.");
   addToFocusList(wid);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+Common::Size LauncherDialog::contentMinSize() const
+{
+  // The smallest (logical) size at which no widget would have to clip: the
+  // point where the most constrained widget reaches its minimum usable size.
+  // Since each widget shrinks 1:1 with the dialog, this is independent of the
+  // current size.
+  const int fontWidth = Dialog::fontWidth();
+  int minW = _w, minH = _h;
+
+  if(myList)
+  {
+    int giveW = myList->getWidth() - MIN_LAUNCHER_CHARS * fontWidth;
+    if(myPattern)
+      giveW = std::min(giveW, myPattern->getWidth()
+                              - EditTextWidget::calcWidth(_font, "123456"));
+    if(myNavigationBar)
+      giveW = std::min(giveW,
+                       myNavigationBar->getWidth() - MIN_LAUNCHER_CHARS * fontWidth);
+    minW = _w - std::max(giveW, 0);
+
+    int giveH = myList->getHeight() - _font.getLineHeight() * 3;
+    if(myRomInfoWidget)
+      giveH = std::min(giveH,
+                       myRomInfoWidget->getHeight() - _font.getFontHeight() * 2);
+    minH = _h - std::max(giveH, 0);
+  }
+  return Common::Size(static_cast<uInt32>(minW), static_cast<uInt32>(minH));
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+int LauncherDialog::clampRomInfoWidth(int imageWidth, int colHeight) const
+{
+  const int fontWidth  = Dialog::fontWidth();
+  const int fontHeight = Dialog::fontHeight();
+  const int HBORDER    = Dialog::hBorder();
+  const int contentW   = _w - HBORDER * 2;
+
+  // Horizontal limit: keep at least MIN_LAUNCHER_CHARS for the list
+  const int hMax = contentW - fontWidth - MIN_LAUNCHER_CHARS * fontWidth;
+  // Vertical limit: the (roughly square) image, its label and a couple of
+  // info text lines must all fit in the column height.  The launcher font is
+  // used as a conservative estimate (the ROM info font is never larger).
+  const int vMax = colHeight - fontHeight * 4;
+
+  const int minW = MIN_ROMINFO_CHARS * fontWidth;
+  const int maxW = std::max(std::min(hMax, vMax), minW);
+
+  return BSPF::clamp(imageWidth, minW, maxW);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void LauncherDialog::layout()
+{
+  // Constrain the window so it can never be shrunk small enough to clip the
+  // launcher's content.  Most window managers honour this; the std::max()
+  // clamp below is a fallback for those that don't.
+  const Common::Size minSize = contentMinSize();
+  instance().frameBuffer().setWindowMinSize(minSize);
+
+  // Derive the available (logical) size from the current window
+  const uInt32 scale = instance().frameBuffer().hidpiScaleFactor();
+  const Common::Rect& image = instance().frameBuffer().imageRect();
+  const int w = std::max(static_cast<int>(image.w() / scale),
+                         static_cast<int>(minSize.w));
+  const int h = std::max(static_cast<int>(image.h() / scale),
+                         static_cast<int>(minSize.h));
+
+  // The constructor performs the initial layout; only an actual window
+  // resize (or a divider drag, via myForceLayout) requires a re-flow
+  const int dw = w - _w;
+  const int dh = h - _h;
+  if(dw == 0 && dh == 0 && !myForceLayout)
+    return;
+  myForceLayout = false;
+
+  _w = w;
+  _h = h;
+
+  // Persist the launcher window size so it is restored next time (on restart
+  // and when returning from a game)
+  if(dw != 0 || dh != 0)
+    instance().settings().setValue("launcherres",
+        Common::Size(static_cast<uInt32>(_w), static_cast<uInt32>(_h)));
+
+  // Path/navigation row: the bar grows with the window; help button re-anchors
+  if(myNavigationBar)
+    myNavigationBar->setWidth(myNavigationBar->getWidth() + dw);
+  if(myHelpButton)
+    myHelpButton->setPosX(myHelpButton->getLeft() + dw);
+
+  // Filtering row: the filter field absorbs the extra width; everything to
+  // its right shifts along with it
+  if(myPattern)
+    myPattern->setWidth(myPattern->getWidth() + dw);
+  if(mySubDirsButton)
+    mySubDirsButton->setPosX(mySubDirsButton->getLeft() + dw);
+  if(myRomCount)
+    myRomCount->setPosX(myRomCount->getLeft() + dw);
+  if(myRandomRomButton)
+    myRandomRomButton->setPosX(myRandomRomButton->getLeft() + dw);
+  if(mySettingsButton)
+    mySettingsButton->setPosX(mySettingsButton->getLeft() + dw);
+
+  // ROM list + (optional) ROM info column.  The ROM info column takes a
+  // fraction of the content width (so it scales with the window), and the
+  // list takes the remainder.  The list also absorbs the height change.
+  if(myList)
+  {
+    const int HBORDER   = Dialog::hBorder();
+    const int fontWidth = Dialog::fontWidth();
+    const int contentW  = _w - HBORDER * 2;
+    const int colHeight = myList->getHeight() + dh;  // new list/column height
+
+    int imageWidth = 0;
+    if(myRomImageWidget)
+      // Scale the column proportionally, clamped to keep list + image usable
+      imageWidth = clampRomInfoWidth(
+        static_cast<int>(std::round(myRomInfoFraction * contentW)), colHeight);
+    const int listW = contentW - (imageWidth > 0 ? imageWidth + fontWidth : 0);
+
+    myList->setWidth(listW);
+    myList->setHeight(colHeight);
+
+    if(myRomImageWidget && myRomInfoWidget)
+    {
+      const int xpos = HBORDER + listW + fontWidth;
+      const int ypos = myList->getTop();
+      const int imageHeight = imageWidth
+          + RomImageWidget::labelHeight(*myROMInfoFont);
+
+      myRomImageWidget->setArea(xpos, ypos, imageWidth, imageHeight);
+
+      const int yofs = imageHeight + myROMInfoFont->getFontHeight() / 2;
+      myRomInfoWidget->setPos(xpos, ypos + yofs);
+      myRomInfoWidget->setWidth(imageWidth);
+      myRomInfoWidget->setHeight(colHeight - yofs);
+
+      if(myDivider)
+      {
+        myDivider->setPos(HBORDER + listW, ypos);
+        myDivider->setHeight(colHeight);
+      }
+    }
+  }
+
+  // Bottom button row: re-anchor to the new bottom edge and re-distribute
+  // across the new width (mirrors addButtonWidgets())
+  if(myStartButton && myGoUpButton && myOptionsButton && myQuitButton)
+  {
+    const int BUTTON_GAP   = Dialog::buttonGap(),
+              VBORDER      = Dialog::vBorder(),
+              HBORDER      = Dialog::hBorder(),
+              buttonHeight = Dialog::buttonHeight(),
+              buttonWidth  = _w - 2 * HBORDER - BUTTON_GAP * (4 - 1);
+    const int ypos = _h - VBORDER - buttonHeight;
+    int xpos = HBORDER;
+
+#ifndef BSPF_MACOS
+    myStartButton->setPos(xpos, ypos);
+    myStartButton->setWidth((buttonWidth + 0) / 4);
+    xpos += (buttonWidth + 0) / 4 + BUTTON_GAP;
+    myGoUpButton->setPos(xpos, ypos);
+    myGoUpButton->setWidth((buttonWidth + 1) / 4);
+    xpos += (buttonWidth + 1) / 4 + BUTTON_GAP;
+    myOptionsButton->setPos(xpos, ypos);
+    myOptionsButton->setWidth((buttonWidth + 3) / 4);
+    xpos += (buttonWidth + 2) / 4 + BUTTON_GAP;
+    myQuitButton->setPos(xpos, ypos);
+    myQuitButton->setWidth((buttonWidth + 4) / 4);
+#else
+    myQuitButton->setPos(xpos, ypos);
+    myQuitButton->setWidth((buttonWidth + 0) / 4);
+    xpos += (buttonWidth + 0) / 4 + BUTTON_GAP;
+    myOptionsButton->setPos(xpos, ypos);
+    myOptionsButton->setWidth((buttonWidth + 1) / 4);
+    xpos += (buttonWidth + 1) / 4 + BUTTON_GAP;
+    myGoUpButton->setPos(xpos, ypos);
+    myGoUpButton->setWidth((buttonWidth + 2) / 4);
+    xpos += (buttonWidth + 2) / 4 + BUTTON_GAP;
+    myStartButton->setPos(xpos, ypos);
+    myStartButton->setWidth((buttonWidth + 3) / 4);
+#endif
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -963,6 +1225,23 @@ void LauncherDialog::handleCommand(CommandSender* sender, int cmd,
 {
   switch(cmd)
   {
+    case kRomWidthCmd:
+    {
+      // The divider was dragged: 'data' is the dialog-relative cursor x.
+      // The ROM info column spans from there to the right border.
+      const int HBORDER   = Dialog::hBorder();
+      const int contentW  = _w - HBORDER * 2;
+      const int imageWidth = clampRomInfoWidth((_w - HBORDER) - data,
+                                               myList->getHeight());
+
+      myRomInfoFraction = static_cast<float>(imageWidth) / contentW;
+      instance().settings().setValue("romwidth", myRomInfoFraction);
+
+      myForceLayout = true;
+      layout();
+      break;
+    }
+
     case kSubDirsCmd:
       toggleSubDirs();
       break;

@@ -90,6 +90,25 @@ class FrameBuffer
                                Common::Size size, bool honourHiDPI = true);
 
     /**
+      Handle a user resize of a windowed UI.  Rebuilds the active video mode
+      for the new window size and reloads all surfaces, *without* recreating
+      the window.  Only applies to resizeable UI windows (the launcher).
+
+      @param width   The new window width, in pixels
+      @param height  The new window height, in pixels
+    */
+    void handleResize(int width, int height);
+
+    /**
+      Set the minimum size (in logical UI pixels) the current window may be
+      resized to.  Used by resizeable UI dialogs to prevent the window being
+      shrunk small enough to clip their content.
+
+      @param size  The minimum size, in logical (unscaled) UI pixels
+    */
+    void setWindowMinSize(const Common::Size& size);
+
+    /**
       Updates the display, which depending on the current mode could mean
       drawing the TIA, any pending menus, etc.
     */

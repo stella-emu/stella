@@ -488,6 +488,36 @@ bool FBBackendSDL::createRenderer()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FBBackendSDL::setWindowResizable(bool resizable, const Common::Size& minSize)
+{
+  ASSERT_MAIN_THREAD;
+
+  if(myWindow == nullptr)
+    return;
+
+  SDL_SetWindowResizable(myWindow, resizable);
+  if(resizable)
+    SDL_SetWindowMinimumSize(myWindow,
+        static_cast<int>(minSize.w), static_cast<int>(minSize.h));
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FBBackendSDL::setWindowMinSize(const Common::Size& minSize)
+{
+  ASSERT_MAIN_THREAD;
+
+  if(myWindow)
+    SDL_SetWindowMinimumSize(myWindow,
+        static_cast<int>(minSize.w), static_cast<int>(minSize.h));
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FBBackendSDL::refreshDimensions()
+{
+  determineDimensions();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FBBackendSDL::setTitle(string_view title)
 {
   ASSERT_MAIN_THREAD;

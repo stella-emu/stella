@@ -124,6 +124,11 @@ class LauncherDialog : public Dialog, CommandSender
     static constexpr int MIN_ROMINFO_LINES = 4; // extra lines
 
     void updateUI();
+    void layout() override;
+    Common::Size contentMinSize() const;
+    // Clamp a desired ROM info column width to keep both the list usable
+    // (horizontal) and the image + text fitting in the column (vertical)
+    int clampRomInfoWidth(int imageWidth, int colHeight) const;
     void addTitleWidget(int& ypos);
     void addFilteringWidgets(int& ypos);
     void addPathWidgets(int& ypos);
@@ -197,6 +202,14 @@ class LauncherDialog : public Dialog, CommandSender
     RomImageWidget*   myRomImageWidget{nullptr};
     RomInfoWidget*    myRomInfoWidget{nullptr};
 
+    // ROM info column width as a fraction of the launcher content width.
+    // Keeps the ROM info area scaling proportionally as the window resizes,
+    // and is adjusted by dragging the divider.
+    float             myRomInfoFraction{0.F};
+
+    // Draggable divider between the list and the ROM info column
+    Widget*           myDivider{nullptr};
+
     std::unordered_map<string, string, BSPF::StringHash, std::equal_to<>> myMD5List;
 
     // Show a message about the dangers of using this function
@@ -205,6 +218,7 @@ class LauncherDialog : public Dialog, CommandSender
     int mySelectedItem{0};
 
     bool myUseMinimalUI{false};
+    bool myForceLayout{false};
     bool myEventHandled{false};
     bool myShortCount{false};
     bool myPendingReload{false};
@@ -218,6 +232,7 @@ class LauncherDialog : public Dialog, CommandSender
       kOptionsCmd    = 'OPTI',
       kQuitCmd       = 'QUIT',
       kReloadCmd     = 'relc',
+      kRomWidthCmd   = 'lrwd',
       kRmAllFav      = 'rmaf',
       kRmAllPop      = 'rmap',
       kRmAllRec      = 'rmar'

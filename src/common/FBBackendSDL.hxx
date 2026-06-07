@@ -164,6 +164,21 @@ class FBBackendSDL : public FBBackend
                       uInt32 winIdx, const Common::Point& winPos) override;
 
     /**
+      Make the window user-resizable (or not) and set its minimum size.
+    */
+    void setWindowResizable(bool resizable, const Common::Size& minSize) override;
+
+    /**
+      Set the window's minimum size (in pixels).
+    */
+    void setWindowMinSize(const Common::Size& minSize) override;
+
+    /**
+      Refresh cached window/renderer dimensions after an external resize.
+    */
+    void refreshDimensions() override;
+
+    /**
       This method is called to create a surface with the given attributes.
 
       @param w      The requested width of the new surface.

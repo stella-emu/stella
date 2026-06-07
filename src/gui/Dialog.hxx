@@ -75,6 +75,12 @@ class Dialog : public GuiObject
     void redraw(bool force = false);
     void render();
 
+    /**
+      Re-run layout() for the current window size, resize the backing surface
+      and repaint.  Safe to call repeatedly (e.g. on a window-resize event).
+    */
+    void relayout();
+
     void tick() override;
 
     void addFocusWidget(Widget* w) override;
@@ -210,6 +216,17 @@ class Dialog : public GuiObject
     /** Define the size (allowed) for the dialog. */
     void setSize(uInt32 w, uInt32 h, uInt32 max_w, uInt32 max_h);
     void positionAt(uInt32 pos);
+
+    /**
+      (Re)compute this dialog's size and the positions/sizes of its child
+      widgets for the current available area.  Unlike the constructor (which
+      *creates* the widgets), layout() only sizes/positions them, so it may
+      be called repeatedly — e.g. on a window-resize event.
+
+      The base implementation does nothing; legacy dialogs still size
+      themselves in their constructor.  Resizeable dialogs override this.
+    */
+    virtual void layout() { }
 
     virtual bool repeatEnabled() { return true; }
 

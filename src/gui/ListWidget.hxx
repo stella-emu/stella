@@ -47,6 +47,7 @@ class ListWidget : public EditableWidget
 
     int rows() const        { return _rows; }
     int currentPos() const  { return _currentPos; }
+    void setWidth(int w) override;
     void setHeight(int h) override;
 
     int getSelected() const { return _selectedItem; }

@@ -164,7 +164,7 @@ class DialogContainer
       may not choose to do a resize, and even if it does, *how* it does it
       is determined by the specific container.
     */
-    virtual void requestResize() { }
+    virtual void requestResize();
 
     /**
       Return (and possibly create) the bottom-most dialog of this container.

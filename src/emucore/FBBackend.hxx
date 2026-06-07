@@ -81,6 +81,24 @@ class FBBackend
                               uInt32 winIdx, const Common::Point& winPos) = 0;
 
     /**
+      Make the window user-resizable (or not) and set its minimum size.
+      Only meaningful for desktop windowed UI modes (e.g. the launcher).
+    */
+    virtual void setWindowResizable(bool resizable, const Common::Size& minSize) { }
+
+    /**
+      Set the window's minimum size (in pixels).  Honored by most window
+      managers to prevent the user shrinking the window below this size.
+    */
+    virtual void setWindowMinSize(const Common::Size& minSize) { }
+
+    /**
+      Refresh cached window/renderer dimensions after the window has been
+      resized externally (e.g. the user dragging the window border).
+    */
+    virtual void refreshDimensions() { }
+
+    /**
       Clear the framebuffer.
     */
     virtual void clear() = 0;

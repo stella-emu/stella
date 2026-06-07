@@ -93,6 +93,10 @@ void Dialog::clear()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Dialog::open()
 {
+  // Settle our size and child widget geometry before allocating the surface
+  // (the base implementation is a no-op; resizeable dialogs override it)
+  layout();
+
   // Make sure we have a valid surface to draw into
   // Technically, this shouldn't be needed until drawDialog(), but some
   // dialogs cause drawing to occur within loadConfig()
@@ -361,6 +365,31 @@ void Dialog::render()
   }
 
   _toolTip->render();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Dialog::relayout()
+{
+  if(_surface == nullptr || !isVisible())
+    return;
+
+  // Recompute size and widget geometry for the current window
+  layout();
+
+  // Grow the backing surface if needed, then refresh src/dst scaling
+  if(static_cast<uInt32>(_w) > _surface->width() ||
+     static_cast<uInt32>(_h) > _surface->height())
+    _surface->resize(_w, _h);
+  _surface->setSrcSize(_w, _h);
+
+  const uInt32 scale = instance().frameBuffer().hidpiScaleFactor();
+  _surface->setDstSize(_w * scale, _h * scale);
+
+  setPosition();
+
+  // Force a full repaint of the dialog and all its widgets
+  setDirty();
+  setDirtyChain();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

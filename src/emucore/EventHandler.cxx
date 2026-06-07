@@ -354,12 +354,20 @@ void EventHandler::handleMouseButtonEvent(MouseButton b, bool pressed,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EventHandler::handleSystemEvent(SystemEvent e, int, int)
+void EventHandler::handleSystemEvent(SystemEvent e, int data1, int data2)
 {
   switch(e)
   {
-    case SystemEvent::WINDOW_EXPOSED:
     case SystemEvent::WINDOW_RESIZED:
+      // Re-flow any resizeable UI to the new window size
+      myOSystem.frameBuffer().handleResize(data1, data2);
+    #ifdef GUI_SUPPORT
+      if(myOverlay)
+        myOverlay->requestResize();
+    #endif
+      [[fallthrough]];
+
+    case SystemEvent::WINDOW_EXPOSED:
       // Force full render update
       myOSystem.frameBuffer().update(FrameBuffer::UpdateMode::RERENDER);
       break;

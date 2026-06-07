@@ -190,6 +190,13 @@ void DialogContainer::removeDialog()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void DialogContainer::requestResize()
+{
+  // Re-flow every dialog in the stack for the new window size
+  myDialogStack.applyAll([](Dialog*& d) { d->relayout(); });
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DialogContainer::reStack()
 {
   // Pop all items from the stack, and then add the base menu

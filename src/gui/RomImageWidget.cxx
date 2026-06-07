@@ -44,6 +44,34 @@ RomImageWidget::RomImageWidget(GuiObject* boss, const GUI::Font& font,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void RomImageWidget::setArea(int x, int y, int w, int h)
+{
+  setPos(x, y);
+  setSize(w, h);
+
+  myImageHeight = _h - labelHeight(_font) - _font.getFontHeight() / 4 - 1;
+  myZoomRect = Common::Rect(_w * 7 / 16, myImageHeight * 7 / 16,
+                            _w * 9 / 16, myImageHeight * 9 / 16);
+
+  // Resize the navigation overlay (redrawn from scratch in drawWidget())
+  const uInt32 scale = instance().frameBuffer().hidpiScaleFactor();
+  if(myNavSurface)
+  {
+    myNavSurface->resize(_w, myImageHeight);
+    myNavSurface->setDstSize(_w * scale, myImageHeight * scale);
+  }
+
+#ifdef IMAGE_SUPPORT
+  // Rescale the current image to the new area (the image is held at its native
+  // resolution, so this stays crisp without reloading)
+  if(mySurface && mySurfaceIsValid && !myIsZoomed)
+    zoomSurfaces(false, true);
+#endif
+
+  setDirty();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void RomImageWidget::setProperties(const FSNode& node,
                                    const Properties& properties, bool full)
 {

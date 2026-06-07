@@ -27,9 +27,18 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Launcher::Launcher(OSystem& osystem)
-  : DialogContainer(osystem),
-    mySize{myOSystem.settings().getSize("launcherres")}
+  : DialogContainer(osystem)
 {
+  loadSize();
+
+  myBaseDialog = new LauncherDialog(myOSystem, *this, 0, 0, mySize.w, mySize.h);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Launcher::loadSize()
+{
+  mySize = myOSystem.settings().getSize("launcherres");
+
   const Common::Size& d = myOSystem.frameBuffer().desktopSize(BufferType::Launcher);
   const double overscan = 1 - myOSystem.settings().getInt("tia.fs_overscan") / 100.0;
 
@@ -41,8 +50,6 @@ Launcher::Launcher(OSystem& osystem)
   // Now make overscan effective
   mySize.w = std::min(mySize.w, static_cast<uInt32>(d.w * overscan));
   mySize.h = std::min(mySize.h, static_cast<uInt32>(d.h * overscan));
-
-  myBaseDialog = new LauncherDialog(myOSystem, *this, 0, 0, mySize.w, mySize.h);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -54,6 +61,9 @@ Launcher::~Launcher()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FBInitStatus Launcher::initializeVideo()
 {
+  // Pick up any size the user set by resizing the launcher window
+  loadSize();
+
   return myOSystem.frameBuffer().createDisplay(STELLA_FULL_TITLE,
                                                BufferType::Launcher, mySize);
 }

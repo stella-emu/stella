@@ -56,6 +56,22 @@ ListWidget::ListWidget(GuiObject* boss, const GUI::Font& font,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void ListWidget::setWidth(int w)
+{
+  // getWidth() reports the full footprint (drawable area + scrollbar), so
+  // setWidth() must subtract the scrollbar again to stay its inverse
+  // (mirrors the constructor); otherwise repeated resizes accumulate the
+  // scrollbar width into the list
+  if(_useScrollbar)
+  {
+    Widget::setWidth(w - ScrollBarWidget::scrollBarWidth(_font));
+    _scrollBar->setPosX(_x + _w);
+  }
+  else
+    Widget::setWidth(w - 1);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ListWidget::setHeight(int h)
 {
   Widget::setHeight(h);
