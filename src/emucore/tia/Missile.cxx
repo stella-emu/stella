@@ -219,7 +219,6 @@ void Missile::updateEnabled()
   myIsEnabled = !myIsSuppressed && myEnam && !myResmp;
 
   collision = (myIsVisible && myIsEnabled) ? myCollisionMaskEnabled : myCollisionMaskDisabled;
-  myTIA->scheduleCollisionUpdate();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

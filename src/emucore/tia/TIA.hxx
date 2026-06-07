@@ -602,11 +602,6 @@ class TIA : public Device
     void flushLineCache();
 
     /**
-      Schedule a collision update
-     */
-    void scheduleCollisionUpdate();
-
-    /**
       Create a new delayQueueIterator for the debugger.
     */
     shared_ptr<DelayQueueIterator> delayQueueIterator() const;
@@ -941,16 +936,6 @@ class TIA : public Device
      * the last frame that are not overwritten)
      */
     uInt8 myXAtRenderingStart{0};
-
-    /**
-     * Do we need to update the collision mask this clock?
-     */
-    bool myCollisionUpdateRequired{false};
-
-    /**
-     * Force schedule a collision update
-     */
-    bool myCollisionUpdateScheduled{false};
 
     /**
      * The collision latches are represented by 15 bits in a bitfield.
