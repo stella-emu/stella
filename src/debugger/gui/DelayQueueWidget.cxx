@@ -40,13 +40,16 @@ DelayQueueWidget::DelayQueueWidget(
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void DelayQueueWidget::loadConfig() {
+void DelayQueueWidget::loadConfig()
+{
   const shared_ptr<DelayQueueIterator> delayQueueIterator =
       instance().debugger().tiaDebug().delayQueueIterator();
 
   using Common::Base;
-  for (auto&& line : myLines) {
-    if (!delayQueueIterator->isValid()) {
+  for(auto&& line: myLines)
+  {
+    if(!delayQueueIterator->isValid())
+    {
       if(!line.empty())
       {
         setDirty();
@@ -108,7 +111,8 @@ void DelayQueueWidget::drawWidget(bool hilite)
   x += 2;
   w -= 3;
 
-  for (const auto& line : myLines) {
+  for(const auto& line: myLines)
+  {
     surface.drawString(_font, line, x, y, w, _textcolor);
     y += lineHeight;
   }

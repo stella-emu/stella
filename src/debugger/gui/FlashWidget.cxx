@@ -71,9 +71,8 @@ void FlashWidget::init(GuiObject* boss, const GUI::Font& font,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FlashWidget::handleCommand(CommandSender*, int cmd, int, int)
 {
-  if(cmd == kEEPROMEraseCurrent) {
+  if(cmd == kEEPROMEraseCurrent)
     eraseCurrent();
-  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

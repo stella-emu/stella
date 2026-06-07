@@ -224,7 +224,6 @@ bool TiaOutputWidget::changedToolTip(const Common::Point& oldPos,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TiaOutputWidget::drawWidget(bool hilite)
 {
-//cerr << "TiaOutputWidget::drawWidget\n";
   const uInt32 width = instance().console().tia().width();
   uInt32 height = instance().console().tia().height();
   // limit to 274 lines (PAL default without scaling)

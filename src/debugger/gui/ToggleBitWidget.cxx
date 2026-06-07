@@ -72,7 +72,6 @@ void ToggleBitWidget::setState(const BoolArray& state, const BoolArray& changed)
   // 1. some bit has changed
   // 2. the changed state compared to the previous changed state has changed
   if(!std::ranges::equal(_changedList, changed)
-     //|| changed.end() != std::find(changed.begin(), changed.end(), true)) {
      || !std::ranges::none_of(changed, [](bool b){ return b; }))
   {
     setDirty();
@@ -104,7 +103,6 @@ string ToggleBitWidget::getToolTip(const Common::Point& pos) const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ToggleBitWidget::drawWidget(bool hilite)
 {
-//cerr << "ToggleBitWidget::drawWidget\n";
   FBSurface& s = dialog().surface();
   string buffer;
 

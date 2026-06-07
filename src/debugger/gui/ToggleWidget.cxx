@@ -38,15 +38,15 @@ ToggleWidget::ToggleWidget(GuiObject* boss, const GUI::Font& font,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ToggleWidget::handleMouseDown(int x, int y, MouseButton b, int clickCount)
 {
-  if (!isEnabled())
+  if(!isEnabled())
     return;
 
   // First check whether the selection changed
   int newSelectedItem = findItem(x, y);
-  if (newSelectedItem > static_cast<int>(_stateList.size()) - 1)
+  if(newSelectedItem > static_cast<int>(_stateList.size()) - 1)
     newSelectedItem = -1;
 
-  if (_selectedItem != newSelectedItem)
+  if(_selectedItem != newSelectedItem)
   {
     _selectedItem = newSelectedItem;
     _currentRow = _selectedItem / _cols;
@@ -59,12 +59,12 @@ void ToggleWidget::handleMouseDown(int x, int y, MouseButton b, int clickCount)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ToggleWidget::handleMouseUp(int x, int y, MouseButton b, int clickCount)
 {
-  if (!isEnabled() || !_editable)
+  if(!isEnabled() || !_editable)
     return;
 
   // If this was a double click and the mouse is still over the selected item,
   // send the double click command
-  if (clickCount == 1 && (_selectedItem == findItem(x, y)))
+  if(clickCount == 1 && (_selectedItem == findItem(x, y)))
   {
     _stateList[_selectedItem] = !_stateList[_selectedItem];
     _changedList[_selectedItem] = !_changedList[_selectedItem];
@@ -99,7 +99,7 @@ bool ToggleWidget::handleKeyDown(StellaKey key, StellaMod mod)
   {
     case StellaKey::RETURN:
     case StellaKey::KP_ENTER:
-      if (_currentRow >= 0 && _currentCol >= 0)
+      if(_currentRow >= 0 && _currentCol >= 0)
       {
         dirty = true;
         toggle = true;
@@ -107,7 +107,7 @@ bool ToggleWidget::handleKeyDown(StellaKey key, StellaMod mod)
       break;
 
     case StellaKey::UP:
-      if (_currentRow > 0)
+      if(_currentRow > 0)
       {
         _currentRow--;
         dirty = true;
@@ -115,7 +115,7 @@ bool ToggleWidget::handleKeyDown(StellaKey key, StellaMod mod)
       break;
 
     case StellaKey::DOWN:
-      if (_currentRow < _rows - 1)
+      if(_currentRow < _rows - 1)
       {
         _currentRow++;
         dirty = true;
@@ -123,7 +123,7 @@ bool ToggleWidget::handleKeyDown(StellaKey key, StellaMod mod)
       break;
 
     case StellaKey::LEFT:
-      if (_currentCol > 0)
+      if(_currentCol > 0)
       {
         _currentCol--;
         dirty = true;
@@ -131,7 +131,7 @@ bool ToggleWidget::handleKeyDown(StellaKey key, StellaMod mod)
       break;
 
     case StellaKey::RIGHT:
-      if (_currentCol < _cols - 1)
+      if(_currentCol < _cols - 1)
       {
         _currentCol++;
         dirty = true;
@@ -139,7 +139,7 @@ bool ToggleWidget::handleKeyDown(StellaKey key, StellaMod mod)
       break;
 
     case StellaKey::PAGEUP:
-      if (_currentRow > 0)
+      if(_currentRow > 0)
       {
         _currentRow = 0;
         dirty = true;
@@ -147,7 +147,7 @@ bool ToggleWidget::handleKeyDown(StellaKey key, StellaMod mod)
       break;
 
     case StellaKey::PAGEDOWN:
-      if (_currentRow < _rows - 1)
+      if(_currentRow < _rows - 1)
       {
         _currentRow = _rows - 1;
         dirty = true;
@@ -155,7 +155,7 @@ bool ToggleWidget::handleKeyDown(StellaKey key, StellaMod mod)
       break;
 
     case StellaKey::HOME:
-      if (_currentCol > 0)
+      if(_currentCol > 0)
       {
         _currentCol = 0;
         dirty = true;
@@ -163,7 +163,7 @@ bool ToggleWidget::handleKeyDown(StellaKey key, StellaMod mod)
       break;
 
     case StellaKey::END:
-      if (_currentCol < _cols - 1)
+      if(_currentCol < _cols - 1)
       {
         _currentCol = _cols - 1;
         dirty = true;
@@ -174,7 +174,7 @@ bool ToggleWidget::handleKeyDown(StellaKey key, StellaMod mod)
       handled = false;
   }
 
-  if (dirty)
+  if(dirty)
   {
     _selectedItem = _currentRow*_cols + _currentCol;
 
@@ -196,9 +196,9 @@ bool ToggleWidget::handleKeyDown(StellaKey key, StellaMod mod)
 void ToggleWidget::handleCommand(CommandSender* sender, int cmd,
                                  int data, int id)
 {
-  if (cmd == GuiObject::kSetPositionCmd)
+  if(cmd == GuiObject::kSetPositionCmd)
   {
-    if (_selectedItem != data)
+    if(_selectedItem != data)
     {
       _selectedItem = data;
       setDirty();

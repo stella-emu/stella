@@ -244,7 +244,6 @@ string CartridgeEnhancedWidget::bankState()
       result += std::format("#{}", bank - (isRamBank ? myCart.romBankCount() : 0));
       if(isRamBank)        result += " RAM"; // was RAM mapped here?
       else if(hasRamBanks) result += " ROM";
-      //if(hotspot >= 0x100)
       if(hotspot != 0 && myHotspotDelta > 0)
         result += " " + hotspotStr(bank, seg, bankSegs() < 3);
     }

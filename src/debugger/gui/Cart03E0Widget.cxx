@@ -42,11 +42,11 @@ string Cartridge03E0Widget::romDescription()
   string info;
   for(int seg = 0; seg < 4; ++seg)
   {
-    const uInt16 segmentOffset = seg << 10; // myCart.myBankShift;
+    const uInt16 segmentOffset = seg << 10;
     info += std::format("Segment #{} accessible @ ${} - ${},\n",
       seg,
       Base::hex4(ADDR_BASE | segmentOffset),
-      Base::hex4(ADDR_BASE | (segmentOffset + /*myCart.myBankSize - 1*/ 0x3FF)));
+      Base::hex4(ADDR_BASE | (segmentOffset + 0x3FF)));
     if(seg < 3)
       info += std::format("  Hotspots {} - {}\n",
         hotspotStr(0, seg, true), hotspotStr(7, seg, true));

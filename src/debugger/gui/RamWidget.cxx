@@ -44,7 +44,6 @@ RamWidget::RamWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& n
 {
   const int bwidth  = lfont.getStringWidth("Compare " + ELLIPSIS),
             bheight = myLineHeight + 2;
-  //const int VGAP = 4;
   const int VGAP = myFontHeight / 4;
   WidgetArray wid;
 
@@ -287,7 +286,7 @@ void RamWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
 
     case kSValEntered:
     {
-      const string& result = doSearch(myInputBox->getResult());
+      const string_view result = doSearch(myInputBox->getResult());
       if(!result.empty())
         myInputBox->setMessage(result);
       else
@@ -297,7 +296,7 @@ void RamWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
 
     case kCValEntered:
     {
-      const string& result = doCompare(myInputBox->getResult());
+      const string_view result = doCompare(myInputBox->getResult());
       if(!result.empty())
         myInputBox->setMessage(result);
       else
@@ -389,7 +388,7 @@ void RamWidget::showInputBox(int cmd)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string RamWidget::doSearch(string_view str)
+string_view RamWidget::doSearch(string_view str)
 {
   bool comparisonSearch = true;
 
@@ -442,11 +441,11 @@ string RamWidget::doSearch(string_view str)
   // Finally, show the search results in the list
   showSearchResults();
 
-  return string{};
+  return {};
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string RamWidget::doCompare(string_view str)
+string_view RamWidget::doCompare(string_view str)
 {
   bool comparativeSearch = false;
   int searchVal = 0, offset = 0;
@@ -520,7 +519,7 @@ string RamWidget::doCompare(string_view str)
   // Finally, show the search results in the list
   showSearchResults();
 
-  return string{};
+  return {};
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

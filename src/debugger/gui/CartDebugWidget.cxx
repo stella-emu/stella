@@ -92,5 +92,4 @@ void CartDebugWidget::invalidate()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartDebugWidget::loadConfig()
 {
-  //myDesc->setSelected(0);
 }
