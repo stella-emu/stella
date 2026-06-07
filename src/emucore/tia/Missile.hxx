@@ -179,7 +179,7 @@ class Missile : public Serializable
     /**
       Tick one color clock. Inline for performance (implementation below).
      */
-    FORCE_INLINE void tick(uInt8 hclock, bool isReceivingMclock = true);
+    FORCE_INLINE void tick(uInt8 hclock, bool isReceivingRegulardClock = true);
 
     /**
       Tick one color clock and apply RESMP tracking against the associated
@@ -334,7 +334,7 @@ void Missile::tick(uInt8 hclock, bool isReceivingRegulardClock)
 
   myIsVisible =
     myIsRendering &&
-    (myRenderCounter >= 0 || (isMoving && isReceivingMclock && myRenderCounter == -1 && myWidth < 4 && ((hclock + 1) % 4 == 3)));
+    (myRenderCounter >= 0 || (isMoving && isReceivingRegulardClock && myRenderCounter == -1 && myWidth < 4 && ((hclock + 1) % 4 == 3)));
 
   // Consider enabled status and the signal to determine visibility
   // (as represented by the collision mask)
@@ -350,7 +350,7 @@ void Missile::tick(uInt8 hclock, bool isReceivingRegulardClock)
 
       if (myRenderCounter == -1) {
         // Regular clock pulse during movement -> starfield mode
-        if (isMoving && isReceivingMclock) {
+        if (isMoving && isReceivingRegulardClock) {
           switch ((hclock + 1) % 4) {
             case 3:
               myEffectiveWidth = myWidth == 1 ? 2 : myWidth;
