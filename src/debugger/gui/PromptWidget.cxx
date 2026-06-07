@@ -1162,28 +1162,6 @@ void PromptWidget::updateScrollBuffer()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-// NOLINTNEXTLINE(cert-dcl50-cpp,modernize-avoid-variadic-functions)
-int PromptWidget::printf(const char* format, ...)
-{
-  va_list argptr;
-
-  va_start(argptr, format);
-  const int count = this->vprintf(format, argptr);
-  va_end (argptr);
-  return count;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int PromptWidget::vprintf(const char* format, va_list argptr)
-{
-  char buf[2048];
-  const int count = std::vsnprintf(buf, sizeof(buf), format, argptr);
-
-  print(buf);
-  return count;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PromptWidget::putcharIntern(int c)
 {
   if (c == '\n')

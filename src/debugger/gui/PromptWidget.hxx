@@ -18,8 +18,6 @@
 #ifndef PROMPT_WIDGET_HXX
 #define PROMPT_WIDGET_HXX
 
-#include <cstdarg>
-
 class ContextMenu;
 class UndoHandler;
 class ScrollBarWidget;
@@ -28,13 +26,6 @@ class FSNode;
 #include "Widget.hxx"
 #include "Command.hxx"
 #include "bspf.hxx"
-
-// TODO - remove this once we clean up the printf stuff
-#if defined(BSPF_UNIX) || defined(BSPF_MACOS)
-  #define ATTRIBUTE_FMT_PRINTF __attribute__((__format__ (__printf__, 2, 0)))
-#else
-  #define ATTRIBUTE_FMT_PRINTF
-#endif
 
 class PromptWidget : public Widget, public CommandSender
 {
@@ -71,8 +62,6 @@ class PromptWidget : public Widget, public CommandSender
     bool handleKeyDown(StellaKey key, StellaMod mod) override;
 
   protected:
-    ATTRIBUTE_FMT_PRINTF int printf(const char* format, ...);
-    ATTRIBUTE_FMT_PRINTF int vprintf(const char* format, va_list argptr);
     int& buffer(int idx) { return _buffer[idx % kBufferSize]; }
     int  buffer(int idx) const { return _buffer[idx % kBufferSize]; }
 
