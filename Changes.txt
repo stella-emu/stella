@@ -49,6 +49,12 @@
     selections when moving forward and backward in the filesystem
     (issue #1039).
 
+  * Improved text editing functionality in PromptWidget (issue #361):
+    - Enhanced selection and cut/copy/paste from keyboard
+    - Added undo and redo support
+    - Added mouse support (selection, cut/copy/paste)
+    - All actions have keyboard shortcuts
+
   * Emulation accuracy:
     - Implemented more accurate RESMP0/RESMP1 behaviour (issue #213)
     - Implemented proper PA7 behaviour in M6532 (issue #108)

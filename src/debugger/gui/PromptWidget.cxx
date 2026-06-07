@@ -145,7 +145,7 @@ void PromptWidget::handleMouseDown(int x, int y, MouseButton b, int clickCount)
     const int screenLine = (y - 2) / _kConsoleLineHeight;
     const int col = (x - 1) / _kConsoleCharWidth;
     const int newPos = std::clamp((start + screenLine) * _lineWidth + col,
-                                  _promptStartPos, _promptEndPos);
+                                  _firstLineInBuffer * _lineWidth, _promptEndPos);
     _currentPos = newPos;
     _selectSize = 0;
 
@@ -177,7 +177,7 @@ void PromptWidget::handleMouseMoved(int x, int y)
   const int screenLine = (y - 2) / _kConsoleLineHeight;
   const int col = (x - 1) / _kConsoleCharWidth;
   const int newPos = std::clamp((start + screenLine) * _lineWidth + col,
-                                _promptStartPos, _promptEndPos);
+                                _firstLineInBuffer * _lineWidth, _promptEndPos);
 
   if(newPos != _currentPos)
   {
@@ -214,6 +214,11 @@ bool PromptWidget::handleText(char text)
 {
   if(text >= 0)
   {
+    if(_currentPos < _promptStartPos)
+    {
+      _currentPos = _promptEndPos;
+      _selectSize = 0;
+    }
     if(_selectSize != 0)
       killSelectedText();
     for(int i = _promptEndPos - 1; i >= _currentPos; i--)
@@ -243,6 +248,18 @@ bool PromptWidget::handleKeyDown(StellaKey key, StellaMod mod)
 
   // Finalize any aggregated char group before processing this key
   myUndoHandler->endChars(getLine());
+
+  // If the cursor is in scrollback (from a mouse selection), snap it back to
+  // the prompt on any actual edit/cursor command, with two exceptions:
+  //  - Copy still operates on the scrollback selection
+  //  - NoType, e.g. a bare modifier like Ctrl pressed before C in Ctrl+C, must
+  //    not clear the selection or the following Copy would have nothing to copy
+  if(_currentPos < _promptStartPos &&
+     event != Event::Copy && event != Event::NoType)
+  {
+    _currentPos = _promptEndPos;
+    _selectSize = 0;
+  }
 
   switch(event)
   {
@@ -771,6 +788,7 @@ void PromptWidget::moveWord(int direction, bool select)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PromptWidget::markWord()
 {
+  const int bufStart = _firstLineInBuffer * _lineWidth;
   _selectSize = 0;
 
   // Extend selection rightward while non-space
@@ -779,7 +797,7 @@ void PromptWidget::markWord()
     _selectSize++;
 
   // Walk cursor leftward while non-space, growing selection to cover the whole word
-  while(_currentPos > _promptStartPos &&
+  while(_currentPos > bufStart &&
         (buffer(_currentPos - 1) & 0xff) != ' ')
   {
     _currentPos--;
@@ -805,8 +823,12 @@ void PromptWidget::setLine(string_view text)
 void PromptWidget::killSelectedText()
 {
   if(_selectSize == 0) return;
-  const int start = selectStartPos();
-  const int end = selectEndPos();
+  // Clamp to the editable prompt area — scrollback content is read-only
+  const int start = std::max(selectStartPos(), _promptStartPos);
+  const int end = std::min(selectEndPos(), _promptEndPos);
+  _selectSize = 0;
+  if(start >= end)
+    return;
   const int count = end - start;
   const int remaining = _promptEndPos - end;
   for(int i = 0; i < remaining; i++)
@@ -815,7 +837,6 @@ void PromptWidget::killSelectedText()
     buffer(i) = ' ';
   _promptEndPos -= count;
   _currentPos = start;
-  _selectSize = 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -836,8 +857,37 @@ string PromptWidget::selectedText() const
   const int end = selectEndPos();
   string text;
   text.reserve(end - start);
-  for(int i = start; i < end; i++)
-    text += static_cast<char>(buffer(i) & 0x7f);
+
+  if(start >= _promptStartPos)
+  {
+    // Entirely within the prompt area — preserve as-is (may include intentional spaces)
+    for(int i = start; i < end; i++)
+      text += static_cast<char>(buffer(i) & 0x7f);
+  }
+  else
+  {
+    // Includes scrollback — strip trailing blanks per line and join with newlines.
+    // Unwritten cells hold NUL (0), not space, so treat both as blank; an embedded
+    // NUL would otherwise truncate the clipboard text at the end of the first line.
+    const auto isBlank = [&](int idx) {
+      const int ch = buffer(idx) & 0x7f;
+      return ch == ' ' || ch == '\0';
+    };
+    int lineEnd = ((start / _lineWidth) + 1) * _lineWidth;
+    for(int i = start; i < end; )
+    {
+      const int segEnd = std::min(lineEnd, end);
+      int lastNonBlank = segEnd - 1;
+      while(lastNonBlank >= i && isBlank(lastNonBlank))
+        lastNonBlank--;
+      for(int j = i; j <= lastNonBlank; j++)
+        text += static_cast<char>(buffer(j) & 0x7f);
+      i = segEnd;
+      lineEnd += _lineWidth;
+      if(i < end)
+        text += '\n';
+    }
+  }
   return text;
 }
 
@@ -853,6 +903,8 @@ void PromptWidget::textCut()
     killLine(1);
     _promptEndPos = _currentPos;
   }
+  if(_currentPos < _promptStartPos)
+    _currentPos = _promptEndPos;
   myUndoHandler->doo(getLine());
   resetFunctions();
 }
@@ -1205,6 +1257,9 @@ void PromptWidget::print(string_view str)
 void PromptWidget::drawCaret()
 {
 //cerr << "PromptWidget::drawCaret()\n";
+  if(_currentPos < _promptStartPos)
+    return;
+
   FBSurface& s = _boss->dialog().surface();
   const int line = _currentPos / _lineWidth;
 

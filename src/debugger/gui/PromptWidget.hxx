@@ -95,7 +95,12 @@ class PromptWidget : public Widget, public CommandSender
     void resetFunctions();
 
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
-    void lostFocusWidget() override { _selectSize = 0; }
+    void lostFocusWidget() override
+    {
+      _selectSize = 0;
+      if(_currentPos < _promptStartPos)
+        _currentPos = _promptEndPos;
+    }
 
   private:
     enum: uInt16 {
