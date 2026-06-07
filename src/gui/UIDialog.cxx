@@ -597,6 +597,8 @@ void UIDialog::handleCommand(CommandSender* sender, int cmd, int data, int id)
         myFavoritesWidget->getState() != instance().settings().getBool("favorites");
       const bool informExt = myIsGlobal &&
         myLauncherExtensionsWidget->getState() != instance().settings().getBool("launcherextensions");
+      const bool informRomViewer = myIsGlobal &&
+        (myRomViewerSize->getValue() > 0) != (instance().settings().getFloat("romviewer") > 0.F);
       saveConfig();
       close();
       if(informPath) // Let the boss know romdir has changed
@@ -605,6 +607,8 @@ void UIDialog::handleCommand(CommandSender* sender, int cmd, int data, int id)
         sendCommand(LauncherDialog::kFavChangedCmd, 0, 0);
       if(informExt) // Let the boss know the file extension display setting has changed
         sendCommand(LauncherDialog::kExtChangedCmd, 0, 0);
+      if(informRomViewer) // Let the boss know the ROM info viewer was toggled
+        sendCommand(LauncherDialog::kRomViewerChangedCmd, 0, 0);
       break;
     }
     case GuiObject::kDefaultsCmd:

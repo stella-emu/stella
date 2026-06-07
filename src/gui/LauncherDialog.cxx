@@ -358,17 +358,28 @@ int LauncherDialog::addRomWidgets(int ypos)
   // Before we add the list, we need to know the size of the RomInfoWidget
   const int listHeight = _h - ypos - VBORDER - buttonHeight - VGAP * 3;
 
-  // Use the persisted ROM info width (set by dragging the divider) if present,
-  // otherwise fall back to the configured zoom level
+  // The ROM info viewer can be toggled on/off at runtime; we always create its
+  // widgets (sized as if enabled) and just show/hide them, so toggling does not
+  // require rebuilding the launcher
+  myShowRomInfo = instance().settings().getFloat("romviewer") > 0.F;
+
+  // Determine the ROM info column width: the persisted drag width if present,
+  // otherwise the configured zoom level (falling back to a default zoom when
+  // currently disabled, so the widgets have a sensible size ready to be shown)
   const float savedFraction = instance().settings().getFloat("romwidth");
   int imageWidth = 0;
-  if(savedFraction > 0.F && instance().settings().getFloat("romviewer") > 0.F)
+  if(savedFraction > 0.F)
     imageWidth = clampRomInfoWidth(
       static_cast<int>(std::round(savedFraction * (_w - HBORDER * 2))), listHeight);
   else
-    imageWidth = static_cast<int>(getRomInfoZoom(listHeight)
+  {
+    const float zoom = myShowRomInfo
+      ? instance().settings().getFloat("romviewer") : 1.F;
+    imageWidth = static_cast<int>(getRomInfoZoom(listHeight, zoom)
                                   * TIAConstants::viewableWidth);
-  const int listWidth = _w - (imageWidth > 0 ? imageWidth + fontWidth : 0) - HBORDER * 2;
+  }
+  const int listWidth = _w
+    - (myShowRomInfo && imageWidth > 0 ? imageWidth + fontWidth : 0) - HBORDER * 2;
 
   // Remember the ROM info width as a fraction of the content width, so it
   // scales proportionally when the window is resized (see layout())
@@ -415,6 +426,19 @@ int LauncherDialog::addRomWidgets(int ypos)
     // Draggable divider in the gap between the list and the ROM info column
     myDivider = new DividerWidget(this, _font, xpos - fontWidth, ypos,
                                   fontWidth, myList->getHeight(), kRomWidthCmd);
+
+    // Hide the viewer initially if it's currently disabled, moving its widgets
+    // off-screen so they receive no mouse events (layout() and
+    // setRomInfoEnabled() keep this in sync afterwards)
+    if(!myShowRomInfo)
+    {
+      myRomImageWidget->setPos(_w, ypos);
+      myRomImageWidget->setFlags(Widget::FLAG_INVISIBLE);
+      myRomInfoWidget->setPos(_w, ypos);
+      myRomInfoWidget->setFlags(Widget::FLAG_INVISIBLE);
+      myDivider->setPos(_w, ypos);
+      myDivider->setFlags(Widget::FLAG_INVISIBLE);
+    }
   }
   return addToFocusList(wid);
 }
@@ -594,8 +618,9 @@ void LauncherDialog::layout()
     const int contentW  = _w - HBORDER * 2;
     const int colHeight = myList->getHeight() + dh;  // new list/column height
 
+    const bool showRom = myShowRomInfo && myRomImageWidget && myRomInfoWidget;
     int imageWidth = 0;
-    if(myRomImageWidget)
+    if(showRom)
       // Scale the column proportionally, clamped to keep list + image usable
       imageWidth = clampRomInfoWidth(
         static_cast<int>(std::round(myRomInfoFraction * contentW)), colHeight);
@@ -606,22 +631,45 @@ void LauncherDialog::layout()
 
     if(myRomImageWidget && myRomInfoWidget)
     {
-      const int xpos = HBORDER + listW + fontWidth;
-      const int ypos = myList->getTop();
-      const int imageHeight = imageWidth
-          + RomImageWidget::labelHeight(*myROMInfoFont);
-
-      myRomImageWidget->setArea(xpos, ypos, imageWidth, imageHeight);
-
-      const int yofs = imageHeight + myROMInfoFont->getFontHeight() / 2;
-      myRomInfoWidget->setPos(xpos, ypos + yofs);
-      myRomInfoWidget->setWidth(imageWidth);
-      myRomInfoWidget->setHeight(colHeight - yofs);
-
-      if(myDivider)
+      if(showRom && imageWidth > 0)
       {
-        myDivider->setPos(HBORDER + listW, ypos);
-        myDivider->setHeight(colHeight);
+        const int xpos = HBORDER + listW + fontWidth;
+        const int ypos = myList->getTop();
+        const int imageHeight = imageWidth
+            + RomImageWidget::labelHeight(*myROMInfoFont);
+
+        myRomImageWidget->setArea(xpos, ypos, imageWidth, imageHeight);
+        myRomImageWidget->clearFlags(Widget::FLAG_INVISIBLE);
+
+        const int yofs = imageHeight + myROMInfoFont->getFontHeight() / 2;
+        myRomInfoWidget->setPos(xpos, ypos + yofs);
+        myRomInfoWidget->setWidth(imageWidth);
+        myRomInfoWidget->setHeight(colHeight - yofs);
+        myRomInfoWidget->clearFlags(Widget::FLAG_INVISIBLE);
+
+        if(myDivider)
+        {
+          myDivider->setPos(HBORDER + listW, ypos);
+          myDivider->setHeight(colHeight);
+          myDivider->clearFlags(Widget::FLAG_INVISIBLE);
+        }
+      }
+      else
+      {
+        // Viewer disabled: hide its widgets and move them off-screen so they
+        // receive no mouse events (findWidgetInChain() is bounds-only and does
+        // not skip invisible widgets); the full-width list then handles clicks
+        // in that area.  This mirrors the startup-disabled layout.
+        const int ypos = myList->getTop();
+        myRomImageWidget->setPos(_w, ypos);
+        myRomImageWidget->setFlags(Widget::FLAG_INVISIBLE);
+        myRomInfoWidget->setPos(_w, ypos);
+        myRomInfoWidget->setFlags(Widget::FLAG_INVISIBLE);
+        if(myDivider)
+        {
+          myDivider->setPos(_w, ypos);
+          myDivider->setFlags(Widget::FLAG_INVISIBLE);
+        }
       }
     }
   }
@@ -858,11 +906,9 @@ void LauncherDialog::applyFiltering()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-float LauncherDialog::getRomInfoZoom(int listHeight) const
+float LauncherDialog::getRomInfoZoom(int listHeight, float zoom) const
 {
   // The ROM info area is some multiple of the minimum TIA image size
-  float zoom = instance().settings().getFloat("romviewer");
-
   if(zoom > 0.F)
   {
     const GUI::Font& smallFont = instance().frameBuffer().smallFont();
@@ -927,9 +973,28 @@ void LauncherDialog::setRomInfoFont(const Common::Size& area)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void LauncherDialog::setRomInfoEnabled(bool enable)
+{
+  if(enable == myShowRomInfo)
+    return;
+
+  myShowRomInfo = enable;
+
+  // Re-flow so the list and ROM info column take their new widths, and the
+  // viewer widgets are shown/hidden
+  myForceLayout = true;
+  layout();
+
+  if(enable)
+    loadRomInfo();                  // load image/info for the current selection
+  else if(myRomImageWidget)
+    myRomImageWidget->clearProperties();  // stop rendering the image surface
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void LauncherDialog::loadRomInfo()
 {
-  if(!myRomImageWidget || !myRomInfoWidget)
+  if(!myShowRomInfo || !myRomImageWidget || !myRomInfoWidget)
     return;
 
   // Update ROM info UI item, delayed
@@ -1350,6 +1415,10 @@ void LauncherDialog::handleCommand(CommandSender* sender, int cmd,
 
     case kExtChangedCmd:
       reload();
+      break;
+
+    case kRomViewerChangedCmd:
+      setRomInfoEnabled(instance().settings().getFloat("romviewer") > 0.F);
       break;
 
     case ContextMenu::kItemSelectedCmd:

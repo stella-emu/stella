@@ -55,6 +55,7 @@ class LauncherDialog : public Dialog, CommandSender
       kRomDirChosenCmd = 'romc',  // ROM dir chosen
       kFavChangedCmd   = 'favc',  // Favorite tracking changed
       kExtChangedCmd   = 'extc',  // File extension display changed
+      kRomViewerChangedCmd = 'rmvc',  // ROM info viewer enabled/disabled
     };
 
   public:
@@ -149,8 +150,10 @@ class LauncherDialog : public Dialog, CommandSender
 
     void applyFiltering();
 
-    float getRomInfoZoom(int listHeight) const;
+    float getRomInfoZoom(int listHeight, float zoom) const;
     void setRomInfoFont(const Common::Size& area);
+    // Show/hide the ROM info viewer at runtime (without rebuilding the launcher)
+    void setRomInfoEnabled(bool enable);
 
     void loadRom();
     void loadRomInfo();
@@ -219,6 +222,7 @@ class LauncherDialog : public Dialog, CommandSender
 
     bool myUseMinimalUI{false};
     bool myForceLayout{false};
+    bool myShowRomInfo{false};
     bool myEventHandled{false};
     bool myShortCount{false};
     bool myPendingReload{false};
