@@ -54,6 +54,12 @@ class ContextMenu : public Dialog, public CommandSender
     /** Add the given items to the widget. */
     void addItems(const VariantList& items);
 
+    /** Enable or disable an item.  Disabled items are greyed out and
+        cannot be selected. */
+    void setEnabled(int index, bool enable);
+    void setEnabled(const Variant& tag, bool enable);
+    bool isEnabled(int index) const;
+
     /** Show context menu onscreen at the specified coordinates */
     void show(uInt32 x, uInt32 y, const Common::Rect& bossRect, int item = -1);
 
@@ -122,6 +128,7 @@ class ContextMenu : public Dialog, public CommandSender
 
   private:
     VariantList _entries;
+    std::vector<bool> _enabled;
 
     int _rowHeight{0};
     int _firstEntry{0}, _numEntries{0};

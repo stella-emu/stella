@@ -134,8 +134,16 @@ void PromptWidget::handleMouseDown(int x, int y, MouseButton b, int clickCount)
     VarList::push_back(items, " Copy     Cmd+C ", "copy");
     VarList::push_back(items, " Paste    Cmd+V ", "paste");
   #endif
-    mouseMenu().addItems(items);
-    mouseMenu().show(x + getAbsX(), y + getAbsY(), dialog().surface().dstRect());
+    ContextMenu& menu = mouseMenu();
+    menu.addItems(items);
+
+    // Enable/disable items based on the current state
+    const bool hasSelection = _selectSize != 0;
+    menu.setEnabled("cut",   hasSelection);
+    menu.setEnabled("copy",  hasSelection);
+    menu.setEnabled("paste", instance().eventHandler().hasClipboardText());
+
+    menu.show(x + getAbsX(), y + getAbsY(), dialog().surface().dstRect());
     return;
   }
 
@@ -894,15 +902,12 @@ string PromptWidget::selectedText() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PromptWidget::textCut()
 {
+  // Selection-only; nothing to cut without a selection
+  if(_selectSize == 0)
+    return;
+
   textCopy();
-  if(_selectSize != 0)
-    killSelectedText();
-  else
-  {
-    _currentPos = _promptStartPos;
-    killLine(1);
-    _promptEndPos = _currentPos;
-  }
+  killSelectedText();
   if(_currentPos < _promptStartPos)
     _currentPos = _promptEndPos;
   myUndoHandler->doo(getLine());
@@ -912,7 +917,11 @@ void PromptWidget::textCut()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PromptWidget::textCopy()
 {
-  const string text = (_selectSize != 0) ? selectedText() : getLine();
+  // Selection-only; nothing to copy without a selection
+  if(_selectSize == 0)
+    return;
+
+  const string text = selectedText();
   if(!text.empty())
     instance().eventHandler().copyText(text);
 }

@@ -156,10 +156,18 @@ void EditableWidget::handleMouseDown(int x, int y, MouseButton b, int clickCount
     if(isEditable())
       VarList::push_back(items, " Paste    Cmd+V ", "paste");
   #endif
-    mouseMenu().addItems(items);
+    ContextMenu& menu = mouseMenu();
+    menu.addItems(items);
+
+    // Enable/disable items based on the current state
+    const bool hasSelection = _selectSize != 0;
+    menu.setEnabled("cut",   isEditable() && hasSelection);
+    menu.setEnabled("copy",  isEditable() ? hasSelection : !_editString.empty());
+    menu.setEnabled("paste", isEditable() &&
+                    instance().eventHandler().hasClipboardText());
 
     // Add menu at current x,y mouse location
-    mouseMenu().show(x + getAbsX(), y + getAbsY(), dialog().surface().dstRect());
+    menu.show(x + getAbsX(), y + getAbsY(), dialog().surface().dstRect());
     return;
   }
   else if(b == MouseButton::LEFT && isEnabled())

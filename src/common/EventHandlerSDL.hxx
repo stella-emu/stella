@@ -43,6 +43,7 @@ class EventHandlerSDL : public EventHandler
     */
     void copyText(const string& text) const override;
     string pasteText(string& text) const override;
+    bool hasClipboardText() const override;
 
   protected:
     /**

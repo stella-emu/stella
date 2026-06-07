@@ -43,6 +43,7 @@ ContextMenu::ContextMenu(GuiObject* boss, const GUI::Font& font,
 void ContextMenu::addItems(const VariantList& items)
 {
   _entries = items;
+  _enabled.assign(_entries.size(), true);
 
   // Resize to largest string
   int maxwidth = _maxWidth;
@@ -56,6 +57,33 @@ void ContextMenu::addItems(const VariantList& items)
   _scrollUpColor = _firstEntry > 0 ? kScrollColor : kColor;
   _scrollDnColor = (_firstEntry + _numEntries < static_cast<int>(_entries.size())) ?
       kScrollColor : kColor;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void ContextMenu::setEnabled(int index, bool enable)
+{
+  if(index >= 0 && std::cmp_less(index, _enabled.size()))
+    _enabled[index] = enable;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void ContextMenu::setEnabled(const Variant& tag, bool enable)
+{
+  const string& tagStr = tag.toString();
+  for(uInt32 i = 0; i < _entries.size(); ++i)
+  {
+    if(BSPF::equalsIgnoreCase(_entries[i].second.toString(), tagStr))
+    {
+      _enabled[i] = enable;
+      return;
+    }
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool ContextMenu::isEnabled(int index) const
+{
+  return index >= 0 && std::cmp_less(index, _enabled.size()) && _enabled[index];
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -381,6 +409,10 @@ void ContextMenu::sendSelection()
       item--;
   }
 
+  // Disabled items are inert; ignore the click and leave the menu open
+  if(!isEnabled(item))
+    return;
+
   // We remove the dialog when the user has selected an item
   // Make sure the dialog is removed before sending any commands,
   // since one consequence of sending a command may be to add another
@@ -619,10 +651,11 @@ void ContextMenu::drawDialog()
 
   for(int i = _firstEntry, current = 0; i < _firstEntry + _numEntries; ++i, ++current)
   {
-    const bool hilite = offset == current;
+    const bool enabled = _enabled[i];
+    const bool hilite = (offset == current) && enabled;
     if(hilite) s.fillRect(x, y, w, _rowHeight, kTextColorHi);
     s.drawString(_font, _entries[i].first, x + _textOfs, y + 2, w,
-                 !hilite ? kTextColor : kTextColorInv);
+                 !enabled ? kColor : hilite ? kTextColorInv : kTextColor);
     y += _rowHeight;
   }
 
