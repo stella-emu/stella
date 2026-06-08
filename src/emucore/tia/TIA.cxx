@@ -65,7 +65,7 @@ namespace {
 // This parameter still has room for tuning. If we go lower than 73, long005 will show
 // a slight artifact (still have to crosscheck on real hardware), if we go lower than
 // 70, the G.I. Joe will show an artifact (hole in roof).
-static constexpr uInt8 resxLateHblankThreshold = TIAConstants::H_CYCLES - 3;
+static constexpr uInt8 resxLateHblankThreshold = 73;
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 TIA::TIA(ConsoleIO& console, const ConsoleTimingProvider& timingProvider,
