@@ -306,8 +306,13 @@ void Dialog::positionAt(uInt32 pos)
       break;
 
     default:
-      // center
-      _surface->setDstPos((screen.w - dst.w()) >> 1, (screen.h - dst.h()) >> 1);
+      // center; clamp so that a surface larger than the screen (e.g. while a
+      // resizeable dialog is mid-drag and bigger than the shrinking window)
+      // stays anchored at the top-left instead of wrapping off-screen via
+      // unsigned underflow
+      _surface->setDstPos(
+        std::max(0, (static_cast<Int32>(screen.w) - static_cast<Int32>(dst.w())) / 2),
+        std::max(0, (static_cast<Int32>(screen.h) - static_cast<Int32>(dst.h())) / 2));
       break;
   }
 }

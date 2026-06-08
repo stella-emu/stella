@@ -333,10 +333,12 @@ FBInitStatus FrameBuffer::createDisplay(string_view title, BufferType type,
   if(status != FBInitStatus::Success)
     return status;
 
-  // The (full) launcher window may be freely resized by the user; all other
-  // UI/TIA windows keep their fixed size
-  const bool resizable = myBufferType == BufferType::Launcher &&
-                         !myOSystem.settings().getBool("minimal_ui");
+  // The (full) launcher and the debugger windows may be freely resized by the
+  // user; all other UI/TIA windows keep their fixed size
+  const bool resizable =
+    (myBufferType == BufferType::Launcher &&
+     !myOSystem.settings().getBool("minimal_ui"))
+    || myBufferType == BufferType::Debugger;
   myBackend->setWindowResizable(resizable,
     Common::Size(FBMinimum::Width * hidpiScaleFactor(),
                  FBMinimum::Height * hidpiScaleFactor()));
@@ -366,8 +368,9 @@ void FrameBuffer::setWindowMinSize(const Common::Size& size)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBuffer::handleResize(int width, int height)
 {
-  // Only the launcher window is user-resizable for now
-  if(myBufferType != BufferType::Launcher)
+  // Only the launcher and debugger windows are user-resizable
+  if(myBufferType != BufferType::Launcher &&
+     myBufferType != BufferType::Debugger)
     return;
 
   // The new window size becomes the new UI image/screen size

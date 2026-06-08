@@ -60,6 +60,10 @@ class TabWidget : public Widget, public CommandSender
     int getTabHeight() const { return _tabHeight; }
     int getActiveTab() const { return _activeTab; }
 
+    // The largest recorded content height over all tabs; tabs whose content
+    // simply fills the area (e.g. a list or prompt) report 0 and are ignored
+    int getMaxContentHeight() const;
+
     void loadConfig() override;
 
     void handleMouseDown(int x, int y, MouseButton b, int clickCount) override;

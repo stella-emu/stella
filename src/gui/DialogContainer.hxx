@@ -57,7 +57,7 @@ class DialogContainer
 
       @param time  The current time in microseconds
     */
-    void updateTime(uInt64 time);
+    virtual void updateTime(uInt64 time);
 
     /**
       Handle a keyboard Unicode text event.

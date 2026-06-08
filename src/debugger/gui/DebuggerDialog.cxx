@@ -478,6 +478,7 @@ void DebuggerDialog::addTabArea()
   tabID = myTab->addTab("TIA");
   auto* tia = new TiaWidget(myTab, *myLFont, *myNFont,
                             2, 2, widWidth, widHeight);
+  tia->recordContentHeight();
   myTab->setParentWidget(tabID, tia);
   addToFocusList(tia->getFocusList(), myTab, tabID);
 
@@ -485,6 +486,7 @@ void DebuggerDialog::addTabArea()
   tabID = myTab->addTab("I/O");
   auto* riot = new RiotWidget(myTab, *myLFont, *myNFont,
                               2, 2, widWidth, widHeight);
+  riot->recordContentHeight();
   myTab->setParentWidget(tabID, riot);
   addToFocusList(riot->getFocusList(), myTab, tabID);
 
@@ -492,6 +494,7 @@ void DebuggerDialog::addTabArea()
   tabID = myTab->addTab("Audio");
   auto* aud = new AudioWidget(myTab, *myLFont, *myNFont,
                               2, 2, widWidth, widHeight);
+  aud->recordContentHeight();
   myTab->setParentWidget(tabID, aud);
   addToFocusList(aud->getFocusList(), myTab, tabID);
 
@@ -673,6 +676,7 @@ void DebuggerDialog::addRomArea()
     tabHeight - myRomTab->getTabHeight() - 2);
   if(myCartInfo != nullptr)
   {
+    myCartInfo->recordContentHeight();
     myRomTab->setParentWidget(tabID, myCartInfo);
     addToFocusList(myCartInfo->getFocusList(), myRomTab, tabID);
     tabID = myRomTab->addTab("    States    ", TabWidget::AUTO_WIDTH);
@@ -684,6 +688,7 @@ void DebuggerDialog::addRomArea()
         tabHeight - myRomTab->getTabHeight() - 2);
   if(myCartDebug)  // TODO - make this always non-null
   {
+    myCartDebug->recordContentHeight();
     myRomTab->setHelpAnchor("BankswitchInformation", true);
     myRomTab->setParentWidget(tabID, myCartDebug);
     addToFocusList(myCartDebug->getFocusList(), myRomTab, tabID);
@@ -743,6 +748,41 @@ Common::Rect DebuggerDialog::getStatusBounds() const
       tia.x() + tia.w() + 225 + (_w > 1030 ? static_cast<int>(0.35 * (_w - 1030)) : 0),
       tia.y() + tia.h()
   };
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+int DebuggerDialog::getMinHeight() const
+{
+  int minHeight = 0;
+
+  // TIA-area tabs (TIA / I/O / Audio) sit below the TIA image, which takes
+  // max(274, 0.35 * _h).  Find the smallest _h whose remaining height fits the
+  // tallest tab content, covering both regimes (TIA image fixed at 274, or
+  // proportional at 0.35 * _h); the larger of the two is the true minimum.
+  if(myTab != nullptr)
+  {
+    const int tabReq = myTab->getMaxContentHeight();
+    if(tabReq > 0)
+    {
+      const int extra = tabReq + myTab->getTabHeight() + 9;
+      const int caseFixed = extra + static_cast<int>(FrameManager::Metrics::baseHeightPAL);
+      const int caseProp  = (extra * 20 + 12) / 13;  // ceil(extra / 0.65)
+
+      minHeight = std::max(minHeight, std::max(caseFixed, caseProp));
+    }
+  }
+
+  // ROM-area cart tabs (info / state) fill the window height below the
+  // CPU/RAM area, so their relationship to _h is linear.
+  if(myRomTab != nullptr)
+  {
+    const int cartReq = myRomTab->getMaxContentHeight();
+    if(cartReq > 0)
+      minHeight = std::max(minHeight,
+        cartReq + myRomTab->getTop() + myRomTab->getTabHeight() + 3);
+  }
+
+  return minHeight;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -83,20 +83,60 @@ Debugger::~Debugger()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+Common::Size Debugger::fontMinSize() const
+{
+  const string& fontSize = myOSystem.settings().getString("dbg.fontsize");
+
+  if(fontSize == "large")
+    return Common::Size(static_cast<uInt32>(DebuggerDialog::kLargeFontMinW),
+                        static_cast<uInt32>(DebuggerDialog::kLargeFontMinH));
+  if(fontSize == "medium")
+    return Common::Size(static_cast<uInt32>(DebuggerDialog::kMediumFontMinW),
+                        static_cast<uInt32>(DebuggerDialog::kMediumFontMinH));
+  return Common::Size(static_cast<uInt32>(DebuggerDialog::kSmallFontMinW),
+                      static_cast<uInt32>(DebuggerDialog::kSmallFontMinH));
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+Common::Size Debugger::dialogMinSize() const
+{
+  // Start from the font-based minimum, then make sure the window is tall
+  // enough that the current ROM's fixed tab content (which can exceed the
+  // font minimum, e.g. for DPC+) is never clipped
+  Common::Size size = fontMinSize();
+
+  if(myDialog != nullptr)
+    size.h = std::max(size.h, static_cast<uInt32>(myDialog->getMinHeight()));
+
+  return size;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Debugger::initialize()
 {
   mySize = myOSystem.settings().getSize("dbg.res");
   const Common::Size& d = myOSystem.frameBuffer().desktopSize(BufferType::Debugger);
 
-  // The debugger dialog is resizable, within certain bounds
-  // We check those bounds now
-  mySize.clamp(static_cast<uInt32>(DebuggerDialog::kSmallFontMinW), d.w,
-               static_cast<uInt32>(DebuggerDialog::kSmallFontMinH), d.h);
-
-  myOSystem.settings().setValue("dbg.res", mySize);
+  // The debugger dialog is resizable, within certain bounds.  Clamp to the
+  // font-based minimum first; the content-based minimum needs an existing
+  // dialog to measure, so it is enforced just below.
+  Common::Size minSize = fontMinSize();
+  mySize.clamp(minSize.w, d.w, minSize.h, d.h);
 
   delete myDialog;  myDialog = nullptr;
   myDialog = new DebuggerDialog(myOSystem, *this, 0, 0, mySize.w, mySize.h);
+
+  // Some cart types need more height than the font minimum; grow the window
+  // and rebuild once if the freshly-created dialog would clip its tab content
+  minSize = dialogMinSize();
+  if(mySize.h < minSize.h)
+  {
+    mySize.clamp(minSize.w, d.w, minSize.h, d.h);
+    delete myDialog;  myDialog = nullptr;
+    myDialog = new DebuggerDialog(myOSystem, *this, 0, 0, mySize.w, mySize.h);
+  }
+
+  myOSystem.settings().setValue("dbg.res", mySize);
 
   myCartDebug->setDebugWidget(myDialog->cartDebug());
 
@@ -106,9 +146,67 @@ void Debugger::initialize()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FBInitStatus Debugger::initializeVideo()
 {
-  return myOSystem.frameBuffer().createDisplay(
+  const FBInitStatus status = myOSystem.frameBuffer().createDisplay(
     string{STELLA_FULL_TITLE} + ": Debugger mode",
     BufferType::Debugger, mySize);
+
+  // The debugger window may be resized, but not below its usable minimum
+  // (which depends on the configured debugger font size)
+  myOSystem.frameBuffer().setWindowMinSize(dialogMinSize());
+
+  return status;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Debugger::requestResize()
+{
+  // Record the desired (logical) size; the actual rebuild is deferred until
+  // the user stops dragging (see updateTime()), since recreating the whole
+  // debugger dialog is expensive
+  const uInt32 scale = myOSystem.frameBuffer().hidpiScaleFactor();
+  const Common::Rect& r = myOSystem.frameBuffer().imageRect();
+
+  myPendingSize = Common::Size(r.w() / scale, r.h() / scale);
+  myResizePending = myPendingSize != mySize;
+  myResizeCountdown = 15;  // ~frames of idle before rebuilding
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Debugger::updateTime(uInt64 time)
+{
+  DialogContainer::updateTime(time);
+
+  // Fire the debounced rebuild once resizing has settled
+  if(myResizePending && --myResizeCountdown <= 0)
+  {
+    myResizePending = false;
+    if(myPendingSize != mySize)
+    {
+      mySize = myPendingSize;
+      const Common::Size& d = myOSystem.frameBuffer().desktopSize(BufferType::Debugger);
+      const Common::Size minSize = dialogMinSize();
+      mySize.clamp(minSize.w, d.w, minSize.h, d.h);
+      myOSystem.settings().setValue("dbg.res", mySize);
+      recreateDialog();
+    }
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Debugger::recreateDialog()
+{
+  // Close everything currently shown (it references the existing dialog)
+  while(!myDialogStack.empty())
+    myDialogStack.top()->close();
+
+  // Rebuild the base dialog at the new size, reusing all existing layout code
+  delete myDialog;  myDialog = nullptr;
+  myDialog = new DebuggerDialog(myOSystem, *this, 0, 0, mySize.w, mySize.h);
+  myCartDebug->setDebugWidget(myDialog->cartDebug());
+
+  // Re-open it as the base dialog
+  myOSystem.frameBuffer().clear();
+  myDialog->open();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

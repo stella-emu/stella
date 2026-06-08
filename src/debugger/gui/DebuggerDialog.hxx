@@ -79,6 +79,14 @@ class DebuggerDialog : public Dialog
 
     void setPosition() override { positionAt(0); }
 
+    /**
+      The minimum dialog height required so that no fixed-content tab (the
+      TIA/I/O/Audio tabs and the cart-specific info/state tabs) is clipped,
+      accounting for the TIA image and CPU/RAM areas laid out around them.
+      Returns 0 if no such constraint applies (e.g. before the tabs exist).
+    */
+    int getMinHeight() const;
+
   protected:
     void handleKeyDown(StellaKey key, StellaMod mod, bool repeated) override;
     void handleKeyUp(StellaKey key, StellaMod mod) override;

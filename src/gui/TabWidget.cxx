@@ -96,6 +96,18 @@ int TabWidget::addTab(string_view title, int tabWidth)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+int TabWidget::getMaxContentHeight() const
+{
+  int maxHeight = 0;
+
+  for(const auto& tab: _tabs)
+    if(tab.parentWidget != nullptr)
+      maxHeight = std::max(maxHeight, tab.parentWidget->getContentHeight());
+
+  return maxHeight;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TabWidget::setActiveTab(int tabID, bool show)
 {
   assert(0 <= tabID && std::cmp_less(tabID, _tabs.size()));

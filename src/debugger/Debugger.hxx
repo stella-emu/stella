@@ -90,6 +90,17 @@ class Debugger : public DialogContainer
     FBInitStatus initializeVideo();
 
     /**
+      Called when the (resizeable) debugger window has been resized.  The
+      actual (expensive) rebuild is debounced until the user stops dragging.
+    */
+    void requestResize() override;
+
+    /**
+      Per-frame update; also fires the debounced window-resize rebuild.
+    */
+    void updateTime(uInt64 time) override;
+
+    /**
       Wrapper method for EventHandler::enterDebugMode() for those classes
       that don't have access to EventHandler.
 
@@ -331,6 +342,22 @@ class Debugger : public DialogContainer
 
     void reset();
 
+    /**
+      Rebuild the debugger dialog at the current mySize (used after a resize).
+    */
+    void recreateDialog();
+
+    /**
+      The minimum debugger window size for the currently configured font size.
+    */
+    Common::Size fontMinSize() const;
+
+    /**
+      The minimum debugger window size: the font-based minimum, raised if
+      necessary so the current dialog's fixed tab content is not clipped.
+    */
+    Common::Size dialogMinSize() const;
+
     void saveState(int state);
     void saveAllStates();
     void loadState(int state);
@@ -355,6 +382,12 @@ class Debugger : public DialogContainer
     // Dimensions of the entire debugger window
     Common::Size mySize{DebuggerDialog::kSmallFontMinW,
                         DebuggerDialog::kSmallFontMinH};
+
+    // Debounced window-resize handling: rebuild the dialog once the user
+    // stops dragging, rather than on every resize event
+    Common::Size myPendingSize;
+    bool myResizePending{false};
+    int  myResizeCountdown{0};
 
     // Various builtin functions and operations
     struct BuiltinFunction {
