@@ -147,7 +147,6 @@ void TIA::initialize()
   myHstate = HState::blank;
   myCollisionMask = 0;
   myLinesSinceChange = 0;
-  myCollisionUpdateRequired = myCollisionUpdateScheduled = false;
   myColorLossEnabled = myColorLossActive = false;
   myColorHBlank = 0;
   myLastCycle = 0;
@@ -307,8 +306,6 @@ bool TIA::save(Serializer& out) const
     out.putInt(myHctrDelta);
     out.putInt(myXAtRenderingStart);
 
-    out.putBool(myCollisionUpdateRequired);
-    out.putBool(myCollisionUpdateScheduled);
     out.putInt(myCollisionMask);
 
     out.putInt(myMovementClock);
@@ -382,8 +379,6 @@ bool TIA::load(Serializer& in)
     myHctrDelta = in.getInt();
     myXAtRenderingStart = in.getInt();
 
-    myCollisionUpdateRequired = in.getBool();
-    myCollisionUpdateScheduled = in.getBool();
     myCollisionMask = in.getInt();
 
     myMovementClock = in.getInt();
@@ -1560,8 +1555,6 @@ void TIA::cycle(uInt32 colorClocks)
       [this] (uInt8 address, uInt8 value) {delayedWrite(address, value);}
     );
 
-    myCollisionUpdateRequired = std::exchange(myCollisionUpdateScheduled, false);
-
     if (myLinesSinceChange < 2) {
       tickMovement();
 
@@ -1570,7 +1563,7 @@ void TIA::cycle(uInt32 colorClocks)
       else
         tickHframe();
 
-      if (myCollisionUpdateRequired && !myFrameManager->vblank()) updateCollision();
+      if (!myFrameManager->vblank()) updateCollision();
     }
 
     if (++myHctr >= TIAConstants::H_CLOCKS) [[unlikely]]
@@ -1606,8 +1599,6 @@ FORCE_INLINE void TIA::tickMovement()
       myPlayer1.isMoving  ||
       myBall.isMoving;
 
-    myCollisionUpdateRequired = myCollisionUpdateRequired || myMovementInProgress;
-
     ++myMovementClock;
   }
 }
@@ -1615,6 +1606,12 @@ FORCE_INLINE void TIA::tickMovement()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FORCE_INLINE void TIA::tickHblank()
 {
+  myMissile0.tickClkpInHblank();
+  myMissile1.tickClkpInHblank();
+  myPlayer0.tickClkpInHblank();
+  myPlayer1.tickClkpInHblank();
+  myBall.tickClkpInHblank();
+
   switch (myHctr) {
     case 0:
       myExtendedHblank = false;
@@ -1633,18 +1630,13 @@ FORCE_INLINE void TIA::tickHblank()
   }
 
   if (myExtendedHblank && myHctr - myHctrDelta > TIAConstants::H_BLANK_CLOCKS - 1)
-    {
-      myPlayfield.tick(myHctr - TIAConstants::H_BLANK_CLOCKS - myHctrDelta);
-      myCollisionUpdateRequired = true;
-    }
+    myPlayfield.tick(myHctr - TIAConstants::H_BLANK_CLOCKS - myHctrDelta);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FORCE_INLINE void TIA::tickHframe()
 {
   const uInt32 x = myHctr - TIAConstants::H_BLANK_CLOCKS - myHctrDelta;
-
-  myCollisionUpdateRequired = true;
 
   myPlayfield.tick(x);
   myPlayer0.tick();
@@ -1786,12 +1778,6 @@ void TIA::cloneLastLine()
       myPatPF[y][myFlickerFrame] = myPatPF[y - 1][myFlickerFrame];
     }
   }
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void TIA::scheduleCollisionUpdate()
-{
-  myCollisionUpdateScheduled = true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
