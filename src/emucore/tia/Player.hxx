@@ -355,7 +355,9 @@ void Player::tickClkpInHblank()
     return;
   }
 
-  if (myIsRendering && myRenderCounter == myRenderCounterTripPoint)
+  if (!myIsRendering || myRenderCounter < myRenderCounterTripPoint)
+    collision = myCollisionMaskDisabled;
+  else
     collision = (myPattern & (1 << mySampleCounter)) ? myCollisionMaskEnabled : myCollisionMaskDisabled;
 }
 

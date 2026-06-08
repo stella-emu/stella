@@ -314,7 +314,7 @@ void Missile::tickClkpInHblank() {
     return;
   }
 
-  if (myIsRendering && myRenderCounter == 0) myIsVisible = true;
+  myIsVisible = myIsRendering && myRenderCounter >= 0;
 
   collision = (myIsVisible && myIsEnabled)
     ? myCollisionMaskEnabled

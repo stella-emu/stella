@@ -386,7 +386,7 @@ void Ball::tickClkpInHblank()
     return;
   }
 
-  mySignalActive = myIsRendering && myRenderCounter == 0;
+  mySignalActive = myIsRendering && myRenderCounter >= 0;
 
   collision = (mySignalActive && myIsEnabled) ? myCollisionMaskEnabled : myCollisionMaskDisabled;
 }
