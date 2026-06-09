@@ -210,7 +210,7 @@ void PromptWidget::printPrompt()
 
   print(PROMPT);
   _promptStartPos = _promptEndPos = _currentPos;
-  myUndoHandler->reset();
+  (*myUndoHandler).reset();  // Make sure to call ::reset, not smartptr reset
   myUndoHandler->doo("");
 
   resetFunctions();
@@ -629,7 +629,7 @@ void PromptWidget::loadConfig()
     print(PROMPT);
 
     _promptStartPos = _promptEndPos = _currentPos;
-    myUndoHandler->reset();
+    (*myUndoHandler).reset();  // Make sure to call ::reset, not smartptr reset
     myUndoHandler->doo("");
     _exitedEarly = false;
   }
@@ -1072,7 +1072,7 @@ bool PromptWidget::execute()
     const string command = getLine();
 
     // Add the input to the history
-    addToHistory(command.c_str());
+    addToHistory(command);
 
     // Pass the command to the debugger, and print the result
     const string result = instance().debugger().run(command);
@@ -1361,7 +1361,7 @@ void PromptWidget::clearScreen()
     updateScrollBuffer();
 
   if(myUndoHandler)
-    myUndoHandler->reset();
+    (*myUndoHandler).reset();  // Make sure to call ::reset, not smartptr reset
 
   resetFunctions();
 }
