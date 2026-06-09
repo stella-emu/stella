@@ -117,6 +117,7 @@ class LauncherDialog : public Dialog, CommandSender
     void handleJoyDown(int stick, int button, bool longPress) override;
     void handleJoyUp(int stick, int button) override;
     Event::Type getJoyAxisEvent(int stick, JoyAxis axis, JoyDir adir, int button) override;
+    void layout() override;
 
   private:
     static constexpr int MIN_LAUNCHER_CHARS = 24;
@@ -125,7 +126,6 @@ class LauncherDialog : public Dialog, CommandSender
     static constexpr int MIN_ROMINFO_LINES = 4; // extra lines
 
     void updateUI();
-    void layout() override;
     Common::Size contentMinSize() const;
     // Clamp a desired ROM info column width to keep both the list usable
     // (horizontal) and the image + text fitting in the column (vertical)

@@ -768,7 +768,7 @@ int DebuggerDialog::getMinHeight() const
       const int caseFixed = extra + static_cast<int>(FrameManager::Metrics::baseHeightPAL);
       const int caseProp  = (extra * 20 + 12) / 13;  // ceil(extra / 0.65)
 
-      minHeight = std::max(minHeight, std::max(caseFixed, caseProp));
+      minHeight = std::max({minHeight, caseFixed, caseProp});
     }
   }
 
