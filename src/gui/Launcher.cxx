@@ -103,3 +103,27 @@ Dialog* Launcher::baseDialog()
 {
   return myBaseDialog;
 }
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Launcher::requestResize()
+{
+  // Defer the re-flow until the user stops dragging.  The new size is derived
+  // inside LauncherDialog::layout(), so we only need to remember that a resize
+  // is pending and restart the idle countdown.
+  myResizePending = true;
+  myResizeCountdown = 15;  // ~frames of idle before re-flowing
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Launcher::updateTime(uInt64 time)
+{
+  DialogContainer::updateTime(time);
+
+  // Re-flow the launcher once resizing has settled, rather than on every
+  // resize event
+  if(myResizePending && --myResizeCountdown <= 0)
+  {
+    myResizePending = false;
+    myDialogStack.applyAll([](Dialog*& d) { d->relayout(); });
+  }
+}

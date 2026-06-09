@@ -75,6 +75,15 @@ class Launcher : public DialogContainer
     */
     Dialog* baseDialog() override;
 
+    /**
+      Debounced window-resize handling: re-flow the launcher once the user
+      stops dragging, rather than on every resize event (mirrors the
+      debugger).  requestResize() just restarts the idle countdown;
+      updateTime() performs the actual re-flow once it expires.
+    */
+    void requestResize() override;
+    void updateTime(uInt64 time) override;
+
   private:
     /**
       (Re)load the launcher window size from the 'launcherres' setting,
@@ -89,6 +98,10 @@ class Launcher : public DialogContainer
 
     // The dimensions of this dialog
     Common::Size mySize;
+
+    // Debounced window-resize state: re-flow only after dragging settles
+    bool myResizePending{false};
+    int  myResizeCountdown{0};
 
   private:
     // Following constructors and assignment operators not supported
