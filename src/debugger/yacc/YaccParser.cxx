@@ -78,7 +78,7 @@ private:
       33, 37, 38, 40, 41, 42, 43, 45, 47, 60, 62, 64, 91, 93, 94, 124, 126
     };
     const int v = static_cast<unsigned char>(c);
-    if(std::find(kValid.begin(), kValid.end(), v) != kValid.end())
+    if(std::ranges::find(kValid, v) != kValid.end())
       // NOLINTNEXTLINE(clang-analyzer-optin.core.EnumCastOutOfRange,modernize-return-braced-init-list)
       return parser::symbol_type(v);
     return parser::make_ERR();

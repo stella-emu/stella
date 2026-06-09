@@ -1061,7 +1061,7 @@ bool DiStella::checkRange(uInt16 start, uInt16 end) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CartDebug::DisasmSegColor DiStella::mnemonicColorForOpcode(uInt8 opcode) const
+CartDebug::DisasmSegColor DiStella::mnemonicColorForOpcode(uInt8 opcode)
 {
   const string_view mn = ourLookup[opcode].mnemonic;
   if(mn[0] == '.')

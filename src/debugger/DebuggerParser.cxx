@@ -1483,7 +1483,7 @@ void DebuggerParser::executeExec()
   commandResult << execResult;
 
   for(const auto& item: history)
-    debugger.prompt().addToHistory(item.c_str());
+    debugger.prompt().addToHistory(item);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

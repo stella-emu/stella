@@ -545,9 +545,9 @@ void RomListWidget::loadDisasmColorMap()
   {
     try
     {
-      const int v = std::stoi(token);
-      myDisasmColorMap[i] = (v == CartDebug::DISASM_COLOR_TEXT || (v >= 0 && v <= 15))
-                            ? static_cast<uInt8>(v)
+      const auto v = static_cast<uInt8>(std::stoi(token));
+      myDisasmColorMap[i] = (v == CartDebug::DISASM_COLOR_TEXT || v <= 15)
+                            ? v
                             : CartDebug::ourDisasmThemes[0].map[i];
     }
     catch(...)

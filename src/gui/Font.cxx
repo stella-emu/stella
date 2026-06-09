@@ -54,7 +54,7 @@ int Font::getStringWidth(string_view str) const
     return myFontDesc.maxwidth * static_cast<int>(str.size());
 
   int width = 0;
-  for(char c: str)
+  for(const char c: str)
     width += getCharWidth(c);
   return width;
 }
