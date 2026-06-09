@@ -124,6 +124,10 @@ void Launcher::updateTime(uInt64 time)
   if(myResizePending && --myResizeCountdown <= 0)
   {
     myResizePending = false;
+
+    // Stop stretching and rebuild the framebuffer at the final dragged size,
+    // so LauncherDialog::layout() (via relayout) sees the new window
+    myOSystem.frameBuffer().applyPendingResize();
     myDialogStack.applyAll([](Dialog*& d) { d->relayout(); });
   }
 }

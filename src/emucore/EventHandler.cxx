@@ -359,12 +359,17 @@ void EventHandler::handleSystemEvent(SystemEvent e, int data1, int data2)
   switch(e)
   {
     case SystemEvent::WINDOW_RESIZED:
-      // Re-flow any resizeable UI to the new window size
-      myOSystem.frameBuffer().handleResize(data1, data2);
-    #ifdef GUI_SUPPORT
-      if(myOverlay)
-        myOverlay->requestResize();
-    #endif
+      // For resizeable UI windows, defer the rebuild until the drag settles
+      // (the frame is stretched meanwhile); otherwise resize immediately
+      if(myOSystem.frameBuffer().deferResize(data1, data2))
+      {
+      #ifdef GUI_SUPPORT
+        if(myOverlay)
+          myOverlay->requestResize();
+      #endif
+      }
+      else
+        myOSystem.frameBuffer().handleResize(data1, data2);
       [[fallthrough]];
 
     case SystemEvent::WINDOW_EXPOSED:

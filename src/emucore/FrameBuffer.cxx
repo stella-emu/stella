@@ -385,6 +385,41 @@ void FrameBuffer::handleResize(int width, int height)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool FrameBuffer::deferResize(int width, int height)
+{
+  // Only the launcher and debugger windows are user-resizable; everything
+  // else resizes immediately via handleResize()
+  if(myBufferType != BufferType::Launcher &&
+     myBufferType != BufferType::Debugger)
+    return false;
+
+  myPendingResize = Common::Size(width, height);
+
+  // On the first event of a drag gesture, freeze the current frame and let
+  // the backend stretch it to the window for the duration of the drag
+  if(!myResizeActive)
+  {
+    myResizeActive = true;
+    myBackend->startStretchResize();
+  }
+  return true;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FrameBuffer::applyPendingResize()
+{
+  if(!myResizeActive)
+    return;
+
+  myResizeActive = false;
+
+  // Stop stretching *before* rebuilding, so the backend re-reads the true
+  // (new) window/render dimensions
+  myBackend->endStretchResize();
+  handleResize(myPendingResize.w, myPendingResize.h);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBuffer::update(UpdateMode mode)
 {
   // Onscreen messages are a special case and require different handling than

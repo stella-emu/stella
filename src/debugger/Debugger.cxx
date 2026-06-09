@@ -160,14 +160,11 @@ FBInitStatus Debugger::initializeVideo()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Debugger::requestResize()
 {
-  // Record the desired (logical) size; the actual rebuild is deferred until
-  // the user stops dragging (see updateTime()), since recreating the whole
-  // debugger dialog is expensive
-  const uInt32 scale = myOSystem.frameBuffer().hidpiScaleFactor();
-  const Common::Rect& r = myOSystem.frameBuffer().imageRect();
-
-  myPendingSize = Common::Size(r.w() / scale, r.h() / scale);
-  myResizePending = myPendingSize != mySize;
+  // The actual rebuild is deferred until the user stops dragging (see
+  // updateTime()), since recreating the whole debugger dialog is expensive.
+  // The framebuffer stretches the current frame meanwhile; here we just
+  // restart the idle countdown.
+  myResizePending = true;
   myResizeCountdown = 15;  // ~frames of idle before rebuilding
 }
 
@@ -180,12 +177,22 @@ void Debugger::updateTime(uInt64 time)
   if(myResizePending && --myResizeCountdown <= 0)
   {
     myResizePending = false;
-    if(myPendingSize != mySize)
+
+    // Stop stretching and rebuild the framebuffer at the final dragged size,
+    // so imageRect() below reflects the new window
+    myOSystem.frameBuffer().applyPendingResize();
+
+    // Derive the new (logical) dialog size from the updated window
+    const uInt32 scale = myOSystem.frameBuffer().hidpiScaleFactor();
+    const Common::Rect& r = myOSystem.frameBuffer().imageRect();
+    Common::Size newSize(r.w() / scale, r.h() / scale);
+    const Common::Size& d = myOSystem.frameBuffer().desktopSize(BufferType::Debugger);
+    const Common::Size minSize = dialogMinSize();
+    newSize.clamp(minSize.w, d.w, minSize.h, d.h);
+
+    if(newSize != mySize)
     {
-      mySize = myPendingSize;
-      const Common::Size& d = myOSystem.frameBuffer().desktopSize(BufferType::Debugger);
-      const Common::Size minSize = dialogMinSize();
-      mySize.clamp(minSize.w, d.w, minSize.h, d.h);
+      mySize = newSize;
       myOSystem.settings().setValue("dbg.res", mySize);
       recreateDialog();
     }

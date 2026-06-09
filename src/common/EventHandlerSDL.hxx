@@ -54,6 +54,11 @@ class EventHandlerSDL : public EventHandler
   private:
     SDL_Event myEvent{0};
 
+    // SDL event watch: lets us re-render during the OS modal resize loop
+    // (Windows/macOS), where the normal main loop is blocked.  Without it,
+    // dragging shows black on Windows instead of the stretched frame.
+    static bool resizeWatch(void* userdata, SDL_Event* event);
+
   #ifdef JOYSTICK_SUPPORT
     // A thin wrapper around a basic PhysicalJoystick, holding the pointer to
     // the underlying SDL joystick device.

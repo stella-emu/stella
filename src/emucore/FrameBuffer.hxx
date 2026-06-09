@@ -100,6 +100,27 @@ class FrameBuffer
     void handleResize(int width, int height);
 
     /**
+      Begin (or continue) a deferred, interactive resize of a resizeable UI
+      window.  Instead of rebuilding the UI on every resize event (which
+      re-letterboxes and flickers), the current frame is frozen and stretched
+      to fill the window while dragging; the actual rebuild happens once via
+      applyPendingResize() when the drag settles.
+
+      @param width   The latest window width, in pixels
+      @param height  The latest window height, in pixels
+      @return  True if the resize was deferred (resizeable UI window); false
+               if the caller should resize immediately via handleResize()
+    */
+    bool deferResize(int width, int height);
+
+    /**
+      Apply the most recent size recorded by deferResize(): stop stretching
+      and rebuild the UI for the new window size.  No-op if no deferred resize
+      is pending.
+    */
+    void applyPendingResize();
+
+    /**
       Set the minimum size (in logical UI pixels) the current window may be
       resized to.  Used by resizeable UI dialogs to prevent the window being
       shrunk small enough to clip their content.
@@ -518,6 +539,12 @@ class FrameBuffer
 
     // Type of the frame buffer
     BufferType myBufferType{BufferType::None};
+
+    // Deferred interactive-resize state: while the user drags the window
+    // border, the current frame is stretched (see deferResize()) and the
+    // actual rebuild is postponed until applyPendingResize() at drag settle
+    bool myResizeActive{false};
+    Common::Size myPendingResize;
 
   #ifdef GUI_SUPPORT
     // The font object to use for the normal in-game GUI

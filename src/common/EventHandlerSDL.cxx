@@ -17,6 +17,7 @@
 
 #include "Logger.hxx"
 #include "OSystem.hxx"
+#include "FrameBuffer.hxx"
 #include "EventHandlerSDL.hxx"
 
 #include "ThreadDebugging.hxx"
@@ -44,6 +45,10 @@ EventHandlerSDL::EventHandlerSDL(OSystem& osystem)
   SDL_SetHint(SDL_HINT_MOUSE_FOCUS_CLICKTHROUGH, "1");
   //SDL_SetHint(SDL_HINT_MOUSE_RELATIVE_SYSTEM_SCALE, "1");
   //SDL_SetHint(SDL_HINT_MOUSE_RELATIVE_MODE_CENTER, "0");
+
+  // Re-render while the OS is in its modal window-resize loop (Windows/macOS),
+  // during which the main event loop is blocked.  See resizeWatch().
+  SDL_AddEventWatch(resizeWatch, this);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -236,6 +241,32 @@ void EventHandlerSDL::pollEvent()
         break;
     }
   }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool EventHandlerSDL::resizeWatch(void* userdata, SDL_Event* event)
+{
+  // SDL invokes event watches synchronously from within its event pump,
+  // including while the OS runs its own modal window-resize loop (Windows/
+  // macOS).  During that loop pollEvent() above is blocked, so without this
+  // hook the window shows black while being dragged instead of the stretched
+  // previous frame.  Re-dispatching the resize/expose here starts (and keeps)
+  // the stretch active and forces a re-render on every event.
+  auto* const self = static_cast<EventHandlerSDL*>(userdata);
+
+  switch(event->type)
+  {
+    case SDL_EVENT_WINDOW_RESIZED:
+      self->handleSystemEvent(SystemEvent::WINDOW_RESIZED,
+                              event->window.data1, event->window.data2);
+      break;
+    case SDL_EVENT_WINDOW_EXPOSED:
+      self->handleSystemEvent(SystemEvent::WINDOW_EXPOSED);
+      break;
+    default:
+      break;
+  }
+  return true;  // return value is ignored for event watches
 }
 
 #ifdef JOYSTICK_SUPPORT

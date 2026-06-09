@@ -179,6 +179,13 @@ class FBBackendSDL : public FBBackend
     void refreshDimensions() override;
 
     /**
+      Freeze/unfreeze the current frame's coordinate space so SDL stretches
+      it to fill the window during an interactive resize drag.
+    */
+    void startStretchResize() override;
+    void endStretchResize() override;
+
+    /**
       This method is called to create a surface with the given attributes.
 
       @param w      The requested width of the new surface.

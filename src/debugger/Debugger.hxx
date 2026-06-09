@@ -385,7 +385,6 @@ class Debugger : public DialogContainer
 
     // Debounced window-resize handling: rebuild the dialog once the user
     // stops dragging, rather than on every resize event
-    Common::Size myPendingSize;
     bool myResizePending{false};
     int  myResizeCountdown{0};
 
