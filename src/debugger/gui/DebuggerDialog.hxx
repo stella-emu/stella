@@ -87,6 +87,15 @@ class DebuggerDialog : public Dialog
     */
     int getMinHeight() const;
 
+    /**
+      Save/restore which tab is active in each of the dialog's two tab
+      areas.  Used when the debugger window is resized: the dialog is fully
+      recreated, so the previously-selected tabs would otherwise reset to
+      the first tab in each area.
+    */
+    void getActiveTabs(int& mainTab, int& romTab) const;
+    void setActiveTabs(int mainTab, int romTab);
+
   protected:
     void handleKeyDown(StellaKey key, StellaMod mod, bool repeated) override;
     void handleKeyUp(StellaKey key, StellaMod mod) override;

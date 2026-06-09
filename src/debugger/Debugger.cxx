@@ -195,6 +195,11 @@ void Debugger::updateTime(uInt64 time)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Debugger::recreateDialog()
 {
+  // Remember which tabs the user had selected; the recreate below would
+  // otherwise reset them to the first tab in each area
+  int activeTab = 0, activeRomTab = 0;
+  myDialog->getActiveTabs(activeTab, activeRomTab);
+
   // Close everything currently shown (it references the existing dialog)
   while(!myDialogStack.empty())
     myDialogStack.top()->close();
@@ -203,6 +208,16 @@ void Debugger::recreateDialog()
   delete myDialog;  myDialog = nullptr;
   myDialog = new DebuggerDialog(myOSystem, *this, 0, 0, mySize.w, mySize.h);
   myCartDebug->setDebugWidget(myDialog->cartDebug());
+
+  // The freshly-created cart widget keeps its change-tracking baseline locally
+  // (unlike TIA/CPU/RIOT, whose old state lives in the persistent debug
+  // objects), so it starts empty.  Seed it now, before any loadConfig() runs,
+  // otherwise clicking a cart info/state/RAM tab indexes an empty vector.
+  myCartDebug->saveOldState();
+
+  // Restore the previously-selected tabs before opening, so the initial
+  // loadConfig() displays them directly (same ROM => same tab layout)
+  myDialog->setActiveTabs(activeTab, activeRomTab);
 
   // Re-open it as the base dialog
   myOSystem.frameBuffer().clear();

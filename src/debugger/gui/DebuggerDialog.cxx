@@ -786,6 +786,22 @@ int DebuggerDialog::getMinHeight() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void DebuggerDialog::getActiveTabs(int& mainTab, int& romTab) const
+{
+  mainTab = myTab->getActiveTab();
+  romTab  = myRomTab->getActiveTab();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void DebuggerDialog::setActiveTabs(int mainTab, int romTab)
+{
+  // Only set the index here; the actual display happens in the dialog's
+  // initial loadConfig() (called from open()), which honours _activeTab
+  myTab->setActiveTab(mainTab);
+  myRomTab->setActiveTab(romTab);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Common::Rect DebuggerDialog::getTabBounds() const
 {
   // The tab area is the full area below the TIA image
