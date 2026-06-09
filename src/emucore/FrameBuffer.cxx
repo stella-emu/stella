@@ -50,11 +50,7 @@
   #include "Stella16x32tFont.hxx"
   #include "ConsoleFont.hxx"
   #include "Launcher.hxx"
-  #include "OptionsMenu.hxx"
-  #include "CommandMenu.hxx"
-  #include "HighScoresMenu.hxx"
-  #include "MessageMenu.hxx"
-  #include "PlusRomsMenu.hxx"
+  #include "DialogContainer.hxx"
   #include "TimeMachine.hxx"
 #endif
 
@@ -130,7 +126,7 @@ uInt32 FrameBuffer::displayId(BufferType bufferType) const
 {
   uInt32 display = 0;
 
-  if(bufferType == myBufferType)
+  if(bufferType == myBufferType || bufferType == BufferType::None)
     display = myBackend->getCurrentDisplayID();
   else
     display = myOSystem.settings().getInt(
@@ -397,78 +393,28 @@ void FrameBuffer::update(UpdateMode mode)
 
   #ifdef GUI_SUPPORT
     case EventHandlerState::OPTIONSMENU:
-    {
-      myOSystem.optionsMenu().tick();
-      redraw |= myOSystem.optionsMenu().needsRedraw();
-      if(redraw)
-      {
-        renderTIA(true, true);
-        myOSystem.optionsMenu().draw(forceRedraw);
-      }
-      else if(rerender)
-      {
-        renderTIA(true, true);
-        myOSystem.optionsMenu().render();
-      }
-      break;  // EventHandlerState::OPTIONSMENU
-    }
-
     case EventHandlerState::CMDMENU:
-    {
-      myOSystem.commandMenu().tick();
-      redraw |= myOSystem.commandMenu().needsRedraw();
-      if(redraw)
-      {
-        renderTIA(true, true);
-        myOSystem.commandMenu().draw(forceRedraw);
-      }
-      else if(rerender)
-      {
-        renderTIA(true, true);
-        myOSystem.commandMenu().render();
-      }
-      break;  // EventHandlerState::CMDMENU
-    }
-
     case EventHandlerState::HIGHSCORESMENU:
+    case EventHandlerState::MESSAGEMENU:
+    case EventHandlerState::PLUSROMSMENU:
+    case EventHandlerState::OVERLAYMENU:
     {
-      myOSystem.highscoresMenu().tick();
-      redraw |= myOSystem.highscoresMenu().needsRedraw();
+      // All GUI menus that overlay the TIA image share one render path;
+      // the active DialogContainer is tracked by EventHandler::overlay()
+      DialogContainer& overlay = myOSystem.eventHandler().overlay();
+      overlay.tick();
+      redraw |= overlay.needsRedraw();
       if(redraw)
       {
         renderTIA(true, true);
-        myOSystem.highscoresMenu().draw(forceRedraw);
+        overlay.draw(forceRedraw);
       }
       else if(rerender)
       {
         renderTIA(true, true);
-        myOSystem.highscoresMenu().render();
+        overlay.render();
       }
-      break;  // EventHandlerState::HIGHSCORESMENU
-    }
-
-    case EventHandlerState::MESSAGEMENU:
-    {
-      myOSystem.messageMenu().tick();
-      redraw |= myOSystem.messageMenu().needsRedraw();
-      if(redraw)
-      {
-        renderTIA(true, true);
-        myOSystem.messageMenu().draw(forceRedraw);
-      }
-      break;  // EventHandlerState::MESSAGEMENU
-    }
-
-    case EventHandlerState::PLUSROMSMENU:
-    {
-      myOSystem.plusRomsMenu().tick();
-      redraw |= myOSystem.plusRomsMenu().needsRedraw();
-      if(redraw)
-      {
-        renderTIA(true, true);
-        myOSystem.plusRomsMenu().draw(forceRedraw);
-      }
-      break;  // EventHandlerState::PLUSROMSMENU
+      break;  // GUI menu overlays
     }
 
     case EventHandlerState::TIMEMACHINE:

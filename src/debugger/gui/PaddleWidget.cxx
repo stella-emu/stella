@@ -63,7 +63,6 @@ PaddleWidget::PaddleWidget(GuiObject* boss, const GUI::Font& font, int x, int y,
 
     new StaticTextWidget(boss, font, xpos, ypos + 2, p0string);
 
-    //ypos += lineHeight;
     myP0Resistance = new SliderWidget(boss, font, xpos, ypos);
     myP0Resistance->setEnabled(false);
     myP0Resistance->setFlags(Widget::FLAG_INVISIBLE);
@@ -75,7 +74,6 @@ PaddleWidget::PaddleWidget(GuiObject* boss, const GUI::Font& font, int x, int y,
     xpos = x;  ypos += _lineHeight * 2.25;
     new StaticTextWidget(boss, font, xpos, ypos + 2, p1string);
 
-    //ypos += lineHeight;
     myP1Resistance = new SliderWidget(boss, font, xpos, ypos);
     myP1Resistance->setEnabled(false);
     myP1Resistance->setFlags(Widget::FLAG_INVISIBLE);

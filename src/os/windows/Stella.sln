@@ -1,29 +1,47 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
-VisualStudioVersion = 17.4.33110.190
+# Visual Studio Version 18
+VisualStudioVersion = 18.7.11822.327
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Stella", "Stella.vcxproj", "{D7FCEC7F-33E1-49DD-A4B0-D5FC222250AD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|ARM64 = Debug|ARM64
 		Debug|x64 = Debug|x64
+		Debug-NoDebugger|ARM64 = Debug-NoDebugger|ARM64
 		Debug-NoDebugger|x64 = Debug-NoDebugger|x64
+		Profile|ARM64 = Profile|ARM64
 		Profile|x64 = Profile|x64
+		Release PGO|ARM64 = Release PGO|ARM64
 		Release PGO|x64 = Release PGO|x64
+		Release|ARM64 = Release|ARM64
 		Release|x64 = Release|x64
+		Release-Sanitize|ARM64 = Release-Sanitize|ARM64
 		Release-Sanitize|x64 = Release-Sanitize|x64
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{D7FCEC7F-33E1-49DD-A4B0-D5FC222250AD}.Debug|ARM64.ActiveCfg = Debug|ARM64
+		{D7FCEC7F-33E1-49DD-A4B0-D5FC222250AD}.Debug|ARM64.Build.0 = Debug|ARM64
 		{D7FCEC7F-33E1-49DD-A4B0-D5FC222250AD}.Debug|x64.ActiveCfg = Debug|x64
 		{D7FCEC7F-33E1-49DD-A4B0-D5FC222250AD}.Debug|x64.Build.0 = Debug|x64
+		{D7FCEC7F-33E1-49DD-A4B0-D5FC222250AD}.Debug-NoDebugger|ARM64.ActiveCfg = Debug-NoDebugger|ARM64
+		{D7FCEC7F-33E1-49DD-A4B0-D5FC222250AD}.Debug-NoDebugger|ARM64.Build.0 = Debug-NoDebugger|ARM64
 		{D7FCEC7F-33E1-49DD-A4B0-D5FC222250AD}.Debug-NoDebugger|x64.ActiveCfg = Debug-NoDebugger|x64
 		{D7FCEC7F-33E1-49DD-A4B0-D5FC222250AD}.Debug-NoDebugger|x64.Build.0 = Debug-NoDebugger|x64
+		{D7FCEC7F-33E1-49DD-A4B0-D5FC222250AD}.Profile|ARM64.ActiveCfg = Profile|ARM64
+		{D7FCEC7F-33E1-49DD-A4B0-D5FC222250AD}.Profile|ARM64.Build.0 = Profile|ARM64
 		{D7FCEC7F-33E1-49DD-A4B0-D5FC222250AD}.Profile|x64.ActiveCfg = Profile|x64
 		{D7FCEC7F-33E1-49DD-A4B0-D5FC222250AD}.Profile|x64.Build.0 = Profile|x64
+		{D7FCEC7F-33E1-49DD-A4B0-D5FC222250AD}.Release PGO|ARM64.ActiveCfg = Release PGO|ARM64
+		{D7FCEC7F-33E1-49DD-A4B0-D5FC222250AD}.Release PGO|ARM64.Build.0 = Release PGO|ARM64
 		{D7FCEC7F-33E1-49DD-A4B0-D5FC222250AD}.Release PGO|x64.ActiveCfg = Release PGO|x64
 		{D7FCEC7F-33E1-49DD-A4B0-D5FC222250AD}.Release PGO|x64.Build.0 = Release PGO|x64
+		{D7FCEC7F-33E1-49DD-A4B0-D5FC222250AD}.Release|ARM64.ActiveCfg = Release|ARM64
+		{D7FCEC7F-33E1-49DD-A4B0-D5FC222250AD}.Release|ARM64.Build.0 = Release|ARM64
 		{D7FCEC7F-33E1-49DD-A4B0-D5FC222250AD}.Release|x64.ActiveCfg = Release|x64
 		{D7FCEC7F-33E1-49DD-A4B0-D5FC222250AD}.Release|x64.Build.0 = Release|x64
+		{D7FCEC7F-33E1-49DD-A4B0-D5FC222250AD}.Release-Sanitize|ARM64.ActiveCfg = Release-Sanitize|ARM64
+		{D7FCEC7F-33E1-49DD-A4B0-D5FC222250AD}.Release-Sanitize|ARM64.Build.0 = Release-Sanitize|ARM64
 		{D7FCEC7F-33E1-49DD-A4B0-D5FC222250AD}.Release-Sanitize|x64.ActiveCfg = Release-Sanitize|x64
 		{D7FCEC7F-33E1-49DD-A4B0-D5FC222250AD}.Release-Sanitize|x64.Build.0 = Release-Sanitize|x64
 	EndGlobalSection

@@ -30,7 +30,6 @@ StringListWidget::StringListWidget(GuiObject* boss, const GUI::Font& font,
 {
   _bgcolorlo = kDlgColor;
 
-
   if(_font.getFontHeight() < 24)
   {
     _textOfs = 3;
@@ -66,7 +65,7 @@ string StringListWidget::getToolTip(const Common::Point& pos) const
   if(idx < 0)
     return string{};
 
-  const string value = _list[idx];
+  const string& value = _list[idx];
 
   if(static_cast<uInt32>(_font.getStringWidth(value)) > rect.w())
     return _toolTipText + value;
@@ -90,19 +89,19 @@ void StringListWidget::drawWidget(bool hilite)
   // Draw a thin frame around the list.
   s.frameRect(_x, _y, _w + 1, _h, hilite && _hilite ? kWidColorHi : kColor);
 
-  if (!isEnabled())
+  if(!isEnabled())
     s.fillRect(_x + 1, _y + 1, _w - 1, _h - 2, kDlgColor);
 
   // Draw the list items
   const int len = static_cast<int>(_list.size());
-  for (int i = 0, pos = _currentPos; i < _rows && pos < len; i++, pos++)
+  for(int i = 0, pos = _currentPos; i < _rows && pos < len; i++, pos++)
   {
     const int y = _y + 2 + _lineHeight * i;
     int iw = 0;
     ColorId textColor = kTextColor;
 
     // Draw the selected item inverted, on a highlighted background.
-    if (_selectedItem == pos && _hilite)
+    if(_selectedItem == pos && _hilite)
     {
       if(_hasFocus && !_editMode)
       {
@@ -115,7 +114,7 @@ void StringListWidget::drawWidget(bool hilite)
     iw = drawIcon(pos, _x, y - 1, textColor);
 
     const Common::Rect r(getEditRect());
-    if (_selectedItem == pos && _editMode)
+    if(_selectedItem == pos && _editMode)
     {
       adjustOffset();
 

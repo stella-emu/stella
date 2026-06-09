@@ -35,15 +35,7 @@ CartridgeBUSWidget::CartridgeBUSWidget(
   int xpos = HBORDER, ypos = VBORDER;
   int ds2_rows = 0;
 
-//  if (cart.myBUSSubtype == CartridgeBUS::BUSSubtype::BUS0)
-//  {
-//    int lwidth = _font.getStringWidth("Unsupported version of BUS"); // get width of the widest label
-//    new StaticTextWidget(boss, _font, xpos, ypos, lwidth,
-//                         myFontHeight, "Unsupported version of BUS", TextAlign::Left);
-//    return;
-//  }
-
-  if (cart.myBUSSubtype == CartridgeBUS::BUSSubtype::BUS3)
+  if(cart.myBUSSubtype == CartridgeBUS::BUSSubtype::BUS3)
   {
     ds2_rows = 2;
     myDatastreamCount = 18;
@@ -55,7 +47,7 @@ CartridgeBUSWidget::CartridgeBUSWidget(
   }
 
   VariantList items;
-  if (cart.myBUSSubtype == CartridgeBUS::BUSSubtype::BUS0)
+  if(cart.myBUSSubtype == CartridgeBUS::BUSSubtype::BUS0)
   {
     VarList::push_back(items, "0 ($FFF6)");
     VarList::push_back(items, "1 ($FFF7)");
@@ -107,7 +99,7 @@ CartridgeBUSWidget::CartridgeBUSWidget(
     myDatastreamLabels[row]->setLabel(Common::Base::toString(row * 4, Common::Base::Fmt::_16_2));
   }
 
-  if (cart.myBUSSubtype == CartridgeBUS::BUSSubtype::BUS3)
+  if(cart.myBUSSubtype == CartridgeBUS::BUSSubtype::BUS3)
   {
     lwidth = _font.getStringWidth("Write Data (stream 16)");
     myDatastreamLabels[4] =
@@ -193,7 +185,7 @@ CartridgeBUSWidget::CartridgeBUSWidget(
   myMusicWaveforms->setEditable(false);
 
   const int xpossp = xpos + myMusicWaveforms->getWidth() + INDENT;
-  if (cart.myBUSSubtype == CartridgeBUS::BUSSubtype::BUS3)
+  if(cart.myBUSSubtype == CartridgeBUS::BUSSubtype::BUS3)
   {
     const int lwidth2 = _font.getStringWidth("Sample Pointer ");
     new StaticTextWidget(boss, _font, xpossp, ypos, lwidth2,
@@ -214,14 +206,13 @@ CartridgeBUSWidget::CartridgeBUSWidget(
   myMusicWaveformSizes->setTarget(this);
   myMusicWaveformSizes->setEditable(false);
 
-
   // BUS stuff and Digital Audio flags
   xpos = 10;  ypos += myLineHeight + VGAP;
   myBusOverdrive = new CheckboxWidget(boss, _font, xpos, ypos, "BUS Overdrive enabled");
   myBusOverdrive->setTarget(this);
   myBusOverdrive->setEditable(false);
 
-  if (cart.myBUSSubtype == CartridgeBUS::BUSSubtype::BUS3)
+  if(cart.myBUSSubtype == CartridgeBUS::BUSSubtype::BUS3)
   {
     myDigitalSample = new CheckboxWidget(boss, _font, xpossp, ypos, "Digital Sample mode");
     myDigitalSample->setTarget(this);
@@ -259,7 +250,7 @@ void CartridgeBUSWidget::saveOldState()
     // F = Fractional
 
     myOldState.datastreampointers.push_back(myCart.getDatastreamPointer(i)>>12);
-    if (i < 16)
+    if(i < 16)
       myOldState.datastreamincrements.push_back(myCart.getDatastreamIncrement(i));
     else
       myOldState.datastreamincrements.push_back(0x100);
@@ -292,9 +283,6 @@ void CartridgeBUSWidget::saveOldState()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeBUSWidget::loadConfig()
 {
-//  if (myCart.myBUSSubtype == CartridgeBUS::BUSSubtype::BUS0)
-//    return;
-
   myBank->setSelectedIndex(myCart.getBank());
 
   // Get registers, using change tracking
@@ -403,7 +391,7 @@ void CartridgeBUSWidget::loadConfig()
   }
   myMusicWaveformSizes->setList(alist, vlist, changed);
 
-  if (myCart.myBUSSubtype == CartridgeBUS::BUSSubtype::BUS3)
+  if(myCart.myBUSSubtype == CartridgeBUS::BUSSubtype::BUS3)
   {
     clearAll();
     alist.push_back(0);  vlist.push_back(myCart.getSample());
@@ -413,21 +401,21 @@ void CartridgeBUSWidget::loadConfig()
   }
 
   myBusOverdrive->setState((myCart.myMode & 0x0f) == 0);
-  if (myCart.myBUSSubtype == CartridgeBUS::BUSSubtype::BUS3)
+  if(myCart.myBUSSubtype == CartridgeBUS::BUSSubtype::BUS3)
     myDigitalSample->setState((myCart.myMode & 0xf0) == 0);
 
-  if ((myCart.myMode & 0xf0) == 0)
+  if((myCart.myMode & 0xf0) == 0)
   {
     myMusicWaveforms->setCrossed(true);
     myMusicWaveformSizes->setCrossed(true);
-    if (myCart.myBUSSubtype == CartridgeBUS::BUSSubtype::BUS3)
+    if(myCart.myBUSSubtype == CartridgeBUS::BUSSubtype::BUS3)
       mySamplePointer->setCrossed(false);
   }
   else
   {
     myMusicWaveforms->setCrossed(false);
     myMusicWaveformSizes->setCrossed(false);
-    if (myCart.myBUSSubtype == CartridgeBUS::BUSSubtype::BUS3)
+    if(myCart.myBUSSubtype == CartridgeBUS::BUSSubtype::BUS3)
       mySamplePointer->setCrossed(true);
   }
 

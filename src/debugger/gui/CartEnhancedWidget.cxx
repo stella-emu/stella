@@ -78,7 +78,7 @@ string CartridgeEnhancedWidget::ramDescription()
     info = std::format("{} bytes RAM @ ${} - ${}\n",
       myCart.myRamSize,
       Base::hex4(ADDR_BASE),
-      Base::hex4(ADDR_BASE | (myCart.myRamSize * 2 - 1)));
+      Base::hex4(static_cast<int>(ADDR_BASE | (myCart.myRamSize * 2 - 1))));
 
   info += std::format("  ${} - ${} (R), ${} - ${} (W)\n",
     Base::hex4(ADDR_BASE | myCart.myReadOffset),
@@ -244,7 +244,6 @@ string CartridgeEnhancedWidget::bankState()
       result += std::format("#{}", bank - (isRamBank ? myCart.romBankCount() : 0));
       if(isRamBank)        result += " RAM"; // was RAM mapped here?
       else if(hasRamBanks) result += " ROM";
-      //if(hotspot >= 0x100)
       if(hotspot != 0 && myHotspotDelta > 0)
         result += " " + hotspotStr(bank, seg, bankSegs() < 3);
     }

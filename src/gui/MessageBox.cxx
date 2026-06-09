@@ -107,12 +107,12 @@ void MessageBox::handleCommand(CommandSender* sender, int cmd, int data, int id)
     if(myOkCmd)
       sendCommand(myOkCmd, 0, 0);
   }
-  else if (cmd == GuiObject::kCloseCmd)
+  else if(cmd == GuiObject::kCloseCmd)
   {
     close();
 
     // Send a signal to the calling class that 'Cancel' has been selected
-    if (myCancelCmd)
+    if(myCancelCmd)
       sendCommand(myCancelCmd, 0, 0);
   }
   else

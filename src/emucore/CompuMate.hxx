@@ -21,6 +21,7 @@
 class Console;
 class Event;
 class FSNode;
+class OSystem;
 class System;
 
 #include "bspf.hxx"
@@ -55,7 +56,8 @@ class CompuMate
       @param event    The event object to use for events
       @param system   The system using this controller
     */
-    CompuMate(const Console& console, const Event& event, const System& system);
+    CompuMate(OSystem& osystem, const Console& console,
+              const Event& event, const System& system);
     ~CompuMate() = default;
 
     /**
@@ -63,14 +65,6 @@ class CompuMate
     */
     unique_ptr<Controller>& leftController()  { return myLeftController;  }
     unique_ptr<Controller>& rightController() { return myRightController; }
-
-    /**
-      Load a cassette .bin image from the given ROM's sibling file.
-      Called by Console immediately after construction.
-      NOTE: eventually we'll use a BrowserWidget to ask the user for the
-            file to load.
-    */
-    void loadCassette(const FSNode& romFile);
 
     /**
       Called by CartCM whenever SWCHA bit 6 (D6, audio-out/CLK) changes.
@@ -174,7 +168,8 @@ class CompuMate
     };
 
   private:
-    // Console, Event, and System objects
+    // OSystem, Console, Event, and System objects
+    OSystem&       myOSystem;
     const Console& myConsole;
     const Event&   myEvent;
     const System&  mySystem;
@@ -199,9 +194,20 @@ class CompuMate
 
       void reset() { *this = {}; }
     };
-    FSNode   myPendingLoadPath;  // set by dialog (or default sibling) at Func+J time
+    FSNode myPendingLoadPath;  // set by dialog at Func+J time
     ArmState myLoadArm;
     ArmState mySaveArm;
+    // Cycle at which to release a virtually-injected Backspace keypress
+    // (0 = none pending).  Used on LOAD/SAVE cancel to erase the command from
+    // the ROM screen; the event is held briefly so the ROM scans it at
+    // column 5, then auto-released in update().
+    uInt64   myBackspaceReleaseCycle{0};
+
+  #ifdef GUI_SUPPORT
+    // Cycles to hold an injected Backspace so the ROM scans it at column 5 and
+    // sees a clean press/release (~1 NTSC frame); used by the cancel callbacks
+    static constexpr uInt32 BACKSPACE_HOLD_CYCLES = 20000;
+  #endif
 
   private:
     // Following constructors and assignment operators not supported

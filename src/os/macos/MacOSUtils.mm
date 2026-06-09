@@ -15,30 +15,41 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#include "Dialog.hxx"
-#include "FrameBuffer.hxx"
-#include "HighScoresDialog.hxx"
-#include "HighScoresMenu.hxx"
+#import <Foundation/Foundation.h>
+
+#include "MacOSUtils.hxx"
+
+namespace MacOSUtils
+{
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-HighScoresMenu::HighScoresMenu(OSystem& osystem)
-  : DialogContainer(osystem)
+std::string applicationSupportPath()
 {
+  @autoreleasepool {
+    NSArray* paths = NSSearchPathForDirectoriesInDomains(
+        NSApplicationSupportDirectory, NSUserDomainMask, YES);
+    if(paths.count > 0)
+    {
+      const char* s = [paths[0] UTF8String];
+      if(s) return std::string{s};
+    }
+  }
+  return {};
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-HighScoresMenu::~HighScoresMenu()
+std::string desktopPath()
 {
-  delete myHighScoresDialog;  myHighScoresDialog = nullptr;
+  @autoreleasepool {
+    NSArray* paths = NSSearchPathForDirectoriesInDomains(
+        NSDesktopDirectory, NSUserDomainMask, YES);
+    if(paths.count > 0)
+    {
+      const char* s = [paths[0] UTF8String];
+      if(s) return std::string{s};
+    }
+  }
+  return {};
 }
 
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Dialog* HighScoresMenu::baseDialog()
-{
-  if (myHighScoresDialog == nullptr)
-    myHighScoresDialog = new HighScoresDialog(myOSystem, *this,
-                                              FBMinimum::Width, FBMinimum::Height,
-                                              Dialog::AppMode::emulator);
-
-  return myHighScoresDialog;
-}
+}  // namespace MacOSUtils

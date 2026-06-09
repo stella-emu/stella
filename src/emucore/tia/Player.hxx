@@ -196,6 +196,15 @@ class Player : public Serializable
     FORCE_INLINE void movementTick(uInt32 clock, uInt32 hclock, bool hblank);
 
     /**
+      The player circuit has a F1 cell right that is clocked by the color clock
+      (CLKP) right at the end of the pixel signal. This cell receives color clock
+      even during HBLANK and is responsible for latching the display signal to
+      the screen. In order to get this correct we distribute CLKP separately to
+      the player during HBLANK.
+     */
+    FORCE_INLINE void tickClkpInHblank();
+
+    /**
       Tick one color clock. Inline for performance (implementation below).
      */
     FORCE_INLINE void tick();
@@ -329,6 +338,22 @@ void Player::movementTick(uInt32 clock, uInt32 hclock, bool hblank)
       myInvertedPhaseClock = !hblank;
     }
   }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Player::tickClkpInHblank()
+{
+  // See tick for an explanation of the various steps.
+  if(myUseInvertedPhaseClock && myInvertedPhaseClock) [[unlikely]]
+  {
+    myInvertedPhaseClock = false;
+    return;
+  }
+
+  if (!myIsRendering || myRenderCounter < myRenderCounterTripPoint)
+    collision = myCollisionMaskDisabled;
+  else
+    collision = (myPattern & (1 << mySampleCounter)) ? myCollisionMaskEnabled : myCollisionMaskDisabled;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

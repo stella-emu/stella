@@ -135,7 +135,8 @@ void Cartridge3EWidget::handleCommand(CommandSender* sender, int cmd, int data, 
     }
     else
     {
-      bank = myCart.romBankCount();  // default to first RAM bank
+      // default to first RAM bank
+      bank = myCart.romBankCount();
       myBankWidgets[1]->setSelectedIndex(0);
     }
   }
@@ -148,7 +149,8 @@ void Cartridge3EWidget::handleCommand(CommandSender* sender, int cmd, int data, 
     }
     else
     {
-      bank = 0;  // default to first ROM bank
+      // default to first ROM bank
+      bank = 0;
       myBankWidgets[0]->setSelectedIndex(0);
     }
   }

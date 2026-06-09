@@ -172,7 +172,6 @@ void InputDialog::addDevicePortTab()
   myDejitterBase->setToolTip("Adjust paddle input averaging.\n"
                              "Note: Already implemented in 2600-daptor",
     Event::DecDejtterAveraging, Event::IncDejtterAveraging);
-  //xpos += myDejitterBase->getWidth() + fontWidth - 4;
   wid.push_back(myDejitterBase);
 
   ypos += lineHeight + VGAP;
@@ -538,7 +537,6 @@ void InputDialog::saveConfig()
 
   instance().eventHandler().saveKeyMapping();
   instance().eventHandler().saveJoyMapping();
-//  instance().saveConfig();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -621,7 +619,7 @@ bool InputDialog::repeatEnabled()
 void InputDialog::handleKeyDown(StellaKey key, StellaMod mod, bool repeated)
 {
   // Remap key events in remap mode, otherwise pass to parent dialog
-  if (myEventMapper->isRemapping())
+  if(myEventMapper->isRemapping())
     myEventMapper->handleKeyDown(key, mod);
   else
     Dialog::handleKeyDown(key, mod);
@@ -631,7 +629,7 @@ void InputDialog::handleKeyDown(StellaKey key, StellaMod mod, bool repeated)
 void InputDialog::handleKeyUp(StellaKey key, StellaMod mod)
 {
   // Remap key events in remap mode, otherwise pass to parent dialog
-  if (myEventMapper->isRemapping())
+  if(myEventMapper->isRemapping())
     myEventMapper->handleKeyUp(key, mod);
   else
     Dialog::handleKeyUp(key, mod);
@@ -651,7 +649,7 @@ void InputDialog::handleJoyDown(int stick, int button, bool longPress)
 void InputDialog::handleJoyUp(int stick, int button)
 {
   // Remap joystick buttons in remap mode, otherwise pass to parent dialog
-  if (myEventMapper->isRemapping())
+  if(myEventMapper->isRemapping())
     myEventMapper->handleJoyUp(stick, button);
   else
     Dialog::handleJoyUp(stick, button);

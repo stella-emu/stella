@@ -34,7 +34,8 @@ CartridgeCDFWidget::CartridgeCDFWidget(
   int xpos = HBORDER, ypos = VBORDER;
 
   VariantList items;
-  if (isCDFJplus()) {
+  if(isCDFJplus())
+  {
     VarList::push_back(items, "0 ($FFF4)");
     VarList::push_back(items, "1 ($FFF5)");
     VarList::push_back(items, "2 ($FFF6)");
@@ -42,7 +43,9 @@ CartridgeCDFWidget::CartridgeCDFWidget(
     VarList::push_back(items, "4 ($FFF8)");
     VarList::push_back(items, "5 ($FFF9)");
     VarList::push_back(items, "6 ($FFFA)");
-  } else {
+  }
+  else
+  {
     VarList::push_back(items, "0 ($FFF5)");
     VarList::push_back(items, "1 ($FFF6)");
     VarList::push_back(items, "2 ($FFF7)");
@@ -66,11 +69,9 @@ CartridgeCDFWidget::CartridgeCDFWidget(
   int lwidth = 0;
 
   // Fast Fetch Offset
-  if (isCDFJplus())
+  if(isCDFJplus())
   {
     ypos += myLineHeight + VGAP;
-
-
     new StaticTextWidget(_boss, _font, myFastFetch->getLeft(), ypos, "Fast Fetch Offset: ");
     lwidth = _font.getStringWidth("Fast Fetch Offset: ");
 
@@ -98,7 +99,7 @@ CartridgeCDFWidget::CartridgeCDFWidget(
   myCommandStreamPointer->setTarget(this);
   myCommandStreamPointer->setEditable(false);
 
-  if (isCDFJ() || isCDFJplus())
+  if(isCDFJ() || isCDFJplus())
     myJumpStreamPointers = new DataGridWidget(boss, _nfont, DS_X  + myDatastreamPointers->getWidth() * 2 / 4,
                                               ypos+myLineHeight + 9*myLineHeight, 2, 1, 6, 32,
                                               Common::Base::Fmt::_16_3_2);
@@ -284,7 +285,7 @@ void CartridgeCDFWidget::loadConfig()
     alist.clear(); vlist.clear(); changed.clear();
   };
 
-  if (isCDFJplus())
+  if(isCDFJplus())
   {
     clearAll();
     alist.push_back(0);  vlist.push_back(myCart.myRAM[myCart.myFastFetcherOffset]);
@@ -405,7 +406,7 @@ void CartridgeCDFWidget::loadConfig()
   myFastFetch->setState((myCart.myMode & 0x0f) == 0);
   myDigitalSample->setState((myCart.myMode & 0xf0) == 0);
 
-  if ((myCart.myMode & 0xf0) == 0)
+  if((myCart.myMode & 0xf0) == 0)
   {
     myMusicWaveforms->setCrossed(true);
     myMusicWaveformSizes->setCrossed(true);

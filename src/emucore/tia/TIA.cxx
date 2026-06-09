@@ -65,7 +65,7 @@ namespace {
 // This parameter still has room for tuning. If we go lower than 73, long005 will show
 // a slight artifact (still have to crosscheck on real hardware), if we go lower than
 // 70, the G.I. Joe will show an artifact (hole in roof).
-static constexpr uInt8 resxLateHblankThreshold = TIAConstants::H_CYCLES - 3;
+static constexpr uInt8 resxLateHblankThreshold = 73;
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 TIA::TIA(ConsoleIO& console, const ConsoleTimingProvider& timingProvider,
@@ -147,7 +147,6 @@ void TIA::initialize()
   myHstate = HState::blank;
   myCollisionMask = 0;
   myLinesSinceChange = 0;
-  myCollisionUpdateRequired = myCollisionUpdateScheduled = false;
   myColorHBlank = 0;
   myLastCycle = 0;
   mySubClock = 0;
@@ -306,8 +305,6 @@ bool TIA::save(Serializer& out) const
     out.putInt(myHctrDelta);
     out.putInt(myXAtRenderingStart);
 
-    out.putBool(myCollisionUpdateRequired);
-    out.putBool(myCollisionUpdateScheduled);
     out.putInt(myCollisionMask);
 
     out.putInt(myMovementClock);
@@ -381,8 +378,6 @@ bool TIA::load(Serializer& in)
     myHctrDelta = in.getInt();
     myXAtRenderingStart = in.getInt();
 
-    myCollisionUpdateRequired = in.getBool();
-    myCollisionUpdateScheduled = in.getBool();
     myCollisionMask = in.getInt();
 
     myMovementClock = in.getInt();
@@ -1513,8 +1508,6 @@ void TIA::cycle(uInt32 colorClocks)
       [this] (uInt8 address, uInt8 value) {delayedWrite(address, value);}
     );
 
-    myCollisionUpdateRequired = std::exchange(myCollisionUpdateScheduled, false);
-
     if (myLinesSinceChange < 2) {
       tickMovement();
 
@@ -1523,7 +1516,7 @@ void TIA::cycle(uInt32 colorClocks)
       else
         tickHframe();
 
-      if (myCollisionUpdateRequired && !myFrameManager->vblank()) updateCollision();
+      if (!myFrameManager->vblank()) updateCollision();
     }
 
     if (++myHctr >= TIAConstants::H_CLOCKS) [[unlikely]]
@@ -1559,8 +1552,6 @@ FORCE_INLINE void TIA::tickMovement()
       myPlayer1.isMoving  ||
       myBall.isMoving;
 
-    myCollisionUpdateRequired = myCollisionUpdateRequired || myMovementInProgress;
-
     ++myMovementClock;
   }
 }
@@ -1568,6 +1559,12 @@ FORCE_INLINE void TIA::tickMovement()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FORCE_INLINE void TIA::tickHblank()
 {
+  myMissile0.tickClkpInHblank();
+  myMissile1.tickClkpInHblank();
+  myPlayer0.tickClkpInHblank();
+  myPlayer1.tickClkpInHblank();
+  myBall.tickClkpInHblank();
+
   switch (myHctr) {
     case 0:
       myExtendedHblank = false;
@@ -1593,8 +1590,6 @@ FORCE_INLINE void TIA::tickHblank()
 FORCE_INLINE void TIA::tickHframe()
 {
   const uInt32 x = myHctr - TIAConstants::H_BLANK_CLOCKS - myHctrDelta;
-
-  myCollisionUpdateRequired = true;
 
   myPlayfield.tick(x);
   myPlayer0.tick();
@@ -1736,12 +1731,6 @@ void TIA::cloneLastLine()
       myPatPF[y][myFlickerFrame] = myPatPF[y - 1][myFlickerFrame];
     }
   }
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void TIA::scheduleCollisionUpdate()
-{
-  myCollisionUpdateScheduled = true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

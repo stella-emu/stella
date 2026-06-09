@@ -20,7 +20,7 @@
 #include "PropsSet.hxx"
 #include "EventHandler.hxx"
 #include "PKeyboardHandler.hxx"
-#include "json_lib.hxx"
+#include "json/json_lib.hxx"
 
 using json = nlohmann::json;
 

@@ -17,28 +17,25 @@
 
 #include "Console.hxx"
 #include "Event.hxx"
+#include "EventHandler.hxx"
 #include "FSNode.hxx"
+#include "OSystem.hxx"
 #include "System.hxx"
 #include "CompuMate.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CompuMate::CompuMate(const Console& console, const Event& event,
-                     const System& system)
-  : myConsole{console},
+CompuMate::CompuMate(OSystem& osystem, const Console& console,
+                     const Event& event, const System& system)
+  : myOSystem{osystem},
+    myConsole{console},
     myEvent{event},
     mySystem{system},
-    myCassette(system)
+    myCassette(osystem, system)
 {
   // These controller pointers will be retrieved by the Console, which will
   // also take ownership of them
   myLeftController  = std::make_unique<CMControl>(*this, Controller::Jack::Left, event, system);
   myRightController = std::make_unique<CMControl>(*this, Controller::Jack::Right, event, system);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CompuMate::loadCassette(const FSNode& romFile)
-{
-  myCassette.load(romFile, myConsole.timing());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -132,6 +129,11 @@ void CompuMate::update()
     lp.setPin(AP::Nine, AnalogReadout::connectToVcc());
     rp.setPin(DP::Four, false);
   }
+  if(myBackspaceReleaseCycle && mySystem.cycles() >= myBackspaceReleaseCycle)
+  {
+    myOSystem.eventHandler().handleEvent(Event::CompuMateBackspace, false);
+    myBackspaceReleaseCycle = 0;
+  }
 
   // Returns true if any non-Enter character key is currently pressed
   const auto anyCharPressed = [&]() -> bool {
@@ -145,23 +147,47 @@ void CompuMate::update()
   };
 
   // Detect Func+J (LOAD command) followed by Enter to start cassette playback
-  if(!myCassette.isPlaying())
+  if(!myLoadArm.seen)
   {
-    if(myEvent.get(E::CompuMateFunc) && myEvent.get(E::CompuMateJ) && !myLoadArm.seen)
+    if(myEvent.get(E::CompuMateFunc) && myEvent.get(E::CompuMateJ))
     {
       myLoadArm.seen = true;
       myLoadArm.bufLen = 1;  // LOAD is a single token
       myLoadArm.waitingForRelease = true;
-      // TODO: open file-browser dialog here; for now use default cassette path
-      myPendingLoadPath = myCassette.defaultCassettePath();
     }
+  }
 
-    // Suppress character tracking until J is released so the J from Func+J
-    // isn't counted as a new character press
-    if(myLoadArm.seen && myLoadArm.waitingForRelease && !myEvent.get(E::CompuMateJ))
+  if(myLoadArm.seen)
+  {
+    // Open the file browser once J is released; by then the ROM has had time
+    // to print 'LOAD' onscreen
+    if(myLoadArm.waitingForRelease && !myEvent.get(E::CompuMateJ))
     {
       myLoadArm.waitingForRelease = false;
       myLoadArm.prevAnyChar = false;
+  #ifdef GUI_SUPPORT
+      myOSystem.eventHandler().openBrowserDialog("Load Cassette",
+        "~",
+        BrowserDialog::Mode::FileLoad,
+        [this](bool ok, const FSNode& node) {
+          if(ok)
+            myPendingLoadPath = node;
+          else
+            cancelCassetteLoad();
+          myOSystem.eventHandler().leaveMenuMode();
+          // leaveMenuMode() calls setState(), which clears all pending events;
+          // the injected Backspace (which erases 'LOAD' from the ROM screen on
+          // cancel) must therefore be set *after* the state transition
+          if(!ok)
+          {
+            myOSystem.eventHandler().handleEvent(Event::CompuMateBackspace, true);
+            myBackspaceReleaseCycle = mySystem.cycles() + BACKSPACE_HOLD_CYCLES;
+          }
+        },
+        [](const FSNode& node) {
+          return node.isDirectory() || node.hasExtension(".bin");
+        });
+  #endif
     }
 
     // Backspace removes the last token; if the buffer empties, load is cancelled
@@ -184,7 +210,10 @@ void CompuMate::update()
     if(enterNow && !myLoadArm.prevEnter && myLoadArm.seen)
     {
       myCassette.load(myPendingLoadPath, myConsole.timing());
-      myCassette.startPlayback(mySystem.cycles());
+      // Only begin playback if the load produced data; otherwise the
+      // synthesised "Loading cassette" gauge would mask load()'s error message.
+      if(myCassette.isLoaded())
+        myCassette.startPlayback(mySystem.cycles());
       myLoadArm.seen = false;
     }
     myLoadArm.prevEnter = enterNow;
@@ -198,14 +227,36 @@ void CompuMate::update()
       mySaveArm.seen = true;
       mySaveArm.bufLen = 1;  // SAVE is a single token
       mySaveArm.waitingForRelease = true;
-      // TODO: open file-browser dialog here; for now fall back to sibling path
-      myCassette.setSavePath(myCassette.defaultCassettePath());
     }
 
+    // Open the file browser once H is released; by then the ROM has had time
+    // to print 'SAVE' onscreen
     if(mySaveArm.seen && mySaveArm.waitingForRelease && !myEvent.get(E::CompuMateH))
     {
       mySaveArm.waitingForRelease = false;
       mySaveArm.prevAnyChar = false;
+  #ifdef GUI_SUPPORT
+      myOSystem.eventHandler().openBrowserDialog("Save Cassette",
+        myPendingLoadPath.getParent().getPath(),
+        BrowserDialog::Mode::FileSave,
+        [this](bool ok, const FSNode& node) {
+          if(ok)
+            myCassette.setSavePath(node);
+          else
+            cancelCassetteSave();
+          myOSystem.eventHandler().leaveMenuMode();
+          // As with LOAD: inject a Backspace after the state change to erase
+          // 'SAVE' from the ROM screen on cancel
+          if(!ok)
+          {
+            myOSystem.eventHandler().handleEvent(Event::CompuMateBackspace, true);
+            myBackspaceReleaseCycle = mySystem.cycles() + BACKSPACE_HOLD_CYCLES;
+          }
+        },
+        [](const FSNode& node) {
+          return node.isDirectory() || node.hasExtension(".bin");
+        });
+  #endif
     }
 
     const bool backspaceNow = myEvent.get(E::CompuMateBackspace) != 0;

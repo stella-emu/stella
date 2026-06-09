@@ -302,7 +302,7 @@ void HighScoresDialog::saveConfig()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void HighScoresDialog::handleCommand(CommandSender* sender, int cmd, int data, int id)
 {
-  switch (cmd)
+  switch(cmd)
   {
     case kOKCmd:
       saveConfig();
@@ -446,13 +446,8 @@ void HighScoresDialog::handlePlayedVariation()
     if (std::cmp_less(myHighScoreRank, NUM_RANKS))
     {
       myEditRank = myHighScoreRank;
-      for (uInt32 r = NUM_RANKS - 1; std::cmp_greater(r, myHighScoreRank); --r)
-      {
-        myScores.scores[r].score = myScores.scores[r - 1].score;
-        myScores.scores[r].special = myScores.scores[r - 1].special;
-        myScores.scores[r].name = myScores.scores[r - 1].name;
-        myScores.scores[r].date = myScores.scores[r - 1].date;
-      }
+      for(uInt32 r = NUM_RANKS - 1; std::cmp_greater(r, myHighScoreRank); --r)
+        myScores.scores[r] = myScores.scores[r - 1];
       myScores.scores[myHighScoreRank].score = newScore;
       myScores.scores[myHighScoreRank].special = newSpecial;
       myScores.scores[myHighScoreRank].date = myNow;
@@ -466,17 +461,9 @@ void HighScoresDialog::handlePlayedVariation()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void HighScoresDialog::deleteRank(int rank)
 {
-  for (uInt32 r = rank; r < NUM_RANKS - 1; ++r)
-  {
-    myScores.scores[r].score   = myScores.scores[r + 1].score;
-    myScores.scores[r].special = myScores.scores[r + 1].special;
-    myScores.scores[r].name    = myScores.scores[r + 1].name;
-    myScores.scores[r].date    = myScores.scores[r + 1].date;
-  }
-  myScores.scores[NUM_RANKS - 1].score   = 0;
-  myScores.scores[NUM_RANKS - 1].special = 0;
-  myScores.scores[NUM_RANKS - 1].name.clear();
-  myScores.scores[NUM_RANKS - 1].date.clear();
+  for(uInt32 r = rank; r < NUM_RANKS - 1; ++r)
+    myScores.scores[r] = std::move(myScores.scores[r + 1]);
+  myScores.scores[NUM_RANKS - 1] = {};
 
   if (myEditRank == rank)
   {

@@ -95,6 +95,7 @@ void DebuggerDialog::loadConfig()
   myMessageBox->setToolTip("");
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DebuggerDialog::saveConfig()
 {
   myFocusedWidget = _focusedWidget;
@@ -114,9 +115,9 @@ void DebuggerDialog::handleKeyDown(StellaKey key, StellaMod mod, bool repeated)
     return;
 
   // special debugger keys first (cannot be remapped)
-  if (StellaModTest::isControl(mod))
+  if(StellaModTest::isControl(mod))
   {
-    switch (key)
+    switch(key)
     {
       case StellaKey::S:
         doStep();
@@ -636,7 +637,6 @@ void DebuggerDialog::addRomArea()
 
   xpos = r.x() + 10;  ypos += myCpu->getHeight() + 10;
   myRam = new RiotRamWidget(this, *myLFont, *myNFont, xpos, ypos, r.w() - 10);
-  //myRam->setHelpAnchor("M6532", true); // TODO: doesn't work
   addToFocusList(myRam->getFocusList());
 
   // Add the DataGridOpsWidget to any widgets which contain a
@@ -673,7 +673,6 @@ void DebuggerDialog::addRomArea()
     tabHeight - myRomTab->getTabHeight() - 2);
   if(myCartInfo != nullptr)
   {
-    //myCartInfo->setHelpAnchor("BankswitchInformation", true); // TODO: doesn't work
     myRomTab->setParentWidget(tabID, myCartInfo);
     addToFocusList(myCartInfo->getFocusList(), myRomTab, tabID);
     tabID = myRomTab->addTab("    States    ", TabWidget::AUTO_WIDTH);
@@ -690,7 +689,7 @@ void DebuggerDialog::addRomArea()
     addToFocusList(myCartDebug->getFocusList(), myRomTab, tabID);
 
     // The cartridge RAM tab
-    if (myCartDebug->internalRamSize() > 0)
+    if(myCartDebug->internalRamSize() > 0)
     {
       tabID = myRomTab->addTab(myCartDebug->tabLabel(), TabWidget::AUTO_WIDTH);
       myCartRam =

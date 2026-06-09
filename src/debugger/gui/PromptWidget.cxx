@@ -15,6 +15,8 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
+#include "ContextMenu.hxx"
+#include "UndoHandler.hxx"
 #include "ScrollBarWidget.hxx"
 #include "FBSurface.hxx"
 #include "Font.hxx"
@@ -31,11 +33,6 @@
 
 static constexpr string_view PROMPT = "> ";
 
-// Uncomment the following to give full-line cut/copy/paste
-// Note that this will be removed eventually, when we implement proper cut/copy/paste
-#define PSEUDO_CUT_COPY_PASTE
-
-// TODO: Github issue #361
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 PromptWidget::PromptWidget(GuiObject* boss, const GUI::Font& font,
                            int x, int y, int w, int h)
@@ -46,7 +43,8 @@ PromptWidget::PromptWidget(GuiObject* boss, const GUI::Font& font,
     _kConsoleLineHeight{_kConsoleCharHeight + 2}
 {
   _flags = Widget::FLAG_ENABLED | Widget::FLAG_CLEARBG | Widget::FLAG_RETAIN_FOCUS |
-           Widget::FLAG_WANTS_TAB | Widget::FLAG_WANTS_RAWDATA;
+           Widget::FLAG_WANTS_TAB | Widget::FLAG_WANTS_RAWDATA |
+           Widget::FLAG_TRACK_MOUSE;
   _textcolor = kTextColor;
   _bgcolor = kWidColor;
   _bgcolorlo = kDlgColor;
@@ -63,6 +61,8 @@ PromptWidget::PromptWidget(GuiObject* boss, const GUI::Font& font,
                                    ScrollBarWidget::scrollBarWidth(_font), _h);
   _scrollBar->setTarget(this);
 
+  myUndoHandler = std::make_unique<UndoHandler>();
+
   clearScreen();
 
   addFocusWidget(this);
@@ -78,24 +78,35 @@ void PromptWidget::drawWidget(bool hilite)
 
   // Draw text
   const int start = _scrollLine - _linesPerPage + 1;
+  const int selStart = selectStartPos();
+  const int selEnd = selectEndPos();
   int y = _y + 2;
 
   for (int line = 0; line < _linesPerPage; ++line)
   {
     int x = _x + 1;
     for (int column = 0; column < _lineWidth; ++column) {
-      const int c = buffer((start + line) * _lineWidth + column);
+      const int bufPos = (start + line) * _lineWidth + column;
+      const int c = buffer(bufPos);
+      const bool isSelected = (_selectSize != 0) && (bufPos >= selStart) && (bufPos < selEnd);
 
-      if(c & (1 << 17))  // inverse video flag
+      if(isSelected)
+      {
+        s.fillRect(x, y, _kConsoleCharWidth, _kConsoleCharHeight, kTextColorHi);
+        s.drawChar(_font, c & 0x7f, x, y, kTextColorInv);
+      }
+      else if(c & (1 << 17))  // inverse video flag
       {
         fgcolor = _bgcolor;
         bgcolor = static_cast<ColorId>((c & 0x1ffff) >> 8);
         s.fillRect(x, y, _kConsoleCharWidth, _kConsoleCharHeight, bgcolor);
+        s.drawChar(_font, c & 0x7f, x, y, fgcolor);
       }
       else
+      {
         fgcolor = static_cast<ColorId>(c >> 8);
-
-      s.drawChar(_font, c & 0x7f, x, y, fgcolor);
+        s.drawChar(_font, c & 0x7f, x, y, fgcolor);
+      }
       x += _kConsoleCharWidth;
     }
     y += _kConsoleLineHeight;
@@ -111,7 +122,77 @@ void PromptWidget::drawWidget(bool hilite)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PromptWidget::handleMouseDown(int x, int y, MouseButton b, int clickCount)
 {
-//  cerr << "PromptWidget::handleMouseDown\n";
+  if(b == MouseButton::RIGHT && isEnabled() && !mouseMenu().isVisible())
+  {
+    VariantList items;
+  #ifndef BSPF_MACOS
+    VarList::push_back(items, " Cut     Ctrl+X ", "cut");
+    VarList::push_back(items, " Copy    Ctrl+C ", "copy");
+    VarList::push_back(items, " Paste   Ctrl+V ", "paste");
+  #else
+    VarList::push_back(items, " Cut      Cmd+X ", "cut");
+    VarList::push_back(items, " Copy     Cmd+C ", "copy");
+    VarList::push_back(items, " Paste    Cmd+V ", "paste");
+  #endif
+    ContextMenu& menu = mouseMenu();
+    menu.addItems(items);
+
+    // Enable/disable items based on the current state
+    const bool hasSelection = _selectSize != 0;
+    menu.setEnabled("cut",   hasSelection);
+    menu.setEnabled("copy",  hasSelection);
+    menu.setEnabled("paste", instance().eventHandler().hasClipboardText());
+
+    menu.show(x + getAbsX(), y + getAbsY(), dialog().surface().dstRect());
+    return;
+  }
+
+  if(b == MouseButton::LEFT && _promptStartPos >= 0)
+  {
+    const int start = _scrollLine - _linesPerPage + 1;
+    const int screenLine = (y - 2) / _kConsoleLineHeight;
+    const int col = (x - 1) / _kConsoleCharWidth;
+    const int newPos = std::clamp((start + screenLine) * _lineWidth + col,
+                                  _firstLineInBuffer * _lineWidth, _promptEndPos);
+    _currentPos = newPos;
+    _selectSize = 0;
+
+    if(clickCount == 2)
+    {
+      markWord();
+      setDirty();
+      return;
+    }
+
+    _isDragging = true;
+    setDirty();
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void PromptWidget::handleMouseUp(int x, int y, MouseButton b, int clickCount)
+{
+  _isDragging = false;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void PromptWidget::handleMouseMoved(int x, int y)
+{
+  if(!_isDragging || _promptStartPos < 0)
+    return;
+
+  const int start = _scrollLine - _linesPerPage + 1;
+  const int screenLine = (y - 2) / _kConsoleLineHeight;
+  const int col = (x - 1) / _kConsoleCharWidth;
+  const int newPos = std::clamp((start + screenLine) * _lineWidth + col,
+                                _firstLineInBuffer * _lineWidth, _promptEndPos);
+
+  if(newPos != _currentPos)
+  {
+    _selectSize -= (newPos - _currentPos);
+    _currentPos = newPos;
+    setDirty();
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -129,8 +210,11 @@ void PromptWidget::printPrompt()
 
   print(PROMPT);
   _promptStartPos = _promptEndPos = _currentPos;
+  (*myUndoHandler).reset();  // Make sure to call ::reset, not smartptr reset
+  myUndoHandler->doo("");
 
   resetFunctions();
+  scrollToCurrent();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -138,13 +222,19 @@ bool PromptWidget::handleText(char text)
 {
   if(text >= 0)
   {
-    // FIXME - convert this class to inherit from EditableWidget
+    if(_currentPos < _promptStartPos)
+    {
+      _currentPos = _promptEndPos;
+      _selectSize = 0;
+    }
+    if(_selectSize != 0)
+      killSelectedText();
     for(int i = _promptEndPos - 1; i >= _currentPos; i--)
       buffer(i + 1) = buffer(i);
     _promptEndPos++;
     putcharIntern(text);
+    myUndoHandler->doChar();
     scrollToCurrent();
-
     resetFunctions();
   }
   return true;
@@ -163,6 +253,21 @@ bool PromptWidget::handleKeyDown(StellaKey key, StellaMod mod)
   Event::Type event = instance().eventHandler().eventForKey(EventMode::kEditMode, key, mod);
   if(event == Event::NoType)
     event = instance().eventHandler().eventForKey(EventMode::kPromptMode, key, mod);
+
+  // Finalize any aggregated char group before processing this key
+  myUndoHandler->endChars(getLine());
+
+  // If the cursor is in scrollback (from a mouse selection), snap it back to
+  // the prompt on any actual edit/cursor command, with two exceptions:
+  //  - Copy still operates on the scrollback selection
+  //  - NoType, e.g. a bare modifier like Ctrl pressed before C in Ctrl+C, must
+  //    not clear the selection or the following Copy would have nothing to copy
+  if(_currentPos < _promptStartPos &&
+     event != Event::Copy && event != Event::NoType)
+  {
+    _currentPos = _promptEndPos;
+    _selectSize = 0;
+  }
 
   switch(event)
   {
@@ -205,32 +310,51 @@ bool PromptWidget::handleKeyDown(StellaKey key, StellaMod mod)
 
     // input modifying events
     case Event::Backspace:
-      if(_currentPos > _promptStartPos)
+      if(_selectSize != 0)
+      {
+        killSelectedText();
+        changeInput = true;
+      }
+      else if(_currentPos > _promptStartPos)
       {
         killChar(-1);
         changeInput = true;
       }
+      if(changeInput) myUndoHandler->doo(getLine());
       scrollToCurrent();
       break;
 
     case Event::Delete:
-      killChar(+1);
+      if(_selectSize != 0)
+        killSelectedText();
+      else
+        killChar(+1);
       changeInput = true;
+      myUndoHandler->doo(getLine());
       break;
 
     case Event::DeleteEnd:
       killLine(+1);
       changeInput = true;
+      myUndoHandler->doo(getLine());
       break;
 
     case Event::DeleteHome:
       killLine(-1);
       changeInput = true;
+      myUndoHandler->doo(getLine());
       break;
 
     case Event::DeleteLeftWord:
-      killWord();
+      killWord(-1);
       changeInput = true;
+      myUndoHandler->doo(getLine());
+      break;
+
+    case Event::DeleteRightWord:
+      killWord(+1);
+      changeInput = true;
+      myUndoHandler->doo(getLine());
       break;
 
     case Event::Cut:
@@ -250,25 +374,109 @@ bool PromptWidget::handleKeyDown(StellaKey key, StellaMod mod)
     // cursor events
     case Event::MoveHome:
       _currentPos = _promptStartPos;
+      _selectSize = 0;
       break;
 
     case Event::MoveEnd:
       _currentPos = _promptEndPos;
+      _selectSize = 0;
       break;
 
     case Event::MoveRightChar:
-      if(_currentPos < _promptEndPos)
+      if(_selectSize)
+      {
+        _currentPos = selectEndPos();
+        _selectSize = 0;
+      }
+      else if(_currentPos < _promptEndPos)
         _currentPos++;
       else
         handled = false;
       break;
 
     case Event::MoveLeftChar:
-      if(_currentPos > _promptStartPos)
+      if(_selectSize)
+      {
+        _currentPos = selectStartPos();
+        _selectSize = 0;
+      }
+      else if(_currentPos > _promptStartPos)
         _currentPos--;
       else
         handled = false;
       break;
+
+    // word movement events
+    case Event::MoveLeftWord:
+      moveWord(-1, false);
+      _selectSize = 0;
+      break;
+
+    case Event::MoveRightWord:
+      moveWord(+1, false);
+      _selectSize = 0;
+      break;
+
+    // selection events
+    case Event::SelectLeftChar:
+      if(_currentPos > _promptStartPos)
+      {
+        _currentPos--;
+        _selectSize++;
+      }
+      break;
+
+    case Event::SelectRightChar:
+      if(_currentPos < _promptEndPos)
+      {
+        _currentPos++;
+        _selectSize--;
+      }
+      break;
+
+    case Event::SelectHome:
+      _selectSize += _currentPos - _promptStartPos;
+      _currentPos = _promptStartPos;
+      break;
+
+    case Event::SelectEnd:
+      _selectSize -= _promptEndPos - _currentPos;
+      _currentPos = _promptEndPos;
+      break;
+
+    case Event::SelectLeftWord:
+      moveWord(-1, true);
+      break;
+
+    case Event::SelectRightWord:
+      moveWord(+1, true);
+      break;
+
+    case Event::SelectAll:
+      _currentPos = _promptEndPos;
+      _selectSize = -(_promptEndPos - _promptStartPos);
+      break;
+
+    case Event::Undo:
+    case Event::Redo:
+    {
+      const string oldLine = getLine();
+      string newLine;
+      const bool ok = (event == Event::Redo)
+        ? myUndoHandler->redo(newLine)
+        : myUndoHandler->undo(newLine);
+      if(ok)
+      {
+        setLine(newLine);
+        const auto diffPos = static_cast<int>(UndoHandler::lastDiff(newLine, oldLine));
+        _currentPos = std::clamp(_promptStartPos + diffPos, _promptStartPos, _promptEndPos);
+        scrollToCurrent();
+        changeInput = true;
+      }
+      else
+        dirty = false;
+      break;
+    }
 
     // scrolling events
     case Event::UIUp:
@@ -338,27 +546,30 @@ bool PromptWidget::handleKeyDown(StellaKey key, StellaMod mod)
   return handled;
 }
 
-#if 0
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PromptWidget::insertIntoPrompt(const char* str)
+ContextMenu& PromptWidget::mouseMenu()
 {
-  Int32 l = (Int32)strlen(str);
-  for(Int32 i = _promptEndPos - 1; i >= _currentPos; i--)
-    buffer(i + l) = buffer(i);
-
-  for(Int32 j = 0; j < l; ++j)
-  {
-    _promptEndPos++;
-    putcharIntern(str[j]);
-  }
+  if(myMouseMenu == nullptr)
+    myMouseMenu = std::make_unique<ContextMenu>(this, _font);
+  return *myMouseMenu;
 }
-#endif
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PromptWidget::handleCommand(CommandSender* sender, int cmd,
                                  int data, int id)
 {
-  if(cmd == GuiObject::kSetPositionCmd)
+  if(cmd == ContextMenu::kItemSelectedCmd)
+  {
+    const string_view sel = mouseMenu().getSelectedTag().toString();
+    if(sel == "cut")
+      textCut();
+    else if(sel == "copy")
+      textCopy();
+    else if(sel == "paste")
+      textPaste();
+    setDirty();
+  }
+  else if(cmd == GuiObject::kSetPositionCmd)
   {
     const int newPos = data + _linesPerPage - 1 + _firstLineInBuffer;
     if (newPos != _scrollLine)
@@ -391,7 +602,7 @@ void PromptWidget::loadConfig()
     StringList history;
     print(instance().debugger().autoExec(&history));
     for(const auto& h: history)
-      addToHistory(h.c_str());
+      addToHistory(h);
 
     history.clear();
 
@@ -418,6 +629,8 @@ void PromptWidget::loadConfig()
     print(PROMPT);
 
     _promptStartPos = _promptEndPos = _currentPos;
+    (*myUndoHandler).reset();  // Make sure to call ::reset, not smartptr reset
+    myUndoHandler->doo("");
     _exitedEarly = false;
   }
   else if(_exitedEarly)
@@ -472,8 +685,15 @@ void PromptWidget::killLine(int direction)
   {
     const int count = _currentPos - _promptStartPos;
     if(count > 0)
-      for (int i = 0; i < count; i++)
-       killChar(-1);
+    {
+      const int remaining = _promptEndPos - _currentPos;
+      for(int i = 0; i < remaining; i++)
+        buffer(_promptStartPos + i) = buffer(_currentPos + i);
+      for(int i = _promptStartPos + remaining; i < _promptEndPos; i++)
+        buffer(i) = ' ';
+      _promptEndPos -= count;
+      _currentPos = _promptStartPos;
+    }
   }
   else if(direction == 1)  // erase from current position to end of line
   {
@@ -485,85 +705,248 @@ void PromptWidget::killLine(int direction)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PromptWidget::killWord()
+void PromptWidget::killWord(int direction)
 {
-  int cnt = 0;
   bool space = true;
-  while (_currentPos > _promptStartPos)
+
+  if(direction == -1)
   {
-    if ((buffer(_currentPos - 1) & 0xff) == ' ')
+    int cnt = 0;
+    while(_currentPos > _promptStartPos)
     {
-      if (!space)
-        break;
+      if((buffer(_currentPos - 1) & 0xff) == ' ')
+      {
+        if(!space) break;
+      }
+      else
+        space = false;
+      _currentPos--;
+      cnt++;
     }
-    else
-      space = false;
-
-    _currentPos--;
-    cnt++;
+    if(cnt > 0)
+    {
+      for(int i = _currentPos; i < _promptEndPos; i++)
+        buffer(i) = buffer(i + cnt);
+      buffer(_promptEndPos) = ' ';
+      _promptEndPos -= cnt;
+    }
   }
-
-  for (int i = _currentPos; i < _promptEndPos; i++)
-    buffer(i) = buffer(i + cnt);
-
-  buffer(_promptEndPos) = ' ';
-  _promptEndPos -= cnt;
+  else if(direction == +1)
+  {
+    int cnt = 0;
+    int pos = _currentPos;
+    while(pos < _promptEndPos)
+    {
+      if(pos > _promptStartPos && (buffer(pos - 1) & 0xff) == ' ')
+      {
+        if(!space) break;
+      }
+      else
+        space = false;
+      pos++;
+      cnt++;
+    }
+    if(cnt > 0)
+    {
+      for(int i = _currentPos; i < _promptEndPos; i++)
+        buffer(i) = buffer(i + cnt);
+      buffer(_promptEndPos) = ' ';
+      _promptEndPos -= cnt;
+    }
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string PromptWidget::getLine()
+void PromptWidget::moveWord(int direction, bool select)
 {
-#ifdef PSEUDO_CUT_COPY_PASTE
+  bool space = true;
+  int pos = _currentPos;
+
+  if(direction == -1)
+  {
+    while(pos > _promptStartPos)
+    {
+      if((buffer(pos - 1) & 0xff) == ' ')
+      {
+        if(!space) break;
+      }
+      else
+        space = false;
+      pos--;
+      if(select) _selectSize++;
+    }
+  }
+  else if(direction == +1)
+  {
+    while(pos < _promptEndPos)
+    {
+      if(pos > _promptStartPos && (buffer(pos - 1) & 0xff) == ' ')
+      {
+        if(!space) break;
+      }
+      else
+        space = false;
+      pos++;
+      if(select) _selectSize--;
+    }
+  }
+  _currentPos = pos;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void PromptWidget::markWord()
+{
+  const int bufStart = _firstLineInBuffer * _lineWidth;
+  _selectSize = 0;
+
+  // Extend selection rightward while non-space
+  while(_currentPos + _selectSize < _promptEndPos &&
+        (buffer(_currentPos + _selectSize) & 0xff) != ' ')
+    _selectSize++;
+
+  // Walk cursor leftward while non-space, growing selection to cover the whole word
+  while(_currentPos > bufStart &&
+        (buffer(_currentPos - 1) & 0xff) != ' ')
+  {
+    _currentPos--;
+    _selectSize++;
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void PromptWidget::setLine(string_view text)
+{
+  for(int i = _promptStartPos; i < _promptEndPos; i++)
+    buffer(i) = ' ';
+  _currentPos = _promptStartPos;
+  _textcolor = kTextColor;
+  _inverse = false;
+  for(const char c: text)
+    putcharIntern(c);
+  _promptEndPos = _currentPos;
+  _selectSize = 0;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void PromptWidget::killSelectedText()
+{
+  if(_selectSize == 0) return;
+  // Clamp to the editable prompt area — scrollback content is read-only
+  const int start = std::max(selectStartPos(), _promptStartPos);
+  const int end = std::min(selectEndPos(), _promptEndPos);
+  _selectSize = 0;
+  if(start >= end)
+    return;
+  const int count = end - start;
+  const int remaining = _promptEndPos - end;
+  for(int i = 0; i < remaining; i++)
+    buffer(start + i) = buffer(end + i);
+  for(int i = _promptEndPos - count; i < _promptEndPos; i++)
+    buffer(i) = ' ';
+  _promptEndPos -= count;
+  _currentPos = start;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+string PromptWidget::getLine() const
+{
   assert(_promptEndPos >= _promptStartPos);
   string text;
-
-  // Copy current line to text
+  text.reserve(_promptEndPos - _promptStartPos);
   for(int i = _promptStartPos; i < _promptEndPos; i++)
-    text += buffer(i) & 0x7f;
-
+    text += static_cast<char>(buffer(i) & 0x7f);
   return text;
-#endif
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+string PromptWidget::selectedText() const
+{
+  const int start = selectStartPos();
+  const int end = selectEndPos();
+  string text;
+  text.reserve(end - start);
+
+  if(start >= _promptStartPos)
+  {
+    // Entirely within the prompt area — preserve as-is (may include intentional spaces)
+    for(int i = start; i < end; i++)
+      text += static_cast<char>(buffer(i) & 0x7f);
+  }
+  else
+  {
+    // Includes scrollback — strip trailing blanks per line and join with newlines.
+    // Unwritten cells hold NUL (0), not space, so treat both as blank; an embedded
+    // NUL would otherwise truncate the clipboard text at the end of the first line.
+    const auto isBlank = [&](int idx) {
+      const int ch = buffer(idx) & 0x7f;
+      return ch == ' ' || ch == '\0';
+    };
+    int lineEnd = ((start / _lineWidth) + 1) * _lineWidth;
+    for(int i = start; i < end; )
+    {
+      const int segEnd = std::min(lineEnd, end);
+      int lastNonBlank = segEnd - 1;
+      while(lastNonBlank >= i && isBlank(lastNonBlank))
+        lastNonBlank--;
+      for(int j = i; j <= lastNonBlank; j++)
+        text += static_cast<char>(buffer(j) & 0x7f);
+      i = segEnd;
+      lineEnd += _lineWidth;
+      if(i < end)
+        text += '\n';
+    }
+  }
+  return text;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PromptWidget::textCut()
 {
-#ifdef PSEUDO_CUT_COPY_PASTE
+  // Selection-only; nothing to cut without a selection
+  if(_selectSize == 0)
+    return;
+
   textCopy();
-
-  // Remove the current line
-  _currentPos = _promptStartPos;
-  killLine(1);  // to end of line
-  _promptEndPos = _currentPos;
-
+  killSelectedText();
+  if(_currentPos < _promptStartPos)
+    _currentPos = _promptEndPos;
+  myUndoHandler->doo(getLine());
   resetFunctions();
-#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PromptWidget::textCopy()
 {
-#ifdef PSEUDO_CUT_COPY_PASTE
-  instance().eventHandler().copyText(getLine());
-#endif
+  // Selection-only; nothing to copy without a selection
+  if(_selectSize == 0)
+    return;
+
+  const string text = selectedText();
+  if(!text.empty())
+    instance().eventHandler().copyText(text);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PromptWidget::textPaste()
 {
-#ifdef PSEUDO_CUT_COPY_PASTE
+  if(_selectSize != 0)
+    killSelectedText();
+
   string text;
-
-  // Remove the current line
-  _currentPos = _promptStartPos;
-  killLine(1);  // to end of line
-
   instance().eventHandler().pasteText(text);
-  print(text);
-  _promptEndPos = _currentPos;
-
+  for(const char c: text)
+  {
+    if(c >= 0 && isprint(c))
+    {
+      for(int i = _promptEndPos - 1; i >= _currentPos; i--)
+        buffer(i + 1) = buffer(i);
+      _promptEndPos++;
+      putcharIntern(c);
+    }
+  }
+  scrollToCurrent();
+  myUndoHandler->doo(getLine());
   resetFunctions();
-#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -588,7 +971,7 @@ void PromptWidget::historyAdd(string_view entry)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PromptWidget::addToHistory(const char* str)
+void PromptWidget::addToHistory(string_view str)
 {
   // Do not add duplicates, remove old duplicate
   if(!_history.empty())
@@ -663,9 +1046,11 @@ bool PromptWidget::historyScroll(int direction)
     ? (_historyIndex - _historyLine + _history.size()) % static_cast<int>(_history.size())
     : _historyIndex;
 
-  for(int i = 0; i < kLineBufferSize && _history[idx][i] != '\0'; i++)
-    putcharIntern(_history[idx][i]);
+  _selectSize = 0;
+  for(const char c: _history[idx])
+    putcharIntern(c);
   _promptEndPos = _currentPos;
+  myUndoHandler->doo(getLine());
 
   // Ensure once more the caret is visible (in case of very long history entries)
   scrollToCurrent();
@@ -687,7 +1072,7 @@ bool PromptWidget::execute()
     const string command = getLine();
 
     // Add the input to the history
-    addToHistory(command.c_str());
+    addToHistory(command);
 
     // Pass the command to the debugger, and print the result
     const string result = instance().debugger().run(command);
@@ -732,13 +1117,12 @@ bool PromptWidget::autoComplete(int direction)
     // copy the input at first tab press only
     if(_tabCount == -1)
       _inputStr[i] = buffer(_promptStartPos + i) & 0x7f;
-    // whitespace characters
-    if(strchr("{*@<> =[]()+-/&|!^~%", _inputStr[i]))
+    if(string_view{"{*@<> =[]()+-/&|!^~%"}.find(_inputStr[i]) != string_view::npos)
     {
       lastDelimPos = i;
       delimiter = _inputStr[i];
     }
-}
+  }
   if(_tabCount == -1)
     _inputStr[len] = '\0';
 
@@ -781,6 +1165,7 @@ bool PromptWidget::autoComplete(int direction)
 
   nextLine();
   _currentPos = _promptStartPos;
+  _selectSize = 0;
   killLine(1);  // kill whole line
 
   // start with-autocompleted, fixed string...
@@ -838,28 +1223,6 @@ void PromptWidget::updateScrollBuffer()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-// NOLINTNEXTLINE(cert-dcl50-cpp,modernize-avoid-variadic-functions)
-int PromptWidget::printf(const char* format, ...)
-{
-  va_list argptr;
-
-  va_start(argptr, format);
-  const int count = this->vprintf(format, argptr);
-  va_end (argptr);
-  return count;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int PromptWidget::vprintf(const char* format, va_list argptr)
-{
-  char buf[2048];
-  const int count = std::vsnprintf(buf, sizeof(buf), format, argptr);
-
-  print(buf);
-  return count;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PromptWidget::putcharIntern(int c)
 {
   if (c == '\n')
@@ -903,6 +1266,9 @@ void PromptWidget::print(string_view str)
 void PromptWidget::drawCaret()
 {
 //cerr << "PromptWidget::drawCaret()\n";
+  if(_currentPos < _promptStartPos)
+    return;
+
   FBSurface& s = _boss->dialog().surface();
   const int line = _currentPos / _lineWidth;
 
@@ -989,10 +1355,13 @@ void PromptWidget::clearScreen()
   _scrollLine = _linesPerPage - 1;
   _firstLineInBuffer = 0;
   _promptStartPos = _promptEndPos = -1;
-  memset(_buffer, 0, kBufferSize * sizeof(int));
+  _buffer.fill(0);
 
   if(!_firstTime)
     updateScrollBuffer();
+
+  if(myUndoHandler)
+    (*myUndoHandler).reset();  // Make sure to call ::reset, not smartptr reset
 
   resetFunctions();
 }

@@ -290,7 +290,7 @@ bool RomImageWidget::loadImage(const string& fileName)
   if(mySurface)
     mySurface->setVisible(mySurfaceIsValid);
 
-  if (!myZoomMode)
+  if(!myZoomMode)
     myZoomTimer = 0;
   setDirty();
   return mySurfaceIsValid;

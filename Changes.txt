@@ -28,6 +28,10 @@
     type with 24 KB of flat RAM across six non-contiguous 4 KB windows
     (issue #1149).
 
+  * Further enhanced UA bankswitching to support more Brazilian carts,
+    including one discovered by bootsector and Eric Fraga of AtariAge.
+    (issue #1152).
+
   * Added support for CompuMate cassette load/save for binary images
     (issue# 79).
 
@@ -44,6 +48,12 @@
   * Selecting entries in various file selection dialogs now remembers
     selections when moving forward and backward in the filesystem
     (issue #1039).
+
+  * Improved text editing functionality in PromptWidget (issue #361):
+    - Enhanced selection and cut/copy/paste from keyboard
+    - Added undo and redo support
+    - Added mouse support (selection, cut/copy/paste)
+    - All actions have keyboard shortcuts
 
   * Emulation accuracy:
     - Implemented more accurate RESMP0/RESMP1 behaviour (issue #213)

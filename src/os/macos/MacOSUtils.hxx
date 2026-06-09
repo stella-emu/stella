@@ -15,24 +15,18 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#ifndef HTTPLIB_LIB_HXX
-#define HTTPLIB_LIB_HXX
+#ifndef MACOSUTILS_HXX
+#define MACOSUTILS_HXX
 
-/*
- * We can't control the quality of code from outside projects, so for now
- * just disable warnings for it.
- */
-#ifdef __clang__
-  #pragma clang diagnostic push
-  #pragma clang diagnostic ignored "-Weverything"
-  #include "httplib/httplib.h"  // NOLINT
-  #pragma clang diagnostic pop
-#elif defined(BSPF_WINDOWS)
-  #pragma warning(push, 0)
-  #include "httplib/httplib.h"  // NOLINT
-  #pragma warning(pop)
-#else
-  #include "httplib/httplib.h"  // NOLINT
-#endif
+#include <string>
 
-#endif  // HTTPLIB_LIB_HXX
+namespace MacOSUtils
+{
+  // Returns ~/Library/Application Support, or empty string on failure
+  std::string applicationSupportPath();
+
+  // Returns ~/Desktop, or empty string on failure
+  std::string desktopPath();
+}
+
+#endif  // MACOSUTILS_HXX

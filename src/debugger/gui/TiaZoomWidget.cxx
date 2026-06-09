@@ -152,12 +152,12 @@ void TiaZoomWidget::handleMouseWheel(int x, int y, int direction)
 
   if(direction > 0)
   {
-    if (myZoomLevel > 1)
+    if(myZoomLevel > 1)
       zoom(myZoomLevel - 1);
   }
   else
   {
-    if (myZoomLevel < 8)
+    if(myZoomLevel < 8)
       zoom(myZoomLevel + 1);
   }
 }
@@ -253,7 +253,7 @@ void TiaZoomWidget::handleCommand(CommandSender* sender, int cmd, int data, int 
     {
       int lines = myClickY / myZoomLevel + myOffY + startLine - instance().console().tia().scanlines();
 
-      if (lines < 0)
+      if(lines < 0)
         lines += instance().console().tia().scanlinesLastFrame();
       if(lines > 0)
       {
@@ -321,7 +321,6 @@ bool TiaZoomWidget::changedToolTip(const Common::Point& oldPos,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TiaZoomWidget::drawWidget(bool hilite)
 {
-//cerr << "TiaZoomWidget::drawWidget\n";
   FBSurface& s = dialog().surface();
 
   s.fillRect(_x+1, _y+1, _w-2, _h-2, kBGColor);

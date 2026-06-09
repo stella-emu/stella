@@ -26,7 +26,7 @@
 #include "CartDetector.hxx"
 
 #ifdef HTTP_LIB_SUPPORT
-  #include "http_lib.hxx"
+  #include "httplib/http_lib.hxx"
 
   namespace {
     constexpr int CONNECTION_TIMEOUT_MSEC = 3000;

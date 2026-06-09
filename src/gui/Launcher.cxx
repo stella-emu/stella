@@ -61,31 +61,31 @@ FBInitStatus Launcher::initializeVideo()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const string& Launcher::selectedRom()
 {
-  return (static_cast<LauncherDialog*>(myBaseDialog))->selectedRom();
+  return static_cast<LauncherDialog*>(myBaseDialog)->selectedRom();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const string& Launcher::selectedRomMD5()
 {
-  return (static_cast<LauncherDialog*>(myBaseDialog))->selectedRomMD5();
+  return static_cast<LauncherDialog*>(myBaseDialog)->selectedRomMD5();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const FSNode& Launcher::currentDir() const
 {
-  return (static_cast<LauncherDialog*>(myBaseDialog))->currentDir();
+  return static_cast<LauncherDialog*>(myBaseDialog)->currentDir();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Launcher::reload()
 {
-  (static_cast<LauncherDialog*>(myBaseDialog))->reload();
+  static_cast<LauncherDialog*>(myBaseDialog)->reload();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Launcher::quit()
 {
-  (static_cast<LauncherDialog*>(myBaseDialog))->quit();
+  static_cast<LauncherDialog*>(myBaseDialog)->quit();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

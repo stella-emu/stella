@@ -84,10 +84,13 @@ void FileListWidget::setLocation(const FSNode& node, string_view select)
   // Now fill the list widget with the names from the file list,
   // even if cancelled
   StringList fileNames;
+  fileNames.reserve(_fileList.size());
   const size_t orgLen = _node.getShortPath().length();
 
   _dirList.clear();
+  _dirList.reserve(_fileList.size());
   _iconTypeList.clear();
+  _iconTypeList.reserve(_fileList.size());
 
   for(const auto& file: _fileList)
   {
@@ -98,9 +101,9 @@ void FileListWidget::setLocation(const FSNode& node, string_view select)
     if(path.length() >= orgLen && !fullPathToolTip())
       _dirList.push_back(path.substr(orgLen));
     else
-      _dirList.push_back(path);
+      _dirList.push_back(std::move(path));
 
-    if(file.isDirectory() && !BSPF::endsWithIgnoreCase(name, ".zip"))
+    if(file.isDirectory() && !file.hasExtension(".zip"))
     {
       fileNames.push_back(name);
       if(name == "..")
@@ -161,7 +164,7 @@ void FileListWidget::getChildren(const FSNode::CancelCheck& isCancelled)
 FileListWidget::IconType FileListWidget::getIconType(const FSNode& node) const
 {
   if(node.isDirectory())
-    return BSPF::endsWithIgnoreCase(node.getName(), ".zip")
+    return node.hasExtension(".zip")
       ? IconType::zip : IconType::directory;
   else
     return node.isFile() && Bankswitch::isValidRomName(node)
@@ -334,7 +337,8 @@ bool FileListWidget::handleKeyDown(StellaKey key, StellaMod mod)
     }
   }
   // Handle shift input for quick directory selection
-  _lastKey = key; _lastMod = mod;
+  _lastKey = key;
+  _lastMod = mod;
   if(_quickSelectTime < TimerManager::getTicks() / 1000)
     _firstMod = mod;
   else if(key == StellaKey::SPACE) // allow searching ROMs with a space without selecting/starting
@@ -365,17 +369,15 @@ bool FileListWidget::handleText(char text)
   _quickSelectTime = time + S_QUICK_SELECT_DELAY;
 
   int selectedItem = 0;
-  for(const auto& i : _list)
+  for(; std::cmp_less(selectedItem, _list.size()); ++selectedItem)
   {
-    if(BSPF::startsWithIgnoreCase(i, _quickSelectStr))
-      // Select directories when the first character is uppercase
-      if(firstShift ==
-          (_iconTypeList[selectedItem] == IconType::directory
-          || _iconTypeList[selectedItem] == IconType::userdir
-          || _iconTypeList[selectedItem] == IconType::recentdir
-          || _iconTypeList[selectedItem] == IconType::popdir))
-        break;
-    selectedItem++;
+    const auto icon = _iconTypeList[selectedItem];
+    // Select directories when the first character is uppercase
+    const bool isDir = icon == IconType::directory || icon == IconType::userdir
+                    || icon == IconType::recentdir || icon == IconType::popdir;
+    if(BSPF::startsWithIgnoreCase(_list[selectedItem], _quickSelectStr) &&
+          firstShift == isDir)
+      break;
   }
 
   if(selectedItem > 0)
@@ -387,7 +389,7 @@ bool FileListWidget::handleText(char text)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FileListWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
 {
-  switch (cmd)
+  switch(cmd)
   {
     case FileListWidget::kHomeDirCmd:
       // Do not let the boss know

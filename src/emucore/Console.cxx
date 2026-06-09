@@ -840,8 +840,7 @@ void Console::setControllers(string_view romMd5)
   // controllers for us, and associates them with the bankswitching class
   if(myCart->detectedType() == "CM")
   {
-    myCMHandler = std::make_shared<CompuMate>(*this, myEvent, *mySystem);
-    myCMHandler->loadCassette(myOSystem.romFile());  // TODO: remove this
+    myCMHandler = std::make_shared<CompuMate>(myOSystem, *this, myEvent, *mySystem);
 
     // A somewhat ugly bit of code that casts to CartridgeCM to
     // add the CompuMate, and then back again for the actual

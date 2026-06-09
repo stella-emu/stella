@@ -351,7 +351,6 @@ void Player::updatePattern()
 
   if (myIsRendering && myRenderCounter >= myRenderCounterTripPoint) {
     collision = (myPattern & (1 << mySampleCounter)) ? myCollisionMaskEnabled : myCollisionMaskDisabled;
-    myTIA->scheduleCollisionUpdate();
   }
 }
 

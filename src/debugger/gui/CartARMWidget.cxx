@@ -18,7 +18,6 @@
 #include <cmath>
 
 #include "OSystem.hxx"
-//#include "EditTextWidget.hxx"
 #include "PopUpWidget.hxx"
 #include "DataGridWidget.hxx"
 #include "CartARMWidget.hxx"
@@ -220,7 +219,7 @@ void CartridgeARMWidget::handleChipType()
       myCart.setChipType(static_cast<Thumbulator::ChipType>
       (myChipType->getSelectedTag().toInt()));
 
-    // update tooltip with currently selecte chip's properties
+    // update tooltip with currently selected chip's properties
     const string tip = myChipType->getToolTip(Common::Point(0, 0)).substr(0, 25);
     myChipType->setToolTip(std::format(
       "{}\nCurrent: {}\n{} flash bank{}, {} MHz, {} wait states",

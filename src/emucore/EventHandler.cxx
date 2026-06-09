@@ -54,11 +54,9 @@
   #include "DebuggerParser.hxx"
 #endif
 #ifdef GUI_SUPPORT
-  #include "OptionsMenu.hxx"
-  #include "CommandMenu.hxx"
-  #include "HighScoresMenu.hxx"
-  #include "MessageMenu.hxx"
-  #include "PlusRomsMenu.hxx"
+  #include "BrowserDialog.hxx"
+  #include "MessageDialog.hxx"
+  #include "OverlayMenu.hxx"
   #include "DialogContainer.hxx"
   #include "Launcher.hxx"
   #include "TimeMachine.hxx"
@@ -1583,7 +1581,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
                 msg.emplace_back("");
                 msg.emplace_back("You will lose all your progress.");
               }
-              MessageMenu::setMessage("Exit Emulation", msg, true);
+              MessageDialog::setMessage("Exit Emulation", msg, true);
               enterMenuMode(EventHandlerState::MESSAGEMENU);
             }
             else
@@ -1598,7 +1596,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
           if(pressed && !repeated)
           {
             leaveMenuMode();
-            if (myOSystem.messageMenu().confirmed())
+            if (MessageDialog::confirmed())
               exitEmulation(true);
           }
           return;
@@ -2513,6 +2511,30 @@ void EventHandler::enterMenuMode(EventHandlerState state)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void EventHandler::openDialog(Dialog* dialog)
+{
+#ifdef GUI_SUPPORT
+  myOSystem.overlayMenu().setDialog(dialog);
+  enterMenuMode(EventHandlerState::OVERLAYMENU);
+#endif
+}
+
+#ifdef GUI_SUPPORT
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void EventHandler::openBrowserDialog(string_view title, string_view startpath,
+                                     BrowserDialog::Mode mode,
+                                     const BrowserDialog::Command& command,
+                                     const FSNode::NameFilter& namefilter)
+{
+  // Use setState directly to avoid reStack(), which would call baseDialog()
+  // on the overlayMenu before BrowserDialog has pushed itself onto the stack
+  setState(EventHandlerState::OVERLAYMENU);
+  myOSystem.sound().pause(true);
+  BrowserDialog::show(myOSystem, title, startpath, mode, command, namefilter);
+}
+#endif
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventHandler::leaveMenuMode()
 {
 #ifdef GUI_SUPPORT
@@ -2623,28 +2645,15 @@ void EventHandler::setState(EventHandlerState state)
       break;
 
   #ifdef GUI_SUPPORT
+    // All built-in menus and any transient dialog opened over TIA mode share
+    // the single OverlayMenu container; it picks the right dialog by state
     case EventHandlerState::OPTIONSMENU:
-      myOverlay = &myOSystem.optionsMenu();
-      enableTextEvents(true);
-      break;
-
     case EventHandlerState::CMDMENU:
-      myOverlay = &myOSystem.commandMenu();
-      enableTextEvents(true);
-      break;
-
     case EventHandlerState::HIGHSCORESMENU:
-      myOverlay = &myOSystem.highscoresMenu();
-      enableTextEvents(true);
-      break;
-
     case EventHandlerState::MESSAGEMENU:
-      myOverlay = &myOSystem.messageMenu();
-      enableTextEvents(true);
-      break;
-
     case EventHandlerState::PLUSROMSMENU:
-      myOverlay = &myOSystem.plusRomsMenu();
+    case EventHandlerState::OVERLAYMENU:
+      myOverlay = &myOSystem.overlayMenu();
       enableTextEvents(true);
       break;
 

@@ -29,11 +29,7 @@
 #endif
 #ifdef GUI_SUPPORT
   #include "BrowserDialog.hxx"
-  #include "OptionsMenu.hxx"
-  #include "CommandMenu.hxx"
-  #include "HighScoresMenu.hxx"
-  #include "MessageMenu.hxx"
-  #include "PlusRomsMenu.hxx"
+  #include "OverlayMenu.hxx"
   #include "Launcher.hxx"
   #include "TimeMachine.hxx"
 #endif
@@ -182,12 +178,8 @@ bool OSystem::initialize(const Settings::Options& options)
 
 #ifdef GUI_SUPPORT
   // Create various subsystems (menu and launcher GUI objects, etc)
-  myOptionsMenu = std::make_unique<OptionsMenu>(*this);
-  myCommandMenu = std::make_unique<CommandMenu>(*this);
   myHighScoresManager = std::make_unique<HighScoresManager>(*this);
-  myHighScoresMenu = std::make_unique<HighScoresMenu>(*this);
-  myMessageMenu = std::make_unique<MessageMenu>(*this);
-  myPlusRomMenu = std::make_unique<PlusRomsMenu>(*this);
+  myOverlayMenu = std::make_unique<OverlayMenu>(*this);
   myTimeMachine = std::make_unique<TimeMachine>(*this);
   myLauncher = std::make_unique<Launcher>(*this);
 
@@ -378,18 +370,6 @@ FBInitStatus OSystem::createFrameBuffer()
   FBInitStatus fbstatus = FBInitStatus::FailComplete;
   switch(myEventHandler->state())
   {
-    case EventHandlerState::EMULATION:
-    case EventHandlerState::PAUSE:
-  #ifdef GUI_SUPPORT
-    case EventHandlerState::OPTIONSMENU:
-    case EventHandlerState::CMDMENU:
-    case EventHandlerState::TIMEMACHINE:
-  #endif
-    case EventHandlerState::PLAYBACK:
-      if(fbstatus = myConsole->initializeVideo(); fbstatus != FBInitStatus::Success)
-        return fbstatus;
-      break;
-
   #ifdef GUI_SUPPORT
     case EventHandlerState::LAUNCHER:
       if(fbstatus = myLauncher->initializeVideo(); fbstatus != FBInitStatus::Success)
@@ -404,9 +384,18 @@ FBInitStatus OSystem::createFrameBuffer()
       break;
   #endif
 
-    case EventHandlerState::NONE:  // Should never happen
     default:
-      Logger::error("ERROR: Unknown emulation state in createFrameBuffer()");
+      // Console states from which a video rebuild can be triggered: emulation,
+      // pause, playback, time machine, and the Options/Command menus (both
+      // expose video settings). hasConsole() is a defensive guard; no other
+      // state reaches here.
+      if(hasConsole())
+      {
+        if(fbstatus = myConsole->initializeVideo(); fbstatus != FBInitStatus::Success)
+          return fbstatus;
+      }
+      else
+        Logger::error("ERROR: No console in createFrameBuffer()");
       break;
   }
   return fbstatus;

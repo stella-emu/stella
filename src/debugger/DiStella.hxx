@@ -163,7 +163,7 @@ class DiStella
 
     // Colour helpers: called from disasm() during the Output pass to assign
     // semantic colour categories to mnemonic and operand fields.
-    [[nodiscard]] CartDebug::DisasmSegColor mnemonicColorForOpcode(uInt8 opcode) const;
+    [[nodiscard]] static CartDebug::DisasmSegColor mnemonicColorForOpcode(uInt8 opcode);
     [[nodiscard]] CartDebug::DisasmSegColor colorA12High(uInt16 addr) const;
     [[nodiscard]] CartDebug::DisasmSegColor colorA12Low(uInt16 addr, AddressType labfound,
                                                         bool isRead) const;

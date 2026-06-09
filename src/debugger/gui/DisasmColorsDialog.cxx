@@ -54,14 +54,11 @@ void DisasmColorsDialog::saveConfig()
 void DisasmColorsDialog::handleCommand(CommandSender* sender, int cmd,
                                        int data, int id)
 {
-  switch(cmd)
+  if(cmd == GuiObject::kOKCmd)
   {
-    case GuiObject::kOKCmd:
-      saveConfig();
-      close();
-      break;
-
-    default:
-      Dialog::handleCommand(sender, cmd, data, id);
+    saveConfig();
+    close();
   }
+  else
+    Dialog::handleCommand(sender, cmd, data, id);
 }

@@ -166,7 +166,7 @@ void RomAuditDialog::auditRoms()
 void RomAuditDialog::handleCommand(CommandSender* sender, int cmd,
                                    int data, int id)
 {
-  switch (cmd)
+  switch(cmd)
   {
     case GuiObject::kOKCmd:
       if(!myConfirmMsg)
