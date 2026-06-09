@@ -64,8 +64,8 @@ class RamWidget : public Widget, public CommandSender
     void fillGrid(bool updateOld);
 
     void showInputBox(int cmd);
-    string doSearch(string_view str);
-    string doCompare(string_view str);
+    string_view doSearch(string_view str);
+    string_view doCompare(string_view str);
     void doRestart();
     void showSearchResults();
 

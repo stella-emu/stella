@@ -109,15 +109,6 @@ MinUICommandDialog::MinUICommandDialog(OSystem& osystem, DialogContainer& parent
   bw = ADD_CD_BUTTON("Close", GuiObject::kCloseCmd);
   wid.push_back(bw);
 
-  ////  Bottom row
-  //xoffset = HBORDER + (buttonWidth + HGAP) / 2;
-  //bw = ADD_CD_BUTTON("Exit Game", kExitGameCmd);
-  //wid.push_back(bw);
-  //xoffset += buttonWidth + HGAP;
-  //yoffset -= buttonHeight + VGAP;
-  //bw = ADD_CD_BUTTON("Close", GuiObject::kCloseCmd);
-  //wid.push_back(bw);
-
   addToFocusList(wid);
 
   // We don't have a close/cancel button, but we still want the cancel
@@ -150,7 +141,7 @@ void MinUICommandDialog::loadConfig()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void MinUICommandDialog::handleKeyDown(StellaKey key, StellaMod mod, bool repeated)
 {
-  switch (key)
+  switch(key)
   {
     case StellaKey::F8: // front  ("Skill P2")
       instance().eventHandler().leaveMenuMode();

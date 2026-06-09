@@ -18,21 +18,14 @@
 #ifndef PROMPT_WIDGET_HXX
 #define PROMPT_WIDGET_HXX
 
-#include <cstdarg>
-
+class ContextMenu;
+class UndoHandler;
 class ScrollBarWidget;
 class FSNode;
 
 #include "Widget.hxx"
 #include "Command.hxx"
 #include "bspf.hxx"
-
-// TODO - remove this once we clean up the printf stuff
-#if defined(BSPF_UNIX) || defined(BSPF_MACOS)
-  #define ATTRIBUTE_FMT_PRINTF __attribute__((__format__ (__printf__, 2, 0)))
-#else
-  #define ATTRIBUTE_FMT_PRINTF
-#endif
 
 class PromptWidget : public Widget, public CommandSender
 {
@@ -52,7 +45,7 @@ class PromptWidget : public Widget, public CommandSender
     // Erase all history
     void clearHistory();
 
-    void addToHistory(const char *str);
+    void addToHistory(string_view str);
 
     bool isLoaded() const { return !_firstTime; }
 
@@ -62,19 +55,19 @@ class PromptWidget : public Widget, public CommandSender
     bool wantsFocus() const override { return true; }
 
     void handleMouseDown(int x, int y, MouseButton b, int clickCount) override;
+    void handleMouseUp(int x, int y, MouseButton b, int clickCount) override;
+    void handleMouseMoved(int x, int y) override;
     void handleMouseWheel(int x, int y, int direction) override;
     bool handleText(char text) override;
     bool handleKeyDown(StellaKey key, StellaMod mod) override;
 
   protected:
-    ATTRIBUTE_FMT_PRINTF int printf(const char* format, ...);
-    ATTRIBUTE_FMT_PRINTF int vprintf(const char* format, va_list argptr);
     int& buffer(int idx) { return _buffer[idx % kBufferSize]; }
+    int  buffer(int idx) const { return _buffer[idx % kBufferSize]; }
 
     void drawWidget(bool hilite) override;
     void drawCaret();
     void putcharIntern(int c);
-//    void insertIntoPrompt(const char *str);
     void updateScrollBuffer();
     void scrollToCurrent();
 
@@ -82,10 +75,14 @@ class PromptWidget : public Widget, public CommandSender
     void nextLine();
     void killChar(int direction);
     void killLine(int direction);
-    void killWord();
+    void killWord(int direction);
+    void moveWord(int direction, bool select);
+    void markWord();
+    void setLine(string_view text);
 
     // Clipboard
-    string getLine();
+    string getLine() const;
+    string selectedText() const;
     void textCut();
     void textCopy();
     void textPaste();
@@ -98,6 +95,12 @@ class PromptWidget : public Widget, public CommandSender
     void resetFunctions();
 
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+    void lostFocusWidget() override
+    {
+      _selectSize = 0;
+      if(_currentPos < _promptStartPos)
+        _currentPos = _promptEndPos;
+    }
 
   private:
     enum: uInt16 {
@@ -106,7 +109,7 @@ class PromptWidget : public Widget, public CommandSender
       kHistorySize = 1000
     };
 
-    int  _buffer[kBufferSize]{};
+    std::array<int, kBufferSize> _buffer{};
     int  _linesInBuffer{0};
 
     int  _lineWidth{0};
@@ -121,6 +124,8 @@ class PromptWidget : public Widget, public CommandSender
     int  _promptEndPos{0};
 
     ScrollBarWidget* _scrollBar{nullptr};
+    unique_ptr<ContextMenu>  myMouseMenu;
+    unique_ptr<UndoHandler>  myUndoHandler;
 
     std::vector<string> _history;
     int _historyIndex{0};
@@ -130,12 +135,23 @@ class PromptWidget : public Widget, public CommandSender
 
     int _kConsoleCharWidth{0}, _kConsoleCharHeight{0}, _kConsoleLineHeight{0};
 
+    int  _selectSize{0};
+    bool _isDragging{false};
     bool _inverse{false};
     bool _firstTime{true};
     bool _exitedEarly{false};
 
     int historyDir(int& index, int direction);
     void historyAdd(string_view entry);
+    ContextMenu& mouseMenu();
+
+    int selectStartPos() const {
+      return _selectSize < 0 ? _currentPos + _selectSize : _currentPos;
+    }
+    int selectEndPos() const {
+      return _selectSize > 0 ? _currentPos + _selectSize : _currentPos;
+    }
+    void killSelectedText();
 
   private:
     // Following constructors and assignment operators not supported

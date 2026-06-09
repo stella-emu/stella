@@ -721,15 +721,16 @@ bool CartDetector::isProbablyUA(ByteSpan image)
 {
   // UA cart bankswitching switches to bank 1 by accessing address 0x240
   // using 'STA $240' or 'LDA $240'.
-  // Brazilian (Digivison) cart bankswitching switches to bank 1 by accessing address 0x2C0
-  // using 'BIT $2C0', 'STA $2C0' or 'LDA $2C0'
-  static constexpr BSPF::array2D<uInt8, 6, 3> signature = {{
+  // Brazilian (Digivision) cart bankswitching switches to bank 1 by accessing
+  // address 0x2C0 using 'BIT $2C0', 'STA $2C0', 'LDA $2C0' or 'BIT $FB0'
+  static constexpr BSPF::array2D<uInt8, 7, 3> signature = {{
     { 0x8D, 0x40, 0x02 },  // STA $240 (Funky Fish, Pleiades)
     { 0xAD, 0x40, 0x02 },  // LDA $240 (???)
     { 0xBD, 0x1F, 0x02 },  // LDA $21F,X (Gingerbread Man)
     { 0x2C, 0xC0, 0x02 },  // BIT $2C0 (Time Pilot)
     { 0x8D, 0xC0, 0x02 },  // STA $2C0 (Fathom, Vanguard)
     { 0xAD, 0xC0, 0x02 },  // LDA $2C0 (Mickey)
+    { 0x2C, 0xB0, 0x0F }   // BIT $FB0 (Digivision Beamrider)
   }};
   return std::ranges::any_of(signature, [&](const auto& sig) {
     return searchForBytes(image, sig);

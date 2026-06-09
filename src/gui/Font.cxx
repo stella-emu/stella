@@ -18,8 +18,6 @@
 //   Copyright (C) 2002-2004 The ScummVM project
 //============================================================================
 
-#include <numeric>
-
 #include "Font.hxx"
 
 namespace GUI {
@@ -54,9 +52,11 @@ int Font::getStringWidth(string_view str) const
   // If no width table is specified, use the maximum width
   if(!myFontDesc.width)
     return myFontDesc.maxwidth * static_cast<int>(str.size());
-  else
-    return std::accumulate(str.cbegin(), str.cend(), 0,
-        [&](int x, char c) { return x + getCharWidth(c); });
+
+  int width = 0;
+  for(const char c: str)
+    width += getCharWidth(c);
+  return width;
 }
 
 } // namespace GUI

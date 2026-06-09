@@ -80,7 +80,8 @@ void EditTextWidget::drawWidget(bool hilite)
 
   // Draw the text
   adjustOffset();
-  s.drawString(_font, editString(), _x + _textOfs, _y + 2, getEditRect().w(), getEditRect().h(),
+  const Common::Rect editRect = getEditRect();
+  s.drawString(_font, editString(), _x + _textOfs, _y + 2, editRect.w(), editRect.h(),
                _changed && isEnabled()
                ? kDbgChangedTextColor
                : isEnabled() ? _textcolor : kColor,
@@ -105,12 +106,6 @@ void EditTextWidget::lostFocusWidget()
   EditableWidget::lostFocusWidget();
   // If we loose focus, 'commit' the user changes
   commit();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EditTextWidget::startEditMode()
-{
-  EditableWidget::startEditMode();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

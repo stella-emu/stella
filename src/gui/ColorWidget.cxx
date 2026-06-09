@@ -59,7 +59,7 @@ void ColorWidget::drawWidget(bool hilite)
 
   if(_framed)
   {
-  // Draw a thin frame around us.
+    // Draw a thin frame around us.
     s.frameRect(_x, _y, _w, _h + 1, kColor);
 
     // Show the currently selected color

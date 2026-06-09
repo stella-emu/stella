@@ -65,8 +65,8 @@ class FileListWidget : public StringListWidget
     /** Determines how to display files/folders; either setDirectory or reload
         must be called after any of these are called. */
     void setListMode(FSNode::ListMode mode) { _fsmode = mode; }
-    void setNameFilter(const FSNode::NameFilter& filter) {
-      _filter = filter;
+    void setNameFilter(FSNode::NameFilter filter) {
+      _filter = std::move(filter);
     }
 
     // When enabled, all subdirectories will be searched too.

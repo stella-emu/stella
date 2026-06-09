@@ -55,7 +55,7 @@ class HelpDialog : public Dialog
     std::array<string, LINES_PER_PAGE> myDescStr;
 
     int myPage{1};
-    int myNumPages{5};
+    static constexpr int myNumPages{5};
 
     enum { kUpdateCmd = 'upCm' };
 

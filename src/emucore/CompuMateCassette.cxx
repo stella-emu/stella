@@ -31,7 +31,6 @@ CompuMateCassette::CompuMateCassette(OSystem& osystem, const System& system)
 void CompuMateCassette::load(const FSNode& romFile, ConsoleTiming timing)
 {
   myCasStartCycle = UINT64_MAX;  // stop any current playback
-  myCasRomPath = romFile;
 
   double cpuFreq{};
   switch(timing)
@@ -42,13 +41,29 @@ void CompuMateCassette::load(const FSNode& romFile, ConsoleTiming timing)
   }
   myCasFreqRatio = SAMPLE_RATE / cpuFreq;
 
-  const FSNode casFile = romFile.getSiblingNode(".bin");
-  if(!casFile.isReadable())
+  if(!romFile.isReadable())
+  {
+    myOSystem.frameBuffer().showTextMessage("CompuMate cassette not readable",
+      MessagePosition::BottomCenter, true);
     return;
+  }
 
   ByteArray data;
-  if(casFile.read(data) == 0)
+  bool readOk = false;
+  try
+  {
+    readOk = romFile.read(data) > 0;
+  }
+  catch(const std::exception& e)
+  {
+    cerr << std::format("CompuMate: cassette read error: {}\n", e.what());
+  }
+  if(!readOk)
+  {
+    myOSystem.frameBuffer().showTextMessage("CompuMate cassette load failed",
+      MessagePosition::BottomCenter, true);
     return;
+  }
 
   if(data.size() != CAS_SIZE_NORMAL && data.size() != CAS_SIZE_EXTENDED)
   {

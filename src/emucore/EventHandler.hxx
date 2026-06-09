@@ -385,6 +385,7 @@ class EventHandler
     */
     virtual void copyText(const string& text) const = 0;
     virtual string pasteText(string& text) const = 0;
+    virtual bool hasClipboardText() const = 0;
   #endif
 
     /**

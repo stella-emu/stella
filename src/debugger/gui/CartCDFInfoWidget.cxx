@@ -46,15 +46,5 @@ CartridgeCDFInfoWidget::CartridgeCDFInfoWidget(
     cart.startBank(),
     fetchers);
 
-#if 0
-  // Eventually, we should query this from the debugger/disassembler
-  for(uInt32 i = 0, offset = 0xFFC, spot = 0xFF5; i < 7; ++i, offset += 0x1000)
-  {
-    uInt16 start = (cart.myImage[offset+1] << 8) | cart.myImage[offset];
-    start -= start % 0x1000;
-    info << "Bank " << i << " @ $" << HEX4 << (start + 0x80) << " - "
-    << "$" << (start + 0xFFF) << " (hotspot = $" << (spot+i) << ")\n";
-  }
-#endif
   addBaseInformation(cart.romSize(), "AtariAge", info);
 }

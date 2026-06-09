@@ -121,7 +121,7 @@ void ScrollBarWidget::handleMouseDown(int x, int y, MouseButton b,
   if(_numEntries <= _entriesPerPage)
     return;
 
-  if (y <= _upDownBoxHeight)
+  if(y <= _upDownBoxHeight)
   {
     // Up arrow
     _currentPos--;
@@ -207,7 +207,7 @@ void ScrollBarWidget::handleMouseMoved(int x, int y)
     else
       _part = Part::Slider;
 
-    if (old_part != _part)
+    if(old_part != _part)
       setDirty();
   }
 }
@@ -227,7 +227,7 @@ void ScrollBarWidget::checkBounds(int old_pos)
   else if(_currentPos > _numEntries - _entriesPerPage)
     _currentPos = _numEntries - _entriesPerPage;
 
-  if (old_pos != _currentPos)
+  if(old_pos != _currentPos)
   {
     recalc();
     setDirty();
@@ -245,7 +245,6 @@ void ScrollBarWidget::handleMouseLeft()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ScrollBarWidget::recalc()
 {
-//cerr << "ScrollBarWidget::recalc()\n";
   const int oldSliderHeight = _sliderHeight,
             oldSliderPos = _sliderPos;
 

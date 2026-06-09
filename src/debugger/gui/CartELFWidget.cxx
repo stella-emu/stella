@@ -82,15 +82,17 @@ void CartridgeELFWidget::initialize()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeELFWidget::saveArmImage(const FSNode& node)
 {
-  try {
+  try
+  {
     const ByteArray buffer = myCart.getArmImage();
 
     const size_t sizeWritten = node.write(buffer);
-    if (sizeWritten != buffer.size()) throw std::runtime_error("failed to write arm image");
+    if(sizeWritten != buffer.size()) throw std::runtime_error("failed to write arm image");
 
     instance().frameBuffer().showTextMessage("Successfully exported ARM executable image", MessagePosition::BottomCenter, true);
   }
-  catch (...) {
+  catch(...)
+  {
     instance().frameBuffer().showTextMessage("Failed to export ARM executable image", MessagePosition::BottomCenter, true);
   }
 }
@@ -98,7 +100,7 @@ void CartridgeELFWidget::saveArmImage(const FSNode& node)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeELFWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
 {
-  if (cmd == kSaveArmImageCmd)
+  if(cmd == kSaveArmImageCmd)
     BrowserDialog::show(
       instance().debugger().baseDialog(),
       "Save ARM image",

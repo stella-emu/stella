@@ -73,6 +73,12 @@ string EventHandlerSDL::pasteText(string& text) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool EventHandlerSDL::hasClipboardText() const
+{
+  return SDL_HasClipboardText();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventHandlerSDL::pollEvent()
 {
   ASSERT_MAIN_THREAD;

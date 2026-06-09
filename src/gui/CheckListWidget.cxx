@@ -67,7 +67,7 @@ void CheckListWidget::setList(const StringList& list, const BoolArray& state)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CheckListWidget::setLine(int line, string_view str, const bool& state)
+void CheckListWidget::setLine(int line, string_view str, bool state)
 {
   if(std::cmp_greater_equal(line, _list.size()))
     return;
@@ -88,6 +88,7 @@ void CheckListWidget::drawWidget(bool hilite)
   s.vLine(_x + CheckboxWidget::boxSize(_font) + 5, _y, _y + _h - 1, kColor);
 
   // Draw the list items
+  const Common::Rect r(getEditRect());
   for (int i = 0, pos = _currentPos; i < _rows && pos < len; i++, pos++)
   {
     // Draw checkboxes for correct lines (takes scrolling into account)
@@ -97,8 +98,6 @@ void CheckListWidget::drawWidget(bool hilite)
 
     const int y = _y + 2 + _lineHeight * i + 2;
     ColorId textColor = kTextColor;
-
-    const Common::Rect r(getEditRect());
 
     // Draw the selected item inverted, on a highlighted background.
     if (_selectedItem == pos)

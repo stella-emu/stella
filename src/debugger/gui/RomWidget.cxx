@@ -164,7 +164,7 @@ void RomWidget::toggleBreak(int disasm_line)
 {
   const uInt16 address = getAddress(disasm_line);
 
-  if (address != 0)
+  if(address != 0)
   {
     const Debugger& debugger = instance().debugger();
 
@@ -247,7 +247,7 @@ uInt16 RomWidget::getAddress(int disasm_line)
   const CartDebug::DisassemblyList& list =
     instance().debugger().cartDebug().disassembly().list;
 
-  if (std::cmp_less(disasm_line, list.size()) && list[disasm_line].address != 0)
+  if(std::cmp_less(disasm_line, list.size()) && list[disasm_line].address != 0)
     return list[disasm_line].address;
   else
     return 0;

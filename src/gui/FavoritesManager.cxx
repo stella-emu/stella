@@ -36,17 +36,17 @@ void FavoritesManager::load()
 
   // User Favorites
   myUserSet.clear();
-  const string& serializedUser = mySettings.getString("_favoriteroms");
+  const string_view serializedUser = mySettings.getString("_favoriteroms");
   if(!serializedUser.empty())
   {
     try
     {
       const json& jUser = json::parse(serializedUser);
-      for (const auto& u: jUser)
+      for(const auto& u: jUser)
       {
-        const string& path = u.get<string>();
+        const string_view path = u.get_ref<const string&>();
         const FSNode node(path);
-        if (node.exists())
+        if(node.exists())
           addUser(path);
       }
     }
@@ -60,17 +60,17 @@ void FavoritesManager::load()
   myRecentList.clear();
   if(myMaxRecent > 0)
   {
-    const string& serializedRecent = mySettings.getString("_recentroms");
+    const string_view serializedRecent = mySettings.getString("_recentroms");
     if(!serializedRecent.empty())
     {
       try
       {
         const json& jRecent = json::parse(serializedRecent);
-        for (const auto& r: jRecent)
+        for(const auto& r: jRecent)
         {
-          const string& path = r.get<string>();
+          const string_view path = r.get_ref<const string&>();
           const FSNode node(path);
-          if (node.exists())
+          if(node.exists())
             addRecent(path);
         }
       }
@@ -83,18 +83,18 @@ void FavoritesManager::load()
 
   // Most Popular
   myPopularMap.clear();
-  const string& serializedPopular = mySettings.getString("_popularroms");
-  if (!serializedPopular.empty())
+  const string_view serializedPopular = mySettings.getString("_popularroms");
+  if(!serializedPopular.empty())
   {
     try
     {
       const json& jPopular = json::parse(serializedPopular);
-      for (const auto& p: jPopular)
+      for(const auto& p: jPopular)
       {
-        const string& path = p[0].get<string>();
+        const string_view path = p[0].get_ref<const string&>();
         const uInt32 count = p[1].get<uInt32>();
         const FSNode node(path);
-        if (node.exists())
+        if(node.exists())
           myPopularMap.emplace(path, count);
       }
     }
@@ -110,19 +110,19 @@ void FavoritesManager::save()
 {
   // User Favorites
   json jUser = json::array();
-  for(const auto& path : myUserSet)
+  for(const auto& path: myUserSet)
     jUser.push_back(path);
   mySettings.setValue("_favoriteroms", jUser.dump(2));
 
   // Recently Played
   json jRecent = json::array();
-  for(const auto& path : myRecentList)
+  for(const auto& path: myRecentList)
     jRecent.push_back(path);
   mySettings.setValue("_recentroms", jRecent.dump(2));
 
   // Most Popular
   json jPopular = json::array();
-  for(const auto& path : myPopularMap)
+  for(const auto& path: myPopularMap)
     jPopular.emplace_back(path);
   mySettings.setValue("_popularroms", jPopular.dump(2));
 }
@@ -250,7 +250,6 @@ const FavoritesManager::RecentList& FavoritesManager::recentList() const
       const FSNode bNode(b);
       return BSPF::compareIgnoreCase(aNode.getName(), bNode.getName()) < 0;
     });
-
   }
   else
     // sort newest to oldest
@@ -286,18 +285,15 @@ void FavoritesManager::incPopular(string_view path)
     // Limit number of entries and age data
     if(myPopularMap.size() >= max_popular)
     {
-      const PopularList& sortedList = sortedPopularList(); // sorted by frequency!
-      for(const auto& item: sortedList)
+      for(auto it = myPopularMap.begin(); it != myPopularMap.end(); )
       {
-        const auto entry = myPopularMap.find(item.first);
-        if(entry != myPopularMap.end())
+        if(it->second >= static_cast<uInt32>(scale * (1.0 - factor)))
         {
-          if(entry->second >= scale * (1.0 - factor))
-            entry->second *= factor; // age data
-          else
-            myPopularMap.erase(entry); // remove least popular
+          it->second = static_cast<uInt32>(it->second * factor); // age data
+          ++it;
         }
-
+        else
+          it = myPopularMap.erase(it); // remove least popular
       }
     }
     myPopularMap.emplace(path, scale);

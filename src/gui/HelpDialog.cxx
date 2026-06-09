@@ -103,7 +103,7 @@ void HelpDialog::updateStrings(int page, int lines, string& title)
   {
     myKeyStr[i] = k;  myDescStr[i] = d;  i++;
   };
-  const auto ADD_EVENT = [&](const Event::Type e, const string & d)
+  const auto ADD_EVENT = [&](const Event::Type e, string_view d)
   {
     string desc = instance().eventHandler().getMappingDesc(e, EventMode::kEmulationMode);
     if(desc.empty())
@@ -244,7 +244,7 @@ void HelpDialog::handleCommand(CommandSender* sender, int cmd,
 
     case StaticTextWidget::kOpenUrlCmd:
     {
-      const string url = myDesc[id]->getUrl();
+      const string& url = myDesc[id]->getUrl();
 
       if(!url.empty())
         MediaFactory::openURL(url);

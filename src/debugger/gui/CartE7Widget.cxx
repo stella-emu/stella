@@ -47,12 +47,6 @@ CartridgeE7Widget::CartridgeE7Widget(
       : myCart.romBankCount() == 6
         ? "  ROM Banks 0 - 4 (hotspots $FFE0/$FFE1\n    and $FFE4 - $FFE6)\n"
         : "  ROM Banks 0 - 6 (hotspots $FFE0 - $FFE6)\n");
-#if 0
-  // Eventually, we should query this from the debugger/disassembler
-  uInt16 start = (cart.myImage[size - 3] << 8) | cart.myImage[size - 4];
-  start -= start % 0x1000;
-  info << "Bank RORG" << " = $" << HEX4 << start << "\n";
-#endif
 
   initialize(boss, cart, info);
 }

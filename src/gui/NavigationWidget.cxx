@@ -117,6 +117,9 @@ void NavigationWidget::setWidth(int w)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void NavigationWidget::setVisible(bool isVisible)
 {
+  if(myUseMinimalUI)
+    return;
+
   if(isVisible)
   {
     this->clearFlags(FLAG_INVISIBLE);
@@ -124,11 +127,11 @@ void NavigationWidget::setVisible(bool isVisible)
     myHomeButton->clearFlags(FLAG_INVISIBLE);
     myHomeButton->setEnabled(true);
     myPrevButton->clearFlags(FLAG_INVISIBLE);
-    myHomeButton->setEnabled(true);
+    myPrevButton->setEnabled(true);
     myNextButton->clearFlags(FLAG_INVISIBLE);
-    myHomeButton->setEnabled(true);
+    myNextButton->setEnabled(true);
     myUpButton->clearFlags(FLAG_INVISIBLE);
-    myHomeButton->setEnabled(true);
+    myUpButton->setEnabled(true);
     myPath->clearFlags(FLAG_INVISIBLE);
     myPath->setEnabled(true);
   }
@@ -200,15 +203,16 @@ void NavigationWidget::PathWidget::setPath(string_view path)
   myLastPath = path;
 
   const int fontWidth = _font.getMaxCharWidth();
-  int x = _x + fontWidth, w = _w;
+  int x = _x + fontWidth;
+  int w = _w;
   FSNode node(path);
 
   // Calculate how many path parts can be displayed
-  StringList paths;
+  std::vector<FSNode> nodes;
   bool cutFirst = false;
-  while(node.hasParent() && w >= fontWidth * 1)
+  while(node.hasParent() && w >= fontWidth)
   {
-    const string& name = node.getName();
+    string_view name = node.getName();
     int l = static_cast<int>(name.length() + 2);
 
     if(name.back() == FSNode::PATH_SEPARATOR)
@@ -217,7 +221,7 @@ void NavigationWidget::PathWidget::setPath(string_view path)
       l++;
 
     w -= l * fontWidth;
-    paths.push_back(node.getPath());
+    nodes.push_back(node);
     node = node.getParent();
   }
   if(w < 0 || node.hasParent())
@@ -225,19 +229,18 @@ void NavigationWidget::PathWidget::setPath(string_view path)
 
   // Update/add widgets for path parts display
   size_t idx = 0;
-  for(auto it = paths.rbegin(); it != paths.rend(); ++it, ++idx)
+  for(auto it = nodes.rbegin(); it != nodes.rend(); ++it, ++idx)
   {
-    const string& curPath = *it;
-    node = FSNode(curPath);
-    string name = node.getName();
+    string name = it->getName();
+    const string& curPath = it->getPath();
 
-    if(it == paths.rbegin() && cutFirst)
+    if(it == nodes.rbegin() && cutFirst)
       name = ">";
     else
     {
       if(name.back() == FSNode::PATH_SEPARATOR)
         name.pop_back();
-      if(it + 1 != paths.rend())
+      if(it + 1 != nodes.rend())
         name += " >";
     }
     const int width = static_cast<int>(name.length() + 1) * fontWidth;
@@ -257,7 +260,6 @@ void NavigationWidget::PathWidget::setPath(string_view path)
       s->setID(static_cast<uInt32>(idx));
       s->setTarget(myTarget);
       myFolderList.push_back(s);
-      //_boss->addFocusWidget(s); // TODO: allow adding/inserting focus dynamically
     }
     x += width;
   }

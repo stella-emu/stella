@@ -171,7 +171,7 @@ void RomListWidget::setHighlighted(int item)
     _highlightedItem = item;
 
     // Only scroll the list if we're about to pass the page boundary
-    if (_highlightedItem < _currentPos)
+    if(_highlightedItem < _currentPos)
       _currentPos = std::max(_currentPos - _rows, 0);
     else if(_highlightedItem == _currentPos + _rows)
       _currentPos += _rows;
@@ -211,21 +211,21 @@ void RomListWidget::recalc()
 void RomListWidget::scrollToCurrent(int item)
 {
   // Only do something if the current item is not in our view port
-  if (item < _currentPos)
+  if(item < _currentPos)
   {
     // it's above our view
     _currentPos = item;
   }
-  else if (item >= _currentPos + _rows )
+  else if(item >= _currentPos + _rows)
   {
     // it's below our view
     _currentPos = item - _rows + 1;
   }
 
   const int size = static_cast<int>(myDisasm->list.size());
-  if (_currentPos < 0 || _rows > size)
+  if(_currentPos < 0 || _rows > size)
     _currentPos = 0;
-  else if (_currentPos + _rows > size)
+  else if(_currentPos + _rows > size)
     _currentPos = size - _rows;
 
   myScrollBar->_currentPos = _currentPos;
@@ -237,7 +237,7 @@ void RomListWidget::scrollToCurrent(int item)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void RomListWidget::handleMouseDown(int x, int y, MouseButton b, int clickCount)
 {
-  if (!isEnabled())
+  if(!isEnabled())
     return;
 
   resetSelection();
@@ -255,12 +255,12 @@ void RomListWidget::handleMouseDown(int x, int y, MouseButton b, int clickCount)
   {
     // First check whether the selection changed
     int newSelectedItem = findItem(x, y);
-    if (newSelectedItem > static_cast<int>(myDisasm->list.size()) - 1)
+    if(newSelectedItem > static_cast<int>(myDisasm->list.size()) - 1)
       newSelectedItem = -1;
 
-    if (_selectedItem != newSelectedItem)
+    if(_selectedItem != newSelectedItem)
     {
-      if (_editMode)
+      if(_editMode)
         abortEditMode();
       _selectedItem = newSelectedItem;
       setDirty();
@@ -273,7 +273,7 @@ void RomListWidget::handleMouseUp(int x, int y, MouseButton b, int clickCount)
 {
   // If this was a double click and the mouse is still over the selected item,
   // send the double click command
-  if (clickCount == 2 && (_selectedItem == findItem(x, y)))
+  if(clickCount == 2 && (_selectedItem == findItem(x, y)))
   {
     // Start edit mode
     if(isEditable() && !_editMode)
@@ -308,14 +308,14 @@ bool RomListWidget::handleKeyDown(StellaKey key, StellaMod mod)
   bool handled = true;
   const int oldSelectedItem = _selectedItem;
 
-  if (_editMode)
+  if(_editMode)
   {
     // Class EditableWidget handles all single-key presses for us
     handled = EditableWidget::handleKeyDown(key, mod);
   }
   else
   {
-    switch (key)
+    switch(key)
     {
       case StellaKey::SPACE:
         // Snap list back to currently highlighted line
@@ -331,7 +331,7 @@ bool RomListWidget::handleKeyDown(StellaKey key, StellaMod mod)
     }
   }
 
-  if (_selectedItem != oldSelectedItem)
+  if(_selectedItem != oldSelectedItem)
   {
     myScrollBar->draw();
     scrollToSelected();
@@ -344,7 +344,7 @@ bool RomListWidget::handleKeyDown(StellaKey key, StellaMod mod)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool RomListWidget::handleKeyUp(StellaKey key, StellaMod mod)
 {
-  if (key == _currentKeyDown)
+  if(key == _currentKeyDown)
     _currentKeyDown = StellaKey::UNKNOWN;
   return true;
 }
@@ -361,20 +361,20 @@ bool RomListWidget::handleEvent(Event::Type e)
   switch(e)
   {
     case Event::UISelect:
-      if (_selectedItem >= 0)
+      if(_selectedItem >= 0)
       {
-        if (isEditable())
+        if(isEditable())
           startEditMode();
       }
       break;
 
     case Event::UIUp:
-      if (_selectedItem > 0)
+      if(_selectedItem > 0)
         _selectedItem--;
       break;
 
     case Event::UIDown:
-      if (_selectedItem < static_cast<int>(myDisasm->list.size()) - 1)
+      if(_selectedItem < static_cast<int>(myDisasm->list.size()) - 1)
         _selectedItem++;
       break;
 
@@ -399,7 +399,7 @@ bool RomListWidget::handleEvent(Event::Type e)
       handled = false;
   }
 
-  if (_selectedItem != oldSelectedItem)
+  if(_selectedItem != oldSelectedItem)
   {
     myScrollBar->draw();
     scrollToSelected();
@@ -411,7 +411,7 @@ bool RomListWidget::handleEvent(Event::Type e)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void RomListWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
 {
-  switch (cmd)
+  switch(cmd)
   {
     case CheckboxWidget::kCheckActionCmd:
       // We let the parent class handle this
@@ -420,7 +420,7 @@ void RomListWidget::handleCommand(CommandSender* sender, int cmd, int data, int 
       break;
 
     case GuiObject::kSetPositionCmd:
-      if (_currentPos != data)
+      if(_currentPos != data)
       {
         _currentPos = data;
         setDirty();
@@ -543,12 +543,15 @@ void RomListWidget::loadDisasmColorMap()
   int i = 1;
   while(i <= CartDebug::NUM_DISASM_ROLES && std::getline(ss, token, ','))
   {
-    try {
-      const int v = std::stoi(token);
-      myDisasmColorMap[i] = (v == CartDebug::DISASM_COLOR_TEXT || (v >= 0 && v <= 15))
-                            ? static_cast<uInt8>(v)
+    try
+    {
+      const auto v = static_cast<uInt8>(std::stoi(token));
+      myDisasmColorMap[i] = (v == CartDebug::DISASM_COLOR_TEXT || v <= 15)
+                            ? v
                             : CartDebug::ourDisasmThemes[0].map[i];
-    } catch(...) {
+    }
+    catch(...)
+    {
       myDisasmColorMap[i] = CartDebug::ourDisasmThemes[0].map[i];
     }
     ++i;
@@ -704,7 +707,7 @@ Common::Rect RomListWidget::getEditRect() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void RomListWidget::startEditMode()
 {
-  if (isEditable() && !_editMode && _selectedItem >= 0)
+  if(isEditable() && !_editMode && _selectedItem >= 0)
   {
     // Does this line represent an editable area?
     if(myDisasm->list[_selectedItem].bytes.empty())
@@ -731,7 +734,7 @@ void RomListWidget::startEditMode()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void RomListWidget::endEditMode()
 {
-  if (!_editMode)
+  if(!_editMode)
     return;
 
   // Send a message that editing finished with a return/enter key press

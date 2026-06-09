@@ -90,7 +90,6 @@ TiaInfoWidget::TiaInfoWidget(GuiObject* boss, const GUI::Font& lfont,
 
   // Right column
   xpos = x + max_w - lwidthR - EditTextWidget::calcWidth(lfont, 5); ypos = y + VBORDER;
-  //xpos = myDeltaCycles->getRight() + LGAP * 2; ypos = y + VBORDER;
 
   // Right: Frame Count
   new StaticTextWidget(boss, lfont, xpos, ypos + 1, longstr ? "Frame Cnt." : "Frame");
@@ -144,7 +143,6 @@ TiaInfoWidget::TiaInfoWidget(GuiObject* boss, const GUI::Font& lfont,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TiaInfoWidget::handleMouseDown(int x, int y, MouseButton b, int clickCount)
 {
-//cerr << "TiaInfoWidget button press: x = " << x << ", y = " << y << '\n';
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

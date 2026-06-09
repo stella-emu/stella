@@ -140,7 +140,7 @@ void LauncherDialog::addFilteringWidgets(int& ypos)
     const int bwSettings = iconButtonWidth + lwSettings + btnGap * 2 + 1;   // Button width for Options button
 
     // Setup some variables for handling the Filter label + field
-    const string& lblFilter = "Filter";
+    string_view lblFilter = "Filter";
     int lwFilter = _font.getStringWidth(lblFilter);
 
     string lblFound = "12345 items found";
@@ -217,7 +217,7 @@ void LauncherDialog::addFilteringWidgets(int& ypos)
     mySettingsButton = new ButtonWidget(this, _font, xpos, ypos - btnYOfs,
                                         iconWidth, buttonHeight, settingsIcon,
                                         iconGap, lblSettings, kOptionsCmd);
-    mySettingsButton-> setToolTip("Open Options dialog (Ctrl+O)");
+    mySettingsButton->setToolTip("Open Options dialog (Ctrl+O)");
     wid.push_back(mySettingsButton);
 
     ypos = mySettingsButton->getBottom() + Dialog::vGap();
@@ -733,7 +733,7 @@ void LauncherDialog::loadPendingRomInfo()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void LauncherDialog::handleFavoritesChanged()
 {
-  if (instance().settings().getBool("favorites"))
+  if(instance().settings().getBool("favorites"))
   {
     myList->loadFavorites();
   }
@@ -1198,10 +1198,6 @@ void LauncherDialog::openContextMenu(int x, int y)
       items.emplace_back(instance().settings().getBool("altsorting")
         ? "Normal sorting"
         : "Alternative sorting", "Ctrl+S", "sorting");
-    //if(!instance().settings().getBool("launcherbuttons"))
-    //{
-    //  items.emplace_back("Options" + ELLIPSIS, "Ctrl+O", "options");
-    //}
   }
   if(addCancel)
     items.emplace_back("Cancel", ""); // closes the context menu and does nothing
@@ -1247,7 +1243,7 @@ void LauncherDialog::openSettings()
   saveConfig();
 
   // Create an options dialog, similar to the in-game one
-  if (instance().settings().getBool("basic_settings"))
+  if(instance().settings().getBool("basic_settings"))
     myDialog = std::make_unique<StellaSettingsDialog>(instance(), parent(),
                                                  _w, _h, AppMode::launcher);
   else

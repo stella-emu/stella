@@ -349,7 +349,6 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
 
   setHelpAnchor("UserInterface");
 
-
 #ifndef WINDOWED_SUPPORT
   myCenter->clearFlags(Widget::FLAG_ENABLED);
 #endif
@@ -411,7 +410,7 @@ void UIDialog::loadConfig()
   myDialogFontPopup->setSelected(dialogFont, "medium");
 
   // Enable HiDPI mode
-  if (!instance().frameBuffer().hidpiAllowed())
+  if(!instance().frameBuffer().hidpiAllowed())
   {
     myHidpiWidget->setState(false);
     myHidpiWidget->setEnabled(false);
@@ -706,47 +705,6 @@ void UIDialog::handleLauncherSize()
   // one tickmark every ~100 pixel
   myLauncherHeightSlider->setTickmarkIntervals((ds.h - h + 67) / 100);
 }
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-/*void UIDialog::handleLauncherSize()
-// an attempt to limit the minimal and maximal ROM info percentages
-// whiche became too complex
-{
-  string launcherFont = myLauncherFontPopup->getSelectedTag().toString();
-  int fwidth, fheight;
-  if(launcherFont == "small")
-  {
-    fwidth = GUI::consoleDesc.maxwidth;
-    fheight = GUI::consoleDesc.height;
-  }
-  else if(launcherFont == "medium")
-  {
-    fwidth = GUI::stellaMediumDesc.maxwidth;
-    fheight = GUI::stellaMediumDesc.height;
-  }
-  else
-  {
-    fwidth = GUI::stellaLargeDesc.maxwidth;
-    fheight = GUI::stellaLargeDesc.height;
-  }
-  int minInfoWidth = instance().frameBuffer().smallFont().getMaxCharWidth() * 20 + 16;
-  int minInfoHeight = instance().frameBuffer().smallFont().getLineHeight() * 8 + 16;
-  int minLauncherWidth = fwidth * 20 + 64;
-  int w = myLauncherWidthSlider->getValue();
-  int h = myLauncherHeightSlider->getValue();
-  int size = std::max(minInfoWidth * 100.F / w, minInfoHeight * 100.F / h);
-
-  myRomViewerSize->setMinValue(size);
-  myRomViewerSize->setMaxValue(100 - minLauncherWidth * 100.F / w);
-  // set tickmarks every ~10%
-  myRomViewerSize->setTickmarkIntervals((myRomViewerSize->getMaxValue() - myRomViewerSize->getMinValue()) / 10);
-
-  size = myRomViewerSize->getValue();
-  size = std::max(size, myRomViewerSize->getMinValue());
-  size = std::min(size, myRomViewerSize->getMaxValue());
-
-  myRomViewerSize->setValue(size);
-}*/
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void UIDialog::handleRomViewer()

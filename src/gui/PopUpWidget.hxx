@@ -48,8 +48,6 @@ class PopUpWidget : public EditableWidget
 
     /** Add the given items to the widget. */
     void addItems(const VariantList& items);
-    ///** Get the items of the widget. */
-    //const VariantList& getItems(const VariantList& items) const;
 
     /** Various selection methods passed directly to the underlying menu
         See ContextMenu.hxx for more information. */

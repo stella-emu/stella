@@ -278,7 +278,7 @@ void RadioButtonWidget::setState(bool state, bool send)
     setDirty();
     if(_state && send)
       sendCommand(_cmd, _state, _id);
-    if (state)
+    if(state)
       myGroup->select(this);
   }
 }
@@ -359,7 +359,7 @@ void RadioButtonGroup::setSelected(uInt32 selected)
   mySelected = selected;
   for(const auto& w : myWidgets)
   {
-    (static_cast<RadioButtonWidget*>(w))->setState(i == mySelected);
+    static_cast<RadioButtonWidget*>(w)->setState(i == mySelected);
     ++i;
   }
 }

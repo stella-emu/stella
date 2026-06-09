@@ -241,7 +241,7 @@ void StellaSettingsDialog::loadConfig()
   handleOverscanChange();
 
   // Controllers
-  if (instance().hasConsole())
+  if(instance().hasConsole())
   {
     myGameProperties = instance().console().properties();
   }
@@ -294,7 +294,7 @@ void StellaSettingsDialog::saveConfig()
   instance().saveConfig();
 
   // In any event, inform the Console
-  if (instance().hasConsole())
+  if(instance().hasConsole())
   {
     instance().console().setProperties(myGameProperties);
   }
@@ -336,7 +336,7 @@ void StellaSettingsDialog::setDefaults()
 void StellaSettingsDialog::handleCommand(CommandSender* sender, int cmd,
   int data, int id)
 {
-  switch (cmd)
+  switch(cmd)
   {
     case GuiObject::kDefaultsCmd:
       setDefaults();
@@ -346,7 +346,7 @@ void StellaSettingsDialog::handleCommand(CommandSender* sender, int cmd,
       saveConfig();
       [[fallthrough]];
     case GuiObject::kCloseCmd:
-      if (myMode != AppMode::emulator)
+      if(myMode != AppMode::emulator)
         close();
       else
         instance().eventHandler().leaveMenuMode();
@@ -358,7 +358,7 @@ void StellaSettingsDialog::handleCommand(CommandSender* sender, int cmd,
 
     case kConfirmSwitchCmd:
       instance().settings().setValue("basic_settings", false);
-      if (myMode != AppMode::emulator)
+      if(myMode != AppMode::emulator)
         close();
       else
         instance().eventHandler().leaveMenuMode();
@@ -396,7 +396,7 @@ void StellaSettingsDialog::handleCommand(CommandSender* sender, int cmd,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void StellaSettingsDialog::handleOverscanChange()
 {
-  if (myTVOverscan->getValue() == 0)
+  if(myTVOverscan->getValue() == 0)
   {
     myTVOverscan->setValueLabel("Off");
     myTVOverscan->setValueUnit("");
@@ -433,7 +433,7 @@ void StellaSettingsDialog::loadControllerProperties(const Properties& props)
   // in launcher mode
   bool enable = false;
 
-  switch (instance().eventHandler().state())
+  switch(instance().eventHandler().state())
   {
     case EventHandlerState::LAUNCHER:
       enable = !instance().launcher().selectedRomMD5().empty();
@@ -452,7 +452,7 @@ void StellaSettingsDialog::loadControllerProperties(const Properties& props)
   myRightPortLabel->setEnabled(enable);
   myRightPortDetected->setEnabled(enable);
 
-  if (enable)
+  if(enable)
   {
     string controller{props.get(PropType::Controller_Left)};
     myLeftPort->setSelected(controller, "AUTO");
@@ -489,9 +489,9 @@ int StellaSettingsDialog::valueToLevel(int value)
     0, 5, 11, 18, 26, 35, 45, 56, 68, 81, 95
   };
 
-  for (int i = NUM_LEVELS - 1; i > 0; --i)
+  for(int i = NUM_LEVELS - 1; i > 0; --i)
   {
-    if (std::cmp_greater_equal(value, values[i]))
+    if(std::cmp_greater_equal(value, values[i]))
       return i;
   }
   return 0;
@@ -501,7 +501,7 @@ int StellaSettingsDialog::valueToLevel(int value)
 void StellaSettingsDialog::openHelp()
 {
   // Create an help dialog, similar to the in-game one
-  if (myHelpDialog == nullptr)
+  if(myHelpDialog == nullptr)
     myHelpDialog = std::make_unique<HelpDialog>(instance(), parent(), _font);
   myHelpDialog->open();
 }

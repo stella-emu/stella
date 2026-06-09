@@ -172,6 +172,15 @@ class Ball : public Serializable
     FORCE_INLINE void movementTick(uInt32 clock, uInt32 hclock, bool hblank);
 
     /**
+      The ball circuit has a F1 cell right that is clocked by the color clock
+      (CLKP) right at the end of the pixel signal. This cell receives color clock
+      even during HBLANK and is responsible for latching the display signal to
+      the screen. In order to get this correct we distribute CLKP separately to
+      the ball during HBLANK.
+     */
+    FORCE_INLINE void tickClkpInHblank();
+
+    /**
       Tick one color clock. Inline for performance (implementation below).
      */
     FORCE_INLINE void tick(bool isReceivingRegularClock = true);
@@ -365,6 +374,21 @@ void Ball::movementTick(uInt32 clock, uInt32 hclock, bool hblank)
       myInvertedPhaseClock = !hblank;
     }
   }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Ball::tickClkpInHblank()
+{
+  // See tick for an explanation of the various steps.
+  if(myUseInvertedPhaseClock && myInvertedPhaseClock) [[unlikely]]
+  {
+    myInvertedPhaseClock = false;
+    return;
+  }
+
+  mySignalActive = myIsRendering && myRenderCounter >= 0;
+
+  collision = (mySignalActive && myIsEnabled) ? myCollisionMaskEnabled : myCollisionMaskDisabled;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

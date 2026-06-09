@@ -71,7 +71,7 @@ string CartDisassemblyWriter::save(string path)
   // whether that bank has been visited during emulation (info.offset is only
   // reliable for visited banks; unvisited banks leave it as 0).
   vector<uInt16> bankOrigins(romBankCount);
-  for(int b = 0; b < romBankCount; ++b)
+  for(uInt16 b = 0; b < romBankCount; ++b)
   {
     cart.unlockHotspots();
     cart.bank(b);
@@ -84,10 +84,10 @@ string CartDisassemblyWriter::save(string path)
   // encode the bank index into the upper 16 bits of orgBase and use a 5/6-digit
   // label format (e.g. L00F103 / L01F103) to guarantee uniqueness.
   bool needsExtendedLabels = false;
-  for(int b1 = 0; b1 < romBankCount && !needsExtendedLabels; ++b1)
+  for(uInt16 b1 = 0; b1 < romBankCount && !needsExtendedLabels; ++b1)
   {
     const size_t size1 = myCartDebug.myBankInfo[b1].size;
-    for(int b2 = b1 + 1; b2 < romBankCount; ++b2)
+    for(uInt16 b2 = b1 + 1; b2 < romBankCount; ++b2)
     {
       const size_t size2 = myCartDebug.myBankInfo[b2].size;
       if(bankOrigins[b1] < bankOrigins[b2] + size2 &&

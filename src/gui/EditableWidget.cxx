@@ -156,10 +156,18 @@ void EditableWidget::handleMouseDown(int x, int y, MouseButton b, int clickCount
     if(isEditable())
       VarList::push_back(items, " Paste    Cmd+V ", "paste");
   #endif
-    mouseMenu().addItems(items);
+    ContextMenu& menu = mouseMenu();
+    menu.addItems(items);
+
+    // Enable/disable items based on the current state
+    const bool hasSelection = _selectSize != 0;
+    menu.setEnabled("cut",   isEditable() && hasSelection);
+    menu.setEnabled("copy",  isEditable() ? hasSelection : !_editString.empty());
+    menu.setEnabled("paste", isEditable() &&
+                    instance().eventHandler().hasClipboardText());
 
     // Add menu at current x,y mouse location
-    mouseMenu().show(x + getAbsX(), y + getAbsY(), dialog().surface().dstRect());
+    menu.show(x + getAbsX(), y + getAbsY(), dialog().surface().dstRect());
     return;
   }
   else if(b == MouseButton::LEFT && isEnabled())
@@ -461,7 +469,7 @@ bool EditableWidget::handleKeyDown(StellaKey key, StellaMod mod)
 int EditableWidget::getCaretOffset() const
 {
   int caretOfs = 0;
-  for(const char c : _editString | std::views::take(_caretPos))
+  for(const char c: _editString | std::views::take(_caretPos))
     caretOfs += _font.getCharWidth(c);
 
   caretOfs -= _editScrollOffset;
@@ -845,7 +853,7 @@ bool EditableWidget::copySelectedText()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool EditableWidget::pasteSelectedText()
 {
-  const bool selected = !selectString().empty();
+  const bool selected = (_selectSize != 0);
   string pasted;
 
   myUndoHandler->endChars(_editString);
@@ -858,7 +866,7 @@ bool EditableWidget::pasteSelectedText()
   string filtered;
   filtered.reserve(pasted.size());
   bool lastOk = true; // only one filler char per invalid character (block)
-  for(const char c : pasted)
+  for(const char c: pasted)
   {
     if(_filter(tolower(c)))
     {

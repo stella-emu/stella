@@ -272,7 +272,7 @@ bool ListWidget::handleKeyDown(StellaKey key, StellaMod mod)
     return false;
 
   bool handled = true;
-  if (!_editMode)
+  if(!_editMode)
   {
     switch(key)
     {
@@ -296,7 +296,7 @@ bool ListWidget::handleKeyDown(StellaKey key, StellaMod mod)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ListWidget::handleJoyDown(int stick, int button, bool longPress)
 {
-  if (longPress)
+  if(longPress)
     sendCommand(ListWidget::kLongButtonPressCmd, _selectedItem, _id);
 }
 
@@ -321,9 +321,9 @@ bool ListWidget::handleEvent(Event::Type e)
   switch(e)
   {
     case Event::UISelect:
-      if (_selectedItem >= 0)
+      if(_selectedItem >= 0)
       {
-        if (isEditable())
+        if(isEditable())
           startEditMode();
         else
           sendCommand(ListWidget::kActivatedCmd, _selectedItem, _id);
@@ -331,12 +331,12 @@ bool ListWidget::handleEvent(Event::Type e)
       break;
 
     case Event::UIUp:
-      if (_selectedItem > 0)
+      if(_selectedItem > 0)
         _selectedItem--;
       break;
 
     case Event::UIDown:
-      if (_selectedItem < size - 1)
+      if(_selectedItem < size - 1)
         _selectedItem++;
       break;
 
@@ -366,7 +366,7 @@ bool ListWidget::handleEvent(Event::Type e)
       handled = false;
   }
 
-  if (_selectedItem != oldSelectedItem)
+  if(_selectedItem != oldSelectedItem)
   {
     if(_useScrollbar)
     {
@@ -392,9 +392,9 @@ void ListWidget::lostFocusWidget()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ListWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
 {
-  if (cmd == GuiObject::kSetPositionCmd)
+  if(cmd == GuiObject::kSetPositionCmd)
   {
-    if (_currentPos != data)
+    if(_currentPos != data)
     {
       _currentPos = data;
       setDirty();
@@ -409,20 +409,20 @@ void ListWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
 void ListWidget::scrollToCurrent(int item)
 {
   // Only do something if the current item is not in our view port
-  if (item < _currentPos)
+  if(item < _currentPos)
   {
     // it's above our view
     _currentPos = item;
   }
-  else if (item >= _currentPos + _rows )
+  else if(item >= _currentPos + _rows)
   {
     // it's below our view
     _currentPos = item - _rows + 1;
   }
 
-  if (_currentPos < 0 || std::cmp_greater_equal(_rows, _list.size()))
+  if(_currentPos < 0 || std::cmp_greater_equal(_rows, _list.size()))
     _currentPos = 0;
-  else if (_currentPos + _rows > static_cast<int>(_list.size()))
+  else if(_currentPos + _rows > static_cast<int>(_list.size()))
     _currentPos = static_cast<int>(_list.size()) - _rows;
 
   if(_useScrollbar)
@@ -441,7 +441,7 @@ void ListWidget::scrollToCurrent(int item)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ListWidget::startEditMode()
 {
-  if (isEditable() && !_editMode && _selectedItem >= 0)
+  if(isEditable() && !_editMode && _selectedItem >= 0)
   {
     _editMode = true;
     setText(_list[_selectedItem]);
@@ -454,7 +454,7 @@ void ListWidget::startEditMode()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ListWidget::endEditMode()
 {
-  if (!_editMode)
+  if(!_editMode)
     return;
 
   // Send a message that editing finished with a return/enter key press

@@ -24,8 +24,10 @@
 #include "CartELFStateWidget.hxx"
 
 namespace {
-  string registerName(uInt8 reg) {
-    switch (reg) {
+  string registerName(uInt8 reg)
+  {
+    switch(reg)
+    {
       case 11:
         return "FP (R11) = ";
 
@@ -46,7 +48,8 @@ namespace {
     }
   }
 
-  string describeTransaction(uInt16 address, uInt16 mask, uInt64 timestamp) {
+  string describeTransaction(uInt16 address, uInt16 mask, uInt64 timestamp)
+  {
     return std::format("waiting for 0x{:04X} mask 0x{:04X} time {}",
       address, mask, timestamp);
   }
@@ -79,7 +82,7 @@ void CartridgeELFStateWidget::initialize()
   y += myArmRegisters->getHeight() + lineHeight / 2;
 
   myArmRegisters->setEditable(false);
-  for (uInt8 i = 0; i < 16; i++) myArmRegisters->setToolTip(i % 4, i / 4, registerName(i));
+  for(uInt8 i = 0; i < 16; i++) myArmRegisters->setToolTip(i % 4, i / 4, registerName(i));
 
   new StaticTextWidget(_boss, _font, x0, y, "ARM flags:");
   myFlags = new ToggleBitWidget(_boss, _font, x0 + indent, y + lineHeight, 4, 1, 1);
@@ -116,7 +119,7 @@ void CartridgeELFStateWidget::initialize()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeELFStateWidget::loadConfig()
 {
-  for (uInt8 i = 0; i < 16; i++)
+  for(uInt8 i = 0; i < 16; i++)
     myArmRegisters->setValue(i, myCart.myCortexEmu.getRegister(i));
 
   BoolArray flags(4);
@@ -126,7 +129,7 @@ void CartridgeELFStateWidget::loadConfig()
   flags[3] = myCart.myCortexEmu.getV();
 
   BoolArray flagsChanged(4);
-  for (uInt8 i = 0; i < 4; i++) flagsChanged[i] = flags[i] != myFlagValues[i];
+  for(uInt8 i = 0; i < 4; i++) flagsChanged[i] = flags[i] != myFlagValues[i];
   myFlagValues = flags;
 
   myFlags->setState(flags, flagsChanged);
