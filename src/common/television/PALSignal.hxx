@@ -361,6 +361,8 @@ class PALSignal
     std::vector<float> myAccY, myAccU, myAccV;
     // Previous line's filtered chroma, for the 1-line PAL comb blend
     std::vector<float> myPrevU, myPrevV;
+    // Gamma-LUT index scratch for convertLine()'s vectorisable first pass
+    std::array<Int32, VISIBLE_SAMPLES> myIdxR{}, myIdxG{}, myIdxB{};
 
     // ── Pre-baked lookup tables ───────────────────────────────────────────
 
@@ -444,7 +446,17 @@ class PALSignal
     // Apply the chroma FIR to a sample buffer in-place (build-time only).
     void applyChromaFilter(float* buf, uInt32 n);
 
+    // Convert one line of YUV accumulator samples to packed 0x00RRGGBB,
+    // applying the comb blend u = uBuf·(1−blend) + uPrev·blend (same for v).
+    // Split into a table-free float pass (auto-vectorisable) and a scalar
+    // gamma-LUT pass; the arithmetic is identical to toRGB().  S-Video
+    // passes blend = 0 with uPrev/vPrev aliased to uBuf/vBuf.
+    void convertLine(const float* yBuf, const float* uBuf, const float* vBuf,
+                     const float* uPrev, const float* vPrev, float blend,
+                     uInt32 n, uInt32* dst);
+
     // Inverse BT.601 (linear light) + gamma LUT, packed to 0x00RRGGBB.
+    // Scalar reference for convertLine(); used by the colour-killed path.
     FORCE_INLINE uInt32 toRGB(float y, float u, float v) const;
 
     static void convertToAdjustable(Adjustable& adjustable, const Setup& setup);

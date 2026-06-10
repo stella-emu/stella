@@ -478,11 +478,10 @@ void PALSignal::render(const uInt8* tiaSrc, uInt32 srcWidth, uInt32 srcHeight,
     myKillerRun = 0;
   const bool   colourKilled = myColourKilled;
 
-  const bool   svideo    = mySVideo;
+  const bool   svideo = mySVideo;
   // S-Video has separate Y/C wires, so there is no 1-line comb (blend = 0).
-  const float  blend    = svideo ? 0.F : (mySetup.blend * 0.5F + 0.5F);
-  const float  invBlend = 1.F - blend;
-  const uInt32 outW     = outWidth(srcWidth);   // oversampled output width
+  const float  blend  = svideo ? 0.F : (mySetup.blend * 0.5F + 0.5F);
+  const uInt32 outW   = outWidth(srcWidth);   // oversampled output width
 
   // Reset the 1-line comb delay at the start of each frame; the first
   // scanline blends against a virtual "black" previous line.  (S-Video has
@@ -547,22 +546,58 @@ void PALSignal::render(const uInt8* tiaSrc, uInt32 srcWidth, uInt32 srcHeight,
     }
     else if(svideo)
     {
-      for(uInt32 j = 0; j < outW; ++j)
-        dst[j] = toRGB(myAccY[j], myAccU[j], myAccV[j]);
+      // No comb: blend = 0 and prev aliases acc, so only this line is read
+      convertLine(myAccY.data(), myAccU.data(), myAccV.data(),
+                  myAccU.data(), myAccV.data(), 0.F, outW, dst);
     }
     else
     {
-      for(uInt32 j = 0; j < outW; ++j)
-      {
-        const float u = myAccU[j] * invBlend + myPrevU[j] * blend;
-        const float v = myAccV[j] * invBlend + myPrevV[j] * blend;
-        dst[j] = toRGB(myAccY[j], u, v);
-      }
+      convertLine(myAccY.data(), myAccU.data(), myAccV.data(),
+                  myPrevU.data(), myPrevV.data(), blend, outW, dst);
 
       // This line's chroma becomes the delay line for the next scanline.
       std::swap(myAccU, myPrevU);
       std::swap(myAccV, myPrevV);
     }
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void PALSignal::convertLine(const float* yBuf, const float* uBuf,
+                            const float* vBuf, const float* uPrev,
+                            const float* vPrev, float blend,
+                            uInt32 n, uInt32* dst)
+{
+  const float invBlend = 1.F - blend;
+  constexpr auto scale = static_cast<float>(GAMMA_LUT_SIZE - 1);
+
+  // Pass 1: comb blend, BT.601 inverse, clamp and LUT index — pure float
+  // math with no table lookups, so the compiler can vectorise it.  The
+  // arithmetic matches toRGB(); see there for the rounding rationale.
+  // NOLINTBEGIN(bugprone-incorrect-roundings)
+  for(uInt32 j = 0; j < n; ++j)
+  {
+    const float u = uBuf[j] * invBlend + uPrev[j] * blend;
+    const float v = vBuf[j] * invBlend + vPrev[j] * blend;
+    const float y = yBuf[j];
+
+    const float r = BSPF::clamp(y              + 1.140F * v, 0.F, 1.F);
+    const float g = BSPF::clamp(y - 0.395F * u - 0.581F * v, 0.F, 1.F);
+    const float b = BSPF::clamp(y + 2.032F * u,              0.F, 1.F);
+
+    myIdxR[j] = static_cast<Int32>(r * scale + 0.5F);
+    myIdxG[j] = static_cast<Int32>(g * scale + 0.5F);
+    myIdxB[j] = static_cast<Int32>(b * scale + 0.5F);
+  }
+  // NOLINTEND(bugprone-incorrect-roundings)
+
+  // Pass 2: scalar gamma-LUT lookups and 0x00RRGGBB pack
+  for(uInt32 j = 0; j < n; ++j)
+  {
+    const uInt32 ri = myGammaLUT[myIdxR[j]];
+    const uInt32 gi = myGammaLUT[myIdxG[j]];
+    const uInt32 bi = myGammaLUT[myIdxB[j]];
+    dst[j] = (ri << 16) | (gi << 8) | bi;
   }
 }
 
