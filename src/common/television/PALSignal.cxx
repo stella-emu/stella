@@ -50,7 +50,7 @@ namespace {
   // cutoffNorm: normalised cutoff = cutoff_Hz / SAMPLE_RATE
   // taps: total kernel length (should be odd so it is symmetric about n = 0)
   // kernel: output array of length taps, normalised to unit DC gain
-  constexpr void buildFIR(float cutoffNorm, uInt32 taps, float* kernel)
+  void buildFIR(float cutoffNorm, uInt32 taps, float* kernel)
   {
     const int half = static_cast<int>(taps) / 2;
     float sum = 0.F;
@@ -85,11 +85,11 @@ PALSignal::PALSignal()
     myPrevU(VISIBLE_SAMPLES, 0.F),
     myPrevV(VISIBLE_SAMPLES, 0.F)
 {
+  // The FIR kernels depend only on compile-time constants, so they are
+  // built once here; applySetup() covers everything setup-dependent
   buildLumaKernel();
   buildChromaKernel();
-  buildGammaLUT();
-  buildCoeff();
-  expandKernels();
+  applySetup();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -101,18 +101,15 @@ void PALSignal::initialize(TVMode mode)
   // Reset the colour-killer to its powered-up (colour-active) state.  This is
   // the receiver-reset chokepoint: TIASurface::initialize() routes here via
   // setTVMode on a TV-mode change and on a mid-game console reset / ROM
-  // reload, so stale killer state never survives a reset.  (A soft Reset
-  // switch does not re-initialise the surface — correctly, since a real TV's
-  // killer is unaware of it — and the hysteresis self-heals within a frame
-  // or two regardless.)
+  // reload, and TVSignal::setTiming() replays the mode here when PAL becomes
+  // the active standard, so stale killer state never survives into PAL
+  // rendering.  (A soft Reset switch does not re-initialise the surface —
+  // correctly, since a real TV's killer is unaware of it — and the hysteresis
+  // self-heals within a frame or two regardless.)
   myColourKilled = false;
   myKillerRun    = 0;
 
-  buildLumaKernel();
-  buildChromaKernel();
-  buildGammaLUT();
-  buildCoeff();
-  expandKernels();
+  applySetup();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -120,8 +117,19 @@ void PALSignal::reinitializeCustom()
 {
   mySVideo = false;
   mySetup  = myCustomSetup;
-  buildLumaKernel();
-  buildChromaKernel();
+  applySetup();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void PALSignal::applySetup()
+{
+  // Aperture (peaking) correction models the high-frequency boost circuit in
+  // a real TV's luma path.  It is an unsharp-mask: a 3-tap [-k/2, 1+k, -k/2]
+  // kernel, which leaves DC untouched (taps sum to 1) but lifts edges.
+  // sharpness in [-1..1] maps to k = sharpness/2; positive sharpens, negative
+  // softens.  Applied after the low-pass in applyLumaFilter().
+  myApertureK = mySetup.sharpness * 0.5F;
+
   buildGammaLUT();
   buildCoeff();
   expandKernels();
@@ -178,7 +186,9 @@ void PALSignal::setPalette(IntSpan palette)
   // pow(value, gamma) before encoding and re-apply 1/gamma on decode
   // (toRGB/myGammaLUT).  Filtering then averages light, not code values,
   // which is what a real CRT does.
-  for(uInt32 i = 0; i < std::min(static_cast<uInt32>(palette.size()), 256U); ++i)
+  const auto numColours =
+    static_cast<uInt32>(std::min<size_t>(palette.size(), myClockTable.size()));
+  for(uInt32 i = 0; i < numColours; ++i)
   {
     // Unpack 0x00RRGGBB and linearise from display gamma
     const float r = std::pow(((palette[i] >> 16) & 0xFF) / 255.F, gamma);
@@ -209,13 +219,6 @@ void PALSignal::buildLumaKernel()
 {
   // PAL-B/G luma video baseband is nominally 5.0 MHz; band-limit luma there.
   buildFIR(5.0e6F / SAMPLE_RATE, LUMA_TAPS, myLumaKernel.data());
-
-  // Aperture (peaking) correction models the high-frequency boost circuit in
-  // a real TV's luma path.  It is an unsharp-mask: a 3-tap [-k/2, 1+k, -k/2]
-  // kernel, which leaves DC untouched (taps sum to 1) but lifts edges.
-  // sharpness in [-1..1] maps to k = sharpness/2; positive sharpens, negative
-  // softens.  Applied after the low-pass in applyLumaFilter().
-  myApertureK = mySetup.sharpness * 0.5F;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -409,21 +412,28 @@ void PALSignal::expandKernels()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PALSignal::applyLumaFilter(float* buf, uInt32 n)
+void PALSignal::convolve(SpanOf<float> kernel, const float* in, float* out,
+                         uInt32 n)
 {
-  constexpr int half = static_cast<int>(LUMA_TAPS) / 2;
+  const int half = static_cast<int>(kernel.size()) / 2;
 
   for(uInt32 i = 0; i < n; ++i)
   {
     float acc = 0.F;
-    for(int k = 0; std::cmp_less(k, LUMA_TAPS); ++k)
+    for(int k = 0; std::cmp_less(k, kernel.size()); ++k)
     {
       const int j = static_cast<int>(i) - k + half;
       if(j >= 0 && std::cmp_less(j, n))
-        acc += buf[j] * myLumaKernel[k];
+        acc += in[j] * kernel[k];
     }
-    myFilterTmp[i] = acc;
+    out[i] = acc;
   }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void PALSignal::applyLumaFilter(float* buf, uInt32 n)
+{
+  convolve(myLumaKernel, buf, myFilterTmp.data(), n);
 
   // Aperture correction (sharpness): unsharp-mask with the 3-tap kernel
   // [-k/2, 1+k, -k/2].  Centre weight 1+k boosts the sample, the neighbour
@@ -441,20 +451,8 @@ void PALSignal::applyLumaFilter(float* buf, uInt32 n)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PALSignal::applyChromaFilter(float* buf, uInt32 n)
 {
-  constexpr int half = static_cast<int>(CHROMA_TAPS) / 2;
-
-  for(uInt32 i = 0; i < n; ++i)
-  {
-    float acc = 0.F;
-    for(int k = 0; std::cmp_less(k, CHROMA_TAPS); ++k)
-    {
-      const int j = static_cast<int>(i) - k + half;
-      if(j >= 0 && std::cmp_less(j, n))
-        acc += buf[j] * myChromaKernel[k];
-    }
-    myFilterTmp[i] = acc;
-  }
-  std::copy(myFilterTmp.begin(), myFilterTmp.begin() + n, buf);
+  convolve(myChromaKernel, buf, myFilterTmp.data(), n);
+  std::copy_n(myFilterTmp.data(), n, buf);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -578,10 +576,16 @@ uInt32 PALSignal::toRGB(float y, float u, float v) const
   const float g = BSPF::clamp(y - 0.395F * u - 0.581F * v, 0.F, 1.F);
   const float b = BSPF::clamp(y + 2.032F * u,              0.F, 1.F);
 
-  // LUT lookup: linear [0..1] → quantized index → gamma-encoded [0..255]
+  // LUT lookup: linear [0..1] → quantized index → gamma-encoded [0..255].
+  // r/g/b are clamped non-negative above, so +0.5 truncation rounds
+  // identically to std::lround, which GCC cannot inline here (no x86
+  // instruction has its round-half-away-from-zero semantics) — that would
+  // cost three libm calls per output pixel.
+  // NOLINTBEGIN(bugprone-incorrect-roundings)
   constexpr auto scale = static_cast<float>(GAMMA_LUT_SIZE - 1);
-  const uInt32 ri = myGammaLUT[static_cast<uInt32>(std::lround(r * scale))];
-  const uInt32 gi = myGammaLUT[static_cast<uInt32>(std::lround(g * scale))];
-  const uInt32 bi = myGammaLUT[static_cast<uInt32>(std::lround(b * scale))];
+  const uInt32 ri = myGammaLUT[static_cast<uInt32>(r * scale + 0.5F)];
+  const uInt32 gi = myGammaLUT[static_cast<uInt32>(g * scale + 0.5F)];
+  const uInt32 bi = myGammaLUT[static_cast<uInt32>(b * scale + 0.5F)];
+  // NOLINTEND(bugprone-incorrect-roundings)
   return (ri << 16) | (gi << 8) | bi;
 }

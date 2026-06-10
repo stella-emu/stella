@@ -290,7 +290,7 @@ bool GlobalKeyHandler::skipInputSetting() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool GlobalKeyHandler::skipDebugSetting() const
+bool GlobalKeyHandler::skipDebugSetting()
 {
   return false;
 }

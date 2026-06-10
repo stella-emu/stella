@@ -72,11 +72,17 @@ class TVSignal
     uInt32 outputWidth() const;
 
     // Load and save custom-adjustable settings
-    void loadConfig(const Settings& settings);
-    void saveConfig(Settings& settings);
+    static void loadConfig(const Settings& settings) {
+      NTSCSignal::loadConfig(settings);
+      PALSignal::loadConfig(settings);
+    }
+    static void saveConfig(Settings& settings) {
+      NTSCSignal::saveConfig(settings);
+      PALSignal::saveConfig(settings);
+    }
 
     // Get the current signal type as a display string
-    string getPreset() const;
+    string_view getPreset() const;
 
     // Cycle through the adjustable list for the active signal standard;
     // changes which one is "current"
@@ -99,6 +105,12 @@ class TVSignal
                 uInt32* rgbDst, uInt32 dstPitch, uInt32 scanlinesLastFrame);
 
   private:
+    // Plain palette lookup with no signal processing (the TVMode::None
+    // paths, plus TVMode::RGB for PAL)
+    void renderPassthrough(const uInt8* tiaSrc, uInt32 srcWidth,
+                           uInt32 srcHeight, uInt32* rgbDst,
+                           uInt32 dstPitch) const;
+
     void renderNTSC(const uInt8* tiaSrc, uInt32 srcWidth, uInt32 srcHeight,
                     uInt32* rgbDst, uInt32 dstPitch);
     void renderPAL(const uInt8* tiaSrc, uInt32 srcWidth, uInt32 srcHeight,
@@ -108,9 +120,6 @@ class TVSignal
 
     // Returns the adjustable tag span for the currently active filter
     SpanOf<AdjustableTag> currentAdjustableTags() const;
-
-    // BT.601 YUV → packed 0x00RRGGBB (values in linear [0..1])
-    static FORCE_INLINE uInt32 yuvToRGB(float y, float u, float v);
 
     // SECAM YDbDr → packed 0x00RRGGBB (values in linear [0..1])
     static FORCE_INLINE uInt32 yDbDrToRGB(float y, float db, float dr);
@@ -128,6 +137,10 @@ class TVSignal
 
     // Display palette used for NTSC non-Blargg pixel lookup
     PaletteArray myPalette{};
+
+    // RGB palette for the engines' internal YIQ/YUV encoding; kept so
+    // setTiming() can replay it into a newly active engine
+    PaletteArray myRGBPalette{};
 
     // Delay-line buffer: TIA colour-index bytes for the previous scanline
     static constexpr uInt32 MAX_LINE_WIDTH = 160;

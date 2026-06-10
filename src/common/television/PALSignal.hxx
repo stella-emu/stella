@@ -407,10 +407,15 @@ class PALSignal
     // ── Private methods ───────────────────────────────────────────────────
 
     // Build the windowed-sinc low-pass FIR kernels (luma 5.0 MHz, chroma
-    // 1.3 MHz at SAMPLE_RATE).  buildLumaKernel() also sets the 3-tap
-    // aperture-correction strength from the sharpness control.
+    // 1.3 MHz at SAMPLE_RATE).  The cutoffs are fixed by the PAL spec, so
+    // the kernels are setup-independent and built once at construction.
     void buildLumaKernel();
     void buildChromaKernel();
+
+    // Apply everything that depends on mySetup: the 3-tap aperture-
+    // correction strength, the gamma LUT, the decode coefficients and the
+    // per-colour kernels.
+    void applySetup();
 
     // Rebuild the linear-light → display-gamma output LUT from mySetup.gamma.
     // Call after any setup change (the active gamma feeds toRGB()).
@@ -426,6 +431,11 @@ class PALSignal
     // coefficients to produce the ready-to-scatter per-colour kernels
     // (myKernel/mySVKernel).  Cheap; call after setPalette() or buildCoeff().
     void expandKernels();
+
+    // Convolve in (length n) with a symmetric FIR kernel into out, treating
+    // samples outside [0..n) as zero.  Used only while building coefficients.
+    static void convolve(SpanOf<float> kernel, const float* in, float* out,
+                         uInt32 n);
 
     // Apply the luma FIR then the aperture-correction (unsharp) pass to a
     // sample buffer in-place.  Used only while building coefficients.

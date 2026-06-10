@@ -89,11 +89,6 @@ class NTSCSignal
     {
       myNTSC.render(src_buf, src_width, src_height, dest_buf, dest_pitch);
     }
-    void render(const uInt8* src_buf, uInt32 src_width, uInt32 src_height,
-                uInt32* dest_buf, uInt32 dest_pitch, uInt32* prev_buf)
-    {
-      myNTSC.render(src_buf, src_width, src_height, dest_buf, dest_pitch, prev_buf);
-    }
 
     void enableThreading(bool enable) {
       myNTSC.enableThreading(enable);
@@ -110,8 +105,6 @@ class NTSCSignal
 
   private:
     AtariNTSC myNTSC;
-
-    AtariNTSC::Setup mySetup{AtariNTSC::TV_Composite};
 
     static inline AtariNTSC::Setup myCustomSetup = AtariNTSC::TV_Composite;
 

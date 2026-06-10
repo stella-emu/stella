@@ -192,7 +192,7 @@ class GlobalKeyHandler
     // Check if a currently non-relevant adjustment can be skipped
     bool skipAVSetting() const;
     bool skipInputSetting() const;
-    bool skipDebugSetting() const;
+    static bool skipDebugSetting();
 
     void buildSettingMap();
 

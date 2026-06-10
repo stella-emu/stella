@@ -26,33 +26,43 @@ TVSignal::TVSignal(const PaletteHandler& paletteHandler)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void TVSignal::loadConfig(const Settings& settings)
-{
-  NTSCSignal::loadConfig(settings);
-  PALSignal::loadConfig(settings);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void TVSignal::saveConfig(Settings& settings)
-{
-  NTSCSignal::saveConfig(settings);
-  PALSignal::saveConfig(settings);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TVSignal::setTiming(ConsoleTiming timing)
 {
+  if(timing == myTiming)
+    return;
+
   myTiming = timing;
-  myPrevLine.fill(0);
+
+  // setTVMode/setPalette only feed the engine for the active standard, so a
+  // timing change must replay the stored mode and palette into the engine
+  // that has just become active
+  if(myTiming == ConsoleTiming::ntsc)
+  {
+    if(myTVMode != TVMode::None)
+      myNTSCSignal.initialize(myTVMode);
+    myNTSCSignal.setPalette(myRGBPalette);
+  }
+  else if(myTiming == ConsoleTiming::pal)
+  {
+    if(myTVMode != TVMode::None)
+      myPALSignal.initialize(myTVMode);
+    myPALSignal.setPalette(myRGBPalette);
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TVSignal::setPalette(const PaletteArray& tiaPalette,
                           const PaletteArray& rgbPalette)
 {
-  myPalette = tiaPalette;
-  myNTSCSignal.setPalette(rgbPalette);
-  myPALSignal.setPalette(rgbPalette);
+  myPalette    = tiaPalette;
+  myRGBPalette = rgbPalette;
+
+  // Only the engine for the active standard consumes the RGB palette; a
+  // later timing change replays it into the other engine (see setTiming)
+  if(myTiming == ConsoleTiming::ntsc)
+    myNTSCSignal.setPalette(myRGBPalette);
+  else if(myTiming == ConsoleTiming::pal)
+    myPALSignal.setPalette(myRGBPalette);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -63,12 +73,16 @@ void TVSignal::setTVMode(TVMode type)
   if(type == TVMode::None)
     return;
 
-  myNTSCSignal.initialize(type);
-  myPALSignal.initialize(type);
+  // Only the engine for the active standard is (re)built; a later timing
+  // change replays the mode into the other engine (see setTiming)
+  if(myTiming == ConsoleTiming::ntsc)
+    myNTSCSignal.initialize(type);
+  else if(myTiming == ConsoleTiming::pal)
+    myPALSignal.initialize(type);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string TVSignal::getPreset() const
+string_view TVSignal::getPreset() const
 {
   switch(myTVMode)
   {
@@ -77,7 +91,7 @@ string TVSignal::getPreset() const
     case TVMode::Composite: return "COMPOSITE";
     case TVMode::Bad:       return "BAD ADJUST";
     case TVMode::Custom:    return "CUSTOM";
-    default:                    return "Disabled";
+    default:                return "Disabled";
   }
 }
 
@@ -99,8 +113,8 @@ SpanOf<AdjustableTag> TVSignal::currentAdjustableTags() const
 {
   switch(myTiming)
   {
-    case ConsoleTiming::ntsc:  return myNTSCSignal.adjustableTags();
-    case ConsoleTiming::pal:   return myPALSignal.adjustableTags();
+    case ConsoleTiming::ntsc:  return NTSCSignal::adjustableTags();
+    case ConsoleTiming::pal:   return PALSignal::adjustableTags();
     default:                   return {};
   }
 }
@@ -156,10 +170,6 @@ void TVSignal::changeCurrentAdjustable(int direction,
 void TVSignal::render(const uInt8* tiaSrc, uInt32 srcWidth, uInt32 srcHeight,
                       uInt32* rgbDst, uInt32 dstPitch, uInt32 scanlinesLastFrame)
 {
-  // Reset delay-line at the start of each frame; the first scanline always
-  // blends against a virtual "black" previous line.
-  myPrevLine.fill(0);
-
   switch(myTiming)
   {
     case ConsoleTiming::ntsc:
@@ -181,6 +191,20 @@ void TVSignal::render(const uInt8* tiaSrc, uInt32 srcWidth, uInt32 srcHeight,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TVSignal::renderPassthrough(const uInt8* tiaSrc, uInt32 srcWidth,
+                                 uInt32 srcHeight, uInt32* rgbDst,
+                                 uInt32 dstPitch) const
+{
+  for(uInt32 y = 0; y < srcHeight; ++y)
+  {
+    const uInt8* src = tiaSrc + static_cast<size_t>(y) * srcWidth;
+    uInt32* dst      = rgbDst + static_cast<size_t>(y) * dstPitch;
+    for(uInt32 x = 0; x < srcWidth; ++x)
+      dst[x] = myPalette[src[x]];
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TVSignal::renderNTSC(const uInt8* tiaSrc, uInt32 srcWidth, uInt32 srcHeight,
                            uInt32* rgbDst, uInt32 dstPitch)
 {
@@ -190,19 +214,7 @@ void TVSignal::renderNTSC(const uInt8* tiaSrc, uInt32 srcWidth, uInt32 srcHeight
     myNTSCSignal.render(tiaSrc, srcWidth, srcHeight, rgbDst, dstPitch << 2);
   }
   else
-  {
-    uInt32 bufofs = 0, screenofsY = 0;
-    for(uInt32 y = 0; y < srcHeight; ++y)
-    {
-      uInt32 pos = screenofsY;
-      for(uInt32 x = srcWidth / 2; x; --x)
-      {
-        rgbDst[pos++] = myPalette[tiaSrc[bufofs++]];
-        rgbDst[pos++] = myPalette[tiaSrc[bufofs++]];
-      }
-      screenofsY += dstPitch;
-    }
-  }
+    renderPassthrough(tiaSrc, srcWidth, srcHeight, rgbDst, dstPitch);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -212,13 +224,7 @@ void TVSignal::renderPAL(const uInt8* tiaSrc, uInt32 srcWidth, uInt32 srcHeight,
   // None, RGB: raw palette lookup with no signal processing.
   if(myTVMode == TVMode::None || myTVMode == TVMode::RGB)
   {
-    for(uInt32 y = 0; y < srcHeight; ++y)
-    {
-      const uInt8* src = tiaSrc + y * srcWidth;
-      uInt32* dst      = rgbDst + y * dstPitch;
-      for(uInt32 x = 0; x < srcWidth; ++x)
-        dst[x] = myPalette[src[x]];
-    }
+    renderPassthrough(tiaSrc, srcWidth, srcHeight, rgbDst, dstPitch);
     return;
   }
 
@@ -233,52 +239,34 @@ void TVSignal::renderSECAM(const uInt8* tiaSrc, uInt32 srcWidth, uInt32 srcHeigh
 {
   if(myTVMode == TVMode::None)
   {
-    for(uInt32 y = 0; y < srcHeight; ++y)
-    {
-      const uInt8* src = tiaSrc + y * srcWidth;
-      uInt32* dst      = rgbDst + y * dstPitch;
-      for(uInt32 x = 0; x < srcWidth; ++x)
-        dst[x] = myPalette[src[x]];
-    }
+    renderPassthrough(tiaSrc, srcWidth, srcHeight, rgbDst, dstPitch);
     return;
   }
+
+  // Reset the delay line at the start of each frame; the first scanline
+  // always blends against a virtual "black" previous line.
+  myPrevLine.fill(0);
 
   const auto& ydbdr = myPaletteHandler.secamYDbDrTable();
 
   for(uInt32 y = 0; y < srcHeight; ++y)
   {
-    const uInt8* src = tiaSrc + y * srcWidth;
-    uInt32* dst      = rgbDst + y * dstPitch;
+    const uInt8* src = tiaSrc + static_cast<size_t>(y) * srcWidth;
+    uInt32* dst      = rgbDst + static_cast<size_t>(y) * dstPitch;
 
     // Even scanlines carry Db; the delay line provides Dr from the previous
     // (odd) line.  Odd scanlines carry Dr; the delay line provides Db from
     // the previous (even) line.
     const bool evenLine = (y & 1) == 0;
+    const uInt8* dbLine = evenLine ? src : myPrevLine.data();
+    const uInt8* drLine = evenLine ? myPrevLine.data() : src;
 
     for(uInt32 x = 0; x < srcWidth; ++x)
-    {
-      const auto& curr = ydbdr[src[x]];
-      const auto& prev = ydbdr[myPrevLine[x]];
-
-      const float yo  = curr.y;
-      const float dbo = evenLine ? curr.db : prev.db;
-      const float dro = evenLine ? prev.dr : curr.dr;
-
-      dst[x] = yDbDrToRGB(yo, dbo, dro);
-    }
+      dst[x] = yDbDrToRGB(ydbdr[src[x]].y, ydbdr[dbLine[x]].db,
+                          ydbdr[drLine[x]].dr);
 
     std::copy_n(src, srcWidth, myPrevLine.data());
   }
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt32 TVSignal::yuvToRGB(float y, float u, float v)
-{
-  // BT.601 inverse: R = Y + 1.140V; G = Y - 0.395U - 0.581V; B = Y + 2.032U
-  const int r = BSPF::clamp(static_cast<int>((y              + 1.140F * v) * 255.F), 0, 255);
-  const int g = BSPF::clamp(static_cast<int>((y - 0.395F * u - 0.581F * v) * 255.F), 0, 255);
-  const int b = BSPF::clamp(static_cast<int>((y + 2.032F * u             ) * 255.F), 0, 255);
-  return static_cast<uInt32>((r << 16) | (g << 8) | b);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

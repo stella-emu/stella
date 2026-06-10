@@ -22,15 +22,13 @@
 namespace {
   // Map a TVMode to the corresponding AtariNTSC setup.
   // Custom returns myCustomSetup; None and unknown fall back to Composite.
-  const AtariNTSC::Setup& setupFor(TVMode mode,
-                                   const AtariNTSC::Setup& customSetup)
+  const AtariNTSC::Setup& setupFor(TVMode mode)
   {
     switch(mode)
     {
       case TVMode::RGB:       return AtariNTSC::TV_RGB;
       case TVMode::SVideo:    return AtariNTSC::TV_SVideo;
       case TVMode::Bad:       return AtariNTSC::TV_Bad;
-      case TVMode::Custom:    return customSetup;
       case TVMode::Composite:
       default:                return AtariNTSC::TV_Composite;
     }
@@ -40,15 +38,13 @@ namespace {
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void NTSCSignal::initialize(TVMode mode)
 {
-  mySetup = setupFor(mode, myCustomSetup);
-  myNTSC.initialize(mySetup);
+  myNTSC.initialize((mode == TVMode::Custom) ? myCustomSetup : setupFor(mode));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void NTSCSignal::reinitializeCustom()
 {
-  mySetup = myCustomSetup;
-  myNTSC.initialize(mySetup);
+  myNTSC.initialize(myCustomSetup);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -74,7 +70,7 @@ void NTSCSignal::saveConfig(Settings& settings)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void NTSCSignal::getAdjustables(Adjustable& adjustable, TVMode mode)
 {
-  convertToAdjustable(adjustable, setupFor(mode, myCustomSetup));
+  convertToAdjustable(adjustable, (mode == TVMode::Custom) ? myCustomSetup : setupFor(mode));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
