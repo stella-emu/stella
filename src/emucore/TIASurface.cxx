@@ -66,7 +66,7 @@ TIASurface::TIASurface(OSystem& system)
   myPaletteHandler = std::make_unique<PaletteHandler>(myOSystem);
   myPaletteHandler->loadConfig(myOSystem.settings());
   myTVSignal = std::make_unique<TVSignal>(*myPaletteHandler);
-  myTVSignal->loadConfig(myOSystem.settings());
+  TVSignal::loadConfig(myOSystem.settings());
   myTVSignal->enableThreading(myOSystem.settings().getBool("threads"));
 }
 
@@ -193,7 +193,7 @@ void TIASurface::changeTVAdjustable(int adjustable, int direction)
 
   setTVMode(TVMode::Custom);
   myTVSignal->changeAdjustable(adjustable, direction, text, valueText, newValue);
-  myTVSignal->saveConfig(myOSystem.settings());
+  TVSignal::saveConfig(myOSystem.settings());
   myOSystem.frameBuffer().showGaugeMessage(text, valueText, newValue);
 }
 
@@ -205,7 +205,7 @@ void TIASurface::changeCurrentTVAdjustable(int direction)
 
   setTVMode(TVMode::Custom);
   myTVSignal->changeCurrentAdjustable(direction, text, valueText, newValue);
-  myTVSignal->saveConfig(myOSystem.settings());
+  TVSignal::saveConfig(myOSystem.settings());
   myOSystem.frameBuffer().showGaugeMessage(text, valueText, newValue);
 }
 
