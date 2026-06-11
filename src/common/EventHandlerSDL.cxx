@@ -107,7 +107,8 @@ void EventHandlerSDL::pollEvent()
 
       case SDL_EVENT_MOUSE_MOTION:
         handleMouseMotionEvent(myEvent.motion.x, myEvent.motion.y,
-                               myEvent.motion.xrel, myEvent.motion.yrel);
+                               myEvent.motion.xrel, myEvent.motion.yrel,
+                               myEvent.motion.windowID);
         break;
 
       case SDL_EVENT_MOUSE_BUTTON_DOWN:
@@ -130,22 +131,25 @@ void EventHandlerSDL::pollEvent()
             break;
         }
         handleMouseButtonEvent(b, myEvent.button.type == SDL_EVENT_MOUSE_BUTTON_DOWN,
-                               myEvent.button.x, myEvent.button.y);
+                               myEvent.button.x, myEvent.button.y,
+                               myEvent.button.windowID);
         break;
       }
 
       case SDL_EVENT_MOUSE_WHEEL:
       {
-        // SDL now uses float for mouse coords, but the core still
-        // uses int throughout; this is sufficient for our current needs
-        float x{0.F}, y{0.F};
-        SDL_GetMouseState(&x, &y);  // we need mouse position too
+        // SDL now uses float for mouse coords, but the core still uses int
+        // throughout; this is sufficient for our current needs.  The wheel
+        // event carries the window-relative mouse position, which is what we
+        // need so the correct (possibly secondary) window receives it.
+        const int x = static_cast<int>(myEvent.wheel.mouse_x);
+        const int y = static_cast<int>(myEvent.wheel.mouse_y);
         if(myEvent.wheel.y < 0)
-          handleMouseButtonEvent(MouseButton::WHEELDOWN, true,
-                                 static_cast<int>(x), static_cast<int>(y));
+          handleMouseButtonEvent(MouseButton::WHEELDOWN, true, x, y,
+                                 myEvent.wheel.windowID);
         else if(myEvent.wheel.y > 0)
-          handleMouseButtonEvent(MouseButton::WHEELUP, true,
-                                 static_cast<int>(x), static_cast<int>(y));
+          handleMouseButtonEvent(MouseButton::WHEELUP, true, x, y,
+                                 myEvent.wheel.windowID);
         break;
       }
 
@@ -190,6 +194,10 @@ void EventHandlerSDL::pollEvent()
 
       case SDL_EVENT_QUIT:
         handleEvent(Event::Quit);
+        break;
+
+      case SDL_EVENT_WINDOW_CLOSE_REQUESTED:
+        handleWindowCloseEvent(myEvent.window.windowID);
         break;
 
       case SDL_EVENT_DROP_FILE:

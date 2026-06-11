@@ -989,6 +989,12 @@ void Debugger::renderTiaWindow()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+DialogContainer* Debugger::tiaWindowContainer() const
+{
+  return myTiaWindowOpen ? myTiaWindow.get() : nullptr;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool Debugger::addFunction(string_view name, string_view definition,
                            unique_ptr<Expression> exp, bool builtin)
 {

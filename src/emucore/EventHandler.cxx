@@ -308,7 +308,8 @@ void EventHandler::handleTextEvent(char text)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EventHandler::handleMouseMotionEvent(int x, int y, int xrel, int yrel)
+void EventHandler::handleMouseMotionEvent(int x, int y, int xrel, int yrel,
+                                          uInt32 windowID)
 {
   // Determine which mode we're in, then send the event to the appropriate place
   if(myState == EventHandlerState::EMULATION)
@@ -323,14 +324,14 @@ void EventHandler::handleMouseMotionEvent(int x, int y, int xrel, int yrel)
     mySkipMouseMotion = false;
   }
 #ifdef GUI_SUPPORT
-  else if(myOverlay)
-    myOverlay->handleMouseMotionEvent(x, y);
+  else if(DialogContainer* overlay = overlayForWindow(windowID))
+    overlay->handleMouseMotionEvent(x, y);
 #endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventHandler::handleMouseButtonEvent(MouseButton b, bool pressed,
-                                          int x, int y)
+                                          int x, int y, uInt32 windowID)
 {
   // Determine which mode we're in, then send the event to the appropriate place
   if(myState == EventHandlerState::EMULATION)
@@ -348,9 +349,23 @@ void EventHandler::handleMouseButtonEvent(MouseButton b, bool pressed,
     }
   }
 #ifdef GUI_SUPPORT
-  else if(myOverlay)
-    myOverlay->handleMouseButtonEvent(b, pressed, x, y);
+  else if(DialogContainer* overlay = overlayForWindow(windowID))
+    overlay->handleMouseButtonEvent(b, pressed, x, y);
 #endif
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+DialogContainer* EventHandler::overlayForWindow([[maybe_unused]] uInt32 windowID) const
+{
+#ifdef DEBUGGER_SUPPORT
+  // While the debugger's companion TIA window is open, events that originate
+  // from it are routed to its own container rather than the main overlay.
+  if(myState == EventHandlerState::DEBUGGER && windowID != 0 &&
+     myOSystem.frameBuffer().secondaryWindowOpen() &&
+     windowID == myOSystem.frameBuffer().secondaryWindowId())
+    return myOSystem.debugger().tiaWindowContainer();
+#endif
+  return myOverlay;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -405,6 +420,19 @@ void EventHandler::handleSystemEvent(SystemEvent e, int data1, int data2)
 void EventHandler::handleDropfileEvent(string_view file)
 {
   myOSystem.createConsole(FSNode(file));
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void EventHandler::handleWindowCloseEvent([[maybe_unused]] uInt32 windowID)
+{
+#ifdef DEBUGGER_SUPPORT
+  // A close request on the companion TIA window closes only that window; the
+  // main window's close is left to the normal SDL_EVENT_QUIT path.
+  if(myState == EventHandlerState::DEBUGGER &&
+     myOSystem.frameBuffer().secondaryWindowOpen() &&
+     windowID == myOSystem.frameBuffer().secondaryWindowId())
+    myOSystem.debugger().closeTiaWindow();
+#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

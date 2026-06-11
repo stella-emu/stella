@@ -107,9 +107,11 @@ void TiaZoomWidget::recalc()
   const int tw = instance().console().tia().width(),
             th = instance().console().tia().height();
 
-  // Don't go past end of framebuffer
-  myOffX = BSPF::clamp(myOffX, 0, (tw << 1) - myNumCols);
-  myOffY = BSPF::clamp(myOffY, 0, th - myNumRows);
+  // Don't go past end of framebuffer.  When the viewport is larger than the
+  // image (e.g. the companion TIA window at low zoom), the available range can
+  // go negative, so pin the upper bound at 0 to keep the offset at top-left.
+  myOffX = BSPF::clamp(myOffX, 0, std::max(0, (tw << 1) - myNumCols));
+  myOffY = BSPF::clamp(myOffY, 0, std::max(0, th - myNumRows));
 
   setDirty();
 }

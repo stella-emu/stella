@@ -114,6 +114,13 @@ class Debugger : public DialogContainer
     void renderTiaWindow();
 
     /**
+      The companion TIA window's DialogContainer, or nullptr when it isn't
+      open.  Used by EventHandler to route events that target the secondary
+      window to it instead of the main debugger overlay.
+    */
+    DialogContainer* tiaWindowContainer() const;
+
+    /**
       Wrapper method for EventHandler::enterDebugMode() for those classes
       that don't have access to EventHandler.
 
