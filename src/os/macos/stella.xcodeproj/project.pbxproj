@@ -380,6 +380,12 @@
 		DC5D2C550F117CFD004D1660 /* StellaMediumFont.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC5D2C510F117CFD004D1660 /* StellaMediumFont.hxx */; };
 		DC5EE7C214F7C165001C628C /* NTSCFilter.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC5EE7C014F7C165001C628C /* NTSCFilter.cxx */; };
 		DC5EE7C314F7C165001C628C /* NTSCFilter.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC5EE7C114F7C165001C628C /* NTSCFilter.hxx */; };
+		DC600FB82FDB0D7200DFC203 /* TiaWindow.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC600FB52FDB0D7200DFC203 /* TiaWindow.cxx */; };
+		DC600FB92FDB0D7200DFC203 /* TiaWindowDialog.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC600FB72FDB0D7200DFC203 /* TiaWindowDialog.cxx */; };
+		DC600FBA2FDB0D7200DFC203 /* TiaDisplayWidget.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC600FB32FDB0D7200DFC203 /* TiaDisplayWidget.cxx */; };
+		DC600FBB2FDB0D7200DFC203 /* TiaDisplayWidget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC600FB22FDB0D7200DFC203 /* TiaDisplayWidget.hxx */; };
+		DC600FBC2FDB0D7200DFC203 /* TiaWindow.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC600FB42FDB0D7200DFC203 /* TiaWindow.hxx */; };
+		DC600FBD2FDB0D7200DFC203 /* TiaWindowDialog.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC600FB62FDB0D7200DFC203 /* TiaWindowDialog.hxx */; };
 		DC62E6481960E87B007AEF05 /* AtariVoxWidget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC62E6441960E87B007AEF05 /* AtariVoxWidget.hxx */; };
 		DC62E64A1960E87B007AEF05 /* SaveKeyWidget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC62E6461960E87B007AEF05 /* SaveKeyWidget.hxx */; };
 		DC63A41D2FD05EE400797117 /* OverlayMenu.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC63A41C2FD05EE400797117 /* OverlayMenu.cxx */; };
@@ -1269,6 +1275,12 @@
 		DC5D2C510F117CFD004D1660 /* StellaMediumFont.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = StellaMediumFont.hxx; sourceTree = "<group>"; };
 		DC5EE7C014F7C165001C628C /* NTSCFilter.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = NTSCFilter.cxx; sourceTree = "<group>"; };
 		DC5EE7C114F7C165001C628C /* NTSCFilter.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = NTSCFilter.hxx; sourceTree = "<group>"; };
+		DC600FB22FDB0D7200DFC203 /* TiaDisplayWidget.hxx */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = TiaDisplayWidget.hxx; sourceTree = "<group>"; };
+		DC600FB32FDB0D7200DFC203 /* TiaDisplayWidget.cxx */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = TiaDisplayWidget.cxx; sourceTree = "<group>"; };
+		DC600FB42FDB0D7200DFC203 /* TiaWindow.hxx */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = TiaWindow.hxx; sourceTree = "<group>"; };
+		DC600FB52FDB0D7200DFC203 /* TiaWindow.cxx */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = TiaWindow.cxx; sourceTree = "<group>"; };
+		DC600FB62FDB0D7200DFC203 /* TiaWindowDialog.hxx */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = TiaWindowDialog.hxx; sourceTree = "<group>"; };
+		DC600FB72FDB0D7200DFC203 /* TiaWindowDialog.cxx */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = TiaWindowDialog.cxx; sourceTree = "<group>"; };
 		DC62E6441960E87B007AEF05 /* AtariVoxWidget.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = AtariVoxWidget.hxx; sourceTree = "<group>"; };
 		DC62E6461960E87B007AEF05 /* SaveKeyWidget.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = SaveKeyWidget.hxx; sourceTree = "<group>"; };
 		DC63A41B2FD05EE400797117 /* OverlayMenu.hxx */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = OverlayMenu.hxx; sourceTree = "<group>"; };
@@ -1989,12 +2001,18 @@
 				2D20F9F508C603EC00A73076 /* RomWidget.hxx */,
 				2D20F9F408C603EC00A73076 /* RomWidget.cxx */,
 				DC62E6461960E87B007AEF05 /* SaveKeyWidget.hxx */,
+				DC600FB22FDB0D7200DFC203 /* TiaDisplayWidget.hxx */,
+				DC600FB32FDB0D7200DFC203 /* TiaDisplayWidget.cxx */,
 				2D20F9F708C603EC00A73076 /* TiaInfoWidget.hxx */,
 				2D20F9F608C603EC00A73076 /* TiaInfoWidget.cxx */,
 				2D20F9F908C603EC00A73076 /* TiaOutputWidget.hxx */,
 				2D20F9F808C603EC00A73076 /* TiaOutputWidget.cxx */,
 				2D20F9FB08C603EC00A73076 /* TiaWidget.hxx */,
 				2D20F9FA08C603EC00A73076 /* TiaWidget.cxx */,
+				DC600FB42FDB0D7200DFC203 /* TiaWindow.hxx */,
+				DC600FB52FDB0D7200DFC203 /* TiaWindow.cxx */,
+				DC600FB62FDB0D7200DFC203 /* TiaWindowDialog.hxx */,
+				DC600FB72FDB0D7200DFC203 /* TiaWindowDialog.cxx */,
 				DC4130A52F435E6900E4DE9B /* TiaZoomWidget.hxx */,
 				DC4130A62F435E6900E4DE9B /* TiaZoomWidget.cxx */,
 				2D20F9FD08C603EC00A73076 /* ToggleBitWidget.hxx */,
@@ -3204,6 +3222,9 @@
 				DCF7F129223D796000701A47 /* ProfilingRunner.hxx in Headers */,
 				DCAAE5D61715887B0080BB82 /* Cart3FWidget.hxx in Headers */,
 				DCB60ACA2535E30600A5C1D2 /* VideoModeHandler.hxx in Headers */,
+				DC600FBB2FDB0D7200DFC203 /* TiaDisplayWidget.hxx in Headers */,
+				DC600FBC2FDB0D7200DFC203 /* TiaWindow.hxx in Headers */,
+				DC600FBD2FDB0D7200DFC203 /* TiaWindowDialog.hxx in Headers */,
 				E0A384182589741A0062AA93 /* SqliteStatement.hxx in Headers */,
 				DCAAE5D81715887B0080BB82 /* Cart4KWidget.hxx in Headers */,
 				DCAAE5DA1715887B0080BB82 /* Cart0840Widget.hxx in Headers */,
@@ -3514,6 +3535,9 @@
 				DC53B6AE1F3622DA00AA6BFB /* PointingDevice.cxx in Sources */,
 				2D9174C509BA90380026E9FF /* Font.cxx in Sources */,
 				2D9174C609BA90380026E9FF /* Debugger.cxx in Sources */,
+				DC600FB82FDB0D7200DFC203 /* TiaWindow.cxx in Sources */,
+				DC600FB92FDB0D7200DFC203 /* TiaWindowDialog.cxx in Sources */,
+				DC600FBA2FDB0D7200DFC203 /* TiaDisplayWidget.cxx in Sources */,
 				2D9174C709BA90380026E9FF /* DebuggerParser.cxx in Sources */,
 				2D9174C809BA90380026E9FF /* EditableWidget.cxx in Sources */,
 				E0A384142589741A0062AA93 /* KeyValueRepositorySqlite.cxx in Sources */,
