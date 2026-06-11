@@ -40,6 +40,7 @@ class RiotDebug;
 class TIADebug;
 class DebuggerParser;
 class RewindManager;
+class TiaWindow;
 
 #include <unordered_map>
 
@@ -99,6 +100,18 @@ class Debugger : public DialogContainer
       Per-frame update; also fires the debounced window-resize rebuild.
     */
     void updateTime(uInt64 time) override;
+
+    /**
+      The companion TIA window: a separate, debugger-controlled window showing
+      the TIA image (pan/zoom inspection for now).  Toggled on demand; only
+      meaningful while in the debugger.  renderTiaWindow() is called each frame
+      by the main loop and draws into the companion's own window.
+    */
+    void toggleTiaWindow();
+    void openTiaWindow();
+    void closeTiaWindow();
+    bool tiaWindowOpen() const { return myTiaWindowOpen; }
+    void renderTiaWindow();
 
     /**
       Wrapper method for EventHandler::enterDebugMode() for those classes
@@ -387,6 +400,15 @@ class Debugger : public DialogContainer
     // stops dragging, rather than on every resize event
     bool myResizePending{false};
     int  myResizeCountdown{0};
+
+    // The companion TIA window's DialogContainer.  Its secondary window/backend
+    // is owned by the (single) FrameBuffer, not here.
+    unique_ptr<TiaWindow> myTiaWindow;
+    bool myTiaWindowOpen{false};
+    // Deferred open: the window is created on the first render *after* the
+    // state has become DEBUGGER, so its createDisplay() doesn't run the
+    // emulation-mode (phosphor) path against the live console
+    bool myTiaWindowPending{false};
 
     // Various builtin functions and operations
     struct BuiltinFunction {

@@ -186,6 +186,16 @@ class FBBackendSDL : public FBBackend
     void endStretchResize() override;
 
     /**
+      The SDL window ID of this backend's window, or 0 if none.
+    */
+    uInt32 windowId() const override;
+
+    /**
+      Show or hide the window without destroying it.
+    */
+    void setWindowVisible(bool visible) override;
+
+    /**
       This method is called to create a surface with the given attributes.
 
       @param w      The requested width of the new surface.

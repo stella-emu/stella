@@ -39,7 +39,8 @@ enum class BufferType: uInt8 {
   None,
   Launcher,
   Emulator,
-  Debugger
+  Debugger,
+  TiaWindow  // the debugger's companion TIA window (own FrameBuffer/window)
 };
 
 enum class ScalingInterpolation: uInt8 {

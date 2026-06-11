@@ -586,6 +586,104 @@ void FrameBuffer::update(UpdateMode mode)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FrameBuffer::setRenderTarget(int target)
+{
+  if(target == myRenderTarget)
+    return;
+
+  // Swap only the per-window state; everything else (palette, fonts,
+  // TIASurface, message handler, desktop maps) is shared and stays put.
+  std::swap(myBackend, myOtherBackend);
+  std::swap(myActiveVidMode, myOtherVidMode);
+  std::swap(myBufferType, myOtherBufferType);
+  myRenderTarget = target;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+FBInitStatus FrameBuffer::openSecondaryWindow(DialogContainer& container,
+                                              string_view title, BufferType type,
+                                              Common::Size size)
+{
+  setRenderTarget(1);
+
+  // Lazily create the secondary backend (its own window + renderer).  The
+  // shared state (palette/fonts/TIASurface) already exists from the primary.
+  if(!mySecondaryCreated)
+  {
+    myBackend = MediaFactory::createVideoBackend(myOSystem);
+    myBackend->queryHardware(myFullscreenDisplays, myWindowedDisplays, myRenderers);
+    mySecondaryCreated = true;
+  }
+
+  const FBInitStatus status = createDisplay(title, type, size);
+  if(status == FBInitStatus::Success)
+  {
+    // Open the container's base dialog; its surfaces bind to this (secondary)
+    // backend because it is the current render target.
+    container.reStack();
+    myBackend->setWindowVisible(true);
+    mySecondaryActive = true;
+  }
+
+  setRenderTarget(0);
+  return status;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FrameBuffer::renderSecondaryWindow(DialogContainer& container, UpdateMode mode)
+{
+  if(!mySecondaryActive)
+    return;
+
+  setRenderTarget(1);
+  updateContainer(container, mode);
+  setRenderTarget(0);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FrameBuffer::closeSecondaryWindow()
+{
+  if(!mySecondaryActive)
+    return;
+
+  // Keep the backend and surfaces alive for a fast re-open; just hide it
+  setRenderTarget(1);
+  myBackend->setWindowVisible(false);
+  setRenderTarget(0);
+  mySecondaryActive = false;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt32 FrameBuffer::secondaryWindowId() const
+{
+  // The secondary backend is parked in myOtherBackend while the primary is the
+  // active target (the normal case outside the secondary-window methods).
+  const FBBackend* backend =
+    (myRenderTarget == 1) ? myBackend.get() : myOtherBackend.get();
+  return backend ? backend->windowId() : 0;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FrameBuffer::updateContainer(DialogContainer& container, UpdateMode mode)
+{
+  const bool forceRedraw = (mode == UpdateMode::REDRAW);
+  bool redraw = forceRedraw;
+  const bool rerender = (mode == UpdateMode::REDRAW || mode == UpdateMode::RERENDER
+                         || myPendingRender);
+  myPendingRender = false;
+
+  container.tick();
+  redraw |= container.needsRedraw();
+  if(redraw)
+    container.draw(forceRedraw);
+  else if(rerender)
+    container.render();
+
+  if(redraw || rerender)
+    myBackend->renderToScreen();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBuffer::updateInEmulationMode(float framesPerSecond)
 {
   // Update method that is specifically tailored to emulation mode
@@ -823,6 +921,9 @@ string FrameBuffer::getDisplayKey(BufferType bufferType) const
     #ifdef DEBUGGER_SUPPORT
     case BufferType::Debugger:
       return "dbg.display";
+
+    case BufferType::TiaWindow:
+      return "tiawindow.display";
     #endif
 
     default:
@@ -845,6 +946,9 @@ string FrameBuffer::getPositionKey() const
     #ifdef DEBUGGER_SUPPORT
     case BufferType::Debugger:
       return "dbg.pos";
+
+    case BufferType::TiaWindow:
+      return "tiawindow.pos";
     #endif
 
     default:

@@ -968,6 +968,12 @@ void OSystem::mainLoop()
       // Render the GUI with 60 Hz in all other modes
       timesliceSeconds = 1. / 60.;
       myFrameBuffer->update();
+    #ifdef DEBUGGER_SUPPORT
+      // While in the debugger, also drive its companion TIA window (if open).
+      // It renders into its own window via a scoped active-FrameBuffer swap.
+      if(myEventHandler->state() == EventHandlerState::DEBUGGER && myDebugger)
+        myDebugger->renderTiaWindow();
+    #endif
     }
 
     const duration<double> timeslice(timesliceSeconds);

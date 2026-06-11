@@ -109,6 +109,20 @@ class FBBackend
     virtual void endStretchResize() { }
 
     /**
+      The platform window ID of this backend's window, or 0 if no window
+      exists.  Used to route window-specific events (mouse, keyboard, close,
+      resize) to the FrameBuffer that owns the targeted window when more than
+      one window is open (e.g. the debugger's companion TIA window).
+    */
+    virtual uInt32 windowId() const { return 0; }
+
+    /**
+      Show or hide this backend's window without destroying it or its
+      surfaces.  Used to toggle a secondary window on and off cheaply.
+    */
+    virtual void setWindowVisible(bool visible) { }
+
+    /**
       Clear the framebuffer.
     */
     virtual void clear() = 0;

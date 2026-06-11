@@ -24,6 +24,7 @@
 #include "FSNode.hxx"
 #include "Settings.hxx"
 #include "DebuggerDialog.hxx"
+#include "TiaWindow.hxx"
 #include "PromptWidget.hxx"
 #include "DebuggerParser.hxx"
 #include "StateManager.hxx"
@@ -888,6 +889,12 @@ void Debugger::addState(string_view rewindMsg)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Debugger::setStartState()
 {
+  // Request the companion TIA window if the user has enabled it.  Actual
+  // creation is deferred to renderTiaWindow() so it happens once the state is
+  // DEBUGGER (see myTiaWindowPending).
+  if(myOSystem.settings().getBool("dbg.tiawindow"))
+    myTiaWindowPending = true;
+
   // Lock the bus each time the debugger is entered, so we don't disturb anything
   lockSystem();
 
@@ -907,6 +914,10 @@ void Debugger::setStartState()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Debugger::setQuitState()
 {
+  // Hide the companion TIA window (kept alive for a fast re-open)
+  myTiaWindowPending = false;
+  closeTiaWindow();
+
   myDialog->saveConfig();
   saveOldState();
 
@@ -917,6 +928,64 @@ void Debugger::setQuitState()
   // sitting at a breakpoint/trap, this will get us past it.
   // Somehow this feels like a hack to me, but I don't know why
   mySystem.m6502().execute(1);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Debugger::toggleTiaWindow()
+{
+  if(myTiaWindowOpen)
+    closeTiaWindow();
+  else
+    openTiaWindow();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Debugger::openTiaWindow()
+{
+  if(myTiaWindowOpen)
+    return;
+
+  if(myTiaWindow == nullptr)
+    myTiaWindow = std::make_unique<TiaWindow>(myOSystem);
+
+  // The (single) FrameBuffer owns the secondary window/backend; palette, fonts
+  // and TIASurface are shared with the main window, so nothing can be clobbered.
+  const FBInitStatus status = myOSystem.frameBuffer().openSecondaryWindow(
+    *myTiaWindow, string{STELLA_FULL_TITLE} + ": TIA",
+    BufferType::TiaWindow, myTiaWindow->size());
+
+  myTiaWindowOpen = (status == FBInitStatus::Success);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Debugger::closeTiaWindow()
+{
+  if(!myTiaWindowOpen)
+    return;
+
+  myOSystem.frameBuffer().closeSecondaryWindow();
+  myTiaWindowOpen = false;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Debugger::renderTiaWindow()
+{
+  // Deferred open (now that the state is DEBUGGER, so createDisplay() doesn't
+  // run the emulation-mode/phosphor path against the live console)
+  if(myTiaWindowPending)
+  {
+    myTiaWindowPending = false;
+    openTiaWindow();
+  }
+
+  if(!myTiaWindowOpen)
+    return;
+
+  // For now we force a full redraw every frame: TiaZoomWidget::drawWidget()
+  // re-reads the live TIA outputBuffer() on each draw, so this both recovers a
+  // lost initial present (avoiding a stuck-black window) and tracks changes as
+  // the user steps.  Phase 4 will replace this with an on-step invalidation.
+  myOSystem.frameBuffer().renderSecondaryWindow(*myTiaWindow);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

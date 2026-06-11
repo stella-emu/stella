@@ -238,6 +238,9 @@ Settings::Settings()
   setPermanent("dbg.logtrace", "false");
   setPermanent("dbg.autosave", "false");
   setPermanent("dbg.script", "");
+  setPermanent("dbg.tiawindow", "false");
+  setPermanent("tiawindow.pos", Common::Point(50, 50));
+  setPermanent("tiawindow.display", 0);
   setPermanent("dis.resolve", "true");
   setPermanent("dis.gfxformat", "2");
   setPermanent("dis.showaddr", "true");

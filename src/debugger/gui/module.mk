@@ -85,6 +85,8 @@ MODULE_OBJS := \
         src/debugger/gui/TiaInfoWidget.o \
         src/debugger/gui/TiaOutputWidget.o \
         src/debugger/gui/TiaWidget.o \
+        src/debugger/gui/TiaWindow.o \
+        src/debugger/gui/TiaWindowDialog.o \
         src/debugger/gui/TiaZoomWidget.o \
         src/debugger/gui/ToggleBitWidget.o \
         src/debugger/gui/TogglePixelWidget.o \

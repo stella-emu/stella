@@ -518,6 +518,26 @@ void FBBackendSDL::refreshDimensions()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt32 FBBackendSDL::windowId() const
+{
+  return myWindow ? SDL_GetWindowID(myWindow) : 0;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FBBackendSDL::setWindowVisible(bool visible)
+{
+  ASSERT_MAIN_THREAD;
+
+  if(myWindow == nullptr)
+    return;
+
+  if(visible)
+    SDL_ShowWindow(myWindow);
+  else
+    SDL_HideWindow(myWindow);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FBBackendSDL::startStretchResize()
 {
   ASSERT_MAIN_THREAD;

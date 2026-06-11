@@ -27,6 +27,7 @@ class Settings;
 class FBSurface;
 class TIASurface;
 class Bezel;
+class DialogContainer;
 
 #ifdef GUI_SUPPORT
   #include "Font.hxx"
@@ -134,6 +135,47 @@ class FrameBuffer
       drawing the TIA, any pending menus, etc.
     */
     void update(UpdateMode mode = UpdateMode::NONE);
+
+    /**
+      Secondary-window support.  In addition to the primary window (launcher /
+      emulation / main debugger), the FrameBuffer can drive one additional
+      window backed by its own FBBackend (e.g. the debugger's companion TIA
+      window).  All other state -- palette, fonts, TIASurface -- is shared, so
+      the secondary window is *not* a separate FrameBuffer; only the window /
+      renderer / surfaces differ.  These methods scope the internal render
+      target switch themselves; callers never see it.
+
+      @param container  The DialogContainer rendered into the secondary window
+      @param title      The secondary window title
+      @param type       The BufferType (geometry/position key) for the window
+      @param size       The secondary window size, in logical UI pixels
+    */
+    FBInitStatus openSecondaryWindow(DialogContainer& container,
+                                     string_view title, BufferType type,
+                                     Common::Size size);
+
+    /**
+      Draw the secondary window's container and present it.  No-op if no
+      secondary window is open.
+    */
+    void renderSecondaryWindow(DialogContainer& container,
+                               UpdateMode mode = UpdateMode::REDRAW);
+
+    /**
+      Hide the secondary window (its backend/surfaces are kept for re-open).
+    */
+    void closeSecondaryWindow();
+
+    /**
+      Whether the secondary window is currently shown.
+    */
+    bool secondaryWindowOpen() const { return mySecondaryActive; }
+
+    /**
+      The platform window ID of the secondary window (0 if none).  Used to
+      route window-specific events to it.
+    */
+    uInt32 secondaryWindowId() const;
 
     /**
       There is a dedicated update method for emulation mode.
@@ -497,12 +539,38 @@ class FrameBuffer
     void setupFonts();
   #endif  // GUI_SUPPORT
 
+    /**
+      Switch the active render target between the primary (0) and secondary (1)
+      window.  This swaps only the per-window state (backend, video mode, buffer
+      type); all shared state (palette, fonts, TIASurface) is unaffected.  The
+      secondary-window methods scope this so the rest of the code always sees
+      the primary target.
+    */
+    void setRenderTarget(int target);
+
+    /**
+      Draw a DialogContainer into the current render target and present it.
+    */
+    void updateContainer(DialogContainer& container, UpdateMode mode);
+
   private:
     // The parent system for the framebuffer
     OSystem& myOSystem;
 
-    // Backend used for all platform-specific graphics operations
+    // Backend used for all platform-specific graphics operations.
+    // This always refers to the *current* render target's backend; the
+    // inactive target's backend is parked in myOtherBackend (see
+    // setRenderTarget()).  Most code only ever sees the primary backend.
     unique_ptr<FBBackend> myBackend;
+
+    // Per-window state for the *inactive* render target, swapped with the live
+    // members (myBackend / myActiveVidMode / myBufferType) by setRenderTarget().
+    // Used to drive a single secondary window (e.g. the debugger's companion
+    // TIA window) without duplicating the shared palette/fonts/TIASurface.
+    unique_ptr<FBBackend> myOtherBackend;
+    int myRenderTarget{0};           // 0 = primary, 1 = secondary
+    bool mySecondaryCreated{false};  // secondary backend has been created
+    bool mySecondaryActive{false};   // secondary window is currently shown
 
     // Indicates the number of times the framebuffer was initialized
     uInt32 myInitializedCount{0};
@@ -539,6 +607,11 @@ class FrameBuffer
 
     // Type of the frame buffer
     BufferType myBufferType{BufferType::None};
+
+    // Parked video mode / buffer type for the inactive render target
+    // (swapped with the live members above by setRenderTarget()).
+    VideoModeHandler::Mode myOtherVidMode;
+    BufferType myOtherBufferType{BufferType::None};
 
     // Deferred interactive-resize state: while the user drags the window
     // border, the current frame is stretched (see deferResize()) and the
