@@ -1096,6 +1096,9 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|ARM64'">true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\..\debugger\gui\TiaDisplayWidget.cxx" />
+    <ClCompile Include="..\..\debugger\gui\TiaWindow.cxx" />
+    <ClCompile Include="..\..\debugger\gui\TiaWindowDialog.cxx" />
     <ClCompile Include="..\..\debugger\TimerMap.cxx">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|ARM64'">true</ExcludedFromBuild>
@@ -2527,6 +2530,9 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|ARM64'">true</ExcludedFromBuild>
     </ClInclude>
+    <ClInclude Include="..\..\debugger\gui\TiaDisplayWidget.hxx" />
+    <ClInclude Include="..\..\debugger\gui\TiaWindow.hxx" />
+    <ClInclude Include="..\..\debugger\gui\TiaWindowDialog.hxx" />
     <ClInclude Include="..\..\debugger\gui\TrakBallWidget.hxx">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|ARM64'">true</ExcludedFromBuild>

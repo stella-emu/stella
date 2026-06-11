@@ -1260,6 +1260,15 @@
     <ClCompile Include="..\..\gui\OverlayMenu.cxx">
       <Filter>Source Files\gui</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\debugger\gui\TiaDisplayWidget.cxx">
+      <Filter>Source Files\debugger\gui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\debugger\gui\TiaWindow.cxx">
+      <Filter>Source Files\debugger\gui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\debugger\gui\TiaWindowDialog.cxx">
+      <Filter>Source Files\debugger\gui</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\emucore\AtariVox.hxx">
@@ -2602,6 +2611,15 @@
     </ClInclude>
     <ClInclude Include="..\..\gui\OverlayMenu.hxx">
       <Filter>Header Files\gui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\debugger\gui\TiaDisplayWidget.hxx">
+      <Filter>Header Files\debugger\gui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\debugger\gui\TiaWindow.hxx">
+      <Filter>Header Files\debugger\gui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\debugger\gui\TiaWindowDialog.hxx">
+      <Filter>Header Files\debugger\gui</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
