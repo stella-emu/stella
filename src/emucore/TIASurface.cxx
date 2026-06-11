@@ -468,19 +468,11 @@ void TIASurface::render(bool shade)
       std::swap(myRGBFramebuffer, myPrevRGBFramebuffer);
 
     const uInt32 renderWidth = myTVSignal->outputWidth();
-    uInt32* rgbIn = myRGBFramebuffer;
-    uInt32 bufofs = 0, screenofsY = 0;
     for(uInt32 y = 0; y < height; ++y)
-    {
-      uInt32 pos = screenofsY;
-      for(uInt32 x = 0; x < renderWidth; ++x, ++bufofs)
-      {
-        rgbIn[bufofs] = out[pos] =
-          PhosphorHandler::getPixel(out[pos], rgbIn[bufofs]);
-        ++pos;
-      }
-      screenofsY += outPitch;
-    }
+      myPhosphorHandler.blendLine(
+          out + static_cast<size_t>(y) * outPitch,
+          myRGBFramebuffer + static_cast<size_t>(y) * renderWidth,
+          renderWidth);
   }
 
   // Draw TIA image

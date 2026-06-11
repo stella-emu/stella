@@ -95,7 +95,7 @@ class AtariNTSC
     //  In_row_width is the number of pixels to get to the next input row.
     //  Out_pitch is the number of *bytes* to get to the next output row.
     void render(const uInt8* atari_in, uInt32 in_width, uInt32 in_height,
-                void* rgb_out, uInt32 out_pitch, uInt32* rgb_in = nullptr);
+                void* rgb_out, uInt32 out_pitch);
 
     // Number of output pixels written by blitter for given input width.
     // Width might be rounded down slightly; use inWidth() on result to
@@ -111,9 +111,6 @@ class AtariNTSC
     // Threaded rendering
     void renderThread(const uInt8* atari_in, uInt32 in_width, uInt32 in_height,
       uInt32 numThreads, uInt32 threadNum, void* rgb_out, uInt32 out_pitch);
-    void renderWithPhosphorThread(const uInt8* atari_in, uInt32 in_width,
-      uInt32 in_height, uInt32 numThreads, uInt32 threadNum, uInt32* rgb_in,
-      void* rgb_out, uInt32 out_pitch);
 
   private:
     static constexpr Int32

@@ -20,32 +20,36 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool PhosphorHandler::initialize(bool enable, int blend)
 {
-  if(myUsePhosphor == enable && std::equal_to()(myPhosphorPercent, blend / 100.F))
+  if(myUsePhosphor == enable && blend >= 0 &&
+     static_cast<uInt32>(blend) == myPhosphorBlend)
     return false;
 
   myUsePhosphor = enable;
-
-  // Precalculate the average colors for the 'phosphor' effect
-  if((myUsePhosphor && blend != -1
-      && std::not_equal_to()(myPhosphorPercent, blend / 100.F))
-      || !myLUTInitialized)
-  {
-    if(blend >= 0 && blend <= 100)
-      myPhosphorPercent = blend / 100.F;
-
-    // Used to calculate an averaged color for the 'phosphor' effect
-    const auto getPhosphor = [&] (const uInt8 c1, uInt8 c2) -> uInt8 {
-      // Use maximum of current and decayed previous values
-      c2 = static_cast<uInt8>(c2 * myPhosphorPercent);
-      if(c1 > c2)  return c1; // raise (assumed immediate)
-      else         return c2; // decay
-    };
-    for(int c = 255; c >= 0; --c)
-      for(int p = 255; p >= 0; --p)
-        ourPhosphorLUT[c][p] = getPhosphor(static_cast<uInt8>(c), static_cast<uInt8>(p));
-    myLUTInitialized = true;
-  }
+  if(blend >= 0 && blend <= 100)
+    myPhosphorBlend = static_cast<uInt32>(blend);
   return true;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void PhosphorHandler::blendLine(uInt32* FORCE_RESTRICT curr,
+                                uInt32* FORCE_RESTRICT prev, uInt32 width) const
+{
+  // Process the lines byte-wise: plain arithmetic (the division is by a
+  // constant) lets the compiler auto-vectorize this loop, unlike the
+  // data-dependent LUT lookups it replaces
+  auto* c = reinterpret_cast<uInt8*>(curr);
+  auto* p = reinterpret_cast<uInt8*>(prev);
+  const uInt32 blend = myPhosphorBlend;
+  const uInt32 len = width * 4;
+
+  for(uInt32 i = 0; i < len; ++i)
+  {
+    // Use maximum of current and decayed previous values
+    const auto decayed = static_cast<uInt8>(p[i] * blend / 100);
+    const uInt8 v = std::max(c[i], decayed);
+    c[i] = v;
+    p[i] = v;
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -72,6 +76,3 @@ string_view PhosphorHandler::toPhosphorName(PhosphorMode type)
 
   return SETTING_NAMES[type];
 }
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-PhosphorHandler::PhosphorLUT PhosphorHandler::ourPhosphorLUT;

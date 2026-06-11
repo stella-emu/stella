@@ -18,7 +18,6 @@
 #ifndef PHOSPHOR_HANDLER_HXX
 #define PHOSPHOR_HANDLER_HXX
 
-#include "FrameBufferConstants.hxx"
 #include "bspf.hxx"
 
 class PhosphorHandler
@@ -41,7 +40,8 @@ class PhosphorHandler
       NumTypes
     };
 
-    static constexpr string_view DEFAULT_BLEND = "50"; // align with myPhosphorPercent!
+    // Align with myPhosphorBlend!
+    static constexpr string_view DEFAULT_BLEND = "50";
 
     PhosphorHandler() = default;
     ~PhosphorHandler() = default;
@@ -54,38 +54,26 @@ class PhosphorHandler
     static string_view toPhosphorName(PhosphorMode type);
 
     /**
-      Used to calculate an averaged color pixel for the 'phosphor' effect.
+      Blend one scanline of the current frame with the persistent phosphor
+      buffer, for the 'phosphor' effect.  Each colour channel becomes
+      max(current, previous * blend%); both lines receive the result (the
+      current line for display, the phosphor line as next frame's state).
+      All four bytes of each pixel are blended; the unused/alpha byte is
+      zero in all TV pipeline output and ignored by the TIA surface.
 
-      @param c  RGB Color 1 (current frame)
-      @param p  RGB Color 2 (previous frame)
-
-      @return  Averaged value of the two RGB colors
+      @param curr   Current frame line (also receives the blended result)
+      @param prev   Persistent phosphor line (also receives the blended result)
+      @param width  Width of the lines, in pixels
     */
-    static constexpr uInt32 getPixel(const uInt32 c, const uInt32 p)
-    {
-      // Mix current calculated frame with previous displayed frame
-      const auto rc = static_cast<uInt8>(c),
-                 gc = static_cast<uInt8>(c >> 8),
-                 bc = static_cast<uInt8>(c >> 16),
-                 rp = static_cast<uInt8>(p),
-                 gp = static_cast<uInt8>(p >> 8),
-                 bp = static_cast<uInt8>(p >> 16);
-
-      return  ourPhosphorLUT[rc][rp] | (ourPhosphorLUT[gc][gp] << 8) |
-              (ourPhosphorLUT[bc][bp] << 16);
-    }
+    void blendLine(uInt32* FORCE_RESTRICT curr, uInt32* FORCE_RESTRICT prev,
+                   uInt32 width) const;
 
   private:
     // Use phosphor effect
     bool myUsePhosphor{false};
 
-    // Amount to blend when using phosphor effect
-    float myPhosphorPercent{0.50F};
-    bool myLUTInitialized{false};
-
-    // Precalculated averaged phosphor colors
-    using PhosphorLUT = BSPF::array2D<uInt8, kColor, kColor>;
-    static PhosphorLUT ourPhosphorLUT;
+    // Percentage of the previous frame retained when blending (0 - 100)
+    uInt32 myPhosphorBlend{50};
 
   private:
     PhosphorHandler(const PhosphorHandler&) = delete;

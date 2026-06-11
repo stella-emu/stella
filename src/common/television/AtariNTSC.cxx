@@ -15,11 +15,9 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#include <cstring>
 #include <thread>
 
 #include "AtariNTSC.hxx"
-#include "PhosphorHandler.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void AtariNTSC::initialize(const Setup& setup)
@@ -93,34 +91,24 @@ void AtariNTSC::enableThreading(bool enable)
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void AtariNTSC::render(const uInt8* atari_in, uInt32 in_width, uInt32 in_height,
-                       void* rgb_out, uInt32 out_pitch, uInt32* rgb_in)
+                       void* rgb_out, uInt32 out_pitch)
 {
   // Spawn the threads...
   for(uInt32 i = 0; i < myWorkerThreads; ++i)
   {
-    myThreads[i] = std::thread([rgb_in, atari_in, in_width, in_height,
+    myThreads[i] = std::thread([atari_in, in_width, in_height,
                                 i, rgb_out, out_pitch, this]
     {
-      rgb_in == nullptr
-        ? renderThread(atari_in, in_width, in_height, myTotalThreads,
-                       i+1, rgb_out, out_pitch)
-        : renderWithPhosphorThread(atari_in, in_width, in_height, myTotalThreads,
-                                   i+1, rgb_in, rgb_out, out_pitch);
+      renderThread(atari_in, in_width, in_height, myTotalThreads,
+                   i+1, rgb_out, out_pitch);
     });
   }
   // Make the main thread busy too
-  rgb_in == nullptr
-    ? renderThread(atari_in, in_width, in_height, myTotalThreads, 0,
-                   rgb_out, out_pitch)
-    : renderWithPhosphorThread(atari_in, in_width, in_height, myTotalThreads,
-                               0, rgb_in, rgb_out, out_pitch);
+  renderThread(atari_in, in_width, in_height, myTotalThreads, 0,
+               rgb_out, out_pitch);
   // ...and make them join again
   for(uInt32 i = 0; i < myWorkerThreads; ++i)
     myThreads[i].join();
-
-  // Copy phosphor values into out buffer
-  if(rgb_in != nullptr)
-    std::memcpy(rgb_out, rgb_in, static_cast<size_t>(in_height) * out_pitch);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -190,123 +178,6 @@ void AtariNTSC::renderThread(const uInt8* atari_in, uInt32 in_width,
 #if 0
     ATARI_NTSC_RGB_OUT_8888(5, line_out[5])
     ATARI_NTSC_RGB_OUT_8888(6, line_out[6])
-#endif
-
-    atari_in += in_width;
-    rgb_out = static_cast<char*>(rgb_out) + out_pitch;
-  }
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void AtariNTSC::renderWithPhosphorThread(const uInt8* atari_in, uInt32 in_width,
-  uInt32 in_height, uInt32 numThreads, uInt32 threadNum, uInt32* rgb_in,
-  void* rgb_out, uInt32 out_pitch)
-{
-  // Adapt parameters to thread number
-  const uInt32 yStart = in_height * threadNum / numThreads;
-  const uInt32 yEnd = in_height * (threadNum + 1) / numThreads;
-  uInt32 bufofs = AtariNTSC::outWidth(in_width) * yStart;
-  const uInt32* out = static_cast<uInt32*>(rgb_out);
-  atari_in += static_cast<size_t>(in_width) * yStart;
-  rgb_out = static_cast<char*>(rgb_out) + static_cast<size_t>(out_pitch) * yStart;
-
-  uInt32 const chunk_count = (in_width - 1) / PIXEL_in_chunk;
-
-  for(uInt32 y = yStart; y < yEnd; ++y)
-  {
-    const uInt8* line_in = atari_in;
-    ATARI_NTSC_BEGIN_ROW(NTSC_black, line_in[0]);
-    auto* FORCE_RESTRICT line_out = static_cast<uInt32*>(rgb_out);
-    ++line_in;
-
-    // shift right by 2 pixel
-    line_out[0] = line_out[1] = 0;
-    line_out += 2;
-
-    for(uInt32 n = chunk_count; n; --n)
-    {
-      // order of input and output pixels must not be altered
-      ATARI_NTSC_COLOR_IN(0, line_in[0])
-      ATARI_NTSC_RGB_OUT_8888(0, line_out[0])
-      ATARI_NTSC_RGB_OUT_8888(1, line_out[1])
-      ATARI_NTSC_RGB_OUT_8888(2, line_out[2])
-      ATARI_NTSC_RGB_OUT_8888(3, line_out[3])
-
-      ATARI_NTSC_COLOR_IN(1, line_in[1])
-      ATARI_NTSC_RGB_OUT_8888(4, line_out[4])
-      ATARI_NTSC_RGB_OUT_8888(5, line_out[5])
-      ATARI_NTSC_RGB_OUT_8888(6, line_out[6])
-
-      line_in += 2;
-      line_out += 7;
-    }
-
-    // finish final pixels
-    ATARI_NTSC_COLOR_IN(0, line_in[0])
-    ATARI_NTSC_RGB_OUT_8888(0, line_out[0])
-    ATARI_NTSC_RGB_OUT_8888(1, line_out[1])
-    ATARI_NTSC_RGB_OUT_8888(2, line_out[2])
-    ATARI_NTSC_RGB_OUT_8888(3, line_out[3])
-
-    ATARI_NTSC_COLOR_IN(1, NTSC_black)
-    ATARI_NTSC_RGB_OUT_8888(4, line_out[4])
-    ATARI_NTSC_RGB_OUT_8888(5, line_out[5])
-    ATARI_NTSC_RGB_OUT_8888(6, line_out[6])
-
-    line_out += 7;
-
-    ATARI_NTSC_COLOR_IN(0, NTSC_black)
-    ATARI_NTSC_RGB_OUT_8888(0, line_out[0])
-    ATARI_NTSC_RGB_OUT_8888(1, line_out[1])
-    ATARI_NTSC_RGB_OUT_8888(2, line_out[2])
-    ATARI_NTSC_RGB_OUT_8888(3, line_out[3])
-
-    ATARI_NTSC_COLOR_IN(1, NTSC_black)
-    ATARI_NTSC_RGB_OUT_8888(4, line_out[4])
-#if 0
-    ATARI_NTSC_RGB_OUT_8888(5, line_out[5])
-    ATARI_NTSC_RGB_OUT_8888(6, line_out[6])
-#endif
-
-    // Do phosphor mode (blend the resulting frames)
-    // Note: The unrolled code assumed that AtariNTSC::outWidth(kTIAW) == outPitch == 565
-    // Now this got changed to 568 so the final 5 calculations got removed.
-    for (uInt32 x = AtariNTSC::outWidth(in_width) / 8; x; --x)
-    {
-      // Store back into displayed frame buffer (for next frame)
-      rgb_in[bufofs] = PhosphorHandler::getPixel(out[bufofs], rgb_in[bufofs]);
-      ++bufofs;
-      rgb_in[bufofs] = PhosphorHandler::getPixel(out[bufofs], rgb_in[bufofs]);
-      ++bufofs;
-      rgb_in[bufofs] = PhosphorHandler::getPixel(out[bufofs], rgb_in[bufofs]);
-      ++bufofs;
-      rgb_in[bufofs] = PhosphorHandler::getPixel(out[bufofs], rgb_in[bufofs]);
-      ++bufofs;
-      rgb_in[bufofs] = PhosphorHandler::getPixel(out[bufofs], rgb_in[bufofs]);
-      ++bufofs;
-      rgb_in[bufofs] = PhosphorHandler::getPixel(out[bufofs], rgb_in[bufofs]);
-      ++bufofs;
-      rgb_in[bufofs] = PhosphorHandler::getPixel(out[bufofs], rgb_in[bufofs]);
-      ++bufofs;
-      rgb_in[bufofs] = PhosphorHandler::getPixel(out[bufofs], rgb_in[bufofs]);
-      ++bufofs;
-    }
-    // finish final 565 % 8 = 5 pixels
-    /*rgb_in[bufofs] = PhosphorHandler::getPixel(out[bufofs], rgb_in[bufofs]);
-    ++bufofs;
-    rgb_in[bufofs] = PhosphorHandler::getPixel(out[bufofs], rgb_in[bufofs]);
-    ++bufofs;
-    rgb_in[bufofs] = PhosphorHandler::getPixel(out[bufofs], rgb_in[bufofs]);
-    ++bufofs;
-    rgb_in[bufofs] = PhosphorHandler::getPixel(out[bufofs], rgb_in[bufofs]);
-    ++bufofs;
-    rgb_in[bufofs] = PhosphorHandler::getPixel(out[bufofs], rgb_in[bufofs]);
-    ++bufofs;*/
-#if 0
-    rgb_in[bufofs] = PhosphorHandler::getPixel(out[bufofs], rgb_in[bufofs]);
-    ++bufofs;
-    rgb_in[bufofs] = PhosphorHandler::getPixel(out[bufofs], rgb_in[bufofs]);
-    ++bufofs;
 #endif
 
     atari_in += in_width;
