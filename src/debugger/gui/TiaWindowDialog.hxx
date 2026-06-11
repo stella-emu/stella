@@ -20,14 +20,15 @@
 
 class OSystem;
 class DialogContainer;
-class TiaZoomWidget;
+class TiaDisplayWidget;
 
 #include "Dialog.hxx"
 
 /**
-  The base dialog of the debugger's companion TIA window.  For now it simply
-  fills the window with a TiaZoomWidget (pan/zoom inspection of the TIA image);
-  additional debugger widgets will be added here later.
+  The base dialog of the debugger's companion TIA window.  It hosts a
+  TiaDisplayWidget (a scalable, zoom/pan-able palette+phosphor view of the TIA
+  image); additional debugger controls will be added here later.  As a Dialog
+  it is a CommandSender/receiver, so those controls can drive the debugger.
 
   @author  Stephen Anthony
 */
@@ -41,7 +42,7 @@ class TiaWindowDialog : public Dialog
     void loadConfig() override;
 
   private:
-    TiaZoomWidget* myTiaZoom{nullptr};
+    TiaDisplayWidget* myTiaDisplay{nullptr};
 
   private:
     // Following constructors and assignment operators not supported

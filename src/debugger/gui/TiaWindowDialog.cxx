@@ -16,7 +16,7 @@
 //============================================================================
 
 #include "Widget.hxx"
-#include "TiaZoomWidget.hxx"
+#include "TiaDisplayWidget.hxx"
 #include "TiaWindowDialog.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -25,13 +25,13 @@ TiaWindowDialog::TiaWindowDialog(OSystem& osystem, DialogContainer& parent,
   : Dialog(osystem, parent, x, y, w, h)
 {
   constexpr int border = 2;
-  myTiaZoom = new TiaZoomWidget(this, _font, border, border,
-                                w - 2 * border, h - 2 * border);
-  addToFocusList(myTiaZoom->getFocusList());
+  myTiaDisplay = new TiaDisplayWidget(this, _font, border, border,
+                                      w - 2 * border, h - 2 * border);
+  addToFocusList(myTiaDisplay->getFocusList());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TiaWindowDialog::loadConfig()
 {
-  myTiaZoom->loadConfig();
+  myTiaDisplay->loadConfig();
 }
