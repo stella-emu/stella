@@ -31,6 +31,15 @@ namespace {
       ? ScalingInterpolation::blur
       : ScalingInterpolation::sharp;
   }
+
+  // Average two RGB pixel rows per colour channel (phosphor snapshots);
+  // restrict parameters let the compiler vectorize the loop
+  void averageRow(uInt32* FORCE_RESTRICT dst, const uInt32* FORCE_RESTRICT cur,
+                  const uInt32* FORCE_RESTRICT prev, uInt32 width)
+  {
+    for(uInt32 x = 0; x < width; ++x)
+      dst[x] = (((cur[x] ^ prev[x]) >> 1) & 0x7F7F7FU) + (cur[x] & prev[x]);
+  }
 }  // namespace
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -501,7 +510,6 @@ void TIASurface::render(bool shade)
 void TIASurface::renderForSnapshot()
 {
   const uInt32 height = myTIA->height();
-  uInt32 pos{0};
   uInt32 *outPtr{nullptr}, outPitch{0};
   myTiaSurface->basePtr(outPtr, outPitch);
 
@@ -509,25 +517,20 @@ void TIASurface::renderForSnapshot()
 
   if(myPhosphorHandler.phosphorEnabled())
   {
+    // Average the current and previous phosphor states into the snapshot image
     const uInt32 renderWidth = myTVSignal->outputWidth();
-    uInt32 bufofs = 0, screenofsY = 0;
     for(uInt32 y = 0; y < height; ++y)
-    {
-      pos = screenofsY;
-      for(uInt32 x = 0; x < renderWidth; ++x)
-        outPtr[pos++] = averageBuffers(bufofs++);
-      screenofsY += outPitch;
-    }
-  }
-  else
-    render();
+      averageRow(outPtr + static_cast<size_t>(y) * outPitch,
+                 myRGBFramebuffer + static_cast<size_t>(y) * renderWidth,
+                 myPrevRGBFramebuffer + static_cast<size_t>(y) * renderWidth,
+                 renderWidth);
 
-  if(myPhosphorHandler.phosphorEnabled())
-  {
     myTiaSurface->render();
     if(myScanlinesEnabled)
       mySLineSurface->render();
   }
+  else
+    render();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

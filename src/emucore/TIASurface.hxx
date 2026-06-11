@@ -211,13 +211,6 @@ class TIASurface
     };
 
   private:
-    // Average current and previous RGB framebuffer pixels at the given offset.
-    FORCE_INLINE uInt32 averageBuffers(uInt32 bufOfs) const {
-      const uInt32 c = myRGBFramebuffer[bufOfs];
-      const uInt32 p = myPrevRGBFramebuffer[bufOfs];
-      return (((c ^ p) >> 1) & 0x7F7F7FU) + (c & p);
-    }
-
     // Is plain video mode enabled?
     bool correctAspect() const;
 
