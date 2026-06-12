@@ -322,16 +322,10 @@ FBInitStatus FrameBuffer::createDisplay(string_view title, BufferType type,
         break;
 
       default: // PhosphorHandler::ByRom
-      {
-        const string_view ppblend =
-          myOSystem.console().properties().get(PropType::Display_PPBlend);
         enable = myOSystem.console().properties().get(PropType::Display_Phosphor) == "YES";
-        p_blend = ppblend.empty()
-          ? myOSystem.settings().getInt(PhosphorHandler::SETTING_BLEND)
-          : BSPF::stoi(ppblend);
+        p_blend = BSPF::stoi(myOSystem.console().properties().get(PropType::Display_PPBlend));
         myOSystem.console().tia().enableAutoPhosphor(false);
         break;
-      }
     }
     myTIASurface->enablePhosphor(enable, p_blend);
   }

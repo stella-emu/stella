@@ -433,6 +433,12 @@ string OSystem::createConsole(const FSNode& rom, string_view md5sum, bool newrom
     mySettings->setValue("romloadcount", -1); // we move to the next game initially
   }
 
+  // Seed the default phosphor blend from the current global 'tv.phosblend',
+  // so a ROM whose 'Display.PPBlend' is unset inherits it when its properties
+  // are loaded below
+  Properties::setDefault(PropType::Display_PPBlend,
+                         mySettings->getString(PhosphorHandler::SETTING_BLEND));
+
   // Create an instance of the 2600 game console
   myEventHandler->handleConsoleStartupEvents();
   try

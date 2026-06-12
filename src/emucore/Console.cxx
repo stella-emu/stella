@@ -652,14 +652,9 @@ void Console::cyclePhosphorMode(int direction)
         break;
 
       default: // PhosphorHandler::ByRom
-      {
-        string_view ppblend = myProperties.get(PropType::Display_PPBlend);
-        const int blend = ppblend.empty()
-          ? myOSystem.settings().getInt(PhosphorHandler::SETTING_BLEND)
-          : BSPF::stoi(ppblend);
         myOSystem.frameBuffer().tiaSurface().enablePhosphor(
-          myProperties.get(PropType::Display_Phosphor) == "YES", blend);
-      }
+          myProperties.get(PropType::Display_Phosphor) == "YES",
+          BSPF::stoi(myProperties.get(PropType::Display_PPBlend)));
         myTIA->enableAutoPhosphor(false);
         break;
     }
@@ -674,10 +669,7 @@ void Console::cyclePhosphorMode(int direction)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Console::changePhosphor(int direction)
 {
-  string_view ppblend = myProperties.get(PropType::Display_PPBlend);
-  int blend = ppblend.empty()
-    ? myOSystem.settings().getInt(PhosphorHandler::SETTING_BLEND)
-    : BSPF::stoi(ppblend);
+  int blend = BSPF::stoi(myProperties.get(PropType::Display_PPBlend));
 
   if(direction)
   {
