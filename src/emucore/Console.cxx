@@ -926,6 +926,7 @@ void Console::setControllers(string_view romMd5)
   }
 
   myTIA->bindToControllers();
+  myRiot->bindToControllers();
 
   // Now that we know the controllers, enable the event mappings
   myOSystem.eventHandler().enableEmulationKeyMappings();

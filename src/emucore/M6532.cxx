@@ -77,8 +77,9 @@ void M6532::reset()
   myPA7LastStable = true;
 
   // Let the controllers know about the reset
-  myConsole.leftController().reset();
-  myConsole.rightController().reset();
+  bindToControllers();
+  myLeftPort->reset();
+  myRightPort->reset();
 
 #ifdef DEBUGGER_SUPPORT
   createAccessBases();
@@ -89,9 +90,16 @@ void M6532::reset()
 void M6532::update()
 {
   // Update entire port state
-  myConsole.leftController().update();
-  myConsole.rightController().update();
+  myLeftPort->update();
+  myRightPort->update();
   myConsole.switches().update();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void M6532::bindToControllers()
+{
+  myLeftPort = &myConsole.leftController();
+  myRightPort = &myConsole.rightController();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -102,7 +110,7 @@ FORCE_INLINE bool M6532::samplePA7Raw() const
     return (myOutA & 0x80) != 0;
 
   // Otherwise sample external input
-  return myConsole.leftController().getPin(Controller::DigitalPin::Four);
+  return myLeftPort->getPin(Controller::DigitalPin::Four);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -202,9 +210,8 @@ void M6532::installDelegate(System& system, Device& device)
   //    (addr & 0x0300) == 0x0100 is Stack  (A8 is 1, A9 is 0)
   //    (addr & 0x0300) == 0x0000 is ZP RAM (A8 is 0, A9 is 0)
   for(uInt16 addr = 0; addr < 0x1000; addr += System::PAGE_SIZE)
-    if((addr & 0x0080) == 0x0080) {
+    if((addr & 0x0080) == 0x0080)
       mySystem->setPageAccess(addr, access);
-    }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -222,8 +229,7 @@ uInt8 M6532::peek(uInt16 addr)
   {
     case 0x00:    // SWCHA - Port A I/O Register (Joystick)
     {
-      const uInt8 value = (myConsole.leftController().read() << 4) |
-                           myConsole.rightController().read();
+      const uInt8 value = (myLeftPort->read() << 4) | myRightPort->read();
 
       // Each pin is high (1) by default and will only go low (0) if either
       //  (a) External device drives the pin low
@@ -359,7 +365,8 @@ void M6532::setTimerRegister(uInt8 value, uInt8 interval)
   mySubTimer = myDivider - 1;
 
   // Interrupt timer flag is cleared (and invalid) when writing to the timer
-  if (!myWrappedThisCycle) myInterruptFlag &= ~TimerBit;
+  if(!myWrappedThisCycle)
+    myInterruptFlag &= ~TimerBit;
 #ifdef DEBUGGER_SUPPORT
   myTimWrappedOnWrite = myWrappedThisCycle;
 #endif
@@ -380,24 +387,21 @@ void M6532::setPinState(bool swcha)
       if(DDR bit is input)       set output as 1
       else if(DDR bit is output) set output as bit in ORA
   */
-  Controller& lport = myConsole.leftController();
-  Controller& rport = myConsole.rightController();
-
   const uInt8 ioport = myOutA | ~myDDRA;
 
-  lport.write(Controller::DigitalPin::One,   ioport & 0b00010000);
-  lport.write(Controller::DigitalPin::Two,   ioport & 0b00100000);
-  lport.write(Controller::DigitalPin::Three, ioport & 0b01000000);
-  lport.write(Controller::DigitalPin::Four,  ioport & 0b10000000);
-  rport.write(Controller::DigitalPin::One,   ioport & 0b00000001);
-  rport.write(Controller::DigitalPin::Two,   ioport & 0b00000010);
-  rport.write(Controller::DigitalPin::Three, ioport & 0b00000100);
-  rport.write(Controller::DigitalPin::Four,  ioport & 0b00001000);
+  myLeftPort->write (Controller::DigitalPin::One,   ioport & 0b00010000);
+  myLeftPort->write (Controller::DigitalPin::Two,   ioport & 0b00100000);
+  myLeftPort->write (Controller::DigitalPin::Three, ioport & 0b01000000);
+  myLeftPort->write (Controller::DigitalPin::Four,  ioport & 0b10000000);
+  myRightPort->write(Controller::DigitalPin::One,   ioport & 0b00000001);
+  myRightPort->write(Controller::DigitalPin::Two,   ioport & 0b00000010);
+  myRightPort->write(Controller::DigitalPin::Three, ioport & 0b00000100);
+  myRightPort->write(Controller::DigitalPin::Four,  ioport & 0b00001000);
 
   if(swcha)
   {
-    lport.controlWrite(ioport);
-    rport.controlWrite(ioport);
+    myLeftPort->controlWrite(ioport);
+    myRightPort->controlWrite(ioport);
   }
 }
 
