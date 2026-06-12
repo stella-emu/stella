@@ -33,6 +33,8 @@ CartridgeCM::CartridgeCM(ByteSpan image, string_view md5,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeCM::reset()
 {
+  Cartridge::reset();
+
   initializeRAM(myRAM);
 
   // On powerup, the last bank of ROM is enabled and RAM is disabled

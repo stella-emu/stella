@@ -694,6 +694,7 @@ void FBBackendSDL::clear()
 {
   ASSERT_MAIN_THREAD;
 
+  SDL_SetRenderDrawColor(myRenderer, 0, 0, 0, 255);
   SDL_RenderClear(myRenderer);
 }
 

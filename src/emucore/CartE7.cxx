@@ -48,6 +48,8 @@ void CartridgeE7::initialize(ByteSpan image)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeE7::reset()
 {
+  Cartridge::reset();
+
   initializeRAM(myRAM);
 
   initializeStartBank(0);

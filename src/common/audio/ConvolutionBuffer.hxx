@@ -23,32 +23,32 @@
 class ConvolutionBuffer
 {
   public:
+    // The buffer is mirrored: each value is stored twice, mySize apart, so
+    // the convolution can always read a contiguous window without wrapping.
     explicit ConvolutionBuffer(uInt32 size)
-      : myData{std::make_unique<float[]>(size)},
+      : myData{std::make_unique<float[]>(static_cast<size_t>(size) * 2)},
         mySize{size} { }
 
     ~ConvolutionBuffer() = default;
 
     void shift(float nextValue) {
-      myData[myFirstIndex] = nextValue;
-      myFirstIndex = (myFirstIndex + 1) % mySize;
+      myData[myFirstIndex] = myData[myFirstIndex + mySize] = nextValue;
+      if(++myFirstIndex == mySize) myFirstIndex = 0;
     }
 
     float convoluteWith(const float* kernel) const {
+      const float* data = myData.get() + myFirstIndex;
       float result = 0.F;
 
       for(uInt32 i = 0; i < mySize; ++i)
-        result += kernel[i] * myData[(myFirstIndex + i) % mySize];
+        result += kernel[i] * data[i];
 
       return result;
     }
 
   private:
-
     unique_ptr<float[]> myData;
-
     uInt32 myFirstIndex{0};
-
     uInt32 mySize{0};
 
   private:
@@ -57,7 +57,6 @@ class ConvolutionBuffer
     ConvolutionBuffer(ConvolutionBuffer&&) = delete;
     ConvolutionBuffer& operator=(const ConvolutionBuffer&) = delete;
     ConvolutionBuffer& operator=(ConvolutionBuffer&&) = delete;
-
 };
 
 #endif  // CONVOLUTION_BUFFER_HXX

@@ -169,7 +169,8 @@ bool OSystem::initialize(const Settings::Options& options)
   createSound();
 
   // Create random number generator
-  myRandom = std::make_unique<Random>(static_cast<uInt32>(TimerManager::getTicks()));
+  const int seed = mySettings->getInt("seed");
+  myRandom = std::make_unique<Random>(seed ? seed : static_cast<uInt32>(TimerManager::getTicks()));
 
 #ifdef CHEATCODE_SUPPORT
   myCheatManager = std::make_unique<CheatManager>(*this);
@@ -431,6 +432,12 @@ string OSystem::createConsole(const FSNode& rom, string_view md5sum, bool newrom
     // based on how many power-cycles they've been through since plugged in
     mySettings->setValue("romloadcount", -1); // we move to the next game initially
   }
+
+  // Seed the default phosphor blend from the current global 'tv.phosblend',
+  // so a ROM whose 'Display.PPBlend' is unset inherits it when its properties
+  // are loaded below
+  Properties::setDefault(PropType::Display_PPBlend,
+                         mySettings->getString(PhosphorHandler::SETTING_BLEND));
 
   // Create an instance of the 2600 game console
   myEventHandler->handleConsoleStartupEvents();

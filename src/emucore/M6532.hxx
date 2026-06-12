@@ -19,6 +19,7 @@
 #define M6532_HXX
 
 class ConsoleIO;
+class Controller;
 class RiotDebug;
 class System;
 class Settings;
@@ -62,6 +63,14 @@ class M6532 : public Device
       Update the entire digital and analog pin state of ports A and B.
     */
     void update();
+
+    /**
+      Cache direct pointers to both controllers. Invoked on reset and from
+      Console::setControllers() whenever the controller objects are replaced.
+      PA7 edge detection samples the left port on every RIOT access, so it
+      must not pay for a virtual ConsoleIO::leftController() lookup there.
+    */
+    void bindToControllers();
 
     /**
       Install 6532 in the specified system.  Invoked by the system
@@ -189,6 +198,11 @@ class M6532 : public Device
 
     // Reference to the settings
     const Settings& mySettings;
+
+    // Direct pointers to the connected controllers, refreshed on reset and
+    // whenever the controller objects are replaced (Console::setControllers)
+    Controller* myLeftPort{nullptr};
+    Controller* myRightPort{nullptr};
 
     // An amazing 128 bytes of RAM
     std::array<uInt8, 128> myRAM{};

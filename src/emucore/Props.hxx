@@ -111,6 +111,18 @@ class Properties
     void set(PropType key, string_view value);
 
     /**
+      Override the default value for the given key at runtime.  Properties
+      created or loaded afterwards use this as the key's default, and a value
+      equal to it is treated as unset (not saved).  Used to seed the default
+      'Display.PPBlend' from the global 'tv.phosblend', so that a ROM with no
+      stored blend transparently inherits it.
+
+      @param key    The key whose default should be overridden
+      @param value  The new default value
+    */
+    static void setDefault(PropType key, string_view value);
+
+    /**
       Print the attributes of this properties object
     */
     void print() const;
@@ -146,6 +158,12 @@ class Properties
     static PropType getPropType(string_view name);
 
     /**
+      Get the effective default for a property slot: the runtime override
+      set via setDefault() if present, otherwise the compiled-in default.
+    */
+    static string_view defaultValue(size_t pos);
+
+    /**
       When printing each collection of ROM properties, it is useful to
       see which columns correspond to the output fields; this method
       provides that output.
@@ -155,6 +173,11 @@ class Properties
   private:
     // The array of properties for this instance (mutable runtime values)
     std::array<string, NUM_PROPS> myProperties;
+
+    // Runtime default overrides set via setDefault(); an empty entry means
+    // "use ourDefaultProperties".  Default-constructed (all empty), so no
+    // throwing static initialization.  Currently only 'Display.PPBlend'.
+    inline static std::array<string, NUM_PROPS> ourDefaultOverrides;
 
     // Default property values — constexpr string_view, no heap allocation
     static constexpr std::array<string_view, NUM_PROPS> ourDefaultProperties = {{

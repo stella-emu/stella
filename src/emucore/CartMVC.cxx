@@ -1660,6 +1660,8 @@ void CartridgeMVC::install(System& system)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeMVC::reset()
 {
+  Cartridge::reset();
+
   myMovie->init(myPath);
 }
 

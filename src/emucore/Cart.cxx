@@ -29,17 +29,16 @@
 Cartridge::Cartridge(const Settings& settings, string_view md5)
   : mySettings{settings}
 {
-  const uInt32 seed =
-    BSPF::stoi<16>(md5.substr(0, 8))  ^ BSPF::stoi<16>(md5.substr(8, 8)) ^
-    BSPF::stoi<16>(md5.substr(16, 8)) ^ BSPF::stoi<16>(md5.substr(24, 8));
-
-  const Random rand(seed);
-  for(uInt32 i = 0; i < 256; ++i)
-    myRWPRandomValues[i] = rand.next();
-
   const bool devSettings = mySettings.getBool("dev.settings");
   myRandomHotspots = devSettings ? mySettings.getBool("dev.randomhs") : false;
   myRamReadAccesses.reserve(5);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Cartridge::reset()
+{
+  for(uInt32 i = 0; i < 256; ++i)
+    myRWPRandomValues[i] = mySystem->randGenerator().next();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

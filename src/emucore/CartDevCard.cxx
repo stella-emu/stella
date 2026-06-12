@@ -32,6 +32,8 @@ CartridgeDevCard::CartridgeDevCard(ByteSpan image, string_view md5,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeDevCard::reset()
 {
+  Cartridge::reset();
+
   myRAM = myImage;
 }
 

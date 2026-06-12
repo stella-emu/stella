@@ -357,6 +357,10 @@ PaletteArray PaletteHandler::adjustedPalette(const PaletteArray& palette) const
   const float brightness = myBrightness * (0.5F * RGB_UNIT) + RGB_OFFSET;
   const float contrast = myContrast * (0.5F * RGB_UNIT) + RGB_UNIT;
   const float saturation = mySaturation + 1;
+  // The hue/saturation transform is identical for every palette entry,
+  // so compute the trigonometry once outside the loop
+  const float su = saturation * cosf(-hue * BSPF::PI_f);
+  const float sw = saturation * sinf(-hue * BSPF::PI_f);
   const float gamma = 1.1333F - myGamma * 0.5F;
   /* match common PC's 2.2 gamma to TV's 2.65 gamma */
   constexpr float toFloat = 1.F / (ADJUST_SIZE - 1);
@@ -374,7 +378,7 @@ PaletteArray PaletteHandler::adjustedPalette(const PaletteArray& palette) const
     int b = (pixel >> 0)  & 0xff;
 
     // Adjust hue (different for NTSC and PAL?) and saturation
-    adjustHueSaturation(r, g, b, hue, saturation);
+    adjustHueSaturation(r, g, b, su, sw);
 
     // Adjust contrast, brightness, gamma
     r = adjust[r];
@@ -552,13 +556,11 @@ void PaletteHandler::generateCustomPalette(ConsoleTiming timing) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PaletteHandler::adjustHueSaturation(int& R, int& G, int& B, float H, float S)
+void PaletteHandler::adjustHueSaturation(int& R, int& G, int& B, float su, float sw)
 {
   // Adapted from http://beesbuzz.biz/code/16-hsv-color-transforms
   // (C) J. Fluffy Shagam
   // License: CC BY-SA 4.0
-  const float su = S * cosf(-H * BSPF::PI_f);
-  const float sw = S * sinf(-H * BSPF::PI_f);
   const float r = (.299F + .701F * su + .168F * sw) * R
                 + (.587F - .587F * su + .330F * sw) * G
                 + (.114F - .114F * su - .497F * sw) * B;

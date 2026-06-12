@@ -89,6 +89,8 @@ CartridgeAR::CartridgeAR(ByteSpan biosImage, vector<float> pcmData,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeAR::reset()
 {
+  Cartridge::reset();
+
   // Zero the RAM banks; preserve the ROM area (real BIOS in sound-load mode,
   // or rewritten by initializeROM() in fast-load mode)
   std::fill(myImage.begin(), myImage.begin() + RAM_SIZE, 0);

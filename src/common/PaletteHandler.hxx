@@ -153,7 +153,7 @@ class PaletteHandler
       Convert angles
     */
     static constexpr float scaleFromAngles(float x) { return x / 10.F; }
-    static constexpr Int32 scaleToAngles(float x) { return static_cast<uInt32>(10.F * x); }
+    static constexpr Int32 scaleToAngles(float x) { return static_cast<Int32>(10.F * x); }
 
     /**
       Convert adjustables from/to 100% scale
@@ -223,13 +223,13 @@ class PaletteHandler
     /**
       Adjust hue and saturation for given RGB values.
 
-      @param R  The red value to adjust
-      @param G  The green value to adjust
-      @param B  The blue value to adjust
-      @param H  The hue adjustment value
-      @param S  The saturation
+      @param R   The red value to adjust
+      @param G   The green value to adjust
+      @param B   The blue value to adjust
+      @param su  Hue/saturation matrix coefficient (saturation * cos(hue angle))
+      @param sw  Hue/saturation matrix coefficient (saturation * sin(hue angle))
     */
-    static void adjustHueSaturation(int& R, int& G, int& B, float H, float S);
+    static void adjustHueSaturation(int& R, int& G, int& B, float su, float sw);
 
     /**
       Rotate a 2D vector.

@@ -75,7 +75,7 @@
 
   <br><br><br>
 
-  <center><b>February 1999 - September 2024</b></center>
+  <center><b>February 1999 - September 2026</b></center>
     <center><b>The Stella Team</b></center>
   <center><b><a href="https://stella-emu.github.io">Stella Homepage</a></b></center>
 
@@ -281,8 +281,8 @@
     <li>Emulates the Atari 2600 Keyboard controllers using your computer's keyboard</li>
     <li>Emulates <a href="https://en.wikipedia.org/wiki/CompuMate">Spectravideo CompuMate</a> system using your computer's keyboard,
       including mapping of CompuMate 'Backspace', 'Space' and 'Enter' functionality to
-      to the actual keys on your keyboard</li>
-    <li>Emulates the Kid Vid Voice Module</li>
+      to the actual keys on your keyboard, and loading/saving tape images in BIN format</li>
+    <li>Emulates the Kid Vid Voice Module, including playback of WAV files from original tapes</li>
     <li>Supports autodetection for most common controller types</li>
     <li>Support for real Atari 2600 controllers using the
       <a href="http://www.grandideastudio.com/stelladaptor-2600">Stelladaptor</a> and
@@ -299,7 +299,7 @@
     <li>Supports cartridge autodetection for almost all bankswitching schemes</li>
     <li>Supports using ROM filename extensions to force specific bankswitching schemes</li>
     <li>Supports using ROM filename to force specific display formats</li>
-    <li>Supports Supercharger single-load and multi-load games</li>
+    <li>Supports Supercharger single-load and multi-load games, including those in MP3 and WAV format</li>
     <li>Supports the usual raw A26/BIN/ROM formats, also when stored in ZIP files</li>
     <li>Supports property file for setting the properties associated with games</li>
     <li>Supports the NTSC, PAL and SECAM television standards in 50Hz and 60Hz mode</li>
@@ -353,10 +353,10 @@
 
   <p>
   <h3><b><u>Linux/UNIX</u></b></h3>
-  <p>The Linux version of Stella is designed to work on a Linux Workstation with
+  <p>The Linux version of Stella is designed to work on any Linux system with
   the following:</p>
   <ul>
-    <li>x86_64 class machine (32-bit not actively tested, but probably works fine)</li>
+    <li>x86_64 class machine (32-bit not actively tested anymore, but probably works fine)</li>
     <li>Other architectures (MIPS, PPC, PPC64, etc.) have been confirmed to work,
       but aren't as well tested as x86_64</li>
     <li>GNU g++-13 or Clang 19 (with C++20 support) and the make utility are required for compiling the Stella source code</li>
@@ -369,7 +369,7 @@
   the following:</p>
   <ul>
     <li>macOS 26.0 or above</li>
-    <li>64-bit ARM</li>
+    <li>64-bit ARM (Intel support likely to be discontinued soon)</li>
     <li>Xcode 26.0 is required to compile the Stella source code</li>
   </ul>
 
@@ -531,10 +531,13 @@
   <p>Once you have the multi-load ROM image file, survivl.bin in this case, you
   can play the game using it.</p>
 
+  <p>Real cassettes in the form of MP3 or WAV files are also directly supported.</p>
+
   <p>
   <h3><b><u>Supported File formats</u></b></h3>
 
-  <p>Stella supports ROMs ending with extensions .a26, .bin, .rom, and .zip.
+  <p>Stella supports ROMs ending with extensions .a26, .bin, .rom, .mp3/.wav
+  (for Supercharger) and .zip.
   For the ZIP archive format, Stella will look into the archive and if it
   contains only one ROM image file, Stella will automatically load it. If an
   archive contains many such files, Stella will display a <i>virtual
@@ -3461,6 +3464,11 @@
     <tr>
       <td><pre>-debug</pre></td>
       <td>Immediately jump to debugger mode when starting Stella.</td>
+    </tr>
+
+    <tr>
+      <td><pre>-seed</pre></td>
+      <td>Define the initial seed of Stella's random number generator (1..).</td>
     </tr>
 
     <tr>
