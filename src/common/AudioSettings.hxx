@@ -58,7 +58,6 @@ class AudioSettings
     static constexpr ResamplingQuality DEFAULT_RESAMPLING_QUALITY   = ResamplingQuality::lanczos_2;
     static constexpr bool DEFAULT_STEREO                            = false;
     static constexpr uInt32 DEFAULT_VOLUME                          = 80;
-    static constexpr uInt32 DEFAULT_DEVICE                          = 0;
     static constexpr bool DEFAULT_ENABLED                           = true;
     static constexpr uInt32 DEFAULT_DPC_PITCH                       = 20000;
 
@@ -110,8 +109,6 @@ class AudioSettings
     void setDpcPitch(uInt32 pitch);
 
     void setVolume(uInt32 volume);
-
-    void setDevice(uInt32 device);
 
     void setEnabled(bool isEnabled);
 

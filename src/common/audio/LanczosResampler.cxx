@@ -16,6 +16,7 @@
 //============================================================================
 
 #include <cmath>
+#include <numeric>
 
 #include "LanczosResampler.hxx"
 
@@ -25,21 +26,11 @@ namespace {
   constexpr float HIGH_PASS_CUT_OFF = 10;
   constexpr float SAMPLE_SCALE = 1.F / static_cast<float>(0x7FFF);
 
-  constexpr uInt32 reducedDenominator(uInt32 n, uInt32 d)
-  {
-    for (uInt32 i = std::min(n ,d); i > 1; --i) {
-      if ((n % i == 0) && (d % i == 0)) {
-        n /= i;
-        d /= i;
-        i = std::min(n ,d);
-      }
-    }
-
-    return d;
+  constexpr uInt32 reducedDenominator(uInt32 n, uInt32 d) {
+    return d / std::gcd(n, d);
   }
 
-  float sinc(float x)
-  {
+  float sinc(float x) {
     // We calculate the sinc with double precision in order to compensate for precision loss
     // around zero
     return x == 0.F ? 1 : static_cast<float>(
