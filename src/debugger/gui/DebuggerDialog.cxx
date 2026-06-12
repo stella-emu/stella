@@ -93,6 +93,11 @@ void DebuggerDialog::loadConfig()
 
   myMessageBox->setText("");
   myMessageBox->setToolTip("");
+
+  // This is the single funnel every refresh-required debugger command reaches
+  // (step/trace/advance/scanline/rewind/unwind/register edits), so it is also
+  // where the companion TIA window is told its contents may have changed.
+  instance().debugger().invalidateTiaWindow();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

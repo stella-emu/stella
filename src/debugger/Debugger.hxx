@@ -114,6 +114,15 @@ class Debugger : public DialogContainer
     void renderTiaWindow();
 
     /**
+      Mark the companion TIA window as needing a redraw.  Called whenever the
+      emulation state the window reflects may have changed (e.g. after a step,
+      frame/scanline advance, or rewind), and when the OS asks the window to
+      repaint.  A no-op when the window is closed; the actual redraw happens in
+      the next renderTiaWindow().
+    */
+    void invalidateTiaWindow();
+
+    /**
       The companion TIA window's DialogContainer, or nullptr when it isn't
       open.  Used by EventHandler to route events that target the secondary
       window to it instead of the main debugger overlay.

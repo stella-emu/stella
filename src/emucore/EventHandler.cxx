@@ -385,10 +385,24 @@ void EventHandler::handleSystemEvent(SystemEvent e, int data1, int data2)
       }
       else
         myOSystem.frameBuffer().handleResize(data1, data2);
-      [[fallthrough]];
+      // Force full render update
+      myOSystem.frameBuffer().update(FrameBuffer::UpdateMode::RERENDER);
+      break;
 
     case SystemEvent::WINDOW_EXPOSED:
-      // Force full render update
+    #ifdef DEBUGGER_SUPPORT
+      // A repaint of the companion TIA window is its own concern (data1 carries
+      // the window ID); just mark it dirty so it redraws, leaving the primary
+      // window untouched
+      if(myState == EventHandlerState::DEBUGGER &&
+         myOSystem.frameBuffer().secondaryWindowOpen() &&
+         static_cast<uInt32>(data1) == myOSystem.frameBuffer().secondaryWindowId())
+      {
+        myOSystem.debugger().invalidateTiaWindow();
+        break;
+      }
+    #endif
+      // Force full render update of the primary window
       myOSystem.frameBuffer().update(FrameBuffer::UpdateMode::RERENDER);
       break;
 

@@ -211,7 +211,10 @@ void EventHandlerSDL::pollEvent()
         handleSystemEvent(SystemEvent::WINDOW_HIDDEN);
         break;
       case SDL_EVENT_WINDOW_EXPOSED:
-        handleSystemEvent(SystemEvent::WINDOW_EXPOSED);
+        // Pass the window ID so a repaint of the secondary (companion) window
+        // can be routed to it rather than forcing a primary-window render
+        handleSystemEvent(SystemEvent::WINDOW_EXPOSED,
+                          static_cast<int>(myEvent.window.windowID));
         break;
       case SDL_EVENT_WINDOW_MOVED:
         handleSystemEvent(SystemEvent::WINDOW_MOVED,

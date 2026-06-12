@@ -981,11 +981,26 @@ void Debugger::renderTiaWindow()
   if(!myTiaWindowOpen)
     return;
 
-  // For now we force a full redraw every frame: TiaZoomWidget::drawWidget()
-  // re-reads the live TIA outputBuffer() on each draw, so this both recovers a
-  // lost initial present (avoiding a stuck-black window) and tracks changes as
-  // the user steps.  Phase 4 will replace this with an on-step invalidation.
-  myOSystem.frameBuffer().renderSecondaryWindow(*myTiaWindow);
+  // Render on demand: the companion is presented only when its dialog/widget is
+  // dirty.  That covers user interaction (zoom/pan mark the widget dirty) and
+  // the initial open (Dialog::open() marks it dirty); content changes from
+  // stepping the emulation come in via invalidateTiaWindow().  When nothing is
+  // dirty this neither redraws nor presents, so an idle companion is free.
+  myOSystem.frameBuffer().renderSecondaryWindow(
+    *myTiaWindow, FrameBuffer::UpdateMode::NONE);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Debugger::invalidateTiaWindow()
+{
+  if(!myTiaWindowOpen)
+    return;
+
+  // loadConfig() cascades to TiaDisplayWidget::loadConfig(), which marks the
+  // widget dirty so renderTiaWindow() redraws it next frame.  It only sets
+  // dirty flags here; the actual draw is deferred (and scoped to the secondary
+  // render target) by renderTiaWindow().
+  myTiaWindow->baseDialog()->loadConfig();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
