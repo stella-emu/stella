@@ -76,7 +76,6 @@ TIASurface::TIASurface(OSystem& system)
   myPaletteHandler->loadConfig(myOSystem.settings());
   myTVSignal = std::make_unique<TVSignal>(*myPaletteHandler);
   TVSignal::loadConfig(myOSystem.settings());
-  myTVSignal->enableThreading(myOSystem.settings().getBool("threads"));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

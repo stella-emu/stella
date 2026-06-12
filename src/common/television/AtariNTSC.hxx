@@ -41,7 +41,6 @@
 #define ATARI_NTSC_HXX
 
 #include <cmath>
-#include <thread>
 
 #include "FrameBufferConstants.hxx"
 #include "bspf.hxx"
@@ -49,8 +48,8 @@
 class AtariNTSC
 {
   public:
-    // By default, threading is turned off and palette is blank
-    AtariNTSC() { enableThreading(false); myRGBPalette.fill(0); }
+    // By default, the palette is blank
+    AtariNTSC() { myRGBPalette.fill(0); }
 
     // Image parameters, ranging from -1.0 to 1.0. Actual internal values shown
     // in parenthesis and should remain fairly stable in future versions.
@@ -87,9 +86,6 @@ class AtariNTSC
     // Set palette for normal Blarrg mode
     void setPalette(IntSpan palette);
 
-    // Set up threading
-    void enableThreading(bool enable);
-
     // Filters one or more rows of pixels. Input pixels are 8-bit Atari
     // palette colors.
     //  In_row_width is the number of pixels to get to the next input row.
@@ -107,10 +103,6 @@ class AtariNTSC
   private:
     // Generate kernels from raw RGB palette
     void generateKernels();
-
-    // Threaded rendering
-    void renderThread(const uInt8* atari_in, uInt32 in_width, uInt32 in_height,
-      uInt32 numThreads, uInt32 threadNum, void* rgb_out, uInt32 out_pitch);
 
   private:
     static constexpr Int32
@@ -153,11 +145,6 @@ class AtariNTSC
 
     std::array<uInt8, palette_size * 3L> myRGBPalette{};
     BSPF::array2D<uInt32, palette_size, entry_size> myColorTable{};
-
-    // Rendering threads
-    unique_ptr<std::thread[]> myThreads;
-    // Number of rendering and total threads
-    uInt32 myWorkerThreads{0}, myTotalThreads{0};
 
     struct init_t
     {

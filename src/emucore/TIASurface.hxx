@@ -99,11 +99,6 @@ class TIASurface
     uInt32 mapIndexedPixel(uInt8 indexedColor, uInt8 shift = 0) const;
 
     /**
-      Enable or disable multi-threaded Blargg rendering.
-    */
-    void enableThreading(bool enable) { myTVSignal->enableThreading(enable); }
-
-    /**
       Use the TV filtering effects specified by the given preset.
     */
     void setTVMode(TVMode type, bool show = true);

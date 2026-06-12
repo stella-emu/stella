@@ -75,7 +75,7 @@ EmulationDialog::EmulationDialog(OSystem& osystem, DialogContainer& parent,
 
   // Set real dimensions
   _w = 37 * fontWidth + HBORDER * 2 + CheckboxWidget::prefixSize(_font);
-  _h = 13 * (lineHeight + VGAP) + VGAP * 7 + VBORDER * 3 + _th + buttonHeight;
+  _h = 12 * (lineHeight + VGAP) + VGAP * 7 + VBORDER * 3 + _th + buttonHeight;
 
   int xpos = HBORDER, ypos = VBORDER + _th;
 
@@ -100,11 +100,6 @@ EmulationDialog::EmulationDialog(OSystem& osystem, DialogContainer& parent,
   myTurbo->setToolTip(Event::ToggleTurbo);
   wid.push_back(myTurbo);
   ypos += lineHeight + VGAP * 3;
-
-  // Use multi-threading
-  myUseThreads = new CheckboxWidget(this, _font, xpos, ypos + 1, "Multi-threading");
-  wid.push_back(myUseThreads);
-  ypos += lineHeight + VGAP;
 
   // Skip progress load bars for SuperCharger ROMs
   // Doesn't really belong here, but I couldn't find a better place for it
@@ -182,9 +177,6 @@ void EmulationDialog::loadConfig()
   // Fast loading of Supercharger BIOS
   myFastSCBios->setState(settings.getBool("fastscbios"));
 
-  // Multi-threaded rendering
-  myUseThreads->setState(settings.getBool("threads"));
-
   // Automatically pause emulation when focus is lost
   myAutoPauseWidget->setState(settings.getBool("autopause"));
 
@@ -221,9 +213,6 @@ void EmulationDialog::saveConfig()
   // Fast loading of Supercharger BIOS
   settings.setValue("fastscbios", myFastSCBios->getState());
 
-  // Multi-threaded rendering
-  settings.setValue("threads", myUseThreads->getState());
-
   // Automatically pause emulation when focus is lost
   settings.setValue("autopause", myAutoPauseWidget->getState());
 
@@ -244,8 +233,6 @@ void EmulationDialog::saveConfig()
     // update VSync
     instance().console().initializeVideo();
     instance().createFrameBuffer();
-
-    instance().frameBuffer().tiaSurface().enableThreading(myUseThreads->getState());
   }
 }
 
@@ -258,7 +245,6 @@ void EmulationDialog::setDefaults()
   // misc
   myUIMessages->setState(true);
   myFastSCBios->setState(true);
-  myUseThreads->setState(false);
   myAutoPauseWidget->setState(false);
   myConfirmExitWidget->setState(false);
 

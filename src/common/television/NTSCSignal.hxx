@@ -90,10 +90,6 @@ class NTSCSignal
       myNTSC.render(src_buf, src_width, src_height, dest_buf, dest_pitch);
     }
 
-    void enableThreading(bool enable) {
-      myNTSC.enableThreading(enable);
-    }
-
     // Width in pixels of one Blargg-filtered scanline for the given input width
     static constexpr uInt32 outWidth(uInt32 inWidth) {
       return AtariNTSC::outWidth(inWidth);

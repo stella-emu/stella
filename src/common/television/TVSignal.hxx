@@ -64,9 +64,6 @@ class TVSignal
     // Set the signal type
     void setTVMode(TVMode type);
 
-    // Enable or disable multi-threaded Blargg rendering
-    void enableThreading(bool enable) { myNTSCSignal.enableThreading(enable); }
-
     // Return the pixel width of one rendered scanline for the current
     // timing/type combination.  568 when NTSC+Blargg is active, 160 otherwise.
     uInt32 outputWidth() const;

@@ -15,8 +15,6 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#include <thread>
-
 #include "AtariNTSC.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -70,61 +68,12 @@ void AtariNTSC::generateKernels()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void AtariNTSC::enableThreading(bool enable)
-{
-  uInt32 systemThreads = enable ? std::thread::hardware_concurrency() : 0;
-  if(systemThreads <= 1)
-  {
-    myWorkerThreads = 0;
-    myTotalThreads  = 1;
-  }
-  else
-  {
-    systemThreads = std::max<uInt32>(1, std::min<uInt32>(4, systemThreads - 1));
-
-    myWorkerThreads = systemThreads - 1;
-    myTotalThreads  = systemThreads;
-
-    myThreads = std::make_unique<std::thread[]>(myWorkerThreads);
-  }
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void AtariNTSC::render(const uInt8* atari_in, uInt32 in_width, uInt32 in_height,
                        void* rgb_out, uInt32 out_pitch)
 {
-  // Spawn the threads...
-  for(uInt32 i = 0; i < myWorkerThreads; ++i)
-  {
-    myThreads[i] = std::thread([atari_in, in_width, in_height,
-                                i, rgb_out, out_pitch, this]
-    {
-      renderThread(atari_in, in_width, in_height, myTotalThreads,
-                   i+1, rgb_out, out_pitch);
-    });
-  }
-  // Make the main thread busy too
-  renderThread(atari_in, in_width, in_height, myTotalThreads, 0,
-               rgb_out, out_pitch);
-  // ...and make them join again
-  for(uInt32 i = 0; i < myWorkerThreads; ++i)
-    myThreads[i].join();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void AtariNTSC::renderThread(const uInt8* atari_in, uInt32 in_width,
-  uInt32 in_height, uInt32 numThreads, uInt32 threadNum,
-  void* rgb_out, uInt32 out_pitch)
-{
-  // Adapt parameters to thread number
-  const uInt32 yStart = in_height * threadNum / numThreads;
-  const uInt32 yEnd = in_height * (threadNum + 1) / numThreads;
-  atari_in += static_cast<size_t>(in_width) * yStart;
-  rgb_out  = static_cast<char*>(rgb_out) + static_cast<size_t>(out_pitch) * yStart;
-
   uInt32 const chunk_count = (in_width - 1) / PIXEL_in_chunk;
 
-  for(uInt32 y = yStart; y < yEnd; ++y)
+  for(uInt32 y = 0; y < in_height; ++y)
   {
     const uInt8* line_in = atari_in;
     ATARI_NTSC_BEGIN_ROW(NTSC_black, line_in[0]);

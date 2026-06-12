@@ -217,7 +217,6 @@ Settings::Settings()
   setPermanent("logtoconsole", "0");
   setPermanent("avoxport", "");
   setPermanent("fastscbios", "true");
-  setPermanent("threads", "false");
   setTemporary("romloadcount", "0");
   setTemporary("maxres", "");
   setPermanent("initials", "");
@@ -566,8 +565,6 @@ void Settings::usage()
     << "  -modcombo     <1|0>            Enable modifier key combos\n"
     << "                                  (Control-Q for quit may not work when disabled!)\n"
     << "  -fastscbios   <1|0>            Disable Supercharger BIOS progress loading bars\n"
-    << "  -threads      <1|0>            Whether to using multi-threading during\n"
-    << "                                  emulation\n"
     << "  -snapsavedir  <path>           The directory to save snapshot files to\n"
     << "  -snaploaddir  <path>           The directory to load snapshot files from\n"
     << "  -snapname     <int|rom>        Name snapshots according to internal database or ROM\n"
