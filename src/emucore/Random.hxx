@@ -21,6 +21,7 @@
 #include <chrono>
 
 #include "bspf.hxx"
+#include "Logger.hxx"
 #include "Serializable.hxx"
 
 /**
@@ -44,7 +45,10 @@ class Random : public Serializable
     /**
       Create a new random number generator with given seed.
     */
-    explicit Random(uInt32 seed) { initSeed(seed); }
+    explicit Random(uInt32 seed) {
+      initSeed(seed);
+      Logger::info(std::format("Random seed: {}\n", myValue));
+    }
 
     /**
       Re-initialize the random number generator with a new seed,

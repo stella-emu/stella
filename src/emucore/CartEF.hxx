@@ -55,6 +55,11 @@ class CartridgeEF : public CartridgeEnhanced
 
   public:
     /**
+      Reset device to its power-on state
+    */
+    void reset() override;
+
+    /**
       Get a descriptor for the device name (used in error checking).
 
       @return The name of the object

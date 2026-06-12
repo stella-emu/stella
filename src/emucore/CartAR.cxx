@@ -57,6 +57,8 @@ CartridgeAR::CartridgeAR(ByteSpan image, string_view md5,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeAR::reset()
 {
+  Cartridge::reset();
+
   // Initialize RAM
 #if 0  // TODO - figure out actual behaviour of the real cart
   initializeRAM(myImage.data(), myImage.size());

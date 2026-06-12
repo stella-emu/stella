@@ -48,6 +48,8 @@ CartridgeCTY::CartridgeCTY(ByteSpan image, string_view md5,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeCTY::reset()
 {
+  Cartridge::reset();
+
   initializeRAM(myRAM);
   initializeStartBank(1);
 

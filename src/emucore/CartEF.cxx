@@ -25,6 +25,12 @@ CartridgeEF::CartridgeEF(ByteSpan image, string_view md5,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void CartridgeEF::reset()
+{
+  Cartridge::reset();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CartridgeEF::checkSwitchBank(uInt16 address, uInt8)
 {
   address &= ROM_MASK;

@@ -126,6 +126,8 @@ void CartridgeEnhanced::install(System& system)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeEnhanced::reset()
 {
+  Cartridge::reset();
+
   if(myRamSize > 0)
     initializeRAM(myRAM);
 
