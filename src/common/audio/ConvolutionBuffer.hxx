@@ -26,7 +26,7 @@ class ConvolutionBuffer
     // The buffer is mirrored: each value is stored twice, mySize apart, so
     // the convolution can always read a contiguous window without wrapping.
     explicit ConvolutionBuffer(uInt32 size)
-      : myData{std::make_unique<float[]>(size * 2U)},
+      : myData{std::make_unique<float[]>(static_cast<size_t>(size) * 2)},
         mySize{size} { }
 
     ~ConvolutionBuffer() = default;

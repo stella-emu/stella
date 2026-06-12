@@ -27,7 +27,7 @@ CartridgeEF::CartridgeEF(ByteSpan image, string_view md5,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeEF::reset()
 {
-  Cartridge::reset();
+  CartridgeEnhanced::reset();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -169,7 +169,7 @@ bool OSystem::initialize(const Settings::Options& options)
   createSound();
 
   // Create random number generator
-  int seed = mySettings->getInt("seed");
+  const int seed = mySettings->getInt("seed");
   myRandom = std::make_unique<Random>(seed ? seed : static_cast<uInt32>(TimerManager::getTicks()));
 
 #ifdef CHEATCODE_SUPPORT
