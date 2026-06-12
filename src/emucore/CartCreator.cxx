@@ -196,6 +196,7 @@ namespace  // anonymous namespace, to keep these functions private
 
     return createFromImage(slice, type, md5, settings);
   }
+
   /**
     Strip a leading collection-index prefix of the form "NN - " from a stem.
     E.g. "05 - Escape From The Mindmaster Load 2 (Ntsc)" → "Escape From..."
@@ -429,8 +430,12 @@ namespace  // anonymous namespace, to keep these functions private
     if(companions.empty())
       cerr << "CartCreator: no companion tapes found\n";
 
+    // Sample offset in the PCM stream where each tape's data begins; the first
+    // tape always starts at 0.  CartridgeAR uses these to capture each tape
+    // into its own load block.
+    vector<size_t> tapeStarts{0};
     int tapeNum = 2;
-    for(const FSNode& companion : companions)
+    for(const FSNode& companion: companions)
     {
       auto [nextPCM, nextRate] = CartridgeAR::loadPCM(companion);
       if(nextPCM.empty() || nextRate != sampleRate)
@@ -443,6 +448,7 @@ namespace  // anonymous namespace, to keep these functions private
       const size_t silenceSamples = static_cast<size_t>(sampleRate) * 2;
       pcmData.reserve(pcmData.size() + silenceSamples + nextPCM.size());
       pcmData.insert(pcmData.end(), silenceSamples, 1.F);
+      tapeStarts.push_back(pcmData.size());  // this tape begins after the silence
       pcmData.insert(pcmData.end(), nextPCM.begin(), nextPCM.end());
       cerr << std::format("CartCreator: tape {}: '{}' ({} samples @ {} Hz)\n",
                           tapeNum++, companion.getName(), nextPCM.size(), nextRate);
@@ -452,8 +458,11 @@ namespace  // anonymous namespace, to keep these functions private
                         static_cast<double>(pcmData.size()) / sampleRate);
 
     auto cart = std::make_unique<CartridgeAR>(
-      ByteSpan{biosData}, std::move(pcmData), sampleRate, md5, settings);
-    cart->setAbout("AR (2K) ", "AR", "");
+      ByteSpan{biosData}, std::move(pcmData), sampleRate, std::move(tapeStarts),
+      md5, settings);
+    // One 8448-byte load per tape, so the size matches the equivalent BIN
+    cart->setAbout(std::format("AR ({}K) ", cart->getImage().size() / 1_KB),
+                   "AR", "");
     return cart;
   }
 

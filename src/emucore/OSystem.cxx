@@ -698,11 +698,14 @@ unique_ptr<Console> OSystem::openConsole(const FSNode& romfile, string& md5)
     // and that the md5 (and hence the cart) has changed
     if(props.get(PropType::Cart_MD5) != cartmd5)
     {
+      // getMD5 resets props to defaults before searching, so save the name
+      // derived above so it isn't lost when the lookup finds no entry
+      const string savedName{props.get(PropType::Cart_Name)};
       if(!myPropSet->getMD5(cartmd5, props))
       {
         // Cart md5 wasn't found, so we create a new props for it
         props.set(PropType::Cart_MD5, cartmd5);
-        props.set(PropType::Cart_Name, std::format("{}{}", props.get(PropType::Cart_Name), cart->multiCartID()));
+        props.set(PropType::Cart_Name, std::format("{}{}", savedName, cart->multiCartID()));
         myPropSet->insert(props, false);
       }
     }

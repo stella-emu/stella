@@ -63,21 +63,25 @@ CartridgeAR::CartridgeAR(ByteSpan image, string_view md5,
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartridgeAR::CartridgeAR(ByteSpan biosImage, vector<float> pcmData,
-                         uInt32 sampleRate, string_view md5,
-                         const Settings& settings)
+                         uInt32 sampleRate, vector<size_t> tapeStarts,
+                         string_view md5, const Settings& settings)
   : Cartridge(settings, md5),
-    myNumberOfLoadImages{1},
+    myNumberOfLoadImages{static_cast<uInt8>(tapeStarts.size())},
+    myTapeStartSamples{std::move(tapeStarts)},
     myPCMData{std::move(pcmData)},
     myPCMSampleRate{sampleRate},
     myPCMSamplesPerCycle{static_cast<double>(sampleRate) / 1190000.0},
     myIsSoundLoad{true}
 {
-  // Pre-allocate one load image slot so getImage(), the debugger, and the
-  // state serialiser all see non-empty data from the start.  RAM bytes are
-  // mirrored from myImage as the real BIOS writes pages; the header area
-  // starts with ourDefaultHeader and is patched when the tape is exhausted.
-  myLoadImages.assign(LOAD_SIZE, 0);
-  std::ranges::copy(ourDefaultHeader, myLoadImages.begin() + myImage.size());
+  // Lay the load image out as one 8448-byte slot per tape, matching the
+  // standard multi-load BIN format: 6K RAM + 2K blank (the copyrighted BIOS is
+  // never written here) + 256B header.  RAM bytes are mirrored from myImage
+  // into the active tape's slot as the real BIOS streams each tape in; each
+  // header starts with ourDefaultHeader and is patched as its tape completes.
+  myLoadImages.assign(myNumberOfLoadImages * LOAD_SIZE, 0);
+  for(uInt32 b = 0; b < myNumberOfLoadImages; ++b)
+    std::ranges::copy(ourDefaultHeader,
+                      myLoadImages.begin() + b * LOAD_SIZE + myImage.size());
 
   // Access arrays need to cover the full 8K image (6K RAM + 2K ROM)
   createRomAccessArrays(myImage.size());
@@ -103,6 +107,7 @@ void CartridgeAR::reset()
   myPCMStarted = false;
   myPCMStartCycle = 0;
   myPCMLoadDelay = 0;
+  myCurrentLoadBlock = 0;
 
   myDataHoldRegister = 0;
   myNumberOfDistinctAccesses = 0;
@@ -131,48 +136,58 @@ uInt8 CartridgeAR::peek(uInt16 addr)
   // In debugger/bank-locked mode, we ignore all hotspots and in general
   // anything that can change the internal state of the cart
   if(hotspotsLocked())
-    return myImage[(addr & 0x07FF) + myImageOffset[(addr & 0x0800) ? 1 : 0]];
+    return myImage[imageIndex(addr)];
 
-  // In sound-load mode, feed the current PCM bit to the real BIOS via $1FF9.
-  //
-  // Play-delay phase: return 0x00 (tape active) for the first kLoadDelay reads
-  // without advancing the PCM index.  This gives the BIOS time to display
-  // "REWIND TAPE / PRESS PLAY" and enter its sync loop before PCM streaming
-  // starts from position 0.
-  if(myIsSoundLoad && (addr & 0x1FFF) == 0x1FF9)
+  if(myIsSoundLoad)
   {
-    if(myPCMData.empty())
-      return 0x01;
-
-    constexpr int kLoadDelay = 30000;
-    if(myPCMLoadDelay < kLoadDelay)
+    // In sound-load mode, feed the current PCM bit to the real BIOS via $1FF9.
+    //
+    // Play-delay phase: return 0x00 (tape active) for the first kLoadDelay
+    // reads without advancing the PCM index.  This gives the BIOS time to
+    // display "REWIND TAPE / PRESS PLAY" and enter its sync loop before PCM
+    // streaming starts from position 0.
+    if((addr & 0x1FFF) == 0x1FF9)
     {
-      ++myPCMLoadDelay;
-      return 0x00;  // tape active: tells BIOS the tape is playing
-    }
+      if(myPCMData.empty())
+        return 0x01;
 
-    const uInt64 now = mySystem->cycles();
-    if(!myPCMStarted)
-    {
-      myPCMStarted = true;
-      myPCMStartCycle = now;
-      cerr << std::format("CartridgeAR: PCM stream started at cycle {}, "
-                          "{} samples @ {} Hz\n",
-                          myPCMStartCycle, myPCMData.size(), myPCMSampleRate);
-    }
+      constexpr int kLoadDelay = 30000;
+      if(myPCMLoadDelay < kLoadDelay)
+      {
+        ++myPCMLoadDelay;
+        return 0x00;  // tape active: tells BIOS the tape is playing
+      }
 
-    const uInt64 elapsed = now - myPCMStartCycle;
-    const double rawIdx = static_cast<double>(elapsed) * myPCMSamplesPerCycle;
-    if(rawIdx >= static_cast<double>(myPCMData.size()))
-    {
-      finalizeSoundLoad();
-      return 0x01;
+      const uInt64 now = mySystem->cycles();
+      if(!myPCMStarted)
+      {
+        myPCMStarted = true;
+        myPCMStartCycle = now;
+        cerr << std::format("CartridgeAR: PCM stream started at cycle {}, "
+                            "{} samples @ {} Hz\n",
+                            myPCMStartCycle, myPCMData.size(), myPCMSampleRate);
+      }
+
+      const uInt64 elapsed = now - myPCMStartCycle;
+      const double rawIdx = static_cast<double>(elapsed) * myPCMSamplesPerCycle;
+      if(rawIdx >= static_cast<double>(myPCMData.size()))
+      {
+        finalizeSoundLoad();
+        return 0x01;
+      }
+      // Once playback reaches the next tape's data, finalise the just-completed
+      // load and direct subsequent RAM mirroring into the next load block
+      while(myCurrentLoadBlock + 1 < myTapeStartSamples.size() &&
+            rawIdx >= static_cast<double>(myTapeStartSamples[myCurrentLoadBlock + 1]))
+      {
+        finalizeLoad(myCurrentLoadBlock);
+        ++myCurrentLoadBlock;
+      }
+      return (myPCMData[static_cast<size_t>(rawIdx)] >= 0.F) ? 0x01 : 0x00;
     }
-    return (myPCMData[static_cast<size_t>(rawIdx)] >= 0.F) ? 0x01 : 0x00;
   }
-
   // Fake-BIOS fast-load hotspot (not used in sound-load mode)
-  if(!myIsSoundLoad && ((addr & 0x1FFF) == 0x1850) && (myImageOffset[1] == RAM_SIZE))
+  else if(((addr & 0x1FFF) == 0x1850) && (myImageOffset[1] == RAM_SIZE))
   {
     // BIOS places load number at 0x80
     loadIntoRAM(mySystem->peek(0x0080));
@@ -182,7 +197,7 @@ uInt8 CartridgeAR::peek(uInt16 addr)
   if(handleHotspot(addr))
     mySystem->setDirtyPage(addr);
 
-  return myImage[(addr & 0x07FF) + myImageOffset[(addr & 0x0800) ? 1 : 0]];
+  return myImage[imageIndex(addr)];
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -192,12 +207,12 @@ bool CartridgeAR::poke(uInt16 addr, uInt8)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgeAR::finalizeSoundLoad()
+void CartridgeAR::finalizeLoad(uInt32 block)
 {
-  // Synthesise a valid myLoadImages header that maps all 24 pages (6K RAM)
-  // in linear bank/page order, matching how writes were mirrored into
-  // myLoadImages.  This lets loadIntoRAM() correctly restore myImage if the
-  // game ever requests a reload after the tape is exhausted.
+  // Synthesise a valid header for this load that maps all 24 pages (6K RAM)
+  // in linear bank/page order, matching how writes were mirrored into the
+  // block.  This lets loadIntoRAM() correctly restore myImage if a saved copy
+  // of the image is ever reloaded.
   myHeader = {};
 
   // Try to recover the bank-switch config and start address the real BIOS
@@ -209,14 +224,15 @@ void CartridgeAR::finalizeSoundLoad()
   static constexpr size_t NUM_PAGES = 24;  // 3 banks × 8 pages
   myHeader[3] = static_cast<uInt8>(NUM_PAGES);
 
-  // Page-map: page j in myLoadImages lives at bank (j/8), page (j%8) in bank
+  // Page-map: page j in the block lives at bank (j/8), page (j%8) in bank
   for(size_t j = 0; j < NUM_PAGES; ++j)
     myHeader[16 + j] = static_cast<uInt8>(((j % 8) << 2) | (j / 8));
 
   // Per-page checksums: must satisfy checksum(data) + map + ck == 0x55
+  const size_t base = static_cast<size_t>(block) * LOAD_SIZE;
   for(size_t j = 0; j < NUM_PAGES; ++j)
   {
-    const ByteSpan src = ByteSpan{myLoadImages}.subspan(j * 256, 256);
+    const ByteSpan src = ByteSpan{myLoadImages}.subspan(base + j * 256, 256);
     myHeader[64 + j] = static_cast<uInt8>(
       0x55U - checksum(src) - myHeader[16 + j]);
   }
@@ -227,8 +243,15 @@ void CartridgeAR::finalizeSoundLoad()
     myHeader[4] + myHeader[5] + myHeader[6]);
   myHeader[7] = static_cast<uInt8>(0x55U - partial);
 
-  // Commit header into myLoadImages
-  std::ranges::copy(myHeader, myLoadImages.begin() + myImage.size());
+  // Commit header into the block's header area
+  std::ranges::copy(myHeader, myLoadImages.begin() + base + myImage.size());
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void CartridgeAR::finalizeSoundLoad()
+{
+  // Finalise the load that was streaming in when the PCM ran out
+  finalizeLoad(myCurrentLoadBlock);
 
   cerr << std::format("CartridgeAR: PCM exhausted at cycle {}, "
                       "finalising load image\n", mySystem->cycles());
@@ -273,7 +296,7 @@ bool CartridgeAR::handleHotspot(uInt16 addr)
       const size_t offset = (addr & 0x07FF) + myImageOffset[0];
       myImage[offset] = myDataHoldRegister;
       if(myIsSoundLoad && offset < RAM_SIZE)
-        myLoadImages[offset] = myDataHoldRegister;
+        myLoadImages[myCurrentLoadBlock * LOAD_SIZE + offset] = myDataHoldRegister;
       written = true;
     }
     else if(myImageOffset[1] != (3 * BANK_SIZE))    // Can't poke to ROM :-)
@@ -281,7 +304,7 @@ bool CartridgeAR::handleHotspot(uInt16 addr)
       const size_t offset = (addr & 0x07FF) + myImageOffset[1];
       myImage[offset] = myDataHoldRegister;
       if(myIsSoundLoad && offset < RAM_SIZE)
-        myLoadImages[offset] = myDataHoldRegister;
+        myLoadImages[myCurrentLoadBlock * LOAD_SIZE + offset] = myDataHoldRegister;
       written = true;
     }
     myWritePending = false;
@@ -295,15 +318,13 @@ bool CartridgeAR::handleHotspot(uInt16 addr)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Device::AccessFlags CartridgeAR::getAccessFlags(uInt16 address) const
 {
-  return myRomAccessBase[(address & 0x07FF) +
-           myImageOffset[(address & 0x0800) ? 1 : 0]];
+  return myRomAccessBase[imageIndex(address)];
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeAR::setAccessFlags(uInt16 address, Device::AccessFlags flags)
 {
-  myRomAccessBase[(address & 0x07FF) +
-    myImageOffset[(address & 0x0800) ? 1 : 0]] |= flags;
+  myRomAccessBase[imageIndex(address)] |= flags;
 }
 #endif
 
@@ -467,13 +488,25 @@ uInt16 CartridgeAR::romBankCount() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CartridgeAR::patch(uInt16 address, uInt8 value)
 {
-  myImage[(address & 0x07FF) + myImageOffset[(address & 0x0800) ? 1 : 0]] = value;
+  myImage[imageIndex(address)] = value;
   return myBankChanged = true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ByteSpan CartridgeAR::getImage() const
 {
+  // One 8448-byte load per tape (BIN file or sound-load).  For sound-load the
+  // 2K BIOS area within each load is left blank, so the copyrighted BIOS is
+  // never exposed; the BIN format itself may bundle a dummy, non-copyright BIOS.
+  //
+  // Refresh the in-progress load's header so a saved image's page checksums
+  // match its (possibly game-modified) RAM; completed loads were already
+  // finalised at their tape boundaries.  Skipped before the cart is installed
+  // (mySystem null) — e.g. the about-string size query — where finalizeLoad()
+  // can't peek zero-page and the header is irrelevant anyway.
+  if(myIsSoundLoad && mySystem)
+    const_cast<CartridgeAR*>(this)->finalizeLoad(myCurrentLoadBlock);
+
   return myLoadImages;
 }
 

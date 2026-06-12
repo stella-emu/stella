@@ -98,11 +98,14 @@ class CartridgeAR : public Cartridge
       @param biosImage  Span of the 2K Supercharger BIOS ROM
       @param pcmData    Conditioned mono PCM samples (threshold 0.0)
       @param sampleRate Audio sample rate of pcmData (Hz)
+      @param tapeStarts Sample offset in pcmData where each tape begins (the
+                        first element is 0); its size is the number of tapes
       @param md5        The md5sum of the source audio file
       @param settings   A reference to the various settings (read-only)
     */
     CartridgeAR(ByteSpan biosImage, vector<float> pcmData, uInt32 sampleRate,
-                string_view md5, const Settings& settings);
+                vector<size_t> tapeStarts, string_view md5,
+                const Settings& settings);
     ~CartridgeAR() override = default;
 
   public:
@@ -252,12 +255,23 @@ class CartridgeAR : public Cartridge
     // Process the write-pending state machine; returns true if a RAM write occurred
     bool handleHotspot(uInt16 addr);
 
-    // Called when the PCM stream is exhausted: synthesises a valid myLoadImages
-    // header from the current RAM state and transitions to normal BIN mode
+    // Synthesise a valid 256-byte header for the given load block from the
+    // current RAM/zero-page state, so a saved copy of the image can be reloaded
+    void finalizeLoad(uInt32 block);
+
+    // Called when the PCM stream is exhausted: finalises the active load and
+    // frees the PCM buffer, leaving the BIOS active
     void finalizeSoundLoad();
 
     // Remove DC bias in-place
     static void conditionSignal(FloatMSpan samples);
+
+    // Compute the byte index into myImage/myRomAccessBase for a cartridge
+    // address, selecting the lower ($F000-$F7FF) or upper ($F800-$FFFF) 2K
+    // window's currently-mapped bank offset
+    size_t imageIndex(uInt16 address) const {
+      return (address & 0x07FF) + myImageOffset[(address & 0x0800) ? 1 : 0];
+    }
 
   private:
     // Indicates the offset within the image for the corresponding bank
@@ -274,6 +288,15 @@ class CartridgeAR : public Cartridge
 
     // Indicates how many 8448 loads there are
     uInt8 myNumberOfLoadImages{0};
+
+    // Sound-load mode only: sample offset within the PCM stream where each
+    // tape's data begins (element 0 is always 0).  Used to advance the active
+    // load block as each tape streams in, so getImage()/saveROM emit a standard
+    // multi-load image (6K RAM + 2K blank BIOS + 256B header per tape).
+    vector<size_t> myTapeStartSamples;
+
+    // Sound-load mode only: the load block (tape) currently streaming into RAM
+    uInt32 myCurrentLoadBlock{0};
 
     // Indicates if the RAM is write enabled
     bool myWriteEnabled{false};
