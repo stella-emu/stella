@@ -600,6 +600,14 @@ class FrameBuffer
     // Flag for pending render
     bool myPendingRender{false};
 
+    // Re-entrancy guard: true only while a backend is (re)creating its window
+    // and renderer.  On X11, SDL pumps the event queue synchronously from
+    // inside those calls and delivers WINDOW_EXPOSED, which fires the
+    // EventHandlerSDL::resizeWatch hook and re-enters update().  For the
+    // companion TIA window that would flush a renderer that does not exist yet
+    // (segfault), so update() bails out while this is set.
+    bool myInVideoMode{false};
+
     // The VideoModeHandler class takes responsibility for all video
     // mode functionality
     VideoModeHandler myVidModeHandler;

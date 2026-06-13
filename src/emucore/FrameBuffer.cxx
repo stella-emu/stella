@@ -422,6 +422,12 @@ void FrameBuffer::applyPendingResize()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBuffer::update(UpdateMode mode)
 {
+  // Ignore re-entrant renders triggered by the SDL event-watch hook while a
+  // backend is still building its renderer (see myInVideoMode).  The pending
+  // frame is reissued once applyVideoMode() completes (myPendingRender).
+  if(myInVideoMode)
+    return;
+
   // Onscreen messages are a special case and require different handling than
   // other objects; they aren't UI dialogs in the normal sense nor are they
   // TIA images, and they need to be rendered on top of everything
@@ -1203,10 +1209,17 @@ FBInitStatus FrameBuffer::applyVideoMode()
   const bool oldPauseState = myOSystem.sound().pause(true);
   FBInitStatus status = FBInitStatus::FailNotSupported;
 
-  if(myBackend->setVideoMode(mode,
+  // Guard against the SDL event-watch hook re-entering update() while the
+  // backend pumps events from inside window/renderer creation (see
+  // myInVideoMode); critical for the companion TIA window whose renderer does
+  // not exist yet at this point
+  myInVideoMode = true;
+  const bool modeApplied = myBackend->setVideoMode(mode,
       myOSystem.settings().getInt(getDisplayKey()),
-      myOSystem.settings().getPoint(getPositionKey()))
-    )
+      myOSystem.settings().getPoint(getPositionKey()));
+  myInVideoMode = false;
+
+  if(modeApplied)
   {
     myActiveVidMode = mode;
     status = FBInitStatus::Success;
