@@ -234,6 +234,12 @@ class Cartridge : public Device
     // bankswitching (for any reason) do not have to provide an
     // implementation for bankswitch-related methods.
     //////////////////////////////////////////////////////////////////////
+
+    /**
+      Reset device to its power-on state
+    */
+    void reset() override;
+
     /**
       Set the specified bank.  This is used only when the bankswitching
       scheme defines banks in a standard format (ie, 0 for first bank,

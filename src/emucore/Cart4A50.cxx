@@ -48,6 +48,8 @@ Cartridge4A50::Cartridge4A50(ByteSpan image, string_view md5,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Cartridge4A50::reset()
 {
+  Cartridge::reset();
+
   initializeRAM(myRAM);
 
   mySliceLow = mySliceMiddle = mySliceHigh = 0;

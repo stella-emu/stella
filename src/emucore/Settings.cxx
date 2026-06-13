@@ -456,7 +456,7 @@ void Settings::usage()
     << "\n\n"
     << "Usage: stella [options ...] romfile\n"
     << "       Run without any options or romfile to use the ROM launcher\n"
-    << "       Consult the manual for more in-depth information\n\n"
+    << "       Consult the User's Guide for more in-depth information\n\n"
     << "Valid options are:\n\n"
     << "  -video        <type>         Type is one of the following:\n"
   #ifdef BSPF_WINDOWS
@@ -522,8 +522,8 @@ void Settings::usage()
     << "  -tia.fs_stretch  <1|0>         Stretch TIA image to fill fullscreen mode\n"
     << "  -tia.fs_refresh  <1|0>         Try to adapt display refresh rate to game's FPS\n"
     << "  -tia.fs_overscan <0-10>        Add overscan to TIA image in fullscreen mode\n"
-    << "  -tia.dbgcolors   <string>      Debug colors to use for each object (see manual\n"
-    << "                                  for description)\n"
+    << "  -tia.dbgcolors   <string>      Debug colors to use for each object (see User's\n"
+    << "                                   Guide for description)\n"
     << "  -tia.correct_aspect <1|0>      Enable aspect ratio correct scaling\n\n"
     << "  -tv.filter    <0-5>            Set TV effects off (0) or to specified mode\n"
     << "                                  (1-5)\n"
@@ -540,8 +540,8 @@ void Settings::usage()
     << "  -tv.artifacts   <-1.0 - 1.0>   Set TV effects custom artifacts\n"
     << "  -tv.fringing    <-1.0 - 1.0>   Set TV effects custom fringing\n"
     << "  -tv.bleed       <-1.0 - 1.0>   Set TV effects custom bleed\n\n"
-    << "  -cheat        <code>           Use the specified cheatcode (see manual for\n"
-    << "                                  description)\n"
+    << "  -cheat        <code>           Use the specified cheatcode (see User's Guide\n"
+    << "                                  for description)\n"
     << "  -loglevel     <0|1|2>          Set level of logging during application run\n\n"
     << "  -logtoconsole <1|0>            Log output to console/commandline\n"
     << "  -joydeadzone  <0-29>           Sets digital 'dead zone' area for analog joysticks\n"
@@ -550,7 +550,7 @@ void Settings::usage()
     << "  -usemouse     <always|\n"
     << "                 analog|\n"
     << "                 never>          Use mouse as a controller as specified by ROM\n"
-    << "                                  properties in given mode(see manual)\n"
+    << "                                  properties in given mode(see User's Guide)\n"
     << "  -grabmouse      <1|0>          Locks the mouse cursor in the TIA window\n"
     << "  -cursor         <0,1,2,3>      Set cursor state in UI/emulation modes\n"
     << "  -adeadzone      <0-29>         Sets analog 'dead zone' area for analog joysticks\n"
@@ -661,7 +661,7 @@ void Settings::usage()
     << "  -help                          Show the text you're now reading\n"
   #ifdef DEBUGGER_SUPPORT
     << "\n The following options are meant for developers\n"
-    << " Arguments are more fully explained in the manual\n\n"
+    << " Arguments are more fully explained in the User's Guide\n\n"
     << "   -dis.resolve   <1|0>          Attempt to resolve code sections in disassembler\n"
     << "   -dis.gfxformat <2|16>         Set base to use for displaying (P)GFX sections\n"
     << "                                  in disassembler\n"
@@ -686,7 +686,9 @@ void Settings::usage()
     << "   -dbg.autosave  <0|1>          Automatically save breaks, traps etc.\n"
     << "   -dbg.script    <file>         Execute script file on debugger startup\n"
     << "   -break         <address>      Set a breakpoint at 'address'\n"
-    << "   -debug                        Start in debugger mode\n\n"
+    << "   -debug                        Start in debugger mode\n"
+    << "   -seed          <number>       Define the initial seed for Stella's RNG (1..)\n\n"
+
     << "   -bs          <arg>            Sets the 'Cartridge.Type' (bankswitch) property\n"
     << "   -type        <arg>            Same as using -bs\n"
     << "   -startbank   <bank>           Sets the ROM's startup bank\n"
@@ -749,7 +751,7 @@ void Settings::usage()
 #endif
     << "  -dev.thumb.trapfatal   <1|0>     Determines whether errors in ARM emulation\n"
     << "                                    throw an exception\n"
-    << "  -dev.arm.mips         <number>   Limit emulation speed to simulate ARM CPU used.\n"
+    << "  -dev.arm.mips          <number>  Limit emulation speed to simulate ARM CPU used.\n"
 #ifdef DEBUGGER_SUPPORT
     << "  -dev.thumb.inccycles   <1|0>     Determines whether ARM emulation cycles\n"
     << "                                    increase system cycles\n"
@@ -782,6 +784,7 @@ void Settings::usage()
     << "  -dev.tia.delaybkcolor  <1|0>      Enable extra delay cycle for background color\n"
     << "  -dev.tia.delayplswap   <1|0>      Enable extra delay cycle for VDELP0/1 swap\n"
     << "  -dev.tia.delayblswap   <1|0>      Enable extra delay cycle for VDELBL swap\n"
+
     << "  -elf.dump              <1|0>      Dump ELF linkage information and write elf_executable_image.bin\n\n";
 
 #ifdef BSPF_WINDOWS

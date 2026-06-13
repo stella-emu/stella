@@ -22,6 +22,7 @@ class System;
 
 #include "bspf.hxx"
 #include "Cart.hxx"
+#include "FSNode.hxx"
 #ifdef DEBUGGER_SUPPORT
   #include "CartARWidget.hxx"
 #endif
@@ -87,6 +88,24 @@ class CartridgeAR : public Cartridge
       @param settings  A reference to the various settings (read-only)
     */
     CartridgeAR(ByteSpan image, string_view md5, const Settings& settings);
+
+    /**
+      Create a new cartridge for sound-load mode.  The caller supplies the
+      real Supercharger BIOS ROM (exactly 2K) and pre-conditioned mono PCM
+      samples decoded from a WAV or MP3 file.  The BIOS receives tape bits
+      via the $1FF9 register, timed to the emulated CPU clock.
+
+      @param biosImage  Span of the 2K Supercharger BIOS ROM
+      @param pcmData    Conditioned mono PCM samples (threshold 0.0)
+      @param sampleRate Audio sample rate of pcmData (Hz)
+      @param tapeStarts Sample offset in pcmData where each tape begins (the
+                        first element is 0); its size is the number of tapes
+      @param md5        The md5sum of the source audio file
+      @param settings   A reference to the various settings (read-only)
+    */
+    CartridgeAR(ByteSpan biosImage, vector<float> pcmData, uInt32 sampleRate,
+                vector<size_t> tapeStarts, string_view md5,
+                const Settings& settings);
     ~CartridgeAR() override = default;
 
   public:
@@ -200,6 +219,14 @@ class CartridgeAR : public Cartridge
 
   public:
     /**
+      Load a WAV or MP3 file as conditioned mono PCM samples for sound-load mode.
+      Called by CartCreator when building a sound-load CartridgeAR instance.
+
+      @return  Pair of (samples, sampleRate), or ({}, 0) on failure
+    */
+    static std::pair<vector<float>, uInt32> loadPCM(const FSNode& file);
+
+    /**
       Get the byte at the specified address
 
       @return The byte at the specified address
@@ -228,6 +255,24 @@ class CartridgeAR : public Cartridge
     // Process the write-pending state machine; returns true if a RAM write occurred
     bool handleHotspot(uInt16 addr);
 
+    // Synthesise a valid 256-byte header for the given load block from the
+    // current RAM/zero-page state, so a saved copy of the image can be reloaded
+    void finalizeLoad(uInt32 block);
+
+    // Called when the PCM stream is exhausted: finalises the active load and
+    // frees the PCM buffer, leaving the BIOS active
+    void finalizeSoundLoad();
+
+    // Remove DC bias in-place
+    static void conditionSignal(FloatMSpan samples);
+
+    // Compute the byte index into myImage/myRomAccessBase for a cartridge
+    // address, selecting the lower ($F000-$F7FF) or upper ($F800-$FFFF) 2K
+    // window's currently-mapped bank offset
+    size_t imageIndex(uInt16 address) const {
+      return (address & 0x07FF) + myImageOffset[(address & 0x0800) ? 1 : 0];
+    }
+
   private:
     // Indicates the offset within the image for the corresponding bank
     std::array<uInt32, 2> myImageOffset{};
@@ -243,6 +288,15 @@ class CartridgeAR : public Cartridge
 
     // Indicates how many 8448 loads there are
     uInt8 myNumberOfLoadImages{0};
+
+    // Sound-load mode only: sample offset within the PCM stream where each
+    // tape's data begins (element 0 is always 0).  Used to advance the active
+    // load block as each tape streams in, so getImage()/saveROM emit a standard
+    // multi-load image (6K RAM + 2K blank BIOS + 256B header per tape).
+    vector<size_t> myTapeStartSamples;
+
+    // Sound-load mode only: the load block (tape) currently streaming into RAM
+    uInt32 myCurrentLoadBlock{0};
 
     // Indicates if the RAM is write enabled
     bool myWriteEnabled{false};
@@ -261,6 +315,18 @@ class CartridgeAR : public Cartridge
 
     // Indicates which bank is currently active
     uInt16 myCurrentBank{0};
+
+    // Sound-load mode: PCM samples streamed to the real BIOS via $1FF9
+    vector<float> myPCMData;
+    uInt32 myPCMSampleRate{0};
+    // Precomputed ratio: sampleRate / cpuFreq; avoids repeated division in peek()
+    double myPCMSamplesPerCycle{0.0};
+    bool myIsSoundLoad{false};
+    // CPU cycle when tape playback began (latched after play-delay expires)
+    uInt64 myPCMStartCycle{0};
+    bool myPCMStarted{false};
+    // Reads of $1FF9 to absorb before starting PCM (lets BIOS show "REWIND/PRESS PLAY")
+    uInt32 myPCMLoadDelay{0};
 
     // Fake SC-BIOS code to simulate the Supercharger load bars
     // This is not marked 'constexpr', since it's patched at runtime

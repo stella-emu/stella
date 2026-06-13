@@ -112,13 +112,8 @@ void QisBlitter::blit(SDL_Surface& surface)
 
     blitToIntermediate();
 
-    myIntermediateTexture = mySecondaryIntermediateTexture;
-    mySecondaryIntermediateTexture = intermediateTexture;
-
-//     std::swap(mySrcTexture, mySecondarySrcTexture);
-    SDL_Texture* temporary = mySrcTexture;
-    mySrcTexture = mySecondarySrcTexture;
-    mySecondarySrcTexture = temporary;
+    std::swap(myIntermediateTexture, mySecondaryIntermediateTexture);
+    std::swap(mySrcTexture, mySecondarySrcTexture);
   }
 
   SDL_RenderTexture(myFB.renderer(), intermediateTexture,
@@ -135,9 +130,6 @@ void QisBlitter::blitToIntermediate()
   r.x = r.y = 0.F;
 
   SDL_SetRenderTarget(myFB.renderer(), myIntermediateTexture);
-
-  SDL_SetRenderDrawColor(myFB.renderer(), 0, 0, 0, 255);
-  SDL_RenderClear(myFB.renderer());
 
   SDL_RenderTexture(myFB.renderer(), mySrcTexture, &r, &myIntermediateFRect);
 

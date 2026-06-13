@@ -169,7 +169,8 @@ bool OSystem::initialize(const Settings::Options& options)
   createSound();
 
   // Create random number generator
-  myRandom = std::make_unique<Random>(static_cast<uInt32>(TimerManager::getTicks()));
+  const int seed = mySettings->getInt("seed");
+  myRandom = std::make_unique<Random>(seed ? seed : static_cast<uInt32>(TimerManager::getTicks()));
 
 #ifdef CHEATCODE_SUPPORT
   myCheatManager = std::make_unique<CheatManager>(*this);
@@ -432,6 +433,12 @@ string OSystem::createConsole(const FSNode& rom, string_view md5sum, bool newrom
     mySettings->setValue("romloadcount", -1); // we move to the next game initially
   }
 
+  // Seed the default phosphor blend from the current global 'tv.phosblend',
+  // so a ROM whose 'Display.PPBlend' is unset inherits it when its properties
+  // are loaded below
+  Properties::setDefault(PropType::Display_PPBlend,
+                         mySettings->getString(PhosphorHandler::SETTING_BLEND));
+
   // Create an instance of the 2600 game console
   myEventHandler->handleConsoleStartupEvents();
   try
@@ -542,8 +549,6 @@ string OSystem::createConsole(const FSNode& rom, string_view md5sum, bool newrom
 
       Logger::info(std::format("PlusROM Nick: {}, ID: {}",
         settings().getString("plusroms.nick"), id));
-
-      Logger::info("PlusROM Nick: " + settings().getString("plusroms.nick") + ", ID: " + id);
     }
   }
 
@@ -641,8 +646,18 @@ unique_ptr<Console> OSystem::openConsole(const FSNode& romfile, string& md5)
 {
   unique_ptr<Console> console;
 
+  // WAV/MP3 files don't need a ROM image; CartCreator handles them via PCM loading
+  const string_view rompath = romfile.getPath();
+  const bool isSoundLoad = BSPF::endsWithIgnoreCase(rompath, ".wav") ||
+                           BSPF::endsWithIgnoreCase(rompath, ".mp3");
+
   // Open the cartridge image and read it in
-  if(ByteArray image = openROM(romfile, md5); !image.empty())
+  ByteArray image;
+  if(isSoundLoad)
+    md5 = MD5::hash(romfile.getPath());  // no image to hash; derive from path
+  else
+    image = openROM(romfile, md5);
+  if(isSoundLoad || !image.empty())
   {
     // Get a valid set of properties, including any entered on the commandline
     // For initial creation of the Cart, we're only concerned with the BS type
@@ -672,7 +687,7 @@ unique_ptr<Console> OSystem::openConsole(const FSNode& romfile, string& md5)
     };
 
     unique_ptr<Cartridge> cart =
-      CartCreator::create(romfile, image, cartmd5, type, *mySettings);
+      CartCreator::create(romfile, image, cartmd5, type, *mySettings, myBaseDir);
     cart->setMessageCallback(callback);
 
     // Some properties may not have a name set; we can't leave it blank
@@ -683,11 +698,14 @@ unique_ptr<Console> OSystem::openConsole(const FSNode& romfile, string& md5)
     // and that the md5 (and hence the cart) has changed
     if(props.get(PropType::Cart_MD5) != cartmd5)
     {
+      // getMD5 resets props to defaults before searching, so save the name
+      // derived above so it isn't lost when the lookup finds no entry
+      const string savedName{props.get(PropType::Cart_Name)};
       if(!myPropSet->getMD5(cartmd5, props))
       {
         // Cart md5 wasn't found, so we create a new props for it
         props.set(PropType::Cart_MD5, cartmd5);
-        props.set(PropType::Cart_Name, std::format("{}{}", props.get(PropType::Cart_Name), cart->multiCartID()));
+        props.set(PropType::Cart_Name, std::format("{}{}", savedName, cart->multiCartID()));
         myPropSet->insert(props, false);
       }
     }
@@ -699,12 +717,13 @@ unique_ptr<Console> OSystem::openConsole(const FSNode& romfile, string& md5)
     CMDLINE_PROPS_UPDATE("rc", PropType::Controller_Right);
     CMDLINE_PROPS_UPDATE("rq1", PropType::Controller_Right1);
     CMDLINE_PROPS_UPDATE("rq2", PropType::Controller_Right2);
-    const string& bc = mySettings->getString("bc");
-    if(!bc.empty()) {
+    const string_view bc = mySettings->getString("bc");
+    if(!bc.empty())
+    {
       props.set(PropType::Controller_Left, bc);
       props.set(PropType::Controller_Right, bc);
     }
-    const string& aq = mySettings->getString("aq");
+    const string_view aq = mySettings->getString("aq");
     if(!aq.empty())
     {
       props.set(PropType::Controller_Left1, aq);
@@ -781,6 +800,11 @@ string OSystem::getROMMD5(const FSNode& rom)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ByteArray OSystem::openROM(const FSNode& rom, bool showErrorMessage)
 {
+  // WAV/MP3 files are loaded via CartCreator::createFromSoundLoad, not as raw images
+  const string_view path = rom.getPath();
+  if(BSPF::endsWithIgnoreCase(path, ".wav") || BSPF::endsWithIgnoreCase(path, ".mp3"))
+    return {};
+
   // First check if this is a valid ROM filename
   const bool isValidROM = rom.isFile() && Bankswitch::isValidRomName(rom);
   if(!isValidROM && showErrorMessage)
@@ -789,7 +813,7 @@ ByteArray OSystem::openROM(const FSNode& rom, bool showErrorMessage)
   // Next check for a proper file size
   // Streaming ROMs read only a portion of the file
   // Otherwise the size to read is 0 (meaning read the entire file)
-  const size_t sizeToRead = CartDetector::isProbablyMVC(rom);  // TODO: optimize this
+  const size_t sizeToRead = CartDetector::isProbablyMVC(rom);
   const bool isStreaming  = sizeToRead > 0;
 
   // Make sure we only read up to the maximum supported cart size
