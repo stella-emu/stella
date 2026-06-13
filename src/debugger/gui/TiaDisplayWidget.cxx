@@ -88,17 +88,25 @@ void TiaDisplayWidget::clampSource()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TiaDisplayWidget::visibleRegion(uInt32& sx, uInt32& sy,
+                                     uInt32& vw, uInt32& vh) const
+{
+  float vwf = 0.F, vhf = 0.F;
+  visibleSize(vwf, vhf);
+  vw = static_cast<uInt32>(std::lround(vwf));
+  vh = static_cast<uInt32>(std::lround(vhf));
+  sx = static_cast<uInt32>(std::lround(mySrcX));
+  sy = static_cast<uInt32>(std::lround(mySrcY));
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TiaDisplayWidget::updateSurface()
 {
   uInt32 fw = 0, fh = 0;
   frameSize(fw, fh);
 
-  float vwf = 0.F, vhf = 0.F;
-  visibleSize(vwf, vhf);
-  const uInt32 vw = static_cast<uInt32>(std::lround(vwf));
-  const uInt32 vh = static_cast<uInt32>(std::lround(vhf));
-  const uInt32 sx = static_cast<uInt32>(std::lround(mySrcX));
-  const uInt32 sy = static_cast<uInt32>(std::lround(mySrcY));
+  uInt32 vw = 0, vh = 0, sx = 0, sy = 0;
+  visibleRegion(sx, sy, vw, vh);
 
   const TIASurface& tiaSurface = instance().frameBuffer().tiaSurface();
   const uInt8* buffer = instance().console().tia().outputBuffer();
@@ -276,9 +284,24 @@ void TiaDisplayWidget::drawWidget(bool hilite)
       ScalingInterpolation::none);
     myTiaSurface->setVisible(true);
 
+    // Pixel-locked overlay layer (electron-beam cursor, future TIA-aligned
+    // marks).  Same size/scaling as the image so it can share the image's
+    // src/dst rectangles; blended so its transparent background lets the image
+    // show through and only the drawn marks appear on top.
+    myMarkSurface = instance().frameBuffer().allocateSurface(
+      TIAConstants::frameBufferWidth, TIAConstants::frameBufferHeight,
+      ScalingInterpolation::none);
+    myMarkSurface->setVisible(true);
+    myMarkSurface->enableBlend(true);
+    myMarkSurface->setBlendLevel(100);
+
+    // Composite order on every render: the TIA image first, then the overlay
+    // layers on top of it.  The screen-space HUD layer (myHudSurface) is
+    // created lazily by its first user and may still be null here.
     dialog().addRenderCallback([this]() {
-      if(myTiaSurface != nullptr)
-        myTiaSurface->render();
+      if(myTiaSurface)  myTiaSurface->render();
+      if(myMarkSurface) myMarkSurface->render();
+      if(myHudSurface)  myHudSurface->render();
     });
   }
 
@@ -295,4 +318,37 @@ void TiaDisplayWidget::drawWidget(bool hilite)
   clampSource();
   updateSurface();
   recalcRects();
+  drawMarkers();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TiaDisplayWidget::drawMarkers()
+{
+  // Clear the previous frame's marks (fully transparent background)
+  myMarkSurface->invalidate();
+
+  // Electron-beam position cursor.  It is drawn in the image's own (top-left
+  // anchored) source space and then handed the image's exact src/dst rectangles
+  // below, so it lands on the precise TIA pixel at any zoom/pan.
+  uInt32 scanx = 0, scany = 0;
+  if(instance().console().tia().electronBeamPos(scanx, scany))
+  {
+    uInt32 sx = 0, sy = 0, vw = 0, vh = 0;
+    visibleRegion(sx, sy, vw, vh);
+
+    // ...but only when the beam lies inside the currently visible (panned) region
+    if(scanx >= sx && scanx < sx + vw && scany >= sy && scany < sy + vh)
+    {
+      // A small box, in TIA pixels (so it inherits the 2:1 pixel aspect),
+      // clamped to the visible region's right/bottom edge
+      static constexpr uInt32 size = 2;
+      const uInt32 bx = scanx - sx, by = scany - sy;
+      myMarkSurface->fillRect(bx, by, std::min(size, vw - bx),
+                              std::min(size, vh - by), kColorInfo);
+    }
+  }
+
+  // Mirror the image surface's geometry so the overlay scales and pans with it
+  myMarkSurface->setSrcRect(myTiaSurface->srcRect());
+  myMarkSurface->setDstRect(myTiaSurface->dstRect());
 }

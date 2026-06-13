@@ -68,9 +68,15 @@ class TiaDisplayWidget : public Widget, public CommandSender
     void frameSize(uInt32& w, uInt32& h) const;
     // Visible source size derived from the current zoom factor
     void visibleSize(float& w, float& h) const;
+    // The visible (zoom/pan) source region, in native TIA pixels: top-left
+    // (sx,sy) and size (vw,vh)
+    void visibleRegion(uInt32& sx, uInt32& sy, uInt32& vw, uInt32& vh) const;
     // Copy the visible (zoom/pan) region of the live TIA frame into the
     // surface's top-left (palette + phosphor) and set its source rectangle
     void updateSurface();
+    // Redraw the pixel-locked overlay (electron-beam cursor, future TIA-pixel
+    // aligned marks) for the current frame
+    void drawMarkers();
     // Recompute the surface's destination (scaled-to-fit) rectangle for the
     // current widget size
     void recalcRects();
@@ -81,6 +87,20 @@ class TiaDisplayWidget : public Widget, public CommandSender
 
   private:
     shared_ptr<FBSurface> myTiaSurface;
+
+    // Overlay layers composited on top of the TIA image by the dialog's render
+    // callback, in this order.  Neither ever touches the live image pixels:
+    //  - myMarkSurface: pixel-locked (source space).  It is given the image
+    //    surface's exact src/dst rectangles, so anything drawn into it stays
+    //    glued to its TIA pixel and zooms/pans with the image.  Hosts the
+    //    electron-beam cursor (and future TIA-pixel-aligned marks: sprite,
+    //    collision, HMOVE, ... indicators).
+    //  - myHudSurface: screen space (widget pixels, HiDPI-scaled).  Reserved
+    //    for fixed on-screen-size readouts/icons; populated lazily when the
+    //    first HUD element is added (see drawMarkers() for the pattern).
+    shared_ptr<FBSurface> myMarkSurface;
+    shared_ptr<FBSurface> myHudSurface;
+
     unique_ptr<ContextMenu> myMenu;
 
     static constexpr float MIN_ZOOM = 1.0F, MAX_ZOOM = 10.0F;
