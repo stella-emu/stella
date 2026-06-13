@@ -22,6 +22,9 @@ class FrameBuffer;
 class FBSurface;
 class OSystem;
 
+#include <mutex>
+#include <thread>
+
 #include "FrameBufferConstants.hxx"
 #include "bspf.hxx"
 
@@ -60,6 +63,13 @@ class FBMessageHandler
     */
     void showGauge(string_view message, string_view valueText,
                    float value, float minValue = 0.F, float maxValue = 100.F);
+
+    /**
+      Show any messages enqueued from other threads (e.g. cartridge code on the
+      emulation worker thread).  Must be called on the main (render) thread;
+      FrameBuffer invokes it once per frame before drawing.
+    */
+    void drainPending();
 
     bool isShown() const { return myMsg.enabled; }
 
@@ -149,6 +159,22 @@ class FBMessageHandler
     static constexpr int MESSAGE_WIDTH  = 56;
     static constexpr int GAUGEBAR_WIDTH = 30;
     static constexpr int MESSAGE_TIME   = 120; // frames (~2 seconds at 60 fps)
+
+#ifdef GUI_SUPPORT
+    // showText() mutates myMsg and allocates GUI surfaces, so it must run on
+    // the main (render) thread.  Calls arriving from other threads (e.g. a
+    // cartridge's message callback on the emulation worker thread) are queued
+    // here and replayed on the main thread by drainPending(), avoiding a data
+    // race with draw().
+    struct PendingMessage {
+      string text;
+      MessagePosition position{MessagePosition::BottomCenter};
+      bool force{false};
+    };
+    const std::thread::id myMainThreadId{std::this_thread::get_id()};
+    std::mutex myPendingMutex;
+    vector<PendingMessage> myPending;
+#endif  // GUI_SUPPORT
 
   private:
     // Following constructors and assignment operators not supported
