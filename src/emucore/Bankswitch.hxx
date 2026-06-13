@@ -320,7 +320,7 @@ class Bankswitch
     // Extension table — sorted case-insensitively for binary search.
     // Precondition: entries below MUST remain in case-insensitive sorted order.
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-    static constexpr std::array<TypeEntry, 113> ourExtensions = {{
+    static constexpr std::array<TypeEntry, 115> ourExtensions = {{
       { "03E"   , Bankswitch::Type::_03E0   },
       { "03E0"  , Bankswitch::Type::_03E0   },
       { "084"   , Bankswitch::Type::_0840   },
@@ -395,6 +395,7 @@ class Bankswitch
       { "JAN"   , Bankswitch::Type::JANE    },
       { "JANE"  , Bankswitch::Type::JANE    },
       { "MDM"   , Bankswitch::Type::MDM     },
+      { "mp3"   , Bankswitch::Type::AR      },
       { "MVC"   , Bankswitch::Type::MVC     },
       { "rom"   , Bankswitch::Type::AUTO    },
       { "SB"    , Bankswitch::Type::SB      },
@@ -402,6 +403,7 @@ class Bankswitch
       { "TVBOY" , Bankswitch::Type::TVBOY   },
       { "UA"    , Bankswitch::Type::UA      },
       { "UASW"  , Bankswitch::Type::UASW    },
+      { "wav"   , Bankswitch::Type::AR      },
       { "WD"    , Bankswitch::Type::WD      },
       { "WDSW"  , Bankswitch::Type::WDSW    },
       { "WF8"   , Bankswitch::Type::WF8     },

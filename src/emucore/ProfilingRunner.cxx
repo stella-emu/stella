@@ -112,7 +112,7 @@ bool ProfilingRunner::runOne(const ProfilingRun& run)
   string md5 = MD5::hash(ByteSpan{image.data(), size});
   const string type;
   unique_ptr<Cartridge> cartridge = CartCreator::create(
-      imageFile, image, md5, type, mySettings);
+      imageFile, image, md5, type, mySettings, FSNode{});
 
   if (!cartridge) {
     cout << "ERROR: unable to determine cartridge type\n";

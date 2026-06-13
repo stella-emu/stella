@@ -144,6 +144,8 @@
     - OSD messaging from Stella routed to libretro core
     - Fast-forward audio suppression
 
+  * Added native Windows on ARM port.
+
   * Removed R77 port; SDL3 not supported on that platform.
 
   * Updated included libraries (libpng, zlib, etc) to latest stable version.

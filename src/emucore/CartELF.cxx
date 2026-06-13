@@ -242,6 +242,8 @@ CartridgeELF::CartridgeELF(ByteSpan image, string_view md5,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeELF::reset()
 {
+  Cartridge::reset();
+
   setupConfig();
   resetWithConfig();
 }

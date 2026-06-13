@@ -21,25 +21,18 @@
 AudioQueue::AudioQueue(uInt32 fragmentSize, uInt32 capacity, bool isStereo)
   : myFragmentSize{fragmentSize},
     myIsStereo{isStereo},
-    myFragmentQueue{capacity},
-    myAllFragments{capacity + 2}
+    myFragmentQueue{capacity}
 {
   const uInt32 sampleSize = myIsStereo ? 2U : 1U;
+  const size_t fragmentStride = static_cast<size_t>(myFragmentSize) * sampleSize;
 
-  myFragmentBuffer = std::make_unique<Int16[]>(
-      static_cast<size_t>(myFragmentSize) * sampleSize * (capacity + 2));
+  myFragmentBuffer = std::make_unique<Int16[]>(fragmentStride * (capacity + 2));
 
   for (uInt32 i = 0; i < capacity; ++i)
-    myFragmentQueue[i] = myAllFragments[i] = myFragmentBuffer.get() +
-      static_cast<size_t>(myFragmentSize) * sampleSize * i;
+    myFragmentQueue[i] = myFragmentBuffer.get() + fragmentStride * i;
 
-  myAllFragments[capacity] = myFirstFragmentForEnqueue =
-    myFragmentBuffer.get() + static_cast<size_t>(myFragmentSize) * sampleSize *
-    capacity;
-
-  myAllFragments[capacity + 1] = myFirstFragmentForDequeue =
-    myFragmentBuffer.get() + static_cast<size_t>(myFragmentSize) * sampleSize *
-    (capacity + 1);
+  myFirstFragmentForEnqueue = myFragmentBuffer.get() + fragmentStride * capacity;
+  myFirstFragmentForDequeue = myFragmentBuffer.get() + fragmentStride * (capacity + 1);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

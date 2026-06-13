@@ -42,7 +42,7 @@ bool Properties::save(KeyValueRepository& repo) const
   auto* atomic = repo.atomic();
   for(size_t i = 0; i < NUM_PROPS; ++i)
   {
-    if(myProperties[i] == ourDefaultProperties[i])
+    if(myProperties[i] == defaultValue(i))
     {
       if(atomic)
         atomic->remove(ourPropertyNames[i]);
@@ -90,7 +90,7 @@ void Properties::set(PropType key, string_view value)
       {
         const int blend = BSPF::stoi(myProperties[pos]);
         if(blend < 0 || blend > 100)
-          myProperties[pos] = ourDefaultProperties[pos];
+          myProperties[pos] = defaultValue(pos);
       }
       break;
     }
@@ -105,13 +105,30 @@ void Properties::reset(PropType key)
 {
   const auto pos = static_cast<size_t>(key);
   if(pos < NUM_PROPS)
-    myProperties[pos] = ourDefaultProperties[pos];
+    myProperties[pos] = defaultValue(pos);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Properties::setDefaults()
 {
-  std::ranges::copy(ourDefaultProperties, myProperties.begin());
+  for(size_t i = 0; i < NUM_PROPS; ++i)
+    myProperties[i] = defaultValue(i);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Properties::setDefault(PropType key, string_view value)
+{
+  const auto pos = static_cast<size_t>(key);
+  if(pos < NUM_PROPS)
+    ourDefaultOverrides[pos] = value;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+string_view Properties::defaultValue(size_t pos)
+{
+  return ourDefaultOverrides[pos].empty()
+    ? ourDefaultProperties[pos]
+    : string_view{ourDefaultOverrides[pos]};
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
