@@ -34,7 +34,7 @@
 
   * Added support for CompuMate cassette load/save for binary images.
     Special thanks to Golden Child for their initial implementation
-    in MAME (issue# 79).
+    in MAME, and for sharing this with Stella (issue# 79).
 
   * Paddle / Driving Controller; extra buttons added for both left and
     right paddle.
@@ -55,6 +55,9 @@
     - Added undo and redo support
     - Added mouse support (selection, cut/copy/paste)
     - All actions have keyboard shortcuts
+
+  * Added 'sscrop' commandline argument and associated UI item that
+    crops saved PNG snapshots, removing black borders (issue #1106).
 
   * Emulation accuracy:
     - Implemented more accurate RESMP0/RESMP1 behaviour (issue #213)

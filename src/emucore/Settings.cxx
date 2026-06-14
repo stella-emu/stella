@@ -158,6 +158,7 @@ Settings::Settings()
   setPermanent("snapname", "int");
   setPermanent("sssingle", "false");
   setPermanent("ss1x", "false");
+  setPermanent("sscrop", "false");
   setPermanent("ssinterval", "2");
   setPermanent("autoslot", "false");
   setPermanent("saveonexit", "none");
@@ -574,6 +575,8 @@ void Settings::usage()
     << "  -sssingle     <1|0>            Generate single snapshot instead of many\n"
     << "  -ss1x         <1|0>            Generate TIA snapshot in 1x mode (ignore\n"
     << "                                  scaling/effects)\n"
+    << "  -sscrop       <1|0>            Automatically crop black borders from\n"
+    << "                                  snapshots\n"
     << "  -ssinterval   <number>         Number of seconds between snapshots in\n"
     << "                                  continuous snapshot mode\n\n"
     << "  -saveonexit   <none|current|   Automatically save state(s) when exiting\n"
