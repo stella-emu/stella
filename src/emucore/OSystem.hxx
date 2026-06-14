@@ -249,8 +249,25 @@ class OSystem
 
     /**
       Return the full/complete path name for storing state files.
+      The location depends on the 'statewithrom' and 'statedir' settings:
+      the current ROM's directory, a user-defined directory, or the default
+      'state' directory under the base directory.
     */
-    const FSNode& stateDir() const { return myStateDir; }
+    const FSNode& stateDir();
+
+    /**
+      Return the state directory selected by the 'statedir' setting, mapping
+      an unset (empty) value to defaultStateDir(). Ignores the 'statewithrom'
+      override, so the result is the user-configurable location (used by
+      'stateDir()' and the settings UI).
+    */
+    FSNode configuredStateDir() const;
+
+    /**
+      Return the default location for storing state files: the 'state'
+      directory under the base directory.
+    */
+    FSNode defaultStateDir() const;
 
     /**
       Return the full/complete path name for storing nvram

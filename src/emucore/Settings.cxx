@@ -162,6 +162,8 @@ Settings::Settings()
   setPermanent("ssinterval", "2");
   setPermanent("autoslot", "false");
   setPermanent("saveonexit", "none");
+  setPermanent("statedir", "");
+  setPermanent("statewithrom", "false");
 
   // Config files and paths
   setPermanent("romdir", "");
@@ -582,7 +584,10 @@ void Settings::usage()
     << "  -saveonexit   <none|current|   Automatically save state(s) when exiting\n"
     << "                 all>             emulation\n"
     << "  -autoslot     <0|1>            Automatically change to next save slot when\n"
-    << "                                  state saving\n\n"
+    << "                                  state saving\n"
+    << "  -statedir     <path>           The directory to load/save state files from/to\n"
+    << "  -statewithrom <0|1>            Load/save state files in the current ROM's\n"
+    << "                                  directory\n\n"
     << "  -rominfo      <rom>            Display detailed information for the given ROM\n"
     << "  -listrominfo                   Display contents of stella.pro, one line per ROM\n"
     << "                                  entry\n\n"

@@ -59,6 +59,10 @@
   * Added 'sscrop' commandline argument and associated UI item that
     crops saved PNG snapshots, removing black borders (issue #1106).
 
+  * Added 'statedir' and 'statewithrom' commandline arguments and
+    associated UI items that allow to change state file location,
+    including always putting it with the ROM (issue #1086).
+
   * Emulation accuracy:
     - Implemented more accurate RESMP0/RESMP1 behaviour (issue #213)
     - Implemented proper PA7 behaviour in M6532 (issue #108)

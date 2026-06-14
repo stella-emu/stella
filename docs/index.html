@@ -3126,6 +3126,17 @@
     </tr>
 
     <tr>
+      <td><pre>-statedir &lt;path&gt;</pre></td>
+      <td>The directory to load/save state files from/to.</td>
+    </tr>
+
+    <tr>
+      <td><pre>-statewithrom &lt;1|0&gt;</pre></td>
+      <td>Load/save state files in the current ROM's directory (overrides
+        <pre>-statedir</pre>).</td>
+    </tr>
+
+    <tr>
       <td><pre>-fastscbios &lt;1|0&gt;</pre></td>
       <td>Disable Supercharger BIOS progress loading bars.</td>
     </tr>
@@ -4009,6 +4020,18 @@
               Automatically change to the next available save state slot after saving a ROM state file.
             </td>
             <td>-autoslot</td>
+          </tr><tr>
+            <td>State path</td>
+            <td>
+              The directory to load/save state files from/to.
+            </td>
+            <td>-statedir</td>
+          </tr><tr>
+            <td>Load/save states in ROM directory</td>
+            <td>
+              Load/save state files in the current ROM's directory. This overrides the 'State path' setting.
+            </td>
+            <td>-statewithrom</td>
           </tr>
         </table>
       </td>

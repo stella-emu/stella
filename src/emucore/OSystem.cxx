@@ -276,7 +276,6 @@ void OSystem::setConfigPaths()
       path.makeDir();
   };
 
-  buildDirIfRequired(myStateDir, myBaseDir, "state");
   buildDirIfRequired(myNVRamDir, myBaseDir, "nvram");
 #ifdef DEBUGGER_SUPPORT
   buildDirIfRequired(myCfgDir, myBaseDir, "cfg");
@@ -284,6 +283,34 @@ void OSystem::setConfigPaths()
 
   myCheatFile = myBaseDir;  myCheatFile /= "stella.cht";
   myPaletteFile = myBaseDir;  myPaletteFile /= "stella.pal";
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+const FSNode& OSystem::stateDir()
+{
+  if(mySettings->getBool("statewithrom") && myRomFile.isFile())
+    myStateDir = myRomFile.getParent();
+  else
+    myStateDir = configuredStateDir();
+  if(!myStateDir.isDirectory())
+    myStateDir.makeDir();
+
+  return myStateDir;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+FSNode OSystem::configuredStateDir() const
+{
+  const string_view sDir = mySettings->getString("statedir");
+  return sDir.empty() ? defaultStateDir() : FSNode(sDir);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+FSNode OSystem::defaultStateDir() const
+{
+  FSNode node = myBaseDir;
+  node /= "state";
+  return node;
 }
 
 #ifdef IMAGE_SUPPORT
