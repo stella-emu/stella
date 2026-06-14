@@ -66,6 +66,7 @@ bool StellaLIBRETRO::create(const SettingsLIBRETRO& cfg, bool logging)
   settings.setValue("uimessages",       cfg.info_messages);
   settings.setValue("plr.extaccess",    cfg.info_messages);
   settings.setValue("plr.detectedinfo", cfg.info_messages);
+  settings.setValue("plr.timemachine",  false);
 
   settings.setValue("detectpal60",  cfg.detect_pal60);
   settings.setValue("detectntsc50", cfg.detect_ntsc50);

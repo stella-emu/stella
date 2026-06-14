@@ -947,6 +947,8 @@ bool TIA::saveDisplay(Serializer& out) const
     out.putByteArray(myBackBuffer);
     out.putByteArray(myFrontBuffer);
     out.putInt(myFramesSinceLastRender);
+
+    if(!myAudio.saveSamples(out)) return false;
   }
   catch(...)
   {
@@ -967,6 +969,8 @@ bool TIA::loadDisplay(Serializer& in)
     in.getByteArray(myBackBuffer);
     in.getByteArray(myFrontBuffer);
     myFramesSinceLastRender = in.getInt();
+
+    if(!myAudio.loadSamples(in)) return false;
   }
   catch(...)
   {

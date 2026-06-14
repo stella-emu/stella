@@ -119,11 +119,13 @@
       FBBackend. Settings)
     - Keymap and JoyMap switched from unordered_map to sorted vector with
       binary search (faster for sizes involved)
+    - Fixed state save files being very large when they didn't need to be
 
   * For the Windows port:
     - FSNodeWINDOWS now uses UTF-16 internally; fixes corruption and not
       saving to correct directories with non-ASCII filenames
       (issue #1051, #1054, #1084, #1133)
+    - Added a native Windows on ARM port
 
   * For the Mac port:
     - Minimum OS version is macOS 26, and compilation requires Xcode 26;
@@ -153,8 +155,6 @@
     - Savestates fixed (was saving all zeroes, loading past end of data)
     - OSD messaging from Stella routed to libretro core
     - Fast-forward audio suppression
-
-  * Added native Windows on ARM port.
 
   * Removed R77 port; SDL3 not supported on that platform.
 

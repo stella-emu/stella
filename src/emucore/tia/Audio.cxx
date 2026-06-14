@@ -74,10 +74,8 @@ void Audio::createSample()
   mySumChannel0 = mySumChannel1 = mySumCt = 0;
 
   addSample(sample0, sample1);
-#ifdef GUI_SUPPORT
   if(myRewindMode)
     mySamples.push_back(sample0 | (sample1 << 4));
-#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -117,17 +115,6 @@ bool Audio::save(Serializer& out) const
     out.putInt(mySumChannel0);
     out.putInt(mySumChannel1);
     out.putInt(mySumCt);
-
-  #ifdef GUI_SUPPORT
-    out.putLong(static_cast<uInt64>(mySamples.size()));
-    out.putByteArray(mySamples);
-
-    // TODO: check if this improves sound of playback for larger state gaps
-    //out.putInt(mySampleIndex);
-    //out.putShortArray((uInt16*)myCurrentFragment, myAudioQueue->fragmentSize());
-
-    mySamples.clear();
-  #endif
   }
   catch(...)
   {
@@ -151,17 +138,50 @@ bool Audio::load(Serializer& in)
     mySumChannel0 = in.getInt();
     mySumChannel1 = in.getInt();
     mySumCt = in.getInt();
+  }
+  catch(...)
+  {
+    cerr << "ERROR: TIA_Audio::load\n";
+    return false;
+  }
 
-  #ifdef GUI_SUPPORT
+  return true;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool Audio::saveSamples(Serializer& out) const
+{
+  try
+  {
+    out.putLong(static_cast<uInt64>(mySamples.size()));
+    out.putByteArray(mySamples);
+
+    // TODO: check if this improves sound of playback for larger state gaps
+    //out.putInt(mySampleIndex);
+    //out.putShortArray((uInt16*)myCurrentFragment, myAudioQueue->fragmentSize());
+
+    mySamples.clear();
+  }
+  catch(...)
+  {
+    cerr << "ERROR: TIA_Audio::saveSamples\n";
+    return false;
+  }
+
+  return true;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool Audio::loadSamples(Serializer& in)
+{
+  try
+  {
     const uInt64 sampleSize = in.getLong();
     ByteArray samples(sampleSize);
     in.getByteArray(samples);
 
-    //mySampleIndex = in.getInt();
-    //in.getShortArray((uInt16*)myCurrentFragment, myAudioQueue->fragmentSize());
-
     // Feed all loaded samples into the audio queue
-    for(size_t i = 0; i < sampleSize; i++)
+    for(size_t i = 0; i < sampleSize; ++i)
     {
       const uInt8 sample = samples[i];
       const uInt8 sample0 = sample & 0x0f;
@@ -169,11 +189,10 @@ bool Audio::load(Serializer& in)
 
       addSample(sample0, sample1);
     }
-  #endif
   }
   catch(...)
   {
-    cerr << "ERROR: TIA_Audio::load\n";
+    cerr << "ERROR: TIA_Audio::loadSamples\n";
     return false;
   }
 
