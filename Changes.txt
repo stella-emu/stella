@@ -32,8 +32,9 @@
     including one discovered by bootsector and Eric Fraga of AtariAge.
     (issue #1152).
 
-  * Added support for CompuMate cassette load/save for binary images
-    (issue# 79).
+  * Added support for CompuMate cassette load/save for binary images.
+    Special thanks to Golden Child for their initial implementation
+    in MAME (issue# 79).
 
   * Paddle / Driving Controller; extra buttons added for both left and
     right paddle.
@@ -90,6 +91,8 @@
     - Cheat code dialog; double-Escape bug fixed, also fixes long-standing
       debugger "Search RAM" Escape lockup
     - Added developer option for disabling PlusROM support
+    - Fixed location of debugger script not matching documentation
+      (issue #1120)
 
   * Efficiency improvements:
     - Serializer completely reworked; much faster state save/load,

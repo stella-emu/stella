@@ -176,11 +176,13 @@ string Debugger::autoExec(StringList* history)
     myParser->exec(autoexec, history)
   );
 
-  // Also, "romname.script" if present
-  const string romScriptPath = myOSystem.userDir().getPath() +
-      myOSystem.romFile().getNameWithExt(".script");
-
-  const FSNode romname(romScriptPath);
+  // Also, "romname.script" if present. Per the documentation this lives in
+  // the same directory as the ROM; fall back to the user directory (where
+  // the 'save'/autosave commands write it) for backward compatibility.
+  FSNode romname = myOSystem.romFile().getSiblingNode(".script");
+  if(!romname.exists())
+    romname = FSNode(myOSystem.userDir().getPath() +
+                     myOSystem.romFile().getNameWithExt(".script"));
   output += std::format("{}\n", myParser->exec(romname, history));
 
   // Also, script specified via -dbg.script command line parameter
