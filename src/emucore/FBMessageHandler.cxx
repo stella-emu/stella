@@ -369,7 +369,7 @@ void FBMessageHandler::drawStats(float framesPerSecond)
 
   // Draw fps / speed
   const float speed = myOSystem.settings().getBool("turbo")
-    ? 50.0F
+    ? 50.F
     : myOSystem.settings().getFloat("speed");
   const string line2 = std::format("{:.1f}fps @ {:.0f}% speed",
     framesPerSecond, 100 * speed);

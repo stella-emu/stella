@@ -245,7 +245,7 @@ float StellaLIBRETRO::getVideoAspectPar(uInt32 aspect_ntsc, uInt32 aspect_pal) c
   else
   {
     if (!aspect_pal)
-      par = (7.3750000F / (4.43361875F * 4.F / 5.F)) / 2.F;
+      par = (7.375F / (4.43361875F * 4.F / 5.F)) / 2.F;
     else
       par = aspect_pal / 100.0;
   }
