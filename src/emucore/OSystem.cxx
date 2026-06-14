@@ -647,9 +647,7 @@ unique_ptr<Console> OSystem::openConsole(const FSNode& romfile, string& md5)
   unique_ptr<Console> console;
 
   // WAV/MP3 files don't need a ROM image; CartCreator handles them via PCM loading
-  const string_view rompath = romfile.getPath();
-  const bool isSoundLoad = BSPF::endsWithIgnoreCase(rompath, ".wav") ||
-                           BSPF::endsWithIgnoreCase(rompath, ".mp3");
+  const bool isSoundLoad = romfile.hasExtension({".mp3", ".wav"});
 
   // Open the cartridge image and read it in
   ByteArray image;
@@ -705,7 +703,8 @@ unique_ptr<Console> OSystem::openConsole(const FSNode& romfile, string& md5)
       {
         // Cart md5 wasn't found, so we create a new props for it
         props.set(PropType::Cart_MD5, cartmd5);
-        props.set(PropType::Cart_Name, std::format("{}{}", savedName, cart->multiCartID()));
+        props.set(PropType::Cart_Name, std::format("{}{}", savedName,
+                                                   cart->multiCartID()));
         myPropSet->insert(props, false);
       }
     }
@@ -801,8 +800,7 @@ string OSystem::getROMMD5(const FSNode& rom)
 ByteArray OSystem::openROM(const FSNode& rom, bool showErrorMessage)
 {
   // WAV/MP3 files are loaded via CartCreator::createFromSoundLoad, not as raw images
-  const string_view path = rom.getPath();
-  if(BSPF::endsWithIgnoreCase(path, ".wav") || BSPF::endsWithIgnoreCase(path, ".mp3"))
+  if(rom.hasExtension({".mp3", ".wav"}))
     return {};
 
   // First check if this is a valid ROM filename
@@ -1023,7 +1021,3 @@ void OSystem::mainLoop()
   myCheatManager->saveCheatDatabase();
 #endif
 }
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string OSystem::ourOverrideBaseDir;
-bool OSystem::ourOverrideBaseDirWithApp = false;

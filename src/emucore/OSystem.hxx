@@ -580,8 +580,8 @@ class OSystem
     // If not empty, a hint for derived classes to use this as the
     // base directory (where all settings are stored)
     // Derived classes are free to ignore it and use their own defaults
-    static string ourOverrideBaseDir;
-    static bool ourOverrideBaseDirWithApp;
+    static inline string ourOverrideBaseDir;
+    static inline bool ourOverrideBaseDirWithApp{false};
 
   private:
     /**

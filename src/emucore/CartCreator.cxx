@@ -377,14 +377,11 @@ namespace  // anonymous namespace, to keep these functions private
   createFromSoundLoad(const FSNode& file, string& md5,
                       Settings& settings, const FSNode& baseDir)
   {
-    const string_view path = file.getPath();
-    if(!BSPF::endsWithIgnoreCase(path, ".wav") &&
-       !BSPF::endsWithIgnoreCase(path, ".mp3"))
+    if(!file.hasExtension({".mp3", ".wav"}))
       return nullptr;
 
-    static constexpr std::array<string_view, 4> biosNames{
-      "Supercharger BIOS.bin", "Supercharger.BIOS.bin",
-      "Supercharger_BIOS.bin", "supercharger_bios.bin"
+    static constexpr std::array<string_view, 2> biosNames{
+      "SUPERCHARGER_BIOS_NTSC.BIN", "SUPERCHARGER_BIOS_PAL.BIN"
     };
 
     ByteArray biosData;
@@ -409,8 +406,7 @@ namespace  // anonymous namespace, to keep these functions private
     {
       cerr << std::format(
         "CartCreator: Supercharger BIOS not found in '{}' or '{}'\n"
-        "  (looked for: Supercharger BIOS.bin, Supercharger.BIOS.bin, "
-        "Supercharger_BIOS.bin, supercharger_bios.bin)",
+        " (searched for SUPERCHARGER_BIOS_NTSC.BIN, SUPERCHARGER_BIOS_PAL.BIN)\n",
         file.getParent().getPath(), baseDir.getPath());
       throw std::runtime_error("Supercharger BIOS not found");
     }
@@ -418,7 +414,7 @@ namespace  // anonymous namespace, to keep these functions private
     auto [pcmData, sampleRate] = CartridgeAR::loadPCM(file);
     if(pcmData.empty())
     {
-      cerr << std::format("CartCreator: failed to load PCM from '{}'\n", path);
+      cerr << std::format("CartCreator: failed to load PCM from '{}'\n", file.getPath());
       return nullptr;
     }
     cerr << std::format("CartCreator: tape 1: '{}' ({} samples @ {} Hz)\n",
