@@ -33,16 +33,6 @@
   #include "DebuggerDialog.hxx"
 #endif
 
-//#if defined(BSPF_WINDOWS)
-//#include <windows.hxx>
-//#endif
-
-#if defined(BSPF_UNIX) || defined(BSPF_MACOS)
-  #include <cstdio>
-  #include <sys/ioctl.h>
-  #include <unistd.h>
-#endif
-
 #include "Settings.hxx"
 #include "repository/KeyValueRepositoryNoop.hxx"
 
@@ -451,7 +441,8 @@ void Settings::validate()
 void Settings::usage()
 {
   std::stringstream buf;
-  buf << "\nStella version " << STELLA_VERSION
+  buf
+    << "\nStella version " << STELLA_VERSION
     << "\n\n"
     << "Usage: stella [options ...] romfile\n"
     << "       Run without any options or romfile to use the ROM launcher\n"
@@ -791,38 +782,7 @@ void Settings::usage()
 
     << "  -elf.dump              <1|0>      Dump ELF linkage information and write elf_executable_image.bin\n\n";
 
-#ifdef BSPF_WINDOWS
-//  int height = 25;
-//  CONSOLE_SCREEN_BUFFER_INFO csbi;
-//
-//  if(NULL != GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &csbi))
-//    height = csbi.srWindow.Bottom - csbi.srWindow.Top + 1;
   cout << buf.view() << std::flush;
-#endif
-
-#if defined(BSPF_UNIX) || defined(BSPF_MACOS)
-  int height = 25;
-  struct winsize ws{};
-
-  ioctl(STDOUT_FILENO, TIOCGWINSZ, &ws);
-
-  height = ws.ws_row;
-
-  int row = 0;
-  while(buf.good())
-  {
-    if(++row == height - 1)
-    {
-      row = 0;
-      cout << "Press \"Enter\"" << std::flush;
-      std::ignore = getchar();
-      cout << '\n';
-    }
-    string substr;
-    getline(buf, substr, '\n');
-    cout << substr << '\n';
-  }
-#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

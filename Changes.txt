@@ -142,6 +142,8 @@
       XDG spec
     - Implemented -baseinappdir (previously Windows-only feature)
     - Wayland/HiDPI improvements due to SDL3
+    - Restore printing from -help to not use paging; instead the user
+      can pipe through less, as expected by most UNIX apps (issue #962)
 
   * For the libretro port:
     - RetroAchievements; basic support added
