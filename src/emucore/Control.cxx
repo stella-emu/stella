@@ -59,12 +59,7 @@ bool Controller::read(DigitalPin pin)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 float Controller::currentInputPos() const
 {
-  const uInt32 lines = mySystem.tia().scanlinesLastFrame();
-  if(lines == 0)
-    return 0.F;
-
-  return std::min(static_cast<float>(mySystem.tia().scanlines()) /
-                  static_cast<float>(lines), 0.99999F);
+  return mySystem.tia().subFramePosition();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

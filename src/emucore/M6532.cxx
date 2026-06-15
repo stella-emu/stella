@@ -254,13 +254,8 @@ uInt8 M6532::peek(uInt16 addr)
       // a momentary Select/Reset press is seen mid-frame
       mySystem->tia().updateEmulation();
 
-      const uInt32 lines = mySystem->tia().scanlinesLastFrame();
-      const float pos = lines ? std::min(
-          static_cast<float>(mySystem->tia().scanlines()) /
-          static_cast<float>(lines), 0.99999F) : 0.F;
-
       return (myOutB | ~myDDRB) &
-             (myConsole.switches().read(pos) | myDDRB);
+             (myConsole.switches().read(mySystem->tia().subFramePosition()) | myDDRB);
     }
 
     case 0x03:    // SWBCNT - Port B Data Direction Register
