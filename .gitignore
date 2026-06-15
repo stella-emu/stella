@@ -22,6 +22,7 @@ xcuserdata/
 .DS_Store
 build/
 src/os/macos/M6502.ins
+src/common/VersionBuild.hxx
 *.dSYM
 .vscode/c_cpp_properties.json
 .vscode/settings.json

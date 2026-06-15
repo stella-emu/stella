@@ -3305,6 +3305,7 @@
 			buildPhases = (
 				51DDA2DF83A64ACA883BBB18 /* Strip Quarantine */,
 				2D9173C909BA90380026E9FF /* ShellScript */,
+				B0117D00B0117D00B0117D00 /* Generate Build Number */,
 				2D9173CA09BA90380026E9FF /* Headers */,
 				2D91746C09BA90380026E9FF /* Resources */,
 				2D91747309BA90380026E9FF /* Sources */,
@@ -3383,6 +3384,21 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "m4 ../../emucore/M6502.m4 > M6502.ins\n";
+		};
+		B0117D00B0117D00B0117D00 /* Generate Build Number */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Generate Build Number";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "sh ../../tools/genbuildnum.sh\n";
 		};
 		51DDA2DF83A64ACA883BBB18 /* Strip Quarantine */ = {
 			isa = PBXShellScriptBuildPhase;
