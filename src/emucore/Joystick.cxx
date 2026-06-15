@@ -71,7 +71,19 @@ void Joystick::updateButtons()
   // The joystick uses both mouse buttons for the single joystick button
   updateMouseButtons(firePressed, firePressed);
 
-  setPin(DigitalPin::Six, !getAutoFireState(firePressed));
+  updateFireButton(firePressed);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Joystick::updateFireButton(bool firePressed)
+{
+  // In the common case, bind the fire button to its event so it can change
+  // mid-frame.  Fall back to a static pin when the mouse or auto fire is
+  // driving the button state.
+  if(myControlID < 0 && !autoFireActive())
+    bindPin(DigitalPin::Six, myFireEvent);
+  else
+    setPin(DigitalPin::Six, !getAutoFireState(firePressed));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -87,11 +99,13 @@ void Joystick::updateMouseButtons(bool& pressedLeft, bool& pressedRight)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Joystick::updateDigitalAxes()
 {
-  // Digital events (from keyboard or joystick hats & buttons)
-  setPin(DigitalPin::One,   myEvent.get(myUpEvent) == 0);
-  setPin(DigitalPin::Two,   myEvent.get(myDownEvent) == 0);
-  setPin(DigitalPin::Three, myEvent.get(myLeftEvent) == 0);
-  setPin(DigitalPin::Four,  myEvent.get(myRightEvent) == 0);
+  // Digital events (from keyboard or joystick hats & buttons), bound so they
+  // reflect their value at the current scanline.  Mouse-driven axes
+  // (updateMouseAxes) override these with static values when active.
+  bindPin(DigitalPin::One,   myUpEvent);
+  bindPin(DigitalPin::Two,   myDownEvent);
+  bindPin(DigitalPin::Three, myLeftEvent);
+  bindPin(DigitalPin::Four,  myRightEvent);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

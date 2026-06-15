@@ -18,12 +18,31 @@
 #ifndef EVENT_HXX
 #define EVENT_HXX
 
+#include <atomic>
 #include <mutex>
 #include <unordered_set>
+#include <vector>
 
 #include "bspf.hxx"
 
 /**
+  Holds the current value of every event type, plus a per-frame schedule of
+  input transitions used to model controllers as devices whose state changes
+  continuously through a frame (rather than being latched once per frame).
+
+  Input is polled once per frame, but a program may sample a controller several
+  times within a single frame (e.g. the fire button before and after its
+  display kernel) and expect to observe a press/release that happened part way
+  through.  To support this, every change to an input value during the poll is
+  recorded as a transition; finalizeInputWindow() then spreads the frame's
+  transitions across [0,1) and get(type, pos) replays the value as of a given
+  sub-frame position (see Controller::read).
+
+  NOTE: the transitions are spread in arrival order, not by real time.  SDL
+  stamps events at drain time rather than physical arrival, so the true
+  sub-frame timing of an input is not recoverable; a lone press/release is
+  therefore placed mid-frame.
+
   @author  Stephen Anthony, Christian Speckner, Thomas Jentzsch
 */
 class Event
@@ -219,12 +238,99 @@ class Event
     }
 
     /**
-      Set the value associated with the event of the specified type.
+      Get the value of the event of the specified type as of the given
+      sub-frame position [0,1).  This replays the transitions recorded
+      during the most recent input poll, spread across the frame, so a
+      device sampling an input at different scanlines sees it change
+      mid-frame.  Falls back to the latest value when the type had no
+      transitions this frame.
+    */
+    Int32 get(Type type, float pos) const {
+      const std::scoped_lock lock(myMutex);
+
+      Int32 result = myValues[type];
+      for(const auto& t: myTransitions)
+        if(t.type == type && t.pos <= pos)
+          result = t.value;
+
+      return result;
+    }
+
+    /**
+      Whether any input transitions were recorded during the most recent
+      poll.  Hot-path readers (Controller::read, Switches::read) use this
+      to skip the sub-frame replay on the common frame where nothing
+      changed: when false, every input is constant across the frame and
+      equals its latched value, so the (mutex-locked) transition scan in
+      get(type, pos) can be avoided entirely.  Read lock-free; the value
+      is published under the mutex during the input poll, which happens
+      before the worker thread reads it for the same frame.
+    */
+    bool hasTransitions() const {
+      return myHasTransitions.load(std::memory_order_relaxed);
+    }
+
+    /**
+      Set the value associated with the event of the specified type.  While the
+      input window is open (see beginInputWindow), a change of value is also
+      recorded in the per-frame transition schedule, in arrival order; the
+      transitions are later spread across the frame by finalizeInputWindow().
     */
     void set(Type type, Int32 value) {
       const std::scoped_lock lock(myMutex);
 
+      if(myRecording && value != myValues[type])
+      {
+        // Record the pre-change baseline once, so get(type, pos) has a value
+        // for positions before the first transition this frame
+        if(std::ranges::none_of(myTransitions,
+            [type](const Transition& t){ return t.type == type; }))
+          myTransitions.push_back({type, 0.F, myValues[type]});
+
+        // Position is assigned later by finalizeInputWindow(); -1 marks pending
+        myTransitions.push_back({type, -1.F, value});
+      }
+
       myValues[type] = value;
+    }
+
+    /**
+      Open the input window: clear the previous frame's transition schedule and
+      begin recording new transitions.  Called once before draining input.
+    */
+    void beginInputWindow() {
+      const std::scoped_lock lock(myMutex);
+
+      myTransitions.clear();
+      myRecording = true;
+      myHasTransitions.store(false, std::memory_order_relaxed);
+    }
+
+    /**
+      Close the input window and spread the recorded transitions evenly across
+      the frame in arrival order.  SDL only timestamps events at drain time
+      (not real arrival), so we cannot recover the true sub-frame timing;
+      instead we distribute N transitions at 1/(N+1) .. N/(N+1), which places a
+      lone press/release mid-frame and keeps multiple transitions ordered.
+    */
+    void finalizeInputWindow() {
+      const std::scoped_lock lock(myMutex);
+
+      myRecording = false;
+
+      uInt32 pending = 0;
+      for(const auto& t: myTransitions)
+        if(t.pos < 0.F) ++pending;
+
+      // Publish the fast-path gate read lock-free by get()'s hot-path callers
+      myHasTransitions.store(pending != 0, std::memory_order_relaxed);
+      if(pending == 0)
+        return;
+
+      uInt32 k = 0;
+      for(auto& t: myTransitions)
+        if(t.pos < 0.F)
+          t.pos = static_cast<float>(++k) / static_cast<float>(pending + 1);
     }
 
     /**
@@ -235,6 +341,9 @@ class Event
       const std::scoped_lock lock(myMutex);
 
       myValues.fill(Event::NoType);
+      myTransitions.clear();
+      myRecording = false;
+      myHasTransitions.store(false, std::memory_order_relaxed);
     }
 
     /**
@@ -257,8 +366,29 @@ class Event
     }
 
   private:
+    // A single recorded input transition within the current frame: the event
+    // 'type' took on 'value' at sub-frame position 'pos' [0,1)
+    struct Transition {
+      Type  type{NoType};
+      float pos{0.F};
+      Int32 value{0};
+    };
+
+  private:
     // Array of values associated with each event type
     std::array<Int32, LastType> myValues;
+
+    // Ordered (arrival-order) input transitions recorded during the current
+    // frame's input poll, replayed by get(type, pos)
+    std::vector<Transition> myTransitions;
+
+    // True while the input window is open and set() should record transitions
+    bool myRecording{false};
+
+    // Lock-free fast-path gate: true when myTransitions holds any transition
+    // for the current frame.  Lets hot-path readers skip the mutex-locked
+    // transition scan when nothing changed (see hasTransitions()).
+    std::atomic<bool> myHasTransitions{false};
 
     mutable std::mutex myMutex;
 

@@ -88,15 +88,22 @@ void Driving::update()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Driving::updateButtons()
 {
-  bool firePressed = myEvent.get(myFireEvent) != 0;
+  const bool rawFire = myEvent.get(myFireEvent) != 0;
+  bool firePressed = rawFire;
 
   // The joystick uses both mouse buttons for the single joystick button
   updateMouseButtons(firePressed);
 
-  setPin(DigitalPin::Six, !getAutoFireState(firePressed));
+  // Bind the fire button for sub-frame replay unless the mouse or auto fire
+  // is driving it
+  if(!autoFireActive() && firePressed == rawFire)
+    bindPin(DigitalPin::Six, myFireEvent);
+  else
+    setPin(DigitalPin::Six, !getAutoFireState(firePressed));
+
   // Joystick left/right pins when using a splitter:
-  setPin(DigitalPin::Three, myEvent.get(myButton1Event) == 0);
-  setPin(DigitalPin::Four, myEvent.get(myButton2Event) == 0);
+  bindPin(DigitalPin::Three, myButton1Event);
+  bindPin(DigitalPin::Four, myButton2Event);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -19,6 +19,7 @@
 #include "Settings.hxx"
 #include "Switches.hxx"
 #include "System.hxx"
+#include "TIA.hxx"
 #include "Base.hxx"
 
 #include "M6532.hxx"
@@ -229,6 +230,10 @@ uInt8 M6532::peek(uInt16 addr)
   {
     case 0x00:    // SWCHA - Port A I/O Register (Joystick)
     {
+      // Bring the TIA up to the current cycle so the controllers sample
+      // their event-bound pins at the correct sub-frame scanline
+      mySystem->tia().updateEmulation();
+
       const uInt8 value = (myLeftPort->read() << 4) | myRightPort->read();
 
       // Each pin is high (1) by default and will only go low (0) if either
@@ -245,7 +250,17 @@ uInt8 M6532::peek(uInt16 addr)
 
     case 0x02:    // SWCHB - Port B I/O Register (Console switches)
     {
-      return (myOutB | ~myDDRB) & (myConsole.switches().read() | myDDRB);
+      // Sample the console switches at the current sub-frame scanline so
+      // a momentary Select/Reset press is seen mid-frame
+      mySystem->tia().updateEmulation();
+
+      const uInt32 lines = mySystem->tia().scanlinesLastFrame();
+      const float pos = lines ? std::min(
+          static_cast<float>(mySystem->tia().scanlines()) /
+          static_cast<float>(lines), 0.99999F) : 0.F;
+
+      return (myOutB | ~myDDRB) &
+             (myConsole.switches().read(pos) | myDDRB);
     }
 
     case 0x03:    // SWBCNT - Port B Data Direction Register

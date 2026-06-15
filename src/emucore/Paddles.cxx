@@ -163,7 +163,8 @@ void Paddles::updateA()
   setPin(DigitalPin::Four, true);
 
   // Digital events (from keyboard or joystick hats & buttons)
-  bool firePressedA = myEvent.get(myAFireEvent) != 0;
+  const bool rawFireA = myEvent.get(myAFireEvent) != 0;
+  bool firePressedA = rawFireA;
 
   // Paddle movement is a very difficult thing to accurately emulate,
   // since it originally came from an analog device that had very
@@ -185,11 +186,16 @@ void Paddles::updateA()
         AnalogReadout::MAX_POT_RESISTANCE * myPosition[0]));
   }
 
-  setPin(DigitalPin::Four, !getAutoFireState(firePressedA));
+  // Bind the fire button for sub-frame replay unless the mouse or auto
+  // fire is driving it
+  if(!autoFireActive() && firePressedA == rawFireA)
+    bindPin(DigitalPin::Four, myAFireEvent);
+  else
+    setPin(DigitalPin::Four, !getAutoFireState(firePressedA));
 
   // Joystick up/down pins when using a splitter:
-  setPin(DigitalPin::One, myEvent.get(myAButton1Event) == 0);
-  setPin(DigitalPin::Two, myEvent.get(myAButton2Event) == 0);
+  bindPin(DigitalPin::One, myAButton1Event);
+  bindPin(DigitalPin::Two, myAButton2Event);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -335,7 +341,8 @@ void Paddles::updateB()
   setPin(DigitalPin::Three, true);
 
   // Digital events (from keyboard or joystick hats & buttons)
-  bool firePressedB = myEvent.get(myBFireEvent) != 0;
+  const bool rawFireB = myEvent.get(myBFireEvent) != 0;
+  bool firePressedB = rawFireB;
 
   if(!updateAnalogAxesB())
   {
@@ -346,7 +353,12 @@ void Paddles::updateB()
         AnalogReadout::MAX_POT_RESISTANCE * myPosition[1]));
   }
 
-  setPin(DigitalPin::Three, !getAutoFireStateP1(firePressedB));
+  // Bind the fire button for sub-frame replay unless the mouse or auto
+  // fire is driving it
+  if(!autoFireActive() && firePressedB == rawFireB)
+    bindPin(DigitalPin::Three, myBFireEvent);
+  else
+    setPin(DigitalPin::Three, !getAutoFireStateP1(firePressedB));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -38,7 +38,7 @@ void Genesis::updateButtons()
 
   updateMouseButtons(firePressed, buttonCPressed);
 
-  setPin(DigitalPin::Six, !getAutoFireState(firePressed));
+  updateFireButton(firePressed);
   setPin(AnalogPin::Five, buttonCPressed
                             ? AnalogReadout::connectToGround()
                             : AnalogReadout::connectToVcc());

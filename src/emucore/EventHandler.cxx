@@ -250,8 +250,16 @@ bool EventHandler::hasMouseControl() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventHandler::poll(uInt64 time)
 {
+  // Open a fresh per-frame input transition schedule, then drain hardware
+  // events into it.  The schedule is spread across the frame and replayed
+  // sub-frame by the controllers during the next frame of emulation.
+  myEvent.beginInputWindow();
+
   // Process events from the underlying hardware
   pollEvent();
+
+  // Close the window and distribute the recorded transitions across the frame
+  myEvent.finalizeInputWindow();
 
   // Update controllers and console switches, and in general all other things
   // related to emulation

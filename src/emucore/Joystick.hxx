@@ -92,6 +92,14 @@ class Joystick : public Controller
     virtual void updateButtons();
 
     /**
+      Set the fire-button pin (DigitalPin::Six), binding it to its event for
+      sub-frame replay when possible, else setting it statically (mouse or
+      auto fire driving the state).  'firePressed' must already include any
+      mouse button contribution.  Shared with derived controllers.
+    */
+    void updateFireButton(bool firePressed);
+
+    /**
       Update the button states from the mouse button events currently set.
     */
     void updateMouseButtons(bool& pressedLeft, bool& pressedRight);

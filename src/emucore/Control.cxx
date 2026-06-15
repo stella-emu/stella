@@ -18,6 +18,7 @@
 #include <cassert>
 
 #include "System.hxx"
+#include "TIA.hxx"
 #include "Control.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -42,7 +43,28 @@ uInt8 Controller::read()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool Controller::read(DigitalPin pin)
 {
+  const Event::Type event = myDigitalPinEvent[static_cast<int>(pin)];
+
+  // An event-bound pin reflects the input's value at the current scanline,
+  // so it can change mid-frame just as the user's input did.  When no
+  // input transitioned this frame (the common case) the value is constant
+  // across the frame and equals the cached pin state, so skip the sub-frame
+  // machinery (scanline lookup + mutex-locked transition scan) entirely.
+  if(event != Event::NoType && myEvent.hasTransitions())
+    return myEvent.get(event, currentInputPos()) == 0;
+
   return getPin(pin);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+float Controller::currentInputPos() const
+{
+  const uInt32 lines = mySystem.tia().scanlinesLastFrame();
+  if(lines == 0)
+    return 0.F;
+
+  return std::min(static_cast<float>(mySystem.tia().scanlines()) /
+                  static_cast<float>(lines), 0.99999F);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

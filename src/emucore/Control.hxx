@@ -28,6 +28,7 @@ class System;
 #include "bspf.hxx"
 #include "Serializable.hxx"
 #include "AnalogReadout.hxx"
+#include "Event.hxx"
 
 /**
   A controller is a device that plugs into either the left or right
@@ -58,6 +59,17 @@ class System;
 
   This is a base class for all controllers.  It provides a view
   of the controller from the perspective of the controller's jack.
+
+  Digital pins may be either static or bound to an input event.
+  A static pin (setPin) keeps a fixed value until changed.  A pin bound
+  to an event (bindPin) instead reports that event's value sampled at
+  the current scanline (via currentInputPos), so the pin can change part
+  way through a frame exactly as the user's input did.  This is what lets
+  a program reading a pin at multiple different points in a frame observe a
+  mid-frame press/release; the sub-frame values come from the Event
+  transition schedule.  For the value to be correct the TIA must be current
+  when the pin is read: TIA register reads (INPT4/5) already update it,
+  and M6532 updates it before SWCHA/SWCHB reads.
 
   @author  Bradford W. Mott
 */
@@ -354,10 +366,23 @@ class Controller : public Serializable
       The read/write methods above are meant to be used at a higher level.
     */
     bool setPin(DigitalPin pin, bool value) {
+      // A static value overrides any sub-frame event binding on this pin
+      myDigitalPinEvent[static_cast<int>(pin)] = Event::NoType;
       return myDigitalPinState[static_cast<int>(pin)] = value;
     }
     bool getPin(DigitalPin pin) const {
       return myDigitalPinState[static_cast<int>(pin)];
+    }
+    /**
+      Bind a digital pin to an input event so that read() reflects the event's
+      value at the current scanline (active low).  This lets the pin change
+      mid-frame as the user's input did, instead of being latched once per
+      frame.
+    */
+    bool bindPin(DigitalPin pin, Event::Type event) {
+      myDigitalPinEvent[static_cast<int>(pin)] = event;
+      // Keep the static state current for getPin()/debugger display
+      return myDigitalPinState[static_cast<int>(pin)] = (myEvent.get(event) == 0);
     }
     void setPin(AnalogPin pin, AnalogReadout::Connection value) {
       myAnalogPinValue[static_cast<int>(pin)] = value;
@@ -387,6 +412,19 @@ class Controller : public Serializable
     */
     bool getAutoFireState(bool pressed)   { return autoFireCheck(pressed, myFireDelay);   }
     bool getAutoFireStateP1(bool pressed) { return autoFireCheck(pressed, myFireDelayP1); }
+
+    /**
+      Whether auto fire is currently active.  When it is, the fire button
+      generates its own timing and is set via setPin() rather than bound to an
+      event for sub-frame replay.
+    */
+    static bool autoFireActive() { return AUTO_FIRE && AUTO_FIRE_RATE; }
+
+    /**
+      The current sub-frame position [0,1), derived from the TIA scanline,
+      used to sample event-bound pins at read time.
+    */
+    float currentInputPos() const;
 
   protected:
     /// Specifies which jack the controller is plugged in
@@ -438,6 +476,11 @@ class Controller : public Serializable
 
     /// The boolean value on each digital pin
     std::array<bool, 5> myDigitalPinState{true, true, true, true, true};
+
+    /// Optional input event bound to each digital pin (NoType == static pin)
+    std::array<Event::Type, 5> myDigitalPinEvent{
+      Event::NoType, Event::NoType, Event::NoType, Event::NoType, Event::NoType
+    };
 
     /// The analog value on each analog pin
     std::array<AnalogReadout::Connection, 2>

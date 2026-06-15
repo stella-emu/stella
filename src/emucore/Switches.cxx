@@ -117,6 +117,32 @@ void Switches::update()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt8 Switches::read(float pos) const
+{
+  // Start from the latched state (difficulty, TV type, plus the once-per-frame
+  // Select/Reset latch already in mySwitches).  Only replay the momentary
+  // Select/Reset switches at the requested sub-frame position when something
+  // actually changed this frame; otherwise the latched state is already
+  // correct and we avoid the mutex-locked transition scan.
+  uInt8 sw = mySwitches;
+
+  if(myEvent.hasTransitions())
+  {
+    if(myEvent.get(Event::ConsoleSelect, pos) != 0)
+      sw &= ~0x02;
+    else
+      sw |= 0x02;
+
+    if(myEvent.get(Event::ConsoleReset, pos) != 0)
+      sw &= ~0x01;
+    else
+      sw |= 0x01;
+  }
+
+  return sw;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Switches::setTvColor(bool setColor)
 {
   if(setColor)
