@@ -41,6 +41,7 @@ src/**/*.vspx
 src/**/**.pdb
 Stella.xcscheme
 src/tools/fonts/*
+src/tools/__pycache__
 *.sym
 a.out
 *.json

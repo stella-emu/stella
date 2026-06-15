@@ -63,6 +63,9 @@
     associated UI items that allow to change state file location,
     including always putting it with the ROM (issue #1086).
 
+  * Converted Perl programs in src/tools to Python, and found/fixed
+    some bugs in the process.
+
   * Emulation accuracy:
     - Implemented more accurate RESMP0/RESMP1 behaviour (issue #213)
     - Implemented proper PA7 behaviour in M6532 (issue #108)
