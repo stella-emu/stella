@@ -288,7 +288,12 @@ class Event
     void set(Type type, Int32 value) {
       const std::scoped_lock lock(myMutex);
 
-      if(myRecording && value != myValues[type])
+      // Only digital on/off inputs are sampled sub-frame (see get(type, pos) /
+      // Controller::read).  Continuous inputs (analog axes, mouse motion) are
+      // read once per frame as a whole value, so recording their constant churn
+      // would be wasted work AND would keep hasTransitions() set throughout
+      // mouse/analog play, defeating the fast-path gate for the digital reads.
+      if(myRecording && value != myValues[type] && !isContinuous(type))
       {
         // Record the pre-change baseline once, so get(type, pos) has a value
         // for positions before the first transition this frame
@@ -411,6 +416,19 @@ class Event
         default:
           return false;
       }
+    }
+
+    /**
+      Whether 'type' carries a continuous whole-frame value — an analog axis or
+      mouse motion (the contiguous MouseAxis* range, NOT the mouse buttons that
+      follow it, which are bound to digital pins).  These are read once per
+      frame via get(type) and never sub-frame replayed, so set() leaves them out
+      of the transition schedule (see the note there).
+    */
+    static bool isContinuous(Type type)
+    {
+      return isAnalog(type) ||
+          (type >= MouseAxisXMove && type <= MouseAxisYValue);
     }
 
   private:
