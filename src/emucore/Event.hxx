@@ -271,12 +271,12 @@ class Event
       to skip the sub-frame replay on the common frame where nothing
       changed: when false, every input is constant across the frame and
       equals its latched value, so the (mutex-locked) transition scan in
-      get(type, pos) can be avoided entirely.  Read lock-free; the value
-      is published under the mutex during the input poll, which happens
-      before the worker thread reads it for the same frame.
+      get(type, pos) can be avoided entirely.  The value is published during
+      the input poll, which happens before the worker thread reads it for the
+      same frame; a plain (sequentially consistent) atomic load suffices.
     */
     bool hasTransitions() const {
-      return myHasTransitions.load(std::memory_order_relaxed);
+      return myHasTransitions;
     }
 
     /**
@@ -304,8 +304,11 @@ class Event
     }
 
     /**
-      Open the input window: clear the previous frame's transition schedule and
-      begin recording new transitions.  Called once before draining input.
+      Open the input window: begin recording new transitions for the coming
+      frame.  Called once before draining input.  Transitions the just-ended
+      frame never reached (its actual length came out shorter than the estimate
+      they were spread over) are carried forward rather than discarded, so an
+      uneven run of frame lengths can't silently swallow an input change.
     */
     void beginInputWindow(uInt64 nowCycles) {
       const std::scoped_lock lock(myMutex);
@@ -314,9 +317,36 @@ class Event
       myCyclesLastFrame = nowCycles - myFrameStartCycle;
       myFrameStartCycle = nowCycles;
 
-      myTransitions.clear();
+      // The schedule was spread over the previous frame's length as the
+      // estimate for this one; if this frame turned out shorter (e.g. a
+      // malformed signal: a long frame followed by a short one), positions at
+      // or beyond its actual length were never sampled by framePosition() and
+      // would be dropped here.  Carry those unconsumed transitions forward so
+      // finalizeInputWindow() re-spreads them across the coming frame.
+      if(myCyclesLastFrame != 0 &&
+         std::ranges::any_of(myTransitions,
+           [this](const Transition& t){ return t.pos >= myCyclesLastFrame; }))
+      {
+        std::vector<Transition> carried;
+        for(const auto& t: myTransitions)
+          if(t.pos >= myCyclesLastFrame)
+          {
+            // A pos-0 baseline holds the value as last observed, so reads
+            // before the carried transition see it rather than the new latch
+            if(std::ranges::none_of(carried,
+                [&t](const Transition& b){ return b.type == t.type; }))
+              carried.push_back(
+                {t.type, 0, heldValueBefore(t.type, myCyclesLastFrame), false});
+            // Re-mark pending so finalizeInputWindow() re-assigns its position
+            carried.push_back({t.type, 0, t.value, true});
+          }
+        myTransitions = std::move(carried);
+      }
+      else
+        myTransitions.clear();
+
       myRecording = true;
-      myHasTransitions.store(false, std::memory_order_relaxed);
+      myHasTransitions = false;
     }
 
     /**
@@ -336,7 +366,7 @@ class Event
         if(t.pending) ++pending;
 
       // Publish the fast-path gate read lock-free by get()'s hot-path callers
-      myHasTransitions.store(pending != 0, std::memory_order_relaxed);
+      myHasTransitions = (pending != 0);
       if(pending == 0)
         return;
 
@@ -361,7 +391,7 @@ class Event
       myValues.fill(Event::NoType);
       myTransitions.clear();
       myRecording = false;
-      myHasTransitions.store(false, std::memory_order_relaxed);
+      myHasTransitions = false;
     }
 
     /**
@@ -392,6 +422,18 @@ class Event
       Int32 value{0};
       bool  pending{false};   // true until finalizeInputWindow() assigns pos
     };
+
+    // Value of 'type' as last observed within a window of 'len' cycles: the
+    // value of its latest transition before sub-frame position 'len'.  Used to
+    // seed the baseline of a carried-forward transition (see beginInputWindow).
+    // Assumes myMutex is held.
+    Int32 heldValueBefore(Type type, uInt64 len) const {
+      Int32 result = myValues[type];
+      for(const auto& t: myTransitions)
+        if(t.type == type && t.pos < len)
+          result = t.value;
+      return result;
+    }
 
   private:
     // Array of values associated with each event type
