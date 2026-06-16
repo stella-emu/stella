@@ -73,6 +73,20 @@ class EventHandler
     const Event& event() const { return myEvent; }
 
     /**
+      Drain hardware input for one frame into a fresh per-frame transition
+      window: opens the window, calls pollEvent(), then spreads the recorded
+      transitions across the frame.  This is the input portion of poll();
+      poll() calls it before its per-frame emulation housekeeping.  Ports that
+      do their own housekeeping (e.g. libretro) call this directly instead of
+      poll(), so sub-frame controller reads work there too.
+    */
+    void pollInput() {
+      myEvent.beginInputWindow();
+      pollEvent();
+      myEvent.finalizeInputWindow();
+    }
+
+    /**
       Initialize state of this eventhandler.
     */
     void initialize();
