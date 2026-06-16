@@ -162,9 +162,11 @@ void Paddles::updateA()
 {
   setPin(DigitalPin::Four, true);
 
-  // Digital events (from keyboard or joystick hats & buttons)
-  const bool rawFireA = myEvent.get(myAFireEvent) != 0;
-  bool firePressedA = rawFireA;
+  // Digital events (from keyboard or joystick hats & buttons).  Collect the
+  // events driving the fire button (the fire event plus any mouse buttons
+  // mapped to this paddle) so it can be bound for sub-frame replay.
+  std::array<Event::Type, MAX_PIN_EVENTS> fire{myAFireEvent};
+  size_t n = 1;
 
   // Paddle movement is a very difficult thing to accurately emulate,
   // since it originally came from an analog device that had very
@@ -179,19 +181,15 @@ void Paddles::updateA()
 
   if(!updateAnalogAxesA())
   {
-    updateMouseA(firePressedA);
+    updateMouseA(fire, n);
     updateDigitalAxesA();
 
     setPin(AnalogPin::Nine, AnalogReadout::connectToVcc(
         AnalogReadout::MAX_POT_RESISTANCE * myPosition[0]));
   }
 
-  // Bind the fire button for sub-frame replay unless the mouse or auto
-  // fire is driving it
-  if(!autoFireActive() && firePressedA == rawFireA)
-    bindPin(DigitalPin::Four, myAFireEvent);
-  else
-    setPin(DigitalPin::Four, !getAutoFireState(firePressedA));
+  // Bind the fire button for sub-frame replay (static only under autofire)
+  updateFireButton(DigitalPin::Four, myFireDelay, {fire.data(), n});
 
   // Joystick up/down pins when using a splitter:
   bindPin(DigitalPin::One, myAButton1Event);
@@ -273,7 +271,7 @@ bool Paddles::updateAnalogAxesA()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Paddles::updateMouseA(bool& firePressedA)
+void Paddles::updateMouseA(std::array<Event::Type, MAX_PIN_EVENTS>& fire, size_t& n)
 {
   // Mouse motion events give relative movement
   // That is, they're only relevant if they're non-zero
@@ -283,9 +281,8 @@ void Paddles::updateMouseA(bool& firePressedA)
     myPosition[myMPaddleID] = BSPF::clamp(
         myPosition[myMPaddleID] - myEvent.get(myAxisMouseMotion) * myMouseScale,
         0.F, POSITION_LIMIT);
-    firePressedA = firePressedA
-      || myEvent.get(Event::MouseButtonLeftValue)
-      || myEvent.get(Event::MouseButtonRightValue);
+    fire[n++] = Event::MouseButtonLeftValue;
+    fire[n++] = Event::MouseButtonRightValue;
   }
   else
   {
@@ -296,16 +293,14 @@ void Paddles::updateMouseA(bool& firePressedA)
       myPosition[myMPaddleIDX] = BSPF::clamp(
           myPosition[myMPaddleIDX] - myEvent.get(Event::MouseAxisXMove) * myMouseScale,
           0.F, POSITION_LIMIT);
-      firePressedA = firePressedA
-        || myEvent.get(Event::MouseButtonLeftValue);
+      fire[n++] = Event::MouseButtonLeftValue;
     }
     if(myMPaddleIDY == 0)
     {
       myPosition[myMPaddleIDY] = BSPF::clamp(
           myPosition[myMPaddleIDY] - myEvent.get(Event::MouseAxisYMove) * myMouseScale,
           0.F, POSITION_LIMIT);
-      firePressedA = firePressedA
-        || myEvent.get(Event::MouseButtonRightValue);
+      fire[n++] = Event::MouseButtonRightValue;
     }
   }
 }
@@ -340,25 +335,22 @@ void Paddles::updateB()
 {
   setPin(DigitalPin::Three, true);
 
-  // Digital events (from keyboard or joystick hats & buttons)
-  const bool rawFireB = myEvent.get(myBFireEvent) != 0;
-  bool firePressedB = rawFireB;
+  // Digital events (from keyboard or joystick hats & buttons).  Collect the
+  // events driving the fire button so it can be bound for sub-frame replay.
+  std::array<Event::Type, MAX_PIN_EVENTS> fire{myBFireEvent};
+  size_t n = 1;
 
   if(!updateAnalogAxesB())
   {
-    updateMouseB(firePressedB);
+    updateMouseB(fire, n);
     updateDigitalAxesB();
 
     setPin(AnalogPin::Five, AnalogReadout::connectToVcc(
         AnalogReadout::MAX_POT_RESISTANCE * myPosition[1]));
   }
 
-  // Bind the fire button for sub-frame replay unless the mouse or auto
-  // fire is driving it
-  if(!autoFireActive() && firePressedB == rawFireB)
-    bindPin(DigitalPin::Three, myBFireEvent);
-  else
-    setPin(DigitalPin::Three, !getAutoFireStateP1(firePressedB));
+  // Bind the fire button for sub-frame replay (static only under autofire)
+  updateFireButton(DigitalPin::Three, myFireDelayP1, {fire.data(), n});
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -382,7 +374,7 @@ bool Paddles::updateAnalogAxesB()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Paddles::updateMouseB(bool& firePressedB)
+void Paddles::updateMouseB(std::array<Event::Type, MAX_PIN_EVENTS>& fire, size_t& n)
 {
   // Mouse motion events give relative movement
   // That is, they're only relevant if they're non-zero
@@ -392,9 +384,8 @@ void Paddles::updateMouseB(bool& firePressedB)
     myPosition[myMPaddleID] = BSPF::clamp(
         myPosition[myMPaddleID] - myEvent.get(myAxisMouseMotion) * myMouseScale,
         0.F, POSITION_LIMIT);
-    firePressedB = firePressedB
-      || myEvent.get(Event::MouseButtonLeftValue)
-      || myEvent.get(Event::MouseButtonRightValue);
+    fire[n++] = Event::MouseButtonLeftValue;
+    fire[n++] = Event::MouseButtonRightValue;
   }
   else
   {
@@ -405,16 +396,14 @@ void Paddles::updateMouseB(bool& firePressedB)
       myPosition[myMPaddleIDX] = BSPF::clamp(
           myPosition[myMPaddleIDX] - myEvent.get(Event::MouseAxisXMove) * myMouseScale,
           0.F, POSITION_LIMIT);
-      firePressedB = firePressedB
-        || myEvent.get(Event::MouseButtonLeftValue);
+      fire[n++] = Event::MouseButtonLeftValue;
     }
     if(myMPaddleIDY == 1)
     {
       myPosition[myMPaddleIDY] = BSPF::clamp(
           myPosition[myMPaddleIDY] - myEvent.get(Event::MouseAxisYMove) * myMouseScale,
           0.F, POSITION_LIMIT);
-      firePressedB = firePressedB
-        || myEvent.get(Event::MouseButtonRightValue);
+      fire[n++] = Event::MouseButtonRightValue;
     }
   }
 }

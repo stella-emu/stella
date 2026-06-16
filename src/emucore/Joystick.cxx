@@ -66,34 +66,26 @@ void Joystick::update()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Joystick::updateButtons()
 {
-  bool firePressed = myEvent.get(myFireEvent) != 0;
-
-  // The joystick uses both mouse buttons for the single joystick button
-  updateMouseButtons(firePressed, firePressed);
-
-  updateFireButton(firePressed);
+  // The plain joystick's single button is also triggered by both mouse buttons
+  updateFire(true);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Joystick::updateFireButton(bool firePressed)
+void Joystick::updateFire(bool bothButtonsFire)
 {
-  // In the common case, bind the fire button to its event so it can change
-  // mid-frame.  Fall back to a static pin when the mouse or auto fire is
-  // driving the button state.
-  if(myControlID < 0 && !autoFireActive())
-    bindPin(DigitalPin::Six, myFireEvent);
-  else
-    setPin(DigitalPin::Six, !getAutoFireState(firePressed));
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Joystick::updateMouseButtons(bool& pressedLeft, bool& pressedRight)
-{
+  // Bind the fire button to its event and, when the mouse emulates this
+  // controller, the mouse button(s) that also trigger it, so each can change
+  // the button mid-frame instead of latching a static aggregate per frame.
+  std::array<Event::Type, MAX_PIN_EVENTS> fire{myFireEvent};
+  size_t n = 1;
   if(myControlID > -1)
   {
-    pressedLeft  |= (myEvent.get(Event::MouseButtonLeftValue) != 0);
-    pressedRight |= (myEvent.get(Event::MouseButtonRightValue) != 0);
+    fire[n++] = Event::MouseButtonLeftValue;
+    if(bothButtonsFire)
+      fire[n++] = Event::MouseButtonRightValue;
   }
+
+  updateFireButton(DigitalPin::Six, myFireDelay, {fire.data(), n});
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

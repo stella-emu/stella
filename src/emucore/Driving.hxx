@@ -97,11 +97,6 @@ class Driving : public Controller
     void updateButtons();
 
     /**
-      Update the button states from the mouse button events currently set.
-    */
-    void updateMouseButtons(bool& firePressed);
-
-    /**
       Update the axes pin states according to the keyboard
       or joystick events currently set.
     */

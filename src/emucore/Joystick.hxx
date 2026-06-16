@@ -92,17 +92,23 @@ class Joystick : public Controller
     virtual void updateButtons();
 
     /**
-      Set the fire-button pin (DigitalPin::Six), binding it to its event for
-      sub-frame replay when possible, else setting it statically (mouse or
-      auto fire driving the state).  'firePressed' must already include any
-      mouse button contribution.  Shared with derived controllers.
+      Bind the fire-button pin (DigitalPin::Six) to the fire event plus, when
+      the mouse emulates this controller, the mouse button(s) that also trigger
+      it, so all replay at sub-frame resolution.  'bothButtonsFire' is true for
+      the plain joystick (its single button is triggered by both mouse buttons)
+      and false for the multi-button derivatives, whose right mouse button maps
+      to an extra button instead.  Shared with derived controllers.
     */
-    void updateFireButton(bool firePressed);
+    void updateFire(bool bothButtonsFire);
 
     /**
-      Update the button states from the mouse button events currently set.
+      True when the mouse emulates this controller and the given mouse button
+      is currently pressed.  Used by derived controllers for their extra
+      (analog) buttons, which can't be event-bound for sub-frame replay.
     */
-    void updateMouseButtons(bool& pressedLeft, bool& pressedRight);
+    bool mousePressed(Event::Type button) const {
+      return myControlID > -1 && myEvent.get(button) != 0;
+    }
 
   protected:
     Event::Type myFireEvent;

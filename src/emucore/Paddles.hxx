@@ -222,10 +222,12 @@ class Paddles : public Controller
     bool updateAnalogAxesB();
 
     /**
-      Update the entire state according to mouse events currently set.
+      Update the paddle position from mouse motion and append the mouse buttons
+      mapped to this paddle's fire button to 'fire' (at index 'n', advancing
+      it) so they can be bound for sub-frame replay.
     */
-    void updateMouseA(bool& firePressedA);
-    void updateMouseB(bool& firePressedB);
+    void updateMouseA(std::array<Event::Type, MAX_PIN_EVENTS>& fire, size_t& n);
+    void updateMouseB(std::array<Event::Type, MAX_PIN_EVENTS>& fire, size_t& n);
 
     /**
       Update the axes pin state according to the keyboard events currently set.

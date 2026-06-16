@@ -88,39 +88,29 @@ void Driving::update()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Driving::updateButtons()
 {
-  const bool rawFire = myEvent.get(myFireEvent) != 0;
-  bool firePressed = rawFire;
-
-  // The joystick uses both mouse buttons for the single joystick button
-  updateMouseButtons(firePressed);
-
-  // Bind the fire button for sub-frame replay unless the mouse or auto fire
-  // is driving it
-  if(!autoFireActive() && firePressed == rawFire)
-    bindPin(DigitalPin::Six, myFireEvent);
+  // Bind the fire button to its event plus any mouse buttons currently mapped
+  // to this controller, so each can change the button mid-frame (sub-frame
+  // replay) instead of latching a static aggregate per frame.
+  std::array<Event::Type, MAX_PIN_EVENTS> fire{myFireEvent};
+  size_t n = 1;
+  if(myControlID > -1)
+  {
+    // The single fire button is triggered by both mouse buttons
+    fire[n++] = Event::MouseButtonLeftValue;
+    fire[n++] = Event::MouseButtonRightValue;
+  }
   else
-    setPin(DigitalPin::Six, !getAutoFireState(firePressed));
+  {
+    // 'untied' mouse axis mode, where each axis is potentially mapped to a
+    // separate driving controller
+    if(myControlIDX > -1) fire[n++] = Event::MouseButtonLeftValue;
+    if(myControlIDY > -1) fire[n++] = Event::MouseButtonRightValue;
+  }
+  updateFireButton(DigitalPin::Six, myFireDelay, {fire.data(), n});
 
   // Joystick left/right pins when using a splitter:
   bindPin(DigitalPin::Three, myButton1Event);
   bindPin(DigitalPin::Four, myButton2Event);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Driving::updateMouseButtons(bool& firePressed)
-{
-  if(myControlID > -1)
-    firePressed |= (myEvent.get(Event::MouseButtonLeftValue) != 0
-      || myEvent.get(Event::MouseButtonRightValue) != 0);
-  else
-  {
-    // Test for 'untied' mouse axis mode, where each axis is potentially
-    // mapped to a separate driving controller
-    if(myControlIDX > -1)
-      firePressed |= (myEvent.get(Event::MouseButtonLeftValue) != 0);
-    if(myControlIDY > -1)
-      firePressed |= (myEvent.get(Event::MouseButtonRightValue) != 0);
-  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

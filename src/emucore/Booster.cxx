@@ -39,15 +39,15 @@ BoosterGrip::BoosterGrip(Jack jack, const Event& event, const System& system)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void BoosterGrip::updateButtons()
 {
-  bool firePressed = myEvent.get(myFireEvent) != 0;
-  // The CBS Booster-grip has two more buttons on it.  These buttons are
-  // connected to the inputs usually used by paddles.
+  // The single fire button is also triggered by the left mouse button
+  updateFire(false);
+
+  // The CBS Booster-grip has two more buttons on it, connected to the inputs
+  // usually used by paddles; the booster also responds to the right mouse
+  // button.  Both are analog inputs, so they stay static (no sub-frame replay).
+  const bool boosterPressed = myEvent.get(myBoosterEvent) != 0 ||
+      mousePressed(Event::MouseButtonRightValue);
   const bool triggerPressed = myEvent.get(myTriggerEvent) != 0;
-  bool boosterPressed = myEvent.get(myBoosterEvent) != 0;
-
-  updateMouseButtons(firePressed, boosterPressed);
-
-  updateFireButton(firePressed);
   setPin(AnalogPin::Five, boosterPressed
                             ? AnalogReadout::connectToVcc()
                             : AnalogReadout::disconnect());
