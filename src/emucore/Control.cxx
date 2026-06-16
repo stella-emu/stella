@@ -18,7 +18,6 @@
 #include <cassert>
 
 #include "System.hxx"
-#include "TIA.hxx"
 #include "Control.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -45,11 +44,11 @@ bool Controller::read(DigitalPin pin)
 {
   const Event::Type event = myDigitalPinEvent[static_cast<int>(pin)];
 
-  // An event-bound pin reflects the input's value at the current scanline,
-  // so it can change mid-frame just as the user's input did.  When no
+  // An event-bound pin reflects the input's value at the current sub-frame
+  // cycle, so it can change mid-frame just as the user's input did.  When no
   // input transitioned this frame (the common case) the value is constant
   // across the frame and equals the cached pin state, so skip the sub-frame
-  // machinery (scanline lookup + mutex-locked transition scan) entirely.
+  // machinery (cycle lookup + mutex-locked transition scan) entirely.
   if(event != Event::NoType && myEvent.hasTransitions())
     return myEvent.get(event, currentInputPos()) == 0;
 
@@ -57,9 +56,9 @@ bool Controller::read(DigitalPin pin)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-float Controller::currentInputPos() const
+uInt64 Controller::currentInputPos() const
 {
-  return mySystem.tia().subFramePosition();
+  return myEvent.framePosition(mySystem.cycles());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

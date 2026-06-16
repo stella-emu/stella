@@ -245,7 +245,7 @@ class Event
       mid-frame.  Falls back to the latest value when the type had no
       transitions this frame.
     */
-    Int32 get(Type type, float pos) const {
+    Int32 get(Type type, uInt64 pos) const {
       const std::scoped_lock lock(myMutex);
 
       Int32 result = myValues[type];
@@ -254,6 +254,17 @@ class Event
           result = t.value;
 
       return result;
+    }
+
+    /**
+      The sub-frame position, in CPU cycles, of the point currently being
+      sampled within the input window.  'nowCycles' is the caller's current
+      System::cycles(); the result is the offset from the start of the frame.
+      Replaces TIA::subFramePosition(); the input layer no longer consults the
+      TIA to know where in the frame a read lands.
+    */
+    uInt64 framePosition(uInt64 nowCycles) const {
+      return nowCycles - myFrameStartCycle;
     }
 
     /**
@@ -285,10 +296,10 @@ class Event
         // for positions before the first transition this frame
         if(std::ranges::none_of(myTransitions,
             [type](const Transition& t){ return t.type == type; }))
-          myTransitions.push_back({type, 0.F, myValues[type]});
+          myTransitions.push_back({type, 0, myValues[type], false});
 
-        // Position is assigned later by finalizeInputWindow(); -1 marks pending
-        myTransitions.push_back({type, -1.F, value});
+        // Position is assigned later by finalizeInputWindow(); 'pending' marks it
+        myTransitions.push_back({type, 0, value, true});
       }
 
       myValues[type] = value;
@@ -298,8 +309,12 @@ class Event
       Open the input window: clear the previous frame's transition schedule and
       begin recording new transitions.  Called once before draining input.
     */
-    void beginInputWindow() {
+    void beginInputWindow(uInt64 nowCycles) {
       const std::scoped_lock lock(myMutex);
+
+      // The input window spans one frame on the system (CPU) clock
+      myCyclesLastFrame = nowCycles - myFrameStartCycle;
+      myFrameStartCycle = nowCycles;
 
       myTransitions.clear();
       myRecording = true;
@@ -320,17 +335,22 @@ class Event
 
       uInt32 pending = 0;
       for(const auto& t: myTransitions)
-        if(t.pos < 0.F) ++pending;
+        if(t.pending) ++pending;
 
       // Publish the fast-path gate read lock-free by get()'s hot-path callers
       myHasTransitions.store(pending != 0, std::memory_order_relaxed);
       if(pending == 0)
         return;
 
+      // Spread the pending transitions evenly across the previous frame's
+      // cycle span, in arrival order
       uInt32 k = 0;
       for(auto& t: myTransitions)
-        if(t.pos < 0.F)
-          t.pos = static_cast<float>(++k) / static_cast<float>(pending + 1);
+        if(t.pending)
+        {
+          t.pos = myCyclesLastFrame * (++k) / (pending + 1);
+          t.pending = false;
+        }
     }
 
     /**
@@ -370,8 +390,9 @@ class Event
     // 'type' took on 'value' at sub-frame position 'pos' [0,1)
     struct Transition {
       Type  type{NoType};
-      float pos{0.F};
+      uInt64 pos{0};
       Int32 value{0};
+      bool  pending{false};   // true until finalizeInputWindow() assigns pos
     };
 
   private:
@@ -384,6 +405,13 @@ class Event
 
     // True while the input window is open and set() should record transitions
     bool myRecording{false};
+
+    // Start of the current input window on the system (CPU) clock, and the
+    // length of the previous window.  These place transitions at their
+    // sub-frame cycle position with no reference to the TIA (see framePosition
+    // and finalizeInputWindow).  Plain (non-atomic): written under myMutex
+    // during the poll, which happens-before the worker thread reads them.
+    uInt64 myFrameStartCycle{0}, myCyclesLastFrame{0};
 
     // Lock-free fast-path gate: true when myTransitions holds any transition
     // for the current frame.  Lets hot-path readers skip the mutex-locked

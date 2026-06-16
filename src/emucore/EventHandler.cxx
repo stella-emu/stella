@@ -19,6 +19,7 @@
 
 #include "Base.hxx"
 #include "Console.hxx"
+#include "System.hxx"
 #include "PaletteHandler.hxx"
 #include "FrameBuffer.hxx"
 #include "OSystem.hxx"
@@ -245,6 +246,12 @@ void EventHandler::changeMouseControl(int direction)
 bool EventHandler::hasMouseControl() const
 {
   return myMouseControl && myMouseControl->hasMouseControl();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt64 EventHandler::currentSystemCycles() const
+{
+  return myOSystem.hasConsole() ? myOSystem.console().system().cycles() : 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

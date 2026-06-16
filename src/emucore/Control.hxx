@@ -63,7 +63,7 @@ class System;
   Digital pins may be either static or bound to an input event.
   A static pin (setPin) keeps a fixed value until changed.  A pin bound
   to an event (bindPin) instead reports that event's value sampled at
-  the current scanline (via currentInputPos), so the pin can change part
+  the current sub-frame cycle (via currentInputPos), so the pin can change part
   way through a frame exactly as the user's input did.  This is what lets
   a program reading a pin at multiple different points in a frame observe a
   mid-frame press/release; the sub-frame values come from the Event
@@ -421,10 +421,11 @@ class Controller : public Serializable
     static bool autoFireActive() { return AUTO_FIRE && AUTO_FIRE_RATE; }
 
     /**
-      The current sub-frame position [0,1), derived from the TIA scanline,
-      used to sample event-bound pins at read time.
+      The current sub-frame position, in CPU cycles from the start of the input
+      window, used to sample event-bound pins at read time.  Sourced from
+      System::cycles() via Event, with no reference to the TIA.
     */
-    float currentInputPos() const;
+    uInt64 currentInputPos() const;
 
   protected:
     /// Specifies which jack the controller is plugged in

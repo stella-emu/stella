@@ -341,22 +341,6 @@ class TIA : public Device
     uInt32 scanlinesLastFrame() const { return myFrameManager->scanlinesLastFrame(); }
 
     /**
-      The current position within the frame, expressed as a fraction [0,1) of
-      the previous frame's scanline count.  Used to sample event-bound input at
-      the scanline currently being emulated, so a controller or console switch
-      can be observed changing part way through a frame.  Returns 0 before any
-      frame has completed.
-    */
-    float subFramePosition() const {
-      const uInt32 lines = scanlinesLastFrame();
-      if(lines == 0)
-        return 0.F;
-
-      return std::min(static_cast<float>(scanlines()) /
-                      static_cast<float>(lines), 0.99999F);
-    }
-
-    /**
       The same, but for the frame in the frame buffer.
      */
     uInt32 frameBufferScanlinesLastFrame() const { return myFrameBufferScanlines; }

@@ -81,7 +81,10 @@ class EventHandler
       poll(), so sub-frame controller reads work there too.
     */
     void pollInput() {
-      myEvent.beginInputWindow();
+      // Sub-frame replay measures input timing on the system clock; pass the
+      // current cycle (0 when no console is loaded, e.g. in the launcher,
+      // where no controller reads occur)
+      myEvent.beginInputWindow(currentSystemCycles());
       pollEvent();
       myEvent.finalizeInputWindow();
     }
@@ -497,6 +500,12 @@ class EventHandler
     static const Event::EventSet DevicesEvents;
     static const Event::EventSet ComboEvents;
     static const Event::EventSet DebugEvents;
+
+    /**
+      The current System::cycles(), or 0 when no console is loaded.  Used by
+      pollInput() to stamp the input window on the system clock.
+    */
+    uInt64 currentSystemCycles() const;
 
     /**
       The following methods take care of assigning action mappings.

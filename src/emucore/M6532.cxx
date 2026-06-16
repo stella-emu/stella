@@ -230,10 +230,6 @@ uInt8 M6532::peek(uInt16 addr)
   {
     case 0x00:    // SWCHA - Port A I/O Register (Joystick)
     {
-      // Bring the TIA up to the current cycle so the controllers sample
-      // their event-bound pins at the correct sub-frame scanline
-      mySystem->tia().updateEmulation();
-
       const uInt8 value = (myLeftPort->read() << 4) | myRightPort->read();
 
       // Each pin is high (1) by default and will only go low (0) if either
@@ -250,12 +246,10 @@ uInt8 M6532::peek(uInt16 addr)
 
     case 0x02:    // SWCHB - Port B I/O Register (Console switches)
     {
-      // Sample the console switches at the current sub-frame scanline so
-      // a momentary Select/Reset press is seen mid-frame
-      mySystem->tia().updateEmulation();
-
+      // Sample the console switches at the current sub-frame cycle so a
+      // momentary Select/Reset press is seen mid-frame
       return (myOutB | ~myDDRB) &
-             (myConsole.switches().read(mySystem->tia().subFramePosition()) | myDDRB);
+             (myConsole.switches().read(mySystem->cycles()) | myDDRB);
     }
 
     case 0x03:    // SWBCNT - Port B Data Direction Register
