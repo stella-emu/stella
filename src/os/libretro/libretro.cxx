@@ -155,10 +155,6 @@ void libretro_logger(int log_level, const char *source)
   string = NULL;
 }
 
-// TODO input:
-// https://github.com/libretro/blueMSX-libretro/blob/master/libretro.c
-// https://github.com/libretro/libretro-o2em/blob/master/libretro.c
-
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uint32_t libretro_read_rom(void* data)
 {
