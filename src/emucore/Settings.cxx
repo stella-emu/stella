@@ -33,16 +33,6 @@
   #include "DebuggerDialog.hxx"
 #endif
 
-//#if defined(BSPF_WINDOWS)
-//#include <windows.hxx>
-//#endif
-
-#if defined(BSPF_UNIX) || defined(BSPF_MACOS)
-  #include <cstdio>
-  #include <sys/ioctl.h>
-  #include <unistd.h>
-#endif
-
 #include "Settings.hxx"
 #include "repository/KeyValueRepositoryNoop.hxx"
 
@@ -158,9 +148,12 @@ Settings::Settings()
   setPermanent("snapname", "int");
   setPermanent("sssingle", "false");
   setPermanent("ss1x", "false");
+  setPermanent("sscrop", "false");
   setPermanent("ssinterval", "2");
   setPermanent("autoslot", "false");
   setPermanent("saveonexit", "none");
+  setPermanent("statedir", "");
+  setPermanent("statewithrom", "false");
 
   // Config files and paths
   setPermanent("romdir", "");
@@ -452,7 +445,8 @@ void Settings::validate()
 void Settings::usage()
 {
   std::stringstream buf;
-  buf << "\nStella version " << STELLA_VERSION
+  buf
+    << "\nStella version " << STELLA_VERSION
     << "\n\n"
     << "Usage: stella [options ...] romfile\n"
     << "       Run without any options or romfile to use the ROM launcher\n"
@@ -578,12 +572,17 @@ void Settings::usage()
     << "  -sssingle     <1|0>            Generate single snapshot instead of many\n"
     << "  -ss1x         <1|0>            Generate TIA snapshot in 1x mode (ignore\n"
     << "                                  scaling/effects)\n"
+    << "  -sscrop       <1|0>            Automatically crop black borders from\n"
+    << "                                  snapshots\n"
     << "  -ssinterval   <number>         Number of seconds between snapshots in\n"
     << "                                  continuous snapshot mode\n\n"
     << "  -saveonexit   <none|current|   Automatically save state(s) when exiting\n"
     << "                 all>             emulation\n"
     << "  -autoslot     <0|1>            Automatically change to next save slot when\n"
-    << "                                  state saving\n\n"
+    << "                                  state saving\n"
+    << "  -statedir     <path>           The directory to load/save state files from/to\n"
+    << "  -statewithrom <0|1>            Load/save state files in the current ROM's\n"
+    << "                                  directory\n\n"
     << "  -rominfo      <rom>            Display detailed information for the given ROM\n"
     << "  -listrominfo                   Display contents of stella.pro, one line per ROM\n"
     << "                                  entry\n\n"
@@ -787,38 +786,7 @@ void Settings::usage()
 
     << "  -elf.dump              <1|0>      Dump ELF linkage information and write elf_executable_image.bin\n\n";
 
-#ifdef BSPF_WINDOWS
-//  int height = 25;
-//  CONSOLE_SCREEN_BUFFER_INFO csbi;
-//
-//  if(NULL != GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &csbi))
-//    height = csbi.srWindow.Bottom - csbi.srWindow.Top + 1;
   cout << buf.view() << std::flush;
-#endif
-
-#if defined(BSPF_UNIX) || defined(BSPF_MACOS)
-  int height = 25;
-  struct winsize ws{};
-
-  ioctl(STDOUT_FILENO, TIOCGWINSZ, &ws);
-
-  height = ws.ws_row;
-
-  int row = 0;
-  while(buf.good())
-  {
-    if(++row == height - 1)
-    {
-      row = 0;
-      cout << "Press \"Enter\"" << std::flush;
-      std::ignore = getchar();
-      cout << '\n';
-    }
-    string substr;
-    getline(buf, substr, '\n');
-    cout << substr << '\n';
-  }
-#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -44,10 +44,10 @@ class MessageDialog : public Dialog
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 
   private:
-    static string myTitle;
-    static StringList myText;
-    static bool myYesNo;
-    static bool myConfirmed;
+    static inline string myTitle;
+    static inline StringList myText;
+    static inline bool myYesNo = false;
+    static inline bool myConfirmed = false;
 
     // Show a message
     GUI::MessageBox* myMsg{nullptr};

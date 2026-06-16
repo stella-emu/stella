@@ -40,7 +40,7 @@ SnapshotDialog::SnapshotDialog(OSystem& osystem, DialogContainer& parent,
   WidgetArray wid;
 
   // Set real dimensions
-  setSize(64 * fontWidth + HBORDER * 2, 9 * (lineHeight + VGAP) + VBORDER + _th, max_w, max_h);
+  setSize(64 * fontWidth + HBORDER * 2, 10 * (lineHeight + VGAP) + VBORDER + _th, max_w, max_h);
 
   int xpos = HBORDER, ypos = VBORDER + _th;
 
@@ -86,6 +86,12 @@ SnapshotDialog::SnapshotDialog(OSystem& osystem, DialogContainer& parent,
       "Create pixel-exact image (no zoom/post-processing)");
   wid.push_back(mySnap1x);
 
+  // Automatically crop black borders
+  ypos += lineHeight + VGAP;
+  mySnapCrop = new CheckboxWidget(this, font, xpos, ypos,
+      "Crop black borders");
+  wid.push_back(mySnapCrop);
+
   // Add Defaults, OK and Cancel buttons
   addDefaultsOKCancelBGroup(wid, font);
 
@@ -103,6 +109,7 @@ void SnapshotDialog::loadConfig()
   mySnapName->setState(instance().settings().getString("snapname") == "rom");
   mySnapSingle->setState(settings.getBool("sssingle"));
   mySnap1x->setState(settings.getBool("ss1x"));
+  mySnapCrop->setState(settings.getBool("sscrop"));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -113,6 +120,7 @@ void SnapshotDialog::saveConfig()
   instance().settings().setValue("snapname", mySnapName->getState() ? "rom" : "int");
   instance().settings().setValue("sssingle", mySnapSingle->getState());
   instance().settings().setValue("ss1x", mySnap1x->getState());
+  instance().settings().setValue("sscrop", mySnapCrop->getState());
 
   // Flush changes to disk and inform the OSystem
   instance().saveConfig();
@@ -127,6 +135,7 @@ void SnapshotDialog::setDefaults()
   mySnapName->setState(false);
   mySnapSingle->setState(false);
   mySnap1x->setState(false);
+  mySnapCrop->setState(false);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

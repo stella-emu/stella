@@ -32,8 +32,9 @@
     including one discovered by bootsector and Eric Fraga of AtariAge.
     (issue #1152).
 
-  * Added support for CompuMate cassette load/save for binary images
-    (issue# 79).
+  * Added support for CompuMate cassette load/save for binary images.
+    Special thanks to Golden Child for their initial implementation
+    in MAME, and for sharing this with Stella (issue# 79).
 
   * Paddle / Driving Controller; extra buttons added for both left and
     right paddle.
@@ -54,6 +55,16 @@
     - Added undo and redo support
     - Added mouse support (selection, cut/copy/paste)
     - All actions have keyboard shortcuts
+
+  * Added 'sscrop' commandline argument and associated UI item that
+    crops saved PNG snapshots, removing black borders (issue #1106).
+
+  * Added 'statedir' and 'statewithrom' commandline arguments and
+    associated UI items that allow to change state file location,
+    including always putting it with the ROM (issue #1086).
+
+  * Converted Perl programs in src/tools to Python, and found/fixed
+    some bugs in the process.
 
   * Emulation accuracy:
     - Implemented more accurate RESMP0/RESMP1 behaviour (issue #213)
@@ -90,6 +101,8 @@
     - Cheat code dialog; double-Escape bug fixed, also fixes long-standing
       debugger "Search RAM" Escape lockup
     - Added developer option for disabling PlusROM support
+    - Fixed location of debugger script not matching documentation
+      (issue #1120)
 
   * Efficiency improvements:
     - Serializer completely reworked; much faster state save/load,
@@ -109,11 +122,13 @@
       FBBackend. Settings)
     - Keymap and JoyMap switched from unordered_map to sorted vector with
       binary search (faster for sizes involved)
+    - Fixed state save files being very large when they didn't need to be
 
   * For the Windows port:
     - FSNodeWINDOWS now uses UTF-16 internally; fixes corruption and not
       saving to correct directories with non-ASCII filenames
       (issue #1051, #1054, #1084, #1133)
+    - Added a native Windows on ARM port
 
   * For the Mac port:
     - Minimum OS version is macOS 26, and compilation requires Xcode 26;
@@ -127,6 +142,8 @@
       XDG spec
     - Implemented -baseinappdir (previously Windows-only feature)
     - Wayland/HiDPI improvements due to SDL3
+    - Restore printing from -help to not use paging; instead the user
+      can pipe through less, as expected by most UNIX apps (issue #962)
 
   * For the libretro port:
     - RetroAchievements; basic support added
@@ -143,8 +160,6 @@
     - Savestates fixed (was saving all zeroes, loading past end of data)
     - OSD messaging from Stella routed to libretro core
     - Fast-forward audio suppression
-
-  * Added native Windows on ARM port.
 
   * Removed R77 port; SDL3 not supported on that platform.
 

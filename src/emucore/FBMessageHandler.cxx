@@ -98,6 +98,14 @@ void FBMessageHandler::showText(string_view message, MessagePosition position,
                                 bool force)
 {
 #ifdef GUI_SUPPORT
+  // If called off the main thread, queue and let drainPending() show it later
+  if(std::this_thread::get_id() != myMainThreadId)
+  {
+    const std::lock_guard<std::mutex> lock(myPendingMutex);
+    myPending.push_back({string{message}, position, force});
+    return;
+  }
+
   const int fontWidth = myFB.font().getMaxCharWidth();
   const int HBORDER = fontWidth * 1.25 / 2.0;
 
@@ -106,6 +114,23 @@ void FBMessageHandler::showText(string_view message, MessagePosition position,
                              myFB.font().getStringWidth(message) + HBORDER * 2);
 
   create(message, position, force);
+#endif  // GUI_SUPPORT
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FBMessageHandler::drainPending()
+{
+#ifdef GUI_SUPPORT
+  vector<PendingMessage> pending;
+  {
+    const std::lock_guard<std::mutex> lock(myPendingMutex);
+    if(myPending.empty())
+      return;
+    std::swap(pending, myPending);
+  }
+
+  for(const auto& msg : pending)
+    showText(msg.text, msg.position, msg.force);
 #endif  // GUI_SUPPORT
 }
 
@@ -344,7 +369,7 @@ void FBMessageHandler::drawStats(float framesPerSecond)
 
   // Draw fps / speed
   const float speed = myOSystem.settings().getBool("turbo")
-    ? 50.0F
+    ? 50.F
     : myOSystem.settings().getFloat("speed");
   const string line2 = std::format("{:.1f}fps @ {:.0f}% speed",
     framesPerSecond, 100 * speed);

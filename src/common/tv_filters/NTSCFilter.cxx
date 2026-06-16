@@ -132,11 +132,11 @@ void NTSCFilter::changeCurrentAdjustable(int direction,
 void NTSCFilter::loadConfig(const Settings& settings)
 {
   // Load adjustables for custom mode
-  myCustomSetup.sharpness = BSPF::clamp(settings.getFloat("tv.sharpness"), -1.0F, 1.0F);
-  myCustomSetup.resolution = BSPF::clamp(settings.getFloat("tv.resolution"), -1.0F, 1.0F);
-  myCustomSetup.artifacts = BSPF::clamp(settings.getFloat("tv.artifacts"), -1.0F, 1.0F);
-  myCustomSetup.fringing = BSPF::clamp(settings.getFloat("tv.fringing"), -1.0F, 1.0F);
-  myCustomSetup.bleed = BSPF::clamp(settings.getFloat("tv.bleed"), -1.0F, 1.0F);
+  myCustomSetup.sharpness = BSPF::clamp(settings.getFloat("tv.sharpness"), -1.F, 1.F);
+  myCustomSetup.resolution = BSPF::clamp(settings.getFloat("tv.resolution"), -1.F, 1.F);
+  myCustomSetup.artifacts = BSPF::clamp(settings.getFloat("tv.artifacts"), -1.F, 1.F);
+  myCustomSetup.fringing = BSPF::clamp(settings.getFloat("tv.fringing"), -1.F, 1.F);
+  myCustomSetup.bleed = BSPF::clamp(settings.getFloat("tv.bleed"), -1.F, 1.F);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

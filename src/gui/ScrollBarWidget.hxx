@@ -73,7 +73,7 @@ class ScrollBarWidget : public Widget, public CommandSender
     const uInt32* _upImg{nullptr};
     const uInt32* _downImg{nullptr};
 
-    static int S_WHEEL_LINES;
+    static inline int S_WHEEL_LINES = 4;
 
   private:
     // Following constructors and assignment operators not supported

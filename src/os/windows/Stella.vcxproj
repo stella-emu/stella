@@ -2927,4 +2927,10 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
+  <!-- Generate src\common\VersionBuild.hxx with the build number from the git
+       commit count. Only rewrites the header when the value changes, so the
+       few objects that include it aren't needlessly recompiled. -->
+  <Target Name="GenerateBuildNumber" BeforeTargets="ClCompile">
+    <Exec Command="call &quot;$(ProjectDir)..\..\tools\genbuildnum.bat&quot;" />
+  </Target>
 </Project>

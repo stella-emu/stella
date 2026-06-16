@@ -61,6 +61,16 @@ namespace {
   [[noreturn]] void png_user_error(png_structp, png_const_charp msg) {
     throw std::runtime_error(msg);
   }
+
+  // Filename-safe local timestamp (YYYY-MM-DD_HH-MM-SS), used to keep
+  // successive snapshots unique without overwriting earlier ones
+  string snapTimestamp()
+  {
+    const std::tm t = BSPF::localTime();
+    return std::format("{:04}-{:02}-{:02}_{:02}-{:02}-{:02}",
+        t.tm_year + 1900, t.tm_mon + 1, t.tm_mday,
+        t.tm_hour, t.tm_min, t.tm_sec);
+  }
 }  // namespace
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -289,6 +299,68 @@ void PNGLibrary::setContinuousSnapInterval(uInt32 interval)
 {
   mySnapInterval = interval;
   mySnapCounter  = 0;
+  myCropValid    = false;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+Common::Rect PNGLibrary::croppedRect(const FBSurface& surface,
+                                     const Common::Rect& rect, uInt32 number)
+{
+  // For continuous snapshots, reuse the crop computed on the first frame so
+  // that every frame in the sequence is saved with identical dimensions
+  if(number > 0 && myCropValid)
+    return myCropRect;
+
+  uInt32* base{nullptr};
+  uInt32  pitch{0};
+  surface.basePtr(base, pitch);
+
+  // A pixel is 'black' once its color channels are all zero (the high
+  // byte is alpha/filler and is ignored)
+  const auto isBlack = [](uInt32 pixel) {
+    return (pixel & 0x00FFFFFF) == 0;
+  };
+  const auto rowIsBlack = [&](uInt32 y, uInt32 x0, uInt32 x1) {
+    const uInt32* row = base + static_cast<size_t>(y) * pitch;
+    for(uInt32 x = x0; x < x1; ++x)
+      if(!isBlack(row[x]))
+        return false;
+    return true;
+  };
+  const auto colIsBlack = [&](uInt32 x, uInt32 y0, uInt32 y1) {
+    for(uInt32 y = y0; y < y1; ++y)
+      if(!isBlack(base[static_cast<size_t>(y) * pitch + x]))
+        return false;
+    return true;
+  };
+
+  // Trim fully-black border rows/columns; if the entire region is black the
+  // original rect is kept, so a snapshot is never reduced to nothing
+  uInt32 top  = rect.y(), bottom = rect.y() + rect.h();
+  uInt32 left = rect.x(), right  = rect.x() + rect.w();
+
+  while(top < bottom && rowIsBlack(top, left, right))
+    ++top;
+  while(bottom > top && rowIsBlack(bottom - 1, left, right))
+    --bottom;
+
+  Common::Rect cropped = rect;
+  if(top < bottom)
+  {
+    // Trim columns over the already-trimmed rows only
+    while(left < right && colIsBlack(left, top, bottom))
+      ++left;
+    while(right > left && colIsBlack(right - 1, top, bottom))
+      --right;
+    cropped = Common::Rect{left, top, right, bottom};
+  }
+
+  if(number > 0)
+  {
+    myCropRect  = cropped;
+    myCropValid = true;
+  }
+  return cropped;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -313,20 +385,11 @@ void PNGLibrary::takeSnapshot(uInt32 number)
   }
   else if(!myOSystem.settings().getBool("sssingle"))
   {
-    // Determine if the file already exists, checking each successive filename
-    // until one doesn't exist
+    // Use the plain ROM name; if that snapshot already exists, append a
+    // timestamp so we never overwrite an earlier one
     filename = sspath + ".png";
-    const FSNode node(filename);
-    if(node.exists())
-    {
-      for(uInt32 i = 1; ; ++i)
-      {
-        filename = std::format("{}_{}.png", sspath, i);
-        const FSNode next(filename);
-        if(!next.exists())
-          break;
-      }
-    }
+    if(FSNode(filename).exists())
+      filename = std::format("{}_{}.png", sspath, snapTimestamp());
   }
   else
     filename = sspath + ".png";
@@ -340,10 +403,13 @@ void PNGLibrary::takeSnapshot(uInt32 number)
       ? string{myOSystem.console().properties().get(PropType::Cart_Name)}
       : myOSystem.romFile().getName();
   VarList::push_back(metaData, "ROM Name", name);
-  VarList::push_back(metaData, "ROM MD5", myOSystem.console().properties().get(PropType::Cart_MD5));
-  VarList::push_back(metaData, "TV Effects", myOSystem.frameBuffer().tiaSurface().effectsInfo());
+  VarList::push_back(metaData, "ROM MD5",
+                     myOSystem.console().properties().get(PropType::Cart_MD5));
+  VarList::push_back(metaData, "TV Effects",
+                     myOSystem.frameBuffer().tiaSurface().effectsInfo());
 
   // Now create a PNG snapshot
+  const bool autoCrop = myOSystem.settings().getBool("sscrop");
   string message = "Snapshot saved";
   if(myOSystem.settings().getBool("ss1x"))
   {
@@ -352,6 +418,8 @@ void PNGLibrary::takeSnapshot(uInt32 number)
       Common::Rect rect;
       const FBSurface& surface =
         myOSystem.frameBuffer().tiaSurface().baseSurface(rect);
+      if(autoCrop)
+        rect = croppedRect(surface, rect, number);
       saveImage(filename, surface, rect, metaData);
     }
     catch(const std::runtime_error& e)
@@ -365,8 +433,12 @@ void PNGLibrary::takeSnapshot(uInt32 number)
 
     try
     {
-      saveImage(filename, myOSystem.frameBuffer().compositedSurface(),
-                {}, metaData);
+      const FBSurface& surface = myOSystem.frameBuffer().compositedSurface();
+      Common::Rect rect;
+      if(autoCrop)
+        rect = croppedRect(surface,
+            Common::Rect{0, 0, surface.width(), surface.height()}, number);
+      saveImage(filename, surface, rect, metaData);
     }
     catch(const std::runtime_error& e)
     {

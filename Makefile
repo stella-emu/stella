@@ -227,6 +227,25 @@ OBJ_TEST=$(addprefix $(OBJECT_ROOT_TEST)/,$(OBJS_TEST))
 OBJ_PROFILE_GENERATE=$(addprefix $(OBJECT_ROOT_PROFILE_GENERERATE)/,$(OBJS))
 OBJ_PROFILE_USE=$(addprefix $(OBJECT_ROOT_PROFILE_USE)/,$(OBJS))
 
+######################################################################
+# Auto-generate the build number from the git commit count
+######################################################################
+
+# 'VersionBuild.hxx' is regenerated on every build but only rewritten when the
+# commit count actually changes (see src/tools/genbuildnum.sh), so only the few
+# objects that include it get recompiled.
+VERSION_BUILD_HXX := $(srcdir)/src/common/VersionBuild.hxx
+
+.PHONY: FORCE
+FORCE:
+
+$(VERSION_BUILD_HXX): FORCE
+	@sh $(srcdir)/src/tools/genbuildnum.sh
+
+# Ensure the header exists before compiling (order-only); the .deps dependency
+# tracking handles recompiling the objects that actually include it.
+$(OBJ) $(OBJ_TEST) $(OBJ_PROFILE_GENERATE) $(OBJ_PROFILE_USE): | $(VERSION_BUILD_HXX)
+
 # The build rule for the Stella executable
 $(EXECUTABLE): $(OBJ)
 	$(LD) $(LDFLAGS) $(PRE_OBJS_FLAGS) $+ $(POST_OBJS_FLAGS) $(LIBS) $(PROF) -o $@
@@ -248,7 +267,7 @@ clean:
 	-$(RM) -fr \
 		$(OBJECT_ROOT) $(OBJECT_ROOT_PROFILE_GENERERATE) $(OBJECT_ROOT_PROFILE_USE) \
 		$(EXECUTABLE) $(EXECUTABLE_PROFILE_GENERATE) $(EXECUTABLE_PROFILE_USE) \
-		$(OBJECT_ROOT_TEST) $(PROFILE_OUT) $(PROFILE_STAMP)
+		$(OBJECT_ROOT_TEST) $(PROFILE_OUT) $(PROFILE_STAMP) $(VERSION_BUILD_HXX)
 
 .PHONY: all clean dist distclean
 

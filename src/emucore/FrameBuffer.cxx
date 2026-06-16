@@ -446,6 +446,9 @@ void FrameBuffer::update(UpdateMode mode)
                          || myPendingRender);
   myPendingRender = false;
 
+  // Show any messages enqueued from other threads (e.g. PlusROM/cart callbacks)
+  myMsgHandler.drainPending();
+
   switch(myOSystem.eventHandler().state())
   {
     case EventHandlerState::NONE:
@@ -698,6 +701,10 @@ void FrameBuffer::updateInEmulationMode(float framesPerSecond)
   // always happens at the full framerate
 
   renderTIA();
+
+  // Show any messages enqueued from the emulation worker thread (e.g. AR
+  // Supercharger load notifications) before drawing them this frame
+  myMsgHandler.drainPending();
 
   // Show frame statistics
   if(myMsgHandler.statsShown())

@@ -455,7 +455,7 @@ void PaletteHandler::generateCustomPalette(ConsoleTiming timing) const
 
   if(timing == ConsoleTiming::ntsc)
   {
-    constexpr float SATURATION = 0.30F; // default NTSC saturation
+    constexpr float SATURATION = 0.3F; // default NTSC saturation
     vector2d IQ[NUM_CHROMA];
     // YIQ is YUV shifted by 33°
     // -90° + 33° = -57° would create a greenish yellow
@@ -519,9 +519,9 @@ void PaletteHandler::generateCustomPalette(ConsoleTiming timing) const
         UV[idx].y = SATURATION * -sinf(offset - shift * chroma / 2.F);
     }
     // Most sources
-    const vector2d UVR = scale(rotate(vector2d( 0.000F, +1.403F), myRedShift),   myRedScale);
+    const vector2d UVR = scale(rotate(vector2d( 0.F, +1.403F), myRedShift),   myRedScale);
     const vector2d UVG = scale(rotate(vector2d(-0.344F, -0.714F), myGreenShift), myGreenScale);
-    const vector2d UVB = scale(rotate(vector2d(+0.714F,  0.000F), myBlueShift),  myBlueScale);
+    const vector2d UVB = scale(rotate(vector2d(+0.714F,  0.F), myBlueShift),  myBlueScale);
     // German Wikipedia, huh???
     //float R = Y + 1 / 0.877 * V;
     //float B = Y + 1 / 0.493 * U;

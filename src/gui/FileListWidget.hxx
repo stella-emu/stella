@@ -116,6 +116,7 @@ class FileListWidget : public StringListWidget
       rom,
       directory,
       zip,
+      cassette,
       updir,
       numTypes,
       favrom = numTypes,
