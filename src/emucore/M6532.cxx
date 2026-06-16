@@ -19,7 +19,6 @@
 #include "Settings.hxx"
 #include "Switches.hxx"
 #include "System.hxx"
-#include "TIA.hxx"
 #include "Base.hxx"
 
 #include "M6532.hxx"

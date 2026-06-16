@@ -260,8 +260,6 @@ class Event
       The sub-frame position, in CPU cycles, of the point currently being
       sampled within the input window.  'nowCycles' is the caller's current
       System::cycles(); the result is the offset from the start of the frame.
-      Replaces TIA::subFramePosition(); the input layer no longer consults the
-      TIA to know where in the frame a read lands.
     */
     uInt64 framePosition(uInt64 nowCycles) const {
       return nowCycles - myFrameStartCycle;
@@ -408,9 +406,9 @@ class Event
 
     // Start of the current input window on the system (CPU) clock, and the
     // length of the previous window.  These place transitions at their
-    // sub-frame cycle position with no reference to the TIA (see framePosition
-    // and finalizeInputWindow).  Plain (non-atomic): written under myMutex
-    // during the poll, which happens-before the worker thread reads them.
+    // sub-frame cycle position (see framePosition and finalizeInputWindow).
+    // Plain (non-atomic): written under myMutex during the poll, which
+    // happens-before the worker thread reads them.
     uInt64 myFrameStartCycle{0}, myCyclesLastFrame{0};
 
     // Lock-free fast-path gate: true when myTransitions holds any transition

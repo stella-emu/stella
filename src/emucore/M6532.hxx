@@ -36,11 +36,6 @@ class Settings;
     - A1 to enable/disable interrupt from PA7 to IRQ
 
   The controller ports (SWCHA) and console switches (SWCHB) are read here.
-  Because controllers and switches now report their state sampled at the
-  current scanline (so input can change mid-frame, see Controller), peek()
-  brings the TIA up to the current cycle before reading SWCHA/SWCHB;
-  otherwise the lazily-clocked TIA scanline would be stale and the sub-frame
-  position wrong.
 
   @author  Bradford W. Mott and Stephen Anthony
 */

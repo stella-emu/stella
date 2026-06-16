@@ -67,9 +67,7 @@ class System;
   way through a frame exactly as the user's input did.  This is what lets
   a program reading a pin at multiple different points in a frame observe a
   mid-frame press/release; the sub-frame values come from the Event
-  transition schedule.  For the value to be correct the TIA must be current
-  when the pin is read: TIA register reads (INPT4/5) already update it,
-  and M6532 updates it before SWCHA/SWCHB reads.
+  transition schedule.
 
   @author  Bradford W. Mott
 */
@@ -421,9 +419,9 @@ class Controller : public Serializable
     static bool autoFireActive() { return AUTO_FIRE && AUTO_FIRE_RATE; }
 
     /**
-      The current sub-frame position, in CPU cycles from the start of the input
-      window, used to sample event-bound pins at read time.  Sourced from
-      System::cycles() via Event, with no reference to the TIA.
+      The current sub-frame position, in CPU cycles from the start of the
+      input window, used to sample event-bound pins at read time.  Sourced
+      from System::cycles() via Event.
     */
     uInt64 currentInputPos() const;
 

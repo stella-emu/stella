@@ -125,8 +125,7 @@ class PointingDevice : public Controller
     int myCycleCountH{INT_MAX}, myCycleCountV{INT_MAX};
 
     // System cycle at the start of the current frame.  A real quadrature
-    // encoder's output depends only on elapsed time, not on the video chip;
-    // measuring against this keeps the controller ignorant of the TIA
+    // encoder's output depends only on elapsed time.
     uInt64 myFrameStartCycle{0};
 
     // Offset factor for first change, 0..(1 << 12) - 1
