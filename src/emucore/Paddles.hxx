@@ -87,9 +87,9 @@ class Paddles : public Controller
     string name() const override { return "Paddles"; }
 
     /**
-      Answers whether the controller is intrinsically an analog controller.
+      Paddles are driven by the mouse (one analog axis each).
     */
-    bool isAnalog() const override { return true; }
+    bool usesMouse() const override { return true; }
 
     /**
       Determines how this controller will treat values received from the

@@ -58,9 +58,9 @@ class Driving : public Controller
     string name() const override { return "Driving"; }
 
     /**
-      Answers whether the controller is intrinsically an analog controller.
+      The driving controller is mouse-driven (digital gray code internally).
     */
-    bool isAnalog() const override { return true; }
+    bool usesMouse() const override { return true; }
 
     /**
       Determines how this controller will treat values received from the

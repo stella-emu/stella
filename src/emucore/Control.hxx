@@ -204,10 +204,14 @@ class Controller : public Serializable
     virtual string name() const { return ""; }
 
     /**
-      Answers whether the controller is intrinsically an analog controller.
-      Specific controllers should override and implement this method.
+      Whether the mouse is the appropriate input device for emulating this
+      controller (trackballs, paddles, driving controllers, ...).  Used to
+      decide whether to enable/grab the mouse.  This describes the input
+      method only, NOT the controller's signalling: e.g. a trackball is
+      digital behind the scenes (gray code on the digital pins) yet is
+      mouse-driven, so returns true.  Specific controllers override as needed.
     */
-    virtual bool isAnalog() const { return false; }
+    virtual bool usesMouse() const { return false; }
 
     /**
       Notification method invoked by the system after its reset method has

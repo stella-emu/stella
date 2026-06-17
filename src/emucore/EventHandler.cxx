@@ -2460,8 +2460,8 @@ void EventHandler::setMouseControllerMode(string_view enable)
       usemouse = false;
     else  // 'analog'
     {
-      usemouse = myOSystem.console().leftController().isAnalog() ||
-                 myOSystem.console().rightController().isAnalog();
+      usemouse = myOSystem.console().leftController().usesMouse() ||
+                 myOSystem.console().rightController().usesMouse();
     }
 
     string_view control = usemouse ?

@@ -61,9 +61,9 @@ class PointingDevice : public Controller
     void update() override;
 
     /**
-      Answers whether the controller is intrinsically an analog controller.
+      Trackballs/mice are driven by the mouse (digital gray code internally).
     */
-    bool isAnalog() const override { return true; }
+    bool usesMouse() const override { return true; }
 
     /**
       Determines how this controller will treat values received from the

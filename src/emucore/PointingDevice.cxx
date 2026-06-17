@@ -39,6 +39,12 @@ PointingDevice::PointingDevice(Jack jack, const Event& event,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 PointingDevice::read()
 {
+  // SWCHA may be polled many times per frame, so the gray-code pins are sampled
+  // cycle-accurately on every read -- this controller is sub-window accurate by
+  // construction.  It deliberately does NOT use the Event transition schedule
+  // (which replays discrete user-input events): the encoder instead synthesizes
+  // an evenly-spaced pulse train from the whole-window mouse delta (see update())
+
   // Elapsed CPU cycles since the start of the current input window; this is
   // the controller's only notion of time, just as a real quadrature encoder
   // emits transitions purely as a function of elapsed time
