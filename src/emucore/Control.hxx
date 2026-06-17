@@ -63,11 +63,11 @@ class System;
   Digital pins may be either static or bound to an input event.
   A static pin (setPin) keeps a fixed value until changed.  A pin bound
   to an event (bindPin) instead reports that event's value sampled at
-  the current sub-frame cycle (via currentInputPos), so the pin can change part
-  way through a frame exactly as the user's input did.  This is what lets
-  a program reading a pin at multiple different points in a frame observe a
-  mid-frame press/release; the sub-frame values come from the Event
-  transition schedule.
+  the current position within the input window (via currentInputPos), so the
+  pin can change part way through the window exactly as the user's input did.
+  This is what lets a program reading a pin at several points within one
+  window observe a press/release between reads; the values come from the
+  Event transition schedule.
 
   @author  Bradford W. Mott
 */
@@ -364,20 +364,21 @@ class Controller : public Serializable
       The read/write methods above are meant to be used at a higher level.
     */
     bool setPin(DigitalPin pin, bool value) {
-      // A static value overrides any sub-frame event binding on this pin
+      // A static value overrides any event binding on this pin
       myDigitalPinEvent[static_cast<int>(pin)].fill(Event::NoType);
       return myDigitalPinState[static_cast<int>(pin)] = value;
     }
     bool getPin(DigitalPin pin) const {
       return myDigitalPinState[static_cast<int>(pin)];
     }
+
     /**
       Bind a digital pin to one or more input events so that read() reflects
-      their value at the current sub-frame cycle (active low: the pin reads as
-      pressed when any bound event is active).  This lets the pin change
-      mid-frame as the user's input did, instead of being latched once per
-      frame.  Several events cover a button with multiple sources, e.g. a fire
-      button that the mouse buttons also trigger.
+      their value at the current position within the input window (active low:
+      the pin reads as pressed when any bound event is active).  This lets the
+      pin change within the window as the user's input did, instead of being
+      latched once per window.  Several events cover a button with multiple
+      sources, e.g. a fire button that the mouse buttons also trigger.
     */
     bool bindPin(DigitalPin pin, SpanOf<Event::Type> events) {
       auto& bound = myDigitalPinEvent[static_cast<int>(pin)];
@@ -390,20 +391,25 @@ class Controller : public Serializable
         bound[i++] = event;
         pressed |= myEvent.get(event) != 0;
       }
+
       // Keep the static state current for getPin()/debugger display
       return myDigitalPinState[static_cast<int>(pin)] = !pressed;
     }
+
     bool bindPin(DigitalPin pin, Event::Type event) {
       return bindPin(pin, SpanOf<Event::Type>{&event, 1});
     }
+
     void setPin(AnalogPin pin, AnalogReadout::Connection value) {
       myAnalogPinValue[static_cast<int>(pin)] = value;
       if(myOnAnalogPinUpdateCallback)
         myOnAnalogPinUpdateCallback(pin);
     }
+
     AnalogReadout::Connection getPin(AnalogPin pin) const {
       return myAnalogPinValue[static_cast<int>(pin)];
     }
+
     void resetDigitalPins() {
       setPin(DigitalPin::One,   true);
       setPin(DigitalPin::Two,   true);
@@ -411,6 +417,7 @@ class Controller : public Serializable
       setPin(DigitalPin::Four,  true);
       setPin(DigitalPin::Six,   true);
     }
+
     void resetAnalogPins() {
       setPin(AnalogPin::Five, AnalogReadout::disconnect());
       setPin(AnalogPin::Nine, AnalogReadout::disconnect());
@@ -427,17 +434,17 @@ class Controller : public Serializable
     /**
       Whether auto fire is currently active.  When it is, the fire button
       generates its own timing and is set via setPin() rather than bound to an
-      event for sub-frame replay.
+      event for replay within the input window.
     */
     static bool autoFireActive() { return AUTO_FIRE && AUTO_FIRE_RATE; }
 
     /**
       Drive a digital "fire" button from one or more events (the fire event
       plus any mouse buttons currently mapped to it).  Normally the pin is
-      bound for sub-frame replay, so each source can change the button mid-frame
-      (see bindPin); while autofire is generating its own timing the pin can't
-      be event-bound and is set statically instead.  'fireDelay' is the
-      controller's per-pin autofire counter.
+      bound for replay within the input window, so each source can change the
+      button mid-window (see bindPin); while autofire is generating its own
+      timing the pin can't be event-bound and is set statically instead.
+      'fireDelay' is the controller's per-pin autofire counter.
     */
     void updateFireButton(DigitalPin pin, int& fireDelay,
                           SpanOf<Event::Type> events) {
@@ -453,9 +460,9 @@ class Controller : public Serializable
     }
 
     /**
-      The current sub-frame position, in CPU cycles from the start of the
-      input window, used to sample event-bound pins at read time.  Sourced
-      from System::cycles() via Event.
+      The current position within the input window, in CPU cycles from its
+      start, used to sample event-bound pins at read time.  Sourced from
+      System::cycles() via Event.
     */
     uInt64 currentInputPos() const;
 
@@ -514,9 +521,9 @@ class Controller : public Serializable
     /// The boolean value on each digital pin
     std::array<bool, 5> myDigitalPinState{true, true, true, true, true};
 
-    /// Input events bound to each digital pin, sub-frame replayed by read()
-    /// (active low, OR'd over the slots); unused slots and a fully static pin
-    /// are NoType
+    /// Input events bound to each digital pin, replayed within the input
+    /// window by read() (active low, OR'd over the slots); unused slots and a
+    /// fully static pin are NoType
     BSPF::array2D<Event::Type, 5, MAX_PIN_EVENTS> myDigitalPinEvent{};
 
     /// The analog value on each analog pin

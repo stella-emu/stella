@@ -257,9 +257,9 @@ uInt64 EventHandler::currentSystemCycles() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventHandler::poll(uInt64 time)
 {
-  // Drain hardware input into a fresh per-frame transition schedule (opened,
-  // filled from the hardware, then spread across the frame and replayed
-  // sub-frame by the controllers during the next frame of emulation)
+  // Drain hardware input into a fresh input window (opened, filled from the
+  // hardware, then spread across the window and replayed by the controllers
+  // during the next frame of emulation)
   pollInput();
 
   // Update controllers and console switches, and in general all other things

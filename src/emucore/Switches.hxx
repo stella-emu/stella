@@ -58,14 +58,15 @@ class Switches : public Serializable
     uInt8 read() const { return mySwitches; }
 
     /**
-      Get the console switches as of the given point within the frame.
-      The momentary Select and Reset switches are replayed at the sub-frame
-      cycle where the user actually pressed/released them, so a program polling
-      them multiple times per frame can see the change mid-frame.  The
-      latching switches (difficulty, TV type) keep their persistent state.
+      Get the console switches as of the given point within the input window.
+      The momentary Select and Reset switches are replayed at the window
+      position where the user actually pressed/released them, so a program
+      polling them several times within one window can see the change between
+      reads.  The latching switches (difficulty, TV type) keep their persistent
+      state.
 
       @param nowCycles  The current System::cycles(), used to derive the
-                        sub-frame position via Event
+                        position within the input window via Event
       @return The 8 bits which represent the state of the console switches
     */
     uInt8 read(uInt64 nowCycles) const;

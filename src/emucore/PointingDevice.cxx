@@ -39,10 +39,10 @@ PointingDevice::PointingDevice(Jack jack, const Event& event,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 PointingDevice::read()
 {
-  // Elapsed CPU cycles since the start of the current frame; this is the
-  // controller's only notion of time, just as a real quadrature encoder
+  // Elapsed CPU cycles since the start of the current input window; this is
+  // the controller's only notion of time, just as a real quadrature encoder
   // emits transitions purely as a function of elapsed time
-  const int elapsed = static_cast<int>(mySystem.cycles() - myFrameStartCycle);
+  const int elapsed = static_cast<int>(mySystem.cycles() - myWindowStartCycle);
 
   // Loop over all missed changes
   while(myCycleCountH < elapsed)
@@ -80,23 +80,23 @@ uInt8 PointingDevice::read()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PointingDevice::update()
 {
-  // Snapshot the frame boundary on the system (CPU) clock.  Done before the
-  // mouse-enabled check so elapsed time in read() is always measured against
-  // the current frame, never a stale reference
+  // Snapshot the input-window boundary on the system (CPU) clock.  Done before
+  // the mouse-enabled check so elapsed time in read() is always measured
+  // against the current window, never a stale reference
   const uInt64 cycles = mySystem.cycles();
-  const uInt64 cyclesLastFrame = cycles - myFrameStartCycle;
-  myFrameStartCycle = cycles;
+  const uInt64 cyclesLastWindow = cycles - myWindowStartCycle;
+  myWindowStartCycle = cycles;
 
   if(!myMouseEnabled)
     return;
 
   // Update horizontal direction
-  updateDirection( myEvent.get(Event::MouseAxisXMove), cyclesLastFrame,
+  updateDirection( myEvent.get(Event::MouseAxisXMove), cyclesLastWindow,
       myHCounterRemainder, myTrackBallLeft, myTrackBallCyclesH,
       myCycleCountH, myFirstOffsetH);
 
   // Update vertical direction
-  updateDirection(-myEvent.get(Event::MouseAxisYMove), cyclesLastFrame,
+  updateDirection(-myEvent.get(Event::MouseAxisYMove), cyclesLastWindow,
       myVCounterRemainder, myTrackBallDown, myTrackBallCyclesV,
       myCycleCountV, myFirstOffsetV);
 
@@ -126,7 +126,7 @@ void PointingDevice::setSensitivity(int sensitivity)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PointingDevice::updateDirection(int counter, uInt64 cyclesLastFrame,
+void PointingDevice::updateDirection(int counter, uInt64 cyclesLastWindow,
     float& counterRemainder, bool& trackBallDir, int& trackBallCycles,
     int& cycleCount, int& firstOffset)
 {
@@ -140,9 +140,9 @@ void PointingDevice::updateDirection(int counter, uInt64 cyclesLastFrame,
     trackBallDir = (trackBallCount > 0);
     trackBallCount = abs(trackBallCount);
 
-    // Spread this frame's movement evenly across the (estimated) length of a
-    // frame, measured in CPU cycles instead of scanlines
-    trackBallCycles = static_cast<int>(cyclesLastFrame) / trackBallCount;
+    // Spread this window's movement evenly across the (estimated) length of an
+    // input window, measured in CPU cycles instead of scanlines
+    trackBallCycles = static_cast<int>(cyclesLastWindow) / trackBallCount;
 
     // Set lower limit in case of (unrealistic) ultra fast mouse movements
     if(trackBallCycles == 0)

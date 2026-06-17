@@ -99,7 +99,7 @@ class PointingDevice : public Controller
     virtual uInt8 ioPortA(uInt8 countH, uInt8 countV, uInt8 left, uInt8 down) = 0;
 
   private:
-    void updateDirection(int counter, uInt64 cyclesLastFrame,
+    void updateDirection(int counter, uInt64 cyclesLastWindow,
                          float& counterRemainder, bool& trackBallDir,
                          int& trackBallCycles, int& cycleCount, int& firstOffset);
 
@@ -119,14 +119,14 @@ class PointingDevice : public Controller
     // Counter to iterate through the gray codes
     uInt8 myCountH{0}, myCountV{0};
 
-    // Elapsed-cycle offset (from frame start) of the next gray code change.
+    // Elapsed-cycle offset (from window start) of the next gray code change.
     // INT_MAX means "no pending change", so a plugged-but-unmapped controller
     // never steps its counters
     int myCycleCountH{INT_MAX}, myCycleCountV{INT_MAX};
 
-    // System cycle at the start of the current frame.  A real quadrature
-    // encoder's output depends only on elapsed time.
-    uInt64 myFrameStartCycle{0};
+    // System cycle at the start of the current input window.  A real
+    // quadrature encoder's output depends only on elapsed time.
+    uInt64 myWindowStartCycle{0};
 
     // Offset factor for first change, 0..(1 << 12) - 1
     int myFirstOffsetH{0}, myFirstOffsetV{0};

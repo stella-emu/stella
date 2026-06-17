@@ -250,7 +250,7 @@ static void draw_crosshair(int16_t x, int16_t y, uint16_t color)
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // External linkage: called from EventHandlerLIBRETRO::pollEvent() so it runs
-// inside the per-frame input transition window opened by pollInput()
+// inside the input window opened by pollInput()
 void update_input()
 {
   if(!input_poll_cb) return;
@@ -1854,8 +1854,8 @@ void retro_run()
     return;
   }
 
-  // Drain input through the per-frame transition window (calls update_input()
-  // via EventHandlerLIBRETRO::pollEvent()) so controllers can replay it sub-frame
+  // Drain input through the input window (calls update_input() via
+  // EventHandlerLIBRETRO::pollEvent()) so controllers can replay it within it
   stella.pollInput();
 
   stella.runFrame();

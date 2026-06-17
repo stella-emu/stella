@@ -44,7 +44,7 @@ void Joy2BPlus::updateButtons()
 
   // The Joy 2B+ has two more buttons, connected to the inputs usually used by
   // paddles; button C also responds to the right mouse button.  Both are
-  // analog inputs, so they stay static (no sub-frame replay).
+  // analog inputs, so they stay static (not replayed within the input window).
   const bool buttonCPressed = myEvent.get(myButtonCEvent) != 0 ||
       mousePressed(Event::MouseButtonRightValue);
   const bool button3Pressed = myEvent.get(myButton3Event) != 0;

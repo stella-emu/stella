@@ -135,9 +135,9 @@ class StellaLIBRETRO
              myOSystem->eventHandler().handleEvent(type, state);
     }
 
-    // Drain a frame's input through the per-frame transition window, so the
-    // controllers can replay it sub-frame (the input slice of poll(), since
-    // libretro does its own frame housekeeping)
+    // Drain input through the input window, so the controllers can replay it
+    // within the window (the input slice of poll(), since libretro does its
+    // own frame housekeeping)
     void   pollInput() {
              myOSystem->eventHandler().pollInput();
     }

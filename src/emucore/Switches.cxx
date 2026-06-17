@@ -119,16 +119,15 @@ void Switches::update()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 Switches::read(uInt64 nowCycles) const
 {
-  // Start from the latched state (difficulty, TV type, plus the once-per-frame
-  // Select/Reset latch already in mySwitches).  Only replay the momentary
-  // Select/Reset switches at the current sub-frame cycle when something
-  // actually changed this frame; otherwise the latched state is already
-  // correct and we avoid the mutex-locked transition scan.
+  // Start from the latched state (difficulty, TV type, plus the once-per-window
+  // Select/Reset latch already in mySwitches).  Replay the momentary
+  // Select/Reset switches at the current window position only when something
+  // changed; otherwise the latched state is already correct.
   uInt8 sw = mySwitches;
 
   if(myEvent.hasTransitions())
   {
-    const uInt64 pos = myEvent.framePosition(nowCycles);
+    const uInt64 pos = myEvent.windowPosition(nowCycles);
 
     if(myEvent.get(Event::ConsoleSelect, pos) != 0)
       sw &= ~0x02;

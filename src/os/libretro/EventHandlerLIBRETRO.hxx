@@ -40,10 +40,10 @@ class EventHandlerLIBRETRO : public EventHandler
 
   protected:
     /**
-      Collects and dispatches any pending events.  Called (with the per-frame
-      input transition window already open) from EventHandler::pollInput(),
-      which libretro.cxx drives once per frame.  update_input() lives in
-      libretro.cxx, where the RetroArch input callbacks it samples live.
+      Collects and dispatches any pending events.  Called (with the input
+      window already open) from EventHandler::pollInput(), which libretro.cxx
+      drives once per frame.  update_input() lives in libretro.cxx, where the
+      RetroArch input callbacks it samples live.
     */
     void pollEvent() override { update_input(); }
 

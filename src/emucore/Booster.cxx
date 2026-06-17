@@ -44,7 +44,8 @@ void BoosterGrip::updateButtons()
 
   // The CBS Booster-grip has two more buttons on it, connected to the inputs
   // usually used by paddles; the booster also responds to the right mouse
-  // button.  Both are analog inputs, so they stay static (no sub-frame replay).
+  // button.  Both are analog inputs, so they stay static (not replayed within
+  // the input window).
   const bool boosterPressed = myEvent.get(myBoosterEvent) != 0 ||
       mousePressed(Event::MouseButtonRightValue);
   const bool triggerPressed = myEvent.get(myTriggerEvent) != 0;

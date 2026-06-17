@@ -164,7 +164,7 @@ void Paddles::updateA()
 
   // Digital events (from keyboard or joystick hats & buttons).  Collect the
   // events driving the fire button (the fire event plus any mouse buttons
-  // mapped to this paddle) so it can be bound for sub-frame replay.
+  // mapped to this paddle) so it can be bound for replay within the input window.
   std::array<Event::Type, MAX_PIN_EVENTS> fire{myAFireEvent};
   size_t n = 1;
 
@@ -188,7 +188,7 @@ void Paddles::updateA()
         AnalogReadout::MAX_POT_RESISTANCE * myPosition[0]));
   }
 
-  // Bind the fire button for sub-frame replay (static only under autofire)
+  // Bind the fire button for replay within the input window (static only under autofire)
   updateFireButton(DigitalPin::Four, myFireDelay, {fire.data(), n});
 
   // Joystick up/down pins when using a splitter:
@@ -336,7 +336,8 @@ void Paddles::updateB()
   setPin(DigitalPin::Three, true);
 
   // Digital events (from keyboard or joystick hats & buttons).  Collect the
-  // events driving the fire button so it can be bound for sub-frame replay.
+  // events driving the fire button so it can be bound for replay within the
+  // input window.
   std::array<Event::Type, MAX_PIN_EVENTS> fire{myBFireEvent};
   size_t n = 1;
 
@@ -349,7 +350,7 @@ void Paddles::updateB()
         AnalogReadout::MAX_POT_RESISTANCE * myPosition[1]));
   }
 
-  // Bind the fire button for sub-frame replay (static only under autofire)
+  // Bind the fire button for replay within the input window (static only under autofire)
   updateFireButton(DigitalPin::Three, myFireDelayP1, {fire.data(), n});
 }
 

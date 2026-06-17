@@ -245,8 +245,8 @@ uInt8 M6532::peek(uInt16 addr)
 
     case 0x02:    // SWCHB - Port B I/O Register (Console switches)
     {
-      // Sample the console switches at the current sub-frame cycle so a
-      // momentary Select/Reset press is seen mid-frame
+      // Sample the console switches at the current position within the input
+      // window so a momentary Select/Reset press is seen between reads
       return (myOutB | ~myDDRB) &
              (myConsole.switches().read(mySystem->cycles()) | myDDRB);
     }

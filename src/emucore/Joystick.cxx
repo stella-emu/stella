@@ -75,7 +75,7 @@ void Joystick::updateFire(bool bothButtonsFire)
 {
   // Bind the fire button to its event and, when the mouse emulates this
   // controller, the mouse button(s) that also trigger it, so each can change
-  // the button mid-frame instead of latching a static aggregate per frame.
+  // the button within the input window instead of latching a static aggregate.
   std::array<Event::Type, MAX_PIN_EVENTS> fire{myFireEvent};
   size_t n = 1;
   if(myControlID > -1)

@@ -44,13 +44,12 @@ bool Controller::read(DigitalPin pin)
 {
   const auto& events = myDigitalPinEvent[static_cast<int>(pin)];
 
-  // An event-bound pin reflects the input's value at the current sub-frame
-  // cycle, so it can change mid-frame just as the user's input did.  A pin may
-  // be bound to several events (e.g. a fire button that the mouse buttons also
-  // trigger); it reads as pressed (active low) when any is active.  When no
-  // input transitioned this frame (the common case) the value is constant
-  // across the frame and equals the cached pin state, so skip the sub-frame
-  // machinery (cycle lookup + mutex-locked transition scan) entirely.
+  // An event-bound pin reflects the input's value at the current position
+  // within the input window, so it can change mid-window just as the user's
+  // input did.  A pin may be bound to several events (e.g. a fire button the
+  // mouse buttons also trigger); it reads as pressed (active low) when any is
+  // active.  When nothing transitioned this window the value is constant and
+  // equals the cached pin state.
   if(events[0] != Event::NoType && myEvent.hasTransitions())
   {
     const uInt64 pos = currentInputPos();
@@ -66,7 +65,7 @@ bool Controller::read(DigitalPin pin)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt64 Controller::currentInputPos() const
 {
-  return myEvent.framePosition(mySystem.cycles());
+  return myEvent.windowPosition(mySystem.cycles());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
