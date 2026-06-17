@@ -261,17 +261,16 @@ bool FBBackendSDL::setVideoMode(const VideoModeHandler::Mode& mode,
   const bool adaptRefresh = false;
 #endif
 
-  // Don't re-create the window if its display and size hasn't changed,
-  // as it's not necessary, and causes flashing in fullscreen mode
+  // The window only needs to be recreated when the fullscreen state actually
+  // toggles (windowed <-> fullscreen), the target display changes, or the
+  // refresh rate is being adapted
   if(myWindow)
   {
     const uInt32 d = getCurrentDisplayID();
-    int w{0}, h{0};
+    const bool wasFullscreen =
+        (SDL_GetWindowFlags(myWindow) & SDL_WINDOW_FULLSCREEN) != 0;
 
-    SDL_GetWindowSize(myWindow, &w, &h);
-    if(d != displayId ||
-       std::cmp_not_equal(w, mode.screenS.w) ||
-       std::cmp_not_equal(h, mode.screenS.h) || adaptRefresh)
+    if(d != displayId || adaptRefresh || mode.fullscreen != wasFullscreen)
     {
       // Renderer has to be destroyed *before* the window gets destroyed to avoid memory leaks
       SDL_DestroyRenderer(myRenderer);
@@ -283,9 +282,21 @@ bool FBBackendSDL::setVideoMode(const VideoModeHandler::Mode& mode,
 
   if(myWindow)
   {
-    // Even though window size stayed the same, the title may have changed
+    // Reuse the existing window.  In windowed mode resize it to the new mode's
+    // size (clearing any minimum left over from a resizable launcher/debugger
+    // mode first, so a smaller fixed-size mode can shrink to fit; createDisplay()
+    // re-applies the correct minimum afterwards).  In fullscreen the window
+    // already spans the display and the fullscreen block below keeps it there,
+    // so we leave its size/position alone and let the src/dst rects resize the
+    // image.
     SDL_SetWindowTitle(myWindow, myScreenTitle.c_str());
-    SDL_SetWindowPosition(myWindow, posX, posY);
+    if(!mode.fullscreen)
+    {
+      SDL_SetWindowMinimumSize(myWindow, 0, 0);
+      SDL_SetWindowSize(myWindow, mode.screenS.w, mode.screenS.h);
+      SDL_SetWindowPosition(myWindow, posX, posY);
+      SDL_SyncWindow(myWindow);
+    }
   }
   else
   {
@@ -476,8 +487,11 @@ bool FBBackendSDL::createRenderer()
     }
 
     detectFeatures();
-    determineDimensions();
   }
+
+  // Refresh the cached window/render dimensions on every mode change;
+  // scaleX()/scaleY() rely on these being current
+  determineDimensions();
   clear();
 
   const char* const detectedvideo = SDL_GetRendererName(myRenderer);

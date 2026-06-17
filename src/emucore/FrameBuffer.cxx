@@ -1231,6 +1231,13 @@ FBInitStatus FrameBuffer::applyVideoMode()
     myActiveVidMode = mode;
     status = FBInitStatus::Success;
 
+    // A completed mode change supersedes any in-progress interactive resize.
+    // Clear that state and reset the renderer's logical presentation to normal,
+    // so a stretched presentation left over from the previous mode
+    // (launcher/debugger) can't leak into this one
+    myResizeActive = false;
+    myBackend->endStretchResize();
+
     // Did we get the requested fullscreen state?
     myOSystem.settings().setValue("fullscreen", fullScreen());
 
