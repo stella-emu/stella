@@ -201,9 +201,9 @@ class DialogContainer
     // Indicates the most current time (in milliseconds) as set by updateTime()
     uInt64 myTime{0};
 
-    static uInt64 S_DOUBLE_CLICK_DELAY;
-    static uInt64 S_REPEAT_INITIAL_DELAY;
-    static uInt64 S_REPEAT_SUSTAIN_DELAY;
+    static inline uInt64 S_DOUBLE_CLICK_DELAY = 500;
+    static inline uInt64 S_REPEAT_INITIAL_DELAY = 400;
+    static inline uInt64 S_REPEAT_SUSTAIN_DELAY = 50;
     static constexpr uInt64 S_REPEAT_NONE = 1 << 24; // loooong
     static constexpr uInt64 S_LONG_PRESS_DELAY = 1000; // 1 second
 

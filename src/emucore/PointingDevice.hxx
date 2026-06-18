@@ -128,7 +128,7 @@ class PointingDevice : public Controller
 
     // User-defined sensitivity; adjustable since end-users may have different
     // mouse speeds
-    static float TB_SENSITIVITY;
+    static inline float TB_SENSITIVITY = 1.F;
 
   private:
     // Following constructors and assignment operators not supported

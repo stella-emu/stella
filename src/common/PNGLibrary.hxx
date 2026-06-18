@@ -118,6 +118,24 @@ class PNGLibrary
     uInt32 mySnapInterval{0};
     uInt32 mySnapCounter{0};
 
+    // Auto-cropped area for the current snapshot.  For continuous snapshots
+    // the crop is computed once (on the first frame) and cached here, so that
+    // every frame in the sequence is saved with identical dimensions.
+    Common::Rect myCropRect;
+    bool myCropValid{false};
+
+    /**
+      Determine the auto-cropped (black borders trimmed) area of the surface.
+      For continuous snapshots (number > 0) the result is computed once and
+      cached, then reused for subsequent frames.
+
+      @param surface  The surface to examine
+      @param rect     The area of the surface to crop within
+      @param number   The continuous snapshot number (0 for single snapshots)
+    */
+    Common::Rect croppedRect(const FBSurface& surface,
+                             const Common::Rect& rect, uInt32 number);
+
     /**
       Write PNG tEXt chunks to the image.
     */

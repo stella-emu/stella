@@ -18,6 +18,9 @@
 #include "OSystem.hxx"
 #include "Console.hxx"
 #include "FrameBuffer.hxx"
+#include "BrowserDialog.hxx"
+#include "EditTextWidget.hxx"
+#include "FSNode.hxx"
 #include "RadioButtonWidget.hxx"
 #include "TIASurface.hxx"
 
@@ -75,7 +78,7 @@ EmulationDialog::EmulationDialog(OSystem& osystem, DialogContainer& parent,
 
   // Set real dimensions
   _w = 37 * fontWidth + HBORDER * 2 + CheckboxWidget::prefixSize(_font);
-  _h = 12 * (lineHeight + VGAP) + VGAP * 7 + VBORDER * 3 + _th + buttonHeight;
+  _h = 13 * (lineHeight + VGAP) + VGAP * 10 + VBORDER * 3 + _th + buttonHeight * 2;
 
   int xpos = HBORDER, ypos = VBORDER + _th;
 
@@ -147,6 +150,26 @@ EmulationDialog::EmulationDialog(OSystem& osystem, DialogContainer& parent,
   myAutoSlotWidget->setToolTip("Cycle to next state slot after saving.", Event::ToggleAutoSlot);
   wid.push_back(myAutoSlotWidget);
 
+  // State directory
+  xpos = HBORDER;  ypos += lineHeight + VGAP * 3;
+  const int bwidth = font.getStringWidth("State path" + ELLIPSIS) + fontWidth * 2 + 1;
+  myStatePathButton = new ButtonWidget(this, font, xpos, ypos, bwidth, buttonHeight,
+                                       "State path" + ELLIPSIS, kChooseStateDir);
+  myStatePathButton->setToolTip("Select the directory to load/save state files from/to.");
+  wid.push_back(myStatePathButton);
+  xpos = myStatePathButton->getRight() + fontWidth;
+  myStatePath = new EditTextWidget(this, font, xpos,
+                                   ypos + (buttonHeight - lineHeight) / 2 - 1,
+                                   _w - xpos - HBORDER, lineHeight, "");
+  wid.push_back(myStatePath);
+
+  // Save/load states in the ROM directory
+  xpos = HBORDER;  ypos += buttonHeight + VGAP;
+  myStateWithRom = new CheckboxWidget(this, font, xpos, ypos + 1,
+                                      "Load/save states in ROM directory", kStateWithRom);
+  myStateWithRom->setToolTip("Use the current ROM's directory for state files.");
+  wid.push_back(myStateWithRom);
+
   // Add Defaults, OK and Cancel buttons
   addDefaultsOKCancelBGroup(wid, font);
 
@@ -188,6 +211,19 @@ void EmulationDialog::loadConfig()
   mySaveOnExitGroup->setSelected(saveOnExit == "all" ? 2 : saveOnExit == "current" ? 1 : 0);
   // Automatically change save state slots
   myAutoSlotWidget->setState(settings.getBool("autoslot"));
+
+  // State directory; resolves to the default location when unset
+  myStatePath->setText(instance().configuredStateDir().getShortPath());
+  myStateWithRom->setState(settings.getBool("statewithrom"));
+  updateStatePathEnabled();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void EmulationDialog::updateStatePathEnabled()
+{
+  const bool enable = !myStateWithRom->getState();
+  myStatePathButton->setEnabled(enable);
+  myStatePath->setEnabled(enable);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -226,6 +262,10 @@ void EmulationDialog::saveConfig()
   // Automatically change save state slots
   settings.setValue("autoslot", myAutoSlotWidget->getState());
 
+  // State directory
+  settings.setValue("statedir", myStatePath->getText());
+  settings.setValue("statewithrom", myStateWithRom->getState());
+
   if(instance().hasConsole())
   {
     // update speed
@@ -250,6 +290,11 @@ void EmulationDialog::setDefaults()
 
   mySaveOnExitGroup->setSelected(0);
   myAutoSlotWidget->setState(false);
+
+  // State directory; always reset to the default '<basedir>/state' location
+  myStatePath->setText(instance().defaultStateDir().getShortPath());
+  myStateWithRom->setState(false);
+  updateStatePathEnabled();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -269,6 +314,19 @@ void EmulationDialog::handleCommand(CommandSender* sender, int cmd,
 
     case kSpeedupChanged:
       mySpeed->setValueLabel(formatSpeed(mySpeed->getValue()));
+      break;
+
+    case kChooseStateDir:
+      BrowserDialog::show(this, _font, "Select State Directory",
+                          myStatePath->getText(),
+                          BrowserDialog::Mode::Directories,
+                          [this](bool OK, const FSNode& node) {
+                            if(OK) myStatePath->setText(node.getShortPath());
+                          });
+      break;
+
+    case kStateWithRom:
+      updateStatePathEnabled();
       break;
 
     default:

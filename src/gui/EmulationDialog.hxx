@@ -37,6 +37,10 @@ class EmulationDialog : public Dialog
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 
   private:
+    // Enable/disable the state path widgets based on the ROM-directory toggle
+    void updateStatePathEnabled();
+
+  private:
     SliderWidget*     mySpeed{nullptr};
     CheckboxWidget*   myUseVSync{nullptr};
     CheckboxWidget*   myTurbo{nullptr};
@@ -46,9 +50,14 @@ class EmulationDialog : public Dialog
     CheckboxWidget*   myConfirmExitWidget{nullptr};
     RadioButtonGroup* mySaveOnExitGroup{nullptr};
     CheckboxWidget*   myAutoSlotWidget{nullptr};
+    ButtonWidget*     myStatePathButton{nullptr};
+    EditTextWidget*   myStatePath{nullptr};
+    CheckboxWidget*   myStateWithRom{nullptr};
 
     enum {
       kSpeedupChanged = 'EDSp',
+      kChooseStateDir = 'EDsd',
+      kStateWithRom   = 'EDsr',
     };
 
   private:

@@ -57,6 +57,7 @@ class SnapshotDialog : public Dialog
 
     CheckboxWidget* mySnapSingle{nullptr};
     CheckboxWidget* mySnap1x{nullptr};
+    CheckboxWidget* mySnapCrop{nullptr};
 
   private:
     // Following constructors and assignment operators not supported

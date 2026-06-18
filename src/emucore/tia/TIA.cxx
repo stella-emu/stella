@@ -946,6 +946,8 @@ bool TIA::saveDisplay(Serializer& out) const
     out.putByteArray(myBackBuffer);
     out.putByteArray(myFrontBuffer);
     out.putInt(myFramesSinceLastRender);
+
+    if(!myAudio.saveSamples(out)) return false;
   }
   catch(...)
   {
@@ -966,6 +968,8 @@ bool TIA::loadDisplay(Serializer& in)
     in.getByteArray(myBackBuffer);
     in.getByteArray(myFrontBuffer);
     myFramesSinceLastRender = in.getInt();
+
+    if(!myAudio.loadSamples(in)) return false;
   }
   catch(...)
   {
@@ -1119,6 +1123,8 @@ bool TIA::toggleBit(TIABit b, BitState mode)
     case BitState::Query:
       mask = mySpriteEnabledBits & b;
       break;
+    default:
+      break;
   }
 
   mySpriteEnabledBits = (mySpriteEnabledBits & ~b) | mask;
@@ -1159,6 +1165,8 @@ bool TIA::toggleCollision(TIABit b, BitState mode)
       break;
     case BitState::Query:
       mask = myCollisionsEnabledBits & b;
+      break;
+    default:
       break;
   }
 

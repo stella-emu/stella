@@ -18,8 +18,21 @@
 #ifndef VERSION_HXX
 #define VERSION_HXX
 
-static constexpr string_view STELLA_FULL_TITLE = "Stella 8.0_pre";
-static constexpr string_view STELLA_VERSION = "8.0_pre";
-static constexpr string_view STELLA_BUILD = "8005";
+#include <string_view>
+
+// The build number is normally generated from the current git commit count
+// (see the 'VersionBuild.hxx' rule in the Makefile). When building outside of
+// git (e.g. from a release tarball) or with a build system that doesn't
+// generate it, the fallback value below is used instead.
+#if __has_include("VersionBuild.hxx")
+  #include "VersionBuild.hxx"
+#endif
+#ifndef STELLA_BUILD_INCLUDED
+  static constexpr std::string_view STELLA_BUILD_NUMBER = "8005";
+#endif
+
+static constexpr std::string_view STELLA_FULL_TITLE = "Stella 8.0_pre";
+static constexpr std::string_view STELLA_VERSION = "8.0_pre";
+static constexpr std::string_view STELLA_BUILD = STELLA_BUILD_NUMBER;
 
 #endif  // VERSION_HXX

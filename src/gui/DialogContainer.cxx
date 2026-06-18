@@ -448,8 +448,3 @@ void DialogContainer::reset()
 
   myLastClick = { 0, 0, 0, 0 };
 }
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt64 DialogContainer::S_DOUBLE_CLICK_DELAY = 500;
-uInt64 DialogContainer::S_REPEAT_INITIAL_DELAY = 400;
-uInt64 DialogContainer::S_REPEAT_SUSTAIN_DELAY = 50;

@@ -52,12 +52,7 @@ class Audio : public Serializable
       Enable/disable pushing audio samples. These are required for TimeMachine
       playback with sound.
     */
-    void setAudioRewindMode(bool enable)
-    {
-    #ifdef GUI_SUPPORT
-      myRewindMode = enable;
-    #endif
-    }
+    void setAudioRewindMode(bool enable) { myRewindMode = enable; }
 
     /**
       Tick one color clock: accumulate channel volumes and drive the two-phase
@@ -80,6 +75,15 @@ class Audio : public Serializable
     */
     bool save(Serializer& out) const override;
     bool load(Serializer& in) override;
+
+    /**
+      Save/load the accumulated audio samples used for TimeMachine playback
+      with sound. Unlike the core device state, these are only meaningful for
+      rewind playback, so they travel with the (rewind-only) display state
+      rather than every save state; this keeps normal save states a fixed size.
+    */
+    bool saveSamples(Serializer& out) const;
+    bool loadSamples(Serializer& in);
 
   private:
     /**
@@ -120,10 +124,9 @@ class Audio : public Serializable
     Int16* myCurrentFragment{nullptr};
     // Write index within the current fragment
     uInt32 mySampleIndex{0};
-  #ifdef GUI_SUPPORT
+
     bool myRewindMode{false};
     mutable ByteArray mySamples;
-  #endif
 
   private:
     // Following constructors and assignment operators not supported
@@ -149,13 +152,13 @@ void Audio::tick()
   // Phase clocks fire at only 4 of 228 positions per line (~1.8%); hint the
   // optimizer that the default (no-op) path is overwhelmingly common
   switch (myCounter) {
-    [[unlikely]] case 9:
+    [[unlikely]] case 9:  [[fallthrough]];
     [[unlikely]] case 81:
       myChannel0.phase0();
       myChannel1.phase0();
       break;
 
-    [[unlikely]] case 37:
+    [[unlikely]] case 37: [[fallthrough]];
     [[unlikely]] case 149:
       myChannel0.phase1();
       myChannel1.phase1();

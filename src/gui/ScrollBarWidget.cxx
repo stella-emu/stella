@@ -310,6 +310,3 @@ void ScrollBarWidget::drawWidget(bool hilite)
   }
   clearDirty();
 }
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int ScrollBarWidget::S_WHEEL_LINES = 4;

@@ -167,8 +167,13 @@ FileListWidget::IconType FileListWidget::getIconType(const FSNode& node) const
     return node.hasExtension(".zip")
       ? IconType::zip : IconType::directory;
   else
-    return node.isFile() && Bankswitch::isValidRomName(node)
-      ? IconType::rom : IconType::unknown;
+    if(node.isFile() && Bankswitch::isValidRomName(node))
+    {
+      return node.hasExtension(".mp3") || node.hasExtension(".wav")
+        ? IconType::cassette : IconType::rom;
+    }
+    else
+      return IconType::unknown;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -538,6 +543,24 @@ const FileListWidget::Icon* FileListWidget::getIcon(int i) const
     0b10000000'00000010,
     0b11111111'11111110
   };
+  static const Icon cassette_small = {
+    0b00000000000000000,
+    0b00000000000000000,
+//    0b00000000000000000,
+    0b11111111'11111110,
+    0b11000000'00000110,
+    0b11000000'00000110,
+    0b11111111'11111110,
+    0b11001100'01100110,
+    0b11010100'01010110,
+    0b11001111'11100110,
+    0b11111111'11111110,
+    0b11110000'00011110,
+    0b11101111'11101110,
+    0b11011111'11110110,
+    0b00000000000000000,
+  };
+
   static const Icon up_small = {
     0b00000000000000000,
     0b11111000'00000000,
@@ -651,6 +674,30 @@ const FileListWidget::Icon* FileListWidget::getIcon(int i) const
     0b11111111111'11111111110,
     0b11111111111'11111111110
   };
+  static const Icon cassette_large = {
+    0b00000000000'00000000000,
+    0b00000000000'00000000000,
+    0b00000000000'00000000000,
+    0b11111111111'11111111110,
+    0b11111111111'11111111110,
+    0b11100000000'00000001110,
+    0b11100000000'00000001110,
+    0b11111111111'11111111110,
+    0b11111111111'11111111110,
+    0b11110001111'11100011110,
+    0b11100011000'00110001110,
+    0b11100111000'00111001110,
+    0b11100011000'00110001110,
+    0b11110001111'11100011110,
+    0b11111111111'11111111110,
+    0b11111111111'11111111110,
+    0b11111111111'11111111110,
+    0b11111000000'00000111110,
+    0b11110111111'11111011110,
+    0b11101111111'11111101110,
+    0b00000000000'00000000000,
+    0b00000000000'00000000000,
+  };
   static const Icon up_large = {
     0b00000000000'00000000000,
     0b11111110000'00000000000,
@@ -677,10 +724,10 @@ const FileListWidget::Icon* FileListWidget::getIcon(int i) const
   };
   constexpr int idx = static_cast<int>(IconType::numTypes);
   static const Icon* const small_icons[idx] = {
-    &unknown_small, &rom_small, &directory_small, &zip_small, &up_small
+    &unknown_small, &rom_small, &directory_small, &zip_small, &cassette_small, &up_small
   };
   static const Icon* const large_icons[idx] = {
-    &unknown_large, &rom_large, &directory_large, &zip_large, &up_large,
+    &unknown_large, &rom_large, &directory_large, &zip_large, &cassette_large, &up_large,
   };
   const bool smallIcon = iconWidth() < 24;
   const int iconType = static_cast<int>(_iconTypeList[i]);

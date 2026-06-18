@@ -151,7 +151,7 @@ class Driving : public Controller
 
     // User-defined sensitivity; adjustable since end-users may prefer different
     // speeds
-    static float SENSITIVITY;
+    static inline float SENSITIVITY = 1.F;
 
     // Subdivisions of each gray code interval for high-resolution tracking
     static constexpr float COUNTER_SCALE = 256.F;
