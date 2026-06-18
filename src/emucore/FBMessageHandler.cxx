@@ -101,7 +101,7 @@ void FBMessageHandler::showText(string_view message, MessagePosition position,
   // If called off the main thread, queue and let drainPending() show it later
   if(std::this_thread::get_id() != myMainThreadId)
   {
-    const std::lock_guard<std::mutex> lock(myPendingMutex);
+    const std::scoped_lock lock(myPendingMutex);
     myPending.push_back({string{message}, position, force});
     return;
   }
@@ -123,7 +123,7 @@ void FBMessageHandler::drainPending()
 #ifdef GUI_SUPPORT
   vector<PendingMessage> pending;
   {
-    const std::lock_guard<std::mutex> lock(myPendingMutex);
+    const std::scoped_lock lock(myPendingMutex);
     if(myPending.empty())
       return;
     std::swap(pending, myPending);

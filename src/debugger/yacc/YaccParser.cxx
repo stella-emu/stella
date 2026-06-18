@@ -280,6 +280,9 @@ parser::symbol_type Lexer::yylex()
         else
           return make_char_tok(*myC++);
         break;
+
+      default:
+        break;
     }
   }
 

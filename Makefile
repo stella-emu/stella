@@ -81,7 +81,7 @@ ifdef USE_FULL_WARNINGS
                -Wno-switch-enum -Wno-float-conversion -Wno-unsafe-buffer-usage \
                -Wno-implicit-int-conversion -Wno-ctad-maybe-unsupported \
                -Wno-undefined-func-template -Wno-covered-switch-default \
-               -Wno-implicit-int-float-conversion
+               -Wno-implicit-int-float-conversion -Wno-nrvo
   endif
 endif
 

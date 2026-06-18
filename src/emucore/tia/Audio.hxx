@@ -152,13 +152,13 @@ void Audio::tick()
   // Phase clocks fire at only 4 of 228 positions per line (~1.8%); hint the
   // optimizer that the default (no-op) path is overwhelmingly common
   switch (myCounter) {
-    [[unlikely]] case 9:
+    [[unlikely]] case 9:  [[fallthrough]];
     [[unlikely]] case 81:
       myChannel0.phase0();
       myChannel1.phase0();
       break;
 
-    [[unlikely]] case 37:
+    [[unlikely]] case 37: [[fallthrough]];
     [[unlikely]] case 149:
       myChannel0.phase1();
       myChannel1.phase1();

@@ -1152,6 +1152,8 @@ bool TIA::toggleBit(TIABit b, BitState mode)
     case BitState::Query:
       mask = mySpriteEnabledBits & b;
       break;
+    default:
+      break;
   }
 
   mySpriteEnabledBits = (mySpriteEnabledBits & ~b) | mask;
@@ -1192,6 +1194,8 @@ bool TIA::toggleCollision(TIABit b, BitState mode)
       break;
     case BitState::Query:
       mask = myCollisionsEnabledBits & b;
+      break;
+    default:
       break;
   }
 

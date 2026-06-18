@@ -604,7 +604,7 @@ uInt32 Thumbulator::read16(uInt32 addr)
     fatalError("read16", addr, "abort - misaligned");
   THUMB_STAT(_stats.reads)
 
-  switch(addr & 0xF0000000)  // NOLINT(bugprone-switch-missing-default-case)
+  switch(addr & 0xF0000000)
   {
     case 0x00000000: //ROM
       if(isInvalidROM(addr))
@@ -626,17 +626,25 @@ uInt32 Thumbulator::read16(uInt32 addr)
       DO_DBUG(statusMsg << "read16(" << Base::HEX8 << addr << ")=" << Base::HEX4 << data << '\n');
       return data;
 
+  #ifdef THUMB_CYCLE_COUNT
     case 0xe0000000: //peripherals
-    #ifdef THUMB_CYCLE_COUNT
       if(addr == 0xE01FC000) //MAMCR
-    #else
-    default:
-    #endif
       {
         DO_DBUG(statusMsg << "read32(" << "MAMCR" << addr << ")=" << mamcr << " *");
         data = static_cast<uInt32>(mamcr);
         return data;
       }
+      break;
+
+    default:
+      break;
+  #else
+    case 0xe0000000: //peripherals
+    default:
+      DO_DBUG(statusMsg << "read32(" << "MAMCR" << addr << ")=" << mamcr << " *");
+      data = static_cast<uInt32>(mamcr);
+      return data;
+  #endif
   }
   return fatalError("read16", addr, "abort");
 }

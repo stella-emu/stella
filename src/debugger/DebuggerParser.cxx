@@ -492,6 +492,9 @@ bool DebuggerParser::validateArgs(int cmd)
 
       case Parameters::ARG_END_ARGS:
         break;
+
+      default:
+        break;
     }
 
     ++curCount;
@@ -1433,14 +1436,14 @@ void DebuggerParser::executeDump()
 
   if(argCount == 4)
   {
-    string outStr{out.view()};
-    string resultStr{commandResult.view()};
+    string dumpOut{out.view()};
+    string dumpResult{commandResult.view()};
 
     DebuggerDialog* dlg = debugger.myDialog;
     BrowserDialog::show(dlg, "Save Dump as", path,
                         BrowserDialog::Mode::FileSave,
-                        [dlg, outStr = std::move(outStr),
-                              resultStr = std::move(resultStr)]
+                        [dlg, outStr = std::move(dumpOut),
+                              resultStr = std::move(dumpResult)]
                         (bool OK, const FSNode& node) mutable
     {
       if(OK)
