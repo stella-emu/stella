@@ -22,6 +22,7 @@
 
 #include "Serializable.hxx"
 #include "FrameLayout.hxx"
+#include "TIAConstants.hxx"
 #include "bspf.hxx"
 
 /**
@@ -61,8 +62,14 @@ class AbstractFrameManager : public Serializable
 
     /**
       Called by TIA to notify the start of the next scanline.
+
+      @param lineLength  Realized length of the line just finished, in colour
+                         clocks. A normal line is TIAConstants::H_CLOCKS; an
+                         RSYNC-truncated line is shorter. Used to accumulate the
+                         continuous PAL chroma-subcarrier field phase so that
+                         RSYNC no longer forces a fake odd/even line-count flip.
      */
-    void nextLine();
+    void nextLine(uInt32 lineLength);
 
     /**
       Called by TIA on VBLANK writes.
@@ -106,6 +113,30 @@ class AbstractFrameManager : public Serializable
      */
     bool scanlineParityChanged() const {
       return (myPreviousFrameFinalLines & 0x1) != (myCurrentFrameFinalLines & 0x1);
+    }
+
+    /**
+      Is the PAL chroma subcarrier inverted for the field about to be decoded?
+
+      This is the phase-based replacement for (scanlinesLastFrame() & 1): rather
+      than taking the parity of the integer line count, it rounds the last
+      frame's realized colour-clock total to the nearest whole line and takes
+      the parity of that. With no RSYNC every line is exactly H_CLOCKS, the
+      rounding is exact, and this reduces to (scanlinesLastFrame() & 1) — the
+      non-RSYNC picture is byte-identical. An RSYNC-shortened line advances the
+      field phase by a fraction of a line, so e.g. Fatal Run's "313" lines is
+      really ~312.16 → rounds to 312 (even) → colour preserved, matching real
+      PAL hardware. A genuine odd-line frame still rounds odd and inverts.
+
+      Because the accumulator keys off realized colour clocks rather than the
+      bookkeeping line count, it is also robust to the double-RSYNC phantom
+      scanline question: a phantom line contributes only its handful of clocks
+      to the phase (not a full line of parity), so whether or not TIA counts it
+      as a scanline, the decoded field phase is unaffected.
+     */
+    bool chromaPhaseInverted() const {
+      return (((myChromaClocksLastFrame + TIAConstants::H_CLOCKS / 2)
+                / TIAConstants::H_CLOCKS) & 0x1) != 0;
     }
 
     /**
@@ -301,6 +332,14 @@ class AbstractFrameManager : public Serializable
 
     // Total number of scanlines in the second last complete frame
     uInt32 myPreviousFrameFinalLines{0};
+
+    // Accumulated realized colour clocks of the current frame. A normal line
+    // adds H_CLOCKS (228); an RSYNC-shortened line adds fewer. Drives the PAL
+    // chroma field phase (see chromaPhaseInverted()).
+    uInt32 myCurrentFrameChromaClocks{0};
+
+    // Snapshot of the above for the last complete frame.
+    uInt32 myChromaClocksLastFrame{0};
 
     // Total frame count
     uInt32 myTotalFrames{0};

@@ -318,6 +318,12 @@ class TIA : public Device
     uInt32 scanlinesLastFrame() const { return myFrameManager->scanlinesLastFrame(); }
 
     /**
+      Is the PAL chroma subcarrier inverted for the last frame? Phase-based
+      replacement for (scanlinesLastFrame() & 1) that stays correct under RSYNC.
+     */
+    bool chromaPhaseInverted() const { return myFrameManager->chromaPhaseInverted(); }
+
+    /**
       The same, but for the frame in the frame buffer.
      */
     uInt32 frameBufferScanlinesLastFrame() const { return myFrameBufferScanlines; }

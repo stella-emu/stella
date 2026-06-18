@@ -168,7 +168,7 @@ void TVSignal::changeCurrentAdjustable(int direction,
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TVSignal::render(const uInt8* tiaSrc, uInt32 srcWidth, uInt32 srcHeight,
-                      uInt32* rgbDst, uInt32 dstPitch, uInt32 scanlinesLastFrame)
+                      uInt32* rgbDst, uInt32 dstPitch, bool phaseInverted)
 {
   switch(myTiming)
   {
@@ -177,8 +177,7 @@ void TVSignal::render(const uInt8* tiaSrc, uInt32 srcWidth, uInt32 srcHeight,
       break;
 
     case ConsoleTiming::pal:
-      renderPAL(tiaSrc, srcWidth, srcHeight, rgbDst, dstPitch,
-                (scanlinesLastFrame & 1) != 0);
+      renderPAL(tiaSrc, srcWidth, srcHeight, rgbDst, dstPitch, phaseInverted);
       break;
 
     case ConsoleTiming::secam:

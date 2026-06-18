@@ -1646,9 +1646,15 @@ FORCE_INLINE void TIA::nextLine()
   if (!myMovementInProgress && myLinesSinceChange < 2) ++myLinesSinceChange;
 
   myHstate = HState::blank;
+
+  // Realized length of the line just finished, in colour clocks. RSYNC leaves
+  // myHctrDelta != 0 (the counter was jumped forward), so the line ran for
+  // fewer than H_CLOCKS clocks; a normal line gives exactly H_CLOCKS. The frame
+  // manager accumulates this to derive the PAL chroma field phase.
+  const uInt32 lineLength = TIAConstants::H_CLOCKS - myHctrDelta;
   myHctrDelta = 0;
 
-  myFrameManager->nextLine();
+  myFrameManager->nextLine(lineLength);
   // y only advances here, so this is the single correct update point for the
   // precomputed row pointer used in renderPixel()
   myCurrentRowPtr = myBackBuffer.data() +

@@ -97,9 +97,10 @@ class TVSignal
     // Process one complete TIA frame.  Reads raw TIA colour-index bytes from
     // tiaSrc and writes 32-bit 0x00RRGGBB pixels to rgbDst.  For PAL, applies
     // the delay-line model; for NTSC, applies Blargg or plain palette lookup.
-    // scanlinesLastFrame is used to derive the PAL V-axis phase.
+    // phaseInverted is the PAL chroma V-axis phase for this field, supplied by
+    // the frame manager (replaces the old scanlinesLastFrame-parity heuristic).
     void render(const uInt8* tiaSrc, uInt32 srcWidth, uInt32 srcHeight,
-                uInt32* rgbDst, uInt32 dstPitch, uInt32 scanlinesLastFrame);
+                uInt32* rgbDst, uInt32 dstPitch, bool phaseInverted);
 
   private:
     // Plain palette lookup with no signal processing (the TVMode::None

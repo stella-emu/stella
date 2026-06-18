@@ -32,15 +32,18 @@ void AbstractFrameManager::reset()
   myCurrentFrameTotalLines = 0;
   myCurrentFrameFinalLines = 0;
   myPreviousFrameFinalLines = 0;
+  myCurrentFrameChromaClocks = 0;
+  myChromaClocksLastFrame = 0;
   myTotalFrames = 0;
 
   onReset();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void AbstractFrameManager::nextLine()
+void AbstractFrameManager::nextLine(uInt32 lineLength)
 {
   ++myCurrentFrameTotalLines;
+  myCurrentFrameChromaClocks += lineLength;
 
   onNextLine();
 }
@@ -92,7 +95,9 @@ void AbstractFrameManager::notifyFrameComplete()
 {
   myPreviousFrameFinalLines = myCurrentFrameFinalLines;
   myCurrentFrameFinalLines = myCurrentFrameTotalLines;
+  myChromaClocksLastFrame = myCurrentFrameChromaClocks;
   myCurrentFrameTotalLines = 0;
+  myCurrentFrameChromaClocks = 0;
   ++myTotalFrames;
 
   if (myOnFrameComplete) myOnFrameComplete();
@@ -119,6 +124,8 @@ bool AbstractFrameManager::save(Serializer& out) const
     out.putInt(myCurrentFrameTotalLines);
     out.putInt(myCurrentFrameFinalLines);
     out.putInt(myPreviousFrameFinalLines);
+    out.putInt(myCurrentFrameChromaClocks);
+    out.putInt(myChromaClocksLastFrame);
     out.putInt(myTotalFrames);
     out.putInt(static_cast<uInt32>(myLayout));
 
@@ -142,6 +149,8 @@ bool AbstractFrameManager::load(Serializer& in)
     myCurrentFrameTotalLines = in.getInt();
     myCurrentFrameFinalLines = in.getInt();
     myPreviousFrameFinalLines = in.getInt();
+    myCurrentFrameChromaClocks = in.getInt();
+    myChromaClocksLastFrame = in.getInt();
     myTotalFrames = in.getInt();
     myLayout = static_cast<FrameLayout>(in.getInt());
 

@@ -468,7 +468,7 @@ void TIASurface::render(bool shade)
   myTiaSurface->basePtr(out, outPitch);
 
   myTVSignal->render(myTIA->frameBuffer(), width, height, out, outPitch,
-                     myTIA->scanlinesLastFrame());
+                     myTIA->chromaPhaseInverted());
 
   if(myPhosphorHandler.phosphorEnabled())
   {
