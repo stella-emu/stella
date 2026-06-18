@@ -30,7 +30,8 @@ set "BUILD="
 for /f "delims=" %%i in ('git -C "%~dp0." rev-list --count HEAD 2^>nul') do set "BUILD=%%i"
 if not defined BUILD exit /b 0
 
-> "%OUT%.tmp" echo #define STELLA_BUILD_NUMBER "%BUILD%"
+> "%OUT%.tmp" echo #define STELLA_BUILD_INCLUDED
+>> "%OUT%.tmp" echo static constexpr std::string_view STELLA_BUILD_NUMBER = "%BUILD%";
 if exist "%OUT%" (
   fc /b "%OUT%.tmp" "%OUT%" >nul 2>&1 && (
     del "%OUT%.tmp"

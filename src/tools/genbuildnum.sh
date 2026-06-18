@@ -29,7 +29,6 @@ out="$dir/../common/VersionBuild.hxx"
 build=`git -C "$dir" rev-list --count HEAD 2>/dev/null` || exit 0
 [ -n "$build" ] || exit 0
 
-line="#define STELLA_BUILD_NUMBER \"$build\""
-if [ ! -f "$out" ] || [ "$(cat "$out" 2>/dev/null)" != "$line" ]; then
-  echo "$line" > "$out"
+if [ ! -f "$out" ] || ! grep -qF "\"$build\";" "$out" 2>/dev/null; then
+  printf '#define STELLA_BUILD_INCLUDED\nstatic constexpr std::string_view STELLA_BUILD_NUMBER = "%s";\n' "$build" > "$out"
 fi

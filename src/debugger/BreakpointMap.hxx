@@ -48,8 +48,7 @@ class BreakpointMap
       }
       auto operator<=>(const Breakpoint& other) const
       {
-        // NOLINTNEXTLINE(hicpp-use-nullptr,modernize-use-nullptr)
-        if(const auto c = bank <=> other.bank; c != 0) return c;
+        if(const auto c = bank <=> other.bank; c != std::strong_ordering::equal) return c;
         return addr <=> other.addr;
       }
     };
@@ -99,8 +98,9 @@ class BreakpointMap
     auto find(const Breakpoint& bp) const
     {
       auto it = myMap.find(bp);
-      if(it != myMap.end()) return it;
-      return myMap.find(masked(bp));
+      if(it == myMap.end())
+        it = myMap.find(masked(bp));
+      return it;
     }
 
     struct BreakpointHash {
