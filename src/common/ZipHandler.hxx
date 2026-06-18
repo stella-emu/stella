@@ -80,8 +80,8 @@ class ZipHandler
             case ZipError::UNSUPPORTED: return "ZIP UNSUPPORTED";
             case ZipError::LZMA_UNSUPPORTED: return "ZIP LZMA_UNSUPPORTED";
             case ZipError::BUFFER_TOO_SMALL: return "ZIP BUFFER_TOO_SMALL";
+            default: return "ZIP UNKNOWN_ERROR";
           }
-          return "ZIP UNKNOWN_ERROR";
         }
     };
 

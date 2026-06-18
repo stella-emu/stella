@@ -32,6 +32,10 @@
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-but-set-variable"
 #endif
+#ifdef __clang__
+#pragma clang diagnostic ignored "-Wunused-macros"
+#pragma clang diagnostic ignored "-Wunreachable-code-break"
+#endif
 }
 
 // Types needed in the generated header (stella.tab.hxx)
