@@ -53,10 +53,10 @@ bool Controller::read(DigitalPin pin)
   if(events[0] != Event::NoType && myEvent.hasTransitions())
   {
     const uInt64 pos = currentInputPos();
-    for(const Event::Type event: events)
-      if(event != Event::NoType && myEvent.get(event, pos) != 0)
-        return false;  // active low: a bound event is pressed
-    return true;
+    // Active low: read as pressed (false) when any bound event is active.
+    return std::ranges::none_of(events, [&](const Event::Type event) {
+      return event != Event::NoType && myEvent.get(event, pos) != 0;
+    });
   }
 
   return getPin(pin);
