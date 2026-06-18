@@ -40,10 +40,11 @@ PointingDevice::PointingDevice(Jack jack, const Event& event,
 uInt8 PointingDevice::read()
 {
   // SWCHA may be polled many times per frame, so the gray-code pins are sampled
-  // cycle-accurately on every read -- this controller is sub-window accurate by
-  // construction.  It deliberately does NOT use the Event transition schedule
-  // (which replays discrete user-input events): the encoder instead synthesizes
-  // an evenly-spaced pulse train from the whole-window mouse delta (see update())
+  // cycle-accurately on every read -- the motion is sub-window accurate by
+  // construction.  These motion pins deliberately do NOT use the Event
+  // transition schedule (which replays discrete user-input events): the encoder
+  // instead synthesizes an evenly-spaced pulse train from the whole-window mouse
+  // delta (see update()).  The fire button is event-bound separately in update()
 
   // Elapsed CPU cycles since the start of the current input window; this is
   // the controller's only notion of time, just as a real quadrature encoder
@@ -93,6 +94,20 @@ void PointingDevice::update()
   const uInt64 cyclesLastWindow = cycles - myWindowStartCycle;
   myWindowStartCycle = cycles;
 
+  // The fire button is driven by the joystick/keyboard fire event whether or
+  // not the mouse emulates motion, so it works even when the mouse isn't mapped
+  // to this controller; when the mouse is enabled, both mouse buttons also
+  // trigger it.  Binding the pin (rather than a static setPin) lets the button
+  // change within the input window like the other controllers
+  std::array<Event::Type, MAX_PIN_EVENTS> fire{Event::LeftJoystickFire};
+  size_t n = 1;
+  if(myMouseEnabled)
+  {
+    fire[n++] = Event::MouseButtonLeftValue;
+    fire[n++] = Event::MouseButtonRightValue;
+  }
+  updateFireButton(DigitalPin::Six, myFireDelay, {fire.data(), n});
+
   if(!myMouseEnabled)
     return;
 
@@ -105,10 +120,6 @@ void PointingDevice::update()
   updateDirection(-myEvent.get(Event::MouseAxisYMove), cyclesLastWindow,
       myVCounterRemainder, myTrackBallDown, myTrackBallCyclesV,
       myCycleCountV, myFirstOffsetV);
-
-  // We allow left and right mouse buttons for fire button
-  setPin(DigitalPin::Six, !getAutoFireState(myEvent.get(Event::LeftJoystickFire) ||
-    myEvent.get(Event::MouseButtonLeftValue) || myEvent.get(Event::MouseButtonRightValue)));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
