@@ -76,6 +76,9 @@
       takes effect when at least 2 scanlines have passed (issue #1150)
     - Enhanced RSYNC emulation, real hardware fires exactly one
       scanline advance only (issue #1150)
+    - Polling SWCHA multiple times per frame now detects events and
+      works as expected; fixes California Games not passing BMX event,
+      and others (issue #858, #689)
     - Enhanced PAL-60 detection, searches for signature (e.g. PAL60)
       in ROM (issue #1061)
     - PAL gray colors; aligned gray colors in the standard PAL palette
