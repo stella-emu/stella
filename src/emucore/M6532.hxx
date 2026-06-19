@@ -35,6 +35,8 @@ class Settings;
     - A3 to enable/disable interrupt from timer to IRQ
     - A1 to enable/disable interrupt from PA7 to IRQ
 
+  The controller ports (SWCHA) and console switches (SWCHB) are read here.
+
   @author  Bradford W. Mott and Stephen Anthony
 */
 class M6532 : public Device

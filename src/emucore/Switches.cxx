@@ -117,6 +117,33 @@ void Switches::update()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt8 Switches::read(uInt64 nowCycles) const
+{
+  // Start from the latched state (difficulty, TV type, plus the once-per-window
+  // Select/Reset latch already in mySwitches).  Replay the momentary
+  // Select/Reset switches at the current window position only when something
+  // changed; otherwise the latched state is already correct.
+  uInt8 sw = mySwitches;
+
+  if(myEvent.hasTransitions())
+  {
+    const uInt64 pos = myEvent.windowPosition(nowCycles);
+
+    if(myEvent.get(Event::ConsoleSelect, pos) != 0)
+      sw &= ~0x02;
+    else
+      sw |= 0x02;
+
+    if(myEvent.get(Event::ConsoleReset, pos) != 0)
+      sw &= ~0x01;
+    else
+      sw |= 0x01;
+  }
+
+  return sw;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Switches::setTvColor(bool setColor)
 {
   if(setColor)

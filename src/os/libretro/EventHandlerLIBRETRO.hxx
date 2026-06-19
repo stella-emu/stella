@@ -27,6 +27,8 @@
 
   @author  Stephen Anthony
 */
+extern void update_input();
+
 class EventHandlerLIBRETRO : public EventHandler
 {
   public:
@@ -38,9 +40,12 @@ class EventHandlerLIBRETRO : public EventHandler
 
   protected:
     /**
-      Collects and dispatches any pending events.
+      Collects and dispatches any pending events.  Called (with the input
+      window already open) from EventHandler::pollInput(), which libretro.cxx
+      drives once per frame.  update_input() lives in libretro.cxx, where the
+      RetroArch input callbacks it samples live.
     */
-    void pollEvent() override { }
+    void pollEvent() override { update_input(); }
 
   private:
     // Following constructors and assignment operators not supported

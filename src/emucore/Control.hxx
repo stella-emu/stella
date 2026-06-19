@@ -28,6 +28,7 @@ class System;
 #include "bspf.hxx"
 #include "Serializable.hxx"
 #include "AnalogReadout.hxx"
+#include "Event.hxx"
 
 /**
   A controller is a device that plugs into either the left or right
@@ -58,6 +59,15 @@ class System;
 
   This is a base class for all controllers.  It provides a view
   of the controller from the perspective of the controller's jack.
+
+  Digital pins may be either static or bound to an input event.
+  A static pin (setPin) keeps a fixed value until changed.  A pin bound
+  to an event (bindPin) instead reports that event's value sampled at
+  the current position within the input window (via currentInputPos), so the
+  pin can change part way through the window exactly as the user's input did.
+  This is what lets a program reading a pin at several points within one
+  window observe a press/release between reads; the values come from the
+  Event transition schedule.
 
   @author  Bradford W. Mott
 */
@@ -194,10 +204,14 @@ class Controller : public Serializable
     virtual string name() const { return ""; }
 
     /**
-      Answers whether the controller is intrinsically an analog controller.
-      Specific controllers should override and implement this method.
+      Whether the mouse is the appropriate input device for emulating this
+      controller (trackballs, paddles, driving controllers, ...).  Used to
+      decide whether to enable/grab the mouse.  This describes the input
+      method only, NOT the controller's signalling: e.g. a trackball is
+      digital behind the scenes (gray code on the digital pins) yet is
+      mouse-driven, so returns true.  Specific controllers override as needed.
     */
-    virtual bool isAnalog() const { return false; }
+    virtual bool usesMouse() const { return false; }
 
     /**
       Notification method invoked by the system after its reset method has
@@ -354,19 +368,52 @@ class Controller : public Serializable
       The read/write methods above are meant to be used at a higher level.
     */
     bool setPin(DigitalPin pin, bool value) {
+      // A static value overrides any event binding on this pin
+      myDigitalPinEvent[static_cast<int>(pin)].fill(Event::NoType);
       return myDigitalPinState[static_cast<int>(pin)] = value;
     }
     bool getPin(DigitalPin pin) const {
       return myDigitalPinState[static_cast<int>(pin)];
     }
+
+    /**
+      Bind a digital pin to one or more input events so that read() reflects
+      their value at the current position within the input window (active low:
+      the pin reads as pressed when any bound event is active).  This lets the
+      pin change within the window as the user's input did, instead of being
+      latched once per window.  Several events cover a button with multiple
+      sources, e.g. a fire button that the mouse buttons also trigger.
+    */
+    bool bindPin(DigitalPin pin, SpanOf<Event::Type> events) {
+      auto& bound = myDigitalPinEvent[static_cast<int>(pin)];
+      bound.fill(Event::NoType);
+
+      bool pressed = false;
+      size_t i = 0;
+      for(const Event::Type event: events)
+      {
+        bound[i++] = event;
+        pressed |= myEvent.get(event) != 0;
+      }
+
+      // Keep the static state current for getPin()/debugger display
+      return myDigitalPinState[static_cast<int>(pin)] = !pressed;
+    }
+
+    bool bindPin(DigitalPin pin, Event::Type event) {
+      return bindPin(pin, SpanOf<Event::Type>{&event, 1});
+    }
+
     void setPin(AnalogPin pin, AnalogReadout::Connection value) {
       myAnalogPinValue[static_cast<int>(pin)] = value;
       if(myOnAnalogPinUpdateCallback)
         myOnAnalogPinUpdateCallback(pin);
     }
+
     AnalogReadout::Connection getPin(AnalogPin pin) const {
       return myAnalogPinValue[static_cast<int>(pin)];
     }
+
     void resetDigitalPins() {
       setPin(DigitalPin::One,   true);
       setPin(DigitalPin::Two,   true);
@@ -374,6 +421,7 @@ class Controller : public Serializable
       setPin(DigitalPin::Four,  true);
       setPin(DigitalPin::Six,   true);
     }
+
     void resetAnalogPins() {
       setPin(AnalogPin::Five, AnalogReadout::disconnect());
       setPin(AnalogPin::Nine, AnalogReadout::disconnect());
@@ -385,10 +433,48 @@ class Controller : public Serializable
       @param pressed  True if the fire button is currently pressed
       @return  The result of the auto fire event check
     */
-    bool getAutoFireState(bool pressed)   { return autoFireCheck(pressed, myFireDelay);   }
-    bool getAutoFireStateP1(bool pressed) { return autoFireCheck(pressed, myFireDelayP1); }
+    bool getAutoFireState(bool pressed) { return autoFireCheck(pressed, myFireDelay); }
+
+    /**
+      Whether auto fire is currently active.  When it is, the fire button
+      generates its own timing and is set via setPin() rather than bound to an
+      event for replay within the input window.
+    */
+    static bool autoFireActive() { return AUTO_FIRE && AUTO_FIRE_RATE; }
+
+    /**
+      Drive a digital "fire" button from one or more events (the fire event
+      plus any mouse buttons currently mapped to it).  Normally the pin is
+      bound for replay within the input window, so each source can change the
+      button mid-window (see bindPin); while autofire is generating its own
+      timing the pin can't be event-bound and is set statically instead.
+      'fireDelay' is the controller's per-pin autofire counter.
+    */
+    void updateFireButton(DigitalPin pin, int& fireDelay,
+                          SpanOf<Event::Type> events) {
+      if(autoFireActive())
+      {
+        bool pressed = false;
+        for(const Event::Type event: events)
+          pressed |= myEvent.get(event) != 0;
+        setPin(pin, !autoFireCheck(pressed, fireDelay));
+      }
+      else
+        bindPin(pin, events);
+    }
+
+    /**
+      The current position within the input window, in CPU cycles from its
+      start, used to sample event-bound pins at read time.  Sourced from
+      System::cycles() via Event.
+    */
+    uInt64 currentInputPos() const;
 
   protected:
+    /// Up to this many input events may be bound to one digital pin (e.g. a
+    /// fire button also driven by both mouse buttons)
+    static constexpr size_t MAX_PIN_EVENTS = 3;
+
     /// Specifies which jack the controller is plugged in
     const Jack myJack;
 
@@ -438,6 +524,11 @@ class Controller : public Serializable
 
     /// The boolean value on each digital pin
     std::array<bool, 5> myDigitalPinState{true, true, true, true, true};
+
+    /// Input events bound to each digital pin, replayed within the input
+    /// window by read() (active low, OR'd over the slots); unused slots and a
+    /// fully static pin are NoType
+    BSPF::array2D<Event::Type, 5, MAX_PIN_EVENTS> myDigitalPinEvent{};
 
     /// The analog value on each analog pin
     std::array<AnalogReadout::Connection, 2>

@@ -30,15 +30,15 @@ Genesis::Genesis(Jack jack, const Event& event, const System& system)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Genesis::updateButtons()
 {
-  bool firePressed = myEvent.get(myFireEvent) != 0;
-  // The Genesis has one more button (C) that can be read by the 2600
-  // However, it seems to work opposite to the BoosterGrip controller,
-  // in that the logic is inverted
-  bool buttonCPressed = myEvent.get(myButtonCEvent) != 0;
+  // The single fire button is also triggered by the left mouse button
+  updateFire(false);
 
-  updateMouseButtons(firePressed, buttonCPressed);
-
-  setPin(DigitalPin::Six, !getAutoFireState(firePressed));
+  // The Genesis has one more button (C) that can be read by the 2600, but with
+  // inverted logic compared to the BoosterGrip.  It also responds to the right
+  // mouse button.  Being an analog input, it stays static (not replayed within
+  // the input window).
+  const bool buttonCPressed = myEvent.get(myButtonCEvent) != 0 ||
+      mousePressed(Event::MouseButtonRightValue);
   setPin(AnalogPin::Five, buttonCPressed
                             ? AnalogReadout::connectToGround()
                             : AnalogReadout::connectToVcc());

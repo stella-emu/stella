@@ -18,12 +18,30 @@
 #ifndef EVENT_HXX
 #define EVENT_HXX
 
+#include <atomic>
 #include <mutex>
 #include <unordered_set>
+#include <vector>
 
 #include "bspf.hxx"
 
 /**
+  Holds the current value of every event type, plus a schedule of input
+  transitions recorded over the current input window.  This models controllers
+  as devices whose state can change at any point within a window, rather than
+  being latched once per window.  An input window spans the system (CPU) cycles
+  between two successive input polls.
+
+  Input is polled once per window, but a program may sample a controller
+  several times within one window (e.g. the fire button before and after its
+  display kernel) and expect to see a change that happened in between.  Each
+  change is recorded as a transition; finalizeInputWindow() spreads them across
+  the window and get(type, pos) replays the value at a position within it.
+
+  Transitions are ordered by arrival, not real time: SDL timestamps events at
+  drain time, so true sub-window timing is unrecoverable and a lone change is
+  placed mid-window.
+
   @author  Stephen Anthony, Christian Speckner, Thomas Jentzsch
 */
 class Event
@@ -219,12 +237,128 @@ class Event
     }
 
     /**
-      Set the value associated with the event of the specified type.
+      Get the value of 'type' at sub-window position 'pos' (CPU cycles from the
+      start of the window), replaying the transitions recorded this window.
+    */
+    Int32 get(Type type, uInt64 pos) const {
+      const std::scoped_lock lock(myMutex);
+
+      Int32 result = myValues[type];
+      for(const auto& t: myTransitions)
+        if(t.type == type && t.pos <= pos)
+          result = t.value;
+
+      return result;
+    }
+
+    /**
+      Position within the current input window, in CPU cycles, of the point
+      being sampled: the offset of 'nowCycles' (the caller's System::cycles())
+      from the start of the window.
+    */
+    uInt64 windowPosition(uInt64 nowCycles) const {
+      return nowCycles - myWindowStartCycle;
+    }
+
+    /**
+      Whether any transition was recorded this input window.  When false, every
+      input is constant across the window and equals its latched value.
+    */
+    bool hasTransitions() const {
+      return myHasTransitions;
+    }
+
+    /**
+      Set the value of 'type'.  While the input window is open (see
+      beginInputWindow), a change of value is also recorded as a transition, in
+      arrival order, for sub-window replay by get(type, pos).
     */
     void set(Type type, Int32 value) {
       const std::scoped_lock lock(myMutex);
 
+      // Continuous inputs (analog axes, mouse motion) are read once per window
+      // as a whole value and never replayed, so they aren't recorded
+      if(myRecording && value != myValues[type] && !isContinuous(type))
+      {
+        // Seed a baseline so reads before the first transition see the prior value
+        if(std::ranges::none_of(myTransitions,
+            [type](const Transition& t){ return t.type == type; }))
+          myTransitions.push_back({type, 0, myValues[type], false});
+
+        // 'pending' marks the position for finalizeInputWindow() to assign
+        myTransitions.push_back({type, 0, value, true});
+      }
+
       myValues[type] = value;
+    }
+
+    /**
+      Open the input window for the coming poll and start recording transitions.
+      Transitions the previous window never reached (it turned out shorter than
+      the estimate they were spread over) are carried forward rather than
+      dropped, so an uneven run of window lengths can't swallow an input change.
+    */
+    void beginInputWindow(uInt64 nowCycles) {
+      const std::scoped_lock lock(myMutex);
+
+      // Length of the just-ended window, used as the estimate for this one
+      myCyclesLastWindow = nowCycles - myWindowStartCycle;
+      myWindowStartCycle = nowCycles;
+
+      // If the just-ended window came out shorter than that estimate, positions
+      // at or beyond its actual length were never sampled; carry those
+      // transitions forward instead of dropping them.
+      if(myCyclesLastWindow != 0 &&
+         std::ranges::any_of(myTransitions,
+           [this](const Transition& t){ return t.pos >= myCyclesLastWindow; }))
+      {
+        std::vector<Transition> carried;
+        for(const auto& t: myTransitions)
+          if(t.pos >= myCyclesLastWindow)
+          {
+            // Seed a baseline so reads before the carried transition see the
+            // held value rather than the new latch
+            if(std::ranges::none_of(carried,
+                [&t](const Transition& b){ return b.type == t.type; }))
+              carried.push_back(
+                {t.type, 0, heldValueBefore(t.type, myCyclesLastWindow), false});
+
+            carried.push_back({t.type, 0, t.value, true});
+          }
+        myTransitions = std::move(carried);
+      }
+      else
+        myTransitions.clear();
+
+      myRecording = true;
+      myHasTransitions = false;
+    }
+
+    /**
+      Close the input window and spread the recorded transitions evenly across
+      it, in arrival order: N transitions at 1/(N+1) .. N/(N+1) of the window
+      length, so a lone change lands mid-window.
+    */
+    void finalizeInputWindow() {
+      const std::scoped_lock lock(myMutex);
+
+      myRecording = false;
+
+      uInt32 pending = 0;
+      for(const auto& t: myTransitions)
+        if(t.pending) ++pending;
+
+      myHasTransitions = (pending != 0);
+      if(pending == 0)
+        return;
+
+      uInt32 k = 0;
+      for(auto& t: myTransitions)
+        if(t.pending)
+        {
+          t.pos = myCyclesLastWindow * (++k) / (pending + 1);
+          t.pending = false;
+        }
     }
 
     /**
@@ -235,6 +369,9 @@ class Event
       const std::scoped_lock lock(myMutex);
 
       myValues.fill(Event::NoType);
+      myTransitions.clear();
+      myRecording = false;
+      myHasTransitions = false;
     }
 
     /**
@@ -256,9 +393,60 @@ class Event
       }
     }
 
+    /**
+      Whether 'type' carries a continuous whole-window value — an analog axis or
+      mouse motion (the contiguous MouseAxis* range, NOT the mouse buttons that
+      follow it, which are bound to digital pins).  These are read once per
+      window via get(type) and never replayed, so set() leaves them out of the
+      transition schedule.
+    */
+    static bool isContinuous(Type type)
+    {
+      return isAnalog(type) ||
+          (type >= MouseAxisXMove && type <= MouseAxisYValue);
+    }
+
   private:
-    // Array of values associated with each event type
+    // A recorded input transition: 'type' took on 'value' at position 'pos'
+    // (CPU cycles) within the input window
+    struct Transition {
+      Type  type{NoType};
+      uInt64 pos{0};
+      Int32 value{0};
+      bool  pending{false};   // true until finalizeInputWindow() assigns pos
+    };
+
+    // Value of 'type' as last observed before position 'len' within the window
+    // (its latest transition before 'len').  Seeds the baseline of a
+    // carried-forward transition (see beginInputWindow).  Assumes myMutex held.
+    Int32 heldValueBefore(Type type, uInt64 len) const {
+      Int32 result = myValues[type];
+      for(const auto& t: myTransitions)
+        if(t.type == type && t.pos < len)
+          result = t.value;
+      return result;
+    }
+
+  private:
+    // Current value of each event type
     std::array<Int32, LastType> myValues;
+
+    // Input transitions recorded this window in arrival order, replayed by
+    // get(type, pos)
+    std::vector<Transition> myTransitions;
+
+    // True while the input window is open and set() should record transitions
+    bool myRecording{false};
+
+    // Start of the current input window, and the length of the previous one,
+    // on the system (CPU) clock (see windowPosition and finalizeInputWindow).
+    // Written under myMutex during the poll, which happens-before the worker
+    // thread reads them, so they need no atomic.
+    uInt64 myWindowStartCycle{0}, myCyclesLastWindow{0};
+
+    // Set when any transition was recorded this window; lets hasTransitions()
+    // callers skip the replay when nothing changed
+    std::atomic<bool> myHasTransitions{false};
 
     mutable std::mutex myMutex;
 
