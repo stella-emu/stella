@@ -42,7 +42,30 @@ uInt8 Controller::read()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool Controller::read(DigitalPin pin)
 {
+  const auto& events = myDigitalPinEvent[static_cast<int>(pin)];
+
+  // An event-bound pin reflects the input's value at the current position
+  // within the input window, so it can change mid-window just as the user's
+  // input did.  A pin may be bound to several events (e.g. a fire button the
+  // mouse buttons also trigger); it reads as pressed (active low) when any is
+  // active.  When nothing transitioned this window the value is constant and
+  // equals the cached pin state.
+  if(events[0] != Event::NoType && myEvent.hasTransitions())
+  {
+    const uInt64 pos = currentInputPos();
+    // Active low: read as pressed (false) when any bound event is active.
+    return std::ranges::none_of(events, [&](const Event::Type event) {
+      return event != Event::NoType && myEvent.get(event, pos) != 0;
+    });
+  }
+
   return getPin(pin);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt64 Controller::currentInputPos() const
+{
+  return myEvent.windowPosition(mySystem.cycles());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

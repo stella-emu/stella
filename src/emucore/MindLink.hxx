@@ -78,9 +78,9 @@ class MindLink : public Controller
     string name() const override { return "MindLink"; }
 
     /**
-      Answers whether the controller is intrinsically an analog controller.
+      MindLink is driven by the mouse.
     */
-    bool isAnalog() const override { return true; }
+    bool usesMouse() const override { return true; }
 
     /**
       Determines how this controller will treat values received from the

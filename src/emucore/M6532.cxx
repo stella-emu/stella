@@ -245,7 +245,10 @@ uInt8 M6532::peek(uInt16 addr)
 
     case 0x02:    // SWCHB - Port B I/O Register (Console switches)
     {
-      return (myOutB | ~myDDRB) & (myConsole.switches().read() | myDDRB);
+      // Sample the console switches at the current position within the input
+      // window so a momentary Select/Reset press is seen between reads
+      return (myOutB | ~myDDRB) &
+             (myConsole.switches().read(mySystem->cycles()) | myDDRB);
     }
 
     case 0x03:    // SWBCNT - Port B Data Direction Register

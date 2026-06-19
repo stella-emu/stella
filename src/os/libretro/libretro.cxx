@@ -155,10 +155,6 @@ void libretro_logger(int log_level, const char *source)
   string = NULL;
 }
 
-// TODO input:
-// https://github.com/libretro/blueMSX-libretro/blob/master/libretro.c
-// https://github.com/libretro/libretro-o2em/blob/master/libretro.c
-
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uint32_t libretro_read_rom(void* data)
 {
@@ -253,7 +249,9 @@ static void draw_crosshair(int16_t x, int16_t y, uint16_t color)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-static void update_input()
+// External linkage: called from EventHandlerLIBRETRO::pollEvent() so it runs
+// inside the input window opened by pollInput()
+void update_input()
 {
   if(!input_poll_cb) return;
   input_poll_cb();
@@ -1856,7 +1854,9 @@ void retro_run()
     return;
   }
 
-  update_input();
+  // Drain input through the input window (calls update_input() via
+  // EventHandlerLIBRETRO::pollEvent()) so controllers can replay it within it
+  stella.pollInput();
 
   stella.runFrame();
 

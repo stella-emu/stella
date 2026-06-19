@@ -24,6 +24,7 @@
 #include "AtariNTSC.hxx"
 #include "AudioSettings.hxx"
 #include "CartDPC.hxx"
+#include "M6532.hxx"
 #include "PaletteHandler.hxx"
 #include "Serializer.hxx"
 #include "StateManager.hxx"
@@ -156,12 +157,9 @@ void StellaLIBRETRO::runFrame()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void StellaLIBRETRO::updateInput()
 {
-  const Console& console = myOSystem->console();
-
-  console.leftController().update();
-  console.rightController().update();
-
-  console.switches().update();
+  // Update both controller ports and the console switches (same per-frame
+  // port update the core runs via EventHandler::poll() on other platforms)
+  myOSystem->console().riot().update();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

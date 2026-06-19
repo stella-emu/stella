@@ -39,15 +39,15 @@ Joy2BPlus::Joy2BPlus(Jack jack, const Event& event, const System& system)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Joy2BPlus::updateButtons()
 {
-  bool firePressed = myEvent.get(myFireEvent) != 0;
-  // The Joy 2B+ has two more buttons on it.  These buttons are
-  // connected to the inputs usually used by paddles.
-  bool buttonCPressed = myEvent.get(myButtonCEvent) != 0;
+  // The single fire button is also triggered by the left mouse button
+  updateFire(false);
+
+  // The Joy 2B+ has two more buttons, connected to the inputs usually used by
+  // paddles; button C also responds to the right mouse button.  Both are
+  // analog inputs, so they stay static (not replayed within the input window).
+  const bool buttonCPressed = myEvent.get(myButtonCEvent) != 0 ||
+      mousePressed(Event::MouseButtonRightValue);
   const bool button3Pressed = myEvent.get(myButton3Event) != 0;
-
-  updateMouseButtons(firePressed, buttonCPressed);
-
-  setPin(DigitalPin::Six, !getAutoFireState(firePressed));
   setPin(AnalogPin::Five, buttonCPressed
                             ? AnalogReadout::connectToGround()
                             : AnalogReadout::connectToVcc());

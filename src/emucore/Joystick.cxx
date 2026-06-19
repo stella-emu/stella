@@ -66,32 +66,38 @@ void Joystick::update()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Joystick::updateButtons()
 {
-  bool firePressed = myEvent.get(myFireEvent) != 0;
-
-  // The joystick uses both mouse buttons for the single joystick button
-  updateMouseButtons(firePressed, firePressed);
-
-  setPin(DigitalPin::Six, !getAutoFireState(firePressed));
+  // The plain joystick's single button is also triggered by both mouse buttons
+  updateFire(true);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Joystick::updateMouseButtons(bool& pressedLeft, bool& pressedRight)
+void Joystick::updateFire(bool bothButtonsFire)
 {
+  // Bind the fire button to its event and, when the mouse emulates this
+  // controller, the mouse button(s) that also trigger it, so each can change
+  // the button within the input window instead of latching a static aggregate.
+  std::array<Event::Type, MAX_PIN_EVENTS> fire{myFireEvent};
+  size_t n = 1;
   if(myControlID > -1)
   {
-    pressedLeft  |= (myEvent.get(Event::MouseButtonLeftValue) != 0);
-    pressedRight |= (myEvent.get(Event::MouseButtonRightValue) != 0);
+    fire[n++] = Event::MouseButtonLeftValue;
+    if(bothButtonsFire)
+      fire[n++] = Event::MouseButtonRightValue;
   }
+
+  updateFireButton(DigitalPin::Six, myFireDelay, {fire.data(), n});
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Joystick::updateDigitalAxes()
 {
-  // Digital events (from keyboard or joystick hats & buttons)
-  setPin(DigitalPin::One,   myEvent.get(myUpEvent) == 0);
-  setPin(DigitalPin::Two,   myEvent.get(myDownEvent) == 0);
-  setPin(DigitalPin::Three, myEvent.get(myLeftEvent) == 0);
-  setPin(DigitalPin::Four,  myEvent.get(myRightEvent) == 0);
+  // Digital events (from keyboard or joystick hats & buttons), bound so they
+  // reflect their value at the current scanline.  Mouse-driven axes
+  // (updateMouseAxes) override these with static values when active.
+  bindPin(DigitalPin::One,   myUpEvent);
+  bindPin(DigitalPin::Two,   myDownEvent);
+  bindPin(DigitalPin::Three, myLeftEvent);
+  bindPin(DigitalPin::Four,  myRightEvent);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

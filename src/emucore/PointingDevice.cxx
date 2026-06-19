@@ -21,7 +21,6 @@
 #include "Control.hxx"
 #include "Event.hxx"
 #include "System.hxx"
-#include "TIA.hxx"
 
 #include "PointingDevice.hxx"
 
@@ -40,26 +39,36 @@ PointingDevice::PointingDevice(Jack jack, const Event& event,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 PointingDevice::read()
 {
-  const int scanline = mySystem.tia().scanlines();
+  // SWCHA may be polled many times per frame, so the gray-code pins are sampled
+  // cycle-accurately on every read -- the motion is sub-window accurate by
+  // construction.  These motion pins deliberately do NOT use the Event
+  // transition schedule (which replays discrete user-input events): the encoder
+  // instead synthesizes an evenly-spaced pulse train from the whole-window mouse
+  // delta (see update()).  The fire button is event-bound separately in update()
+
+  // Elapsed CPU cycles since the start of the current input window; this is
+  // the controller's only notion of time, just as a real quadrature encoder
+  // emits transitions purely as a function of elapsed time
+  const int elapsed = static_cast<int>(mySystem.cycles() - myWindowStartCycle);
 
   // Loop over all missed changes
-  while(myScanCountH < scanline)
+  while(myCycleCountH < elapsed)
   {
     if(myTrackBallLeft) --myCountH;
     else                ++myCountH;
 
-    // Define scanline of next change
-    myScanCountH += myTrackBallLinesH;
+    // Define cycle of next change
+    myCycleCountH += myTrackBallCyclesH;
   }
 
   // Loop over all missed changes
-  while(myScanCountV < scanline)
+  while(myCycleCountV < elapsed)
   {
     if(myTrackBallDown) ++myCountV;
     else                --myCountV;
 
-    // Define scanline of next change
-    myScanCountV += myTrackBallLinesV;
+    // Define cycle of next change
+    myCycleCountV += myTrackBallCyclesV;
   }
 
   myCountH &= 0b11;
@@ -78,20 +87,39 @@ uInt8 PointingDevice::read()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PointingDevice::update()
 {
+  // Snapshot the input-window boundary on the system (CPU) clock.  Done before
+  // the mouse-enabled check so elapsed time in read() is always measured
+  // against the current window, never a stale reference
+  const uInt64 cycles = mySystem.cycles();
+  const uInt64 cyclesLastWindow = cycles - myWindowStartCycle;
+  myWindowStartCycle = cycles;
+
+  // The fire button is driven by the joystick/keyboard fire event whether or
+  // not the mouse emulates motion, so it works even when the mouse isn't mapped
+  // to this controller; when the mouse is enabled, both mouse buttons also
+  // trigger it.  Binding the pin (rather than a static setPin) lets the button
+  // change within the input window like the other controllers
+  std::array<Event::Type, MAX_PIN_EVENTS> fire{Event::LeftJoystickFire};
+  size_t n = 1;
+  if(myMouseEnabled)
+  {
+    fire[n++] = Event::MouseButtonLeftValue;
+    fire[n++] = Event::MouseButtonRightValue;
+  }
+  updateFireButton(DigitalPin::Six, myFireDelay, {fire.data(), n});
+
   if(!myMouseEnabled)
     return;
 
   // Update horizontal direction
-  updateDirection( myEvent.get(Event::MouseAxisXMove), myHCounterRemainder,
-      myTrackBallLeft, myTrackBallLinesH, myScanCountH, myFirstScanOffsetH);
+  updateDirection( myEvent.get(Event::MouseAxisXMove), cyclesLastWindow,
+      myHCounterRemainder, myTrackBallLeft, myTrackBallCyclesH,
+      myCycleCountH, myFirstOffsetH);
 
   // Update vertical direction
-  updateDirection(-myEvent.get(Event::MouseAxisYMove), myVCounterRemainder,
-      myTrackBallDown, myTrackBallLinesV, myScanCountV, myFirstScanOffsetV);
-
-  // We allow left and right mouse buttons for fire button
-  setPin(DigitalPin::Six, !getAutoFireState(myEvent.get(Event::LeftJoystickFire) ||
-    myEvent.get(Event::MouseButtonLeftValue) || myEvent.get(Event::MouseButtonRightValue)));
+  updateDirection(-myEvent.get(Event::MouseAxisYMove), cyclesLastWindow,
+      myVCounterRemainder, myTrackBallDown, myTrackBallCyclesV,
+      myCycleCountV, myFirstOffsetV);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -115,8 +143,9 @@ void PointingDevice::setSensitivity(int sensitivity)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PointingDevice::updateDirection(int counter, float& counterRemainder,
-    bool& trackBallDir, int& trackBallLines, int& scanCount, int& firstScanOffset)
+void PointingDevice::updateDirection(int counter, uInt64 cyclesLastWindow,
+    float& counterRemainder, bool& trackBallDir, int& trackBallCycles,
+    int& cycleCount, int& firstOffset)
 {
   // Apply sensitivity and calculate remainder
   const float fTrackBallCount = counter * mySensitivity * TB_SENSITIVITY + counterRemainder;
@@ -128,23 +157,24 @@ void PointingDevice::updateDirection(int counter, float& counterRemainder,
     trackBallDir = (trackBallCount > 0);
     trackBallCount = abs(trackBallCount);
 
-    // Calculate lines to wait between sending new horz/vert values
-    trackBallLines = mySystem.tia().scanlinesLastFrame() / trackBallCount;
+    // Spread this window's movement evenly across the (estimated) length of an
+    // input window, measured in CPU cycles instead of scanlines
+    trackBallCycles = static_cast<int>(cyclesLastWindow) / trackBallCount;
 
     // Set lower limit in case of (unrealistic) ultra fast mouse movements
-    if(trackBallLines == 0)
-      trackBallLines = 1;
+    if(trackBallCycles == 0)
+      trackBallCycles = 1;
 
-    // Define scanline of first change
-    scanCount = (trackBallLines * firstScanOffset) >> 12;
+    // Define cycle offset of first change
+    cycleCount = (trackBallCycles * firstOffset) >> 12;
   }
   else
   {
     // Prevent any change
-    scanCount = INT_MAX;
+    cycleCount = INT_MAX;
 
     // Define offset factor for first change, move randomly forward by up to 1/8th
-    firstScanOffset = (((firstScanOffset << 3) + mySystem.randGenerator().next() %
-                      (1 << 12)) >> 3) & ((1 << 12) - 1);
+    firstOffset = (((firstOffset << 3) + mySystem.randGenerator().next() %
+                  (1 << 12)) >> 3) & ((1 << 12) - 1);
   }
 }

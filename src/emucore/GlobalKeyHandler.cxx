@@ -235,8 +235,8 @@ bool GlobalKeyHandler::skipAVSetting() const
 bool GlobalKeyHandler::skipInputSetting() const
 {
   const bool grabMouseAllowed = myOSystem.frameBuffer().grabMouseAllowed();
-  const bool analog = myOSystem.console().leftController().isAnalog()
-    || myOSystem.console().rightController().isAnalog();
+  const bool analog = myOSystem.console().leftController().usesMouse()
+    || myOSystem.console().rightController().usesMouse();
   const bool joystick = isJoystick(myOSystem.console().leftController())
     || isJoystick(myOSystem.console().rightController());
   const bool paddle = isPaddle(myOSystem.console().leftController())

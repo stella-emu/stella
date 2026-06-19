@@ -171,10 +171,10 @@ string QuadTari::name() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool QuadTari::isAnalog() const
+bool QuadTari::usesMouse() const
 {
   // For now, use mouse for first controller only
-  return myFirstController->isAnalog();
+  return myFirstController->usesMouse();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -88,32 +88,29 @@ void Driving::update()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Driving::updateButtons()
 {
-  bool firePressed = myEvent.get(myFireEvent) != 0;
-
-  // The joystick uses both mouse buttons for the single joystick button
-  updateMouseButtons(firePressed);
-
-  setPin(DigitalPin::Six, !getAutoFireState(firePressed));
-  // Joystick left/right pins when using a splitter:
-  setPin(DigitalPin::Three, myEvent.get(myButton1Event) == 0);
-  setPin(DigitalPin::Four, myEvent.get(myButton2Event) == 0);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Driving::updateMouseButtons(bool& firePressed)
-{
+  // Bind the fire button to its event plus any mouse buttons currently mapped
+  // to this controller, so each can change the button within the input window
+  // instead of latching a static aggregate.
+  std::array<Event::Type, MAX_PIN_EVENTS> fire{myFireEvent};
+  size_t n = 1;
   if(myControlID > -1)
-    firePressed |= (myEvent.get(Event::MouseButtonLeftValue) != 0
-      || myEvent.get(Event::MouseButtonRightValue) != 0);
+  {
+    // The single fire button is triggered by both mouse buttons
+    fire[n++] = Event::MouseButtonLeftValue;
+    fire[n++] = Event::MouseButtonRightValue;
+  }
   else
   {
-    // Test for 'untied' mouse axis mode, where each axis is potentially
-    // mapped to a separate driving controller
-    if(myControlIDX > -1)
-      firePressed |= (myEvent.get(Event::MouseButtonLeftValue) != 0);
-    if(myControlIDY > -1)
-      firePressed |= (myEvent.get(Event::MouseButtonRightValue) != 0);
+    // 'untied' mouse axis mode, where each axis is potentially mapped to a
+    // separate driving controller
+    if(myControlIDX > -1) fire[n++] = Event::MouseButtonLeftValue;
+    if(myControlIDY > -1) fire[n++] = Event::MouseButtonRightValue;
   }
+  updateFireButton(DigitalPin::Six, myFireDelay, {fire.data(), n});
+
+  // Joystick left/right pins when using a splitter:
+  bindPin(DigitalPin::Three, myButton1Event);
+  bindPin(DigitalPin::Four, myButton2Event);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

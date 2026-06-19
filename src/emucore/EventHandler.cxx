@@ -19,6 +19,7 @@
 
 #include "Base.hxx"
 #include "Console.hxx"
+#include "System.hxx"
 #include "PaletteHandler.hxx"
 #include "FrameBuffer.hxx"
 #include "OSystem.hxx"
@@ -248,10 +249,18 @@ bool EventHandler::hasMouseControl() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt64 EventHandler::currentSystemCycles() const
+{
+  return myOSystem.hasConsole() ? myOSystem.console().system().cycles() : 0;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventHandler::poll(uInt64 time)
 {
-  // Process events from the underlying hardware
-  pollEvent();
+  // Drain hardware input into a fresh input window (opened, filled from the
+  // hardware, then spread across the window and replayed by the controllers
+  // during the next frame of emulation)
+  pollInput();
 
   // Update controllers and console switches, and in general all other things
   // related to emulation
@@ -2506,8 +2515,8 @@ void EventHandler::setMouseControllerMode(string_view enable)
       usemouse = false;
     else  // 'analog'
     {
-      usemouse = myOSystem.console().leftController().isAnalog() ||
-                 myOSystem.console().rightController().isAnalog();
+      usemouse = myOSystem.console().leftController().usesMouse() ||
+                 myOSystem.console().rightController().usesMouse();
     }
 
     string_view control = usemouse ?

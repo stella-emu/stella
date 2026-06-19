@@ -1343,8 +1343,8 @@ bool FrameBuffer::grabMouseAllowed()
   const bool emulation =
     myOSystem.eventHandler().state() == EventHandlerState::EMULATION;
   const bool analog = myOSystem.hasConsole() ?
-    (myOSystem.console().leftController().isAnalog() ||
-     myOSystem.console().rightController().isAnalog()) : false;
+    (myOSystem.console().leftController().usesMouse() ||
+     myOSystem.console().rightController().usesMouse()) : false;
   const bool usesLightgun = emulation && myOSystem.hasConsole() ?
     myOSystem.console().leftController().type() == Controller::Type::Lightgun ||
     myOSystem.console().rightController().type() == Controller::Type::Lightgun : false;
