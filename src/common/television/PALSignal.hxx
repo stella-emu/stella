@@ -441,8 +441,10 @@ class PALSignal
     // techniques for line-locked sampled PAL and NTSC television signals" (BBC
     // Research Dept., Mar 1986), downloads.bbc.co.uk/rd/pubs/reports/1986-02.pdf
     //   - reference-phase error → cos θ desaturation: §4.3, p.21 (Fig 27)
-    //   - PAL-switch bistable, ~10-line underdamped re-lock: §4.3.2, Fig 32(a),
-    //     p.24
+    //   - PAL-switch bistable, reset when wrong for several lines: §4.3.2,
+    //     Fig 32(a), p.24
+    //   - ~10-line underdamped re-lock (the loop's control filter, a P+I loop):
+    //     §4.3.2, Fig 32(b), p.24
     //
     // θ0 is in degrees (converted to radians at use, as PaletteHandler does);
     // τ is in scanlines, setting the height of the wrong-hue band.
