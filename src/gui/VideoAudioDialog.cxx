@@ -378,6 +378,23 @@ void VideoAudioDialog::addTVEffectsTab()
   CREATE_CUSTOM_SLIDERS(Fringe, "Fringing ", 0)
   CREATE_CUSTOM_SLIDERS(Bleed, "Bleeding ", 0)
 
+  // PAL colour-loss model (composite modes only).  Grouped with the signal
+  // controls above, before the display controls (phosphor/scanlines) below.
+  xpos = HBORDER;
+  items.clear();
+  VarList::push_back(items, "Saturation loss", 0);
+  VarList::push_back(items, "Phase settling", 1);
+  // Next value (2) reserved for a future burst-locked "Decoder sim" model.
+  myPALColorLoss = new PopUpWidget(myTab, _font, xpos, ypos,
+      _font.getStringWidth("Saturation loss"), lineHeight, items,
+      "PAL color loss ");
+  myPALColorLoss->setToolTip("How PAL colour loss (odd-line fields) appears:\n"
+      "Saturation loss = whole frame greyscale;\n"
+      "Phase settling = wrong hue at top, settling down the screen.\n"
+      "Composite PAL modes only.");
+  wid.push_back(myPALColorLoss);
+  ypos += lineHeight + VGAP;
+
   ypos += VGAP * 3;
   xpos = HBORDER;
 
@@ -741,6 +758,9 @@ void VideoAudioDialog::loadConfig()
   // TV Custom adjustables
   loadTVAdjustables(TVMode::Custom);
 
+  // PAL colour-loss model
+  myPALColorLoss->setSelected(settings.getString("pal.colorloss"), "0");
+
   // TV phosphor mode & blend
   myTVPhosphor->setSelected(settings.getString(PhosphorHandler::SETTING_MODE), PhosphorHandler::VALUE_BYROM);
   myTVPhosLevel->setValue(settings.getInt(PhosphorHandler::SETTING_BLEND));
@@ -879,6 +899,9 @@ void VideoAudioDialog::saveConfig()
     palAdj.blend     = myTVBleed->getValue();
     PALSignal::setCustomAdjustables(palAdj);
   }
+
+  // PAL colour-loss model (global receiver choice, independent of timing)
+  PALSignal::setColourLoss(myPALColorLoss->getSelectedTag().toInt());
 
   Logger::debug("Saving TV effects options ...");
   NTSCSignal::saveConfig(settings);

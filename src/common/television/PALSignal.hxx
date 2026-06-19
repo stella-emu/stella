@@ -177,6 +177,19 @@ class PALSignal
     static constexpr Setup TV_SVideo   {  0.3F, 0.F, 0.F, 0.F, 0.F  };
     static constexpr Setup TV_Bad      { -0.3F, 0.F, 0.F, 0.F, 0.6F };
 
+    // PAL colour-loss model: how a receiver reacts once a sustained malformed
+    // (odd-clock) field trips the colour-killer in render().  Real PAL CRTs are
+    // documented doing either, so it is a user choice; SaturationLoss is the
+    // default and preserves the long-standing behaviour.
+    enum class ColourLoss: uInt8 {
+      SaturationLoss,   // chroma cut → luma-only greyscale frame (classic loss)
+      PhaseSettling,    // chroma kept; recovered phase wrong at the top of the
+                        // field, settling down the screen (effective model)
+      // Reserved next: DecoderSim — a future burst-locked decoder simulation
+      // where the artifact would emerge instead of being injected.
+      NUM_MODELS
+    };
+
   public:
     PALSignal();
     ~PALSignal() = default;
@@ -200,6 +213,10 @@ class PALSignal
     // Load and save PAL-related settings
     static void loadConfig(const Settings& settings);
     static void saveConfig(Settings& settings);
+
+    // Set the PAL colour-loss model (see ColourLoss).  Global receiver choice,
+    // applied by render() and persisted by saveConfig.
+    static void setColourLoss(int model);
 
     // Rebuild the per-colour YUV table (and the dependent kernels) from the
     // given RGB palette.  The palette is display-gamma encoded, so each entry
@@ -392,6 +409,41 @@ class PALSignal
     bool   myColourKilled{false};   // current killer state (true = chroma cut)
     uInt32 myKillerRun{0};          // consecutive frames demanding the flip
 
+    // ── Phase-settling model constants (ColourLoss::PhaseSettling) ─────────
+    //
+    // When the colour-killer trips, the PhaseSettling model keeps chroma but
+    // gives the line a demodulation phase error  φ(y) = ±θ0·exp(−y/τ)  that is
+    // large at the top of the field and decays down the screen (applied in
+    // render()).
+    //
+    // GROUNDED:
+    //   • θ0 = 180°.  An odd-line field is fundamentally a 180° disruption of
+    //     the PAL line alternation — the same physical fact that drives the
+    //     colour-killer above.  So the field-start phase error is anchored to
+    //     that 180°, not hand-picked; the wrong hue follows from it.
+    //   • exp(−y/τ) is the textbook response of a single-pole subcarrier-
+    //     recovery (APC/PLL) loop settling after the field-start disturbance
+    //     (τ = loop time constant in line periods).
+    //   • Applied common-mode (same on adjacent lines), so the PAL 1-line comb
+    //     passes it through as a hue rotation with magnitude preserved
+    //     (standard PAL-D theory) — i.e. a wrong *hue* that settles, not the
+    //     desaturation of the SaturationLoss model.  The ± sign follows field
+    //     parity, so the wrong-hue band alternates each field.
+    //
+    // PHENOMENOLOGICAL: φ(y) is injected straight onto the demodulator — no
+    // simulated burst or loop — the trigger is the existing odd/even colour-
+    // killer state (not a measured burst phase), the *common-mode* choice and
+    // τ model a particular receiver class rather than a specific circuit, and
+    // a 180° rotation yields the complementary hue which need not be the exact
+    // shade seen on any one CRT.  A truly emergent version (a burst-locked
+    // decoder) is a separate, larger effort.  (θ0 may become a user adjustable
+    // later; for now it is fixed at the grounded value.)
+    //
+    // θ0 is in degrees (converted to radians at use, as PaletteHandler does);
+    // τ is in scanlines, setting the height of the wrong-hue band.
+    static constexpr float SETTLE_THETA0 = 180.F;  // degrees (PAL alternation)
+    static constexpr float SETTLE_TAU    = 30.F;   // scanlines
+
     // ── Active and custom setups ──────────────────────────────────────────
 
     // Active setup (set by initialize or reinitializeCustom)
@@ -399,6 +451,10 @@ class PALSignal
 
     // Persistent custom setup written by setCustomAdjustables/loadConfig
     static inline Setup myCustomSetup{TV_Composite};
+
+    // PAL colour-loss model (global receiver choice, not part of a TVMode
+    // preset).  Static + loaded from settings, mirroring myCustomSetup.
+    static inline ColourLoss myColourLoss{ColourLoss::SaturationLoss};
 
     // AdjustableTags pointing into myCustomSetup for the cycling UI
     static constexpr std::array<AdjustableTag, 2> ourCustomAdjustables = {{

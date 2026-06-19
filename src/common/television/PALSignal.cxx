@@ -153,6 +153,7 @@ void PALSignal::loadConfig(const Settings& settings)
 {
   myCustomSetup.sharpness = BSPF::clamp(settings.getFloat("pal.sharpness"), -1.F, 1.F);
   myCustomSetup.blend     = BSPF::clamp(settings.getFloat("pal.blend"),     -1.F, 1.F);
+  setColourLoss(settings.getInt("pal.colorloss"));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -160,6 +161,14 @@ void PALSignal::saveConfig(Settings& settings)
 {
   settings.setValue("pal.sharpness", myCustomSetup.sharpness);
   settings.setValue("pal.blend",     myCustomSetup.blend);
+  settings.setValue("pal.colorloss", static_cast<int>(myColourLoss));
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void PALSignal::setColourLoss(int model)
+{
+  myColourLoss = static_cast<ColourLoss>(
+      BSPF::clamp(model, 0, static_cast<int>(ColourLoss::NUM_MODELS) - 1));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -483,6 +492,15 @@ void PALSignal::render(const uInt8* tiaSrc, uInt32 srcWidth, uInt32 srcHeight,
   const float  blend  = svideo ? 0.F : (mySetup.blend * 0.5F + 0.5F);
   const uInt32 outW   = outWidth(srcWidth);   // oversampled output width
 
+  // PhaseSettling colour-loss model: when the killer has tripped on a composite
+  // mode, keep chroma but rotate each line's demodulated chroma by a settling
+  // phase error (applied in the comb branch below).  settleRad is ±θ0 radians;
+  // the sign follows field parity so the wrong-hue band alternates each field.
+  const bool   settling  = colourKilled && !svideo &&
+                           myColourLoss == ColourLoss::PhaseSettling;
+  const float  settleRad = (phaseInverted ? -1.F : 1.F)
+                         * SETTLE_THETA0 * BSPF::PI_f / 180.F;
+
   // Reset the 1-line comb delay at the start of each frame; the first
   // scanline blends against a virtual "black" previous line.  (S-Video has
   // no comb, so the delay line is never read.)
@@ -534,11 +552,11 @@ void PALSignal::render(const uInt8* tiaSrc, uInt32 srcWidth, uInt32 srcHeight,
     // applies the PAL 1-line comb blend with the previous line's chroma.
     // (The previous line was encoded with the opposite V-sign, so adding its
     // own-sign filtered chroma reinforces U and cancels chroma noise on V.)
-    if(colourKilled && !svideo)
+    if(colourKilled && !svideo && myColourLoss == ColourLoss::SaturationLoss)
     {
-      // PAL colour loss (composite modes only): the set's colour-killer has
-      // cut chroma, so emit luma only.  S-Video is immune because Y and C are
-      // carried on separate wires with no phase dependency.  The subcarrier
+      // SaturationLoss model (composite modes only): the set's colour-killer
+      // has cut chroma, so emit luma only.  S-Video is immune because Y and C
+      // are carried on separate wires with no phase dependency.  The subcarrier
       // residual still present in the luma channel shows as faint dot-crawl in
       // the greyscale image, as on real hardware.
       for(uInt32 j = 0; j < outW; ++j)
@@ -552,6 +570,27 @@ void PALSignal::render(const uInt8* tiaSrc, uInt32 srcWidth, uInt32 srcHeight,
     }
     else
     {
+      // PhaseSettling model: rotate this line's demodulated chroma by the
+      // common-mode settling phase error  φ(y) = settleRad·exp(−y/τ)  before
+      // the comb (no-op unless the killer has tripped — see `settling`).
+      // GROUNDED: exp() is a first-order recovery-loop settling from the 180°
+      // odd-field alternation event, and the comb turns a *common-mode*
+      // rotation into a settling hue error (PAL-D theory).  PHENOMENOLOGICAL:
+      // φ is injected here, not produced by a simulated burst/loop.  The
+      // rotated chroma feeds the delay line, so the comb stays consistent.
+      if(settling)
+      {
+        const float phi = settleRad
+                        * std::exp(-static_cast<float>(y) / SETTLE_TAU);
+        const float c = std::cos(phi), s = std::sin(phi);
+        for(uInt32 j = 0; j < outW; ++j)
+        {
+          const float u = myAccU[j], v = myAccV[j];
+          myAccU[j] = c * u - s * v;
+          myAccV[j] = s * u + c * v;
+        }
+      }
+
       convertLine(myAccY.data(), myAccU.data(), myAccV.data(),
                   myPrevU.data(), myPrevV.data(), blend, outW, dst);
 

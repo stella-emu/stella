@@ -96,6 +96,8 @@ class VideoAudioDialog : public Dialog
     SliderWidget*     myTVArtifacts{nullptr};
     SliderWidget*     myTVFringe{nullptr};
     SliderWidget*     myTVBleed{nullptr};
+    // PAL colour-loss model (composite modes only)
+    PopUpWidget*      myPALColorLoss{nullptr};
 
     // TV phosphor effect
     PopUpWidget*      myTVPhosphor{nullptr};
