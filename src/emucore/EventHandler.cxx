@@ -41,7 +41,7 @@
 #include "M6532.hxx"
 #include "MouseControl.hxx"
 #include "PNGLibrary.hxx"
-#include "TIASurface.hxx"
+#include "Television.hxx"
 
 #include "EventHandler.hxx"
 
@@ -632,7 +632,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
     case Event::PaletteDecrease:
       if(pressed && !repeated)
       {
-        myOSystem.frameBuffer().tiaSurface().paletteHandler().cyclePalette(-1);
+        myOSystem.frameBuffer().television().paletteHandler().cyclePalette(-1);
         myGlobalKeyHandler->setSetting(GlobalKeyHandler::Setting::PALETTE);
       }
       return;
@@ -640,7 +640,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
     case Event::PaletteIncrease:
       if(pressed && !repeated)
       {
-        myOSystem.frameBuffer().tiaSurface().paletteHandler().cyclePalette(+1);
+        myOSystem.frameBuffer().television().paletteHandler().cyclePalette(+1);
         myGlobalKeyHandler->setSetting(GlobalKeyHandler::Setting::PALETTE);
       }
       return;
@@ -648,7 +648,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
     case Event::PreviousVideoMode:
       if(pressed && !repeated)
       {
-        myOSystem.frameBuffer().tiaSurface().changeTVEffect(-1);
+        myOSystem.frameBuffer().television().changeTVEffect(-1);
         myGlobalKeyHandler->setSetting(GlobalKeyHandler::Setting::TV_PRESET);
       }
       return;
@@ -656,7 +656,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
     case Event::NextVideoMode:
       if(pressed && !repeated)
       {
-        myOSystem.frameBuffer().tiaSurface().changeTVEffect(+1);
+        myOSystem.frameBuffer().television().changeTVEffect(+1);
         myGlobalKeyHandler->setSetting(GlobalKeyHandler::Setting::TV_PRESET);
       }
       return;
@@ -664,7 +664,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
     case Event::VidmodeStd:
       if(pressed && !repeated)
       {
-        myOSystem.frameBuffer().tiaSurface().setTVMode(TVMode::None);
+        myOSystem.frameBuffer().television().setTVMode(TVMode::None);
         myGlobalKeyHandler->setSetting(GlobalKeyHandler::Setting::TV_PRESET);
       }
       return;
@@ -672,7 +672,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
     case Event::VidmodeRGB:
       if(pressed && !repeated)
       {
-        myOSystem.frameBuffer().tiaSurface().setTVMode(TVMode::RGB);
+        myOSystem.frameBuffer().television().setTVMode(TVMode::RGB);
         myGlobalKeyHandler->setSetting(GlobalKeyHandler::Setting::TV_PRESET);
       }
       return;
@@ -680,7 +680,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
     case Event::VidmodeSVideo:
       if(pressed && !repeated)
       {
-        myOSystem.frameBuffer().tiaSurface().setTVMode(TVMode::SVideo);
+        myOSystem.frameBuffer().television().setTVMode(TVMode::SVideo);
         myGlobalKeyHandler->setSetting(GlobalKeyHandler::Setting::TV_PRESET);
       }
       return;
@@ -688,7 +688,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
     case Event::VidModeComposite:
       if(pressed && !repeated)
       {
-        myOSystem.frameBuffer().tiaSurface().setTVMode(TVMode::Composite);
+        myOSystem.frameBuffer().television().setTVMode(TVMode::Composite);
         myGlobalKeyHandler->setSetting(GlobalKeyHandler::Setting::TV_PRESET);
       }
       return;
@@ -696,7 +696,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
     case Event::VidModeBad:
       if(pressed && !repeated)
       {
-        myOSystem.frameBuffer().tiaSurface().setTVMode(TVMode::Bad);
+        myOSystem.frameBuffer().television().setTVMode(TVMode::Bad);
         myGlobalKeyHandler->setSetting(GlobalKeyHandler::Setting::TV_PRESET);
       }
       return;
@@ -704,7 +704,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
     case Event::VidModeCustom:
       if(pressed && !repeated)
       {
-        myOSystem.frameBuffer().tiaSurface().setTVMode(TVMode::Custom);
+        myOSystem.frameBuffer().television().setTVMode(TVMode::Custom);
         myGlobalKeyHandler->setSetting(GlobalKeyHandler::Setting::TV_PRESET);
       }
       return;
@@ -751,7 +751,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
     case Event::ScanlinesDecrease:
       if(pressed)
       {
-        myOSystem.frameBuffer().tiaSurface().changeScanlineIntensity(-1);
+        myOSystem.frameBuffer().television().changeScanlineIntensity(-1);
         myGlobalKeyHandler->setSetting(GlobalKeyHandler::Setting::SCANLINES);
       }
       return;
@@ -759,7 +759,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
     case Event::ScanlinesIncrease:
       if(pressed)
       {
-        myOSystem.frameBuffer().tiaSurface().changeScanlineIntensity(+1);
+        myOSystem.frameBuffer().television().changeScanlineIntensity(+1);
         myGlobalKeyHandler->setSetting(GlobalKeyHandler::Setting::SCANLINES);
       }
       return;
@@ -767,7 +767,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
     case Event::PreviousScanlineMask:
       if(pressed && !repeated)
       {
-        myOSystem.frameBuffer().tiaSurface().cycleScanlineMask(-1);
+        myOSystem.frameBuffer().television().cycleScanlineMask(-1);
         myGlobalKeyHandler->setSetting(GlobalKeyHandler::Setting::SCANLINE_MASK);
       }
       return;
@@ -775,7 +775,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
     case Event::NextScanlineMask:
       if(pressed && !repeated)
       {
-        myOSystem.frameBuffer().tiaSurface().cycleScanlineMask(+1);
+        myOSystem.frameBuffer().television().cycleScanlineMask(+1);
         myGlobalKeyHandler->setSetting(GlobalKeyHandler::Setting::SCANLINE_MASK);
       }
       return;
@@ -793,7 +793,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
     case Event::PreviousPaletteAttribute:
       if(pressed)
       {
-        myOSystem.frameBuffer().tiaSurface().paletteHandler().cycleAdjustable(-1);
+        myOSystem.frameBuffer().television().paletteHandler().cycleAdjustable(-1);
         myGlobalKeyHandler->setDirectSetting(GlobalKeyHandler::Setting::PALETTE_ATTRIBUTE);
       }
       return;
@@ -801,7 +801,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
     case Event::NextPaletteAttribute:
       if(pressed)
       {
-        myOSystem.frameBuffer().tiaSurface().paletteHandler().cycleAdjustable(+1);
+        myOSystem.frameBuffer().television().paletteHandler().cycleAdjustable(+1);
         myGlobalKeyHandler->setDirectSetting(GlobalKeyHandler::Setting::PALETTE_ATTRIBUTE);
       }
       return;
@@ -809,7 +809,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
     case Event::PaletteAttributeDecrease:
       if(pressed)
       {
-        myOSystem.frameBuffer().tiaSurface().paletteHandler().changeCurrentAdjustable(-1);
+        myOSystem.frameBuffer().television().paletteHandler().changeCurrentAdjustable(-1);
         myGlobalKeyHandler->setDirectSetting(GlobalKeyHandler::Setting::PALETTE_ATTRIBUTE);
       }
       return;
@@ -817,7 +817,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
     case Event::PaletteAttributeIncrease:
       if(pressed)
       {
-        myOSystem.frameBuffer().tiaSurface().paletteHandler().changeCurrentAdjustable(+1);
+        myOSystem.frameBuffer().television().paletteHandler().changeCurrentAdjustable(+1);
         myGlobalKeyHandler->setDirectSetting(GlobalKeyHandler::Setting::PALETTE_ATTRIBUTE);
       }
       return;
@@ -825,7 +825,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
     case Event::PreviousAttribute:
       if(pressed)
       {
-        myOSystem.frameBuffer().tiaSurface().selectTVAdjustable(-1);
+        myOSystem.frameBuffer().television().selectTVAdjustable(-1);
         myGlobalKeyHandler->setDirectSetting(GlobalKeyHandler::Setting::TV_ATTRIBUTE);
       }
       return;
@@ -833,7 +833,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
     case Event::NextAttribute:
       if(pressed)
       {
-        myOSystem.frameBuffer().tiaSurface().selectTVAdjustable(+1);
+        myOSystem.frameBuffer().television().selectTVAdjustable(+1);
         myGlobalKeyHandler->setDirectSetting(GlobalKeyHandler::Setting::TV_ATTRIBUTE);
       }
       return;
@@ -841,7 +841,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
     case Event::DecreaseAttribute:
       if(pressed)
       {
-        myOSystem.frameBuffer().tiaSurface().changeCurrentTVAdjustable(-1);
+        myOSystem.frameBuffer().television().changeCurrentTVAdjustable(-1);
         myGlobalKeyHandler->setDirectSetting(GlobalKeyHandler::Setting::TV_ATTRIBUTE);
       }
       return;
@@ -849,7 +849,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
     case Event::IncreaseAttribute:
       if(pressed)
       {
-        myOSystem.frameBuffer().tiaSurface().changeCurrentTVAdjustable(+1);
+        myOSystem.frameBuffer().television().changeCurrentTVAdjustable(+1);
         myGlobalKeyHandler->setDirectSetting(GlobalKeyHandler::Setting::TV_ATTRIBUTE);
       }
       return;
@@ -1538,7 +1538,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       return;
 
     case Event::TakeSnapshot:
-      if(pressed && !repeated) myOSystem.frameBuffer().tiaSurface().saveSnapShot();
+      if(pressed && !repeated) myOSystem.frameBuffer().television().saveSnapShot();
       return;
   #endif
 

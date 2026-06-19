@@ -64,15 +64,14 @@ class PaletteHandler
       uInt32 hue{0}, saturation{0}, contrast{0}, brightness{0}, gamma{0};
     };
 
-    // Per-entry luma + chroma decompositions used by the TVSignal processor.
-    // Indexed by TIA colour byte (0..255); values are in linear [0..1] space.
-    struct YUVEntry {
-      float y{0}, u{0}, v{0};   // BT.601 YUV (PAL)
-    };
+    // Per-entry SECAM YDbDr decomposition used by the TVSignal processor's
+    // SECAM delay line.  Indexed by TIA colour byte (0..255); values are in
+    // linear [0..1] space.  (PAL/NTSC do not need a decomposition table here:
+    // the PALSignal/NTSCSignal engines derive their own YUV from the adjusted
+    // RGB palette internally.)
     struct YDbDrEntry {
       float y{0}, db{0}, dr{0}; // SECAM YDbDr
     };
-    using PALYUVTable     = std::array<YUVEntry,   256>;
     using SECAMYDbDrTable = std::array<YDbDrEntry, 256>;
 
   public:
@@ -132,7 +131,6 @@ class PaletteHandler
     */
     void setPalette();
 
-    const PALYUVTable&     palYUVTable()     const { return myPALYUVTable; }
     const SECAMYDbDrTable& secamYDbDrTable() const { return mySecamYDbDrTable; }
 
 
@@ -267,9 +265,9 @@ class PaletteHandler
     void loadUserPalette();
 
     /**
-      Populate myPALYUVTable and mySecamYDbDrTable from an adjusted RGB palette.
+      Populate mySecamYDbDrTable from an adjusted RGB palette.
     */
-    void buildDecompositionTables(const PaletteArray& adjusted);
+    void buildSecamYDbDrTable(const PaletteArray& adjusted);
 
   private:
     static constexpr int NUM_ADJUSTABLES = 12;
@@ -323,8 +321,7 @@ class PaletteHandler
     // successfully loaded
     bool myUserPaletteDefined{false};
 
-    // Decomposition tables populated by buildDecompositionTables()
-    PALYUVTable     myPALYUVTable{};
+    // SECAM decomposition table populated by buildSecamYDbDrTable()
     SECAMYDbDrTable mySecamYDbDrTable{};
 
     // Table of RGB values for NTSC, PAL and SECAM

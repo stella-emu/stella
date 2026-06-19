@@ -24,7 +24,7 @@
 #include "TVSignal.hxx"
 #include "PopUpWidget.hxx"
 #include "MessageBox.hxx"
-#include "TIASurface.hxx"
+#include "Television.hxx"
 
 #include "StellaSettingsDialog.hxx"
 
@@ -303,7 +303,7 @@ void StellaSettingsDialog::saveConfig()
   instance().createFrameBuffer();
 
   // ... and apply potential setting changes to the TIA surface
-  instance().frameBuffer().tiaSurface().updateSurfaceSettings();
+  instance().frameBuffer().television().updateSurfaceSettings();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -15,8 +15,8 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#ifndef TIA_SURFACE_HXX
-#define TIA_SURFACE_HXX
+#ifndef TELEVISION_HXX
+#define TELEVISION_HXX
 
 class TIA;
 class Console;
@@ -37,14 +37,41 @@ class PaletteHandler;
 #include "TIAConstants.hxx"
 
 /**
-  This class is basically a wrapper around all things related to rendering
-  the TIA image to FBSurface's, and presenting the results to the screen.
-  This is placed in a separate class since currently, rendering a TIA image
-  can consist of TV filters, a separate scanline surface, phosphor modes, etc.
+  Renders the TIA image to FBSurface's and presents the results to the screen.
+
+  Television owns Stella's TIA→screen pipeline.  The three stages below model
+  distinct physical domains and are applied in physical signal order; this
+  class is the single place that holds them and sequences them (see render()).
+  They communicate one-way, downstream — each stage's output is the next
+  stage's input.
+
+    1. COLORIMETRY  (PaletteHandler) — "what colour is each TIA value?"
+       Owns the source palette and the per-colour controls applied once to the
+       256-entry palette when it changes: phase shift, RGB calibration, hue,
+       saturation, contrast, brightness, gamma.  Output: an adjusted RGB
+       palette, the input to stage 2.
+
+    2. SIGNAL TRANSPORT  (TVSignal → NTSC/PAL/SECAM) — "what do the wire and
+       receiver do to it?"  Takes the adjusted palette and simulates the analog
+       encode → modulate → demodulate → comb → bandwidth chain per pixel; the
+       artifacts (dot crawl, fringing, colour loss) emerge from that physics.
+       Receiver-side controls live here: sharpness, comb blend, colour-killer.
+       Output: a decoded RGB frame, the input to stage 3.
+
+    3. DISPLAY DEVICE  (PhosphorHandler + scanline surface + shade/mask) —
+       "what does the tube do over time and space?"  Inter-frame phosphor
+       persistence plus the scanline/aperture overlays, applied to the decoded
+       RGB frame on its way to the screen.
+
+  Boundary rule, when adding a new control: a knob describing the *source
+  colour* of a TIA value is colorimetry (stage 1); a knob modelling the *wire
+  or receiver* is signal (stage 2); a knob modelling the *display tube* is
+  device (stage 3).  Keeping a control in its own domain is what stops the
+  stages from quietly duplicating each other's colour/decode work.
 
   @author  Stephen Anthony
 */
-class TIASurface
+class Television
 {
   public:
     // Setting names of palette types
@@ -55,10 +82,10 @@ class TIASurface
     static constexpr string_view SETTING_MAME     = "mame";
 
     /**
-      Creates a new TIASurface object
+      Creates a new Television object
     */
-    explicit TIASurface(OSystem& system);
-    ~TIASurface();
+    explicit Television(OSystem& system);
+    ~Television();
 
     /**
       Set the TIA object, which is needed for actually rendering the TIA image.
@@ -221,8 +248,8 @@ class TIASurface
                           myBaseTiaSurface, myShadeSurface;
 
     /////////////////////////////////////////////////////////////
-    // Phosphor mode items (aka reduced flicker on 30Hz screens)
-    // RGB frame buffer
+    // Pipeline stage 3 (display device): phosphor persistence (also reduces
+    // flicker on 30Hz screens), plus the scanline/shade surfaces above.
     PhosphorHandler myPhosphorHandler;
 
     // Phosphor blend
@@ -251,10 +278,10 @@ class TIASurface
     // Palette for normal TIA rendering mode
     PaletteArray myPalette{};
 
-    // The palette handler
+    // Pipeline stage 1 (colorimetry): source palette + per-colour controls
     unique_ptr<PaletteHandler> myPaletteHandler;
 
-    // TV signal delay-line processor for PAL and SECAM
+    // Pipeline stage 2 (signal transport): NTSC/PAL/SECAM signal simulation
     unique_ptr<TVSignal> myTVSignal;
 
     // Flag for saving a snapshot
@@ -262,11 +289,11 @@ class TIASurface
 
   private:
     // Following constructors and assignment operators not supported
-    TIASurface() = delete;
-    TIASurface(const TIASurface&) = delete;
-    TIASurface(TIASurface&&) = delete;
-    TIASurface& operator=(const TIASurface&) = delete;
-    TIASurface& operator=(TIASurface&&) = delete;
+    Television() = delete;
+    Television(const Television&) = delete;
+    Television(Television&&) = delete;
+    Television& operator=(const Television&) = delete;
+    Television& operator=(Television&&) = delete;
 };
 
-#endif  // TIA_SURFACE_HXX
+#endif  // TELEVISION_HXX

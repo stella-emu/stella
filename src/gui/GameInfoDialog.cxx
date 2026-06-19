@@ -38,7 +38,7 @@
 
 #include "repository/KeyValueRepositoryPropertyFile.hxx"
 #include "FrameBuffer.hxx"
-#include "TIASurface.hxx"
+#include "Television.hxx"
 #include "Switches.hxx"
 #include "AudioSettings.hxx"
 #include "bspf.hxx"
@@ -1045,7 +1045,7 @@ void GameInfoDialog::saveConfig()
 
     // update 'Emulation' tab settings immediately
     instance().console().setFormat(myFormat->getSelected());
-    instance().frameBuffer().tiaSurface().enablePhosphor(myPhosphor->getState(), myPPBlend->getValue());
+    instance().frameBuffer().television().enablePhosphor(myPhosphor->getState(), myPPBlend->getValue());
     instance().console().updateVcenter(myVCenter->getValue());
     instance().console().initializeAudio();
 

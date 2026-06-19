@@ -29,7 +29,7 @@
 #include "StateManager.hxx"
 #include "Switches.hxx"
 #include "TIA.hxx"
-#include "TIASurface.hxx"
+#include "Television.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 StellaLIBRETRO::StellaLIBRETRO()
@@ -116,7 +116,7 @@ bool StellaLIBRETRO::create(const SettingsLIBRETRO& cfg, bool logging)
   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
   console_timing = myOSystem->console().timing();
-  phosphor_default = myOSystem->frameBuffer().tiaSurface().phosphorEnabled();
+  phosphor_default = myOSystem->frameBuffer().television().phosphorEnabled();
 
   if(cfg.video_phosphor == "never") setVideoPhosphor("never", cfg.video_phosphor_blend);
 
@@ -260,7 +260,7 @@ void* StellaLIBRETRO::getVideoBuffer() const
   if (!render_surface)
   {
     const FBSurface& surface =
-        myOSystem->frameBuffer().tiaSurface().tiaSurface();
+        myOSystem->frameBuffer().television().tiaSurface();
 
     uInt32 pitch = 0;
     surface.basePtr(render_surface, pitch);
@@ -305,7 +305,7 @@ void StellaLIBRETRO::setVideoFilter(TVMode mode)
   if (system_ready)
   {
     myOSystem->settings().setValue("tv.filter", static_cast<int>(mode));
-    myOSystem->frameBuffer().tiaSurface().setTVMode(mode);
+    myOSystem->frameBuffer().television().setTVMode(mode);
   }
 }
 
@@ -315,7 +315,7 @@ void StellaLIBRETRO::setVideoPalette(string_view mode)
   if (system_ready)
   {
     myOSystem->settings().setValue("palette", mode);
-    myOSystem->frameBuffer().tiaSurface().paletteHandler().setPalette(string{mode});
+    myOSystem->frameBuffer().television().paletteHandler().setPalette(string{mode});
   }
 }
 
@@ -328,11 +328,11 @@ void StellaLIBRETRO::setVideoPhosphor(string_view phosphor, uInt32 blend)
     myOSystem->settings().setValue("tv.phosblend", blend);
 
     if(phosphor == "byrom")
-      myOSystem->frameBuffer().tiaSurface().enablePhosphor(phosphor_default, blend);
+      myOSystem->frameBuffer().television().enablePhosphor(phosphor_default, blend);
     else if(phosphor == "never")
-      myOSystem->frameBuffer().tiaSurface().enablePhosphor(false, blend);
+      myOSystem->frameBuffer().television().enablePhosphor(false, blend);
     else
-      myOSystem->frameBuffer().tiaSurface().enablePhosphor(true, blend);
+      myOSystem->frameBuffer().television().enablePhosphor(true, blend);
   }
 }
 
@@ -361,7 +361,7 @@ void StellaLIBRETRO::setPaletteAdjust(float contrast, float brightness, float hu
     settings.setValue("pal.saturation", saturation);
     settings.setValue("pal.gamma",      gamma);
 
-    PaletteHandler& ph = myOSystem->frameBuffer().tiaSurface().paletteHandler();
+    PaletteHandler& ph = myOSystem->frameBuffer().television().paletteHandler();
     ph.loadConfig(settings);
     ph.setPalette();
   }

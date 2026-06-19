@@ -46,7 +46,7 @@ Stella is a classic emulation architecture centered on `OSystem` owning everythi
 
 **Cartridge system** (`src/emucore/Cart*.cxx`): 50+ cartridge types implementing various bankswitch schemes. `CartDetector` auto-identifies ROM type; `CartCreator` is the factory.
 
-**Graphics** (`src/emucore/FrameBuffer.*`, `FBSurface.*`): Platform-agnostic abstraction. `FBBackendSDL` implements SDL3 rendering. `TIASurface` converts raw TIA output to display pixels.
+**Graphics** (`src/emucore/FrameBuffer.*`, `FBSurface.*`): Platform-agnostic abstraction. `FBBackendSDL` implements SDL3 rendering. `Television` converts raw TIA output to display pixels.
 
 **Input** (`src/emucore/EventHandler.*`, `src/emucore/Control*.cxx`): Keyboard/joystick/mouse → event dispatch → controller emulation. `ControllerDetector` auto-identifies peripheral type.
 
@@ -61,7 +61,7 @@ Stella is a classic emulation architecture centered on `OSystem` owning everythi
 **Third-party libs** (`src/lib/`): httplib, nanojpeg, tinyexif, nlohmann/json, SQLite wrapper.
 
 ### Data flow (one emulation frame)
-`OSystem::mainLoop` → `Console::update` → `M6502::execute` (runs CPU cycles) → each cycle notifies `TIA` and `M6532` via `System` → TIA produces scanlines into a pixel buffer → `TIASurface` uploads buffer to `FBBackendSDL` → SDL presents frame.
+`OSystem::mainLoop` → `Console::update` → `M6502::execute` (runs CPU cycles) → each cycle notifies `TIA` and `M6532` via `System` → TIA produces scanlines into a pixel buffer → `Television` uploads buffer to `FBBackendSDL` → SDL presents frame.
 
 ## Code Conventions
 

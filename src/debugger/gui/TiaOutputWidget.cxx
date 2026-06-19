@@ -27,7 +27,7 @@
 #include "DebuggerParser.hxx"
 #include "PNGLibrary.hxx"
 #include "TIADebug.hxx"
-#include "TIASurface.hxx"
+#include "Television.hxx"
 #include "TIA.hxx"
 #include "TimerManager.hxx"
 #include "FrameManager.hxx"
@@ -242,7 +242,7 @@ void TiaOutputWidget::drawWidget(bool hilite)
   const bool visible = instance().console().tia().electronBeamPos(scanx, scany);
   const uInt32 scanoffset = width * scany + scanx;
   const uInt8* tiaOutputBuffer = instance().console().tia().outputBuffer();
-  const TIASurface& tiaSurface = instance().frameBuffer().tiaSurface();
+  const Television& television = instance().frameBuffer().television();
 
   const std::span<uInt32> line{myLineBuffer};
   for(uInt32 y = 0, i = yStart * width; y < height; ++y)
@@ -250,7 +250,7 @@ void TiaOutputWidget::drawWidget(bool hilite)
     uInt32 lineIdx = 0;
     for(uInt32 x = 0; x < width; ++x, ++i)
     {
-      const uInt32 pixel = tiaSurface.mapIndexedPixel(
+      const uInt32 pixel = television.mapIndexedPixel(
         tiaOutputBuffer[i], i >= scanoffset ? 1 : 0);
       line[lineIdx++] = pixel;
       line[lineIdx++] = pixel;

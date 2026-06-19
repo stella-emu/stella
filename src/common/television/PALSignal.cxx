@@ -99,7 +99,7 @@ void PALSignal::initialize(TVMode mode)
   mySetup  = setupFor(mode, myCustomSetup);
 
   // Reset the colour-killer to its powered-up (colour-active) state.  This is
-  // the receiver-reset chokepoint: TIASurface::initialize() routes here via
+  // the receiver-reset chokepoint: Television::initialize() routes here via
   // setTVMode on a TV-mode change and on a mid-game console reset / ROM
   // reload, and TVSignal::setTiming() replays the mode here when PAL becomes
   // the active standard, so stale killer state never survives into PAL

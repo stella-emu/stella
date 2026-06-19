@@ -25,7 +25,7 @@ class OSystem;
 class Console;
 class Settings;
 class FBSurface;
-class TIASurface;
+class Television;
 class Bezel;
 
 #ifdef GUI_SUPPORT
@@ -236,11 +236,10 @@ class FrameBuffer
     double supportedTIAMaxZoom() const { return maxWindowZoom(); }
 
     /**
-      Get the TIA surface associated with the framebuffer.
-      Note that this is the 'raw' TIA surface, without any post-processing
-      effects included.
+      Get the Television (the TIA→screen pipeline: colorimetry, signal and
+      display stages) owned by this framebuffer.
     */
-    TIASurface& tiaSurface() const { return *myTIASurface; }
+    Television& television() const { return *myTelevision; }
 
     /**
       This method is called to get the specified ARGB data from the viewable
@@ -514,8 +513,8 @@ class FrameBuffer
     unique_ptr<GUI::Font> myLauncherFont;
   #endif  // GUI_SUPPORT
 
-    // The TIASurface class takes responsibility for TIA rendering
-    shared_ptr<TIASurface> myTIASurface;
+    // The Television class takes responsibility for TIA rendering
+    shared_ptr<Television> myTelevision;
 
     // The BezelSurface which blends over the TIA surface
     unique_ptr<Bezel> myBezel;

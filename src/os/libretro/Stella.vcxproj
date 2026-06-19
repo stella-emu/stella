@@ -141,8 +141,8 @@
     <ClCompile Include="..\..\common\JoyMap.cxx" />
     <ClCompile Include="..\..\common\KeyMap.cxx" />
     <ClCompile Include="..\..\common\Logger.cxx" />
-    <ClCompile Include="..\..\common\PaletteHandler.cxx" />
-    <ClCompile Include="..\..\common\PhosphorHandler.cxx" />
+    <ClCompile Include="..\..\common\television\PaletteHandler.cxx" />
+    <ClCompile Include="..\..\common\television\PhosphorHandler.cxx" />
     <ClCompile Include="..\..\common\repository\CompositeKeyValueRepository.cxx" />
     <ClCompile Include="..\..\common\repository\CompositeKVRJsonAdapter.cxx" />
     <ClCompile Include="..\..\common\repository\KeyValueRepositoryJsonFile.cxx" />
@@ -200,7 +200,7 @@
     <ClCompile Include="..\..\emucore\MindLink.cxx" />
     <ClCompile Include="..\..\emucore\PointingDevice.cxx" />
     <ClCompile Include="..\..\emucore\ProfilingRunner.cxx" />
-    <ClCompile Include="..\..\emucore\TIASurface.cxx" />
+    <ClCompile Include="..\..\common\television\Television.cxx" />
     <ClCompile Include="..\..\emucore\tia\Audio.cxx" />
     <ClCompile Include="..\..\emucore\tia\AudioChannel.cxx" />
     <ClCompile Include="..\..\emucore\tia\Background.cxx" />
@@ -288,8 +288,8 @@
     <ClInclude Include="..\..\common\Logger.hxx" />
     <ClInclude Include="..\..\common\MediaFactory.hxx" />
     <ClInclude Include="..\..\common\MouseControl.hxx" />
-    <ClInclude Include="..\..\common\PaletteHandler.hxx" />
-    <ClInclude Include="..\..\common\PhosphorHandler.hxx" />
+    <ClInclude Include="..\..\common\television\PaletteHandler.hxx" />
+    <ClInclude Include="..\..\common\television\PhosphorHandler.hxx" />
     <ClInclude Include="..\..\common\PhysicalJoystick.hxx" />
     <ClInclude Include="..\..\common\PJoystickHandler.hxx" />
     <ClInclude Include="..\..\common\PKeyboardHandler.hxx" />
@@ -356,7 +356,7 @@
     <ClInclude Include="..\..\emucore\PointingDevice.hxx" />
     <ClInclude Include="..\..\emucore\ProfilingRunner.hxx" />
     <ClInclude Include="..\..\emucore\QuadTari.hxx" />
-    <ClInclude Include="..\..\emucore\TIASurface.hxx" />
+    <ClInclude Include="..\..\common\television\Television.hxx" />
     <ClInclude Include="..\..\emucore\tia\Audio.hxx" />
     <ClInclude Include="..\..\emucore\tia\AudioChannel.hxx" />
     <ClInclude Include="..\..\emucore\tia\Background.hxx" />

@@ -339,7 +339,7 @@ void PaletteHandler::setPalette()
 
     const PaletteArray adjusted = adjustedPalette(*palette);
     myOSystem.frameBuffer().setTIAPalette(adjusted);
-    buildDecompositionTables(adjusted);
+    buildSecamYDbDrTable(adjusted);
   }
 }
 
@@ -404,7 +404,7 @@ PaletteArray PaletteHandler::adjustedPalette(const PaletteArray& palette) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PaletteHandler::buildDecompositionTables(const PaletteArray& adjusted)
+void PaletteHandler::buildSecamYDbDrTable(const PaletteArray& adjusted)
 {
   constexpr float inv255 = 1.F / 255.F;
 
@@ -413,11 +413,6 @@ void PaletteHandler::buildDecompositionTables(const PaletteArray& adjusted)
     const float r = static_cast<float>((adjusted[i] >> 16) & 0xff) * inv255;
     const float g = static_cast<float>((adjusted[i] >>  8) & 0xff) * inv255;
     const float b = static_cast<float>((adjusted[i] >>  0) & 0xff) * inv255;
-
-    // BT.601 RGB → YUV (PAL delay-line operates in this space)
-    myPALYUVTable[i].y =  0.299F * r + 0.587F * g + 0.114F * b;
-    myPALYUVTable[i].u = -0.147F * r - 0.289F * g + 0.436F * b;
-    myPALYUVTable[i].v =  0.615F * r - 0.515F * g - 0.100F * b;
 
     // BT.601 RGB → YDbDr (SECAM delay-line operates in this space)
     mySecamYDbDrTable[i].y  =  0.299F * r + 0.587F * g + 0.114F * b;

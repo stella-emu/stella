@@ -99,7 +99,6 @@ MODULE_OBJS := \
 	src/emucore/Settings.o \
 	src/emucore/Switches.o \
 	src/emucore/System.o \
-	src/emucore/TIASurface.o \
 	src/emucore/Thumbulator.o
 
 MODULE_TEST_OBJS =

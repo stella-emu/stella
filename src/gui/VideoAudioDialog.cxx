@@ -37,7 +37,7 @@
 #include "TabWidget.hxx"
 #include "TVMode.hxx"
 #include "TVSignal.hxx"
-#include "TIASurface.hxx"
+#include "Television.hxx"
 
 #include "VideoAudioDialog.hxx"
 
@@ -409,11 +409,11 @@ void VideoAudioDialog::addTVEffectsTab()
   myTVScanIntense->setToolTip(Event::ScanlinesDecrease, Event::ScanlinesIncrease);
 
   items.clear();
-  VarList::push_back(items, "Standard", TIASurface::SETTING_STANDARD);
-  VarList::push_back(items, "Thin lines", TIASurface::SETTING_THIN);
-  VarList::push_back(items, "Pixelated", TIASurface::SETTING_PIXELS);
-  VarList::push_back(items, "Aperture Gr.", TIASurface::SETTING_APERTURE);
-  VarList::push_back(items, "MAME", TIASurface::SETTING_MAME);
+  VarList::push_back(items, "Standard", Television::SETTING_STANDARD);
+  VarList::push_back(items, "Thin lines", Television::SETTING_THIN);
+  VarList::push_back(items, "Pixelated", Television::SETTING_PIXELS);
+  VarList::push_back(items, "Aperture Gr.", Television::SETTING_APERTURE);
+  VarList::push_back(items, "MAME", Television::SETTING_MAME);
 
   xpos = myTVScanIntense->getRight() + fontWidth * 2;
   pwidth = _w - HBORDER - xpos - fontWidth * 5 - PopUpWidget::dropDownWidth(_font) - 2 * 2;
@@ -693,7 +693,7 @@ void VideoAudioDialog::loadConfig()
   const bool isPAL = instance().hasConsole()
     && instance().console().timing() == ConsoleTiming::pal;
 
-  instance().frameBuffer().tiaSurface().paletteHandler().getAdjustables(myPaletteAdj);
+  instance().frameBuffer().television().paletteHandler().getAdjustables(myPaletteAdj);
   if(isPAL)
   {
     myPhaseShift->setLabel("PAL phase");
@@ -748,7 +748,7 @@ void VideoAudioDialog::loadConfig()
 
   // TV scanline intensity & mask
   myTVScanIntense->setValue(settings.getInt("tv.scanlines"));
-  myTVScanMask->setSelected(settings.getString("tv.scanmask"), TIASurface::SETTING_STANDARD);
+  myTVScanMask->setSelected(settings.getString("tv.scanmask"), Television::SETTING_STANDARD);
 
   /////////////////////////////////////////////////////////////////////////////
 #ifdef IMAGE_SUPPORT
@@ -848,7 +848,7 @@ void VideoAudioDialog::saveConfig()
   settings.setValue("tia.vsizeadjust", newAdjust);
 
   Logger::debug("Saving palette settings...");
-  instance().frameBuffer().tiaSurface().paletteHandler().saveConfig(settings);
+  instance().frameBuffer().television().paletteHandler().saveConfig(settings);
 
   // Autodetection
   settings.setValue("detectpal60", myDetectPal60->getState());
@@ -922,7 +922,7 @@ void VideoAudioDialog::saveConfig()
   instance().createFrameBuffer();
 
   // ... and apply potential setting changes to the TIA surface
-  instance().frameBuffer().tiaSurface().updateSurfaceSettings();
+  instance().frameBuffer().television().updateSurfaceSettings();
 
   /////////////////////////////////////////////////////////////////////////////
   // Audio tab
@@ -1028,7 +1028,7 @@ void VideoAudioDialog::setDefaults()
 
       // TV scanline intensity & mask
       myTVScanIntense->setValue(0);
-      myTVScanMask->setSelected(TIASurface::SETTING_STANDARD);
+      myTVScanMask->setSelected(Television::SETTING_STANDARD);
 
       // Make sure that mutually-exclusive items are not enabled at the same time
       handleTVModeChange(TVMode::None);
@@ -1191,11 +1191,11 @@ void VideoAudioDialog::handlePaletteUpdate()
   paletteAdj.contrast   = myTVContrast->getValue();
   paletteAdj.brightness = myTVBright->getValue();
   paletteAdj.gamma      = myTVGamma->getValue();
-  instance().frameBuffer().tiaSurface().paletteHandler().setAdjustables(paletteAdj);
+  instance().frameBuffer().television().paletteHandler().setAdjustables(paletteAdj);
 
   if(instance().hasConsole())
   {
-    instance().frameBuffer().tiaSurface().paletteHandler().setPalette();
+    instance().frameBuffer().television().paletteHandler().setPalette();
 
     for(auto& row: myColor)
       for(auto* w: row)
@@ -1260,8 +1260,8 @@ void VideoAudioDialog::handleCommand(CommandSender* sender, int cmd,
 
     case GuiObject::kCloseCmd:
       // restore palette settings
-      instance().frameBuffer().tiaSurface().paletteHandler().setAdjustables(myPaletteAdj);
-      instance().frameBuffer().tiaSurface().paletteHandler().setPalette(myPalette);
+      instance().frameBuffer().television().paletteHandler().setAdjustables(myPaletteAdj);
+      instance().frameBuffer().television().paletteHandler().setPalette(myPalette);
       Dialog::handleCommand(sender, cmd, data, 0);
       break;
 

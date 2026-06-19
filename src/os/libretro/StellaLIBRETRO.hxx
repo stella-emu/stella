@@ -32,7 +32,7 @@
 #include "Paddles.hxx"
 #include "System.hxx"
 #include "TIA.hxx"
-#include "TIASurface.hxx"
+#include "Television.hxx"
 
 /**
   This class wraps Stella core for easier libretro maintenance
@@ -80,7 +80,7 @@ class StellaLIBRETRO
 
     bool   getVideoReady() const { return video_ready; }
     uInt32 getVideoZoom() const {
-      return myOSystem->frameBuffer().tiaSurface().tvEffectsEnabled() ? 2 : 1;
+      return myOSystem->frameBuffer().television().tvEffectsEnabled() ? 2 : 1;
     }
     bool   getVideoResize();
 

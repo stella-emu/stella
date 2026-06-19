@@ -29,7 +29,7 @@
 #include "Widget.hxx"
 #include "StellaSettingsDialog.hxx"
 #include "OptionsDialog.hxx"
-#include "TIASurface.hxx"
+#include "Television.hxx"
 
 #include "MinUICommandDialog.hxx"
 
@@ -135,7 +135,7 @@ void MinUICommandDialog::loadConfig()
   // Column 3
   updateTVFormat();
   myStretchButton->setLabel(instance().settings().getBool("tia.fs_stretch") ? "Stretched" : "4:3 Format");
-  myPhosphorButton->setLabel(instance().frameBuffer().tiaSurface().phosphorEnabled() ? "Phosphor On" : "Phosphor Off");
+  myPhosphorButton->setLabel(instance().frameBuffer().television().phosphorEnabled() ? "Phosphor On" : "Phosphor Off");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

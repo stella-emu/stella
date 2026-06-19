@@ -573,8 +573,8 @@
     <ClCompile Include="..\..\emucore\FBSurface.cxx">
       <Filter>Source Files\emucore</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\emucore\TIASurface.cxx">
-      <Filter>Source Files\emucore</Filter>
+    <ClCompile Include="..\..\common\television\Television.cxx">
+      <Filter>Source Files\common\television</Filter>
     </ClCompile>
     <ClCompile Include="..\..\emucore\CartMDM.cxx">
       <Filter>Source Files\emucore</Filter>
@@ -1134,11 +1134,11 @@
     <ClCompile Include="..\..\common\MouseControl.cxx">
       <Filter>Source Files\common</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\common\PaletteHandler.cxx">
-      <Filter>Source Files\common</Filter>
+    <ClCompile Include="..\..\common\television\PaletteHandler.cxx">
+      <Filter>Source Files\common\television</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\common\PhosphorHandler.cxx">
-      <Filter>Source Files\common</Filter>
+    <ClCompile Include="..\..\common\television\PhosphorHandler.cxx">
+      <Filter>Source Files\common\television</Filter>
     </ClCompile>
     <ClCompile Include="..\..\common\PhysicalJoystick.cxx">
       <Filter>Source Files\common</Filter>
@@ -1708,8 +1708,8 @@
     <ClInclude Include="..\..\emucore\FBSurface.hxx">
       <Filter>Header Files\emucore</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\emucore\TIASurface.hxx">
-      <Filter>Header Files\emucore</Filter>
+    <ClInclude Include="..\..\common\television\Television.hxx">
+      <Filter>Header Files\common\television</Filter>
     </ClInclude>
     <ClInclude Include="..\..\emucore\CartMDM.hxx">
       <Filter>Header Files\emucore</Filter>
@@ -2416,11 +2416,11 @@
     <ClInclude Include="..\..\common\MouseControl.hxx">
       <Filter>Header Files\common</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\common\PaletteHandler.hxx">
-      <Filter>Header Files\common</Filter>
+    <ClInclude Include="..\..\common\television\PaletteHandler.hxx">
+      <Filter>Header Files\common\television</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\common\PhosphorHandler.hxx">
-      <Filter>Header Files\common</Filter>
+    <ClInclude Include="..\..\common\television\PhosphorHandler.hxx">
+      <Filter>Header Files\common\television</Filter>
     </ClInclude>
     <ClInclude Include="..\..\common\PhysicalJoystick.hxx">
       <Filter>Header Files\common</Filter>

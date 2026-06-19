@@ -27,7 +27,7 @@
 #include "Widget.hxx"
 #include "AudioSettings.hxx"
 #include "Sound.hxx"
-#include "TIASurface.hxx"
+#include "Television.hxx"
 #include "CommandDialog.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -130,7 +130,7 @@ void CommandDialog::loadConfig()
   // Column 3
   updateTVFormat();
   updatePalette();
-  myPhosphorButton->setLabel(instance().frameBuffer().tiaSurface().phosphorEnabled()
+  myPhosphorButton->setLabel(instance().frameBuffer().television().phosphorEnabled()
     ? "Phosphor On" : "Phosphor Off");
   mySoundButton->setLabel(instance().audioSettings().enabled()
     ? "Sound On" : "Sound Off");
@@ -211,7 +211,7 @@ void CommandDialog::handleCommand(CommandSender* sender, int cmd,
       break;
 
     case kPaletteCmd:
-      instance().frameBuffer().tiaSurface().paletteHandler().cyclePalette();
+      instance().frameBuffer().television().paletteHandler().cyclePalette();
       updatePalette();
       break;
 

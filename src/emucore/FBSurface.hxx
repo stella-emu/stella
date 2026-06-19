@@ -19,7 +19,7 @@
 #define FB_SURFACE_HXX
 
 class FrameBuffer;
-class TIASurface;
+class Television;
 
 namespace GUI {
   class Font;

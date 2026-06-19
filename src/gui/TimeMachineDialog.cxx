@@ -25,7 +25,7 @@
 #include "StateManager.hxx"
 #include "RewindManager.hxx"
 #include "TimeLineWidget.hxx"
-#include "TIASurface.hxx"
+#include "Television.hxx"
 
 #include "Console.hxx"
 #include "TIA.hxx"

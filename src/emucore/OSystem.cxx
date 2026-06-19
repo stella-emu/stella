@@ -41,7 +41,7 @@
 #include "CartCreator.hxx"
 #include "CartDetector.hxx"
 #include "FrameBuffer.hxx"
-#include "TIASurface.hxx"
+#include "Television.hxx"
 #include "TIAConstants.hxx"
 #include "Settings.hxx"
 #include "PropsSet.hxx"

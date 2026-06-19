@@ -29,7 +29,7 @@
 #include "PNGLibrary.hxx"
 
 #include "FBSurface.hxx"
-#include "TIASurface.hxx"
+#include "Television.hxx"
 #include "Bezel.hxx"
 #include "FrameBuffer.hxx"
 #include "StateManager.hxx"
@@ -116,7 +116,7 @@ void FrameBuffer::initialize()
   myGrabMouse = myOSystem.settings().getBool("grabmouse");
 
   // Create a TIA surface; we need it for rendering TIA images
-  myTIASurface = std::make_unique<TIASurface>(myOSystem);
+  myTelevision = std::make_unique<Television>(myOSystem);
   // Create a bezel surface for TIA overlays
   myBezel = std::make_unique<Bezel>(myOSystem);
 }
@@ -327,7 +327,7 @@ FBInitStatus FrameBuffer::createDisplay(string_view title, BufferType type,
         myOSystem.console().tia().enableAutoPhosphor(false);
         break;
     }
-    myTIASurface->enablePhosphor(enable, p_blend);
+    myTelevision->enablePhosphor(enable, p_blend);
   }
 
   if(status != FBInitStatus::Success)
@@ -644,7 +644,7 @@ void FrameBuffer::renderTIA(bool doClear, bool shade)
   if(doClear)
     clear();  // TODO - test this: it may cause slowdowns on older systems
 
-  myTIASurface->render(shade);
+  myTelevision->render(shade);
   if(myBezel)
     myBezel->render();
 }
@@ -672,7 +672,7 @@ void FrameBuffer::setTIAPalette(const PaletteArray& rgb_palette)
   std::copy_n(tia_palette.begin(), tia_palette.size(), myFullPalette.begin());
 
   // Let the TIA surface know about the new palette
-  myTIASurface->setPalette(tia_palette, rgb_palette);
+  myTelevision->setPalette(tia_palette, rgb_palette);
 
   // Since the UI palette shares the TIA palette, we need to update it too
   setUIPalette();
@@ -1049,7 +1049,7 @@ FBInitStatus FrameBuffer::applyVideoMode()
     // Inform TIA surface about new mode, and update TIA settings
     if(inTIAMode)
     {
-      myTIASurface->initialize(myOSystem.console(), myActiveVidMode);
+      myTelevision->initialize(myOSystem.console(), myActiveVidMode);
       if(fullScreen())
         myOSystem.settings().setValue("tia.fs_stretch",
           myActiveVidMode.stretch == VideoModeHandler::Mode::Stretch::Fill);

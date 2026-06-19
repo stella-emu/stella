@@ -50,7 +50,7 @@
 #include "Switches.hxx"
 #include "System.hxx"
 #include "FrameBuffer.hxx"
-#include "TIASurface.hxx"
+#include "Television.hxx"
 #include "OSystem.hxx"
 #include "Serializer.hxx"
 #include "TimerManager.hxx"
@@ -124,7 +124,7 @@ Console::Console(OSystem& osystem, unique_ptr<Cartridge>& cart,
 
   const TIA::onPhosphorCallback callback = [&frameBuffer = this->myOSystem.frameBuffer()](bool enable)
   {
-    frameBuffer.tiaSurface().enablePhosphor(enable);
+    frameBuffer.television().enablePhosphor(enable);
   #ifdef DEBUG_BUILD
     frameBuffer.showTextMessage(
       std::format("Phosphor effect automatically {}", enable ? "enabled" : "disabled"));
@@ -520,7 +520,7 @@ void Console::toggleInter(bool toggle)
       myOSystem.settings().setValue("tia.inter", enabled);
 
       // Apply potential setting changes to the TIA surface
-      myOSystem.frameBuffer().tiaSurface().updateSurfaceSettings();
+      myOSystem.frameBuffer().television().updateSurfaceSettings();
     }
 
     myOSystem.frameBuffer().showTextMessage(
@@ -573,7 +573,7 @@ void Console::changeSpeed(int direction)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Console::togglePhosphor(bool toggle)
 {
-  bool enable = myOSystem.frameBuffer().tiaSurface().phosphorEnabled();
+  bool enable = myOSystem.frameBuffer().television().phosphorEnabled();
 
   if(toggle)
   {
@@ -582,7 +582,7 @@ void Console::togglePhosphor(bool toggle)
       myProperties.set(PropType::Display_Phosphor, "NO");
     else
       myProperties.set(PropType::Display_Phosphor, "YES");
-    myOSystem.frameBuffer().tiaSurface().enablePhosphor(enable);
+    myOSystem.frameBuffer().television().enablePhosphor(enable);
 
     // disable auto-phosphor
     myTIA->enableAutoPhosphor(false);
@@ -608,20 +608,20 @@ void Console::cyclePhosphorMode(int direction)
     switch(mode)
     {
       case PhosphorHandler::Always:
-        myOSystem.frameBuffer().tiaSurface().enablePhosphor(
+        myOSystem.frameBuffer().television().enablePhosphor(
           true, myOSystem.settings().getInt(PhosphorHandler::SETTING_BLEND));
         myTIA->enableAutoPhosphor(false);
         break;
 
       case PhosphorHandler::Auto_on:
       case PhosphorHandler::Auto:
-        myOSystem.frameBuffer().tiaSurface().enablePhosphor(
+        myOSystem.frameBuffer().television().enablePhosphor(
           false, myOSystem.settings().getInt(PhosphorHandler::SETTING_BLEND));
         myTIA->enableAutoPhosphor(true, mode == PhosphorHandler::Auto_on);
         break;
 
       default: // PhosphorHandler::ByRom
-        myOSystem.frameBuffer().tiaSurface().enablePhosphor(
+        myOSystem.frameBuffer().television().enablePhosphor(
           myProperties.get(PropType::Display_Phosphor) == "YES",
           BSPF::stoi(myProperties.get(PropType::Display_PPBlend)));
         myTIA->enableAutoPhosphor(false);
@@ -643,7 +643,7 @@ void Console::changePhosphor(int direction)
   if(direction)
   {
     blend = BSPF::clamp(blend + direction * 2, 0, 100);
-    myOSystem.frameBuffer().tiaSurface().enablePhosphor(true, blend);
+    myOSystem.frameBuffer().television().enablePhosphor(true, blend);
   }
 
   myProperties.set(PropType::Display_PPBlend, std::to_string(blend));

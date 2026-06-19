@@ -22,7 +22,7 @@
 #include "TIA.hxx"
 #include "PNGLibrary.hxx"
 #include "PaletteHandler.hxx"
-#include "TIASurface.hxx"
+#include "Television.hxx"
 
 namespace {
   ScalingInterpolation interpolationModeFromSettings(const Settings& settings)
@@ -43,7 +43,7 @@ namespace {
 }  // namespace
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-TIASurface::TIASurface(OSystem& system)
+Television::Television(OSystem& system)
   : myOSystem{system},
     myFB{system.frameBuffer()}
 {
@@ -79,10 +79,10 @@ TIASurface::TIASurface(OSystem& system)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-TIASurface::~TIASurface() = default;
+Television::~Television() = default;
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void TIASurface::initialize(const Console& console,
+void Television::initialize(const Console& console,
                             const VideoModeHandler::Mode& mode)
 {
   myTIA = &(console.tia());
@@ -108,7 +108,7 @@ cerr << "INITIALIZE:\n"
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void TIASurface::setPalette(const PaletteArray& tia_palette,
+void Television::setPalette(const PaletteArray& tia_palette,
                             const PaletteArray& rgb_palette)
 {
   myPalette = tia_palette;
@@ -119,7 +119,7 @@ void TIASurface::setPalette(const PaletteArray& tia_palette,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const FBSurface& TIASurface::baseSurface(Common::Rect& rect) const
+const FBSurface& Television::baseSurface(Common::Rect& rect) const
 {
   const uInt32 tiaw = myTIA->width(), width = tiaw * 2, height = myTIA->height();
   rect.setBounds(0, 0, width, height);
@@ -136,13 +136,13 @@ const FBSurface& TIASurface::baseSurface(Common::Rect& rect) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt32 TIASurface::mapIndexedPixel(uInt8 indexedColor, uInt8 shift) const
+uInt32 Television::mapIndexedPixel(uInt8 indexedColor, uInt8 shift) const
 {
   return myPalette[indexedColor | shift];
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void TIASurface::setTVMode(TVMode type, bool show)
+void Television::setTVMode(TVMode type, bool show)
 {
   myTVSignal->setTVMode(type);
   enableTVEffects();
@@ -157,7 +157,7 @@ void TIASurface::setTVMode(TVMode type, bool show)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void TIASurface::changeTVEffect(int direction)
+void Television::changeTVEffect(int direction)
 {
   using ST = TVMode;
   static constexpr std::array<ST, 6> PRESETS = {
@@ -183,7 +183,7 @@ void TIASurface::changeTVEffect(int direction)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void TIASurface::selectTVAdjustable(int direction)
+void Television::selectTVAdjustable(int direction)
 {
   string text, valueText;
   Int32 value{0};
@@ -194,7 +194,7 @@ void TIASurface::selectTVAdjustable(int direction)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void TIASurface::changeTVAdjustable(int adjustable, int direction)
+void Television::changeTVAdjustable(int adjustable, int direction)
 {
   string text, valueText;
   Int32 newValue{0};
@@ -206,7 +206,7 @@ void TIASurface::changeTVAdjustable(int adjustable, int direction)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void TIASurface::changeCurrentTVAdjustable(int direction)
+void Television::changeCurrentTVAdjustable(int direction)
 {
   string text, valueText;
   Int32 newValue{0};
@@ -218,7 +218,7 @@ void TIASurface::changeCurrentTVAdjustable(int direction)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void TIASurface::changeScanlineIntensity(int direction)
+void Television::changeScanlineIntensity(int direction)
 {
   const int intensity =
       BSPF::clamp<int>(mySLineSurface->blendLevel() + direction * 2, 0, 100);
@@ -232,7 +232,7 @@ void TIASurface::changeScanlineIntensity(int direction)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-TIASurface::ScanlineMask TIASurface::scanlineMaskType(int direction)
+Television::ScanlineMask Television::scanlineMaskType(int direction)
 {
   static constexpr
   std::array<string_view, static_cast<int>(ScanlineMask::NumMasks)> Masks = {
@@ -262,7 +262,7 @@ TIASurface::ScanlineMask TIASurface::scanlineMaskType(int direction)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void TIASurface::cycleScanlineMask(int direction)
+void Television::cycleScanlineMask(int direction)
 {
   static constexpr
   std::array<string_view, static_cast<int>(ScanlineMask::NumMasks)> Names = {
@@ -282,7 +282,7 @@ void TIASurface::cycleScanlineMask(int direction)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void TIASurface::enablePhosphor(bool enable, int blend)
+void Television::enablePhosphor(bool enable, int blend)
 {
   if(myPhosphorHandler.initialize(enable, blend))
   {
@@ -293,7 +293,7 @@ void TIASurface::enablePhosphor(bool enable, int blend)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void TIASurface::createScanlineSurface()
+void Television::createScanlineSurface()
 {
   // Idea: Emulate
   // - Dot-Trio Shadow-Mask
@@ -417,7 +417,7 @@ void TIASurface::createScanlineSurface()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void TIASurface::enableTVEffects()
+void Television::enableTVEffects()
 {
   const uInt32 surfaceWidth = myTVSignal->outputWidth();
 
@@ -438,7 +438,7 @@ void TIASurface::enableTVEffects()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string TIASurface::effectsInfo() const
+string Television::effectsInfo() const
 {
   string buf;
   if(myPhosphorHandler.phosphorEnabled())
@@ -461,15 +461,20 @@ string TIASurface::effectsInfo() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void TIASurface::render(bool shade)
+void Television::render(bool shade)
 {
   const uInt32 width = myTIA->width(), height = myTIA->height();
   uInt32 *out{nullptr}, outPitch{0};
   myTiaSurface->basePtr(out, outPitch);
 
+  // Stage 2 (signal transport).  Stage 1 (colorimetry) already ran when the
+  // palette was last built (see setPalette): its adjusted palette is baked
+  // into the TVSignal engine, so per-frame rendering begins at the signal.
   myTVSignal->render(myTIA->frameBuffer(), width, height, out, outPitch,
                      myTIA->chromaPhaseInverted());
 
+  // Stage 3 (display device): phosphor persistence, then the scanline and
+  // shade overlays that follow.
   if(myPhosphorHandler.phosphorEnabled())
   {
     if(mySaveSnapFlag)
@@ -506,7 +511,7 @@ void TIASurface::render(bool shade)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void TIASurface::renderForSnapshot()
+void Television::renderForSnapshot()
 {
   const uInt32 height = myTIA->height();
   uInt32 *outPtr{nullptr}, outPitch{0};
@@ -533,7 +538,7 @@ void TIASurface::renderForSnapshot()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void TIASurface::updateSurfaceSettings()
+void Television::updateSurfaceSettings()
 {
   if(myTiaSurface != nullptr)
     myTiaSurface->setScalingInterpolation(
@@ -545,7 +550,7 @@ void TIASurface::updateSurfaceSettings()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool TIASurface::correctAspect() const
+bool Television::correctAspect() const
 {
   return myOSystem.settings().getBool("tia.correct_aspect");
 }

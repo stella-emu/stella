@@ -22,7 +22,7 @@
 #include "EditTextWidget.hxx"
 #include "FSNode.hxx"
 #include "RadioButtonWidget.hxx"
-#include "TIASurface.hxx"
+#include "Television.hxx"
 
 #include "EmulationDialog.hxx"
 

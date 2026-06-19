@@ -31,7 +31,7 @@
 #include "FSNode.hxx"
 #include "OSystem.hxx"
 #include "PNGLibrary.hxx"
-#include "TIASurface.hxx"
+#include "Television.hxx"
 #include "ProfilingRunner.hxx"
 
 #include "ThreadDebugging.hxx"

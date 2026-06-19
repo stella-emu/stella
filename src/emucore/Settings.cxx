@@ -20,7 +20,7 @@
 #include "Version.hxx"
 #include "Logger.hxx"
 #include "AudioSettings.hxx"
-#include "TIASurface.hxx"
+#include "Television.hxx"
 #include "PaletteHandler.hxx"
 #include "Joystick.hxx"
 #include "Paddles.hxx"
@@ -91,7 +91,7 @@ Settings::Settings()
   setPermanent(PhosphorHandler::SETTING_MODE, PhosphorHandler::VALUE_BYROM);
   setPermanent(PhosphorHandler::SETTING_BLEND, PhosphorHandler::DEFAULT_BLEND);
   setPermanent("tv.scanlines", "0");
-  setPermanent("tv.scanmask", TIASurface::SETTING_STANDARD);
+  setPermanent("tv.scanmask", Television::SETTING_STANDARD);
   // TV options when using 'custom' mode
   setPermanent("ntsc.sharpness", "0.0");
   setPermanent("ntsc.resolution", "0.0");
@@ -385,10 +385,10 @@ void Settings::validate()
     setValue(PhosphorHandler::SETTING_BLEND, PhosphorHandler::DEFAULT_BLEND);
 
   requireOneOf("tv.scanmask", {
-    TIASurface::SETTING_STANDARD, TIASurface::SETTING_THIN,
-    TIASurface::SETTING_PIXELS,   TIASurface::SETTING_APERTURE,
-    TIASurface::SETTING_MAME
-  }, TIASurface::SETTING_STANDARD);
+    Television::SETTING_STANDARD, Television::SETTING_THIN,
+    Television::SETTING_PIXELS,   Television::SETTING_APERTURE,
+    Television::SETTING_MAME
+  }, Television::SETTING_STANDARD);
   clampSetting("tv.filter", 0, 5, 0);
 
   requireOneOf("palette", {

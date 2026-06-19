@@ -23,7 +23,7 @@
 #include "QuadTari.hxx"
 #include "Sound.hxx"
 #include "StateManager.hxx"
-#include "TIASurface.hxx"
+#include "Television.hxx"
 
 #include "GlobalKeyHandler.hxx"
 
@@ -360,35 +360,35 @@ void GlobalKeyHandler::buildSettingMap()
     {Setting::ASPECT_RATIO,           {false, [this](int d) { myOSystem.console().toggleCorrectAspectRatio(d); }}}, // always repeating
     {Setting::VSIZE,                  {true,  [this](int d) { myOSystem.console().changeVSizeAdjust(d); }}},
     // Palette adjustables
-    {Setting::PALETTE,                {false, [this](int d) { myOSystem.frameBuffer().tiaSurface().paletteHandler().cyclePalette(d); }}},
-    {Setting::PALETTE_PHASE,          {true,  [this](int d) { myOSystem.frameBuffer().tiaSurface().paletteHandler().changeAdjustable(PaletteHandler::PHASE_SHIFT, d); }}},
-    {Setting::PALETTE_RED_SCALE,      {true,  [this](int d) { myOSystem.frameBuffer().tiaSurface().paletteHandler().changeAdjustable(PaletteHandler::RED_SCALE, d); }}},
-    {Setting::PALETTE_RED_SHIFT,      {true,  [this](int d) { myOSystem.frameBuffer().tiaSurface().paletteHandler().changeAdjustable(PaletteHandler::RED_SHIFT, d); }}},
-    {Setting::PALETTE_GREEN_SCALE,    {true,  [this](int d) { myOSystem.frameBuffer().tiaSurface().paletteHandler().changeAdjustable(PaletteHandler::GREEN_SCALE, d); }}},
-    {Setting::PALETTE_GREEN_SHIFT,    {true,  [this](int d) { myOSystem.frameBuffer().tiaSurface().paletteHandler().changeAdjustable(PaletteHandler::GREEN_SHIFT, d); }}},
-    {Setting::PALETTE_BLUE_SCALE,     {true,  [this](int d) { myOSystem.frameBuffer().tiaSurface().paletteHandler().changeAdjustable(PaletteHandler::BLUE_SCALE, d); }}},
-    {Setting::PALETTE_BLUE_SHIFT,     {true,  [this](int d) { myOSystem.frameBuffer().tiaSurface().paletteHandler().changeAdjustable(PaletteHandler::BLUE_SHIFT, d); }}},
-    {Setting::PALETTE_HUE,            {true,  [this](int d) { myOSystem.frameBuffer().tiaSurface().paletteHandler().changeAdjustable(PaletteHandler::HUE, d); }}},
-    {Setting::PALETTE_SATURATION,     {true,  [this](int d) { myOSystem.frameBuffer().tiaSurface().paletteHandler().changeAdjustable(PaletteHandler::SATURATION, d); }}},
-    {Setting::PALETTE_CONTRAST,       {true,  [this](int d) { myOSystem.frameBuffer().tiaSurface().paletteHandler().changeAdjustable(PaletteHandler::CONTRAST, d); }}},
-    {Setting::PALETTE_BRIGHTNESS,     {true,  [this](int d) { myOSystem.frameBuffer().tiaSurface().paletteHandler().changeAdjustable(PaletteHandler::BRIGHTNESS, d); }}},
-    {Setting::PALETTE_GAMMA,          {true,  [this](int d) { myOSystem.frameBuffer().tiaSurface().paletteHandler().changeAdjustable(PaletteHandler::GAMMA, d); }}},
+    {Setting::PALETTE,                {false, [this](int d) { myOSystem.frameBuffer().television().paletteHandler().cyclePalette(d); }}},
+    {Setting::PALETTE_PHASE,          {true,  [this](int d) { myOSystem.frameBuffer().television().paletteHandler().changeAdjustable(PaletteHandler::PHASE_SHIFT, d); }}},
+    {Setting::PALETTE_RED_SCALE,      {true,  [this](int d) { myOSystem.frameBuffer().television().paletteHandler().changeAdjustable(PaletteHandler::RED_SCALE, d); }}},
+    {Setting::PALETTE_RED_SHIFT,      {true,  [this](int d) { myOSystem.frameBuffer().television().paletteHandler().changeAdjustable(PaletteHandler::RED_SHIFT, d); }}},
+    {Setting::PALETTE_GREEN_SCALE,    {true,  [this](int d) { myOSystem.frameBuffer().television().paletteHandler().changeAdjustable(PaletteHandler::GREEN_SCALE, d); }}},
+    {Setting::PALETTE_GREEN_SHIFT,    {true,  [this](int d) { myOSystem.frameBuffer().television().paletteHandler().changeAdjustable(PaletteHandler::GREEN_SHIFT, d); }}},
+    {Setting::PALETTE_BLUE_SCALE,     {true,  [this](int d) { myOSystem.frameBuffer().television().paletteHandler().changeAdjustable(PaletteHandler::BLUE_SCALE, d); }}},
+    {Setting::PALETTE_BLUE_SHIFT,     {true,  [this](int d) { myOSystem.frameBuffer().television().paletteHandler().changeAdjustable(PaletteHandler::BLUE_SHIFT, d); }}},
+    {Setting::PALETTE_HUE,            {true,  [this](int d) { myOSystem.frameBuffer().television().paletteHandler().changeAdjustable(PaletteHandler::HUE, d); }}},
+    {Setting::PALETTE_SATURATION,     {true,  [this](int d) { myOSystem.frameBuffer().television().paletteHandler().changeAdjustable(PaletteHandler::SATURATION, d); }}},
+    {Setting::PALETTE_CONTRAST,       {true,  [this](int d) { myOSystem.frameBuffer().television().paletteHandler().changeAdjustable(PaletteHandler::CONTRAST, d); }}},
+    {Setting::PALETTE_BRIGHTNESS,     {true,  [this](int d) { myOSystem.frameBuffer().television().paletteHandler().changeAdjustable(PaletteHandler::BRIGHTNESS, d); }}},
+    {Setting::PALETTE_GAMMA,          {true,  [this](int d) { myOSystem.frameBuffer().television().paletteHandler().changeAdjustable(PaletteHandler::GAMMA, d); }}},
     // TV filter preset (cycles the active timing's presets)
-    {Setting::TV_PRESET,              {false, [this](int d) { myOSystem.frameBuffer().tiaSurface().changeTVEffect(d); }}},
+    {Setting::TV_PRESET,              {false, [this](int d) { myOSystem.frameBuffer().television().changeTVEffect(d); }}},
     // NTSC filter adjustables
-    {Setting::NTSC_SHARPNESS,         {true,  [this](int d) { myOSystem.frameBuffer().tiaSurface().changeTVAdjustable(static_cast<int>(NTSCSignal::Adjustables::SHARPNESS), d); }}},
-    {Setting::NTSC_RESOLUTION,        {true,  [this](int d) { myOSystem.frameBuffer().tiaSurface().changeTVAdjustable(static_cast<int>(NTSCSignal::Adjustables::RESOLUTION), d); }}},
-    {Setting::NTSC_ARTIFACTS,         {true,  [this](int d) { myOSystem.frameBuffer().tiaSurface().changeTVAdjustable(static_cast<int>(NTSCSignal::Adjustables::ARTIFACTS), d); }}},
-    {Setting::NTSC_FRINGING,          {true,  [this](int d) { myOSystem.frameBuffer().tiaSurface().changeTVAdjustable(static_cast<int>(NTSCSignal::Adjustables::FRINGING), d); }}},
-    {Setting::NTSC_BLEEDING,          {true,  [this](int d) { myOSystem.frameBuffer().tiaSurface().changeTVAdjustable(static_cast<int>(NTSCSignal::Adjustables::BLEEDING), d); }}},
+    {Setting::NTSC_SHARPNESS,         {true,  [this](int d) { myOSystem.frameBuffer().television().changeTVAdjustable(static_cast<int>(NTSCSignal::Adjustables::SHARPNESS), d); }}},
+    {Setting::NTSC_RESOLUTION,        {true,  [this](int d) { myOSystem.frameBuffer().television().changeTVAdjustable(static_cast<int>(NTSCSignal::Adjustables::RESOLUTION), d); }}},
+    {Setting::NTSC_ARTIFACTS,         {true,  [this](int d) { myOSystem.frameBuffer().television().changeTVAdjustable(static_cast<int>(NTSCSignal::Adjustables::ARTIFACTS), d); }}},
+    {Setting::NTSC_FRINGING,          {true,  [this](int d) { myOSystem.frameBuffer().television().changeTVAdjustable(static_cast<int>(NTSCSignal::Adjustables::FRINGING), d); }}},
+    {Setting::NTSC_BLEEDING,          {true,  [this](int d) { myOSystem.frameBuffer().television().changeTVAdjustable(static_cast<int>(NTSCSignal::Adjustables::BLEEDING), d); }}},
     // PAL filter adjustables
-    {Setting::PAL_SHARPNESS,          {true,  [this](int d) { myOSystem.frameBuffer().tiaSurface().changeTVAdjustable(static_cast<int>(PALSignal::Adjustables::SHARPNESS), d); }}},
-    {Setting::PAL_BLEND,              {true,  [this](int d) { myOSystem.frameBuffer().tiaSurface().changeTVAdjustable(static_cast<int>(PALSignal::Adjustables::BLEND), d); }}},
+    {Setting::PAL_SHARPNESS,          {true,  [this](int d) { myOSystem.frameBuffer().television().changeTVAdjustable(static_cast<int>(PALSignal::Adjustables::SHARPNESS), d); }}},
+    {Setting::PAL_BLEND,              {true,  [this](int d) { myOSystem.frameBuffer().television().changeTVAdjustable(static_cast<int>(PALSignal::Adjustables::BLEND), d); }}},
     // Other TV effects adjustables
     {Setting::PHOSPHOR_MODE,          {true,  [this](int d) { myOSystem.console().cyclePhosphorMode(d); }}},
     {Setting::PHOSPHOR,               {true,  [this](int d) { myOSystem.console().changePhosphor(d); }}},
-    {Setting::SCANLINES,              {true,  [this](int d) { myOSystem.frameBuffer().tiaSurface().changeScanlineIntensity(d); }}},
-    {Setting::SCANLINE_MASK,          {false, [this](int d) { myOSystem.frameBuffer().tiaSurface().cycleScanlineMask(d); }}},
+    {Setting::SCANLINES,              {true,  [this](int d) { myOSystem.frameBuffer().television().changeScanlineIntensity(d); }}},
+    {Setting::SCANLINE_MASK,          {false, [this](int d) { myOSystem.frameBuffer().television().cycleScanlineMask(d); }}},
     {Setting::INTERPOLATION,          {false, [this](int d) { myOSystem.console().toggleInter(d); }}},
     {Setting::BEZEL,                  {false, [this](int d) { myOSystem.frameBuffer().toggleBezel(d); }}},
     // *** Input group ***
@@ -440,8 +440,8 @@ void GlobalKeyHandler::buildSettingMap()
     {Setting::JITTER_REC,             {true,  [this](int d) { myOSystem.console().changeJitterRecovery(d); }}},
     // *** Following functions are not used when cycling settings, but for "direct only" hotkeys ***
     {Setting::STATE,                  {true,  [this](int d) { myOSystem.state().changeState(d); }}}, // temporary, not persisted
-    {Setting::PALETTE_ATTRIBUTE,      {true,  [this](int d) { myOSystem.frameBuffer().tiaSurface().paletteHandler().changeCurrentAdjustable(d); }}},
-    {Setting::TV_ATTRIBUTE,         {true,  [this](int d) { myOSystem.frameBuffer().tiaSurface().changeCurrentTVAdjustable(d); }}},
+    {Setting::PALETTE_ATTRIBUTE,      {true,  [this](int d) { myOSystem.frameBuffer().television().paletteHandler().changeCurrentAdjustable(d); }}},
+    {Setting::TV_ATTRIBUTE,         {true,  [this](int d) { myOSystem.frameBuffer().television().changeCurrentTVAdjustable(d); }}},
     {Setting::CHANGE_SPEED,           {true,  [this](int d) { myOSystem.console().changeSpeed(d); }}},
   };
 }

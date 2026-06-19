@@ -26,7 +26,7 @@
 #include "FBSurface.hxx"
 #include "FSNode.hxx"
 #include "Props.hxx"
-#include "TIASurface.hxx"
+#include "Television.hxx"
 #include "Version.hxx"
 #include "PNGLibrary.hxx"
 
@@ -406,7 +406,7 @@ void PNGLibrary::takeSnapshot(uInt32 number)
   VarList::push_back(metaData, "ROM MD5",
                      myOSystem.console().properties().get(PropType::Cart_MD5));
   VarList::push_back(metaData, "TV Effects",
-                     myOSystem.frameBuffer().tiaSurface().effectsInfo());
+                     myOSystem.frameBuffer().television().effectsInfo());
 
   // Now create a PNG snapshot
   const bool autoCrop = myOSystem.settings().getBool("sscrop");
@@ -417,7 +417,7 @@ void PNGLibrary::takeSnapshot(uInt32 number)
     {
       Common::Rect rect;
       const FBSurface& surface =
-        myOSystem.frameBuffer().tiaSurface().baseSurface(rect);
+        myOSystem.frameBuffer().television().baseSurface(rect);
       if(autoCrop)
         rect = croppedRect(surface, rect, number);
       saveImage(filename, surface, rect, metaData);
@@ -429,7 +429,7 @@ void PNGLibrary::takeSnapshot(uInt32 number)
   }
   else
   {
-    myOSystem.frameBuffer().tiaSurface().renderForSnapshot();
+    myOSystem.frameBuffer().television().renderForSnapshot();
 
     try
     {

@@ -26,7 +26,7 @@
 #include "Settings.hxx"
 
 #include "ThreadDebugging.hxx"
-#include "TIASurface.hxx"
+#include "Television.hxx"
 #include "FBSurfaceSDL.hxx"
 #include "FBBackendSDL.hxx"
 
@@ -658,7 +658,7 @@ const FBSurface& FBBackendSDL::compositedSurface()
   // the averaged pixel values go through this conversion and come back darker.
   // Apply sRGB gamma correction to restore correct brightness.
   // NOTE: this correction may need revisiting for other renderers (e.g. Metal).
-  if(fb.tiaSurface().phosphorEnabled())
+  if(fb.television().phosphorEnabled())
   {
     static const std::array<uInt8, 256> gammaLUT = [] {
       std::array<uInt8, 256> lut{};
