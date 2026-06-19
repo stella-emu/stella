@@ -412,36 +412,41 @@ class PALSignal
     // ── Phase-settling model constants (ColourLoss::PhaseSettling) ─────────
     //
     // When the colour-killer trips, the PhaseSettling model keeps chroma but
-    // gives the line a demodulation phase error  φ(y) = ±θ0·exp(−y/τ)  that is
-    // large at the top of the field and decays down the screen (applied in
-    // render()).
+    // rotates the line's demodulated U/V by  φ(y) = ±θ0·exp(−y/τ)  — large at
+    // the top of the field, decaying down the screen (applied in render()).
+    // The result is a wrong hue at the top that settles to correct lower down,
+    // the band alternating each field — matching the "settling" class of real
+    // PAL CRTs, as opposed to the whole-frame greyscale of SaturationLoss.
     //
-    // GROUNDED:
-    //   • θ0 = 180°.  An odd-line field is fundamentally a 180° disruption of
-    //     the PAL line alternation — the same physical fact that drives the
-    //     colour-killer above.  So the field-start phase error is anchored to
-    //     that 180°, not hand-picked; the wrong hue follows from it.
-    //   • exp(−y/τ) is the textbook response of a single-pole subcarrier-
-    //     recovery (APC/PLL) loop settling after the field-start disturbance
-    //     (τ = loop time constant in line periods).
-    //   • Applied common-mode (same on adjacent lines), so the PAL 1-line comb
-    //     passes it through as a hue rotation with magnitude preserved
-    //     (standard PAL-D theory) — i.e. a wrong *hue* that settles, not the
-    //     desaturation of the SaturationLoss model.  The ± sign follows field
-    //     parity, so the wrong-hue band alternates each field.
+    // THIS IS AN EFFECTIVE MODEL, NOT THE REAL MECHANISM.  Per the source below,
+    // the actual cause of wrong-hue-that-settles is the receiver's PAL-switch
+    // ("ident") bistable: thrown into the wrong phase at field start and
+    // re-locking over ~10 lines (slightly underdamped), it decodes V with the
+    // wrong sign for the first lines — a hue *reflection* that resolves as it
+    // locks.  A subcarrier reference-phase error does NOT cause a hue shift at
+    // all; the PAL delay-line comb turns it into a desaturation by cos θ.  So a
+    // faithful model would re-lock a simulated bistable driving the per-line
+    // V-sign, not rotate U/V — that is the bottom-up decoder, a separate, larger
+    // effort.  We rotate U/V here only because it reproduces the *look* cheaply
+    // on top of the existing per-colour kernels.
     //
-    // PHENOMENOLOGICAL: φ(y) is injected straight onto the demodulator — no
-    // simulated burst or loop — the trigger is the existing odd/even colour-
-    // killer state (not a measured burst phase), the *common-mode* choice and
-    // τ model a particular receiver class rather than a specific circuit, and
-    // a 180° rotation yields the complementary hue which need not be the exact
-    // shade seen on any one CRT.  A truly emergent version (a burst-locked
-    // decoder) is a separate, larger effort.  (θ0 may become a user adjustable
-    // later; for now it is fixed at the grounded value.)
+    // GROUNDED: a first-order loop settling after a field-start disturbance is
+    // an exp(−y/τ); the disturbance recurs every malformed field and its sign
+    // flips with field parity.  PHENOMENOLOGICAL: rotating the separated U/V
+    // (the real effect is a V-sign/ident error, not a carrier rotation), and
+    // the values of θ0 and τ — tuned to reference CRT captures, not derived.
+    // (θ0/τ may become user adjustables later.)
+    //
+    // Source: BBC RD 1986/2, C.K.P. Clarke, "Colour encoding and decoding
+    // techniques for line-locked sampled PAL and NTSC television signals" (BBC
+    // Research Dept., Mar 1986), downloads.bbc.co.uk/rd/pubs/reports/1986-02.pdf
+    //   - reference-phase error → cos θ desaturation: §4.3, p.21 (Fig 27)
+    //   - PAL-switch bistable, ~10-line underdamped re-lock: §4.3.2, Fig 32(a),
+    //     p.24
     //
     // θ0 is in degrees (converted to radians at use, as PaletteHandler does);
     // τ is in scanlines, setting the height of the wrong-hue band.
-    static constexpr float SETTLE_THETA0 = 180.F;  // degrees (PAL alternation)
+    static constexpr float SETTLE_THETA0 = 180.F;  // degrees
     static constexpr float SETTLE_TAU    = 30.F;   // scanlines
 
     // ── Active and custom setups ──────────────────────────────────────────

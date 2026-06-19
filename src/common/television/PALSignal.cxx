@@ -571,12 +571,11 @@ void PALSignal::render(const uInt8* tiaSrc, uInt32 srcWidth, uInt32 srcHeight,
     else
     {
       // PhaseSettling model: rotate this line's demodulated chroma by the
-      // common-mode settling phase error  φ(y) = settleRad·exp(−y/τ)  before
-      // the comb (no-op unless the killer has tripped — see `settling`).
-      // GROUNDED: exp() is a first-order recovery-loop settling from the 180°
-      // odd-field alternation event, and the comb turns a *common-mode*
-      // rotation into a settling hue error (PAL-D theory).  PHENOMENOLOGICAL:
-      // φ is injected here, not produced by a simulated burst/loop.  The
+      // settling angle  φ(y) = settleRad·exp(−y/τ)  before the comb (no-op
+      // unless the killer has tripped — see `settling`).  This is an EFFECTIVE
+      // model: the wrong-hue-that-settles really comes from the receiver's
+      // PAL-switch bistable re-locking, not a chroma rotation (see the full
+      // explanation and citation at SETTLE_THETA0 in PALSignal.hxx).  The
       // rotated chroma feeds the delay line, so the comb stays consistent.
       if(settling)
       {
