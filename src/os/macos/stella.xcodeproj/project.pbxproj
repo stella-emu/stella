@@ -2089,11 +2089,11 @@
 				DCDDEAC21F5DBF0400C67366 /* StateManager.cxx */,
 				DC5C768E14C26F7C0031EBC7 /* StellaKeys.hxx */,
 				DC74D6A0138D4D7E00F05C5C /* StringParser.hxx */,
+				DCC467EA14FBEC9600E15508 /* television */,
 				DC6F394C21B897F300897AD8 /* ThreadDebugging.hxx */,
 				DC6F394B21B897F300897AD8 /* ThreadDebugging.cxx */,
 				DC30924B212F74930020DAD0 /* TimerManager.hxx */,
 				DC30924A212F74930020DAD0 /* TimerManager.cxx */,
-				DCC467EA14FBEC9600E15508 /* television */,
 				DC7A24D4173B1CF600B20FE9 /* Variant.hxx */,
 				DCF490791A0ECE5B00A67AA9 /* Vec.hxx */,
 				DCF467BC0F9399F500B25D7A /* Version.hxx */,
@@ -2657,18 +2657,18 @@
 				DCAE61DC2FCDE63700D23847 /* AtariNTSC.cxx */,
 				DCAE61DD2FCDE63700D23847 /* NTSCSignal.hxx */,
 				DCAE61DE2FCDE63700D23847 /* NTSCSignal.cxx */,
+				DC3C9BC42469C8F700CF2D47 /* PaletteHandler.hxx */,
+				DC3C9BC32469C8F700CF2D47 /* PaletteHandler.cxx */,
 				DCAE61DF2FCDE63700D23847 /* PALSignal.hxx */,
 				DCAE61E02FCDE63700D23847 /* PALSignal.cxx */,
+				DCA233AF23B583FE0032ABF3 /* PhosphorHandler.hxx */,
+				DCA233AE23B583FE0032ABF3 /* PhosphorHandler.cxx */,
+				DC2AADAD194F389C0026C7A4 /* Television.hxx */,
+				DC2AADAC194F389C0026C7A4 /* Television.cxx */,
 				DCAE61E12FCDE63700D23847 /* TVAdjustable.hxx */,
 				DCAE61E22FCDE63700D23847 /* TVMode.hxx */,
 				DCAE61E32FCDE63700D23847 /* TVSignal.hxx */,
 				DCAE61E42FCDE63700D23847 /* TVSignal.cxx */,
-				DC2AADAD194F389C0026C7A4 /* Television.hxx */,
-				DC2AADAC194F389C0026C7A4 /* Television.cxx */,
-				DC3C9BC42469C8F700CF2D47 /* PaletteHandler.hxx */,
-				DC3C9BC32469C8F700CF2D47 /* PaletteHandler.cxx */,
-				DCA233AF23B583FE0032ABF3 /* PhosphorHandler.hxx */,
-				DCA233AE23B583FE0032ABF3 /* PhosphorHandler.cxx */,
 			);
 			path = television;
 			sourceTree = "<group>";
@@ -3407,21 +3407,6 @@
 			shellPath = /bin/sh;
 			shellScript = "m4 ../../emucore/M6502.m4 > M6502.ins\n";
 		};
-		B0117D00B0117D00B0117D00 /* Generate Build Number */ = {
-			isa = PBXShellScriptBuildPhase;
-			alwaysOutOfDate = 1;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "Generate Build Number";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "sh ../../tools/genbuildnum.sh\n";
-		};
 		51DDA2DF83A64ACA883BBB18 /* Strip Quarantine */ = {
 			isa = PBXShellScriptBuildPhase;
 			alwaysOutOfDate = 1;
@@ -3436,6 +3421,21 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "xattr -dr com.apple.quarantine \"${SRCROOT}/Frameworks/SDL3.xcframework\"\n";
+		};
+		B0117D00B0117D00B0117D00 /* Generate Build Number */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Generate Build Number";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "sh ../../tools/genbuildnum.sh\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -3573,7 +3573,6 @@
 				2D9174F309BA90380026E9FF /* StringListWidget.cxx in Sources */,
 				2D9174F409BA90380026E9FF /* CommandDialog.cxx in Sources */,
 				E06508C12272447200B341AC /* KeyValueRepositoryConfigfile.cxx in Sources */,
-				DC2B85E71EF5EF2300379EB9 /* AtariNTSC.cxx in Sources */,
 				DCB1502B2A814E6C0036F9EC /* Cart03E0.cxx in Sources */,
 				2D9174F709BA90380026E9FF /* CpuWidget.cxx in Sources */,
 				DC0EF94F2C59578C0007F3B5 /* VcsLib.cxx in Sources */,
