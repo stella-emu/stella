@@ -30,23 +30,29 @@
   standard is set by setTiming(); the TVMode controls which signal path
   within that standard is emulated (composite, S-Video, RGB, etc.).
 
-  NTSC: Delegates to NTSCSignal, which wraps the Blargg NTSC engine.
-  TVMode::None bypasses the engine and performs a plain palette lookup.
+  Across all three standards TVMode::None is the raw TIA palette: no signal
+  model runs, so it is a faithful capture source for external processing.
+  The remaining modes are ordered by how many channels the signal carries
+  and therefore how few artifacts it shows (RGB → S-Video → Composite).
 
-  PAL: Emulates the chroma delay-line present in PAL televisions.  The
-  delay line averages U and V from the current and previous scanlines.
-  When the total scanline count is odd the V-axis is phase-inverted,
-  causing V to cancel rather than reinforce for same-colour lines (the
-  classic "colour-loss" greyscale effect).  TVMode::RGB and TVMode::SVideo
-  bypass the chroma decoder entirely, so the delay line is skipped for
-  those modes.
+  NTSC: Delegates to NTSCSignal, which wraps the Blargg NTSC engine.  The
+  RGB / S-Video / Composite modes map to Blargg setups of decreasing
+  cleanliness; Custom is a user-tweaked setup.
+
+  PAL: Delegates to PALSignal, an analogue encode/decode model.  RGB carries
+  chroma at full bandwidth with no 1-line comb (the crispest result);
+  S-Video band-limits the chroma but still skips the comb; Composite/Custom
+  run the full comb, where an odd total scanline count phase-inverts the
+  V-axis and trips the colour-killer (the classic "colour-loss" effect).
 
   SECAM: Emulates the chroma delay-line present in SECAM televisions.  The
-  signal alternates between transmitting Db (even lines) and Dr (odd lines);
-  the delay line holds the missing component from the previous line so the
-  decoder always has both.  Mixing two colours across adjacent scanlines
-  produces blended colours beyond the 8-entry SECAM palette.  The delay
-  line is always active except when TVMode::None is selected.
+  signal alternates transmitting Db (even lines) and Dr (odd lines), so the
+  delay line — which holds the missing component from the previous line — is
+  the decoder itself: it is what recovers a full colour at all, and blending
+  two colours across adjacent scanlines produces colours beyond the 8-entry
+  SECAM palette.  Every colour mode (RGB, S-Video, Composite) therefore runs
+  the delay line; SECAM models neither chroma bandwidth nor Y/C separation,
+  so they render identically and differ only from None.
 */
 class TVSignal
 {
@@ -103,8 +109,8 @@ class TVSignal
                 uInt32* rgbDst, uInt32 dstPitch, bool phaseInverted);
 
   private:
-    // Plain palette lookup with no signal processing (the TVMode::None
-    // paths, plus TVMode::RGB for PAL)
+    // Plain palette lookup with no signal processing (the TVMode::None path
+    // for every standard — the raw capture source)
     void renderPassthrough(const uInt8* tiaSrc, uInt32 srcWidth,
                            uInt32 srcHeight, uInt32* rgbDst,
                            uInt32 dstPitch) const;

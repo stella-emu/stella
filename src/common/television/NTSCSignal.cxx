@@ -28,7 +28,6 @@ namespace {
     {
       case TVMode::RGB:       return AtariNTSC::TV_RGB;
       case TVMode::SVideo:    return AtariNTSC::TV_SVideo;
-      case TVMode::Bad:       return AtariNTSC::TV_Bad;
       case TVMode::Composite:
       default:                return AtariNTSC::TV_Composite;
     }

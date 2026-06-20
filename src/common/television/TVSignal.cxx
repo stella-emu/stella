@@ -89,7 +89,6 @@ string_view TVSignal::getPreset() const
     case TVMode::RGB:       return "RGB";
     case TVMode::SVideo:    return "S-VIDEO";
     case TVMode::Composite: return "COMPOSITE";
-    case TVMode::Bad:       return "BAD ADJUST";
     case TVMode::Custom:    return "CUSTOM";
     default:                return "Disabled";
   }
@@ -98,12 +97,12 @@ string_view TVSignal::getPreset() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt32 TVSignal::outputWidth() const
 {
-  // NTSC composite/S-Video and PAL composite/S-Video render to a wider,
-  // oversampled grid; None and (for PAL) RGB pass through at native width.
+  // For NTSC and PAL, every engine mode (RGB, S-Video, Composite, Custom)
+  // renders to the wider, oversampled grid; only None passes through at the
+  // native TIA width.  SECAM has no oversampled engine, so it is always native.
   if(myTiming == ConsoleTiming::ntsc && myTVMode != TVMode::None)
     return NTSCSignal::outWidth(TIAConstants::frameBufferWidth);
-  if(myTiming == ConsoleTiming::pal &&
-     myTVMode != TVMode::None && myTVMode != TVMode::RGB)
+  if(myTiming == ConsoleTiming::pal && myTVMode != TVMode::None)
     return PALSignal::outWidth(TIAConstants::frameBufferWidth);
   return TIAConstants::frameBufferWidth;
 }
@@ -220,15 +219,18 @@ void TVSignal::renderNTSC(const uInt8* tiaSrc, uInt32 srcWidth, uInt32 srcHeight
 void TVSignal::renderPAL(const uInt8* tiaSrc, uInt32 srcWidth, uInt32 srcHeight,
                           uInt32* rgbDst, uInt32 dstPitch, bool phaseInverted)
 {
-  // None, RGB: raw palette lookup with no signal processing.
-  if(myTVMode == TVMode::None || myTVMode == TVMode::RGB)
+  // None: raw palette lookup with no signal processing (capture source).
+  if(myTVMode == TVMode::None)
   {
     renderPassthrough(tiaSrc, srcWidth, srcHeight, rgbDst, dstPitch);
     return;
   }
 
-  // Composite, Bad, Custom: full PALSignal composite pipeline.  phaseInverted
-  // (an odd scanline count) drives both V-phase alternation and PAL colour loss.
+  // RGB, S-Video, Composite, Custom all run the PAL engine; the active mode
+  // selects how much of the chroma chain runs (RGB = full-bandwidth, no comb;
+  // S-Video = band-limited, no comb; Composite/Custom = full comb).  Only the
+  // composite modes can lose colour, so phaseInverted (an odd scanline count)
+  // drives both the per-line V-phase alternation and the colour-killer there.
   myPALSignal.render(tiaSrc, srcWidth, srcHeight, rgbDst, dstPitch, phaseInverted);
 }
 
@@ -236,6 +238,13 @@ void TVSignal::renderPAL(const uInt8* tiaSrc, uInt32 srcWidth, uInt32 srcHeight,
 void TVSignal::renderSECAM(const uInt8* tiaSrc, uInt32 srcWidth, uInt32 srcHeight,
                             uInt32* rgbDst, uInt32 dstPitch)
 {
+  // Only None is the raw palette (the capture source).  Every colour mode
+  // (RGB, S-Video, Composite, Custom) runs the sequential delay line below:
+  // SECAM transmits only Db or Dr per line, so the delay line is the decoder
+  // itself — it is what recovers a full colour at all, blending adjacent
+  // colours as a side effect.  SECAM models neither chroma bandwidth nor Y/C
+  // separation, so the three colour connections render identically here; they
+  // differ only from None.
   if(myTVMode == TVMode::None)
   {
     renderPassthrough(tiaSrc, srcWidth, srcHeight, rgbDst, dstPitch);

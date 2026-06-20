@@ -172,10 +172,13 @@ class PALSignal
       uInt32 sharpness{0}, blend{0};
     };
 
-    // Preset Setup values for each TVMode
-    static constexpr Setup TV_Composite{  0.2F, 0.F, 0.F, 0.F, 0.F  };
+    // Preset Setup values for each TVMode, cleanest first.  RGB and S-Video
+    // carry chroma off the luma wire so they never comb (blend is unused);
+    // RGB additionally carries chroma at full bandwidth, so it is the crispest
+    // and takes the strongest aperture peaking.
+    static constexpr Setup TV_RGB      {  0.4F, 0.F, 0.F, 0.F, 0.F  };
     static constexpr Setup TV_SVideo   {  0.3F, 0.F, 0.F, 0.F, 0.F  };
-    static constexpr Setup TV_Bad      { -0.3F, 0.F, 0.F, 0.F, 0.6F };
+    static constexpr Setup TV_Composite{  0.2F, 0.F, 0.F, 0.F, 0.F  };
 
     // PAL colour-loss model: how a receiver reacts once a sustained malformed
     // (odd-clock) field trips the colour-killer in render().  Real PAL CRTs are
@@ -232,12 +235,12 @@ class PALSignal
     //              Drives PAL V-phase alternation on all modes (per-line, from
     //              the real parity).  Also feeds the hysteretic colour-killer
     //              that triggers PAL colour loss on composite modes (Composite,
-    //              Bad, Custom): a sustained odd count gives an inconsistent
+    //              Custom): a sustained odd count gives an inconsistent
     //              PAL field/burst sequence, so a real set's colour-killer cuts
     //              chroma and the frame is rendered as luma-only greyscale.  A
     //              single malformed frame is ignored (see COLOUR_KILLER_FRAMES).
-    //              S-Video is immune (Y and C are carried on separate wires; no
-    //              colour-killer mechanism).
+    //              S-Video and RGB are immune (chroma is carried off the luma
+    //              wire, so there is no colour-killer mechanism).
     void render(const uInt8* tiaSrc, uInt32 srcWidth, uInt32 srcHeight,
                 uInt32* rgbDst, uInt32 dstPitch, bool phaseInverted);
 
@@ -359,12 +362,17 @@ class PALSignal
     std::array<std::array<std::array<DecodeCoeff, KERNEL_WIDTH>, 2>, 4> myCoeff{};
     // S-Video coefficients (no subcarrier → phase/vSign independent)
     std::array<DecodeCoeff, KERNEL_WIDTH> mySVCoeff{};
+    // RGB coefficients: S-Video luma (FIR + aperture) but full-bandwidth
+    // chroma (separate wires, no chroma FIR); phase/vSign independent.
+    std::array<DecodeCoeff, KERNEL_WIDTH> myRGBCoeff{};
 
     // Per-colour expanded kernels, rebuilt on any palette or coeff change.
     // Composite: [colour][columnPhase 0..3][vSign 0..1]
     std::array<std::array<std::array<Kernel, 2>, 4>, 256> myKernel{};
     // S-Video: [colour]
     std::array<Kernel, 256> mySVKernel{};
+    // RGB: [colour]
+    std::array<Kernel, 256> myRGBKernel{};
 
     // ── Scratch buffers (used only while building coefficients) ───────────
 
@@ -388,8 +396,13 @@ class PALSignal
     static constexpr uInt32 GAMMA_LUT_SIZE = 1024;
     std::array<uInt8, GAMMA_LUT_SIZE> myGammaLUT{};
 
-    // True when the active mode bypasses composite encoding (S-Video)
-    bool mySVideo{false};
+    // Which signal path the active mode renders.  Composite runs the full
+    // subcarrier encode/decode + 1-line comb.  S-Video and RGB skip the comb
+    // (chroma is carried off the luma wire), differing only in chroma
+    // bandwidth: S-Video band-limits it through the chroma FIR; RGB carries it
+    // on its own wires at full bandwidth.
+    enum class Path: uInt8 { Composite, SVideo, RGB };
+    Path myPath{Path::Composite};
 
     // ── Colour-killer hysteresis ──────────────────────────────────────────
     //

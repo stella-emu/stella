@@ -20,16 +20,19 @@
 
 #include "bspf.hxx"
 
-// The type of TV video connection being emulated.
-// Numeric values are stored in the "tv.filter" setting — do not reorder.
+// The type of TV video connection being emulated, ordered by how many
+// separate channels the signal carries and therefore how few artifacts it
+// shows: None is the raw TIA palette (no signal model at all, for external
+// capture); RGB (3 channels) is the cleanest engine output; S-Video (2)
+// band-limits the colour; Composite (1) combines everything and shows all
+// artifacts.  Custom is a user-tweaked composite.
 enum class TVMode: uInt8
 {
   None      = 0,
   RGB       = 1,
   SVideo    = 2,
   Composite = 3,
-  Bad       = 4,
-  Custom    = 5
+  Custom    = 4
 };
 
 #endif  // TV_MODE_HXX

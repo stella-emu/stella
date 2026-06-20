@@ -621,7 +621,6 @@ static void update_variables(bool init = false)
     else if(!strcmp(var.value, "composite"))      value = TVMode::Composite;
     else if(!strcmp(var.value, "s-video"))        value = TVMode::SVideo;
     else if(!strcmp(var.value, "rgb"))            value = TVMode::RGB;
-    else if(!strcmp(var.value, "badly adjusted")) value = TVMode::Bad;
 
     if(stella_settings.video_filter != value)
     {
@@ -1051,7 +1050,6 @@ void retro_set_environment(retro_environment_t cb)
         { "composite", NULL },
         { "s-video", NULL },
         { "rgb", NULL },
-        { "badly adjusted", NULL },
         { NULL, NULL },
       },
       "disabled",
@@ -1641,7 +1639,7 @@ void retro_set_environment(retro_environment_t cb)
     // Adding more variables and rearranging them is safe.
     { "stella_console", "Console display; auto|ntsc|pal|secam|ntsc50|pal60|secam60" },
     { "stella_palette", "Palette colors; standard|z26|user|custom" },
-    { "stella_filter", "TV effects; disabled|composite|s-video|rgb|badly adjusted" },
+    { "stella_filter", "TV effects; disabled|composite|s-video|rgb" },
     { "stella_crop_hoverscan", "Crop horizontal overscan; disabled|enabled" },
     { "stella_crop_voverscan", "Crop vertical overscan; 0|1|2|3|4|5|6|7|8|9|10|11|12|13|14|15|16|17|18|19|20|21|22|23|24" },
     { "stella_ntsc_aspect", "NTSC aspect %; par|100|101|102|103|104|105|106|107|108|109|110|111|112|113|114|115|116|117|118|119|120|121|122|123|124|125|75|76|77|78|79|80|81|82|83|84|85|86|87|88|89|90|91|92|93|94|95|96|97|98|99" },

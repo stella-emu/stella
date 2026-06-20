@@ -356,7 +356,6 @@ NLOHMANN_JSON_SERIALIZE_ENUM(Event::Type, {
   {Event::VidmodeRGB, "VidmodeRGB"},
   {Event::VidmodeSVideo, "VidmodeSVideo"},
   {Event::VidModeComposite, "VidModeComposite"},
-  {Event::VidModeBad, "VidModeBad"},
   {Event::VidModeCustom, "VidModeCustom"},
   {Event::PreviousVideoMode, "PreviousVideoMode"},
   {Event::NextVideoMode, "NextVideoMode"},

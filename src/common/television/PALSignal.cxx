@@ -27,8 +27,8 @@ namespace {
   {
     switch(mode)
     {
+      case TVMode::RGB:       return PALSignal::TV_RGB;
       case TVMode::SVideo:    return PALSignal::TV_SVideo;
-      case TVMode::Bad:       return PALSignal::TV_Bad;
       case TVMode::Custom:    return customSetup;
       case TVMode::Composite:
       default:                return PALSignal::TV_Composite;
@@ -95,8 +95,10 @@ PALSignal::PALSignal()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PALSignal::initialize(TVMode mode)
 {
-  mySVideo = (mode == TVMode::SVideo);
-  mySetup  = setupFor(mode, myCustomSetup);
+  myPath  = (mode == TVMode::RGB)    ? Path::RGB
+          : (mode == TVMode::SVideo) ? Path::SVideo
+          :                            Path::Composite;
+  mySetup = setupFor(mode, myCustomSetup);
 
   // Reset the colour-killer to its powered-up (colour-active) state.  This is
   // the receiver-reset chokepoint: Television::initialize() routes here via
@@ -115,8 +117,8 @@ void PALSignal::initialize(TVMode mode)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PALSignal::reinitializeCustom()
 {
-  mySVideo = false;
-  mySetup  = myCustomSetup;
+  myPath  = Path::Composite;
+  mySetup = myCustomSetup;
   applySetup();
 }
 
@@ -384,6 +386,34 @@ void PALSignal::buildCoeff()
       mySVCoeff[t].vv = myUBuf[idx];   // V reuses the chroma kernel
     }
   }
+
+  // RGB coefficients (3 separate channels, no subcarrier).  Luma matches
+  // S-Video (baseband FIR + aperture); chroma rides its own wires at full
+  // bandwidth, so it bypasses the chroma FIR and stays a unit box — the
+  // crispest colour and the source of RGB's "least artifacts" character.
+  {
+    constexpr int xref = 80;
+    constexpr uInt32 base = static_cast<uInt32>(xref) * SAMPLES_PER_CLOCK;
+
+    // Unit luma impulse through the luma FIR + aperture (same as S-Video)
+    std::ranges::fill(myYBuf, 0.F);
+    for(uInt32 s = 0; s < SAMPLES_PER_CLOCK; ++s) myYBuf[base + s] = 1.F;
+    applyLumaFilter(myYBuf.data(), vis);
+
+    // Unit chroma impulse with NO FIR: full-bandwidth, so it stays a box
+    std::ranges::fill(myUBuf, 0.F);
+    for(uInt32 s = 0; s < SAMPLES_PER_CLOCK; ++s) myUBuf[base + s] = 1.F;
+
+    constexpr int capBase = xref * static_cast<int>(SAMPLES_PER_CLOCK) - KERNEL_LEFT;
+    for(int t = 0; t < KERNEL_WIDTH; ++t)
+    {
+      const auto idx = static_cast<uInt32>(capBase + t);
+      myRGBCoeff[t] = DecodeCoeff{};
+      myRGBCoeff[t].yy = myYBuf[idx];   // luma channel
+      myRGBCoeff[t].uu = myUBuf[idx];   // U full-bandwidth
+      myRGBCoeff[t].vv = myUBuf[idx];   // V full-bandwidth
+    }
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -416,6 +446,14 @@ void PALSignal::expandKernels()
       sv.y[d] = mySVCoeff[d].yy * Y;
       sv.u[d] = mySVCoeff[d].uu * U;
       sv.v[d] = mySVCoeff[d].vv * V;
+    }
+
+    Kernel& rgb = myRGBKernel[c];
+    for(int d = 0; d < KERNEL_WIDTH; ++d)
+    {
+      rgb.y[d] = myRGBCoeff[d].yy * Y;
+      rgb.u[d] = myRGBCoeff[d].uu * U;
+      rgb.v[d] = myRGBCoeff[d].vv * V;
     }
   }
 }
@@ -487,16 +525,17 @@ void PALSignal::render(const uInt8* tiaSrc, uInt32 srcWidth, uInt32 srcHeight,
     myKillerRun = 0;
   const bool   colourKilled = myColourKilled;
 
-  const bool   svideo = mySVideo;
-  // S-Video has separate Y/C wires, so there is no 1-line comb (blend = 0).
-  const float  blend  = svideo ? 0.F : (mySetup.blend * 0.5F + 0.5F);
+  const bool   composite = (myPath == Path::Composite);
+  // S-Video and RGB carry chroma off the luma wire, so there is no 1-line
+  // comb (blend = 0); only Composite combs against the previous scanline.
+  const float  blend  = composite ? (mySetup.blend * 0.5F + 0.5F) : 0.F;
   const uInt32 outW   = outWidth(srcWidth);   // oversampled output width
 
   // PALSwitch colour-loss model: when the killer has tripped on a composite
   // mode, keep chroma but negate V (reflection about the U axis) on the lines
   // where the simulated PAL-switch bistable is mis-locked — the wrong V-switch
   // sign.  See the PALSWITCH_* block in PALSignal.hxx.
-  const bool   palSwitch = colourKilled && !svideo &&
+  const bool   palSwitch = colourKilled && composite &&
                            myColourLoss == ColourLoss::PALSwitch;
 
   // PALSwitch: the switch decodes V with the wrong sign down to a re-lock
@@ -513,9 +552,9 @@ void PALSignal::render(const uInt8* tiaSrc, uInt32 srcWidth, uInt32 srcHeight,
   }
 
   // Reset the 1-line comb delay at the start of each frame; the first
-  // scanline blends against a virtual "black" previous line.  (S-Video has
-  // no comb, so the delay line is never read.)
-  if(!svideo)
+  // scanline blends against a virtual "black" previous line.  (S-Video and
+  // RGB have no comb, so the delay line is never read.)
+  if(composite)
   {
     std::fill(myPrevU.begin(), myPrevU.begin() + outW, 0.F);
     std::fill(myPrevV.begin(), myPrevV.begin() + outW, 0.F);
@@ -540,8 +579,9 @@ void PALSignal::render(const uInt8* tiaSrc, uInt32 srcWidth, uInt32 srcHeight,
     // A clock at input column x lands on output samples starting at x·5.
     for(uInt32 x = 0; x < srcWidth; ++x)
     {
-      const Kernel& k = svideo ? mySVKernel[src[x]]
-                               : myKernel[src[x]][x & 3U][vi];
+      const Kernel& k = composite ? myKernel[src[x]][x & 3U][vi]
+                      : (myPath == Path::RGB) ? myRGBKernel[src[x]]
+                      :                         mySVKernel[src[x]];
 
       // First output sample this kernel touches, then clamp the tap range
       // to the visible region (zero-padded output at the line edges).
@@ -563,19 +603,20 @@ void PALSignal::render(const uInt8* tiaSrc, uInt32 srcWidth, uInt32 srcHeight,
     // applies the PAL 1-line comb blend with the previous line's chroma.
     // (The previous line was encoded with the opposite V-sign, so adding its
     // own-sign filtered chroma reinforces U and cancels chroma noise on V.)
-    if(colourKilled && !svideo && myColourLoss == ColourLoss::SaturationLoss)
+    if(colourKilled && composite && myColourLoss == ColourLoss::SaturationLoss)
     {
       // SaturationLoss model (composite modes only): the set's colour-killer
-      // has cut chroma, so emit luma only.  S-Video is immune because Y and C
-      // are carried on separate wires with no phase dependency.  The subcarrier
-      // residual still present in the luma channel shows as faint dot-crawl in
-      // the greyscale image, as on real hardware.
+      // has cut chroma, so emit luma only.  S-Video and RGB are immune because
+      // chroma is carried off the luma wire with no phase dependency.  The
+      // subcarrier residual still present in the luma channel shows as faint
+      // dot-crawl in the greyscale image, as on real hardware.
       for(uInt32 j = 0; j < outW; ++j)
         dst[j] = toRGB(myAccY[j], 0.F, 0.F);
     }
-    else if(svideo)
+    else if(!composite)
     {
-      // No comb: blend = 0 and prev aliases acc, so only this line is read
+      // S-Video / RGB: no comb (blend = 0, prev aliases acc), so only this
+      // line is read; the per-colour kernel already set the chroma bandwidth.
       convertLine(myAccY.data(), myAccU.data(), myAccV.data(),
                   myAccU.data(), myAccV.data(), 0.F, outW, dst);
     }

@@ -133,7 +133,7 @@ class Event
       VCenterDecrease, VCenterIncrease, VSizeAdjustDecrease, VSizeAdjustIncrease,
       OverscanDecrease, OverscanIncrease,
 
-      VidmodeStd, VidmodeRGB, VidmodeSVideo, VidModeComposite, VidModeBad, VidModeCustom,
+      VidmodeStd, VidmodeRGB, VidmodeSVideo, VidModeComposite, VidModeCustom,
       PreviousVideoMode, NextVideoMode,
       PreviousAttribute, NextAttribute, DecreaseAttribute, IncreaseAttribute,
       ScanlinesDecrease, ScanlinesIncrease,
@@ -215,7 +215,7 @@ class Event
     };
 
     // Event list version, update only if the id of existing(!) event types changed
-    static constexpr Int32 VERSION = 8;
+    static constexpr Int32 VERSION = 9;
 
     using EventSet = std::unordered_set<Event::Type>;
 

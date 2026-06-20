@@ -135,7 +135,6 @@ void StellaSettingsDialog::addVideoOptions(WidgetArray& wid, int xpos, int& ypos
   VarList::push_back(items, "RGB", static_cast<uInt32>(TVMode::RGB));
   VarList::push_back(items, "S-Video", static_cast<uInt32>(TVMode::SVideo));
   VarList::push_back(items, "Composite", static_cast<uInt32>(TVMode::Composite));
-  VarList::push_back(items, "Bad adjust", static_cast<uInt32>(TVMode::Bad));
   const int pwidth = _font.getStringWidth("Right bottom");
   const int lwidth = _font.getStringWidth("Scanline intensity ");
 

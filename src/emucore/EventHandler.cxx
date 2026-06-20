@@ -702,14 +702,6 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       }
       return;
 
-    case Event::VidModeBad:
-      if(pressed && !repeated)
-      {
-        myOSystem.frameBuffer().television().setTVMode(TVMode::Bad);
-        myGlobalKeyHandler->setSetting(GlobalKeyHandler::Setting::TV_PRESET);
-      }
-      return;
-
     case Event::VidModeCustom:
       if(pressed && !repeated)
       {
@@ -2928,7 +2920,6 @@ EventHandler::EmulActionList EventHandler::ourEmulActionList = { {
   { Event::VidmodeRGB,              "Select 'RGB' preset"                   },
   { Event::VidmodeSVideo,           "Select 'S-Video' preset"               },
   { Event::VidModeComposite,        "Select 'Composite' preset"             },
-  { Event::VidModeBad,              "Select 'Badly adjusted' preset"        },
   { Event::VidModeCustom,           "Select 'Custom' preset"                },
   { Event::PreviousVideoMode,       "Select previous TV effect mode preset" },
   { Event::NextVideoMode,           "Select next TV effect mode preset"     },
@@ -3115,7 +3106,7 @@ const Event::EventSet EventHandler::AudioVideoEvents = {
   Event::PaletteDecrease, Event::PaletteIncrease,
   Event::PreviousPaletteAttribute, Event::NextPaletteAttribute,
   Event::PaletteAttributeDecrease, Event::PaletteAttributeIncrease,
-  Event::VidmodeStd, Event::VidmodeRGB, Event::VidmodeSVideo, Event::VidModeComposite, Event::VidModeBad, Event::VidModeCustom,
+  Event::VidmodeStd, Event::VidmodeRGB, Event::VidmodeSVideo, Event::VidModeComposite, Event::VidModeCustom,
   Event::PreviousVideoMode, Event::NextVideoMode,
   Event::PreviousAttribute, Event::NextAttribute, Event::DecreaseAttribute, Event::IncreaseAttribute,
   Event::PhosphorDecrease, Event::PhosphorIncrease, Event::TogglePhosphor,

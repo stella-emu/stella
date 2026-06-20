@@ -75,9 +75,6 @@ class AtariNTSC
     static constexpr Setup TV_RGB = {       // crisp image
       0.2F, 0.7F, -1.F, -1.F, -1.F
     };
-    static constexpr Setup TV_Bad = {       // badly adjusted TV
-      0.2F, 0.1F, 0.5F, 0.5F, 0.5F
-    };
 
     // Initializes and adjusts parameters
     // Note that this must be called before setting a palette

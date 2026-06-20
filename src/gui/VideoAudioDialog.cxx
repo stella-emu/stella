@@ -342,7 +342,7 @@ void VideoAudioDialog::addTVEffectsTab()
   const int lineHeight   = Dialog::lineHeight(),
             fontWidth    = Dialog::fontWidth(),
             buttonHeight = Dialog::buttonHeight(),
-            buttonWidth  = Dialog::buttonWidth("Clone Bad Adjust"),
+            buttonWidth  = Dialog::buttonWidth("Clone Composite"),
             VBORDER      = Dialog::vBorder(),
             HBORDER      = Dialog::hBorder(),
             VGAP         = Dialog::vGap();
@@ -350,7 +350,7 @@ void VideoAudioDialog::addTVEffectsTab()
   int xpos = HBORDER,
       ypos = VBORDER;
   const int lwidth = _font.getStringWidth("Saturation ");
-  int pwidth = _font.getStringWidth("Bad adjust  ");
+  int pwidth = _font.getStringWidth("Composite  ");
   WidgetArray wid;
   VariantList items;
   const int tabID = myTab->addTab("TV Effects", TabWidget::AUTO_WIDTH);
@@ -360,7 +360,6 @@ void VideoAudioDialog::addTVEffectsTab()
   VarList::push_back(items, "RGB", static_cast<uInt32>(TVMode::RGB));
   VarList::push_back(items, "S-Video", static_cast<uInt32>(TVMode::SVideo));
   VarList::push_back(items, "Composite", static_cast<uInt32>(TVMode::Composite));
-  VarList::push_back(items, "Bad adjust", static_cast<uInt32>(TVMode::Bad));
   VarList::push_back(items, "Custom", static_cast<uInt32>(TVMode::Custom));
   myTVMode = new PopUpWidget(myTab, _font, xpos, ypos, pwidth, lineHeight,
                              items, "TV mode ", 0, kTVModeChanged);
@@ -454,7 +453,6 @@ void VideoAudioDialog::addTVEffectsTab()
   CREATE_CLONE_BUTTON(RGB, "Clone RGB")
   CREATE_CLONE_BUTTON(Svideo, "Clone S-Video")
   CREATE_CLONE_BUTTON(Composite, "Clone Composite")
-  CREATE_CLONE_BUTTON(Bad, "Clone Bad adjust")
   CREATE_CLONE_BUTTON(Custom, "Revert")
 
   // Add items for tab 2
@@ -1110,7 +1108,6 @@ void VideoAudioDialog::handleTVModeChange(TVMode preset)
   myCloneComposite->setEnabled(enable && !isSECAM);
   myCloneSvideo->setEnabled(enable && !isSECAM);
   myCloneRGB->setEnabled(enable && !isSECAM);
-  myCloneBad->setEnabled(enable && !isSECAM);
   myCloneCustom->setEnabled(enable && !isSECAM);
 }
 
@@ -1350,8 +1347,6 @@ void VideoAudioDialog::handleCommand(CommandSender* sender, int cmd,
     case kCloneSvideoCmd: loadTVAdjustables(TVMode::SVideo);
       break;
     case kCloneRGBCmd: loadTVAdjustables(TVMode::RGB);
-      break;
-    case kCloneBadCmd: loadTVAdjustables(TVMode::Bad);
       break;
     case kCloneCustomCmd: loadTVAdjustables(TVMode::Custom);
       break;

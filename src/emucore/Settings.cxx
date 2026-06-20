@@ -390,7 +390,7 @@ void Settings::validate()
     Television::SETTING_PIXELS,   Television::SETTING_APERTURE,
     Television::SETTING_MAME
   }, Television::SETTING_STANDARD);
-  clampSetting("tv.filter", 0, 5, 0);
+  clampSetting("tv.filter", 0, 4, 0);
 
   requireOneOf("palette", {
     PaletteHandler::SETTING_STANDARD, PaletteHandler::SETTING_Z26,

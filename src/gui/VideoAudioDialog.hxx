@@ -112,7 +112,6 @@ class VideoAudioDialog : public Dialog
     ButtonWidget*     myCloneComposite{nullptr};
     ButtonWidget*     myCloneSvideo{nullptr};
     ButtonWidget*     myCloneRGB{nullptr};
-    ButtonWidget*     myCloneBad{nullptr};
     ButtonWidget*     myCloneCustom{nullptr};
 
     // Palettes
@@ -177,7 +176,6 @@ class VideoAudioDialog : public Dialog
       kCloneCompositeCmd  = 'CLcp',
       kCloneSvideoCmd     = 'CLsv',
       kCloneRGBCmd        = 'CLrb',
-      kCloneBadCmd        = 'CLbd',
       kCloneCustomCmd     = 'CLcu',
       kPhosphorChanged    = 'VDph',
       kPhosBlendChanged   = 'VDbl',

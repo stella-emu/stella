@@ -160,8 +160,8 @@ void Television::setTVMode(TVMode type, bool show)
 void Television::changeTVEffect(int direction)
 {
   using ST = TVMode;
-  static constexpr std::array<ST, 6> PRESETS = {
-    ST::None, ST::RGB, ST::SVideo, ST::Composite, ST::Bad, ST::Custom
+  static constexpr std::array<ST, 5> PRESETS = {
+    ST::None, ST::RGB, ST::SVideo, ST::Composite, ST::Custom
   };
   int preset = myOSystem.settings().getInt("tv.filter");
 
