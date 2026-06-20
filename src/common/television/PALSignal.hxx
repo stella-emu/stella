@@ -183,10 +183,10 @@ class PALSignal
     // default and preserves the long-standing behaviour.
     enum class ColourLoss: uInt8 {
       SaturationLoss,   // chroma cut → luma-only greyscale frame (classic loss)
-      PhaseSettling,    // chroma kept; recovered phase wrong at the top of the
-                        // field, settling down the screen (effective model)
-      // Reserved next: DecoderSim — a future burst-locked decoder simulation
-      // where the artifact would emerge instead of being injected.
+      PALSwitch,        // chroma kept; the PAL-switch bistable decodes V with the
+                        // wrong sign while re-locking → wrong-hue band at the top
+                        // + mid-band flicker, settling to correct (the mechanism-
+                        // faithful model; constants at PALSWITCH_* below)
       NUM_MODELS
     };
 
@@ -408,34 +408,39 @@ class PALSignal
     static constexpr uInt32 COLOUR_KILLER_FRAMES = 2;
     bool   myColourKilled{false};   // current killer state (true = chroma cut)
     uInt32 myKillerRun{0};          // consecutive frames demanding the flip
+    bool   myPALSwitchField{false}; // PALSwitch per-frame field-parity toggle
 
-    // ── Phase-settling model constants (ColourLoss::PhaseSettling) ─────────
+    // ── PAL-switch model constants (ColourLoss::PALSwitch) ─────────────────
     //
-    // When the colour-killer trips, the PhaseSettling model keeps chroma but
-    // rotates the line's demodulated U/V by  φ(y) = ±θ0·exp(−y/τ)  — large at
-    // the top of the field, decaying down the screen (applied in render()).
-    // The result is a wrong hue at the top that settles to correct lower down,
-    // the band alternating each field — matching the "settling" class of real
-    // PAL CRTs, as opposed to the whole-frame greyscale of SaturationLoss.
+    // The mechanism-faithful model of the "wrong-hue-that-settles" class of PAL
+    // receivers (the alternative to SaturationLoss's whole-frame greyscale).  It
+    // models the receiver's PAL-switch bistable: thrown into the wrong phase at
+    // the top of a malformed field, it decodes V with the wrong SIGN — a
+    // reflection about the U axis (V → −V, U unchanged) — until it re-locks.
+    // render() negates myAccV on the mis-locked lines, before the comb
+    // (consecutive wrong lines, so the PAL 1-line comb reinforces a full hue
+    // reflection; an isolated wrong line would instead be averaged toward grey).
     //
-    // THIS IS AN EFFECTIVE MODEL, NOT THE REAL MECHANISM.  Per the source below,
-    // the actual cause of wrong-hue-that-settles is the receiver's PAL-switch
-    // ("ident") bistable: thrown into the wrong phase at field start and
-    // re-locking over ~10 lines (slightly underdamped), it decodes V with the
-    // wrong sign for the first lines — a hue *reflection* that resolves as it
-    // locks.  A subcarrier reference-phase error does NOT cause a hue shift at
-    // all; the PAL delay-line comb turns it into a desaturation by cos θ.  So a
-    // faithful model would re-lock a simulated bistable driving the per-line
-    // V-sign, not rotate U/V — that is the bottom-up decoder, a separate, larger
-    // effort.  We rotate U/V here only because it reproduces the *look* cheaply
-    // on top of the existing per-colour kernels.
+    // The re-lock boundary is a scanline: the switch is wrong above it, locked
+    // below.  Because the receiver's field alternation throws it the opposite way
+    // each field, that boundary lands a few lines DEEPER every other rendered
+    // frame (myPALSwitchField).  Two boundaries → three zones:
+    //   • top SOLID_LINES    : wrong on both frames → steady wrong hue
+    //   • next FLICKER_LINES : wrong on one frame, right on the next → flickers
+    //                          magenta↔cyan (ale-79's zone 2, hard to see in a
+    //                          still, exactly as he reports)
+    //   • below              : locked → correct colour
     //
-    // GROUNDED: a first-order loop settling after a field-start disturbance is
-    // an exp(−y/τ); the disturbance recurs every malformed field and its sign
-    // flips with field parity.  PHENOMENOLOGICAL: rotating the separated U/V
-    // (the real effect is a V-sign/ident error, not a carrier rotation), and
-    // the values of θ0 and τ — tuned to reference CRT captures, not derived.
-    // (θ0/τ may become user adjustables later.)
+    // GROUNDED: a PAL-switch bistable mis-locked at field start and re-locking
+    // over several lines, alternating with field parity, is the source below; a
+    // wrong V-switch sign → V reflection is that report's PAL-switch mechanism.
+    // (A subcarrier reference-phase error, by contrast, does NOT shift hue at all
+    // — the PAL delay-line comb turns it into a cos θ desaturation.)
+    // PHENOMENOLOGICAL: the hard per-frame boundary (vs a soft settling transient)
+    // and the line counts — tuned to reference CRT captures, not derived (may
+    // become user adjustables later).  Band height varies per game on real sets
+    // (it depends on where the field-start disturbance falls relative to the
+    // visible window); these fixed counts are a compromise across games.
     //
     // Source: BBC RD 1986/2, C.K.P. Clarke, "Colour encoding and decoding
     // techniques for line-locked sampled PAL and NTSC television signals" (BBC
@@ -446,10 +451,10 @@ class PALSignal
     //   - ~10-line underdamped re-lock (the loop's control filter, a P+I loop):
     //     §4.3.2, Fig 32(b), p.24
     //
-    // θ0 is in degrees (converted to radians at use, as PaletteHandler does);
-    // τ is in scanlines, setting the height of the wrong-hue band.
-    static constexpr float SETTLE_THETA0 = 180.F;  // degrees
-    static constexpr float SETTLE_TAU    = 30.F;   // scanlines
+    // Both in scanlines: SOLID_LINES = the steady wrong band at the top;
+    // FLICKER_LINES = the flickering band just below it.
+    static constexpr uInt32 PALSWITCH_SOLID_LINES   = 55;  // solid band (scanlines)
+    static constexpr uInt32 PALSWITCH_FLICKER_LINES = 12;  // flicker band (scanlines)
 
     // ── Active and custom setups ──────────────────────────────────────────
 

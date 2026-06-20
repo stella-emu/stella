@@ -492,14 +492,25 @@ void PALSignal::render(const uInt8* tiaSrc, uInt32 srcWidth, uInt32 srcHeight,
   const float  blend  = svideo ? 0.F : (mySetup.blend * 0.5F + 0.5F);
   const uInt32 outW   = outWidth(srcWidth);   // oversampled output width
 
-  // PhaseSettling colour-loss model: when the killer has tripped on a composite
-  // mode, keep chroma but rotate each line's demodulated chroma by a settling
-  // phase error (applied in the comb branch below).  settleRad is ±θ0 radians;
-  // the sign follows field parity so the wrong-hue band alternates each field.
-  const bool   settling  = colourKilled && !svideo &&
-                           myColourLoss == ColourLoss::PhaseSettling;
-  const float  settleRad = (phaseInverted ? -1.F : 1.F)
-                         * SETTLE_THETA0 * BSPF::PI_f / 180.F;
+  // PALSwitch colour-loss model: when the killer has tripped on a composite
+  // mode, keep chroma but negate V (reflection about the U axis) on the lines
+  // where the simulated PAL-switch bistable is mis-locked — the wrong V-switch
+  // sign.  See the PALSWITCH_* block in PALSignal.hxx.
+  const bool   palSwitch = colourKilled && !svideo &&
+                           myColourLoss == ColourLoss::PALSwitch;
+
+  // PALSwitch: the switch decodes V with the wrong sign down to a re-lock
+  // boundary scanline, which lands PALSWITCH_FLICKER_LINES deeper every other
+  // rendered frame (myPALSwitchField).  So the top PALSWITCH_SOLID_LINES are wrong
+  // on both frames (steady), the next FLICKER_LINES are wrong on one and right on
+  // the next (the magenta↔cyan flicker, ale-79's zone 2).  See PALSignal.hxx.
+  uInt32 palSwitchBand = 0;
+  if(palSwitch)
+  {
+    palSwitchBand = PALSWITCH_SOLID_LINES
+                  + (myPALSwitchField ? PALSWITCH_FLICKER_LINES : 0);
+    myPALSwitchField = !myPALSwitchField;
+  }
 
   // Reset the 1-line comb delay at the start of each frame; the first
   // scanline blends against a virtual "black" previous line.  (S-Video has
@@ -570,24 +581,18 @@ void PALSignal::render(const uInt8* tiaSrc, uInt32 srcWidth, uInt32 srcHeight,
     }
     else
     {
-      // PhaseSettling model: rotate this line's demodulated chroma by the
-      // settling angle  φ(y) = settleRad·exp(−y/τ)  before the comb (no-op
-      // unless the killer has tripped — see `settling`).  This is an EFFECTIVE
-      // model: the wrong-hue-that-settles really comes from the receiver's
-      // PAL-switch bistable re-locking, not a chroma rotation (see the full
-      // explanation and citation at SETTLE_THETA0 in PALSignal.hxx).  The
-      // rotated chroma feeds the delay line, so the comb stays consistent.
-      if(settling)
+      // PALSwitch model: negate this line's demodulated V (reflection about
+      // the U axis, U left alone) above the re-lock boundary line palSwitchBand,
+      // i.e. where the switch decodes V with the wrong sign (no-op unless the
+      // killer has tripped — see `palSwitch`).  The negated V feeds the delay line
+      // below, so the comb stays consistent and turns the line-to-line sign
+      // inconsistency partly into desaturation, as real hardware does (see the
+      // PALSWITCH_* citation in PALSignal.hxx).
+      if(palSwitch)
       {
-        const float phi = settleRad
-                        * std::exp(-static_cast<float>(y) / SETTLE_TAU);
-        const float c = std::cos(phi), s = std::sin(phi);
-        for(uInt32 j = 0; j < outW; ++j)
-        {
-          const float u = myAccU[j], v = myAccV[j];
-          myAccU[j] = c * u - s * v;
-          myAccV[j] = s * u + c * v;
-        }
+        if(y < palSwitchBand)
+          for(uInt32 j = 0; j < outW; ++j)
+            myAccV[j] = -myAccV[j];
       }
 
       convertLine(myAccY.data(), myAccU.data(), myAccV.data(),

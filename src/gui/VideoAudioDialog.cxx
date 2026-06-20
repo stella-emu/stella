@@ -383,14 +383,13 @@ void VideoAudioDialog::addTVEffectsTab()
   xpos = HBORDER;
   items.clear();
   VarList::push_back(items, "Saturation loss", 0);
-  VarList::push_back(items, "Phase settling", 1);
-  // Next value (2) reserved for a future burst-locked "Decoder sim" model.
+  VarList::push_back(items, "PAL switch", 1);
   myPALColorLoss = new PopUpWidget(myTab, _font, xpos, ypos,
       _font.getStringWidth("Saturation loss"), lineHeight, items,
       "PAL color loss ");
   myPALColorLoss->setToolTip("How PAL colour loss (odd-line fields) appears:\n"
       "Saturation loss = whole frame greyscale;\n"
-      "Phase settling = wrong hue at top, settling down the screen.\n"
+      "PAL switch = wrong-hue band + flicker, settling down.\n"
       "Composite PAL modes only.");
   wid.push_back(myPALColorLoss);
   ypos += lineHeight + VGAP;
