@@ -1262,6 +1262,7 @@
     </ClCompile>
     <ClCompile Include="..\..\common\television\PALSignal.cxx">
       <Filter>Source Files\common\television</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\gui\OverlayMenu.cxx">
       <Filter>Source Files\gui</Filter>
     </ClCompile>
@@ -2616,6 +2617,7 @@
     </ClInclude>
     <ClInclude Include="..\..\common\television\TVAdjustable.hxx">
       <Filter>Header Files\common\television</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\gui\OverlayMenu.hxx">
       <Filter>Header Files\gui</Filter>
     </ClInclude>
