@@ -259,10 +259,10 @@ void PALSignal::buildGammaLUT()
 void PALSignal::buildCoeff()
 {
   // Generate the palette-independent linear decode coefficients by running
-  // the full encode→demod→filter→downsample pipeline on isolated unit
-  // impulses.  Because the pipeline is linear in (y, u, v), three unit
-  // inputs fully characterise it.  This costs a couple of dozen small
-  // decodes and is only repeated when the filters change.
+  // the full encode→demod→filter pipeline on isolated unit impulses.  Because
+  // the pipeline is linear in (y, u, v), three unit inputs fully characterise
+  // it.  This costs a couple of dozen small decodes and is only repeated when
+  // the filters change.
   constexpr uInt32 HBLANK_SAMPLES = 68 * SAMPLES_PER_CLOCK;
   constexpr uInt32 vis = VISIBLE_SAMPLES;
 

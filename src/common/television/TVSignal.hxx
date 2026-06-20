@@ -63,15 +63,16 @@ class TVSignal
     // Called whenever the console timing changes
     void setTiming(ConsoleTiming timing);
 
-    // Set the display palette (for NTSC non-Blargg lookup) and RGB palette
-    // (for the Blargg filter's internal YIQ calculation)
+    // Set the display palette (for the None/passthrough lookup) and the RGB
+    // palette (linearised by each engine for its internal YIQ/YUV encoding)
     void setPalette(const PaletteArray& tiaPalette, const PaletteArray& rgbPalette);
 
     // Set the signal type
     void setTVMode(TVMode type);
 
     // Return the pixel width of one rendered scanline for the current
-    // timing/type combination.  568 when NTSC+Blargg is active, 160 otherwise.
+    // timing/type combination: 568 for NTSC and 800 for PAL when an engine mode
+    // is active (the oversampled grids), 160 otherwise (None, and all of SECAM).
     uInt32 outputWidth() const;
 
     // Load and save custom-adjustable settings
@@ -101,10 +102,10 @@ class TVSignal
                                  string& text, string& valueText, Int32& newValue);
 
     // Process one complete TIA frame.  Reads raw TIA colour-index bytes from
-    // tiaSrc and writes 32-bit 0x00RRGGBB pixels to rgbDst.  For PAL, applies
-    // the delay-line model; for NTSC, applies Blargg or plain palette lookup.
-    // phaseInverted is the PAL chroma V-axis phase for this field, supplied by
-    // the frame manager (replaces the old scanlinesLastFrame-parity heuristic).
+    // tiaSrc and writes 32-bit 0x00RRGGBB pixels to rgbDst, dispatched by the
+    // active standard (NTSC/PAL/SECAM) and TVMode.  phaseInverted is the PAL
+    // chroma V-axis field phase, supplied by the frame manager (see
+    // AbstractFrameManager::chromaPhaseInverted()).
     void render(const uInt8* tiaSrc, uInt32 srcWidth, uInt32 srcHeight,
                 uInt32* rgbDst, uInt32 dstPitch, bool phaseInverted);
 

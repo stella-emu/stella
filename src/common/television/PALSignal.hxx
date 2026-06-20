@@ -317,13 +317,13 @@ class PALSignal
 
     // ── Per-output-pixel kernels (AtariNTSC-style precomputation) ─────────
     //
-    // Every stage from composite encode through comb/low-pass decode and
-    // 5:1 downsampling is *linear* in each input clock's (Y, U, V).  So the
-    // contribution of one input clock to the YUV of the output pixels around
-    // it is a fixed kernel that depends only on the clock's colour, its
-    // column phase (x & 3) and the PAL V-sign.  At render time we simply
-    // scatter-add each clock's kernel into the line accumulators; no per-
-    // pixel filtering is performed.  See buildCoeff() and expandKernels().
+    // Every stage from composite encode through comb/low-pass decode is
+    // *linear* in each input clock's (Y, U, V).  So the contribution of one
+    // input clock to the YUV of the output pixels around it is a fixed kernel
+    // that depends only on the clock's colour, its column phase (x & 3) and the
+    // PAL V-sign.  At render time we simply scatter-add each clock's kernel into
+    // the line accumulators; no per-pixel filtering is performed.  See
+    // buildCoeff() and expandKernels().
 
     // Sample-domain reach of one clock's energy: the luma FIR half-width plus
     // one for aperture correction, or the chroma FIR half-width, whichever is

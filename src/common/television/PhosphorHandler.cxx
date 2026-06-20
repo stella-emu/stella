@@ -20,8 +20,7 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool PhosphorHandler::initialize(bool enable, int blend)
 {
-  if(myUsePhosphor == enable && blend >= 0 &&
-     static_cast<uInt32>(blend) == myPhosphorBlend)
+  if(myUsePhosphor == enable && std::cmp_equal(blend, myPhosphorBlend))
     return false;
 
   myUsePhosphor = enable;

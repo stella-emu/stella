@@ -20,8 +20,9 @@
 #include "NTSCSignal.hxx"
 
 namespace {
-  // Map a TVMode to the corresponding AtariNTSC setup.
-  // Custom returns myCustomSetup; None and unknown fall back to Composite.
+  // Map a TVMode to its fixed AtariNTSC preset.  Custom is not handled here
+  // (callers substitute the live myCustomSetup); None and unknown fall back to
+  // Composite.
   const AtariNTSC::Setup& setupFor(TVMode mode)
   {
     switch(mode)

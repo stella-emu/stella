@@ -676,7 +676,7 @@ const FBSurface& FBBackendSDL::compositedSurface()
     // Pre-shift the gamma values into per-channel position, so the pixel
     // loop needs only byte-indexed lookups and ORs; building the tables is
     // trivial next to the full-window pass (measured 1.47x on the loop)
-    std::array<uInt32, 256> lutR, lutG, lutB;  // NOLINT(cppcoreguidelines-pro-type-member-init)
+    std::array<uInt32, 256> lutR, lutG, lutB;  // NOLINT(cppcoreguidelines-pro-type-member-init,hicpp-member-init)
     for(uInt32 i = 0; i < 256; ++i)
     {
       lutR[i] = static_cast<uInt32>(gammaLUT[i]) << rShift;
