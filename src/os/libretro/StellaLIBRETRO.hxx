@@ -86,19 +86,20 @@ class StellaLIBRETRO
 
     void*  getVideoBuffer() const;
     uInt32 getVideoWidth() const {
-      return getVideoZoom() == 1 ? myOSystem->console().tia().width() : getVideoWidthMax();
+      return getVideoZoom() == 1 ? myOSystem->console().tia().width()
+                                 : myOSystem->frameBuffer().television().outputWidth();
     }
     uInt32 getVideoHeight() const {
       return myOSystem->console().tia().height();
     }
     static constexpr uInt32 getVideoPitch() { return getVideoWidthMax() * 4; }
 
-    static constexpr uInt32 getVideoWidthMax()  { return AtariNTSC::outWidth(160); }
+    static constexpr uInt32 getVideoWidthMax()  { return Television::maxRenderWidth(); }
     static constexpr uInt32 getVideoHeightMax() { return 312; }
 
     uInt32 getRenderWidth() const {
       return getVideoZoom() == 1 ? myOSystem->console().tia().width() * 2
-                                 : getVideoWidthMax();
+                                 : myOSystem->frameBuffer().television().outputWidth();
     }
     uInt32 getRenderHeight() const {
       return myOSystem->console().tia().height() * getVideoZoom();

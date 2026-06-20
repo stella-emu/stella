@@ -199,6 +199,16 @@ class Television
     bool tvEffectsEnabled() const {
       return myTVSignal->outputWidth() != TIAConstants::frameBufferWidth;
     }
+
+    // Width produced by the active signal this frame; always <= maxRenderWidth().
+    // Front-ends that read the raw TIA surface need this: the surface is
+    // allocated at maxRenderWidth(), but only this many columns are filled.
+    uInt32 outputWidth() const { return myTVSignal->outputWidth(); }
+
+    // The widest output across all timings/modes; also the row stride (in
+    // pixels) of the TIA render surface.
+    static constexpr uInt32 maxRenderWidth() { return maxOutputWidth; }
+
     string effectsInfo() const;
 
     /**
