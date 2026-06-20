@@ -74,35 +74,22 @@ namespace {
     if(_countCycles)                     \
       incICycles(m)
 
-  #define INC_SHIFT_CYCLES               \
-    INC_I_CYCLES                         \
-    //FETCH_TYPE(CycleType::S, AccessType::data)
+  #define INC_SHIFT_CYCLES INC_I_CYCLES
 
-  #define INC_LDR_CYCLES                 \
-    INC_N_CYCLES(rb, AccessType::data);  \
-    INC_I_CYCLES                         \
-    /*FETCH_TYPE(CycleType::N, AccessType::data); \
-      FETCH_TYPE_N;*/
+  #define INC_LDR_CYCLES                \
+    INC_N_CYCLES(rb, AccessType::data); \
+    INC_I_CYCLES
   #define INC_LDRB_CYCLES                       \
     INC_N_CYCLES(rb & (~1U), AccessType::data); \
-    INC_I_CYCLES                                \
-    /*FETCH_TYPE(CycleType::N, AccessType::data); \
-      FETCH_TYPE_N;*/
+    INC_I_CYCLES
 
-  #define INC_STR_CYCLES                 \
-    INC_N_CYCLES(rb, AccessType::data);  \
-    FETCH_TYPE_N                         \
-    //INC_N_CYCLES(rb, AccessType::data);
+  #define INC_STR_CYCLES                \
+    INC_N_CYCLES(rb, AccessType::data); \
+    FETCH_TYPE_N
   #define INC_STRB_CYCLES                       \
     INC_N_CYCLES(rb & (~1U), AccessType::data); \
-    FETCH_TYPE_N                                \
-    //INC_N_CYCLES(rb & (~1U), AccessType::data);
+    FETCH_TYPE_N
 
-#if 0 // unused for now
-  #define FETCH_TYPE(cycleType, accessType) \
-    _prefetchCycleType[_pipeIdx] = cycleType; \
-    _prefetchAccessType[_pipeIdx] = accessType
-#endif
   #define FETCH_TYPE_N                          \
     _prefetchCycleType[_pipeIdx] = CycleType::N
 #else
@@ -119,7 +106,6 @@ namespace {
   #define INC_STR_CYCLES
   #define INC_STRB_CYCLES
 
-  #define FETCH_TYPE(cycleType, accessType)
   #define FETCH_TYPE_N
 #endif
 
@@ -301,31 +287,18 @@ FORCE_INLINE uInt32 Thumbulator::fetch16(uInt32 addr)
 
 #ifdef MERGE_I_S
   if(_lastCycleType[2] == CycleType::I)
-  //if(_lastCycleType[_pipeIdx] == CycleType::I)
     --_totalCycles;
 #endif
 
   if(_prefetchCycleType[_pipeIdx] == CycleType::S)
   {
-  //#ifdef MERGE_I_S
-  //  //if(_lastCycleType[2] == CycleType::I)
-  //  if(_lastCycleType[_pipeIdx] == CycleType::I)
-  //  {
-  //    --_totalCycles;
-  //    INC_S_CYCLES(addr, AccessType::prefetch); // N?
-  //  }
-  //  else
-  //#endif
-      INC_S_CYCLES(addr, AccessType::prefetch);
-      //INC_S_CYCLES(addr, _prefetchAccessType[_pipeIdx]);
+    INC_S_CYCLES(addr, AccessType::prefetch);
   }
   else
   {
     INC_N_CYCLES(addr, AccessType::prefetch); // or ::data ?
-    //INC_N_CYCLES(addr, _prefetchAccessType[_pipeIdx]);
   }
   _prefetchCycleType[_pipeIdx] = CycleType::S; // default
-  //_prefetchAccessType[_pipeIdx] = AccessType::prefetch; // default
 #endif
 
   switch(addr & 0xF0000000)
@@ -2863,10 +2836,6 @@ void Thumbulator::incCycles(AccessType accessType, uInt32 cycles)
     default: // AccessType::prefetch
     {
       // Reduce cycles by pipelined cycles
-      // Cart (Turbo start sequence): 1F0AC
-      // None:      1FF2E @ 90% (22989 @ 100%)
-    #if 1
-      // Version 1: 1ECFC @ 90% (223C3 @ 100%)
       if(cycles == _flashCycles)
       {
         if(!_memory1Pipeline) // there must be no pending memory access
@@ -2877,22 +2846,6 @@ void Thumbulator::incCycles(AccessType accessType, uInt32 cycles)
           cycles = newCycles;
         }
       }
-    #endif
-    #if 0
-      // Version 2: 1ED23 @ 90% (223EF @ 100%)
-      //   considers that partial fetches are not allowed
-      if(cycles == _flashCycles)
-      {
-        //_memory0Pipeline = _memory1Pipeline = 0;
-        if(!_memory1Pipeline && _fetchPipeline >= _flashCycles)
-        {
-          _fetchPipeline -= (_flashCycles - 1);
-          cycles = 1;
-        }
-        //else
-        // _fetchPipeline = 0; // Flash prefetch abort (makes 0 difference!)
-      }
-    #endif
       break;
     }
   };
@@ -2932,37 +2885,17 @@ void Thumbulator::incSCycles(uInt32 addr, AccessType accessType)
   }
 
 #ifdef MERGE_I_S
-  //if(accessType != AccessType::prefetch)
-  //{
-  //  if(_lastCycleType[0] == CycleType::I)
-  //  {
-  //    _lastCycleType[0] = CycleType::S; // merge cannot be used twice!
-  //    --cycles;
-  //  }
-  //}
-  //else if(_lastCycleType[2] == CycleType::I)
-  //  --cycles;
-
-  //if(accessType == AccessType::prefetch &&
-  //  _lastCycleType[_pipeIdx] == CycleType::I)
-  //  --cycles;
-
-
   _lastCycleType[2] = _lastCycleType[1];
   _lastCycleType[1] = _lastCycleType[0];
   _lastCycleType[0] = CycleType::S;
-  //_lastCycleType[_pipeIdx] = CycleType::S;
 #endif
   incCycles(accessType, cycles);
-
 
 #ifdef MERGE_I_S
   if(accessType == AccessType::branch)
   {
     if(_lastCycleType[1] == CycleType::I || _lastCycleType[2] == CycleType::I)
-    _lastCycleType[1] = _lastCycleType[2] = CycleType::S;
-    //if(_lastCycleType[_pipeIdx ^ 1] == CycleType::I || _lastCycleType[_pipeIdx ^ 2] == CycleType::I)
-    //  _lastCycleType[_pipeIdx ^ 1] = _lastCycleType[_pipeIdx ^ 2] = CycleType::S;
+      _lastCycleType[1] = _lastCycleType[2] = CycleType::S;
   }
 #endif  // MERGE_I_S
 }
@@ -2989,7 +2922,6 @@ void Thumbulator::incNCycles(uInt32 addr, AccessType accessType)
   _lastCycleType[2] = _lastCycleType[1];
   _lastCycleType[1] = _lastCycleType[0];
   _lastCycleType[0] = CycleType::N;
-  //_lastCycleType[_pipeIdx] = CycleType::N;
 #endif
   incCycles(accessType, cycles);
 }
@@ -3018,7 +2950,6 @@ void Thumbulator::incICycles(uInt32 m)
   _lastCycleType[2] = _lastCycleType[1];
   _lastCycleType[1] = _lastCycleType[0];
   _lastCycleType[0] = CycleType::I;
-  //_lastCycleType[_pipeIdx] = CycleType::I;
 #endif
   _totalCycles += m;
 }
