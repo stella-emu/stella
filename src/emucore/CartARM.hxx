@@ -19,6 +19,7 @@
 #define CARTRIDGE_ARM_HXX
 
 #include "Thumbulator.hxx"
+#include "ThumbBusDelegate.hxx"
 #include "PlusROM.hxx"
 #include "Cart.hxx"
 
@@ -27,7 +28,7 @@
 
   @author  Thomas Jentzsch
 */
-class CartridgeARM : public Cartridge
+class CartridgeARM : public Cartridge, public ThumbBusDelegate
 {
   friend class CartridgeARMWidget;
 
@@ -74,6 +75,13 @@ class CartridgeARM : public Cartridge
       if(myPlusROM->isValid())
         myPlusROM->setMessageCallback(myMsgCallback);
     }
+
+    /**
+      Emulate a 32-bit ARM driver routine the Thumb core cannot execute.
+      The base cart has no such routines; subclasses with a music/driver
+      interface override this.  See ThumbBusDelegate.
+    */
+    bool armBranch(uInt32, Thumbulator&) override { return false; }
 
   protected:
     /**

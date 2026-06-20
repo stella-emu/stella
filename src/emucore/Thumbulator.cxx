@@ -25,7 +25,7 @@
 // NOLINTBEGIN(cppcoreguidelines-macro-usage)  TODO: Too many macros for now
 #include "bspf.hxx"
 #include "Base.hxx"
-#include "Cart.hxx"
+#include "ThumbBusDelegate.hxx"
 #include "Thumbulator.hxx"
 using Common::Base;
 
@@ -105,10 +105,6 @@ namespace {
 #endif
   #define FETCH_TYPE_N                          \
     _prefetchCycleType[_pipeIdx] = CycleType::N
-
-  // ARM cycles
-  #define INC_ARM_CYCLES(m) \
-    _totalCycles += m
 #else
   #define INC_S_CYCLES(addr, accessType)
   #define INC_N_CYCLES(addr, accessType)
@@ -125,9 +121,6 @@ namespace {
 
   #define FETCH_TYPE(cycleType, accessType)
   #define FETCH_TYPE_N
-
-  // ARM cycles
-  #define INC_ARM_CYCLES(m)
 #endif
 
 #ifdef THUMB_STATS
@@ -147,7 +140,7 @@ Thumbulator::Thumbulator(const uInt16* rom_ptr, uInt16* ram_ptr, uInt32 rom_size
                          uInt32 c_base, uInt32 c_start, uInt32 c_stack,
                          bool traponfatal, double cyclefactor,
                          Thumbulator::ConfigureFor configurefor,
-                         Cartridge* cartridge)
+                         ThumbBusDelegate* bus)
   : rom{rom_ptr},
     romSize{rom_size},
     cBase{c_base},
@@ -157,7 +150,7 @@ Thumbulator::Thumbulator(const uInt16* rom_ptr, uInt16* ram_ptr, uInt32 rom_size
     decodedParam{std::make_unique<uInt32[]>(romSize / 2)},
     ram{ram_ptr},
     configuration{configurefor},
-    myCartridge{cartridge}
+    myBus{bus}
 {
   for(uInt32 i = 0; i < romSize / 2; ++i)
     decodedRom[i] = decodeInstructionWord(CONV_RAMROM(rom[i]), i * 2);
@@ -409,95 +402,7 @@ void Thumbulator::write32(uInt32 addr, uInt32 data)
       throw std::runtime_error("HALT");
 
     case 0xE0000000: //periph
-      switch(addr)
-      {
-        case 0xE0000000:
-          DO_DISS(statusMsg << "uart: [" << char(data&0xFF) << "]\n");
-          break;
-#ifdef TIMER_0
-        case 0xE0004004:  // T0TCR - Timer 0 Control Register
-        #ifdef THUMB_CYCLE_COUNT
-          if((T0TCR ^ data) & 1)
-          {
-            // timer changed counter state
-            if(data & 1)
-              // timer switched to counting
-              tim0Start = _totalCycles;
-            else
-              // timer switched to disabled
-              tim0Total += _totalCycles - tim0Start;
-          }
-        #endif
-          T0TCR = data;
-          break;
-
-        case 0xE0004008:  // T0TC - Timer 0 Counter
-        #ifdef THUMB_CYCLE_COUNT
-          tim0Start = _totalCycles;
-          tim0Total = data / _armCyclesFactor;
-        #endif
-          T0TC = data;
-          break;
-#endif
-        case 0xE0008004:  // T1TCR - Timer 1 Control Register
-        #ifdef THUMB_CYCLE_COUNT
-          if((T1TCR ^ data) & 1)
-          {
-            // timer changed counter state
-            if(data & 1)
-              // timer switched to counting
-              tim1Start = _totalCycles;
-            else
-              // timer switched to disabled
-              tim1Total += _totalCycles - tim1Start;
-          }
-        #endif
-          T1TCR = data;
-          break;
-
-        case 0xE0008008:  // T1TC - Timer 1 Counter
-        #ifdef THUMB_CYCLE_COUNT
-          tim1Start = _totalCycles;
-          tim1Total = data / _armCyclesFactor;
-        #endif
-          T1TC = data;
-          break;
-
-        case 0xE000E010:
-        {
-          const uInt32 old = systick_ctrl;
-          systick_ctrl = data & 0x00010007;
-          if(((old & 1) == 0) && (systick_ctrl & 1))
-          {
-            // timer started, load count
-            systick_count = systick_reload;
-          }
-          break;
-        }
-
-        case 0xE000E014:
-          systick_reload = data & 0x00FFFFFF;
-          break;
-
-        case 0xE000E018:
-          systick_count = data & 0x00FFFFFF;
-          break;
-
-        case 0xE000E01C:
-          systick_calibrate = data & 0x00FFFFFF;
-          break;
-
-      #ifdef THUMB_CYCLE_COUNT
-        case 0xE01FC000: //MAMCR
-          DO_DBUG(statusMsg << "write32(" << Base::HEX8 << "MAMCR" << ","
-                  << Base::HEX8 << data << ") *\n");
-          if(!_lockMamcr)
-            mamcr = static_cast<MamModeType>(data);
-          break;
-      #endif
-        default:
-          break;
-      }
+      writePeripheral(addr, data);
       return;
 
     case 0xD0000000: //debug
@@ -678,79 +583,178 @@ uInt32 Thumbulator::read32(uInt32 addr)
 
     case 0xE0000000:
     default:
-    {
-      switch(addr)
-      {
-      #ifdef THUMB_CYCLE_COUNT
-        case 0xE01FC000: //MAMCR
-          DO_DBUG(statusMsg << "read32(" << "MAMCR" << addr << ")=" << mamcr << " *");
-          data = static_cast<uInt32>(mamcr);
-          return data;
-      #endif
+      return readPeripheral(addr);
+  }
+}
 
-      #ifdef TIMER_0
-        case 0xE0004004:  // T0TCR - Timer 0 Control Register
-          data = T0TCR;
-          return data;
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt32 Thumbulator::readPeripheral(uInt32 addr)
+{
+  uInt32 data = 0;
+  switch(addr)
+  {
+  #ifdef THUMB_CYCLE_COUNT
+    case 0xE01FC000: //MAMCR
+      DO_DBUG(statusMsg << "read32(" << "MAMCR" << addr << ")=" << mamcr << " *");
+      data = static_cast<uInt32>(mamcr);
+      return data;
+  #endif
 
-        case 0xE0004008:  // T0TC - Timer 0 Counter
-        #ifdef THUMB_CYCLE_COUNT
-          // NOLINTBEGIN(clang-analyzer-deadcode.DeadStores)
-          if(T0TCR & 1)
-            // timer is counting
-            data = T0TC + (tim0Total + (_totalCycles - tim0Start)) * _armCyclesFactor;
-          else
-            // timer is disabled
-            data = T0TC + tim0Total * _armCyclesFactor;
-        #else
-          data = T0TC;
-        #endif
-          // NOLINTEND(clang-analyzer-deadcode.DeadStores)
-          break;
-      #endif
-        case 0xE0008004:  // T1TCR - Timer 1 Control Register
-          data = T1TCR;
-          return data;
+  #ifdef TIMER_0
+    case 0xE0004004:  // T0TCR - Timer 0 Control Register
+      data = T0TCR;
+      return data;
 
-        case 0xE0008008:  // T1TC - Timer 1 Counter
-        #ifdef THUMB_CYCLE_COUNT
-          if(T1TCR & 1)
-            // timer is counting
-            data = T1TC + (tim1Total + (_totalCycles - tim1Start)) * _armCyclesFactor;
-          else
-            // timer is disabled
-            data = T1TC + tim1Total * _armCyclesFactor;
-        #else
-          data = T1TC;
-        #endif
-          return data;
+    case 0xE0004008:  // T0TC - Timer 0 Counter
+    #ifdef THUMB_CYCLE_COUNT
+      // NOLINTBEGIN(clang-analyzer-deadcode.DeadStores)
+      if(T0TCR & 1)
+        // timer is counting
+        data = T0TC + (tim0Total + (_totalCycles - tim0Start)) * _armCyclesFactor;
+      else
+        // timer is disabled
+        data = T0TC + tim0Total * _armCyclesFactor;
+    #else
+      data = T0TC;
+    #endif
+      // NOLINTEND(clang-analyzer-deadcode.DeadStores)
+      break;
+  #endif
+    case 0xE0008004:  // T1TCR - Timer 1 Control Register
+      data = T1TCR;
+      return data;
 
-        case 0xE000E010:
-          data = systick_ctrl;
-          systick_ctrl &= (~0x00010000);
-          return data;
+    case 0xE0008008:  // T1TC - Timer 1 Counter
+    #ifdef THUMB_CYCLE_COUNT
+      if(T1TCR & 1)
+        // timer is counting
+        data = T1TC + (tim1Total + (_totalCycles - tim1Start)) * _armCyclesFactor;
+      else
+        // timer is disabled
+        data = T1TC + tim1Total * _armCyclesFactor;
+    #else
+      data = T1TC;
+    #endif
+      return data;
 
-        case 0xE000E014:
-          data = systick_reload;
-          return data;
+    case 0xE000E010:
+      data = systick_ctrl;
+      systick_ctrl &= (~0x00010000);
+      return data;
 
-        case 0xE000E018:
-          data = systick_count;
-          return data;
-#ifdef THUMB_CYCLE_COUNT
-        case 0xE01FC100: // APBDIV
-          _countCycles = true; // enabe cycle counting
-          return 1; // random value
-#endif
+    case 0xE000E014:
+      data = systick_reload;
+      return data;
 
-        case 0xE000E01C:
-        default:
-          data = systick_calibrate;
-          return data;
-      }
-    }
+    case 0xE000E018:
+      data = systick_count;
+      return data;
+  #ifdef THUMB_CYCLE_COUNT
+    case 0xE01FC100: // APBDIV
+      _countCycles = true; // enabe cycle counting
+      return 1; // random value
+  #endif
+
+    case 0xE000E01C:
+    default:
+      data = systick_calibrate;
+      return data;
   }
   return fatalError("read32", addr, "abort");
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Thumbulator::writePeripheral(uInt32 addr, uInt32 data)
+{
+  switch(addr)
+  {
+    case 0xE0000000:
+      DO_DISS(statusMsg << "uart: [" << char(data&0xFF) << "]\n");
+      break;
+#ifdef TIMER_0
+    case 0xE0004004:  // T0TCR - Timer 0 Control Register
+    #ifdef THUMB_CYCLE_COUNT
+      if((T0TCR ^ data) & 1)
+      {
+        // timer changed counter state
+        if(data & 1)
+          // timer switched to counting
+          tim0Start = _totalCycles;
+        else
+          // timer switched to disabled
+          tim0Total += _totalCycles - tim0Start;
+      }
+    #endif
+      T0TCR = data;
+      break;
+
+    case 0xE0004008:  // T0TC - Timer 0 Counter
+    #ifdef THUMB_CYCLE_COUNT
+      tim0Start = _totalCycles;
+      tim0Total = data / _armCyclesFactor;
+    #endif
+      T0TC = data;
+      break;
+#endif
+    case 0xE0008004:  // T1TCR - Timer 1 Control Register
+    #ifdef THUMB_CYCLE_COUNT
+      if((T1TCR ^ data) & 1)
+      {
+        // timer changed counter state
+        if(data & 1)
+          // timer switched to counting
+          tim1Start = _totalCycles;
+        else
+          // timer switched to disabled
+          tim1Total += _totalCycles - tim1Start;
+      }
+    #endif
+      T1TCR = data;
+      break;
+
+    case 0xE0008008:  // T1TC - Timer 1 Counter
+    #ifdef THUMB_CYCLE_COUNT
+      tim1Start = _totalCycles;
+      tim1Total = data / _armCyclesFactor;
+    #endif
+      T1TC = data;
+      break;
+
+    case 0xE000E010:
+    {
+      const uInt32 old = systick_ctrl;
+      systick_ctrl = data & 0x00010007;
+      if(((old & 1) == 0) && (systick_ctrl & 1))
+      {
+        // timer started, load count
+        systick_count = systick_reload;
+      }
+      break;
+    }
+
+    case 0xE000E014:
+      systick_reload = data & 0x00FFFFFF;
+      break;
+
+    case 0xE000E018:
+      systick_count = data & 0x00FFFFFF;
+      break;
+
+    case 0xE000E01C:
+      systick_calibrate = data & 0x00FFFFFF;
+      break;
+
+  #ifdef THUMB_CYCLE_COUNT
+    case 0xE01FC000: //MAMCR
+      DO_DBUG(statusMsg << "write32(" << Base::HEX8 << "MAMCR" << ","
+              << Base::HEX8 << data << ") *\n");
+      if(!_lockMamcr)
+        mamcr = static_cast<MamModeType>(data);
+      break;
+  #endif
+    default:
+      break;
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -789,6 +793,18 @@ FORCE_INLINE void Thumbulator::write_register(uInt32 reg, uInt32 data, bool isFl
     }
   }
   reg_norm[reg] = data;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt32 Thumbulator::reg(uInt32 n)
+{
+  return read_register(n);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Thumbulator::setReg(uInt32 n, uInt32 value)
+{
+  write_register(n, value);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1564,233 +1580,15 @@ FORCE_INLINE int Thumbulator::execute()  // NOLINT(readability-function-size,
       }
       else
       {
-        // branch to even address denotes 32 bit ARM code, which the Thumbulator
-        // class does not support. So capture relevant information and hand it
-        // off to the Cartridge class for it to handle.
-
-        bool handled = false;
-
-        switch(configuration)
-        {
-          case ConfigureFor::BUS: {
-            // this subroutine interface is used in the BUS driver,
-            // it starts at address 0x000006d8
-            // _SetNote:
-            //   ldr     r4, =NoteStore
-            //   bx      r4   // bx instruction at 0x000006da
-            // _ResetWave:
-            //   ldr     r4, =ResetWaveStore
-            //   bx      r4   // bx instruction at 0x000006de
-            // _GetWavePtr:
-            //   ldr     r4, =WavePtrFetch
-            //   bx      r4   // bx instruction at 0x000006e2
-            // _SetWaveSize:
-            //   ldr     r4, =WaveSizeStore
-            //   bx      r4   // bx instruction at 0x000006e6
-
-            // address to test for is + 4 due to pipelining
-            static constexpr uInt32
-                BUS_SetNote     = (0x000006da + 4),
-                BUS_ResetWave   = (0x000006de + 4),
-                BUS_GetWavePtr  = (0x000006e2 + 4),
-                BUS_SetWaveSize = (0x000006e6 + 4);
-
-            if      (pc == BUS_SetNote)
-            {
-              myCartridge->thumbCallback(0, read_register(2), read_register(3));
-              handled = true;
-            }
-            else if (pc == BUS_ResetWave)
-            {
-              myCartridge->thumbCallback(1, read_register(2), 0);
-              handled = true;
-            }
-            else if (pc == BUS_GetWavePtr)
-            {
-              write_register(2, myCartridge->thumbCallback(2, read_register(2), 0));
-              handled = true;
-            }
-            else if (pc == BUS_SetWaveSize)
-            {
-              myCartridge->thumbCallback(3, read_register(2), read_register(3));
-              handled = true;
-            }
-            else if (pc == 0x0000083a)
-            {
-              // exiting Custom ARM code, returning to BUS Driver control
-            }
-            else
-            {
-  #if 0  // uncomment this for testing
-              uInt32 r0 = read_register(0);
-              uInt32 r1 = read_register(1);
-              uInt32 r2 = read_register(2);
-              uInt32 r3 = read_register(3);
-              uInt32 r4 = read_register(4);
-  #endif
-              myCartridge->thumbCallback(255, 0, 0);
-            }
-
-            break;
-          }
-
-          case ConfigureFor::CDF: {
-            // this subroutine interface is used in the CDF driver,
-            // it starts at address 0x000006e0
-            // _SetNote:
-            //   ldr     r4, =NoteStore
-            //   bx      r4   // bx instruction at 0x000006e2
-            // _ResetWave:
-            //   ldr     r4, =ResetWaveStore
-            //   bx      r4   // bx instruction at 0x000006e6
-            // _GetWavePtr:
-            //   ldr     r4, =WavePtrFetch
-            //   bx      r4   // bx instruction at 0x000006ea
-            // _SetWaveSize:
-            //   ldr     r4, =WaveSizeStore
-            //   bx      r4   // bx instruction at 0x000006ee
-
-            // address to test for is + 4 due to pipelining
-            static constexpr uInt32
-                CDF_SetNote      = (0x000006e2 + 4),
-                CDF_ResetWave    = (0x000006e6 + 4),
-                CDF_GetWavePtr   = (0x000006ea + 4),
-                CDF_SetWaveSize  = (0x000006ee + 4);
-
-            if      (pc == CDF_SetNote)
-            {
-              myCartridge->thumbCallback(0, read_register(2), read_register(3));
-              handled = true;
-            }
-            else if (pc == CDF_ResetWave)
-            {
-              myCartridge->thumbCallback(1, read_register(2), 0);
-              handled = true;
-            }
-            else if (pc == CDF_GetWavePtr)
-            {
-              write_register(2, myCartridge->thumbCallback(2, read_register(2), 0));
-              handled = true;
-            }
-            else if (pc == CDF_SetWaveSize)
-            {
-              myCartridge->thumbCallback(3, read_register(2), read_register(3));
-              handled = true;
-            }
-            else if (pc == 0x0000083a)
-            {
-              // exiting Custom ARM code, returning to CDF Driver control
-            }
-            else
-            {
-            #if 0  // uncomment this for testing
-              uInt32 r0 = read_register(0);
-              uInt32 r1 = read_register(1);
-              uInt32 r2 = read_register(2);
-              uInt32 r3 = read_register(3);
-              uInt32 r4 = read_register(4);
-            #endif
-              myCartridge->thumbCallback(255, 0, 0);
-            }
-
-            break;
-          }
-
-          case ConfigureFor::CDF1:
-          case ConfigureFor::CDFJ:
-          case ConfigureFor::CDFJplus: {
-            // this subroutine interface is used in the CDF driver,
-            // it starts at address 0x00000750
-            // _SetNote:
-            //   ldr     r4, =NoteStore
-            //   bx      r4   // bx instruction at 0x000006e2
-            // _ResetWave:
-            //   ldr     r4, =ResetWaveStore
-            //   bx      r4   // bx instruction at 0x000006e6
-            // _GetWavePtr:
-            //   ldr     r4, =WavePtrFetch
-            //   bx      r4   // bx instruction at 0x000006ea
-            // _SetWaveSize:
-            //   ldr     r4, =WaveSizeStore
-            //   bx      r4   // bx instruction at 0x000006ee
-
-            // address to test for is + 4 due to pipelining
-            static constexpr uInt32
-                CDF1_SetNote     = (0x00000752 + 4),
-                CDF1_ResetWave   = (0x00000756 + 4),
-                CDF1_GetWavePtr  = (0x0000075a + 4),
-                CDF1_SetWaveSize = (0x0000075e + 4);
-
-            if      (pc == CDF1_SetNote)
-            {
-              myCartridge->thumbCallback(0, read_register(2), read_register(3));
-              // approximated cycles
-              INC_ARM_CYCLES(_flashCycles + 1);     // this instruction
-              INC_ARM_CYCLES(6);                    // ARM code NoteStore
-              INC_ARM_CYCLES(2 + _flashCycles + 2); // ARM code ReturnC
-              handled = true;
-            }
-            else if (pc == CDF1_ResetWave)
-            {
-              myCartridge->thumbCallback(1, read_register(2), 0);
-              // approximated cycles
-              INC_ARM_CYCLES(_flashCycles + 1);     // this instruction
-              INC_ARM_CYCLES(6 + _flashCycles + 2); // ARM code ResetWaveStore
-              INC_ARM_CYCLES(2 + _flashCycles + 2); // ARM code ReturnC
-              handled = true;
-            }
-            else if (pc == CDF1_GetWavePtr)
-            {
-              write_register(2, myCartridge->thumbCallback(2, read_register(2), 0));
-              // approximated cycles
-              INC_ARM_CYCLES(_flashCycles + 1);     // this instruction
-              INC_ARM_CYCLES(6 + _flashCycles + 2); // ARM code WavePtrFetch
-              INC_ARM_CYCLES(2 + _flashCycles + 2); // ARM code ReturnC
-              handled = true;
-            }
-            else if (pc == CDF1_SetWaveSize)
-            {
-              myCartridge->thumbCallback(3, read_register(2), read_register(3));
-              // approximated cycles
-              INC_ARM_CYCLES(_flashCycles + 1);           // this instruction
-              INC_ARM_CYCLES(18 + _flashCycles * 3 + 2);  // ARM code WaveSizeStore
-              INC_ARM_CYCLES(2 + _flashCycles + 2);       // ARM code ReturnC
-              handled = true;
-            }
-            else if (pc == 0x0000083a)
-            {
-              // exiting Custom ARM code, returning to CDFJ Driver control
-            }
-            else
-            {
-  #if 0  // uncomment this for testing
-              uInt32 r0 = read_register(0);
-              uInt32 r1 = read_register(1);
-              uInt32 r2 = read_register(2);
-              uInt32 r3 = read_register(3);
-              uInt32 r4 = read_register(4);
-  #endif
-              myCartridge->thumbCallback(255, 0, 0);
-            }
-
-            break;
-          }
-
-          case ConfigureFor::DPCplus:
-            // no 32-bit subroutines in DPC+
-            break;
-
-          default:
-            break;  // Stop braindead compiler from complaining
-        }
-
-        if (handled)
+        // branch to even address denotes 32 bit ARM code, which this core
+        // cannot execute.  Hand it off to the bus delegate (the owning
+        // cartridge), which emulates its own driver routines; it returns true
+        // if it did so (execution resumes after the call) or false to stop.
+        if(myBus && myBus->armBranch(pc, *this))
         {
           rc = read_register(14); // lr
           rc += 2;
-          //rc &= ~1;
           write_register(15, rc);
-          //_totalCycles += 100; // just a wild guess
           return 0;
         }
         return 1;

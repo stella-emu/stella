@@ -25,7 +25,7 @@
 #ifndef THUMBULATOR_HXX
 #define THUMBULATOR_HXX
 
-class Cartridge;
+class ThumbBusDelegate;
 
 #include "bspf.hxx"
 #include "Console.hxx"
@@ -87,7 +87,7 @@ class Thumbulator
                 uInt32 c_base, uInt32 c_start, uInt32 c_stack,
                 bool traponfatal, double cyclefactor,
                 Thumbulator::ConfigureFor configurefor,
-                Cartridge* cartridge);
+                ThumbBusDelegate* bus);
     ~Thumbulator() = default;
 
     /**
@@ -114,6 +114,25 @@ class Thumbulator
     void cycleFactor(double) { }
     double cycleFactor() const { return 1.0; }
   #endif
+
+    // Register/cycle surface exposed to the bus delegate, so that cartridges
+    // can emulate their own 32-bit ARM driver routines.  See ThumbBusDelegate.
+    // reg()/setReg() are defined out-of-line as read/write_register have
+    // internal linkage.
+    uInt32 reg(uInt32 n);
+    void setReg(uInt32 n, uInt32 value);
+    uInt32 flashCycles() const {
+    #ifdef THUMB_CYCLE_COUNT
+      return _flashCycles;
+    #else
+      return 4;
+    #endif
+    }
+    void incArmCycles([[maybe_unused]] uInt32 cycles) {
+    #ifdef THUMB_CYCLE_COUNT
+      _totalCycles += cycles;
+    #endif
+    }
 
     /**
       Normally when a fatal error is encountered, the ARM emulation
@@ -221,6 +240,10 @@ class Thumbulator
     bool isProtectedRAM(uInt32 addr);
     void write16(uInt32 addr, uInt32 data);
     void write32(uInt32 addr, uInt32 data);
+    // LPC2103 memory-mapped peripherals (MAM, Timer0/1, SysTick), split out
+    // from the 32-bit memory accessors to keep those readable
+    uInt32 readPeripheral(uInt32 addr);
+    void writePeripheral(uInt32 addr, uInt32 data);
     void updateTimer(uInt32 cycles);
 
     Op decodeInstructionWord(uint16_t inst, uInt32 pc);
@@ -316,7 +339,8 @@ class Thumbulator
 
     ConfigureFor configuration;
 
-    Cartridge* myCartridge{nullptr};
+    // Services 32-bit ARM driver routines this core cannot execute itself
+    ThumbBusDelegate* myBus{nullptr};
 
     static constexpr uInt32
       ROMADDMASK = 0x7FFFF,

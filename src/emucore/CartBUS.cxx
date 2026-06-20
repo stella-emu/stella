@@ -894,6 +894,51 @@ uInt32 CartridgeBUS::thumbCallback(uInt8 function, uInt32 value1, uInt32 value2)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool CartridgeBUS::armBranch(uInt32 pc, Thumbulator& core)
+{
+  // The BUS driver exposes a 32-bit ARM subroutine interface starting at
+  // 0x000006d8.  The address tested is +4 due to pipelining:
+  //   _SetNote     bx at 0x000006da
+  //   _ResetWave   bx at 0x000006de
+  //   _GetWavePtr  bx at 0x000006e2
+  //   _SetWaveSize bx at 0x000006e6
+  static constexpr uInt32
+      SetNote     = 0x000006da + 4,
+      ResetWave   = 0x000006de + 4,
+      GetWavePtr  = 0x000006e2 + 4,
+      SetWaveSize = 0x000006e6 + 4,
+      ExitCustom  = 0x0000083a;
+
+  switch(pc)
+  {
+    case SetNote:
+      thumbCallback(0, core.reg(2), core.reg(3));
+      return true;
+
+    case ResetWave:
+      thumbCallback(1, core.reg(2), 0);
+      return true;
+
+    case GetWavePtr:
+      core.setReg(2, thumbCallback(2, core.reg(2), 0));
+      return true;
+
+    case SetWaveSize:
+      thumbCallback(3, core.reg(2), core.reg(3));
+      return true;
+
+    case ExitCustom:
+      // exiting Custom ARM code, returning to BUS Driver control
+      return false;
+
+    default:
+      // run Custom ARM code, then stop
+      thumbCallback(255, 0, 0);
+      return false;
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 CartridgeBUS::internalRamGetValue(uInt16 addr) const
 {
   if(addr < internalRamSize())

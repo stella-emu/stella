@@ -535,6 +535,107 @@ uInt32 CartridgeCDF::thumbCallback(uInt8 function, uInt32 value1, uInt32 value2)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool CartridgeCDF::armBranch(uInt32 pc, Thumbulator& core)
+{
+  // The CDF driver exposes a 32-bit ARM subroutine interface; the entry
+  // addresses differ between the original CDF driver and the later
+  // CDF1/CDFJ/CDFJ+ drivers.  The address tested is +4 due to pipelining.
+  static constexpr uInt32 ExitCustom = 0x0000083a;
+
+  if(myCDFSubtype == CDFSubtype::CDF0)
+  {
+    // CDF driver, subroutine interface starts at 0x000006e0
+    static constexpr uInt32
+        SetNote     = 0x000006e2 + 4,
+        ResetWave   = 0x000006e6 + 4,
+        GetWavePtr  = 0x000006ea + 4,
+        SetWaveSize = 0x000006ee + 4;
+
+    switch(pc)
+    {
+      case SetNote:
+        thumbCallback(0, core.reg(2), core.reg(3));
+        return true;
+
+      case ResetWave:
+        thumbCallback(1, core.reg(2), 0);
+        return true;
+
+      case GetWavePtr:
+        core.setReg(2, thumbCallback(2, core.reg(2), 0));
+        return true;
+
+      case SetWaveSize:
+        thumbCallback(3, core.reg(2), core.reg(3));
+        return true;
+
+      case ExitCustom:
+        // exiting Custom ARM code, returning to CDF Driver control
+        return false;
+
+      default:
+        // run Custom ARM code, then stop
+        thumbCallback(255, 0, 0);
+        return false;
+    }
+  }
+  else
+  {
+    // CDF1/CDFJ/CDFJ+ driver, subroutine interface starts at 0x00000750
+    static constexpr uInt32
+        SetNote     = 0x00000752 + 4,
+        ResetWave   = 0x00000756 + 4,
+        GetWavePtr  = 0x0000075a + 4,
+        SetWaveSize = 0x0000075e + 4;
+    const uInt32 fc = core.flashCycles();
+
+    switch(pc)
+    {
+      case SetNote:
+        thumbCallback(0, core.reg(2), core.reg(3));
+        // approximated cycles
+        core.incArmCycles(fc + 1);      // this instruction
+        core.incArmCycles(6);           // ARM code NoteStore
+        core.incArmCycles(2 + fc + 2);  // ARM code ReturnC
+        return true;
+
+      case ResetWave:
+        thumbCallback(1, core.reg(2), 0);
+        // approximated cycles
+        core.incArmCycles(fc + 1);      // this instruction
+        core.incArmCycles(6 + fc + 2);  // ARM code ResetWaveStore
+        core.incArmCycles(2 + fc + 2);  // ARM code ReturnC
+        return true;
+
+      case GetWavePtr:
+        core.setReg(2, thumbCallback(2, core.reg(2), 0));
+        // approximated cycles
+        core.incArmCycles(fc + 1);      // this instruction
+        core.incArmCycles(6 + fc + 2);  // ARM code WavePtrFetch
+        core.incArmCycles(2 + fc + 2);  // ARM code ReturnC
+        return true;
+
+      case SetWaveSize:
+        thumbCallback(3, core.reg(2), core.reg(3));
+        // approximated cycles
+        core.incArmCycles(fc + 1);          // this instruction
+        core.incArmCycles(18 + fc * 3 + 2); // ARM code WaveSizeStore
+        core.incArmCycles(2 + fc + 2);      // ARM code ReturnC
+        return true;
+
+      case ExitCustom:
+        // exiting Custom ARM code, returning to CDFJ Driver control
+        return false;
+
+      default:
+        // run Custom ARM code, then stop
+        thumbCallback(255, 0, 0);
+        return false;
+    }
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 CartridgeCDF::internalRamGetValue(uInt16 addr) const
 {
   return (addr < internalRamSize()) ? myRAM[addr] : 0;

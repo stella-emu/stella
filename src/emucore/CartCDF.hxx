@@ -164,6 +164,11 @@ class CartridgeCDF : public CartridgeARM
     uInt32 thumbCallback(uInt8 function, uInt32 value1, uInt32 value2) override;
 
     /**
+      Emulate the CDF driver's 32-bit ARM subroutine interface.  See ThumbBusDelegate.
+    */
+    bool armBranch(uInt32 pc, Thumbulator& core) override;
+
+    /**
       Query the internal RAM size of the cart.
 
       @return The internal RAM size
