@@ -28,7 +28,7 @@
 class ThumbBusDelegate;
 
 #include "bspf.hxx"
-#include "Console.hxx"
+#include "ConsoleTiming.hxx"
 
 #ifdef DEBUGGER_SUPPORT
   #define THUMB_CYCLE_COUNT
