@@ -351,7 +351,9 @@ class Thumbulator
     double _armCyclesFactor{1.05};
     uInt32 _pipeIdx{0};
     CycleType _prefetchCycleType[3]{CycleType::S};
+   #ifdef MERGE_I_S
     CycleType _lastCycleType[3]{CycleType::S};
+   #endif
    #ifdef EMULATE_PIPELINE
     uInt32 _fetchPipeline{0}; // reserve fetch cycles resulting from pipelining (execution stage)
     uInt32 _memory0Pipeline{0}, _memory1Pipeline{0};

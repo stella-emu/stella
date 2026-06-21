@@ -26,6 +26,7 @@
 #include "Base.hxx"
 #include "ThumbBusDelegate.hxx"
 #include "Thumbulator.hxx"
+
 using Common::Base;
 
 // Uncomment the following to enable specific functionality
@@ -33,28 +34,27 @@ using Common::Base;
 // #define THUMB_DISS
 // #define THUMB_DBUG
 
-#ifdef THUMB_DISS
-  static constexpr bool THUMB_DISS_ENABLED = true;
-#else
-  static constexpr bool THUMB_DISS_ENABLED = false;
-#endif
-#ifdef THUMB_DBUG
-  static constexpr bool THUMB_DBUG_ENABLED = true;
-#else
-  static constexpr bool THUMB_DBUG_ENABLED = false;
-#endif
-
 namespace {
   // Disassembly/debug output, formatted only when the matching toggle is on.
   // The std::format call lives in a discarded if-constexpr branch of a template,
   // so when disabled nothing is built; the format string is still validated at
   // compile time via std::format_string's consteval check.
+#ifdef THUMB_DISS
+  constexpr bool THUMB_DISS_ENABLED = true;
+#else
+  constexpr bool THUMB_DISS_ENABLED = false;
+#endif
   template<typename... Args>
   void doDiss(std::ostringstream& msg, std::format_string<Args...> fmt, Args&&... args)
   {
     if constexpr(THUMB_DISS_ENABLED)
       msg << std::format(fmt, std::forward<Args>(args)...);
   }
+#ifdef THUMB_DBUG
+  constexpr bool THUMB_DBUG_ENABLED = true;
+#else
+  constexpr bool THUMB_DBUG_ENABLED = false;
+#endif
   template<typename... Args>
   void doDbug(std::ostringstream& msg, std::format_string<Args...> fmt, Args&&... args)
   {
@@ -610,7 +610,7 @@ void Thumbulator::writePeripheral(uInt32 addr, uInt32 data)
   switch(addr)
   {
     case 0xE0000000:
-      doDiss(statusMsg, "uart: [{}]\n", char(data&0xFF));
+      doDiss(statusMsg, "uart: [{}]\n", static_cast<char>(data&0xFF));
       break;
 #ifdef TIMER_0
     case 0xE0004004:  // T0TCR - Timer 0 Control Register
