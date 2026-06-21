@@ -71,16 +71,16 @@ class Thumbulator
       uInt32 flashCycles;
       uInt32 flashBanks;
     };
+    // All fields always present (cheap) so thumbStat()'s by-reference argument
+    // binds even when THUMB_STATS is off; the increment itself is elided then.
     struct Stats {
       uInt32 instructions{0};
-    #ifdef THUMB_STATS
       uInt32 reads{0}, writes{0};
       uInt32 nCycles{0}, sCycles{0}, iCycles{0};
       uInt32 branches{0}, taken{0};
       uInt32 mamPrefetchHits{0}, mamPrefetchMisses{0};
       uInt32 mamBranchHits{0}, mamBranchMisses{0};
       uInt32 mamDataHits{0}, mamDataMisses{0};
-    #endif
     };
 
     Thumbulator(const uInt16* rom_ptr, uInt16* ram_ptr, uInt32 rom_size,
@@ -211,14 +211,14 @@ class Thumbulator
       uxth,
       numOps
     };
-  #ifdef THUMB_CYCLE_COUNT
+    // Always defined (even without cycle counting) so the cycle-helper
+    // signatures below compile in non-debugger builds.
     enum class CycleType: uInt8 {
       S, N, I // Sequential, Non-sequential, Internal
     };
     enum class AccessType: uInt8 {
       prefetch, branch, data
     };
-  #endif
     const std::array<ChipPropsType,
         static_cast<uInt32>(ChipType::numTypes)> ChipProps =
     {{
@@ -264,9 +264,39 @@ class Thumbulator
   #ifdef THUMB_CYCLE_COUNT
     bool isMamBuffered(uInt32 addr, AccessType = AccessType::data);
     void incCycles(AccessType accessType, uInt32 cycles);
-    void incSCycles(uInt32 addr, AccessType = AccessType::data);
-    void incNCycles(uInt32 addr, AccessType = AccessType::data);
-    void incICycles(uInt32 m = 1);
+    void doSCycles(uInt32 addr, AccessType accessType);
+    void doNCycles(uInt32 addr, AccessType accessType);
+    void doICycles(uInt32 m);
+
+    // Inline gated wrappers replacing the former INC_*_CYCLES macros.  The
+    // counting only runs once the ARM code has enabled it (_countCycles).
+    FORCE_INLINE void incSCycles(uInt32 addr, AccessType t = AccessType::data)
+    { if(_countCycles) doSCycles(addr, t); }
+    FORCE_INLINE void incNCycles(uInt32 addr, AccessType t = AccessType::data)
+    { if(_countCycles) doNCycles(addr, t); }
+    FORCE_INLINE void incICycles(uInt32 m = 1)
+    { if(_countCycles) doICycles(m); }
+    FORCE_INLINE void incShiftCycles() { incICycles(); }
+    FORCE_INLINE void incLdrCycles(uInt32 rb)
+    { incNCycles(rb, AccessType::data); incICycles(); }
+    FORCE_INLINE void incLdrbCycles(uInt32 rb)
+    { incNCycles(rb & (~1U), AccessType::data); incICycles(); }
+    FORCE_INLINE void incStrCycles(uInt32 rb)
+    { incNCycles(rb, AccessType::data); fetchTypeN(); }
+    FORCE_INLINE void incStrbCycles(uInt32 rb)
+    { incNCycles(rb & (~1U), AccessType::data); fetchTypeN(); }
+    FORCE_INLINE void fetchTypeN() { _prefetchCycleType[_pipeIdx] = CycleType::N; }
+  #else
+    // No-ops when cycle counting is compiled out (zero overhead).
+    void incSCycles(uInt32, AccessType = AccessType::data) {}
+    void incNCycles(uInt32, AccessType = AccessType::data) {}
+    void incICycles(uInt32 = 1) {}
+    void incShiftCycles() {}
+    void incLdrCycles(uInt32) {}
+    void incLdrbCycles(uInt32) {}
+    void incStrCycles(uInt32) {}
+    void incStrbCycles(uInt32) {}
+    void fetchTypeN() {}
   #endif
     bool searchPattern(uInt32 pattern, uInt32 repeats = 1) const;
 
