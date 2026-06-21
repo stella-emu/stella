@@ -548,7 +548,6 @@ uInt32 Thumbulator::readPeripheral(uInt32 addr)
 
     case 0xE0004008:  // T0TC - Timer 0 Counter
     #ifdef THUMB_CYCLE_COUNT
-      // NOLINTBEGIN(clang-analyzer-deadcode.DeadStores)
       if(T0TCR & 1)
         // timer is counting
         data = T0TC + (tim0Total + (_totalCycles - tim0Start)) * _armCyclesFactor;
@@ -558,8 +557,7 @@ uInt32 Thumbulator::readPeripheral(uInt32 addr)
     #else
       data = T0TC;
     #endif
-      // NOLINTEND(clang-analyzer-deadcode.DeadStores)
-      break;
+      return data;
   #endif
     case 0xE0008004:  // T1TCR - Timer 1 Control Register
       data = T1TCR;
