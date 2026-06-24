@@ -17,6 +17,7 @@
 
 #include "ElfParser.hxx"
 
+#include <algorithm>
 #include <cstring>
 #include <iomanip>
 
@@ -91,7 +92,7 @@ void ElfParser::parse(const uInt8 *elfData, size_t size)
 
       vector<Relocation> rels;
       const size_t relocationCount = section.size / (section.type == SHT_REL ? REL_ENTRY_SIZE : RELA_ENTRY_SIZE);
-      rels.reserve(section.size / relocationCount);
+      rels.reserve(relocationCount);
 
       for (uInt32 i = 0; i < relocationCount; i++) {
         Relocation rel = readRelocation(i, section);
@@ -176,8 +177,12 @@ ElfParser::Section ElfParser::readSection(uInt32 offset) const {
     section.info = read32(offset + 0x1c);
     section.align = read32(offset + 0x20);
 
-    if (section.offset + section.size >= mySize && section.type != SHT_NOBITS)
-      ElfParseError::raise("section  exceeds bounds");
+    // Compute in 64-bit so a crafted offset/size pair cannot overflow a
+    // 32-bit sum and slip past this bounds check (which would later let
+    // getName() dereference out of bounds).
+    if (section.type != SHT_NOBITS &&
+        static_cast<uInt64>(section.offset) + section.size >= mySize)
+      ElfParseError::raise("section exceeds bounds");
 
   } catch (const ElfParseError &e) {
     ElfParseError::raise("failed to read section: " + string(e.what()));
@@ -255,11 +260,21 @@ ElfParser::Relocation ElfParser::readRelocation(uInt32 index, const Section& sec
 const char* ElfParser::getName(const Section& section, uInt32 offset) const
 {
   if (offset >= section.size) ElfParseError::raise("name out of bounds");
-  const uInt32 imageOffset = offset + section.offset;
+
+  // Compute the absolute offset in 64-bit (avoids 32-bit wraparound) and
+  // verify it lies within the image; the bytes below are read directly here,
+  // not through the bounds-checked read8().
+  const uInt64 imageOffset = static_cast<uInt64>(section.offset) + offset;
+  if (imageOffset >= mySize) ElfParseError::raise("name out of bounds");
 
   const char* name = reinterpret_cast<const char*>(myData + imageOffset);
 
-  if (myData[imageOffset + strnlen(name, section.size - offset)] != '\0')
+  // The name must be NUL-terminated within both the section and the image.
+  // If strnlen scans the whole bound without finding a terminator, the name
+  // is unterminated (and reading one byte further would be out of bounds).
+  const size_t maxLen = std::min(static_cast<size_t>(section.size - offset),
+                                 static_cast<size_t>(mySize - imageOffset));
+  if (strnlen(name, maxLen) == maxLen)
     ElfParseError::raise("unterminated section name");
 
   return name;
