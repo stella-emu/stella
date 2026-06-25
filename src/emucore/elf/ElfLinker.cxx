@@ -240,8 +240,11 @@ void ElfLinker::relocateSections()
 
     uInt32& segmentSize = getSegmentSizeRef(*segmentType);
 
-    if (segmentSize % section.align)
-      segmentSize = (segmentSize / section.align + 1) * section.align;
+    // A section alignment of 0 (or 1) means no constraint; guard against a
+    // crafted ELF that would otherwise trigger a divide-by-zero here
+    const uInt32 align = section.align ? section.align : 1;
+    if (segmentSize % align)
+      segmentSize = (segmentSize / align + 1) * align;
 
     myRelocatedSections[i] = {*segmentType, segmentSize};
     segmentSize += section.size;
@@ -252,8 +255,9 @@ void ElfLinker::relocateSections()
     const auto& section = sections[i];
 
     if (section.type == ElfFile::SHT_NOBITS) {
-      if (myDataSize % section.align)
-        myDataSize = (myDataSize / section.align + 1) * section.align;
+      const uInt32 align = section.align ? section.align : 1;
+      if (myDataSize % align)
+        myDataSize = (myDataSize / align + 1) * align;
 
       myRelocatedSections[i] = {SegmentType::data, myDataSize};
       myDataSize += section.size;
@@ -414,7 +418,7 @@ void ElfLinker::copyInitArrays(vector<uInt32>& initArray, const std::unordered_m
   const auto& sections = myElf.getSections();
 
   // Copy init arrays
-  for (const auto [iSection, offset]: relocatedInitArrays) {
+  for (const auto& [iSection, offset]: relocatedInitArrays) {
     const auto& section = sections[iSection];
 
     for (size_t i = 0; i < section.size; i += 4)

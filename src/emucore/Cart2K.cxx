@@ -43,8 +43,10 @@ Cartridge2K::Cartridge2K(ByteSpan image, string_view md5,
   {
     // Manually 'mirror' the ROM image into the buffer
     myImage.assign(System::PAGE_SIZE, 0);
+    // newSize is rounded up to a power of two, so it may exceed the actual
+    // image size; clamp the source read to avoid reading past the image
     for(size_t i = 0; i < System::PAGE_SIZE; i += newSize)
-      std::copy_n(image.data(), newSize, myImage.data() + i);
+      std::copy_n(image.data(), std::min(newSize, size), myImage.data() + i);
     myBankShift = System::PAGE_SHIFT;
   }
   else if(newSize < myImage.size())

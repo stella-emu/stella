@@ -27,6 +27,11 @@
   #pragma clang diagnostic ignored "-Weverything"
   #include "json.hpp"
   #pragma clang diagnostic pop
+#elif defined(__GNUC__) || defined(__GNUG__)
+  #pragma GCC diagnostic push
+  #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+  #include "json.hpp"
+  #pragma GCC diagnostic pop
 #elif defined(BSPF_WINDOWS)
   #pragma warning(push, 0)
   #include "json.hpp"
