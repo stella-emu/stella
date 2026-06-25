@@ -797,6 +797,8 @@ PhysicalKeyboardHandler::DefaultCommonMapping = []() noexcept {
     { Event::UnwindAllMenu,            StellaKey::UP, MOD3 },
     { Event::HighScoresMenuMode,       StellaKey::INSERT },
     { Event::TogglePlayBackMode,       StellaKey::SPACE, StellaMod::SHIFT },
+    { Event::ToggleMovieRecord,        StellaKey::R, StellaMod::SHIFT },
+    { Event::ToggleMoviePlayback,      StellaKey::P, StellaMod::SHIFT },
 
     { Event::ConsoleBlackWhite,        StellaKey::F4 },
     { Event::ConsoleLeftDiffB,         StellaKey::F6 },

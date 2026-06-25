@@ -19,12 +19,13 @@
 #include "Settings.hxx"
 #include "Console.hxx"
 #include "Cart.hxx"
+#include "Control.hxx"
 #include "Switches.hxx"
+#include "System.hxx"
+#include "Event.hxx"
 #include "RewindManager.hxx"
 
 #include "StateManager.hxx"
-
-// #define MOVIE_HEADER "03030000movie"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 StateManager::StateManager(OSystem& osystem)
@@ -37,88 +38,233 @@ StateManager::StateManager(OSystem& osystem)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 StateManager::~StateManager() = default;
 
-#if 0
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void StateManager::toggleRecordMode()
+string StateManager::movieFile() const
 {
-  if(myActiveMode != kMovieRecordMode)  // Turn on movie record mode
+  return std::format("{}{}.inp",
+    myOSystem.stateDir().getPath(),
+    myOSystem.console().properties().get(PropType::Cart_Name));
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+StateManager::Mode StateManager::defaultMode() const
+{
+  const bool devSettings = myOSystem.settings().getBool("dev.settings");
+  const bool timeMachine = myOSystem.settings().getBool(
+    devSettings ? "dev.timemachine" : "plr.timemachine");
+
+  return timeMachine ? Mode::TimeMachine : Mode::Off;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool StateManager::toggleRecordMode()
+{
+  if(myActiveMode != Mode::MovieRecord)
+    return startRecording();
+
+  stopRecording();
+  return false;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool StateManager::togglePlaybackMode()
+{
+  if(myActiveMode != Mode::MoviePlayback)
+    return startPlayback();
+
+  stopPlayback();
+  myOSystem.frameBuffer().showTextMessage("Movie playback stopped");
+  return false;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool StateManager::startRecording()
+{
+  if(!myOSystem.hasConsole())
+    return false;
+
+  // A movie is exclusive with any other state mode
+  if(myActiveMode == Mode::MoviePlayback)
+    stopPlayback();
+
+  myMovie = std::make_unique<Serializer>(movieFile(),
+                                         Serializer::FileMode::ReadWriteTrunc);
+  if(!*myMovie)
   {
-    myActiveMode = kOffMode;
-
-    string moviefile = /*myOSystem.baseDir() +*/ "test.inp";
-    if(myMovieWriter.isOpen())
-      myMovieWriter.close();
-    if(!myMovieWriter.open(moviefile))
-      return false;
-
-    // Prepend the ROM md5 so this state file only works with that ROM
-    myMovieWriter.putString(myOSystem.console().properties().get(Cartridge_MD5));
-
-    if(!myOSystem.console().save(myMovieWriter))
-      return false;
-
-    // Save controller types for this ROM
-    // We need to check this, since some controllers save more state than
-    // normal, and those states files wouldn't be compatible with normal
-    // controllers.
-    myMovieWriter.putString(
-      myOSystem.console().controller(Controller::Jack::Left).name());
-    myMovieWriter.putString(
-      myOSystem.console().controller(Controller::Jack::Right).name());
-
-    // If we get this far, we're really in movie record mode
-    myActiveMode = kMovieRecordMode;
-  }
-  else  // Turn off movie record mode
-  {
-    myActiveMode = kOffMode;
-    myMovieWriter.close();
+    myMovie.reset();
+    myOSystem.frameBuffer().showTextMessage("Can't open movie file for recording");
     return false;
   }
 
-  return myActiveMode == kMovieRecordMode;
-////////////////////////////////////////////////////////
-// FIXME - For now, I'm going to use this to activate movie playback
-  // Close the writer, since we're about to re-open in read mode
-  myMovieWriter.close();
-
-  if(myActiveMode != kMoviePlaybackMode)  // Turn on movie playback mode
+  try
   {
-    myActiveMode = kOffMode;
+    // The format id, ROM md5 and controller names tie a movie to a specific
+    // machine setup; the initial state lets playback start from this point
+    myMovie->putString(MOVIE_HEADER);
+    myMovie->putString(myOSystem.console().properties().get(PropType::Cart_MD5));
+    myMovie->putString(myOSystem.console().leftController().name());
+    myMovie->putString(myOSystem.console().rightController().name());
 
-    string moviefile = /*myOSystem.baseDir() + */ "test.inp";
-    if(myMovieReader.isOpen())
-      myMovieReader.close();
-    if(!myMovieReader.open(moviefile))
+    if(!saveState(*myMovie))
+    {
+      myMovie.reset();
+      myOSystem.frameBuffer().showTextMessage("Error writing movie header");
       return false;
-
-    // Check the ROM md5
-    if(myMovieReader.getString() !=
-       myOSystem.console().properties().get(Cartridge_MD5))
-      return false;
-
-    if(!myOSystem.console().load(myMovieReader))
-      return false;
-
-    // Check controller types
-    const string& left  = myMovieReader.getString();
-    const string& right = myMovieReader.getString();
-
-    if(left != myOSystem.console().controller(Controller::Jack::Left).name() ||
-       right != myOSystem.console().controller(Controller::Jack::Right).name())
-      return false;
-
-    // If we get this far, we're really in movie record mode
-    myActiveMode = kMoviePlaybackMode;
+    }
   }
-  else  // Turn off movie playback mode
+  catch(...)
   {
-    myActiveMode = kOffMode;
-    myMovieReader.close();
+    myMovie.reset();
+    myOSystem.frameBuffer().showTextMessage("Error writing movie header");
+    return false;
+  }
+
+  myMovieFrames = 0;
+  myActiveMode = Mode::MovieRecord;
+  myOSystem.frameBuffer().showTextMessage("Movie recording started");
+  return true;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void StateManager::stopRecording()
+{
+  if(myMovie)
+  {
+    // End-of-movie marker, then flush and close
+    try { myMovie->putBool(false); }
+    catch(...) { }  // NOLINT(bugprone-empty-catch)
+    myMovie.reset();
+  }
+
+  myActiveMode = defaultMode();
+  myOSystem.frameBuffer().showTextMessage(
+    std::format("Movie recording stopped ({} frames)", myMovieFrames));
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void StateManager::recordFrame(const Event& event)
+{
+  if(myActiveMode != Mode::MovieRecord || !myMovie)
+    return;
+
+  try
+  {
+    myMovie->putBool(true);  // a frame follows
+    // Per-frame sync check: deterministic emulation reproduces the exact cycle
+    // count, so a mismatch on playback pinpoints a desync
+    myMovie->putLong(myOSystem.console().system().cycles());
+    event.saveInputWindow(*myMovie);
+    ++myMovieFrames;
+  }
+  catch(...)
+  {
+    myOSystem.frameBuffer().showTextMessage("Error writing movie, recording stopped");
+    stopRecording();
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool StateManager::startPlayback()
+{
+  if(!myOSystem.hasConsole())
+    return false;
+
+  if(myActiveMode == Mode::MovieRecord)
+    stopRecording();
+
+  myMovie = std::make_unique<Serializer>(movieFile(),
+                                         Serializer::FileMode::ReadOnly);
+  if(!*myMovie)
+  {
+    myMovie.reset();
+    myOSystem.frameBuffer().showTextMessage("No movie file to play back");
+    return false;
+  }
+
+  try
+  {
+    if(myMovie->getString() != MOVIE_HEADER)
+    {
+      myMovie.reset();
+      myOSystem.frameBuffer().showTextMessage("Incompatible movie file");
+      return false;
+    }
+    if(myMovie->getString() !=
+       myOSystem.console().properties().get(PropType::Cart_MD5))
+    {
+      myMovie.reset();
+      myOSystem.frameBuffer().showTextMessage("Movie is for a different ROM");
+      return false;
+    }
+    const string left  = myMovie->getString();
+    const string right = myMovie->getString();
+    if(left  != myOSystem.console().leftController().name() ||
+       right != myOSystem.console().rightController().name())
+    {
+      myMovie.reset();
+      myOSystem.frameBuffer().showTextMessage("Movie controller mismatch");
+      return false;
+    }
+    if(!loadState(*myMovie))
+    {
+      myMovie.reset();
+      myOSystem.frameBuffer().showTextMessage("Invalid movie state data");
+      return false;
+    }
+  }
+  catch(...)
+  {
+    myMovie.reset();
+    myOSystem.frameBuffer().showTextMessage("Error reading movie file");
+    return false;
+  }
+
+  myMovieFrames = 0;
+  myActiveMode = Mode::MoviePlayback;
+  myOSystem.frameBuffer().showTextMessage("Movie playback started");
+  return true;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void StateManager::stopPlayback()
+{
+  myMovie.reset();
+  myActiveMode = defaultMode();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool StateManager::playbackFrame(Event& event, uInt64 nowCycles)
+{
+  if(myActiveMode != Mode::MoviePlayback || !myMovie)
+    return false;
+
+  try
+  {
+    if(!myMovie->getBool())  // end-of-movie marker
+    {
+      const uInt32 frames = myMovieFrames;
+      stopPlayback();
+      myOSystem.frameBuffer().showTextMessage(
+        std::format("Movie playback ended ({} frames)", frames));
+      return false;
+    }
+
+    const uInt64 recCycles = myMovie->getLong();
+    if(recCycles != nowCycles)
+      myOSystem.frameBuffer().showTextMessage(
+        std::format("Movie desync at frame {}", myMovieFrames));
+
+    event.loadInputWindow(*myMovie, nowCycles);
+    ++myMovieFrames;
+    return true;
+  }
+  catch(...)
+  {
+    myOSystem.frameBuffer().showTextMessage("Error reading movie, playback stopped");
+    stopPlayback();
     return false;
   }
 }
-#endif
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void StateManager::toggleTimeMachine()
@@ -167,31 +313,10 @@ bool StateManager::windStates(uInt32 numStates, bool unwind)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void StateManager::update()
 {
+  // Movie record/playback is driven per input window from EventHandler::poll;
+  // only the rewind facility needs servicing here
   if(myActiveMode == Mode::TimeMachine)
     myRewindManager->addState("Time Machine", true);
-
-#if 0
-  switch(myActiveMode)
-  {
-    case Mode::TimeMachine:
-      myRewindManager->addState("Time Machine", true);
-      break;
-
-    case Mode::MovieRecord:
-      myOSystem.console().controller(Controller::Jack::Left).save(myMovieWriter);
-      myOSystem.console().controller(Controller::Jack::Right).save(myMovieWriter);
-      myOSystem.console().switches().save(myMovieWriter);
-      break;
-
-    case Mode::MoviePlayback:
-      myOSystem.console().controller(Controller::Jack::Left).load(myMovieReader);
-      myOSystem.console().controller(Controller::Jack::Right).load(myMovieReader);
-      myOSystem.console().switches().load(myMovieReader);
-      break;
-    default:
-      break;
-  }
-#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -364,28 +489,9 @@ void StateManager::reset()
   myCurrentSlot = 0;
   myRewindManager->clear();
 
-  const bool devSettings = myOSystem.settings().getBool("dev.settings");
-  const bool timeMachine = myOSystem.settings().getBool(
-    devSettings ? "dev.timemachine" : "plr.timemachine");
+  // Abandon any in-progress movie (e.g. on console reset/reload)
+  myMovie.reset();
+  myMovieFrames = 0;
 
-  myActiveMode = timeMachine ? Mode::TimeMachine : Mode::Off;
-
-#if 0
-  myCurrentSlot = 0;
-
-  switch(myActiveMode)
-  {
-    case kMovieRecordMode:
-      myMovieWriter.close();
-      break;
-
-    case kMoviePlaybackMode:
-      myMovieReader.close();
-      break;
-
-    default:
-      break;
-  }
-  myActiveMode = kOffMode;
-#endif
+  myActiveMode = defaultMode();
 }

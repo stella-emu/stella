@@ -25,6 +25,8 @@
 
 #include "bspf.hxx"
 
+class Serializer;
+
 /**
   Holds the current value of every event type, plus a schedule of input
   transitions recorded over the current input window.  This models controllers
@@ -201,6 +203,7 @@ class Event
       SALeftAxis0Value, SALeftAxis1Value, SARightAxis0Value, SARightAxis1Value,
       QTPaddle3AFire, QTPaddle3BFire, QTPaddle4AFire, QTPaddle4BFire,
       UIHelp,
+      ToggleMovieRecord, ToggleMoviePlayback,
       LastType
     };
 
@@ -275,6 +278,11 @@ class Event
     */
     void set(Type type, Int32 value) {
       const std::scoped_lock lock(myMutex);
+
+      // While input is locked (movie playback), live hardware input is ignored;
+      // the emulation-visible state comes solely from loadInputWindow()
+      if(myInputLocked)
+        return;
 
       // Continuous inputs (analog axes, mouse motion) are read once per window
       // as a whole value and never replayed, so they aren't recorded
@@ -362,6 +370,33 @@ class Event
     }
 
     /**
+      Lock or unlock live input.  While locked, set() ignores all hardware
+      input, so the only way the emulation-visible state changes is via
+      loadInputWindow().  Used during movie playback.
+    */
+    void setInputLocked(bool locked) {
+      const std::scoped_lock lock(myMutex);
+
+      myInputLocked = locked;
+    }
+
+    /**
+      Serialize the finalized input window for movie recording / netplay: the
+      digital transition schedule plus the current value of every continuous
+      input (analog axes and mouse motion, which carry no transitions).  Call
+      after finalizeInputWindow().
+    */
+    void saveInputWindow(Serializer& out) const;
+
+    /**
+      Restore an input window during movie playback, replacing whatever
+      pollEvent() would have produced.  'nowCycles' is the playback
+      System::cycles() at this poll; deterministic emulation makes it match the
+      recording, so the recorded window-relative transition positions line up.
+    */
+    void loadInputWindow(Serializer& in, uInt64 nowCycles);
+
+    /**
       Clears the event array (resets to initial state).
     */
     void clear()
@@ -372,6 +407,7 @@ class Event
       myTransitions.clear();
       myRecording = false;
       myHasTransitions = false;
+      myInputLocked = false;
     }
 
     /**
@@ -437,6 +473,9 @@ class Event
 
     // True while the input window is open and set() should record transitions
     bool myRecording{false};
+
+    // True while live input is ignored (movie playback); see setInputLocked
+    bool myInputLocked{false};
 
     // Start of the current input window, and the length of the previous one,
     // on the system (CPU) clock (see windowPosition and finalizeInputWindow).

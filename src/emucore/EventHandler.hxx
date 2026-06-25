@@ -80,14 +80,7 @@ class EventHandler
       libretro) call this directly instead of poll(), so controller reads see
       the input window there too.
     */
-    void pollInput() {
-      // The input window is measured on the system clock; pass the current
-      // cycle (0 when no console is loaded, e.g. in the launcher, where no
-      // controller reads occur)
-      myEvent.beginInputWindow(currentSystemCycles());
-      pollEvent();
-      myEvent.finalizeInputWindow();
-    }
+    void pollInput();
 
     /**
       Initialize state of this eventhandler.
@@ -586,7 +579,7 @@ class EventHandler
     #else
       REFRESH_SIZE         = 0,
     #endif
-      EMUL_ACTIONLIST_SIZE = 242 + PNG_SIZE + COMBO_SIZE + REFRESH_SIZE,
+      EMUL_ACTIONLIST_SIZE = 244 + PNG_SIZE + COMBO_SIZE + REFRESH_SIZE,
       MENU_ACTIONLIST_SIZE = 20
     ;
 

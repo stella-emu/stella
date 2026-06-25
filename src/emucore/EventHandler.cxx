@@ -255,6 +255,51 @@ uInt64 EventHandler::currentSystemCycles() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void EventHandler::pollInput()
+{
+  // During movie playback the recorded eventstream defines the emulation input;
+  // live input is ignored (locked out at the Event::set() chokepoint)
+  if(myOSystem.state().mode() == StateManager::Mode::MoviePlayback)
+  {
+    myEvent.setInputLocked(true);
+    // Still pump hardware so the window stays responsive and the user can stop
+    // playback; those events are dropped by the lock
+    pollEvent();
+    // Unless the user just stopped playback, feed the next recorded window
+    if(myOSystem.state().mode() == StateManager::Mode::MoviePlayback)
+      myOSystem.state().playbackFrame(myEvent, currentSystemCycles());
+    return;
+  }
+
+  // The input window is measured on the system clock; pass the current cycle
+  // (0 when no console is loaded, e.g. in the launcher, where no controller
+  // reads occur)
+  myEvent.setInputLocked(false);
+  myEvent.beginInputWindow(currentSystemCycles());
+  pollEvent();
+  myEvent.finalizeInputWindow();
+
+  switch(myOSystem.state().mode())
+  {
+    case StateManager::Mode::MovieRecord:
+      // Append this window to the movie being recorded
+      myOSystem.state().recordFrame(myEvent);
+      break;
+
+    case StateManager::Mode::MoviePlayback:
+      // Playback was just toggled on during pollEvent (the initial state has
+      // been restored); discard the stale live window and feed the first
+      // recorded frame, so this frame emulates from the restored state
+      myEvent.setInputLocked(true);
+      myOSystem.state().playbackFrame(myEvent, currentSystemCycles());
+      break;
+
+    default:
+      break;
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventHandler::poll(uInt64 time)
 {
   // Drain hardware input into a fresh input window (opened, filled from the
@@ -1410,6 +1455,22 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       {
         myOSystem.frameBuffer().showTextMessage(myOSystem.state().rewindManager().saveAllStates());
         myGlobalKeyHandler->setDirectSetting(GlobalKeyHandler::Setting::STATE);
+      }
+      return;
+
+    case Event::ToggleMovieRecord:
+      // Movie record/playback only make sense while actively emulating; the
+      // emulation keeps running (the EventHandlerState does not change)
+      if(pressed && !repeated && myState == EventHandlerState::EMULATION)
+        myOSystem.state().toggleRecordMode();
+      return;
+
+    case Event::ToggleMoviePlayback:
+      if(pressed && !repeated && myState == EventHandlerState::EMULATION)
+      {
+        // pollInput() owns the input lock; toggling playback off here unlocks
+        // it on the next poll, so no explicit unlock is needed
+        myOSystem.state().togglePlaybackMode();
       }
       return;
 
@@ -3017,6 +3078,8 @@ EventHandler::EmulActionList EventHandler::ourEmulActionList = { {
   { Event::Unwind10Menu,            "Unwind 10 states & enter TM UI"        },
   { Event::UnwindAllMenu,           "Unwind all states & enter TM UI"       },
   { Event::TogglePlayBackMode,      "Toggle 'Time Machine' playback mode"   },
+  { Event::ToggleMovieRecord,       "Toggle movie recording"                },
+  { Event::ToggleMoviePlayback,     "Toggle movie playback"                 },
 
   // Developer:
   { Event::ToggleDeveloperSet,      "Toggle developer settings sets"        },
@@ -3141,6 +3204,7 @@ const Event::EventSet EventHandler::StateEvents = {
   Event::Rewind1Menu, Event::Rewind10Menu, Event::RewindAllMenu,
   Event::Unwind1Menu, Event::Unwind10Menu, Event::UnwindAllMenu,
   Event::TogglePlayBackMode,
+  Event::ToggleMovieRecord, Event::ToggleMoviePlayback,
   Event::SaveAllStates, Event::LoadAllStates, Event::ToggleAutoSlot,
 };
 

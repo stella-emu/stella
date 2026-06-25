@@ -20,6 +20,7 @@
 
 class OSystem;
 class RewindManager;
+class Event;
 
 #include "Serializer.hxx"
 
@@ -35,11 +36,12 @@ class StateManager
   public:
     enum class Mode: uInt8 {
       Off,
-      TimeMachine
-//       MovieRecord,
-//       MoviePlayback
+      TimeMachine,
+      MovieRecord,
+      MoviePlayback
     };
     static constexpr string_view STATE_HEADER = "07000003state";
+    static constexpr string_view MOVIE_HEADER = "001movie";
 
     /**
       Create a new statemananger class.
@@ -53,12 +55,38 @@ class StateManager
     */
     Mode mode() const { return myActiveMode; }
 
-#if 0
     /**
-      Toggle movie recording mode (FIXME - currently disabled)
+      Toggle movie recording mode.  Recording captures the initial machine
+      state plus the per-frame input eventstream to a movie file.
+
+      @return  True if recording is now active
     */
-    void toggleRecordMode();
-#endif
+    bool toggleRecordMode();
+
+    /**
+      Toggle movie playback mode.  Playback restores the recorded initial
+      machine state and then replays the input eventstream frame by frame.
+
+      @return  True if playback is now active
+    */
+    bool togglePlaybackMode();
+
+    /**
+      Append the current (finalized) input window to the movie being recorded.
+      Called once per frame while in MovieRecord mode.
+    */
+    void recordFrame(const Event& event);
+
+    /**
+      Load the next input window from the movie being played back into 'event'.
+      Called once per frame while in MoviePlayback mode, before the frame is
+      emulated.
+
+      @param nowCycles  The current System::cycles() at this poll
+      @return  True if a frame was loaded; false if the movie ended (playback
+               is stopped) or an error occurred
+    */
+    bool playbackFrame(Event& event, uInt64 nowCycles);
 
     /**
       Toggle state rewind recording mode; this uses the RewindManager
@@ -160,6 +188,23 @@ class StateManager
     RewindManager& rewindManager() const { return *myRewindManager; }
 
   private:
+    // Full path of the movie file for the currently loaded ROM
+    string movieFile() const;
+
+    // The mode to return to when a movie stops (TimeMachine or Off, per setting)
+    Mode defaultMode() const;
+
+    // Open the movie file and write its header (md5, controllers, initial state)
+    bool startRecording();
+    // Write the end-of-movie marker and close the movie file
+    void stopRecording();
+
+    // Open the movie file, validate its header and restore the initial state
+    bool startPlayback();
+    // Close the movie file
+    void stopPlayback();
+
+  private:
     // The parent OSystem object
     OSystem& myOSystem;
 
@@ -172,11 +217,11 @@ class StateManager
     // MD5 of the currently active ROM (either in movie or rewind mode)
     string myMD5;
 
-#if 0
-    // Serializer classes used to save/load the eventstream
-    Serializer myMovieWriter;
-    Serializer myMovieReader;
-#endif
+    // Movie eventstream file (writer while recording, reader while playing back)
+    unique_ptr<Serializer> myMovie;
+
+    // Number of input-window frames recorded/played back so far
+    uInt32 myMovieFrames{0};
 
     // Stored savestates to be later rewound
     unique_ptr<RewindManager> myRewindManager;

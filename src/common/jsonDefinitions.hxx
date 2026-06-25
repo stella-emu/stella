@@ -411,6 +411,8 @@ NLOHMANN_JSON_SERIALIZE_ENUM(Event::Type, {
   {Event::PreviousSettingGroup, "PreviousSettingGroup"},
   {Event::NextSettingGroup, "NextSettingGroup"},
   {Event::TogglePlayBackMode, "TogglePlayBackMode"},
+  {Event::ToggleMovieRecord, "ToggleMovieRecord"},
+  {Event::ToggleMoviePlayback, "ToggleMoviePlayback"},
   {Event::ToggleAutoFire, "ToggleAutoFire"},
   {Event::DecreaseAutoFire, "DecreaseAutoFire"},
   {Event::IncreaseAutoFire, "IncreaseAutoFire"},

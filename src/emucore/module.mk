@@ -67,6 +67,7 @@ MODULE_OBJS := \
 	src/emucore/CortexM0.o \
 	src/emucore/DispatchResult.o \
 	src/emucore/Driving.o \
+	src/emucore/Event.o \
 	src/emucore/EventHandler.o \
 	src/emucore/EmulationTiming.o \
 	src/emucore/EmulationWorker.o \
