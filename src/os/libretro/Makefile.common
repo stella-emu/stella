@@ -105,6 +105,7 @@ SOURCES_CXX := \
 	$(CORE_DIR)/emucore/Driving.cxx \
 	$(CORE_DIR)/emucore/EmulationTiming.cxx \
 	$(CORE_DIR)/emucore/EmulationWorker.cxx \
+	$(CORE_DIR)/emucore/Event.cxx \
 	$(CORE_DIR)/emucore/EventHandler.cxx \
 	$(CORE_DIR)/emucore/FBSurface.cxx \
 	$(CORE_DIR)/emucore/FrameBuffer.cxx \
