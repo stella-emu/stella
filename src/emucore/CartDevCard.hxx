@@ -94,7 +94,9 @@ class CartridgeDevCard : public Cartridge
     static uInt32 ramOffset(uInt16 address) {
       // Windows are at x000 for x in {5,7,9,B,D,F}:
       const uInt32 windowIdx = (static_cast<uInt32>(address >> 12) - 5U) / 2U;
-      return windowIdx * WINDOW_SIZE + (address & (WINDOW_SIZE - 1));
+      return windowIdx < NUM_WINDOWS
+        ? windowIdx * WINDOW_SIZE + (address & (WINDOW_SIZE - 1))
+        : 0;
     }
 
     // Working RAM (initialised from ROM image, writable at runtime)

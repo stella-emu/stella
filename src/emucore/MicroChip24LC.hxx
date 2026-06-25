@@ -497,7 +497,7 @@ void MicroChip24LC<FLASH_SIZE, PAGE_SIZE>
     for(uInt32 i = 3; i < jpee_pptr; ++i)
     {
       myDataChanged = true;
-      myPageHit[jpee_address / PAGE_SIZE] = true;
+      myPageHit[(jpee_address & jpee_sizemask) / PAGE_SIZE] = true;
 
       if(myCallback)
       {
@@ -623,7 +623,7 @@ void MicroChip24LC<FLASH_SIZE, PAGE_SIZE>
         break;
       }
       jpee_state = JPEEState::ByteOut;
-      myPageHit[jpee_address / PAGE_SIZE] = true;
+      myPageHit[(jpee_address & jpee_sizemask) / PAGE_SIZE] = true;
 
       if(myCallback)
       {
