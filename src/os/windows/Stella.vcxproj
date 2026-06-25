@@ -1143,6 +1143,7 @@
     <ClCompile Include="..\..\emucore\elf\VcsLib.cxx" />
     <ClCompile Include="..\..\emucore\EmulationTiming.cxx" />
     <ClCompile Include="..\..\emucore\EmulationWorker.cxx" />
+    <ClCompile Include="..\..\emucore\Event.cxx" />
     <ClCompile Include="..\..\emucore\FBMessageHandler.cxx" />
     <ClCompile Include="..\..\emucore\FBSurface.cxx" />
     <ClCompile Include="..\..\emucore\GlobalKeyHandler.cxx" />
