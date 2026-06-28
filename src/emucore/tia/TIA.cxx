@@ -1660,13 +1660,6 @@ FORCE_INLINE void TIA::tickHframe()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TIA::applyRsync()
 {
-  // If the write cycle's incrementCycles() already overflowed hctr and fired
-  // nextLine() (leaving myHctr=0), the RSYNC scanline has already ended.
-  // Restoring myHctr to H_CLOCKS-3 would cause a second nextLine() on the
-  // very next CPU cycle, producing a phantom scanline.  Real hardware fires
-  // exactly one scanline advance for RSYNC, so bail out here.
-  if (myHctr == 0) return;
-
   const uInt32 x = myHctr > TIAConstants::H_BLANK_CLOCKS
       ? myHctr - TIAConstants::H_BLANK_CLOCKS : 0;
 
