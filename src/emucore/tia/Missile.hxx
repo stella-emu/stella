@@ -31,6 +31,19 @@ class TIA;
   RESM, RESMP, NUSIZ), producing a per-clock collision mask and color
   output.
 
+  Stripped-down Player: no graphics pattern — the missile emits a constant
+  signal for myWidth clocks (1/2/4/8 from NUSIZ). Two extras over Player:
+
+   - RESMP locks the missile to its associated player. While the RESMP bit
+     is set, the missile is forced invisible AND its counter is snapped
+     to the player's center on each color clock that the player's main
+     copy reaches scan-counter pixel 4 (the FSTOB condition from Andrew
+     Towers' TIA notes). See Missile::resmpTick and
+     Player::isDrawingMainCopyAt4.
+   - Starfield mode (Cosmic Ark): when HMOVE is in progress and a regular
+     clock pulse arrives at the wrong phase, the rendered width shifts by
+     one. Implemented via myEffectiveWidth in tick().
+
   @author  Christian Speckner (DirtyHairy)
 */
 class Missile : public Serializable

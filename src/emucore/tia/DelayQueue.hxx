@@ -46,7 +46,6 @@ class DelayQueue : public Serializable
 
     /**
       Schedule a register write to occur after the given number of clocks.
-      If a write to the same address is already pending, it is replaced.
       Throws if delay >= length.
      */
     void push(uInt8 address, uInt8 value, uInt8 delay);
