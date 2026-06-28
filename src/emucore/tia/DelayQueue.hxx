@@ -41,7 +41,7 @@ class DelayQueue : public Serializable
     friend DelayQueueIteratorImpl<length, capacity>;
 
   public:
-    DelayQueue();
+    DelayQueue() = default;
     ~DelayQueue() override = default;
 
     /**
@@ -74,8 +74,6 @@ class DelayQueue : public Serializable
     std::array<DelayQueueMember<capacity>, length> myMembers;
     // Index of the "current" slot (next to execute)
     uInt8 myIndex{0};
-    // Maps each register address to its pending slot (0xFF = none)
-    std::array<uInt8, 0xFF> myIndices{};
 
   private:
     // Following constructors and assignment operators not supported
@@ -89,12 +87,6 @@ class DelayQueue : public Serializable
 // Implementation
 // ############################################################################
 
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-template<unsigned length, unsigned capacity>
-DelayQueue<length, capacity>::DelayQueue()
-{
-  myIndices.fill(0xFF);
-}
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 template<unsigned length, unsigned capacity>
@@ -103,15 +95,8 @@ void DelayQueue<length, capacity>::push(uInt8 address, uInt8 value, uInt8 delay)
   if (delay >= length)
     throw std::runtime_error("delay exceeds queue length");
 
-  const uInt8 currentIndex = myIndices[address];
-
-  if (currentIndex < length)
-    myMembers[currentIndex].remove(address);
-
   const uInt8 index = smartmod<length>(myIndex + delay);
   myMembers[index].push(address, value);
-
-  myIndices[address] = index;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -122,7 +107,6 @@ void DelayQueue<length, capacity>::reset()
     myMembers[i].clear();
 
   myIndex = 0;
-  myIndices.fill(0xFF);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -134,7 +118,6 @@ void DelayQueue<length, capacity>::execute(T executor)
 
   for (uInt8 i = 0; i < currentMember.mySize; ++i) {
     executor(currentMember.myEntries[i].address, currentMember.myEntries[i].value);
-    myIndices[currentMember.myEntries[i].address] = 0xFF;
   }
 
   currentMember.clear();
@@ -154,7 +137,6 @@ bool DelayQueue<length, capacity>::save(Serializer& out) const
       myMembers[i].save(out);
 
     out.putByte(myIndex);
-    out.putByteArray(myIndices);
   }
   catch(...)
   {
@@ -177,7 +159,6 @@ bool DelayQueue<length, capacity>::load(Serializer& in)
       myMembers[i].load(in);
 
     myIndex = in.getByte();
-    in.getByteArray(myIndices);
   }
   catch(...)
   {
