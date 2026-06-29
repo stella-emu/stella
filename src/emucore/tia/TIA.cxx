@@ -27,6 +27,21 @@
 #include "Base.hxx"
 
 namespace {
+  // Per-object collision bit patterns. Chosen so that, for any two distinct
+  // objects A and B, A & B is a single unique bit appearing in no other
+  // object's mask. Each object's mask is exactly the union of those unique
+  // pair bits — i.e. the set of pair collisions it participates in.
+  //
+  // Examples:
+  //   player0 & playfield = bit 10   (P0-PF)
+  //   player0 & ball      = bit 11   (P0-BL)
+  //   missile0 & missile1 = bit 14   (M0-M1)
+  //
+  // This lets updateCollision() compute all 15 pair collisions with a single
+  // 15-bit AND across all six objects; see TIA::updateCollision for the
+  // correctness argument and TIA::collCX* for how individual pair bits are
+  // extracted on read. Bit 15 is reserved by each sprite as a "visible this
+  // clock" latch (see TIA::renderPixel / sprite::isOn).
   enum CollisionMask: uInt16 {
     player0   = 0b0111110000000000,
     player1   = 0b0100001111000000,
@@ -36,6 +51,10 @@ namespace {
     playfield = 0b0000010001001011
   };
 
+  // Per-register color-clock delays applied when a TIA write is pushed onto
+  // the DelayQueue. Some games rely on these on real hardware (e.g. GRP0/1
+  // takes effect one clock after the write); see TIA::poke for which writes
+  // route through the queue.
   enum Delay: uInt8 {
     hmove = 6,
     pf = 2,
@@ -52,6 +71,8 @@ namespace {
     vblank = 1
   };
 
+  // RESPx/RESMx/RESBL counter targets — depend on whether the strobe lands
+  // in late HBLANK, regular HBLANK, or the visible region (see TIA::resxCounter).
   enum ResxCounter: uInt8 {
     hblank = 159,
     lateHblank = 158,
@@ -62,9 +83,10 @@ namespace {
   constexpr bool bmBool(T v) noexcept { return Bitmask::Enum{v}.any(); }
 }  // namespace
 
-// This parameter still has room for tuning. If we go lower than 73, long005 will show
-// a slight artifact (still have to crosscheck on real hardware), if we go lower than
-// 70, the G.I. Joe will show an artifact (hole in roof).
+// Flags the last possible RESx write during extended HBLANK — CPU cycle 75.
+// Selects ResxCounter::lateHblank (158) vs ResxCounter::hblank (159) so that
+// the strobe lands on the correct sprite counter relative to the HMOVE
+// movement clocks (MOTCK).
 static constexpr uInt8 resxLateHblankThreshold = 73;
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -73,6 +95,11 @@ TIA::TIA(ConsoleIO& console, const ConsoleTimingProvider& timingProvider,
   : myConsole{console},
     myTimingProvider{timingProvider},
     mySettings{settings},
+    // Each sprite's "disabled" collision mask is constructed as
+    //   ~CollisionMask::self & 0x7FFF
+    // so that when the sprite is silent it contributes ones everywhere
+    // except its own pair bits (and bit 15 — the visibility latch — is
+    // also cleared). See the CollisionMask enum above.
     myPlayfield{~CollisionMask::playfield & 0x7FFF},
     myMissile0{~CollisionMask::missile0 & 0x7FFF},
     myMissile1{~CollisionMask::missile1 & 0x7FFF},
@@ -482,10 +509,13 @@ void TIA::bindToControllers()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 TIA::peek(uInt16 address)
 {
+  // Catch the TIA simulation up to the current system clock so the read
+  // observes correct collision/INPT state.
   updateEmulation();
 
-  // Start with all bits disabled
-  // In some cases both D7 and D6 are used; in other cases only D7 is used
+  // Only the low 4 bits matter: 8 collision latches (CX*) + 6 input ports
+  // (INPT0-5). Most CX* registers use both D7 and D6 (two pairs encoded in
+  // one register); CXBLPF and INPT* only use D7.
   uInt8 result = 0b0000000;
 
   switch (address & 0x0F) {
@@ -555,8 +585,10 @@ uInt8 TIA::peek(uInt16 address)
       break;
   }
 
-  // Bits D5 .. D0 are floating
-  // The options are either to use the last databus value, or use random data
+  // Bits D5..D0 are floating bus on real hardware: the TIA never drives
+  // them so whatever the CPU put on the bus last cycle (or random noise
+  // on real chips with weaker pull-downs) shows up. The 'tiapinsdriven'
+  // setting picks random noise to surface games that read these bits.
   return result | ((!myTIAPinsDriven ? mySystem->getDataBusState() :
     mySystem->randGenerator().next()) & 0b00111111);
 }
@@ -564,8 +596,19 @@ uInt8 TIA::peek(uInt16 address)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool TIA::poke(uInt16 address, uInt8 value)
 {
+  // Catch the TIA up to the current system clock so the write lands on
+  // the correct color clock.
   updateEmulation();
 
+  // Each write falls into one of three buckets:
+  //   - Strobes whose effect must be immediate (WSYNC/RSYNC/RESxx/CXCLR);
+  //     these call flushLineCache() if they change rendered state.
+  //   - State registers that change visible output but take effect
+  //     immediately (CTRLPF/COLUxx/NUSIZx/VDELxx); the per-sprite setColor
+  //     etc. flush the line cache only when actually needed.
+  //   - Pipelined writes (PFx/GRPx/ENAxx/HMxx/HMOVE/REFPx/VBLANK/...) that
+  //     go through myDelayQueue with a per-register color-clock delay
+  //     defined in the Delay enum above; delayedWrite() dispatches them.
   address &= 0x3F;
 
   switch (address)
@@ -575,6 +618,8 @@ bool TIA::poke(uInt16 address, uInt8 value)
       break;
 
     case RSYNC:
+      // RSYNC rewinds the horizontal counter and zeroes the rest of the
+      // line — anything cached for this line is no longer correct.
       flushLineCache();
       applyRsync();
       myShadowRegisters[address] = value;
@@ -721,6 +766,9 @@ bool TIA::poke(uInt16 address, uInt8 value)
     }
 
     case CTRLPF:
+      // Priority encoder mode, playfield reflect / color mode, and ball
+      // width can all change here — any of these may alter pixels already
+      // rendered on the current line.
       flushLineCache();
       myPriority = (value & 0x04) ? Priority::pfp :
                    (value & 0x02) ? Priority::score : Priority::normal;
@@ -731,6 +779,9 @@ bool TIA::poke(uInt16 address, uInt8 value)
 
     case COLUPF:
     {
+      // Playfield/ball color may have changed mid-line. (Could be tightened
+      // to "only when value differs and PF/BL is emitting" like the
+      // per-sprite setColor guards, but isn't.)
       flushLineCache();
       value &= 0xFE;
       if(myPFColorDelay)
@@ -791,6 +842,8 @@ bool TIA::poke(uInt16 address, uInt8 value)
       break;
 
     case RESM0:
+      // Missile position counter is being reset — anything already drawn
+      // for this line was drawn with the old counter.
       flushLineCache();
       myMissile0.resm(resxCounter(), myHstate == HState::blank,
         myHstate == HState::blank && myMovementInProgress && myMovementClock == 0);
@@ -798,6 +851,7 @@ bool TIA::poke(uInt16 address, uInt8 value)
       break;
 
     case RESM1:
+      // Same as RESM0 — counter reset invalidates the cached line.
       flushLineCache();
       myMissile1.resm(resxCounter(), myHstate == HState::blank,
         myHstate == HState::blank && myMovementInProgress && myMovementClock == 0);
@@ -815,6 +869,8 @@ bool TIA::poke(uInt16 address, uInt8 value)
       break;
 
     case NUSIZ0:
+      // Player copy count / missile width / decode table changing mid-line
+      // can affect every pixel since the last decode trigger.
       flushLineCache();
       myMissile0.nusiz(value);
       myPlayer0.nusiz(value, myHstate == HState::blank);
@@ -822,6 +878,7 @@ bool TIA::poke(uInt16 address, uInt8 value)
       break;
 
     case NUSIZ1:
+      // Same as NUSIZ0 — copy count / size change invalidates the line.
       flushLineCache();
       myMissile1.nusiz(value);
       myPlayer1.nusiz(value, myHstate == HState::blank);
@@ -866,6 +923,9 @@ bool TIA::poke(uInt16 address, uInt8 value)
     }
 
     case RESP0:
+      // Player position counter reset — any pixels already drawn used the
+      // old position; render-counter rewind in Player::resp may also
+      // affect this scanline.
       flushLineCache();
       myPlayer0.resp(resxCounter(),
         myHstate == HState::blank && myMovementInProgress && myMovementClock == 0);
@@ -873,6 +933,7 @@ bool TIA::poke(uInt16 address, uInt8 value)
       break;
 
     case RESP1:
+      // Same as RESP0.
       flushLineCache();
       myPlayer1.resp(resxCounter(),
         myHstate == HState::blank && myMovementInProgress && myMovementClock == 0);
@@ -910,6 +971,7 @@ bool TIA::poke(uInt16 address, uInt8 value)
       break;
 
     case RESBL:
+      // Ball position counter reset — same reasoning as RESPx/RESMx.
       flushLineCache();
       myBall.resbl(resxCounter(),
         myHstate == HState::blank && myMovementInProgress && myMovementClock == 0);
@@ -926,6 +988,9 @@ bool TIA::poke(uInt16 address, uInt8 value)
       break;
 
     case CXCLR:
+      // Collision latches are shared state that subsequent reads on this
+      // line will observe; flush so updateCollision rebuilds them from
+      // the rewound counters rather than from a cloned line.
       flushLineCache();
       myCollisionMask = 0;
       myShadowRegisters[address] = value;
@@ -1395,6 +1460,12 @@ uInt8 TIA::registerValue(uInt8 reg) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// Lazy catch-up: the CPU runs freely, and the TIA simulation only advances
+// when externally visible state matters. This is called on every peek/poke,
+// at the end of M6502::execute, and from controller analog-pin callbacks.
+// myLastCycle tracks the system-clock value at the end of the previous
+// catch-up; mySubClock carries the fractional color clock (0..2) since the
+// CPU clock is 1/3 of the color clock.
 void TIA::updateEmulation()
 {
   const uInt64 systemCycles = mySystem->cycles();
@@ -1555,6 +1626,19 @@ void TIA::onHalt()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// Per-color-clock simulation step. The order matters:
+//   1. Execute any DelayQueue entries scheduled for this clock (these are
+//      writes whose effect was pipelined N clocks back; see TIA::poke).
+//   2. Tick movement (only on every 4th color clock when HMOVE is active),
+//      then either the HBLANK or visible-frame tick for each sprite, then
+//      accumulate collisions (skipped during VBLANK to match real hardware).
+//   3. Advance the master horizontal counter; wrap into next scanline at 228.
+//   4. Tick audio (sums per-clock volumes; the two-phase clock fires at 4
+//      of 228 positions per scanline — see Audio::tick).
+//
+// The full sprite path (step 2) is bypassed once myLinesSinceChange reaches
+// 2: subsequent lines are memcpy clones of the previous one until the next
+// state change calls flushLineCache(). This is the line cache fast path.
 void TIA::cycle(uInt32 colorClocks)
 {
   for (uInt32 i = 0; i < colorClocks; ++i)
@@ -1571,6 +1655,8 @@ void TIA::cycle(uInt32 colorClocks)
       else
         tickHframe();
 
+      // Collisions are only latched during the visible portion of each
+      // scanline on real hardware — VBLANK gates the collision latches.
       if (!myFrameManager->vblank()) updateCollision();
     }
 
@@ -1586,6 +1672,10 @@ void TIA::cycle(uInt32 colorClocks)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// HMOVE distributes movement clocks at 1/4 of the color-clock rate (only
+// on color-clocks where the low 2 bits of myHctr are zero). The movement
+// counter saturates at 15 — beyond that no further per-sprite tick is
+// signalled, matching the HMxx high-nibble interpretation.
 FORCE_INLINE void TIA::tickMovement()
 {
   if (!myMovementInProgress) [[likely]] return;
@@ -1612,6 +1702,16 @@ FORCE_INLINE void TIA::tickMovement()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// During HBLANK each sprite's F1 latch still receives the CLKP color clock
+// (used to latch the display signal); tickClkpInHblank updates each
+// sprite's collision/visibility latch without advancing its counter or
+// sample logic — see Player::tickClkpInHblank / Missile::tickClkpInHblank
+// / Ball::tickClkpInHblank for the per-sprite split.
+//
+// HBLANK is normally 68 color clocks (H_BLANK_CLOCKS); HMOVE extends it
+// by 8 (myExtendedHblank). When extended, the playfield still starts
+// ticking inside HBLANK after the regular boundary so that pixels in the
+// HMOVE-comb region are produced correctly.
 FORCE_INLINE void TIA::tickHblank()
 {
   myMissile0.tickClkpInHblank();
@@ -1642,6 +1742,9 @@ FORCE_INLINE void TIA::tickHblank()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// Visible-frame per-color-clock tick. Missiles take the associated player
+// as an argument so their RESMP "lock to player" tracking can sample the
+// player's main-copy scan counter — see Missile::resmpTick.
 FORCE_INLINE void TIA::tickHframe()
 {
   const uInt32 x = myHctr - TIAConstants::H_BLANK_CLOCKS - myHctrDelta;
@@ -1660,13 +1763,6 @@ FORCE_INLINE void TIA::tickHframe()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TIA::applyRsync()
 {
-  // If the write cycle's incrementCycles() already overflowed hctr and fired
-  // nextLine() (leaving myHctr=0), the RSYNC scanline has already ended.
-  // Restoring myHctr to H_CLOCKS-3 would cause a second nextLine() on the
-  // very next CPU cycle, producing a phantom scanline.  Real hardware fires
-  // exactly one scanline advance for RSYNC, so bail out here.
-  if (myHctr == 0) return;
-
   const uInt32 x = myHctr > TIAConstants::H_BLANK_CLOCKS
       ? myHctr - TIAConstants::H_BLANK_CLOCKS : 0;
 
@@ -1710,6 +1806,8 @@ FORCE_INLINE void TIA::nextLine()
 
   if(myFrameManager->isRendering())
   {
+    // First rendered line of a new frame — discard any cache carried over
+    // from the previous frame so y=0 is rebuilt from a clean replay.
     if(myFrameManager->getY() == 0)
       flushLineCache();
 
@@ -1789,6 +1887,23 @@ void TIA::cloneLastLine()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// Compute all 15 pair-collisions in parallel using the unique-bit pattern
+// encoding from the CollisionMask enum above.
+//
+// Each sprite's .collision is one of two precomputed values:
+//   Enabled  = 0xFFFF           (object emits a pixel this clock)
+//   Disabled = ~Self & 0x7FFF   (object is silent this clock)
+//
+// For the pair-bit k shared by exactly two objects A and B:
+//   - If A is silent, ~A clears bit k -> AND result bit k = 0.
+//   - If B is silent, same via B -> AND result bit k = 0.
+//   - If both A and B emit, both contribute 1; every other object C
+//     contributes 1 either way (silent: bit k is not in C's mask so ~C
+//     keeps it set; emitting: C is all-ones).
+// So bit k is set in the AND iff A and B both emit this clock.
+//
+// The OR-accumulate into myCollisionMask mirrors per-pair latches: once a
+// pair has collided this frame, the bit sticks until CXCLR clears it.
 FORCE_INLINE void TIA::updateCollision()
 {
   myCollisionMask |= (
@@ -1867,6 +1982,13 @@ FORCE_INLINE void TIA::renderPixel(uInt32 x)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// Drop the line-cache fast path and replay the partial current line so
+// subsequent ticks see correct sprite-counter state. Always safe to call —
+// when nothing has actually changed, replay just rebuilds the same state.
+//
+// Call sites that guard with "if (newValue != oldValue)" or similar are
+// doing so as an optimization (avoiding a needless replay), not because
+// flushing on a no-op write would be incorrect.
 void TIA::flushLineCache()
 {
   const bool wasCaching = myLinesSinceChange >= 2;
@@ -1991,6 +2113,12 @@ void TIA::setBlLateRespx(bool enable)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// Executor for DelayQueue entries: dispatched once per color clock from
+// cycle() when an entry's slot comes due. Real register writes update the
+// shadow register here (so the debugger sees the value once it has taken
+// effect); DummyRegisters::shuffle* are pseudo-addresses (see TIA.hxx)
+// that don't correspond to real TIA registers and are skipped by the
+// shadow update.
 void TIA::delayedWrite(uInt8 address, uInt8 value)
 {
   if (address < 64)
@@ -1999,11 +2127,16 @@ void TIA::delayedWrite(uInt8 address, uInt8 value)
   switch (address)
   {
     case VBLANK:
+      // VBLANK gates updateCollision and (via the frame manager) the visible
+      // window; a mid-line transition changes what subsequent pixels do.
       flushLineCache();
       myFrameManager->setVblank(value & 0x02, myTimestamp / 3);
       break;
 
     case HMOVE:
+      // HMOVE extends HBLANK by 8 clocks, paints the comb pattern, and
+      // arms movement on every sprite — none of these can be reused from
+      // a cloned line.
       flushLineCache();
 
       myMovementClock = 0;

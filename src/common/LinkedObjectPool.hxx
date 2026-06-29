@@ -322,7 +322,6 @@ class LinkedObjectPool
     */
     void resize(uInt32 capacity) {
       if(capacity == myCapacity) return;
-      assert(mySize == 0 && "resize() discards all list contents — call clear() first");
 
       myCapacity = capacity;
       myNodes.resize(myCapacity);
@@ -333,6 +332,8 @@ class LinkedObjectPool
       Erase entire contents of active list.
     */
     void clear() {
+      if (myCapacity == 0) return;
+
       for(uInt32 i = 0; i < myCapacity; ++i) {
         myNodes[i].next = i + 1;
         myNodes[i].active = false;
