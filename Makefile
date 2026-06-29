@@ -21,7 +21,7 @@
 
 srcdir      ?= .
 
-DEFINES     := -DSDL_SUPPORT -D_GLIBCXX_USE_CXX11_ABI=1
+DEFINES     := -DSDL_SUPPORT
 LDFLAGS     := -pthread
 INCLUDES    :=
 LIBS	    :=

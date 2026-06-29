@@ -74,8 +74,6 @@
     - Properly initialise HMxy shadow registers (issue #1081)
     - Enhanced VSYNC emulation, considers VBLANK now too, and only
       takes effect when at least 2 scanlines have passed (issue #1150)
-    - Enhanced RSYNC emulation, real hardware fires exactly one
-      scanline advance only (issue #1150)
     - Polling SWCHA multiple times per frame now detects events and
       works as expected; fixes California Games not passing BMX event,
       and others (issue #858, #689)

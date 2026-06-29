@@ -33,7 +33,9 @@ Cartridge4A50::Cartridge4A50(ByteSpan image, string_view md5,
   else if(size < 128_KB)  size = 64_KB;
   else                    size = 128_KB;
   for(uInt32 slice = 0; slice < 128_KB / size; ++slice)
-    std::copy_n(image.data(), size, myImage.data() + (slice*size));
+    // size is rounded up to 32/64/128K, so clamp the source read to the
+    // actual image size to avoid reading past a smaller-than-expected image
+    std::copy_n(image.data(), std::min(size, image.size()), myImage.data() + (slice*size));
 
   // We use System::PageAccess.romAccessBase, but don't allow its use
   // through a pointer, since the address space of 4A50 carts can change
