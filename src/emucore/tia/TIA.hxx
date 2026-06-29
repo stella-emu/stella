@@ -67,8 +67,17 @@ class TIA : public Device
 {
   public:
     /**
-     * These dummy register addresses are used to represent the delayed
-     * old / new register swap on writing GRPx and ENABL in the DelayQueue (see below).
+     * Pseudo-addresses pushed onto the DelayQueue to model the GRPx/ENABL
+     * old/new pattern swap. Writing GRP0 queues both the actual GRP0 and a
+     * shuffleP1; writing GRP1 queues GRP1, shuffleP0, and shuffleBL. When
+     * delayedWrite() sees a shuffle, it calls the appropriate sprite's
+     * shufflePatterns / shuffleStatus to latch new -> old. This models the
+     * real TIA behaviour where the *other* player's "old" register latches
+     * when *this* GRPx is poked, implementing VDELP / VDELBL.
+     *
+     * The values 0xF0-0xF2 are deliberately outside the real 6-bit TIA
+     * register space so they can't collide with actual register addresses
+     * and are skipped by the shadow-register write in delayedWrite().
      */
     enum DummyRegisters: uInt8 {
       shuffleP0 = 0xF0,
@@ -867,11 +876,18 @@ class TIA : public Device
     LatchedInput myInput0;
     LatchedInput myInput1;
 
-    // Pointer to the internal color-index-based frame buffer
+    // Three-stage framebuffer pipeline. Emulation runs on a worker thread
+    // (EmulationWorker) while the main thread renders the previous frame:
+    //
+    //   renderPixel()        --writes-->  myBackBuffer    [emulation thread]
+    //   onFrameComplete()    --copies-->  myFrontBuffer   [emulation thread]
+    //   renderToFrameBuffer()--copies-->  myFramebuffer   [main thread, before worker starts]
+    //   TIASurface           --reads --   myFramebuffer   [main thread]
+    //
+    // Values are 8-bit TIA color indices (palette mapping happens later
+    // in TIASurface).
     std::array<uInt8, static_cast<size_t>(TIAConstants::H_PIXEL * TIAConstants::frameBufferHeight)> myFramebuffer{};
 
-    // The frame is rendered to the backbuffer and only copied to the framebuffer
-    // upon completion
     std::array<uInt8, static_cast<size_t>(TIAConstants::H_PIXEL * TIAConstants::frameBufferHeight)> myBackBuffer{};
 
     // Pointer to the first pixel of the current scanline in myBackBuffer.
@@ -921,7 +937,13 @@ class TIA : public Device
     uInt8 myXAtRenderingStart{0};
 
     /**
-     * The collision latches are represented by 15 bits in a bitfield.
+     * Single 15-bit accumulator that collapses the 15 per-pair collision
+     * flip-flops of the real chip into one OR-accumulated register. Each
+     * bit corresponds to a unique object pair via the encoding in the
+     * CollisionMask enum in TIA.cxx; see TIA::updateCollision for how a
+     * single AND across all six objects sets every relevant pair bit, and
+     * TIA::collCX* for how individual pair bits are extracted on read.
+     * Cleared by CXCLR.
      */
     uInt32 myCollisionMask{0};
 
@@ -943,9 +965,16 @@ class TIA : public Device
     bool myExtendedHblank{false};
 
     /**
-     * Counts the number of line wraps since the last external TIA state change.
-     * If at least two line breaks have passed, the TIA will suspend simulation
-     * and just reuse the last line instead.
+     * Line-cache counter. Counts the number of line wraps since the last
+     * externally visible state change. Once it reaches 2, cycle() skips all
+     * sprite ticks and nextLine() memcpys the previous scanline into the
+     * current one (cloneLastLine).
+     *
+     * The contract: any state change that could alter rendering must call
+     * flushLineCache(). Flushing is always safe — it merely replays the
+     * partial current line. Call sites that guard the flush on "value
+     * actually changed" do so as an optimization to skip unneeded replays;
+     * see TIA::flushLineCache.
      */
     uInt32 myLinesSinceChange{0};
 
@@ -992,8 +1021,13 @@ class TIA : public Device
     bool myArePortsDumped{false};
 
     /**
-     * The "shadow registers" track the last written register value for the
-     * debugger.
+     * Shadow registers: the last value written to each TIA register as the
+     * program saw it, before any DelayQueue processing. The simulation
+     * never reads these — they exist purely so the debugger can display
+     * "what the CPU just wrote" without having to wait for the delayed
+     * effect to take place. Pokes that go through the delay queue update
+     * the shadow in delayedWrite once the entry fires; pokes that take
+     * immediate effect update it synchronously in poke().
      */
     std::array<uInt8, 64> myShadowRegisters{};
 

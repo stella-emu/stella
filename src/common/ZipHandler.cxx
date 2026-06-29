@@ -20,6 +20,7 @@
 #include <zlib.h>
 
 #include "Bankswitch.hxx"
+#include "Cart.hxx"
 #include "ZipHandler.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -85,6 +86,12 @@ uInt64 ZipHandler::decompress(string_view name, ByteArray& image)
     throw ZipException(ZipError::FILE_NOT_FOUND);
   if(header->uncompressedLength == 0)
     throw ZipException(ZipError::FILE_ERROR);
+
+  // Guard against decompression bombs: a malformed ZIP can claim an enormous
+  // uncompressed size, forcing a huge allocation before decompression even
+  // begins.  No loadable Stella ROM exceeds Cartridge::maxSize().
+  if(header->uncompressedLength > Cartridge::maxSize())
+    throw ZipException(ZipError::UNSUPPORTED);
 
   const size_t length = header->uncompressedLength;
   image.resize(length);
@@ -188,7 +195,13 @@ void ZipHandler::ZipFile::initialize()
      myEcd.cdDiskEntries != myEcd.cdTotalEntries)
     throw ZipException(ZipError::UNSUPPORTED);
 
-  // Allocate memory for the central directory
+  // Allocate memory for the central directory.  Its size comes from the ECD,
+  // which is attacker-controlled; the directory is physically part of the file,
+  // so reject a claimed size larger than the file itself to avoid an oversized
+  // allocation (DoS).  Finer truncation is still caught by readStream below.
+  if(myEcd.cdSize > myLength)
+    throw ZipException(ZipError::FILE_CORRUPT);
+
   myCd.resize(myEcd.cdSize);
 
   // Read the central directory
@@ -208,10 +221,22 @@ void ZipHandler::ZipFile::initialize()
   size_t pos = 0;
   while(pos < myCd.size())
   {
-    // Make sure we have enough data
-    // If we're at or past the end, we're done
+    // Ensure the fixed-size part of the entry header lies within the central
+    // directory before reading any of its fields; the field readers do not
+    // bounds-check, so a truncated/malformed directory would read past myCd.
+    if(myCd.size() - pos < CentralDirEntryReader::minimumLength())
+      throw ZipException(ZipError::FILE_CORRUPT);
+
     const CentralDirEntryReader reader(myCd.data() + pos);
     if(!reader.signatureCorrect())
+      throw ZipException(ZipError::FILE_CORRUPT);
+
+    // Ensure the variable-length parts (filename/extra/comment) are also
+    // within bounds.  filename() returns a string_view into myCd that must
+    // not extend past the buffer, since it is later hashed, compared and
+    // passed to isValidRomName.
+    const size_t entryLength = reader.totalLength();
+    if(entryLength > myCd.size() - pos)
       throw ZipException(ZipError::FILE_CORRUPT);
 
     // Extract file header info
@@ -245,7 +270,7 @@ void ZipHandler::ZipFile::initialize()
     }
 
     myHeaders.emplace_back(header);
-    pos += reader.totalLength();
+    pos += entryLength;
   }
 }
 
@@ -409,6 +434,13 @@ uInt64 ZipHandler::ZipFile::getCompressedDataOffset(const ZipHeader& header)
 void ZipHandler::ZipFile::decompressDataType0(const ZipHeader& header,
                                               ByteMSpan out, uInt64 offset)
 {
+  // For a stored entry the compressed size must fit within the output buffer
+  // (which is sized to the uncompressed length).  A malformed ZIP can claim a
+  // compressedLength larger than uncompressedLength; without this guard
+  // readStream would write past the end of 'out' (heap buffer overflow).
+  if(header.compressedLength > out.size())
+    throw ZipException(ZipError::BUFFER_TOO_SMALL);
+
   // The data is uncompressed; just read it
   uInt64 read_length = 0;
   const bool success = readStream(out.data(), offset,

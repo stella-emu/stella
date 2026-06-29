@@ -24,6 +24,22 @@ class TIA;
 #include "TIAConstants.hxx"
 #include "Serializable.hxx"
 
+/**
+  TIA ball sprite object. Conceptually a single-copy Missile (no NUSIZ; the
+  one and only decode position is myCounter == 156) with VDELBL semantics:
+
+   - VDELBL: ENABL writes update myIsEnabledNew; the shuffleBL dummy
+     register (queued from a GRP1 write) later latches new -> old via
+     shuffleStatus(). The effective myIsEnabled reads from old or new
+     depending on whether VDEL is active.
+   - Width: comes from CTRLPF bits 5-4 (1/2/4/8), shared with the
+     playfield width control — both Playfield::ctrlpf and Ball::ctrlpf
+     are called from TIA's CTRLPF handler.
+   - Starfield: same HMOVE/regular-clock phase trick as Missile produces
+     the Cosmic Ark-style width quirk.
+
+  @author  Christian Speckner (DirtyHairy)
+*/
 class Ball : public Serializable
 {
   public:

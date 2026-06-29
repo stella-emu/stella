@@ -30,6 +30,25 @@ class TIA;
   associated registers (GRP, HMP, NUSIZ, RESP, REFP, VDELP), producing
   per-clock collision and color output.
 
+  Rendering state machine (tick()):
+    - myCounter (0..159) increments every color clock.
+    - When myDecodes[myCounter] != 0 (NUSIZ-dependent decode table), the
+      render latch myIsRendering goes high and myRenderCounter starts at
+      renderCounterOffset (-5).
+    - Once myRenderCounter reaches myRenderCounterTripPoint (0 for size 1,
+      1 for size 2/4), pixels begin emitting; mySampleCounter walks the
+      8-bit pattern at single/double/quad horizontal width via myDivider.
+    - Bit 0 of the pattern is sampled first when reflected; updatePattern()
+      bit-reverses myPatternNew/myPatternOld up front when not reflected
+      so tick() can always shift in the same direction.
+    - With VDEL active, myPattern is sourced from myPatternOld (latched
+      from myPatternNew by shufflePatterns() — queued from the OTHER
+      player's GRPx write, modelling the real TIA cross-coupling).
+
+  The .collision field encodes both pair-collision contribution and
+  visibility (bit 15) — see TIA.cxx's CollisionMask enum and
+  TIA::updateCollision for the encoding.
+
   @author  Christian Speckner (DirtyHairy)
 */
 class Player : public Serializable

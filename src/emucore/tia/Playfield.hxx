@@ -24,6 +24,23 @@ class TIA;
 #include "TIAConstants.hxx"
 #include "Serializable.hxx"
 
+/**
+  TIA playfield object. Unlike the sprites, the playfield has no counter:
+  the visible pattern is a 20-bit register myPattern derived from PF0/PF1/
+  PF2 (the bit-shuffle for the PF1 nibbles is hand-coded in pf1()). The
+  playfield clock is 1/4 of the color clock, so tick() bails on x%4 != 0
+  and otherwise indexes the pattern by (x >> 2) over the left half, then
+  either mirrors or repeats it across the right half depending on the
+  CTRLPF reflect bit. The reflect flag is only sampled at x = 0 or x = 79
+  so a CTRLPF write mid-line behaves correctly.
+
+  Color is split left/right: in normal mode both halves use COLUPF; in
+  score mode the left half uses COLUP0 and the right half COLUP1. The
+  optional score-glitch quirk (myScoreHaste) shifts the boundary one
+  pixel earlier to reproduce the matchie-Pesco behavior.
+
+  @author  Christian Speckner (DirtyHairy)
+*/
 class Playfield : public Serializable
 {
   public:

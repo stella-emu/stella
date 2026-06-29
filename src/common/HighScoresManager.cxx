@@ -526,6 +526,11 @@ HSM::ScoreAddresses HighScoresManager::getPropScoreAddr(const json& jprops)
 
       for(const json& addresses : addrProps)
       {
+        // Never write past the fixed-size address array; a crafted properties
+        // entry could otherwise list more addresses than the array can hold.
+        if(std::cmp_greater_equal(a, MAX_SCORE_ADDR))
+          break;
+
         const string address = addresses.get<string>();
 
         if(address.empty())

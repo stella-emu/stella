@@ -81,7 +81,10 @@ SqliteStatement& SqliteStatement::reset()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string SqliteStatement::columnText(int index) const
 {
-  return reinterpret_cast<const char*>(sqlite3_column_text(myStmt, index));
+  // sqlite3_column_text returns nullptr for a SQL NULL value (or on OOM);
+  // constructing a string from nullptr is undefined behavior
+  const auto* text = reinterpret_cast<const char*>(sqlite3_column_text(myStmt, index));
+  return text ? string{text} : string{};
 }
 
 

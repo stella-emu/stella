@@ -337,9 +337,11 @@ bool CartDetector::isProbably4A50(ByteSpan image)
     return true;
 
   // Program starts at $1Fxx with NOP $6Exx or NOP $6Fxx?
-  if(((image[0xfffd] & 0x1f) == 0x1f) &&
-      (image[image[0xfffd] * 256 + image[0xfffc]] == 0x0c) &&
-      ((image[image[0xfffd] * 256 + image[0xfffc] + 2] & 0xfe) == 0x6e))
+  // The target address is derived from ROM bytes, so bound it against the
+  // image size to avoid reading past the end of a crafted image
+  const size_t target = image[0xfffd] * 256 + image[0xfffc];
+  if(((image[0xfffd] & 0x1f) == 0x1f) && (target + 2 < image.size()) &&
+      (image[target] == 0x0c) && ((image[target + 2] & 0xfe) == 0x6e))
     return true;
 
   return false;

@@ -116,6 +116,13 @@ void PNGLibrary::loadImage(string_view filename, FBSurface& surface,
   png_get_IHDR(png_ptr, info_ptr, &width, &height, &bit_depth, &color_type,
                nullptr, nullptr, nullptr);
 
+  // The dimensions come straight from the (untrusted) PNG header; libpng only
+  // caps them at 1,000,000 each, which would drive a multi-gigabyte surface
+  // allocation below.  Reject implausibly large images up front.
+  constexpr png_uint_32 MAX_DIMENSION = 16384;
+  if(width == 0 || height == 0 || width > MAX_DIMENSION || height > MAX_DIMENSION)
+    throw std::runtime_error("PNG image dimensions out of range");
+
   // Normalize format
   if(bit_depth == 16)
     png_set_strip_16(png_ptr);

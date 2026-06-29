@@ -28,6 +28,9 @@ void Background::reset()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Background::setColor(uInt8 color)
 {
+  // Color may have changed mid-line — cached pixels used the old value.
+  // The "if changed" guard is an optimization; flushing unconditionally
+  // would also be correct (see TIA::flushLineCache).
   if (color != myObjectColor) myTIA->flushLineCache();
 
   myObjectColor = color;
@@ -37,6 +40,7 @@ void Background::setColor(uInt8 color)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Background::setDebugColor(uInt8 color)
 {
+  // Debug palette override changed.
   myTIA->flushLineCache();
   myDebugColor = color;
   applyColors();
@@ -45,6 +49,7 @@ void Background::setDebugColor(uInt8 color)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Background::enableDebugColors(bool enabled)
 {
+  // Debug color source toggled.
   myTIA->flushLineCache();
   myDebugEnabled = enabled;
   applyColors();
