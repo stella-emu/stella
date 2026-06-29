@@ -427,8 +427,12 @@ void CartridgeAR::loadIntoRAM(uInt8 load)
       }
 
       // Load all of the pages from the load
+      // A load maps at most 24 pages (6K of Supercharger RAM); clamp the
+      // header-supplied count so a corrupt/malicious header cannot index
+      // past myHeader (page/checksum tables) or myLoadImages
       bool invalidPageChecksumSeen = false;
-      for(size_t j = 0; j < myHeader[3]; ++j)
+      const size_t numPages = std::min<size_t>(myHeader[3], RAM_SIZE / 256);
+      for(size_t j = 0; j < numPages; ++j)
       {
         const size_t bank = myHeader[16 + j] & 0b00011;
         const size_t page = (myHeader[16 + j] & 0b11100) >> 2;

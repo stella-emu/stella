@@ -32,7 +32,9 @@ CartridgeDPCPlus::CartridgeDPCPlus(ByteSpan image, string_view md5,
 {
   // Image is always 32K, but in the case of ROM < 32K, the image is
   // copied to the end of the buffer
-  std::copy_n(image.data(), image.size(), myImage.data() + (32_KB - mySize));
+  // Use mySize (capped at 32K) as the length so an over-sized image can
+  // never write past the 32K myImage buffer
+  std::copy_n(image.data(), mySize, myImage.data() + (32_KB - mySize));
   createRomAccessArrays(24_KB);
 
   // Subspan for the program ROM (24K @ 3K offset; ignore first 3K)

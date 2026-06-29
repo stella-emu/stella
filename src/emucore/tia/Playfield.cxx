@@ -55,6 +55,9 @@ void Playfield::pf0(uInt8 value)
 {
   if (myPf0 == value >> 4) return;
 
+  // PF0 nibble changed — the low 4 bits of the 20-bit pattern shift in,
+  // and any pixels already drawn on this line used the old pattern. The
+  // early return above is an optimization.
   myTIA->flushLineCache();
 
   myPattern = (myPattern & 0x000FFFF0) | (value >> 4);
@@ -68,6 +71,7 @@ void Playfield::pf1(uInt8 value)
 {
   if (myPf1 == value) return;
 
+  // PF1 byte changed — bit-shuffled into the middle 8 bits of myPattern.
   myTIA->flushLineCache();
 
   myPattern = (myPattern & 0x000FF00F)
@@ -89,6 +93,7 @@ void Playfield::pf2(uInt8 value)
 {
   if (myPf2 == value) return;
 
+  // PF2 byte changed — slotted into the high 8 bits of myPattern.
   myTIA->flushLineCache();
 
   myPattern = (myPattern & 0x00000FFF) | (value << 12);
@@ -105,6 +110,8 @@ void Playfield::ctrlpf(uInt8 value)
 
   if (myReflected == reflected && myColorMode == colorMode) return;
 
+  // CTRLPF affects reflect mode (right-half indexing) and score-mode color
+  // selection — both change rendered output mid-line.
   myTIA->flushLineCache();
 
   myReflected = reflected;
@@ -131,6 +138,9 @@ void Playfield::toggleCollisions(bool enabled)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Playfield::setColor(uInt8 color)
 {
+  // COLUPF only feeds the playfield in normal mode — in score mode the
+  // halves take colors from COLUP0/COLUP1 instead. The mode check is the
+  // optimization that skips the flush when this color isn't visible.
   if (color != myObjectColor && myColorMode == ColorMode::normal) myTIA->flushLineCache();
 
   myObjectColor = color;
@@ -140,6 +150,7 @@ void Playfield::setColor(uInt8 color)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Playfield::setColorP0(uInt8 color)
 {
+  // COLUP0 only feeds the playfield in score mode (left half).
   if (color != myColorP0 && myColorMode == ColorMode::score) myTIA->flushLineCache();
 
   myColorP0 = color;
@@ -149,6 +160,7 @@ void Playfield::setColorP0(uInt8 color)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Playfield::setColorP1(uInt8 color)
 {
+  // COLUP1 only feeds the playfield in score mode (right half).
   if (color != myColorP1 && myColorMode == ColorMode::score) myTIA->flushLineCache();
 
   myColorP1 = color;
@@ -165,6 +177,7 @@ void Playfield::setScoreGlitch(bool enable)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Playfield::setDebugColor(uInt8 color)
 {
+  // Debug palette override changed.
   myTIA->flushLineCache();
   // allow slight luminance variations without changing color
   if((color & 0xe) == 0xe)
@@ -178,6 +191,7 @@ void Playfield::setDebugColor(uInt8 color)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Playfield::enableDebugColors(bool enabled)
 {
+  // Debug color source toggled.
   myTIA->flushLineCache();
   myDebugEnabled = enabled;
   applyColors();
@@ -186,6 +200,7 @@ void Playfield::enableDebugColors(bool enabled)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Playfield::applyColorLoss()
 {
+  // PAL color-loss LSB flip on the rendered color.
   myTIA->flushLineCache();
   applyColors();
 }

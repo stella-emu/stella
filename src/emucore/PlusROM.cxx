@@ -196,6 +196,12 @@ bool PlusROM::initialize(ByteSpan image)
 #ifdef HTTP_LIB_SUPPORT
   const size_t size = image.size();
 
+  // The NMI vector is read from the last 6 bytes below; guard against an
+  // undersized image, which would otherwise underflow the index calculation
+  // and read out of bounds.
+  if(size < 6)
+    return myIsPlusROM = false;
+
   // Host and path are stored at the NMI vector
   size_t i = ((image[size - 5] - 16) << 8) | image[size - 6];  // NMI @ $FFFA
   if(i >= size)
@@ -362,6 +368,12 @@ void PlusROM::reset()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool PlusROM::isValidHost(string_view host)
 {
+  // RFC 1035: a hostname is at most 253 characters.  Reject longer strings up
+  // front so an over-long, ROM-supplied host cannot drive the regex below with
+  // an unbounded input.
+  if(host.size() > 253)
+    return false;
+
   static const std::regex rgx(R"(^(([a-z0-9]|[a-z0-9][a-z0-9\-]*[a-z0-9])\.)*([a-z0-9]|[a-z0-9][a-z0-9\-]*[a-z0-9])$)", std::regex_constants::icase);
 
   if(!std::regex_match(host.cbegin(), host.cend(), rgx))

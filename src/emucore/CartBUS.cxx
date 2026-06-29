@@ -37,7 +37,7 @@ namespace {
   constexpr bool BUS_STUFF_ON(uInt8 mode) { return (mode & 0x0F) == 0; }
   constexpr bool DIGITAL_AUDIO_ON(uInt8 mode) { return (mode & 0xF0) == 0; }
 
-} // namespace
+}  // namespace
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartridgeBUS::CartridgeBUS(ByteSpan image, string_view md5,
@@ -864,25 +864,31 @@ uInt8 CartridgeBUS::busOverdrive(uInt16 address)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt32 CartridgeBUS::thumbCallback(uInt8 function, uInt32 value1, uInt32 value2)
 {
-  switch (function)
+  // Functions 0-3 use value1 as a music-voice index.  It arrives directly from
+  // an ARM register, so reject out-of-range values to avoid indexing the
+  // fixed-size music arrays out of bounds.
+  if(value1 >= myMusicFrequencies.size())
+    return 0;
+
+  switch(function)
   {
     case 0:
       // _SetNote - set the note/frequency
       myMusicFrequencies[value1] = value2;
       break;
 
+    case 1:
       // _ResetWave - reset counter,
       // used to make sure digital samples start from the beginning
-    case 1:
       myMusicCounters[value1] = 0;
       break;
 
-      // _GetWavePtr - return the counter
     case 2:
+      // _GetWavePtr - return the counter
       return myMusicCounters[value1];
 
-      // _SetWaveSize - set size of waveform buffer
     case 3:
+      // _SetWaveSize - set size of waveform buffer
       myMusicWaveformSize[value1] = value2;
       break;
 
@@ -941,10 +947,7 @@ bool CartridgeBUS::armBranch(uInt32 pc, Thumbulator& core)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 CartridgeBUS::internalRamGetValue(uInt16 addr) const
 {
-  if(addr < internalRamSize())
-    return myRAM[addr];
-  else
-    return 0;
+  return (addr < internalRamSize()) ? myRAM[addr] : 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1191,16 +1194,11 @@ string CartridgeBUS::name() const
 {
   switch(myBUSSubtype)
   {
-    case BUSSubtype::BUS0:
-      return "CartridgeBUS0";
-    case BUSSubtype::BUS1:
-      return "CartridgeBUS1";
-    case BUSSubtype::BUS2:
-      return "CartridgeBUS2";
-    case BUSSubtype::BUS3:
-      return "CartridgeBUS3";
-    default:
-      return "Unsupported BUS";
+    case BUSSubtype::BUS0:  return "CartridgeBUS0";
+    case BUSSubtype::BUS1:  return "CartridgeBUS1";
+    case BUSSubtype::BUS2:  return "CartridgeBUS2";
+    case BUSSubtype::BUS3:  return "CartridgeBUS3";
+    default:                return "Unsupported BUS";
   }
 }
 

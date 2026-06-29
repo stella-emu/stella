@@ -485,6 +485,19 @@ namespace BSPF
     return str.substr(first, last - first + 1);
   }
 
+  // Make an untrusted string safe to use as a single filename component by
+  // neutralizing path separators.  This prevents directory-traversal when a
+  // name from a (potentially shared/imported) properties entry is concatenated
+  // into a save/snapshot path.  Both '/' and '\' are replaced regardless of
+  // platform so the result can't escape its intended directory.
+  inline string sanitizeFilename(string_view name)
+  {
+    string result{name};
+    std::ranges::replace(result, '/', '_');
+    std::ranges::replace(result, '\\', '_');
+    return result;
+  }
+
   // C++11 way to get local time
   // Equivalent to the C-style localtime() function, but is thread-safe
   inline std::tm localTime()

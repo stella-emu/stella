@@ -247,6 +247,13 @@ bool Serializer::getBool()
 string Serializer::getString()
 {
   const uInt32 len = getInt();
+
+  // A serialized string cannot be larger than the entire stream.  Reject a
+  // corrupt/hostile length before allocating, to avoid a huge allocation
+  // driven by a bad save state.
+  if(len > size())
+    throw std::runtime_error("Serializer: invalid string length");
+
   string result(len, '\0');
 
   getByteArray(ByteMSpan(reinterpret_cast<uInt8*>(result.data()), len));

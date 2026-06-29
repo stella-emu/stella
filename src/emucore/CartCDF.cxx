@@ -43,7 +43,7 @@ namespace {
       default:        throw std::runtime_error("unreachable");
     }
   }
-} // namespace
+}  // namespace
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartridgeCDF::CartridgeCDF(ByteSpan image, string_view md5,
@@ -285,7 +285,7 @@ uInt8 CartridgeCDF::peek(uInt16 address)
         const uInt32 sampleaddress = getSample() + (myMusicCounters[0] >> (isCDFJplus() ? 13 : 21));
 
         // get sample value from ROM or RAM
-        if (sampleaddress < 0x00080000)
+        if (sampleaddress < myImage.size())
           peekvalue = myImage[sampleaddress];
         else if (sampleaddress >= 0x40000000 && sampleaddress < 0x40008000) // check for RAM
           peekvalue = myRAM[sampleaddress - 0x40000000];
@@ -505,25 +505,31 @@ ByteSpan CartridgeCDF::getImage() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt32 CartridgeCDF::thumbCallback(uInt8 function, uInt32 value1, uInt32 value2)
 {
-  switch (function)
+  // Functions 0-3 use value1 as a music-voice index.  It arrives directly from
+  // an ARM register, so reject out-of-range values to avoid indexing the
+  // fixed-size music arrays out of bounds.
+  if(value1 >= myMusicFrequencies.size())
+    return 0;
+
+  switch(function)
   {
     case 0:
       // _SetNote - set the note/frequency
       myMusicFrequencies[value1] = value2;
       break;
 
+    case 1:
       // _ResetWave - reset counter,
       // used to make sure digital samples start from the beginning
-    case 1:
       myMusicCounters[value1] = 0;
       break;
 
-      // _GetWavePtr - return the counter
     case 2:
+      // _GetWavePtr - return the counter
       return myMusicCounters[value1];
 
-      // _SetWaveSize - set size of waveform buffer
     case 3:
+      // _SetWaveSize - set size of waveform buffer
       myMusicWaveformSize[value1] = value2;
       break;
 
@@ -914,16 +920,11 @@ string CartridgeCDF::name() const
 {
   switch(myCDFSubtype)
   {
-    case CDFSubtype::CDF0:
-      return "CartridgeCDF0";
-    case CDFSubtype::CDF1:
-      return "CartridgeCDF1";
-    case CDFSubtype::CDFJ:
-      return "CartridgeCDFJ";
-    case CDFSubtype::CDFJplus:
-      return "CartridgeCDFJ+";
-    default:
-      return "Cart unknown";
+    case CDFSubtype::CDF0:      return "CartridgeCDF0";
+    case CDFSubtype::CDF1:      return "CartridgeCDF1";
+    case CDFSubtype::CDFJ:      return "CartridgeCDFJ";
+    case CDFSubtype::CDFJplus:  return "CartridgeCDFJ+";
+    default:                    return "Cart unknown";
   }
 }
 
