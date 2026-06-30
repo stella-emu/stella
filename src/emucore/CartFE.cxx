@@ -48,6 +48,27 @@ void CartridgeFE::install(System& system)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CartridgeFE::checkSwitchBank(uInt16 address, uInt8 value)
 {
+  // The patent shows that the mapping circuit watches for 0x01fe to appear on
+  // the address bus and then, with one cycle delay, stores bits 5 -- 7 on the data
+  // bus into a latch. The latch drives a demux which controls bank selection.
+  // The only thing not specify in the patent is the way the demux connects to
+  // the ROM chip.
+  //
+  // The following expects that the lowest bit selects the ROM bank and the other
+  // two bits are ignored. This has been validated for Space Shuttle and works on
+  // all other known FE ROMs.
+  //
+  // Decathlon is a special case: during the boot sequence (which is not emulated
+  // by Stella), the mapper switches to bank 1 if this demux scheme is assumed.
+  // However, Decathlon contains a garbage boot vector in bank 1, so the CPU
+  // now starts executing trash from TIA register space. Eventually, it hits a
+  // 0x00 = BRK with S in the right state to switch to bank 0, executes the valid
+  // BRK vector from there and starts up fine. While Stella always starts FE in
+  // bank 0, this can be verified in Stella by randomizing the startup bank.
+  //
+  // We have not validated this with a real cartridge, though, and while this
+  // supposedly is what real hardware does, other emulators may be better off
+  // implementing a stricter scheme here to get Decathlon to start in bank 0.
   if(myLastAccessWasFE)
   {
     bank((value >> 5) ^ 0b111);
