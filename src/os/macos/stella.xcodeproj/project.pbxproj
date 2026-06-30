@@ -330,6 +330,7 @@
 		DC4130A92F435E6900E4DE9B /* CartEFFWidget.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC4130A42F435E6900E4DE9B /* CartEFFWidget.cxx */; };
 		DC44019E1F1A5D01008C08F6 /* ColorWidget.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC44019C1F1A5D01008C08F6 /* ColorWidget.cxx */; };
 		DC44019F1F1A5D01008C08F6 /* ColorWidget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC44019D1F1A5D01008C08F6 /* ColorWidget.hxx */; };
+		DC44BCAE2FF40F4400656D67 /* Event.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC44BCAD2FF40F4400656D67 /* Event.cxx */; };
 		DC4613670D92C03600D8DAB9 /* RomAuditDialog.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC4613650D92C03600D8DAB9 /* RomAuditDialog.cxx */; };
 		DC4613680D92C03600D8DAB9 /* RomAuditDialog.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC4613660D92C03600D8DAB9 /* RomAuditDialog.hxx */; };
 		DC47455509C34BFA00EDDA3A /* BankRomCheat.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC47454A09C34BFA00EDDA3A /* BankRomCheat.cxx */; };
@@ -1219,6 +1220,7 @@
 		DC4130A62F435E6900E4DE9B /* TiaZoomWidget.cxx */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = TiaZoomWidget.cxx; sourceTree = "<group>"; };
 		DC44019C1F1A5D01008C08F6 /* ColorWidget.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ColorWidget.cxx; sourceTree = "<group>"; };
 		DC44019D1F1A5D01008C08F6 /* ColorWidget.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = ColorWidget.hxx; sourceTree = "<group>"; };
+		DC44BCAD2FF40F4400656D67 /* Event.cxx */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Event.cxx; sourceTree = "<group>"; };
 		DC4613650D92C03600D8DAB9 /* RomAuditDialog.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = RomAuditDialog.cxx; sourceTree = "<group>"; };
 		DC4613660D92C03600D8DAB9 /* RomAuditDialog.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; path = RomAuditDialog.hxx; sourceTree = "<group>"; };
 		DC47454A09C34BFA00EDDA3A /* BankRomCheat.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = BankRomCheat.cxx; sourceTree = "<group>"; };
@@ -2272,6 +2274,7 @@
 				DCFCDE7120C9E66500915CBE /* EmulationWorker.hxx */,
 				DCFCDE7020C9E66500915CBE /* EmulationWorker.cxx */,
 				2DE2DF410627AE07006BEC99 /* Event.hxx */,
+				DC44BCAD2FF40F4400656D67 /* Event.cxx */,
 				2D733D6F062895B2006265D9 /* EventHandler.hxx */,
 				2D733D6E062895B2006265D9 /* EventHandler.cxx */,
 				DC5AAC261FCB24AB00C420A6 /* EventHandlerConstants.hxx */,
@@ -3385,21 +3388,6 @@
 			shellPath = /bin/sh;
 			shellScript = "m4 ../../emucore/M6502.m4 > M6502.ins\n";
 		};
-		B0117D00B0117D00B0117D00 /* Generate Build Number */ = {
-			isa = PBXShellScriptBuildPhase;
-			alwaysOutOfDate = 1;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "Generate Build Number";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "sh ../../tools/genbuildnum.sh\n";
-		};
 		51DDA2DF83A64ACA883BBB18 /* Strip Quarantine */ = {
 			isa = PBXShellScriptBuildPhase;
 			alwaysOutOfDate = 1;
@@ -3414,6 +3402,21 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "xattr -dr com.apple.quarantine \"${SRCROOT}/Frameworks/SDL3.xcframework\"\n";
+		};
+		B0117D00B0117D00B0117D00 /* Generate Build Number */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Generate Build Number";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "sh ../../tools/genbuildnum.sh\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -3645,6 +3648,7 @@
 				DC6B2BA611037FF200F199A7 /* DiStella.cxx in Sources */,
 				DC3C9BCB2469C93D00CF2D47 /* VideoAudioDialog.cxx in Sources */,
 				CFE3F6151E84A9CE00A8204E /* CartCDF.cxx in Sources */,
+				DC44BCAE2FF40F4400656D67 /* Event.cxx in Sources */,
 				E08D2F3E23089B9B000BD709 /* JoyMap.cxx in Sources */,
 				DCA82C711FEB4E780059340F /* TimeMachine.cxx in Sources */,
 				DCD3F7C511340AAF00DBA3AE /* Genesis.cxx in Sources */,
