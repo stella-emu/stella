@@ -50,8 +50,8 @@ bool CartridgeFE::checkSwitchBank(uInt16 address, uInt8 value)
 {
   if(myLastAccessWasFE)
   {
-    bank((value >> 4) == 0x0D ? 1 : 0);
-    myLastAccessWasFE = false;
+    bank((value >> 5) ^ 0b111);
+    myLastAccessWasFE = false; // was: address == 0x01FE;
     return true;
   }
   myLastAccessWasFE = address == 0x01FE;
