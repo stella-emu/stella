@@ -37,8 +37,14 @@ class OptionsDialog : public Dialog
   protected:
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 
+    // Position the buttons via a GridLayout built from the current font metrics
+    void layout() override;
+
   private:
     unique_ptr<Dialog>           myDialog;
+
+    // All buttons in grid order: the two columns top-to-bottom, then Close
+    vector<ButtonWidget*> myButtons;
 
     ButtonWidget* myRomAuditButton{nullptr};
     ButtonWidget* myGameInfoButton{nullptr};

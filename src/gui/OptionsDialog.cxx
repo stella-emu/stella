@@ -21,6 +21,7 @@
 #include "Dialog.hxx"
 #include "DialogContainer.hxx"
 #include "Widget.hxx"
+#include "Layout.hxx"
 #include "EmulationDialog.hxx"
 #include "VideoAudioDialog.hxx"
 #include "InputDialog.hxx"
@@ -55,104 +56,114 @@ OptionsDialog::OptionsDialog(OSystem& osystem, DialogContainer& parent,
             VGAP         = Dialog::vGap();
   const int HGAP      = Dialog::buttonGap(),
             rowHeight = buttonHeight + VGAP;
-  int buttonWidth = Dialog::buttonWidth("Game Properties" + ELLIPSIS);
+  const int buttonWidth = Dialog::buttonWidth("Game Properties" + ELLIPSIS);
   _w = 2 * buttonWidth + HBORDER * 2 + HGAP;
   _h = 7 * rowHeight + VBORDER * 2 - VGAP + _th;
 
-  int xoffset = HBORDER, yoffset = VBORDER + _th;
   WidgetArray wid;
-  ButtonWidget* b{nullptr};
 
+  // Widgets are only created here (at placeholder geometry); layout() positions
+  // them via a GridLayout.  myButtons keeps them in grid order for that pass.
   const auto ADD_OD_BUTTON = [&](string_view label, int cmd, string_view toolTip = {})
   {
-    auto* bw = new ButtonWidget(this, _font, xoffset, yoffset,
+    auto* bw = new ButtonWidget(this, _font, 0, 0,
                                 buttonWidth, buttonHeight, label, cmd);
     bw->setToolTip(toolTip);
-    yoffset += rowHeight;
+    myButtons.push_back(bw);
+    wid.push_back(bw);
     return bw;
   };
 
-  b = ADD_OD_BUTTON("Video & Audio" + ELLIPSIS, kVidCmd,
+  // First column
+  ADD_OD_BUTTON("Video & Audio" + ELLIPSIS, kVidCmd,
     "Change display modes, colors, TV effects,\n"
     "volume, stereo mode" + ELLIPSIS);
-  wid.push_back(b);
-
-  b = ADD_OD_BUTTON("Emulation" + ELLIPSIS, kEmuCmd,
+  ADD_OD_BUTTON("Emulation" + ELLIPSIS, kEmuCmd,
     "Change emulation speed, save state settings" + ELLIPSIS);
-  wid.push_back(b);
-
-  b = ADD_OD_BUTTON("Input" + ELLIPSIS, kInptCmd,
+  ADD_OD_BUTTON("Input" + ELLIPSIS, kInptCmd,
     "Map and configure keyboard, mouse and controllers.");
-  wid.push_back(b);
-
-  b = ADD_OD_BUTTON("User Interface" + ELLIPSIS, kUsrIfaceCmd,
+  ADD_OD_BUTTON("User Interface" + ELLIPSIS, kUsrIfaceCmd,
     "Change themes, fonts, launcher layout\n"
     "and paths for ROMs and images.");
-  wid.push_back(b);
-
-  b = ADD_OD_BUTTON("Snapshots" + ELLIPSIS, kSnapCmd,
+  ADD_OD_BUTTON("Snapshots" + ELLIPSIS, kSnapCmd,
     "Define snapshot save location, format" + ELLIPSIS);
-  wid.push_back(b);
-
-  b = ADD_OD_BUTTON("Developer" + ELLIPSIS, kDevelopCmd,
+  ADD_OD_BUTTON("Developer" + ELLIPSIS, kDevelopCmd,
     "Change options which support programming Atari 2600 games.");
-  wid.push_back(b);
 
-  // Move to second column
-  xoffset += buttonWidth + HGAP;
-  yoffset = VBORDER + _th;
-
+  // Second column
   myGameInfoButton = ADD_OD_BUTTON("Game Properties" + ELLIPSIS, kInfoCmd,
     "Change game-specific info and options (TV format,\n"
     "console switches, controllers" + ELLIPSIS + ")");
-  wid.push_back(myGameInfoButton);
-
   myCheatCodeButton = ADD_OD_BUTTON("Cheat Codes" + ELLIPSIS, kCheatCmd,
     "Use and manage cheat codes.");
 #ifndef CHEATCODE_SUPPORT
   myCheatCodeButton->clearFlags(Widget::FLAG_ENABLED);
 #endif
-  wid.push_back(myCheatCodeButton);
-
   myRomAuditButton = ADD_OD_BUTTON("Audit ROMs" + ELLIPSIS, kAuditCmd,
     "Rename your ROMs according to Stella's internal database.");
-  wid.push_back(myRomAuditButton);
-
-  b = ADD_OD_BUTTON("System Logs" + ELLIPSIS, kLoggerCmd,
+  ADD_OD_BUTTON("System Logs" + ELLIPSIS, kLoggerCmd,
     "Configure, view and save Stella's system log.");
-  wid.push_back(b);
-
-  b = ADD_OD_BUTTON("Help" + ELLIPSIS, kHelpCmd,
+  ADD_OD_BUTTON("Help" + ELLIPSIS, kHelpCmd,
     "Display Stella's essential keyboard commands.");
-  wid.push_back(b);
-
-  b = ADD_OD_BUTTON("About" + ELLIPSIS, kAboutCmd,
+  ADD_OD_BUTTON("About" + ELLIPSIS, kAboutCmd,
     "Display info about the installed Stella version.");
-  wid.push_back(b);
 
-  buttonWidth = Dialog::buttonWidth("   Close   ");
-  xoffset -= (buttonWidth + HGAP) / 2;
-  b = ADD_OD_BUTTON("Close", kExitCmd);
-  wid.push_back(b);
-  addCancelWidget(b);
+  // Centered Close button on its own row spanning both columns
+  const int closeWidth = Dialog::buttonWidth("   Close   ");
+  auto* closeButton = new ButtonWidget(this, _font, 0, 0,
+                                       closeWidth, buttonHeight, "Close", kExitCmd);
+  myButtons.push_back(closeButton);
+  wid.push_back(closeButton);
+  addCancelWidget(closeButton);
 
   addToFocusList(wid);
 
   // Certain buttons are disabled depending on mode
   if(myMode == AppMode::launcher)
-  {
     myCheatCodeButton->clearFlags(Widget::FLAG_ENABLED);
-  }
   else
-  {
     myRomAuditButton->clearFlags(Widget::FLAG_ENABLED);
-  }
 
   setHelpAnchor("Options");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 OptionsDialog::~OptionsDialog() = default;
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void OptionsDialog::layout()
+{
+  using GUI::GridLayout;
+  using GUI::widgetItem;
+  using GUI::hCentered;
+
+  const int buttonHeight = Dialog::buttonHeight();
+  const int VBORDER      = Dialog::vBorder();
+  const int HBORDER      = Dialog::hBorder();
+  const int VGAP         = Dialog::vGap();
+  const int HGAP         = Dialog::buttonGap();
+  const int buttonWidth  = Dialog::buttonWidth("Game Properties" + ELLIPSIS);
+  const int closeWidth   = Dialog::buttonWidth("   Close   ");
+
+  // Two columns of equal buttons over six rows, plus a seventh row holding the
+  // Close button centered across both columns
+  static constexpr int COLS = 2, ROWS = 7, PER_COL = 6;
+  auto grid = std::make_unique<GridLayout>(COLS, ROWS, HGAP, VGAP,
+                                           HBORDER, VBORDER);
+  grid->columnFixed(0, buttonWidth).columnFixed(1, buttonWidth);
+  for(int r = 0; r < ROWS; ++r)
+    grid->rowFixed(r, buttonHeight);
+
+  for(int r = 0; r < PER_COL; ++r)
+  {
+    grid->place(0, r, widgetItem(myButtons[r]));
+    grid->place(1, r, widgetItem(myButtons[PER_COL + r]));
+  }
+  grid->place(0, PER_COL, hCentered(myButtons.back(), closeWidth), COLS);
+
+  // Position the grid in the dialog area below the title bar
+  grid->doLayout(0, _th, _w, _h - _th);
+}
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void OptionsDialog::loadConfig()

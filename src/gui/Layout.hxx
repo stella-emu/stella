@@ -92,21 +92,25 @@ class WidgetLayout : public Layout
 };
 
 /**
+  How a BoxLayout child (along the main axis) or a GridLayout track is sized:
+
+    Fixed    a fixed number of pixels (usually font-derived)
+    Percent  a percentage (0..100) of the available length
+    Stretch  shares the leftover length in proportion to a weight
+
+  An optional maximum clamps the resulting size.
+*/
+enum class SizePolicy: uInt8 { Fixed, Percent, Stretch };
+
+/**
   Stacks its children along one axis (horizontal or vertical).  Each child is
   sized along the box's main axis according to its policy; on the cross axis
   every child fills the box (minus margins).
-
-    Fixed    main-axis size is a fixed number of pixels (usually font-derived)
-    Percent  main-axis size is a percentage (0..100) of the available length
-    Stretch  child shares the leftover length in proportion to its weight
-
-  An optional per-child maximum clamps the resulting main-axis size.
 */
 class BoxLayout : public Layout
 {
   public:
-    enum class Dir: uInt8    { Horizontal, Vertical };
-    enum class Policy: uInt8 { Fixed, Percent, Stretch };
+    enum class Dir: uInt8 { Horizontal, Vertical };
 
     explicit BoxLayout(Dir dir, int spacing = 0, int marginH = 0, int marginV = 0)
       : myDir{dir}, mySpacing{spacing}, myMarginH{marginH}, myMarginV{marginV} { }
@@ -114,19 +118,19 @@ class BoxLayout : public Layout
 
     // value: Fixed -> pixels, Percent -> 0..100, Stretch -> weight.
     // maxMain: optional main-axis clamp (0 = unbounded).
-    BoxLayout& add(unique_ptr<Layout> child, Policy policy, int value,
+    BoxLayout& add(unique_ptr<Layout> child, SizePolicy policy, int value,
                    int maxMain = 0);
 
     // Convenience wrappers
     BoxLayout& addFixed(unique_ptr<Layout> child, int px)
-      { return add(std::move(child), Policy::Fixed, px); }
+      { return add(std::move(child), SizePolicy::Fixed, px); }
     BoxLayout& addPercent(unique_ptr<Layout> child, int pct, int maxMain = 0)
-      { return add(std::move(child), Policy::Percent, pct, maxMain); }
+      { return add(std::move(child), SizePolicy::Percent, pct, maxMain); }
     BoxLayout& addStretch(unique_ptr<Layout> child, int weight = 1)
-      { return add(std::move(child), Policy::Stretch, weight); }
+      { return add(std::move(child), SizePolicy::Stretch, weight); }
     // A fixed empty gap
     BoxLayout& addSpace(int px)
-      { return add(std::make_unique<WidgetLayout>(nullptr), Policy::Fixed, px); }
+      { return add(std::make_unique<WidgetLayout>(nullptr), SizePolicy::Fixed, px); }
 
     void doLayout(int x, int y, int w, int h) override;
     Common::Size minSize() const override;
@@ -134,7 +138,7 @@ class BoxLayout : public Layout
   private:
     struct Item {
       unique_ptr<Layout> layout;
-      Policy policy{Policy::Fixed};
+      SizePolicy policy{SizePolicy::Fixed};
       int value{0};
       int maxMain{0};
     };
@@ -153,6 +157,87 @@ class BoxLayout : public Layout
     BoxLayout& operator=(BoxLayout&&) = delete;
 };
 
+/**
+  Arranges its children in a table of fixed rows and columns.  Each column and
+  each row is a "track" sized along its axis by a SizePolicy (the same
+  Fixed/Percent/Stretch rules BoxLayout uses); a child is then placed into a
+  cell and may span several columns and/or rows.
+
+  Because every cell in a column shares that column's resolved width (and every
+  cell in a row its height), controls line up across rows — which is what the
+  form-style option dialogs need for their label / control columns.
+*/
+class GridLayout : public Layout
+{
+  public:
+    GridLayout(int cols, int rows, int hSpacing = 0, int vSpacing = 0,
+               int marginH = 0, int marginV = 0);
+    ~GridLayout() override = default;
+
+    // Define a column's / row's sizing policy.
+    // value: Fixed -> pixels, Percent -> 0..100, Stretch -> weight.
+    // maxSize: optional clamp on the resolved track size (0 = unbounded).
+    GridLayout& column(int idx, SizePolicy policy, int value, int maxSize = 0);
+    GridLayout& row(int idx, SizePolicy policy, int value, int maxSize = 0);
+
+    // Convenience wrappers
+    GridLayout& columnFixed(int idx, int px)
+      { return column(idx, SizePolicy::Fixed, px); }
+    GridLayout& columnPercent(int idx, int pct, int maxSize = 0)
+      { return column(idx, SizePolicy::Percent, pct, maxSize); }
+    GridLayout& columnStretch(int idx, int weight = 1)
+      { return column(idx, SizePolicy::Stretch, weight); }
+    GridLayout& rowFixed(int idx, int px)
+      { return row(idx, SizePolicy::Fixed, px); }
+    GridLayout& rowPercent(int idx, int pct, int maxSize = 0)
+      { return row(idx, SizePolicy::Percent, pct, maxSize); }
+    GridLayout& rowStretch(int idx, int weight = 1)
+      { return row(idx, SizePolicy::Stretch, weight); }
+
+    // Place a child in the cell at (col, row), optionally spanning cells.
+    GridLayout& place(int col, int row, unique_ptr<Layout> child,
+                      int colspan = 1, int rowspan = 1);
+
+    void doLayout(int x, int y, int w, int h) override;
+    Common::Size minSize() const override;
+
+  private:
+    struct Track {
+      SizePolicy policy{SizePolicy::Fixed};
+      int value{0};
+      int maxSize{0};
+    };
+    struct Cell {
+      unique_ptr<Layout> layout;
+      int col{0}, row{0};
+      int colspan{1}, rowspan{1};
+    };
+
+    // Resolve one axis' track sizes into 'ext', given the length available to
+    // the tracks (i.e. after the inter-track spacing has been removed).
+    static void resolveTracks(const vector<Track>& tracks, int avail,
+                              IntArray& ext);
+    // Grow the 'span' tracks starting at 'start' so their combined size (plus
+    // the spacing they subsume) can hold 'need' pixels of content.
+    static void growSpan(IntArray& mins, int start, int span, int need,
+                         int spacing);
+
+    int myHSpacing{0};
+    int myVSpacing{0};
+    int myMarginH{0};  // left/right inset
+    int myMarginV{0};  // top/bottom inset
+    vector<Track> myColumns;
+    vector<Track> myRows;
+    vector<Cell> myCells;
+
+  private:
+    // Following constructors and assignment operators not supported
+    GridLayout(const GridLayout&) = delete;
+    GridLayout(GridLayout&&) = delete;
+    GridLayout& operator=(const GridLayout&) = delete;
+    GridLayout& operator=(GridLayout&&) = delete;
+};
+
 // - - - - - Convenience builders for assembling a layout tree - - - - -
 
 // Wrap a widget as a layout item, carrying its minimum usable size.  A null
@@ -167,6 +252,11 @@ widgetItem(Widget* widget, int minW = 0, int minH = 0)
 // within its (taller) cell, rather than filling it — used for plain text
 // labels, which draw top-aligned.
 unique_ptr<Layout> vCentered(Widget* widget, int h, int minW = 0);
+
+// Wrap a widget so it keeps its natural width 'w' and is horizontally centered
+// within its (wider) cell, rather than filling it — used e.g. for a button
+// centered across a spanning grid cell.
+unique_ptr<Layout> hCentered(Widget* widget, int w, int minH = 0);
 
 }  // namespace GUI
 
