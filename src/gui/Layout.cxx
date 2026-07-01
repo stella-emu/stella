@@ -168,6 +168,15 @@ unique_ptr<Layout> hCentered(Widget* widget, int w, int minH)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+unique_ptr<Layout> indentedItem(Widget* widget, int indent, int minW)
+{
+  auto row = std::make_unique<BoxLayout>(BoxLayout::Dir::Horizontal);
+  row->addSpace(indent);
+  row->addStretch(anchoredItem(widget, minW));
+  return row;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 GridLayout::GridLayout(int cols, int rows, int hSpacing, int vSpacing,
                        int marginH, int marginV)
   : myHSpacing{hSpacing}, myVSpacing{vSpacing},

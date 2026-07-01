@@ -272,6 +272,11 @@ unique_ptr<Layout> vCentered(Widget* widget, int h, int minW = 0);
 // centered across a spanning grid cell.
 unique_ptr<Layout> hCentered(Widget* widget, int w, int minH = 0);
 
+// Wrap a widget so it keeps its natural size and is positioned 'indent' pixels
+// from the left of its cell — used for options indented under a group header
+// (e.g. the checkboxes below a "When saving:" label in the option dialogs).
+unique_ptr<Layout> indentedItem(Widget* widget, int indent, int minW = 0);
+
 }  // namespace GUI
 
 #endif  // LAYOUT_HXX

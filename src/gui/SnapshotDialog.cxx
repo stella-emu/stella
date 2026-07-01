@@ -20,6 +20,7 @@
 #include "EditTextWidget.hxx"
 #include "FSNode.hxx"
 #include "Font.hxx"
+#include "Layout.hxx"
 #include "OSystem.hxx"
 #include "Settings.hxx"
 #include "SnapshotDialog.hxx"
@@ -30,34 +31,22 @@ SnapshotDialog::SnapshotDialog(OSystem& osystem, DialogContainer& parent,
   : Dialog(osystem, parent, font, "Snapshot settings")
 {
   const int lineHeight   = Dialog::lineHeight(),
-            fontWidth    = Dialog::fontWidth(),
             buttonHeight = Dialog::buttonHeight(),
-            buttonWidth  = Dialog::buttonWidth("Save path" + ELLIPSIS),
-            VBORDER      = Dialog::vBorder(),
-            HBORDER      = Dialog::hBorder(),
-            VGAP         = Dialog::vGap(),
-            INDENT       = Dialog::indent();
+            buttonWidth  = Dialog::buttonWidth("Save path" + ELLIPSIS);
   WidgetArray wid;
 
-  // Set real dimensions
-  setSize(64 * fontWidth + HBORDER * 2, 10 * (lineHeight + VGAP) + VBORDER + _th, max_w, max_h);
-
-  int xpos = HBORDER, ypos = VBORDER + _th;
+  // Widgets are only created here (at placeholder geometry); layout() assigns
+  // all geometry from the current font, so the dialog reflows on font change.
 
   // Snapshot path (save files)
-  auto* b = new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight,
-                             "Save path" + ELLIPSIS, kChooseSnapSaveDirCmd);
-  wid.push_back(b);
-  xpos += buttonWidth + fontWidth;
-  mySnapSavePath = new EditTextWidget(this, font, xpos, ypos + (buttonHeight - lineHeight) / 2 - 1,
-                                  _w - xpos - HBORDER, lineHeight, "");
+  mySnapSaveButton = new ButtonWidget(this, font, 0, 0, buttonWidth, buttonHeight,
+                                      "Save path" + ELLIPSIS, kChooseSnapSaveDirCmd);
+  wid.push_back(mySnapSaveButton);
+  mySnapSavePath = new EditTextWidget(this, font, 0, 0, lineHeight, lineHeight, "");
   wid.push_back(mySnapSavePath);
 
-  // Snapshot naming
-  xpos = HBORDER;  ypos += buttonHeight + VGAP * 4;
-
   // Snapshot interval (continuous mode)
-  mySnapInterval = new SliderWidget(this, font, xpos, ypos,
+  mySnapInterval = new SliderWidget(this, font, 0, 0,
                                     "Continuous snapshot interval ", 0, kSnapshotInterval,
                                     font.getStringWidth("10 seconds"));
   mySnapInterval->setMinValue(1);
@@ -65,31 +54,23 @@ SnapshotDialog::SnapshotDialog(OSystem& osystem, DialogContainer& parent,
   mySnapInterval->setTickmarkIntervals(3);
   wid.push_back(mySnapInterval);
 
-  // Booleans for saving snapshots
-  const int fwidth = font.getStringWidth("When saving snapshots:");
-  xpos = HBORDER;  ypos += lineHeight + VGAP * 3;
-  new StaticTextWidget(this, font, xpos, ypos, fwidth, lineHeight,
-                       "When saving snapshots:", TextAlign::Left);
+  // Header for the boolean save options
+  myWhenLabel = new StaticTextWidget(this, font, 0, 0,
+                                     "When saving snapshots:", TextAlign::Left);
 
   // Snapshot single or multiple saves
-  xpos += INDENT;  ypos += lineHeight + VGAP;
-  mySnapName = new CheckboxWidget(this, font, xpos, ypos, "Use actual ROM name");
+  mySnapName = new CheckboxWidget(this, font, 0, 0, "Use actual ROM name");
   wid.push_back(mySnapName);
-  ypos += lineHeight + VGAP;
-
-  mySnapSingle = new CheckboxWidget(this, font, xpos, ypos, "Overwrite existing files");
+  mySnapSingle = new CheckboxWidget(this, font, 0, 0, "Overwrite existing files");
   wid.push_back(mySnapSingle);
 
   // Snapshot in 1x mode (ignore scaling)
-  ypos += lineHeight + VGAP;
-  mySnap1x = new CheckboxWidget(this, font, xpos, ypos,
+  mySnap1x = new CheckboxWidget(this, font, 0, 0,
       "Create pixel-exact image (no zoom/post-processing)");
   wid.push_back(mySnap1x);
 
   // Automatically crop black borders
-  ypos += lineHeight + VGAP;
-  mySnapCrop = new CheckboxWidget(this, font, xpos, ypos,
-      "Crop black borders");
+  mySnapCrop = new CheckboxWidget(this, font, 0, 0, "Crop black borders");
   wid.push_back(mySnapCrop);
 
   // Add Defaults, OK and Cancel buttons
@@ -98,6 +79,63 @@ SnapshotDialog::SnapshotDialog(OSystem& osystem, DialogContainer& parent,
   addToFocusList(wid);
 
   setHelpAnchor("Snapshots");
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void SnapshotDialog::layout()
+{
+  using GUI::BoxLayout;
+  using GUI::widgetItem;
+  using GUI::anchoredItem;
+  using GUI::indentedItem;
+  using GUI::vCentered;
+  using Dir = BoxLayout::Dir;
+
+  const int lineHeight   = Dialog::lineHeight(),
+            fontWidth    = Dialog::fontWidth(),
+            buttonHeight = Dialog::buttonHeight(),
+            buttonWidth  = Dialog::buttonWidth("Save path" + ELLIPSIS),
+            VBORDER      = Dialog::vBorder(),
+            HBORDER      = Dialog::hBorder(),
+            VGAP         = Dialog::vGap(),
+            INDENT       = Dialog::indent();
+
+  // Size the (fixed) dialog from the current font so it reflows on font change
+  _w = 64 * fontWidth + HBORDER * 2;
+  _h = 10 * (lineHeight + VGAP) + VBORDER + _th;
+
+  // Save-path row: a button plus an edit field that fills the remaining width.
+  // The row is the only one with several widgets, so it needs its own HBox; the
+  // outer VBox already supplies the HBORDER inset (hence marginH 0 here).  The
+  // edit field keeps its own (natural) height, vertically centered in the taller
+  // button row.
+  auto pathRow = std::make_unique<BoxLayout>(Dir::Horizontal, 0, 0, 0);
+  pathRow->addFixed(widgetItem(mySnapSaveButton), buttonWidth);
+  pathRow->addSpace(fontWidth);
+  pathRow->addStretch(vCentered(mySnapSavePath, mySnapSavePath->getHeight()));
+
+  // Assemble the vertical stack; the button group sits below it, positioned
+  // separately by layoutButtonGroup().  The interval slider is self-labeling and
+  // the header/checkboxes keep their natural size, so all are anchored.
+  auto root = std::make_unique<BoxLayout>(Dir::Vertical, 0, HBORDER, VBORDER);
+  root->addFixed(std::move(pathRow), buttonHeight);
+  root->addSpace(VGAP * 4);
+  root->addFixed(anchoredItem(mySnapInterval), lineHeight);
+  root->addSpace(VGAP * 3);
+  root->addFixed(anchoredItem(myWhenLabel), lineHeight);
+  root->addSpace(VGAP);
+  root->addFixed(indentedItem(mySnapName, INDENT), lineHeight);
+  root->addSpace(VGAP);
+  root->addFixed(indentedItem(mySnapSingle, INDENT), lineHeight);
+  root->addSpace(VGAP);
+  root->addFixed(indentedItem(mySnap1x, INDENT), lineHeight);
+  root->addSpace(VGAP);
+  root->addFixed(indentedItem(mySnapCrop, INDENT), lineHeight);
+
+  root->doLayout(0, _th, _w, _h - _th);
+
+  // Standard button group (Defaults / OK / Cancel) along the bottom edge
+  layoutButtonGroup();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -21,6 +21,7 @@
 class OSystem;
 class GuiObject;
 class DialogContainer;
+class ButtonWidget;
 class CheckboxWidget;
 class EditTextWidget;
 class SliderWidget;
@@ -43,6 +44,10 @@ class SnapshotDialog : public Dialog
   protected:
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 
+    // (Re)position all widgets from the current font metrics; the constructor
+    // only creates them
+    void layout() override;
+
   private:
     enum {
       kChooseSnapSaveDirCmd = 'LOss', // snapshot dir (save files)
@@ -50,8 +55,10 @@ class SnapshotDialog : public Dialog
     };
 
     // Config paths
+    ButtonWidget* mySnapSaveButton{nullptr};
     EditTextWidget* mySnapSavePath{nullptr};
 
+    StaticTextWidget* myWhenLabel{nullptr};
     CheckboxWidget* mySnapName{nullptr};
     SliderWidget* mySnapInterval{nullptr};
 
