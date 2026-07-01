@@ -1180,11 +1180,11 @@
     <ClCompile Include="..\..\gui\FileListWidget.cxx" />
     <ClCompile Include="..\..\gui\HighScoresDialog.cxx" />
     <ClCompile Include="..\..\gui\LauncherFileListWidget.cxx" />
+    <ClCompile Include="..\..\gui\Layout.cxx" />
     <ClCompile Include="..\..\gui\NavigationWidget.cxx" />
     <ClCompile Include="..\..\gui\JoystickDialog.cxx" />
     <ClCompile Include="..\..\gui\LoggerDialog.cxx" />
     <ClCompile Include="..\..\gui\MessageDialog.cxx" />
-    <ClCompile Include="..\..\gui\MinUICommandDialog.cxx" />
     <ClCompile Include="..\..\gui\OverlayMenu.cxx" />
     <ClCompile Include="..\..\gui\PlusRomsSetupDialog.cxx" />
     <ClCompile Include="..\..\gui\QuadTariDialog.cxx" />
@@ -2645,11 +2645,11 @@
     <ClInclude Include="..\..\gui\HighScoresDialog.hxx" />
     <ClInclude Include="..\..\gui\Icon.hxx" />
     <ClInclude Include="..\..\gui\LauncherFileListWidget.hxx" />
+    <ClInclude Include="..\..\gui\Layout.hxx" />
     <ClInclude Include="..\..\gui\NavigationWidget.hxx" />
     <ClInclude Include="..\..\gui\JoystickDialog.hxx" />
     <ClInclude Include="..\..\gui\LoggerDialog.hxx" />
     <ClInclude Include="..\..\gui\MessageDialog.hxx" />
-    <ClInclude Include="..\..\gui\MinUICommandDialog.hxx" />
     <ClInclude Include="..\..\gui\OverlayMenu.hxx" />
     <ClInclude Include="..\..\gui\PlusRomsSetupDialog.hxx" />
     <ClInclude Include="..\..\gui\QuadTariDialog.hxx" />

@@ -78,6 +78,7 @@ class WidgetLayout : public Layout
     ~WidgetLayout() override = default;
 
     void doLayout(int x, int y, int w, int h) override;
+
     Common::Size minSize() const override {
       return Common::Size(static_cast<uInt32>(myMinW), static_cast<uInt32>(myMinH));
     }
@@ -138,6 +139,7 @@ class BoxLayout : public Layout
       { return add(std::make_unique<WidgetLayout>(nullptr), SizePolicy::Fixed, px); }
 
     void doLayout(int x, int y, int w, int h) override;
+
     Common::Size minSize() const override;
 
   private:
@@ -204,6 +206,7 @@ class GridLayout : public Layout
                       int colspan = 1, int rowspan = 1);
 
     void doLayout(int x, int y, int w, int h) override;
+
     Common::Size minSize() const override;
 
   private:
