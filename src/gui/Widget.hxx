@@ -67,6 +67,11 @@ class Widget : public GuiObject
     void setHeight(int h) override;
     virtual void setSize(int w, int h);
     virtual void setSize(const Common::Point& pos);
+    // Set position and size together.  The base just forwards to setPos() and
+    // the virtual setWidth()/setHeight(); widgets that must react to a geometry
+    // change as a whole (e.g. RomImageWidget rescales its image) override it.
+    // This is the single entry point the layout manager uses to place a widget.
+    virtual void setArea(int x, int y, int w, int h);
 
     virtual bool handleText(char text)                        { return false; }
     virtual bool handleKeyDown(StellaKey key, StellaMod mod)  { return false; }
@@ -112,6 +117,16 @@ class Widget : public GuiObject
     uInt32 getID() const  { return _id; }
 
     virtual const GUI::Font& font() const { return _font; }
+
+    /**
+      The referenced font's metrics may have changed at runtime (e.g. the user
+      picked a different launcher font).  Re-read any cached font-derived state.
+      The base refreshes the common metrics; widgets that cache additional
+      font-derived values override and extend this.  Geometry is not touched
+      here — the owning dialog's layout() repositions/resizes widgets after the
+      refresh.
+    */
+    virtual void refreshFontMetrics();
 
     void setTextColor(ColorId color)   { _textcolor = color;   setDirty(); }
     void setTextColorHi(ColorId color) { _textcolorhi = color; setDirty(); }
@@ -208,6 +223,10 @@ class Widget : public GuiObject
 
     /** Sets all widgets in this chain to be dirty (must be redrawn) */
     static void setDirtyInChain(Widget* start);
+
+    // Refresh font-derived state for an entire widget chain, recursing into the
+    // child widgets owned by composite widgets (which form their own chains).
+    static void refreshFontMetricsInChain(Widget* start);
 
   private:
     // Following constructors and assignment operators not supported

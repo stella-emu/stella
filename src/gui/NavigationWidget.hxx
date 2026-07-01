@@ -18,7 +18,6 @@
 #ifndef NAVIGATION_WIDGET_HXX
 #define NAVIGATION_WIDGET_HXX
 
-class EditTextWidget;
 class FileListWidget;
 namespace GUI {
   class Font;
@@ -69,6 +68,9 @@ class NavigationWidget : public Widget
 
         void setPath(string_view path);
         const string& getPath(int idx) const;
+        // Force the folder-link widths to be recomputed (e.g. after a font
+        // change) even though the path itself has not changed
+        void refresh();
 
       private:
         string myLastPath;
@@ -90,6 +92,7 @@ class NavigationWidget : public Widget
     ~NavigationWidget() override = default;
 
     void setWidth(int w) override;
+    void setArea(int x, int y, int w, int h) override;
     void setList(FileListWidget* list);
     void setVisible(bool isVisible);
     void updateUI();
@@ -98,13 +101,16 @@ class NavigationWidget : public Widget
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 
   private:
-    bool              myUseMinimalUI{false};
+    // (Re)position and (re)size the child buttons and path field from the
+    // current font metrics and this widget's geometry, re-picking the button
+    // icon variants; keeps a runtime font change correct, not just resizes
+    void layoutChildren();
 
+  private:
     ButtonWidget*     myHomeButton{nullptr};
     ButtonWidget*     myPrevButton{nullptr};
     ButtonWidget*     myNextButton{nullptr};
     ButtonWidget*     myUpButton{nullptr};
-    EditTextWidget*   myDir{nullptr};
     PathWidget*       myPath{nullptr};
     FileListWidget*   myList{nullptr};
 

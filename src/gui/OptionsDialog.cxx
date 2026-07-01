@@ -49,9 +49,6 @@ OptionsDialog::OptionsDialog(OSystem& osystem, DialogContainer& parent,
     myBoss{boss},
     myMode{mode}
 {
-  // do not show basic settings options in debugger
-  const bool minSettings = osystem.settings().getBool("minimal_ui")
-    && mode != AppMode::debugger;
   const int buttonHeight = Dialog::buttonHeight(),
             VBORDER      = Dialog::vBorder(),
             HBORDER      = Dialog::hBorder(),
@@ -65,15 +62,6 @@ OptionsDialog::OptionsDialog(OSystem& osystem, DialogContainer& parent,
   int xoffset = HBORDER, yoffset = VBORDER + _th;
   WidgetArray wid;
   ButtonWidget* b{nullptr};
-
-  if(minSettings)
-  {
-    auto* bw = new ButtonWidget(this, _font, xoffset, yoffset,
-        _w - HBORDER * 2, buttonHeight, "Use Basic Settings", kBasSetCmd);
-    wid.push_back(bw);
-    yoffset += rowHeight + VGAP * 2;
-    _h += rowHeight + VGAP * 2;
-  }
 
   const auto ADD_OD_BUTTON = [&](string_view label, int cmd, string_view toolTip = {})
   {
@@ -112,7 +100,7 @@ OptionsDialog::OptionsDialog(OSystem& osystem, DialogContainer& parent,
 
   // Move to second column
   xoffset += buttonWidth + HGAP;
-  yoffset = minSettings ? VBORDER + _th + rowHeight + VGAP * 2 : VBORDER + _th;
+  yoffset = VBORDER + _th;
 
   myGameInfoButton = ADD_OD_BUTTON("Game Properties" + ELLIPSIS, kInfoCmd,
     "Change game-specific info and options (TV format,\n"
@@ -194,15 +182,6 @@ void OptionsDialog::handleCommand(CommandSender* sender, int cmd,
 {
   switch(cmd)
   {
-    case kBasSetCmd:
-      // enable basic settings
-      instance().settings().setValue("basic_settings", true);
-      if(myMode != AppMode::emulator)
-        close();
-      else
-        instance().eventHandler().leaveMenuMode();
-      break;
-
     case kVidCmd:
     {
       uInt32 w = 0, h = 0;

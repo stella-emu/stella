@@ -599,6 +599,8 @@ void UIDialog::handleCommand(CommandSender* sender, int cmd, int data, int id)
         myLauncherExtensionsWidget->getState() != instance().settings().getBool("launcherextensions");
       const bool informRomViewer = myIsGlobal &&
         (myRomViewerSize->getValue() > 0) != (instance().settings().getFloat("romviewer") > 0.F);
+      const bool informFont = myIsGlobal &&
+        myLauncherFontPopup->getSelectedTag().toString() != instance().settings().getString("launcherfont");
       saveConfig();
       close();
       if(informPath) // Let the boss know romdir has changed
@@ -609,6 +611,8 @@ void UIDialog::handleCommand(CommandSender* sender, int cmd, int data, int id)
         sendCommand(LauncherDialog::kExtChangedCmd, 0, 0);
       if(informRomViewer) // Let the boss know the ROM info viewer was toggled
         sendCommand(LauncherDialog::kRomViewerChangedCmd, 0, 0);
+      if(informFont) // Let the boss know the launcher font changed
+        sendCommand(LauncherDialog::kFontChangedCmd, 0, 0);
       break;
     }
     case GuiObject::kDefaultsCmd:

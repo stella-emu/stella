@@ -56,6 +56,7 @@ class LauncherDialog : public Dialog, CommandSender
       kFavChangedCmd   = 'favc',  // Favorite tracking changed
       kExtChangedCmd   = 'extc',  // File extension display changed
       kRomViewerChangedCmd = 'rmvc',  // ROM info viewer enabled/disabled
+      kFontChangedCmd  = 'fntc',  // Launcher font changed
     };
 
   public:
@@ -130,11 +131,12 @@ class LauncherDialog : public Dialog, CommandSender
     // Clamp a desired ROM info column width to keep both the list usable
     // (horizontal) and the image + text fitting in the column (vertical)
     int clampRomInfoWidth(int imageWidth, int colHeight) const;
-    void addTitleWidget(int& ypos);
-    void addFilteringWidgets(int& ypos);
-    void addPathWidgets(int& ypos);
-    int addRomWidgets(int ypos);
-    void addButtonWidgets(int& ypos);
+    // These create the widgets and their non-geometry state (tooltips, focus
+    // order, structural choices); layout() assigns all geometry
+    void addFilteringWidgets();
+    void addPathWidgets();
+    int addRomWidgets();
+    void addButtonWidgets();
     string getRomDir();
 
     /**
@@ -186,6 +188,7 @@ class LauncherDialog : public Dialog, CommandSender
     unique_ptr<GUI::Font> myROMInfoFont;
 
     ButtonWidget*     mySettingsButton{nullptr};
+    StaticTextWidget* myFilterLabel{nullptr};
     EditTextWidget*   myPattern{nullptr};
     ButtonWidget*     mySubDirsButton{nullptr};
     ButtonWidget*     myRandomRomButton{nullptr};
@@ -210,6 +213,11 @@ class LauncherDialog : public Dialog, CommandSender
     // and is adjusted by dragging the divider.
     float             myRomInfoFraction{0.F};
 
+    // The minimum content size, recomputed at the end of each layout() from the
+    // laid-out widgets and used to clamp the next one (the widgets carry no
+    // meaningful geometry until layout() runs, so it cannot be read up front)
+    Common::Size      myMinSize;
+
     // Draggable divider between the list and the ROM info column
     Widget*           myDivider{nullptr};
 
@@ -220,8 +228,6 @@ class LauncherDialog : public Dialog, CommandSender
 
     int mySelectedItem{0};
 
-    bool myUseMinimalUI{false};
-    bool myForceLayout{false};
     bool myShowRomInfo{false};
     bool myEventHandled{false};
     bool myShortCount{false};

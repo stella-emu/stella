@@ -247,6 +247,14 @@ void Widget::setSize(const Common::Point& pos)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Widget::setArea(int x, int y, int w, int h)
+{
+  setPos(x, y);
+  setWidth(w);
+  setHeight(h);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Widget::handleMouseEntered()
 {
   if(isEnabled())
@@ -534,6 +542,27 @@ void Widget::setDirtyInChain(Widget* start)
     //cerr << "setDirtyInChain " << typeid(*start).name() << '\n';
   #endif
     start->setDirty();
+    start = start->_next;
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Widget::refreshFontMetrics()
+{
+  _fontWidth = _font.getMaxCharWidth();
+  _lineHeight = _font.getLineHeight();
+  setDirty();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Widget::refreshFontMetricsInChain(Widget* start)
+{
+  while(start)
+  {
+    start->refreshFontMetrics();
+    // Composite widgets parent their children to themselves, forming separate
+    // chains that the boss-level walk does not reach; recurse into them
+    refreshFontMetricsInChain(start->_firstWidget);
     start = start->_next;
   }
 }

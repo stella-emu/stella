@@ -28,11 +28,11 @@ MODULE_OBJS := \
         src/gui/LauncherDialog.o \
         src/gui/LauncherFileListWidget.o \
         src/gui/Launcher.o \
+        src/gui/Layout.o \
         src/gui/ListWidget.o \
         src/gui/LoggerDialog.o \
         src/gui/MessageBox.o \
         src/gui/MessageDialog.o \
-        src/gui/MinUICommandDialog.o \
         src/gui/NavigationWidget.o \
         src/gui/OptionsDialog.o \
         src/gui/OverlayMenu.o \

@@ -108,6 +108,20 @@ void ScrollBarWidget::setArrows()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void ScrollBarWidget::refreshFontMetrics()
+{
+  Widget::refreshFontMetrics();
+
+  // All of these are font-dependent, so recompute them for the new font.  The
+  // bar width is intrinsic to the scrollbar (the list positions and sets our
+  // height, but the width follows the font)
+  _scrollBarWidth = scrollBarWidth(_font);
+  setArrows();
+  Widget::setWidth(_scrollBarWidth);
+  recalc();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ScrollBarWidget::handleMouseDown(int x, int y, MouseButton b,
                                       int clickCount)
 {

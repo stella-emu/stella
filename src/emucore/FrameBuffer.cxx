@@ -163,46 +163,36 @@ void FrameBuffer::setupFonts()
   // use it
   mySmallFont = std::make_unique<GUI::Font>(GUI::stellaDesc); // 6x10
 
-  if(myOSystem.settings().getBool("minimal_ui"))
-  {
-    // The general font used in all UI elements
-    myFont = std::make_unique<GUI::Font>(GUI::stella12x24tDesc);           // 12x24
-    // The info font used in all UI elements
-    myInfoFont = std::make_unique<GUI::Font>(GUI::stellaLargeDesc);        // 10x20
-  }
-  else
-  {
-    constexpr int NUM_FONTS = 7;
-    const FontDesc FONT_DESC[NUM_FONTS] = {
-      GUI::consoleDesc, GUI::consoleMediumDesc, GUI::stellaMediumDesc,
-      GUI::stellaLargeDesc, GUI::stella12x24tDesc, GUI::stella14x28tDesc,
-      GUI::stella16x32tDesc};
-    const string_view dialogFont = myOSystem.settings().getString("dialogfont");
-    const FontDesc fd = getFontDesc(dialogFont);
+  constexpr int NUM_FONTS = 7;
+  const FontDesc FONT_DESC[NUM_FONTS] = {
+    GUI::consoleDesc, GUI::consoleMediumDesc, GUI::stellaMediumDesc,
+    GUI::stellaLargeDesc, GUI::stella12x24tDesc, GUI::stella14x28tDesc,
+    GUI::stella16x32tDesc};
+  const string_view dialogFont = myOSystem.settings().getString("dialogfont");
+  const FontDesc fd = getFontDesc(dialogFont);
 
-    // The general font used in all UI elements
-    myFont = std::make_unique<GUI::Font>(fd);                                //  default: 9x18
-    // The info font used in all UI elements,
-    //  automatically determined aiming for 1 / 1.4 (~= 18 / 13) size
-    int fontIdx = 0;
-    for(int i = 0; i < NUM_FONTS; ++i)
+  // The general font used in all UI elements
+  myFont = std::make_unique<GUI::Font>(fd);                                //  default: 9x18
+  // The info font used in all UI elements,
+  //  automatically determined aiming for 1 / 1.4 (~= 18 / 13) size
+  int fontIdx = 0;
+  for(int i = 0; i < NUM_FONTS; ++i)
+  {
+    if(fd.height <= FONT_DESC[i].height * 1.4)
     {
-      if(fd.height <= FONT_DESC[i].height * 1.4)
-      {
-        fontIdx = i;
-        break;
-      }
+      fontIdx = i;
+      break;
     }
-    myInfoFont = std::make_unique<GUI::Font>(FONT_DESC[fontIdx]);            //  default 8x13
-
-    // Determine minimal zoom level based on the default font
-    //  So what fits with default font should fit for any font.
-    //  However, we have to make sure all Dialogs are sized using the fontsize.
-    const int zoom_h = (fd.height * 4 * 2) / GUI::stellaMediumDesc.height;
-    const int zoom_w = (fd.maxwidth * 4 * 2) / GUI::stellaMediumDesc.maxwidth;
-    // round to 25% steps, >= 200%
-    myTIAMinZoom = std::max(std::max(zoom_w, zoom_h) / 4., 2.);
   }
+  myInfoFont = std::make_unique<GUI::Font>(FONT_DESC[fontIdx]);            //  default 8x13
+
+  // Determine minimal zoom level based on the default font
+  //  So what fits with default font should fit for any font.
+  //  However, we have to make sure all Dialogs are sized using the fontsize.
+  const int zoom_h = (fd.height * 4 * 2) / GUI::stellaMediumDesc.height;
+  const int zoom_w = (fd.maxwidth * 4 * 2) / GUI::stellaMediumDesc.maxwidth;
+  // round to 25% steps, >= 200%
+  myTIAMinZoom = std::max(std::max(zoom_w, zoom_h) / 4., 2.);
 
   // The font used by the ROM launcher
   const string_view lf = myOSystem.settings().getString("launcherfont");
@@ -333,11 +323,9 @@ FBInitStatus FrameBuffer::createDisplay(string_view title, BufferType type,
   if(status != FBInitStatus::Success)
     return status;
 
-  // The (full) launcher and the debugger windows may be freely resized by the
-  // user; all other UI/TIA windows keep their fixed size
-  const bool resizable =
-    (myBufferType == BufferType::Launcher &&
-     !myOSystem.settings().getBool("minimal_ui"))
+  // The launcher and the debugger windows may be freely resized by the user;
+  // all other UI/TIA windows keep their fixed size
+  const bool resizable = myBufferType == BufferType::Launcher
     || myBufferType == BufferType::Debugger;
   myBackend->setWindowResizable(resizable,
     Common::Size(FBMinimum::Width * hidpiScaleFactor(),

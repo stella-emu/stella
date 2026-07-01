@@ -49,7 +49,6 @@ class OptionsDialog : public Dialog
     AppMode myMode{AppMode::emulator};
 
     enum {
-      kBasSetCmd   = 'BAST',
       kVidCmd      = 'VIDO',
       kEmuCmd      = 'EMUO',
       kInptCmd     = 'INPT',

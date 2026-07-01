@@ -56,6 +56,16 @@ ListWidget::ListWidget(GuiObject* boss, const GUI::Font& font,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void ListWidget::setPos(const Common::Point& pos)
+{
+  Widget::setPos(pos);
+  // The scrollbar is a sibling widget, not a child, so it must be moved to
+  // track the list (it sits flush against the list's right edge)
+  if(_useScrollbar)
+    _scrollBar->setPos(_x + _w, _y);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ListWidget::setWidth(int w)
 {
   // getWidth() reports the full footprint (drawable area + scrollbar), so
@@ -64,6 +74,8 @@ void ListWidget::setWidth(int w)
   // scrollbar width into the list
   if(_useScrollbar)
   {
+    // The scrollbar sizes its own (font-derived) width; we just reserve room
+    // for it and keep it flush against the list's right edge
     Widget::setWidth(w - ScrollBarWidget::scrollBarWidth(_font));
     _scrollBar->setPosX(_x + _w);
   }

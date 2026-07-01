@@ -17,75 +17,97 @@
 
 #include "Command.hxx"
 #include "Dialog.hxx"
-#include "EditTextWidget.hxx"
 #include "FBSurface.hxx"
 #include "FileListWidget.hxx"
 #include "Icons.hxx"
-#include "OSystem.hxx"
 
 #include "NavigationWidget.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 NavigationWidget::NavigationWidget(GuiObject* boss, const GUI::Font& font,
     int xpos, int ypos, int w, int h)
-  : Widget(boss, font, xpos, ypos, w, h),
-    myUseMinimalUI{instance().settings().getBool("minimal_ui")}
+  : Widget(boss, font, xpos, ypos, w, h)
 {
-  // Add some buttons and textfield to show current directory
-  const int lineHeight = _font.getLineHeight();
-
-  if(!myUseMinimalUI)
-  {
-    const int
-      fontWidth    = _font.getMaxCharWidth(),
-      BTN_GAP      = fontWidth / 4;
-    const bool smallIcon = lineHeight < 26;
-    const GUI::Icon& homeIcon = smallIcon ? GUI::icon_home_small : GUI::icon_home_large;
-    const GUI::Icon& prevIcon = smallIcon ? GUI::icon_prev_small : GUI::icon_prev_large;
-    const GUI::Icon& nextIcon = smallIcon ? GUI::icon_next_small : GUI::icon_next_large;
-    const GUI::Icon& upIcon = smallIcon ? GUI::icon_up_small : GUI::icon_up_large;
-    const int iconWidth = homeIcon.width();
-    const int buttonWidth = iconWidth + ((fontWidth + 1) & ~0b1) + 1; // round up to next odd
-    const int buttonHeight = h;
+  // Add some buttons and a path field to show the current directory
+  const int
+    fontWidth    = _font.getMaxCharWidth(),
+    BTN_GAP      = fontWidth / 4;
+  const bool smallIcon = _font.getLineHeight() < 26;
+  const GUI::Icon& homeIcon = smallIcon ? GUI::icon_home_small : GUI::icon_home_large;
+  const GUI::Icon& prevIcon = smallIcon ? GUI::icon_prev_small : GUI::icon_prev_large;
+  const GUI::Icon& nextIcon = smallIcon ? GUI::icon_next_small : GUI::icon_next_large;
+  const GUI::Icon& upIcon = smallIcon ? GUI::icon_up_small : GUI::icon_up_large;
+  const int iconWidth = homeIcon.width();
+  const int buttonWidth = iconWidth + ((fontWidth + 1) & ~0b1) + 1; // round up to next odd
+  const int buttonHeight = h;
 #ifndef BSPF_MACOS
-    const string altKey = "Alt";
+  const string altKey = "Alt";
 #else
-    const string altKey = "Cmd";
+  const string altKey = "Cmd";
 #endif
 
+  myHomeButton = new ButtonWidget(boss, _font, xpos, ypos,
+    buttonWidth, buttonHeight, homeIcon, FileListWidget::kHomeDirCmd);
+  myHomeButton->setToolTip("Go back to initial directory. (" + altKey + "+Pos1)");
+  boss->addFocusWidget(myHomeButton);
+  xpos = myHomeButton->getRight() + BTN_GAP;
 
-    myHomeButton = new ButtonWidget(boss, _font, xpos, ypos,
-      buttonWidth, buttonHeight, homeIcon, FileListWidget::kHomeDirCmd);
-    myHomeButton->setToolTip("Go back to initial directory. (" + altKey + "+Pos1)");
-    boss->addFocusWidget(myHomeButton);
-    xpos = myHomeButton->getRight() + BTN_GAP;
+  myPrevButton = new ButtonWidget(boss, _font, xpos, ypos,
+    buttonWidth, buttonHeight, prevIcon, FileListWidget::kPrevDirCmd);
+  myPrevButton->setToolTip("Go back in directory history. (" + altKey + "+Left)");
+  boss->addFocusWidget(myPrevButton);
+  xpos = myPrevButton->getRight() + BTN_GAP;
 
-    myPrevButton = new ButtonWidget(boss, _font, xpos, ypos,
-      buttonWidth, buttonHeight, prevIcon, FileListWidget::kPrevDirCmd);
-    myPrevButton->setToolTip("Go back in directory history. (" + altKey + "+Left)");
-    boss->addFocusWidget(myPrevButton);
-    xpos = myPrevButton->getRight() + BTN_GAP;
+  myNextButton = new ButtonWidget(boss, _font, xpos, ypos,
+    buttonWidth, buttonHeight, nextIcon, FileListWidget::kNextDirCmd);
+  myNextButton->setToolTip("Go forward in directory history. (" + altKey + "+Right)");
+  boss->addFocusWidget(myNextButton);
+  xpos = myNextButton->getRight() + BTN_GAP;
 
-    myNextButton = new ButtonWidget(boss, _font, xpos, ypos,
-      buttonWidth, buttonHeight, nextIcon, FileListWidget::kNextDirCmd);
-    myNextButton->setToolTip("Go forward in directory history. (" + altKey + "+Right)");
-    boss->addFocusWidget(myNextButton);
-    xpos = myNextButton->getRight() + BTN_GAP;
+  myUpButton = new ButtonWidget(boss, _font, xpos, ypos,
+    buttonWidth, buttonHeight, upIcon, ListWidget::kParentDirCmd);
+  myUpButton->setToolTip("Go Up.", Event::UIPrevDir, EventMode::kMenuMode);
+  boss->addFocusWidget(myUpButton);
+  xpos = myUpButton->getRight() + BTN_GAP;
 
-    myUpButton = new ButtonWidget(boss, _font, xpos, ypos,
-      buttonWidth, buttonHeight, upIcon, ListWidget::kParentDirCmd);
-    myUpButton->setToolTip("Go Up.", Event::UIPrevDir, EventMode::kMenuMode);
-    boss->addFocusWidget(myUpButton);
-    xpos = myUpButton->getRight() + BTN_GAP;
+  myPath = new PathWidget(boss, this, _font, xpos, ypos, _w + _x - xpos, h);
+}
 
-    myPath = new PathWidget(boss, this, _font, xpos, ypos, _w + _x - xpos, h);
-  }
-  else
-  {
-    myDir = new EditTextWidget(boss, _font, xpos, ypos, _w + _x - xpos, lineHeight, "");
-    myDir->setEditable(false, true);
-    myDir->clearFlags(Widget::FLAG_RETAIN_FOCUS);
-  }
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void NavigationWidget::layoutChildren()
+{
+  const int fontWidth = _font.getMaxCharWidth();
+  const int BTN_GAP = fontWidth / 4;
+  const bool smallIcon = _font.getLineHeight() < 26;
+  const GUI::Icon& homeIcon = smallIcon ? GUI::icon_home_small : GUI::icon_home_large;
+  const GUI::Icon& prevIcon = smallIcon ? GUI::icon_prev_small : GUI::icon_prev_large;
+  const GUI::Icon& nextIcon = smallIcon ? GUI::icon_next_small : GUI::icon_next_large;
+  const GUI::Icon& upIcon   = smallIcon ? GUI::icon_up_small   : GUI::icon_up_large;
+
+  // Re-pick the icon variants (the font height may have crossed the threshold)
+  myHomeButton->setIcon(homeIcon);
+  myPrevButton->setIcon(prevIcon);
+  myNextButton->setIcon(nextIcon);
+  myUpButton->setIcon(upIcon);
+
+  const int buttonWidth = homeIcon.width() + ((fontWidth + 1) & ~0b1) + 1;
+  int xpos = _x;
+  myHomeButton->setArea(xpos, _y, buttonWidth, _h); xpos += buttonWidth + BTN_GAP;
+  myPrevButton->setArea(xpos, _y, buttonWidth, _h); xpos += buttonWidth + BTN_GAP;
+  myNextButton->setArea(xpos, _y, buttonWidth, _h); xpos += buttonWidth + BTN_GAP;
+  myUpButton->setArea(xpos, _y, buttonWidth, _h);   xpos += buttonWidth + BTN_GAP;
+  myPath->setArea(xpos, _y, _w + _x - xpos, _h);
+  // The path is unchanged but its folder-link widths depend on the font
+  myPath->refresh();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void NavigationWidget::setArea(int x, int y, int w, int h)
+{
+  setPos(x, y);
+  Widget::setWidth(w);   // base setters; children are re-flowed below
+  Widget::setHeight(h);
+  layoutChildren();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -94,32 +116,23 @@ void NavigationWidget::setList(FileListWidget* list)
   myList = list;
 
   // Let the FileListWidget handle the button commands
-  if(!myUseMinimalUI)
-  {
-    myHomeButton->setTarget(myList);
-    myPrevButton->setTarget(myList);
-    myNextButton->setTarget(myList);
-    myUpButton->setTarget(myList);
-  }
+  myHomeButton->setTarget(myList);
+  myPrevButton->setTarget(myList);
+  myNextButton->setTarget(myList);
+  myUpButton->setTarget(myList);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void NavigationWidget::setWidth(int w)
 {
   // Adjust path display accordingly too
-  if(myUseMinimalUI)
-    myDir->setWidth(w - (myDir->getLeft() - _x));
-  else
-    myPath->setWidth(w - (myPath->getLeft() - _x));
+  myPath->setWidth(w - (myPath->getLeft() - _x));
   Widget::setWidth(w);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void NavigationWidget::setVisible(bool isVisible)
 {
-  if(myUseMinimalUI)
-    return;
-
   if(isVisible)
   {
     this->clearFlags(FLAG_INVISIBLE);
@@ -160,18 +173,11 @@ void NavigationWidget::updateUI()
   if(isVisible())
   {
     // Only enable the navigation buttons if function is available
-    if(myUseMinimalUI)
-    {
-      myDir->setText(myList->currentDir().getShortPath());
-    }
-    else
-    {
-      myHomeButton->setEnabled(myList->hasPrevHistory());
-      myPrevButton->setEnabled(myList->hasPrevHistory());
-      myNextButton->setEnabled(myList->hasNextHistory());
-      myUpButton->setEnabled(myList->currentDir().hasParent());
-      myPath->setPath(myList->currentDir().getShortPath());
-    }
+    myHomeButton->setEnabled(myList->hasPrevHistory());
+    myPrevButton->setEnabled(myList->hasPrevHistory());
+    myNextButton->setEnabled(myList->hasNextHistory());
+    myUpButton->setEnabled(myList->currentDir().hasParent());
+    myPath->setPath(myList->currentDir().getShortPath());
   }
 }
 
@@ -248,8 +254,9 @@ void NavigationWidget::PathWidget::setPath(string_view path)
     if(myFolderList.size() > idx)
     {
       myFolderList[idx]->setPath(curPath);
-      myFolderList[idx]->setPosX(x);
-      myFolderList[idx]->setWidth(width);
+      // Set the full geometry: after a font change the row height and vertical
+      // position move too, not just the X/width, so the text stays centered
+      myFolderList[idx]->setArea(x, _y, width, _h);
       myFolderList[idx]->setLabel(name);
     }
     else
@@ -269,6 +276,16 @@ void NavigationWidget::PathWidget::setPath(string_view path)
     myFolderList[idx]->setWidth(0);
     ++idx;
   }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void NavigationWidget::PathWidget::refresh()
+{
+  // setPath() early-returns when the path is unchanged; clear the cache so the
+  // folder-link widths are recomputed for the current font
+  const string path = myLastPath;
+  myLastPath.clear();
+  setPath(path);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

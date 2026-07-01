@@ -41,12 +41,15 @@ class ListWidget : public EditableWidget
     };
 
   public:
+    using Widget::setPos;
+
     ListWidget(GuiObject* boss, const GUI::Font& font,
                int x, int y, int w, int h, bool useScrollbar = true);
     ~ListWidget() override = default;
 
     int rows() const        { return _rows; }
     int currentPos() const  { return _currentPos; }
+    void setPos(const Common::Point& pos) override;
     void setWidth(int w) override;
     void setHeight(int h) override;
 

@@ -74,7 +74,7 @@ class OverlayMenu : public DialogContainer
   private:
     // The concrete built-in menu dialogs, each cached on first use
     enum class Cached: uInt8 {
-      Options, StellaSettings, Command, MinUICommand,
+      Options, StellaSettings, Command,
       HighScores, Message, PlusRoms, NumCached
     };
 

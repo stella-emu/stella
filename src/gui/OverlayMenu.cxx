@@ -24,7 +24,6 @@
 #include "OptionsDialog.hxx"
 #include "StellaSettingsDialog.hxx"
 #include "CommandDialog.hxx"
-#include "MinUICommandDialog.hxx"
 #include "HighScoresDialog.hxx"
 #include "MessageDialog.hxx"
 #include "PlusRomsSetupDialog.hxx"
@@ -57,8 +56,7 @@ Dialog* OverlayMenu::baseDialog()
                      ? Cached::StellaSettings : Cached::Options);
 
     case EventHandlerState::CMDMENU:
-      return &cached(myOSystem.settings().getBool("minimal_ui")
-                     ? Cached::MinUICommand : Cached::Command);
+      return &cached(Cached::Command);
 
     case EventHandlerState::HIGHSCORESMENU:
       return &cached(Cached::HighScores);
@@ -98,9 +96,6 @@ Dialog* OverlayMenu::createDialog(Cached id)
 
     case Cached::Command:
       return new CommandDialog(myOSystem, *this);
-
-    case Cached::MinUICommand:
-      return new MinUICommandDialog(myOSystem, *this);
 
     case Cached::HighScores:
       return new HighScoresDialog(myOSystem, *this,

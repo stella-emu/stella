@@ -1924,9 +1924,7 @@ bool EventHandler::changeStateByEvent(Event::Type type)
       if(myState == EventHandlerState::EMULATION || myState == EventHandlerState::PAUSE
          || myState == EventHandlerState::TIMEMACHINE || myState == EventHandlerState::PLAYBACK)
         enterMenuMode(EventHandlerState::CMDMENU);
-      else if(myState == EventHandlerState::CMDMENU && !myOSystem.settings().getBool("minimal_ui"))
-        // The extra check for "minimal_ui" allows mapping e.g. right joystick fire
-        //  to open the command dialog and navigate there using that fire button
+      else if(myState == EventHandlerState::CMDMENU)
         leaveMenuMode();
       else
         handled = false;

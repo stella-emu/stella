@@ -60,6 +60,14 @@ class Font
 
     const FontDesc& desc() const { return myFontDesc; }
 
+    // Replace the font description in place.  Every widget holds a reference to
+    // its Font, so swapping the descriptor here makes all of them immediately
+    // use the new glyphs and metrics without having to reseat any reference
+    // (which a reference member cannot do anyway).  Callers must then refresh
+    // any font-derived state cached by the referrers (see
+    // Widget::refreshFontMetrics() and FrameBuffer::changeLauncherFont()).
+    void changeDesc(const FontDesc& desc) { myFontDesc = desc; }
+
     int getFontHeight() const { return myFontDesc.height; }
     int getLineHeight() const { return myFontDesc.height + 2; }
     int getMaxCharWidth() const { return myFontDesc.maxwidth; }

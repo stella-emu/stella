@@ -438,6 +438,19 @@ class FrameBuffer
     const GUI::Font& launcherFont() const { return *myLauncherFont; }
 
     /**
+      Change the launcher font at runtime.  The existing Font object is mutated
+      in place (rather than replaced) so that every widget's reference to it
+      stays valid and immediately picks up the new glyphs and metrics.  Callers
+      must afterwards refresh font-derived state cached by the launcher widgets
+      and re-run its layout (see LauncherDialog).
+
+      @param name  The settings name of the new launcher font
+    */
+    void changeLauncherFont(string_view name) {
+      myLauncherFont->changeDesc(getFontDesc(name));
+    }
+
+    /**
       Get the font description from the font name
 
       @param name  The settings name of the font

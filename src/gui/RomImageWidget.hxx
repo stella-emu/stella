@@ -42,7 +42,7 @@ class RomImageWidget : public Widget
 
     // Reposition and resize the widget, rescaling the current image to fit.
     // Used when the launcher (and thus this widget) is resized.
-    void setArea(int x, int y, int w, int h);
+    void setArea(int x, int y, int w, int h) override;
     bool changeImage(int direction = 1);
     // Toggle zoom via keyboard
     void toggleImageZoom();
