@@ -96,6 +96,7 @@ void Dialog::open()
   // Settle our size and child widget geometry before allocating the surface
   // (the base implementation is a no-op; resizeable dialogs override it)
   layout();
+  layoutHelp();
 
   // Make sure we have a valid surface to draw into
   // Technically, this shouldn't be needed until drawDialog(), but some
@@ -165,18 +166,27 @@ void Dialog::initHelp()
 
       const int helpWidth = static_cast<int>(std::lround(_font.getMaxCharWidth() *
                                                          3.5));
-      _helpWidget = new ButtonWidget(this, _font, _w - helpWidth, 0,
+      _helpWidget = new ButtonWidget(this, _font, 0, 0,
         helpWidth, buttonHeight(), "?", kHelpCmd);
       _helpWidget->setBGColor(kColorTitleBar);
       _helpWidget->setTextColor(kColorTitleText);
       _helpWidget->setToolTip("Click or press " + key + " for help.");
     }
+    layoutHelp();
 
     if(hasHelp())
       _helpWidget->clearFlags(Widget::FLAG_INVISIBLE);
     else
       _helpWidget->setFlags(Widget::FLAG_INVISIBLE);
   }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Dialog::layoutHelp()
+{
+  // The help button sits in the top-right corner of the title bar
+  if(_helpWidget != nullptr)
+    _helpWidget->setPos(_w - _helpWidget->getWidth(), 0);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -380,6 +390,7 @@ void Dialog::relayout()
 
   // Recompute size and widget geometry for the current window
   layout();
+  layoutHelp();
 
   // Grow the backing surface if needed, then refresh src/dst scaling
   if(static_cast<uInt32>(_w) > _surface->width() ||
@@ -1016,7 +1027,6 @@ void Dialog::addOKCancelBGroup(WidgetArray& wid, const GUI::Font& font,
 {
   const int buttonHeight = Dialog::buttonHeight(),
             BUTTON_GAP   = Dialog::buttonGap(),
-            VBORDER      = Dialog::vBorder(),
             HBORDER      = Dialog::hBorder();
 
   buttonWidth = std::max({buttonWidth,
@@ -1026,17 +1036,12 @@ void Dialog::addOKCancelBGroup(WidgetArray& wid, const GUI::Font& font,
 
   _w = std::max(HBORDER * 2 + buttonWidth * 2 + BUTTON_GAP, _w);
 
-#ifndef BSPF_MACOS
-  addOKWidget(new ButtonWidget(this, font, _w - 2 * buttonWidth - HBORDER - BUTTON_GAP,
-      _h - buttonHeight - VBORDER, buttonWidth, buttonHeight, okText, GuiObject::kOKCmd));
-  addCancelWidget(new ButtonWidget(this, font, _w - (buttonWidth + HBORDER),
-      _h - buttonHeight - VBORDER, buttonWidth, buttonHeight, cancelText, GuiObject::kCloseCmd));
-#else
-  addCancelWidget(new ButtonWidget(this, font, _w - 2 * buttonWidth - HBORDER - BUTTON_GAP,
-      _h - buttonHeight - VBORDER, buttonWidth, buttonHeight, cancelText, GuiObject::kCloseCmd));
-  addOKWidget(new ButtonWidget(this, font, _w - (buttonWidth + HBORDER),
-      _h - buttonHeight - VBORDER, buttonWidth, buttonHeight, okText, GuiObject::kOKCmd));
-#endif
+  // Created at placeholder geometry; layoutButtonGroup() positions the group
+  addOKWidget(new ButtonWidget(this, font, 0, 0, buttonWidth, buttonHeight,
+                               okText, GuiObject::kOKCmd));
+  addCancelWidget(new ButtonWidget(this, font, 0, 0, buttonWidth, buttonHeight,
+                                   cancelText, GuiObject::kCloseCmd));
+  layoutButtonGroup();
 
   // Note that 'focusOKButton' only takes effect when there are no other UI
   // elements in the dialog; otherwise, the first widget of the dialog is always
@@ -1055,17 +1060,51 @@ void Dialog::addOKCancelBGroup(WidgetArray& wid, const GUI::Font& font,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Dialog::layoutButtonGroup()
+{
+  const int buttonHeight = Dialog::buttonHeight(),
+            BUTTON_GAP   = Dialog::buttonGap(),
+            VBORDER      = Dialog::vBorder(),
+            HBORDER      = Dialog::hBorder();
+  const int by = _h - buttonHeight - VBORDER;
+
+  // Left side: Defaults, with an optional Extra button beside it
+  if(_defaultWidget != nullptr)
+  {
+    _defaultWidget->setPos(HBORDER, by);
+    if(_extraWidget != nullptr)
+      _extraWidget->setPos(HBORDER + _defaultWidget->getWidth() + BUTTON_GAP, by);
+  }
+
+  // Right side: OK/Cancel in platform order, right-aligned.  Positioned from
+  // the right using each button's own width (the group shares one width).
+#ifndef BSPF_MACOS
+  const std::array<ButtonWidget*, 2> right{_okWidget, _cancelWidget};
+#else
+  const std::array<ButtonWidget*, 2> right{_cancelWidget, _okWidget};
+#endif
+  int xpos = _w - HBORDER;
+  for(auto it = right.rbegin(); it != right.rend(); ++it)
+  {
+    ButtonWidget* b = *it;
+    if(b == nullptr)
+      continue;
+    xpos -= b->getWidth();
+    b->setPos(xpos, by);
+    xpos -= BUTTON_GAP;
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Dialog::addDefaultsOKCancelBGroup(WidgetArray& wid, const GUI::Font& font,
                                        string_view okText, string_view cancelText,
                                        string_view defaultsText,
                                        bool focusOKButton)
 {
   const int buttonHeight = Dialog::buttonHeight(),
-            buttonWidth  = Dialog::buttonWidth(defaultsText),
-            VBORDER      = Dialog::vBorder(),
-            HBORDER      = Dialog::hBorder();
+            buttonWidth  = Dialog::buttonWidth(defaultsText);
 
-  addDefaultWidget(new ButtonWidget(this, font, HBORDER, _h - buttonHeight - VBORDER,
+  addDefaultWidget(new ButtonWidget(this, font, 0, 0,
                    buttonWidth, buttonHeight, defaultsText, GuiObject::kDefaultsCmd));
   wid.push_back(_defaultWidget);
 
@@ -1081,17 +1120,13 @@ void Dialog::addDefaultsExtraOKCancelBGroup(
 {
   const int buttonHeight = Dialog::buttonHeight(),
             buttonWidth  = std::max(Dialog::buttonWidth(defaultsText),
-                                    Dialog::buttonWidth(extraText)),
-            BUTTON_GAP   = Dialog::buttonGap(),
-            VBORDER      = Dialog::vBorder(),
-            HBORDER      = Dialog::hBorder();
+                                    Dialog::buttonWidth(extraText));
 
-  addDefaultWidget(new ButtonWidget(this, font, HBORDER, _h - buttonHeight - VBORDER,
+  addDefaultWidget(new ButtonWidget(this, font, 0, 0,
                    buttonWidth, buttonHeight, defaultsText, GuiObject::kDefaultsCmd));
   wid.push_back(_defaultWidget);
 
-  addExtraWidget(new ButtonWidget(this, font, HBORDER + buttonWidth + BUTTON_GAP,
-                 _h - buttonHeight - VBORDER,
+  addExtraWidget(new ButtonWidget(this, font, 0, 0,
                  buttonWidth, buttonHeight, extraText, extraCmd));
   wid.push_back(_extraWidget);
 

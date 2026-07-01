@@ -50,15 +50,10 @@ OptionsDialog::OptionsDialog(OSystem& osystem, DialogContainer& parent,
     myBoss{boss},
     myMode{mode}
 {
-  const int buttonHeight = Dialog::buttonHeight(),
-            VBORDER      = Dialog::vBorder(),
-            HBORDER      = Dialog::hBorder(),
-            VGAP         = Dialog::vGap();
-  const int HGAP      = Dialog::buttonGap(),
-            rowHeight = buttonHeight + VGAP;
-  const int buttonWidth = Dialog::buttonWidth("Game Properties" + ELLIPSIS);
-  _w = 2 * buttonWidth + HBORDER * 2 + HGAP;
-  _h = 7 * rowHeight + VBORDER * 2 - VGAP + _th;
+  // Only sizes needed to create the buttons; layout() computes _w/_h and all
+  // geometry from the current font, so the dialog reflows on font change
+  const int buttonHeight = Dialog::buttonHeight();
+  const int buttonWidth  = Dialog::buttonWidth("Game Properties" + ELLIPSIS);
 
   WidgetArray wid;
 
@@ -144,6 +139,11 @@ void OptionsDialog::layout()
   const int HGAP         = Dialog::buttonGap();
   const int buttonWidth  = Dialog::buttonWidth("Game Properties" + ELLIPSIS);
   const int closeWidth   = Dialog::buttonWidth("   Close   ");
+
+  // Size the (fixed) dialog from the current font so it reflows on font change
+  const int rowHeight = buttonHeight + VGAP;
+  _w = 2 * buttonWidth + HBORDER * 2 + HGAP;
+  _h = 7 * rowHeight + VBORDER * 2 - VGAP + _th;
 
   // Two columns of equal buttons over six rows, plus a seventh row holding the
   // Close button centered across both columns

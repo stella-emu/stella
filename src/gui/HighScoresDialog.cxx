@@ -25,6 +25,7 @@
 #include "EditTextWidget.hxx"
 #include "PopUpWidget.hxx"
 #include "MessageBox.hxx"
+#include "Layout.hxx"
 
 #include "HighScoresDialog.hxx"
 
@@ -107,6 +108,82 @@ HighScoresDialog::HighScoresDialog(OSystem& osystem, DialogContainer& parent,
   myScores.variation = HSM::DEFAULT_VARIATION;
 
   const GUI::Font& ifont = instance().frameBuffer().infoFont();
+  const int lineHeight = Dialog::lineHeight(),
+            fontWidth  = Dialog::fontWidth();
+  const int nWidth = _font.getStringWidth("ABC") + fontWidth * 0.75;
+  const int bWidth = fontWidth * 5;
+  const bool smallFont = _font.getFontHeight() < 24;
+  const int buttonSize = smallFont ? BUTTON_GFX_H : BUTTON_GFX_H_LARGE;
+  const int numRanks = static_cast<int>(NUM_RANKS);
+  const VariantList items;
+  WidgetArray wid;
+
+  // Widgets are only created here (at placeholder geometry); layout() assigns
+  // all geometry from the current font, so the dialog reflows on font change.
+  myGameNameWidget = new StaticTextWidget(this, _font, 0, 0, "");
+
+  myVariationLabel = new StaticTextWidget(this, _font, 0, 0, "Variation ");
+  myVariationPopup = new PopUpWidget(this, _font, 0, 0,
+      _font.getStringWidth("256"), lineHeight, items, "", 0, kVariationChanged);
+  wid.push_back(myVariationPopup);
+  myPrevVarButton = new ButtonWidget(this, _font, 0, 0, bWidth, myVariationPopup->getHeight(),
+      smallFont ? PREV_GFX.data() : PREV_GFX_LARGE.data(),
+      buttonSize, buttonSize, kPrevVariation);
+  wid.push_back(myPrevVarButton);
+  myNextVarButton = new ButtonWidget(this, _font, 0, 0, bWidth, myVariationPopup->getHeight(),
+      smallFont ? NEXT_GFX.data() : NEXT_GFX_LARGE.data(),
+      buttonSize, buttonSize, kNextVariation);
+  wid.push_back(myNextVarButton);
+
+  // Score-table column headers
+  myRankLabel          = new StaticTextWidget(this, _font, 0, 0, "Rank");
+  myScoreLabel         = new StaticTextWidget(this, _font, 0, 0, "Score");
+  mySpecialLabelWidget = new StaticTextWidget(this, _font, 0, 0, "Round");
+  myNameLabel          = new StaticTextWidget(this, _font, 0, 0, "Name");
+  myDateLabel          = new StaticTextWidget(this, _font, 0, 0, "Date   Time");
+
+  // Score-table data rows
+  for(int r = 0; r < numRanks; ++r)
+  {
+    myRankWidgets[r] = new StaticTextWidget(this, _font, 0, 0,
+                          (r < 9 ? " " : "") + std::to_string(r + 1));
+    myScoreWidgets[r] = new StaticTextWidget(this, _font, 0, 0, "12345678");
+    mySpecialWidgets[r] = new StaticTextWidget(this, _font, 0, 0, "123");
+    myNameWidgets[r] = new StaticTextWidget(this, _font, 0, 0, "   ");
+    myEditNameWidgets[r] = new EditTextWidget(this, _font, 0, 0, nWidth, lineHeight);
+    myEditNameWidgets[r]->setFlags(EditTextWidget::FLAG_INVISIBLE);
+    myEditNameWidgets[r]->setEnabled(false);
+    myDateWidgets[r] = new StaticTextWidget(this, _font, 0, 0, "YY-MM-DD HH:MM");
+    myDeleteButtons[r] = new ButtonWidget(this, _font, 0, 0, fontWidth * 2,
+                                          Dialog::fontHeight(), "X", kDeleteSingle);
+    myDeleteButtons[r]->setID(r);
+    myDeleteButtons[r]->setToolTip("Click to delete this high score.");
+
+    wid.push_back(myEditNameWidgets[r]);
+    wid.push_back(myDeleteButtons[r]);
+  }
+
+  myNotesWidget = new StaticTextWidget(this, ifont, 0, 0, "Note: ");
+  // Note: Only display the first 16 md5 chars + "..."
+  myMD5Widget = new StaticTextWidget(this, ifont, 0, 0, "MD5: 1234567890123456.");
+  myCheckSumWidget = new StaticTextWidget(this, ifont, 0, 0, "Props: 1234567890123456.");
+
+  addDefaultsOKCancelBGroup(wid, _font, "Save", "Cancel", " Reset ");
+  _defaultWidget->setToolTip("Click to reset all high scores of this variation.");
+  addToFocusList(wid);
+
+  _focusedWidget = _okWidget; // start with focus on 'Save' button
+
+  setHelpAnchor("Highscores");
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void HighScoresDialog::layout()
+{
+  using GUI::GridLayout;
+  using GUI::anchoredItem;
+
+  const GUI::Font& ifont = instance().frameBuffer().infoFont();
   const int infoLineHeight = ifont.getLineHeight();
   const int lineHeight   = Dialog::lineHeight(),
             fontHeight   = Dialog::fontHeight(),
@@ -116,99 +193,91 @@ HighScoresDialog::HighScoresDialog(OSystem& osystem, DialogContainer& parent,
             VBORDER      = Dialog::vBorder(),
             HBORDER      = Dialog::hBorder(),
             VGAP         = Dialog::vGap();
+  const int numRanks = static_cast<int>(NUM_RANKS);
+
+  // Score-table columns.  Each column width is the width of a representative
+  // (padded) string, so the columns line up; the table also drives the dialog
+  // width.  Cells are anchored (see below) so wide data can't be clipped.
   const int xposRank = HBORDER;
-  const int xposScore = xposRank + _font.getStringWidth("Rank");
-  const int xposSpecial = xposScore + _font.getStringWidth("   Score  ");
-  const int xposName = xposSpecial + _font.getStringWidth("Round  ");
-  const int xposDate = xposName + _font.getStringWidth("Name  ");
-  const int xposDelete = xposDate + _font.getStringWidth("YY-MM-DD HH:MM  ");
-  const int nWidth = _font.getStringWidth("ABC") + fontWidth * 0.75;
-  const bool smallFont = _font.getFontHeight() < 24;
-  const int buttonSize = smallFont ? BUTTON_GFX_H : BUTTON_GFX_H_LARGE;
-  WidgetArray wid;
-  const VariantList items;
+  const int wRank    = _font.getStringWidth("Rank");
+  const int wScore   = _font.getStringWidth("   Score  ");
+  const int wSpecial = _font.getStringWidth("Round  ");
+  const int wName    = _font.getStringWidth("Name  ");
+  const int wDate    = _font.getStringWidth("YY-MM-DD HH:MM  ");
+  const int wDelete  = fontWidth * 2;
+  const int tableWidth = wRank + wScore + wSpecial + wName + wDate + wDelete;
+  const int xposDelete = xposRank + wRank + wScore + wSpecial + wName + wDate;
 
-  const int xpos = HBORDER;
-  int ypos = VBORDER + _th;
-  ypos += lineHeight + VGAP * 2; // space for game name
+  // Dialog width = widest of the table, the info text, and the button row
+  const int buttonWidth = std::max({Dialog::buttonWidth(" Reset "),
+                                    Dialog::buttonWidth("Save"),
+                                    Dialog::buttonWidth("Cancel"),
+                                    Dialog::buttonWidth("Defaults")});
+  _w = std::max({HBORDER * 2 + tableWidth,
+                 HBORDER * 2 + ifont.getMaxCharWidth() * (5 + 17 + 2 + 7 + 17),
+                 HBORDER * 2 + buttonWidth * 2 + BUTTON_GAP});
 
-  const auto* s = new StaticTextWidget(this, _font, xpos, ypos + 1, "Variation ");
-  myVariationPopup = new PopUpWidget(this, _font, s->getRight(), ypos,
-      _font.getStringWidth("256"), lineHeight, items, "", 0, kVariationChanged);
-  wid.push_back(myVariationPopup);
+  // Game name (top)
+  myGameNameWidget->setArea(HBORDER, VBORDER + _th + 1, _w - HBORDER * 2, lineHeight);
+
+  int ypos = VBORDER + _th + lineHeight + VGAP * 2;
+
+  // Variation row: label + popup, with the prev/next buttons at the right
+  myVariationLabel->setPos(HBORDER, ypos + 1);
+  myVariationPopup->setPos(myVariationLabel->getRight(), ypos);
   const int bWidth = fontWidth * 5;
-  myPrevVarButton = new ButtonWidget(this, _font,
-      xposDelete + fontWidth * 2 - bWidth * 2 - BUTTON_GAP, ypos - 1,
-      bWidth, myVariationPopup->getHeight(),
-      smallFont ? PREV_GFX.data() : PREV_GFX_LARGE.data(),
-      buttonSize, buttonSize, kPrevVariation);
-  wid.push_back(myPrevVarButton);
-  myNextVarButton = new ButtonWidget(this, _font,
-      xposDelete + fontHeight - bWidth, ypos - 1,
-      bWidth, myVariationPopup->getHeight(),
-      smallFont ? NEXT_GFX.data() : NEXT_GFX_LARGE.data(),
-      buttonSize, buttonSize, kNextVariation);
-  wid.push_back(myNextVarButton);
+  myPrevVarButton->setPos(xposDelete + fontWidth * 2 - bWidth * 2 - BUTTON_GAP, ypos - 1);
+  myNextVarButton->setPos(xposDelete + fontHeight - bWidth, ypos - 1);
 
   ypos += lineHeight + VGAP * 4;
 
-  new StaticTextWidget(this, _font, xposRank, ypos + 1, "Rank");
-  new StaticTextWidget(this, _font, xposScore, ypos + 1, "   Score");
-  mySpecialLabelWidget = new StaticTextWidget(this, _font, xposSpecial, ypos + 1, "Round");
-  new StaticTextWidget(this, _font, xposName - 2, ypos + 1, "Name");
-  new StaticTextWidget(this, _font, xposDate+16, ypos + 1, "Date   Time");
+  // Score table (header row + NUM_RANKS data rows) laid out as a grid so the
+  // columns line up.  Cells are anchored (positioned, not stretched) so each
+  // label keeps its natural width, matching the old loose packing.
+  const int tableBase = ypos;
+  auto grid = std::make_unique<GridLayout>(6, 1 + numRanks, 0, VGAP, 0, 0);
+  grid->columnFixed(0, wRank).columnFixed(1, wScore).columnFixed(2, wSpecial)
+      .columnFixed(3, wName).columnFixed(4, wDate).columnFixed(5, wDelete);
+  for(int gr = 0; gr < 1 + numRanks; ++gr)
+    grid->rowFixed(gr, lineHeight);
 
-  ypos += lineHeight + VGAP;
-
-  for (uInt32 r = 0; r < NUM_RANKS; ++r)
+  grid->place(0, 0, anchoredItem(myRankLabel));
+  grid->place(1, 0, anchoredItem(myScoreLabel));
+  grid->place(2, 0, anchoredItem(mySpecialLabelWidget));
+  grid->place(3, 0, anchoredItem(myNameLabel));
+  grid->place(4, 0, anchoredItem(myDateLabel));
+  for(int r = 0; r < numRanks; ++r)
   {
-    myRankWidgets[r] = new StaticTextWidget(this, _font, xposRank + 8, ypos + 1,
-                                          (r < 9 ? " " : "") + std::to_string(r + 1));
-    myScoreWidgets[r] = new StaticTextWidget(this, _font, xposScore, ypos + 1, "12345678");
-    mySpecialWidgets[r] = new StaticTextWidget(this, _font, xposSpecial + 8, ypos + 1, "123");
-    myNameWidgets[r] = new StaticTextWidget(this, _font, xposName + 2, ypos + 1, "   ");
-    myEditNameWidgets[r] = new EditTextWidget(this, _font, xposName, ypos - 1, nWidth, lineHeight);
-    myEditNameWidgets[r]->setFlags(EditTextWidget::FLAG_INVISIBLE);
-    myEditNameWidgets[r]->setEnabled(false);
-    wid.push_back(myEditNameWidgets[r]);
-    myDateWidgets[r] = new StaticTextWidget(this, _font, xposDate, ypos + 1, "YY-MM-DD HH:MM");
-    myDeleteButtons[r] = new ButtonWidget(this, _font, xposDelete, ypos + 1, fontWidth * 2, fontHeight, "X",
-                                          kDeleteSingle);
-    myDeleteButtons[r]->setID(r);
-    myDeleteButtons[r]->setToolTip("Click to delete this high score.");
-    wid.push_back(myDeleteButtons[r]);
-
-    ypos += lineHeight + VGAP;
+    const int gr = r + 1;
+    grid->place(0, gr, anchoredItem(myRankWidgets[r]));
+    grid->place(1, gr, anchoredItem(myScoreWidgets[r]));
+    grid->place(2, gr, anchoredItem(mySpecialWidgets[r]));
+    grid->place(3, gr, anchoredItem(myNameWidgets[r]));
+    grid->place(4, gr, anchoredItem(myDateWidgets[r]));
+    grid->place(5, gr, anchoredItem(myDeleteButtons[r]));
   }
-  ypos += VGAP;
+  // The +1 preserves the previous per-row vertical nudge
+  grid->doLayout(xposRank, tableBase + 1, tableWidth,
+                 (1 + numRanks) * lineHeight + numRanks * VGAP);
 
-  _w = std::max(myDeleteButtons[0]->getRight() + HBORDER,
-                HBORDER * 2 + ifont.getMaxCharWidth() * (5 + 17 + 2 + 7 + 17));
-  myNotesWidget = new StaticTextWidget(this, ifont, xpos, ypos + 1, _w - HBORDER * 2,
-                                       infoLineHeight, "Note: ");
+  // Editable-name overlays sit on their name cells (not part of the grid flow)
+  for(int r = 0; r < numRanks; ++r)
+    myEditNameWidgets[r]->setPos(myNameWidgets[r]->getLeft(),
+                                 myNameWidgets[r]->getTop() - 2);
 
+  ypos = tableBase + (1 + numRanks) * (lineHeight + VGAP) + VGAP;
+
+  // Notes, then MD5 (left) + properties checksum (right)
+  myNotesWidget->setArea(HBORDER, ypos + 1, _w - HBORDER * 2, infoLineHeight);
   ypos += infoLineHeight + VGAP;
-
-  // Note: Only display the first 16 md5 chars + "..."
-  myMD5Widget = new StaticTextWidget(this, ifont, xpos, ypos + 1,
-                                     "MD5: 1234567890123456.");
-
-  myCheckSumWidget = new StaticTextWidget(this, ifont,
-                                          _w - HBORDER - ifont.getStringWidth("Props: 1234567890123456."),
-                                          ypos + 1, "Props: 1234567890123456.");
+  myMD5Widget->setPos(HBORDER, ypos + 1);
+  myCheckSumWidget->setPos(
+      _w - HBORDER - ifont.getStringWidth("Props: 1234567890123456."), ypos + 1);
 
   _h = myMD5Widget->getBottom() + VBORDER + buttonHeight + VBORDER;
 
-  myGameNameWidget = new StaticTextWidget(this, _font, HBORDER, VBORDER + _th + 1,
-                                          _w - HBORDER * 2, lineHeight);
-
-  addDefaultsOKCancelBGroup(wid, _font, "Save", "Cancel", " Reset ");
-  _defaultWidget->setToolTip("Click to reset all high scores of this variation.");
-  addToFocusList(wid);
-
-  _focusedWidget = _okWidget; // start with focus on 'Save' button
-
-  setHelpAnchor("Highscores");
+  // Standard button group (Reset / Save / Cancel) along the bottom
+  layoutButtonGroup();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

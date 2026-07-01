@@ -55,6 +55,10 @@ class HighScoresDialog : public Dialog
   protected:
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 
+    // (Re)position all widgets from the current font metrics; the constructor
+    // only creates them
+    void layout() override;
+
     void updateWidgets(bool init = false);
     void handleVariation(bool init = false);
     void handlePlayedVariation();
@@ -92,11 +96,17 @@ class HighScoresDialog : public Dialog
 
     StaticTextWidget* myGameNameWidget{nullptr};
 
+    StaticTextWidget* myVariationLabel{nullptr};
     PopUpWidget*      myVariationPopup{nullptr};
     ButtonWidget*     myPrevVarButton{nullptr};
     ButtonWidget*     myNextVarButton{nullptr};
 
+    // Score-table column headers
+    StaticTextWidget* myRankLabel{nullptr};
+    StaticTextWidget* myScoreLabel{nullptr};
     StaticTextWidget* mySpecialLabelWidget{nullptr};
+    StaticTextWidget* myNameLabel{nullptr};
+    StaticTextWidget* myDateLabel{nullptr};
 
     StaticTextWidget* myRankWidgets[NUM_RANKS]{nullptr};
     StaticTextWidget* myScoreWidgets[NUM_RANKS]{nullptr};

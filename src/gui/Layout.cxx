@@ -26,6 +26,13 @@ void WidgetLayout::doLayout(int x, int y, int w, int h)
   if(myWidget == nullptr)
     return;
 
+  // Anchored items keep their own size and are only moved to the cell origin
+  if(!myFill)
+  {
+    myWidget->setPos(x, y);
+    return;
+  }
+
   // setArea() forwards to the virtual setWidth()/setHeight() so composite
   // widgets that override them re-flow their content (e.g. ListWidget
   // recomputes its visible rows, NavigationWidget its path field), while

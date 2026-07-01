@@ -62,15 +62,19 @@ class Layout
 };
 
 /**
-  An item that positions a single widget so it fills its cell.  Carries the
-  widget's minimum usable size (font-derived, supplied by the dialog).  A null
-  widget makes the item an empty spacer that only reserves space.
+  An item that positions a single widget within its cell.  By default the widget
+  is resized to fill the cell; with fill=false it is instead anchored at the
+  cell's top-left and keeps its own (natural) size — useful for table cells that
+  should line up but not stretch, e.g. text labels.  Carries the widget's
+  minimum usable size (font-derived, supplied by the dialog).  A null widget
+  makes the item an empty spacer that only reserves space.
 */
 class WidgetLayout : public Layout
 {
   public:
-    explicit WidgetLayout(Widget* widget, int minW = 0, int minH = 0)
-      : myWidget{widget}, myMinW{minW}, myMinH{minH} { }
+    explicit WidgetLayout(Widget* widget, int minW = 0, int minH = 0,
+                          bool fill = true)
+      : myWidget{widget}, myMinW{minW}, myMinH{minH}, myFill{fill} { }
     ~WidgetLayout() override = default;
 
     void doLayout(int x, int y, int w, int h) override;
@@ -82,6 +86,7 @@ class WidgetLayout : public Layout
     Widget* myWidget{nullptr};
     int myMinW{0};
     int myMinH{0};
+    bool myFill{true};
 
   private:
     // Following constructors and assignment operators not supported
@@ -246,6 +251,15 @@ inline unique_ptr<WidgetLayout>
 widgetItem(Widget* widget, int minW = 0, int minH = 0)
 {
   return std::make_unique<WidgetLayout>(widget, minW, minH);
+}
+
+// Like widgetItem(), but anchors the widget at its cell's top-left and keeps
+// the widget's own size instead of resizing it to fill the cell — for table
+// cells (labels/values) that should align but not stretch.
+inline unique_ptr<WidgetLayout>
+anchoredItem(Widget* widget, int minW = 0, int minH = 0)
+{
+  return std::make_unique<WidgetLayout>(widget, minW, minH, false);
 }
 
 // Wrap a widget so it keeps its natural height 'h' and is vertically centered

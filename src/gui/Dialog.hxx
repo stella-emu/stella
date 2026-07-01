@@ -210,6 +210,18 @@ class Dialog : public GuiObject
                                         string_view defaultsText = "Defaults",
                                         bool focusOKButton = true);
 
+    // (Re)position the standard bottom button group — Defaults (and optional
+    // Extra) at the left, OK/Cancel at the right (platform order) — along the
+    // dialog's bottom edge for the current _w/_h.  Only the buttons that exist
+    // are moved.  Used both when the group is first created and by a resizeable
+    // dialog's layout() so the group follows font/size changes.
+    void layoutButtonGroup();
+
+    // Position the title-bar help ('?') button at the top-right for the current
+    // _w.  Called automatically after layout(), so dialogs that compute _w in
+    // layout() get it placed correctly.
+    void layoutHelp();
+
     void processCancelWithoutWidget(bool state = true) { _processCancel = state; }
     virtual void processCancel() { close(); }
 
