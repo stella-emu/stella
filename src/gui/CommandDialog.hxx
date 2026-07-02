@@ -34,10 +34,17 @@ class CommandDialog : public Dialog
 
   protected:
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+
+    // Position the buttons via a GridLayout built from the current font metrics
+    void layout() override;
+
     void updateSlot(int slot);
     void updateTVFormat();
     void updatePalette();
     void processCancel() override;
+
+    // All buttons in grid order (each column top-to-bottom)
+    vector<ButtonWidget*> myButtons;
 
     // column 0
     ButtonWidget* myColorButton{nullptr};

@@ -21,6 +21,7 @@
 #include "Switches.hxx"
 #include "Dialog.hxx"
 #include "Font.hxx"
+#include "Layout.hxx"
 #include "EventHandler.hxx"
 #include "StateManager.hxx"
 #include "OSystem.hxx"
@@ -34,75 +35,48 @@
 CommandDialog::CommandDialog(OSystem& osystem, DialogContainer& parent)
   : Dialog(osystem, parent, osystem.frameBuffer().font(), "Commands")
 {
+  // Only the button size is needed to create the widgets; layout() computes
+  // _w/_h and positions everything from the current font
   const int buttonHeight = Dialog::buttonHeight(),
-            buttonWidth  = _font.getStringWidth("Time Machine On") + Dialog::fontWidth() * 2,
-            VBORDER      = Dialog::vBorder(),
-            HBORDER      = Dialog::hBorder(),
-            VGAP         = Dialog::vGap();
-  const int HGAP      = Dialog::buttonGap(),
-            rowHeight = buttonHeight + VGAP;
-  // Set real dimensions
-  _w = 3 * (buttonWidth + HGAP) - HGAP + HBORDER * 2;
-  _h = 6 * rowHeight - VGAP + VBORDER * 2 + _th;
-  ButtonWidget* bw = nullptr;
+            buttonWidth  = Dialog::buttonWidth("Time Machine On");
   WidgetArray wid;
-  int xoffset = HBORDER, yoffset = VBORDER + _th;
 
+  // Widgets are only created here (at placeholder geometry); layout() positions
+  // them via a GridLayout.  myButtons keeps them in grid order (column-major).
   const auto ADD_CD_BUTTON = [&](string_view label, int cmd,
     Event::Type event1 = Event::NoType, Event::Type event2 = Event::NoType)
   {
-    auto* b = new ButtonWidget(this, _font, xoffset, yoffset,
+    auto* b = new ButtonWidget(this, _font, 0, 0,
         buttonWidth, buttonHeight, label, cmd);
     b->setToolTip(event1, event2);
-    yoffset += buttonHeight + VGAP;
+    myButtons.push_back(b);
+    wid.push_back(b);
     return b;
   };
 
   // Column 1
-  bw = ADD_CD_BUTTON(GUI::SELECT, kSelectCmd, Event::ConsoleSelect);
-  wid.push_back(bw);
-  bw = ADD_CD_BUTTON("Reset", kResetCmd, Event::ConsoleReset);
-  wid.push_back(bw);
+  ADD_CD_BUTTON(GUI::SELECT, kSelectCmd, Event::ConsoleSelect);
+  ADD_CD_BUTTON("Reset", kResetCmd, Event::ConsoleReset);
   myColorButton = ADD_CD_BUTTON("", kColorCmd, Event::ConsoleColor, Event::ConsoleBlackWhite);
-  wid.push_back(myColorButton);
   myLeftDiffButton = ADD_CD_BUTTON("", kLeftDiffCmd,
     Event::ConsoleLeftDiffA, Event::ConsoleLeftDiffB);
-  wid.push_back(myLeftDiffButton);
   myRightDiffButton = ADD_CD_BUTTON("", kRightDiffCmd,
     Event::ConsoleRightDiffA, Event::ConsoleRightDiffB);
-  wid.push_back(myRightDiffButton);
 
   // Column 2
-  xoffset += buttonWidth + HGAP;
-  yoffset = VBORDER + _th;
-
   mySaveStateButton = ADD_CD_BUTTON("", kSaveStateCmd, Event::SaveState);
-  wid.push_back(mySaveStateButton);
   myStateSlotButton = ADD_CD_BUTTON("Change Slot", kStateSlotCmd, Event::NextState);
-  wid.push_back(myStateSlotButton);
   myLoadStateButton = ADD_CD_BUTTON("", kLoadStateCmd, Event::LoadState);
-  wid.push_back(myLoadStateButton);
-  bw = ADD_CD_BUTTON("Snapshot", kSnapshotCmd, Event::TakeSnapshot);
-  wid.push_back(bw);
+  ADD_CD_BUTTON("Snapshot", kSnapshotCmd, Event::TakeSnapshot);
   myTimeMachineButton = ADD_CD_BUTTON("", kTimeMachineCmd, Event::TimeMachineMode);
-  wid.push_back(myTimeMachineButton);
-  bw = ADD_CD_BUTTON("Exit Game", kExitCmd, Event::ExitMode);
-  wid.push_back(bw);
+  ADD_CD_BUTTON("Exit Game", kExitCmd, Event::ExitMode);
 
   // Column 3
-  xoffset += buttonWidth + HGAP;
-  yoffset = VBORDER + _th;
-
   myTVFormatButton = ADD_CD_BUTTON("", kFormatCmd, Event::FormatIncrease);
-  wid.push_back(myTVFormatButton);
   myPaletteButton = ADD_CD_BUTTON("", kPaletteCmd, Event::PaletteIncrease);
-  wid.push_back(myPaletteButton);
   myPhosphorButton = ADD_CD_BUTTON("", kPhosphorCmd, Event::TogglePhosphor);
-  wid.push_back(myPhosphorButton);
   mySoundButton = ADD_CD_BUTTON("", kSoundCmd, Event::SoundToggle);
-  wid.push_back(mySoundButton);
-  bw = ADD_CD_BUTTON("Reload ROM", kReloadRomCmd, Event::ReloadConsole);
-  wid.push_back(bw);
+  ADD_CD_BUTTON("Reload ROM", kReloadRomCmd, Event::ReloadConsole);
 
   addToFocusList(wid);
 
@@ -111,6 +85,45 @@ CommandDialog::CommandDialog(OSystem& osystem, DialogContainer& parent)
   processCancelWithoutWidget(true);
 
   setHelpAnchor("CommandMenu");
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void CommandDialog::layout()
+{
+  using GUI::GridLayout;
+  using GUI::widgetItem;
+
+  const int buttonHeight = Dialog::buttonHeight();
+  const int buttonWidth  = Dialog::buttonWidth("Time Machine On");
+  const int VBORDER      = Dialog::vBorder();
+  const int HBORDER      = Dialog::hBorder();
+  const int VGAP         = Dialog::vGap();
+  const int HGAP         = Dialog::buttonGap();
+  const int rowHeight    = buttonHeight + VGAP;
+
+  // Size the (fixed) dialog from the current font so it reflows on font change
+  _w = 3 * (buttonWidth + HGAP) - HGAP + HBORDER * 2;
+  _h = 6 * rowHeight - VGAP + VBORDER * 2 + _th;
+
+  // Three columns of buttons; columns 1 and 3 have five rows, column 2 has six
+  static constexpr int COLS = 3, ROWS = 6;
+  static constexpr std::array<int, COLS> colRows{5, 6, 5};
+
+  auto grid = std::make_unique<GridLayout>(COLS, ROWS, HGAP, VGAP,
+                                           HBORDER, VBORDER);
+  for(int c = 0; c < COLS; ++c)
+    grid->columnFixed(c, buttonWidth);
+  for(int r = 0; r < ROWS; ++r)
+    grid->rowFixed(r, buttonHeight);
+
+  // myButtons is stored column-major; place each in its cell
+  size_t idx = 0;
+  for(int c = 0; c < COLS; ++c)
+    for(int r = 0; r < colRows[c]; ++r)
+      grid->place(c, r, widgetItem(myButtons[idx++]));
+
+  // Position the grid in the dialog area below the title bar
+  grid->doLayout(0, _th, _w, _h - _th);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
