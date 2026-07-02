@@ -243,8 +243,6 @@
 		DC22F1322507D22500AB43E9 /* QuadTariWidget.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC22F1302507D22500AB43E9 /* QuadTariWidget.cxx */; };
 		DC22F1352507D24E00AB43E9 /* QuadTariDialog.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC22F1332507D24D00AB43E9 /* QuadTariDialog.hxx */; };
 		DC22F1362507D24E00AB43E9 /* QuadTariDialog.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC22F1342507D24E00AB43E9 /* QuadTariDialog.cxx */; };
-		DC2410E32274BDA8007A4CBF /* MinUICommandDialog.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC2410E12274BDA7007A4CBF /* MinUICommandDialog.hxx */; };
-		DC2410E42274BDA8007A4CBF /* MinUICommandDialog.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC2410E22274BDA8007A4CBF /* MinUICommandDialog.cxx */; };
 		DC2874071F8F2278004BF21A /* TrapArray.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC2874061F8F2278004BF21A /* TrapArray.hxx */; };
 		DC2AADB0194F389C0026C7A4 /* TIASurface.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC2AADAC194F389C0026C7A4 /* TIASurface.cxx */; };
 		DC2AADB1194F389C0026C7A4 /* TIASurface.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC2AADAD194F389C0026C7A4 /* TIASurface.hxx */; };
@@ -330,6 +328,8 @@
 		DC4130A92F435E6900E4DE9B /* CartEFFWidget.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC4130A42F435E6900E4DE9B /* CartEFFWidget.cxx */; };
 		DC44019E1F1A5D01008C08F6 /* ColorWidget.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC44019C1F1A5D01008C08F6 /* ColorWidget.cxx */; };
 		DC44019F1F1A5D01008C08F6 /* ColorWidget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC44019D1F1A5D01008C08F6 /* ColorWidget.hxx */; };
+		DC44BCB12FF68F3D00656D67 /* Layout.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC44BCAF2FF68F3D00656D67 /* Layout.hxx */; };
+		DC44BCB22FF68F3D00656D67 /* Layout.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC44BCB02FF68F3D00656D67 /* Layout.cxx */; };
 		DC4613670D92C03600D8DAB9 /* RomAuditDialog.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC4613650D92C03600D8DAB9 /* RomAuditDialog.cxx */; };
 		DC4613680D92C03600D8DAB9 /* RomAuditDialog.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC4613660D92C03600D8DAB9 /* RomAuditDialog.hxx */; };
 		DC47455509C34BFA00EDDA3A /* BankRomCheat.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC47454A09C34BFA00EDDA3A /* BankRomCheat.cxx */; };
@@ -1136,8 +1136,6 @@
 		DC22F1302507D22500AB43E9 /* QuadTariWidget.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = QuadTariWidget.cxx; sourceTree = "<group>"; };
 		DC22F1332507D24D00AB43E9 /* QuadTariDialog.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = QuadTariDialog.hxx; sourceTree = "<group>"; };
 		DC22F1342507D24E00AB43E9 /* QuadTariDialog.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = QuadTariDialog.cxx; sourceTree = "<group>"; };
-		DC2410E12274BDA7007A4CBF /* MinUICommandDialog.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = MinUICommandDialog.hxx; sourceTree = "<group>"; };
-		DC2410E22274BDA8007A4CBF /* MinUICommandDialog.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MinUICommandDialog.cxx; sourceTree = "<group>"; };
 		DC2874061F8F2278004BF21A /* TrapArray.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = TrapArray.hxx; sourceTree = "<group>"; };
 		DC2AADAC194F389C0026C7A4 /* TIASurface.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TIASurface.cxx; sourceTree = "<group>"; };
 		DC2AADAD194F389C0026C7A4 /* TIASurface.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = TIASurface.hxx; sourceTree = "<group>"; };
@@ -1225,6 +1223,8 @@
 		DC4130A62F435E6900E4DE9B /* TiaZoomWidget.cxx */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = TiaZoomWidget.cxx; sourceTree = "<group>"; };
 		DC44019C1F1A5D01008C08F6 /* ColorWidget.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ColorWidget.cxx; sourceTree = "<group>"; };
 		DC44019D1F1A5D01008C08F6 /* ColorWidget.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = ColorWidget.hxx; sourceTree = "<group>"; };
+		DC44BCAF2FF68F3D00656D67 /* Layout.hxx */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Layout.hxx; sourceTree = "<group>"; };
+		DC44BCB02FF68F3D00656D67 /* Layout.cxx */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Layout.cxx; sourceTree = "<group>"; };
 		DC4613650D92C03600D8DAB9 /* RomAuditDialog.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = RomAuditDialog.cxx; sourceTree = "<group>"; };
 		DC4613660D92C03600D8DAB9 /* RomAuditDialog.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; path = RomAuditDialog.hxx; sourceTree = "<group>"; };
 		DC47454A09C34BFA00EDDA3A /* BankRomCheat.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = BankRomCheat.cxx; sourceTree = "<group>"; };
@@ -2438,6 +2438,8 @@
 				2DDBEABC084578BF00812C11 /* LauncherDialog.cxx */,
 				DCE9681027553F1000E99839 /* LauncherFileListWidget.hxx */,
 				DCE9681327553F1000E99839 /* LauncherFileListWidget.cxx */,
+				DC44BCAF2FF68F3D00656D67 /* Layout.hxx */,
+				DC44BCB02FF68F3D00656D67 /* Layout.cxx */,
 				2DDBEAC1084578BF00812C11 /* ListWidget.hxx */,
 				2DDBEAC0084578BF00812C11 /* ListWidget.cxx */,
 				DC6C726113CDEA0A008A5975 /* LoggerDialog.hxx */,
@@ -2446,8 +2448,6 @@
 				DC98F35411F5B56200AA520F /* MessageBox.cxx */,
 				DCDE647C23E6638D00EE3EFF /* MessageDialog.hxx */,
 				DCDE647B23E6638D00EE3EFF /* MessageDialog.cxx */,
-				DC2410E12274BDA7007A4CBF /* MinUICommandDialog.hxx */,
-				DC2410E22274BDA8007A4CBF /* MinUICommandDialog.cxx */,
 				DCE9681D276A40AB00E99839 /* NavigationWidget.hxx */,
 				DCE9681C276A40AB00E99839 /* NavigationWidget.cxx */,
 				2DDBEAC5084578BF00812C11 /* OptionsDialog.hxx */,
@@ -3212,6 +3212,7 @@
 				DC67270C1556F4860023653B /* CartCTY.hxx in Headers */,
 				DC6DC5ED273C2C3A00F64413 /* DevSettingsHandler.hxx in Headers */,
 				DC1B2EC41E50036100F62837 /* AmigaMouse.hxx in Headers */,
+				DC44BCB12FF68F3D00656D67 /* Layout.hxx in Headers */,
 				DCE395DB16CB0B2B008DB1E5 /* FSNodePOSIX.hxx in Headers */,
 				DCE395EF16CB0B5F008DB1E5 /* FSNodeFactory.hxx in Headers */,
 				DCE395F116CB0B5F008DB1E5 /* FSNodeZIP.hxx in Headers */,
@@ -3260,7 +3261,6 @@
 				DC676A4A1729A0B000E4E73D /* CartCTYWidget.hxx in Headers */,
 				DC676A4C1729A0B000E4E73D /* CartDPCPlusWidget.hxx in Headers */,
 				DC676A4E1729A0B000E4E73D /* CartDPCWidget.hxx in Headers */,
-				DC2410E32274BDA8007A4CBF /* MinUICommandDialog.hxx in Headers */,
 				DCE9681B2761128200E99839 /* Icon.hxx in Headers */,
 				DCCA26B31FA64D5E000EE4D8 /* AbstractFrameManager.hxx in Headers */,
 				DC3EE8631E2C0E6D00905161 /* inffast.h in Headers */,
@@ -3354,7 +3354,7 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = YES;
-				LastUpgradeCheck = 2650;
+				LastUpgradeCheck = 2660;
 				ORGANIZATIONNAME = "Stella-emu";
 			};
 			buildConfigurationList = 2D91752109BA903B0026E9FF /* Build configuration list for PBXProject "stella" */;
@@ -3406,21 +3406,6 @@
 			shellPath = /bin/sh;
 			shellScript = "m4 ../../emucore/M6502.m4 > M6502.ins\n";
 		};
-		B0117D00B0117D00B0117D00 /* Generate Build Number */ = {
-			isa = PBXShellScriptBuildPhase;
-			alwaysOutOfDate = 1;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "Generate Build Number";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "sh ../../tools/genbuildnum.sh\n";
-		};
 		51DDA2DF83A64ACA883BBB18 /* Strip Quarantine */ = {
 			isa = PBXShellScriptBuildPhase;
 			alwaysOutOfDate = 1;
@@ -3435,6 +3420,21 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "xattr -dr com.apple.quarantine \"${SRCROOT}/Frameworks/SDL3.xcframework\"\n";
+		};
+		B0117D00B0117D00B0117D00 /* Generate Build Number */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Generate Build Number";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "sh ../../tools/genbuildnum.sh\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -3566,7 +3566,6 @@
 				2D9174CF09BA90380026E9FF /* CpuDebug.cxx in Sources */,
 				2D9174F109BA90380026E9FF /* InputTextDialog.cxx in Sources */,
 				DC6DC920205DB879004A5FC3 /* PJoystickHandler.cxx in Sources */,
-				DC2410E42274BDA8007A4CBF /* MinUICommandDialog.cxx in Sources */,
 				2D9174F209BA90380026E9FF /* CheckListWidget.cxx in Sources */,
 				2D9174F309BA90380026E9FF /* StringListWidget.cxx in Sources */,
 				2D9174F409BA90380026E9FF /* CommandDialog.cxx in Sources */,
@@ -3658,6 +3657,7 @@
 				DCF467C20F939A1400B25D7A /* CartEF.cxx in Sources */,
 				DC85734F2C10A371007AB2FE /* CartJANEWidget.cxx in Sources */,
 				DCF467C40F939A1400B25D7A /* CartEFSC.cxx in Sources */,
+				DC44BCB22FF68F3D00656D67 /* Layout.cxx in Sources */,
 				DCF7B0DD10A762FC007A2870 /* CartF0.cxx in Sources */,
 				DCF7B0DF10A762FC007A2870 /* CartFA.cxx in Sources */,
 				DCC527D210B9DA19005E1287 /* M6502.cxx in Sources */,
