@@ -22,6 +22,7 @@
 #include "OSystem.hxx"
 #include "PopUpWidget.hxx"
 #include "Widget.hxx"
+#include "Layout.hxx"
 #include "Font.hxx"
 #include "ComboDialog.hxx"
 
@@ -30,31 +31,22 @@ ComboDialog::ComboDialog(GuiObject* boss, const GUI::Font& font,
                          const VariantList& combolist)
   : Dialog(boss->instance(), boss->parent(), font, "Add...")
 {
-  const int lineHeight   = Dialog::lineHeight(),
-            fontWidth    = Dialog::fontWidth(),
-            buttonHeight = Dialog::buttonHeight(),
-            VBORDER      = Dialog::vBorder(),
-            HBORDER      = Dialog::hBorder(),
-            VGAP         = Dialog::vGap();
+  const int lineHeight = Dialog::lineHeight();
   WidgetArray wid;
 
-  // Get maximum width of popupwidget
-  int pwidth = 0;
-  for(const auto& s: combolist)
-    pwidth = std::max(font.getStringWidth(s.first), pwidth);
+  // Widgets are only created here (at placeholder position); layout() assigns
+  // all geometry from the current font.
 
-  // Set real dimensions
-  _w = 8 * fontWidth + pwidth + PopUpWidget::dropDownWidth(font) + HBORDER * 2;
-  _h = 8 * (lineHeight + VGAP) + VGAP + buttonHeight + VBORDER * 2 + _th;
-  int xpos = HBORDER, ypos = VBORDER + _th;
+  // Popup width = widest combo entry (content-derived; layout() uses it for _w)
+  for(const auto& s: combolist)
+    myPopupWidth = std::max(font.getStringWidth(s.first), myPopupWidth);
 
   // Add event popup for 8 events
   const auto ADD_EVENT_POPUP = [&](int idx, string_view label)
   {
-    myEvents[idx] = new PopUpWidget(this, font, xpos, ypos,
-                        pwidth, lineHeight, combolist, label);
+    myEvents[idx] = new PopUpWidget(this, font, 0, 0,
+                        myPopupWidth, lineHeight, combolist, label);
     wid.push_back(myEvents[idx]);
-    ypos += lineHeight + VGAP;
   };
   ADD_EVENT_POPUP(0, "Event 1 ");
   ADD_EVENT_POPUP(1, "Event 2 ");
@@ -71,6 +63,39 @@ ComboDialog::ComboDialog(GuiObject* boss, const GUI::Font& font,
   addToFocusList(wid);
 
   setHelpAnchor("Combo");
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void ComboDialog::layout()
+{
+  using GUI::BoxLayout;
+  using GUI::anchoredItem;
+  using Dir = BoxLayout::Dir;
+
+  const int lineHeight   = Dialog::lineHeight(),
+            fontWidth    = Dialog::fontWidth(),
+            buttonHeight = Dialog::buttonHeight(),
+            VBORDER      = Dialog::vBorder(),
+            HBORDER      = Dialog::hBorder(),
+            VGAP         = Dialog::vGap();
+
+  // Size the (fixed) dialog from the current font so it reflows on font change
+  _w = 8 * fontWidth + myPopupWidth + PopUpWidget::dropDownWidth(_font) + HBORDER * 2;
+  _h = 8 * (lineHeight + VGAP) + VGAP + buttonHeight + VBORDER * 2 + _th;
+
+  // Vertical stack of the eight self-labeling event popups; the button group
+  // sits below, positioned by layoutButtonGroup().
+  auto root = std::make_unique<BoxLayout>(Dir::Vertical, 0, HBORDER, VBORDER);
+  for(auto* e: myEvents)
+  {
+    root->addFixed(anchoredItem(e), lineHeight);
+    root->addSpace(VGAP);
+  }
+
+  root->doLayout(0, _th, _w, _h - _th);
+
+  // Standard button group (Defaults / OK / Cancel) along the bottom edge
+  layoutButtonGroup();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
