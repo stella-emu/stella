@@ -60,39 +60,52 @@ int TabWidget::getChildY() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 int TabWidget::addTab(string_view title, int tabWidth)
 {
-  // Add a new tab page
-  const int newWidth = _font.getStringWidth(title) + 2 * kTabPadding;
+  // Add a new tab page.  AUTO_WIDTH tabs size to their title (recomputed from
+  // the font in updateTabSizes()); NO_WIDTH tabs share the common _tabWidth.
+  const bool autoWidth = tabWidth == AUTO_WIDTH;
+  _tabs.emplace_back(title, autoWidth ? NO_WIDTH : tabWidth, autoWidth);
 
-  if(tabWidth == AUTO_WIDTH)
-    _tabs.emplace_back(title, newWidth);
-  else
-    _tabs.emplace_back(title, tabWidth);
-  const int numTabs = static_cast<int>(_tabs.size());
+  updateTabSizes();
 
-  // Determine the new tab width
-  int fixedWidth = 0, fixedTabs = 0;
-  for(const auto& tab: _tabs)
+  // Activate the new tab
+  setActiveTab(static_cast<int>(_tabs.size()) - 1);
+
+  return _activeTab;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TabWidget::updateTabSizes()
+{
+  // Tab-bar height and the AUTO-width tabs' widths follow the current font
+  _tabHeight = _font.getLineHeight() + 4;
+
+  // A common width is shared by the NO_WIDTH tabs (its floor is kTabMinWidth);
+  // AUTO/fixed tabs contribute their own width to the fixed total
+  int fixedWidth = 0, fixedTabs = 0, sharedWidth = kTabMinWidth;
+  for(auto& tab: _tabs)
   {
+    if(tab.autoWidth)
+      tab.tabWidth = _font.getStringWidth(tab.title) + 2 * kTabPadding;
+
     if(tab.tabWidth != NO_WIDTH)
     {
       fixedWidth += tab.tabWidth;
-      fixedTabs++;
+      ++fixedTabs;
     }
+    else
+      sharedWidth = std::max(sharedWidth,
+                             _font.getStringWidth(tab.title) + 2 * kTabPadding);
   }
 
-  if(tabWidth == NO_WIDTH)
-    _tabWidth = std::max(_tabWidth, newWidth);
-
-  if(numTabs - fixedTabs)
+  // Clamp the shared width so all the NO_WIDTH tabs still fit the current width
+  _tabWidth = sharedWidth;
+  const int varTabs = static_cast<int>(_tabs.size()) - fixedTabs;
+  if(varTabs > 0)
   {
-    const int maxWidth = (_w - kTabLeftOffset - fixedWidth) / (numTabs - fixedTabs) - kTabLeftOffset;
+    const int maxWidth =
+        (_w - kTabLeftOffset - fixedWidth) / varTabs - kTabLeftOffset;
     _tabWidth = std::min(_tabWidth, maxWidth);
   }
-
-  // Activate the new tab
-  setActiveTab(numTabs - 1);
-
-  return _activeTab;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

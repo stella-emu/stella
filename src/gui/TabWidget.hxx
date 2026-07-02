@@ -51,6 +51,13 @@ class TabWidget : public Widget, public CommandSender
     void enableTab(int tabID, bool enable = true);
     void activateTabs();
     void cycleTab(int direction);
+
+    // Recompute the tab-bar geometry (height and per-tab widths) from the
+    // current font and the widget's current width.  Called internally by
+    // addTab(); a font-reactive/resizeable dialog also calls it from layout()
+    // after (re)sizing the tab widget, so the tab bar reflows like everything
+    // else (addTab() otherwise bakes these from the width at construction).
+    void updateTabSizes();
 // setActiveTab changes the value of _firstWidget. This means Widgets added afterwards
 // will be added to the active tab.
     void setParentWidget(int tabID, Widget* parent);
@@ -85,12 +92,13 @@ class TabWidget : public Widget, public CommandSender
       Widget* firstWidget{nullptr};
       Widget* parentWidget{nullptr};
       bool enabled{true};
-      int tabWidth{0};
+      int tabWidth{0};        // resolved width (0 = share the common _tabWidth)
+      bool autoWidth{false};  // width tracks the (font-dependent) title width
 
-      explicit Tab(string_view t, int tw = NO_WIDTH,
+      explicit Tab(string_view t, int tw = NO_WIDTH, bool aw = false,
           Widget* first = nullptr, Widget* parent = nullptr, bool e = true)
         : title{t}, firstWidget{first}, parentWidget{parent}, enabled{e},
-          tabWidth{tw} { }
+          tabWidth{tw}, autoWidth{aw} { }
     };
     using TabList = vector<Tab>;
 
@@ -103,7 +111,8 @@ class TabWidget : public Widget, public CommandSender
     enum: uInt8 {
       kTabLeftOffset = 0,
       kTabSpacing = 1,
-      kTabPadding = 4
+      kTabPadding = 4,
+      kTabMinWidth = 40
     };
 
   private:

@@ -35,7 +35,14 @@ class UIDialog : public Dialog, public CommandSender
   protected:
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 
+    // (Re)position all widgets from the current font metrics; the constructor
+    // only creates them
+    void layout() override;
+
   private:
+    void layoutLookAndFeelTab();
+    void layoutLauncherTab();
+
     void handleLauncherSize();
     void handleRomViewer();
 
@@ -54,6 +61,7 @@ class UIDialog : public Dialog, public CommandSender
     TabWidget* myTab{nullptr};
 
     // Launcher options
+    ButtonWidget*     myRomButton{nullptr};
     EditTextWidget*   myRomPath{nullptr};
     CheckboxWidget*   myFollowLauncherWidget{nullptr};
     SliderWidget*     myLauncherWidthSlider{nullptr};
@@ -80,6 +88,10 @@ class UIDialog : public Dialog, public CommandSender
     SliderWidget*     myControllerRateSlider{nullptr};
     SliderWidget*     myControllerDelaySlider{nullptr};
     SliderWidget*     myDoubleClickSlider{nullptr};
+
+    // Bottom-of-tab "(*) ..." info messages
+    StaticTextWidget* myLookFeelInfo{nullptr};
+    StaticTextWidget* myLauncherInfo{nullptr};
 
     // Indicates if this dialog is used for global (vs. in-game) settings
     bool myIsGlobal{false};
