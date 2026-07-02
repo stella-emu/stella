@@ -22,6 +22,7 @@ class CommandSender;
 class DialogContainer;
 class CheckboxWidget;
 class PopUpWidget;
+class StaticTextWidget;
 class OSystem;
 
 #include "Dialog.hxx"
@@ -38,10 +39,12 @@ class GlobalPropsDialog : public Dialog, public CommandSender
     void setDefaults() override;
 
   protected:
+    void layout() override;
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 
   private:
-    int addHoldWidgets(const GUI::Font& font, int x, int y, WidgetArray& wid);
+    void createHoldWidgets(const GUI::Font& font, WidgetArray& wid);
+    int layoutHoldWidgets(int x, int y);
 
   private:
     enum: uInt8 {
@@ -58,6 +61,18 @@ class GlobalPropsDialog : public Dialog, public CommandSender
     CheckboxWidget* myHoldSelect{nullptr};
     CheckboxWidget* myHoldReset{nullptr};
     CheckboxWidget* myDebug{nullptr};
+
+    StaticTextWidget* myBSLabel{nullptr};
+    StaticTextWidget* myTVLabel{nullptr};
+    StaticTextWidget* myLeftDiffLabel{nullptr};
+    StaticTextWidget* myRightDiffLabel{nullptr};
+    StaticTextWidget* myHeldLabel{nullptr};
+    StaticTextWidget* myReleasedLabel{nullptr};
+    StaticTextWidget* myLeftJoyLabel{nullptr};
+    StaticTextWidget* myRightJoyLabel{nullptr};
+    StaticTextWidget* myConsoleLabel{nullptr};
+    StaticTextWidget* myInfo1{nullptr};
+    StaticTextWidget* myInfo2{nullptr};
 
     static constexpr std::array<string_view, 10> ourJoyState = {
       "U", "D", "L", "R", "F", "U", "D", "L", "R", "F"
