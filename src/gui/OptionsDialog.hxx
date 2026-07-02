@@ -29,7 +29,7 @@ class OptionsDialog : public Dialog
 {
   public:
     OptionsDialog(OSystem& osystem, DialogContainer& parent, GuiObject* boss,
-                  int max_w, int max_h, AppMode mode);
+                  AppMode mode);
     ~OptionsDialog() override;
 
     void loadConfig() override;

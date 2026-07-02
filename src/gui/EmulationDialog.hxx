@@ -19,14 +19,14 @@
 #define EMULATION_DIALOG_HXX
 
 class RadioButtonGroup;
+class RadioButtonWidget;
 
 #include "Dialog.hxx"
 
 class EmulationDialog : public Dialog
 {
   public:
-    EmulationDialog(OSystem& osystem, DialogContainer& parent, const GUI::Font& font,
-                    int max_w, int max_h);
+    EmulationDialog(OSystem& osystem, DialogContainer& parent, const GUI::Font& font);
     ~EmulationDialog() override = default;
 
     void loadConfig() override;
@@ -35,6 +35,10 @@ class EmulationDialog : public Dialog
 
   protected:
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+
+    // (Re)position all widgets from the current font metrics; the constructor
+    // only creates them
+    void layout() override;
 
   private:
     // Enable/disable the state path widgets based on the ROM-directory toggle
@@ -49,7 +53,9 @@ class EmulationDialog : public Dialog
     CheckboxWidget*   myUseThreads{nullptr};
     CheckboxWidget*   myAutoPauseWidget{nullptr};
     CheckboxWidget*   myConfirmExitWidget{nullptr};
+    StaticTextWidget* mySaveOnExitLabel{nullptr};
     RadioButtonGroup* mySaveOnExitGroup{nullptr};
+    std::array<RadioButtonWidget*, 3> mySaveOnExitButtons{nullptr, nullptr, nullptr};
     CheckboxWidget*   myAutoSlotWidget{nullptr};
     ButtonWidget*     myStatePathButton{nullptr};
     EditTextWidget*   myStatePath{nullptr};

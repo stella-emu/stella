@@ -88,7 +88,7 @@ Dialog* OverlayMenu::createDialog(Cached id)
   {
     case Cached::Options:
       return new OptionsDialog(myOSystem, *this, nullptr,
-        FBMinimum::Width, FBMinimum::Height, Dialog::AppMode::emulator);
+        Dialog::AppMode::emulator);
 
     case Cached::StellaSettings:
       return new StellaSettingsDialog(myOSystem, *this,

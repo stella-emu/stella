@@ -1406,7 +1406,7 @@ void LauncherDialog::openSettings()
     myDialog = std::make_unique<StellaSettingsDialog>(instance(), parent(),
                                                  _w, _h, AppMode::launcher);
   else
-    myDialog = std::make_unique<OptionsDialog>(instance(), parent(), this, _w, _h,
+    myDialog = std::make_unique<OptionsDialog>(instance(), parent(), this,
                                           AppMode::launcher);
   myDialog->open();
 }

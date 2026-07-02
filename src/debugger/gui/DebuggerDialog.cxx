@@ -286,13 +286,8 @@ void DebuggerDialog::handleCommand(CommandSender* sender, int cmd,
       saveConfig();
 
       if(myOptions == nullptr)
-      {
-        uInt32 w = 0, h = 0;
-
-        getDynamicBounds(w, h);
-        myOptions = std::make_unique<OptionsDialog>(instance(), parent(), this, w, h,
+        myOptions = std::make_unique<OptionsDialog>(instance(), parent(), this,
                                                AppMode::debugger);
-      }
       myOptions->open();
 
       loadConfig();

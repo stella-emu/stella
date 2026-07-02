@@ -40,7 +40,7 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
-                   const GUI::Font& font, GuiObject* boss, int max_w, int max_h)
+                   const GUI::Font& font, GuiObject* boss)
   : Dialog(osystem, parent, font, "User interface settings"),
     CommandSender(boss),
     myIsGlobal{boss != nullptr}

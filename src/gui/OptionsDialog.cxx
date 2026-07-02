@@ -45,7 +45,7 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 OptionsDialog::OptionsDialog(OSystem& osystem, DialogContainer& parent,
-                             GuiObject* boss, int max_w, int max_h, AppMode mode)
+                             GuiObject* boss, AppMode mode)
   : Dialog(osystem, parent, osystem.frameBuffer().font(), "Options"),
     myBoss{boss},
     myMode{mode}
@@ -203,14 +203,9 @@ void OptionsDialog::handleCommand(CommandSender* sender, int cmd,
       break;
     }
     case kEmuCmd:
-    {
-      uInt32 w = 0, h = 0;
-
-      getDynamicBounds(w, h);
-      myDialog = std::make_unique<EmulationDialog>(instance(), parent(), _font, w, h);
+      myDialog = std::make_unique<EmulationDialog>(instance(), parent(), _font);
       myDialog->open();
       break;
-    }
     case kInptCmd:
     {
       uInt32 w = 0, h = 0;
@@ -222,24 +217,14 @@ void OptionsDialog::handleCommand(CommandSender* sender, int cmd,
     }
 
     case kUsrIfaceCmd:
-    {
-      uInt32 w = 0, h = 0;
-
-      getDynamicBounds(w, h);
-      myDialog = std::make_unique<UIDialog>(instance(), parent(), _font, myBoss, w, h);
+      myDialog = std::make_unique<UIDialog>(instance(), parent(), _font, myBoss);
       myDialog->open();
       break;
-    }
 
     case kSnapCmd:
-    {
-      uInt32 w = 0, h = 0;
-
-      getDynamicBounds(w, h);
-      myDialog = std::make_unique<SnapshotDialog>(instance(), parent(), _font, w, h);
+      myDialog = std::make_unique<SnapshotDialog>(instance(), parent(), _font);
       myDialog->open();
       break;
-    }
 
     case kDevelopCmd:
     {
