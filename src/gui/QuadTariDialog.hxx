@@ -29,8 +29,7 @@ class PopUpWidget;
 class QuadTariDialog: public Dialog
 {
   public:
-    QuadTariDialog(GuiObject* boss, const GUI::Font& font, int max_w, int max_h,
-                   Properties& properties);
+    QuadTariDialog(GuiObject* boss, const GUI::Font& font, Properties& properties);
     ~QuadTariDialog() override = default;
 
     /** Place the dialog onscreen */
@@ -42,6 +41,10 @@ class QuadTariDialog: public Dialog
 
   protected:
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+
+    // (Re)position all widgets from the current font metrics; the constructor
+    // only creates them
+    void layout() override;
 
   private:
     void loadControllerProperties(const Properties& props);

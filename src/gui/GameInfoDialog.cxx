@@ -1529,8 +1529,7 @@ void GameInfoDialog::handleCommand(CommandSender* sender, int cmd,
 
       if(!myQuadTariDialog)
         myQuadTariDialog = std::make_unique<QuadTariDialog>
-          (this, _font, _font.getMaxCharWidth() * 42, _font.getFontHeight() * 10,
-           myGameProperties);
+          (this, _font, myGameProperties);
       myQuadTariDialog->show(enableLeft, enableRight);
       break;
     }

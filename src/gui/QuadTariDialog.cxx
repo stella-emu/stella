@@ -20,6 +20,7 @@
 #include "EventHandler.hxx"
 #include "Widget.hxx"
 #include "PopUpWidget.hxx"
+#include "Layout.hxx"
 #include "Font.hxx"
 #include "Variant.hxx"
 #include "Props.hxx"
@@ -30,21 +31,15 @@
 #include "QuadTariDialog.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-QuadTariDialog::QuadTariDialog(GuiObject* boss, const GUI::Font& font, int max_w, int max_h,
+QuadTariDialog::QuadTariDialog(GuiObject* boss, const GUI::Font& font,
                                Properties& properties)
-  : Dialog(boss->instance(), boss->parent(), font, "QuadTari controllers", 0, 0, max_w, max_h),
+  : Dialog(boss->instance(), boss->parent(), font, "QuadTari controllers"),
     myGameProperties{properties}
 {
   const GUI::Font& ifont = instance().frameBuffer().infoFont();
-  const int lineHeight = Dialog::lineHeight(),
-            fontWidth    = Dialog::fontWidth(),
-            VBORDER    = Dialog::vBorder(),
-            HBORDER    = Dialog::hBorder(),
-            VGAP       = Dialog::vGap();
+  const int lineHeight = Dialog::lineHeight();
   WidgetArray wid;
   VariantList ctrls;
-
-  int xpos = HBORDER, ypos = VBORDER + _th;
 
   VarList::push_back(ctrls, "Auto-detect", "AUTO");
   VarList::push_back(ctrls, "Joystick", "JOYSTICK");
@@ -68,52 +63,85 @@ QuadTariDialog::QuadTariDialog(GuiObject* boss, const GUI::Font& font, int max_w
 
   const int pwidth = font.getStringWidth("Auto-detect  "); // a bit wider looks better overall
 
-  myLeftPortLabel = new StaticTextWidget(this, font, xpos, ypos + 1, "Left port");
-
-  ypos += lineHeight + VGAP * 2;
-  myLeft1Port = new PopUpWidget(this, font, xpos, ypos,
-                               pwidth, lineHeight, ctrls, "P1 ");
+  // Widgets are only created here (at placeholder position); layout() assigns
+  // all geometry from the current font.  The two ports are laid out as two
+  // side-by-side columns of identical structure.
+  myLeftPortLabel = new StaticTextWidget(this, font, 0, 0, "Left port");
+  myLeft1Port = new PopUpWidget(this, font, 0, 0, pwidth, lineHeight, ctrls, "P1 ");
   wid.push_back(myLeft1Port);
-  ypos += lineHeight + VGAP;
-
-  myLeft1PortDetected = new StaticTextWidget(this, ifont,
-    myLeft1Port->getLeft() + fontWidth * 3, ypos, "                 ");
-  ypos += lineHeight + VGAP;
-
-  myLeft2Port = new PopUpWidget(this, font, xpos, ypos,
-                               pwidth, lineHeight, ctrls, "P3 ");
+  myLeft1PortDetected = new StaticTextWidget(this, ifont, 0, 0, "                 ");
+  myLeft2Port = new PopUpWidget(this, font, 0, 0, pwidth, lineHeight, ctrls, "P3 ");
   wid.push_back(myLeft2Port);
-  ypos += lineHeight + VGAP;
+  myLeft2PortDetected = new StaticTextWidget(this, ifont, 0, 0, "                 ");
 
-  myLeft2PortDetected = new StaticTextWidget(this, ifont,
-    myLeft2Port->getLeft() + fontWidth * 3, ypos, "                 ");
-
-  xpos = _w - HBORDER - myLeft1Port->getWidth(); // aligned right
-  ypos = myLeftPortLabel->getTop() - 1;
-  myRightPortLabel = new StaticTextWidget(this, font, xpos, ypos + 1, "Right port");
-
-  ypos += lineHeight + VGAP * 2;
-  myRight1Port = new PopUpWidget(this, font, xpos, ypos,
-                                pwidth, lineHeight, ctrls, "P2 ");
+  myRightPortLabel = new StaticTextWidget(this, font, 0, 0, "Right port");
+  myRight1Port = new PopUpWidget(this, font, 0, 0, pwidth, lineHeight, ctrls, "P2 ");
   wid.push_back(myRight1Port);
-  ypos += lineHeight + VGAP;
-
-  myRight1PortDetected = new StaticTextWidget(this, ifont,
-    myRight1Port->getLeft() + fontWidth * 3, ypos, "                 ");
-  ypos += lineHeight + VGAP;
-
-  myRight2Port = new PopUpWidget(this, font, xpos, ypos,
-                                pwidth, lineHeight, ctrls, "P4 ");
+  myRight1PortDetected = new StaticTextWidget(this, ifont, 0, 0, "                 ");
+  myRight2Port = new PopUpWidget(this, font, 0, 0, pwidth, lineHeight, ctrls, "P4 ");
   wid.push_back(myRight2Port);
-  ypos += lineHeight + VGAP;
-
-  myRight2PortDetected = new StaticTextWidget(this, ifont,
-    myRight2Port->getLeft() + fontWidth * 3, ypos, "                 ");
+  myRight2PortDetected = new StaticTextWidget(this, ifont, 0, 0, "                 ");
 
   addDefaultsOKCancelBGroup(wid, _font);
   addBGroupToFocusList(wid);
 
   setHelpAnchor("Quadtari");
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void QuadTariDialog::layout()
+{
+  using GUI::BoxLayout;
+  using GUI::anchoredItem;
+  using GUI::indentedItem;
+  using Dir = BoxLayout::Dir;
+
+  const int lineHeight   = Dialog::lineHeight(),
+            fontWidth    = Dialog::fontWidth(),
+            buttonHeight = Dialog::buttonHeight(),
+            VBORDER      = Dialog::vBorder(),
+            HBORDER      = Dialog::hBorder(),
+            VGAP         = Dialog::vGap();
+
+  // Size the dialog from the current font.  The height must fit the tallest
+  // port column (a header plus two popup/auto-detect-label pairs) above the
+  // button group; the previous caller-supplied height (10 * fontHeight) was too
+  // short once the auto-detect labels are shown.
+  _w = 42 * fontWidth;
+  _h = _th + VBORDER * 2 + buttonHeight + 5 * lineHeight + VGAP * 9;
+
+  // Both ports share the same column width and vertical structure: a header
+  // label, then two popups each followed by its (indented) auto-detect label
+  const int columnWidth = myLeft1Port->getWidth();
+  const auto portColumn = [&](StaticTextWidget* label,
+                              PopUpWidget* popup1, StaticTextWidget* detected1,
+                              PopUpWidget* popup2, StaticTextWidget* detected2)
+  {
+    auto col = std::make_unique<BoxLayout>(Dir::Vertical, 0, 0, 0);
+    col->addFixed(anchoredItem(label), lineHeight);
+    col->addSpace(VGAP * 2);
+    col->addFixed(anchoredItem(popup1), lineHeight);
+    col->addSpace(VGAP);
+    col->addFixed(indentedItem(detected1, fontWidth * 3), lineHeight);
+    col->addSpace(VGAP);
+    col->addFixed(anchoredItem(popup2), lineHeight);
+    col->addSpace(VGAP);
+    col->addFixed(indentedItem(detected2, fontWidth * 3), lineHeight);
+    return col;
+  };
+
+  // Left column, a flexible gap, then the right column aligned to the right edge
+  auto root = std::make_unique<BoxLayout>(Dir::Horizontal, 0, HBORDER, VBORDER);
+  root->addFixed(portColumn(myLeftPortLabel, myLeft1Port, myLeft1PortDetected,
+                            myLeft2Port, myLeft2PortDetected), columnWidth);
+  root->addSpace(_w - HBORDER * 2 - columnWidth * 2);
+  root->addFixed(portColumn(myRightPortLabel, myRight1Port, myRight1PortDetected,
+                            myRight2Port, myRight2PortDetected), columnWidth);
+
+  root->doLayout(0, _th, _w, _h - _th);
+
+  // Standard button group (Defaults / OK / Cancel) along the bottom edge
+  layoutButtonGroup();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
