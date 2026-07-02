@@ -25,60 +25,34 @@
 #include "PopUpWidget.hxx"
 #include "MessageBox.hxx"
 #include "TIASurface.hxx"
+#include "Layout.hxx"
 
 #include "StellaSettingsDialog.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-StellaSettingsDialog::StellaSettingsDialog(OSystem& osystem, DialogContainer& parent,
-  int max_w, int max_h, AppMode mode)
+StellaSettingsDialog::StellaSettingsDialog(OSystem& osystem,
+                                           DialogContainer& parent,
+                                           AppMode mode)
   : Dialog(osystem, parent, osystem.frameBuffer().font(), "Basic settings"),
     myMode{mode}
 {
-  const int iLineHeight = instance().frameBuffer().infoFont().getLineHeight();
-  const int lineHeight   = Dialog::lineHeight(),
-            fontWidth    = Dialog::fontWidth(),
-            buttonHeight = Dialog::buttonHeight(),
-            buttonWidth  = Dialog::buttonWidth("  Help  " + ELLIPSIS),
-            VBORDER      = Dialog::vBorder(),
-            HBORDER      = Dialog::hBorder(),
-            VGAP         = Dialog::vGap(),
-            INDENT       = Dialog::indent();
-  ButtonWidget* bw = nullptr;
-
+  const int buttonHeight = Dialog::buttonHeight(),
+            buttonWidth  = Dialog::buttonWidth("  Help  " + ELLIPSIS);
   WidgetArray wid;
 
-  // Set real dimensions
-  setSize(35 * fontWidth + HBORDER * 2 + 5,
-          VBORDER * 2 +_th + 10 * (lineHeight + VGAP) + 3 * (iLineHeight + VGAP)
-          + VGAP * 12 + buttonHeight * 2, max_w, max_h);
-
-  int xpos = HBORDER;
-  int ypos = VBORDER + _th;
-
-  bw = new ButtonWidget(this, _font, xpos, ypos, _w - HBORDER * 2 - buttonWidth - 8, buttonHeight,
+  myAdvancedButton = new ButtonWidget(this, _font, 0, 0, buttonWidth, buttonHeight,
     "Use Advanced Settings" + ELLIPSIS, kAdvancedSettings);
-  wid.push_back(bw);
-  bw = new ButtonWidget(this, _font, bw->getRight() + 8, ypos, buttonWidth, buttonHeight,
+  wid.push_back(myAdvancedButton);
+  myHelpButton = new ButtonWidget(this, _font, 0, 0, buttonWidth, buttonHeight,
     "Help" + ELLIPSIS, kHelp);
-  wid.push_back(bw);
+  wid.push_back(myHelpButton);
 
-  ypos += buttonHeight + VGAP * 2;
+  myGlobalLabel = new StaticTextWidget(this, _font, 0, 0, "Global settings:");
+  createUIOptions(wid);
+  createVideoOptions(wid);
 
-  new StaticTextWidget(this, _font, xpos, ypos + 1, "Global settings:");
-  xpos += INDENT;
-  ypos += lineHeight + VGAP;
-
-  addUIOptions(wid, xpos, ypos);
-  ypos += VGAP * 4;
-  addVideoOptions(wid, xpos, ypos);
-  ypos += VGAP * 4;
-
-  xpos -= INDENT;
-  myGameSettings = new StaticTextWidget(this, _font, xpos, ypos + 1, "Game settings:");
-  xpos += INDENT;
-  ypos += lineHeight + VGAP;
-
-  addGameOptions(wid, xpos, ypos);
+  myGameSettings = new StaticTextWidget(this, _font, 0, 0, "Game settings:");
+  createGameOptions(wid);
 
   // Add Defaults, OK and Cancel buttons
   addDefaultsOKCancelBGroup(wid, _font);
@@ -90,20 +64,18 @@ StellaSettingsDialog::StellaSettingsDialog(OSystem& osystem, DialogContainer& pa
 StellaSettingsDialog::~StellaSettingsDialog() = default;
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void StellaSettingsDialog::addUIOptions(WidgetArray& wid, int xpos, int& ypos)
+void StellaSettingsDialog::createUIOptions(WidgetArray& wid)
 {
-  const int lineHeight = Dialog::lineHeight(),
-            VGAP       = Dialog::vGap();
+  const int lineHeight = Dialog::lineHeight();
   VariantList items;
   const int pwidth = _font.getStringWidth("Right bottom"); // align width with other popup
 
-  ypos += 1;
   VarList::push_back(items, "Standard", "standard");
   VarList::push_back(items, "Classic", "classic");
   VarList::push_back(items, "Light", "light");
-  myThemePopup = new PopUpWidget(this, _font, xpos, ypos, pwidth, lineHeight, items, "UI theme           ");
+  myThemePopup = new PopUpWidget(this, _font, 0, 0, pwidth, lineHeight, items,
+    "UI theme           ");
   wid.push_back(myThemePopup);
-  ypos += lineHeight + VGAP;
 
   // Dialog position
   items.clear();
@@ -112,18 +84,16 @@ void StellaSettingsDialog::addUIOptions(WidgetArray& wid, int xpos, int& ypos)
   VarList::push_back(items, "Right top", 2);
   VarList::push_back(items, "Right bottom", 3);
   VarList::push_back(items, "Left bottom", 4);
-  myPositionPopup = new PopUpWidget(this, _font, xpos, ypos, pwidth, lineHeight,
+  myPositionPopup = new PopUpWidget(this, _font, 0, 0, pwidth, lineHeight,
     items, "Dialogs position   ");
   wid.push_back(myPositionPopup);
-  ypos += lineHeight + VGAP;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void StellaSettingsDialog::addVideoOptions(WidgetArray& wid, int xpos, int& ypos)
+void StellaSettingsDialog::createVideoOptions(WidgetArray& wid)
 {
   const int lineHeight = Dialog::lineHeight(),
-            fontWidth  = Dialog::fontWidth(),
-            VGAP       = Dialog::vGap();
+            fontWidth  = Dialog::fontWidth();
   const GUI::Font& ifont = instance().frameBuffer().infoFont();
   VariantList items;
 
@@ -139,44 +109,39 @@ void StellaSettingsDialog::addVideoOptions(WidgetArray& wid, int xpos, int& ypos
   const int pwidth = _font.getStringWidth("Right bottom");
   const int lwidth = _font.getStringWidth("Scanline intensity ");
 
-  myTVMode = new PopUpWidget(this, _font, xpos, ypos, pwidth, lineHeight,
+  myTVMode = new PopUpWidget(this, _font, 0, 0, pwidth, lineHeight,
     items, "TV mode            ");
   wid.push_back(myTVMode);
-  ypos += lineHeight + VGAP;
 
   // Scanline intensity
-  myTVScanIntense = new SliderWidget(this, _font, xpos, ypos-1, swidth, lineHeight,
+  myTVScanIntense = new SliderWidget(this, _font, 0, 0, swidth, lineHeight,
     "Scanline intensity", lwidth, kScanlinesChanged, fontWidth * 3);
   myTVScanIntense->setMinValue(0); myTVScanIntense->setMaxValue(10);
   myTVScanIntense->setTickmarkIntervals(2);
   wid.push_back(myTVScanIntense);
-  ypos += lineHeight + VGAP;
 
   // TV Phosphor blend level
-  myTVPhosLevel = new SliderWidget(this, _font, xpos, ypos-1, swidth, lineHeight,
+  myTVPhosLevel = new SliderWidget(this, _font, 0, 0, swidth, lineHeight,
     "Phosphor blend  ", lwidth, kPhosphorChanged, fontWidth * 3);
   myTVPhosLevel->setMinValue(0); myTVPhosLevel->setMaxValue(10);
   myTVPhosLevel->setTickmarkIntervals(2);
   wid.push_back(myTVPhosLevel);
-  ypos += lineHeight + VGAP;
 
   // FS overscan
-  myTVOverscan = new SliderWidget(this, _font, xpos, ypos - 1, swidth, lineHeight,
+  myTVOverscan = new SliderWidget(this, _font, 0, 0, swidth, lineHeight,
     "Overscan (*)    ", lwidth, kOverscanChanged, fontWidth * 3);
   myTVOverscan->setMinValue(0); myTVOverscan->setMaxValue(10);
   myTVOverscan->setTickmarkIntervals(2);
   wid.push_back(myTVOverscan);
-  ypos += lineHeight + VGAP;
 
-  new StaticTextWidget(this, ifont, xpos, ypos + 1, "(*) Change requires launcher reboot");
-  ypos += ifont.getLineHeight() + VGAP;
+  myOverscanInfo = new StaticTextWidget(this, ifont, 0, 0,
+    "(*) Change requires launcher reboot");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void StellaSettingsDialog::addGameOptions(WidgetArray& wid, int xpos, int& ypos)
+void StellaSettingsDialog::createGameOptions(WidgetArray& wid)
 {
-  const int lineHeight = Dialog::lineHeight(),
-            VGAP       = Dialog::vGap();
+  const int lineHeight = Dialog::lineHeight();
   const GUI::Font& ifont = instance().frameBuffer().infoFont();
   VariantList ctrls;
 
@@ -194,24 +159,101 @@ void StellaSettingsDialog::addGameOptions(WidgetArray& wid, int xpos, int& ypos)
   VarList::push_back(ctrls, "QuadTari", "QUADTARI");
 
   const int pwidth = _font.getStringWidth("Sega Genesis");
-  myLeftPortLabel = new StaticTextWidget(this, _font, xpos, ypos + 1, "Left port  ");
-  myLeftPort = new PopUpWidget(this, _font, myLeftPortLabel->getRight(),
-    myLeftPortLabel->getTop() - 1, pwidth, lineHeight, ctrls, "", 0, kLeftCChanged);
+  myLeftPortLabel = new StaticTextWidget(this, _font, 0, 0, "Left port  ");
+  myLeftPort = new PopUpWidget(this, _font, 0, 0, pwidth, lineHeight,
+    ctrls, "", 0, kLeftCChanged);
   wid.push_back(myLeftPort);
-  ypos += lineHeight + VGAP;
+  myLeftPortDetected = new StaticTextWidget(this, ifont, 0, 0, "Sega Genesis detected");
 
-  myLeftPortDetected = new StaticTextWidget(this, ifont, myLeftPort->getLeft(), ypos,
-    "Sega Genesis detected");
-  ypos += ifont.getLineHeight() + VGAP;
-
-  myRightPortLabel = new StaticTextWidget(this, _font, xpos, ypos + 1, "Right port ");
-  myRightPort = new PopUpWidget(this, _font, myRightPortLabel->getRight(),
-    myRightPortLabel->getTop() - 1, pwidth, lineHeight, ctrls, "", 0, kRightCChanged);
+  myRightPortLabel = new StaticTextWidget(this, _font, 0, 0, "Right port ");
+  myRightPort = new PopUpWidget(this, _font, 0, 0, pwidth, lineHeight,
+    ctrls, "", 0, kRightCChanged);
   wid.push_back(myRightPort);
-  ypos += lineHeight + VGAP;
-  myRightPortDetected = new StaticTextWidget(this, ifont, myRightPort->getLeft(), ypos,
-    "Sega Genesis detected");
-  ypos += ifont.getLineHeight() + VGAP;
+  myRightPortDetected = new StaticTextWidget(this, ifont, 0, 0, "Sega Genesis detected");
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void StellaSettingsDialog::layout()
+{
+  using GUI::BoxLayout;
+  using GUI::anchoredItem;
+  using GUI::widgetItem;
+  using GUI::indentedItem;
+  using Dir = BoxLayout::Dir;
+
+  const int iLineHeight = instance().frameBuffer().infoFont().getLineHeight();
+  const int lineHeight   = Dialog::lineHeight(),
+            fontWidth    = Dialog::fontWidth(),
+            buttonHeight = Dialog::buttonHeight(),
+            buttonWidth  = Dialog::buttonWidth("  Help  " + ELLIPSIS),
+            VBORDER      = Dialog::vBorder(),
+            HBORDER      = Dialog::hBorder(),
+            VGAP         = Dialog::vGap(),
+            INDENT       = Dialog::indent();
+
+  // Size the dialog from the current font so it reflows on font change
+  _w = 35 * fontWidth + HBORDER * 2 + 5;
+  _h = VBORDER * 2 + _th + 10 * (lineHeight + VGAP) + 3 * (iLineHeight + VGAP)
+       + VGAP * 12 + buttonHeight * 2;
+
+  // Top row: "Use Advanced Settings" fills the width, "Help" is fixed at right
+  auto buttonRow = std::make_unique<BoxLayout>(Dir::Horizontal);
+  buttonRow->addStretch(widgetItem(myAdvancedButton));
+  buttonRow->addSpace(8);
+  buttonRow->addFixed(widgetItem(myHelpButton), buttonWidth);
+
+  auto root = std::make_unique<BoxLayout>(Dir::Vertical, 0, HBORDER, VBORDER);
+  root->addFixed(std::move(buttonRow), buttonHeight);
+  root->addSpace(VGAP * 2);
+
+  // Global settings: header, then the indented UI and video options
+  root->addFixed(anchoredItem(myGlobalLabel), lineHeight);
+  root->addSpace(VGAP);
+  root->addFixed(indentedItem(myThemePopup, INDENT), lineHeight);
+  root->addSpace(VGAP);
+  root->addFixed(indentedItem(myPositionPopup, INDENT), lineHeight);
+  root->addSpace(VGAP);
+  root->addSpace(VGAP * 4);
+  root->addFixed(indentedItem(myTVMode, INDENT), lineHeight);
+  root->addSpace(VGAP);
+  root->addFixed(indentedItem(myTVScanIntense, INDENT), lineHeight);
+  root->addSpace(VGAP);
+  root->addFixed(indentedItem(myTVPhosLevel, INDENT), lineHeight);
+  root->addSpace(VGAP);
+  root->addFixed(indentedItem(myTVOverscan, INDENT), lineHeight);
+  root->addSpace(VGAP);
+  root->addFixed(indentedItem(myOverscanInfo, INDENT), iLineHeight);
+  root->addSpace(VGAP);
+  root->addSpace(VGAP * 4);
+
+  // Game settings: header, then the indented controller port rows.  The port
+  // pop-up sits directly right of its label; the "detected" line aligns under
+  // the pop-up (indent = INDENT + label width).
+  root->addFixed(anchoredItem(myGameSettings), lineHeight);
+  root->addSpace(VGAP);
+
+  auto portRow = [&](StaticTextWidget* label, PopUpWidget* popup) {
+    auto box = std::make_unique<BoxLayout>(Dir::Horizontal);
+    box->addSpace(INDENT);
+    box->addFixed(anchoredItem(label), label->getWidth());
+    box->addFixed(anchoredItem(popup), popup->getWidth());
+    return box;
+  };
+
+  root->addFixed(portRow(myLeftPortLabel, myLeftPort), lineHeight);
+  root->addSpace(VGAP);
+  root->addFixed(indentedItem(myLeftPortDetected,
+                              INDENT + myLeftPortLabel->getWidth()), iLineHeight);
+  root->addSpace(VGAP);
+  root->addFixed(portRow(myRightPortLabel, myRightPort), lineHeight);
+  root->addSpace(VGAP);
+  root->addFixed(indentedItem(myRightPortDetected,
+                              INDENT + myRightPortLabel->getWidth()), iLineHeight);
+
+  root->doLayout(0, _th, _w, _h - _th);
+
+  // Standard button group (Defaults / OK / Cancel) along the bottom edge
+  layoutButtonGroup();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

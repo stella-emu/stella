@@ -1404,10 +1404,10 @@ void LauncherDialog::openSettings()
   // Create an options dialog, similar to the in-game one
   if(instance().settings().getBool("basic_settings"))
     myDialog = std::make_unique<StellaSettingsDialog>(instance(), parent(),
-                                                 _w, _h, AppMode::launcher);
+                                                      AppMode::launcher);
   else
     myDialog = std::make_unique<OptionsDialog>(instance(), parent(), this,
-                                          AppMode::launcher);
+                                               AppMode::launcher);
   myDialog->open();
 }
 

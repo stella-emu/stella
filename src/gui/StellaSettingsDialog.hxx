@@ -19,6 +19,7 @@
 #define STELLA_SETTINGS_DIALOG_HXX
 
 class PopUpWidget;
+class ButtonWidget;
 
 #include "Props.hxx"
 #include "Dialog.hxx"
@@ -33,8 +34,7 @@ namespace GUI {
 class StellaSettingsDialog : public Dialog
 {
   public:
-    StellaSettingsDialog(OSystem& osystem, DialogContainer& parent,
-      int max_w, int max_h, AppMode mode);
+    StellaSettingsDialog(OSystem& osystem, DialogContainer& parent, AppMode mode);
     ~StellaSettingsDialog() override;
 
     void loadConfig() override;
@@ -42,12 +42,13 @@ class StellaSettingsDialog : public Dialog
     void setDefaults() override;
 
   protected:
+    void layout() override;
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 
   private:
-    void addVideoOptions(WidgetArray& wid, int xpos, int& ypos);
-    void addUIOptions(WidgetArray& wid, int xpos, int& ypos);
-    void addGameOptions(WidgetArray& wid, int xpos, int& ypos);
+    void createUIOptions(WidgetArray& wid);
+    void createVideoOptions(WidgetArray& wid);
+    void createGameOptions(WidgetArray& wid);
 
     void handleOverscanChange();
 
@@ -66,6 +67,11 @@ class StellaSettingsDialog : public Dialog
     void updateControllerStates();
 
   private:
+    // Top-row buttons and section headers
+    ButtonWidget*     myAdvancedButton{nullptr};
+    ButtonWidget*     myHelpButton{nullptr};
+    StaticTextWidget* myGlobalLabel{nullptr};
+
     // UI theme
     PopUpWidget*      myThemePopup{nullptr};
     PopUpWidget*      myPositionPopup{nullptr};
@@ -81,6 +87,7 @@ class StellaSettingsDialog : public Dialog
 
     // TV Overscan
     SliderWidget*     myTVOverscan{nullptr};
+    StaticTextWidget* myOverscanInfo{nullptr};
 
     // Controller properties
     StaticTextWidget* myGameSettings{nullptr};

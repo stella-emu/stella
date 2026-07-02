@@ -53,7 +53,8 @@ Dialog* OverlayMenu::baseDialog()
   {
     case EventHandlerState::OPTIONSMENU:
       return &cached(myOSystem.settings().getBool("basic_settings")
-                     ? Cached::StellaSettings : Cached::Options);
+        ? Cached::StellaSettings
+        : Cached::Options);
 
     case EventHandlerState::CMDMENU:
       return &cached(Cached::Command);
@@ -92,7 +93,7 @@ Dialog* OverlayMenu::createDialog(Cached id)
 
     case Cached::StellaSettings:
       return new StellaSettingsDialog(myOSystem, *this,
-        1280, 720, Dialog::AppMode::emulator);
+        Dialog::AppMode::emulator);
 
     case Cached::Command:
       return new CommandDialog(myOSystem, *this);
