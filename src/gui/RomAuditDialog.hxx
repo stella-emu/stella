@@ -21,6 +21,7 @@
 class OSystem;
 class GuiObject;
 class DialogContainer;
+class ButtonWidget;
 class EditTextWidget;
 class StaticTextWidget;
 namespace GUI {
@@ -43,6 +44,10 @@ class RomAuditDialog : public Dialog
   protected:
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 
+    // (Re)position all widgets from the current font metrics; the constructor
+    // only creates them
+    void layout() override;
+
   private:
     void auditRoms();
 
@@ -53,11 +58,17 @@ class RomAuditDialog : public Dialog
     };
 
     // ROM audit path
+    ButtonWidget*   myRomButton{nullptr};
     EditTextWidget* myRomPath{nullptr};
 
     // Show the results of the ROM audit
-    EditTextWidget* myResults1{nullptr};
-    EditTextWidget* myResults2{nullptr};
+    StaticTextWidget* myRenamedLabel{nullptr};
+    EditTextWidget*   myResults1{nullptr};
+    StaticTextWidget* mySkippedLabel{nullptr};
+    EditTextWidget*   myResults2{nullptr};
+
+    // Inline warning about the dangers of using this function
+    StaticTextWidget* myWarningLabel{nullptr};
 
     // Show a message about the dangers of using this function
     unique_ptr<GUI::MessageBox> myConfirmMsg;
