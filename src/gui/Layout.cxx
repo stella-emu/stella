@@ -177,6 +177,18 @@ unique_ptr<Layout> indentedItem(Widget* widget, int indent, int minW)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+unique_ptr<Layout> labeledRow(Widget* label, Widget* control,
+                              int labelW, int indent)
+{
+  auto row = std::make_unique<BoxLayout>(BoxLayout::Dir::Horizontal);
+  if(indent > 0)
+    row->addSpace(indent);
+  row->addFixed(anchoredItem(label), labelW > 0 ? labelW : label->getWidth());
+  row->addStretch(anchoredItem(control));
+  return row;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 GridLayout::GridLayout(int cols, int rows, int hSpacing, int vSpacing,
                        int marginH, int marginV)
   : myHSpacing{hSpacing}, myVSpacing{vSpacing},

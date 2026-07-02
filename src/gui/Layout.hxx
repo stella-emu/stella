@@ -280,6 +280,14 @@ unique_ptr<Layout> hCentered(Widget* widget, int w, int minH = 0);
 // (e.g. the checkboxes below a "When saving:" label in the option dialogs).
 unique_ptr<Layout> indentedItem(Widget* widget, int indent, int minW = 0);
 
+// A horizontal form row pairing a separate label with a control: the label
+// occupies a column 'labelW' wide (0 = the label's own width) and the control
+// is anchored at its natural size just to its right, after an optional left
+// 'indent'.  For label + PopUp/Slider/edit rows where the widget is not
+// self-labeling; pass a shared 'labelW' to align controls across several rows.
+unique_ptr<Layout> labeledRow(Widget* label, Widget* control,
+                              int labelW = 0, int indent = 0);
+
 }  // namespace GUI
 
 #endif  // LAYOUT_HXX

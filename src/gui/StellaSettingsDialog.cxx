@@ -179,6 +179,7 @@ void StellaSettingsDialog::layout()
   using GUI::anchoredItem;
   using GUI::widgetItem;
   using GUI::indentedItem;
+  using GUI::labeledRow;
   using Dir = BoxLayout::Dir;
 
   const int iLineHeight = instance().frameBuffer().infoFont().getLineHeight();
@@ -226,26 +227,18 @@ void StellaSettingsDialog::layout()
   root->addSpace(VGAP);
   root->addSpace(VGAP * 4);
 
-  // Game settings: header, then the indented controller port rows.  The port
-  // pop-up sits directly right of its label; the "detected" line aligns under
-  // the pop-up (indent = INDENT + label width).
+  // Game settings: header, then the indented controller port rows.  Each port
+  // pop-up sits directly right of its (natural-width) label; the "detected"
+  // line aligns under the pop-up (indent = INDENT + label width).
   root->addFixed(anchoredItem(myGameSettings), lineHeight);
   root->addSpace(VGAP);
 
-  auto portRow = [&](StaticTextWidget* label, PopUpWidget* popup) {
-    auto box = std::make_unique<BoxLayout>(Dir::Horizontal);
-    box->addSpace(INDENT);
-    box->addFixed(anchoredItem(label), label->getWidth());
-    box->addFixed(anchoredItem(popup), popup->getWidth());
-    return box;
-  };
-
-  root->addFixed(portRow(myLeftPortLabel, myLeftPort), lineHeight);
+  root->addFixed(labeledRow(myLeftPortLabel, myLeftPort, 0, INDENT), lineHeight);
   root->addSpace(VGAP);
   root->addFixed(indentedItem(myLeftPortDetected,
                               INDENT + myLeftPortLabel->getWidth()), iLineHeight);
   root->addSpace(VGAP);
-  root->addFixed(portRow(myRightPortLabel, myRightPort), lineHeight);
+  root->addFixed(labeledRow(myRightPortLabel, myRightPort, 0, INDENT), lineHeight);
   root->addSpace(VGAP);
   root->addFixed(indentedItem(myRightPortDetected,
                               INDENT + myRightPortLabel->getWidth()), iLineHeight);

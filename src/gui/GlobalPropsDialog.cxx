@@ -196,6 +196,7 @@ void GlobalPropsDialog::layout()
 {
   using GUI::BoxLayout;
   using GUI::anchoredItem;
+  using GUI::labeledRow;
   using Dir = BoxLayout::Dir;
 
   const int lineHeight   = Dialog::lineHeight(),
@@ -215,24 +216,17 @@ void GlobalPropsDialog::layout()
   _h = _th + 11 * (lineHeight + VGAP) + 3 * infoLineHeight + VGAP * 12
        + buttonHeight + VBORDER * 2;
 
-  // Top section: a vertical stack of the four labelled pop-ups followed by the
-  // "held down" heading.  Each pop-up row is a label in a fixed lwidth column
-  // with the control to its right.
-  auto popupRow = [&](StaticTextWidget* label, PopUpWidget* popup) {
-    auto row = std::make_unique<BoxLayout>(Dir::Horizontal);
-    row->addFixed(anchoredItem(label), lwidth);
-    row->addFixed(anchoredItem(popup), popup->getWidth());
-    return row;
-  };
-
+  // Top section: a vertical stack of the four labelled pop-ups (each a label in
+  // a fixed lwidth column with the control to its right) followed by the
+  // "held down" heading
   auto top = std::make_unique<BoxLayout>(Dir::Vertical, 0, HBORDER, VBORDER);
-  top->addFixed(popupRow(myBSLabel, myBSType), lineHeight);
+  top->addFixed(labeledRow(myBSLabel, myBSType, lwidth), lineHeight);
   top->addSpace(VGAP * 3);
-  top->addFixed(popupRow(myTVLabel, myTVType), lineHeight);
+  top->addFixed(labeledRow(myTVLabel, myTVType, lwidth), lineHeight);
   top->addSpace(VGAP);
-  top->addFixed(popupRow(myLeftDiffLabel, myLeftDiff), lineHeight);
+  top->addFixed(labeledRow(myLeftDiffLabel, myLeftDiff, lwidth), lineHeight);
   top->addSpace(VGAP);
-  top->addFixed(popupRow(myRightDiffLabel, myRightDiff), lineHeight);
+  top->addFixed(labeledRow(myRightDiffLabel, myRightDiff, lwidth), lineHeight);
   top->addSpace(VGAP * 3);
   top->addFixed(anchoredItem(myHeldLabel), lineHeight);
   top->addFixed(anchoredItem(myReleasedLabel), infoLineHeight);
