@@ -23,6 +23,7 @@
 #include "PopUpWidget.hxx"
 #include "StringListWidget.hxx"
 #include "Variant.hxx"
+#include "Layout.hxx"
 #include "JoystickDialog.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -32,24 +33,17 @@ JoystickDialog::JoystickDialog(GuiObject* boss, const GUI::Font& font,
 {
   WidgetArray wid;
   const int lineHeight   = Dialog::lineHeight(),
-            fontWidth    = Dialog::fontWidth(),
             buttonHeight = Dialog::buttonHeight(),
-            buttonWidth  = Dialog::buttonWidth("Remove"),
-            VBORDER      = Dialog::vBorder(),
-            HBORDER      = Dialog::hBorder();
+            buttonWidth  = Dialog::buttonWidth("Remove");
+
   // Joystick list
-  int xpos = HBORDER, ypos = VBORDER + _th;
-  const int w = _w - 2 * xpos;
-  const int h = _h - buttonHeight - ypos - VBORDER * 2;
-  myJoyList = new StringListWidget(this, font, xpos, ypos, w, h);
+  myJoyList = new StringListWidget(this, font, 0, 0, 1, 1);
   myJoyList->setEditable(false);
   wid.push_back(myJoyList);
 
   // Joystick ID
-  ypos = _h - VBORDER - (buttonHeight + lineHeight) / 2;
-  const auto* t = new StaticTextWidget(this, font, xpos, ypos, "Controller ID ");
-  xpos += t->getWidth();
-  myJoyText = new EditTextWidget(this, font, xpos, ypos - 2,
+  myIDLabel = new StaticTextWidget(this, font, 0, 0, "Controller ID ");
+  myJoyText = new EditTextWidget(this, font, 0, 0,
       font.getStringWidth("Unplugged "), lineHeight, "");
   myJoyText->setEditable(false);
 
@@ -59,20 +53,17 @@ JoystickDialog::JoystickDialog(GuiObject* boss, const GUI::Font& font,
   VarList::push_back(ports, "Left",  static_cast<Int32>(PhysicalJoystick::Port::LEFT));
   VarList::push_back(ports, "Right", static_cast<Int32>(PhysicalJoystick::Port::RIGHT));
 
-  myJoyPort = new PopUpWidget(this, font, myJoyText->getRight() + fontWidth * 2, ypos - 1,
+  myJoyPort = new PopUpWidget(this, font, 0, 0,
     font.getStringWidth("Right"), lineHeight, ports, "Port ", 0, kPortCmd);
   myJoyPort->setToolTip("Define default mapping port.");
   wid.push_back(myJoyPort);
 
-  // Add buttons at bottom
-  xpos = _w - buttonWidth - HBORDER;
-  ypos = _h - VBORDER - buttonHeight;
-  myCloseBtn = new ButtonWidget(this, font, xpos, ypos,
+  // Buttons at bottom
+  myCloseBtn = new ButtonWidget(this, font, 0, 0,
       buttonWidth, buttonHeight, "Close", GuiObject::kCloseCmd);
   addOKWidget(myCloseBtn);  addCancelWidget(myCloseBtn);
 
-  xpos -= buttonWidth + fontWidth;
-  myRemoveBtn = new ButtonWidget(this, font, xpos, ypos,
+  myRemoveBtn = new ButtonWidget(this, font, 0, 0,
       buttonWidth, buttonHeight, "Remove", kRemoveCmd);
   myRemoveBtn->clearFlags(Widget::FLAG_ENABLED);
 
@@ -80,6 +71,40 @@ JoystickDialog::JoystickDialog(GuiObject* boss, const GUI::Font& font,
   wid.push_back(myRemoveBtn);
   wid.push_back(myCloseBtn);
   addToFocusList(wid);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void JoystickDialog::layout()
+{
+  using GUI::BoxLayout;
+  using GUI::widgetItem;
+  using Dir = BoxLayout::Dir;
+
+  const int lineHeight   = Dialog::lineHeight(),
+            fontWidth    = Dialog::fontWidth(),
+            buttonHeight = Dialog::buttonHeight(),
+            buttonWidth  = Dialog::buttonWidth("Remove"),
+            VBORDER      = Dialog::vBorder(),
+            HBORDER      = Dialog::hBorder();
+
+  // The joystick list fills the area above the bottom control/button row
+  auto root = std::make_unique<BoxLayout>(Dir::Vertical, 0, HBORDER, VBORDER);
+  root->addStretch(widgetItem(myJoyList));
+  root->addSpace(VBORDER);
+  root->addSpace(buttonHeight);  // reserve the button row
+  root->doLayout(0, _th, _w, _h - _th);
+
+  // Controller ID label + (non-editable) value + port popup, vertically
+  // centered within the bottom button row on the left
+  int ypos = _h - VBORDER - (buttonHeight + lineHeight) / 2;
+  myIDLabel->setPos(HBORDER, ypos);
+  myJoyText->setPos(HBORDER + myIDLabel->getWidth(), ypos - 2);
+  myJoyPort->setPos(myJoyText->getRight() + fontWidth * 2, ypos - 1);
+
+  // Remove / Close buttons, right-aligned on the button row
+  ypos = _h - VBORDER - buttonHeight;
+  myCloseBtn->setPos(_w - buttonWidth - HBORDER, ypos);
+  myRemoveBtn->setPos(myCloseBtn->getLeft() - buttonWidth - fontWidth, ypos);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

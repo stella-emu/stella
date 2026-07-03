@@ -24,6 +24,7 @@ class ButtonWidget;
 class EditTextWidget;
 class PopUpWidget;
 class StringListWidget;
+class StaticTextWidget;
 
 #include "Dialog.hxx"
 
@@ -44,11 +45,13 @@ class JoystickDialog : public Dialog
     void loadConfig() override;
 
   protected:
+    void layout() override;
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
     void handleEvent(Event::Type event) override;
 
   private:
     StringListWidget* myJoyList{nullptr};
+    StaticTextWidget* myIDLabel{nullptr};
     EditTextWidget*   myJoyText{nullptr};
     PopUpWidget*      myJoyPort{nullptr};
 

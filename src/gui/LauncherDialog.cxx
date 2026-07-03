@@ -1448,7 +1448,7 @@ void LauncherDialog::openHighScores()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void LauncherDialog::openWhatsNew()
 {
-  myDialog = std::make_unique<WhatsNewDialog>(instance(), parent(), _w, _h);
+  myDialog = std::make_unique<WhatsNewDialog>(instance(), parent());
   myDialog->open();
 }
 

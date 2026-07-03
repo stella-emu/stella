@@ -24,35 +24,18 @@
 static constexpr int MAX_CHARS = 64; // maximum number of chars per line
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-WhatsNewDialog::WhatsNewDialog(OSystem& osystem, DialogContainer& parent,
-                               int max_w, int max_h)
+WhatsNewDialog::WhatsNewDialog(OSystem& osystem, DialogContainer& parent)
   : Dialog(osystem, parent, osystem.frameBuffer().font(),
            "What's New in Stella " + string(STELLA_VERSION) + "?")
 {
-  const int fontWidth = Dialog::fontWidth(),
-    buttonHeight = Dialog::buttonHeight(),
-    VBORDER = Dialog::vBorder(),
-    HBORDER = Dialog::hBorder(),
-    VGAP = Dialog::vGap();
-  int ypos = _th + VBORDER;
-
-  // Set preliminary dimensions
-  setSize(MAX_CHARS * fontWidth + HBORDER * 2, max_h,
-          max_w, max_h);
-
   const string_view version = instance().settings().getString("stella.version");
   if(version < "7.0")
   {
-    add(ypos, "accelerated ARM emulation by ~15%");
-    add(ypos, "added user defined CPU cycle timers to debugger");
+    add("accelerated ARM emulation by ~15%");
+    add("added user defined CPU cycle timers to debugger");
   }
-  add(ypos, "ported Stella to SDL3");
-  add(ypos, ELLIPSIS + " (for a complete list see 'docs/Changes.txt')");
-
-  // Set needed dimensions
-  ypos += VGAP * 2 + buttonHeight + VBORDER;
-  assert(std::cmp_less_equal(ypos, FBMinimum::Height)); // minimal launcher height
-  setSize(MAX_CHARS * fontWidth + HBORDER * 2, ypos, max_w, max_h);
+  add("ported Stella to SDL3");
+  add(ELLIPSIS + " (for a complete list see 'docs/Changes.txt')");
 
   WidgetArray wid;
   addOKBGroup(wid, _font);
@@ -64,24 +47,51 @@ WhatsNewDialog::WhatsNewDialog(OSystem& osystem, DialogContainer& parent,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void WhatsNewDialog::add(int& ypos, string_view text)
+void WhatsNewDialog::add(string_view text)
 {
   const int lineHeight = Dialog::lineHeight(),
-            fontHeight = Dialog::fontHeight(),
-            HBORDER    = Dialog::hBorder();
+            fontHeight = Dialog::fontHeight();
   string txt = "\x1f ";
   txt += text;
 
-  // automatically wrap too long texts
+  // automatically wrap too long texts; continuation lines advance by fontHeight,
+  // the final line of each bullet by lineHeight (giving a gap between bullets)
   while(txt.length() > MAX_CHARS)
   {
     int i = MAX_CHARS;
 
     while(--i && txt[i] != ' ');  // NOLINT(bugprone-inc-dec-in-conditions)
-    new StaticTextWidget(this, _font, HBORDER, ypos, txt.substr(0, i));
+    myLines.push_back(new StaticTextWidget(this, _font, 0, 0, txt.substr(0, i)));
+    myLineAdvance.push_back(fontHeight);
     txt = " " + txt.substr(i);
-    ypos += fontHeight;
   }
-  new StaticTextWidget(this, _font, HBORDER, ypos, txt);
-  ypos += lineHeight;
+  myLines.push_back(new StaticTextWidget(this, _font, 0, 0, txt));
+  myLineAdvance.push_back(lineHeight);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void WhatsNewDialog::layout()
+{
+  const int fontWidth    = Dialog::fontWidth(),
+            buttonHeight = Dialog::buttonHeight(),
+            VBORDER      = Dialog::vBorder(),
+            HBORDER      = Dialog::hBorder(),
+            VGAP         = Dialog::vGap();
+
+  _w = MAX_CHARS * fontWidth + HBORDER * 2;
+
+  // Stack the (pre-wrapped) bullet lines
+  int ypos = _th + VBORDER;
+  for(size_t i = 0; i < myLines.size(); ++i)
+  {
+    myLines[i]->setPos(HBORDER, ypos);
+    ypos += myLineAdvance[i];
+  }
+
+  ypos += VGAP * 2 + buttonHeight + VBORDER;
+  _h = ypos;
+  assert(std::cmp_less_equal(_h, FBMinimum::Height)); // minimal launcher height
+
+  // Single OK button, centered along the bottom edge
+  _okWidget->setPos((_w - _okWidget->getWidth()) / 2, _h - buttonHeight - VBORDER);
 }

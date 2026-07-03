@@ -20,15 +20,23 @@
 
 #include "Dialog.hxx"
 
+class StaticTextWidget;
+
 class WhatsNewDialog : public Dialog
 {
   public:
-    WhatsNewDialog(OSystem& osystem, DialogContainer& parent,
-                   int max_w, int max_h);
+    WhatsNewDialog(OSystem& osystem, DialogContainer& parent);
     ~WhatsNewDialog() override = default;
 
+  protected:
+    void layout() override;
+
   private:
-    void add(int& ypos, string_view text);
+    void add(string_view text);
+
+  private:
+    std::vector<StaticTextWidget*> myLines;
+    std::vector<int> myLineAdvance;
 
   private:
     // Following constructors and assignment operators not supported
