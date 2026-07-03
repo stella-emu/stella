@@ -41,11 +41,13 @@ class ProgressDialog : public Dialog
     bool isCancelled() const { return myIsCancelled; }
 
   protected:
+    void layout() override;
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 
   private:
     StaticTextWidget* myMessage{nullptr};
     SliderWidget*     mySlider{nullptr};
+    string            myMessageText;
 
     int myStart{0}, myFinish{0}, myStep{0};
     int myProgress{0};

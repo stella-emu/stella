@@ -19,6 +19,7 @@
 #include "Widget.hxx"
 #include "Font.hxx"
 #include "StringParser.hxx"
+#include "Layout.hxx"
 #include "MessageBox.hxx"
 
 namespace GUI {
@@ -31,9 +32,11 @@ MessageBox::MessageBox(GuiObject* boss, const GUI::Font& font,
   : Dialog(boss->instance(), boss->parent(), font, title, 0, 0, max_w, max_h),
     CommandSender(boss),
     myOkCmd{okCmd},
-    myCancelCmd{cancelCmd}
+    myCancelCmd{cancelCmd},
+    myMaxW{max_w},
+    myMaxH{max_h}
 {
-  addText(font, text);
+  createText(font, text);
 
   WidgetArray wid;
   addOKCancelBGroup(wid, font, okText, cancelText, focusOKButton);
@@ -71,28 +74,46 @@ MessageBox::MessageBox(GuiObject* boss, const GUI::Font& font,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void MessageBox::addText(const GUI::Font& font, const StringList& text)
+void MessageBox::createText(const GUI::Font& font, const StringList& text)
+{
+  const int fontHeight = Dialog::fontHeight();
+
+  myText = text;
+  for(const auto& s: text)
+    myTextWidgets.push_back(new StaticTextWidget(this, font, 0, 0, 1,
+                            fontHeight, s, TextAlign::Left));
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void MessageBox::layout()
 {
   const int fontWidth  = Dialog::fontWidth(),
             fontHeight = Dialog::fontHeight(),
             VBORDER    = Dialog::vBorder(),
             HBORDER    = Dialog::hBorder();
-  // Set real dimensions
+
+  // Size to the longest line, clamped to the max, but never narrower than the
+  // button group (mirrors addOKCancelBGroup's width floor)
   int str_w = 0;
-
-  for(const auto& s: text)
+  for(const auto& s: myText)
     str_w = std::max(static_cast<int>(s.length()), str_w);
-  _w = std::min(str_w * fontWidth + HBORDER * 2, _w);
-  _h = std::min((static_cast<int>(text.size()) + 2) * fontHeight + VBORDER * 2 + _th, _h);
+  _w = std::min(str_w * fontWidth + HBORDER * 2, myMaxW);
+  _w = std::max(_w, HBORDER * 2 + _okWidget->getWidth()
+                    + _cancelWidget->getWidth() + Dialog::buttonGap());
+  _h = std::min((static_cast<int>(myText.size()) + 2) * fontHeight + VBORDER * 2 + _th,
+                myMaxH);
 
-  const int xpos = HBORDER;
+  // Stack the text lines below the title bar
   int ypos = VBORDER + _th;
-  for(const auto& s: text)
+  for(auto* w: myTextWidgets)
   {
-    new StaticTextWidget(this, font, xpos, ypos, _w - HBORDER * 2,
-                         fontHeight, s, TextAlign::Left);
+    w->setPos(HBORDER, ypos);
+    w->setWidth(_w - HBORDER * 2);
     ypos += fontHeight;
   }
+
+  // Standard OK/Cancel button group along the bottom edge
+  layoutButtonGroup();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

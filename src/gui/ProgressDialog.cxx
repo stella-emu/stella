@@ -29,57 +29,62 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ProgressDialog::ProgressDialog(GuiObject* boss, const GUI::Font& font,
                                string_view message)
-  : Dialog(boss->instance(), boss->parent(), font)
+  : Dialog(boss->instance(), boss->parent(), font),
+    myMessageText{message}
 {
   const int lineHeight   = Dialog::lineHeight(),
             fontHeight   = Dialog::fontHeight(),
             buttonHeight = Dialog::buttonHeight(),
-            buttonWidth  = Dialog::buttonWidth("Cancel"),
-            VBORDER      = Dialog::vBorder(),
-            HBORDER      = Dialog::hBorder(),
-            VGAP         = Dialog::vGap();
-  const int lwidth = font.getStringWidth(message);
+            buttonWidth  = Dialog::buttonWidth("Cancel");
   WidgetArray wid;
 
-  // Calculate real dimensions
-  _w = HBORDER * 2 + std::max(lwidth, buttonWidth);
-  _h = VBORDER * 2 + lineHeight * 2 + buttonHeight + VGAP * 6;
-
-  const int xpos = HBORDER;
-  int ypos = VBORDER;
-  myMessage = new StaticTextWidget(this, font, xpos, ypos, lwidth, fontHeight,
+  myMessage = new StaticTextWidget(this, font, 0, 0, 1, fontHeight,
                                    message, TextAlign::Center);
   myMessage->setTextColor(kTextColorEm);
 
-  ypos += lineHeight + VGAP * 2;
-  mySlider = new SliderWidget(this, font, xpos, ypos, lwidth, lineHeight,
-                              "", 0, 0);
+  mySlider = new SliderWidget(this, font, 0, 0, 1, lineHeight, "", 0, 0);
   mySlider->setMinValue(1);
   mySlider->setMaxValue(100);
 
-  ypos += lineHeight + VGAP * 4;
-  auto* b = new ButtonWidget(this, font, (_w - buttonWidth) / 2, ypos,
-                             buttonWidth, buttonHeight, "Cancel",
-                             Event::UICancel);
+  auto* b = new ButtonWidget(this, font, 0, 0, buttonWidth, buttonHeight,
+                             "Cancel", Event::UICancel);
   wid.push_back(b);
   addCancelWidget(b);
   addToFocusList(wid);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void ProgressDialog::setMessage(string_view message)
+void ProgressDialog::layout()
 {
-  const int buttonWidth  = Dialog::buttonWidth("Cancel"),
-            HBORDER      = Dialog::hBorder();
-  const int lwidth = _font.getStringWidth(message);
-  // Recalculate real dimensions
-  _w = HBORDER * 2 + std::max(lwidth, buttonWidth);
+  const int lineHeight   = Dialog::lineHeight(),
+            buttonHeight = Dialog::buttonHeight(),
+            buttonWidth  = Dialog::buttonWidth("Cancel"),
+            VBORDER      = Dialog::vBorder(),
+            HBORDER      = Dialog::hBorder(),
+            VGAP         = Dialog::vGap();
+  const int lwidth = _font.getStringWidth(myMessageText);
 
+  _w = HBORDER * 2 + std::max(lwidth, buttonWidth);
+  _h = VBORDER * 2 + lineHeight * 2 + buttonHeight + VGAP * 6;
+
+  int ypos = VBORDER;
+  myMessage->setPos(HBORDER, ypos);
   myMessage->setWidth(lwidth);
-  myMessage->setLabel(message);
+
+  ypos += lineHeight + VGAP * 2;
+  mySlider->setPos(HBORDER, ypos);
   mySlider->setWidth(lwidth);
 
-  _cancelWidget->setPosX((_w - buttonWidth) / 2);
+  ypos += lineHeight + VGAP * 4;
+  _cancelWidget->setPos((_w - buttonWidth) / 2, ypos);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void ProgressDialog::setMessage(string_view message)
+{
+  myMessageText = message;
+  myMessage->setLabel(message);
+  layout();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

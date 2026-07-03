@@ -60,14 +60,20 @@ class MessageBox : public Dialog, public CommandSender
     void show() { open(); }
 
   protected:
+    void layout() override;
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 
   private:
-    void addText(const GUI::Font& font, const StringList& text);
+    void createText(const GUI::Font& font, const StringList& text);
 
   private:
     int myOkCmd{0};
     int myCancelCmd{0};
+    int myMaxW{0};
+    int myMaxH{0};
+
+    StringList myText;
+    std::vector<StaticTextWidget*> myTextWidgets;
 
   private:
     // Following constructors and assignment operators not supported
