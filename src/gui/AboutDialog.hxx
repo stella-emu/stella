@@ -37,6 +37,7 @@ class AboutDialog : public Dialog
     void loadConfig() override { displayInfo(); }
 
   protected:
+    void layout() override;
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 
   private:
@@ -47,6 +48,7 @@ class AboutDialog : public Dialog
     ButtonWidget* myWhatsNewButton{nullptr};
     ButtonWidget* myNextButton{nullptr};
     ButtonWidget* myPrevButton{nullptr};
+    ButtonWidget* myCloseButton{nullptr};
 
     StaticTextWidget* myTitle{nullptr};
     vector<StaticTextWidget*> myDesc;

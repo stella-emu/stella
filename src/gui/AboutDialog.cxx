@@ -30,6 +30,54 @@ AboutDialog::AboutDialog(OSystem& osystem, DialogContainer& parent,
                          const GUI::Font& font)
   : Dialog(osystem, parent, font, "About Stella")
 {
+  const int fontHeight   = Dialog::fontHeight(),
+            buttonHeight = Dialog::buttonHeight(),
+            buttonWidth  = Dialog::buttonWidth("Previous");
+  WidgetArray wid;
+
+  // Previous, Next and Close buttons
+  myPrevButton =
+    new ButtonWidget(this, font, 0, 0, buttonWidth, buttonHeight,
+                     "Previous", GuiObject::kPrevCmd);
+  myPrevButton->clearFlags(Widget::FLAG_ENABLED);
+  wid.push_back(myPrevButton);
+
+  myNextButton =
+    new ButtonWidget(this, font, 0, 0, buttonWidth, buttonHeight,
+                     "Next", GuiObject::kNextCmd);
+  wid.push_back(myNextButton);
+
+  myCloseButton = new ButtonWidget(this, font, 0, 0,
+      buttonWidth, buttonHeight, "Close", GuiObject::kCloseCmd);
+  wid.push_back(myCloseButton);
+  addCancelWidget(myCloseButton);
+
+  myTitle = new StaticTextWidget(this, font, 0, 0, 1,
+                                 fontHeight, "", TextAlign::Center);
+  myTitle->setTextColor(kTextColorEm);
+
+  myWhatsNewButton =
+    new ButtonWidget(this, font, 0, 0, 1, buttonHeight,
+                     "What's New" + ELLIPSIS, kWhatsNew);
+  wid.push_back(myWhatsNewButton);
+
+  for(int i = 0; i < myLinesPerPage; i++)
+  {
+    auto* s = new StaticTextWidget(this, font, 0, 0, 1,
+                                   fontHeight, "", TextAlign::Left, kNone);
+    s->setID(i);
+    myDesc.push_back(s);
+    myDescStr.emplace_back("");
+  }
+
+  addToFocusList(wid);
+
+  setHelpURL("https://stella-emu.github.io/index.html");
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void AboutDialog::layout()
+{
   const int lineHeight   = Dialog::lineHeight(),
             fontHeight   = Dialog::fontHeight(),
             fontWidth    = Dialog::fontWidth(),
@@ -38,60 +86,34 @@ AboutDialog::AboutDialog(OSystem& osystem, DialogContainer& parent,
             VBORDER      = Dialog::vBorder(),
             HBORDER      = Dialog::hBorder(),
             VGAP         = Dialog::vGap();
-  WidgetArray wid;
 
-  // Set real dimensions
   _w = 55 * fontWidth + HBORDER * 2;
   _h = _th + 14 * lineHeight + VGAP * 3 + buttonHeight + VBORDER * 2;
 
-  // Add Previous, Next and Close buttons
-  int xpos = HBORDER, ypos = _h - buttonHeight - VBORDER;
-  myPrevButton =
-    new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight,
-                     "Previous", GuiObject::kPrevCmd);
-  myPrevButton->clearFlags(Widget::FLAG_ENABLED);
-  wid.push_back(myPrevButton);
+  // Previous / Next (left) and Close (right) along the bottom
+  int ypos = _h - buttonHeight - VBORDER;
+  myPrevButton->setPos(HBORDER, ypos);
+  myNextButton->setPos(HBORDER + buttonWidth + fontWidth, ypos);
+  myCloseButton->setPos(_w - buttonWidth - HBORDER, ypos);
 
-  xpos += buttonWidth + fontWidth;
-  myNextButton =
-    new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight,
-                     "Next", GuiObject::kNextCmd);
-  wid.push_back(myNextButton);
+  // Centered title, with the "What's New" button at the right of its row
+  ypos = _th + VBORDER + (buttonHeight - fontHeight) / 2;
+  const int bwidth = Dialog::buttonWidth("What's New" + ELLIPSIS);
+  myTitle->setPos(HBORDER + bwidth, ypos);
+  myTitle->setWidth(_w - (HBORDER + bwidth) * 2);
 
-  xpos = _w - buttonWidth - HBORDER;
-  auto* b = new ButtonWidget(this, font, xpos, ypos,
-      buttonWidth, buttonHeight, "Close", GuiObject::kCloseCmd);
-  wid.push_back(b);
-  addCancelWidget(b);
+  myWhatsNewButton->setPos(_w - HBORDER - bwidth,
+                           ypos - (buttonHeight - fontHeight) / 2);
+  myWhatsNewButton->setWidth(bwidth);
 
-  xpos = HBORDER;  ypos = _th + VBORDER + (buttonHeight - fontHeight) / 2;
-  const int bwidth = font.getStringWidth("What's New" + ELLIPSIS) + fontWidth * 2.5;
-
-  myTitle = new StaticTextWidget(this, font, xpos + bwidth, ypos,
-                                 _w - (xpos + bwidth) * 2,
-                                 fontHeight, "", TextAlign::Center);
-  myTitle->setTextColor(kTextColorEm);
-
-  myWhatsNewButton =
-    new ButtonWidget(this, font, _w - HBORDER - bwidth,
-                     ypos - (buttonHeight - fontHeight) / 2,
-                     bwidth, buttonHeight, "What's New" + ELLIPSIS, kWhatsNew);
-  wid.push_back(myWhatsNewButton);
-
-  xpos = HBORDER * 2;  ypos += lineHeight + VGAP * 2;
-  for(int i = 0; i < myLinesPerPage; i++)
+  // Description lines
+  ypos += lineHeight + VGAP * 2;
+  for(auto* s: myDesc)
   {
-    auto* s = new StaticTextWidget(this, font, xpos, ypos, _w - xpos * 2,
-                                   fontHeight, "", TextAlign::Left, kNone);
-    s->setID(i);
-    myDesc.push_back(s);
-    myDescStr.emplace_back("");
+    s->setPos(HBORDER * 2, ypos);
+    s->setWidth(_w - HBORDER * 4);
     ypos += fontHeight;
   }
-
-  addToFocusList(wid);
-
-  setHelpURL("https://stella-emu.github.io/index.html");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

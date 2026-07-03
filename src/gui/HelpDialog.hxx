@@ -36,6 +36,7 @@ class HelpDialog : public Dialog
     void loadConfig() override { displayInfo(); }
 
   protected:
+    void layout() override;
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 
   private:
@@ -47,6 +48,7 @@ class HelpDialog : public Dialog
     ButtonWidget* myNextButton{nullptr};
     ButtonWidget* myPrevButton{nullptr};
     ButtonWidget* myUpdateButton{nullptr};
+    ButtonWidget* myCloseButton{nullptr};
 
     StaticTextWidget* myTitle;
     std::array<StaticTextWidget*, LINES_PER_PAGE> myKey{nullptr};

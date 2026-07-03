@@ -29,6 +29,53 @@ HelpDialog::HelpDialog(OSystem& osystem, DialogContainer& parent,
                        const GUI::Font& font)
   : Dialog(osystem, parent, font, "Help")
 {
+  const int fontHeight   = Dialog::fontHeight(),
+            buttonHeight = Dialog::buttonHeight(),
+            buttonWidth  = Dialog::buttonWidth(" << "),
+            closeButtonWidth = Dialog::buttonWidth("Close");
+  WidgetArray wid;
+
+  // Previous, Next, Update and Close buttons
+  myPrevButton =
+    new ButtonWidget(this, font, 0, 0, buttonWidth, buttonHeight,
+                     "<<", GuiObject::kPrevCmd);
+  myPrevButton->clearFlags(Widget::FLAG_ENABLED);
+  wid.push_back(myPrevButton);
+
+  myNextButton =
+    new ButtonWidget(this, font, 0, 0, buttonWidth, buttonHeight,
+                     ">>", GuiObject::kNextCmd);
+  wid.push_back(myNextButton);
+
+  const int updButtonWidth = Dialog::buttonWidth("Check for Update" + ELLIPSIS);
+  myUpdateButton =
+    new ButtonWidget(this, font, 0, 0, updButtonWidth, buttonHeight,
+                     "Check for Update" + ELLIPSIS, kUpdateCmd);
+  myUpdateButton->setEnabled(true);
+  wid.push_back(myUpdateButton);
+
+  myCloseButton = new ButtonWidget(this, font, 0, 0, closeButtonWidth,
+                             buttonHeight, "Close", GuiObject::kCloseCmd);
+  wid.push_back(myCloseButton);
+  addCancelWidget(myCloseButton);
+
+  myTitle = new StaticTextWidget(this, font, 0, 0, 1, fontHeight,
+                                 "", TextAlign::Center);
+  myTitle->setTextColor(kTextColorEm);
+
+  for(uInt32 i = 0; i < LINES_PER_PAGE; ++i)
+  {
+    myKey[i] = new StaticTextWidget(this, font, 0, 0, 1, fontHeight);
+    myDesc[i] = new StaticTextWidget(this, font, 0, 0, 1, fontHeight);
+    myDesc[i]->setID(i);
+  }
+
+  addToFocusList(wid);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void HelpDialog::layout()
+{
   const int lineHeight   = Dialog::lineHeight(),
             fontHeight   = Dialog::fontHeight(),
             fontWidth    = Dialog::fontWidth(),
@@ -38,61 +85,35 @@ HelpDialog::HelpDialog(OSystem& osystem, DialogContainer& parent,
             VBORDER      = Dialog::vBorder(),
             HBORDER      = Dialog::hBorder(),
             VGAP         = Dialog::vGap();
-  WidgetArray wid;
 
-  // Set real dimensions
   _w = 46 * fontWidth + HBORDER * 2;
   _h = _th + 11 * lineHeight + VGAP * 3 + buttonHeight + VBORDER * 2;
 
-  // Add Previous, Next and Close buttons
+  // Previous / Next / Update (left) and Close (right) along the bottom
   int xpos = HBORDER, ypos = _h - buttonHeight - VBORDER;
-  myPrevButton =
-    new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight,
-                     "<<", GuiObject::kPrevCmd);
-  myPrevButton->clearFlags(Widget::FLAG_ENABLED);
-  wid.push_back(myPrevButton);
-
+  myPrevButton->setPos(xpos, ypos);
   xpos += buttonWidth + fontWidth;
-  myNextButton =
-    new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight,
-                     ">>", GuiObject::kNextCmd);
-  wid.push_back(myNextButton);
-
+  myNextButton->setPos(xpos, ypos);
   xpos += buttonWidth + fontWidth;
+  myUpdateButton->setPos(xpos, ypos);
+  myCloseButton->setPos(_w - closeButtonWidth - HBORDER, ypos);
 
-  const int updButtonWidth = Dialog::buttonWidth("Check for Update" + ELLIPSIS);
-  myUpdateButton =
-    new ButtonWidget(this, font, xpos, ypos, updButtonWidth, buttonHeight,
-                     "Check for Update" + ELLIPSIS, kUpdateCmd);
-  myUpdateButton->setEnabled(true);
-  wid.push_back(myUpdateButton);
-
-  xpos = _w - closeButtonWidth - HBORDER;
-  auto* b = new ButtonWidget(this, font, xpos, ypos, closeButtonWidth,
-                             buttonHeight, "Close", GuiObject::kCloseCmd);
-  wid.push_back(b);
-  addCancelWidget(b);
-
+  // Centered title
   xpos = HBORDER; ypos = VBORDER + _th;
-  myTitle = new StaticTextWidget(this, font, xpos, ypos, _w - HBORDER * 2, fontHeight,
-                                 "", TextAlign::Center);
-  myTitle->setTextColor(kTextColorEm);
+  myTitle->setPos(xpos, ypos);
+  myTitle->setWidth(_w - HBORDER * 2);
 
+  // Key / description columns, one row per binding
   const int lwidth = 15 * fontWidth;
   ypos += lineHeight + VGAP * 2;
   for(uInt32 i = 0; i < LINES_PER_PAGE; ++i)
   {
-    myKey[i] =
-      new StaticTextWidget(this, font, xpos, ypos, lwidth,
-                           fontHeight);
-    myDesc[i] =
-      new StaticTextWidget(this, font, xpos+lwidth, ypos, _w - xpos - lwidth - HBORDER,
-                           fontHeight);
-    myDesc[i]->setID(i);
+    myKey[i]->setPos(xpos, ypos);
+    myKey[i]->setWidth(lwidth);
+    myDesc[i]->setPos(xpos + lwidth, ypos);
+    myDesc[i]->setWidth(_w - xpos - lwidth - HBORDER);
     ypos += fontHeight;
   }
-
-  addToFocusList(wid);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
