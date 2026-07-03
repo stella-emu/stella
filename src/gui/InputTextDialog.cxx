@@ -25,6 +25,7 @@
 #include "FBSurface.hxx"
 #include "Font.hxx"
 #include "Widget.hxx"
+#include "Layout.hxx"
 #include "InputTextDialog.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -61,55 +62,24 @@ InputTextDialog::InputTextDialog(OSystem& osystem, DialogContainer& parent,
 void InputTextDialog::initialize(const GUI::Font& lfont, const GUI::Font& nfont,
                                  const StringList& labels, int widthChars)
 {
-  const int lineHeight   = Dialog::lineHeight(),
-            fontHeight   = Dialog::fontHeight(),
-            fontWidth    = Dialog::fontWidth(),
-            buttonHeight = Dialog::buttonHeight(),
-            VBORDER      = Dialog::vBorder(),
-            HBORDER      = Dialog::hBorder(),
-            VGAP         = Dialog::vGap();
-  uInt32 xpos = 0, lwidth = 0;
+  const int lineHeight = Dialog::lineHeight(),
+            fontHeight = Dialog::fontHeight();
   WidgetArray wid;
 
-  // Calculate real dimensions
-  _w = HBORDER * 2 + fontWidth * widthChars;
-  _h = buttonHeight + lineHeight + VGAP
-    + static_cast<int>(labels.size()) * (lineHeight + VGAP)
-    + _th + VBORDER * 2;
+  myWidthChars = widthChars;
+  myMaxLen.resize(labels.size(), 0);
 
-  // Determine longest label
-  size_t maxIdx = 0;
-  for(size_t i = 0; i < labels.size(); ++i)
-  {
-    if(labels[i].length() > lwidth)
-    {
-      lwidth = static_cast<int>(labels[i].length());
-      maxIdx = i;
-    }
-  }
-  if(!labels.empty())
-    lwidth = lfont.getStringWidth(labels[maxIdx]);
-
-  // Create editboxes for all labels
-  int ypos = VBORDER + _th;
+  // Create a label + editbox for each entry; layout() assigns all geometry
   for(const auto& label: labels)
   {
-    xpos = HBORDER;
-    auto* s = new StaticTextWidget(this, lfont, xpos, ypos + 2,
-                                   lwidth, fontHeight, label);
-    myLabel.push_back(s);
+    myLabel.push_back(new StaticTextWidget(this, lfont, 0, 0, 1, fontHeight, label));
 
-    xpos += lwidth + fontWidth;
-    auto* w = new EditTextWidget(this, nfont, xpos, ypos,
-                                 _w - xpos - HBORDER, lineHeight);
+    auto* w = new EditTextWidget(this, nfont, 0, 0, 1, lineHeight);
     wid.push_back(w);
-
     myInput.push_back(w);
-    ypos += lineHeight + VGAP;
   }
 
-  xpos = HBORDER; ypos += VGAP;
-  myMessage = new StaticTextWidget(this, lfont, xpos, ypos, _w - 2 * xpos, fontHeight);
+  myMessage = new StaticTextWidget(this, lfont, 0, 0, 1, fontHeight);
   myMessage->setTextColor(kTextColorEm);
 
   addToFocusList(wid);
@@ -118,6 +88,46 @@ void InputTextDialog::initialize(const GUI::Font& lfont, const GUI::Font& nfont,
   wid.clear();
   addOKCancelBGroup(wid, lfont);
   addBGroupToFocusList(wid);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void InputTextDialog::layout()
+{
+  const int lineHeight   = Dialog::lineHeight(),
+            fontWidth    = Dialog::fontWidth(),
+            buttonHeight = Dialog::buttonHeight(),
+            VBORDER      = Dialog::vBorder(),
+            HBORDER      = Dialog::hBorder(),
+            VGAP         = Dialog::vGap();
+  const int numRows = static_cast<int>(myInput.size());
+
+  _w = HBORDER * 2 + fontWidth * myWidthChars;
+  _h = buttonHeight + lineHeight + VGAP + numRows * (lineHeight + VGAP)
+       + _th + VBORDER * 2;
+
+  // The longest label defines the shared label column width
+  int lwidth = 0;
+  for(auto* l: myLabel)
+    lwidth = std::max(lwidth, _font.getStringWidth(l->getLabel()));
+
+  const int editX = HBORDER + lwidth + fontWidth;
+  int ypos = VBORDER + _th;
+  for(int i = 0; i < numRows; ++i)
+  {
+    myLabel[i]->setPos(HBORDER, ypos + 2);
+    myLabel[i]->setWidth(lwidth);
+    myInput[i]->setPos(editX, ypos);
+    myInput[i]->setWidth(myMaxLen[i] > 0 ? (myMaxLen[i] + 1) * fontWidth
+                                         : _w - editX - HBORDER);
+    ypos += lineHeight + VGAP;
+  }
+
+  ypos += VGAP;
+  myMessage->setPos(HBORDER, ypos);
+  myMessage->setWidth(_w - 2 * HBORDER);
+
+  // Standard OK/Cancel button group along the bottom edge
+  layoutButtonGroup();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -193,8 +203,14 @@ void InputTextDialog::setTextFilter(const EditableWidget::TextFilter& f, int idx
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void InputTextDialog::setMaxLen(int len, int idx)
 {
-  myInput[idx]->setMaxLen(len);
-  myInput[idx]->setWidth((len + 1) * Dialog::fontWidth());
+  if(static_cast<uInt32>(idx) < myInput.size())
+  {
+    // Remember the limit so layout() keeps this input at its fixed width
+    // instead of stretching it to fill the row
+    myMaxLen[idx] = len;
+    myInput[idx]->setMaxLen(len);
+    myInput[idx]->setWidth((len + 1) * Dialog::fontWidth());
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

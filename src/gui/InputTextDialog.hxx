@@ -65,12 +65,18 @@ class InputTextDialog : public Dialog, public CommandSender
   protected:
     void initialize(const GUI::Font& lfont, const GUI::Font& nfont,
                     const StringList& labels, int widthChars = 39);
+    void layout() override;
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 
   private:
     vector<StaticTextWidget*> myLabel;
     vector<EditTextWidget*> myInput;
     StaticTextWidget* myMessage{nullptr};
+
+    // Dialog width (in characters) and per-input character limit (0 = fill),
+    // both needed by layout() to reflow from the current font
+    int myWidthChars{39};
+    IntArray myMaxLen;
 
     bool myEnableCenter{true};
     bool myErrorFlag{false};
