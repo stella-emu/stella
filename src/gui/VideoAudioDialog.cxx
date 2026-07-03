@@ -38,18 +38,7 @@
 #include "TVMode.hxx"
 #include "TVSignal.hxx"
 #include "Television.hxx"
-
 #include "VideoAudioDialog.hxx"
-
-#define CREATE_CUSTOM_SLIDERS(obj, desc, cmd)                            \
-  myTV ## obj =                                                          \
-    new SliderWidget(myTab, _font, xpos, ypos-1, swidth, lineHeight,     \
-                     desc, lwidth, cmd, fontWidth*4, "%");               \
-  myTV ## obj->setMinValue(0); myTV ## obj->setMaxValue(100);            \
-  myTV ## obj->setStepValue(1);                                          \
-  myTV ## obj->setTickmarkIntervals(2);                                  \
-  wid.push_back(myTV ## obj);                                            \
-  ypos += lineHeight + VGAP;
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 VideoAudioDialog::VideoAudioDialog(OSystem& osystem, DialogContainer& parent,
@@ -308,11 +297,16 @@ void VideoAudioDialog::addPaletteTab()
   ypos += lineHeight + VGAP * 2;
   xpos -= INDENT;
 
-  CREATE_CUSTOM_SLIDERS(Hue, "Hue ", kPaletteUpdated)
-  CREATE_CUSTOM_SLIDERS(Satur, "Saturation ", kPaletteUpdated)
-  CREATE_CUSTOM_SLIDERS(Contrast, "Contrast ", kPaletteUpdated)
-  CREATE_CUSTOM_SLIDERS(Bright, "Brightness ", kPaletteUpdated)
-  CREATE_CUSTOM_SLIDERS(Gamma, "Gamma ", kPaletteUpdated)
+  myTVHue      = createCustomSlider(wid, xpos, ypos, swidth, lwidth, "Hue ",
+                                    kPaletteUpdated);
+  myTVSatur    = createCustomSlider(wid, xpos, ypos, swidth, lwidth, "Saturation ",
+                                    kPaletteUpdated);
+  myTVContrast = createCustomSlider(wid, xpos, ypos, swidth, lwidth, "Contrast ",
+                                    kPaletteUpdated);
+  myTVBright   = createCustomSlider(wid, xpos, ypos, swidth, lwidth, "Brightness ",
+                                    kPaletteUpdated);
+  myTVGamma    = createCustomSlider(wid, xpos, ypos, swidth, lwidth, "Gamma ",
+                                    kPaletteUpdated);
 
   ypos += VGAP;
   const auto* s = new StaticTextWidget(myTab, _font, xpos, ypos + 1, "Autodetection");
@@ -365,36 +359,51 @@ void VideoAudioDialog::addTVEffectsTab()
                              items, "TV mode ", 0, kTVModeChanged);
   myTVMode->setToolTip(Event::PreviousVideoMode, Event::NextVideoMode);
   wid.push_back(myTVMode);
+
   ypos += lineHeight + VGAP;
 
-  // Custom adjustables (using macro voodoo)
+  // Custom adjustables (using macro voodoo).  NTSC (5 adjustables) and PAL
+  // (2 adjustables + colour loss) each get their own widget set, both
+  // starting at the same row, so that whichever one is shown (see
+  // handleTVModeChange) stacks top to bottom with no gaps.  SECAM has no
+  // adjustables at all.  The taller NTSC set reserves the space that the
+  // Phosphor/Scanlines sections below are anchored to, so switching
+  // standards never shifts the rest of the tab.
   const int swidth = myTVMode->getWidth() - INDENT - lwidth;
   xpos += INDENT;
+  const int adjTop = ypos;
 
-  CREATE_CUSTOM_SLIDERS(Sharp, "Sharpness ", 0)
-  CREATE_CUSTOM_SLIDERS(Res, "Resolution ", 0)
-  CREATE_CUSTOM_SLIDERS(Artifacts, "Artifacts ", 0)
-  CREATE_CUSTOM_SLIDERS(Fringe, "Fringing ", 0)
-  CREATE_CUSTOM_SLIDERS(Bleed, "Bleeding ", 0)
+  myNTSCSharp     = createCustomSlider(wid, xpos, ypos, swidth, lwidth,
+                                       "Sharpness ", 0);
+  myNTSCRes       = createCustomSlider(wid, xpos, ypos, swidth, lwidth,
+                                       "Resolution ", 0);
+  myNTSCArtifacts = createCustomSlider(wid, xpos, ypos, swidth, lwidth,
+                                       "Artifacts ", 0);
+  myNTSCFringe    = createCustomSlider(wid, xpos, ypos, swidth, lwidth,
+                                       "Fringing ", 0);
+  myNTSCBleed     = createCustomSlider(wid, xpos, ypos, swidth, lwidth,
+                                       "Bleeding ", 0);
+  const int adjBottom = ypos;
 
-  // PAL colour-loss model (composite modes only).  Grouped with the signal
-  // controls above, before the display controls (phosphor/scanlines) below.
-  xpos = HBORDER;
+  ypos = adjTop;
+  myPALSharp = createCustomSlider(wid, xpos, ypos, swidth, lwidth,
+                                  "Sharpness ", 0);
+  myPALBlend = createCustomSlider(wid, xpos, ypos, swidth, lwidth,
+                                  "Blend ", 0);
+
   items.clear();
-  VarList::push_back(items, "Saturation loss", 0);
+  VarList::push_back(items, "Desaturation", 0);
   VarList::push_back(items, "PAL switch", 1);
   myPALColorLoss = new PopUpWidget(myTab, _font, xpos, ypos,
-      _font.getStringWidth("Saturation loss"), lineHeight, items,
-      "PAL color loss ");
-  myPALColorLoss->setToolTip("How PAL colour loss (odd-line fields) appears:\n"
-      "Saturation loss = whole frame greyscale;\n"
-      "PAL switch = wrong-hue band + flicker, settling down.\n"
-      "Composite PAL modes only.");
+      _font.getStringWidth("Desaturation"), lineHeight, items,
+      "Color loss ");
+  myPALColorLoss->setToolTip("How PAL color loss (odd-line fields) appears:\n"
+      "Desaturation = whole frame greyscale;\n"
+      "PAL switch = wrong-hue band + flicker, settling down.");
   wid.push_back(myPALColorLoss);
-  ypos += lineHeight + VGAP;
 
-  ypos += VGAP * 3;
   xpos = HBORDER;
+  ypos = adjBottom + VGAP * 3;
 
   // TV Phosphor effect
   items.clear();
@@ -411,7 +420,7 @@ void VideoAudioDialog::addTVEffectsTab()
 
   // TV Phosphor blend level
   xpos += INDENT;
-  CREATE_CUSTOM_SLIDERS(PhosLevel, "Blend", kPhosBlendChanged)
+  myTVPhosLevel = createCustomSlider(wid, xpos, ypos, swidth, lwidth, "Blend", kPhosBlendChanged);
   ypos += VGAP;
 
   // Scanline intensity and interpolation
@@ -420,7 +429,8 @@ void VideoAudioDialog::addTVEffectsTab()
   ypos += lineHeight + VGAP / 2;
 
   xpos += INDENT;
-  CREATE_CUSTOM_SLIDERS(ScanIntense, "Intensity", kScanlinesChanged)
+  myTVScanIntense = createCustomSlider(wid, xpos, ypos, swidth, lwidth,
+                                       "Intensity", kScanlinesChanged);
   myTVScanIntense->setToolTip(Event::ScanlinesDecrease, Event::ScanlinesIncrease);
 
   items.clear();
@@ -431,7 +441,8 @@ void VideoAudioDialog::addTVEffectsTab()
   VarList::push_back(items, "MAME", Television::SETTING_MAME);
 
   xpos = myTVScanIntense->getRight() + fontWidth * 2;
-  pwidth = _w - HBORDER - xpos - fontWidth * 5 - PopUpWidget::dropDownWidth(_font) - 2 * 2;
+  pwidth = _w - HBORDER - xpos - fontWidth * 5 -
+      PopUpWidget::dropDownWidth(_font) - 2 * 2;
   myTVScanMask = new PopUpWidget(myTab, _font, xpos,
     myTVScanIntense->getTop() + 1, pwidth, lineHeight, items, "Mask ");
   myTVScanMask->setToolTip(Event::PreviousScanlineMask, Event::NextScanlineMask);
@@ -442,18 +453,19 @@ void VideoAudioDialog::addTVEffectsTab()
   ypos = VBORDER - VGAP / 2;
 
   // Adjustable presets
-#define CREATE_CLONE_BUTTON(obj, desc)                                 \
-  myClone ## obj =                                                     \
-    new ButtonWidget(myTab, _font, xpos, ypos, buttonWidth, buttonHeight,\
-                     desc, kClone ## obj ##Cmd);                       \
-  wid.push_back(myClone ## obj);                                       \
-  ypos += buttonHeight + VGAP;
+  auto CREATE_CLONE_BUTTON = [&](string_view desc, int cmd) {
+    auto* button = new ButtonWidget(myTab, _font, xpos, ypos, buttonWidth,
+                                    buttonHeight, desc, cmd);
+    wid.push_back(button);
+    ypos += buttonHeight + VGAP;
+    return button;
+  };
 
   ypos += VGAP;
-  CREATE_CLONE_BUTTON(RGB, "Clone RGB")
-  CREATE_CLONE_BUTTON(Svideo, "Clone S-Video")
-  CREATE_CLONE_BUTTON(Composite, "Clone Composite")
-  CREATE_CLONE_BUTTON(Custom, "Revert")
+  myCloneRGB       = CREATE_CLONE_BUTTON("Clone RGB", kCloneRGBCmd);
+  myCloneSvideo    = CREATE_CLONE_BUTTON("Clone S-Video", kCloneSvideoCmd);
+  myCloneComposite = CREATE_CLONE_BUTTON("Clone Composite", kCloneCompositeCmd);
+  myCloneCustom    = CREATE_CLONE_BUTTON("Revert", kCloneCustomCmd);
 
   // Add items for tab 2
   addToFocusList(wid, myTab, tabID);
@@ -493,7 +505,8 @@ void VideoAudioDialog::addBezelTab()
 
   myBezelPath = new EditTextWidget(myTab, _font, xpos + bwidth + fontWidth,
                                    ypos + (buttonHeight - lineHeight) / 2 - 1,
-                                   _w - xpos - bwidth - fontWidth - HBORDER - 2, lineHeight, "");
+                                   _w - xpos - bwidth - fontWidth - HBORDER - 2,
+                                   lineHeight, "");
   wid.push_back(myBezelPath);
 
   ypos += lineHeight + VGAP * 3;
@@ -511,7 +524,7 @@ void VideoAudioDialog::addBezelTab()
   xpos += INDENT;
 
   const int lWidth = _font.getStringWidth("Bottom ");
-  const int sWidth = myBezelPath->getRight() - xpos - lWidth - 4.5 * fontWidth; // _w - HBORDER - xpos - lwidth;
+  const int sWidth = myBezelPath->getRight() - xpos - lWidth - 4.5 * fontWidth;
   ypos += lineHeight + VGAP * 1;
   myWinLeftSlider = new SliderWidget(myTab, _font, xpos, ypos, sWidth, lineHeight,
                                      "Left   ", 0, 0, 4 * fontWidth, "%");
@@ -581,14 +594,19 @@ void VideoAudioDialog::addAudioTab()
 
   // Mode
   items.clear();
-  VarList::push_back(items, "Low quality, medium lag", static_cast<int>(AudioSettings::Preset::lowQualityMediumLag));
-  VarList::push_back(items, "High quality, medium lag", static_cast<int>(AudioSettings::Preset::highQualityMediumLag));
-  VarList::push_back(items, "High quality, low lag", static_cast<int>(AudioSettings::Preset::highQualityLowLag));
-  VarList::push_back(items, "Ultra quality, minimal lag", static_cast<int>(AudioSettings::Preset::ultraQualityMinimalLag));
-  VarList::push_back(items, "Custom", static_cast<int>(AudioSettings::Preset::custom));
+  VarList::push_back(items, "Low quality, medium lag",
+      static_cast<int>(AudioSettings::Preset::lowQualityMediumLag));
+  VarList::push_back(items, "High quality, medium lag",
+      static_cast<int>(AudioSettings::Preset::highQualityMediumLag));
+  VarList::push_back(items, "High quality, low lag",
+      static_cast<int>(AudioSettings::Preset::highQualityLowLag));
+  VarList::push_back(items, "Ultra quality, minimal lag",
+      static_cast<int>(AudioSettings::Preset::ultraQualityMinimalLag));
+  VarList::push_back(items, "Custom",
+      static_cast<int>(AudioSettings::Preset::custom));
   myModePopup = new PopUpWidget(myTab, _font, xpos, ypos,
-                                _font.getStringWidth("Ultra quality, minimal lag"), lineHeight,
-                                items, "Mode", lwidth, kModeChanged);
+                                _font.getStringWidth("Ultra quality, minimal lag"),
+                                lineHeight, items, "Mode", lwidth, kModeChanged);
   wid.push_back(myModePopup);
   ypos += lineHeight + VGAP;
   xpos += INDENT;
@@ -608,9 +626,12 @@ void VideoAudioDialog::addAudioTab()
 
   // Resampling quality
   items.clear();
-  VarList::push_back(items, "Low", static_cast<int>(AudioSettings::ResamplingQuality::nearestNeighbour));
-  VarList::push_back(items, "High", static_cast<int>(AudioSettings::ResamplingQuality::lanczos_2));
-  VarList::push_back(items, "Ultra", static_cast<int>(AudioSettings::ResamplingQuality::lanczos_3));
+  VarList::push_back(items, "Low",
+      static_cast<int>(AudioSettings::ResamplingQuality::nearestNeighbour));
+  VarList::push_back(items, "High",
+      static_cast<int>(AudioSettings::ResamplingQuality::lanczos_2));
+  VarList::push_back(items, "Ultra",
+      static_cast<int>(AudioSettings::ResamplingQuality::lanczos_3));
   myResamplingPopup = new PopUpWidget(myTab, _font, xpos, ypos,
                                       pwidth, lineHeight,
                                       items, "Resampling quality ", lwidth);
@@ -620,15 +641,18 @@ void VideoAudioDialog::addAudioTab()
   // Param 1
   int swidth = pwidth + PopUpWidget::dropDownWidth(_font);
   myHeadroomSlider = new SliderWidget(myTab, _font, xpos, ypos, swidth, lineHeight,
-                                      "Headroom           ", 0, kHeadroomChanged, 10 * fontWidth);
-  myHeadroomSlider->setMinValue(0); myHeadroomSlider->setMaxValue(AudioSettings::MAX_HEADROOM);
+                                      "Headroom           ", 0, kHeadroomChanged,
+                                      10 * fontWidth);
+  myHeadroomSlider->setMinValue(0);
+  myHeadroomSlider->setMaxValue(AudioSettings::MAX_HEADROOM);
   myHeadroomSlider->setTickmarkIntervals(5);
   wid.push_back(myHeadroomSlider);
   ypos += lineHeight + VGAP;
 
   // Param 2
   myBufferSizeSlider = new SliderWidget(myTab, _font, xpos, ypos, swidth, lineHeight,
-                                        "Buffer size        ", 0, kBufferSizeChanged, 10 * fontWidth);
+                                        "Buffer size        ", 0, kBufferSizeChanged,
+                                        10 * fontWidth);
   myBufferSizeSlider->setMinValue(0); myBufferSizeSlider->setMaxValue(AudioSettings::MAX_BUFFER_SIZE);
   myBufferSizeSlider->setTickmarkIntervals(5);
   wid.push_back(myBufferSizeSlider);
@@ -671,7 +695,7 @@ void VideoAudioDialog::loadConfig()
   // TIA zoom levels
   // These are dynamically loaded, since they depend on the size of
   // the desktop and which renderer we're using
-  const double minZoom = instance().frameBuffer().supportedTIAMinZoom(); // or 2 if we allow lower values
+  const double minZoom = instance().frameBuffer().supportedTIAMinZoom();
   const double maxZoom = instance().frameBuffer().supportedTIAMaxZoom();
 
   myTIAZoom->setMinValue(minZoom * 100);
@@ -882,18 +906,18 @@ void VideoAudioDialog::saveConfig()
   if(timing == ConsoleTiming::ntsc)
   {
     NTSCSignal::Adjustable ntscAdj;
-    ntscAdj.sharpness  = myTVSharp->getValue();
-    ntscAdj.resolution = myTVRes->getValue();
-    ntscAdj.artifacts  = myTVArtifacts->getValue();
-    ntscAdj.fringing   = myTVFringe->getValue();
-    ntscAdj.bleed      = myTVBleed->getValue();
+    ntscAdj.sharpness  = myNTSCSharp->getValue();
+    ntscAdj.resolution = myNTSCRes->getValue();
+    ntscAdj.artifacts  = myNTSCArtifacts->getValue();
+    ntscAdj.fringing   = myNTSCFringe->getValue();
+    ntscAdj.bleed      = myNTSCBleed->getValue();
     NTSCSignal::setCustomAdjustables(ntscAdj);
   }
   else if(timing == ConsoleTiming::pal)
   {
     PALSignal::Adjustable palAdj;
-    palAdj.sharpness = myTVSharp->getValue();
-    palAdj.blend     = myTVBleed->getValue();
+    palAdj.sharpness = myPALSharp->getValue();
+    palAdj.blend     = myPALBlend->getValue();
     PALSignal::setCustomAdjustables(palAdj);
   }
 
@@ -905,9 +929,12 @@ void VideoAudioDialog::saveConfig()
   PALSignal::saveConfig(settings);
 
   // TV phosphor mode & blend
-  settings.setValue(PhosphorHandler::SETTING_MODE, myTVPhosphor->getSelectedTag());
-  settings.setValue(PhosphorHandler::SETTING_BLEND, myTVPhosLevel->getValueLabel() == "Off"
-                    ? "0" : myTVPhosLevel->getValueLabel());
+  settings.setValue(PhosphorHandler::SETTING_MODE,
+                    myTVPhosphor->getSelectedTag());
+  settings.setValue(PhosphorHandler::SETTING_BLEND,
+                    myTVPhosLevel->getValueLabel() == "Off"
+                      ? "0"
+                      : myTVPhosLevel->getValueLabel());
 
   // TV scanline intensity & mask
   settings.setValue("tv.scanlines", myTVScanIntense->getValueLabel());
@@ -973,12 +1000,14 @@ void VideoAudioDialog::saveConfig()
       (myModePopup->getSelectedTag().toInt());
   audioSettings.setPreset(preset);
 
-  if(preset == AudioSettings::Preset::custom) {
+  if(preset == AudioSettings::Preset::custom)
+  {
     // Fragsize
     audioSettings.setSampleRate(myFreqPopup->getSelectedTag().toInt());
     audioSettings.setHeadroom(myHeadroomSlider->getValue());
     audioSettings.setBufferSize(myBufferSizeSlider->getValue());
-    audioSettings.setResamplingQuality(static_cast<AudioSettings::ResamplingQuality>(myResamplingPopup->getSelectedTag().toInt()));
+    audioSettings.setResamplingQuality(static_cast<AudioSettings::ResamplingQuality>
+        (myResamplingPopup->getSelectedTag().toInt()));
   }
 
   // Only force a re-initialization when necessary, since it can
@@ -1056,7 +1085,8 @@ void VideoAudioDialog::setDefaults()
       loadTVAdjustables(TVMode::Custom);
       break;
     }
-    case 3: // Bezels
+
+    case 3:  // Bezels
 #ifdef IMAGE_SUPPORT
       myBezelEnableCheckbox->setState(true);
       myBezelPath->setText(instance().userDir().getShortPath());
@@ -1073,8 +1103,10 @@ void VideoAudioDialog::setDefaults()
       myDpcPitch->setValue(AudioSettings::DEFAULT_DPC_PITCH);
       myModePopup->setSelected(static_cast<int>(AudioSettings::DEFAULT_PRESET));
 
-      if constexpr(AudioSettings::DEFAULT_PRESET == AudioSettings::Preset::custom) {
-        myResamplingPopup->setSelected(static_cast<int>(AudioSettings::DEFAULT_RESAMPLING_QUALITY));
+      if constexpr(AudioSettings::DEFAULT_PRESET == AudioSettings::Preset::custom)
+      {
+        myResamplingPopup->setSelected(static_cast<int>
+            (AudioSettings::DEFAULT_RESAMPLING_QUALITY));
         myFreqPopup->setSelected(AudioSettings::DEFAULT_SAMPLE_RATE);
         myHeadroomSlider->setValue(AudioSettings::DEFAULT_HEADROOM);
         myBufferSizeSlider->setValue(AudioSettings::DEFAULT_BUFFER_SIZE);
@@ -1096,19 +1128,44 @@ void VideoAudioDialog::handleTVModeChange(TVMode preset)
     ? instance().console().timing() : ConsoleTiming::ntsc;
   const bool isSECAM = timing == ConsoleTiming::secam;
   const bool isPAL   = timing == ConsoleTiming::pal;
+  const bool isNTSC  = !isPAL && !isSECAM;
   const bool enable  = preset == TVMode::Custom;
 
   myTVMode->setEnabled(!isSECAM);
-  // PAL exposes only sharpness and blend; the NTSC-specific middle three are N/A
-  myTVSharp->setEnabled(enable && !isSECAM);
-  myTVRes->setEnabled(enable && !isPAL && !isSECAM);
-  myTVArtifacts->setEnabled(enable && !isPAL && !isSECAM);
-  myTVFringe->setEnabled(enable && !isPAL && !isSECAM);
-  myTVBleed->setEnabled(enable && !isSECAM);
-  myCloneComposite->setEnabled(enable && !isSECAM);
-  myCloneSvideo->setEnabled(enable && !isSECAM);
-  myCloneRGB->setEnabled(enable && !isSECAM);
-  myCloneCustom->setEnabled(enable && !isSECAM);
+
+  // Each standard's widget set is hidden outright (not merely disabled)
+  // when inapplicable, keeping the tab clean; both sets start at the same
+  // row, so whichever one is shown stacks with no gaps.  SECAM has no
+  // adjustables at all.
+  const auto showSlider = [](SliderWidget* w, bool visible, bool editable)
+  {
+    if(visible) w->clearFlags(Widget::FLAG_INVISIBLE);
+    else        w->setFlags(Widget::FLAG_INVISIBLE);
+    w->setEnabled(editable);
+  };
+
+  for(auto* w: {myNTSCSharp, myNTSCRes, myNTSCArtifacts, myNTSCFringe, myNTSCBleed})
+    showSlider(w, isNTSC, enable && isNTSC);
+
+  for(auto* w: {myPALSharp, myPALBlend})
+    showSlider(w, isPAL, enable && isPAL);
+
+  // PAL colour loss sits directly under the PAL adjustables and is
+  // meaningless outside PAL.  It only affects the picture on the composite
+  // decode path (TVMode::Composite and Custom both use it; see myPath in
+  // PALSignal.cxx), so it's disabled for RGB/S-Video/Disabled.
+  if(isPAL) myPALColorLoss->clearFlags(Widget::FLAG_INVISIBLE);
+  else      myPALColorLoss->setFlags(Widget::FLAG_INVISIBLE);
+  myPALColorLoss->setEnabled(isPAL &&
+    (preset == TVMode::Composite || preset == TVMode::Custom));
+
+  const bool showClones = !isSECAM;
+  for(auto* b: {myCloneComposite, myCloneSvideo, myCloneRGB, myCloneCustom})
+  {
+    if(showClones) b->clearFlags(Widget::FLAG_INVISIBLE);
+    else           b->setFlags(Widget::FLAG_INVISIBLE);
+    b->setEnabled(enable && showClones);
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1121,33 +1178,20 @@ void VideoAudioDialog::loadTVAdjustables(TVMode preset)
   {
     NTSCSignal::Adjustable adj;
     NTSCSignal::getAdjustables(adj, preset);
-    myTVSharp->setLabel("Sharpness ");
-    myTVRes->setLabel("Resolution ");
-    myTVArtifacts->setLabel("Artifacts ");
-    myTVFringe->setLabel("Fringing ");
-    myTVBleed->setLabel("Bleeding ");
-    myTVSharp->setValue(adj.sharpness);
-    myTVRes->setValue(adj.resolution);
-    myTVArtifacts->setValue(adj.artifacts);
-    myTVFringe->setValue(adj.fringing);
-    myTVBleed->setValue(adj.bleed);
+    myNTSCSharp->setValue(adj.sharpness);
+    myNTSCRes->setValue(adj.resolution);
+    myNTSCArtifacts->setValue(adj.artifacts);
+    myNTSCFringe->setValue(adj.fringing);
+    myNTSCBleed->setValue(adj.bleed);
   }
   else if(timing == ConsoleTiming::pal)
   {
     PALSignal::Adjustable adj;
     PALSignal::getAdjustables(adj, preset);
-    myTVSharp->setLabel("Sharpness ");
-    myTVRes->setLabel("n/a ");
-    myTVArtifacts->setLabel("n/a ");
-    myTVFringe->setLabel("n/a ");
-    myTVBleed->setLabel("Blend ");
-    myTVSharp->setValue(adj.sharpness);
-    myTVRes->setValue(0);
-    myTVArtifacts->setValue(0);
-    myTVFringe->setValue(0);
-    myTVBleed->setValue(adj.blend);
+    myPALSharp->setValue(adj.sharpness);
+    myPALBlend->setValue(adj.blend);
   }
-  // SECAM: no signal adjustables; enable/disable handled by handleTVModeChange
+  // SECAM: no signal adjustables; visibility handled by handleTVModeChange
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1248,7 +1292,8 @@ void VideoAudioDialog::handleOverscanChange()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void VideoAudioDialog::handlePhosphorChange()
 {
-  myTVPhosLevel->setEnabled(myTVPhosphor->getSelectedTag() != PhosphorHandler::VALUE_BYROM);
+  myTVPhosLevel->setEnabled(myTVPhosphor->getSelectedTag() !=
+    PhosphorHandler::VALUE_BYROM);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1279,7 +1324,8 @@ void VideoAudioDialog::handleCommand(CommandSender* sender, int cmd,
 
     case GuiObject::kCloseCmd:
       // restore palette settings
-      instance().frameBuffer().television().paletteHandler().setAdjustables(myPaletteAdj);
+      instance().frameBuffer().television().paletteHandler().setAdjustables(
+          myPaletteAdj);
       instance().frameBuffer().television().paletteHandler().setPalette(myPalette);
       Dialog::handleCommand(sender, cmd, data, 0);
       break;
@@ -1318,10 +1364,7 @@ void VideoAudioDialog::handleCommand(CommandSender* sender, int cmd,
       break;
 
     case kVSizeChanged:
-    {
-      const int adjust = myVSizeAdjust->getValue();
-
-      if(!adjust)
+      if(!myVSizeAdjust->getValue())
       {
         myVSizeAdjust->setValueLabel("Default");
         myVSizeAdjust->setValueUnit("");
@@ -1329,7 +1372,7 @@ void VideoAudioDialog::handleCommand(CommandSender* sender, int cmd,
       else
         myVSizeAdjust->setValueUnit("%");
       break;
-    }
+
     case kFullScreenChanged:
       handleFullScreenChange();
       break;
@@ -1434,9 +1477,10 @@ void VideoAudioDialog::addPalette(int x, int y, int w, int h)
     myColorLbl[idx] = new StaticTextWidget(myTab, ifont, x, y + yofs + idx * COLH, " ");
     for(int lum = 0; lum < NUM_LUMA; ++lum)
     {
-      myColor[idx][lum] = new ColorWidget(myTab, _font, x + lwidth + lum * COLW, y + idx * COLH,
-                                          COLW + 1, COLH + 1, 0, false);
-      myColor[idx][lum]->clearFlags(FLAG_CLEARBG | FLAG_RETAIN_FOCUS | FLAG_MOUSE_FOCUS | FLAG_BORDER);
+      myColor[idx][lum] = new ColorWidget(myTab, _font, x + lwidth + lum * COLW,
+                                          y + idx * COLH, COLW + 1, COLH + 1, 0, false);
+      myColor[idx][lum]->clearFlags(FLAG_CLEARBG | FLAG_RETAIN_FOCUS |
+                                    FLAG_MOUSE_FOCUS | FLAG_BORDER);
     }
   }
 }
@@ -1506,4 +1550,22 @@ void VideoAudioDialog::updatePreset()
   audioSettings.setPreset(preset);
 
   updateSettingsWithPreset(audioSettings);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+SliderWidget*
+VideoAudioDialog::createCustomSlider(WidgetArray& wid, int xpos, int& ypos,
+                                     int swidth, int lwidth, string_view desc,
+                                     int cmd)
+{
+  const int lineHeight = Dialog::lineHeight(), fontWidth = Dialog::fontWidth(),
+            VGAP       = Dialog::vGap();
+
+  auto* slider = new SliderWidget(myTab, _font, xpos, ypos - 1, swidth, lineHeight,
+                                  desc, lwidth, cmd, fontWidth * 4, "%");
+  slider->setMinValue(0);  slider->setMaxValue(100);  slider->setStepValue(1);
+  slider->setTickmarkIntervals(2);
+  wid.push_back(slider);
+  ypos += lineHeight + VGAP;
+  return slider;
 }

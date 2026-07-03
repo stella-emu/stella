@@ -39,8 +39,8 @@ class OSystem;
 class VideoAudioDialog : public Dialog
 {
   public:
-    VideoAudioDialog(OSystem& osystem, DialogContainer& parent, const GUI::Font& font,
-                     int max_w, int max_h);
+    VideoAudioDialog(OSystem& osystem, DialogContainer& parent,
+                     const GUI::Font& font, int max_w, int max_h);
     ~VideoAudioDialog() override = default;
 
     void loadConfig() override;
@@ -71,6 +71,9 @@ class VideoAudioDialog : public Dialog
     void addPalette(int x, int y, int w, int h);
     void colorPalette();
 
+    SliderWidget* createCustomSlider(WidgetArray& wid, int xpos, int& ypos,
+                                     int swidth, int lwidth, string_view desc, int cmd);
+
     void updatePreset();
     void updateAudioEnabledState();
     void updateSettingsWithPreset(AudioSettings&);
@@ -89,14 +92,17 @@ class VideoAudioDialog : public Dialog
     CheckboxWidget*   myCorrectAspect{nullptr};
     SliderWidget*     myVSizeAdjust{nullptr};
 
-    // TV effects adjustables (custom mode)
+    // TV effects adjustables (custom mode).  NTSC and PAL each get their own
+    // widget set (5 vs 2 adjustables) so that whichever one is shown stacks
+    // with no gaps; SECAM has no adjustables at all.
     PopUpWidget*      myTVMode{nullptr};
-    SliderWidget*     myTVSharp{nullptr};
-    SliderWidget*     myTVRes{nullptr};
-    SliderWidget*     myTVArtifacts{nullptr};
-    SliderWidget*     myTVFringe{nullptr};
-    SliderWidget*     myTVBleed{nullptr};
-    // PAL colour-loss model (composite modes only)
+    SliderWidget*     myNTSCSharp{nullptr};
+    SliderWidget*     myNTSCRes{nullptr};
+    SliderWidget*     myNTSCArtifacts{nullptr};
+    SliderWidget*     myNTSCFringe{nullptr};
+    SliderWidget*     myNTSCBleed{nullptr};
+    SliderWidget*     myPALSharp{nullptr};
+    SliderWidget*     myPALBlend{nullptr};
     PopUpWidget*      myPALColorLoss{nullptr};
 
     // TV phosphor effect
