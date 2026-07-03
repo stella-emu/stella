@@ -326,7 +326,6 @@
 "Cart.ModelNo" "CA285"
 "Cart.Name" "Wall-Defender (1983) (Bomb)"
 "Cart.Note" "AKA Wall Break"
-"Bezel.Name" "Wall Break (Europe)"
 ""
 
 "Cart.MD5" "04014d563b094e79ac8974366f616308"
@@ -1540,7 +1539,6 @@
 "Cart.ModelNo" "805.784 6"
 "Cart.Name" "Labyrinth (1983) (Quelle) (PAL)"
 "Cart.Note" "AKA Maze Craze"
-"Bezel.Name" "Maze Craze - A Game of Cops 'n Robbers (USA)"
 ""
 
 "Cart.MD5" "0fc161704c46e16f7483f92b06c1558d"
@@ -2831,7 +2829,6 @@
 "Cart.Name" "Mein Weg (1983) (Quelle) (PAL)"
 "Cart.Note" "AKA Challenge"
 "Display.Phosphor" "YES"
-"Bezel.Name" "Challenge (Europe)"
 ""
 
 "Cart.MD5" "1e1290ea102e12d7ac52820961457e2b"
@@ -3553,7 +3550,6 @@
 "Cart.Name" "Der kleine Baer (1983) (Quelle) (PAL)"
 "Cart.Note" "AKA Frostbite"
 "Cart.Highscore" "{\"score_addresses\":[\"0xc8\",\"0xc9\",\"0xca\"],\"score_digits\":6,\"special_address\":\"0xcb\",\"special_label\":\"Level\",\"special_zero_based\":true,\"variations_address\":\"0x80\",\"variations_count\":4,\"variations_zero_based\":true}"
-"Bezel.Name" "Frostbite (USA)"
 ""
 
 "Cart.MD5" "25b52bf8dd215bcbd59c9abdb55c44f8"
@@ -3613,6 +3609,7 @@
 "Cart.Note" "NTSC Conversion, joystick ports swapped"
 "Cart.Rarity" "Homebrew"
 "Console.SwapPorts" "YES"
+"Bezel.Name" "Hell Driver (Europe)"
 ""
 
 "Cart.MD5" "262ccb882ff617d9b4b51f24aee02cbe"
@@ -3818,7 +3815,6 @@
 "Cart.Name" "Boom Bang (Unknown) (PAL)"
 "Cart.Note" "AKA Crackpots"
 "Cart.Rarity" "Rare"
-"Bezel.Name" "Crackpots (USA)"
 ""
 
 "Cart.MD5" "282a77841cb3d33af5b56151acba770e"
@@ -5125,6 +5121,7 @@
 "Cart.Name" "McDonald's (06-06-1983) (Parker Bros) (Prototype)"
 "Cart.Rarity" "Prototype"
 "Cart.Url" "http://www.atariprotos.com/2600/software/mcdonalds/mcdonalds.htm"
+"Bezel.Name" "McDonald's - Golden Arches Adventure (USA) (Proto)"
 ""
 
 "Cart.MD5" "35be55426c1fec32dfb503b4f0651572"
@@ -5262,7 +5259,6 @@
 "Cart.ModelNo" "CA285"
 "Cart.Name" "Wall-Defender (1983) (Bomb) (PAL)"
 "Cart.Note" "AKA Wall Break"
-"Bezel.Name" "Wall Break (Europe)"
 ""
 
 "Cart.MD5" "373b8a081acd98a895db0cb02df35673"
@@ -5469,6 +5465,7 @@
 "Cart.Note" "Uses the Paddle Controllers (swapped)"
 "Controller.SwapPaddles" "YES"
 "Controller.MouseAxis" "AUTO 60"
+"Bezel.Name" "Street Racer - Speedway II (USA)"
 ""
 
 "Cart.MD5" "3974e2d1f614fbd3a092533ecae2e84d"
@@ -6809,7 +6806,7 @@
 "Cart.Manufacturer" "Zellers"
 "Cart.Name" "Laser Volley (Zellers)"
 "Cart.Note" "AKA Innerspace"
-"Bezel.Name" "Laser Gates (USA)"
+"Bezel.Name" "Laaser Voley (Europe) (Pirate)"
 ""
 
 "Cart.MD5" "4834b7b28ea862227ac7e40053fb52a5"
@@ -7501,6 +7498,7 @@
 "Cart.Rarity" "Prototype"
 "Cart.Url" "http://www.atariprotos.com/2600/software/zapper/zapper.htm"
 "Display.Phosphor" "YES"
+"Bezel.Name" "3-D Zapper (USA) (Proto) (Earlier)"
 ""
 
 "Cart.MD5" "4f618c2429138e0280969193ed6c107e"
@@ -8859,7 +8857,6 @@
 "Cart.MD5" "5dd08e85fd7b928df16f59df92a9d983"
 "Cart.Name" "Boom Bang (Unknown) [a2]"
 "Cart.Note" "AKA Crackpots"
-"Bezel.Name" "Crackpots (USA)"
 ""
 
 "Cart.MD5" "5de8803a59c36725888346fdc6e7429d"
@@ -9418,7 +9415,6 @@
 "Cart.Name" "Super Ferrari (1983) (Rainbow Vision) (PAL)"
 "Cart.Note" "AKA Enduro"
 "Cart.Highscore" "{\"score_addresses\":[\"0xaa\",\"0xa9\",\"0xa8\"],\"score_digits\":6,\"special_address\":\"0xad\",\"special_label\":\"Day\",\"variations_count\":1}"
-"Bezel.Name" "Enduro (USA)"
 ""
 
 "Cart.MD5" "63a6eda1da30446569ac76211d0f861c"
@@ -11092,7 +11088,6 @@
 "Cart.ModelNo" "SS-016"
 "Cart.Name" "Boom Bang (1983) (Rainbow Vision) (PAL)"
 "Cart.Note" "AKA Crackpots"
-"Bezel.Name" "Crackpots (USA)"
 ""
 
 "Cart.MD5" "73b4e8f8b04515d91937510e680214bc"
@@ -11456,7 +11451,6 @@
 "Cart.ModelNo" "311377"
 "Cart.Name" "Fox & Goat (Double-Game Package) (1983) (Otto Versand) (PAL)"
 "Cart.Note" "AKA Nuts"
-"Bezel.Name" "Nuts (Europe)"
 ""
 
 "Cart.MD5" "76f53abbbf39a0063f24036d6ee0968a"
@@ -12312,7 +12306,6 @@
 "Cart.Manufacturer" "HES"
 "Cart.Name" "Boom Bang (HES) (PAL)"
 "Cart.Note" "AKA Crackpots"
-"Bezel.Name" "Crackpots (USA)"
 ""
 
 "Cart.MD5" "7f5da5dc44bb5e0b959507bb0ea31cd6"
@@ -14501,6 +14494,7 @@
 "Cart.Name" "Colors (1980) (Atari) (Prototype) (PAL)"
 "Cart.Rarity" "Prototype"
 "Cart.Url" "http://www.atariprotos.com/2600/software/colors/colors.htm"
+"Bezel.Name" "Colors (Europe) (Proto)"
 ""
 
 "Cart.MD5" "97cd63c483fe3c68b7ce939ab8f7a318"
@@ -15383,7 +15377,6 @@
 "Cart.MD5" "a2aae759e4e76f85c8afec3b86529317"
 "Cart.Name" "Boom Bang (Unknown)"
 "Cart.Note" "AKA Crackpots"
-"Bezel.Name" "Crackpots (USA)"
 ""
 
 "Cart.MD5" "a2d7cc2e5419a9e4ab91fdb26339b726"
@@ -16963,7 +16956,6 @@
 "Cart.Name" "Bogey Blaster (1988) (Telegames) (PAL)"
 "Cart.Note" "AKA Air Raiders"
 "Cart.Rarity" "Rare"
-"Bezel.Name" "Air Raiders (USA)"
 ""
 
 "Cart.MD5" "b451307b8b5e29f1c5f2cf064f6c7227"
@@ -17406,7 +17398,7 @@
 "Controller.PaddlesXCenter" "10"
 "Controller.PaddlesYCenter" "10"
 "Controller.MouseAxis" "01 55"
-"Bezel.Name" "G.I. Joe - Cobra Strike (USA)"
+"Bezel.Name" "Action Man - Action Force (Europe)"
 ""
 
 "Cart.MD5" "b9f9c0fed0db08c34346317f3957a945"
@@ -18196,9 +18188,9 @@
 ""
 
 "Cart.MD5" "c31a17942d162b80962cb1f7571cd1d5"
-"Cart.Manufacturer" "Home Vision - Gem International Corp. - VDI"
-"Cart.ModelNo" "VCS83112"
-"Cart.Name" "Sky Alien (1983) (Home Vision) (PAL)"
+"Cart.Manufacturer" "Bomb - Onbase"
+"Cart.ModelNo" "CA281"
+"Cart.Name" "Assault (1983) (Bomb - Onbase) (CA281)"
 "Cart.Note" "AKA Sky Aliem"
 ""
 
@@ -18483,7 +18475,6 @@
 "Cart.Name" "Bogey Blaster (1988) (Telegames)"
 "Cart.Note" "AKA Air Raiders"
 "Cart.Rarity" "Rare"
-"Bezel.Name" "Air Raiders (USA)"
 ""
 
 "Cart.MD5" "c5a76bafc4676edb76e0126fb9f0fb2d"
@@ -18737,6 +18728,7 @@
 "Cart.Name" "Tempest (01-05-1984) (Atari) (Prototype)"
 "Cart.Rarity" "Prototype"
 "Cart.Url" "http://www.atariprotos.com/2600/software/tempest/tempest.htm"
+"Bezel.Name" "Marble Craze (USA) (Unl)"
 ""
 
 "Cart.MD5" "c866c995c0d2ca7d017fef0fc0c2e268"
@@ -20659,6 +20651,7 @@
 "Cart.Name" "Elf Adventure (05-02-83) (Atari) (Prototype)"
 "Cart.Rarity" "Prototype"
 "Cart.Url" "http://www.atariprotos.com/2600/software/elfadventure/elfadventure.htm"
+"Bezel.Name" "Elf Adventure (USA) (Proto)"
 ""
 
 "Cart.MD5" "dc97cbcf091a5ef4ca7fe95dc0848036"
@@ -20882,7 +20875,6 @@
 "Cart.Name" "Assault (1983) (Bomb)"
 "Cart.Note" "AKA Sky Alien"
 "Cart.Rarity" "Extremely Rare"
-"Bezel.Name" "Sky Alien (Europe)"
 ""
 
 "Cart.MD5" "de7a64108074098ba333cc0c70eef18a"
@@ -21640,7 +21632,6 @@
 "Cart.MD5" "e5359cbbbff9c6d7fe8aeff5fb471b46"
 "Cart.Name" "Boom Bang (Unknown) [a1]"
 "Cart.Note" "AKA Crackpots"
-"Bezel.Name" "Crackpots (USA)"
 ""
 
 "Cart.MD5" "e549f1178e038fa88dc6d657dc441146"
@@ -22368,7 +22359,6 @@
 "Cart.ModelNo" "105"
 "Cart.Name" "Stunt Man (1983) (Panda)"
 "Cart.Note" "AKA Nightmare"
-"Bezel.Name" "Nightmare (Europe)"
 ""
 
 "Cart.MD5" "ed1306436ce237afc5a7ed3f77134202"
