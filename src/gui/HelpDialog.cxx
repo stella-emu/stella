@@ -21,6 +21,7 @@
 #include "Widget.hxx"
 #include "Font.hxx"
 #include "MediaFactory.hxx"
+#include "Layout.hxx"
 
 #include "HelpDialog.hxx"
 
@@ -54,10 +55,10 @@ HelpDialog::HelpDialog(OSystem& osystem, DialogContainer& parent,
   myUpdateButton->setEnabled(true);
   wid.push_back(myUpdateButton);
 
-  myCloseButton = new ButtonWidget(this, font, 0, 0, closeButtonWidth,
+  auto* b = new ButtonWidget(this, font, 0, 0, closeButtonWidth,
                              buttonHeight, "Close", GuiObject::kCloseCmd);
-  wid.push_back(myCloseButton);
-  addCancelWidget(myCloseButton);
+  wid.push_back(b);
+  addCancelWidget(b);
 
   myTitle = new StaticTextWidget(this, font, 0, 0, 1, fontHeight,
                                  "", TextAlign::Center);
@@ -76,12 +77,17 @@ HelpDialog::HelpDialog(OSystem& osystem, DialogContainer& parent,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void HelpDialog::layout()
 {
+  using GUI::BoxLayout;
+  using GUI::GridLayout;
+  using GUI::widgetItem;
+  using Dir = BoxLayout::Dir;
+
   const int lineHeight   = Dialog::lineHeight(),
             fontHeight   = Dialog::fontHeight(),
             fontWidth    = Dialog::fontWidth(),
             buttonHeight = Dialog::buttonHeight(),
             buttonWidth  = Dialog::buttonWidth(" << "),
-            closeButtonWidth = Dialog::buttonWidth("Close"),
+            updButtonWidth = Dialog::buttonWidth("Check for Update" + ELLIPSIS),
             VBORDER      = Dialog::vBorder(),
             HBORDER      = Dialog::hBorder(),
             VGAP         = Dialog::vGap();
@@ -89,31 +95,33 @@ void HelpDialog::layout()
   _w = 46 * fontWidth + HBORDER * 2;
   _h = _th + 11 * lineHeight + VGAP * 3 + buttonHeight + VBORDER * 2;
 
-  // Previous / Next / Update (left) and Close (right) along the bottom
-  int xpos = HBORDER, ypos = _h - buttonHeight - VBORDER;
-  myPrevButton->setPos(xpos, ypos);
-  xpos += buttonWidth + fontWidth;
-  myNextButton->setPos(xpos, ypos);
-  xpos += buttonWidth + fontWidth;
-  myUpdateButton->setPos(xpos, ypos);
-  myCloseButton->setPos(_w - closeButtonWidth - HBORDER, ypos);
-
-  // Centered title
-  xpos = HBORDER; ypos = VBORDER + _th;
-  myTitle->setPos(xpos, ypos);
+  // Centered title, full width
+  myTitle->setPos(HBORDER, VBORDER + _th);
   myTitle->setWidth(_w - HBORDER * 2);
 
-  // Key / description columns, one row per binding
+  // Key / description table: fixed key column, description column fills the rest
   const int lwidth = 15 * fontWidth;
-  ypos += lineHeight + VGAP * 2;
-  for(uInt32 i = 0; i < LINES_PER_PAGE; ++i)
+  const int numRows = static_cast<int>(LINES_PER_PAGE);
+  auto table = std::make_unique<GridLayout>(2, numRows);
+  table->columnFixed(0, lwidth);
+  table->columnStretch(1);
+  for(int i = 0; i < numRows; ++i)
   {
-    myKey[i]->setPos(xpos, ypos);
-    myKey[i]->setWidth(lwidth);
-    myDesc[i]->setPos(xpos + lwidth, ypos);
-    myDesc[i]->setWidth(_w - xpos - lwidth - HBORDER);
-    ypos += fontHeight;
+    table->rowFixed(i, fontHeight);
+    table->place(0, i, widgetItem(myKey[i]));
+    table->place(1, i, widgetItem(myDesc[i]));
   }
+  table->doLayout(HBORDER, VBORDER + _th + lineHeight + VGAP * 2,
+                  _w - HBORDER * 2, numRows * fontHeight);
+
+  // Bottom row: Prev / Next / Update on the left, Close (cancel widget) at right
+  auto navButtons = std::make_unique<BoxLayout>(Dir::Horizontal, fontWidth);
+  navButtons->addFixed(widgetItem(myPrevButton), buttonWidth);
+  navButtons->addFixed(widgetItem(myNextButton), buttonWidth);
+  navButtons->addFixed(widgetItem(myUpdateButton), updButtonWidth);
+  navButtons->doLayout(HBORDER, _h - buttonHeight - VBORDER,
+                       buttonWidth * 2 + updButtonWidth + fontWidth * 2, buttonHeight);
+  layoutButtonGroup();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -93,6 +93,11 @@ void InputTextDialog::initialize(const GUI::Font& lfont, const GUI::Font& nfont,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void InputTextDialog::layout()
 {
+  using GUI::BoxLayout;
+  using GUI::widgetItem;
+  using GUI::vCentered;
+  using Dir = BoxLayout::Dir;
+
   const int lineHeight   = Dialog::lineHeight(),
             fontWidth    = Dialog::fontWidth(),
             buttonHeight = Dialog::buttonHeight(),
@@ -110,21 +115,25 @@ void InputTextDialog::layout()
   for(auto* l: myLabel)
     lwidth = std::max(lwidth, _font.getStringWidth(l->getLabel()));
 
-  const int editX = HBORDER + lwidth + fontWidth;
-  int ypos = VBORDER + _th;
+  // A label + editbox per row, then a message line; the editbox fills the row
+  // (or keeps a fixed width if a max length was set via setMaxLen)
+  auto root = std::make_unique<BoxLayout>(Dir::Vertical, 0, HBORDER, VBORDER);
   for(int i = 0; i < numRows; ++i)
   {
-    myLabel[i]->setPos(HBORDER, ypos + 2);
-    myLabel[i]->setWidth(lwidth);
-    myInput[i]->setPos(editX, ypos);
-    myInput[i]->setWidth(myMaxLen[i] > 0 ? (myMaxLen[i] + 1) * fontWidth
-                                         : _w - editX - HBORDER);
-    ypos += lineHeight + VGAP;
+    auto row = std::make_unique<BoxLayout>(Dir::Horizontal);
+    row->addFixed(vCentered(myLabel[i], Dialog::fontHeight()), lwidth);
+    row->addSpace(fontWidth);
+    if(myMaxLen[i] > 0)
+      row->addFixed(vCentered(myInput[i], myInput[i]->getHeight()),
+                    (myMaxLen[i] + 1) * fontWidth);
+    else
+      row->addStretch(vCentered(myInput[i], myInput[i]->getHeight()));
+    root->addFixed(std::move(row), lineHeight);
+    root->addSpace(VGAP);
   }
-
-  ypos += VGAP;
-  myMessage->setPos(HBORDER, ypos);
-  myMessage->setWidth(_w - 2 * HBORDER);
+  root->addSpace(VGAP);
+  root->addFixed(widgetItem(myMessage), Dialog::fontHeight());
+  root->doLayout(0, _th, _w, _h - _th);
 
   // Standard OK/Cancel button group along the bottom edge
   layoutButtonGroup();

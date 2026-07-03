@@ -384,63 +384,67 @@ void UIDialog::layoutLookAndFeelTab()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void UIDialog::layoutLauncherTab()
 {
+  using GUI::BoxLayout;
+  using GUI::anchoredItem;
+  using GUI::vCentered;
+  using Dir = BoxLayout::Dir;
+
   const GUI::Font& ifont = instance().frameBuffer().infoFont();
   const int lineHeight   = Dialog::lineHeight(),
             fontHeight   = Dialog::fontHeight(),
             fontWidth    = Dialog::fontWidth(),
-            buttonHeight = Dialog::buttonHeight(),
             VBORDER      = Dialog::vBorder(),
             HBORDER      = Dialog::hBorder(),
             VGAP         = Dialog::vGap(),
             INDENT       = Dialog::indent();
   const int lwidth = _font.getStringWidth("Launcher height ");
 
-  // This tab is not a uniform stack (a button row, a right-hand column aligned
-  // to specific left rows, back-referenced groups), so it is positioned
-  // directly, mirroring the previous hand-tuned geometry from the live font
-  int ypos = VBORDER;
+  // Left column: the two path rows (browse button + filling edit) bracket a
+  // vertical run of self-labeling launcher and ROM-info-viewer controls.  The
+  // browse buttons keep their (taller) natural height and overflow their row.
+  auto col = std::make_unique<BoxLayout>(Dir::Vertical, 0, HBORDER, VBORDER);
 
-  // ROM path row: button plus an edit field filling the remaining width
-  myRomButton->setPos(HBORDER, ypos);
-  const int rx = myRomButton->getRight() + fontWidth;
-  myRomPath->setPos(rx, ypos + (buttonHeight - lineHeight) / 2 - 1);
-  myRomPath->setWidth(_w - rx - HBORDER - 2);
+  auto romRow = std::make_unique<BoxLayout>(Dir::Horizontal);
+  romRow->addFixed(anchoredItem(myRomButton), myRomButton->getWidth());
+  romRow->addSpace(fontWidth);
+  romRow->addStretch(vCentered(myRomPath, myRomPath->getHeight()));
+  col->addFixed(std::move(romRow), lineHeight);
 
-  // Right-hand checkboxes share this column, right-aligned to the widest label
+  col->addSpace(VGAP * 2);
+  col->addSpace(lineHeight + VGAP);  // row shared with the right "follow launcher" box
+  col->addFixed(anchoredItem(myLauncherFontPopup), lineHeight);
+  col->addSpace(VGAP);
+  col->addFixed(anchoredItem(myLauncherWidthSlider), lineHeight);
+  col->addSpace(VGAP);
+  col->addFixed(anchoredItem(myLauncherHeightSlider), lineHeight);
+  col->addSpace(VGAP * 4);
+  col->addFixed(anchoredItem(myRomViewerSize), lineHeight);
+  col->addSpace(VGAP);
+
+  auto imgRow = std::make_unique<BoxLayout>(Dir::Horizontal);
+  imgRow->addSpace(INDENT);
+  imgRow->addFixed(anchoredItem(myOpenBrowserButton), myOpenBrowserButton->getWidth());
+  imgRow->addSpace(lwidth - INDENT - myOpenBrowserButton->getWidth());
+  imgRow->addStretch(vCentered(mySnapLoadPath, mySnapLoadPath->getHeight()));
+  col->addFixed(std::move(imgRow), lineHeight);
+
+  col->addSpace(VGAP * 4);
+  col->addFixed(anchoredItem(myLauncherExitWidget), lineHeight);
+  col->doLayout(0, 0, myTab->getWidth(), myTab->getHeight());
+
+  // Right-hand checkbox column, right-aligned to the widest label and vertically
+  // aligned to specific (now-resolved) left-column rows
   const int xpos2 = _w - HBORDER - _font.getStringWidth("Display file extensions")
                     - CheckboxWidget::prefixSize(_font) - 1;
+  myFollowLauncherWidget->setPos(xpos2,
+      myLauncherFontPopup->getTop() - lineHeight - VGAP);
 
-  ypos += lineHeight + VGAP * 2;
-  myFollowLauncherWidget->setPos(xpos2, ypos);
-
-  ypos += lineHeight + VGAP;
-  myLauncherFontPopup->setPos(HBORDER, ypos + 1);
-
-  ypos += lineHeight + VGAP;
-  myLauncherWidthSlider->setPos(HBORDER, ypos);
-
-  ypos += lineHeight + VGAP;
-  myLauncherHeightSlider->setPos(HBORDER, ypos);
-
-  // Favorites / extensions / bottom-buttons column, aligned to the font row down
   int rypos = myLauncherFontPopup->getTop();
   myFavoritesWidget->setPos(xpos2, rypos + 1);
   rypos += lineHeight + VGAP;
   myLauncherExtensionsWidget->setPos(xpos2, rypos + 1);
   rypos += lineHeight + VGAP;
   myLauncherButtonsWidget->setPos(xpos2, rypos + 1);
-
-  // ROM info viewer size, then its image path row
-  ypos = myLauncherHeightSlider->getTop() + lineHeight + VGAP * 4;
-  myRomViewerSize->setPos(HBORDER, ypos);
-
-  ypos += lineHeight + VGAP;
-  myOpenBrowserButton->setPos(HBORDER + INDENT, ypos);
-  mySnapLoadPath->setPos(HBORDER + lwidth, ypos + (buttonHeight - lineHeight) / 2 - 1);
-  mySnapLoadPath->setWidth(_w - lwidth - HBORDER * 2 - 2);
-
-  ypos += lineHeight + VGAP * 4;
-  myLauncherExitWidget->setPos(HBORDER + 1, ypos);
 
   // Info message along the bottom of the tab
   const int lwInfo = ifont.getStringWidth("(*) Changes may require an application restart");

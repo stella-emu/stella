@@ -87,6 +87,10 @@ void MessageBox::createText(const GUI::Font& font, const StringList& text)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void MessageBox::layout()
 {
+  using GUI::BoxLayout;
+  using GUI::widgetItem;
+  using Dir = BoxLayout::Dir;
+
   const int fontWidth  = Dialog::fontWidth(),
             fontHeight = Dialog::fontHeight(),
             VBORDER    = Dialog::vBorder(),
@@ -103,14 +107,11 @@ void MessageBox::layout()
   _h = std::min((static_cast<int>(myText.size()) + 2) * fontHeight + VBORDER * 2 + _th,
                 myMaxH);
 
-  // Stack the text lines below the title bar
-  int ypos = VBORDER + _th;
+  // Vertical stack of the text lines below the title bar
+  auto root = std::make_unique<BoxLayout>(Dir::Vertical, 0, HBORDER, VBORDER);
   for(auto* w: myTextWidgets)
-  {
-    w->setPos(HBORDER, ypos);
-    w->setWidth(_w - HBORDER * 2);
-    ypos += fontHeight;
-  }
+    root->addFixed(widgetItem(w), fontHeight);
+  root->doLayout(0, _th, _w, _h - _th);
 
   // Standard OK/Cancel button group along the bottom edge
   layoutButtonGroup();

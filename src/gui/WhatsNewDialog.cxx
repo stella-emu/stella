@@ -18,6 +18,7 @@
 #include "OSystem.hxx"
 #include "FrameBuffer.hxx"
 #include "Version.hxx"
+#include "Layout.hxx"
 
 #include "WhatsNewDialog.hxx"
 
@@ -72,6 +73,11 @@ void WhatsNewDialog::add(string_view text)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void WhatsNewDialog::layout()
 {
+  using GUI::BoxLayout;
+  using GUI::anchoredItem;
+  using GUI::hCentered;
+  using Dir = BoxLayout::Dir;
+
   const int fontWidth    = Dialog::fontWidth(),
             buttonHeight = Dialog::buttonHeight(),
             VBORDER      = Dialog::vBorder(),
@@ -80,18 +86,17 @@ void WhatsNewDialog::layout()
 
   _w = MAX_CHARS * fontWidth + HBORDER * 2;
 
-  // Stack the (pre-wrapped) bullet lines
-  int ypos = _th + VBORDER;
-  for(size_t i = 0; i < myLines.size(); ++i)
-  {
-    myLines[i]->setPos(HBORDER, ypos);
-    ypos += myLineAdvance[i];
-  }
-
-  ypos += VGAP * 2 + buttonHeight + VBORDER;
-  _h = ypos;
+  int linesHeight = 0;
+  for(const int adv: myLineAdvance)
+    linesHeight += adv;
+  _h = _th + VBORDER + linesHeight + VGAP * 2 + buttonHeight + VBORDER;
   assert(std::cmp_less_equal(_h, FBMinimum::Height)); // minimal launcher height
 
-  // Single OK button, centered along the bottom edge
-  _okWidget->setPos((_w - _okWidget->getWidth()) / 2, _h - buttonHeight - VBORDER);
+  // Stack the (pre-wrapped) bullet lines, then a single centered OK button
+  auto root = std::make_unique<BoxLayout>(Dir::Vertical, 0, HBORDER, VBORDER);
+  for(size_t i = 0; i < myLines.size(); ++i)
+    root->addFixed(anchoredItem(myLines[i]), myLineAdvance[i]);
+  root->addSpace(VGAP * 2);
+  root->addFixed(hCentered(_okWidget, _okWidget->getWidth()), buttonHeight);
+  root->doLayout(0, _th, _w, _h - _th);
 }

@@ -78,9 +78,11 @@ void JoystickDialog::layout()
 {
   using GUI::BoxLayout;
   using GUI::widgetItem;
+  using GUI::vCentered;
   using Dir = BoxLayout::Dir;
 
   const int lineHeight   = Dialog::lineHeight(),
+            fontHeight   = Dialog::fontHeight(),
             fontWidth    = Dialog::fontWidth(),
             buttonHeight = Dialog::buttonHeight(),
             buttonWidth  = Dialog::buttonWidth("Remove"),
@@ -94,17 +96,24 @@ void JoystickDialog::layout()
   root->addSpace(buttonHeight);  // reserve the button row
   root->doLayout(0, _th, _w, _h - _th);
 
-  // Controller ID label + (non-editable) value + port popup, vertically
-  // centered within the bottom button row on the left
-  int ypos = _h - VBORDER - (buttonHeight + lineHeight) / 2;
-  myIDLabel->setPos(HBORDER, ypos);
-  myJoyText->setPos(HBORDER + myIDLabel->getWidth(), ypos - 2);
-  myJoyPort->setPos(myJoyText->getRight() + fontWidth * 2, ypos - 1);
+  const int by = _h - VBORDER - buttonHeight;  // button row top
+
+  // Controller ID label + (non-editable) value + port popup on the left,
+  // vertically centered within the button row
+  auto idRow = std::make_unique<BoxLayout>(Dir::Horizontal);
+  idRow->addFixed(vCentered(myIDLabel, fontHeight), myIDLabel->getWidth());
+  idRow->addFixed(vCentered(myJoyText, myJoyText->getHeight()), myJoyText->getWidth());
+  idRow->addSpace(fontWidth * 2);
+  idRow->addFixed(vCentered(myJoyPort, lineHeight), myJoyPort->getWidth());
+  idRow->doLayout(HBORDER, by, _w - HBORDER * 2, buttonHeight);
 
   // Remove / Close buttons, right-aligned on the button row
-  ypos = _h - VBORDER - buttonHeight;
-  myCloseBtn->setPos(_w - buttonWidth - HBORDER, ypos);
-  myRemoveBtn->setPos(myCloseBtn->getLeft() - buttonWidth - fontWidth, ypos);
+  auto buttons = std::make_unique<BoxLayout>(Dir::Horizontal);
+  buttons->addStretch(widgetItem(nullptr));
+  buttons->addFixed(widgetItem(myRemoveBtn), buttonWidth);
+  buttons->addSpace(fontWidth);
+  buttons->addFixed(widgetItem(myCloseBtn), buttonWidth);
+  buttons->doLayout(HBORDER, by, _w - HBORDER * 2, buttonHeight);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

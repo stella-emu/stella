@@ -48,7 +48,6 @@ class AboutDialog : public Dialog
     ButtonWidget* myWhatsNewButton{nullptr};
     ButtonWidget* myNextButton{nullptr};
     ButtonWidget* myPrevButton{nullptr};
-    ButtonWidget* myCloseButton{nullptr};
 
     StaticTextWidget* myTitle{nullptr};
     vector<StaticTextWidget*> myDesc;

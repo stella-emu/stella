@@ -48,7 +48,6 @@ class HelpDialog : public Dialog
     ButtonWidget* myNextButton{nullptr};
     ButtonWidget* myPrevButton{nullptr};
     ButtonWidget* myUpdateButton{nullptr};
-    ButtonWidget* myCloseButton{nullptr};
 
     StaticTextWidget* myTitle;
     std::array<StaticTextWidget*, LINES_PER_PAGE> myKey{nullptr};

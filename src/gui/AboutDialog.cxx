@@ -22,6 +22,7 @@
 #include "Font.hxx"
 #include "WhatsNewDialog.hxx"
 #include "MediaFactory.hxx"
+#include "Layout.hxx"
 
 #include "AboutDialog.hxx"
 
@@ -47,10 +48,10 @@ AboutDialog::AboutDialog(OSystem& osystem, DialogContainer& parent,
                      "Next", GuiObject::kNextCmd);
   wid.push_back(myNextButton);
 
-  myCloseButton = new ButtonWidget(this, font, 0, 0,
+  auto* b = new ButtonWidget(this, font, 0, 0,
       buttonWidth, buttonHeight, "Close", GuiObject::kCloseCmd);
-  wid.push_back(myCloseButton);
-  addCancelWidget(myCloseButton);
+  wid.push_back(b);
+  addCancelWidget(b);
 
   myTitle = new StaticTextWidget(this, font, 0, 0, 1,
                                  fontHeight, "", TextAlign::Center);
@@ -78,6 +79,11 @@ AboutDialog::AboutDialog(OSystem& osystem, DialogContainer& parent,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void AboutDialog::layout()
 {
+  using GUI::BoxLayout;
+  using GUI::widgetItem;
+  using GUI::vCentered;
+  using Dir = BoxLayout::Dir;
+
   const int lineHeight   = Dialog::lineHeight(),
             fontHeight   = Dialog::fontHeight(),
             fontWidth    = Dialog::fontWidth(),
@@ -90,30 +96,31 @@ void AboutDialog::layout()
   _w = 55 * fontWidth + HBORDER * 2;
   _h = _th + 14 * lineHeight + VGAP * 3 + buttonHeight + VBORDER * 2;
 
-  // Previous / Next (left) and Close (right) along the bottom
-  int ypos = _h - buttonHeight - VBORDER;
-  myPrevButton->setPos(HBORDER, ypos);
-  myNextButton->setPos(HBORDER + buttonWidth + fontWidth, ypos);
-  myCloseButton->setPos(_w - buttonWidth - HBORDER, ypos);
-
-  // Centered title, with the "What's New" button at the right of its row
-  ypos = _th + VBORDER + (buttonHeight - fontHeight) / 2;
+  // Title row: a centered title with the "What's New" button at the right; the
+  // leading spacer (= button width) keeps the title centered across the dialog
   const int bwidth = Dialog::buttonWidth("What's New" + ELLIPSIS);
-  myTitle->setPos(HBORDER + bwidth, ypos);
-  myTitle->setWidth(_w - (HBORDER + bwidth) * 2);
+  auto titleRow = std::make_unique<BoxLayout>(Dir::Horizontal);
+  titleRow->addSpace(bwidth);
+  titleRow->addStretch(vCentered(myTitle, fontHeight));
+  titleRow->addFixed(widgetItem(myWhatsNewButton), bwidth);
+  titleRow->doLayout(HBORDER, _th + VBORDER, _w - HBORDER * 2, buttonHeight);
 
-  myWhatsNewButton->setPos(_w - HBORDER - bwidth,
-                           ypos - (buttonHeight - fontHeight) / 2);
-  myWhatsNewButton->setWidth(bwidth);
-
-  // Description lines
-  ypos += lineHeight + VGAP * 2;
+  // Description lines, indented an extra border on each side
+  const int descY = _th + VBORDER + (buttonHeight - fontHeight) / 2
+                    + lineHeight + VGAP * 2;
+  auto descCol = std::make_unique<BoxLayout>(Dir::Vertical);
   for(auto* s: myDesc)
-  {
-    s->setPos(HBORDER * 2, ypos);
-    s->setWidth(_w - HBORDER * 4);
-    ypos += fontHeight;
-  }
+    descCol->addFixed(widgetItem(s), fontHeight);
+  descCol->doLayout(HBORDER * 2, descY, _w - HBORDER * 4,
+                    static_cast<int>(myDesc.size()) * fontHeight);
+
+  // Bottom row: Previous / Next on the left, Close (the cancel widget) at right
+  auto navButtons = std::make_unique<BoxLayout>(Dir::Horizontal, fontWidth);
+  navButtons->addFixed(widgetItem(myPrevButton), buttonWidth);
+  navButtons->addFixed(widgetItem(myNextButton), buttonWidth);
+  navButtons->doLayout(HBORDER, _h - buttonHeight - VBORDER,
+                       buttonWidth * 2 + fontWidth, buttonHeight);
+  layoutButtonGroup();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

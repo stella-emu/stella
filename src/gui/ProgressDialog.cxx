@@ -24,6 +24,7 @@
 #include "Dialog.hxx"
 #include "Font.hxx"
 #include "DialogContainer.hxx"
+#include "Layout.hxx"
 #include "ProgressDialog.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -56,6 +57,11 @@ ProgressDialog::ProgressDialog(GuiObject* boss, const GUI::Font& font,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ProgressDialog::layout()
 {
+  using GUI::BoxLayout;
+  using GUI::anchoredItem;
+  using GUI::hCentered;
+  using Dir = BoxLayout::Dir;
+
   const int lineHeight   = Dialog::lineHeight(),
             buttonHeight = Dialog::buttonHeight(),
             buttonWidth  = Dialog::buttonWidth("Cancel"),
@@ -67,16 +73,18 @@ void ProgressDialog::layout()
   _w = HBORDER * 2 + std::max(lwidth, buttonWidth);
   _h = VBORDER * 2 + lineHeight * 2 + buttonHeight + VGAP * 6;
 
-  int ypos = VBORDER;
-  myMessage->setPos(HBORDER, ypos);
+  // The message and slider keep their (message-derived) width; the Cancel
+  // button is centered below them
   myMessage->setWidth(lwidth);
-
-  ypos += lineHeight + VGAP * 2;
-  mySlider->setPos(HBORDER, ypos);
   mySlider->setWidth(lwidth);
 
-  ypos += lineHeight + VGAP * 4;
-  _cancelWidget->setPos((_w - buttonWidth) / 2, ypos);
+  auto root = std::make_unique<BoxLayout>(Dir::Vertical, 0, HBORDER, VBORDER);
+  root->addFixed(anchoredItem(myMessage), lineHeight);
+  root->addSpace(VGAP * 2);
+  root->addFixed(anchoredItem(mySlider), lineHeight);
+  root->addSpace(VGAP * 4);
+  root->addFixed(hCentered(_cancelWidget, buttonWidth), buttonHeight);
+  root->doLayout(0, 0, _w, _h);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
