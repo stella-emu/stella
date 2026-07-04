@@ -32,9 +32,15 @@
 #include "System.hxx"
 
 #include "TimeMachineDialog.hxx"
+#include "Layout.hxx"
 #include "Base.hxx"
 
+// This dialog is a compact translucent HUD bar with fixed-size icon buttons, so
+// it deliberately uses its own tight metrics rather than the standard Dialog
+// form helpers (hBorder()/buttonGap()/buttonWidth()/...).
 static constexpr int BUTTON_W = 14, BUTTON_H = 14;
+static constexpr int H_BORDER = 6, V_BORDER = 4, BUTTON_GAP = 4;
+static constexpr int BUTTON_WIDTH = BUTTON_W + 10, BUTTON_HEIGHT = BUTTON_H + 10;
 
 static constexpr std::array<uInt32, BUTTON_H> RECORD = {
   0b00000111100000,
@@ -204,98 +210,124 @@ TimeMachineDialog::TimeMachineDialog(OSystem& osystem, DialogContainer& parent,
   : Dialog(osystem, parent)
 {
   const GUI::Font& font = instance().frameBuffer().font();
-  constexpr int H_BORDER = 6, BUTTON_GAP = 4, V_BORDER = 4;
-  constexpr int buttonWidth = BUTTON_W + 10, buttonHeight = BUTTON_H + 10;
   const int rowHeight = font.getLineHeight();
 
-  // Set real dimensions
-  _w = width;  // Parent determines our width (based on window size)
-  _h = V_BORDER * 2 + rowHeight + std::max(buttonHeight + 2, rowHeight);
+  // Set real dimensions; the parent determines our width (based on window size)
+  _w = width;
+  _h = V_BORDER * 2 + rowHeight + std::max(BUTTON_HEIGHT + 2, rowHeight);
 
   this->clearFlags(Widget::FLAG_CLEARBG); // does only work combined with blending (0..100)!
   this->clearFlags(Widget::FLAG_BORDER);
   this->setFlags(Widget::FLAG_NOBG);
 
-  int xpos = H_BORDER, ypos = V_BORDER;
+  // Widgets are only created here (at placeholder positions); layout() assigns
+  // all geometry from the current font and dialog width.
 
-  // Add index info
-  myCurrentIdxWidget = new StaticTextWidget(this, font, xpos, ypos, "1000", TextAlign::Left, kBGColor);
+  // Index info (current + last state index)
+  myCurrentIdxWidget = new StaticTextWidget(this, font, 0, 0, "1000", TextAlign::Left, kBGColor);
   myCurrentIdxWidget->setTextColor(kColorInfo);
   myCurrentIdxWidget->setFlags(Widget::FLAG_CLEARBG | Widget::FLAG_NOBG);
-  myLastIdxWidget = new StaticTextWidget(this, font, _w - H_BORDER - font.getStringWidth("1000"), ypos,
-                                         "1000", TextAlign::Right, kBGColor);
+  myLastIdxWidget = new StaticTextWidget(this, font, 0, 0, "1000", TextAlign::Right, kBGColor);
   myLastIdxWidget->setFlags(Widget::FLAG_CLEARBG | Widget::FLAG_NOBG);
   myLastIdxWidget->setTextColor(kColorInfo);
 
-  // Add timeline
-  const uInt32 tl_h = myCurrentIdxWidget->getHeight() / 2 + 6,
-    tl_x = xpos + myCurrentIdxWidget->getWidth() + 8,
-    tl_y = ypos + (myCurrentIdxWidget->getHeight() - tl_h) / 2 - 1,
-    tl_w = myLastIdxWidget->getAbsX() - tl_x - 8;
-  myTimeline = new TimeLineWidget(this, font, tl_x, tl_y, tl_w, tl_h, "", 0, kTimeline);
+  // Timeline scrubber
+  myTimeline = new TimeLineWidget(this, font, 0, 0, _w, rowHeight / 2 + 6, "", 0, kTimeline);
   myTimeline->setMinValue(0);
-  ypos += rowHeight;
 
-  // Add time info
-  const int ypos_s = ypos + (buttonHeight - font.getFontHeight() + 1) / 2; // align to button vertical center
-  myCurrentTimeWidget = new StaticTextWidget(this, font, xpos, ypos_s, "00:00.00", TextAlign::Left, kBGColor);
+  // Time info (current + last time)
+  myCurrentTimeWidget = new StaticTextWidget(this, font, 0, 0, "00:00.00", TextAlign::Left, kBGColor);
   myCurrentTimeWidget->setFlags(Widget::FLAG_CLEARBG | Widget::FLAG_NOBG);
   myCurrentTimeWidget->setTextColor(kColorInfo);
-  myLastTimeWidget = new StaticTextWidget(this, font, _w - H_BORDER - font.getStringWidth("00:00.00"), ypos_s,
-                                          "00:00.00", TextAlign::Right, kBGColor);
+  myLastTimeWidget = new StaticTextWidget(this, font, 0, 0, "00:00.00", TextAlign::Right, kBGColor);
   myLastTimeWidget->setFlags(Widget::FLAG_CLEARBG | Widget::FLAG_NOBG);
   myLastTimeWidget->setTextColor(kColorInfo);
-  xpos = myCurrentTimeWidget->getRight() + BUTTON_GAP * 4;
 
-  // Add buttons
-  myToggleWidget = new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight,
+  // Buttons
+  myToggleWidget = new ButtonWidget(this, font, 0, 0, BUTTON_WIDTH, BUTTON_HEIGHT,
                                     STOP.data(), BUTTON_W, BUTTON_H, kToggle);
   myToggleWidget->setToolTip("Toggle Time Machine mode.");
-  xpos += buttonWidth + BUTTON_GAP;
-
-  myExitWidget = new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight,
+  myExitWidget = new ButtonWidget(this, font, 0, 0, BUTTON_WIDTH, BUTTON_HEIGHT,
                                   EXIT.data(), BUTTON_W, BUTTON_H, kExit);
   myExitWidget->setToolTip("Exit Time Machine dialog.");
-  xpos += buttonWidth + BUTTON_GAP * 4;
-
-  myRewindAllWidget = new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight,
+  myRewindAllWidget = new ButtonWidget(this, font, 0, 0, BUTTON_WIDTH, BUTTON_HEIGHT,
                                        REWIND_ALL.data(), BUTTON_W, BUTTON_H, kRewindAll);
-  xpos += buttonWidth + BUTTON_GAP;
-
-  myRewind1Widget = new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight,
+  myRewind1Widget = new ButtonWidget(this, font, 0, 0, BUTTON_WIDTH, BUTTON_HEIGHT,
                                      REWIND_1.data(), BUTTON_W, BUTTON_H, kRewind1, true);
-  xpos += buttonWidth + BUTTON_GAP;
-
-  myPlayBackWidget = new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight,
+  myPlayBackWidget = new ButtonWidget(this, font, 0, 0, BUTTON_WIDTH, BUTTON_HEIGHT,
                                       PLAYBACK.data(), BUTTON_W, BUTTON_H, kPlayBack);
   myPlayBackWidget->setToolTip("Start playback of Time Machine states.");
-  xpos += buttonWidth + BUTTON_GAP;
-
-  myUnwind1Widget = new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight,
+  myUnwind1Widget = new ButtonWidget(this, font, 0, 0, BUTTON_WIDTH, BUTTON_HEIGHT,
                                      UNWIND_1.data(), BUTTON_W, BUTTON_H, kUnwind1, true);
-  xpos += buttonWidth + BUTTON_GAP;
-
-  myUnwindAllWidget = new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight,
+  myUnwindAllWidget = new ButtonWidget(this, font, 0, 0, BUTTON_WIDTH, BUTTON_HEIGHT,
                                        UNWIND_ALL.data(), BUTTON_W, BUTTON_H, kUnwindAll);
-  xpos = myUnwindAllWidget->getRight() + BUTTON_GAP * 4;
-
-  mySaveAllWidget = new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight,
+  mySaveAllWidget = new ButtonWidget(this, font, 0, 0, BUTTON_WIDTH, BUTTON_HEIGHT,
                                      SAVE_ALL.data(), BUTTON_W, BUTTON_H, kSaveAll);
   mySaveAllWidget->setToolTip("Save all Time Machine states.");
-  xpos = mySaveAllWidget->getRight() + BUTTON_GAP;
-
-  myLoadAllWidget = new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight,
+  myLoadAllWidget = new ButtonWidget(this, font, 0, 0, BUTTON_WIDTH, BUTTON_HEIGHT,
                                      LOAD_ALL.data(), BUTTON_W, BUTTON_H, kLoadAll);
   myLoadAllWidget->setToolTip("Load all Time Machine states.");
-  xpos = myLoadAllWidget->getRight() + BUTTON_GAP * 4;
 
-  // Add message
-  const int mWidth = (myLastTimeWidget->getLeft() - xpos) / font.getMaxCharWidth();
-  myMessageWidget = new StaticTextWidget(this, font, xpos, ypos_s,
-                                         string(mWidth, ' '),
+  // Message (fills the space between the buttons and the last-time readout)
+  myMessageWidget = new StaticTextWidget(this, font, 0, 0, 1, rowHeight, "",
                                          TextAlign::Left, kBGColor);
   myMessageWidget->setFlags(Widget::FLAG_CLEARBG | Widget::FLAG_NOBG);
   myMessageWidget->setTextColor(kColorInfo);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TimeMachineDialog::layout()
+{
+  using GUI::BoxLayout;
+  using GUI::anchoredItem;
+  using GUI::vCentered;
+  using Dir = BoxLayout::Dir;
+
+  const int rowHeight  = Dialog::lineHeight();
+  const int row2Height = std::max(BUTTON_HEIGHT + 2, rowHeight);
+
+  // Row 1: current-index label, timeline (fills), last-index label
+  auto row1 = std::make_unique<BoxLayout>(Dir::Horizontal);
+  row1->addFixed(anchoredItem(myCurrentIdxWidget), myCurrentIdxWidget->getWidth());
+  row1->addSpace(8);
+  row1->addStretch(vCentered(myTimeline, rowHeight / 2 + 6));
+  row1->addSpace(8);
+  row1->addFixed(anchoredItem(myLastIdxWidget), myLastIdxWidget->getWidth());
+
+  // Row 2: current-time label, transport buttons, message (fills), last-time label.
+  // The text readouts are centered on the (taller) icon buttons.
+  auto row2 = std::make_unique<BoxLayout>(Dir::Horizontal);
+  row2->addFixed(vCentered(myCurrentTimeWidget, myCurrentTimeWidget->getHeight()),
+                 myCurrentTimeWidget->getWidth());
+  row2->addSpace(BUTTON_GAP * 4);
+  row2->addFixed(anchoredItem(myToggleWidget), BUTTON_WIDTH);
+  row2->addSpace(BUTTON_GAP);
+  row2->addFixed(anchoredItem(myExitWidget), BUTTON_WIDTH);
+  row2->addSpace(BUTTON_GAP * 4);
+  row2->addFixed(anchoredItem(myRewindAllWidget), BUTTON_WIDTH);
+  row2->addSpace(BUTTON_GAP);
+  row2->addFixed(anchoredItem(myRewind1Widget), BUTTON_WIDTH);
+  row2->addSpace(BUTTON_GAP);
+  row2->addFixed(anchoredItem(myPlayBackWidget), BUTTON_WIDTH);
+  row2->addSpace(BUTTON_GAP);
+  row2->addFixed(anchoredItem(myUnwind1Widget), BUTTON_WIDTH);
+  row2->addSpace(BUTTON_GAP);
+  row2->addFixed(anchoredItem(myUnwindAllWidget), BUTTON_WIDTH);
+  row2->addSpace(BUTTON_GAP * 4);
+  row2->addFixed(anchoredItem(mySaveAllWidget), BUTTON_WIDTH);
+  row2->addSpace(BUTTON_GAP);
+  row2->addFixed(anchoredItem(myLoadAllWidget), BUTTON_WIDTH);
+  row2->addSpace(BUTTON_GAP * 4);
+  row2->addStretch(vCentered(myMessageWidget, myMessageWidget->getHeight()));
+  row2->addFixed(vCentered(myLastTimeWidget, myLastTimeWidget->getHeight()),
+                 myLastTimeWidget->getWidth());
+
+  // Two stacked rows, inset by the HUD borders
+  auto root = std::make_unique<BoxLayout>(Dir::Vertical, 0, H_BORDER, V_BORDER);
+  root->addFixed(std::move(row1), rowHeight);
+  root->addFixed(std::move(row2), row2Height);
+
+  root->doLayout(0, _th, _w, _h - _th);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

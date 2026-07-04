@@ -41,6 +41,7 @@ class TimeMachineDialog : public Dialog
     void setPosition() override;
 
   protected:
+    void layout() override;
     void handleKeyDown(StellaKey key, StellaMod mod, bool repeated) override;
     void handleKeyUp(StellaKey key, StellaMod mod) override;
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
