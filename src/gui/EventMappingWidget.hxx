@@ -43,6 +43,9 @@ class EventMappingWidget : public Widget, public CommandSender
 
     bool isRemapping() const { return myRemapStatus; }
 
+    // Reposition/resize all sub-widgets for the given area (font-sensitive)
+    void setArea(int x, int y, int w, int h) override;
+
     void loadConfig() override;
     void setDefaults();
 
@@ -83,6 +86,7 @@ class EventMappingWidget : public Widget, public CommandSender
     ButtonWidget*     myComboButton{nullptr};
     PopUpWidget*      myFilterPopup{nullptr};
     StringListWidget* myActionsList{nullptr};
+    StaticTextWidget* myActionLabel{nullptr};
     EditTextWidget*   myKeyMapping{nullptr};
 
     unique_ptr<ComboDialog> myComboDialog;

@@ -43,6 +43,10 @@ class PopUpWidget : public EditableWidget
 
     void setID(uInt32 id) override;
 
+    // Set the total widget width (label + value box + drop-down arrow); also
+    // resizes the drop-down menu so it tracks the value box
+    void setWidth(int w) override;
+
     int getTop() const override { return _y + 1; }
     int getBottom() const override { return _y + 1 + getHeight(); }
 

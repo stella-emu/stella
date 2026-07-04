@@ -54,6 +54,10 @@ class ContextMenu : public Dialog, public CommandSender
     /** Add the given items to the widget. */
     void addItems(const VariantList& items);
 
+    /** Set the minimum menu width (the owning PopUpWidget's value-box width);
+        the menu still grows to fit its widest entry. */
+    void setMaxWidth(int width);
+
     /** Enable or disable an item.  Disabled items are greyed out and
         cannot be selected. */
     void setEnabled(int index, bool enable);

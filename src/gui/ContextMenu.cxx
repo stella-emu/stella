@@ -60,6 +60,18 @@ void ContextMenu::addItems(const VariantList& items)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void ContextMenu::setMaxWidth(int width)
+{
+  _maxWidth = width;
+
+  // Recompute the menu width from the new minimum and any existing entries
+  int maxwidth = _maxWidth;
+  for(const auto& e: _entries)
+    maxwidth = std::max(maxwidth, _font.getStringWidth(e.first) + _textOfs * 2 + 2);
+  _w = maxwidth;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ContextMenu::setEnabled(int index, bool enable)
 {
   if(index >= 0 && std::cmp_less(index, _enabled.size()))

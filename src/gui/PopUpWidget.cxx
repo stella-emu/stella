@@ -68,6 +68,14 @@ void PopUpWidget::setID(uInt32 id)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void PopUpWidget::setWidth(int w)
+{
+  Widget::setWidth(w);
+  // Keep the drop-down menu as wide as the value box (total minus the label)
+  myMenu->setMaxWidth(_w - _labelWidth);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PopUpWidget::addItems(const VariantList& items)
 {
   myMenu->addItems(items);

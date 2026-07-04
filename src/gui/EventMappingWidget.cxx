@@ -28,7 +28,10 @@
 #include "ComboDialog.hxx"
 #include "Variant.hxx"
 
+#include "Layout.hxx"
 #include "EventMappingWidget.hxx"
+
+static constexpr int ACTION_LINES = 2;
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 EventMappingWidget::EventMappingWidget(GuiObject* boss, const GUI::Font& font,
@@ -37,18 +40,14 @@ EventMappingWidget::EventMappingWidget(GuiObject* boss, const GUI::Font& font,
     CommandSender(boss)
 {
   const int lineHeight   = boss->dialog().lineHeight(),
-            fontWidth    = boss->dialog().fontWidth(),
+            fontHeight   = boss->dialog().fontHeight(),
             buttonHeight = boss->dialog().buttonHeight(),
-            buttonWidth  = boss->dialog().buttonWidth("Defaults"),
-            VBORDER      = boss->dialog().vBorder(),
-            HBORDER      = boss->dialog().hBorder(),
-            VGAP         = boss->dialog().vGap();
-  constexpr int ACTION_LINES = 2;
-  int xpos = HBORDER, ypos = VBORDER;
-  const int listWidth = _w - buttonWidth - HBORDER * 2 - fontWidth;
-  int listHeight = _h - (2 + ACTION_LINES) * lineHeight - VBORDER + 2;
-
+            buttonWidth  = boss->dialog().buttonWidth("Defaults");
   VariantList items;
+
+  // Widgets are only created here (at placeholder geometry); setArea() assigns
+  // all positions/sizes from the current font and area, so it reflows on font
+  // and dialog-size changes.
 
   VarList::push_back(items, "Emulation", Event::Group::Emulation);
   VarList::push_back(items, " Miscellaneous", Event::Group::Misc);
@@ -64,71 +63,111 @@ EventMappingWidget::EventMappingWidget(GuiObject* boss, const GUI::Font& font,
   VarList::push_back(items, " Debug", Event::Group::Debug);
   VarList::push_back(items, "User Interface", Event::Group::Menu);
 
-  myFilterPopup = new PopUpWidget(boss, font, xpos, ypos,
-                                  listWidth - font.getStringWidth("Events ") - PopUpWidget::dropDownWidth(font),
-                                  lineHeight, items, "Events ", 0, kFilterCmd);
+  myFilterPopup = new PopUpWidget(boss, font, 0, 0, 1, lineHeight,
+                                  items, "Events ", 0, kFilterCmd);
   myFilterPopup->setTarget(this);
   addFocusWidget(myFilterPopup);
-  ypos += lineHeight * 3 / 2;
-  listHeight -= lineHeight * 3 / 2;
 
-  myActionsList = new StringListWidget(boss, font, xpos, ypos, listWidth, listHeight);
+  myActionsList = new StringListWidget(boss, font, 0, 0, 1, lineHeight);
   myActionsList->setTarget(this);
   myActionsList->setEditable(false);
   addFocusWidget(myActionsList);
 
-  // Add remap, erase, cancel and default buttons
-  xpos = _w - HBORDER - buttonWidth + 2;
-  myMapButton = new ButtonWidget(boss, font, xpos, ypos,
-                                 buttonWidth, buttonHeight,
+  // Remap, cancel, erase, reset and combo buttons (font-derived fixed width)
+  myMapButton = new ButtonWidget(boss, font, 0, 0, buttonWidth, buttonHeight,
                                  "Map" + ELLIPSIS, kStartMapCmd);
   myMapButton->setTarget(this);
   addFocusWidget(myMapButton);
 
-  ypos += buttonHeight + VGAP;
-  myCancelMapButton = new ButtonWidget(boss, font, xpos, ypos,
-                                       buttonWidth, buttonHeight,
+  myCancelMapButton = new ButtonWidget(boss, font, 0, 0, buttonWidth, buttonHeight,
                                        "Cancel", kStopMapCmd);
   myCancelMapButton->setToolTip("Cancel current mapping.");
   myCancelMapButton->setTarget(this);
   myCancelMapButton->clearFlags(Widget::FLAG_ENABLED);
   addFocusWidget(myCancelMapButton);
 
-  ypos += buttonHeight + VGAP * 2;
-  myEraseButton = new ButtonWidget(boss, font, xpos, ypos,
-                                   buttonWidth, buttonHeight,
+  myEraseButton = new ButtonWidget(boss, font, 0, 0, buttonWidth, buttonHeight,
                                    "Erase", kEraseCmd);
   myEraseButton->setTarget(this);
   myEraseButton->setToolTip("Erase any mapping for selected event.");
   addFocusWidget(myEraseButton);
 
-  ypos += buttonHeight + VGAP;
-  myResetButton = new ButtonWidget(boss, font, xpos, ypos,
-                                   buttonWidth, buttonHeight,
+  myResetButton = new ButtonWidget(boss, font, 0, 0, buttonWidth, buttonHeight,
                                    "Reset", kResetCmd);
   myResetButton->setToolTip("Reset mapping for selected event to defaults.");
   myResetButton->setTarget(this);
   addFocusWidget(myResetButton);
 
-  ypos += buttonHeight + VGAP * 2;
-  myComboButton = new ButtonWidget(boss, font, xpos, ypos,
-                                    buttonWidth, buttonHeight,
-                                    "Combo" + ELLIPSIS, kComboCmd);
+  myComboButton = new ButtonWidget(boss, font, 0, 0, buttonWidth, buttonHeight,
+                                   "Combo" + ELLIPSIS, kComboCmd);
   myComboButton->setTarget(this);
   addFocusWidget(myComboButton);
 
   myComboDialog = std::make_unique<ComboDialog>(boss, font, EventHandler::getComboList());
 
-  // Show message for currently selected event
-  xpos = HBORDER;
-  ypos = myActionsList->getBottom() + VGAP * 2;
-  const auto* t = new StaticTextWidget(boss, font, xpos, ypos+2, "Action");
-
-  myKeyMapping = new EditTextWidget(boss, font, xpos + t->getWidth() + fontWidth, ypos,
-                                    _w - xpos - t->getWidth() - fontWidth - HBORDER + 2,
-                                    lineHeight + font.getFontHeight() * (ACTION_LINES - 1), "");
+  // Label and (read-only) display for the currently selected event's mapping
+  myActionLabel = new StaticTextWidget(boss, font, 0, 0, "Action");
+  myKeyMapping = new EditTextWidget(boss, font, 0, 0, 1,
+                                    lineHeight + fontHeight * (ACTION_LINES - 1), "");
   myKeyMapping->setEditable(false, true);
   myKeyMapping->clearFlags(Widget::FLAG_RETAIN_FOCUS);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void EventMappingWidget::setArea(int x, int y, int w, int h)
+{
+  using GUI::BoxLayout;
+  using GUI::widgetItem;
+  using Dir = BoxLayout::Dir;
+
+  setPos(x, y);
+  Widget::setWidth(w);
+  Widget::setHeight(h);
+
+  const int lineHeight   = dialog().lineHeight(),
+            fontWidth    = dialog().fontWidth(),
+            fontHeight   = dialog().fontHeight(),
+            buttonHeight = dialog().buttonHeight(),
+            buttonWidth  = dialog().buttonWidth("Defaults"),
+            VBORDER      = dialog().vBorder(),
+            HBORDER      = dialog().hBorder(),
+            VGAP         = dialog().vGap();
+  const int listWidth = w - buttonWidth - HBORDER * 2 - fontWidth;
+  const int listTop = y + VBORDER + lineHeight * 3 / 2;
+  const int listHeight = h - (2 + ACTION_LINES) * lineHeight - VBORDER + 2
+                         - lineHeight * 3 / 2;
+
+  // Event-group filter popup, above the actions list
+  myFilterPopup->setPos(x + HBORDER, y + VBORDER);
+  myFilterPopup->setWidth(listWidth - _font.getStringWidth("Events ")
+                          - PopUpWidget::dropDownWidth(_font));
+
+  // Scrollable list of actions (fills the left side)
+  myActionsList->setPos(x + HBORDER, listTop);
+  myActionsList->setWidth(listWidth);
+  myActionsList->setHeight(listHeight);
+
+  // Right-hand button column, aligned to the list top
+  auto col = std::make_unique<BoxLayout>(Dir::Vertical);
+  col->addFixed(widgetItem(myMapButton), buttonHeight);
+  col->addSpace(VGAP);
+  col->addFixed(widgetItem(myCancelMapButton), buttonHeight);
+  col->addSpace(VGAP * 2);
+  col->addFixed(widgetItem(myEraseButton), buttonHeight);
+  col->addSpace(VGAP);
+  col->addFixed(widgetItem(myResetButton), buttonHeight);
+  col->addSpace(VGAP * 2);
+  col->addFixed(widgetItem(myComboButton), buttonHeight);
+  col->doLayout(x + w - HBORDER - buttonWidth + 2, listTop, buttonWidth,
+                buttonHeight * 5 + VGAP * 6);
+
+  // Selected-event label and its (read-only) key-mapping display
+  const int ypos = myActionsList->getBottom() + VGAP * 2;
+  myActionLabel->setPos(x + HBORDER, ypos + 2);
+  myKeyMapping->setPos(x + HBORDER + myActionLabel->getWidth() + fontWidth, ypos);
+  myKeyMapping->setWidth(w - HBORDER - myActionLabel->getWidth() - fontWidth
+                         - HBORDER + 2);
+  myKeyMapping->setHeight(lineHeight + fontHeight * (ACTION_LINES - 1) + 2);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

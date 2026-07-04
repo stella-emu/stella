@@ -31,6 +31,7 @@
 #include "PopUpWidget.hxx"
 #include "TabWidget.hxx"
 #include "Widget.hxx"
+#include "Layout.hxx"
 #include "Font.hxx"
 #include "MessageBox.hxx"
 #include "MediaFactory.hxx"
@@ -43,31 +44,16 @@ InputDialog::InputDialog(OSystem& osystem, DialogContainer& parent,
     myMaxWidth{max_w},
     myMaxHeight{max_h}
 {
-  const int lineHeight   = Dialog::lineHeight(),
-            fontWidth    = Dialog::fontWidth(),
-            buttonHeight = Dialog::buttonHeight(),
-            VBORDER      = Dialog::vBorder(),
-            HBORDER      = Dialog::hBorder(),
-            VGAP         = Dialog::vGap();
-
-  // Set real dimensions
-  setSize(49 * fontWidth + PopUpWidget::dropDownWidth(_font) + HBORDER * 2,
-          _th + VGAP * 3 + lineHeight + 13 * (lineHeight + VGAP) + VGAP * 9 + buttonHeight + VBORDER * 3,
-          max_w, max_h);
-
-  // The tab widget
-  constexpr int xpos = 2;
-  const int ypos = VGAP + _th;
-  myTab = new TabWidget(this, _font, xpos, ypos,
-                        _w - 2*xpos,
-                        _h -_th - VGAP - buttonHeight - VBORDER * 2);
+  // Widgets are only created here (at placeholder geometry); layout() sizes the
+  // dialog and positions everything from the current font, so it reflows on
+  // font change.  The tab widget's bar geometry is (re)computed in layout() via
+  // TabWidget::updateTabSizes(), so a placeholder size is fine here.
+  myTab = new TabWidget(this, _font, 0, 0, 1, 1);
   addTabWidget(myTab);
 
-  // 1) Event mapper
+  // 1) Event mapper (the composite fills its tab; it reflows via setArea())
   const int tabID = myTab->addTab(" Event Mappings ", TabWidget::AUTO_WIDTH);
-  myEventMapper = new EventMappingWidget(myTab, _font, 2, 2,
-                                             myTab->getWidth(),
-                                             myTab->getHeight() - VGAP);
+  myEventMapper = new EventMappingWidget(myTab, _font, 0, 0, 1, 1);
   myTab->setParentWidget(tabID, myEventMapper);
   addToFocusList(myEventMapper->getFocusList(), myTab, tabID);
   myTab->parentWidget(tabID)->setHelpAnchor("Remapping");
@@ -94,25 +80,63 @@ InputDialog::InputDialog(OSystem& osystem, DialogContainer& parent,
 InputDialog::~InputDialog() = default;
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void InputDialog::addDevicePortTab()
+void InputDialog::layout()
 {
+  using GUI::BoxLayout;
+  using GUI::widgetItem;
+  using Dir = BoxLayout::Dir;
+
   const int lineHeight   = Dialog::lineHeight(),
             fontWidth    = Dialog::fontWidth(),
             buttonHeight = Dialog::buttonHeight(),
             VBORDER      = Dialog::vBorder(),
             HBORDER      = Dialog::hBorder(),
             VGAP         = Dialog::vGap();
+
+  // Size the dialog from the current font, clamped to the available space
+  setSize(49 * fontWidth + PopUpWidget::dropDownWidth(_font) + HBORDER * 2,
+          _th + VGAP * 3 + lineHeight + 13 * (lineHeight + VGAP) + VGAP * 9
+            + buttonHeight + VBORDER * 3,
+          myMaxWidth, myMaxHeight);
+
+  // Position/size the tab widget below the title bar, then recompute its
+  // tab-bar geometry for the current font/width
+  constexpr int xpos = 2;
+  myTab->setPos(xpos, VGAP + _th);
+  myTab->setWidth(_w - 2 * xpos);
+  myTab->setHeight(_h - _th - VGAP - buttonHeight - VBORDER * 2);
+  myTab->updateTabSizes();
+
+  // 1) Event mapper fills its tab, leaving a small bottom gap
+  auto eventCol = std::make_unique<BoxLayout>(Dir::Vertical);
+  eventCol->addStretch(widgetItem(myEventMapper));
+  eventCol->addSpace(VGAP);
+  eventCol->doLayout(0, 0, myTab->getWidth(), myTab->getHeight());
+
+  // 2) Devices & ports, 3) Mouse
+  layoutDevicePortTab();
+  layoutMouseTab();
+
+  // Standard button group (Defaults / OK / Cancel) along the bottom edge
+  layoutButtonGroup();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void InputDialog::addDevicePortTab()
+{
+  const int lineHeight   = Dialog::lineHeight(),
+            fontWidth    = Dialog::fontWidth(),
+            buttonHeight = Dialog::buttonHeight();
   const int swidth = 13 * fontWidth;
+  const int lwidth = _font.getStringWidth("Digital paddle sensitivity ");
   WidgetArray wid;
 
-  // Devices/ports
+  // Devices/ports.  Widgets are created here at placeholder positions;
+  // layoutDevicePortTab() assigns geometry from the current font.
   const int tabID = myTab->addTab(" Devices & Ports ", TabWidget::AUTO_WIDTH);
 
-  int xpos = HBORDER, ypos = VBORDER;
-  int lwidth = _font.getStringWidth("Digital paddle sensitivity ");
-
   // Add digital dead zone setting
-  myDigitalDeadzone = new SliderWidget(myTab, _font, xpos, ypos - 1, swidth, lineHeight,
+  myDigitalDeadzone = new SliderWidget(myTab, _font, 0, 0, swidth, lineHeight,
                                         "Digital dead zone size ",
                                         lwidth, kDDeadzoneChanged, 3 * fontWidth, "%");
   myDigitalDeadzone->setMinValue(Controller::MIN_DIGITAL_DEADZONE);
@@ -123,8 +147,7 @@ void InputDialog::addDevicePortTab()
   wid.push_back(myDigitalDeadzone);
 
   // Add analog dead zone
-  ypos += lineHeight + VGAP;
-  myAnalogDeadzone = new SliderWidget(myTab, _font, xpos, ypos - 1, swidth, lineHeight,
+  myAnalogDeadzone = new SliderWidget(myTab, _font, 0, 0, swidth, lineHeight,
                                       "Analog dead zone size",
                                       lwidth, kADeadzoneChanged, 3 * fontWidth, "%");
   myAnalogDeadzone->setMinValue(Controller::MIN_ANALOG_DEADZONE);
@@ -134,13 +157,10 @@ void InputDialog::addDevicePortTab()
     Event::DecAnalogDeadzone, Event::IncAnalogDeadzone);
   wid.push_back(myAnalogDeadzone);
 
-  ypos += lineHeight + VGAP * (3 - 2);
-  new StaticTextWidget(myTab, _font, xpos, ypos+1, "Analog paddle:");
-  xpos += fontWidth * 2;
+  myAnalogPaddleLabel = new StaticTextWidget(myTab, _font, 0, 0, "Analog paddle:");
 
   // Add analog paddle sensitivity
-  ypos += lineHeight;
-  myPaddleSpeed = new SliderWidget(myTab, _font, xpos, ypos - 1, swidth, lineHeight,
+  myPaddleSpeed = new SliderWidget(myTab, _font, 0, 0, swidth, lineHeight,
                                  "Sensitivity",
                                  lwidth - fontWidth * 2, kPSpeedChanged, 4 * fontWidth, "%");
   myPaddleSpeed->setMinValue(0);
@@ -150,8 +170,7 @@ void InputDialog::addDevicePortTab()
   wid.push_back(myPaddleSpeed);
 
   // Add analog paddle linearity
-  ypos += lineHeight + VGAP;
-  myPaddleLinearity = new SliderWidget(myTab, _font, xpos, ypos - 1, swidth, lineHeight,
+  myPaddleLinearity = new SliderWidget(myTab, _font, 0, 0, swidth, lineHeight,
                                        "Linearity", lwidth - fontWidth * 2, 0, 4 * fontWidth, "%");
   myPaddleLinearity->setMinValue(Paddles::MIN_ANALOG_LINEARITY);
   myPaddleLinearity->setMaxValue(Paddles::MAX_ANALOG_LINEARITY);
@@ -162,8 +181,7 @@ void InputDialog::addDevicePortTab()
   wid.push_back(myPaddleLinearity);
 
   // Add dejitter (analog paddles)
-  ypos += lineHeight + VGAP;
-  myDejitterBase = new SliderWidget(myTab, _font, xpos, ypos - 1, swidth, lineHeight,
+  myDejitterBase = new SliderWidget(myTab, _font, 0, 0, swidth, lineHeight,
                                     "Dejitter averaging", lwidth - fontWidth * 2,
                                     kDejitterAvChanged, 3 * fontWidth);
   myDejitterBase->setMinValue(Paddles::MIN_DEJITTER);
@@ -174,8 +192,7 @@ void InputDialog::addDevicePortTab()
     Event::DecDejtterAveraging, Event::IncDejtterAveraging);
   wid.push_back(myDejitterBase);
 
-  ypos += lineHeight + VGAP;
-  myDejitterDiff = new SliderWidget(myTab, _font, xpos, ypos - 1, swidth, lineHeight,
+  myDejitterDiff = new SliderWidget(myTab, _font, 0, 0, swidth, lineHeight,
                                     "Dejitter reaction", lwidth - fontWidth * 2,
                                     kDejitterReChanged, 3 * fontWidth);
   myDejitterDiff->setMinValue(Paddles::MIN_DEJITTER);
@@ -186,8 +203,7 @@ void InputDialog::addDevicePortTab()
   wid.push_back(myDejitterDiff);
 
   // Add paddle speed (digital emulation)
-  ypos += lineHeight + VGAP * (3 - 2);
-  myDPaddleSpeed = new SliderWidget(myTab, _font, HBORDER, ypos - 1, swidth, lineHeight,
+  myDPaddleSpeed = new SliderWidget(myTab, _font, 0, 0, swidth, lineHeight,
                                     "Digital paddle sensitivity",
                                     lwidth, kDPSpeedChanged, 4 * fontWidth, "%");
   myDPaddleSpeed->setMinValue(1); myDPaddleSpeed->setMaxValue(20);
@@ -195,65 +211,55 @@ void InputDialog::addDevicePortTab()
   myDPaddleSpeed->setToolTip(Event::DecDigitalSense, Event::IncDigitalSense);
   wid.push_back(myDPaddleSpeed);
 
-  ypos += lineHeight + VGAP * (3 - 2);
-  myAutoFire = new CheckboxWidget(myTab, _font, HBORDER, ypos + 1, "Autofire", kAutoFireChanged);
+  myAutoFire = new CheckboxWidget(myTab, _font, 0, 0, "Autofire", kAutoFireChanged);
   myAutoFire->setToolTip(Event::ToggleAutoFire);
   wid.push_back(myAutoFire);
 
-  myAutoFireRate = new SliderWidget(myTab, _font, HBORDER + lwidth - fontWidth * 5,
-    ypos - 1, swidth, lineHeight, "Rate ", 0, kAutoFireRate, 5 * fontWidth, "Hz");
+  myAutoFireRate = new SliderWidget(myTab, _font, 0, 0, swidth, lineHeight,
+    "Rate ", 0, kAutoFireRate, 5 * fontWidth, "Hz");
   myAutoFireRate->setMinValue(0); myAutoFireRate->setMaxValue(30);
   myAutoFireRate->setTickmarkIntervals(6);
   myAutoFireRate->setToolTip(Event::DecreaseAutoFire, Event::IncreaseAutoFire);
   wid.push_back(myAutoFireRate);
 
   // Add 'allow all 4 directions' for joystick
-  ypos += lineHeight + VGAP * (4 - 2);
-  myAllowAll4 = new CheckboxWidget(myTab, _font, HBORDER, ypos,
+  myAllowAll4 = new CheckboxWidget(myTab, _font, 0, 0,
                                    "Allow all 4 directions on joystick");
   myAllowAll4->setToolTip(Event::ToggleFourDirections);
   wid.push_back(myAllowAll4);
 
   // Enable/disable modifier key-combos
-  ypos += lineHeight + VGAP;
-  myModCombo = new CheckboxWidget(myTab, _font, HBORDER, ypos,
+  myModCombo = new CheckboxWidget(myTab, _font, 0, 0,
                                   "Use modifier key combos");
   myModCombo->setToolTip(Event::ToggleKeyCombos);
   wid.push_back(myModCombo);
-  ypos += lineHeight + VGAP;
 
   // Stelladaptor mappings
-  mySAPort = new CheckboxWidget(myTab, _font, HBORDER, ypos,
+  mySAPort = new CheckboxWidget(myTab, _font, 0, 0,
                                 "Swap Stelladaptor ports");
   mySAPort->setToolTip(Event::ToggleSAPortOrder);
   wid.push_back(mySAPort);
 
-  // Add EEPROM erase (part 1/2)
-  ypos += VGAP * (3 - 1);
-  int fwidth = _font.getStringWidth("AtariVox/SaveKey");
-  new StaticTextWidget(myTab, _font, _w - HBORDER - 2 - fwidth, ypos,
-                       "AtariVox/SaveKey");
+  // EEPROM erase group heading (right column)
+  myAtariVoxLabel = new StaticTextWidget(myTab, _font, 0, 0, "AtariVox/SaveKey");
 
   // Show joystick database
-  ypos += lineHeight;
-  lwidth = Dialog::buttonWidth("Controller Database" + ELLIPSIS);
-  myJoyDlgButton = new ButtonWidget(myTab, _font, HBORDER, ypos, lwidth, buttonHeight,
+  myJoyDlgButton = new ButtonWidget(myTab, _font, 0, 0,
+                                    Dialog::buttonWidth("Controller Database" + ELLIPSIS),
+                                    buttonHeight,
                                     "Controller Database" + ELLIPSIS, kDBButtonPressed);
   wid.push_back(myJoyDlgButton);
 
-  // Add EEPROM erase (part 1/2)
-  myEraseEEPROMButton = new ButtonWidget(myTab, _font, _w - HBORDER - 2 - fwidth, ypos,
-                                         fwidth, buttonHeight,
-                                        "Erase EEPROM", kEEButtonPressed);
+  // Erase EEPROM (right column, aligned under the heading)
+  myEraseEEPROMButton = new ButtonWidget(myTab, _font, 0, 0,
+                                         _font.getStringWidth("AtariVox/SaveKey"),
+                                         buttonHeight, "Erase EEPROM", kEEButtonPressed);
   wid.push_back(myEraseEEPROMButton);
 
-  // Add AtariVox serial port
-  ypos += lineHeight + VGAP * 3;
-  lwidth = _font.getStringWidth("AtariVox serial port ");
-  fwidth = _w - HBORDER * 2 - 2 - lwidth - PopUpWidget::dropDownWidth(_font);
-  myAVoxPort = new PopUpWidget(myTab, _font, HBORDER, ypos, fwidth, lineHeight,
-                  VariantList{}, "AtariVox serial port ", lwidth,
-                  kCursorStateChanged);
+  // Add AtariVox serial port (width set in layout)
+  myAVoxPort = new PopUpWidget(myTab, _font, 0, 0, 1, lineHeight,
+                  VariantList{}, "AtariVox serial port ",
+                  _font.getStringWidth("AtariVox serial port "), kCursorStateChanged);
   myAVoxPort->setEditable(true);
   wid.push_back(myAVoxPort);
 
@@ -264,63 +270,115 @@ void InputDialog::addDevicePortTab()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void InputDialog::addMouseTab()
+void InputDialog::layoutDevicePortTab()
 {
+  using GUI::BoxLayout;
+  using GUI::anchoredItem;
+  using GUI::indentedItem;
+  using Dir = BoxLayout::Dir;
+
   const int lineHeight = Dialog::lineHeight(),
             fontWidth  = Dialog::fontWidth(),
             VBORDER    = Dialog::vBorder(),
             HBORDER    = Dialog::hBorder(),
-            VGAP       = Dialog::vGap(),
+            VGAP       = Dialog::vGap();
+  const int lwidth = _font.getStringWidth("Digital paddle sensitivity ");
+
+  // Main vertical column of the tab
+  auto col = std::make_unique<BoxLayout>(Dir::Vertical, 0, HBORDER, VBORDER);
+  col->addFixed(anchoredItem(myDigitalDeadzone), lineHeight);
+  col->addSpace(VGAP);
+  col->addFixed(anchoredItem(myAnalogDeadzone), lineHeight);
+  col->addSpace(VGAP);
+  col->addFixed(anchoredItem(myAnalogPaddleLabel), lineHeight);
+  // The analog-paddle sliders are indented; their reduced label widths keep the
+  // slider tracks aligned with the non-indented sliders
+  col->addFixed(indentedItem(myPaddleSpeed, fontWidth * 2), lineHeight);
+  col->addSpace(VGAP);
+  col->addFixed(indentedItem(myPaddleLinearity, fontWidth * 2), lineHeight);
+  col->addSpace(VGAP);
+  col->addFixed(indentedItem(myDejitterBase, fontWidth * 2), lineHeight);
+  col->addSpace(VGAP);
+  col->addFixed(indentedItem(myDejitterDiff, fontWidth * 2), lineHeight);
+  col->addSpace(VGAP);
+  col->addFixed(anchoredItem(myDPaddleSpeed), lineHeight);
+  col->addSpace(VGAP);
+  // Autofire checkbox with its rate slider to the right
+  auto autofireRow = std::make_unique<BoxLayout>(Dir::Horizontal);
+  autofireRow->addFixed(anchoredItem(myAutoFire), lwidth - fontWidth * 5);
+  autofireRow->addStretch(anchoredItem(myAutoFireRate));
+  col->addFixed(std::move(autofireRow), lineHeight);
+  col->addSpace(VGAP * 2);
+  col->addFixed(anchoredItem(myAllowAll4), lineHeight);
+  col->addSpace(VGAP);
+  col->addFixed(anchoredItem(myModCombo), lineHeight);
+  col->addSpace(VGAP);
+  col->addFixed(anchoredItem(mySAPort), lineHeight);
+  col->addSpace(VGAP * 2);
+  col->addFixed(anchoredItem(myJoyDlgButton), lineHeight);  // overflows to buttonHeight
+  col->addSpace(VGAP * 3);
+  col->addFixed(anchoredItem(myAVoxPort), lineHeight);
+  col->doLayout(0, 0, myTab->getWidth(), myTab->getHeight());
+
+  // AtariVox serial-port popup fills the remaining width
+  myAVoxPort->setWidth(_w - HBORDER * 2 - 2);
+
+  // Right-column heading + Erase EEPROM button, aligned to the joystick-DB row
+  const int rx = myTab->getWidth() - HBORDER - 2 - myEraseEEPROMButton->getWidth();
+  myAtariVoxLabel->setPos(rx, myJoyDlgButton->getTop() - lineHeight);
+  myEraseEEPROMButton->setPos(rx, myJoyDlgButton->getTop());
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void InputDialog::addMouseTab()
+{
+  const int lineHeight = Dialog::lineHeight(),
+            fontWidth  = Dialog::fontWidth(),
             INDENT     = Dialog::indent();
   const int swidth = 13 * fontWidth;
+  const int lwidth = _font.getStringWidth("Use mouse as a controller ");
+  const int pwidth = _font.getStringWidth("-UI, -Emulation");
   WidgetArray wid;
   VariantList items;
 
-  // Mouse
+  // Mouse.  Widgets are created here at placeholder positions; layoutMouseTab()
+  // assigns geometry from the current font.
   const int tabID = myTab->addTab("  Mouse  ", TabWidget::AUTO_WIDTH);
-
-  int xpos = HBORDER, ypos = VBORDER;
-  int lwidth = _font.getStringWidth("Use mouse as a controller ");
-  const int pwidth = _font.getStringWidth("-UI, -Emulation");
 
   // Use mouse as controller
   VarList::push_back(items, "Always", "always");
   VarList::push_back(items, "Analog devices", "analog");
   VarList::push_back(items, "Never", "never");
-  myMouseControl = new PopUpWidget(myTab, _font, xpos, ypos, pwidth, lineHeight, items,
+  myMouseControl = new PopUpWidget(myTab, _font, 0, 0, pwidth, lineHeight, items,
                                    "Use mouse as a controller ", lwidth, kMouseCtrlChanged);
   myMouseControl->setToolTip(Event::PrevMouseAsController, Event::NextMouseAsController);
   wid.push_back(myMouseControl);
 
-  ypos += lineHeight + VGAP;
-  myMouseSensitivity = new StaticTextWidget(myTab, _font, xpos, ypos + 1, "Sensitivity:");
+  myMouseSensitivity = new StaticTextWidget(myTab, _font, 0, 0, "Sensitivity:");
 
-  // Add paddle speed (mouse emulation)
-  xpos += INDENT;  ypos += lineHeight + VGAP;
-  lwidth -= INDENT;
-  myMPaddleSpeed = new SliderWidget(myTab, _font, xpos, ypos - 1, swidth, lineHeight,
+  // Add paddle speed (mouse emulation); the sensitivity sliders are indented, so
+  // their reduced label widths keep the tracks aligned with the popups above
+  myMPaddleSpeed = new SliderWidget(myTab, _font, 0, 0, swidth, lineHeight,
                                     "Paddle",
-                                    lwidth, kMPSpeedChanged, 4 * fontWidth, "%");
+                                    lwidth - INDENT, kMPSpeedChanged, 4 * fontWidth, "%");
   myMPaddleSpeed->setMinValue(1); myMPaddleSpeed->setMaxValue(20);
   myMPaddleSpeed->setTickmarkIntervals(4);
   myMPaddleSpeed->setToolTip(Event::DecMousePaddleSense, Event::IncMousePaddleSense);
   wid.push_back(myMPaddleSpeed);
 
   // Add trackball speed
-  ypos += lineHeight + VGAP;
-  myTrackBallSpeed = new SliderWidget(myTab, _font, xpos, ypos - 1, swidth, lineHeight,
+  myTrackBallSpeed = new SliderWidget(myTab, _font, 0, 0, swidth, lineHeight,
                                       "Trackball",
-                                      lwidth, kTBSpeedChanged, 4 * fontWidth, "%");
+                                      lwidth - INDENT, kTBSpeedChanged, 4 * fontWidth, "%");
   myTrackBallSpeed->setMinValue(1); myTrackBallSpeed->setMaxValue(20);
   myTrackBallSpeed->setTickmarkIntervals(4);
   myTrackBallSpeed->setToolTip(Event::DecMouseTrackballSense, Event::IncMouseTrackballSense);
   wid.push_back(myTrackBallSpeed);
 
   // Add driving controller speed
-  ypos += lineHeight + VGAP;
-  myDrivingSpeed = new SliderWidget(myTab, _font, xpos, ypos - 1, swidth, lineHeight,
+  myDrivingSpeed = new SliderWidget(myTab, _font, 0, 0, swidth, lineHeight,
                                     "Driving controller",
-                                    lwidth, kDCSpeedChanged, 4 * fontWidth, "%");
+                                    lwidth - INDENT, kDCSpeedChanged, 4 * fontWidth, "%");
   myDrivingSpeed->setMinValue(1); myDrivingSpeed->setMaxValue(20);
   myDrivingSpeed->setTickmarkIntervals(4);
   myDrivingSpeed->setToolTip("Adjust driving controller sensitivity for digital and mouse input.",
@@ -328,14 +386,12 @@ void InputDialog::addMouseTab()
   wid.push_back(myDrivingSpeed);
 
   // Mouse cursor state
-  lwidth += INDENT;
-  ypos += lineHeight + VGAP * 4;
   items.clear();
   VarList::push_back(items, "-UI, -Emulation", "0");
   VarList::push_back(items, "-UI, +Emulation", "1");
   VarList::push_back(items, "+UI, -Emulation", "2");
   VarList::push_back(items, "+UI, +Emulation", "3");
-  myCursorState = new PopUpWidget(myTab, _font, HBORDER, ypos, pwidth, lineHeight, items,
+  myCursorState = new PopUpWidget(myTab, _font, 0, 0, pwidth, lineHeight, items,
                                   "Mouse cursor visibility ", lwidth, kCursorStateChanged);
   myCursorState->setToolTip(Event::PreviousCursorVisbility, Event::NextCursorVisbility);
   wid.push_back(myCursorState);
@@ -344,8 +400,7 @@ void InputDialog::addMouseTab()
 #endif
 
   // Grab mouse (in windowed mode)
-  ypos += lineHeight + VGAP;
-  myGrabMouse = new CheckboxWidget(myTab, _font, HBORDER, ypos,
+  myGrabMouse = new CheckboxWidget(myTab, _font, 0, 0,
                                    "Grab mouse in emulation mode");
   myGrabMouse->setToolTip(Event::ToggleGrabMouse);
   wid.push_back(myGrabMouse);
@@ -357,6 +412,37 @@ void InputDialog::addMouseTab()
   addToFocusList(wid, myTab, tabID);
 
   myTab->parentWidget(tabID)->setHelpAnchor("Mouse");
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void InputDialog::layoutMouseTab()
+{
+  using GUI::BoxLayout;
+  using GUI::anchoredItem;
+  using GUI::indentedItem;
+  using Dir = BoxLayout::Dir;
+
+  const int lineHeight = Dialog::lineHeight(),
+            VBORDER    = Dialog::vBorder(),
+            HBORDER    = Dialog::hBorder(),
+            VGAP       = Dialog::vGap(),
+            INDENT     = Dialog::indent();
+
+  auto col = std::make_unique<BoxLayout>(Dir::Vertical, 0, HBORDER, VBORDER);
+  col->addFixed(anchoredItem(myMouseControl), lineHeight);
+  col->addSpace(VGAP);
+  col->addFixed(anchoredItem(myMouseSensitivity), lineHeight);
+  col->addSpace(VGAP);
+  col->addFixed(indentedItem(myMPaddleSpeed, INDENT), lineHeight);
+  col->addSpace(VGAP);
+  col->addFixed(indentedItem(myTrackBallSpeed, INDENT), lineHeight);
+  col->addSpace(VGAP);
+  col->addFixed(indentedItem(myDrivingSpeed, INDENT), lineHeight);
+  col->addSpace(VGAP * 4);
+  col->addFixed(anchoredItem(myCursorState), lineHeight);
+  col->addSpace(VGAP);
+  col->addFixed(anchoredItem(myGrabMouse), lineHeight);
+  col->doLayout(0, 0, myTab->getWidth(), myTab->getHeight());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

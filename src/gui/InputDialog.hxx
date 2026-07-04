@@ -46,6 +46,8 @@ class InputDialog : public Dialog
     void setDefaults() override;
 
   protected:
+    void layout() override;
+
     // disable repeat during and directly after mapping events
     bool repeatEnabled() override;
 
@@ -60,6 +62,8 @@ class InputDialog : public Dialog
   private:
     void addDevicePortTab();
     void addMouseTab();
+    void layoutDevicePortTab();
+    void layoutMouseTab();
 
     void handleMouseControlState();
     void handleCursorState();
@@ -103,11 +107,13 @@ class InputDialog : public Dialog
     SliderWidget*     myDejitterBase{nullptr};
     SliderWidget*     myDejitterDiff{nullptr};
     SliderWidget*     myDPaddleSpeed{nullptr};
+    StaticTextWidget* myAnalogPaddleLabel{nullptr};
     CheckboxWidget*   myAutoFire{nullptr};
     SliderWidget*     myAutoFireRate{nullptr};
     CheckboxWidget*   myAllowAll4{nullptr};
     CheckboxWidget*   myModCombo{nullptr};
 
+    StaticTextWidget* myAtariVoxLabel{nullptr};
     ButtonWidget*     myJoyDlgButton{nullptr};
     ButtonWidget*     myEraseEEPROMButton{nullptr};
 
