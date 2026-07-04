@@ -1316,7 +1316,7 @@ bool TIA::enableFixedColors(bool enable)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool TIA::setFixedColorPalette(string_view colors)
 {
-  for(size_t i = 0; i < std::max<size_t>(6, colors.size()); ++i)
+  for(size_t i = 0; i < std::min<size_t>(6, colors.size()); ++i)
   {
     switch(colors[i])
     {
@@ -1633,16 +1633,43 @@ void TIA::onHalt()
 //      then either the HBLANK or visible-frame tick for each sprite, then
 //      accumulate collisions (skipped during VBLANK to match real hardware).
 //   3. Advance the master horizontal counter; wrap into next scanline at 228.
-//   4. Tick audio (sums per-clock volumes; the two-phase clock fires at 4
-//      of 228 positions per scanline — see Audio::tick).
+//
+// Audio is processed up front for the whole batch: nothing in the per-clock
+// loop can affect audio state (AUDxx writes are applied in poke(), outside
+// cycle(), and delayedWrite() never touches audio), and the audio clock
+// free-runs on total color clocks independent of myHctr — see Audio::tick.
 //
 // The full sprite path (step 2) is bypassed once myLinesSinceChange reaches
 // 2: subsequent lines are memcpy clones of the previous one until the next
 // state change calls flushLineCache(). This is the line cache fast path.
+// When it is active and no delayed writes are pending, no per-clock work
+// remains at all, so the loop skips to the next line boundary in one step.
 void TIA::cycle(uInt32 colorClocks)
 {
-  for (uInt32 i = 0; i < colorClocks; ++i)
+#ifdef SOUND_SUPPORT
+  myAudio.tick(colorClocks);
+#endif
+
+  while (colorClocks > 0)
   {
+    if (myLinesSinceChange >= 2 && myDelayQueue.empty())
+    {
+      // Once empty, the delay queue stays empty for the rest of the batch
+      // (only poke() pushes entries), so nothing can change until the next
+      // line boundary
+      const uInt32 chunk =
+        std::min(colorClocks, static_cast<uInt32>(TIAConstants::H_CLOCKS - myHctr));
+
+      myHctr = static_cast<uInt8>(myHctr + chunk);
+      myTimestamp += chunk;
+      colorClocks -= chunk;
+
+      if (myHctr >= TIAConstants::H_CLOCKS)
+        nextLine();
+
+      continue;
+    }
+
     myDelayQueue.execute(
       [this] (uInt8 address, uInt8 value) {delayedWrite(address, value);}
     );
@@ -1663,11 +1690,8 @@ void TIA::cycle(uInt32 colorClocks)
     if (++myHctr >= TIAConstants::H_CLOCKS) [[unlikely]]
       nextLine();
 
-  #ifdef SOUND_SUPPORT
-    myAudio.tick();
-  #endif
-
     ++myTimestamp;
+    --colorClocks;
   }
 }
 

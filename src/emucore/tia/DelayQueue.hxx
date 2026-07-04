@@ -58,9 +58,16 @@ class DelayQueue : public Serializable
     /**
       Execute all writes scheduled for the current clock and advance the
       queue by one slot. The executor callable receives (address, value)
-      for each due write.
+      for each due write. When the queue is completely empty this is a
+      no-op: slot positions only matter relative to myIndex, so an idle
+      queue can stand still.
      */
     template<typename T> void execute(T executor);
+
+    /**
+      Whether no writes are pending anywhere in the queue.
+     */
+    bool empty() const { return myPendingCount == 0; }
 
     /**
       Serializable methods (see that class for more information).
@@ -73,6 +80,9 @@ class DelayQueue : public Serializable
     std::array<DelayQueueMember<capacity>, length> myMembers;
     // Index of the "current" slot (next to execute)
     uInt8 myIndex{0};
+    // Total number of pending writes across all slots; lets execute()
+    // skip all queue work on the (overwhelmingly common) empty clocks
+    uInt16 myPendingCount{0};
 
   private:
     // Following constructors and assignment operators not supported
@@ -96,6 +106,7 @@ void DelayQueue<length, capacity>::push(uInt8 address, uInt8 value, uInt8 delay)
 
   const uInt8 index = smartmod<length>(myIndex + delay);
   myMembers[index].push(address, value);
+  ++myPendingCount;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -106,6 +117,7 @@ void DelayQueue<length, capacity>::reset()
     myMembers[i].clear();
 
   myIndex = 0;
+  myPendingCount = 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -113,7 +125,11 @@ template<unsigned length, unsigned capacity>
 template<typename T>
 void DelayQueue<length, capacity>::execute(T executor)
 {
+  if (myPendingCount == 0) return;
+
   DelayQueueMember<capacity>& currentMember = myMembers[myIndex];
+
+  myPendingCount -= currentMember.mySize;
 
   for (uInt8 i = 0; i < currentMember.mySize; ++i) {
     executor(currentMember.myEntries[i].address, currentMember.myEntries[i].value);
@@ -154,8 +170,14 @@ bool DelayQueue<length, capacity>::load(Serializer& in)
   {
     if (in.getInt() != length) throw std::runtime_error("delay queue length mismatch");
 
+    // myPendingCount is derived state, recomputed here rather than being
+    // part of the save format
+    myPendingCount = 0;
     for (uInt32 i = 0; i < length; ++i)
+    {
       myMembers[i].load(in);
+      myPendingCount += myMembers[i].mySize;
+    }
 
     myIndex = in.getByte();
   }
