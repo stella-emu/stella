@@ -1418,7 +1418,7 @@ void LauncherDialog::openGameProperties()
   {
     // Create game properties dialog
     myDialog = std::make_unique<GameInfoDialog>(instance(), parent(),
-      instance().frameBuffer().font(), this, _w, _h);
+      instance().frameBuffer().font(), this);
     myDialog->open();
   }
 }

@@ -237,14 +237,9 @@ void OptionsDialog::handleCommand(CommandSender* sender, int cmd,
     }
 
     case kInfoCmd:
-    {
-      uInt32 w = 0, h = 0;
-
-      getDynamicBounds(w, h);
-      myDialog = std::make_unique<GameInfoDialog>(instance(), parent(), _font, this, w, h);
+      myDialog = std::make_unique<GameInfoDialog>(instance(), parent(), _font, this);
       myDialog->open();
       break;
-    }
 
 #ifdef CHEATCODE_SUPPORT
     case kCheatCmd:

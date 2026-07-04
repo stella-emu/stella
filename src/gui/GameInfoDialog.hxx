@@ -24,6 +24,7 @@ class EditTextWidget;
 class PopUpWidget;
 class StaticTextWidget;
 class RadioButtonGroup;
+class RadioButtonWidget;
 class TabWidget;
 class SliderWidget;
 class QuadTariDialog;
@@ -37,7 +38,7 @@ class GameInfoDialog : public Dialog, public CommandSender
 {
   public:
     GameInfoDialog(OSystem& osystem, DialogContainer& parent,
-                   const GUI::Font& font, GuiObject* boss, int max_w, int max_h);
+                   const GUI::Font& font, GuiObject* boss);
     ~GameInfoDialog() override;
 
     void loadConfig() override;
@@ -45,6 +46,7 @@ class GameInfoDialog : public Dialog, public CommandSender
     void setDefaults() override;
 
   protected:
+    void layout() override;
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 
   private:
@@ -53,6 +55,12 @@ class GameInfoDialog : public Dialog, public CommandSender
     void addControllersTab();
     void addCartridgeTab();
     void addHighScoresTab();
+
+    void layoutEmulationTab();
+    void layoutConsoleTab();
+    void layoutControllersTab();
+    void layoutCartridgeTab();
+    void layoutHighScoresTab();
 
     // load the properties for the 'Emulation' tab
     void loadEmulationProperties(const Properties& props);
@@ -101,11 +109,18 @@ class GameInfoDialog : public Dialog, public CommandSender
     CheckboxWidget*   myPhosphor{nullptr};
     SliderWidget*     myPPBlend{nullptr};
     CheckboxWidget*   mySound{nullptr};
+    StaticTextWidget* myEmulInfo{nullptr};
 
     // Console properties
     RadioButtonGroup* myLeftDiffGroup{nullptr};
     RadioButtonGroup* myRightDiffGroup{nullptr};
     RadioButtonGroup* myTVTypeGroup{nullptr};
+    StaticTextWidget* myTVTypeLabel{nullptr};
+    StaticTextWidget* myLeftDiffLabel{nullptr};
+    StaticTextWidget* myRightDiffLabel{nullptr};
+    std::array<RadioButtonWidget*, 2> myTVType{nullptr};
+    std::array<RadioButtonWidget*, 2> myLeftDiff{nullptr};
+    std::array<RadioButtonWidget*, 2> myRightDiff{nullptr};
 
     // Controller properties
     StaticTextWidget* myLeftPortLabel{nullptr};
@@ -132,6 +147,8 @@ class GameInfoDialog : public Dialog, public CommandSender
     unique_ptr<QuadTariDialog> myQuadTariDialog;
 
     // Cartridge properties
+    // Row labels: Name/MD5/Manufacturer/Model/Rarity/Note/Link/Bezelname
+    std::array<StaticTextWidget*, 8> myCartLabels{nullptr};
     EditTextWidget*   myName{nullptr};
     EditTextWidget*   myMD5{nullptr};
     EditTextWidget*   myManufacturer{nullptr};
