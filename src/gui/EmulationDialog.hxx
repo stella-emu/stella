@@ -36,8 +36,6 @@ class EmulationDialog : public Dialog
   protected:
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 
-    // (Re)position all widgets from the current font metrics; the constructor
-    // only creates them
     void layout() override;
 
   private:

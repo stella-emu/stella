@@ -307,7 +307,7 @@ void DeveloperDialog::layoutEmulationTab()
   // Usage note along the bottom of the tab
   myEmuInfo->setPos(HBORDER,
       myTab->getHeight() - fontHeight - infofont.getFontHeight() - VGAP - VBORDER);
-  myEmuInfo->setWidth(infofont.getStringWidth("(*) Change requires a reload for ELF ROMs"));
+  myEmuInfo->setWidth(infofont.getStringWidth(myEmuInfo->getLabel()));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -625,10 +625,10 @@ void DeveloperDialog::layoutVideoTab()
                                  myDbgColour[i]->getTop());
 
   // Usage note along the bottom of the tab
-  const int lwidth = infofont.getStringWidth("(*) Colors identical for player and developer settings");
   myVideoInfo->setPos(HBORDER,
       myTab->getHeight() - fontHeight - infofont.getFontHeight() - VGAP - VBORDER);
-  myVideoInfo->setWidth(std::min(lwidth, _w - HBORDER * 2));
+  myVideoInfo->setWidth(std::min(infofont.getStringWidth(myVideoInfo->getLabel()),
+                                 _w - HBORDER * 2));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -760,10 +760,10 @@ void DeveloperDialog::layoutTimeMachineTab()
   col->doLayout(0, 0, myTab->getWidth(), myTab->getHeight());
 
   // Usage note along the bottom of the tab
-  const int lwidth = infofont.getStringWidth("(*) Any size change clears the buffer");
   myTMInfo->setPos(HBORDER,
       myTab->getHeight() - fontHeight - infofont.getFontHeight() - VGAP - VBORDER);
-  myTMInfo->setWidth(std::min(lwidth, _w - HBORDER * 2));
+  myTMInfo->setWidth(std::min(infofont.getStringWidth(myTMInfo->getLabel()),
+                              _w - HBORDER * 2));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

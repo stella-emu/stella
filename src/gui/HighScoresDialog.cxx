@@ -178,6 +178,9 @@ HighScoresDialog::HighScoresDialog(OSystem& osystem, DialogContainer& parent,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+HighScoresDialog::~HighScoresDialog() = default;
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void HighScoresDialog::layout()
 {
   using GUI::GridLayout;
@@ -279,9 +282,6 @@ void HighScoresDialog::layout()
   // Standard button group (Reset / Save / Cancel) along the bottom
   layoutButtonGroup();
 }
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-HighScoresDialog::~HighScoresDialog() = default;
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void HighScoresDialog::loadConfig()

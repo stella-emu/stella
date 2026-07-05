@@ -77,6 +77,9 @@ AboutDialog::AboutDialog(OSystem& osystem, DialogContainer& parent,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+AboutDialog::~AboutDialog() = default;
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void AboutDialog::layout()
 {
   using GUI::BoxLayout;
@@ -122,9 +125,6 @@ void AboutDialog::layout()
                        buttonWidth * 2 + fontWidth, buttonHeight);
   layoutButtonGroup();
 }
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-AboutDialog::~AboutDialog() = default;
 
 // The following commands can be put at the start of a line (all subject to change):
 //   \C, \L, \R  -- set center/left/right alignment

@@ -86,6 +86,9 @@ GameInfoDialog::GameInfoDialog(
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+GameInfoDialog::~GameInfoDialog() = default;
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void GameInfoDialog::layout()
 {
   const GUI::Font& ifont = instance().frameBuffer().infoFont();
@@ -118,9 +121,6 @@ void GameInfoDialog::layout()
   // Standard button group (Defaults / Export / OK / Cancel) along the bottom
   layoutButtonGroup();
 }
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-GameInfoDialog::~GameInfoDialog() = default;
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void GameInfoDialog::addEmulationTab()

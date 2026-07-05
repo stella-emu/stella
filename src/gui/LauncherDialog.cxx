@@ -472,7 +472,8 @@ void LauncherDialog::layout()
   filterRow->addSpace(LBL_GAP * 2);
   if(myFilterLabel)
   {
-    filterRow->addFixed(vCentered(myFilterLabel, fontHeight), _font.getStringWidth("Filter"));
+    filterRow->addFixed(vCentered(myFilterLabel, fontHeight),
+                        _font.getStringWidth(myFilterLabel->getLabel()));
     filterRow->addSpace(LBL_GAP);
   }
   filterRow->addStretch(widgetItem(myPattern, EditTextWidget::calcWidth(_font, "123456")));

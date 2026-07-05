@@ -375,10 +375,10 @@ void UIDialog::layoutLookAndFeelTab()
   myCenter->setPos(xpos2, myPositionPopup->getTop() + 1);
 
   // Info message along the bottom of the tab
-  const int lwidth = ifont.getStringWidth("(*) Change requires an application restart");
   myLookFeelInfo->setPos(HBORDER,
       myTab->getHeight() - fontHeight - ifont.getFontHeight() - VGAP - VBORDER);
-  myLookFeelInfo->setWidth(std::min(lwidth, _w - HBORDER * 2));
+  myLookFeelInfo->setWidth(std::min(ifont.getStringWidth(myLookFeelInfo->getLabel()),
+                                    _w - HBORDER * 2));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -447,10 +447,10 @@ void UIDialog::layoutLauncherTab()
   myLauncherButtonsWidget->setPos(xpos2, rypos + 1);
 
   // Info message along the bottom of the tab
-  const int lwInfo = ifont.getStringWidth("(*) Changes may require an application restart");
   myLauncherInfo->setPos(HBORDER,
       myTab->getHeight() - fontHeight - ifont.getFontHeight() - VGAP - VBORDER);
-  myLauncherInfo->setWidth(std::min(lwInfo, _w - HBORDER * 2));
+  myLauncherInfo->setWidth(std::min(ifont.getStringWidth(myLauncherInfo->getLabel()),
+                                    _w - HBORDER * 2));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
