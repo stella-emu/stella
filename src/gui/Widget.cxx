@@ -597,6 +597,18 @@ StaticTextWidget::StaticTextWidget(GuiObject* boss, const GUI::Font& font,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void StaticTextWidget::refreshFontMetrics()
+{
+  Widget::refreshFontMetrics();
+
+  // Recompute the natural (font + label derived) size, matching the short ctor.
+  // Runs only during a live font-change broadcast; the owning dialog's layout()
+  // re-runs immediately after and overrides this where it sets an explicit size.
+  _w = _font.getStringWidth(_label);
+  _h = _font.getLineHeight();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void StaticTextWidget::setValue(int value)
 {
   setLabel(std::to_string(value));
@@ -801,6 +813,17 @@ ButtonWidget::ButtonWidget(GuiObject* boss, const GUI::Font& font,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void ButtonWidget::refreshFontMetrics()
+{
+  // A button's size (width via Dialog::buttonWidth, height, icon extents) is
+  // chosen by its owning dialog and re-applied by layout()/layoutButtonGroup(),
+  // so only refresh the cached font metrics here.  This also deliberately blocks
+  // the StaticTextWidget size recompute (which would shrink a button to its bare
+  // label width) from being inherited by ButtonWidget and its subclasses.
+  Widget::refreshFontMetrics();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ButtonWidget::handleMouseEntered()
 {
   if(isEnabled())
@@ -919,6 +942,35 @@ CheckboxWidget::CheckboxWidget(GuiObject* boss, const GUI::Font& font,
     _textY = (_boxSize - _font.getFontHeight()) / 2;
 
   setFill(CheckboxWidget::FillType::Normal);  // NOLINT(clang-analyzer-optin.cplusplus.VirtualCall)
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void CheckboxWidget::refreshFontMetrics()
+{
+  Widget::refreshFontMetrics();
+
+  // Recompute the box + label geometry from the live font (mirrors the ctor).
+  // A checkbox is fully font + label derived, so this is the complete size.
+  _boxSize = boxSize(_font);
+
+  if(_label.empty())
+    _w = _boxSize;
+  else
+    _w = _font.getStringWidth(_label) + _boxSize + _font.getMaxCharWidth() * 0.75;
+  _h = _font.getFontHeight() < _boxSize ? _boxSize : _font.getFontHeight();
+
+  // Depending on font size, either the font or box will need to be
+  // centered vertically
+  if(_h > _boxSize)  // center box
+  {
+    _boxY = (_h - _boxSize) / 2;
+    _textY = 0;
+  }
+  else               // center text
+  {
+    _boxY = 0;
+    _textY = (_boxSize - _font.getFontHeight()) / 2;
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

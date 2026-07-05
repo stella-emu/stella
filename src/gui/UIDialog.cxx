@@ -97,7 +97,7 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
   VarList::push_back(items, "Large (14pt)", "large14");   // 14x28
   VarList::push_back(items, "Large (16pt)", "large16");   // 16x32
   myDialogFontPopup = new PopUpWidget(myTab, font, 0, 0, pwidth, lineHeight,
-                                      items, "Dialogs font (*)", lwidth, kDialogFont);
+                                      items, "Dialogs font", lwidth, kDialogFont);
   wid.push_back(myDialogFontPopup);
 
   // Enable HiDPI mode
@@ -700,6 +700,10 @@ void UIDialog::handleCommand(CommandSender* sender, int cmd, int data, int id)
         (myRomViewerSize->getValue() > 0) != (instance().settings().getFloat("romviewer") > 0.F);
       const bool informFont = myIsGlobal &&
         myLauncherFontPopup->getSelectedTag().toString() != instance().settings().getString("launcherfont");
+      // The dialog font applies to every open dialog (not just the launcher),
+      // so it is not gated on myIsGlobal
+      const bool informDialogFont =
+        myDialogFontPopup->getSelectedTag().toString() != instance().settings().getString("dialogfont");
       saveConfig();
       close();
       if(informPath) // Let the boss know romdir has changed
@@ -712,6 +716,15 @@ void UIDialog::handleCommand(CommandSender* sender, int cmd, int data, int id)
         sendCommand(LauncherDialog::kRomViewerChangedCmd, 0, 0);
       if(informFont) // Let the boss know the launcher font changed
         sendCommand(LauncherDialog::kFontChangedCmd, 0, 0);
+      if(informDialogFont)
+      {
+        // Change the dialog font in place, then re-font every open dialog.  A
+        // dialog that no longer fits the window is detected + reported when it
+        // (re)opens via Dialog::open() (see Dialog::exceedsScreen)
+        instance().frameBuffer().changeDialogFont(
+            instance().settings().getString("dialogfont"));
+        parent().refreshFont();
+      }
       break;
     }
     case GuiObject::kDefaultsCmd:

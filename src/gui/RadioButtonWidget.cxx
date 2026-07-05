@@ -260,6 +260,42 @@ RadioButtonWidget::RadioButtonWidget(GuiObject* boss, const GUI::Font& font,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void RadioButtonWidget::refreshFontMetrics()
+{
+  // Bypass CheckboxWidget's version: a radio button has its own button size and
+  // outer/inner circle images that must be re-selected for the live font
+  // (mirrors the ctor).
+  Widget::refreshFontMetrics();
+
+  _buttonSize = buttonSize(_font);
+  if(_buttonSize == 14)
+  {
+    _outerCircle = radio_img_outercircle.data();
+    _innerCircle = radio_img_innercircle.data();
+  }
+  else
+  {
+    _outerCircle = radio_img_outercircle_large.data();
+    _innerCircle = radio_img_innercircle_large.data();
+  }
+
+  if(_label.empty())
+    _w = _buttonSize;
+  else
+    _w = _font.getStringWidth(_label) + _buttonSize + _font.getMaxCharWidth() * 0.75;
+  _h = _font.getFontHeight() < static_cast<int>(_buttonSize)
+      ? _buttonSize : _font.getFontHeight();
+
+  // Depending on font size, either the font or box will need to be
+  // centered vertically
+  _boxY = _textY = 0;
+  if(std::cmp_greater(_h, _buttonSize))  // center box
+    _boxY = (_h - _buttonSize) / 2;
+  else                                   // center text
+    _textY = (_buttonSize - _font.getFontHeight()) / 2;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void RadioButtonWidget::handleMouseUp(int x, int y, MouseButton b, int clickCount)
 {
   if(isEnabled() && _editable && x >= 0 && x < _w && y >= 0 && y < _h)

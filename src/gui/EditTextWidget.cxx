@@ -38,6 +38,17 @@ EditTextWidget::EditTextWidget(GuiObject* boss, const GUI::Font& font,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void EditTextWidget::refreshFontMetrics()
+{
+  Widget::refreshFontMetrics();
+
+  // Restore the framed height (lineHeight + 2) and text offset for the live
+  // font; the width is dialog-chosen and re-applied by the owning layout().
+  _h = _font.getLineHeight() + 2;
+  _textOfs = _font.getFontHeight() < 24 ? 3 : 5;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EditTextWidget::setText(string_view str, bool changed)
 {
   EditableWidget::setText(str, changed);

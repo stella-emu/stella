@@ -39,6 +39,8 @@ class RadioButtonWidget : public CheckboxWidget
     void setState(bool state, bool send = true) override;
     void setFill(FillType type) override;
 
+    void refreshFontMetrics() override;
+
   protected:
     void drawWidget(bool hilite) override;
     static uInt32 buttonSize(const GUI::Font& font) {

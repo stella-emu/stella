@@ -93,11 +93,15 @@ void InputDialog::layout()
             HBORDER      = Dialog::hBorder(),
             VGAP         = Dialog::vGap();
 
-  // Size the dialog from the current font, clamped to the available space
-  setSize(49 * fontWidth + PopUpWidget::dropDownWidth(_font) + HBORDER * 2,
-          _th + VGAP * 3 + lineHeight + 13 * (lineHeight + VGAP) + VGAP * 9
-            + buttonHeight + VBORDER * 3,
-          myMaxWidth, myMaxHeight);
+  // Size the dialog from the current font at its natural size (no clamp to the
+  // available space): a clamped dialog would keep _w/_h within the screen while
+  // its content overflowed, so Dialog::exceedsScreen() could not detect the
+  // too-large case.  Sizing naturally lets that check fire the "too large"
+  // message like every other dialog.  (myMaxWidth/myMaxHeight are still used to
+  // bound the confirm MessageBox below.)
+  _w = 49 * fontWidth + PopUpWidget::dropDownWidth(_font) + HBORDER * 2;
+  _h = _th + VGAP * 3 + lineHeight + 13 * (lineHeight + VGAP) + VGAP * 9
+         + buttonHeight + VBORDER * 3;
 
   // Position/size the tab widget below the title bar, then recompute its
   // tab-bar geometry for the current font/width

@@ -87,6 +87,17 @@ void FBMessageHandler::create(string_view message, MessagePosition position,
   myMsg.enabled   = true;
   myMsg.dirty     = true;
 
+  // The surface was allocated once (in init) for the font in use at that time.
+  // A later (live) dialog-font change mutates that font in place, so the
+  // message can now be bigger than the surface.  Grow it to fit before defining
+  // the rendered (src) region, otherwise the extra rows/columns sample
+  // uninitialized memory (pixelated garbage along the message edge).
+  const uInt32 needW = static_cast<uInt32>(myMsg.w),
+               needH = static_cast<uInt32>(myMsg.h);
+  if(needW > myMsg.surface->width() || needH > myMsg.surface->height())
+    myMsg.surface->resize(std::max(needW, myMsg.surface->width()),
+                          std::max(needH, myMsg.surface->height()));
+
   myMsg.surface->setSrcSize(myMsg.w, myMsg.h);
   myMsg.surface->setDstSize(myMsg.w * myFB.hidpiScaleFactor(),
                             myMsg.h * myFB.hidpiScaleFactor());
@@ -350,6 +361,19 @@ void FBMessageHandler::drawStats(float framesPerSecond)
   int yPos = 0;
   const GUI::Font& f = myFB.hidpiEnabled() ? myFB.infoFont() : myFB.font();
   const int dy = f.getFontHeight() + 2;
+
+  // Size to the current font (the surface was allocated once in init for the
+  // font then in use; a live font change can make it bigger).  Grow the surface
+  // to fit before defining the rendered (src) region, otherwise the text is
+  // clipped and the extra area samples uninitialized memory (see create()).
+  myStatsMsg.w = f.getMaxCharWidth() * 40 + 3;
+  myStatsMsg.h = dy * 3;
+  const uInt32 needW = static_cast<uInt32>(myStatsMsg.w),
+               needH = static_cast<uInt32>(myStatsMsg.h);
+  if(needW > myStatsMsg.surface->width() || needH > myStatsMsg.surface->height())
+    myStatsMsg.surface->resize(std::max(needW, myStatsMsg.surface->width()),
+                               std::max(needH, myStatsMsg.surface->height()));
+  myStatsMsg.surface->setSrcSize(myStatsMsg.w, myStatsMsg.h);
 
   myStatsMsg.surface->invalidate();
 

@@ -197,6 +197,14 @@ void DialogContainer::requestResize()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void DialogContainer::refreshFont()
+{
+  // Re-font every dialog in the stack (the font object was already mutated
+  // in place; each dialog refreshes its cached metrics and re-flows)
+  myDialogStack.applyAll([](Dialog*& d) { d->refreshFont(); });
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DialogContainer::reStack()
 {
   // Pop all items from the stack, and then add the base menu

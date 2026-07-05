@@ -33,6 +33,8 @@ class EditTextWidget : public EditableWidget
 
     void handleMouseDown(int x, int y, MouseButton b, int clickCount) override;
 
+    void refreshFontMetrics() override;
+
     // Get total width of widget
     static int calcWidth(const GUI::Font& font, int length = 0)
     {

@@ -163,11 +163,6 @@ void FrameBuffer::setupFonts()
   // use it
   mySmallFont = std::make_unique<GUI::Font>(GUI::stellaDesc); // 6x10
 
-  constexpr int NUM_FONTS = 7;
-  const FontDesc FONT_DESC[NUM_FONTS] = {
-    GUI::consoleDesc, GUI::consoleMediumDesc, GUI::stellaMediumDesc,
-    GUI::stellaLargeDesc, GUI::stella12x24tDesc, GUI::stella14x28tDesc,
-    GUI::stella16x32tDesc};
   const string_view dialogFont = myOSystem.settings().getString("dialogfont");
   const FontDesc fd = getFontDesc(dialogFont);
 
@@ -175,16 +170,7 @@ void FrameBuffer::setupFonts()
   myFont = std::make_unique<GUI::Font>(fd);                                //  default: 9x18
   // The info font used in all UI elements,
   //  automatically determined aiming for 1 / 1.4 (~= 18 / 13) size
-  int fontIdx = 0;
-  for(int i = 0; i < NUM_FONTS; ++i)
-  {
-    if(fd.height <= FONT_DESC[i].height * 1.4)
-    {
-      fontIdx = i;
-      break;
-    }
-  }
-  myInfoFont = std::make_unique<GUI::Font>(FONT_DESC[fontIdx]);            //  default 8x13
+  myInfoFont = std::make_unique<GUI::Font>(infoFontDesc(fd));             //  default 8x13
 
   // Determine minimal zoom level based on the default font
   //  So what fits with default font should fit for any font.
@@ -217,6 +203,27 @@ FontDesc FrameBuffer::getFontDesc(string_view name)
     return GUI::stella14x28tDesc;   // 14x28
   else // "large16"
     return GUI::stella16x32tDesc;   // 16x32
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+FontDesc FrameBuffer::infoFontDesc(const FontDesc& fd)
+{
+  constexpr int NUM_FONTS = 7;
+  const FontDesc FONT_DESC[NUM_FONTS] = {
+    GUI::consoleDesc, GUI::consoleMediumDesc, GUI::stellaMediumDesc,
+    GUI::stellaLargeDesc, GUI::stella12x24tDesc, GUI::stella14x28tDesc,
+    GUI::stella16x32tDesc};
+
+  int fontIdx = 0;
+  for(int i = 0; i < NUM_FONTS; ++i)
+  {
+    if(fd.height <= FONT_DESC[i].height * 1.4)
+    {
+      fontIdx = i;
+      break;
+    }
+  }
+  return FONT_DESC[fontIdx];
 }
 #endif  // GUI_SUPPORT
 

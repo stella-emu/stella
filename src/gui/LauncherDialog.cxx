@@ -1254,13 +1254,11 @@ void LauncherDialog::handleCommand(CommandSender* sender, int cmd,
 
     case kFontChangedCmd:
       // The launcher font was changed at runtime.  Swap it in place (every
-      // widget references the same Font object), refresh the cached font-derived
-      // state of all widgets, then re-flow — no restart required.
+      // widget references the same Font object), then refresh the cached
+      // font-derived state and re-flow — no restart required.
       instance().frameBuffer().changeLauncherFont(
           instance().settings().getString("launcherfont"));
-      Widget::refreshFontMetricsInChain(_firstWidget);
-      tooltip().setFont(_font);
-      relayout();
+      refreshFont();
       break;
 
     case ContextMenu::kItemSelectedCmd:

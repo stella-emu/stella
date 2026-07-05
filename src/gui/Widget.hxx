@@ -274,6 +274,8 @@ class StaticTextWidget : public Widget, public CommandSender
     void handleMouseLeft() override;
     void handleMouseUp(int x, int y, MouseButton b, int clickCount) override;
 
+    void refreshFontMetrics() override;
+
   protected:
     void drawWidget(bool hilite) override;
 
@@ -336,6 +338,8 @@ class ButtonWidget : public StaticTextWidget
     void handleMouseEntered() override;
     void handleMouseLeft() override;
 
+    void refreshFontMetrics() override;
+
   protected:
     void drawWidget(bool hilite) override;
 
@@ -375,6 +379,8 @@ class CheckboxWidget : public ButtonWidget
     bool getState() const  { return _state;     }
 
     void handleMouseUp(int x, int y, MouseButton b, int clickCount) override;
+
+    void refreshFontMetrics() override;
 
     static int boxSize(const GUI::Font& font)
     {

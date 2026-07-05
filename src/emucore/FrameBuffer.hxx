@@ -451,6 +451,22 @@ class FrameBuffer
     }
 
     /**
+      Change the dialog font at runtime.  Like changeLauncherFont(), the Font
+      objects are mutated in place so every widget's reference stays valid.
+      The dialog font drives both the general UI font and the (auto-sized) info
+      font, so both are updated.  Callers must afterwards refresh the cached
+      font-derived state of the affected dialogs and re-run their layout
+      (see DialogContainer::refreshFont / Dialog::refreshFont).
+
+      @param name  The settings name of the new dialog font
+    */
+    void changeDialogFont(string_view name) {
+      const FontDesc fd = getFontDesc(name);
+      myFont->changeDesc(fd);
+      myInfoFont->changeDesc(infoFontDesc(fd));
+    }
+
+    /**
       Get the font description from the font name
 
       @param name  The settings name of the font
@@ -458,6 +474,16 @@ class FrameBuffer
       @return  The description of the font
     */
     static FontDesc getFontDesc(string_view name);
+
+    /**
+      Determine the info-font description that pairs with a given dialog font,
+      aiming for roughly a 1 / 1.4 size ratio.
+
+      @param fd  The dialog font description
+
+      @return  The matching info font description
+    */
+    static FontDesc infoFontDesc(const FontDesc& fd);
   #endif  // GUI_SUPPORT
 
     /**

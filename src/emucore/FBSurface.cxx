@@ -20,6 +20,7 @@
 #include "Rect.hxx"
 #include "FrameBuffer.hxx"
 #include "FBSurface.hxx"
+#include "Logger.hxx"
 
 #ifdef GUI_SUPPORT
   #include "Font.hxx"
@@ -433,8 +434,13 @@ bool FBSurface::checkBounds(uInt32 x, uInt32 y) const
   if (x <= width() && y <= height())
     return true;
 
-  cerr << "FBSurface::checkBounds() failed: "
-       << x << ", " << y << " vs " << width() << ", " << height() << '\n';
+  // Downgraded from a raw cerr to a debug-level log so an oversized dialog
+  // (e.g. after a large dialog-font change) no longer spams the console; the
+  // too-large condition is detected and reported to the user elsewhere
+  // (see UIDialog / DialogContainer::anyDialogExceedsScreen)
+  Logger::debug("FBSurface::checkBounds() failed: " +
+                std::to_string(x) + ", " + std::to_string(y) + " vs " +
+                std::to_string(width()) + ", " + std::to_string(height()));
   return false;
 }
 

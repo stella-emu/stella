@@ -60,6 +60,20 @@ PopUpWidget::PopUpWidget(GuiObject* boss, const GUI::Font& font,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void PopUpWidget::refreshFontMetrics()
+{
+  Widget::refreshFontMetrics();
+
+  // Re-pick the arrow bitmap/dimensions for the live font, restore the framed
+  // height and vertically re-center the text and arrows (mirrors the ctor).
+  // The overall width is dialog-chosen and re-applied by the owning layout().
+  setArrow();
+  _h = _font.getLineHeight() + 2;
+  myTextY   = (_h - _font.getFontHeight()) / 2;
+  myArrowsY = (_h - _arrowHeight) / 2;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PopUpWidget::setID(uInt32 id)
 {
   myMenu->setID(id);

@@ -167,6 +167,13 @@ class DialogContainer
     virtual void requestResize();
 
     /**
+      Re-font every dialog in the stack after the dialog font has been changed
+      in place (see FrameBuffer::changeDialogFont).  Broadcasts refreshFont() to
+      the whole stack so all open dialogs re-font live, no restart.
+    */
+    void refreshFont();
+
+    /**
       Return (and possibly create) the bottom-most dialog of this container.
     */
     virtual Dialog* baseDialog() = 0;

@@ -81,6 +81,20 @@ class Dialog : public GuiObject
     */
     void relayout();
 
+    /**
+      Refresh all font-derived state after the dialog's font has been changed
+      in place (see FrameBuffer::changeDialogFont), then re-run layout() so the
+      whole dialog re-fonts live without being recreated.
+    */
+    void refreshFont();
+
+    /**
+      Answers whether this dialog (at its current size and hidpi scaling) is
+      larger than the screen it would be drawn into.  Used to detect when a
+      font change would make a dialog too big for the current window.
+    */
+    bool exceedsScreen() const;
+
     void tick() override;
 
     void addFocusWidget(Widget* w) override;

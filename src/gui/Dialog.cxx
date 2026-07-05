@@ -124,6 +124,13 @@ void Dialog::open()
   loadConfig(); // has to be done AFTER (re)building the focus list
 
   _visible = true;
+
+  // A dialog laid out for a large font (e.g. after a live dialog-font change)
+  // can be bigger than the current window; inform the user instead of silently
+  // clipping it (drawing out-of-bounds is safely skipped by FBSurface)
+  if(exceedsScreen())
+    instance().frameBuffer().showTextMessage("Dialog too large for screen",
+                                             MessagePosition::BottomCenter, true);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -186,7 +193,13 @@ void Dialog::layoutHelp()
 {
   // The help button sits in the top-right corner of the title bar
   if(_helpWidget != nullptr)
+  {
+    // Resize for the current font first (it was created once, at ctor-font
+    // size, so a live font change would otherwise leave it stale)
+    _helpWidget->setWidth(static_cast<int>(std::lround(_font.getMaxCharWidth() * 3.5)));
+    _helpWidget->setHeight(buttonHeight());
     _helpWidget->setPos(_w - _helpWidget->getWidth(), 0);
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -406,6 +419,35 @@ void Dialog::relayout()
   // Force a full repaint of the dialog and all its widgets
   setDirty();
   setDirtyChain();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Dialog::refreshFont()
+{
+  // Refresh the cached font metrics of every widget (the font object itself was
+  // already mutated in place), update the tooltip font, then re-flow.  Order
+  // matters: metrics first, so layout() computes geometry from current values.
+  Widget::refreshFontMetricsInChain(_firstWidget);
+  tooltip().setFont(_font);
+
+  // Recompute the title-bar height for the new font (setTitle only ran at
+  // construction, with the old font); layout() reads _th to place its content
+  _th = _title.empty() ? 0 : static_cast<int>(_font.getLineHeight() * 1.25);
+
+  relayout();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool Dialog::exceedsScreen() const
+{
+  if(_surface == nullptr)
+    return false;
+
+  // Compare in the same (hidpi-scaled) units positionAt() uses: the surface's
+  // destination rect against the screen size
+  const Common::Size& screen = instance().frameBuffer().screenSize();
+  const Common::Rect& dst = _surface->dstRect();
+  return dst.w() > screen.w || dst.h() > screen.h;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
