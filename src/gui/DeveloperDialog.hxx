@@ -41,7 +41,7 @@ class DeveloperDialog : public Dialog, DevSettingsHandler
 {
   public:
     DeveloperDialog(OSystem& osystem, DialogContainer& parent,
-                const GUI::Font& font, int max_w, int max_h);
+                const GUI::Font& font);
     ~DeveloperDialog() override = default;
 
     void loadConfig() override;
@@ -49,6 +49,7 @@ class DeveloperDialog : public Dialog, DevSettingsHandler
     void setDefaults() override;
 
   protected:
+    void layout() override;
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 
   private:
@@ -79,6 +80,17 @@ class DeveloperDialog : public Dialog, DevSettingsHandler
     static constexpr int DEBUG_COLORS = 6;
 
     TabWidget* myTab{nullptr};
+    // Per-tab "Player/Developer settings" radio pairs + bottom info labels
+    // (promoted from anonymous locals so layout() can position them)
+    std::array<RadioButtonWidget*, 2> myEmuSettings{nullptr};
+    std::array<RadioButtonWidget*, 2> myTiaSettings{nullptr};
+    std::array<RadioButtonWidget*, 2> myVideoSettings{nullptr};
+    std::array<RadioButtonWidget*, 2> myTMSettings{nullptr};
+    StaticTextWidget*   myEmuInfo{nullptr};
+    StaticTextWidget*   myVideoInfo{nullptr};
+    StaticTextWidget*   myTMInfo{nullptr};
+    StaticTextWidget*   myDebuggerInfo{nullptr};
+
     // Emulator widgets
     RadioButtonGroup*   mySettingsGroupEmulation{nullptr};
     CheckboxWidget*     myFrameStatsWidget{nullptr};
@@ -170,6 +182,12 @@ class DeveloperDialog : public Dialog, DevSettingsHandler
     void addTiaTab(const GUI::Font& font);
     void addVideoTab(const GUI::Font& font);
     void addDebuggerTab(const GUI::Font& font);
+
+    void layoutEmulationTab();
+    void layoutTiaTab();
+    void layoutVideoTab();
+    void layoutTimeMachineTab();
+    void layoutDebuggerTab();
 
     void getWidgetStates(SettingsSet set);
     void setWidgetStates(SettingsSet set);

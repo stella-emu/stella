@@ -227,14 +227,9 @@ void OptionsDialog::handleCommand(CommandSender* sender, int cmd,
       break;
 
     case kDevelopCmd:
-    {
-      uInt32 w = 0, h = 0;
-
-      getDynamicBounds(w, h);
-      myDialog = std::make_unique<DeveloperDialog>(instance(), parent(), _font, w, h);
+      myDialog = std::make_unique<DeveloperDialog>(instance(), parent(), _font);
       myDialog->open();
       break;
-    }
 
     case kInfoCmd:
       myDialog = std::make_unique<GameInfoDialog>(instance(), parent(), _font, this);
