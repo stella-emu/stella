@@ -44,6 +44,11 @@ class CheckListWidget : public ListWidget
 
     bool handleEvent(Event::Type e) override;
 
+    using ListWidget::setPos;
+    void setPos(const Common::Point& pos) override;
+    void setHeight(int h) override;
+    void refreshFontMetrics() override;
+
   protected:
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 
@@ -53,6 +58,12 @@ class CheckListWidget : public ListWidget
   protected:
     BoolArray     _stateList;
     CheckboxArray _checkList;
+
+  private:
+    // Grow the checkbox pool to one per visible row (grow-only; widgets can't
+    // be removed) and position every checkbox against the list's current
+    // origin, hiding any beyond the visible row count
+    void reflowCheckboxes();
 
   private:
     // Following constructors and assignment operators not supported

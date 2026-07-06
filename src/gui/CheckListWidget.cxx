@@ -25,24 +25,68 @@ CheckListWidget::CheckListWidget(GuiObject* boss, const GUI::Font& font,
                                  int x, int y, int w, int h)
   : ListWidget(boss, font, x, y, w, h)
 {
-  int ypos = _y + 2;
-
   // rowheight is determined by largest item on a line,
   // possibly meaning that number of rows will change
   _lineHeight = std::max(_lineHeight, CheckboxWidget::boxSize(_font));
   _rows = h / _lineHeight;
 
-  // Create a CheckboxWidget for each row in the list
-  for(int i = 0; i < _rows; ++i)
+  // Create and position a CheckboxWidget for each visible row
+  reflowCheckboxes();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void CheckListWidget::setPos(const Common::Point& pos)
+{
+  ListWidget::setPos(pos);
+  reflowCheckboxes();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void CheckListWidget::setHeight(int h)
+{
+  // Recomputes _rows (and revalidates the scrollbar/selection)
+  ListWidget::setHeight(h);
+  reflowCheckboxes();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void CheckListWidget::refreshFontMetrics()
+{
+  ListWidget::refreshFontMetrics();
+  // The base reset _lineHeight to the plain font line height; the row must
+  // still clear the checkbox (mirrors the constructor)
+  _lineHeight = std::max(_lineHeight, CheckboxWidget::boxSize(_font));
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void CheckListWidget::reflowCheckboxes()
+{
+  // Grow the pool so there is a checkbox for every visible row.  The boss owns
+  // these widgets for its lifetime and there is no removal API, so we only ever
+  // append (surplus rows are hidden below).
+  while(std::cmp_less(_checkList.size(), _rows))
   {
-    auto* t = new CheckboxWidget(boss, font, _x + 2, ypos, "",
+    auto* t = new CheckboxWidget(_boss, _font, 0, 0, "",
                                  CheckboxWidget::kCheckActionCmd);
     t->setTextColor(kTextColor);
     t->setTarget(this);
-    t->setID(i);
-    ypos += _lineHeight;
-
+    t->setID(static_cast<int>(_checkList.size()));
     _checkList.push_back(t);
+  }
+
+  // Position each checkbox against the list's current origin; hide any that
+  // fall past the visible row count
+  int ypos = _y + 2;
+  for(int i = 0; std::cmp_less(i, _checkList.size()); ++i)
+  {
+    if(i < _rows)
+    {
+      _checkList[i]->setPos(_x + 2, ypos);
+      _checkList[i]->clearFlags(Widget::FLAG_INVISIBLE);
+      ypos += _lineHeight;
+    }
+    else
+      _checkList[i]->setFlags(Widget::FLAG_INVISIBLE);
   }
 }
 

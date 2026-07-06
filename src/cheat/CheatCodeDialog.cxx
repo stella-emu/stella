@@ -24,6 +24,7 @@
 #include "Dialog.hxx"
 #include "Font.hxx"
 #include "InputTextDialog.hxx"
+#include "Layout.hxx"
 #include "OSystem.hxx"
 #include "Widget.hxx"
 
@@ -34,51 +35,34 @@ CheatCodeDialog::CheatCodeDialog(OSystem& osystem, DialogContainer& parent,
                                  const GUI::Font& font)
   : Dialog(osystem, parent, font, "Cheat codes")
 {
-  const int lineHeight   = Dialog::lineHeight(),
-            //fontHeight   = Dialog::fontHeight(),
-            fontWidth    = Dialog::fontWidth(),
-            buttonHeight = Dialog::buttonHeight(),
-            buttonWidth  = Dialog::buttonWidth("One shot "),
-            VGAP         = Dialog::vGap(),
-            VBORDER      = Dialog::vBorder(),
-            HBORDER      = Dialog::hBorder();
+  const int buttonHeight = Dialog::buttonHeight(),
+            buttonWidth  = Dialog::buttonWidth("One shot ");
   WidgetArray wid;
-  ButtonWidget* b = nullptr;
 
-  // Set real dimensions
-  _w = 45 * fontWidth + HBORDER * 2;
-  _h = _th + 11 * (lineHeight + 4) + VBORDER * 2;
+  // Widgets are only created here (at placeholder geometry); layout() assigns
+  // all geometry from the current font.
 
+  // NOLINTBEGIN(cppcoreguidelines-prefer-member-initializer)
   // List of cheats, with checkboxes to enable/disable
-  int xpos = HBORDER, ypos = _th + VBORDER;
-  myCheatList =
-    new CheckListWidget(this, font, xpos, ypos, _w - buttonWidth - HBORDER * 2 - fontWidth,
-                        _h - _th - buttonHeight - VBORDER * 3);
+  myCheatList = new CheckListWidget(this, font, 0, 0, 1, 1);
   myCheatList->setEditable(false);
   wid.push_back(myCheatList);
 
-  xpos += myCheatList->getWidth() + fontWidth; ypos = _th + VBORDER;
+  myAddButton = new ButtonWidget(this, font, 0, 0, buttonWidth, buttonHeight,
+                                 "Add" + ELLIPSIS, kAddCheatCmd);
+  wid.push_back(myAddButton);
 
-  b = new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight,
-                       "Add" + ELLIPSIS, kAddCheatCmd);
-  wid.push_back(b);
-  ypos += lineHeight + VGAP * 2;
-
-  myEditButton =
-    new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight,
-                     "Edit" + ELLIPSIS, kEditCheatCmd);
+  myEditButton = new ButtonWidget(this, font, 0, 0, buttonWidth, buttonHeight,
+                                  "Edit" + ELLIPSIS, kEditCheatCmd);
   wid.push_back(myEditButton);
-  ypos += lineHeight + VGAP * 2;
 
-  myRemoveButton =
-    new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight,
-                     "Remove", kRemCheatCmd);
+  myRemoveButton = new ButtonWidget(this, font, 0, 0, buttonWidth, buttonHeight,
+                                    "Remove", kRemCheatCmd);
   wid.push_back(myRemoveButton);
-  ypos += lineHeight + VGAP * 2 * 3;
 
-  b = new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight,
-                       "One shot" + ELLIPSIS, kAddOneShotCmd);
-  wid.push_back(b);
+  myOneShotButton = new ButtonWidget(this, font, 0, 0, buttonWidth, buttonHeight,
+                                     "One shot" + ELLIPSIS, kAddOneShotCmd);
+  wid.push_back(myOneShotButton);
 
   // Inputbox which will pop up when adding/editing a cheat
   StringList labels;
@@ -107,10 +91,60 @@ CheatCodeDialog::CheatCodeDialog(OSystem& osystem, DialogContainer& parent,
   addBGroupToFocusList(wid);
 
   setHelpAnchor("Cheats");
+  // NOLINTEND(cppcoreguidelines-prefer-member-initializer)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CheatCodeDialog::~CheatCodeDialog() = default;
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void CheatCodeDialog::layout()
+{
+  using GUI::BoxLayout;
+  using GUI::widgetItem;
+  using GUI::anchoredItem;
+  using Dir = BoxLayout::Dir;
+
+  const int lineHeight   = Dialog::lineHeight(),
+            fontWidth    = Dialog::fontWidth(),
+            buttonHeight = Dialog::buttonHeight(),
+            buttonWidth  = Dialog::buttonWidth("One shot "),
+            VGAP         = Dialog::vGap(),
+            VBORDER      = Dialog::vBorder(),
+            HBORDER      = Dialog::hBorder();
+
+  // Size the (fixed) dialog from the current font so it reflows on font change
+  _w = 45 * fontWidth + HBORDER * 2;
+  _h = _th + 11 * (lineHeight + 4) + VBORDER * 2;
+
+  const int listH = _h - _th - buttonHeight - VBORDER * 3;
+
+  // Right-hand column of action buttons.  Each button is buttonHeight tall but
+  // the column advances on a lineHeight pitch (matching the original), so it is
+  // anchored in a lineHeight cell and overflows downward; a larger gap sets
+  // 'One shot' apart from the editing buttons.
+  auto buttonCol = std::make_unique<BoxLayout>(Dir::Vertical, 0, 0, 0);
+  buttonCol->addFixed(anchoredItem(myAddButton), lineHeight);
+  buttonCol->addSpace(VGAP * 2);
+  buttonCol->addFixed(anchoredItem(myEditButton), lineHeight);
+  buttonCol->addSpace(VGAP * 2);
+  buttonCol->addFixed(anchoredItem(myRemoveButton), lineHeight);
+  buttonCol->addSpace(VGAP * 2 * 3);
+  buttonCol->addFixed(anchoredItem(myOneShotButton), lineHeight);
+
+  // The list fills the remaining width to the left of the button column
+  auto mainRow = std::make_unique<BoxLayout>(Dir::Horizontal, 0, 0, 0);
+  mainRow->addStretch(widgetItem(myCheatList));
+  mainRow->addSpace(fontWidth);
+  mainRow->addFixed(std::move(buttonCol), buttonWidth);
+
+  auto root = std::make_unique<BoxLayout>(Dir::Vertical, 0, HBORDER, VBORDER);
+  root->addFixed(std::move(mainRow), listH);
+  root->doLayout(0, _th, _w, _h - _th);
+
+  // OK/Cancel along the bottom edge
+  layoutButtonGroup();
+}
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CheatCodeDialog::loadConfig()

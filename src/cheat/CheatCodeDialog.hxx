@@ -42,6 +42,8 @@ class CheatCodeDialog : public Dialog
     void saveConfig() override;
 
   protected:
+    void layout() override;
+
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 
   private:
@@ -54,8 +56,10 @@ class CheatCodeDialog : public Dialog
     CheckListWidget* myCheatList{nullptr};
     unique_ptr<InputTextDialog> myCheatInput;
 
+    ButtonWidget* myAddButton{nullptr};
     ButtonWidget* myEditButton{nullptr};
     ButtonWidget* myRemoveButton{nullptr};
+    ButtonWidget* myOneShotButton{nullptr};
 
     enum {
       kAddCheatCmd       = 'CHTa',
