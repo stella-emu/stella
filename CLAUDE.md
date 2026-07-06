@@ -52,7 +52,7 @@ Stella is a classic emulation architecture centered on `OSystem` owning everythi
 
 **Debugger** (`src/debugger/`): Interactive debugger with DiStella disassembler, breakpoints, watchpoints, expression parser (yacc/bison in `src/debugger/yacc/`), and dedicated GUI dialogs in `src/debugger/gui/`.
 
-**GUI** (`src/gui/`): Dialog/widget system for launcher, options, high scores, etc.
+**GUI** (`src/gui/`): Dialog/widget system for launcher, options, high scores, etc. New dialogs use the relative layout engine (`src/gui/Layout.*`) via a create-only constructor plus a `layout()` override — see [src/gui/DIALOGS.md](src/gui/DIALOGS.md) for the full guide.
 
 **Common utilities** (`src/common/`): Audio pipeline (`AudioQueue`, `AudioSettings`), filesystem abstraction (`FSNode`), state/rewind managers, high scores, palette, TV filters (`tv_filters/`), SDL blitters (`sdl_blitter/`), persistence layer (`repository/` — JSON, properties, SQLite).
 
