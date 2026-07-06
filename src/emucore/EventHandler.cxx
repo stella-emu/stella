@@ -1636,30 +1636,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
 
         case EventHandlerState::EMULATION:
           if(pressed && !repeated)
-          {
-#ifdef GUI_SUPPORT
-            if (myOSystem.settings().getBool("confirmexit"))
-            {
-              StringList msg;
-              const string saveOnExit = myOSystem.settings().getString("saveonexit");
-              const bool activeTM = myOSystem.settings().getBool(
-                myOSystem.settings().getBool("dev.settings") ? "dev.timemachine" : "plr.timemachine");
-
-
-              msg.emplace_back("Do you really want to exit emulation?");
-              if (saveOnExit != "all" || !activeTM)
-              {
-                msg.emplace_back("");
-                msg.emplace_back("You will lose all your progress.");
-              }
-              openMessageBox("Exit Emulation", msg,
-                [this](bool ok) { if(ok) exitEmulation(true); }, "Yes", "No");
-            }
-            else
-#endif
-              exitEmulation(true);
-
-          }
+            confirmExitEmulation();
           return;
 
         default:
@@ -1667,19 +1644,23 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       }
 
     case Event::ExitGame:
-      exitEmulation(true);
+      if(pressed && !repeated)
+        confirmExitEmulation();
       return;
 
     case Event::Quit:
       if(pressed && !repeated)
       {
-        saveKeyMapping();
-        saveJoyMapping();
-        if (myState != EventHandlerState::LAUNCHER)
-          exitEmulation();
+#ifdef GUI_SUPPORT
+        // Quitting from an active game loses progress just like exiting it,
+        // so honor 'confirmexit' here too; the window-manager close button
+        // also arrives here (as SDL_EVENT_QUIT)
+        if(myState == EventHandlerState::EMULATION ||
+           myState == EventHandlerState::PAUSE)
+          confirmExitEmulation(true);
         else
-          exitLauncher();
-        myOSystem.quit();
+#endif
+          doQuit();
       }
       return;
 
@@ -2798,6 +2779,58 @@ void EventHandler::exitEmulation(bool checkLauncher)
     else
       handleEvent(Event::Quit);
   }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void EventHandler::confirmExitEmulation(bool quitApp)
+{
+#ifdef GUI_SUPPORT
+  if(myOSystem.settings().getBool("confirmexit"))
+  {
+    const string saveOnExit = myOSystem.settings().getString("saveonexit");
+    const bool activeTM = myOSystem.settings().getBool(
+      myOSystem.settings().getBool("dev.settings") ? "dev.timemachine" : "plr.timemachine");
+
+    StringList msg;
+    msg.emplace_back(quitApp ? "Do you really want to quit Stella?"
+                             : "Do you really want to exit emulation?");
+    if(saveOnExit != "all" || !activeTM)
+    {
+      msg.emplace_back("");
+      msg.emplace_back("You will lose all your progress.");
+    }
+    openMessageBox(quitApp ? "Quit Stella" : "Exit Emulation", msg,
+      [this, quitApp](bool ok)
+      {
+        if(ok)
+        {
+          if(quitApp)
+            doQuit();
+          else
+            exitEmulation(true);
+        }
+      }, "Yes", "No");
+  }
+  else
+#endif
+  {
+    if(quitApp)
+      doQuit();
+    else
+      exitEmulation(true);
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void EventHandler::doQuit()
+{
+  saveKeyMapping();
+  saveJoyMapping();
+  if(myState != EventHandlerState::LAUNCHER)
+    exitEmulation();
+  else
+    exitLauncher();
+  myOSystem.quit();
 }
 
 #ifdef __clang__

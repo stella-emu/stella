@@ -426,6 +426,17 @@ class EventHandler
     void exitLauncher();
     void exitEmulation(bool checkLauncher = false);
 
+    /**
+      Exit emulation ('quitApp' also quits the application entirely), first
+      asking for confirmation if the 'confirmexit' setting is enabled.
+    */
+    void confirmExitEmulation(bool quitApp = false);
+
+    /**
+      Quit the application, exiting emulation or the launcher first as needed.
+    */
+    void doQuit();
+
   protected:
     // Global OSystem object
     OSystem& myOSystem;
