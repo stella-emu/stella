@@ -529,6 +529,13 @@ Two corollaries:
   them, or their track/value box stretches.
 - **Keep irregular gaps explicit** with `addSpace(VGAP * n)`, traced from the
   original spacing.
+- **Radio buttons are two objects with different ownership.** Each
+  `RadioButtonWidget` is a widget, so the dialog owns it automatically like any
+  other — but the `RadioButtonGroup` that links the buttons is *not* a widget,
+  and nothing owns it for you. Hold it as a `unique_ptr<RadioButtonGroup>`
+  member, create it with `std::make_unique<RadioButtonGroup>()`, and pass
+  `myGroup.get()` to each button's constructor (the buttons only observe the
+  group). A raw `new RadioButtonGroup()` into a plain pointer is a leak.
 - **Destructor placement:** if you define `~MyDialog() = default;` in the `.cxx`
   (needed when members are `unique_ptr` to forward-declared types), put it
   immediately after the constructor. An inline `= default` in the header needs

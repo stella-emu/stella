@@ -35,7 +35,7 @@ class TabWidget : public Widget, public CommandSender
 
   public:
     TabWidget(GuiObject* boss, const GUI::Font& font, int x, int y, int w, int h);
-    ~TabWidget() override;
+    ~TabWidget() override = default;
 
 // use Dialog::releaseFocus() when changing to another tab
 
@@ -58,8 +58,8 @@ class TabWidget : public Widget, public CommandSender
     // after (re)sizing the tab widget, so the tab bar reflows like everything
     // else (addTab() otherwise bakes these from the width at construction).
     void updateTabSizes();
-// setActiveTab changes the value of _firstWidget. This means Widgets added afterwards
-// will be added to the active tab.
+// setActiveTab moves the active tab's widgets into _children. This means
+// Widgets added afterwards will be added to the active tab.
     void setParentWidget(int tabID, Widget* parent);
     Widget* parentWidget(int tabID);
 
@@ -89,16 +89,16 @@ class TabWidget : public Widget, public CommandSender
   private:
     struct Tab {
       string title;
-      Widget* firstWidget{nullptr};
+      // The tab's widgets; while the tab is active they live in _children
+      // instead (see setActiveTab), so this list is then empty
+      WidgetList children;
       Widget* parentWidget{nullptr};
       bool enabled{true};
       int tabWidth{0};        // resolved width (0 = share the common _tabWidth)
       bool autoWidth{false};  // width tracks the (font-dependent) title width
 
-      explicit Tab(string_view t, int tw = NO_WIDTH, bool aw = false,
-          Widget* first = nullptr, Widget* parent = nullptr, bool e = true)
-        : title{t}, firstWidget{first}, parentWidget{parent}, enabled{e},
-          tabWidth{tw}, autoWidth{aw} { }
+      explicit Tab(string_view t, int tw = NO_WIDTH, bool aw = false)
+        : title{t}, tabWidth{tw}, autoWidth{aw} { }
     };
     using TabList = vector<Tab>;
 

@@ -33,21 +33,16 @@ MessageDialog::MessageDialog(OSystem& osystem, DialogContainer& parent,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-MessageDialog::~MessageDialog()
-{
-  delete myMsg;  myMsg = nullptr;
-}
+MessageDialog::~MessageDialog() = default;
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void MessageDialog::loadConfig()
 {
-  // ugly, but I can't do better
-  delete myMsg;
-
-  myMsg = new GUI::MessageBox(this, _font, myText,
-                              FBMinimum::Width, FBMinimum::Height, kOKCmd, kCloseCmd,
-                              myYesNo ? "Yes" : "Ok", myYesNo ? "No" : "Cancel",
-                              myTitle, true);
+  // ugly, but I can't do better: recreate the message box for the current text
+  myMsg = std::make_unique<GUI::MessageBox>(this, _font, myText,
+      FBMinimum::Width, FBMinimum::Height, kOKCmd, kCloseCmd,
+      myYesNo ? "Yes" : "Ok", myYesNo ? "No" : "Cancel",
+      myTitle, true);
   myMsg->show();
 }
 

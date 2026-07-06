@@ -38,13 +38,10 @@ TiaWindow::TiaWindow(OSystem& osystem)
   mySize = Common::Size(
     TIAConstants::frameBufferWidth  * 2 * zoom + chrome,   // 160*2*2 + 6 = 646
     TIAConstants::frameBufferHeight     * zoom + chrome);  // 320*2   + 6 = 646
-  myBaseDialog = new TiaWindowDialog(myOSystem, *this, 0, 0,
-                                     static_cast<int>(mySize.w),
-                                     static_cast<int>(mySize.h));
+  myBaseDialog = std::make_unique<TiaWindowDialog>(myOSystem, *this, 0, 0,
+                                                   static_cast<int>(mySize.w),
+                                                   static_cast<int>(mySize.h));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-TiaWindow::~TiaWindow()
-{
-  delete myBaseDialog;
-}
+TiaWindow::~TiaWindow() = default;

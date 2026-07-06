@@ -29,7 +29,11 @@ class OSystem;
 #include "Command.hxx"
 #include "Vec.hxx"
 
+// Non-owning list of widgets (focus lists, button groups, ...)
 using WidgetArray = vector<Widget*>;
+// Owning list of widgets; each GuiObject owns the widgets created with it
+// as their boss
+using WidgetList = vector<unique_ptr<Widget>>;
 
 /**
   This is the base class for all GUI objects/widgets.
@@ -161,7 +165,9 @@ class GuiObject : public CommandReceiver
     bool        _dirtyChain{false};
     uInt32      _flags{0};
 
-    Widget*     _firstWidget{nullptr};
+    // The child widgets owned by this object; a Widget appends itself to its
+    // boss's list at construction (see the Widget constructor)
+    WidgetList  _children;
     WidgetArray _focusList;
 
   private:

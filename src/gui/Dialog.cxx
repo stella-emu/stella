@@ -84,8 +84,7 @@ void Dialog::clear()
   _myFocus.list.clear();
   _myTabList.clear();
 
-  delete _firstWidget;
-  _firstWidget = nullptr;
+  _children.clear();
 
   _buttonGroup.clear();
 }
@@ -286,13 +285,8 @@ void Dialog::setDirtyChain()
 void Dialog::tick()
 {
   // Recursively tick dialog and all child dialogs and widgets
-  Widget* w = _firstWidget;
-
-  while(w)
-  {
+  for(const auto& w: _children)
     w->tick();
-    w = w->_next;
-  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -427,7 +421,7 @@ void Dialog::refreshFont()
   // Refresh the cached font metrics of every widget (the font object itself was
   // already mutated in place), update the tooltip font, then re-flow.  Order
   // matters: metrics first, so layout() computes geometry from current values.
-  Widget::refreshFontMetricsInChain(_firstWidget);
+  Widget::refreshFontMetricsInList(_children);
   tooltip().setFont(_font);
 
   // Recompute the title-bar height for the new font (setTitle only ran at
@@ -550,7 +544,7 @@ void Dialog::setFocus(const Widget* w)
   if(w && w != _focusedWidget && w->wantsFocus() && w->isEnabled())
   {
     // Redraw widgets for new focus
-    _focusedWidget = Widget::setFocusForChain(this, getFocusList(), w, 0);
+    _focusedWidget = Widget::setFocusForList(this, getFocusList(), w, 0);
 
     // Update current tab based on new focused widget
     getTabIdForWidget(_focusedWidget);
@@ -645,7 +639,7 @@ void Dialog::drawDialog()
       s.frameRect(_x, _y, _w, _h, kColor);
 
     // Make all child widgets dirty
-    Widget::setDirtyInChain(_firstWidget);
+    Widget::setDirtyInList(_children);
 
     clearDirty();
   }
@@ -662,7 +656,7 @@ void Dialog::drawDialog()
   // focus events
   if(_focusedWidget)
   {
-    _focusedWidget = Widget::setFocusForChain(this, getFocusList(),
+    _focusedWidget = Widget::setFocusForList(this, getFocusList(),
                                               _focusedWidget, 0, false);
     //if(_focusedWidget)
     //  _focusedWidget->draw(); // make sure the highlight color is drawn initially
@@ -676,14 +670,9 @@ void Dialog::drawChain()
   //   being drawn (e.g. RomListWidget)
   clearDirtyChain();
 
-  Widget* w = _firstWidget;
-
-  while(w)
-  {
+  for(const auto& w: _children)
     if(w->needsRedraw())
       w->draw();
-    w = w->_next;
-  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -929,7 +918,7 @@ bool Dialog::handleNavEvent(Event::Type e, bool repeated)
     case Event::UINavPrev:
       if(_focusedWidget && !_focusedWidget->wantsTab())
       {
-        _focusedWidget = Widget::setFocusForChain(this, getFocusList(),
+        _focusedWidget = Widget::setFocusForList(this, getFocusList(),
                                                   _focusedWidget, -1);
         // Update current tab based on new focused widget
         getTabIdForWidget(_focusedWidget);
@@ -941,7 +930,7 @@ bool Dialog::handleNavEvent(Event::Type e, bool repeated)
     case Event::UINavNext:
       if(_focusedWidget && !_focusedWidget->wantsTab())
       {
-        _focusedWidget = Widget::setFocusForChain(this, getFocusList(),
+        _focusedWidget = Widget::setFocusForList(this, getFocusList(),
                                                   _focusedWidget, +1);
         // Update current tab based on new focused widget
         getTabIdForWidget(_focusedWidget);
@@ -1041,7 +1030,7 @@ void Dialog::handleCommand(CommandSender* sender, int cmd, int data, int id)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Widget* Dialog::findWidget(int x, int y) const
 {
-  return Widget::findWidgetInChain(_firstWidget, x, y);
+  return Widget::findWidgetInList(_children, x, y);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1187,7 +1176,7 @@ void Dialog::TabFocus::appendFocusList(WidgetArray& lst)
 void Dialog::TabFocus::saveCurrentFocus(Widget* w)
 {
   if(currentTab < focus.size() &&
-      Widget::isWidgetInChain(focus[currentTab].list, w))
+      Widget::isWidgetInList(focus[currentTab].list, w))
     focus[currentTab].widget = w;
 }
 

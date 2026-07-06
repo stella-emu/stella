@@ -40,18 +40,6 @@ TabWidget::TabWidget(GuiObject* boss, const GUI::Font& font,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-TabWidget::~TabWidget()
-{
-  for(auto& tab: _tabs)
-  {
-    delete tab.firstWidget;
-    tab.firstWidget = nullptr;
-    // _tabs[i].parentWidget is deleted elsewhere
-  }
-  _tabs.clear();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 int TabWidget::getChildY() const
 {
   return getAbsY() + _tabHeight;
@@ -128,14 +116,14 @@ void TabWidget::setActiveTab(int tabID, bool show)
   if(_activeTab != -1)
   {
     // Exchange the widget lists, and switch to the new tab
-    _tabs[_activeTab].firstWidget = _firstWidget;
+    _tabs[_activeTab].children = std::move(_children);
   }
 
   if(_activeTab != tabID)
     setDirty();
 
   _activeTab = tabID;
-  _firstWidget  = _tabs[tabID].firstWidget;
+  _children = std::move(_tabs[tabID].children);
 
   // Let parent know about the tab change
   if(show)
@@ -336,7 +324,7 @@ void TabWidget::drawWidget(bool hilite)
 
     clearDirty();
     // Make all child widgets of currently active tab dirty
-    Widget::setDirtyInChain(_tabs[_activeTab].firstWidget);
+    Widget::setDirtyInList(_children);
   }
 }
 
@@ -351,6 +339,6 @@ Widget* TabWidget::findWidget(int x, int y)
   else
   {
     // Iterate over all child widgets and find the one which was clicked
-    return Widget::findWidgetInChain(_firstWidget, x, y - _tabHeight);
+    return Widget::findWidgetInList(_children, x, y - _tabHeight);
   }
 }

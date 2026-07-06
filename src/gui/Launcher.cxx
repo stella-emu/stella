@@ -31,7 +31,8 @@ Launcher::Launcher(OSystem& osystem)
 {
   loadSize();
 
-  myBaseDialog = new LauncherDialog(myOSystem, *this, 0, 0, mySize.w, mySize.h);
+  myBaseDialog = std::make_unique<LauncherDialog>(myOSystem, *this, 0, 0,
+                                                  mySize.w, mySize.h);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -53,10 +54,7 @@ void Launcher::loadSize()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Launcher::~Launcher()
-{
-  delete myBaseDialog;  myBaseDialog = nullptr;
-}
+Launcher::~Launcher() = default;
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FBInitStatus Launcher::initializeVideo()
@@ -71,37 +69,37 @@ FBInitStatus Launcher::initializeVideo()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const string& Launcher::selectedRom()
 {
-  return static_cast<LauncherDialog*>(myBaseDialog)->selectedRom();
+  return myBaseDialog->selectedRom();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const string& Launcher::selectedRomMD5()
 {
-  return static_cast<LauncherDialog*>(myBaseDialog)->selectedRomMD5();
+  return myBaseDialog->selectedRomMD5();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const FSNode& Launcher::currentDir() const
 {
-  return static_cast<LauncherDialog*>(myBaseDialog)->currentDir();
+  return myBaseDialog->currentDir();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Launcher::reload()
 {
-  static_cast<LauncherDialog*>(myBaseDialog)->reload();
+  myBaseDialog->reload();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Launcher::quit()
 {
-  static_cast<LauncherDialog*>(myBaseDialog)->quit();
+  myBaseDialog->quit();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Dialog* Launcher::baseDialog()
 {
-  return myBaseDialog;
+  return myBaseDialog.get();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

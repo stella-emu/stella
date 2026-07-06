@@ -43,10 +43,10 @@ class TiaWindow : public DialogContainer
     */
     const Common::Size& size() const { return mySize; }
 
-    Dialog* baseDialog() override { return myBaseDialog; }
+    Dialog* baseDialog() override { return myBaseDialog.get(); }
 
   private:
-    Dialog* myBaseDialog{nullptr};
+    unique_ptr<Dialog> myBaseDialog;
 
     // The (fixed, for now) size of the companion window, in logical UI pixels
     Common::Size mySize;

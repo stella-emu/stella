@@ -64,7 +64,7 @@ namespace {
 EmulationDialog::EmulationDialog(OSystem& osystem, DialogContainer& parent,
                                  const GUI::Font& font)
   : Dialog(osystem, parent, font, "Emulation settings"),
-    mySaveOnExitGroup{new RadioButtonGroup()}
+    mySaveOnExitGroup{std::make_unique<RadioButtonGroup>()}
 {
   const int lineHeight   = Dialog::lineHeight(),
             fontWidth    = Dialog::fontWidth(),
@@ -122,13 +122,13 @@ EmulationDialog::EmulationDialog(OSystem& osystem, DialogContainer& parent,
   mySaveOnExitLabel = new StaticTextWidget(this, font, 0, 0,
                                            "When entering/exiting emulation:");
   mySaveOnExitButtons[0] = new RadioButtonWidget(this, font, 0, 0,
-                                                 "Do nothing", mySaveOnExitGroup);
+                                                 "Do nothing", mySaveOnExitGroup.get());
   wid.push_back(mySaveOnExitButtons[0]);
   mySaveOnExitButtons[1] = new RadioButtonWidget(this, font, 0, 0,
-                                                 "Save current state in current slot", mySaveOnExitGroup);
+                                                 "Save current state in current slot", mySaveOnExitGroup.get());
   wid.push_back(mySaveOnExitButtons[1]);
   mySaveOnExitButtons[2] = new RadioButtonWidget(this, font, 0, 0,
-                                                 "Load/save all Time Machine states", mySaveOnExitGroup);
+                                                 "Load/save all Time Machine states", mySaveOnExitGroup.get());
   wid.push_back(mySaveOnExitButtons[2]);
 
   myAutoSlotWidget = new CheckboxWidget(this, font, 0, 0,
@@ -158,6 +158,9 @@ EmulationDialog::EmulationDialog(OSystem& osystem, DialogContainer& parent,
 
   setHelpAnchor("Emulation");
 }
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+EmulationDialog::~EmulationDialog() = default;
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EmulationDialog::layout()

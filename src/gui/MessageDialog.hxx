@@ -50,7 +50,7 @@ class MessageDialog : public Dialog
     static inline bool myConfirmed = false;
 
     // Show a message
-    GUI::MessageBox* myMsg{nullptr};
+    unique_ptr<GUI::MessageBox> myMsg;
 
   private:
     // Following constructors and assignment operators not supported

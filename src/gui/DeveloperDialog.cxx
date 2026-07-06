@@ -74,6 +74,9 @@ DeveloperDialog::DeveloperDialog(OSystem& osystem, DialogContainer& parent,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+DeveloperDialog::~DeveloperDialog() = default;
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DeveloperDialog::layout()
 {
   const int lineHeight   = Dialog::lineHeight(),
@@ -119,13 +122,13 @@ void DeveloperDialog::addEmulationTab(const GUI::Font& font)
   const int tabID = myTab->addTab(" Emulation ", TabWidget::AUTO_WIDTH);
 
   // settings set
-  mySettingsGroupEmulation = new RadioButtonGroup();
+  mySettingsGroupEmulation = std::make_unique<RadioButtonGroup>();
   myEmuSettings[0] = new RadioButtonWidget(myTab, font, 0, 0, "Player settings",
-                                           mySettingsGroupEmulation, kPlrSettings);
+                                           mySettingsGroupEmulation.get(), kPlrSettings);
   myEmuSettings[0]->setToolTip(Event::ToggleDeveloperSet);
   wid.push_back(myEmuSettings[0]);
   myEmuSettings[1] = new RadioButtonWidget(myTab, font, 0, 0, "Developer settings",
-                                           mySettingsGroupEmulation, kDevSettings);
+                                           mySettingsGroupEmulation.get(), kDevSettings);
   myEmuSettings[1]->setToolTip(Event::ToggleDeveloperSet);
   wid.push_back(myEmuSettings[1]);
 
@@ -325,13 +328,13 @@ void DeveloperDialog::addTiaTab(const GUI::Font& font)
   const int tabID = myTab->addTab("  TIA  ", TabWidget::AUTO_WIDTH);
 
   // settings set
-  mySettingsGroupTia = new RadioButtonGroup();
+  mySettingsGroupTia = std::make_unique<RadioButtonGroup>();
   myTiaSettings[0] = new RadioButtonWidget(myTab, font, 0, 0, "Player settings",
-                                           mySettingsGroupTia, kPlrSettings);
+                                           mySettingsGroupTia.get(), kPlrSettings);
   myTiaSettings[0]->setToolTip(Event::ToggleDeveloperSet);
   wid.push_back(myTiaSettings[0]);
   myTiaSettings[1] = new RadioButtonWidget(myTab, font, 0, 0, "Developer settings",
-                                           mySettingsGroupTia, kDevSettings);
+                                           mySettingsGroupTia.get(), kDevSettings);
   myTiaSettings[1]->setToolTip(Event::ToggleDeveloperSet);
   wid.push_back(myTiaSettings[1]);
 
@@ -497,13 +500,13 @@ void DeveloperDialog::addVideoTab(const GUI::Font& font)
   const int tabID = myTab->addTab(" Video ", TabWidget::AUTO_WIDTH);
 
   // settings set
-  mySettingsGroupVideo = new RadioButtonGroup();
+  mySettingsGroupVideo = std::make_unique<RadioButtonGroup>();
   myVideoSettings[0] = new RadioButtonWidget(myTab, font, 0, 0, "Player settings",
-                                             mySettingsGroupVideo, kPlrSettings);
+                                             mySettingsGroupVideo.get(), kPlrSettings);
   myVideoSettings[0]->setToolTip(Event::ToggleDeveloperSet);
   wid.push_back(myVideoSettings[0]);
   myVideoSettings[1] = new RadioButtonWidget(myTab, font, 0, 0, "Developer settings",
-                                             mySettingsGroupVideo, kDevSettings);
+                                             mySettingsGroupVideo.get(), kDevSettings);
   myVideoSettings[1]->setToolTip(Event::ToggleDeveloperSet);
   wid.push_back(myVideoSettings[1]);
 
@@ -666,13 +669,13 @@ void DeveloperDialog::addTimeMachineTab(const GUI::Font& font)
   const int tabID = myTab->addTab(" Time Machine ", TabWidget::AUTO_WIDTH);
 
   // settings set
-  mySettingsGroupTM = new RadioButtonGroup();
+  mySettingsGroupTM = std::make_unique<RadioButtonGroup>();
   myTMSettings[0] = new RadioButtonWidget(myTab, font, 0, 0, "Player settings",
-                                          mySettingsGroupTM, kPlrSettings);
+                                          mySettingsGroupTM.get(), kPlrSettings);
   myTMSettings[0]->setToolTip(Event::ToggleDeveloperSet);
   wid.push_back(myTMSettings[0]);
   myTMSettings[1] = new RadioButtonWidget(myTab, font, 0, 0, "Developer settings",
-                                          mySettingsGroupTM, kDevSettings);
+                                          mySettingsGroupTM.get(), kDevSettings);
   myTMSettings[1]->setToolTip(Event::ToggleDeveloperSet);
   wid.push_back(myTMSettings[1]);
 

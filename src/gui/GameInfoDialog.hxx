@@ -112,9 +112,9 @@ class GameInfoDialog : public Dialog, public CommandSender
     StaticTextWidget* myEmulInfo{nullptr};
 
     // Console properties
-    RadioButtonGroup* myLeftDiffGroup{nullptr};
-    RadioButtonGroup* myRightDiffGroup{nullptr};
-    RadioButtonGroup* myTVTypeGroup{nullptr};
+    unique_ptr<RadioButtonGroup> myLeftDiffGroup;
+    unique_ptr<RadioButtonGroup> myRightDiffGroup;
+    unique_ptr<RadioButtonGroup> myTVTypeGroup;
     StaticTextWidget* myTVTypeLabel{nullptr};
     StaticTextWidget* myLeftDiffLabel{nullptr};
     StaticTextWidget* myRightDiffLabel{nullptr};

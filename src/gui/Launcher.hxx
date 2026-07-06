@@ -21,6 +21,7 @@
 class Properties;
 class OSystem;
 class FSNode;
+class LauncherDialog;
 
 #include "Rect.hxx"
 #include "FrameBufferConstants.hxx"
@@ -94,7 +95,7 @@ class Launcher : public DialogContainer
     void loadSize();
 
   private:
-    Dialog* myBaseDialog{nullptr};
+    unique_ptr<LauncherDialog> myBaseDialog;
 
     // The dimensions of this dialog
     Common::Size mySize;

@@ -265,29 +265,29 @@ void GameInfoDialog::addConsoleTab()
   const int tabID = myTab->addTab(" Console ", TabWidget::AUTO_WIDTH);
 
   myTVTypeLabel = new StaticTextWidget(myTab, _font, 0, 0, "TV type");
-  myTVTypeGroup = new RadioButtonGroup();
-  myTVType[0] = new RadioButtonWidget(myTab, _font, 0, 0, "Color", myTVTypeGroup);
+  myTVTypeGroup = std::make_unique<RadioButtonGroup>();
+  myTVType[0] = new RadioButtonWidget(myTab, _font, 0, 0, "Color", myTVTypeGroup.get());
   myTVType[0]->setToolTip(Event::ConsoleColor, Event::ConsoleColorToggle);
   wid.push_back(myTVType[0]);
-  myTVType[1] = new RadioButtonWidget(myTab, _font, 0, 0, "B/W", myTVTypeGroup);
+  myTVType[1] = new RadioButtonWidget(myTab, _font, 0, 0, "B/W", myTVTypeGroup.get());
   myTVType[1]->setToolTip(Event::ConsoleBlackWhite, Event::ConsoleColorToggle);
   wid.push_back(myTVType[1]);
 
   myLeftDiffLabel = new StaticTextWidget(myTab, _font, 0, 0, GUI::LEFT_DIFFICULTY);
-  myLeftDiffGroup = new RadioButtonGroup();
-  myLeftDiff[0] = new RadioButtonWidget(myTab, _font, 0, 0, "A (Expert)", myLeftDiffGroup);
+  myLeftDiffGroup = std::make_unique<RadioButtonGroup>();
+  myLeftDiff[0] = new RadioButtonWidget(myTab, _font, 0, 0, "A (Expert)", myLeftDiffGroup.get());
   myLeftDiff[0]->setToolTip(Event::ConsoleLeftDiffA, Event::ConsoleLeftDiffToggle);
   wid.push_back(myLeftDiff[0]);
-  myLeftDiff[1] = new RadioButtonWidget(myTab, _font, 0, 0, "B (Novice)", myLeftDiffGroup);
+  myLeftDiff[1] = new RadioButtonWidget(myTab, _font, 0, 0, "B (Novice)", myLeftDiffGroup.get());
   myLeftDiff[1]->setToolTip(Event::ConsoleLeftDiffB, Event::ConsoleLeftDiffToggle);
   wid.push_back(myLeftDiff[1]);
 
   myRightDiffLabel = new StaticTextWidget(myTab, _font, 0, 0, GUI::RIGHT_DIFFICULTY);
-  myRightDiffGroup = new RadioButtonGroup();
-  myRightDiff[0] = new RadioButtonWidget(myTab, _font, 0, 0, "A (Expert)", myRightDiffGroup);
+  myRightDiffGroup = std::make_unique<RadioButtonGroup>();
+  myRightDiff[0] = new RadioButtonWidget(myTab, _font, 0, 0, "A (Expert)", myRightDiffGroup.get());
   myRightDiff[0]->setToolTip(Event::ConsoleRightDiffA, Event::ConsoleRightDiffToggle);
   wid.push_back(myRightDiff[0]);
-  myRightDiff[1] = new RadioButtonWidget(myTab, _font, 0, 0, "B (Novice)", myRightDiffGroup);
+  myRightDiff[1] = new RadioButtonWidget(myTab, _font, 0, 0, "B (Novice)", myRightDiffGroup.get());
   myRightDiff[1]->setToolTip(Event::ConsoleRightDiffB, Event::ConsoleRightDiffToggle);
   wid.push_back(myRightDiff[1]);
 

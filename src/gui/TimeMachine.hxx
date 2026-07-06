@@ -19,6 +19,7 @@
 #define TIME_MACHINE_HXX
 
 class OSystem;
+class TimeMachineDialog;
 
 #include "DialogContainer.hxx"
 
@@ -50,7 +51,7 @@ class TimeMachine : public DialogContainer
     void setEnterWinds(Int32 numWinds);
 
   private:
-    Dialog* myBaseDialog{nullptr};
+    unique_ptr<TimeMachineDialog> myBaseDialog;
 
     uInt32 myWidth{0};
 

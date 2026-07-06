@@ -149,6 +149,9 @@ LauncherDialog::LauncherDialog(OSystem& osystem, DialogContainer& parent,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+LauncherDialog::~LauncherDialog() = default;
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void LauncherDialog::addFilteringWidgets()
 {
   if(_w < 640)
@@ -525,7 +528,7 @@ void LauncherDialog::layout()
   else if(myRomImageWidget && myRomInfoWidget)
   {
     // Viewer disabled: hide its widgets and move them off-screen so they
-    // receive no mouse events (findWidgetInChain() is bounds-only and does not
+    // receive no mouse events (findWidgetInList() is bounds-only and does not
     // skip invisible widgets); the full-width list then handles clicks there
     myRomImageWidget->setPos(_w, 0);
     myRomImageWidget->setFlags(Widget::FLAG_INVISIBLE);

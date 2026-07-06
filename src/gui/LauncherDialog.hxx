@@ -62,7 +62,7 @@ class LauncherDialog : public Dialog, CommandSender
   public:
     LauncherDialog(OSystem& osystem, DialogContainer& parent,
                    int x, int y, int w, int h);
-    ~LauncherDialog() override = default;
+    ~LauncherDialog() override;
 
     /**
       Get path for the currently selected file.

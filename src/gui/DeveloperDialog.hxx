@@ -42,7 +42,7 @@ class DeveloperDialog : public Dialog, DevSettingsHandler
   public:
     DeveloperDialog(OSystem& osystem, DialogContainer& parent,
                 const GUI::Font& font);
-    ~DeveloperDialog() override = default;
+    ~DeveloperDialog() override;
 
     void loadConfig() override;
     void saveConfig() override;
@@ -92,7 +92,7 @@ class DeveloperDialog : public Dialog, DevSettingsHandler
     StaticTextWidget*   myDebuggerInfo{nullptr};
 
     // Emulator widgets
-    RadioButtonGroup*   mySettingsGroupEmulation{nullptr};
+    unique_ptr<RadioButtonGroup> mySettingsGroupEmulation;
     CheckboxWidget*     myFrameStatsWidget{nullptr};
     CheckboxWidget*     myDetectedInfoWidget{nullptr};
     CheckboxWidget*     myExternAccessWidget{nullptr};
@@ -115,7 +115,7 @@ class DeveloperDialog : public Dialog, DevSettingsHandler
     SliderWidget*       myArmSpeedWidget{nullptr};
 
     // TIA widgets
-    RadioButtonGroup*   mySettingsGroupTia{nullptr};
+    unique_ptr<RadioButtonGroup> mySettingsGroupTia;
     PopUpWidget*        myTIATypeWidget{nullptr};
 
     StaticTextWidget*   myInvPhaseLabel{nullptr};
@@ -145,7 +145,7 @@ class DeveloperDialog : public Dialog, DevSettingsHandler
     CheckboxWidget*     myBlSwapWidget{nullptr};
 
     // Video widgets
-    RadioButtonGroup*   mySettingsGroupVideo{nullptr};
+    unique_ptr<RadioButtonGroup> mySettingsGroupVideo;
     CheckboxWidget*     myTVJitterWidget{nullptr};
     SliderWidget*       myTVJitterRecWidget{nullptr};
     SliderWidget*       myTVJitterSenseWidget{nullptr};
@@ -155,7 +155,7 @@ class DeveloperDialog : public Dialog, DevSettingsHandler
     std::array<ColorWidget*, DEBUG_COLORS> myDbgColourSwatch{nullptr};
 
     // States widgets
-    RadioButtonGroup*   mySettingsGroupTM{nullptr};
+    unique_ptr<RadioButtonGroup> mySettingsGroupTM;
     CheckboxWidget*     myTimeMachineWidget{nullptr};
     SliderWidget*       myStateSizeWidget{nullptr};
     SliderWidget*       myUncompressedWidget{nullptr};

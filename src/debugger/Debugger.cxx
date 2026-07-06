@@ -78,10 +78,7 @@ Debugger::Debugger(OSystem& osystem, Console& console)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Debugger::~Debugger()
-{
-  delete myDialog;  myDialog = nullptr;
-}
+Debugger::~Debugger() = default;
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Common::Size Debugger::fontMinSize() const
@@ -124,8 +121,8 @@ void Debugger::initialize()
   Common::Size minSize = fontMinSize();
   mySize.clamp(minSize.w, d.w, minSize.h, d.h);
 
-  delete myDialog;  myDialog = nullptr;
-  myDialog = new DebuggerDialog(myOSystem, *this, 0, 0, mySize.w, mySize.h);
+  myDialog = std::make_unique<DebuggerDialog>(myOSystem, *this, 0, 0,
+                                              mySize.w, mySize.h);
 
   // Some cart types need more height than the font minimum; grow the window
   // and rebuild once if the freshly-created dialog would clip its tab content
@@ -133,8 +130,8 @@ void Debugger::initialize()
   if(mySize.h < minSize.h)
   {
     mySize.clamp(minSize.w, d.w, minSize.h, d.h);
-    delete myDialog;  myDialog = nullptr;
-    myDialog = new DebuggerDialog(myOSystem, *this, 0, 0, mySize.w, mySize.h);
+    myDialog = std::make_unique<DebuggerDialog>(myOSystem, *this, 0, 0,
+                                                mySize.w, mySize.h);
   }
 
   myOSystem.settings().setValue("dbg.res", mySize);
@@ -213,8 +210,8 @@ void Debugger::recreateDialog()
     myDialogStack.top()->close();
 
   // Rebuild the base dialog at the new size, reusing all existing layout code
-  delete myDialog;  myDialog = nullptr;
-  myDialog = new DebuggerDialog(myOSystem, *this, 0, 0, mySize.w, mySize.h);
+  myDialog = std::make_unique<DebuggerDialog>(myOSystem, *this, 0, 0,
+                                              mySize.w, mySize.h);
   myCartDebug->setDebugWidget(myDialog->cartDebug());
 
   // The freshly-created cart widget keeps its change-tracking baseline locally

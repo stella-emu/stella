@@ -47,7 +47,7 @@ class Widget : public GuiObject
 
   public:
     Widget(GuiObject* boss, const GUI::Font& font, int x, int y, int w, int h);
-    ~Widget() override;
+    ~Widget() override = default;
 
     int getAbsX() const override { return _x + _boss->getChildX(); }
     int getAbsY() const override { return _y + _boss->getChildY(); }
@@ -185,7 +185,6 @@ class Widget : public GuiObject
   protected:
     GuiObject*  _boss{nullptr};
     const GUI::Font& _font;
-    Widget*     _next{nullptr};
     uInt32      _id{0};
     bool        _hasFocus{false};
     int         _fontWidth{0};
@@ -207,26 +206,23 @@ class Widget : public GuiObject
     bool        _debuggerHelp{false};
 
   public:
-    static Widget* findWidgetInChain(Widget* start, int x, int y);
-
-    /** Determine if 'find' is in the chain pointed to by 'start' */
-    static bool isWidgetInChain(Widget* start, const Widget* find);
+    static Widget* findWidgetInList(const WidgetList& list, int x, int y);
 
     /** Determine if 'find' is in the widget array */
-    static bool isWidgetInChain(const WidgetArray& list, Widget* find);
+    static bool isWidgetInList(const WidgetArray& list, Widget* find);
 
-    /** Select either previous, current, or next widget in chain to have
+    /** Select either previous, current, or next widget in list to have
         focus, and deselects all others */
-    static Widget* setFocusForChain(const GuiObject* boss, WidgetArray& arr,
-                                    const Widget* w, int direction,
-                                    bool emitFocusEvents = true);
+    static Widget* setFocusForList(const GuiObject* boss, WidgetArray& arr,
+                                   const Widget* w, int direction,
+                                   bool emitFocusEvents = true);
 
-    /** Sets all widgets in this chain to be dirty (must be redrawn) */
-    static void setDirtyInChain(Widget* start);
+    /** Sets all widgets in this list to be dirty (must be redrawn) */
+    static void setDirtyInList(const WidgetList& list);
 
-    // Refresh font-derived state for an entire widget chain, recursing into the
-    // child widgets owned by composite widgets (which form their own chains).
-    static void refreshFontMetricsInChain(Widget* start);
+    // Refresh font-derived state for an entire widget list, recursing into the
+    // child widgets owned by composite widgets (which form their own lists).
+    static void refreshFontMetricsInList(const WidgetList& list);
 
   private:
     // Following constructors and assignment operators not supported

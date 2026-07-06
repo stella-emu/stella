@@ -25,14 +25,12 @@ TimeMachine::TimeMachine(OSystem& osystem)
   : DialogContainer(osystem),
     myWidth{FBMinimum::Width}
 {
-  myBaseDialog = new TimeMachineDialog(myOSystem, *this, static_cast<int>(myWidth));
+  myBaseDialog = std::make_unique<TimeMachineDialog>(myOSystem, *this,
+                                                     static_cast<int>(myWidth));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-TimeMachine::~TimeMachine()
-{
-  delete myBaseDialog;  myBaseDialog = nullptr;
-}
+TimeMachine::~TimeMachine() = default;
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TimeMachine::requestResize()
@@ -44,12 +42,12 @@ void TimeMachine::requestResize()
   if(myWidth != w)
   {
     myWidth = w;
-    Dialog* oldPtr = myBaseDialog;
-    const Int32 enterWinds = static_cast<TimeMachineDialog*>(myBaseDialog)->getEnterWinds();
-    delete myBaseDialog;
-    myBaseDialog = new TimeMachineDialog(myOSystem, *this, static_cast<int>(myWidth));
+    const Dialog* oldPtr = myBaseDialog.get();
+    const Int32 enterWinds = myBaseDialog->getEnterWinds();
+    myBaseDialog = std::make_unique<TimeMachineDialog>(myOSystem, *this,
+                                                       static_cast<int>(myWidth));
     setEnterWinds(enterWinds);
-    Dialog* newPtr = myBaseDialog;
+    Dialog* newPtr = myBaseDialog.get();
 
     // Update the container stack; it may contain a reference to the old pointer
     if(oldPtr != newPtr)
@@ -65,11 +63,11 @@ void TimeMachine::requestResize()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Dialog* TimeMachine::baseDialog()
 {
-  return myBaseDialog;
+  return myBaseDialog.get();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TimeMachine::setEnterWinds(Int32 numWinds)
 {
-  static_cast<TimeMachineDialog*>(myBaseDialog)->setEnterWinds(numWinds);
+  myBaseDialog->setEnterWinds(numWinds);
 }

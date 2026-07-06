@@ -35,33 +35,24 @@ Widget::Widget(GuiObject* boss, const GUI::Font& font,
   : GuiObject(boss->instance(), boss->parent(), boss->dialog(), x, y, w, h),
     _boss{boss},
     _font{font},
-    _next{_boss->_firstWidget},
     _fontWidth{_font.getMaxCharWidth()},
     _lineHeight{_font.getLineHeight()}
 {
-  // Insert into the widget list of the boss
-  _boss->_firstWidget = this;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Widget::~Widget()
-{
-  delete _next;
-  _next = nullptr;
-
-  _focusList.clear();
+  // Insert into the widget list of the boss, which owns this widget from
+  // here on; everything else holds non-owning aliases
+  _boss->_children.emplace_back(this);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Widget::recordContentHeight()
 {
   // The content widgets are siblings (added to the same boss while this tab
-  // was built), so scan the boss's child chain for the lowest visible widget,
+  // was built), so scan the boss's child list for the lowest visible widget,
   // ignoring this container which is sized to fill the entire tab area
   int maxBottom = 0;
 
-  for(const Widget* w = _boss->_firstWidget; w != nullptr; w = w->_next)
-    if(w != this && w->isVisible())
+  for(const auto& w: _boss->_children)
+    if(w.get() != this && w->isVisible())
       maxBottom = std::max(maxBottom, w->getBottom());
 
   _contentHeight = maxBottom;
@@ -93,14 +84,9 @@ void Widget::tick()
     if(wantsToolTip())
       dialog().tooltip().request();
 
-    // Recursively tick widget and all child dialogs and widgets
-    Widget* w = _firstWidget;
-
-    while(w)
-    {
+    // Recursively tick all child widgets
+    for(const auto& w: _children)
       w->tick();
-      w = w->_next;
-    }
   }
 }
 
@@ -176,14 +162,9 @@ void Widget::drawChain()
   //   being drawn (e.g. RomListWidget)
   clearDirtyChain();
 
-  Widget* w = _firstWidget;
-
-  while(w)
-  {
+  for(const auto& w: _children)
     if(w->needsRedraw())
       w->draw();
-    w = w->_next;
-  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -407,45 +388,29 @@ string Widget::getHelpURL() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Widget* Widget::findWidgetInChain(Widget* start, int x, int y)
+Widget* Widget::findWidgetInList(const WidgetList& list, int x, int y)
 {
-  while(start)
+  // Search newest-first, so where widgets overlap the one added last wins
+  for(const auto& w: std::views::reverse(list))
   {
-    // Stop as soon as starte find a startidget that contains the point (x,y)
-    if(x >= start->_x && x < start->_x + start->_w &&
-       y >= start->_y && y < start->_y + start->_h)
-      break;
-    start = start->_next;
+    // Stop as soon as we find a widget that contains the point (x,y)
+    if(x >= w->_x && x < w->_x + w->_w &&
+       y >= w->_y && y < w->_y + w->_h)
+      return w->findWidget(x - w->_x, y - w->_y);
   }
-
-  if(start)
-    start = start->findWidget(x - start->_x, y - start->_y);
-
-  return start;
+  return nullptr;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool Widget::isWidgetInChain(Widget* start, const Widget* find)
-{
-  while(start)
-  {
-    // Stop as soon as starte find the startidget
-    if(start == find)  return true;
-    start = start->_next;
-  }
-  return false;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool Widget::isWidgetInChain(const WidgetArray& list, Widget* find)
+bool Widget::isWidgetInList(const WidgetArray& list, Widget* find)
 {
   return BSPF::contains(list, find);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Widget* Widget::setFocusForChain(const GuiObject* boss, WidgetArray& arr,
-                                 const Widget* wid, int direction,
-                                 bool emitFocusEvents)
+Widget* Widget::setFocusForList(const GuiObject* boss, WidgetArray& arr,
+                                const Widget* wid, int direction,
+                                bool emitFocusEvents)
 {
   FBSurface& s = boss->dialog().surface();
   const int size = static_cast<int>(arr.size());
@@ -534,16 +499,10 @@ Widget* Widget::setFocusForChain(const GuiObject* boss, WidgetArray& arr,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Widget::setDirtyInChain(Widget* start)
+void Widget::setDirtyInList(const WidgetList& list)
 {
-  while(start)
-  {
-  #ifdef DEBUG_BUILD
-    //cerr << "setDirtyInChain " << typeid(*start).name() << '\n';
-  #endif
-    start->setDirty();
-    start = start->_next;
-  }
+  for(const auto& w: list)
+    w->setDirty();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -555,15 +514,14 @@ void Widget::refreshFontMetrics()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Widget::refreshFontMetricsInChain(Widget* start)
+void Widget::refreshFontMetricsInList(const WidgetList& list)
 {
-  while(start)
+  for(const auto& w: list)
   {
-    start->refreshFontMetrics();
+    w->refreshFontMetrics();
     // Composite widgets parent their children to themselves, forming separate
-    // chains that the boss-level walk does not reach; recurse into them
-    refreshFontMetricsInChain(start->_firstWidget);
-    start = start->_next;
+    // child lists that the boss-level walk does not reach; recurse into them
+    refreshFontMetricsInList(w->_children);
   }
 }
 

@@ -27,7 +27,7 @@ class EmulationDialog : public Dialog
 {
   public:
     EmulationDialog(OSystem& osystem, DialogContainer& parent, const GUI::Font& font);
-    ~EmulationDialog() override = default;
+    ~EmulationDialog() override;
 
     void loadConfig() override;
     void saveConfig() override;
@@ -52,7 +52,7 @@ class EmulationDialog : public Dialog
     CheckboxWidget*   myAutoPauseWidget{nullptr};
     CheckboxWidget*   myConfirmExitWidget{nullptr};
     StaticTextWidget* mySaveOnExitLabel{nullptr};
-    RadioButtonGroup* mySaveOnExitGroup{nullptr};
+    unique_ptr<RadioButtonGroup> mySaveOnExitGroup;
     std::array<RadioButtonWidget*, 3> mySaveOnExitButtons{nullptr, nullptr, nullptr};
     CheckboxWidget*   myAutoSlotWidget{nullptr};
     ButtonWidget*     myStatePathButton{nullptr};
