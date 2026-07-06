@@ -687,9 +687,6 @@
     <ClCompile Include="..\..\gui\StellaSettingsDialog.cxx">
       <Filter>Source Files\gui</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\gui\MinUICommandDialog.cxx">
-      <Filter>Source Files\gui</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\debugger\BreakpointMap.cxx">
       <Filter>Source Files\debugger</Filter>
     </ClCompile>
@@ -1265,6 +1262,9 @@
     </ClCompile>
     <ClCompile Include="..\..\debugger\gui\TiaWindowDialog.cxx">
       <Filter>Source Files\debugger\gui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\gui\Layout.cxx">
+      <Filter>Source Files\gui</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1879,9 +1879,6 @@
     </ClInclude>
     <ClInclude Include="..\..\emucore\ControlLowLevel.hxx">
       <Filter>Header Files\emucore</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\gui\MinUICommandDialog.hxx">
-      <Filter>Header Files\gui</Filter>
     </ClInclude>
     <ClInclude Include="..\..\common\repository\KeyValueRepository.hxx">
       <Filter>Header Files\common\repository</Filter>
@@ -2614,6 +2611,9 @@
     </ClInclude>
     <ClInclude Include="..\..\debugger\gui\TiaWindowDialog.hxx">
       <Filter>Header Files\debugger\gui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\gui\Layout.hxx">
+      <Filter>Header Files\gui</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
