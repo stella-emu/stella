@@ -46,7 +46,7 @@ namespace CartCreator
   */
   unique_ptr<Cartridge> create(const FSNode& file, ByteSpan image,
                                string& md5, string_view dtype,
-                               Settings& settings, const FSNode& baseDir);
+                               Settings& settings, std::optional<std::reference_wrapper<const FSNode>> baseDir = std::nullopt);
 };  // namespace CartCreator
 
 #endif  // CART_CREATOR_HXX

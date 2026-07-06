@@ -467,15 +467,18 @@ namespace  // anonymous namespace, to keep these functions private
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 unique_ptr<Cartridge> CartCreator::create(const FSNode& file, ByteSpan image,
                                           string& md5, string_view dtype,
-                                          Settings& settings, const FSNode& baseDir)
+                                          Settings& settings, std::optional<std::reference_wrapper<const FSNode>> baseDir)
 {
   unique_ptr<Cartridge> cartridge;
   Bankswitch::Type type = Bankswitch::nameToType(dtype), detectedType = type;
   string id;
 
   // Supercharger audio files (WAV/MP3): stream PCM bits through the real BIOS.
-  if(auto cart = createFromSoundLoad(file, md5, settings, baseDir))
-    return cart;
+  if(baseDir.has_value()) {
+    if(auto cart = createFromSoundLoad(file, md5, settings, *baseDir)) {
+      return cart;
+    }
+  }
 
   // First inspect the file extension itself
   // If a valid type is found, it will override the one passed into this method
