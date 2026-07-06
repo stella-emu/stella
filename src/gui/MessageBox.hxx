@@ -21,6 +21,8 @@
 class GuiObject;
 class StaticTextWidget;
 
+#include <functional>
+
 #include "Dialog.hxx"
 #include "Command.hxx"
 
@@ -54,6 +56,18 @@ class MessageBox : public Dialog, public CommandSender
                string_view okText = "OK", string_view cancelText = "Cancel",
                string_view title = "",
                bool focusOKButton = true);
+
+    /**
+      Variant for transient use over TIA mode (via EventHandler::openDialog):
+      there is no boss to send commands to — answering leaves the menu mode
+      and reports the result through 'callback' instead.
+    */
+    MessageBox(OSystem& osystem, DialogContainer& parent, const GUI::Font& font,
+               const StringList& text, int max_w, int max_h,
+               const std::function<void(bool ok)>& callback,
+               string_view okText = "OK", string_view cancelText = "Cancel",
+               string_view title = "",
+               bool focusOKButton = true);
     ~MessageBox() override = default;
 
     /** Place the input dialog onscreen and center it */
@@ -74,6 +88,7 @@ class MessageBox : public Dialog, public CommandSender
 
     StringList myText;
     std::vector<StaticTextWidget*> myTextWidgets;
+    std::function<void(bool ok)> myCallback;
 
   private:
     // Following constructors and assignment operators not supported

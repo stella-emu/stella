@@ -176,13 +176,22 @@ class EventHandler
 
     void enterMenuMode(EventHandlerState state);
     void leaveMenuMode();
-    void openDialog(Dialog* dialog);
+    void openDialog(unique_ptr<Dialog> dialog);
   #ifdef GUI_SUPPORT
     void openBrowserDialog(string_view title, string_view startpath,
                            BrowserDialog::Mode mode,
                            const BrowserDialog::Command& command,
                            const FSNode::NameFilter& namefilter = {
                             [](const FSNode&) { return true; } });
+
+    /**
+      Show a transient message box over TIA mode; the answer is reported
+      through 'callback' after the menu mode is left.
+    */
+    void openMessageBox(string_view title, const StringList& text,
+                        const std::function<void(bool ok)>& callback,
+                        string_view okText = "OK",
+                        string_view cancelText = "Cancel");
   #endif
     bool enterDebugMode();
     void leaveDebugMode();

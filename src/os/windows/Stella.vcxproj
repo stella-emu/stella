@@ -1184,7 +1184,6 @@
     <ClCompile Include="..\..\gui\NavigationWidget.cxx" />
     <ClCompile Include="..\..\gui\JoystickDialog.cxx" />
     <ClCompile Include="..\..\gui\LoggerDialog.cxx" />
-    <ClCompile Include="..\..\gui\MessageDialog.cxx" />
     <ClCompile Include="..\..\gui\OverlayMenu.cxx" />
     <ClCompile Include="..\..\gui\PlusRomsSetupDialog.cxx" />
     <ClCompile Include="..\..\gui\QuadTariDialog.cxx" />
@@ -2649,7 +2648,6 @@
     <ClInclude Include="..\..\gui\NavigationWidget.hxx" />
     <ClInclude Include="..\..\gui\JoystickDialog.hxx" />
     <ClInclude Include="..\..\gui\LoggerDialog.hxx" />
-    <ClInclude Include="..\..\gui\MessageDialog.hxx" />
     <ClInclude Include="..\..\gui\OverlayMenu.hxx" />
     <ClInclude Include="..\..\gui\PlusRomsSetupDialog.hxx" />
     <ClInclude Include="..\..\gui\QuadTariDialog.hxx" />

@@ -32,7 +32,6 @@ MODULE_OBJS := \
         src/gui/ListWidget.o \
         src/gui/LoggerDialog.o \
         src/gui/MessageBox.o \
-        src/gui/MessageDialog.o \
         src/gui/NavigationWidget.o \
         src/gui/OptionsDialog.o \
         src/gui/OverlayMenu.o \

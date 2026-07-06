@@ -18,6 +18,8 @@
 #include "Dialog.hxx"
 #include "Widget.hxx"
 #include "Font.hxx"
+#include "OSystem.hxx"
+#include "EventHandler.hxx"
 #include "StringParser.hxx"
 #include "Layout.hxx"
 #include "MessageBox.hxx"
@@ -74,6 +76,25 @@ MessageBox::MessageBox(GuiObject* boss, const GUI::Font& font,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+MessageBox::MessageBox(OSystem& osystem, DialogContainer& parent,
+                       const GUI::Font& font, const StringList& text,
+                       int max_w, int max_h,
+                       const std::function<void(bool ok)>& callback,
+                       string_view okText, string_view cancelText,
+                       string_view title, bool focusOKButton)
+  : Dialog(osystem, parent, font, title, 0, 0, max_w, max_h),
+    myMaxW{max_w},
+    myMaxH{max_h},
+    myCallback{callback}
+{
+  createText(font, text);
+
+  WidgetArray wid;
+  addOKCancelBGroup(wid, font, okText, cancelText, focusOKButton);
+  addToFocusList(wid);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void MessageBox::createText(const GUI::Font& font, const StringList& text)
 {
   const int fontHeight = Dialog::fontHeight();
@@ -120,22 +141,27 @@ void MessageBox::layout()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void MessageBox::handleCommand(CommandSender* sender, int cmd, int data, int id)
 {
-  if(cmd == GuiObject::kOKCmd)
+  if(cmd == GuiObject::kOKCmd || cmd == GuiObject::kCloseCmd)
   {
-    close();
+    const bool ok = cmd == GuiObject::kOKCmd;
 
-    // Send a signal to the calling class that 'OK' has been selected
-    // Since we aren't derived from a widget, we don't have a 'data' or 'id'
-    if(myOkCmd)
-      sendCommand(myOkCmd, 0, 0);
-  }
-  else if(cmd == GuiObject::kCloseCmd)
-  {
-    close();
+    if(myCallback)
+    {
+      // As a transient dialog over TIA mode, any answer leaves the menu mode;
+      // the result is reported through the callback
+      instance().eventHandler().leaveMenuMode();
+      myCallback(ok);
+    }
+    else
+    {
+      close();
 
-    // Send a signal to the calling class that 'Cancel' has been selected
-    if(myCancelCmd)
-      sendCommand(myCancelCmd, 0, 0);
+      // Send a signal to the calling class which button was selected
+      // Since we aren't derived from a widget, we don't have a 'data' or 'id'
+      const int replyCmd = ok ? myOkCmd : myCancelCmd;
+      if(replyCmd)
+        sendCommand(replyCmd, 0, 0);
+    }
   }
   else
     Dialog::handleCommand(sender, cmd, data, id);

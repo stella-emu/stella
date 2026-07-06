@@ -699,9 +699,6 @@
     <ClCompile Include="..\..\emucore\Lightgun.cxx">
       <Filter>Source Files\emucore</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\gui\MessageDialog.cxx">
-      <Filter>Source Files\gui</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\gui\HighScoresDialog.cxx">
       <Filter>Source Files\gui</Filter>
     </ClCompile>
@@ -1900,9 +1897,6 @@
     </ClInclude>
     <ClInclude Include="..\..\emucore\Lightgun.hxx">
       <Filter>Header Files\emucore</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\gui\MessageDialog.hxx">
-      <Filter>Header Files\gui</Filter>
     </ClInclude>
     <ClInclude Include="..\..\gui\HighScoresDialog.hxx">
       <Filter>Header Files\gui</Filter>

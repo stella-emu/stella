@@ -470,7 +470,6 @@ void FrameBuffer::update(UpdateMode mode)
     case EventHandlerState::OPTIONSMENU:
     case EventHandlerState::CMDMENU:
     case EventHandlerState::HIGHSCORESMENU:
-    case EventHandlerState::MESSAGEMENU:
     case EventHandlerState::PLUSROMSMENU:
     case EventHandlerState::OVERLAYMENU:
     {

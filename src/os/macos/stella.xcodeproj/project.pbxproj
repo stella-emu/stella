@@ -693,8 +693,6 @@
 		DCDDEAC71F5DBF0400C67366 /* StateManager.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCDDEAC31F5DBF0400C67366 /* StateManager.hxx */; };
 		DCDE17FC17724E5D00EB1AC6 /* SnapshotDialog.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCDE17F817724E5D00EB1AC6 /* SnapshotDialog.cxx */; };
 		DCDE17FD17724E5D00EB1AC6 /* SnapshotDialog.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCDE17F917724E5D00EB1AC6 /* SnapshotDialog.hxx */; };
-		DCDE647F23E6638E00EE3EFF /* MessageDialog.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCDE647B23E6638D00EE3EFF /* MessageDialog.cxx */; };
-		DCDE648023E6638E00EE3EFF /* MessageDialog.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCDE647C23E6638D00EE3EFF /* MessageDialog.hxx */; };
 		DCDFF08120B781B0001227C0 /* DispatchResult.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCDFF07F20B781B0001227C0 /* DispatchResult.cxx */; };
 		DCDFF08220B781B0001227C0 /* DispatchResult.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCDFF08020B781B0001227C0 /* DispatchResult.hxx */; };
 		DCE1FF42286DFB76003568AD /* Joy2BPlusWidget.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCE1FF40286DFB76003568AD /* Joy2BPlusWidget.cxx */; };
@@ -1590,8 +1588,6 @@
 		DCDDEAC31F5DBF0400C67366 /* StateManager.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = StateManager.hxx; sourceTree = "<group>"; };
 		DCDE17F817724E5D00EB1AC6 /* SnapshotDialog.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SnapshotDialog.cxx; sourceTree = "<group>"; };
 		DCDE17F917724E5D00EB1AC6 /* SnapshotDialog.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = SnapshotDialog.hxx; sourceTree = "<group>"; };
-		DCDE647B23E6638D00EE3EFF /* MessageDialog.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MessageDialog.cxx; sourceTree = "<group>"; };
-		DCDE647C23E6638D00EE3EFF /* MessageDialog.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = MessageDialog.hxx; sourceTree = "<group>"; };
 		DCDFF07F20B781B0001227C0 /* DispatchResult.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DispatchResult.cxx; sourceTree = "<group>"; };
 		DCDFF08020B781B0001227C0 /* DispatchResult.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = DispatchResult.hxx; sourceTree = "<group>"; };
 		DCE1FF40286DFB76003568AD /* Joy2BPlusWidget.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Joy2BPlusWidget.cxx; sourceTree = "<group>"; };
@@ -2446,8 +2442,6 @@
 				DC6C726013CDEA0A008A5975 /* LoggerDialog.cxx */,
 				DC98F35511F5B56200AA520F /* MessageBox.hxx */,
 				DC98F35411F5B56200AA520F /* MessageBox.cxx */,
-				DCDE647C23E6638D00EE3EFF /* MessageDialog.hxx */,
-				DCDE647B23E6638D00EE3EFF /* MessageDialog.cxx */,
 				DCE9681D276A40AB00E99839 /* NavigationWidget.hxx */,
 				DCE9681C276A40AB00E99839 /* NavigationWidget.cxx */,
 				2DDBEAC5084578BF00812C11 /* OptionsDialog.hxx */,
@@ -2870,7 +2864,6 @@
 				2D9173CC09BA90380026E9FF /* Booster.hxx in Headers */,
 				E07DF4472C0A81ED00E1FB07 /* CartWF8Widget.hxx in Headers */,
 				2D9173CD09BA90380026E9FF /* Cart.hxx in Headers */,
-				DCDE648023E6638E00EE3EFF /* MessageDialog.hxx in Headers */,
 				2D9173CE09BA90380026E9FF /* Cart2K.hxx in Headers */,
 				2D9173CF09BA90380026E9FF /* Cart3F.hxx in Headers */,
 				DC3EE86D1E2C0E6D00905161 /* zlib.h in Headers */,
@@ -3719,7 +3712,6 @@
 				DCDDEAC61F5DBF0400C67366 /* StateManager.cxx in Sources */,
 				DC8C1BAF14B25DE7006440EE /* CompuMate.cxx in Sources */,
 				E09F4142201E9050004A3391 /* Audio.cxx in Sources */,
-				DCDE647F23E6638E00EE3EFF /* MessageDialog.cxx in Sources */,
 				DCF7F127223D796000701A47 /* ProfilingRunner.cxx in Sources */,
 				DC8C1BB114B25DE7006440EE /* MindLink.cxx in Sources */,
 				DCCF47DF14B60DEE00814FAB /* JoystickWidget.cxx in Sources */,

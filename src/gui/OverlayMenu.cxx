@@ -25,7 +25,6 @@
 #include "StellaSettingsDialog.hxx"
 #include "CommandDialog.hxx"
 #include "HighScoresDialog.hxx"
-#include "MessageDialog.hxx"
 #include "PlusRomsSetupDialog.hxx"
 #include "OverlayMenu.hxx"
 
@@ -39,9 +38,9 @@ OverlayMenu::OverlayMenu(OSystem& osystem)
 OverlayMenu::~OverlayMenu() = default;
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void OverlayMenu::setDialog(Dialog* dialog)
+void OverlayMenu::setDialog(unique_ptr<Dialog> dialog)
 {
-  myTransientDialog.reset(dialog);
+  myTransientDialog = std::move(dialog);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -61,9 +60,6 @@ Dialog* OverlayMenu::baseDialog()
 
     case EventHandlerState::HIGHSCORESMENU:
       return &cached(Cached::HighScores);
-
-    case EventHandlerState::MESSAGEMENU:
-      return &cached(Cached::Message);
 
     case EventHandlerState::PLUSROMSMENU:
       return &cached(Cached::PlusRoms);
@@ -101,10 +97,6 @@ Dialog* OverlayMenu::createDialog(Cached id)
     case Cached::HighScores:
       return new HighScoresDialog(myOSystem, *this,
         FBMinimum::Width, FBMinimum::Height, Dialog::AppMode::emulator);
-
-    case Cached::Message:
-      return new MessageDialog(myOSystem, *this,
-        myOSystem.frameBuffer().font(), FBMinimum::Width, FBMinimum::Height);
 
     case Cached::PlusRoms:
       return new PlusRomsSetupDialog(myOSystem, *this,

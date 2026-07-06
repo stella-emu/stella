@@ -55,7 +55,7 @@
 #endif
 #ifdef GUI_SUPPORT
   #include "BrowserDialog.hxx"
-  #include "MessageDialog.hxx"
+  #include "MessageBox.hxx"
   #include "OverlayMenu.hxx"
   #include "DialogContainer.hxx"
   #include "Launcher.hxx"
@@ -1652,8 +1652,8 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
                 msg.emplace_back("");
                 msg.emplace_back("You will lose all your progress.");
               }
-              MessageDialog::setMessage("Exit Emulation", msg, true);
-              enterMenuMode(EventHandlerState::MESSAGEMENU);
+              openMessageBox("Exit Emulation", msg,
+                [this](bool ok) { if(ok) exitEmulation(true); }, "Yes", "No");
             }
             else
 #endif
@@ -1662,16 +1662,6 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
           }
           return;
 
-#ifdef GUI_SUPPORT
-        case EventHandlerState::MESSAGEMENU:
-          if(pressed && !repeated)
-          {
-            leaveMenuMode();
-            if (MessageDialog::confirmed())
-              exitEmulation(true);
-          }
-          return;
-#endif
         default:
           return;
       }
@@ -2580,10 +2570,10 @@ void EventHandler::enterMenuMode(EventHandlerState state)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EventHandler::openDialog(Dialog* dialog)
+void EventHandler::openDialog(unique_ptr<Dialog> dialog)
 {
 #ifdef GUI_SUPPORT
-  myOSystem.overlayMenu().setDialog(dialog);
+  myOSystem.overlayMenu().setDialog(std::move(dialog));
   enterMenuMode(EventHandlerState::OVERLAYMENU);
 #endif
 }
@@ -2600,6 +2590,16 @@ void EventHandler::openBrowserDialog(string_view title, string_view startpath,
   setState(EventHandlerState::OVERLAYMENU);
   myOSystem.sound().pause(true);
   BrowserDialog::show(myOSystem, title, startpath, mode, command, namefilter);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void EventHandler::openMessageBox(string_view title, const StringList& text,
+                                  const std::function<void(bool ok)>& callback,
+                                  string_view okText, string_view cancelText)
+{
+  openDialog(std::make_unique<GUI::MessageBox>(
+    myOSystem, myOSystem.overlayMenu(), myOSystem.frameBuffer().font(), text,
+    FBMinimum::Width, FBMinimum::Height, callback, okText, cancelText, title));
 }
 #endif
 
@@ -2719,7 +2719,6 @@ void EventHandler::setState(EventHandlerState state)
     case EventHandlerState::OPTIONSMENU:
     case EventHandlerState::CMDMENU:
     case EventHandlerState::HIGHSCORESMENU:
-    case EventHandlerState::MESSAGEMENU:
     case EventHandlerState::PLUSROMSMENU:
     case EventHandlerState::OVERLAYMENU:
       myOverlay = &myOSystem.overlayMenu();
