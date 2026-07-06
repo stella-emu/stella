@@ -48,6 +48,7 @@ InputDialog::InputDialog(OSystem& osystem, DialogContainer& parent,
   // dialog and positions everything from the current font, so it reflows on
   // font change.  The tab widget's bar geometry is (re)computed in layout() via
   // TabWidget::updateTabSizes(), so a placeholder size is fine here.
+  // NOLINTBEGIN(cppcoreguidelines-prefer-member-initializer)
   myTab = new TabWidget(this, _font, 0, 0, 1, 1);
   addTabWidget(myTab);
 
@@ -74,6 +75,7 @@ InputDialog::InputDialog(OSystem& osystem, DialogContainer& parent,
   addBGroupToFocusList(wid);
 
   setHelpAnchor("Remapping");
+  // NOLINTEND(cppcoreguidelines-prefer-member-initializer)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

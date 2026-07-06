@@ -92,8 +92,8 @@ void FBMessageHandler::create(string_view message, MessagePosition position,
   // message can now be bigger than the surface.  Grow it to fit before defining
   // the rendered (src) region, otherwise the extra rows/columns sample
   // uninitialized memory (pixelated garbage along the message edge).
-  const uInt32 needW = static_cast<uInt32>(myMsg.w),
-               needH = static_cast<uInt32>(myMsg.h);
+  const auto needW = static_cast<uInt32>(myMsg.w),
+             needH = static_cast<uInt32>(myMsg.h);
   if(needW > myMsg.surface->width() || needH > myMsg.surface->height())
     myMsg.surface->resize(std::max(needW, myMsg.surface->width()),
                           std::max(needH, myMsg.surface->height()));
@@ -368,8 +368,8 @@ void FBMessageHandler::drawStats(float framesPerSecond)
   // clipped and the extra area samples uninitialized memory (see create()).
   myStatsMsg.w = f.getMaxCharWidth() * 40 + 3;
   myStatsMsg.h = dy * 3;
-  const uInt32 needW = static_cast<uInt32>(myStatsMsg.w),
-               needH = static_cast<uInt32>(myStatsMsg.h);
+  const auto needW = static_cast<uInt32>(myStatsMsg.w),
+             needH = static_cast<uInt32>(myStatsMsg.h);
   if(needW > myStatsMsg.surface->width() || needH > myStatsMsg.surface->height())
     myStatsMsg.surface->resize(std::max(needW, myStatsMsg.surface->width()),
                                std::max(needH, myStatsMsg.surface->height()));

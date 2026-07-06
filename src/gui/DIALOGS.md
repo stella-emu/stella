@@ -324,6 +324,31 @@ What stays in the ctor: `VarList` items, tooltips, `setHelpAnchor`, enable/disab
 command IDs, focus registration. What does **not**: any `xpos`/`ypos` arithmetic,
 any `setSize`, any use of `_w`/`_h` (they are still 0 here).
 
+**clang-tidy — suppress `prefer-member-initializer`, don't obey it.** Creating the
+widgets in the ctor body (rather than the member-initializer list) makes
+`cppcoreguidelines-prefer-member-initializer` flag every widget whose arguments are
+literals/params/members only (a widget sized from a body-local like `lineHeight`
+isn't flagged). **Do not hoist them into the initializer list.** That is wrong for
+this pattern: it scatters the labels away from the size-bearing siblings that *must*
+stay in the body, and it silently reorders widget registration — the init list runs
+before the body, in header-declaration order, so draw/focus order would change.
+Bracket the create-only block with a `NOLINTBEGIN`/`NOLINTEND` pair instead (place
+`NOLINTBEGIN` right after the create-only comment and `NOLINTEND` before the
+constructor's closing brace):
+
+```cpp
+  // NOLINTBEGIN(cppcoreguidelines-prefer-member-initializer)
+  myMode = new PopUpWidget(this, font, 0, 0, popupWidth, lineHeight, items, "Mode ");
+  wid.push_back(myMode);
+  myEnable = new CheckboxWidget(this, font, 0, 0, "Enable feature");
+  wid.push_back(myEnable);
+  // NOLINTEND(cppcoreguidelines-prefer-member-initializer)
+```
+
+(For a lone flagged line — e.g. one whose value depends on a body-local so it can't
+be a member initializer anyway — a single `// NOLINTNEXTLINE(...)` above it is
+enough.)
+
 ### 3. `layout()` — size and position
 
 ```cpp
@@ -508,6 +533,9 @@ Two corollaries:
   (needed when members are `unique_ptr` to forward-declared types), put it
   immediately after the constructor. An inline `= default` in the header needs
   nothing.
+- **Wrap the create-only block in `NOLINTBEGIN/END(cppcoreguidelines-prefer-member-initializer)`**
+  — the create-only ctor deliberately triggers this check; suppress it, never hoist
+  the widgets into the initializer list (see step 2).
 
 ---
 

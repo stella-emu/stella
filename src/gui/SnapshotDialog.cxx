@@ -38,6 +38,7 @@ SnapshotDialog::SnapshotDialog(OSystem& osystem, DialogContainer& parent,
   // Widgets are only created here (at placeholder geometry); layout() assigns
   // all geometry from the current font, so the dialog reflows on font change.
 
+  // NOLINTBEGIN(cppcoreguidelines-prefer-member-initializer)
   // Snapshot path (save files)
   mySnapSaveButton = new ButtonWidget(this, font, 0, 0, buttonWidth, buttonHeight,
                                       "Save path" + ELLIPSIS, kChooseSnapSaveDirCmd);
@@ -79,6 +80,7 @@ SnapshotDialog::SnapshotDialog(OSystem& osystem, DialogContainer& parent,
   addToFocusList(wid);
 
   setHelpAnchor("Snapshots");
+  // NOLINTEND(cppcoreguidelines-prefer-member-initializer)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

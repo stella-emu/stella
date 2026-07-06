@@ -39,6 +39,7 @@ GlobalPropsDialog::GlobalPropsDialog(GuiObject* boss, const GUI::Font& font)
   VariantList items;
   const GUI::Font& infofont = instance().frameBuffer().infoFont();
 
+  // NOLINTBEGIN(cppcoreguidelines-prefer-member-initializer)
   // Bankswitch type
   myBSLabel = new StaticTextWidget(this, font, 0, 0, "Bankswitch type");
   for(const auto& [name, desc] : Bankswitch::BSList)
@@ -100,6 +101,7 @@ GlobalPropsDialog::GlobalPropsDialog(GuiObject* boss, const GUI::Font& font)
   addToFocusList(wid);
 
   setHelpAnchor("PowerOn");
+  // NOLINTEND(cppcoreguidelines-prefer-member-initializer)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

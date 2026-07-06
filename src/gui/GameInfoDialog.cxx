@@ -62,6 +62,7 @@ GameInfoDialog::GameInfoDialog(
   // Widgets are only created here (at placeholder geometry); layout() sizes the
   // dialog and positions everything from the current font.  The tab bar geometry
   // is recomputed in layout() via TabWidget::updateTabSizes().
+  // NOLINTBEGIN(cppcoreguidelines-prefer-member-initializer)
   myTab = new TabWidget(this, font, 0, 0, 1, 1);
   addTabWidget(myTab);
 
@@ -83,6 +84,7 @@ GameInfoDialog::GameInfoDialog(
   addBGroupToFocusList(wid);
 
   setHelpAnchor("Properties");
+  // NOLINTEND(cppcoreguidelines-prefer-member-initializer)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

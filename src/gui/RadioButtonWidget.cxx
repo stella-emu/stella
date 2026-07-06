@@ -265,6 +265,7 @@ void RadioButtonWidget::refreshFontMetrics()
   // Bypass CheckboxWidget's version: a radio button has its own button size and
   // outer/inner circle images that must be re-selected for the live font
   // (mirrors the ctor).
+  // NOLINTNEXTLINE(bugprone-parent-virtual-call)
   Widget::refreshFontMetrics();
 
   _buttonSize = buttonSize(_font);

@@ -36,6 +36,7 @@ JoystickDialog::JoystickDialog(GuiObject* boss, const GUI::Font& font,
             buttonHeight = Dialog::buttonHeight(),
             buttonWidth  = Dialog::buttonWidth("Remove");
 
+  // NOLINTBEGIN(cppcoreguidelines-prefer-member-initializer)
   // Joystick list
   myJoyList = new StringListWidget(this, font, 0, 0, 1, 1);
   myJoyList->setEditable(false);
@@ -71,6 +72,7 @@ JoystickDialog::JoystickDialog(GuiObject* boss, const GUI::Font& font,
   wid.push_back(myRemoveBtn);
   wid.push_back(myCloseBtn);
   addToFocusList(wid);
+  // NOLINTEND(cppcoreguidelines-prefer-member-initializer)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

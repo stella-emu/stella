@@ -49,6 +49,7 @@ RomAuditDialog::RomAuditDialog(OSystem& osystem, DialogContainer& parent,
   // Widgets are only created here (at placeholder geometry); layout() assigns
   // all geometry from the current font.
 
+  // NOLINTBEGIN(cppcoreguidelines-prefer-member-initializer)
   // Audit path
   myRomButton = new ButtonWidget(this, font, 0, 0,
       buttonWidth, buttonHeight, "Audit path" + ELLIPSIS, kChooseAuditDirCmd);
@@ -74,6 +75,7 @@ RomAuditDialog::RomAuditDialog(OSystem& osystem, DialogContainer& parent,
   addBGroupToFocusList(wid);
 
   setHelpAnchor("ROMAudit");
+  // NOLINTEND(cppcoreguidelines-prefer-member-initializer)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

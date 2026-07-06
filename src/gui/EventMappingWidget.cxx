@@ -63,6 +63,7 @@ EventMappingWidget::EventMappingWidget(GuiObject* boss, const GUI::Font& font,
   VarList::push_back(items, " Debug", Event::Group::Debug);
   VarList::push_back(items, "User Interface", Event::Group::Menu);
 
+  // NOLINTBEGIN(cppcoreguidelines-prefer-member-initializer)
   myFilterPopup = new PopUpWidget(boss, font, 0, 0, 1, lineHeight,
                                   items, "Events ", 0, kFilterCmd);
   myFilterPopup->setTarget(this);
@@ -111,6 +112,7 @@ EventMappingWidget::EventMappingWidget(GuiObject* boss, const GUI::Font& font,
                                     lineHeight + fontHeight * (ACTION_LINES - 1), "");
   myKeyMapping->setEditable(false, true);
   myKeyMapping->clearFlags(Widget::FLAG_RETAIN_FOCUS);
+  // NOLINTEND(cppcoreguidelines-prefer-member-initializer)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -57,6 +57,7 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
   // dialog and positions everything from the current font, so it reflows on
   // font change.  The tab widget's bar geometry is (re)computed in layout() via
   // TabWidget::updateTabSizes(), so a placeholder size is fine here.
+  // NOLINTBEGIN(cppcoreguidelines-prefer-member-initializer)
   myTab = new TabWidget(this, font, 0, 0, 1, 1);
   addTabWidget(myTab);
 
@@ -296,6 +297,7 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
 #ifndef WINDOWED_SUPPORT
   myCenter->clearFlags(Widget::FLAG_ENABLED);
 #endif
+  // NOLINTEND(cppcoreguidelines-prefer-member-initializer)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -66,6 +66,7 @@ QuadTariDialog::QuadTariDialog(GuiObject* boss, const GUI::Font& font,
   // Widgets are only created here (at placeholder position); layout() assigns
   // all geometry from the current font.  The two ports are laid out as two
   // side-by-side columns of identical structure.
+  // NOLINTBEGIN(cppcoreguidelines-prefer-member-initializer)
   myLeftPortLabel = new StaticTextWidget(this, font, 0, 0, "Left port");
   myLeft1Port = new PopUpWidget(this, font, 0, 0, pwidth, lineHeight, ctrls, "P1 ");
   wid.push_back(myLeft1Port);
@@ -86,6 +87,7 @@ QuadTariDialog::QuadTariDialog(GuiObject* boss, const GUI::Font& font,
   addBGroupToFocusList(wid);
 
   setHelpAnchor("Quadtari");
+  // NOLINTEND(cppcoreguidelines-prefer-member-initializer)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -820,6 +820,7 @@ void ButtonWidget::refreshFontMetrics()
   // so only refresh the cached font metrics here.  This also deliberately blocks
   // the StaticTextWidget size recompute (which would shrink a button to its bare
   // label width) from being inherited by ButtonWidget and its subclasses.
+  // NOLINTNEXTLINE(bugprone-parent-virtual-call)
   Widget::refreshFontMetrics();
 }
 
@@ -947,7 +948,7 @@ CheckboxWidget::CheckboxWidget(GuiObject* boss, const GUI::Font& font,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CheckboxWidget::refreshFontMetrics()
 {
-  Widget::refreshFontMetrics();
+  ButtonWidget::refreshFontMetrics();
 
   // Recompute the box + label geometry from the live font (mirrors the ctor).
   // A checkbox is fully font + label derived, so this is the complete size.

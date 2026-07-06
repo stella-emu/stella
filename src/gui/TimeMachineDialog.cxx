@@ -223,6 +223,7 @@ TimeMachineDialog::TimeMachineDialog(OSystem& osystem, DialogContainer& parent,
   // Widgets are only created here (at placeholder positions); layout() assigns
   // all geometry from the current font and dialog width.
 
+  // NOLINTBEGIN(cppcoreguidelines-prefer-member-initializer)
   // Index info (current + last state index)
   myCurrentIdxWidget = new StaticTextWidget(this, font, 0, 0, "1000", TextAlign::Left, kBGColor);
   myCurrentIdxWidget->setTextColor(kColorInfo);
@@ -273,6 +274,7 @@ TimeMachineDialog::TimeMachineDialog(OSystem& osystem, DialogContainer& parent,
                                          TextAlign::Left, kBGColor);
   myMessageWidget->setFlags(Widget::FLAG_CLEARBG | Widget::FLAG_NOBG);
   myMessageWidget->setTextColor(kColorInfo);
+  // NOLINTEND(cppcoreguidelines-prefer-member-initializer)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

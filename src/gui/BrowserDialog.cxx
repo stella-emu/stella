@@ -63,6 +63,7 @@ void BrowserDialog::initialize(int max_w, int max_h)
   // composite widgets (navigation bar and file list) are created at a real base
   // size to avoid degenerate tiny-size initialization.
 
+  // NOLINTBEGIN(cppcoreguidelines-prefer-member-initializer)
   // Current path (navigation bar) and the "save path" checkbox beside it
   _navigationBar = new NavigationWidget(this, _font, 0, 0, _w - HBORDER * 2,
                                         buttonHeight);
@@ -108,6 +109,7 @@ void BrowserDialog::initialize(int max_w, int max_h)
 
   // add last to avoid focus problems
   addFocusWidget(_savePathBox);
+  // NOLINTEND(cppcoreguidelines-prefer-member-initializer)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

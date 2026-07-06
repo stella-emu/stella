@@ -82,6 +82,7 @@ class DividerWidget : public Widget, public CommandSender
       // (Dialog only forwards moves to widgets that request mouse tracking)
       _flags = Widget::FLAG_ENABLED | Widget::FLAG_TRACK_MOUSE;
     }
+    ~DividerWidget() override = default;
 
     void handleMouseDown(int x, int y, MouseButton b, int clickCount) override
     {
@@ -135,6 +136,7 @@ LauncherDialog::LauncherDialog(OSystem& osystem, DialogContainer& parent,
   addPathWidgets();
   addFilteringWidgets();
 
+  // NOLINTNEXTLINE(cppcoreguidelines-prefer-member-initializer)
   mySelectedItem = addRomWidgets() - 2;  // Highlight 'Rom Listing'
   if(instance().settings().getBool("launcherbuttons"))
     addButtonWidgets();
@@ -183,6 +185,7 @@ void LauncherDialog::addFilteringWidgets()
     lwFilter = 0;
 
   WidgetArray wid;
+  // NOLINTBEGIN(cppcoreguidelines-prefer-member-initializer)
   myReloadButton = new ButtonWidget(this, _font, 0, 0, 1, 1,
                                     GUI::icon_reload_small, kReloadCmd);
   myReloadButton->setToolTip("Reload listing (Ctrl+R)");
@@ -220,6 +223,7 @@ void LauncherDialog::addFilteringWidgets()
   wid.push_back(mySettingsButton);
 
   addToFocusList(wid);
+  // NOLINTEND(cppcoreguidelines-prefer-member-initializer)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

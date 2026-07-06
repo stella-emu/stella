@@ -1126,9 +1126,8 @@ void Dialog::layoutButtonGroup()
   const std::array<ButtonWidget*, 2> right{_cancelWidget, _okWidget};
 #endif
   int xpos = _w - HBORDER;
-  for(auto it = right.rbegin(); it != right.rend(); ++it)
+  for(auto* b: std::views::reverse(right))
   {
-    ButtonWidget* b = *it;
     if(b == nullptr)
       continue;
     xpos -= b->getWidth();

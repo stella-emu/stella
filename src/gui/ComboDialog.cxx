@@ -37,6 +37,7 @@ ComboDialog::ComboDialog(GuiObject* boss, const GUI::Font& font,
   // Widgets are only created here (at placeholder position); layout() assigns
   // all geometry from the current font.
 
+  // NOLINTBEGIN(cppcoreguidelines-prefer-member-initializer)
   // Popup width = widest combo entry (content-derived; layout() uses it for _w)
   for(const auto& s: combolist)
     myPopupWidth = std::max(font.getStringWidth(s.first), myPopupWidth);
@@ -63,6 +64,7 @@ ComboDialog::ComboDialog(GuiObject* boss, const GUI::Font& font,
   addToFocusList(wid);
 
   setHelpAnchor("Combo");
+  // NOLINTEND(cppcoreguidelines-prefer-member-initializer)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

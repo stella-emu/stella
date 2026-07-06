@@ -120,6 +120,7 @@ HighScoresDialog::HighScoresDialog(OSystem& osystem, DialogContainer& parent,
 
   // Widgets are only created here (at placeholder geometry); layout() assigns
   // all geometry from the current font, so the dialog reflows on font change.
+  // NOLINTBEGIN(cppcoreguidelines-prefer-member-initializer)
   myGameNameWidget = new StaticTextWidget(this, _font, 0, 0, "");
 
   myVariationLabel = new StaticTextWidget(this, _font, 0, 0, "Variation ");
@@ -167,6 +168,7 @@ HighScoresDialog::HighScoresDialog(OSystem& osystem, DialogContainer& parent,
   // Note: Only display the first 16 md5 chars + "..."
   myMD5Widget = new StaticTextWidget(this, ifont, 0, 0, "MD5: 1234567890123456.");
   myCheckSumWidget = new StaticTextWidget(this, ifont, 0, 0, "Props: 1234567890123456.");
+  // NOLINTEND(cppcoreguidelines-prefer-member-initializer)
 
   addDefaultsOKCancelBGroup(wid, _font, "Save", "Cancel", " Reset ");
   _defaultWidget->setToolTip("Click to reset all high scores of this variation.");

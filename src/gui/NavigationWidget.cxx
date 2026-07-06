@@ -70,6 +70,7 @@ NavigationWidget::NavigationWidget(GuiObject* boss, const GUI::Font& font,
   boss->addFocusWidget(myUpButton);
   xpos = myUpButton->getRight() + BTN_GAP;
 
+  // NOLINTNEXTLINE(cppcoreguidelines-prefer-member-initializer)
   myPath = new PathWidget(boss, this, _font, xpos, ypos, _w + _x - xpos, h);
 }
 

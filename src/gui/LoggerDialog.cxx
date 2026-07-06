@@ -49,6 +49,7 @@ LoggerDialog::LoggerDialog(OSystem& osystem, DialogContainer& parent,
   // Widgets are only created here (at placeholder geometry); layout() assigns
   // all geometry from the current font and dialog size.
 
+  // NOLINTBEGIN(cppcoreguidelines-prefer-member-initializer)
   // Scrollable listing of the log output
   myLogInfo = new StringListWidget(this, uselargefont ? font :
                   instance().frameBuffer().infoFont(), 0, 0, 1, 1, false);
@@ -80,6 +81,7 @@ LoggerDialog::LoggerDialog(OSystem& osystem, DialogContainer& parent,
   addToFocusList(wid);
 
   setHelpAnchor("Logs");
+  // NOLINTEND(cppcoreguidelines-prefer-member-initializer)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

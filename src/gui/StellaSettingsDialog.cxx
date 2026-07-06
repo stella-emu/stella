@@ -40,6 +40,7 @@ StellaSettingsDialog::StellaSettingsDialog(OSystem& osystem,
             buttonWidth  = Dialog::buttonWidth("  Help  " + ELLIPSIS);
   WidgetArray wid;
 
+  // NOLINTBEGIN(cppcoreguidelines-prefer-member-initializer)
   myAdvancedButton = new ButtonWidget(this, _font, 0, 0, buttonWidth, buttonHeight,
     "Use Advanced Settings" + ELLIPSIS, kAdvancedSettings);
   wid.push_back(myAdvancedButton);
@@ -58,6 +59,7 @@ StellaSettingsDialog::StellaSettingsDialog(OSystem& osystem,
   addDefaultsOKCancelBGroup(wid, _font);
 
   addToFocusList(wid);
+  // NOLINTEND(cppcoreguidelines-prefer-member-initializer)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -77,6 +77,7 @@ EmulationDialog::EmulationDialog(OSystem& osystem, DialogContainer& parent,
   // Widgets are only created here (at placeholder geometry); layout() assigns
   // all geometry from the current font, so the dialog reflows on font change.
 
+  // NOLINTBEGIN(cppcoreguidelines-prefer-member-initializer)
   // Speed
   mySpeed = new SliderWidget(this, _font, 0, 0, swidth, lineHeight,
                              "Emulation speed ", lwidth, kSpeedupChanged, fontWidth * 5, "%");
@@ -148,6 +149,7 @@ EmulationDialog::EmulationDialog(OSystem& osystem, DialogContainer& parent,
                                       "Load/save states in ROM directory", kStateWithRom);
   myStateWithRom->setToolTip("Use the current ROM's directory for state files.");
   wid.push_back(myStateWithRom);
+  // NOLINTEND(cppcoreguidelines-prefer-member-initializer)
 
   // Add Defaults, OK and Cancel buttons
   addDefaultsOKCancelBGroup(wid, font);

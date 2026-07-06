@@ -201,7 +201,7 @@ GridLayout::GridLayout(int cols, int rows, int hSpacing, int vSpacing,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 GridLayout& GridLayout::column(int idx, SizePolicy policy, int value, int maxSize)
 {
-  assert(idx >= 0 && idx < static_cast<int>(myColumns.size()));
+  assert(idx >= 0 && std::cmp_less(idx, myColumns.size()));
   myColumns[idx] = Track{policy, value, maxSize};
   return *this;
 }
@@ -209,7 +209,7 @@ GridLayout& GridLayout::column(int idx, SizePolicy policy, int value, int maxSiz
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 GridLayout& GridLayout::row(int idx, SizePolicy policy, int value, int maxSize)
 {
-  assert(idx >= 0 && idx < static_cast<int>(myRows.size()));
+  assert(idx >= 0 && std::cmp_less(idx, myRows.size()));
   myRows[idx] = Track{policy, value, maxSize};
   return *this;
 }

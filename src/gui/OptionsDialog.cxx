@@ -59,6 +59,7 @@ OptionsDialog::OptionsDialog(OSystem& osystem, DialogContainer& parent,
 
   // Widgets are only created here (at placeholder geometry); layout() positions
   // them via a GridLayout.  myButtons keeps them in grid order for that pass.
+  // NOLINTBEGIN(cppcoreguidelines-prefer-member-initializer)
   const auto ADD_OD_BUTTON = [&](string_view label, int cmd, string_view toolTip = {})
   {
     auto* bw = new ButtonWidget(this, _font, 0, 0,
@@ -120,6 +121,7 @@ OptionsDialog::OptionsDialog(OSystem& osystem, DialogContainer& parent,
     myRomAuditButton->clearFlags(Widget::FLAG_ENABLED);
 
   setHelpAnchor("Options");
+  // NOLINTEND(cppcoreguidelines-prefer-member-initializer)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

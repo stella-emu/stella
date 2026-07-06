@@ -43,6 +43,7 @@ CommandDialog::CommandDialog(OSystem& osystem, DialogContainer& parent)
 
   // Widgets are only created here (at placeholder geometry); layout() positions
   // them via a GridLayout.  myButtons keeps them in grid order (column-major).
+  // NOLINTBEGIN(cppcoreguidelines-prefer-member-initializer)
   const auto ADD_CD_BUTTON = [&](string_view label, int cmd,
     Event::Type event1 = Event::NoType, Event::Type event2 = Event::NoType)
   {
@@ -85,6 +86,7 @@ CommandDialog::CommandDialog(OSystem& osystem, DialogContainer& parent)
   processCancelWithoutWidget(true);
 
   setHelpAnchor("CommandMenu");
+  // NOLINTEND(cppcoreguidelines-prefer-member-initializer)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

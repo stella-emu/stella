@@ -45,11 +45,12 @@ class ScrollBarWidget : public Widget, public CommandSender
       return font.getFontHeight() < 24 ? 15 : 23;
     }
 
-  protected:
-    void drawWidget(bool hilite) override;
     // Re-pick the arrow images/box sizes and the (font-derived) bar width when
     // the font changes at runtime, so the scrollbar grows/shrinks with it
     void refreshFontMetrics() override;
+
+  protected:
+    void drawWidget(bool hilite) override;
 
   private:
     void checkBounds(int old_pos);
