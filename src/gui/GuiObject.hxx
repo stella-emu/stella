@@ -73,13 +73,9 @@ class GuiObject : public CommandReceiver
 
   public:
     GuiObject(OSystem& osystem, DialogContainer& parent, Dialog& dialog,
-              int x, int y, int w, int h)
-      : myOSystem{osystem},
-        myParent{parent},
-        myDialog{dialog},
-        _x{x}, _y{y}, _w{w}, _h{h} { }
+              int x, int y, int w, int h);
 
-    ~GuiObject() override = default;
+    ~GuiObject() override;
 
     OSystem& instance() const       { return myOSystem; }
     DialogContainer& parent() const { return myParent;  }

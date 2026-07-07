@@ -657,6 +657,7 @@
 		DCCF4B0314BA27EB00814FAB /* DrivingWidget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCCF4AFF14BA27EB00814FAB /* DrivingWidget.hxx */; };
 		DCCF4B0414BA27EB00814FAB /* KeyboardWidget.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCCF4B0014BA27EB00814FAB /* KeyboardWidget.cxx */; };
 		DCCF4B0514BA27EB00814FAB /* KeyboardWidget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCCF4B0114BA27EB00814FAB /* KeyboardWidget.hxx */; };
+		DCCF53B42FFD323B00424F7F /* GuiObject.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCCF53B32FFD323B00424F7F /* GuiObject.cxx */; };
 		DCD043A02FCDE2B10053802F /* DisasmColorsDialog.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCD0439E2FCDE2B10053802F /* DisasmColorsDialog.hxx */; };
 		DCD043A12FCDE2B10053802F /* DisasmColorsDialog.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCD0439F2FCDE2B10053802F /* DisasmColorsDialog.cxx */; };
 		DCD2839812E39F1200A808DC /* Thumbulator.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCD2839612E39F1200A808DC /* Thumbulator.cxx */; };
@@ -1552,6 +1553,7 @@
 		DCCF4AFF14BA27EB00814FAB /* DrivingWidget.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = DrivingWidget.hxx; sourceTree = "<group>"; };
 		DCCF4B0014BA27EB00814FAB /* KeyboardWidget.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = KeyboardWidget.cxx; sourceTree = "<group>"; };
 		DCCF4B0114BA27EB00814FAB /* KeyboardWidget.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = KeyboardWidget.hxx; sourceTree = "<group>"; };
+		DCCF53B32FFD323B00424F7F /* GuiObject.cxx */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = GuiObject.cxx; sourceTree = "<group>"; };
 		DCD0439E2FCDE2B10053802F /* DisasmColorsDialog.hxx */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = DisasmColorsDialog.hxx; sourceTree = "<group>"; };
 		DCD0439F2FCDE2B10053802F /* DisasmColorsDialog.cxx */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = DisasmColorsDialog.cxx; sourceTree = "<group>"; };
 		DCD2839612E39F1200A808DC /* Thumbulator.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Thumbulator.cxx; sourceTree = "<group>"; };
@@ -2416,6 +2418,7 @@
 				DC0DF8680F0DAAF500B0F1F3 /* GlobalPropsDialog.hxx */,
 				DC0DF8670F0DAAF500B0F1F3 /* GlobalPropsDialog.cxx */,
 				2DDBEAB6084578BF00812C11 /* GuiObject.hxx */,
+				DCCF53B32FFD323B00424F7F /* GuiObject.cxx */,
 				2DDBEAB9084578BF00812C11 /* HelpDialog.hxx */,
 				2DDBEAB8084578BF00812C11 /* HelpDialog.cxx */,
 				DC816CFE25757DC200FBCCDA /* HighScoresDialog.hxx */,
@@ -3594,6 +3597,7 @@
 				E0A3841B2589741A0062AA93 /* SqliteDatabase.cxx in Sources */,
 				E050876E25A1337400E4B62A /* OSystemStandalone.cxx in Sources */,
 				2D91750309BA90380026E9FF /* TogglePixelWidget.cxx in Sources */,
+				DCCF53B42FFD323B00424F7F /* GuiObject.cxx in Sources */,
 				2D91750409BA90380026E9FF /* ToggleWidget.cxx in Sources */,
 				2D91750609BA90380026E9FF /* TiaZoomWidget.cxx in Sources */,
 				DCD043A12FCDE2B10053802F /* DisasmColorsDialog.cxx in Sources */,

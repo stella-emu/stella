@@ -20,6 +20,7 @@ MODULE_OBJS := \
         src/gui/Font.o \
         src/gui/GameInfoDialog.o \
         src/gui/GlobalPropsDialog.o \
+        src/gui/GuiObject.o \
         src/gui/HelpDialog.o \
         src/gui/HighScoresDialog.o \
         src/gui/InputDialog.o \
