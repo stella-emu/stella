@@ -1178,6 +1178,7 @@
     <ClCompile Include="..\..\gui\EmulationDialog.cxx" />
     <ClCompile Include="..\..\gui\FavoritesManager.cxx" />
     <ClCompile Include="..\..\gui\FileListWidget.cxx" />
+    <ClCompile Include="..\..\gui\GuiObject.cxx" />
     <ClCompile Include="..\..\gui\HighScoresDialog.cxx" />
     <ClCompile Include="..\..\gui\LauncherFileListWidget.cxx" />
     <ClCompile Include="..\..\gui\Layout.cxx" />
