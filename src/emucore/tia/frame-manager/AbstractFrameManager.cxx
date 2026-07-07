@@ -120,7 +120,7 @@ bool AbstractFrameManager::save(Serializer& out) const
     out.putInt(myCurrentFrameFinalLines);
     out.putInt(myPreviousFrameFinalLines);
     out.putInt(myTotalFrames);
-    out.putInt(static_cast<uInt32>(myLayout));
+    out.putInt(std::to_underlying(myLayout));
 
     return onSave(out);
   }

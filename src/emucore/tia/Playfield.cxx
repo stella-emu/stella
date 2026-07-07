@@ -308,7 +308,7 @@ bool Playfield::save(Serializer& out) const
     out.putByte(myDebugColor);
     out.putBool(myDebugEnabled);
 
-    out.putByte(static_cast<uInt8>(myColorMode));
+    out.putByte(std::to_underlying(myColorMode));
     out.putBool(myScoreGlitch);
 
     out.putInt(myPattern);

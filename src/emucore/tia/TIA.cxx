@@ -327,7 +327,7 @@ bool TIA::save(Serializer& out) const
     if(!myInput0.save(out)) return false;
     if(!myInput1.save(out)) return false;
 
-    out.putInt(static_cast<int>(myHstate));
+    out.putInt(std::to_underlying(myHstate));
 
     out.putInt(myHctr);
     out.putInt(myHctrDelta);
@@ -341,7 +341,7 @@ bool TIA::save(Serializer& out) const
 
     out.putInt(myLinesSinceChange);
 
-    out.putInt(static_cast<int>(myPriority));
+    out.putInt(std::to_underlying(myPriority));
 
     out.putByte(mySubClock);
     out.putLong(myLastCycle);

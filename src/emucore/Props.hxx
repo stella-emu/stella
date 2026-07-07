@@ -70,7 +70,7 @@ class Properties
   friend class PropertiesSet;
 
   public:
-    static constexpr size_t NUM_PROPS = static_cast<size_t>(PropType::NumTypes);
+    static constexpr size_t NUM_PROPS = std::to_underlying(PropType::NumTypes);
 
     /**
       Creates an empty properties object with the specified defaults.

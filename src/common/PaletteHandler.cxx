@@ -332,7 +332,7 @@ void PaletteHandler::setPalette()
     const ConsoleTiming timing = myOSystem.console().timing();
     const PaletteType paletteType = toPaletteType(name);
     // Now consider the current display format
-    const PaletteArray* palette = palettes[paletteType][static_cast<int>(timing)];
+    const PaletteArray* palette = palettes[paletteType][std::to_underlying(timing)];
 
     if(paletteType == PaletteType::Custom)
       generateCustomPalette(timing);

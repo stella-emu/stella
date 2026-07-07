@@ -218,12 +218,12 @@ class Bankswitch
   public:
     // Convert BSType enum to string_view
     static constexpr string_view typeToName(Bankswitch::Type type) {
-      return BSList[static_cast<size_t>(type)].name;
+      return BSList[std::to_underlying(type)].name;
     }
 
     // Convert BSType enum to description string_view
     static constexpr string_view typeToDesc(Bankswitch::Type type) {
-      return BSList[static_cast<size_t>(type)].desc;
+      return BSList[std::to_underlying(type)].desc;
     }
 
     // Convert string to BSType enum via binary search on sorted constexpr table

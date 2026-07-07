@@ -369,11 +369,11 @@ class Controller : public Serializable
     */
     bool setPin(DigitalPin pin, bool value) {
       // A static value overrides any event binding on this pin
-      myDigitalPinEvent[static_cast<int>(pin)].fill(Event::NoType);
-      return myDigitalPinState[static_cast<int>(pin)] = value;
+      myDigitalPinEvent[std::to_underlying(pin)].fill(Event::NoType);
+      return myDigitalPinState[std::to_underlying(pin)] = value;
     }
     bool getPin(DigitalPin pin) const {
-      return myDigitalPinState[static_cast<int>(pin)];
+      return myDigitalPinState[std::to_underlying(pin)];
     }
 
     /**
@@ -385,7 +385,7 @@ class Controller : public Serializable
       sources, e.g. a fire button that the mouse buttons also trigger.
     */
     bool bindPin(DigitalPin pin, SpanOf<Event::Type> events) {
-      auto& bound = myDigitalPinEvent[static_cast<int>(pin)];
+      auto& bound = myDigitalPinEvent[std::to_underlying(pin)];
       bound.fill(Event::NoType);
 
       bool pressed = false;
@@ -397,7 +397,7 @@ class Controller : public Serializable
       }
 
       // Keep the static state current for getPin()/debugger display
-      return myDigitalPinState[static_cast<int>(pin)] = !pressed;
+      return myDigitalPinState[std::to_underlying(pin)] = !pressed;
     }
 
     bool bindPin(DigitalPin pin, Event::Type event) {
@@ -405,13 +405,13 @@ class Controller : public Serializable
     }
 
     void setPin(AnalogPin pin, AnalogReadout::Connection value) {
-      myAnalogPinValue[static_cast<int>(pin)] = value;
+      myAnalogPinValue[std::to_underlying(pin)] = value;
       if(myOnAnalogPinUpdateCallback)
         myOnAnalogPinUpdateCallback(pin);
     }
 
     AnalogReadout::Connection getPin(AnalogPin pin) const {
-      return myAnalogPinValue[static_cast<int>(pin)];
+      return myAnalogPinValue[std::to_underlying(pin)];
     }
 
     void resetDigitalPins() {
@@ -561,7 +561,7 @@ class Controller : public Serializable
         { "QuadTari",      "QUADTARI"      },
         { "Joy 2B+",       "JOY_2B+"       }
     });
-    static_assert(CONTROLLER_INFO.size() == static_cast<size_t>(Type::LastType),
+    static_assert(CONTROLLER_INFO.size() == std::to_underlying(Type::LastType),
         "CONTROLLER_INFO must have an entry for each Controller::Type");
 
   private:

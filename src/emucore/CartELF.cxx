@@ -268,14 +268,14 @@ bool CartridgeELF::save(Serializer& out) const
   try {
     out.putBool(myConfigStrictMode);
     out.putInt(myConfigMips);
-    out.putByte(static_cast<uInt8>(myConfigSystemType));
+    out.putByte(std::to_underlying(myConfigSystemType));
 
     out.putBool(myIsBusDriven);
     out.putByte(myDriveBusValue);
     out.putLong(myArmCyclesOffset);
-    out.putByte(static_cast<uInt8>(myExecutionStage));
+    out.putByte(std::to_underlying(myExecutionStage));
     out.putInt(myInitFunctionIndex);
-    out.putByte(static_cast<uInt8>(myConsoleTiming));
+    out.putByte(std::to_underlying(myConsoleTiming));
 
     out.putByteArray(myLastPeekResult);
 

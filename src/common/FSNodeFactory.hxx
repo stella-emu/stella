@@ -20,8 +20,6 @@
 
 class AbstractFSNode;
 
-#include <cassert>
-
 #ifdef ZIP_SUPPORT
   #include "FSNodeZIP.hxx"
 #endif
@@ -67,9 +65,8 @@ class FSNodeFactory
           throw std::runtime_error("ZIP support not compiled in");
         #endif
         default:
-          assert(false);  // all Type values handled above
+          std::unreachable();  // all Type values handled above
       }
-      return nullptr;  // satisfy compiler
     }
 };
 

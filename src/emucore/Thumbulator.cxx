@@ -1134,7 +1134,7 @@ FORCE_INLINE int Thumbulator::execute()  // NOLINT(readability-function-size,
     decodedOp = decodeInstructionWord(CONV_RAMROM(rom[instructionPtr2]), instructionPtr);
 
 #ifdef COUNT_OPS
-  ++opCount[static_cast<int>(decodedOp)];
+  ++opCount[std::to_underlying(decodedOp)];
 #endif
   switch (decodedOp) {
     //ADC

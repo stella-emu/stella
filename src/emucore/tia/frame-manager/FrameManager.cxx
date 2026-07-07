@@ -227,7 +227,7 @@ bool FrameManager::onSave(Serializer& out) const
 {
   if (!myJitterEmulation.save(out)) return false;
 
-  out.putInt(static_cast<uInt32>(myState));
+  out.putInt(std::to_underlying(myState));
   out.putInt(myLineInState);
   out.putInt(myVsyncLineCount);
   out.putInt(myY);

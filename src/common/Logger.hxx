@@ -52,7 +52,7 @@ class Logger
     ~Logger() = default;
 
   private:
-    int  myLogLevel{static_cast<int>(Level::MAX)};
+    int  myLogLevel{std::to_underlying(Level::MAX)};
     bool myLogToConsole{true};
 
     string     myLogMessages;

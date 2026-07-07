@@ -1532,7 +1532,7 @@ bool MovieCart::save(Serializer& out) const
 
     // title screen state
     out.putInt(myTitleCycles);
-    out.putInt(static_cast<int>(myTitleState));
+    out.putInt(std::to_underlying(myTitleState));
 
     // address info
     out.putBool(myA7);

@@ -564,7 +564,7 @@ void RomListWidget::loadDisasmColorMap()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ColorId RomListWidget::segColor(CartDebug::DisasmSegColor seg) const
 {
-  const uInt8 idx = myDisasmColorMap[static_cast<uInt8>(seg)];
+  const uInt8 idx = myDisasmColorMap[std::to_underlying(seg)];
   return (idx == CartDebug::DISASM_COLOR_TEXT)
          ? kTextColor
          : static_cast<ColorId>(kDisasmBlack + idx);
