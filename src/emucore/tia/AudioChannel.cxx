@@ -45,8 +45,8 @@ void AudioChannel::phase0()
         myPulseCounterHold = !myNoiseCounterBit4;
         break;
 
-      default:  // not possible, but silence the compiler
-        break;
+      default:
+        std::unreachable();
     }
 
     switch (myAudc & 0x03) {
