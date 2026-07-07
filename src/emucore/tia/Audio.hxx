@@ -55,10 +55,13 @@ class Audio : public Serializable
     void setAudioRewindMode(bool enable) { myRewindMode = enable; }
 
     /**
-      Tick one color clock: accumulate channel volumes and drive the two-phase
-      audio clock at the appropriate points in the scanline.
+      Tick the given number of color clocks: accumulate channel volumes and
+      drive the two-phase audio clock at the appropriate points in each
+      scanline. A channel's volume can only change on a phase clock (AUDxx
+      writes are applied in TIA::poke, between batches), so accumulation is
+      done per segment between phase events rather than per color clock.
      */
-    FORCE_INLINE void tick();
+    void tick(uInt32 colorClocks);
 
     /**
       Access audio channel 0.
@@ -141,36 +144,57 @@ class Audio : public Serializable
 // ############################################################################
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Audio::tick()
+inline void Audio::tick(uInt32 colorClocks)
 {
-  // Volume for each channel is sampled every color clock. the average of
-  // these samples will be taken twice a scanline in the phase1() function
-  mySumChannel0 += static_cast<uInt32>(myChannel0.actualVolume());
-  mySumChannel1 += static_cast<uInt32>(myChannel1.actualVolume());
-  mySumCt++;
+  // Volume for each channel is sampled every color clock; the average of
+  // these samples is taken twice a scanline when phase1() fires. The volume
+  // is constant between phase clocks, so each segment accumulates as a
+  // single multiply instead of clock-by-clock.
+  while (colorClocks > 0)
+  {
+    // Clocks up to and including the next phase event, or to the end of the
+    // line when no event remains. Phase 0 fires at counters 9 and 81,
+    // phase 1 at 37 and 149; the counter wraps after 227.
+    enum class Event: uInt8 { phase0, phase1, lineWrap };
+    uInt32 toEvent;  // NOLINT(cppcoreguidelines-init-variables)
+    Event event;     // NOLINT(cppcoreguidelines-init-variables)
 
-  // Phase clocks fire at only 4 of 228 positions per line (~1.8%); hint the
-  // optimizer that the default (no-op) path is overwhelmingly common
-  switch (myCounter) {
-    [[unlikely]] case 9:  [[fallthrough]];
-    [[unlikely]] case 81:
-      myChannel0.phase0();
-      myChannel1.phase0();
-      break;
+    if (myCounter < 10)       { toEvent = 10 - myCounter;  event = Event::phase0; }
+    else if (myCounter < 38)  { toEvent = 38 - myCounter;  event = Event::phase1; }
+    else if (myCounter < 82)  { toEvent = 82 - myCounter;  event = Event::phase0; }
+    else if (myCounter < 150) { toEvent = 150 - myCounter; event = Event::phase1; }
+    else                      { toEvent = 228 - myCounter; event = Event::lineWrap; }
 
-    [[unlikely]] case 37: [[fallthrough]];
-    [[unlikely]] case 149:
-      myChannel0.phase1();
-      myChannel1.phase1();
-      createSample();
-      break;
+    const uInt32 chunk = std::min(colorClocks, toEvent);
 
-    [[likely]] default:
-      break;
+    mySumChannel0 += static_cast<uInt32>(myChannel0.actualVolume()) * chunk;
+    mySumChannel1 += static_cast<uInt32>(myChannel1.actualVolume()) * chunk;
+    mySumCt += chunk;
+    myCounter = static_cast<uInt8>(myCounter + chunk);
+    colorClocks -= chunk;
+
+    // The event only fires if the batch actually reached it
+    if (chunk == toEvent)
+    {
+      switch (event)
+      {
+        case Event::phase0:
+          myChannel0.phase0();
+          myChannel1.phase0();
+          break;
+
+        case Event::phase1:
+          myChannel0.phase1();
+          myChannel1.phase1();
+          createSample();
+          break;
+
+        case Event::lineWrap:
+          myCounter = 0;
+          break;
+      }
+    }
   }
-
-  if (++myCounter == 228) [[unlikely]]
-    myCounter = 0;
 }
 
 #endif  // AUDIO_HXX

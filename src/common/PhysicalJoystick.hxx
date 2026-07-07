@@ -94,7 +94,7 @@ class PhysicalJoystick
         "Auto", "Left", "Right"
       };
 
-      return string{NAMES[static_cast<int>(_port)]};
+      return string{NAMES[std::to_underlying(_port)]};
     }
 
     static Port getPort(string_view portName) {

@@ -27,7 +27,7 @@
   #pragma clang diagnostic ignored "-Weverything"
   #include "httplib/httplib.h"  // NOLINT
   #pragma clang diagnostic pop
-#elif defined(BSPF_WINDOWS)
+#elifdef BSPF_WINDOWS
   #pragma warning(push, 0)
   #include "httplib/httplib.h"  // NOLINT
   #pragma warning(pop)

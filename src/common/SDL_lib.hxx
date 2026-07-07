@@ -36,7 +36,7 @@
   #pragma clang diagnostic ignored "-Wswitch-default"
   #include <SDL3/SDL.h>
   #pragma clang diagnostic pop
-#elif defined(BSPF_WINDOWS)
+#elifdef BSPF_WINDOWS
   #pragma warning(push, 0)
   #include <SDL3/SDL.h>
   #pragma warning(pop)

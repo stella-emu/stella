@@ -107,7 +107,7 @@ uInt32 ElfLinker::getSegmentSize(SegmentType type) const
       return myRodataSize;
 
     default:
-      throw std::runtime_error("unreachable");
+      std::unreachable();
   }
 }
 
@@ -125,7 +125,7 @@ const uInt8* ElfLinker::getSegmentData(SegmentType type) const
       return myRodataData.get();
 
     default:
-      throw std::runtime_error("unreachable");
+      std::unreachable();
   }
 }
 
@@ -143,7 +143,7 @@ uInt32 ElfLinker::getSegmentBase(SegmentType type) const
       return myRodataBase;
 
     default:
-      throw std::runtime_error("unreachable");
+      std::unreachable();
   }
 }
 
@@ -203,7 +203,7 @@ uInt32& ElfLinker::getSegmentSizeRef(SegmentType type)
       return myRodataSize;
 
     default:
-      throw std::runtime_error("unreachable");
+      std::unreachable();
   }
 }
 
@@ -221,7 +221,7 @@ unique_ptr<uInt8[]>& ElfLinker::getSegmentDataRef(SegmentType type)
       return myRodataData;
 
     default:
-      throw std::runtime_error("unreachable");
+      std::unreachable();
   }
 }
 

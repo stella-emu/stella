@@ -60,10 +60,10 @@ ifndef LDFLAGS_TEST
 	LDFLAGS_TEST := $(LDFLAGS)
 endif
 
-CXXFLAGS+= -std=c++20 -Wall -Wextra -Wunused -Woverloaded-virtual -Wno-unused-parameter
+CXXFLAGS+= -std=c++23 -Wall -Wextra -Wunused -Woverloaded-virtual -Wno-unused-parameter
 CFLAGS+= -Wall -Wextra -Wno-unused-parameter
 
-CXXFLAGS_TEST+= -std=c++20 -Wall -Wextra -Wunused -Woverloaded-virtual -Wno-unused-parameter
+CXXFLAGS_TEST+= -std=c++23 -Wall -Wextra -Wunused -Woverloaded-virtual -Wno-unused-parameter
 CFLAGS_TEST+= -Wall -Wextra -Wunused -Wno-unused-parameter
 
 ifdef HAVE_GCC

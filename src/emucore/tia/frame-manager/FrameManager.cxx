@@ -24,7 +24,12 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FrameManager::FrameManager()
 {
-  reset();
+  // Establish the reset state without invoking the virtual-dispatching reset()
+  // from the constructor: doing so lets GCC's LTO devirtualizer speculatively
+  // inline a sibling override (FrameLayoutDetector::onReset) and trip a bogus
+  // -Wstringop-overflow.  All members are NSDMI-initialized, so the statically
+  // bound onReset() plus recalculateMetrics() establishes the same state.
+  FrameManager::onReset();
   recalculateMetrics();
 }
 
@@ -222,7 +227,7 @@ bool FrameManager::onSave(Serializer& out) const
 {
   if (!myJitterEmulation.save(out)) return false;
 
-  out.putInt(static_cast<uInt32>(myState));
+  out.putInt(std::to_underlying(myState));
   out.putInt(myLineInState);
   out.putInt(myVsyncLineCount);
   out.putInt(myY);
