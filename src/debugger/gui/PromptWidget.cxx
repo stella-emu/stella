@@ -1117,7 +1117,7 @@ bool PromptWidget::autoComplete(int direction)
     // copy the input at first tab press only
     if(_tabCount == -1)
       _inputStr[i] = buffer(_promptStartPos + i) & 0x7f;
-    if(string_view{"{*@<> =[]()+-/&|!^~%"}.find(_inputStr[i]) != string_view::npos)
+    if(string_view{"{*@<> =[]()+-/&|!^~%"}.contains(_inputStr[i]))
     {
       lastDelimPos = i;
       delimiter = _inputStr[i];

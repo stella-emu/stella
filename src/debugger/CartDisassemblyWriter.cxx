@@ -204,7 +204,7 @@ string CartDisassemblyWriter::save(string path)
         case Device::CODE:
           buf += std::format("{:<32}{}{}{}", tag.disasm,
             tag.ccount.substr(0, 5), tag.ctotal, tag.ccount.substr(5, 2));
-          if(tag.disasm.find("WSYNC") != std::string::npos)
+          if(tag.disasm.contains("WSYNC"))
             buf += "\n;---------------------------------------";
           break;
 

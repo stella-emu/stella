@@ -166,7 +166,7 @@ namespace BSPF
     constexpr string_view ARCH = "ppc";
   #elif defined(__arm__) || defined(__thumb__)
     constexpr string_view ARCH = "arm32";
-  #elif defined(__aarch64__)
+  #elifdef __aarch64__
     constexpr string_view ARCH = "arm64";
   #else
     constexpr string_view ARCH = "NOARCH";
@@ -182,7 +182,7 @@ namespace BSPF
   // do not alias each other, enabling auto-vectorization of hot loops.
   #if defined(__clang__) || defined(__GNUC__)
     #define FORCE_RESTRICT __restrict__
-  #elif defined(_MSC_VER)
+  #elifdef _MSC_VER
     #define FORCE_RESTRICT __restrict
   #else
     /* no support for restricted pointers */
@@ -515,7 +515,7 @@ namespace BSPF
   constexpr bool isWhiteSpace(const char c)
   {
     constexpr string_view spaces{" ,.;:+-*&/\\'"};
-    return spaces.find(c) != string_view::npos;
+    return spaces.contains(c);
   }
 
   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

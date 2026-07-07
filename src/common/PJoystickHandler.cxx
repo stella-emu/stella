@@ -143,7 +143,7 @@ int PhysicalJoystickHandler::add(const PhysicalJoystickPtr& stick)
     // name due to being reordered when mapping them
     for(const auto& [_id, _stick] : mySticks)
     {
-      if(_stick->name.find(" (emulates ") != std::string::npos)
+      if(_stick->name.contains(" (emulates "))
         addToDatabase(_stick);
     }
   else

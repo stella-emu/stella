@@ -27,9 +27,9 @@ class AbstractFSNode;
 #endif
 #if defined(BSPF_UNIX) || defined(BSPF_MACOS)
   #include "FSNodePOSIX.hxx"
-#elif defined(BSPF_WINDOWS)
+#elifdef BSPF_WINDOWS
   #include "FSNodeWINDOWS.hxx"
-#elif defined(__LIB_RETRO__)
+#elifdef __LIB_RETRO__
   #include "FSNodeLIBRETRO.hxx"
 #else
   #error Unsupported platform in FSNodeFactory!
@@ -55,9 +55,9 @@ class FSNodeFactory
         case Type::SYSTEM:
         #if defined(BSPF_UNIX) || defined(BSPF_MACOS)
           return std::make_shared<FSNodePOSIX>(path);
-        #elif defined(BSPF_WINDOWS)
+        #elifdef BSPF_WINDOWS
           return std::make_shared<FSNodeWINDOWS>(path);
-        #elif defined(__LIB_RETRO__)
+        #elifdef __LIB_RETRO__
           return std::make_shared<FSNodeLIBRETRO>(path);
         #endif
         case Type::ZIP:

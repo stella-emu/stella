@@ -44,8 +44,7 @@ class FrameManager: public AbstractFrameManager
       baseHeightNTSC = 228,
       // visible range: 260..288
       baseHeightPAL = 274,
-      // NOLINTNEXTLINE(bugprone-incorrect-roundings) lround not constexpr until C++23
-      maxHeight = static_cast<uInt32>(baseHeightPAL * 1.05 + 0.5),
+      maxHeight = (baseHeightPAL * 105 + 50) / 100,
       maxLinesVsync = 50,
       initialGarbageFrames = TIAConstants::initialGarbageFrames,
       ystartNTSC = 23,
