@@ -166,7 +166,7 @@ void Paddles::updateA()
   // events driving the fire button (the fire event plus any mouse buttons
   // mapped to this paddle) so it can be bound for replay within the input window.
   std::array<Event::Type, MAX_PIN_EVENTS> fire{myAFireEvent};
-  size_t n = 1;
+  auto n = 1uz;
 
   // Paddle movement is a very difficult thing to accurately emulate,
   // since it originally came from an analog device that had very
@@ -339,7 +339,7 @@ void Paddles::updateB()
   // events driving the fire button so it can be bound for replay within the
   // input window.
   std::array<Event::Type, MAX_PIN_EVENTS> fire{myBFireEvent};
-  size_t n = 1;
+  auto n = 1uz;
 
   if(!updateAnalogAxesB())
   {

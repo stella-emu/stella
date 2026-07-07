@@ -292,7 +292,7 @@ class Serializer
 
       // Buffer small writes to a vector, and flush to disk occasionally
       void writeBuffered(const uInt8* data, size_t dataSize) {
-        size_t offset = 0;
+        auto offset = 0uz;
         while(dataSize > 0) {
           const size_t space = MAX_BUF_SIZE - bufferPos;
           const size_t toWrite = std::min(space, dataSize);

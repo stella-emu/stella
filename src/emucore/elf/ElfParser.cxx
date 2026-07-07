@@ -293,9 +293,9 @@ const ElfParser::Section* ElfParser::getSymtab() const
 const ElfParser::Section* ElfParser::getStrtab() const
 {
   const Section* strtab = nullptr;
-  size_t count = 0;
+  auto count = 0uz;
 
-  for (size_t i = 0; i < mySections.size(); i++) {
+  for (auto i = 0uz; i < mySections.size(); i++) {
     if (mySections[i].type != SHT_STRTAB || i == myHeader.shstrIndex) continue;
 
     strtab = &mySections[i];
