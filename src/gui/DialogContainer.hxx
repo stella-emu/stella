@@ -167,6 +167,26 @@ class DialogContainer
     virtual void requestResize();
 
     /**
+      Whether an interactive window resize is currently in progress.  Dialogs
+      can use this to defer work that should not run on every frame of a drag
+      (e.g. re-asserting the window minimum size, persisting the final size)
+      until the resize has settled.
+    */
+    virtual bool resizeInProgress() const { return false; }
+
+    /**
+      Apply a pending live window resize (recorded via FrameBuffer::liveResize)
+      and re-flow this container, throttled to roughly the display rate.
+      Returns true if it applied — the caller then presents the new frame.
+
+      This is driven from the resize event handler (not just the main loop) so
+      that it also runs during the Windows/macOS modal resize loop, when the
+      main loop — and hence updateTime() — is blocked.  The base container does
+      nothing.
+    */
+    virtual bool applyResize() { return false; }
+
+    /**
       Re-font every dialog in the stack after the dialog font has been changed
       in place (see FrameBuffer::changeDialogFont).  Broadcasts refreshFont() to
       the whole stack so all open dialogs re-font live, no restart.

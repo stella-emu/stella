@@ -347,38 +347,6 @@ void LauncherDialog::addButtonWidgets()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Common::Size LauncherDialog::contentMinSize() const
-{
-  // The smallest (logical) size at which no widget would have to clip: the
-  // point where the most constrained widget reaches its minimum usable size.
-  // Since each widget shrinks 1:1 with the dialog, this is independent of the
-  // current size.  (The ROM info column couples width and height non-linearly,
-  // so this is derived from the current widget sizes rather than purely from
-  // the font metrics.)
-  const int fontWidth = Dialog::fontWidth();
-  int minW = _w, minH = _h;
-
-  if(myList)
-  {
-    int giveW = myList->getWidth() - MIN_LAUNCHER_CHARS * fontWidth;
-    if(myPattern)
-      giveW = std::min(giveW, myPattern->getWidth()
-                              - EditTextWidget::calcWidth(_font, "123456"));
-    if(myNavigationBar)
-      giveW = std::min(giveW,
-                       myNavigationBar->getWidth() - MIN_LAUNCHER_CHARS * fontWidth);
-    minW = _w - std::max(giveW, 0);
-
-    int giveH = myList->getHeight() - _font.getLineHeight() * 3;
-    if(myShowRomInfo && myRomInfoWidget)
-      giveH = std::min(giveH,
-                       myRomInfoWidget->getHeight() - _font.getFontHeight() * 2);
-    minH = _h - std::max(giveH, 0);
-  }
-  return Common::Size(static_cast<uInt32>(minW), static_cast<uInt32>(minH));
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 int LauncherDialog::clampRomInfoWidth(int imageWidth, int colHeight) const
 {
   const int fontWidth  = Dialog::fontWidth();
@@ -413,9 +381,13 @@ void LauncherDialog::layout()
   const int h = std::max(static_cast<int>(image.h() / scale),
                          static_cast<int>(myMinSize.h));
 
-  // Persist the launcher window size on an actual change, so it is restored
-  // next time (on restart and when returning from a game)
-  if(w != _w || h != _h)
+  // Persist the launcher window size, so it is restored next time (on restart
+  // and when returning from a game).  While an interactive resize is in
+  // progress this is deferred: the settle pass re-runs layout() and persists
+  // the final size exactly once per drag.  (Settings::setValue ignores an
+  // unchanged value, so calling it unconditionally here is cheap.)
+  const bool resizing = parent().resizeInProgress();
+  if(!resizing)
     instance().settings().setValue("launcherres",
         Common::Size(static_cast<uInt32>(w), static_cast<uInt32>(h)));
   _w = w;
@@ -514,12 +486,18 @@ void LauncherDialog::layout()
   {
     mainRow->addFixed(widgetItem(myDivider), fontWidth);
 
-    const int imageHeight = imageWidth + RomImageWidget::labelHeight(*myROMInfoFont);
+    // The image cell and the column are fixed at the current (fraction- and
+    // clamp-derived) width, but both compress as the window shrinks: declare
+    // their floors so minSize() reports a size-independent minimum
+    const int minRomW = MIN_ROMINFO_CHARS * fontWidth;
+    const int labelHeight = RomImageWidget::labelHeight(*myROMInfoFont);
+    const int imageHeight = imageWidth + labelHeight;
     auto romCol = std::make_unique<BoxLayout>(Dir::Vertical);
-    romCol->addFixed(widgetItem(myRomImageWidget), imageHeight);
+    romCol->addFixed(widgetItem(myRomImageWidget, minRomW), imageHeight,
+                     minRomW + labelHeight);
     romCol->addSpace(myROMInfoFont->getFontHeight() / 2);
-    romCol->addStretch(widgetItem(myRomInfoWidget, MIN_ROMINFO_CHARS * fontWidth));
-    mainRow->addFixed(std::move(romCol), imageWidth);
+    romCol->addStretch(widgetItem(myRomInfoWidget, minRomW, fontHeight * 2));
+    mainRow->addFixed(std::move(romCol), imageWidth, minRomW);
 
     myRomImageWidget->clearFlags(Widget::FLAG_INVISIBLE);
     myRomInfoWidget->clearFlags(Widget::FLAG_INVISIBLE);
@@ -575,10 +553,16 @@ void LauncherDialog::layout()
 
   root->doLayout(0, 0, _w, _h);
 
-  // With the widgets laid out, compute the minimum content size (from their
-  // sizes) to clamp the next layout, and give the window manager its hint
-  myMinSize = contentMinSize();
-  instance().frameBuffer().setWindowMinSize(myMinSize);
+  // The layout tree also yields the minimum content size (from the items'
+  // declared minimums, so it is independent of the current size), used to
+  // clamp the next layout and as the window manager's minimum-size hint.
+  // The hint is NOT re-applied while an interactive resize is in progress —
+  // re-asserting a minimum mid-drag fights the resize itself (the window can
+  // only shrink up to the last hint per motion, felt as heavy lag).  The
+  // settle pass applies the final value once the drag ends.
+  myMinSize = root->minSize();
+  if(!resizing)
+    instance().frameBuffer().setWindowMinSize(myMinSize);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -127,7 +127,6 @@ class LauncherDialog : public Dialog, CommandSender
     static constexpr int MIN_ROMINFO_LINES = 4; // extra lines
 
     void updateUI();
-    Common::Size contentMinSize() const;
     // Clamp a desired ROM info column width to keep both the list usable
     // (horizontal) and the image + text fitting in the column (vertical)
     int clampRomInfoWidth(int imageWidth, int colHeight) const;

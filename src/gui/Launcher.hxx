@@ -77,13 +77,17 @@ class Launcher : public DialogContainer
     Dialog* baseDialog() override;
 
     /**
-      Debounced window-resize handling: re-flow the launcher once the user
-      stops dragging, rather than on every resize event (mirrors the
-      debugger).  requestResize() just restarts the idle countdown;
-      updateTime() performs the actual re-flow once it expires.
+      Live window-resize handling.  EventHandler records the latest dragged size
+      (FrameBuffer::liveResize) and drives applyResize() to apply + re-flow it,
+      so the window shows live content as it is dragged rather than a stretched
+      snapshot updated at the end.  updateTime() flushes any size the throttle
+      skipped and, once the drag settles, runs one final re-flow with
+      resizeInProgress() false so the deferred finalization (minimum-size hint,
+      size persistence) happens exactly once per drag.
     */
-    void requestResize() override;
     void updateTime(uInt64 time) override;
+    bool applyResize() override;
+    bool resizeInProgress() const override { return mySettleCountdown > 0; }
 
   private:
     /**
@@ -100,9 +104,11 @@ class Launcher : public DialogContainer
     // The dimensions of this dialog
     Common::Size mySize;
 
-    // Debounced window-resize state: re-flow only after dragging settles
-    bool myResizePending{false};
-    int  myResizeCountdown{0};
+    // Frames of idle left before a live resize counts as settled
+    int mySettleCountdown{0};
+
+    // Time (microseconds) of the last applied live resize, for throttling
+    uInt64 myLastResizeTime{0};
 
   private:
     // Following constructors and assignment operators not supported

@@ -43,9 +43,9 @@ void WidgetLayout::doLayout(int x, int y, int w, int h)
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 BoxLayout& BoxLayout::add(unique_ptr<Layout> child, SizePolicy policy, int value,
-                          int maxMain)
+                          int maxMain, int minMain)
 {
-  myItems.push_back(Item{std::move(child), policy, value, maxMain});
+  myItems.push_back(Item{std::move(child), policy, value, maxMain, minMain});
   return *this;
 }
 
@@ -128,9 +128,11 @@ Common::Size BoxLayout::minSize() const
     const Common::Size cs = it.layout->minSize();
     int childMain = static_cast<int>(horiz ? cs.w : cs.h);
     const int childCross = static_cast<int>(horiz ? cs.h : cs.w);
-    // A fixed cell can never be smaller than its fixed size
+    // A fixed cell can never be smaller than its fixed size — unless the
+    // dialog declared a compression floor (minMain), promising to recompute
+    // the fixed value down to that floor as the available space shrinks
     if(it.policy == SizePolicy::Fixed)
-      childMain = std::max(childMain, it.value);
+      childMain = std::max(childMain, it.minMain > 0 ? it.minMain : it.value);
     mainMin += childMain;
     crossMin = std::max(crossMin, childCross);
   }

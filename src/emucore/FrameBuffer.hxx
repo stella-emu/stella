@@ -122,6 +122,26 @@ class FrameBuffer
     void applyPendingResize();
 
     /**
+      Record the latest window size for a live, per-frame re-flow (rather than
+      the stretch-then-settle path).  Returns true for a window that re-flows
+      live — the caller then applies it via applyLiveResize() and re-lays-out
+      its dialogs; false otherwise, so the caller falls back to deferResize()/
+      handleResize().
+
+      @param width   The latest window width, in pixels
+      @param height  The latest window height, in pixels
+      @return  True if this window re-flows live
+    */
+    bool liveResize(int width, int height);
+
+    /**
+      If a live resize is pending, rebuild the UI at the recorded size and clear
+      the flag.  Returns true if it applied (the caller then re-flows its
+      dialogs), false if nothing was pending.
+    */
+    bool applyLiveResize();
+
+    /**
       Set the minimum size (in logical UI pixels) the current window may be
       resized to.  Used by resizeable UI dialogs to prevent the window being
       shrunk small enough to clip their content.
@@ -665,6 +685,14 @@ class FrameBuffer
     // actual rebuild is postponed until applyPendingResize() at drag settle
     bool myResizeActive{false};
     Common::Size myPendingResize;
+
+    // A new window size arrived (live re-flow) and is waiting to be applied by
+    // applyLiveResize()
+    bool myLiveResizePending{false};
+
+    // Last window minimum size forwarded to the backend (scaled), so an
+    // unchanged minimum isn't re-applied on every layout() during a drag
+    Common::Size myWindowMinSize;
 
   #ifdef GUI_SUPPORT
     // The font object to use for the normal in-game GUI

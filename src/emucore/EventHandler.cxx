@@ -383,20 +383,40 @@ void EventHandler::handleSystemEvent(SystemEvent e, int data1, int data2)
   switch(e)
   {
     case SystemEvent::WINDOW_RESIZED:
-      // For resizeable UI windows, defer the rebuild until the drag settles
-      // (the frame is stretched meanwhile); otherwise resize immediately
-      if(myOSystem.frameBuffer().deferResize(data1, data2))
+    {
+      auto& fb = myOSystem.frameBuffer();
+      // A window that re-flows live records the latest size, then applies +
+      // re-flows + presents it right here (throttled inside applyResize()).
+      // Driving it from the handler — rather than only from the main loop's
+      // updateTime() — is what makes it work during the Windows/macOS modal
+      // resize loop, where the main loop is blocked and this handler is reached
+      // only via the SDL resize event-watch.  Other windows defer + stretch
+      // until the drag settles (the debugger), or resize immediately (fixed
+      // windows).
+      const bool live = fb.liveResize(data1, data2);
+      if(live)
       {
       #ifdef GUI_SUPPORT
-        if(myOverlay)
-          myOverlay->requestResize();
+        if(myOverlay && myOverlay->applyResize())
+          fb.update(FrameBuffer::UpdateMode::RERENDER);
       #endif
       }
       else
-        myOSystem.frameBuffer().handleResize(data1, data2);
-      // Force full render update
-      myOSystem.frameBuffer().update(FrameBuffer::UpdateMode::RERENDER);
+      {
+        if(fb.deferResize(data1, data2))
+        {
+        #ifdef GUI_SUPPORT
+          if(myOverlay)
+            myOverlay->requestResize();
+        #endif
+        }
+        else
+          fb.handleResize(data1, data2);
+        // Force full render update (stretched frozen frame / immediate resize)
+        fb.update(FrameBuffer::UpdateMode::RERENDER);
+      }
       break;
+    }
 
     case SystemEvent::WINDOW_EXPOSED:
     #ifdef DEBUGGER_SUPPORT

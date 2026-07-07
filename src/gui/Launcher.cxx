@@ -16,6 +16,7 @@
 //============================================================================
 
 #include "LauncherDialog.hxx"
+#include "TimerManager.hxx"
 #include "Version.hxx"
 #include "OSystem.hxx"
 #include "Settings.hxx"
@@ -103,13 +104,24 @@ Dialog* Launcher::baseDialog()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Launcher::requestResize()
+bool Launcher::applyResize()
 {
-  // Defer the re-flow until the user stops dragging.  The new size is derived
-  // inside LauncherDialog::layout(), so we only need to remember that a resize
-  // is pending and restart the idle countdown.
-  myResizePending = true;
-  myResizeCountdown = 15;  // ~frames of idle before re-flowing
+  // Throttle to roughly the display rate: the modal-loop event-watch (and an
+  // X11 event flood) can deliver resizes far faster than 60Hz, and a full
+  // re-flow per event is wasteful
+  static constexpr uInt64 INTERVAL = 1000000 / 60;  // microseconds
+  const uInt64 now = TimerManager::getTicks();
+  if(now - myLastResizeTime < INTERVAL)
+    return false;
+
+  // Nothing to do unless a new size is pending
+  if(!myOSystem.frameBuffer().applyLiveResize())
+    return false;
+
+  myLastResizeTime = now;
+  myDialogStack.applyAll([](Dialog*& d) { d->relayout(); });
+  mySettleCountdown = 15;  // ~frames of idle before the resize is settled
+  return true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -117,15 +129,17 @@ void Launcher::updateTime(uInt64 time)
 {
   DialogContainer::updateTime(time);
 
-  // Re-flow the launcher once resizing has settled, rather than on every
-  // resize event
-  if(myResizePending && --myResizeCountdown <= 0)
+  // Live re-flow is normally applied straight from the event handler
+  // (applyResize(), which also covers the Windows/macOS modal loop).  Here we
+  // catch any size the handler's throttle skipped — notably the final one when
+  // the drag stops — and, once idle, run one settle pass with
+  // resizeInProgress() false so layout() performs the finalization it defers
+  // during the drag (window minimum-size hint, persisting the final size).
+  if(myOSystem.frameBuffer().applyLiveResize())
   {
-    myResizePending = false;
-
-    // Stop stretching and rebuild the framebuffer at the final dragged size,
-    // so LauncherDialog::layout() (via relayout) sees the new window
-    myOSystem.frameBuffer().applyPendingResize();
     myDialogStack.applyAll([](Dialog*& d) { d->relayout(); });
+    mySettleCountdown = 15;
   }
+  else if(mySettleCountdown > 0 && --mySettleCountdown == 0)
+    myDialogStack.applyAll([](Dialog*& d) { d->relayout(); });
 }

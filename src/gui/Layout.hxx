@@ -124,12 +124,16 @@ class BoxLayout : public Layout
 
     // value: Fixed -> pixels, Percent -> 0..100, Stretch -> weight.
     // maxMain: optional main-axis clamp (0 = unbounded).
+    // minMain: main-axis floor reported by minSize().  A Fixed cell defaults
+    //          to its fixed size; a dialog that recomputes the fixed value as
+    //          the window shrinks declares here how far it can compress, which
+    //          keeps minSize() independent of the current size.
     BoxLayout& add(unique_ptr<Layout> child, SizePolicy policy, int value,
-                   int maxMain = 0);
+                   int maxMain = 0, int minMain = 0);
 
     // Convenience wrappers
-    BoxLayout& addFixed(unique_ptr<Layout> child, int px)
-      { return add(std::move(child), SizePolicy::Fixed, px); }
+    BoxLayout& addFixed(unique_ptr<Layout> child, int px, int minPx = 0)
+      { return add(std::move(child), SizePolicy::Fixed, px, 0, minPx); }
     BoxLayout& addPercent(unique_ptr<Layout> child, int pct, int maxMain = 0)
       { return add(std::move(child), SizePolicy::Percent, pct, maxMain); }
     BoxLayout& addStretch(unique_ptr<Layout> child, int weight = 1)
@@ -148,6 +152,7 @@ class BoxLayout : public Layout
       SizePolicy policy{SizePolicy::Fixed};
       int value{0};
       int maxMain{0};
+      int minMain{0};
     };
 
     Dir myDir{Dir::Vertical};

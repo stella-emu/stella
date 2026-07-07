@@ -270,9 +270,10 @@ bool EventHandlerSDL::resizeWatch(void* userdata, SDL_Event* event)
   // SDL invokes event watches synchronously from within its event pump,
   // including while the OS runs its own modal window-resize loop (Windows/
   // macOS).  During that loop pollEvent() above is blocked, so without this
-  // hook the window shows black while being dragged instead of the stretched
-  // previous frame.  Re-dispatching the resize/expose here starts (and keeps)
-  // the stretch active and forces a re-render on every event.
+  // hook the window shows black while being dragged.  Re-dispatching the
+  // resize/expose here lets the normal handler run during the loop: it
+  // re-flows the launcher live (or keeps the debugger's stretch active) and
+  // presents each frame, exactly as it would from the main loop.
   auto* const self = static_cast<EventHandlerSDL*>(userdata);
 
   switch(event->type)

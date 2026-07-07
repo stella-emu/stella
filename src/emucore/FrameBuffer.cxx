@@ -357,7 +357,17 @@ FBInitStatus FrameBuffer::createDisplay(string_view title, BufferType type,
 void FrameBuffer::setWindowMinSize(const Common::Size& size)
 {
   const uInt32 scale = hidpiScaleFactor();
-  myBackend->setWindowMinSize(Common::Size(size.w * scale, size.h * scale));
+  const Common::Size scaled(size.w * scale, size.h * scale);
+
+  // The content minimum is font-invariant, so a resizeable dialog re-asserts
+  // the same value on every layout() — i.e. every frame while the window is
+  // being dragged.  Re-applying an unchanged minimum mid-drag is wasteful and
+  // can interfere with the interactive resize, so forward it to the backend
+  // only when it actually changes.
+  if(scaled == myWindowMinSize)
+    return;
+  myWindowMinSize = scaled;
+  myBackend->setWindowMinSize(scaled);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -412,6 +422,39 @@ void FrameBuffer::applyPendingResize()
   // (new) window/render dimensions
   myBackend->endStretchResize();
   handleResize(myPendingResize.w, myPendingResize.h);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool FrameBuffer::liveResize(int width, int height)
+{
+  // Live re-flow currently applies to the launcher window; other windows
+  // defer/stretch.  Extend this as more windows adopt live re-flow.
+  if(myBufferType != BufferType::Launcher)
+    return false;
+
+  myPendingResize = Common::Size(width, height);
+  myLiveResizePending = true;
+  return true;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool FrameBuffer::applyLiveResize()
+{
+  if(!myLiveResizePending)
+    return false;
+
+  myLiveResizePending = false;
+
+  // Rebuild the UI video mode for the new window size and refresh the backend's
+  // cached dimensions.  Deliberately does NOT reload surfaces or present: each
+  // dialog re-flows its own surfaces afterwards (updating dst rects only — no
+  // texture re-upload), and the main loop then renders one correct frame.
+  // (Reloading here would re-upload every texture every frame.)
+  myVidModeHandler.setImageSize(myPendingResize);
+  myActiveVidMode = myVidModeHandler.buildMode(
+      myOSystem.settings(), false, myBezel->info());
+  myBackend->refreshDimensions();
+  return true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
