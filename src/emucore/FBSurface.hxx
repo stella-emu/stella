@@ -400,7 +400,7 @@ class FBSurface
     */
     static bool isWhiteSpace(char c) {
       static constexpr string_view spaces{" ,.;:+-*/\\'([\n"};
-      return spaces.find(c) != string_view::npos;
+      return spaces.contains(c);
     }
 
   protected:

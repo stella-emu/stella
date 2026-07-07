@@ -72,7 +72,7 @@ Dialog* OverlayMenu::baseDialog()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Dialog& OverlayMenu::cached(Cached id)
 {
-  auto& slot = myCached[static_cast<size_t>(id)];
+  auto& slot = myCached[std::to_underlying(id)];
   if(slot == nullptr)
     slot.reset(createDialog(id));
   return *slot;

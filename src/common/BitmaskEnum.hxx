@@ -58,6 +58,7 @@
 #include <concepts>
 #include <limits>
 #include <type_traits>
+#include <utility>
 
 namespace Bitmask {
 
@@ -85,7 +86,7 @@ concept Type =
 template<Type Enum>
 [[nodiscard]] constexpr std::underlying_type_t<Enum>
 to_underlying(Enum e) noexcept {
-    return static_cast<std::underlying_type_t<Enum>>(e);
+    return std::to_underlying(e);
 }
 
 template<Type Enum>

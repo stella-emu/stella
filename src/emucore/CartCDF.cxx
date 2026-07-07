@@ -40,7 +40,7 @@ namespace {
       case CDF1:      return Thumbulator::ConfigureFor::CDF1;
       case CDFJ:      return Thumbulator::ConfigureFor::CDFJ;
       case CDFJplus:  return Thumbulator::ConfigureFor::CDFJplus;
-      default:        throw std::runtime_error("unreachable");
+      default:        std::unreachable();
     }
   }
 }  // namespace

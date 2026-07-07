@@ -168,6 +168,6 @@ string PhysicalJoystick::about() const
   };
   return std::format("'{}' in {} port with: {} axes, {} buttons, {} hats",
     name,
-    PORT_NAMES[static_cast<uInt8>(port)],
+    PORT_NAMES[std::to_underlying(port)],
     numAxes, numButtons, numHats);
 }

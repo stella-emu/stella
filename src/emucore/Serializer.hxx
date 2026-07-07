@@ -230,27 +230,14 @@ class Serializer
     template<typename T> void writeRaw(T value);
 
     // Endian conversion helpers
-    // TODO: until we can use C++23 std::byteswap
-    template<typename T> static constexpr T byteswap(T v) {
-      static_assert(sizeof(T) == 1 || sizeof(T) == 2 ||
-                    sizeof(T) == 4 || sizeof(T) == 8,
-                    "Unsupported type size for byteswap");
-
-      if constexpr(sizeof(T) > 1) {
-        auto src = std::bit_cast<std::array<std::byte, sizeof(T)>>(v);
-        std::ranges::reverse(src);
-        return std::bit_cast<T>(src);
-      }
-      return v;
-    }
     template<typename T> static constexpr T toLittle(T v) {
       if constexpr(std::endian::native != std::endian::little)
-        return byteswap(v);
+        return std::byteswap(v);
       return v;
     }
     template<typename T> static constexpr T fromLittle(T v) {
       if constexpr (std::endian::native != std::endian::little)
-        return byteswap(v);
+        return std::byteswap(v);
       return v;
     }
 

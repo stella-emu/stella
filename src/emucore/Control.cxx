@@ -42,7 +42,7 @@ uInt8 Controller::read()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool Controller::read(DigitalPin pin)
 {
-  const auto& events = myDigitalPinEvent[static_cast<int>(pin)];
+  const auto& events = myDigitalPinEvent[std::to_underlying(pin)];
 
   // An event-bound pin reflects the input's value at the current position
   // within the input window, so it can change mid-window just as the user's
@@ -129,14 +129,14 @@ bool Controller::load(Serializer& in)
 string_view Controller::getName(const Type type)
 {
   assert(static_cast<std::size_t>(type) < CONTROLLER_INFO.size());
-  return CONTROLLER_INFO[static_cast<int>(type)].name;
+  return CONTROLLER_INFO[std::to_underlying(type)].name;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string_view Controller::getPropName(const Type type)
 {
   assert(static_cast<std::size_t>(type) < CONTROLLER_INFO.size());
-  return CONTROLLER_INFO[static_cast<int>(type)].propName;
+  return CONTROLLER_INFO[std::to_underlying(type)].propName;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -35,7 +35,7 @@ namespace {
         return BlitterFactory::ScalingAlgorithm::quasiInteger;
 
       default:
-        throw std::runtime_error("unreachable");
+        std::unreachable();
     }
   }
 } // namespace

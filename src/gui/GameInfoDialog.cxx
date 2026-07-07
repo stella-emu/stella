@@ -1333,7 +1333,7 @@ void GameInfoDialog::updateMultiCart()
 
   const bool isInMulti = !isMulti && std::ranges::any_of(MultiCart,
       [&](string_view entry) {
-          return detected.find(std::format("{} [", entry)) != string::npos;
+          return detected.contains(std::format("{} [", entry));
       });
 
   // en/disable Emulation tab widgets

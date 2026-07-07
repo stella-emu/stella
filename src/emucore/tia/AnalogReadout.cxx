@@ -133,7 +133,7 @@ bool AnalogReadout::save(Serializer& out) const
     myConnection.save(out);
     out.putLong(myTimestamp);
 
-    out.putInt(static_cast<int>(myConsoleTiming));
+    out.putInt(std::to_underlying(myConsoleTiming));
     out.putDouble(myClockFreq);
 
     out.putBool(myIsDumped);
@@ -177,7 +177,7 @@ bool AnalogReadout::Connection::save(Serializer& out) const
 {
   try
   {
-    out.putInt(static_cast<uInt8>(type));
+    out.putInt(std::to_underlying(type));
     out.putInt(resistance);
   }
   catch(...)

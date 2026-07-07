@@ -15,7 +15,6 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#include <cassert>
 #include <cmath>
 #include <format>
 
@@ -148,8 +147,7 @@ VideoModeHandler::Mode::Mode(uInt32 iw, uInt32 ih, uInt32 sw, uInt32 sh,
         break;
 
       default:
-        assert(false && "Unhandled Stretch enum value");
-        break;
+        std::unreachable();  // all Stretch values handled above
     }
   }
   else
@@ -170,8 +168,7 @@ VideoModeHandler::Mode::Mode(uInt32 iw, uInt32 ih, uInt32 sw, uInt32 sh,
         break;  // Do not change image or screen rects whatsoever
 
       default:
-        assert(false && "Unhandled Stretch enum value");
-        break;
+        std::unreachable();  // all Stretch values handled above
     }
   }
 

@@ -931,11 +931,11 @@ void Console::setControllers(string_view romMd5)
 void Console::changeLeftController(int direction)
 {
   auto type =
-    static_cast<uInt8>(Controller::getType(myProperties.get(PropType::Controller_Left)));
+    std::to_underlying(Controller::getType(myProperties.get(PropType::Controller_Left)));
   if(!type)
-    type = static_cast<uInt8>(Controller::getType(leftController().name()));
+    type = std::to_underlying(Controller::getType(leftController().name()));
   type = BSPF::clampw(type + direction,
-                      1, static_cast<uInt8>(Controller::Type::LastType) - 1);
+                      1, std::to_underlying(Controller::Type::LastType) - 1);
 
   myProperties.set(PropType::Controller_Left, Controller::getPropName(Controller::Type{type}));
   setControllers(myProperties.get(PropType::Cart_MD5));
@@ -948,11 +948,11 @@ void Console::changeLeftController(int direction)
 void Console::changeRightController(int direction)
 {
   auto type =
-    static_cast<uInt8>(Controller::getType(myProperties.get(PropType::Controller_Right)));
+    std::to_underlying(Controller::getType(myProperties.get(PropType::Controller_Right)));
   if(!type)
-    type = static_cast<uInt8>(Controller::getType(rightController().name()));
+    type = std::to_underlying(Controller::getType(rightController().name()));
   type = BSPF::clampw(type + direction,
-                      1, static_cast<uInt8>(Controller::Type::LastType) - 1);
+                      1, std::to_underlying(Controller::Type::LastType) - 1);
 
   myProperties.set(PropType::Controller_Right, Controller::getPropName(Controller::Type{type}));
   setControllers(myProperties.get(PropType::Cart_MD5));

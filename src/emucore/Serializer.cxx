@@ -206,7 +206,7 @@ void Serializer::getShortArray(ShortMSpan arr)
                                                   arr.size_bytes()));
   if constexpr(std::endian::native != std::endian::little)
     for(auto& val: arr)
-      val = byteswap(val);
+      val = std::byteswap(val);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -222,7 +222,7 @@ void Serializer::getIntArray(IntMSpan arr)
                          arr.size_bytes()));
   if constexpr(std::endian::native != std::endian::little)
     for(auto& val: arr)
-      val = byteswap(val);
+      val = std::byteswap(val);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

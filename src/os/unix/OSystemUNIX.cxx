@@ -50,7 +50,7 @@ namespace
     if(sysctl(mib, 4, resolved, &len, nullptr, 0) == 0)
       return string{resolved};
 
-  #elif defined(__NetBSD__)
+  #elifdef __NetBSD__
     const ssize_t len = readlink("/proc/curproc/exe", resolved, PATH_MAX - 1);
     if(len > 0)
     {
@@ -58,7 +58,7 @@ namespace
       return string{resolved};
     }
 
-  #elif defined(__sun)
+  #elifdef __sun
     const ssize_t len = readlink("/proc/self/path/a.out", resolved, PATH_MAX - 1);
     if(len > 0)
     {
