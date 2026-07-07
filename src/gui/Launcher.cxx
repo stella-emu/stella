@@ -140,6 +140,10 @@ void Launcher::updateTime(uInt64 time)
     myDialogStack.applyAll([](Dialog*& d) { d->relayout(); });
     mySettleCountdown = 15;
   }
-  else if(mySettleCountdown > 0 && --mySettleCountdown == 0)
-    myDialogStack.applyAll([](Dialog*& d) { d->relayout(); });
+  else if(mySettleCountdown > 0)
+  {
+    // Once the countdown reaches zero, run the settle pass
+    if(--mySettleCountdown == 0)
+      myDialogStack.applyAll([](Dialog*& d) { d->relayout(); });
+  }
 }
