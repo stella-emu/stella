@@ -119,8 +119,8 @@ const FBSurface& TIASurface::baseSurface(Common::Rect& rect) const
   uInt32 *buf_ptr{nullptr}, pitch{0};
   myBaseTiaSurface->basePtr(buf_ptr, pitch);
 
-  for(size_t y = 0; y < height; ++y)
-    for(size_t x = 0; x < width; ++x)
+  for(auto y = 0uz; y < height; ++y)
+    for(auto x = 0uz; x < width; ++x)
         *buf_ptr++ = myPalette[*(myTIA->frameBuffer() + y * tiaw + x / 2)];
 
   return *myBaseTiaSurface;

@@ -73,7 +73,7 @@ bool BusTransactionQueue::save(Serializer& out) const
     out.putShort(myNextInjectAddress);
     out.putLong(myTimestamp);
 
-    for (size_t i = 0; i < myQueueSize; i++)
+    for (auto i = 0uz; i < myQueueSize; i++)
       myQueue[(myQueueNext + i) % myQueueCapacity].serialize(out);
   }
   catch (...) {
@@ -96,7 +96,7 @@ bool BusTransactionQueue::load(Serializer& in)
 
     if (myQueueSize > myQueueCapacity) return false;
 
-    for (size_t i = 0; i < myQueueSize; i++)
+    for (auto i = 0uz; i < myQueueSize; i++)
       myQueue[i].deserialize(in);
   }
   catch(...) {

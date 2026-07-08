@@ -359,7 +359,7 @@ string RewindManager::getUnitString(Int64 cycles)
 
   const uInt64 u_cycles = std::abs(cycles);
 
-  size_t i = 0;
+  auto i = 0uz;
   for(i = 0; i < UNIT_NAMES.size() - 1; ++i)
   {
     // use the lower unit up to twice the nextCycles unit, except for an exact match of the nextCycles unit

@@ -174,7 +174,7 @@ FORCE_INLINE void CartridgeDPCPlus::updateMusicModeDataFetchers()
 
   // Let's update counters and flags of the music mode data fetchers
   if(wholeClocks > 0)
-    for(size_t x = 0; x < myMusicCounters.size(); ++x)
+    for(auto x = 0uz; x < myMusicCounters.size(); ++x)
       myMusicCounters[x] += myMusicFrequencies[x] * wholeClocks;
 }
 

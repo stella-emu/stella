@@ -270,7 +270,7 @@ namespace BSPF
   {
     // Only compare up to the length of the shorter string
     const auto maxsize = std::min(s1.size(), s2.size());
-    for(size_t i = 0; i < maxsize; ++i)
+    for(auto i = 0uz; i < maxsize; ++i)
     {
       const char c1 = toUpperAscii(s1[i]);
       const char c2 = toUpperAscii(s2[i]);
@@ -336,8 +336,8 @@ namespace BSPF
       return false;
 
     // Remaining characters must appear in order
-    size_t pos = 1;
-    for(size_t j = 1; j < s2.size(); ++j)
+    auto pos = 1uz;
+    for(auto j = 1uz; j < s2.size(); ++j)
     {
       const char target = toUpperAscii(s2[j]);
       while(pos < s1.size() && toUpperAscii(s1[pos]) != target)
@@ -358,15 +358,15 @@ namespace BSPF
     if(s1.empty() || s2.empty()) return false;
 
     // Skip leading '_' for both strings if both start with it
-    const size_t ofs = (s1[0] == '_' && s2[0] == '_') ? 1 : 0;
+    const auto ofs = (s1[0] == '_' && s2[0] == '_') ? 1uz : 0uz;
 
     // First character must match (case insensitive)
     if(toUpperAscii(s1[ofs]) != toUpperAscii(s2[ofs]))
       return false;
 
-    size_t pos = 1 + ofs;  // current search position in s1 (absolute)
+    auto pos = 1uz + ofs;  // current search position in s1 (absolute)
 
-    for(size_t j = 1 + ofs; j < s2.size(); ++j)
+    for(auto j = 1uz + ofs; j < s2.size(); ++j)
     {
       const char c2 = s2[j];
 
@@ -422,10 +422,10 @@ namespace BSPF
       pattern = effectivePat;
     }
 
-    size_t si = 0;        // current position in str
-    size_t pi = 0;        // current position in pattern
-    size_t starPi = string_view::npos;  // position of last '*' in pattern
-    size_t starSi = 0;    // position in str when last '*' was matched
+    auto si = 0uz;        // current position in str
+    auto pi = 0uz;        // current position in pattern
+    auto starPi = string_view::npos;  // position of last '*' in pattern
+    auto starSi = 0uz;    // position in str when last '*' was matched
 
     while(si < str.length())
     {
@@ -464,7 +464,7 @@ namespace BSPF
   constexpr void replaceAll(string& str, string_view from, string_view to)
   {
     if(from.empty()) return;
-    size_t start_pos = 0;
+    auto start_pos = 0uz;
     while((start_pos = str.find(from, start_pos)) != string_view::npos)
     {
       str.replace(start_pos, from.length(), to);
@@ -532,10 +532,10 @@ namespace BSPF
     if(image.size() < sigsize)
       return false;
 
-    size_t count{0};
-    for(size_t i = 0; i <= image.size() - sigsize; ++i)
+    auto count = 0uz;
+    for(auto i = 0uz; i <= image.size() - sigsize; ++i)
     {
-      size_t j{0};
+      auto j = 0uz;
       for(j = 0; j < sigsize; ++j)
       {
         if(image[i + j] != signature[j])

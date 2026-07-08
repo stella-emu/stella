@@ -602,7 +602,7 @@ bool CartDetector::isProbablyFA2(ByteSpan image)
   // file sizes
 
   // 32K version has all zeros in 29K-32K area
-  for(size_t i = 29_KB; i < 32_KB; ++i)
+  for(auto i = 29_KB; i < 32_KB; ++i)
     if(image[i] != 0)
       return false;
 

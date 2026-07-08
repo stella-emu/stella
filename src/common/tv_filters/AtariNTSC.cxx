@@ -47,7 +47,7 @@ void AtariNTSC::generateKernels()
   constexpr float PALETTE_SCALE = rgb_unit / 255.F;
 
   const uInt8* ptr = myRGBPalette.data();
-  for(size_t entry = 0; entry < myRGBPalette.size() / 3; ++entry)
+  for(auto entry = 0uz; entry < myRGBPalette.size() / 3; ++entry)
   {
     const float r = (*ptr++) * PALETTE_SCALE + rgb_offset,
                 g = (*ptr++) * PALETTE_SCALE + rgb_offset,

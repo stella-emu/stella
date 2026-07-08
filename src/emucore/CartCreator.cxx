@@ -203,7 +203,7 @@ namespace  // anonymous namespace, to keep these functions private
   */
   string_view stripCollectionPrefix(string_view stem)
   {
-    size_t p = 0;
+    auto p = 0uz;
     while(p < stem.size() && std::isdigit(static_cast<unsigned char>(stem[p])))
       ++p;
     if(p > 0 && p + 2 < stem.size() && stem.substr(p, 3) == " - ")

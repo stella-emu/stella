@@ -282,12 +282,7 @@ uInt8 M6532::peek(uInt16 addr)
     }
 
     default:
-    {
-#ifdef DEBUG_ACCESSES
-      cerr << "BAD M6532 Peek: " << hex << addr << '\n';
-#endif
-      return 0;
-    }
+      std::unreachable();
   }
 }
 
@@ -322,33 +317,25 @@ bool M6532::poke(uInt16 addr, uInt8 value)
     switch(addr & 0x03)
     {
       case 0:     // SWCHA - Port A I/O Register (Joystick)
-      {
         myOutA = value;
         setPinState(true);
         break;
-      }
 
       case 1:     // SWACNT - Port A Data Direction Register
-      {
         myDDRA = value;
         setPinState(false);
         break;
-      }
 
       case 2:     // SWCHB - Port B I/O Register (Console switches)
-      {
         myOutB = value;
         break;
-      }
 
       case 3:     // SWBCNT - Port B Data Direction Register
-      {
         myDDRB = value;
         break;
-      }
 
-      default:  // satisfy compiler
-        break;
+      default:
+        std::unreachable();
     }
   }
   return true;

@@ -100,7 +100,7 @@ void PointingDevice::update()
   // trigger it.  Binding the pin (rather than a static setPin) lets the button
   // change within the input window like the other controllers
   std::array<Event::Type, MAX_PIN_EVENTS> fire{Event::LeftJoystickFire};
-  size_t n = 1;
+  auto n = 1uz;
   if(myMouseEnabled)
   {
     fire[n++] = Event::MouseButtonLeftValue;

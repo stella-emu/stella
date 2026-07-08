@@ -28,7 +28,7 @@ CartridgeCV::CartridgeCV(ByteSpan image, string_view md5,
   const size_t size = image.size();
   if(size <= 2_KB)
   {
-    for(size_t i = 0; i < 2_KB; i += size)
+    for(auto i = 0uz; i < 2_KB; i += size)
       // Copy the ROM of <=2K files to the 2nd half of the 4K ROM
       // The 1st half is used for RAM
       // A non-power-of-2 size won't tile [2K, 4K) evenly, so clamp the
