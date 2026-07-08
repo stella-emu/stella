@@ -20,80 +20,101 @@
 #include "FrameBuffer.hxx"
 #include "FBSurface.hxx"
 #include "Font.hxx"
+#include "Widget.hxx"
 #include "Dialog.hxx"
 #include "DialogContainer.hxx"
+#include "Layout.hxx"
 #include "RomListWidget.hxx"
 #include "RomListSettings.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 RomListSettings::RomListSettings(GuiObject* boss, const GUI::Font& font)
-  : Dialog(boss->instance(), boss->parent()),
+  : Dialog(boss->instance(), boss->parent(), font),
     CommandSender(boss)
 {
-  const int buttonWidth  = font.getStringWidth("Disassemble @ current line") + 20,
-            buttonHeight = font.getLineHeight() + 4;
-  int xpos = 8, ypos = 8;
+  const int buttonWidth  = Dialog::buttonWidth("Disassemble @ current line"),
+            buttonHeight = Dialog::buttonHeight();
   WidgetArray wid;
 
-  // Set PC to current line
-  auto* setPC =
-    new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight,
-                     "Set PC @ current line", RomListWidget::kSetPCCmd);
-  wid.push_back(setPC);
-
-  // RunTo PC on current line
-  ypos += buttonHeight + 4;
-  auto* runtoPC =
-    new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight,
-                     "RunTo PC @ current line", RomListWidget::kRuntoPCCmd);
-  wid.push_back(runtoPC);
-
-  // Toggle timer
-  ypos += buttonHeight + 4;
-  auto* setTimer =
-    new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight,
-      "Set timer @ current line", RomListWidget::kSetTimerCmd);
-  wid.push_back(setTimer);
-
-  // Re-disassemble
-  ypos += buttonHeight + 4;
-  auto* disasm =
-    new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight,
-                     "Disassemble @ current line", RomListWidget::kDisassembleCmd);
-  wid.push_back(disasm);
+  // NOLINTBEGIN(cppcoreguidelines-prefer-member-initializer)
+  // Action buttons
+  mySetPC = new ButtonWidget(this, font, 0, 0, buttonWidth, buttonHeight,
+                             "Set PC @ current line", RomListWidget::kSetPCCmd);
+  wid.push_back(mySetPC);
+  myRuntoPC = new ButtonWidget(this, font, 0, 0, buttonWidth, buttonHeight,
+                               "RunTo PC @ current line", RomListWidget::kRuntoPCCmd);
+  wid.push_back(myRuntoPC);
+  mySetTimer = new ButtonWidget(this, font, 0, 0, buttonWidth, buttonHeight,
+                                "Set timer @ current line", RomListWidget::kSetTimerCmd);
+  wid.push_back(mySetTimer);
+  myDisassemble = new ButtonWidget(this, font, 0, 0, buttonWidth, buttonHeight,
+                                   "Disassemble @ current line", RomListWidget::kDisassembleCmd);
+  wid.push_back(myDisassemble);
 
   // Settings for Distella
-  xpos += 4;  ypos += buttonHeight + 8;
-  myShowTentative = new CheckboxWidget(this, font, xpos, ypos,
+  myShowTentative = new CheckboxWidget(this, font, 0, 0,
                                        "Show tentative code", RomListWidget::kTentativeCodeCmd);
   myShowTentative->setToolTip("Check to differentiate between tentative code\n"
                               "vs. data sections via static code analysis.");
   wid.push_back(myShowTentative);
-  ypos += buttonHeight + 4;
-  myShowAddresses = new CheckboxWidget(this, font, xpos, ypos,
+  myShowAddresses = new CheckboxWidget(this, font, 0, 0,
                                        "Show PC addresses", RomListWidget::kPCAddressesCmd);
   myShowAddresses->setToolTip("Check to show program counter addresses as labels.");
   wid.push_back(myShowAddresses);
-  ypos += buttonHeight + 4;
-  myShowGFXBinary = new CheckboxWidget(this, font, xpos, ypos,
+  myShowGFXBinary = new CheckboxWidget(this, font, 0, 0,
                                        "Show GFX as binary", RomListWidget::kGfxAsBinaryCmd);
   myShowGFXBinary->setToolTip("Check to allow editing GFX sections in binary format.");
   wid.push_back(myShowGFXBinary);
-  ypos += buttonHeight + 4;
-  myUseRelocation = new CheckboxWidget(this, font, xpos, ypos,
+  myUseRelocation = new CheckboxWidget(this, font, 0, 0,
                                        "Use address relocation", RomListWidget::kAddrRelocationCmd);
   myUseRelocation->setToolTip("Check to relocate calls out of address range.");
   wid.push_back(myUseRelocation);
-
-  // Set real dimensions
-  _w = buttonWidth + 20;
-  _h = ypos + buttonHeight + 8;
+  // NOLINTEND(cppcoreguidelines-prefer-member-initializer)
 
   addToFocusList(wid);
 
   // We don't have a close/cancel button, but we still want the cancel
   // event to be processed
   processCancelWithoutWidget(true);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void RomListSettings::layout()
+{
+  using GUI::BoxLayout;
+  using GUI::anchoredItem;
+  using GUI::indentedItem;
+  using Dir = BoxLayout::Dir;
+
+  const int buttonWidth  = Dialog::buttonWidth("Disassemble @ current line"),
+            buttonHeight = Dialog::buttonHeight(),
+            VBORDER      = Dialog::vBorder(),
+            HBORDER      = Dialog::hBorder(),
+            VGAP         = Dialog::vGap();
+
+  // The four action buttons share the widest label's width; refresh their
+  // size from the live font (ButtonWidget::refreshFontMetrics doesn't resize).
+  for(auto* b: {mySetPC, myRuntoPC, mySetTimer, myDisassemble})
+  {
+    b->setWidth(buttonWidth);
+    b->setHeight(buttonHeight);
+  }
+
+  // No title bar (_th == 0), so content starts at the top margin
+  _w = buttonWidth + HBORDER * 2;
+  _h = VBORDER * 2 + 8 * buttonHeight + VGAP * 9;
+
+  auto root = std::make_unique<BoxLayout>(Dir::Vertical, 0, HBORDER, VBORDER);
+  root->addFixed(anchoredItem(mySetPC),       buttonHeight); root->addSpace(VGAP);
+  root->addFixed(anchoredItem(myRuntoPC),     buttonHeight); root->addSpace(VGAP);
+  root->addFixed(anchoredItem(mySetTimer),    buttonHeight); root->addSpace(VGAP);
+  root->addFixed(anchoredItem(myDisassemble), buttonHeight);
+  root->addSpace(VGAP * 3);
+  root->addFixed(indentedItem(myShowTentative, indent()/2), buttonHeight); root->addSpace(VGAP);
+  root->addFixed(indentedItem(myShowAddresses, indent()/2), buttonHeight); root->addSpace(VGAP);
+  root->addFixed(indentedItem(myShowGFXBinary, indent()/2), buttonHeight); root->addSpace(VGAP);
+  root->addFixed(indentedItem(myUseRelocation, indent()/2), buttonHeight);
+  root->doLayout(0, _th, _w, _h - _th);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
