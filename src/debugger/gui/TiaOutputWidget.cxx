@@ -29,6 +29,7 @@
 #include "TIADebug.hxx"
 #include "TIASurface.hxx"
 #include "TIA.hxx"
+#include "TIAConstants.hxx"
 #include "TimerManager.hxx"
 #include "FrameManager.hxx"
 
@@ -51,6 +52,16 @@ TiaOutputWidget::TiaOutputWidget(GuiObject* boss, const GUI::Font& font,
   myMenu = std::make_unique<ContextMenu>(this, font, l);
 
   //setHelpAnchor("TIADisplay", true); // TODO: does not work due to missing focus
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+TiaOutputWidget::~TiaOutputWidget()
+{
+  // The framebuffer keeps a reference to every allocated surface, so release
+  // ours explicitly (the dialog can be recreated, which would otherwise leak)
+  FrameBuffer& fb = instance().frameBuffer();
+  if(myTiaSurface)  fb.deallocateSurface(myTiaSurface);
+  if(myMarkSurface) fb.deallocateSurface(myMarkSurface);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -97,21 +108,25 @@ void TiaOutputWidget::saveSnapshot(int execDepth, string_view execPrefix,
   }
   sspath += ".png";
 
-  const uInt32 width  = instance().console().tia().width(),
-               height = instance().console().tia().height();
-  const FBSurface& s = dialog().surface();
+  const uInt32 width = instance().console().tia().width();
+  uInt32 height = instance().console().tia().height();
+  height = std::min<uInt32>(height, FrameManager::Metrics::baseHeightPAL);
 
-  // to skip borders, add 1 to origin
-  const int x = _x + 1, y = _y + 1;
-  const Common::Rect rect(x, y, x + width*2, y + height);
   string message = "Snapshot saved";
-  try
+  if(myTiaSurface == nullptr)
+    message = "Snapshot not available";
+  else
   {
-    PNGLibrary::saveImage(sspath, s, rect);
-  }
-  catch(const std::runtime_error& e)
-  {
-    message = e.what();
+    // The image lives in its own surface, at the top-left, horizontally doubled
+    const Common::Rect rect(0, 0, width * 2, height);
+    try
+    {
+      PNGLibrary::saveImage(sspath, *myTiaSurface, rect);
+    }
+    catch(const std::runtime_error& e)
+    {
+      message = e.what();
+    }
   }
   if(execDepth == 0)
     instance().frameBuffer().showTextMessage(message);
@@ -123,13 +138,19 @@ void TiaOutputWidget::saveSnapshot(int execDepth, string_view execPrefix,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TiaOutputWidget::handleMouseDown(int x, int y, MouseButton b, int clickCount)
 {
+  // Map the (possibly scaled) click to native TIA coordinates.  The zoom widget
+  // and the context-menu handlers below work in doubled columns / native rows,
+  // matching the original fixed-scale behaviour.
+  int col = 0, row = 0;
+  widgetToImage(x, y, col, row);
+
   if(b == MouseButton::LEFT)
-    myZoom->setPos(x, y);
+    myZoom->setPos(col << 1, row);
   // Grab right mouse button for command context menu
   else if(b == MouseButton::RIGHT)
   {
-    myClickX = x;
-    myClickY = y - 1;
+    myClickX = col << 1;
+    myClickY = row;
 
     // Add menu at current x,y mouse location
     myMenu->show(x + getAbsX(), y + getAbsY(), dialog().surface().dstRect());
@@ -180,15 +201,11 @@ void TiaOutputWidget::handleCommand(CommandSender* sender, int cmd, int data, in
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Common::Point TiaOutputWidget::getToolTipIndex(const Common::Point& pos) const
 {
-  const Int32 width = instance().console().tia().width();
-  const Int32 height = instance().console().tia().height();
-  const int col = (pos.x - 1 - getAbsX()) >> 1;
-  const int row = pos.y - 1 - getAbsY();
-
-  if(col < 0 || col >= width || row < 0 || row >= height)
+  int col = 0, row = 0;
+  if(!widgetToImage(pos.x - getAbsX(), pos.y - getAbsY(), col, row))
     return Common::Point(-1, -1);
-  else
-    return Common::Point(col, row);
+
+  return Common::Point(col, row);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -224,27 +241,66 @@ bool TiaOutputWidget::changedToolTip(const Common::Point& oldPos,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TiaOutputWidget::drawWidget(bool hilite)
 {
+  // Lazily create the image + overlay surfaces on first draw, and register the
+  // render callback that composites them on top of the dialog's base surface.
+  if(myTiaSurface == nullptr)
+  {
+    FrameBuffer& fb = instance().frameBuffer();
+
+    // 'none' (nearest-neighbour) scaling keeps the TIA pixels crisp at any size
+    myTiaSurface = fb.allocateSurface(
+      TIAConstants::viewableWidth, TIAConstants::frameBufferHeight,
+      ScalingInterpolation::none);
+    myTiaSurface->setVisible(true);
+
+    // Pixel-locked overlay for the electron-beam cursor: same size/scaling as
+    // the image so it can share the image's src/dst rectangles; blended so its
+    // transparent background lets the image show through
+    myMarkSurface = fb.allocateSurface(
+      TIAConstants::viewableWidth, TIAConstants::frameBufferHeight,
+      ScalingInterpolation::none);
+    myMarkSurface->setVisible(true);
+    myMarkSurface->enableBlend(true);
+    myMarkSurface->setBlendLevel(100);
+
+    // Composite order on every render: TIA image first, then the beam overlay
+    dialog().addRenderCallback([this]() {
+      if(myTiaSurface)  myTiaSurface->render();
+      if(myMarkSurface) myMarkSurface->render();
+    });
+  }
+
+  updateSurface();
+  recalcRects();
+  drawMarkers();
+
+  // Frame the scaled image on the dialog's base surface (the image itself is
+  // composited on top by the render callback)
+  FBSurface& s = dialog().surface();
+  s.frameRect(_x + myImgX - 1, _y + myImgY - 1, myImgW + 2, myImgH + 2,
+              hilite ? kWidColorHi : kColor);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TiaOutputWidget::updateSurface()
+{
   const uInt32 width = instance().console().tia().width();
   uInt32 height = instance().console().tia().height();
-  // limit to 274 lines (PAL default without scaling)
+  // limit to 274 lines (PAL default without scaling); center taller frames
   const uInt32 yStart = height <= FrameManager::Metrics::baseHeightPAL ? 0 :
       (height - FrameManager::Metrics::baseHeightPAL) / 2;
   height = std::min<uInt32>(height, FrameManager::Metrics::baseHeightPAL);
-  FBSurface& s = dialog().surface();
 
-  s.vLine(_x + _w + 1, _y, height, kColor);
-  s.hLine(_x, _y + height + 1, _x +_w + 1, kColor);
-
-  // Get current scanline position
-  // This determines where the frame greying should start, and where a
-  // scanline 'pointer' should be drawn
+  // Get current scanline position; this determines where the frame greying of
+  // the yet-to-be-drawn part of the image should start
   uInt32 scanx = 0, scany = 0;
-  const bool visible = instance().console().tia().electronBeamPos(scanx, scany);
+  instance().console().tia().electronBeamPos(scanx, scany);
   const uInt32 scanoffset = width * scany + scanx;
   const uInt8* tiaOutputBuffer = instance().console().tia().outputBuffer();
   const TIASurface& tiaSurface = instance().frameBuffer().tiaSurface();
 
-  const std::span<uInt32> line{myLineBuffer};
+  // Copy the frame into the surface's top-left, horizontally doubled (the TIA's
+  // 2:1 pixel aspect), so the source rectangle always starts at (0,0)
   for(uInt32 y = 0, i = yStart * width; y < height; ++y)
   {
     uInt32 lineIdx = 0;
@@ -252,13 +308,96 @@ void TiaOutputWidget::drawWidget(bool hilite)
     {
       const uInt32 pixel = tiaSurface.mapIndexedPixel(
         tiaOutputBuffer[i], i >= scanoffset ? 1 : 0);
-      line[lineIdx++] = pixel;
-      line[lineIdx++] = pixel;
+      myLineBuffer[lineIdx++] = pixel;
+      myLineBuffer[lineIdx++] = pixel;
     }
-    s.drawPixels(myLineBuffer.data(), _x + 1, _y + 1 + y, width << 1);
+    myTiaSurface->drawPixels(myLineBuffer.data(), 0, y, width << 1);
   }
 
-  // Show electron beam position
-  if(visible && scanx < width && scany+2U < height)
-    s.fillRect(_x + 1 + (scanx<<1), _y + 1 + scany, 3, 3, kColorInfo);
+  myTiaSurface->setSrcPos(0, 0);
+  myTiaSurface->setSrcSize(width << 1, height);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TiaOutputWidget::recalcRects()
+{
+  const int srcW = static_cast<int>(myTiaSurface->srcRect().w()),
+            srcH = static_cast<int>(myTiaSurface->srcRect().h());
+  if(srcW <= 0 || srcH <= 0)
+    return;
+
+  // Fit the image into the widget area (inside a 1px border), preserving the
+  // aspect ratio already baked into the horizontally doubled source
+  const int availW = _w - 2, availH = _h - 2;
+  const float scale = std::min(static_cast<float>(availW) / srcW,
+                               static_cast<float>(availH) / srcH);
+  myImgW = static_cast<int>(srcW * scale);
+  myImgH = static_cast<int>(srcH * scale);
+  // Anchor at the widget's top-left (matching the original TIA image layout)
+  myImgX = 1;
+  myImgY = 1;
+
+  // Map widget-local logical coordinates to physical surface coordinates,
+  // accounting for the dialog's on-screen position and any HiDPI scaling
+  const Common::Rect& s_dst = dialog().surface().dstRect();
+  const Int32 dpi = instance().frameBuffer().hidpiScaleFactor();
+  myTiaSurface->setDstPos(s_dst.x() + (_x + myImgX) * dpi,
+                          s_dst.y() + (_y + myImgY) * dpi);
+  myTiaSurface->setDstSize(myImgW * dpi, myImgH * dpi);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TiaOutputWidget::drawMarkers()
+{
+  // Clear the previous frame's marks (fully transparent background)
+  myMarkSurface->invalidate();
+
+  uInt32 scanx = 0, scany = 0;
+  if(instance().console().tia().electronBeamPos(scanx, scany))
+  {
+    const uInt32 width = instance().console().tia().width();
+    uInt32 height = instance().console().tia().height();
+    const uInt32 yStart = height <= FrameManager::Metrics::baseHeightPAL ? 0 :
+        (height - FrameManager::Metrics::baseHeightPAL) / 2;
+    height = std::min<uInt32>(height, FrameManager::Metrics::baseHeightPAL);
+
+    // Only draw when the beam lies inside the displayed region
+    if(scanx < width && scany >= yStart && scany < yStart + height)
+    {
+      // A small box in (doubled) surface pixels, so it inherits the 2:1 aspect
+      // and scales/pans with the image via the shared src/dst rectangles
+      const uInt32 bx = scanx << 1, by = scany - yStart;
+      myMarkSurface->fillRect(bx, by, std::min<uInt32>(3, (width << 1) - bx),
+                              std::min<uInt32>(3, height - by), kColorInfo);
+    }
+  }
+
+  // Mirror the image surface geometry so the overlay scales/aligns with it
+  myMarkSurface->setSrcRect(myTiaSurface->srcRect());
+  myMarkSurface->setDstRect(myTiaSurface->dstRect());
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool TiaOutputWidget::widgetToImage(int lx, int ly, int& col, int& row) const
+{
+  const int width = static_cast<int>(instance().console().tia().width());
+  uInt32 h = instance().console().tia().height();
+  h = std::min<uInt32>(h, FrameManager::Metrics::baseHeightPAL);
+  const int height = static_cast<int>(h);
+
+  if(myImgW <= 0 || myImgH <= 0)
+  {
+    col = row = 0;
+    return false;
+  }
+
+  const float fx = (lx - myImgX) / static_cast<float>(myImgW);
+  const float fy = (ly - myImgY) / static_cast<float>(myImgH);
+  const bool inside = fx >= 0.F && fx < 1.F && fy >= 0.F && fy < 1.F;
+
+  // Native TIA column / displayed row, clamped so callers can act on a point
+  // in the (letterbox) border too
+  col = std::clamp(static_cast<int>(fx * width), 0, width - 1);
+  row = std::clamp(static_cast<int>(fy * height), 0, height - 1);
+  return inside;
 }

@@ -31,7 +31,7 @@ class TiaOutputWidget : public Widget, public CommandSender
   public:
     TiaOutputWidget(GuiObject *boss, const GUI::Font& font,
                     int x, int y, int w, int h);
-    ~TiaOutputWidget() override = default;
+    ~TiaOutputWidget() override;
 
     void loadConfig() override;
 
@@ -63,10 +63,33 @@ class TiaOutputWidget : public Widget, public CommandSender
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 
   private:
+    // Copy the current (palette + phosphor processed, horizontally doubled) TIA
+    // frame into the image surface's top-left and set its source rectangle
+    void updateSurface();
+    // Recompute the image surface's destination rectangle: scaled to fit the
+    // widget area, preserving the TIA's 2:1 pixel aspect ratio
+    void recalcRects();
+    // Redraw the pixel-locked overlay (electron-beam cursor) for this frame
+    void drawMarkers();
+    // Map a widget-local point to native TIA (column, row); returns false if the
+    // point is outside the displayed image
+    bool widgetToImage(int lx, int ly, int& col, int& row) const;
+
+  private:
     unique_ptr<ContextMenu> myMenu;
     TiaZoomWidget* myZoom{nullptr};
 
     int myClickX{0}, myClickY{0};
+
+    // The TIA image is rendered into its own surface (so it can be scaled), with
+    // a blended overlay surface on top for the electron-beam cursor.  Both are
+    // composited over the dialog's base surface by a render callback.
+    shared_ptr<FBSurface> myTiaSurface;
+    shared_ptr<FBSurface> myMarkSurface;
+
+    // Area the scaled image occupies within the widget, in widget-local logical
+    // pixels (cached from the last recalcRects; maps mouse coords to TIA pixels)
+    int myImgX{0}, myImgY{0}, myImgW{0}, myImgH{0};
 
     // Create this buffer once, instead of allocating it each time the
     // TIA image is redrawn
