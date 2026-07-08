@@ -78,6 +78,11 @@ class DataGridWidget : public EditableWidget
     // Account for the extra width of embedded scrollbar
     int getWidth() const override;
 
+    // The scrollbar (when present) is a sibling widget, so it must be moved to
+    // track the grid when the owning dialog repositions it (mirrors ListWidget)
+    using Widget::setPos;
+    void setPos(const Common::Point& pos) override;
+
     int colWidth() const { return _colWidth; }
 
     void setOpsWidget(DataGridOpsWidget* w) { _opsWidget = w; }

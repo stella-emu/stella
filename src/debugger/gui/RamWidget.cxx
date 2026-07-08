@@ -24,6 +24,8 @@
 #include "Font.hxx"
 #include "FBSurface.hxx"
 #include "Widget.hxx"
+#include "ScrollBarWidget.hxx"
+#include "Layout.hxx"
 #include "RamWidget.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -40,61 +42,51 @@ RamWidget::RamWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& n
     myButtonHeight{static_cast<int>(myLineHeight * 1.25)},
     myRamSize{ramsize},
     myNumRows{numrows},
-    myPageSize{pagesize}
+    myPageSize{pagesize},
+    myAutoHeight{h == 0}
 {
   const int bwidth  = lfont.getStringWidth("Compare " + ELLIPSIS),
             bheight = myLineHeight + 2;
-  const int VGAP = myFontHeight / 4;
   WidgetArray wid;
 
-  int ypos = y + myLineHeight;
+  // Create every widget at a placeholder position; reflow() positions/sizes them
+  // NOLINTBEGIN(cppcoreguidelines-prefer-member-initializer)
 
-  // Add RAM grid (with scrollbar)
-  int xpos = x + _font.getStringWidth("xxxx");
+  // RAM grid (with scrollbar for larger RAM)
   const bool useScrollbar = ramsize / numrows > 16;
-  myRamGrid = new DataGridRamWidget(_boss, *this, _nfont, xpos, ypos,
+  myRamGrid = new DataGridRamWidget(_boss, *this, _nfont, 0, 0,
                                     16, myNumRows, 2, 8, Common::Base::Fmt::_16, useScrollbar);
   myRamGrid->setHelpAnchor(helpAnchor, true);
   myRamGrid->setTarget(this);
   myRamGrid->setID(kRamGridID);
   addFocusWidget(myRamGrid);
 
-  // Create actions buttons to the left of the RAM grid
-  const int bx = xpos + myRamGrid->getWidth() + 4;
-  int by = ypos;
-
-  myUndoButton = new ButtonWidget(boss, lfont, bx, by, bwidth, bheight,
-                                  "Undo", kUndoCmd);
+  // Action buttons to the right of the RAM grid
+  myUndoButton = new ButtonWidget(boss, lfont, 0, 0, bwidth, bheight, "Undo", kUndoCmd);
   myUndoButton->setHelpAnchor("M6532Search", true);
   wid.push_back(myUndoButton);
   myUndoButton->setTarget(this);
 
-  by += bheight + VGAP;
-  myRevertButton = new ButtonWidget(boss, lfont, bx, by, bwidth, bheight,
-                                    "Revert", kRevertCmd);
+  myRevertButton = new ButtonWidget(boss, lfont, 0, 0, bwidth, bheight, "Revert", kRevertCmd);
   myRevertButton->setHelpAnchor("M6532Search", true);
   wid.push_back(myRevertButton);
   myRevertButton->setTarget(this);
 
-  by += bheight + VGAP * 6;
-  mySearchButton = new ButtonWidget(boss, lfont, bx, by, bwidth, bheight,
+  mySearchButton = new ButtonWidget(boss, lfont, 0, 0, bwidth, bheight,
                                     "Search" + ELLIPSIS, kSearchCmd);
   mySearchButton->setHelpAnchor("M6532Search", true);
   mySearchButton->setToolTip("Search and highlight found values.");
   wid.push_back(mySearchButton);
   mySearchButton->setTarget(this);
 
-  by += bheight + VGAP;
-  myCompareButton = new ButtonWidget(boss, lfont, bx, by, bwidth, bheight,
+  myCompareButton = new ButtonWidget(boss, lfont, 0, 0, bwidth, bheight,
                                      "Compare" + ELLIPSIS, kCmpCmd);
   myCompareButton->setHelpAnchor("M6532Search", true);
   myCompareButton->setToolTip("Compare highlighted values.");
   wid.push_back(myCompareButton);
   myCompareButton->setTarget(this);
 
-  by += bheight + VGAP;
-  myRestartButton = new ButtonWidget(boss, lfont, bx, by, bwidth, bheight,
-                                     "Reset", kRestartCmd);
+  myRestartButton = new ButtonWidget(boss, lfont, 0, 0, bwidth, bheight, "Reset", kRestartCmd);
   myRestartButton->setHelpAnchor("M6532Search", true);
   myRestartButton->setToolTip("Reset search/compare mode.");
   wid.push_back(myRestartButton);
@@ -102,60 +94,36 @@ RamWidget::RamWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& n
 
   addToFocusList(wid);
 
-  // Labels for RAM grid
-  myRamStart =
-    new StaticTextWidget(_boss, lfont, xpos - _font.getStringWidth("xxxx"),
-                         ypos - myLineHeight,
-                         lfont.getStringWidth("xxxx"), myFontHeight,
-                        "00xx", TextAlign::Left);
+  // Row-address label and column headers for the RAM grid
+  myRamStart = new StaticTextWidget(_boss, lfont, 0, 0,
+                                    lfont.getStringWidth("xxxx"), myFontHeight,
+                                    "00xx", TextAlign::Left);
 
   for(int col = 0; col < 16; ++col)
-  {
-    new StaticTextWidget(_boss, lfont, xpos + col*myRamGrid->colWidth() + 8,
-                         ypos - myLineHeight,
-                         myFontWidth, myFontHeight,
-                         Common::Base::toString(col, Common::Base::Fmt::_16_1),
-                         TextAlign::Left);
-  }
+    myColHeaders[col] = new StaticTextWidget(_boss, lfont, 0, 0,
+                          myFontWidth, myFontHeight,
+                          Common::Base::toString(col, Common::Base::Fmt::_16_1),
+                          TextAlign::Left);
 
-  uInt32 row{0};
-  for(row = 0; row < myNumRows; ++row)
-  {
-    myRamLabels[row] =
-      new StaticTextWidget(_boss, _font, xpos - _font.getStringWidth("x "),
-                           ypos + row*myLineHeight + 2,
-                           myFontWidth, myFontHeight, "", TextAlign::Left);
-  }
+  for(uInt32 row = 0; row < myNumRows; ++row)
+    myRamLabels[row] = new StaticTextWidget(_boss, _font, 0, 0,
+                         myFontWidth, myFontHeight, "", TextAlign::Left);
 
-  // For smaller grids, make sure RAM cell detail fields are below the RESET button
-  row = myNumRows < 8 ? 9 : myNumRows + 1;
-  ypos += (row - 1) * myLineHeight + VGAP * 2;
-
-  // We need to define these widgets from right to left since the leftmost
-  // one resizes as much as possible
-
-  // Add Binary display of selected RAM cell
-  xpos = x + w - 9.6 * myFontWidth - 9;
-  auto* s = new StaticTextWidget(boss, lfont, xpos, ypos, "%");
-  myBinValue = new DataGridWidget(boss, nfont, s->getRight() + myFontWidth * 0.1, ypos-2,
-                                  1, 1, 8, 8, Common::Base::Fmt::_2);
+  // Detail row for the selected RAM cell (built from right to left originally,
+  // but here just created; reflow() right-aligns the hex/dec/bin cluster)
+  myBinPrefix = new StaticTextWidget(boss, lfont, 0, 0, "%");
+  myBinValue = new DataGridWidget(boss, nfont, 0, 0, 1, 1, 8, 8, Common::Base::Fmt::_2);
   myBinValue->setHelpAnchor(helpAnchor, true);
   myBinValue->setTarget(this);
   myBinValue->setID(kRamBinID);
 
-  // Add Decimal display of selected RAM cell
-  xpos -= 6.5 * myFontWidth;
-  s = new StaticTextWidget(boss, lfont, xpos, ypos, "#");
-  myDecValue = new DataGridWidget(boss, nfont, s->getRight(), ypos-2,
-                                  1, 1, 3, 8, Common::Base::Fmt::_10);
+  myDecPrefix = new StaticTextWidget(boss, lfont, 0, 0, "#");
+  myDecValue = new DataGridWidget(boss, nfont, 0, 0, 1, 1, 3, 8, Common::Base::Fmt::_10);
   myDecValue->setHelpAnchor(helpAnchor, true);
   myDecValue->setTarget(this);
   myDecValue->setID(kRamDecID);
 
-  // Add Hex display of selected RAM cell
-  xpos -= 4.5 * myFontWidth;
-  myHexValue = new DataGridWidget(boss, nfont, xpos, ypos - 2,
-                                  1, 1, 2, 8, Common::Base::Fmt::_16);
+  myHexValue = new DataGridWidget(boss, nfont, 0, 0, 1, 1, 2, 8, Common::Base::Fmt::_16);
   myHexValue->setHelpAnchor(helpAnchor, true);
   myHexValue->setTarget(this);
   myHexValue->setID(kRamHexID);
@@ -164,14 +132,10 @@ RamWidget::RamWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& n
   addFocusWidget(myDecValue);
   addFocusWidget(myBinValue);
 
-  // Add Label of selected RAM cell
-  const int xpos_r = xpos - myFontWidth * 1.5;
-  xpos = x;
-  s = new StaticTextWidget(boss, lfont, xpos, ypos, "Label");
-  xpos = s->getRight() + myFontWidth / 2;
-  myLabel = new EditTextWidget(boss, nfont, xpos, ypos-2, xpos_r-xpos,
-                               myLineHeight);
+  myLabelText = new StaticTextWidget(boss, lfont, 0, 0, "Label");
+  myLabel = new EditTextWidget(boss, nfont, 0, 0, 1, myLineHeight);
   myLabel->setEditable(false, true);
+  // NOLINTEND(cppcoreguidelines-prefer-member-initializer)
 
   // Inputbox which will pop up when searching RAM
   const StringList labels = { "Value" };
@@ -186,8 +150,94 @@ RamWidget::RamWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& n
   myCompareButton->clearFlags(Widget::FLAG_ENABLED);
   myRestartButton->clearFlags(Widget::FLAG_ENABLED);
 
-  // Calculate final height
-  if(_h == 0)  _h = ypos + myLineHeight - y;
+  reflow(w);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void RamWidget::setArea(int x, int y, int w, int h)
+{
+  setPos(x, y);
+  // The M6532 view sizes itself to its content; the cartridge view keeps the
+  // fixed height it was given (it lives inside a tab)
+  if(!myAutoHeight)
+    _h = h;
+  reflow(w);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void RamWidget::reflow(int w)
+{
+  using GUI::BoxLayout;
+  using GUI::anchoredItem;
+  using GUI::indentedItem;
+  using GUI::vCentered;
+  using Dir = BoxLayout::Dir;
+
+  const int x = _x, y = _y;
+  const int VGAP    = myFontHeight / 4;
+  const int bheight = myLineHeight + 2;
+  const int gridX   = x + _font.getStringWidth("xxxx");
+  const int gridY   = y + myLineHeight;
+  const int colWidth = myRamGrid->colWidth(),
+            gridW    = myRamGrid->getWidth();
+
+  _w = w;
+
+  // The grid (its scrollbar, if any, tracks it via DataGridWidget::setPos)
+  myRamGrid->setPos(gridX, gridY);
+
+  // Header row: row-address cell then the 16 column labels aligned to columns
+  BoxLayout header(Dir::Horizontal);
+  header.addFixed(anchoredItem(myRamStart), gridX - x);
+  for(auto* h: myColHeaders)
+    header.addFixed(indentedItem(h, 8), colWidth);
+  header.doLayout(x, y, gridX - x + 16 * colWidth, myLineHeight);
+
+  // Row-address labels down the left side of the grid
+  BoxLayout rowLabels(Dir::Vertical);
+  for(uInt32 row = 0; row < myNumRows; ++row)
+    rowLabels.addFixed(anchoredItem(myRamLabels[row]), myLineHeight);
+  rowLabels.doLayout(gridX - _font.getStringWidth("x "), gridY,
+                     myFontWidth, myNumRows * myLineHeight);
+
+  // Action buttons to the right of the grid (a wider gap sets Search apart)
+  BoxLayout buttons(Dir::Vertical);
+  buttons.addFixed(anchoredItem(myUndoButton), bheight);
+  buttons.addSpace(VGAP);
+  buttons.addFixed(anchoredItem(myRevertButton), bheight);
+  buttons.addSpace(VGAP * 6);
+  buttons.addFixed(anchoredItem(mySearchButton), bheight);
+  buttons.addSpace(VGAP);
+  buttons.addFixed(anchoredItem(myCompareButton), bheight);
+  buttons.addSpace(VGAP);
+  buttons.addFixed(anchoredItem(myRestartButton), bheight);
+  buttons.doLayout(gridX + gridW + 4, gridY, myUndoButton->getWidth(),
+                   bheight * 5 + VGAP * 10);
+
+  // Detail row for the selected RAM cell: a "Label" caption plus a stretchy
+  // label field, then the hex / #dec / %bin values right-aligned
+  const uInt32 detailRow = myNumRows < 8 ? 9 : myNumRows + 1;
+  const int detailY = gridY + (detailRow - 1) * myLineHeight + VGAP * 2;
+
+  BoxLayout detail(Dir::Horizontal);
+  detail.addFixed(anchoredItem(myLabelText), myLabelText->getWidth());
+  detail.addSpace(myFontWidth / 2);
+  detail.addStretch(vCentered(myLabel, myLabel->getHeight()));
+  detail.addSpace(myFontWidth * 1.5);
+  detail.addFixed(anchoredItem(myHexValue), myHexValue->getWidth());
+  detail.addSpace(myFontWidth);
+  detail.addFixed(anchoredItem(myDecPrefix), myDecPrefix->getWidth());
+  detail.addFixed(anchoredItem(myDecValue), myDecValue->getWidth());
+  detail.addSpace(myFontWidth);
+  detail.addFixed(anchoredItem(myBinPrefix), myBinPrefix->getWidth());
+  detail.addSpace(myFontWidth * 0.1);
+  detail.addFixed(anchoredItem(myBinValue), myBinValue->getWidth());
+  detail.addSpace(9);
+  detail.doLayout(x, detailY, w, myLineHeight);
+
+  // The M6532 view fits its height to the content
+  if(myAutoHeight)
+    _h = detailY + myLineHeight - y;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

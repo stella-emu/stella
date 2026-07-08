@@ -44,10 +44,19 @@ class RamWidget : public Widget, public CommandSender
     void loadConfig() override;
     void setOpsWidget(DataGridOpsWidget* w);
 
+    // Reflow entry point for the resizable debugger: move the widget and lay
+    // the RAM grid, its labels/buttons and the detail row out for the width
+    void setArea(int x, int y, int w, int h) override;
+
     virtual string getLabel(int addr) const = 0;
 
   protected:
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+
+  private:
+    // Build the layout tree from the current font and lay the widgets out for
+    // the given available width; shared by the ctor and setArea()
+    void reflow(int w);
 
   private:
     // To be implemented by derived classes
@@ -101,8 +110,19 @@ class RamWidget : public Widget, public CommandSender
 
     unique_ptr<InputTextDialog> myInputBox;
 
+    // True when the ctor was given h==0, i.e. the widget sizes its own height
+    // to the content (the M6532 RAM view); false when a fixed height is given
+    // (the cartridge RAM view inside a tab)
+    bool myAutoHeight{false};
+
     StaticTextWidget* myRamStart{nullptr};
     std::array<StaticTextWidget*, 16> myRamLabels{nullptr};
+
+    // Promoted from anonymous locals so the reflow can reposition them
+    std::array<StaticTextWidget*, 16> myColHeaders{nullptr};  // column headers 0..F
+    StaticTextWidget* myLabelText{nullptr};  // "Label"
+    StaticTextWidget* myDecPrefix{nullptr};  // "#"
+    StaticTextWidget* myBinPrefix{nullptr};  // "%"
 
     DataGridRamWidget* myRamGrid{nullptr};
     DataGridWidget* myHexValue{nullptr};

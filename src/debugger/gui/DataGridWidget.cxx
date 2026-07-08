@@ -697,6 +697,15 @@ int DataGridWidget::getWidth() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void DataGridWidget::setPos(const Common::Point& pos)
+{
+  Widget::setPos(pos);
+  // Keep the (optional) scrollbar flush against the grid's right edge
+  if(_scrollBar)
+    _scrollBar->setPos(_x + _w, _y);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DataGridWidget::setCrossed(bool enable)
 {
   if(_crossGrid != enable)

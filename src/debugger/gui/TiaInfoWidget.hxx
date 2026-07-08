@@ -20,6 +20,7 @@
 
 class GuiObject;
 class EditTextWidget;
+class StaticTextWidget;
 class CheckboxWidget;
 
 #include "Widget.hxx"
@@ -35,7 +36,17 @@ class TiaInfoWidget : public Widget, public CommandSender
 
     void loadConfig() override;
 
+    // Reflow entry point for the resizable debugger: move the widget and
+    // re-lay-out the two columns of fields for the available width, choosing
+    // the short or long label variants to fit (recomputes _w/_h)
+    void setArea(int x, int y, int w, int h) override;
+
     void handleMouseDown(int x, int y, MouseButton b, int clickCount) override;
+
+  private:
+    // Build the layout tree from the current font and lay the fields out within
+    // the given available width; shared by the ctor and setArea()
+    void reflow(int max_w);
 
   private:
     EditTextWidget* myFrameCount{nullptr};
@@ -50,6 +61,19 @@ class TiaInfoWidget : public Widget, public CommandSender
     EditTextWidget* myScanlineCycles{nullptr};
     EditTextWidget* myPixelPosition{nullptr};
     EditTextWidget* myColorClocks{nullptr};
+
+    // Labels promoted from anonymous locals so the reflow can switch each one
+    // between its short and long text and reposition it
+    StaticTextWidget* myFrameCyclesLabel{nullptr};
+    StaticTextWidget* myWSyncCyclesLabel{nullptr};
+    StaticTextWidget* myTimerCyclesLabel{nullptr};
+    StaticTextWidget* myTotalLabel{nullptr};
+    StaticTextWidget* myDeltaLabel{nullptr};
+    StaticTextWidget* myFrameCountLabel{nullptr};
+    StaticTextWidget* myScanlineLabel{nullptr};
+    StaticTextWidget* myScanCycleLabel{nullptr};
+    StaticTextWidget* myPixelPosLabel{nullptr};
+    StaticTextWidget* myColorClockLabel{nullptr};
 
   protected:
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;

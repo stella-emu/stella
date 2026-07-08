@@ -25,6 +25,7 @@
 #include "DataGridWidget.hxx"
 #include "EditTextWidget.hxx"
 #include "ToggleBitWidget.hxx"
+#include "Layout.hxx"
 
 #include "CpuWidget.hxx"
 
@@ -34,98 +35,72 @@ CpuWidget::CpuWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& n
   : Widget(boss, lfont, x, y, 16, 16),
     CommandSender(boss)
 {
-  const int fontWidth  = lfont.getMaxCharWidth(),
-            fontHeight = lfont.getFontHeight(),
-            lineHeight = lfont.getLineHeight();
-  constexpr int VGAP = 2;
-  const int lwidth = 4 * fontWidth;
+  const int fontHeight = lfont.getFontHeight();
+  const std::array<string, 4> labels = { "SP", "A", "X", "Y" };
 
-  // Create a 1x1 grid with label for the PC register
-  int xpos = x, ypos = y;
-  new StaticTextWidget(boss, lfont, xpos, ypos + 2, lwidth-2, fontHeight,
-                       "PC ", TextAlign::Left);
-  myPCGrid =
-    new DataGridWidget(boss, nfont, xpos + lwidth, ypos, 1, 1, 4, 16, Common::Base::Fmt::_16);
+  // Create every widget at a placeholder position/size; reflow() positions and
+  // sizes them for the available width
+  // NOLINTBEGIN(cppcoreguidelines-prefer-member-initializer)
+  myPCText = new StaticTextWidget(boss, lfont, 0, 0, "PC ", TextAlign::Left);
+  myPCGrid = new DataGridWidget(boss, nfont, 0, 0, 1, 1, 4, 16, Common::Base::Fmt::_16);
   myPCGrid->setHelpAnchor("CPURegisters", true);
   myPCGrid->setTarget(this);
   myPCGrid->setID(kPCRegID);
   addFocusWidget(myPCGrid);
 
-  // Create a read-only textbox containing the current PC label
-  xpos += lwidth + myPCGrid->getWidth() + 10;
-  myPCLabel = new EditTextWidget(boss, nfont, xpos, ypos, (max_w - xpos + x) - 10,
-                                 fontHeight+1, "");
+  // Read-only textbox containing the current PC label
+  myPCLabel = new EditTextWidget(boss, nfont, 0, 0, 1, fontHeight + 1, "");
   myPCLabel->setEditable(false, true);
 
-  // Create a 1x4 grid with labels for the other CPU registers
-  xpos = x + lwidth;  ypos = myPCGrid->getBottom() + VGAP;
-  myCpuGrid =
-    new DataGridWidget(boss, nfont, xpos, ypos, 1, 4, 2, 8, Common::Base::Fmt::_16);
+  // 1x4 grid with labels for the other CPU registers
+  myCpuGrid = new DataGridWidget(boss, nfont, 0, 0, 1, 4, 2, 8, Common::Base::Fmt::_16);
   myCpuGrid->setHelpAnchor("CPURegisters", true);
   myCpuGrid->setTarget(this);
   myCpuGrid->setID(kCpuRegID);
   addFocusWidget(myCpuGrid);
 
-  // Create a 1x4 grid with decimal and binary values for the other CPU registers
-  xpos = myPCGrid->getRight() + 10;
-  myCpuGridDecValue =
-    new DataGridWidget(boss, nfont, xpos, ypos, 1, 4, 3, 8, Common::Base::Fmt::_10);
+  // 1x4 grids with the decimal and binary values for those registers
+  myCpuGridDecValue = new DataGridWidget(boss, nfont, 0, 0, 1, 4, 3, 8, Common::Base::Fmt::_10);
   myCpuGridDecValue->setHelpAnchor("CPURegisters", true);
   myCpuGridDecValue->setTarget(this);
   myCpuGridDecValue->setID(kCpuRegDecID);
   addFocusWidget(myCpuGridDecValue);
 
-  xpos = myCpuGridDecValue->getRight() + fontWidth * 2;
-  myCpuGridBinValue =
-    new DataGridWidget(boss, nfont, xpos, ypos, 1, 4, 8, 8, Common::Base::Fmt::_2);
+  myCpuGridBinValue = new DataGridWidget(boss, nfont, 0, 0, 1, 4, 8, 8, Common::Base::Fmt::_2);
   myCpuGridBinValue->setHelpAnchor("CPURegisters", true);
   myCpuGridBinValue->setTarget(this);
   myCpuGridBinValue->setID(kCpuRegBinID);
   addFocusWidget(myCpuGridBinValue);
 
-  // Calculate real dimensions (_y will be calculated at the end)
-  _w = lwidth + myPCGrid->getWidth() + myPCLabel->getWidth() + 20;
-
-  // Create labels showing the source of data for SP/A/X/Y registers
-  const std::array<string, 4> labels = { "SP", "A", "X", "Y" };
-  xpos += myCpuGridBinValue->getWidth() + 20;
-  const int src_w = (max_w - xpos + x) - 10;
-  for(int i = 0, src_y = ypos; i < 4; ++i)
+  // Labels showing the source of data for the SP/A/X/Y registers
+  for(int i = 0; i < 4; ++i)
   {
-    myCpuDataSrc[i] = new EditTextWidget(boss, nfont, xpos, src_y, src_w, fontHeight + 1);
+    myCpuDataSrc[i] = new EditTextWidget(boss, nfont, 0, 0, 1, fontHeight + 1);
     myCpuDataSrc[i]->setToolTip("Source label of last read for " + labels[i] + ".");
     myCpuDataSrc[i]->setEditable(false, true);
-    src_y += fontHeight + 2;
   }
 
-  // Add labels for other CPU registers
-  xpos = x;
+  // Row labels for the other CPU registers and the '#'/'%' value prefixes
   for(int row = 0; row < 4; ++row)
   {
-    new StaticTextWidget(boss, lfont, xpos, ypos + row*lineHeight + 2,
-                         lwidth-2, fontHeight,
-                         labels[row], TextAlign::Left);
+    myRegLabels[row] = new StaticTextWidget(boss, lfont, 0, 0, labels[row], TextAlign::Left);
+    myDecPrefix[row] = new StaticTextWidget(boss, lfont, 0, 0, "#");
+    myBinPrefix[row] = new StaticTextWidget(boss, lfont, 0, 0, "%");
   }
 
-  // Add prefixes for decimal and binary values
-  for(int row = 0; row < 4; ++row)
-  {
-    new StaticTextWidget(boss, lfont, myCpuGridDecValue->getLeft() - fontWidth,
-                         ypos + row * lineHeight + 2,
-                         fontWidth, fontHeight, "#");
-    new StaticTextWidget(boss, lfont, myCpuGridBinValue->getLeft() - fontWidth,
-                         ypos + row * lineHeight + 2,
-                         fontWidth, fontHeight, "%");
-  }
-
-  // Create a bitfield widget for changing the processor status
-  xpos = x;  ypos = myCpuGrid->getBottom() + VGAP;
-  new StaticTextWidget(boss, lfont, xpos, ypos + 2, lwidth-2, fontHeight,
-                       "PS ", TextAlign::Left);
-  myPSRegister = new ToggleBitWidget(boss, nfont, xpos+lwidth, ypos, 8, 1);
+  // Bitfield widget for changing the processor status
+  myPSText = new StaticTextWidget(boss, lfont, 0, 0, "PS ", TextAlign::Left);
+  myPSRegister = new ToggleBitWidget(boss, nfont, 0, 0, 8, 1);
   myPSRegister->setHelpAnchor("CPURegisters", true);
   myPSRegister->setTarget(this);
   addFocusWidget(myPSRegister);
+
+  // Last write destination address
+  myDestText = new StaticTextWidget(boss, lfont, 0, 0, "Dest");
+  myCpuDataDest = new EditTextWidget(boss, nfont, 0, 0, 1, fontHeight + 1);
+  myCpuDataDest->setToolTip("Destination label of last write.");
+  myCpuDataDest->setEditable(false, true);
+  // NOLINTEND(cppcoreguidelines-prefer-member-initializer)
 
   // Set the strings to be used in the PSRegister
   // We only do this once because it's the state that changes, not the strings
@@ -139,16 +114,91 @@ CpuWidget::CpuWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& n
   const StringList on(onstr.begin(), onstr.end());
   myPSRegister->setList(off, on);
 
-  // Last write destination address
-  xpos = myCpuDataSrc[0]->getLeft();
-  new StaticTextWidget(boss, lfont, xpos - fontWidth * 4.5, ypos + 2, "Dest");
-  myCpuDataDest = new EditTextWidget(boss, nfont, xpos, ypos, src_w, fontHeight + 1);
-  myCpuDataDest->setToolTip("Destination label of last write.");
-  myCpuDataDest->setEditable(false, true);
-
   setHelpAnchor("DataOpButtons", true);
 
-  _h = ypos + myPSRegister->getHeight() - y;
+  reflow(max_w);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void CpuWidget::setArea(int x, int y, int w, int h)
+{
+  setPos(x, y);
+  reflow(w);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void CpuWidget::reflow(int max_w)
+{
+  using GUI::BoxLayout;
+  using GUI::anchoredItem;
+  using GUI::vCentered;
+  using Dir = BoxLayout::Dir;
+
+  const int fontWidth  = _font.getMaxCharWidth(),
+            lineHeight = _font.getLineHeight();
+  constexpr int VGAP = 2;
+  const int lwidth = 4 * fontWidth;
+  const int x = _x, y = _y;
+
+  const int pcGridW  = myPCGrid->getWidth(),
+            hexGridW = myCpuGrid->getWidth(),
+            decGridW = myCpuGridDecValue->getWidth(),
+            binGridW = myCpuGridBinValue->getWidth();
+
+  // PC row: "PC" label, PC grid, then the current-PC label filling the rest
+  BoxLayout pcRow(Dir::Horizontal);
+  pcRow.addFixed(anchoredItem(myPCText), lwidth);
+  pcRow.addFixed(anchoredItem(myPCGrid), pcGridW);
+  pcRow.addSpace(10);
+  pcRow.addStretch(vCentered(myPCLabel, myPCLabel->getHeight()));
+  pcRow.addSpace(10);
+  pcRow.doLayout(x, y, max_w, myPCGrid->getHeight());
+
+  // Register block: label | hex | # dec | % bin | data source, the last of
+  // which stretches to fill the remaining width.  Each per-row column is a
+  // 4-row vertical box that lines up with the (4-row) data grids beside it.
+  const auto column = [&](const std::array<StaticTextWidget*, 4>& cells) {
+    auto col = std::make_unique<BoxLayout>(Dir::Vertical);
+    for(auto* w: cells)
+      col->addFixed(anchoredItem(w), lineHeight);
+    return col;
+  };
+  auto srcCol = std::make_unique<BoxLayout>(Dir::Vertical);
+  for(auto* w: myCpuDataSrc)
+    srcCol->addFixed(vCentered(w, w->getHeight()), lineHeight);
+
+  const int regY = myPCGrid->getBottom() + VGAP;
+  BoxLayout regRow(Dir::Horizontal);
+  regRow.addFixed(column(myRegLabels), lwidth);
+  regRow.addFixed(anchoredItem(myCpuGrid), hexGridW);
+  regRow.addSpace(pcGridW - hexGridW + 10 - fontWidth);
+  regRow.addFixed(column(myDecPrefix), fontWidth);
+  regRow.addFixed(anchoredItem(myCpuGridDecValue), decGridW);
+  regRow.addSpace(fontWidth);
+  regRow.addFixed(column(myBinPrefix), fontWidth);
+  regRow.addFixed(anchoredItem(myCpuGridBinValue), binGridW);
+  regRow.addSpace(20);
+  regRow.addStretch(std::move(srcCol));
+  regRow.addSpace(10);
+  regRow.doLayout(x, regY, max_w, myCpuGrid->getHeight());
+
+  // PS row: "PS" label and the processor-status toggle
+  const int psY = myCpuGrid->getBottom() + VGAP;
+  BoxLayout psRow(Dir::Horizontal);
+  psRow.addFixed(anchoredItem(myPSText), lwidth);
+  psRow.addFixed(anchoredItem(myPSRegister), myPSRegister->getWidth());
+  psRow.doLayout(x, psY, max_w, myPSRegister->getHeight());
+
+  // The "Dest" label and destination edit align under the data-source column
+  // resolved above (a cross-reference the box layout does not express)
+  const int srcX = myCpuDataSrc[0]->getLeft(),
+            srcW = myCpuDataSrc[0]->getWidth();
+  myDestText->setPos(srcX - fontWidth * 4.5, psY + 2);
+  myCpuDataDest->setPos(srcX, psY);
+  myCpuDataDest->setWidth(srcW);
+
+  _w = max_w;
+  _h = myPSRegister->getBottom() - y;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

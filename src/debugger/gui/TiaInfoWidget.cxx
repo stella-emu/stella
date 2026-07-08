@@ -24,6 +24,7 @@
 #include "Widget.hxx"
 #include "EditTextWidget.hxx"
 #include "GuiObject.hxx"
+#include "Layout.hxx"
 
 #include "TiaInfoWidget.hxx"
 
@@ -34,110 +35,167 @@ TiaInfoWidget::TiaInfoWidget(GuiObject* boss, const GUI::Font& lfont,
   : Widget(boss, lfont, x, y, 16, 16),
     CommandSender(boss)
 {
-  const int VGAP = lfont.getLineHeight() / 4;
-  constexpr int VBORDER = 5 + 1;
-  const int COLUMN_GAP = _fontWidth * 1.25;
-  const bool longstr = lfont.getStringWidth("Frame Cycls12345") + _fontWidth * 0.5
-    + COLUMN_GAP + lfont.getStringWidth("Scanline262262")
-    + EditTextWidget::calcWidth(lfont) * 3 <= max_w;
   const int lineHeight = lfont.getLineHeight();
-  int lwidth = lfont.getStringWidth(longstr ? "Frame Cycls" : "F. Cycls");
-  int lwidth8 = lwidth - lfont.getMaxCharWidth() * 3;
-  int lwidthR = lfont.getStringWidth(longstr ? "Frame Cnt." : "Frame   ");
-  int fwidth = EditTextWidget::calcWidth(lfont, 5);
-  const int twidth = EditTextWidget::calcWidth(lfont, 8);
-  const int LGAP = (max_w - lwidth - EditTextWidget::calcWidth(lfont, 5)
-    - lwidthR - EditTextWidget::calcWidth(lfont, 5)) / 4;
 
-  lwidth += LGAP;
-  lwidth8 += LGAP;
-  lwidthR += LGAP;
-
-  // Left column
-  // Left: Frame Cycle
-  int xpos = x, ypos = y + VBORDER;
-  new StaticTextWidget(boss, lfont, xpos, ypos + 1, longstr ? "Frame Cycls" : "F. Cycls");
-  myFrameCycles = new EditTextWidget(boss, nfont, xpos + lwidth, ypos - 1, fwidth, lineHeight);
+  // Create every field at a placeholder position/size; reflow() picks the
+  // short/long label text and positions and sizes everything for the width
+  // NOLINTBEGIN(cppcoreguidelines-prefer-member-initializer)
+  myFrameCyclesLabel = new StaticTextWidget(boss, lfont, 0, 0, "Frame Cycles");
+  myFrameCycles = new EditTextWidget(boss, nfont, 0, 0, 1, lineHeight);
   myFrameCycles->setToolTip("CPU cycles executed this frame.");
   myFrameCycles->setEditable(false, true);
 
-  // Left: WSync Cycles
-  ypos += lineHeight + VGAP;
-  new StaticTextWidget(boss, lfont, xpos, ypos + 1, longstr ? "WSync Cycls" : "WSync C.");
-  myWSyncCylces = new EditTextWidget(boss, nfont, xpos + lwidth, ypos - 1, fwidth, lineHeight);
+  myWSyncCyclesLabel = new StaticTextWidget(boss, lfont, 0, 0, "WSync Cycles");
+  myWSyncCylces = new EditTextWidget(boss, nfont, 0, 0, 1, lineHeight);
   myWSyncCylces->setToolTip("CPU cycles used for WSYNC this frame.");
   myWSyncCylces->setEditable(false, true);
 
-  // Left: Timer Cycles
-  ypos += lineHeight + VGAP;
-  new StaticTextWidget(boss, lfont, xpos, ypos + 1, longstr ? "Timer Cycls" : "Timer C.");
-  myTimerCylces = new EditTextWidget(boss, nfont, xpos + lwidth, ypos - 1, fwidth, lineHeight);
+  myTimerCyclesLabel = new StaticTextWidget(boss, lfont, 0, 0, "Timer Cycles");
+  myTimerCylces = new EditTextWidget(boss, nfont, 0, 0, 1, lineHeight);
   myTimerCylces->setToolTip("CPU cycles roughly used for INTIM reads this frame.");
   myTimerCylces->setEditable(false, true);
 
-  // Left: Total Cycles
-  ypos += lineHeight + VGAP;
-  new StaticTextWidget(boss, lfont, xpos, ypos + 1, "Total");
-  myTotalCycles = new EditTextWidget(boss, nfont, xpos + lwidth8, ypos - 1, twidth, lineHeight);
+  myTotalLabel = new StaticTextWidget(boss, lfont, 0, 0, "Total");
+  myTotalCycles = new EditTextWidget(boss, nfont, 0, 0, 1, lineHeight);
   myTotalCycles->setEditable(false, true);
 
-  // Left: Delta Cycles
-  ypos += lineHeight + VGAP;
-  new StaticTextWidget(boss, lfont, xpos, ypos + 1, "Delta");
-  myDeltaCycles = new EditTextWidget(boss, nfont, xpos + lwidth8, ypos - 1, twidth, lineHeight);
+  myDeltaLabel = new StaticTextWidget(boss, lfont, 0, 0, "Delta");
+  myDeltaCycles = new EditTextWidget(boss, nfont, 0, 0, 1, lineHeight);
   myDeltaCycles->setToolTip("CPU cycles executed since last debug break.");
   myDeltaCycles->setEditable(false, true);
 
-  // Right column
-  xpos = x + max_w - lwidthR - EditTextWidget::calcWidth(lfont, 5); ypos = y + VBORDER;
-
-  // Right: Frame Count
-  new StaticTextWidget(boss, lfont, xpos, ypos + 1, longstr ? "Frame Cnt." : "Frame");
-  myFrameCount = new EditTextWidget(boss, nfont, xpos + lwidthR, ypos - 1, fwidth, lineHeight);
+  myFrameCountLabel = new StaticTextWidget(boss, lfont, 0, 0, "Frame Cnt.");
+  myFrameCount = new EditTextWidget(boss, nfont, 0, 0, 1, lineHeight);
   myFrameCount->setToolTip("Total number of frames executed this session.");
   myFrameCount->setEditable(false, true);
 
-  lwidth = lfont.getStringWidth(longstr ? "Color Clock " : "Pixel Pos ") + LGAP;
-  fwidth = EditTextWidget::calcWidth(lfont, 3);
-
-  // Right: Scanline
-  ypos += lineHeight + VGAP;
-  new StaticTextWidget(boss, lfont, xpos, ypos + 1, longstr ? "Scanline" : "Scn Ln");
-  myScanlineCountLast = new EditTextWidget(boss, nfont, xpos + lwidth, ypos - 1, fwidth, lineHeight);
+  myScanlineLabel = new StaticTextWidget(boss, lfont, 0, 0, "Scanline");
+  myScanlineCountLast = new EditTextWidget(boss, nfont, 0, 0, 1, lineHeight);
   myScanlineCountLast->setToolTip("Number of scanlines of last frame.");
   myScanlineCountLast->setEditable(false, true);
-  myScanlineCount = new EditTextWidget(boss, nfont,
-                                       xpos + lwidth - myScanlineCountLast->getWidth() - 2, ypos - 1,
-                                       fwidth, lineHeight);
+  myScanlineCount = new EditTextWidget(boss, nfont, 0, 0, 1, lineHeight);
   myScanlineCount->setToolTip("Current scanline of this frame.");
   myScanlineCount->setEditable(false, true);
 
-  // Right: Scan Cycle
-  ypos += lineHeight + VGAP;
-  new StaticTextWidget(boss, lfont, xpos, ypos + 1, longstr ? "Scan Cycle" : "Scn Cycle");
-  myScanlineCycles = new EditTextWidget(boss, nfont, xpos + lwidth, ypos - 1, fwidth, lineHeight);
+  myScanCycleLabel = new StaticTextWidget(boss, lfont, 0, 0, "Scan Cycle");
+  myScanlineCycles = new EditTextWidget(boss, nfont, 0, 0, 1, lineHeight);
   myScanlineCycles->setToolTip("CPU cycles in current scanline.");
   myScanlineCycles->setEditable(false, true);
 
-  // Right: Pixel Pos
-  ypos += lineHeight + VGAP;
-  new StaticTextWidget(boss, lfont, xpos, ypos + 1, "Pixel Pos");
-  myPixelPosition = new EditTextWidget(boss, nfont, xpos + lwidth, ypos - 1, fwidth, lineHeight);
+  myPixelPosLabel = new StaticTextWidget(boss, lfont, 0, 0, "Pixel Pos");
+  myPixelPosition = new EditTextWidget(boss, nfont, 0, 0, 1, lineHeight);
   myPixelPosition->setToolTip("Pixel position in current scanline.");
   myPixelPosition->setEditable(false, true);
 
-  // Right: Color Clock
-  ypos += lineHeight + VGAP;
-  new StaticTextWidget(boss, lfont, xpos, ypos + 1, longstr ? "Color Clock" : "Color Clk");
-  myColorClocks = new EditTextWidget(boss, nfont, xpos + lwidth, ypos - 1, fwidth, lineHeight);
+  myColorClockLabel = new StaticTextWidget(boss, lfont, 0, 0, "Color Clock");
+  myColorClocks = new EditTextWidget(boss, nfont, 0, 0, 1, lineHeight);
   myColorClocks->setToolTip("Color clocks in current scanline.");
   myColorClocks->setEditable(false, true);
+  // NOLINTEND(cppcoreguidelines-prefer-member-initializer)
 
-  // Calculate actual dimensions
-  _w = myColorClocks->getRight() - x;
-  _h = myColorClocks->getBottom();
+  reflow(max_w);
 
   //setHelpAnchor("TIAInfo", true); // TODO: does not work due to missing focus
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TiaInfoWidget::setArea(int x, int y, int w, int h)
+{
+  setPos(x, y);
+  reflow(w);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TiaInfoWidget::reflow(int max_w)
+{
+  using GUI::BoxLayout;
+  using GUI::anchoredItem;
+  using GUI::labeledRow;
+  using Dir = BoxLayout::Dir;
+
+  const GUI::Font& lfont = _font;
+  const int VGAP = lfont.getLineHeight() / 4;
+  constexpr int VBORDER = 5 + 1;
+  const int COLUMN_GAP = _fontWidth * 1.25;
+  const bool longstr = lfont.getStringWidth("Frame Cycles12345") + _fontWidth * 0.5
+    + COLUMN_GAP + lfont.getStringWidth("Scanline262262")
+    + EditTextWidget::calcWidth(lfont) * 3 <= max_w;
+  const int lineHeight = lfont.getLineHeight();
+  int lwidth  = lfont.getStringWidth(longstr ? "Frame Cycles" : "F. Cycls");
+  int lwidth8 = lwidth - lfont.getMaxCharWidth() * 3;
+  int lwidthR = lfont.getStringWidth(longstr ? "Frame Cnt." : "Frame   ");
+  const int fwidth5 = EditTextWidget::calcWidth(lfont, 5);
+  const int fwidth3 = EditTextWidget::calcWidth(lfont, 3);
+  const int twidth  = EditTextWidget::calcWidth(lfont, 8);
+  const int LGAP = (max_w - lwidth - fwidth5 - lwidthR - fwidth5) / 4;
+
+  lwidth  += LGAP;
+  lwidth8 += LGAP;
+  lwidthR += LGAP;
+
+  // Set each label's text (short or long) and its natural width, and each value
+  // field's font-derived width, so the anchored layout items below pick up the
+  // right sizes (anchored items keep their own size and are only repositioned)
+  const auto setText = [&](StaticTextWidget* w, string_view s) {
+    w->setLabel(s);
+    w->setWidth(lfont.getStringWidth(s));
+  };
+  setText(myFrameCyclesLabel, longstr ? "Frame Cycles" : "F. Cycls");
+  setText(myWSyncCyclesLabel, longstr ? "WSync Cycles" : "WSync C.");
+  setText(myTimerCyclesLabel, longstr ? "Timer Cycles" : "Timer C.");
+  setText(myTotalLabel, "Total");
+  setText(myDeltaLabel, "Delta");
+  setText(myFrameCountLabel, longstr ? "Frame Cnt." : "Frame");
+  setText(myScanlineLabel, longstr ? "Scanline" : "Scn Ln");
+  setText(myScanCycleLabel, longstr ? "Scan Cycle" : "Scn Cycle");
+  setText(myPixelPosLabel, "Pixel Pos");
+  setText(myColorClockLabel, longstr ? "Color Clock" : "Color Clk");
+
+  myFrameCycles->setWidth(fwidth5);
+  myWSyncCylces->setWidth(fwidth5);
+  myTimerCylces->setWidth(fwidth5);
+  myTotalCycles->setWidth(twidth);
+  myDeltaCycles->setWidth(twidth);
+  myFrameCount->setWidth(fwidth5);
+  myScanlineCount->setWidth(fwidth3);
+  myScanlineCountLast->setWidth(fwidth3);
+  myScanlineCycles->setWidth(fwidth3);
+  myPixelPosition->setWidth(fwidth3);
+  myColorClocks->setWidth(fwidth3);
+
+  // Right column origin and its lower label-column width
+  const int rightX = _x + max_w - lwidthR - fwidth5;
+  const int lwidth2 = lfont.getStringWidth(longstr ? "Color Clock " : "Pixel Pos ") + LGAP;
+  const int colH = VBORDER * 2 + 5 * lineHeight + 4 * VGAP;
+
+  // Left column: label + value form rows (Total/Delta use a shorter label
+  // column so their wider 8-digit value ends flush with the 5-digit ones)
+  BoxLayout left(Dir::Vertical, VGAP, 0, VBORDER);
+  left.addFixed(labeledRow(myFrameCyclesLabel, myFrameCycles, lwidth), lineHeight);
+  left.addFixed(labeledRow(myWSyncCyclesLabel, myWSyncCylces, lwidth), lineHeight);
+  left.addFixed(labeledRow(myTimerCyclesLabel, myTimerCylces, lwidth), lineHeight);
+  left.addFixed(labeledRow(myTotalLabel, myTotalCycles, lwidth8), lineHeight);
+  left.addFixed(labeledRow(myDeltaLabel, myDeltaCycles, lwidth8), lineHeight);
+  left.doLayout(_x, _y, rightX - _x, colH);
+
+  // Right column
+  BoxLayout right(Dir::Vertical, VGAP, 0, VBORDER);
+  right.addFixed(labeledRow(myFrameCountLabel, myFrameCount, lwidthR), lineHeight);
+  // The scanline row shows the current and last-frame counts side by side
+  auto scanRow = std::make_unique<BoxLayout>(Dir::Horizontal);
+  scanRow->addFixed(anchoredItem(myScanlineLabel), lwidth2 - fwidth3 - 2);
+  scanRow->addFixed(anchoredItem(myScanlineCount), fwidth3);
+  scanRow->addSpace(2);
+  scanRow->addFixed(anchoredItem(myScanlineCountLast), fwidth3);
+  right.addFixed(std::move(scanRow), lineHeight);
+  right.addFixed(labeledRow(myScanCycleLabel, myScanlineCycles, lwidth2), lineHeight);
+  right.addFixed(labeledRow(myPixelPosLabel, myPixelPosition, lwidth2), lineHeight);
+  right.addFixed(labeledRow(myColorClockLabel, myColorClocks, lwidth2), lineHeight);
+  right.doLayout(rightX, _y, max_w - (rightX - _x), colH);
+
+  // Final dimensions (the bottom-right field is the last right-column row)
+  _w = myColorClocks->getRight() - _x;
+  _h = myColorClocks->getBottom();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

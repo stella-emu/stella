@@ -38,8 +38,17 @@ class CpuWidget : public Widget, public CommandSender
     void setOpsWidget(DataGridOpsWidget* w);
     void loadConfig() override;
 
+    // Reflow entry point for the resizable debugger: move the widget and lay
+    // the registers/labels out for the available width (recomputes _w/_h)
+    void setArea(int x, int y, int w, int h) override;
+
   protected:
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+
+  private:
+    // Build the layout tree from the current font and position/size the
+    // registers within the given available width; shared by ctor and setArea()
+    void reflow(int max_w);
 
   private:
     // ID's for the various widgets
@@ -77,6 +86,14 @@ class CpuWidget : public Widget, public CommandSender
     EditTextWidget*  myPCLabel{nullptr};
     std::array<EditTextWidget*, 4> myCpuDataSrc{nullptr};
     EditTextWidget*  myCpuDataDest{nullptr};
+
+    // Labels promoted from anonymous locals so the reflow can reposition them
+    StaticTextWidget* myPCText{nullptr};
+    StaticTextWidget* myPSText{nullptr};
+    StaticTextWidget* myDestText{nullptr};
+    std::array<StaticTextWidget*, 4> myRegLabels{nullptr};  // SP/A/X/Y
+    std::array<StaticTextWidget*, 4> myDecPrefix{nullptr};  // '#'
+    std::array<StaticTextWidget*, 4> myBinPrefix{nullptr};  // '%'
 
   private:
     // Following constructors and assignment operators not supported

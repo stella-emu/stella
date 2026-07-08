@@ -42,17 +42,10 @@ TiaZoomWidget::TiaZoomWidget(GuiObject* boss, const GUI::Font& font,
            Widget::FLAG_RETAIN_FOCUS | Widget::FLAG_TRACK_MOUSE;
   _bgcolor = _bgcolorhi = kDlgColor;
 
-  // Use all available space, up to the maximum bounds of the TIA image
-  _w = std::min(w, 320);
-  _h = std::min(h, static_cast<int>(FrameManager::Metrics::maxHeight));
-
   addFocusWidget(this);
 
-  // Initialize positions
-  // NOLINTBEGIN(cppcoreguidelines-prefer-member-initializer)
-  myNumCols = (_w - 4) / myZoomLevel;  // must initialize after _w
-  myNumRows = (_h - 4) / myZoomLevel;  // must initialize after _h
-  // NOLINTEND(cppcoreguidelines-prefer-member-initializer)
+  // Size the view and grid from the available space
+  recomputeGrid(w, h);
 
   // Create context menu for zoom levels
   VariantList l;
@@ -80,6 +73,28 @@ void TiaZoomWidget::setPos(int x, int y)
   myOffY = y - (myNumRows >> 1);
 
   recalc();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TiaZoomWidget::setArea(int x, int y, int w, int h)
+{
+  // Our setPos(int,int) override is hijacked to re-centre the zoom on a TIA
+  // pixel, so move the widget itself via the geometry setPos explicitly
+  Widget::setPos(Common::Point(x, y));
+  recomputeGrid(w, h);
+  recalc();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TiaZoomWidget::recomputeGrid(int w, int h)
+{
+  // Use all available space, up to the maximum bounds of the TIA image; the
+  // zoom view need not preserve the TIA aspect ratio
+  _w = std::min(w, 320);
+  _h = std::min(h, static_cast<int>(FrameManager::Metrics::maxHeight));
+
+  myNumCols = (_w - 4) / myZoomLevel;
+  myNumRows = (_h - 4) / myZoomLevel;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
