@@ -469,11 +469,11 @@ void TIA::bindToControllers()
       switch (pin) {
         using enum Controller::AnalogPin;
         case Five:
-          updateAnalogReadout(1);
+          updateAnalogReadout(0);
           break;
 
         case Nine:
-          updateAnalogReadout(0);
+          updateAnalogReadout(1);
           break;
 
         default:
@@ -489,11 +489,11 @@ void TIA::bindToControllers()
       switch (pin) {
         using enum Controller::AnalogPin;
         case Five:
-          updateAnalogReadout(3);
+          updateAnalogReadout(2);
           break;
 
         case Nine:
-          updateAnalogReadout(2);
+          updateAnalogReadout(3);
           break;
 
         default:
@@ -2279,19 +2279,19 @@ void TIA::updateAnalogReadout(uInt8 idx)
   AnalogReadout::Connection connection{};
   switch (idx) {
     case 0:
-      connection = myConsole.leftController().read(Controller::AnalogPin::Nine);
-      break;
-
-    case 1:
       connection = myConsole.leftController().read(Controller::AnalogPin::Five);
       break;
 
+    case 1:
+      connection = myConsole.leftController().read(Controller::AnalogPin::Nine);
+      break;
+
     case 2:
-      connection = myConsole.rightController().read(Controller::AnalogPin::Nine);
+      connection = myConsole.rightController().read(Controller::AnalogPin::Five);
       break;
 
     case 3:
-      connection = myConsole.rightController().read(Controller::AnalogPin::Five);
+      connection = myConsole.rightController().read(Controller::AnalogPin::Nine);
       break;
 
     default:

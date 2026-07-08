@@ -27,8 +27,8 @@ Paddles::Paddles(Jack jack, const Event& event, const System& system,
 {
   // We must start with a physical valid resistance (e.g. 0);
   // see commit 38b452e1a047a0dca38c5bcce7c271d40f76736e for more information
-  setPin(AnalogPin::Five, AnalogReadout::connectToVcc());
   setPin(AnalogPin::Nine, AnalogReadout::connectToVcc());
+  setPin(AnalogPin::Five, AnalogReadout::connectToVcc());
 
   // The following logic reflects that mapping paddles to different
   // devices can be extremely complex
@@ -184,7 +184,7 @@ void Paddles::updateA()
     updateMouseA(fire, n);
     updateDigitalAxesA();
 
-    setPin(AnalogPin::Nine, AnalogReadout::connectToVcc(
+    setPin(AnalogPin::Five, AnalogReadout::connectToVcc(
         AnalogReadout::MAX_POT_RESISTANCE * myPosition[0]));
   }
 
@@ -259,7 +259,7 @@ bool Paddles::updateAnalogAxesA()
   if(std::abs(myLastAxisX - sa_xaxis) > 10)
   {
     conditionAxisInput(myLastAxisX, sa_xaxis);
-    setPin(AnalogPin::Nine, AnalogReadout::connectToVcc(
+    setPin(AnalogPin::Five, AnalogReadout::connectToVcc(
         AnalogReadout::MAX_POT_RESISTANCE * BSPF::clamp(
             (ANALOG_MAX_VALUE - (sa_xaxis * SENSITIVITY + XCENTER)) / float{ANALOG_RANGE},
             0.F, 1.F)));
@@ -346,7 +346,7 @@ void Paddles::updateB()
     updateMouseB(fire, n);
     updateDigitalAxesB();
 
-    setPin(AnalogPin::Five, AnalogReadout::connectToVcc(
+    setPin(AnalogPin::Nine, AnalogReadout::connectToVcc(
         AnalogReadout::MAX_POT_RESISTANCE * myPosition[1]));
   }
 
@@ -363,7 +363,7 @@ bool Paddles::updateAnalogAxesB()
   if(std::abs(myLastAxisY - sa_yaxis) > 10)
   {
     conditionAxisInput(myLastAxisY, sa_yaxis);
-    setPin(AnalogPin::Five, AnalogReadout::connectToVcc(
+    setPin(AnalogPin::Nine, AnalogReadout::connectToVcc(
         AnalogReadout::MAX_POT_RESISTANCE * BSPF::clamp(
             (ANALOG_MAX_VALUE - (sa_yaxis * SENSITIVITY + YCENTER)) / float{ANALOG_RANGE},
             0.F, 1.F)));

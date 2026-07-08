@@ -124,11 +124,11 @@ class CompuMate
             myHandler{handler}
         {
           if(jack == Controller::Jack::Left) {
-            setPin(AnalogPin::Nine, AnalogReadout::connectToGround());
-            setPin(AnalogPin::Five, AnalogReadout::connectToVcc());
-          } else {
-            setPin(AnalogPin::Nine, AnalogReadout::connectToVcc());
             setPin(AnalogPin::Five, AnalogReadout::connectToGround());
+            setPin(AnalogPin::Nine, AnalogReadout::connectToVcc());
+          } else {
+            setPin(AnalogPin::Five, AnalogReadout::connectToVcc());
+            setPin(AnalogPin::Nine, AnalogReadout::connectToGround());
           }
         }
         ~CMControl() override = default;
