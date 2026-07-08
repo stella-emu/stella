@@ -36,6 +36,7 @@ RomListWidget::RomListWidget(GuiObject* boss, const GUI::Font& lfont,
                              const GUI::Font& nfont,
                              int x, int y, int w, int h)
   : EditableWidget(boss, nfont, x, y, 16, 16),
+    _lfont{lfont},
     _rows{h / _lineHeight}
 {
   _flags = Widget::FLAG_ENABLED | Widget::FLAG_CLEARBG | Widget::FLAG_RETAIN_FOCUS;
@@ -66,15 +67,7 @@ RomListWidget::RomListWidget(GuiObject* boss, const GUI::Font& lfont,
   loadDisasmColorMap();
 
   // Take advantage of a wide debugger window when possible
-  const int fontWidth = lfont.getMaxCharWidth(),
-            numchars = w / fontWidth;
-
-  _labelWidth = std::max(14, static_cast<int>(0.45 * (numchars - 8 - 8 - 9 - 2))) * fontWidth - 1;
-  _bytesWidth = 9 * fontWidth;
-
-  ///////////////////////////////////////////////////////
-  // Add checkboxes
-  int ypos = _y + 2;
+  recalcColumnWidths(w);
 
   // rowheight is determined by largest item on a line,
   // possibly meaning that number of rows will change
@@ -82,19 +75,8 @@ RomListWidget::RomListWidget(GuiObject* boss, const GUI::Font& lfont,
   // The following must be initialized after _lineHeight
   _rows = h / _lineHeight;  // NOLINT(cppcoreguidelines-prefer-member-initializer)
 
-  // Create a CheckboxWidget for each row in the list
-  for(int i = 0; i < _rows; ++i)
-  {
-    auto* t = new CheckboxWidget(boss, lfont, _x + 2, ypos, "",
-        CheckboxWidget::kCheckActionCmd);
-    t->setTarget(this);
-    t->setID(i);
-    t->setFill(CheckboxWidget::FillType::Circle);
-    t->setTextColor(kTextColorEm);
-    ypos += _lineHeight;
-
-    myCheckList.push_back(t);
-  }
+  // Create and position a CheckboxWidget for each visible row
+  reflowCheckboxes();
 
   // Add filtering
   const EditableWidget::TextFilter f = [&](char c)
@@ -122,6 +104,104 @@ RomListWidget::RomListWidget(GuiObject* boss, const GUI::Font& lfont,
     }
   };
   setTextFilter(f);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void RomListWidget::setPos(const Common::Point& pos)
+{
+  EditableWidget::setPos(pos);
+  // The scrollbar is a sibling widget, not a child, so it must be moved to
+  // track the list (it sits flush against the list's right edge)
+  myScrollBar->setPos(_x + _w, _y);
+  reflowCheckboxes();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void RomListWidget::setWidth(int w)
+{
+  // getWidth() reports the full footprint (list area + scrollbar), so
+  // setWidth() must subtract the scrollbar again to stay its inverse
+  // (mirrors the constructor); the scrollbar stays flush against the right edge
+  Widget::setWidth(w - ScrollBarWidget::scrollBarWidth(_font));
+  myScrollBar->setPosX(_x + _w);
+
+  // The label/bytes columns scale with the available width
+  recalcColumnWidths(w);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void RomListWidget::setHeight(int h)
+{
+  Widget::setHeight(h);
+  myScrollBar->setHeight(h);
+
+  // The visible row count follows the height (the constructor's _h reserves 2px)
+  _rows = (h - 2) / _lineHeight;
+  reflowCheckboxes();
+
+  // recalc() dereferences the disassembly, which is only set once a ROM is
+  // loaded; skip until then (setList() will recalc)
+  if(myDisasm)
+    recalc();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+int RomListWidget::getWidth() const
+{
+  return _w + ScrollBarWidget::scrollBarWidth(_font);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void RomListWidget::refreshFontMetrics()
+{
+  EditableWidget::refreshFontMetrics();
+  // The base reset _lineHeight to the plain font line height; the row must
+  // still clear the checkbox (mirrors the constructor)
+  _lineHeight = std::max(_lineHeight, CheckboxWidget::boxSize(_font));
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void RomListWidget::reflowCheckboxes()
+{
+  // Grow the pool so there is a checkbox for every visible row.  The boss owns
+  // these widgets for its lifetime and there is no removal API, so we only ever
+  // append (surplus rows are hidden below).
+  while(std::cmp_less(myCheckList.size(), _rows))
+  {
+    auto* t = new CheckboxWidget(_boss, _lfont, 0, 0, "",
+                                 CheckboxWidget::kCheckActionCmd);
+    t->setTarget(this);
+    t->setID(static_cast<int>(myCheckList.size()));
+    t->setFill(CheckboxWidget::FillType::Circle);
+    t->setTextColor(kTextColorEm);
+    myCheckList.push_back(t);
+  }
+
+  // Position each checkbox against the list's current origin; hide any that
+  // fall past the visible row count
+  int ypos = _y + 2;
+  for(int i = 0; std::cmp_less(i, myCheckList.size()); ++i)
+  {
+    if(i < _rows)
+    {
+      myCheckList[i]->setPos(_x + 2, ypos);
+      myCheckList[i]->clearFlags(Widget::FLAG_INVISIBLE);
+      ypos += _lineHeight;
+    }
+    else
+      myCheckList[i]->setFlags(Widget::FLAG_INVISIBLE);
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void RomListWidget::recalcColumnWidths(int w)
+{
+  // Take advantage of a wide debugger window when possible
+  const int fontWidth = _lfont.getMaxCharWidth(),
+            numchars = w / fontWidth;
+
+  _labelWidth = std::max(14, static_cast<int>(0.45 * (numchars - 8 - 8 - 9 - 2))) * fontWidth - 1;
+  _bytesWidth = 9 * fontWidth;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

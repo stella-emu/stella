@@ -71,6 +71,19 @@ class RomListWidget : public EditableWidget
     bool handleKeyUp(StellaKey key, StellaMod mod) override;
     bool handleEvent(Event::Type e) override;
 
+    // Reflow support so the owning dialog's layout() can move/resize the list
+    // in place (used by the resizable debugger).  These grow the checkbox pool,
+    // reposition the sibling scrollbar and recompute the row count / column
+    // widths from the live geometry and font.
+    using EditableWidget::setPos;
+    void setPos(const Common::Point& pos) override;
+    void setWidth(int w) override;
+    void setHeight(int h) override;
+    // Reports the full footprint (list area + scrollbar), so setWidth() is its
+    // inverse (mirrors ListWidget)
+    int getWidth() const override;
+    void refreshFontMetrics() override;
+
   protected:
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 
@@ -102,7 +115,20 @@ class RomListWidget : public EditableWidget
     void scrollToCurrent(int item);
     Common::Point getToolTipIndex(const Common::Point& pos) const;
 
+    // Grow the checkbox pool to one per visible row (grow-only; widgets can't
+    // be removed) and position every checkbox against the list's current
+    // origin, hiding any beyond the visible row count
+    void reflowCheckboxes();
+
+    // (Re)compute the label and bytes column widths from the full footprint
+    // width and the list font (wider windows get wider label columns)
+    void recalcColumnWidths(int w);
+
   private:
+    // The list font (the base Widget font is the narrower disassembly font);
+    // used for the scrollbar, checkboxes and label/bytes column widths
+    const GUI::Font& _lfont;
+
     unique_ptr<RomListSettings>    myMenu;
     unique_ptr<DisasmColorsDialog> myDisasmColorsDialog;
 
