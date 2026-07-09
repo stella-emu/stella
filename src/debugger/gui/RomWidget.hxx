@@ -46,10 +46,16 @@ class RomWidget : public Widget, public CommandSender
 
     void scrollTo(int line);
 
+    void setArea(int x, int y, int w, int h) override;
+
   protected:
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 
   private:
+    // Position the bank display and the disassembly listing within the area
+    // this widget occupies; shared by the ctor and setArea()
+    void reflow();
+
     void toggleBreak(int disasm_line);
     void setPC(int disasm_line);
     void runtoPC(int disasm_line);
@@ -59,8 +65,9 @@ class RomWidget : public Widget, public CommandSender
     uInt16 getAddress(int disasm_line);
 
   private:
-    RomListWidget*  myRomList{nullptr};
-    EditTextWidget* myBank{nullptr};
+    RomListWidget*   myRomList{nullptr};
+    EditTextWidget*  myBank{nullptr};
+    StaticTextWidget* myInfoLabel{nullptr};
 
     bool myListIsDirty{true};
 

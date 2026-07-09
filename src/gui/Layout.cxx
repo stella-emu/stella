@@ -80,6 +80,9 @@ void BoxLayout::doLayout(int x, int y, int w, int h)
         break;
       case SizePolicy::Stretch:
         totalWeight += it.value;
+        // A stretch cell is never smaller than its base size, so that is spoken
+        // for before any leftover is shared out
+        used += it.minMain;
         continue;  // sized in the second pass
     }
     if(it.maxMain > 0)
@@ -87,18 +90,20 @@ void BoxLayout::doLayout(int x, int y, int w, int h)
     used += ext[i];
   }
 
-  // Second pass: stretch items share the remaining length by weight
+  // Second pass: stretch items take their base size, then share what is left
+  // over by weight
   const int remaining = std::max(mainLen - used, 0);
   int distributed = 0, lastStretch = -1;
   for(int i = 0; i < n; ++i)
   {
     if(myItems[i].policy != SizePolicy::Stretch)
       continue;
-    int e = totalWeight > 0 ? remaining * myItems[i].value / totalWeight : 0;
+    int e = myItems[i].minMain
+          + (totalWeight > 0 ? remaining * myItems[i].value / totalWeight : 0);
     if(myItems[i].maxMain > 0)
       e = std::min(e, myItems[i].maxMain);
     ext[i] = e;
-    distributed += e;
+    distributed += e - myItems[i].minMain;
     lastStretch = i;
   }
   // Hand any rounding leftover to the last stretch item
@@ -133,6 +138,8 @@ Common::Size BoxLayout::minSize() const
     // the fixed value down to that floor as the available space shrinks
     if(it.policy == SizePolicy::Fixed)
       childMain = std::max(childMain, it.minMain > 0 ? it.minMain : it.value);
+    else if(it.policy == SizePolicy::Stretch)
+      childMain = std::max(childMain, it.minMain);
     mainMin += childMain;
     crossMin = std::max(crossMin, childCross);
   }
@@ -179,13 +186,26 @@ unique_ptr<Layout> indentedItem(Widget* widget, int indent, int minW)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+unique_ptr<Layout> labelColumn(Widget* label, Widget* control)
+{
+  // A label draws its text top-aligned, whereas a control frames its own text
+  // and so is the taller of the two; sit the label on the control's centre
+  auto column = std::make_unique<BoxLayout>(BoxLayout::Dir::Vertical);
+  column->addSpace(std::max(control->getHeight() - label->getHeight(), 0) / 2);
+  column->addFixed(anchoredItem(label), label->getHeight());
+  column->addStretch(std::make_unique<WidgetLayout>(nullptr));
+  return column;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 unique_ptr<Layout> labeledRow(Widget* label, Widget* control,
                               int labelW, int indent)
 {
   auto row = std::make_unique<BoxLayout>(BoxLayout::Dir::Horizontal);
   if(indent > 0)
     row->addSpace(indent);
-  row->addFixed(anchoredItem(label), labelW > 0 ? labelW : label->getWidth());
+  row->addFixed(labelColumn(label, control),
+                labelW > 0 ? labelW : label->getWidth());
   row->addStretch(anchoredItem(control));
   return row;
 }

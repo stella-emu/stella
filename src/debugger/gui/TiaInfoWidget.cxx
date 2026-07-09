@@ -28,6 +28,27 @@
 
 #include "TiaInfoWidget.hxx"
 
+// Between the current and the last-frame scanline counts, which share a row
+static constexpr int SCAN_GAP = 2;
+
+// The label of each row, in the two forms picked between by the width available
+struct RowLabel { string_view full; string_view abbr; };
+
+static constexpr std::array<RowLabel, 5> LEFT_LABELS{{
+  {"Frame Cycles", "F. Cycls"},
+  {"WSync Cycles", "WSync C."},
+  {"Timer Cycles", "Timer C."},
+  {"Total",        "Total"},
+  {"Delta",        "Delta"}
+}};
+static constexpr std::array<RowLabel, 5> RIGHT_LABELS{{
+  {"Frame Cnt.",  "Frame"},
+  {"Scanline",    "Scn Ln"},
+  {"Scan Cycle",  "Scn Cycle"},
+  {"Pixel Pos",   "Pixel Pos"},
+  {"Color Clock", "Color Clk"}
+}};
+
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 TiaInfoWidget::TiaInfoWidget(GuiObject* boss, const GUI::Font& lfont,
                              const GUI::Font& nfont,
@@ -106,50 +127,84 @@ void TiaInfoWidget::setArea(int x, int y, int w, int h)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+TiaInfoWidget::ColumnWidths TiaInfoWidget::columnWidths(bool longstr) const
+{
+  const GUI::Font& lfont = _font;
+
+  // Every label keeps one character of clearance before its value field
+  const int space = lfont.getMaxCharWidth();
+  const int fwidth5 = EditTextWidget::calcWidth(lfont, 5),
+            fwidth3 = EditTextWidget::calcWidth(lfont, 3),
+            twidth  = EditTextWidget::calcWidth(lfont, 8);
+
+  // What each row ends with; the scanline row shows two counts side by side
+  const std::array<int, 5> leftFields{fwidth5, fwidth5, fwidth5, twidth, twidth};
+  const std::array<int, 5> rightFields{fwidth5, fwidth3 * 2 + SCAN_GAP,
+                                       fwidth3, fwidth3, fwidth3};
+
+  const auto width = [&](const auto& labels, const auto& fields) {
+    int w = 0;
+    for(size_t i = 0; i < labels.size(); ++i)
+      w = std::max(w, lfont.getStringWidth(longstr ? labels[i].full
+                                                   : labels[i].abbr)
+                      + space + fields[i]);
+    return w;
+  };
+
+  return {width(LEFT_LABELS, leftFields), width(RIGHT_LABELS, rightFields)};
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+int TiaInfoWidget::minWidthFor(bool longstr) const
+{
+  // The base sizes of the three cells reflow() lays the widget out with
+  const ColumnWidths w = columnWidths(longstr);
+
+  return w.left + columnGap() + w.right;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+int TiaInfoWidget::minWidth() const
+{
+  return minWidthFor(false);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TiaInfoWidget::reflow(int max_w)
 {
   using GUI::BoxLayout;
   using GUI::anchoredItem;
-  using GUI::labeledRow;
+  using GUI::labelColumn;
   using Dir = BoxLayout::Dir;
 
   const GUI::Font& lfont = _font;
   const int VGAP = lfont.getLineHeight() / 4;
   constexpr int VBORDER = 5 + 1;
-  const int COLUMN_GAP = _fontWidth * 1.25;
-  const bool longstr = lfont.getStringWidth("Frame Cycles12345") + _fontWidth * 0.5
-    + COLUMN_GAP + lfont.getStringWidth("Scanline262262")
-    + EditTextWidget::calcWidth(lfont) * 3 <= max_w;
+  // Spell the labels out only once they fit without eating their own clearance
+  const bool longstr = minWidthFor(true) <= max_w;
   const int lineHeight = lfont.getLineHeight();
-  int lwidth  = lfont.getStringWidth(longstr ? "Frame Cycles" : "F. Cycls");
-  int lwidth8 = lwidth - lfont.getMaxCharWidth() * 3;
-  int lwidthR = lfont.getStringWidth(longstr ? "Frame Cnt." : "Frame   ");
   const int fwidth5 = EditTextWidget::calcWidth(lfont, 5);
   const int fwidth3 = EditTextWidget::calcWidth(lfont, 3);
   const int twidth  = EditTextWidget::calcWidth(lfont, 8);
-  const int LGAP = (max_w - lwidth - fwidth5 - lwidthR - fwidth5) / 4;
-
-  lwidth  += LGAP;
-  lwidth8 += LGAP;
-  lwidthR += LGAP;
 
   // Set each label's text (short or long) and its natural width, and each value
   // field's font-derived width, so the anchored layout items below pick up the
   // right sizes (anchored items keep their own size and are only repositioned)
-  const auto setText = [&](StaticTextWidget* w, string_view s) {
+  const auto setText = [&](StaticTextWidget* w, const RowLabel& l) {
+    const string_view s = longstr ? l.full : l.abbr;
     w->setLabel(s);
     w->setWidth(lfont.getStringWidth(s));
   };
-  setText(myFrameCyclesLabel, longstr ? "Frame Cycles" : "F. Cycls");
-  setText(myWSyncCyclesLabel, longstr ? "WSync Cycles" : "WSync C.");
-  setText(myTimerCyclesLabel, longstr ? "Timer Cycles" : "Timer C.");
-  setText(myTotalLabel, "Total");
-  setText(myDeltaLabel, "Delta");
-  setText(myFrameCountLabel, longstr ? "Frame Cnt." : "Frame");
-  setText(myScanlineLabel, longstr ? "Scanline" : "Scn Ln");
-  setText(myScanCycleLabel, longstr ? "Scan Cycle" : "Scn Cycle");
-  setText(myPixelPosLabel, "Pixel Pos");
-  setText(myColorClockLabel, longstr ? "Color Clock" : "Color Clk");
+  setText(myFrameCyclesLabel, LEFT_LABELS[0]);
+  setText(myWSyncCyclesLabel, LEFT_LABELS[1]);
+  setText(myTimerCyclesLabel, LEFT_LABELS[2]);
+  setText(myTotalLabel,       LEFT_LABELS[3]);
+  setText(myDeltaLabel,       LEFT_LABELS[4]);
+  setText(myFrameCountLabel,  RIGHT_LABELS[0]);
+  setText(myScanlineLabel,    RIGHT_LABELS[1]);
+  setText(myScanCycleLabel,   RIGHT_LABELS[2]);
+  setText(myPixelPosLabel,    RIGHT_LABELS[3]);
+  setText(myColorClockLabel,  RIGHT_LABELS[4]);
 
   myFrameCycles->setWidth(fwidth5);
   myWSyncCylces->setWidth(fwidth5);
@@ -163,39 +218,51 @@ void TiaInfoWidget::reflow(int max_w)
   myPixelPosition->setWidth(fwidth3);
   myColorClocks->setWidth(fwidth3);
 
-  // Right column origin and its lower label-column width
-  const int rightX = _x + max_w - lwidthR - fwidth5;
-  const int lwidth2 = lfont.getStringWidth(longstr ? "Color Clock " : "Pixel Pos ") + LGAP;
-  const int colH = VBORDER * 2 + 5 * lineHeight + 4 * VGAP;
+  // A row stretches its label across whatever width the column has and anchors
+  // its value field at the right, so that a column's fields all end flush, no
+  // matter how wide its labels or how many digits each field holds
+  const auto row = [&](StaticTextWidget* label, Widget* field, int fieldW) {
+    auto r = std::make_unique<BoxLayout>(Dir::Horizontal);
+    r->addStretch(labelColumn(label, field));
+    r->addFixed(anchoredItem(field), fieldW);
+    return r;
+  };
 
-  // Left column: label + value form rows (Total/Delta use a shorter label
-  // column so their wider 8-digit value ends flush with the 5-digit ones)
-  BoxLayout left(Dir::Vertical, VGAP, 0, VBORDER);
-  left.addFixed(labeledRow(myFrameCyclesLabel, myFrameCycles, lwidth), lineHeight);
-  left.addFixed(labeledRow(myWSyncCyclesLabel, myWSyncCylces, lwidth), lineHeight);
-  left.addFixed(labeledRow(myTimerCyclesLabel, myTimerCylces, lwidth), lineHeight);
-  left.addFixed(labeledRow(myTotalLabel, myTotalCycles, lwidth8), lineHeight);
-  left.addFixed(labeledRow(myDeltaLabel, myDeltaCycles, lwidth8), lineHeight);
-  left.doLayout(_x, _y, rightX - _x, colH);
+  auto left = std::make_unique<BoxLayout>(Dir::Vertical, VGAP, 0, VBORDER);
+  left->addFixed(row(myFrameCyclesLabel, myFrameCycles, fwidth5), lineHeight);
+  left->addFixed(row(myWSyncCyclesLabel, myWSyncCylces, fwidth5), lineHeight);
+  left->addFixed(row(myTimerCyclesLabel, myTimerCylces, fwidth5), lineHeight);
+  left->addFixed(row(myTotalLabel, myTotalCycles, twidth), lineHeight);
+  left->addFixed(row(myDeltaLabel, myDeltaCycles, twidth), lineHeight);
 
-  // Right column
-  BoxLayout right(Dir::Vertical, VGAP, 0, VBORDER);
-  right.addFixed(labeledRow(myFrameCountLabel, myFrameCount, lwidthR), lineHeight);
+  auto right = std::make_unique<BoxLayout>(Dir::Vertical, VGAP, 0, VBORDER);
+  right->addFixed(row(myFrameCountLabel, myFrameCount, fwidth5), lineHeight);
   // The scanline row shows the current and last-frame counts side by side
   auto scanRow = std::make_unique<BoxLayout>(Dir::Horizontal);
-  scanRow->addFixed(anchoredItem(myScanlineLabel), lwidth2 - fwidth3 - 2);
+  scanRow->addStretch(labelColumn(myScanlineLabel, myScanlineCount));
   scanRow->addFixed(anchoredItem(myScanlineCount), fwidth3);
-  scanRow->addSpace(2);
+  scanRow->addSpace(SCAN_GAP);
   scanRow->addFixed(anchoredItem(myScanlineCountLast), fwidth3);
-  right.addFixed(std::move(scanRow), lineHeight);
-  right.addFixed(labeledRow(myScanCycleLabel, myScanlineCycles, lwidth2), lineHeight);
-  right.addFixed(labeledRow(myPixelPosLabel, myPixelPosition, lwidth2), lineHeight);
-  right.addFixed(labeledRow(myColorClockLabel, myColorClocks, lwidth2), lineHeight);
-  right.doLayout(rightX, _y, max_w - (rightX - _x), colH);
+  right->addFixed(std::move(scanRow), lineHeight);
+  right->addFixed(row(myScanCycleLabel, myScanlineCycles, fwidth3), lineHeight);
+  right->addFixed(row(myPixelPosLabel, myPixelPosition, fwidth3), lineHeight);
+  right->addFixed(row(myColorClockLabel, myColorClocks, fwidth3), lineHeight);
+
+  // The two columns and the gap between them grow from their natural sizes in
+  // the proportion 1 : 2 : 1, so the gap always outgrows the label clearances
+  const ColumnWidths cw = columnWidths(longstr);
+
+  BoxLayout root(Dir::Horizontal);
+  root.addStretch(std::move(left), 1, cw.left);
+  root.addStretchSpace(2, columnGap());
+  root.addStretch(std::move(right), 1, cw.right);
+
+  // The columns are as tall as their rows, margins and gaps make them
+  root.doLayout(_x, _y, max_w, static_cast<int>(root.minSize().h));
 
   // Final dimensions (the bottom-right field is the last right-column row)
-  _w = myColorClocks->getRight() - _x;
-  _h = myColorClocks->getBottom();
+  _w = max_w;
+  _h = myColorClocks->getBottom() - _y;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

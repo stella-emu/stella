@@ -89,12 +89,24 @@ its policy; along the **cross** axis every child fills the box (minus margins).
 BoxLayout(Dir dir, int spacing = 0, int marginH = 0, int marginV = 0);
 ```
 
-| Method                         | Meaning                                             |
-| ------------------------------ | --------------------------------------------------- |
-| `addFixed(child, px)`          | child gets exactly `px` along the main axis         |
-| `addStretch(child, weight=1)`  | child shares leftover space (by weight)             |
-| `addPercent(child, pct, max=0)`| child gets `pct`% of the available length           |
-| `addSpace(px)`                 | an empty gap of `px`                                |
+| Method                              | Meaning                                             |
+| ----------------------------------- | --------------------------------------------------- |
+| `addFixed(child, px)`               | child gets exactly `px` along the main axis         |
+| `addStretch(child, weight=1, base=0)` | child gets `base`, then shares leftover (by weight) |
+| `addPercent(child, pct, max=0)`     | child gets `pct`% of the available length           |
+| `addSpace(px)`                      | an empty gap of `px`                                |
+| `addStretchSpace(weight=1, base=0)` | an empty gap of at least `base`, which also grows   |
+
+The `base` of a stretch cell is its **natural size**: it is reserved before any
+leftover is shared out. That is what lets several cells grow from *different*
+natural sizes in a chosen proportion, without computing the leftover yourself.
+Two columns and the gap between them, growing 1 : 2 : 1 from their own minima:
+
+```cpp
+  root.addStretch(std::move(left), 1, leftNaturalW);
+  root.addStretchSpace(2, minGap);
+  root.addStretch(std::move(right), 1, rightNaturalW);
+```
 
 ```
   BoxLayout(Dir::Vertical)                BoxLayout(Dir::Horizontal)
@@ -162,6 +174,7 @@ You never construct `WidgetLayout` directly; use these `GUI::` helper builders:
 | `vCentered(w, h, minW=0)`                | keeps natural height `h`, vertically centered in a taller cell             |
 | `hCentered(w, width, minH=0)`            | keeps natural width, horizontally centered in a wider cell                 |
 | `indentedItem(w, indent, minW=0)`        | natural size, positioned `indent` px from the left                        |
+| `labelColumn(label, control)`            | a label centered on the (taller) control it names                         |
 | `labeledRow(label, control, labelW=0, indent=0)` | a row pairing a **separate** label with a control                 |
 
 Rules of thumb:
@@ -176,6 +189,11 @@ Rules of thumb:
 - **A checkbox indented under a group header** → `indentedItem(cb, indent())`.
 - **A separate label + control** (label is its own `StaticTextWidget`, control is
   not self-labeling) → `labeledRow(label, control, sharedLabelW)`.
+- **Right-align a column of value fields** whose widths differ (say a 3-digit and
+  an 8-digit field, which should still end flush) → do *not* compute per-row
+  label widths. Stretch the label and fix the field:
+  `row.addStretch(labelColumn(label, field)); row.addFixed(anchoredItem(field), fieldW);`
+  Every row then ends at the column's right edge, whatever its label or digits.
 
 `nullptr` as the widget makes any item an empty spacer that only reserves space
 (this is exactly what `addSpace` does internally).

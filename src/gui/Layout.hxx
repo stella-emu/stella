@@ -127,7 +127,10 @@ class BoxLayout : public Layout
     // minMain: main-axis floor reported by minSize().  A Fixed cell defaults
     //          to its fixed size; a dialog that recomputes the fixed value as
     //          the window shrinks declares here how far it can compress, which
-    //          keeps minSize() independent of the current size.
+    //          keeps minSize() independent of the current size.  A Stretch cell
+    //          takes it as a BASE SIZE: the cell gets that much before the
+    //          leftover is shared out by weight, so several cells can grow from
+    //          differing natural sizes in a chosen proportion.
     BoxLayout& add(unique_ptr<Layout> child, SizePolicy policy, int value,
                    int maxMain = 0, int minMain = 0);
 
@@ -136,11 +139,15 @@ class BoxLayout : public Layout
       { return add(std::move(child), SizePolicy::Fixed, px, 0, minPx); }
     BoxLayout& addPercent(unique_ptr<Layout> child, int pct, int maxMain = 0)
       { return add(std::move(child), SizePolicy::Percent, pct, maxMain); }
-    BoxLayout& addStretch(unique_ptr<Layout> child, int weight = 1)
-      { return add(std::move(child), SizePolicy::Stretch, weight); }
+    BoxLayout& addStretch(unique_ptr<Layout> child, int weight = 1, int basePx = 0)
+      { return add(std::move(child), SizePolicy::Stretch, weight, 0, basePx); }
     // A fixed empty gap
     BoxLayout& addSpace(int px)
       { return add(std::make_unique<WidgetLayout>(nullptr), SizePolicy::Fixed, px); }
+    // An empty gap of at least 'basePx', which grows with the leftover space
+    BoxLayout& addStretchSpace(int weight = 1, int basePx = 0)
+      { return add(std::make_unique<WidgetLayout>(nullptr), SizePolicy::Stretch,
+                   weight, 0, basePx); }
 
     void doLayout(int x, int y, int w, int h) override;
 
@@ -285,11 +292,19 @@ unique_ptr<Layout> hCentered(Widget* widget, int w, int minH = 0);
 // (e.g. the checkboxes below a "When saving:" label in the option dialogs).
 unique_ptr<Layout> indentedItem(Widget* widget, int indent, int minW = 0);
 
+// Wrap a label so it keeps its natural size and sits on the vertical centre of
+// 'control', which frames its own (taller) text.  This is the column that
+// labeledRow() puts its label in, for the rows labeledRow() cannot express.
+unique_ptr<Layout> labelColumn(Widget* label, Widget* control);
+
 // A horizontal form row pairing a separate label with a control: the label
 // occupies a column 'labelW' wide (0 = the label's own width) and the control
 // is anchored at its natural size just to its right, after an optional left
 // 'indent'.  For label + PopUp/Slider/edit rows where the widget is not
 // self-labeling; pass a shared 'labelW' to align controls across several rows.
+// The label is centered on the control, which frames its own (taller) text.
+// Note that 'labelW' is a column width, not the label's: leave room in it for
+// some clearance before the control.
 unique_ptr<Layout> labeledRow(Widget* label, Widget* control,
                               int labelW = 0, int indent = 0);
 

@@ -41,6 +41,15 @@ class DataGridOpsWidget : public Widget, public CommandSender
     void setTarget(CommandReceiver* target) override;
     void setEnabled(bool e) override;
 
+    using Widget::setPos;
+    void setPos(const Common::Point& pos) override;
+    void refreshFontMetrics() override;
+
+  private:
+    // Size the buttons from the current font and arrange them in their two
+    // columns; recomputes _w/_h
+    void reflow();
+
   private:
     ButtonWidget* _zeroButton{nullptr};
     ButtonWidget* _invButton{nullptr};

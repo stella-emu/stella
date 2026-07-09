@@ -41,12 +41,29 @@ class TiaInfoWidget : public Widget, public CommandSender
     // the short or long label variants to fit (recomputes _w/_h)
     void setArea(int x, int y, int w, int h) override;
 
+    // The narrowest width the fields still fit into, i.e. the width at which
+    // the short label variants are used.  Bounds the status area, which shares
+    // the debugger's top band with the (growable) TIA image
+    int minWidth() const;
+
     void handleMouseDown(int x, int y, MouseButton b, int clickCount) override;
 
   private:
     // Build the layout tree from the current font and lay the fields out within
     // the given available width; shared by the ctor and setArea()
     void reflow(int max_w);
+
+    // The natural width of each of the two columns of fields: enough for its
+    // widest row, being that row's label, one character of clearance, and the
+    // value field(s) the row ends with
+    struct ColumnWidths { int left{0}; int right{0}; };
+    ColumnWidths columnWidths(bool longstr) const;
+
+    // The width at which the given label form exactly fits, gaps included
+    int minWidthFor(bool longstr) const;
+
+    // The gap between the two columns of fields
+    int columnGap() const { return _fontWidth * 5 / 4; }
 
   private:
     EditTextWidget* myFrameCount{nullptr};

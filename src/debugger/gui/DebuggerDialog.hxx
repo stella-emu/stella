@@ -34,6 +34,10 @@ class TiaOutputWidget;
 class TiaZoomWidget;
 class CartDebugWidget;
 class CartRamWidget;
+class DataGridOpsWidget;
+class TiaWidget;
+class RiotWidget;
+class AudioWidget;
 class OptionsDialog;
 
 namespace GUI {
@@ -50,6 +54,9 @@ class DebuggerDialog : public Dialog
   public:
     // Note: these sizes make sure that all major tabs are fully visible
     //       cart dependend information (e.g. DPC+) may require more space
+    //       at these widths the TIA image gives up some of its 320 pixels to
+    //       the status area, with which it shares the half of the dialog left
+    //       of centre
     enum: uInt16 {
       kSmallFontMinW  = 1090, kSmallFontMinH  = 720,
       kMediumFontMinW = 1160, kMediumFontMinH = 770,
@@ -97,6 +104,8 @@ class DebuggerDialog : public Dialog
     void setActiveTabs(int mainTab, int romTab);
 
   protected:
+    void layout() override;
+
     void handleKeyDown(StellaKey key, StellaMod mod, bool repeated) override;
     void handleKeyUp(StellaKey key, StellaMod mod) override;
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
@@ -121,10 +130,21 @@ class DebuggerDialog : public Dialog
     void addStatusArea();
     void addRomArea();
 
+    void layoutTiaArea();
+    void layoutTabArea();
+    void layoutStatusArea();
+    void layoutRomArea();
+
     Common::Rect getTiaBounds() const;
     Common::Rect getRomBounds() const;
     Common::Rect getStatusBounds() const;
     Common::Rect getTabBounds() const;
+
+    /**
+      The narrowest the status area may become: the TIA image beside it is
+      clamped so that its fields always fit.
+    */
+    int statusMinWidth() const;
 
   private:
     enum {
@@ -142,6 +162,9 @@ class DebuggerDialog : public Dialog
     TabWidget *myTab{nullptr}, *myRomTab{nullptr};
 
     PromptWidget*    myPrompt{nullptr};
+    TiaWidget*       myTiaTab{nullptr};
+    RiotWidget*      myRiotTab{nullptr};
+    AudioWidget*     myAudioTab{nullptr};
     TiaInfoWidget*   myTiaInfo{nullptr};
     TiaOutputWidget* myTiaOutput{nullptr};
     TiaZoomWidget*   myTiaZoom{nullptr};
@@ -154,6 +177,11 @@ class DebuggerDialog : public Dialog
     EditTextWidget*  myMessageBox{nullptr};
     ButtonWidget*    myRewindButton{nullptr};
     ButtonWidget*    myUnwindButton{nullptr};
+    ButtonWidget*    myOptionsButton{nullptr};
+    DataGridOpsWidget* myDataGridOps{nullptr};
+
+    // Step / Trace / Scan +1 / Frame +1 / Run
+    std::array<ButtonWidget*, 5> myStepButtons{};
 
     unique_ptr<GUI::MessageBox> myFatalError;
     unique_ptr<OptionsDialog>   myOptions;

@@ -98,6 +98,16 @@ void CartRamWidget::setOpsWidget(DataGridOpsWidget* w)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void CartRamWidget::setArea(int x, int y, int w, int h)
+{
+  Widget::setArea(x, y, w, h);
+
+  // The RAM view is a sibling widget which fills whatever is left below the
+  // size and description fields, so it does not move but does resize
+  myRam->setArea(2, myRam->getTop(), w, h - myRam->getTop());
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartRamWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
 {
   myRam->handleCommand(sender, cmd, data, id);

@@ -26,6 +26,7 @@
 #include "DataGridWidget.hxx"
 #include "EditTextWidget.hxx"
 #include "RomListWidget.hxx"
+#include "Layout.hxx"
 #include "RomWidget.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -34,21 +35,55 @@ RomWidget::RomWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& n
   : Widget(boss, lfont, x, y, w, h),
     CommandSender(boss)
 {
-  // Show current bank state
-  int xpos = x, ypos = y + 7;
-  const auto* t = new StaticTextWidget(boss, lfont, xpos, ypos, "Info ");
+  // Create the bank display and the listing at a placeholder position/size;
+  // reflow() positions and sizes them for the area the widget occupies
+  // NOLINTBEGIN(cppcoreguidelines-prefer-member-initializer)
+  myInfoLabel = new StaticTextWidget(boss, lfont, 0, 0, "Info ");
 
-  xpos += t->getRight();
-  myBank = new EditTextWidget(boss, nfont, xpos, ypos-2,
-                              _w - 2 - xpos, nfont.getLineHeight());
+  myBank = new EditTextWidget(boss, nfont, 0, 0, 1, nfont.getLineHeight());
   myBank->setEditable(false);
 
-  // Create rom listing
-  xpos = x;  ypos += myBank->getHeight() + 4;
-
-  myRomList = new RomListWidget(boss, lfont, nfont, xpos, ypos, _w - 4, _h - ypos - 2);
+  myRomList = new RomListWidget(boss, lfont, nfont, 0, 0, 1, 1);
+  // NOLINTEND(cppcoreguidelines-prefer-member-initializer)
   myRomList->setTarget(this);
   addFocusWidget(myRomList);
+
+  reflow();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void RomWidget::setArea(int x, int y, int w, int h)
+{
+  Widget::setArea(x, y, w, h);
+  reflow();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void RomWidget::reflow()
+{
+  using GUI::BoxLayout;
+  using GUI::vCentered;
+  using GUI::widgetItem;
+  using Dir = BoxLayout::Dir;
+
+  constexpr int HBORDER = 2, VGAP = 4;
+
+  // The label and the bank display are sibling widgets parented to the boss,
+  // not children of this widget, so they are positioned explicitly here
+  myInfoLabel->setWidth(_font.getStringWidth(myInfoLabel->getLabel()));
+
+  BoxLayout root(Dir::Vertical, VGAP, HBORDER, VGAP);
+
+  // The bank info row: a label, then the bank display filling the rest
+  auto infoRow = std::make_unique<BoxLayout>(Dir::Horizontal);
+  infoRow->addFixed(vCentered(myInfoLabel, _lineHeight), myInfoLabel->getWidth());
+  infoRow->addStretch(vCentered(myBank, myBank->getHeight()));
+  root.addFixed(std::move(infoRow), std::max(_lineHeight, myBank->getHeight()));
+
+  // The disassembly fills whatever is left
+  root.addStretch(widgetItem(myRomList));
+
+  root.doLayout(_x, _y, _w, _h);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
