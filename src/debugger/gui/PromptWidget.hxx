@@ -52,6 +52,13 @@ class PromptWidget : public Widget, public CommandSender
     // Account for the extra width of embedded scrollbar
     int getWidth() const override;
 
+    using Widget::setPos;
+    void setPos(const Common::Point& pos) override;
+    void setWidth(int w) override;
+    void setHeight(int h) override;
+    void setArea(int x, int y, int w, int h) override;
+    void refreshFontMetrics() override;
+
     bool wantsFocus() const override { return true; }
 
     void handleMouseDown(int x, int y, MouseButton b, int clickCount) override;
@@ -141,9 +148,14 @@ class PromptWidget : public Widget, public CommandSender
     bool _firstTime{true};
     bool _exitedEarly{false};
 
+    // Set once the line width changes, meaning the buffer no longer matches the
+    // geometry it was wrapped for; cleared by the next clearScreen()
+    bool _bufferStale{false};
+
     int historyDir(int& index, int direction);
     void historyAdd(string_view entry);
     ContextMenu& mouseMenu();
+    void recalcMetrics();
 
     int selectStartPos() const {
       return _selectSize < 0 ? _currentPos + _selectSize : _currentPos;
