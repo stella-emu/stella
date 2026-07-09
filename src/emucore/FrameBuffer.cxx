@@ -390,46 +390,12 @@ void FrameBuffer::handleResize(int width, int height)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool FrameBuffer::deferResize(int width, int height)
-{
-  // Only the launcher and debugger windows are user-resizable; everything
-  // else resizes immediately via handleResize()
-  if(myBufferType != BufferType::Launcher &&
-     myBufferType != BufferType::Debugger)
-    return false;
-
-  myPendingResize = Common::Size(width, height);
-
-  // On the first event of a drag gesture, freeze the current frame and let
-  // the backend stretch it to the window for the duration of the drag
-  if(!myResizeActive)
-  {
-    myResizeActive = true;
-    myBackend->startStretchResize();
-  }
-  return true;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBuffer::applyPendingResize()
-{
-  if(!myResizeActive)
-    return;
-
-  myResizeActive = false;
-
-  // Stop stretching *before* rebuilding, so the backend re-reads the true
-  // (new) window/render dimensions
-  myBackend->endStretchResize();
-  handleResize(myPendingResize.w, myPendingResize.h);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool FrameBuffer::liveResize(int width, int height)
 {
-  // Live re-flow currently applies to the launcher window; other windows
-  // defer/stretch.  Extend this as more windows adopt live re-flow.
-  if(myBufferType != BufferType::Launcher)
+  // The launcher and the debugger are the only user-resizable windows, and both
+  // re-flow live; everything else resizes immediately via handleResize()
+  if(myBufferType != BufferType::Launcher &&
+     myBufferType != BufferType::Debugger)
     return false;
 
   myPendingResize = Common::Size(width, height);
@@ -697,6 +663,14 @@ void FrameBuffer::closeSecondaryWindow()
   myBackend->setWindowVisible(false);
   setRenderTarget(0);
   mySecondaryActive = false;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt32 FrameBuffer::primaryWindowId() const
+{
+  const FBBackend* backend =
+    (myRenderTarget == 1) ? myOtherBackend.get() : myBackend.get();
+  return backend ? backend->windowId() : 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1268,12 +1242,10 @@ FBInitStatus FrameBuffer::applyVideoMode()
     myActiveVidMode = mode;
     status = FBInitStatus::Success;
 
-    // A completed mode change supersedes any in-progress interactive resize.
-    // Clear that state and reset the renderer's logical presentation to normal,
-    // so a stretched presentation left over from the previous mode
-    // (launcher/debugger) can't leak into this one
-    myResizeActive = false;
-    myBackend->endStretchResize();
+    // A completed mode change supersedes any in-progress interactive resize, so
+    // a size still pending from the previous mode (launcher/debugger) can't
+    // leak into this one
+    myLiveResizePending = false;
 
     // Did we get the requested fullscreen state?
     myOSystem.settings().setValue("fullscreen", fullScreen());

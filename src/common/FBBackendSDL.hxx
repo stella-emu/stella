@@ -179,13 +179,6 @@ class FBBackendSDL : public FBBackend
     void refreshDimensions() override;
 
     /**
-      Freeze/unfreeze the current frame's coordinate space so SDL stretches
-      it to fill the window during an interactive resize drag.
-    */
-    void startStretchResize() override;
-    void endStretchResize() override;
-
-    /**
       The SDL window ID of this backend's window, or 0 if none.
     */
     uInt32 windowId() const override;

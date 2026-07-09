@@ -99,16 +99,6 @@ class FBBackend
     virtual void refreshDimensions() { }
 
     /**
-      While the user is interactively dragging the window border, freeze the
-      current frame's coordinate space and let the backend stretch it to fill
-      the resizing window (avoiding the re-letterboxing/flicker of rebuilding
-      the UI on every resize event).  endStretchResize() restores normal
-      rendering.  Default no-ops for backends that don't support this.
-    */
-    virtual void startStretchResize() { }
-    virtual void endStretchResize() { }
-
-    /**
       The platform window ID of this backend's window, or 0 if no window
       exists.  Used to route window-specific events (mouse, keyboard, close,
       resize) to the FrameBuffer that owns the targeted window when more than

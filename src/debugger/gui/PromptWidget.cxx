@@ -137,10 +137,19 @@ void PromptWidget::setArea(int x, int y, int w, int h)
   }
   else
   {
-    // A height-only change leaves the buffer valid, but the view may now reach
-    // above the oldest line still held
+    // A height-only change leaves the buffer valid, but resizes the page it is
+    // viewed through.  _scrollLine is the buffer line drawn on the page's last
+    // row, so pin it between the oldest line the buffer still holds and the
+    // newest line written: a page that grew would otherwise reach above the
+    // first, and one that shrank would leave it stale, scrolling the newest
+    // line (and the cursor with it) off the top.  Within those bounds the
+    // user's own scroll position survives the resize
     _bufferStale = false;
-    _scrollLine = std::max(_scrollLine, _firstLineInBuffer + _linesPerPage - 1);
+
+    const int lastLine = std::max(_promptEndPos, _currentPos) / _lineWidth,
+              minScroll = _firstLineInBuffer + _linesPerPage - 1;
+    _scrollLine = BSPF::clamp(_scrollLine, minScroll,
+                              std::max(lastLine, minScroll));
     updateScrollBuffer();
   }
   setDirty();
@@ -1363,8 +1372,10 @@ void PromptWidget::drawCaret()
   FBSurface& s = _boss->dialog().surface();
   const int line = _currentPos / _lineWidth;
 
-  // Don't draw the cursor if it's not in the current view
-  if(_scrollLine < line)
+  // Don't draw the cursor if it's not in the current view, which spans the
+  // lines [_scrollLine - _linesPerPage + 1, _scrollLine]; drawing above the
+  // first would land outside the widget, as nothing clips us to it
+  if(line < _scrollLine - _linesPerPage + 1 || line > _scrollLine)
     return;
 
   const int displayLine = line - _scrollLine + _linesPerPage - 1,

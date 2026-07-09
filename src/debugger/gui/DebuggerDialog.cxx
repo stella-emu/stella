@@ -85,10 +85,10 @@ DebuggerDialog::DebuggerDialog(OSystem& osystem, DialogContainer& parent,
 
   setHelpAnchor(" ", true);
 
-  // This dialog is sized by the debugger rather than by its own content, so its
-  // geometry is known already.  Settle it now, because Debugger::initialize()
-  // measures getMinHeight() before ever opening the dialog (open() lays it out
-  // again, which costs little and changes nothing)
+  // Settle the geometry now, because Debugger::initialize() measures
+  // getMinHeight() before ever opening the dialog, and that reads back widget
+  // positions.  open() lays it out again, at whatever size the debugger has
+  // settled on by then
   DebuggerDialog::layout();
 }
 
@@ -98,6 +98,12 @@ DebuggerDialog::~DebuggerDialog() = default;
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DebuggerDialog::layout()
 {
+  // The debugger owns the (resizable) window, and so its size; take ours from
+  // it every time, which is what makes a live resize re-flow this dialog
+  const Common::Size& size = instance().debugger().size();
+  _w = static_cast<int>(size.w);
+  _h = static_cast<int>(size.h);
+
   // The TIA image and the status area beside it share the half of the dialog
   // left of centre, above the tabs; the ROM area has the half right of it
   layoutTiaArea();
@@ -913,22 +919,6 @@ int DebuggerDialog::getMinHeight() const
   }
 
   return minHeight;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void DebuggerDialog::getActiveTabs(int& mainTab, int& romTab) const
-{
-  mainTab = myTab->getActiveTab();
-  romTab  = myRomTab->getActiveTab();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void DebuggerDialog::setActiveTabs(int mainTab, int romTab)
-{
-  // Only set the index here; the actual display happens in the dialog's
-  // initial loadConfig() (called from open()), which honours _activeTab
-  myTab->setActiveTab(mainTab);
-  myRomTab->setActiveTab(romTab);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

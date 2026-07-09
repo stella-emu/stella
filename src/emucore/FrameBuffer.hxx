@@ -101,32 +101,10 @@ class FrameBuffer
     void handleResize(int width, int height);
 
     /**
-      Begin (or continue) a deferred, interactive resize of a resizeable UI
-      window.  Instead of rebuilding the UI on every resize event (which
-      re-letterboxes and flickers), the current frame is frozen and stretched
-      to fill the window while dragging; the actual rebuild happens once via
-      applyPendingResize() when the drag settles.
-
-      @param width   The latest window width, in pixels
-      @param height  The latest window height, in pixels
-      @return  True if the resize was deferred (resizeable UI window); false
-               if the caller should resize immediately via handleResize()
-    */
-    bool deferResize(int width, int height);
-
-    /**
-      Apply the most recent size recorded by deferResize(): stop stretching
-      and rebuild the UI for the new window size.  No-op if no deferred resize
-      is pending.
-    */
-    void applyPendingResize();
-
-    /**
-      Record the latest window size for a live, per-frame re-flow (rather than
-      the stretch-then-settle path).  Returns true for a window that re-flows
-      live — the caller then applies it via applyLiveResize() and re-lays-out
-      its dialogs; false otherwise, so the caller falls back to deferResize()/
-      handleResize().
+      Record the latest window size for a live, per-frame re-flow.  Returns true
+      for a user-resizable window (the launcher and the debugger) — the caller
+      then applies it via applyLiveResize() and re-lays-out its dialogs; false
+      otherwise, so the caller falls back to handleResize().
 
       @param width   The latest window width, in pixels
       @param height  The latest window height, in pixels
@@ -190,6 +168,12 @@ class FrameBuffer
       Whether the secondary window is currently shown.
     */
     bool secondaryWindowOpen() const { return mySecondaryActive; }
+
+    /**
+      The platform window ID of the primary window (0 if none).  Used to ignore
+      window-specific events reported for any other window.
+    */
+    uInt32 primaryWindowId() const;
 
     /**
       The platform window ID of the secondary window (0 if none).  Used to
@@ -680,14 +664,9 @@ class FrameBuffer
     VideoModeHandler::Mode myOtherVidMode;
     BufferType myOtherBufferType{BufferType::None};
 
-    // Deferred interactive-resize state: while the user drags the window
-    // border, the current frame is stretched (see deferResize()) and the
-    // actual rebuild is postponed until applyPendingResize() at drag settle
-    bool myResizeActive{false};
-    Common::Size myPendingResize;
-
-    // A new window size arrived (live re-flow) and is waiting to be applied by
+    // The latest size recorded by liveResize(), waiting to be applied by
     // applyLiveResize()
+    Common::Size myPendingResize;
     bool myLiveResizePending{false};
 
     // Last window minimum size forwarded to the backend (scaled), so an

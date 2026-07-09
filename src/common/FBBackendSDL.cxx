@@ -552,37 +552,6 @@ void FBBackendSDL::setWindowVisible(bool visible)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FBBackendSDL::startStretchResize()
-{
-  ASSERT_MAIN_THREAD;
-
-  if(myRenderer == nullptr)
-    return;
-
-  // Lock the renderer to the current frame's pixel dimensions and let SDL
-  // stretch that logical space to fill the window as it is dragged.  The UI
-  // keeps rendering at these frozen dimensions (we suppress the usual resize
-  // rebuild during the drag), so the result is the previous frame scaled to
-  // the new window size, the same as macOS does natively.
-  SDL_SetRenderLogicalPresentation(myRenderer, myRenderW, myRenderH,
-                                   SDL_LOGICAL_PRESENTATION_STRETCH);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FBBackendSDL::endStretchResize()
-{
-  ASSERT_MAIN_THREAD;
-
-  if(myRenderer == nullptr)
-    return;
-
-  // Restore normal 1:1 rendering; the caller rebuilds the UI at the new size
-  // immediately afterwards
-  SDL_SetRenderLogicalPresentation(myRenderer, 0, 0,
-                                   SDL_LOGICAL_PRESENTATION_DISABLED);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FBBackendSDL::setTitle(string_view title)
 {
   ASSERT_MAIN_THREAD;

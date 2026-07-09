@@ -29,6 +29,7 @@
 #include "DebuggerParser.hxx"
 #include "StateManager.hxx"
 #include "RewindManager.hxx"
+#include "TimerManager.hxx"
 
 #include "Console.hxx"
 #include "System.hxx"
@@ -124,15 +125,13 @@ void Debugger::initialize()
   myDialog = std::make_unique<DebuggerDialog>(myOSystem, *this, 0, 0,
                                               mySize.w, mySize.h);
 
-  // Some cart types need more height than the font minimum; grow the window
-  // and rebuild once if the freshly-created dialog would clip its tab content
+  // Some cart types need more height than the font minimum; grow the window if
+  // the freshly-created dialog would clip its tab content.  The dialog reads
+  // mySize back the next time it lays out (from open()), so there is nothing to
+  // rebuild here
   minSize = dialogMinSize();
   if(mySize.h < minSize.h)
-  {
     mySize.clamp(minSize.w, d.w, minSize.h, d.h);
-    myDialog = std::make_unique<DebuggerDialog>(myOSystem, *this, 0, 0,
-                                                mySize.w, mySize.h);
-  }
 
   myOSystem.settings().setValue("dbg.res", mySize);
 
@@ -156,14 +155,37 @@ FBInitStatus Debugger::initializeVideo()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Debugger::requestResize()
+void Debugger::updateSize()
 {
-  // The actual rebuild is deferred until the user stops dragging (see
-  // updateTime()), since recreating the whole debugger dialog is expensive.
-  // The framebuffer stretches the current frame meanwhile; here we just
-  // restart the idle countdown.
-  myResizePending = true;
-  myResizeCountdown = 15;  // ~frames of idle before rebuilding
+  const uInt32 scale = myOSystem.frameBuffer().hidpiScaleFactor();
+  const Common::Rect& r = myOSystem.frameBuffer().imageRect();
+  const Common::Size& d = myOSystem.frameBuffer().desktopSize(BufferType::Debugger);
+  const Common::Size minSize = dialogMinSize();
+
+  mySize = Common::Size(r.w() / scale, r.h() / scale);
+  mySize.clamp(minSize.w, d.w, minSize.h, d.h);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool Debugger::applyResize()
+{
+  // Throttle to roughly the display rate: the modal-loop event-watch (and an
+  // X11 event flood) can deliver resizes far faster than 60Hz, and a full
+  // re-flow per event is wasteful
+  static constexpr uInt64 INTERVAL = 1000000 / 60;  // microseconds
+  const uInt64 now = TimerManager::getTicks();
+  if(now - myLastResizeTime < INTERVAL)
+    return false;
+
+  // Nothing to do unless a new size is pending
+  if(!myOSystem.frameBuffer().applyLiveResize())
+    return false;
+
+  myLastResizeTime = now;
+  updateSize();
+  myDialogStack.applyAll([](Dialog*& d) { d->relayout(); });
+  mySettleCountdown = 15;  // ~frames of idle before the resize is settled
+  return true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -171,62 +193,18 @@ void Debugger::updateTime(uInt64 time)
 {
   DialogContainer::updateTime(time);
 
-  // Fire the debounced rebuild once resizing has settled
-  if(myResizePending && --myResizeCountdown <= 0)
+  // Live re-flow is normally applied straight from the event handler
+  // (applyResize(), which also covers the Windows/macOS modal resize loop).
+  // Here we catch any size the handler's throttle skipped — notably the final
+  // one when the drag stops — and, once idle, persist the settled size
+  if(myOSystem.frameBuffer().applyLiveResize())
   {
-    myResizePending = false;
-
-    // Stop stretching and rebuild the framebuffer at the final dragged size,
-    // so imageRect() below reflects the new window
-    myOSystem.frameBuffer().applyPendingResize();
-
-    // Derive the new (logical) dialog size from the updated window
-    const uInt32 scale = myOSystem.frameBuffer().hidpiScaleFactor();
-    const Common::Rect& r = myOSystem.frameBuffer().imageRect();
-    Common::Size newSize(r.w() / scale, r.h() / scale);
-    const Common::Size& d = myOSystem.frameBuffer().desktopSize(BufferType::Debugger);
-    const Common::Size minSize = dialogMinSize();
-    newSize.clamp(minSize.w, d.w, minSize.h, d.h);
-
-    if(newSize != mySize)
-    {
-      mySize = newSize;
-      myOSystem.settings().setValue("dbg.res", mySize);
-      recreateDialog();
-    }
+    updateSize();
+    myDialogStack.applyAll([](Dialog*& d) { d->relayout(); });
+    mySettleCountdown = 15;
   }
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Debugger::recreateDialog()
-{
-  // Remember which tabs the user had selected; the recreate below would
-  // otherwise reset them to the first tab in each area
-  int activeTab = 0, activeRomTab = 0;
-  myDialog->getActiveTabs(activeTab, activeRomTab);
-
-  // Close everything currently shown (it references the existing dialog)
-  while(!myDialogStack.empty())
-    myDialogStack.top()->close();
-
-  // Rebuild the base dialog at the new size, reusing all existing layout code
-  myDialog = std::make_unique<DebuggerDialog>(myOSystem, *this, 0, 0,
-                                              mySize.w, mySize.h);
-  myCartDebug->setDebugWidget(myDialog->cartDebug());
-
-  // The freshly-created cart widget keeps its change-tracking baseline locally
-  // (unlike TIA/CPU/RIOT, whose old state lives in the persistent debug
-  // objects), so it starts empty.  Seed it now, before any loadConfig() runs,
-  // otherwise clicking a cart info/state/RAM tab indexes an empty vector.
-  myCartDebug->saveOldState();
-
-  // Restore the previously-selected tabs before opening, so the initial
-  // loadConfig() displays them directly (same ROM => same tab layout)
-  myDialog->setActiveTabs(activeTab, activeRomTab);
-
-  // Re-open it as the base dialog
-  myOSystem.frameBuffer().clear();
-  myDialog->open();
+  else if(mySettleCountdown > 0 && --mySettleCountdown == 0)
+    myOSystem.settings().setValue("dbg.res", mySize);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

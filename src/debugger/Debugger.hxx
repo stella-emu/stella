@@ -91,15 +91,20 @@ class Debugger : public DialogContainer
     FBInitStatus initializeVideo();
 
     /**
-      Called when the (resizeable) debugger window has been resized.  The
-      actual (expensive) rebuild is debounced until the user stops dragging.
-    */
-    void requestResize() override;
-
-    /**
-      Per-frame update; also fires the debounced window-resize rebuild.
+      Live window-resize handling, as for the launcher.  EventHandler records
+      the latest dragged size (FrameBuffer::liveResize) and drives applyResize()
+      to apply + re-flow it, so the window shows live content as it is dragged
+      rather than a stretched snapshot.  updateTime() flushes any size the
+      throttle skipped and, once the drag settles, persists the final size.
     */
     void updateTime(uInt64 time) override;
+    bool applyResize() override;
+
+    /**
+      The current (logical) size of the debugger window, which the dialog takes
+      its own size from each time it lays out.
+    */
+    const Common::Size& size() const { return mySize; }
 
     /**
       The companion TIA window: a separate, debugger-controlled window showing
@@ -372,9 +377,10 @@ class Debugger : public DialogContainer
     void reset();
 
     /**
-      Rebuild the debugger dialog at the current mySize (used after a resize).
+      Re-derive mySize from the (just resized) window, clamped to the allowed
+      bounds.  The dialog reads it back when it re-flows.
     */
-    void recreateDialog();
+    void updateSize();
 
     /**
       The minimum debugger window size for the currently configured font size.
@@ -412,10 +418,10 @@ class Debugger : public DialogContainer
     Common::Size mySize{DebuggerDialog::kSmallFontMinW,
                         DebuggerDialog::kSmallFontMinH};
 
-    // Debounced window-resize handling: rebuild the dialog once the user
-    // stops dragging, rather than on every resize event
-    bool myResizePending{false};
-    int  myResizeCountdown{0};
+    // Live window-resize handling: throttle the re-flow, and settle once the
+    // user stops dragging (see applyResize()/updateTime())
+    uInt64 myLastResizeTime{0};
+    int    mySettleCountdown{0};
 
     // The companion TIA window's DialogContainer.  Its secondary window/backend
     // is owned by the (single) FrameBuffer, not here.

@@ -385,16 +385,14 @@ void EventHandler::handleSystemEvent(SystemEvent e, int data1, int data2)
     case SystemEvent::WINDOW_RESIZED:
     {
       auto& fb = myOSystem.frameBuffer();
-      // A window that re-flows live records the latest size, then applies +
-      // re-flows + presents it right here (throttled inside applyResize()).
-      // Driving it from the handler — rather than only from the main loop's
-      // updateTime() — is what makes it work during the Windows/macOS modal
-      // resize loop, where the main loop is blocked and this handler is reached
-      // only via the SDL resize event-watch.  Other windows defer + stretch
-      // until the drag settles (the debugger), or resize immediately (fixed
-      // windows).
-      const bool live = fb.liveResize(data1, data2);
-      if(live)
+      // A user-resizable window (the launcher and the debugger) records the
+      // latest size, then applies + re-flows + presents it right here
+      // (throttled inside applyResize()).  Driving it from the handler — rather
+      // than only from the main loop's updateTime() — is what makes it work
+      // during the Windows/macOS modal resize loop, where the main loop is
+      // blocked and this handler is reached only via the SDL resize
+      // event-watch.  Every other window resizes immediately.
+      if(fb.liveResize(data1, data2))
       {
       #ifdef GUI_SUPPORT
         if(myOverlay && myOverlay->applyResize())
@@ -403,16 +401,8 @@ void EventHandler::handleSystemEvent(SystemEvent e, int data1, int data2)
       }
       else
       {
-        if(fb.deferResize(data1, data2))
-        {
-        #ifdef GUI_SUPPORT
-          if(myOverlay)
-            myOverlay->requestResize();
-        #endif
-        }
-        else
-          fb.handleResize(data1, data2);
-        // Force full render update (stretched frozen frame / immediate resize)
+        fb.handleResize(data1, data2);
+        // Force full render update
         fb.update(FrameBuffer::UpdateMode::RERENDER);
       }
       break;
