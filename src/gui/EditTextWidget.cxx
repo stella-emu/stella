@@ -92,7 +92,7 @@ void EditTextWidget::drawWidget(bool hilite)
   // Draw the text
   adjustOffset();
   const Common::Rect editRect = getEditRect();
-  s.drawString(_font, editString(), _x + _textOfs, _y + 2, editRect.w(), editRect.h(),
+  s.drawString(_font, editString(), _x + _textOfs, _y + textOffsetY(), editRect.w(), editRect.h(),
                _changed && isEnabled()
                ? kDbgChangedTextColor
                : isEnabled() ? _textcolor : kColor,

@@ -285,7 +285,7 @@ void PopUpWidget::drawWidget(bool hilite)
 
   // Draw the label, if any
   if(_labelWidth > 0)
-    s.drawString(_font, _label, _x, _y + myTextY, _labelWidth,
+    s.drawString(_font, _label, _x, _y + textOffsetY(), _labelWidth,
                  isEnabled() ? _textcolor : kColor, TextAlign::Left);
 
   // Draw a thin frame around us.
@@ -311,7 +311,7 @@ void PopUpWidget::drawWidget(bool hilite)
   const TextAlign align = (_font.getStringWidth(name) > w && !editable) ?
                            TextAlign::Right : TextAlign::Left;
   adjustOffset();
-  s.drawString(_font, name, x + _textOfs, _y + myTextY, w,
+  s.drawString(_font, name, x + _textOfs, _y + textOffsetY(), w,
                !isEnabled() ? kColor : _changed ? kDbgChangedTextColor : kTextColor,
                align, editable ? -_editScrollOffset : 0, !editable);
 

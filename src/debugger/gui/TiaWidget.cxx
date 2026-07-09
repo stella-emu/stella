@@ -497,7 +497,10 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
   const auto start = [&](int sw) { return (sw - sfWidth + 2) / 2; };
   const int colw = myPF[0]->getWidth() / 4;
   xpos = myPF[0]->getLeft() + start(colw);
-  const int _ypos = ypos - sfHeight;
+  // A label clears its whole height, which is a line rather than a glyph tall,
+  // so hang it from the boxes rather than measuring up by the glyph height;
+  // otherwise the padding below its text erases the boxes' top border
+  const int _ypos = myPF[0]->getTop() - sf.getLineHeight();
   for(int i = 4; i <= 7; ++i)
   {
     new StaticTextWidget(boss, sf, xpos, _ypos, bitNames[i]);

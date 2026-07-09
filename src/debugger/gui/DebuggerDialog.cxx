@@ -55,11 +55,18 @@
 #include "Layout.hxx"
 #include "DebuggerDialog.hxx"
 
-// Horizontal border of the status area, left of its fields
+// Horizontal border of the status and ROM areas, left of their widgets
 static constexpr int HBORDER = 10;
 
 // Border and gap of the ROM area, around and between its widgets
 static constexpr int VBORDER = 4, VGAP = 4;
+
+// Inset and gap of the ROM area's control columns, which the CPU area stretches
+// up to: the data grid operations, the rewind/unwind arrows and the step buttons
+static constexpr int HGAP = 5;
+
+// Vertical gap separating the CPU, RAM and disassembly sections
+static constexpr int SECTION_GAP = 10;
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 DebuggerDialog::DebuggerDialog(OSystem& osystem, DialogContainer& parent,
@@ -532,13 +539,12 @@ void DebuggerDialog::addTabArea()
 void DebuggerDialog::layoutTabArea()
 {
   const Common::Rect& r = getTabBounds();
-  constexpr int vBorder = 4;
 
-  myTab->setArea(r.x(), r.y() + vBorder, r.w(), r.h() - vBorder);
+  myTab->setArea(r.x(), r.y() + VBORDER, r.w(), r.h() - VBORDER);
   myTab->updateTabSizes();
 
-  const int widWidth  = r.w() - vBorder;
-  const int widHeight = r.h() - myTab->getTabHeight() - vBorder - 4;
+  const int widWidth  = r.w() - VBORDER;
+  const int widHeight = r.h() - myTab->getTabHeight() - VBORDER - 4;
 
   // Tab contents are positioned relative to their tab, which carries them along
   myPrompt->setArea(2, 2, widWidth - 4, widHeight);
@@ -567,24 +573,34 @@ void DebuggerDialog::addStatusArea()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DebuggerDialog::layoutStatusArea()
 {
-  const int lineHeight = myLFont->getLineHeight();
+  using GUI::BoxLayout;
+  using GUI::anchoredItem;
+  using GUI::vCentered;
+  using GUI::widgetItem;
+  using Dir = BoxLayout::Dir;
+
   const Common::Rect& r = getStatusBounds();
-  const int vGap = lineHeight / 3;
+  const int vGap = myLFont->getLineHeight() / 3;
+  const int xpos = r.x() + HBORDER,
+            width = r.w() - HBORDER;
 
-  const int xpos = r.x() + HBORDER;
-  int ypos = r.y();
+  // The column reaches down to the tab area below it, leaving the message box
+  // in the gap directly above the tabs
+  const int height = getTabBounds().y() + VBORDER - r.y();
 
-  // The info widget picks its own height, along with the label form that fits
-  myTiaInfo->setArea(xpos, ypos, r.w() - HBORDER, 0);
+  // The info widget fits its height to the width it is given (and spells its
+  // labels out only if they fit), so measure it before the column shares out
+  // what is left; the box only repositions it
+  myTiaInfo->setArea(xpos, r.y(), width, 0);
 
-  ypos = myTiaInfo->getBottom() + vGap;
-  myTiaZoom->setArea(xpos, ypos, r.w() - HBORDER,
-                     r.h() - ypos - vGap - lineHeight + 3);
-
-  // Never force the message box's height; it frames its own text
-  ypos = myTiaZoom->getBottom() + vGap;
-  myMessageBox->setPos(xpos, ypos);
-  myMessageBox->setWidth(myTiaZoom->getWidth());
+  // The zoom view takes whatever height is left; never force the message box's
+  // height, which frames its own text
+  BoxLayout column(Dir::Vertical, vGap);
+  column.addFixed(anchoredItem(myTiaInfo), myTiaInfo->getHeight());
+  column.addStretch(widgetItem(myTiaZoom));
+  column.addFixed(vCentered(myMessageBox, myMessageBox->getHeight()),
+                  myMessageBox->getHeight());
+  column.doLayout(xpos, r.y(), width, height);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -743,6 +759,7 @@ void DebuggerDialog::addRomArea()
 void DebuggerDialog::layoutRomArea()
 {
   using GUI::BoxLayout;
+  using GUI::anchoredItem;
   using GUI::widgetItem;
   using Dir = BoxLayout::Dir;
 
@@ -752,39 +769,51 @@ void DebuggerDialog::layoutRomArea()
 
   // The step and run buttons, in a column down the right-hand edge
   const int bwidth = myLFont->getStringWidth("Frame +1 ");
-  const int buttonX = r.x() + r.w() - bwidth - 5,
-            buttonY = r.y() + 5;
 
-  BoxLayout stepCol(Dir::Vertical, VGAP);
+  auto stepCol = std::make_unique<BoxLayout>(Dir::Vertical, VGAP);
   for(auto* b: myStepButtons)
-    stepCol.addFixed(widgetItem(b), bheight);
-  stepCol.doLayout(buttonX, buttonY, bwidth, 5 * bheight + 4 * VGAP);
+    stepCol->addFixed(widgetItem(b), bheight);
 
-  // The rewind and unwind arrows beside them, spanning three and two rows
+  // The rewind and unwind arrows beside them, spanning three and two rows so
+  // that the pair stands exactly as tall as the step buttons
   const int awidth = bheight;
-  const int arrowX = buttonX - awidth - 5;
 
-  myRewindButton->setArea(arrowX, buttonY, awidth, bheight * 3 + VGAP * 2);
-  myUnwindButton->setArea(arrowX, myRewindButton->getBottom() + VGAP,
-                          awidth, bheight * 2 + VGAP);
+  auto arrowCol = std::make_unique<BoxLayout>(Dir::Vertical, VGAP);
+  arrowCol->addFixed(widgetItem(myRewindButton), bheight * 3 + VGAP * 2);
+  arrowCol->addFixed(widgetItem(myUnwindButton), bheight * 2 + VGAP);
 
-  // The Options button, with the data grid operations below it
-  const int owidth = myLFont->getStringWidth(myOptionsButton->getLabel())
-                   + fontWidth;
-  const int opsX = arrowX - 8 * fontWidth - 20;
+  // The Options button, with the data grid operations below it.  Neither is
+  // stretched, so the button takes its size from the live font here (a button
+  // keeps its size across a font change); the ops widget sizes itself
+  myOptionsButton->setWidth(myLFont->getStringWidth(myOptionsButton->getLabel())
+                            + fontWidth);
+  myOptionsButton->setHeight(bheight);
 
-  myOptionsButton->setArea(opsX, buttonY, owidth, bheight);
-  myDataGridOps->setPos(opsX, myOptionsButton->getBottom() + VGAP * 2);
+  auto opsCol = std::make_unique<BoxLayout>(Dir::Vertical);
+  opsCol->addFixed(anchoredItem(myOptionsButton), bheight);
+  opsCol->addSpace(VGAP * 2);
+  opsCol->addFixed(anchoredItem(myDataGridOps), myDataGridOps->getHeight());
 
-  // The CPU and RAM areas fill the width left of the operations column; both
-  // size their own height to their content
-  myCpu->setArea(r.x() + 10, r.y() + 5, opsX - r.x() - 10, 0);
-  myRam->setArea(r.x() + 10, myCpu->getBottom() + 10, r.w() - 10, 0);
+  // The CPU area takes whatever width the three control columns leave it, and
+  // sizes its own height to its content
+  BoxLayout topRow(Dir::Horizontal);
+  topRow.addStretch(widgetItem(myCpu));
+  topRow.addFixed(std::move(opsCol), myDataGridOps->getWidth());
+  topRow.addSpace(HGAP);
+  topRow.addFixed(std::move(arrowCol), awidth);
+  topRow.addSpace(HGAP);
+  topRow.addFixed(std::move(stepCol), bwidth);
+  topRow.doLayout(r.x() + HBORDER, r.y() + HGAP, r.w() - HBORDER - HGAP,
+                  bheight * 5 + VGAP * 4);
+
+  // The RAM area spans the full width below the CPU, and sizes its own height
+  myRam->setArea(r.x() + HBORDER, myCpu->getBottom() + SECTION_GAP,
+                 r.w() - HBORDER, 0);
 
   ////////////////////////////////////////////////////////////////////
   // Disassembly area
 
-  const int tabY = myRam->getBottom() + 5;
+  const int tabY = myRam->getBottom() + HGAP;
   const int tabWidth = r.w() - VBORDER - 1;
   const int tabHeight = r.h() - tabY - 1;
 

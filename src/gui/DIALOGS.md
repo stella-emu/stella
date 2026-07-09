@@ -174,7 +174,7 @@ You never construct `WidgetLayout` directly; use these `GUI::` helper builders:
 | `vCentered(w, h, minW=0)`                | keeps natural height `h`, vertically centered in a taller cell             |
 | `hCentered(w, width, minH=0)`            | keeps natural width, horizontally centered in a wider cell                 |
 | `indentedItem(w, indent, minW=0)`        | natural size, positioned `indent` px from the left                        |
-| `labelColumn(label, control)`            | a label centered on the (taller) control it names                         |
+| `labelColumn(label, control)`            | a label sitting on the text line of the control it names                  |
 | `labeledRow(label, control, labelW=0, indent=0)` | a row pairing a **separate** label with a control                 |
 
 Rules of thumb:
@@ -541,6 +541,18 @@ Two corollaries:
   (`_w - HBORDER*2 - …`), not the ctor's value-box formula. `setWidth` also
   resizes the drop-down menu, so a placeholder-width popup sized in `layout()`
   gets a correct menu.
+- **A label never top-aligns with the control it names.** A `StaticTextWidget`
+  draws its text at its top edge; a framed control (`EditTextWidget`,
+  `PopUpWidget`, `DataGridWidget`, `ToggleWidget`) insets its text by
+  `textOffsetY()`. Pair them with `labelColumn()` / `labeledRow()`, which drop
+  the label by that inset. Aligning the *boxes* instead of the *text* leaves the
+  label a pixel or two high. For a column of labels beside a multi-row grid,
+  start the column with `addSpace(grid->textOffsetY())`.
+- **A label's box is `lineHeight` tall and clears its background**, so it carries
+  ~2px of padding *below* its glyphs. Stacking one directly above another widget
+  by measuring up `getFontHeight()` makes that padding erase the widget's top
+  border. Hang it from the widget instead: `y = target->getTop() -
+  label->getHeight()`.
 - **Anything that reads `_w`/`_h` in the ctor breaks** — they are 0 there. Move
   such code to `layout()`.
 - **Don't fill self-labeling widgets** (`PopUpWidget`/`SliderWidget`) — anchor

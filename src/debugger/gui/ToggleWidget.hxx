@@ -43,6 +43,10 @@ class ToggleWidget : public Widget, public CommandSender
     bool wantsFocus() const override { return true; }
 
     int colWidth() const { return _colWidth; }
+
+    // Each row insets its text; drawWidget() and any label beside us use this
+    int textOffsetY() const override { return 2; }
+
     void setEditable(bool editable) { _editable = editable; }
     bool isEditable() const { return _editable; }
 

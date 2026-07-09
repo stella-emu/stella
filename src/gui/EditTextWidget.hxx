@@ -33,6 +33,9 @@ class EditTextWidget : public EditableWidget
 
     void handleMouseDown(int x, int y, MouseButton b, int clickCount) override;
 
+    // The frame insets the text; drawWidget() and any label beside us use this
+    int textOffsetY() const override { return 2; }
+
     void refreshFontMetrics() override;
 
     // Get total width of widget

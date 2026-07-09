@@ -119,6 +119,15 @@ class Widget : public GuiObject
     virtual const GUI::Font& font() const { return _font; }
 
     /**
+      The vertical offset, from the widget's top edge, at which it draws its
+      text.  A plain label draws at its top edge, whereas a control that frames
+      its own text (edit field, pop-up, data grid) insets it.  A label therefore
+      pairs with such a control by sitting this far below its top edge, which is
+      what GUI::labelColumn() does.
+    */
+    virtual int textOffsetY() const { return 0; }
+
+    /**
       The referenced font's metrics may have changed at runtime (e.g. the user
       picked a different launcher font).  Re-read any cached font-derived state.
       The base refreshes the common metrics; widgets that cache additional

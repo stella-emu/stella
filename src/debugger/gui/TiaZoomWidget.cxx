@@ -29,7 +29,6 @@
 #include "Dialog.hxx"
 #include "ToolTip.hxx"
 #include "ContextMenu.hxx"
-#include "FrameManager.hxx"
 #include "TiaZoomWidget.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -88,10 +87,11 @@ void TiaZoomWidget::setArea(int x, int y, int w, int h)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TiaZoomWidget::recomputeGrid(int w, int h)
 {
-  // Use all available space, up to the maximum bounds of the TIA image; the
-  // zoom view need not preserve the TIA aspect ratio
-  _w = std::min(w, 320);
-  _h = std::min(h, static_cast<int>(FrameManager::Metrics::maxHeight));
+  // Use all the space available; the zoom view need not preserve the TIA aspect
+  // ratio, and once the view outgrows the image drawWidget() simply stops at the
+  // image's edge, leaving the rest of the view blank
+  _w = w;
+  _h = h;
 
   myNumCols = (_w - 4) / myZoomLevel;
   myNumRows = (_h - 4) / myZoomLevel;
@@ -298,7 +298,9 @@ void TiaZoomWidget::handleCommand(CommandSender* sender, int cmd, int data, int 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Common::Point TiaZoomWidget::getToolTipIndex(const Common::Point& pos) const
 {
-  const Int32 width = instance().console().tia().width() * 2;
+  // A native TIA pixel is drawn 'myZoomLevel << 1' wide and myOffX counts
+  // doubled pixels, so 'col' is a native column, as getToolTip() indexes with
+  const Int32 width = instance().console().tia().width();
   const Int32 height = instance().console().tia().height();
   const int col = (pos.x - 1 - getAbsX()) / (myZoomLevel << 1) + (myOffX >> 1);
   const int row = (pos.y - 1 - getAbsY()) / myZoomLevel + myOffY;
@@ -348,6 +350,7 @@ void TiaZoomWidget::drawWidget(bool hilite)
   // and I don't have time to make it faster :)
   const uInt8* currentFrame  = instance().console().tia().outputBuffer();
   const int width = instance().console().tia().width(),
+            height = instance().console().tia().height(),
             wzoom = myZoomLevel << 1,
             hzoom = myZoomLevel;
 
@@ -357,9 +360,14 @@ void TiaZoomWidget::drawWidget(bool hilite)
   instance().console().tia().electronBeamPos(scanx, scany);
   const uInt32 scanoffset = width * scany + scanx;
 
-  for(int y = myOffY, row = 0; y < myNumRows+myOffY; ++y, row += hzoom)
+  // The view may be larger than the image, in which case it shows all of it and
+  // leaves the rest blank; never read beyond the frame buffer
+  const int xEnd = std::min((myNumCols + myOffX) >> 1, width),
+            yEnd = std::min(myNumRows + myOffY, height);
+
+  for(int y = myOffY, row = 0; y < yEnd; ++y, row += hzoom)
   {
-    for(int x = myOffX >> 1, col = 0; x < (myNumCols+myOffX) >> 1; ++x, col += wzoom)
+    for(int x = myOffX >> 1, col = 0; x < xEnd; ++x, col += wzoom)
     {
       const uInt32 idx = std::max(y * width + x, 0);
       const auto color = static_cast<ColorId>(currentFrame[idx] | (idx > scanoffset ? 1 : 0));

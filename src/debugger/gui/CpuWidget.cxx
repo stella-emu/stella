@@ -131,6 +131,7 @@ void CpuWidget::reflow(int max_w)
 {
   using GUI::BoxLayout;
   using GUI::anchoredItem;
+  using GUI::labelColumn;
   using GUI::vCentered;
   using Dir = BoxLayout::Dir;
 
@@ -147,7 +148,7 @@ void CpuWidget::reflow(int max_w)
 
   // PC row: "PC" label, PC grid, then the current-PC label filling the rest
   BoxLayout pcRow(Dir::Horizontal);
-  pcRow.addFixed(anchoredItem(myPCText), lwidth);
+  pcRow.addFixed(labelColumn(myPCText, myPCGrid), lwidth);
   pcRow.addFixed(anchoredItem(myPCGrid), pcGridW);
   pcRow.addSpace(10);
   pcRow.addStretch(vCentered(myPCLabel, myPCLabel->getHeight()));
@@ -157,8 +158,10 @@ void CpuWidget::reflow(int max_w)
   // Register block: label | hex | # dec | % bin | data source, the last of
   // which stretches to fill the remaining width.  Each per-row column is a
   // 4-row vertical box that lines up with the (4-row) data grids beside it.
+  // A grid insets each row's text, so the labels beside it start that far down
   const auto column = [&](const std::array<StaticTextWidget*, 4>& cells) {
     auto col = std::make_unique<BoxLayout>(Dir::Vertical);
+    col->addSpace(myCpuGrid->textOffsetY());
     for(auto* w: cells)
       col->addFixed(anchoredItem(w), lineHeight);
     return col;
@@ -185,7 +188,7 @@ void CpuWidget::reflow(int max_w)
   // PS row: "PS" label and the processor-status toggle
   const int psY = myCpuGrid->getBottom() + VGAP;
   BoxLayout psRow(Dir::Horizontal);
-  psRow.addFixed(anchoredItem(myPSText), lwidth);
+  psRow.addFixed(labelColumn(myPSText, myPSRegister), lwidth);
   psRow.addFixed(anchoredItem(myPSRegister), myPSRegister->getWidth());
   psRow.doLayout(x, psY, max_w, myPSRegister->getHeight());
 
@@ -193,7 +196,7 @@ void CpuWidget::reflow(int max_w)
   // resolved above (a cross-reference the box layout does not express)
   const int srcX = myCpuDataSrc[0]->getLeft(),
             srcW = myCpuDataSrc[0]->getWidth();
-  myDestText->setPos(srcX - fontWidth * 4.5, psY + 2);
+  myDestText->setPos(srcX - fontWidth * 4.5, psY + myCpuDataDest->textOffsetY());
   myCpuDataDest->setPos(srcX, psY);
   myCpuDataDest->setWidth(srcW);
 

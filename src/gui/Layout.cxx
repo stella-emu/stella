@@ -188,10 +188,11 @@ unique_ptr<Layout> indentedItem(Widget* widget, int indent, int minW)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 unique_ptr<Layout> labelColumn(Widget* label, Widget* control)
 {
-  // A label draws its text top-aligned, whereas a control frames its own text
-  // and so is the taller of the two; sit the label on the control's centre
+  // A label draws its text at its top edge, whereas a control frames its own
+  // text and insets it; drop the label by that inset so the two texts, rather
+  // than the two boxes, sit on the same line
   auto column = std::make_unique<BoxLayout>(BoxLayout::Dir::Vertical);
-  column->addSpace(std::max(control->getHeight() - label->getHeight(), 0) / 2);
+  column->addSpace(std::max(control->textOffsetY() - label->textOffsetY(), 0));
   column->addFixed(anchoredItem(label), label->getHeight());
   column->addStretch(std::make_unique<WidgetLayout>(nullptr));
   return column;

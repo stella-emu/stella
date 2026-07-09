@@ -125,7 +125,7 @@ void ToggleBitWidget::drawWidget(bool hilite)
     {
       ColorId textColor = kTextColor;
       const int x = _x + 4 + (col * _colWidth),
-                y = _y + 2 + (row * _rowHeight),
+                y = _y + textOffsetY() + (row * _rowHeight),
                 pos = row*_cols + col;
 
       // Draw the selected item inverted, on a highlighted background.

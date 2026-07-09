@@ -85,6 +85,9 @@ class DataGridWidget : public EditableWidget
 
     int colWidth() const { return _colWidth; }
 
+    // Each row insets its text; drawWidget() and any label beside us use this
+    int textOffsetY() const override { return 2; }
+
     void setOpsWidget(DataGridOpsWidget* w) { _opsWidget = w; }
 
     void setCrossed(bool enable);
