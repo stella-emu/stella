@@ -63,6 +63,14 @@ class ToggleWidget : public Widget, public CommandSender
     void drawWidget(bool hilite) override = 0;
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 
+    // The grid's size is intrinsic: exactly what its rows and columns need.
+    // Child classes derive _rowHeight/_colWidth from the font, then call this
+    // (from their constructor and their refreshFontMetrics())
+    void recalcSize() {
+      _w = _colWidth * _cols + 1;
+      _h = _rowHeight * _rows + 1;
+    }
+
   protected:
     int  _rows{0};
     int  _cols{0};

@@ -36,10 +36,13 @@ class ToggleBitWidget : public ToggleWidget
 
     string getToolTip(const Common::Point& pos) const override;
 
+    void refreshFontMetrics() override;
+
   protected:
     void drawWidget(bool hilite) override;
 
   protected:
+    int _colChars{1};   // characters per column; _colWidth follows the font
     StringList _offList;
     StringList _onList;
     StringList _labelList;

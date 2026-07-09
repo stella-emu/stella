@@ -141,6 +141,15 @@ void CpuWidget::reflow(int max_w)
   const int lwidth = 4 * fontWidth;
   const int x = _x, y = _y;
 
+  // An edit field restores its own framed height on a font change, but these
+  // are a pixel shorter, so that four of them stack onto four grid rows
+  const int editHeight = _font.getFontHeight() + 3;
+
+  myPCLabel->setHeight(editHeight);
+  for(auto* w: myCpuDataSrc)
+    w->setHeight(editHeight);
+  myCpuDataDest->setHeight(editHeight);
+
   const int pcGridW  = myPCGrid->getWidth(),
             hexGridW = myCpuGrid->getWidth(),
             decGridW = myCpuGridDecValue->getWidth(),

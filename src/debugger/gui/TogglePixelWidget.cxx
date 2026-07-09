@@ -30,8 +30,7 @@ TogglePixelWidget::TogglePixelWidget(GuiObject* boss, const GUI::Font& font,
   _rowHeight = _colWidth = font.getLineHeight();
 
   // Calculate real dimensions
-  _w = _colWidth  * cols + 1;
-  _h = _rowHeight * rows + 1;
+  recalcSize();
 
   // Changed state isn't used, but we still need to fill it
   while(static_cast<int>(_changedList.size()) < rows * cols)
@@ -39,6 +38,15 @@ TogglePixelWidget::TogglePixelWidget(GuiObject* boss, const GUI::Font& font,
   // prepare _stateList for change tracking
   while(static_cast<int>(_stateList.size()) < rows * cols)
     _stateList.push_back(false);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TogglePixelWidget::refreshFontMetrics()
+{
+  ToggleWidget::refreshFontMetrics();
+
+  _rowHeight = _colWidth = _lineHeight;
+  recalcSize();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

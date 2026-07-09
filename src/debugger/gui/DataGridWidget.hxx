@@ -85,6 +85,8 @@ class DataGridWidget : public EditableWidget
 
     int colWidth() const { return _colWidth; }
 
+    void refreshFontMetrics() override;
+
     // Each row insets its text; drawWidget() and any label beside us use this
     int textOffsetY() const override { return 2; }
 
@@ -126,6 +128,7 @@ class DataGridWidget : public EditableWidget
   protected:
     int   _rows{0};
     int   _cols{0};
+    int   _colChars{0};   // characters per column; _colWidth follows the font
     int   _currentRow{0};
     int   _currentCol{0};
     int   _rowHeight{0};

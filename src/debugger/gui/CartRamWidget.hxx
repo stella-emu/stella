@@ -48,10 +48,6 @@ class CartRamWidget : public Widget, public CommandSender
     // Font used for 'normal' text; _font is for 'label' text
     const GUI::Font& _nfont;
 
-    // These will be needed by most of the child classes;
-    // we may as well make them protected variables
-    int myFontWidth{0}, myFontHeight{0}, myLineHeight{0}, myButtonHeight{0};
-
   private:
     class InternalRamWidget : public RamWidget
     {

@@ -36,17 +36,11 @@ RamWidget::RamWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& n
   : Widget(boss, lfont, x, y, w, h),
     CommandSender(boss),
     _nfont{nfont},
-    myFontWidth{lfont.getMaxCharWidth()},
-    myFontHeight{lfont.getFontHeight()},
-    myLineHeight{lfont.getLineHeight()},
-    myButtonHeight{static_cast<int>(myLineHeight * 1.25)},
     myRamSize{ramsize},
     myNumRows{numrows},
     myPageSize{pagesize},
     myAutoHeight{h == 0}
 {
-  const int bwidth  = lfont.getStringWidth("Compare " + ELLIPSIS),
-            bheight = myLineHeight + 2;
   WidgetArray wid;
 
   // Create every widget at a placeholder position; reflow() positions/sizes them
@@ -62,31 +56,31 @@ RamWidget::RamWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& n
   addFocusWidget(myRamGrid);
 
   // Action buttons to the right of the RAM grid
-  myUndoButton = new ButtonWidget(boss, lfont, 0, 0, bwidth, bheight, "Undo", kUndoCmd);
+  myUndoButton = new ButtonWidget(boss, lfont, 0, 0, 1, 1, "Undo", kUndoCmd);
   myUndoButton->setHelpAnchor("M6532Search", true);
   wid.push_back(myUndoButton);
   myUndoButton->setTarget(this);
 
-  myRevertButton = new ButtonWidget(boss, lfont, 0, 0, bwidth, bheight, "Revert", kRevertCmd);
+  myRevertButton = new ButtonWidget(boss, lfont, 0, 0, 1, 1, "Revert", kRevertCmd);
   myRevertButton->setHelpAnchor("M6532Search", true);
   wid.push_back(myRevertButton);
   myRevertButton->setTarget(this);
 
-  mySearchButton = new ButtonWidget(boss, lfont, 0, 0, bwidth, bheight,
+  mySearchButton = new ButtonWidget(boss, lfont, 0, 0, 1, 1,
                                     "Search" + ELLIPSIS, kSearchCmd);
   mySearchButton->setHelpAnchor("M6532Search", true);
   mySearchButton->setToolTip("Search and highlight found values.");
   wid.push_back(mySearchButton);
   mySearchButton->setTarget(this);
 
-  myCompareButton = new ButtonWidget(boss, lfont, 0, 0, bwidth, bheight,
+  myCompareButton = new ButtonWidget(boss, lfont, 0, 0, 1, 1,
                                      "Compare" + ELLIPSIS, kCmpCmd);
   myCompareButton->setHelpAnchor("M6532Search", true);
   myCompareButton->setToolTip("Compare highlighted values.");
   wid.push_back(myCompareButton);
   myCompareButton->setTarget(this);
 
-  myRestartButton = new ButtonWidget(boss, lfont, 0, 0, bwidth, bheight, "Reset", kRestartCmd);
+  myRestartButton = new ButtonWidget(boss, lfont, 0, 0, 1, 1, "Reset", kRestartCmd);
   myRestartButton->setHelpAnchor("M6532Search", true);
   myRestartButton->setToolTip("Reset search/compare mode.");
   wid.push_back(myRestartButton);
@@ -95,19 +89,21 @@ RamWidget::RamWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& n
   addToFocusList(wid);
 
   // Row-address label and column headers for the RAM grid
+  const int fontHeight = lfont.getFontHeight();
+
   myRamStart = new StaticTextWidget(_boss, lfont, 0, 0,
-                                    lfont.getStringWidth("xxxx"), myFontHeight,
+                                    lfont.getStringWidth("xxxx"), fontHeight,
                                     "00xx", TextAlign::Left);
 
   for(int col = 0; col < 16; ++col)
     myColHeaders[col] = new StaticTextWidget(_boss, lfont, 0, 0,
-                          myFontWidth, myFontHeight,
+                          _fontWidth, fontHeight,
                           Common::Base::toString(col, Common::Base::Fmt::_16_1),
                           TextAlign::Left);
 
   for(uInt32 row = 0; row < myNumRows; ++row)
     myRamLabels[row] = new StaticTextWidget(_boss, _font, 0, 0,
-                         myFontWidth, myFontHeight, "", TextAlign::Left);
+                         _fontWidth, fontHeight, "", TextAlign::Left);
 
   // Detail row for the selected RAM cell (built from right to left originally,
   // but here just created; reflow() right-aligns the hex/dec/bin cluster)
@@ -133,7 +129,7 @@ RamWidget::RamWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& n
   addFocusWidget(myBinValue);
 
   myLabelText = new StaticTextWidget(boss, lfont, 0, 0, "Label");
-  myLabel = new EditTextWidget(boss, nfont, 0, 0, 1, myLineHeight);
+  myLabel = new EditTextWidget(boss, nfont, 0, 0, 1, _lineHeight);
   myLabel->setEditable(false, true);
   // NOLINTEND(cppcoreguidelines-prefer-member-initializer)
 
@@ -175,14 +171,24 @@ void RamWidget::reflow(int w)
   using Dir = BoxLayout::Dir;
 
   const int x = _x, y = _y;
-  const int VGAP    = myFontHeight / 4;
-  const int bheight = myLineHeight + 2;
+  const int VGAP    = _font.getFontHeight() / 4;
+  const int bheight = _lineHeight + 2;
   const int gridX   = x + _font.getStringWidth("xxxx");
-  const int gridY   = y + myLineHeight;
+  const int gridY   = y + _lineHeight;
   const int colWidth = myRamGrid->colWidth(),
             gridW    = myRamGrid->getWidth();
 
   _w = w;
+
+  // A button keeps its size across a font change, so size them from the live
+  // font here; they all share the widest label's width
+  const int bwidth = _font.getStringWidth("Compare " + ELLIPSIS);
+  for(auto* b: {myUndoButton, myRevertButton, mySearchButton, myCompareButton,
+                myRestartButton})
+  {
+    b->setWidth(bwidth);
+    b->setHeight(bheight);
+  }
 
   // The grid (its scrollbar, if any, tracks it via DataGridWidget::setPos)
   myRamGrid->setPos(gridX, gridY);
@@ -192,16 +198,16 @@ void RamWidget::reflow(int w)
   header.addFixed(anchoredItem(myRamStart), gridX - x);
   for(auto* h: myColHeaders)
     header.addFixed(indentedItem(h, 8), colWidth);
-  header.doLayout(x, y, gridX - x + 16 * colWidth, myLineHeight);
+  header.doLayout(x, y, gridX - x + 16 * colWidth, _lineHeight);
 
   // Row-address labels down the left side of the grid, which insets each row's
   // text, so they start that far down to share its lines
   BoxLayout rowLabels(Dir::Vertical);
   rowLabels.addSpace(myRamGrid->textOffsetY());
   for(uInt32 row = 0; row < myNumRows; ++row)
-    rowLabels.addFixed(anchoredItem(myRamLabels[row]), myLineHeight);
+    rowLabels.addFixed(anchoredItem(myRamLabels[row]), _lineHeight);
   rowLabels.doLayout(gridX - _font.getStringWidth("x "), gridY,
-                     myFontWidth, myNumRows * myLineHeight);
+                     _fontWidth, myNumRows * _lineHeight);
 
   // Action buttons to the right of the grid (a wider gap sets Search apart)
   BoxLayout buttons(Dir::Vertical);
@@ -214,34 +220,34 @@ void RamWidget::reflow(int w)
   buttons.addFixed(anchoredItem(myCompareButton), bheight);
   buttons.addSpace(VGAP);
   buttons.addFixed(anchoredItem(myRestartButton), bheight);
-  buttons.doLayout(gridX + gridW + 4, gridY, myUndoButton->getWidth(),
+  buttons.doLayout(gridX + gridW + 4, gridY, bwidth,
                    bheight * 5 + VGAP * 10);
 
   // Detail row for the selected RAM cell: a "Label" caption plus a stretchy
   // label field, then the hex / #dec / %bin values right-aligned
   const uInt32 detailRow = myNumRows < 8 ? 9 : myNumRows + 1;
-  const int detailY = gridY + (detailRow - 1) * myLineHeight + VGAP * 2;
+  const int detailY = gridY + (detailRow - 1) * _lineHeight + VGAP * 2;
 
   // The controls inset their own text, so the row is positioned by that text
   // line: the labels land on 'detailY' and the controls just above it
   BoxLayout detail(Dir::Horizontal);
   detail.addFixed(labelColumn(myLabelText, myLabel), myLabelText->getWidth());
-  detail.addSpace(myFontWidth / 2);
+  detail.addSpace(_fontWidth / 2);
   detail.addStretch(vCentered(myLabel, myLabel->getHeight()));
-  detail.addSpace(myFontWidth * 3 / 2);
+  detail.addSpace(_fontWidth * 3 / 2);
   detail.addFixed(anchoredItem(myHexValue), myHexValue->getWidth());
-  detail.addSpace(myFontWidth);
+  detail.addSpace(_fontWidth);
   detail.addFixed(labelColumn(myDecPrefix, myDecValue), myDecPrefix->getWidth());
   detail.addFixed(anchoredItem(myDecValue), myDecValue->getWidth());
-  detail.addSpace(myFontWidth);
+  detail.addSpace(_fontWidth);
   detail.addFixed(labelColumn(myBinPrefix, myBinValue), myBinPrefix->getWidth());
   detail.addFixed(anchoredItem(myBinValue), myBinValue->getWidth());
   detail.addSpace(9);
-  detail.doLayout(x, detailY - myHexValue->textOffsetY(), w, myLineHeight);
+  detail.doLayout(x, detailY - myHexValue->textOffsetY(), w, _lineHeight);
 
   // The M6532 view fits its height to the content
   if(myAutoHeight)
-    _h = detailY + myLineHeight - y;
+    _h = detailY + _lineHeight - y;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

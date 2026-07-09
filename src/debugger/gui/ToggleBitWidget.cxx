@@ -26,6 +26,7 @@ ToggleBitWidget::ToggleBitWidget(GuiObject* boss, const GUI::Font& font,
                                  int x, int y, int cols, int rows, int colchars,
                                  const StringList& labels)
   : ToggleWidget(boss, font, x, y, cols, rows),
+    _colChars{colchars},
     _labelList{labels}
 {
   _rowHeight = font.getLineHeight();
@@ -43,8 +44,7 @@ ToggleBitWidget::ToggleBitWidget(GuiObject* boss, const GUI::Font& font,
   }
 
   // Calculate real dimensions
-  _w = _colWidth  * cols + 1;
-  _h = _rowHeight * rows + 1;
+  recalcSize();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -52,6 +52,16 @@ ToggleBitWidget::ToggleBitWidget(GuiObject* boss, const GUI::Font& font,
                                  int x, int y, int cols, int rows, int colchars)
   : ToggleBitWidget(boss, font, x, y, cols, rows, colchars, StringList())
 {
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void ToggleBitWidget::refreshFontMetrics()
+{
+  ToggleWidget::refreshFontMetrics();
+
+  _rowHeight = _lineHeight;
+  _colWidth  = _colChars * _fontWidth + 8;
+  recalcSize();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

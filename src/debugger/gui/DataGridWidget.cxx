@@ -40,6 +40,7 @@ DataGridWidget::DataGridWidget(GuiObject* boss, const GUI::Font& font,
                    font.getLineHeight()*rows + 1),
     _rows{rows},
     _cols{cols},
+    _colChars{colchars},
     _rowHeight{font.getLineHeight()},
     _colWidth{colchars * font.getMaxCharWidth() + 8},
     _bits{bits},
@@ -703,6 +704,28 @@ void DataGridWidget::setPos(const Common::Point& pos)
   // Keep the (optional) scrollbar flush against the grid's right edge
   if(_scrollBar)
     _scrollBar->setPos(_x + _w, _y);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void DataGridWidget::refreshFontMetrics()
+{
+  EditableWidget::refreshFontMetrics();
+
+  // The grid's size is intrinsic: it is exactly what its rows and columns need
+  // for the current font, so recompute it here rather than leaving it stale for
+  // the owning widget's reflow to read back
+  _rowHeight = _lineHeight;
+  _colWidth = _colChars * _fontWidth + 8;
+  _w = _cols * _colWidth + 1;
+  _h = _rowHeight * _rows + 1;
+
+  // The scrollbar refreshes its own (font-derived) width, but the grid owns its
+  // position and height
+  if(_scrollBar)
+  {
+    _scrollBar->setPos(_x + _w, _y);
+    _scrollBar->setHeight(_h);
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -32,11 +32,7 @@ CartRamWidget::CartRamWidget(
       int x, int y, int w, int h, CartDebugWidget& cartDebug)
   : Widget(boss, lfont, x, y, w, h),
     CommandSender(boss),
-    _nfont{nfont},
-    myFontWidth{lfont.getMaxCharWidth()},
-    myFontHeight{lfont.getFontHeight()},
-    myLineHeight{lfont.getLineHeight()},
-    myButtonHeight{myLineHeight + 4}
+    _nfont{nfont}
 {
   const int lwidth = lfont.getStringWidth("Description "),
             fwidth = w - lwidth - 20;
@@ -53,14 +49,14 @@ CartRamWidget::CartRamWidget(
     : std::format("{} bytes", ramsize);
 
   auto* etw = new EditTextWidget(boss, nfont, xpos+lwidth, ypos - 1,
-                                 fwidth, myLineHeight, ramsizeStr);
+                                 fwidth, _lineHeight, ramsizeStr);
   etw->setEditable(false);
-  ypos += myLineHeight + 4;
+  ypos += _lineHeight + 4;
 
   // Add Description
   const string& desc = cartDebug.internalRamDescription();
   constexpr uInt16 maxlines = 6;
-  const StringParser bs(desc, (fwidth - ScrollBarWidget::scrollBarWidth(_font)) / myFontWidth);
+  const StringParser bs(desc, (fwidth - ScrollBarWidget::scrollBarWidth(_font)) / _fontWidth);
   const StringList& sl = bs.stringList();
 
   bool useScrollbar = false;
@@ -73,12 +69,12 @@ CartRamWidget::CartRamWidget(
 
   new StaticTextWidget(_boss, _font, xpos, ypos + 1, "Description ");
   myDesc = new StringListWidget(boss, nfont, xpos+lwidth, ypos - 1,
-                                fwidth, lines * myLineHeight, false, useScrollbar);
+                                fwidth, lines * _lineHeight, false, useScrollbar);
   myDesc->setEditable(false);
   myDesc->setEnabled(false);
   myDesc->setList(sl);
 
-  ypos += myDesc->getHeight() + myFontHeight / 2;
+  ypos += myDesc->getHeight() + lfont.getFontHeight() / 2;
 
   // Add RAM widget
   myRam = new InternalRamWidget(boss, lfont, nfont, 2, ypos, w, h-ypos, cartDebug);
