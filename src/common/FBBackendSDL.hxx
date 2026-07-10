@@ -164,9 +164,9 @@ class FBBackendSDL : public FBBackend
                       uInt32 winIdx, const Common::Point& winPos) override;
 
     /**
-      Make the window user-resizable (or not) and set its minimum size.
+      Make the window user-resizable (or not).
     */
-    void setWindowResizable(bool resizable, const Common::Size& minSize) override;
+    void setWindowResizable(bool resizable) override;
 
     /**
       Set the window's minimum size (in pixels).

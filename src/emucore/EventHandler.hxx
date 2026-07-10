@@ -494,7 +494,15 @@ class EventHandler
       THEME_CHANGED,
       DROP_FILE
     };
-    void handleSystemEvent(SystemEvent e, int data1 = 0, int data2 = 0);
+
+    /**
+      Handle an event reported by the platform (window, theme, files).  The data
+      arguments are event-specific: WINDOW_RESIZED carries the new width, height
+      and window ID; WINDOW_MOVED the new x, y and window ID; WINDOW_EXPOSED the
+      window ID alone (in data1).
+    */
+    void handleSystemEvent(SystemEvent e, int data1 = 0, int data2 = 0,
+                           int data3 = 0);
     void handleDropfileEvent(string_view file);
 
     /**

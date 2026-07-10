@@ -284,11 +284,10 @@ bool FBBackendSDL::setVideoMode(const VideoModeHandler::Mode& mode,
   {
     // Reuse the existing window.  In windowed mode resize it to the new mode's
     // size (clearing any minimum left over from a resizable launcher/debugger
-    // mode first, so a smaller fixed-size mode can shrink to fit; createDisplay()
-    // re-applies the correct minimum afterwards).  In fullscreen the window
-    // already spans the display and the fullscreen block below keeps it there,
-    // so we leave its size/position alone and let the src/dst rects resize the
-    // image.
+    // mode first, so a smaller mode can shrink to fit; the window's owner
+    // re-applies its own minimum afterwards).  In fullscreen the window already
+    // spans the display and the fullscreen block below keeps it there, so we
+    // leave its size/position alone and let the src/dst rects resize the image.
     SDL_SetWindowTitle(myWindow, myScreenTitle.c_str());
     if(!mode.fullscreen)
     {
@@ -502,7 +501,7 @@ bool FBBackendSDL::createRenderer()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FBBackendSDL::setWindowResizable(bool resizable, const Common::Size& minSize)
+void FBBackendSDL::setWindowResizable(bool resizable)
 {
   ASSERT_MAIN_THREAD;
 
@@ -510,9 +509,6 @@ void FBBackendSDL::setWindowResizable(bool resizable, const Common::Size& minSiz
     return;
 
   SDL_SetWindowResizable(myWindow, resizable);
-  if(resizable)
-    SDL_SetWindowMinimumSize(myWindow,
-        static_cast<int>(minSize.w), static_cast<int>(minSize.h));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

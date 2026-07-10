@@ -17,17 +17,36 @@
 
 #include "Widget.hxx"
 #include "TiaDisplayWidget.hxx"
+#include "TiaWindow.hxx"
 #include "TiaWindowDialog.hxx"
+
+// The dialog's border, inside which the display widget sits
+static constexpr int BORDER = 2;
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 TiaWindowDialog::TiaWindowDialog(OSystem& osystem, DialogContainer& parent,
                                  int x, int y, int w, int h)
   : Dialog(osystem, parent, x, y, w, h)
 {
-  constexpr int border = 2;
-  myTiaDisplay = new TiaDisplayWidget(this, _font, border, border,
-                                      w - 2 * border, h - 2 * border);
+  // Created at a placeholder size; layout() fits it to the window
+  myTiaDisplay = new TiaDisplayWidget(this, _font, 0, 0, 1, 1);
   addToFocusList(myTiaDisplay->getFocusList());
+
+  TiaWindowDialog::layout();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TiaWindowDialog::layout()
+{
+  // The companion window owns its (resizable) size; take ours from it every
+  // time, which is what makes a live resize re-flow this dialog.  The display
+  // widget then scales its image to fit, preserving the TIA's pixel aspect
+  const Common::Size& size = static_cast<const TiaWindow&>(parent()).size();
+
+  _w = static_cast<int>(size.w);
+  _h = static_cast<int>(size.h);
+
+  myTiaDisplay->setArea(BORDER, BORDER, _w - 2 * BORDER, _h - 2 * BORDER);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

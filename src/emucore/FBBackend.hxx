@@ -81,10 +81,11 @@ class FBBackend
                               uInt32 winIdx, const Common::Point& winPos) = 0;
 
     /**
-      Make the window user-resizable (or not) and set its minimum size.
-      Only meaningful for desktop windowed UI modes (e.g. the launcher).
+      Make the window user-resizable (or not).  Only meaningful for desktop
+      windowed UI modes (the launcher, the debugger and its companion TIA
+      window).  Each such window's owner sets its own minimum size, separately.
     */
-    virtual void setWindowResizable(bool resizable, const Common::Size& minSize) { }
+    virtual void setWindowResizable(bool resizable) { }
 
     /**
       Set the window's minimum size (in pixels).  Honored by most window

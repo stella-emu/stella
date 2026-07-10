@@ -91,9 +91,9 @@ class FrameBuffer
                                Common::Size size, bool honourHiDPI = true);
 
     /**
-      Handle a user resize of a windowed UI.  Rebuilds the active video mode
-      for the new window size and reloads all surfaces, *without* recreating
-      the window.  Only applies to resizeable UI windows (the launcher).
+      Handle a resize of a window that does not re-flow live (see liveResize()).
+      Rebuilds the active video mode for the new window size and reloads all
+      surfaces, *without* recreating the window.
 
       @param width   The new window width, in pixels
       @param height  The new window height, in pixels
@@ -101,10 +101,19 @@ class FrameBuffer
     void handleResize(int width, int height);
 
     /**
+      Whether a window of this type may be resized by the user.  Such windows
+      all re-flow live, rather than resizing immediately via handleResize().
+    */
+    static constexpr bool isResizable(BufferType type) {
+      return type == BufferType::Launcher || type == BufferType::Debugger
+          || type == BufferType::TiaWindow;
+    }
+
+    /**
       Record the latest window size for a live, per-frame re-flow.  Returns true
-      for a user-resizable window (the launcher and the debugger) — the caller
-      then applies it via applyLiveResize() and re-lays-out its dialogs; false
-      otherwise, so the caller falls back to handleResize().
+      for a user-resizable window — the caller then applies it via
+      applyLiveResize() and re-lays-out its dialogs; false otherwise, so the
+      caller falls back to handleResize().
 
       @param width   The latest window width, in pixels
       @param height  The latest window height, in pixels
@@ -147,10 +156,23 @@ class FrameBuffer
       @param title      The secondary window title
       @param type       The BufferType (geometry/position key) for the window
       @param size       The secondary window size, in logical UI pixels
+      @param minSize    The smallest size the user may drag it to
     */
     FBInitStatus openSecondaryWindow(DialogContainer& container,
                                      string_view title, BufferType type,
-                                     Common::Size size);
+                                     Common::Size size, Common::Size minSize);
+
+    /**
+      Apply a user resize of the secondary window: rebuild its video mode at the
+      new size and re-flow its dialogs, whose surfaces are bound to its backend.
+
+      @param container  The DialogContainer rendered into the secondary window
+      @param width      The latest window width, in pixels
+      @param height     The latest window height, in pixels
+      @return  True if a resize was applied
+    */
+    bool resizeSecondaryWindow(DialogContainer& container,
+                               int width, int height);
 
     /**
       Draw the secondary window's container and present it.  No-op if no
@@ -180,6 +202,14 @@ class FrameBuffer
       route window-specific events to it.
     */
     uInt32 secondaryWindowId() const;
+
+    /**
+      The user has moved a window: remember its position and display, under that
+      window's own settings keys.  Ignored for a window we do not own.
+
+      @param windowId  The platform window ID reported by the move event
+    */
+    void saveWindowPosition(uInt32 windowId) const;
 
     /**
       There is a dedicated update method for emulation mode.
@@ -289,15 +319,15 @@ class FrameBuffer
       Note that this will take into account the current scaling (if any)
       as well as image 'centering'.
     */
-    const Common::Rect& imageRect() const { return myActiveVidMode.imageR; }
+    const Common::Rect& imageRect() const { return myWindow.vidMode.imageR; }
 
     /**
       Returns the current dimensions of the framebuffer window.
       This is the entire area containing the framebuffer image as well as any
       'unusable' area.
     */
-    const Common::Size& screenSize() const { return myActiveVidMode.screenS; }
-    const Common::Rect& screenRect() const { return myActiveVidMode.screenR; }
+    const Common::Size& screenSize() const { return myWindow.vidMode.screenS; }
+    const Common::Rect& screenRect() const { return myWindow.vidMode.screenR; }
 
     /**
       Returns the dimensions of the mode specific users' desktop, or if
@@ -529,12 +559,52 @@ class FrameBuffer
 
   private:
     /**
+      The state belonging to one window, which must follow the render target.
+      Both windows may be resized independently, so each keeps its own pending
+      size and minimum.  Grouped so that a new per-window field cannot be
+      forgotten by setRenderTarget().
+    */
+    struct WindowState {
+      VideoModeHandler::Mode vidMode;
+      BufferType bufferType{BufferType::None};
+
+      // The latest size recorded by liveResize(), waiting for applyLiveResize()
+      Common::Size pendingResize;
+      bool liveResizePending{false};
+
+      // Last minimum size forwarded to the backend (scaled), so an unchanged
+      // minimum isn't re-applied on every layout() during a drag
+      Common::Size minSize;
+    };
+
+    /**
       These methods are used to load/save position and display of the
       current window.
     */
-    string getPositionKey() const;
+    string getPositionKey(BufferType bufferType = BufferType::None) const;
     string getDisplayKey(BufferType bufferType = BufferType::None) const;
     void saveCurrentWindowPosition() const;
+
+    /**
+      Save the given window's position and display under that window's own
+      settings keys.
+    */
+    void savePosition(const FBBackend& backend, BufferType type) const;
+
+    /**
+      The backend and state of the primary/secondary window, whichever of the
+      two is currently the render target.  The primary backend exists from
+      initialize() onwards; the secondary one is created lazily, so accessing it
+      requires mySecondaryCreated.
+    */
+    const FBBackend& primaryBackend() const
+      { return (myRenderTarget == 1) ? *myOtherBackend : *myBackend; }
+    const FBBackend& secondaryBackend() const
+      { return (myRenderTarget == 1) ? *myBackend : *myOtherBackend; }
+    const WindowState& primaryWindow() const
+      { return (myRenderTarget == 1) ? myOtherWindow : myWindow; }
+    const WindowState& secondaryWindow() const
+      { return (myRenderTarget == 1) ? myWindow : myOtherWindow; }
 
     /**
       Frees and reloads all surfaces that the framebuffer knows about.
@@ -606,14 +676,17 @@ class FrameBuffer
     // setRenderTarget()).  Most code only ever sees the primary backend.
     unique_ptr<FBBackend> myBackend;
 
-    // Per-window state for the *inactive* render target, swapped with the live
-    // members (myBackend / myActiveVidMode / myBufferType) by setRenderTarget().
-    // Used to drive a single secondary window (e.g. the debugger's companion
-    // TIA window) without duplicating the shared palette/fonts/TIASurface.
+    // Backend for the *inactive* render target, swapped with myBackend by
+    // setRenderTarget().  Used to drive a single secondary window (e.g. the
+    // debugger's companion TIA window) without duplicating the shared
+    // palette/fonts/TIASurface.
     unique_ptr<FBBackend> myOtherBackend;
     int myRenderTarget{0};           // 0 = primary, 1 = secondary
     bool mySecondaryCreated{false};  // secondary backend has been created
     bool mySecondaryActive{false};   // secondary window is currently shown
+
+    WindowState myWindow;       // the current render target's
+    WindowState myOtherWindow;  // parked, swapped in by setRenderTarget()
 
     // Indicates the number of times the framebuffer was initialized
     uInt32 myInitializedCount{0};
@@ -654,24 +727,6 @@ class FrameBuffer
     // The VideoModeHandler class takes responsibility for all video
     // mode functionality
     VideoModeHandler myVidModeHandler;
-    VideoModeHandler::Mode myActiveVidMode;
-
-    // Type of the frame buffer
-    BufferType myBufferType{BufferType::None};
-
-    // Parked video mode / buffer type for the inactive render target
-    // (swapped with the live members above by setRenderTarget()).
-    VideoModeHandler::Mode myOtherVidMode;
-    BufferType myOtherBufferType{BufferType::None};
-
-    // The latest size recorded by liveResize(), waiting to be applied by
-    // applyLiveResize()
-    Common::Size myPendingResize;
-    bool myLiveResizePending{false};
-
-    // Last window minimum size forwarded to the backend (scaled), so an
-    // unchanged minimum isn't re-applied on every layout() during a drag
-    Common::Size myWindowMinSize;
 
   #ifdef GUI_SUPPORT
     // The font object to use for the normal in-game GUI

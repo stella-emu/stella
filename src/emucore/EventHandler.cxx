@@ -378,13 +378,30 @@ DialogContainer* EventHandler::overlayForWindow([[maybe_unused]] uInt32 windowID
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EventHandler::handleSystemEvent(SystemEvent e, int data1, int data2)
+void EventHandler::handleSystemEvent(SystemEvent e, int data1, int data2,
+                                     int data3)
 {
   switch(e)
   {
     case SystemEvent::WINDOW_RESIZED:
     {
       auto& fb = myOSystem.frameBuffer();
+      const auto windowID = static_cast<uInt32>(data3);
+
+    #ifdef DEBUGGER_SUPPORT
+      // The companion TIA window resizes independently of the debugger window
+      // it belongs to (data3 carries the window ID)
+      if(myState == EventHandlerState::DEBUGGER && fb.secondaryWindowOpen() &&
+         windowID == fb.secondaryWindowId())
+      {
+        myOSystem.debugger().resizeTiaWindow(data1, data2);
+        break;
+      }
+    #endif
+      // Ignore a resize reported for any window we are not driving
+      if(windowID != fb.primaryWindowId())
+        break;
+
       // A user-resizable window (the launcher and the debugger) records the
       // latest size, then applies + re-flows + presents it right here
       // (throttled inside applyResize()).  Driving it from the handler — rather
@@ -407,6 +424,13 @@ void EventHandler::handleSystemEvent(SystemEvent e, int data1, int data2)
       }
       break;
     }
+
+    case SystemEvent::WINDOW_MOVED:
+      // Remember where the user put this window (data3 carries the window ID);
+      // the position is read back from the window itself, so a fullscreen or
+      // centered window is correctly skipped
+      myOSystem.frameBuffer().saveWindowPosition(static_cast<uInt32>(data3));
+      break;
 
     case SystemEvent::WINDOW_EXPOSED:
     #ifdef DEBUGGER_SUPPORT

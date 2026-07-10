@@ -119,6 +119,12 @@ class Debugger : public DialogContainer
     void renderTiaWindow();
 
     /**
+      The user has dragged the companion TIA window's border.  Re-flows and
+      presents it at the new size, independently of the debugger window.
+    */
+    void resizeTiaWindow(int width, int height);
+
+    /**
       Mark the companion TIA window as needing a redraw.  Called whenever the
       emulation state the window reflects may have changed (e.g. after a step,
       frame/scanline advance, or rewind), and when the OS asks the window to

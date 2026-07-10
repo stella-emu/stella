@@ -126,13 +126,13 @@ uInt32 FrameBuffer::displayId(BufferType bufferType) const
 {
   uInt32 display = 0;
 
-  if(bufferType == myBufferType || bufferType == BufferType::None)
+  if(bufferType == myWindow.bufferType || bufferType == BufferType::None)
     display = myBackend->getCurrentDisplayID();
   else
     display = myOSystem.settings().getInt(
       getDisplayKey(bufferType != BufferType::None
         ? bufferType
-        : myBufferType)
+        : myWindow.bufferType)
     );
 
   // If the requested display ID is not available, default to the first one
@@ -236,7 +236,7 @@ FBInitStatus FrameBuffer::createDisplay(string_view title, BufferType type,
 
   // Always save, maybe only the mode of the window has changed
   saveCurrentWindowPosition();
-  myBufferType = type;
+  myWindow.bufferType = type;
 
   // In HiDPI mode, all created displays must be scaled appropriately
   if(honourHiDPI && hidpiEnabled())
@@ -273,7 +273,7 @@ FBInitStatus FrameBuffer::createDisplay(string_view title, BufferType type,
     return FBInitStatus::FailTooLarge;
 #endif
 
-  if(myBufferType == BufferType::Emulator)
+  if(myWindow.bufferType == BufferType::Emulator)
   {
     myBezel->load(); // make sure we have the correct bezel size
 
@@ -330,13 +330,17 @@ FBInitStatus FrameBuffer::createDisplay(string_view title, BufferType type,
   if(status != FBInitStatus::Success)
     return status;
 
-  // The launcher and the debugger windows may be freely resized by the user;
-  // all other UI/TIA windows keep their fixed size
-  const bool resizable = myBufferType == BufferType::Launcher
-    || myBufferType == BufferType::Debugger;
-  myBackend->setWindowResizable(resizable,
-    Common::Size(FBMinimum::Width * hidpiScaleFactor(),
-                 FBMinimum::Height * hidpiScaleFactor()));
+  // The launcher, debugger and companion TIA windows may be freely resized by
+  // the user; all other UI/TIA windows keep their fixed size.  Each resizeable
+  // window's owner applies its own minimum, right after this, via
+  // setWindowMinSize(); imposing one here would enlarge a window the user had
+  // dragged smaller.  (FBMinimum is the TIA emulation-mode floor, sized so the
+  // dialogs fit over the image — not a UI window minimum.)
+  myBackend->setWindowResizable(isResizable(myWindow.bufferType));
+
+  // setVideoMode() cleared the window's minimum, so forget what we last
+  // forwarded, or the owner's (unchanged) minimum would not be re-applied
+  myWindow.minSize = Common::Size();
 
   // Print initial usage message, but only print it later if the status has changed
   if(myInitializedCount == 1)
@@ -364,9 +368,9 @@ void FrameBuffer::setWindowMinSize(const Common::Size& size)
   // being dragged.  Re-applying an unchanged minimum mid-drag is wasteful and
   // can interfere with the interactive resize, so forward it to the backend
   // only when it actually changes.
-  if(scaled == myWindowMinSize)
+  if(scaled == myWindow.minSize)
     return;
-  myWindowMinSize = scaled;
+  myWindow.minSize = scaled;
   myBackend->setWindowMinSize(scaled);
 }
 
@@ -374,13 +378,13 @@ void FrameBuffer::setWindowMinSize(const Common::Size& size)
 void FrameBuffer::handleResize(int width, int height)
 {
   // Only the launcher and debugger windows are user-resizable
-  if(myBufferType != BufferType::Launcher &&
-     myBufferType != BufferType::Debugger)
+  if(myWindow.bufferType != BufferType::Launcher &&
+     myWindow.bufferType != BufferType::Debugger)
     return;
 
   // The new window size becomes the new UI image/screen size
   myVidModeHandler.setImageSize(Common::Size(width, height));
-  myActiveVidMode = myVidModeHandler.buildMode(
+  myWindow.vidMode = myVidModeHandler.buildMode(
       myOSystem.settings(), false, myBezel->info());
 
   // The window already has its new size; refresh the backend's cached
@@ -392,32 +396,32 @@ void FrameBuffer::handleResize(int width, int height)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool FrameBuffer::liveResize(int width, int height)
 {
-  // The launcher and the debugger are the only user-resizable windows, and both
-  // re-flow live; everything else resizes immediately via handleResize()
-  if(myBufferType != BufferType::Launcher &&
-     myBufferType != BufferType::Debugger)
+  // The launcher, the debugger and its companion TIA window are the only
+  // user-resizable windows, and all re-flow live; everything else resizes
+  // immediately via handleResize()
+  if(!isResizable(myWindow.bufferType))
     return false;
 
-  myPendingResize = Common::Size(width, height);
-  myLiveResizePending = true;
+  myWindow.pendingResize = Common::Size(width, height);
+  myWindow.liveResizePending = true;
   return true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool FrameBuffer::applyLiveResize()
 {
-  if(!myLiveResizePending)
+  if(!myWindow.liveResizePending)
     return false;
 
-  myLiveResizePending = false;
+  myWindow.liveResizePending = false;
 
   // Rebuild the UI video mode for the new window size and refresh the backend's
   // cached dimensions.  Deliberately does NOT reload surfaces or present: each
   // dialog re-flows its own surfaces afterwards (updating dst rects only — no
   // texture re-upload), and the main loop then renders one correct frame.
   // (Reloading here would re-upload every texture every frame.)
-  myVidModeHandler.setImageSize(myPendingResize);
-  myActiveVidMode = myVidModeHandler.buildMode(
+  myVidModeHandler.setImageSize(myWindow.pendingResize);
+  myWindow.vidMode = myVidModeHandler.buildMode(
       myOSystem.settings(), false, myBezel->info());
   myBackend->refreshDimensions();
   return true;
@@ -606,15 +610,15 @@ void FrameBuffer::setRenderTarget(int target)
   // Swap only the per-window state; everything else (palette, fonts,
   // TIASurface, message handler, desktop maps) is shared and stays put.
   std::swap(myBackend, myOtherBackend);
-  std::swap(myActiveVidMode, myOtherVidMode);
-  std::swap(myBufferType, myOtherBufferType);
+  std::swap(myWindow, myOtherWindow);
   myRenderTarget = target;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FBInitStatus FrameBuffer::openSecondaryWindow(DialogContainer& container,
                                               string_view title, BufferType type,
-                                              Common::Size size)
+                                              Common::Size size,
+                                              Common::Size minSize)
 {
   setRenderTarget(1);
 
@@ -630,6 +634,8 @@ FBInitStatus FrameBuffer::openSecondaryWindow(DialogContainer& container,
   const FBInitStatus status = createDisplay(title, type, size);
   if(status == FBInitStatus::Success)
   {
+    setWindowMinSize(minSize);
+
     // Open the container's base dialog; its surfaces bind to this (secondary)
     // backend because it is the current render target.
     container.reStack();
@@ -639,6 +645,23 @@ FBInitStatus FrameBuffer::openSecondaryWindow(DialogContainer& container,
 
   setRenderTarget(0);
   return status;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool FrameBuffer::resizeSecondaryWindow(DialogContainer& container,
+                                        int width, int height)
+{
+  if(!mySecondaryActive)
+    return false;
+
+  setRenderTarget(1);
+
+  // The container's dialogs own surfaces bound to this backend, so both the
+  // video mode rebuild and the re-flow must happen while it is the target
+  const bool applied = liveResize(width, height) && container.applyResize();
+
+  setRenderTarget(0);
+  return applied;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -668,19 +691,13 @@ void FrameBuffer::closeSecondaryWindow()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt32 FrameBuffer::primaryWindowId() const
 {
-  const FBBackend* backend =
-    (myRenderTarget == 1) ? myOtherBackend.get() : myBackend.get();
-  return backend ? backend->windowId() : 0;
+  return primaryBackend().windowId();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt32 FrameBuffer::secondaryWindowId() const
 {
-  // The secondary backend is parked in myOtherBackend while the primary is the
-  // active target (the normal case outside the secondary-window methods).
-  const FBBackend* backend =
-    (myRenderTarget == 1) ? myBackend.get() : myOtherBackend.get();
-  return backend ? backend->windowId() : 0;
+  return mySecondaryCreated ? secondaryBackend().windowId() : 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -931,7 +948,7 @@ void FrameBuffer::stateChanged(EventHandlerState state)
 string FrameBuffer::getDisplayKey(BufferType bufferType) const
 {
   if(bufferType == BufferType::None)
-    bufferType = myBufferType;
+    bufferType = myWindow.bufferType;
 
   // save current window's display and position
   switch(bufferType)
@@ -956,10 +973,13 @@ string FrameBuffer::getDisplayKey(BufferType bufferType) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string FrameBuffer::getPositionKey() const
+string FrameBuffer::getPositionKey(BufferType bufferType) const
 {
+  if(bufferType == BufferType::None)
+    bufferType = myWindow.bufferType;
+
   // save current window's display and position
-  switch(myBufferType)
+  switch(bufferType)
   {
     case BufferType::Launcher:
       return "launcherpos";
@@ -981,23 +1001,42 @@ string FrameBuffer::getPositionKey() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FrameBuffer::savePosition(const FBBackend& backend, BufferType type) const
+{
+  myOSystem.settings().setValue(
+    getDisplayKey(type), backend.getCurrentDisplayID());
+  if(backend.isCurrentWindowPositioned())
+    myOSystem.settings().setValue(
+      getPositionKey(type), backend.getCurrentWindowPos());
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBuffer::saveCurrentWindowPosition() const
 {
   if(myBackend)
-  {
-    myOSystem.settings().setValue(
-      getDisplayKey(), myBackend->getCurrentDisplayID());
-    if(myBackend->isCurrentWindowPositioned())
-      myOSystem.settings().setValue(
-        getPositionKey(), myBackend->getCurrentWindowPos());
-  }
+    savePosition(*myBackend, myWindow.bufferType);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FrameBuffer::saveWindowPosition(uInt32 windowId) const
+{
+  // Each window keeps its own position/display keys, and the one that moved is
+  // not necessarily the current render target
+  if(windowId == primaryWindowId())
+    savePosition(primaryBackend(), primaryWindow().bufferType);
+  else if(mySecondaryCreated && windowId == secondaryWindowId())
+    savePosition(secondaryBackend(), secondaryWindow().bufferType);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBuffer::saveConfig(Settings& settings) const
 {
-  // Save the last windowed position and display on system shutdown
+  // Save the last windowed position and display of each window on shutdown.
+  // The secondary window is never the render target here, so it needs its own
+  // pass (it keeps its window alive even while hidden)
   saveCurrentWindowPosition();
+  if(mySecondaryCreated)
+    savePosition(secondaryBackend(), secondaryWindow().bufferType);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1053,10 +1092,10 @@ void FrameBuffer::toggleFullscreen(bool toggle)
           const string msg = isFullscreen
             ? std::format("Fullscreen {} ({} Hz, Zoom {}%)",
                 state_str, myBackend->refreshRate(),
-                static_cast<int>(round(myActiveVidMode.zoom * 100)))
+                static_cast<int>(round(myWindow.vidMode.zoom * 100)))
             : std::format("Fullscreen {} (Zoom {}%)",
                 state_str,
-                static_cast<int>(round(myActiveVidMode.zoom * 100)));
+                static_cast<int>(round(myWindow.vidMode.zoom * 100)));
           showTextMessage(msg);
         }
         else
@@ -1078,7 +1117,7 @@ void FrameBuffer::toggleAdaptRefresh(bool toggle)
   if(toggle)
     isAdaptRefresh = !isAdaptRefresh;
 
-  if(myBufferType == BufferType::Emulator)
+  if(myWindow.bufferType == BufferType::Emulator)
   {
     if(toggle)
     {
@@ -1150,10 +1189,10 @@ void FrameBuffer::switchVideoMode(int direction)
   if(!direction || applyVideoMode() == FBInitStatus::Success)
   {
     if(fullScreen())
-      showTextMessage(myActiveVidMode.description);
+      showTextMessage(myWindow.vidMode.description);
     else
-      showGaugeMessage("Zoom", myActiveVidMode.description,
-                       static_cast<float>(myActiveVidMode.zoom),
+      showGaugeMessage("Zoom", myWindow.vidMode.description,
+                       static_cast<float>(myWindow.vidMode.zoom),
                        static_cast<float>(supportedTIAMinZoom()),
                        static_cast<float>(supportedTIAMaxZoom()));
   }
@@ -1164,7 +1203,7 @@ void FrameBuffer::toggleBezel(bool toggle)
 {
   bool enabled = myOSystem.settings().getBool("bezel.show");
 
-  if(toggle && myBufferType == BufferType::Emulator)
+  if(toggle && myWindow.bufferType == BufferType::Emulator)
   {
     if(!fullScreen() && !myOSystem.settings().getBool("bezel.windowed"))
     {
@@ -1239,13 +1278,13 @@ FBInitStatus FrameBuffer::applyVideoMode()
 
   if(modeApplied)
   {
-    myActiveVidMode = mode;
+    myWindow.vidMode = mode;
     status = FBInitStatus::Success;
 
     // A completed mode change supersedes any in-progress interactive resize, so
     // a size still pending from the previous mode (launcher/debugger) can't
     // leak into this one
-    myLiveResizePending = false;
+    myWindow.liveResizePending = false;
 
     // Did we get the requested fullscreen state?
     myOSystem.settings().setValue("fullscreen", fullScreen());
@@ -1253,12 +1292,12 @@ FBInitStatus FrameBuffer::applyVideoMode()
     // Inform TIA surface about new mode, and update TIA settings
     if(inTIAMode)
     {
-      myTIASurface->initialize(myOSystem.console(), myActiveVidMode);
+      myTIASurface->initialize(myOSystem.console(), myWindow.vidMode);
       if(fullScreen())
         myOSystem.settings().setValue("tia.fs_stretch",
-          myActiveVidMode.stretch == VideoModeHandler::Mode::Stretch::Fill);
+          myWindow.vidMode.stretch == VideoModeHandler::Mode::Stretch::Fill);
       else
-        myOSystem.settings().setValue("tia.zoom", myActiveVidMode.zoom);
+        myOSystem.settings().setValue("tia.zoom", myWindow.vidMode.zoom);
 
       myBezel->apply();
     }

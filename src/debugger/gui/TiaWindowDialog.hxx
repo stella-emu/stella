@@ -41,6 +41,9 @@ class TiaWindowDialog : public Dialog
 
     void loadConfig() override;
 
+  protected:
+    void layout() override;
+
   private:
     TiaDisplayWidget* myTiaDisplay{nullptr};
 

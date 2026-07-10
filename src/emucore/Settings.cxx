@@ -31,6 +31,7 @@
 
 #ifdef DEBUGGER_SUPPORT
   #include "DebuggerDialog.hxx"
+  #include "TiaWindow.hxx"
 #endif
 
 #include "Settings.hxx"
@@ -232,6 +233,7 @@ Settings::Settings()
   setPermanent("dbg.autosave", "false");
   setPermanent("dbg.script", "");
   setPermanent("dbg.tiawindow", "false");
+  setPermanent("tiawindow.res", TiaWindow::defaultSize());
   setPermanent("tiawindow.pos", Common::Point(50, 50));
   setPermanent("tiawindow.display", 0);
   setPermanent("dis.resolve", "true");

@@ -227,12 +227,17 @@ void EventHandlerSDL::pollEvent()
                           static_cast<int>(myEvent.window.windowID));
         break;
       case SDL_EVENT_WINDOW_MOVED:
+        // Pass the window ID; each window remembers its own position
         handleSystemEvent(SystemEvent::WINDOW_MOVED,
-                          myEvent.window.data1, myEvent.window.data2);
+                          myEvent.window.data1, myEvent.window.data2,
+                          static_cast<int>(myEvent.window.windowID));
         break;
       case SDL_EVENT_WINDOW_RESIZED:
+        // Pass the window ID: the debugger and its companion TIA window are
+        // both resizable, and resize one another's windows programmatically
         handleSystemEvent(SystemEvent::WINDOW_RESIZED,
-                          myEvent.window.data1, myEvent.window.data2);
+                          myEvent.window.data1, myEvent.window.data2,
+                          static_cast<int>(myEvent.window.windowID));
         break;
       case SDL_EVENT_WINDOW_MINIMIZED:
         handleSystemEvent(SystemEvent::WINDOW_MINIMIZED);
@@ -271,16 +276,17 @@ bool EventHandlerSDL::resizeWatch(void* userdata, SDL_Event* event)
   // including while the OS runs its own modal window-resize loop (Windows/
   // macOS).  During that loop pollEvent() above is blocked, so without this
   // hook the window shows black while being dragged.  Re-dispatching the
-  // resize/expose here lets the normal handler run during the loop: it
-  // re-flows the launcher live (or keeps the debugger's stretch active) and
-  // presents each frame, exactly as it would from the main loop.
+  // resize/expose here lets the normal handler run during the loop: it re-flows
+  // the dragged window live and presents each frame, exactly as it would from
+  // the main loop.
   auto* const self = static_cast<EventHandlerSDL*>(userdata);
 
   switch(event->type)
   {
     case SDL_EVENT_WINDOW_RESIZED:
       self->handleSystemEvent(SystemEvent::WINDOW_RESIZED,
-                              event->window.data1, event->window.data2);
+                              event->window.data1, event->window.data2,
+                              static_cast<int>(event->window.windowID));
       break;
     case SDL_EVENT_WINDOW_EXPOSED:
       self->handleSystemEvent(SystemEvent::WINDOW_EXPOSED);

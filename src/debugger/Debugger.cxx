@@ -183,7 +183,7 @@ bool Debugger::applyResize()
 
   myLastResizeTime = now;
   updateSize();
-  myDialogStack.applyAll([](Dialog*& d) { d->relayout(); });
+  relayout();
   mySettleCountdown = 15;  // ~frames of idle before the resize is settled
   return true;
 }
@@ -200,7 +200,7 @@ void Debugger::updateTime(uInt64 time)
   if(myOSystem.frameBuffer().applyLiveResize())
   {
     updateSize();
-    myDialogStack.applyAll([](Dialog*& d) { d->relayout(); });
+    relayout();
     mySettleCountdown = 15;
   }
   else if(mySettleCountdown > 0 && --mySettleCountdown == 0)
@@ -929,9 +929,23 @@ void Debugger::openTiaWindow()
   // and TIASurface are shared with the main window, so nothing can be clobbered.
   const FBInitStatus status = myOSystem.frameBuffer().openSecondaryWindow(
     *myTiaWindow, string{STELLA_FULL_TITLE} + ": TIA",
-    BufferType::TiaWindow, myTiaWindow->size());
+    BufferType::TiaWindow, myTiaWindow->size(), TiaWindow::minSize());
 
   myTiaWindowOpen = (status == FBInitStatus::Success);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Debugger::resizeTiaWindow(int width, int height)
+{
+  if(!myTiaWindowOpen)
+    return;
+
+  // The companion window resizes independently of the debugger's, and re-flows
+  // and presents itself here rather than waiting for the next rendered frame
+  // (during a modal resize loop there isn't one)
+  if(myOSystem.frameBuffer().resizeSecondaryWindow(*myTiaWindow, width, height))
+    myOSystem.frameBuffer().renderSecondaryWindow(
+      *myTiaWindow, FrameBuffer::UpdateMode::RERENDER);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -30,6 +30,9 @@ class Dialog;
   driven directly by the Debugger (which remains in DEBUGGER state) and renders
   into a dedicated, second FrameBuffer/window.  See TiaWindowDialog for content.
 
+  The window is freely resizable, independently of the debugger window; its size
+  is persisted in the 'tiawindow.res' setting.
+
   @author  Stephen Anthony
 */
 class TiaWindow : public DialogContainer
@@ -39,16 +42,36 @@ class TiaWindow : public DialogContainer
     ~TiaWindow() override;
 
     /**
-      The (fixed, for now) size of the companion window, in logical UI pixels.
+      The current size of the companion window, in logical UI pixels.  The
+      dialog takes its own size from this each time it lays out.
     */
     const Common::Size& size() const { return mySize; }
+
+    /**
+      The smallest size the window may be dragged to: the whole TIA output
+      buffer at 1x, which TiaDisplayWidget scales its image to fit.
+    */
+    static Common::Size minSize();
+
+    /**
+      The size the window opens at before the user has ever resized it: the
+      whole TIA output buffer at 2x, with no downscaling.
+    */
+    static Common::Size defaultSize();
+
+    /**
+      Apply a pending live resize of the companion window and re-flow it.  Only
+      ever called with the secondary render target selected, from
+      FrameBuffer::resizeSecondaryWindow().
+    */
+    bool applyResize() override;
 
     Dialog* baseDialog() override { return myBaseDialog.get(); }
 
   private:
     unique_ptr<Dialog> myBaseDialog;
 
-    // The (fixed, for now) size of the companion window, in logical UI pixels
+    // The current size of the companion window, in logical UI pixels
     Common::Size mySize;
 
   private:

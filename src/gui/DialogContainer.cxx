@@ -197,6 +197,12 @@ void DialogContainer::requestResize()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void DialogContainer::relayout()
+{
+  myDialogStack.applyAll([](Dialog*& d) { d->relayout(); });
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DialogContainer::refreshFont()
 {
   // Re-font every dialog in the stack (the font object was already mutated

@@ -119,7 +119,7 @@ bool Launcher::applyResize()
     return false;
 
   myLastResizeTime = now;
-  myDialogStack.applyAll([](Dialog*& d) { d->relayout(); });
+  relayout();
   mySettleCountdown = 15;  // ~frames of idle before the resize is settled
   return true;
 }
@@ -137,13 +137,13 @@ void Launcher::updateTime(uInt64 time)
   // during the drag (window minimum-size hint, persisting the final size).
   if(myOSystem.frameBuffer().applyLiveResize())
   {
-    myDialogStack.applyAll([](Dialog*& d) { d->relayout(); });
+    relayout();
     mySettleCountdown = 15;
   }
   else if(mySettleCountdown > 0)
   {
     // Once the countdown reaches zero, run the settle pass
     if(--mySettleCountdown == 0)
-      myDialogStack.applyAll([](Dialog*& d) { d->relayout(); });
+      relayout();
   }
 }
