@@ -1269,6 +1269,12 @@
     <ClCompile Include="..\..\gui\GuiObject.cxx">
       <Filter>Source Files\gui</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\gui\TabPaneWidget.cxx">
+      <Filter>Source Files\gui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\gui\WrappedTextWidget.cxx">
+      <Filter>Source Files\gui</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\emucore\AtariVox.hxx">
@@ -2616,6 +2622,12 @@
       <Filter>Header Files\debugger\gui</Filter>
     </ClInclude>
     <ClInclude Include="..\..\gui\Layout.hxx">
+      <Filter>Header Files\gui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\gui\TabPaneWidget.hxx">
+      <Filter>Header Files\gui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\gui\WrappedTextWidget.hxx">
       <Filter>Header Files\gui</Filter>
     </ClInclude>
   </ItemGroup>

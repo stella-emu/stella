@@ -1192,12 +1192,14 @@
     <ClCompile Include="..\..\gui\RomImageWidget.cxx" />
     <ClCompile Include="..\..\gui\SnapshotDialog.cxx" />
     <ClCompile Include="..\..\gui\StellaSettingsDialog.cxx" />
+    <ClCompile Include="..\..\gui\TabPaneWidget.cxx" />
     <ClCompile Include="..\..\gui\TimeLineWidget.cxx" />
     <ClCompile Include="..\..\gui\TimeMachine.cxx" />
     <ClCompile Include="..\..\gui\TimeMachineDialog.cxx" />
     <ClCompile Include="..\..\gui\ToolTip.cxx" />
     <ClCompile Include="..\..\gui\UndoHandler.cxx" />
     <ClCompile Include="..\..\gui\WhatsNewDialog.cxx" />
+    <ClCompile Include="..\..\gui\WrappedTextWidget.cxx" />
     <ClCompile Include="..\..\lib\sqlite\source\sqlite3.c">
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'">CompileAsC</CompileAs>
@@ -2660,12 +2662,14 @@
     <ClInclude Include="..\..\gui\Stella14x28tFont.hxx" />
     <ClInclude Include="..\..\gui\Stella16x32tFont.hxx" />
     <ClInclude Include="..\..\gui\StellaSettingsDialog.hxx" />
+    <ClInclude Include="..\..\gui\TabPaneWidget.hxx" />
     <ClInclude Include="..\..\gui\TimeLineWidget.hxx" />
     <ClInclude Include="..\..\gui\TimeMachine.hxx" />
     <ClInclude Include="..\..\gui\TimeMachineDialog.hxx" />
     <ClInclude Include="..\..\gui\ToolTip.hxx" />
     <ClInclude Include="..\..\gui\UndoHandler.hxx" />
     <ClInclude Include="..\..\gui\WhatsNewDialog.hxx" />
+    <ClInclude Include="..\..\gui\WrappedTextWidget.hxx" />
     <ClInclude Include="..\..\lib\dr_libs\dr_mp3.h" />
     <ClInclude Include="..\..\lib\dr_libs\dr_mp3_lib.hxx" />
     <ClInclude Include="..\..\lib\dr_libs\dr_wav.h" />
