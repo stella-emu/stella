@@ -38,8 +38,6 @@ class UIDialog : public Dialog, public CommandSender
     void layout() override;
 
   private:
-    void layoutLookAndFeelTab();
-    void layoutLauncherTab();
 
     void handleLauncherSize();
     void handleRomViewer();
