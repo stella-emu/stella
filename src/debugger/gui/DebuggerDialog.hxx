@@ -125,11 +125,6 @@ class DebuggerDialog : public Dialog
     void layoutTabArea();
     void layoutStatusArea();
     void layoutRomArea();
-    // Lay out only the currently-active tab's content.  Inactive tabs are left
-    // alone (they are laid out when they become active — see handleCommand), so
-    // a hidden tab's widgets never run their reflow
-    void layoutActiveTab();
-    void layoutActiveRomTab();
 
     Common::Rect getTiaBounds() const;
     Common::Rect getRomBounds() const;

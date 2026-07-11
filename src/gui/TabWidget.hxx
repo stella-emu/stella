@@ -93,6 +93,12 @@ class TabWidget : public Widget, public CommandSender
       // instead (see setActiveTab), so this list is then empty
       WidgetList children;
       Widget* parentWidget{nullptr};
+      // TRANSITIONAL: true only when a real content widget was set via
+      // setParentWidget (vs the lazily-created 0-size dummy), so the container
+      // sizes only such content (see layoutActivePane).  Once every tab has a
+      // real content widget/pane (no more dummies), this flag and its checks —
+      // and the dummy itself — can be removed.  TODO: revisit after conversion
+      bool sizeContent{false};
       bool enabled{true};
       int tabWidth{0};        // resolved width (0 = share the common _tabWidth)
       bool autoWidth{false};  // width tracks the (font-dependent) title width
@@ -117,6 +123,10 @@ class TabWidget : public Widget, public CommandSender
 
   private:
     void updateActiveTab();
+    // Lay the active tab's content widget out to fill the area below the tab
+    // bar.  The tab widget is a container, so it owns this: a dialog just sizes
+    // the tab widget and the content follows, needing no per-tab resize code
+    void layoutActivePane();
 
   private:
     // Following constructors and assignment operators not supported

@@ -48,6 +48,7 @@ MODULE_OBJS := \
         src/gui/SnapshotDialog.o \
         src/gui/StellaSettingsDialog.o \
         src/gui/StringListWidget.o \
+        src/gui/TabPaneWidget.o \
         src/gui/TabWidget.o \
         src/gui/TimeLineWidget.o \
         src/gui/TimeMachineDialog.o \

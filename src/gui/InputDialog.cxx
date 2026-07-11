@@ -30,6 +30,7 @@
 #include "JoystickDialog.hxx"
 #include "PopUpWidget.hxx"
 #include "TabWidget.hxx"
+#include "TabPaneWidget.hxx"
 #include "Widget.hxx"
 #include "Layout.hxx"
 #include "Font.hxx"
@@ -84,10 +85,6 @@ InputDialog::~InputDialog() = default;
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void InputDialog::layout()
 {
-  using GUI::BoxLayout;
-  using GUI::widgetItem;
-  using Dir = BoxLayout::Dir;
-
   const int lineHeight   = Dialog::lineHeight(),
             fontWidth    = Dialog::fontWidth(),
             buttonHeight = Dialog::buttonHeight(),
@@ -113,15 +110,10 @@ void InputDialog::layout()
   myTab->setHeight(_h - _th - VGAP - buttonHeight - VBORDER * 2);
   myTab->updateTabSizes();
 
-  // 1) Event mapper fills its tab, leaving a small bottom gap
-  auto eventCol = std::make_unique<BoxLayout>(Dir::Vertical);
-  eventCol->addStretch(widgetItem(myEventMapper));
-  eventCol->addSpace(VGAP);
-  eventCol->doLayout(0, 0, myTab->getWidth(), myTab->getHeight());
-
-  // 2) Devices & ports, 3) Mouse
+  // The Event Mappings tab (a composite widget) and the Mouse tab (a content
+  // pane) lay themselves out via the tab widget; only Devices & Ports, not yet
+  // a pane, is still laid out here
   layoutDevicePortTab();
-  layoutMouseTab();
 
   // Standard button group (Defaults / OK / Cancel) along the bottom edge
   layoutButtonGroup();
@@ -347,24 +339,26 @@ void InputDialog::addMouseTab()
   WidgetArray wid;
   VariantList items;
 
-  // Mouse.  Widgets are created here at placeholder positions; layoutMouseTab()
-  // assigns geometry from the current font.
+  // Mouse.  The tab's controls are parented to a content pane; the pane lays
+  // them out (see setLayout below) whenever the tab is sized — no resize code
   const int tabID = myTab->addTab("  Mouse  ", TabWidget::AUTO_WIDTH);
+  auto* pane = new TabPaneWidget(myTab, _font);
+  myTab->setParentWidget(tabID, pane);
 
   // Use mouse as controller
   VarList::push_back(items, "Always", "always");
   VarList::push_back(items, "Analog devices", "analog");
   VarList::push_back(items, "Never", "never");
-  myMouseControl = new PopUpWidget(myTab, _font, 0, 0, pwidth, lineHeight, items,
+  myMouseControl = new PopUpWidget(pane, _font, 0, 0, pwidth, lineHeight, items,
                                    "Use mouse as a controller ", lwidth, kMouseCtrlChanged);
   myMouseControl->setToolTip(Event::PrevMouseAsController, Event::NextMouseAsController);
   wid.push_back(myMouseControl);
 
-  myMouseSensitivity = new StaticTextWidget(myTab, _font, 0, 0, "Sensitivity:");
+  myMouseSensitivity = new StaticTextWidget(pane, _font, 0, 0, "Sensitivity:");
 
   // Add paddle speed (mouse emulation); the sensitivity sliders are indented, so
   // their reduced label widths keep the tracks aligned with the popups above
-  myMPaddleSpeed = new SliderWidget(myTab, _font, 0, 0, swidth, lineHeight,
+  myMPaddleSpeed = new SliderWidget(pane, _font, 0, 0, swidth, lineHeight,
                                     "Paddle",
                                     lwidth - INDENT, kMPSpeedChanged, 4 * fontWidth, "%");
   myMPaddleSpeed->setMinValue(1); myMPaddleSpeed->setMaxValue(20);
@@ -373,7 +367,7 @@ void InputDialog::addMouseTab()
   wid.push_back(myMPaddleSpeed);
 
   // Add trackball speed
-  myTrackBallSpeed = new SliderWidget(myTab, _font, 0, 0, swidth, lineHeight,
+  myTrackBallSpeed = new SliderWidget(pane, _font, 0, 0, swidth, lineHeight,
                                       "Trackball",
                                       lwidth - INDENT, kTBSpeedChanged, 4 * fontWidth, "%");
   myTrackBallSpeed->setMinValue(1); myTrackBallSpeed->setMaxValue(20);
@@ -382,7 +376,7 @@ void InputDialog::addMouseTab()
   wid.push_back(myTrackBallSpeed);
 
   // Add driving controller speed
-  myDrivingSpeed = new SliderWidget(myTab, _font, 0, 0, swidth, lineHeight,
+  myDrivingSpeed = new SliderWidget(pane, _font, 0, 0, swidth, lineHeight,
                                     "Driving controller",
                                     lwidth - INDENT, kDCSpeedChanged, 4 * fontWidth, "%");
   myDrivingSpeed->setMinValue(1); myDrivingSpeed->setMaxValue(20);
@@ -397,7 +391,7 @@ void InputDialog::addMouseTab()
   VarList::push_back(items, "-UI, +Emulation", "1");
   VarList::push_back(items, "+UI, -Emulation", "2");
   VarList::push_back(items, "+UI, +Emulation", "3");
-  myCursorState = new PopUpWidget(myTab, _font, 0, 0, pwidth, lineHeight, items,
+  myCursorState = new PopUpWidget(pane, _font, 0, 0, pwidth, lineHeight, items,
                                   "Mouse cursor visibility ", lwidth, kCursorStateChanged);
   myCursorState->setToolTip(Event::PreviousCursorVisbility, Event::NextCursorVisbility);
   wid.push_back(myCursorState);
@@ -406,7 +400,7 @@ void InputDialog::addMouseTab()
 #endif
 
   // Grab mouse (in windowed mode)
-  myGrabMouse = new CheckboxWidget(myTab, _font, 0, 0,
+  myGrabMouse = new CheckboxWidget(pane, _font, 0, 0,
                                    "Grab mouse in emulation mode");
   myGrabMouse->setToolTip(Event::ToggleGrabMouse);
   wid.push_back(myGrabMouse);
@@ -416,41 +410,32 @@ void InputDialog::addMouseTab()
 
   // Add items for mouse
   addToFocusList(wid, myTab, tabID);
+  pane->setHelpAnchor("Mouse");
 
-  myTab->parentWidget(tabID)->setHelpAnchor("Mouse");
+  // Describe the layout once; the pane runs it on every resize
+  pane->setLayout([this](GUI::BoxLayout& col) {
+    using GUI::anchoredItem;
+    using GUI::indentedItem;
+    const int lh = Dialog::lineHeight(), VGAP = Dialog::vGap(),
+              INDENT = Dialog::indent();
+
+    col.addFixed(anchoredItem(myMouseControl), lh);
+    col.addSpace(VGAP);
+    col.addFixed(anchoredItem(myMouseSensitivity), lh);
+    col.addSpace(VGAP);
+    col.addFixed(indentedItem(myMPaddleSpeed, INDENT), lh);
+    col.addSpace(VGAP);
+    col.addFixed(indentedItem(myTrackBallSpeed, INDENT), lh);
+    col.addSpace(VGAP);
+    col.addFixed(indentedItem(myDrivingSpeed, INDENT), lh);
+    col.addSpace(VGAP * 4);
+    col.addFixed(anchoredItem(myCursorState), lh);
+    col.addSpace(VGAP);
+    col.addFixed(anchoredItem(myGrabMouse), lh);
+  });
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void InputDialog::layoutMouseTab()
-{
-  using GUI::BoxLayout;
-  using GUI::anchoredItem;
-  using GUI::indentedItem;
-  using Dir = BoxLayout::Dir;
-
-  const int lineHeight = Dialog::lineHeight(),
-            VBORDER    = Dialog::vBorder(),
-            HBORDER    = Dialog::hBorder(),
-            VGAP       = Dialog::vGap(),
-            INDENT     = Dialog::indent();
-
-  auto col = std::make_unique<BoxLayout>(Dir::Vertical, 0, HBORDER, VBORDER);
-  col->addFixed(anchoredItem(myMouseControl), lineHeight);
-  col->addSpace(VGAP);
-  col->addFixed(anchoredItem(myMouseSensitivity), lineHeight);
-  col->addSpace(VGAP);
-  col->addFixed(indentedItem(myMPaddleSpeed, INDENT), lineHeight);
-  col->addSpace(VGAP);
-  col->addFixed(indentedItem(myTrackBallSpeed, INDENT), lineHeight);
-  col->addSpace(VGAP);
-  col->addFixed(indentedItem(myDrivingSpeed, INDENT), lineHeight);
-  col->addSpace(VGAP * 4);
-  col->addFixed(anchoredItem(myCursorState), lineHeight);
-  col->addSpace(VGAP);
-  col->addFixed(anchoredItem(myGrabMouse), lineHeight);
-  col->doLayout(0, 0, myTab->getWidth(), myTab->getHeight());
-}
-
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void InputDialog::loadConfig()
 {

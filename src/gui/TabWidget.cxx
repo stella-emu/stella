@@ -94,6 +94,10 @@ void TabWidget::updateTabSizes()
         (_w - kTabLeftOffset - fixedWidth) / varTabs - kTabLeftOffset;
     _tabWidth = std::min(_tabWidth, maxWidth);
   }
+
+  // The content area (below the tab bar) has now changed, so re-lay the active
+  // tab's content out — the container owns this, so dialogs need no such code
+  layoutActivePane();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -125,9 +129,38 @@ void TabWidget::setActiveTab(int tabID, bool show)
   _activeTab = tabID;
   _children = std::move(_tabs[tabID].children);
 
+  // As a container, lay the newly-active content out to the current size
+  layoutActivePane();
+
   // Let parent know about the tab change
   if(show)
     sendCommand(TabWidget::kTabChangedCmd, _activeTab, _id);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TabWidget::layoutActivePane()
+{
+  if(_activeTab < 0)
+    return;
+
+  // Only lay out tabs whose content was set via setParentWidget (composite or
+  // pane).  Unconverted loose tabs keep a lazily-created 0-size dummy that the
+  // dialog lays around; sizing it would make it a large invisible click-blocker
+  if(!_tabs[_activeTab].sizeContent)
+    return;
+  Widget* content = _tabs[_activeTab].parentWidget;
+
+  // Size the content to fill the area below the tab bar, inset by a small frame
+  // border.  Skip while the tab widget is still at its placeholder size (a
+  // negative content area would drive content widgets into degenerate states);
+  // the owning dialog's layout() sizes us, then re-drives this via
+  // updateTabSizes()
+  constexpr int border = 2;
+  const int w = _w - 2 * border, h = _h - _tabHeight - 2 * border;
+  if(w <= 0 || h <= 0)
+    return;
+
+  content->setArea(border, border, w, h);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -196,6 +229,8 @@ void TabWidget::setParentWidget(int tabID, Widget* parent)
 {
   assert(0 <= tabID && std::cmp_less(tabID, _tabs.size()));
   _tabs[tabID].parentWidget = parent;
+  // This is real content, so the container lays it out (see layoutActivePane)
+  _tabs[tabID].sizeContent = true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -204,12 +239,11 @@ Widget* TabWidget::parentWidget(int tabID)
   assert(0 <= tabID && std::cmp_less(tabID, _tabs.size()));
 
   if(!_tabs[tabID].parentWidget)
-  {
-    // Create dummy widget if not existing
-    auto* w = new Widget(_boss, _font, 0, 0, 0, 0);
+    // Create a 0-size dummy if none exists.  It is deliberately NOT set via
+    // setParentWidget, so sizeContent stays false and layoutActivePane leaves
+    // it alone (sizing it would make it a large invisible click-blocker)
+    _tabs[tabID].parentWidget = new Widget(_boss, _font, 0, 0, 0, 0);
 
-    setParentWidget(tabID, w);
-  }
   return _tabs[tabID].parentWidget;
 }
 

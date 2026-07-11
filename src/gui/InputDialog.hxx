@@ -63,7 +63,6 @@ class InputDialog : public Dialog
     void addDevicePortTab();
     void addMouseTab();
     void layoutDevicePortTab();
-    void layoutMouseTab();
 
     void handleMouseControlState();
     void handleCursorState();

@@ -336,16 +336,6 @@ void DebuggerDialog::handleCommand(CommandSender* sender, int cmd,
       myRom->invalidate(myRomTab->getActiveTab() == 0);
       break;
 
-    case TabWidget::kTabChangedCmd:
-      // A tab just became active; lay its content out now (inactive tabs are
-      // skipped by the area layouts, so one that changed size while hidden — or
-      // was never shown — needs sizing here).  'id' is the tab widget's own id
-      if(myTab != nullptr && std::cmp_equal(id, myTab->getID()))
-        layoutActiveTab();
-      else if(myRomTab != nullptr && std::cmp_equal(id, myRomTab->getID()))
-        layoutActiveRomTab();
-      break;
-
     default:
       Dialog::handleCommand(sender, cmd, data, id);
   }
@@ -556,22 +546,10 @@ void DebuggerDialog::layoutTabArea()
 {
   const Common::Rect& r = getTabBounds();
 
+  // The tab widget lays its own active content out (updateTabSizes -> the
+  // container's layoutActivePane), so there is nothing else to do here
   myTab->setArea(r.x(), r.y() + VBORDER, r.w(), r.h() - VBORDER);
   myTab->updateTabSizes();
-
-  layoutActiveTab();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void DebuggerDialog::layoutActiveTab()
-{
-  const Common::Rect& r = getTabBounds();
-  const int widWidth  = r.w() - VBORDER;
-  const int widHeight = r.h() - myTab->getTabHeight() - VBORDER - 4;
-
-  // Tab contents are positioned relative to their tab, which carries them along
-  if(Widget* active = myTab->parentWidget(myTab->getActiveTab()))
-    active->setArea(2, 2, active == myPrompt ? widWidth - 4 : widWidth, widHeight);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -838,25 +816,9 @@ void DebuggerDialog::layoutRomArea()
   const int tabWidth = r.w() - VBORDER - 1;
   const int tabHeight = r.h() - tabY - 1;
 
+  // As with the other tab area, the tab widget lays its own active content out
   myRomTab->setArea(r.x() + VBORDER, tabY, tabWidth, tabHeight);
   myRomTab->updateTabSizes();
-
-  layoutActiveRomTab();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void DebuggerDialog::layoutActiveRomTab()
-{
-  const Common::Rect& r = getRomBounds();
-  const int tabY = myRam->getBottom() + HGAP;
-  const int tabWidth = r.w() - VBORDER - 1;
-  const int tabHeight = r.h() - tabY - 1;
-  const int contentW = tabWidth - 1;
-  const int contentH = tabHeight - myRomTab->getTabHeight() - 2;
-
-  // The disassembly and the cart-specific tabs share this content rectangle
-  if(Widget* active = myRomTab->parentWidget(myRomTab->getActiveTab()))
-    active->setArea(2, 2, contentW, contentH);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
