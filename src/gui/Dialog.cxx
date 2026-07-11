@@ -1091,6 +1091,26 @@ void Dialog::addOKCancelBGroup(WidgetArray& wid, const GUI::Font& font,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+int Dialog::buttonGroupWidth() const
+{
+  const int BUTTON_GAP = Dialog::buttonGap(),
+            HBORDER    = Dialog::hBorder();
+  int left = 0, right = 0;
+
+  for(const auto* b: {_defaultWidget, _extraWidget})
+    if(b != nullptr)
+      left += b->getWidth() + (left > 0 ? BUTTON_GAP : 0);
+  for(const auto* b: {_okWidget, _cancelWidget})
+    if(b != nullptr)
+      right += b->getWidth() + (right > 0 ? BUTTON_GAP : 0);
+
+  // The two sides never touch; a group with only one side needs no clearance
+  const int between = (left > 0 && right > 0) ? BUTTON_GAP * 2 : 0;
+
+  return HBORDER * 2 + left + between + right;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Dialog::layoutButtonGroup()
 {
   const int buttonHeight = Dialog::buttonHeight(),

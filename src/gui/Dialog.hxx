@@ -231,6 +231,14 @@ class Dialog : public GuiObject
     // dialog's layout() so the group follows font/size changes.
     void layoutButtonGroup();
 
+    /**
+      The width the button group needs: Defaults (and any Extra) on the left,
+      OK/Cancel on the right, with clearance between the two sides.  A dialog
+      that sizes itself from its content (Layout::naturalSize) must still be wide
+      enough for its buttons, which the content knows nothing about.
+    */
+    int buttonGroupWidth() const;
+
     // Position the title-bar help ('?') button at the top-right for the current
     // _w.  Called automatically after layout(), so dialogs that compute _w in
     // layout() get it placed correctly.
