@@ -21,6 +21,7 @@
 #include "Font.hxx"
 #include "GuiObject.hxx"
 #include "Widget.hxx"
+#include "TabPaneWidget.hxx"
 #include "TabWidget.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -95,9 +96,9 @@ void TabWidget::updateTabSizes()
     _tabWidth = std::min(_tabWidth, maxWidth);
   }
 
-  // The content area (below the tab bar) has now changed, so re-lay the active
-  // tab's content out — the container owns this, so dialogs need no such code
-  layoutActivePane();
+  // The content area (below the tab bar) has now changed, so re-lay the tabs'
+  // content out — the container owns this, so dialogs need no such code
+  layoutTabs();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -130,7 +131,7 @@ void TabWidget::setActiveTab(int tabID, bool show)
   _children = std::move(_tabs[tabID].children);
 
   // As a container, lay the newly-active content out to the current size
-  layoutActivePane();
+  layoutContent(_activeTab);
 
   // Let parent know about the tab change
   if(show)
@@ -138,17 +139,33 @@ void TabWidget::setActiveTab(int tabID, bool show)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void TabWidget::layoutActivePane()
+void TabWidget::layoutTabs()
 {
-  if(_activeTab < 0)
+  for(int i = 0; std::cmp_less(i, _tabs.size()); ++i)
+  {
+    // A pane parents the tab's controls to itself, so it can be laid out while
+    // hidden — and it must be, since a dialog's loadConfig() feeds the controls
+    // of every tab, not just the visible one, and they have to be at their real
+    // size by then.  Content parented directly to us must NOT be laid out while
+    // hidden: any child it creates lazily (e.g. RomListWidget's checkbox pool,
+    // which grows with the height) would be added to whichever tab is active
+    if(i == _activeTab || _tabs[i].isPane)
+      layoutContent(i);
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TabWidget::layoutContent(int tabID)
+{
+  if(tabID < 0)
     return;
 
-  // Only lay out tabs whose content was set via setParentWidget (composite or
-  // pane).  Unconverted loose tabs keep a lazily-created 0-size dummy that the
-  // dialog lays around; sizing it would make it a large invisible click-blocker
-  if(!_tabs[_activeTab].sizeContent)
+  // Only lay out tabs whose content was set via setParentWidget/setPaneWidget.
+  // Unconverted loose tabs keep a lazily-created 0-size dummy that the dialog
+  // lays around; sizing it would make it a large invisible click-blocker
+  if(!_tabs[tabID].sizeContent)
     return;
-  Widget* content = _tabs[_activeTab].parentWidget;
+  Widget* content = _tabs[tabID].parentWidget;
 
   // Size the content to fill the area below the tab bar, inset by a small frame
   // border.  Skip while the tab widget is still at its placeholder size (a
@@ -229,8 +246,16 @@ void TabWidget::setParentWidget(int tabID, Widget* parent)
 {
   assert(0 <= tabID && std::cmp_less(tabID, _tabs.size()));
   _tabs[tabID].parentWidget = parent;
-  // This is real content, so the container lays it out (see layoutActivePane)
+  // This is real content, so the container lays it out (see layoutContent)
   _tabs[tabID].sizeContent = true;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TabWidget::setPaneWidget(int tabID, TabPaneWidget* pane)
+{
+  setParentWidget(tabID, pane);
+  // A pane owns the tab's controls, so it can also be laid out while hidden
+  _tabs[tabID].isPane = true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -23,6 +23,8 @@
 #include "Command.hxx"
 #include "Widget.hxx"
 
+class TabPaneWidget;
+
 class TabWidget : public Widget, public CommandSender
 {
   public:
@@ -61,6 +63,10 @@ class TabWidget : public Widget, public CommandSender
 // setActiveTab moves the active tab's widgets into _children. This means
 // Widgets added afterwards will be added to the active tab.
     void setParentWidget(int tabID, Widget* parent);
+    // Set a tab's content pane.  Called by TabPaneWidget's constructor, so a
+    // pane is always registered with its tab (see also setParentWidget, for
+    // composite content parented directly to us)
+    void setPaneWidget(int tabID, TabPaneWidget* pane);
     Widget* parentWidget(int tabID);
 
     int getTabWidth() const  { return _tabWidth;  }
@@ -94,11 +100,15 @@ class TabWidget : public Widget, public CommandSender
       WidgetList children;
       Widget* parentWidget{nullptr};
       // TRANSITIONAL: true only when a real content widget was set via
-      // setParentWidget (vs the lazily-created 0-size dummy), so the container
-      // sizes only such content (see layoutActivePane).  Once every tab has a
-      // real content widget/pane (no more dummies), this flag and its checks —
-      // and the dummy itself — can be removed.  TODO: revisit after conversion
+      // setParentWidget/setPaneWidget (vs the lazily-created 0-size dummy), so
+      // the container sizes only such content (see layoutContent).  Once every
+      // tab has a real content widget/pane (no more dummies), this flag and its
+      // checks — and the dummy itself — can be removed.  TODO: revisit
       bool sizeContent{false};
+      // True when the content is a TabPaneWidget, which parents the tab's
+      // controls to itself.  Such a tab can be laid out while hidden; content
+      // parented directly to us cannot (see layoutTabs)
+      bool isPane{false};
       bool enabled{true};
       int tabWidth{0};        // resolved width (0 = share the common _tabWidth)
       bool autoWidth{false};  // width tracks the (font-dependent) title width
@@ -123,10 +133,12 @@ class TabWidget : public Widget, public CommandSender
 
   private:
     void updateActiveTab();
-    // Lay the active tab's content widget out to fill the area below the tab
-    // bar.  The tab widget is a container, so it owns this: a dialog just sizes
-    // the tab widget and the content follows, needing no per-tab resize code
-    void layoutActivePane();
+    // Lay one tab's content widget out to fill the area below the tab bar.  The
+    // tab widget is a container, so it owns this: a dialog just sizes the tab
+    // widget and the content follows, needing no per-tab resize code
+    void layoutContent(int tabID);
+    // Lay out the content of the active tab, plus that of every (hidden) pane
+    void layoutTabs();
 
   private:
     // Following constructors and assignment operators not supported

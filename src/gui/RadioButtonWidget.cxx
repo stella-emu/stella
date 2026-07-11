@@ -244,15 +244,7 @@ RadioButtonWidget::RadioButtonWidget(GuiObject* boss, const GUI::Font& font,
     _w = _buttonSize;
   else
     _w = font.getStringWidth(label) + _buttonSize + font.getMaxCharWidth() * 0.75;
-  _h = font.getFontHeight() < static_cast<int>(_buttonSize)
-      ? _buttonSize : font.getFontHeight();
-
-  // Depending on font size, either the font or box will need to be
-  // centered vertically
-  if(std::cmp_greater(_h, _buttonSize))  // center box
-    _boxY = (_h - _buttonSize) / 2;
-  else                                   // center text
-    _textY = (_buttonSize - _font.getFontHeight()) / 2;
+  alignBox(static_cast<int>(_buttonSize));
 
   // NOLINTNEXTLINE(clang-analyzer-optin.cplusplus.VirtualCall)
   setFill(CheckboxWidget::FillType::Normal);
@@ -284,16 +276,7 @@ void RadioButtonWidget::refreshFontMetrics()
     _w = _buttonSize;
   else
     _w = _font.getStringWidth(_label) + _buttonSize + _font.getMaxCharWidth() * 0.75;
-  _h = _font.getFontHeight() < static_cast<int>(_buttonSize)
-      ? _buttonSize : _font.getFontHeight();
-
-  // Depending on font size, either the font or box will need to be
-  // centered vertically
-  _boxY = _textY = 0;
-  if(std::cmp_greater(_h, _buttonSize))  // center box
-    _boxY = (_h - _buttonSize) / 2;
-  else                                   // center text
-    _textY = (_buttonSize - _font.getFontHeight()) / 2;
+  alignBox(static_cast<int>(_buttonSize));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

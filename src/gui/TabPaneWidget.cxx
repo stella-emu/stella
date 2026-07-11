@@ -48,10 +48,20 @@ void TabPaneWidget::setArea(int x, int y, int w, int h)
   if(myPostLayout)
     myPostLayout();
 
-  // The pane is (re)laid out when it becomes the active tab, but a container
-  // swapped into the active tab is not otherwise re-dirtied — so its children
-  // would not repaint until each was individually touched.  Mark our subtree
-  // for redraw (dirtying the children propagates the chain up to us)
+  // Everything moved, so repaint the whole pane (see drawWidget)
+  setDirty();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TabPaneWidget::drawWidget(bool hilite)
+{
+  // The pane has nothing of its own to draw.  But drawing is incremental — a
+  // widget is only repainted when it is itself dirty — so as a container it has
+  // to pass a repaint of itself on to its children, which are not otherwise
+  // re-dirtied.  Without this they would vanish whenever something forces a full
+  // redraw of the dialog underneath them (e.g. closing a popup menu) and only
+  // reappear as each was individually touched.  TabWidget does the same for the
+  // widgets it holds directly
   Widget::setDirtyInList(_children);
 }
 

@@ -119,6 +119,7 @@ EventMappingWidget::EventMappingWidget(GuiObject* boss, const GUI::Font& font,
 void EventMappingWidget::setArea(int x, int y, int w, int h)
 {
   using GUI::BoxLayout;
+  using GUI::labeledRow;
   using GUI::widgetItem;
   using Dir = BoxLayout::Dir;
 
@@ -126,50 +127,50 @@ void EventMappingWidget::setArea(int x, int y, int w, int h)
   Widget::setWidth(w);
   Widget::setHeight(h);
 
-  const int lineHeight   = dialog().lineHeight(),
-            fontWidth    = dialog().fontWidth(),
-            fontHeight   = dialog().fontHeight(),
+  const int fontWidth    = dialog().fontWidth(),
             buttonHeight = dialog().buttonHeight(),
             buttonWidth  = dialog().buttonWidth("Defaults"),
             VBORDER      = dialog().vBorder(),
             HBORDER      = dialog().hBorder(),
             VGAP         = dialog().vGap();
   const int listWidth = w - buttonWidth - HBORDER * 2 - fontWidth;
-  const int listTop = y + VBORDER + lineHeight * 3 / 2;
-  const int listHeight = h - (2 + ACTION_LINES) * lineHeight - VBORDER + 2
-                         - lineHeight * 3 / 2;
 
   // Event-group filter popup, above the actions list
-  myFilterPopup->setPos(x + HBORDER, y + VBORDER);
-  myFilterPopup->setWidth(listWidth - _font.getStringWidth("Events ")
-                          - PopUpWidget::dropDownWidth(_font));
+  auto filterRow = std::make_unique<BoxLayout>(Dir::Horizontal);
+  filterRow->addFixed(widgetItem(myFilterPopup),
+                      listWidth - _font.getStringWidth("Events ")
+                        - PopUpWidget::dropDownWidth(_font));
+  filterRow->addStretchSpace();
 
-  // Scrollable list of actions (fills the left side)
-  myActionsList->setPos(x + HBORDER, listTop);
-  myActionsList->setWidth(listWidth);
-  myActionsList->setHeight(listHeight);
+  // The buttons form a column to the right of the list, aligned to its top
+  auto buttonCol = std::make_unique<BoxLayout>(Dir::Vertical);
+  buttonCol->addFixed(widgetItem(myMapButton), buttonHeight);
+  buttonCol->addSpace(VGAP);
+  buttonCol->addFixed(widgetItem(myCancelMapButton), buttonHeight);
+  buttonCol->addSpace(VGAP * 2);
+  buttonCol->addFixed(widgetItem(myEraseButton), buttonHeight);
+  buttonCol->addSpace(VGAP);
+  buttonCol->addFixed(widgetItem(myResetButton), buttonHeight);
+  buttonCol->addSpace(VGAP * 2);
+  buttonCol->addFixed(widgetItem(myComboButton), buttonHeight);
+  buttonCol->addStretchSpace();
 
-  // Right-hand button column, aligned to the list top
-  auto col = std::make_unique<BoxLayout>(Dir::Vertical);
-  col->addFixed(widgetItem(myMapButton), buttonHeight);
-  col->addSpace(VGAP);
-  col->addFixed(widgetItem(myCancelMapButton), buttonHeight);
+  auto listRow = std::make_unique<BoxLayout>(Dir::Horizontal);
+  listRow->addStretch(widgetItem(myActionsList));
+  listRow->addSpace(fontWidth);
+  listRow->addFixed(std::move(buttonCol), buttonWidth);
+
+  auto col = std::make_unique<BoxLayout>(Dir::Vertical, 0, HBORDER, VBORDER);
+  col->addFixed(std::move(filterRow), myFilterPopup->getHeight());
   col->addSpace(VGAP * 2);
-  col->addFixed(widgetItem(myEraseButton), buttonHeight);
-  col->addSpace(VGAP);
-  col->addFixed(widgetItem(myResetButton), buttonHeight);
+  // The actions list takes whatever height the rows around it leave over
+  col->addStretch(std::move(listRow));
   col->addSpace(VGAP * 2);
-  col->addFixed(widgetItem(myComboButton), buttonHeight);
-  col->doLayout(x + w - HBORDER - buttonWidth + 2, listTop, buttonWidth,
-                buttonHeight * 5 + VGAP * 6);
-
-  // Selected-event label and its (read-only) key-mapping display
-  const int ypos = myActionsList->getBottom() + VGAP * 2;
-  myActionLabel->setPos(x + HBORDER, ypos + 2);
-  myKeyMapping->setPos(x + HBORDER + myActionLabel->getWidth() + fontWidth, ypos);
-  myKeyMapping->setWidth(w - HBORDER - myActionLabel->getWidth() - fontWidth
-                         - HBORDER + 2);
-  myKeyMapping->setHeight(lineHeight + fontHeight * (ACTION_LINES - 1) + 2);
+  // Selected event's label and its (read-only) key-mapping display
+  col->addFixed(labeledRow(myActionLabel, myKeyMapping,
+                           myActionLabel->getWidth() + fontWidth, 0, true),
+                myKeyMapping->getHeight());
+  col->doLayout(x, y, w, h);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

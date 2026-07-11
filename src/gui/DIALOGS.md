@@ -437,13 +437,82 @@ composition local.
 
 ## Tabbed dialogs
 
+`TabWidget` is a **container**: it owns laying out the content of its tabs. The
+dialog sizes the tab widget and the content follows — **a tabbed dialog writes no
+per-tab layout or resize code at all.**
+
+Every tab's content is **one widget**. There are two kinds, and picking the right
+one is the whole trick:
+
+| Your tab holds… | Use | Register with |
+|---|---|---|
+| loose controls the dialog owns (the usual form of checkboxes, popups, sliders) | a **`TabPaneWidget`** — a transparent container you parent the controls to, plus a layout builder | `myTab->setPaneWidget(tabID, pane)` |
+| a self-contained widget that already owns its controls (`EventMappingWidget`, the debugger's `TiaWidget`/`RiotWidget`/`Cart*Widget`) | **that widget itself** — it *is* the content | `myTab->setParentWidget(tabID, widget)` |
+
+```
+  ┌─ General ─┬─ Advanced ─┬─ Mapping ─┐   ← tab bar (updateTabSizes())
+  │           └────────────┴───────────┴──┐
+  │  Mode:      [ popup               ▼]  │  ← "General" = loose controls, so
+  │  [x] Enable feature                   │    they are parented to a
+  │  Speed:     [======O------]           │    TabPaneWidget and described in
+  │                                       │    its setLayout() builder
+  ├───────────────────────────────────────┤
+  │ [Defaults]                 [OK][Cancel]
+  └───────────────────────────────────────┘
+
+  ┌─ General ─┬─ Advanced ─┬─ Mapping ─┐
+  │                        └───────────┴──┐
+  │  ┌─────────────────────────────────┐  │  ← "Mapping" = one self-contained
+  │  │                                 │  │    widget (EventMappingWidget).
+  │  │   EventMappingWidget            │  │    It IS the content: no pane, and
+  │  │   (owns its list, buttons, …)   │  │    it reflows in its own setArea()
+  │  └─────────────────────────────────┘  │
+  ├───────────────────────────────────────┤
+  │ [Defaults]                 [OK][Cancel]
+  └───────────────────────────────────────┘
+```
+
+A self-contained widget needs **no pane** — it already is the thing the tab holds.
+Do not wrap it in one, and do not derive it from `TabPaneWidget`: **a widget must
+never know whether its parent is a tab.** It takes a plain `GuiObject*` boss like
+any other widget, and reflows itself in its own `setArea()` override. The *dialog*
+does the tab wiring.
+
+### A tab of loose controls — `TabPaneWidget`
+
 ```cpp
 // ctor: create the tab widget at a PLACEHOLDER size
 myTab = new TabWidget(this, font, 0, 0, 1, 1);
-const int tabID = myTab->addTab(" General ", TabWidget::AUTO_WIDTH);
-// ... create this tab's widgets with parent = myTab ...
 addTabWidget(myTab);
+
+const int tabID = myTab->addTab(" General ", TabWidget::AUTO_WIDTH);
+auto* pane = new TabPaneWidget(myTab, _font);
+myTab->setPaneWidget(tabID, pane);
+
+// this tab's controls are parented to the PANE, not to myTab
+myMode  = new PopUpWidget(pane, _font, 0, 0, pwidth, lineHeight, items, "Mode ", lwidth);
+mySpeed = new SliderWidget(pane, _font, 0, 0, swidth, lineHeight, "Speed", lwidth);
+addToFocusList(wid, myTab, tabID);
+pane->setHelpAnchor("General");
+
+// describe the layout ONCE; the pane re-runs it on every resize/font change.
+// The box is vertical and already inset by the standard borders
+pane->setLayout([this](GUI::BoxLayout& col) {
+  const int lh = Dialog::lineHeight(), VGAP = Dialog::vGap();
+
+  col.addFixed(GUI::anchoredItem(myMode), lh);
+  col.addSpace(VGAP);
+  col.addFixed(GUI::anchoredItem(mySpeed), lh);
+});
 ```
+
+`setLayout()` also takes an optional second `postLayout` callback, for the rare
+overlay/cross-referencing widget the box cannot express. Reach for it last: a
+right-hand group with its own vertical rhythm is usually just **two parallel
+columns** — an `addStretch`ed left column beside a fixed-width right one (see
+`InputDialog`'s "Devices & Ports" tab).
+
+### `layout()` — no per-tab code
 
 ```cpp
 void MyTabbedDialog::layout()
@@ -455,38 +524,31 @@ void MyTabbedDialog::layout()
   myTab->setWidth(_w - 4);
   myTab->setHeight(_h - _th - Dialog::vGap()
                    - Dialog::buttonHeight() - Dialog::vBorder() * 2);
-  // …then recompute the tab-bar geometry from the live font:
+  // …then recompute the tab-bar geometry from the live font.  This also re-lays
+  // out the tabs' content — that is the container's job, not the dialog's
   myTab->updateTabSizes();
-
-  layoutGeneralTab();     // per-tab helpers position each tab's contents
-  layoutAdvancedTab();
 
   layoutButtonGroup();
 }
-```
-
-```
-  ┌─ General ─┬─ Advanced ─┐            ← tab bar (updateTabSizes())
-  │           └────────────┴──────────┐
-  │  Mode:      [ popup            ▼]  │
-  │  [x] Enable feature               │  ← each tab laid out like a form,
-  │  Speed:     [======O------]       │    via layoutGeneralTab()
-  │                                   │
-  ├───────────────────────────────────┤
-  │ [Defaults]              [OK][Cancel]
-  └───────────────────────────────────┘
 ```
 
 Key points:
 
 - Create `myTab` at `(0, 0, 1, 1)` and size it in `layout()`. **You must call
   `myTab->updateTabSizes()`** after sizing, or the tab headers render with a
-  negative/placeholder width.
-- Tab child coordinates are **tab-relative**; the tab bar offset is added for
-  you. A per-tab helper builds that tab's contents exactly like a standalone
-  form: `doLayout(0, 0, myTab->getWidth(), myTab->getHeight())`.
+  negative/placeholder width and the content is never laid out.
+- A pane's children are **pane-relative**, and the builder's box is already inset
+  by `hBorder()`/`vBorder()` — so just add rows; never offset by the borders
+  yourself.
+- **Panes are laid out even while their tab is hidden**, and they must be: a
+  dialog's `loadConfig()` feeds the controls of *every* tab, not just the visible
+  one, so they all have to be at their real size by then. (Feeding a control that
+  is still at its placeholder size is how you get a `Rect::valid()` assert.)
+  Self-contained content is laid out only when its tab is **active**, because a
+  child it creates lazily (`RomListWidget`'s checkbox pool) would otherwise attach
+  itself to whichever tab is currently showing.
 - `layout()` order: compute `_w`/`_h` → size `myTab` → `updateTabSizes()` →
-  per-tab helpers → `layoutButtonGroup()`.
+  `layoutButtonGroup()`.
 
 ---
 
@@ -533,9 +595,11 @@ Two corollaries:
 
 ## Gotcha checklist
 
-- **`EditTextWidget` is `h + 2` internally** (frame padding). Never force its
-  height. Use `setWidth` + `setPos`, or `vCentered(edit, edit->getHeight())` in
-  a row. Passing `lineHeight` as its height makes it 2px too short.
+- **`EditTextWidget` and `PopUpWidget` are `h + 2` internally** (frame padding).
+  Never force their height. Use `setWidth` + `setPos`, or
+  `vCentered(edit, edit->getHeight())` in a row. Passing `lineHeight` as the
+  height makes them 2px too short — including via `widgetItem()`, which fills its
+  cell in **both** axes: give such a widget a cell of `widget->getHeight()`.
 - **`PopUpWidget::setWidth(w)` takes the TOTAL width** (`value box + label +
   dropDownWidth`), not just the value box. To fill a row, pass the full span
   (`_w - HBORDER*2 - …`), not the ctor's value-box formula. `setWidth` also
@@ -555,6 +619,15 @@ Two corollaries:
   label->getHeight()`.
 - **Anything that reads `_w`/`_h` in the ctor breaks** — they are 0 there. Move
   such code to `layout()`.
+- **A tab's content is one widget, and it never knows it is in a tab.** Loose
+  controls go in a `TabPaneWidget`; a widget that already owns its controls *is*
+  the content and needs no pane — don't wrap it in one, and don't derive it from
+  `TabPaneWidget` (that would couple it to `TabWidget` and stop it being used
+  anywhere else). See "Tabbed dialogs".
+- **Never size a widget by subtracting what you think the other rows use.** A
+  formula like `listHeight = h - 3*lineHeight - VBORDER - …` is right for exactly
+  one height and silently drifts the moment anything above or below it changes.
+  Make it an `addStretch()` item and let it take whatever is left over.
 - **Don't fill self-labeling widgets** (`PopUpWidget`/`SliderWidget`) — anchor
   them, or their track/value box stretches.
 - **Keep irregular gaps explicit** with `addSpace(VGAP * n)`, traced from the

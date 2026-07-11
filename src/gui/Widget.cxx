@@ -891,16 +891,29 @@ CheckboxWidget::CheckboxWidget(GuiObject* boss, const GUI::Font& font,
     _w = _boxSize;
   else
     _w = font.getStringWidth(label) + _boxSize + font.getMaxCharWidth() * 0.75;
-  _h = font.getFontHeight() < _boxSize ? _boxSize : font.getFontHeight();
-
-  // Depending on font size, either the font or box will need to be
-  // centered vertically
-  if(_h > _boxSize)  // center box
-    _boxY = (_h - _boxSize) / 2;
-  else         // center text
-    _textY = (_boxSize - _font.getFontHeight()) / 2;
+  alignBox(_boxSize);
 
   setFill(CheckboxWidget::FillType::Normal);  // NOLINT(clang-analyzer-optin.cplusplus.VirtualCall)
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void CheckboxWidget::alignBox(int boxSize)
+{
+  const int fontHeight = _font.getFontHeight();
+
+  // Inset the label as the controls that frame their text do, so a checkbox
+  // lines up with one sharing its row, then center the box on the label
+  _textY = TEXT_INSET;
+  _boxY = _textY + (fontHeight - boxSize) / 2;
+
+  // With a small enough font the box is taller than the label, so it sets the
+  // height and the label is centered on it instead
+  if(_boxY < 0)
+  {
+    _textY -= _boxY;
+    _boxY = 0;
+  }
+  _h = std::max(_textY + fontHeight, _boxY + boxSize);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -916,20 +929,7 @@ void CheckboxWidget::refreshFontMetrics()
     _w = _boxSize;
   else
     _w = _font.getStringWidth(_label) + _boxSize + _font.getMaxCharWidth() * 0.75;
-  _h = _font.getFontHeight() < _boxSize ? _boxSize : _font.getFontHeight();
-
-  // Depending on font size, either the font or box will need to be
-  // centered vertically
-  if(_h > _boxSize)  // center box
-  {
-    _boxY = (_h - _boxSize) / 2;
-    _textY = 0;
-  }
-  else               // center text
-  {
-    _boxY = 0;
-    _textY = (_boxSize - _font.getFontHeight()) / 2;
-  }
+  alignBox(_boxSize);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1238,7 +1238,8 @@ void SliderWidget::drawWidget(bool hilite)
 
   // Draw the label, if any
   if(_labelWidth > 0)
-    s.drawString(_font, _label, _x, _y + 2, _labelWidth, isEnabled() ? kTextColor : kColor);
+    s.drawString(_font, _label, _x, _y + textOffsetY(), _labelWidth,
+                 isEnabled() ? kTextColor : kColor);
 
   const int p = valueToPos(_value),
     h = _h - _font.getFontHeight() / 2 - 1,

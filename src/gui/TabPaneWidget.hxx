@@ -26,21 +26,24 @@ namespace GUI {
 }  // namespace GUI
 
 /**
-  The content of a single tab: a transparent container that a tab's controls are
-  parented to, plus a layout builder.
+  A transparent container that a group of controls are parented to, plus a
+  layout builder.
 
-  Whenever the tab is (re)sized, the pane rebuilds a vertical BoxLayout (inset by
-  the standard borders) from the current font, runs the builder to fill it with
-  the tab's rows, and lays it out.  So a dialog describes a tab's layout once,
-  right where its controls are created, and writes no resize code at all — the
-  TabWidget drives it (see TabWidget::layoutActivePane).
+  Whenever the pane is (re)sized, it rebuilds a vertical BoxLayout (inset by the
+  standard borders) from the current font, runs the builder to fill it with the
+  pane's rows, and lays it out.  So its owner describes the layout once, right
+  where the controls are created, and writes no resize code at all.
+
+  Typically a pane is the content of a tab, which the TabWidget then sizes (see
+  TabWidget::setPaneWidget); but nothing here depends on that, and a dialog can
+  equally hold one directly and setArea() it from layout().
 
   @author  Stephen Anthony
 */
 class TabPaneWidget : public Widget
 {
   public:
-    // Fills the (vertical, already-margined) box with the tab's rows
+    // Fills the (vertical, already-margined) box with the pane's rows
     using LayoutBuilder = std::function<void(GUI::BoxLayout&)>;
     // Optional: position cross-referencing/overlay widgets after the box has
     // been laid out (for the rare right-column-aligned-to-a-row cases)
@@ -53,6 +56,9 @@ class TabPaneWidget : public Widget
       { myBuilder = builder; myPostLayout = post; }
 
     void setArea(int x, int y, int w, int h) override;
+
+  protected:
+    void drawWidget(bool hilite) override;
     Widget* findWidget(int x, int y) override;
 
   private:

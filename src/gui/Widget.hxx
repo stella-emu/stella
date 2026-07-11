@@ -387,6 +387,11 @@ class CheckboxWidget : public ButtonWidget
 
     void refreshFontMetrics() override;
 
+    // A checkbox draws its label against its top edge, unlike the controls that
+    // frame their text; report that so a checkbox sharing a row with one of them
+    // can be aligned to it (see GUI::labelColumn)
+    int textOffsetY() const override { return _textY; }
+
     static int boxSize(const GUI::Font& font)
     {
       return font.getFontHeight() < 24 ? 14 : 22; // box is square
@@ -399,7 +404,18 @@ class CheckboxWidget : public ButtonWidget
   protected:
     void drawWidget(bool hilite) override;
 
+    // Compute the height and the box/label offsets from the current font: the
+    // label is inset like that of any other control, and the box of the given
+    // size is centered on it.  Shared with RadioButtonWidget, whose button
+    // takes the place of the box
+    void alignBox(int boxSize);
+
   protected:
+    // Inset of the label from the top edge, matching the controls that frame
+    // their own text (EditTextWidget, PopUpWidget, SliderWidget, ...), so that a
+    // checkbox lines up with one it shares a row with
+    static constexpr int TEXT_INSET = 2;
+
     bool _state{false};
     bool _holdFocus{true};
     bool _drawBox{true};
@@ -458,6 +474,9 @@ class SliderWidget : public ButtonWidget
     void handleMouseUp(int x, int y, MouseButton b, int clickCount) override;
     void handleMouseWheel(int x, int y, int direction) override;
     bool handleEvent(Event::Type event) override;
+
+    // A slider insets its label, like the other controls that frame their text
+    int textOffsetY() const override { return 2; }
 
   protected:
     void drawWidget(bool hilite) override;
