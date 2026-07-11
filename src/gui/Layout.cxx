@@ -360,12 +360,15 @@ void GridLayout::trackNaturals(bool horiz, IntArray& naturals) const
     if(span == 1)
       naturals[idx] = std::max(naturals[idx], static_cast<int>(horiz ? cs.w : cs.h));
   }
-  // ...and a spanning cell only grows its tracks when they cannot hold it
-  // between them — and then only if none of them is flexible.  A flexible track
-  // takes up the leftover anyway, so growing the content-sized tracks instead
-  // would size a track by something that merely LIES ACROSS it: the wide
-  // detected-bezel note, spanning the field and button columns, would make the
-  // button column as wide as itself
+  // ...and a spanning cell grows its tracks when they cannot hold it between
+  // them.  The growth goes to the FLEXIBLE tracks of the span if it has any,
+  // since those are the ones that take up slack; a content-sized track must not
+  // be widened by something that merely LIES ACROSS it (the wide detected-bezel
+  // note, spanning the field and button columns, would otherwise make the button
+  // column as wide as itself).  With no flexible track in the span, they all
+  // grow — the cell has to fit somewhere
+  const int spacing = horiz ? myHSpacing : myVSpacing;
+
   for(const auto& cell: myCells)
   {
     const int idx  = horiz ? cell.col : cell.row;
@@ -373,16 +376,30 @@ void GridLayout::trackNaturals(bool horiz, IntArray& naturals) const
     if(span <= 1)
       continue;
 
-    const bool flexible = std::any_of(tracks.begin() + idx,
-      tracks.begin() + idx + span, [](const Track& t) {
-        return t.policy == SizePolicy::Stretch || t.policy == SizePolicy::Percent;
-      });
-    if(flexible)
-      continue;
+    int have = spacing * (span - 1);
+    for(int i = 0; i < span; ++i)
+      have += naturals[idx + i];
 
     const Common::Size cs = cell.layout->naturalSize();
-    growSpan(naturals, idx, span, static_cast<int>(horiz ? cs.w : cs.h),
-             horiz ? myHSpacing : myVSpacing);
+    const int deficit = static_cast<int>(horiz ? cs.w : cs.h) - have;
+    if(deficit <= 0)
+      continue;
+
+    IntArray targets;
+    for(int i = 0; i < span; ++i)
+      if(tracks[idx + i].policy == SizePolicy::Stretch ||
+         tracks[idx + i].policy == SizePolicy::Percent)
+        targets.push_back(idx + i);
+    if(targets.empty())
+      for(int i = 0; i < span; ++i)
+        targets.push_back(idx + i);
+
+    // Share the shortfall out, remainder to the last of them
+    const int n = static_cast<int>(targets.size());
+    const int per = deficit / n;
+    for(const int t: targets)
+      naturals[t] += per;
+    naturals[targets.back()] += deficit - per * n;
   }
 }
 

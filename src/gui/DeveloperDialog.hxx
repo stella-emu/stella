@@ -183,11 +183,6 @@ class DeveloperDialog : public Dialog, DevSettingsHandler
     void addVideoTab(const GUI::Font& font);
     void addDebuggerTab(const GUI::Font& font);
 
-    void layoutEmulationTab();
-    void layoutTiaTab();
-    void layoutVideoTab();
-    void layoutTimeMachineTab();
-    void layoutDebuggerTab();
 
     void getWidgetStates(SettingsSet set);
     void setWidgetStates(SettingsSet set);
