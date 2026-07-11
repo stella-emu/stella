@@ -91,11 +91,21 @@ BoxLayout(Dir dir, int spacing = 0, int marginH = 0, int marginV = 0);
 
 | Method                              | Meaning                                             |
 | ----------------------------------- | --------------------------------------------------- |
+| `addAuto(child)`                    | child gets what it *wants* along the main axis — **prefer this** |
 | `addFixed(child, px)`               | child gets exactly `px` along the main axis         |
 | `addStretch(child, weight=1, base=0)` | child gets `base`, then shares leftover (by weight) |
 | `addPercent(child, pct, max=0)`     | child gets `pct`% of the available length           |
 | `addSpace(px)`                      | an empty gap of `px`                                |
 | `addStretchSpace(weight=1, base=0)` | an empty gap of at least `base`, which also grows   |
+
+`addAuto` sizes the cell from `Widget::naturalSize()`, so a row is exactly as
+tall as its tallest widget and you state no height at all. Reach for it before
+`addFixed(item, lineHeight)`: a `lineHeight` cell is 2px too short for anything
+that frames its text (edit field, pop-up) and far too short for a button, and it
+stops following the font the moment the row's contents change. Use `addFixed`
+only where the size is genuinely the *dialog's* choice (a shared button width, a
+column width several rows must agree on), and `addStretch` for a widget with no
+size of its own — a list, an image.
 
 The `base` of a stretch cell is its **natural size**: it is reserved before any
 leftover is shared out. That is what lets several cells grow from *different*
@@ -163,19 +173,41 @@ Both containers size tracks/children with the same three policies:
 | `Percent` | a percentage 0..100 of the available length       |
 | `Stretch` | a weight; shares the leftover length in proportion |
 
-### Leaf items — how a single widget fills its cell
+### Leaf items — how a single widget sits in its cell
 
 You never construct `WidgetLayout` directly; use these `GUI::` helper builders:
 
 | Helper                                   | Behaviour                                                                 |
 | ---------------------------------------- | ------------------------------------------------------------------------- |
-| `widgetItem(w, minW=0, minH=0)`          | **fills** the cell — stretches the widget to the cell size                 |
-| `anchoredItem(w, minW=0, minH=0)`        | keeps the widget's **natural** size, top-left of the cell                  |
-| `vCentered(w, h, minW=0)`                | keeps natural height `h`, vertically centered in a taller cell             |
-| `hCentered(w, width, minH=0)`            | keeps natural width, horizontally centered in a wider cell                 |
+| `widgetItem(w, minW=0, minH=0)`          | **fills** the cell in both axes — stretches the widget to the cell size    |
+| `anchoredItem(w, minW=0, minH=0)`        | the widget's **natural** size, left of the cell and vertically **centered** |
+| `alignedItem(w, hAlign, vAlign, …)`      | any other combination — the general form the two above are shorthand for  |
 | `indentedItem(w, indent, minW=0)`        | natural size, positioned `indent` px from the left                        |
-| `labelColumn(label, control)`            | a label sitting on the text line of the control it names                  |
 | `labeledRow(label, control, labelW=0, indent=0, fill=false)` | a row pairing a **separate** label with a control; `fill=true` stretches the control to the rest of the row (edits/lists) instead of keeping its natural width |
+
+Alignment is per axis, and it is *all* you state:
+
+```cpp
+enum class HAlign { Fill, Left, Center, Right };
+enum class VAlign { Fill, Top, Center, Baseline, Bottom };
+```
+
+**Why you never nudge text by hand.** Every widget centers its own text within
+its own height (`Widget::firstTextY()`), and the layout centers each widget in
+its cell. Center two widgets in one row and their *text* lines up — whatever
+their heights, and whichever of them frames its text (an edit field and a pop-up
+are 2px taller than a label; a button is taller still). There is no anchor to
+pick and nothing to get wrong. If a row looks 1px out, the fix is in the widget's
+`firstTextY()`, never a `+2` in the dialog.
+
+`VAlign::Baseline` is the one case centering cannot express: a `DataGridWidget`
+or `ToggleWidget` is *several* rows of text in one box, and a label beside it
+must sit on the grid's **first** row, not the middle of the whole grid. Mark both
+items `Baseline` and the row puts the label's text on the grid's first line.
+(This only works within a horizontal `BoxLayout`. A vertical *stack* of labels
+beside a grid is one item to the row, so it cannot use it — start the column with
+`addSpace(grid->firstTextY() - label->firstTextY())` instead; `CpuWidget` and
+`RamWidget` do exactly this.)
 
 Rules of thumb:
 
@@ -184,16 +216,20 @@ Rules of thumb:
   and look wrong. Because they share a common label width, they line up across
   rows without a grid.
 - **A control that should span the row** (an `EditTextWidget`, a list) → use
-  `widgetItem` (fill), or `vCentered(edit, edit->getHeight())` for an edit field
-  (see the EditTextWidget gotcha below).
+  `widgetItem` (fill) in a row sized with `addAuto`, or, if the control should
+  keep its own height, `alignedItem(w, HAlign::Fill, VAlign::Center)`.
 - **A checkbox indented under a group header** → `indentedItem(cb, indent())`.
 - **A separate label + control** (label is its own `StaticTextWidget`, control is
   not self-labeling) → `labeledRow(label, control, sharedLabelW)`.
 - **Right-align a column of value fields** whose widths differ (say a 3-digit and
   an 8-digit field, which should still end flush) → do *not* compute per-row
   label widths. Stretch the label and fix the field:
-  `row.addStretch(labelColumn(label, field)); row.addFixed(anchoredItem(field), fieldW);`
+  `row.addStretch(anchoredItem(label)); row.addFixed(anchoredItem(field), fieldW);`
   Every row then ends at the column's right edge, whatever its label or digits.
+- **A standalone button centered on its row** (an OK/Close on its own) → a
+  horizontal box of `addStretchSpace()` · `addFixed(widgetItem(btn), w)` ·
+  `addStretchSpace()`. Give the cell the width, because a *dialog* picks button
+  widths (usually one width shared by a group), so the button cannot report it.
 
 `nullptr` as the widget makes any item an empty spacer that only reserves space
 (this is exactly what `addSpace` does internally).
@@ -275,7 +311,8 @@ OK/Cancel go in their own left-aligned `BoxLayout` HBox positioned at the same
 bottom `y`, letting `layoutButtonGroup()` handle the right side.
 
 **Single centered OK** (from `addOKBGroup`): the group helper right-aligns, so
-center it yourself with the engine — `hCentered(_okWidget, w)` as a one-item row.
+center it yourself with the engine — a horizontal box of `addStretchSpace()` ·
+`addFixed(widgetItem(_okWidget), Dialog::buttonWidth("OK"))` · `addStretchSpace()`.
 
 ### The title-bar "?" help button
 
@@ -596,22 +633,26 @@ Two corollaries:
 ## Gotcha checklist
 
 - **`EditTextWidget` and `PopUpWidget` are `h + 2` internally** (frame padding).
-  Never force their height. Use `setWidth` + `setPos`, or
-  `vCentered(edit, edit->getHeight())` in a row. Passing `lineHeight` as the
-  height makes them 2px too short — including via `widgetItem()`, which fills its
-  cell in **both** axes: give such a widget a cell of `widget->getHeight()`.
+  Never force their height. Size their row with `addAuto`, which takes the height
+  from the widget, or give them `VAlign::Center` so they keep it. Passing
+  `lineHeight` as the cell height makes them 2px too short — including via
+  `widgetItem()`, which fills its cell in **both** axes.
 - **`PopUpWidget::setWidth(w)` takes the TOTAL width** (`value box + label +
   dropDownWidth`), not just the value box. To fill a row, pass the full span
   (`_w - HBORDER*2 - …`), not the ctor's value-box formula. `setWidth` also
   resizes the drop-down menu, so a placeholder-width popup sized in `layout()`
   gets a correct menu.
-- **A label never top-aligns with the control it names.** A `StaticTextWidget`
-  draws its text at its top edge; a framed control (`EditTextWidget`,
-  `PopUpWidget`, `DataGridWidget`, `ToggleWidget`) insets its text by
-  `textOffsetY()`. Pair them with `labelColumn()` / `labeledRow()`, which drop
-  the label by that inset. Aligning the *boxes* instead of the *text* leaves the
-  label a pixel or two high. For a column of labels beside a multi-row grid,
-  start the column with `addSpace(grid->textOffsetY())`.
+- **Never nudge text to make it line up.** Text alignment is not something a
+  dialog states: each widget centers its own text and the layout centers each
+  widget in its cell, so centered items on a row always agree. A stray `+2` in a
+  dialog is a bug in some widget's `firstTextY()`, not a fix. The single
+  exception is a *multi-row* widget (`DataGridWidget`, `ToggleWidget`), whose
+  first row a label must sit on: that is `VAlign::Baseline` (see above).
+- **A box built to show several lines is not centered.** An `EditTextWidget`
+  taller than one line (EventMappingWidget's two-line "Action" box) starts its
+  text at the top, so the lines below it have somewhere to go — and a label
+  beside it belongs on that *first* line, so pair them with `VAlign::Baseline`,
+  not `labeledRow`. Centering is only ever right for a *single* line of text.
 - **A label's box is `lineHeight` tall and clears its background**, so it carries
   ~2px of padding *below* its glyphs. Stacking one directly above another widget
   by measuring up `getFontHeight()` makes that padding erase the widget's top

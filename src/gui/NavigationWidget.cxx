@@ -318,6 +318,6 @@ void NavigationWidget::PathWidget::FolderLinkWidget::drawWidget(bool hilite)
 
   if(hilite)
     s.frameRect(_x, _y, _w, _h, kBtnBorderColorHi);
-  s.drawString(_font, _label, _x + 1, _y + (_h - _font.getFontHeight()) / 2 , _w,
+  s.drawString(_font, _label, _x + 1, _y + firstTextY(), _w,
     hilite ? _textcolorhi : _textcolor, _align);
 }

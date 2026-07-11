@@ -56,11 +56,7 @@ class GameInfoDialog : public Dialog, public CommandSender
     void addCartridgeTab();
     void addHighScoresTab();
 
-    void layoutEmulationTab();
-    void layoutConsoleTab();
-    void layoutControllersTab();
-    void layoutCartridgeTab();
-    void layoutHighScoresTab();
+    void layoutHighScoresTab(int paneWidth);
 
     // load the properties for the 'Emulation' tab
     void loadEmulationProperties(const Properties& props);

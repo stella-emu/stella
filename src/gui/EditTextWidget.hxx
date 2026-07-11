@@ -33,8 +33,14 @@ class EditTextWidget : public EditableWidget
 
     void handleMouseDown(int x, int y, MouseButton b, int clickCount) override;
 
-    // The frame insets the text; drawWidget() and any label beside us use this
-    int textOffsetY() const override { return 2; }
+    // The frame insets the text by the same amount however tall the box is.  A
+    // box built to show several lines (EventMappingWidget's two-line "Action"
+    // box) keeps its first line at the top, so the lines below it follow on;
+    // centering would leave the first line floating in the middle of the box.
+    // For a box of a single line this IS the centered position
+    int firstTextY() const override {
+      return (_font.getLineHeight() + 2 - _font.getFontHeight()) / 2;
+    }
 
     void refreshFontMetrics() override;
 
@@ -62,6 +68,9 @@ class EditTextWidget : public EditableWidget
   protected:
     bool   _changed{false};
     int    _textOfs{0};
+    // Lines of text the box was built to show, so a font change can restore a
+    // multi-line height rather than collapsing the box to a single line
+    int    _lines{1};
 
   private:
     // Following constructors and assignment operators not supported

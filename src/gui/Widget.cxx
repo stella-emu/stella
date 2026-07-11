@@ -690,7 +690,7 @@ void StaticTextWidget::drawWidget(bool hilite)
 {
   FBSurface& s = _boss->dialog().surface();
 
-  s.drawString(_font, _label, _x, _y, _w,
+  s.drawString(_font, _label, _x, _y + firstTextY(), _w,
                 isEnabled() ? _textcolor : kColor, _align, 0, true,
                 _shadowcolor, _linkStart, _linkLen, _linkUnderline && hilite);
 }
@@ -868,7 +868,7 @@ void ButtonWidget::drawWidget(bool hilite)
     x = _x + _bmw + _bmx;
   }
   if(_useText)
-    s.drawString(_font, _label, x, _y + (_h - _lineHeight)/2 + 1, _w,
+    s.drawString(_font, _label, x, _y + firstTextY(), _w,
                  !isEnabled() ? _textcolorlo :
                  hilite ? _textcolorhi : _textcolor, _align);
 }
@@ -899,21 +899,11 @@ CheckboxWidget::CheckboxWidget(GuiObject* boss, const GUI::Font& font,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CheckboxWidget::alignBox(int boxSize)
 {
-  const int fontHeight = _font.getFontHeight();
-
-  // Inset the label as the controls that frame their text do, so a checkbox
-  // lines up with one sharing its row, then center the box on the label
-  _textY = TEXT_INSET;
-  _boxY = _textY + (fontHeight - boxSize) / 2;
-
-  // With a small enough font the box is taller than the label, so it sets the
-  // height and the label is centered on it instead
-  if(_boxY < 0)
-  {
-    _textY -= _boxY;
-    _boxY = 0;
-  }
-  _h = std::max(_textY + fontHeight, _boxY + boxSize);
+  // The label is centered in the height, as any other control centers its text
+  // (firstTextY()), and the box is centered on the label.  With a small enough
+  // font the box is the taller of the two, and it sets the height instead
+  _h = std::max(_lineHeight, boxSize);
+  _boxY = (_h - boxSize) / 2;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1046,7 +1036,7 @@ void CheckboxWidget::drawWidget(bool hilite)
                  : kColor, _boxSize - 4);
 
   // Finally draw the label
-  s.drawString(_font, _label, _x + prefixSize(_font), _y + _textY, _w,
+  s.drawString(_font, _label, _x + prefixSize(_font), _y + firstTextY(), _w,
                isEnabled() ? kTextColor : kColor);
 }
 
@@ -1238,7 +1228,7 @@ void SliderWidget::drawWidget(bool hilite)
 
   // Draw the label, if any
   if(_labelWidth > 0)
-    s.drawString(_font, _label, _x, _y + textOffsetY(), _labelWidth,
+    s.drawString(_font, _label, _x, _y + firstTextY(), _labelWidth,
                  isEnabled() ? kTextColor : kColor);
 
   const int p = valueToPos(_value),
@@ -1281,8 +1271,9 @@ void SliderWidget::drawWidget(bool hilite)
              !isEnabled() ? kColor : hilite ? kSliderColorHi : kSliderColor);
 
   if(_valueLabelWidth > 0)
-    s.drawString(_font, _valueLabel + _valueUnit, _x + _w - _valueLabelWidth, _y + 2,
-                 _valueLabelWidth, isEnabled() ? kTextColor : kColor);
+    s.drawString(_font, _valueLabel + _valueUnit, _x + _w - _valueLabelWidth,
+                 _y + firstTextY(), _valueLabelWidth,
+                 isEnabled() ? kTextColor : kColor);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

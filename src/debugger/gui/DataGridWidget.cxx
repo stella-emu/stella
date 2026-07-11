@@ -626,7 +626,7 @@ void DataGridWidget::drawWidget(bool hilite)
     for(int col = 0; col < _cols; col++)
     {
       const int x = _x + 4 + (col * _colWidth);
-      const int y = _y + textOffsetY() + (row * _rowHeight);
+      const int y = _y + firstTextY() + (row * _rowHeight);
       const int pos = row*_cols + col;
       ColorId textColor = kTextColor;
 

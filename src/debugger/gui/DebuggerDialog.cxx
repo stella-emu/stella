@@ -574,7 +574,9 @@ void DebuggerDialog::layoutStatusArea()
 {
   using GUI::BoxLayout;
   using GUI::anchoredItem;
-  using GUI::vCentered;
+  using GUI::alignedItem;
+  using GUI::HAlign;
+  using GUI::VAlign;
   using GUI::widgetItem;
   using Dir = BoxLayout::Dir;
 
@@ -597,7 +599,7 @@ void DebuggerDialog::layoutStatusArea()
   BoxLayout column(Dir::Vertical, vGap);
   column.addFixed(anchoredItem(myTiaInfo), myTiaInfo->getHeight());
   column.addStretch(widgetItem(myTiaZoom));
-  column.addFixed(vCentered(myMessageBox, myMessageBox->getHeight()),
+  column.addFixed(alignedItem(myMessageBox, HAlign::Fill, VAlign::Center),
                   myMessageBox->getHeight());
   column.doLayout(xpos, r.y(), width, height);
 }

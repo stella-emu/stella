@@ -87,7 +87,9 @@ void RomAuditDialog::layout()
   using GUI::BoxLayout;
   using GUI::widgetItem;
   using GUI::anchoredItem;
-  using GUI::vCentered;
+  using GUI::alignedItem;
+  using GUI::HAlign;
+  using GUI::VAlign;
   using Dir = BoxLayout::Dir;
 
   const int lineHeight   = Dialog::lineHeight(),
@@ -108,7 +110,7 @@ void RomAuditDialog::layout()
   auto pathRow = std::make_unique<BoxLayout>(Dir::Horizontal, 0, 0, 0);
   pathRow->addFixed(widgetItem(myRomButton), buttonWidth);
   pathRow->addSpace(fontWidth);
-  pathRow->addStretch(vCentered(myRomPath, myRomPath->getHeight()));
+  pathRow->addStretch(alignedItem(myRomPath, HAlign::Fill, VAlign::Center));
 
   // Two result rows: a label plus a small value field, the field aligned at a
   // shared column (lwidth) across both rows

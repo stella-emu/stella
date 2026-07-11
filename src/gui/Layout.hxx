@@ -31,11 +31,34 @@ namespace GUI {
   A Layout describes how a rectangular region of a dialog is subdivided.
   doLayout() assigns absolute geometry to the widgets it (transitively)
   contains; minSize() reports the smallest region in which nothing would clip,
-  which the owning dialog uses to derive its window minimum.
+  which the owning dialog uses to derive its window minimum; naturalSize()
+  reports what the content would like to be.
 
   Layouts are intentionally cheap, throwaway descriptions: a dialog rebuilds
   its tree from the current font metrics whenever it (re)lays out, so window
   resizing and font-size changes are handled by exactly the same path.
+
+  A dialog states alignment and sizing policy, never pixel offsets.  Text lines
+  up because each widget centers its own text and the layout centers each widget
+  in its cell (see HAlign/VAlign) — there is no per-widget nudge to get right,
+  and none should be reintroduced.
+
+  Things Qt has that this does not, left out on purpose — add them when a case
+  demands one, rather than working around their absence:
+
+    minimumSizeHint()  A widget reporting how far it may be squeezed, so a
+                       resizable dialog could derive its window minimum from the
+                       tree instead of the dialog hand-feeding it (the minW/minH
+                       carried by each item).  It must stay separate from
+                       naturalSize(): if a list's minimum were the size it wants
+                       to be, the launcher could never be made smaller.
+    heightForWidth()   A widget whose height depends on its width.  We do have
+                       this case — WrappedTextWidget, which is why its width must
+                       be set before the column holding it is built — but one
+                       case does not pay for a two-pass layout.
+    size policy        Fixed/Preferred/Expanding on the widget.  Not needed:
+                       addFixed()/addAuto()/addStretch()/addPercent() say it at
+                       the layout, where the dialog is already deciding.
 
   @author  Stephen Anthony
 */
@@ -53,6 +76,19 @@ class Layout
     // Report the smallest size at which the content does not clip.
     virtual Common::Size minSize() const = 0;
 
+    // Report the size the content would like to be (Qt's size hint), which is
+    // what BoxLayout::addAuto() sizes a cell from.  Deliberately separate from
+    // minSize(): a list's natural size is far larger than the size it can be
+    // squeezed to, and it is minSize() that a resizable dialog's window minimum
+    // comes from (see Widget::naturalSize).
+    virtual Common::Size naturalSize() const = 0;
+
+    // Where this node's first line of text sits, and whether it asks to be put
+    // on its row's baseline.  Only a widget can answer meaningfully, so these
+    // default to "no text, not baseline-aligned" for the composite layouts.
+    virtual int firstTextY() const { return 0; }
+    virtual bool onBaseline() const { return false; }
+
   private:
     // Following constructors and assignment operators not supported
     Layout(const Layout&) = delete;
@@ -62,19 +98,37 @@ class Layout
 };
 
 /**
-  An item that positions a single widget within its cell.  By default the widget
-  is resized to fill the cell; with fill=false it is instead anchored at the
-  cell's top-left and keeps its own (natural) size — useful for table cells that
-  should line up but not stretch, e.g. text labels.  Carries the widget's
-  minimum usable size (font-derived, supplied by the dialog).  A null widget
-  makes the item an empty spacer that only reserves space.
+  How a widget is placed within its cell, on each axis independently (this is
+  Qt's Qt::Alignment).  Fill resizes the widget to the cell; every other value
+  keeps the widget at its natural size (Widget::naturalSize) and positions it.
+
+  Alignment is all a dialog needs to state, because every widget centers its own
+  text within its own height (Widget::firstTextY): center two widgets in a row
+  and their TEXT lines up, whatever each one's height and framing.  Baseline is
+  the one case centering cannot express — a widget that is several rows of text
+  in one box (data grid, toggle list), whose FIRST row a label beside it must sit
+  on.  It is meaningful in a horizontal BoxLayout, where the row's baseline is
+  the lowest first-text-line among its baseline-aligned items; elsewhere it
+  places like Top.
+*/
+enum class HAlign: uInt8 { Fill, Left, Center, Right };
+enum class VAlign: uInt8 { Fill, Top, Center, Baseline, Bottom };
+
+/**
+  An item that positions a single widget within its cell, per its alignment on
+  each axis.  Carries the widget's minimum usable size (font-derived, supplied
+  by the dialog).  A null widget makes the item an empty spacer that only
+  reserves space.
 */
 class WidgetLayout : public Layout
 {
   public:
-    explicit WidgetLayout(Widget* widget, int minW = 0, int minH = 0,
-                          bool fill = true)
-      : myWidget{widget}, myMinW{minW}, myMinH{minH}, myFill{fill} { }
+    explicit WidgetLayout(Widget* widget,
+                          HAlign hAlign = HAlign::Fill,
+                          VAlign vAlign = VAlign::Fill,
+                          int minW = 0, int minH = 0)
+      : myWidget{widget}, myHAlign{hAlign}, myVAlign{vAlign},
+        myMinW{minW}, myMinH{minH} { }
     ~WidgetLayout() override = default;
 
     void doLayout(int x, int y, int w, int h) override;
@@ -83,11 +137,17 @@ class WidgetLayout : public Layout
       return Common::Size(static_cast<uInt32>(myMinW), static_cast<uInt32>(myMinH));
     }
 
+    Common::Size naturalSize() const override;
+
+    int firstTextY() const override;
+    bool onBaseline() const override { return myVAlign == VAlign::Baseline; }
+
   private:
     Widget* myWidget{nullptr};
+    HAlign myHAlign{HAlign::Fill};
+    VAlign myVAlign{VAlign::Fill};
     int myMinW{0};
     int myMinH{0};
-    bool myFill{true};
 
   private:
     // Following constructors and assignment operators not supported
@@ -141,6 +201,21 @@ class BoxLayout : public Layout
       { return add(std::move(child), SizePolicy::Percent, pct, maxMain); }
     BoxLayout& addStretch(unique_ptr<Layout> child, int weight = 1, int basePx = 0)
       { return add(std::move(child), SizePolicy::Stretch, weight, 0, basePx); }
+
+    // Size the cell from what the child wants to be (Widget::naturalSize), so a
+    // row of controls is as tall as its tallest one and a column of them as wide
+    // as its widest — the dialog states no pixel height at all.  Prefer this to
+    // addFixed(item, lineHeight): the row then cannot be too short for a control
+    // that frames its text, and it follows the font by construction.
+    // Not for a widget that has no meaningful size of its own along the main
+    // axis (a list, an image): stretch those.
+    BoxLayout& addAuto(unique_ptr<Layout> child, int minPx = 0) {
+      const Common::Size natural = child->naturalSize();
+      const int px = static_cast<int>(myDir == Dir::Horizontal
+                                      ? natural.w : natural.h);
+      return add(std::move(child), SizePolicy::Fixed, px, 0, minPx);
+    }
+
     // A fixed empty gap
     BoxLayout& addSpace(int px)
       { return add(std::make_unique<WidgetLayout>(nullptr), SizePolicy::Fixed, px); }
@@ -152,6 +227,7 @@ class BoxLayout : public Layout
     void doLayout(int x, int y, int w, int h) override;
 
     Common::Size minSize() const override;
+    Common::Size naturalSize() const override;
 
   private:
     struct Item {
@@ -220,6 +296,7 @@ class GridLayout : public Layout
     void doLayout(int x, int y, int w, int h) override;
 
     Common::Size minSize() const override;
+    Common::Size naturalSize() const override;
 
   private:
     struct Track {
@@ -260,42 +337,42 @@ class GridLayout : public Layout
 
 // - - - - - Convenience builders for assembling a layout tree - - - - -
 
-// Wrap a widget as a layout item, carrying its minimum usable size.  A null
-// widget yields an empty spacer that only reserves space.
+// Wrap a widget as a layout item, aligned within its cell as asked.  Carries the
+// widget's minimum usable size, which the dialog supplies (only a resizable
+// dialog, whose window minimum comes from it, need bother).
+inline unique_ptr<WidgetLayout>
+alignedItem(Widget* widget, HAlign hAlign, VAlign vAlign,
+            int minW = 0, int minH = 0)
+{
+  return std::make_unique<WidgetLayout>(widget, hAlign, vAlign, minW, minH);
+}
+
+// A widget that fills its cell in both axes: lists, images, and any control that
+// should widen (and deepen) with the dialog.  A null widget yields an empty
+// spacer that only reserves space.
 inline unique_ptr<WidgetLayout>
 widgetItem(Widget* widget, int minW = 0, int minH = 0)
 {
-  return std::make_unique<WidgetLayout>(widget, minW, minH);
+  return std::make_unique<WidgetLayout>(widget, HAlign::Fill, VAlign::Fill,
+                                        minW, minH);
 }
 
-// Like widgetItem(), but anchors the widget at its cell's top-left and keeps
-// the widget's own size instead of resizing it to fill the cell — for table
-// cells (labels/values) that should align but not stretch.
+// A widget that keeps its natural size, at the left of its cell and centered in
+// it vertically.  This is the workhorse: centering is what makes its text line
+// up with that of everything else on the row (see HAlign/VAlign above), so most
+// controls want exactly this and need say nothing further.
 inline unique_ptr<WidgetLayout>
 anchoredItem(Widget* widget, int minW = 0, int minH = 0)
 {
-  return std::make_unique<WidgetLayout>(widget, minW, minH, false);
+  return std::make_unique<WidgetLayout>(widget, HAlign::Left, VAlign::Center,
+                                        minW, minH);
 }
-
-// Wrap a widget so it keeps its natural height 'h' and is vertically centered
-// within its (taller) cell, rather than filling it — used for plain text
-// labels, which draw top-aligned.
-unique_ptr<Layout> vCentered(Widget* widget, int h, int minW = 0);
-
-// Wrap a widget so it keeps its natural width 'w' and is horizontally centered
-// within its (wider) cell, rather than filling it — used e.g. for a button
-// centered across a spanning grid cell.
-unique_ptr<Layout> hCentered(Widget* widget, int w, int minH = 0);
 
 // Wrap a widget so it keeps its natural size and is positioned 'indent' pixels
 // from the left of its cell — used for options indented under a group header
 // (e.g. the checkboxes below a "When saving:" label in the option dialogs).
+// An indent is spacing, not alignment, hence a composition rather than a flag.
 unique_ptr<Layout> indentedItem(Widget* widget, int indent, int minW = 0);
-
-// Wrap a label so it keeps its natural size and sits on the vertical centre of
-// 'control', which frames its own (taller) text.  This is the column that
-// labeledRow() puts its label in, for the rows labeledRow() cannot express.
-unique_ptr<Layout> labelColumn(Widget* label, Widget* control);
 
 // A horizontal form row pairing a separate label with a control: the label
 // occupies a column 'labelW' wide (0 = the label's own width) and the control
@@ -304,9 +381,14 @@ unique_ptr<Layout> labelColumn(Widget* label, Widget* control);
 // to fill the rest of the row — for edit/list fields that should widen with the
 // dialog.  For label + PopUp/Slider/edit rows where the widget is not
 // self-labeling; pass a shared 'labelW' to align controls across several rows.
-// The label is centered on the control, which frames its own (taller) text.
 // Note that 'labelW' is a column width, not the label's: leave room in it for
 // some clearance before the control.
+// The row is as tall as the taller of the two, and both are centered in it, so
+// their texts line up whichever control it is.  Give the row an addAuto() cell.
+// NOT for a control that shows SEVERAL lines (a multi-line EditTextWidget, a
+// data grid): the label belongs on the control's first line, not the middle of
+// the box, so pair them with VAlign::Baseline instead — see EventMappingWidget's
+// "Action" row.
 unique_ptr<Layout> labeledRow(Widget* label, Widget* control,
                               int labelW = 0, int indent = 0, bool fill = false);
 

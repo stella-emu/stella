@@ -62,7 +62,9 @@ void RomWidget::setArea(int x, int y, int w, int h)
 void RomWidget::reflow()
 {
   using GUI::BoxLayout;
-  using GUI::vCentered;
+  using GUI::alignedItem;
+  using GUI::HAlign;
+  using GUI::VAlign;
   using GUI::widgetItem;
   using Dir = BoxLayout::Dir;
 
@@ -76,8 +78,8 @@ void RomWidget::reflow()
 
   // The bank info row: a label, then the bank display filling the rest
   auto infoRow = std::make_unique<BoxLayout>(Dir::Horizontal);
-  infoRow->addFixed(vCentered(myInfoLabel, _lineHeight), myInfoLabel->getWidth());
-  infoRow->addStretch(vCentered(myBank, myBank->getHeight()));
+  infoRow->addFixed(alignedItem(myInfoLabel, HAlign::Fill, VAlign::Center), myInfoLabel->getWidth());
+  infoRow->addStretch(alignedItem(myBank, HAlign::Fill, VAlign::Center));
   root.addFixed(std::move(infoRow), std::max(_lineHeight, myBank->getHeight()));
 
   // The disassembly fills whatever is left

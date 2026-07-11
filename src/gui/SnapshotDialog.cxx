@@ -90,7 +90,9 @@ void SnapshotDialog::layout()
   using GUI::widgetItem;
   using GUI::anchoredItem;
   using GUI::indentedItem;
-  using GUI::vCentered;
+  using GUI::alignedItem;
+  using GUI::HAlign;
+  using GUI::VAlign;
   using Dir = BoxLayout::Dir;
 
   const int lineHeight   = Dialog::lineHeight(),
@@ -114,7 +116,7 @@ void SnapshotDialog::layout()
   auto pathRow = std::make_unique<BoxLayout>(Dir::Horizontal, 0, 0, 0);
   pathRow->addFixed(widgetItem(mySnapSaveButton), buttonWidth);
   pathRow->addSpace(fontWidth);
-  pathRow->addStretch(vCentered(mySnapSavePath, mySnapSavePath->getHeight()));
+  pathRow->addStretch(alignedItem(mySnapSavePath, HAlign::Fill, VAlign::Center));
 
   // Assemble the vertical stack; the button group sits below it, positioned
   // separately by layoutButtonGroup().  The interval slider is self-labeling and

@@ -131,9 +131,16 @@ void CpuWidget::reflow(int max_w)
 {
   using GUI::BoxLayout;
   using GUI::anchoredItem;
-  using GUI::labelColumn;
-  using GUI::vCentered;
+  using GUI::alignedItem;
+  using GUI::HAlign;
+  using GUI::VAlign;
   using Dir = BoxLayout::Dir;
+
+  // A label beside a data grid sits on the grid's first row, not on the middle
+  // of the whole grid, so the two share the row's baseline
+  const auto onBaseline = [](Widget* w) {
+    return alignedItem(w, HAlign::Left, VAlign::Baseline);
+  };
 
   const int fontWidth  = _font.getMaxCharWidth(),
             lineHeight = _font.getLineHeight();
@@ -157,27 +164,29 @@ void CpuWidget::reflow(int max_w)
 
   // PC row: "PC" label, PC grid, then the current-PC label filling the rest
   BoxLayout pcRow(Dir::Horizontal);
-  pcRow.addFixed(labelColumn(myPCText, myPCGrid), lwidth);
-  pcRow.addFixed(anchoredItem(myPCGrid), pcGridW);
+  pcRow.addFixed(onBaseline(myPCText), lwidth);
+  pcRow.addFixed(onBaseline(myPCGrid), pcGridW);
   pcRow.addSpace(10);
-  pcRow.addStretch(vCentered(myPCLabel, myPCLabel->getHeight()));
+  pcRow.addStretch(alignedItem(myPCLabel, HAlign::Fill, VAlign::Center));
   pcRow.addSpace(10);
   pcRow.doLayout(x, y, max_w, myPCGrid->getHeight());
 
   // Register block: label | hex | # dec | % bin | data source, the last of
   // which stretches to fill the remaining width.  Each per-row column is a
   // 4-row vertical box that lines up with the (4-row) data grids beside it.
-  // A grid insets each row's text, so the labels beside it start that far down
+  // The grid insets each row's text where a label centers its own, so the column
+  // starts that much lower and label i lands on grid row i's line.  A stack of
+  // labels is one item to the row beside it, so it cannot use VAlign::Baseline
   const auto column = [&](const std::array<StaticTextWidget*, 4>& cells) {
     auto col = std::make_unique<BoxLayout>(Dir::Vertical);
-    col->addSpace(myCpuGrid->textOffsetY());
+    col->addSpace(myCpuGrid->firstTextY() - cells[0]->firstTextY());
     for(auto* w: cells)
       col->addFixed(anchoredItem(w), lineHeight);
     return col;
   };
   auto srcCol = std::make_unique<BoxLayout>(Dir::Vertical);
   for(auto* w: myCpuDataSrc)
-    srcCol->addFixed(vCentered(w, w->getHeight()), lineHeight);
+    srcCol->addFixed(alignedItem(w, HAlign::Fill, VAlign::Center), lineHeight);
 
   const int regY = myPCGrid->getBottom() + VGAP;
   BoxLayout regRow(Dir::Horizontal);
@@ -197,15 +206,17 @@ void CpuWidget::reflow(int max_w)
   // PS row: "PS" label and the processor-status toggle
   const int psY = myCpuGrid->getBottom() + VGAP;
   BoxLayout psRow(Dir::Horizontal);
-  psRow.addFixed(labelColumn(myPSText, myPSRegister), lwidth);
-  psRow.addFixed(anchoredItem(myPSRegister), myPSRegister->getWidth());
+  psRow.addFixed(onBaseline(myPSText), lwidth);
+  psRow.addFixed(onBaseline(myPSRegister), myPSRegister->getWidth());
   psRow.doLayout(x, psY, max_w, myPSRegister->getHeight());
 
   // The "Dest" label and destination edit align under the data-source column
-  // resolved above (a cross-reference the box layout does not express)
+  // resolved above (a cross-reference the box layout does not express); the two
+  // frame their text differently, so the label is placed by its text line
   const int srcX = myCpuDataSrc[0]->getLeft(),
             srcW = myCpuDataSrc[0]->getWidth();
-  myDestText->setPos(srcX - fontWidth * 4.5, psY + myCpuDataDest->textOffsetY());
+  myDestText->setPos(srcX - fontWidth * 4.5,
+                     psY + myCpuDataDest->firstTextY() - myDestText->firstTextY());
   myCpuDataDest->setPos(srcX, psY);
   myCpuDataDest->setWidth(srcW);
 

@@ -169,7 +169,9 @@ void EmulationDialog::layout()
   using GUI::widgetItem;
   using GUI::anchoredItem;
   using GUI::indentedItem;
-  using GUI::vCentered;
+  using GUI::alignedItem;
+  using GUI::HAlign;
+  using GUI::VAlign;
   using Dir = BoxLayout::Dir;
 
   const int lineHeight   = Dialog::lineHeight(),
@@ -191,7 +193,7 @@ void EmulationDialog::layout()
   auto pathRow = std::make_unique<BoxLayout>(Dir::Horizontal, 0, 0, 0);
   pathRow->addFixed(widgetItem(myStatePathButton), buttonWidth);
   pathRow->addSpace(fontWidth);
-  pathRow->addStretch(vCentered(myStatePath, myStatePath->getHeight()));
+  pathRow->addStretch(alignedItem(myStatePath, HAlign::Fill, VAlign::Center));
 
   // Vertical stack; the button group sits below it, positioned separately by
   // layoutButtonGroup().  The self-labeling slider, header and checkboxes keep

@@ -51,8 +51,7 @@ PopUpWidget::PopUpWidget(GuiObject* boss, const GUI::Font& font,
 
   _w = w + _labelWidth + dropDownWidth(font); // 23
 
-  // vertically center the arrows and text
-  myTextY   = (_h - _font.getFontHeight()) / 2;
+  // vertically center the arrows (the text centers itself, see firstTextY())
   myArrowsY = (_h - _arrowHeight) / 2;
 
   myMenu = std::make_unique<ContextMenu>(this, font, items, cmd,
@@ -65,11 +64,10 @@ void PopUpWidget::refreshFontMetrics()
   Widget::refreshFontMetrics();
 
   // Re-pick the arrow bitmap/dimensions for the live font, restore the framed
-  // height and vertically re-center the text and arrows (mirrors the ctor).
+  // height and vertically re-center the arrows (mirrors the ctor).
   // The overall width is dialog-chosen and re-applied by the owning layout().
   setArrow();
   _h = _font.getLineHeight() + 2;
-  myTextY   = (_h - _font.getFontHeight()) / 2;
   myArrowsY = (_h - _arrowHeight) / 2;
 }
 
@@ -285,7 +283,7 @@ void PopUpWidget::drawWidget(bool hilite)
 
   // Draw the label, if any
   if(_labelWidth > 0)
-    s.drawString(_font, _label, _x, _y + textOffsetY(), _labelWidth,
+    s.drawString(_font, _label, _x, _y + firstTextY(), _labelWidth,
                  isEnabled() ? _textcolor : kColor, TextAlign::Left);
 
   // Draw a thin frame around us.
@@ -311,7 +309,7 @@ void PopUpWidget::drawWidget(bool hilite)
   const TextAlign align = (_font.getStringWidth(name) > w && !editable) ?
                            TextAlign::Right : TextAlign::Left;
   adjustOffset();
-  s.drawString(_font, name, x + _textOfs, _y + textOffsetY(), w,
+  s.drawString(_font, name, x + _textOfs, _y + firstTextY(), w,
                !isEnabled() ? kColor : _changed ? kDbgChangedTextColor : kTextColor,
                align, editable ? -_editScrollOffset : 0, !editable);
 

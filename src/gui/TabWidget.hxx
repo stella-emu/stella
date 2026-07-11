@@ -77,6 +77,13 @@ class TabWidget : public Widget, public CommandSender
     // simply fills the area (e.g. a list or prompt) report 0 and are ignored
     int getMaxContentHeight() const;
 
+    // The height we need for our tallest tab's content, plus the tab bar and the
+    // content frame — so a fixed-size dialog sizes itself from the layout rather
+    // than counting the rows of its biggest tab.  Only content panes report a
+    // size; a self-contained composite (a list, the event mapper) fills whatever
+    // height it is given and so does not constrain us
+    Common::Size naturalSize() const override;
+
     void loadConfig() override;
 
     void handleMouseDown(int x, int y, MouseButton b, int clickCount) override;
@@ -117,6 +124,12 @@ class TabWidget : public Widget, public CommandSender
         : title{t}, tabWidth{tw}, autoWidth{aw} { }
     };
     using TabList = vector<Tab>;
+
+    // The frame inset between us and our active tab's content
+    static constexpr int CONTENT_BORDER = 2;
+
+    // The tab bar's height for the current font (what _tabHeight caches)
+    int tabBarHeight() const { return _font.getLineHeight() + 4; }
 
     TabList _tabs;
     int     _tabWidth{40};

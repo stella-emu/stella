@@ -95,7 +95,9 @@ void InputTextDialog::layout()
 {
   using GUI::BoxLayout;
   using GUI::widgetItem;
-  using GUI::vCentered;
+  using GUI::alignedItem;
+  using GUI::HAlign;
+  using GUI::VAlign;
   using Dir = BoxLayout::Dir;
 
   const int lineHeight   = Dialog::lineHeight(),
@@ -121,13 +123,13 @@ void InputTextDialog::layout()
   for(int i = 0; i < numRows; ++i)
   {
     auto row = std::make_unique<BoxLayout>(Dir::Horizontal);
-    row->addFixed(vCentered(myLabel[i], Dialog::fontHeight()), lwidth);
+    row->addFixed(alignedItem(myLabel[i], HAlign::Fill, VAlign::Center), lwidth);
     row->addSpace(fontWidth);
     if(myMaxLen[i] > 0)
-      row->addFixed(vCentered(myInput[i], myInput[i]->getHeight()),
+      row->addFixed(alignedItem(myInput[i], HAlign::Fill, VAlign::Center),
                     (myMaxLen[i] + 1) * fontWidth);
     else
-      row->addStretch(vCentered(myInput[i], myInput[i]->getHeight()));
+      row->addStretch(alignedItem(myInput[i], HAlign::Fill, VAlign::Center));
     root->addFixed(std::move(row), lineHeight);
     root->addSpace(VGAP);
   }

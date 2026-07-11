@@ -75,9 +75,6 @@ class PopUpWidget : public EditableWidget
     void handleMouseWheel(int x, int y, int direction) override;
     bool handleEvent(Event::Type e) override;
 
-    // The text is centered within the (taller) framed control
-    int textOffsetY() const override { return myTextY; }
-
     void refreshFontMetrics() override;
 
   protected:
@@ -95,7 +92,6 @@ class PopUpWidget : public EditableWidget
   private:
     unique_ptr<ContextMenu> myMenu;
     int myArrowsY{0};
-    int myTextY{0};
 
     string _label;
     int    _labelWidth{0};

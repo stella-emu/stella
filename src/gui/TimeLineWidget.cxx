@@ -143,7 +143,7 @@ void TimeLineWidget::drawWidget(bool hilite)
 
   // Draw the label, if any
   if(_labelWidth > 0)
-    s.drawString(_font, _label, _x, _y + 2, _labelWidth,
+    s.drawString(_font, _label, _x, _y + firstTextY(), _labelWidth,
                  isEnabled() ? kTextColor : kColor, TextAlign::Left);
 
   // Frame the handle

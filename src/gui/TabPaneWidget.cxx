@@ -28,23 +28,46 @@ TabPaneWidget::TabPaneWidget(GuiObject* boss, const GUI::Font& font)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+unique_ptr<GUI::BoxLayout> TabPaneWidget::buildLayout() const
+{
+  // The tree is throwaway, rebuilt from the current font on every use, so it
+  // stays font-correct.  Spacing is 0 so the builder controls each gap (rows
+  // rarely want a uniform one); the margins are the dialog's standard borders
+  auto col = std::make_unique<GUI::BoxLayout>(
+    GUI::BoxLayout::Dir::Vertical, 0, dialog().hBorder(), dialog().vBorder());
+
+  if(myBuilder)
+    myBuilder(*col);
+
+  return col;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+Common::Size TabPaneWidget::naturalSize() const
+{
+  // What the rows add up to, straight from the layout.  A fixed-size dialog can
+  // therefore size itself to its tallest tab (see TabWidget::naturalSize) rather
+  // than counting rows and gaps by hand, which no one keeps correct
+  if(!myBuilder)
+    return Widget::naturalSize();
+
+  return buildLayout()->naturalSize();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TabPaneWidget::setArea(int x, int y, int w, int h)
 {
   Widget::setArea(x, y, w, h);
 
-  if(!myBuilder)
-    return;
+  // Position the pane's children within the rebuilt layout.  They are parented
+  // to the pane, so their coordinates are pane-local and the layout runs from
+  // (0, 0)
+  if(myBuilder)
+    buildLayout()->doLayout(0, 0, _w, _h);
 
-  // Rebuild the tab's layout from the current font (throwaway, so it stays
-  // font-correct) and position the pane's children within it.  Children use
-  // pane-local coordinates, so the layout runs from (0, 0).  Spacing is 0 so the
-  // builder controls each gap (rows rarely want a uniform gap)
-  GUI::BoxLayout col(GUI::BoxLayout::Dir::Vertical,
-                     0, dialog().hBorder(), dialog().vBorder());
-  myBuilder(col);
-  col.doLayout(0, 0, _w, _h);
-
-  // Overlay/cross-referencing widgets are placed once the box is resolved
+  // Overlay/cross-referencing widgets are placed once the box is resolved.  A
+  // pane whose content a box cannot express (a dense, cross-referenced grid) may
+  // supply only this
   if(myPostLayout)
     myPostLayout();
 

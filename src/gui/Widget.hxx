@@ -119,13 +119,37 @@ class Widget : public GuiObject
     virtual const GUI::Font& font() const { return _font; }
 
     /**
-      The vertical offset, from the widget's top edge, at which it draws its
-      text.  A plain label draws at its top edge, whereas a control that frames
-      its own text (edit field, pop-up, data grid) insets it.  A label therefore
-      pairs with such a control by sitting this far below its top edge, which is
-      what GUI::labelColumn() does.
+      The size the widget would like to be (Qt calls this the size hint): what a
+      layout gives it when it is neither filled nor stretched, and what
+      GUI::BoxLayout::addAuto() sizes a cell from — so a row is as tall as its
+      tallest widget without anyone hard-coding a height.  The default reports
+      the current size, which for most widgets their constructor derives from the
+      font; one whose constructor cannot know it overrides this.
+
+      Deliberately distinct from GUI::Layout::minSize(), which is how far the
+      content may be squeezed (a resizable dialog derives its window minimum from
+      that).  Conflating the two would stop the launcher shrinking.
     */
-    virtual int textOffsetY() const { return 0; }
+    virtual Common::Size naturalSize() const {
+      return Common::Size(std::max(_w, 0), std::max(_h, 0));
+    }
+
+    /**
+      The vertical offset, from the widget's top edge, at which the widget draws
+      its first line of text.  A widget centers its text within its own height,
+      so the default serves all the single-line controls, and two of them sharing
+      a row line up once the layout centers each within the row.
+
+      A widget that can show SEVERAL lines must override it, because centering
+      would float its first line in the middle of a box whose whole purpose is to
+      hold the lines below it: an EditTextWidget built two lines tall, or a data
+      grid / toggle list, which is several rows of text in one box.  Such a widget
+      reports where its first line starts, which is also the line a label beside
+      it must sit on — GUI::VAlign::Baseline consumes exactly this.
+    */
+    virtual int firstTextY() const {
+      return (_h - _font.getFontHeight()) / 2;
+    }
 
     /**
       The referenced font's metrics may have changed at runtime (e.g. the user
@@ -387,11 +411,6 @@ class CheckboxWidget : public ButtonWidget
 
     void refreshFontMetrics() override;
 
-    // A checkbox draws its label against its top edge, unlike the controls that
-    // frame their text; report that so a checkbox sharing a row with one of them
-    // can be aligned to it (see GUI::labelColumn)
-    int textOffsetY() const override { return _textY; }
-
     static int boxSize(const GUI::Font& font)
     {
       return font.getFontHeight() < 24 ? 14 : 22; // box is square
@@ -404,18 +423,13 @@ class CheckboxWidget : public ButtonWidget
   protected:
     void drawWidget(bool hilite) override;
 
-    // Compute the height and the box/label offsets from the current font: the
-    // label is inset like that of any other control, and the box of the given
-    // size is centered on it.  Shared with RadioButtonWidget, whose button
-    // takes the place of the box
+    // Compute the height and the box offset from the current font: the label is
+    // centered in the height, like the text of any other control, and the box of
+    // the given size is centered on the label.  Shared with RadioButtonWidget,
+    // whose button takes the place of the box
     void alignBox(int boxSize);
 
   protected:
-    // Inset of the label from the top edge, matching the controls that frame
-    // their own text (EditTextWidget, PopUpWidget, SliderWidget, ...), so that a
-    // checkbox lines up with one it shares a row with
-    static constexpr int TEXT_INSET = 2;
-
     bool _state{false};
     bool _holdFocus{true};
     bool _drawBox{true};
@@ -426,7 +440,6 @@ class CheckboxWidget : public ButtonWidget
     const uInt32* _img{nullptr};
     ColorId _fillColor{kColor};
     int _boxY{0};
-    int _textY{0};
     int _boxSize{14};
 
   private:
@@ -474,9 +487,6 @@ class SliderWidget : public ButtonWidget
     void handleMouseUp(int x, int y, MouseButton b, int clickCount) override;
     void handleMouseWheel(int x, int y, int direction) override;
     bool handleEvent(Event::Type event) override;
-
-    // A slider insets its label, like the other controls that frame their text
-    int textOffsetY() const override { return 2; }
 
   protected:
     void drawWidget(bool hilite) override;

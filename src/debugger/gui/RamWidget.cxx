@@ -166,8 +166,9 @@ void RamWidget::reflow(int w)
   using GUI::BoxLayout;
   using GUI::anchoredItem;
   using GUI::indentedItem;
-  using GUI::labelColumn;
-  using GUI::vCentered;
+  using GUI::alignedItem;
+  using GUI::HAlign;
+  using GUI::VAlign;
   using Dir = BoxLayout::Dir;
 
   const int x = _x, y = _y;
@@ -200,10 +201,11 @@ void RamWidget::reflow(int w)
     header.addFixed(indentedItem(h, 8), colWidth);
   header.doLayout(x, y, gridX - x + 16 * colWidth, _lineHeight);
 
-  // Row-address labels down the left side of the grid, which insets each row's
-  // text, so they start that far down to share its lines
+  // Row-address labels down the left side of the grid.  The grid insets each
+  // row's text where a label centers its own, so the column starts that much
+  // lower and label i lands on grid row i's line
   BoxLayout rowLabels(Dir::Vertical);
-  rowLabels.addSpace(myRamGrid->textOffsetY());
+  rowLabels.addSpace(myRamGrid->firstTextY() - myRamLabels[0]->firstTextY());
   for(uInt32 row = 0; row < myNumRows; ++row)
     rowLabels.addFixed(anchoredItem(myRamLabels[row]), _lineHeight);
   rowLabels.doLayout(gridX - _font.getStringWidth("x "), gridY,
@@ -231,19 +233,21 @@ void RamWidget::reflow(int w)
   // The controls inset their own text, so the row is positioned by that text
   // line: the labels land on 'detailY' and the controls just above it
   BoxLayout detail(Dir::Horizontal);
-  detail.addFixed(labelColumn(myLabelText, myLabel), myLabelText->getWidth());
+  detail.addFixed(anchoredItem(myLabelText), myLabelText->getWidth());
   detail.addSpace(_fontWidth / 2);
-  detail.addStretch(vCentered(myLabel, myLabel->getHeight()));
+  detail.addStretch(alignedItem(myLabel, HAlign::Fill, VAlign::Center));
   detail.addSpace(_fontWidth * 3 / 2);
   detail.addFixed(anchoredItem(myHexValue), myHexValue->getWidth());
   detail.addSpace(_fontWidth);
-  detail.addFixed(labelColumn(myDecPrefix, myDecValue), myDecPrefix->getWidth());
+  detail.addFixed(anchoredItem(myDecPrefix), myDecPrefix->getWidth());
   detail.addFixed(anchoredItem(myDecValue), myDecValue->getWidth());
   detail.addSpace(_fontWidth);
-  detail.addFixed(labelColumn(myBinPrefix, myBinValue), myBinPrefix->getWidth());
+  detail.addFixed(anchoredItem(myBinPrefix), myBinPrefix->getWidth());
   detail.addFixed(anchoredItem(myBinValue), myBinValue->getWidth());
   detail.addSpace(9);
-  detail.doLayout(x, detailY - myHexValue->textOffsetY(), w, _lineHeight);
+  // The row is as tall as the fields that frame their text, so that centering
+  // them in it leaves their text exactly on 'detailY' (as do the labels')
+  detail.doLayout(x, detailY - myHexValue->firstTextY(), w, myHexValue->getHeight());
 
   // The M6532 view fits its height to the content
   if(myAutoHeight)

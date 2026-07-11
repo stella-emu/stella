@@ -85,8 +85,7 @@ InputDialog::~InputDialog() = default;
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void InputDialog::layout()
 {
-  const int lineHeight   = Dialog::lineHeight(),
-            fontWidth    = Dialog::fontWidth(),
+  const int fontWidth    = Dialog::fontWidth(),
             buttonHeight = Dialog::buttonHeight(),
             VBORDER      = Dialog::vBorder(),
             HBORDER      = Dialog::hBorder(),
@@ -98,19 +97,19 @@ void InputDialog::layout()
   // too-large case.  Sizing naturally lets that check fire the "too large"
   // message like every other dialog.  (myMaxWidth/myMaxHeight are still used to
   // bound the confirm MessageBox below.)
-  // Devices & Ports is the tallest tab: 13 rows, one of which is the taller
-  // controller-database button, plus the gaps between them
-  _w = 49 * fontWidth + PopUpWidget::dropDownWidth(_font) + HBORDER * 2;
-  _h = _th + VGAP * 3 + lineHeight + 13 * (lineHeight + VGAP)
-         + (buttonHeight - lineHeight) + VGAP * 10
-         + buttonHeight + VBORDER * 3;
-
-  // Position/size the tab widget below the title bar, then recompute its
-  // tab-bar geometry for the current font/width
+  // The height comes from the tab widget: it reports what its tallest tab's
+  // content asks for, so nothing here counts rows or gaps, and adding a row to
+  // any tab needs no change at all
   constexpr int xpos = 2;
+  _w = 49 * fontWidth + PopUpWidget::dropDownWidth(_font) + HBORDER * 2;
+
   myTab->setPos(xpos, VGAP + _th);
   myTab->setWidth(_w - 2 * xpos);
-  myTab->setHeight(_h - _th - VGAP - buttonHeight - VBORDER * 2);
+  myTab->setHeight(static_cast<int>(myTab->naturalSize().h));
+
+  _h = _th + VGAP + myTab->getHeight() + VBORDER + buttonHeight + VBORDER;
+
+  // Recompute the tab-bar geometry for the current font/width
   myTab->updateTabSizes();
 
   // Every tab's content lays itself out via the tab widget (the Event Mappings
@@ -140,8 +139,8 @@ void InputDialog::addDevicePortTab()
 
   // Add digital dead zone setting
   myDigitalDeadzone = new SliderWidget(pane, _font, 0, 0, swidth, lineHeight,
-                                        "Digital dead zone size ",
-                                        lwidth, kDDeadzoneChanged, 3 * fontWidth, "%");
+                                       "Digital dead zone size ",
+                                       lwidth, kDDeadzoneChanged, 3 * fontWidth, "%");
   myDigitalDeadzone->setMinValue(Controller::MIN_DIGITAL_DEADZONE);
   myDigitalDeadzone->setMaxValue(Controller::MAX_DIGITAL_DEADZONE);
   myDigitalDeadzone->setTickmarkIntervals(5);
@@ -164,8 +163,8 @@ void InputDialog::addDevicePortTab()
 
   // Add analog paddle sensitivity
   myPaddleSpeed = new SliderWidget(pane, _font, 0, 0, swidth, lineHeight,
-                                 "Sensitivity",
-                                 lwidth - INDENT, kPSpeedChanged, 4 * fontWidth, "%");
+                                   "Sensitivity",
+                                   lwidth - INDENT, kPSpeedChanged, 4 * fontWidth, "%");
   myPaddleSpeed->setMinValue(0);
   myPaddleSpeed->setMaxValue(Paddles::MAX_ANALOG_SENSE);
   myPaddleSpeed->setTickmarkIntervals(3);
@@ -275,70 +274,73 @@ void InputDialog::addDevicePortTab()
     using GUI::widgetItem;
     using Dir = BoxLayout::Dir;
 
-    const int lh     = Dialog::lineHeight(),
-              fw     = Dialog::fontWidth(),
-              bh     = Dialog::buttonHeight(),
+    const int fw     = Dialog::fontWidth(),
               VGAP   = Dialog::vGap(),
               INDENT = Dialog::indent();
     const int lwidth = _font.getStringWidth("Digital paddle sensitivity ");
 
-    col.addFixed(anchoredItem(myDigitalDeadzone), lh);
+    // Every row is as tall as what it holds (addAuto), so no height is stated
+    // here and none can be wrong — the pop-ups frame their text and are taller
+    // than the sliders and checkboxes, and the rows follow the font on their own
+    col.addAuto(anchoredItem(myDigitalDeadzone));
     col.addSpace(VGAP);
-    col.addFixed(anchoredItem(myAnalogDeadzone), lh);
+    col.addAuto(anchoredItem(myAnalogDeadzone));
     col.addSpace(VGAP);
-    col.addFixed(anchoredItem(myAnalogPaddleLabel), lh);
+    col.addAuto(anchoredItem(myAnalogPaddleLabel));
     // The analog-paddle sliders are indented; their reduced label widths keep the
     // slider tracks aligned with the non-indented sliders
-    col.addFixed(indentedItem(myPaddleSpeed, INDENT), lh);
+    col.addAuto(indentedItem(myPaddleSpeed, INDENT));
     col.addSpace(VGAP);
-    col.addFixed(indentedItem(myPaddleLinearity, INDENT), lh);
+    col.addAuto(indentedItem(myPaddleLinearity, INDENT));
     col.addSpace(VGAP);
-    col.addFixed(indentedItem(myDejitterBase, INDENT), lh);
+    col.addAuto(indentedItem(myDejitterBase, INDENT));
     col.addSpace(VGAP);
-    col.addFixed(indentedItem(myDejitterDiff, INDENT), lh);
+    col.addAuto(indentedItem(myDejitterDiff, INDENT));
     col.addSpace(VGAP);
-    col.addFixed(anchoredItem(myDPaddleSpeed), lh);
+    col.addAuto(anchoredItem(myDPaddleSpeed));
     col.addSpace(VGAP);
     auto autofireRow = std::make_unique<BoxLayout>(Dir::Horizontal);
     autofireRow->addFixed(anchoredItem(myAutoFire), lwidth - fw * 5);
     autofireRow->addStretch(anchoredItem(myAutoFireRate));
-    col.addFixed(std::move(autofireRow), lh);
+    col.addAuto(std::move(autofireRow));
     col.addSpace(VGAP);
-    col.addFixed(anchoredItem(myAllowAll4), lh);
+    col.addAuto(anchoredItem(myAllowAll4));
     col.addSpace(VGAP);
-    col.addFixed(anchoredItem(myModCombo), lh);
+    col.addAuto(anchoredItem(myModCombo));
     col.addSpace(VGAP);
 
     // The ports section runs as two parallel columns, since the EEPROM group's
-    // heading rides one line above its button and so does not share the left
+    // heading rides directly above its button and so does not share the left
     // column's rhythm.  Left: the Stelladaptor option above the controller
     // database button.  Right: the EEPROM heading above the Erase button, both
-    // right-aligned (the left column takes the slack)
+    // right-aligned (the left column takes the horizontal slack).
+    // Each column ENDS with its button and takes up its vertical slack in a
+    // stretch, so the two buttons land on the same line whatever is above them —
+    // rather than the columns having to add up to the same height by hand
     auto dbRow = std::make_unique<BoxLayout>(Dir::Horizontal);
     dbRow->addFixed(widgetItem(myJoyDlgButton),
                     Dialog::buttonWidth("Controller Database" + ELLIPSIS));
     dbRow->addStretchSpace();
 
     auto portsCol = std::make_unique<BoxLayout>(Dir::Vertical);
-    portsCol->addFixed(anchoredItem(mySAPort), lh);
-    portsCol->addSpace(VGAP * 2);
-    portsCol->addFixed(std::move(dbRow), bh);
+    portsCol->addAuto(anchoredItem(mySAPort));
+    portsCol->addStretchSpace(1, VGAP * 2);
+    portsCol->addAuto(std::move(dbRow));
 
     auto eepromCol = std::make_unique<BoxLayout>(Dir::Vertical);
-    eepromCol->addSpace(VGAP * 2);
-    eepromCol->addFixed(anchoredItem(myAtariVoxLabel), lh);
-    eepromCol->addFixed(widgetItem(myEraseEEPROMButton), bh);
+    eepromCol->addStretchSpace();
+    eepromCol->addAuto(anchoredItem(myAtariVoxLabel));
+    eepromCol->addAuto(widgetItem(myEraseEEPROMButton));
 
     auto portsRow = std::make_unique<BoxLayout>(Dir::Horizontal);
     portsRow->addStretch(std::move(portsCol));
     portsRow->addFixed(std::move(eepromCol),
                        _font.getStringWidth("AtariVox/SaveKey"));
-    col.addFixed(std::move(portsRow), lh + VGAP * 2 + bh);
+    col.addAuto(std::move(portsRow));
 
     col.addSpace(VGAP * 3);
-    // The serial-port popup widens with the dialog, but keeps its own height (a
-    // PopUpWidget frames its text, so it is taller than a plain row)
-    col.addFixed(widgetItem(myAVoxPort), myAVoxPort->getHeight());
+    // The serial-port pop-up widens with the dialog, but keeps its own height
+    col.addAuto(widgetItem(myAVoxPort));
   });
 }
 
@@ -431,26 +433,27 @@ void InputDialog::addMouseTab()
   pane->setLayout([this](GUI::BoxLayout& col) {
     using GUI::anchoredItem;
     using GUI::indentedItem;
-    const int lh = Dialog::lineHeight(), VGAP = Dialog::vGap(),
-              INDENT = Dialog::indent();
+    const int VGAP = Dialog::vGap(), INDENT = Dialog::indent();
 
-    col.addFixed(anchoredItem(myMouseControl), lh);
+    // Every row is as tall as what it holds (addAuto), so no height is stated
+    // here and none can be wrong: the pop-up frames its text and is taller than
+    // the sliders, and the rows follow the font on their own
+    col.addAuto(anchoredItem(myMouseControl));
     col.addSpace(VGAP);
-    col.addFixed(anchoredItem(myMouseSensitivity), lh);
+    col.addAuto(anchoredItem(myMouseSensitivity));
     col.addSpace(VGAP);
-    col.addFixed(indentedItem(myMPaddleSpeed, INDENT), lh);
+    col.addAuto(indentedItem(myMPaddleSpeed, INDENT));
     col.addSpace(VGAP);
-    col.addFixed(indentedItem(myTrackBallSpeed, INDENT), lh);
+    col.addAuto(indentedItem(myTrackBallSpeed, INDENT));
     col.addSpace(VGAP);
-    col.addFixed(indentedItem(myDrivingSpeed, INDENT), lh);
+    col.addAuto(indentedItem(myDrivingSpeed, INDENT));
     col.addSpace(VGAP * 4);
-    col.addFixed(anchoredItem(myCursorState), lh);
+    col.addAuto(anchoredItem(myCursorState));
     col.addSpace(VGAP);
-    col.addFixed(anchoredItem(myGrabMouse), lh);
+    col.addAuto(anchoredItem(myGrabMouse));
   });
 }
 
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void InputDialog::loadConfig()
 {

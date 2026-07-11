@@ -282,7 +282,9 @@ void TimeMachineDialog::layout()
 {
   using GUI::BoxLayout;
   using GUI::anchoredItem;
-  using GUI::vCentered;
+  using GUI::alignedItem;
+  using GUI::HAlign;
+  using GUI::VAlign;
   using Dir = BoxLayout::Dir;
 
   const int rowHeight  = Dialog::lineHeight();
@@ -292,14 +294,14 @@ void TimeMachineDialog::layout()
   auto row1 = std::make_unique<BoxLayout>(Dir::Horizontal);
   row1->addFixed(anchoredItem(myCurrentIdxWidget), myCurrentIdxWidget->getWidth());
   row1->addSpace(8);
-  row1->addStretch(vCentered(myTimeline, rowHeight / 2 + 6));
+  row1->addStretch(alignedItem(myTimeline, HAlign::Fill, VAlign::Center));
   row1->addSpace(8);
   row1->addFixed(anchoredItem(myLastIdxWidget), myLastIdxWidget->getWidth());
 
   // Row 2: current-time label, transport buttons, message (fills), last-time label.
   // The text readouts are centered on the (taller) icon buttons.
   auto row2 = std::make_unique<BoxLayout>(Dir::Horizontal);
-  row2->addFixed(vCentered(myCurrentTimeWidget, myCurrentTimeWidget->getHeight()),
+  row2->addFixed(alignedItem(myCurrentTimeWidget, HAlign::Fill, VAlign::Center),
                  myCurrentTimeWidget->getWidth());
   row2->addSpace(BUTTON_GAP * 4);
   row2->addFixed(anchoredItem(myToggleWidget), BUTTON_WIDTH);
@@ -320,8 +322,8 @@ void TimeMachineDialog::layout()
   row2->addSpace(BUTTON_GAP);
   row2->addFixed(anchoredItem(myLoadAllWidget), BUTTON_WIDTH);
   row2->addSpace(BUTTON_GAP * 4);
-  row2->addStretch(vCentered(myMessageWidget, myMessageWidget->getHeight()));
-  row2->addFixed(vCentered(myLastTimeWidget, myLastTimeWidget->getHeight()),
+  row2->addStretch(alignedItem(myMessageWidget, HAlign::Fill, VAlign::Center));
+  row2->addFixed(alignedItem(myLastTimeWidget, HAlign::Fill, VAlign::Center),
                  myLastTimeWidget->getWidth());
 
   // Two stacked rows, inset by the HUD borders

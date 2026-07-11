@@ -395,7 +395,9 @@ void LauncherDialog::layout()
 
   using GUI::BoxLayout;
   using GUI::widgetItem;
-  using GUI::vCentered;
+  using GUI::alignedItem;
+  using GUI::HAlign;
+  using GUI::VAlign;
   using Dir = BoxLayout::Dir;
 
   const int HBORDER      = Dialog::hBorder();
@@ -451,7 +453,7 @@ void LauncherDialog::layout()
   filterRow->addSpace(LBL_GAP * 2);
   if(myFilterLabel)
   {
-    filterRow->addFixed(vCentered(myFilterLabel, fontHeight),
+    filterRow->addFixed(alignedItem(myFilterLabel, HAlign::Fill, VAlign::Center),
                         _font.getStringWidth(myFilterLabel->getLabel()));
     filterRow->addSpace(LBL_GAP);
   }
@@ -459,7 +461,7 @@ void LauncherDialog::layout()
   filterRow->addSpace(BTN_GAP);
   filterRow->addFixed(widgetItem(mySubDirsButton), iconButtonWidth);
   filterRow->addSpace(BTN_GAP + LBL_GAP);
-  filterRow->addFixed(vCentered(myRomCount, fontHeight), lwFound);
+  filterRow->addFixed(alignedItem(myRomCount, HAlign::Fill, VAlign::Center), lwFound);
   filterRow->addSpace(LBL_GAP * 2);
   filterRow->addFixed(widgetItem(myRandomRomButton), randomButtonWidth);
   filterRow->addSpace(BTN_GAP);

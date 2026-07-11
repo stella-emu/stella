@@ -131,8 +131,9 @@ OptionsDialog::~OptionsDialog() = default;
 void OptionsDialog::layout()
 {
   using GUI::GridLayout;
+  using GUI::BoxLayout;
   using GUI::widgetItem;
-  using GUI::hCentered;
+  using Dir = BoxLayout::Dir;
 
   const int buttonHeight = Dialog::buttonHeight();
   const int VBORDER      = Dialog::vBorder();
@@ -161,7 +162,12 @@ void OptionsDialog::layout()
     grid->place(0, r, widgetItem(myButtons[r]));
     grid->place(1, r, widgetItem(myButtons[PER_COL + r]));
   }
-  grid->place(0, PER_COL, hCentered(myButtons.back(), closeWidth), COLS);
+  // The Close button keeps its own (narrower) width, centered across both columns
+  auto closeRow = std::make_unique<BoxLayout>(Dir::Horizontal);
+  closeRow->addStretchSpace();
+  closeRow->addFixed(widgetItem(myButtons.back()), closeWidth);
+  closeRow->addStretchSpace();
+  grid->place(0, PER_COL, std::move(closeRow), COLS);
 
   // Position the grid in the dialog area below the title bar
   grid->doLayout(0, _th, _w, _h - _th);

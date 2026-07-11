@@ -44,8 +44,10 @@ class ToggleWidget : public Widget, public CommandSender
 
     int colWidth() const { return _colWidth; }
 
-    // Each row insets its text; drawWidget() and any label beside us use this
-    int textOffsetY() const override { return 2; }
+    // We are several rows of text in one box, not one line centered in it, so
+    // report the inset of the FIRST row: that is the line a label beside us must
+    // sit on (GUI::VAlign::Baseline), and drawWidget() steps down from it
+    int firstTextY() const override { return 2; }
 
     void setEditable(bool editable) { _editable = editable; }
     bool isEditable() const { return _editable; }

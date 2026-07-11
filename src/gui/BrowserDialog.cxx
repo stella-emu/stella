@@ -117,7 +117,9 @@ void BrowserDialog::layout()
 {
   using GUI::BoxLayout;
   using GUI::widgetItem;
-  using GUI::vCentered;
+  using GUI::alignedItem;
+  using GUI::HAlign;
+  using GUI::VAlign;
   using Dir = BoxLayout::Dir;
 
   const int fontWidth    = Dialog::fontWidth(),
@@ -145,7 +147,7 @@ void BrowserDialog::layout()
       auto navRow = std::make_unique<BoxLayout>(Dir::Horizontal);
       navRow->addStretch(widgetItem(_navigationBar));
       navRow->addSpace(fontWidth);
-      navRow->addFixed(vCentered(_savePathBox, _savePathBox->getHeight()),
+      navRow->addFixed(alignedItem(_savePathBox, HAlign::Fill, VAlign::Center),
                        _savePathBox->getWidth());
       root->addFixed(std::move(navRow), buttonHeight);
     }
@@ -161,8 +163,8 @@ void BrowserDialog::layout()
   if(fileMode)
   {
     auto nameRow = std::make_unique<BoxLayout>(Dir::Horizontal);
-    nameRow->addFixed(vCentered(_name, _name->getHeight()), _name->getWidth());
-    nameRow->addStretch(vCentered(_selected, _selected->getHeight()));
+    nameRow->addFixed(alignedItem(_name, HAlign::Fill, VAlign::Center), _name->getWidth());
+    nameRow->addStretch(alignedItem(_selected, HAlign::Fill, VAlign::Center));
 
     root->addSpace(VGAP * 2);
     root->addFixed(std::move(nameRow), _selected->getHeight());

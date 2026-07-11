@@ -341,7 +341,7 @@ void RadioButtonWidget::drawWidget(bool hilite)
                  : kColor, _buttonSize - 4);
 
   // Finally draw the label
-  s.drawString(_font, _label, _x + _buttonSize + _font.getMaxCharWidth() * 0.75, _y + _textY, _w,
+  s.drawString(_font, _label, _x + _buttonSize + _font.getMaxCharWidth() * 0.75, _y + firstTextY(), _w,
                isEnabled() ? kTextColor : kColor);
 }
 

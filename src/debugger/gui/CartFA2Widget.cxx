@@ -58,11 +58,13 @@ void CartridgeFA2Widget::layoutExtra(GUI::BoxLayout& col)
 {
   using GUI::BoxLayout;
   using GUI::anchoredItem;
-  using GUI::vCentered;
+  using GUI::alignedItem;
+  using GUI::HAlign;
+  using GUI::VAlign;
 
   // The flash label and the three flash buttons, in a row
   auto row = std::make_unique<BoxLayout>(BoxLayout::Dir::Horizontal, _fontWidth);
-  row->addFixed(vCentered(myFlashLabel, myFlashLabel->getHeight()),
+  row->addFixed(alignedItem(myFlashLabel, HAlign::Fill, VAlign::Center),
                 myFlashLabel->getWidth());
   row->addFixed(anchoredItem(myFlashErase), myFlashErase->getWidth());
   row->addFixed(anchoredItem(myFlashLoad), myFlashLoad->getWidth());

@@ -59,7 +59,7 @@ void ProgressDialog::layout()
 {
   using GUI::BoxLayout;
   using GUI::anchoredItem;
-  using GUI::hCentered;
+  using GUI::widgetItem;
   using Dir = BoxLayout::Dir;
 
   const int lineHeight   = Dialog::lineHeight(),
@@ -78,12 +78,18 @@ void ProgressDialog::layout()
   myMessage->setWidth(lwidth);
   mySlider->setWidth(lwidth);
 
+  // The Cancel button keeps the width its label needs, centered on its row
+  auto cancelRow = std::make_unique<BoxLayout>(Dir::Horizontal);
+  cancelRow->addStretchSpace();
+  cancelRow->addFixed(widgetItem(_cancelWidget), buttonWidth);
+  cancelRow->addStretchSpace();
+
   auto root = std::make_unique<BoxLayout>(Dir::Vertical, 0, HBORDER, VBORDER);
   root->addFixed(anchoredItem(myMessage), lineHeight);
   root->addSpace(VGAP * 2);
   root->addFixed(anchoredItem(mySlider), lineHeight);
   root->addSpace(VGAP * 4);
-  root->addFixed(hCentered(_cancelWidget, buttonWidth), buttonHeight);
+  root->addFixed(std::move(cancelRow), buttonHeight);
   root->doLayout(0, 0, _w, _h);
 }
 

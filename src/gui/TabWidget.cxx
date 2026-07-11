@@ -66,7 +66,7 @@ int TabWidget::addTab(string_view title, int tabWidth)
 void TabWidget::updateTabSizes()
 {
   // Tab-bar height and the AUTO-width tabs' widths follow the current font
-  _tabHeight = _font.getLineHeight() + 4;
+  _tabHeight = tabBarHeight();
 
   // A common width is shared by the NO_WIDTH tabs (its floor is kTabMinWidth);
   // AUTO/fixed tabs contribute their own width to the fixed total
@@ -172,12 +172,29 @@ void TabWidget::layoutContent(int tabID)
   // negative content area would drive content widgets into degenerate states);
   // the owning dialog's layout() sizes us, then re-drives this via
   // updateTabSizes()
-  constexpr int border = 2;
-  const int w = _w - 2 * border, h = _h - _tabHeight - 2 * border;
+  const int w = _w - 2 * CONTENT_BORDER,
+            h = _h - _tabHeight - 2 * CONTENT_BORDER;
   if(w <= 0 || h <= 0)
     return;
 
-  content->setArea(border, border, w, h);
+  content->setArea(CONTENT_BORDER, CONTENT_BORDER, w, h);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+Common::Size TabWidget::naturalSize() const
+{
+  int contentH = 0;
+
+  for(const auto& tab: _tabs)
+    if(tab.isPane && tab.parentWidget != nullptr)
+      contentH = std::max(contentH,
+                          static_cast<int>(tab.parentWidget->naturalSize().h));
+
+  // The bar height is taken from the font rather than the cached _tabHeight,
+  // which a live font change leaves stale until updateTabSizes() runs — and a
+  // dialog's layout() asks us how tall we want to be before it gets there
+  return Common::Size(std::max(_w, 0),
+                      contentH + tabBarHeight() + 2 * CONTENT_BORDER);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

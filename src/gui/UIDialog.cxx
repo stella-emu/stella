@@ -388,7 +388,9 @@ void UIDialog::layoutLauncherTab()
 {
   using GUI::BoxLayout;
   using GUI::anchoredItem;
-  using GUI::vCentered;
+  using GUI::alignedItem;
+  using GUI::HAlign;
+  using GUI::VAlign;
   using Dir = BoxLayout::Dir;
 
   const GUI::Font& ifont = instance().frameBuffer().infoFont();
@@ -409,7 +411,7 @@ void UIDialog::layoutLauncherTab()
   auto romRow = std::make_unique<BoxLayout>(Dir::Horizontal);
   romRow->addFixed(anchoredItem(myRomButton), myRomButton->getWidth());
   romRow->addSpace(fontWidth);
-  romRow->addStretch(vCentered(myRomPath, myRomPath->getHeight()));
+  romRow->addStretch(alignedItem(myRomPath, HAlign::Fill, VAlign::Center));
   col->addFixed(std::move(romRow), lineHeight);
 
   col->addSpace(VGAP * 2);
@@ -427,7 +429,7 @@ void UIDialog::layoutLauncherTab()
   imgRow->addSpace(INDENT);
   imgRow->addFixed(anchoredItem(myOpenBrowserButton), myOpenBrowserButton->getWidth());
   imgRow->addSpace(lwidth - INDENT - myOpenBrowserButton->getWidth());
-  imgRow->addStretch(vCentered(mySnapLoadPath, mySnapLoadPath->getHeight()));
+  imgRow->addStretch(alignedItem(mySnapLoadPath, HAlign::Fill, VAlign::Center));
   col->addFixed(std::move(imgRow), lineHeight);
 
   col->addSpace(VGAP * 4);

@@ -80,12 +80,12 @@ void JoystickDialog::layout()
 {
   using GUI::BoxLayout;
   using GUI::widgetItem;
-  using GUI::vCentered;
+  using GUI::alignedItem;
+  using GUI::HAlign;
+  using GUI::VAlign;
   using Dir = BoxLayout::Dir;
 
-  const int lineHeight   = Dialog::lineHeight(),
-            fontHeight   = Dialog::fontHeight(),
-            fontWidth    = Dialog::fontWidth(),
+  const int fontWidth    = Dialog::fontWidth(),
             buttonHeight = Dialog::buttonHeight(),
             buttonWidth  = Dialog::buttonWidth("Remove"),
             VBORDER      = Dialog::vBorder(),
@@ -103,10 +103,10 @@ void JoystickDialog::layout()
   // Controller ID label + (non-editable) value + port popup on the left,
   // vertically centered within the button row
   auto idRow = std::make_unique<BoxLayout>(Dir::Horizontal);
-  idRow->addFixed(vCentered(myIDLabel, fontHeight), myIDLabel->getWidth());
-  idRow->addFixed(vCentered(myJoyText, myJoyText->getHeight()), myJoyText->getWidth());
+  idRow->addFixed(alignedItem(myIDLabel, HAlign::Fill, VAlign::Center), myIDLabel->getWidth());
+  idRow->addFixed(alignedItem(myJoyText, HAlign::Fill, VAlign::Center), myJoyText->getWidth());
   idRow->addSpace(fontWidth * 2);
-  idRow->addFixed(vCentered(myJoyPort, lineHeight), myJoyPort->getWidth());
+  idRow->addFixed(alignedItem(myJoyPort, HAlign::Fill, VAlign::Center), myJoyPort->getWidth());
   idRow->doLayout(HBORDER, by, _w - HBORDER * 2, buttonHeight);
 
   // Remove / Close buttons, right-aligned on the button row

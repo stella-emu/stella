@@ -174,7 +174,6 @@ void TiaInfoWidget::reflow(int max_w)
 {
   using GUI::BoxLayout;
   using GUI::anchoredItem;
-  using GUI::labelColumn;
   using Dir = BoxLayout::Dir;
 
   const GUI::Font& lfont = _font;
@@ -223,7 +222,7 @@ void TiaInfoWidget::reflow(int max_w)
   // matter how wide its labels or how many digits each field holds
   const auto row = [&](StaticTextWidget* label, Widget* field, int fieldW) {
     auto r = std::make_unique<BoxLayout>(Dir::Horizontal);
-    r->addStretch(labelColumn(label, field));
+    r->addStretch(anchoredItem(label));
     r->addFixed(anchoredItem(field), fieldW);
     return r;
   };
@@ -239,7 +238,7 @@ void TiaInfoWidget::reflow(int max_w)
   right->addFixed(row(myFrameCountLabel, myFrameCount, fwidth5), lineHeight);
   // The scanline row shows the current and last-frame counts side by side
   auto scanRow = std::make_unique<BoxLayout>(Dir::Horizontal);
-  scanRow->addStretch(labelColumn(myScanlineLabel, myScanlineCount));
+  scanRow->addStretch(anchoredItem(myScanlineLabel));
   scanRow->addFixed(anchoredItem(myScanlineCount), fwidth3);
   scanRow->addSpace(SCAN_GAP);
   scanRow->addFixed(anchoredItem(myScanlineCountLast), fwidth3);

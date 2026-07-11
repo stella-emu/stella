@@ -84,7 +84,9 @@ void AboutDialog::layout()
 {
   using GUI::BoxLayout;
   using GUI::widgetItem;
-  using GUI::vCentered;
+  using GUI::alignedItem;
+  using GUI::HAlign;
+  using GUI::VAlign;
   using Dir = BoxLayout::Dir;
 
   const int lineHeight   = Dialog::lineHeight(),
@@ -104,7 +106,7 @@ void AboutDialog::layout()
   const int bwidth = Dialog::buttonWidth("What's New" + ELLIPSIS);
   auto titleRow = std::make_unique<BoxLayout>(Dir::Horizontal);
   titleRow->addSpace(bwidth);
-  titleRow->addStretch(vCentered(myTitle, fontHeight));
+  titleRow->addStretch(alignedItem(myTitle, HAlign::Fill, VAlign::Center));
   titleRow->addFixed(widgetItem(myWhatsNewButton), bwidth);
   titleRow->doLayout(HBORDER, _th + VBORDER, _w - HBORDER * 2, buttonHeight);
 

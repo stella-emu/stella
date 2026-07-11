@@ -21,16 +21,48 @@
 namespace GUI {
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+Common::Size WidgetLayout::naturalSize() const
+{
+  return myWidget != nullptr ? myWidget->naturalSize() : Common::Size{};
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+int WidgetLayout::firstTextY() const
+{
+  return myWidget != nullptr ? myWidget->firstTextY() : 0;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void WidgetLayout::doLayout(int x, int y, int w, int h)
 {
   if(myWidget == nullptr)
     return;
 
-  // Anchored items keep their own size and are only moved to the cell origin
-  if(!myFill)
+  w = std::max(w, 0);
+  h = std::max(h, 0);
+
+  // An axis the widget does not fill leaves it at the size it wants to be, and
+  // positions that within the cell.  A baseline item has already been dropped
+  // onto its row's baseline by the enclosing box, so here it places like Top
+  const Common::Size natural = myWidget->naturalSize();
+  const int aw = myHAlign == HAlign::Fill ? w : static_cast<int>(natural.w);
+  const int ah = myVAlign == VAlign::Fill ? h : static_cast<int>(natural.h);
+  int ax = x, ay = y;
+
+  switch(myHAlign)
   {
-    myWidget->setPos(x, y);
-    return;
+    case HAlign::Center:  ax = x + (w - aw) / 2;  break;
+    case HAlign::Right:   ax = x + w - aw;        break;
+    case HAlign::Fill:
+    case HAlign::Left:                            break;
+  }
+  switch(myVAlign)
+  {
+    case VAlign::Center:  ay = y + (h - ah) / 2;  break;
+    case VAlign::Bottom:  ay = y + h - ah;        break;
+    case VAlign::Fill:
+    case VAlign::Top:
+    case VAlign::Baseline:                        break;
   }
 
   // setArea() forwards to the virtual setWidth()/setHeight() so composite
@@ -38,7 +70,7 @@ void WidgetLayout::doLayout(int x, int y, int w, int h)
   // recomputes its visible rows, NavigationWidget its path field), while
   // widgets that override setArea() itself (e.g. RomImageWidget, which rescales
   // its image) react to the whole geometry change
-  myWidget->setArea(x, y, std::max(w, 0), std::max(h, 0));
+  myWidget->setArea(ax, ay, aw, ah);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -110,17 +142,63 @@ void BoxLayout::doLayout(int x, int y, int w, int h)
   if(lastStretch >= 0)
     ext[lastStretch] += remaining - distributed;
 
+  // In a row, the items asking to sit on the baseline share the lowest first
+  // line of text among them, so each is dropped by the difference: a label
+  // (whose text is centered in its own small height) lands on the first row of
+  // the data grid beside it, which centering could not express
+  int baseline = 0;
+  if(horiz)
+    for(const auto& it: myItems)
+      if(it.layout->onBaseline())
+        baseline = std::max(baseline, it.layout->firstTextY());
+
   // Position the children sequentially along the main axis
   int pos = horiz ? cx : cy;
   const int crossStart = horiz ? cy : cx;
   for(int i = 0; i < n; ++i)
   {
     if(horiz)
-      myItems[i].layout->doLayout(pos, crossStart, ext[i], crossLen);
+    {
+      const int drop = myItems[i].layout->onBaseline()
+        ? baseline - myItems[i].layout->firstTextY() : 0;
+      myItems[i].layout->doLayout(pos, crossStart + drop, ext[i],
+                                  crossLen - drop);
+    }
     else
       myItems[i].layout->doLayout(crossStart, pos, crossLen, ext[i]);
     pos += ext[i] + mySpacing;
   }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+Common::Size BoxLayout::naturalSize() const
+{
+  const bool horiz = myDir == Dir::Horizontal;
+  int mainNat = 0, crossNat = 0;
+  for(const auto& it: myItems)
+  {
+    const Common::Size cs = it.layout->naturalSize();
+    // A cell sized in pixels wants exactly those; one that stretches wants what
+    // its content wants, but never less than the base size it was promised
+    int childMain = static_cast<int>(horiz ? cs.w : cs.h);
+    if(it.policy == SizePolicy::Fixed)
+      childMain = it.value;
+    else if(it.policy == SizePolicy::Stretch)
+      childMain = std::max(childMain, it.minMain);
+    mainNat += childMain;
+    crossNat = std::max(crossNat, static_cast<int>(horiz ? cs.h : cs.w));
+  }
+  const int n = static_cast<int>(myItems.size());
+  if(n > 0)
+    mainNat += mySpacing * (n - 1);
+
+  // Main axis gets that axis' margin; cross axis gets the other
+  const int wMargin = 2 * myMarginH, hMargin = 2 * myMarginV;
+  return horiz
+    ? Common::Size(static_cast<uInt32>(mainNat + wMargin),
+                   static_cast<uInt32>(crossNat + hMargin))
+    : Common::Size(static_cast<uInt32>(crossNat + wMargin),
+                   static_cast<uInt32>(mainNat + hMargin));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -157,26 +235,6 @@ Common::Size BoxLayout::minSize() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-unique_ptr<Layout> vCentered(Widget* widget, int h, int minW)
-{
-  auto col = std::make_unique<BoxLayout>(BoxLayout::Dir::Vertical);
-  col->addStretch(std::make_unique<WidgetLayout>(nullptr));
-  col->addFixed(widgetItem(widget, minW, h), h);
-  col->addStretch(std::make_unique<WidgetLayout>(nullptr));
-  return col;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-unique_ptr<Layout> hCentered(Widget* widget, int w, int minH)
-{
-  auto row = std::make_unique<BoxLayout>(BoxLayout::Dir::Horizontal);
-  row->addStretch(std::make_unique<WidgetLayout>(nullptr));
-  row->addFixed(widgetItem(widget, w, minH), w);
-  row->addStretch(std::make_unique<WidgetLayout>(nullptr));
-  return row;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 unique_ptr<Layout> indentedItem(Widget* widget, int indent, int minW)
 {
   auto row = std::make_unique<BoxLayout>(BoxLayout::Dir::Horizontal);
@@ -186,29 +244,17 @@ unique_ptr<Layout> indentedItem(Widget* widget, int indent, int minW)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-unique_ptr<Layout> labelColumn(Widget* label, Widget* control)
-{
-  // A label draws its text at its top edge, whereas a control frames its own
-  // text and insets it; drop the label by that inset so the two texts, rather
-  // than the two boxes, sit on the same line
-  auto column = std::make_unique<BoxLayout>(BoxLayout::Dir::Vertical);
-  column->addSpace(std::max(control->textOffsetY() - label->textOffsetY(), 0));
-  column->addFixed(anchoredItem(label), label->getHeight());
-  column->addStretch(std::make_unique<WidgetLayout>(nullptr));
-  return column;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 unique_ptr<Layout> labeledRow(Widget* label, Widget* control,
                               int labelW, int indent, bool fill)
 {
+  // Nothing here knows what kind of control it was handed: both items are
+  // centered in the row, and each centers its own text, so the two texts meet
   auto row = std::make_unique<BoxLayout>(BoxLayout::Dir::Horizontal);
   if(indent > 0)
     row->addSpace(indent);
-  row->addFixed(labelColumn(label, control),
-                labelW > 0 ? labelW : label->getWidth());
+  row->addFixed(anchoredItem(label), labelW > 0 ? labelW : label->getWidth());
   if(fill)
-    row->addStretch(widgetItem(control));
+    row->addStretch(alignedItem(control, HAlign::Fill, VAlign::Center));
   else
     row->addStretch(anchoredItem(control));
   return row;
@@ -397,6 +443,49 @@ Common::Size GridLayout::minSize() const
   if(rows > 0) mh += myVSpacing * (rows - 1);
 
   return Common::Size(static_cast<uInt32>(mw), static_cast<uInt32>(mh));
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+Common::Size GridLayout::naturalSize() const
+{
+  const int cols = static_cast<int>(myColumns.size());
+  const int rows = static_cast<int>(myRows.size());
+  IntArray colNat(cols, 0), rowNat(rows, 0);
+
+  // A track sized in pixels wants exactly those
+  for(int c = 0; c < cols; ++c)
+    if(myColumns[c].policy == SizePolicy::Fixed)
+      colNat[c] = myColumns[c].value;
+  for(int r = 0; r < rows; ++r)
+    if(myRows[r].policy == SizePolicy::Fixed)
+      rowNat[r] = myRows[r].value;
+
+  // A track is as large as the largest thing in it wants to be
+  for(const auto& cell: myCells)
+  {
+    const Common::Size cs = cell.layout->naturalSize();
+    if(cell.colspan == 1)
+      colNat[cell.col] = std::max(colNat[cell.col], static_cast<int>(cs.w));
+    if(cell.rowspan == 1)
+      rowNat[cell.row] = std::max(rowNat[cell.row], static_cast<int>(cs.h));
+  }
+  // A spanning cell only grows its tracks when they cannot hold it between them
+  for(const auto& cell: myCells)
+  {
+    const Common::Size cs = cell.layout->naturalSize();
+    if(cell.colspan > 1)
+      growSpan(colNat, cell.col, cell.colspan, static_cast<int>(cs.w), myHSpacing);
+    if(cell.rowspan > 1)
+      growSpan(rowNat, cell.row, cell.rowspan, static_cast<int>(cs.h), myVSpacing);
+  }
+
+  int nw = 2 * myMarginH, nh = 2 * myMarginV;
+  for(int c = 0; c < cols; ++c) nw += colNat[c];
+  for(int r = 0; r < rows; ++r) nh += rowNat[r];
+  if(cols > 0) nw += myHSpacing * (cols - 1);
+  if(rows > 0) nh += myVSpacing * (rows - 1);
+
+  return Common::Size(static_cast<uInt32>(nw), static_cast<uInt32>(nh));
 }
 
 }  // namespace GUI

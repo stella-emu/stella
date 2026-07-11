@@ -57,9 +57,16 @@ class TabPaneWidget : public Widget
 
     void setArea(int x, int y, int w, int h) override;
 
+    // The size the pane's rows add up to, asked of the layout itself
+    Common::Size naturalSize() const override;
+
   protected:
     void drawWidget(bool hilite) override;
     Widget* findWidget(int x, int y) override;
+
+  private:
+    // Build the (throwaway) layout tree for the current font
+    unique_ptr<GUI::BoxLayout> buildLayout() const;
 
   private:
     LayoutBuilder myBuilder;

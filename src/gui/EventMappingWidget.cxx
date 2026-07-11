@@ -119,8 +119,10 @@ EventMappingWidget::EventMappingWidget(GuiObject* boss, const GUI::Font& font,
 void EventMappingWidget::setArea(int x, int y, int w, int h)
 {
   using GUI::BoxLayout;
-  using GUI::labeledRow;
+  using GUI::alignedItem;
   using GUI::widgetItem;
+  using GUI::HAlign;
+  using GUI::VAlign;
   using Dir = BoxLayout::Dir;
 
   setPos(x, y);
@@ -160,16 +162,21 @@ void EventMappingWidget::setArea(int x, int y, int w, int h)
   listRow->addSpace(fontWidth);
   listRow->addFixed(std::move(buttonCol), buttonWidth);
 
+  // Selected event's label and its (read-only) key-mapping display.  The display
+  // is a multi-line box, so the two sit on its FIRST line: centering the label
+  // would drop it to the middle of a box whose lower lines are there to be used
+  auto actionRow = std::make_unique<BoxLayout>(Dir::Horizontal);
+  actionRow->addFixed(alignedItem(myActionLabel, HAlign::Left, VAlign::Baseline),
+                      myActionLabel->getWidth() + fontWidth);
+  actionRow->addStretch(alignedItem(myKeyMapping, HAlign::Fill, VAlign::Baseline));
+
   auto col = std::make_unique<BoxLayout>(Dir::Vertical, 0, HBORDER, VBORDER);
   col->addFixed(std::move(filterRow), myFilterPopup->getHeight());
   col->addSpace(VGAP * 2);
   // The actions list takes whatever height the rows around it leave over
   col->addStretch(std::move(listRow));
   col->addSpace(VGAP * 2);
-  // Selected event's label and its (read-only) key-mapping display
-  col->addFixed(labeledRow(myActionLabel, myKeyMapping,
-                           myActionLabel->getWidth() + fontWidth, 0, true),
-                myKeyMapping->getHeight());
+  col->addAuto(std::move(actionRow));
   col->doLayout(x, y, w, h);
 }
 

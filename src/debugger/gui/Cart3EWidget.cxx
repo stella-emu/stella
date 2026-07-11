@@ -104,16 +104,18 @@ void Cartridge3EWidget::layoutBankSelect(GUI::BoxLayout& col)
 {
   using GUI::BoxLayout;
   using GUI::anchoredItem;
-  using GUI::vCentered;
+  using GUI::alignedItem;
+  using GUI::HAlign;
+  using GUI::VAlign;
 
   // The ROM bank selector + label, then the RAM bank selector + label, in a row
   auto row = std::make_unique<BoxLayout>(BoxLayout::Dir::Horizontal);
   row->addFixed(anchoredItem(myBankWidgets[0]), myBankWidgets[0]->getWidth());
-  row->addFixed(vCentered(myROMTypeLabel, myROMTypeLabel->getHeight()),
+  row->addFixed(alignedItem(myROMTypeLabel, HAlign::Fill, VAlign::Center),
                 myROMTypeLabel->getWidth());
   row->addSpace(20);
   row->addFixed(anchoredItem(myBankWidgets[1]), myBankWidgets[1]->getWidth());
-  row->addFixed(vCentered(myRAMTypeLabel, myRAMTypeLabel->getHeight()),
+  row->addFixed(alignedItem(myRAMTypeLabel, HAlign::Fill, VAlign::Center),
                 myRAMTypeLabel->getWidth());
 
   col.addFixed(std::move(row), myBankWidgets[0]->getHeight());
