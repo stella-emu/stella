@@ -77,11 +77,13 @@ class TabWidget : public Widget, public CommandSender
     // simply fills the area (e.g. a list or prompt) report 0 and are ignored
     int getMaxContentHeight() const;
 
-    // The height we need for our tallest tab's content, plus the tab bar and the
+    // The size we need for our largest tab's content, plus the tab bar and the
     // content frame — so a fixed-size dialog sizes itself from the layout rather
-    // than counting the rows of its biggest tab.  Only content panes report a
-    // size; a self-contained composite (a list, the event mapper) fills whatever
-    // height it is given and so does not constrain us
+    // than counting the rows and columns of its biggest tab.  Only content panes
+    // report a size; a self-contained composite (a list, the event mapper) fills
+    // whatever it is given and so does not constrain us.  Nor does the tab BAR:
+    // a dialog too narrow for its tab titles would squeeze them, so keep a width
+    // floor if the tabs are many or their titles long
     Common::Size naturalSize() const override;
 
     void loadConfig() override;

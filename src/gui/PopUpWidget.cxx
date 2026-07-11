@@ -59,6 +59,17 @@ PopUpWidget::PopUpWidget(GuiObject* boss, const GUI::Font& font,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void PopUpWidget::setLabelWidth(int w)
+{
+  // Keep the value box the width it already has: the label column grows or
+  // shrinks and we grow or shrink with it, rather than eating into the box
+  _w += w - _labelWidth;
+  _labelWidth = w;
+  myMenu->setMaxWidth(_w - _labelWidth);
+  setDirty();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PopUpWidget::refreshFontMetrics()
 {
   Widget::refreshFontMetrics();

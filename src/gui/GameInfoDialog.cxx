@@ -94,25 +94,25 @@ GameInfoDialog::~GameInfoDialog() = default;
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void GameInfoDialog::layout()
 {
-  const GUI::Font& ifont = instance().frameBuffer().infoFont();
-  const int lineHeight   = Dialog::lineHeight(),
-            fontWidth    = Dialog::fontWidth(),
-            buttonHeight = Dialog::buttonHeight(),
+  const int buttonHeight = Dialog::buttonHeight(),
             VBORDER      = Dialog::vBorder(),
-            HBORDER      = Dialog::hBorder(),
             VGAP         = Dialog::vGap();
+  constexpr int xpos = 2;
 
-  // Size the dialog from the current font
-  _w = 56 * fontWidth + HBORDER * 2;
-  _h = _th + VGAP * 3 + lineHeight + 8 * (lineHeight + VGAP)
-       + 1 * (ifont.getLineHeight() + VGAP)
-       + ifont.getLineHeight() + VGAP * 4 + buttonHeight + VBORDER * 2;
+  // Both dimensions come from what the tabs ask for: nothing here counts rows or
+  // columns, or reasons about labels and borders.  A tab whose fields simply
+  // widen with the dialog says how much room they need where the fields are (see
+  // the cartridge grid's field column), so even that is not guessed at here
+  const Common::Size tabSize = myTab->naturalSize();
+  _w = static_cast<int>(tabSize.w) + 2 * xpos;
 
-  // Position/size the tab widget below the title bar, then recompute its tab-bar
-  // geometry for the current font/width
-  myTab->setPos(2, 4 + _th);
-  myTab->setWidth(_w - 2 * 2);
-  myTab->setHeight(_h - _th - VGAP - buttonHeight - VBORDER * 2);
+  myTab->setPos(xpos, 4 + _th);
+  myTab->setWidth(_w - 2 * xpos);
+  myTab->setHeight(static_cast<int>(tabSize.h));
+
+  _h = _th + VGAP + myTab->getHeight() + VBORDER + buttonHeight + VBORDER;
+
+  // Recompute the tab-bar geometry for the current font/width
   myTab->updateTabSizes();
 
   // Standard button group (Defaults / Export / OK / Cancel) along the bottom
@@ -148,7 +148,7 @@ void GameInfoDialog::addEmulationTab()
 
   // Start bank
   myStartBank = new PopUpWidget(pane, _font, 0, 0,
-                                _font.getStringWidth("AUTO"), lineHeight, items, "Start bank (*) ");
+                                _font.getStringWidth("AUTO"), lineHeight, items, "Start bank (*)");
   wid.push_back(myStartBank);
 
   items.clear();
@@ -160,7 +160,7 @@ void GameInfoDialog::addEmulationTab()
   VarList::push_back(items, "PAL-60", "PAL60");
   VarList::push_back(items, "SECAM-60", "SECAM60");
   myFormat = new PopUpWidget(pane, _font, 0, 0,
-                             _font.getStringWidth("Auto-detect"), lineHeight, items, "TV format      ");
+                             _font.getStringWidth("Auto-detect"), lineHeight, items, "TV format");
   myFormat->setToolTip(Event::FormatDecrease, Event::FormatIncrease);
   wid.push_back(myFormat);
 
@@ -173,13 +173,13 @@ void GameInfoDialog::addEmulationTab()
   wid.push_back(myPhosphor);
 
   myPPBlend = new SliderWidget(pane, _font, 0, 0,
-                               "Blend  ", 0, kPPBlendChanged, 4 * fontWidth, "%");
+                               "Blend", 0, kPPBlendChanged, 4 * fontWidth, "%");
   myPPBlend->setMinValue(0); myPPBlend->setMaxValue(100);
   myPPBlend->setTickmarkIntervals(2);
   myPPBlend->setToolTip(Event::PhosphorDecrease, Event::PhosphorIncrease);
   wid.push_back(myPPBlend);
 
-  myVCenter = new SliderWidget(pane, _font, 0, 0, "V-Center ",
+  myVCenter = new SliderWidget(pane, _font, 0, 0, "V-Center",
                                0, kVCenterChanged, 7 * fontWidth, "px", 0, true);
   myVCenter->setMinValue(TIAConstants::minVcenter);
   myVCenter->setMaxValue(TIAConstants::maxVcenter);
@@ -208,48 +208,56 @@ void GameInfoDialog::addEmulationTab()
     using GUI::VAlign;
     using Dir = BoxLayout::Dir;
 
-    const int lineHeight = Dialog::lineHeight(),
-              fontWidth  = Dialog::fontWidth(),
-              VGAP       = Dialog::vGap(),
-              INDENT     = Dialog::indent();
-    const int infoLineHeight = instance().frameBuffer().infoFont().getLineHeight();
+    const int fontWidth = Dialog::fontWidth(),
+              VGAP      = Dialog::vGap(),
+              INDENT    = Dialog::indent();
     const int labelIndent = myBSTypeLabel->getWidth() + fontWidth;
+
+    // These controls draw their own labels, so no layout can line their value
+    // boxes up: each group is given ONE label column instead, sized to the
+    // longest label in it.  The blend slider is indented, so its column is
+    // narrowed to match and its track still meets the V-Center one below it
+    GUI::alignLabels({{myStartBank}, {myFormat}});
+    GUI::alignLabels({{myPPBlend, INDENT}, {myVCenter}});
 
     // Bankswitch-type row: label + type popup + filter checkbox
     auto bsRow = std::make_unique<BoxLayout>(Dir::Horizontal);
-    bsRow->addFixed(anchoredItem(myBSTypeLabel), myBSTypeLabel->getWidth());
+    bsRow->addAuto(anchoredItem(myBSTypeLabel));
     bsRow->addSpace(fontWidth);
-    bsRow->addFixed(anchoredItem(myBSType), myBSType->getWidth());
+    bsRow->addAuto(anchoredItem(myBSType));
     bsRow->addSpace(fontWidth);
-    bsRow->addFixed(anchoredItem(myBSFilter), myBSFilter->getWidth());
+    bsRow->addAuto(anchoredItem(myBSFilter));
 
     // TV-format row, with the detected format beside the popup (it uses the
-    // smaller info font, so it is centered on the row rather than top-aligned)
+    // smaller info font, so it is centered on the row rather than filling it)
     auto formatRow = std::make_unique<BoxLayout>(Dir::Horizontal);
-    formatRow->addFixed(anchoredItem(myFormat), myFormat->getWidth());
+    formatRow->addAuto(anchoredItem(myFormat));
     formatRow->addSpace(fontWidth);
     formatRow->addStretch(alignedItem(myFormatDetected, HAlign::Fill, VAlign::Center));
 
-    col.addFixed(std::move(bsRow), lineHeight);
+    // Every row is as tall as what it holds, so no height is stated here: the
+    // pop-ups frame their text, and the detected-type/usage notes use the
+    // smaller info font
+    col.addAuto(std::move(bsRow));
     col.addSpace(VGAP);
     // Detected type, indented to line up under the type popup
-    col.addFixed(indentedItem(myTypeDetected, labelIndent), infoLineHeight);
+    col.addAuto(indentedItem(myTypeDetected, labelIndent));
     col.addSpace(VGAP);
-    col.addFixed(anchoredItem(myStartBank), lineHeight);
+    col.addAuto(anchoredItem(myStartBank));
     col.addSpace(VGAP * 4);
-    col.addFixed(std::move(formatRow), lineHeight);
+    col.addAuto(std::move(formatRow));
     col.addSpace(VGAP);
-    col.addFixed(anchoredItem(myPhosphor), lineHeight);
-    col.addFixed(indentedItem(myPPBlend, INDENT), lineHeight);
+    col.addAuto(anchoredItem(myPhosphor));
+    col.addAuto(indentedItem(myPPBlend, INDENT));
     col.addSpace(VGAP);
-    col.addFixed(anchoredItem(myVCenter), lineHeight);
+    col.addAuto(anchoredItem(myVCenter));
     col.addSpace(VGAP * 3);
-    col.addFixed(anchoredItem(mySound), lineHeight);
+    col.addAuto(anchoredItem(mySound));
     // Usage note along the bottom of the tab, never closer than this to the row
     // above it
     col.addSpace(VGAP * 3);
     col.addStretchSpace();
-    col.addFixed(anchoredItem(myEmulInfo), infoLineHeight);
+    col.addAuto(anchoredItem(myEmulInfo));
   });
 }
 
@@ -295,27 +303,39 @@ void GameInfoDialog::addConsoleTab()
   addToFocusList(wid, myTab, tabID);
   pane->setHelpAnchor("ConsoleProps");
 
-  // Describe the layout once; the pane runs it on every resize
+  // Describe the layout once; the pane runs it on every resize.  Each switch is
+  // a label with its two radio buttons stacked to the right of it, and the three
+  // switches line up because they share the grid's label column — which is as
+  // wide as the longest of the three labels, without anyone measuring one
   pane->setLayout([this](GUI::BoxLayout& col) {
-    using GUI::indentedItem;
-    using GUI::labeledRow;
+    using GUI::GridLayout;
+    using GUI::anchoredItem;
 
-    const int lineHeight = Dialog::lineHeight(),
-              VGAP       = Dialog::vGap();
-    const int lwidth = _font.getStringWidth(string{GUI::RIGHT_DIFFICULTY} + " ");
+    const int VGAP = Dialog::vGap();
 
-    // Each switch is a label with two radio buttons stacked to its right
-    const auto section = [&](StaticTextWidget* label,
+    enum Col: int { LABEL, OPTION, COLS };
+    enum Row: int {
+      TV_A, TV_B, GAP1, LEFT_A, LEFT_B, GAP2, RIGHT_A, RIGHT_B, ROWS
+    };
+    auto grid = std::make_unique<GridLayout>(COLS, ROWS,
+                                             Dialog::fontWidth(), 0);
+    grid->columnAuto(LABEL).columnStretch(OPTION);
+    for(const int r: {TV_A, TV_B, LEFT_A, LEFT_B, RIGHT_A, RIGHT_B})
+      grid->rowAuto(r);
+    grid->rowFixed(GAP1, VGAP * 2).rowFixed(GAP2, VGAP * 2);
+
+    const auto section = [&](int row, StaticTextWidget* label,
                              RadioButtonWidget* a, RadioButtonWidget* b) {
-      col.addFixed(labeledRow(label, a, lwidth), lineHeight);
-      col.addFixed(indentedItem(b, lwidth), lineHeight);
+      grid->place(LABEL,  row, anchoredItem(label));
+      grid->place(OPTION, row, anchoredItem(a));
+      grid->place(OPTION, row + 1, anchoredItem(b));
     };
 
-    section(myTVTypeLabel, myTVType[0], myTVType[1]);
-    col.addSpace(VGAP * 2);
-    section(myLeftDiffLabel, myLeftDiff[0], myLeftDiff[1]);
-    col.addSpace(VGAP * 2);
-    section(myRightDiffLabel, myRightDiff[0], myRightDiff[1]);
+    section(TV_A,    myTVTypeLabel,    myTVType[0],    myTVType[1]);
+    section(LEFT_A,  myLeftDiffLabel,  myLeftDiff[0],  myLeftDiff[1]);
+    section(RIGHT_A, myRightDiffLabel, myRightDiff[0], myRightDiff[1]);
+
+    col.addAuto(std::move(grid));
   });
 }
 
@@ -456,78 +476,74 @@ void GameInfoDialog::addControllersTab()
     using GUI::VAlign;
     using Dir = BoxLayout::Dir;
 
-    const int lineHeight   = Dialog::lineHeight(),
-              fontWidth    = Dialog::fontWidth(),
-              buttonHeight = Dialog::buttonHeight(),
-              VGAP         = Dialog::vGap(),
-              INDENT       = Dialog::indent();
-    const int infoLineHeight = instance().frameBuffer().infoFont().getLineHeight();
+    const int fontWidth = Dialog::fontWidth(),
+              VGAP      = Dialog::vGap(),
+              INDENT    = Dialog::indent();
 
-    // A port row is a label and the port popup, both put on the text line of the
-    // control that sits beside them (which frames its text differently)
-    const auto portRow = [&](StaticTextWidget* label, PopUpWidget* popup,
-                             const Widget* anchor) {
+    // A port row is a label and the port popup, with room for what follows them
+    const auto portRow = [&](StaticTextWidget* label, PopUpWidget* popup) {
       auto row = std::make_unique<BoxLayout>(Dir::Horizontal);
-      row->addFixed(anchoredItem(label), label->getWidth());
-      row->addFixed(anchoredItem(popup), popup->getWidth());
+      row->addAuto(anchoredItem(label));
+      row->addAuto(anchoredItem(popup));
       row->addSpace(fontWidth * 4);
       return row;
     };
 
-    auto leftRow = portRow(myLeftPortLabel, myLeftPort, mySwapPorts);
+    auto leftRow = portRow(myLeftPortLabel, myLeftPort);
     leftRow->addStretch(anchoredItem(mySwapPorts));
 
-    auto rightRow = portRow(myRightPortLabel, myRightPort, myQuadTariButton);
-    rightRow->addFixed(widgetItem(myQuadTariButton), myQuadTariButton->getWidth());
+    auto rightRow = portRow(myRightPortLabel, myRightPort);
+    rightRow->addFixed(alignedItem(myQuadTariButton, HAlign::Fill, VAlign::Center),
+                       myQuadTariButton->getWidth());
     rightRow->addStretchSpace();
 
-    // EEPROM erase button, with its label and note on the button's text line
+    // EEPROM erase button, with its label and its note beside it
     auto eepromRow = std::make_unique<BoxLayout>(Dir::Horizontal);
-    eepromRow->addFixed(anchoredItem(myEraseEEPROMLabel),
-                        myEraseEEPROMLabel->getWidth());
-    eepromRow->addFixed(widgetItem(myEraseEEPROMButton), myRightPort->getWidth());
+    eepromRow->addAuto(anchoredItem(myEraseEEPROMLabel));
+    eepromRow->addFixed(alignedItem(myEraseEEPROMButton, HAlign::Fill, VAlign::Center),
+                        myRightPort->getWidth());
     eepromRow->addSpace(fontWidth / 2);
     eepromRow->addStretch(alignedItem(myEraseEEPROMInfo, HAlign::Fill, VAlign::Center));
 
     // The paddle options and the mouse axes run as two parallel columns
     auto paddleCol = std::make_unique<BoxLayout>(Dir::Vertical);
-    paddleCol->addFixed(anchoredItem(mySwapPaddles), lineHeight);
+    paddleCol->addAuto(anchoredItem(mySwapPaddles));
     paddleCol->addSpace(VGAP);
-    paddleCol->addFixed(anchoredItem(myPaddlesCenter), lineHeight);
+    paddleCol->addAuto(anchoredItem(myPaddlesCenter));
     paddleCol->addSpace(VGAP);
-    paddleCol->addFixed(indentedItem(myPaddleXCenter, INDENT), lineHeight);
+    paddleCol->addAuto(indentedItem(myPaddleXCenter, INDENT));
     paddleCol->addSpace(VGAP);
-    paddleCol->addFixed(indentedItem(myPaddleYCenter, INDENT), lineHeight);
+    paddleCol->addAuto(indentedItem(myPaddleYCenter, INDENT));
 
     // The two axis popups are indented by the checkbox prefix, so they line up
     // under its text
     const int prefix = CheckboxWidget::prefixSize(_font);
     auto mouseCol = std::make_unique<BoxLayout>(Dir::Vertical);
-    mouseCol->addFixed(anchoredItem(myMouseControl), lineHeight);
+    mouseCol->addAuto(anchoredItem(myMouseControl));
     mouseCol->addSpace(VGAP);
-    mouseCol->addFixed(indentedItem(myMouseX, prefix), lineHeight);
+    mouseCol->addAuto(indentedItem(myMouseX, prefix));
     mouseCol->addSpace(VGAP);
-    mouseCol->addFixed(indentedItem(myMouseY, prefix), lineHeight);
+    mouseCol->addAuto(indentedItem(myMouseY, prefix));
     mouseCol->addSpace(VGAP);
-    mouseCol->addFixed(anchoredItem(myMouseRange), lineHeight);
+    mouseCol->addAuto(anchoredItem(myMouseRange));
 
     auto lowerRow = std::make_unique<BoxLayout>(Dir::Horizontal);
     lowerRow->addFixed(std::move(paddleCol), fontWidth * 24 - INDENT);
     lowerRow->addStretch(std::move(mouseCol));
 
-    col.addFixed(std::move(leftRow), lineHeight);
+    // Every row is as tall as what it holds — including the two-column block at
+    // the bottom, which is as tall as its taller column
+    col.addAuto(std::move(leftRow));
     col.addSpace(VGAP);
-    col.addFixed(indentedItem(myLeftPortDetected, myLeftPortLabel->getWidth()),
-                 infoLineHeight);
+    col.addAuto(indentedItem(myLeftPortDetected, myLeftPortLabel->getWidth()));
     col.addSpace(VGAP);
-    col.addFixed(std::move(rightRow), buttonHeight);
+    col.addAuto(std::move(rightRow));
     col.addSpace(VGAP);
-    col.addFixed(indentedItem(myRightPortDetected, myRightPortLabel->getWidth()),
-                 infoLineHeight);
-    col.addSpace(VGAP + 4);
-    col.addFixed(std::move(eepromRow), buttonHeight);
+    col.addAuto(indentedItem(myRightPortDetected, myRightPortLabel->getWidth()));
+    col.addSpace(VGAP * 2);
+    col.addAuto(std::move(eepromRow));
     col.addSpace(VGAP * 4);
-    col.addFixed(std::move(lowerRow), lineHeight * 4 + VGAP * 3);
+    col.addAuto(std::move(lowerRow));
   });
 }
 
@@ -536,9 +552,7 @@ void GameInfoDialog::addCartridgeTab()
 {
   // 4) Cartridge properties.  The tab's controls are parented to a content pane;
   // the pane lays them out (see setLayout below) whenever the tab is sized
-  const int lineHeight = Dialog::lineHeight(),
-            fontHeight = Dialog::fontHeight();
-  const int lwidth = _font.getStringWidth("Manufacturer ");
+  const int lineHeight = Dialog::lineHeight();
   const int bw = buttonWidth(">");
   WidgetArray wid;
 
@@ -546,32 +560,32 @@ void GameInfoDialog::addCartridgeTab()
   auto* pane = new TabPaneWidget(myTab, _font);
   myTab->setPaneWidget(tabID, pane);
 
-  myCartLabels[0] = new StaticTextWidget(pane, _font, 0, 0, lwidth, fontHeight, "Name");
+  myCartLabels[0] = new StaticTextWidget(pane, _font, 0, 0, "Name");
   myName = new EditTextWidget(pane, _font, 0, 0, 1, lineHeight, "");
   wid.push_back(myName);
 
-  myCartLabels[1] = new StaticTextWidget(pane, _font, 0, 0, lwidth, fontHeight, "MD5");
+  myCartLabels[1] = new StaticTextWidget(pane, _font, 0, 0, "MD5");
   myMD5 = new EditTextWidget(pane, _font, 0, 0, 1, lineHeight, "");
   myMD5->setEditable(false);
 
-  myCartLabels[2] = new StaticTextWidget(pane, _font, 0, 0, lwidth, fontHeight, "Manufacturer");
+  myCartLabels[2] = new StaticTextWidget(pane, _font, 0, 0, "Manufacturer");
   myManufacturer = new EditTextWidget(pane, _font, 0, 0, 1, lineHeight, "");
   wid.push_back(myManufacturer);
 
-  myCartLabels[3] = new StaticTextWidget(pane, _font, 0, 0, lwidth, fontHeight,
+  myCartLabels[3] = new StaticTextWidget(pane, _font, 0, 0,
                                          "Model", TextAlign::Left);
   myModelNo = new EditTextWidget(pane, _font, 0, 0, 1, lineHeight, "");
   wid.push_back(myModelNo);
 
-  myCartLabels[4] = new StaticTextWidget(pane, _font, 0, 0, lwidth, fontHeight, "Rarity");
+  myCartLabels[4] = new StaticTextWidget(pane, _font, 0, 0, "Rarity");
   myRarity = new EditTextWidget(pane, _font, 0, 0, 1, lineHeight, "");
   wid.push_back(myRarity);
 
-  myCartLabels[5] = new StaticTextWidget(pane, _font, 0, 0, lwidth, fontHeight, "Note");
+  myCartLabels[5] = new StaticTextWidget(pane, _font, 0, 0, "Note");
   myNote = new EditTextWidget(pane, _font, 0, 0, 1, lineHeight, "");
   wid.push_back(myNote);
 
-  myCartLabels[6] = new StaticTextWidget(pane, _font, 0, 0, lwidth, fontHeight, "Link");
+  myCartLabels[6] = new StaticTextWidget(pane, _font, 0, 0, "Link");
   myUrl = new EditTextWidget(pane, _font, 0, 0, 1, lineHeight, "");
   myUrl->setID(kLinkId);
   wid.push_back(myUrl);
@@ -583,7 +597,7 @@ void GameInfoDialog::addCartridgeTab()
 #ifdef IMAGE_SUPPORT
   const GUI::Font& ifont = instance().frameBuffer().infoFont();
 
-  myCartLabels[7] = new StaticTextWidget(pane, _font, 0, 0, lwidth, fontHeight, "Bezelname");
+  myCartLabels[7] = new StaticTextWidget(pane, _font, 0, 0, "Bezelname");
   myBezelName = new EditTextWidget(pane, _font, 0, 0, 1, lineHeight, "");
   myBezelName->setToolTip("Define the name of the bezel file.");
   wid.push_back(myBezelName);
@@ -601,61 +615,74 @@ void GameInfoDialog::addCartridgeTab()
   pane->setHelpAnchor("CartridgeProps");
 
   // Describe the layout once; the pane runs it on every resize
+  // The properties are a form: a label column, a field column that widens with
+  // the dialog, and a button column used by the rows that have one.  A grid says
+  // exactly that — and its label column is as wide as the longest label in it,
+  // so adding a longer one needs no change here
   pane->setLayout([this](GUI::BoxLayout& col) {
-    using GUI::BoxLayout;
+    using GUI::GridLayout;
     using GUI::anchoredItem;
-    using GUI::indentedItem;
-    using GUI::labeledRow;
-    using Dir = BoxLayout::Dir;
+    using GUI::alignedItem;
+    using GUI::HAlign;
+    using GUI::VAlign;
 
-    const int lineHeight = Dialog::lineHeight(),
-              fontWidth  = Dialog::fontWidth(),
-              VGAP       = Dialog::vGap();
-    const int lwidth = myCartLabels[0]->getWidth();
-    const int bw = buttonWidth(">");
-    const int HGAP = fontWidth / 4;
+    enum Col: int { LABEL, FIELD, BUTTON, COLS };
+    enum Row: int {
+      NAME, MD5, MANUFACTURER, MODEL, RARITY, NOTE, LINK,
+#ifdef IMAGE_SUPPORT
+      BEZEL, BEZEL_DETECTED,
+#endif
+      ROWS
+    };
+    auto grid = std::make_unique<GridLayout>(COLS, ROWS, Dialog::fontWidth(),
+                                             Dialog::vGap());
+    // The fields widen with the dialog, but they are what the dialog is FOR, so
+    // they say how much room they need — and the dialog's width follows from it
+    grid->columnAuto(LABEL)
+         .columnStretch(FIELD, 1, EditTextWidget::calcWidth(_font, 40))
+         .columnAuto(BUTTON);
+    for(int r = 0; r < ROWS; ++r)
+      grid->rowAuto(r);
 
-    // A label + edit row, with the edit leaving room for a trailing button
-    const auto buttonRow = [&](StaticTextWidget* label, EditTextWidget* edit,
-                               ButtonWidget* button) {
-      auto row = std::make_unique<BoxLayout>(Dir::Horizontal);
-      row->addStretch(labeledRow(label, edit, lwidth, 0, true));
-      row->addSpace(HGAP);
-      row->addFixed(anchoredItem(button), bw);
-      return row;
+    // A plain property row: its field takes the width the button column does not
+    const auto field = [&](int row, StaticTextWidget* label,
+                           EditTextWidget* edit) {
+      grid->place(LABEL, row, anchoredItem(label));
+      grid->place(FIELD, row, alignedItem(edit, HAlign::Fill, VAlign::Center),
+                  COLS - FIELD);
+    };
+    // ...and one whose field is followed by a browse button
+    const auto browseField = [&](int row, StaticTextWidget* label,
+                                 EditTextWidget* edit, ButtonWidget* button) {
+      grid->place(LABEL,  row, anchoredItem(label));
+      grid->place(FIELD,  row, alignedItem(edit, HAlign::Fill, VAlign::Center));
+      grid->place(BUTTON, row, anchoredItem(button));
     };
 
-    col.addFixed(labeledRow(myCartLabels[0], myName, lwidth, 0, true), lineHeight);
-    col.addSpace(VGAP);
-    col.addFixed(labeledRow(myCartLabels[1], myMD5, lwidth, 0, true), lineHeight);
-    col.addSpace(VGAP);
-    col.addFixed(labeledRow(myCartLabels[2], myManufacturer, lwidth, 0, true), lineHeight);
-    col.addSpace(VGAP);
-    col.addFixed(labeledRow(myCartLabels[3], myModelNo, lwidth, 0, true), lineHeight);
-    col.addSpace(VGAP);
-    col.addFixed(labeledRow(myCartLabels[4], myRarity, lwidth, 0, true), lineHeight);
-    col.addSpace(VGAP);
-    col.addFixed(labeledRow(myCartLabels[5], myNote, lwidth, 0, true), lineHeight);
-    col.addSpace(VGAP);
-    col.addFixed(buttonRow(myCartLabels[6], myUrl, myUrlButton), lineHeight);
+    field(NAME,         myCartLabels[0], myName);
+    field(MD5,          myCartLabels[1], myMD5);
+    field(MANUFACTURER, myCartLabels[2], myManufacturer);
+    field(MODEL,        myCartLabels[3], myModelNo);
+    field(RARITY,       myCartLabels[4], myRarity);
+    field(NOTE,         myCartLabels[5], myNote);
+    browseField(LINK,   myCartLabels[6], myUrl, myUrlButton);
 #ifdef IMAGE_SUPPORT
-    col.addSpace(VGAP);
-    col.addFixed(buttonRow(myCartLabels[7], myBezelName, myBezelButton), lineHeight);
-    col.addSpace(VGAP);
-    col.addFixed(indentedItem(myBezelDetected, lwidth),
-                 instance().frameBuffer().infoFont().getLineHeight());
+    browseField(BEZEL,  myCartLabels[7], myBezelName, myBezelButton);
+    // The detected bezel, under the field it belongs to
+    grid->place(FIELD, BEZEL_DETECTED, anchoredItem(myBezelDetected),
+                COLS - FIELD);
 #endif
+
+    col.addAuto(std::move(grid));
   });
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void GameInfoDialog::addHighScoresTab()
 {
-  // 4) High Scores properties.  Widgets are created here at placeholder positions;
-  // layoutHighScoresTab() assigns geometry from the current font.
-  const int lineHeight = Dialog::lineHeight(),
-            fontHeight = Dialog::fontHeight();
-  const int lwidth  = _font.getStringWidth("Variations ");
+  // 4) High Scores properties.  The tab's controls are parented to a content
+  // pane; the pane lays them out (see setLayout below) whenever the tab is sized
+  const int lineHeight = Dialog::lineHeight();
   const int awidth  = EditTextWidget::calcWidth(_font, 4); // addresses
   const int swidth  = EditTextWidget::calcWidth(_font, HSM::MAX_SPECIAL_NAME); // special
   const int fwidth  = EditTextWidget::calcWidth(_font, 3); // variants
@@ -680,7 +707,7 @@ void GameInfoDialog::addHighScoresTab()
                                     kHiScoresChanged);
 
   // Variations
-  myVariationsLabel = new StaticTextWidget(pane, _font, 0, 0, lwidth, fontHeight, "Variations");
+  myVariationsLabel = new StaticTextWidget(pane, _font, 0, 0, "Variations");
   myVariations = new EditTextWidget(pane, _font, 0, 0, fwidth, lineHeight);
   myVariations->setTextFilter(fVars);
   myVariations->setMaxLen(3);
@@ -790,87 +817,120 @@ void GameInfoDialog::addHighScoresTab()
   addToFocusList(wid, myTab, tabID);
   pane->setHelpAnchor("HighScoreProps");
 
-  // This tab's grid cannot be expressed as a box, so the pane runs it as a
-  // postLayout step instead of a layout builder (see layoutHighScoresTab)
-  pane->setLayout({}, [this, pane] { layoutHighScoresTab(pane->getWidth()); });
-}
+  // Describe the layout once; the pane runs it on every resize.  The rows all
+  // cross-reference each other's columns (the BCD checkboxes line up, as do the
+  // address groups), which is exactly what a grid is for: a column is as wide as
+  // the widest thing in it, and everything in it lines up by construction
+  pane->setLayout([this](GUI::BoxLayout& col) {
+    using GUI::BoxLayout;
+    using GUI::GridLayout;
+    using GUI::anchoredItem;
+    using GUI::indentedItem;
+    using GUI::alignedItem;
+    using GUI::HAlign;
+    using GUI::VAlign;
+    using Dir = BoxLayout::Dir;
 
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void GameInfoDialog::layoutHighScoresTab(int paneWidth)
-{
-  // This tab is a dense, cross-referenced grid (columns line up across rows via
-  // sibling positions), so it is positioned directly rather than via the engine.
-  // It is still fully font-sensitive: every position is recomputed here from the
-  // current font metrics and resolved sibling positions each time it is laid out.
-  const int lineHeight = Dialog::lineHeight(),
-            fontWidth  = Dialog::fontWidth(),
-            VBORDER    = Dialog::vBorder(),
-            HBORDER    = Dialog::hBorder(),
-            VGAP       = Dialog::vGap(),
-            INDENT     = Dialog::indent();
-  const int lwidth = myVariationsLabel->getWidth();
-  int xpos = HBORDER, ypos = VBORDER;
+    const int fontWidth = Dialog::fontWidth(),
+              VGAP      = Dialog::vGap(),
+              INDENT    = Dialog::indent();
+    // The gap between the groups within a row, and the tight one that ties a
+    // value field to the address it reads
+    const int GAP = fontWidth * 2, TIE = fontWidth / 4;
 
-  myHighScores->setPos(xpos, ypos + 1);
-  xpos += CheckboxWidget::prefixSize(_font);
-  ypos += lineHeight + VGAP * 2;
+    // An address group: its label, the address, and the value read from it
+    const auto addrGroup = [&](StaticTextWidget* label, EditTextWidget* addr,
+                               EditTextWidget* val) {
+      auto row = std::make_unique<BoxLayout>(Dir::Horizontal);
+      row->addSpace(GAP);
+      row->addAuto(anchoredItem(label));
+      row->addAuto(anchoredItem(addr));
+      row->addSpace(TIE);
+      row->addAuto(anchoredItem(val));
+      return row;
+    };
 
-  // Variations row
-  myVariationsLabel->setPos(xpos, ypos + 1);
-  myVariations->setPos(xpos + lwidth, ypos - 1);
-  myVarAddressLabel->setPos(myVariations->getRight() + fontWidth * 2, ypos + 1);
-  myVarAddress->setPos(myVarAddressLabel->getRight(), ypos - 1);
-  myVarAddressVal->setPos(myVarAddress->getRight() + 2, ypos - 1);
-  myVarsBCD->setPos(myVarAddressVal->getRight() + fontWidth * 2, ypos + 1);
-  myVarsZeroBased->setPos(myVarsBCD->getRight() + fontWidth * 2, ypos + 1);
-  ypos += lineHeight + VGAP * 3;
+    // Columns: row label | value | address group | BCD | trailing option.
+    // Rows alternate content and the gaps between them, so each gap is stated
+    // where it falls rather than being one uniform spacing
+    enum Col: int { LABEL, VALUE, ADDR, BCD, OPT, COLS };
+    enum Row: int {
+      VARS, GAP1, SCORE, GAP2, DIGITS, GAP3, ADDRS, GAP4, CURRENT, GAP5,
+      SPECIAL, GAP6, NOTE, ROWS
+    };
+    auto grid = std::make_unique<GridLayout>(COLS, ROWS);
 
-  // Score group header
-  myScoreLabel->setPos(xpos, ypos + 1);
-  xpos += INDENT;
-  ypos += lineHeight + VGAP;
+    for(const int c: {LABEL, VALUE, ADDR, BCD})
+      grid->columnAuto(c);
+    grid->columnStretch(OPT);
 
-  // Digits row
-  myScoreDigitsLabel->setPos(xpos, ypos + 1);
-  myScoreDigits->setPos(myScoreDigitsLabel->getRight(), ypos);
-  myTrailingZeroesLabel->setPos(myScoreDigits->getRight() + 30, ypos + 1);
-  myTrailingZeroes->setPos(myTrailingZeroesLabel->getRight(), ypos);
-  myScoreBCD->setPos(myVarsBCD->getLeft(), ypos + 1);
-  myScoreInvert->setPos(myScoreBCD->getRight() + fontWidth * 2, ypos + 1);
-  ypos += lineHeight + VGAP;
+    for(const int r: {VARS, SCORE, DIGITS, ADDRS, CURRENT, SPECIAL, NOTE})
+      grid->rowAuto(r);
+    grid->rowFixed(GAP1, VGAP * 3).rowFixed(GAP2, VGAP).rowFixed(GAP3, VGAP)
+         .rowFixed(GAP4, VGAP).rowFixed(GAP5, VGAP * 3).rowFixed(GAP6, VGAP * 3);
 
-  // Score addresses row
-  myScoreAddressesLabel->setPos(xpos, ypos + 1);
-  int s_xpos = xpos + myScoreAddressesLabel->getWidth();
-  for(uInt32 a = 0; a < HSM::MAX_SCORE_ADDR; ++a)
-  {
-    myScoreAddress[a]->setPos(s_xpos, ypos - 1);
-    s_xpos += myScoreAddress[a]->getWidth() + 2;
-    myScoreAddressVal[a]->setPos(myScoreAddress[a]->getRight() + 2, ypos - 1);
-    s_xpos += myScoreAddressVal[a]->getWidth() + 16;
-  }
-  ypos += lineHeight + VGAP;
+    // Variations
+    grid->place(LABEL, VARS, anchoredItem(myVariationsLabel));
+    grid->place(VALUE, VARS, anchoredItem(myVariations));
+    grid->place(ADDR,  VARS, addrGroup(myVarAddressLabel, myVarAddress,
+                                       myVarAddressVal));
+    grid->place(BCD,   VARS, indentedItem(myVarsBCD, GAP));
+    grid->place(OPT,   VARS, indentedItem(myVarsZeroBased, GAP));
 
-  // Current score row
-  myCurrentScoreLabel->setPos(xpos, ypos + 1);
-  myCurrentScore->setPos(myCurrentScoreLabel->getRight(), ypos + 1);
-  xpos -= INDENT;
-  ypos += lineHeight + VGAP * 3;
+    // Score, whose three rows are indented under their heading
+    grid->place(LABEL, SCORE, anchoredItem(myScoreLabel));
 
-  // Special row
-  mySpecialLabel->setPos(xpos, ypos + 1);
-  mySpecialName->setPos(mySpecialLabel->getRight() + fontWidth, ypos - 1);
-  mySpecialAddressLabel->setPos(myVarAddressLabel->getLeft(), ypos + 1);
-  mySpecialAddress->setPos(mySpecialAddressLabel->getRight(), ypos - 1);
-  mySpecialAddressVal->setPos(mySpecialAddress->getRight() + 2, ypos - 1);
-  mySpecialBCD->setPos(myVarsBCD->getLeft(), ypos + 1);
-  mySpecialZeroBased->setPos(mySpecialBCD->getRight() + fontWidth * 2, ypos + 1);
-  ypos += lineHeight + VGAP * 3;
+    auto zeroesGroup = std::make_unique<BoxLayout>(Dir::Horizontal);
+    zeroesGroup->addSpace(GAP);
+    zeroesGroup->addAuto(anchoredItem(myTrailingZeroesLabel));
+    zeroesGroup->addAuto(anchoredItem(myTrailingZeroes));
 
-  // Note row (edit fills the remaining width)
-  myHighScoreNotesLabel->setPos(xpos, ypos + 1);
-  myHighScoreNotes->setPos(mySpecialName->getLeft(), ypos - 1);
-  myHighScoreNotes->setWidth(paneWidth - HBORDER - mySpecialName->getLeft());
+    grid->place(LABEL, DIGITS, indentedItem(myScoreDigitsLabel, INDENT));
+    grid->place(VALUE, DIGITS, anchoredItem(myScoreDigits));
+    grid->place(ADDR,  DIGITS, std::move(zeroesGroup));
+    grid->place(BCD,   DIGITS, indentedItem(myScoreBCD, GAP));
+    grid->place(OPT,   DIGITS, indentedItem(myScoreInvert, GAP));
+
+    // The score addresses run past the columns above them, so they span the rest
+    auto scoreAddrs = std::make_unique<BoxLayout>(Dir::Horizontal);
+    for(uInt32 a = 0; a < HSM::MAX_SCORE_ADDR; ++a)
+    {
+      scoreAddrs->addAuto(anchoredItem(myScoreAddress[a]));
+      scoreAddrs->addSpace(TIE);
+      scoreAddrs->addAuto(anchoredItem(myScoreAddressVal[a]));
+      scoreAddrs->addSpace(GAP);
+    }
+    scoreAddrs->addStretchSpace();
+
+    grid->place(LABEL, ADDRS, indentedItem(myScoreAddressesLabel, INDENT));
+    grid->place(VALUE, ADDRS, std::move(scoreAddrs), COLS - VALUE);
+
+    grid->place(LABEL, CURRENT, indentedItem(myCurrentScoreLabel, INDENT));
+    grid->place(VALUE, CURRENT, anchoredItem(myCurrentScore), COLS - VALUE);
+
+    // Special
+    grid->place(LABEL, SPECIAL, anchoredItem(mySpecialLabel));
+    grid->place(VALUE, SPECIAL, anchoredItem(mySpecialName));
+    grid->place(ADDR,  SPECIAL, addrGroup(mySpecialAddressLabel, mySpecialAddress,
+                                          mySpecialAddressVal));
+    grid->place(BCD,   SPECIAL, indentedItem(mySpecialBCD, GAP));
+    grid->place(OPT,   SPECIAL, indentedItem(mySpecialZeroBased, GAP));
+
+    // Note, whose field takes all the width the other columns leave
+    grid->place(LABEL, NOTE, anchoredItem(myHighScoreNotesLabel));
+    grid->place(VALUE, NOTE,
+                alignedItem(myHighScoreNotes, HAlign::Fill, VAlign::Center),
+                COLS - VALUE);
+
+    // Everything below the enable checkbox lines up under its label
+    auto gridRow = std::make_unique<BoxLayout>(Dir::Horizontal);
+    gridRow->addSpace(CheckboxWidget::prefixSize(_font));
+    gridRow->addStretch(std::move(grid));
+
+    col.addAuto(anchoredItem(myHighScores));
+    col.addSpace(VGAP * 2);
+    col.addAuto(std::move(gridRow));
+  });
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -75,6 +75,12 @@ class PopUpWidget : public EditableWidget
     void handleMouseWheel(int x, int y, int direction) override;
     bool handleEvent(Event::Type e) override;
 
+    int naturalLabelWidth() const override {
+      return _label.empty() ? 0 : _font.getStringWidth(_label);
+    }
+    int labelWidth() const override { return _labelWidth; }
+    void setLabelWidth(int w) override;
+
     void refreshFontMetrics() override;
 
   protected:

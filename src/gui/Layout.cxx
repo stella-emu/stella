@@ -23,7 +23,20 @@ namespace GUI {
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Common::Size WidgetLayout::naturalSize() const
 {
-  return myWidget != nullptr ? myWidget->naturalSize() : Common::Size{};
+  if(myWidget == nullptr)
+    return {};
+
+  // An axis the widget FILLS has no size of its own: the cell decides it.  The
+  // widget's extent along that axis is merely what the last layout gave it, and
+  // reporting that would feed back — a field would drive the width of the column
+  // that is supposed to be sizing the field.  What it CAN say is how small it is
+  // prepared to be, and that is what it wants when nothing else is pushing: so a
+  // filled axis reports the minimum the dialog declared for it, if any.  This is
+  // how a dialog whose fields simply stretch still has a width of its own
+  const Common::Size natural = myWidget->naturalSize();
+
+  return Common::Size(myHAlign == HAlign::Fill ? std::max(myMinW, 0) : natural.w,
+                      myVAlign == VAlign::Fill ? std::max(myMinH, 0) : natural.h);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -96,7 +109,8 @@ void BoxLayout::doLayout(int x, int y, int w, int h)
   const int mainLen = (horiz ? cw : ch) - mySpacing * (n - 1);
   const int crossLen = horiz ? ch : cw;
 
-  // First pass: fixed and percentage sizes (and tally stretch weights)
+  // First pass: the sizes that do not depend on what is left over (and tally the
+  // stretch weights)
   IntArray ext(n, 0);
   int used = 0, totalWeight = 0;
   for(int i = 0; i < n; ++i)
@@ -104,6 +118,12 @@ void BoxLayout::doLayout(int x, int y, int w, int h)
     const Item& it = myItems[i];
     switch(it.policy)
     {
+      case SizePolicy::Auto:
+      {
+        const Common::Size natural = it.layout->naturalSize();
+        ext[i] = static_cast<int>(horiz ? natural.w : natural.h);
+        break;
+      }
       case SizePolicy::Fixed:
         ext[i] = it.value;
         break;
@@ -218,6 +238,16 @@ Common::Size BoxLayout::minSize() const
       childMain = std::max(childMain, it.minMain > 0 ? it.minMain : it.value);
     else if(it.policy == SizePolicy::Stretch)
       childMain = std::max(childMain, it.minMain);
+    else if(it.policy == SizePolicy::Auto)
+    {
+      // A cell sized by its content cannot be squeezed below it (a row of
+      // controls does not get shorter than the controls).  Note this is the
+      // only place the two queries meet: content that CAN be squeezed — a list,
+      // an image — stretches instead, and keeps a small minSize of its own
+      const Common::Size natural = it.layout->naturalSize();
+      childMain = std::max(childMain,
+                           static_cast<int>(horiz ? natural.w : natural.h));
+    }
     mainMin += childMain;
     crossMin = std::max(crossMin, childCross);
   }
@@ -232,6 +262,22 @@ Common::Size BoxLayout::minSize() const
                    static_cast<uInt32>(crossMin + hMargin))
     : Common::Size(static_cast<uInt32>(crossMin + wMargin),
                    static_cast<uInt32>(mainMin + hMargin));
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void alignLabels(std::initializer_list<LabeledControl> controls)
+{
+  // The column has to hold the longest label, and an indented control's label
+  // starts that much further in
+  int width = 0;
+  for(const auto& c: controls)
+    width = std::max(width, c.control->naturalLabelWidth()
+                            + c.control->font().getMaxCharWidth() + c.indent);
+
+  // Each control's column ends at the same place, so the tracks beside them
+  // start there too
+  for(const auto& c: controls)
+    c.control->setLabelWidth(width - c.indent);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -271,18 +317,20 @@ GridLayout::GridLayout(int cols, int rows, int hSpacing, int vSpacing,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-GridLayout& GridLayout::column(int idx, SizePolicy policy, int value, int maxSize)
+GridLayout& GridLayout::column(int idx, SizePolicy policy, int value, int maxSize,
+                               int minSize)
 {
   assert(idx >= 0 && std::cmp_less(idx, myColumns.size()));
-  myColumns[idx] = Track{policy, value, maxSize};
+  myColumns[idx] = Track{policy, value, maxSize, minSize};
   return *this;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-GridLayout& GridLayout::row(int idx, SizePolicy policy, int value, int maxSize)
+GridLayout& GridLayout::row(int idx, SizePolicy policy, int value, int maxSize,
+                            int minSize)
 {
   assert(idx >= 0 && std::cmp_less(idx, myRows.size()));
-  myRows[idx] = Track{policy, value, maxSize};
+  myRows[idx] = Track{policy, value, maxSize, minSize};
   return *this;
 }
 
@@ -298,18 +346,63 @@ GridLayout& GridLayout::place(int col, int row, unique_ptr<Layout> child,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void GridLayout::trackNaturals(bool horiz, IntArray& naturals) const
+{
+  const auto& tracks = horiz ? myColumns : myRows;
+  naturals.assign(tracks.size(), 0);
+
+  // A track is as large as the largest thing in it wants to be...
+  for(const auto& cell: myCells)
+  {
+    const Common::Size cs = cell.layout->naturalSize();
+    const int idx  = horiz ? cell.col : cell.row;
+    const int span = horiz ? cell.colspan : cell.rowspan;
+    if(span == 1)
+      naturals[idx] = std::max(naturals[idx], static_cast<int>(horiz ? cs.w : cs.h));
+  }
+  // ...and a spanning cell only grows its tracks when they cannot hold it
+  // between them — and then only if none of them is flexible.  A flexible track
+  // takes up the leftover anyway, so growing the content-sized tracks instead
+  // would size a track by something that merely LIES ACROSS it: the wide
+  // detected-bezel note, spanning the field and button columns, would make the
+  // button column as wide as itself
+  for(const auto& cell: myCells)
+  {
+    const int idx  = horiz ? cell.col : cell.row;
+    const int span = horiz ? cell.colspan : cell.rowspan;
+    if(span <= 1)
+      continue;
+
+    const bool flexible = std::any_of(tracks.begin() + idx,
+      tracks.begin() + idx + span, [](const Track& t) {
+        return t.policy == SizePolicy::Stretch || t.policy == SizePolicy::Percent;
+      });
+    if(flexible)
+      continue;
+
+    const Common::Size cs = cell.layout->naturalSize();
+    growSpan(naturals, idx, span, static_cast<int>(horiz ? cs.w : cs.h),
+             horiz ? myHSpacing : myVSpacing);
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void GridLayout::resolveTracks(const vector<Track>& tracks, int avail,
-                               IntArray& ext)
+                               const IntArray& naturals, IntArray& ext)
 {
   const int n = static_cast<int>(tracks.size());
   ext.assign(n, 0);
 
-  // First pass: fixed and percentage tracks (and tally stretch weights)
+  // First pass: the tracks that do not depend on what is left over (and tally
+  // the stretch weights)
   int used = 0, totalWeight = 0;
   for(int i = 0; i < n; ++i)
   {
     switch(tracks[i].policy)
     {
+      case SizePolicy::Auto:
+        ext[i] = naturals[i];
+        break;
       case SizePolicy::Fixed:
         ext[i] = tracks[i].value;
         break;
@@ -318,6 +411,9 @@ void GridLayout::resolveTracks(const vector<Track>& tracks, int avail,
         break;
       case SizePolicy::Stretch:
         totalWeight += tracks[i].value;
+        // A stretch track is never smaller than its base size, so that is spoken
+        // for before any leftover is shared out
+        used += tracks[i].minSize;
         continue;  // sized in the second pass
     }
     if(tracks[i].maxSize > 0)
@@ -325,18 +421,20 @@ void GridLayout::resolveTracks(const vector<Track>& tracks, int avail,
     used += ext[i];
   }
 
-  // Second pass: stretch tracks share the remaining length by weight
+  // Second pass: stretch tracks take their base size, then share what is left
+  // over by weight
   const int remaining = std::max(avail - used, 0);
   int distributed = 0, lastStretch = -1;
   for(int i = 0; i < n; ++i)
   {
     if(tracks[i].policy != SizePolicy::Stretch)
       continue;
-    int e = totalWeight > 0 ? remaining * tracks[i].value / totalWeight : 0;
+    int e = tracks[i].minSize
+          + (totalWeight > 0 ? remaining * tracks[i].value / totalWeight : 0);
     if(tracks[i].maxSize > 0)
       e = std::min(e, tracks[i].maxSize);
     ext[i] = e;
-    distributed += e;
+    distributed += e - tracks[i].minSize;
     lastStretch = i;
   }
   // Hand any rounding leftover to the last stretch track
@@ -378,9 +476,11 @@ void GridLayout::doLayout(int x, int y, int w, int h)
   const int availW = (w - 2 * myMarginH) - myHSpacing * std::max(cols - 1, 0);
   const int availH = (h - 2 * myMarginV) - myVSpacing * std::max(rows - 1, 0);
 
-  IntArray colExt, rowExt;
-  resolveTracks(myColumns, availW, colExt);
-  resolveTracks(myRows, availH, rowExt);
+  IntArray colNat, rowNat, colExt, rowExt;
+  trackNaturals(true, colNat);
+  trackNaturals(false, rowNat);
+  resolveTracks(myColumns, availW, colNat, colExt);
+  resolveTracks(myRows, availH, rowNat, rowExt);
 
   // Start offset of each column and row
   IntArray colPos(cols, 0), rowPos(rows, 0);
@@ -407,15 +507,27 @@ Common::Size GridLayout::minSize() const
 {
   const int cols = static_cast<int>(myColumns.size());
   const int rows = static_cast<int>(myRows.size());
-  IntArray colMin(cols, 0), rowMin(rows, 0);
+  IntArray colMin(cols, 0), rowMin(rows, 0), colNat, rowNat;
 
-  // A track can never be smaller than its own fixed size
+  trackNaturals(true, colNat);
+  trackNaturals(false, rowNat);
+
+  // A track can never be smaller than its own fixed size, nor one sized by its
+  // content smaller than that content, nor a stretching one than its base
   for(int c = 0; c < cols; ++c)
     if(myColumns[c].policy == SizePolicy::Fixed)
       colMin[c] = myColumns[c].value;
+    else if(myColumns[c].policy == SizePolicy::Auto)
+      colMin[c] = colNat[c];
+    else if(myColumns[c].policy == SizePolicy::Stretch)
+      colMin[c] = myColumns[c].minSize;
   for(int r = 0; r < rows; ++r)
     if(myRows[r].policy == SizePolicy::Fixed)
       rowMin[r] = myRows[r].value;
+    else if(myRows[r].policy == SizePolicy::Auto)
+      rowMin[r] = rowNat[r];
+    else if(myRows[r].policy == SizePolicy::Stretch)
+      rowMin[r] = myRows[r].minSize;
 
   // Non-spanning cells constrain their own column/row directly
   for(const auto& cell: myCells)
@@ -450,34 +562,24 @@ Common::Size GridLayout::naturalSize() const
 {
   const int cols = static_cast<int>(myColumns.size());
   const int rows = static_cast<int>(myRows.size());
-  IntArray colNat(cols, 0), rowNat(rows, 0);
+  IntArray colNat, rowNat;
 
-  // A track sized in pixels wants exactly those
+  trackNaturals(true, colNat);
+  trackNaturals(false, rowNat);
+
+  // A track sized in pixels wants exactly those, whatever is placed in it; a
+  // stretching one wants at least the base it was given (its content — a field,
+  // a list — has no width of its own to ask for)
   for(int c = 0; c < cols; ++c)
     if(myColumns[c].policy == SizePolicy::Fixed)
       colNat[c] = myColumns[c].value;
+    else if(myColumns[c].policy == SizePolicy::Stretch)
+      colNat[c] = std::max(colNat[c], myColumns[c].minSize);
   for(int r = 0; r < rows; ++r)
     if(myRows[r].policy == SizePolicy::Fixed)
       rowNat[r] = myRows[r].value;
-
-  // A track is as large as the largest thing in it wants to be
-  for(const auto& cell: myCells)
-  {
-    const Common::Size cs = cell.layout->naturalSize();
-    if(cell.colspan == 1)
-      colNat[cell.col] = std::max(colNat[cell.col], static_cast<int>(cs.w));
-    if(cell.rowspan == 1)
-      rowNat[cell.row] = std::max(rowNat[cell.row], static_cast<int>(cs.h));
-  }
-  // A spanning cell only grows its tracks when they cannot hold it between them
-  for(const auto& cell: myCells)
-  {
-    const Common::Size cs = cell.layout->naturalSize();
-    if(cell.colspan > 1)
-      growSpan(colNat, cell.col, cell.colspan, static_cast<int>(cs.w), myHSpacing);
-    if(cell.rowspan > 1)
-      growSpan(rowNat, cell.row, cell.rowspan, static_cast<int>(cs.h), myVSpacing);
-  }
+    else if(myRows[r].policy == SizePolicy::Stretch)
+      rowNat[r] = std::max(rowNat[r], myRows[r].minSize);
 
   int nw = 2 * myMarginH, nh = 2 * myMarginV;
   for(int c = 0; c < cols; ++c) nw += colNat[c];

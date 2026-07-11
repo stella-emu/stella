@@ -135,6 +135,22 @@ class Widget : public GuiObject
     }
 
     /**
+      A self-labeling control (SliderWidget, PopUpWidget) draws its own label in
+      a column to the left of its track/value box.  That column is inside the
+      widget, so no layout can line one up with another's: instead a group of
+      them is given ONE column, sized to the longest of their labels, by
+      GUI::alignLabels() — which is what these three are for.  Everything else
+      has no label of its own and reports nothing.
+
+      naturalLabelWidth() is what my own label needs; labelWidth() is what I have
+      been given; setLabelWidth() re-partitions me, keeping my track the width it
+      already was.
+    */
+    virtual int naturalLabelWidth() const { return 0; }
+    virtual int labelWidth() const { return 0; }
+    virtual void setLabelWidth(int w) { }
+
+    /**
       The vertical offset, from the widget's top edge, at which the widget draws
       its first line of text.  A widget centers its text within its own height,
       so the default serves all the single-line controls, and two of them sharing
@@ -487,6 +503,12 @@ class SliderWidget : public ButtonWidget
     void handleMouseUp(int x, int y, MouseButton b, int clickCount) override;
     void handleMouseWheel(int x, int y, int direction) override;
     bool handleEvent(Event::Type event) override;
+
+    int naturalLabelWidth() const override {
+      return _label.empty() ? 0 : _font.getStringWidth(_label);
+    }
+    int labelWidth() const override { return _labelWidth; }
+    void setLabelWidth(int w) override;
 
   protected:
     void drawWidget(bool hilite) override;

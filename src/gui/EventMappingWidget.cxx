@@ -116,6 +116,23 @@ EventMappingWidget::EventMappingWidget(GuiObject* boss, const GUI::Font& font,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+Common::Size EventMappingWidget::naturalSize() const
+{
+  // The actions list is what needs the room — it shows an event's description —
+  // and everything else here is sized from it: the buttons stand beside it, the
+  // filter pop-up above it, the mapping field below.  So what this tab asks for
+  // is the list's width plus that button column, and it is what makes the input
+  // settings as wide as they are.
+  // The height is whatever it is given: the list takes up the slack (see
+  // setArea), so there is no height of our own to report
+  const int fontWidth   = dialog().fontWidth(),
+            buttonWidth = dialog().buttonWidth("Defaults"),
+            HBORDER     = dialog().hBorder();
+
+  return Common::Size(HBORDER * 2 + listWidth() + fontWidth + buttonWidth, 0);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventMappingWidget::setArea(int x, int y, int w, int h)
 {
   using GUI::BoxLayout;
@@ -135,12 +152,13 @@ void EventMappingWidget::setArea(int x, int y, int w, int h)
             VBORDER      = dialog().vBorder(),
             HBORDER      = dialog().hBorder(),
             VGAP         = dialog().vGap();
-  const int listWidth = w - buttonWidth - HBORDER * 2 - fontWidth;
+  // The width the list actually gets: what is left beside the button column
+  const int listArea = w - buttonWidth - HBORDER * 2 - fontWidth;
 
   // Event-group filter popup, above the actions list
   auto filterRow = std::make_unique<BoxLayout>(Dir::Horizontal);
   filterRow->addFixed(widgetItem(myFilterPopup),
-                      listWidth - _font.getStringWidth("Events ")
+                      listArea - _font.getStringWidth("Events ")
                         - PopUpWidget::dropDownWidth(_font));
   filterRow->addStretchSpace();
 
@@ -157,8 +175,10 @@ void EventMappingWidget::setArea(int x, int y, int w, int h)
   buttonCol->addFixed(widgetItem(myComboButton), buttonHeight);
   buttonCol->addStretchSpace();
 
+  // The list widens with the dialog, but it says how narrow it may be — which is
+  // what the dialog's own width is derived from (see naturalSize)
   auto listRow = std::make_unique<BoxLayout>(Dir::Horizontal);
-  listRow->addStretch(widgetItem(myActionsList));
+  listRow->addStretch(widgetItem(myActionsList, listWidth()));
   listRow->addSpace(fontWidth);
   listRow->addFixed(std::move(buttonCol), buttonWidth);
 

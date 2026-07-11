@@ -40,6 +40,31 @@ The layout engine solves all three with **one** rule:
 Window resize and font change (including live re-font) then all funnel through
 the same `layout()` call. You write the geometry once.
 
+And it aims at **one goal**, which is worth stating before any of the API:
+
+> **Layout code describes *intent*. The pixel positions are details, and they are
+> deliberately hidden from you at this level.**
+
+So a pixel computation in a dialog is a smell, and almost always means some
+knowledge belongs one level down — in the engine, or in the widget itself:
+
+| you were about to write | say this instead |
+| ----------------------- | ---------------- |
+| a row height (`lineHeight`, `buttonHeight`) | `addAuto` — the widget knows its own size |
+| a dialog's height, summed over its rows | ask the layout: `naturalSize()` |
+| `+2` to line up some text | nothing — widgets centre their own text (`firstTextY`) |
+| a column that matches a sibling's `x` | a shared `GridLayout` track (`columnAuto`) |
+| arithmetic keeping two groups in step | a stretch that absorbs the slack |
+
+`addFixed` is still right where the number is genuinely the *dialog's* decision —
+a width shared by a group of buttons, a minimum width for the whole dialog. The
+test is simply: **whose choice is this number?** If it is the widget's or the
+font's, do not write it down.
+
+If the engine cannot express your intent, **extend the engine** rather than
+working around it in the dialog. `VAlign::Baseline`, `addAuto` and
+`SizePolicy::Auto` all arrived exactly that way.
+
 ---
 
 ## The pattern in one picture

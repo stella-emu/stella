@@ -160,13 +160,19 @@ class WidgetLayout : public Layout
 /**
   How a BoxLayout child (along the main axis) or a GridLayout track is sized:
 
+    Auto     as large as its content wants to be (Widget::naturalSize)
     Fixed    a fixed number of pixels (usually font-derived)
     Percent  a percentage (0..100) of the available length
     Stretch  shares the leftover length in proportion to a weight
 
+  Auto is the one to reach for: a row is then as tall as its tallest widget and a
+  column as wide as its widest, and the dialog states no pixel size at all.  Use
+  Fixed only where the size is genuinely the dialog's choice (a shared button
+  width), and Stretch for content with no size of its own (a list, an image).
+
   An optional maximum clamps the resulting size.
 */
-enum class SizePolicy: uInt8 { Fixed, Percent, Stretch };
+enum class SizePolicy: uInt8 { Auto, Fixed, Percent, Stretch };
 
 /**
   Stacks its children along one axis (horizontal or vertical).  Each child is
@@ -209,12 +215,8 @@ class BoxLayout : public Layout
     // that frames its text, and it follows the font by construction.
     // Not for a widget that has no meaningful size of its own along the main
     // axis (a list, an image): stretch those.
-    BoxLayout& addAuto(unique_ptr<Layout> child, int minPx = 0) {
-      const Common::Size natural = child->naturalSize();
-      const int px = static_cast<int>(myDir == Dir::Horizontal
-                                      ? natural.w : natural.h);
-      return add(std::move(child), SizePolicy::Fixed, px, 0, minPx);
-    }
+    BoxLayout& addAuto(unique_ptr<Layout> child, int minPx = 0)
+      { return add(std::move(child), SizePolicy::Auto, 0, 0, minPx); }
 
     // A fixed empty gap
     BoxLayout& addSpace(int px)
@@ -272,22 +274,34 @@ class GridLayout : public Layout
     // Define a column's / row's sizing policy.
     // value: Fixed -> pixels, Percent -> 0..100, Stretch -> weight.
     // maxSize: optional clamp on the resolved track size (0 = unbounded).
-    GridLayout& column(int idx, SizePolicy policy, int value, int maxSize = 0);
-    GridLayout& row(int idx, SizePolicy policy, int value, int maxSize = 0);
+    // minSize: a Stretch track's BASE size — what it gets before the leftover is
+    //          shared out.  A stretching column of fields has no size of its own,
+    //          so this is where a dialog says how much room they need, and it is
+    //          what lets the dialog's own width be derived rather than guessed.
+    GridLayout& column(int idx, SizePolicy policy, int value, int maxSize = 0,
+                       int minSize = 0);
+    GridLayout& row(int idx, SizePolicy policy, int value, int maxSize = 0,
+                    int minSize = 0);
 
-    // Convenience wrappers
+    // Convenience wrappers.  An Auto track is as large as the largest thing
+    // placed in it wants to be — the counterpart of BoxLayout::addAuto(), and
+    // what makes a form's label column line up without anyone measuring labels
+    GridLayout& columnAuto(int idx)
+      { return column(idx, SizePolicy::Auto, 0); }
     GridLayout& columnFixed(int idx, int px)
       { return column(idx, SizePolicy::Fixed, px); }
     GridLayout& columnPercent(int idx, int pct, int maxSize = 0)
       { return column(idx, SizePolicy::Percent, pct, maxSize); }
-    GridLayout& columnStretch(int idx, int weight = 1)
-      { return column(idx, SizePolicy::Stretch, weight); }
+    GridLayout& columnStretch(int idx, int weight = 1, int minPx = 0)
+      { return column(idx, SizePolicy::Stretch, weight, 0, minPx); }
+    GridLayout& rowAuto(int idx)
+      { return row(idx, SizePolicy::Auto, 0); }
     GridLayout& rowFixed(int idx, int px)
       { return row(idx, SizePolicy::Fixed, px); }
     GridLayout& rowPercent(int idx, int pct, int maxSize = 0)
       { return row(idx, SizePolicy::Percent, pct, maxSize); }
-    GridLayout& rowStretch(int idx, int weight = 1)
-      { return row(idx, SizePolicy::Stretch, weight); }
+    GridLayout& rowStretch(int idx, int weight = 1, int minPx = 0)
+      { return row(idx, SizePolicy::Stretch, weight, 0, minPx); }
 
     // Place a child in the cell at (col, row), optionally spanning cells.
     GridLayout& place(int col, int row, unique_ptr<Layout> child,
@@ -303,6 +317,7 @@ class GridLayout : public Layout
       SizePolicy policy{SizePolicy::Fixed};
       int value{0};
       int maxSize{0};
+      int minSize{0};
     };
     struct Cell {
       unique_ptr<Layout> layout;
@@ -311,9 +326,13 @@ class GridLayout : public Layout
     };
 
     // Resolve one axis' track sizes into 'ext', given the length available to
-    // the tracks (i.e. after the inter-track spacing has been removed).
+    // the tracks (i.e. after the inter-track spacing has been removed) and what
+    // each track's content wants to be (which sizes the Auto tracks).
     static void resolveTracks(const vector<Track>& tracks, int avail,
-                              IntArray& ext);
+                              const IntArray& naturals, IntArray& ext);
+
+    // What each track's content wants to be, along the given axis
+    void trackNaturals(bool horiz, IntArray& naturals) const;
     // Grow the 'span' tracks starting at 'start' so their combined size (plus
     // the spacing they subsume) can hold 'need' pixels of content.
     static void growSpan(IntArray& mins, int start, int span, int need,
@@ -373,6 +392,30 @@ anchoredItem(Widget* widget, int minW = 0, int minH = 0)
 // (e.g. the checkboxes below a "When saving:" label in the option dialogs).
 // An indent is spacing, not alignment, hence a composition rather than a flag.
 unique_ptr<Layout> indentedItem(Widget* widget, int indent, int minW = 0);
+
+// A self-labeling control, plus any indent the layout gives the row it sits in.
+struct LabeledControl {
+  Widget* control{nullptr};
+  int indent{0};
+};
+
+// Give a group of self-labeling controls (SliderWidget, PopUpWidget — they draw
+// their own label, see Widget::naturalLabelWidth) ONE label column, as wide as
+// the longest of their labels plus a character of clearance.  Their tracks and
+// value boxes then line up down the group, and a control the layout indents says
+// so, so its column is narrowed to match and the tracks still meet.
+//
+// This is the width counterpart of BoxLayout::addAuto(): no one names a label in
+// a string literal to measure it, and adding a longer label simply widens the
+// column.  Call it from the layout (a pane's builder), so it follows the font.
+//
+// ⚠ The clearance comes from HERE.  A self-labeling control left out of a group
+// derives its own column from its label text alone, so its box sits flush
+// against it — which is why some labels still carry a trailing space to fake the
+// gap ("Rate ", "X "). Put such a control in a group of its own rather than
+// padding its label: the padding is alignment hidden in a string, and it breaks
+// silently when the label is reworded.
+void alignLabels(std::initializer_list<LabeledControl> controls);
 
 // A horizontal form row pairing a separate label with a control: the label
 // occupies a column 'labelW' wide (0 = the label's own width) and the control

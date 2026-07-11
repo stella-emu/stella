@@ -1222,6 +1222,16 @@ bool SliderWidget::handleEvent(Event::Type e)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void SliderWidget::setLabelWidth(int w)
+{
+  // Keep the track the width it already has: the label column grows or shrinks
+  // and we grow or shrink with it, rather than eating into the track
+  _w += w - _labelWidth;
+  _labelWidth = w;
+  setDirty();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void SliderWidget::drawWidget(bool hilite)
 {
   FBSurface& s = _boss->dialog().surface();

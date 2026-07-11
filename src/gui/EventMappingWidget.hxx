@@ -46,6 +46,10 @@ class EventMappingWidget : public Widget, public CommandSender
     // Reposition/resize all sub-widgets for the given area (font-sensitive)
     void setArea(int x, int y, int w, int h) override;
 
+    // What we ask our tab for: enough width for the actions list and the button
+    // column beside it.  We fill whatever height we are given, so we report none
+    Common::Size naturalSize() const override;
+
     void loadConfig() override;
     void setDefaults();
 
@@ -68,6 +72,13 @@ class EventMappingWidget : public Widget, public CommandSender
       kResetCmd    = 'rest',
       kComboCmd    = 'cmbo'
     };
+
+    // The actions list shows an event's description, so it needs room for one.
+    // How much is this widget's ONE design decision: everything else it needs —
+    // and, through naturalSize(), the width of the dialog holding it — follows
+    static constexpr int ACTION_CHARS = 40;
+
+    int listWidth() const { return dialog().fontWidth() * ACTION_CHARS; }
 
     void updateActions();
     void startRemapping();

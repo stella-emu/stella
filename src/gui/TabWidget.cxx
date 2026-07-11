@@ -183,17 +183,26 @@ void TabWidget::layoutContent(int tabID)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Common::Size TabWidget::naturalSize() const
 {
-  int contentH = 0;
+  int contentW = 0, contentH = 0;
 
+  // Every tab is asked, pane or self-contained composite alike: the tab that
+  // needs the most room is not always one built of rows (the event mapper's list
+  // is what makes the input settings as wide as they are).  Content that simply
+  // fills an axis reports 0 for it and so does not constrain us — but it must
+  // SAY so by overriding naturalSize(), since the default reports its current
+  // size, which for such a widget is merely what it was last given
   for(const auto& tab: _tabs)
-    if(tab.isPane && tab.parentWidget != nullptr)
-      contentH = std::max(contentH,
-                          static_cast<int>(tab.parentWidget->naturalSize().h));
+    if(tab.sizeContent && tab.parentWidget != nullptr)
+    {
+      const Common::Size natural = tab.parentWidget->naturalSize();
+      contentW = std::max(contentW, static_cast<int>(natural.w));
+      contentH = std::max(contentH, static_cast<int>(natural.h));
+    }
 
   // The bar height is taken from the font rather than the cached _tabHeight,
   // which a live font change leaves stale until updateTabSizes() runs — and a
-  // dialog's layout() asks us how tall we want to be before it gets there
-  return Common::Size(std::max(_w, 0),
+  // dialog's layout() asks us how big we want to be before it gets there
+  return Common::Size(contentW + 2 * CONTENT_BORDER,
                       contentH + tabBarHeight() + 2 * CONTENT_BORDER);
 }
 
