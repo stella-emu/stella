@@ -18,9 +18,8 @@
 #include "Font.hxx"
 #include "RomWidget.hxx"
 #include "EditTextWidget.hxx"
-#include "StringListWidget.hxx"
-#include "ScrollBarWidget.hxx"
-#include "StringParser.hxx"
+#include "WrappedTextWidget.hxx"
+#include "Layout.hxx"
 #include "CartDebugWidget.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -64,23 +63,67 @@ int CartDebugWidget::addBaseInformation(size_t bytes, string_view manufacturer,
   w->setEditable(false);
   y += myLineHeight + 4;
 
-  const StringParser bs(desc, (fwidth - ScrollBarWidget::scrollBarWidth(_font)) /
-    myFontWidth);
-  const StringList& sl = bs.stringList();
-  const bool useScrollbar = sl.size() > maxlines;
-  const size_t lines = useScrollbar ? maxlines : std::max(sl.size(), 3uz);
-
+  // The description wraps itself to the width given here
   new StaticTextWidget(_boss, _font, x, y + 1, "Description ");
-  myDesc = new StringListWidget(_boss, _nfont, x+lwidth, y - 1,
-                                fwidth, static_cast<int>(lines) * myLineHeight,
-                                false, useScrollbar);
+  myDesc = new WrappedTextWidget(_boss, _nfont, x+lwidth, y - 1,
+                                 fwidth, 1, desc, maxlines);
   myDesc->setEditable(false);
   myDesc->setEnabled(false);
-  myDesc->setList(sl);
 
   y += myDesc->getHeight() + 4;
 
   return y;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void CartDebugWidget::createBaseInformation(size_t bytes, string_view manufacturer,
+        string_view desc, uInt16 maxlines)
+{
+  // Everything is created at a placeholder position; layoutBaseInformation()
+  // positions it, and the description re-wraps itself, at reflow() time
+  myROMSizeLabel = new StaticTextWidget(_boss, _font, 0, 0, "ROM size ");
+  myROMSize = new EditTextWidget(_boss, _nfont, 0, 0, 1, _lineHeight,
+    bytes >= 1024
+      ? std::format("{} bytes / {}KB", bytes, bytes / 1024)
+      : std::format("{} bytes", bytes));
+  myROMSize->setEditable(false);
+
+  myManufacturerLabel = new StaticTextWidget(_boss, _font, 0, 0, "Manufacturer ");
+  myManufacturer = new EditTextWidget(_boss, _nfont, 0, 0, 1, _lineHeight,
+                                      manufacturer);
+  myManufacturer->setEditable(false);
+
+  myDescLabel = new StaticTextWidget(_boss, _font, 0, 0, "Description ");
+  myDesc = new WrappedTextWidget(_boss, _nfont, 0, 0, 1, 1, desc, maxlines);
+  myDesc->setEditable(false);
+  myDesc->setEnabled(false);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void CartDebugWidget::layoutBaseInformation(GUI::BoxLayout& col)
+{
+  using GUI::labeledRow;
+
+  const int lwidth = _font.getStringWidth("Manufacturer ");
+
+  // Give the description its width up front so it can re-wrap and report the
+  // height its row needs (word wrap couples width to height).  This must match
+  // the field width the column below hands it: content width minus the label
+  myDesc->setWidth(_w - HBORDER - RBORDER - lwidth);
+
+  col.addFixed(labeledRow(myROMSizeLabel, myROMSize, lwidth, 0, true),
+               myROMSize->getHeight());
+  col.addFixed(labeledRow(myManufacturerLabel, myManufacturer, lwidth, 0, true),
+               myManufacturer->getHeight());
+  col.addFixed(labeledRow(myDescLabel, myDesc, lwidth, 0, true),
+               myDesc->getHeight());
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void CartDebugWidget::setArea(int x, int y, int w, int h)
+{
+  Widget::setArea(x, y, w, h);
+  reflow();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

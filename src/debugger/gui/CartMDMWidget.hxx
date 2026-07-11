@@ -37,7 +37,8 @@ class CartridgeMDMWidget : public CartridgeEnhancedWidget
   protected:
     string manufacturer() override { return "Edwin Blink"; }
     string description() override;
-    void bankSelect(int& ypos) override;
+    void createExtras() override;
+    void reflowExtra() override;
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 
   private:

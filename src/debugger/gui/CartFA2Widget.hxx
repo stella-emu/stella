@@ -35,11 +35,14 @@ class CartridgeFA2Widget : public CartridgeEnhancedWidget
   protected:
     string manufacturer() override { return "Chris D. Walton (Star Castle 2600 Arcade)"; }
     string description() override;
+    void createExtras() override;
+    void layoutExtra(GUI::BoxLayout& col) override;
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 
   private:
     CartridgeFA2& myCartFA2;
 
+    StaticTextWidget* myFlashLabel{nullptr};
     ButtonWidget *myFlashErase{nullptr}, *myFlashLoad{nullptr}, *myFlashSave{nullptr};
 
     enum {

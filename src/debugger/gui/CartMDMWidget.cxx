@@ -42,20 +42,25 @@ string CartridgeMDMWidget::description()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgeMDMWidget::bankSelect(int& ypos)
+void CartridgeMDMWidget::createExtras()
 {
-  CartridgeEnhancedWidget::bankSelect(ypos);
   if(myCart.romBankCount() > 1)
   {
-    const int xpos = myBankWidgets[0]->getRight() + 20;
-    ypos = myBankWidgets[0]->getTop();
-
-    myBankDisabled = new CheckboxWidget(_boss, _font, xpos, ypos + 1,
+    myBankDisabled = new CheckboxWidget(_boss, _font, 0, 0,
                                         "Bankswitching is locked/disabled",
                                         kBankDisabled);
     myBankDisabled->setTarget(this);
     addFocusWidget(myBankDisabled);
   }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void CartridgeMDMWidget::reflowExtra()
+{
+  // The checkbox sits to the right of the bank selector
+  if(myBankDisabled != nullptr)
+    myBankDisabled->setPos(myBankWidgets[0]->getRight() + 20,
+                           myBankWidgets[0]->getTop() + 1);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

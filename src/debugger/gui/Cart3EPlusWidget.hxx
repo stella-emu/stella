@@ -41,7 +41,8 @@ class Cartridge3EPlusWidget : public CartridgeEnhancedWidget
   protected:
     string manufacturer() override { return "Thomas Jentzsch"; }
     string description() override;
-    void bankSelect(int& ypos) override;
+    void createBankWidgets() override;
+    void layoutBankSelect(GUI::BoxLayout& col) override;
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 
     void updateUIState();
@@ -49,6 +50,8 @@ class Cartridge3EPlusWidget : public CartridgeEnhancedWidget
   private:
     Cartridge3EPlus& myCart3EP;
 
+    std::array<StaticTextWidget*, 4> mySegLabel{nullptr};
+    std::array<StaticTextWidget*, 8> myAddrLabel{nullptr};
     std::array<PopUpWidget*, 4> myBankType{nullptr};
     std::array<ButtonWidget*, 4> myBankCommit{nullptr};
     std::array<EditTextWidget*, 8> myBankState{nullptr};

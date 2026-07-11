@@ -200,14 +200,17 @@ unique_ptr<Layout> labelColumn(Widget* label, Widget* control)
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 unique_ptr<Layout> labeledRow(Widget* label, Widget* control,
-                              int labelW, int indent)
+                              int labelW, int indent, bool fill)
 {
   auto row = std::make_unique<BoxLayout>(BoxLayout::Dir::Horizontal);
   if(indent > 0)
     row->addSpace(indent);
   row->addFixed(labelColumn(label, control),
                 labelW > 0 ? labelW : label->getWidth());
-  row->addStretch(anchoredItem(control));
+  if(fill)
+    row->addStretch(widgetItem(control));
+  else
+    row->addStretch(anchoredItem(control));
   return row;
 }
 

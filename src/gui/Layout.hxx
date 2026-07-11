@@ -299,14 +299,16 @@ unique_ptr<Layout> labelColumn(Widget* label, Widget* control);
 
 // A horizontal form row pairing a separate label with a control: the label
 // occupies a column 'labelW' wide (0 = the label's own width) and the control
-// is anchored at its natural size just to its right, after an optional left
-// 'indent'.  For label + PopUp/Slider/edit rows where the widget is not
+// sits just to its right, after an optional left 'indent'.  With fill=false
+// (the default) the control keeps its natural width; with fill=true it stretches
+// to fill the rest of the row — for edit/list fields that should widen with the
+// dialog.  For label + PopUp/Slider/edit rows where the widget is not
 // self-labeling; pass a shared 'labelW' to align controls across several rows.
 // The label is centered on the control, which frames its own (taller) text.
 // Note that 'labelW' is a column width, not the label's: leave room in it for
 // some clearance before the control.
 unique_ptr<Layout> labeledRow(Widget* label, Widget* control,
-                              int labelW = 0, int indent = 0);
+                              int labelW = 0, int indent = 0, bool fill = false);
 
 }  // namespace GUI
 

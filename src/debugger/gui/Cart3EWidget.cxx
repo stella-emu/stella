@@ -15,8 +15,10 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
+#include "Font.hxx"
 #include "Cart3E.hxx"
 #include "PopUpWidget.hxx"
+#include "Layout.hxx"
 #include "Cart3EWidget.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -67,9 +69,8 @@ void Cartridge3EWidget::bankList(uInt16 bankCount, int seg, VariantList& items, 
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Cartridge3EWidget::bankSelect(int& ypos)
+void Cartridge3EWidget::createBankWidgets()
 {
-  int xpos{2};
   VariantList items;
   int pw{0};
 
@@ -77,27 +78,45 @@ void Cartridge3EWidget::bankSelect(int& ypos)
 
   bankList(myCart.romBankCount(), 0, items, pw);
   myBankWidgets[0] =
-    new PopUpWidget(_boss, _font, xpos, ypos - 2, pw,
+    new PopUpWidget(_boss, _font, 0, 0, pw,
                     myLineHeight, items, "Set bank     ",
                     _font.getStringWidth("Set bank     "), kBankChanged);
   myBankWidgets[0]->setTarget(this);
   myBankWidgets[0]->setID(0);
   addFocusWidget(myBankWidgets[0]);
 
-  const auto* t = new StaticTextWidget(_boss, _font,
-      myBankWidgets[0]->getRight(), ypos - 1, " (ROM)");
+  myROMTypeLabel = new StaticTextWidget(_boss, _font, 0, 0, " (ROM)");
 
-  xpos = t->getRight() + 20;
   items.clear();
   bankList(myCart.ramBankCount(), 0, items, pw);
   myBankWidgets[1] =
-    new PopUpWidget(_boss, _font, xpos, ypos - 2, pw,
+    new PopUpWidget(_boss, _font, 0, 0, pw,
                     myLineHeight, items, "", 0, kRAMBankChanged);
   myBankWidgets[1]->setTarget(this);
   myBankWidgets[1]->setID(1);
   addFocusWidget(myBankWidgets[1]);
 
-  new StaticTextWidget(_boss, _font, myBankWidgets[1]->getRight(), ypos - 1, " (RAM)");
+  myRAMTypeLabel = new StaticTextWidget(_boss, _font, 0, 0, " (RAM)");
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Cartridge3EWidget::layoutBankSelect(GUI::BoxLayout& col)
+{
+  using GUI::BoxLayout;
+  using GUI::anchoredItem;
+  using GUI::vCentered;
+
+  // The ROM bank selector + label, then the RAM bank selector + label, in a row
+  auto row = std::make_unique<BoxLayout>(BoxLayout::Dir::Horizontal);
+  row->addFixed(anchoredItem(myBankWidgets[0]), myBankWidgets[0]->getWidth());
+  row->addFixed(vCentered(myROMTypeLabel, myROMTypeLabel->getHeight()),
+                myROMTypeLabel->getWidth());
+  row->addSpace(20);
+  row->addFixed(anchoredItem(myBankWidgets[1]), myBankWidgets[1]->getWidth());
+  row->addFixed(vCentered(myRAMTypeLabel, myRAMTypeLabel->getHeight()),
+                myRAMTypeLabel->getWidth());
+
+  col.addFixed(std::move(row), myBankWidgets[0]->getHeight());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

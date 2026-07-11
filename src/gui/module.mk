@@ -57,7 +57,8 @@ MODULE_OBJS := \
         src/gui/UIDialog.o \
         src/gui/VideoAudioDialog.o \
         src/gui/WhatsNewDialog.o \
-        src/gui/Widget.o
+        src/gui/Widget.o \
+        src/gui/WrappedTextWidget.o
 
 MODULE_TEST_OBJS =
 

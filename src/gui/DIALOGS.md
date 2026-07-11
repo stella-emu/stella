@@ -175,7 +175,7 @@ You never construct `WidgetLayout` directly; use these `GUI::` helper builders:
 | `hCentered(w, width, minH=0)`            | keeps natural width, horizontally centered in a wider cell                 |
 | `indentedItem(w, indent, minW=0)`        | natural size, positioned `indent` px from the left                        |
 | `labelColumn(label, control)`            | a label sitting on the text line of the control it names                  |
-| `labeledRow(label, control, labelW=0, indent=0)` | a row pairing a **separate** label with a control                 |
+| `labeledRow(label, control, labelW=0, indent=0, fill=false)` | a row pairing a **separate** label with a control; `fill=true` stretches the control to the rest of the row (edits/lists) instead of keeping its natural width |
 
 Rules of thumb:
 

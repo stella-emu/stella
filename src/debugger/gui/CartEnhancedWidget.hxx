@@ -55,7 +55,9 @@ class CartridgeEnhancedWidget : public CartDebugWidget
     // End of functions for Cartridge RAM tab
 
   protected:
-    int initialize();
+    // Create then lay out all of this widget's content; called by each leaf ctor
+    void initialize();
+    void reflow() override;
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 
     virtual size_t size();
@@ -64,11 +66,24 @@ class CartridgeEnhancedWidget : public CartDebugWidget
     virtual int descriptionLines();
     virtual string ramDescription();
     virtual string romDescription();
-    virtual void plusROMInfo(int& ypos);
     virtual void bankList(uInt16 bankCount, int seg, VariantList& items, int& width);
-    virtual void bankSelect(int& ypos);
     virtual string hotspotStr(int bank = 0, int segment = 0, bool prefix = false);
     virtual uInt16 bankSegs(); // { return myCart.myBankSegs; }
+
+    // Create this widget's content at placeholder positions (create-only ctor)
+    void createWidgets();
+    void createPlusROM();
+    virtual void createBankWidgets();
+    // Extra per-cart widgets, e.g. a lock checkbox or flash buttons
+    virtual void createExtras() { }
+
+    // Append this widget's sections to the vertical layout box (reflow time)
+    void layoutPlusROM(GUI::BoxLayout& col);
+    virtual void layoutBankSelect(GUI::BoxLayout& col);
+    // Extra rows flowing below the bank controls, e.g. FA2's flash buttons
+    virtual void layoutExtra(GUI::BoxLayout& col) { }
+    // Position extras that sit alongside already-placed widgets (cross-refs)
+    virtual void reflowExtra() { }
 
   protected:
     enum { kBankChanged = 'bkCH' };
@@ -86,6 +101,11 @@ class CartridgeEnhancedWidget : public CartDebugWidget
     // Distance between two hotspots
     int myHotspotDelta{1};
 
+    StaticTextWidget* myPlusROMLabel{nullptr};
+    StaticTextWidget* myPlusROMHostLabel{nullptr};
+    StaticTextWidget* myPlusROMPathLabel{nullptr};
+    StaticTextWidget* myPlusROMSendLabel{nullptr};
+    StaticTextWidget* myPlusROMReceiveLabel{nullptr};
     EditTextWidget* myPlusROMHostWidget{nullptr};
     EditTextWidget* myPlusROMPathWidget{nullptr};
     EditTextWidget* myPlusROMSendWidget{nullptr};

@@ -43,20 +43,25 @@ string CartridgeTVBoyWidget::description()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgeTVBoyWidget::bankSelect(int& ypos)
+void CartridgeTVBoyWidget::createExtras()
 {
-  CartridgeEnhancedWidget::bankSelect(ypos);
   if(myCart.romBankCount() > 1)
   {
-    const int xpos = myBankWidgets[0]->getRight() + _font.getMaxCharWidth() * 4;
-    ypos = myBankWidgets[0]->getTop();
-
-    myBankLocked = new CheckboxWidget(_boss, _font, xpos, ypos + 1,
+    myBankLocked = new CheckboxWidget(_boss, _font, 0, 0,
                                       "Bankswitching is locked",
                                       kBankLocked);
     myBankLocked->setTarget(this);
     addFocusWidget(myBankLocked);
   }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void CartridgeTVBoyWidget::reflowExtra()
+{
+  // The checkbox sits to the right of the bank selector
+  if(myBankLocked != nullptr)
+    myBankLocked->setPos(myBankWidgets[0]->getRight() + _fontWidth * 4,
+                         myBankWidgets[0]->getTop() + 1);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

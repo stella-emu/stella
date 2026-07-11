@@ -19,10 +19,12 @@
 #define CART_DEBUG_WIDGET_HXX
 
 class GuiObject;
-class StringListWidget;
+class EditTextWidget;
+class WrappedTextWidget;
 
 namespace GUI {
   class Font;
+  class BoxLayout;
 }  // namespace GUI
 
 #include "Base.hxx"  // not needed here, but all child classes need it
@@ -38,8 +40,21 @@ class CartDebugWidget : public Widget, public CommandSender
     ~CartDebugWidget() override = default;
 
   public:
+    // Legacy one-shot creation+positioning of the ROM size / manufacturer /
+    // description fields, returning the y below them.  Still used by the cart
+    // widgets that have not yet been converted to the reflow() model; those
+    // continue to position their own widgets from the returned value.
     int addBaseInformation(size_t bytes, string_view manufacturer,
         string_view desc, uInt16 maxlines = 10);
+
+    // Reposition/resize this widget's content when its area changes; drives
+    // reflow() so a converted cart tab re-flows live with the debugger window
+    void setArea(int x, int y, int w, int h) override;
+
+    // Lay the widget's content out for its current area/font.  The base does
+    // nothing (unconverted carts keep their ctor-time geometry); converted
+    // carts (via CartridgeEnhancedWidget) rebuild an engine layout tree here
+    virtual void reflow() { }
 
     // Inform the ROM Widget that the underlying cart has somehow changed
     void invalidate();
@@ -68,7 +83,21 @@ class CartDebugWidget : public Widget, public CommandSender
   protected:
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override { }
 
+    // Create the ROM size / manufacturer / description fields (at a placeholder
+    // position); layoutBaseInformation() then positions them via the engine.
+    // The reflow-based counterpart to addBaseInformation()
+    void createBaseInformation(size_t bytes, string_view manufacturer,
+        string_view desc, uInt16 maxlines = 10);
+
+    // Append the ROM size / manufacturer / description rows to a vertical box.
+    // The description (a WrappedTextWidget) re-wraps itself to the current width
+    void layoutBaseInformation(GUI::BoxLayout& col);
+
   protected:
+    // Shared layout metrics for the cart tabs.  The right margin is wider than
+    // the left so the fields keep a gap from the window border
+    static constexpr int HBORDER = 2, RBORDER = 12, VBORDER = 4, VGAP = 4;
+
     // Arrays used to hold current and previous internal RAM values
     ByteArray myRamOld, myRamCurrent;
 
@@ -80,7 +109,14 @@ class CartDebugWidget : public Widget, public CommandSender
     int myFontWidth{0}, myFontHeight{0}, myLineHeight{0}, myButtonHeight{0};
 
   private:
-    StringListWidget* myDesc{nullptr};
+    // The ROM size / manufacturer / description fields and their labels.
+    // The description (myDesc) re-wraps itself whenever its width changes
+    StaticTextWidget* myROMSizeLabel{nullptr};
+    StaticTextWidget* myManufacturerLabel{nullptr};
+    StaticTextWidget* myDescLabel{nullptr};
+    EditTextWidget* myROMSize{nullptr};
+    EditTextWidget* myManufacturer{nullptr};
+    WrappedTextWidget* myDesc{nullptr};
 
   private:
     // Following constructors and assignment operators not supported

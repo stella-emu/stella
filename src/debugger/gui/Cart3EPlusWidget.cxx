@@ -15,9 +15,11 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
+#include "Font.hxx"
 #include "Cart3EPlus.hxx"
 #include "EditTextWidget.hxx"
 #include "PopUpWidget.hxx"
+#include "Layout.hxx"
 #include "CartEnhancedWidget.hxx"
 
 using Common::Base;
@@ -57,10 +59,9 @@ string Cartridge3EPlusWidget::description()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Cartridge3EPlusWidget::bankSelect(int& ypos)
+void Cartridge3EPlusWidget::createBankWidgets()
 {
   const ByteSpan image = myCart.getImage();
-  const int VGAP = myFontHeight / 4;
   VariantList banktype;
 
   VarList::push_back(banktype, "ROM", "ROM");
@@ -68,73 +69,95 @@ void Cartridge3EPlusWidget::bankSelect(int& ypos)
 
   myBankWidgets = std::make_unique<PopUpWidget* []>(bankSegs());
 
-  ypos -= VGAP * 2;
+  const uInt16 start = (((static_cast<uInt16>(image[0x400 - 3]) << 8) |
+                              image[0x400 - 4]) / 0x1000) * 0x1000;
 
   for(uInt32 seg = 0; seg < bankSegs(); ++seg)
   {
-    int xpos = 2, ypos_s = ypos + 1, width = 0;
     VariantList items;
+    int width = 0;
+    const size_t bank_off = static_cast<size_t>(seg) * 2;
 
-    const string segLabel = std::format("Set segment {} as ", seg);
-    new StaticTextWidget(_boss, _font, xpos, ypos, segLabel);
-    ypos += myLineHeight + VGAP * 2;
-
-    xpos += _font.getMaxCharWidth() * 2;
+    mySegLabel[seg] = new StaticTextWidget(_boss, _font, 0, 0,
+        std::format("Set segment {} as ", seg));
 
     CartridgeEnhancedWidget::bankList(std::max(myCart.romBankCount(), myCart.ramBankCount()),
                                       seg, items, width);
     myBankWidgets[seg] =
-      new PopUpWidget(_boss, _font, xpos, ypos - 2, width,
+      new PopUpWidget(_boss, _font, 0, 0, width,
                       myLineHeight, items, "Bank ", 0, kBankChanged);
     myBankWidgets[seg]->setID(seg);
     myBankWidgets[seg]->setTarget(this);
     addFocusWidget(myBankWidgets[seg]);
 
-    xpos += myBankWidgets[seg]->getWidth();
     myBankType[seg] =
-      new PopUpWidget(_boss, _font, xpos, ypos - 2, 3 * _font.getMaxCharWidth(),
+      new PopUpWidget(_boss, _font, 0, 0, 3 * _fontWidth,
                       myLineHeight, banktype, " of ", 0, kRomRamChanged);
     myBankType[seg]->setID(seg);
     myBankType[seg]->setTarget(this);
     addFocusWidget(myBankType[seg]);
 
-    xpos = myBankType[seg]->getRight() + _font.getMaxCharWidth();
-
     // add "Commit" button (why required?)
-    myBankCommit[seg] = new ButtonWidget(_boss, _font, xpos, ypos - 4,
+    myBankCommit[seg] = new ButtonWidget(_boss, _font, 0, 0,
                                          _font.getStringWidth(" Commit "), myButtonHeight,
                                          "Commit", kChangeBank);
     myBankCommit[seg]->setID(seg);
     myBankCommit[seg]->setTarget(this);
     addFocusWidget(myBankCommit[seg]);
 
-    const int xpos_s = myBankCommit[seg]->getRight() + _font.getMaxCharWidth() * 2;
-
-    const uInt16 start = (((static_cast<uInt16>(image[0x400 - 3]) << 8) |
-                                image[0x400 - 4]) / 0x1000) * 0x1000;
     const int addr1 = start + (seg * 0x400), addr2 = addr1 + 0x200;
 
-    const string addrLabel1 = std::format("${}-${}", Base::hex4(addr1),
-                                          Base::hex4(addr1 + 0x1FF));
-    const auto* t = new StaticTextWidget(_boss, _font, xpos_s, ypos_s + 2,
-                                         addrLabel1);
-
-    const int xoffset = t->getRight() + _font.getMaxCharWidth();
-    const size_t bank_off = static_cast<size_t>(seg) * 2;
-    myBankState[bank_off] = new EditTextWidget(_boss, _font, xoffset, ypos_s,
-                                               _w - xoffset - 10, myLineHeight, "");
+    myAddrLabel[bank_off] = new StaticTextWidget(_boss, _font, 0, 0,
+        std::format("${}-${}", Base::hex4(addr1), Base::hex4(addr1 + 0x1FF)));
+    myBankState[bank_off] = new EditTextWidget(_boss, _font, 0, 0, 1, myLineHeight, "");
     myBankState[bank_off]->setEditable(false, true);
-    ypos_s += myLineHeight + VGAP;
 
-    const string addrLabel2 = std::format("${}-${}", Base::hex4(addr2),
-                                          Base::hex4(addr2 + 0x1FF));
-    new StaticTextWidget(_boss, _font, xpos_s, ypos_s + 2, addrLabel2);
-
-    myBankState[bank_off + 1] = new EditTextWidget(_boss, _font,
-        xoffset, ypos_s, _w - xoffset - 10, myLineHeight, "");
+    myAddrLabel[bank_off + 1] = new StaticTextWidget(_boss, _font, 0, 0,
+        std::format("${}-${}", Base::hex4(addr2), Base::hex4(addr2 + 0x1FF)));
+    myBankState[bank_off + 1] = new EditTextWidget(_boss, _font, 0, 0, 1, myLineHeight, "");
     myBankState[bank_off + 1]->setEditable(false, true);
+  }
+}
 
-    ypos += myLineHeight + VGAP * 4;
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Cartridge3EPlusWidget::layoutBankSelect(GUI::BoxLayout& col)
+{
+  using GUI::BoxLayout;
+  using GUI::anchoredItem;
+  using GUI::labeledRow;
+  using Dir = BoxLayout::Dir;
+
+  const int editH = myBankState[0]->getHeight();
+  // All the address labels share a width ("$XXXX-$XXXX")
+  const int addrW = myAddrLabel[0]->getWidth() + _fontWidth;
+
+  for(uInt32 seg = 0; seg < bankSegs(); ++seg)
+  {
+    const size_t off = static_cast<size_t>(seg) * 2;
+
+    // The bank / type / commit controls along one row
+    auto controls = std::make_unique<BoxLayout>(Dir::Horizontal, _fontWidth);
+    controls->addFixed(anchoredItem(myBankWidgets[seg]), myBankWidgets[seg]->getWidth());
+    controls->addFixed(anchoredItem(myBankType[seg]), myBankType[seg]->getWidth());
+    controls->addFixed(anchoredItem(myBankCommit[seg]), myBankCommit[seg]->getWidth());
+    const int controlsW = myBankWidgets[seg]->getWidth() + myBankType[seg]->getWidth() +
+                          myBankCommit[seg]->getWidth() + _fontWidth * 2;
+
+    // The two address rows on the right, each an address label + filling field
+    auto addrCol = std::make_unique<BoxLayout>(Dir::Vertical, VGAP);
+    addrCol->addFixed(labeledRow(myAddrLabel[off], myBankState[off],
+                                 addrW, 0, true), editH);
+    addrCol->addFixed(labeledRow(myAddrLabel[off + 1], myBankState[off + 1],
+                                 addrW, 0, true), editH);
+
+    // The controls on the left (top row), address rows filling the right
+    auto block = std::make_unique<BoxLayout>(Dir::Horizontal, _fontWidth * 2);
+    block->addFixed(std::move(controls), controlsW);
+    block->addStretch(std::move(addrCol));
+
+    col.addFixed(anchoredItem(mySegLabel[seg]), mySegLabel[seg]->getHeight());
+    col.addFixed(std::move(block), editH * 2 + VGAP);
+    col.addSpace(VGAP * 2);
   }
 }
 
