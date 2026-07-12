@@ -644,7 +644,7 @@ void GameInfoDialog::addCartridgeTab()
     // The fields widen with the dialog, but they are what the dialog is FOR, so
     // they say how much room they need — and the dialog's width follows from it
     grid->columnAuto(LABEL)
-         .columnStretch(FIELD, 1, EditTextWidget::calcWidth(_font, 40))
+         .columnStretch(FIELD, 1, EditTextWidget::calcWidth(_font, 30))
          .columnAuto(BUTTON);
     for(int r = 0; r < ROWS; ++r)
       grid->rowAuto(r);
@@ -673,8 +673,11 @@ void GameInfoDialog::addCartridgeTab()
     browseField(LINK,   myCartLabels[6], myUrl, myUrlButton);
 #ifdef IMAGE_SUPPORT
     browseField(BEZEL,  myCartLabels[7], myBezelName, myBezelButton);
-    // The detected bezel, under the field it belongs to
-    grid->place(FIELD, BEZEL_DETECTED, anchoredItem(myBezelDetected),
+    // The detected bezel, under the field it belongs to.  It FILLS what the
+    // field above leaves it (like every other "detected" caption here), so the
+    // specimen name it was built with cannot decide how wide the tab is
+    grid->place(FIELD, BEZEL_DETECTED,
+                alignedItem(myBezelDetected, HAlign::Fill, VAlign::Center),
                 COLS - FIELD);
 #endif
 
