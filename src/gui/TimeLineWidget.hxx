@@ -26,7 +26,22 @@ class TimeLineWidget : public ButtonWidget
     TimeLineWidget(GuiObject* boss, const GUI::Font& font,
                    int x, int y, int w, int h, string_view label = "",
                    uInt32 labelWidth = 0, int cmd = 0);
+
+    /**
+      Take this width; my height is my own business.  I am a scrubber bar — half
+      a line of text, plus room for the handle to stand proud of it — and being
+      thin is what I am, not something the dialog holding me decides.
+    */
+    TimeLineWidget(GuiObject* boss, const GUI::Font& font,
+                   int x, int y, int w, string_view label = "",
+                   uInt32 labelWidth = 0, int cmd = 0);
+
     ~TimeLineWidget() override = default;
+
+    static int calcHeight(const GUI::Font& font)
+    {
+      return font.getLineHeight() / 2 + 6;
+    }
 
     void setValue(int value) override;
     uInt32 getValue() const { return _value; }

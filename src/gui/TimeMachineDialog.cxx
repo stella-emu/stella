@@ -37,7 +37,7 @@
 
 // This dialog is a compact translucent HUD bar with fixed-size icon buttons, so
 // it deliberately uses its own tight metrics rather than the standard Dialog
-// form helpers (hBorder()/buttonGap()/buttonWidth()/...).
+// form helpers (hBorder()/buttonGap()/buttonHeight()/...).
 static constexpr int BUTTON_W = 14, BUTTON_H = 14;
 static constexpr int H_BORDER = 6, V_BORDER = 4, BUTTON_GAP = 4;
 static constexpr int BUTTON_WIDTH = BUTTON_W + 10, BUTTON_HEIGHT = BUTTON_H + 10;
@@ -210,11 +210,10 @@ TimeMachineDialog::TimeMachineDialog(OSystem& osystem, DialogContainer& parent,
   : Dialog(osystem, parent)
 {
   const GUI::Font& font = instance().frameBuffer().font();
-  const int rowHeight = font.getLineHeight();
 
-  // Set real dimensions; the parent determines our width (based on window size)
+  // The parent determines our width (based on window size); our height is
+  // whatever the two rows turn out to need (see layout())
   _w = width;
-  _h = V_BORDER * 2 + rowHeight + std::max(BUTTON_HEIGHT + 2, rowHeight);
 
   this->clearFlags(Widget::FLAG_CLEARBG); // does only work combined with blending (0..100)!
   this->clearFlags(Widget::FLAG_BORDER);
@@ -233,7 +232,7 @@ TimeMachineDialog::TimeMachineDialog(OSystem& osystem, DialogContainer& parent,
   myLastIdxWidget->setTextColor(kColorInfo);
 
   // Timeline scrubber
-  myTimeline = new TimeLineWidget(this, font, 0, 0, _w, rowHeight / 2 + 6, "", 0, kTimeline);
+  myTimeline = new TimeLineWidget(this, font, 0, 0, _w, "", 0, kTimeline);
   myTimeline->setMinValue(0);
 
   // Time info (current + last time)
@@ -270,7 +269,7 @@ TimeMachineDialog::TimeMachineDialog(OSystem& osystem, DialogContainer& parent,
   myLoadAllWidget->setToolTip("Load all Time Machine states.");
 
   // Message (fills the space between the buttons and the last-time readout)
-  myMessageWidget = new StaticTextWidget(this, font, 0, 0, 1, rowHeight, "",
+  myMessageWidget = new StaticTextWidget(this, font, 0, 0, "",
                                          TextAlign::Left, kBGColor);
   myMessageWidget->setFlags(Widget::FLAG_CLEARBG | Widget::FLAG_NOBG);
   myMessageWidget->setTextColor(kColorInfo);
@@ -281,28 +280,25 @@ TimeMachineDialog::TimeMachineDialog(OSystem& osystem, DialogContainer& parent,
 void TimeMachineDialog::layout()
 {
   using GUI::BoxLayout;
+  using GUI::stretchedItem;
   using GUI::anchoredItem;
   using GUI::alignedItem;
   using GUI::HAlign;
   using GUI::VAlign;
   using Dir = BoxLayout::Dir;
 
-  const int rowHeight  = Dialog::lineHeight();
-  const int row2Height = std::max(BUTTON_HEIGHT + 2, rowHeight);
-
   // Row 1: current-index label, timeline (fills), last-index label
   auto row1 = std::make_unique<BoxLayout>(Dir::Horizontal);
-  row1->addFixed(anchoredItem(myCurrentIdxWidget), myCurrentIdxWidget->getWidth());
-  row1->addSpace(8);
+  row1->addAuto(anchoredItem(myCurrentIdxWidget));
+  row1->addSpace(BUTTON_GAP * 2);
   row1->addStretch(alignedItem(myTimeline, HAlign::Fill, VAlign::Center));
-  row1->addSpace(8);
-  row1->addFixed(anchoredItem(myLastIdxWidget), myLastIdxWidget->getWidth());
+  row1->addSpace(BUTTON_GAP * 2);
+  row1->addAuto(anchoredItem(myLastIdxWidget));
 
   // Row 2: current-time label, transport buttons, message (fills), last-time label.
   // The text readouts are centered on the (taller) icon buttons.
   auto row2 = std::make_unique<BoxLayout>(Dir::Horizontal);
-  row2->addFixed(alignedItem(myCurrentTimeWidget, HAlign::Fill, VAlign::Center),
-                 myCurrentTimeWidget->getWidth());
+  row2->addAuto(anchoredItem(myCurrentTimeWidget));
   row2->addSpace(BUTTON_GAP * 4);
   row2->addFixed(anchoredItem(myToggleWidget), BUTTON_WIDTH);
   row2->addSpace(BUTTON_GAP);
@@ -322,14 +318,16 @@ void TimeMachineDialog::layout()
   row2->addSpace(BUTTON_GAP);
   row2->addFixed(anchoredItem(myLoadAllWidget), BUTTON_WIDTH);
   row2->addSpace(BUTTON_GAP * 4);
-  row2->addStretch(alignedItem(myMessageWidget, HAlign::Fill, VAlign::Center));
-  row2->addFixed(alignedItem(myLastTimeWidget, HAlign::Fill, VAlign::Center),
-                 myLastTimeWidget->getWidth());
+  row2->addStretch(stretchedItem(myMessageWidget));
+  row2->addAuto(anchoredItem(myLastTimeWidget));
 
-  // Two stacked rows, inset by the HUD borders
+  // Two stacked rows, inset by the HUD borders.  The parent gave us our width;
+  // our height is as tall as the two rows need to be
   auto root = std::make_unique<BoxLayout>(Dir::Vertical, 0, H_BORDER, V_BORDER);
-  root->addFixed(std::move(row1), rowHeight);
-  root->addFixed(std::move(row2), row2Height);
+  root->addAuto(std::move(row1));
+  root->addAuto(std::move(row2));
+
+  _h = _th + static_cast<int>(root->naturalSize().h);
 
   root->doLayout(0, _th, _w, _h - _th);
 }

@@ -151,7 +151,7 @@ HighScoresDialog::HighScoresDialog(OSystem& osystem, DialogContainer& parent,
     myScoreWidgets[r] = new StaticTextWidget(this, _font, 0, 0, "12345678");
     mySpecialWidgets[r] = new StaticTextWidget(this, _font, 0, 0, "123");
     myNameWidgets[r] = new StaticTextWidget(this, _font, 0, 0, "   ");
-    myEditNameWidgets[r] = new EditTextWidget(this, _font, 0, 0, nWidth, lineHeight);
+    myEditNameWidgets[r] = new EditTextWidget(this, _font, 0, 0, nWidth);
     myEditNameWidgets[r]->setFlags(EditTextWidget::FLAG_INVISIBLE);
     myEditNameWidgets[r]->setEnabled(false);
     myDateWidgets[r] = new StaticTextWidget(this, _font, 0, 0, "YY-MM-DD HH:MM");
@@ -213,14 +213,11 @@ void HighScoresDialog::layout()
   const int tableWidth = wRank + wScore + wSpecial + wName + wDate + wDelete;
   const int xposDelete = xposRank + wRank + wScore + wSpecial + wName + wDate;
 
-  // Dialog width = widest of the table, the info text, and the button row
-  const int buttonWidth = std::max({Dialog::buttonWidth(" Reset "),
-                                    Dialog::buttonWidth("Save"),
-                                    Dialog::buttonWidth("Cancel"),
-                                    Dialog::buttonWidth("Defaults")});
+  // Dialog width = widest of the table, the info text, and the button row (whose
+  // buttons have already sized themselves, see addDefaultsOKCancelBGroup)
   _w = std::max({HBORDER * 2 + tableWidth,
                  HBORDER * 2 + ifont.getMaxCharWidth() * (5 + 17 + 2 + 7 + 17),
-                 HBORDER * 2 + buttonWidth * 2 + BUTTON_GAP});
+                 buttonGroupWidth()});
 
   // Game name (top)
   myGameNameWidget->setArea(HBORDER, VBORDER + _th + 1, _w - HBORDER * 2, lineHeight);

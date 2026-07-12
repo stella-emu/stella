@@ -38,9 +38,6 @@ LoggerDialog::LoggerDialog(OSystem& osystem, DialogContainer& parent,
                            bool uselargefont)
   : Dialog(osystem, parent, font, "System logs")
 {
-  const int lineHeight   = Dialog::lineHeight(),
-            buttonHeight = Dialog::buttonHeight(),
-            buttonWidth  = Dialog::buttonWidth("Save log to disk" + ELLIPSIS);
   WidgetArray wid;
 
   // This is one dialog that can take as much space as is available
@@ -61,10 +58,7 @@ LoggerDialog::LoggerDialog(OSystem& osystem, DialogContainer& parent,
   VarList::push_back(items, "None", static_cast<int>(Logger::Level::ERR));
   VarList::push_back(items, "Basic", static_cast<int>(Logger::Level::INFO));
   VarList::push_back(items, "Verbose", static_cast<int>(Logger::Level::DEBUG));
-  myLogLevel =
-    new PopUpWidget(this, font, 0, 0, font.getStringWidth("Verbose"),
-                    lineHeight, items, "Log level ",
-                    font.getStringWidth("Log level "));
+  myLogLevel = new PopUpWidget(this, font, 0, 0, items, "Log level");
   wid.push_back(myLogLevel);
 
   // Should log output also be shown on the console?
@@ -73,7 +67,7 @@ LoggerDialog::LoggerDialog(OSystem& osystem, DialogContainer& parent,
 
   // 'Save log to disk' occupies the left (Defaults) slot of the button group,
   // with OK/Cancel on the right
-  addDefaultWidget(new ButtonWidget(this, font, 0, 0, buttonWidth, buttonHeight,
+  addDefaultWidget(new ButtonWidget(this, font, 0, 0,
                    "Save log to disk" + ELLIPSIS, GuiObject::kDefaultsCmd));
   wid.push_back(_defaultWidget);
   addOKCancelBGroup(wid, font);
@@ -92,26 +86,29 @@ void LoggerDialog::layout()
   using GUI::anchoredItem;
   using Dir = BoxLayout::Dir;
 
-  const int lineHeight   = Dialog::lineHeight(),
-            fontWidth    = Dialog::fontWidth(),
+  const int fontWidth    = Dialog::fontWidth(),
             buttonHeight = Dialog::buttonHeight(),
             VBORDER      = Dialog::vBorder(),
             HBORDER      = Dialog::hBorder(),
             VGAP         = Dialog::vGap();
 
+  // The popup draws its own label, so give it a label column of its own
+  GUI::alignLabels({{myLogLevel}});
+
   // Bottom controls: the log-level popup and a checkbox to its right
   auto controlRow = std::make_unique<BoxLayout>(Dir::Horizontal, 0, 0, 0);
-  controlRow->addFixed(anchoredItem(myLogLevel), myLogLevel->getWidth());
+  controlRow->addAuto(anchoredItem(myLogLevel));
   controlRow->addSpace(fontWidth * 4);
-  controlRow->addFixed(anchoredItem(myLogToConsole), myLogToConsole->getWidth());
+  controlRow->addAuto(anchoredItem(myLogToConsole));
 
   // Vertical stack: the log listing fills the available space, then the control
   // row, then a reserved slot for the button group (positioned separately by
-  // layoutButtonGroup()).
+  // layoutButtonGroup()).  This dialog takes all the space it is given, so its
+  // size is not derived from the content.
   auto root = std::make_unique<BoxLayout>(Dir::Vertical, 0, HBORDER, VBORDER);
   root->addStretch(widgetItem(myLogInfo));
   root->addSpace(VGAP * 2);
-  root->addFixed(std::move(controlRow), lineHeight);
+  root->addAuto(std::move(controlRow));
   root->addSpace(VGAP * 2);
   root->addSpace(buttonHeight);
 

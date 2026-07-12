@@ -160,10 +160,16 @@ class Dialog : public GuiObject
     int lineHeight() const { return _font.getLineHeight(); }
     int fontHeight() const { return _font.getFontHeight(); }
     int fontWidth() const { return _font.getMaxCharWidth(); }
-    int buttonHeight() const { return lineHeight() * 1.25; }
-    int buttonWidth(string_view label) const {
-      return _font.getStringWidth(label) + fontWidth() * 2.5;
-    }
+    // How tall a button is — a unit other things are measured in (a navigation
+    // bar is one button tall).  There is deliberately no buttonWidth(): a button
+    // sizes itself to its label, and a GROUP of them is equalized by the layout
+    // (GUI::alignButtons), so no dialog ever names a button's width
+    int buttonHeight() const { return ButtonWidget::calcHeight(_font); }
+    // The standard button group (Defaults / OK / Cancel) is the same size in
+    // every dialog rather than shrink-wrapping to whatever its labels happen to
+    // be, so it does not change shape from one dialog to the next.  Eight
+    // characters is what the longest of them ("Defaults") needs
+    int standardButtonWidth() const { return ButtonWidget::calcWidth(_font, 8); }
     int buttonGap() const { return fontWidth(); }
     int hBorder() const { return fontWidth() * 1.25; }
     int vBorder() const { return fontHeight() / 2; }
@@ -199,15 +205,15 @@ class Dialog : public GuiObject
     string getHelpURL() const override;
     bool hasHelp() const override { return !getHelpURL().empty(); }
 
+    // The standard button groups.  Each creates self-sizing buttons and lets
+    // layoutButtonGroup() give them one shared width, so no caller passes one
     void addOKBGroup(WidgetArray& wid, const GUI::Font& font,
-                     string_view okText = "OK",
-                     int buttonWidth = 0);
+                     string_view okText = "OK");
 
     void addOKCancelBGroup(WidgetArray& wid, const GUI::Font& font,
                            string_view okText = "OK",
                            string_view cancelText = "Cancel",
-                           bool focusOKButton = true,
-                           int buttonWidth = 0);
+                           bool focusOKButton = true);
 
     void addDefaultsOKCancelBGroup(WidgetArray& wid, const GUI::Font& font,
                                    string_view okText = "OK",

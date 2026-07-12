@@ -32,22 +32,20 @@ RomListSettings::RomListSettings(GuiObject* boss, const GUI::Font& font)
   : Dialog(boss->instance(), boss->parent(), font),
     CommandSender(boss)
 {
-  const int buttonWidth  = Dialog::buttonWidth("Disassemble @ current line"),
-            buttonHeight = Dialog::buttonHeight();
   WidgetArray wid;
 
   // NOLINTBEGIN(cppcoreguidelines-prefer-member-initializer)
   // Action buttons
-  mySetPC = new ButtonWidget(this, font, 0, 0, buttonWidth, buttonHeight,
+  mySetPC = new ButtonWidget(this, font, 0, 0,
                              "Set PC @ current line", RomListWidget::kSetPCCmd);
   wid.push_back(mySetPC);
-  myRuntoPC = new ButtonWidget(this, font, 0, 0, buttonWidth, buttonHeight,
+  myRuntoPC = new ButtonWidget(this, font, 0, 0,
                                "RunTo PC @ current line", RomListWidget::kRuntoPCCmd);
   wid.push_back(myRuntoPC);
-  mySetTimer = new ButtonWidget(this, font, 0, 0, buttonWidth, buttonHeight,
+  mySetTimer = new ButtonWidget(this, font, 0, 0,
                                 "Set timer @ current line", RomListWidget::kSetTimerCmd);
   wid.push_back(mySetTimer);
-  myDisassemble = new ButtonWidget(this, font, 0, 0, buttonWidth, buttonHeight,
+  myDisassemble = new ButtonWidget(this, font, 0, 0,
                                    "Disassemble @ current line", RomListWidget::kDisassembleCmd);
   wid.push_back(myDisassemble);
 
@@ -86,34 +84,32 @@ void RomListSettings::layout()
   using GUI::indentedItem;
   using Dir = BoxLayout::Dir;
 
-  const int buttonWidth  = Dialog::buttonWidth("Disassemble @ current line"),
-            buttonHeight = Dialog::buttonHeight(),
-            VBORDER      = Dialog::vBorder(),
-            HBORDER      = Dialog::hBorder(),
-            VGAP         = Dialog::vGap();
+  const int VBORDER = Dialog::vBorder(),
+            HBORDER = Dialog::hBorder(),
+            VGAP    = Dialog::vGap();
 
-  // The four action buttons share the widest label's width; refresh their
-  // size from the live font (ButtonWidget::refreshFontMetrics doesn't resize).
-  for(auto* b: {mySetPC, myRuntoPC, mySetTimer, myDisassemble})
-  {
-    b->setWidth(buttonWidth);
-    b->setHeight(buttonHeight);
-  }
-
-  // No title bar (_th == 0), so content starts at the top margin
-  _w = buttonWidth + HBORDER * 2;
-  _h = VBORDER * 2 + 8 * buttonHeight + VGAP * 9;
+  // The four action buttons stand in one column, so they share one width -- the
+  // widest of them.  (They size themselves from their labels, and re-do it on a
+  // font change, so nothing here names a width or a height)
+  GUI::alignButtons({mySetPC, myRuntoPC, mySetTimer, myDisassemble});
 
   auto root = std::make_unique<BoxLayout>(Dir::Vertical, 0, HBORDER, VBORDER);
-  root->addFixed(anchoredItem(mySetPC),       buttonHeight); root->addSpace(VGAP);
-  root->addFixed(anchoredItem(myRuntoPC),     buttonHeight); root->addSpace(VGAP);
-  root->addFixed(anchoredItem(mySetTimer),    buttonHeight); root->addSpace(VGAP);
-  root->addFixed(anchoredItem(myDisassemble), buttonHeight);
+  root->addAuto(anchoredItem(mySetPC));       root->addSpace(VGAP);
+  root->addAuto(anchoredItem(myRuntoPC));     root->addSpace(VGAP);
+  root->addAuto(anchoredItem(mySetTimer));    root->addSpace(VGAP);
+  root->addAuto(anchoredItem(myDisassemble));
   root->addSpace(VGAP * 3);
-  root->addFixed(indentedItem(myShowTentative, indent()/2), buttonHeight); root->addSpace(VGAP);
-  root->addFixed(indentedItem(myShowAddresses, indent()/2), buttonHeight); root->addSpace(VGAP);
-  root->addFixed(indentedItem(myShowGFXBinary, indent()/2), buttonHeight); root->addSpace(VGAP);
-  root->addFixed(indentedItem(myUseRelocation, indent()/2), buttonHeight);
+  root->addAuto(indentedItem(myShowTentative, indent() / 2)); root->addSpace(VGAP);
+  root->addAuto(indentedItem(myShowAddresses, indent() / 2)); root->addSpace(VGAP);
+  root->addAuto(indentedItem(myShowGFXBinary, indent() / 2)); root->addSpace(VGAP);
+  root->addAuto(indentedItem(myUseRelocation, indent() / 2));
+
+  // No title bar (_th == 0); the dialog is exactly as large as its content
+  const Common::Size natural = root->naturalSize();
+
+  _w = static_cast<int>(natural.w);
+  _h = static_cast<int>(natural.h);
+
   root->doLayout(0, _th, _w, _h - _th);
 }
 

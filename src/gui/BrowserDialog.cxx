@@ -53,9 +53,7 @@ void BrowserDialog::initialize(int max_w, int max_h)
   _w = max_w;
   _h = max_h;
 
-  const int lineHeight   = Dialog::lineHeight(),
-            buttonHeight = Dialog::buttonHeight(),
-            buttonWidth  = Dialog::buttonWidth("Base Dir"),
+  const int buttonHeight = Dialog::buttonHeight(),
             HBORDER      = Dialog::hBorder();
 
   // Widgets are only created here (at placeholder geometry); layout() assigns
@@ -78,31 +76,27 @@ void BrowserDialog::initialize(int max_w, int max_h)
   _navigationBar->setList(_fileList);
 
   // Currently selected item
-  _name = new StaticTextWidget(this, _font, 0, 0, "Name ");
-  _selected = new EditTextWidget(this, _font, 0, 0, _w, lineHeight, "");
+  _name = new StaticTextWidget(this, _font, 0, 0, "Name");
+  _selected = new EditTextWidget(this, _font, 0, 0, _w, "");
   addFocusWidget(_selected);
 
   // Directory-navigation buttons
-  _goUpButton = new ButtonWidget(this, _font, 0, 0, buttonWidth, buttonHeight,
-                                 "Go up", kGoUpCmd);
+  _goUpButton = new ButtonWidget(this, _font, 0, 0, "Go up", kGoUpCmd);
   addFocusWidget(_goUpButton);
-  _baseDirButton = new ButtonWidget(this, _font, 0, 0, buttonWidth, buttonHeight,
-                                    "Base Dir", kBaseDirCmd);
+  _baseDirButton = new ButtonWidget(this, _font, 0, 0, "Base Dir", kBaseDirCmd);
   _baseDirButton->setToolTip("Go to Stella's base directory.");
   addFocusWidget(_baseDirButton);
-  _homeDirButton = new ButtonWidget(this, _font, 0, 0, buttonWidth, buttonHeight,
-                                    "Home Dir", kHomeDirCmd);
+  _homeDirButton = new ButtonWidget(this, _font, 0, 0, "Home Dir", kHomeDirCmd);
   _homeDirButton->setToolTip("Go to user's home directory.");
   addFocusWidget(_homeDirButton);
 
   // OK and Cancel; the platform-specific left/right ordering is handled by
   // Dialog::layoutButtonGroup()
-  auto* okButton = new ButtonWidget(this, _font, 0, 0, buttonWidth, buttonHeight,
+  auto* okButton = new ButtonWidget(this, _font, 0, 0,
                                     "OK", kChooseCmd);
   addFocusWidget(okButton);
   addOKWidget(okButton);
-  auto* cancelButton = new ButtonWidget(this, _font, 0, 0, buttonWidth,
-                                        buttonHeight, "Cancel",
+  auto* cancelButton = new ButtonWidget(this, _font, 0, 0, "Cancel",
                                         GuiObject::kCloseCmd);
   addFocusWidget(cancelButton);
   addCancelWidget(cancelButton);
@@ -116,15 +110,13 @@ void BrowserDialog::initialize(int max_w, int max_h)
 void BrowserDialog::layout()
 {
   using GUI::BoxLayout;
+  using GUI::stretchedItem;
   using GUI::widgetItem;
-  using GUI::alignedItem;
-  using GUI::HAlign;
-  using GUI::VAlign;
+  using GUI::anchoredItem;
   using Dir = BoxLayout::Dir;
 
   const int fontWidth    = Dialog::fontWidth(),
             buttonHeight = Dialog::buttonHeight(),
-            buttonWidth  = Dialog::buttonWidth("Base Dir"),
             BUTTON_GAP   = Dialog::buttonGap(),
             VBORDER      = Dialog::vBorder(),
             HBORDER      = Dialog::hBorder(),
@@ -134,6 +126,8 @@ void BrowserDialog::layout()
 
   // Vertical stack: navigation bar, file listing (fills the available space),
   // an optional selected-item row, then a reserved band for the bottom buttons.
+  // This dialog takes all the space it is given, so its size is not derived from
+  // the content.
   auto root = std::make_unique<BoxLayout>(Dir::Vertical, 0, HBORDER, VBORDER);
 
   // Navigation-bar row (absent in FileLoadNoDirs, whose directory is fixed, so
@@ -145,14 +139,13 @@ void BrowserDialog::layout()
     if(fileMode)
     {
       auto navRow = std::make_unique<BoxLayout>(Dir::Horizontal);
-      navRow->addStretch(widgetItem(_navigationBar));
+      navRow->addStretch(stretchedItem(_navigationBar));
       navRow->addSpace(fontWidth);
-      navRow->addFixed(alignedItem(_savePathBox, HAlign::Fill, VAlign::Center),
-                       _savePathBox->getWidth());
-      root->addFixed(std::move(navRow), buttonHeight);
+      navRow->addAuto(anchoredItem(_savePathBox));
+      root->addAuto(std::move(navRow));
     }
     else
-      root->addFixed(widgetItem(_navigationBar), buttonHeight);
+      root->addAuto(stretchedItem(_navigationBar));
 
     root->addSpace(VGAP);
   }
@@ -163,27 +156,32 @@ void BrowserDialog::layout()
   if(fileMode)
   {
     auto nameRow = std::make_unique<BoxLayout>(Dir::Horizontal);
-    nameRow->addFixed(alignedItem(_name, HAlign::Fill, VAlign::Center), _name->getWidth());
-    nameRow->addStretch(alignedItem(_selected, HAlign::Fill, VAlign::Center));
+    nameRow->addAuto(anchoredItem(_name));
+    nameRow->addSpace(fontWidth);
+    nameRow->addStretch(stretchedItem(_selected));
 
     root->addSpace(VGAP * 2);
-    root->addFixed(std::move(nameRow), _selected->getHeight());
+    root->addAuto(std::move(nameRow));
   }
 
   // Gap down to the bottom button row, then the reserved button band (the
   // buttons themselves are positioned below)
-  root->addSpace(VBORDER + VGAP - 2);
+  root->addSpace(VBORDER + VGAP);
   root->addSpace(buttonHeight);
 
   root->doLayout(0, _th, _w, _h - _th);
 
   // Bottom-left directory-navigation buttons (Go up / Base Dir / Home Dir)
+  // The three navigation buttons share one width, the widest of them
+  GUI::alignButtons({_goUpButton, _baseDirButton, _homeDirButton});
+
   auto navButtons = std::make_unique<BoxLayout>(Dir::Horizontal, BUTTON_GAP);
-  navButtons->addFixed(widgetItem(_goUpButton), buttonWidth);
-  navButtons->addFixed(widgetItem(_baseDirButton), buttonWidth);
-  navButtons->addFixed(widgetItem(_homeDirButton), buttonWidth);
+  navButtons->addAuto(anchoredItem(_goUpButton));
+  navButtons->addAuto(anchoredItem(_baseDirButton));
+  navButtons->addAuto(anchoredItem(_homeDirButton));
+  const Common::Size navSize = navButtons->naturalSize();
   navButtons->doLayout(HBORDER, _h - buttonHeight - VBORDER,
-                       buttonWidth * 3 + BUTTON_GAP * 2, buttonHeight);
+                       static_cast<int>(navSize.w), static_cast<int>(navSize.h));
 
   // OK/Cancel along the bottom-right (platform order)
   layoutButtonGroup();

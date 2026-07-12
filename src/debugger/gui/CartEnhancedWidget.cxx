@@ -171,11 +171,11 @@ void CartridgeEnhancedWidget::createPlusROM()
   myPlusROMPathWidget->setEditable(false);
 
   myPlusROMSendLabel = new StaticTextWidget(_boss, _font, 0, 0, "Send");
-  myPlusROMSendWidget = new EditTextWidget(_boss, _nfont, 0, 0, 1, myLineHeight);
+  myPlusROMSendWidget = new EditTextWidget(_boss, _nfont, 0, 0, 1);
   myPlusROMSendWidget->setEditable(false);
 
   myPlusROMReceiveLabel = new StaticTextWidget(_boss, _font, 0, 0, "Receive");
-  myPlusROMReceiveWidget = new EditTextWidget(_boss, _nfont, 0, 0, 1, myLineHeight);
+  myPlusROMReceiveWidget = new EditTextWidget(_boss, _nfont, 0, 0, 1);
   myPlusROMReceiveWidget->setEditable(false);
 }
 

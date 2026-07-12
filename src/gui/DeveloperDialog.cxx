@@ -107,7 +107,6 @@ void DeveloperDialog::layout()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DeveloperDialog::addEmulationTab(const GUI::Font& font)
 {
-  const int lineHeight = Dialog::lineHeight();
   const GUI::Font& infofont = instance().frameBuffer().infoFont();
   WidgetArray wid;
   VariantList items;
@@ -146,9 +145,8 @@ void DeveloperDialog::addEmulationTab(const GUI::Font& font)
   items.clear();
   VarList::push_back(items, "Atari 2600", "2600");
   VarList::push_back(items, "Atari 7800", "7800");
-  myConsoleWidget = new PopUpWidget(pane, font, 0, 0, font.getStringWidth("Atari 2600"),
-                                    lineHeight, items, "Console ",
-                                    font.getStringWidth("Console "), kConsole);
+  myConsoleWidget = new PopUpWidget(pane, font, 0, 0, items, "Console", 0,
+                                    kConsole);
   myConsoleWidget->setToolTip("Emulate Color/B&W/Pause key and zero\n"
                               "page RAM initialization differently.");
   wid.push_back(myConsoleWidget);
@@ -176,7 +174,7 @@ void DeveloperDialog::addEmulationTab(const GUI::Font& font)
   wid.push_back(myRandomizeRAMWidget);
 
   // Randomize CPU
-  myRandomizeCPULabel = new StaticTextWidget(pane, font, 0, 0, "Randomize CPU ");
+  myRandomizeCPULabel = new StaticTextWidget(pane, font, 0, 0, "Randomize CPU");
   wid.push_back(myRandomizeCPULabel);
 
   const std::array<string, 5> cpuregsLabels = {"SP", "A", "X", "Y", "PS"};
@@ -217,7 +215,7 @@ void DeveloperDialog::addEmulationTab(const GUI::Font& font)
   wid.push_back(myThumbExceptionWidget);
 
   myArmSpeedWidget = new SliderWidget(pane, font, 0, 0,
-                                      Dialog::fontWidth() * 10, lineHeight, "Limit ARM speed (*) ",
+                                      Dialog::fontWidth() * 10, "Limit ARM speed (*)",
                                       0, kArmSpeedChanged, Dialog::fontWidth() * 9, " MIPS");
   myArmSpeedWidget->setMinValue(CartridgeELF::MIPS_MIN);
   myArmSpeedWidget->setMaxValue(CartridgeELF::MIPS_MAX);
@@ -248,6 +246,13 @@ void DeveloperDialog::addEmulationTab(const GUI::Font& font)
     const int fontWidth = Dialog::fontWidth(),
               VGAP      = Dialog::vGap(),
               INDENT    = Dialog::indent();
+
+    // These two self-labeling controls are nine rows apart, so a shared label
+    // column would buy no alignment and cost the shorter label a wide gap
+    // between it and its value box.  Each gets a group of its own, purely for
+    // the clearance a group supplies
+    GUI::alignLabels({{myConsoleWidget, INDENT}});
+    GUI::alignLabels({{myArmSpeedWidget, INDENT}});
 
     enum Col: int { MAIN, EXTRA, COLS };
     enum Row: int {
@@ -281,14 +286,20 @@ void DeveloperDialog::addEmulationTab(const GUI::Font& font)
     grid->place(EXTRA, BANK, anchoredItem(myRandomizeTIAWidget));
     option(RAM, myRandomizeRAMWidget, INDENT * 2);
 
-    // The five CPU registers are evenly spaced, so they get equal cells
-    const int regWidth = CheckboxWidget::boxSize(_font)
-                         + _font.getStringWidth("XX") + fontWidth * 2.5;
+    // The five CPU registers are evenly spaced: each as wide as the widest of
+    // them (none of them can know that alone), with a uniform gap between
+    GUI::alignButtons({myRandomizeCPUWidget[0], myRandomizeCPUWidget[1],
+                       myRandomizeCPUWidget[2], myRandomizeCPUWidget[3],
+                       myRandomizeCPUWidget[4]});
+
+    auto regs = std::make_unique<BoxLayout>(Dir::Horizontal, fontWidth * 2);
+    for(auto* reg: myRandomizeCPUWidget)
+      regs->addAuto(anchoredItem(reg));
+
     auto cpuRow = std::make_unique<BoxLayout>(Dir::Horizontal);
     cpuRow->addAuto(indentedItem(myRandomizeCPULabel, INDENT * 2));
     cpuRow->addSpace(fontWidth * 1.25);
-    for(auto* reg: myRandomizeCPUWidget)
-      cpuRow->addFixed(anchoredItem(reg), regWidth);
+    cpuRow->addAuto(std::move(regs));
     cpuRow->addStretchSpace();
     grid->place(MAIN, CPU, std::move(cpuRow), COLS - MAIN);
 
@@ -317,8 +328,6 @@ void DeveloperDialog::addEmulationTab(const GUI::Font& font)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DeveloperDialog::addTiaTab(const GUI::Font& font)
 {
-  const int lineHeight = Dialog::lineHeight();
-  const int pwidth = font.getStringWidth("Faulty Cosmic Ark stars");
   WidgetArray wid;
   VariantList items;
 
@@ -350,8 +359,8 @@ void DeveloperDialog::addTiaTab(const GUI::Font& font)
   VarList::push_back(items, "Glitched Light Sixer", "lightsixer");
   VarList::push_back(items, "Glitched Jr. missiles", "juniorbug");
   VarList::push_back(items, "Custom", "custom");
-  myTIATypeWidget = new PopUpWidget(pane, font, 0, 0,
-                                    pwidth, lineHeight, items, "Chip type ", 0, kTIAType);
+  myTIATypeWidget = new PopUpWidget(pane, font, 0, 0, items, "Chip type", 0,
+                                    kTIAType);
   myTIATypeWidget->setToolTip("Select which TIA chip type to emulate.\n"
                               "Some types cause defined glitches.");
   wid.push_back(myTIATypeWidget);
@@ -431,6 +440,9 @@ void DeveloperDialog::addTiaTab(const GUI::Font& font)
               INDENT    = Dialog::indent();
     const int gap = fontWidth * 2.5;
 
+    // The chip-type pop-up draws its own label, so give it a column of its own
+    GUI::alignLabels({{myTIATypeWidget, INDENT}});
+
     // Each quirk is a heading with a row of the objects it applies to beneath it
     const auto objectRow = [&](CheckboxWidget* first, CheckboxWidget* second,
                                CheckboxWidget* third) {
@@ -478,7 +490,6 @@ void DeveloperDialog::addVideoTab(const GUI::Font& font)
 {
   const int lineHeight = Dialog::lineHeight(),
             fontWidth  = Dialog::fontWidth();
-  const int lwidth = font.getStringWidth("Intensity ");
   const int pwidth = fontWidth * 6;
   WidgetArray wid;
   VariantList items;
@@ -503,8 +514,8 @@ void DeveloperDialog::addVideoTab(const GUI::Font& font)
   myTVJitterWidget->setToolTip("Enable to emulate TV loss of sync.", Event::ToggleJitter);
   wid.push_back(myTVJitterWidget);
 
-  myTVJitterSenseWidget = new SliderWidget(pane, font, 0, 0, fontWidth * 10, lineHeight,
-                                           "Sensitivity ", 0, 0, fontWidth * 2);
+  myTVJitterSenseWidget = new SliderWidget(pane, font, 0, 0, fontWidth * 10,
+                                           "Sensitivity", 0, 0, fontWidth * 2);
   myTVJitterSenseWidget->setMinValue(JitterEmulation::MIN_SENSITIVITY);
   myTVJitterSenseWidget->setMaxValue(JitterEmulation::MAX_SENSITIVITY);
   myTVJitterSenseWidget->setTickmarkIntervals(3);
@@ -512,8 +523,8 @@ void DeveloperDialog::addVideoTab(const GUI::Font& font)
     Event::JitterSenseDecrease, Event::JitterSenseIncrease);
   wid.push_back(myTVJitterSenseWidget);
 
-  myTVJitterRecWidget = new SliderWidget(pane, font, 0, 0, fontWidth * 10, lineHeight,
-                                         "Recovery ", 0, 0, fontWidth * 2);
+  myTVJitterRecWidget = new SliderWidget(pane, font, 0, 0, fontWidth * 10,
+                                         "Recovery", 0, 0, fontWidth * 2);
   myTVJitterRecWidget->setMinValue(JitterEmulation::MIN_RECOVERY);
   myTVJitterRecWidget->setMaxValue(JitterEmulation::MAX_RECOVERY);
   myTVJitterRecWidget->setTickmarkIntervals(5);
@@ -546,19 +557,19 @@ void DeveloperDialog::addVideoTab(const GUI::Font& font)
 
   const auto createDebugColourWidgets = [&](int idx, string_view desc)
   {
-    myDbgColour[idx] = new PopUpWidget(pane, font, 0, 0,
-                                       pwidth, lineHeight, items, desc, lwidth, dbg_cmds[idx]);
+    myDbgColour[idx] = new PopUpWidget(pane, font, 0, 0, pwidth, items, desc,
+                                       0, dbg_cmds[idx]);
     wid.push_back(myDbgColour[idx]);
     myDbgColourSwatch[idx] = new ColorWidget(
       pane, font, 0, 0, static_cast<uInt32>(2 * lineHeight), lineHeight);
   };
 
-  createDebugColourWidgets(0, "Player 0  ");
-  createDebugColourWidgets(1, "Missile 0 ");
-  createDebugColourWidgets(2, "Player 1  ");
-  createDebugColourWidgets(3, "Missile 1 ");
-  createDebugColourWidgets(4, "Playfield ");
-  createDebugColourWidgets(5, "Ball      ");
+  createDebugColourWidgets(0, "Player 0");
+  createDebugColourWidgets(1, "Missile 0");
+  createDebugColourWidgets(2, "Player 1");
+  createDebugColourWidgets(3, "Missile 1");
+  createDebugColourWidgets(4, "Playfield");
+  createDebugColourWidgets(5, "Ball");
 
   myVideoInfo = new StaticTextWidget(pane, instance().frameBuffer().infoFont(), 0, 0,
                                      "(*) Colors identical for player and developer settings");
@@ -580,6 +591,13 @@ void DeveloperDialog::addVideoTab(const GUI::Font& font)
               INDENT    = Dialog::indent();
     const int prefix = CheckboxWidget::prefixSize(_font);
 
+    // The two jitter sliders sit side by side, so a shared label column would
+    // align nothing (their tracks start at different places regardless) and
+    // would only pad the shorter label out to the longer one.  Each gets a
+    // group of its own, purely for the clearance a group supplies
+    GUI::alignLabels({{myTVJitterSenseWidget}});
+    GUI::alignLabels({{myTVJitterRecWidget}});
+
     // The jitter sliders share a row, indented under the checkbox's text
     auto jitterRow = std::make_unique<BoxLayout>(Dir::Horizontal);
     jitterRow->addAuto(indentedItem(myTVJitterSenseWidget, INDENT + prefix));
@@ -600,7 +618,11 @@ void DeveloperDialog::addVideoTab(const GUI::Font& font)
     col.addAuto(indentedItem(myDebugColorsWidget, INDENT));
     col.addSpace(VGAP + 2);
 
-    // Each debug colour is a pop-up with its colour swatch beside it
+    // Each debug colour is a pop-up with its colour swatch beside it.  They draw
+    // their own labels, so one shared column keeps their value boxes in line
+    GUI::alignLabels({{myDbgColour[0]}, {myDbgColour[1]}, {myDbgColour[2]},
+                      {myDbgColour[3]}, {myDbgColour[4]}, {myDbgColour[5]}});
+
     for(int i = 0; i < DEBUG_COLORS; ++i)
     {
       auto colourRow = std::make_unique<BoxLayout>(Dir::Horizontal);
@@ -632,17 +654,16 @@ void DeveloperDialog::addTimeMachineTab(const GUI::Font& font)
     "10 seconds"
   };
   static constexpr std::array<string_view, RewindManager::NUM_HORIZONS> HORIZONS = {
-    " 3 seconds",
-    "10 seconds",
-    "30 seconds",
-    " 1 minute",
-    " 3 minutes",
-    "10 minutes",
-    "30 minutes",
-    "60 minutes"
+    "~  3 seconds",
+    "~ 10 seconds",
+    "~ 30 seconds",
+    "~  1 minute",
+    "~  3 minutes",
+    "~ 10 minutes",
+    "~ 30 minutes",
+    "~ 60 minutes"
   };
-  const int lineHeight = Dialog::lineHeight(),
-            fontWidth  = Dialog::fontWidth();
+  const int fontWidth  = Dialog::fontWidth();
   const int lwidth = fontWidth * 11;
   WidgetArray wid;
   VariantList items;
@@ -667,8 +688,8 @@ void DeveloperDialog::addTimeMachineTab(const GUI::Font& font)
   wid.push_back(myTimeMachineWidget);
 
   const int swidth = fontWidth * 12 + 5; // width of PopUpWidgets below
-  myStateSizeWidget = new SliderWidget(pane, font, 0, 0, swidth, lineHeight,
-                                       "Buffer size (*)   ", 0, kSizeChanged, lwidth, " states");
+  myStateSizeWidget = new SliderWidget(pane, font, 0, 0, swidth,
+                                       "Buffer size (*)", 0, kSizeChanged, lwidth, " states");
   myStateSizeWidget->setMinValue(RewindManager::MIN_BUF_SIZE);
   myStateSizeWidget->setMaxValue(RewindManager::MAX_BUF_SIZE);
   myStateSizeWidget->setStepValue(20);
@@ -676,8 +697,8 @@ void DeveloperDialog::addTimeMachineTab(const GUI::Font& font)
   myStateSizeWidget->setToolTip("Define the total Time Machine buffer size.");
   wid.push_back(myStateSizeWidget);
 
-  myUncompressedWidget = new SliderWidget(pane, font, 0, 0, swidth, lineHeight,
-                                          "Uncompressed size ", 0, kUncompressedChanged, lwidth, " states");
+  myUncompressedWidget = new SliderWidget(pane, font, 0, 0, swidth,
+                                          "Uncompressed size", 0, kUncompressedChanged, lwidth, " states");
   myUncompressedWidget->setMinValue(0);
   myUncompressedWidget->setMaxValue(RewindManager::MAX_BUF_SIZE);
   myUncompressedWidget->setStepValue(20);
@@ -690,17 +711,16 @@ void DeveloperDialog::addTimeMachineTab(const GUI::Font& font)
   items.clear();
   for(int i = 0; i < RewindManager::NUM_INTERVALS; ++i)
     VarList::push_back(items, INTERVALS[i], RewindManager::INT_SETTINGS[i]);
-  const int pwidth = font.getStringWidth("10 seconds");
-  myStateIntervalWidget = new PopUpWidget(pane, font, 0, 0, pwidth,
-                                          lineHeight, items, "Interval          ", 0, kIntervalChanged);
+  myStateIntervalWidget = new PopUpWidget(pane, font, 0, 0, items,
+                                          "Interval", 0, kIntervalChanged);
   myStateIntervalWidget->setToolTip("Define the interval between each saved state.");
   wid.push_back(myStateIntervalWidget);
 
   items.clear();
   for(int i = 0; i < RewindManager::NUM_HORIZONS; ++i)
     VarList::push_back(items, HORIZONS[i], RewindManager::HOR_SETTINGS[i]);
-  myStateHorizonWidget = new PopUpWidget(pane, font, 0, 0, pwidth,
-                                         lineHeight, items, "Horizon         ~ ", 0, kHorizonChanged);
+  myStateHorizonWidget = new PopUpWidget(pane, font, 0, 0, items,
+                                         "Horizon", 0, kHorizonChanged);
   myStateHorizonWidget->setToolTip("Define how far the Time Machine\n"
                                    "will allow moving back in time.");
   wid.push_back(myStateHorizonWidget);
@@ -721,6 +741,14 @@ void DeveloperDialog::addTimeMachineTab(const GUI::Font& font)
               INDENT = Dialog::indent();
     // The sliders and pop-ups line up under the Time Machine checkbox's text
     const int under = INDENT + CheckboxWidget::prefixSize(_font);
+
+    // All four draw their own labels, so one shared column lines up the two
+    // sliders' tracks with the two pop-ups' boxes...
+    GUI::alignLabels({{myStateSizeWidget, under}, {myUncompressedWidget, under},
+                      {myStateIntervalWidget, under}, {myStateHorizonWidget, under}});
+    // ...and the pop-ups, which size their boxes to their own lists, take one
+    // shared box width so their right edges are flush too
+    GUI::alignPopUps({myStateIntervalWidget, myStateHorizonWidget});
 
     col.addAuto(anchoredItem(myTMSettings[0]));
     col.addSpace(VGAP);
@@ -751,8 +779,7 @@ void DeveloperDialog::addDebuggerTab(const GUI::Font& font)
   WidgetArray wid;
 
 #ifdef DEBUGGER_SUPPORT
-  const int lineHeight = Dialog::lineHeight(),
-            fontWidth  = Dialog::fontWidth();
+  const int fontWidth  = Dialog::fontWidth();
   VariantList items;
   const Common::Size& ds = instance().frameBuffer().desktopSize();
 
@@ -762,8 +789,8 @@ void DeveloperDialog::addDebuggerTab(const GUI::Font& font)
   VarList::push_back(items, "Medium", "medium");
   VarList::push_back(items, "Large", "large");
   myDebuggerFontSize =
-    new PopUpWidget(pane, font, 0, 0, font.getStringWidth("Medium"), lineHeight, items,
-                    "Font size (*)  ", 0, kDFontSizeChanged);
+    new PopUpWidget(pane, font, 0, 0, items, "Font size (*)", 0,
+                    kDFontSizeChanged);
   wid.push_back(myDebuggerFontSize);
 
   // Font style (bold label vs. text, etc)
@@ -773,12 +800,11 @@ void DeveloperDialog::addDebuggerTab(const GUI::Font& font)
   VarList::push_back(items, "Bold non-labels only", "2");
   VarList::push_back(items, "All bold font", "3");
   myDebuggerFontStyle =
-    new PopUpWidget(pane, font, 0, 0, font.getStringWidth("Bold non-labels only"),
-                    lineHeight, items, "Font style (*) ", 0);
+    new PopUpWidget(pane, font, 0, 0, items, "Font style (*)", 0);
   wid.push_back(myDebuggerFontStyle);
 
   // Debugger width and height
-  myDebuggerWidthSlider = new SliderWidget(pane, font, 0, 0, "Debugger width (*)  ",
+  myDebuggerWidthSlider = new SliderWidget(pane, font, 0, 0, "Debugger width (*)",
                                            0, 0, 6 * fontWidth, "px");
   myDebuggerWidthSlider->setMinValue(DebuggerDialog::kSmallFontMinW);
   myDebuggerWidthSlider->setMaxValue(ds.w);
@@ -787,7 +813,7 @@ void DeveloperDialog::addDebuggerTab(const GUI::Font& font)
   myDebuggerWidthSlider->setTickmarkIntervals((ds.w - DebuggerDialog::kSmallFontMinW + 50) / 100);
   wid.push_back(myDebuggerWidthSlider);
 
-  myDebuggerHeightSlider = new SliderWidget(pane, font, 0, 0, "Debugger height (*) ",
+  myDebuggerHeightSlider = new SliderWidget(pane, font, 0, 0, "Debugger height (*)",
                                             0, 0, 6 * fontWidth, "px");
   myDebuggerHeightSlider->setMinValue(DebuggerDialog::kSmallFontMinH);
   myDebuggerHeightSlider->setMaxValue(ds.h);
@@ -813,7 +839,7 @@ void DeveloperDialog::addDebuggerTab(const GUI::Font& font)
   }
 #endif
 #else
-  myDebuggerInfo = new StaticTextWidget(pane, font, 0, 0, 1, font.getFontHeight(),
+  myDebuggerInfo = new StaticTextWidget(pane, font, 0, 0,
                                         "Debugger support not included", TextAlign::Center);
 #endif
 
@@ -830,6 +856,12 @@ void DeveloperDialog::addDebuggerTab(const GUI::Font& font)
 
 #ifdef DEBUGGER_SUPPORT
     const int VGAP = Dialog::vGap();
+
+    // All four draw their own labels: one shared column, and one shared box
+    // width for the two pop-ups
+    GUI::alignLabels({{myDebuggerFontSize}, {myDebuggerFontStyle},
+                      {myDebuggerWidthSlider}, {myDebuggerHeightSlider}});
+    GUI::alignPopUps({myDebuggerFontSize, myDebuggerFontStyle});
 
     col.addAuto(anchoredItem(myDebuggerFontSize));
     col.addSpace(VGAP);

@@ -37,8 +37,6 @@ CommandDialog::CommandDialog(OSystem& osystem, DialogContainer& parent)
 {
   // Only the button size is needed to create the widgets; layout() computes
   // _w/_h and positions everything from the current font
-  const int buttonHeight = Dialog::buttonHeight(),
-            buttonWidth  = Dialog::buttonWidth("Time Machine On");
   WidgetArray wid;
 
   // Widgets are only created here (at placeholder geometry); layout() positions
@@ -47,8 +45,7 @@ CommandDialog::CommandDialog(OSystem& osystem, DialogContainer& parent)
   const auto ADD_CD_BUTTON = [&](string_view label, int cmd,
     Event::Type event1 = Event::NoType, Event::Type event2 = Event::NoType)
   {
-    auto* b = new ButtonWidget(this, _font, 0, 0,
-        buttonWidth, buttonHeight, label, cmd);
+    auto* b = new ButtonWidget(this, _font, 0, 0, 1, label, cmd);
     b->setToolTip(event1, event2);
     myButtons.push_back(b);
     wid.push_back(b);
@@ -93,19 +90,19 @@ CommandDialog::CommandDialog(OSystem& osystem, DialogContainer& parent)
 void CommandDialog::layout()
 {
   using GUI::GridLayout;
-  using GUI::widgetItem;
+  using GUI::anchoredItem;
 
-  const int buttonHeight = Dialog::buttonHeight();
-  const int buttonWidth  = Dialog::buttonWidth("Time Machine On");
-  const int VBORDER      = Dialog::vBorder();
-  const int HBORDER      = Dialog::hBorder();
-  const int VGAP         = Dialog::vGap();
-  const int HGAP         = Dialog::buttonGap();
-  const int rowHeight    = buttonHeight + VGAP;
+  const int VBORDER = Dialog::vBorder();
+  const int HBORDER = Dialog::hBorder();
+  const int VGAP    = Dialog::vGap();
+  const int HGAP    = Dialog::buttonGap();
 
-  // Size the (fixed) dialog from the current font so it reflows on font change
-  _w = 3 * (buttonWidth + HGAP) - HGAP + HBORDER * 2;
-  _h = 6 * rowHeight - VGAP + VBORDER * 2 + _th;
+  // These buttons are RE-LABELLED as the console state changes (loadConfig), so
+  // they cannot size themselves: they must all be as wide as the widest label any
+  // of them can ever show, or they would resize under the user
+  const int buttonWidth = ButtonWidget::calcWidth(_font, "Time Machine On");
+  for(auto* b: myButtons)
+    b->setWidth(buttonWidth);
 
   // Three columns of buttons; columns 1 and 3 have five rows, column 2 has six
   static constexpr int COLS = 3, ROWS = 6;
@@ -114,15 +111,21 @@ void CommandDialog::layout()
   auto grid = std::make_unique<GridLayout>(COLS, ROWS, HGAP, VGAP,
                                            HBORDER, VBORDER);
   for(int c = 0; c < COLS; ++c)
-    grid->columnFixed(c, buttonWidth);
+    grid->columnAuto(c);
   for(int r = 0; r < ROWS; ++r)
-    grid->rowFixed(r, buttonHeight);
+    grid->rowAuto(r);
 
   // myButtons is stored column-major; place each in its cell
   size_t idx = 0;
   for(int c = 0; c < COLS; ++c)
     for(int r = 0; r < colRows[c]; ++r)
-      grid->place(c, r, widgetItem(myButtons[idx++]));
+      grid->place(c, r, anchoredItem(myButtons[idx++]));
+
+  // The dialog is exactly as large as the button grid asks to be
+  const Common::Size natural = grid->naturalSize();
+
+  _w = static_cast<int>(natural.w);
+  _h = _th + static_cast<int>(natural.h);
 
   // Position the grid in the dialog area below the title bar
   grid->doLayout(0, _th, _w, _h - _th);

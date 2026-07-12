@@ -33,22 +33,17 @@ ProgressDialog::ProgressDialog(GuiObject* boss, const GUI::Font& font,
   : Dialog(boss->instance(), boss->parent(), font),
     myMessageText{message}
 {
-  const int lineHeight   = Dialog::lineHeight(),
-            fontHeight   = Dialog::fontHeight(),
-            buttonHeight = Dialog::buttonHeight(),
-            buttonWidth  = Dialog::buttonWidth("Cancel");
   WidgetArray wid;
 
-  myMessage = new StaticTextWidget(this, font, 0, 0, 1, fontHeight,
-                                   message, TextAlign::Center);
+  myMessage = new StaticTextWidget(this, font, 0, 0, message,
+                                   TextAlign::Center);
   myMessage->setTextColor(kTextColorEm);
 
-  mySlider = new SliderWidget(this, font, 0, 0, 1, lineHeight, "", 0, 0);
+  mySlider = new SliderWidget(this, font, 0, 0, 1, "", 0, 0);
   mySlider->setMinValue(1);
   mySlider->setMaxValue(100);
 
-  auto* b = new ButtonWidget(this, font, 0, 0, buttonWidth, buttonHeight,
-                             "Cancel", Event::UICancel);
+  auto* b = new ButtonWidget(this, font, 0, 0, "Cancel", Event::UICancel);
   wid.push_back(b);
   addCancelWidget(b);
   addToFocusList(wid);
@@ -58,38 +53,35 @@ ProgressDialog::ProgressDialog(GuiObject* boss, const GUI::Font& font,
 void ProgressDialog::layout()
 {
   using GUI::BoxLayout;
+  using GUI::stretchedItem;
   using GUI::anchoredItem;
-  using GUI::widgetItem;
   using Dir = BoxLayout::Dir;
 
-  const int lineHeight   = Dialog::lineHeight(),
-            buttonHeight = Dialog::buttonHeight(),
-            buttonWidth  = Dialog::buttonWidth("Cancel"),
-            VBORDER      = Dialog::vBorder(),
-            HBORDER      = Dialog::hBorder(),
-            VGAP         = Dialog::vGap();
-  const int lwidth = _font.getStringWidth(myMessageText);
-
-  _w = HBORDER * 2 + std::max(lwidth, buttonWidth);
-  _h = VBORDER * 2 + lineHeight * 2 + buttonHeight + VGAP * 6;
-
-  // The message and slider keep their (message-derived) width; the Cancel
-  // button is centered below them
-  myMessage->setWidth(lwidth);
-  mySlider->setWidth(lwidth);
+  const int VBORDER = Dialog::vBorder(),
+            HBORDER = Dialog::hBorder(),
+            VGAP    = Dialog::vGap();
 
   // The Cancel button keeps the width its label needs, centered on its row
   auto cancelRow = std::make_unique<BoxLayout>(Dir::Horizontal);
   cancelRow->addStretchSpace();
-  cancelRow->addFixed(widgetItem(_cancelWidget), buttonWidth);
+  cancelRow->addAuto(anchoredItem(_cancelWidget));
   cancelRow->addStretchSpace();
 
+  // The message and the slider below it both span the dialog's width; how much
+  // room the message needs is what that width is derived from (the button row
+  // below widens it further if the message is a short one)
   auto root = std::make_unique<BoxLayout>(Dir::Vertical, 0, HBORDER, VBORDER);
-  root->addFixed(anchoredItem(myMessage), lineHeight);
+  root->addAuto(stretchedItem(myMessage, _font.getStringWidth(myMessageText)));
   root->addSpace(VGAP * 2);
-  root->addFixed(anchoredItem(mySlider), lineHeight);
+  root->addAuto(stretchedItem(mySlider));
   root->addSpace(VGAP * 4);
-  root->addFixed(std::move(cancelRow), buttonHeight);
+  root->addAuto(std::move(cancelRow));
+
+  const Common::Size natural = root->naturalSize();
+
+  _w = static_cast<int>(natural.w);
+  _h = static_cast<int>(natural.h);
+
   root->doLayout(0, 0, _w, _h);
 }
 

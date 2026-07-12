@@ -35,12 +35,11 @@ CheatCodeDialog::CheatCodeDialog(OSystem& osystem, DialogContainer& parent,
                                  const GUI::Font& font)
   : Dialog(osystem, parent, font, "Cheat codes")
 {
-  const int buttonHeight = Dialog::buttonHeight(),
-            buttonWidth  = Dialog::buttonWidth("One shot ");
   WidgetArray wid;
 
   // Widgets are only created here (at placeholder geometry); layout() assigns
-  // all geometry from the current font.
+  // all geometry from the current font.  Each button sizes itself to its label;
+  // layout() gives the column one shared width
 
   // NOLINTBEGIN(cppcoreguidelines-prefer-member-initializer)
   // List of cheats, with checkboxes to enable/disable
@@ -48,26 +47,26 @@ CheatCodeDialog::CheatCodeDialog(OSystem& osystem, DialogContainer& parent,
   myCheatList->setEditable(false);
   wid.push_back(myCheatList);
 
-  myAddButton = new ButtonWidget(this, font, 0, 0, buttonWidth, buttonHeight,
+  myAddButton = new ButtonWidget(this, font, 0, 0,
                                  "Add" + ELLIPSIS, kAddCheatCmd);
   wid.push_back(myAddButton);
 
-  myEditButton = new ButtonWidget(this, font, 0, 0, buttonWidth, buttonHeight,
+  myEditButton = new ButtonWidget(this, font, 0, 0,
                                   "Edit" + ELLIPSIS, kEditCheatCmd);
   wid.push_back(myEditButton);
 
-  myRemoveButton = new ButtonWidget(this, font, 0, 0, buttonWidth, buttonHeight,
+  myRemoveButton = new ButtonWidget(this, font, 0, 0,
                                     "Remove", kRemCheatCmd);
   wid.push_back(myRemoveButton);
 
-  myOneShotButton = new ButtonWidget(this, font, 0, 0, buttonWidth, buttonHeight,
+  myOneShotButton = new ButtonWidget(this, font, 0, 0,
                                      "One shot" + ELLIPSIS, kAddOneShotCmd);
   wid.push_back(myOneShotButton);
 
   // Inputbox which will pop up when adding/editing a cheat
   StringList labels;
-  labels.emplace_back("Name       ");
-  labels.emplace_back("Code (hex) ");
+  labels.emplace_back("Name");
+  labels.emplace_back("Code (hex)");
   myCheatInput = std::make_unique<InputTextDialog>(this, font, labels, "Cheat code");
   myCheatInput->setTarget(this);
 
@@ -102,44 +101,52 @@ void CheatCodeDialog::layout()
 {
   using GUI::BoxLayout;
   using GUI::widgetItem;
-  using GUI::anchoredItem;
+  using GUI::stretchedItem;
   using Dir = BoxLayout::Dir;
 
-  const int lineHeight   = Dialog::lineHeight(),
-            fontWidth    = Dialog::fontWidth(),
+  const int fontWidth    = Dialog::fontWidth(),
             buttonHeight = Dialog::buttonHeight(),
-            buttonWidth  = Dialog::buttonWidth("One shot "),
             VGAP         = Dialog::vGap(),
             VBORDER      = Dialog::vBorder(),
             HBORDER      = Dialog::hBorder();
 
-  // Size the (fixed) dialog from the current font so it reflows on font change
-  _w = 45 * fontWidth + HBORDER * 2;
-  _h = _th + 11 * (lineHeight + 4) + VBORDER * 2;
+  // The four action buttons stand in one column, so they share one width
+  GUI::alignButtons({myAddButton, myEditButton, myRemoveButton, myOneShotButton});
+  const int buttonWidth = myAddButton->getWidth();
 
-  const int listH = _h - _th - buttonHeight - VBORDER * 3;
-
-  // Right-hand column of action buttons.  Each button is buttonHeight tall but
-  // the column advances on a lineHeight pitch (matching the original), so it is
-  // anchored in a lineHeight cell and overflows downward; a larger gap sets
-  // 'One shot' apart from the editing buttons.
-  auto buttonCol = std::make_unique<BoxLayout>(Dir::Vertical, 0, 0, 0);
-  buttonCol->addFixed(anchoredItem(myAddButton), lineHeight);
+  // Right-hand column of action buttons, with a larger gap setting 'One shot'
+  // apart from the editing buttons
+  auto buttonCol = std::make_unique<BoxLayout>(Dir::Vertical, VGAP * 2, 0, 0);
+  buttonCol->addAuto(stretchedItem(myAddButton));
+  buttonCol->addAuto(stretchedItem(myEditButton));
+  buttonCol->addAuto(stretchedItem(myRemoveButton));
   buttonCol->addSpace(VGAP * 2);
-  buttonCol->addFixed(anchoredItem(myEditButton), lineHeight);
-  buttonCol->addSpace(VGAP * 2);
-  buttonCol->addFixed(anchoredItem(myRemoveButton), lineHeight);
-  buttonCol->addSpace(VGAP * 2 * 3);
-  buttonCol->addFixed(anchoredItem(myOneShotButton), lineHeight);
+  buttonCol->addAuto(stretchedItem(myOneShotButton));
+  buttonCol->addStretchSpace();
 
-  // The list fills the remaining width to the left of the button column
+  // The list fills the width to the left of the button column, and shows
+  // eleven cheats -- which, with the room its names need, is what sizes the
+  // dialog
   auto mainRow = std::make_unique<BoxLayout>(Dir::Horizontal, 0, 0, 0);
-  mainRow->addStretch(widgetItem(myCheatList));
+  mainRow->addStretch(widgetItem(myCheatList, 32 * fontWidth,
+                                 ListWidget::calcHeight(_font, 11)));
   mainRow->addSpace(fontWidth);
   mainRow->addFixed(std::move(buttonCol), buttonWidth);
 
+  // The list STRETCHES, so the band for the button group has to be reserved
+  // here: laying the tree out over the whole dialog would otherwise let the list
+  // grow down into it.  (A dialog whose rows are all addAuto -- EmulationDialog
+  // -- has nothing that can expand, and simply adds the band to its height.)
   auto root = std::make_unique<BoxLayout>(Dir::Vertical, 0, HBORDER, VBORDER);
-  root->addFixed(std::move(mainRow), listH);
+  root->addStretch(std::move(mainRow));
+  root->addSpace(VBORDER);
+  root->addSpace(buttonHeight);
+
+  const Common::Size natural = root->naturalSize();
+
+  _w = std::max(static_cast<int>(natural.w), Dialog::buttonGroupWidth());
+  _h = _th + static_cast<int>(natural.h);
+
   root->doLayout(0, _th, _w, _h - _th);
 
   // OK/Cancel along the bottom edge

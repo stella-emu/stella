@@ -49,7 +49,7 @@ CartRamWidget::CartRamWidget(
     : std::format("{} bytes", ramsize);
 
   auto* etw = new EditTextWidget(boss, nfont, xpos+lwidth, ypos - 1,
-                                 fwidth, _lineHeight, ramsizeStr);
+                                 fwidth, ramsizeStr);
   etw->setEditable(false);
   ypos += _lineHeight + 4;
 

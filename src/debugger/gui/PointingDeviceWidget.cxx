@@ -41,16 +41,16 @@ PointingDeviceWidget::PointingDeviceWidget(GuiObject* boss, const GUI::Font& fon
 
   ypos += myGrayValueV->getHeight() + 2;
 
-  myGrayUp = new ButtonWidget(boss, font, xMid, ypos, 17, "+", kTBUp);
+  myGrayUp = new ButtonWidget(boss, font, xMid, ypos, font.getStringWidth("+") + 17, "+", kTBUp);
   myGrayUp->setTarget(this);
 
   ypos += myGrayUp->getHeight() + 5;
 
   // add horizontal direction and gray code widgets
-  myGrayLeft = new ButtonWidget(boss, font, xLeft, ypos, 17, "-", kTBLeft);
+  myGrayLeft = new ButtonWidget(boss, font, xLeft, ypos, font.getStringWidth("-") + 17, "-", kTBLeft);
   myGrayLeft->setTarget(this);
 
-  myGrayRight = new ButtonWidget(boss, font, xRight, ypos, 17, "+", kTBRight);
+  myGrayRight = new ButtonWidget(boss, font, xRight, ypos, font.getStringWidth("+") + 17, "+", kTBRight);
   myGrayRight->setTarget(this);
 
   myGrayValueH = new DataGridWidget(boss, font, xValue, ypos + 2,
@@ -61,7 +61,7 @@ PointingDeviceWidget::PointingDeviceWidget(GuiObject* boss, const GUI::Font& fon
   ypos += myGrayLeft->getHeight() + 5;
 
   // add down widget
-  myGrayDown = new ButtonWidget(boss, font, xMid, ypos, 17, "-", kTBDown);
+  myGrayDown = new ButtonWidget(boss, font, xMid, ypos, font.getStringWidth("-") + 17, "-", kTBDown);
   myGrayDown->setTarget(this);
 
   ypos += myGrayDown->getHeight() + 8;

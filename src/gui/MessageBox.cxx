@@ -97,41 +97,45 @@ MessageBox::MessageBox(OSystem& osystem, DialogContainer& parent,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void MessageBox::createText(const GUI::Font& font, const StringList& text)
 {
-  const int fontHeight = Dialog::fontHeight();
 
   myText = text;
   for(const auto& s: text)
-    myTextWidgets.push_back(new StaticTextWidget(this, font, 0, 0, 1,
-                            fontHeight, s, TextAlign::Left));
+    myTextWidgets.push_back(new StaticTextWidget(this, font, 0, 0, s,
+                                                 TextAlign::Left));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void MessageBox::layout()
 {
   using GUI::BoxLayout;
-  using GUI::widgetItem;
+  using GUI::stretchedItem;
   using Dir = BoxLayout::Dir;
 
-  const int fontWidth  = Dialog::fontWidth(),
-            fontHeight = Dialog::fontHeight(),
-            VBORDER    = Dialog::vBorder(),
-            HBORDER    = Dialog::hBorder();
+  const int fontWidth    = Dialog::fontWidth(),
+            buttonHeight = Dialog::buttonHeight(),
+            VBORDER      = Dialog::vBorder(),
+            HBORDER      = Dialog::hBorder(),
+            VGAP         = Dialog::vGap();
 
-  // Size to the longest line, clamped to the max, but never narrower than the
-  // button group (mirrors addOKCancelBGroup's width floor)
+  // Vertical stack of the text lines below the title bar; the button group sits
+  // below it, positioned by layoutButtonGroup()
+  auto root = std::make_unique<BoxLayout>(Dir::Vertical, 0, HBORDER, VBORDER);
+  for(auto* w: myTextWidgets)
+    root->addAuto(stretchedItem(w));
+  root->addSpace(VGAP * 2);
+
+  // As wide as the longest line, and as tall as the lines need -- but never
+  // narrower than the button group below them, and never bigger than the caller
+  // said we may be
   int str_w = 0;
   for(const auto& s: myText)
     str_w = std::max(static_cast<int>(s.length()), str_w);
-  _w = std::min(str_w * fontWidth + HBORDER * 2, myMaxW);
-  _w = std::max(_w, HBORDER * 2 + _okWidget->getWidth()
-                    + _cancelWidget->getWidth() + Dialog::buttonGap());
-  _h = std::min((static_cast<int>(myText.size()) + 2) * fontHeight + VBORDER * 2 + _th,
-                myMaxH);
 
-  // Vertical stack of the text lines below the title bar
-  auto root = std::make_unique<BoxLayout>(Dir::Vertical, 0, HBORDER, VBORDER);
-  for(auto* w: myTextWidgets)
-    root->addFixed(widgetItem(w), fontHeight);
+  _w = std::min(std::max(str_w * fontWidth + HBORDER * 2,
+                         Dialog::buttonGroupWidth()), myMaxW);
+  _h = std::min(_th + static_cast<int>(root->naturalSize().h)
+                + buttonHeight + VBORDER, myMaxH);
+
   root->doLayout(0, _th, _w, _h - _th);
 
   // Standard OK/Cancel button group along the bottom edge

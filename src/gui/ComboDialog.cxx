@@ -31,32 +31,26 @@ ComboDialog::ComboDialog(GuiObject* boss, const GUI::Font& font,
                          const VariantList& combolist)
   : Dialog(boss->instance(), boss->parent(), font, "Add...")
 {
-  const int lineHeight = Dialog::lineHeight();
   WidgetArray wid;
 
   // Widgets are only created here (at placeholder position); layout() assigns
   // all geometry from the current font.
 
   // NOLINTBEGIN(cppcoreguidelines-prefer-member-initializer)
-  // Popup width = widest combo entry (content-derived; layout() uses it for _w)
-  for(const auto& s: combolist)
-    myPopupWidth = std::max(font.getStringWidth(s.first), myPopupWidth);
-
-  // Add event popup for 8 events
+  // Add event popup for 8 events; each sizes itself to the events it can show
   const auto ADD_EVENT_POPUP = [&](int idx, string_view label)
   {
-    myEvents[idx] = new PopUpWidget(this, font, 0, 0,
-                        myPopupWidth, lineHeight, combolist, label);
+    myEvents[idx] = new PopUpWidget(this, font, 0, 0, combolist, label);
     wid.push_back(myEvents[idx]);
   };
-  ADD_EVENT_POPUP(0, "Event 1 ");
-  ADD_EVENT_POPUP(1, "Event 2 ");
-  ADD_EVENT_POPUP(2, "Event 3 ");
-  ADD_EVENT_POPUP(3, "Event 4 ");
-  ADD_EVENT_POPUP(4, "Event 5 ");
-  ADD_EVENT_POPUP(5, "Event 6 ");
-  ADD_EVENT_POPUP(6, "Event 7 ");
-  ADD_EVENT_POPUP(7, "Event 8 ");
+  ADD_EVENT_POPUP(0, "Event 1");
+  ADD_EVENT_POPUP(1, "Event 2");
+  ADD_EVENT_POPUP(2, "Event 3");
+  ADD_EVENT_POPUP(3, "Event 4");
+  ADD_EVENT_POPUP(4, "Event 5");
+  ADD_EVENT_POPUP(5, "Event 6");
+  ADD_EVENT_POPUP(6, "Event 7");
+  ADD_EVENT_POPUP(7, "Event 8");
 
   // Add Defaults, OK and Cancel buttons
   addDefaultsOKCancelBGroup(wid, font);
@@ -74,25 +68,28 @@ void ComboDialog::layout()
   using GUI::anchoredItem;
   using Dir = BoxLayout::Dir;
 
-  const int lineHeight   = Dialog::lineHeight(),
-            fontWidth    = Dialog::fontWidth(),
-            buttonHeight = Dialog::buttonHeight(),
+  const int buttonHeight = Dialog::buttonHeight(),
             VBORDER      = Dialog::vBorder(),
             HBORDER      = Dialog::hBorder(),
             VGAP         = Dialog::vGap();
 
-  // Size the (fixed) dialog from the current font so it reflows on font change
-  _w = 8 * fontWidth + myPopupWidth + PopUpWidget::dropDownWidth(_font) + HBORDER * 2;
-  _h = 8 * (lineHeight + VGAP) + VGAP + buttonHeight + VBORDER * 2 + _th;
+  // The popups draw their own labels; one shared column lines their value boxes
+  // up down the dialog
+  GUI::alignLabels({{myEvents[0]}, {myEvents[1]}, {myEvents[2]}, {myEvents[3]},
+                    {myEvents[4]}, {myEvents[5]}, {myEvents[6]}, {myEvents[7]}});
 
   // Vertical stack of the eight self-labeling event popups; the button group
   // sits below, positioned by layoutButtonGroup().
-  auto root = std::make_unique<BoxLayout>(Dir::Vertical, 0, HBORDER, VBORDER);
+  auto root = std::make_unique<BoxLayout>(Dir::Vertical, VGAP, HBORDER, VBORDER);
   for(auto* e: myEvents)
-  {
-    root->addFixed(anchoredItem(e), lineHeight);
-    root->addSpace(VGAP);
-  }
+    root->addAuto(anchoredItem(e));
+
+  // The dialog is as large as its content asks to be, and at least wide enough
+  // for the button row below it (which the content knows nothing about)
+  const Common::Size natural = root->naturalSize();
+
+  _w = std::max(static_cast<int>(natural.w), Dialog::buttonGroupWidth());
+  _h = _th + static_cast<int>(natural.h) + buttonHeight + VBORDER;
 
   root->doLayout(0, _th, _w, _h - _th);
 

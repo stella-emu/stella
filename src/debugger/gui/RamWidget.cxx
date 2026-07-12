@@ -129,7 +129,7 @@ RamWidget::RamWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& n
   addFocusWidget(myBinValue);
 
   myLabelText = new StaticTextWidget(boss, lfont, 0, 0, "Label");
-  myLabel = new EditTextWidget(boss, nfont, 0, 0, 1, _lineHeight);
+  myLabel = new EditTextWidget(boss, nfont, 0, 0, 1);
   myLabel->setEditable(false, true);
   // NOLINTEND(cppcoreguidelines-prefer-member-initializer)
 

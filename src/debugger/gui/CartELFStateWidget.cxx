@@ -96,19 +96,19 @@ void CartridgeELFStateWidget::initialize()
   y += (5 * lineHeight) / 2;
 
   new StaticTextWidget(_boss, _font, x0, y + 4, "Time VCS:");
-  myCurrentCyclesVcs = new EditTextWidget(_boss, _font, x0 + indent, y, 16 * _font.getMaxCharWidth(), lineHeight);
+  myCurrentCyclesVcs = new EditTextWidget(_boss, _font, x0 + indent, y, 16 * _font.getMaxCharWidth());
   myCurrentCyclesVcs->setEditable(false, true);
 
   y += myCurrentCyclesVcs->getHeight() + lineHeight / 2;
 
   new StaticTextWidget(_boss, _font, x0, y + 4, "Time ARM:");
-  myCurrentCyclesArm = new EditTextWidget(_boss, _font, x0 + indent, y, 16 * _font.getMaxCharWidth(), lineHeight);
+  myCurrentCyclesArm = new EditTextWidget(_boss, _font, x0 + indent, y, 16 * _font.getMaxCharWidth());
   myCurrentCyclesArm->setEditable(false, true);
 
   y += myCurrentCyclesArm->getHeight() + lineHeight / 2;
 
   new StaticTextWidget(_boss, _font, x0, y + 4, "Bus queue size:");
-  myQueueSize = new EditTextWidget(_boss, _font, x0 + indent, y, 4 * _font.getMaxCharWidth(), lineHeight);
+  myQueueSize = new EditTextWidget(_boss, _font, x0 + indent, y, 4 * _font.getMaxCharWidth());
   myQueueSize->setEditable(false, true);
 
   y += myQueueSize->getHeight() + lineHeight / 2;

@@ -319,6 +319,17 @@ class StaticTextWidget : public Widget, public CommandSender
     void handleMouseLeft() override;
     void handleMouseUp(int x, int y, MouseButton b, int clickCount) override;
 
+    /*
+      A static text IS a label, so what it needs and what it has been given are
+      simply its text and its width.  Saying so lets GUI::alignLabels() give a
+      group of them one column -- exactly as it does for the controls that draw
+      their own label -- so the widgets they name line up beside them, and no
+      dialog measures a label or pads one with trailing spaces to fake a column.
+    */
+    int naturalLabelWidth() const override { return _font.getStringWidth(_label); }
+    int labelWidth() const override { return _w; }
+    void setLabelWidth(int w) override { setWidth(w); }
+
     void refreshFontMetrics() override;
 
   protected:
@@ -350,9 +361,26 @@ class ButtonWidget : public StaticTextWidget
     ButtonWidget(GuiObject* boss, const GUI::Font& font,
                  int x, int y, int w, int h,
                  string_view label, int cmd = 0, bool repeat = false);
+    /**
+      Take this width, but size your own height.  For a button whose LABEL is not
+      final — the command menu re-labels its buttons as the console state changes
+      — since it must be as wide as the widest label it can ever show, and would
+      otherwise resize under the user.  Everything else uses the ctor below.
+    */
     ButtonWidget(GuiObject* boss, const GUI::Font& font,
-                 int x, int y, int dw,
+                 int x, int y, int w,
                  string_view label, int cmd = 0, bool repeat = false);
+
+    /**
+      Size me from my own label: as wide as it needs plus a comfortable margin,
+      and a little taller than a line of text.  This is what a button standing on
+      its own wants, so a dialog states nothing about it but the label — and I
+      follow a live font change by myself (see refreshFontMetrics).
+
+      Buttons that must share ONE width (a column of them, an OK/Cancel group)
+      are still built this way: no button can know what the widest of its
+      neighbours needs, so the LAYOUT equalizes them — see GUI::alignButtons().
+    */
     ButtonWidget(GuiObject* boss, const GUI::Font& font,
                  int x, int y,
                  string_view label, int cmd = 0, bool repeat = false);
@@ -383,7 +411,45 @@ class ButtonWidget : public StaticTextWidget
     void handleMouseEntered() override;
     void handleMouseLeft() override;
 
+    /*
+      A button (and so a checkbox, and a radio button) draws its label INSIDE
+      itself, not in a column to its left, so it has no label column to align and
+      GUI::alignButtons() is what sizes a group of them.  These undo the
+      StaticTextWidget behaviour we would otherwise inherit -- which would let
+      GUI::alignLabels() resize a button to the width of its label alone.
+      SliderWidget, which DOES draw a label beside its track, overrides them again
+    */
+    int naturalLabelWidth() const override { return 0; }
+    int labelWidth() const override { return 0; }
+    void setLabelWidth(int) override { }
+
     void refreshFontMetrics() override;
+
+    // How tall a button is.  Unlike its width — which is its own business, and
+    // which only GUI::alignButtons() ever overrides — a button's height is a unit
+    // other things measure themselves against (a navigation bar is one button
+    // tall, a file list four), so it is asked for from outside; Dialog::
+    // buttonHeight() is the wrapper they use
+    static int calcHeight(const GUI::Font& font)
+    {
+      return font.getLineHeight() * 1.25;
+    }
+
+    // The width this label needs, plus the margin that makes it look like a
+    // button.  A button with a fixed label applies this itself and no one else
+    // needs it; it is here for the dialog that must state a width because the
+    // label is not final (see the width-only ctor above), which says so with a
+    // specimen label rather than a pixel count
+    static int calcWidth(const GUI::Font& font, string_view label)
+    {
+      return font.getStringWidth(label) + font.getMaxCharWidth() * 2.5;
+    }
+    // The same, for a label of the given length -- how a dialog states a button
+    // width in characters rather than pixels (see Dialog::standardButtonWidth)
+    static int calcWidth(const GUI::Font& font, int chars)
+    {
+      return font.getMaxCharWidth() * (chars + 2.5);
+    }
 
   protected:
     void drawWidget(bool hilite) override;
@@ -394,6 +460,10 @@ class ButtonWidget : public StaticTextWidget
     bool _useBitmap{false};
     const uInt32* _bitmap{nullptr};
     int  _bmw{0}, _bmh{0}, _bmx{0};
+    // Set only by the label-only ctor: I sized myself, so a font change re-sizes
+    // me.  A button whose size came from elsewhere (an icon's extents, a width
+    // the layout imposes) keeps it, and the layout re-applies it
+    bool _autoSize{false};
 
   private:
     // Following constructors and assignment operators not supported
@@ -476,6 +546,18 @@ class SliderWidget : public ButtonWidget
                  string_view label = "", int labelWidth = 0, int cmd = 0,
                  int valueLabelWidth = 0, string_view valueUnit = "",
                  int valueLabelGap = 0, bool forceLabelSign = false);
+
+    /**
+      Take this TRACK width, and my height from the font.  How long a track the
+      dialog wants is its own decision; how tall a slider is never was.
+    */
+    SliderWidget(GuiObject* boss, const GUI::Font& font,
+                 int x, int y, int w,
+                 string_view label = "", int labelWidth = 0, int cmd = 0,
+                 int valueLabelWidth = 0, string_view valueUnit = "",
+                 int valueLabelGap = 0, bool forceLabelSign = false);
+
+    // ...and with a default track width as well
     SliderWidget(GuiObject* boss, const GUI::Font& font,
                  int x, int y,
                  string_view label = "", int labelWidth = 0, int cmd = 0,
@@ -509,6 +591,19 @@ class SliderWidget : public ButtonWidget
     }
     int labelWidth() const override { return _labelWidth; }
     void setLabelWidth(int w) override;
+
+    /**
+      My track: the part between my label and my value readout.  How long it is
+      IS the dialog's decision (it says how finely the value can be dragged), but
+      it says it by handing me a width, never by reaching inside me for the pieces.
+    */
+    int trackWidth() const {
+      return _w - _labelWidth - _valueLabelGap - _valueLabelWidth;
+    }
+    void setTrackWidth(int w) {
+      _w = w + _labelWidth + _valueLabelGap + _valueLabelWidth;
+      setDirty();
+    }
 
   protected:
     void drawWidget(bool hilite) override;

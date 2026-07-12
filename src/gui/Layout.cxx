@@ -16,6 +16,7 @@
 //============================================================================
 
 #include "Widget.hxx"
+#include "PopUpWidget.hxx"
 #include "Layout.hxx"
 
 namespace GUI {
@@ -278,6 +279,49 @@ void alignLabels(std::initializer_list<LabeledControl> controls)
   // start there too
   for(const auto& c: controls)
     c.control->setLabelWidth(width - c.indent);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+namespace {
+  // Each button has already sized itself to its own label, so the group's width
+  // is simply the widest of them.  Re-running this is harmless: a button that has
+  // been widened to the group reports that width, which is still the maximum
+  template<typename Buttons>
+  void alignButtonGroup(const Buttons& buttons, int minWidth)
+  {
+    int width = minWidth;
+    for(const auto* b: buttons)
+      if(b != nullptr)
+        width = std::max(width, static_cast<int>(b->naturalSize().w));
+
+    for(auto* b: buttons)
+      if(b != nullptr)
+        b->setWidth(width);
+  }
+}  // namespace
+
+void alignButtons(std::initializer_list<Widget*> buttons, int minWidth)
+{
+  alignButtonGroup(buttons, minWidth);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void alignButtons(std::span<ButtonWidget* const> buttons, int minWidth)
+{
+  alignButtonGroup(buttons, minWidth);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void alignPopUps(std::initializer_list<PopUpWidget*> popups)
+{
+  int width = 0;
+  for(const auto* p: popups)
+    if(p != nullptr)
+      width = std::max(width, p->boxWidth());
+
+  for(auto* p: popups)
+    if(p != nullptr)
+      p->setBoxWidth(width);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -30,9 +30,6 @@ SnapshotDialog::SnapshotDialog(OSystem& osystem, DialogContainer& parent,
                                const GUI::Font& font)
   : Dialog(osystem, parent, font, "Snapshot settings")
 {
-  const int lineHeight   = Dialog::lineHeight(),
-            buttonHeight = Dialog::buttonHeight(),
-            buttonWidth  = Dialog::buttonWidth("Save path" + ELLIPSIS);
   WidgetArray wid;
 
   // Widgets are only created here (at placeholder geometry); layout() assigns
@@ -40,15 +37,15 @@ SnapshotDialog::SnapshotDialog(OSystem& osystem, DialogContainer& parent,
 
   // NOLINTBEGIN(cppcoreguidelines-prefer-member-initializer)
   // Snapshot path (save files)
-  mySnapSaveButton = new ButtonWidget(this, font, 0, 0, buttonWidth, buttonHeight,
+  mySnapSaveButton = new ButtonWidget(this, font, 0, 0,
                                       "Save path" + ELLIPSIS, kChooseSnapSaveDirCmd);
   wid.push_back(mySnapSaveButton);
-  mySnapSavePath = new EditTextWidget(this, font, 0, 0, lineHeight, lineHeight, "");
+  mySnapSavePath = new EditTextWidget(this, font, 0, 0, 1, "");
   wid.push_back(mySnapSavePath);
 
   // Snapshot interval (continuous mode)
   mySnapInterval = new SliderWidget(this, font, 0, 0,
-                                    "Continuous snapshot interval ", 0, kSnapshotInterval,
+                                    "Continuous snapshot interval", 0, kSnapshotInterval,
                                     font.getStringWidth("10 seconds"));
   mySnapInterval->setMinValue(1);
   mySnapInterval->setMaxValue(10);
@@ -87,54 +84,57 @@ SnapshotDialog::SnapshotDialog(OSystem& osystem, DialogContainer& parent,
 void SnapshotDialog::layout()
 {
   using GUI::BoxLayout;
-  using GUI::widgetItem;
+  using GUI::stretchedItem;
   using GUI::anchoredItem;
   using GUI::indentedItem;
-  using GUI::alignedItem;
-  using GUI::HAlign;
-  using GUI::VAlign;
   using Dir = BoxLayout::Dir;
 
-  const int lineHeight   = Dialog::lineHeight(),
-            fontWidth    = Dialog::fontWidth(),
+  const int fontWidth    = Dialog::fontWidth(),
             buttonHeight = Dialog::buttonHeight(),
-            buttonWidth  = Dialog::buttonWidth("Save path" + ELLIPSIS),
             VBORDER      = Dialog::vBorder(),
             HBORDER      = Dialog::hBorder(),
             VGAP         = Dialog::vGap(),
             INDENT       = Dialog::indent();
 
-  // Size the (fixed) dialog from the current font so it reflows on font change
-  _w = 64 * fontWidth + HBORDER * 2;
-  _h = 10 * (lineHeight + VGAP) + VBORDER + _th;
+  // The slider draws its own label, so give it a label column of its own
+  GUI::alignLabels({{mySnapInterval}});
 
   // Save-path row: a button plus an edit field that fills the remaining width.
   // The row is the only one with several widgets, so it needs its own HBox; the
   // outer VBox already supplies the HBORDER inset (hence marginH 0 here).  The
   // edit field keeps its own (natural) height, vertically centered in the taller
-  // button row.
+  // button row, and how much of a path it must show is this dialog's one width
+  // decision -- everything else is derived from it
   auto pathRow = std::make_unique<BoxLayout>(Dir::Horizontal, 0, 0, 0);
-  pathRow->addFixed(widgetItem(mySnapSaveButton), buttonWidth);
+  pathRow->addAuto(anchoredItem(mySnapSaveButton));
   pathRow->addSpace(fontWidth);
-  pathRow->addStretch(alignedItem(mySnapSavePath, HAlign::Fill, VAlign::Center));
+  pathRow->addStretch(stretchedItem(mySnapSavePath,
+                                    EditTextWidget::calcWidth(_font, 48)));
 
   // Assemble the vertical stack; the button group sits below it, positioned
   // separately by layoutButtonGroup().  The interval slider is self-labeling and
   // the header/checkboxes keep their natural size, so all are anchored.
   auto root = std::make_unique<BoxLayout>(Dir::Vertical, 0, HBORDER, VBORDER);
-  root->addFixed(std::move(pathRow), buttonHeight);
+  root->addAuto(std::move(pathRow));
   root->addSpace(VGAP * 4);
-  root->addFixed(anchoredItem(mySnapInterval), lineHeight);
+  root->addAuto(anchoredItem(mySnapInterval));
   root->addSpace(VGAP * 3);
-  root->addFixed(anchoredItem(myWhenLabel), lineHeight);
+  root->addAuto(anchoredItem(myWhenLabel));
   root->addSpace(VGAP);
-  root->addFixed(indentedItem(mySnapName, INDENT), lineHeight);
+  root->addAuto(indentedItem(mySnapName, INDENT));
   root->addSpace(VGAP);
-  root->addFixed(indentedItem(mySnapSingle, INDENT), lineHeight);
+  root->addAuto(indentedItem(mySnapSingle, INDENT));
   root->addSpace(VGAP);
-  root->addFixed(indentedItem(mySnap1x, INDENT), lineHeight);
+  root->addAuto(indentedItem(mySnap1x, INDENT));
   root->addSpace(VGAP);
-  root->addFixed(indentedItem(mySnapCrop, INDENT), lineHeight);
+  root->addAuto(indentedItem(mySnapCrop, INDENT));
+
+  // The dialog is as large as its content asks to be, and at least wide enough
+  // for the button row below it (which the content knows nothing about)
+  const Common::Size natural = root->naturalSize();
+
+  _w = std::max(static_cast<int>(natural.w), Dialog::buttonGroupWidth());
+  _h = _th + static_cast<int>(natural.h) + buttonHeight + VBORDER;
 
   root->doLayout(0, _th, _w, _h - _th);
 

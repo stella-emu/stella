@@ -59,7 +59,7 @@ int CartDebugWidget::addBaseInformation(size_t bytes, string_view manufacturer,
 
   new StaticTextWidget(_boss, _font, x, y + 1, "Manufacturer ");
   w = new EditTextWidget(_boss, _nfont, x+lwidth, y - 1,
-                         fwidth, myLineHeight, manufacturer);
+                         fwidth, manufacturer);
   w->setEditable(false);
   y += myLineHeight + 4;
 
@@ -89,7 +89,7 @@ void CartDebugWidget::createBaseInformation(size_t bytes, string_view manufactur
   myROMSize->setEditable(false);
 
   myManufacturerLabel = new StaticTextWidget(_boss, _font, 0, 0, "Manufacturer ");
-  myManufacturer = new EditTextWidget(_boss, _nfont, 0, 0, 1, _lineHeight,
+  myManufacturer = new EditTextWidget(_boss, _nfont, 0, 0, 1,
                                       manufacturer);
   myManufacturer->setEditable(false);
 

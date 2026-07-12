@@ -52,9 +52,6 @@ OptionsDialog::OptionsDialog(OSystem& osystem, DialogContainer& parent,
 {
   // Only sizes needed to create the buttons; layout() computes _w/_h and all
   // geometry from the current font, so the dialog reflows on font change
-  const int buttonHeight = Dialog::buttonHeight();
-  const int buttonWidth  = Dialog::buttonWidth("Game Properties" + ELLIPSIS);
-
   WidgetArray wid;
 
   // Widgets are only created here (at placeholder geometry); layout() positions
@@ -62,8 +59,7 @@ OptionsDialog::OptionsDialog(OSystem& osystem, DialogContainer& parent,
   // NOLINTBEGIN(cppcoreguidelines-prefer-member-initializer)
   const auto ADD_OD_BUTTON = [&](string_view label, int cmd, string_view toolTip = {})
   {
-    auto* bw = new ButtonWidget(this, _font, 0, 0,
-                                buttonWidth, buttonHeight, label, cmd);
+    auto* bw = new ButtonWidget(this, _font, 0, 0, label, cmd);
     bw->setToolTip(toolTip);
     myButtons.push_back(bw);
     wid.push_back(bw);
@@ -104,10 +100,10 @@ OptionsDialog::OptionsDialog(OSystem& osystem, DialogContainer& parent,
   ADD_OD_BUTTON("About" + ELLIPSIS, kAboutCmd,
     "Display info about the installed Stella version.");
 
-  // Centered Close button on its own row spanning both columns
-  const int closeWidth = Dialog::buttonWidth("   Close   ");
-  auto* closeButton = new ButtonWidget(this, _font, 0, 0,
-                                       closeWidth, buttonHeight, "Close", kExitCmd);
+  // Centered Close button on its own row spanning both columns.  The padding is
+  // its own: a button centers its text, so a roomier label simply makes a roomier
+  // button, and it still sizes itself
+  auto* closeButton = new ButtonWidget(this, _font, 0, 0, "   Close   ", kExitCmd);
   myButtons.push_back(closeButton);
   wid.push_back(closeButton);
   addCancelWidget(closeButton);
@@ -132,42 +128,44 @@ void OptionsDialog::layout()
 {
   using GUI::GridLayout;
   using GUI::BoxLayout;
-  using GUI::widgetItem;
+  using GUI::anchoredItem;
   using Dir = BoxLayout::Dir;
 
-  const int buttonHeight = Dialog::buttonHeight();
-  const int VBORDER      = Dialog::vBorder();
-  const int HBORDER      = Dialog::hBorder();
-  const int VGAP         = Dialog::vGap();
-  const int HGAP         = Dialog::buttonGap();
-  const int buttonWidth  = Dialog::buttonWidth("Game Properties" + ELLIPSIS);
-  const int closeWidth   = Dialog::buttonWidth("   Close   ");
+  const int VBORDER = Dialog::vBorder();
+  const int HBORDER = Dialog::hBorder();
+  const int VGAP    = Dialog::vGap();
+  const int HGAP    = Dialog::buttonGap();
 
-  // Size the (fixed) dialog from the current font so it reflows on font change
-  const int rowHeight = buttonHeight + VGAP;
-  _w = 2 * buttonWidth + HBORDER * 2 + HGAP;
-  _h = 7 * rowHeight + VBORDER * 2 - VGAP + _th;
+  // Every option button is as wide as the widest of them, so the two columns come
+  // out even.  The Close button below is NOT one of them -- it keeps the width its
+  // own (deliberately roomy) label needs -- hence the subrange
+  GUI::alignButtons(std::span{myButtons}.first(myButtons.size() - 1));
 
   // Two columns of equal buttons over six rows, plus a seventh row holding the
   // Close button centered across both columns
   static constexpr int COLS = 2, ROWS = 7, PER_COL = 6;
   auto grid = std::make_unique<GridLayout>(COLS, ROWS, HGAP, VGAP,
                                            HBORDER, VBORDER);
-  grid->columnFixed(0, buttonWidth).columnFixed(1, buttonWidth);
+  grid->columnAuto(0).columnAuto(1);
   for(int r = 0; r < ROWS; ++r)
-    grid->rowFixed(r, buttonHeight);
+    grid->rowAuto(r);
 
   for(int r = 0; r < PER_COL; ++r)
   {
-    grid->place(0, r, widgetItem(myButtons[r]));
-    grid->place(1, r, widgetItem(myButtons[PER_COL + r]));
+    grid->place(0, r, anchoredItem(myButtons[r]));
+    grid->place(1, r, anchoredItem(myButtons[PER_COL + r]));
   }
-  // The Close button keeps its own (narrower) width, centered across both columns
   auto closeRow = std::make_unique<BoxLayout>(Dir::Horizontal);
   closeRow->addStretchSpace();
-  closeRow->addFixed(widgetItem(myButtons.back()), closeWidth);
+  closeRow->addAuto(anchoredItem(myButtons.back()));
   closeRow->addStretchSpace();
   grid->place(0, PER_COL, std::move(closeRow), COLS);
+
+  // The dialog is exactly as large as the button grid asks to be
+  const Common::Size natural = grid->naturalSize();
+
+  _w = static_cast<int>(natural.w);
+  _h = _th + static_cast<int>(natural.h);
 
   // Position the grid in the dialog area below the title bar
   grid->doLayout(0, _th, _w, _h - _th);

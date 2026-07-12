@@ -69,6 +69,15 @@ class ListWidget : public EditableWidget
     // Account for the extra width of embedded scrollbar
     int getWidth() const override;
 
+    // Total height of a list showing the given number of rows.  A list has no
+    // height of its own (it stretches to whatever the dialog gives it), so this
+    // is how a dialog states how many rows it means to show, rather than
+    // arriving at a pixel height and hoping the rows come out even
+    static int calcHeight(const GUI::Font& font, int rows)
+    {
+      return rows * font.getLineHeight() + 2;
+    }
+
     void handleMouseDown(int x, int y, MouseButton b, int clickCount) override;
     void handleMouseUp(int x, int y, MouseButton b, int clickCount) override;
     void handleMouseWheel(int x, int y, int direction) override;

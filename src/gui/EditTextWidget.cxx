@@ -43,6 +43,13 @@ EditTextWidget::EditTextWidget(GuiObject* boss, const GUI::Font& font,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+EditTextWidget::EditTextWidget(GuiObject* boss, const GUI::Font& font,
+                               int x, int y, int w, string_view text)
+  : EditTextWidget(boss, font, x, y, w, calcHeight(font), text)
+{
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EditTextWidget::refreshFontMetrics()
 {
   Widget::refreshFontMetrics();

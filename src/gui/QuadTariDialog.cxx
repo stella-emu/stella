@@ -61,27 +61,35 @@ QuadTariDialog::QuadTariDialog(GuiObject* boss, const GUI::Font& font,
   //VarList::push_back(ctrls, "MindLink", "MINDLINK");
   //VarList::push_back(ctrls, "QuadTari", "QUADTARI");
 
-  const int pwidth = font.getStringWidth("Auto-detect  "); // a bit wider looks better overall
+  // A couple of characters more than the items strictly need, which looks better
+  // overall -- so these state a width instead of taking the self-sizing ctor
+  const int pwidth = PopUpWidget::calcWidth(font, ctrls) + Dialog::fontWidth() * 2;
 
   // Widgets are only created here (at placeholder position); layout() assigns
   // all geometry from the current font.  The two ports are laid out as two
   // side-by-side columns of identical structure.
   // NOLINTBEGIN(cppcoreguidelines-prefer-member-initializer)
+  // An auto-detect label is filled in at load time and takes its width from the
+  // column it sits in, so it starts out empty
+  const auto detectedLabel = [&]() {
+    return new StaticTextWidget(this, ifont, 0, 0, "");
+  };
+
   myLeftPortLabel = new StaticTextWidget(this, font, 0, 0, "Left port");
-  myLeft1Port = new PopUpWidget(this, font, 0, 0, pwidth, lineHeight, ctrls, "P1 ");
+  myLeft1Port = new PopUpWidget(this, font, 0, 0, pwidth, lineHeight, ctrls, "P1");
   wid.push_back(myLeft1Port);
-  myLeft1PortDetected = new StaticTextWidget(this, ifont, 0, 0, "                 ");
-  myLeft2Port = new PopUpWidget(this, font, 0, 0, pwidth, lineHeight, ctrls, "P3 ");
+  myLeft1PortDetected = detectedLabel();
+  myLeft2Port = new PopUpWidget(this, font, 0, 0, pwidth, lineHeight, ctrls, "P3");
   wid.push_back(myLeft2Port);
-  myLeft2PortDetected = new StaticTextWidget(this, ifont, 0, 0, "                 ");
+  myLeft2PortDetected = detectedLabel();
 
   myRightPortLabel = new StaticTextWidget(this, font, 0, 0, "Right port");
-  myRight1Port = new PopUpWidget(this, font, 0, 0, pwidth, lineHeight, ctrls, "P2 ");
+  myRight1Port = new PopUpWidget(this, font, 0, 0, pwidth, lineHeight, ctrls, "P2");
   wid.push_back(myRight1Port);
-  myRight1PortDetected = new StaticTextWidget(this, ifont, 0, 0, "                 ");
-  myRight2Port = new PopUpWidget(this, font, 0, 0, pwidth, lineHeight, ctrls, "P4 ");
+  myRight1PortDetected = detectedLabel();
+  myRight2Port = new PopUpWidget(this, font, 0, 0, pwidth, lineHeight, ctrls, "P4");
   wid.push_back(myRight2Port);
-  myRight2PortDetected = new StaticTextWidget(this, ifont, 0, 0, "                 ");
+  myRight2PortDetected = detectedLabel();
 
   addDefaultsOKCancelBGroup(wid, _font);
   addBGroupToFocusList(wid);
@@ -94,51 +102,61 @@ QuadTariDialog::QuadTariDialog(GuiObject* boss, const GUI::Font& font,
 void QuadTariDialog::layout()
 {
   using GUI::BoxLayout;
+  using GUI::stretchedItem;
   using GUI::anchoredItem;
-  using GUI::indentedItem;
   using Dir = BoxLayout::Dir;
 
-  const int lineHeight   = Dialog::lineHeight(),
-            fontWidth    = Dialog::fontWidth(),
+  const int fontWidth    = Dialog::fontWidth(),
             buttonHeight = Dialog::buttonHeight(),
             VBORDER      = Dialog::vBorder(),
             HBORDER      = Dialog::hBorder(),
             VGAP         = Dialog::vGap();
 
-  // Size the dialog from the current font.  The height must fit the tallest
-  // port column (a header plus two popup/auto-detect-label pairs) above the
-  // button group; the previous caller-supplied height (10 * fontHeight) was too
-  // short once the auto-detect labels are shown.
-  _w = 42 * fontWidth;
-  _h = _th + VBORDER * 2 + buttonHeight + 5 * lineHeight + VGAP * 9;
+  // The four popups draw their own labels ("P1".."P4"), so one shared column
+  // keeps their value boxes the same width and in line across both ports
+  GUI::alignLabels({{myLeft1Port},  {myLeft2Port},
+                    {myRight1Port}, {myRight2Port}});
 
-  // Both ports share the same column width and vertical structure: a header
-  // label, then two popups each followed by its (indented) auto-detect label
-  const int columnWidth = myLeft1Port->getWidth();
+  // Both ports have the same structure: a header label, then two popups each
+  // followed by its (indented) auto-detect label, which fills the column
   const auto portColumn = [&](StaticTextWidget* label,
                               PopUpWidget* popup1, StaticTextWidget* detected1,
                               PopUpWidget* popup2, StaticTextWidget* detected2)
   {
+    const auto detectedRow = [&](StaticTextWidget* detected) {
+      auto row = std::make_unique<BoxLayout>(Dir::Horizontal);
+      row->addSpace(fontWidth * 3);
+      row->addStretch(stretchedItem(detected));
+      return row;
+    };
+
     auto col = std::make_unique<BoxLayout>(Dir::Vertical, 0, 0, 0);
-    col->addFixed(anchoredItem(label), lineHeight);
+    col->addAuto(anchoredItem(label));
     col->addSpace(VGAP * 2);
-    col->addFixed(anchoredItem(popup1), lineHeight);
+    col->addAuto(anchoredItem(popup1));
     col->addSpace(VGAP);
-    col->addFixed(indentedItem(detected1, fontWidth * 3), lineHeight);
+    col->addAuto(detectedRow(detected1));
     col->addSpace(VGAP);
-    col->addFixed(anchoredItem(popup2), lineHeight);
+    col->addAuto(anchoredItem(popup2));
     col->addSpace(VGAP);
-    col->addFixed(indentedItem(detected2, fontWidth * 3), lineHeight);
+    col->addAuto(detectedRow(detected2));
     return col;
   };
 
-  // Left column, a flexible gap, then the right column aligned to the right edge
+  // The two port columns side by side, each as wide as its popups need
   auto root = std::make_unique<BoxLayout>(Dir::Horizontal, 0, HBORDER, VBORDER);
-  root->addFixed(portColumn(myLeftPortLabel, myLeft1Port, myLeft1PortDetected,
-                            myLeft2Port, myLeft2PortDetected), columnWidth);
-  root->addSpace(_w - HBORDER * 2 - columnWidth * 2);
-  root->addFixed(portColumn(myRightPortLabel, myRight1Port, myRight1PortDetected,
-                            myRight2Port, myRight2PortDetected), columnWidth);
+  root->addAuto(portColumn(myLeftPortLabel, myLeft1Port, myLeft1PortDetected,
+                           myLeft2Port, myLeft2PortDetected));
+  root->addSpace(fontWidth * 3);
+  root->addAuto(portColumn(myRightPortLabel, myRight1Port, myRight1PortDetected,
+                           myRight2Port, myRight2PortDetected));
+
+  // The dialog is as large as the two columns ask to be, and at least wide
+  // enough for the button row below them
+  const Common::Size natural = root->naturalSize();
+
+  _w = std::max(static_cast<int>(natural.w), Dialog::buttonGroupWidth());
+  _h = _th + static_cast<int>(natural.h) + buttonHeight + VBORDER;
 
   root->doLayout(0, _th, _w, _h - _th);
 

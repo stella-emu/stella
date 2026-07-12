@@ -40,10 +40,6 @@ RomAuditDialog::RomAuditDialog(OSystem& osystem, DialogContainer& parent,
     myMaxWidth{max_w},
     myMaxHeight{max_h}
 {
-  const int lineHeight   = Dialog::lineHeight(),
-            fontWidth    = Dialog::fontWidth(),
-            buttonHeight = Dialog::buttonHeight(),
-            buttonWidth  = Dialog::buttonWidth("Audit path" + ELLIPSIS);
   WidgetArray wid;
 
   // Widgets are only created here (at placeholder geometry); layout() assigns
@@ -52,19 +48,21 @@ RomAuditDialog::RomAuditDialog(OSystem& osystem, DialogContainer& parent,
   // NOLINTBEGIN(cppcoreguidelines-prefer-member-initializer)
   // Audit path
   myRomButton = new ButtonWidget(this, font, 0, 0,
-      buttonWidth, buttonHeight, "Audit path" + ELLIPSIS, kChooseAuditDirCmd);
+      "Audit path" + ELLIPSIS, kChooseAuditDirCmd);
   wid.push_back(myRomButton);
-  myRomPath = new EditTextWidget(this, font, 0, 0, lineHeight, lineHeight);
+  myRomPath = new EditTextWidget(this, font, 0, 0, 1);
   wid.push_back(myRomPath);
 
   // Show results of ROM audit
   myRenamedLabel = new StaticTextWidget(this, font, 0, 0,
-                                        "ROMs with properties (renamed) ");
-  myResults1 = new EditTextWidget(this, font, 0, 0, fontWidth * 6, lineHeight);
+                                        "ROMs with properties (renamed)");
+  myResults1 = new EditTextWidget(this, font, 0, 0,
+                                  EditTextWidget::calcWidth(font, 5));
   myResults1->setEditable(false, true);
   mySkippedLabel = new StaticTextWidget(this, font, 0, 0,
-                                        "ROMs without properties (skipped) ");
-  myResults2 = new EditTextWidget(this, font, 0, 0, fontWidth * 6, lineHeight);
+                                        "ROMs without properties (skipped)");
+  myResults2 = new EditTextWidget(this, font, 0, 0,
+                                  EditTextWidget::calcWidth(font, 5));
   myResults2->setEditable(false, true);
 
   myWarningLabel = new StaticTextWidget(this, font, 0, 0,
@@ -85,53 +83,53 @@ RomAuditDialog::~RomAuditDialog() = default;
 void RomAuditDialog::layout()
 {
   using GUI::BoxLayout;
-  using GUI::widgetItem;
+  using GUI::stretchedItem;
+  using GUI::GridLayout;
   using GUI::anchoredItem;
-  using GUI::alignedItem;
-  using GUI::HAlign;
-  using GUI::VAlign;
   using Dir = BoxLayout::Dir;
 
-  const int lineHeight   = Dialog::lineHeight(),
-            fontWidth    = Dialog::fontWidth(),
+  const int fontWidth    = Dialog::fontWidth(),
             buttonHeight = Dialog::buttonHeight(),
-            buttonWidth  = Dialog::buttonWidth("Audit path" + ELLIPSIS),
             VBORDER      = Dialog::vBorder(),
             HBORDER      = Dialog::hBorder(),
             VGAP         = Dialog::vGap();
-  const int lwidth = _font.getStringWidth("ROMs without properties (skipped) ");
-
-  // Size the (fixed) dialog from the current font so it reflows on font change
-  _w = 64 * fontWidth + HBORDER * 2;
-  _h = _th + VBORDER * 2 + buttonHeight * 2 + lineHeight * 3 + VGAP * 10;
 
   // Audit-path row: a button plus an edit filling the remaining width (the edit
-  // keeps its natural height, vertically centered in the taller button row)
+  // keeps its natural height, vertically centered in the taller button row).
+  // How much of a path the field must show is this dialog's one width decision,
+  // and everything else is derived from it
   auto pathRow = std::make_unique<BoxLayout>(Dir::Horizontal, 0, 0, 0);
-  pathRow->addFixed(widgetItem(myRomButton), buttonWidth);
+  pathRow->addAuto(anchoredItem(myRomButton));
   pathRow->addSpace(fontWidth);
-  pathRow->addStretch(alignedItem(myRomPath, HAlign::Fill, VAlign::Center));
+  pathRow->addStretch(stretchedItem(myRomPath,
+                                    EditTextWidget::calcWidth(_font, 48)));
 
-  // Two result rows: a label plus a small value field, the field aligned at a
-  // shared column (lwidth) across both rows
-  auto resultRow1 = std::make_unique<BoxLayout>(Dir::Horizontal, 0, 0, 0);
-  resultRow1->addFixed(anchoredItem(myRenamedLabel), lwidth);
-  resultRow1->addFixed(anchoredItem(myResults1), fontWidth * 6);
-
-  auto resultRow2 = std::make_unique<BoxLayout>(Dir::Horizontal, 0, 0, 0);
-  resultRow2->addFixed(anchoredItem(mySkippedLabel), lwidth);
-  resultRow2->addFixed(anchoredItem(myResults2), fontWidth * 6);
+  // Two result rows: a label plus a small count field.  The label column is as
+  // wide as the longer of the two labels, so the fields line up beneath one
+  // another without either label being measured
+  auto results = std::make_unique<GridLayout>(2, 2, fontWidth, VGAP);
+  results->columnAuto(0).columnStretch(1);
+  results->rowAuto(0).rowAuto(1);
+  results->place(0, 0, anchoredItem(myRenamedLabel));
+  results->place(1, 0, anchoredItem(myResults1));
+  results->place(0, 1, anchoredItem(mySkippedLabel));
+  results->place(1, 1, anchoredItem(myResults2));
 
   // Vertical stack; the OK/Cancel group sits below, positioned by
-  // layoutButtonGroup().  Result rows use a buttonHeight pitch (matching the
-  // original), the label/field anchored at the top.
+  // layoutButtonGroup()
   auto root = std::make_unique<BoxLayout>(Dir::Vertical, 0, HBORDER, VBORDER);
-  root->addFixed(std::move(pathRow), buttonHeight);
+  root->addAuto(std::move(pathRow));
   root->addSpace(VGAP * 4);
-  root->addFixed(std::move(resultRow1), buttonHeight);
-  root->addFixed(std::move(resultRow2), buttonHeight);
+  root->addAuto(std::move(results));
   root->addSpace(VGAP * 2);
-  root->addFixed(anchoredItem(myWarningLabel), lineHeight);
+  root->addAuto(anchoredItem(myWarningLabel));
+
+  // The dialog is as large as its content asks to be, and at least wide enough
+  // for the button row below it (which the content knows nothing about)
+  const Common::Size natural = root->naturalSize();
+
+  _w = std::max(static_cast<int>(natural.w), Dialog::buttonGroupWidth());
+  _h = _th + static_cast<int>(natural.h) + buttonHeight + VBORDER;
 
   root->doLayout(0, _th, _w, _h - _th);
 

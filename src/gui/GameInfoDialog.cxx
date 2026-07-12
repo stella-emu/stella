@@ -123,8 +123,7 @@ void GameInfoDialog::layout()
 void GameInfoDialog::addEmulationTab()
 {
   const GUI::Font& ifont = instance().frameBuffer().infoFont();
-  const int lineHeight = Dialog::lineHeight(),
-            fontWidth  = Dialog::fontWidth();
+  const int fontWidth = Dialog::fontWidth();
   WidgetArray wid;
   VariantList items;
 
@@ -134,10 +133,12 @@ void GameInfoDialog::addEmulationTab()
   auto* pane = new TabPaneWidget(myTab, _font);
   myTab->setPaneWidget(tabID, pane);
 
-  myBSTypeLabel = new StaticTextWidget(pane, _font, 0, 0, "Type (*)      ");
+  myBSTypeLabel = new StaticTextWidget(pane, _font, 0, 0, "Type (*)");
+  // The bankswitch and start-bank lists are refilled per ROM, so these two
+  // cannot size themselves: the dialog says how wide an entry it will show
   myBSType = new PopUpWidget(pane, _font, 0, 0,
                              _font.getStringWidth("CM (SpectraVideo CompuMate)"),
-                             lineHeight, items, "", 0, kBSTypeChanged);
+                             items, "", 0, kBSTypeChanged);
   wid.push_back(myBSType);
   myBSFilter = new CheckboxWidget(pane, _font, 0, 0, "Filter", kBSFilterChanged);
   myBSFilter->setToolTip("Enable to filter types by ROM size");
@@ -148,7 +149,7 @@ void GameInfoDialog::addEmulationTab()
 
   // Start bank
   myStartBank = new PopUpWidget(pane, _font, 0, 0,
-                                _font.getStringWidth("AUTO"), lineHeight, items, "Start bank (*)");
+                                _font.getStringWidth("AUTO"), items, "Start bank (*)");
   wid.push_back(myStartBank);
 
   items.clear();
@@ -159,8 +160,7 @@ void GameInfoDialog::addEmulationTab()
   VarList::push_back(items, "NTSC-50", "NTSC50");
   VarList::push_back(items, "PAL-60", "PAL60");
   VarList::push_back(items, "SECAM-60", "SECAM60");
-  myFormat = new PopUpWidget(pane, _font, 0, 0,
-                             _font.getStringWidth("Auto-detect"), lineHeight, items, "TV format");
+  myFormat = new PopUpWidget(pane, _font, 0, 0, items, "TV format");
   myFormat->setToolTip(Event::FormatDecrease, Event::FormatIncrease);
   wid.push_back(myFormat);
 
@@ -211,19 +211,18 @@ void GameInfoDialog::addEmulationTab()
     const int fontWidth = Dialog::fontWidth(),
               VGAP      = Dialog::vGap(),
               INDENT    = Dialog::indent();
-    const int labelIndent = myBSTypeLabel->getWidth() + fontWidth;
-
-    // These controls draw their own labels, so no layout can line their value
-    // boxes up: each group is given ONE label column instead, sized to the
-    // longest label in it.  The blend slider is indented, so its column is
-    // narrowed to match and its track still meets the V-Center one below it
-    GUI::alignLabels({{myStartBank}, {myFormat}});
+    // Each group is given ONE label column, sized to the longest label in it, so
+    // the value boxes beside them line up.  It makes no difference whether a
+    // control draws its own label (the pop-ups) or is named by a separate one
+    // (the bankswitch type) -- a label is a label, and all three boxes line up.
+    // The blend slider is indented, so its column is narrowed to match and its
+    // track still meets the V-Center one below it
+    GUI::alignLabels({{myBSTypeLabel}, {myStartBank}, {myFormat}});
     GUI::alignLabels({{myPPBlend, INDENT}, {myVCenter}});
 
     // Bankswitch-type row: label + type popup + filter checkbox
     auto bsRow = std::make_unique<BoxLayout>(Dir::Horizontal);
     bsRow->addAuto(anchoredItem(myBSTypeLabel));
-    bsRow->addSpace(fontWidth);
     bsRow->addAuto(anchoredItem(myBSType));
     bsRow->addSpace(fontWidth);
     bsRow->addAuto(anchoredItem(myBSFilter));
@@ -241,7 +240,7 @@ void GameInfoDialog::addEmulationTab()
     col.addAuto(std::move(bsRow));
     col.addSpace(VGAP);
     // Detected type, indented to line up under the type popup
-    col.addAuto(indentedItem(myTypeDetected, labelIndent));
+    col.addAuto(indentedItem(myTypeDetected, myBSTypeLabel->getWidth()));
     col.addSpace(VGAP);
     col.addAuto(anchoredItem(myStartBank));
     col.addSpace(VGAP * 4);
@@ -343,9 +342,7 @@ void GameInfoDialog::addConsoleTab()
 void GameInfoDialog::addControllersTab()
 {
   const GUI::Font& ifont = instance().frameBuffer().infoFont();
-  const int lineHeight   = Dialog::lineHeight(),
-            fontWidth    = Dialog::fontWidth(),
-            buttonHeight = Dialog::buttonHeight();
+  const int fontWidth    = Dialog::fontWidth();
   VariantList items, ctrls;
   WidgetArray wid;
 
@@ -375,18 +372,15 @@ void GameInfoDialog::addControllersTab()
   VarList::push_back(items, "MindLink", "MINDLINK");
   VarList::push_back(items, "QuadTari", "QUADTARI");
 
-  const int pwidth = _font.getStringWidth("Paddles_IAxis");
-  myLeftPortLabel = new StaticTextWidget(pane, _font, 0, 0, "Left port        ");
-  myLeftPort = new PopUpWidget(pane, _font, 0, 0,
-                               pwidth, lineHeight, items, "", 0, kLeftCChanged);
+  myLeftPortLabel = new StaticTextWidget(pane, _font, 0, 0, "Left port");
+  myLeftPort = new PopUpWidget(pane, _font, 0, 0, items, "", 0, kLeftCChanged);
   myLeftPort->setToolTip(Event::PreviousLeftPort, Event::NextLeftPort);
   wid.push_back(myLeftPort);
 
   myLeftPortDetected = new StaticTextWidget(pane, ifont, 0, 0, "Sega Genesis detected");
 
-  myRightPortLabel = new StaticTextWidget(pane, _font, 0, 0, "Right port       ");
-  myRightPort = new PopUpWidget(pane, _font, 0, 0,
-                                pwidth, lineHeight, items, "", 0, kRightCChanged);
+  myRightPortLabel = new StaticTextWidget(pane, _font, 0, 0, "Right port");
+  myRightPort = new PopUpWidget(pane, _font, 0, 0, items, "", 0, kRightCChanged);
   myRightPort->setToolTip(Event::PreviousRightPort, Event::NextRightPort);
   wid.push_back(myRightPort);
 
@@ -400,10 +394,9 @@ void GameInfoDialog::addControllersTab()
                                       " QuadTari" + ELLIPSIS + " ", kQuadTariPressed);
   wid.push_back(myQuadTariButton);
 
-  // EEPROM erase button for left/right controller (button as wide as a port popup)
-  myEraseEEPROMLabel = new StaticTextWidget(pane, _font, 0, 0, "AtariVox/SaveKey ");
+  // EEPROM erase button for left/right controller
+  myEraseEEPROMLabel = new StaticTextWidget(pane, _font, 0, 0, "AtariVox/SaveKey");
   myEraseEEPROMButton = new ButtonWidget(pane, _font, 0, 0,
-                                         myRightPort->getWidth(), buttonHeight,
                                          "Erase EEPROM", kEEButtonPressed);
   wid.push_back(myEraseEEPROMButton);
   myEraseEEPROMInfo = new StaticTextWidget(pane, ifont, 0, 0, "(for this game only)");
@@ -415,7 +408,7 @@ void GameInfoDialog::addControllersTab()
   // Paddles
   myPaddlesCenter = new StaticTextWidget(pane, _font, 0, 0, "Paddles center:");
 
-  myPaddleXCenter = new SliderWidget(pane, _font, 0, 0, "X ", 0, kPXCenterChanged,
+  myPaddleXCenter = new SliderWidget(pane, _font, 0, 0, "X", 0, kPXCenterChanged,
                                      fontWidth * 6, "px", 0 ,true);
   myPaddleXCenter->setMinValue(Paddles::MIN_ANALOG_CENTER);
   myPaddleXCenter->setMaxValue(Paddles::MAX_ANALOG_CENTER);
@@ -423,7 +416,7 @@ void GameInfoDialog::addControllersTab()
   myPaddleXCenter->setToolTip(Event::DecreasePaddleCenterX, Event::IncreasePaddleCenterX);
   wid.push_back(myPaddleXCenter);
 
-  myPaddleYCenter = new SliderWidget(pane, _font, 0, 0, "Y ", 0, kPYCenterChanged,
+  myPaddleYCenter = new SliderWidget(pane, _font, 0, 0, "Y", 0, kPYCenterChanged,
                                      fontWidth * 6, "px", 0 ,true);
   myPaddleYCenter->setMinValue(Paddles::MIN_ANALOG_CENTER);
   myPaddleYCenter->setMaxValue(Paddles::MAX_ANALOG_CENTER);
@@ -437,7 +430,6 @@ void GameInfoDialog::addControllersTab()
   wid.push_back(myMouseControl);
 
   // Mouse controller specific axis
-  const int cpwidth = _font.getStringWidth("Right MindLink");
   VarList::push_back(ctrls, "None",           static_cast<uInt32>(MouseControl::Type::NoControl));
   VarList::push_back(ctrls, "Left Paddle A",  static_cast<uInt32>(MouseControl::Type::LeftPaddleA));
   VarList::push_back(ctrls, "Left Paddle B",  static_cast<uInt32>(MouseControl::Type::LeftPaddleB));
@@ -448,13 +440,13 @@ void GameInfoDialog::addControllersTab()
   VarList::push_back(ctrls, "Left MindLink",  static_cast<uInt32>(MouseControl::Type::LeftMindLink));
   VarList::push_back(ctrls, "Right MindLink", static_cast<uInt32>(MouseControl::Type::RightMindLink));
 
-  myMouseX = new PopUpWidget(pane, _font, 0, 0, cpwidth, lineHeight, ctrls, "X-Axis is ");
+  myMouseX = new PopUpWidget(pane, _font, 0, 0, ctrls, "X-Axis is");
   wid.push_back(myMouseX);
-  myMouseY = new PopUpWidget(pane, _font, 0, 0, cpwidth, lineHeight, ctrls, "Y-Axis is ");
+  myMouseY = new PopUpWidget(pane, _font, 0, 0, ctrls, "Y-Axis is");
   wid.push_back(myMouseY);
 
   myMouseRange = new SliderWidget(pane, _font, 0, 0,
-                                  "Mouse axes range ", 0, 0, fontWidth * 4, "%");
+                                  "Mouse axes range", 0, 0, fontWidth * 4, "%");
   myMouseRange->setMinValue(1); myMouseRange->setMaxValue(100);
   myMouseRange->setTickmarkIntervals(4);
   myMouseRange->setToolTip("Adjust paddle range emulated by the mouse.",
@@ -468,9 +460,10 @@ void GameInfoDialog::addControllersTab()
   // Describe the layout once; the pane runs it on every resize
   pane->setLayout([this](GUI::BoxLayout& col) {
     using GUI::BoxLayout;
+    using GUI::GridLayout;
     using GUI::anchoredItem;
     using GUI::indentedItem;
-    using GUI::widgetItem;
+    using GUI::stretchedItem;
     using GUI::alignedItem;
     using GUI::HAlign;
     using GUI::VAlign;
@@ -480,30 +473,51 @@ void GameInfoDialog::addControllersTab()
               VGAP      = Dialog::vGap(),
               INDENT    = Dialog::indent();
 
-    // A port row is a label and the port popup, with room for what follows them
-    const auto portRow = [&](StaticTextWidget* label, PopUpWidget* popup) {
-      auto row = std::make_unique<BoxLayout>(Dir::Horizontal);
-      row->addAuto(anchoredItem(label));
-      row->addAuto(anchoredItem(popup));
-      row->addSpace(fontWidth * 4);
-      return row;
-    };
+    // The two ports and the EEPROM all take the same form: a label, the control
+    // it names, and something beside that.  A grid IS that form -- the labels get
+    // one column, as wide as the widest of them, and the controls get another --
+    // so the three line up without anyone measuring a label.  What each port
+    // detected goes in the control column too, which is what puts it under the
+    // pop-up that reported it
+    enum Col: int { LABEL, CTRL, EXTRA, COLS };
+    enum Row: int { LEFT, LEFTDET, RIGHT, RIGHTDET, BREAK, EEPROM, ROWS };
 
-    auto leftRow = portRow(myLeftPortLabel, myLeftPort);
-    leftRow->addStretch(anchoredItem(mySwapPorts));
+    auto ports = std::make_unique<GridLayout>(COLS, ROWS, fontWidth, VGAP);
+    ports->columnAuto(LABEL).columnAuto(CTRL).columnStretch(EXTRA);
+    for(int r = 0; r < ROWS; ++r)
+      ports->rowAuto(r);
+    // The EEPROM is not one of the ports: an empty row sets it apart
+    ports->rowFixed(BREAK, 0);
 
-    auto rightRow = portRow(myRightPortLabel, myRightPort);
-    rightRow->addFixed(alignedItem(myQuadTariButton, HAlign::Fill, VAlign::Center),
-                       myQuadTariButton->getWidth());
-    rightRow->addStretchSpace();
+    // Each pop-up sizes its box to its own list; one shared width keeps the two
+    // ports (and the two mouse axes below) flush with one another
+    GUI::alignPopUps({myLeftPort, myRightPort});
+    GUI::alignPopUps({myMouseX, myMouseY});
 
-    // EEPROM erase button, with its label and its note beside it
-    auto eepromRow = std::make_unique<BoxLayout>(Dir::Horizontal);
-    eepromRow->addAuto(anchoredItem(myEraseEEPROMLabel));
-    eepromRow->addFixed(alignedItem(myEraseEEPROMButton, HAlign::Fill, VAlign::Center),
-                        myRightPort->getWidth());
-    eepromRow->addSpace(fontWidth / 2);
-    eepromRow->addStretch(alignedItem(myEraseEEPROMInfo, HAlign::Fill, VAlign::Center));
+    ports->place(LABEL, LEFT, anchoredItem(myLeftPortLabel));
+    ports->place(CTRL,  LEFT, anchoredItem(myLeftPort));
+    ports->place(EXTRA, LEFT, indentedItem(mySwapPorts, fontWidth * 3));
+    ports->place(CTRL,  LEFTDET, stretchedItem(myLeftPortDetected), COLS - CTRL);
+
+    ports->place(LABEL, RIGHT, anchoredItem(myRightPortLabel));
+    ports->place(CTRL,  RIGHT, anchoredItem(myRightPort));
+    ports->place(EXTRA, RIGHT, indentedItem(myQuadTariButton, fontWidth * 3));
+    ports->place(CTRL,  RIGHTDET, stretchedItem(myRightPortDetected), COLS - CTRL);
+
+    // The Erase button fills the pop-ups' column, so it is as wide as they are
+    ports->place(LABEL, EEPROM, anchoredItem(myEraseEEPROMLabel));
+    ports->place(CTRL,  EEPROM, alignedItem(myEraseEEPROMButton, HAlign::Fill,
+                                            VAlign::Center));
+    ports->place(EXTRA, EEPROM, stretchedItem(myEraseEEPROMInfo));
+
+    // Each of these draws its own label, so each group gets its own column: the
+    // two paddle-centre sliders, the two mouse-axis pop-ups, and the range slider
+    // (which lines up with nothing)
+    const int prefix = CheckboxWidget::prefixSize(_font);
+    GUI::alignLabels({{myPaddleXCenter, INDENT}, {myPaddleYCenter, INDENT}});
+    GUI::alignLabels({{myMouseX, prefix}, {myMouseY, prefix}});
+    GUI::alignLabels({{myMouseRange}});
+    GUI::alignPopUps({myMouseX, myMouseY});
 
     // The paddle options and the mouse axes run as two parallel columns
     auto paddleCol = std::make_unique<BoxLayout>(Dir::Vertical);
@@ -517,7 +531,6 @@ void GameInfoDialog::addControllersTab()
 
     // The two axis popups are indented by the checkbox prefix, so they line up
     // under its text
-    const int prefix = CheckboxWidget::prefixSize(_font);
     auto mouseCol = std::make_unique<BoxLayout>(Dir::Vertical);
     mouseCol->addAuto(anchoredItem(myMouseControl));
     mouseCol->addSpace(VGAP);
@@ -533,15 +546,7 @@ void GameInfoDialog::addControllersTab()
 
     // Every row is as tall as what it holds — including the two-column block at
     // the bottom, which is as tall as its taller column
-    col.addAuto(std::move(leftRow));
-    col.addSpace(VGAP);
-    col.addAuto(indentedItem(myLeftPortDetected, myLeftPortLabel->getWidth()));
-    col.addSpace(VGAP);
-    col.addAuto(std::move(rightRow));
-    col.addSpace(VGAP);
-    col.addAuto(indentedItem(myRightPortDetected, myRightPortLabel->getWidth()));
-    col.addSpace(VGAP * 2);
-    col.addAuto(std::move(eepromRow));
+    col.addAuto(std::move(ports));
     col.addSpace(VGAP * 4);
     col.addAuto(std::move(lowerRow));
   });
@@ -552,8 +557,8 @@ void GameInfoDialog::addCartridgeTab()
 {
   // 4) Cartridge properties.  The tab's controls are parented to a content pane;
   // the pane lays them out (see setLayout below) whenever the tab is sized
-  const int lineHeight = Dialog::lineHeight();
-  const int bw = buttonWidth(">");
+  // The link button is a pair of chevrons, so it is sized as if it were one
+  const int bw = ButtonWidget::calcWidth(_font, ">");
   WidgetArray wid;
 
   const int tabID = myTab->addTab("Cartridge", TabWidget::AUTO_WIDTH);
@@ -561,32 +566,32 @@ void GameInfoDialog::addCartridgeTab()
   myTab->setPaneWidget(tabID, pane);
 
   myCartLabels[0] = new StaticTextWidget(pane, _font, 0, 0, "Name");
-  myName = new EditTextWidget(pane, _font, 0, 0, 1, lineHeight, "");
+  myName = new EditTextWidget(pane, _font, 0, 0, 1, "");
   wid.push_back(myName);
 
   myCartLabels[1] = new StaticTextWidget(pane, _font, 0, 0, "MD5");
-  myMD5 = new EditTextWidget(pane, _font, 0, 0, 1, lineHeight, "");
+  myMD5 = new EditTextWidget(pane, _font, 0, 0, 1, "");
   myMD5->setEditable(false);
 
   myCartLabels[2] = new StaticTextWidget(pane, _font, 0, 0, "Manufacturer");
-  myManufacturer = new EditTextWidget(pane, _font, 0, 0, 1, lineHeight, "");
+  myManufacturer = new EditTextWidget(pane, _font, 0, 0, 1, "");
   wid.push_back(myManufacturer);
 
   myCartLabels[3] = new StaticTextWidget(pane, _font, 0, 0,
                                          "Model", TextAlign::Left);
-  myModelNo = new EditTextWidget(pane, _font, 0, 0, 1, lineHeight, "");
+  myModelNo = new EditTextWidget(pane, _font, 0, 0, 1, "");
   wid.push_back(myModelNo);
 
   myCartLabels[4] = new StaticTextWidget(pane, _font, 0, 0, "Rarity");
-  myRarity = new EditTextWidget(pane, _font, 0, 0, 1, lineHeight, "");
+  myRarity = new EditTextWidget(pane, _font, 0, 0, 1, "");
   wid.push_back(myRarity);
 
   myCartLabels[5] = new StaticTextWidget(pane, _font, 0, 0, "Note");
-  myNote = new EditTextWidget(pane, _font, 0, 0, 1, lineHeight, "");
+  myNote = new EditTextWidget(pane, _font, 0, 0, 1, "");
   wid.push_back(myNote);
 
   myCartLabels[6] = new StaticTextWidget(pane, _font, 0, 0, "Link");
-  myUrl = new EditTextWidget(pane, _font, 0, 0, 1, lineHeight, "");
+  myUrl = new EditTextWidget(pane, _font, 0, 0, 1, "");
   myUrl->setID(kLinkId);
   wid.push_back(myUrl);
 
@@ -598,7 +603,7 @@ void GameInfoDialog::addCartridgeTab()
   const GUI::Font& ifont = instance().frameBuffer().infoFont();
 
   myCartLabels[7] = new StaticTextWidget(pane, _font, 0, 0, "Bezelname");
-  myBezelName = new EditTextWidget(pane, _font, 0, 0, 1, lineHeight, "");
+  myBezelName = new EditTextWidget(pane, _font, 0, 0, 1, "");
   myBezelName->setToolTip("Define the name of the bezel file.");
   wid.push_back(myBezelName);
 
@@ -682,7 +687,6 @@ void GameInfoDialog::addHighScoresTab()
 {
   // 4) High Scores properties.  The tab's controls are parented to a content
   // pane; the pane lays them out (see setLayout below) whenever the tab is sized
-  const int lineHeight = Dialog::lineHeight();
   const int awidth  = EditTextWidget::calcWidth(_font, 4); // addresses
   const int swidth  = EditTextWidget::calcWidth(_font, HSM::MAX_SPECIAL_NAME); // special
   const int fwidth  = EditTextWidget::calcWidth(_font, 3); // variants
@@ -708,21 +712,21 @@ void GameInfoDialog::addHighScoresTab()
 
   // Variations
   myVariationsLabel = new StaticTextWidget(pane, _font, 0, 0, "Variations");
-  myVariations = new EditTextWidget(pane, _font, 0, 0, fwidth, lineHeight);
+  myVariations = new EditTextWidget(pane, _font, 0, 0, fwidth);
   myVariations->setTextFilter(fVars);
   myVariations->setMaxLen(3);
   myVariations->setToolTip("Define the number of game variations.");
   wid.push_back(myVariations);
 
-  myVarAddressLabel = new StaticTextWidget(pane, _font, 0, 0, "Address ");
-  myVarAddress = new EditTextWidget(pane, _font, 0, 0, awidth, lineHeight);
+  myVarAddressLabel = new StaticTextWidget(pane, _font, 0, 0, "Address");
+  myVarAddress = new EditTextWidget(pane, _font, 0, 0, awidth);
   myVarAddress->setTextFilter(fAddr);
   myVarAddress->setMaxLen(4);
   myVarAddress->setToolTip("Define the address (in hex format) where the variation number "
                            "is stored.");
   wid.push_back(myVarAddress);
   myVarAddressVal = new EditTextWidget(pane, _font, 0, 0,
-                                       EditTextWidget::calcWidth(_font, 3), lineHeight);
+                                       EditTextWidget::calcWidth(_font, 3));
   myVarAddressVal->setEditable(false);
 
   myVarsBCD = new CheckboxWidget(pane, _font, 0, 0, "BCD", kHiScoresChanged);
@@ -738,18 +742,18 @@ void GameInfoDialog::addHighScoresTab()
   items.clear();
   for(uInt32 i = 1; i <= HSM::MAX_SCORE_DIGITS; ++i)
     VarList::push_back(items, std::to_string(i), std::to_string(i));
-  myScoreDigitsLabel = new StaticTextWidget(pane, _font, 0, 0, "Digits    ");
-  myScoreDigits = new PopUpWidget(pane, _font, 0, 0, _font.getStringWidth("4"),
-                                  lineHeight, items, "", 0, kHiScoresChanged);
+  myScoreDigitsLabel = new StaticTextWidget(pane, _font, 0, 0, "Digits");
+  myScoreDigits = new PopUpWidget(pane, _font, 0, 0, items, "", 0,
+                                  kHiScoresChanged);
   myScoreDigits->setToolTip("Select the number of score digits displayed.");
   wid.push_back(myScoreDigits);
 
   items.clear();
   for(uInt32 i = 0; i <= HSM::MAX_SCORE_DIGITS - 3; ++i)
     VarList::push_back(items, std::to_string(i), std::to_string(i));
-  myTrailingZeroesLabel = new StaticTextWidget(pane, _font, 0, 0, "0-digits ");
-  myTrailingZeroes = new PopUpWidget(pane, _font, 0, 0, _font.getStringWidth("0"),
-                                     lineHeight, items, "", 0, kHiScoresChanged);
+  myTrailingZeroesLabel = new StaticTextWidget(pane, _font, 0, 0, "0-digits");
+  myTrailingZeroes = new PopUpWidget(pane, _font, 0, 0, items, "", 0,
+                                     kHiScoresChanged);
   myTrailingZeroes->setToolTip("Select the number of trailing score digits which are fixed to 0.");
   wid.push_back(myTrailingZeroes);
 
@@ -761,42 +765,42 @@ void GameInfoDialog::addHighScoresTab()
   wid.push_back(myScoreInvert);
 
   // Score addresses
-  myScoreAddressesLabel = new StaticTextWidget(pane, _font, 0, 0, "Addresses ");
+  myScoreAddressesLabel = new StaticTextWidget(pane, _font, 0, 0, "Addresses");
   for(uInt32 a = 0; a < HSM::MAX_SCORE_ADDR; ++a)
   {
-    myScoreAddress[a] = new EditTextWidget(pane, _font, 0, 0, awidth, lineHeight);
+    myScoreAddress[a] = new EditTextWidget(pane, _font, 0, 0, awidth);
     myScoreAddress[a]->setTextFilter(fAddr);
     myScoreAddress[a]->setMaxLen(4);
     myScoreAddress[a]->setToolTip("Define the addresses (in hex format, highest byte first) "
                                   "where the score is stored.");
     wid.push_back(myScoreAddress[a]);
     myScoreAddressVal[a] = new EditTextWidget(pane, _font, 0, 0,
-                                              EditTextWidget::calcWidth(_font, 2), lineHeight);
+                                              EditTextWidget::calcWidth(_font, 2));
     myScoreAddressVal[a]->setEditable(false);
   }
 
-  myCurrentScoreLabel = new StaticTextWidget(pane, _font, 0, 0, "Current   ");
+  myCurrentScoreLabel = new StaticTextWidget(pane, _font, 0, 0, "Current");
   myCurrentScore = new StaticTextWidget(pane, _font, 0, 0, "12345678");
   myCurrentScore->setToolTip("The score read using the current definitions.");
 
   // Special
   mySpecialLabel = new StaticTextWidget(pane, _font, 0, 0, "Special");
-  mySpecialName = new EditTextWidget(pane, _font, 0, 0, swidth, lineHeight);
+  mySpecialName = new EditTextWidget(pane, _font, 0, 0, swidth);
   mySpecialName->setTextFilter(fText);
   mySpecialName->setMaxLen(HSM::MAX_SPECIAL_NAME);
   mySpecialName->setToolTip("Define a short label (up to 5 chars) for the optional,\ngame's "
                             "special value (e.g. 'Level', 'Wave', 'Round'" + ELLIPSIS + ")");
   wid.push_back(mySpecialName);
 
-  mySpecialAddressLabel = new StaticTextWidget(pane, _font, 0, 0, "Address ");
-  mySpecialAddress = new EditTextWidget(pane, _font, 0, 0, awidth, lineHeight);
+  mySpecialAddressLabel = new StaticTextWidget(pane, _font, 0, 0, "Address");
+  mySpecialAddress = new EditTextWidget(pane, _font, 0, 0, awidth);
   mySpecialAddress->setTextFilter(fAddr);
   mySpecialAddress->setMaxLen(4);
   mySpecialAddress->setToolTip("Define the address (in hex format) where the special "
                                "number is stored.");
   wid.push_back(mySpecialAddress);
   mySpecialAddressVal = new EditTextWidget(pane, _font, 0, 0,
-                                           EditTextWidget::calcWidth(_font, 3), lineHeight);
+                                           EditTextWidget::calcWidth(_font, 3));
   mySpecialAddressVal->setEditable(false);
 
   mySpecialBCD = new CheckboxWidget(pane, _font, 0, 0, "BCD", kHiScoresChanged);
@@ -808,7 +812,7 @@ void GameInfoDialog::addHighScoresTab()
 
   // Note
   myHighScoreNotesLabel = new StaticTextWidget(pane, _font, 0, 0, "Note");
-  myHighScoreNotes = new EditTextWidget(pane, _font, 0, 0, 1, lineHeight);
+  myHighScoreNotes = new EditTextWidget(pane, _font, 0, 0, 1);
   myHighScoreNotes->setTextFilter(fText);
   myHighScoreNotes->setToolTip("Define some free text which explains the high scores properties.");
   wid.push_back(myHighScoreNotes);
@@ -834,33 +838,68 @@ void GameInfoDialog::addHighScoresTab()
     const int fontWidth = Dialog::fontWidth(),
               VGAP      = Dialog::vGap(),
               INDENT    = Dialog::indent();
-    // The gap between the groups within a row, and the tight one that ties a
-    // value field to the address it reads
+    // The gap between the groups within a row -- it is the grid's own column
+    // spacing, so no group has to open one for itself -- and the tight one that
+    // ties a value field to the address it reads
     const int GAP = fontWidth * 2, TIE = fontWidth / 4;
+
+    // The tab reads as three groups, and the values line up WITHIN a group, not
+    // across the tab: Variations on its own, the three rows under Score, and
+    // Special with the Note beneath it.  Each group's labels therefore get a
+    // column of their own -- so a long label in one group cannot push the values
+    // of another out -- and the clearance after a label comes with it
+    GUI::alignLabels({{myVariationsLabel}});
+    GUI::alignLabels({{myScoreDigitsLabel}, {myScoreAddressesLabel},
+                      {myCurrentScoreLabel}});
+    GUI::alignLabels({{mySpecialLabel}, {myHighScoreNotesLabel}});
+    // The two address groups line up with each other; the trailing-zeroes label
+    // names its own pop-up and lines up with nothing
+    GUI::alignLabels({{myVarAddressLabel}, {mySpecialAddressLabel}});
+    GUI::alignLabels({{myTrailingZeroesLabel}});
+
+    // A label and the thing it names.  The gap between them is the label's own
+    // (alignLabels sized it), so nothing here opens one.  Optionally indented,
+    // to sit under a heading
+    const auto labelled = [&](StaticTextWidget* label, int indent = 0) {
+      auto row = std::make_unique<BoxLayout>(Dir::Horizontal);
+      if(indent > 0)
+        row->addSpace(indent);
+      row->addAuto(anchoredItem(label));
+      return row;
+    };
 
     // An address group: its label, the address, and the value read from it
     const auto addrGroup = [&](StaticTextWidget* label, EditTextWidget* addr,
                                EditTextWidget* val) {
-      auto row = std::make_unique<BoxLayout>(Dir::Horizontal);
-      row->addSpace(GAP);
-      row->addAuto(anchoredItem(label));
+      auto row = labelled(label);
       row->addAuto(anchoredItem(addr));
       row->addSpace(TIE);
       row->addAuto(anchoredItem(val));
       return row;
     };
 
-    // Columns: row label | value | address group | BCD | trailing option.
-    // Rows alternate content and the gaps between them, so each gap is stated
-    // where it falls rather than being one uniform spacing
-    enum Col: int { LABEL, VALUE, ADDR, BCD, OPT, COLS };
+    // A row's label and its value, as one cell
+    const auto field = [&](StaticTextWidget* label, Widget* value, int indent = 0) {
+      auto row = labelled(label, indent);
+      row->addAuto(anchoredItem(value));
+      return row;
+    };
+
+    // Columns: the row's own label+value | address group | BCD | trailing option,
+    // one GAP apart.  It is these three that cross-reference each other down the
+    // tab, so they are the ones a grid has to line up; the label and value beside
+    // them belong to their row alone, and pairing them keeps the tab no wider
+    // than the widest single row.  Rows alternate content and the gaps between
+    // them, so each gap is stated where it falls rather than being one uniform
+    // spacing
+    enum Col: int { FIELD, ADDR, BCD, OPT, COLS };
     enum Row: int {
       VARS, GAP1, SCORE, GAP2, DIGITS, GAP3, ADDRS, GAP4, CURRENT, GAP5,
       SPECIAL, GAP6, NOTE, ROWS
     };
-    auto grid = std::make_unique<GridLayout>(COLS, ROWS);
+    auto grid = std::make_unique<GridLayout>(COLS, ROWS, GAP);
 
-    for(const int c: {LABEL, VALUE, ADDR, BCD})
+    for(const int c: {FIELD, ADDR, BCD})
       grid->columnAuto(c);
     grid->columnStretch(OPT);
 
@@ -870,29 +909,22 @@ void GameInfoDialog::addHighScoresTab()
          .rowFixed(GAP4, VGAP).rowFixed(GAP5, VGAP * 3).rowFixed(GAP6, VGAP * 3);
 
     // Variations
-    grid->place(LABEL, VARS, anchoredItem(myVariationsLabel));
-    grid->place(VALUE, VARS, anchoredItem(myVariations));
+    grid->place(FIELD, VARS, field(myVariationsLabel, myVariations));
     grid->place(ADDR,  VARS, addrGroup(myVarAddressLabel, myVarAddress,
                                        myVarAddressVal));
-    grid->place(BCD,   VARS, indentedItem(myVarsBCD, GAP));
-    grid->place(OPT,   VARS, indentedItem(myVarsZeroBased, GAP));
+    grid->place(BCD,   VARS, anchoredItem(myVarsBCD));
+    grid->place(OPT,   VARS, anchoredItem(myVarsZeroBased));
 
     // Score, whose three rows are indented under their heading
-    grid->place(LABEL, SCORE, anchoredItem(myScoreLabel));
+    grid->place(FIELD, SCORE, anchoredItem(myScoreLabel));
 
-    auto zeroesGroup = std::make_unique<BoxLayout>(Dir::Horizontal);
-    zeroesGroup->addSpace(GAP);
-    zeroesGroup->addAuto(anchoredItem(myTrailingZeroesLabel));
-    zeroesGroup->addAuto(anchoredItem(myTrailingZeroes));
+    grid->place(FIELD, DIGITS, field(myScoreDigitsLabel, myScoreDigits, INDENT));
+    grid->place(ADDR,  DIGITS, field(myTrailingZeroesLabel, myTrailingZeroes));
+    grid->place(BCD,   DIGITS, anchoredItem(myScoreBCD));
+    grid->place(OPT,   DIGITS, anchoredItem(myScoreInvert));
 
-    grid->place(LABEL, DIGITS, indentedItem(myScoreDigitsLabel, INDENT));
-    grid->place(VALUE, DIGITS, anchoredItem(myScoreDigits));
-    grid->place(ADDR,  DIGITS, std::move(zeroesGroup));
-    grid->place(BCD,   DIGITS, indentedItem(myScoreBCD, GAP));
-    grid->place(OPT,   DIGITS, indentedItem(myScoreInvert, GAP));
-
-    // The score addresses run past the columns above them, so they span the rest
-    auto scoreAddrs = std::make_unique<BoxLayout>(Dir::Horizontal);
+    // The score addresses run past the columns beside them, so they span the rest
+    auto scoreAddrs = labelled(myScoreAddressesLabel, INDENT);
     for(uInt32 a = 0; a < HSM::MAX_SCORE_ADDR; ++a)
     {
       scoreAddrs->addAuto(anchoredItem(myScoreAddress[a]));
@@ -901,26 +933,23 @@ void GameInfoDialog::addHighScoresTab()
       scoreAddrs->addSpace(GAP);
     }
     scoreAddrs->addStretchSpace();
+    grid->place(FIELD, ADDRS, std::move(scoreAddrs), COLS - FIELD);
 
-    grid->place(LABEL, ADDRS, indentedItem(myScoreAddressesLabel, INDENT));
-    grid->place(VALUE, ADDRS, std::move(scoreAddrs), COLS - VALUE);
-
-    grid->place(LABEL, CURRENT, indentedItem(myCurrentScoreLabel, INDENT));
-    grid->place(VALUE, CURRENT, anchoredItem(myCurrentScore), COLS - VALUE);
+    // The score read back is wider than the fields above it, so it spans too
+    grid->place(FIELD, CURRENT, field(myCurrentScoreLabel, myCurrentScore, INDENT),
+                COLS - FIELD);
 
     // Special
-    grid->place(LABEL, SPECIAL, anchoredItem(mySpecialLabel));
-    grid->place(VALUE, SPECIAL, anchoredItem(mySpecialName));
+    grid->place(FIELD, SPECIAL, field(mySpecialLabel, mySpecialName));
     grid->place(ADDR,  SPECIAL, addrGroup(mySpecialAddressLabel, mySpecialAddress,
                                           mySpecialAddressVal));
-    grid->place(BCD,   SPECIAL, indentedItem(mySpecialBCD, GAP));
-    grid->place(OPT,   SPECIAL, indentedItem(mySpecialZeroBased, GAP));
+    grid->place(BCD,   SPECIAL, anchoredItem(mySpecialBCD));
+    grid->place(OPT,   SPECIAL, anchoredItem(mySpecialZeroBased));
 
     // Note, whose field takes all the width the other columns leave
-    grid->place(LABEL, NOTE, anchoredItem(myHighScoreNotesLabel));
-    grid->place(VALUE, NOTE,
-                alignedItem(myHighScoreNotes, HAlign::Fill, VAlign::Center),
-                COLS - VALUE);
+    auto noteRow = labelled(myHighScoreNotesLabel);
+    noteRow->addStretch(alignedItem(myHighScoreNotes, HAlign::Fill, VAlign::Center));
+    grid->place(FIELD, NOTE, std::move(noteRow), COLS - FIELD);
 
     // Everything below the enable checkbox lines up under its label
     auto gridRow = std::make_unique<BoxLayout>(Dir::Horizontal);

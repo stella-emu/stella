@@ -47,9 +47,7 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
     myIsGlobal{boss != nullptr}
 {
   const GUI::Font& ifont = instance().frameBuffer().infoFont();
-  const int lineHeight   = Dialog::lineHeight(),
-            fontWidth    = Dialog::fontWidth(),
-            buttonHeight = Dialog::buttonHeight();
+  const int fontWidth = Dialog::fontWidth();
   WidgetArray wid;
   VariantList items;
   const Common::Size& ds = instance().frameBuffer().desktopSize();
@@ -68,7 +66,6 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
   int tabID = myTab->addTab(" Look & Feel ");
   auto* lookPane = new TabPaneWidget(myTab, font);
   myTab->setPaneWidget(tabID, lookPane);
-  const int pwidth = font.getStringWidth("Right bottom");
 
   // UI Palette
   items.clear();
@@ -76,12 +73,12 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
   VarList::push_back(items, "Classic", "classic");
   VarList::push_back(items, "Light", "light");
   VarList::push_back(items, "Dark", "dark");
-  myPalette1Popup = new PopUpWidget(lookPane, font, 0, 0, pwidth, lineHeight,
+  myPalette1Popup = new PopUpWidget(lookPane, font, 0, 0,
                                     items, "Light theme", 0);
   myPalette1Popup->setToolTip("Primary/light theme.", Event::ToggleUIPalette, EventMode::kMenuMode);
   wid.push_back(myPalette1Popup);
 
-  myPalette2Popup = new PopUpWidget(lookPane, font, 0, 0, pwidth, lineHeight,
+  myPalette2Popup = new PopUpWidget(lookPane, font, 0, 0,
                                     items, "Dark theme", 0);
   myPalette2Popup->setToolTip("Alternative/dark theme.", Event::ToggleUIPalette, EventMode::kMenuMode);
   wid.push_back(myPalette2Popup);
@@ -99,7 +96,7 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
   VarList::push_back(items, "Large (12pt)", "large12");   // 12x24
   VarList::push_back(items, "Large (14pt)", "large14");   // 14x28
   VarList::push_back(items, "Large (16pt)", "large16");   // 16x32
-  myDialogFontPopup = new PopUpWidget(lookPane, font, 0, 0, pwidth, lineHeight,
+  myDialogFontPopup = new PopUpWidget(lookPane, font, 0, 0,
                                       items, "Dialogs font", 0, kDialogFont);
   wid.push_back(myDialogFontPopup);
 
@@ -115,7 +112,7 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
   VarList::push_back(items, "Right top", 2);
   VarList::push_back(items, "Right bottom", 3);
   VarList::push_back(items, "Left bottom", 4);
-  myPositionPopup = new PopUpWidget(lookPane, font, 0, 0, pwidth, lineHeight,
+  myPositionPopup = new PopUpWidget(lookPane, font, 0, 0,
                                     items, "Dialogs position", 0);
   wid.push_back(myPositionPopup);
 
@@ -124,10 +121,11 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
   myCenter->setToolTip("Check to center all windows, else remember last position.");
   wid.push_back(myCenter);
 
-  // Delay between quick-selecting characters in ListWidget
-  // The sliders' tracks are as wide as the pop-ups' value boxes beside them
-  const int swidth = pwidth + PopUpWidget::dropDownWidth(font);
-  myListDelaySlider = new SliderWidget(lookPane, font, 0, 0, swidth, lineHeight,
+  // Delay between quick-selecting characters in ListWidget.  The sliders' tracks
+  // span the pop-ups' boxes and arrows beside them, but the pop-ups have not been
+  // given their shared width yet, so layout() sets the real track width
+  const int swidth = 1;
+  myListDelaySlider = new SliderWidget(lookPane, font, 0, 0, swidth,
                                       "List input delay", 0, kListDelay,
                                       font.getStringWidth("1 second"));
   myListDelaySlider->setMinValue(0);
@@ -139,7 +137,7 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
   wid.push_back(myListDelaySlider);
 
   // Number of lines a mouse wheel will scroll
-  myWheelLinesSlider = new SliderWidget(lookPane, font, 0, 0, swidth, lineHeight,
+  myWheelLinesSlider = new SliderWidget(lookPane, font, 0, 0, swidth,
                                       "Mouse wheel scroll", 0, kMouseWheel,
                                        font.getStringWidth("10 lines"));
   myWheelLinesSlider->setMinValue(1);
@@ -148,7 +146,7 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
   wid.push_back(myWheelLinesSlider);
 
   // Mouse double click speed
-  myDoubleClickSlider = new SliderWidget(lookPane, font, 0, 0, swidth, lineHeight,
+  myDoubleClickSlider = new SliderWidget(lookPane, font, 0, 0, swidth,
                                          "Double-click speed", 0, 0,
                                          font.getStringWidth("900 ms"), " ms");
   myDoubleClickSlider->setMinValue(100);
@@ -158,7 +156,7 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
   wid.push_back(myDoubleClickSlider);
 
   // Initial delay before controller input will start repeating
-  myControllerDelaySlider = new SliderWidget(lookPane, font, 0, 0, swidth, lineHeight,
+  myControllerDelaySlider = new SliderWidget(lookPane, font, 0, 0, swidth,
                                              "Controller repeat delay", 0, kControllerDelay,
                                              font.getStringWidth("1 second"));
   myControllerDelaySlider->setMinValue(200);
@@ -168,7 +166,7 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
   wid.push_back(myControllerDelaySlider);
 
   // Controller repeat rate
-  myControllerRateSlider = new SliderWidget(lookPane, font, 0, 0, swidth, lineHeight,
+  myControllerRateSlider = new SliderWidget(lookPane, font, 0, 0, swidth,
                                             "Controller repeat rate", 0, 0,
                                             font.getStringWidth("30 repeats/s"), " repeats/s");
   myControllerRateSlider->setMinValue(2);
@@ -204,6 +202,14 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
                       {myPositionPopup}, {myListDelaySlider}, {myWheelLinesSlider},
                       {myDoubleClickSlider}, {myControllerDelaySlider},
                       {myControllerRateSlider}});
+    // The pop-ups size their own boxes to their items; one shared width keeps
+    // them flush, and the sliders' tracks then span box and arrow alike
+    GUI::alignPopUps({myPalette1Popup, myPalette2Popup, myDialogFontPopup,
+                      myPositionPopup});
+    const int swidth = myPalette1Popup->getWidth() - myPalette1Popup->labelWidth();
+    for(auto* slider: {myListDelaySlider, myWheelLinesSlider, myDoubleClickSlider,
+                       myControllerDelaySlider, myControllerRateSlider})
+      slider->setTrackWidth(swidth);
 
     enum Col: int { MAIN, EXTRA, COLS };
     enum Row: int {
@@ -247,11 +253,10 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
   myTab->setPaneWidget(tabID, launchPane);
 
   // ROM path
-  int bwidth = font.getStringWidth("ROM path" + ELLIPSIS) + 20 + 1;
-  myRomButton = new ButtonWidget(launchPane, font, 0, 0, bwidth,
-      buttonHeight, "ROM path" + ELLIPSIS, kChooseRomDirCmd);
+  myRomButton = new ButtonWidget(launchPane, font, 0, 0,
+      "ROM path" + ELLIPSIS, kChooseRomDirCmd);
   wid.push_back(myRomButton);
-  myRomPath = new EditTextWidget(launchPane, font, 0, 0, lineHeight, lineHeight, "");
+  myRomPath = new EditTextWidget(launchPane, font, 0, 0, 1, "");
   wid.push_back(myRomPath);
 
   myFollowLauncherWidget = new CheckboxWidget(launchPane, font, 0, 0, "Follow Launcher path");
@@ -259,7 +264,6 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
   wid.push_back(myFollowLauncherWidget);
 
   // Launcher font
-  const int pwidthL = font.getStringWidth("2x (1000x760)");
   items.clear();
   VarList::push_back(items, "Small", "small");            //  8x13
   VarList::push_back(items, "Low Medium", "low_medium");  //  9x15
@@ -269,8 +273,7 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
   VarList::push_back(items, "Large (14pt)", "large14");   // 14x28
   VarList::push_back(items, "Large (16pt)", "large16");   // 16x32
   myLauncherFontPopup =
-    new PopUpWidget(launchPane, font, 0, 0, pwidthL, lineHeight, items,
-      "Launcher font", 0);
+    new PopUpWidget(launchPane, font, 0, 0, items, "Launcher font", 0);
   wid.push_back(myLauncherFontPopup);
 
   // Launcher width and height
@@ -302,7 +305,7 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
 
   // ROM launcher info/snapshot viewer
   myRomViewerSize = new SliderWidget(launchPane, font, 0, 0, "ROM info width",
-                                     0, kRomViewer, 6 * fontWidth, "%  ");
+                                     0, kRomViewer, 6 * fontWidth, "%");
   myRomViewerSize->setMinValue(0);
   myRomViewerSize->setMaxValue(100);
   myRomViewerSize->setStepValue(2);
@@ -311,13 +314,12 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
   wid.push_back(myRomViewerSize);
 
   // Snapshot path (load files)
-  bwidth = font.getStringWidth("Image path" + ELLIPSIS) + fontWidth * 2 + 1;
-  myOpenBrowserButton = new ButtonWidget(launchPane, font, 0, 0, bwidth, buttonHeight,
+  myOpenBrowserButton = new ButtonWidget(launchPane, font, 0, 0,
                                          "Image path" + ELLIPSIS, kChooseSnapLoadDirCmd);
   myOpenBrowserButton->setToolTip("Select path for images used in Launcher.");
   wid.push_back(myOpenBrowserButton);
 
-  mySnapLoadPath = new EditTextWidget(launchPane, font, 0, 0, lineHeight, lineHeight, "");
+  mySnapLoadPath = new EditTextWidget(launchPane, font, 0, 0, 1, "");
   wid.push_back(mySnapLoadPath);
 
   // Exit to Launcher

@@ -714,10 +714,9 @@ ButtonWidget::ButtonWidget(GuiObject* boss, const GUI::Font& font,
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ButtonWidget::ButtonWidget(GuiObject* boss, const GUI::Font& font,
-                           int x, int y, int dw,
+                           int x, int y, int w,
                            string_view label, int cmd, bool repeat)
-  : ButtonWidget(boss, font, x, y, font.getStringWidth(label) + dw,
-                 font.getLineHeight() + 4, label, cmd, repeat)
+  : ButtonWidget(boss, font, x, y, w, calcHeight(font), label, cmd, repeat)
 {
 }
 
@@ -725,8 +724,10 @@ ButtonWidget::ButtonWidget(GuiObject* boss, const GUI::Font& font,
 ButtonWidget::ButtonWidget(GuiObject* boss, const GUI::Font& font,
                            int x, int y,
                            string_view label, int cmd, bool repeat)
-  : ButtonWidget(boss, font, x, y, 20, label, cmd, repeat)
+  : ButtonWidget(boss, font, x, y, calcWidth(font, label), calcHeight(font),
+                 label, cmd, repeat)
 {
+  _autoSize = true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -773,13 +774,20 @@ ButtonWidget::ButtonWidget(GuiObject* boss, const GUI::Font& font,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ButtonWidget::refreshFontMetrics()
 {
-  // A button's size (width via Dialog::buttonWidth, height, icon extents) is
-  // chosen by its owning dialog and re-applied by layout()/layoutButtonGroup(),
-  // so only refresh the cached font metrics here.  This also deliberately blocks
-  // the StaticTextWidget size recompute (which would shrink a button to its bare
-  // label width) from being inherited by ButtonWidget and its subclasses.
+  // Deliberately skips StaticTextWidget's recompute, which would shrink a button
+  // to its bare label width (and would be inherited by the checkbox, radio button
+  // and slider below).
   // NOLINTNEXTLINE(bugprone-parent-virtual-call)
   Widget::refreshFontMetrics();
+
+  // A button that sized itself from its label re-derives that size, so it follows
+  // the font on its own.  Any other size came from outside — an icon's extents, a
+  // width shared with its neighbours — and is re-applied by the owning layout()
+  if(_autoSize)
+  {
+    _w = calcWidth(_font, _label);
+    _h = calcHeight(_font);
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1070,11 +1078,23 @@ SliderWidget::SliderWidget(GuiObject* boss, const GUI::Font& font,
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 SliderWidget::SliderWidget(GuiObject* boss, const GUI::Font& font,
+                           int x, int y, int w,
+                           string_view label, int labelWidth, int cmd,
+                           int valueLabelWidth, string_view valueUnit, int valueLabelGap,
+                           bool forceLabelSign)
+  : SliderWidget(boss, font, x, y, w, font.getLineHeight(),
+                 label, labelWidth, cmd, valueLabelWidth, valueUnit, valueLabelGap,
+                 forceLabelSign)
+{
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+SliderWidget::SliderWidget(GuiObject* boss, const GUI::Font& font,
                            int x, int y,
                            string_view label, int labelWidth, int cmd,
                            int valueLabelWidth, string_view valueUnit, int valueLabelGap,
                            bool forceLabelSign)
-  : SliderWidget(boss, font, x, y, font.getMaxCharWidth() * 10, font.getLineHeight(),
+  : SliderWidget(boss, font, x, y, font.getMaxCharWidth() * 10,
                  label, labelWidth, cmd, valueLabelWidth, valueUnit, valueLabelGap,
                  forceLabelSign)
 {

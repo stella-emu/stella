@@ -39,6 +39,32 @@ class PopUpWidget : public EditableWidget
     PopUpWidget(GuiObject* boss, const GUI::Font& font,
                 int x, int y, int w, int h, const VariantList& items,
                 string_view label = "", int labelWidth = 0, int cmd = 0);
+
+    /**
+      Size me from my own items: the value box is as wide as the widest of them
+      and I am as tall as my font — so a dialog with a list of things to offer
+      states only the list, and adding a longer entry simply widens me.
+
+      ⚠ Only for a list that is FIXED for my lifetime.  A pop-up refilled in
+      loadConfig() (the per-ROM controller and bankswitch lists) must be given an
+      explicit width, or the dialog would change size as the user browses: how
+      wide an entry it is prepared to show is then the DIALOG's decision.  Such a
+      dialog can still say it in items rather than pixels — see calcWidth().
+    */
+    PopUpWidget(GuiObject* boss, const GUI::Font& font, int x, int y,
+                const VariantList& items, string_view label = "",
+                int labelWidth = 0, int cmd = 0);
+
+    /**
+      Take this value-box width, but size your own height.  For the pop-up whose
+      LIST is refilled at runtime (the per-ROM controller and bankswitch lists):
+      it cannot size its box to items it does not have yet, and would resize under
+      the user if it tried, so the DIALOG says how wide an entry it will show.
+    */
+    PopUpWidget(GuiObject* boss, const GUI::Font& font, int x, int y, int w,
+                const VariantList& items, string_view label = "",
+                int labelWidth = 0, int cmd = 0);
+
     ~PopUpWidget() override = default;
 
     void setID(uInt32 id) override;
@@ -71,6 +97,16 @@ class PopUpWidget : public EditableWidget
       return font.getFontHeight() < 24 ? (9 * 2 + 3) : (13 * 2 + 7);
     }
 
+    /**
+      The value-box width (the 'w' the full constructor takes, i.e. excluding the
+      label and the drop-down arrow) needed to show the widest of these items.
+      The self-sizing constructor above uses this; a dialog only needs it for a
+      pop-up it must size itself — to give one a little more room than its items
+      strictly need, or to size a *dynamic* list from a fixed set of specimen
+      entries rather than a pixel literal.
+    */
+    static int calcWidth(const GUI::Font& font, const VariantList& items);
+
     void handleMouseDown(int x, int y, MouseButton b, int clickCount) override;
     void handleMouseWheel(int x, int y, int direction) override;
     bool handleEvent(Event::Type e) override;
@@ -80,6 +116,14 @@ class PopUpWidget : public EditableWidget
     }
     int labelWidth() const override { return _labelWidth; }
     void setLabelWidth(int w) override;
+
+    /**
+      My value box: the part between my label and my drop-down arrow.  I size it
+      to my own items, but a COLUMN of pop-ups wants them all the same width —
+      which none of us can know alone — so GUI::alignPopUps() equalizes them.
+    */
+    int boxWidth() const { return _w - _labelWidth - dropDownWidth(_font); }
+    void setBoxWidth(int w);
 
     void refreshFontMetrics() override;
 

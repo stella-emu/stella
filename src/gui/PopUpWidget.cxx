@@ -59,12 +59,51 @@ PopUpWidget::PopUpWidget(GuiObject* boss, const GUI::Font& font,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+PopUpWidget::PopUpWidget(GuiObject* boss, const GUI::Font& font, int x, int y,
+                         const VariantList& items, string_view label,
+                         int labelWidth, int cmd)
+  : PopUpWidget(boss, font, x, y, calcWidth(font, items), font.getLineHeight(),
+                items, label, labelWidth, cmd)
+{
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+PopUpWidget::PopUpWidget(GuiObject* boss, const GUI::Font& font, int x, int y,
+                         int w, const VariantList& items, string_view label,
+                         int labelWidth, int cmd)
+  : PopUpWidget(boss, font, x, y, w, font.getLineHeight(), items, label,
+                labelWidth, cmd)
+{
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+int PopUpWidget::calcWidth(const GUI::Font& font, const VariantList& items)
+{
+  int width = 0;
+
+  for(const auto& item: items)
+    width = std::max(width, font.getStringWidth(item.first));
+
+  return width;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PopUpWidget::setLabelWidth(int w)
 {
   // Keep the value box the width it already has: the label column grows or
   // shrinks and we grow or shrink with it, rather than eating into the box
   _w += w - _labelWidth;
   _labelWidth = w;
+  myMenu->setMaxWidth(_w - _labelWidth);
+  setDirty();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void PopUpWidget::setBoxWidth(int w)
+{
+  // Keep my label column as it is; the box (and the menu that drops out of it)
+  // grow or shrink, and I grow or shrink with them
+  _w = w + _labelWidth + dropDownWidth(_font);
   myMenu->setMaxWidth(_w - _labelWidth);
   setDirty();
 }

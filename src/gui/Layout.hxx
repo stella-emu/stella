@@ -18,10 +18,14 @@
 #ifndef LAYOUT_HXX
 #define LAYOUT_HXX
 
+#include <span>
+
 #include "Rect.hxx"
 #include "bspf.hxx"
 
 class Widget;
+class ButtonWidget;
+class PopUpWidget;
 
 namespace GUI {
 
@@ -369,11 +373,29 @@ alignedItem(Widget* widget, HAlign hAlign, VAlign vAlign,
 // A widget that fills its cell in both axes: lists, images, and any control that
 // should widen (and deepen) with the dialog.  A null widget yields an empty
 // spacer that only reserves space.
+//
+// ⚠ A filled axis reports NO natural size (the cell decides it), so a widget
+// that HAS a height of its own — a button, a field, a checkbox — must not be
+// given to a cell that is sized by addAuto()/rowAuto(): the cell would take its
+// height from whatever else shares the row and squash it.  Use stretchedItem()
+// for those; keep widgetItem() for content that genuinely has no size of its own
+// (or declare minW/minH here, which is what the filled axes then report).
 inline unique_ptr<WidgetLayout>
 widgetItem(Widget* widget, int minW = 0, int minH = 0)
 {
   return std::make_unique<WidgetLayout>(widget, HAlign::Fill, VAlign::Fill,
                                         minW, minH);
+}
+
+// A widget that takes its cell's WIDTH but keeps its own height, centered in the
+// cell.  This is what a button in a column of shared width wants, and a field
+// that widens with the dialog: the width is the layout's to decide, the height
+// is the widget's, and centering lines its text up with everything on its row.
+inline unique_ptr<WidgetLayout>
+stretchedItem(Widget* widget, int minW = 0)
+{
+  return std::make_unique<WidgetLayout>(widget, HAlign::Fill, VAlign::Center,
+                                        minW);
 }
 
 // A widget that keeps its natural size, at the left of its cell and centered in
@@ -409,6 +431,14 @@ struct LabeledControl {
 // a string literal to measure it, and adding a longer label simply widens the
 // column.  Call it from the layout (a pane's builder), so it follows the font.
 //
+// ⚠ A group is a column of controls STACKED VERTICALLY, and near enough to each
+// other to read as one.  Two controls sharing a ROW cannot be aligned by it (their
+// tracks begin at different places whatever the column is), and controls rows apart
+// gain no alignment the eye can see.  Either way the only effect is to pad every
+// shorter label out to the longest one, opening a gap between a label and its box.
+// A control with nothing to line up with belongs in a group of ITS OWN, for the
+// clearance below.
+//
 // ⚠ The clearance comes from HERE.  A self-labeling control left out of a group
 // derives its own column from its label text alone, so its box sits flush
 // against it — which is why some labels still carry a trailing space to fake the
@@ -416,6 +446,31 @@ struct LabeledControl {
 // padding its label: the padding is alignment hidden in a string, and it breaks
 // silently when the label is reworded.
 void alignLabels(std::initializer_list<LabeledControl> controls);
+
+// Give a group of buttons ONE width — the widest of them — so a column or a row
+// of them is not ragged.  A button already knows how wide its own label needs it
+// to be (see ButtonWidget's label-only constructor); what it cannot know is what
+// its NEIGHBOURS need, and that is the only thing about a button a layout has to
+// say.  So no dialog names a button width, and none names a label to measure:
+// add a longer button and the group simply widens.
+// Null entries are ignored, so an optional button can be passed unconditionally.
+// 'minWidth' is for a group that must not shrink-wrap to its labels: a dialog's
+// OK/Cancel is the same size in EVERY dialog (Dialog::standardButtonWidth), so
+// that the standard group does not change shape from one dialog to the next.
+void alignButtons(std::initializer_list<Widget*> buttons, int minWidth = 0);
+// ...and the same for a whole collection of them (a grid of option buttons);
+// pass a subrange -- std::span(myButtons).first(n) -- to leave one out
+void alignButtons(std::span<ButtonWidget* const> buttons, int minWidth = 0);
+
+// Give a column of pop-ups ONE value-box width -- the widest of them -- so their
+// boxes and arrows line up down the dialog instead of ending raggedly.  Each
+// pop-up has already sized its box to its OWN items (see PopUpWidget's item-only
+// constructor); what it cannot know is what its neighbours have to show, and that
+// is the only thing about a pop-up a layout has to say.  So no dialog names a
+// pop-up width, and none names a specimen entry to measure: add a longer item to
+// any of them and the group simply widens.
+// Pair it with alignLabels() to line up their left edges too.
+void alignPopUps(std::initializer_list<PopUpWidget*> popups);
 
 // A horizontal form row pairing a separate label with a control: the label
 // occupies a column 'labelW' wide (0 = the label's own width) and the control

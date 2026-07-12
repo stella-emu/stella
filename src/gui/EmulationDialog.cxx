@@ -66,11 +66,8 @@ EmulationDialog::EmulationDialog(OSystem& osystem, DialogContainer& parent,
   : Dialog(osystem, parent, font, "Emulation settings"),
     mySaveOnExitGroup{std::make_unique<RadioButtonGroup>()}
 {
-  const int lineHeight   = Dialog::lineHeight(),
-            fontWidth    = Dialog::fontWidth(),
-            buttonHeight = Dialog::buttonHeight();
+  const int fontWidth = Dialog::fontWidth();
   const int swidth = fontWidth * 10;
-  const int bwidth = Dialog::buttonWidth("State path" + ELLIPSIS);
   WidgetArray wid;
 
   // Widgets are only created here (at placeholder geometry); layout() assigns
@@ -78,7 +75,7 @@ EmulationDialog::EmulationDialog(OSystem& osystem, DialogContainer& parent,
 
   // NOLINTBEGIN(cppcoreguidelines-prefer-member-initializer)
   // Speed
-  mySpeed = new SliderWidget(this, _font, 0, 0, swidth, lineHeight,
+  mySpeed = new SliderWidget(this, _font, 0, 0, swidth,
                              "Emulation speed", 0, kSpeedupChanged, fontWidth * 5, "%");
   mySpeed->setMinValue(MIN_SPEED); mySpeed->setMaxValue(MAX_SPEED);
   mySpeed->setStepValue(SPEED_STEP);
@@ -136,11 +133,11 @@ EmulationDialog::EmulationDialog(OSystem& osystem, DialogContainer& parent,
   wid.push_back(myAutoSlotWidget);
 
   // State directory
-  myStatePathButton = new ButtonWidget(this, font, 0, 0, bwidth, buttonHeight,
+  myStatePathButton = new ButtonWidget(this, font, 0, 0,
                                        "State path" + ELLIPSIS, kChooseStateDir);
   myStatePathButton->setToolTip("Select the directory to load/save state files from/to.");
   wid.push_back(myStatePathButton);
-  myStatePath = new EditTextWidget(this, font, 0, 0, lineHeight, lineHeight, "");
+  myStatePath = new EditTextWidget(this, font, 0, 0, 1, "");
   wid.push_back(myStatePath);
 
   // Save/load states in the ROM directory
@@ -165,17 +162,13 @@ EmulationDialog::~EmulationDialog() = default;
 void EmulationDialog::layout()
 {
   using GUI::BoxLayout;
-  using GUI::widgetItem;
+  using GUI::stretchedItem;
   using GUI::anchoredItem;
   using GUI::indentedItem;
-  using GUI::alignedItem;
-  using GUI::HAlign;
-  using GUI::VAlign;
   using Dir = BoxLayout::Dir;
 
   const int fontWidth    = Dialog::fontWidth(),
             buttonHeight = Dialog::buttonHeight(),
-            buttonWidth  = Dialog::buttonWidth(myStatePathButton->getLabel()),
             VBORDER      = Dialog::vBorder(),
             HBORDER      = Dialog::hBorder(),
             VGAP         = Dialog::vGap(),
@@ -185,12 +178,12 @@ void EmulationDialog::layout()
   // the outer VBox supplies the HBORDER inset (so marginH 0 here).  The edit
   // keeps its natural height, vertically centered in the taller button row.
   auto pathRow = std::make_unique<BoxLayout>(Dir::Horizontal, 0, 0, 0);
-  pathRow->addFixed(widgetItem(myStatePathButton), buttonWidth);
+  pathRow->addAuto(anchoredItem(myStatePathButton));
   pathRow->addSpace(fontWidth);
   // The path widens with the dialog, but it says how much room a path needs —
   // which is what the dialog's own width is derived from
-  pathRow->addStretch(alignedItem(myStatePath, HAlign::Fill, VAlign::Center,
-                                  EditTextWidget::calcWidth(_font, 24)));
+  pathRow->addStretch(stretchedItem(myStatePath,
+                                    EditTextWidget::calcWidth(_font, 24)));
 
   // Vertical stack; the button group sits below it, positioned separately by
   // layoutButtonGroup().  The self-labeling slider, header and checkboxes keep

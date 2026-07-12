@@ -39,10 +39,7 @@ EventMappingWidget::EventMappingWidget(GuiObject* boss, const GUI::Font& font,
   : Widget(boss, font, x, y, w, h),
     CommandSender(boss)
 {
-  const int lineHeight   = boss->dialog().lineHeight(),
-            fontHeight   = boss->dialog().fontHeight(),
-            buttonHeight = boss->dialog().buttonHeight(),
-            buttonWidth  = boss->dialog().buttonWidth("Defaults");
+  const int lineHeight = boss->dialog().lineHeight();
   VariantList items;
 
   // Widgets are only created here (at placeholder geometry); setArea() assigns
@@ -64,8 +61,8 @@ EventMappingWidget::EventMappingWidget(GuiObject* boss, const GUI::Font& font,
   VarList::push_back(items, "User Interface", Event::Group::Menu);
 
   // NOLINTBEGIN(cppcoreguidelines-prefer-member-initializer)
-  myFilterPopup = new PopUpWidget(boss, font, 0, 0, 1, lineHeight,
-                                  items, "Events ", 0, kFilterCmd);
+  myFilterPopup = new PopUpWidget(boss, font, 0, 0, items, "Events", 0,
+                                  kFilterCmd);
   myFilterPopup->setTarget(this);
   addFocusWidget(myFilterPopup);
 
@@ -75,41 +72,47 @@ EventMappingWidget::EventMappingWidget(GuiObject* boss, const GUI::Font& font,
   addFocusWidget(myActionsList);
 
   // Remap, cancel, erase, reset and combo buttons (font-derived fixed width)
-  myMapButton = new ButtonWidget(boss, font, 0, 0, buttonWidth, buttonHeight,
+  myMapButton = new ButtonWidget(boss, font, 0, 0,
                                  "Map" + ELLIPSIS, kStartMapCmd);
   myMapButton->setTarget(this);
   addFocusWidget(myMapButton);
 
-  myCancelMapButton = new ButtonWidget(boss, font, 0, 0, buttonWidth, buttonHeight,
+  myCancelMapButton = new ButtonWidget(boss, font, 0, 0,
                                        "Cancel", kStopMapCmd);
   myCancelMapButton->setToolTip("Cancel current mapping.");
   myCancelMapButton->setTarget(this);
   myCancelMapButton->clearFlags(Widget::FLAG_ENABLED);
   addFocusWidget(myCancelMapButton);
 
-  myEraseButton = new ButtonWidget(boss, font, 0, 0, buttonWidth, buttonHeight,
+  myEraseButton = new ButtonWidget(boss, font, 0, 0,
                                    "Erase", kEraseCmd);
   myEraseButton->setTarget(this);
   myEraseButton->setToolTip("Erase any mapping for selected event.");
   addFocusWidget(myEraseButton);
 
-  myResetButton = new ButtonWidget(boss, font, 0, 0, buttonWidth, buttonHeight,
+  myResetButton = new ButtonWidget(boss, font, 0, 0,
                                    "Reset", kResetCmd);
   myResetButton->setToolTip("Reset mapping for selected event to defaults.");
   myResetButton->setTarget(this);
   addFocusWidget(myResetButton);
 
-  myComboButton = new ButtonWidget(boss, font, 0, 0, buttonWidth, buttonHeight,
+  myComboButton = new ButtonWidget(boss, font, 0, 0,
                                    "Combo" + ELLIPSIS, kComboCmd);
   myComboButton->setTarget(this);
   addFocusWidget(myComboButton);
+
+  // The five buttons stand in one column, so they share one width -- a standard
+  // one, so they match the dialog's own buttons rather than shrink to their labels
+  GUI::alignButtons({myMapButton, myCancelMapButton, myEraseButton,
+                     myResetButton, myComboButton},
+                    boss->dialog().standardButtonWidth());
 
   myComboDialog = std::make_unique<ComboDialog>(boss, font, EventHandler::getComboList());
 
   // Label and (read-only) display for the currently selected event's mapping
   myActionLabel = new StaticTextWidget(boss, font, 0, 0, "Action");
   myKeyMapping = new EditTextWidget(boss, font, 0, 0, 1,
-                                    lineHeight + fontHeight * (ACTION_LINES - 1), "");
+                                    EditTextWidget::calcHeight(font, ACTION_LINES), "");
   myKeyMapping->setEditable(false, true);
   myKeyMapping->clearFlags(Widget::FLAG_RETAIN_FOCUS);
   // NOLINTEND(cppcoreguidelines-prefer-member-initializer)
@@ -126,7 +129,7 @@ Common::Size EventMappingWidget::naturalSize() const
   // The height is whatever it is given: the list takes up the slack (see
   // setArea), so there is no height of our own to report
   const int fontWidth   = dialog().fontWidth(),
-            buttonWidth = dialog().buttonWidth("Defaults"),
+            buttonWidth = myMapButton->getWidth(),
             HBORDER     = dialog().hBorder();
 
   return Common::Size(HBORDER * 2 + listWidth() + fontWidth + buttonWidth, 0);
@@ -138,6 +141,7 @@ void EventMappingWidget::setArea(int x, int y, int w, int h)
   using GUI::BoxLayout;
   using GUI::alignedItem;
   using GUI::widgetItem;
+  using GUI::stretchedItem;
   using GUI::HAlign;
   using GUI::VAlign;
   using Dir = BoxLayout::Dir;
@@ -146,33 +150,39 @@ void EventMappingWidget::setArea(int x, int y, int w, int h)
   Widget::setWidth(w);
   Widget::setHeight(h);
 
+  // The buttons share one width; re-derived here so a live font change is picked
+  // up (each button first re-sizes itself to its own label, see refreshFontMetrics)
+  GUI::alignButtons({myMapButton, myCancelMapButton, myEraseButton,
+                     myResetButton, myComboButton}, dialog().standardButtonWidth());
+
   const int fontWidth    = dialog().fontWidth(),
-            buttonHeight = dialog().buttonHeight(),
-            buttonWidth  = dialog().buttonWidth("Defaults"),
+            buttonWidth  = myMapButton->getWidth(),
             VBORDER      = dialog().vBorder(),
             HBORDER      = dialog().hBorder(),
             VGAP         = dialog().vGap();
   // The width the list actually gets: what is left beside the button column
   const int listArea = w - buttonWidth - HBORDER * 2 - fontWidth;
 
-  // Event-group filter popup, above the actions list
+  // Event-group filter popup, flush with the actions list below it.  The popup
+  // splits the width it is given into its own label, value box and arrow, so it
+  // is simply handed the list's width
+  GUI::alignLabels({{myFilterPopup}});
+
   auto filterRow = std::make_unique<BoxLayout>(Dir::Horizontal);
-  filterRow->addFixed(widgetItem(myFilterPopup),
-                      listArea - _font.getStringWidth("Events ")
-                        - PopUpWidget::dropDownWidth(_font));
+  filterRow->addFixed(stretchedItem(myFilterPopup), listArea);
   filterRow->addStretchSpace();
 
   // The buttons form a column to the right of the list, aligned to its top
   auto buttonCol = std::make_unique<BoxLayout>(Dir::Vertical);
-  buttonCol->addFixed(widgetItem(myMapButton), buttonHeight);
+  buttonCol->addAuto(stretchedItem(myMapButton));
   buttonCol->addSpace(VGAP);
-  buttonCol->addFixed(widgetItem(myCancelMapButton), buttonHeight);
+  buttonCol->addAuto(stretchedItem(myCancelMapButton));
   buttonCol->addSpace(VGAP * 2);
-  buttonCol->addFixed(widgetItem(myEraseButton), buttonHeight);
+  buttonCol->addAuto(stretchedItem(myEraseButton));
   buttonCol->addSpace(VGAP);
-  buttonCol->addFixed(widgetItem(myResetButton), buttonHeight);
+  buttonCol->addAuto(stretchedItem(myResetButton));
   buttonCol->addSpace(VGAP * 2);
-  buttonCol->addFixed(widgetItem(myComboButton), buttonHeight);
+  buttonCol->addAuto(stretchedItem(myComboButton));
   buttonCol->addStretchSpace();
 
   // The list widens with the dialog, but it says how narrow it may be — which is
@@ -186,12 +196,12 @@ void EventMappingWidget::setArea(int x, int y, int w, int h)
   // is a multi-line box, so the two sit on its FIRST line: centering the label
   // would drop it to the middle of a box whose lower lines are there to be used
   auto actionRow = std::make_unique<BoxLayout>(Dir::Horizontal);
-  actionRow->addFixed(alignedItem(myActionLabel, HAlign::Left, VAlign::Baseline),
-                      myActionLabel->getWidth() + fontWidth);
+  actionRow->addAuto(alignedItem(myActionLabel, HAlign::Left, VAlign::Baseline));
+  actionRow->addSpace(fontWidth);
   actionRow->addStretch(alignedItem(myKeyMapping, HAlign::Fill, VAlign::Baseline));
 
   auto col = std::make_unique<BoxLayout>(Dir::Vertical, 0, HBORDER, VBORDER);
-  col->addFixed(std::move(filterRow), myFilterPopup->getHeight());
+  col->addAuto(std::move(filterRow));
   col->addSpace(VGAP * 2);
   // The actions list takes whatever height the rows around it leave over
   col->addStretch(std::move(listRow));

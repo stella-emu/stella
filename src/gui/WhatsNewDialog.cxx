@@ -74,35 +74,35 @@ void WhatsNewDialog::add(string_view text)
 void WhatsNewDialog::layout()
 {
   using GUI::BoxLayout;
+  using GUI::stretchedItem;
   using GUI::anchoredItem;
-  using GUI::widgetItem;
   using Dir = BoxLayout::Dir;
 
-  const int fontWidth    = Dialog::fontWidth(),
-            buttonHeight = Dialog::buttonHeight(),
-            VBORDER      = Dialog::vBorder(),
-            HBORDER      = Dialog::hBorder(),
-            VGAP         = Dialog::vGap();
-
-  _w = MAX_CHARS * fontWidth + HBORDER * 2;
-
-  int linesHeight = 0;
-  for(const int adv: myLineAdvance)
-    linesHeight += adv;
-  _h = _th + VBORDER + linesHeight + VGAP * 2 + buttonHeight + VBORDER;
-  assert(std::cmp_less_equal(_h, FBMinimum::Height)); // minimal launcher height
+  const int fontWidth = Dialog::fontWidth(),
+            VBORDER   = Dialog::vBorder(),
+            HBORDER   = Dialog::hBorder(),
+            VGAP      = Dialog::vGap();
 
   // The OK button keeps the width its label needs, centered on its row
   auto okRow = std::make_unique<BoxLayout>(Dir::Horizontal);
   okRow->addStretchSpace();
-  okRow->addFixed(widgetItem(_okWidget), Dialog::buttonWidth("OK"));
+  okRow->addAuto(anchoredItem(_okWidget));
   okRow->addStretchSpace();
 
-  // Stack the (pre-wrapped) bullet lines, then that row
+  // Stack the (pre-wrapped) bullet lines, then that row.  A line's cell is its
+  // advance rather than its height: the last line of a bullet is followed by a
+  // little more space than the lines within one (see add())
   auto root = std::make_unique<BoxLayout>(Dir::Vertical, 0, HBORDER, VBORDER);
   for(size_t i = 0; i < myLines.size(); ++i)
     root->addFixed(anchoredItem(myLines[i]), myLineAdvance[i]);
   root->addSpace(VGAP * 2);
-  root->addFixed(std::move(okRow), buttonHeight);
+  root->addAuto(std::move(okRow));
+
+  // The text is wrapped to MAX_CHARS, so that is the dialog's width; its height
+  // is however much room the bullets ask for
+  _w = MAX_CHARS * fontWidth + HBORDER * 2;
+  _h = _th + static_cast<int>(root->naturalSize().h);
+  assert(std::cmp_less_equal(_h, FBMinimum::Height)); // minimal launcher height
+
   root->doLayout(0, _th, _w, _h - _th);
 }

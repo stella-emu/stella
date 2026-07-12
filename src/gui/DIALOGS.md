@@ -55,11 +55,24 @@ knowledge belongs one level down — in the engine, or in the widget itself:
 | `+2` to line up some text | nothing — widgets centre their own text (`firstTextY`) |
 | a column that matches a sibling's `x` | a shared `GridLayout` track (`columnAuto`) |
 | arithmetic keeping two groups in step | a stretch that absorbs the slack |
+| a button's width, from its label | nothing — the button sizes itself; a *group* of them, `GUI::alignButtons` |
+| a pop-up's width, from its items | nothing — pass it the items and let it size itself |
 
 `addFixed` is still right where the number is genuinely the *dialog's* decision —
-a width shared by a group of buttons, a minimum width for the whole dialog. The
-test is simply: **whose choice is this number?** If it is the widget's or the
-font's, do not write it down.
+a minimum width for the whole dialog, how many characters of a path a field must
+show. The test is simply: **whose choice is this number?** If it is the widget's
+or the font's, do not write it down.
+
+The same test applies to what you hand a widget's **constructor**. A widget that
+can work a size out for itself should be left to: a `ButtonWidget` given only its
+label sizes itself to it, and a `PopUpWidget` given only its item list sizes its
+value box to the widest of them (and both take their height from the font). You
+pass a size only when the widget genuinely cannot know it — because the label or
+the item list is **not final** (the command menu re-labels its buttons; the game
+properties pop-ups are refilled per ROM), in which case the dialog must say how
+wide a label or entry it is prepared to show, or the control would resize under
+the user. `ButtonWidget::calcWidth()` and `PopUpWidget::calcWidth()` exist for
+exactly that, and for nothing else.
 
 If the engine cannot express your intent, **extend the engine** rather than
 working around it in the dialog. `VAlign::Baseline`, `addAuto` and
@@ -205,10 +218,22 @@ You never construct `WidgetLayout` directly; use these `GUI::` helper builders:
 | Helper                                   | Behaviour                                                                 |
 | ---------------------------------------- | ------------------------------------------------------------------------- |
 | `widgetItem(w, minW=0, minH=0)`          | **fills** the cell in both axes — stretches the widget to the cell size    |
+| `stretchedItem(w, minW=0)`               | fills the cell's **width**, keeps its own **height**, vertically centered  |
 | `anchoredItem(w, minW=0, minH=0)`        | the widget's **natural** size, left of the cell and vertically **centered** |
-| `alignedItem(w, hAlign, vAlign, …)`      | any other combination — the general form the two above are shorthand for  |
+| `alignedItem(w, hAlign, vAlign, …)`      | any other combination — the general form the three above are shorthand for |
 | `indentedItem(w, indent, minW=0)`        | natural size, positioned `indent` px from the left                        |
 | `labeledRow(label, control, labelW=0, indent=0, fill=false)` | a row pairing a **separate** label with a control; `fill=true` stretches the control to the rest of the row (edits/lists) instead of keeping its natural width |
+
+> ⚠ **`widgetItem` vs `stretchedItem` — the one trap in the engine.** A *filled*
+> axis reports **no natural size** (the cell decides it, so reporting back would
+> feed the cell its own answer). That is right for a list or an image, which have
+> no size of their own. It is wrong for a **button, field or checkbox**, which do:
+> put one in a cell sized by `addAuto`/`rowAuto` and the cell takes its height
+> from whatever *else* shares the row, squashing it (a 25px button in a row with a
+> 22px edit field comes out 22px, and a row of nothing but filled items collapses
+> to zero). Reach for `stretchedItem` whenever the **width** is the layout's to
+> decide but the **height** is the widget's — which is almost every control.
+> Keep `widgetItem` for content that genuinely has no size of its own.
 
 Alignment is per axis, and it is *all* you state:
 
@@ -240,9 +265,10 @@ Rules of thumb:
   label) → use `anchoredItem`. Filling them would stretch the *track/value box*
   and look wrong. Because they share a common label width, they line up across
   rows without a grid.
-- **A control that should span the row** (an `EditTextWidget`, a list) → use
-  `widgetItem` (fill) in a row sized with `addAuto`, or, if the control should
-  keep its own height, `alignedItem(w, HAlign::Fill, VAlign::Center)`.
+- **A control that should span the row** (an `EditTextWidget`) → `stretchedItem`
+  in a row sized with `addAuto`: it widens with the dialog but keeps the height
+  it built itself from the font. Only a **list** or an image — which have no
+  height of their own — wants `widgetItem` and a stretching row.
 - **A checkbox indented under a group header** → `indentedItem(cb, indent())`.
 - **A separate label + control** (label is its own `StaticTextWidget`, control is
   not self-labeling) → `labeledRow(label, control, sharedLabelW)`.
@@ -252,9 +278,19 @@ Rules of thumb:
   `row.addStretch(anchoredItem(label)); row.addFixed(anchoredItem(field), fieldW);`
   Every row then ends at the column's right edge, whatever its label or digits.
 - **A standalone button centered on its row** (an OK/Close on its own) → a
-  horizontal box of `addStretchSpace()` · `addFixed(widgetItem(btn), w)` ·
-  `addStretchSpace()`. Give the cell the width, because a *dialog* picks button
-  widths (usually one width shared by a group), so the button cannot report it.
+  horizontal box of `addStretchSpace()` · `addAuto(anchoredItem(btn))` ·
+  `addStretchSpace()`. The button already knows how wide its label needs it to be
+  (see below), so the row states nothing.
+- **A group of buttons that must be the same width** (a column of them, an
+  OK/Cancel pair, a grid of option buttons) → `GUI::alignButtons({a, b, c})` and
+  then `addAuto`. What a button *cannot* know is what its **neighbours'** labels
+  need, and that is the only thing about a button a layout has to say. Pass
+  `dialog().standardButtonWidth()` as the optional minimum for a group that should
+  match the dialog's own buttons rather than shrink-wrap to its labels.
+- **How many rows should this list show?** → `ListWidget::calcHeight(font, rows)`
+  as the item's `minH`, the same way `EditTextWidget::calcWidth(font, chars)`
+  says how wide a field must be. Say what you mean in rows and characters; do not
+  arrive at a pixel size and hope the rows come out even.
 
 `nullptr` as the widget makes any item an empty spacer that only reserves space
 (this is exactly what `addSpace` does internally).
@@ -399,6 +435,22 @@ MyDialog::MyDialog(OSystem& osystem, DialogContainer& parent, const GUI::Font& f
   setHelpAnchor("MyDialog");               // enables the "?" button
 }
 ```
+
+> ⚠ **A widget's ctor width is its *natural* width.** A widget built at a
+> placeholder width (`, 1,`) reports **1px**, so anything that reads its natural
+> size — `anchoredItem`, `addAuto`, `columnAuto` — will size a cell or a whole
+> column to 1px and clip it away. Only a *filled* axis (`widgetItem`,
+> `stretchedItem`) overrides that width, which is why a placeholder is safe there
+> and nowhere else. So: **a label or a text field the layout does not stretch must
+> be built with its real, font-derived width** — for a `StaticTextWidget` that
+> means the short ctor (which derives it from the text), and for an
+> `EditTextWidget`, `EditTextWidget::calcWidth(font, chars)`. Only the widget's
+> *position*, and any size the layout will assign, belong in `layout()`.
+>
+> This misbehaves *intermittently*, which makes it nasty: `refreshFontMetrics()`
+> recomputes a `StaticTextWidget`'s width from its label, so a clipped label
+> springs back into view after any live font change and looks fine — until the
+> dialog is next opened from scratch.
 
 What stays in the ctor: `VarList` items, tooltips, `setHelpAnchor`, enable/disable,
 command IDs, focus registration. What does **not**: any `xpos`/`ypos` arithmetic,

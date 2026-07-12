@@ -42,7 +42,7 @@
 
 #define CREATE_CUSTOM_SLIDERS(obj, desc, cmd)                            \
   myTV ## obj =                                                          \
-    new SliderWidget(myTab, _font, xpos, ypos-1, swidth, lineHeight,     \
+    new SliderWidget(myTab, _font, xpos, ypos-1, swidth,     \
                      desc, lwidth, cmd, fontWidth*4, "%");               \
   myTV ## obj->setMinValue(0); myTV ## obj->setMaxValue(100);            \
   myTV ## obj->setStepValue(1);                                          \
@@ -135,7 +135,7 @@ void VideoAudioDialog::addDisplayTab()
 
   ypos += lineHeight + VGAP * 4;
   // TIA zoom levels (will be dynamically filled later)
-  myTIAZoom = new SliderWidget(myTab, _font, xpos, ypos - 1, swidth, lineHeight,
+  myTIAZoom = new SliderWidget(myTab, _font, xpos, ypos - 1, swidth,
                                "Zoom ", lwidth, 0, fontWidth * 4, "%");
   myTIAZoom->setMinValue(200); myTIAZoom->setStepValue(FrameBuffer::ZOOM_STEPS * 100);
   myTIAZoom->setToolTip(Event::VidmodeDecrease, Event::VidmodeIncrease);
@@ -165,7 +165,7 @@ void VideoAudioDialog::addDisplayTab()
 
   // FS overscan
   ypos += lineHeight + VGAP;
-  myTVOverscan = new SliderWidget(myTab, _font, xpos + INDENT, ypos - 1, swidth, lineHeight,
+  myTVOverscan = new SliderWidget(myTab, _font, xpos + INDENT, ypos - 1, swidth,
                                   "Overscan", lwidth - INDENT, kOverscanChanged, fontWidth * 3, "%");
   myTVOverscan->setMinValue(0); myTVOverscan->setMaxValue(10);
   myTVOverscan->setTickmarkIntervals(2);
@@ -182,7 +182,7 @@ void VideoAudioDialog::addDisplayTab()
   // Vertical size
   ypos += lineHeight + VGAP;
   myVSizeAdjust =
-    new SliderWidget(myTab, _font, xpos, ypos-1, swidth, lineHeight,
+    new SliderWidget(myTab, _font, xpos, ypos-1, swidth,
                      "V-Size adjust", lwidth, kVSizeChanged, fontWidth * 7, "%", 0, true);
   myVSizeAdjust->setMinValue(-5); myVSizeAdjust->setMaxValue(5);
   myVSizeAdjust->setTickmarkIntervals(2);
@@ -240,7 +240,7 @@ void VideoAudioDialog::addPaletteTab()
   xpos += INDENT;
 
   myPhaseShift =
-    new SliderWidget(myTab, _font, xpos, ypos - 1, pswidth, lineHeight,
+    new SliderWidget(myTab, _font, xpos, ypos - 1, pswidth,
                      "NTSC phase", plWidth, kPhaseShiftChanged, fontWidth * 5);
   wid.push_back(myPhaseShift);
   ypos += lineHeight + VGAP;
@@ -249,7 +249,7 @@ void VideoAudioDialog::addPaletteTab()
   const int rgbsWidth = (myTIAPalette->getWidth() - INDENT - rgblWidth - fontWidth * 5) / 2;
 
   myTVRedScale =
-    new SliderWidget(myTab, _font, xpos, ypos - 1, rgbsWidth, lineHeight,
+    new SliderWidget(myTab, _font, xpos, ypos - 1, rgbsWidth,
                      "R", rgblWidth, kPaletteUpdated, fontWidth * 4, "%");
   myTVRedScale->setMinValue(0);
   myTVRedScale->setMaxValue(100);
@@ -259,7 +259,7 @@ void VideoAudioDialog::addPaletteTab()
 
   const int xposr = myTIAPalette->getRight() - rgbsWidth;
   myTVRedShift =
-    new SliderWidget(myTab, _font, xposr, ypos - 1, rgbsWidth, lineHeight,
+    new SliderWidget(myTab, _font, xposr, ypos - 1, rgbsWidth,
                      "", 0, kRedShiftChanged, fontWidth * 6);
   myTVRedShift->setMinValue((PaletteHandler::DEF_RGB_SHIFT - PaletteHandler::MAX_RGB_SHIFT) * 10);
   myTVRedShift->setMaxValue((PaletteHandler::DEF_RGB_SHIFT + PaletteHandler::MAX_RGB_SHIFT) * 10);
@@ -269,7 +269,7 @@ void VideoAudioDialog::addPaletteTab()
   ypos += lineHeight + VGAP;
 
   myTVGreenScale =
-    new SliderWidget(myTab, _font, xpos, ypos - 1, rgbsWidth, lineHeight,
+    new SliderWidget(myTab, _font, xpos, ypos - 1, rgbsWidth,
                      "G", rgblWidth, kPaletteUpdated, fontWidth * 4, "%");
   myTVGreenScale->setMinValue(0);
   myTVGreenScale->setMaxValue(100);
@@ -278,7 +278,7 @@ void VideoAudioDialog::addPaletteTab()
   wid.push_back(myTVGreenScale);
 
   myTVGreenShift =
-    new SliderWidget(myTab, _font, xposr, ypos - 1, rgbsWidth, lineHeight,
+    new SliderWidget(myTab, _font, xposr, ypos - 1, rgbsWidth,
                      "", 0, kGreenShiftChanged, fontWidth * 6);
   myTVGreenShift->setMinValue((PaletteHandler::DEF_RGB_SHIFT - PaletteHandler::MAX_RGB_SHIFT) * 10);
   myTVGreenShift->setMaxValue((PaletteHandler::DEF_RGB_SHIFT + PaletteHandler::MAX_RGB_SHIFT) * 10);
@@ -288,7 +288,7 @@ void VideoAudioDialog::addPaletteTab()
   ypos += lineHeight + VGAP;
 
   myTVBlueScale =
-    new SliderWidget(myTab, _font, xpos, ypos - 1, rgbsWidth, lineHeight,
+    new SliderWidget(myTab, _font, xpos, ypos - 1, rgbsWidth,
                      "B", rgblWidth, kPaletteUpdated, fontWidth * 4, "%");
   myTVBlueScale->setMinValue(0);
   myTVBlueScale->setMaxValue(100);
@@ -297,7 +297,7 @@ void VideoAudioDialog::addPaletteTab()
   wid.push_back(myTVBlueScale);
 
   myTVBlueShift =
-    new SliderWidget(myTab, _font, xposr, ypos - 1, rgbsWidth, lineHeight,
+    new SliderWidget(myTab, _font, xposr, ypos - 1, rgbsWidth,
                      "", 0, kBlueShiftChanged, fontWidth * 6);
   myTVBlueShift->setMinValue((PaletteHandler::DEF_RGB_SHIFT - PaletteHandler::MAX_RGB_SHIFT) * 10);
   myTVBlueShift->setMaxValue((PaletteHandler::DEF_RGB_SHIFT + PaletteHandler::MAX_RGB_SHIFT) * 10);
@@ -341,7 +341,7 @@ void VideoAudioDialog::addTVEffectsTab()
   const int lineHeight   = Dialog::lineHeight(),
             fontWidth    = Dialog::fontWidth(),
             buttonHeight = Dialog::buttonHeight(),
-            buttonWidth  = Dialog::buttonWidth("Clone Bad Adjust"),
+            buttonWidth  = ButtonWidget::calcWidth(_font, "Clone Bad Adjust"),
             VBORDER      = Dialog::vBorder(),
             HBORDER      = Dialog::hBorder(),
             VGAP         = Dialog::vGap();
@@ -478,7 +478,7 @@ void VideoAudioDialog::addBezelTab()
 
   myBezelPath = new EditTextWidget(myTab, _font, xpos + bwidth + fontWidth,
                                    ypos + (buttonHeight - lineHeight) / 2 - 1,
-                                   _w - xpos - bwidth - fontWidth - HBORDER - 2, lineHeight, "");
+                                   _w - xpos - bwidth - fontWidth - HBORDER - 2, "");
   wid.push_back(myBezelPath);
 
   ypos += lineHeight + VGAP * 3;
@@ -498,28 +498,28 @@ void VideoAudioDialog::addBezelTab()
   const int lWidth = _font.getStringWidth("Bottom ");
   const int sWidth = myBezelPath->getRight() - xpos - lWidth - 4.5 * fontWidth; // _w - HBORDER - xpos - lwidth;
   ypos += lineHeight + VGAP * 1;
-  myWinLeftSlider = new SliderWidget(myTab, _font, xpos, ypos, sWidth, lineHeight,
+  myWinLeftSlider = new SliderWidget(myTab, _font, xpos, ypos, sWidth,
                                      "Left   ", 0, 0, 4 * fontWidth, "%");
   myWinLeftSlider->setMinValue(0); myWinLeftSlider->setMaxValue(40);
   myWinLeftSlider->setTickmarkIntervals(4);
   wid.push_back(myWinLeftSlider);
 
   ypos += lineHeight + VGAP * 1;
-  myWinRightSlider = new SliderWidget(myTab, _font, xpos, ypos, sWidth, lineHeight,
+  myWinRightSlider = new SliderWidget(myTab, _font, xpos, ypos, sWidth,
                                       "Right  ", 0, 0, 4 * fontWidth, "%");
   myWinRightSlider->setMinValue(0); myWinRightSlider->setMaxValue(40);
   myWinRightSlider->setTickmarkIntervals(4);
   wid.push_back(myWinRightSlider);
 
   ypos += lineHeight + VGAP * 1;
-  myWinTopSlider = new SliderWidget(myTab, _font, xpos, ypos, sWidth, lineHeight,
+  myWinTopSlider = new SliderWidget(myTab, _font, xpos, ypos, sWidth,
                                     "Top    ", 0, 0, 4 * fontWidth, "%");
   myWinTopSlider->setMinValue(0); myWinTopSlider->setMaxValue(40);
   myWinTopSlider->setTickmarkIntervals(4);
   wid.push_back(myWinTopSlider);
 
   ypos += lineHeight + VGAP;
-  myWinBottomSlider = new SliderWidget(myTab, _font, xpos, ypos, sWidth, lineHeight,
+  myWinBottomSlider = new SliderWidget(myTab, _font, xpos, ypos, sWidth,
                                        "Bottom ", 0, 0, 4 * fontWidth, "%");
   myWinBottomSlider->setMinValue(0); myWinBottomSlider->setMaxValue(40);
   myWinBottomSlider->setTickmarkIntervals(4);
@@ -604,7 +604,7 @@ void VideoAudioDialog::addAudioTab()
 
   // Param 1
   int swidth = pwidth + PopUpWidget::dropDownWidth(_font);
-  myHeadroomSlider = new SliderWidget(myTab, _font, xpos, ypos, swidth, lineHeight,
+  myHeadroomSlider = new SliderWidget(myTab, _font, xpos, ypos, swidth,
                                       "Headroom           ", 0, kHeadroomChanged, 10 * fontWidth);
   myHeadroomSlider->setMinValue(0); myHeadroomSlider->setMaxValue(AudioSettings::MAX_HEADROOM);
   myHeadroomSlider->setTickmarkIntervals(5);
@@ -612,7 +612,7 @@ void VideoAudioDialog::addAudioTab()
   ypos += lineHeight + VGAP;
 
   // Param 2
-  myBufferSizeSlider = new SliderWidget(myTab, _font, xpos, ypos, swidth, lineHeight,
+  myBufferSizeSlider = new SliderWidget(myTab, _font, xpos, ypos, swidth,
                                         "Buffer size        ", 0, kBufferSizeChanged, 10 * fontWidth);
   myBufferSizeSlider->setMinValue(0); myBufferSizeSlider->setMaxValue(AudioSettings::MAX_BUFFER_SIZE);
   myBufferSizeSlider->setTickmarkIntervals(5);
@@ -627,7 +627,7 @@ void VideoAudioDialog::addAudioTab()
   ypos += lineHeight + VGAP;
 
   swidth += INDENT - fontWidth * 4;
-  myDpcPitch = new SliderWidget(myTab, _font, xpos, ypos, swidth, lineHeight,
+  myDpcPitch = new SliderWidget(myTab, _font, xpos, ypos, swidth,
                                 "Pitfall II music pitch ", 0, 0, 5 * fontWidth);
   myDpcPitch->setMinValue(10000); myDpcPitch->setMaxValue(30000);
   myDpcPitch->setStepValue(100);

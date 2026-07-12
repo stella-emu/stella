@@ -26,6 +26,7 @@
 #include "Dialog.hxx"
 #include "DialogContainer.hxx"
 #include "Widget.hxx"
+#include "Layout.hxx"
 #include "TabWidget.hxx"
 #include "ToolTip.hxx"
 
@@ -1035,43 +1036,29 @@ Widget* Dialog::findWidget(int x, int y) const
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Dialog::addOKBGroup(WidgetArray& wid, const GUI::Font& font,
-                         string_view okText, int buttonWidth)
+                         string_view okText)
 {
-  const int buttonHeight = Dialog::buttonHeight(),
-            BUTTON_GAP   = Dialog::buttonGap(),
-            VBORDER      = Dialog::vBorder(),
-            HBORDER      = Dialog::hBorder();
-
-  buttonWidth = std::max({buttonWidth, Dialog::buttonWidth(okText),
-                          Dialog::buttonWidth("Cancel")});
-  _w = std::max(HBORDER * 2 + buttonWidth * 2 + BUTTON_GAP, _w);
-
-  addOKWidget(new ButtonWidget(this, font, (_w - buttonWidth) / 2,
-              _h - buttonHeight - VBORDER, buttonWidth, buttonHeight, okText, GuiObject::kCloseCmd));
+  // Created at a placeholder position; the button sizes itself to its label and
+  // layoutButtonGroup() places it
+  addOKWidget(new ButtonWidget(this, font, 0, 0, okText, GuiObject::kCloseCmd));
   wid.push_back(_okWidget);
+
+  _w = std::max(buttonGroupWidth(), _w);
+  layoutButtonGroup();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Dialog::addOKCancelBGroup(WidgetArray& wid, const GUI::Font& font,
                                string_view okText, string_view cancelText,
-                               bool focusOKButton, int buttonWidth)
+                               bool focusOKButton)
 {
-  const int buttonHeight = Dialog::buttonHeight(),
-            BUTTON_GAP   = Dialog::buttonGap(),
-            HBORDER      = Dialog::hBorder();
+  // Created at placeholder positions; each button sizes itself to its label, and
+  // layoutButtonGroup() gives the group one width and positions it
+  addOKWidget(new ButtonWidget(this, font, 0, 0, okText, GuiObject::kOKCmd));
+  addCancelWidget(new ButtonWidget(this, font, 0, 0, cancelText,
+                                   GuiObject::kCloseCmd));
 
-  buttonWidth = std::max({buttonWidth,
-                          Dialog::buttonWidth("Defaults"),
-                          Dialog::buttonWidth(okText),
-                          Dialog::buttonWidth(cancelText)});
-
-  _w = std::max(HBORDER * 2 + buttonWidth * 2 + BUTTON_GAP, _w);
-
-  // Created at placeholder geometry; layoutButtonGroup() positions the group
-  addOKWidget(new ButtonWidget(this, font, 0, 0, buttonWidth, buttonHeight,
-                               okText, GuiObject::kOKCmd));
-  addCancelWidget(new ButtonWidget(this, font, 0, 0, buttonWidth, buttonHeight,
-                                   cancelText, GuiObject::kCloseCmd));
+  _w = std::max(buttonGroupWidth(), _w);
   layoutButtonGroup();
 
   // Note that 'focusOKButton' only takes effect when there are no other UI
@@ -1095,19 +1082,30 @@ int Dialog::buttonGroupWidth() const
 {
   const int BUTTON_GAP = Dialog::buttonGap(),
             HBORDER    = Dialog::hBorder();
-  int left = 0, right = 0;
 
+  // Every button in the group ends up as wide as the widest of them (see
+  // layoutButtonGroup), so count them and multiply -- this holds whether or not
+  // they have been equalized yet, which is what lets a dialog derive its own
+  // width from this before the group is laid out
+  int bwidth = standardButtonWidth(), left = 0, right = 0;
+
+  for(const auto* b: {_defaultWidget, _extraWidget, _okWidget, _cancelWidget})
+    if(b != nullptr)
+      bwidth = std::max(bwidth, b->getWidth());
   for(const auto* b: {_defaultWidget, _extraWidget})
     if(b != nullptr)
-      left += b->getWidth() + (left > 0 ? BUTTON_GAP : 0);
+      ++left;
   for(const auto* b: {_okWidget, _cancelWidget})
     if(b != nullptr)
-      right += b->getWidth() + (right > 0 ? BUTTON_GAP : 0);
+      ++right;
 
+  const auto side = [&](int n) {
+    return n > 0 ? n * bwidth + (n - 1) * BUTTON_GAP : 0;
+  };
   // The two sides never touch; a group with only one side needs no clearance
   const int between = (left > 0 && right > 0) ? BUTTON_GAP * 2 : 0;
 
-  return HBORDER * 2 + left + between + right;
+  return HBORDER * 2 + side(left) + between + side(right);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1118,6 +1116,11 @@ void Dialog::layoutButtonGroup()
             VBORDER      = Dialog::vBorder(),
             HBORDER      = Dialog::hBorder();
   const int by = _h - buttonHeight - VBORDER;
+
+  // The group shares one width: no button knows what its neighbours' labels need,
+  // and the standard group has a standard size whatever they are
+  GUI::alignButtons({_defaultWidget, _extraWidget, _okWidget, _cancelWidget},
+                    standardButtonWidth());
 
   // Left side: Defaults, with an optional Extra button beside it
   if(_defaultWidget != nullptr)
@@ -1151,14 +1154,11 @@ void Dialog::addDefaultsOKCancelBGroup(WidgetArray& wid, const GUI::Font& font,
                                        string_view defaultsText,
                                        bool focusOKButton)
 {
-  const int buttonHeight = Dialog::buttonHeight(),
-            buttonWidth  = Dialog::buttonWidth(defaultsText);
-
-  addDefaultWidget(new ButtonWidget(this, font, 0, 0,
-                   buttonWidth, buttonHeight, defaultsText, GuiObject::kDefaultsCmd));
+  addDefaultWidget(new ButtonWidget(this, font, 0, 0, defaultsText,
+                                    GuiObject::kDefaultsCmd));
   wid.push_back(_defaultWidget);
 
-  addOKCancelBGroup(wid, font, okText, cancelText, focusOKButton, buttonWidth);
+  addOKCancelBGroup(wid, font, okText, cancelText, focusOKButton);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1168,19 +1168,14 @@ void Dialog::addDefaultsExtraOKCancelBGroup(
       string_view okText, string_view cancelText, string_view defaultsText,
       bool focusOKButton)
 {
-  const int buttonHeight = Dialog::buttonHeight(),
-            buttonWidth  = std::max(Dialog::buttonWidth(defaultsText),
-                                    Dialog::buttonWidth(extraText));
-
-  addDefaultWidget(new ButtonWidget(this, font, 0, 0,
-                   buttonWidth, buttonHeight, defaultsText, GuiObject::kDefaultsCmd));
+  addDefaultWidget(new ButtonWidget(this, font, 0, 0, defaultsText,
+                                    GuiObject::kDefaultsCmd));
   wid.push_back(_defaultWidget);
 
-  addExtraWidget(new ButtonWidget(this, font, 0, 0,
-                 buttonWidth, buttonHeight, extraText, extraCmd));
+  addExtraWidget(new ButtonWidget(this, font, 0, 0, extraText, extraCmd));
   wid.push_back(_extraWidget);
 
-  addOKCancelBGroup(wid, font, okText, cancelText, focusOKButton, buttonWidth);
+  addOKCancelBGroup(wid, font, okText, cancelText, focusOKButton);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

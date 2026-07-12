@@ -142,7 +142,7 @@ CartridgeCMWidget::CartridgeCMWidget(
   new StaticTextWidget(boss, _font, xpos, ypos, lwidth,
         myFontHeight, "Ram State ", TextAlign::Left);
   myRAM = new EditTextWidget(boss, _nfont, xpos+lwidth, ypos-2,
-              _nfont.getStringWidth(" Write-only "), myLineHeight, "");
+              _nfont.getStringWidth(" Write-only "), "");
   myRAM->setEditable(false, true);
 }
 

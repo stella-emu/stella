@@ -62,24 +62,25 @@ InputTextDialog::InputTextDialog(OSystem& osystem, DialogContainer& parent,
 void InputTextDialog::initialize(const GUI::Font& lfont, const GUI::Font& nfont,
                                  const StringList& labels, int widthChars)
 {
-  const int lineHeight = Dialog::lineHeight(),
-            fontHeight = Dialog::fontHeight();
   WidgetArray wid;
 
   myWidthChars = widthChars;
   myMaxLen.resize(labels.size(), 0);
 
-  // Create a label + editbox for each entry; layout() assigns all geometry
+  // Create a label + editbox for each entry; layout() assigns all geometry.
+  // A label takes its width from its own text (the auto-sizing ctor), because
+  // the label column is sized from what the labels ask for -- one built at a
+  // placeholder width would report that width and collapse the column
   for(const auto& label: labels)
   {
-    myLabel.push_back(new StaticTextWidget(this, lfont, 0, 0, 1, fontHeight, label));
+    myLabel.push_back(new StaticTextWidget(this, lfont, 0, 0, label));
 
-    auto* w = new EditTextWidget(this, nfont, 0, 0, 1, lineHeight);
+    auto* w = new EditTextWidget(this, nfont, 0, 0, 1);
     wid.push_back(w);
     myInput.push_back(w);
   }
 
-  myMessage = new StaticTextWidget(this, lfont, 0, 0, 1, fontHeight);
+  myMessage = new StaticTextWidget(this, lfont, 0, 0);
   myMessage->setTextColor(kTextColorEm);
 
   addToFocusList(wid);
@@ -94,47 +95,56 @@ void InputTextDialog::initialize(const GUI::Font& lfont, const GUI::Font& nfont,
 void InputTextDialog::layout()
 {
   using GUI::BoxLayout;
-  using GUI::widgetItem;
-  using GUI::alignedItem;
-  using GUI::HAlign;
-  using GUI::VAlign;
+  using GUI::stretchedItem;
+  using GUI::GridLayout;
+  using GUI::anchoredItem;
   using Dir = BoxLayout::Dir;
 
-  const int lineHeight   = Dialog::lineHeight(),
-            fontWidth    = Dialog::fontWidth(),
+  const int fontWidth    = Dialog::fontWidth(),
             buttonHeight = Dialog::buttonHeight(),
             VBORDER      = Dialog::vBorder(),
             HBORDER      = Dialog::hBorder(),
             VGAP         = Dialog::vGap();
   const int numRows = static_cast<int>(myInput.size());
 
-  _w = HBORDER * 2 + fontWidth * myWidthChars;
-  _h = buttonHeight + lineHeight + VGAP + numRows * (lineHeight + VGAP)
-       + _th + VBORDER * 2;
-
-  // The longest label defines the shared label column width
-  int lwidth = 0;
-  for(auto* l: myLabel)
-    lwidth = std::max(lwidth, _font.getStringWidth(l->getLabel()));
-
-  // A label + editbox per row, then a message line; the editbox fills the row
-  // (or keeps a fixed width if a max length was set via setMaxLen)
-  auto root = std::make_unique<BoxLayout>(Dir::Vertical, 0, HBORDER, VBORDER);
+  // A label + editbox per row.  The label column is as wide as the longest of
+  // the labels (nobody measures one), and the fields line up beside it
+  auto grid = std::make_unique<GridLayout>(2, numRows, fontWidth, VGAP);
+  grid->columnAuto(0).columnStretch(1);
   for(int i = 0; i < numRows; ++i)
   {
-    auto row = std::make_unique<BoxLayout>(Dir::Horizontal);
-    row->addFixed(alignedItem(myLabel[i], HAlign::Fill, VAlign::Center), lwidth);
-    row->addSpace(fontWidth);
+    grid->rowAuto(i);
+    grid->place(0, i, anchoredItem(myLabel[i]));
+
+    // A field with a character limit is only as wide as that many characters;
+    // one without fills the rest of the row
     if(myMaxLen[i] > 0)
-      row->addFixed(alignedItem(myInput[i], HAlign::Fill, VAlign::Center),
-                    (myMaxLen[i] + 1) * fontWidth);
+    {
+      auto field = std::make_unique<BoxLayout>(Dir::Horizontal);
+      field->addFixed(stretchedItem(myInput[i]),
+                      EditTextWidget::calcWidth(myInput[i]->font(), myMaxLen[i]));
+      field->addStretchSpace();
+      grid->place(1, i, std::move(field));
+    }
     else
-      row->addStretch(alignedItem(myInput[i], HAlign::Fill, VAlign::Center));
-    root->addFixed(std::move(row), lineHeight);
-    root->addSpace(VGAP);
+      grid->place(1, i, stretchedItem(myInput[i]));
   }
-  root->addSpace(VGAP);
-  root->addFixed(widgetItem(myMessage), Dialog::fontHeight());
+
+  // The rows, then the message line below them; the button group sits below
+  // that, positioned by layoutButtonGroup()
+  auto root = std::make_unique<BoxLayout>(Dir::Vertical, 0, HBORDER, VBORDER);
+  root->addAuto(std::move(grid));
+  root->addSpace(VGAP * 2);
+  root->addAuto(stretchedItem(myMessage));
+
+  // This dialog states its width in characters, since what it has to show is
+  // whatever text it is handed; only its height is derived from the content
+  const Common::Size natural = root->naturalSize();
+
+  _w = std::max(HBORDER * 2 + fontWidth * myWidthChars,
+                Dialog::buttonGroupWidth());
+  _h = _th + static_cast<int>(natural.h) + buttonHeight + VBORDER;
+
   root->doLayout(0, _th, _w, _h - _th);
 
   // Standard OK/Cancel button group along the bottom edge

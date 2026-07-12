@@ -31,41 +31,32 @@ AboutDialog::AboutDialog(OSystem& osystem, DialogContainer& parent,
                          const GUI::Font& font)
   : Dialog(osystem, parent, font, "About Stella")
 {
-  const int fontHeight   = Dialog::fontHeight(),
-            buttonHeight = Dialog::buttonHeight(),
-            buttonWidth  = Dialog::buttonWidth("Previous");
   WidgetArray wid;
 
   // Previous, Next and Close buttons
   myPrevButton =
-    new ButtonWidget(this, font, 0, 0, buttonWidth, buttonHeight,
-                     "Previous", GuiObject::kPrevCmd);
+    new ButtonWidget(this, font, 0, 0, "Previous", GuiObject::kPrevCmd);
   myPrevButton->clearFlags(Widget::FLAG_ENABLED);
   wid.push_back(myPrevButton);
 
   myNextButton =
-    new ButtonWidget(this, font, 0, 0, buttonWidth, buttonHeight,
-                     "Next", GuiObject::kNextCmd);
+    new ButtonWidget(this, font, 0, 0, "Next", GuiObject::kNextCmd);
   wid.push_back(myNextButton);
 
-  auto* b = new ButtonWidget(this, font, 0, 0,
-      buttonWidth, buttonHeight, "Close", GuiObject::kCloseCmd);
+  auto* b = new ButtonWidget(this, font, 0, 0, "Close", GuiObject::kCloseCmd);
   wid.push_back(b);
   addCancelWidget(b);
 
-  myTitle = new StaticTextWidget(this, font, 0, 0, 1,
-                                 fontHeight, "", TextAlign::Center);
+  myTitle = new StaticTextWidget(this, font, 0, 0, "", TextAlign::Center);
   myTitle->setTextColor(kTextColorEm);
 
   myWhatsNewButton =
-    new ButtonWidget(this, font, 0, 0, 1, buttonHeight,
-                     "What's New" + ELLIPSIS, kWhatsNew);
+    new ButtonWidget(this, font, 0, 0, "What's New" + ELLIPSIS, kWhatsNew);
   wid.push_back(myWhatsNewButton);
 
   for(int i = 0; i < myLinesPerPage; i++)
   {
-    auto* s = new StaticTextWidget(this, font, 0, 0, 1,
-                                   fontHeight, "", TextAlign::Left, kNone);
+    auto* s = new StaticTextWidget(this, font, 0, 0, "", TextAlign::Left, kNone);
     s->setID(i);
     myDesc.push_back(s);
     myDescStr.emplace_back("");
@@ -83,48 +74,54 @@ AboutDialog::~AboutDialog() = default;
 void AboutDialog::layout()
 {
   using GUI::BoxLayout;
+  using GUI::anchoredItem;
+  using GUI::stretchedItem;
   using GUI::widgetItem;
-  using GUI::alignedItem;
-  using GUI::HAlign;
-  using GUI::VAlign;
   using Dir = BoxLayout::Dir;
 
-  const int lineHeight   = Dialog::lineHeight(),
-            fontHeight   = Dialog::fontHeight(),
-            fontWidth    = Dialog::fontWidth(),
+  const int fontWidth    = Dialog::fontWidth(),
             buttonHeight = Dialog::buttonHeight(),
-            buttonWidth  = Dialog::buttonWidth("Previous"),
             VBORDER      = Dialog::vBorder(),
             HBORDER      = Dialog::hBorder(),
             VGAP         = Dialog::vGap();
 
-  _w = 55 * fontWidth + HBORDER * 2;
-  _h = _th + 14 * lineHeight + VGAP * 3 + buttonHeight + VBORDER * 2;
+  // Previous and Next share one width, the wider of the two
+  GUI::alignButtons({myPrevButton, myNextButton});
 
   // Title row: a centered title with the "What's New" button at the right; the
-  // leading spacer (= button width) keeps the title centered across the dialog
-  const int bwidth = Dialog::buttonWidth("What's New" + ELLIPSIS);
+  // leading spacer (= that button's own width) keeps the title centered across
+  // the dialog.  The title is centered in the (taller) button row, so it needs
+  // no offset of its own
+  const int whatsNewWidth = myWhatsNewButton->getWidth();
   auto titleRow = std::make_unique<BoxLayout>(Dir::Horizontal);
-  titleRow->addSpace(bwidth);
-  titleRow->addStretch(alignedItem(myTitle, HAlign::Fill, VAlign::Center));
-  titleRow->addFixed(widgetItem(myWhatsNewButton), bwidth);
-  titleRow->doLayout(HBORDER, _th + VBORDER, _w - HBORDER * 2, buttonHeight);
+  titleRow->addSpace(whatsNewWidth);
+  titleRow->addStretch(stretchedItem(myTitle));
+  titleRow->addAuto(anchoredItem(myWhatsNewButton));
 
   // Description lines, indented an extra border on each side
-  const int descY = _th + VBORDER + (buttonHeight - fontHeight) / 2
-                    + lineHeight + VGAP * 2;
-  auto descCol = std::make_unique<BoxLayout>(Dir::Vertical);
+  auto descCol = std::make_unique<BoxLayout>(Dir::Vertical, 0, HBORDER, 0);
   for(auto* s: myDesc)
-    descCol->addFixed(widgetItem(s), fontHeight);
-  descCol->doLayout(HBORDER * 2, descY, _w - HBORDER * 4,
-                    static_cast<int>(myDesc.size()) * fontHeight);
+    descCol->addAuto(stretchedItem(s));
+
+  auto root = std::make_unique<BoxLayout>(Dir::Vertical, 0, HBORDER, VBORDER);
+  root->addAuto(std::move(titleRow));
+  root->addSpace(VGAP * 2);
+  root->addAuto(std::move(descCol));
+
+  // The pages are written to 55 characters, so that is the dialog's width; its
+  // height is however much room they ask for, plus the button row below them
+  _w = 55 * fontWidth + HBORDER * 2;
+  _h = _th + static_cast<int>(root->naturalSize().h) + buttonHeight + VBORDER;
+
+  root->doLayout(0, _th, _w, _h - _th);
 
   // Bottom row: Previous / Next on the left, Close (the cancel widget) at right
   auto navButtons = std::make_unique<BoxLayout>(Dir::Horizontal, fontWidth);
-  navButtons->addFixed(widgetItem(myPrevButton), buttonWidth);
-  navButtons->addFixed(widgetItem(myNextButton), buttonWidth);
+  navButtons->addAuto(anchoredItem(myPrevButton));
+  navButtons->addAuto(anchoredItem(myNextButton));
+  const Common::Size navSize = navButtons->naturalSize();
   navButtons->doLayout(HBORDER, _h - buttonHeight - VBORDER,
-                       buttonWidth * 2 + fontWidth, buttonHeight);
+                       static_cast<int>(navSize.w), static_cast<int>(navSize.h));
   layoutButtonGroup();
 }
 

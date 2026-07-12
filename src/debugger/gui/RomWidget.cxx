@@ -40,7 +40,7 @@ RomWidget::RomWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& n
   // NOLINTBEGIN(cppcoreguidelines-prefer-member-initializer)
   myInfoLabel = new StaticTextWidget(boss, lfont, 0, 0, "Info ");
 
-  myBank = new EditTextWidget(boss, nfont, 0, 0, 1, nfont.getLineHeight());
+  myBank = new EditTextWidget(boss, nfont, 0, 0, 1);
   myBank->setEditable(false);
 
   myRomList = new RomListWidget(boss, lfont, nfont, 0, 0, 1, 1);

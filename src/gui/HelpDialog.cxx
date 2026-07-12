@@ -30,44 +30,35 @@ HelpDialog::HelpDialog(OSystem& osystem, DialogContainer& parent,
                        const GUI::Font& font)
   : Dialog(osystem, parent, font, "Help")
 {
-  const int fontHeight   = Dialog::fontHeight(),
-            buttonHeight = Dialog::buttonHeight(),
-            buttonWidth  = Dialog::buttonWidth(" << "),
-            closeButtonWidth = Dialog::buttonWidth("Close");
   WidgetArray wid;
 
-  // Previous, Next, Update and Close buttons
+  // Previous, Next, Update and Close buttons.  Each sizes itself to its label;
+  // layout() gives the two arrows one shared width
   myPrevButton =
-    new ButtonWidget(this, font, 0, 0, buttonWidth, buttonHeight,
-                     "<<", GuiObject::kPrevCmd);
+    new ButtonWidget(this, font, 0, 0, "<<", GuiObject::kPrevCmd);
   myPrevButton->clearFlags(Widget::FLAG_ENABLED);
   wid.push_back(myPrevButton);
 
   myNextButton =
-    new ButtonWidget(this, font, 0, 0, buttonWidth, buttonHeight,
-                     ">>", GuiObject::kNextCmd);
+    new ButtonWidget(this, font, 0, 0, ">>", GuiObject::kNextCmd);
   wid.push_back(myNextButton);
 
-  const int updButtonWidth = Dialog::buttonWidth("Check for Update" + ELLIPSIS);
   myUpdateButton =
-    new ButtonWidget(this, font, 0, 0, updButtonWidth, buttonHeight,
-                     "Check for Update" + ELLIPSIS, kUpdateCmd);
+    new ButtonWidget(this, font, 0, 0, "Check for Update" + ELLIPSIS, kUpdateCmd);
   myUpdateButton->setEnabled(true);
   wid.push_back(myUpdateButton);
 
-  auto* b = new ButtonWidget(this, font, 0, 0, closeButtonWidth,
-                             buttonHeight, "Close", GuiObject::kCloseCmd);
+  auto* b = new ButtonWidget(this, font, 0, 0, "Close", GuiObject::kCloseCmd);
   wid.push_back(b);
   addCancelWidget(b);
 
-  myTitle = new StaticTextWidget(this, font, 0, 0, 1, fontHeight,
-                                 "", TextAlign::Center);
+  myTitle = new StaticTextWidget(this, font, 0, 0, "", TextAlign::Center);
   myTitle->setTextColor(kTextColorEm);
 
   for(uInt32 i = 0; i < LINES_PER_PAGE; ++i)
   {
-    myKey[i] = new StaticTextWidget(this, font, 0, 0, 1, fontHeight);
-    myDesc[i] = new StaticTextWidget(this, font, 0, 0, 1, fontHeight);
+    myKey[i] = new StaticTextWidget(this, font, 0, 0);
+    myDesc[i] = new StaticTextWidget(this, font, 0, 0);
     myDesc[i]->setID(i);
   }
 
@@ -78,49 +69,56 @@ HelpDialog::HelpDialog(OSystem& osystem, DialogContainer& parent,
 void HelpDialog::layout()
 {
   using GUI::BoxLayout;
+  using GUI::anchoredItem;
+  using GUI::stretchedItem;
   using GUI::GridLayout;
   using GUI::widgetItem;
   using Dir = BoxLayout::Dir;
 
-  const int lineHeight   = Dialog::lineHeight(),
-            fontHeight   = Dialog::fontHeight(),
-            fontWidth    = Dialog::fontWidth(),
+  const int fontWidth    = Dialog::fontWidth(),
             buttonHeight = Dialog::buttonHeight(),
-            buttonWidth  = Dialog::buttonWidth(" << "),
-            updButtonWidth = Dialog::buttonWidth("Check for Update" + ELLIPSIS),
             VBORDER      = Dialog::vBorder(),
             HBORDER      = Dialog::hBorder(),
             VGAP         = Dialog::vGap();
 
-  _w = 46 * fontWidth + HBORDER * 2;
-  _h = _th + 11 * lineHeight + VGAP * 3 + buttonHeight + VBORDER * 2;
+  // The two arrow buttons share one width, the wider of the two
+  GUI::alignButtons({myPrevButton, myNextButton});
 
-  // Centered title, full width
-  myTitle->setPos(HBORDER, VBORDER + _th);
-  myTitle->setWidth(_w - HBORDER * 2);
-
-  // Key / description table: fixed key column, description column fills the rest
-  const int lwidth = 15 * fontWidth;
+  // Key / description table.  The key column is a fixed 15 characters rather
+  // than sized to its content: the keys are refilled per page (see loadConfig),
+  // and a column that followed them would shift as the user pages through
   const int numRows = static_cast<int>(LINES_PER_PAGE);
   auto table = std::make_unique<GridLayout>(2, numRows);
-  table->columnFixed(0, lwidth);
+  table->columnFixed(0, 15 * fontWidth);
   table->columnStretch(1);
   for(int i = 0; i < numRows; ++i)
   {
-    table->rowFixed(i, fontHeight);
-    table->place(0, i, widgetItem(myKey[i]));
-    table->place(1, i, widgetItem(myDesc[i]));
+    table->rowAuto(i);
+    table->place(0, i, stretchedItem(myKey[i]));
+    table->place(1, i, stretchedItem(myDesc[i]));
   }
-  table->doLayout(HBORDER, VBORDER + _th + lineHeight + VGAP * 2,
-                  _w - HBORDER * 2, numRows * fontHeight);
+
+  // Centered title, then the table below it
+  auto root = std::make_unique<BoxLayout>(Dir::Vertical, 0, HBORDER, VBORDER);
+  root->addAuto(stretchedItem(myTitle));
+  root->addSpace(VGAP * 2);
+  root->addAuto(std::move(table));
+
+  // The pages are written to 46 characters, so that is the dialog's width; its
+  // height is however much room they ask for, plus the button row below them
+  _w = 46 * fontWidth + HBORDER * 2;
+  _h = _th + static_cast<int>(root->naturalSize().h) + buttonHeight + VBORDER;
+
+  root->doLayout(0, _th, _w, _h - _th);
 
   // Bottom row: Prev / Next / Update on the left, Close (cancel widget) at right
   auto navButtons = std::make_unique<BoxLayout>(Dir::Horizontal, fontWidth);
-  navButtons->addFixed(widgetItem(myPrevButton), buttonWidth);
-  navButtons->addFixed(widgetItem(myNextButton), buttonWidth);
-  navButtons->addFixed(widgetItem(myUpdateButton), updButtonWidth);
+  navButtons->addAuto(anchoredItem(myPrevButton));
+  navButtons->addAuto(anchoredItem(myNextButton));
+  navButtons->addAuto(anchoredItem(myUpdateButton));
+  const Common::Size navSize = navButtons->naturalSize();
   navButtons->doLayout(HBORDER, _h - buttonHeight - VBORDER,
-                       buttonWidth * 2 + updButtonWidth + fontWidth * 2, buttonHeight);
+                       static_cast<int>(navSize.w), static_cast<int>(navSize.h));
   layoutButtonGroup();
 }
 

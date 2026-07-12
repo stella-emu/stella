@@ -32,9 +32,6 @@ JoystickDialog::JoystickDialog(GuiObject* boss, const GUI::Font& font,
   : Dialog(boss->instance(), boss->parent(), font, "Controller database", 0, 0, max_w, max_h)
 {
   WidgetArray wid;
-  const int lineHeight   = Dialog::lineHeight(),
-            buttonHeight = Dialog::buttonHeight(),
-            buttonWidth  = Dialog::buttonWidth("Remove");
 
   // NOLINTBEGIN(cppcoreguidelines-prefer-member-initializer)
   // Joystick list
@@ -43,9 +40,9 @@ JoystickDialog::JoystickDialog(GuiObject* boss, const GUI::Font& font,
   wid.push_back(myJoyList);
 
   // Joystick ID
-  myIDLabel = new StaticTextWidget(this, font, 0, 0, "Controller ID ");
+  myIDLabel = new StaticTextWidget(this, font, 0, 0, "Controller ID");
   myJoyText = new EditTextWidget(this, font, 0, 0,
-      font.getStringWidth("Unplugged "), lineHeight, "");
+      EditTextWidget::calcWidth(font, "Unplugged"), "");
   myJoyText->setEditable(false);
 
   // Port
@@ -54,18 +51,15 @@ JoystickDialog::JoystickDialog(GuiObject* boss, const GUI::Font& font,
   VarList::push_back(ports, "Left",  static_cast<Int32>(PhysicalJoystick::Port::LEFT));
   VarList::push_back(ports, "Right", static_cast<Int32>(PhysicalJoystick::Port::RIGHT));
 
-  myJoyPort = new PopUpWidget(this, font, 0, 0,
-    font.getStringWidth("Right"), lineHeight, ports, "Port ", 0, kPortCmd);
+  myJoyPort = new PopUpWidget(this, font, 0, 0, ports, "Port", 0, kPortCmd);
   myJoyPort->setToolTip("Define default mapping port.");
   wid.push_back(myJoyPort);
 
   // Buttons at bottom
-  myCloseBtn = new ButtonWidget(this, font, 0, 0,
-      buttonWidth, buttonHeight, "Close", GuiObject::kCloseCmd);
+  myCloseBtn = new ButtonWidget(this, font, 0, 0, "Close", GuiObject::kCloseCmd);
   addOKWidget(myCloseBtn);  addCancelWidget(myCloseBtn);
 
-  myRemoveBtn = new ButtonWidget(this, font, 0, 0,
-      buttonWidth, buttonHeight, "Remove", kRemoveCmd);
+  myRemoveBtn = new ButtonWidget(this, font, 0, 0, "Remove", kRemoveCmd);
   myRemoveBtn->clearFlags(Widget::FLAG_ENABLED);
 
   // Now we can finally add the widgets to the focus list
@@ -80,18 +74,23 @@ void JoystickDialog::layout()
 {
   using GUI::BoxLayout;
   using GUI::widgetItem;
-  using GUI::alignedItem;
-  using GUI::HAlign;
-  using GUI::VAlign;
+  using GUI::anchoredItem;
   using Dir = BoxLayout::Dir;
 
   const int fontWidth    = Dialog::fontWidth(),
             buttonHeight = Dialog::buttonHeight(),
-            buttonWidth  = Dialog::buttonWidth("Remove"),
             VBORDER      = Dialog::vBorder(),
             HBORDER      = Dialog::hBorder();
 
-  // The joystick list fills the area above the bottom control/button row
+  // Remove and Close share one width, the wider of the two
+  GUI::alignButtons({myRemoveBtn, myCloseBtn});
+
+  // The popup draws its own label, so give it a label column of its own
+  GUI::alignLabels({{myJoyPort}});
+
+  // The joystick list fills the area above the bottom control/button row.  This
+  // dialog takes all the space it is given, so its size is not derived from the
+  // content.
   auto root = std::make_unique<BoxLayout>(Dir::Vertical, 0, HBORDER, VBORDER);
   root->addStretch(widgetItem(myJoyList));
   root->addSpace(VBORDER);
@@ -100,21 +99,23 @@ void JoystickDialog::layout()
 
   const int by = _h - VBORDER - buttonHeight;  // button row top
 
-  // Controller ID label + (non-editable) value + port popup on the left,
-  // vertically centered within the button row
+  // Controller ID label + (non-editable) value + port popup on the left; each
+  // keeps its natural size and is centered in the (taller) button row, so all
+  // three texts line up with the buttons beside them
   auto idRow = std::make_unique<BoxLayout>(Dir::Horizontal);
-  idRow->addFixed(alignedItem(myIDLabel, HAlign::Fill, VAlign::Center), myIDLabel->getWidth());
-  idRow->addFixed(alignedItem(myJoyText, HAlign::Fill, VAlign::Center), myJoyText->getWidth());
+  idRow->addAuto(anchoredItem(myIDLabel));
+  idRow->addSpace(fontWidth);
+  idRow->addAuto(anchoredItem(myJoyText));
   idRow->addSpace(fontWidth * 2);
-  idRow->addFixed(alignedItem(myJoyPort, HAlign::Fill, VAlign::Center), myJoyPort->getWidth());
+  idRow->addAuto(anchoredItem(myJoyPort));
   idRow->doLayout(HBORDER, by, _w - HBORDER * 2, buttonHeight);
 
   // Remove / Close buttons, right-aligned on the button row
   auto buttons = std::make_unique<BoxLayout>(Dir::Horizontal);
-  buttons->addStretch(widgetItem(nullptr));
-  buttons->addFixed(widgetItem(myRemoveBtn), buttonWidth);
+  buttons->addStretchSpace();
+  buttons->addAuto(anchoredItem(myRemoveBtn));
   buttons->addSpace(fontWidth);
-  buttons->addFixed(widgetItem(myCloseBtn), buttonWidth);
+  buttons->addAuto(anchoredItem(myCloseBtn));
   buttons->doLayout(HBORDER, by, _w - HBORDER * 2, buttonHeight);
 }
 

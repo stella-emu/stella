@@ -198,7 +198,7 @@ void LauncherDialog::addFilteringWidgets()
     myFilterLabel = new StaticTextWidget(this, _font, 0, 0, 1, Dialog::fontHeight(),
                                          "Filter");
 
-  myPattern = new EditTextWidget(this, _font, 0, 0, 1, Dialog::lineHeight(), "");
+  myPattern = new EditTextWidget(this, _font, 0, 0, 1, "");
   myPattern->setToolTip("Enter filter text to reduce file list.\n"
     "Use '*' and '?' as wildcards.");
   wid.push_back(myPattern);

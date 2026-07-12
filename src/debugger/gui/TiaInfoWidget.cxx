@@ -56,60 +56,58 @@ TiaInfoWidget::TiaInfoWidget(GuiObject* boss, const GUI::Font& lfont,
   : Widget(boss, lfont, x, y, 16, 16),
     CommandSender(boss)
 {
-  const int lineHeight = lfont.getLineHeight();
-
   // Create every field at a placeholder position/size; reflow() picks the
   // short/long label text and positions and sizes everything for the width
   // NOLINTBEGIN(cppcoreguidelines-prefer-member-initializer)
   myFrameCyclesLabel = new StaticTextWidget(boss, lfont, 0, 0, "Frame Cycles");
-  myFrameCycles = new EditTextWidget(boss, nfont, 0, 0, 1, lineHeight);
+  myFrameCycles = new EditTextWidget(boss, nfont, 0, 0, 1);
   myFrameCycles->setToolTip("CPU cycles executed this frame.");
   myFrameCycles->setEditable(false, true);
 
   myWSyncCyclesLabel = new StaticTextWidget(boss, lfont, 0, 0, "WSync Cycles");
-  myWSyncCylces = new EditTextWidget(boss, nfont, 0, 0, 1, lineHeight);
+  myWSyncCylces = new EditTextWidget(boss, nfont, 0, 0, 1);
   myWSyncCylces->setToolTip("CPU cycles used for WSYNC this frame.");
   myWSyncCylces->setEditable(false, true);
 
   myTimerCyclesLabel = new StaticTextWidget(boss, lfont, 0, 0, "Timer Cycles");
-  myTimerCylces = new EditTextWidget(boss, nfont, 0, 0, 1, lineHeight);
+  myTimerCylces = new EditTextWidget(boss, nfont, 0, 0, 1);
   myTimerCylces->setToolTip("CPU cycles roughly used for INTIM reads this frame.");
   myTimerCylces->setEditable(false, true);
 
   myTotalLabel = new StaticTextWidget(boss, lfont, 0, 0, "Total");
-  myTotalCycles = new EditTextWidget(boss, nfont, 0, 0, 1, lineHeight);
+  myTotalCycles = new EditTextWidget(boss, nfont, 0, 0, 1);
   myTotalCycles->setEditable(false, true);
 
   myDeltaLabel = new StaticTextWidget(boss, lfont, 0, 0, "Delta");
-  myDeltaCycles = new EditTextWidget(boss, nfont, 0, 0, 1, lineHeight);
+  myDeltaCycles = new EditTextWidget(boss, nfont, 0, 0, 1);
   myDeltaCycles->setToolTip("CPU cycles executed since last debug break.");
   myDeltaCycles->setEditable(false, true);
 
   myFrameCountLabel = new StaticTextWidget(boss, lfont, 0, 0, "Frame Cnt.");
-  myFrameCount = new EditTextWidget(boss, nfont, 0, 0, 1, lineHeight);
+  myFrameCount = new EditTextWidget(boss, nfont, 0, 0, 1);
   myFrameCount->setToolTip("Total number of frames executed this session.");
   myFrameCount->setEditable(false, true);
 
   myScanlineLabel = new StaticTextWidget(boss, lfont, 0, 0, "Scanline");
-  myScanlineCountLast = new EditTextWidget(boss, nfont, 0, 0, 1, lineHeight);
+  myScanlineCountLast = new EditTextWidget(boss, nfont, 0, 0, 1);
   myScanlineCountLast->setToolTip("Number of scanlines of last frame.");
   myScanlineCountLast->setEditable(false, true);
-  myScanlineCount = new EditTextWidget(boss, nfont, 0, 0, 1, lineHeight);
+  myScanlineCount = new EditTextWidget(boss, nfont, 0, 0, 1);
   myScanlineCount->setToolTip("Current scanline of this frame.");
   myScanlineCount->setEditable(false, true);
 
   myScanCycleLabel = new StaticTextWidget(boss, lfont, 0, 0, "Scan Cycle");
-  myScanlineCycles = new EditTextWidget(boss, nfont, 0, 0, 1, lineHeight);
+  myScanlineCycles = new EditTextWidget(boss, nfont, 0, 0, 1);
   myScanlineCycles->setToolTip("CPU cycles in current scanline.");
   myScanlineCycles->setEditable(false, true);
 
   myPixelPosLabel = new StaticTextWidget(boss, lfont, 0, 0, "Pixel Pos");
-  myPixelPosition = new EditTextWidget(boss, nfont, 0, 0, 1, lineHeight);
+  myPixelPosition = new EditTextWidget(boss, nfont, 0, 0, 1);
   myPixelPosition->setToolTip("Pixel position in current scanline.");
   myPixelPosition->setEditable(false, true);
 
   myColorClockLabel = new StaticTextWidget(boss, lfont, 0, 0, "Color Clock");
-  myColorClocks = new EditTextWidget(boss, nfont, 0, 0, 1, lineHeight);
+  myColorClocks = new EditTextWidget(boss, nfont, 0, 0, 1);
   myColorClocks->setToolTip("Color clocks in current scanline.");
   myColorClocks->setEditable(false, true);
   // NOLINTEND(cppcoreguidelines-prefer-member-initializer)
