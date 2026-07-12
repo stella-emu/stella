@@ -179,12 +179,10 @@ void BrowserDialog::layout()
   navButtons->addAuto(anchoredItem(_goUpButton));
   navButtons->addAuto(anchoredItem(_baseDirButton));
   navButtons->addAuto(anchoredItem(_homeDirButton));
-  const Common::Size navSize = navButtons->naturalSize();
-  navButtons->doLayout(HBORDER, _h - buttonHeight - VBORDER,
-                       static_cast<int>(navSize.w), static_cast<int>(navSize.h));
 
-  // OK/Cancel along the bottom-right (platform order)
-  layoutButtonGroup();
+  // OK/Cancel along the bottom-right (platform order), the navigation buttons
+  // on the left of the same band
+  layoutButtonGroup(std::move(navButtons));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

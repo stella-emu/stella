@@ -111,15 +111,13 @@ void HelpDialog::layout()
 
   root->doLayout(0, _th, _w, _h - _th);
 
-  // Bottom row: Prev / Next / Update on the left, Close (cancel widget) at right
-  auto navButtons = std::make_unique<BoxLayout>(Dir::Horizontal, fontWidth);
+  // Bottom row: Prev / Next / Update on the left of the button band, Close
+  // (cancel widget) at right
+  auto navButtons = std::make_unique<BoxLayout>(Dir::Horizontal, Dialog::buttonGap());
   navButtons->addAuto(anchoredItem(myPrevButton));
   navButtons->addAuto(anchoredItem(myNextButton));
   navButtons->addAuto(anchoredItem(myUpdateButton));
-  const Common::Size navSize = navButtons->naturalSize();
-  navButtons->doLayout(HBORDER, _h - buttonHeight - VBORDER,
-                       static_cast<int>(navSize.w), static_cast<int>(navSize.h));
-  layoutButtonGroup();
+  layoutButtonGroup(std::move(navButtons));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

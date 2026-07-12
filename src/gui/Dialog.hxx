@@ -28,6 +28,10 @@ class TabWidget;
 class CommandSender;
 class ToolTip;
 
+namespace GUI {
+  class Layout;
+}  // namespace GUI
+
 #include <functional>
 
 #include "Widget.hxx"
@@ -236,6 +240,19 @@ class Dialog : public GuiObject
     // are moved.  Used both when the group is first created and by a resizeable
     // dialog's layout() so the group follows font/size changes.
     void layoutButtonGroup();
+
+    // The same, then lay 'bandContent' out in the part of the button band the
+    // standard group leaves free: from the left group's end (or the border) to
+    // the right group's start.  This is how a dialog puts its OWN content on the
+    // button row — navigation buttons (About/Help/Browser) — without re-deriving
+    // where the band is.
+    void layoutButtonGroup(unique_ptr<GUI::Layout> bandContent);
+
+    // Lay 'content' out across the WHOLE button band, with no standard group
+    // placed at all.  For a dialog whose bottom row is entirely its own
+    // (JoystickDialog: a status readout and buttons that deliberately keep
+    // their natural widths rather than the standard group's).
+    void layoutButtonBand(unique_ptr<GUI::Layout> content);
 
     /**
       The width the button group needs: Defaults (and any Extra) on the left,

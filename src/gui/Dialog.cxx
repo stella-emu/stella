@@ -1131,21 +1131,64 @@ void Dialog::layoutButtonGroup()
   }
 
   // Right side: OK/Cancel in platform order, right-aligned.  Positioned from
-  // the right using each button's own width (the group shares one width).
+  // the right using each button's own width (the group shares one width).  One
+  // button may serve as both (Enter and Escape both close), so a repeat is
+  // skipped rather than placed twice
 #ifndef BSPF_MACOS
   const std::array<ButtonWidget*, 2> right{_okWidget, _cancelWidget};
 #else
   const std::array<ButtonWidget*, 2> right{_cancelWidget, _okWidget};
 #endif
   int xpos = _w - HBORDER;
+  const ButtonWidget* placed = nullptr;
   for(auto* b: std::views::reverse(right))
   {
-    if(b == nullptr)
+    if(b == nullptr || b == placed)
       continue;
     xpos -= b->getWidth();
     b->setPos(xpos, by);
     xpos -= BUTTON_GAP;
+    placed = b;
   }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Dialog::layoutButtonGroup(unique_ptr<GUI::Layout> bandContent)
+{
+  layoutButtonGroup();
+  if(bandContent == nullptr)
+    return;
+
+  const int buttonHeight = Dialog::buttonHeight(),
+            BUTTON_GAP   = Dialog::buttonGap(),
+            VBORDER      = Dialog::vBorder(),
+            HBORDER      = Dialog::hBorder();
+
+  // The band segment the standard group leaves free: it starts after the left
+  // group (Defaults, and Extra beside it) and ends before the right one
+  int bandL = HBORDER;
+  for(const auto* b: {_defaultWidget, _extraWidget})
+    if(b != nullptr)
+      bandL = std::max(bandL, b->getRight() + BUTTON_GAP);
+
+  int bandR = _w - HBORDER;
+  for(const auto* b: {_okWidget, _cancelWidget})
+    if(b != nullptr)
+      bandR = std::min(bandR, b->getLeft() - BUTTON_GAP);
+
+  bandContent->doLayout(bandL, _h - buttonHeight - VBORDER,
+                        bandR - bandL, buttonHeight);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Dialog::layoutButtonBand(unique_ptr<GUI::Layout> content)
+{
+  const int buttonHeight = Dialog::buttonHeight(),
+            VBORDER      = Dialog::vBorder(),
+            HBORDER      = Dialog::hBorder();
+
+  content->doLayout(HBORDER, _h - buttonHeight - VBORDER,
+                    _w - HBORDER * 2, buttonHeight);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

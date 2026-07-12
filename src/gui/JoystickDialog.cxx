@@ -97,26 +97,21 @@ void JoystickDialog::layout()
   root->addSpace(buttonHeight);  // reserve the button row
   root->doLayout(0, _th, _w, _h - _th);
 
-  const int by = _h - VBORDER - buttonHeight;  // button row top
-
-  // Controller ID label + (non-editable) value + port popup on the left; each
-  // keeps its natural size and is centered in the (taller) button row, so all
-  // three texts line up with the buttons beside them
-  auto idRow = std::make_unique<BoxLayout>(Dir::Horizontal);
-  idRow->addAuto(anchoredItem(myIDLabel));
-  idRow->addSpace(fontWidth);
-  idRow->addAuto(anchoredItem(myJoyText));
-  idRow->addSpace(fontWidth * 2);
-  idRow->addAuto(anchoredItem(myJoyPort));
-  idRow->doLayout(HBORDER, by, _w - HBORDER * 2, buttonHeight);
-
-  // Remove / Close buttons, right-aligned on the button row
-  auto buttons = std::make_unique<BoxLayout>(Dir::Horizontal);
-  buttons->addStretchSpace();
-  buttons->addAuto(anchoredItem(myRemoveBtn));
-  buttons->addSpace(fontWidth);
-  buttons->addAuto(anchoredItem(myCloseBtn));
-  buttons->doLayout(HBORDER, by, _w - HBORDER * 2, buttonHeight);
+  // The button band is entirely this dialog's own: the controller ID readout on
+  // the left, Remove / Close (which keep their natural widths, not the standard
+  // group's) on the right.  Everything keeps its own size and is centered in the
+  // (taller) band, so all the texts line up
+  auto band = std::make_unique<BoxLayout>(Dir::Horizontal);
+  band->addAuto(anchoredItem(myIDLabel));
+  band->addSpace(fontWidth);
+  band->addAuto(anchoredItem(myJoyText));
+  band->addSpace(fontWidth * 2);
+  band->addAuto(anchoredItem(myJoyPort));
+  band->addStretchSpace();
+  band->addAuto(anchoredItem(myRemoveBtn));
+  band->addSpace(fontWidth);
+  band->addAuto(anchoredItem(myCloseBtn));
+  layoutButtonBand(std::move(band));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

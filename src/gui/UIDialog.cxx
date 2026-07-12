@@ -357,14 +357,22 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
                       {myLauncherHeightSlider}, {myRomViewerSize}});
     const int labelW = myLauncherFontPopup->labelWidth();
 
-    // A path row: its browse button, then the path filling the rest
+    // A path row: its browse button, then the path filling the rest.  The
+    // button may be given the shared label column to sit in (anchored left),
+    // which is what lines its path up with the value boxes around it — no one
+    // computes the gap between the button and the path
     const auto pathRow = [&](ButtonWidget* button, EditTextWidget* path,
-                             int indent, int gap) {
+                             int indent, int labelCol = 0) {
       auto row = std::make_unique<BoxLayout>(Dir::Horizontal);
       if(indent > 0)
         row->addSpace(indent);
-      row->addAuto(anchoredItem(button));
-      row->addSpace(gap);
+      if(labelCol > 0)
+        row->addFixed(anchoredItem(button), labelCol - indent);
+      else
+      {
+        row->addAuto(anchoredItem(button));
+        row->addSpace(fontWidth);
+      }
       row->addStretch(alignedItem(path, HAlign::Fill, VAlign::Center,
                                   EditTextWidget::calcWidth(_font, 30)));
       return row;
@@ -383,7 +391,7 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
 
     // The ROM path spans the width; the "follow launcher" box that governs it
     // sits in the checkbox column on the row below
-    grid->place(MAIN,  ROM_PATH, pathRow(myRomButton, myRomPath, 0, fontWidth),
+    grid->place(MAIN,  ROM_PATH, pathRow(myRomButton, myRomPath, 0),
                 COLS - MAIN);
     grid->place(EXTRA, FOLLOW, anchoredItem(myFollowLauncherWidget));
 
@@ -394,11 +402,11 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
     grid->place(MAIN,  HEIGHT, anchoredItem(myLauncherHeightSlider));
     grid->place(EXTRA, HEIGHT, anchoredItem(myLauncherButtonsWidget));
 
-    // The image path lines up with the value boxes of the controls above it
+    // The image path lines up with the value boxes of the controls above it:
+    // its browse button occupies the shared label column
     grid->place(MAIN, VIEWER, anchoredItem(myRomViewerSize), COLS - MAIN);
     grid->place(MAIN, IMAGE_PATH,
-                pathRow(myOpenBrowserButton, mySnapLoadPath, INDENT,
-                        labelW - INDENT - myOpenBrowserButton->getWidth()),
+                pathRow(myOpenBrowserButton, mySnapLoadPath, INDENT, labelW),
                 COLS - MAIN);
     grid->place(MAIN, EXIT, anchoredItem(myLauncherExitWidget), COLS - MAIN);
 

@@ -115,14 +115,12 @@ void AboutDialog::layout()
 
   root->doLayout(0, _th, _w, _h - _th);
 
-  // Bottom row: Previous / Next on the left, Close (the cancel widget) at right
-  auto navButtons = std::make_unique<BoxLayout>(Dir::Horizontal, fontWidth);
+  // Bottom row: Previous / Next on the left of the button band, Close (the
+  // cancel widget) at right
+  auto navButtons = std::make_unique<BoxLayout>(Dir::Horizontal, Dialog::buttonGap());
   navButtons->addAuto(anchoredItem(myPrevButton));
   navButtons->addAuto(anchoredItem(myNextButton));
-  const Common::Size navSize = navButtons->naturalSize();
-  navButtons->doLayout(HBORDER, _h - buttonHeight - VBORDER,
-                       static_cast<int>(navSize.w), static_cast<int>(navSize.h));
-  layoutButtonGroup();
+  layoutButtonGroup(std::move(navButtons));
 }
 
 // The following commands can be put at the start of a line (all subject to change):
