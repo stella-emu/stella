@@ -28,6 +28,7 @@ class SliderWidget;
 class StaticTextWidget;
 class EditTextWidget;
 class TabWidget;
+class TabPaneWidget;
 class OSystem;
 
 #include "Dialog.hxx"
@@ -38,8 +39,8 @@ class OSystem;
 class VideoAudioDialog : public Dialog
 {
   public:
-    VideoAudioDialog(OSystem& osystem, DialogContainer& parent, const GUI::Font& font,
-                     int max_w, int max_h);
+    VideoAudioDialog(OSystem& osystem, DialogContainer& parent,
+                     const GUI::Font& font);
     ~VideoAudioDialog() override = default;
 
     void loadConfig() override;
@@ -47,6 +48,7 @@ class VideoAudioDialog : public Dialog
     void setDefaults() override;
 
   protected:
+    void layout() override;
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 
   private:
@@ -67,7 +69,8 @@ class VideoAudioDialog : public Dialog
     void handlePhosphorChange();
     void handleBezelChange();
 
-    void addPalette(int x, int y, int w, int h);
+    void createPaletteWidgets(TabPaneWidget* pane);
+    unique_ptr<GUI::Layout> paletteLayout();
     void colorPalette();
 
     void updatePreset();
@@ -87,6 +90,7 @@ class VideoAudioDialog : public Dialog
     SliderWidget*     myTIAZoom{nullptr};
     CheckboxWidget*   myCorrectAspect{nullptr};
     SliderWidget*     myVSizeAdjust{nullptr};
+    StaticTextWidget* myDisplayInfo{nullptr};
 
     // TV effects adjustables (custom mode)
     PopUpWidget*      myTVMode{nullptr};
@@ -128,8 +132,12 @@ class VideoAudioDialog : public Dialog
     SliderWidget*     myTVBright{nullptr};
     SliderWidget*     myTVContrast{nullptr};
     SliderWidget*     myTVGamma{nullptr};
-    std::array<StaticTextWidget*, 16> myColorLbl{};
-    BSPF::array2D<ColorWidget*, 16, 8> myColor{};
+    StaticTextWidget* myAutodetectLabel{nullptr};
+    // The palette: a chroma per row, a luminance per column
+    static constexpr int NUM_CHROMA = 16;
+    static constexpr int NUM_LUMA = 8;
+    std::array<StaticTextWidget*, NUM_CHROMA> myColorLbl{};
+    BSPF::array2D<ColorWidget*, NUM_CHROMA, NUM_LUMA> myColor{};
 
     // Bezels
     CheckboxWidget*   myBezelEnableCheckbox{nullptr};

@@ -325,11 +325,82 @@ void alignPopUps(std::initializer_list<PopUpWidget*> popups)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void alignTracks(std::initializer_list<SliderWidget*> sliders,
+                 const PopUpWidget* popup, int indent)
+{
+  if(popup == nullptr)
+    return;
+
+  // Their own label column, which is what the tracks start after.  It is the
+  // SLIDERS' column, not the pop-up's: the two coincide only when the pop-up
+  // shares their alignLabels group, and it does not always.  A slider the layout
+  // indents within the group reports a column narrowed by exactly that indent, so
+  // taking the widest is what puts them all on the same track
+  int column = 0;
+  for(const auto* s: sliders)
+    if(s != nullptr)
+      column = std::max(column, s->labelWidth());
+
+  const int track = popup->getWidth() - indent - column;
+
+  for(auto* s: sliders)
+    if(s != nullptr)
+      s->setTrackWidth(track);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void alignTracks(std::initializer_list<SliderWidget*> sliders,
+                 int span, int spacing)
+{
+  const int count = static_cast<int>(sliders.size());
+  if(count == 0)
+    return;
+
+  // What in the span is NOT track: the gaps between them, every slider's label,
+  // and every readout but the LAST, which hangs past the end.  Only each slider
+  // knows how wide its own label and readout are, so ask it
+  int overhead = spacing * (count - 1);
+  int idx = 0;
+
+  for(auto* s: sliders)
+  {
+    if(s == nullptr)
+      continue;
+
+    overhead += s->labelWidth();
+    if(++idx < count)  // not the last: its readout sits between the tracks
+      overhead += s->getWidth() - s->trackWidth() - s->labelWidth();
+  }
+
+  const int track = (span - overhead) / count;
+
+  for(auto* s: sliders)
+    if(s != nullptr)
+      s->setTrackWidth(track);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 unique_ptr<Layout> indentedItem(Widget* widget, int indent, int minW)
 {
   auto row = std::make_unique<BoxLayout>(BoxLayout::Dir::Horizontal);
   row->addSpace(indent);
   row->addStretch(anchoredItem(widget, minW));
+  return row;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+unique_ptr<Layout> indentedFill(Widget* widget, int indent, int width)
+{
+  auto row = std::make_unique<BoxLayout>(BoxLayout::Dir::Horizontal);
+  row->addSpace(indent);
+
+  // A stated width is what makes the widget end flush with a SIBLING; without
+  // one it simply fills the row it is given
+  if(width > 0)
+    row->addFixed(stretchedItem(widget), width);
+  else
+    row->addStretch(stretchedItem(widget));
+
   return row;
 }
 

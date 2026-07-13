@@ -206,10 +206,9 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
     // them flush, and the sliders' tracks then span box and arrow alike
     GUI::alignPopUps({myPalette1Popup, myPalette2Popup, myDialogFontPopup,
                       myPositionPopup});
-    const int swidth = myPalette1Popup->getWidth() - myPalette1Popup->labelWidth();
-    for(auto* slider: {myListDelaySlider, myWheelLinesSlider, myDoubleClickSlider,
-                       myControllerDelaySlider, myControllerRateSlider})
-      slider->setTrackWidth(swidth);
+    GUI::alignTracks({myListDelaySlider, myWheelLinesSlider, myDoubleClickSlider,
+                      myControllerDelaySlider, myControllerRateSlider},
+                     myPalette1Popup);
 
     enum Col: int { MAIN, EXTRA, COLS };
     enum Row: int {

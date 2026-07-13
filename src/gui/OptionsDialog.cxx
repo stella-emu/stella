@@ -204,7 +204,7 @@ void OptionsDialog::handleCommand(CommandSender* sender, int cmd,
       uInt32 w = 0, h = 0;
 
       getDynamicBounds(w, h);
-      myDialog = std::make_unique<VideoAudioDialog>(instance(), parent(), _font, w, h);
+      myDialog = std::make_unique<VideoAudioDialog>(instance(), parent(), _font);
       myDialog->open();
       break;
     }

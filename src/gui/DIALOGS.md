@@ -224,6 +224,7 @@ You never construct `WidgetLayout` directly; use these `GUI::` helper builders:
 | `anchoredItem(w, minW=0, minH=0)`        | the widget's **natural** size, left of the cell and vertically **centered** |
 | `alignedItem(w, hAlign, vAlign, …)`      | any other combination — the general form the three above are shorthand for |
 | `indentedItem(w, indent, minW=0)`        | natural size, positioned `indent` px from the left                        |
+| `indentedFill(w, indent, width=0)`       | indented and **filling** — an indented field/list/pop-up. Give a `width` to end flush with a **sibling** rather than with the row (see the Fill rule) |
 | `labeledRow(label, control, labelW=0, indent=0, fill=false)` | a row pairing a **separate** label with a control; `fill=true` stretches the control to the rest of the row (edits/lists) instead of keeping its natural width |
 
 > ⚠ **`widgetItem` vs `stretchedItem` — the one trap in the engine.** A *filled*
@@ -236,6 +237,34 @@ You never construct `WidgetLayout` directly; use these `GUI::` helper builders:
 > to zero). Reach for `stretchedItem` whenever the **width** is the layout's to
 > decide but the **height** is the widget's — which is almost every control.
 > Keep `widgetItem` for content that genuinely has no size of its own.
+
+> ⚠ **Fill means "end flush with your CELL" — so make the cell the thing you are
+> lining up with.** This is the trap on the other side of the same coin, and it is
+> subtle because it *looks* right until the container grows.
+>
+> A control that must end flush with a **sibling** — a pop-up above it, a list
+> below it — cannot say so by stretching into whatever container it happens to be
+> in. Stretch it and it will chase the container's edge, and the container is
+> usually wider (a tab is as wide as the *widest* tab in the dialog, not as wide as
+> its own content). The control then sails past the thing it was supposed to meet.
+>
+> Say it by giving it a cell that **is** that width:
+>
+> ```cpp
+> // the filter pop-up ends flush with the list below it (EventMappingWidget)
+> row->addFixed(stretchedItem(myFilterPopup), listArea);
+>
+> // NOT this: it would run out to the container's edge instead
+> row->addStretch(stretchedItem(myFilterPopup));
+> ```
+>
+> Filling is right when the cell genuinely *is* the anchor — a progress bar across
+> the dialog, a path field to the right border, a pop-up to the tab edge. The test
+> is the usual one: **what is it ending flush with?** If the answer is another
+> widget, name that widget; if it is the edge you are already in, fill.
+>
+> For **sliders** this case has its own helper, because what must line up is the
+> *track inside* the widget rather than its edge — see `GUI::alignTracks`.
 
 Alignment is per axis, and it is *all* you state:
 
@@ -289,6 +318,16 @@ Rules of thumb:
   need, and that is the only thing about a button a layout has to say. Pass
   `dialog().standardButtonWidth()` as the optional minimum for a group that should
   match the dialog's own buttons rather than shrink-wrap to its labels.
+- **Sliders that must end flush with the pop-up above them** →
+  `GUI::alignTracks({s1, s2, …}, popup)` (add the indent as a third argument if the
+  sliders sit a level in from it). A slider is a *label + track + readout* drawn in
+  one rect, and what lines up down a form is the **track inside it** — which is
+  below the level a layout can see, since a layout only sizes whole widgets. The
+  slider knows what its own label and readout take; what it cannot know is the box
+  it should span. Never compute a track width in a dialog.
+  For two sliders **sharing one row** (a value and its offset, side by side), the
+  other form tiles their tracks across a span:
+  `GUI::alignTracks({scale, shift}, span, gap)`.
 - **How many rows should this list show?** → `ListWidget::calcHeight(font, rows)`
   as the item's `minH`, the same way `EditTextWidget::calcWidth(font, chars)`
   says how wide a field must be. Say what you mean in rows and characters; do not
@@ -751,8 +790,13 @@ Two corollaries:
   formula like `listHeight = h - 3*lineHeight - VBORDER - …` is right for exactly
   one height and silently drifts the moment anything above or below it changes.
   Make it an `addStretch()` item and let it take whatever is left over.
-- **Don't fill self-labeling widgets** (`PopUpWidget`/`SliderWidget`) — anchor
-  them, or their track/value box stretches.
+- **Filling a self-labeling widget** (`PopUpWidget`/`SliderWidget`) stretches its
+  value box / track, so only fill one when its **cell is the thing it must end
+  flush with** (a pop-up handed the list's width). Anchor it otherwise — and never
+  stretch it into a container that is wider than its anchor, or it will chase the
+  container's edge and sail past what it was meant to meet. A slider lining up with
+  a pop-up wants `GUI::alignTracks`, not a fill: what has to meet is the *track*,
+  not the widget's edge.
 - **A widget that shows text loaded LATER must FILL.** A caption filled in by
   `loadConfig()` — a detected controller, a score, a date, an MD5 — must be given
   its width by the layout (`stretchedItem`, or `HAlign::Fill`), and built with no
