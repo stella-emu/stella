@@ -37,9 +37,6 @@ NavigationWidget::NavigationWidget(GuiObject* boss, const GUI::Font& font,
   const GUI::Icon& prevIcon = largeIcon ? GUI::icon_prev_large : GUI::icon_prev_small;
   const GUI::Icon& nextIcon = largeIcon ? GUI::icon_next_large : GUI::icon_next_small;
   const GUI::Icon& upIcon = largeIcon ? GUI::icon_up_large : GUI::icon_up_small;
-  const int iconWidth = homeIcon.width();
-  const int buttonWidth = iconWidth + ((fontWidth + 1) & ~0b1) + 1; // round up to next odd
-  const int buttonHeight = h;
 #ifndef BSPF_MACOS
   const string altKey = "Alt";
 #else
@@ -47,25 +44,25 @@ NavigationWidget::NavigationWidget(GuiObject* boss, const GUI::Font& font,
 #endif
 
   myHomeButton = new ButtonWidget(boss, _font, xpos, ypos,
-    buttonWidth, buttonHeight, homeIcon, FileListWidget::kHomeDirCmd);
+    homeIcon, FileListWidget::kHomeDirCmd);
   myHomeButton->setToolTip("Go back to initial directory. (" + altKey + "+Pos1)");
   boss->addFocusWidget(myHomeButton);
   xpos = myHomeButton->getRight() + BTN_GAP;
 
   myPrevButton = new ButtonWidget(boss, _font, xpos, ypos,
-    buttonWidth, buttonHeight, prevIcon, FileListWidget::kPrevDirCmd);
+    prevIcon, FileListWidget::kPrevDirCmd);
   myPrevButton->setToolTip("Go back in directory history. (" + altKey + "+Left)");
   boss->addFocusWidget(myPrevButton);
   xpos = myPrevButton->getRight() + BTN_GAP;
 
   myNextButton = new ButtonWidget(boss, _font, xpos, ypos,
-    buttonWidth, buttonHeight, nextIcon, FileListWidget::kNextDirCmd);
+    nextIcon, FileListWidget::kNextDirCmd);
   myNextButton->setToolTip("Go forward in directory history. (" + altKey + "+Right)");
   boss->addFocusWidget(myNextButton);
   xpos = myNextButton->getRight() + BTN_GAP;
 
   myUpButton = new ButtonWidget(boss, _font, xpos, ypos,
-    buttonWidth, buttonHeight, upIcon, ListWidget::kParentDirCmd);
+    upIcon, ListWidget::kParentDirCmd);
   myUpButton->setToolTip("Go Up.", Event::UIPrevDir, EventMode::kMenuMode);
   boss->addFocusWidget(myUpButton);
   xpos = myUpButton->getRight() + BTN_GAP;
@@ -91,7 +88,8 @@ void NavigationWidget::layoutChildren()
   myNextButton->setIcon(nextIcon);
   myUpButton->setIcon(upIcon);
 
-  const int buttonWidth = homeIcon.width() + ((fontWidth + 1) & ~0b1) + 1;
+  // setIcon() re-sized each button around its new bitmap, so it knows its width
+  const int buttonWidth = myHomeButton->getWidth();
   int xpos = _x;
   myHomeButton->setArea(xpos, _y, buttonWidth, _h); xpos += buttonWidth + BTN_GAP;
   myPrevButton->setArea(xpos, _y, buttonWidth, _h); xpos += buttonWidth + BTN_GAP;

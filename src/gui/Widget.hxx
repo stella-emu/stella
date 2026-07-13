@@ -384,30 +384,31 @@ class ButtonWidget : public StaticTextWidget
     ButtonWidget(GuiObject* boss, const GUI::Font& font,
                  int x, int y,
                  string_view label, int cmd = 0, bool repeat = false);
+    /**
+      A raw bitmap, at a size you give me.  For the caller that draws its own
+      graphic and must match it to something else (the high scores dialog's
+      prev/next arrows, sized to the pop-up beside them).  An ICON belongs in one
+      of the two below, which need no size at all.
+    */
     ButtonWidget(GuiObject* boss, const GUI::Font& font,
                  int x, int y, int dw, int dh,
                  const uInt32* bitmap, int bmw, int bmh,
                  int cmd = 0, bool repeat = false);
-    ButtonWidget(GuiObject* boss, const GUI::Font& font,
-                 int x, int y, int dw, int dh,
-                 const GUI::Icon& icon,
-                 int cmd = 0, bool repeat = false);
-    ButtonWidget(GuiObject* boss, const GUI::Font& font,
-                 int x, int y, int w, int h,
-                 const GUI::Icon& icon, int bmx,
-                 string_view label,
-                 int cmd = 0, bool repeat= false);
 
     /**
-      Size me from my own icon and label: I am laid out around my bitmap (see
-      drawWidget), so only I can say how much room that needs.  A dialog that
-      swaps my icon for a different one — a larger variant for a larger font, a
-      different state — just calls setIcon(), and I re-size to it.
+      Size me from my own icon, and from my label if I have one: I am laid out
+      around my bitmap (see drawWidget), so only I can say how much room that
+      needs — nobody passes an icon button a size.  A dialog that swaps my icon
+      for a different one — a larger variant for a larger font, a different
+      state — just calls setIcon(), and I re-size to it.
     */
     ButtonWidget(GuiObject* boss, const GUI::Font& font,
                  int x, int y,
-                 const GUI::Icon& icon, int bmx,
-                 string_view label,
+                 const GUI::Icon& icon,
+                 int cmd = 0, bool repeat = false);
+    ButtonWidget(GuiObject* boss, const GUI::Font& font,
+                 int x, int y,
+                 const GUI::Icon& icon, string_view label,
                  int cmd = 0, bool repeat = false);
     ~ButtonWidget() override = default;
 
@@ -437,15 +438,27 @@ class ButtonWidget : public StaticTextWidget
 
     void refreshFontMetrics() override;
 
+  public:
+    // The room a button leaves around its bitmap: an icon-only button centers
+    // its bitmap in this, and an icon-and-label one draws its label after it
+    static int iconGap(const GUI::Font& font)
+    {
+      return ((font.getMaxCharWidth() + 1) & ~0b1) + 1;
+    }
+
   protected:
-    // The width my content needs.  An icon-and-label button is laid out around
+    // The width my content needs: an icon-and-label button is laid out around
     // its bitmap -- a half-gap, the bitmap, a half-gap, then the label (see
-    // drawWidget) -- and a plain one around its label alone
+    // drawWidget); an icon-only one just centers its bitmap; a plain one is
+    // sized by its label alone
     int autoWidth() const
     {
-      return _useBitmap && _useText
+      if(!_useBitmap)
+        return calcWidth(_font, _label);
+
+      return _useText
         ? _bmw + static_cast<int>(_bmx * 1.5) + _font.getStringWidth(_label)
-        : calcWidth(_font, _label);
+        : _bmw + iconGap(_font);
     }
 
   public:

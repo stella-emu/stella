@@ -123,12 +123,6 @@ class DividerWidget : public Widget, public CommandSender
     DividerWidget& operator=(DividerWidget&&) = delete;
 };
 
-// Each of the launcher's icon buttons leaves this much room around its bitmap
-int iconGap(const GUI::Font& font)
-{
-  return ((font.getMaxCharWidth() + 1) & ~0b1) + 1;  // round up to next even
-}
-
 }  // namespace
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -162,7 +156,7 @@ void LauncherDialog::addFilteringWidgets()
 {
   WidgetArray wid;
   // NOLINTBEGIN(cppcoreguidelines-prefer-member-initializer)
-  myReloadButton = new ButtonWidget(this, _font, 0, 0, 1, 1,
+  myReloadButton = new ButtonWidget(this, _font, 0, 0,
                                     GUI::icon_reload_small, kReloadCmd);
   myReloadButton->setToolTip("Reload listing (Ctrl+R)");
   wid.push_back(myReloadButton);
@@ -174,14 +168,14 @@ void LauncherDialog::addFilteringWidgets()
     "Use '*' and '?' as wildcards.");
   wid.push_back(myPattern);
 
-  mySubDirsButton = new ButtonWidget(this, _font, 0, 0, 1, 1,
+  mySubDirsButton = new ButtonWidget(this, _font, 0, 0,
                                      GUI::icon_reload_small, kSubDirsCmd);
   mySubDirsButton->setToolTip("Toggle subdirectories (Ctrl+D)");
   wid.push_back(mySubDirsButton);
 
   myRomCount = new StaticTextWidget(this, _font, 0, 0, "", TextAlign::Right);
 
-  myRandomRomButton = new ButtonWidget(this, _font, 0, 0, 1, 1,
+  myRandomRomButton = new ButtonWidget(this, _font, 0, 0,
                                        GUI::icon_random_small, kLoadRndRomCmd);
 #ifndef BSPF_MACOS
   myRandomRomButton->setToolTip("Load random ROM (Alt+R)");
@@ -191,7 +185,7 @@ void LauncherDialog::addFilteringWidgets()
   wid.push_back(myRandomRomButton);
 
   mySettingsButton = new ButtonWidget(this, _font, 0, 0,
-    GUI::icon_settings_small, iconGap(_font), "Options" + ELLIPSIS, kOptionsCmd);
+    GUI::icon_settings_small, "Options" + ELLIPSIS, kOptionsCmd);
   mySettingsButton->setToolTip("Open Options dialog (Ctrl+O)");
   wid.push_back(mySettingsButton);
 
@@ -208,7 +202,7 @@ void LauncherDialog::addPathWidgets()
   myNavigationBar = new NavigationWidget(this, _font, 0, 0, _w, Dialog::buttonHeight());
 
   // Help icon (variant/size re-picked in layout())
-  myHelpButton = new ButtonWidget(this, _font, 0, 0, 1, 1,
+  myHelpButton = new ButtonWidget(this, _font, 0, 0,
                                   GUI::icon_help_small, kHelpCmd);
   myHelpButton->setToolTip(std::format("Click for help. ({})",
     instance().eventHandler().getMappingDesc(Event::UIHelp, EventMode::kMenuMode)));
@@ -420,16 +414,13 @@ void LauncherDialog::layout()
   const bool bottomButtons = instance().settings().getBool("launcherbuttons");
 
   // The icons come in two sizes; re-pick them here, since a live font change may
-  // have crossed the threshold.  The settings button re-sizes itself around
-  // whichever one it is given; the rest are icon-only and the layout sizes them
+  // have crossed the threshold.  Each button re-sizes itself around the icon it
+  // is given, so nothing here says how wide one is
   const bool largeIcons = _font.isLarge();
   const GUI::Icon& reloadIcon   = largeIcons ? GUI::icon_reload_large   : GUI::icon_reload_small;
   const GUI::Icon& randomIcon   = largeIcons ? GUI::icon_random_large   : GUI::icon_random_small;
   const GUI::Icon& settingsIcon = largeIcons ? GUI::icon_settings_large : GUI::icon_settings_small;
   const GUI::Icon& helpIcon     = largeIcons ? GUI::icon_help_large     : GUI::icon_help_small;
-  const int iconButtonWidth   = reloadIcon.width() + iconGap(_font);
-  const int randomButtonWidth = randomIcon.width() + iconGap(_font);
-  const int helpButtonWidth   = helpIcon.width() + iconGap(_font);
 
   myReloadButton->setIcon(reloadIcon);
   myRandomRomButton->setIcon(randomIcon);
@@ -447,18 +438,18 @@ void LauncherDialog::layout()
   // window minimum ends up being -- which is why everything in it always fits
   const auto makeFilterRow = [&]() {
     auto row = std::make_unique<BoxLayout>(Dir::Horizontal, 0, HBORDER, 0);
-    row->addFixed(widgetItem(myReloadButton), iconButtonWidth);
+    row->addAuto(anchoredItem(myReloadButton));
     row->addSpace(LBL_GAP * 2);
     row->addAuto(anchoredItem(myFilterLabel));
     row->addSpace(LBL_GAP);
     row->addStretch(widgetItem(myPattern, EditTextWidget::calcWidth(_font, "123456")));
     row->addSpace(BTN_GAP);
-    row->addFixed(widgetItem(mySubDirsButton), iconButtonWidth);
+    row->addAuto(anchoredItem(mySubDirsButton));
     row->addSpace(BTN_GAP + LBL_GAP);
     row->addFixed(alignedItem(myRomCount, HAlign::Fill, VAlign::Center),
                   _font.getStringWidth("12345 items found"));
     row->addSpace(LBL_GAP * 2);
-    row->addFixed(widgetItem(myRandomRomButton), randomButtonWidth);
+    row->addAuto(anchoredItem(myRandomRomButton));
     row->addSpace(BTN_GAP);
     row->addAuto(anchoredItem(mySettingsButton));
     return row;
@@ -470,7 +461,7 @@ void LauncherDialog::layout()
     auto row = std::make_unique<BoxLayout>(Dir::Horizontal, BTN_GAP, HBORDER, 0);
     row->addStretch(widgetItem(myNavigationBar, MIN_LAUNCHER_CHARS * fontWidth));
     if(myHelpButton)
-      row->addFixed(widgetItem(myHelpButton), helpButtonWidth);
+      row->addAuto(anchoredItem(myHelpButton));
     return row;
   };
 

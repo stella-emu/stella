@@ -56,6 +56,7 @@ knowledge belongs one level down — in the engine, or in the widget itself:
 | a column that matches a sibling's `x` | a shared `GridLayout` track (`columnAuto`) |
 | arithmetic keeping two groups in step | a stretch that absorbs the slack |
 | a button's width, from its label | nothing — the button sizes itself; a *group* of them, `GUI::alignButtons` |
+| a button's width, from its icon | nothing — pass it the icon; `setIcon()` re-sizes it too |
 | a pop-up's width, from its items | nothing — pass it the items and let it size itself |
 | a width for a caption that shows *loaded* text | nothing — **fill it**; the layout owns its width (see below) |
 

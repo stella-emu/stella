@@ -746,40 +746,30 @@ ButtonWidget::ButtonWidget(GuiObject* boss, const GUI::Font& font,
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ButtonWidget::ButtonWidget(GuiObject* boss, const GUI::Font& font,
-                           int x, int y, int w, int h,
+                           int x, int y,
                            const GUI::Icon& icon,
                            int cmd, bool repeat)
-  : ButtonWidget(boss, font, x, y, w, h,
+  : ButtonWidget(boss, font, x, y, icon.width() + iconGap(font), calcHeight(font),
                  icon.bitmap(), icon.width(), icon.height(), cmd, repeat)
 {
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-ButtonWidget::ButtonWidget(GuiObject* boss, const GUI::Font& font,
-                           int x, int y, int w, int h,
-                           const GUI::Icon& icon, int bmx,
-                           string_view label,
-                           int cmd, bool repeat)
-  : ButtonWidget(boss, font, x, y, w + bmx * 1.5 + font.getStringWidth(label), h,
-                 label, cmd, repeat)
-{
-  _useBitmap = true;
-  _bitmap = icon.bitmap();
-  _bmw = icon.width();
-  _bmh = icon.height();
-  _bmx = bmx;
-  _align = TextAlign::Left;
+  _autoSize = true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ButtonWidget::ButtonWidget(GuiObject* boss, const GUI::Font& font,
                            int x, int y,
-                           const GUI::Icon& icon, int bmx,
-                           string_view label,
+                           const GUI::Icon& icon, string_view label,
                            int cmd, bool repeat)
-  : ButtonWidget(boss, font, x, y, icon.width(), calcHeight(font),
-                 icon, bmx, label, cmd, repeat)
+  : ButtonWidget(boss, font, x, y,
+                 icon.width() + iconGap(font) * 1.5 + font.getStringWidth(label),
+                 calcHeight(font), label, cmd, repeat)
 {
+  _useBitmap = true;
+  _bitmap = icon.bitmap();
+  _bmw = icon.width();
+  _bmh = icon.height();
+  _bmx = iconGap(font);
+  _align = TextAlign::Left;
   _autoSize = true;
 }
 
