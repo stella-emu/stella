@@ -130,21 +130,23 @@
       saving to correct directories with non-ASCII filenames
       (issue #1051, #1054, #1084, #1133)
     - Added a native Windows on ARM port
+    - Visual Studio 2026 Community Edition now required for C++23
 
   * For the Mac port:
     - Minimum OS version is macOS 26, and compilation requires Xcode 26;
       future releases will likely be ARM-only
     - AboutBox removed; going forward, all UI's will be in Stella directly
     - ROM drag-and-drop onto the Stella app icon now supported
+    - Xcode 26.0 now required for C++23
 
   * For the Linux/UNIX port:
-    - Minimum supported compilers are g++-13 and Clang 19
     - XDGPaths class added; centralizes home/appdir resolution following
       XDG spec
     - Implemented -baseinappdir (previously Windows-only feature)
     - Wayland/HiDPI improvements due to SDL3
     - Restore printing from -help to not use paging; instead the user
       can pipe through less, as expected by most UNIX apps (issue #962)
+    - g++-13 or clang 19 now required for C++23
 
   * For the libretro port:
     - RetroAchievements; basic support added
@@ -165,6 +167,9 @@
   * Removed R77 port; SDL3 not supported on that platform.
 
   * Updated included libraries (libpng, zlib, etc) to latest stable version.
+
+  * Codebase now uses C++23 features; minimum required compilers are listed
+    above.
 
 -Have fun!
 

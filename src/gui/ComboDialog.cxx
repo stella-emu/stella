@@ -92,13 +92,13 @@ void ComboDialog::loadConfig()
 {
   StringList events = instance().eventHandler().getComboListForEvent(myComboEvent);
 
-  const size_t size = std::min<size_t>(events.size(), 8);
-  for(size_t i = 0; i < size; ++i)
+  const auto size = std::min(events.size(), 8uz);
+  for(auto i = 0uz; i < size; ++i)
     myEvents[i]->setSelected("", events[i]);
 
   // Fill any remaining items to 'None'
   if(size < 8)
-    for(size_t i = size; i < 8; ++i)
+    for(auto i = size; i < 8; ++i)
       myEvents[i]->setSelected("None", "-1");
 }
 

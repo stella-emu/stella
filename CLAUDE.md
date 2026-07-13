@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project
 
-Stella is an Atari 2600 VCS emulator written in C++20, targeting Linux, macOS, and Windows via SDL3.
+Stella is an Atari 2600 VCS emulator written in C++23, targeting Linux, macOS, and Windows via SDL3.
 
 ## Build System
 
@@ -65,7 +65,7 @@ Stella is a classic emulation architecture centered on `OSystem` owning everythi
 
 ## Code Conventions
 
-- C++20; warnings treated as errors in CI (`-Wall -Wextra -Wunused -Woverloaded-virtual`)
+- C++23; warnings treated as errors in CI (`-Wall -Wextra -Wunused -Woverloaded-virtual`)
 - Tabs for indentation (width 2 per VSCode config)
 - Headers use `.hxx`, sources use `.cxx`
 - New devices/cartridges must register with `System::resetDevice` and implement `peek`/`poke`

@@ -80,8 +80,8 @@ void JPGLibrary::loadImage(string_view filename, FBSurface& surface,
   // Read the entire image in one go
   const auto width  = static_cast<uInt32>(njGetWidth());
   const auto height = static_cast<uInt32>(njGetHeight());
-  const bool   isColor       = njIsColor() != 0;
-  const size_t bytesPerPixel = isColor ? 3 : 1;
+  const bool isColor       = njIsColor() != 0;
+  const auto bytesPerPixel = isColor ? 3uz : 1uz;
 
   // njGetImage() points into nanojpeg's internal buffer — no extra copy needed
   const ByteSpan pixels{ njGetImage(),
@@ -98,8 +98,8 @@ void JPGLibrary::loadImage(string_view filename, FBSurface& surface,
   surface.basePtr(s_buf, s_pitch);
 
   const FrameBuffer& fb = myOSystem.frameBuffer();
-  const size_t  i_pitch = static_cast<size_t>(width) * bytesPerPixel;
-  const uInt8*  i_buf   = pixels.data();
+  const size_t i_pitch = static_cast<size_t>(width) * bytesPerPixel;
+  const uInt8* i_buf   = pixels.data();
 
   // Get the shift values for each colour component
   const uInt32 rShift = std::countr_zero(fb.rMask());

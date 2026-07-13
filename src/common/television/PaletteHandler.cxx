@@ -372,7 +372,7 @@ PaletteArray PaletteHandler::adjustedPalette(const PaletteArray& palette) const
     adjust[i] = powf(i * toFloat, gamma) * contrast + brightness;
 
   // Transform original palette into destination palette
-  for(size_t i = 0; i < destPalette.size(); i += 2)
+  for(auto i = 0uz; i < destPalette.size(); i += 2)
   {
     const uInt32 pixel = palette[i];
     int r = (pixel >> 16) & 0xff;

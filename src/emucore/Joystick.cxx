@@ -77,7 +77,7 @@ void Joystick::updateFire(bool bothButtonsFire)
   // controller, the mouse button(s) that also trigger it, so each can change
   // the button within the input window instead of latching a static aggregate.
   std::array<Event::Type, MAX_PIN_EVENTS> fire{myFireEvent};
-  size_t n = 1;
+  auto n = 1uz;
   if(myControlID > -1)
   {
     fire[n++] = Event::MouseButtonLeftValue;

@@ -45,7 +45,7 @@ void CartridgeDevCard::install(System& system)
 
   System::PageAccess access(this, System::PageAccessType::READWRITE);
 
-  for(size_t win = 0; win < NUM_WINDOWS; ++win)
+  for(auto win = 0uz; win < NUM_WINDOWS; ++win)
   {
     const auto winBase = static_cast<uInt32>(win * WINDOW_SIZE);
     for(uInt32 addr = WINDOWS[win]; addr < WINDOWS[win] + WINDOW_SIZE;
