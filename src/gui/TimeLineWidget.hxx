@@ -23,10 +23,6 @@
 class TimeLineWidget : public ButtonWidget
 {
   public:
-    TimeLineWidget(GuiObject* boss, const GUI::Font& font,
-                   int x, int y, int w, int h, string_view label = "",
-                   uInt32 labelWidth = 0, int cmd = 0);
-
     /**
       Take this width; my height is my own business.  I am a scrubber bar — half
       a line of text, plus room for the handle to stand proud of it — and being

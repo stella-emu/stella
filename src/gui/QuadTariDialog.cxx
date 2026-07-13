@@ -37,7 +37,6 @@ QuadTariDialog::QuadTariDialog(GuiObject* boss, const GUI::Font& font,
     myGameProperties{properties}
 {
   const GUI::Font& ifont = instance().frameBuffer().infoFont();
-  const int lineHeight = Dialog::lineHeight();
   WidgetArray wid;
   VariantList ctrls;
 
@@ -76,18 +75,18 @@ QuadTariDialog::QuadTariDialog(GuiObject* boss, const GUI::Font& font,
   };
 
   myLeftPortLabel = new StaticTextWidget(this, font, 0, 0, "Left port");
-  myLeft1Port = new PopUpWidget(this, font, 0, 0, pwidth, lineHeight, ctrls, "P1");
+  myLeft1Port = new PopUpWidget(this, font, 0, 0, pwidth, ctrls, "P1");
   wid.push_back(myLeft1Port);
   myLeft1PortDetected = detectedLabel();
-  myLeft2Port = new PopUpWidget(this, font, 0, 0, pwidth, lineHeight, ctrls, "P3");
+  myLeft2Port = new PopUpWidget(this, font, 0, 0, pwidth, ctrls, "P3");
   wid.push_back(myLeft2Port);
   myLeft2PortDetected = detectedLabel();
 
   myRightPortLabel = new StaticTextWidget(this, font, 0, 0, "Right port");
-  myRight1Port = new PopUpWidget(this, font, 0, 0, pwidth, lineHeight, ctrls, "P2");
+  myRight1Port = new PopUpWidget(this, font, 0, 0, pwidth, ctrls, "P2");
   wid.push_back(myRight1Port);
   myRight1PortDetected = detectedLabel();
-  myRight2Port = new PopUpWidget(this, font, 0, 0, pwidth, lineHeight, ctrls, "P4");
+  myRight2Port = new PopUpWidget(this, font, 0, 0, pwidth, ctrls, "P4");
   wid.push_back(myRight2Port);
   myRight2PortDetected = detectedLabel();
 
