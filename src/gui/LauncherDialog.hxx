@@ -130,6 +130,8 @@ class LauncherDialog : public Dialog, CommandSender
     // Clamp a desired ROM info column width to keep both the list usable
     // (horizontal) and the image + text fitting in the column (vertical)
     int clampRomInfoWidth(int imageWidth, int colHeight) const;
+    void showRomWidgets(bool show);
+    void updateRomCount();
     // These create the widgets and their non-geometry state (tooltips, focus
     // order, structural choices); layout() assigns all geometry
     void addFilteringWidgets();
@@ -229,7 +231,6 @@ class LauncherDialog : public Dialog, CommandSender
 
     bool myShowRomInfo{false};
     bool myEventHandled{false};
-    bool myShortCount{false};
     bool myPendingReload{false};
     uInt64 myReloadTime{0};
     bool myPendingRomInfo{false};

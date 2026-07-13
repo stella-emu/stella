@@ -123,6 +123,12 @@ class DividerWidget : public Widget, public CommandSender
     DividerWidget& operator=(DividerWidget&&) = delete;
 };
 
+// Each of the launcher's icon buttons leaves this much room around its bitmap
+int iconGap(const GUI::Font& font)
+{
+  return ((font.getMaxCharWidth() + 1) & ~0b1) + 1;  // round up to next even
+}
+
 }  // namespace
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -154,39 +160,6 @@ LauncherDialog::~LauncherDialog() = default;
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void LauncherDialog::addFilteringWidgets()
 {
-  if(_w < 640)
-    return;
-
-  const int fontWidth = Dialog::fontWidth();
-  const int HBORDER   = Dialog::hBorder();
-  const int LBL_GAP   = fontWidth;
-  const int btnGap    = fontWidth / 4;
-  const bool smallIcon = Dialog::lineHeight() < 26;
-  const int iconGap = ((fontWidth + 1) & ~0b1) + 1;  // round up to next even
-
-  // Decide (from the initial width) whether the "Filter" label fits and whether
-  // the item counter must be shortened; layout() assigns all actual geometry
-  const int iconButtonWidth =
-    (smallIcon ? GUI::icon_reload_small : GUI::icon_reload_large).width() + iconGap;
-  const int randomButtonWidth =
-    (smallIcon ? GUI::icon_random_small : GUI::icon_random_large).width() + iconGap;
-  const int bwSettings =
-    iconButtonWidth + _font.getStringWidth("Options" + ELLIPSIS) + btnGap * 2 + 1;
-  int lwFilter = _font.getStringWidth("Filter");
-  int lwFound  = _font.getStringWidth("12345 items found");
-  const int fwFilter = EditTextWidget::calcWidth(_font, "123456");  // at least 6 chars
-  int wTotal = HBORDER * 2 + iconButtonWidth * 2 + randomButtonWidth + lwFilter
-    + fwFilter + lwFound + bwSettings + LBL_GAP * 5 + btnGap * 3;
-  if(_w < wTotal)
-  {
-    wTotal -= lwFound;
-    myShortCount = true;
-    lwFound = _font.getStringWidth("12345 items");
-    wTotal += lwFound;
-  }
-  if(_w < wTotal)
-    lwFilter = 0;
-
   WidgetArray wid;
   // NOLINTBEGIN(cppcoreguidelines-prefer-member-initializer)
   myReloadButton = new ButtonWidget(this, _font, 0, 0, 1, 1,
@@ -194,9 +167,7 @@ void LauncherDialog::addFilteringWidgets()
   myReloadButton->setToolTip("Reload listing (Ctrl+R)");
   wid.push_back(myReloadButton);
 
-  if(lwFilter)
-    myFilterLabel = new StaticTextWidget(this, _font, 0, 0, 1, Dialog::fontHeight(),
-                                         "Filter");
+  myFilterLabel = new StaticTextWidget(this, _font, 0, 0, "Filter");
 
   myPattern = new EditTextWidget(this, _font, 0, 0, 1, "");
   myPattern->setToolTip("Enter filter text to reduce file list.\n"
@@ -208,8 +179,7 @@ void LauncherDialog::addFilteringWidgets()
   mySubDirsButton->setToolTip("Toggle subdirectories (Ctrl+D)");
   wid.push_back(mySubDirsButton);
 
-  myRomCount = new StaticTextWidget(this, _font, 0, 0, 1, Dialog::fontHeight(),
-                                    "", TextAlign::Right);
+  myRomCount = new StaticTextWidget(this, _font, 0, 0, "", TextAlign::Right);
 
   myRandomRomButton = new ButtonWidget(this, _font, 0, 0, 1, 1,
                                        GUI::icon_random_small, kLoadRndRomCmd);
@@ -220,8 +190,8 @@ void LauncherDialog::addFilteringWidgets()
 #endif
   wid.push_back(myRandomRomButton);
 
-  mySettingsButton = new ButtonWidget(this, _font, 0, 0, 1, 1,
-    GUI::icon_settings_small, iconGap, "Options" + ELLIPSIS, kOptionsCmd);
+  mySettingsButton = new ButtonWidget(this, _font, 0, 0,
+    GUI::icon_settings_small, iconGap(_font), "Options" + ELLIPSIS, kOptionsCmd);
   mySettingsButton->setToolTip("Open Options dialog (Ctrl+O)");
   wid.push_back(mySettingsButton);
 
@@ -347,6 +317,43 @@ void LauncherDialog::addButtonWidgets()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void LauncherDialog::showRomWidgets(bool show)
+{
+  if(!myRomImageWidget || !myRomInfoWidget)
+    return;
+
+  if(show)
+  {
+    myRomImageWidget->clearFlags(Widget::FLAG_INVISIBLE);
+    myRomInfoWidget->clearFlags(Widget::FLAG_INVISIBLE);
+    if(myDivider)
+      myDivider->clearFlags(Widget::FLAG_INVISIBLE);
+  }
+  else
+  {
+    // Hiding them is not enough: findWidgetInList() is bounds-only and does not
+    // skip invisible widgets, so they would still take the clicks meant for the
+    // full-width list.  Move them off-screen too
+    myRomImageWidget->setPos(_w, 0);
+    myRomImageWidget->setFlags(Widget::FLAG_INVISIBLE);
+    myRomInfoWidget->setPos(_w, 0);
+    myRomInfoWidget->setFlags(Widget::FLAG_INVISIBLE);
+    if(myDivider)
+    {
+      myDivider->setPos(_w, 0);
+      myDivider->setFlags(Widget::FLAG_INVISIBLE);
+    }
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void LauncherDialog::updateRomCount()
+{
+  myRomCount->setLabel(std::format("{} items found",
+    myList->getList().size() - (currentDir().hasParent() ? 1 : 0)));
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 int LauncherDialog::clampRomInfoWidth(int imageWidth, int colHeight) const
 {
   const int fontWidth  = Dialog::fontWidth();
@@ -396,6 +403,7 @@ void LauncherDialog::layout()
   using GUI::BoxLayout;
   using GUI::widgetItem;
   using GUI::alignedItem;
+  using GUI::anchoredItem;
   using GUI::HAlign;
   using GUI::VAlign;
   using Dir = BoxLayout::Dir;
@@ -411,21 +419,17 @@ void LauncherDialog::layout()
   const int BTN_GAP      = fontWidth / 4;
   const bool bottomButtons = instance().settings().getBool("launcherbuttons");
 
-  // Icon-button sizes and variants are font-dependent, so (re)compute them here
-  // rather than reading each widget's intrinsic width; this keeps a runtime
-  // font change correct, not just window resizes.  The icons are also re-picked
-  // in case the font height crossed the small/large threshold.
-  const bool smallIcon = lineHeight < 26;
-  const int iconGap = ((fontWidth + 1) & ~0b1) + 1;  // round up to next even
-  const GUI::Icon& reloadIcon   = smallIcon ? GUI::icon_reload_small   : GUI::icon_reload_large;
-  const GUI::Icon& randomIcon   = smallIcon ? GUI::icon_random_small   : GUI::icon_random_large;
-  const GUI::Icon& settingsIcon = smallIcon ? GUI::icon_settings_small : GUI::icon_settings_large;
-  const GUI::Icon& helpIcon     = smallIcon ? GUI::icon_help_small     : GUI::icon_help_large;
-  const int iconButtonWidth   = reloadIcon.width() + iconGap;
-  const int randomButtonWidth = randomIcon.width() + iconGap;
-  const int helpButtonWidth   = helpIcon.width() + iconGap;
-  const int bwSettings = iconButtonWidth
-    + _font.getStringWidth("Options" + ELLIPSIS) + BTN_GAP * 2 + 1;
+  // The icons come in two sizes; re-pick them here, since a live font change may
+  // have crossed the threshold.  The settings button re-sizes itself around
+  // whichever one it is given; the rest are icon-only and the layout sizes them
+  const bool largeIcons = _font.isLarge();
+  const GUI::Icon& reloadIcon   = largeIcons ? GUI::icon_reload_large   : GUI::icon_reload_small;
+  const GUI::Icon& randomIcon   = largeIcons ? GUI::icon_random_large   : GUI::icon_random_small;
+  const GUI::Icon& settingsIcon = largeIcons ? GUI::icon_settings_large : GUI::icon_settings_small;
+  const GUI::Icon& helpIcon     = largeIcons ? GUI::icon_help_large     : GUI::icon_help_small;
+  const int iconButtonWidth   = reloadIcon.width() + iconGap(_font);
+  const int randomButtonWidth = randomIcon.width() + iconGap(_font);
+  const int helpButtonWidth   = helpIcon.width() + iconGap(_font);
 
   myReloadButton->setIcon(reloadIcon);
   myRandomRomButton->setIcon(randomIcon);
@@ -435,124 +439,122 @@ void LauncherDialog::layout()
   // The subdirs button shows the current on/off state in the matching variant
   const bool subdirs = instance().settings().getBool("launchersubdirs");
   mySubDirsButton->setIcon(subdirs
-    ? (smallIcon ? GUI::icon_subdirs_small_on  : GUI::icon_subdirs_large_on)
-    : (smallIcon ? GUI::icon_subdirs_small_off : GUI::icon_subdirs_large_off));
+    ? (largeIcons ? GUI::icon_subdirs_large_on  : GUI::icon_subdirs_small_on)
+    : (largeIcons ? GUI::icon_subdirs_large_off : GUI::icon_subdirs_small_off));
+
+  // Filtering row: the filter field absorbs the slack; everything else packs
+  // around it.  This row is the widest thing in the dialog, so it is what the
+  // window minimum ends up being -- which is why everything in it always fits
+  const auto makeFilterRow = [&]() {
+    auto row = std::make_unique<BoxLayout>(Dir::Horizontal, 0, HBORDER, 0);
+    row->addFixed(widgetItem(myReloadButton), iconButtonWidth);
+    row->addSpace(LBL_GAP * 2);
+    row->addAuto(anchoredItem(myFilterLabel));
+    row->addSpace(LBL_GAP);
+    row->addStretch(widgetItem(myPattern, EditTextWidget::calcWidth(_font, "123456")));
+    row->addSpace(BTN_GAP);
+    row->addFixed(widgetItem(mySubDirsButton), iconButtonWidth);
+    row->addSpace(BTN_GAP + LBL_GAP);
+    row->addFixed(alignedItem(myRomCount, HAlign::Fill, VAlign::Center),
+                  _font.getStringWidth("12345 items found"));
+    row->addSpace(LBL_GAP * 2);
+    row->addFixed(widgetItem(myRandomRomButton), randomButtonWidth);
+    row->addSpace(BTN_GAP);
+    row->addAuto(anchoredItem(mySettingsButton));
+    return row;
+  };
 
   // Path / navigation row: the bar fills the width, the help button anchors
   // to the right
-  auto pathRow = std::make_unique<BoxLayout>(Dir::Horizontal, BTN_GAP, HBORDER, 0);
-  pathRow->addStretch(widgetItem(myNavigationBar, MIN_LAUNCHER_CHARS * fontWidth));
-  if(myHelpButton)
-    pathRow->addFixed(widgetItem(myHelpButton), helpButtonWidth);
-
-  // Filtering row: the filter field absorbs the slack; everything else is
-  // fixed and packs around it
-  const int lwFound = _font.getStringWidth(myShortCount ? "12345 items" : "12345 items found");
-  auto filterRow = std::make_unique<BoxLayout>(Dir::Horizontal, 0, HBORDER, 0);
-  filterRow->addFixed(widgetItem(myReloadButton), iconButtonWidth);
-  filterRow->addSpace(LBL_GAP * 2);
-  if(myFilterLabel)
-  {
-    filterRow->addFixed(alignedItem(myFilterLabel, HAlign::Fill, VAlign::Center),
-                        _font.getStringWidth(myFilterLabel->getLabel()));
-    filterRow->addSpace(LBL_GAP);
-  }
-  filterRow->addStretch(widgetItem(myPattern, EditTextWidget::calcWidth(_font, "123456")));
-  filterRow->addSpace(BTN_GAP);
-  filterRow->addFixed(widgetItem(mySubDirsButton), iconButtonWidth);
-  filterRow->addSpace(BTN_GAP + LBL_GAP);
-  filterRow->addFixed(alignedItem(myRomCount, HAlign::Fill, VAlign::Center), lwFound);
-  filterRow->addSpace(LBL_GAP * 2);
-  filterRow->addFixed(widgetItem(myRandomRomButton), randomButtonWidth);
-  filterRow->addSpace(BTN_GAP);
-  filterRow->addFixed(widgetItem(mySettingsButton), bwSettings);
-
-  // Main row: the ROM list, plus an optional ROM info column (divider + image
-  // over info text).  The column width is a fraction of the content width so
-  // it scales with the window, clamped to keep both list and image usable.
-  const int contentW = _w - HBORDER * 2;
-  const int fixedRowCount = bottomButtons ? 3 : 2;
-  const int gapCount      = bottomButtons ? 3 : 2;
-  const int mainH = (_h - vBorder * 2) - fixedRowCount * buttonHeight
-                  - gapCount * rowGap;
-
-  const bool showRom = myShowRomInfo && myRomImageWidget && myRomInfoWidget;
-  const int imageWidth = showRom
-    ? clampRomInfoWidth(static_cast<int>(std::round(myRomInfoFraction * contentW)),
-                        mainH)
-    : 0;
-
-  auto mainRow = std::make_unique<BoxLayout>(Dir::Horizontal, 0, HBORDER, 0);
-  mainRow->addStretch(widgetItem(myList, MIN_LAUNCHER_CHARS * fontWidth, lineHeight * 3));
-  if(showRom && imageWidth > 0)
-  {
-    mainRow->addFixed(widgetItem(myDivider), fontWidth);
-
-    // The image cell and the column are fixed at the current (fraction- and
-    // clamp-derived) width, but both compress as the window shrinks: declare
-    // their floors so minSize() reports a size-independent minimum
-    const int minRomW = MIN_ROMINFO_CHARS * fontWidth;
-    const int labelHeight = RomImageWidget::labelHeight(*myROMInfoFont);
-    const int imageHeight = imageWidth + labelHeight;
-    auto romCol = std::make_unique<BoxLayout>(Dir::Vertical);
-    romCol->addFixed(widgetItem(myRomImageWidget, minRomW), imageHeight,
-                     minRomW + labelHeight);
-    romCol->addSpace(myROMInfoFont->getFontHeight() / 2);
-    romCol->addStretch(widgetItem(myRomInfoWidget, minRomW, fontHeight * 2));
-    mainRow->addFixed(std::move(romCol), imageWidth, minRomW);
-
-    myRomImageWidget->clearFlags(Widget::FLAG_INVISIBLE);
-    myRomInfoWidget->clearFlags(Widget::FLAG_INVISIBLE);
-    myDivider->clearFlags(Widget::FLAG_INVISIBLE);
-  }
-  else if(myRomImageWidget && myRomInfoWidget)
-  {
-    // Viewer disabled: hide its widgets and move them off-screen so they
-    // receive no mouse events (findWidgetInList() is bounds-only and does not
-    // skip invisible widgets); the full-width list then handles clicks there
-    myRomImageWidget->setPos(_w, 0);
-    myRomImageWidget->setFlags(Widget::FLAG_INVISIBLE);
-    myRomInfoWidget->setPos(_w, 0);
-    myRomInfoWidget->setFlags(Widget::FLAG_INVISIBLE);
-    if(myDivider)
-    {
-      myDivider->setPos(_w, 0);
-      myDivider->setFlags(Widget::FLAG_INVISIBLE);
-    }
-  }
+  const auto makePathRow = [&]() {
+    auto row = std::make_unique<BoxLayout>(Dir::Horizontal, BTN_GAP, HBORDER, 0);
+    row->addStretch(widgetItem(myNavigationBar, MIN_LAUNCHER_CHARS * fontWidth));
+    if(myHelpButton)
+      row->addFixed(widgetItem(myHelpButton), helpButtonWidth);
+    return row;
+  };
 
   // Bottom button row (optional): four equal-width buttons
-  unique_ptr<BoxLayout> buttonRow;
-  if(bottomButtons && myStartButton && myGoUpButton && myOptionsButton && myQuitButton)
-  {
-    buttonRow = std::make_unique<BoxLayout>(Dir::Horizontal, Dialog::buttonGap(),
-                                            HBORDER, 0);
+  const bool hasButtonRow = bottomButtons && myStartButton && myGoUpButton
+                         && myOptionsButton && myQuitButton;
+  const auto makeButtonRow = [&]() {
+    auto row = std::make_unique<BoxLayout>(Dir::Horizontal, Dialog::buttonGap(),
+                                           HBORDER, 0);
 #ifndef BSPF_MACOS
-    buttonRow->addStretch(widgetItem(myStartButton));
-    buttonRow->addStretch(widgetItem(myGoUpButton));
-    buttonRow->addStretch(widgetItem(myOptionsButton));
-    buttonRow->addStretch(widgetItem(myQuitButton));
+    row->addStretch(widgetItem(myStartButton));
+    row->addStretch(widgetItem(myGoUpButton));
+    row->addStretch(widgetItem(myOptionsButton));
+    row->addStretch(widgetItem(myQuitButton));
 #else
-    buttonRow->addStretch(widgetItem(myQuitButton));
-    buttonRow->addStretch(widgetItem(myOptionsButton));
-    buttonRow->addStretch(widgetItem(myGoUpButton));
-    buttonRow->addStretch(widgetItem(myStartButton));
+    row->addStretch(widgetItem(myQuitButton));
+    row->addStretch(widgetItem(myOptionsButton));
+    row->addStretch(widgetItem(myGoUpButton));
+    row->addStretch(widgetItem(myStartButton));
 #endif
-  }
+    return row;
+  };
 
-  // Assemble the vertical stack and apply it to the whole dialog
-  auto root = std::make_unique<BoxLayout>(Dir::Vertical, 0, 0, vBorder);
-  root->addFixed(std::move(pathRow), buttonHeight);
-  root->addSpace(rowGap);
-  root->addFixed(std::move(filterRow), buttonHeight);
-  root->addSpace(rowGap);
-  root->addStretch(std::move(mainRow));
-  if(buttonRow)
+  // Main row: the ROM list, plus an optional ROM info column (divider + image
+  // over info text).  The column width is a fraction of the content width so it
+  // scales with the window, clamped to keep both list and image usable
+  const bool showRom = myShowRomInfo && myRomImageWidget && myRomInfoWidget;
+  const int minRomW = MIN_ROMINFO_CHARS * fontWidth;
+
+  const auto makeMainRow = [&](int imageWidth) {
+    auto row = std::make_unique<BoxLayout>(Dir::Horizontal, 0, HBORDER, 0);
+    row->addStretch(widgetItem(myList, MIN_LAUNCHER_CHARS * fontWidth,
+                               lineHeight * 3));
+    if(imageWidth > 0)
+    {
+      row->addFixed(widgetItem(myDivider), fontWidth);
+
+      // The image cell and the column are fixed at the current (fraction- and
+      // clamp-derived) width, but both compress as the window shrinks: declare
+      // their floors so minSize() reports a size-independent minimum
+      const int labelHeight = RomImageWidget::labelHeight(*myROMInfoFont);
+      auto romCol = std::make_unique<BoxLayout>(Dir::Vertical);
+      romCol->addFixed(widgetItem(myRomImageWidget, minRomW),
+                       imageWidth + labelHeight, minRomW + labelHeight);
+      romCol->addSpace(myROMInfoFont->getFontHeight() / 2);
+      romCol->addStretch(widgetItem(myRomInfoWidget, minRomW, fontHeight * 2));
+      row->addFixed(std::move(romCol), imageWidth, minRomW);
+    }
+    return row;
+  };
+
+  // Assemble the vertical stack; the main row takes whatever the others leave
+  const auto makeRoot = [&](int imageWidth) {
+    auto stack = std::make_unique<BoxLayout>(Dir::Vertical, 0, 0, vBorder);
+    stack->addFixed(makePathRow(), buttonHeight);
+    stack->addSpace(rowGap);
+    stack->addFixed(makeFilterRow(), buttonHeight);
+    stack->addSpace(rowGap);
+    stack->addStretch(makeMainRow(imageWidth));
+    if(hasButtonRow)
+    {
+      stack->addSpace(rowGap);
+      stack->addFixed(makeButtonRow(), buttonHeight);
+    }
+    return stack;
+  };
+
+  // The ROM image is square, so how WIDE the column may be depends on how TALL
+  // the main row is -- and only the layout knows that.  So lay the stack out
+  // once with the list alone, ask the list what height it was given, and lay it
+  // out again for real.  (The ROM widgets are not in that first pass, so nothing
+  // rescales an image for it.)
+  int imageWidth = 0;
+  if(showRom)
   {
-    root->addSpace(rowGap);
-    root->addFixed(std::move(buttonRow), buttonHeight);
+    makeRoot(0)->doLayout(0, 0, _w, _h);
+    imageWidth = clampRomInfoWidth(
+        static_cast<int>(std::round(myRomInfoFraction * (_w - HBORDER * 2))),
+        myList->getHeight());
   }
 
+  showRomWidgets(imageWidth > 0);
+
+  auto root = makeRoot(imageWidth);
   root->doLayout(0, 0, _w, _h);
 
   // The layout tree also yields the minimum content size (from the items'
@@ -705,9 +707,7 @@ void LauncherDialog::updateUI()
   myNavigationBar->updateUI();
 
   // Indicate how many files were found
-  myRomCount->setLabel(std::format("{} {}",
-    myList->getList().size() - (currentDir().hasParent() ? 1 : 0),
-    myShortCount ? "items" : "items found"));
+  updateRomCount();
 
   loadRomInfo();
 }
@@ -1455,15 +1455,11 @@ void LauncherDialog::toggleSubDirs(bool toggle)
     instance().settings().setValue("launchersubdirs", subdirs);
   }
 
-  if(mySubDirsButton)
-  {
-    const bool smallIcon = Dialog::lineHeight() < 26;
-    const GUI::Icon& subdirsIcon = subdirs
-      ? smallIcon ? GUI::icon_subdirs_small_on : GUI::icon_subdirs_large_on
-      : smallIcon ? GUI::icon_subdirs_small_off : GUI::icon_subdirs_large_off;
+  const bool largeIcons = _font.isLarge();
+  mySubDirsButton->setIcon(subdirs
+    ? (largeIcons ? GUI::icon_subdirs_large_on  : GUI::icon_subdirs_small_on)
+    : (largeIcons ? GUI::icon_subdirs_large_off : GUI::icon_subdirs_small_off));
 
-    mySubDirsButton->setIcon(subdirsIcon);
-  }
   myList->setIncludeSubDirs(subdirs);
   if(toggle)
     reload();

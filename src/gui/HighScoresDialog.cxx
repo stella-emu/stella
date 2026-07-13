@@ -127,8 +127,8 @@ HighScoresDialog::HighScoresDialog(OSystem& osystem, DialogContainer& parent,
   const GUI::Font& ifont = instance().frameBuffer().infoFont();
   const int fontWidth = Dialog::fontWidth();
   const int bWidth = fontWidth * 5;
-  const bool smallFont = _font.getFontHeight() < 24;
-  const int buttonSize = smallFont ? BUTTON_GFX_H : BUTTON_GFX_H_LARGE;
+  const bool largeFont = _font.isLarge();
+  const int buttonSize = largeFont ? BUTTON_GFX_H_LARGE : BUTTON_GFX_H;
   const int numRanks = static_cast<int>(NUM_RANKS);
   const VariantList items;
   WidgetArray wid;
@@ -145,11 +145,11 @@ HighScoresDialog::HighScoresDialog(OSystem& osystem, DialogContainer& parent,
       fontWidth * HSM::MAX_VARIATION_DIGITS, items, "", 0, kVariationChanged);
   wid.push_back(myVariationPopup);
   myPrevVarButton = new ButtonWidget(this, _font, 0, 0, bWidth, myVariationPopup->getHeight(),
-      smallFont ? PREV_GFX.data() : PREV_GFX_LARGE.data(),
+      largeFont ? PREV_GFX_LARGE.data() : PREV_GFX.data(),
       buttonSize, buttonSize, kPrevVariation);
   wid.push_back(myPrevVarButton);
   myNextVarButton = new ButtonWidget(this, _font, 0, 0, bWidth, myVariationPopup->getHeight(),
-      smallFont ? NEXT_GFX.data() : NEXT_GFX_LARGE.data(),
+      largeFont ? NEXT_GFX_LARGE.data() : NEXT_GFX.data(),
       buttonSize, buttonSize, kNextVariation);
   wid.push_back(myNextVarButton);
 

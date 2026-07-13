@@ -57,7 +57,7 @@ class EditTextWidget : public EditableWidget
     static int calcWidth(const GUI::Font& font, int length = 0)
     {
       return length * font.getMaxCharWidth()
-        + (font.getFontHeight() < 24 ? 3 * 2 : 5 * 2);
+        + (font.isLarge() ? 5 * 2 : 3 * 2);
     }
     // Get total width of widget
     static int calcWidth(const GUI::Font& font, string_view str)

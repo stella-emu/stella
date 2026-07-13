@@ -94,7 +94,7 @@ class PopUpWidget : public EditableWidget
 
     bool wantsFocus() const override { return true; }
     static int dropDownWidth(const GUI::Font& font) {
-      return font.getFontHeight() < 24 ? (9 * 2 + 3) : (13 * 2 + 7);
+      return font.isLarge() ? (13 * 2 + 7) : (9 * 2 + 3);
     }
 
     /**

@@ -89,21 +89,21 @@ void ScrollBarWidget::setArrows()
   };
 
 
-  if(_font.getFontHeight() < 24)
-  {
-    _upDownWidth = 7;
-    _upDownHeight = 6;
-    _upDownBoxHeight = 18;
-    _upImg = up_arrow.data();
-    _downImg = down_arrow.data();
-  }
-  else
+  if(_font.isLarge())
   {
     _upDownWidth = 11;
     _upDownHeight = 9;
     _upDownBoxHeight = 27;
     _upImg = up_arrow_large.data();
     _downImg = down_arrow_large.data();
+  }
+  else
+  {
+    _upDownWidth = 7;
+    _upDownHeight = 6;
+    _upDownBoxHeight = 18;
+    _upImg = up_arrow.data();
+    _downImg = down_arrow.data();
   }
 }
 

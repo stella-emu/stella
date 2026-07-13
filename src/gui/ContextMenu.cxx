@@ -619,19 +619,19 @@ void ContextMenu::setArrows()
     0b000001100000
   };
 
-  if(_font.getFontHeight() < 24)
-  {
-    _textOfs = 2;
-    _arrowSize = 8;
-    _upImg = up_arrow.data();
-    _downImg = down_arrow.data();
-  }
-  else
+  if(_font.isLarge())
   {
     _textOfs = 4;
     _arrowSize = 12;
     _upImg = up_arrow_large.data();
     _downImg = down_arrow_large.data();
+  }
+  else
+  {
+    _textOfs = 2;
+    _arrowSize = 8;
+    _upImg = up_arrow.data();
+    _downImg = down_arrow.data();
   }
 }
 

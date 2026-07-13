@@ -36,10 +36,10 @@ EditTextWidget::EditTextWidget(GuiObject* boss, const GUI::Font& font,
   // change can restore the height
   _lines = std::max(1, 1 + (h - font.getLineHeight()) / font.getFontHeight());
 
-  if(_font.getFontHeight() < 24)
-    _textOfs = 3;
-  else
+  if(_font.isLarge())
     _textOfs = 5;
+  else
+    _textOfs = 3;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -58,7 +58,7 @@ void EditTextWidget::refreshFontMetrics()
   // beyond the first) and the text offset for the live font; the width is
   // dialog-chosen and re-applied by the owning layout().
   _h = _font.getLineHeight() + 2 + _font.getFontHeight() * (_lines - 1);
-  _textOfs = _font.getFontHeight() < 24 ? 3 : 5;
+  _textOfs = _font.isLarge() ? 5 : 3;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

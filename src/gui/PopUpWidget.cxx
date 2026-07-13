@@ -307,19 +307,19 @@ void PopUpWidget::setArrow()
     0b0000001000000
   };
 
-  if(_font.getFontHeight() < 24)
-  {
-    _textOfs = 3;
-    _arrowWidth = 9;
-    _arrowHeight = 7;
-    _arrowImg = down_arrow.data();
-  }
-  else
+  if(_font.isLarge())
   {
     _textOfs = 5;
     _arrowWidth = 13;
     _arrowHeight = 10;
     _arrowImg = down_arrow_large.data();
+  }
+  else
+  {
+    _textOfs = 3;
+    _arrowWidth = 9;
+    _arrowHeight = 7;
+    _arrowImg = down_arrow.data();
   }
 }
 

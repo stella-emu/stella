@@ -32,11 +32,11 @@ NavigationWidget::NavigationWidget(GuiObject* boss, const GUI::Font& font,
   const int
     fontWidth    = _font.getMaxCharWidth(),
     BTN_GAP      = fontWidth / 4;
-  const bool smallIcon = _font.getLineHeight() < 26;
-  const GUI::Icon& homeIcon = smallIcon ? GUI::icon_home_small : GUI::icon_home_large;
-  const GUI::Icon& prevIcon = smallIcon ? GUI::icon_prev_small : GUI::icon_prev_large;
-  const GUI::Icon& nextIcon = smallIcon ? GUI::icon_next_small : GUI::icon_next_large;
-  const GUI::Icon& upIcon = smallIcon ? GUI::icon_up_small : GUI::icon_up_large;
+  const bool largeIcon = _font.isLarge();
+  const GUI::Icon& homeIcon = largeIcon ? GUI::icon_home_large : GUI::icon_home_small;
+  const GUI::Icon& prevIcon = largeIcon ? GUI::icon_prev_large : GUI::icon_prev_small;
+  const GUI::Icon& nextIcon = largeIcon ? GUI::icon_next_large : GUI::icon_next_small;
+  const GUI::Icon& upIcon = largeIcon ? GUI::icon_up_large : GUI::icon_up_small;
   const int iconWidth = homeIcon.width();
   const int buttonWidth = iconWidth + ((fontWidth + 1) & ~0b1) + 1; // round up to next odd
   const int buttonHeight = h;
@@ -79,11 +79,11 @@ void NavigationWidget::layoutChildren()
 {
   const int fontWidth = _font.getMaxCharWidth();
   const int BTN_GAP = fontWidth / 4;
-  const bool smallIcon = _font.getLineHeight() < 26;
-  const GUI::Icon& homeIcon = smallIcon ? GUI::icon_home_small : GUI::icon_home_large;
-  const GUI::Icon& prevIcon = smallIcon ? GUI::icon_prev_small : GUI::icon_prev_large;
-  const GUI::Icon& nextIcon = smallIcon ? GUI::icon_next_small : GUI::icon_next_large;
-  const GUI::Icon& upIcon   = smallIcon ? GUI::icon_up_small   : GUI::icon_up_large;
+  const bool largeIcon = _font.isLarge();
+  const GUI::Icon& homeIcon = largeIcon ? GUI::icon_home_large : GUI::icon_home_small;
+  const GUI::Icon& prevIcon = largeIcon ? GUI::icon_prev_large : GUI::icon_prev_small;
+  const GUI::Icon& nextIcon = largeIcon ? GUI::icon_next_large : GUI::icon_next_small;
+  const GUI::Icon& upIcon   = largeIcon ? GUI::icon_up_large   : GUI::icon_up_small;
 
   // Re-pick the icon variants (the font height may have crossed the threshold)
   myHomeButton->setIcon(homeIcon);

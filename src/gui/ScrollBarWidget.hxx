@@ -42,7 +42,7 @@ class ScrollBarWidget : public Widget, public CommandSender
     static void setWheelLines(int lines) { S_WHEEL_LINES = lines; }
     static int  getWheelLines()          { return S_WHEEL_LINES;  }
     static int scrollBarWidth(const GUI::Font& font) {
-      return font.getFontHeight() < 24 ? 15 : 23;
+      return font.isLarge() ? 23 : 15;
     }
 
     // Re-pick the arrow images/box sizes and the (font-derived) bar width when

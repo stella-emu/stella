@@ -772,6 +772,18 @@ ButtonWidget::ButtonWidget(GuiObject* boss, const GUI::Font& font,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+ButtonWidget::ButtonWidget(GuiObject* boss, const GUI::Font& font,
+                           int x, int y,
+                           const GUI::Icon& icon, int bmx,
+                           string_view label,
+                           int cmd, bool repeat)
+  : ButtonWidget(boss, font, x, y, icon.width(), calcHeight(font),
+                 icon, bmx, label, cmd, repeat)
+{
+  _autoSize = true;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ButtonWidget::refreshFontMetrics()
 {
   // Deliberately skips StaticTextWidget's recompute, which would shrink a button
@@ -780,12 +792,14 @@ void ButtonWidget::refreshFontMetrics()
   // NOLINTNEXTLINE(bugprone-parent-virtual-call)
   Widget::refreshFontMetrics();
 
-  // A button that sized itself from its label re-derives that size, so it follows
-  // the font on its own.  Any other size came from outside — an icon's extents, a
-  // width shared with its neighbours — and is re-applied by the owning layout()
+  // A button that sized itself from its content re-derives that size, so it
+  // follows the font on its own.  Any other size came from outside — a width
+  // shared with its neighbours — and is re-applied by the owning layout().  An
+  // icon-and-label button keeps whichever icon it holds; a dialog that swaps in a
+  // different variant for the new font does so with setIcon(), which re-sizes it
   if(_autoSize)
   {
-    _w = calcWidth(_font, _label);
+    _w = autoWidth();
     _h = calcHeight(_font);
   }
 }
@@ -856,6 +870,11 @@ void ButtonWidget::setBitmap(const uInt32* bitmap, int bmw, int bmh)
 void ButtonWidget::setIcon(const GUI::Icon& icon)
 {
   setBitmap(icon.bitmap(), icon.width(), icon.height());
+
+  // A button that sized itself around its icon re-sizes around the new one; one
+  // whose width came from outside keeps it (the layout re-applies that)
+  if(_autoSize)
+    setWidth(autoWidth());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -885,8 +904,8 @@ void ButtonWidget::drawWidget(bool hilite)
 CheckboxWidget::CheckboxWidget(GuiObject* boss, const GUI::Font& font,
                                int x, int y, string_view label,
                                int cmd)
-  : ButtonWidget(boss, font, x, y, font.getFontHeight() < 24 ? 16 : 24,
-                 font.getFontHeight() < 24 ? 16 : 24, label, cmd),
+  : ButtonWidget(boss, font, x, y, font.isLarge() ? 24 : 16,
+                 font.isLarge() ? 24 : 16, label, cmd),
     _boxSize{boxSize(font)}
 {
   _flags = Widget::FLAG_ENABLED;

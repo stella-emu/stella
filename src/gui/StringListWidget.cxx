@@ -30,13 +30,13 @@ StringListWidget::StringListWidget(GuiObject* boss, const GUI::Font& font,
 {
   _bgcolorlo = kDlgColor;
 
-  if(_font.getFontHeight() < 24)
+  if(_font.isLarge())
   {
-    _textOfs = 3;
+    _textOfs = 5;
   }
   else
   {
-    _textOfs = 5;
+    _textOfs = 3;
   }
 }
 
