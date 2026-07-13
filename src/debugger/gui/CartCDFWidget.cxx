@@ -55,7 +55,7 @@ CartridgeCDFWidget::CartridgeCDFWidget(
     VarList::push_back(items, "6 ($FFFB)");
   }
   myBank = new PopUpWidget(boss, _font, xpos, ypos, _font.getStringWidth("0 ($FFFx)"),
-                           myLineHeight, items,
+                           _lineHeight, items,
                            "Set bank ", 0, kBankChanged);
   myBank->setTarget(this);
   addFocusWidget(myBank);
@@ -71,7 +71,7 @@ CartridgeCDFWidget::CartridgeCDFWidget(
   // Fast Fetch Offset
   if(isCDFJplus())
   {
-    ypos += myLineHeight + VGAP;
+    ypos += _lineHeight + VGAP;
     new StaticTextWidget(_boss, _font, myFastFetch->getLeft(), ypos, "Fast Fetch Offset: ");
     lwidth = _font.getStringWidth("Fast Fetch Offset: ");
 
@@ -84,28 +84,28 @@ CartridgeCDFWidget::CartridgeCDFWidget(
   // Datastream Pointers
 #define DS_X (HBORDER + _font.getStringWidth("xx "))
   xpos = DS_X;
-  ypos += myLineHeight + VGAP * 2;
+  ypos += _lineHeight + VGAP * 2;
   new StaticTextWidget(boss, _font, xpos, ypos, "Datastream Pointers");
 
   myDatastreamPointers = new DataGridWidget(boss, _nfont, DS_X,
-                                            ypos+myLineHeight, 4, 8, 6, 32,
+                                            ypos+_lineHeight, 4, 8, 6, 32,
                                             Common::Base::Fmt::_16_3_2);
   myDatastreamPointers->setTarget(this);
   myDatastreamPointers->setEditable(false);
 
   myCommandStreamPointer = new DataGridWidget(boss, _nfont, DS_X  + myDatastreamPointers->getWidth() * 3 / 4,
-                                              ypos+myLineHeight + 8*myLineHeight, 1, 1, 6, 32,
+                                              ypos+_lineHeight + 8*_lineHeight, 1, 1, 6, 32,
                                               Common::Base::Fmt::_16_3_2);
   myCommandStreamPointer->setTarget(this);
   myCommandStreamPointer->setEditable(false);
 
   if(isCDFJ() || isCDFJplus())
     myJumpStreamPointers = new DataGridWidget(boss, _nfont, DS_X  + myDatastreamPointers->getWidth() * 2 / 4,
-                                              ypos+myLineHeight + 9*myLineHeight, 2, 1, 6, 32,
+                                              ypos+_lineHeight + 9*_lineHeight, 2, 1, 6, 32,
                                               Common::Base::Fmt::_16_3_2);
   else
     myJumpStreamPointers = new DataGridWidget(boss, _nfont, DS_X  + myDatastreamPointers->getWidth() * 3 / 4,
-                                              ypos+myLineHeight + 9*myLineHeight, 1, 1, 6, 32,
+                                              ypos+_lineHeight + 9*_lineHeight, 1, 1, 6, 32,
                                               Common::Base::Fmt::_16_3_2);
   myJumpStreamPointers->setTarget(this);
   myJumpStreamPointers->setEditable(false);
@@ -114,19 +114,19 @@ CartridgeCDFWidget::CartridgeCDFWidget(
   {
     myDatastreamLabels[row] =
     new StaticTextWidget(_boss, _font, DS_X - _font.getStringWidth("xx "),
-                         ypos+myLineHeight + row*myLineHeight + 2, "   ");
+                         ypos+_lineHeight + row*_lineHeight + 2, "   ");
     myDatastreamLabels[row]->setLabel(Common::Base::toString(row * 4,
                                       Common::Base::Fmt::_16_2));
   }
   lwidth = _font.getStringWidth("Jump Data (21|22)");
   myDatastreamLabels[8] =
   new StaticTextWidget(_boss, _font, DS_X - _font.getStringWidth("xx "),
-                       ypos+myLineHeight + 8*myLineHeight + 2,
-                       lwidth, myFontHeight, "Write Data (20)");
+                       ypos+_lineHeight + 8*_lineHeight + 2,
+                       lwidth, _fontHeight, "Write Data (20)");
   myDatastreamLabels[9] =
   new StaticTextWidget(_boss, _font, DS_X - _font.getStringWidth("xx "),
-                       ypos+myLineHeight + 9*myLineHeight + 2,
-                       lwidth, myFontHeight,
+                       ypos+_lineHeight + 9*_lineHeight + 2,
+                       lwidth, _fontHeight,
                        (isCDFJ() || isCDFJplus()) ? "Jump Data (21|22)" : "Jump Data (21)");
 
   // Datastream Increments
@@ -134,30 +134,30 @@ CartridgeCDFWidget::CartridgeCDFWidget(
   new StaticTextWidget(boss, _font, xpos, ypos, "Datastream Increments");
 
   myDatastreamIncrements = new DataGridWidget(boss, _nfont, xpos,
-                                              ypos+myLineHeight, 4, 8, 5, 32,
+                                              ypos+_lineHeight, 4, 8, 5, 32,
                                               Common::Base::Fmt::_16_2_2);
   myDatastreamIncrements->setTarget(this);
   myDatastreamIncrements->setEditable(false);
 
   myCommandStreamIncrement = new DataGridWidget(boss, _nfont, xpos,
-                                                ypos+myLineHeight + 8*myLineHeight, 1, 1, 5, 32,
+                                                ypos+_lineHeight + 8*_lineHeight, 1, 1, 5, 32,
                                                 Common::Base::Fmt::_16_2_2);
   myCommandStreamIncrement->setTarget(this);
   myCommandStreamIncrement->setEditable(false);
 
   myJumpStreamIncrements = new DataGridWidget(boss, _nfont, xpos,
-                                              ypos+myLineHeight + 9*myLineHeight, (isCDFJ() || isCDFJplus()) ? 2 : 1, 1, 5, 32,
+                                              ypos+_lineHeight + 9*_lineHeight, (isCDFJ() || isCDFJplus()) ? 2 : 1, 1, 5, 32,
                                               Common::Base::Fmt::_16_2_2);
   myJumpStreamIncrements->setTarget(this);
   myJumpStreamIncrements->setEditable(false);
-  xpos = HBORDER;  ypos += myLineHeight * 11 + VGAP * 2;
+  xpos = HBORDER;  ypos += _lineHeight * 11 + VGAP * 2;
 
   lwidth = _font.getStringWidth("Waveform Sizes ");
 
   // Music counters
   new StaticTextWidget(_boss, _font, xpos, ypos, "Music States:");
   xpos += INDENT;
-  ypos += myLineHeight + VGAP;
+  ypos += _lineHeight + VGAP;
 
   new StaticTextWidget(boss, _font, xpos, ypos, "Counters");
   xpos += lwidth;
@@ -168,7 +168,7 @@ CartridgeCDFWidget::CartridgeCDFWidget(
   myMusicCounters->setEditable(false);
 
   // Music frequencies
-  xpos = HBORDER + INDENT;  ypos += myLineHeight + VGAP;
+  xpos = HBORDER + INDENT;  ypos += _lineHeight + VGAP;
   new StaticTextWidget(boss, _font, xpos, ypos, "Frequencies");
   xpos += lwidth;
 
@@ -178,7 +178,7 @@ CartridgeCDFWidget::CartridgeCDFWidget(
   myMusicFrequencies->setEditable(false);
 
   // Music waveforms
-  xpos = HBORDER + INDENT;  ypos += myLineHeight + VGAP;
+  xpos = HBORDER + INDENT;  ypos += _lineHeight + VGAP;
   new StaticTextWidget(boss, _font, xpos, ypos, "Waveforms");
   xpos += lwidth;
 
@@ -188,7 +188,7 @@ CartridgeCDFWidget::CartridgeCDFWidget(
   myMusicWaveforms->setEditable(false);
 
   // Music waveform sizes
-  xpos = HBORDER + INDENT;  ypos += myLineHeight + VGAP;
+  xpos = HBORDER + INDENT;  ypos += _lineHeight + VGAP;
   new StaticTextWidget(boss, _font, xpos, ypos, "Waveform Sizes");
   xpos += lwidth;
 
@@ -198,13 +198,13 @@ CartridgeCDFWidget::CartridgeCDFWidget(
   myMusicWaveformSizes->setEditable(false);
 
   // Digital Audio flag
-  xpos = HBORDER;  ypos += myLineHeight + VGAP;
+  xpos = HBORDER;  ypos += _lineHeight + VGAP;
 
   myDigitalSample = new CheckboxWidget(boss, _font, xpos, ypos, "Digital Sample mode");
   myDigitalSample->setTarget(this);
   myDigitalSample->setEditable(false);
 
-  xpos = HBORDER + INDENT;  ypos += myLineHeight + VGAP;
+  xpos = HBORDER + INDENT;  ypos += _lineHeight + VGAP;
 
   const int lwidth2 = _font.getStringWidth("Sample Pointer ");
   new StaticTextWidget(boss, _font, xpos, ypos, "Sample Pointer");
@@ -214,7 +214,7 @@ CartridgeCDFWidget::CartridgeCDFWidget(
   mySamplePointer->setTarget(this);
   mySamplePointer->setEditable(false);
 
-  xpos = HBORDER;  ypos += myLineHeight + VGAP * 2;
+  xpos = HBORDER;  ypos += _lineHeight + VGAP * 2;
   addCycleWidgets(xpos, ypos);
 }
 

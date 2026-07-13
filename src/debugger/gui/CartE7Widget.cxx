@@ -58,7 +58,7 @@ void CartridgeE7Widget::initialize(GuiObject* boss,
   const uInt32 size = cart.romBankCount() * CartridgeE7::BANK_SIZE;
 
   constexpr int xpos = 2;
-  int ypos = addBaseInformation(size, "M Network", info, 15) + myLineHeight;
+  int ypos = addBaseInformation(size, "M Network", info, 15) + _lineHeight;
 
   VariantList items0, items1;
   for(int i = 0; std::cmp_less(i, cart.romBankCount()); ++i)
@@ -69,14 +69,14 @@ void CartridgeE7Widget::initialize(GuiObject* boss,
   const int lwidth = _font.getStringWidth("Set bank for upper 256B segment "),
     fwidth = _font.getStringWidth("#3 - RAM ($FFEB)");
   myLower2K =
-    new PopUpWidget(boss, _font, xpos, ypos - 2, fwidth, myLineHeight, items0,
+    new PopUpWidget(boss, _font, xpos, ypos - 2, fwidth, _lineHeight, items0,
                     "Set bank for lower 2K segment", lwidth, kLowerChanged);
   myLower2K->setTarget(this);
   addFocusWidget(myLower2K);
   ypos += myLower2K->getHeight() + 4;
 
   myUpper256B =
-    new PopUpWidget(boss, _font, xpos, ypos - 2, fwidth, myLineHeight, items1,
+    new PopUpWidget(boss, _font, xpos, ypos - 2, fwidth, _lineHeight, items1,
                     "Set bank for upper 256B segment ", lwidth, kUpperChanged);
   myUpper256B->setTarget(this);
   addFocusWidget(myUpper256B);

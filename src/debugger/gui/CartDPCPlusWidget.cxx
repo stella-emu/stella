@@ -41,7 +41,7 @@ CartridgeDPCPlusWidget::CartridgeDPCPlusWidget(
 
   int xpos = 2,
       ypos = addBaseInformation(size, "Activision (Pitfall II)", info) +
-              myLineHeight;
+              _lineHeight;
 
   VariantList items;
   VarList::push_back(items, "0 ($FFF6)");
@@ -52,16 +52,16 @@ CartridgeDPCPlusWidget::CartridgeDPCPlusWidget(
   VarList::push_back(items, "5 ($FFFB)");
   myBank =
     new PopUpWidget(boss, _font, xpos, ypos-2, _font.getStringWidth("0 ($FFFx)"),
-                    myLineHeight, items, "Set bank     ",
+                    _lineHeight, items, "Set bank     ",
                     0, kBankChanged);
   myBank->setTarget(this);
   addFocusWidget(myBank);
 
   // Top registers
   int lwidth = _font.getStringWidth("Counter Registers ");
-  xpos = 2;  ypos += myLineHeight + 8;
+  xpos = 2;  ypos += _lineHeight + 8;
   new StaticTextWidget(boss, _font, xpos, ypos, lwidth,
-        myFontHeight, "Top Registers ", TextAlign::Left);
+        _fontHeight, "Top Registers ", TextAlign::Left);
   xpos += lwidth;
 
   myTops = new DataGridWidget(boss, _nfont, xpos, ypos-2, 8, 1, 2, 8, Common::Base::Fmt::_16);
@@ -69,9 +69,9 @@ CartridgeDPCPlusWidget::CartridgeDPCPlusWidget(
   myTops->setEditable(false);
 
   // Bottom registers
-  xpos = 2;  ypos += myLineHeight + 4;
+  xpos = 2;  ypos += _lineHeight + 4;
   new StaticTextWidget(boss, _font, xpos, ypos, lwidth,
-        myFontHeight, "Bottom Registers ", TextAlign::Left);
+        _fontHeight, "Bottom Registers ", TextAlign::Left);
   xpos += lwidth;
 
   myBottoms = new DataGridWidget(boss, _nfont, xpos, ypos-2, 8, 1, 2, 8, Common::Base::Fmt::_16);
@@ -79,9 +79,9 @@ CartridgeDPCPlusWidget::CartridgeDPCPlusWidget(
   myBottoms->setEditable(false);
 
   // Counter registers
-  xpos = 2;  ypos += myLineHeight + 4;
+  xpos = 2;  ypos += _lineHeight + 4;
   new StaticTextWidget(boss, _font, xpos, ypos, lwidth,
-        myFontHeight, "Counter Registers ", TextAlign::Left);
+        _fontHeight, "Counter Registers ", TextAlign::Left);
   xpos += lwidth;
 
   myCounters = new DataGridWidget(boss, _nfont, xpos, ypos-2, 8, 1, 4, 16, Common::Base::Fmt::_16_4);
@@ -89,9 +89,9 @@ CartridgeDPCPlusWidget::CartridgeDPCPlusWidget(
   myCounters->setEditable(false);
 
   // Fractional counter registers
-  xpos = 2;  ypos += myLineHeight + 4;
+  xpos = 2;  ypos += _lineHeight + 4;
   new StaticTextWidget(boss, _font, xpos, ypos, lwidth,
-        myFontHeight, "Frac Counters ", TextAlign::Left);
+        _fontHeight, "Frac Counters ", TextAlign::Left);
   xpos += lwidth;
 
   myFracCounters = new DataGridWidget(boss, _nfont, xpos, ypos-2, 4, 2, 8, 32, Common::Base::Fmt::_16_8);
@@ -101,7 +101,7 @@ CartridgeDPCPlusWidget::CartridgeDPCPlusWidget(
   // Fractional increment registers
   xpos = 2;  ypos += myFracCounters->getHeight() + 8;
   new StaticTextWidget(boss, _font, xpos, ypos, lwidth,
-        myFontHeight, "Frac Increments ", TextAlign::Left);
+        _fontHeight, "Frac Increments ", TextAlign::Left);
   xpos += lwidth;
 
   myFracIncrements = new DataGridWidget(boss, _nfont, xpos, ypos-2, 8, 1, 2, 8, Common::Base::Fmt::_16);
@@ -109,9 +109,9 @@ CartridgeDPCPlusWidget::CartridgeDPCPlusWidget(
   myFracIncrements->setEditable(false);
 
   // Special function parameters
-  xpos = 2;  ypos += myLineHeight + 4;
+  xpos = 2;  ypos += _lineHeight + 4;
   new StaticTextWidget(boss, _font, xpos, ypos, lwidth,
-        myFontHeight, "Function Params ", TextAlign::Left);
+        _fontHeight, "Function Params ", TextAlign::Left);
   xpos += lwidth;
 
   myParameter = new DataGridWidget(boss, _nfont, xpos, ypos-2, 8, 1, 2, 8, Common::Base::Fmt::_16);
@@ -119,9 +119,9 @@ CartridgeDPCPlusWidget::CartridgeDPCPlusWidget(
   myParameter->setEditable(false);
 
   // Music counters
-  xpos = 2;  ypos += myLineHeight + 4;
+  xpos = 2;  ypos += _lineHeight + 4;
   new StaticTextWidget(boss, _font, xpos, ypos, lwidth,
-        myFontHeight, "Music Counters ", TextAlign::Left);
+        _fontHeight, "Music Counters ", TextAlign::Left);
   xpos += lwidth;
 
   myMusicCounters = new DataGridWidget(boss, _nfont, xpos, ypos-2, 3, 1, 8, 32, Common::Base::Fmt::_16_8);
@@ -129,9 +129,9 @@ CartridgeDPCPlusWidget::CartridgeDPCPlusWidget(
   myMusicCounters->setEditable(false);
 
   // Music frequencies
-  xpos = 2;  ypos += myLineHeight + 4;
+  xpos = 2;  ypos += _lineHeight + 4;
   new StaticTextWidget(boss, _font, xpos, ypos, lwidth,
-        myFontHeight, "Music Frequencies ", TextAlign::Left);
+        _fontHeight, "Music Frequencies ", TextAlign::Left);
   xpos += lwidth;
 
   myMusicFrequencies = new DataGridWidget(boss, _nfont, xpos, ypos-2, 3, 1, 8, 32, Common::Base::Fmt::_16_8);
@@ -139,9 +139,9 @@ CartridgeDPCPlusWidget::CartridgeDPCPlusWidget(
   myMusicFrequencies->setEditable(false);
 
   // Music waveforms
-  xpos = 2;  ypos += myLineHeight + 4;
+  xpos = 2;  ypos += _lineHeight + 4;
   new StaticTextWidget(boss, _font, xpos, ypos, lwidth,
-        myFontHeight, "Music Waveforms ", TextAlign::Left);
+        _fontHeight, "Music Waveforms ", TextAlign::Left);
   xpos += lwidth;
 
   myMusicWaveforms = new DataGridWidget(boss, _nfont, xpos, ypos-2, 3, 1, 4, 16, Common::Base::Fmt::_16_4);
@@ -150,9 +150,9 @@ CartridgeDPCPlusWidget::CartridgeDPCPlusWidget(
 
   // Current random number
   lwidth = _font.getStringWidth("Current random number ");
-  xpos = 2;  ypos += myLineHeight + 4;
+  xpos = 2;  ypos += _lineHeight + 4;
   new StaticTextWidget(boss, _font, xpos, ypos, lwidth,
-        myFontHeight, "Current random number ", TextAlign::Left);
+        _fontHeight, "Current random number ", TextAlign::Left);
   xpos += lwidth;
 
   myRandom = new DataGridWidget(boss, _nfont, xpos, ypos-2, 1, 1, 8, 32, Common::Base::Fmt::_16_8);
@@ -164,12 +164,12 @@ CartridgeDPCPlusWidget::CartridgeDPCPlusWidget(
   myFastFetch = new CheckboxWidget(boss, _font, xpos, ypos, "Fast Fetcher enabled");
   myFastFetch->setTarget(this);
   myFastFetch->setEditable(false);
-  ypos += myLineHeight + 4;
+  ypos += _lineHeight + 4;
   myIMLDA = new CheckboxWidget(boss, _font, xpos, ypos, "Immediate mode LDA");
   myIMLDA->setTarget(this);
   myIMLDA->setEditable(false);
 
-  xpos = 2;  ypos += myLineHeight + 4 * 1;
+  xpos = 2;  ypos += _lineHeight + 4 * 1;
   addCycleWidgets(xpos, ypos);
 }
 

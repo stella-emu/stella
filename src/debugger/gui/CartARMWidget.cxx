@@ -39,7 +39,7 @@ void CartridgeARMWidget::addCycleWidgets(int xpos, int ypos)
 
   auto* s = new StaticTextWidget(_boss, _font, xpos, ypos + 1, "ARM emulation cycles:");
   s->setToolTip("Cycle count enabled by developer settings.");
-  xpos += INDENT; ypos += myLineHeight + VGAP;
+  xpos += INDENT; ypos += _lineHeight + VGAP;
   myIncCycles = new CheckboxWidget(_boss, _font, xpos, ypos + 1, "Increase 6507 cycles",
                                    kIncCyclesChanged);
   myIncCycles->setToolTip("Increase 6507 cycles with approximated ARM cycles.");
@@ -53,7 +53,7 @@ void CartridgeARMWidget::addCycleWidgets(int xpos, int ypos)
   myCycleFactor->setToolTip("Correct approximated ARM cycles by factor.");
   myCycleFactor->setTarget(this);
 
-  ypos += (myLineHeight + VGAP) * 2;
+  ypos += (_lineHeight + VGAP) * 2;
   myCyclesLabel = new StaticTextWidget(_boss, _font, xpos, ypos + 1, "Cycles #");
 
   myPrevThumbCycles = new DataGridWidget(_boss, _font, myCyclesLabel->getRight(), ypos - 1,
@@ -83,7 +83,7 @@ void CartridgeARMWidget::addCycleWidgets(int xpos, int ypos)
   myThumbInstructions->setToolTip("Instructions of last ARM run.\n");
 
   // add later to allow aligning
-  ypos -= myLineHeight + VGAP;
+  ypos -= _lineHeight + VGAP;
   int pwidth = myThumbCycles->getRight() - myPrevThumbCycles->getLeft()
     - PopUpWidget::dropDownWidth(_font);
 
@@ -93,7 +93,7 @@ void CartridgeARMWidget::addCycleWidgets(int xpos, int ypos)
   VarList::push_back(items, "LPC2104" + ELLIPSIS + "6 OC", static_cast<Int32>(Thumbulator::ChipType::LPC2104_OC));
   VarList::push_back(items, "LPC2104" + ELLIPSIS + "6",    static_cast<Int32>(Thumbulator::ChipType::LPC2104));
   VarList::push_back(items, "LPC213x",                     static_cast<Int32>(Thumbulator::ChipType::LPC213x));
-  myChipType = new PopUpWidget(_boss, _font, xpos, ypos, pwidth, myLineHeight, items,
+  myChipType = new PopUpWidget(_boss, _font, xpos, ypos, pwidth, _lineHeight, items,
                                "Chip    ", 0, kChipChanged);
   myChipType->setToolTip("Select emulated ARM chip.");
   myChipType->setTarget(this);
@@ -111,7 +111,7 @@ void CartridgeARMWidget::addCycleWidgets(int xpos, int ypos)
   VarList::push_back(items, "Full (2)", static_cast<uInt32>(Thumbulator::MamModeType::mode2));
   VarList::push_back(items, "1 Cycle (X)", static_cast<uInt32>(Thumbulator::MamModeType::modeX));
   myMamMode = new PopUpWidget(_boss, _font, myPrevThumbInstructions->getLeft(), ypos,
-                              pwidth, myLineHeight, items, "", 0, kMamModeChanged);
+                              pwidth, _lineHeight, items, "", 0, kMamModeChanged);
   myMamMode->setToolTip("Select emulated Memory Accelerator Module (MAM) mode.");
   myMamMode->setTarget(this);
 

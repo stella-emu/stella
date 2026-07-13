@@ -9,6 +9,31 @@ picture](#the-pattern-in-one-picture) and [Step by step](#step-by-step).
 
 ---
 
+## Read this before you write any code
+
+Every dialog in `src/gui/` is already converted, so there is a precedent for
+whatever you are about to do. Find it and follow it. These five rules are what the
+rest of this document exists to explain:
+
+1. **Read the exemplar.** Open the nearest already-converted file and follow its
+   *shape* before designing anything. A summary of the engine gives you the
+   vocabulary, not the design.
+2. **No new seam without asking.** Don't invent a virtual, protocol, collector or
+   helper that has no counterpart in `src/gui/`. If the existing seams can't express
+   what you need, that is a question to raise, not a design to make.
+3. **State intent, not pixels.** No pixel arithmetic, no `setPos()` after a layout,
+   no hand-summed widths, no measured specimen strings
+   (`getStringWidth("Manufacturer ")`), no labels padded with spaces to fake
+   alignment. Extend the engine rather than working around it.
+4. **One `align*` call per group**, made by the code that *builds* the group
+   (`alignLabels` / `alignPopUps` / `alignButtons` / `alignTracks`). Size cells with
+   `addAuto()`.
+5. **Widgets own their size.** A constructor never bakes geometry: if a widget can
+   derive it (button, pop-up, edit field, slider, static text), don't pass it. All
+   geometry lives in `layout()` / `reflow()`.
+
+---
+
 ## Why this exists
 
 Historically every dialog hard-coded pixel positions in its **constructor**:

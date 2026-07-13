@@ -237,6 +237,7 @@ class Widget : public GuiObject
     uInt32      _id{0};
     bool        _hasFocus{false};
     int         _fontWidth{0};
+    int         _fontHeight{0};
     int         _lineHeight{0};
     int         _contentHeight{0};
     ColorId     _bgcolor{kWidColor};

@@ -55,25 +55,25 @@ CartridgeDPCWidget::CartridgeDPCWidget(
 
   int xpos = 2,
       ypos = addBaseInformation(size, "Activision (Pitfall II)", info) +
-              myLineHeight;
+              _lineHeight;
 
   VariantList items;
   for(int bank = 0; bank < 2; ++bank)
     VarList::push_back(items, std::format("#{} (${})", bank, Base::hex4(0xFFF8 + bank)));
 
   myBank = new PopUpWidget(boss, _font, xpos, ypos-2, _font.getStringWidth("#0 ($FFFx)"),
-                           myLineHeight, items, "Set bank     ",
+                           _lineHeight, items, "Set bank     ",
                            0, kBankChanged);
   myBank->setTarget(this);
   addFocusWidget(myBank);
-  ypos += myLineHeight + V_GAP * 3;
+  ypos += _lineHeight + V_GAP * 3;
 
   // Data fetchers
   new StaticTextWidget(boss, _font, xpos, ypos, "Data fetchers ");
 
   // Top registers
   int lwidth = _font.getStringWidth("Counter registers ");
-  xpos = 2 + _font.getMaxCharWidth() * 2; ypos += myLineHeight + 4;
+  xpos = 2 + _font.getMaxCharWidth() * 2; ypos += _lineHeight + 4;
   new StaticTextWidget(boss, _font, xpos, ypos, "Top registers ");
   xpos += lwidth;
 
@@ -82,7 +82,7 @@ CartridgeDPCWidget::CartridgeDPCWidget(
   myTops->setEditable(false);
 
   // Bottom registers
-  xpos = 2 + _font.getMaxCharWidth() * 2; ypos += myLineHeight + 4;
+  xpos = 2 + _font.getMaxCharWidth() * 2; ypos += _lineHeight + 4;
   new StaticTextWidget(boss, _font, xpos, ypos, "Bottom registers ");
   xpos += lwidth;
 
@@ -91,7 +91,7 @@ CartridgeDPCWidget::CartridgeDPCWidget(
   myBottoms->setEditable(false);
 
   // Counter registers
-  xpos = 2 + _font.getMaxCharWidth() * 2; ypos += myLineHeight + 4;
+  xpos = 2 + _font.getMaxCharWidth() * 2; ypos += _lineHeight + 4;
   new StaticTextWidget(boss, _font, xpos, ypos, "Counter registers ");
   xpos += lwidth;
 
@@ -100,7 +100,7 @@ CartridgeDPCWidget::CartridgeDPCWidget(
   myCounters->setEditable(false);
 
   // Flag registers
-  xpos = 2 + _font.getMaxCharWidth() * 2; ypos += myLineHeight + 4;
+  xpos = 2 + _font.getMaxCharWidth() * 2; ypos += _lineHeight + 4;
   new StaticTextWidget(boss, _font, xpos, ypos, "Flag registers ");
   xpos += lwidth;
 
@@ -109,7 +109,7 @@ CartridgeDPCWidget::CartridgeDPCWidget(
   myFlags->setEditable(false);
 
   // Music mode
-  xpos = 2; ypos += myLineHeight + V_GAP * 3;
+  xpos = 2; ypos += _lineHeight + V_GAP * 3;
   lwidth = _font.getStringWidth("Music mode (DF5/DF6/DF7) ");
   new StaticTextWidget(boss, _font, xpos, ypos, "Music mode (DF5/DF6/DF7) ");
   xpos += lwidth;
@@ -119,7 +119,7 @@ CartridgeDPCWidget::CartridgeDPCWidget(
   myMusicMode->setEditable(false);
 
   // Current random number
-  xpos = 2; ypos += myLineHeight + V_GAP * 3;
+  xpos = 2; ypos += _lineHeight + V_GAP * 3;
   new StaticTextWidget(boss, _font, xpos, ypos, "Current random number ");
   xpos += lwidth;
 

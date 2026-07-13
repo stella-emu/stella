@@ -66,7 +66,8 @@ class CartridgeEnhancedWidget : public CartDebugWidget
     virtual int descriptionLines();
     virtual string ramDescription();
     virtual string romDescription();
-    virtual void bankList(uInt16 bankCount, int seg, VariantList& items, int& width);
+    // The bank pop-up's entries; it sizes its own box to the widest of them
+    virtual void bankList(uInt16 bankCount, int seg, VariantList& items);
     virtual string hotspotStr(int bank = 0, int segment = 0, bool prefix = false);
     virtual uInt16 bankSegs(); // { return myCart.myBankSegs; }
 
@@ -82,8 +83,6 @@ class CartridgeEnhancedWidget : public CartDebugWidget
     virtual void layoutBankSelect(GUI::BoxLayout& col);
     // Extra rows flowing below the bank controls, e.g. FA2's flash buttons
     virtual void layoutExtra(GUI::BoxLayout& col) { }
-    // Position extras that sit alongside already-placed widgets (cross-refs)
-    virtual void reflowExtra() { }
 
   protected:
     enum { kBankChanged = 'bkCH' };
@@ -111,7 +110,7 @@ class CartridgeEnhancedWidget : public CartDebugWidget
     EditTextWidget* myPlusROMSendWidget{nullptr};
     EditTextWidget* myPlusROMReceiveWidget{nullptr};
 
-    std::unique_ptr<PopUpWidget* []> myBankWidgets{nullptr};
+    std::vector<PopUpWidget*> myBankWidgets;
 
     // Display all addresses based on this
     static constexpr uInt16 ADDR_BASE = 0xF000;

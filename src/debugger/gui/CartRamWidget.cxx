@@ -18,11 +18,10 @@
 #include "EditTextWidget.hxx"
 #include "GuiObject.hxx"
 #include "CartDebug.hxx"
-#include "StringParser.hxx"
 #include "Widget.hxx"
 #include "Font.hxx"
-#include "StringListWidget.hxx"
-#include "ScrollBarWidget.hxx"
+#include "WrappedTextWidget.hxx"
+#include "Layout.hxx"
 #include "CartDebugWidget.hxx"
 #include "CartRamWidget.hxx"
 
@@ -34,51 +33,55 @@ CartRamWidget::CartRamWidget(
     CommandSender(boss),
     _nfont{nfont}
 {
-  const int lwidth = lfont.getStringWidth("Description "),
-            fwidth = w - lwidth - 20;
-
-  constexpr int xpos = 2;
-  int ypos = 8;
-
-  // Add RAM size
-  new StaticTextWidget(_boss, _font, xpos, ypos + 1, "RAM size ");
+  // Everything is created at a placeholder position; reflow() positions and
+  // sizes it, and the description re-wraps itself, whenever our area changes
+  myRamSizeLabel = new StaticTextWidget(_boss, _font, 0, 0, "RAM size");
 
   const uInt32 ramsize = cartDebug.internalRamSize();
-  const string ramsizeStr = ramsize >= 1024
-    ? std::format("{} bytes / {}KB", ramsize, ramsize / 1024)
-    : std::format("{} bytes", ramsize);
+  myRamSize = new EditTextWidget(boss, nfont, 0, 0, 1,
+    ramsize >= 1024
+      ? std::format("{} bytes / {}KB", ramsize, ramsize / 1024)
+      : std::format("{} bytes", ramsize));
+  myRamSize->setEditable(false);
 
-  auto* etw = new EditTextWidget(boss, nfont, xpos+lwidth, ypos - 1,
-                                 fwidth, ramsizeStr);
-  etw->setEditable(false);
-  ypos += _lineHeight + 4;
-
-  // Add Description
-  const string& desc = cartDebug.internalRamDescription();
-  constexpr uInt16 maxlines = 6;
-  const StringParser bs(desc, (fwidth - ScrollBarWidget::scrollBarWidth(_font)) / _fontWidth);
-  const StringList& sl = bs.stringList();
-
-  bool useScrollbar = false;
-  auto lines = std::max<uInt32>(static_cast<uInt32>(sl.size()), 2);
-  if(lines > maxlines)
-  {
-    lines = maxlines;
-    useScrollbar = true;
-  }
-
-  new StaticTextWidget(_boss, _font, xpos, ypos + 1, "Description ");
-  myDesc = new StringListWidget(boss, nfont, xpos+lwidth, ypos - 1,
-                                fwidth, lines * _lineHeight, false, useScrollbar);
+  myDescLabel = new StaticTextWidget(_boss, _font, 0, 0, "Description");
+  myDesc = new WrappedTextWidget(boss, nfont, 0, 0, 1, 1,
+                                 cartDebug.internalRamDescription(), MAX_DESC_LINES);
   myDesc->setEditable(false);
   myDesc->setEnabled(false);
-  myDesc->setList(sl);
 
-  ypos += myDesc->getHeight() + lfont.getFontHeight() / 2;
-
-  // Add RAM widget
-  myRam = new InternalRamWidget(boss, lfont, nfont, 2, ypos, w, h-ypos, cartDebug);
+  // The RAM view fills whatever is left below the fields
+  myRam = new InternalRamWidget(boss, lfont, nfont, 0, 0, 1, 1, cartDebug);
   addToFocusList(myRam->getFocusList());
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void CartRamWidget::reflow()
+{
+  using GUI::BoxLayout;
+  using GUI::labeledRow;
+  using GUI::widgetItem;
+
+  // The two rows share one label column, as wide as the longer of their labels
+  GUI::alignLabels({{myRamSizeLabel}, {myDescLabel}});
+
+  const int contentW = _w - CartDebugWidget::HBORDER - CartDebugWidget::RBORDER;
+
+  // Word wrap couples width to height: the description only knows how tall it is
+  // once it knows how wide it is, so it is given its width before the column is
+  // built (see the heightForWidth note in Layout.hxx).  Its width is the one the
+  // filling row below will hand it -- the content, less the shared label column
+  myDesc->setWidth(contentW - myDescLabel->getWidth());
+
+  BoxLayout col(BoxLayout::Dir::Vertical, CartDebugWidget::VGAP, 0,
+                CartDebugWidget::VBORDER);
+
+  col.addAuto(labeledRow(myRamSizeLabel, myRamSize, 0, 0, true));
+  col.addAuto(labeledRow(myDescLabel, myDesc, 0, 0, true));
+  col.addSpace(_fontHeight / 2);
+  col.addStretch(widgetItem(myRam));
+
+  col.doLayout(_x + CartDebugWidget::HBORDER, _y, contentW, _h);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -97,10 +100,7 @@ void CartRamWidget::setOpsWidget(DataGridOpsWidget* w)
 void CartRamWidget::setArea(int x, int y, int w, int h)
 {
   Widget::setArea(x, y, w, h);
-
-  // The RAM view is a sibling widget which fills whatever is left below the
-  // size and description fields, so it does not move but does resize
-  myRam->setArea(2, myRam->getTop(), w, h - myRam->getTop());
+  reflow();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

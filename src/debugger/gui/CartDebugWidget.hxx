@@ -29,6 +29,7 @@ namespace GUI {
 
 #include "Base.hxx"  // not needed here, but all child classes need it
 #include "Command.hxx"
+#include "Layout.hxx"
 #include "Widget.hxx"
 
 class CartDebugWidget : public Widget, public CommandSender
@@ -38,6 +39,12 @@ class CartDebugWidget : public Widget, public CommandSender
                     const GUI::Font& nfont,
                     int x, int y, int w, int h);
     ~CartDebugWidget() override = default;
+
+  public:
+    // Layout metrics shared by BOTH cart tabs (this one and CartRamWidget), so
+    // their fields line up with each other.  The right margin is wider than the
+    // left so the fields keep a gap from the window border
+    static constexpr int HBORDER = 2, RBORDER = 12, VBORDER = 4, VGAP = 4;
 
   public:
     // Legacy one-shot creation+positioning of the ROM size / manufacturer /
@@ -90,23 +97,23 @@ class CartDebugWidget : public Widget, public CommandSender
         string_view desc, uInt16 maxlines = 10);
 
     // Append the ROM size / manufacturer / description rows to a vertical box.
-    // The description (a WrappedTextWidget) re-wraps itself to the current width
-    void layoutBaseInformation(GUI::BoxLayout& col);
+    // 'contentW' is the width the box will be laid out in — the description needs
+    // it up front, since word wrap makes its height depend on its width
+    void layoutBaseInformation(GUI::BoxLayout& col, int contentW);
 
   protected:
-    // Shared layout metrics for the cart tabs.  The right margin is wider than
-    // the left so the fields keep a gap from the window border
-    static constexpr int HBORDER = 2, RBORDER = 12, VBORDER = 4, VGAP = 4;
+    // The controls sharing this tab's label column.  A control says it belongs
+    // here as it is CREATED — the ROM info rows below, the PlusROM fields and
+    // bank selectors in the carts — and one GUI::alignLabels() call at reflow
+    // time gives them all the same column.  So no label carries padding of its
+    // own, and a cart whose selectors sit elsewhere simply does not join
+    std::vector<GUI::LabeledControl> myLabelColumn;
 
     // Arrays used to hold current and previous internal RAM values
     ByteArray myRamOld, myRamCurrent;
 
     // Font used for 'normal' text; _font is for 'label' text
     const GUI::Font& _nfont;
-
-    // These will be needed by most of the child classes;
-    // we may as well make them protected variables
-    int myFontWidth{0}, myFontHeight{0}, myLineHeight{0}, myButtonHeight{0};
 
   private:
     // The ROM size / manufacturer / description fields and their labels.

@@ -38,7 +38,7 @@ CartridgeCTYWidget::CartridgeCTYWidget(
     "\nTHIS SCHEME IS NOT FULLY IMPLEMENTED OR TESTED\n";
 
   constexpr int xpos = 2;
-  const int ypos = addBaseInformation(size, "Chris D. Walton", info) + myLineHeight;
+  const int ypos = addBaseInformation(size, "Chris D. Walton", info) + _lineHeight;
 
   VariantList items;
   VarList::push_back(items, "1 ($FFF5)");
@@ -50,7 +50,7 @@ CartridgeCTYWidget::CartridgeCTYWidget(
   VarList::push_back(items, "7 ($FFFB)");
   myBank =
     new PopUpWidget(boss, _font, xpos, ypos-2, _font.getStringWidth("0 ($FFFx)"),
-                    myLineHeight, items, "Set bank     ",
+                    _lineHeight, items, "Set bank     ",
                     0, kBankChanged);
   myBank->setTarget(this);
   addFocusWidget(myBank);

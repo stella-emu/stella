@@ -36,6 +36,7 @@ Widget::Widget(GuiObject* boss, const GUI::Font& font,
     _boss{boss},
     _font{font},
     _fontWidth{_font.getMaxCharWidth()},
+    _fontHeight{_font.getFontHeight()},
     _lineHeight{_font.getLineHeight()}
 {
   // Insert into the widget list of the boss, which owns this widget from
@@ -509,6 +510,7 @@ void Widget::setDirtyInList(const WidgetList& list)
 void Widget::refreshFontMetrics()
 {
   _fontWidth = _font.getMaxCharWidth();
+  _fontHeight = _font.getFontHeight();
   _lineHeight = _font.getLineHeight();
   setDirty();
 }

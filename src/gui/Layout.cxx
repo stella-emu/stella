@@ -266,7 +266,7 @@ Common::Size BoxLayout::minSize() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void alignLabels(std::initializer_list<LabeledControl> controls)
+void alignLabels(std::span<const LabeledControl> controls)
 {
   // The column has to hold the longest label, and an indented control's label
   // starts that much further in
@@ -279,6 +279,12 @@ void alignLabels(std::initializer_list<LabeledControl> controls)
   // start there too
   for(const auto& c: controls)
     c.control->setLabelWidth(width - c.indent);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void alignLabels(std::initializer_list<LabeledControl> controls)
+{
+  alignLabels(std::span{controls.begin(), controls.size()});
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

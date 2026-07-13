@@ -637,12 +637,11 @@ void DebuggerDialog::addRomArea()
   WidgetArray wid1, wid2;
 
   // Every widget is created at a placeholder position/size; layoutRomArea()
-  // sizes and positions them.  The one exception is the cart widgets, whose
-  // ctors derive field widths (and the word wrapping of their descriptions)
-  // from their width, and which have no reflow of their own; they are given
-  // their real width here, which the externally sized dialog already knows.
-  // Their height still is a placeholder, which only CartRamWidget reads (to
-  // size the RAM view, which its setArea() then corrects)
+  // sizes and positions them.  The cart widgets are given a real WIDTH here,
+  // which the externally sized dialog already knows: the cart types not yet
+  // converted still derive their field widths (and the word wrapping of their
+  // descriptions) in their ctors, having no reflow of their own.  A converted
+  // cart ignores it and re-flows to whatever setArea() later gives it
   // NOLINTBEGIN(cppcoreguidelines-prefer-member-initializer)
   const auto addStepButton = [&](size_t idx, string_view label, int cmd,
                                  string_view tip, bool repeat) {

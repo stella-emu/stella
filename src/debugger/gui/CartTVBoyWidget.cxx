@@ -17,6 +17,7 @@
 
 #include "CartTVBoy.hxx"
 #include "PopUpWidget.hxx"
+#include "Layout.hxx"
 #include "CartTVBoyWidget.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -56,18 +57,28 @@ void CartridgeTVBoyWidget::createExtras()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgeTVBoyWidget::reflowExtra()
+void CartridgeTVBoyWidget::layoutBankSelect(GUI::BoxLayout& col)
 {
-  // The checkbox sits to the right of the bank selector
-  if(myBankLocked != nullptr)
-    myBankLocked->setPos(myBankWidgets[0]->getRight() + _fontWidth * 4,
-                         myBankWidgets[0]->getTop() + 1);
+  using GUI::anchoredItem;
+  using GUI::indentedItem;
+
+  // A single-bank cart has neither a selector nor a checkbox to lock it with
+  if(myBankWidgets.empty())
+    return;
+
+  col.addAuto(anchoredItem(myBankWidgets[0]));
+
+  // The lock checkbox goes UNDER the selector rather than beside it: its label is
+  // long and the selector's width follows the bank labels, so a single row would
+  // crowd the right border on a cart with many banks.  It is an option BELONGING
+  // to the selector, so it is indented under it
+  col.addAuto(indentedItem(myBankLocked, _fontWidth * 2));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeTVBoyWidget::loadConfig()
 {
-  if(myBankWidgets != nullptr)
+  if(!myBankWidgets.empty())
   {
     myBankWidgets[0]->setEnabled(!myCartTVBoy.myBankingDisabled);
     myBankLocked->setState(myCartTVBoy.myBankingDisabled);

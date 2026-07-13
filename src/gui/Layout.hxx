@@ -459,6 +459,10 @@ struct LabeledControl {
 // padding its label: the padding is alignment hidden in a string, and it breaks
 // silently when the label is reworded.
 void alignLabels(std::initializer_list<LabeledControl> controls);
+// ...and the same for a group whose membership is only known once it is built:
+// a cart debug tab's column is its ROM info rows plus whichever fields and bank
+// selectors that particular cart has under them
+void alignLabels(std::span<const LabeledControl> controls);
 
 // Give a group of buttons ONE width — the widest of them — so a column or a row
 // of them is not ragged.  A button already knows how wide its own label needs it

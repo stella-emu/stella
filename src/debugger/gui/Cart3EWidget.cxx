@@ -60,43 +60,43 @@ string Cartridge3EWidget::description()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Cartridge3EWidget::bankList(uInt16 bankCount, int seg, VariantList& items, int& width)
+void Cartridge3EWidget::bankList(uInt16 bankCount, int seg, VariantList& items)
 {
-  CartridgeEnhancedWidget::bankList(bankCount, seg, items, width);
+  CartridgeEnhancedWidget::bankList(bankCount, seg, items);
 
   VarList::push_back(items, "Inactive", "");
-  width = _font.getStringWidth("Inactive");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Cartridge3EWidget::createBankWidgets()
 {
   VariantList items;
-  int pw{0};
 
-  myBankWidgets = std::make_unique<PopUpWidget* []>(2);
+  myBankWidgets.resize(2);
 
-  bankList(myCart.romBankCount(), 0, items, pw);
+  bankList(myCart.romBankCount(), 0, items);
   myBankWidgets[0] =
-    new PopUpWidget(_boss, _font, 0, 0, pw,
-                    myLineHeight, items, "Set bank     ",
-                    _font.getStringWidth("Set bank     "), kBankChanged);
+    new PopUpWidget(_boss, _font, 0, 0, items, "Set bank", 0, kBankChanged);
   myBankWidgets[0]->setTarget(this);
   myBankWidgets[0]->setID(0);
   addFocusWidget(myBankWidgets[0]);
 
-  myROMTypeLabel = new StaticTextWidget(_boss, _font, 0, 0, " (ROM)");
+  myROMTypeLabel = new StaticTextWidget(_boss, _font, 0, 0, "(ROM)");
 
   items.clear();
-  bankList(myCart.ramBankCount(), 0, items, pw);
+  bankList(myCart.ramBankCount(), 0, items);
   myBankWidgets[1] =
-    new PopUpWidget(_boss, _font, 0, 0, pw,
-                    myLineHeight, items, "", 0, kRAMBankChanged);
+    new PopUpWidget(_boss, _font, 0, 0, items, "", 0, kRAMBankChanged);
   myBankWidgets[1]->setTarget(this);
   myBankWidgets[1]->setID(1);
   addFocusWidget(myBankWidgets[1]);
 
-  myRAMTypeLabel = new StaticTextWidget(_boss, _font, 0, 0, " (RAM)");
+  myRAMTypeLabel = new StaticTextWidget(_boss, _font, 0, 0, "(RAM)");
+
+  // Both selectors take the tab's label column, so their boxes line up under one
+  // another; the RAM one has no label of its own and simply leaves it empty
+  myLabelColumn.insert(myLabelColumn.end(),
+                       {{myBankWidgets[0]}, {myBankWidgets[1]}});
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -104,21 +104,21 @@ void Cartridge3EWidget::layoutBankSelect(GUI::BoxLayout& col)
 {
   using GUI::BoxLayout;
   using GUI::anchoredItem;
-  using GUI::alignedItem;
-  using GUI::HAlign;
-  using GUI::VAlign;
 
-  // The ROM bank selector + label, then the RAM bank selector + label, in a row
-  auto row = std::make_unique<BoxLayout>(BoxLayout::Dir::Horizontal);
-  row->addFixed(anchoredItem(myBankWidgets[0]), myBankWidgets[0]->getWidth());
-  row->addFixed(alignedItem(myROMTypeLabel, HAlign::Fill, VAlign::Center),
-                myROMTypeLabel->getWidth());
-  row->addSpace(20);
-  row->addFixed(anchoredItem(myBankWidgets[1]), myBankWidgets[1]->getWidth());
-  row->addFixed(alignedItem(myRAMTypeLabel, HAlign::Fill, VAlign::Center),
-                myRAMTypeLabel->getWidth());
+  // A row per selector, each annotated with the kind of bank it selects.  Both
+  // boxes sit in the tab's label column (see collectBankLabels), so they line up
+  // with each other and with the ROM info fields above -- and the row's width no
+  // longer grows with the bank labels, as a side-by-side pair's did
+  const std::array<StaticTextWidget*, 2> types{myROMTypeLabel, myRAMTypeLabel};
 
-  col.addFixed(std::move(row), myBankWidgets[0]->getHeight());
+  for(size_t i = 0; i < myBankWidgets.size(); ++i)
+  {
+    auto row = std::make_unique<BoxLayout>(BoxLayout::Dir::Horizontal, _fontWidth);
+    row->addAuto(anchoredItem(myBankWidgets[i]));
+    row->addAuto(anchoredItem(types[i]));
+
+    col.addAuto(std::move(row));
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

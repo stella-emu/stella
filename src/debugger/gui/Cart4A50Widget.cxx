@@ -36,7 +36,7 @@ Cartridge4A50Widget::Cartridge4A50Widget(
 
   int xpos = 2,
       ypos = addBaseInformation(cart.mySize, "John Payson / Supercat", info) +
-               myLineHeight;
+               _lineHeight;
 
   VariantList items16, items32, items128, items256;
   for(uInt32 i = 0; i < 16; ++i)
@@ -65,59 +65,59 @@ Cartridge4A50Widget::Cartridge4A50Widget(
   // Lower bank/region configuration
   xpos = 2;
   new StaticTextWidget(_boss, _font, xpos, ypos, lwidth,
-    myFontHeight, lowerlabel, TextAlign::Left);
-  ypos += myLineHeight + 8;
+    _fontHeight, lowerlabel, TextAlign::Left);
+  ypos += _lineHeight + 8;
 
   xpos += 40;
   myROMLower =
-    new PopUpWidget(boss, _font, xpos, ypos-2, fwidth, myLineHeight,
+    new PopUpWidget(boss, _font, xpos, ypos-2, fwidth, _lineHeight,
                     items32, "ROM ", flwidth, kROMLowerChanged);
   myROMLower->setTarget(this);
   addFocusWidget(myROMLower);
 
   xpos += myROMLower->getWidth() + 20;
   myRAMLower =
-    new PopUpWidget(boss, _font, xpos, ypos-2, fwidth, myLineHeight,
+    new PopUpWidget(boss, _font, xpos, ypos-2, fwidth, _lineHeight,
                     items16, "RAM ", flwidth, kRAMLowerChanged);
   myRAMLower->setTarget(this);
   addFocusWidget(myRAMLower);
 
   // Middle bank/region configuration
-  xpos = 2;  ypos += myLineHeight + 14;
+  xpos = 2;  ypos += _lineHeight + 14;
   new StaticTextWidget(_boss, _font, xpos, ypos, lwidth,
-    myFontHeight, middlelabel, TextAlign::Left);
-  ypos += myLineHeight + 8;
+    _fontHeight, middlelabel, TextAlign::Left);
+  ypos += _lineHeight + 8;
 
   xpos += 40;
   myROMMiddle =
-    new PopUpWidget(boss, _font, xpos, ypos-2, fwidth, myLineHeight,
+    new PopUpWidget(boss, _font, xpos, ypos-2, fwidth, _lineHeight,
                     items32, "ROM ", flwidth, kROMMiddleChanged);
   myROMMiddle->setTarget(this);
   addFocusWidget(myROMMiddle);
 
   xpos += myROMMiddle->getWidth() + 20;
   myRAMMiddle =
-    new PopUpWidget(boss, _font, xpos, ypos-2, fwidth, myLineHeight,
+    new PopUpWidget(boss, _font, xpos, ypos-2, fwidth, _lineHeight,
                     items16, "RAM ", flwidth, kRAMMiddleChanged);
   myRAMMiddle->setTarget(this);
   addFocusWidget(myRAMMiddle);
 
   // High bank/region configuration
-  xpos = 2;  ypos += myLineHeight + 14;
+  xpos = 2;  ypos += _lineHeight + 14;
   new StaticTextWidget(_boss, _font, xpos, ypos, lwidth,
-    myFontHeight, highlabel, TextAlign::Left);
-  ypos += myLineHeight + 8;
+    _fontHeight, highlabel, TextAlign::Left);
+  ypos += _lineHeight + 8;
 
   xpos += 40;
   myROMHigh =
-    new PopUpWidget(boss, _font, xpos, ypos-2, fwidth, myLineHeight,
+    new PopUpWidget(boss, _font, xpos, ypos-2, fwidth, _lineHeight,
                     items256, "ROM ", flwidth, kROMHighChanged);
   myROMHigh->setTarget(this);
   addFocusWidget(myROMHigh);
 
   xpos += myROMHigh->getWidth() + 20;
   myRAMHigh =
-    new PopUpWidget(boss, _font, xpos, ypos-2, fwidth, myLineHeight,
+    new PopUpWidget(boss, _font, xpos, ypos-2, fwidth, _lineHeight,
                     items128, "RAM ", flwidth, kRAMHighChanged);
   myRAMHigh->setTarget(this);
   addFocusWidget(myRAMHigh);

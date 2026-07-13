@@ -36,6 +36,13 @@ class StringListWidget : public ListWidget
     bool changedToolTip(const Common::Point& oldPos, const Common::Point& newPos) const override;
 
   protected:
+    // The width a row's text is actually DRAWN in: my box, less the inset I keep
+    // on BOTH sides of it (the scrollbar, if any, is already out of _w).  Anything
+    // measuring text against my rows must ask for this rather than work it out
+    // from _w -- a word wrapped to a wider figure does not fit its row, and the
+    // renderer silently ellipsizes it.  0 while I am still at a placeholder width
+    int textWidth() const { return std::max(_w - 2 * _textOfs, 0); }
+
     // display depends on _hasFocus so we have to redraw when focus changes
     void receivedFocusWidget() override { setDirty(); }
     void lostFocusWidget() override { setDirty(); }

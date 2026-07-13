@@ -20,7 +20,7 @@
 
 class GuiObject;
 class DataGridOpsWidget;
-class StringListWidget;
+class WrappedTextWidget;
 class InternalRamWidget;
 class CartDebugWidget;
 
@@ -43,6 +43,11 @@ class CartRamWidget : public Widget, public CommandSender
 
   protected:
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+
+    // Lay the tab out for its current area/font: the RAM size and description
+    // fields widen with it (the description re-wrapping itself), and the RAM view
+    // fills whatever is left below them.  Driven by setArea()
+    void reflow();
 
   protected:
     // Font used for 'normal' text; _font is for 'label' text
@@ -81,7 +86,13 @@ class CartRamWidget : public Widget, public CommandSender
     };
 
   private:
-    StringListWidget* myDesc{nullptr};
+    // The most lines of description to show before it scrolls
+    static constexpr uInt16 MAX_DESC_LINES = 6;
+
+    StaticTextWidget* myRamSizeLabel{nullptr};
+    StaticTextWidget* myDescLabel{nullptr};
+    EditTextWidget* myRamSize{nullptr};
+    WrappedTextWidget* myDesc{nullptr};
     InternalRamWidget* myRam{nullptr};
 
   private:

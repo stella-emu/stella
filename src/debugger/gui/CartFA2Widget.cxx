@@ -33,22 +33,18 @@ CartridgeFA2Widget::CartridgeFA2Widget(
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeFA2Widget::createExtras()
 {
-  const int bwidth = _font.getStringWidth("Erase") + 20;
+  // Each button sizes itself to its label; layoutExtra() gives the group one width
+  myFlashLabel = new StaticTextWidget(_boss, _font, 0, 0, "Harmony flash memory");
 
-  myFlashLabel = new StaticTextWidget(_boss, _font, 0, 0, "Harmony flash memory ");
-
-  myFlashErase = new ButtonWidget(_boss, _font, 0, 0, bwidth, myButtonHeight,
-                                  "Erase", kFlashErase);
+  myFlashErase = new ButtonWidget(_boss, _font, 0, 0, "Erase", kFlashErase);
   myFlashErase->setTarget(this);
   addFocusWidget(myFlashErase);
 
-  myFlashLoad = new ButtonWidget(_boss, _font, 0, 0, bwidth, myButtonHeight,
-                                 "Load", kFlashLoad);
+  myFlashLoad = new ButtonWidget(_boss, _font, 0, 0, "Load", kFlashLoad);
   myFlashLoad->setTarget(this);
   addFocusWidget(myFlashLoad);
 
-  myFlashSave = new ButtonWidget(_boss, _font, 0, 0, bwidth, myButtonHeight,
-                                 "Save", kFlashSave);
+  myFlashSave = new ButtonWidget(_boss, _font, 0, 0, "Save", kFlashSave);
   myFlashSave->setTarget(this);
   addFocusWidget(myFlashSave);
 }
@@ -58,20 +54,18 @@ void CartridgeFA2Widget::layoutExtra(GUI::BoxLayout& col)
 {
   using GUI::BoxLayout;
   using GUI::anchoredItem;
-  using GUI::alignedItem;
-  using GUI::HAlign;
-  using GUI::VAlign;
+
+  GUI::alignButtons({myFlashErase, myFlashLoad, myFlashSave});
 
   // The flash label and the three flash buttons, in a row
   auto row = std::make_unique<BoxLayout>(BoxLayout::Dir::Horizontal, _fontWidth);
-  row->addFixed(alignedItem(myFlashLabel, HAlign::Fill, VAlign::Center),
-                myFlashLabel->getWidth());
-  row->addFixed(anchoredItem(myFlashErase), myFlashErase->getWidth());
-  row->addFixed(anchoredItem(myFlashLoad), myFlashLoad->getWidth());
-  row->addFixed(anchoredItem(myFlashSave), myFlashSave->getWidth());
+  row->addAuto(anchoredItem(myFlashLabel));
+  row->addAuto(anchoredItem(myFlashErase));
+  row->addAuto(anchoredItem(myFlashLoad));
+  row->addAuto(anchoredItem(myFlashSave));
 
   col.addSpace(VGAP * 2);
-  col.addFixed(std::move(row), myButtonHeight);
+  col.addAuto(std::move(row));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -47,7 +47,7 @@ class Cartridge3EWidget : public CartridgeEnhancedWidget
   protected:
     string manufacturer() override { return "Andrew Davie & Thomas Jentzsch"; }
     string description() override;
-    void bankList(uInt16 bankCount, int seg, VariantList& items, int& width) override;
+    void bankList(uInt16 bankCount, int seg, VariantList& items) override;
     void createBankWidgets() override;
     void layoutBankSelect(GUI::BoxLayout& col) override;
     uInt16 bankSegs() override { return 1; }

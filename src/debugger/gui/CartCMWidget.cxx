@@ -44,7 +44,7 @@ CartridgeCMWidget::CartridgeCMWidget(
     "Startup bank = 3 (ROM), RAM disabled\n";
 
   int xpos = 2,
-      ypos = addBaseInformation(size, "CompuMate", info) + myLineHeight;
+      ypos = addBaseInformation(size, "CompuMate", info) + _lineHeight;
 
   VariantList items;
   VarList::push_back(items, " 0 ");
@@ -52,15 +52,15 @@ CartridgeCMWidget::CartridgeCMWidget(
   VarList::push_back(items, " 2 ");
   VarList::push_back(items, " 3 ");
   myBank = new PopUpWidget(boss, _font, xpos, ypos-2, _font.getStringWidth(" 0 "),
-                           myLineHeight, items, "Set bank     ",
+                           _lineHeight, items, "Set bank     ",
                            0, kBankChanged);
   myBank->setTarget(this);
   addFocusWidget(myBank);
 
   // Raw SWCHA value (this will be broken down further in other UI elements)
   int lwidth = _font.getStringWidth("Current column ");
-  ypos += myLineHeight + 8;
-  new StaticTextWidget(boss, _font, xpos, ypos+2, lwidth, myFontHeight,
+  ypos += _lineHeight + 8;
+  new StaticTextWidget(boss, _font, xpos, ypos+2, lwidth, _fontHeight,
                        "Current SWCHA ", TextAlign::Left);
   xpos += lwidth;
   mySWCHA = new ToggleBitWidget(boss, _nfont, xpos, ypos, 8, 1);
@@ -68,9 +68,9 @@ CartridgeCMWidget::CartridgeCMWidget(
   mySWCHA->setEditable(false);
 
   // Current column number
-  xpos = 10;  ypos += myLineHeight + 5;
+  xpos = 10;  ypos += _lineHeight + 5;
   new StaticTextWidget(boss, _font, xpos, ypos, lwidth,
-        myFontHeight, "Current column ", TextAlign::Left);
+        _fontHeight, "Current column ", TextAlign::Left);
   xpos += lwidth;
 
   myColumn = new DataGridWidget(boss, _nfont, xpos, ypos-2, 1, 1, 2, 8, Common::Base::Fmt::_16);
@@ -81,7 +81,7 @@ CartridgeCMWidget::CartridgeCMWidget(
   xpos = 30;
 
   // D6 (column part)
-  ypos += myLineHeight + 8;
+  ypos += _lineHeight + 8;
   myIncrease = new CheckboxWidget(boss, _font, xpos, ypos, "Increase Column");
   myIncrease->setTarget(this);
   myIncrease->setEditable(false);
@@ -89,35 +89,35 @@ CartridgeCMWidget::CartridgeCMWidget(
   const int orig_ypos = ypos;  // save for when we go to the next column
 
   // D5 (column part)
-  ypos += myLineHeight + 4;
+  ypos += _lineHeight + 4;
   myReset = new CheckboxWidget(boss, _font, xpos, ypos, "Reset Column");
   myReset->setTarget(this);
   myReset->setEditable(false);
 
   // Row inputs
-  ypos += myLineHeight + 4;
+  ypos += _lineHeight + 4;
   myRow[0] = new CheckboxWidget(boss, _font, xpos, ypos, "Row 0");
   myRow[0]->setTarget(this);
   myRow[0]->setEditable(false);
-  ypos += myLineHeight + 4;
+  ypos += _lineHeight + 4;
   myRow[1] = new CheckboxWidget(boss, _font, xpos, ypos, "Row 1");
   myRow[1]->setTarget(this);
   myRow[1]->setEditable(false);
-  ypos += myLineHeight + 4;
+  ypos += _lineHeight + 4;
   myRow[2] = new CheckboxWidget(boss, _font, xpos, ypos, "Row 2");
   myRow[2]->setTarget(this);
   myRow[2]->setEditable(false);
-  ypos += myLineHeight + 4;
+  ypos += _lineHeight + 4;
   myRow[3] = new CheckboxWidget(boss, _font, xpos, ypos, "Row 3");
   myRow[3]->setTarget(this);
   myRow[3]->setEditable(false);
 
   // Func and Shift keys
-  ypos += myLineHeight + 4;
+  ypos += _lineHeight + 4;
   myFunc = new CheckboxWidget(boss, _font, xpos, ypos, "FUNC key pressed");
   myFunc->setTarget(this);
   myFunc->setEditable(false);
-  ypos += myLineHeight + 4;
+  ypos += _lineHeight + 4;
   myShift = new CheckboxWidget(boss, _font, xpos, ypos, "Shift key pressed");
   myShift->setTarget(this);
   myShift->setEditable(false);
@@ -131,16 +131,16 @@ CartridgeCMWidget::CartridgeCMWidget(
   myAudIn->setEditable(false);
 
   // D6 (audio part)
-  ypos += myLineHeight + 4;
+  ypos += _lineHeight + 4;
   myAudOut = new CheckboxWidget(boss, _font, xpos, ypos, "Audio Output");
   myAudOut->setTarget(this);
   myAudOut->setEditable(false);
 
   // Ram state (combination of several bits in SWCHA)
-  ypos += myLineHeight + 8;
+  ypos += _lineHeight + 8;
   lwidth = _font.getStringWidth("Ram State ");
   new StaticTextWidget(boss, _font, xpos, ypos, lwidth,
-        myFontHeight, "Ram State ", TextAlign::Left);
+        _fontHeight, "Ram State ", TextAlign::Left);
   myRAM = new EditTextWidget(boss, _nfont, xpos+lwidth, ypos-2,
               _nfont.getStringWidth(" Write-only "), "");
   myRAM->setEditable(false, true);

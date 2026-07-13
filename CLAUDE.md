@@ -54,6 +54,29 @@ Stella is a classic emulation architecture centered on `OSystem` owning everythi
 
 **GUI** (`src/gui/`): Dialog/widget system for launcher, options, high scores, etc. New dialogs use the relative layout engine (`src/gui/Layout.*`) via a create-only constructor plus a `layout()` override — see [src/gui/DIALOGS.md](src/gui/DIALOGS.md) for the full guide.
 
+#### Before touching `src/gui/` or `src/debugger/gui/` — read this first
+
+Every dialog in `src/gui/` is already converted to the layout engine, so there is a
+precedent for whatever you are about to do. These rules are not style preferences;
+ignoring them has repeatedly cost whole sessions of rework.
+
+1. **Read the exemplar.** Open the nearest already-converted file and follow its
+   *shape* before designing anything. Notes and summaries give you the vocabulary,
+   not the design.
+2. **No new seam without asking.** Do not invent a virtual, protocol, collector or
+   helper that has no counterpart in `src/gui/`. If the existing seams cannot
+   express what you need, that is a question to ask, not a design to make.
+3. **State intent, not pixels.** No pixel arithmetic, no `setPos()` after a layout,
+   no hand-summed widths, no measured specimen strings
+   (`getStringWidth("Manufacturer ")`), no labels padded with spaces to fake
+   alignment. Extend the engine rather than working around it.
+4. **One `align*` call per group**, made by the code that *builds* the group
+   (`alignLabels` / `alignPopUps` / `alignButtons` / `alignTracks`). Size cells with
+   `addAuto()`.
+5. **Widgets own their size.** A constructor never bakes geometry: if a widget can
+   derive it (button, pop-up, edit field, slider, static text), don't pass it. All
+   geometry lives in `layout()` / `reflow()`.
+
 **Common utilities** (`src/common/`): Audio pipeline (`AudioQueue`, `AudioSettings`), filesystem abstraction (`FSNode`), state/rewind managers, high scores, palette, TV filters (`tv_filters/`), SDL blitters (`sdl_blitter/`), persistence layer (`repository/` — JSON, properties, SQLite).
 
 **Platform code** (`src/os/unix/`, `src/os/windows/`, `src/os/macos/`): OSystem subclasses and filesystem implementations per platform.

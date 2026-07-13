@@ -38,7 +38,7 @@ class CartridgeTVBoyWidget : public CartridgeEnhancedWidget
     string manufacturer() override { return "Akor"; }
     string description() override;
     void createExtras() override;
-    void reflowExtra() override;
+    void layoutBankSelect(GUI::BoxLayout& col) override;
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 
   private:

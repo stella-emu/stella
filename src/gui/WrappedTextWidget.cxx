@@ -47,13 +47,17 @@ void WrappedTextWidget::refreshFontMetrics()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void WrappedTextWidget::rewrap()
 {
-  // Nothing sensible to wrap into until the width is known
-  if(_w <= 0)
+  // Wrap into however many characters fit the width a row is actually DRAWN in.
+  // Wrap to anything wider -- _w, say -- and the longest line does not fit its
+  // row, so the renderer ELLIPSIZES it, eating the end of the very word that
+  // wrapping should have carried whole onto the next line
+  const int usable = textWidth();
+
+  // Nothing sensible to wrap into until we have a width to speak of
+  if(usable <= 0)
     return;
 
-  // Wrap into however many characters fit the current drawable width (the
-  // scrollbar has already been subtracted from _w)
-  const StringParser bs(myText, std::max(_w / _fontWidth, 1));
+  const StringParser bs(myText, std::max(usable / _fontWidth, 1));
   const StringList& lines = bs.stringList();
   setList(lines);
 

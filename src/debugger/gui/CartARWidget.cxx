@@ -37,13 +37,13 @@ CartridgeARWidget::CartridgeARWidget(
     "(may be zero or random). Currently emulated as zero-filled.\n";
 
   constexpr int xpos = 2;
-  const int ypos = addBaseInformation(size, "Starpath", info) + myLineHeight;
+  const int ypos = addBaseInformation(size, "Starpath", info) + _lineHeight;
 
   VariantList items;
   for(int i = 0; i < 32; ++i)
     VarList::push_back(items, std::format("{:3}", i));
   myBank = new PopUpWidget(boss, _font, xpos, ypos-2, _font.getStringWidth(" XX"),
-                           myLineHeight, items, "Set bank     ",
+                           _lineHeight, items, "Set bank     ",
                            0, kBankChanged);
   myBank->setTarget(this);
   addFocusWidget(myBank);
