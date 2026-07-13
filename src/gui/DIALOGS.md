@@ -57,6 +57,7 @@ knowledge belongs one level down — in the engine, or in the widget itself:
 | arithmetic keeping two groups in step | a stretch that absorbs the slack |
 | a button's width, from its label | nothing — the button sizes itself; a *group* of them, `GUI::alignButtons` |
 | a pop-up's width, from its items | nothing — pass it the items and let it size itself |
+| a width for a caption that shows *loaded* text | nothing — **fill it**; the layout owns its width (see below) |
 
 `addFixed` is still right where the number is genuinely the *dialog's* decision —
 a minimum width for the whole dialog, how many characters of a path a field must
@@ -525,22 +526,25 @@ Add `MyDialog.cxx` to `src/gui/module.mk` (follow the existing entries), and
 
 ## Choosing an engine shape
 
-| Your dialog is…                                       | Use                                                                   |
-| ----------------------------------------------------- | --------------------------------------------------------------------- |
-| A vertical **form** of self-labeling popups/sliders   | `BoxLayout(Vertical)` of `anchoredItem`s                              |
-| A form with **separate** label + control rows         | `BoxLayout(Vertical)` of `labeledRow(...)` (share a `labelW`)         |
-| A genuine **table** (cells align in 2-D)              | `GridLayout`                                                          |
-| A grid of **buttons** (OptionsDialog, CommandDialog)  | `GridLayout` with `widgetItem` cells                                  |
-| **Tabbed**                                            | `TabWidget` + a per-tab `layoutXxxTab()` helper (see below)           |
-| Mostly regular with an **irregular** sub-block        | engine for the regular part, `setPos`/`setWidth` for the rest         |
+**Before you design anything, open the converted dialog closest to yours and copy
+its shape.** These are the worked examples, and reading one will save you
+re-deriving (badly) a rule that is already settled:
 
-**Mixing is expected and fine.** Lay out the structured part with the engine and
-`doLayout` it, then read back resolved positions (`getRight()`, `getTop()`,
-`getBottom()`) to `setPos`/`setWidth` the irregular bits. `HighScoresDialog` and
-`GlobalPropsDialog` do exactly this. What you must *not* do is a plain
-`for(...) w->setPos(...)` loop over several regular widgets — that defeats the
-whole exercise. Direct `setPos` is only for a genuinely one-off widget or a
-back-referenced nudge after a `doLayout`.
+| Your dialog is…                                       | Use                                                                   | Read first          |
+| ----------------------------------------------------- | --------------------------------------------------------------------- | ------------------- |
+| A vertical **form** of self-labeling popups/sliders   | `BoxLayout(Vertical)` of `anchoredItem`s                              | `EmulationDialog`   |
+| A form with **separate** label + control rows         | `BoxLayout(Vertical)` of `labeledRow(...)`, columns via `GUI::alignLabels` | `GlobalPropsDialog` |
+| A genuine **table** (cells align in 2-D)              | `GridLayout`                                                          | `HighScoresDialog`  |
+| A grid of **buttons** (OptionsDialog, CommandDialog)  | `GridLayout` with `widgetItem` cells                                  | `OptionsDialog`     |
+| **Tabbed**                                            | `TabWidget` + a `TabPaneWidget` per tab (see below)                   | `InputDialog`       |
+
+**Everything goes through the engine — there is no "irregular" escape hatch.** A
+`for(...) w->setPos(...)` loop over several widgets defeats the whole exercise,
+and so does reading back a resolved position to nudge the next widget by hand. If
+the engine cannot express what you want, **extend the engine**: an effect that
+looks like arithmetic is usually a layout policy in disguise ("these two end
+flush" is a right-align; "the extra width splits 1:2:1" is a weighted stretch;
+"this group is centred" is a stretch either side of it).
 
 If you write a row/column lambda inside `layout()` that other dialogs could
 reuse (a label+control row, a centered item, …), promote it to a `GUI::` helper
@@ -748,6 +752,24 @@ Two corollaries:
   Make it an `addStretch()` item and let it take whatever is left over.
 - **Don't fill self-labeling widgets** (`PopUpWidget`/`SliderWidget`) — anchor
   them, or their track/value box stretches.
+- **A widget that shows text loaded LATER must FILL.** A caption filled in by
+  `loadConfig()` — a detected controller, a score, a date, an MD5 — must be given
+  its width by the layout (`stretchedItem`, or `HAlign::Fill`), and built with no
+  text at all. Never let it take its width from the text it happens to hold: that
+  text is *data*, and the layout would then change shape with it — a long value
+  stretching a column, an empty one collapsing it, and a `StaticTextWidget`
+  re-deriving its width from its current label after any font change. Where the
+  space such a value needs is wider than its heading, that width is the *dialog's*
+  to state — from the model, not from a specimen widget:
+
+  ```cpp
+  // the score column shows MAX_SCORE_DIGITS digits, whatever is in it today
+  table->columnFixed(COL_SCORE, fontWidth * HSM::MAX_SCORE_DIGITS);
+  table->place(COL_SCORE, row, stretchedItem(myScoreWidgets[r]));  // fills it
+  ```
+
+  A value that must be centred (or right-aligned) in that space says so on the
+  **widget** (`TextAlign::Center`) — a widget aligns its own text.
 - **Keep irregular gaps explicit** with `addSpace(VGAP * n)`, traced from the
   original spacing.
 - **Radio buttons are two objects with different ownership.** Each

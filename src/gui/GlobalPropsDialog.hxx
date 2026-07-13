@@ -44,7 +44,12 @@ class GlobalPropsDialog : public Dialog, public CommandSender
 
   private:
     void createHoldWidgets(const GUI::Font& font, WidgetArray& wid);
-    int layoutHoldWidgets(int x, int y);
+
+    // The three groups of buttons which can be held down at power-on: a
+    // directional cross per joystick, and the console's Select/Reset
+    unique_ptr<GUI::Layout> holdLayout();
+    unique_ptr<GUI::Layout> joyLayout(StaticTextWidget* label, int base);
+    unique_ptr<GUI::Layout> consoleLayout();
 
   private:
     enum: uInt8 {

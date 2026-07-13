@@ -33,8 +33,6 @@ GlobalPropsDialog::GlobalPropsDialog(GuiObject* boss, const GUI::Font& font)
   : Dialog(boss->instance(), boss->parent(), font, "Power-on options"),
     CommandSender(boss)
 {
-  const int lineHeight = Dialog::lineHeight();
-  int pwidth = font.getStringWidth("CM (SpectraVideo CompuMate)");
   WidgetArray wid;
   VariantList items;
   const GUI::Font& infofont = instance().frameBuffer().infoFont();
@@ -44,10 +42,8 @@ GlobalPropsDialog::GlobalPropsDialog(GuiObject* boss, const GUI::Font& font)
   myBSLabel = new StaticTextWidget(this, font, 0, 0, "Bankswitch type");
   for(const auto& [name, desc] : Bankswitch::BSList)
     VarList::push_back(items, desc, name);
-  myBSType = new PopUpWidget(this, font, 0, 0, pwidth, lineHeight, items, "");
+  myBSType = new PopUpWidget(this, font, 0, 0, items, "");
   wid.push_back(myBSType);
-
-  pwidth = font.getStringWidth("A (Expert)");
 
   // TV type
   myTVLabel = new StaticTextWidget(this, font, 0, 0, "TV type");
@@ -55,7 +51,7 @@ GlobalPropsDialog::GlobalPropsDialog(GuiObject* boss, const GUI::Font& font)
   VarList::push_back(items, "Default", "DEFAULT");
   VarList::push_back(items, "Color", "COLOR");
   VarList::push_back(items, "B/W", "BW");
-  myTVType = new PopUpWidget(this, font, 0, 0, pwidth, lineHeight, items, "");
+  myTVType = new PopUpWidget(this, font, 0, 0, items, "");
   wid.push_back(myTVType);
 
   // Left difficulty
@@ -64,13 +60,13 @@ GlobalPropsDialog::GlobalPropsDialog(GuiObject* boss, const GUI::Font& font)
   VarList::push_back(items, "Default", "DEFAULT");
   VarList::push_back(items, "A (Expert)", "A");
   VarList::push_back(items, "B (Novice)", "B");
-  myLeftDiff = new PopUpWidget(this, font, 0, 0, pwidth, lineHeight, items, "");
+  myLeftDiff = new PopUpWidget(this, font, 0, 0, items, "");
   wid.push_back(myLeftDiff);
 
   // Right difficulty
   myRightDiffLabel = new StaticTextWidget(this, font, 0, 0, GUI::RIGHT_DIFFICULTY);
   // ... use same items as above
-  myRightDiff = new PopUpWidget(this, font, 0, 0, pwidth, lineHeight, items, "");
+  myRightDiff = new PopUpWidget(this, font, 0, 0, items, "");
   wid.push_back(myRightDiff);
 
   // Start console with buttons held down
@@ -140,57 +136,89 @@ void GlobalPropsDialog::createHoldWidgets(const GUI::Font& font, WidgetArray& wi
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int GlobalPropsDialog::layoutHoldWidgets(int x, int y)
+unique_ptr<GUI::Layout> GlobalPropsDialog::joyLayout(StaticTextWidget* label,
+                                                     int base)
 {
-  const int fontWidth = Dialog::fontWidth(),
-            VGAP      = Dialog::vGap();
-  int xpos = x, ypos = y;
-  const int xdiff = CheckboxWidget::boxSize(_font) - 9;
+  using GUI::BoxLayout;
+  using GUI::GridLayout;
+  using GUI::alignedItem;
+  using GUI::anchoredItem;
+  using GUI::HAlign;
+  using GUI::VAlign;
+  using Dir = BoxLayout::Dir;
 
-  // Left joystick, arranged as a directional cross
-  myLeftJoyLabel->setPos(xpos, ypos + 2);
-  xpos += myLeftJoyLabel->getWidth()/2 - xdiff - 2;
-  ypos += myLeftJoyLabel->getHeight() + VGAP;
-  myJoy[kJ0Up]->setPos(xpos, ypos);
-  ypos += myJoy[kJ0Up]->getHeight() * 2 + VGAP * 2;
-  myJoy[kJ0Down]->setPos(xpos, ypos);
-  xpos -= myJoy[kJ0Up]->getWidth() + xdiff;
-  ypos -= myJoy[kJ0Up]->getHeight() + VGAP;
-  myJoy[kJ0Left]->setPos(xpos, ypos);
-  xpos += (myJoy[kJ0Up]->getWidth() + xdiff) * 2;
-  myJoy[kJ0Right]->setPos(xpos, ypos);
-  xpos -= (myJoy[kJ0Up]->getWidth() + xdiff) * 2;
-  ypos += myJoy[kJ0Down]->getHeight() * 2 + VGAP * 2;
-  myJoy[kJ0Fire]->setPos(xpos, ypos);
+  const int VGAP = Dialog::vGap();
 
-  xpos = _w / 3;  ypos = y;
+  // The four directions form a cross, with fire below it; every box is one
+  // standard gap from its neighbours, so the cross follows the font
+  auto cross = std::make_unique<GridLayout>(3, 4, VGAP, VGAP);
+  for(int col = 0; col < 3; ++col)
+    cross->columnAuto(col);
+  for(int row = 0; row < 4; ++row)
+    cross->rowAuto(row);
 
-  // Right joystick
-  myRightJoyLabel->setPos(xpos, ypos + 2);
-  xpos += myRightJoyLabel->getWidth()/2 - xdiff - 2;
-  ypos += myRightJoyLabel->getHeight() + VGAP;
-  myJoy[kJ1Up]->setPos(xpos, ypos);
-  ypos += myJoy[kJ1Up]->getHeight() * 2 + VGAP * 2;
-  myJoy[kJ1Down]->setPos(xpos, ypos);
-  xpos -= myJoy[kJ1Up]->getWidth() + xdiff;
-  ypos -= myJoy[kJ1Up]->getHeight() + VGAP;
-  myJoy[kJ1Left]->setPos(xpos, ypos);
-  xpos += (myJoy[kJ1Up]->getWidth() + xdiff) * 2;
-  myJoy[kJ1Right]->setPos(xpos, ypos);
-  xpos -= (myJoy[kJ1Up]->getWidth() + xdiff) * 2;
-  ypos += myJoy[kJ1Down]->getHeight() * 2 + VGAP * 2;
-  myJoy[kJ1Fire]->setPos(xpos, ypos);
+  cross->place(1, 0, anchoredItem(myJoy[base + kJ0Up]));
+  cross->place(0, 1, anchoredItem(myJoy[base + kJ0Left]));
+  cross->place(2, 1, anchoredItem(myJoy[base + kJ0Right]));
+  cross->place(1, 2, anchoredItem(myJoy[base + kJ0Down]));
+  // Fire is the only one with a label, so it lies across the whole cross
+  cross->place(0, 3, anchoredItem(myJoy[base + kJ0Fire]), 3);
 
-  xpos = 2 * _w / 3 + fontWidth;  ypos = y;
+  // Center the cross in the column, and its heading over the cross
+  auto crossRow = std::make_unique<BoxLayout>(Dir::Horizontal);
+  crossRow->addStretchSpace();
+  crossRow->addAuto(std::move(cross));
+  crossRow->addStretchSpace();
 
-  // Console Select/Reset
-  myConsoleLabel->setPos(xpos, ypos + 2);
-  ypos += myConsoleLabel->getHeight() + VGAP;
-  myHoldSelect->setPos(xpos, ypos);
-  ypos += myHoldSelect->getHeight() + VGAP;
-  myHoldReset->setPos(xpos, ypos);
+  auto column = std::make_unique<BoxLayout>(Dir::Vertical, VGAP);
+  column->addAuto(alignedItem(label, HAlign::Center, VAlign::Center));
+  column->addAuto(std::move(crossRow));
 
-  return myJoy[kJ0Fire]->getBottom();
+  return column;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+unique_ptr<GUI::Layout> GlobalPropsDialog::consoleLayout()
+{
+  using GUI::BoxLayout;
+  using GUI::alignedItem;
+  using GUI::anchoredItem;
+  using GUI::HAlign;
+  using GUI::VAlign;
+  using Dir = BoxLayout::Dir;
+
+  const int VGAP = Dialog::vGap();
+
+  auto stack = std::make_unique<BoxLayout>(Dir::Vertical, VGAP);
+  stack->addAuto(anchoredItem(myHoldSelect));
+  stack->addAuto(anchoredItem(myHoldReset));
+
+  // Centered in the column, like the joysticks' crosses beside it
+  auto stackRow = std::make_unique<BoxLayout>(Dir::Horizontal);
+  stackRow->addStretchSpace();
+  stackRow->addAuto(std::move(stack));
+  stackRow->addStretchSpace();
+
+  auto column = std::make_unique<BoxLayout>(Dir::Vertical, VGAP);
+  column->addAuto(alignedItem(myConsoleLabel, HAlign::Center, VAlign::Center));
+  column->addAuto(std::move(stackRow));
+
+  return column;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+unique_ptr<GUI::Layout> GlobalPropsDialog::holdLayout()
+{
+  using GUI::BoxLayout;
+  using Dir = BoxLayout::Dir;
+
+  // The three groups share the width equally
+  auto row = std::make_unique<BoxLayout>(Dir::Horizontal);
+  row->addStretch(joyLayout(myLeftJoyLabel, kJ0Up));
+  row->addStretch(joyLayout(myRightJoyLabel, kJ1Up));
+  row->addStretch(consoleLayout());
+
+  return row;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -201,50 +229,45 @@ void GlobalPropsDialog::layout()
   using GUI::labeledRow;
   using Dir = BoxLayout::Dir;
 
-  const int lineHeight   = Dialog::lineHeight(),
-            fontWidth    = Dialog::fontWidth(),
-            buttonHeight = Dialog::buttonHeight(),
+  const int buttonHeight = Dialog::buttonHeight(),
             VBORDER      = Dialog::vBorder(),
             HBORDER      = Dialog::hBorder(),
             VGAP         = Dialog::vGap();
-  const GUI::Font& infofont = instance().frameBuffer().infoFont();
-  const int infoLineHeight = infofont.getLineHeight();
-  const int lwidth = _font.getStringWidth("Right difficulty ");
-  const int pwidth = _font.getStringWidth("CM (SpectraVideo CompuMate)");
 
-  // Size the (fixed) dialog from the current font so it reflows on font change
-  _w = HBORDER * 2 + std::max(lwidth + pwidth + PopUpWidget::dropDownWidth(_font),
-                              49 * infofont.getMaxCharWidth());
-  _h = _th + 11 * (lineHeight + VGAP) + 3 * infoLineHeight + VGAP * 12
-       + buttonHeight + VBORDER * 2;
+  // The four pop-ups share one label column; the three offering the same kind
+  // of choice also share one value-box width, so their boxes line up (the
+  // bankswitch list has far longer entries and keeps its own width)
+  GUI::alignLabels({{myBSLabel}, {myTVLabel},
+                    {myLeftDiffLabel}, {myRightDiffLabel}});
+  GUI::alignPopUps({myTVType, myLeftDiff, myRightDiff});
 
-  // Top section: a vertical stack of the four labelled pop-ups (each a label in
-  // a fixed lwidth column with the control to its right) followed by the
-  // "held down" heading
-  auto top = std::make_unique<BoxLayout>(Dir::Vertical, 0, HBORDER, VBORDER);
-  top->addFixed(labeledRow(myBSLabel, myBSType, lwidth), lineHeight);
-  top->addSpace(VGAP * 3);
-  top->addFixed(labeledRow(myTVLabel, myTVType, lwidth), lineHeight);
-  top->addSpace(VGAP);
-  top->addFixed(labeledRow(myLeftDiffLabel, myLeftDiff, lwidth), lineHeight);
-  top->addSpace(VGAP);
-  top->addFixed(labeledRow(myRightDiffLabel, myRightDiff, lwidth), lineHeight);
-  top->addSpace(VGAP * 3);
-  top->addFixed(anchoredItem(myHeldLabel), lineHeight);
-  top->addFixed(anchoredItem(myReleasedLabel), infoLineHeight);
-  top->doLayout(0, _th, _w, _h - _th);
+  auto root = std::make_unique<BoxLayout>(Dir::Vertical, 0, HBORDER, VBORDER);
+  root->addAuto(labeledRow(myBSLabel, myBSType));
+  root->addSpace(VGAP * 3);
+  root->addAuto(labeledRow(myTVLabel, myTVType));
+  root->addSpace(VGAP);
+  root->addAuto(labeledRow(myLeftDiffLabel, myLeftDiff));
+  root->addSpace(VGAP);
+  root->addAuto(labeledRow(myRightDiffLabel, myRightDiff));
+  root->addSpace(VGAP * 3);
+  root->addAuto(anchoredItem(myHeldLabel));
+  root->addAuto(anchoredItem(myReleasedLabel));
+  root->addSpace(VGAP * 2);
+  root->addAuto(holdLayout());
+  root->addSpace(VGAP * 4);
+  root->addAuto(anchoredItem(myDebug));
+  root->addSpace(VGAP * 3);
+  root->addAuto(anchoredItem(myInfo1));
+  root->addAuto(anchoredItem(myInfo2));
 
-  // The joystick/console "held down" checkboxes use a custom cross layout
-  const int holdY = myReleasedLabel->getTop() + infoLineHeight + VGAP * 2;
-  const int fireBottom = layoutHoldWidgets(fontWidth * 4, holdY);
+  // The dialog is as large as its content asks to be, and at least wide enough
+  // for the button row below it (which the content knows nothing about)
+  const Common::Size natural = root->naturalSize();
 
-  // Start in debugger mode
-  myDebug->setPos(HBORDER, fireBottom + VGAP * 4);
+  _w = std::max(static_cast<int>(natural.w), Dialog::buttonGroupWidth());
+  _h = _th + static_cast<int>(natural.h) + buttonHeight + VBORDER;
 
-  // Usage message, anchored just above the button row
-  const int infoY = _h - VBORDER - buttonHeight - VGAP * 3 - infoLineHeight * 2;
-  myInfo1->setPos(HBORDER, infoY);
-  myInfo2->setPos(HBORDER, infoY + infoLineHeight);
+  root->doLayout(0, _th, _w, _h - _th);
 
   // Standard button group (Defaults / Load ROM / Cancel) along the bottom edge
   layoutButtonGroup();

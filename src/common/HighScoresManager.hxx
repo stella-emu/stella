@@ -41,6 +41,12 @@ namespace HSM {
   static constexpr uInt32 MAX_SPECIAL_NAME = 5;
   static constexpr uInt32 MAX_SPECIAL_DIGITS = 3;
 
+  static constexpr uInt32 MAX_VARIATIONS = 256;
+  // How many characters a variation number is printed in; the high scores
+  // dialog both formats its list and sizes its pop-up from this
+  static constexpr uInt32 MAX_VARIATION_DIGITS = 3;
+  static_assert(MAX_VARIATIONS < 1000, "a variation no longer fits its field");
+
   static constexpr uInt32 DEFAULT_VARIATION = 1;
   static constexpr uInt32 DEFAULT_ADDRESS = 0;
 
@@ -167,8 +173,6 @@ class HighScoresManager
     static constexpr string_view SPECIAL_BCD = "special_bcd";
     static constexpr string_view SPECIAL_ZERO_BASED = "special_zero_based";
     static constexpr string_view NOTES = "notes";
-
-    static constexpr uInt32 MAX_VARIATIONS = 256;
 
     static constexpr uInt32 MAX_TRAILING = 3;
     static constexpr uInt32 DEFAULT_DIGITS = 4;

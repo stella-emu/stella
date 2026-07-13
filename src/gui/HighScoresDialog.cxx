@@ -32,6 +32,23 @@
 static constexpr int BUTTON_GFX_H = 10;
 static constexpr int BUTTON_GFX_H_LARGE = 16;
 
+namespace {
+  // The score table's columns
+  enum Column: int {
+    COL_RANK, COL_SCORE, COL_SPECIAL, COL_NAME, COL_DATE, COL_DELETE, NUM_COLUMNS
+  };
+
+  // A name is the player's initials
+  constexpr string_view NAME_FIELD = "ABC";
+  // The format the dates are shown in, which is what sizes their column
+  constexpr string_view DATE_FIELD = "YY-MM-DD HH:MM";
+
+  // An MD5 is far longer than there is room for, so these two lines show only
+  // the first 16 characters of one (and clip the rest)
+  constexpr string_view MD5_FIELD   = "MD5: 1234567890123456.";
+  constexpr string_view PROPS_FIELD = "Props: 1234567890123456.";
+}  // namespace
+
 static constexpr std::array<uInt32, BUTTON_GFX_H> PREV_GFX = {
   0b0000110000,
   0b0000110000,
@@ -108,9 +125,7 @@ HighScoresDialog::HighScoresDialog(OSystem& osystem, DialogContainer& parent,
   myScores.variation = HSM::DEFAULT_VARIATION;
 
   const GUI::Font& ifont = instance().frameBuffer().infoFont();
-  const int lineHeight = Dialog::lineHeight(),
-            fontWidth  = Dialog::fontWidth();
-  const int nWidth = _font.getStringWidth("ABC") + fontWidth * 0.75;
+  const int fontWidth = Dialog::fontWidth();
   const int bWidth = fontWidth * 5;
   const bool smallFont = _font.getFontHeight() < 24;
   const int buttonSize = smallFont ? BUTTON_GFX_H : BUTTON_GFX_H_LARGE;
@@ -123,9 +138,11 @@ HighScoresDialog::HighScoresDialog(OSystem& osystem, DialogContainer& parent,
   // NOLINTBEGIN(cppcoreguidelines-prefer-member-initializer)
   myGameNameWidget = new StaticTextWidget(this, _font, 0, 0, "");
 
-  myVariationLabel = new StaticTextWidget(this, _font, 0, 0, "Variation ");
+  myVariationLabel = new StaticTextWidget(this, _font, 0, 0, "Variation");
+  // The list is filled per ROM in loadConfig(), so the pop-up cannot size its
+  // box to it; the widest variation there can be is what it must show
   myVariationPopup = new PopUpWidget(this, _font, 0, 0,
-      _font.getStringWidth("256"), lineHeight, items, "", 0, kVariationChanged);
+      fontWidth * HSM::MAX_VARIATION_DIGITS, items, "", 0, kVariationChanged);
   wid.push_back(myVariationPopup);
   myPrevVarButton = new ButtonWidget(this, _font, 0, 0, bWidth, myVariationPopup->getHeight(),
       smallFont ? PREV_GFX.data() : PREV_GFX_LARGE.data(),
@@ -136,25 +153,32 @@ HighScoresDialog::HighScoresDialog(OSystem& osystem, DialogContainer& parent,
       buttonSize, buttonSize, kNextVariation);
   wid.push_back(myNextVarButton);
 
-  // Score-table column headers
+  // Score-table column headers.  The special value's heading is the game's own
+  // word for it ("Round", "Level", ...), so it arrives with the scores
   myRankLabel          = new StaticTextWidget(this, _font, 0, 0, "Rank");
   myScoreLabel         = new StaticTextWidget(this, _font, 0, 0, "Score");
-  mySpecialLabelWidget = new StaticTextWidget(this, _font, 0, 0, "Round");
+  mySpecialLabelWidget = new StaticTextWidget(this, _font, 0, 0, "");
   myNameLabel          = new StaticTextWidget(this, _font, 0, 0, "Name");
   myDateLabel          = new StaticTextWidget(this, _font, 0, 0, "Date   Time");
 
-  // Score-table data rows
+  // Score-table data rows.  Every one of these is filled in as the scores load,
+  // so each takes its width from the column it sits in and starts out empty; the
+  // rank is the exception, being the one thing here that is known up front.  The
+  // rank and the special value are narrower than their headings, so they center
+  // their text under them
   for(int r = 0; r < numRanks; ++r)
   {
     myRankWidgets[r] = new StaticTextWidget(this, _font, 0, 0,
-                          (r < 9 ? " " : "") + std::to_string(r + 1));
-    myScoreWidgets[r] = new StaticTextWidget(this, _font, 0, 0, "12345678");
-    mySpecialWidgets[r] = new StaticTextWidget(this, _font, 0, 0, "123");
-    myNameWidgets[r] = new StaticTextWidget(this, _font, 0, 0, "   ");
-    myEditNameWidgets[r] = new EditTextWidget(this, _font, 0, 0, nWidth);
+        (r < 9 ? " " : "") + std::to_string(r + 1), TextAlign::Center);
+    myScoreWidgets[r] = new StaticTextWidget(this, _font, 0, 0, "");
+    mySpecialWidgets[r] = new StaticTextWidget(this, _font, 0, 0, "",
+                                               TextAlign::Center);
+    myNameWidgets[r] = new StaticTextWidget(this, _font, 0, 0, "");
+    myEditNameWidgets[r] = new EditTextWidget(this, _font, 0, 0,
+        EditTextWidget::calcWidth(_font, NAME_FIELD));
     myEditNameWidgets[r]->setFlags(EditTextWidget::FLAG_INVISIBLE);
     myEditNameWidgets[r]->setEnabled(false);
-    myDateWidgets[r] = new StaticTextWidget(this, _font, 0, 0, "YY-MM-DD HH:MM");
+    myDateWidgets[r] = new StaticTextWidget(this, _font, 0, 0, "");
     myDeleteButtons[r] = new ButtonWidget(this, _font, 0, 0, fontWidth * 2,
                                           Dialog::fontHeight(), "X", kDeleteSingle);
     myDeleteButtons[r]->setID(r);
@@ -164,10 +188,9 @@ HighScoresDialog::HighScoresDialog(OSystem& osystem, DialogContainer& parent,
     wid.push_back(myDeleteButtons[r]);
   }
 
-  myNotesWidget = new StaticTextWidget(this, ifont, 0, 0, "Note: ");
-  // Note: Only display the first 16 md5 chars + "..."
-  myMD5Widget = new StaticTextWidget(this, ifont, 0, 0, "MD5: 1234567890123456.");
-  myCheckSumWidget = new StaticTextWidget(this, ifont, 0, 0, "Props: 1234567890123456.");
+  myNotesWidget = new StaticTextWidget(this, ifont, 0, 0, "");
+  myMD5Widget = new StaticTextWidget(this, ifont, 0, 0, "");
+  myCheckSumWidget = new StaticTextWidget(this, ifont, 0, 0, "");
   // NOLINTEND(cppcoreguidelines-prefer-member-initializer)
 
   addDefaultsOKCancelBGroup(wid, _font, "Save", "Cancel", " Reset ");
@@ -185,98 +208,109 @@ HighScoresDialog::~HighScoresDialog() = default;
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void HighScoresDialog::layout()
 {
+  using GUI::BoxLayout;
   using GUI::GridLayout;
+  using GUI::alignedItem;
   using GUI::anchoredItem;
+  using GUI::stretchedItem;
+  using GUI::HAlign;
+  using GUI::VAlign;
+  using Dir = BoxLayout::Dir;
 
   const GUI::Font& ifont = instance().frameBuffer().infoFont();
-  const int infoLineHeight = ifont.getLineHeight();
-  const int lineHeight   = Dialog::lineHeight(),
-            fontHeight   = Dialog::fontHeight(),
-            fontWidth    = Dialog::fontWidth(),
+  const int fontWidth    = Dialog::fontWidth(),
             buttonHeight = Dialog::buttonHeight(),
             BUTTON_GAP   = Dialog::buttonGap(),
             VBORDER      = Dialog::vBorder(),
             HBORDER      = Dialog::hBorder(),
             VGAP         = Dialog::vGap();
   const int numRanks = static_cast<int>(NUM_RANKS);
+  // Two characters between the table's columns
+  const int COL_GAP = fontWidth * 2;
 
-  // Score-table columns.  Each column width is the width of a representative
-  // (padded) string, so the columns line up; the table also drives the dialog
-  // width.  Cells are anchored (see below) so wide data can't be clipped.
-  const int xposRank = HBORDER;
-  const int wRank    = _font.getStringWidth("Rank");
-  const int wScore   = _font.getStringWidth("   Score  ");
-  const int wSpecial = _font.getStringWidth("Round  ");
-  const int wName    = _font.getStringWidth("Name  ");
-  const int wDate    = _font.getStringWidth("YY-MM-DD HH:MM  ");
-  const int wDelete  = fontWidth * 2;
-  const int tableWidth = wRank + wScore + wSpecial + wName + wDate + wDelete;
-  const int xposDelete = xposRank + wRank + wScore + wSpecial + wName + wDate;
+  // The only label of its kind in the dialog, so it is a group on its own --
+  // which is where its clearance from the pop-up comes from
+  GUI::alignLabels({{myVariationLabel}});
 
-  // Dialog width = widest of the table, the info text, and the button row (whose
-  // buttons have already sized themselves, see addDefaultsOKCancelBGroup)
-  _w = std::max({HBORDER * 2 + tableWidth,
-                 HBORDER * 2 + ifont.getMaxCharWidth() * (5 + 17 + 2 + 7 + 17),
-                 buttonGroupWidth()});
+  // Variation: the pop-up beside its label, and the prev/next buttons at the
+  // far end of the row (i.e. at the end of the table below)
+  auto varRow = std::make_unique<BoxLayout>(Dir::Horizontal);
+  varRow->addAuto(anchoredItem(myVariationLabel));
+  varRow->addAuto(anchoredItem(myVariationPopup));
+  varRow->addStretchSpace();
+  varRow->addAuto(anchoredItem(myPrevVarButton));
+  varRow->addSpace(BUTTON_GAP);
+  varRow->addAuto(anchoredItem(myNextVarButton));
 
-  // Game name (top)
-  myGameNameWidget->setArea(HBORDER, VBORDER + _th + 1, _w - HBORDER * 2, lineHeight);
+  // The score table: a header row plus a row per rank.  A column is as wide as
+  // the widest thing in it -- except where the FIELD it shows is wider than its
+  // heading, which no widget in it can say, since the values arrive later
+  auto table = std::make_unique<GridLayout>(NUM_COLUMNS, 1 + numRanks,
+                                            COL_GAP, VGAP);
+  for(int col = 0; col < NUM_COLUMNS; ++col)
+    table->columnAuto(col);
+  table->columnFixed(COL_SCORE, fontWidth * HSM::MAX_SCORE_DIGITS)
+        .columnFixed(COL_SPECIAL, fontWidth * HSM::MAX_SPECIAL_NAME)
+        .columnFixed(COL_DATE, _font.getStringWidth(DATE_FIELD));
+  for(int row = 0; row < 1 + numRanks; ++row)
+    table->rowAuto(row);
 
-  int ypos = VBORDER + _th + lineHeight + VGAP * 2;
+  // A score is right-aligned in its field, so its heading sits at the right of
+  // the column; the date's heading is shorter than the dates and centers on them
+  table->place(COL_RANK, 0, anchoredItem(myRankLabel));
+  table->place(COL_SCORE, 0, alignedItem(myScoreLabel, HAlign::Right,
+                                         VAlign::Center));
+  table->place(COL_SPECIAL, 0, stretchedItem(mySpecialLabelWidget));
+  table->place(COL_NAME, 0, anchoredItem(myNameLabel));
+  table->place(COL_DATE, 0, alignedItem(myDateLabel, HAlign::Center,
+                                        VAlign::Center));
 
-  // Variation row: label + popup, with the prev/next buttons at the right
-  myVariationLabel->setPos(HBORDER, ypos + 1);
-  myVariationPopup->setPos(myVariationLabel->getRight(), ypos);
-  const int bWidth = fontWidth * 5;
-  myPrevVarButton->setPos(xposDelete + fontWidth * 2 - bWidth * 2 - BUTTON_GAP, ypos - 1);
-  myNextVarButton->setPos(xposDelete + fontHeight - bWidth, ypos - 1);
-
-  ypos += lineHeight + VGAP * 4;
-
-  // Score table (header row + NUM_RANKS data rows) laid out as a grid so the
-  // columns line up.  Cells are anchored (positioned, not stretched) so each
-  // label keeps its natural width, matching the old loose packing.
-  const int tableBase = ypos;
-  auto grid = std::make_unique<GridLayout>(6, 1 + numRanks, 0, VGAP, 0, 0);
-  grid->columnFixed(0, wRank).columnFixed(1, wScore).columnFixed(2, wSpecial)
-      .columnFixed(3, wName).columnFixed(4, wDate).columnFixed(5, wDelete);
-  for(int gr = 0; gr < 1 + numRanks; ++gr)
-    grid->rowFixed(gr, lineHeight);
-
-  grid->place(0, 0, anchoredItem(myRankLabel));
-  grid->place(1, 0, anchoredItem(myScoreLabel));
-  grid->place(2, 0, anchoredItem(mySpecialLabelWidget));
-  grid->place(3, 0, anchoredItem(myNameLabel));
-  grid->place(4, 0, anchoredItem(myDateLabel));
   for(int r = 0; r < numRanks; ++r)
   {
-    const int gr = r + 1;
-    grid->place(0, gr, anchoredItem(myRankWidgets[r]));
-    grid->place(1, gr, anchoredItem(myScoreWidgets[r]));
-    grid->place(2, gr, anchoredItem(mySpecialWidgets[r]));
-    grid->place(3, gr, anchoredItem(myNameWidgets[r]));
-    grid->place(4, gr, anchoredItem(myDateWidgets[r]));
-    grid->place(5, gr, anchoredItem(myDeleteButtons[r]));
+    const int row = r + 1;
+
+    // Every cell here fills its column, so what is loaded into it can neither
+    // stretch it nor collapse it.  The name's editor takes the name's place, so
+    // it shares its cell -- and the row is as tall as the editor, which frames
+    // its text
+    table->place(COL_RANK, row, stretchedItem(myRankWidgets[r]));
+    table->place(COL_SCORE, row, stretchedItem(myScoreWidgets[r]));
+    table->place(COL_SPECIAL, row, stretchedItem(mySpecialWidgets[r]));
+    table->place(COL_NAME, row, stretchedItem(myNameWidgets[r]));
+    table->place(COL_NAME, row, stretchedItem(myEditNameWidgets[r]));
+    table->place(COL_DATE, row, stretchedItem(myDateWidgets[r]));
+    table->place(COL_DELETE, row, anchoredItem(myDeleteButtons[r]));
   }
-  // The +1 preserves the previous per-row vertical nudge
-  grid->doLayout(xposRank, tableBase + 1, tableWidth,
-                 (1 + numRanks) * lineHeight + numRanks * VGAP);
 
-  // Editable-name overlays sit on their name cells (not part of the grid flow)
-  for(int r = 0; r < numRanks; ++r)
-    myEditNameWidgets[r]->setPos(myNameWidgets[r]->getLeft(),
-                                 myNameWidgets[r]->getTop() - 2);
+  // How much of an MD5 to show is the dialog's choice, not the widgets': the
+  // full one is put in them as the ROM loads, and they clip it
+  myMD5Widget->setWidth(ifont.getStringWidth(MD5_FIELD));
+  myCheckSumWidget->setWidth(ifont.getStringWidth(PROPS_FIELD));
 
-  ypos = tableBase + (1 + numRanks) * (lineHeight + VGAP) + VGAP;
+  auto md5Row = std::make_unique<BoxLayout>(Dir::Horizontal);
+  md5Row->addAuto(anchoredItem(myMD5Widget));
+  md5Row->addStretchSpace(1, ifont.getMaxCharWidth() * 2);
+  md5Row->addAuto(anchoredItem(myCheckSumWidget));
 
-  // Notes, then MD5 (left) + properties checksum (right)
-  myNotesWidget->setArea(HBORDER, ypos + 1, _w - HBORDER * 2, infoLineHeight);
-  ypos += infoLineHeight + VGAP;
-  myMD5Widget->setPos(HBORDER, ypos + 1);
-  myCheckSumWidget->setPos(
-      _w - HBORDER - ifont.getStringWidth("Props: 1234567890123456."), ypos + 1);
+  // The game name and the notes fill the width they are given and say nothing
+  // about how wide the dialog should be; the table is what decides that
+  auto root = std::make_unique<BoxLayout>(Dir::Vertical, 0, HBORDER, VBORDER);
+  root->addAuto(stretchedItem(myGameNameWidget));
+  root->addSpace(VGAP * 2);
+  root->addAuto(std::move(varRow));
+  root->addSpace(VGAP * 4);
+  root->addAuto(std::move(table));
+  root->addSpace(VGAP * 2);
+  root->addAuto(stretchedItem(myNotesWidget));
+  root->addSpace(VGAP);
+  root->addAuto(std::move(md5Row));
 
-  _h = myMD5Widget->getBottom() + VBORDER + buttonHeight + VBORDER;
+  const Common::Size natural = root->naturalSize();
+
+  _w = std::max(static_cast<int>(natural.w), Dialog::buttonGroupWidth());
+  _h = _th + static_cast<int>(natural.h) + buttonHeight + VBORDER;
+
+  root->doLayout(0, _th, _w, _h - _th);
 
   // Standard button group (Reset / Save / Cancel) along the bottom
   layoutButtonGroup();
@@ -296,7 +330,8 @@ void HighScoresDialog::loadConfig()
   // fill drown down with all variation numbers of current game
   items.clear();
   for (Int32 i = 1; i <= instance().highScores().numVariations(); ++i)
-    VarList::push_back(items, std::format("{:3}", i), i);
+    VarList::push_back(items,
+                       std::format("{:{}}", i, HSM::MAX_VARIATION_DIGITS), i);
   myVariationPopup->addItems(items);
 
   Int32 variation = 0;
@@ -322,9 +357,10 @@ void HighScoresDialog::loadConfig()
     // load initials from last session
     myInitials = instance().settings().getString("initials");
 
+  // Right-align the game's word for the special value in the field it is shown in
   string label = "   " + instance().highScores().specialLabel();
-  if (label.length() > 5)
-    label = label.substr(label.length() - 5);
+  if (label.length() > HSM::MAX_SPECIAL_NAME)
+    label = label.substr(label.length() - HSM::MAX_SPECIAL_NAME);
   mySpecialLabelWidget->setLabel(label);
 
   if (!instance().highScores().notes().empty())
