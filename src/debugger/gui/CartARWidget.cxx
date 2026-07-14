@@ -20,6 +20,7 @@
 #include "Debugger.hxx"
 #include "CartDebug.hxx"
 #include "PopUpWidget.hxx"
+#include "Layout.hxx"
 #include "CartARWidget.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -36,17 +37,26 @@ CartridgeARWidget::CartridgeARWidget(
     "\nNote: on real hardware, RAM contents at power-on are uncertain "
     "(may be zero or random). Currently emulated as zero-filled.\n";
 
-  constexpr int xpos = 2;
-  const int ypos = addBaseInformation(size, "Starpath", info) + _lineHeight;
+  createBaseInformation(size, "Starpath", info);
 
   VariantList items;
   for(int i = 0; i < 32; ++i)
     VarList::push_back(items, std::format("{:3}", i));
-  myBank = new PopUpWidget(boss, _font, xpos, ypos-2, _font.getStringWidth(" XX"),
-                           _lineHeight, items, "Set bank     ",
-                           0, kBankChanged);
+
+  myBank = new PopUpWidget(boss, _font, 0, 0, items, "Set bank", 0, kBankChanged);
   myBank->setTarget(this);
   addFocusWidget(myBank);
+
+  // The selector's box lines up with the info fields above it
+  myLabelColumn.emplace_back(myBank);
+
+  reflow();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void CartridgeARWidget::layoutContent(GUI::BoxLayout& col)
+{
+  col.addAuto(GUI::anchoredItem(myBank));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

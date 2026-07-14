@@ -34,7 +34,9 @@ CartridgeDevCardWidget::CartridgeDevCardWidget(
     "$B000-$BFFF  $D000-$DFFF  $F000-$FFFF\n"
     "All windows readable and writable; no bankswitching.";
 
-  addBaseInformation(CartridgeDevCard::RAM_SIZE, "Atari (DevKit)", info);
+  // This tab is nothing but the ROM info block; reflow() lays it out
+  createBaseInformation(CartridgeDevCard::RAM_SIZE, "Atari (DevKit)", info);
+  reflow();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

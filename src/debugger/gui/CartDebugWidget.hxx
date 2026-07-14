@@ -46,22 +46,22 @@ class CartDebugWidget : public Widget, public CommandSender
     // left so the fields keep a gap from the window border
     static constexpr int HBORDER = 2, RBORDER = 12, VBORDER = 4, VGAP = 4;
 
-  public:
-    // Legacy one-shot creation+positioning of the ROM size / manufacturer /
-    // description fields, returning the y below them.  Still used by the cart
-    // widgets that have not yet been converted to the reflow() model; those
-    // continue to position their own widgets from the returned value.
-    int addBaseInformation(size_t bytes, string_view manufacturer,
-        string_view desc, uInt16 maxlines = 10);
+    // The width a tab's content is laid out in, for the tab of width 'w'.  Ask for
+    // it rather than subtracting the margins yourself: a word-wrapping widget must
+    // be given its width before the column holding it is built, and that width has
+    // to be the one the column will hand it (see Layout.hxx's heightForWidth note)
+    static constexpr int contentWidth(int w) { return w - HBORDER - RBORDER; }
 
+  public:
     // Reposition/resize this widget's content when its area changes; drives
-    // reflow() so a converted cart tab re-flows live with the debugger window
+    // reflow() so a cart tab re-flows live with the debugger window
     void setArea(int x, int y, int w, int h) override;
 
-    // Lay the widget's content out for its current area/font.  The base does
-    // nothing (unconverted carts keep their ctor-time geometry); converted
-    // carts (via CartridgeEnhancedWidget) rebuild an engine layout tree here
-    virtual void reflow() { }
+    // Lay this tab out for its current area and font.  EVERY cart tab has the
+    // same skeleton -- one label column, the ROM info rows, the cart's own rows
+    // beneath them, all within the shared margins -- so it is written once, here.
+    // A cart says only what goes in the middle: see layoutContent()
+    void reflow();
 
     // Inform the ROM Widget that the underlying cart has somehow changed
     void invalidate();
@@ -90,16 +90,21 @@ class CartDebugWidget : public Widget, public CommandSender
   protected:
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override { }
 
-    // Create the ROM size / manufacturer / description fields (at a placeholder
-    // position); layoutBaseInformation() then positions them via the engine.
-    // The reflow-based counterpart to addBaseInformation()
+    // Create the ROM size / manufacturer / description fields, at a placeholder
+    // position: reflow() is what positions them.  Call this from the ctor
     void createBaseInformation(size_t bytes, string_view manufacturer,
         string_view desc, uInt16 maxlines = 10);
 
-    // Append the ROM size / manufacturer / description rows to a vertical box.
-    // 'contentW' is the width the box will be laid out in — the description needs
-    // it up front, since word wrap makes its height depend on its width
-    void layoutBaseInformation(GUI::BoxLayout& col, int contentW);
+    // THE hook: append this cart's own rows to the tab's column.  Everything
+    // around them — the label column, the ROM info rows above, the margins — is
+    // the skeleton's business (see reflow()), so a cart states only its content.
+    // A cart adding to what its base class lays out calls the base first, then
+    // appends; one REPLACING a part of it overrides that part instead (see
+    // CartridgeEnhancedWidget's bank selectors)
+    virtual void layoutContent(GUI::BoxLayout& col) { }
+
+    // Append the ROM size / manufacturer / description rows to a vertical box
+    void layoutBaseInformation(GUI::BoxLayout& col);
 
   protected:
     // The controls sharing this tab's label column.  A control says it belongs

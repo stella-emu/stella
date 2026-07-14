@@ -17,6 +17,7 @@
 
 #include "DataGridWidget.hxx"
 #include "PopUpWidget.hxx"
+#include "Layout.hxx"
 #include "CartCDFWidget.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -26,13 +27,6 @@ CartridgeCDFWidget::CartridgeCDFWidget(
   : CartridgeARMWidget(boss, lfont, nfont, x, y, w, h, cart),
     myCart{cart}
 {
-  constexpr int VBORDER = 8,
-                HBORDER = 2,
-                INDENT = 20,
-                VGAP = 4;
-
-  int xpos = HBORDER, ypos = VBORDER;
-
   VariantList items;
   if(isCDFJplus())
   {
@@ -54,168 +48,175 @@ CartridgeCDFWidget::CartridgeCDFWidget(
     VarList::push_back(items, "5 ($FFFA)");
     VarList::push_back(items, "6 ($FFFB)");
   }
-  myBank = new PopUpWidget(boss, _font, xpos, ypos, _font.getStringWidth("0 ($FFFx)"),
-                           _lineHeight, items,
-                           "Set bank ", 0, kBankChanged);
+  // Every widget is created at a placeholder position; reflow() positions them
+  myBank = new PopUpWidget(boss, _font, 0, 0, items, "Set bank", 0, kBankChanged);
   myBank->setTarget(this);
   addFocusWidget(myBank);
+  myLabelColumn.emplace_back(myBank);
 
-  // Fast Fetch flag
-  myFastFetch = new CheckboxWidget(boss, _font, myBank->getRight() + 24, ypos + 1,
-                                   "Fast Fetcher enabled");
+  // Fast Fetch flag, and (CDFJ+) the offset it fetches from
+  myFastFetch = new CheckboxWidget(boss, _font, 0, 0, "Fast Fetcher enabled");
   myFastFetch->setTarget(this);
   myFastFetch->setEditable(false);
 
-  int lwidth = 0;
-
-  // Fast Fetch Offset
   if(isCDFJplus())
   {
-    ypos += _lineHeight + VGAP;
-    new StaticTextWidget(_boss, _font, myFastFetch->getLeft(), ypos, "Fast Fetch Offset: ");
-    lwidth = _font.getStringWidth("Fast Fetch Offset: ");
+    myFastFetchOffsetLabel = new StaticTextWidget(_boss, _font, 0, 0, "Fast Fetch Offset:");
 
-    myFastFetcherOffset = new DataGridWidget(boss, _nfont, myFastFetch->getLeft() + lwidth, ypos, 1, 1, 2, 8,
-                                         Common::Base::Fmt::_16_2);
+    myFastFetcherOffset = new DataGridWidget(boss, _nfont, 0, 0, 1, 1, 2, 8,
+                                             Common::Base::Fmt::_16_2);
     myFastFetcherOffset->setTarget(this);
     myFastFetcherOffset->setEditable(false);
   }
 
-  // Datastream Pointers
-#define DS_X (HBORDER + _font.getStringWidth("xx "))
-  xpos = DS_X;
-  ypos += _lineHeight + VGAP * 2;
-  new StaticTextWidget(boss, _font, xpos, ypos, "Datastream Pointers");
+  const auto addGrid = [&](DataGridWidget*& grid, int cols, int rows,
+                           int colchars, int bits, Common::Base::Fmt fmt) {
+    grid = new DataGridWidget(boss, _nfont, 0, 0, cols, rows, colchars, bits, fmt);
+    grid->setTarget(this);
+    grid->setEditable(false);
+  };
+  const bool jump2 = isCDFJ() || isCDFJplus();   // two jump streams, not one
 
-  myDatastreamPointers = new DataGridWidget(boss, _nfont, DS_X,
-                                            ypos+_lineHeight, 4, 8, 6, 32,
-                                            Common::Base::Fmt::_16_3_2);
-  myDatastreamPointers->setTarget(this);
-  myDatastreamPointers->setEditable(false);
+  // The datastream table: pointers on the left, increments on the right, with the
+  // command and jump streams on rows of their own beneath them
+  myPointersLabel = new StaticTextWidget(boss, _font, 0, 0, "Datastream Pointers");
+  addGrid(myDatastreamPointers,     4, 8, 6, 32, Common::Base::Fmt::_16_3_2);
+  addGrid(myCommandStreamPointer,   1, 1, 6, 32, Common::Base::Fmt::_16_3_2);
+  addGrid(myJumpStreamPointers, jump2 ? 2 : 1, 1, 6, 32, Common::Base::Fmt::_16_3_2);
 
-  myCommandStreamPointer = new DataGridWidget(boss, _nfont, DS_X  + myDatastreamPointers->getWidth() * 3 / 4,
-                                              ypos+_lineHeight + 8*_lineHeight, 1, 1, 6, 32,
-                                              Common::Base::Fmt::_16_3_2);
-  myCommandStreamPointer->setTarget(this);
-  myCommandStreamPointer->setEditable(false);
+  myIncrementsLabel = new StaticTextWidget(boss, _font, 0, 0, "Datastream Increments");
+  addGrid(myDatastreamIncrements,   4, 8, 5, 32, Common::Base::Fmt::_16_2_2);
+  addGrid(myCommandStreamIncrement, 1, 1, 5, 32, Common::Base::Fmt::_16_2_2);
+  addGrid(myJumpStreamIncrements, jump2 ? 2 : 1, 1, 5, 32, Common::Base::Fmt::_16_2_2);
 
-  if(isCDFJ() || isCDFJplus())
-    myJumpStreamPointers = new DataGridWidget(boss, _nfont, DS_X  + myDatastreamPointers->getWidth() * 2 / 4,
-                                              ypos+_lineHeight + 9*_lineHeight, 2, 1, 6, 32,
-                                              Common::Base::Fmt::_16_3_2);
-  else
-    myJumpStreamPointers = new DataGridWidget(boss, _nfont, DS_X  + myDatastreamPointers->getWidth() * 3 / 4,
-                                              ypos+_lineHeight + 9*_lineHeight, 1, 1, 6, 32,
-                                              Common::Base::Fmt::_16_3_2);
-  myJumpStreamPointers->setTarget(this);
-  myJumpStreamPointers->setEditable(false);
-
+  // The stream each table row holds: the first eight by number, then the named ones
   for(uInt32 row = 0; row < 8; ++row)
-  {
     myDatastreamLabels[row] =
-    new StaticTextWidget(_boss, _font, DS_X - _font.getStringWidth("xx "),
-                         ypos+_lineHeight + row*_lineHeight + 2, "   ");
-    myDatastreamLabels[row]->setLabel(Common::Base::toString(row * 4,
-                                      Common::Base::Fmt::_16_2));
-  }
-  lwidth = _font.getStringWidth("Jump Data (21|22)");
-  myDatastreamLabels[8] =
-  new StaticTextWidget(_boss, _font, DS_X - _font.getStringWidth("xx "),
-                       ypos+_lineHeight + 8*_lineHeight + 2,
-                       lwidth, _fontHeight, "Write Data (20)");
-  myDatastreamLabels[9] =
-  new StaticTextWidget(_boss, _font, DS_X - _font.getStringWidth("xx "),
-                       ypos+_lineHeight + 9*_lineHeight + 2,
-                       lwidth, _fontHeight,
-                       (isCDFJ() || isCDFJplus()) ? "Jump Data (21|22)" : "Jump Data (21)");
+      new StaticTextWidget(_boss, _font, 0, 0,
+                           Common::Base::toString(row * 4, Common::Base::Fmt::_16_2));
 
-  // Datastream Increments
-  xpos = DS_X + myDatastreamPointers->getWidth() + 16;
-  new StaticTextWidget(boss, _font, xpos, ypos, "Datastream Increments");
+  myDatastreamLabels[8] = new StaticTextWidget(_boss, _font, 0, 0, "Write Data (20)");
+  myDatastreamLabels[9] = new StaticTextWidget(_boss, _font, 0, 0,
+                            jump2 ? "Jump Data (21|22)" : "Jump Data (21)");
 
-  myDatastreamIncrements = new DataGridWidget(boss, _nfont, xpos,
-                                              ypos+_lineHeight, 4, 8, 5, 32,
-                                              Common::Base::Fmt::_16_2_2);
-  myDatastreamIncrements->setTarget(this);
-  myDatastreamIncrements->setEditable(false);
+  // Music states
+  myMusicLabel = new StaticTextWidget(_boss, _font, 0, 0, "Music States:");
 
-  myCommandStreamIncrement = new DataGridWidget(boss, _nfont, xpos,
-                                                ypos+_lineHeight + 8*_lineHeight, 1, 1, 5, 32,
-                                                Common::Base::Fmt::_16_2_2);
-  myCommandStreamIncrement->setTarget(this);
-  myCommandStreamIncrement->setEditable(false);
+  myCountersLabel = new StaticTextWidget(boss, _font, 0, 0, "Counters");
+  addGrid(myMusicCounters,      3, 1, 8, 32, Common::Base::Fmt::_16_8);
 
-  myJumpStreamIncrements = new DataGridWidget(boss, _nfont, xpos,
-                                              ypos+_lineHeight + 9*_lineHeight, (isCDFJ() || isCDFJplus()) ? 2 : 1, 1, 5, 32,
-                                              Common::Base::Fmt::_16_2_2);
-  myJumpStreamIncrements->setTarget(this);
-  myJumpStreamIncrements->setEditable(false);
-  xpos = HBORDER;  ypos += _lineHeight * 11 + VGAP * 2;
+  myFrequenciesLabel = new StaticTextWidget(boss, _font, 0, 0, "Frequencies");
+  addGrid(myMusicFrequencies,   3, 1, 8, 32, Common::Base::Fmt::_16_8);
 
-  lwidth = _font.getStringWidth("Waveform Sizes ");
+  myWaveformsLabel = new StaticTextWidget(boss, _font, 0, 0, "Waveforms");
+  addGrid(myMusicWaveforms,     3, 1, 8, 16, Common::Base::Fmt::_16_2);
 
-  // Music counters
-  new StaticTextWidget(_boss, _font, xpos, ypos, "Music States:");
-  xpos += INDENT;
-  ypos += _lineHeight + VGAP;
+  myWaveformSizesLabel = new StaticTextWidget(boss, _font, 0, 0, "Waveform Sizes");
+  addGrid(myMusicWaveformSizes, 3, 1, 8, 16, Common::Base::Fmt::_16_2);
 
-  new StaticTextWidget(boss, _font, xpos, ypos, "Counters");
-  xpos += lwidth;
-
-  myMusicCounters = new DataGridWidget(boss, _nfont, xpos, ypos-2, 3, 1, 8, 32,
-                                       Common::Base::Fmt::_16_8);
-  myMusicCounters->setTarget(this);
-  myMusicCounters->setEditable(false);
-
-  // Music frequencies
-  xpos = HBORDER + INDENT;  ypos += _lineHeight + VGAP;
-  new StaticTextWidget(boss, _font, xpos, ypos, "Frequencies");
-  xpos += lwidth;
-
-  myMusicFrequencies = new DataGridWidget(boss, _nfont, xpos, ypos-2, 3, 1, 8, 32,
-                                          Common::Base::Fmt::_16_8);
-  myMusicFrequencies->setTarget(this);
-  myMusicFrequencies->setEditable(false);
-
-  // Music waveforms
-  xpos = HBORDER + INDENT;  ypos += _lineHeight + VGAP;
-  new StaticTextWidget(boss, _font, xpos, ypos, "Waveforms");
-  xpos += lwidth;
-
-  myMusicWaveforms = new DataGridWidget(boss, _nfont, xpos, ypos-2, 3, 1, 8, 16,
-                                        Common::Base::Fmt::_16_2);
-  myMusicWaveforms->setTarget(this);
-  myMusicWaveforms->setEditable(false);
-
-  // Music waveform sizes
-  xpos = HBORDER + INDENT;  ypos += _lineHeight + VGAP;
-  new StaticTextWidget(boss, _font, xpos, ypos, "Waveform Sizes");
-  xpos += lwidth;
-
-  myMusicWaveformSizes = new DataGridWidget(boss, _nfont, xpos, ypos-2, 3, 1, 8, 16,
-                                            Common::Base::Fmt::_16_2);
-  myMusicWaveformSizes->setTarget(this);
-  myMusicWaveformSizes->setEditable(false);
-
-  // Digital Audio flag
-  xpos = HBORDER;  ypos += _lineHeight + VGAP;
-
-  myDigitalSample = new CheckboxWidget(boss, _font, xpos, ypos, "Digital Sample mode");
+  // Digital Audio flag, and the sample it plays from
+  myDigitalSample = new CheckboxWidget(boss, _font, 0, 0, "Digital Sample mode");
   myDigitalSample->setTarget(this);
   myDigitalSample->setEditable(false);
 
-  xpos = HBORDER + INDENT;  ypos += _lineHeight + VGAP;
+  mySamplePointerLabel = new StaticTextWidget(boss, _font, 0, 0, "Sample Pointer");
+  addGrid(mySamplePointer,      1, 1, 8, 32, Common::Base::Fmt::_16_8);
 
-  const int lwidth2 = _font.getStringWidth("Sample Pointer ");
-  new StaticTextWidget(boss, _font, xpos, ypos, "Sample Pointer");
+  createCycleWidgets();
 
-  mySamplePointer = new DataGridWidget(boss, _nfont, xpos + lwidth2, ypos - 2, 1, 1, 8, 32,
-                                       Common::Base::Fmt::_16_8);
-  mySamplePointer->setTarget(this);
-  mySamplePointer->setEditable(false);
+  reflow();
+}
 
-  xpos = HBORDER;  ypos += _lineHeight + VGAP * 2;
-  addCycleWidgets(xpos, ypos);
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+unique_ptr<GUI::Layout> CartridgeCDFWidget::layoutDatastreams()
+{
+  using GUI::BoxLayout;
+  using GUI::GridLayout;
+  using GUI::anchoredItem;
+  using GUI::alignedItem;
+  using GUI::HAlign;
+  using GUI::VAlign;
+
+  // The stream labels down the left of the pointer grid: one per GRID row, which
+  // no cell can say -- so the column is built to the grid's own row pitch, and
+  // starts where the grid insets its first row's text (as RamWidget's do)
+  auto streams = std::make_unique<BoxLayout>(BoxLayout::Dir::Vertical);
+  streams->addSpace(myDatastreamPointers->firstTextY()
+                    - myDatastreamLabels[0]->firstTextY());
+  for(uInt32 row = 0; row < 8; ++row)
+    streams->addFixed(anchoredItem(myDatastreamLabels[row]), _lineHeight);
+
+  // A grid: labels | pointers | increments.  The rows keep the two tables in step,
+  // and the named streams' cells end flush with the column above them (they hold
+  // the last of its four), which is what the old 3/4-of-the-width offset was for.
+  // Their labels LIE ACROSS the label and pointer columns rather than sitting in
+  // the first, which would widen it to their length and push the table off-window
+  auto table = std::make_unique<GridLayout>(3, 4, _fontWidth, VGAP);
+  table->columnAuto(0);
+  table->columnAuto(1);
+  table->columnAuto(2);
+  for(int row = 0; row < 4; ++row)
+    table->rowAuto(row);
+
+  table->place(1, 0, anchoredItem(myPointersLabel));
+  table->place(2, 0, anchoredItem(myIncrementsLabel));
+
+  table->place(0, 1, std::move(streams));
+  table->place(1, 1, alignedItem(myDatastreamPointers, HAlign::Left, VAlign::Top));
+  table->place(2, 1, alignedItem(myDatastreamIncrements, HAlign::Left, VAlign::Top));
+
+  table->place(0, 2, anchoredItem(myDatastreamLabels[8]), 2);
+  table->place(1, 2, alignedItem(myCommandStreamPointer, HAlign::Right, VAlign::Center));
+  table->place(2, 2, anchoredItem(myCommandStreamIncrement));
+
+  table->place(0, 3, anchoredItem(myDatastreamLabels[9]), 2);
+  table->place(1, 3, alignedItem(myJumpStreamPointers, HAlign::Right, VAlign::Center));
+  table->place(2, 3, anchoredItem(myJumpStreamIncrements));
+
+  return table;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void CartridgeCDFWidget::layoutContent(GUI::BoxLayout& col)
+{
+  using GUI::BoxLayout;
+  using GUI::anchoredItem;
+  using GUI::indentedItem;
+  using GUI::labeledRow;
+  using Dir = BoxLayout::Dir;
+
+  const int indent = _fontWidth * 2;
+
+  // The music rows share a label column, as do the sample rows below them
+  GUI::alignLabels({{myCountersLabel, indent}, {myFrequenciesLabel, indent},
+                    {myWaveformsLabel, indent}, {myWaveformSizesLabel, indent}});
+  GUI::alignLabels({{mySamplePointerLabel, indent}});
+
+  // The bank selector, with the fast fetcher beside it
+  auto top = std::make_unique<BoxLayout>(Dir::Horizontal, _fontWidth * 3);
+  top->addAuto(anchoredItem(myBank));
+  top->addAuto(anchoredItem(myFastFetch));
+  col.addAuto(std::move(top));
+
+  if(myFastFetcherOffset != nullptr)
+    col.addAuto(labeledRow(myFastFetchOffsetLabel, myFastFetcherOffset, 0, indent));
+
+  col.addSpace(_lineHeight / 2);
+  col.addAuto(layoutDatastreams());
+
+  col.addSpace(_lineHeight / 2);
+  col.addAuto(anchoredItem(myMusicLabel));
+  col.addAuto(labeledRow(myCountersLabel,      myMusicCounters,      0, indent));
+  col.addAuto(labeledRow(myFrequenciesLabel,   myMusicFrequencies,   0, indent));
+  col.addAuto(labeledRow(myWaveformsLabel,     myMusicWaveforms,     0, indent));
+  col.addAuto(labeledRow(myWaveformSizesLabel, myMusicWaveformSizes, 0, indent));
+
+  col.addSpace(_lineHeight / 2);
+  col.addAuto(anchoredItem(myDigitalSample));
+  col.addAuto(labeledRow(mySamplePointerLabel, mySamplePointer, 0, indent));
+
+  // ...and the ARM cycle counters below everything
+  CartridgeARMWidget::layoutContent(col);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -33,42 +33,21 @@ CartDebugWidget::CartDebugWidget(GuiObject* boss, const GUI::Font& lfont,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int CartDebugWidget::addBaseInformation(size_t bytes, string_view manufacturer,
-        string_view desc, uInt16 maxlines)
+void CartDebugWidget::reflow()
 {
-  const int lwidth = _font.getStringWidth("Manufacturer "),
-            fwidth = _w - lwidth - 12;
-  EditTextWidget* w = nullptr;
+  using GUI::BoxLayout;
 
-  constexpr int x = 2;
-  int y = 8;
+  // One label column for the whole tab, as wide as the longest label in it
+  GUI::alignLabels(myLabelColumn);
 
-  // Add ROM size, manufacturer and bankswitch info
-  new StaticTextWidget(_boss, _font, x, y + 1, "ROM size ");
+  // The horizontal margins are applied via the layout rect (below) so the right
+  // margin can be wider than the left; only the vertical margin lives here
+  BoxLayout col(BoxLayout::Dir::Vertical, VGAP, 0, VBORDER);
 
-  w = new EditTextWidget(_boss, _nfont, x+lwidth, y - 1, fwidth, _lineHeight,
-    bytes >= 1024
-      ? std::format("{} bytes / {}KB", bytes, bytes / 1024)
-      : std::format("{} bytes", bytes));
-  w->setEditable(false);
-  y += _lineHeight + 4;
+  layoutBaseInformation(col);
+  layoutContent(col);
 
-  new StaticTextWidget(_boss, _font, x, y + 1, "Manufacturer ");
-  w = new EditTextWidget(_boss, _nfont, x+lwidth, y - 1,
-                         fwidth, manufacturer);
-  w->setEditable(false);
-  y += _lineHeight + 4;
-
-  // The description wraps itself to the width given here
-  new StaticTextWidget(_boss, _font, x, y + 1, "Description ");
-  myDesc = new WrappedTextWidget(_boss, _nfont, x+lwidth, y - 1,
-                                 fwidth, 1, desc, maxlines);
-  myDesc->setEditable(false);
-  myDesc->setEnabled(false);
-
-  y += myDesc->getHeight() + 4;
-
-  return y;
+  col.doLayout(_x + HBORDER, _y, contentWidth(_w), _h);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -77,7 +56,7 @@ void CartDebugWidget::createBaseInformation(size_t bytes, string_view manufactur
 {
   // Everything is created at a placeholder position; layoutBaseInformation()
   // positions it, and the description re-wraps itself, at reflow() time.  The
-  // labels carry no padding of their own: collectLabels() puts them in a group
+  // labels carry no padding of their own: they join the tab's label column below,
   // and GUI::alignLabels() supplies the column and its clearance
   myROMSizeLabel = new StaticTextWidget(_boss, _font, 0, 0, "ROM size");
   myROMSize = new EditTextWidget(_boss, _nfont, 0, 0, 1,
@@ -100,19 +79,28 @@ void CartDebugWidget::createBaseInformation(size_t bytes, string_view manufactur
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartDebugWidget::layoutBaseInformation(GUI::BoxLayout& col, int contentW)
+void CartDebugWidget::layoutBaseInformation(GUI::BoxLayout& col)
 {
   using GUI::labeledRow;
+
+  // Not every cart tab has an info block: the ARM carts show theirs on a tab of
+  // its own (CartridgeBUSInfoWidget, CartridgeCDFInfoWidget) and this one holds
+  // nothing but their registers
+  if(myROMSizeLabel == nullptr)
+    return;
 
   // Word wrap couples width to height: the description only knows how tall it is
   // once it knows how wide it is, so it is given its width before the column is
   // built (see the heightForWidth note in Layout.hxx).  Its width is the one the
   // filling row below will hand it -- the content, less the shared label column
-  myDesc->setWidth(contentW - myDescLabel->getWidth());
+  myDesc->setWidth(contentWidth(_w) - myDescLabel->getWidth());
 
   col.addAuto(labeledRow(myROMSizeLabel, myROMSize, 0, 0, true));
   col.addAuto(labeledRow(myManufacturerLabel, myManufacturer, 0, 0, true));
   col.addAuto(labeledRow(myDescLabel, myDesc, 0, 0, true));
+
+  // Whatever the cart puts below the info block stands clear of it
+  col.addSpace(_lineHeight / 2);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

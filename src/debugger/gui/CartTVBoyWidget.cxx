@@ -27,6 +27,15 @@ CartridgeTVBoyWidget::CartridgeTVBoyWidget(
   : CartridgeEnhancedWidget(boss, lfont, nfont, x, y, w, h, cart),
     myCartTVBoy{cart}
 {
+  // A single-bank cart has no bank selector, so nothing to lock either
+  if(myCart.romBankCount() > 1)
+  {
+    myBankLocked = new CheckboxWidget(_boss, _font, 0, 0,
+                                      "Bankswitching is locked",
+                                      kBankLocked);
+    myBankLocked->setTarget(this);
+    addFocusWidget(myBankLocked);
+  }
   initialize();
 }
 
@@ -41,19 +50,6 @@ string CartridgeTVBoyWidget::description()
     0xf800,
     0xf800 + myCart.romBankCount() - 1,
     CartridgeEnhancedWidget::description());
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgeTVBoyWidget::createExtras()
-{
-  if(myCart.romBankCount() > 1)
-  {
-    myBankLocked = new CheckboxWidget(_boss, _font, 0, 0,
-                                      "Bankswitching is locked",
-                                      kBankLocked);
-    myBankLocked->setTarget(this);
-    addFocusWidget(myBankLocked);
-  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

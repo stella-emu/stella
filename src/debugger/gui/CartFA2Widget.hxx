@@ -35,9 +35,12 @@ class CartridgeFA2Widget : public CartridgeEnhancedWidget
   protected:
     string manufacturer() override { return "Chris D. Walton (Star Castle 2600 Arcade)"; }
     string description() override;
-    void createExtras() override;
-    void layoutExtra(GUI::BoxLayout& col) override;
+    void layoutContent(GUI::BoxLayout& col) override;
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+
+  private:
+    // The Harmony flash controls, created (unpositioned) by the ctor
+    void createFlashWidgets();
 
   private:
     CartridgeFA2& myCartFA2;

@@ -36,10 +36,18 @@ class Cartridge4A50Widget : public CartDebugWidget
     string bankState() override;
 
   protected:
+    void layoutContent(GUI::BoxLayout& col) override;
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 
   private:
+    // One region: a heading, with its ROM and RAM selectors indented beneath it
+    void layoutRegion(GUI::BoxLayout& col, StaticTextWidget* label,
+                      PopUpWidget* rom, PopUpWidget* ram);
+
+  private:
     Cartridge4A50& myCart;
+    StaticTextWidget *myLowerLabel{nullptr}, *myMiddleLabel{nullptr},
+                     *myHighLabel{nullptr};
     PopUpWidget *myROMLower{nullptr}, *myRAMLower{nullptr};
     PopUpWidget *myROMMiddle{nullptr}, *myRAMMiddle{nullptr};
     PopUpWidget *myROMHigh{nullptr}, *myRAMHigh{nullptr};

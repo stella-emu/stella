@@ -22,6 +22,7 @@
 
 class CartridgeELF;
 class EditTextWidget;
+class WrappedTextWidget;
 class FSNode;
 
 class CartridgeELFWidget: public CartDebugWidget
@@ -35,6 +36,7 @@ class CartridgeELFWidget: public CartDebugWidget
     ~CartridgeELFWidget() override = default;
 
   protected:
+    void layoutContent(GUI::BoxLayout& col) override;
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 
   private:
@@ -42,7 +44,13 @@ class CartridgeELFWidget: public CartDebugWidget
     void saveArmImage(const FSNode& node);
 
   private:
+    // The most lines of the debug log to show before it scrolls
+    static constexpr uInt16 VISIBLE_LOG_LINES = 19;
+
     CartridgeELF& myCart;
+
+    WrappedTextWidget* myLog{nullptr};
+    ButtonWidget* mySaveImageButton{nullptr};
 
     enum { kSaveArmImageCmd = 'sarm' };
 

@@ -46,5 +46,7 @@ CartridgeCDFInfoWidget::CartridgeCDFInfoWidget(
     cart.startBank(),
     fetchers);
 
-  addBaseInformation(cart.romSize(), "AtariAge", info);
+  // This tab is nothing but the ROM info block; reflow() lays it out
+  createBaseInformation(cart.romSize(), "AtariAge", info);
+  reflow();
 }

@@ -17,6 +17,7 @@
 
 #include "CartE7.hxx"
 #include "PopUpWidget.hxx"
+#include "Layout.hxx"
 #include "CartE7Widget.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -57,8 +58,7 @@ void CartridgeE7Widget::initialize(GuiObject* boss,
 {
   const uInt32 size = cart.romBankCount() * CartridgeE7::BANK_SIZE;
 
-  constexpr int xpos = 2;
-  int ypos = addBaseInformation(size, "M Network", info, 15) + _lineHeight;
+  createBaseInformation(size, "M Network", info, 15);
 
   VariantList items0, items1;
   for(int i = 0; std::cmp_less(i, cart.romBankCount()); ++i)
@@ -66,20 +66,32 @@ void CartridgeE7Widget::initialize(GuiObject* boss,
   for(int i = 0; i < 4; ++i)
     VarList::push_back(items1, getSpotUpper(i));
 
-  const int lwidth = _font.getStringWidth("Set bank for upper 256B segment "),
-    fwidth = _font.getStringWidth("#3 - RAM ($FFEB)");
-  myLower2K =
-    new PopUpWidget(boss, _font, xpos, ypos - 2, fwidth, _lineHeight, items0,
-                    "Set bank for lower 2K segment", lwidth, kLowerChanged);
+  myLower2K = new PopUpWidget(boss, _font, 0, 0, items0,
+                              "Set bank for lower 2K segment", 0, kLowerChanged);
   myLower2K->setTarget(this);
   addFocusWidget(myLower2K);
-  ypos += myLower2K->getHeight() + 4;
 
-  myUpper256B =
-    new PopUpWidget(boss, _font, xpos, ypos - 2, fwidth, _lineHeight, items1,
-                    "Set bank for upper 256B segment ", lwidth, kUpperChanged);
+  myUpper256B = new PopUpWidget(boss, _font, 0, 0, items1,
+                                "Set bank for upper 256B segment", 0, kUpperChanged);
   myUpper256B->setTarget(this);
   addFocusWidget(myUpper256B);
+
+  reflow();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void CartridgeE7Widget::layoutContent(GUI::BoxLayout& col)
+{
+  using GUI::anchoredItem;
+
+  // The two selectors are a column of their own: their labels are far longer than
+  // the ROM info's, so they get their own label column -- and one box width, so
+  // their boxes end level despite listing different things
+  GUI::alignLabels({{myLower2K}, {myUpper256B}});
+  GUI::alignPopUps({myLower2K, myUpper256B});
+
+  col.addAuto(anchoredItem(myLower2K));
+  col.addAuto(anchoredItem(myUpper256B));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

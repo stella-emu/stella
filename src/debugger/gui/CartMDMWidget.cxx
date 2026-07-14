@@ -27,6 +27,15 @@ CartridgeMDMWidget::CartridgeMDMWidget(
   : CartridgeEnhancedWidget(boss, lfont, nfont, x, y, w, h, cart),
     myCartMDM{cart}
 {
+  // A single-bank cart has no bank selector, so nothing to lock either
+  if(myCart.romBankCount() > 1)
+  {
+    myBankDisabled = new CheckboxWidget(_boss, _font, 0, 0,
+                                        "Bankswitching is locked/disabled",
+                                        kBankDisabled);
+    myBankDisabled->setTarget(this);
+    addFocusWidget(myBankDisabled);
+  }
   initialize();
 }
 
@@ -40,19 +49,6 @@ string CartridgeMDMWidget::description()
     "{}",
     myCart.romBankCount(), 0xBFF,
     CartridgeEnhancedWidget::description());
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgeMDMWidget::createExtras()
-{
-  if(myCart.romBankCount() > 1)
-  {
-    myBankDisabled = new CheckboxWidget(_boss, _font, 0, 0,
-                                        "Bankswitching is locked/disabled",
-                                        kBankDisabled);
-    myBankDisabled->setTarget(this);
-    addFocusWidget(myBankDisabled);
-  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

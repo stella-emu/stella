@@ -17,6 +17,7 @@
 
 #include "Cart4A50.hxx"
 #include "PopUpWidget.hxx"
+#include "Layout.hxx"
 #include "Cart4A50Widget.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -34,9 +35,7 @@ Cartridge4A50Widget::Cartridge4A50Widget(
     "High bank region (256B)  : $FE00 - $FEFF\n"
     "Fixed (last 256B of ROM) : $FF00 - $FFFF\n";
 
-  int xpos = 2,
-      ypos = addBaseInformation(cart.mySize, "John Payson / Supercat", info) +
-               _lineHeight;
+  createBaseInformation(cart.mySize, "John Payson / Supercat", info);
 
   VariantList items16, items32, items128, items256;
   for(uInt32 i = 0; i < 16; ++i)
@@ -55,72 +54,66 @@ Cartridge4A50Widget::Cartridge4A50Widget(
     VarList::push_back(items256, i);
   VarList::push_back(items256, "Inactive", "");
 
-  constexpr string_view lowerlabel  = "Set lower 2K region ($F000 - $F7FF): ";
-  constexpr string_view middlelabel = "Set middle 1.5K region ($F800 - $FDFF): ";
-  constexpr string_view highlabel   = "Set high 256B region ($FE00 - $FEFF): ";
-  const int lwidth  = _font.getStringWidth(middlelabel),
-            fwidth  = _font.getStringWidth("Inactive"),
-            flwidth = _font.getStringWidth("ROM ");
+  // Each region: a heading, with a ROM and a RAM selector indented beneath it.
+  // Every widget is created at a placeholder position; reflow() positions them
+  const auto addRegion = [&](StaticTextWidget*& label, string_view heading,
+                             PopUpWidget*& rom, const VariantList& romItems, int romCmd,
+                             PopUpWidget*& ram, const VariantList& ramItems, int ramCmd) {
+    label = new StaticTextWidget(_boss, _font, 0, 0, heading);
 
-  // Lower bank/region configuration
-  xpos = 2;
-  new StaticTextWidget(_boss, _font, xpos, ypos, lwidth,
-    _fontHeight, lowerlabel, TextAlign::Left);
-  ypos += _lineHeight + 8;
+    rom = new PopUpWidget(boss, _font, 0, 0, romItems, "ROM", 0, romCmd);
+    rom->setTarget(this);
+    addFocusWidget(rom);
 
-  xpos += 40;
-  myROMLower =
-    new PopUpWidget(boss, _font, xpos, ypos-2, fwidth, _lineHeight,
-                    items32, "ROM ", flwidth, kROMLowerChanged);
-  myROMLower->setTarget(this);
-  addFocusWidget(myROMLower);
+    ram = new PopUpWidget(boss, _font, 0, 0, ramItems, "RAM", 0, ramCmd);
+    ram->setTarget(this);
+    addFocusWidget(ram);
+  };
 
-  xpos += myROMLower->getWidth() + 20;
-  myRAMLower =
-    new PopUpWidget(boss, _font, xpos, ypos-2, fwidth, _lineHeight,
-                    items16, "RAM ", flwidth, kRAMLowerChanged);
-  myRAMLower->setTarget(this);
-  addFocusWidget(myRAMLower);
+  addRegion(myLowerLabel,  "Set lower 2K region ($F000 - $F7FF):",
+            myROMLower,  items32,  kROMLowerChanged,
+            myRAMLower,  items16,  kRAMLowerChanged);
+  addRegion(myMiddleLabel, "Set middle 1.5K region ($F800 - $FDFF):",
+            myROMMiddle, items32,  kROMMiddleChanged,
+            myRAMMiddle, items16,  kRAMMiddleChanged);
+  addRegion(myHighLabel,   "Set high 256B region ($FE00 - $FEFF):",
+            myROMHigh,   items256, kROMHighChanged,
+            myRAMHigh,   items128, kRAMHighChanged);
 
-  // Middle bank/region configuration
-  xpos = 2;  ypos += _lineHeight + 14;
-  new StaticTextWidget(_boss, _font, xpos, ypos, lwidth,
-    _fontHeight, middlelabel, TextAlign::Left);
-  ypos += _lineHeight + 8;
+  reflow();
+}
 
-  xpos += 40;
-  myROMMiddle =
-    new PopUpWidget(boss, _font, xpos, ypos-2, fwidth, _lineHeight,
-                    items32, "ROM ", flwidth, kROMMiddleChanged);
-  myROMMiddle->setTarget(this);
-  addFocusWidget(myROMMiddle);
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Cartridge4A50Widget::layoutContent(GUI::BoxLayout& col)
+{
+  // The ROM selectors form a column, as do the RAM ones: each gets one label
+  // column, and all six get one box width, so the two columns line up down the tab
+  GUI::alignLabels({{myROMLower}, {myROMMiddle}, {myROMHigh}});
+  GUI::alignLabels({{myRAMLower}, {myRAMMiddle}, {myRAMHigh}});
+  GUI::alignPopUps({myROMLower, myROMMiddle, myROMHigh,
+                    myRAMLower, myRAMMiddle, myRAMHigh});
 
-  xpos += myROMMiddle->getWidth() + 20;
-  myRAMMiddle =
-    new PopUpWidget(boss, _font, xpos, ypos-2, fwidth, _lineHeight,
-                    items16, "RAM ", flwidth, kRAMMiddleChanged);
-  myRAMMiddle->setTarget(this);
-  addFocusWidget(myRAMMiddle);
+  layoutRegion(col, myLowerLabel,  myROMLower,  myRAMLower);
+  col.addSpace(_lineHeight);
+  layoutRegion(col, myMiddleLabel, myROMMiddle, myRAMMiddle);
+  col.addSpace(_lineHeight);
+  layoutRegion(col, myHighLabel,   myROMHigh,   myRAMHigh);
+}
 
-  // High bank/region configuration
-  xpos = 2;  ypos += _lineHeight + 14;
-  new StaticTextWidget(_boss, _font, xpos, ypos, lwidth,
-    _fontHeight, highlabel, TextAlign::Left);
-  ypos += _lineHeight + 8;
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Cartridge4A50Widget::layoutRegion(GUI::BoxLayout& col, StaticTextWidget* label,
+                                       PopUpWidget* rom, PopUpWidget* ram)
+{
+  using GUI::BoxLayout;
+  using GUI::anchoredItem;
 
-  xpos += 40;
-  myROMHigh =
-    new PopUpWidget(boss, _font, xpos, ypos-2, fwidth, _lineHeight,
-                    items256, "ROM ", flwidth, kROMHighChanged);
-  myROMHigh->setTarget(this);
-  addFocusWidget(myROMHigh);
+  auto row = std::make_unique<BoxLayout>(BoxLayout::Dir::Horizontal, _fontWidth * 2);
+  row->addSpace(_fontWidth * 4);   // the selectors sit in from their heading
+  row->addAuto(anchoredItem(rom));
+  row->addAuto(anchoredItem(ram));
 
-  xpos += myROMHigh->getWidth() + 20;
-  myRAMHigh =
-    new PopUpWidget(boss, _font, xpos, ypos-2, fwidth, _lineHeight,
-                    items128, "RAM ", flwidth, kRAMHighChanged);
-  myRAMHigh->setTarget(this);
-  addFocusWidget(myRAMHigh);
+  col.addAuto(anchoredItem(label));
+  col.addAuto(std::move(row));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

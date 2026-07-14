@@ -743,6 +743,7 @@ void DebuggerDialog::addRomArea()
                           *myCartDebug);
       if(myCartRam)  // TODO - make this always non-null
       {
+        myCartRam->recordContentHeight();
         myCartRam->setHelpAnchor("CartridgeRAMInformation", true);
         myRomTab->setParentWidget(tabID, myCartRam);
         addToFocusList(myCartRam->getFocusList(), myRomTab, tabID);

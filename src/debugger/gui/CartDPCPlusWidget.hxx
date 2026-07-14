@@ -49,6 +49,7 @@ class CartridgeDPCPlusWidget : public CartridgeARMWidget
     // End of functions for Cartridge RAM tab
 
   protected:
+    void layoutContent(GUI::BoxLayout& col) override;
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 
   private:
@@ -69,6 +70,12 @@ class CartridgeDPCPlusWidget : public CartridgeARMWidget
 
     CartridgeDPCPlus& myCart;
     PopUpWidget* myBank{nullptr};
+
+    StaticTextWidget *myTopsLabel{nullptr}, *myBottomsLabel{nullptr},
+                     *myCountersLabel{nullptr}, *myFracCountersLabel{nullptr},
+                     *myFracIncrementsLabel{nullptr}, *myParameterLabel{nullptr},
+                     *myMusicCountersLabel{nullptr}, *myMusicFrequenciesLabel{nullptr},
+                     *myMusicWaveformsLabel{nullptr}, *myRandomLabel{nullptr};
 
     DataGridWidget* myTops{nullptr};
     DataGridWidget* myBottoms{nullptr};

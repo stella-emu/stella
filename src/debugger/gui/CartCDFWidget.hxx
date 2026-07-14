@@ -51,7 +51,13 @@ class CartridgeCDFWidget : public CartridgeARMWidget
     // End of functions for Cartridge RAM tab
 
   protected:
+    void layoutContent(GUI::BoxLayout& col) override;
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+
+  private:
+    // The datastream table: the pointer and increment grids side by side, with the
+    // stream numbers (and the named streams below them) labelling their rows
+    unique_ptr<GUI::Layout> layoutDatastreams();
 
   private:
     struct CartState {
@@ -70,6 +76,12 @@ class CartridgeCDFWidget : public CartridgeARMWidget
 
     CartridgeCDF& myCart;
     PopUpWidget* myBank{nullptr};
+
+    StaticTextWidget *myPointersLabel{nullptr}, *myIncrementsLabel{nullptr},
+                     *myFastFetchOffsetLabel{nullptr}, *myMusicLabel{nullptr},
+                     *myCountersLabel{nullptr}, *myFrequenciesLabel{nullptr},
+                     *myWaveformsLabel{nullptr}, *myWaveformSizesLabel{nullptr},
+                     *mySamplePointerLabel{nullptr};
 
     DataGridWidget* myDatastreamPointers{nullptr};
     DataGridWidget* myDatastreamIncrements{nullptr};

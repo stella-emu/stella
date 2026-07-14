@@ -18,6 +18,7 @@
 #include "CartBUS.hxx"
 #include "DataGridWidget.hxx"
 #include "PopUpWidget.hxx"
+#include "Layout.hxx"
 #include "CartBUSWidget.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -27,22 +28,16 @@ CartridgeBUSWidget::CartridgeBUSWidget(
   : CartridgeARMWidget(boss, lfont, nfont, x, y, w, h, cart),
     myCart{cart}
 {
-  constexpr int VBORDER = 8,
-                HBORDER = 2,
-                INDENT = 20,
-                VGAP = 4;
+  const bool isBUS3 = cart.myBUSSubtype == CartridgeBUS::BUSSubtype::BUS3;
 
-  int xpos = HBORDER, ypos = VBORDER;
-  int ds2_rows = 0;
-
-  if(cart.myBUSSubtype == CartridgeBUS::BUSSubtype::BUS3)
+  if(isBUS3)
   {
-    ds2_rows = 2;
+    myDatastream2Rows = 2;
     myDatastreamCount = 18;
   }
   else
   {
-    ds2_rows = 4;
+    myDatastream2Rows = 4;
     myDatastreamCount = 20;
   }
 
@@ -66,160 +61,179 @@ CartridgeBUSWidget::CartridgeBUSWidget(
     VarList::push_back(items, "5 ($FFFA)");
     VarList::push_back(items, "6 ($FFFB)");
   }
-  myBank =
-    new PopUpWidget(boss, _font, xpos, ypos-2, _font.getStringWidth("0 ($FFFx)"),
-                    _lineHeight, items, "Set bank     ",
-                    0, kBankChanged);
+  // Every widget is created at a placeholder position; reflow() positions them
+  myBank = new PopUpWidget(boss, _font, 0, 0, items, "Set bank", 0, kBankChanged);
   myBank->setTarget(this);
   addFocusWidget(myBank);
+  myLabelColumn.emplace_back(myBank);
 
-  int lwidth = _font.getStringWidth("Datastream Increments "); // get width of the widest label
+  const auto addGrid = [&](DataGridWidget*& grid, int cols, int rows,
+                           int colchars, int bits, Common::Base::Fmt fmt) {
+    grid = new DataGridWidget(boss, _nfont, 0, 0, cols, rows, colchars, bits, fmt);
+    grid->setTarget(this);
+    grid->setEditable(false);
+  };
 
-  // Datastream Pointers
-  constexpr int DS_X = 30;
-  xpos = DS_X;
-  ypos += _lineHeight + VGAP;
-  new StaticTextWidget(boss, _font, xpos, ypos, lwidth,
-                       _fontHeight, "Datastream Pointers", TextAlign::Left);
+  // The datastream table: pointers on the left, increments on the right, with the
+  // named streams on rows of their own beneath them
+  myPointersLabel = new StaticTextWidget(boss, _font, 0, 0, "Datastream Pointers");
+  addGrid(myDatastreamPointers,   4, 4, 6, 32, Common::Base::Fmt::_16_3_2);
+  addGrid(myDatastreamPointers2,  1, myDatastream2Rows, 6, 32, Common::Base::Fmt::_16_3_2);
 
-  myDatastreamPointers = new DataGridWidget(boss, _nfont, DS_X, ypos+_lineHeight-2, 4, 4, 6, 32, Common::Base::Fmt::_16_3_2);
-  myDatastreamPointers->setTarget(this);
-  myDatastreamPointers->setEditable(false);
+  myIncrementsLabel = new StaticTextWidget(boss, _font, 0, 0, "Datastream Increments");
+  addGrid(myDatastreamIncrements,  4, 4, 5, 32, Common::Base::Fmt::_16_2_2);
+  addGrid(myDatastreamIncrements2, 1, myDatastream2Rows, 5, 32, Common::Base::Fmt::_16_2_2);
 
-  myDatastreamPointers2 = new DataGridWidget(boss, _nfont, DS_X + myDatastreamPointers->getWidth() * 3 / 4, ypos+_lineHeight-2 + 4*_lineHeight, 1, ds2_rows, 6, 32, Common::Base::Fmt::_16_3_2);
-  myDatastreamPointers2->setTarget(this);
-  myDatastreamPointers2->setEditable(false);
-
+  // The stream each table row holds: the first four by number, then the named ones
   for(uInt32 row = 0; row < 4; ++row)
-  {
     myDatastreamLabels[row] =
-    new StaticTextWidget(_boss, _font, DS_X - _font.getStringWidth("xx "),
-                         ypos+_lineHeight-2 + row*_lineHeight + 2,
-                         _fontWidth*2, _fontHeight, "", TextAlign::Left);
-    myDatastreamLabels[row]->setLabel(Common::Base::toString(row * 4, Common::Base::Fmt::_16_2));
-  }
+      new StaticTextWidget(_boss, _font, 0, 0,
+                           Common::Base::toString(row * 4, Common::Base::Fmt::_16_2));
 
-  if(cart.myBUSSubtype == CartridgeBUS::BUSSubtype::BUS3)
+  static constexpr std::array<string_view, 4> named{
+    "Write Data 0 (stream 16)", "Write Data 1 (stream 17)",
+    "Write Data 2 (stream 18)", "Write Data 3 (stream 19)"
+  };
+  if(isBUS3)
   {
-    lwidth = _font.getStringWidth("Write Data (stream 16)");
-    myDatastreamLabels[4] =
-    new StaticTextWidget(_boss, _font, DS_X - _font.getStringWidth("xx "),
-                         ypos+_lineHeight-2 + 4*_lineHeight + 2,
-                         lwidth, _fontHeight, "Write Data (stream 16)", TextAlign::Left);
-    myDatastreamLabels[5] =
-    new StaticTextWidget(_boss, _font, DS_X - _font.getStringWidth("xx "),
-                         ypos+_lineHeight-2 + 5*_lineHeight + 2,
-                         lwidth, _fontHeight, "Jump Data (stream 17)", TextAlign::Left);
+    myDatastreamLabels[4] = new StaticTextWidget(_boss, _font, 0, 0, "Write Data (stream 16)");
+    myDatastreamLabels[5] = new StaticTextWidget(_boss, _font, 0, 0, "Jump Data (stream 17)");
   }
   else
-  {
-    lwidth = _font.getStringWidth("Write Data 0 (stream 16)");
-    myDatastreamLabels[4] =
-    new StaticTextWidget(_boss, _font, DS_X - _font.getStringWidth("xx "),
-                         ypos+_lineHeight-2 + 4*_lineHeight + 2,
-                         lwidth, _fontHeight, "Write Data 0(stream 16)", TextAlign::Left);
-    myDatastreamLabels[5] =
-    new StaticTextWidget(_boss, _font, DS_X - _font.getStringWidth("xx "),
-                         ypos+_lineHeight-2 + 5*_lineHeight + 2,
-                         lwidth, _fontHeight, "Write Data 1(stream 17)", TextAlign::Left);
-    myDatastreamLabels[6] =
-    new StaticTextWidget(_boss, _font, DS_X - _font.getStringWidth("xx "),
-                         ypos+_lineHeight-2 + 6*_lineHeight + 2,
-                         lwidth, _fontHeight, "Write Data 2(stream 18)", TextAlign::Left);
-    myDatastreamLabels[7] =
-    new StaticTextWidget(_boss, _font, DS_X - _font.getStringWidth("xx "),
-                         ypos+_lineHeight-2 + 7*_lineHeight + 2,
-                         lwidth, _fontHeight, "Write Data 3(stream 19)", TextAlign::Left);
-  }
+    for(uInt32 row = 0; row < 4; ++row)
+      myDatastreamLabels[4 + row] =
+        new StaticTextWidget(_boss, _font, 0, 0, named[row]);
 
-  // Datastream Increments
-  xpos = DS_X + myDatastreamPointers->getWidth() + INDENT;
-  new StaticTextWidget(boss, _font, xpos, ypos, lwidth,
-                       _fontHeight, "Datastream Increments", TextAlign::Left);
+  // Address maps
+  myAddressMapsLabel = new StaticTextWidget(boss, _font, 0, 0, "Address Maps");
+  addGrid(myAddressMaps, 8, 5, 8, 32, Common::Base::Fmt::_16_8);
 
-  myDatastreamIncrements = new DataGridWidget(boss, _nfont, xpos, ypos+_lineHeight-2, 4, 4, 5, 32, Common::Base::Fmt::_16_2_2);
-  myDatastreamIncrements->setTarget(this);
-  myDatastreamIncrements->setEditable(false);
+  // Music states
+  myCountersLabel = new StaticTextWidget(boss, _font, 0, 0, "Music Counters");
+  addGrid(myMusicCounters,      3, 1, 8, 32, Common::Base::Fmt::_16_8);
 
-  myDatastreamIncrements2 = new DataGridWidget(boss, _nfont, xpos, ypos+_lineHeight-2 + 4*_lineHeight, 1, ds2_rows, 5, 32, Common::Base::Fmt::_16_2_2);
-  myDatastreamIncrements2->setTarget(this);
-  myDatastreamIncrements2->setEditable(false);
+  myFrequenciesLabel = new StaticTextWidget(boss, _font, 0, 0, "Music Frequencies");
+  addGrid(myMusicFrequencies,   3, 1, 8, 32, Common::Base::Fmt::_16_8);
 
-  // Datastream Maps
-  xpos = 0;  ypos += _lineHeight*(5 + ds2_rows) + VGAP;
-  new StaticTextWidget(boss, _font, xpos, ypos, lwidth,
-                       _fontHeight, "Address Maps", TextAlign::Left);
+  myWaveformsLabel = new StaticTextWidget(boss, _font, 0, 0, "Music Waveforms");
+  addGrid(myMusicWaveforms,     3, 1, 4, 16, Common::Base::Fmt::_16_2);
 
-  myAddressMaps = new DataGridWidget(boss, _nfont, 0, ypos+_lineHeight-2, 8, 5, 8, 32, Common::Base::Fmt::_16_8);
-  myAddressMaps->setTarget(this);
-  myAddressMaps->setEditable(false);
+  myWaveformSizesLabel = new StaticTextWidget(boss, _font, 0, 0, "Music Waveform Sizes");
+  addGrid(myMusicWaveformSizes, 3, 1, 4, 16, Common::Base::Fmt::_16_2);
 
-  // Music counters
-  xpos = 10;  ypos += _lineHeight*6 + VGAP;
-  new StaticTextWidget(boss, _font, xpos, ypos, lwidth,
-        _fontHeight, "Music Counters", TextAlign::Left);
-  xpos += lwidth;
-
-  myMusicCounters = new DataGridWidget(boss, _nfont, xpos, ypos-2, 3, 1, 8, 32, Common::Base::Fmt::_16_8);
-  myMusicCounters->setTarget(this);
-  myMusicCounters->setEditable(false);
-
-  // Music frequencies
-  xpos = 10;  ypos += _lineHeight + VGAP;
-  new StaticTextWidget(boss, _font, xpos, ypos, lwidth,
-        _fontHeight, "Music Frequencies", TextAlign::Left);
-  xpos += lwidth;
-
-  myMusicFrequencies = new DataGridWidget(boss, _nfont, xpos, ypos-2, 3, 1, 8, 32, Common::Base::Fmt::_16_8);
-  myMusicFrequencies->setTarget(this);
-  myMusicFrequencies->setEditable(false);
-
-  // Music waveforms
-  xpos = 10;  ypos += _lineHeight + VGAP;
-  new StaticTextWidget(boss, _font, xpos, ypos, lwidth,
-        _fontHeight, "Music Waveforms", TextAlign::Left);
-  xpos += lwidth;
-
-  myMusicWaveforms = new DataGridWidget(boss, _nfont, xpos, ypos-2, 3, 1, 4, 16, Common::Base::Fmt::_16_2);
-  myMusicWaveforms->setTarget(this);
-  myMusicWaveforms->setEditable(false);
-
-  const int xpossp = xpos + myMusicWaveforms->getWidth() + INDENT;
-  if(cart.myBUSSubtype == CartridgeBUS::BUSSubtype::BUS3)
-  {
-    const int lwidth2 = _font.getStringWidth("Sample Pointer ");
-    new StaticTextWidget(boss, _font, xpossp, ypos, lwidth2,
-                         _fontHeight, "Sample Pointer ", TextAlign::Left);
-
-    mySamplePointer = new DataGridWidget(boss, _nfont, xpossp + lwidth2, ypos-2, 1, 1, 8, 32, Common::Base::Fmt::_16_8);
-    mySamplePointer->setTarget(this);
-    mySamplePointer->setEditable(false);
-  }
-
-  // Music waveform sizes
-  xpos = 10;  ypos += _lineHeight + VGAP;
-  new StaticTextWidget(boss, _font, xpos, ypos, lwidth,
-                       _fontHeight, "Music Waveform Sizes", TextAlign::Left);
-  xpos += lwidth;
-
-  myMusicWaveformSizes = new DataGridWidget(boss, _nfont, xpos, ypos-2, 3, 1, 4, 16, Common::Base::Fmt::_16_2);
-  myMusicWaveformSizes->setTarget(this);
-  myMusicWaveformSizes->setEditable(false);
-
-  // BUS stuff and Digital Audio flags
-  xpos = 10;  ypos += _lineHeight + VGAP;
-  myBusOverdrive = new CheckboxWidget(boss, _font, xpos, ypos, "BUS Overdrive enabled");
+  // BUS stuff and Digital Audio flags; only BUS3 plays digital samples
+  myBusOverdrive = new CheckboxWidget(boss, _font, 0, 0, "BUS Overdrive enabled");
   myBusOverdrive->setTarget(this);
   myBusOverdrive->setEditable(false);
 
-  if(cart.myBUSSubtype == CartridgeBUS::BUSSubtype::BUS3)
+  if(isBUS3)
   {
-    myDigitalSample = new CheckboxWidget(boss, _font, xpossp, ypos, "Digital Sample mode");
+    mySamplePointerLabel = new StaticTextWidget(boss, _font, 0, 0, "Sample Pointer");
+    addGrid(mySamplePointer, 1, 1, 8, 32, Common::Base::Fmt::_16_8);
+
+    myDigitalSample = new CheckboxWidget(boss, _font, 0, 0, "Digital Sample mode");
     myDigitalSample->setTarget(this);
     myDigitalSample->setEditable(false);
   }
-  xpos = 10;  ypos += _lineHeight + VGAP * 2;
-  addCycleWidgets(xpos, ypos);
+
+  createCycleWidgets();
+
+  reflow();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+unique_ptr<GUI::Layout> CartridgeBUSWidget::layoutDatastreams()
+{
+  using GUI::BoxLayout;
+  using GUI::GridLayout;
+  using GUI::anchoredItem;
+  using GUI::alignedItem;
+  using GUI::HAlign;
+  using GUI::VAlign;
+
+  // The stream labels down the left of the pointer grid: one per GRID row, which
+  // no cell can say -- so the column is built to the grid's own row pitch, and
+  // starts where the grid insets its first row's text (as RamWidget's do)
+  const auto streamLabels = [&](int first, int count, const DataGridWidget* grid) {
+    auto labels = std::make_unique<BoxLayout>(BoxLayout::Dir::Vertical);
+    labels->addSpace(grid->firstTextY() - myDatastreamLabels[first]->firstTextY());
+    for(int row = 0; row < count; ++row)
+      labels->addFixed(anchoredItem(myDatastreamLabels[first + row]), _lineHeight);
+    return labels;
+  };
+
+  // A grid: labels | pointers | increments.  The rows keep the two tables in step,
+  // and the named streams' cells end flush with the column above them (they hold
+  // the last of its four), which is what the old 3/4-of-the-width offset was for.
+  // Their labels LIE ACROSS the label and pointer columns rather than sitting in
+  // the first, which would widen it to their length and push the table off-window
+  auto table = std::make_unique<GridLayout>(3, 3, _fontWidth, VGAP);
+  for(int c = 0; c < 3; ++c)
+    table->columnAuto(c);
+  for(int r = 0; r < 3; ++r)
+    table->rowAuto(r);
+
+  table->place(1, 0, anchoredItem(myPointersLabel));
+  table->place(2, 0, anchoredItem(myIncrementsLabel));
+
+  table->place(0, 1, streamLabels(0, 4, myDatastreamPointers));
+  table->place(1, 1, alignedItem(myDatastreamPointers, HAlign::Left, VAlign::Top));
+  table->place(2, 1, alignedItem(myDatastreamIncrements, HAlign::Left, VAlign::Top));
+
+  table->place(0, 2, streamLabels(4, myDatastream2Rows, myDatastreamPointers2), 2);
+  table->place(1, 2, alignedItem(myDatastreamPointers2, HAlign::Right, VAlign::Top));
+  table->place(2, 2, alignedItem(myDatastreamIncrements2, HAlign::Left, VAlign::Top));
+
+  return table;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void CartridgeBUSWidget::layoutContent(GUI::BoxLayout& col)
+{
+  using GUI::BoxLayout;
+  using GUI::anchoredItem;
+  using GUI::labeledRow;
+  using Dir = BoxLayout::Dir;
+
+  // The music rows share a label column
+  GUI::alignLabels({{myCountersLabel}, {myFrequenciesLabel},
+                    {myWaveformsLabel}, {myWaveformSizesLabel}});
+
+  col.addAuto(anchoredItem(myBank));
+
+  col.addSpace(_lineHeight / 2);
+  col.addAuto(layoutDatastreams());
+
+  col.addSpace(_lineHeight / 2);
+  col.addAuto(anchoredItem(myAddressMapsLabel));
+  col.addAuto(anchoredItem(myAddressMaps));
+
+  col.addSpace(_lineHeight / 2);
+  col.addAuto(labeledRow(myCountersLabel,      myMusicCounters));
+  col.addAuto(labeledRow(myFrequenciesLabel,   myMusicFrequencies));
+
+  // Only BUS3 has a sample pointer, and it sits beside the waveforms
+  auto waveforms = std::make_unique<BoxLayout>(Dir::Horizontal, _fontWidth * 3);
+  waveforms->addAuto(labeledRow(myWaveformsLabel, myMusicWaveforms));
+  if(mySamplePointer != nullptr)
+  {
+    GUI::alignLabels({{mySamplePointerLabel}});
+    waveforms->addAuto(labeledRow(mySamplePointerLabel, mySamplePointer));
+  }
+  col.addAuto(std::move(waveforms));
+
+  col.addAuto(labeledRow(myWaveformSizesLabel, myMusicWaveformSizes));
+
+  // ...the two flags, then the ARM cycle counters below everything
+  auto flags = std::make_unique<BoxLayout>(Dir::Horizontal, _fontWidth * 3);
+  flags->addAuto(anchoredItem(myBusOverdrive));
+  if(myDigitalSample != nullptr)
+    flags->addAuto(anchoredItem(myDigitalSample));
+
+  col.addSpace(_lineHeight / 2);
+  col.addAuto(std::move(flags));
+
+  CartridgeARMWidget::layoutContent(col);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -57,7 +57,6 @@ class CartridgeEnhancedWidget : public CartDebugWidget
   protected:
     // Create then lay out all of this widget's content; called by each leaf ctor
     void initialize();
-    void reflow() override;
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 
     virtual size_t size();
@@ -75,14 +74,13 @@ class CartridgeEnhancedWidget : public CartDebugWidget
     void createWidgets();
     void createPlusROM();
     virtual void createBankWidgets();
-    // Extra per-cart widgets, e.g. a lock checkbox or flash buttons
-    virtual void createExtras() { }
 
-    // Append this widget's sections to the vertical layout box (reflow time)
+    // The PlusROM fields and the bank selectors, which every enhanced cart has.
+    // A leaf adding rows of its own overrides layoutContent() and calls this
+    // first; one that selects its banks differently overrides layoutBankSelect()
+    void layoutContent(GUI::BoxLayout& col) override;
     void layoutPlusROM(GUI::BoxLayout& col);
     virtual void layoutBankSelect(GUI::BoxLayout& col);
-    // Extra rows flowing below the bank controls, e.g. FA2's flash buttons
-    virtual void layoutExtra(GUI::BoxLayout& col) { }
 
   protected:
     enum { kBankChanged = 'bkCH' };

@@ -20,6 +20,7 @@
 #include "CartDebug.hxx"
 #include "CartCTY.hxx"
 #include "PopUpWidget.hxx"
+#include "Layout.hxx"
 #include "CartCTYWidget.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -37,8 +38,7 @@ CartridgeCTYWidget::CartridgeCTYWidget(
     "  $F040 - $F07F (R), $F000 - $F03F (W)\n"
     "\nTHIS SCHEME IS NOT FULLY IMPLEMENTED OR TESTED\n";
 
-  constexpr int xpos = 2;
-  const int ypos = addBaseInformation(size, "Chris D. Walton", info) + _lineHeight;
+  createBaseInformation(size, "Chris D. Walton", info);
 
   VariantList items;
   VarList::push_back(items, "1 ($FFF5)");
@@ -48,12 +48,21 @@ CartridgeCTYWidget::CartridgeCTYWidget(
   VarList::push_back(items, "5 ($FFF9)");
   VarList::push_back(items, "6 ($FFFA)");
   VarList::push_back(items, "7 ($FFFB)");
-  myBank =
-    new PopUpWidget(boss, _font, xpos, ypos-2, _font.getStringWidth("0 ($FFFx)"),
-                    _lineHeight, items, "Set bank     ",
-                    0, kBankChanged);
+
+  myBank = new PopUpWidget(boss, _font, 0, 0, items, "Set bank", 0, kBankChanged);
   myBank->setTarget(this);
   addFocusWidget(myBank);
+
+  // The selector's box lines up with the info fields above it
+  myLabelColumn.emplace_back(myBank);
+
+  reflow();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void CartridgeCTYWidget::layoutContent(GUI::BoxLayout& col)
+{
+  col.addAuto(GUI::anchoredItem(myBank));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

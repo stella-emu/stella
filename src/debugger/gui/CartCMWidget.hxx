@@ -52,6 +52,7 @@ class CartridgeCMWidget : public CartDebugWidget
     // End of functions for Cartridge RAM tab
 
   protected:
+    void layoutContent(GUI::BoxLayout& col) override;
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 
   private:
@@ -65,6 +66,8 @@ class CartridgeCMWidget : public CartDebugWidget
     CartridgeCM& myCart;
     PopUpWidget* myBank{nullptr};
 
+    StaticTextWidget *mySWCHALabel{nullptr}, *myColumnLabel{nullptr},
+                     *myRAMLabel{nullptr};
     ToggleBitWidget* mySWCHA{nullptr};
     DataGridWidget* myColumn{nullptr};
     CheckboxWidget *myAudIn{nullptr}, *myAudOut{nullptr},

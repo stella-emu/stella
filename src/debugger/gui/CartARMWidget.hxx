@@ -44,7 +44,11 @@ class CartridgeARMWidget : public CartDebugWidget
     void loadConfig() override;
 
   protected:
-    void addCycleWidgets(int xpos, int ypos);
+    // The ARM cycle/instruction counters and the controls that drive them, which
+    // every ARM cart has.  A leaf creates them in its ctor and, having appended
+    // its own rows in layoutContent(), calls this base to put them underneath
+    void createCycleWidgets();
+    void layoutContent(GUI::BoxLayout& col) override;
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 
   private:
@@ -67,6 +71,8 @@ class CartridgeARMWidget : public CartDebugWidget
     PopUpWidget*      myChipType{nullptr};
     CheckboxWidget*   myLockMamMode{nullptr};
     PopUpWidget*      myMamMode{nullptr};
+    StaticTextWidget* myArmCyclesLabel{nullptr};
+    StaticTextWidget* myInstructionsLabel{nullptr};
     StaticTextWidget* myCyclesLabel{nullptr};
     DataGridWidget*   myPrevThumbCycles{nullptr};
     DataGridWidget*   myPrevThumbInstructions{nullptr};

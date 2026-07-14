@@ -50,29 +50,13 @@ void CartridgeEnhancedWidget::createWidgets()
   createBaseInformation(size(), manufacturer(), description(), descriptionLines());
   createPlusROM();
   createBankWidgets();
-  createExtras();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgeEnhancedWidget::reflow()
+void CartridgeEnhancedWidget::layoutContent(GUI::BoxLayout& col)
 {
-  using GUI::BoxLayout;
-
-  // One label column for the whole tab, as wide as the longest label in it
-  GUI::alignLabels(myLabelColumn);
-
-  // The horizontal margins are applied via the layout rect (below) so the right
-  // margin can be wider than the left; only the vertical margin lives here
-  const int contentW = _w - HBORDER - RBORDER;
-  BoxLayout col(BoxLayout::Dir::Vertical, VGAP, 0, VBORDER);
-
-  layoutBaseInformation(col, contentW);
   layoutPlusROM(col);
-  col.addSpace(_lineHeight);   // separate the info block from the bank controls
   layoutBankSelect(col);
-  layoutExtra(col);
-
-  col.doLayout(_x + HBORDER, _y, contentW, _h);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -198,7 +182,7 @@ void CartridgeEnhancedWidget::layoutPlusROM(GUI::BoxLayout& col)
   if(!myCart.isPlusROM())
     return;
 
-  // The labels were given their (indented) column by collectLabels()
+  // The labels were given their (indented) column when they joined myLabelColumn
   const int indent = _fontWidth * 2;
 
   col.addAuto(anchoredItem(myPlusROMLabel));

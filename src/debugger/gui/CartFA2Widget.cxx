@@ -27,13 +27,14 @@ CartridgeFA2Widget::CartridgeFA2Widget(
   : CartridgeEnhancedWidget(boss, lfont, nfont, x, y, w, h, cart),
     myCartFA2{cart}
 {
+  createFlashWidgets();
   initialize();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgeFA2Widget::createExtras()
+void CartridgeFA2Widget::createFlashWidgets()
 {
-  // Each button sizes itself to its label; layoutExtra() gives the group one width
+  // Each button sizes itself to its label; layoutContent() gives the group one width
   myFlashLabel = new StaticTextWidget(_boss, _font, 0, 0, "Harmony flash memory");
 
   myFlashErase = new ButtonWidget(_boss, _font, 0, 0, "Erase", kFlashErase);
@@ -50,10 +51,13 @@ void CartridgeFA2Widget::createExtras()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgeFA2Widget::layoutExtra(GUI::BoxLayout& col)
+void CartridgeFA2Widget::layoutContent(GUI::BoxLayout& col)
 {
   using GUI::BoxLayout;
   using GUI::anchoredItem;
+
+  // The PlusROM fields and bank selector first, then the flash row beneath them
+  CartridgeEnhancedWidget::layoutContent(col);
 
   GUI::alignButtons({myFlashErase, myFlashLoad, myFlashSave});
 

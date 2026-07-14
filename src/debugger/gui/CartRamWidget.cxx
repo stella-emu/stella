@@ -53,6 +53,8 @@ CartRamWidget::CartRamWidget(
   // The RAM view fills whatever is left below the fields
   myRam = new InternalRamWidget(boss, lfont, nfont, 0, 0, 1, 1, cartDebug);
   addToFocusList(myRam->getFocusList());
+
+  reflow();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -65,7 +67,7 @@ void CartRamWidget::reflow()
   // The two rows share one label column, as wide as the longer of their labels
   GUI::alignLabels({{myRamSizeLabel}, {myDescLabel}});
 
-  const int contentW = _w - CartDebugWidget::HBORDER - CartDebugWidget::RBORDER;
+  const int contentW = CartDebugWidget::contentWidth(_w);
 
   // Word wrap couples width to height: the description only knows how tall it is
   // once it knows how wide it is, so it is given its width before the column is
