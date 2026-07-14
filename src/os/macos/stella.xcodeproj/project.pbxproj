@@ -265,6 +265,10 @@
 		DC2ABA7825A0E178007E57D3 /* StellaDb.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC2ABA7625A0E178007E57D3 /* StellaDb.cxx */; };
 		DC2B85E71EF5EF2300379EB9 /* AtariNTSC.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC2B85E51EF5EF2300379EB9 /* AtariNTSC.cxx */; };
 		DC2B85E81EF5EF2300379EB9 /* AtariNTSC.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC2B85E61EF5EF2300379EB9 /* AtariNTSC.hxx */; };
+		DC2BF3D53006851B009FFBF7 /* WrappedTextWidget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC2BF3D33006851B009FFBF7 /* WrappedTextWidget.hxx */; };
+		DC2BF3D63006851B009FFBF7 /* TabPaneWidget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC2BF3D13006851B009FFBF7 /* TabPaneWidget.hxx */; };
+		DC2BF3D73006851B009FFBF7 /* WrappedTextWidget.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC2BF3D43006851B009FFBF7 /* WrappedTextWidget.cxx */; };
+		DC2BF3D83006851B009FFBF7 /* TabPaneWidget.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC2BF3D23006851B009FFBF7 /* TabPaneWidget.cxx */; };
 		DC2C5EDB1F8F2403007D2A09 /* smartmod.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC2C5EDA1F8F2403007D2A09 /* smartmod.hxx */; };
 		DC30924C212F74930020DAD0 /* TimerManager.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC30924A212F74930020DAD0 /* TimerManager.cxx */; };
 		DC30924D212F74930020DAD0 /* TimerManager.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC30924B212F74930020DAD0 /* TimerManager.hxx */; };
@@ -1157,6 +1161,10 @@
 		DC2ABA7625A0E178007E57D3 /* StellaDb.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = StellaDb.cxx; sourceTree = "<group>"; };
 		DC2B85E51EF5EF2300379EB9 /* AtariNTSC.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AtariNTSC.cxx; sourceTree = "<group>"; };
 		DC2B85E61EF5EF2300379EB9 /* AtariNTSC.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = AtariNTSC.hxx; sourceTree = "<group>"; };
+		DC2BF3D13006851B009FFBF7 /* TabPaneWidget.hxx */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = TabPaneWidget.hxx; sourceTree = "<group>"; };
+		DC2BF3D23006851B009FFBF7 /* TabPaneWidget.cxx */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = TabPaneWidget.cxx; sourceTree = "<group>"; };
+		DC2BF3D33006851B009FFBF7 /* WrappedTextWidget.hxx */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = WrappedTextWidget.hxx; sourceTree = "<group>"; };
+		DC2BF3D43006851B009FFBF7 /* WrappedTextWidget.cxx */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = WrappedTextWidget.cxx; sourceTree = "<group>"; };
 		DC2C5EDA1F8F2403007D2A09 /* smartmod.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = smartmod.hxx; sourceTree = "<group>"; };
 		DC30924A212F74930020DAD0 /* TimerManager.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TimerManager.cxx; sourceTree = "<group>"; };
 		DC30924B212F74930020DAD0 /* TimerManager.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = TimerManager.hxx; sourceTree = "<group>"; };
@@ -2481,6 +2489,8 @@
 				DCCE0353225104BE008C246F /* StellaSettingsDialog.cxx */,
 				2DEF21FB08BC033500B246B4 /* StringListWidget.hxx */,
 				2DEF21FA08BC033500B246B4 /* StringListWidget.cxx */,
+				DC2BF3D13006851B009FFBF7 /* TabPaneWidget.hxx */,
+				DC2BF3D23006851B009FFBF7 /* TabPaneWidget.cxx */,
 				2DDBEAD1084578BF00812C11 /* TabWidget.hxx */,
 				2DDBEAD0084578BF00812C11 /* TabWidget.cxx */,
 				DCE9158A201543B900960CC0 /* TimeLineWidget.hxx */,
@@ -2501,6 +2511,8 @@
 				DC1E474C24D34F3A0047E61A /* WhatsNewDialog.cxx */,
 				2DDBEAD5084578BF00812C11 /* Widget.hxx */,
 				2DDBEAD4084578BF00812C11 /* Widget.cxx */,
+				DC2BF3D33006851B009FFBF7 /* WrappedTextWidget.hxx */,
+				DC2BF3D43006851B009FFBF7 /* WrappedTextWidget.cxx */,
 			);
 			name = gui;
 			path = ../gui;
@@ -3292,6 +3304,8 @@
 				DC84397B247B294E00C6A4FC /* CartTVBoy.hxx in Headers */,
 				DCAACB0F188D636F00A4D282 /* Cart4KSCWidget.hxx in Headers */,
 				DCAACB11188D636F00A4D282 /* CartBFSCWidget.hxx in Headers */,
+				DC2BF3D53006851B009FFBF7 /* WrappedTextWidget.hxx in Headers */,
+				DC2BF3D63006851B009FFBF7 /* TabPaneWidget.hxx in Headers */,
 				DCA82C741FEB4E780059340F /* TimeMachineDialog.hxx in Headers */,
 				DC6A18FD19B3E67A00DEB242 /* CartMDM.hxx in Headers */,
 				DCDDEAC51F5DBF0400C67366 /* RewindManager.hxx in Headers */,
@@ -3626,6 +3640,8 @@
 				DCE3BBF90C95CEDC00A671DF /* RomInfoWidget.cxx in Sources */,
 				DC2ABA62259BD56F007E57D3 /* AbstractKeyValueRepositorySqlite.cxx in Sources */,
 				DC0984850D3985160073C852 /* CartSB.cxx in Sources */,
+				DC2BF3D73006851B009FFBF7 /* WrappedTextWidget.cxx in Sources */,
+				DC2BF3D83006851B009FFBF7 /* TabPaneWidget.cxx in Sources */,
 				DC0E98E02801CC8900097C68 /* Cart0FA0Widget.cxx in Sources */,
 				DC3EE8651E2C0E6D00905161 /* inflate.c in Sources */,
 				DC6D39871A3CE65000171E71 /* CartWDWidget.cxx in Sources */,
