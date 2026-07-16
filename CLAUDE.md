@@ -13,7 +13,6 @@ Uses a custom shell configure script + GNU Make (not CMake or autotools).
 ```bash
 ./configure          # First-time setup; generates config.mak
 make -j$(nproc)      # Build main stella executable (output: out/stella)
-make test            # Build and run unit tests (Google Test, output: out.test/stella-test)
 make clean           # Remove object files
 make distclean       # Remove object files + config.mak
 make DEBUG=1         # Debug build with symbols and _GLIBCXX_DEBUG
