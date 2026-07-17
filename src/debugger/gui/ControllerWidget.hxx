@@ -20,6 +20,13 @@
 
 class GuiObject;
 class ButtonWidget;
+class StaticTextWidget;
+class CheckboxWidget;
+
+namespace GUI {
+  class Layout;
+  class BoxLayout;
+}  // namespace GUI
 
 #include "Font.hxx"
 #include "Widget.hxx"
@@ -44,7 +51,31 @@ class ControllerWidget : public Widget, public CommandSender, public ControllerL
 
     void loadConfig() override { }
 
+    // Reposition/resize this widget's content when its area changes; drives
+    // reflow() so a controller re-flows live with the debugger window
+    void setArea(int x, int y, int w, int h) override;
+
   protected:
+    // Create the shared "Left (X)" / "Right (X)" caption at a placeholder
+    // position; a controller EMBEDDED in another (QuadTari) has none, so it
+    // simply does not call this.  reflow() is what positions it
+    void createHeader();
+
+    // Lay this widget out for its current area and font.  EVERY controller has
+    // the same skeleton -- an optional header above its content, centered in a
+    // fixed block -- so it is written once, here.  A controller states only what
+    // goes below the header: see layoutContent()
+    void reflow();
+
+    // THE hook: add this controller's own pins/cross/grid to the column
+    virtual void layoutContent(GUI::BoxLayout& col) { }
+
+    // Build the shared 4-direction cross (Up/Left/Right/Down) as a tight grid,
+    // so every joystick-style controller's cross is the same size whatever the
+    // labeled buttons it stacks below it in layoutContent()
+    unique_ptr<GUI::Layout> layoutCross(CheckboxWidget* up, CheckboxWidget* down,
+                                        CheckboxWidget* left, CheckboxWidget* right);
+
     bool isLeftPort()
     {
       const bool swappedPorts =
@@ -58,6 +89,12 @@ class ControllerWidget : public Widget, public CommandSender, public ControllerL
     }
 
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override { }
+
+  private:
+    // The shared two-line header, laid out by reflow(): the controller name over
+    // its "(Left)"/"(Right)" port, both centered (null when embedded)
+    StaticTextWidget* myHeaderName{nullptr};
+    StaticTextWidget* myHeaderPort{nullptr};
 
   private:
     // Following constructors and assignment operators not supported

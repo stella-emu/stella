@@ -35,11 +35,13 @@ class FlashWidget : public ControllerWidget
   protected:
     void init(GuiObject* boss, const GUI::Font& font, int x, int y, bool embedded);
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+    void layoutContent(GUI::BoxLayout& col) override;
 
   private:
     enum { kEEPROMEraseCurrent = 'eeEC' };
 
     bool myEmbedded{false};
+    StaticTextWidget* myPagesLabel{nullptr};
     ButtonWidget* myEEPROMEraseCurrent{nullptr};
 
     static constexpr uInt32 MAX_PAGES = 5;

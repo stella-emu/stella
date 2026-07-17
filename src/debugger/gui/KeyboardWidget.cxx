@@ -16,6 +16,7 @@
 //============================================================================
 
 #include "EventHandler.hxx"
+#include "Layout.hxx"
 #include "KeyboardWidget.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -23,32 +24,48 @@ KeyboardWidget::KeyboardWidget(GuiObject* boss, const GUI::Font& font,
                                int x, int y, Controller& controller)
   : ControllerWidget(boss, font, x, y, controller)
 {
-  const bool leftport = isLeftPort();
-  const string& label = leftport ? "Left (Keyboard)" : "Right (Keyboard)";
-
-  const int fontHeight = font.getFontHeight(),
-            lwidth = font.getStringWidth("Right (Keyboard)");
-  int xpos = x, ypos = y;
-  const StaticTextWidget* t = new StaticTextWidget(boss, font, xpos, ypos+2, lwidth,
-                                      fontHeight, label, TextAlign::Left);
-
-  xpos += 30;  ypos += t->getHeight() + 20;
-
+  // Create the keys at a placeholder position; reflow() lays them out
+  // NOLINTBEGIN(cppcoreguidelines-prefer-member-initializer)
   for(int i = 0; i < 12; ++i)
   {
-    myBox[i] = new CheckboxWidget(boss, font, xpos, ypos, "",
+    myBox[i] = new CheckboxWidget(boss, font, 0, 0, "",
                                   CheckboxWidget::kCheckActionCmd);
     myBox[i]->setID(i);
     myBox[i]->setTarget(this);
-    xpos += myBox[i]->getWidth() + 5;
-    if((i+1) % 3 == 0)
-    {
-      xpos = x + 30;
-      ypos += myBox[i]->getHeight() + 5;
-    }
     addFocusWidget(myBox[i]);
   }
-  myEvent = leftport ? ourLeftEvents.data() : ourRightEvents.data();
+  // NOLINTEND(cppcoreguidelines-prefer-member-initializer)
+
+  myEvent = isLeftPort() ? ourLeftEvents.data() : ourRightEvents.data();
+
+  createHeader();
+  reflow();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void KeyboardWidget::layoutContent(GUI::BoxLayout& col)
+{
+  using GUI::BoxLayout;
+  using GUI::GridLayout;
+  using GUI::anchoredItem;
+  using Dir = BoxLayout::Dir;
+
+  const int VGAP = _font.getFontHeight() / 4;
+
+  // The twelve keys as a 3-wide keypad, centered
+  auto keypad = std::make_unique<GridLayout>(3, 4, VGAP, VGAP);
+  for(int c = 0; c < 3; ++c)
+    keypad->columnAuto(c);
+  for(int r = 0; r < 4; ++r)
+    keypad->rowAuto(r);
+  for(int i = 0; i < 12; ++i)
+    keypad->place(i % 3, i / 3, anchoredItem(myBox[i]));
+
+  auto row = std::make_unique<BoxLayout>(Dir::Horizontal);
+  row->addStretchSpace();
+  row->addAuto(std::move(keypad));
+  row->addStretchSpace();
+  col.addAuto(std::move(row));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

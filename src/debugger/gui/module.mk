@@ -59,6 +59,7 @@ MODULE_OBJS := \
         src/debugger/gui/CartWF8Widget.o \
         src/debugger/gui/CartX07Widget.o \
         src/debugger/gui/CartDebugWidget.o \
+        src/debugger/gui/ControllerWidget.o \
         src/debugger/gui/CpuWidget.o \
         src/debugger/gui/DataGridOpsWidget.o \
         src/debugger/gui/DataGridRamWidget.o \
@@ -72,6 +73,7 @@ MODULE_OBJS := \
         src/debugger/gui/Joy2BPlusWidget.o \
         src/debugger/gui/JoystickWidget.o \
         src/debugger/gui/KeyboardWidget.o \
+        src/debugger/gui/NullControlWidget.o \
         src/debugger/gui/PaddleWidget.o \
         src/debugger/gui/PointingDeviceWidget.o \
         src/debugger/gui/PromptWidget.o \

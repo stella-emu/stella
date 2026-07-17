@@ -33,8 +33,17 @@ class AudioWidget : public Widget, public CommandSender
 
     void loadConfig() override;
 
+    // Reflow entry point for the resizable debugger: move/resize the widget and
+    // lay the registers/labels out for the available width (recomputes _h)
+    void setArea(int x, int y, int w, int h) override;
+
   protected:
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+
+  private:
+    // Build the layout tree from the current font and position/size the
+    // registers within the current width; shared by the ctor and setArea()
+    void reflow();
 
   private:
     // ID's for the various widgets
@@ -51,6 +60,11 @@ class AudioWidget : public Widget, public CommandSender
     DataGridWidget*   myAudC{nullptr};
     DataGridWidget*   myAudV{nullptr};
     StaticTextWidget* myAudEffV{nullptr};
+
+    // Labels promoted from anonymous locals so reflow() can reposition them
+    std::array<StaticTextWidget*, 3> myRegLabels{nullptr};      // AUDF/AUDC/AUDV
+    std::array<StaticTextWidget*, 2> myChannelLabels{nullptr};  // channel 0/1
+    StaticTextWidget* mySlash{nullptr};                         // between freqs
 
     // Audio channels
     enum: uInt8

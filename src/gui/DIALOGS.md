@@ -247,7 +247,8 @@ You never construct `WidgetLayout` directly; use these `GUI::` helper builders:
 | `widgetItem(w, minW=0, minH=0)`          | **fills** the cell in both axes — stretches the widget to the cell size    |
 | `stretchedItem(w, minW=0)`               | fills the cell's **width**, keeps its own **height**, vertically centered  |
 | `anchoredItem(w, minW=0, minH=0)`        | the widget's **natural** size, left of the cell and vertically **centered** |
-| `alignedItem(w, hAlign, vAlign, …)`      | any other combination — the general form the three above are shorthand for |
+| `centeredItem(w, minW=0, minH=0)`        | the widget's **natural** size, **centered** on both axes — a heading over its content, or a symmetric grid cell (a joystick cross) |
+| `alignedItem(w, hAlign, vAlign, …)`      | any other combination — the general form the four above are shorthand for |
 | `indentedItem(w, indent, minW=0)`        | natural size, positioned `indent` px from the left                        |
 | `indentedFill(w, indent, width=0)`       | indented and **filling** — an indented field/list/pop-up. Give a `width` to end flush with a **sibling** rather than with the row (see the Fill rule) |
 | `labeledRow(label, control, labelW=0, indent=0, fill=false)` | a row pairing a **separate** label with a control; `fill=true` stretches the control to the rest of the row (edits/lists) instead of keeping its natural width |

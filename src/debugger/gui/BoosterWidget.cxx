@@ -15,6 +15,8 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
+#include "Layout.hxx"
+
 #include "BoosterWidget.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -22,56 +24,17 @@ BoosterWidget::BoosterWidget(GuiObject* boss, const GUI::Font& font,
                              int x, int y, Controller& controller)
   : ControllerWidget(boss, font, x, y, controller)
 {
-  const string& label = isLeftPort() ? "Left (Booster)" : "Right (Booster)";
-
-  const int fontHeight = font.getFontHeight(),
-            lwidth = font.getStringWidth("Right (Booster)");
-  int xpos = x, ypos = y;
-  const auto* t = new StaticTextWidget(boss, font, xpos, ypos+2, lwidth,
-                                       fontHeight, label, TextAlign::Left);
-  xpos += t->getWidth()/2 - 5;  ypos += t->getHeight() + 10;
-  myPins[kJUp] = new CheckboxWidget(boss, font, xpos, ypos, "",
+  // Create the pins at a placeholder position; reflow() lays them out
+  // NOLINTBEGIN(cppcoreguidelines-prefer-member-initializer)
+  const auto pin = [&](int id, string_view label) {
+    myPins[id] = new CheckboxWidget(boss, font, 0, 0, label,
                                     CheckboxWidget::kCheckActionCmd);
-  myPins[kJUp]->setID(kJUp);
-  myPins[kJUp]->setTarget(this);
-
-  ypos += myPins[kJUp]->getHeight() * 2 + 10;
-  myPins[kJDown] = new CheckboxWidget(boss, font, xpos, ypos, "",
-                                      CheckboxWidget::kCheckActionCmd);
-  myPins[kJDown]->setID(kJDown);
-  myPins[kJDown]->setTarget(this);
-
-  xpos -= myPins[kJUp]->getWidth() + 5;
-  ypos -= myPins[kJUp]->getHeight() + 5;
-  myPins[kJLeft] = new CheckboxWidget(boss, font, xpos, ypos, "",
-                                      CheckboxWidget::kCheckActionCmd);
-  myPins[kJLeft]->setID(kJLeft);
-  myPins[kJLeft]->setTarget(this);
-
-  xpos += (myPins[kJUp]->getWidth() + 5) * 2;
-  myPins[kJRight] = new CheckboxWidget(boss, font, xpos, ypos, "",
-                                       CheckboxWidget::kCheckActionCmd);
-  myPins[kJRight]->setID(kJRight);
-  myPins[kJRight]->setTarget(this);
-
-  xpos -= (myPins[kJUp]->getWidth() + 5) * 2;
-  ypos = 20 + (myPins[kJUp]->getHeight() + 10) * 3;
-  myPins[kJFire] = new CheckboxWidget(boss, font, xpos, ypos, "Fire",
-                                      CheckboxWidget::kCheckActionCmd);
-  myPins[kJFire]->setID(kJFire);
-  myPins[kJFire]->setTarget(this);
-
-  ypos += myPins[kJFire]->getHeight() + 5;
-  myPins[kJBooster] = new CheckboxWidget(boss, font, xpos, ypos, "Booster",
-                                         CheckboxWidget::kCheckActionCmd);
-  myPins[kJBooster]->setID(kJBooster);
-  myPins[kJBooster]->setTarget(this);
-
-  ypos += myPins[kJBooster]->getHeight() + 5;
-  myPins[kJTrigger] = new CheckboxWidget(boss, font, xpos, ypos, "Trigger",
-                                         CheckboxWidget::kCheckActionCmd);
-  myPins[kJTrigger]->setID(kJTrigger);
-  myPins[kJTrigger]->setTarget(this);
+    myPins[id]->setID(id);
+    myPins[id]->setTarget(this);
+  };
+  pin(kJUp, "");  pin(kJDown, "");  pin(kJLeft, "");  pin(kJRight, "");
+  pin(kJFire, "Fire");  pin(kJBooster, "Booster");  pin(kJTrigger, "Trigger");
+  // NOLINTEND(cppcoreguidelines-prefer-member-initializer)
 
   addFocusWidget(myPins[kJUp]);
   addFocusWidget(myPins[kJLeft]);
@@ -80,6 +43,34 @@ BoosterWidget::BoosterWidget(GuiObject* boss, const GUI::Font& font,
   addFocusWidget(myPins[kJFire]);
   addFocusWidget(myPins[kJBooster]);
   addFocusWidget(myPins[kJTrigger]);
+
+  createHeader();
+  reflow();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void BoosterWidget::layoutContent(GUI::BoxLayout& col)
+{
+  using GUI::BoxLayout;
+  using GUI::anchoredItem;
+  using Dir = BoxLayout::Dir;
+
+  const int VGAP = _font.getFontHeight() / 4;
+
+  // The shared cross, with the labeled buttons left-aligned below it; the whole
+  // unit is centered so the buttons line up with the cross's left column
+  auto unit = std::make_unique<BoxLayout>(Dir::Vertical, VGAP);
+  unit->addAuto(layoutCross(myPins[kJUp], myPins[kJDown],
+                            myPins[kJLeft], myPins[kJRight]));
+  unit->addAuto(anchoredItem(myPins[kJFire]));
+  unit->addAuto(anchoredItem(myPins[kJBooster]));
+  unit->addAuto(anchoredItem(myPins[kJTrigger]));
+
+  auto row = std::make_unique<BoxLayout>(Dir::Horizontal);
+  row->addStretchSpace();
+  row->addAuto(std::move(unit));
+  row->addStretchSpace();
+  col.addAuto(std::move(row));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

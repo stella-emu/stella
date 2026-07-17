@@ -193,7 +193,7 @@ RiotWidget::RiotWidget(GuiObject* boss, const GUI::Font& lfont,
   myLeftControl = addControlWidget(boss, lfont, xpos, ypos,
       instance().console().leftController());
   addToFocusList(myLeftControl->getFocusList());
-  xpos = myLeftControl->getRight() + hGap * 1.5;
+  xpos = myLeftControl->getRight() + hGap * 4;
   myRightControl = addControlWidget(boss, lfont, xpos, ypos,
       instance().console().rightController());
   addToFocusList(myRightControl->getFocusList());

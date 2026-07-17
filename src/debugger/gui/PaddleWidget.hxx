@@ -34,13 +34,17 @@ class PaddleWidget : public ControllerWidget
 
   protected:
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+    void layoutContent(GUI::BoxLayout& col) override;
 
   private:
     enum { kP0Changed = 'P0ch', kP1Changed = 'P1ch',
            kP0Fire = 'P0fr', kP1Fire = 'P1fr' };
 
+    bool myEmbedded{false};
     SliderWidget *myP0Resistance{nullptr}, *myP1Resistance{nullptr};
     CheckboxWidget *myP0Fire{nullptr}, *myP1Fire{nullptr};
+    // Short pot labels shown only when embedded in a QuadTari
+    StaticTextWidget *myP0Label{nullptr}, *myP1Label{nullptr};
 
   private:
     // Following constructors and assignment operators not supported

@@ -25,6 +25,7 @@
 #include "NullControlWidget.hxx"
 #include "PaddleWidget.hxx"
 #include "SaveKeyWidget.hxx"
+#include "Layout.hxx"
 
 #include "QuadTariWidget.hxx"
 
@@ -33,56 +34,69 @@ QuadTariWidget::QuadTariWidget(GuiObject* boss, const GUI::Font& font,
                                int x, int y, Controller& controller)
   : ControllerWidget(boss, font, x, y, controller)
 {
-  const string label = (isLeftPort() ? "Left" : "Right") + string(" (QuadTari)");
-  const StaticTextWidget* t = new StaticTextWidget(boss, font, x, y + 2, label);
   const QuadTari& qt = static_cast<QuadTari&>(controller);
 
-  y = t->getBottom() + _lineHeight;
-  addController(boss, x, y, *qt.myFirstController, false);
-  addController(boss, x, y, *qt.mySecondController, true);
+  // Create both embedded controllers and the pointer at a placeholder position;
+  // reflow() lays them out
+  // NOLINTBEGIN(cppcoreguidelines-prefer-member-initializer)
+  myFirst   = addController(boss, *qt.myFirstController, false);
+  mySecond  = addController(boss, *qt.mySecondController, true);
+  myPointer = new StaticTextWidget(boss, font, 0, 0, "  ");
+  // NOLINTEND(cppcoreguidelines-prefer-member-initializer)
 
-  myPointer = new StaticTextWidget(boss, font,
-                                   t->getLeft() + _fontWidth * 7, y, "  ");
+  createHeader();
+  reflow();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void QuadTariWidget::addController(GuiObject* boss, int x, int y,
-                                   Controller& controller, bool second)
+void QuadTariWidget::layoutContent(GUI::BoxLayout& col)
+{
+  using GUI::BoxLayout;
+  using GUI::anchoredItem;
+  using Dir = BoxLayout::Dir;
+
+  // The two embedded controllers side by side, the pointer between them.  Each
+  // is a full controller widget, so the row lays it out via its setArea(),
+  // which re-flows its own content -- no need to position them by hand
+  auto row = std::make_unique<BoxLayout>(Dir::Horizontal, _font.getMaxCharWidth());
+  row->addAuto(anchoredItem(myFirst));
+  row->addAuto(anchoredItem(myPointer));
+  row->addAuto(anchoredItem(mySecond));
+  col.addAuto(std::move(row));
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+ControllerWidget* QuadTariWidget::addController(GuiObject* boss,
+                                                Controller& controller, bool second)
 {
   ControllerWidget* widget = nullptr;
 
-  x += second ? _fontWidth * 10 : 0;
   switch(controller.type())
   {
     using enum Controller::Type;
     case Joystick:
-      x += _fontWidth * 2;
-      widget = new JoystickWidget(boss, _font, x, y, controller, true);
+      widget = new JoystickWidget(boss, _font, 0, 0, controller, true);
       break;
-
     case Driving:
-      widget = new DrivingWidget(boss, _font, x, y, controller, true);
+      widget = new DrivingWidget(boss, _font, 0, 0, controller, true);
       break;
-
     case Paddles:
-      widget = new PaddleWidget(boss, _font, x, y, controller, true, second);
+      widget = new PaddleWidget(boss, _font, 0, 0, controller, true, second);
       break;
-
     case AtariVox:
-      widget = new AtariVoxWidget(boss, _font, x, y, controller, true);
+      widget = new AtariVoxWidget(boss, _font, 0, 0, controller, true);
       break;
-
     case SaveKey:
-      widget = new SaveKeyWidget(boss, _font, x, y, controller, true);
+      widget = new SaveKeyWidget(boss, _font, 0, 0, controller, true);
       break;
-
     default:
-      widget = new NullControlWidget(boss, _font, x, y, controller, true);
+      widget = new NullControlWidget(boss, _font, 0, 0, controller, true);
       break;
   }
-  const WidgetArray focusList = widget->getFocusList();
+  const WidgetArray& focusList = widget->getFocusList();
   if(!focusList.empty())
     addToFocusList(focusList);
+  return widget;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

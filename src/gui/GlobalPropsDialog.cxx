@@ -141,10 +141,8 @@ unique_ptr<GUI::Layout> GlobalPropsDialog::joyLayout(StaticTextWidget* label,
 {
   using GUI::BoxLayout;
   using GUI::GridLayout;
-  using GUI::alignedItem;
+  using GUI::centeredItem;
   using GUI::anchoredItem;
-  using GUI::HAlign;
-  using GUI::VAlign;
   using Dir = BoxLayout::Dir;
 
   const int VGAP = Dialog::vGap();
@@ -171,7 +169,7 @@ unique_ptr<GUI::Layout> GlobalPropsDialog::joyLayout(StaticTextWidget* label,
   crossRow->addStretchSpace();
 
   auto column = std::make_unique<BoxLayout>(Dir::Vertical, VGAP);
-  column->addAuto(alignedItem(label, HAlign::Center, VAlign::Center));
+  column->addAuto(centeredItem(label));
   column->addAuto(std::move(crossRow));
 
   return column;
@@ -181,10 +179,8 @@ unique_ptr<GUI::Layout> GlobalPropsDialog::joyLayout(StaticTextWidget* label,
 unique_ptr<GUI::Layout> GlobalPropsDialog::consoleLayout()
 {
   using GUI::BoxLayout;
-  using GUI::alignedItem;
+  using GUI::centeredItem;
   using GUI::anchoredItem;
-  using GUI::HAlign;
-  using GUI::VAlign;
   using Dir = BoxLayout::Dir;
 
   const int VGAP = Dialog::vGap();
@@ -200,7 +196,7 @@ unique_ptr<GUI::Layout> GlobalPropsDialog::consoleLayout()
   stackRow->addStretchSpace();
 
   auto column = std::make_unique<BoxLayout>(Dir::Vertical, VGAP);
-  column->addAuto(alignedItem(myConsoleLabel, HAlign::Center, VAlign::Center));
+  column->addAuto(centeredItem(myConsoleLabel));
   column->addAuto(std::move(stackRow));
 
   return column;

@@ -17,6 +17,7 @@
 
 #include "Base.hxx"
 #include "MT24LC256.hxx"
+#include "Layout.hxx"
 #include "FlashWidget.hxx"
 
 using Common::Base;
@@ -33,39 +34,43 @@ FlashWidget::FlashWidget(GuiObject* boss, const GUI::Font& font,
 void FlashWidget::init(GuiObject* boss, const GUI::Font& font,
                        int x, int y, bool embedded)
 {
-  int xpos = x, ypos = y;
-
   myEmbedded = embedded;
-  if(!embedded)
-  {
-    new StaticTextWidget(boss, font, xpos, ypos + 2, getHeader());
 
-    ypos += _lineHeight * 1.4;
-    new StaticTextWidget(boss, font, xpos, ypos, "Pages/Ranges used:");
-  }
-  else
-  {
-    ypos += _lineHeight * 0.4 - (2 + _lineHeight);
-    new StaticTextWidget(boss, font, xpos, ypos, "Pages:");
-  }
-
-  ypos += _lineHeight + 2;
-  xpos += 8;
+  // Create the controls at a placeholder position; reflow() lays them out.  The
+  // page ranges are filled in by loadConfig(), so they take no text here
+  // NOLINTBEGIN(cppcoreguidelines-prefer-member-initializer)
+  myPagesLabel = new StaticTextWidget(boss, font, 0, 0,
+                                      embedded ? "Pages:" : "Pages/Ranges used:");
   for(uInt32 page = 0; page < MAX_PAGES; ++page)
-  {
-    myPage[page] = new StaticTextWidget(boss, font, xpos, ypos,
-        embedded ? page ? "    " : "none"
-                 : page ? "                  " : "none              ");
-    ypos += _lineHeight;
-  }
-
-  xpos -= 8; ypos += 2;
-  myEEPROMEraseCurrent = new ButtonWidget(boss, font, xpos, ypos,
+    myPage[page] = new StaticTextWidget(boss, font, 0, 0, page ? "" : "none");
+  myEEPROMEraseCurrent = new ButtonWidget(boss, font, 0, 0,
                                           embedded ? "Erase" : "Erase used pages",
                                           kEEPROMEraseCurrent);
   myEEPROMEraseCurrent->setTarget(this);
+  // NOLINTEND(cppcoreguidelines-prefer-member-initializer)
 
   addFocusWidget(myEEPROMEraseCurrent);
+
+  if(!embedded)
+    createHeader();
+  reflow();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FlashWidget::layoutContent(GUI::BoxLayout& col)
+{
+  using GUI::anchoredItem;
+  using GUI::indentedFill;
+
+  const int VGAP = _font.getFontHeight() / 4;
+
+  // The "Pages/Ranges used:" caption, then the used-page ranges (filled in by
+  // loadConfig) indented under it, then the erase button
+  col.addAuto(anchoredItem(myPagesLabel));
+  for(auto* page: myPage)
+    col.addAuto(indentedFill(page, _font.getMaxCharWidth()));
+  col.addSpace(VGAP);
+  col.addAuto(anchoredItem(myEEPROMEraseCurrent));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

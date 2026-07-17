@@ -32,6 +32,7 @@ class GenesisWidget : public ControllerWidget
 
   protected:
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+    void layoutContent(GUI::BoxLayout& col) override;
 
   private:
     enum: uInt8 { kJUp = 0, kJDown, kJLeft, kJRight, kJBbtn, kJCbtn };

@@ -410,6 +410,16 @@ anchoredItem(Widget* widget, int minW = 0, int minH = 0)
                                         minW, minH);
 }
 
+// A widget that keeps its natural size, centered in its cell on both axes.  For
+// a heading over the content it labels, or the cells of a symmetric grid (a
+// joystick cross) whose contents differ in width.
+inline unique_ptr<WidgetLayout>
+centeredItem(Widget* widget, int minW = 0, int minH = 0)
+{
+  return std::make_unique<WidgetLayout>(widget, HAlign::Center, VAlign::Center,
+                                        minW, minH);
+}
+
 // Wrap a widget so it keeps its natural size and is positioned 'indent' pixels
 // from the left of its cell — used for options indented under a group header
 // (e.g. the checkboxes below a "When saving:" label in the option dialogs).

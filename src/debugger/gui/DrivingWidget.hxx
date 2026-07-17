@@ -36,6 +36,7 @@ class DrivingWidget : public ControllerWidget
 
   protected:
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+    void layoutContent(GUI::BoxLayout& col) override;
 
   private:
     enum {
