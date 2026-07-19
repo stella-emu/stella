@@ -422,12 +422,15 @@ class ButtonWidget : public StaticTextWidget
     void setIcon(const GUI::Icon& icon);
 
     // Trim the self-size margin so a small button (a debugger op button) is not
-    // as wide as a dialog button.  Only affects an auto-sized (label-only) button
+    // as big as a dialog button.  Only affects an auto-sized (label-only) button
     void setCompact(bool compact = true)
     {
       _compact = compact;
       if(_autoSize)
+      {
         setWidth(autoWidth());
+        setHeight(autoHeight());
+      }
     }
 
     bool handleMouseClicks(int x, int y, MouseButton b) override;
@@ -474,6 +477,14 @@ class ButtonWidget : public StaticTextWidget
       return _useText
         ? _bmw + static_cast<int>(_bmx * 1.5) + _font.getStringWidth(_label)
         : _bmw + iconGap(_font);
+    }
+
+    // The height my content needs.  A compact button keeps to its line and no
+    // more; the standard margin is what gives a dialog button its presence,
+    // which a small op button beside a grid does not want
+    int autoHeight() const
+    {
+      return _compact ? _font.getLineHeight() : calcHeight(_font);
     }
 
   public:

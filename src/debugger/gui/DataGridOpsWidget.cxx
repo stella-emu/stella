@@ -67,7 +67,7 @@ DataGridOpsWidget::DataGridOpsWidget(GuiObject* boss, const GUI::Font& font,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-unique_ptr<GUI::Layout> DataGridOpsWidget::buildLayout(int rowHeight, int gap)
+unique_ptr<GUI::GridLayout> DataGridOpsWidget::buildLayout(int vGap, int hGap)
 {
   using GUI::GridLayout;
   using GUI::alignedItem;
@@ -78,25 +78,31 @@ unique_ptr<GUI::Layout> DataGridOpsWidget::buildLayout(int rowHeight, int gap)
   GUI::alignButtons({_zeroButton, _invButton, _incButton, _shiftLeftButton,
                      _negButton, _decButton, _shiftRightButton});
 
-  // Two columns of operations; the right column starts one row down.  Each button
-  // fills its row's height (which the caller sets to match its own buttons) but
-  // keeps its own compact width
+  // Two columns of operations; the right column starts one row down.  The rows
+  // SHARE the height of the band between them and the gaps are a fixed vGap, so
+  // this column ends level with the register grids beside it whatever height the
+  // band comes to, and the height goes into the buttons rather than the space
+  // between them.  A button keeps its compact WIDTH and fills the row
+  auto grid = std::make_unique<GridLayout>(2, ROWS * 2 - 1, hGap, 0);
+  grid->columnAuto(0).columnAuto(1);
+  for(int row = 0; row < ROWS * 2 - 1; ++row)
+  {
+    if(row % 2)
+      grid->rowFixed(row, vGap);
+    else
+      grid->rowStretch(row);
+  }
+
   const auto opButton = [](ButtonWidget* b) {
     return alignedItem(b, HAlign::Left, VAlign::Fill);
   };
-
-  auto grid = std::make_unique<GridLayout>(2, 4, gap, gap, 0, 0);
-  grid->columnAuto(0).columnAuto(1);
-  for(int row = 0; row < 4; ++row)
-    grid->rowFixed(row, rowHeight);
-
-  grid->place(0, 0, opButton(_zeroButton));
-  grid->place(0, 1, opButton(_invButton));
-  grid->place(0, 2, opButton(_incButton));
-  grid->place(0, 3, opButton(_shiftLeftButton));
-  grid->place(1, 1, opButton(_negButton));
-  grid->place(1, 2, opButton(_decButton));
-  grid->place(1, 3, opButton(_shiftRightButton));
+  grid->place(0, 2, opButton(_zeroButton));
+  grid->place(0, 4, opButton(_invButton));
+  grid->place(0, 6, opButton(_incButton));
+  grid->place(0, 8, opButton(_shiftLeftButton));
+  grid->place(1, 4, opButton(_negButton));
+  grid->place(1, 6, opButton(_decButton));
+  grid->place(1, 8, opButton(_shiftRightButton));
 
   return grid;
 }

@@ -21,6 +21,7 @@
 #include "FrameBuffer.hxx"
 #include "Font.hxx"
 #include "GuiObject.hxx"
+#include "Layout.hxx"
 #include "OSystem.hxx"
 #include "Debugger.hxx"
 #include "TIA.hxx"
@@ -37,69 +38,49 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
   : Widget(boss, lfont, x, y, w, h),
     CommandSender(boss)
 {
-  const int fontWidth  = lfont.getMaxCharWidth(),
-            fontHeight = lfont.getFontHeight(),
-            lineHeight = lfont.getLineHeight(),
-            buttonW = 7 * fontWidth,
-            buttonH = lineHeight,
-            hGap = fontWidth,
-            vGap = fontHeight / 2,
-            hBorder = 10,
-            vBorder = 10;
-  int xpos = hBorder, ypos = vBorder;
-  ButtonWidget* b = nullptr;
+  const int lineHeight = lfont.getLineHeight();
 
+  // Create every widget; reflow() positions and sizes them for the area the
+  // parent layout gives us
   ////////////////////////////
   // VSync/VBlank
   ////////////////////////////
-  int buttonX = xpos, buttonY = ypos;
-  myVSync = new CheckboxWidget(boss, lfont, buttonX, buttonY, "VSync", kVSyncCmd);
+  myVSync = new CheckboxWidget(boss, lfont, 0, 0, "VSync", kVSyncCmd);
   myVSync->setTarget(this);
   addFocusWidget(myVSync);
 
-  buttonX += myVSync->getRight() + hGap * 2;
-  myVBlank = new CheckboxWidget(boss, lfont, buttonX, buttonY, "VBlank", kVBlankCmd);
+  myVBlank = new CheckboxWidget(boss, lfont, 0, 0, "VBlank", kVBlankCmd);
   myVBlank->setTarget(this);
   addFocusWidget(myVBlank);
 
   // Color registers
-  ypos = vBorder + lineHeight * 2 + vGap / 2;
   static constexpr std::array<string_view, 4> regNames = {
     "COLUP0", "COLUP1", "COLUPF", "COLUBK"
   };
   for(int row = 0; row < 4; ++row)
-    new StaticTextWidget(boss, lfont, xpos, ypos + row * lineHeight + 2,
-                         regNames[row]);
-  xpos += 6 * fontWidth + hGap;
-  myColorRegs = new DataGridWidget(boss, nfont, xpos, ypos,
+    myColorRegLabels[row] = new StaticTextWidget(boss, lfont, 0, 0, regNames[row]);
+
+  myColorRegs = new DataGridWidget(boss, nfont, 0, 0,
                                    1, 4, 2, 8, Common::Base::Fmt::_16);
   myColorRegs->setTarget(this);
   myColorRegs->setID(kColorRegsID);
   addFocusWidget(myColorRegs);
 
-  xpos += myColorRegs->colWidth() + hGap / 2;
-  myCOLUP0Color = new ColorWidget(boss, nfont, xpos, ypos + 2,
-                                  static_cast<uInt32>(1.5 * lineHeight), lineHeight - 4);
-  myCOLUP0Color->setTarget(this);
-
-  ypos += lineHeight;
-  myCOLUP1Color = new ColorWidget(boss, nfont, xpos, ypos + 2,
-                                  static_cast<uInt32>(1.5 * lineHeight), lineHeight - 4);
-  myCOLUP1Color->setTarget(this);
-
-  ypos += lineHeight;
-  myCOLUPFColor = new ColorWidget(boss, nfont, xpos, ypos + 2,
-                                  static_cast<uInt32>(1.5 * lineHeight), lineHeight - 4);
-  myCOLUPFColor->setTarget(this);
-
-  ypos += lineHeight;
-  myCOLUBKColor = new ColorWidget(boss, nfont, xpos, ypos + 2,
-                                  static_cast<uInt32>(1.5 * lineHeight), lineHeight - 4);
-  myCOLUBKColor->setTarget(this);
+  // A colour swatch is half again as wide as it is tall; reflow() re-applies
+  // both, so they follow the font
+  const auto swatch = [&]() {
+    auto* c = new ColorWidget(boss, nfont, 0, 0,
+                              static_cast<uInt32>(1.5 * lineHeight), lineHeight - 4);
+    c->setTarget(this);
+    return c;
+  };
+  myCOLUP0Color = swatch();
+  myCOLUP1Color = swatch();
+  myCOLUPFColor = swatch();
+  myCOLUBKColor = swatch();
 
   // Fixed debug colors
-  xpos = myCOLUP0Color->getRight() + hGap * 4;  ypos = vBorder + lineHeight + vGap / 2;
-  myFixedEnabled = new CheckboxWidget(boss, lfont, xpos, ypos, "Debug Colors", kDbgClCmd);
+  myFixedEnabled = new CheckboxWidget(boss, lfont, 0, 0, "Debug Colors", kDbgClCmd);
   myFixedEnabled->setToolTip("Enable fixed debug colors", Event::ToggleFixedColors);
   myFixedEnabled->setTarget(this);
   addFocusWidget(myFixedEnabled);
@@ -107,80 +88,56 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
   static constexpr std::array<string_view, 8> dbgLabels = {
     "P0", "P1", "PF", "BK", "M0", "M1", "BL", "HM"
   };
-  for(uInt32 row = 0; row <= 3; ++row)
+  for(uInt32 row = 0; row < 8; ++row)
   {
-    ypos += lineHeight;
-    auto* t = new StaticTextWidget(boss, lfont, xpos, ypos + 2, dbgLabels[row]);
-    myFixedColors[row] = new ColorWidget(boss, nfont, t->getRight() + hGap,
-                                         ypos + 2, static_cast<uInt32>(1.5 * lineHeight), lineHeight - 4);
-    myFixedColors[row]->setTarget(this);
-  }
-  xpos = myFixedColors[0]->getRight() + hGap * 2;
-  ypos = vBorder + lineHeight + vGap / 2;
-  for(uInt32 row = 4; row <= 7; ++row)
-  {
-    ypos += lineHeight;
-    auto* t = new StaticTextWidget(boss, lfont, xpos, ypos + 2, dbgLabels[row]);
-    myFixedColors[row] = new ColorWidget(boss, nfont, t->getRight() + hGap,
-                                         ypos + 2, static_cast<uInt32>(1.5 * lineHeight), lineHeight - 4);
-    myFixedColors[row]->setTarget(this);
+    myDbgColorLabels[row] = new StaticTextWidget(boss, lfont, 0, 0, dbgLabels[row]);
+    myFixedColors[row] = swatch();
   }
 
   ////////////////////////////
   // Collision register bits
   ////////////////////////////
-  xpos = myFixedColors[4]->getRight() + 6 * hGap;  ypos = vBorder + lineHeight;
-
-  // Add all 15 collision bits (with labels)
+  // All 15 collision bits, with a label down the left and along the top
   static constexpr std::array<string_view, 5> rowLabel = { "P0", "P1", "M0", "M1", "BL" };
   static constexpr std::array<string_view, 5> colLabel = { "PF", "BL", "M1", "M0", "P1" };
   int idx = 0;
   for(uInt32 row = 0; row < 5; ++row)
   {
-    // Add vertical label
-    auto* t = new StaticTextWidget(boss, lfont, xpos, ypos, rowLabel[row]);
-    int collX = t->getRight() + hGap;
+    myCollRowLabels[row] = new StaticTextWidget(boss, lfont, 0, 0, rowLabel[row]);
+    myCollColLabels[row] = new StaticTextWidget(boss, lfont, 0, 0, colLabel[row]);
 
     for(uInt32 col = 0; col < 5 - row; ++col, ++idx)
     {
-      myCollision[idx] = new CheckboxWidget(boss, lfont, collX, ypos, "", CheckboxWidget::kCheckActionCmd);
+      myCollision[idx] = new CheckboxWidget(boss, lfont, 0, 0, "",
+                                            CheckboxWidget::kCheckActionCmd);
       myCollision[idx]->setTarget(this);
       myCollision[idx]->setID(idx);
-
-      if(row == 0)
-      {
-        // Add centered horizontal label
-        const int labelx = collX - (2 * fontWidth - myCollision[idx]->getWidth()) / 2;
-        new StaticTextWidget(boss, lfont, labelx, ypos - lineHeight, colLabel[col]);
-      }
-      collX += fontWidth * 2 + hGap;
     }
-    ypos += lineHeight + 3; // constant gap for all font sizes because checkboxes have the same size too
   }
 
   // Clear all collision bits
-  buttonX = myCollision[kP0_P1ID]->getRight() - buttonW;
-  buttonY = myCollision[kBL_PFID]->getBottom() - buttonH;
-  b = new ButtonWidget(boss, lfont, buttonX, buttonY, buttonW, buttonH,
-                       "CXCLR", kCxclrCmd);
-  b->setTarget(this);
-  addFocusWidget(b);
+  myCxclrButton = new ButtonWidget(boss, lfont, 0, 0, "CXCLR", kCxclrCmd);
+  myCxclrButton->setCompact();
+  myCxclrButton->setTarget(this);
+  addFocusWidget(myCxclrButton);
 
   ////////////////////////////
   // P0 register info
   ////////////////////////////
+  myBlockLabels[0].name = new StaticTextWidget(boss, lfont, 0, 0, "P0");
+  myBlockLabels[0].pos  = new StaticTextWidget(boss, lfont, 0, 0, "Pos#");
+  myBlockLabels[0].hm   = new StaticTextWidget(boss, lfont, 0, 0, "HM");
+  myBlockLabels[0].size = new StaticTextWidget(boss, lfont, 0, 0, "NuSiz");
+
   // grP0 (new)
-  ypos = std::max(myFixedColors[3]->getBottom(), b->getBottom()) + vGap * 1.5;
-  auto* t = new StaticTextWidget(boss, lfont, hBorder, ypos + 2, "P0");
-  myGRP0 = new TogglePixelWidget(boss, nfont, t->getRight() + hGap, ypos + 1, 8, 1);
+  myGRP0 = new TogglePixelWidget(boss, nfont, 0, 0, 8, 1);
   myGRP0->setTarget(this);
   myGRP0->setID(kGRP0ID);
   myGRP0->clearBackgroundColor();
   addFocusWidget(myGRP0);
 
   // posP0
-  t = new StaticTextWidget(boss, lfont, myGRP0->getRight() + hGap * 1.5, ypos + 2, "Pos#");
-  myPosP0 = new DataGridWidget(boss, nfont, t->getRight() + hGap / 2, ypos,
+  myPosP0 = new DataGridWidget(boss, nfont, 0, 0,
                                1, 1, 3, 8, Common::Base::Fmt::_10);
   myPosP0->setTarget(this);
   myPosP0->setID(kPosP0ID);
@@ -188,69 +145,66 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
   addFocusWidget(myPosP0);
 
   // hmP0
-  t = new StaticTextWidget(boss, lfont, myPosP0->getRight() + hGap * 3, ypos + 2, "HM");
-  myHMP0 = new DataGridWidget(boss, nfont, t->getRight() + hGap / 2, ypos,
+  myHMP0 = new DataGridWidget(boss, nfont, 0, 0,
                               1, 1, 1, 4, Common::Base::Fmt::_16_1);
   myHMP0->setTarget(this);
   myHMP0->setID(kHMP0ID);
   addFocusWidget(myHMP0);
 
   // P0 reflect
-  myRefP0 = new CheckboxWidget(boss, lfont, myHMP0->getRight() + hGap * 2, ypos + 1,
+  myRefP0 = new CheckboxWidget(boss, lfont, 0, 0,
                                "Reflect", CheckboxWidget::kCheckActionCmd);
   myRefP0->setTarget(this);
   myRefP0->setID(kRefP0ID);
   addFocusWidget(myRefP0);
 
   // P0 reset
-  buttonX = myRefP0->getRight() + hGap * 2;
-  b = new ButtonWidget(boss, lfont, buttonX, ypos, buttonW, buttonH,
-                       "RESP0", kResP0Cmd);
-  b->setTarget(this);
-  addFocusWidget(b);
+  myResButtons[0] = new ButtonWidget(boss, lfont, 0, 0, "RESP0", kResP0Cmd);
+  myResButtons[0]->setCompact();
+  myResButtons[0]->setTarget(this);
+  addFocusWidget(myResButtons[0]);
 
   // grP0 (old)
-  ypos += myGRP0->getHeight() + vGap / 2;
-  myGRP0Old = new TogglePixelWidget(boss, nfont, myGRP0->getLeft(), ypos + 1, 8, 1);
+  myGRP0Old = new TogglePixelWidget(boss, nfont, 0, 0, 8, 1);
   myGRP0Old->setTarget(this);
   myGRP0Old->setID(kGRP0OldID);
   myGRP0Old->clearBackgroundColor();
   addFocusWidget(myGRP0Old);
 
   // P0 delay
-  myDelP0 = new CheckboxWidget(boss, lfont, myGRP0Old->getRight() + hGap * 1.5, ypos + 2,
+  myDelP0 = new CheckboxWidget(boss, lfont, 0, 0,
                                "VDel", CheckboxWidget::kCheckActionCmd);
   myDelP0->setTarget(this);
   myDelP0->setID(kDelP0ID);
   addFocusWidget(myDelP0);
 
   // NUSIZ0 (player portion)
-  new StaticTextWidget(boss, lfont, myHMP0->getLeft() - fontWidth * 5 - hGap / 2, ypos + 2, "NuSiz");
-  myNusizP0 = new DataGridWidget(boss, nfont, myHMP0->getLeft(), ypos,
+  myNusizP0 = new DataGridWidget(boss, nfont, 0, 0,
                                  1, 1, 1, 3, Common::Base::Fmt::_16_1);
   myNusizP0->setTarget(this);
   myNusizP0->setID(kNusizP0ID);
   addFocusWidget(myNusizP0);
 
-  myNusizP0Text = new EditTextWidget(boss, nfont, myNusizP0->getRight() + hGap / 2, ypos,
-                                     21 * fontWidth, lineHeight);
+  myNusizP0Text = new EditTextWidget(boss, nfont, 0, 0, 1, lineHeight);
   myNusizP0Text->setEditable(false, true);
 
   ////////////////////////////
   // P1 register info
   ////////////////////////////
+  myBlockLabels[1].name = new StaticTextWidget(boss, lfont, 0, 0, "P1");
+  myBlockLabels[1].pos  = new StaticTextWidget(boss, lfont, 0, 0, "Pos#");
+  myBlockLabels[1].hm   = new StaticTextWidget(boss, lfont, 0, 0, "HM");
+  myBlockLabels[1].size = new StaticTextWidget(boss, lfont, 0, 0, "NuSiz");
+
   // grP1 (new)
-  ypos += lineHeight + vGap * 1.5;
-  t = new StaticTextWidget(boss, lfont, hBorder, ypos + 2, "P1");
-  myGRP1 = new TogglePixelWidget(boss, nfont, t->getRight() + hGap, ypos + 1, 8, 1);
+  myGRP1 = new TogglePixelWidget(boss, nfont, 0, 0, 8, 1);
   myGRP1->setTarget(this);
   myGRP1->setID(kGRP1ID);
   myGRP1->clearBackgroundColor();
   addFocusWidget(myGRP1);
 
   // posP1
-  t = new StaticTextWidget(boss, lfont, myGRP1->getRight() + hGap * 1.5, ypos + 2, "Pos#");
-  myPosP1 = new DataGridWidget(boss, nfont, t->getRight() + hGap / 2, ypos,
+  myPosP1 = new DataGridWidget(boss, nfont, 0, 0,
                                1, 1, 3, 8, Common::Base::Fmt::_10);
   myPosP1->setTarget(this);
   myPosP1->setID(kPosP1ID);
@@ -258,68 +212,66 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
   addFocusWidget(myPosP1);
 
   // hmP1
-  t = new StaticTextWidget(boss, lfont, myPosP1->getRight() + hGap * 3, ypos + 2, "HM");
-  myHMP1 = new DataGridWidget(boss, nfont, t->getRight() + hGap / 2, ypos,
+  myHMP1 = new DataGridWidget(boss, nfont, 0, 0,
                               1, 1, 1, 4, Common::Base::Fmt::_16_1);
   myHMP1->setTarget(this);
   myHMP1->setID(kHMP1ID);
   addFocusWidget(myHMP1);
 
   // P1 reflect
-  myRefP1 = new CheckboxWidget(boss, lfont, myHMP1->getRight() + hGap * 2, ypos + 1,
+  myRefP1 = new CheckboxWidget(boss, lfont, 0, 0,
                                "Reflect", CheckboxWidget::kCheckActionCmd);
   myRefP1->setTarget(this);
   myRefP1->setID(kRefP1ID);
   addFocusWidget(myRefP1);
 
   // P1 reset
-  b = new ButtonWidget(boss, lfont, myRefP1->getRight() + hGap * 2, ypos,
-                       buttonW, buttonH, "RESP1", kResP1Cmd);
-  b->setTarget(this);
-  addFocusWidget(b);
+  myResButtons[1] = new ButtonWidget(boss, lfont, 0, 0, "RESP1", kResP1Cmd);
+  myResButtons[1]->setCompact();
+  myResButtons[1]->setTarget(this);
+  addFocusWidget(myResButtons[1]);
 
   // grP1 (old)
-  ypos += myGRP1->getHeight() + vGap / 2;
-  myGRP1Old = new TogglePixelWidget(boss, nfont, myGRP1->getLeft(), ypos + 1, 8, 1);
+  myGRP1Old = new TogglePixelWidget(boss, nfont, 0, 0, 8, 1);
   myGRP1Old->setTarget(this);
   myGRP1Old->setID(kGRP1OldID);
   myGRP1Old->clearBackgroundColor();
   addFocusWidget(myGRP1Old);
 
   // P1 delay
-  myDelP1 = new CheckboxWidget(boss, lfont, myGRP1Old->getRight() + hGap * 1.5, ypos + 2,
+  myDelP1 = new CheckboxWidget(boss, lfont, 0, 0,
                                "VDel", CheckboxWidget::kCheckActionCmd);
   myDelP1->setTarget(this);
   myDelP1->setID(kDelP1ID);
   addFocusWidget(myDelP1);
 
   // NUSIZ1 (player portion)
-  new StaticTextWidget(boss, lfont, myHMP1->getLeft() - fontWidth * 5 - hGap / 2, ypos + 2, "NuSiz");
-  myNusizP1 = new DataGridWidget(boss, nfont, myHMP1->getLeft(), ypos,
+  myNusizP1 = new DataGridWidget(boss, nfont, 0, 0,
                                  1, 1, 1, 3, Common::Base::Fmt::_16_1);
   myNusizP1->setTarget(this);
   myNusizP1->setID(kNusizP1ID);
   addFocusWidget(myNusizP1);
 
-  myNusizP1Text = new EditTextWidget(boss, nfont, myNusizP1->getRight() + hGap / 2, ypos,
-                                     21 * fontWidth, lineHeight);
+  myNusizP1Text = new EditTextWidget(boss, nfont, 0, 0, 1, lineHeight);
   myNusizP1Text->setEditable(false, true);
 
   ////////////////////////////
   // M0 register info
   ////////////////////////////
+  myBlockLabels[2].name = new StaticTextWidget(boss, lfont, 0, 0, "M0");
+  myBlockLabels[2].pos  = new StaticTextWidget(boss, lfont, 0, 0, "Pos#");
+  myBlockLabels[2].hm   = new StaticTextWidget(boss, lfont, 0, 0, "HM");
+  myBlockLabels[2].size = new StaticTextWidget(boss, lfont, 0, 0, "Size");
+
   // enaM0
-  ypos += lineHeight + vGap * 1.5;
-  t = new StaticTextWidget(boss, lfont, hBorder, ypos + 2, "M0");
-  myEnaM0 = new TogglePixelWidget(boss, nfont, t->getRight() + hGap, ypos + 1, 1, 1);
+  myEnaM0 = new TogglePixelWidget(boss, nfont, 0, 0, 1, 1);
   myEnaM0->setTarget(this);
   myEnaM0->setID(kEnaM0ID);
   myEnaM0->clearBackgroundColor();
   addFocusWidget(myEnaM0);
 
   // posM0
-  t = new StaticTextWidget(boss, lfont, myEnaM0->getRight() + hGap * 1.5, ypos + 2, "Pos#");
-  myPosM0 = new DataGridWidget(boss, nfont, t->getRight() + hGap / 2, ypos,
+  myPosM0 = new DataGridWidget(boss, nfont, 0, 0,
                                1, 1, 3, 8, Common::Base::Fmt::_10);
   myPosM0->setTarget(this);
   myPosM0->setID(kPosM0ID);
@@ -327,99 +279,99 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
   addFocusWidget(myPosM0);
 
   // hmM0
-  t = new StaticTextWidget(boss, lfont, myPosM0->getRight() + hGap * 1.5, ypos + 2, "HM");
-  myHMM0 = new DataGridWidget(boss, nfont, t->getRight() + hGap / 2, ypos,
+  myHMM0 = new DataGridWidget(boss, nfont, 0, 0,
                               1, 1, 1, 4, Common::Base::Fmt::_16_1);
   myHMM0->setTarget(this);
   myHMM0->setID(kHMM0ID);
   addFocusWidget(myHMM0);
 
   // NUSIZ0 (missile portion)
-  t = new StaticTextWidget(boss, lfont, myHMM0->getRight() + hGap * 1.5, ypos + 2, "Size");
-  myNusizM0 = new DataGridWidget(boss, nfont, t->getRight() + hGap / 2, ypos,
+  myNusizM0 = new DataGridWidget(boss, nfont, 0, 0,
                                  1, 1, 1, 2, Common::Base::Fmt::_16_1);
   myNusizM0->setTarget(this);
   myNusizM0->setID(kNusizM0ID);
   addFocusWidget(myNusizM0);
 
   // M0 reset to player 0
-  myResMP0 = new CheckboxWidget(boss, lfont, myNusizM0->getRight() + hGap * 2, ypos + 1,
+  myResMP0 = new CheckboxWidget(boss, lfont, 0, 0,
                                 "Reset to P0", CheckboxWidget::kCheckActionCmd);
   myResMP0->setTarget(this);
   myResMP0->setID(kResMP0ID);
   addFocusWidget(myResMP0);
 
   // M0 reset
-  b = new ButtonWidget(boss, lfont, buttonX, ypos, buttonW, buttonH,
-                       "RESM0", kResM0Cmd);
-  b->setTarget(this);
-  addFocusWidget(b);
+  myResButtons[2] = new ButtonWidget(boss, lfont, 0, 0, "RESM0", kResM0Cmd);
+  myResButtons[2]->setCompact();
+  myResButtons[2]->setTarget(this);
+  addFocusWidget(myResButtons[2]);
 
   ////////////////////////////
   // M1 register info
   ////////////////////////////
+  myBlockLabels[3].name = new StaticTextWidget(boss, lfont, 0, 0, "M1");
+  myBlockLabels[3].pos  = new StaticTextWidget(boss, lfont, 0, 0, "Pos#");
+  myBlockLabels[3].hm   = new StaticTextWidget(boss, lfont, 0, 0, "HM");
+  myBlockLabels[3].size = new StaticTextWidget(boss, lfont, 0, 0, "Size");
+
   // enaM1
-  ypos += lineHeight + vGap / 2;
-  t = new StaticTextWidget(boss, lfont, hBorder, ypos + 2, "M1");
-  myEnaM1 = new TogglePixelWidget(boss, nfont, t->getRight() + hGap, ypos + 1, 1, 1);
+  myEnaM1 = new TogglePixelWidget(boss, nfont, 0, 0, 1, 1);
   myEnaM1->setTarget(this);
   myEnaM1->setID(kEnaM1ID);
   myEnaM1->clearBackgroundColor();
   addFocusWidget(myEnaM1);
 
-  // posM0
-  t = new StaticTextWidget(boss, lfont, myEnaM1->getRight() + hGap * 1.5, ypos + 2, "Pos#");
-  myPosM1 = new DataGridWidget(boss, nfont, t->getRight() + hGap / 2, ypos,
+  // posM1
+  myPosM1 = new DataGridWidget(boss, nfont, 0, 0,
                                1, 1, 3, 8, Common::Base::Fmt::_10);
   myPosM1->setTarget(this);
   myPosM1->setID(kPosM1ID);
   myPosM1->setRange(0, 160);
   addFocusWidget(myPosM1);
 
-  // hmM0
-  t = new StaticTextWidget(boss, lfont, myPosM1->getRight() + hGap * 1.5, ypos + 2, "HM");
-  myHMM1 = new DataGridWidget(boss, nfont, t->getRight() + hGap / 2, ypos,
+  // hmM1
+  myHMM1 = new DataGridWidget(boss, nfont, 0, 0,
                               1, 1, 1, 4, Common::Base::Fmt::_16_1);
   myHMM1->setTarget(this);
   myHMM1->setID(kHMM1ID);
   addFocusWidget(myHMM1);
 
   // NUSIZ1 (missile portion)
-  t = new StaticTextWidget(boss, lfont, myHMM1->getRight() + hGap * 1.5, ypos + 2, "Size");
-  myNusizM1 = new DataGridWidget(boss, nfont, t->getRight() + hGap / 2, ypos,
+  myNusizM1 = new DataGridWidget(boss, nfont, 0, 0,
                                  1, 1, 1, 2, Common::Base::Fmt::_16_1);
   myNusizM1->setTarget(this);
   myNusizM1->setID(kNusizM1ID);
   addFocusWidget(myNusizM1);
 
-  // M1 reset to player 0
-  myResMP1 = new CheckboxWidget(boss, lfont, myNusizM1->getRight() + hGap * 2, ypos + 1,
+  // M1 reset to player 1
+  myResMP1 = new CheckboxWidget(boss, lfont, 0, 0,
                                 "Reset to P1", CheckboxWidget::kCheckActionCmd);
   myResMP1->setTarget(this);
   myResMP1->setID(kResMP1ID);
   addFocusWidget(myResMP1);
 
   // M1 reset
-  b = new ButtonWidget(boss, lfont, buttonX, ypos, buttonW, buttonH,
-                       "RESM1", kResM1Cmd);
-  b->setTarget(this);
-  addFocusWidget(b);
+  myResButtons[3] = new ButtonWidget(boss, lfont, 0, 0, "RESM1", kResM1Cmd);
+  myResButtons[3]->setCompact();
+  myResButtons[3]->setTarget(this);
+  addFocusWidget(myResButtons[3]);
 
   ////////////////////////////
   // BL register info
   ////////////////////////////
+  myBlockLabels[4].name = new StaticTextWidget(boss, lfont, 0, 0, "BL");
+  myBlockLabels[4].pos  = new StaticTextWidget(boss, lfont, 0, 0, "Pos#");
+  myBlockLabels[4].hm   = new StaticTextWidget(boss, lfont, 0, 0, "HM");
+  myBlockLabels[4].size = new StaticTextWidget(boss, lfont, 0, 0, "Size");
+
   // enaBL
-  ypos += lineHeight + vGap / 2;
-  t = new StaticTextWidget(boss, lfont, hBorder, ypos + 2, "BL");
-  myEnaBL = new TogglePixelWidget(boss, nfont, t->getRight() + hGap, ypos + 1, 1, 1);
+  myEnaBL = new TogglePixelWidget(boss, nfont, 0, 0, 1, 1);
   myEnaBL->setTarget(this);
   myEnaBL->setID(kEnaBLID);
   myEnaBL->clearBackgroundColor();
   addFocusWidget(myEnaBL);
 
   // posBL
-  t = new StaticTextWidget(boss, lfont, myEnaBL->getRight() + hGap * 1.5, ypos + 2, "Pos#");
-  myPosBL = new DataGridWidget(boss, nfont, t->getRight() + hGap / 2, ypos,
+  myPosBL = new DataGridWidget(boss, nfont, 0, 0,
                                1, 1, 3, 8, Common::Base::Fmt::_10);
   myPosBL->setTarget(this);
   myPosBL->setID(kPosBLID);
@@ -427,37 +379,34 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
   addFocusWidget(myPosBL);
 
   // hmBL
-  t = new StaticTextWidget(boss, lfont, myPosBL->getRight() + hGap * 1.5, ypos + 2, "HM");
-  myHMBL = new DataGridWidget(boss, nfont, t->getRight() + hGap / 2, ypos,
+  myHMBL = new DataGridWidget(boss, nfont, 0, 0,
                               1, 1, 1, 4, Common::Base::Fmt::_16_1);
   myHMBL->setTarget(this);
   myHMBL->setID(kHMBLID);
   addFocusWidget(myHMBL);
 
   // CTRLPF (size portion)
-  t = new StaticTextWidget(boss, lfont, myHMBL->getRight() + hGap * 1.5, ypos + 2, "Size");
-  mySizeBL = new DataGridWidget(boss, nfont, t->getRight() + hGap / 2, ypos,
+  mySizeBL = new DataGridWidget(boss, nfont, 0, 0,
                                 1, 1, 1, 2, Common::Base::Fmt::_16_1);
   mySizeBL->setTarget(this);
   mySizeBL->setID(kSizeBLID);
   addFocusWidget(mySizeBL);
 
   // Reset ball
-  b = new ButtonWidget(boss, lfont, buttonX, ypos, buttonW, buttonH,
-                       "RESBL", kResBLCmd);
-  b->setTarget(this);
-  addFocusWidget(b);
+  myResButtons[4] = new ButtonWidget(boss, lfont, 0, 0, "RESBL", kResBLCmd);
+  myResButtons[4]->setCompact();
+  myResButtons[4]->setTarget(this);
+  addFocusWidget(myResButtons[4]);
 
   // Ball (old)
-  ypos += lineHeight + hGap / 2;
-  myEnaBLOld = new TogglePixelWidget(boss, nfont, myEnaBL->getLeft(), ypos + 1, 1, 1);
+  myEnaBLOld = new TogglePixelWidget(boss, nfont, 0, 0, 1, 1);
   myEnaBLOld->setTarget(this);
   myEnaBLOld->setID(kEnaBLOldID);
   myEnaBLOld->clearBackgroundColor();
   addFocusWidget(myEnaBLOld);
 
   // Ball delay
-  myDelBL = new CheckboxWidget(boss, lfont, myEnaBLOld->getRight() + hGap * 1.5, ypos + 2,
+  myDelBL = new CheckboxWidget(boss, lfont, 0, 0,
                                "VDel", CheckboxWidget::kCheckActionCmd);
   myDelBL->setTarget(this);
   myDelBL->setID(kDelBLID);
@@ -467,112 +416,457 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
   // PF 0/1/2 registers
   ////////////////////////////
   const GUI::Font& sf = instance().frameBuffer().smallFont();
-  const int sfWidth = sf.getMaxCharWidth(),
-            sfHeight = sf.getFontHeight();
   static constexpr std::array<string_view, 8> bitNames = {
     "0", "1", "2", "3", "4", "5", "6", "7"
   };
 
-  // PF0
-  ypos += lineHeight + sfHeight + vGap * 1.5;
-  t = new StaticTextWidget(boss, lfont, hBorder, ypos + 2, "PF");
-  myPF[0] = new TogglePixelWidget(boss, nfont, t->getRight() + hGap, ypos + 1, 4, 1, 4);
+  myPFLabel = new StaticTextWidget(boss, lfont, 0, 0, "PF");
+
+  // PF0 is four bits wide at double width; PF1 and PF2 are eight
+  myPF[0] = new TogglePixelWidget(boss, nfont, 0, 0, 4, 1, 4);
   myPF[0]->setTarget(this);
   myPF[0]->setID(kPF0ID);
   addFocusWidget(myPF[0]);
 
   // PF1
-  myPF[1] = new TogglePixelWidget(boss, nfont, myPF[0]->getRight() + hGap / 2, ypos + 1, 8, 1);
+  myPF[1] = new TogglePixelWidget(boss, nfont, 0, 0, 8, 1);
   myPF[1]->setTarget(this);
   myPF[1]->setID(kPF1ID);
   addFocusWidget(myPF[1]);
 
   // PF2
-  myPF[2] = new TogglePixelWidget(boss, nfont, myPF[1]->getRight() + hGap / 2, ypos + 1, 8, 1);
+  myPF[2] = new TogglePixelWidget(boss, nfont, 0, 0, 8, 1);
   myPF[2]->setTarget(this);
   myPF[2]->setID(kPF2ID);
   addFocusWidget(myPF[2]);
 
-  // PFx bit labels
-  const auto start = [&](int sw) { return (sw - sfWidth + 2) / 2; };
-  const int colw = myPF[0]->getWidth() / 4;
-  xpos = myPF[0]->getLeft() + start(colw);
-  // A label clears its whole height, which is a line rather than a glyph tall,
-  // so hang it from the boxes rather than measuring up by the glyph height;
-  // otherwise the padding below its text erases the boxes' top border
-  const int _ypos = myPF[0]->getTop() - sf.getLineHeight();
-  for(int i = 4; i <= 7; ++i)
+  // PFx bit labels, in the small font: PF0 shows bits 4-7, PF1 counts down from
+  // 7, PF2 counts up from 0 -- one label per bit box, in that order
   {
-    new StaticTextWidget(boss, sf, xpos, _ypos, bitNames[i]);
-    xpos += colw;
-  }
-  xpos = myPF[1]->getLeft() + start(colw);
-  for(int i = 7; i >= 0; --i)
-  {
-    new StaticTextWidget(boss, sf, xpos, _ypos, bitNames[i]);
-    xpos += colw;
-  }
-  xpos = myPF[2]->getLeft() + start(colw);
-  for(int i = 0; i <= 7; ++i)
-  {
-    new StaticTextWidget(boss, sf, xpos, _ypos, bitNames[i]);
-    xpos += colw;
+    int label = 0;
+    for(int i = 4; i <= 7; ++i)
+      myPFBitLabels[label++] = new StaticTextWidget(boss, sf, 0, 0, bitNames[i]);
+    for(int i = 7; i >= 0; --i)
+      myPFBitLabels[label++] = new StaticTextWidget(boss, sf, 0, 0, bitNames[i]);
+    for(int i = 0; i <= 7; ++i)
+      myPFBitLabels[label++] = new StaticTextWidget(boss, sf, 0, 0, bitNames[i]);
   }
 
   // PF reflect, score, priority
-  ypos = myPF[0]->getBottom() + vGap / 2;
-  myRefPF = new CheckboxWidget(boss, lfont, myPF[0]->getLeft(), ypos + 1,
+  myRefPF = new CheckboxWidget(boss, lfont, 0, 0,
                                "Reflect", CheckboxWidget::kCheckActionCmd);
   myRefPF->setTarget(this);
   myRefPF->setID(kRefPFID);
   addFocusWidget(myRefPF);
 
-  myScorePF = new CheckboxWidget(boss, lfont, myRefPF->getRight() + hGap * 2, ypos + 1,
+  myScorePF = new CheckboxWidget(boss, lfont, 0, 0,
                                  "Score", CheckboxWidget::kCheckActionCmd);
   myScorePF->setTarget(this);
   myScorePF->setID(kScorePFID);
   addFocusWidget(myScorePF);
 
-  myPriorityPF = new CheckboxWidget(boss, lfont, myScorePF->getRight() + hGap * 2, ypos + 1,
+  myPriorityPF = new CheckboxWidget(boss, lfont, 0, 0,
                                     "Priority", CheckboxWidget::kCheckActionCmd);
   myPriorityPF->setTarget(this);
   myPriorityPF->setID(kPriorityPFID);
   addFocusWidget(myPriorityPF);
 
-  ypos += lineHeight + vGap * 1.5;
-  t = new StaticTextWidget(boss, lfont, hBorder, ypos + 1, "Queued Writes");
-  myDelayQueueWidget = new DelayQueueWidget(boss, lfont, t->getRight() + hGap, ypos);
+  myQueuedWritesLabel = new StaticTextWidget(boss, lfont, 0, 0, "Queued Writes");
+  myDelayQueueWidget = new DelayQueueWidget(boss, lfont, 0, 0);
 
   ////////////////////////////
   // Strobe buttons
   ////////////////////////////
-  buttonX = myDelayQueueWidget->getRight() + hGap * 2;
-  buttonY = ypos;
-  b = new ButtonWidget(boss, lfont, buttonX, buttonY, buttonW, buttonH,
-                       "WSYNC", kWsyncCmd);
-  b->setTarget(this);
-  addFocusWidget(b);
-
-  buttonY += lineHeight + vGap;
-  b = new ButtonWidget(boss, lfont, buttonX, buttonY, buttonW, buttonH,
-                       "RSYNC", kRsyncCmd);
-  b->setTarget(this);
-  addFocusWidget(b);
-
-  buttonX = b->getRight() + hGap * 2;
-  buttonY = ypos;
-  b = new ButtonWidget(boss, lfont, buttonX, buttonY, buttonW, buttonH,
-                       "HMOVE", kHmoveCmd);
-  b->setTarget(this);
-  addFocusWidget(b);
-
-  buttonY += lineHeight + vGap;
-  b = new ButtonWidget(boss, lfont, buttonX, buttonY, buttonW, buttonH,
-                       "HMCLR", kHmclrCmd);
-  b->setTarget(this);
-  addFocusWidget(b);
+  static constexpr std::array<string_view, 4> strobeNames = {
+    "WSYNC", "RSYNC", "HMOVE", "HMCLR"
+  };
+  static constexpr std::array<int, 4> strobeCmds = {
+    kWsyncCmd, kRsyncCmd, kHmoveCmd, kHmclrCmd
+  };
+  for(int i = 0; i < 4; ++i)
+  {
+    myStrobeButtons[i] = new ButtonWidget(boss, lfont, 0, 0,
+                                          strobeNames[i], strobeCmds[i]);
+    myStrobeButtons[i]->setCompact();
+    myStrobeButtons[i]->setTarget(this);
+    addFocusWidget(myStrobeButtons[i]);
+  }
 
   setHelpAnchor("TIATab", true);
+
+  reflow();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TiaWidget::setArea(int x, int y, int w, int h)
+{
+  Widget::setArea(x, y, w, h);
+  reflow();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+Common::Size TiaWidget::naturalSize() const
+{
+  return buildLayout()->naturalSize();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TiaWidget::reflow()
+{
+  buildLayout()->doLayout(_x, _y, _w, _h);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+unique_ptr<GUI::Layout> TiaWidget::buildLayout() const
+{
+  using GUI::BoxLayout;
+  using GUI::GridLayout;
+  using GUI::anchoredItem;
+  using GUI::alignedItem;
+  using GUI::centeredItem;
+  using GUI::HAlign;
+  using GUI::VAlign;
+  using Dir = BoxLayout::Dir;
+
+  const int lineHeight = _font.getLineHeight(),
+            HGAP    = _fontWidth,
+            // What separates a label from the grid it belongs to: enough to
+            // clear the frame, but far less than what separates the groups
+            LBLGAP  = HGAP / 2,
+            VGAP    = _fontHeight / 2,
+            HBORDER = static_cast<int>(_fontWidth * 1.25),
+            VBORDER = _fontHeight / 2;
+
+  // Every button in the tab takes the widest label's width
+  GUI::alignButtons({myCxclrButton, myResButtons[0], myResButtons[1],
+                     myResButtons[2], myResButtons[3], myResButtons[4],
+                     myStrobeButtons[0], myStrobeButtons[1],
+                     myStrobeButtons[2], myStrobeButtons[3]});
+
+  // A control that frames its text sits beside a label on the label's own line
+  const auto onBaseline = [](Widget* wid) {
+    return alignedItem(wid, HAlign::Left, VAlign::Baseline);
+  };
+  // A register row is a line of single-line parts of differing heights -- a
+  // grid, a checkbox, a button.  They agree on the row's MIDDLE: a baseline
+  // would line their text up and leave the frames around it stepped, since a
+  // grid reports its text near its top and everything else reports its centre
+  const auto onRow = [](Widget* wid) {
+    return alignedItem(wid, HAlign::Left, VAlign::Center);
+  };
+  // A colour swatch is half again as wide as it is tall
+  const auto swatchW = static_cast<int>(1.5 * lineHeight);
+
+  ////////////////////////////////////////////////////////////////////
+  // Top band: colour registers | fixed debug colours | collisions
+  ////////////////////////////////////////////////////////////////////
+  // The four COLUPx rows: labels, the shared 4-row grid, then the swatches.
+  // Each side column is built at the grid's row pitch so row i lines up with
+  // grid row i (the grid insets its text where a label centres its own)
+  const auto gridColumn = [&](auto&& cells, int cellHeight) {
+    auto col = std::make_unique<BoxLayout>(Dir::Vertical);
+    col->addSpace(myColorRegs->firstTextY() - cells[0]->firstTextY());
+    for(auto* wid: cells)
+      col->addFixed(alignedItem(wid, HAlign::Left, VAlign::Center), cellHeight);
+    return col;
+  };
+
+  const std::array<ColorWidget*, 4> colorSwatches{
+    myCOLUP0Color, myCOLUP1Color, myCOLUPFColor, myCOLUBKColor
+  };
+  auto swatchCol = std::make_unique<BoxLayout>(Dir::Vertical);
+  swatchCol->addSpace(myColorRegs->firstTextY() - 2);
+  for(auto* c: colorSwatches)
+    swatchCol->addFixed(alignedItem(c, HAlign::Fill, VAlign::Center), lineHeight);
+
+  // The row this sits in takes up the collisions' slack, so it is taller than
+  // its content: everything in it hangs from the TOP, or the grid would centre
+  // itself in that height and drop below the label and swatch columns beside it
+  auto colorRow = std::make_unique<BoxLayout>(Dir::Horizontal, HGAP);
+  colorRow->addAuto(gridColumn(myColorRegLabels, lineHeight));
+  colorRow->addAuto(alignedItem(myColorRegs, HAlign::Left, VAlign::Top));
+  colorRow->addFixed(std::move(swatchCol), swatchW);
+
+  auto vsyncRow = std::make_unique<BoxLayout>(Dir::Horizontal, HGAP * 2);
+  vsyncRow->addAuto(anchoredItem(myVSync));
+  vsyncRow->addAuto(anchoredItem(myVBlank));
+
+  // The eight fixed debug colours, in two columns of four
+  const auto dbgColumn = [&](int first) {
+    auto col = std::make_unique<BoxLayout>(Dir::Vertical);
+    for(int i = first; i < first + 4; ++i)
+    {
+      auto row = std::make_unique<BoxLayout>(Dir::Horizontal, HGAP);
+      row->addAuto(alignedItem(myDbgColorLabels[i], HAlign::Left, VAlign::Center));
+      row->addFixed(alignedItem(myFixedColors[i], HAlign::Fill, VAlign::Center),
+                    swatchW);
+      col->addFixed(std::move(row), lineHeight);
+    }
+    return col;
+  };
+
+  auto dbgRow = std::make_unique<BoxLayout>(Dir::Horizontal, HGAP * 2);
+  dbgRow->addAuto(dbgColumn(0));
+  dbgRow->addAuto(dbgColumn(4));
+
+  // The collision triangle: row r holds 5 - r bits, labelled down the left and
+  // along the top, with CXCLR parked in the empty corner it leaves.  The row
+  // pitch is a constant, not a font height: the checkboxes are one fixed size
+  auto collGrid = std::make_unique<GridLayout>(6, 6, HGAP, 0);
+  collGrid->columnAuto(0);
+  for(int col = 1; col <= 5; ++col)
+    collGrid->columnAuto(col);
+  collGrid->rowAuto(0);
+  for(int row = 1; row <= 5; ++row)
+    collGrid->rowFixed(row, lineHeight + 3);
+
+  int idx = 0;
+  for(int row = 0; row < 5; ++row)
+  {
+    collGrid->place(0, row + 1,
+                    alignedItem(myCollRowLabels[row], HAlign::Left, VAlign::Center));
+    for(int col = 0; col < 5 - row; ++col, ++idx)
+    {
+      if(row == 0)
+        collGrid->place(col + 1, 0, centeredItem(myCollColLabels[col]));
+      collGrid->place(col + 1, row + 1, centeredItem(myCollision[idx]));
+    }
+  }
+  // Parked in the corner the triangle leaves empty: it lies across the columns
+  // the last row does not use, and sits in them the way a bit would -- ending
+  // with the last column, and centred on the row rather than hanging below it
+  collGrid->place(2, 5, alignedItem(myCxclrButton, HAlign::Right, VAlign::Center), 4);
+
+  // The band is three columns staggered against ONE set of rows: VSync/VBlank
+  // own the first line, the Debug Colors switch the second, and the two colour
+  // blocks start together on the third, with the collisions running down the
+  // whole height beside them.
+  // VSync/VBlank LIE ACROSS the colour and debug columns rather than sitting in
+  // the first: that row is wider than the COLUPx rows below it, and a column
+  // sized by it would push the debug block (and the collisions after it) right.
+  // The collisions are taller than the three rows come to, so the row holding
+  // the colour blocks takes up that slack -- it is the one with room below its
+  // content, so growing it moves nothing
+  enum TCol: uInt8 { COLOURS, TGAP0, DEBUG, TGAP1, COLLS, TSLACK, T_COLS };
+  enum TRow: uInt8 { VSYNC_LN, DBGSW_LN, BLOCKS_LN, T_ROWS };
+
+  auto topBand = std::make_unique<GridLayout>(T_COLS, T_ROWS, 0, 0);
+  topBand->columnAuto(COLOURS).columnAuto(DEBUG).columnAuto(COLLS);
+  topBand->columnFixed(TGAP0, HGAP * 4).columnFixed(TGAP1, HGAP * 4);
+  topBand->columnStretch(TSLACK);
+  topBand->rowAuto(VSYNC_LN).rowAuto(DBGSW_LN).rowStretch(BLOCKS_LN);
+
+  topBand->place(COLOURS, VSYNC_LN, std::move(vsyncRow), DEBUG - COLOURS + 1);
+  topBand->place(DEBUG, DBGSW_LN, anchoredItem(myFixedEnabled));
+  topBand->place(COLOURS, BLOCKS_LN, std::move(colorRow));
+  topBand->place(DEBUG, BLOCKS_LN, std::move(dbgRow));
+  topBand->place(COLLS, VSYNC_LN, std::move(collGrid), 1, T_ROWS);
+
+  ////////////////////////////////////////////////////////////////////
+  // The register table: every block over one set of columns, which is what
+  // lines the five RESxx buttons up without anyone tracking an x position
+  ////////////////////////////////////////////////////////////////////
+  // A missile or ball row is far more compact than a player's, so it takes one
+  // cell that LIES ACROSS the player columns instead of sitting in them -- put
+  // every field in a shared column and the compact rows stretch to the players'
+  // widths.  OVERRUN holds nothing of its own: it is the flexible track that
+  // takes the NuSiz readout's overhang, so a readout wider than the block
+  // cannot push the button column along with it
+  enum RCol: uInt8 {
+    NAME, GAP1, TOGGLE, GAP2, POSLBL, LGAP1, POS, GAP3, HMLBL, LGAP2, HM,
+    GAP4, EXTRA, GAP5, BTN, OVERRUN, R_COLS
+  };
+  // A player's two rows belong together, so the gap that separates one register
+  // block from the next is a row of its own -- the same way the gaps between
+  // the register groups across a row are columns of their own.  The missile and
+  // ball rows read as one block, so nothing separates them
+  enum RRow: uInt8 {
+    P0_A, P0_B, RGAP0, P1_A, P1_B, RGAP1, M0_R, M1_R, BL_A, BL_B, R_ROWS
+  };
+
+  auto regs = std::make_unique<GridLayout>(R_COLS, R_ROWS, 0, VGAP / 2);
+
+  // The content columns are sized by what is in them and carry no gap of their
+  // own; every gap is a column that says which one it is.  A label sits a short
+  // LBLGAP from its own grid, so it reads as belonging to it, while the wider
+  // gaps keep the register groups apart
+  regs->columnAuto(NAME).columnAuto(TOGGLE);
+  regs->columnAuto(POSLBL).columnAuto(POS);
+  regs->columnAuto(HMLBL).columnAuto(HM);
+  regs->columnAuto(EXTRA).columnAuto(BTN);
+  regs->columnFixed(LGAP1, LBLGAP).columnFixed(LGAP2, LBLGAP);
+  regs->columnFixed(GAP1, HGAP).columnFixed(GAP2, HGAP).columnFixed(GAP3, HGAP);
+  regs->columnFixed(GAP4, HGAP * 2).columnFixed(GAP5, HGAP * 2);
+  regs->columnStretch(OVERRUN);
+  for(int row = 0; row < R_ROWS; ++row)
+    regs->rowAuto(row);
+  regs->rowFixed(RGAP0, VGAP / 2).rowFixed(RGAP1, VGAP / 2);
+
+  // A player is two rows over ONE set of columns: that is what puts the delayed
+  // graphic under the live one, and NuSiz under the motion register
+  const auto playerBlock = [&](int block, int row, TogglePixelWidget* grp,
+                               TogglePixelWidget* grpOld, DataGridWidget* pos,
+                               DataGridWidget* hm, CheckboxWidget* ref,
+                               CheckboxWidget* del, DataGridWidget* nusiz,
+                               EditTextWidget* nusizText) {
+    const BlockLabels& lbl = myBlockLabels[block];
+
+    regs->place(NAME,   row, onRow(lbl.name));
+    regs->place(TOGGLE, row, onRow(grp));
+    regs->place(POSLBL, row, onRow(lbl.pos));
+    regs->place(POS,    row, onRow(pos));
+    regs->place(HMLBL,  row, alignedItem(lbl.hm, HAlign::Right, VAlign::Center));
+    regs->place(HM,     row, onRow(hm));
+    regs->place(EXTRA,  row, onRow(ref));
+    regs->place(BTN,    row, onRow(myResButtons[block]));
+
+    // The readout spells a NUSIZ setting out, so it is as wide as the longest
+    // one.  It belongs to the grid beside it, so it starts from the gap column
+    // rather than the checkbox one -- that keeps it near its grid without
+    // touching the column the checkboxes above and below it are sized by.
+    // Spanning it out to OVERRUN lets it run past the button as it always has
+    auto textCell = std::make_unique<BoxLayout>(Dir::Horizontal);
+    textCell->addSpace(LBLGAP);
+    textCell->addFixed(alignedItem(nusizText, HAlign::Fill, VAlign::Center),
+                       EditTextWidget::calcWidth(_font, 21));
+
+    regs->place(TOGGLE, row + 1, onRow(grpOld));
+    regs->place(POSLBL, row + 1, onRow(del), POS - POSLBL + 1);
+    regs->place(HMLBL,  row + 1, alignedItem(lbl.size, HAlign::Right, VAlign::Center));
+    regs->place(HM,     row + 1, onRow(nusiz));
+    regs->place(GAP4,   row + 1, std::move(textCell), OVERRUN - GAP4 + 1);
+  };
+  playerBlock(0, P0_A, myGRP0, myGRP0Old, myPosP0, myHMP0, myRefP0,
+              myDelP0, myNusizP0, myNusizP0Text);
+  playerBlock(1, P1_A, myGRP1, myGRP1Old, myPosP1, myHMP1, myRefP1,
+              myDelP1, myNusizP1, myNusizP1Text);
+
+  // A missile or the ball: enable bit, position, motion, size.  The three are
+  // built alike from equal-sized parts, so they line up with each other by
+  // construction; only their name and their button share the players' columns
+  const auto objectBlock = [&](int block, int row, TogglePixelWidget* ena,
+                               DataGridWidget* pos, DataGridWidget* hm,
+                               DataGridWidget* size, CheckboxWidget* extra,
+                               TogglePixelWidget* enaOld, CheckboxWidget* del) {
+    const BlockLabels& lbl = myBlockLabels[block];
+
+    // Same rule as the shared columns: a label abuts its own grid, and the gaps
+    // fall between the register groups
+    auto rest = std::make_unique<BoxLayout>(Dir::Horizontal);
+    rest->addAuto(onRow(ena));
+    rest->addSpace(HGAP);
+    rest->addAuto(onRow(lbl.pos));
+    rest->addSpace(LBLGAP);
+    rest->addAuto(onRow(pos));
+    rest->addSpace(HGAP);
+    rest->addAuto(onRow(lbl.hm));
+    rest->addSpace(LBLGAP);
+    rest->addAuto(onRow(hm));
+    rest->addSpace(HGAP);
+    rest->addAuto(onRow(lbl.size));
+    rest->addSpace(LBLGAP);
+    rest->addAuto(onRow(size));
+    if(extra != nullptr)
+    {
+      rest->addSpace(HGAP * 2);
+      rest->addAuto(onRow(extra));
+    }
+
+    regs->place(NAME,   row, onRow(lbl.name));
+    regs->place(TOGGLE, row, std::move(rest), EXTRA - TOGGLE + 1);
+    regs->place(BTN,    row, onRow(myResButtons[block]));
+
+    // The ball's delayed bit starts where the live one does, so the second row
+    // spans from the same column
+    if(enaOld != nullptr)
+    {
+      auto delayed = std::make_unique<BoxLayout>(Dir::Horizontal, HGAP);
+      delayed->addAuto(onRow(enaOld));
+      delayed->addAuto(onRow(del));
+      regs->place(TOGGLE, row + 1, std::move(delayed), EXTRA - TOGGLE + 1);
+    }
+  };
+  objectBlock(2, M0_R, myEnaM0, myPosM0, myHMM0, myNusizM0,
+              myResMP0, nullptr, nullptr);
+  objectBlock(3, M1_R, myEnaM1, myPosM1, myHMM1, myNusizM1,
+              myResMP1, nullptr, nullptr);
+  objectBlock(4, BL_A, myEnaBL, myPosBL, myHMBL, mySizeBL,
+              nullptr, myEnaBLOld, myDelBL);
+
+  ////////////////////////////////////////////////////////////////////
+  // Playfield
+  ////////////////////////////////////////////////////////////////////
+  // One column per playfield BIT: the bit number goes in it, and each toggle
+  // SPANS the columns of its own group.  Sharing the columns is what keeps a
+  // number over the box it names -- the alternative, sizing the number's cell
+  // to the toggle's bit pitch, only lines up while the two agree, and drifts a
+  // box at a time when they do not.  PF0 has four bits, PF1 and PF2 eight
+  static constexpr int PF_NAME = 0, PF_GAP0 = 1,
+                       PF_G0 = 2,           PF_GAP1 = PF_G0 + 4,
+                       PF_G1 = PF_GAP1 + 1, PF_GAP2 = PF_G1 + 8,
+                       PF_G2 = PF_GAP2 + 1, PF_COLS = PF_G2 + 8;
+  static constexpr std::array<int, 3> pfFirst = { PF_G0, PF_G1, PF_G2 };
+  static constexpr std::array<int, 3> pfCount = { 4, 8, 8 };
+
+  // The numbers hang directly on the boxes, so the block carries no row spacing
+  auto pfBlock = std::make_unique<GridLayout>(PF_COLS, 3, 0, 0);
+  for(int col = 0; col < PF_COLS; ++col)
+    pfBlock->columnAuto(col);
+  pfBlock->columnFixed(PF_GAP0, HGAP);
+  pfBlock->columnFixed(PF_GAP1, HGAP / 2).columnFixed(PF_GAP2, HGAP / 2);
+  pfBlock->rowAuto(0).rowAuto(1).rowAuto(2);
+
+  {
+    int label = 0;
+    for(int reg = 0; reg < 3; ++reg)
+    {
+      for(int bit = 0; bit < pfCount[reg]; ++bit)
+        pfBlock->place(pfFirst[reg] + bit, 0,
+                       centeredItem(myPFBitLabels[label++]));
+      pfBlock->place(pfFirst[reg], 1, anchoredItem(myPF[reg]), pfCount[reg]);
+    }
+  }
+  pfBlock->place(PF_NAME, 1, onBaseline(myPFLabel));
+
+  auto pfFlags = std::make_unique<BoxLayout>(Dir::Horizontal, HGAP * 2);
+  pfFlags->addAuto(anchoredItem(myRefPF));
+  pfFlags->addAuto(anchoredItem(myScorePF));
+  pfFlags->addAuto(anchoredItem(myPriorityPF));
+
+  // The numbers hang directly over the boxes, so the block itself carries no
+  // row spacing; the flags are a group of their own and want the usual gap
+  auto pfFlagsRow = std::make_unique<BoxLayout>(Dir::Vertical);
+  pfFlagsRow->addSpace(VGAP);
+  pfFlagsRow->addAuto(std::move(pfFlags));
+  pfBlock->place(PF_G0, 2, std::move(pfFlagsRow), PF_COLS - PF_G0);
+
+  ////////////////////////////////////////////////////////////////////
+  // Queued writes, with the strobe buttons beside them
+  ////////////////////////////////////////////////////////////////////
+  auto strobes = std::make_unique<GridLayout>(2, 2, HGAP * 2, VGAP);
+  strobes->columnAuto(0).columnAuto(1).rowAuto(0).rowAuto(1);
+  strobes->place(0, 0, anchoredItem(myStrobeButtons[0]));
+  strobes->place(0, 1, anchoredItem(myStrobeButtons[1]));
+  strobes->place(1, 0, anchoredItem(myStrobeButtons[2]));
+  strobes->place(1, 1, anchoredItem(myStrobeButtons[3]));
+
+  auto queueRow = std::make_unique<BoxLayout>(Dir::Horizontal, HGAP);
+  queueRow->addAuto(onBaseline(myQueuedWritesLabel));
+  queueRow->addAuto(anchoredItem(myDelayQueueWidget));
+  queueRow->addSpace(HGAP * 2);
+  queueRow->addAuto(std::move(strobes));
+
+  ////////////////////////////////////////////////////////////////////
+  auto root = std::make_unique<BoxLayout>(Dir::Vertical, VGAP, HBORDER, VBORDER);
+  root->addAuto(std::move(topBand));
+  root->addAuto(std::move(regs));
+  // The playfield follows the registers directly: its bit numbers are a line of
+  // their own, which already sets it apart from the row above
+  root->addAuto(std::move(pfBlock));
+  root->addAuto(std::move(queueRow));
+  root->addStretchSpace();
+
+  return root;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

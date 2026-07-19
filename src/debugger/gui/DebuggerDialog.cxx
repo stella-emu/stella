@@ -757,6 +757,7 @@ void DebuggerDialog::addRomArea()
 void DebuggerDialog::layoutRomArea()
 {
   using GUI::BoxLayout;
+  using GUI::GridLayout;
   using GUI::anchoredItem;
   using GUI::alignedItem;
   using GUI::widgetItem;
@@ -768,32 +769,52 @@ void DebuggerDialog::layoutRomArea()
   const int fontWidth = myLFont->getMaxCharWidth(),
             bheight = myLFont->getLineHeight() + 2;
 
-  // The step and run buttons, in a column down the right-hand edge
+  // Every column in this band -- the register grids, the grid operations and the
+  // step buttons -- ends level with the others.  The grids set the height, and
+  // the button columns divide it into ROWS rows that SHARE what is left after a
+  // fixed VGAP between each: the engine divides the same slack the same way in
+  // every column, so they stay level at any font without anyone measuring anyone.
+  // The rows take the slack rather than the gaps, so it goes into the buttons
   const int bwidth = myLFont->getStringWidth("Frame +1 ");
+  const int lastRow = (DataGridOpsWidget::ROWS - 1) * 2;
 
-  auto stepCol = std::make_unique<BoxLayout>(Dir::Vertical, VGAP);
-  for(auto* b: myStepButtons)
-    stepCol->addFixed(widgetItem(b), bheight);
+  const auto bandRows = [&](int cols, int hGap) {
+    auto g = std::make_unique<GridLayout>(cols, lastRow + 1, hGap, 0);
+    for(int row = 0; row <= lastRow; ++row)
+    {
+      if(row % 2)
+        g->rowFixed(row, VGAP);
+      else
+        g->rowStretch(row);
+    }
+    return g;
+  };
+  const auto bandButton = [](ButtonWidget* b) {
+    return alignedItem(b, HAlign::Fill, VAlign::Fill);
+  };
 
-  // The rewind and unwind arrows beside them, spanning three and two rows so
+  // The step and run buttons, in a column down the right-hand edge
+  auto stepCol = bandRows(1, 0);
+  stepCol->columnStretch(0);
+  for(int i = 0; i < DataGridOpsWidget::ROWS; ++i)
+    stepCol->place(0, i * 2, bandButton(myStepButtons[i]));
+
+  // The rewind and unwind arrows beside them, spanning three rows and two so
   // that the pair stands exactly as tall as the step buttons
   const int awidth = bheight;
 
-  auto arrowCol = std::make_unique<BoxLayout>(Dir::Vertical, VGAP);
-  arrowCol->addFixed(widgetItem(myRewindButton), bheight * 3 + VGAP * 2);
-  arrowCol->addFixed(widgetItem(myUnwindButton), bheight * 2 + VGAP);
+  auto arrowCol = bandRows(1, 0);
+  arrowCol->columnStretch(0);
+  arrowCol->place(0, 0, bandButton(myRewindButton), 1, 5);
+  arrowCol->place(0, 6, bandButton(myUnwindButton), 1, 3);
 
-  // The Options button, with the data grid operations below it.  The button keeps
-  // its size across a font change, so size it here; the ops buttons are built at
-  // the same row height and gap as the step buttons, so the two columns line up
+  // The Options button heads the operations column.  It keeps its width across a
+  // font change, so size it here; its height is the row's, like every other
   myOptionsButton->setWidth(myLFont->getStringWidth(myOptionsButton->getLabel())
                             + fontWidth);
-  myOptionsButton->setHeight(bheight);
 
-  auto opsCol = std::make_unique<BoxLayout>(Dir::Vertical);
-  opsCol->addFixed(anchoredItem(myOptionsButton), bheight);
-  opsCol->addSpace(VGAP);
-  opsCol->addAuto(myDataGridOps->buildLayout(bheight, VGAP));
+  auto opsCol = myDataGridOps->buildLayout(VGAP, HGAP);
+  opsCol->place(0, 0, alignedItem(myOptionsButton, HAlign::Left, VAlign::Fill), 2);
 
   // The CPU area takes whatever width the three control columns leave it, and
   // keeps the height its own rows come to

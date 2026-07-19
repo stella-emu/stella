@@ -794,7 +794,7 @@ void ButtonWidget::refreshFontMetrics()
   if(_autoSize)
   {
     _w = autoWidth();
-    _h = calcHeight(_font);
+    _h = autoHeight();
   }
 }
 

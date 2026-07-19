@@ -30,6 +30,10 @@ class DelayQueueWidget;
 #include "Widget.hxx"
 #include "Command.hxx"
 
+namespace GUI {
+  class Layout;
+}  // namespace GUI
+
 class TiaWidget : public Widget, public CommandSender
 {
   public:
@@ -39,11 +43,54 @@ class TiaWidget : public Widget, public CommandSender
 
     void loadConfig() override;
 
+    // Reflow entry point for the resizable debugger: move/resize the widget and
+    // lay its register blocks out for the available area
+    void setArea(int x, int y, int w, int h) override;
+
+    // My constructor cannot know how big I am -- that is however big my blocks
+    // make me -- so report what my own layout tree comes to
+    Common::Size naturalSize() const override;
+
   protected:
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 
   private:
+    // Build the layout tree from the current font and position/size everything;
+    // shared by the ctor and setArea()
+    void reflow();
+
+    // Everything the tab holds, as the engine sees it
+    unique_ptr<GUI::Layout> buildLayout() const;
+
+  private:
     DataGridWidget* myColorRegs{nullptr};
+
+    // Labels and buttons promoted from anonymous locals, so that the layout can
+    // place them.  Grouped as they are built
+    std::array<StaticTextWidget*, 4> myColorRegLabels{nullptr};
+    std::array<StaticTextWidget*, 8> myDbgColorLabels{nullptr};
+    std::array<StaticTextWidget*, 5> myCollRowLabels{nullptr};
+    std::array<StaticTextWidget*, 5> myCollColLabels{nullptr};
+    std::array<StaticTextWidget*, 20> myPFBitLabels{nullptr};
+    StaticTextWidget* myPFLabel{nullptr};
+    StaticTextWidget* myQueuedWritesLabel{nullptr};
+
+    // One per register block: its name, then "Pos#"/"HM" and the block's fourth
+    // label ("NuSiz" for a player, "Size" for a missile or the ball)
+    struct BlockLabels {
+      StaticTextWidget* name{nullptr};
+      StaticTextWidget* pos{nullptr};
+      StaticTextWidget* hm{nullptr};
+      StaticTextWidget* size{nullptr};
+    };
+    // P0, P1, M0, M1, BL, in that order
+    std::array<BlockLabels, 5> myBlockLabels{};
+
+    ButtonWidget* myCxclrButton{nullptr};
+    // RESP0, RESP1, RESM0, RESM1, RESBL -- these share one column
+    std::array<ButtonWidget*, 5> myResButtons{nullptr};
+    // WSYNC, RSYNC, HMOVE, HMCLR
+    std::array<ButtonWidget*, 4> myStrobeButtons{nullptr};
 
     ColorWidget* myCOLUP0Color{nullptr};
     ColorWidget* myCOLUP1Color{nullptr};

@@ -22,7 +22,7 @@
 #include "Command.hxx"
 
 namespace GUI {
-  class Layout;
+  class GridLayout;
 }  // namespace GUI
 
 // DataGridWidget operations
@@ -42,10 +42,17 @@ class DataGridOpsWidget : public Widget, public CommandSender
     DataGridOpsWidget(GuiObject* boss, const GUI::Font& font, int x, int y);
     ~DataGridOpsWidget() override = default;
 
-    // Arrange the op buttons in their two columns, each row 'rowHeight' tall with
-    // 'gap' between.  The caller (DebuggerDialog) passes the same metrics its
-    // adjacent step buttons use, so the two columns line up row for row
-    unique_ptr<GUI::Layout> buildLayout(int rowHeight, int gap);
+    // How many rows the ops column comes to: my four, plus one at the top for
+    // the owner's Options button.  Every column in the band is built to this
+    // many rows so they all end level
+    static constexpr int ROWS = 5;
+
+    // The column the op buttons live in: ROWS rows SHARING the height of the
+    // band with a fixed 'vGap' between them, so the column ends level with the
+    // register grids however tall the band comes to, and the height it is given
+    // goes into the buttons rather than the space between them.  Row 0 is left
+    // empty for the owner's Options button to place itself into
+    unique_ptr<GUI::GridLayout> buildLayout(int vGap, int hGap);
 
     void setTarget(CommandReceiver* target) override;
     void setEnabled(bool e) override;
