@@ -28,27 +28,39 @@ class ToggleBitWidget;
 #include "Widget.hxx"
 #include "Command.hxx"
 
+namespace GUI {
+  class Layout;
+}  // namespace GUI
+
 class CpuWidget : public Widget, public CommandSender
 {
   public:
-    CpuWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& nfont,
-              int x, int y, int max_w);
+    CpuWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& nfont);
     ~CpuWidget() override = default;
 
     void setOpsWidget(DataGridOpsWidget* w);
     void loadConfig() override;
 
     // Reflow entry point for the resizable debugger: move the widget and lay
-    // the registers/labels out for the available width (recomputes _w/_h)
+    // the registers/labels out for the width given
     void setArea(int x, int y, int w, int h) override;
+
+    // My constructor cannot know how tall I am -- that is however tall my three
+    // register rows make me -- so report what my own layout tree comes to
+    Common::Size naturalSize() const override;
 
   protected:
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 
   private:
-    // Build the layout tree from the current font and position/size the
-    // registers within the given available width; shared by ctor and setArea()
-    void reflow(int max_w);
+    // Lay the registers out within the area the parent layout gave us; shared
+    // by the ctor and setArea()
+    void reflow();
+
+    // The three register rows as the engine sees them.  They share one set of
+    // columns, which is what puts the destination field under the source ones
+    // without anyone reading back where those ended up
+    unique_ptr<GUI::Layout> buildLayout() const;
 
   private:
     // ID's for the various widgets

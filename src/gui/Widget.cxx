@@ -580,6 +580,8 @@ void StaticTextWidget::setLabel(string_view label)
   if(_label != label)
   {
     _label = label;
+    if(_autoResize)
+      _w = _font.getStringWidth(label);
     setDirty();
   }
 }

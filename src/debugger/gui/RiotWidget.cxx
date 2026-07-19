@@ -26,6 +26,7 @@
 #include "PopUpWidget.hxx"
 #include "ToggleBitWidget.hxx"
 #include "Widget.hxx"
+#include "Layout.hxx"
 
 #include "NullControlWidget.hxx"
 #include "JoystickWidget.hxx"
@@ -51,103 +52,64 @@ RiotWidget::RiotWidget(GuiObject* boss, const GUI::Font& lfont,
   : Widget(boss, lfont, x, y, w, h),
     CommandSender(boss)
 {
-  const int fontHeight = lfont.getFontHeight(),
-            hGap = _fontWidth,
-            vGap = fontHeight / 2,
-            hBorder = 10,
-            vBorder = 10;
-  int xpos = hBorder, ypos = vBorder + _lineHeight,
-    lwidth = _fontWidth * 8 + hGap;
   VariantList items;
 
-  // Set the strings to be used in the various bit registers
-  // We only do this once because it's the state that changes, not the strings
+  // Bit strings for the toggle registers (the state changes, not the strings)
   StringList off, on;
   for(int i = 0; i < 8; ++i)
   {
     off.emplace_back("0");
     on.emplace_back("1");
   }
-
   StringList labels;
 
-  auto CREATE_IO_REGS = [&](string_view desc, uInt8 bitsID,
-                            bool editable) -> auto
-  {
-    new StaticTextWidget(boss, lfont, xpos, ypos + 2, desc);
-    xpos = hBorder + lwidth;
-    auto* wid = new ToggleBitWidget(boss, nfont, xpos, ypos, 8, 1, 1, labels);
+  // Create every widget at a placeholder position; reflow() lays them out
+  // NOLINTBEGIN(cppcoreguidelines-prefer-member-initializer)
+  int reg = 0;
+  const auto ioReg = [&](string_view desc, uInt8 bitsID) {
+    myRegLabel[reg++] = new StaticTextWidget(boss, lfont, 0, 0, desc);
+    auto* wid = new ToggleBitWidget(boss, nfont, 0, 0, 8, 1, 1, labels);
     wid->setTarget(this);
     wid->setID(bitsID);
-    if(editable) addFocusWidget(wid); else wid->setEditable(false);
+    addFocusWidget(wid);
     wid->setList(off, on);
     return wid;
   };
 
-  // SWCHA bits in 'poke' mode
+  // SWCHA(W) / SWACNT / SWCHA(R) -- the read register carries per-bit labels
   labels.clear();
-  mySWCHAWriteBits = CREATE_IO_REGS("SWCHA(W)", kSWCHABitsID, true);
-
-  // SWACNT bits
-  xpos = hBorder;  ypos += _lineHeight + vGap / 2;
-  mySWACNTBits = CREATE_IO_REGS("SWACNT", kSWACNTBitsID, true);
-
-  // SWCHA bits in 'peek' mode
-  xpos = hBorder;  ypos += _lineHeight + vGap / 2;
+  mySWCHAWriteBits = ioReg("SWCHA(W)", kSWCHABitsID);
+  mySWACNTBits = ioReg("SWACNT", kSWACNTBitsID);
   labels.clear();
-  labels.emplace_back("Left right");
-  labels.emplace_back("Left left");
-  labels.emplace_back("Left down");
-  labels.emplace_back("Left up");
-  labels.emplace_back("Right right");
-  labels.emplace_back("Right left");
-  labels.emplace_back("Right down");
-  labels.emplace_back("Right up");
-  mySWCHAReadBits = CREATE_IO_REGS("SWCHA(R)", kSWCHARBitsID, true);
+  labels.emplace_back("Left right");   labels.emplace_back("Left left");
+  labels.emplace_back("Left down");    labels.emplace_back("Left up");
+  labels.emplace_back("Right right");  labels.emplace_back("Right left");
+  labels.emplace_back("Right down");   labels.emplace_back("Right up");
+  mySWCHAReadBits = ioReg("SWCHA(R)", kSWCHARBitsID);
 
-  // SWCHB bits in 'poke' mode
-  xpos = hBorder;  ypos = mySWCHAReadBits->getBottom() + vGap * 2;
+  // SWCHB(W) / SWBCNT / SWCHB(R)
   labels.clear();
-  mySWCHBWriteBits = CREATE_IO_REGS("SWCHB(W)", kSWCHBBitsID, true);
-
-  // SWBCNT bits
-  xpos = hBorder;  ypos += _lineHeight + vGap / 2;
-  mySWBCNTBits = CREATE_IO_REGS("SWBCNT", kSWBCNTBitsID, true);
-
-  // SWCHB bits in 'peek' mode
-  xpos = hBorder;  ypos += _lineHeight + vGap / 2;
+  mySWCHBWriteBits = ioReg("SWCHB(W)", kSWCHBBitsID);
+  mySWBCNTBits = ioReg("SWBCNT", kSWBCNTBitsID);
   labels.clear();
-  labels.emplace_back("Right difficulty");
-  labels.emplace_back("Left difficulty");
-  labels.emplace_back("");
-  labels.emplace_back("");
-  labels.emplace_back("Color/B+W");
-  labels.emplace_back("");
-  labels.emplace_back("Select");
-  labels.emplace_back("Reset");
-  mySWCHBReadBits = CREATE_IO_REGS("SWCHB(R)", kSWCHBRBitsID, true);
+  labels.emplace_back("Right difficulty");  labels.emplace_back("Left difficulty");
+  labels.emplace_back("");                  labels.emplace_back("");
+  labels.emplace_back("Color/B+W");         labels.emplace_back("");
+  labels.emplace_back("Select");            labels.emplace_back("Reset");
+  mySWCHBReadBits = ioReg("SWCHB(R)", kSWCHBRBitsID);
 
-  // Timer registers (R/W)
+  // Timer registers (R/W): four labels beside a 4-row grid, plus the cycle count
   static constexpr std::array<string_view, 4> writeNames = {
     "TIM1T", "TIM8T", "TIM64T", "T1024T"
   };
-  ypos += _lineHeight + vGap * 4;
   for(int row = 0; row < 4; ++row)
-  {
-    myTimWriteLabel[row] = new StaticTextWidget(boss, lfont, hBorder,
-        ypos + row * _lineHeight + 2, writeNames[row]);
-  }
-  xpos = hBorder + lwidth;
-  myTimWrite = new DataGridWidget(boss, nfont, xpos, ypos, 1, 4, 2, 8, Common::Base::Fmt::_16);
+    myTimWriteLabel[row] = new StaticTextWidget(boss, lfont, 0, 0, writeNames[row]);
+  myTimWrite = new DataGridWidget(boss, nfont, 0, 0, 1, 4, 2, 8, Common::Base::Fmt::_16);
   myTimWrite->setTarget(this);
   myTimWrite->setID(kTimWriteID);
   addFocusWidget(myTimWrite);
-
-  auto* t = new StaticTextWidget(boss, lfont,
-                                 myTimWrite->getRight() + hGap * 3,
-                                 ypos + _lineHeight * 1.5 + 2 , "#");
-  myTimAvail = new DataGridWidget(boss, nfont, t->getRight(), t->getTop() - 2,
-                                   1, 1, 6, 30, Common::Base::Fmt::_10_6);
+  myTimHash[0] = new StaticTextWidget(boss, lfont, 0, 0, "#");
+  myTimAvail = new DataGridWidget(boss, nfont, 0, 0, 1, 1, 6, 30, Common::Base::Fmt::_10_6);
   myTimAvail->setToolTip("Number of CPU cycles available for current timer interval.\n");
   myTimAvail->setTarget(this);
   myTimAvail->setEditable(false);
@@ -156,153 +118,286 @@ RiotWidget::RiotWidget(GuiObject* boss, const GUI::Font& lfont,
   static constexpr std::array<string_view, 4> readNames = {
     "INTIM", " Clocks", "TIMINT", "Divider #"
   };
-  ypos = myTimWrite->getBottom() + _lineHeight / 2;
   for(int row = 0; row < 4; ++row)
-  {
-    new StaticTextWidget(boss, lfont, hBorder, ypos + row * _lineHeight + 2,
-                         readNames[row]);
-  }
-  xpos = hBorder + lwidth;
-  myTimRead = new DataGridWidget(boss, nfont, xpos, ypos, 1, 3, 4, 30, Common::Base::Fmt::_16_2);
+    myTimReadLabel[row] = new StaticTextWidget(boss, lfont, 0, 0, readNames[row]);
+  myTimRead = new DataGridWidget(boss, nfont, 0, 0, 1, 3, 4, 30, Common::Base::Fmt::_16_2);
   myTimRead->setToolTip(0, 1, "Remaining timer interval clocks.\n");
   myTimRead->setToolTip(0, 2, "Timer interrupt flag in bit 7.\n");
   myTimRead->setTarget(this);
   myTimRead->setEditable(false);
-
-  t = new StaticTextWidget(boss, lfont,
-                           myTimWrite->getRight() + hGap * 3,
-                           ypos + _lineHeight * 0.5 + 2 , "#");
-  new StaticTextWidget(boss, lfont,
-                       myTimWrite->getRight() + hGap * 3,
-                       ypos + _lineHeight * 1.5 + 2 , "#");
-  myTimTotal = new DataGridWidget(boss, nfont, t->getRight(), t->getTop() - 2,
-                                  1, 2, 6, 30, Common::Base::Fmt::_10_6);
+  myTimHash[1] = new StaticTextWidget(boss, lfont, 0, 0, "#");
+  myTimHash[2] = new StaticTextWidget(boss, lfont, 0, 0, "#");
+  myTimTotal = new DataGridWidget(boss, nfont, 0, 0, 1, 2, 6, 30, Common::Base::Fmt::_10_6);
   myTimTotal->setToolTip(0, 0, "Number of CPU cycles since last TIMxxT write.\n");
   myTimTotal->setToolTip(0, 1, "Number of CPU cycles remaining.\n");
   myTimTotal->setTarget(this);
   myTimTotal->setEditable(false);
-
-  ypos = myTimTotal->getBottom() + _lineHeight / 2;
-  myTimDivider = new DataGridWidget(boss, nfont, xpos, ypos, 1, 1, 4, 12, Common::Base::Fmt::_10_4);
+  myTimDivider = new DataGridWidget(boss, nfont, 0, 0, 1, 1, 4, 12, Common::Base::Fmt::_10_4);
   myTimDivider->setTarget(this);
   myTimDivider->setEditable(false);
 
-  // Controller ports
-  const int col = mySWCHAWriteBits->getRight() + hGap * 2.5;
-  xpos = col;  ypos = vBorder;
-  myLeftControl = addControlWidget(boss, lfont, xpos, ypos,
+  // Controller ports: two full controller widgets (the row lays them out via
+  // their own setArea(), so they re-flow themselves)
+  myLeftControl = addControlWidget(boss, lfont, 0, 0,
       instance().console().leftController());
   addToFocusList(myLeftControl->getFocusList());
-  xpos = myLeftControl->getRight() + hGap * 4;
-  myRightControl = addControlWidget(boss, lfont, xpos, ypos,
+  myRightControl = addControlWidget(boss, lfont, 0, 0,
       instance().console().rightController());
   addToFocusList(myRightControl->getFocusList());
 
-  // TIA INPTx registers (R), left port
-  static constexpr std::array<string_view, 3> contLeftReadNames = {
-    "INPT0", "INPT1", "INPT4"
-  };
-  xpos = myLeftControl->getLeft();  ypos += myLeftControl->getHeight() + 2 * _lineHeight;
+  // TIA INPTx registers (R), left and right ports
+  static constexpr std::array<string_view, 3> leftINPTNames  = {"INPT0", "INPT1", "INPT4"};
+  static constexpr std::array<string_view, 3> rightINPTNames = {"INPT2", "INPT3", "INPT5"};
   for(int row = 0; row < 3; ++row)
   {
-    t = new StaticTextWidget(boss, lfont, xpos, ypos + row * _lineHeight + 2,
-                             contLeftReadNames[row]);
+    myLeftINPTLabel[row]  = new StaticTextWidget(boss, lfont, 0, 0, leftINPTNames[row]);
+    myRightINPTLabel[row] = new StaticTextWidget(boss, lfont, 0, 0, rightINPTNames[row]);
   }
-  xpos = t->getRight() + hGap;
-  myLeftINPT = new DataGridWidget(boss, nfont, xpos, ypos, 1, 3, 2, 8, Common::Base::Fmt::_16);
+  myLeftINPT = new DataGridWidget(boss, nfont, 0, 0, 1, 3, 2, 8, Common::Base::Fmt::_16);
   myLeftINPT->setTarget(this);
   myLeftINPT->setEditable(false);
-
-  // TIA INPTx registers (R), right port
-  static constexpr std::array<string_view, 3> contRightReadNames = {
-    "INPT2", "INPT3", "INPT5"
-  };
-  xpos = myRightControl->getLeft();
-  for(int row = 0; row < 3; ++row)
-  {
-    t = new StaticTextWidget(boss, lfont, xpos, ypos + row*_lineHeight + 2,
-                             contRightReadNames[row]);
-  }
-  xpos = t->getRight() + hGap;
-  myRightINPT = new DataGridWidget(boss, nfont, xpos, ypos, 1, 3, 2, 8, Common::Base::Fmt::_16);
+  myRightINPT = new DataGridWidget(boss, nfont, 0, 0, 1, 3, 2, 8, Common::Base::Fmt::_16);
   myRightINPT->setTarget(this);
   myRightINPT->setEditable(false);
 
   // TIA INPTx VBLANK bits (D6-latch, D7-dump) (R)
-  xpos = col + hGap * 2;  ypos = myLeftINPT->getBottom() + vGap;
-  myINPTLatch = new CheckboxWidget(boss, lfont, xpos, ypos, "INPT latch (VBlank D6)");
+  myINPTLatch = new CheckboxWidget(boss, lfont, 0, 0, "INPT latch (VBlank D6)");
   myINPTLatch->setTarget(this);
   myINPTLatch->setEditable(false);
-  ypos += _lineHeight + vGap / 2;
-  myINPTDump = new CheckboxWidget(boss, lfont, xpos, ypos, "INPT dump to gnd (VBlank D7)");
+  myINPTDump = new CheckboxWidget(boss, lfont, 0, 0, "INPT dump to gnd (VBlank D7)");
   myINPTDump->setTarget(this);
   myINPTDump->setEditable(false);
 
-  // PO & P1 difficulty switches
-  int pwidth = lfont.getStringWidth("B/easy");
-  lwidth = lfont.getStringWidth("Right Diff ");
-  xpos = col;  ypos = myINPTDump->getBottom() + vGap * 4;
+  // P0 & P1 difficulty switches (self-sizing, fixed lists)
   items.clear();
   VarList::push_back(items, "B/easy", "b");
   VarList::push_back(items, "A/hard", "a");
-  myP0Diff = new PopUpWidget(boss, lfont, xpos, ypos, pwidth, _lineHeight, items,
-                             "Left Diff ", lwidth, kP0DiffChanged);
+  myP0Diff = new PopUpWidget(boss, lfont, 0, 0, items, "Left Diff", 0, kP0DiffChanged);
   myP0Diff->setTarget(this);
   addFocusWidget(myP0Diff);
-  ypos = myP0Diff->getBottom() + vGap / 2;
-  myP1Diff = new PopUpWidget(boss, lfont, xpos, ypos, pwidth, _lineHeight, items,
-                             "Right Diff ", lwidth, kP1DiffChanged);
+  myP1Diff = new PopUpWidget(boss, lfont, 0, 0, items, "Right Diff", 0, kP1DiffChanged);
   myP1Diff->setTarget(this);
   addFocusWidget(myP1Diff);
 
   // TV Type
-  ypos = myP1Diff->getBottom() + vGap / 2;
   items.clear();
   VarList::push_back(items, "B&W", "bw");
   VarList::push_back(items, "Color", "color");
-  myTVType = new PopUpWidget(boss, lfont, xpos, ypos, pwidth, _lineHeight, items,
-                             "TV Type ", lwidth, kTVTypeChanged);
+  myTVType = new PopUpWidget(boss, lfont, 0, 0, items, "TV Type", 0, kTVTypeChanged);
   myTVType->setToolTip("Atari 2600 Color/B&W switch.");
   myTVType->setTarget(this);
   addFocusWidget(myTVType);
 
-  // 2600/7800 mode
-  pwidth = lfont.getStringWidth("Atari 2600");
+  // 2600/7800 mode (bottom of the left column)
   items.clear();
   VarList::push_back(items, "Atari 2600", "2600");
   VarList::push_back(items, "Atari 7800", "7800");
-
-  new StaticTextWidget(boss, lfont, hBorder, ypos + 1, "Console");
-  myConsole = new PopUpWidget(boss, lfont, mySWCHBReadBits->getLeft(), ypos - 1,
-                              pwidth, _lineHeight, items, "", 0, kConsoleID);
+  myConsoleLabel = new StaticTextWidget(boss, lfont, 0, 0, "Console");
+  myConsole = new PopUpWidget(boss, lfont, 0, 0, items, "", 0, kConsoleID);
   myConsole->setTarget(this);
   myConsole->setToolTip("Emulated console.");
   addFocusWidget(myConsole);
 
-  // Select, Reset and Pause
-  xpos = myP0Diff->getRight() + hGap * 2;  ypos = myP0Diff->getTop() + 1;
-  mySelect = new CheckboxWidget(boss, lfont, xpos, ypos, "Select",
-                                CheckboxWidget::kCheckActionCmd);
-  mySelect->setID(kSelectID);
-  mySelect->setTarget(this);
-  addFocusWidget(mySelect);
-
-  ypos = myP1Diff->getTop() + 1;
-  myReset = new CheckboxWidget(boss, lfont, xpos, ypos, "Reset",
-                               CheckboxWidget::kCheckActionCmd);
-  myReset->setID(kResetID);
-  myReset->setTarget(this);
-  addFocusWidget(myReset);
-
-  ypos = myTVType->getTop() + 1;
-  myPause = new CheckboxWidget(boss, lfont, xpos, ypos, "Pause",
-                               CheckboxWidget::kCheckActionCmd);
+  // Select, Reset and Pause (beside the difficulty/TV pop-ups)
+  const auto check = [&](string_view label, uInt8 id) {
+    auto* cb = new CheckboxWidget(boss, lfont, 0, 0, label,
+                                  CheckboxWidget::kCheckActionCmd);
+    cb->setID(id);
+    cb->setTarget(this);
+    addFocusWidget(cb);
+    return cb;
+  };
+  mySelect = check("Select", kSelectID);
+  myReset  = check("Reset", kResetID);
+  myPause  = check("Pause", kPauseID);
   myPause->setToolTip("Atari 7800 pause switch.");
-  myPause->setID(kPauseID);
-  myPause->setTarget(this);
-  addFocusWidget(myPause);
+  // NOLINTEND(cppcoreguidelines-prefer-member-initializer)
 
   setHelpAnchor("IOTab", true);
+
+  reflow();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void RiotWidget::setArea(int x, int y, int w, int h)
+{
+  Widget::setArea(x, y, w, h);
+  reflow();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void RiotWidget::reflow()
+{
+  using GUI::BoxLayout;
+  using GUI::GridLayout;
+  using GUI::anchoredItem;
+  using GUI::indentedItem;
+  using GUI::alignedItem;
+  using GUI::HAlign;
+  using GUI::VAlign;
+  using Dir = BoxLayout::Dir;
+
+  // A label beside a single-row register/grid sits on its line (shared baseline)
+  const auto onBaseline = [](Widget* wid) {
+    return alignedItem(wid, HAlign::Left, VAlign::Baseline);
+  };
+
+  const int fontWidth  = _fontWidth,
+            lineHeight = _lineHeight,
+            fontHeight = _font.getFontHeight(),
+            VGAP    = fontHeight / 4,
+            HBORDER = static_cast<int>(fontWidth * 1.25),
+            VBORDER = fontHeight / 2,
+            HGAP    = fontWidth,
+            lwidth  = 9 * fontWidth;   // shared left-column label width
+
+  // A vertical stack of labels lined up with the rows of the grid beside it: the
+  // grid insets each row's text where a label centers its own (CpuWidget idiom)
+  const auto gridLabels = [&](auto&& lbls, DataGridWidget* grid) {
+    auto colv = std::make_unique<BoxLayout>(Dir::Vertical);
+    colv->addSpace(grid->firstTextY() - lbls[0]->firstTextY());
+    for(auto* l: lbls)
+      colv->addFixed(anchoredItem(l), lineHeight);
+    return colv;
+  };
+
+  // ---- LEFT column: the SW registers, the timers, the console selector ----
+  auto left = std::make_unique<BoxLayout>(Dir::Vertical, VGAP);
+
+  // Six I/O bit registers: label + 8-bit toggle, a wider gap between the groups
+  const auto regRow = [&](StaticTextWidget* label, ToggleBitWidget* bits) {
+    auto row = std::make_unique<BoxLayout>(Dir::Horizontal);
+    row->addFixed(onBaseline(label), lwidth);
+    row->addFixed(onBaseline(bits), bits->getWidth());
+    return row;
+  };
+  left->addAuto(regRow(myRegLabel[0], mySWCHAWriteBits));
+  left->addAuto(regRow(myRegLabel[1], mySWACNTBits));
+  left->addAuto(regRow(myRegLabel[2], mySWCHAReadBits));
+  left->addSpace(VGAP * 2);
+  left->addAuto(regRow(myRegLabel[3], mySWCHBWriteBits));
+  left->addAuto(regRow(myRegLabel[4], mySWBCNTBits));
+  left->addAuto(regRow(myRegLabel[5], mySWCHBReadBits));
+  left->addSpace(VGAP * 4);
+
+  // The write grid is 2 chars wide, the read/divider grids 4; giving both the
+  // same column keeps the "#" and cycle readouts in one line down both blocks
+  const int gridColW = std::max(myTimWrite->getWidth(), myTimRead->getWidth());
+
+  // Timer write: 4 labels | 4-row grid | "#" | available-cycles grid.  The "#"
+  // abuts its readout (gaps added explicitly so the two stay centered but touch)
+  {
+    auto row = std::make_unique<BoxLayout>(Dir::Horizontal);
+    row->addFixed(gridLabels(myTimWriteLabel, myTimWrite), lwidth);
+    row->addFixed(anchoredItem(myTimWrite), gridColW);
+    row->addSpace(HGAP);
+    row->addAuto(anchoredItem(myTimHash[0]));
+    row->addAuto(anchoredItem(myTimAvail));
+    left->addAuto(std::move(row));
+  }
+  left->addSpace(VGAP);
+
+  // Timer read: 3 labels | 3-row grid | "#"x2 | 2-row total.  The total nestles
+  // half a row down, centered against the 3 read rows; its two "#" ride along
+  // (both top-aligned within the block, so gridLabels pairs each "#" to its row)
+  {
+    const std::array<StaticTextWidget*, 3> readLbls =
+      {myTimReadLabel[0], myTimReadLabel[1], myTimReadLabel[2]};
+    const std::array<StaticTextWidget*, 2> hashLbls =
+      {myTimHash[1], myTimHash[2]};
+
+    auto total = std::make_unique<BoxLayout>(Dir::Horizontal);
+    total->addAuto(gridLabels(hashLbls, myTimTotal));
+    total->addAuto(alignedItem(myTimTotal, HAlign::Left, VAlign::Top));
+    auto totalCol = std::make_unique<BoxLayout>(Dir::Vertical);
+    totalCol->addSpace(lineHeight / 2);
+    totalCol->addAuto(std::move(total));
+
+    auto row = std::make_unique<BoxLayout>(Dir::Horizontal);
+    row->addFixed(gridLabels(readLbls, myTimRead), lwidth);
+    row->addFixed(anchoredItem(myTimRead), gridColW);
+    row->addSpace(HGAP);
+    row->addAuto(std::move(totalCol));
+    left->addAuto(std::move(row));
+  }
+
+  // Timer divider: its own labeled row, value aligned under the read grid
+  {
+    auto row = std::make_unique<BoxLayout>(Dir::Horizontal);
+    row->addFixed(onBaseline(myTimReadLabel[3]), lwidth);
+    row->addFixed(onBaseline(myTimDivider), gridColW);
+    left->addAuto(std::move(row));
+  }
+  left->addSpace(VGAP * 2);
+
+  // Console 2600/7800 selector
+  {
+    auto row = std::make_unique<BoxLayout>(Dir::Horizontal);
+    row->addFixed(onBaseline(myConsoleLabel), lwidth);
+    row->addAuto(anchoredItem(myConsole));
+    left->addAuto(std::move(row));
+  }
+
+  // ---- RIGHT column: controllers, INPT registers, switches ----
+  auto right = std::make_unique<BoxLayout>(Dir::Vertical, VGAP);
+
+  // The two controller widgets side by side; each re-flows via its own setArea
+  {
+    auto row = std::make_unique<BoxLayout>(Dir::Horizontal, HGAP * 4);
+    row->addAuto(anchoredItem(myLeftControl));
+    row->addAuto(anchoredItem(myRightControl));
+    right->addAuto(std::move(row));
+  }
+  right->addSpace(VGAP * 2);
+
+  // INPT registers: left labels+grid and right labels+grid, side by side
+  const auto inptCluster = [&](auto&& lbls, DataGridWidget* grid) {
+    auto row = std::make_unique<BoxLayout>(Dir::Horizontal, HGAP);
+    row->addAuto(gridLabels(lbls, grid));
+    row->addAuto(anchoredItem(grid));
+    return row;
+  };
+  {
+    auto row = std::make_unique<BoxLayout>(Dir::Horizontal, HGAP * 3);
+    row->addAuto(inptCluster(myLeftINPTLabel, myLeftINPT));
+    row->addAuto(inptCluster(myRightINPTLabel, myRightINPT));
+    right->addAuto(std::move(row));
+  }
+  right->addSpace(VGAP);
+
+  // INPT latch / dump, indented under the INPT registers
+  right->addAuto(indentedItem(myINPTLatch, HGAP * 2));
+  right->addAuto(indentedItem(myINPTDump, HGAP * 2));
+  right->addSpace(VGAP * 4);
+
+  // Switches: the diff/TV pop-ups line up as one column, the Select/Reset/Pause
+  // checkboxes beside them, row for row
+  GUI::alignLabels({{myP0Diff}, {myP1Diff}, {myTVType}});
+  GUI::alignPopUps({myP0Diff, myP1Diff, myTVType});
+  {
+    auto grid = std::make_unique<GridLayout>(2, 3, HGAP * 2, VGAP);
+    grid->columnAuto(0).columnAuto(1);
+    for(int r = 0; r < 3; ++r)
+      grid->rowAuto(r);
+    grid->place(0, 0, anchoredItem(myP0Diff));
+    grid->place(1, 0, anchoredItem(mySelect));
+    grid->place(0, 1, anchoredItem(myP1Diff));
+    grid->place(1, 1, anchoredItem(myReset));
+    grid->place(0, 2, anchoredItem(myTVType));
+    grid->place(1, 2, anchoredItem(myPause));
+    right->addAuto(std::move(grid));
+  }
+
+  // ---- assemble the two columns, inset by the standard borders ----
+  auto root = std::make_unique<BoxLayout>(Dir::Horizontal, fontWidth * 2,
+                                          HBORDER, VBORDER);
+  root->addAuto(std::move(left));
+  root->addAuto(std::move(right));
+
+  const Common::Size natural = root->naturalSize();
+  _w = static_cast<int>(natural.w);
+  _h = static_cast<int>(natural.h);
+  root->doLayout(_x, _y, _w, _h);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

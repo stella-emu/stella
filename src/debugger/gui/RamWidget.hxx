@@ -30,6 +30,10 @@ class InputTextDialog;
 #include "Widget.hxx"
 #include "Command.hxx"
 
+namespace GUI {
+  class BoxLayout;
+}  // namespace GUI
+
 class RamWidget : public Widget, public CommandSender
 {
   friend class CartRamWidget;  // TODO: handleCommand() needs this
@@ -48,15 +52,24 @@ class RamWidget : public Widget, public CommandSender
     // the RAM grid, its labels/buttons and the detail row out for the width
     void setArea(int x, int y, int w, int h) override;
 
+    // My constructor cannot know how big I am -- that is however big my grid,
+    // buttons and detail row make me -- so report what my layout tree comes to
+    Common::Size naturalSize() const override;
+
     virtual string getLabel(int addr) const = 0;
 
   protected:
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 
   private:
-    // Build the layout tree from the current font and lay the widgets out for
-    // the given available width; shared by the ctor and setArea()
-    void reflow(int w);
+    // Lay the widgets out within the area the parent layout gave us; shared by
+    // the ctor and setArea()
+    void reflow();
+
+    // The grid, its row/column labels, the action buttons and the detail row,
+    // as the engine sees them.  Asking this tree for its natural size is where
+    // the widget's own size comes from, so nothing is added up here by hand
+    unique_ptr<GUI::BoxLayout> buildLayout() const;
 
   private:
     // To be implemented by derived classes
@@ -105,11 +118,6 @@ class RamWidget : public Widget, public CommandSender
     uInt32 myPageSize{0};
 
     unique_ptr<InputTextDialog> myInputBox;
-
-    // True when the ctor was given h==0, i.e. the widget sizes its own height
-    // to the content (the M6532 RAM view); false when a fixed height is given
-    // (the cartridge RAM view inside a tab)
-    bool myAutoHeight{false};
 
     StaticTextWidget* myRamStart{nullptr};
     std::array<StaticTextWidget*, 16> myRamLabels{nullptr};

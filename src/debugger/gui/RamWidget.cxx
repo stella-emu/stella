@@ -38,8 +38,7 @@ RamWidget::RamWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& n
     _nfont{nfont},
     myRamSize{ramsize},
     myNumRows{numrows},
-    myPageSize{pagesize},
-    myAutoHeight{h == 0}
+    myPageSize{pagesize}
 {
   WidgetArray wid;
 
@@ -55,32 +54,33 @@ RamWidget::RamWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& n
   myRamGrid->setID(kRamGridID);
   addFocusWidget(myRamGrid);
 
-  // Action buttons to the right of the RAM grid
-  myUndoButton = new ButtonWidget(boss, lfont, 0, 0, 1, 1, "Undo", kUndoCmd);
+  // Action buttons to the right of the RAM grid; each sizes itself to its own
+  // label, and reflow() gives the group one width
+  myUndoButton = new ButtonWidget(boss, lfont, 0, 0, "Undo", kUndoCmd);
   myUndoButton->setHelpAnchor("M6532Search", true);
   wid.push_back(myUndoButton);
   myUndoButton->setTarget(this);
 
-  myRevertButton = new ButtonWidget(boss, lfont, 0, 0, 1, 1, "Revert", kRevertCmd);
+  myRevertButton = new ButtonWidget(boss, lfont, 0, 0, "Revert", kRevertCmd);
   myRevertButton->setHelpAnchor("M6532Search", true);
   wid.push_back(myRevertButton);
   myRevertButton->setTarget(this);
 
-  mySearchButton = new ButtonWidget(boss, lfont, 0, 0, 1, 1,
+  mySearchButton = new ButtonWidget(boss, lfont, 0, 0,
                                     "Search" + ELLIPSIS, kSearchCmd);
   mySearchButton->setHelpAnchor("M6532Search", true);
   mySearchButton->setToolTip("Search and highlight found values.");
   wid.push_back(mySearchButton);
   mySearchButton->setTarget(this);
 
-  myCompareButton = new ButtonWidget(boss, lfont, 0, 0, 1, 1,
+  myCompareButton = new ButtonWidget(boss, lfont, 0, 0,
                                      "Compare" + ELLIPSIS, kCmpCmd);
   myCompareButton->setHelpAnchor("M6532Search", true);
   myCompareButton->setToolTip("Compare highlighted values.");
   wid.push_back(myCompareButton);
   myCompareButton->setTarget(this);
 
-  myRestartButton = new ButtonWidget(boss, lfont, 0, 0, 1, 1, "Reset", kRestartCmd);
+  myRestartButton = new ButtonWidget(boss, lfont, 0, 0, "Reset", kRestartCmd);
   myRestartButton->setHelpAnchor("M6532Search", true);
   myRestartButton->setToolTip("Reset search/compare mode.");
   wid.push_back(myRestartButton);
@@ -88,22 +88,16 @@ RamWidget::RamWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& n
 
   addToFocusList(wid);
 
-  // Row-address label and column headers for the RAM grid
-  const int fontHeight = lfont.getFontHeight();
-
-  myRamStart = new StaticTextWidget(_boss, lfont, 0, 0,
-                                    lfont.getStringWidth("xxxx"), fontHeight,
-                                    "00xx", TextAlign::Left);
+  // Row-address label and column headers for the RAM grid.  Each is built with
+  // a value of the length it always shows, so it owns its own width
+  myRamStart = new StaticTextWidget(_boss, lfont, 0, 0, "00xx");
 
   for(int col = 0; col < 16; ++col)
     myColHeaders[col] = new StaticTextWidget(_boss, lfont, 0, 0,
-                          _fontWidth, fontHeight,
-                          Common::Base::toString(col, Common::Base::Fmt::_16_1),
-                          TextAlign::Left);
+                          Common::Base::toString(col, Common::Base::Fmt::_16_1));
 
   for(uInt32 row = 0; row < myNumRows; ++row)
-    myRamLabels[row] = new StaticTextWidget(_boss, _font, 0, 0,
-                         _fontWidth, fontHeight, "", TextAlign::Left);
+    myRamLabels[row] = new StaticTextWidget(_boss, _font, 0, 0, "0");
 
   // Detail row for the selected RAM cell (built from right to left originally,
   // but here just created; reflow() right-aligns the hex/dec/bin cluster)
@@ -146,112 +140,121 @@ RamWidget::RamWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& n
   myCompareButton->clearFlags(Widget::FLAG_ENABLED);
   myRestartButton->clearFlags(Widget::FLAG_ENABLED);
 
-  reflow(w);
+  reflow();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void RamWidget::setArea(int x, int y, int w, int h)
 {
-  setPos(x, y);
-  // The M6532 view sizes itself to its content; the cartridge view keeps the
-  // fixed height it was given (it lives inside a tab)
-  if(!myAutoHeight)
-    _h = h;
-  reflow(w);
+  Widget::setArea(x, y, w, h);
+  reflow();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void RamWidget::reflow(int w)
+unique_ptr<GUI::BoxLayout> RamWidget::buildLayout() const
 {
   using GUI::BoxLayout;
+  using GUI::GridLayout;
   using GUI::anchoredItem;
-  using GUI::indentedItem;
+  using GUI::centeredItem;
   using GUI::alignedItem;
+  using GUI::stretchedItem;
   using GUI::HAlign;
   using GUI::VAlign;
   using Dir = BoxLayout::Dir;
 
-  const int x = _x, y = _y;
-  const int VGAP    = _font.getFontHeight() / 4;
-  const int bheight = _lineHeight + 2;
-  const int gridX   = x + _font.getStringWidth("xxxx");
-  const int gridY   = y + _lineHeight;
-  const int colWidth = myRamGrid->colWidth(),
-            gridW    = myRamGrid->getWidth();
+  const int VGAP = _font.getFontHeight() / 4,
+            HGAP = _fontWidth;
 
-  _w = w;
+  // Every action button takes the widest label's width
+  GUI::alignButtons({myUndoButton, myRevertButton, mySearchButton,
+                     myCompareButton, myRestartButton});
 
-  // A button keeps its size across a font change, so size them from the live
-  // font here; they all share the widest label's width
-  const int bwidth = _font.getStringWidth("Compare " + ELLIPSIS);
-  for(auto* b: {myUndoButton, myRevertButton, mySearchButton, myCompareButton,
-                myRestartButton})
-  {
-    b->setWidth(bwidth);
-    b->setHeight(bheight);
-  }
+  // A control that frames its text sits beside a label on the label's own line
+  const auto onBaseline = [](Widget* wid) {
+    return alignedItem(wid, HAlign::Left, VAlign::Baseline);
+  };
 
-  // The grid (its scrollbar, if any, tracks it via DataGridWidget::setPos)
-  myRamGrid->setPos(gridX, gridY);
-
-  // Header row: row-address cell then the 16 column labels aligned to columns
-  BoxLayout header(Dir::Horizontal);
-  header.addFixed(anchoredItem(myRamStart), gridX - x);
+  // The 16 column headings, each centred over the grid column it names
+  auto colHeaders = std::make_unique<BoxLayout>(Dir::Horizontal);
   for(auto* h: myColHeaders)
-    header.addFixed(indentedItem(h, 8), colWidth);
-  header.doLayout(x, y, gridX - x + 16 * colWidth, _lineHeight);
+    colHeaders->addFixed(centeredItem(h), myRamGrid->colWidth());
 
-  // Row-address labels down the left side of the grid.  The grid insets each
-  // row's text where a label centers its own, so the column starts that much
-  // lower and label i lands on grid row i's line
-  BoxLayout rowLabels(Dir::Vertical);
-  rowLabels.addSpace(myRamGrid->firstTextY() - myRamLabels[0]->firstTextY());
+  // The row addresses down the left of the grid.  The grid insets each row's
+  // text where a label centres its own, so the stack starts that much lower and
+  // label i lands on grid row i's line
+  auto digits = std::make_unique<BoxLayout>(Dir::Vertical);
+  digits->addSpace(myRamGrid->firstTextY() - myRamLabels[0]->firstTextY());
   for(uInt32 row = 0; row < myNumRows; ++row)
-    rowLabels.addFixed(anchoredItem(myRamLabels[row]), _lineHeight);
-  rowLabels.doLayout(gridX - _font.getStringWidth("x "), gridY,
-                     _fontWidth, myNumRows * _lineHeight);
+    digits->addFixed(alignedItem(myRamLabels[row], HAlign::Right, VAlign::Center),
+                     _lineHeight);
 
-  // Action buttons to the right of the grid (a wider gap sets Search apart)
-  BoxLayout buttons(Dir::Vertical);
-  buttons.addFixed(anchoredItem(myUndoButton), bheight);
-  buttons.addSpace(VGAP);
-  buttons.addFixed(anchoredItem(myRevertButton), bheight);
-  buttons.addSpace(VGAP * 6);
-  buttons.addFixed(anchoredItem(mySearchButton), bheight);
-  buttons.addSpace(VGAP);
-  buttons.addFixed(anchoredItem(myCompareButton), bheight);
-  buttons.addSpace(VGAP);
-  buttons.addFixed(anchoredItem(myRestartButton), bheight);
-  buttons.doLayout(gridX + gridW + 4, gridY, bwidth,
-                   bheight * 5 + VGAP * 10);
+  // ...ending one character clear of the grid
+  auto addrCol = std::make_unique<BoxLayout>(Dir::Horizontal);
+  addrCol->addStretch(std::move(digits));
+  addrCol->addSpace(HGAP);
+
+  // The action buttons, set in from the grid (a wider gap sets Search apart)
+  auto buttonCol = std::make_unique<BoxLayout>(Dir::Vertical, VGAP);
+  buttonCol->addAuto(anchoredItem(myUndoButton));
+  buttonCol->addAuto(anchoredItem(myRevertButton));
+  buttonCol->addSpace(VGAP * 5);
+  buttonCol->addAuto(anchoredItem(mySearchButton));
+  buttonCol->addAuto(anchoredItem(myCompareButton));
+  buttonCol->addAuto(anchoredItem(myRestartButton));
+
+  auto buttons = std::make_unique<BoxLayout>(Dir::Horizontal);
+  buttons->addSpace(HGAP / 2);
+  buttons->addAuto(std::move(buttonCol));
+
+  // The address column is shared by the page heading and the row digits, so an
+  // Auto column sizes it from the pair and nobody measures an address.  The
+  // grid area is never shorter than eight rows, which is what the old code's
+  // "detail row 9 if fewer than 8 rows" was saying
+  auto body = std::make_unique<GridLayout>(3, 2);
+  body->columnAuto(0).columnAuto(1).columnAuto(2);
+  body->rowAuto(0).rowStretch(1, 1, 8 * _lineHeight);
+
+  body->place(0, 0, anchoredItem(myRamStart));
+  body->place(1, 0, std::move(colHeaders));
+  body->place(0, 1, std::move(addrCol));
+  body->place(1, 1, alignedItem(myRamGrid, HAlign::Left, VAlign::Top));
+  body->place(2, 1, std::move(buttons));
 
   // Detail row for the selected RAM cell: a "Label" caption plus a stretchy
-  // label field, then the hex / #dec / %bin values right-aligned
-  const uInt32 detailRow = myNumRows < 8 ? 9 : myNumRows + 1;
-  const int detailY = gridY + (detailRow - 1) * _lineHeight + VGAP * 2;
+  // label field, then the hex / #dec / %bin values
+  auto detail = std::make_unique<BoxLayout>(Dir::Horizontal);
+  detail->addAuto(onBaseline(myLabelText));
+  detail->addSpace(HGAP / 2);
+  detail->addStretch(alignedItem(myLabel, HAlign::Fill, VAlign::Baseline));
+  detail->addSpace(HGAP * 3 / 2);
+  detail->addAuto(onBaseline(myHexValue));
+  detail->addSpace(HGAP);
+  detail->addAuto(onBaseline(myDecPrefix));
+  detail->addAuto(onBaseline(myDecValue));
+  detail->addSpace(HGAP);
+  detail->addAuto(onBaseline(myBinPrefix));
+  detail->addAuto(onBaseline(myBinValue));
+  detail->addSpace(HGAP);
 
-  // The controls inset their own text, so the row is positioned by that text
-  // line: the labels land on 'detailY' and the controls just above it
-  BoxLayout detail(Dir::Horizontal);
-  detail.addFixed(anchoredItem(myLabelText), myLabelText->getWidth());
-  detail.addSpace(_fontWidth / 2);
-  detail.addStretch(alignedItem(myLabel, HAlign::Fill, VAlign::Center));
-  detail.addSpace(_fontWidth * 3 / 2);
-  detail.addFixed(anchoredItem(myHexValue), myHexValue->getWidth());
-  detail.addSpace(_fontWidth);
-  detail.addFixed(anchoredItem(myDecPrefix), myDecPrefix->getWidth());
-  detail.addFixed(anchoredItem(myDecValue), myDecValue->getWidth());
-  detail.addSpace(_fontWidth);
-  detail.addFixed(anchoredItem(myBinPrefix), myBinPrefix->getWidth());
-  detail.addFixed(anchoredItem(myBinValue), myBinValue->getWidth());
-  detail.addSpace(9);
-  // The row is as tall as the fields that frame their text, so that centering
-  // them in it leaves their text exactly on 'detailY' (as do the labels')
-  detail.doLayout(x, detailY - myHexValue->firstTextY(), w, myHexValue->getHeight());
+  auto root = std::make_unique<BoxLayout>(Dir::Vertical);
+  root->addAuto(std::move(body));
+  root->addSpace(VGAP * 2);
+  root->addAuto(std::move(detail));
 
-  // The M6532 view fits its height to the content
-  if(myAutoHeight)
-    _h = detailY + _lineHeight - y;
+  return root;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+Common::Size RamWidget::naturalSize() const
+{
+  return buildLayout()->naturalSize();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void RamWidget::reflow()
+{
+  buildLayout()->doLayout(_x, _y, _w, _h);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

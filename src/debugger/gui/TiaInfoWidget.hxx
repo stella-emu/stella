@@ -26,41 +26,52 @@ class CheckboxWidget;
 #include "Widget.hxx"
 #include "Command.hxx"
 
+namespace GUI {
+  class BoxLayout;
+}  // namespace GUI
+
 
 class TiaInfoWidget : public Widget, public CommandSender
 {
   public:
-    TiaInfoWidget(GuiObject *boss, const GUI::Font& lfont, const GUI::Font& nfont,
-                  int x, int y, int max_w);
+    TiaInfoWidget(GuiObject *boss, const GUI::Font& lfont, const GUI::Font& nfont);
     ~TiaInfoWidget() override = default;
 
     void loadConfig() override;
 
     // Reflow entry point for the resizable debugger: move the widget and
-    // re-lay-out the two columns of fields for the available width, choosing
-    // the short or long label variants to fit (recomputes _w/_h)
+    // re-lay-out the two columns of fields for the width given, choosing the
+    // short or long label variants to fit
     void setArea(int x, int y, int w, int h) override;
+
+    // My constructor cannot know how tall I am -- that is however tall my rows,
+    // gaps and margins make me -- so report what my own layout tree comes to
+    Common::Size naturalSize() const override;
 
     // The narrowest width the fields still fit into, i.e. the width at which
     // the short label variants are used.  Bounds the status area, which shares
-    // the debugger's top band with the (growable) TIA image
-    int minWidth() const;
+    // the debugger's top band with the (growable) TIA image.  Measuring means
+    // showing the short labels, so this restores the form that was on screen
+    int minWidth();
 
     void handleMouseDown(int x, int y, MouseButton b, int clickCount) override;
 
   private:
-    // Build the layout tree from the current font and lay the fields out within
-    // the given available width; shared by the ctor and setArea()
-    void reflow(int max_w);
+    // Lay the fields out within the width the parent layout gave us, choosing
+    // the label form that fits; shared by the ctor and setArea()
+    void reflow();
 
-    // The natural width of each of the two columns of fields: enough for its
-    // widest row, being that row's label, one character of clearance, and the
-    // value field(s) the row ends with
-    struct ColumnWidths { int left{0}; int right{0}; };
-    ColumnWidths columnWidths(bool longstr) const;
+    // Show the long or the short form of every row label.  The labels resize
+    // themselves to what they show, so the layout's own size follows suit
+    void setLabels(bool longstr);
 
-    // The width at which the given label form exactly fits, gaps included
-    int minWidthFor(bool longstr) const;
+    // The two columns of rows, as the engine sees them.  Asking this tree for
+    // its natural size is where the widget's own width and height come from,
+    // so no width or height is ever added up here by hand
+    unique_ptr<GUI::BoxLayout> buildLayout() const;
+
+    // The width the given label form wants: clearances, gap and fields included
+    int naturalWidthFor(bool longstr);
 
     // The gap between the two columns of fields
     int columnGap() const { return _fontWidth * 5 / 4; }
@@ -91,6 +102,9 @@ class TiaInfoWidget : public Widget, public CommandSender
     StaticTextWidget* myScanCycleLabel{nullptr};
     StaticTextWidget* myPixelPosLabel{nullptr};
     StaticTextWidget* myColorClockLabel{nullptr};
+
+    // Which label form is currently on screen
+    bool myLongLabels{false};
 
   protected:
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;

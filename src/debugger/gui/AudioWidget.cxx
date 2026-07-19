@@ -50,10 +50,11 @@ AudioWidget::AudioWidget(GuiObject* boss, const GUI::Font& lfont,
   myAudF->setID(kAUDFID);
   addFocusWidget(myAudF);
 
-  // The resulting channel frequencies ("f0 / f1"), filled in by loadConfig()
-  myAud0F = new StaticTextWidget(boss, lfont, 0, 0, "");
+  // The resulting channel frequencies ("f0 / f1"), filled in by loadConfig(); each
+  // is sized from a representative value (every value it holds is the same length)
+  myAud0F = new StaticTextWidget(boss, lfont, 0, 0, "31400.0Hz");
   mySlash = new StaticTextWidget(boss, lfont, 0, 0, "/");
-  myAud1F = new StaticTextWidget(boss, lfont, 0, 0, "");
+  myAud1F = new StaticTextWidget(boss, lfont, 0, 0, "31400.0Hz");
 
   // AUDC registers (control, one hex digit per channel)
   myRegLabels[1] = new StaticTextWidget(boss, lfont, 0, 0, "AUDC", TextAlign::Left);
@@ -118,8 +119,6 @@ void AudioWidget::reflow()
   const int labelW   = myRegLabels[0]->getWidth(),
             channelW = myAudF->colWidth(),  // one channel column of the AUDF grid
             gridW    = myAudF->getWidth();   // both AUDF channels
-  // audFreq() formats each frequency as "{:7.1f}Hz" -- nine characters wide
-  const int freqWidth = 9 * fontWidth;
 
   BoxLayout root(Dir::Vertical, VGAP, HBORDER, VBORDER);
 
@@ -131,15 +130,14 @@ void AudioWidget::reflow()
   root.addAuto(std::move(headers));
 
   // AUDF row: label, the two-digit frequency-divider grid, then the resulting
-  // channel frequencies "f0 / f1" (each readout fills a stated field, so its
-  // loaded value never resizes it)
+  // channel frequencies "f0 / f1" (each readout is sized to its own value)
   auto audf = std::make_unique<BoxLayout>(Dir::Horizontal);
   audf->addAuto(onBaseline(myRegLabels[0]));
   audf->addFixed(onBaseline(myAudF), gridW);
   audf->addSpace(fontWidth);
-  audf->addFixed(stretchedItem(myAud0F), freqWidth);
+  audf->addAuto(anchoredItem(myAud0F));
   audf->addFixed(anchoredItem(mySlash), fontWidth);
-  audf->addFixed(stretchedItem(myAud1F), freqWidth);
+  audf->addAuto(anchoredItem(myAud1F));
   root.addAuto(std::move(audf));
 
   // AUDC row: label and the one-digit control grid, centered under AUDF

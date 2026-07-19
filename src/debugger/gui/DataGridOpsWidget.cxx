@@ -22,35 +22,38 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 DataGridOpsWidget::DataGridOpsWidget(GuiObject* boss, const GUI::Font& font,
                                      int x, int y)
-  : Widget(boss, font, x, y, 16, 16),
+  : Widget(boss, font, x, y, 0, 0),
     CommandSender(boss)
 {
-  // Create every button at a placeholder position/size; reflow() sizes and
-  // arranges them for the current font
+  // This widget only holds the buttons (siblings parented to the boss) and wires
+  // their target/enabled state; DebuggerDialog lays them out via buildLayout()
   // NOLINTBEGIN(cppcoreguidelines-prefer-member-initializer)
-  _zeroButton = new ButtonWidget(boss, font, 0, 0, 1, 1, "0", kDGZeroCmd);
+  _zeroButton = new ButtonWidget(boss, font, 0, 0, "0", kDGZeroCmd);
   _zeroButton->setToolTip("Zero currently selected value (Z)");
 
-  _invButton = new ButtonWidget(boss, font, 0, 0, 1, 1, "Inv", kDGInvertCmd);
+  _invButton = new ButtonWidget(boss, font, 0, 0, "Inv", kDGInvertCmd);
   _invButton->setToolTip("Invert currently selected value (I)");
 
-  _incButton = new ButtonWidget(boss, font, 0, 0, 1, 1, "++", kDGIncCmd);
+  _incButton = new ButtonWidget(boss, font, 0, 0, "++", kDGIncCmd);
   _incButton->setToolTip("Increase currently selected value. (=, Keypad +)");
 
-  _shiftLeftButton = new ButtonWidget(boss, font, 0, 0, 1, 1, "<<", kDGShiftLCmd);
+  _shiftLeftButton = new ButtonWidget(boss, font, 0, 0, "<<", kDGShiftLCmd);
   _shiftLeftButton->setToolTip("Shift currently selected value left (,)");
 
-  _negButton = new ButtonWidget(boss, font, 0, 0, 1, 1, "Neg", kDGNegateCmd);
+  _negButton = new ButtonWidget(boss, font, 0, 0, "Neg", kDGNegateCmd);
   _negButton->setToolTip("Negate currently selected value (N)");
 
-  _decButton = new ButtonWidget(boss, font, 0, 0, 1, 1, "--", kDGDecCmd);
+  _decButton = new ButtonWidget(boss, font, 0, 0, "--", kDGDecCmd);
   _decButton->setToolTip("Decrease currently selected value (-, Keypad -)");
 
-  _shiftRightButton = new ButtonWidget(boss, font, 0, 0, 1, 1, ">>", kDGShiftRCmd);
+  _shiftRightButton = new ButtonWidget(boss, font, 0, 0, ">>", kDGShiftRCmd);
   _shiftRightButton->setToolTip("Shift currently selected value right (.)");
   // NOLINTEND(cppcoreguidelines-prefer-member-initializer)
 
-  reflow();
+  // These op buttons are small; trim their self-size margin
+  for(auto* b: {_zeroButton, _invButton, _incButton, _shiftLeftButton,
+                _negButton, _decButton, _shiftRightButton})
+    b->setCompact();
 
   // We don't enable the buttons until the DataGridWidget is attached
   // Don't call setEnabled(false), since that does an immediate redraw
@@ -64,52 +67,38 @@ DataGridOpsWidget::DataGridOpsWidget(GuiObject* boss, const GUI::Font& font,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void DataGridOpsWidget::setPos(const Common::Point& pos)
-{
-  Widget::setPos(pos);
-  // The buttons are sibling widgets, not children, so they must be moved along
-  reflow();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void DataGridOpsWidget::refreshFontMetrics()
-{
-  Widget::refreshFontMetrics();
-  // ButtonWidget::refreshFontMetrics() is metrics-only, so the buttons must be
-  // resized here
-  reflow();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void DataGridOpsWidget::reflow()
+unique_ptr<GUI::Layout> DataGridOpsWidget::buildLayout(int rowHeight, int gap)
 {
   using GUI::GridLayout;
-  using GUI::widgetItem;
+  using GUI::alignedItem;
+  using GUI::HAlign;
+  using GUI::VAlign;
 
-  const int bwidth = _fontWidth * 4 + 2,
-            bheight = _font.getFontHeight() + 3;
-  constexpr int space = 4;
+  // Every button takes the widest one's (compact) width, so the two columns line up
+  GUI::alignButtons({_zeroButton, _invButton, _incButton, _shiftLeftButton,
+                     _negButton, _decButton, _shiftRightButton});
 
-  // Two columns of operations; the right column starts one row down
-  GridLayout grid(2, 4, space, space, 0, 0);
-  grid.columnFixed(0, bwidth);
-  grid.columnFixed(1, bwidth);
+  // Two columns of operations; the right column starts one row down.  Each button
+  // fills its row's height (which the caller sets to match its own buttons) but
+  // keeps its own compact width
+  const auto opButton = [](ButtonWidget* b) {
+    return alignedItem(b, HAlign::Left, VAlign::Fill);
+  };
+
+  auto grid = std::make_unique<GridLayout>(2, 4, gap, gap, 0, 0);
+  grid->columnAuto(0).columnAuto(1);
   for(int row = 0; row < 4; ++row)
-    grid.rowFixed(row, bheight);
+    grid->rowFixed(row, rowHeight);
 
-  grid.place(0, 0, widgetItem(_zeroButton));
-  grid.place(0, 1, widgetItem(_invButton));
-  grid.place(0, 2, widgetItem(_incButton));
-  grid.place(0, 3, widgetItem(_shiftLeftButton));
-  grid.place(1, 1, widgetItem(_negButton));
-  grid.place(1, 2, widgetItem(_decButton));
-  grid.place(1, 3, widgetItem(_shiftRightButton));
+  grid->place(0, 0, opButton(_zeroButton));
+  grid->place(0, 1, opButton(_invButton));
+  grid->place(0, 2, opButton(_incButton));
+  grid->place(0, 3, opButton(_shiftLeftButton));
+  grid->place(1, 1, opButton(_negButton));
+  grid->place(1, 2, opButton(_decButton));
+  grid->place(1, 3, opButton(_shiftRightButton));
 
-  grid.doLayout(_x, _y, 2 * bwidth + space, 4 * bheight + 3 * space);
-
-  // Calculate real dimensions
-  _w = 2 * (bwidth + space);
-  _h = 4 * (bheight + space);
+  return grid;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

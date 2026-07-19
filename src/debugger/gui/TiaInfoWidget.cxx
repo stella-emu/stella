@@ -31,6 +31,11 @@
 // Between the current and the last-frame scanline counts, which share a row
 static constexpr int SCAN_GAP = 2;
 
+// How many characters wide each kind of value field is
+static constexpr int CYCLE_CHARS = 5,  // a cycle count for this frame
+                     TOTAL_CHARS = 8,  // the session total, in E notation
+                     COUNT_CHARS = 3;  // a scanline, pixel or clock count
+
 // The label of each row, in the two forms picked between by the width available
 struct RowLabel { string_view full; string_view abbr; };
 
@@ -51,13 +56,12 @@ static constexpr std::array<RowLabel, 5> RIGHT_LABELS{{
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 TiaInfoWidget::TiaInfoWidget(GuiObject* boss, const GUI::Font& lfont,
-                             const GUI::Font& nfont,
-                             int x, int y, int max_w)
-  : Widget(boss, lfont, x, y, 16, 16),
+                             const GUI::Font& nfont)
+  : Widget(boss, lfont, 0, 0, 0, 0),
     CommandSender(boss)
 {
-  // Create every field at a placeholder position/size; reflow() picks the
-  // short/long label text and positions and sizes everything for the width
+  // Create every field; reflow() picks the short/long label text and positions
+  // and sizes everything for the width the parent layout gives us
   // NOLINTBEGIN(cppcoreguidelines-prefer-member-initializer)
   myFrameCyclesLabel = new StaticTextWidget(boss, lfont, 0, 0, "Frame Cycles");
   myFrameCycles = new EditTextWidget(boss, nfont, 0, 0, 1);
@@ -112,7 +116,14 @@ TiaInfoWidget::TiaInfoWidget(GuiObject* boss, const GUI::Font& lfont,
   myColorClocks->setEditable(false, true);
   // NOLINTEND(cppcoreguidelines-prefer-member-initializer)
 
-  reflow(max_w);
+  // Each label switches between a long and a short form as the width allows, so
+  // it must take its width from whichever one it is currently showing
+  for(auto* l: {myFrameCyclesLabel, myWSyncCyclesLabel, myTimerCyclesLabel,
+                myTotalLabel, myDeltaLabel, myFrameCountLabel, myScanlineLabel,
+                myScanCycleLabel, myPixelPosLabel, myColorClockLabel})
+    l->setAutoResize(true);
+
+  reflow();
 
   //setHelpAnchor("TIAInfo", true); // TODO: does not work due to missing focus
 }
@@ -120,146 +131,135 @@ TiaInfoWidget::TiaInfoWidget(GuiObject* boss, const GUI::Font& lfont,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TiaInfoWidget::setArea(int x, int y, int w, int h)
 {
-  setPos(x, y);
-  reflow(w);
+  Widget::setArea(x, y, w, h);
+  reflow();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-TiaInfoWidget::ColumnWidths TiaInfoWidget::columnWidths(bool longstr) const
+void TiaInfoWidget::setLabels(bool longstr)
 {
-  const GUI::Font& lfont = _font;
-
-  // Every label keeps one character of clearance before its value field
-  const int space = lfont.getMaxCharWidth();
-  const int fwidth5 = EditTextWidget::calcWidth(lfont, 5),
-            fwidth3 = EditTextWidget::calcWidth(lfont, 3),
-            twidth  = EditTextWidget::calcWidth(lfont, 8);
-
-  // What each row ends with; the scanline row shows two counts side by side
-  const std::array<int, 5> leftFields{fwidth5, fwidth5, fwidth5, twidth, twidth};
-  const std::array<int, 5> rightFields{fwidth5, fwidth3 * 2 + SCAN_GAP,
-                                       fwidth3, fwidth3, fwidth3};
-
-  const auto width = [&](const auto& labels, const auto& fields) {
-    int w = 0;
-    for(size_t i = 0; i < labels.size(); ++i)
-      w = std::max(w, lfont.getStringWidth(longstr ? labels[i].full
-                                                   : labels[i].abbr)
-                      + space + fields[i]);
-    return w;
+  const auto set = [&](StaticTextWidget* w, const RowLabel& l) {
+    w->setLabel(longstr ? l.full : l.abbr);
   };
+  set(myFrameCyclesLabel, LEFT_LABELS[0]);
+  set(myWSyncCyclesLabel, LEFT_LABELS[1]);
+  set(myTimerCyclesLabel, LEFT_LABELS[2]);
+  set(myTotalLabel,       LEFT_LABELS[3]);
+  set(myDeltaLabel,       LEFT_LABELS[4]);
+  set(myFrameCountLabel,  RIGHT_LABELS[0]);
+  set(myScanlineLabel,    RIGHT_LABELS[1]);
+  set(myScanCycleLabel,   RIGHT_LABELS[2]);
+  set(myPixelPosLabel,    RIGHT_LABELS[3]);
+  set(myColorClockLabel,  RIGHT_LABELS[4]);
 
-  return {width(LEFT_LABELS, leftFields), width(RIGHT_LABELS, rightFields)};
+  myLongLabels = longstr;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int TiaInfoWidget::minWidthFor(bool longstr) const
-{
-  // The base sizes of the three cells reflow() lays the widget out with
-  const ColumnWidths w = columnWidths(longstr);
-
-  return w.left + columnGap() + w.right;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int TiaInfoWidget::minWidth() const
-{
-  return minWidthFor(false);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void TiaInfoWidget::reflow(int max_w)
+unique_ptr<GUI::BoxLayout> TiaInfoWidget::buildLayout() const
 {
   using GUI::BoxLayout;
   using GUI::anchoredItem;
+  using GUI::stretchedItem;
   using Dir = BoxLayout::Dir;
 
-  const GUI::Font& lfont = _font;
-  const int VGAP = lfont.getLineHeight() / 4;
-  constexpr int VBORDER = 5 + 1;
-  // Spell the labels out only once they fit without eating their own clearance
-  const bool longstr = minWidthFor(true) <= max_w;
-  const int lineHeight = lfont.getLineHeight();
-  const int fwidth5 = EditTextWidget::calcWidth(lfont, 5);
-  const int fwidth3 = EditTextWidget::calcWidth(lfont, 3);
-  const int twidth  = EditTextWidget::calcWidth(lfont, 8);
+  const int VGAP = _font.getLineHeight() / 4;
+  const int VBORDER = _font.getFontHeight() / 2;
+  // Every label keeps one character of clearance before its value field, which
+  // is simply the row's spacing -- so a row is that much wider than its parts
+  const int space = _font.getMaxCharWidth();
 
-  // Set each label's text (short or long) and its natural width, and each value
-  // field's font-derived width, so the anchored layout items below pick up the
-  // right sizes (anchored items keep their own size and are only repositioned)
-  const auto setText = [&](StaticTextWidget* w, const RowLabel& l) {
-    const string_view s = longstr ? l.full : l.abbr;
-    w->setLabel(s);
-    w->setWidth(lfont.getStringWidth(s));
+  // A field is as wide as the characters it has to show; it fills the cell that
+  // says so, which is how its width follows the font without anyone setting it
+  const auto field = [&](Widget* w, int chars) {
+    return std::pair{stretchedItem(w), EditTextWidget::calcWidth(_font, chars)};
   };
-  setText(myFrameCyclesLabel, LEFT_LABELS[0]);
-  setText(myWSyncCyclesLabel, LEFT_LABELS[1]);
-  setText(myTimerCyclesLabel, LEFT_LABELS[2]);
-  setText(myTotalLabel,       LEFT_LABELS[3]);
-  setText(myDeltaLabel,       LEFT_LABELS[4]);
-  setText(myFrameCountLabel,  RIGHT_LABELS[0]);
-  setText(myScanlineLabel,    RIGHT_LABELS[1]);
-  setText(myScanCycleLabel,   RIGHT_LABELS[2]);
-  setText(myPixelPosLabel,    RIGHT_LABELS[3]);
-  setText(myColorClockLabel,  RIGHT_LABELS[4]);
-
-  myFrameCycles->setWidth(fwidth5);
-  myWSyncCylces->setWidth(fwidth5);
-  myTimerCylces->setWidth(fwidth5);
-  myTotalCycles->setWidth(twidth);
-  myDeltaCycles->setWidth(twidth);
-  myFrameCount->setWidth(fwidth5);
-  myScanlineCount->setWidth(fwidth3);
-  myScanlineCountLast->setWidth(fwidth3);
-  myScanlineCycles->setWidth(fwidth3);
-  myPixelPosition->setWidth(fwidth3);
-  myColorClocks->setWidth(fwidth3);
 
   // A row stretches its label across whatever width the column has and anchors
   // its value field at the right, so that a column's fields all end flush, no
-  // matter how wide its labels or how many digits each field holds
-  const auto row = [&](StaticTextWidget* label, Widget* field, int fieldW) {
-    auto r = std::make_unique<BoxLayout>(Dir::Horizontal);
+  // matter how wide its labels or how many characters each field holds
+  const auto row = [&](StaticTextWidget* label, Widget* value, int chars) {
+    auto [item, w] = field(value, chars);
+    auto r = std::make_unique<BoxLayout>(Dir::Horizontal, space);
     r->addStretch(anchoredItem(label));
-    r->addFixed(anchoredItem(field), fieldW);
+    r->addFixed(std::move(item), w);
     return r;
   };
 
   auto left = std::make_unique<BoxLayout>(Dir::Vertical, VGAP, 0, VBORDER);
-  left->addFixed(row(myFrameCyclesLabel, myFrameCycles, fwidth5), lineHeight);
-  left->addFixed(row(myWSyncCyclesLabel, myWSyncCylces, fwidth5), lineHeight);
-  left->addFixed(row(myTimerCyclesLabel, myTimerCylces, fwidth5), lineHeight);
-  left->addFixed(row(myTotalLabel, myTotalCycles, twidth), lineHeight);
-  left->addFixed(row(myDeltaLabel, myDeltaCycles, twidth), lineHeight);
+  left->addAuto(row(myFrameCyclesLabel, myFrameCycles, CYCLE_CHARS));
+  left->addAuto(row(myWSyncCyclesLabel, myWSyncCylces, CYCLE_CHARS));
+  left->addAuto(row(myTimerCyclesLabel, myTimerCylces, CYCLE_CHARS));
+  left->addAuto(row(myTotalLabel, myTotalCycles, TOTAL_CHARS));
+  left->addAuto(row(myDeltaLabel, myDeltaCycles, TOTAL_CHARS));
+
+  // The scanline row shows the current and last-frame counts side by side
+  auto counts = std::make_unique<BoxLayout>(Dir::Horizontal, SCAN_GAP);
+  for(auto* c: {myScanlineCount, myScanlineCountLast})
+  {
+    auto [item, w] = field(c, COUNT_CHARS);
+    counts->addFixed(std::move(item), w);
+  }
+
+  auto scanRow = std::make_unique<BoxLayout>(Dir::Horizontal, space);
+  scanRow->addStretch(anchoredItem(myScanlineLabel));
+  scanRow->addAuto(std::move(counts));
 
   auto right = std::make_unique<BoxLayout>(Dir::Vertical, VGAP, 0, VBORDER);
-  right->addFixed(row(myFrameCountLabel, myFrameCount, fwidth5), lineHeight);
-  // The scanline row shows the current and last-frame counts side by side
-  auto scanRow = std::make_unique<BoxLayout>(Dir::Horizontal);
-  scanRow->addStretch(anchoredItem(myScanlineLabel));
-  scanRow->addFixed(anchoredItem(myScanlineCount), fwidth3);
-  scanRow->addSpace(SCAN_GAP);
-  scanRow->addFixed(anchoredItem(myScanlineCountLast), fwidth3);
-  right->addFixed(std::move(scanRow), lineHeight);
-  right->addFixed(row(myScanCycleLabel, myScanlineCycles, fwidth3), lineHeight);
-  right->addFixed(row(myPixelPosLabel, myPixelPosition, fwidth3), lineHeight);
-  right->addFixed(row(myColorClockLabel, myColorClocks, fwidth3), lineHeight);
+  right->addAuto(row(myFrameCountLabel, myFrameCount, CYCLE_CHARS));
+  right->addAuto(std::move(scanRow));
+  right->addAuto(row(myScanCycleLabel, myScanlineCycles, COUNT_CHARS));
+  right->addAuto(row(myPixelPosLabel, myPixelPosition, COUNT_CHARS));
+  right->addAuto(row(myColorClockLabel, myColorClocks, COUNT_CHARS));
 
-  // The two columns and the gap between them grow from their natural sizes in
-  // the proportion 1 : 2 : 1, so the gap always outgrows the label clearances
-  const ColumnWidths cw = columnWidths(longstr);
+  // The two columns and the gap between them start at the size their contents
+  // need and share any surplus in the proportion 1 : 2 : 1, so the gap always
+  // outgrows the label clearances
+  const int leftW  = static_cast<int>(left->naturalSize().w),
+            rightW = static_cast<int>(right->naturalSize().w);
 
-  BoxLayout root(Dir::Horizontal);
-  root.addStretch(std::move(left), 1, cw.left);
-  root.addStretchSpace(2, columnGap());
-  root.addStretch(std::move(right), 1, cw.right);
+  auto root = std::make_unique<BoxLayout>(Dir::Horizontal);
+  root->addStretch(std::move(left), 1, leftW);
+  root->addStretchSpace(2, columnGap());
+  root->addStretch(std::move(right), 1, rightW);
 
-  // The columns are as tall as their rows, margins and gaps make them
-  root.doLayout(_x, _y, max_w, static_cast<int>(root.minSize().h));
+  return root;
+}
 
-  // Final dimensions (the bottom-right field is the last right-column row)
-  _w = max_w;
-  _h = myColorClocks->getBottom() - _y;
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+Common::Size TiaInfoWidget::naturalSize() const
+{
+  return buildLayout()->naturalSize();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+int TiaInfoWidget::naturalWidthFor(bool longstr)
+{
+  setLabels(longstr);
+
+  return static_cast<int>(naturalSize().w);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+int TiaInfoWidget::minWidth()
+{
+  // Measuring means showing the short labels, so put back what was on screen
+  const bool wasLong = myLongLabels;
+  const int w = naturalWidthFor(false);
+
+  setLabels(wasLong);
+
+  return w;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TiaInfoWidget::reflow()
+{
+  // Spell the labels out only once they fit without eating their own clearance
+  if(naturalWidthFor(true) > _w)
+    setLabels(false);
+
+  buildLayout()->doLayout(_x, _y, _w, _h);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

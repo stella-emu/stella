@@ -21,6 +21,10 @@
 #include "Widget.hxx"
 #include "Command.hxx"
 
+namespace GUI {
+  class Layout;
+}  // namespace GUI
+
 // DataGridWidget operations
 enum {
   kDGZeroCmd   = 'DGze',
@@ -38,17 +42,13 @@ class DataGridOpsWidget : public Widget, public CommandSender
     DataGridOpsWidget(GuiObject* boss, const GUI::Font& font, int x, int y);
     ~DataGridOpsWidget() override = default;
 
+    // Arrange the op buttons in their two columns, each row 'rowHeight' tall with
+    // 'gap' between.  The caller (DebuggerDialog) passes the same metrics its
+    // adjacent step buttons use, so the two columns line up row for row
+    unique_ptr<GUI::Layout> buildLayout(int rowHeight, int gap);
+
     void setTarget(CommandReceiver* target) override;
     void setEnabled(bool e) override;
-
-    using Widget::setPos;
-    void setPos(const Common::Point& pos) override;
-    void refreshFontMetrics() override;
-
-  private:
-    // Size the buttons from the current font and arrange them in their two
-    // columns; recomputes _w/_h
-    void reflow();
 
   private:
     ButtonWidget* _zeroButton{nullptr};

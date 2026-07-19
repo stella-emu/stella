@@ -38,10 +38,18 @@ class RiotWidget : public Widget, public CommandSender
 
     void loadConfig() override;
 
+    // Reflow entry point for the resizable debugger: move/resize the widget and
+    // lay its two columns out for the available area
+    void setArea(int x, int y, int w, int h) override;
+
   protected:
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 
   private:
+    // Build the layout tree from the current font and position/size everything;
+    // shared by the ctor and setArea()
+    void reflow();
+
     static ControllerWidget* addControlWidget(
         GuiObject* boss, const GUI::Font& font,
         int x, int y, Controller& controller);
@@ -49,6 +57,8 @@ class RiotWidget : public Widget, public CommandSender
     void handleConsole();
 
   private:
+    // The six SW register labels (SWCHA(W)/SWACNT/... ), shared label column
+    std::array<StaticTextWidget*, 6> myRegLabel{nullptr};
     ToggleBitWidget* mySWCHAReadBits{nullptr};
     ToggleBitWidget* mySWCHAWriteBits{nullptr};
     ToggleBitWidget* mySWACNTBits{nullptr};
@@ -56,12 +66,16 @@ class RiotWidget : public Widget, public CommandSender
     ToggleBitWidget* mySWCHBWriteBits{nullptr};
     ToggleBitWidget* mySWBCNTBits{nullptr};
 
+    std::array<StaticTextWidget*, 3> myLeftINPTLabel{nullptr};
+    std::array<StaticTextWidget*, 3> myRightINPTLabel{nullptr};
     DataGridWidget* myLeftINPT{nullptr};
     DataGridWidget* myRightINPT{nullptr};
     CheckboxWidget* myINPTLatch{nullptr};
     CheckboxWidget* myINPTDump{nullptr};
 
     std::array<StaticTextWidget*, 4> myTimWriteLabel{nullptr};
+    std::array<StaticTextWidget*, 4> myTimReadLabel{nullptr};
+    std::array<StaticTextWidget*, 3> myTimHash{nullptr};  // "#" cycle markers
     DataGridWidget* myTimWrite{nullptr};
     DataGridWidget* myTimAvail{nullptr};
     DataGridWidget* myTimRead{nullptr};
@@ -75,6 +89,7 @@ class RiotWidget : public Widget, public CommandSender
     CheckboxWidget* myReset{nullptr};
     CheckboxWidget* myPause{nullptr};
 
+    StaticTextWidget* myConsoleLabel{nullptr};
     PopUpWidget *myConsole{nullptr};
 
     // ID's for the various widgets

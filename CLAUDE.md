@@ -77,6 +77,29 @@ ignoring them has repeatedly cost whole sessions of rework.
    derive it (button, pop-up, edit field, slider, static text), don't pass it. All
    geometry lives in `layout()` / `reflow()`.
 
+The debugger tab widgets in `src/debugger/gui/` are `Widget`s, not `Dialog`s. The
+five rules above still hold, but the shape and exemplars differ, so also obey:
+
+6. **Create-only constructor + `reflow()`.** Build every child at `0, 0` in the
+   constructor, which *ends* with `reflow()`. Add
+   `setArea(x,y,w,h){ Widget::setArea(...); reflow(); }`. `reflow()` reads `_x/_y/_w`,
+   builds a `GUI::BoxLayout`/`GridLayout` tree and `doLayout()`s it. Do **not** add a
+   `max_w`/size constructor parameter (the old `CpuWidget`/`RamWidget` style).
+7. **The exemplars are the debugger files**, not the `src/gui/` dialogs:
+   `CartRamWidget::reflow` and `RomWidget::reflow` (the `setArea`/`reflow` shape),
+   `CartDebugWidget` (skeleton + one `layoutContent` hook), `CpuWidget`
+   (`VAlign::Baseline` label + `DataGrid` rows). Open one before designing.
+8. **Labels beside a `DataGrid`'s rows** use the `RamWidget` `gridLabels` idiom (a
+   vertical box at the grid's row pitch, offset by
+   `grid->firstTextY() - label->firstTextY()`), never an `N*fontWidth` column.
+9. **A composite that hosts sub-widgets** (`ControllerWidget`, `CartDebugWidget`)
+   shares one seam: the base owns the skeleton plus a virtual
+   `layoutContent(GUI::BoxLayout&)` hook. Don't invent a second one — that is a
+   question to ask (rule 2).
+10. **The root box carries the font-derived borders as its margins**
+    (`HBORDER = fontWidth*1.25`, `VBORDER = fontHeight/2`, `VGAP = fontHeight/4`),
+    computed from `_font`.
+
 **Common utilities** (`src/common/`): Audio pipeline (`AudioQueue`, `AudioSettings`), filesystem abstraction (`FSNode`), state/rewind managers, high scores, palette, TV filters (`tv_filters/`), SDL blitters (`sdl_blitter/`), persistence layer (`repository/` — JSON, properties, SQLite).
 
 **Platform code** (`src/os/unix/`, `src/os/windows/`, `src/os/macos/`): OSystem subclasses and filesystem implementations per platform.

@@ -62,6 +62,7 @@ void RomWidget::setArea(int x, int y, int w, int h)
 void RomWidget::reflow()
 {
   using GUI::BoxLayout;
+  using GUI::anchoredItem;
   using GUI::alignedItem;
   using GUI::HAlign;
   using GUI::VAlign;
@@ -72,13 +73,11 @@ void RomWidget::reflow()
 
   // The label and the bank display are sibling widgets parented to the boss,
   // not children of this widget, so they are positioned explicitly here
-  myInfoLabel->setWidth(_font.getStringWidth(myInfoLabel->getLabel()));
-
   BoxLayout root(Dir::Vertical, VGAP, HBORDER, VGAP);
 
   // The bank info row: a label, then the bank display filling the rest
   auto infoRow = std::make_unique<BoxLayout>(Dir::Horizontal);
-  infoRow->addFixed(alignedItem(myInfoLabel, HAlign::Fill, VAlign::Center), myInfoLabel->getWidth());
+  infoRow->addAuto(anchoredItem(myInfoLabel));
   infoRow->addStretch(alignedItem(myBank, HAlign::Fill, VAlign::Center));
   root.addFixed(std::move(infoRow), std::max(_lineHeight, myBank->getHeight()));
 

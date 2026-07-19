@@ -307,6 +307,7 @@ class StaticTextWidget : public Widget, public CommandSender
 
     virtual void setValue(int value);
     void setLabel(string_view label);
+    void setAutoResize(bool state) { _autoResize = state; }
     void setAlign(TextAlign align) { _align = align; setDirty(); }
     const string& getLabel() const { return _label; }
     bool isEditable() const { return _editable; }
@@ -339,6 +340,7 @@ class StaticTextWidget : public Widget, public CommandSender
   protected:
     string    _label;
     bool      _editable{false};
+    bool      _autoResize{false};
     TextAlign _align{TextAlign::Left};
     int       _cmd{0};
     size_t    _linkStart{string::npos};
@@ -419,6 +421,15 @@ class ButtonWidget : public StaticTextWidget
     void setBitmap(const uInt32* bitmap, int bmw, int bmh);
     void setIcon(const GUI::Icon& icon);
 
+    // Trim the self-size margin so a small button (a debugger op button) is not
+    // as wide as a dialog button.  Only affects an auto-sized (label-only) button
+    void setCompact(bool compact = true)
+    {
+      _compact = compact;
+      if(_autoSize)
+        setWidth(autoWidth());
+    }
+
     bool handleMouseClicks(int x, int y, MouseButton b) override;
     void handleMouseDown(int x, int y, MouseButton b, int clickCount) override;
     void handleMouseUp(int x, int y, MouseButton b, int clickCount) override;
@@ -455,7 +466,10 @@ class ButtonWidget : public StaticTextWidget
     int autoWidth() const
     {
       if(!_useBitmap)
-        return calcWidth(_font, _label);
+        return _compact
+          ? _font.getStringWidth(_label)
+              + static_cast<int>(_font.getMaxCharWidth() * 1.25)
+          : calcWidth(_font, _label);
 
       return _useText
         ? _bmw + static_cast<int>(_bmx * 1.5) + _font.getStringWidth(_label)
@@ -497,6 +511,7 @@ class ButtonWidget : public StaticTextWidget
     bool _repeat{false}; // button repeats
     bool _useText{true};
     bool _useBitmap{false};
+    bool _compact{false}; // trim the self-size margin (a small op button)
     const uInt32* _bitmap{nullptr};
     int  _bmw{0}, _bmh{0}, _bmx{0};
     // Set only by the label-only ctor: I sized myself, so a font change re-sizes

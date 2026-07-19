@@ -78,6 +78,19 @@ class DataGridWidget : public EditableWidget
     // Account for the extra width of embedded scrollbar
     int getWidth() const override;
 
+    /**
+      My size is intrinsic -- exactly what my rows and columns need for the
+      current font -- and my footprint includes the scrollbar, if I have one.
+      getWidth() has always said so, and naturalSize() must agree with it: a
+      layout that sized a cell to the grid alone would put whatever follows on
+      top of the scrollbar.  Since that reported width is what a layout then
+      hands back via setArea(), setWidth() keeps the grid's own width intact.
+    */
+    Common::Size naturalSize() const override {
+      return Common::Size(std::max(getWidth(), 0), std::max(getHeight(), 0));
+    }
+    void setWidth(int) override { }
+
     // The scrollbar (when present) is a sibling widget, so it must be moved to
     // track the grid when the owning dialog repositions it (mirrors ListWidget)
     using Widget::setPos;
