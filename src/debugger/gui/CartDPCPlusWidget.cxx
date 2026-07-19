@@ -23,8 +23,8 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartridgeDPCPlusWidget::CartridgeDPCPlusWidget(
       GuiObject* boss, const GUI::Font& lfont, const GUI::Font& nfont,
-      int x, int y, int w, int h, CartridgeDPCPlus& cart)
-  : CartridgeARMWidget(boss, lfont, nfont, x, y, w, h, cart),
+      CartridgeDPCPlus& cart)
+  : CartridgeARMWidget(boss, lfont, nfont, cart),
     myCart{cart}
 {
   const size_t size = cart.mySize;

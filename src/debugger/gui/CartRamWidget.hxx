@@ -33,7 +33,7 @@ class CartRamWidget : public Widget, public CommandSender
   public:
     CartRamWidget(GuiObject* boss, const GUI::Font& lfont,
                   const GUI::Font& nfont,
-                  int x, int y, int w, int h, CartDebugWidget& cartDebug);
+                  CartDebugWidget& cartDebug);
     ~CartRamWidget() override = default;
 
     void loadConfig() override;

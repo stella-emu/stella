@@ -28,7 +28,6 @@ class CartridgeMDMWidget : public CartridgeEnhancedWidget
   public:
     CartridgeMDMWidget(GuiObject* boss, const GUI::Font& lfont,
                        const GUI::Font& nfont,
-                       int x, int y, int w, int h,
                        CartridgeMDM& cart);
     ~CartridgeMDMWidget() override = default;
 

@@ -30,7 +30,6 @@ class CartridgeDPCPlusWidget : public CartridgeARMWidget
   public:
     CartridgeDPCPlusWidget(GuiObject* boss, const GUI::Font& lfont,
                            const GUI::Font& nfont,
-                           int x, int y, int w, int h,
                            CartridgeDPCPlus& cart);
     ~CartridgeDPCPlusWidget() override = default;
 

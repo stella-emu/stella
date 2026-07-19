@@ -27,7 +27,6 @@ class CartridgeUAWidget : public CartridgeEnhancedWidget
   public:
     CartridgeUAWidget(GuiObject* boss, const GUI::Font& lfont,
                       const GUI::Font& nfont,
-                      int x, int y, int w, int h,
                       CartridgeUA& cart, bool swapHotspots);
     ~CartridgeUAWidget() override = default;
 

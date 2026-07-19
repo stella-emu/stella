@@ -23,9 +23,8 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartridgeE7Widget::CartridgeE7Widget(
     GuiObject* boss, const GUI::Font& lfont, const GUI::Font& nfont,
-    int x, int y, int w, int h,
     CartridgeE7& cart)
-  : CartDebugWidget(boss, lfont, nfont, x, y, w, h),
+  : CartDebugWidget(boss, lfont, nfont),
     myCart{cart}
 {
   const string info = std::format(

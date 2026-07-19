@@ -28,8 +28,8 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartRamWidget::CartRamWidget(
       GuiObject* boss, const GUI::Font& lfont, const GUI::Font& nfont,
-      int x, int y, int w, int h, CartDebugWidget& cartDebug)
-  : Widget(boss, lfont, x, y, w, h),
+      CartDebugWidget& cartDebug)
+  : Widget(boss, lfont, 0, 0, 0, 0),
     CommandSender(boss),
     _nfont{nfont}
 {

@@ -26,8 +26,8 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartridgeARWidget::CartridgeARWidget(
       GuiObject* boss, const GUI::Font& lfont, const GUI::Font& nfont,
-      int x, int y, int w, int h, CartridgeAR& cart)
-  : CartDebugWidget(boss, lfont, nfont, x, y, w, h),
+      CartridgeAR& cart)
+  : CartDebugWidget(boss, lfont, nfont),
     myCart{cart}
 {
   const size_t size = myCart.getImage().size();

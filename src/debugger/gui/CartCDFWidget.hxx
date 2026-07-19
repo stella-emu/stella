@@ -32,7 +32,6 @@ class CartridgeCDFWidget : public CartridgeARMWidget
   public:
     CartridgeCDFWidget(GuiObject* boss, const GUI::Font& lfont,
                        const GUI::Font& nfont,
-                       int x, int y, int w, int h,
                        CartridgeCDF& cart);
     ~CartridgeCDFWidget() override = default;
 

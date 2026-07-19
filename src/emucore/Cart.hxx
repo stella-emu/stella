@@ -362,7 +362,7 @@ class Cartridge : public Device
       This can be used when the debugWidget runs out of space.
     */
     virtual CartDebugWidget* infoWidget(GuiObject* boss, const GUI::Font& lfont,
-                                        const GUI::Font& nfont, int x, int y, int w, int h)
+                                        const GUI::Font& nfont)
     {
       return nullptr;
     }
@@ -374,7 +374,7 @@ class Cartridge : public Device
       of each cart type can be very different from each other.
     */
     virtual CartDebugWidget* debugWidget(GuiObject* boss, const GUI::Font& lfont,
-                                         const GUI::Font& nfont, int x, int y, int w, int h)
+                                         const GUI::Font& nfont)
     {
       return nullptr;
     }

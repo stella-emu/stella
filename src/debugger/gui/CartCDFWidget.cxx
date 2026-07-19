@@ -23,8 +23,8 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartridgeCDFWidget::CartridgeCDFWidget(
     GuiObject* boss, const GUI::Font& lfont, const GUI::Font& nfont,
-    int x, int y, int w, int h, CartridgeCDF& cart)
-  : CartridgeARMWidget(boss, lfont, nfont, x, y, w, h, cart),
+    CartridgeCDF& cart)
+  : CartridgeARMWidget(boss, lfont, nfont, cart),
     myCart{cart}
 {
   VariantList items;

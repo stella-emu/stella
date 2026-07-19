@@ -1160,14 +1160,14 @@ string CartridgeBUS::name() const
 #ifdef DEBUGGER_SUPPORT
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   CartDebugWidget* CartridgeBUS::debugWidget(GuiObject* boss, const GUI::Font& lfont,
-                               const GUI::Font& nfont, int x, int y, int w, int h)
+                               const GUI::Font& nfont)
   {
-    return new CartridgeBUSWidget(boss, lfont, nfont, x, y, w, h, *this);
+    return new CartridgeBUSWidget(boss, lfont, nfont, *this);
   }
 
   CartDebugWidget* CartridgeBUS::infoWidget(GuiObject* boss, const GUI::Font& lfont,
-                                             const GUI::Font& nfont, int x, int y, int w, int h)
+                                             const GUI::Font& nfont)
   {
-    return new CartridgeBUSInfoWidget(boss, lfont, nfont, x, y, w, h, *this);
+    return new CartridgeBUSInfoWidget(boss, lfont, nfont, *this);
   }
 #endif

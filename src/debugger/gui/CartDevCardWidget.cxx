@@ -24,8 +24,8 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartridgeDevCardWidget::CartridgeDevCardWidget(
       GuiObject* boss, const GUI::Font& lfont, const GUI::Font& nfont,
-      int x, int y, int w, int h, CartridgeDevCard& cart)
-  : CartDebugWidget(boss, lfont, nfont, x, y, w, h),
+      CartridgeDevCard& cart)
+  : CartDebugWidget(boss, lfont, nfont),
     myCart{cart}
 {
   constexpr string_view info =

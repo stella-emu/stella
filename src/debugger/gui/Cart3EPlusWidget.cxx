@@ -27,8 +27,8 @@ using Common::Base;
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Cartridge3EPlusWidget::Cartridge3EPlusWidget(
       GuiObject* boss, const GUI::Font& lfont, const GUI::Font& nfont,
-      int x, int y, int w, int h, Cartridge3EPlus& cart)
-  : CartridgeEnhancedWidget(boss, lfont, nfont, x, y, w, h, cart),
+      Cartridge3EPlus& cart)
+  : CartridgeEnhancedWidget(boss, lfont, nfont, cart),
     myCart3EP{cart}
 {
   initialize();

@@ -27,7 +27,6 @@ class CartridgeDFSCWidget : public CartridgeEnhancedWidget
   public:
     CartridgeDFSCWidget(GuiObject* boss, const GUI::Font& lfont,
                         const GUI::Font& nfont,
-                        int x, int y, int w, int h,
                         CartridgeDFSC& cart);
     ~CartridgeDFSCWidget() override = default;
 

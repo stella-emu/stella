@@ -36,8 +36,7 @@ class CartDebugWidget : public Widget, public CommandSender
 {
   public:
     CartDebugWidget(GuiObject* boss, const GUI::Font& lfont,
-                    const GUI::Font& nfont,
-                    int x, int y, int w, int h);
+                    const GUI::Font& nfont);
     ~CartDebugWidget() override = default;
 
   public:

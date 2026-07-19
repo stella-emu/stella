@@ -634,11 +634,7 @@ void DebuggerDialog::addRomArea()
   WidgetArray wid1, wid2;
 
   // Every widget is created at a placeholder position/size; layoutRomArea()
-  // sizes and positions them.  The cart widgets are given a real WIDTH here,
-  // which the externally sized dialog already knows: the cart types not yet
-  // converted still derive their field widths (and the word wrapping of their
-  // descriptions) in their ctors, having no reflow of their own.  A converted
-  // cart ignores it and re-flows to whatever setArea() later gives it
+  // sizes and positions them
   // NOLINTBEGIN(cppcoreguidelines-prefer-member-initializer)
   const auto addStepButton = [&](size_t idx, string_view label, int cmd,
                                  string_view tip, bool repeat) {
@@ -701,18 +697,27 @@ void DebuggerDialog::addRomArea()
 
   // The main disassembly tab
   int tabID = myRomTab->addTab("  Disassembly  ", TabWidget::AUTO_WIDTH);
-  myRom = new RomWidget(myRomTab, *myLFont, *myNFont, 2, 2, 1, 1);
+  myRom = new RomWidget(myRomTab, *myLFont, *myNFont);
   myRom->setHelpAnchor("Disassembly", true);
   myRomTab->setParentWidget(tabID, myRom);
   addToFocusList(myRom->getFocusList(), myRomTab, tabID);
 
-  // The width the cart widgets are built for (see the note above)
-  const int cartWidth = getRomBounds().w() - VBORDER - 2;
-
+  // KNOWN BUG: CartDebugWidget/CartEnhancedWidget/CartARMWidget/CartRamWidget's
+  // ctors call reflow() immediately (see CartEnhancedWidget::initialize()), and
+  // that first reflow() runs at width 0 -- before recordContentHeight() below
+  // ever runs, and long before these widgets get a real setArea(). For carts
+  // whose content is width-dependent (e.g. a WrappedTextWidget description),
+  // recordContentHeight() then under-reports the tab's minimum height, and the
+  // debugger window doesn't grow tall enough, clipping the bottom of the tab
+  // (seen on CartridgeDPC+/CDF, whose ARM-cycle rows fall below the window).
+  // Passing the real width into these ctors fixes it, but that reintroduces a
+  // ctor geometry parameter, which defeats the point of this refactor -- so
+  // it's deliberately NOT done here. Proper fix (deferred): make
+  // recordContentHeight() (or its caller) not depend on a ctor-time reflow()
+  // at all, e.g. by only measuring after a real setArea().
   // The 'cart-specific' information tab (optional)
   tabID = myRomTab->addTab(" " + instance().console().cartridge().name() + " ", TabWidget::AUTO_WIDTH);
-  myCartInfo = instance().console().cartridge().infoWidget(
-    myRomTab, *myLFont, *myNFont, 2, 2, cartWidth, 1);
+  myCartInfo = instance().console().cartridge().infoWidget(myRomTab, *myLFont, *myNFont);
   if(myCartInfo != nullptr)
   {
     myCartInfo->recordContentHeight();
@@ -722,8 +727,7 @@ void DebuggerDialog::addRomArea()
   }
 
   // The 'cart-specific' state tab
-  myCartDebug = instance().console().cartridge().debugWidget(
-        myRomTab, *myLFont, *myNFont, 2, 2, cartWidth, 1);
+  myCartDebug = instance().console().cartridge().debugWidget(myRomTab, *myLFont, *myNFont);
   if(myCartDebug)  // TODO - make this always non-null
   {
     myCartDebug->recordContentHeight();
@@ -736,8 +740,7 @@ void DebuggerDialog::addRomArea()
     {
       tabID = myRomTab->addTab(myCartDebug->tabLabel(), TabWidget::AUTO_WIDTH);
       myCartRam =
-        new CartRamWidget(myRomTab, *myLFont, *myNFont, 2, 2, cartWidth, 1,
-                          *myCartDebug);
+        new CartRamWidget(myRomTab, *myLFont, *myNFont, *myCartDebug);
       if(myCartRam)  // TODO - make this always non-null
       {
         myCartRam->recordContentHeight();

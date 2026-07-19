@@ -27,7 +27,6 @@ class Cartridge3FWidget : public CartridgeEnhancedWidget
   public:
     Cartridge3FWidget(GuiObject* boss, const GUI::Font& lfont,
                       const GUI::Font& nfont,
-                      int x, int y, int w, int h,
                       Cartridge3F& cart);
     ~Cartridge3FWidget() override = default;
 

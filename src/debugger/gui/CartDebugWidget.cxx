@@ -24,9 +24,8 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartDebugWidget::CartDebugWidget(GuiObject* boss, const GUI::Font& lfont,
-                                 const GUI::Font& nfont,
-                                 int x, int y, int w, int h)
-  : Widget(boss, lfont, x, y, w, h),
+                                 const GUI::Font& nfont)
+  : Widget(boss, lfont, 0, 0, 0, 0),
     CommandSender(boss),
     _nfont{nfont}
 {

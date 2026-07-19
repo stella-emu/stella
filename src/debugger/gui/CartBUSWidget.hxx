@@ -30,7 +30,6 @@ class CartridgeBUSWidget : public CartridgeARMWidget
   public:
     CartridgeBUSWidget(GuiObject* boss, const GUI::Font& lfont,
                        const GUI::Font& nfont,
-                       int x, int y, int w, int h,
                        CartridgeBUS& cart);
     ~CartridgeBUSWidget() override = default;
 

@@ -23,8 +23,8 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartridgeMDMWidget::CartridgeMDMWidget(
       GuiObject* boss, const GUI::Font& lfont, const GUI::Font& nfont,
-      int x, int y, int w, int h, CartridgeMDM& cart)
-  : CartridgeEnhancedWidget(boss, lfont, nfont, x, y, w, h, cart),
+      CartridgeMDM& cart)
+  : CartridgeEnhancedWidget(boss, lfont, nfont, cart),
     myCartMDM{cart}
 {
   // A single-bank cart has no bank selector, so nothing to lock either

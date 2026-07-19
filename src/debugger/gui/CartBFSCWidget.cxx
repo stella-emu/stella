@@ -21,8 +21,8 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartridgeBFSCWidget::CartridgeBFSCWidget(
   GuiObject* boss, const GUI::Font& lfont, const GUI::Font& nfont,
-  int x, int y, int w, int h, CartridgeBFSC& cart)
-  : CartridgeEnhancedWidget(boss, lfont, nfont, x, y, w, h, cart)
+  CartridgeBFSC& cart)
+  : CartridgeEnhancedWidget(boss, lfont, nfont, cart)
 {
   initialize();
 }

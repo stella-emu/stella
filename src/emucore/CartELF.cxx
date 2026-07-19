@@ -379,16 +379,16 @@ uInt8 CartridgeELF::overdrivePoke(uInt16 address, uInt8 value)
 #ifdef DEBUGGER_SUPPORT
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartDebugWidget* CartridgeELF::debugWidget(
-  GuiObject* boss, const GUI::Font& lfont, const GUI::Font& nfont, int x, int y, int w, int h
+  GuiObject* boss, const GUI::Font& lfont, const GUI::Font& nfont
 ) {
-  return new CartridgeELFStateWidget(boss, lfont, nfont, x, y, w, h, *this);
+  return new CartridgeELFStateWidget(boss, lfont, nfont, *this);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartDebugWidget* CartridgeELF::infoWidget(
-  GuiObject* boss, const GUI::Font& lfont, const GUI::Font& nfont, int x, int y, int w, int h
+  GuiObject* boss, const GUI::Font& lfont, const GUI::Font& nfont
 ) {
-  return new CartridgeELFWidget(boss, lfont, nfont, x, y, w, h, *this);
+  return new CartridgeELFWidget(boss, lfont, nfont, *this);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

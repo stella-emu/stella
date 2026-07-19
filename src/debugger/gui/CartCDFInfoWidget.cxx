@@ -20,8 +20,8 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartridgeCDFInfoWidget::CartridgeCDFInfoWidget(
     GuiObject* boss, const GUI::Font& lfont, const GUI::Font& nfont,
-    int x, int y, int w, int h, CartridgeCDF& cart)
-  : CartDebugWidget(boss, lfont, nfont, x, y, w, h)
+    CartridgeCDF& cart)
+  : CartDebugWidget(boss, lfont, nfont)
 {
   string fetchers = "LDA #";
   if(cart.myLDXenabled)

@@ -24,8 +24,8 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartridgeBUSWidget::CartridgeBUSWidget(
       GuiObject* boss, const GUI::Font& lfont, const GUI::Font& nfont,
-      int x, int y, int w, int h, CartridgeBUS& cart)
-  : CartridgeARMWidget(boss, lfont, nfont, x, y, w, h, cart),
+      CartridgeBUS& cart)
+  : CartridgeARMWidget(boss, lfont, nfont, cart),
     myCart{cart}
 {
   const bool isBUS3 = cart.myBUSSubtype == CartridgeBUS::BUSSubtype::BUS3;

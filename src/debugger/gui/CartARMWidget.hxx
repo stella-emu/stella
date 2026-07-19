@@ -36,7 +36,6 @@ class CartridgeARMWidget : public CartDebugWidget
   public:
     CartridgeARMWidget(GuiObject* boss, const GUI::Font& lfont,
                        const GUI::Font& nfont,
-                       int x, int y, int w, int h,
                        CartridgeARM& cart);
     ~CartridgeARMWidget() override = default;
 

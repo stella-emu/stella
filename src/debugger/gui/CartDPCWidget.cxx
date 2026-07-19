@@ -25,8 +25,8 @@ using Common::Base;
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartridgeDPCWidget::CartridgeDPCWidget(
       GuiObject* boss, const GUI::Font& lfont, const GUI::Font& nfont,
-      int x, int y, int w, int h, CartridgeDPC& cart)
-  : CartDebugWidget(boss, lfont, nfont, x, y, w, h),
+      CartridgeDPC& cart)
+  : CartDebugWidget(boss, lfont, nfont),
     myCart{cart}
 {
   const size_t size = cart.myImage.size();

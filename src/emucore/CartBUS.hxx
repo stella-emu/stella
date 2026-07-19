@@ -172,12 +172,10 @@ class CartridgeBUS : public CartridgeARM
       of the cart.
     */
     CartDebugWidget* debugWidget(GuiObject* boss, const GUI::Font& lfont,
-                                 const GUI::Font& nfont, int x, int y,
-                                 int w, int h) override;
+                                 const GUI::Font& nfont) override;
 
     CartDebugWidget* infoWidget(GuiObject* boss, const GUI::Font& lfont,
-                                const GUI::Font& nfont, int x, int y,
-                                int w, int h) override;
+                                const GUI::Font& nfont) override;
   #endif
 
   public:

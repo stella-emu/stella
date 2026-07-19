@@ -30,9 +30,8 @@
 #include "RomWidget.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-RomWidget::RomWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& nfont,
-                     int x, int y, int w, int h)
-  : Widget(boss, lfont, x, y, w, h),
+RomWidget::RomWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& nfont)
+  : Widget(boss, lfont, 0, 0, 0, 0),
     CommandSender(boss)
 {
   // Create the bank display and the listing at a placeholder position/size;

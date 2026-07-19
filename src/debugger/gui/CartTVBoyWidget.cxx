@@ -23,8 +23,8 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartridgeTVBoyWidget::CartridgeTVBoyWidget(
       GuiObject* boss, const GUI::Font& lfont, const GUI::Font& nfont,
-      int x, int y, int w, int h, CartridgeTVBoy& cart)
-  : CartridgeEnhancedWidget(boss, lfont, nfont, x, y, w, h, cart),
+      CartridgeTVBoy& cart)
+  : CartridgeEnhancedWidget(boss, lfont, nfont, cart),
     myCartTVBoy{cart}
 {
   // A single-bank cart has no bank selector, so nothing to lock either

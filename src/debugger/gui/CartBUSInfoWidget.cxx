@@ -20,8 +20,8 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartridgeBUSInfoWidget::CartridgeBUSInfoWidget(
     GuiObject* boss, const GUI::Font& lfont, const GUI::Font& nfont,
-    int x, int y, int w, int h, CartridgeBUS& cart)
-  : CartDebugWidget(boss, lfont, nfont, x, y, w, h)
+    CartridgeBUS& cart)
+  : CartDebugWidget(boss, lfont, nfont)
 {
   constexpr uInt16 size = 8 * 4096;
 

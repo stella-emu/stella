@@ -77,9 +77,9 @@ class CartridgeUA : public CartridgeEnhanced
       of the cart.
     */
     CartDebugWidget* debugWidget(GuiObject* boss, const GUI::Font& lfont,
-        const GUI::Font& nfont, int x, int y, int w, int h) override
+        const GUI::Font& nfont) override
     {
-      return new CartridgeUAWidget(boss, lfont, nfont, x, y, w, h, *this, mySwappedHotspots);
+      return new CartridgeUAWidget(boss, lfont, nfont, *this, mySwappedHotspots);
     }
   #endif
 

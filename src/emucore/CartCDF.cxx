@@ -848,14 +848,14 @@ uInt32 CartridgeCDF::romSize() const
 #ifdef DEBUGGER_SUPPORT
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   CartDebugWidget* CartridgeCDF::debugWidget(GuiObject* boss,
-      const GUI::Font& lfont, const GUI::Font& nfont, int x, int y, int w, int h)
+      const GUI::Font& lfont, const GUI::Font& nfont)
   {
-    return new CartridgeCDFWidget(boss, lfont, nfont, x, y, w, h, *this);
+    return new CartridgeCDFWidget(boss, lfont, nfont, *this);
   }
 
   CartDebugWidget* CartridgeCDF::infoWidget(GuiObject* boss,
-      const GUI::Font& lfont, const GUI::Font& nfont, int x, int y, int w, int h)
+      const GUI::Font& lfont, const GUI::Font& nfont)
   {
-    return new CartridgeCDFInfoWidget(boss, lfont, nfont, x, y, w, h, *this);
+    return new CartridgeCDFInfoWidget(boss, lfont, nfont, *this);
   }
 #endif

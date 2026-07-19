@@ -23,8 +23,8 @@ using Common::Base;
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Cartridge0FA0Widget::Cartridge0FA0Widget(
       GuiObject* boss, const GUI::Font& lfont, const GUI::Font& nfont,
-      int x, int y, int w, int h, Cartridge0FA0& cart)
-  : CartridgeEnhancedWidget(boss, lfont, nfont, x, y, w, h, cart)
+      Cartridge0FA0& cart)
+  : CartridgeEnhancedWidget(boss, lfont, nfont, cart)
 {
   myHotspotDelta = 0x20;
   initialize();
