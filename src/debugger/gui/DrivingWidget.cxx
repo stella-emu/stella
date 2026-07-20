@@ -21,8 +21,8 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 DrivingWidget::DrivingWidget(GuiObject* boss, const GUI::Font& font,
-                             int x, int y, Controller& controller, bool embedded)
-  : ControllerWidget(boss, font, x, y, controller)
+                             Controller& controller, bool embedded)
+  : ControllerWidget(boss, font, controller)
 {
   // Create the controls at a placeholder position; reflow() lays them out.
   // Embedded in a QuadTari there is only room for short button labels
@@ -34,7 +34,7 @@ DrivingWidget::DrivingWidget(GuiObject* boss, const GUI::Font& font,
                                 embedded ? "GC-" : "Gray code -", kGrayDownCmd);
   myGrayDown->setTarget(this);
 
-  myGrayValue = new DataGridWidget(boss, font, 0, 0, 1, 1, 2, 8,
+  myGrayValue = new DataGridWidget(boss, font, 1, 1, 2, 8,
                                    Common::Base::Fmt::_16);
   myGrayValue->setTarget(this);
   myGrayValue->setEditable(false);

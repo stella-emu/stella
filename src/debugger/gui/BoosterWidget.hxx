@@ -24,7 +24,7 @@
 class BoosterWidget : public ControllerWidget
 {
   public:
-    BoosterWidget(GuiObject* boss, const GUI::Font& font, int x, int y,
+    BoosterWidget(GuiObject* boss, const GUI::Font& font,
                    Controller& controller);
     ~BoosterWidget() override = default;
 

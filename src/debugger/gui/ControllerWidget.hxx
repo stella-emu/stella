@@ -38,9 +38,9 @@ namespace GUI {
 class ControllerWidget : public Widget, public CommandSender, public ControllerLowLevel
 {
   public:
-    ControllerWidget(GuiObject* boss, const GUI::Font& font, int x, int y,
+    ControllerWidget(GuiObject* boss, const GUI::Font& font,
                      Controller& controller)
-      : Widget(boss, font, x, y, 16, 16),
+      : Widget(boss, font, 0, 0, 16, 16),
         CommandSender(boss),
         ControllerLowLevel(controller)
     {

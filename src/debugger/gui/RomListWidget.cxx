@@ -33,11 +33,10 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 RomListWidget::RomListWidget(GuiObject* boss, const GUI::Font& lfont,
-                             const GUI::Font& nfont,
-                             int x, int y, int w, int h)
-  : EditableWidget(boss, nfont, x, y, 16, 16),
+                             const GUI::Font& nfont)
+  : EditableWidget(boss, nfont, 0, 0, 16, 16),
     _lfont{lfont},
-    _rows{h / _lineHeight}
+    _rows{0}
 {
   _flags = Widget::FLAG_ENABLED | Widget::FLAG_CLEARBG | Widget::FLAG_RETAIN_FOCUS;
   _bgcolor = kWidColor;
@@ -48,9 +47,8 @@ RomListWidget::RomListWidget(GuiObject* boss, const GUI::Font& lfont,
   _editMode = false;
   _dyText = -1; // fixes the vertical position of selected text
 
-  // Set real dimensions
-  _w = w - ScrollBarWidget::scrollBarWidth(_font);
-  _h = h + 2;
+  // Real dimensions arrive via setWidth()/setHeight(), which recompute the
+  // visible row count and keep the scrollbar flush with our right edge
 
   // Create scrollbar and attach to the list
   // We want to initialize here, not in the member list
@@ -66,14 +64,10 @@ RomListWidget::RomListWidget(GuiObject* boss, const GUI::Font& lfont,
   myDisasmColorsDialog = std::make_unique<DisasmColorsDialog>(this, lfont);
   loadDisasmColorMap();
 
-  // Take advantage of a wide debugger window when possible
-  recalcColumnWidths(w);
-
-  // rowheight is determined by largest item on a line,
-  // possibly meaning that number of rows will change
+  // rowheight is determined by largest item on a line, so the row count that
+  // follows from it is settled by setHeight(); the columns likewise widen with
+  // setWidth(), which is what takes advantage of a wide debugger window
   _lineHeight = std::max(_lineHeight, CheckboxWidget::boxSize(_font));
-  // The following must be initialized after _lineHeight
-  _rows = h / _lineHeight;  // NOLINT(cppcoreguidelines-prefer-member-initializer)
 
   // Create and position a CheckboxWidget for each visible row
   reflowCheckboxes();

@@ -25,8 +25,7 @@ class DelayQueueWidget : public Widget
   public:
     DelayQueueWidget(
       GuiObject* boss,
-      const GUI::Font& font,
-      int x, int y
+      const GUI::Font& font
     );
     ~DelayQueueWidget() override = default;
 

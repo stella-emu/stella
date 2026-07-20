@@ -21,8 +21,8 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 BoosterWidget::BoosterWidget(GuiObject* boss, const GUI::Font& font,
-                             int x, int y, Controller& controller)
-  : ControllerWidget(boss, font, x, y, controller)
+                             Controller& controller)
+  : ControllerWidget(boss, font, controller)
 {
   // Create the pins at a placeholder position; reflow() lays them out
   // NOLINTBEGIN(cppcoreguidelines-prefer-member-initializer)

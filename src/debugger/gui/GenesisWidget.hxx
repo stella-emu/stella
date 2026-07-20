@@ -24,7 +24,7 @@
 class GenesisWidget : public ControllerWidget
 {
   public:
-    GenesisWidget(GuiObject* boss, const GUI::Font& font, int x, int y,
+    GenesisWidget(GuiObject* boss, const GUI::Font& font,
                   Controller& controller);
     ~GenesisWidget() override = default;
 

@@ -42,7 +42,7 @@ RomWidget::RomWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& n
   myBank = new EditTextWidget(boss, nfont, 0, 0, 1);
   myBank->setEditable(false);
 
-  myRomList = new RomListWidget(boss, lfont, nfont, 0, 0, 1, 1);
+  myRomList = new RomListWidget(boss, lfont, nfont);
   // NOLINTEND(cppcoreguidelines-prefer-member-initializer)
   myRomList->setTarget(this);
   addFocusWidget(myRomList);
@@ -68,11 +68,16 @@ void RomWidget::reflow()
   using GUI::widgetItem;
   using Dir = BoxLayout::Dir;
 
-  constexpr int HBORDER = 2, VGAP = 4;
+  // This tab insets itself by the same small border on every side -- the listing
+  // fills it, and its frame is meant to sit close to the tab's own, as it did
+  // before the engine laid this widget out.  VGAP is the gap BETWEEN the two
+  // rows, and was standing in for the vertical border as well, which left the
+  // listing twice as far off the bottom of the tab as it should be
+  constexpr int HBORDER = 2, VBORDER = 2, VGAP = 4;
 
   // The label and the bank display are sibling widgets parented to the boss,
   // not children of this widget, so they are positioned explicitly here
-  BoxLayout root(Dir::Vertical, VGAP, HBORDER, VGAP);
+  BoxLayout root(Dir::Vertical, VGAP, HBORDER, VBORDER);
 
   // The bank info row: a label, then the bank display filling the rest
   auto infoRow = std::make_unique<BoxLayout>(Dir::Horizontal);

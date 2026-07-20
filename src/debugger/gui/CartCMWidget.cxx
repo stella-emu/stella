@@ -60,13 +60,13 @@ CartridgeCMWidget::CartridgeCMWidget(
 
   // Raw SWCHA value (this will be broken down further in other UI elements)
   mySWCHALabel = new StaticTextWidget(boss, _font, 0, 0, "Current SWCHA");
-  mySWCHA = new ToggleBitWidget(boss, _nfont, 0, 0, 8, 1);
+  mySWCHA = new ToggleBitWidget(boss, _nfont, 8, 1);
   mySWCHA->setTarget(this);
   mySWCHA->setEditable(false);
 
   // Current column number
   myColumnLabel = new StaticTextWidget(boss, _font, 0, 0, "Current column");
-  myColumn = new DataGridWidget(boss, _nfont, 0, 0, 1, 1, 2, 8, Common::Base::Fmt::_16);
+  myColumn = new DataGridWidget(boss, _nfont, 1, 1, 2, 8, Common::Base::Fmt::_16);
   myColumn->setTarget(this);
   myColumn->setEditable(false);
 

@@ -39,7 +39,7 @@ enum {
 class DataGridOpsWidget : public Widget, public CommandSender
 {
   public:
-    DataGridOpsWidget(GuiObject* boss, const GUI::Font& font, int x, int y);
+    DataGridOpsWidget(GuiObject* boss, const GUI::Font& font);
     ~DataGridOpsWidget() override = default;
 
     // How many rows the ops column comes to: my four, plus one at the top for

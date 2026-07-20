@@ -26,7 +26,7 @@ class DataGridWidget;
 class PointingDeviceWidget : public ControllerWidget
 {
   public:
-    PointingDeviceWidget(GuiObject* boss, const GUI::Font& font, int x, int y,
+    PointingDeviceWidget(GuiObject* boss, const GUI::Font& font,
                          Controller& controller);
     ~PointingDeviceWidget() override = default;
 

@@ -24,7 +24,7 @@
 class JoystickWidget : public ControllerWidget
 {
   public:
-    JoystickWidget(GuiObject* boss, const GUI::Font& font, int x, int y,
+    JoystickWidget(GuiObject* boss, const GUI::Font& font,
                    Controller& controller, bool embedded = false);
     ~JoystickWidget() override = default;
 

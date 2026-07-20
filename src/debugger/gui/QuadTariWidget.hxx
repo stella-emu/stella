@@ -24,7 +24,7 @@
 class QuadTariWidget: public ControllerWidget
 {
   public:
-    QuadTariWidget(GuiObject* boss, const GUI::Font& font, int x, int y,
+    QuadTariWidget(GuiObject* boss, const GUI::Font& font,
                    Controller& controller);
     ~QuadTariWidget() override = default;
 

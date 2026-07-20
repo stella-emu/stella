@@ -23,9 +23,9 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ToggleBitWidget::ToggleBitWidget(GuiObject* boss, const GUI::Font& font,
-                                 int x, int y, int cols, int rows, int colchars,
+                                 int cols, int rows, int colchars,
                                  const StringList& labels)
-  : ToggleWidget(boss, font, x, y, cols, rows),
+  : ToggleWidget(boss, font, cols, rows),
     _colChars{colchars},
     _labelList{labels}
 {
@@ -49,8 +49,8 @@ ToggleBitWidget::ToggleBitWidget(GuiObject* boss, const GUI::Font& font,
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ToggleBitWidget::ToggleBitWidget(GuiObject* boss, const GUI::Font& font,
-                                 int x, int y, int cols, int rows, int colchars)
-  : ToggleBitWidget(boss, font, x, y, cols, rows, colchars, StringList())
+                                 int cols, int rows, int colchars)
+  : ToggleBitWidget(boss, font, cols, rows, colchars, StringList())
 {
 }
 

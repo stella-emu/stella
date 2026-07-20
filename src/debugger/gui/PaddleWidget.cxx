@@ -20,9 +20,9 @@
 #include "PaddleWidget.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-PaddleWidget::PaddleWidget(GuiObject* boss, const GUI::Font& font, int x, int y,
+PaddleWidget::PaddleWidget(GuiObject* boss, const GUI::Font& font,
                            Controller& controller, bool embedded, bool second)
-  : ControllerWidget(boss, font, x, y, controller),
+  : ControllerWidget(boss, font, controller),
     myEmbedded{embedded}
 {
   const bool leftport = isLeftPort();

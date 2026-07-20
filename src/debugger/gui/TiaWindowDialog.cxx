@@ -29,7 +29,7 @@ TiaWindowDialog::TiaWindowDialog(OSystem& osystem, DialogContainer& parent,
   : Dialog(osystem, parent, x, y, w, h)
 {
   // Created at a placeholder size; layout() fits it to the window
-  myTiaDisplay = new TiaDisplayWidget(this, _font, 0, 0, 1, 1);
+  myTiaDisplay = new TiaDisplayWidget(this, _font);
   addToFocusList(myTiaDisplay->getFocusList());
 
   TiaWindowDialog::layout();

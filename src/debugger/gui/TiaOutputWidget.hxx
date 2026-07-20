@@ -29,8 +29,7 @@ class FBSurface;
 class TiaOutputWidget : public Widget, public CommandSender
 {
   public:
-    TiaOutputWidget(GuiObject *boss, const GUI::Font& font,
-                    int x, int y, int w, int h);
+    TiaOutputWidget(GuiObject *boss, const GUI::Font& font);
     ~TiaOutputWidget() override;
 
     void loadConfig() override;

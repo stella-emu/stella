@@ -30,8 +30,7 @@ class FSNode;
 class PromptWidget : public Widget, public CommandSender
 {
   public:
-    PromptWidget(GuiObject* boss, const GUI::Font& font,
-                 int x, int y, int w, int h);
+    PromptWidget(GuiObject* boss, const GUI::Font& font);
     ~PromptWidget() override = default;
 
     void loadConfig() override;

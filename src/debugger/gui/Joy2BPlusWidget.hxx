@@ -24,7 +24,7 @@
 class Joy2BPlusWidget : public ControllerWidget
 {
   public:
-    Joy2BPlusWidget(GuiObject* boss, const GUI::Font& font, int x, int y,
+    Joy2BPlusWidget(GuiObject* boss, const GUI::Font& font,
                    Controller& controller);
     ~Joy2BPlusWidget() override = default;
 

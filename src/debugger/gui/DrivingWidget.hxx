@@ -28,7 +28,7 @@ class DataGridWidget;
 class DrivingWidget : public ControllerWidget
 {
   public:
-    DrivingWidget(GuiObject* boss, const GUI::Font& font, int x, int y,
+    DrivingWidget(GuiObject* boss, const GUI::Font& font,
                   Controller& controller, bool embedded = false);
     ~DrivingWidget() override = default;
 

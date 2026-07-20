@@ -21,9 +21,9 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 NullControlWidget::NullControlWidget(GuiObject* boss, const GUI::Font& font,
-                                     int x, int y, Controller& controller,
+                                     Controller& controller,
                                      bool embedded)
-  : ControllerWidget(boss, font, x, y, controller)
+  : ControllerWidget(boss, font, controller)
 {
   // Create the text at a placeholder position; reflow() lays it out.  Embedded
   // in a QuadTari there is only room for a terse "not avail."

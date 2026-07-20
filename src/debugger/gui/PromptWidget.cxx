@@ -34,9 +34,8 @@
 static constexpr string_view PROMPT = "> ";
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-PromptWidget::PromptWidget(GuiObject* boss, const GUI::Font& font,
-                           int x, int y, int w, int h)
-  : Widget(boss, font, x, y, w - ScrollBarWidget::scrollBarWidth(font), h),
+PromptWidget::PromptWidget(GuiObject* boss, const GUI::Font& font)
+  : Widget(boss, font, 0, 0, 0, 0),
     CommandSender(boss),
     _kConsoleCharWidth{font.getMaxCharWidth()},
     _kConsoleCharHeight{font.getFontHeight()},

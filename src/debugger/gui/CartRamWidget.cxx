@@ -51,7 +51,7 @@ CartRamWidget::CartRamWidget(
   myDesc->setEnabled(false);
 
   // The RAM view fills whatever is left below the fields
-  myRam = new InternalRamWidget(boss, lfont, nfont, 0, 0, 1, 1, cartDebug);
+  myRam = new InternalRamWidget(boss, lfont, nfont, cartDebug);
   addToFocusList(myRam->getFocusList());
 
   reflow();
@@ -148,9 +148,8 @@ void CartRamWidget::handleCommand(CommandSender* sender, int cmd, int data, int 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartRamWidget::InternalRamWidget::InternalRamWidget(GuiObject* boss,
         const GUI::Font& lfont, const GUI::Font& nfont,
-        int x, int y, int w, int h,
         CartDebugWidget& dbg)
-  : RamWidget(boss, lfont, nfont, x, y, w, h,
+  : RamWidget(boss, lfont, nfont,
       dbg.internalRamSize(), std::min(dbg.internalRamSize() / 16, 16U),
       std::min(dbg.internalRamSize() / 16, 16U) * 16, "CartridgeRAMInformation"),
     myCart(dbg)

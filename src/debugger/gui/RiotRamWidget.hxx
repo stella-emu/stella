@@ -32,8 +32,7 @@ class CartDebug;
 class RiotRamWidget : public RamWidget
 {
   public:
-    RiotRamWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& nfont,
-                  int x, int y, int w);
+    RiotRamWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& nfont);
     ~RiotRamWidget() override = default;
 
     string getLabel(int addr) const override;

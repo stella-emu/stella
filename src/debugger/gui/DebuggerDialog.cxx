@@ -483,7 +483,7 @@ void DebuggerDialog::showFatalMessage(string_view msg)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DebuggerDialog::addTiaArea()
 {
-  myTiaOutput = new TiaOutputWidget(this, *myNFont, 0, 0, 1, 1);
+  myTiaOutput = new TiaOutputWidget(this, *myNFont);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -513,25 +513,25 @@ void DebuggerDialog::addTabArea()
 
   // The Prompt/console tab
   int tabID = myTab->addTab("Prompt");
-  myPrompt = new PromptWidget(myTab, *myNFont, 0, 0, 1, 1);
+  myPrompt = new PromptWidget(myTab, *myNFont);
   myTab->setParentWidget(tabID, myPrompt);
   addToFocusList(myPrompt->getFocusList(), myTab, tabID);
 
   // The TIA tab
   tabID = myTab->addTab("TIA");
-  myTiaTab = new TiaWidget(myTab, *myLFont, *myNFont, 2, 2, 1, 1);
+  myTiaTab = new TiaWidget(myTab, *myLFont, *myNFont);
   myTab->setParentWidget(tabID, myTiaTab);
   addToFocusList(myTiaTab->getFocusList(), myTab, tabID);
 
   // The input/output tab (includes RIOT and INPTx from TIA)
   tabID = myTab->addTab("I/O");
-  myRiotTab = new RiotWidget(myTab, *myLFont, *myNFont, 2, 2, 1, 1);
+  myRiotTab = new RiotWidget(myTab, *myLFont, *myNFont);
   myTab->setParentWidget(tabID, myRiotTab);
   addToFocusList(myRiotTab->getFocusList(), myTab, tabID);
 
   // The Audio tab
   tabID = myTab->addTab("Audio");
-  myAudioTab = new AudioWidget(myTab, *myLFont, *myNFont, 2, 2, 1, 1);
+  myAudioTab = new AudioWidget(myTab, *myLFont, *myNFont);
   myTab->setParentWidget(tabID, myAudioTab);
   addToFocusList(myAudioTab->getFocusList(), myTab, tabID);
   // NOLINTEND(cppcoreguidelines-prefer-member-initializer)
@@ -556,7 +556,7 @@ void DebuggerDialog::addStatusArea()
   // NOLINTBEGIN(cppcoreguidelines-prefer-member-initializer)
   myTiaInfo = new TiaInfoWidget(this, *myLFont, *myNFont);
 
-  myTiaZoom = new TiaZoomWidget(this, *myNFont, 0, 0, 1, 1);
+  myTiaZoom = new TiaZoomWidget(this, *myNFont);
   addToFocusList(myTiaZoom->getFocusList());
 
   myMessageBox = new EditTextWidget(this, *myLFont, 0, 0, 1,
@@ -668,7 +668,7 @@ void DebuggerDialog::addRomArea()
   wid1.push_back(myRewindButton);
   wid1.push_back(myUnwindButton);
 
-  myDataGridOps = new DataGridOpsWidget(this, *myLFont, 0, 0);
+  myDataGridOps = new DataGridOpsWidget(this, *myLFont);
 
   myCpu = new CpuWidget(this, *myLFont, *myNFont);
   addToFocusList(myCpu->getFocusList());
@@ -676,7 +676,7 @@ void DebuggerDialog::addRomArea()
   addToFocusList(wid1);
   addToFocusList(wid2);
 
-  myRam = new RiotRamWidget(this, *myLFont, *myNFont, 0, 0, 1);
+  myRam = new RiotRamWidget(this, *myLFont, *myNFont);
   addToFocusList(myRam->getFocusList());
 
   // Add the DataGridOpsWidget to any widgets which contain a

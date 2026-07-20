@@ -25,9 +25,9 @@ class Controller;
 class AtariMouseWidget : public PointingDeviceWidget
 {
   public:
-    AtariMouseWidget(GuiObject* boss, const GUI::Font& font, int x, int y,
+    AtariMouseWidget(GuiObject* boss, const GUI::Font& font,
                      Controller& controller)
-      : PointingDeviceWidget(boss, font, x, y, controller) { }
+      : PointingDeviceWidget(boss, font, controller) { }
 
     ~AtariMouseWidget() override = default;
 

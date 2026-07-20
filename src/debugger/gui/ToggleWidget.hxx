@@ -33,7 +33,7 @@ class ToggleWidget : public Widget, public CommandSender
 
   public:
     ToggleWidget(GuiObject* boss, const GUI::Font& font,
-                 int x, int y, int cols = 1, int rows = 1,
+                 int cols = 1, int rows = 1,
                  int shiftBits = 0);
     ~ToggleWidget() override = default;
 

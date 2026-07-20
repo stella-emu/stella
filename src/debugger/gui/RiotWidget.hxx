@@ -32,8 +32,7 @@ class Controller;
 class RiotWidget : public Widget, public CommandSender
 {
   public:
-    RiotWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& nfont,
-               int x, int y, int w, int h);
+    RiotWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& nfont);
     ~RiotWidget() override = default;
 
     void loadConfig() override;
@@ -59,8 +58,7 @@ class RiotWidget : public Widget, public CommandSender
     unique_ptr<GUI::Layout> buildLayout() const;
 
     static ControllerWidget* addControlWidget(
-        GuiObject* boss, const GUI::Font& font,
-        int x, int y, Controller& controller);
+        GuiObject* boss, const GUI::Font& font, Controller& controller);
 
     void handleConsole();
 

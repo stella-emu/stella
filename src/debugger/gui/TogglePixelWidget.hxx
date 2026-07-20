@@ -25,7 +25,7 @@ class TogglePixelWidget : public ToggleWidget
 {
   public:
     TogglePixelWidget(GuiObject* boss, const GUI::Font& font,
-                      int x, int y, int cols = 1, int rows = 1,
+                      int cols = 1, int rows = 1,
                       int shiftBits = 0);
     ~TogglePixelWidget() override = default;
 

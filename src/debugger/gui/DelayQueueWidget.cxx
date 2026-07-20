@@ -29,9 +29,8 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 DelayQueueWidget::DelayQueueWidget(
     GuiObject* boss,
-    const GUI::Font& font,
-    int x, int y
-  ) : Widget(boss, font, x, y, 0, 0)
+    const GUI::Font& font
+  ) : Widget(boss, font, 0, 0, 0, 0)
 {
   _textcolor = kTextColor;
 

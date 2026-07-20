@@ -53,7 +53,7 @@ void CartridgeARMWidget::createCycleWidgets()
   myCycleFactor->setTarget(this);
 
   const auto addCounter = [&](DataGridWidget*& grid, string_view tip) {
-    grid = new DataGridWidget(_boss, _font, 0, 0, 1, 1, 6, 32, Common::Base::Fmt::_10_6);
+    grid = new DataGridWidget(_boss, _font, 1, 1, 6, 32, Common::Base::Fmt::_10_6);
     grid->setEditable(false);
     grid->setToolTip(tip);
   };

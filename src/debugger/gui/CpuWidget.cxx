@@ -41,7 +41,7 @@ CpuWidget::CpuWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& n
   // parent layout gives us
   // NOLINTBEGIN(cppcoreguidelines-prefer-member-initializer)
   myPCText = new StaticTextWidget(boss, lfont, 0, 0, "PC", TextAlign::Left);
-  myPCGrid = new DataGridWidget(boss, nfont, 0, 0, 1, 1, 4, 16, Common::Base::Fmt::_16);
+  myPCGrid = new DataGridWidget(boss, nfont, 1, 1, 4, 16, Common::Base::Fmt::_16);
   myPCGrid->setHelpAnchor("CPURegisters", true);
   myPCGrid->setTarget(this);
   myPCGrid->setID(kPCRegID);
@@ -52,20 +52,20 @@ CpuWidget::CpuWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& n
   myPCLabel->setEditable(false, true);
 
   // 1x4 grid with labels for the other CPU registers
-  myCpuGrid = new DataGridWidget(boss, nfont, 0, 0, 1, 4, 2, 8, Common::Base::Fmt::_16);
+  myCpuGrid = new DataGridWidget(boss, nfont, 1, 4, 2, 8, Common::Base::Fmt::_16);
   myCpuGrid->setHelpAnchor("CPURegisters", true);
   myCpuGrid->setTarget(this);
   myCpuGrid->setID(kCpuRegID);
   addFocusWidget(myCpuGrid);
 
   // 1x4 grids with the decimal and binary values for those registers
-  myCpuGridDecValue = new DataGridWidget(boss, nfont, 0, 0, 1, 4, 3, 8, Common::Base::Fmt::_10);
+  myCpuGridDecValue = new DataGridWidget(boss, nfont, 1, 4, 3, 8, Common::Base::Fmt::_10);
   myCpuGridDecValue->setHelpAnchor("CPURegisters", true);
   myCpuGridDecValue->setTarget(this);
   myCpuGridDecValue->setID(kCpuRegDecID);
   addFocusWidget(myCpuGridDecValue);
 
-  myCpuGridBinValue = new DataGridWidget(boss, nfont, 0, 0, 1, 4, 8, 8, Common::Base::Fmt::_2);
+  myCpuGridBinValue = new DataGridWidget(boss, nfont, 1, 4, 8, 8, Common::Base::Fmt::_2);
   myCpuGridBinValue->setHelpAnchor("CPURegisters", true);
   myCpuGridBinValue->setTarget(this);
   myCpuGridBinValue->setID(kCpuRegBinID);
@@ -89,7 +89,7 @@ CpuWidget::CpuWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& n
 
   // Bitfield widget for changing the processor status
   myPSText = new StaticTextWidget(boss, lfont, 0, 0, "PS", TextAlign::Left);
-  myPSRegister = new ToggleBitWidget(boss, nfont, 0, 0, 8, 1);
+  myPSRegister = new ToggleBitWidget(boss, nfont, 8, 1);
   myPSRegister->setHelpAnchor("CPURegisters", true);
   myPSRegister->setTarget(this);
   addFocusWidget(myPSRegister);

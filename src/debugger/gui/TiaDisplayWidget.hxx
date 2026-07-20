@@ -45,8 +45,7 @@ class FBSurface;
 class TiaDisplayWidget : public Widget, public CommandSender
 {
   public:
-    TiaDisplayWidget(GuiObject* boss, const GUI::Font& font,
-                     int x, int y, int w, int h);
+    TiaDisplayWidget(GuiObject* boss, const GUI::Font& font);
     ~TiaDisplayWidget() override = default;
 
     void loadConfig() override;

@@ -25,9 +25,9 @@ class Controller;
 class AmigaMouseWidget : public PointingDeviceWidget
 {
   public:
-    AmigaMouseWidget(GuiObject* boss, const GUI::Font& font, int x, int y,
+    AmigaMouseWidget(GuiObject* boss, const GUI::Font& font,
                      Controller& controller)
-      : PointingDeviceWidget(boss, font, x, y, controller) { }
+      : PointingDeviceWidget(boss, font, controller) { }
 
     ~AmigaMouseWidget() override = default;
 

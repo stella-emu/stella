@@ -24,15 +24,15 @@ using Common::Base;
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FlashWidget::FlashWidget(GuiObject* boss, const GUI::Font& font,
-                         int x, int y, Controller& controller)
-  : ControllerWidget(boss, font, x, y, controller)
+                         Controller& controller)
+  : ControllerWidget(boss, font, controller)
 {
   myPage.fill(nullptr);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FlashWidget::init(GuiObject* boss, const GUI::Font& font,
-                       int x, int y, bool embedded)
+                       bool embedded)
 {
   myEmbedded = embedded;
 

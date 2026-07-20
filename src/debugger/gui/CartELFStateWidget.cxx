@@ -69,50 +69,102 @@ CartridgeELFStateWidget::CartridgeELFStateWidget(GuiObject* boss,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeELFStateWidget::initialize()
 {
-  constexpr int x0 = 2;
-  const int lineHeight = _font.getLineHeight();
-  int y = lineHeight / 2;
+  // Everything is created at a placeholder position; layoutContent() places it.
+  // The row labels carry no padding of their own: they join the tab's label
+  // column, and GUI::alignLabels() (in the skeleton) supplies the column
+  myRegistersLabel = new StaticTextWidget(_boss, _font, 0, 0, "ARM registers:");
 
-  new StaticTextWidget(_boss, _font, x0, y, "ARM registers:");
-  const int indent = _font.getMaxCharWidth() * 17;
-
-  myArmRegisters = new DataGridWidget(_boss, _font, x0 + indent, y, 4, 4, 8, 8, Common::Base::Fmt::_16_8);
-
-  y += myArmRegisters->getHeight() + lineHeight / 2;
-
+  myArmRegisters = new DataGridWidget(_boss, _font, 4, 4, 8, 8,
+                                      Common::Base::Fmt::_16_8);
   myArmRegisters->setEditable(false);
   for(uInt8 i = 0; i < 16; i++) myArmRegisters->setToolTip(i % 4, i / 4, registerName(i));
 
-  new StaticTextWidget(_boss, _font, x0, y, "ARM flags:");
-  myFlags = new ToggleBitWidget(_boss, _font, x0 + indent, y + lineHeight, 4, 1, 1);
+  myFlagsLabel = new StaticTextWidget(_boss, _font, 0, 0, "ARM flags:");
+  myFlags = new ToggleBitWidget(_boss, _font, 4, 1, 1);
   myFlags->setEditable(false);
 
-  new StaticTextWidget(_boss, _font, x0 + indent + 3, y, "N");
-  new StaticTextWidget(_boss, _font, x0 + indent + 3 + myFlags->colWidth(), y, "Z");
-  new StaticTextWidget(_boss, _font, x0 + indent + 3 + 2 * myFlags->colWidth(), y, "C");
-  new StaticTextWidget(_boss, _font, x0 + indent + 3 + 3 * myFlags->colWidth(), y, "V");
+  static constexpr std::array<string_view, 4> flagNames = {"N", "Z", "C", "V"};
+  for(size_t i = 0; i < myFlagLabels.size(); ++i)
+    myFlagLabels[i] = new StaticTextWidget(_boss, _font, 0, 0, flagNames[i]);
 
-  y += (5 * lineHeight) / 2;
-
-  new StaticTextWidget(_boss, _font, x0, y + 4, "Time VCS:");
-  myCurrentCyclesVcs = new EditTextWidget(_boss, _font, x0 + indent, y, 16 * _font.getMaxCharWidth());
+  // The readouts are as wide as the value they hold, in characters
+  myTimeVcsLabel = new StaticTextWidget(_boss, _font, 0, 0, "Time VCS:");
+  myCurrentCyclesVcs = new EditTextWidget(_boss, _font, 0, 0,
+                                          16 * _font.getMaxCharWidth());
   myCurrentCyclesVcs->setEditable(false, true);
 
-  y += myCurrentCyclesVcs->getHeight() + lineHeight / 2;
-
-  new StaticTextWidget(_boss, _font, x0, y + 4, "Time ARM:");
-  myCurrentCyclesArm = new EditTextWidget(_boss, _font, x0 + indent, y, 16 * _font.getMaxCharWidth());
+  myTimeArmLabel = new StaticTextWidget(_boss, _font, 0, 0, "Time ARM:");
+  myCurrentCyclesArm = new EditTextWidget(_boss, _font, 0, 0,
+                                          16 * _font.getMaxCharWidth());
   myCurrentCyclesArm->setEditable(false, true);
 
-  y += myCurrentCyclesArm->getHeight() + lineHeight / 2;
-
-  new StaticTextWidget(_boss, _font, x0, y + 4, "Bus queue size:");
-  myQueueSize = new EditTextWidget(_boss, _font, x0 + indent, y, 4 * _font.getMaxCharWidth());
+  myQueueSizeLabel = new StaticTextWidget(_boss, _font, 0, 0, "Bus queue size:");
+  myQueueSize = new EditTextWidget(_boss, _font, 0, 0,
+                                   4 * _font.getMaxCharWidth());
   myQueueSize->setEditable(false, true);
 
-  y += myQueueSize->getHeight() + lineHeight / 2;
+  myNextTransaction = new StaticTextWidget(_boss, _font, 0, 0,
+                          describeTransaction(0xffff, 0xffff, ~0LLU));
 
-  myNextTransaction = new StaticTextWidget(_boss, _font, x0, y, describeTransaction(0xffff, 0xffff, ~0LLU));
+  myLabelColumn.insert(myLabelColumn.end(),
+                       {{myRegistersLabel}, {myFlagsLabel}, {myTimeVcsLabel},
+                        {myTimeArmLabel}, {myQueueSizeLabel}});
+
+  reflow();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void CartridgeELFStateWidget::layoutContent(GUI::BoxLayout& col) const
+{
+  using GUI::BoxLayout;
+  using GUI::anchoredItem;
+  using GUI::alignedItem;
+  using GUI::centeredItem;
+  using GUI::labeledRow;
+  using GUI::HAlign;
+  using GUI::VAlign;
+  using Dir = BoxLayout::Dir;
+
+  // A label beside a multi-row grid sits on the grid's FIRST row, not on the
+  // middle of the whole block, so the two share that row's baseline (CpuWidget)
+  const auto onBaseline = [](Widget* wid) {
+    return alignedItem(wid, HAlign::Left, VAlign::Baseline);
+  };
+  const auto labelCell = [](StaticTextWidget* l) { return l->getWidth(); };
+
+  // The 16 ARM registers, in a 4x4 grid beside its caption
+  {
+    auto row = std::make_unique<BoxLayout>(Dir::Horizontal);
+    row->addFixed(onBaseline(myRegistersLabel), labelCell(myRegistersLabel));
+    row->addAuto(onBaseline(myArmRegisters));
+    col.addAuto(std::move(row));
+  }
+
+  // The four flags, each name centered over its own column of the toggle below
+  // (the AudioWidget channel-header idiom), the caption beside the pair
+  {
+    auto names = std::make_unique<BoxLayout>(Dir::Horizontal);
+    for(auto* l: myFlagLabels)
+      names->addFixed(centeredItem(l), myFlags->colWidth());
+
+    auto flags = std::make_unique<BoxLayout>(Dir::Vertical);
+    flags->addAuto(std::move(names));
+    flags->addAuto(anchoredItem(myFlags));
+
+    auto row = std::make_unique<BoxLayout>(Dir::Horizontal);
+    row->addFixed(alignedItem(myFlagsLabel, HAlign::Left, VAlign::Top),
+                  labelCell(myFlagsLabel));
+    row->addAuto(std::move(flags));
+    col.addAuto(std::move(row));
+  }
+
+  // The cycle counts and the queue depth, each a read-only field beside its label
+  col.addAuto(labeledRow(myTimeVcsLabel, myCurrentCyclesVcs));
+  col.addAuto(labeledRow(myTimeArmLabel, myCurrentCyclesArm));
+  col.addAuto(labeledRow(myQueueSizeLabel, myQueueSize));
+
+  // The pending bus transaction, spanning the tab on a line of its own
+  col.addAuto(anchoredItem(myNextTransaction));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

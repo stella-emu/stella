@@ -25,9 +25,9 @@ class ToggleBitWidget : public ToggleWidget
 {
   public:
     ToggleBitWidget(GuiObject* boss, const GUI::Font& font,
-                    int x, int y, int cols, int rows, int colchars = 1);
+                    int cols, int rows, int colchars = 1);
     ToggleBitWidget(GuiObject* boss, const GUI::Font& font,
-                    int x, int y, int cols, int rows, int colchars,
+                    int cols, int rows, int colchars,
                     const StringList& labels);
     ~ToggleBitWidget() override = default;
 

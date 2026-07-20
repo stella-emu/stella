@@ -63,7 +63,7 @@ CartridgeCDFWidget::CartridgeCDFWidget(
   {
     myFastFetchOffsetLabel = new StaticTextWidget(_boss, _font, 0, 0, "Fast Fetch Offset:");
 
-    myFastFetcherOffset = new DataGridWidget(boss, _nfont, 0, 0, 1, 1, 2, 8,
+    myFastFetcherOffset = new DataGridWidget(boss, _nfont, 1, 1, 2, 8,
                                              Common::Base::Fmt::_16_2);
     myFastFetcherOffset->setTarget(this);
     myFastFetcherOffset->setEditable(false);
@@ -71,7 +71,7 @@ CartridgeCDFWidget::CartridgeCDFWidget(
 
   const auto addGrid = [&](DataGridWidget*& grid, int cols, int rows,
                            int colchars, int bits, Common::Base::Fmt fmt) {
-    grid = new DataGridWidget(boss, _nfont, 0, 0, cols, rows, colchars, bits, fmt);
+    grid = new DataGridWidget(boss, _nfont, cols, rows, colchars, bits, fmt);
     grid->setTarget(this);
     grid->setEditable(false);
   };

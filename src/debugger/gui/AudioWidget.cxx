@@ -29,9 +29,8 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 AudioWidget::AudioWidget(GuiObject* boss, const GUI::Font& lfont,
-                         const GUI::Font& nfont,
-                         int x, int y, int w, int h)
-  : Widget(boss, lfont, x, y, w, h),
+                         const GUI::Font& nfont)
+  : Widget(boss, lfont, 0, 0, 0, 0),
     CommandSender(boss)
 {
   // Create every widget at a placeholder position/size; reflow() positions and
@@ -45,7 +44,7 @@ AudioWidget::AudioWidget(GuiObject* boss, const GUI::Font& lfont,
 
   // AUDF registers (frequency divider, two hex digits per channel)
   myRegLabels[0] = new StaticTextWidget(boss, lfont, 0, 0, "AUDF", TextAlign::Left);
-  myAudF = new DataGridWidget(boss, nfont, 0, 0, 2, 1, 2, 5, Common::Base::Fmt::_16);
+  myAudF = new DataGridWidget(boss, nfont, 2, 1, 2, 5, Common::Base::Fmt::_16);
   myAudF->setTarget(this);
   myAudF->setID(kAUDFID);
   addFocusWidget(myAudF);
@@ -58,14 +57,14 @@ AudioWidget::AudioWidget(GuiObject* boss, const GUI::Font& lfont,
 
   // AUDC registers (control, one hex digit per channel)
   myRegLabels[1] = new StaticTextWidget(boss, lfont, 0, 0, "AUDC", TextAlign::Left);
-  myAudC = new DataGridWidget(boss, nfont, 0, 0, 2, 1, 1, 4, Common::Base::Fmt::_16_1);
+  myAudC = new DataGridWidget(boss, nfont, 2, 1, 1, 4, Common::Base::Fmt::_16_1);
   myAudC->setTarget(this);
   myAudC->setID(kAUDCID);
   addFocusWidget(myAudC);
 
   // AUDV registers (volume, one hex digit per channel)
   myRegLabels[2] = new StaticTextWidget(boss, lfont, 0, 0, "AUDV", TextAlign::Left);
-  myAudV = new DataGridWidget(boss, nfont, 0, 0, 2, 1, 1, 4, Common::Base::Fmt::_16_1);
+  myAudV = new DataGridWidget(boss, nfont, 2, 1, 1, 4, Common::Base::Fmt::_16_1);
   myAudV->setTarget(this);
   myAudV->setID(kAUDVID);
   addFocusWidget(myAudV);

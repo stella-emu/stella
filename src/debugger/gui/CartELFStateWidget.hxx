@@ -35,6 +35,9 @@ class CartridgeELFStateWidget : public CartDebugWidget {
 
     void loadConfig() override;
 
+  protected:
+    void layoutContent(GUI::BoxLayout& col) const override;
+
   private:
     void initialize();
 
@@ -48,6 +51,16 @@ class CartridgeELFStateWidget : public CartDebugWidget {
     EditTextWidget* myCurrentCyclesArm{nullptr};
     EditTextWidget* myQueueSize{nullptr};
     StaticTextWidget* myNextTransaction{nullptr};
+
+    // Labels promoted from anonymous locals so layoutContent() can place them.
+    // The row labels share the tab's column (see myLabelColumn); the flag names
+    // caption the toggle's four columns, so they ride above it instead
+    StaticTextWidget* myRegistersLabel{nullptr};
+    StaticTextWidget* myFlagsLabel{nullptr};
+    StaticTextWidget* myTimeVcsLabel{nullptr};
+    StaticTextWidget* myTimeArmLabel{nullptr};
+    StaticTextWidget* myQueueSizeLabel{nullptr};
+    std::array<StaticTextWidget*, 4> myFlagLabels{nullptr};
 
   private:
     CartridgeELFStateWidget() = delete;

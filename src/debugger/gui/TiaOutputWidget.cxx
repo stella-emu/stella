@@ -36,9 +36,8 @@
 #include "TiaOutputWidget.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-TiaOutputWidget::TiaOutputWidget(GuiObject* boss, const GUI::Font& font,
-                                 int x, int y, int w, int h)
-  : Widget(boss, font, x, y, w, h),
+TiaOutputWidget::TiaOutputWidget(GuiObject* boss, const GUI::Font& font)
+  : Widget(boss, font, 0, 0, 0, 0),
     CommandSender(boss)
 {
   // Create context menu for commands

@@ -69,7 +69,7 @@ CartridgeBUSWidget::CartridgeBUSWidget(
 
   const auto addGrid = [&](DataGridWidget*& grid, int cols, int rows,
                            int colchars, int bits, Common::Base::Fmt fmt) {
-    grid = new DataGridWidget(boss, _nfont, 0, 0, cols, rows, colchars, bits, fmt);
+    grid = new DataGridWidget(boss, _nfont, cols, rows, colchars, bits, fmt);
     grid->setTarget(this);
     grid->setEditable(false);
   };

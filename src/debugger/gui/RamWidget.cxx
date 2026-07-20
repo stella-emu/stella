@@ -30,10 +30,9 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 RamWidget::RamWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& nfont,
-                     int x, int y, int w, int h,
                      uInt32 ramsize, uInt32 numrows, uInt32 pagesize,
                      string_view helpAnchor)
-  : Widget(boss, lfont, x, y, w, h),
+  : Widget(boss, lfont, 0, 0, 0, 0),
     CommandSender(boss),
     _nfont{nfont},
     myRamSize{ramsize},
@@ -47,7 +46,7 @@ RamWidget::RamWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& n
 
   // RAM grid (with scrollbar for larger RAM)
   const bool useScrollbar = ramsize / numrows > 16;
-  myRamGrid = new DataGridRamWidget(_boss, *this, _nfont, 0, 0,
+  myRamGrid = new DataGridRamWidget(_boss, *this, _nfont,
                                     16, myNumRows, 2, 8, Common::Base::Fmt::_16, useScrollbar);
   myRamGrid->setHelpAnchor(helpAnchor, true);
   myRamGrid->setTarget(this);
@@ -102,18 +101,18 @@ RamWidget::RamWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& n
   // Detail row for the selected RAM cell (built from right to left originally,
   // but here just created; reflow() right-aligns the hex/dec/bin cluster)
   myBinPrefix = new StaticTextWidget(boss, lfont, 0, 0, "%");
-  myBinValue = new DataGridWidget(boss, nfont, 0, 0, 1, 1, 8, 8, Common::Base::Fmt::_2);
+  myBinValue = new DataGridWidget(boss, nfont, 1, 1, 8, 8, Common::Base::Fmt::_2);
   myBinValue->setHelpAnchor(helpAnchor, true);
   myBinValue->setTarget(this);
   myBinValue->setID(kRamBinID);
 
   myDecPrefix = new StaticTextWidget(boss, lfont, 0, 0, "#");
-  myDecValue = new DataGridWidget(boss, nfont, 0, 0, 1, 1, 3, 8, Common::Base::Fmt::_10);
+  myDecValue = new DataGridWidget(boss, nfont, 1, 1, 3, 8, Common::Base::Fmt::_10);
   myDecValue->setHelpAnchor(helpAnchor, true);
   myDecValue->setTarget(this);
   myDecValue->setID(kRamDecID);
 
-  myHexValue = new DataGridWidget(boss, nfont, 0, 0, 1, 1, 2, 8, Common::Base::Fmt::_16);
+  myHexValue = new DataGridWidget(boss, nfont, 1, 1, 2, 8, Common::Base::Fmt::_16);
   myHexValue->setHelpAnchor(helpAnchor, true);
   myHexValue->setTarget(this);
   myHexValue->setID(kRamHexID);

@@ -21,11 +21,11 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 DataGridRamWidget::DataGridRamWidget(GuiObject* boss, const RamWidget& ram,
                                      const GUI::Font& font,
-                                     int x, int y, int cols, int rows,
+                                     int cols, int rows,
                                      int colchars, int bits,
                                      Common::Base::Fmt base,
                                      bool useScrollbar)
-  : DataGridWidget(boss, font, x, y, cols, rows, colchars,
+  : DataGridWidget(boss, font, cols, rows, colchars,
                    bits, base, useScrollbar),
     _ram{ram}
 {

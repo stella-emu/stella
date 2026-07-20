@@ -32,9 +32,8 @@
 #include "TiaZoomWidget.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-TiaZoomWidget::TiaZoomWidget(GuiObject* boss, const GUI::Font& font,
-                             int x, int y, int w, int h)
-  : Widget(boss, font, x, y, 16, 16),
+TiaZoomWidget::TiaZoomWidget(GuiObject* boss, const GUI::Font& font)
+  : Widget(boss, font, 0, 0, 16, 16),
     CommandSender(boss)
 {
   _flags = Widget::FLAG_ENABLED | Widget::FLAG_CLEARBG |
@@ -43,8 +42,9 @@ TiaZoomWidget::TiaZoomWidget(GuiObject* boss, const GUI::Font& font,
 
   addFocusWidget(this);
 
-  // Size the view and grid from the available space
-  recomputeGrid(w, h);
+  // Size the view and grid from the placeholder area; setArea() redoes this
+  // for the real one
+  recomputeGrid(_w, _h);
 
   // Create context menu for zoom levels
   VariantList l;

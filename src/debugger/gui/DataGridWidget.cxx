@@ -31,11 +31,11 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 DataGridWidget::DataGridWidget(GuiObject* boss, const GUI::Font& font,
-                               int x, int y, int cols, int rows,
+                               int cols, int rows,
                                int colchars, int bits,
                                Common::Base::Fmt base,
                                bool useScrollbar)
-  : EditableWidget(boss, font, x, y,
+  : EditableWidget(boss, font, 0, 0,
                    cols*(colchars * font.getMaxCharWidth() + 8) + 1,
                    font.getLineHeight()*rows + 1),
     _rows{rows},

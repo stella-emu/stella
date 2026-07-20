@@ -31,8 +31,8 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 QuadTariWidget::QuadTariWidget(GuiObject* boss, const GUI::Font& font,
-                               int x, int y, Controller& controller)
-  : ControllerWidget(boss, font, x, y, controller)
+                               Controller& controller)
+  : ControllerWidget(boss, font, controller)
 {
   const QuadTari& qt = static_cast<QuadTari&>(controller);
 
@@ -75,22 +75,22 @@ ControllerWidget* QuadTariWidget::addController(GuiObject* boss,
   {
     using enum Controller::Type;
     case Joystick:
-      widget = new JoystickWidget(boss, _font, 0, 0, controller, true);
+      widget = new JoystickWidget(boss, _font, controller, true);
       break;
     case Driving:
-      widget = new DrivingWidget(boss, _font, 0, 0, controller, true);
+      widget = new DrivingWidget(boss, _font, controller, true);
       break;
     case Paddles:
-      widget = new PaddleWidget(boss, _font, 0, 0, controller, true, second);
+      widget = new PaddleWidget(boss, _font, controller, true, second);
       break;
     case AtariVox:
-      widget = new AtariVoxWidget(boss, _font, 0, 0, controller, true);
+      widget = new AtariVoxWidget(boss, _font, controller, true);
       break;
     case SaveKey:
-      widget = new SaveKeyWidget(boss, _font, 0, 0, controller, true);
+      widget = new SaveKeyWidget(boss, _font, controller, true);
       break;
     default:
-      widget = new NullControlWidget(boss, _font, 0, 0, controller, true);
+      widget = new NullControlWidget(boss, _font, controller, true);
       break;
   }
   const WidgetArray& focusList = widget->getFocusList();

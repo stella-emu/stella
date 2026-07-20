@@ -24,7 +24,7 @@
 class KeyboardWidget : public ControllerWidget
 {
   public:
-    KeyboardWidget(GuiObject* boss, const GUI::Font& font, int x, int y,
+    KeyboardWidget(GuiObject* boss, const GUI::Font& font,
                    Controller& controller);
     ~KeyboardWidget() override = default;
 

@@ -26,14 +26,14 @@ class ButtonWidget;
 class FlashWidget : public ControllerWidget
 {
   public:
-    FlashWidget(GuiObject* boss, const GUI::Font& font, int x, int y,
+    FlashWidget(GuiObject* boss, const GUI::Font& font,
                 Controller& controller);
     ~FlashWidget() override = default;
 
     void loadConfig() override;
 
   protected:
-    void init(GuiObject* boss, const GUI::Font& font, int x, int y, bool embedded);
+    void init(GuiObject* boss, const GUI::Font& font, bool embedded);
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
     void layoutContent(GUI::BoxLayout& col) override;
 

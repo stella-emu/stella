@@ -62,7 +62,7 @@ CartridgeDPCPlusWidget::CartridgeDPCPlusWidget(
                                 int colchars, int bits, Common::Base::Fmt fmt) {
     label = new StaticTextWidget(boss, _font, 0, 0, text);
 
-    grid = new DataGridWidget(boss, _nfont, 0, 0, cols, rows, colchars, bits, fmt);
+    grid = new DataGridWidget(boss, _nfont, cols, rows, colchars, bits, fmt);
     grid->setTarget(this);
     grid->setEditable(false);
   };

@@ -21,9 +21,9 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 JoystickWidget::JoystickWidget(GuiObject* boss, const GUI::Font& font,
-                               int x, int y, Controller& controller,
+                               Controller& controller,
                                bool embedded)
-  : ControllerWidget(boss, font, x, y, controller)
+  : ControllerWidget(boss, font, controller)
 {
   // Create the pins at a placeholder position; reflow() forms them into a cross
   // NOLINTBEGIN(cppcoreguidelines-prefer-member-initializer)

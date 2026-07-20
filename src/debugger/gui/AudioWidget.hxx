@@ -27,8 +27,7 @@ class DataGridWidget;
 class AudioWidget : public Widget, public CommandSender
 {
   public:
-    AudioWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& nfont,
-                int x, int y, int w, int h);
+    AudioWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& nfont);
     ~AudioWidget() override = default;
 
     void loadConfig() override;

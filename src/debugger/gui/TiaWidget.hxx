@@ -37,8 +37,7 @@ namespace GUI {
 class TiaWidget : public Widget, public CommandSender
 {
   public:
-    TiaWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& nfont,
-              int x, int y, int w, int h);
+    TiaWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& nfont);
     ~TiaWidget() override = default;
 
     void loadConfig() override;

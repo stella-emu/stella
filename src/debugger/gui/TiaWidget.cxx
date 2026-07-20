@@ -33,9 +33,8 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
-                     const GUI::Font& nfont,
-                     int x, int y, int w, int h)
-  : Widget(boss, lfont, x, y, w, h),
+                     const GUI::Font& nfont)
+  : Widget(boss, lfont, 0, 0, 0, 0),
     CommandSender(boss)
 {
   const int lineHeight = lfont.getLineHeight();
@@ -60,7 +59,7 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
   for(int row = 0; row < 4; ++row)
     myColorRegLabels[row] = new StaticTextWidget(boss, lfont, 0, 0, regNames[row]);
 
-  myColorRegs = new DataGridWidget(boss, nfont, 0, 0,
+  myColorRegs = new DataGridWidget(boss, nfont,
                                    1, 4, 2, 8, Common::Base::Fmt::_16);
   myColorRegs->setTarget(this);
   myColorRegs->setID(kColorRegsID);
@@ -130,14 +129,14 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
   myBlockLabels[0].size = new StaticTextWidget(boss, lfont, 0, 0, "NuSiz");
 
   // grP0 (new)
-  myGRP0 = new TogglePixelWidget(boss, nfont, 0, 0, 8, 1);
+  myGRP0 = new TogglePixelWidget(boss, nfont, 8, 1);
   myGRP0->setTarget(this);
   myGRP0->setID(kGRP0ID);
   myGRP0->clearBackgroundColor();
   addFocusWidget(myGRP0);
 
   // posP0
-  myPosP0 = new DataGridWidget(boss, nfont, 0, 0,
+  myPosP0 = new DataGridWidget(boss, nfont,
                                1, 1, 3, 8, Common::Base::Fmt::_10);
   myPosP0->setTarget(this);
   myPosP0->setID(kPosP0ID);
@@ -145,7 +144,7 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
   addFocusWidget(myPosP0);
 
   // hmP0
-  myHMP0 = new DataGridWidget(boss, nfont, 0, 0,
+  myHMP0 = new DataGridWidget(boss, nfont,
                               1, 1, 1, 4, Common::Base::Fmt::_16_1);
   myHMP0->setTarget(this);
   myHMP0->setID(kHMP0ID);
@@ -165,7 +164,7 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
   addFocusWidget(myResButtons[0]);
 
   // grP0 (old)
-  myGRP0Old = new TogglePixelWidget(boss, nfont, 0, 0, 8, 1);
+  myGRP0Old = new TogglePixelWidget(boss, nfont, 8, 1);
   myGRP0Old->setTarget(this);
   myGRP0Old->setID(kGRP0OldID);
   myGRP0Old->clearBackgroundColor();
@@ -179,7 +178,7 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
   addFocusWidget(myDelP0);
 
   // NUSIZ0 (player portion)
-  myNusizP0 = new DataGridWidget(boss, nfont, 0, 0,
+  myNusizP0 = new DataGridWidget(boss, nfont,
                                  1, 1, 1, 3, Common::Base::Fmt::_16_1);
   myNusizP0->setTarget(this);
   myNusizP0->setID(kNusizP0ID);
@@ -197,14 +196,14 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
   myBlockLabels[1].size = new StaticTextWidget(boss, lfont, 0, 0, "NuSiz");
 
   // grP1 (new)
-  myGRP1 = new TogglePixelWidget(boss, nfont, 0, 0, 8, 1);
+  myGRP1 = new TogglePixelWidget(boss, nfont, 8, 1);
   myGRP1->setTarget(this);
   myGRP1->setID(kGRP1ID);
   myGRP1->clearBackgroundColor();
   addFocusWidget(myGRP1);
 
   // posP1
-  myPosP1 = new DataGridWidget(boss, nfont, 0, 0,
+  myPosP1 = new DataGridWidget(boss, nfont,
                                1, 1, 3, 8, Common::Base::Fmt::_10);
   myPosP1->setTarget(this);
   myPosP1->setID(kPosP1ID);
@@ -212,7 +211,7 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
   addFocusWidget(myPosP1);
 
   // hmP1
-  myHMP1 = new DataGridWidget(boss, nfont, 0, 0,
+  myHMP1 = new DataGridWidget(boss, nfont,
                               1, 1, 1, 4, Common::Base::Fmt::_16_1);
   myHMP1->setTarget(this);
   myHMP1->setID(kHMP1ID);
@@ -232,7 +231,7 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
   addFocusWidget(myResButtons[1]);
 
   // grP1 (old)
-  myGRP1Old = new TogglePixelWidget(boss, nfont, 0, 0, 8, 1);
+  myGRP1Old = new TogglePixelWidget(boss, nfont, 8, 1);
   myGRP1Old->setTarget(this);
   myGRP1Old->setID(kGRP1OldID);
   myGRP1Old->clearBackgroundColor();
@@ -246,7 +245,7 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
   addFocusWidget(myDelP1);
 
   // NUSIZ1 (player portion)
-  myNusizP1 = new DataGridWidget(boss, nfont, 0, 0,
+  myNusizP1 = new DataGridWidget(boss, nfont,
                                  1, 1, 1, 3, Common::Base::Fmt::_16_1);
   myNusizP1->setTarget(this);
   myNusizP1->setID(kNusizP1ID);
@@ -264,14 +263,14 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
   myBlockLabels[2].size = new StaticTextWidget(boss, lfont, 0, 0, "Size");
 
   // enaM0
-  myEnaM0 = new TogglePixelWidget(boss, nfont, 0, 0, 1, 1);
+  myEnaM0 = new TogglePixelWidget(boss, nfont, 1, 1);
   myEnaM0->setTarget(this);
   myEnaM0->setID(kEnaM0ID);
   myEnaM0->clearBackgroundColor();
   addFocusWidget(myEnaM0);
 
   // posM0
-  myPosM0 = new DataGridWidget(boss, nfont, 0, 0,
+  myPosM0 = new DataGridWidget(boss, nfont,
                                1, 1, 3, 8, Common::Base::Fmt::_10);
   myPosM0->setTarget(this);
   myPosM0->setID(kPosM0ID);
@@ -279,14 +278,14 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
   addFocusWidget(myPosM0);
 
   // hmM0
-  myHMM0 = new DataGridWidget(boss, nfont, 0, 0,
+  myHMM0 = new DataGridWidget(boss, nfont,
                               1, 1, 1, 4, Common::Base::Fmt::_16_1);
   myHMM0->setTarget(this);
   myHMM0->setID(kHMM0ID);
   addFocusWidget(myHMM0);
 
   // NUSIZ0 (missile portion)
-  myNusizM0 = new DataGridWidget(boss, nfont, 0, 0,
+  myNusizM0 = new DataGridWidget(boss, nfont,
                                  1, 1, 1, 2, Common::Base::Fmt::_16_1);
   myNusizM0->setTarget(this);
   myNusizM0->setID(kNusizM0ID);
@@ -314,14 +313,14 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
   myBlockLabels[3].size = new StaticTextWidget(boss, lfont, 0, 0, "Size");
 
   // enaM1
-  myEnaM1 = new TogglePixelWidget(boss, nfont, 0, 0, 1, 1);
+  myEnaM1 = new TogglePixelWidget(boss, nfont, 1, 1);
   myEnaM1->setTarget(this);
   myEnaM1->setID(kEnaM1ID);
   myEnaM1->clearBackgroundColor();
   addFocusWidget(myEnaM1);
 
   // posM1
-  myPosM1 = new DataGridWidget(boss, nfont, 0, 0,
+  myPosM1 = new DataGridWidget(boss, nfont,
                                1, 1, 3, 8, Common::Base::Fmt::_10);
   myPosM1->setTarget(this);
   myPosM1->setID(kPosM1ID);
@@ -329,14 +328,14 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
   addFocusWidget(myPosM1);
 
   // hmM1
-  myHMM1 = new DataGridWidget(boss, nfont, 0, 0,
+  myHMM1 = new DataGridWidget(boss, nfont,
                               1, 1, 1, 4, Common::Base::Fmt::_16_1);
   myHMM1->setTarget(this);
   myHMM1->setID(kHMM1ID);
   addFocusWidget(myHMM1);
 
   // NUSIZ1 (missile portion)
-  myNusizM1 = new DataGridWidget(boss, nfont, 0, 0,
+  myNusizM1 = new DataGridWidget(boss, nfont,
                                  1, 1, 1, 2, Common::Base::Fmt::_16_1);
   myNusizM1->setTarget(this);
   myNusizM1->setID(kNusizM1ID);
@@ -364,14 +363,14 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
   myBlockLabels[4].size = new StaticTextWidget(boss, lfont, 0, 0, "Size");
 
   // enaBL
-  myEnaBL = new TogglePixelWidget(boss, nfont, 0, 0, 1, 1);
+  myEnaBL = new TogglePixelWidget(boss, nfont, 1, 1);
   myEnaBL->setTarget(this);
   myEnaBL->setID(kEnaBLID);
   myEnaBL->clearBackgroundColor();
   addFocusWidget(myEnaBL);
 
   // posBL
-  myPosBL = new DataGridWidget(boss, nfont, 0, 0,
+  myPosBL = new DataGridWidget(boss, nfont,
                                1, 1, 3, 8, Common::Base::Fmt::_10);
   myPosBL->setTarget(this);
   myPosBL->setID(kPosBLID);
@@ -379,14 +378,14 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
   addFocusWidget(myPosBL);
 
   // hmBL
-  myHMBL = new DataGridWidget(boss, nfont, 0, 0,
+  myHMBL = new DataGridWidget(boss, nfont,
                               1, 1, 1, 4, Common::Base::Fmt::_16_1);
   myHMBL->setTarget(this);
   myHMBL->setID(kHMBLID);
   addFocusWidget(myHMBL);
 
   // CTRLPF (size portion)
-  mySizeBL = new DataGridWidget(boss, nfont, 0, 0,
+  mySizeBL = new DataGridWidget(boss, nfont,
                                 1, 1, 1, 2, Common::Base::Fmt::_16_1);
   mySizeBL->setTarget(this);
   mySizeBL->setID(kSizeBLID);
@@ -399,7 +398,7 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
   addFocusWidget(myResButtons[4]);
 
   // Ball (old)
-  myEnaBLOld = new TogglePixelWidget(boss, nfont, 0, 0, 1, 1);
+  myEnaBLOld = new TogglePixelWidget(boss, nfont, 1, 1);
   myEnaBLOld->setTarget(this);
   myEnaBLOld->setID(kEnaBLOldID);
   myEnaBLOld->clearBackgroundColor();
@@ -423,19 +422,19 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
   myPFLabel = new StaticTextWidget(boss, lfont, 0, 0, "PF");
 
   // PF0 is four bits wide at double width; PF1 and PF2 are eight
-  myPF[0] = new TogglePixelWidget(boss, nfont, 0, 0, 4, 1, 4);
+  myPF[0] = new TogglePixelWidget(boss, nfont, 4, 1, 4);
   myPF[0]->setTarget(this);
   myPF[0]->setID(kPF0ID);
   addFocusWidget(myPF[0]);
 
   // PF1
-  myPF[1] = new TogglePixelWidget(boss, nfont, 0, 0, 8, 1);
+  myPF[1] = new TogglePixelWidget(boss, nfont, 8, 1);
   myPF[1]->setTarget(this);
   myPF[1]->setID(kPF1ID);
   addFocusWidget(myPF[1]);
 
   // PF2
-  myPF[2] = new TogglePixelWidget(boss, nfont, 0, 0, 8, 1);
+  myPF[2] = new TogglePixelWidget(boss, nfont, 8, 1);
   myPF[2]->setTarget(this);
   myPF[2]->setID(kPF2ID);
   addFocusWidget(myPF[2]);
@@ -472,7 +471,7 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
   addFocusWidget(myPriorityPF);
 
   myQueuedWritesLabel = new StaticTextWidget(boss, lfont, 0, 0, "Queued Writes");
-  myDelayQueueWidget = new DelayQueueWidget(boss, lfont, 0, 0);
+  myDelayQueueWidget = new DelayQueueWidget(boss, lfont);
 
   ////////////////////////////
   // Strobe buttons

@@ -25,7 +25,7 @@ class GuiObject;
 class NullControlWidget : public ControllerWidget
 {
   public:
-    NullControlWidget(GuiObject* boss, const GUI::Font& font, int x, int y,
+    NullControlWidget(GuiObject* boss, const GUI::Font& font,
                       Controller& controller, bool embedded = false);
     ~NullControlWidget() override = default;
 

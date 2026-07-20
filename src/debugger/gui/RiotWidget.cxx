@@ -47,9 +47,8 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 RiotWidget::RiotWidget(GuiObject* boss, const GUI::Font& lfont,
-                       const GUI::Font& nfont,
-                       int x, int y, int w, int h)
-  : Widget(boss, lfont, x, y, w, h),
+                       const GUI::Font& nfont)
+  : Widget(boss, lfont, 0, 0, 0, 0),
     CommandSender(boss)
 {
   VariantList items;
@@ -68,7 +67,7 @@ RiotWidget::RiotWidget(GuiObject* boss, const GUI::Font& lfont,
   int reg = 0;
   const auto ioReg = [&](string_view desc, uInt8 bitsID) {
     myRegLabel[reg++] = new StaticTextWidget(boss, lfont, 0, 0, desc);
-    auto* wid = new ToggleBitWidget(boss, nfont, 0, 0, 8, 1, 1, labels);
+    auto* wid = new ToggleBitWidget(boss, nfont, 8, 1, 1, labels);
     wid->setTarget(this);
     wid->setID(bitsID);
     addFocusWidget(wid);
@@ -104,12 +103,12 @@ RiotWidget::RiotWidget(GuiObject* boss, const GUI::Font& lfont,
   };
   for(int row = 0; row < 4; ++row)
     myTimWriteLabel[row] = new StaticTextWidget(boss, lfont, 0, 0, writeNames[row]);
-  myTimWrite = new DataGridWidget(boss, nfont, 0, 0, 1, 4, 2, 8, Common::Base::Fmt::_16);
+  myTimWrite = new DataGridWidget(boss, nfont, 1, 4, 2, 8, Common::Base::Fmt::_16);
   myTimWrite->setTarget(this);
   myTimWrite->setID(kTimWriteID);
   addFocusWidget(myTimWrite);
   myTimHash[0] = new StaticTextWidget(boss, lfont, 0, 0, "#");
-  myTimAvail = new DataGridWidget(boss, nfont, 0, 0, 1, 1, 6, 30, Common::Base::Fmt::_10_6);
+  myTimAvail = new DataGridWidget(boss, nfont, 1, 1, 6, 30, Common::Base::Fmt::_10_6);
   myTimAvail->setToolTip("Number of CPU cycles available for current timer interval.\n");
   myTimAvail->setTarget(this);
   myTimAvail->setEditable(false);
@@ -120,28 +119,28 @@ RiotWidget::RiotWidget(GuiObject* boss, const GUI::Font& lfont,
   };
   for(int row = 0; row < 4; ++row)
     myTimReadLabel[row] = new StaticTextWidget(boss, lfont, 0, 0, readNames[row]);
-  myTimRead = new DataGridWidget(boss, nfont, 0, 0, 1, 3, 4, 30, Common::Base::Fmt::_16_2);
+  myTimRead = new DataGridWidget(boss, nfont, 1, 3, 4, 30, Common::Base::Fmt::_16_2);
   myTimRead->setToolTip(0, 1, "Remaining timer interval clocks.\n");
   myTimRead->setToolTip(0, 2, "Timer interrupt flag in bit 7.\n");
   myTimRead->setTarget(this);
   myTimRead->setEditable(false);
   myTimHash[1] = new StaticTextWidget(boss, lfont, 0, 0, "#");
   myTimHash[2] = new StaticTextWidget(boss, lfont, 0, 0, "#");
-  myTimTotal = new DataGridWidget(boss, nfont, 0, 0, 1, 2, 6, 30, Common::Base::Fmt::_10_6);
+  myTimTotal = new DataGridWidget(boss, nfont, 1, 2, 6, 30, Common::Base::Fmt::_10_6);
   myTimTotal->setToolTip(0, 0, "Number of CPU cycles since last TIMxxT write.\n");
   myTimTotal->setToolTip(0, 1, "Number of CPU cycles remaining.\n");
   myTimTotal->setTarget(this);
   myTimTotal->setEditable(false);
-  myTimDivider = new DataGridWidget(boss, nfont, 0, 0, 1, 1, 4, 12, Common::Base::Fmt::_10_4);
+  myTimDivider = new DataGridWidget(boss, nfont, 1, 1, 4, 12, Common::Base::Fmt::_10_4);
   myTimDivider->setTarget(this);
   myTimDivider->setEditable(false);
 
   // Controller ports: two full controller widgets (the row lays them out via
   // their own setArea(), so they re-flow themselves)
-  myLeftControl = addControlWidget(boss, lfont, 0, 0,
+  myLeftControl = addControlWidget(boss, lfont,
       instance().console().leftController());
   addToFocusList(myLeftControl->getFocusList());
-  myRightControl = addControlWidget(boss, lfont, 0, 0,
+  myRightControl = addControlWidget(boss, lfont,
       instance().console().rightController());
   addToFocusList(myRightControl->getFocusList());
 
@@ -153,10 +152,10 @@ RiotWidget::RiotWidget(GuiObject* boss, const GUI::Font& lfont,
     myLeftINPTLabel[row]  = new StaticTextWidget(boss, lfont, 0, 0, leftINPTNames[row]);
     myRightINPTLabel[row] = new StaticTextWidget(boss, lfont, 0, 0, rightINPTNames[row]);
   }
-  myLeftINPT = new DataGridWidget(boss, nfont, 0, 0, 1, 3, 2, 8, Common::Base::Fmt::_16);
+  myLeftINPT = new DataGridWidget(boss, nfont, 1, 3, 2, 8, Common::Base::Fmt::_16);
   myLeftINPT->setTarget(this);
   myLeftINPT->setEditable(false);
-  myRightINPT = new DataGridWidget(boss, nfont, 0, 0, 1, 3, 2, 8, Common::Base::Fmt::_16);
+  myRightINPT = new DataGridWidget(boss, nfont, 1, 3, 2, 8, Common::Base::Fmt::_16);
   myRightINPT->setTarget(this);
   myRightINPT->setEditable(false);
 
@@ -681,28 +680,28 @@ void RiotWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ControllerWidget*
 RiotWidget::addControlWidget(GuiObject* boss, const GUI::Font& font,
-                             int x, int y, Controller& controller)
+                             Controller& controller)
 {
   switch(controller.type())
   {
     using enum Controller::Type;
-    case AmigaMouse:  return new AmigaMouseWidget(boss, font, x, y, controller);
-    case AtariMouse:  return new AtariMouseWidget(boss, font, x, y, controller);
-    case AtariVox:    return new AtariVoxWidget(boss, font, x, y, controller);
-    case BoosterGrip: return new BoosterWidget(boss, font, x, y, controller);
-    case Driving:     return new DrivingWidget(boss, font, x, y, controller);
-    case Genesis:     return new GenesisWidget(boss, font, x, y, controller);
-    case Joy2BPlus:   return new Joy2BPlusWidget(boss, font, x, y, controller);
-    case Joystick:    return new JoystickWidget(boss, font, x, y, controller);
-    case Keyboard:    return new KeyboardWidget(boss, font, x, y, controller);
+    case AmigaMouse:  return new AmigaMouseWidget(boss, font, controller);
+    case AtariMouse:  return new AtariMouseWidget(boss, font, controller);
+    case AtariVox:    return new AtariVoxWidget(boss, font, controller);
+    case BoosterGrip: return new BoosterWidget(boss, font, controller);
+    case Driving:     return new DrivingWidget(boss, font, controller);
+    case Genesis:     return new GenesisWidget(boss, font, controller);
+    case Joy2BPlus:   return new Joy2BPlusWidget(boss, font, controller);
+    case Joystick:    return new JoystickWidget(boss, font, controller);
+    case Keyboard:    return new KeyboardWidget(boss, font, controller);
 //    case KidVid:      // TODO - implement this
 //    case MindLink:    // TODO - implement this
 //    case Lightgun:    // TODO - implement this
-    case QuadTari:    return new QuadTariWidget(boss, font, x, y, controller);
-    case Paddles:     return new PaddleWidget(boss, font, x, y, controller);
-    case SaveKey:     return new SaveKeyWidget(boss, font, x, y, controller);
-    case TrakBall:    return new TrakBallWidget(boss, font, x, y, controller);
-    default:          return new NullControlWidget(boss, font, x, y, controller);
+    case QuadTari:    return new QuadTariWidget(boss, font, controller);
+    case Paddles:     return new PaddleWidget(boss, font, controller);
+    case SaveKey:     return new SaveKeyWidget(boss, font, controller);
+    case TrakBall:    return new TrakBallWidget(boss, font, controller);
+    default:          return new NullControlWidget(boss, font, controller);
   }
 }
 
