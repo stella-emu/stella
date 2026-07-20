@@ -31,8 +31,8 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Widget::Widget(GuiObject* boss, const GUI::Font& font,
-               int x, int y, int w, int h)
-  : GuiObject(boss->instance(), boss->parent(), boss->dialog(), x, y, w, h),
+               int w, int h)
+  : GuiObject(boss->instance(), boss->parent(), boss->dialog(), w, h),
     _boss{boss},
     _font{font},
     _fontWidth{_font.getMaxCharWidth()},
@@ -517,7 +517,7 @@ StaticTextWidget::StaticTextWidget(GuiObject* boss, const GUI::Font& font,
                                    int w, int h,
                                    string_view text, TextAlign align,
                                    ColorId shadowColor)
-  : Widget(boss, font, 0, 0, w, h),
+  : Widget(boss, font, w, h),
     CommandSender(boss),
     _label{text},
     _align{align}

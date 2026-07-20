@@ -73,7 +73,7 @@ class GuiObject : public CommandReceiver
 
   public:
     GuiObject(OSystem& osystem, DialogContainer& parent, Dialog& dialog,
-              int x, int y, int w, int h);
+              int w, int h);
 
     ~GuiObject() override;
 

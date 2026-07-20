@@ -32,7 +32,7 @@
 RamWidget::RamWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& nfont,
                      uInt32 ramsize, uInt32 numrows, uInt32 pagesize,
                      string_view helpAnchor)
-  : Widget(boss, lfont, 0, 0, 0, 0),
+  : Widget(boss, lfont, 0, 0),
     CommandSender(boss),
     _nfont{nfont},
     myRamSize{ramsize},

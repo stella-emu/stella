@@ -57,7 +57,7 @@ static constexpr std::array<RowLabel, 5> RIGHT_LABELS{{
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 TiaInfoWidget::TiaInfoWidget(GuiObject* boss, const GUI::Font& lfont,
                              const GUI::Font& nfont)
-  : Widget(boss, lfont, 0, 0, 0, 0),
+  : Widget(boss, lfont, 0, 0),
     CommandSender(boss)
 {
   // Create every field; reflow() picks the short/long label text and positions

@@ -40,7 +40,7 @@ class ControllerWidget : public Widget, public CommandSender, public ControllerL
   public:
     ControllerWidget(GuiObject* boss, const GUI::Font& font,
                      Controller& controller)
-      : Widget(boss, font, 0, 0, 16, 16),
+      : Widget(boss, font, 16, 16),
         CommandSender(boss),
         ControllerLowLevel(controller)
     {

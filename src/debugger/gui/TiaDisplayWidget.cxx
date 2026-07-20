@@ -33,7 +33,7 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 TiaDisplayWidget::TiaDisplayWidget(GuiObject* boss, const GUI::Font& font)
-  : Widget(boss, font, 0, 0, 0, 0),
+  : Widget(boss, font, 0, 0),
     CommandSender(boss)
 {
   _flags = Widget::FLAG_ENABLED | Widget::FLAG_CLEARBG |

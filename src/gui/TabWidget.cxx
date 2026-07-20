@@ -26,7 +26,7 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 TabWidget::TabWidget(GuiObject* boss, const GUI::Font& font)
-  : Widget(boss, font, 0, 0, 0, 0),
+  : Widget(boss, font, 0, 0),
     CommandSender(boss),
     _tabHeight{font.getLineHeight() + 4}
 {
@@ -296,7 +296,7 @@ Widget* TabWidget::parentWidget(int tabID)
     // Create a 0-size dummy if none exists.  It is deliberately NOT set via
     // setParentWidget, so sizeContent stays false and layoutActivePane leaves
     // it alone (sizing it would make it a large invisible click-blocker)
-    _tabs[tabID].parentWidget = new Widget(_boss, _font, 0, 0, 0, 0);
+    _tabs[tabID].parentWidget = new Widget(_boss, _font, 0, 0);
 
   return _tabs[tabID].parentWidget;
 }

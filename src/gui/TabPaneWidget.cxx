@@ -21,7 +21,7 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 TabPaneWidget::TabPaneWidget(GuiObject* boss, const GUI::Font& font)
-  : Widget(boss, font, 0, 0, 1, 1)
+  : Widget(boss, font, 1, 1)
 {
   // A transparent container: it draws nothing of its own, only its children
   _flags = Widget::FLAG_ENABLED;

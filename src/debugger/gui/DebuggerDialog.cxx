@@ -71,7 +71,7 @@ static constexpr int SECTION_GAP = 10;
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 DebuggerDialog::DebuggerDialog(OSystem& osystem, DialogContainer& parent,
                                int w, int h)
-  : Dialog(osystem, parent, 0, 0, w, h)
+  : Dialog(osystem, parent, w, h)
 {
   createFont();  // Font is sized according to available space
 

@@ -37,7 +37,7 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 TiaOutputWidget::TiaOutputWidget(GuiObject* boss, const GUI::Font& font)
-  : Widget(boss, font, 0, 0, 0, 0),
+  : Widget(boss, font, 0, 0),
     CommandSender(boss)
 {
   // Create context menu for commands

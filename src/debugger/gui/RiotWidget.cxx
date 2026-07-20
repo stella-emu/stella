@@ -48,7 +48,7 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 RiotWidget::RiotWidget(GuiObject* boss, const GUI::Font& lfont,
                        const GUI::Font& nfont)
-  : Widget(boss, lfont, 0, 0, 0, 0),
+  : Widget(boss, lfont, 0, 0),
     CommandSender(boss)
 {
   VariantList items;

@@ -73,7 +73,7 @@ class DividerWidget : public Widget, public CommandSender
 {
   public:
     DividerWidget(GuiObject* boss, const GUI::Font& font, int w, int cmd)
-      : Widget(boss, font, 0, 0, w, 0),
+      : Widget(boss, font, w, 0),
         CommandSender(boss),
         myCmd{cmd}
     {
@@ -128,7 +128,7 @@ class DividerWidget : public Widget, public CommandSender
 LauncherDialog::LauncherDialog(OSystem& osystem, DialogContainer& parent,
                                int w, int h)
   : Dialog(osystem, parent, osystem.frameBuffer().launcherFont(), "",
-           0, 0, w, h),
+           w, h),
     CommandSender(this)
 {
   // Create the widgets (in focus order); layout() assigns all geometry

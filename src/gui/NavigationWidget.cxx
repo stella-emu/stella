@@ -25,7 +25,7 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 NavigationWidget::NavigationWidget(GuiObject* boss, const GUI::Font& font)
-  : Widget(boss, font, 0, 0, 0, 0)
+  : Widget(boss, font, 0, 0)
 {
   // Add some buttons and a path field to show the current directory.  They are
   // created at a placeholder position; layoutChildren() is the ONE place that
@@ -186,7 +186,7 @@ void NavigationWidget::handleCommand(CommandSender* sender, int cmd, int data,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 NavigationWidget::PathWidget::PathWidget(GuiObject* boss, CommandReceiver* target,
     const GUI::Font& font)
-  : Widget(boss, font, 0, 0, 0, 0),
+  : Widget(boss, font, 0, 0),
     myTarget{target}
 {
 }

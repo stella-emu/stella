@@ -27,11 +27,11 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 GuiObject::GuiObject(OSystem& osystem, DialogContainer& parent, Dialog& dialog,
-                     int x, int y, int w, int h)
+                     int w, int h)
   : myOSystem{osystem},
     myParent{parent},
     myDialog{dialog},
-    _x{x}, _y{y}, _w{w}, _h{h} { }
+    _w{w}, _h{h} { }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 GuiObject::~GuiObject() = default;

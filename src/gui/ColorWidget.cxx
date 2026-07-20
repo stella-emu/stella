@@ -24,7 +24,7 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ColorWidget::ColorWidget(GuiObject* boss, const GUI::Font& font,
                          int w, int h, int cmd, bool framed)
-  : Widget(boss, font, 0, 0, w, h),
+  : Widget(boss, font, w, h),
     CommandSender(boss),
     _framed{framed},
     _cmd{cmd}

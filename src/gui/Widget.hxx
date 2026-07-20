@@ -46,7 +46,7 @@ class Widget : public GuiObject
   friend class Dialog;
 
   public:
-    Widget(GuiObject* boss, const GUI::Font& font, int x, int y, int w, int h);
+    Widget(GuiObject* boss, const GUI::Font& font, int w, int h);
     ~Widget() override = default;
 
     int getAbsX() const override { return _x + _boss->getChildX(); }

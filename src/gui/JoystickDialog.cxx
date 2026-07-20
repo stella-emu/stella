@@ -29,7 +29,7 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 JoystickDialog::JoystickDialog(GuiObject* boss, const GUI::Font& font,
                                int max_w, int max_h)
-  : Dialog(boss->instance(), boss->parent(), font, "Controller database", 0, 0, max_w, max_h)
+  : Dialog(boss->instance(), boss->parent(), font, "Controller database", max_w, max_h)
 {
   WidgetArray wid;
 

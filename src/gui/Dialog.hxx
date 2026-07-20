@@ -56,9 +56,9 @@ class Dialog : public GuiObject
     using RenderCallback = std::function<void()>;
 
     Dialog(OSystem& instance, DialogContainer& parent,
-           int x = 0, int y = 0, int w = 0, int h = 0);
+           int w = 0, int h = 0);
     Dialog(OSystem& instance, DialogContainer& parent, const GUI::Font& font,
-           string_view title = "", int x = 0, int y = 0, int w = 0, int h = 0);
+           string_view title = "", int w = 0, int h = 0);
     ~Dialog() override;
 
     void clear();

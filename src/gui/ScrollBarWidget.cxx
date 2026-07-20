@@ -31,7 +31,7 @@
 ScrollBarWidget::ScrollBarWidget(GuiObject* boss, const GUI::Font& font)
   // My width is my own business -- it follows the font.  My position and height
   // are the list's, which sets them whenever it moves or resizes
-  : Widget(boss, font, 0, 0, scrollBarWidth(font), 0),
+  : Widget(boss, font, scrollBarWidth(font), 0),
     CommandSender(boss),
     _scrollBarWidth{scrollBarWidth(font)}
 {

@@ -30,7 +30,7 @@
 DelayQueueWidget::DelayQueueWidget(
     GuiObject* boss,
     const GUI::Font& font
-  ) : Widget(boss, font, 0, 0, 0, 0)
+  ) : Widget(boss, font, 0, 0)
 {
   _textcolor = kTextColor;
 

@@ -46,8 +46,8 @@
  */
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Dialog::Dialog(OSystem& instance, DialogContainer& parent, const GUI::Font& font,
-               string_view title, int x, int y, int w, int h)
-  : GuiObject(instance, parent, *this, x, y, w, h),
+               string_view title, int w, int h)
+  : GuiObject(instance, parent, *this, w, h),
     _font{font},
     _title{title},
     _renderCallback{[]() { return; }}
@@ -60,8 +60,8 @@ Dialog::Dialog(OSystem& instance, DialogContainer& parent, const GUI::Font& font
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Dialog::Dialog(OSystem& instance, DialogContainer& parent,
-               int x, int y, int w, int h)
-  : Dialog(instance, parent, instance.frameBuffer().font(), "", x, y, w, h)
+               int w, int h)
+  : Dialog(instance, parent, instance.frameBuffer().font(), "", w, h)
 {
 }
 
