@@ -60,7 +60,7 @@ CartridgeCTYWidget::CartridgeCTYWidget(
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgeCTYWidget::layoutContent(GUI::BoxLayout& col)
+void CartridgeCTYWidget::layoutContent(GUI::BoxLayout& col) const
 {
   col.addAuto(GUI::anchoredItem(myBank));
 }

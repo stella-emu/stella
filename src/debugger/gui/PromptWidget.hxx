@@ -57,6 +57,10 @@ class PromptWidget : public Widget, public CommandSender
     void setWidth(int w) override;
     void setHeight(int h) override;
     void setArea(int x, int y, int w, int h) override;
+
+    // I fill whatever area I am given, so I have no height of my own to
+    // constrain the window with (see the note in TabWidget::naturalSize)
+    Common::Size naturalSize() const override { return {}; }
     void refreshFontMetrics() override;
 
     bool wantsFocus() const override { return true; }

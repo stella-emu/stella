@@ -42,6 +42,10 @@ class RiotWidget : public Widget, public CommandSender
     // lay its two columns out for the available area
     void setArea(int x, int y, int w, int h) override;
 
+    // My constructor cannot know how tall I am -- that is however tall
+    // my two columns make me -- so report what my own layout tree comes to
+    Common::Size naturalSize() const override;
+
   protected:
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 
@@ -49,6 +53,10 @@ class RiotWidget : public Widget, public CommandSender
     // Build the layout tree from the current font and position/size everything;
     // shared by the ctor and setArea()
     void reflow();
+
+    // The two columns as the engine sees them, built without positioning
+    // anything, so reflow() and naturalSize() are one layout asked two questions
+    unique_ptr<GUI::Layout> buildLayout() const;
 
     static ControllerWidget* addControlWidget(
         GuiObject* boss, const GUI::Font& font,

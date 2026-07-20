@@ -87,7 +87,7 @@ void AudioWidget::setArea(int x, int y, int w, int h)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void AudioWidget::reflow()
+unique_ptr<GUI::Layout> AudioWidget::buildLayout() const
 {
   using GUI::BoxLayout;
   using GUI::anchoredItem;
@@ -120,14 +120,14 @@ void AudioWidget::reflow()
             channelW = myAudF->colWidth(),  // one channel column of the AUDF grid
             gridW    = myAudF->getWidth();   // both AUDF channels
 
-  BoxLayout root(Dir::Vertical, VGAP, HBORDER, VBORDER);
+  auto root = std::make_unique<BoxLayout>(Dir::Vertical, VGAP, HBORDER, VBORDER);
 
   // Channel headers ("0"/"1"), each centered over its AUDF column
   auto headers = std::make_unique<BoxLayout>(Dir::Horizontal);
   headers->addSpace(labelW);
   for(auto* h: myChannelLabels)
     headers->addFixed(centeredItem(h), channelW);
-  root.addAuto(std::move(headers));
+  root->addAuto(std::move(headers));
 
   // AUDF row: label, the two-digit frequency-divider grid, then the resulting
   // channel frequencies "f0 / f1" (each readout is sized to its own value)
@@ -138,13 +138,13 @@ void AudioWidget::reflow()
   audf->addAuto(anchoredItem(myAud0F));
   audf->addFixed(anchoredItem(mySlash), fontWidth);
   audf->addAuto(anchoredItem(myAud1F));
-  root.addAuto(std::move(audf));
+  root->addAuto(std::move(audf));
 
   // AUDC row: label and the one-digit control grid, centered under AUDF
   auto audc = std::make_unique<BoxLayout>(Dir::Horizontal);
   audc->addAuto(onBaseline(myRegLabels[1]));
   audc->addFixed(centeredGrid(myAudC), gridW);
-  root.addAuto(std::move(audc));
+  root->addAuto(std::move(audc));
 
   // AUDV row: label, the one-digit volume grid centered under AUDF, then the
   // effective volume filling the rest of the row
@@ -153,9 +153,21 @@ void AudioWidget::reflow()
   audv->addFixed(centeredGrid(myAudV), gridW);
   audv->addSpace(fontWidth * 2);
   audv->addStretch(stretchedItem(myAudEffV));
-  root.addAuto(std::move(audv));
+  root->addAuto(std::move(audv));
 
-  root.doLayout(_x, _y, _w, _h);
+  return root;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void AudioWidget::reflow()
+{
+  buildLayout()->doLayout(_x, _y, _w, _h);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+Common::Size AudioWidget::naturalSize() const
+{
+  return buildLayout()->naturalSize();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

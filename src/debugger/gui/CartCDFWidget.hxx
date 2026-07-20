@@ -50,13 +50,13 @@ class CartridgeCDFWidget : public CartridgeARMWidget
     // End of functions for Cartridge RAM tab
 
   protected:
-    void layoutContent(GUI::BoxLayout& col) override;
+    void layoutContent(GUI::BoxLayout& col) const override;
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 
   private:
     // The datastream table: the pointer and increment grids side by side, with the
     // stream numbers (and the named streams below them) labelling their rows
-    unique_ptr<GUI::Layout> layoutDatastreams();
+    unique_ptr<GUI::Layout> layoutDatastreams() const;
 
   private:
     struct CartState {

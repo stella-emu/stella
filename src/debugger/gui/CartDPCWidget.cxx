@@ -96,7 +96,7 @@ CartridgeDPCWidget::CartridgeDPCWidget(
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgeDPCWidget::layoutContent(GUI::BoxLayout& col)
+void CartridgeDPCWidget::layoutContent(GUI::BoxLayout& col) const
 {
   using GUI::anchoredItem;
   using GUI::labeledRow;

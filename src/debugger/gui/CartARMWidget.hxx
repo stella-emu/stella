@@ -47,7 +47,7 @@ class CartridgeARMWidget : public CartDebugWidget
     // every ARM cart has.  A leaf creates them in its ctor and, having appended
     // its own rows in layoutContent(), calls this base to put them underneath
     void createCycleWidgets();
-    void layoutContent(GUI::BoxLayout& col) override;
+    void layoutContent(GUI::BoxLayout& col) const override;
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 
   private:

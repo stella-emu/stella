@@ -499,8 +499,9 @@ void DebuggerDialog::layoutTiaArea()
 void DebuggerDialog::addTabArea()
 {
   // Every widget is created at a placeholder position/size; layoutTabArea()
-  // sizes and positions them.  Each tab's content must be created while that
-  // tab is the active one, so that recordContentHeight() only measures it
+  // sizes and positions them.  Each tab's content is created while that tab is
+  // the active one, since setActiveTab() is what decides whose child list a
+  // widget joins
   // NOLINTBEGIN(cppcoreguidelines-prefer-member-initializer)
 
   // The tab widget
@@ -519,21 +520,18 @@ void DebuggerDialog::addTabArea()
   // The TIA tab
   tabID = myTab->addTab("TIA");
   myTiaTab = new TiaWidget(myTab, *myLFont, *myNFont, 2, 2, 1, 1);
-  myTiaTab->recordContentHeight();
   myTab->setParentWidget(tabID, myTiaTab);
   addToFocusList(myTiaTab->getFocusList(), myTab, tabID);
 
   // The input/output tab (includes RIOT and INPTx from TIA)
   tabID = myTab->addTab("I/O");
   myRiotTab = new RiotWidget(myTab, *myLFont, *myNFont, 2, 2, 1, 1);
-  myRiotTab->recordContentHeight();
   myTab->setParentWidget(tabID, myRiotTab);
   addToFocusList(myRiotTab->getFocusList(), myTab, tabID);
 
   // The Audio tab
   tabID = myTab->addTab("Audio");
   myAudioTab = new AudioWidget(myTab, *myLFont, *myNFont, 2, 2, 1, 1);
-  myAudioTab->recordContentHeight();
   myTab->setParentWidget(tabID, myAudioTab);
   addToFocusList(myAudioTab->getFocusList(), myTab, tabID);
   // NOLINTEND(cppcoreguidelines-prefer-member-initializer)
@@ -702,25 +700,11 @@ void DebuggerDialog::addRomArea()
   myRomTab->setParentWidget(tabID, myRom);
   addToFocusList(myRom->getFocusList(), myRomTab, tabID);
 
-  // KNOWN BUG: CartDebugWidget/CartEnhancedWidget/CartARMWidget/CartRamWidget's
-  // ctors call reflow() immediately (see CartEnhancedWidget::initialize()), and
-  // that first reflow() runs at width 0 -- before recordContentHeight() below
-  // ever runs, and long before these widgets get a real setArea(). For carts
-  // whose content is width-dependent (e.g. a WrappedTextWidget description),
-  // recordContentHeight() then under-reports the tab's minimum height, and the
-  // debugger window doesn't grow tall enough, clipping the bottom of the tab
-  // (seen on CartridgeDPC+/CDF, whose ARM-cycle rows fall below the window).
-  // Passing the real width into these ctors fixes it, but that reintroduces a
-  // ctor geometry parameter, which defeats the point of this refactor -- so
-  // it's deliberately NOT done here. Proper fix (deferred): make
-  // recordContentHeight() (or its caller) not depend on a ctor-time reflow()
-  // at all, e.g. by only measuring after a real setArea().
   // The 'cart-specific' information tab (optional)
   tabID = myRomTab->addTab(" " + instance().console().cartridge().name() + " ", TabWidget::AUTO_WIDTH);
   myCartInfo = instance().console().cartridge().infoWidget(myRomTab, *myLFont, *myNFont);
   if(myCartInfo != nullptr)
   {
-    myCartInfo->recordContentHeight();
     myRomTab->setParentWidget(tabID, myCartInfo);
     addToFocusList(myCartInfo->getFocusList(), myRomTab, tabID);
     tabID = myRomTab->addTab("    States    ", TabWidget::AUTO_WIDTH);
@@ -730,7 +714,6 @@ void DebuggerDialog::addRomArea()
   myCartDebug = instance().console().cartridge().debugWidget(myRomTab, *myLFont, *myNFont);
   if(myCartDebug)  // TODO - make this always non-null
   {
-    myCartDebug->recordContentHeight();
     myRomTab->setHelpAnchor("BankswitchInformation", true);
     myRomTab->setParentWidget(tabID, myCartDebug);
     addToFocusList(myCartDebug->getFocusList(), myRomTab, tabID);
@@ -743,7 +726,6 @@ void DebuggerDialog::addRomArea()
         new CartRamWidget(myRomTab, *myLFont, *myNFont, *myCartDebug);
       if(myCartRam)  // TODO - make this always non-null
       {
-        myCartRam->recordContentHeight();
         myCartRam->setHelpAnchor("CartridgeRAMInformation", true);
         myRomTab->setParentWidget(tabID, myCartRam);
         addToFocusList(myCartRam->getFocusList(), myRomTab, tabID);
@@ -918,7 +900,12 @@ int DebuggerDialog::getMinHeight() const
     const int tabReq = myTab->getMaxContentHeight();
     if(tabReq > 0)
     {
-      const int extra = tabReq + myTab->getTabHeight() + 9;
+      // What the tab content asks for, plus the chrome around it: the tab bar,
+      // the frame inset above and below it, the gap getTabBounds() leaves under
+      // the TIA image and the border layoutTabArea() insets it by.  The content's
+      // own margins are already in tabReq, since naturalSize() carries them
+      const int extra = tabReq + myTab->getTabHeight()
+                      + 2 * TabWidget::CONTENT_BORDER + VBORDER + 1;
       const int caseFixed = extra + static_cast<int>(FrameManager::Metrics::baseHeightPAL);
       const int caseProp  = (extra * 20 + 12) / 13;  // ceil(extra / 0.65)
 
@@ -932,8 +919,12 @@ int DebuggerDialog::getMinHeight() const
   {
     const int cartReq = myRomTab->getMaxContentHeight();
     if(cartReq > 0)
+      // As above: the tab bar, the frame inset above and below the content, and
+      // the pixel layoutRomArea() leaves below the tab.  The cart column's own
+      // margins are already in cartReq
       minHeight = std::max(minHeight,
-        cartReq + myRomTab->getTop() + myRomTab->getTabHeight() + 3);
+        cartReq + myRomTab->getTop() + myRomTab->getTabHeight()
+                + 2 * TabWidget::CONTENT_BORDER + 1);
   }
 
   return minHeight;

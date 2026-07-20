@@ -103,7 +103,7 @@ CartridgeDPCPlusWidget::CartridgeDPCPlusWidget(
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgeDPCPlusWidget::layoutContent(GUI::BoxLayout& col)
+void CartridgeDPCPlusWidget::layoutContent(GUI::BoxLayout& col) const
 {
   using GUI::BoxLayout;
   using GUI::anchoredItem;

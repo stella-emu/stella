@@ -35,13 +35,13 @@ class Cartridge4A50Widget : public CartDebugWidget
     string bankState() override;
 
   protected:
-    void layoutContent(GUI::BoxLayout& col) override;
+    void layoutContent(GUI::BoxLayout& col) const override;
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 
   private:
     // One region: a heading, with its ROM and RAM selectors indented beneath it
     void layoutRegion(GUI::BoxLayout& col, StaticTextWidget* label,
-                      PopUpWidget* rom, PopUpWidget* ram);
+                      PopUpWidget* rom, PopUpWidget* ram) const;
 
   private:
     Cartridge4A50& myCart;

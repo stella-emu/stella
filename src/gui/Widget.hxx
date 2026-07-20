@@ -55,10 +55,6 @@ class Widget : public GuiObject
     virtual int getTop() const { return _y; }
     virtual int getRight() const { return _x + getWidth(); }
     virtual int getBottom() const { return _y + getHeight(); }
-    // The height needed to display this container's fixed content without
-    // clipping; 0 unless recordContentHeight() has been called (e.g. for
-    // widgets which simply fill their available area)
-    int getContentHeight() const { return _contentHeight; }
     virtual void setPosX(int x);
     virtual void setPosY(int y);
     virtual void setPos(int x, int y);
@@ -207,7 +203,6 @@ class Widget : public GuiObject
       while ignoring the container, which is sized to fill the whole tab area.
       Used by resizeable dialogs to keep fixed tab content fully visible.
     */
-    void recordContentHeight();
 
   protected:
     void drawChain() override;
@@ -239,7 +234,6 @@ class Widget : public GuiObject
     int         _fontWidth{0};
     int         _fontHeight{0};
     int         _lineHeight{0};
-    int         _contentHeight{0};
     ColorId     _bgcolor{kWidColor};
     ColorId     _bgcolorhi{kWidColor};
     ColorId     _bgcolorlo{kBGColorLo};

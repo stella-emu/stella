@@ -100,7 +100,7 @@ void Cartridge3EWidget::createBankWidgets()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Cartridge3EWidget::layoutBankSelect(GUI::BoxLayout& col)
+void Cartridge3EWidget::layoutBankSelect(GUI::BoxLayout& col) const
 {
   using GUI::BoxLayout;
   using GUI::anchoredItem;

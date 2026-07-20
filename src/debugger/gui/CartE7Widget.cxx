@@ -79,7 +79,7 @@ void CartridgeE7Widget::initialize(GuiObject* boss,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgeE7Widget::layoutContent(GUI::BoxLayout& col)
+void CartridgeE7Widget::layoutContent(GUI::BoxLayout& col) const
 {
   using GUI::anchoredItem;
 

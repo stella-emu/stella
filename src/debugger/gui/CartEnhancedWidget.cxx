@@ -52,7 +52,7 @@ void CartridgeEnhancedWidget::createWidgets()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgeEnhancedWidget::layoutContent(GUI::BoxLayout& col)
+void CartridgeEnhancedWidget::layoutContent(GUI::BoxLayout& col) const
 {
   layoutPlusROM(col);
   layoutBankSelect(col);
@@ -173,7 +173,7 @@ void CartridgeEnhancedWidget::createPlusROM()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgeEnhancedWidget::layoutPlusROM(GUI::BoxLayout& col)
+void CartridgeEnhancedWidget::layoutPlusROM(GUI::BoxLayout& col) const
 {
   using GUI::anchoredItem;
   using GUI::labeledRow;
@@ -244,7 +244,7 @@ void CartridgeEnhancedWidget::createBankWidgets()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgeEnhancedWidget::layoutBankSelect(GUI::BoxLayout& col)
+void CartridgeEnhancedWidget::layoutBankSelect(GUI::BoxLayout& col) const
 {
   using GUI::anchoredItem;
 
@@ -298,7 +298,7 @@ string CartridgeEnhancedWidget::hotspotStr(int bank, int segment, bool prefix)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt16 CartridgeEnhancedWidget::bankSegs()
+uInt16 CartridgeEnhancedWidget::bankSegs() const
 {
   return myCart.myBankSegs;
 }

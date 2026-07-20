@@ -48,8 +48,8 @@ class Cartridge3EWidget : public CartridgeEnhancedWidget
     string description() override;
     void bankList(uInt16 bankCount, int seg, VariantList& items) override;
     void createBankWidgets() override;
-    void layoutBankSelect(GUI::BoxLayout& col) override;
-    uInt16 bankSegs() override { return 1; }
+    void layoutBankSelect(GUI::BoxLayout& col) const override;
+    uInt16 bankSegs() const override { return 1; }
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 
   private:

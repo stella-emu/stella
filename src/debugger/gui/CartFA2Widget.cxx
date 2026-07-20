@@ -51,7 +51,7 @@ void CartridgeFA2Widget::createFlashWidgets()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgeFA2Widget::layoutContent(GUI::BoxLayout& col)
+void CartridgeFA2Widget::layoutContent(GUI::BoxLayout& col) const
 {
   using GUI::BoxLayout;
   using GUI::anchoredItem;

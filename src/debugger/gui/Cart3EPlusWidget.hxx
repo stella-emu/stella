@@ -41,7 +41,7 @@ class Cartridge3EPlusWidget : public CartridgeEnhancedWidget
     string manufacturer() override { return "Thomas Jentzsch"; }
     string description() override;
     void createBankWidgets() override;
-    void layoutBankSelect(GUI::BoxLayout& col) override;
+    void layoutBankSelect(GUI::BoxLayout& col) const override;
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 
     void updateUIState();

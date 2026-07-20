@@ -53,16 +53,24 @@ void WrappedTextWidget::rewrap()
   // wrapping should have carried whole onto the next line
   const int usable = textWidth();
 
-  // Nothing sensible to wrap into until we have a width to speak of
+  // Nothing sensible to wrap into until we have a width to speak of.  We keep
+  // the line count we had (0 before the first wrap), which is what makes
+  // naturalSize() fall back to the floor -- see the class comment
   if(usable <= 0)
     return;
 
   const StringParser bs(myText, std::max(usable / _fontWidth, 1));
   const StringList& lines = bs.stringList();
   setList(lines);
+  myLines = static_cast<int>(lines.size());
+}
 
-  // Grow to fit the text, up to the line cap; the scrollbar covers any overflow
-  const int shown = std::min(std::max<int>(static_cast<int>(lines.size()), 3),
-                             static_cast<int>(myMaxLines));
-  StringListWidget::setHeight(shown * _lineHeight + 2);
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+Common::Size WrappedTextWidget::naturalSize() const
+{
+  // As many lines as the text came to, never fewer than the floor we always
+  // show and never more than the cap beyond which we scroll
+  const int shown = std::clamp(myLines, MIN_LINES, static_cast<int>(myMaxLines));
+
+  return Common::Size(std::max(_w, 0), heightForLines(shown));
 }

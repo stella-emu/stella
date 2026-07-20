@@ -56,6 +56,10 @@ class CartDebugWidget : public Widget, public CommandSender
     // reflow() so a cart tab re-flows live with the debugger window
     void setArea(int x, int y, int w, int h) override;
 
+    // My constructor cannot know how tall I am -- that is however tall the rows
+    // this cart contributes make me -- so report what my own layout tree comes to
+    Common::Size naturalSize() const override;
+
     // Lay this tab out for its current area and font.  EVERY cart tab has the
     // same skeleton -- one label column, the ROM info rows, the cart's own rows
     // beneath them, all within the shared margins -- so it is written once, here.
@@ -100,10 +104,16 @@ class CartDebugWidget : public Widget, public CommandSender
     // A cart adding to what its base class lays out calls the base first, then
     // appends; one REPLACING a part of it overrides that part instead (see
     // CartridgeEnhancedWidget's bank selectors)
-    virtual void layoutContent(GUI::BoxLayout& col) { }
+    virtual void layoutContent(GUI::BoxLayout& col) const { }
 
     // Append the ROM size / manufacturer / description rows to a vertical box
-    void layoutBaseInformation(GUI::BoxLayout& col);
+    void layoutBaseInformation(GUI::BoxLayout& col) const;
+
+  private:
+    // The whole tab as the engine sees it: the skeleton above, with this cart's
+    // own rows in the middle.  Built without positioning anything, so that
+    // reflow() and naturalSize() are the same layout asked two questions
+    unique_ptr<GUI::Layout> buildLayout() const;
 
   protected:
     // The controls sharing this tab's label column.  A control says it belongs

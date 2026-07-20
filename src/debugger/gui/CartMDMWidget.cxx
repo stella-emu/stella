@@ -52,7 +52,7 @@ string CartridgeMDMWidget::description()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgeMDMWidget::layoutBankSelect(GUI::BoxLayout& col)
+void CartridgeMDMWidget::layoutBankSelect(GUI::BoxLayout& col) const
 {
   using GUI::anchoredItem;
   using GUI::indentedItem;

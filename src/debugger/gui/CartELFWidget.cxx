@@ -58,7 +58,7 @@ void CartridgeELFWidget::initialize()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgeELFWidget::layoutContent(GUI::BoxLayout& col)
+void CartridgeELFWidget::layoutContent(GUI::BoxLayout& col) const
 {
   using GUI::anchoredItem;
   using GUI::stretchedItem;
@@ -68,7 +68,11 @@ void CartridgeELFWidget::layoutContent(GUI::BoxLayout& col)
   myLog->setWidth(contentWidth(_w));
 
   col.addSpace(_lineHeight / 2);
-  col.addAuto(stretchedItem(myLog));
+  // The log scrolls, so it is squeezable: a stretching cell between the floor it
+  // always shows and the height of its own text, which keeps the button below it
+  // on the tab however short the window gets
+  col.add(GUI::widgetItem(myLog, 0, myLog->minHeight()), GUI::SizePolicy::Stretch,
+          1, static_cast<int>(myLog->naturalSize().h), myLog->minHeight());
   col.addSpace(_lineHeight / 2);
   col.addAuto(anchoredItem(mySaveImageButton));
 }

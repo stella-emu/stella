@@ -51,7 +51,7 @@ class CartridgeCMWidget : public CartDebugWidget
     // End of functions for Cartridge RAM tab
 
   protected:
-    void layoutContent(GUI::BoxLayout& col) override;
+    void layoutContent(GUI::BoxLayout& col) const override;
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 
   private:

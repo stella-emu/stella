@@ -84,7 +84,7 @@ Cartridge4A50Widget::Cartridge4A50Widget(
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Cartridge4A50Widget::layoutContent(GUI::BoxLayout& col)
+void Cartridge4A50Widget::layoutContent(GUI::BoxLayout& col) const
 {
   // The ROM selectors form a column, as do the RAM ones: each gets one label
   // column, and all six get one box width, so the two columns line up down the tab
@@ -102,7 +102,7 @@ void Cartridge4A50Widget::layoutContent(GUI::BoxLayout& col)
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Cartridge4A50Widget::layoutRegion(GUI::BoxLayout& col, StaticTextWidget* label,
-                                       PopUpWidget* rom, PopUpWidget* ram)
+                                       PopUpWidget* rom, PopUpWidget* ram) const
 {
   using GUI::BoxLayout;
   using GUI::anchoredItem;

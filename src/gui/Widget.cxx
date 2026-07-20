@@ -45,21 +45,6 @@ Widget::Widget(GuiObject* boss, const GUI::Font& font,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Widget::recordContentHeight()
-{
-  // The content widgets are siblings (added to the same boss while this tab
-  // was built), so scan the boss's child list for the lowest visible widget,
-  // ignoring this container which is sized to fill the entire tab area
-  int maxBottom = 0;
-
-  for(const auto& w: _boss->_children)
-    if(w.get() != this && w->isVisible())
-      maxBottom = std::max(maxBottom, w->getBottom());
-
-  _contentHeight = maxBottom;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Widget::setDirty()
 {
   _dirty = true;

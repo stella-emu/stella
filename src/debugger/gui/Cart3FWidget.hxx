@@ -33,7 +33,7 @@ class Cartridge3FWidget : public CartridgeEnhancedWidget
   protected:
     string manufacturer() override { return "TigerVision"; }
     string description() override;
-    uInt16 bankSegs() override { return 1; }
+    uInt16 bankSegs() const override { return 1; }
 
   private:
     // Following constructors and assignment operators not supported

@@ -128,7 +128,7 @@ CartridgeCDFWidget::CartridgeCDFWidget(
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-unique_ptr<GUI::Layout> CartridgeCDFWidget::layoutDatastreams()
+unique_ptr<GUI::Layout> CartridgeCDFWidget::layoutDatastreams() const
 {
   using GUI::BoxLayout;
   using GUI::GridLayout;
@@ -177,7 +177,7 @@ unique_ptr<GUI::Layout> CartridgeCDFWidget::layoutDatastreams()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgeCDFWidget::layoutContent(GUI::BoxLayout& col)
+void CartridgeCDFWidget::layoutContent(GUI::BoxLayout& col) const
 {
   using GUI::BoxLayout;
   using GUI::anchoredItem;

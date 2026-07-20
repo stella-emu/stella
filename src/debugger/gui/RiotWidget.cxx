@@ -226,7 +226,7 @@ void RiotWidget::setArea(int x, int y, int w, int h)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void RiotWidget::reflow()
+unique_ptr<GUI::Layout> RiotWidget::buildLayout() const
 {
   using GUI::BoxLayout;
   using GUI::GridLayout;
@@ -394,10 +394,26 @@ void RiotWidget::reflow()
   root->addAuto(std::move(left));
   root->addAuto(std::move(right));
 
+  return root;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void RiotWidget::reflow()
+{
+  auto root = buildLayout();
+
+  // This tab does not fill its area, it sizes itself to its content: take the
+  // size the tree comes to, then lay out within it
   const Common::Size natural = root->naturalSize();
   _w = static_cast<int>(natural.w);
   _h = static_cast<int>(natural.h);
   root->doLayout(_x, _y, _w, _h);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+Common::Size RiotWidget::naturalSize() const
+{
+  return buildLayout()->naturalSize();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

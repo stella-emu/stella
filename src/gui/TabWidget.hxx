@@ -73,8 +73,15 @@ class TabWidget : public Widget, public CommandSender
     int getTabHeight() const { return _tabHeight; }
     int getActiveTab() const { return _activeTab; }
 
-    // The largest recorded content height over all tabs; tabs whose content
-    // simply fills the area (e.g. a list or prompt) report 0 and are ignored
+    // The frame inset between us and our active tab's content.  Public because
+    // a dialog deriving its own minimum from getMaxContentHeight() has to add
+    // back the insets that height was measured inside of
+    static constexpr int CONTENT_BORDER = 2;
+
+    // The height the tallest tab's content ASKS to be; tabs whose content simply
+    // fills the area (e.g. a list or prompt) report 0 and are ignored.  Answered
+    // from each content's own layout tree, so it holds before anything has been
+    // laid out -- which is what lets a dialog derive its minimum at build time
     int getMaxContentHeight() const;
 
     // The size we need for our largest tab's content, plus the tab bar and the
@@ -126,9 +133,6 @@ class TabWidget : public Widget, public CommandSender
         : title{t}, tabWidth{tw}, autoWidth{aw} { }
     };
     using TabList = vector<Tab>;
-
-    // The frame inset between us and our active tab's content
-    static constexpr int CONTENT_BORDER = 2;
 
     // The tab bar's height for the current font (what _tabHeight caches)
     int tabBarHeight() const { return _font.getLineHeight() + 4; }

@@ -47,6 +47,10 @@ class RomWidget : public Widget, public CommandSender
 
     void setArea(int x, int y, int w, int h) override;
 
+    // I fill whatever area I am given, so I have no height of my own to
+    // constrain the window with (see the note in TabWidget::naturalSize)
+    Common::Size naturalSize() const override { return {}; }
+
   protected:
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 

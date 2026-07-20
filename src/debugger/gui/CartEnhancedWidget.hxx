@@ -67,7 +67,7 @@ class CartridgeEnhancedWidget : public CartDebugWidget
     // The bank pop-up's entries; it sizes its own box to the widest of them
     virtual void bankList(uInt16 bankCount, int seg, VariantList& items);
     virtual string hotspotStr(int bank = 0, int segment = 0, bool prefix = false);
-    virtual uInt16 bankSegs(); // { return myCart.myBankSegs; }
+    virtual uInt16 bankSegs() const; // { return myCart.myBankSegs; }
 
     // Create this widget's content at placeholder positions (create-only ctor)
     void createWidgets();
@@ -77,9 +77,9 @@ class CartridgeEnhancedWidget : public CartDebugWidget
     // The PlusROM fields and the bank selectors, which every enhanced cart has.
     // A leaf adding rows of its own overrides layoutContent() and calls this
     // first; one that selects its banks differently overrides layoutBankSelect()
-    void layoutContent(GUI::BoxLayout& col) override;
-    void layoutPlusROM(GUI::BoxLayout& col);
-    virtual void layoutBankSelect(GUI::BoxLayout& col);
+    void layoutContent(GUI::BoxLayout& col) const override;
+    void layoutPlusROM(GUI::BoxLayout& col) const;
+    virtual void layoutBankSelect(GUI::BoxLayout& col) const;
 
   protected:
     enum { kBankChanged = 'bkCH' };

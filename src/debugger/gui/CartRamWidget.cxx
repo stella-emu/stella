@@ -58,7 +58,7 @@ CartRamWidget::CartRamWidget(
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartRamWidget::reflow()
+unique_ptr<GUI::Layout> CartRamWidget::buildLayout() const
 {
   using GUI::BoxLayout;
   using GUI::labeledRow;
@@ -75,15 +75,45 @@ void CartRamWidget::reflow()
   // filling row below will hand it -- the content, less the shared label column
   myDesc->setWidth(contentW - myDescLabel->getWidth());
 
-  BoxLayout col(BoxLayout::Dir::Vertical, CartDebugWidget::VGAP, 0,
-                CartDebugWidget::VBORDER);
+  auto col = std::make_unique<BoxLayout>(BoxLayout::Dir::Vertical,
+                CartDebugWidget::VGAP, 0, CartDebugWidget::VBORDER);
 
-  col.addAuto(labeledRow(myRamSizeLabel, myRamSize, 0, 0, true));
-  col.addAuto(labeledRow(myDescLabel, myDesc, 0, 0, true));
-  col.addSpace(_fontHeight / 2);
-  col.addStretch(widgetItem(myRam));
+  col->addAuto(labeledRow(myRamSizeLabel, myRamSize, 0, 0, true));
 
-  col.doLayout(_x + CartDebugWidget::HBORDER, _y, contentW, _h);
+  // The description scrolls, so it is squeezable: a stretching cell between the
+  // floor it always shows and the height of its own text, exactly as on the
+  // cart tab (see CartDebugWidget::layoutBaseInformation).  Only the floor is
+  // width-independent, which is what lets this column be measured before it has
+  // been sized.  The RAM view below is the last stretching cell, so it is what
+  // takes the slack the description's cap declines
+  auto descRow = std::make_unique<BoxLayout>(BoxLayout::Dir::Horizontal);
+  descRow->addFixed(GUI::anchoredItem(myDescLabel), myDescLabel->getWidth());
+  descRow->addStretch(widgetItem(myDesc, 0, myDesc->minHeight()));
+  col->add(std::move(descRow), GUI::SizePolicy::Stretch, 1,
+           static_cast<int>(myDesc->naturalSize().h), myDesc->minHeight());
+
+  col->addSpace(_fontHeight / 2);
+  col->addStretch(widgetItem(myRam));
+
+  return col;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void CartRamWidget::reflow()
+{
+  buildLayout()->doLayout(_x + CartDebugWidget::HBORDER, _y,
+                          CartDebugWidget::contentWidth(_w), _h);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+Common::Size CartRamWidget::naturalSize() const
+{
+  // The tree is laid out in the CONTENT rect, so what it comes to is my size
+  // less the horizontal margins reflow() insets it by
+  const Common::Size content = buildLayout()->naturalSize();
+
+  return Common::Size(content.w + CartDebugWidget::HBORDER
+                                + CartDebugWidget::RBORDER, content.h);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

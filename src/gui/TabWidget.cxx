@@ -106,9 +106,13 @@ int TabWidget::getMaxContentHeight() const
 {
   int maxHeight = 0;
 
+  // What each tab's content ASKS to be, not where it happens to sit: a widget
+  // that owns a layout tree answers from the tree, so this holds before anything
+  // has been laid out.  Content that simply fills reports 0 (see naturalSize)
   for(const auto& tab: _tabs)
-    if(tab.parentWidget != nullptr)
-      maxHeight = std::max(maxHeight, tab.parentWidget->getContentHeight());
+    if(tab.sizeContent && tab.parentWidget != nullptr)
+      maxHeight = std::max(maxHeight,
+                           static_cast<int>(tab.parentWidget->naturalSize().h));
 
   return maxHeight;
 }

@@ -34,7 +34,7 @@ class CartridgeFA2Widget : public CartridgeEnhancedWidget
   protected:
     string manufacturer() override { return "Chris D. Walton (Star Castle 2600 Arcade)"; }
     string description() override;
-    void layoutContent(GUI::BoxLayout& col) override;
+    void layoutContent(GUI::BoxLayout& col) const override;
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 
   private:

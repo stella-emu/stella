@@ -54,7 +54,7 @@ CartridgeARWidget::CartridgeARWidget(
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgeARWidget::layoutContent(GUI::BoxLayout& col)
+void CartridgeARWidget::layoutContent(GUI::BoxLayout& col) const
 {
   col.addAuto(GUI::anchoredItem(myBank));
 }

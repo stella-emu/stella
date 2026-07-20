@@ -32,21 +32,43 @@ CartDebugWidget::CartDebugWidget(GuiObject* boss, const GUI::Font& lfont,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartDebugWidget::reflow()
+unique_ptr<GUI::Layout> CartDebugWidget::buildLayout() const
 {
   using GUI::BoxLayout;
 
   // One label column for the whole tab, as wide as the longest label in it
   GUI::alignLabels(myLabelColumn);
 
-  // The horizontal margins are applied via the layout rect (below) so the right
-  // margin can be wider than the left; only the vertical margin lives here
-  BoxLayout col(BoxLayout::Dir::Vertical, VGAP, 0, VBORDER);
+  // The horizontal margins are applied via the layout rect (see reflow) so the
+  // right margin can be wider than the left; only the vertical margin lives here
+  auto col = std::make_unique<BoxLayout>(BoxLayout::Dir::Vertical, VGAP, 0, VBORDER);
 
-  layoutBaseInformation(col);
-  layoutContent(col);
+  layoutBaseInformation(*col);
+  layoutContent(*col);
 
-  col.doLayout(_x + HBORDER, _y, contentWidth(_w), _h);
+  // Soak up whatever the rows above did not need.  The description stretches
+  // (see layoutBaseInformation) but stops at the height of its own text, and a
+  // box hands the leftover to its LAST stretching cell -- so without this the
+  // description would be handed back the very slack its cap just declined
+  col->addStretchSpace(0);
+
+  return col;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void CartDebugWidget::reflow()
+{
+  buildLayout()->doLayout(_x + HBORDER, _y, contentWidth(_w), _h);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+Common::Size CartDebugWidget::naturalSize() const
+{
+  // The tree is laid out in the CONTENT rect, so what it comes to is my size
+  // less the horizontal margins reflow() insets it by
+  const Common::Size content = buildLayout()->naturalSize();
+
+  return Common::Size(content.w + HBORDER + RBORDER, content.h);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -78,7 +100,7 @@ void CartDebugWidget::createBaseInformation(size_t bytes, string_view manufactur
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartDebugWidget::layoutBaseInformation(GUI::BoxLayout& col)
+void CartDebugWidget::layoutBaseInformation(GUI::BoxLayout& col) const
 {
   using GUI::labeledRow;
 
@@ -96,7 +118,19 @@ void CartDebugWidget::layoutBaseInformation(GUI::BoxLayout& col)
 
   col.addAuto(labeledRow(myROMSizeLabel, myROMSize, 0, 0, true));
   col.addAuto(labeledRow(myManufacturerLabel, myManufacturer, 0, 0, true));
-  col.addAuto(labeledRow(myDescLabel, myDesc, 0, 0, true));
+
+  // The description is the one row here that can be SQUEEZED: it scrolls, so it
+  // gives up height before anything below it is pushed off the tab.  Hence a
+  // stretching cell rather than an Auto one -- between the floor it always shows
+  // and the height of its own text, so a roomy tab looks as it always did while
+  // a short one keeps the rows below visible.  Both ends come from the widget:
+  // only the floor is width-independent, which is what lets this column be
+  // measured before anything has been sized (see the class comment there)
+  auto descRow = std::make_unique<GUI::BoxLayout>(GUI::BoxLayout::Dir::Horizontal);
+  descRow->addFixed(GUI::anchoredItem(myDescLabel), myDescLabel->getWidth());
+  descRow->addStretch(GUI::widgetItem(myDesc, 0, myDesc->minHeight()));
+  col.add(std::move(descRow), GUI::SizePolicy::Stretch, 1,
+          static_cast<int>(myDesc->naturalSize().h), myDesc->minHeight());
 
   // Whatever the cart puts below the info block stands clear of it
   col.addSpace(_lineHeight / 2);

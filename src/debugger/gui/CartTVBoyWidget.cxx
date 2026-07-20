@@ -53,7 +53,7 @@ string CartridgeTVBoyWidget::description()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgeTVBoyWidget::layoutBankSelect(GUI::BoxLayout& col)
+void CartridgeTVBoyWidget::layoutBankSelect(GUI::BoxLayout& col) const
 {
   using GUI::anchoredItem;
   using GUI::indentedItem;

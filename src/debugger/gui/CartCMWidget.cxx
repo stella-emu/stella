@@ -96,7 +96,7 @@ CartridgeCMWidget::CartridgeCMWidget(
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgeCMWidget::layoutContent(GUI::BoxLayout& col)
+void CartridgeCMWidget::layoutContent(GUI::BoxLayout& col) const
 {
   using GUI::BoxLayout;
   using GUI::anchoredItem;

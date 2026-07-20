@@ -142,7 +142,7 @@ CartridgeBUSWidget::CartridgeBUSWidget(
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-unique_ptr<GUI::Layout> CartridgeBUSWidget::layoutDatastreams()
+unique_ptr<GUI::Layout> CartridgeBUSWidget::layoutDatastreams() const
 {
   using GUI::BoxLayout;
   using GUI::GridLayout;
@@ -188,7 +188,7 @@ unique_ptr<GUI::Layout> CartridgeBUSWidget::layoutDatastreams()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgeBUSWidget::layoutContent(GUI::BoxLayout& col)
+void CartridgeBUSWidget::layoutContent(GUI::BoxLayout& col) const
 {
   using GUI::BoxLayout;
   using GUI::anchoredItem;

@@ -41,6 +41,11 @@ class CartRamWidget : public Widget, public CommandSender
 
     void setArea(int x, int y, int w, int h) override;
 
+    // My constructor cannot know how tall I am -- that is however tall my fields
+    // make me -- so report what my own layout tree comes to.  The RAM view below
+    // them fills, and so adds nothing of its own
+    Common::Size naturalSize() const override;
+
   protected:
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 
@@ -48,6 +53,11 @@ class CartRamWidget : public Widget, public CommandSender
     // fields widen with it (the description re-wrapping itself), and the RAM view
     // fills whatever is left below them.  Driven by setArea()
     void reflow();
+
+  private:
+    // The tab as the engine sees it, built without positioning anything, so that
+    // reflow() and naturalSize() are the same layout asked two questions
+    unique_ptr<GUI::Layout> buildLayout() const;
 
   protected:
     // Font used for 'normal' text; _font is for 'label' text

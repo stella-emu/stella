@@ -35,7 +35,7 @@ class CartridgeARWidget : public CartDebugWidget
     string bankState() override;
 
   protected:
-    void layoutContent(GUI::BoxLayout& col) override;
+    void layoutContent(GUI::BoxLayout& col) const override;
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 
   private:

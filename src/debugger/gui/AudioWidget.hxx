@@ -37,6 +37,10 @@ class AudioWidget : public Widget, public CommandSender
     // lay the registers/labels out for the available width (recomputes _h)
     void setArea(int x, int y, int w, int h) override;
 
+    // My constructor cannot know how tall I am -- that is however tall
+    // my register rows make me -- so report what my own layout tree comes to
+    Common::Size naturalSize() const override;
+
   protected:
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 
@@ -44,6 +48,10 @@ class AudioWidget : public Widget, public CommandSender
     // Build the layout tree from the current font and position/size the
     // registers within the current width; shared by the ctor and setArea()
     void reflow();
+
+    // The register rows as the engine sees them, built without positioning
+    // anything, so reflow() and naturalSize() are one layout asked two questions
+    unique_ptr<GUI::Layout> buildLayout() const;
 
   private:
     // ID's for the various widgets

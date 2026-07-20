@@ -97,7 +97,7 @@ void CartridgeARMWidget::createCycleWidgets()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgeARMWidget::layoutContent(GUI::BoxLayout& col)
+void CartridgeARMWidget::layoutContent(GUI::BoxLayout& col) const
 {
   using GUI::BoxLayout;
   using GUI::GridLayout;
