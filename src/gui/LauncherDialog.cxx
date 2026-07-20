@@ -72,9 +72,8 @@ namespace {
 class DividerWidget : public Widget, public CommandSender
 {
   public:
-    DividerWidget(GuiObject* boss, const GUI::Font& font,
-                  int x, int y, int w, int h, int cmd)
-      : Widget(boss, font, x, y, w, h),
+    DividerWidget(GuiObject* boss, const GUI::Font& font, int w, int cmd)
+      : Widget(boss, font, 0, 0, w, 0),
         CommandSender(boss),
         myCmd{cmd}
     {
@@ -156,26 +155,26 @@ void LauncherDialog::addFilteringWidgets()
 {
   WidgetArray wid;
   // NOLINTBEGIN(cppcoreguidelines-prefer-member-initializer)
-  myReloadButton = new ButtonWidget(this, _font, 0, 0,
+  myReloadButton = new ButtonWidget(this, _font,
                                     GUI::icon_reload_small, kReloadCmd);
   myReloadButton->setToolTip("Reload listing (Ctrl+R)");
   wid.push_back(myReloadButton);
 
-  myFilterLabel = new StaticTextWidget(this, _font, 0, 0, "Filter");
+  myFilterLabel = new StaticTextWidget(this, _font, "Filter");
 
-  myPattern = new EditTextWidget(this, _font, 0, 0, 1, "");
+  myPattern = new EditTextWidget(this, _font, 1, "");
   myPattern->setToolTip("Enter filter text to reduce file list.\n"
     "Use '*' and '?' as wildcards.");
   wid.push_back(myPattern);
 
-  mySubDirsButton = new ButtonWidget(this, _font, 0, 0,
+  mySubDirsButton = new ButtonWidget(this, _font,
                                      GUI::icon_reload_small, kSubDirsCmd);
   mySubDirsButton->setToolTip("Toggle subdirectories (Ctrl+D)");
   wid.push_back(mySubDirsButton);
 
-  myRomCount = new StaticTextWidget(this, _font, 0, 0, "", TextAlign::Right);
+  myRomCount = new StaticTextWidget(this, _font, "", TextAlign::Right);
 
-  myRandomRomButton = new ButtonWidget(this, _font, 0, 0,
+  myRandomRomButton = new ButtonWidget(this, _font,
                                        GUI::icon_random_small, kLoadRndRomCmd);
 #ifndef BSPF_MACOS
   myRandomRomButton->setToolTip("Load random ROM (Alt+R)");
@@ -184,7 +183,7 @@ void LauncherDialog::addFilteringWidgets()
 #endif
   wid.push_back(myRandomRomButton);
 
-  mySettingsButton = new ButtonWidget(this, _font, 0, 0,
+  mySettingsButton = new ButtonWidget(this, _font,
     GUI::icon_settings_small, "Options" + ELLIPSIS, kOptionsCmd);
   mySettingsButton->setToolTip("Open Options dialog (Ctrl+O)");
   wid.push_back(mySettingsButton);
@@ -199,10 +198,10 @@ void LauncherDialog::addPathWidgets()
   WidgetArray wid;
   // The navigation bar; its geometry (and that of its children) is assigned by
   // layout()
-  myNavigationBar = new NavigationWidget(this, _font, 0, 0, _w, Dialog::buttonHeight());
+  myNavigationBar = new NavigationWidget(this, _font);
 
   // Help icon (variant/size re-picked in layout())
-  myHelpButton = new ButtonWidget(this, _font, 0, 0,
+  myHelpButton = new ButtonWidget(this, _font,
                                   GUI::icon_help_small, kHelpCmd);
   myHelpButton->setToolTip(std::format("Click for help. ({})",
     instance().eventHandler().getMappingDesc(Event::UIHelp, EventMode::kMenuMode)));
@@ -252,7 +251,7 @@ int LauncherDialog::addRomWidgets()
 
   // remember initial ROM directory for returning there via home button
   instance().settings().setValue("startromdir", getRomDir());
-  myList = new LauncherFileListWidget(this, _font, 0, 0, 1, 1);
+  myList = new LauncherFileListWidget(this, _font);
   myList->setEditable(false);
   myList->setListMode(FSNode::ListMode::All);
   // since we cannot know how many files there are, use a really high value here
@@ -272,12 +271,11 @@ int LauncherDialog::addRomWidgets()
 
     // Now we have the correct font height
     imageHeight = imageWidth + RomImageWidget::labelHeight(*myROMInfoFont);
-    myRomImageWidget = new RomImageWidget(this, *myROMInfoFont, 0, 0,
-                                          imageWidth, imageHeight);
+    myRomImageWidget = new RomImageWidget(this, *myROMInfoFont);
     wid.push_back(myRomImageWidget);
-    myRomInfoWidget = new RomInfoWidget(this, *myROMInfoFont, 0, 0, imageWidth, 1);
+    myRomInfoWidget = new RomInfoWidget(this, *myROMInfoFont);
     // Draggable divider between the list and the ROM info column
-    myDivider = new DividerWidget(this, _font, 0, 0, fontWidth, 1, kRomWidthCmd);
+    myDivider = new DividerWidget(this, _font, fontWidth, kRomWidthCmd);
   }
   return addToFocusList(wid);
 }
@@ -288,22 +286,22 @@ void LauncherDialog::addButtonWidgets()
   WidgetArray wid;
   // Four equal-width buttons at the bottom; geometry assigned by layout()
 #ifndef BSPF_MACOS
-  myStartButton   = new ButtonWidget(this, _font, 0, 0, 1, 1, "Select", kLoadROMCmd);
+  myStartButton   = new ButtonWidget(this, _font, 1, 1, "Select", kLoadROMCmd);
   wid.push_back(myStartButton);
-  myGoUpButton    = new ButtonWidget(this, _font, 0, 0, 1, 1, "Go Up", ListWidget::kParentDirCmd);
+  myGoUpButton    = new ButtonWidget(this, _font, 1, 1, "Go Up", ListWidget::kParentDirCmd);
   wid.push_back(myGoUpButton);
-  myOptionsButton = new ButtonWidget(this, _font, 0, 0, 1, 1, "Options" + ELLIPSIS, kOptionsCmd);
+  myOptionsButton = new ButtonWidget(this, _font, 1, 1, "Options" + ELLIPSIS, kOptionsCmd);
   wid.push_back(myOptionsButton);
-  myQuitButton    = new ButtonWidget(this, _font, 0, 0, 1, 1, "Quit", kQuitCmd);
+  myQuitButton    = new ButtonWidget(this, _font, 1, 1, "Quit", kQuitCmd);
   wid.push_back(myQuitButton);
 #else
-  myQuitButton    = new ButtonWidget(this, _font, 0, 0, 1, 1, "Quit", kQuitCmd);
+  myQuitButton    = new ButtonWidget(this, _font, 1, 1, "Quit", kQuitCmd);
   wid.push_back(myQuitButton);
-  myOptionsButton = new ButtonWidget(this, _font, 0, 0, 1, 1, "Options" + ELLIPSIS, kOptionsCmd);
+  myOptionsButton = new ButtonWidget(this, _font, 1, 1, "Options" + ELLIPSIS, kOptionsCmd);
   wid.push_back(myOptionsButton);
-  myGoUpButton    = new ButtonWidget(this, _font, 0, 0, 1, 1, "Go Up", ListWidget::kParentDirCmd);
+  myGoUpButton    = new ButtonWidget(this, _font, 1, 1, "Go Up", ListWidget::kParentDirCmd);
   wid.push_back(myGoUpButton);
-  myStartButton   = new ButtonWidget(this, _font, 0, 0, 1, 1, "Select", kLoadROMCmd);
+  myStartButton   = new ButtonWidget(this, _font, 1, 1, "Select", kLoadROMCmd);
   wid.push_back(myStartButton);
 #endif
   myStartButton->setToolTip("Start emulation of selected ROM\nor switch to selected directory.");

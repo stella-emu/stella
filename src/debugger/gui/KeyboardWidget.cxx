@@ -28,7 +28,7 @@ KeyboardWidget::KeyboardWidget(GuiObject* boss, const GUI::Font& font,
   // NOLINTBEGIN(cppcoreguidelines-prefer-member-initializer)
   for(int i = 0; i < 12; ++i)
   {
-    myBox[i] = new CheckboxWidget(boss, font, 0, 0, "",
+    myBox[i] = new CheckboxWidget(boss, font, "",
                                   CheckboxWidget::kCheckActionCmd);
     myBox[i]->setID(i);
     myBox[i]->setTarget(this);

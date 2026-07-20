@@ -32,8 +32,7 @@ class CheckListWidget : public ListWidget
     enum { kListItemChecked = 'LIct' /* checkbox toggled on current line*/ };
 
   public:
-    CheckListWidget(GuiObject* boss, const GUI::Font& font,
-                    int x, int y, int w, int h);
+    CheckListWidget(GuiObject* boss, const GUI::Font& font);
     ~CheckListWidget() override = default;
 
     void setList(const StringList& list, const BoolArray& state);

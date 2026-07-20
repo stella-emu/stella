@@ -224,52 +224,52 @@ TimeMachineDialog::TimeMachineDialog(OSystem& osystem, DialogContainer& parent,
 
   // NOLINTBEGIN(cppcoreguidelines-prefer-member-initializer)
   // Index info (current + last state index)
-  myCurrentIdxWidget = new StaticTextWidget(this, font, 0, 0, "1000", TextAlign::Left, kBGColor);
+  myCurrentIdxWidget = new StaticTextWidget(this, font, "1000", TextAlign::Left, kBGColor);
   myCurrentIdxWidget->setTextColor(kColorInfo);
   myCurrentIdxWidget->setFlags(Widget::FLAG_CLEARBG | Widget::FLAG_NOBG);
-  myLastIdxWidget = new StaticTextWidget(this, font, 0, 0, "1000", TextAlign::Right, kBGColor);
+  myLastIdxWidget = new StaticTextWidget(this, font, "1000", TextAlign::Right, kBGColor);
   myLastIdxWidget->setFlags(Widget::FLAG_CLEARBG | Widget::FLAG_NOBG);
   myLastIdxWidget->setTextColor(kColorInfo);
 
   // Timeline scrubber
-  myTimeline = new TimeLineWidget(this, font, 0, 0, _w, "", 0, kTimeline);
+  myTimeline = new TimeLineWidget(this, font, _w, "", 0, kTimeline);
   myTimeline->setMinValue(0);
 
   // Time info (current + last time)
-  myCurrentTimeWidget = new StaticTextWidget(this, font, 0, 0, "00:00.00", TextAlign::Left, kBGColor);
+  myCurrentTimeWidget = new StaticTextWidget(this, font, "00:00.00", TextAlign::Left, kBGColor);
   myCurrentTimeWidget->setFlags(Widget::FLAG_CLEARBG | Widget::FLAG_NOBG);
   myCurrentTimeWidget->setTextColor(kColorInfo);
-  myLastTimeWidget = new StaticTextWidget(this, font, 0, 0, "00:00.00", TextAlign::Right, kBGColor);
+  myLastTimeWidget = new StaticTextWidget(this, font, "00:00.00", TextAlign::Right, kBGColor);
   myLastTimeWidget->setFlags(Widget::FLAG_CLEARBG | Widget::FLAG_NOBG);
   myLastTimeWidget->setTextColor(kColorInfo);
 
   // Buttons
-  myToggleWidget = new ButtonWidget(this, font, 0, 0, BUTTON_WIDTH, BUTTON_HEIGHT,
+  myToggleWidget = new ButtonWidget(this, font, BUTTON_WIDTH, BUTTON_HEIGHT,
                                     STOP.data(), BUTTON_W, BUTTON_H, kToggle);
   myToggleWidget->setToolTip("Toggle Time Machine mode.");
-  myExitWidget = new ButtonWidget(this, font, 0, 0, BUTTON_WIDTH, BUTTON_HEIGHT,
+  myExitWidget = new ButtonWidget(this, font, BUTTON_WIDTH, BUTTON_HEIGHT,
                                   EXIT.data(), BUTTON_W, BUTTON_H, kExit);
   myExitWidget->setToolTip("Exit Time Machine dialog.");
-  myRewindAllWidget = new ButtonWidget(this, font, 0, 0, BUTTON_WIDTH, BUTTON_HEIGHT,
+  myRewindAllWidget = new ButtonWidget(this, font, BUTTON_WIDTH, BUTTON_HEIGHT,
                                        REWIND_ALL.data(), BUTTON_W, BUTTON_H, kRewindAll);
-  myRewind1Widget = new ButtonWidget(this, font, 0, 0, BUTTON_WIDTH, BUTTON_HEIGHT,
+  myRewind1Widget = new ButtonWidget(this, font, BUTTON_WIDTH, BUTTON_HEIGHT,
                                      REWIND_1.data(), BUTTON_W, BUTTON_H, kRewind1, true);
-  myPlayBackWidget = new ButtonWidget(this, font, 0, 0, BUTTON_WIDTH, BUTTON_HEIGHT,
+  myPlayBackWidget = new ButtonWidget(this, font, BUTTON_WIDTH, BUTTON_HEIGHT,
                                       PLAYBACK.data(), BUTTON_W, BUTTON_H, kPlayBack);
   myPlayBackWidget->setToolTip("Start playback of Time Machine states.");
-  myUnwind1Widget = new ButtonWidget(this, font, 0, 0, BUTTON_WIDTH, BUTTON_HEIGHT,
+  myUnwind1Widget = new ButtonWidget(this, font, BUTTON_WIDTH, BUTTON_HEIGHT,
                                      UNWIND_1.data(), BUTTON_W, BUTTON_H, kUnwind1, true);
-  myUnwindAllWidget = new ButtonWidget(this, font, 0, 0, BUTTON_WIDTH, BUTTON_HEIGHT,
+  myUnwindAllWidget = new ButtonWidget(this, font, BUTTON_WIDTH, BUTTON_HEIGHT,
                                        UNWIND_ALL.data(), BUTTON_W, BUTTON_H, kUnwindAll);
-  mySaveAllWidget = new ButtonWidget(this, font, 0, 0, BUTTON_WIDTH, BUTTON_HEIGHT,
+  mySaveAllWidget = new ButtonWidget(this, font, BUTTON_WIDTH, BUTTON_HEIGHT,
                                      SAVE_ALL.data(), BUTTON_W, BUTTON_H, kSaveAll);
   mySaveAllWidget->setToolTip("Save all Time Machine states.");
-  myLoadAllWidget = new ButtonWidget(this, font, 0, 0, BUTTON_WIDTH, BUTTON_HEIGHT,
+  myLoadAllWidget = new ButtonWidget(this, font, BUTTON_WIDTH, BUTTON_HEIGHT,
                                      LOAD_ALL.data(), BUTTON_W, BUTTON_H, kLoadAll);
   myLoadAllWidget->setToolTip("Load all Time Machine states.");
 
   // Message (fills the space between the buttons and the last-time readout)
-  myMessageWidget = new StaticTextWidget(this, font, 0, 0, "",
+  myMessageWidget = new StaticTextWidget(this, font, "",
                                          TextAlign::Left, kBGColor);
   myMessageWidget->setFlags(Widget::FLAG_CLEARBG | Widget::FLAG_NOBG);
   myMessageWidget->setTextColor(kColorInfo);

@@ -142,24 +142,24 @@ void CartridgeEnhancedWidget::createPlusROM()
   if(!myCart.isPlusROM())
     return;
 
-  myPlusROMLabel = new StaticTextWidget(_boss, _font, 0, 0, "PlusROM:");
+  myPlusROMLabel = new StaticTextWidget(_boss, _font, "PlusROM:");
 
-  myPlusROMHostLabel = new StaticTextWidget(_boss, _font, 0, 0, "Host");
-  myPlusROMHostWidget = new EditTextWidget(_boss, _font, 0, 0, 1, _lineHeight,
+  myPlusROMHostLabel = new StaticTextWidget(_boss, _font, "Host");
+  myPlusROMHostWidget = new EditTextWidget(_boss, _font, 1, _lineHeight,
                                            myCart.myPlusROM->getHost());
   myPlusROMHostWidget->setEditable(false);
 
-  myPlusROMPathLabel = new StaticTextWidget(_boss, _font, 0, 0, "Path");
-  myPlusROMPathWidget = new EditTextWidget(_boss, _font, 0, 0, 1, _lineHeight,
+  myPlusROMPathLabel = new StaticTextWidget(_boss, _font, "Path");
+  myPlusROMPathWidget = new EditTextWidget(_boss, _font, 1, _lineHeight,
                                            myCart.myPlusROM->getPath());
   myPlusROMPathWidget->setEditable(false);
 
-  myPlusROMSendLabel = new StaticTextWidget(_boss, _font, 0, 0, "Send");
-  myPlusROMSendWidget = new EditTextWidget(_boss, _nfont, 0, 0, 1);
+  myPlusROMSendLabel = new StaticTextWidget(_boss, _font, "Send");
+  myPlusROMSendWidget = new EditTextWidget(_boss, _nfont, 1);
   myPlusROMSendWidget->setEditable(false);
 
-  myPlusROMReceiveLabel = new StaticTextWidget(_boss, _font, 0, 0, "Receive");
-  myPlusROMReceiveWidget = new EditTextWidget(_boss, _nfont, 0, 0, 1);
+  myPlusROMReceiveLabel = new StaticTextWidget(_boss, _font, "Receive");
+  myPlusROMReceiveWidget = new EditTextWidget(_boss, _nfont, 1);
   myPlusROMReceiveWidget->setEditable(false);
 
   // The fields line up with the ROM info fields above them, their labels indented
@@ -232,7 +232,7 @@ void CartridgeEnhancedWidget::createBankWidgets()
       ? std::format("Set bank for segment #{}", seg)
       : "Set bank";
 
-    myBankWidgets[seg] = new PopUpWidget(_boss, _font, 0, 0, items, label,
+    myBankWidgets[seg] = new PopUpWidget(_boss, _font, items, label,
                                          0, kBankChanged);
     myBankWidgets[seg]->setTarget(this);
     myBankWidgets[seg]->setID(seg);

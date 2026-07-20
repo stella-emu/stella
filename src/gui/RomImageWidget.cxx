@@ -30,17 +30,14 @@
 #include "RomImageWidget.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-RomImageWidget::RomImageWidget(GuiObject* boss, const GUI::Font& font,
-                               int x, int y, int w, int h)
-  : Widget(boss, font, x, y, w, h),
-    myImageHeight{_h - labelHeight(font) - font.getFontHeight() / 4 - 1}
+RomImageWidget::RomImageWidget(GuiObject* boss, const GUI::Font& font)
+  : Widget(boss, font, 0, 0, 0, 0)
 {
   _flags = Widget::FLAG_ENABLED | Widget::FLAG_TRACK_MOUSE; // | FLAG_WANTS_RAWDATA;
   _bgcolor = kDlgColor;
   _bgcolorlo = kBGColorLo;
 
-  myZoomRect = Common::Rect(_w * 7 / 16, myImageHeight * 7 / 16,
-                            _w * 9 / 16, myImageHeight * 9 / 16);
+  // myImageHeight and the zoom rect follow the area, which setArea() gives us
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -80,25 +80,25 @@ void Cartridge3EPlusWidget::createBankWidgets()
     VariantList items;
     const size_t bank_off = static_cast<size_t>(seg) * 2;
 
-    mySegLabel[seg] = new StaticTextWidget(_boss, _font, 0, 0,
+    mySegLabel[seg] = new StaticTextWidget(_boss, _font,
         std::format("Set segment {} as", seg));
 
     CartridgeEnhancedWidget::bankList(std::max(myCart.romBankCount(), myCart.ramBankCount()),
                                       seg, items);
     myBankWidgets[seg] =
-      new PopUpWidget(_boss, _font, 0, 0, items, "Bank", 0, kBankChanged);
+      new PopUpWidget(_boss, _font, items, "Bank", 0, kBankChanged);
     myBankWidgets[seg]->setID(seg);
     myBankWidgets[seg]->setTarget(this);
     addFocusWidget(myBankWidgets[seg]);
 
     myBankType[seg] =
-      new PopUpWidget(_boss, _font, 0, 0, banktype, "of", 0, kRomRamChanged);
+      new PopUpWidget(_boss, _font, banktype, "of", 0, kRomRamChanged);
     myBankType[seg]->setID(seg);
     myBankType[seg]->setTarget(this);
     addFocusWidget(myBankType[seg]);
 
     // add "Commit" button (why required?)
-    myBankCommit[seg] = new ButtonWidget(_boss, _font, 0, 0,
+    myBankCommit[seg] = new ButtonWidget(_boss, _font,
                                          "Commit", kChangeBank);
     myBankCommit[seg]->setID(seg);
     myBankCommit[seg]->setTarget(this);
@@ -106,14 +106,14 @@ void Cartridge3EPlusWidget::createBankWidgets()
 
     const int addr1 = start + (seg * 0x400), addr2 = addr1 + 0x200;
 
-    myAddrLabel[bank_off] = new StaticTextWidget(_boss, _font, 0, 0,
+    myAddrLabel[bank_off] = new StaticTextWidget(_boss, _font,
         std::format("${}-${}", Base::hex4(addr1), Base::hex4(addr1 + 0x1FF)));
-    myBankState[bank_off] = new EditTextWidget(_boss, _font, 0, 0, 1, "");
+    myBankState[bank_off] = new EditTextWidget(_boss, _font, 1, "");
     myBankState[bank_off]->setEditable(false, true);
 
-    myAddrLabel[bank_off + 1] = new StaticTextWidget(_boss, _font, 0, 0,
+    myAddrLabel[bank_off + 1] = new StaticTextWidget(_boss, _font,
         std::format("${}-${}", Base::hex4(addr2), Base::hex4(addr2 + 0x1FF)));
-    myBankState[bank_off + 1] = new EditTextWidget(_boss, _font, 0, 0, 1, "");
+    myBankState[bank_off + 1] = new EditTextWidget(_boss, _font, 1, "");
     myBankState[bank_off + 1]->setEditable(false, true);
   }
 }

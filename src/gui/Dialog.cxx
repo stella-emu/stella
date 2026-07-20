@@ -173,7 +173,7 @@ void Dialog::initHelp()
 
       const int helpWidth = static_cast<int>(std::lround(_font.getMaxCharWidth() *
                                                          3.5));
-      _helpWidget = new ButtonWidget(this, _font, 0, 0,
+      _helpWidget = new ButtonWidget(this, _font,
         helpWidth, buttonHeight(), "?", kHelpCmd);
       _helpWidget->setBGColor(kColorTitleBar);
       _helpWidget->setTextColor(kColorTitleText);
@@ -1040,7 +1040,7 @@ void Dialog::addOKBGroup(WidgetArray& wid, const GUI::Font& font,
 {
   // Created at a placeholder position; the button sizes itself to its label and
   // layoutButtonGroup() places it
-  addOKWidget(new ButtonWidget(this, font, 0, 0, okText, GuiObject::kCloseCmd));
+  addOKWidget(new ButtonWidget(this, font, okText, GuiObject::kCloseCmd));
   wid.push_back(_okWidget);
 
   _w = std::max(buttonGroupWidth(), _w);
@@ -1054,8 +1054,8 @@ void Dialog::addOKCancelBGroup(WidgetArray& wid, const GUI::Font& font,
 {
   // Created at placeholder positions; each button sizes itself to its label, and
   // layoutButtonGroup() gives the group one width and positions it
-  addOKWidget(new ButtonWidget(this, font, 0, 0, okText, GuiObject::kOKCmd));
-  addCancelWidget(new ButtonWidget(this, font, 0, 0, cancelText,
+  addOKWidget(new ButtonWidget(this, font, okText, GuiObject::kOKCmd));
+  addCancelWidget(new ButtonWidget(this, font, cancelText,
                                    GuiObject::kCloseCmd));
 
   _w = std::max(buttonGroupWidth(), _w);
@@ -1197,7 +1197,7 @@ void Dialog::addDefaultsOKCancelBGroup(WidgetArray& wid, const GUI::Font& font,
                                        string_view defaultsText,
                                        bool focusOKButton)
 {
-  addDefaultWidget(new ButtonWidget(this, font, 0, 0, defaultsText,
+  addDefaultWidget(new ButtonWidget(this, font, defaultsText,
                                     GuiObject::kDefaultsCmd));
   wid.push_back(_defaultWidget);
 
@@ -1211,11 +1211,11 @@ void Dialog::addDefaultsExtraOKCancelBGroup(
       string_view okText, string_view cancelText, string_view defaultsText,
       bool focusOKButton)
 {
-  addDefaultWidget(new ButtonWidget(this, font, 0, 0, defaultsText,
+  addDefaultWidget(new ButtonWidget(this, font, defaultsText,
                                     GuiObject::kDefaultsCmd));
   wid.push_back(_defaultWidget);
 
-  addExtraWidget(new ButtonWidget(this, font, 0, 0, extraText, extraCmd));
+  addExtraWidget(new ButtonWidget(this, font, extraText, extraCmd));
   wid.push_back(_extraWidget);
 
   addOKCancelBGroup(wid, font, okText, cancelText, focusOKButton);

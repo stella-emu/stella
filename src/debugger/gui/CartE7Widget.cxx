@@ -65,12 +65,12 @@ void CartridgeE7Widget::initialize(GuiObject* boss,
   for(int i = 0; i < 4; ++i)
     VarList::push_back(items1, getSpotUpper(i));
 
-  myLower2K = new PopUpWidget(boss, _font, 0, 0, items0,
+  myLower2K = new PopUpWidget(boss, _font, items0,
                               "Set bank for lower 2K segment", 0, kLowerChanged);
   myLower2K->setTarget(this);
   addFocusWidget(myLower2K);
 
-  myUpper256B = new PopUpWidget(boss, _font, 0, 0, items1,
+  myUpper256B = new PopUpWidget(boss, _font, items1,
                                 "Set bank for upper 256B segment", 0, kUpperChanged);
   myUpper256B->setTarget(this);
   addFocusWidget(myUpper256B);

@@ -49,7 +49,7 @@ CartridgeCTYWidget::CartridgeCTYWidget(
   VarList::push_back(items, "6 ($FFFA)");
   VarList::push_back(items, "7 ($FFFB)");
 
-  myBank = new PopUpWidget(boss, _font, 0, 0, items, "Set bank", 0, kBankChanged);
+  myBank = new PopUpWidget(boss, _font, items, "Set bank", 0, kBankChanged);
   myBank->setTarget(this);
   addFocusWidget(myBank);
 

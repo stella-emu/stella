@@ -53,8 +53,7 @@ PromptWidget::PromptWidget(GuiObject* boss, const GUI::Font& font)
   // Add scrollbar
   // We want to initialize here, not in the member list
   // NOLINTNEXTLINE(cppcoreguidelines-prefer-member-initializer)
-  _scrollBar = new ScrollBarWidget(boss, font, _x + _w, _y,
-                                   ScrollBarWidget::scrollBarWidth(_font), _h);
+  _scrollBar = new ScrollBarWidget(boss, font);
   _scrollBar->setTarget(this);
 
   myUndoHandler = std::make_unique<UndoHandler>();

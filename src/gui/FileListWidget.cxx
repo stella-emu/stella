@@ -25,9 +25,8 @@
 #include "FileListWidget.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FileListWidget::FileListWidget(GuiObject* boss, const GUI::Font& font,
-                               int x, int y, int w, int h)
-  : StringListWidget(boss, font, x, y, w, h),
+FileListWidget::FileListWidget(GuiObject* boss, const GUI::Font& font)
+  : StringListWidget(boss, font),
     _filter{[](const FSNode&) { return true; }}
 {
   // This widget is special, in that it catches signals and redirects them

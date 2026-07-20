@@ -49,19 +49,19 @@ CartridgeCDFWidget::CartridgeCDFWidget(
     VarList::push_back(items, "6 ($FFFB)");
   }
   // Every widget is created at a placeholder position; reflow() positions them
-  myBank = new PopUpWidget(boss, _font, 0, 0, items, "Set bank", 0, kBankChanged);
+  myBank = new PopUpWidget(boss, _font, items, "Set bank", 0, kBankChanged);
   myBank->setTarget(this);
   addFocusWidget(myBank);
   myLabelColumn.emplace_back(myBank);
 
   // Fast Fetch flag, and (CDFJ+) the offset it fetches from
-  myFastFetch = new CheckboxWidget(boss, _font, 0, 0, "Fast Fetcher enabled");
+  myFastFetch = new CheckboxWidget(boss, _font, "Fast Fetcher enabled");
   myFastFetch->setTarget(this);
   myFastFetch->setEditable(false);
 
   if(isCDFJplus())
   {
-    myFastFetchOffsetLabel = new StaticTextWidget(_boss, _font, 0, 0, "Fast Fetch Offset:");
+    myFastFetchOffsetLabel = new StaticTextWidget(_boss, _font, "Fast Fetch Offset:");
 
     myFastFetcherOffset = new DataGridWidget(boss, _nfont, 1, 1, 2, 8,
                                              Common::Base::Fmt::_16_2);
@@ -79,12 +79,12 @@ CartridgeCDFWidget::CartridgeCDFWidget(
 
   // The datastream table: pointers on the left, increments on the right, with the
   // command and jump streams on rows of their own beneath them
-  myPointersLabel = new StaticTextWidget(boss, _font, 0, 0, "Datastream Pointers");
+  myPointersLabel = new StaticTextWidget(boss, _font, "Datastream Pointers");
   addGrid(myDatastreamPointers,     4, 8, 6, 32, Common::Base::Fmt::_16_3_2);
   addGrid(myCommandStreamPointer,   1, 1, 6, 32, Common::Base::Fmt::_16_3_2);
   addGrid(myJumpStreamPointers, jump2 ? 2 : 1, 1, 6, 32, Common::Base::Fmt::_16_3_2);
 
-  myIncrementsLabel = new StaticTextWidget(boss, _font, 0, 0, "Datastream Increments");
+  myIncrementsLabel = new StaticTextWidget(boss, _font, "Datastream Increments");
   addGrid(myDatastreamIncrements,   4, 8, 5, 32, Common::Base::Fmt::_16_2_2);
   addGrid(myCommandStreamIncrement, 1, 1, 5, 32, Common::Base::Fmt::_16_2_2);
   addGrid(myJumpStreamIncrements, jump2 ? 2 : 1, 1, 5, 32, Common::Base::Fmt::_16_2_2);
@@ -92,34 +92,34 @@ CartridgeCDFWidget::CartridgeCDFWidget(
   // The stream each table row holds: the first eight by number, then the named ones
   for(uInt32 row = 0; row < 8; ++row)
     myDatastreamLabels[row] =
-      new StaticTextWidget(_boss, _font, 0, 0,
+      new StaticTextWidget(_boss, _font,
                            Common::Base::toString(row * 4, Common::Base::Fmt::_16_2));
 
-  myDatastreamLabels[8] = new StaticTextWidget(_boss, _font, 0, 0, "Write Data (20)");
-  myDatastreamLabels[9] = new StaticTextWidget(_boss, _font, 0, 0,
+  myDatastreamLabels[8] = new StaticTextWidget(_boss, _font, "Write Data (20)");
+  myDatastreamLabels[9] = new StaticTextWidget(_boss, _font,
                             jump2 ? "Jump Data (21|22)" : "Jump Data (21)");
 
   // Music states
-  myMusicLabel = new StaticTextWidget(_boss, _font, 0, 0, "Music States:");
+  myMusicLabel = new StaticTextWidget(_boss, _font, "Music States:");
 
-  myCountersLabel = new StaticTextWidget(boss, _font, 0, 0, "Counters");
+  myCountersLabel = new StaticTextWidget(boss, _font, "Counters");
   addGrid(myMusicCounters,      3, 1, 8, 32, Common::Base::Fmt::_16_8);
 
-  myFrequenciesLabel = new StaticTextWidget(boss, _font, 0, 0, "Frequencies");
+  myFrequenciesLabel = new StaticTextWidget(boss, _font, "Frequencies");
   addGrid(myMusicFrequencies,   3, 1, 8, 32, Common::Base::Fmt::_16_8);
 
-  myWaveformsLabel = new StaticTextWidget(boss, _font, 0, 0, "Waveforms");
+  myWaveformsLabel = new StaticTextWidget(boss, _font, "Waveforms");
   addGrid(myMusicWaveforms,     3, 1, 8, 16, Common::Base::Fmt::_16_2);
 
-  myWaveformSizesLabel = new StaticTextWidget(boss, _font, 0, 0, "Waveform Sizes");
+  myWaveformSizesLabel = new StaticTextWidget(boss, _font, "Waveform Sizes");
   addGrid(myMusicWaveformSizes, 3, 1, 8, 16, Common::Base::Fmt::_16_2);
 
   // Digital Audio flag, and the sample it plays from
-  myDigitalSample = new CheckboxWidget(boss, _font, 0, 0, "Digital Sample mode");
+  myDigitalSample = new CheckboxWidget(boss, _font, "Digital Sample mode");
   myDigitalSample->setTarget(this);
   myDigitalSample->setEditable(false);
 
-  mySamplePointerLabel = new StaticTextWidget(boss, _font, 0, 0, "Sample Pointer");
+  mySamplePointerLabel = new StaticTextWidget(boss, _font, "Sample Pointer");
   addGrid(mySamplePointer,      1, 1, 8, 32, Common::Base::Fmt::_16_8);
 
   createCycleWidgets();

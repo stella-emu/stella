@@ -36,7 +36,7 @@ class ColorWidget : public Widget, public CommandSender
 
   public:
     ColorWidget(GuiObject* boss, const GUI::Font& font,
-                int x, int y, int w, int h, int cmd = 0, bool framed = true);
+                int w, int h, int cmd = 0, bool framed = true);
     ~ColorWidget() override = default;
 
     void setColor(ColorId color);

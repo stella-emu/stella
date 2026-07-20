@@ -27,8 +27,7 @@ class GuiObject;
 class ScrollBarWidget : public Widget, public CommandSender
 {
   public:
-    ScrollBarWidget(GuiObject* boss, const GUI::Font& font,
-                    int x, int y, int w, int h);
+    ScrollBarWidget(GuiObject* boss, const GUI::Font& font);
     ~ScrollBarWidget() override = default;
 
     void recalc();

@@ -29,12 +29,12 @@ JoystickWidget::JoystickWidget(GuiObject* boss, const GUI::Font& font,
   // NOLINTBEGIN(cppcoreguidelines-prefer-member-initializer)
   for(int i = kJUp; i <= kJRight; ++i)
   {
-    myPins[i] = new CheckboxWidget(boss, font, 0, 0, "",
+    myPins[i] = new CheckboxWidget(boss, font, "",
                                    CheckboxWidget::kCheckActionCmd);
     myPins[i]->setID(i);
     myPins[i]->setTarget(this);
   }
-  myPins[kJFire] = new CheckboxWidget(boss, font, 0, 0, "Fire",
+  myPins[kJFire] = new CheckboxWidget(boss, font, "Fire",
                                       CheckboxWidget::kCheckActionCmd);
   myPins[kJFire]->setID(kJFire);
   myPins[kJFire]->setTarget(this);

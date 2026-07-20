@@ -59,7 +59,7 @@ OptionsDialog::OptionsDialog(OSystem& osystem, DialogContainer& parent,
   // NOLINTBEGIN(cppcoreguidelines-prefer-member-initializer)
   const auto ADD_OD_BUTTON = [&](string_view label, int cmd, string_view toolTip = {})
   {
-    auto* bw = new ButtonWidget(this, _font, 0, 0, label, cmd);
+    auto* bw = new ButtonWidget(this, _font, label, cmd);
     bw->setToolTip(toolTip);
     myButtons.push_back(bw);
     wid.push_back(bw);
@@ -103,7 +103,7 @@ OptionsDialog::OptionsDialog(OSystem& osystem, DialogContainer& parent,
   // Centered Close button on its own row spanning both columns.  The padding is
   // its own: a button centers its text, so a roomier label simply makes a roomier
   // button, and it still sizes itself
-  auto* closeButton = new ButtonWidget(this, _font, 0, 0, "   Close   ", kExitCmd);
+  auto* closeButton = new ButtonWidget(this, _font, "   Close   ", kExitCmd);
   myButtons.push_back(closeButton);
   wid.push_back(closeButton);
   addCancelWidget(closeButton);

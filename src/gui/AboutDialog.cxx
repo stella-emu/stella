@@ -35,28 +35,28 @@ AboutDialog::AboutDialog(OSystem& osystem, DialogContainer& parent,
 
   // Previous, Next and Close buttons
   myPrevButton =
-    new ButtonWidget(this, font, 0, 0, "Previous", GuiObject::kPrevCmd);
+    new ButtonWidget(this, font, "Previous", GuiObject::kPrevCmd);
   myPrevButton->clearFlags(Widget::FLAG_ENABLED);
   wid.push_back(myPrevButton);
 
   myNextButton =
-    new ButtonWidget(this, font, 0, 0, "Next", GuiObject::kNextCmd);
+    new ButtonWidget(this, font, "Next", GuiObject::kNextCmd);
   wid.push_back(myNextButton);
 
-  auto* b = new ButtonWidget(this, font, 0, 0, "Close", GuiObject::kCloseCmd);
+  auto* b = new ButtonWidget(this, font, "Close", GuiObject::kCloseCmd);
   wid.push_back(b);
   addCancelWidget(b);
 
-  myTitle = new StaticTextWidget(this, font, 0, 0, "", TextAlign::Center);
+  myTitle = new StaticTextWidget(this, font, "", TextAlign::Center);
   myTitle->setTextColor(kTextColorEm);
 
   myWhatsNewButton =
-    new ButtonWidget(this, font, 0, 0, "What's New" + ELLIPSIS, kWhatsNew);
+    new ButtonWidget(this, font, "What's New" + ELLIPSIS, kWhatsNew);
   wid.push_back(myWhatsNewButton);
 
   for(int i = 0; i < myLinesPerPage; i++)
   {
-    auto* s = new StaticTextWidget(this, font, 0, 0, "", TextAlign::Left, kNone);
+    auto* s = new StaticTextWidget(this, font, "", TextAlign::Left, kNone);
     s->setID(i);
     myDesc.push_back(s);
     myDescStr.emplace_back("");

@@ -29,7 +29,7 @@ class TimeLineWidget : public ButtonWidget
       thin is what I am, not something the dialog holding me decides.
     */
     TimeLineWidget(GuiObject* boss, const GUI::Font& font,
-                   int x, int y, int w, string_view label = "",
+                   int w, string_view label = "",
                    uInt32 labelWidth = 0, int cmd = 0);
 
     ~TimeLineWidget() override = default;

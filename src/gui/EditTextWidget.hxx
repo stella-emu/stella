@@ -26,7 +26,7 @@ class EditTextWidget : public EditableWidget
 {
   public:
     EditTextWidget(GuiObject* boss, const GUI::Font& font,
-                   int x, int y, int w, int h, string_view text = "");
+                   int w, int h, string_view text = "");
 
     /**
       A box of a single line: I take my height from the font, so a dialog states
@@ -34,7 +34,7 @@ class EditTextWidget : public EditableWidget
       For a box of several lines, pass calcHeight(font, lines) to the ctor above.
     */
     EditTextWidget(GuiObject* boss, const GUI::Font& font,
-                   int x, int y, int w, string_view text = "");
+                   int w, string_view text = "");
 
     ~EditTextWidget() override = default;
 

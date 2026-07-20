@@ -507,7 +507,7 @@ void DebuggerDialog::addTabArea()
   // The tab widget
   // Since there are two tab widgets in this dialog, we specifically
   // assign an ID of 0
-  myTab = new TabWidget(this, *myLFont, 0, 0, 1, 1);
+  myTab = new TabWidget(this, *myLFont);
   myTab->setID(0);
   addTabWidget(myTab);
 
@@ -559,7 +559,7 @@ void DebuggerDialog::addStatusArea()
   myTiaZoom = new TiaZoomWidget(this, *myNFont);
   addToFocusList(myTiaZoom->getFocusList());
 
-  myMessageBox = new EditTextWidget(this, *myLFont, 0, 0, 1,
+  myMessageBox = new EditTextWidget(this, *myLFont, 1,
                                     myLFont->getLineHeight());
   // NOLINTEND(cppcoreguidelines-prefer-member-initializer)
   myMessageBox->setEditable(false, false);
@@ -636,7 +636,7 @@ void DebuggerDialog::addRomArea()
   // NOLINTBEGIN(cppcoreguidelines-prefer-member-initializer)
   const auto addStepButton = [&](size_t idx, string_view label, int cmd,
                                  string_view tip, bool repeat) {
-    auto* b = new ButtonWidget(this, *myLFont, 0, 0, 1, 1, label, cmd, repeat);
+    auto* b = new ButtonWidget(this, *myLFont, 1, 1, label, cmd, repeat);
     b->setToolTip(tip);
     b->setHelpAnchor("GlobalButtons", true);
     myStepButtons[idx] = b;
@@ -649,20 +649,20 @@ void DebuggerDialog::addRomArea()
   addStepButton(4, "Run",      kDDRunCmd,   "Escape", false);
 
   myRewindButton =
-    new ButtonWidget(this, *myLFont, 0, 0, 1, 1,
+    new ButtonWidget(this, *myLFont, 1, 1,
                      LEFT_ARROW.data(), 7, 11, kDDRewindCmd, true);
   myRewindButton->setToolTip("Alt[+Shift]+Left");
   myRewindButton->setHelpAnchor("GlobalButtons", true);
   myRewindButton->clearFlags(Widget::FLAG_ENABLED);
 
   myUnwindButton =
-    new ButtonWidget(this, *myLFont, 0, 0, 1, 1,
+    new ButtonWidget(this, *myLFont, 1, 1,
                      RIGHT_ARROW.data(), 7, 11, kDDUnwindCmd, true);
   myUnwindButton->setToolTip("Alt[+Shift]+Right");
   myUnwindButton->setHelpAnchor("GlobalButtons", true);
   myUnwindButton->clearFlags(Widget::FLAG_ENABLED);
 
-  myOptionsButton = new ButtonWidget(this, *myLFont, 0, 0, 1, 1,
+  myOptionsButton = new ButtonWidget(this, *myLFont, 1, 1,
                                      "Options" + ELLIPSIS, kDDOptionsCmd);
   wid1.push_back(myOptionsButton);
   wid1.push_back(myRewindButton);
@@ -689,7 +689,7 @@ void DebuggerDialog::addRomArea()
 
   // Since there are two tab widgets in this dialog, we specifically
   // assign an ID of 1
-  myRomTab = new TabWidget(this, *myLFont, 0, 0, 1, 1);
+  myRomTab = new TabWidget(this, *myLFont);
   myRomTab->setID(1);
   addTabWidget(myRomTab);
 

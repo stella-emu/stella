@@ -100,7 +100,7 @@ void MessageBox::createText(const GUI::Font& font, const StringList& text)
 
   myText = text;
   for(const auto& s: text)
-    myTextWidgets.push_back(new StaticTextWidget(this, font, 0, 0, s,
+    myTextWidgets.push_back(new StaticTextWidget(this, font, s,
                                                  TextAlign::Left));
 }
 

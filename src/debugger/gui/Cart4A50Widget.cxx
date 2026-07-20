@@ -59,13 +59,13 @@ Cartridge4A50Widget::Cartridge4A50Widget(
   const auto addRegion = [&](StaticTextWidget*& label, string_view heading,
                              PopUpWidget*& rom, const VariantList& romItems, int romCmd,
                              PopUpWidget*& ram, const VariantList& ramItems, int ramCmd) {
-    label = new StaticTextWidget(_boss, _font, 0, 0, heading);
+    label = new StaticTextWidget(_boss, _font, heading);
 
-    rom = new PopUpWidget(boss, _font, 0, 0, romItems, "ROM", 0, romCmd);
+    rom = new PopUpWidget(boss, _font, romItems, "ROM", 0, romCmd);
     rom->setTarget(this);
     addFocusWidget(rom);
 
-    ram = new PopUpWidget(boss, _font, 0, 0, ramItems, "RAM", 0, ramCmd);
+    ram = new PopUpWidget(boss, _font, ramItems, "RAM", 0, ramCmd);
     ram->setTarget(this);
     addFocusWidget(ram);
   };

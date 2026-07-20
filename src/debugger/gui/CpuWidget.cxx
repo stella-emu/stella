@@ -40,7 +40,7 @@ CpuWidget::CpuWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& n
   // Create every widget; reflow() positions and sizes them for the area the
   // parent layout gives us
   // NOLINTBEGIN(cppcoreguidelines-prefer-member-initializer)
-  myPCText = new StaticTextWidget(boss, lfont, 0, 0, "PC", TextAlign::Left);
+  myPCText = new StaticTextWidget(boss, lfont, "PC", TextAlign::Left);
   myPCGrid = new DataGridWidget(boss, nfont, 1, 1, 4, 16, Common::Base::Fmt::_16);
   myPCGrid->setHelpAnchor("CPURegisters", true);
   myPCGrid->setTarget(this);
@@ -48,7 +48,7 @@ CpuWidget::CpuWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& n
   addFocusWidget(myPCGrid);
 
   // Read-only textbox containing the current PC label
-  myPCLabel = new EditTextWidget(boss, nfont, 0, 0, 1, fontHeight + 1, "");
+  myPCLabel = new EditTextWidget(boss, nfont, 1, fontHeight + 1, "");
   myPCLabel->setEditable(false, true);
 
   // 1x4 grid with labels for the other CPU registers
@@ -74,7 +74,7 @@ CpuWidget::CpuWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& n
   // Labels showing the source of data for the SP/A/X/Y registers
   for(int i = 0; i < 4; ++i)
   {
-    myCpuDataSrc[i] = new EditTextWidget(boss, nfont, 0, 0, 1, fontHeight + 1);
+    myCpuDataSrc[i] = new EditTextWidget(boss, nfont, 1, fontHeight + 1);
     myCpuDataSrc[i]->setToolTip("Source label of last read for " + labels[i] + ".");
     myCpuDataSrc[i]->setEditable(false, true);
   }
@@ -82,21 +82,21 @@ CpuWidget::CpuWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& n
   // Row labels for the other CPU registers and the '#'/'%' value prefixes
   for(int row = 0; row < 4; ++row)
   {
-    myRegLabels[row] = new StaticTextWidget(boss, lfont, 0, 0, labels[row], TextAlign::Left);
-    myDecPrefix[row] = new StaticTextWidget(boss, lfont, 0, 0, "#");
-    myBinPrefix[row] = new StaticTextWidget(boss, lfont, 0, 0, "%");
+    myRegLabels[row] = new StaticTextWidget(boss, lfont, labels[row], TextAlign::Left);
+    myDecPrefix[row] = new StaticTextWidget(boss, lfont, "#");
+    myBinPrefix[row] = new StaticTextWidget(boss, lfont, "%");
   }
 
   // Bitfield widget for changing the processor status
-  myPSText = new StaticTextWidget(boss, lfont, 0, 0, "PS", TextAlign::Left);
+  myPSText = new StaticTextWidget(boss, lfont, "PS", TextAlign::Left);
   myPSRegister = new ToggleBitWidget(boss, nfont, 8, 1);
   myPSRegister->setHelpAnchor("CPURegisters", true);
   myPSRegister->setTarget(this);
   addFocusWidget(myPSRegister);
 
   // Last write destination address
-  myDestText = new StaticTextWidget(boss, lfont, 0, 0, "Dest");
-  myCpuDataDest = new EditTextWidget(boss, nfont, 0, 0, 1, fontHeight + 1);
+  myDestText = new StaticTextWidget(boss, lfont, "Dest");
+  myCpuDataDest = new EditTextWidget(boss, nfont, 1, fontHeight + 1);
   myCpuDataDest->setToolTip("Destination label of last write.");
   myCpuDataDest->setEditable(false, true);
   // NOLINTEND(cppcoreguidelines-prefer-member-initializer)

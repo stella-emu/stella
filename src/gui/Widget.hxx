@@ -288,11 +288,10 @@ class StaticTextWidget : public Widget, public CommandSender
 
   public:
     StaticTextWidget(GuiObject* boss, const GUI::Font& font,
-                     int x, int y, int w, int h,
+                     int w, int h,
                      string_view text = "", TextAlign align = TextAlign::Left,
                      ColorId shadowColor = kNone);
     StaticTextWidget(GuiObject* boss, const GUI::Font& font,
-                     int x, int y,
                      string_view text = "", TextAlign align = TextAlign::Left,
                      ColorId shadowColor = kNone);
     ~StaticTextWidget() override = default;
@@ -356,7 +355,7 @@ class ButtonWidget : public StaticTextWidget
 {
   public:
     ButtonWidget(GuiObject* boss, const GUI::Font& font,
-                 int x, int y, int w, int h,
+                 int w, int h,
                  string_view label, int cmd = 0, bool repeat = false);
     /**
       Take this width, but size your own height.  For a button whose LABEL is not
@@ -365,7 +364,7 @@ class ButtonWidget : public StaticTextWidget
       otherwise resize under the user.  Everything else uses the ctor below.
     */
     ButtonWidget(GuiObject* boss, const GUI::Font& font,
-                 int x, int y, int w,
+                 int w,
                  string_view label, int cmd = 0, bool repeat = false);
 
     /**
@@ -379,7 +378,6 @@ class ButtonWidget : public StaticTextWidget
       neighbours needs, so the LAYOUT equalizes them — see GUI::alignButtons().
     */
     ButtonWidget(GuiObject* boss, const GUI::Font& font,
-                 int x, int y,
                  string_view label, int cmd = 0, bool repeat = false);
     /**
       A raw bitmap, at a size you give me.  For the caller that draws its own
@@ -388,7 +386,7 @@ class ButtonWidget : public StaticTextWidget
       of the two below, which need no size at all.
     */
     ButtonWidget(GuiObject* boss, const GUI::Font& font,
-                 int x, int y, int dw, int dh,
+                 int dw, int dh,
                  const uInt32* bitmap, int bmw, int bmh,
                  int cmd = 0, bool repeat = false);
 
@@ -400,11 +398,9 @@ class ButtonWidget : public StaticTextWidget
       state — just calls setIcon(), and I re-size to it.
     */
     ButtonWidget(GuiObject* boss, const GUI::Font& font,
-                 int x, int y,
                  const GUI::Icon& icon,
                  int cmd = 0, bool repeat = false);
     ButtonWidget(GuiObject* boss, const GUI::Font& font,
-                 int x, int y,
                  const GUI::Icon& icon, string_view label,
                  int cmd = 0, bool repeat = false);
     ~ButtonWidget() override = default;
@@ -541,7 +537,7 @@ class CheckboxWidget : public ButtonWidget
     enum class FillType: uInt8 { Normal, Inactive, Circle };
 
   public:
-    CheckboxWidget(GuiObject* boss, const GUI::Font& font, int x, int y,
+    CheckboxWidget(GuiObject* boss, const GUI::Font& font,
                    string_view label, int cmd = 0);
     ~CheckboxWidget() override = default;
 
@@ -601,7 +597,7 @@ class SliderWidget : public ButtonWidget
 {
   public:
     SliderWidget(GuiObject* boss, const GUI::Font& font,
-                 int x, int y, int w, int h,
+                 int w, int h,
                  string_view label = "", int labelWidth = 0, int cmd = 0,
                  int valueLabelWidth = 0, string_view valueUnit = "",
                  int valueLabelGap = 0, bool forceLabelSign = false);
@@ -611,14 +607,13 @@ class SliderWidget : public ButtonWidget
       dialog wants is its own decision; how tall a slider is never was.
     */
     SliderWidget(GuiObject* boss, const GUI::Font& font,
-                 int x, int y, int w,
+                 int w,
                  string_view label = "", int labelWidth = 0, int cmd = 0,
                  int valueLabelWidth = 0, string_view valueUnit = "",
                  int valueLabelGap = 0, bool forceLabelSign = false);
 
     // ...and with a default track width as well
     SliderWidget(GuiObject* boss, const GUI::Font& font,
-                 int x, int y,
                  string_view label = "", int labelWidth = 0, int cmd = 0,
                  int valueLabelWidth = 0, string_view valueUnit = "",
                  int valueLabelGap = 0, bool forceLabelSign = false);

@@ -35,8 +35,7 @@ class Settings;
 class LauncherFileListWidget : public FileListWidget
 {
   public:
-    LauncherFileListWidget(GuiObject* boss, const GUI::Font& font,
-      int x, int y, int w, int h);
+    LauncherFileListWidget(GuiObject* boss, const GUI::Font& font);
     ~LauncherFileListWidget() override = default;
 
     void loadFavorites();

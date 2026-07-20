@@ -73,14 +73,14 @@ void InputTextDialog::initialize(const GUI::Font& lfont, const GUI::Font& nfont,
   // placeholder width would report that width and collapse the column
   for(const auto& label: labels)
   {
-    myLabel.push_back(new StaticTextWidget(this, lfont, 0, 0, label));
+    myLabel.push_back(new StaticTextWidget(this, lfont, label));
 
-    auto* w = new EditTextWidget(this, nfont, 0, 0, 1);
+    auto* w = new EditTextWidget(this, nfont, 1);
     wid.push_back(w);
     myInput.push_back(w);
   }
 
-  myMessage = new StaticTextWidget(this, lfont, 0, 0);
+  myMessage = new StaticTextWidget(this, lfont);
   myMessage->setTextColor(kTextColorEm);
 
   addToFocusList(wid);

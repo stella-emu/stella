@@ -49,7 +49,7 @@ LoggerDialog::LoggerDialog(OSystem& osystem, DialogContainer& parent,
   // NOLINTBEGIN(cppcoreguidelines-prefer-member-initializer)
   // Scrollable listing of the log output
   myLogInfo = new StringListWidget(this, uselargefont ? font :
-                  instance().frameBuffer().infoFont(), 0, 0, 1, 1, false);
+                  instance().frameBuffer().infoFont(), false);
   myLogInfo->setEditable(false);
   wid.push_back(myLogInfo);
 
@@ -58,16 +58,16 @@ LoggerDialog::LoggerDialog(OSystem& osystem, DialogContainer& parent,
   VarList::push_back(items, "None", static_cast<int>(Logger::Level::ERR));
   VarList::push_back(items, "Basic", static_cast<int>(Logger::Level::INFO));
   VarList::push_back(items, "Verbose", static_cast<int>(Logger::Level::DEBUG));
-  myLogLevel = new PopUpWidget(this, font, 0, 0, items, "Log level");
+  myLogLevel = new PopUpWidget(this, font, items, "Log level");
   wid.push_back(myLogLevel);
 
   // Should log output also be shown on the console?
-  myLogToConsole = new CheckboxWidget(this, font, 0, 0, "Print to console");
+  myLogToConsole = new CheckboxWidget(this, font, "Print to console");
   wid.push_back(myLogToConsole);
 
   // 'Save log to disk' occupies the left (Defaults) slot of the button group,
   // with OK/Cancel on the right
-  addDefaultWidget(new ButtonWidget(this, font, 0, 0,
+  addDefaultWidget(new ButtonWidget(this, font,
                    "Save log to disk" + ELLIPSIS, GuiObject::kDefaultsCmd));
   wid.push_back(_defaultWidget);
   addOKCancelBGroup(wid, font);

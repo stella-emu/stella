@@ -514,10 +514,10 @@ void Widget::refreshFontMetricsInList(const WidgetList& list)
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 StaticTextWidget::StaticTextWidget(GuiObject* boss, const GUI::Font& font,
-                                   int x, int y, int w, int h,
+                                   int w, int h,
                                    string_view text, TextAlign align,
                                    ColorId shadowColor)
-  : Widget(boss, font, x, y, w, h),
+  : Widget(boss, font, 0, 0, w, h),
     CommandSender(boss),
     _label{text},
     _align{align}
@@ -533,10 +533,10 @@ StaticTextWidget::StaticTextWidget(GuiObject* boss, const GUI::Font& font,
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 StaticTextWidget::StaticTextWidget(GuiObject* boss, const GUI::Font& font,
-                                   int x, int y,
+                                   
                                    string_view text, TextAlign align,
                                    ColorId shadowColor)
-  : StaticTextWidget(boss, font, x, y, font.getStringWidth(text),
+  : StaticTextWidget(boss, font, font.getStringWidth(text),
                      font.getLineHeight(), text, align, shadowColor)
 {
 }
@@ -686,9 +686,9 @@ void StaticTextWidget::drawWidget(bool hilite)
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ButtonWidget::ButtonWidget(GuiObject* boss, const GUI::Font& font,
-                           int x, int y, int w, int h,
+                           int w, int h,
                            string_view label, int cmd, bool repeat)
-  : StaticTextWidget(boss, font, x, y, w, h, label, TextAlign::Center),
+  : StaticTextWidget(boss, font, w, h, label, TextAlign::Center),
     _repeat{repeat}
 {
   _cmd = cmd;
@@ -703,17 +703,17 @@ ButtonWidget::ButtonWidget(GuiObject* boss, const GUI::Font& font,
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ButtonWidget::ButtonWidget(GuiObject* boss, const GUI::Font& font,
-                           int x, int y, int w,
+                           int w,
                            string_view label, int cmd, bool repeat)
-  : ButtonWidget(boss, font, x, y, w, calcHeight(font), label, cmd, repeat)
+  : ButtonWidget(boss, font, w, calcHeight(font), label, cmd, repeat)
 {
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ButtonWidget::ButtonWidget(GuiObject* boss, const GUI::Font& font,
-                           int x, int y,
+                           
                            string_view label, int cmd, bool repeat)
-  : ButtonWidget(boss, font, x, y, calcWidth(font, label), calcHeight(font),
+  : ButtonWidget(boss, font, calcWidth(font, label), calcHeight(font),
                  label, cmd, repeat)
 {
   _autoSize = true;
@@ -721,10 +721,10 @@ ButtonWidget::ButtonWidget(GuiObject* boss, const GUI::Font& font,
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ButtonWidget::ButtonWidget(GuiObject* boss, const GUI::Font& font,
-                           int x, int y, int w, int h,
+                           int w, int h,
                            const uInt32* bitmap, int bmw, int bmh,
                            int cmd, bool repeat)
-  : ButtonWidget(boss, font, x, y, w, h, "", cmd, repeat)
+  : ButtonWidget(boss, font, w, h, "", cmd, repeat)
 {
   _useBitmap = true;
   _useText = false;
@@ -735,10 +735,10 @@ ButtonWidget::ButtonWidget(GuiObject* boss, const GUI::Font& font,
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ButtonWidget::ButtonWidget(GuiObject* boss, const GUI::Font& font,
-                           int x, int y,
+                           
                            const GUI::Icon& icon,
                            int cmd, bool repeat)
-  : ButtonWidget(boss, font, x, y, icon.width() + iconGap(font), calcHeight(font),
+  : ButtonWidget(boss, font, icon.width() + iconGap(font), calcHeight(font),
                  icon.bitmap(), icon.width(), icon.height(), cmd, repeat)
 {
   _autoSize = true;
@@ -746,10 +746,10 @@ ButtonWidget::ButtonWidget(GuiObject* boss, const GUI::Font& font,
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ButtonWidget::ButtonWidget(GuiObject* boss, const GUI::Font& font,
-                           int x, int y,
+                           
                            const GUI::Icon& icon, string_view label,
                            int cmd, bool repeat)
-  : ButtonWidget(boss, font, x, y,
+  : ButtonWidget(boss, font,
                  icon.width() + iconGap(font) * 1.5 + font.getStringWidth(label),
                  calcHeight(font), label, cmd, repeat)
 {
@@ -881,9 +881,9 @@ void ButtonWidget::drawWidget(bool hilite)
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CheckboxWidget::CheckboxWidget(GuiObject* boss, const GUI::Font& font,
-                               int x, int y, string_view label,
+                               string_view label,
                                int cmd)
-  : ButtonWidget(boss, font, x, y, font.isLarge() ? 24 : 16,
+  : ButtonWidget(boss, font, font.isLarge() ? 24 : 16,
                  font.isLarge() ? 24 : 16, label, cmd),
     _boxSize{boxSize(font)}
 {
@@ -1048,11 +1048,11 @@ void CheckboxWidget::drawWidget(bool hilite)
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 SliderWidget::SliderWidget(GuiObject* boss, const GUI::Font& font,
-                           int x, int y, int w, int h,
+                           int w, int h,
                            string_view label, int labelWidth, int cmd,
                            int valueLabelWidth, string_view valueUnit, int valueLabelGap,
                            bool forceLabelSign)
-  : ButtonWidget(boss, font, x, y, w, h, label, cmd),
+  : ButtonWidget(boss, font, w, h, label, cmd),
     _labelWidth{labelWidth},
     _valueUnit{valueUnit},
     _valueLabelGap{valueLabelGap},
@@ -1076,11 +1076,11 @@ SliderWidget::SliderWidget(GuiObject* boss, const GUI::Font& font,
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 SliderWidget::SliderWidget(GuiObject* boss, const GUI::Font& font,
-                           int x, int y, int w,
+                           int w,
                            string_view label, int labelWidth, int cmd,
                            int valueLabelWidth, string_view valueUnit, int valueLabelGap,
                            bool forceLabelSign)
-  : SliderWidget(boss, font, x, y, w, font.getLineHeight(),
+  : SliderWidget(boss, font, w, font.getLineHeight(),
                  label, labelWidth, cmd, valueLabelWidth, valueUnit, valueLabelGap,
                  forceLabelSign)
 {
@@ -1088,11 +1088,11 @@ SliderWidget::SliderWidget(GuiObject* boss, const GUI::Font& font,
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 SliderWidget::SliderWidget(GuiObject* boss, const GUI::Font& font,
-                           int x, int y,
+                           
                            string_view label, int labelWidth, int cmd,
                            int valueLabelWidth, string_view valueUnit, int valueLabelGap,
                            bool forceLabelSign)
-  : SliderWidget(boss, font, x, y, font.getMaxCharWidth() * 10,
+  : SliderWidget(boss, font, font.getMaxCharWidth() * 10,
                  label, labelWidth, cmd, valueLabelWidth, valueUnit, valueLabelGap,
                  forceLabelSign)
 {

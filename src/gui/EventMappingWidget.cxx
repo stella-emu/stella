@@ -34,12 +34,10 @@
 static constexpr int ACTION_LINES = 2;
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-EventMappingWidget::EventMappingWidget(GuiObject* boss, const GUI::Font& font,
-                                       int x, int y, int w, int h)
-  : Widget(boss, font, x, y, w, h),
+EventMappingWidget::EventMappingWidget(GuiObject* boss, const GUI::Font& font)
+  : Widget(boss, font, 0, 0, 0, 0),
     CommandSender(boss)
 {
-  const int lineHeight = boss->dialog().lineHeight();
   VariantList items;
 
   // Widgets are only created here (at placeholder geometry); setArea() assigns
@@ -61,42 +59,42 @@ EventMappingWidget::EventMappingWidget(GuiObject* boss, const GUI::Font& font,
   VarList::push_back(items, "User Interface", Event::Group::Menu);
 
   // NOLINTBEGIN(cppcoreguidelines-prefer-member-initializer)
-  myFilterPopup = new PopUpWidget(boss, font, 0, 0, items, "Events", 0,
+  myFilterPopup = new PopUpWidget(boss, font, items, "Events", 0,
                                   kFilterCmd);
   myFilterPopup->setTarget(this);
   addFocusWidget(myFilterPopup);
 
-  myActionsList = new StringListWidget(boss, font, 0, 0, 1, lineHeight);
+  myActionsList = new StringListWidget(boss, font);
   myActionsList->setTarget(this);
   myActionsList->setEditable(false);
   addFocusWidget(myActionsList);
 
   // Remap, cancel, erase, reset and combo buttons (font-derived fixed width)
-  myMapButton = new ButtonWidget(boss, font, 0, 0,
+  myMapButton = new ButtonWidget(boss, font,
                                  "Map" + ELLIPSIS, kStartMapCmd);
   myMapButton->setTarget(this);
   addFocusWidget(myMapButton);
 
-  myCancelMapButton = new ButtonWidget(boss, font, 0, 0,
+  myCancelMapButton = new ButtonWidget(boss, font,
                                        "Cancel", kStopMapCmd);
   myCancelMapButton->setToolTip("Cancel current mapping.");
   myCancelMapButton->setTarget(this);
   myCancelMapButton->clearFlags(Widget::FLAG_ENABLED);
   addFocusWidget(myCancelMapButton);
 
-  myEraseButton = new ButtonWidget(boss, font, 0, 0,
+  myEraseButton = new ButtonWidget(boss, font,
                                    "Erase", kEraseCmd);
   myEraseButton->setTarget(this);
   myEraseButton->setToolTip("Erase any mapping for selected event.");
   addFocusWidget(myEraseButton);
 
-  myResetButton = new ButtonWidget(boss, font, 0, 0,
+  myResetButton = new ButtonWidget(boss, font,
                                    "Reset", kResetCmd);
   myResetButton->setToolTip("Reset mapping for selected event to defaults.");
   myResetButton->setTarget(this);
   addFocusWidget(myResetButton);
 
-  myComboButton = new ButtonWidget(boss, font, 0, 0,
+  myComboButton = new ButtonWidget(boss, font,
                                    "Combo" + ELLIPSIS, kComboCmd);
   myComboButton->setTarget(this);
   addFocusWidget(myComboButton);
@@ -110,8 +108,8 @@ EventMappingWidget::EventMappingWidget(GuiObject* boss, const GUI::Font& font,
   myComboDialog = std::make_unique<ComboDialog>(boss, font, EventHandler::getComboList());
 
   // Label and (read-only) display for the currently selected event's mapping
-  myActionLabel = new StaticTextWidget(boss, font, 0, 0, "Action");
-  myKeyMapping = new EditTextWidget(boss, font, 0, 0, 1,
+  myActionLabel = new StaticTextWidget(boss, font, "Action");
+  myKeyMapping = new EditTextWidget(boss, font, 1,
                                     EditTextWidget::calcHeight(font, ACTION_LINES), "");
   myKeyMapping->setEditable(false, true);
   myKeyMapping->clearFlags(Widget::FLAG_RETAIN_FOCUS);

@@ -58,7 +58,7 @@ CartridgeDPCWidget::CartridgeDPCWidget(
   for(int bank = 0; bank < 2; ++bank)
     VarList::push_back(items, std::format("#{} (${})", bank, Base::hex4(0xFFF8 + bank)));
 
-  myBank = new PopUpWidget(boss, _font, 0, 0, items, "Set bank", 0, kBankChanged);
+  myBank = new PopUpWidget(boss, _font, items, "Set bank", 0, kBankChanged);
   myBank->setTarget(this);
   addFocusWidget(myBank);
 
@@ -66,12 +66,12 @@ CartridgeDPCWidget::CartridgeDPCWidget(
   myLabelColumn.emplace_back(myBank);
 
   // The data fetcher registers, each a labelled row of a grid
-  myFetcherLabel = new StaticTextWidget(boss, _font, 0, 0, "Data fetchers");
+  myFetcherLabel = new StaticTextWidget(boss, _font, "Data fetchers");
 
   const auto addRegisters = [&](StaticTextWidget*& label, string_view text,
                                 DataGridWidget*& grid, int cols, int colchars,
                                 int bits, Common::Base::Fmt fmt) {
-    label = new StaticTextWidget(boss, _font, 0, 0, text);
+    label = new StaticTextWidget(boss, _font, text);
 
     grid = new DataGridWidget(boss, _nfont, cols, 1, colchars, bits, fmt);
     grid->setTarget(this);

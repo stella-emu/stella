@@ -40,7 +40,7 @@ class NavigationWidget : public Widget
         {
           public:
             FolderLinkWidget(GuiObject* boss, const GUI::Font& font,
-              int x, int y, int w, int h, string_view text, string_view path);
+              string_view text, string_view path);
             ~FolderLinkWidget() override = default;
 
             void setPath(string_view path) { myPath = path; }
@@ -63,7 +63,7 @@ class NavigationWidget : public Widget
 
       public:
         PathWidget(GuiObject* boss, CommandReceiver* target,
-          const GUI::Font& font, int x, int y, int w, int h);
+          const GUI::Font& font);
         ~PathWidget() override = default;
 
         void setPath(string_view path);
@@ -87,8 +87,7 @@ class NavigationWidget : public Widget
     }; // PathWidget
 
   public:
-    NavigationWidget(GuiObject* boss, const GUI::Font& font,
-      int x, int y, int w, int h);
+    NavigationWidget(GuiObject* boss, const GUI::Font& font);
     ~NavigationWidget() override = default;
 
     void setWidth(int w) override;

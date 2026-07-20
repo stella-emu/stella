@@ -35,17 +35,17 @@ CartRamWidget::CartRamWidget(
 {
   // Everything is created at a placeholder position; reflow() positions and
   // sizes it, and the description re-wraps itself, whenever our area changes
-  myRamSizeLabel = new StaticTextWidget(_boss, _font, 0, 0, "RAM size");
+  myRamSizeLabel = new StaticTextWidget(_boss, _font, "RAM size");
 
   const uInt32 ramsize = cartDebug.internalRamSize();
-  myRamSize = new EditTextWidget(boss, nfont, 0, 0, 1,
+  myRamSize = new EditTextWidget(boss, nfont, 1,
     ramsize >= 1024
       ? std::format("{} bytes / {}KB", ramsize, ramsize / 1024)
       : std::format("{} bytes", ramsize));
   myRamSize->setEditable(false);
 
-  myDescLabel = new StaticTextWidget(_boss, _font, 0, 0, "Description");
-  myDesc = new WrappedTextWidget(boss, nfont, 0, 0, 1, 1,
+  myDescLabel = new StaticTextWidget(_boss, _font, "Description");
+  myDesc = new WrappedTextWidget(boss, nfont,
                                  cartDebug.internalRamDescription(), MAX_DESC_LINES);
   myDesc->setEditable(false);
   myDesc->setEnabled(false);

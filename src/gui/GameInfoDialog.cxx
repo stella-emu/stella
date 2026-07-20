@@ -64,7 +64,7 @@ GameInfoDialog::GameInfoDialog(
   // dialog and positions everything from the current font.  The tab bar geometry
   // is recomputed in layout() via TabWidget::updateTabSizes().
   // NOLINTBEGIN(cppcoreguidelines-prefer-member-initializer)
-  myTab = new TabWidget(this, font, 0, 0, 1, 1);
+  myTab = new TabWidget(this, font);
   addTabWidget(myTab);
 
   //////////////////////////////////////////////////////////////////////////////
@@ -133,22 +133,22 @@ void GameInfoDialog::addEmulationTab()
   auto* pane = new TabPaneWidget(myTab, _font);
   myTab->setPaneWidget(tabID, pane);
 
-  myBSTypeLabel = new StaticTextWidget(pane, _font, 0, 0, "Type (*)");
+  myBSTypeLabel = new StaticTextWidget(pane, _font, "Type (*)");
   // The bankswitch and start-bank lists are refilled per ROM, so these two
   // cannot size themselves: the dialog says how wide an entry it will show
-  myBSType = new PopUpWidget(pane, _font, 0, 0,
+  myBSType = new PopUpWidget(pane, _font,
                              _font.getStringWidth("CM (SpectraVideo CompuMate)"),
                              items, "", 0, kBSTypeChanged);
   wid.push_back(myBSType);
-  myBSFilter = new CheckboxWidget(pane, _font, 0, 0, "Filter", kBSFilterChanged);
+  myBSFilter = new CheckboxWidget(pane, _font, "Filter", kBSFilterChanged);
   myBSFilter->setToolTip("Enable to filter types by ROM size");
   wid.push_back(myBSFilter);
 
-  myTypeDetected = new StaticTextWidget(pane, ifont, 0, 0,
+  myTypeDetected = new StaticTextWidget(pane, ifont,
                                         "CM (SpectraVideo CompuMate) detected");
 
   // Start bank
-  myStartBank = new PopUpWidget(pane, _font, 0, 0,
+  myStartBank = new PopUpWidget(pane, _font,
                                 _font.getStringWidth("AUTO"), items, "Start bank (*)");
   wid.push_back(myStartBank);
 
@@ -160,26 +160,26 @@ void GameInfoDialog::addEmulationTab()
   VarList::push_back(items, "NTSC-50", "NTSC50");
   VarList::push_back(items, "PAL-60", "PAL60");
   VarList::push_back(items, "SECAM-60", "SECAM60");
-  myFormat = new PopUpWidget(pane, _font, 0, 0, items, "TV format");
+  myFormat = new PopUpWidget(pane, _font, items, "TV format");
   myFormat->setToolTip(Event::FormatDecrease, Event::FormatIncrease);
   wid.push_back(myFormat);
 
-  myFormatDetected = new StaticTextWidget(pane, ifont, 0, 0, "SECAM-60 detected");
+  myFormatDetected = new StaticTextWidget(pane, ifont, "SECAM-60 detected");
 
   // Phosphor
-  myPhosphor = new CheckboxWidget(pane, _font, 0, 0,
+  myPhosphor = new CheckboxWidget(pane, _font,
                                   "Phosphor (auto-enabled/disabled for all ROMs)", kPhosphorChanged);
   myPhosphor->setToolTip(Event::TogglePhosphor);
   wid.push_back(myPhosphor);
 
-  myPPBlend = new SliderWidget(pane, _font, 0, 0,
+  myPPBlend = new SliderWidget(pane, _font,
                                "Blend", 0, kPPBlendChanged, 4 * fontWidth, "%");
   myPPBlend->setMinValue(0); myPPBlend->setMaxValue(100);
   myPPBlend->setTickmarkIntervals(2);
   myPPBlend->setToolTip(Event::PhosphorDecrease, Event::PhosphorIncrease);
   wid.push_back(myPPBlend);
 
-  myVCenter = new SliderWidget(pane, _font, 0, 0, "V-Center",
+  myVCenter = new SliderWidget(pane, _font, "V-Center",
                                0, kVCenterChanged, 7 * fontWidth, "px", 0, true);
   myVCenter->setMinValue(TIAConstants::minVcenter);
   myVCenter->setMaxValue(TIAConstants::maxVcenter);
@@ -187,11 +187,11 @@ void GameInfoDialog::addEmulationTab()
   myVCenter->setToolTip(Event::VCenterDecrease, Event::VCenterIncrease);
   wid.push_back(myVCenter);
 
-  mySound = new CheckboxWidget(pane, _font, 0, 0, "Stereo sound");
+  mySound = new CheckboxWidget(pane, _font, "Stereo sound");
   wid.push_back(mySound);
 
   // Message concerning usage (positioned along the bottom in layout)
-  myEmulInfo = new StaticTextWidget(pane, ifont, 0, 0,
+  myEmulInfo = new StaticTextWidget(pane, ifont,
                                     "(*) Change requires a ROM reload");
 
   // Add items for tab 0
@@ -271,30 +271,30 @@ void GameInfoDialog::addConsoleTab()
   auto* pane = new TabPaneWidget(myTab, _font);
   myTab->setPaneWidget(tabID, pane);
 
-  myTVTypeLabel = new StaticTextWidget(pane, _font, 0, 0, "TV type");
+  myTVTypeLabel = new StaticTextWidget(pane, _font, "TV type");
   myTVTypeGroup = std::make_unique<RadioButtonGroup>();
-  myTVType[0] = new RadioButtonWidget(pane, _font, 0, 0, "Color", myTVTypeGroup.get());
+  myTVType[0] = new RadioButtonWidget(pane, _font, "Color", myTVTypeGroup.get());
   myTVType[0]->setToolTip(Event::ConsoleColor, Event::ConsoleColorToggle);
   wid.push_back(myTVType[0]);
-  myTVType[1] = new RadioButtonWidget(pane, _font, 0, 0, "B/W", myTVTypeGroup.get());
+  myTVType[1] = new RadioButtonWidget(pane, _font, "B/W", myTVTypeGroup.get());
   myTVType[1]->setToolTip(Event::ConsoleBlackWhite, Event::ConsoleColorToggle);
   wid.push_back(myTVType[1]);
 
-  myLeftDiffLabel = new StaticTextWidget(pane, _font, 0, 0, GUI::LEFT_DIFFICULTY);
+  myLeftDiffLabel = new StaticTextWidget(pane, _font, GUI::LEFT_DIFFICULTY);
   myLeftDiffGroup = std::make_unique<RadioButtonGroup>();
-  myLeftDiff[0] = new RadioButtonWidget(pane, _font, 0, 0, "A (Expert)", myLeftDiffGroup.get());
+  myLeftDiff[0] = new RadioButtonWidget(pane, _font, "A (Expert)", myLeftDiffGroup.get());
   myLeftDiff[0]->setToolTip(Event::ConsoleLeftDiffA, Event::ConsoleLeftDiffToggle);
   wid.push_back(myLeftDiff[0]);
-  myLeftDiff[1] = new RadioButtonWidget(pane, _font, 0, 0, "B (Novice)", myLeftDiffGroup.get());
+  myLeftDiff[1] = new RadioButtonWidget(pane, _font, "B (Novice)", myLeftDiffGroup.get());
   myLeftDiff[1]->setToolTip(Event::ConsoleLeftDiffB, Event::ConsoleLeftDiffToggle);
   wid.push_back(myLeftDiff[1]);
 
-  myRightDiffLabel = new StaticTextWidget(pane, _font, 0, 0, GUI::RIGHT_DIFFICULTY);
+  myRightDiffLabel = new StaticTextWidget(pane, _font, GUI::RIGHT_DIFFICULTY);
   myRightDiffGroup = std::make_unique<RadioButtonGroup>();
-  myRightDiff[0] = new RadioButtonWidget(pane, _font, 0, 0, "A (Expert)", myRightDiffGroup.get());
+  myRightDiff[0] = new RadioButtonWidget(pane, _font, "A (Expert)", myRightDiffGroup.get());
   myRightDiff[0]->setToolTip(Event::ConsoleRightDiffA, Event::ConsoleRightDiffToggle);
   wid.push_back(myRightDiff[0]);
-  myRightDiff[1] = new RadioButtonWidget(pane, _font, 0, 0, "B (Novice)", myRightDiffGroup.get());
+  myRightDiff[1] = new RadioButtonWidget(pane, _font, "B (Novice)", myRightDiffGroup.get());
   myRightDiff[1]->setToolTip(Event::ConsoleRightDiffB, Event::ConsoleRightDiffToggle);
   wid.push_back(myRightDiff[1]);
 
@@ -372,43 +372,43 @@ void GameInfoDialog::addControllersTab()
   VarList::push_back(items, "MindLink", "MINDLINK");
   VarList::push_back(items, "QuadTari", "QUADTARI");
 
-  myLeftPortLabel = new StaticTextWidget(pane, _font, 0, 0, "Left port");
-  myLeftPort = new PopUpWidget(pane, _font, 0, 0, items, "", 0, kLeftCChanged);
+  myLeftPortLabel = new StaticTextWidget(pane, _font, "Left port");
+  myLeftPort = new PopUpWidget(pane, _font, items, "", 0, kLeftCChanged);
   myLeftPort->setToolTip(Event::PreviousLeftPort, Event::NextLeftPort);
   wid.push_back(myLeftPort);
 
-  myLeftPortDetected = new StaticTextWidget(pane, ifont, 0, 0, "Sega Genesis detected");
+  myLeftPortDetected = new StaticTextWidget(pane, ifont, "Sega Genesis detected");
 
-  myRightPortLabel = new StaticTextWidget(pane, _font, 0, 0, "Right port");
-  myRightPort = new PopUpWidget(pane, _font, 0, 0, items, "", 0, kRightCChanged);
+  myRightPortLabel = new StaticTextWidget(pane, _font, "Right port");
+  myRightPort = new PopUpWidget(pane, _font, items, "", 0, kRightCChanged);
   myRightPort->setToolTip(Event::PreviousRightPort, Event::NextRightPort);
   wid.push_back(myRightPort);
 
-  myRightPortDetected = new StaticTextWidget(pane, ifont, 0, 0, "Sega Genesis detected");
+  myRightPortDetected = new StaticTextWidget(pane, ifont, "Sega Genesis detected");
 
-  mySwapPorts = new CheckboxWidget(pane, _font, 0, 0, "Swap ports");
+  mySwapPorts = new CheckboxWidget(pane, _font, "Swap ports");
   mySwapPorts->setToolTip(Event::ToggleSwapPorts);
   wid.push_back(mySwapPorts);
 
-  myQuadTariButton = new ButtonWidget(pane, _font, 0, 0,
+  myQuadTariButton = new ButtonWidget(pane, _font,
                                       " QuadTari" + ELLIPSIS + " ", kQuadTariPressed);
   wid.push_back(myQuadTariButton);
 
   // EEPROM erase button for left/right controller
-  myEraseEEPROMLabel = new StaticTextWidget(pane, _font, 0, 0, "AtariVox/SaveKey");
-  myEraseEEPROMButton = new ButtonWidget(pane, _font, 0, 0,
+  myEraseEEPROMLabel = new StaticTextWidget(pane, _font, "AtariVox/SaveKey");
+  myEraseEEPROMButton = new ButtonWidget(pane, _font,
                                          "Erase EEPROM", kEEButtonPressed);
   wid.push_back(myEraseEEPROMButton);
-  myEraseEEPROMInfo = new StaticTextWidget(pane, ifont, 0, 0, "(for this game only)");
+  myEraseEEPROMInfo = new StaticTextWidget(pane, ifont, "(for this game only)");
 
-  mySwapPaddles = new CheckboxWidget(pane, _font, 0, 0, "Swap paddles");
+  mySwapPaddles = new CheckboxWidget(pane, _font, "Swap paddles");
   mySwapPaddles->setToolTip(Event::ToggleSwapPaddles);
   wid.push_back(mySwapPaddles);
 
   // Paddles
-  myPaddlesCenter = new StaticTextWidget(pane, _font, 0, 0, "Paddles center:");
+  myPaddlesCenter = new StaticTextWidget(pane, _font, "Paddles center:");
 
-  myPaddleXCenter = new SliderWidget(pane, _font, 0, 0, "X", 0, kPXCenterChanged,
+  myPaddleXCenter = new SliderWidget(pane, _font, "X", 0, kPXCenterChanged,
                                      fontWidth * 6, "px", 0 ,true);
   myPaddleXCenter->setMinValue(Paddles::MIN_ANALOG_CENTER);
   myPaddleXCenter->setMaxValue(Paddles::MAX_ANALOG_CENTER);
@@ -416,7 +416,7 @@ void GameInfoDialog::addControllersTab()
   myPaddleXCenter->setToolTip(Event::DecreasePaddleCenterX, Event::IncreasePaddleCenterX);
   wid.push_back(myPaddleXCenter);
 
-  myPaddleYCenter = new SliderWidget(pane, _font, 0, 0, "Y", 0, kPYCenterChanged,
+  myPaddleYCenter = new SliderWidget(pane, _font, "Y", 0, kPYCenterChanged,
                                      fontWidth * 6, "px", 0 ,true);
   myPaddleYCenter->setMinValue(Paddles::MIN_ANALOG_CENTER);
   myPaddleYCenter->setMaxValue(Paddles::MAX_ANALOG_CENTER);
@@ -425,7 +425,7 @@ void GameInfoDialog::addControllersTab()
   wid.push_back(myPaddleYCenter);
 
   // Mouse
-  myMouseControl = new CheckboxWidget(pane, _font, 0, 0, "Specific mouse axes",
+  myMouseControl = new CheckboxWidget(pane, _font, "Specific mouse axes",
                                       kMCtrlChanged);
   wid.push_back(myMouseControl);
 
@@ -440,12 +440,12 @@ void GameInfoDialog::addControllersTab()
   VarList::push_back(ctrls, "Left MindLink",  static_cast<uInt32>(MouseControl::Type::LeftMindLink));
   VarList::push_back(ctrls, "Right MindLink", static_cast<uInt32>(MouseControl::Type::RightMindLink));
 
-  myMouseX = new PopUpWidget(pane, _font, 0, 0, ctrls, "X-Axis is");
+  myMouseX = new PopUpWidget(pane, _font, ctrls, "X-Axis is");
   wid.push_back(myMouseX);
-  myMouseY = new PopUpWidget(pane, _font, 0, 0, ctrls, "Y-Axis is");
+  myMouseY = new PopUpWidget(pane, _font, ctrls, "Y-Axis is");
   wid.push_back(myMouseY);
 
-  myMouseRange = new SliderWidget(pane, _font, 0, 0,
+  myMouseRange = new SliderWidget(pane, _font,
                                   "Mouse axes range", 0, 0, fontWidth * 4, "%");
   myMouseRange->setMinValue(1); myMouseRange->setMaxValue(100);
   myMouseRange->setTickmarkIntervals(4);
@@ -565,53 +565,53 @@ void GameInfoDialog::addCartridgeTab()
   auto* pane = new TabPaneWidget(myTab, _font);
   myTab->setPaneWidget(tabID, pane);
 
-  myCartLabels[0] = new StaticTextWidget(pane, _font, 0, 0, "Name");
-  myName = new EditTextWidget(pane, _font, 0, 0, 1, "");
+  myCartLabels[0] = new StaticTextWidget(pane, _font, "Name");
+  myName = new EditTextWidget(pane, _font, 1, "");
   wid.push_back(myName);
 
-  myCartLabels[1] = new StaticTextWidget(pane, _font, 0, 0, "MD5");
-  myMD5 = new EditTextWidget(pane, _font, 0, 0, 1, "");
+  myCartLabels[1] = new StaticTextWidget(pane, _font, "MD5");
+  myMD5 = new EditTextWidget(pane, _font, 1, "");
   myMD5->setEditable(false);
 
-  myCartLabels[2] = new StaticTextWidget(pane, _font, 0, 0, "Manufacturer");
-  myManufacturer = new EditTextWidget(pane, _font, 0, 0, 1, "");
+  myCartLabels[2] = new StaticTextWidget(pane, _font, "Manufacturer");
+  myManufacturer = new EditTextWidget(pane, _font, 1, "");
   wid.push_back(myManufacturer);
 
-  myCartLabels[3] = new StaticTextWidget(pane, _font, 0, 0,
+  myCartLabels[3] = new StaticTextWidget(pane, _font,
                                          "Model", TextAlign::Left);
-  myModelNo = new EditTextWidget(pane, _font, 0, 0, 1, "");
+  myModelNo = new EditTextWidget(pane, _font, 1, "");
   wid.push_back(myModelNo);
 
-  myCartLabels[4] = new StaticTextWidget(pane, _font, 0, 0, "Rarity");
-  myRarity = new EditTextWidget(pane, _font, 0, 0, 1, "");
+  myCartLabels[4] = new StaticTextWidget(pane, _font, "Rarity");
+  myRarity = new EditTextWidget(pane, _font, 1, "");
   wid.push_back(myRarity);
 
-  myCartLabels[5] = new StaticTextWidget(pane, _font, 0, 0, "Note");
-  myNote = new EditTextWidget(pane, _font, 0, 0, 1, "");
+  myCartLabels[5] = new StaticTextWidget(pane, _font, "Note");
+  myNote = new EditTextWidget(pane, _font, 1, "");
   wid.push_back(myNote);
 
-  myCartLabels[6] = new StaticTextWidget(pane, _font, 0, 0, "Link");
-  myUrl = new EditTextWidget(pane, _font, 0, 0, 1, "");
+  myCartLabels[6] = new StaticTextWidget(pane, _font, "Link");
+  myUrl = new EditTextWidget(pane, _font, 1, "");
   myUrl->setID(kLinkId);
   wid.push_back(myUrl);
 
-  myUrlButton = new ButtonWidget(pane, _font, 0, 0, bw, myUrl->getHeight(),
+  myUrlButton = new ButtonWidget(pane, _font, bw, myUrl->getHeight(),
                                  ">>", kLinkPressed);
   wid.push_back(myUrlButton);
 
 #ifdef IMAGE_SUPPORT
   const GUI::Font& ifont = instance().frameBuffer().infoFont();
 
-  myCartLabels[7] = new StaticTextWidget(pane, _font, 0, 0, "Bezelname");
-  myBezelName = new EditTextWidget(pane, _font, 0, 0, 1, "");
+  myCartLabels[7] = new StaticTextWidget(pane, _font, "Bezelname");
+  myBezelName = new EditTextWidget(pane, _font, 1, "");
   myBezelName->setToolTip("Define the name of the bezel file.");
   wid.push_back(myBezelName);
 
-  myBezelButton = new ButtonWidget(pane, _font, 0, 0, bw, myBezelName->getHeight(),
+  myBezelButton = new ButtonWidget(pane, _font, bw, myBezelName->getHeight(),
                                    ELLIPSIS, kBezelFilePressed);
   wid.push_back(myBezelButton);
 
-  myBezelDetected = new StaticTextWidget(pane, ifont, 0, 0,
+  myBezelDetected = new StaticTextWidget(pane, ifont,
     "'1234567890123456789012345678901234567' selected");
 #endif
 
@@ -710,43 +710,43 @@ void GameInfoDialog::addHighScoresTab()
     return (c >= 'a' && c <= 'z') || (c >= ' ' && c < ',') || (c > ',' && c < '@');
   };
 
-  myHighScores = new CheckboxWidget(pane, _font, 0, 0, "Enable High Scores",
+  myHighScores = new CheckboxWidget(pane, _font, "Enable High Scores",
                                     kHiScoresChanged);
 
   // Variations
-  myVariationsLabel = new StaticTextWidget(pane, _font, 0, 0, "Variations");
-  myVariations = new EditTextWidget(pane, _font, 0, 0, fwidth);
+  myVariationsLabel = new StaticTextWidget(pane, _font, "Variations");
+  myVariations = new EditTextWidget(pane, _font, fwidth);
   myVariations->setTextFilter(fVars);
   myVariations->setMaxLen(3);
   myVariations->setToolTip("Define the number of game variations.");
   wid.push_back(myVariations);
 
-  myVarAddressLabel = new StaticTextWidget(pane, _font, 0, 0, "Address");
-  myVarAddress = new EditTextWidget(pane, _font, 0, 0, awidth);
+  myVarAddressLabel = new StaticTextWidget(pane, _font, "Address");
+  myVarAddress = new EditTextWidget(pane, _font, awidth);
   myVarAddress->setTextFilter(fAddr);
   myVarAddress->setMaxLen(4);
   myVarAddress->setToolTip("Define the address (in hex format) where the variation number "
                            "is stored.");
   wid.push_back(myVarAddress);
-  myVarAddressVal = new EditTextWidget(pane, _font, 0, 0,
+  myVarAddressVal = new EditTextWidget(pane, _font,
                                        EditTextWidget::calcWidth(_font, 3));
   myVarAddressVal->setEditable(false);
 
-  myVarsBCD = new CheckboxWidget(pane, _font, 0, 0, "BCD", kHiScoresChanged);
+  myVarsBCD = new CheckboxWidget(pane, _font, "BCD", kHiScoresChanged);
   myVarsBCD->setToolTip("Check when the variation number is stored as BCD.");
   wid.push_back(myVarsBCD);
-  myVarsZeroBased = new CheckboxWidget(pane, _font, 0, 0, "0-based", kHiScoresChanged);
+  myVarsZeroBased = new CheckboxWidget(pane, _font, "0-based", kHiScoresChanged);
   myVarsZeroBased->setToolTip("Check when the variation number is stored zero-based.");
   wid.push_back(myVarsZeroBased);
 
   // Score
-  myScoreLabel = new StaticTextWidget(pane, _font, 0, 0, "Score");
+  myScoreLabel = new StaticTextWidget(pane, _font, "Score");
 
   items.clear();
   for(uInt32 i = 1; i <= HSM::MAX_SCORE_DIGITS; ++i)
     VarList::push_back(items, std::to_string(i), std::to_string(i));
-  myScoreDigitsLabel = new StaticTextWidget(pane, _font, 0, 0, "Digits");
-  myScoreDigits = new PopUpWidget(pane, _font, 0, 0, items, "", 0,
+  myScoreDigitsLabel = new StaticTextWidget(pane, _font, "Digits");
+  myScoreDigits = new PopUpWidget(pane, _font, items, "", 0,
                                   kHiScoresChanged);
   myScoreDigits->setToolTip("Select the number of score digits displayed.");
   wid.push_back(myScoreDigits);
@@ -754,68 +754,68 @@ void GameInfoDialog::addHighScoresTab()
   items.clear();
   for(uInt32 i = 0; i <= HSM::MAX_SCORE_DIGITS - 3; ++i)
     VarList::push_back(items, std::to_string(i), std::to_string(i));
-  myTrailingZeroesLabel = new StaticTextWidget(pane, _font, 0, 0, "0-digits");
-  myTrailingZeroes = new PopUpWidget(pane, _font, 0, 0, items, "", 0,
+  myTrailingZeroesLabel = new StaticTextWidget(pane, _font, "0-digits");
+  myTrailingZeroes = new PopUpWidget(pane, _font, items, "", 0,
                                      kHiScoresChanged);
   myTrailingZeroes->setToolTip("Select the number of trailing score digits which are fixed to 0.");
   wid.push_back(myTrailingZeroes);
 
-  myScoreBCD = new CheckboxWidget(pane, _font, 0, 0, "BCD", kHiScoresChanged);
+  myScoreBCD = new CheckboxWidget(pane, _font, "BCD", kHiScoresChanged);
   myScoreBCD->setToolTip("Check when the score is stored as BCD.");
   wid.push_back(myScoreBCD);
-  myScoreInvert = new CheckboxWidget(pane, _font, 0, 0, "Invert");
+  myScoreInvert = new CheckboxWidget(pane, _font, "Invert");
   myScoreInvert->setToolTip("Check when a lower score (e.g. a timer) is better.");
   wid.push_back(myScoreInvert);
 
   // Score addresses
-  myScoreAddressesLabel = new StaticTextWidget(pane, _font, 0, 0, "Addresses");
+  myScoreAddressesLabel = new StaticTextWidget(pane, _font, "Addresses");
   for(uInt32 a = 0; a < HSM::MAX_SCORE_ADDR; ++a)
   {
-    myScoreAddress[a] = new EditTextWidget(pane, _font, 0, 0, awidth);
+    myScoreAddress[a] = new EditTextWidget(pane, _font, awidth);
     myScoreAddress[a]->setTextFilter(fAddr);
     myScoreAddress[a]->setMaxLen(4);
     myScoreAddress[a]->setToolTip("Define the addresses (in hex format, highest byte first) "
                                   "where the score is stored.");
     wid.push_back(myScoreAddress[a]);
-    myScoreAddressVal[a] = new EditTextWidget(pane, _font, 0, 0,
+    myScoreAddressVal[a] = new EditTextWidget(pane, _font,
                                               EditTextWidget::calcWidth(_font, 2));
     myScoreAddressVal[a]->setEditable(false);
   }
 
-  myCurrentScoreLabel = new StaticTextWidget(pane, _font, 0, 0, "Current");
-  myCurrentScore = new StaticTextWidget(pane, _font, 0, 0, "12345678");
+  myCurrentScoreLabel = new StaticTextWidget(pane, _font, "Current");
+  myCurrentScore = new StaticTextWidget(pane, _font, "12345678");
   myCurrentScore->setToolTip("The score read using the current definitions.");
 
   // Special
-  mySpecialLabel = new StaticTextWidget(pane, _font, 0, 0, "Special");
-  mySpecialName = new EditTextWidget(pane, _font, 0, 0, swidth);
+  mySpecialLabel = new StaticTextWidget(pane, _font, "Special");
+  mySpecialName = new EditTextWidget(pane, _font, swidth);
   mySpecialName->setTextFilter(fText);
   mySpecialName->setMaxLen(HSM::MAX_SPECIAL_NAME);
   mySpecialName->setToolTip("Define a short label (up to 5 chars) for the optional,\ngame's "
                             "special value (e.g. 'Level', 'Wave', 'Round'" + ELLIPSIS + ")");
   wid.push_back(mySpecialName);
 
-  mySpecialAddressLabel = new StaticTextWidget(pane, _font, 0, 0, "Address");
-  mySpecialAddress = new EditTextWidget(pane, _font, 0, 0, awidth);
+  mySpecialAddressLabel = new StaticTextWidget(pane, _font, "Address");
+  mySpecialAddress = new EditTextWidget(pane, _font, awidth);
   mySpecialAddress->setTextFilter(fAddr);
   mySpecialAddress->setMaxLen(4);
   mySpecialAddress->setToolTip("Define the address (in hex format) where the special "
                                "number is stored.");
   wid.push_back(mySpecialAddress);
-  mySpecialAddressVal = new EditTextWidget(pane, _font, 0, 0,
+  mySpecialAddressVal = new EditTextWidget(pane, _font,
                                            EditTextWidget::calcWidth(_font, 3));
   mySpecialAddressVal->setEditable(false);
 
-  mySpecialBCD = new CheckboxWidget(pane, _font, 0, 0, "BCD", kHiScoresChanged);
+  mySpecialBCD = new CheckboxWidget(pane, _font, "BCD", kHiScoresChanged);
   mySpecialBCD->setToolTip("Check when the special number is stored as BCD.");
   wid.push_back(mySpecialBCD);
-  mySpecialZeroBased = new CheckboxWidget(pane, _font, 0, 0, "0-based", kHiScoresChanged);
+  mySpecialZeroBased = new CheckboxWidget(pane, _font, "0-based", kHiScoresChanged);
   mySpecialZeroBased->setToolTip("Check when the special number is stored zero-based.");
   wid.push_back(mySpecialZeroBased);
 
   // Note
-  myHighScoreNotesLabel = new StaticTextWidget(pane, _font, 0, 0, "Note");
-  myHighScoreNotes = new EditTextWidget(pane, _font, 0, 0, 1);
+  myHighScoreNotesLabel = new StaticTextWidget(pane, _font, "Note");
+  myHighScoreNotes = new EditTextWidget(pane, _font, 1);
   myHighScoreNotes->setTextFilter(fText);
   myHighScoreNotes->setToolTip("Define some free text which explains the high scores properties.");
   wid.push_back(myHighScoreNotes);

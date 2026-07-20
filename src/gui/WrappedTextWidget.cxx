@@ -21,9 +21,8 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 WrappedTextWidget::WrappedTextWidget(GuiObject* boss, const GUI::Font& font,
-                                     int x, int y, int w, int h,
                                      string_view text, uInt16 maxLines)
-  : StringListWidget(boss, font, x, y, w, h, false, true),
+  : StringListWidget(boss, font, false, true),
     myText{text},
     myMaxLines{maxLines}
 {

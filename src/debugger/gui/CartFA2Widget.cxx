@@ -35,17 +35,17 @@ CartridgeFA2Widget::CartridgeFA2Widget(
 void CartridgeFA2Widget::createFlashWidgets()
 {
   // Each button sizes itself to its label; layoutContent() gives the group one width
-  myFlashLabel = new StaticTextWidget(_boss, _font, 0, 0, "Harmony flash memory");
+  myFlashLabel = new StaticTextWidget(_boss, _font, "Harmony flash memory");
 
-  myFlashErase = new ButtonWidget(_boss, _font, 0, 0, "Erase", kFlashErase);
+  myFlashErase = new ButtonWidget(_boss, _font, "Erase", kFlashErase);
   myFlashErase->setTarget(this);
   addFocusWidget(myFlashErase);
 
-  myFlashLoad = new ButtonWidget(_boss, _font, 0, 0, "Load", kFlashLoad);
+  myFlashLoad = new ButtonWidget(_boss, _font, "Load", kFlashLoad);
   myFlashLoad->setTarget(this);
   addFocusWidget(myFlashLoad);
 
-  myFlashSave = new ButtonWidget(_boss, _font, 0, 0, "Save", kFlashSave);
+  myFlashSave = new ButtonWidget(_boss, _font, "Save", kFlashSave);
   myFlashSave->setTarget(this);
   addFocusWidget(myFlashSave);
 }

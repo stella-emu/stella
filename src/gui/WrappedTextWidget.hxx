@@ -46,7 +46,6 @@ class WrappedTextWidget : public StringListWidget
 {
   public:
     WrappedTextWidget(GuiObject* boss, const GUI::Font& font,
-                      int x, int y, int w, int h,
                       string_view text = "", uInt16 maxLines = 10);
     ~WrappedTextWidget() override = default;
 

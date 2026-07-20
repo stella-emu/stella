@@ -37,8 +37,7 @@ class EventMappingWidget : public Widget, public CommandSender
   friend class InputDialog;
 
   public:
-    EventMappingWidget(GuiObject* boss, const GUI::Font& font,
-                       int x, int y, int w, int h);
+    EventMappingWidget(GuiObject* boss, const GUI::Font& font);
     ~EventMappingWidget() override = default;
 
     bool isRemapping() const { return myRemapStatus; }

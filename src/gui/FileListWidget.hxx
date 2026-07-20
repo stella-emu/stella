@@ -53,8 +53,7 @@ class FileListWidget : public StringListWidget
       kNextDirCmd   = 'nxtc'   // go back in history to next directory
     };
   public:
-    FileListWidget(GuiObject* boss, const GUI::Font& font,
-                   int x, int y, int w, int h);
+    FileListWidget(GuiObject* boss, const GUI::Font& font);
     ~FileListWidget() override = default;
 
     bool handleKeyDown(StellaKey key, StellaMod mod) override;

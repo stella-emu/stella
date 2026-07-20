@@ -30,7 +30,7 @@ class RadioButtonGroup;
 class RadioButtonWidget : public CheckboxWidget
 {
   public:
-    RadioButtonWidget(GuiObject* boss, const GUI::Font& font, int x, int y,
+    RadioButtonWidget(GuiObject* boss, const GUI::Font& font,
                       const string& label, RadioButtonGroup* group,
                       int cmd = 0);
     ~RadioButtonWidget() override = default;

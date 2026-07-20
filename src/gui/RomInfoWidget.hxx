@@ -32,8 +32,7 @@ class RomInfoWidget : public Widget, public CommandSender
     };
 
   public:
-    RomInfoWidget(GuiObject *boss, const GUI::Font& font,
-                  int x, int y, int w, int h);
+    RomInfoWidget(GuiObject *boss, const GUI::Font& font);
     ~RomInfoWidget() override = default;
 
     void setProperties(const FSNode& node, const Properties& properties,

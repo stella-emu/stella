@@ -45,7 +45,7 @@ CommandDialog::CommandDialog(OSystem& osystem, DialogContainer& parent)
   const auto ADD_CD_BUTTON = [&](string_view label, int cmd,
     Event::Type event1 = Event::NoType, Event::Type event2 = Event::NoType)
   {
-    auto* b = new ButtonWidget(this, _font, 0, 0, 1, label, cmd);
+    auto* b = new ButtonWidget(this, _font, 1, label, cmd);
     b->setToolTip(event1, event2);
     myButtons.push_back(b);
     wid.push_back(b);

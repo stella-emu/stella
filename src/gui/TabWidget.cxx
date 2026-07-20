@@ -25,9 +25,8 @@
 #include "TabWidget.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-TabWidget::TabWidget(GuiObject* boss, const GUI::Font& font,
-                     int x, int y, int w, int h)
-  : Widget(boss, font, x, y, w, h),
+TabWidget::TabWidget(GuiObject* boss, const GUI::Font& font)
+  : Widget(boss, font, 0, 0, 0, 0),
     CommandSender(boss),
     _tabHeight{font.getLineHeight() + 4}
 {

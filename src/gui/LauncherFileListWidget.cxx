@@ -25,8 +25,8 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 LauncherFileListWidget::LauncherFileListWidget(GuiObject* boss,
-    const GUI::Font& font, int x, int y, int w, int h)
-  : FileListWidget(boss, font, x, y, w, h)
+    const GUI::Font& font)
+  : FileListWidget(boss, font)
 {
   // This widget is special, in that it catches signals and redirects them
   setTarget(this);

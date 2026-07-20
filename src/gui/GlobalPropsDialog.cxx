@@ -39,56 +39,56 @@ GlobalPropsDialog::GlobalPropsDialog(GuiObject* boss, const GUI::Font& font)
 
   // NOLINTBEGIN(cppcoreguidelines-prefer-member-initializer)
   // Bankswitch type
-  myBSLabel = new StaticTextWidget(this, font, 0, 0, "Bankswitch type");
+  myBSLabel = new StaticTextWidget(this, font, "Bankswitch type");
   for(const auto& [name, desc] : Bankswitch::BSList)
     VarList::push_back(items, desc, name);
-  myBSType = new PopUpWidget(this, font, 0, 0, items, "");
+  myBSType = new PopUpWidget(this, font, items, "");
   wid.push_back(myBSType);
 
   // TV type
-  myTVLabel = new StaticTextWidget(this, font, 0, 0, "TV type");
+  myTVLabel = new StaticTextWidget(this, font, "TV type");
   items.clear();
   VarList::push_back(items, "Default", "DEFAULT");
   VarList::push_back(items, "Color", "COLOR");
   VarList::push_back(items, "B/W", "BW");
-  myTVType = new PopUpWidget(this, font, 0, 0, items, "");
+  myTVType = new PopUpWidget(this, font, items, "");
   wid.push_back(myTVType);
 
   // Left difficulty
-  myLeftDiffLabel = new StaticTextWidget(this, font, 0, 0, GUI::LEFT_DIFFICULTY);
+  myLeftDiffLabel = new StaticTextWidget(this, font, GUI::LEFT_DIFFICULTY);
   items.clear();
   VarList::push_back(items, "Default", "DEFAULT");
   VarList::push_back(items, "A (Expert)", "A");
   VarList::push_back(items, "B (Novice)", "B");
-  myLeftDiff = new PopUpWidget(this, font, 0, 0, items, "");
+  myLeftDiff = new PopUpWidget(this, font, items, "");
   wid.push_back(myLeftDiff);
 
   // Right difficulty
-  myRightDiffLabel = new StaticTextWidget(this, font, 0, 0, GUI::RIGHT_DIFFICULTY);
+  myRightDiffLabel = new StaticTextWidget(this, font, GUI::RIGHT_DIFFICULTY);
   // ... use same items as above
-  myRightDiff = new PopUpWidget(this, font, 0, 0, items, "");
+  myRightDiff = new PopUpWidget(this, font, items, "");
   wid.push_back(myRightDiff);
 
   // Start console with buttons held down
-  myHeldLabel = new StaticTextWidget(this, font, 0, 0,
+  myHeldLabel = new StaticTextWidget(this, font,
       "Start with the following held down:");
-  myReleasedLabel = new StaticTextWidget(this, infofont, 0, 0,
+  myReleasedLabel = new StaticTextWidget(this, infofont,
       "(automatically released shortly after start)");
 
   // Start with console joystick direction/buttons held down
   createHoldWidgets(font, wid);
 
   // Start in debugger mode
-  myDebug = new CheckboxWidget(this, font, 0, 0, "Start in Debugger mode");
+  myDebug = new CheckboxWidget(this, font, "Start in Debugger mode");
 #ifndef DEBUGGER_SUPPORT
   myDebug->setEnabled(false);
 #endif
   wid.push_back(myDebug);
 
   // Add message concerning usage
-  myInfo1 = new StaticTextWidget(this, infofont, 0, 0,
+  myInfo1 = new StaticTextWidget(this, infofont,
     "(*) These options are not saved, but apply to all");
-  myInfo2 = new StaticTextWidget(this, infofont, 0, 0,
+  myInfo2 = new StaticTextWidget(this, infofont,
     "    further ROMs until selecting 'Defaults'.");
 
   // Add Defaults, OK and Cancel buttons
@@ -104,25 +104,25 @@ GlobalPropsDialog::GlobalPropsDialog(GuiObject* boss, const GUI::Font& font)
 void GlobalPropsDialog::createHoldWidgets(const GUI::Font& font, WidgetArray& wid)
 {
   // Left joystick
-  myLeftJoyLabel = new StaticTextWidget(this, font, 0, 0, "Left joy");
-  myJoy[kJ0Up]    = new CheckboxWidget(this, font, 0, 0, "", kJ0Up);
-  myJoy[kJ0Down]  = new CheckboxWidget(this, font, 0, 0, "", kJ0Down);
-  myJoy[kJ0Left]  = new CheckboxWidget(this, font, 0, 0, "", kJ0Left);
-  myJoy[kJ0Right] = new CheckboxWidget(this, font, 0, 0, "", kJ0Right);
-  myJoy[kJ0Fire]  = new CheckboxWidget(this, font, 0, 0, "Fire", kJ0Fire);
+  myLeftJoyLabel = new StaticTextWidget(this, font, "Left joy");
+  myJoy[kJ0Up]    = new CheckboxWidget(this, font, "", kJ0Up);
+  myJoy[kJ0Down]  = new CheckboxWidget(this, font, "", kJ0Down);
+  myJoy[kJ0Left]  = new CheckboxWidget(this, font, "", kJ0Left);
+  myJoy[kJ0Right] = new CheckboxWidget(this, font, "", kJ0Right);
+  myJoy[kJ0Fire]  = new CheckboxWidget(this, font, "Fire", kJ0Fire);
 
   // Right joystick
-  myRightJoyLabel = new StaticTextWidget(this, font, 0, 0, "Right joy");
-  myJoy[kJ1Up]    = new CheckboxWidget(this, font, 0, 0, "", kJ1Up);
-  myJoy[kJ1Down]  = new CheckboxWidget(this, font, 0, 0, "", kJ1Down);
-  myJoy[kJ1Left]  = new CheckboxWidget(this, font, 0, 0, "", kJ1Left);
-  myJoy[kJ1Right] = new CheckboxWidget(this, font, 0, 0, "", kJ1Right);
-  myJoy[kJ1Fire]  = new CheckboxWidget(this, font, 0, 0, "Fire", kJ1Fire);
+  myRightJoyLabel = new StaticTextWidget(this, font, "Right joy");
+  myJoy[kJ1Up]    = new CheckboxWidget(this, font, "", kJ1Up);
+  myJoy[kJ1Down]  = new CheckboxWidget(this, font, "", kJ1Down);
+  myJoy[kJ1Left]  = new CheckboxWidget(this, font, "", kJ1Left);
+  myJoy[kJ1Right] = new CheckboxWidget(this, font, "", kJ1Right);
+  myJoy[kJ1Fire]  = new CheckboxWidget(this, font, "Fire", kJ1Fire);
 
   // Console Select/Reset
-  myConsoleLabel = new StaticTextWidget(this, font, 0, 0, "Console");
-  myHoldSelect = new CheckboxWidget(this, font, 0, 0, GUI::SELECT);
-  myHoldReset  = new CheckboxWidget(this, font, 0, 0, "Reset");
+  myConsoleLabel = new StaticTextWidget(this, font, "Console");
+  myHoldSelect = new CheckboxWidget(this, font, GUI::SELECT);
+  myHoldReset  = new CheckboxWidget(this, font, "Reset");
 
   static constexpr std::array<int, 10> TAB_ORDER = {
     kJ0Up, kJ0Left, kJ0Right, kJ0Down, kJ0Fire,

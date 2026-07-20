@@ -32,27 +32,27 @@ PaddleWidget::PaddleWidget(GuiObject* boss, const GUI::Font& font,
   // NOLINTBEGIN(cppcoreguidelines-prefer-member-initializer)
   if(embedded)
   {
-    myP0Label = new StaticTextWidget(boss, font, 0, 0,
+    myP0Label = new StaticTextWidget(boss, font,
       leftport ? second ? "P1b" : "P1a" : second ? "P3b" : "P3a");
-    myP1Label = new StaticTextWidget(boss, font, 0, 0,
+    myP1Label = new StaticTextWidget(boss, font,
       leftport ? second ? "P2b" : "P2a" : second ? "P4b" : "P4a");
 
-    myP0Resistance = new SliderWidget(boss, font, 0, 0);
+    myP0Resistance = new SliderWidget(boss, font);
     myP0Resistance->setEnabled(false);
     myP0Resistance->setFlags(Widget::FLAG_INVISIBLE);
-    myP1Resistance = new SliderWidget(boss, font, 0, 0);
+    myP1Resistance = new SliderWidget(boss, font);
     myP1Resistance->setEnabled(false);
     myP1Resistance->setFlags(Widget::FLAG_INVISIBLE);
   }
   else
   {
-    myP0Resistance = new SliderWidget(boss, font, 0, 0,
+    myP0Resistance = new SliderWidget(boss, font,
                                       leftport ? "P1 pot" : "P3 pot", 0, kP0Changed);
-    myP1Resistance = new SliderWidget(boss, font, 0, 0,
+    myP1Resistance = new SliderWidget(boss, font,
                                       leftport ? "P2 pot" : "P4 pot", 0, kP1Changed);
   }
-  myP0Fire = new CheckboxWidget(boss, font, 0, 0, "Fire", kP0Fire);
-  myP1Fire = new CheckboxWidget(boss, font, 0, 0, "Fire", kP1Fire);
+  myP0Fire = new CheckboxWidget(boss, font, "Fire", kP0Fire);
+  myP1Fire = new CheckboxWidget(boss, font, "Fire", kP1Fire);
   // NOLINTEND(cppcoreguidelines-prefer-member-initializer)
 
   for(auto* s: {myP0Resistance, myP1Resistance})

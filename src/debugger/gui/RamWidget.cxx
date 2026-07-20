@@ -55,31 +55,31 @@ RamWidget::RamWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& n
 
   // Action buttons to the right of the RAM grid; each sizes itself to its own
   // label, and reflow() gives the group one width
-  myUndoButton = new ButtonWidget(boss, lfont, 0, 0, "Undo", kUndoCmd);
+  myUndoButton = new ButtonWidget(boss, lfont, "Undo", kUndoCmd);
   myUndoButton->setHelpAnchor("M6532Search", true);
   wid.push_back(myUndoButton);
   myUndoButton->setTarget(this);
 
-  myRevertButton = new ButtonWidget(boss, lfont, 0, 0, "Revert", kRevertCmd);
+  myRevertButton = new ButtonWidget(boss, lfont, "Revert", kRevertCmd);
   myRevertButton->setHelpAnchor("M6532Search", true);
   wid.push_back(myRevertButton);
   myRevertButton->setTarget(this);
 
-  mySearchButton = new ButtonWidget(boss, lfont, 0, 0,
+  mySearchButton = new ButtonWidget(boss, lfont,
                                     "Search" + ELLIPSIS, kSearchCmd);
   mySearchButton->setHelpAnchor("M6532Search", true);
   mySearchButton->setToolTip("Search and highlight found values.");
   wid.push_back(mySearchButton);
   mySearchButton->setTarget(this);
 
-  myCompareButton = new ButtonWidget(boss, lfont, 0, 0,
+  myCompareButton = new ButtonWidget(boss, lfont,
                                      "Compare" + ELLIPSIS, kCmpCmd);
   myCompareButton->setHelpAnchor("M6532Search", true);
   myCompareButton->setToolTip("Compare highlighted values.");
   wid.push_back(myCompareButton);
   myCompareButton->setTarget(this);
 
-  myRestartButton = new ButtonWidget(boss, lfont, 0, 0, "Reset", kRestartCmd);
+  myRestartButton = new ButtonWidget(boss, lfont, "Reset", kRestartCmd);
   myRestartButton->setHelpAnchor("M6532Search", true);
   myRestartButton->setToolTip("Reset search/compare mode.");
   wid.push_back(myRestartButton);
@@ -89,24 +89,24 @@ RamWidget::RamWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& n
 
   // Row-address label and column headers for the RAM grid.  Each is built with
   // a value of the length it always shows, so it owns its own width
-  myRamStart = new StaticTextWidget(_boss, lfont, 0, 0, "00xx");
+  myRamStart = new StaticTextWidget(_boss, lfont, "00xx");
 
   for(int col = 0; col < 16; ++col)
-    myColHeaders[col] = new StaticTextWidget(_boss, lfont, 0, 0,
+    myColHeaders[col] = new StaticTextWidget(_boss, lfont,
                           Common::Base::toString(col, Common::Base::Fmt::_16_1));
 
   for(uInt32 row = 0; row < myNumRows; ++row)
-    myRamLabels[row] = new StaticTextWidget(_boss, _font, 0, 0, "0");
+    myRamLabels[row] = new StaticTextWidget(_boss, _font, "0");
 
   // Detail row for the selected RAM cell (built from right to left originally,
   // but here just created; reflow() right-aligns the hex/dec/bin cluster)
-  myBinPrefix = new StaticTextWidget(boss, lfont, 0, 0, "%");
+  myBinPrefix = new StaticTextWidget(boss, lfont, "%");
   myBinValue = new DataGridWidget(boss, nfont, 1, 1, 8, 8, Common::Base::Fmt::_2);
   myBinValue->setHelpAnchor(helpAnchor, true);
   myBinValue->setTarget(this);
   myBinValue->setID(kRamBinID);
 
-  myDecPrefix = new StaticTextWidget(boss, lfont, 0, 0, "#");
+  myDecPrefix = new StaticTextWidget(boss, lfont, "#");
   myDecValue = new DataGridWidget(boss, nfont, 1, 1, 3, 8, Common::Base::Fmt::_10);
   myDecValue->setHelpAnchor(helpAnchor, true);
   myDecValue->setTarget(this);
@@ -121,8 +121,8 @@ RamWidget::RamWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& n
   addFocusWidget(myDecValue);
   addFocusWidget(myBinValue);
 
-  myLabelText = new StaticTextWidget(boss, lfont, 0, 0, "Label");
-  myLabel = new EditTextWidget(boss, nfont, 0, 0, 1);
+  myLabelText = new StaticTextWidget(boss, lfont, "Label");
+  myLabel = new EditTextWidget(boss, nfont, 1);
   myLabel->setEditable(false, true);
   // NOLINTEND(cppcoreguidelines-prefer-member-initializer)
 

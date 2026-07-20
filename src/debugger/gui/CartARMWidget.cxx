@@ -37,15 +37,15 @@ void CartridgeARMWidget::createCycleWidgets()
   VariantList items;
 
   // Everything is created at a placeholder position; layoutContent() positions it
-  myArmCyclesLabel = new StaticTextWidget(_boss, _font, 0, 0, "ARM emulation cycles:");
+  myArmCyclesLabel = new StaticTextWidget(_boss, _font, "ARM emulation cycles:");
   myArmCyclesLabel->setToolTip("Cycle count enabled by developer settings.");
 
-  myIncCycles = new CheckboxWidget(_boss, _font, 0, 0, "Increase 6507 cycles",
+  myIncCycles = new CheckboxWidget(_boss, _font, "Increase 6507 cycles",
                                    kIncCyclesChanged);
   myIncCycles->setToolTip("Increase 6507 cycles with approximated ARM cycles.");
   myIncCycles->setTarget(this);
 
-  myCycleFactor = new SliderWidget(_boss, _font, 0, 0, _fontWidth * 10,
+  myCycleFactor = new SliderWidget(_boss, _font, _fontWidth * 10,
                                    "Cycle factor", 0, kFactorChanged, _fontWidth * 4, "%");
   myCycleFactor->setMinValue(90); myCycleFactor->setMaxValue(110);
   myCycleFactor->setTickmarkIntervals(4);
@@ -58,11 +58,11 @@ void CartridgeARMWidget::createCycleWidgets()
     grid->setToolTip(tip);
   };
 
-  myCyclesLabel = new StaticTextWidget(_boss, _font, 0, 0, "Cycles #");
+  myCyclesLabel = new StaticTextWidget(_boss, _font, "Cycles #");
   addCounter(myPrevThumbCycles, "Approximated CPU cycles of last but one ARM run.\n");
   addCounter(myThumbCycles,     "Approximated CPU cycles of last ARM run.\n");
 
-  myInstructionsLabel = new StaticTextWidget(_boss, _font, 0, 0, "Instructions #");
+  myInstructionsLabel = new StaticTextWidget(_boss, _font, "Instructions #");
   addCounter(myPrevThumbInstructions, "Instructions of last but one ARM run.\n");
   addCounter(myThumbInstructions,     "Instructions of last ARM run.\n");
 
@@ -71,11 +71,11 @@ void CartridgeARMWidget::createCycleWidgets()
   VarList::push_back(items, "LPC2104" + ELLIPSIS + "6 OC", static_cast<Int32>(Thumbulator::ChipType::LPC2104_OC));
   VarList::push_back(items, "LPC2104" + ELLIPSIS + "6",    static_cast<Int32>(Thumbulator::ChipType::LPC2104));
   VarList::push_back(items, "LPC213x",                     static_cast<Int32>(Thumbulator::ChipType::LPC213x));
-  myChipType = new PopUpWidget(_boss, _font, 0, 0, items, "Chip", 0, kChipChanged);
+  myChipType = new PopUpWidget(_boss, _font, items, "Chip", 0, kChipChanged);
   myChipType->setToolTip("Select emulated ARM chip.");
   myChipType->setTarget(this);
 
-  myLockMamMode = new CheckboxWidget(_boss, _font, 0, 0, "MAM Mode", kMamLockChanged);
+  myLockMamMode = new CheckboxWidget(_boss, _font, "MAM Mode", kMamLockChanged);
   myLockMamMode->setToolTip("Check to lock Memory Accelerator Module (MAM) mode.");
   myLockMamMode->setTarget(this);
 
@@ -84,7 +84,7 @@ void CartridgeARMWidget::createCycleWidgets()
   VarList::push_back(items, "Partial (1)", static_cast<uInt32>(Thumbulator::MamModeType::mode1));
   VarList::push_back(items, "Full (2)", static_cast<uInt32>(Thumbulator::MamModeType::mode2));
   VarList::push_back(items, "1 Cycle (X)", static_cast<uInt32>(Thumbulator::MamModeType::modeX));
-  myMamMode = new PopUpWidget(_boss, _font, 0, 0, items, "", 0, kMamModeChanged);
+  myMamMode = new PopUpWidget(_boss, _font, items, "", 0, kMamModeChanged);
   myMamMode->setToolTip("Select emulated Memory Accelerator Module (MAM) mode.");
   myMamMode->setTarget(this);
 

@@ -37,9 +37,9 @@ RomWidget::RomWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& n
   // Create the bank display and the listing at a placeholder position/size;
   // reflow() positions and sizes them for the area the widget occupies
   // NOLINTBEGIN(cppcoreguidelines-prefer-member-initializer)
-  myInfoLabel = new StaticTextWidget(boss, lfont, 0, 0, "Info ");
+  myInfoLabel = new StaticTextWidget(boss, lfont, "Info ");
 
-  myBank = new EditTextWidget(boss, nfont, 0, 0, 1);
+  myBank = new EditTextWidget(boss, nfont, 1);
   myBank->setEditable(false);
 
   myRomList = new RomListWidget(boss, lfont, nfont);

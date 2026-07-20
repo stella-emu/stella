@@ -26,8 +26,7 @@ class Properties;
 class RomImageWidget : public Widget
 {
   public:
-    RomImageWidget(GuiObject *boss, const GUI::Font& font,
-                  int x, int y, int w, int h);
+    RomImageWidget(GuiObject *boss, const GUI::Font& font);
     ~RomImageWidget() override = default;
 
     static int labelHeight(const GUI::Font& font)

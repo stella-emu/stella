@@ -35,7 +35,7 @@ PointingDeviceWidget::PointingDeviceWidget(GuiObject* boss, const GUI::Font& fon
     return g;
   };
   const auto button = [&](string_view label, int cmd) {
-    auto* b = new ButtonWidget(boss, font, 0, 0, label, cmd);
+    auto* b = new ButtonWidget(boss, font, label, cmd);
     b->setTarget(this);
     return b;
   };
@@ -45,7 +45,7 @@ PointingDeviceWidget::PointingDeviceWidget(GuiObject* boss, const GUI::Font& fon
   myGrayRight  = button("+", kTBRight);
   myGrayValueH = grayValue();
   myGrayDown   = button("-", kTBDown);
-  myFire = new CheckboxWidget(boss, font, 0, 0, "Fire", kTBFire);
+  myFire = new CheckboxWidget(boss, font, "Fire", kTBFire);
   myFire->setTarget(this);
   // NOLINTEND(cppcoreguidelines-prefer-member-initializer)
 

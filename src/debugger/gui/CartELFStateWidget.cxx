@@ -72,38 +72,38 @@ void CartridgeELFStateWidget::initialize()
   // Everything is created at a placeholder position; layoutContent() places it.
   // The row labels carry no padding of their own: they join the tab's label
   // column, and GUI::alignLabels() (in the skeleton) supplies the column
-  myRegistersLabel = new StaticTextWidget(_boss, _font, 0, 0, "ARM registers:");
+  myRegistersLabel = new StaticTextWidget(_boss, _font, "ARM registers:");
 
   myArmRegisters = new DataGridWidget(_boss, _font, 4, 4, 8, 8,
                                       Common::Base::Fmt::_16_8);
   myArmRegisters->setEditable(false);
   for(uInt8 i = 0; i < 16; i++) myArmRegisters->setToolTip(i % 4, i / 4, registerName(i));
 
-  myFlagsLabel = new StaticTextWidget(_boss, _font, 0, 0, "ARM flags:");
+  myFlagsLabel = new StaticTextWidget(_boss, _font, "ARM flags:");
   myFlags = new ToggleBitWidget(_boss, _font, 4, 1, 1);
   myFlags->setEditable(false);
 
   static constexpr std::array<string_view, 4> flagNames = {"N", "Z", "C", "V"};
   for(size_t i = 0; i < myFlagLabels.size(); ++i)
-    myFlagLabels[i] = new StaticTextWidget(_boss, _font, 0, 0, flagNames[i]);
+    myFlagLabels[i] = new StaticTextWidget(_boss, _font, flagNames[i]);
 
   // The readouts are as wide as the value they hold, in characters
-  myTimeVcsLabel = new StaticTextWidget(_boss, _font, 0, 0, "Time VCS:");
-  myCurrentCyclesVcs = new EditTextWidget(_boss, _font, 0, 0,
+  myTimeVcsLabel = new StaticTextWidget(_boss, _font, "Time VCS:");
+  myCurrentCyclesVcs = new EditTextWidget(_boss, _font,
                                           16 * _font.getMaxCharWidth());
   myCurrentCyclesVcs->setEditable(false, true);
 
-  myTimeArmLabel = new StaticTextWidget(_boss, _font, 0, 0, "Time ARM:");
-  myCurrentCyclesArm = new EditTextWidget(_boss, _font, 0, 0,
+  myTimeArmLabel = new StaticTextWidget(_boss, _font, "Time ARM:");
+  myCurrentCyclesArm = new EditTextWidget(_boss, _font,
                                           16 * _font.getMaxCharWidth());
   myCurrentCyclesArm->setEditable(false, true);
 
-  myQueueSizeLabel = new StaticTextWidget(_boss, _font, 0, 0, "Bus queue size:");
-  myQueueSize = new EditTextWidget(_boss, _font, 0, 0,
+  myQueueSizeLabel = new StaticTextWidget(_boss, _font, "Bus queue size:");
+  myQueueSize = new EditTextWidget(_boss, _font,
                                    4 * _font.getMaxCharWidth());
   myQueueSize->setEditable(false, true);
 
-  myNextTransaction = new StaticTextWidget(_boss, _font, 0, 0,
+  myNextTransaction = new StaticTextWidget(_boss, _font,
                           describeTransaction(0xffff, 0xffff, ~0LLU));
 
   myLabelColumn.insert(myLabelColumn.end(),

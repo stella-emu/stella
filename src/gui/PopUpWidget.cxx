@@ -26,9 +26,9 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 PopUpWidget::PopUpWidget(GuiObject* boss, const GUI::Font& font,
-                         int x, int y, int w, int h, const VariantList& items,
+                         int w, int h, const VariantList& items,
                          string_view label, int labelWidth, int cmd)
-  : EditableWidget(boss, font, x, y - 1, w, h + 2),
+  : EditableWidget(boss, font, w, h + 2),
     _label{label},
     _labelWidth{labelWidth}
 {
@@ -59,19 +59,19 @@ PopUpWidget::PopUpWidget(GuiObject* boss, const GUI::Font& font,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-PopUpWidget::PopUpWidget(GuiObject* boss, const GUI::Font& font, int x, int y,
+PopUpWidget::PopUpWidget(GuiObject* boss, const GUI::Font& font,
                          const VariantList& items, string_view label,
                          int labelWidth, int cmd)
-  : PopUpWidget(boss, font, x, y, calcWidth(font, items), font.getLineHeight(),
+  : PopUpWidget(boss, font, calcWidth(font, items), font.getLineHeight(),
                 items, label, labelWidth, cmd)
 {
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-PopUpWidget::PopUpWidget(GuiObject* boss, const GUI::Font& font, int x, int y,
+PopUpWidget::PopUpWidget(GuiObject* boss, const GUI::Font& font,
                          int w, const VariantList& items, string_view label,
                          int labelWidth, int cmd)
-  : PopUpWidget(boss, font, x, y, w, font.getLineHeight(), items, label,
+  : PopUpWidget(boss, font, w, font.getLineHeight(), items, label,
                 labelWidth, cmd)
 {
 }

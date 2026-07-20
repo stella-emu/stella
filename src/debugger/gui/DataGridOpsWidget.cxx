@@ -27,25 +27,25 @@ DataGridOpsWidget::DataGridOpsWidget(GuiObject* boss, const GUI::Font& font)
   // This widget only holds the buttons (siblings parented to the boss) and wires
   // their target/enabled state; DebuggerDialog lays them out via buildLayout()
   // NOLINTBEGIN(cppcoreguidelines-prefer-member-initializer)
-  _zeroButton = new ButtonWidget(boss, font, 0, 0, "0", kDGZeroCmd);
+  _zeroButton = new ButtonWidget(boss, font, "0", kDGZeroCmd);
   _zeroButton->setToolTip("Zero currently selected value (Z)");
 
-  _invButton = new ButtonWidget(boss, font, 0, 0, "Inv", kDGInvertCmd);
+  _invButton = new ButtonWidget(boss, font, "Inv", kDGInvertCmd);
   _invButton->setToolTip("Invert currently selected value (I)");
 
-  _incButton = new ButtonWidget(boss, font, 0, 0, "++", kDGIncCmd);
+  _incButton = new ButtonWidget(boss, font, "++", kDGIncCmd);
   _incButton->setToolTip("Increase currently selected value. (=, Keypad +)");
 
-  _shiftLeftButton = new ButtonWidget(boss, font, 0, 0, "<<", kDGShiftLCmd);
+  _shiftLeftButton = new ButtonWidget(boss, font, "<<", kDGShiftLCmd);
   _shiftLeftButton->setToolTip("Shift currently selected value left (,)");
 
-  _negButton = new ButtonWidget(boss, font, 0, 0, "Neg", kDGNegateCmd);
+  _negButton = new ButtonWidget(boss, font, "Neg", kDGNegateCmd);
   _negButton->setToolTip("Negate currently selected value (N)");
 
-  _decButton = new ButtonWidget(boss, font, 0, 0, "--", kDGDecCmd);
+  _decButton = new ButtonWidget(boss, font, "--", kDGDecCmd);
   _decButton->setToolTip("Decrease currently selected value (-, Keypad -)");
 
-  _shiftRightButton = new ButtonWidget(boss, font, 0, 0, ">>", kDGShiftRCmd);
+  _shiftRightButton = new ButtonWidget(boss, font, ">>", kDGShiftRCmd);
   _shiftRightButton->setToolTip("Shift currently selected value right (.)");
   // NOLINTEND(cppcoreguidelines-prefer-member-initializer)
 

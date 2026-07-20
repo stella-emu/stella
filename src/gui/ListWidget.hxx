@@ -44,7 +44,7 @@ class ListWidget : public EditableWidget
     using Widget::setPos;
 
     ListWidget(GuiObject* boss, const GUI::Font& font,
-               int x, int y, int w, int h, bool useScrollbar = true);
+               bool useScrollbar = true);
     ~ListWidget() override = default;
 
     int rows() const        { return _rows; }
@@ -110,7 +110,6 @@ class ListWidget : public EditableWidget
 
   protected:
     int  _rows{0};
-    int  _cols{0};
     int  _currentPos{0};
     int  _selectedItem{-1};
     int  _highlightedItem{-1};

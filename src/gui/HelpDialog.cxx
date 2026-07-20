@@ -35,30 +35,30 @@ HelpDialog::HelpDialog(OSystem& osystem, DialogContainer& parent,
   // Previous, Next, Update and Close buttons.  Each sizes itself to its label;
   // layout() gives the two arrows one shared width
   myPrevButton =
-    new ButtonWidget(this, font, 0, 0, "<<", GuiObject::kPrevCmd);
+    new ButtonWidget(this, font, "<<", GuiObject::kPrevCmd);
   myPrevButton->clearFlags(Widget::FLAG_ENABLED);
   wid.push_back(myPrevButton);
 
   myNextButton =
-    new ButtonWidget(this, font, 0, 0, ">>", GuiObject::kNextCmd);
+    new ButtonWidget(this, font, ">>", GuiObject::kNextCmd);
   wid.push_back(myNextButton);
 
   myUpdateButton =
-    new ButtonWidget(this, font, 0, 0, "Check for Update" + ELLIPSIS, kUpdateCmd);
+    new ButtonWidget(this, font, "Check for Update" + ELLIPSIS, kUpdateCmd);
   myUpdateButton->setEnabled(true);
   wid.push_back(myUpdateButton);
 
-  auto* b = new ButtonWidget(this, font, 0, 0, "Close", GuiObject::kCloseCmd);
+  auto* b = new ButtonWidget(this, font, "Close", GuiObject::kCloseCmd);
   wid.push_back(b);
   addCancelWidget(b);
 
-  myTitle = new StaticTextWidget(this, font, 0, 0, "", TextAlign::Center);
+  myTitle = new StaticTextWidget(this, font, "", TextAlign::Center);
   myTitle->setTextColor(kTextColorEm);
 
   for(uInt32 i = 0; i < LINES_PER_PAGE; ++i)
   {
-    myKey[i] = new StaticTextWidget(this, font, 0, 0);
-    myDesc[i] = new StaticTextWidget(this, font, 0, 0);
+    myKey[i] = new StaticTextWidget(this, font);
+    myDesc[i] = new StaticTextWidget(this, font);
     myDesc[i]->setID(i);
   }
 

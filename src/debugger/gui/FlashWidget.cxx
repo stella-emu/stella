@@ -39,11 +39,11 @@ void FlashWidget::init(GuiObject* boss, const GUI::Font& font,
   // Create the controls at a placeholder position; reflow() lays them out.  The
   // page ranges are filled in by loadConfig(), so they take no text here
   // NOLINTBEGIN(cppcoreguidelines-prefer-member-initializer)
-  myPagesLabel = new StaticTextWidget(boss, font, 0, 0,
+  myPagesLabel = new StaticTextWidget(boss, font,
                                       embedded ? "Pages:" : "Pages/Ranges used:");
   for(uInt32 page = 0; page < MAX_PAGES; ++page)
-    myPage[page] = new StaticTextWidget(boss, font, 0, 0, page ? "" : "none");
-  myEEPROMEraseCurrent = new ButtonWidget(boss, font, 0, 0,
+    myPage[page] = new StaticTextWidget(boss, font, page ? "" : "none");
+  myEEPROMEraseCurrent = new ButtonWidget(boss, font,
                                           embedded ? "Erase" : "Erase used pages",
                                           kEEPROMEraseCurrent);
   myEEPROMEraseCurrent->setTarget(this);

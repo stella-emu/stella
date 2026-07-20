@@ -28,8 +28,8 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 EditableWidget::EditableWidget(GuiObject* boss, const GUI::Font& font,
-                               int x, int y, int w, int h, string_view str)
-  : Widget(boss, font, x, y, w, h),
+                               int w, int h, string_view str)
+  : Widget(boss, font, 0, 0, w, h),
     CommandSender(boss),
     _editString{str},
     myUndoHandler{std::make_unique<UndoHandler>()},

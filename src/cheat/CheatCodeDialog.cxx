@@ -43,23 +43,23 @@ CheatCodeDialog::CheatCodeDialog(OSystem& osystem, DialogContainer& parent,
 
   // NOLINTBEGIN(cppcoreguidelines-prefer-member-initializer)
   // List of cheats, with checkboxes to enable/disable
-  myCheatList = new CheckListWidget(this, font, 0, 0, 1, 1);
+  myCheatList = new CheckListWidget(this, font);
   myCheatList->setEditable(false);
   wid.push_back(myCheatList);
 
-  myAddButton = new ButtonWidget(this, font, 0, 0,
+  myAddButton = new ButtonWidget(this, font,
                                  "Add" + ELLIPSIS, kAddCheatCmd);
   wid.push_back(myAddButton);
 
-  myEditButton = new ButtonWidget(this, font, 0, 0,
+  myEditButton = new ButtonWidget(this, font,
                                   "Edit" + ELLIPSIS, kEditCheatCmd);
   wid.push_back(myEditButton);
 
-  myRemoveButton = new ButtonWidget(this, font, 0, 0,
+  myRemoveButton = new ButtonWidget(this, font,
                                     "Remove", kRemCheatCmd);
   wid.push_back(myRemoveButton);
 
-  myOneShotButton = new ButtonWidget(this, font, 0, 0,
+  myOneShotButton = new ButtonWidget(this, font,
                                      "One shot" + ELLIPSIS, kAddOneShotCmd);
   wid.push_back(myOneShotButton);
 

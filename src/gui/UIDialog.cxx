@@ -57,7 +57,7 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
   // font change.  The tab widget's bar geometry is (re)computed in layout() via
   // TabWidget::updateTabSizes(), so a placeholder size is fine here.
   // NOLINTBEGIN(cppcoreguidelines-prefer-member-initializer)
-  myTab = new TabWidget(this, font, 0, 0, 1, 1);
+  myTab = new TabWidget(this, font);
   addTabWidget(myTab);
 
   //////////////////////////////////////////////////////////
@@ -73,17 +73,17 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
   VarList::push_back(items, "Classic", "classic");
   VarList::push_back(items, "Light", "light");
   VarList::push_back(items, "Dark", "dark");
-  myPalette1Popup = new PopUpWidget(lookPane, font, 0, 0,
+  myPalette1Popup = new PopUpWidget(lookPane, font,
                                     items, "Light theme", 0);
   myPalette1Popup->setToolTip("Primary/light theme.", Event::ToggleUIPalette, EventMode::kMenuMode);
   wid.push_back(myPalette1Popup);
 
-  myPalette2Popup = new PopUpWidget(lookPane, font, 0, 0,
+  myPalette2Popup = new PopUpWidget(lookPane, font,
                                     items, "Dark theme", 0);
   myPalette2Popup->setToolTip("Alternative/dark theme.", Event::ToggleUIPalette, EventMode::kMenuMode);
   wid.push_back(myPalette2Popup);
 
-  myAutoPalette = new CheckboxWidget(lookPane, font, 0, 0, "Auto theme");
+  myAutoPalette = new CheckboxWidget(lookPane, font, "Auto theme");
   myAutoPalette->setToolTip("Enable for automatic switching between light and dark themes in sync with OS.");
   wid.push_back(myAutoPalette);
 
@@ -96,12 +96,12 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
   VarList::push_back(items, "Large (12pt)", "large12");   // 12x24
   VarList::push_back(items, "Large (14pt)", "large14");   // 14x28
   VarList::push_back(items, "Large (16pt)", "large16");   // 16x32
-  myDialogFontPopup = new PopUpWidget(lookPane, font, 0, 0,
+  myDialogFontPopup = new PopUpWidget(lookPane, font,
                                       items, "Dialogs font", 0, kDialogFont);
   wid.push_back(myDialogFontPopup);
 
   // Enable HiDPI mode
-  myHidpiWidget = new CheckboxWidget(lookPane, font, 0, 0, "HiDPI mode (*)");
+  myHidpiWidget = new CheckboxWidget(lookPane, font, "HiDPI mode (*)");
   myHidpiWidget->setToolTip("Scale the UI by a factor of two when enabled.");
   wid.push_back(myHidpiWidget);
 
@@ -112,12 +112,12 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
   VarList::push_back(items, "Right top", 2);
   VarList::push_back(items, "Right bottom", 3);
   VarList::push_back(items, "Left bottom", 4);
-  myPositionPopup = new PopUpWidget(lookPane, font, 0, 0,
+  myPositionPopup = new PopUpWidget(lookPane, font,
                                     items, "Dialogs position", 0);
   wid.push_back(myPositionPopup);
 
   // Center window (in windowed mode)
-  myCenter = new CheckboxWidget(lookPane, _font, 0, 0, "Center windows");
+  myCenter = new CheckboxWidget(lookPane, _font, "Center windows");
   myCenter->setToolTip("Check to center all windows, else remember last position.");
   wid.push_back(myCenter);
 
@@ -125,7 +125,7 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
   // span the pop-ups' boxes and arrows beside them, but the pop-ups have not been
   // given their shared width yet, so layout() sets the real track width
   const int swidth = 1;
-  myListDelaySlider = new SliderWidget(lookPane, font, 0, 0, swidth,
+  myListDelaySlider = new SliderWidget(lookPane, font, swidth,
                                       "List input delay", 0, kListDelay,
                                       font.getStringWidth("1 second"));
   myListDelaySlider->setMinValue(0);
@@ -137,7 +137,7 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
   wid.push_back(myListDelaySlider);
 
   // Number of lines a mouse wheel will scroll
-  myWheelLinesSlider = new SliderWidget(lookPane, font, 0, 0, swidth,
+  myWheelLinesSlider = new SliderWidget(lookPane, font, swidth,
                                       "Mouse wheel scroll", 0, kMouseWheel,
                                        font.getStringWidth("10 lines"));
   myWheelLinesSlider->setMinValue(1);
@@ -146,7 +146,7 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
   wid.push_back(myWheelLinesSlider);
 
   // Mouse double click speed
-  myDoubleClickSlider = new SliderWidget(lookPane, font, 0, 0, swidth,
+  myDoubleClickSlider = new SliderWidget(lookPane, font, swidth,
                                          "Double-click speed", 0, 0,
                                          font.getStringWidth("900 ms"), " ms");
   myDoubleClickSlider->setMinValue(100);
@@ -156,7 +156,7 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
   wid.push_back(myDoubleClickSlider);
 
   // Initial delay before controller input will start repeating
-  myControllerDelaySlider = new SliderWidget(lookPane, font, 0, 0, swidth,
+  myControllerDelaySlider = new SliderWidget(lookPane, font, swidth,
                                              "Controller repeat delay", 0, kControllerDelay,
                                              font.getStringWidth("1 second"));
   myControllerDelaySlider->setMinValue(200);
@@ -166,7 +166,7 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
   wid.push_back(myControllerDelaySlider);
 
   // Controller repeat rate
-  myControllerRateSlider = new SliderWidget(lookPane, font, 0, 0, swidth,
+  myControllerRateSlider = new SliderWidget(lookPane, font, swidth,
                                             "Controller repeat rate", 0, 0,
                                             font.getStringWidth("30 repeats/s"), " repeats/s");
   myControllerRateSlider->setMinValue(2);
@@ -175,7 +175,7 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
   myControllerRateSlider->setTickmarkIntervals(14);
   wid.push_back(myControllerRateSlider);
 
-  myLookFeelInfo = new StaticTextWidget(lookPane, ifont, 0, 0,
+  myLookFeelInfo = new StaticTextWidget(lookPane, ifont,
                        "(*) Change requires an application restart");
 
   // Add items for tab 0
@@ -252,13 +252,13 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
   myTab->setPaneWidget(tabID, launchPane);
 
   // ROM path
-  myRomButton = new ButtonWidget(launchPane, font, 0, 0,
+  myRomButton = new ButtonWidget(launchPane, font,
       "ROM path" + ELLIPSIS, kChooseRomDirCmd);
   wid.push_back(myRomButton);
-  myRomPath = new EditTextWidget(launchPane, font, 0, 0, 1, "");
+  myRomPath = new EditTextWidget(launchPane, font, 1, "");
   wid.push_back(myRomPath);
 
-  myFollowLauncherWidget = new CheckboxWidget(launchPane, font, 0, 0, "Follow Launcher path");
+  myFollowLauncherWidget = new CheckboxWidget(launchPane, font, "Follow Launcher path");
   myFollowLauncherWidget->setToolTip("The ROM path is updated during Launcher navigation.");
   wid.push_back(myFollowLauncherWidget);
 
@@ -272,38 +272,38 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
   VarList::push_back(items, "Large (14pt)", "large14");   // 14x28
   VarList::push_back(items, "Large (16pt)", "large16");   // 16x32
   myLauncherFontPopup =
-    new PopUpWidget(launchPane, font, 0, 0, items, "Launcher font", 0);
+    new PopUpWidget(launchPane, font, items, "Launcher font", 0);
   wid.push_back(myLauncherFontPopup);
 
   // Launcher width and height
-  myLauncherWidthSlider = new SliderWidget(launchPane, font, 0, 0, "Launcher width",
+  myLauncherWidthSlider = new SliderWidget(launchPane, font, "Launcher width",
                                            0, 0, 6 * fontWidth, "px");
   myLauncherWidthSlider->setMaxValue(ds.w);
   myLauncherWidthSlider->setStepValue(10);
   wid.push_back(myLauncherWidthSlider);
 
-  myLauncherHeightSlider = new SliderWidget(launchPane, font, 0, 0, "Launcher height",
+  myLauncherHeightSlider = new SliderWidget(launchPane, font, "Launcher height",
                                             0, 0, 6 * fontWidth, "px");
   myLauncherHeightSlider->setMaxValue(ds.h);
   myLauncherHeightSlider->setStepValue(10);
   wid.push_back(myLauncherHeightSlider);
 
   // Track favorites
-  myFavoritesWidget = new CheckboxWidget(launchPane, _font, 0, 0, "Track favorites");
+  myFavoritesWidget = new CheckboxWidget(launchPane, _font, "Track favorites");
   myFavoritesWidget->setToolTip("Check to enable favorites tracking and display.");
   wid.push_back(myFavoritesWidget);
 
   // Display launcher extensions
-  myLauncherExtensionsWidget = new CheckboxWidget(launchPane, _font, 0, 0, "Display file extensions");
+  myLauncherExtensionsWidget = new CheckboxWidget(launchPane, _font, "Display file extensions");
   wid.push_back(myLauncherExtensionsWidget);
 
   // Display bottom buttons
-  myLauncherButtonsWidget = new CheckboxWidget(launchPane, _font, 0, 0, "Display bottom buttons");
+  myLauncherButtonsWidget = new CheckboxWidget(launchPane, _font, "Display bottom buttons");
   myLauncherButtonsWidget->setToolTip("Check to enable bottom command buttons.");
   wid.push_back(myLauncherButtonsWidget);
 
   // ROM launcher info/snapshot viewer
-  myRomViewerSize = new SliderWidget(launchPane, font, 0, 0, "ROM info width",
+  myRomViewerSize = new SliderWidget(launchPane, font, "ROM info width",
                                      0, kRomViewer, 6 * fontWidth, "%");
   myRomViewerSize->setMinValue(0);
   myRomViewerSize->setMaxValue(100);
@@ -313,19 +313,19 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
   wid.push_back(myRomViewerSize);
 
   // Snapshot path (load files)
-  myOpenBrowserButton = new ButtonWidget(launchPane, font, 0, 0,
+  myOpenBrowserButton = new ButtonWidget(launchPane, font,
                                          "Image path" + ELLIPSIS, kChooseSnapLoadDirCmd);
   myOpenBrowserButton->setToolTip("Select path for images used in Launcher.");
   wid.push_back(myOpenBrowserButton);
 
-  mySnapLoadPath = new EditTextWidget(launchPane, font, 0, 0, 1, "");
+  mySnapLoadPath = new EditTextWidget(launchPane, font, 1, "");
   wid.push_back(mySnapLoadPath);
 
   // Exit to Launcher
-  myLauncherExitWidget = new CheckboxWidget(launchPane, font, 0, 0, "Always exit to Launcher");
+  myLauncherExitWidget = new CheckboxWidget(launchPane, font, "Always exit to Launcher");
   wid.push_back(myLauncherExitWidget);
 
-  myLauncherInfo = new StaticTextWidget(launchPane, ifont, 0, 0,
+  myLauncherInfo = new StaticTextWidget(launchPane, ifont,
                        "(*) Changes may require an application restart");
 
   // Add items for tab 1

@@ -35,15 +35,15 @@ ProgressDialog::ProgressDialog(GuiObject* boss, const GUI::Font& font,
 {
   WidgetArray wid;
 
-  myMessage = new StaticTextWidget(this, font, 0, 0, message,
+  myMessage = new StaticTextWidget(this, font, message,
                                    TextAlign::Center);
   myMessage->setTextColor(kTextColorEm);
 
-  mySlider = new SliderWidget(this, font, 0, 0, 1, "", 0, 0);
+  mySlider = new SliderWidget(this, font, 1, "", 0, 0);
   mySlider->setMinValue(1);
   mySlider->setMaxValue(100);
 
-  auto* b = new ButtonWidget(this, font, 0, 0, "Cancel", Event::UICancel);
+  auto* b = new ButtonWidget(this, font, "Cancel", Event::UICancel);
   wid.push_back(b);
   addCancelWidget(b);
   addToFocusList(wid);

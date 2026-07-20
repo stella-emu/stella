@@ -39,11 +39,11 @@ AudioWidget::AudioWidget(GuiObject* boss, const GUI::Font& lfont,
 
   // Column headers for the two audio channels
   for(int col = 0; col < 2; ++col)
-    myChannelLabels[col] = new StaticTextWidget(boss, lfont, 0, 0,
+    myChannelLabels[col] = new StaticTextWidget(boss, lfont,
       Common::Base::toString(col, Common::Base::Fmt::_16_1), TextAlign::Left);
 
   // AUDF registers (frequency divider, two hex digits per channel)
-  myRegLabels[0] = new StaticTextWidget(boss, lfont, 0, 0, "AUDF", TextAlign::Left);
+  myRegLabels[0] = new StaticTextWidget(boss, lfont, "AUDF", TextAlign::Left);
   myAudF = new DataGridWidget(boss, nfont, 2, 1, 2, 5, Common::Base::Fmt::_16);
   myAudF->setTarget(this);
   myAudF->setID(kAUDFID);
@@ -51,26 +51,26 @@ AudioWidget::AudioWidget(GuiObject* boss, const GUI::Font& lfont,
 
   // The resulting channel frequencies ("f0 / f1"), filled in by loadConfig(); each
   // is sized from a representative value (every value it holds is the same length)
-  myAud0F = new StaticTextWidget(boss, lfont, 0, 0, "31400.0Hz");
-  mySlash = new StaticTextWidget(boss, lfont, 0, 0, "/");
-  myAud1F = new StaticTextWidget(boss, lfont, 0, 0, "31400.0Hz");
+  myAud0F = new StaticTextWidget(boss, lfont, "31400.0Hz");
+  mySlash = new StaticTextWidget(boss, lfont, "/");
+  myAud1F = new StaticTextWidget(boss, lfont, "31400.0Hz");
 
   // AUDC registers (control, one hex digit per channel)
-  myRegLabels[1] = new StaticTextWidget(boss, lfont, 0, 0, "AUDC", TextAlign::Left);
+  myRegLabels[1] = new StaticTextWidget(boss, lfont, "AUDC", TextAlign::Left);
   myAudC = new DataGridWidget(boss, nfont, 2, 1, 1, 4, Common::Base::Fmt::_16_1);
   myAudC->setTarget(this);
   myAudC->setID(kAUDCID);
   addFocusWidget(myAudC);
 
   // AUDV registers (volume, one hex digit per channel)
-  myRegLabels[2] = new StaticTextWidget(boss, lfont, 0, 0, "AUDV", TextAlign::Left);
+  myRegLabels[2] = new StaticTextWidget(boss, lfont, "AUDV", TextAlign::Left);
   myAudV = new DataGridWidget(boss, nfont, 2, 1, 1, 4, Common::Base::Fmt::_16_1);
   myAudV->setTarget(this);
   myAudV->setID(kAUDVID);
   addFocusWidget(myAudV);
 
   // The effective volume, filled in by loadConfig()
-  myAudEffV = new StaticTextWidget(boss, lfont, 0, 0, "");
+  myAudEffV = new StaticTextWidget(boss, lfont, "");
   // NOLINTEND(cppcoreguidelines-prefer-member-initializer)
 
   setHelpAnchor("AudioTab", true);

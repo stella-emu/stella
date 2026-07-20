@@ -51,7 +51,7 @@ CartridgeCMWidget::CartridgeCMWidget(
   VarList::push_back(items, " 2 ");
   VarList::push_back(items, " 3 ");
 
-  myBank = new PopUpWidget(boss, _font, 0, 0, items, "Set bank", 0, kBankChanged);
+  myBank = new PopUpWidget(boss, _font, items, "Set bank", 0, kBankChanged);
   myBank->setTarget(this);
   addFocusWidget(myBank);
 
@@ -59,20 +59,20 @@ CartridgeCMWidget::CartridgeCMWidget(
   myLabelColumn.emplace_back(myBank);
 
   // Raw SWCHA value (this will be broken down further in other UI elements)
-  mySWCHALabel = new StaticTextWidget(boss, _font, 0, 0, "Current SWCHA");
+  mySWCHALabel = new StaticTextWidget(boss, _font, "Current SWCHA");
   mySWCHA = new ToggleBitWidget(boss, _nfont, 8, 1);
   mySWCHA->setTarget(this);
   mySWCHA->setEditable(false);
 
   // Current column number
-  myColumnLabel = new StaticTextWidget(boss, _font, 0, 0, "Current column");
+  myColumnLabel = new StaticTextWidget(boss, _font, "Current column");
   myColumn = new DataGridWidget(boss, _nfont, 1, 1, 2, 8, Common::Base::Fmt::_16);
   myColumn->setTarget(this);
   myColumn->setEditable(false);
 
   // The relevant pins of SWCHA, as two columns of read-only checkboxes
   const auto addPin = [&](CheckboxWidget*& box, string_view label) {
-    box = new CheckboxWidget(boss, _font, 0, 0, label);
+    box = new CheckboxWidget(boss, _font, label);
     box->setTarget(this);
     box->setEditable(false);
   };
@@ -87,8 +87,8 @@ CartridgeCMWidget::CartridgeCMWidget(
   addPin(myAudOut, "Audio Output");        // D6 (audio part)
 
   // Ram state (combination of several bits in SWCHA)
-  myRAMLabel = new StaticTextWidget(boss, _font, 0, 0, "Ram State");
-  myRAM = new EditTextWidget(boss, _nfont, 0, 0,
+  myRAMLabel = new StaticTextWidget(boss, _font, "Ram State");
+  myRAM = new EditTextWidget(boss, _nfont,
                              EditTextWidget::calcWidth(_nfont, " Write-only "));
   myRAM->setEditable(false, true);
 

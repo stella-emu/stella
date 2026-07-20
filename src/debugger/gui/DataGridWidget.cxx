@@ -35,7 +35,7 @@ DataGridWidget::DataGridWidget(GuiObject* boss, const GUI::Font& font,
                                int colchars, int bits,
                                Common::Base::Fmt base,
                                bool useScrollbar)
-  : EditableWidget(boss, font, 0, 0,
+  : EditableWidget(boss, font,
                    cols*(colchars * font.getMaxCharWidth() + 8) + 1,
                    font.getLineHeight()*rows + 1),
     _rows{rows},
@@ -66,8 +66,7 @@ DataGridWidget::DataGridWidget(GuiObject* boss, const GUI::Font& font,
   // Add a scrollbar if necessary
   if(useScrollbar)
   {
-    _scrollBar = new ScrollBarWidget(boss, font, _x + _w, _y,
-                                     ScrollBarWidget::scrollBarWidth(_font), _h);
+    _scrollBar = new ScrollBarWidget(boss, font);
     _scrollBar->setTarget(this);
     _scrollBar->_numEntries = 1;
     _scrollBar->_currentPos = 0;

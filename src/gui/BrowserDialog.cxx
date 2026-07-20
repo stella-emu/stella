@@ -53,9 +53,6 @@ void BrowserDialog::initialize(int max_w, int max_h)
   _w = max_w;
   _h = max_h;
 
-  const int buttonHeight = Dialog::buttonHeight(),
-            HBORDER      = Dialog::hBorder();
-
   // Widgets are only created here (at placeholder geometry); layout() assigns
   // all positions and sizes from the current font and dialog size.  The
   // composite widgets (navigation bar and file list) are created at a real base
@@ -63,40 +60,38 @@ void BrowserDialog::initialize(int max_w, int max_h)
 
   // NOLINTBEGIN(cppcoreguidelines-prefer-member-initializer)
   // Current path (navigation bar) and the "save path" checkbox beside it
-  _navigationBar = new NavigationWidget(this, _font, 0, 0, _w - HBORDER * 2,
-                                        buttonHeight);
-  _savePathBox = new CheckboxWidget(this, _font, 0, 0, "Save");
+  _navigationBar = new NavigationWidget(this, _font);
+  _savePathBox = new CheckboxWidget(this, _font, "Save");
   _savePathBox->setToolTip("Check to save current path as default.");
 
   // File listing
-  _fileList = new FileListWidget(this, _font, 0, 0, _w - HBORDER * 2,
-                                 buttonHeight * 4);
+  _fileList = new FileListWidget(this, _font);
   _fileList->setEditable(false);
   addFocusWidget(_fileList);
   _navigationBar->setList(_fileList);
 
   // Currently selected item
-  _name = new StaticTextWidget(this, _font, 0, 0, "Name");
-  _selected = new EditTextWidget(this, _font, 0, 0, _w, "");
+  _name = new StaticTextWidget(this, _font, "Name");
+  _selected = new EditTextWidget(this, _font, _w, "");
   addFocusWidget(_selected);
 
   // Directory-navigation buttons
-  _goUpButton = new ButtonWidget(this, _font, 0, 0, "Go up", kGoUpCmd);
+  _goUpButton = new ButtonWidget(this, _font, "Go up", kGoUpCmd);
   addFocusWidget(_goUpButton);
-  _baseDirButton = new ButtonWidget(this, _font, 0, 0, "Base Dir", kBaseDirCmd);
+  _baseDirButton = new ButtonWidget(this, _font, "Base Dir", kBaseDirCmd);
   _baseDirButton->setToolTip("Go to Stella's base directory.");
   addFocusWidget(_baseDirButton);
-  _homeDirButton = new ButtonWidget(this, _font, 0, 0, "Home Dir", kHomeDirCmd);
+  _homeDirButton = new ButtonWidget(this, _font, "Home Dir", kHomeDirCmd);
   _homeDirButton->setToolTip("Go to user's home directory.");
   addFocusWidget(_homeDirButton);
 
   // OK and Cancel; the platform-specific left/right ordering is handled by
   // Dialog::layoutButtonGroup()
-  auto* okButton = new ButtonWidget(this, _font, 0, 0,
+  auto* okButton = new ButtonWidget(this, _font,
                                     "OK", kChooseCmd);
   addFocusWidget(okButton);
   addOKWidget(okButton);
-  auto* cancelButton = new ButtonWidget(this, _font, 0, 0, "Cancel",
+  auto* cancelButton = new ButtonWidget(this, _font, "Cancel",
                                         GuiObject::kCloseCmd);
   addFocusWidget(cancelButton);
   addCancelWidget(cancelButton);

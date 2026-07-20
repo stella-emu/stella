@@ -44,11 +44,11 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
   ////////////////////////////
   // VSync/VBlank
   ////////////////////////////
-  myVSync = new CheckboxWidget(boss, lfont, 0, 0, "VSync", kVSyncCmd);
+  myVSync = new CheckboxWidget(boss, lfont, "VSync", kVSyncCmd);
   myVSync->setTarget(this);
   addFocusWidget(myVSync);
 
-  myVBlank = new CheckboxWidget(boss, lfont, 0, 0, "VBlank", kVBlankCmd);
+  myVBlank = new CheckboxWidget(boss, lfont, "VBlank", kVBlankCmd);
   myVBlank->setTarget(this);
   addFocusWidget(myVBlank);
 
@@ -57,7 +57,7 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
     "COLUP0", "COLUP1", "COLUPF", "COLUBK"
   };
   for(int row = 0; row < 4; ++row)
-    myColorRegLabels[row] = new StaticTextWidget(boss, lfont, 0, 0, regNames[row]);
+    myColorRegLabels[row] = new StaticTextWidget(boss, lfont, regNames[row]);
 
   myColorRegs = new DataGridWidget(boss, nfont,
                                    1, 4, 2, 8, Common::Base::Fmt::_16);
@@ -68,7 +68,7 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
   // A colour swatch is half again as wide as it is tall; reflow() re-applies
   // both, so they follow the font
   const auto swatch = [&]() {
-    auto* c = new ColorWidget(boss, nfont, 0, 0,
+    auto* c = new ColorWidget(boss, nfont,
                               static_cast<uInt32>(1.5 * lineHeight), lineHeight - 4);
     c->setTarget(this);
     return c;
@@ -79,7 +79,7 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
   myCOLUBKColor = swatch();
 
   // Fixed debug colors
-  myFixedEnabled = new CheckboxWidget(boss, lfont, 0, 0, "Debug Colors", kDbgClCmd);
+  myFixedEnabled = new CheckboxWidget(boss, lfont, "Debug Colors", kDbgClCmd);
   myFixedEnabled->setToolTip("Enable fixed debug colors", Event::ToggleFixedColors);
   myFixedEnabled->setTarget(this);
   addFocusWidget(myFixedEnabled);
@@ -89,7 +89,7 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
   };
   for(uInt32 row = 0; row < 8; ++row)
   {
-    myDbgColorLabels[row] = new StaticTextWidget(boss, lfont, 0, 0, dbgLabels[row]);
+    myDbgColorLabels[row] = new StaticTextWidget(boss, lfont, dbgLabels[row]);
     myFixedColors[row] = swatch();
   }
 
@@ -102,12 +102,12 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
   int idx = 0;
   for(uInt32 row = 0; row < 5; ++row)
   {
-    myCollRowLabels[row] = new StaticTextWidget(boss, lfont, 0, 0, rowLabel[row]);
-    myCollColLabels[row] = new StaticTextWidget(boss, lfont, 0, 0, colLabel[row]);
+    myCollRowLabels[row] = new StaticTextWidget(boss, lfont, rowLabel[row]);
+    myCollColLabels[row] = new StaticTextWidget(boss, lfont, colLabel[row]);
 
     for(uInt32 col = 0; col < 5 - row; ++col, ++idx)
     {
-      myCollision[idx] = new CheckboxWidget(boss, lfont, 0, 0, "",
+      myCollision[idx] = new CheckboxWidget(boss, lfont, "",
                                             CheckboxWidget::kCheckActionCmd);
       myCollision[idx]->setTarget(this);
       myCollision[idx]->setID(idx);
@@ -115,7 +115,7 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
   }
 
   // Clear all collision bits
-  myCxclrButton = new ButtonWidget(boss, lfont, 0, 0, "CXCLR", kCxclrCmd);
+  myCxclrButton = new ButtonWidget(boss, lfont, "CXCLR", kCxclrCmd);
   myCxclrButton->setCompact();
   myCxclrButton->setTarget(this);
   addFocusWidget(myCxclrButton);
@@ -123,10 +123,10 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
   ////////////////////////////
   // P0 register info
   ////////////////////////////
-  myBlockLabels[0].name = new StaticTextWidget(boss, lfont, 0, 0, "P0");
-  myBlockLabels[0].pos  = new StaticTextWidget(boss, lfont, 0, 0, "Pos#");
-  myBlockLabels[0].hm   = new StaticTextWidget(boss, lfont, 0, 0, "HM");
-  myBlockLabels[0].size = new StaticTextWidget(boss, lfont, 0, 0, "NuSiz");
+  myBlockLabels[0].name = new StaticTextWidget(boss, lfont, "P0");
+  myBlockLabels[0].pos  = new StaticTextWidget(boss, lfont, "Pos#");
+  myBlockLabels[0].hm   = new StaticTextWidget(boss, lfont, "HM");
+  myBlockLabels[0].size = new StaticTextWidget(boss, lfont, "NuSiz");
 
   // grP0 (new)
   myGRP0 = new TogglePixelWidget(boss, nfont, 8, 1);
@@ -151,14 +151,14 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
   addFocusWidget(myHMP0);
 
   // P0 reflect
-  myRefP0 = new CheckboxWidget(boss, lfont, 0, 0,
+  myRefP0 = new CheckboxWidget(boss, lfont,
                                "Reflect", CheckboxWidget::kCheckActionCmd);
   myRefP0->setTarget(this);
   myRefP0->setID(kRefP0ID);
   addFocusWidget(myRefP0);
 
   // P0 reset
-  myResButtons[0] = new ButtonWidget(boss, lfont, 0, 0, "RESP0", kResP0Cmd);
+  myResButtons[0] = new ButtonWidget(boss, lfont, "RESP0", kResP0Cmd);
   myResButtons[0]->setCompact();
   myResButtons[0]->setTarget(this);
   addFocusWidget(myResButtons[0]);
@@ -171,7 +171,7 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
   addFocusWidget(myGRP0Old);
 
   // P0 delay
-  myDelP0 = new CheckboxWidget(boss, lfont, 0, 0,
+  myDelP0 = new CheckboxWidget(boss, lfont,
                                "VDel", CheckboxWidget::kCheckActionCmd);
   myDelP0->setTarget(this);
   myDelP0->setID(kDelP0ID);
@@ -184,16 +184,16 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
   myNusizP0->setID(kNusizP0ID);
   addFocusWidget(myNusizP0);
 
-  myNusizP0Text = new EditTextWidget(boss, nfont, 0, 0, 1, lineHeight);
+  myNusizP0Text = new EditTextWidget(boss, nfont, 1, lineHeight);
   myNusizP0Text->setEditable(false, true);
 
   ////////////////////////////
   // P1 register info
   ////////////////////////////
-  myBlockLabels[1].name = new StaticTextWidget(boss, lfont, 0, 0, "P1");
-  myBlockLabels[1].pos  = new StaticTextWidget(boss, lfont, 0, 0, "Pos#");
-  myBlockLabels[1].hm   = new StaticTextWidget(boss, lfont, 0, 0, "HM");
-  myBlockLabels[1].size = new StaticTextWidget(boss, lfont, 0, 0, "NuSiz");
+  myBlockLabels[1].name = new StaticTextWidget(boss, lfont, "P1");
+  myBlockLabels[1].pos  = new StaticTextWidget(boss, lfont, "Pos#");
+  myBlockLabels[1].hm   = new StaticTextWidget(boss, lfont, "HM");
+  myBlockLabels[1].size = new StaticTextWidget(boss, lfont, "NuSiz");
 
   // grP1 (new)
   myGRP1 = new TogglePixelWidget(boss, nfont, 8, 1);
@@ -218,14 +218,14 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
   addFocusWidget(myHMP1);
 
   // P1 reflect
-  myRefP1 = new CheckboxWidget(boss, lfont, 0, 0,
+  myRefP1 = new CheckboxWidget(boss, lfont,
                                "Reflect", CheckboxWidget::kCheckActionCmd);
   myRefP1->setTarget(this);
   myRefP1->setID(kRefP1ID);
   addFocusWidget(myRefP1);
 
   // P1 reset
-  myResButtons[1] = new ButtonWidget(boss, lfont, 0, 0, "RESP1", kResP1Cmd);
+  myResButtons[1] = new ButtonWidget(boss, lfont, "RESP1", kResP1Cmd);
   myResButtons[1]->setCompact();
   myResButtons[1]->setTarget(this);
   addFocusWidget(myResButtons[1]);
@@ -238,7 +238,7 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
   addFocusWidget(myGRP1Old);
 
   // P1 delay
-  myDelP1 = new CheckboxWidget(boss, lfont, 0, 0,
+  myDelP1 = new CheckboxWidget(boss, lfont,
                                "VDel", CheckboxWidget::kCheckActionCmd);
   myDelP1->setTarget(this);
   myDelP1->setID(kDelP1ID);
@@ -251,16 +251,16 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
   myNusizP1->setID(kNusizP1ID);
   addFocusWidget(myNusizP1);
 
-  myNusizP1Text = new EditTextWidget(boss, nfont, 0, 0, 1, lineHeight);
+  myNusizP1Text = new EditTextWidget(boss, nfont, 1, lineHeight);
   myNusizP1Text->setEditable(false, true);
 
   ////////////////////////////
   // M0 register info
   ////////////////////////////
-  myBlockLabels[2].name = new StaticTextWidget(boss, lfont, 0, 0, "M0");
-  myBlockLabels[2].pos  = new StaticTextWidget(boss, lfont, 0, 0, "Pos#");
-  myBlockLabels[2].hm   = new StaticTextWidget(boss, lfont, 0, 0, "HM");
-  myBlockLabels[2].size = new StaticTextWidget(boss, lfont, 0, 0, "Size");
+  myBlockLabels[2].name = new StaticTextWidget(boss, lfont, "M0");
+  myBlockLabels[2].pos  = new StaticTextWidget(boss, lfont, "Pos#");
+  myBlockLabels[2].hm   = new StaticTextWidget(boss, lfont, "HM");
+  myBlockLabels[2].size = new StaticTextWidget(boss, lfont, "Size");
 
   // enaM0
   myEnaM0 = new TogglePixelWidget(boss, nfont, 1, 1);
@@ -292,14 +292,14 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
   addFocusWidget(myNusizM0);
 
   // M0 reset to player 0
-  myResMP0 = new CheckboxWidget(boss, lfont, 0, 0,
+  myResMP0 = new CheckboxWidget(boss, lfont,
                                 "Reset to P0", CheckboxWidget::kCheckActionCmd);
   myResMP0->setTarget(this);
   myResMP0->setID(kResMP0ID);
   addFocusWidget(myResMP0);
 
   // M0 reset
-  myResButtons[2] = new ButtonWidget(boss, lfont, 0, 0, "RESM0", kResM0Cmd);
+  myResButtons[2] = new ButtonWidget(boss, lfont, "RESM0", kResM0Cmd);
   myResButtons[2]->setCompact();
   myResButtons[2]->setTarget(this);
   addFocusWidget(myResButtons[2]);
@@ -307,10 +307,10 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
   ////////////////////////////
   // M1 register info
   ////////////////////////////
-  myBlockLabels[3].name = new StaticTextWidget(boss, lfont, 0, 0, "M1");
-  myBlockLabels[3].pos  = new StaticTextWidget(boss, lfont, 0, 0, "Pos#");
-  myBlockLabels[3].hm   = new StaticTextWidget(boss, lfont, 0, 0, "HM");
-  myBlockLabels[3].size = new StaticTextWidget(boss, lfont, 0, 0, "Size");
+  myBlockLabels[3].name = new StaticTextWidget(boss, lfont, "M1");
+  myBlockLabels[3].pos  = new StaticTextWidget(boss, lfont, "Pos#");
+  myBlockLabels[3].hm   = new StaticTextWidget(boss, lfont, "HM");
+  myBlockLabels[3].size = new StaticTextWidget(boss, lfont, "Size");
 
   // enaM1
   myEnaM1 = new TogglePixelWidget(boss, nfont, 1, 1);
@@ -342,14 +342,14 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
   addFocusWidget(myNusizM1);
 
   // M1 reset to player 1
-  myResMP1 = new CheckboxWidget(boss, lfont, 0, 0,
+  myResMP1 = new CheckboxWidget(boss, lfont,
                                 "Reset to P1", CheckboxWidget::kCheckActionCmd);
   myResMP1->setTarget(this);
   myResMP1->setID(kResMP1ID);
   addFocusWidget(myResMP1);
 
   // M1 reset
-  myResButtons[3] = new ButtonWidget(boss, lfont, 0, 0, "RESM1", kResM1Cmd);
+  myResButtons[3] = new ButtonWidget(boss, lfont, "RESM1", kResM1Cmd);
   myResButtons[3]->setCompact();
   myResButtons[3]->setTarget(this);
   addFocusWidget(myResButtons[3]);
@@ -357,10 +357,10 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
   ////////////////////////////
   // BL register info
   ////////////////////////////
-  myBlockLabels[4].name = new StaticTextWidget(boss, lfont, 0, 0, "BL");
-  myBlockLabels[4].pos  = new StaticTextWidget(boss, lfont, 0, 0, "Pos#");
-  myBlockLabels[4].hm   = new StaticTextWidget(boss, lfont, 0, 0, "HM");
-  myBlockLabels[4].size = new StaticTextWidget(boss, lfont, 0, 0, "Size");
+  myBlockLabels[4].name = new StaticTextWidget(boss, lfont, "BL");
+  myBlockLabels[4].pos  = new StaticTextWidget(boss, lfont, "Pos#");
+  myBlockLabels[4].hm   = new StaticTextWidget(boss, lfont, "HM");
+  myBlockLabels[4].size = new StaticTextWidget(boss, lfont, "Size");
 
   // enaBL
   myEnaBL = new TogglePixelWidget(boss, nfont, 1, 1);
@@ -392,7 +392,7 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
   addFocusWidget(mySizeBL);
 
   // Reset ball
-  myResButtons[4] = new ButtonWidget(boss, lfont, 0, 0, "RESBL", kResBLCmd);
+  myResButtons[4] = new ButtonWidget(boss, lfont, "RESBL", kResBLCmd);
   myResButtons[4]->setCompact();
   myResButtons[4]->setTarget(this);
   addFocusWidget(myResButtons[4]);
@@ -405,7 +405,7 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
   addFocusWidget(myEnaBLOld);
 
   // Ball delay
-  myDelBL = new CheckboxWidget(boss, lfont, 0, 0,
+  myDelBL = new CheckboxWidget(boss, lfont,
                                "VDel", CheckboxWidget::kCheckActionCmd);
   myDelBL->setTarget(this);
   myDelBL->setID(kDelBLID);
@@ -419,7 +419,7 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
     "0", "1", "2", "3", "4", "5", "6", "7"
   };
 
-  myPFLabel = new StaticTextWidget(boss, lfont, 0, 0, "PF");
+  myPFLabel = new StaticTextWidget(boss, lfont, "PF");
 
   // PF0 is four bits wide at double width; PF1 and PF2 are eight
   myPF[0] = new TogglePixelWidget(boss, nfont, 4, 1, 4);
@@ -444,33 +444,33 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
   {
     int label = 0;
     for(int i = 4; i <= 7; ++i)
-      myPFBitLabels[label++] = new StaticTextWidget(boss, sf, 0, 0, bitNames[i]);
+      myPFBitLabels[label++] = new StaticTextWidget(boss, sf, bitNames[i]);
     for(int i = 7; i >= 0; --i)
-      myPFBitLabels[label++] = new StaticTextWidget(boss, sf, 0, 0, bitNames[i]);
+      myPFBitLabels[label++] = new StaticTextWidget(boss, sf, bitNames[i]);
     for(int i = 0; i <= 7; ++i)
-      myPFBitLabels[label++] = new StaticTextWidget(boss, sf, 0, 0, bitNames[i]);
+      myPFBitLabels[label++] = new StaticTextWidget(boss, sf, bitNames[i]);
   }
 
   // PF reflect, score, priority
-  myRefPF = new CheckboxWidget(boss, lfont, 0, 0,
+  myRefPF = new CheckboxWidget(boss, lfont,
                                "Reflect", CheckboxWidget::kCheckActionCmd);
   myRefPF->setTarget(this);
   myRefPF->setID(kRefPFID);
   addFocusWidget(myRefPF);
 
-  myScorePF = new CheckboxWidget(boss, lfont, 0, 0,
+  myScorePF = new CheckboxWidget(boss, lfont,
                                  "Score", CheckboxWidget::kCheckActionCmd);
   myScorePF->setTarget(this);
   myScorePF->setID(kScorePFID);
   addFocusWidget(myScorePF);
 
-  myPriorityPF = new CheckboxWidget(boss, lfont, 0, 0,
+  myPriorityPF = new CheckboxWidget(boss, lfont,
                                     "Priority", CheckboxWidget::kCheckActionCmd);
   myPriorityPF->setTarget(this);
   myPriorityPF->setID(kPriorityPFID);
   addFocusWidget(myPriorityPF);
 
-  myQueuedWritesLabel = new StaticTextWidget(boss, lfont, 0, 0, "Queued Writes");
+  myQueuedWritesLabel = new StaticTextWidget(boss, lfont, "Queued Writes");
   myDelayQueueWidget = new DelayQueueWidget(boss, lfont);
 
   ////////////////////////////
@@ -484,7 +484,7 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
   };
   for(int i = 0; i < 4; ++i)
   {
-    myStrobeButtons[i] = new ButtonWidget(boss, lfont, 0, 0,
+    myStrobeButtons[i] = new ButtonWidget(boss, lfont,
                                           strobeNames[i], strobeCmds[i]);
     myStrobeButtons[i]->setCompact();
     myStrobeButtons[i]->setTarget(this);

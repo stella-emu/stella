@@ -21,17 +21,12 @@
 #include "CheckListWidget.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CheckListWidget::CheckListWidget(GuiObject* boss, const GUI::Font& font,
-                                 int x, int y, int w, int h)
-  : ListWidget(boss, font, x, y, w, h)
+CheckListWidget::CheckListWidget(GuiObject* boss, const GUI::Font& font)
+  : ListWidget(boss, font)
 {
-  // rowheight is determined by largest item on a line,
-  // possibly meaning that number of rows will change
+  // rowheight is determined by largest item on a line, so the row count that
+  // follows from it is settled by setHeight(), which reflows the checkboxes too
   _lineHeight = std::max(_lineHeight, CheckboxWidget::boxSize(_font));
-  _rows = h / _lineHeight;
-
-  // Create and position a CheckboxWidget for each visible row
-  reflowCheckboxes();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -66,7 +61,7 @@ void CheckListWidget::reflowCheckboxes()
   // append (surplus rows are hidden below).
   while(std::cmp_less(_checkList.size(), _rows))
   {
-    auto* t = new CheckboxWidget(_boss, _font, 0, 0, "",
+    auto* t = new CheckboxWidget(_boss, _font, "",
                                  CheckboxWidget::kCheckActionCmd);
     t->setTextColor(kTextColor);
     t->setTarget(this);

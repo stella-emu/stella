@@ -35,13 +35,13 @@ JoystickDialog::JoystickDialog(GuiObject* boss, const GUI::Font& font,
 
   // NOLINTBEGIN(cppcoreguidelines-prefer-member-initializer)
   // Joystick list
-  myJoyList = new StringListWidget(this, font, 0, 0, 1, 1);
+  myJoyList = new StringListWidget(this, font);
   myJoyList->setEditable(false);
   wid.push_back(myJoyList);
 
   // Joystick ID
-  myIDLabel = new StaticTextWidget(this, font, 0, 0, "Controller ID");
-  myJoyText = new EditTextWidget(this, font, 0, 0,
+  myIDLabel = new StaticTextWidget(this, font, "Controller ID");
+  myJoyText = new EditTextWidget(this, font,
       EditTextWidget::calcWidth(font, "Unplugged"), "");
   myJoyText->setEditable(false);
 
@@ -51,15 +51,15 @@ JoystickDialog::JoystickDialog(GuiObject* boss, const GUI::Font& font,
   VarList::push_back(ports, "Left",  static_cast<Int32>(PhysicalJoystick::Port::LEFT));
   VarList::push_back(ports, "Right", static_cast<Int32>(PhysicalJoystick::Port::RIGHT));
 
-  myJoyPort = new PopUpWidget(this, font, 0, 0, ports, "Port", 0, kPortCmd);
+  myJoyPort = new PopUpWidget(this, font, ports, "Port", 0, kPortCmd);
   myJoyPort->setToolTip("Define default mapping port.");
   wid.push_back(myJoyPort);
 
   // Buttons at bottom
-  myCloseBtn = new ButtonWidget(this, font, 0, 0, "Close", GuiObject::kCloseCmd);
+  myCloseBtn = new ButtonWidget(this, font, "Close", GuiObject::kCloseCmd);
   addOKWidget(myCloseBtn);  addCancelWidget(myCloseBtn);
 
-  myRemoveBtn = new ButtonWidget(this, font, 0, 0, "Remove", kRemoveCmd);
+  myRemoveBtn = new ButtonWidget(this, font, "Remove", kRemoveCmd);
   myRemoveBtn->clearFlags(Widget::FLAG_ENABLED);
 
   // Now we can finally add the widgets to the focus list

@@ -75,7 +75,7 @@ EmulationDialog::EmulationDialog(OSystem& osystem, DialogContainer& parent,
 
   // NOLINTBEGIN(cppcoreguidelines-prefer-member-initializer)
   // Speed
-  mySpeed = new SliderWidget(this, _font, 0, 0, swidth,
+  mySpeed = new SliderWidget(this, _font, swidth,
                              "Emulation speed", 0, kSpeedupChanged, fontWidth * 5, "%");
   mySpeed->setMinValue(MIN_SPEED); mySpeed->setMaxValue(MAX_SPEED);
   mySpeed->setStepValue(SPEED_STEP);
@@ -84,64 +84,64 @@ EmulationDialog::EmulationDialog(OSystem& osystem, DialogContainer& parent,
   wid.push_back(mySpeed);
 
   // Use sync to vblank
-  myUseVSync = new CheckboxWidget(this, _font, 0, 0, "VSync");
+  myUseVSync = new CheckboxWidget(this, _font, "VSync");
   myUseVSync->setToolTip("Check to enable vertical synced display updates.");
   wid.push_back(myUseVSync);
 
-  myTurbo = new CheckboxWidget(this, _font, 0, 0, "Turbo mode");
+  myTurbo = new CheckboxWidget(this, _font, "Turbo mode");
   myTurbo->setToolTip(Event::ToggleTurbo);
   wid.push_back(myTurbo);
 
   // Use multi-threading
-  myUseThreads = new CheckboxWidget(this, _font, 0, 0, "Multi-threading");
+  myUseThreads = new CheckboxWidget(this, _font, "Multi-threading");
   wid.push_back(myUseThreads);
 
   // Skip progress load bars for SuperCharger ROMs
   // Doesn't really belong here, but I couldn't find a better place for it
-  myFastSCBios = new CheckboxWidget(this, _font, 0, 0, "Fast SuperCharger load");
+  myFastSCBios = new CheckboxWidget(this, _font, "Fast SuperCharger load");
   wid.push_back(myFastSCBios);
 
   // Show UI messages onscreen
-  myUIMessages = new CheckboxWidget(this, _font, 0, 0, "Show UI messages");
+  myUIMessages = new CheckboxWidget(this, _font, "Show UI messages");
   wid.push_back(myUIMessages);
 
   // Automatically pause emulation when focus is lost
-  myAutoPauseWidget = new CheckboxWidget(this, _font, 0, 0, "Automatic pause");
+  myAutoPauseWidget = new CheckboxWidget(this, _font, "Automatic pause");
   myAutoPauseWidget->setToolTip("Check for automatic pause/continue of\nemulation when Stella loses/gains focus.");
   wid.push_back(myAutoPauseWidget);
 
   // Confirm dialog when exiting emulation
-  myConfirmExitWidget = new CheckboxWidget(this, _font, 0, 0, "Confirm exiting emulation");
+  myConfirmExitWidget = new CheckboxWidget(this, _font, "Confirm exiting emulation");
   wid.push_back(myConfirmExitWidget);
 
   // Save on exit
-  mySaveOnExitLabel = new StaticTextWidget(this, font, 0, 0,
+  mySaveOnExitLabel = new StaticTextWidget(this, font,
                                            "When entering/exiting emulation:");
-  mySaveOnExitButtons[0] = new RadioButtonWidget(this, font, 0, 0,
+  mySaveOnExitButtons[0] = new RadioButtonWidget(this, font,
                                                  "Do nothing", mySaveOnExitGroup.get());
   wid.push_back(mySaveOnExitButtons[0]);
-  mySaveOnExitButtons[1] = new RadioButtonWidget(this, font, 0, 0,
+  mySaveOnExitButtons[1] = new RadioButtonWidget(this, font,
                                                  "Save current state in current slot", mySaveOnExitGroup.get());
   wid.push_back(mySaveOnExitButtons[1]);
-  mySaveOnExitButtons[2] = new RadioButtonWidget(this, font, 0, 0,
+  mySaveOnExitButtons[2] = new RadioButtonWidget(this, font,
                                                  "Load/save all Time Machine states", mySaveOnExitGroup.get());
   wid.push_back(mySaveOnExitButtons[2]);
 
-  myAutoSlotWidget = new CheckboxWidget(this, font, 0, 0,
+  myAutoSlotWidget = new CheckboxWidget(this, font,
                                         "Automatically change save state slots");
   myAutoSlotWidget->setToolTip("Cycle to next state slot after saving.", Event::ToggleAutoSlot);
   wid.push_back(myAutoSlotWidget);
 
   // State directory
-  myStatePathButton = new ButtonWidget(this, font, 0, 0,
+  myStatePathButton = new ButtonWidget(this, font,
                                        "State path" + ELLIPSIS, kChooseStateDir);
   myStatePathButton->setToolTip("Select the directory to load/save state files from/to.");
   wid.push_back(myStatePathButton);
-  myStatePath = new EditTextWidget(this, font, 0, 0, 1, "");
+  myStatePath = new EditTextWidget(this, font, 1, "");
   wid.push_back(myStatePath);
 
   // Save/load states in the ROM directory
-  myStateWithRom = new CheckboxWidget(this, font, 0, 0,
+  myStateWithRom = new CheckboxWidget(this, font,
                                       "Load/save states in ROM directory", kStateWithRom);
   myStateWithRom->setToolTip("Use the current ROM's directory for state files.");
   wid.push_back(myStateWithRom);

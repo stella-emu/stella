@@ -27,7 +27,7 @@ GenesisWidget::GenesisWidget(GuiObject* boss, const GUI::Font& font,
   // Create the pins at a placeholder position; reflow() lays them out
   // NOLINTBEGIN(cppcoreguidelines-prefer-member-initializer)
   const auto pin = [&](int id, string_view label) {
-    myPins[id] = new CheckboxWidget(boss, font, 0, 0, label,
+    myPins[id] = new CheckboxWidget(boss, font, label,
                                     CheckboxWidget::kCheckActionCmd);
     myPins[id]->setID(id);
     myPins[id]->setTarget(this);

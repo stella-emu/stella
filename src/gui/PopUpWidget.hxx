@@ -37,7 +37,7 @@ class PopUpWidget : public EditableWidget
 {
   public:
     PopUpWidget(GuiObject* boss, const GUI::Font& font,
-                int x, int y, int w, int h, const VariantList& items,
+                int w, int h, const VariantList& items,
                 string_view label = "", int labelWidth = 0, int cmd = 0);
 
     /**
@@ -51,7 +51,7 @@ class PopUpWidget : public EditableWidget
       wide an entry it is prepared to show is then the DIALOG's decision.  Such a
       dialog can still say it in items rather than pixels — see calcWidth().
     */
-    PopUpWidget(GuiObject* boss, const GUI::Font& font, int x, int y,
+    PopUpWidget(GuiObject* boss, const GUI::Font& font,
                 const VariantList& items, string_view label = "",
                 int labelWidth = 0, int cmd = 0);
 
@@ -61,7 +61,7 @@ class PopUpWidget : public EditableWidget
       it cannot size its box to items it does not have yet, and would resize under
       the user if it tried, so the DIALOG says how wide an entry it will show.
     */
-    PopUpWidget(GuiObject* boss, const GUI::Font& font, int x, int y, int w,
+    PopUpWidget(GuiObject* boss, const GUI::Font& font, int w,
                 const VariantList& items, string_view label = "",
                 int labelWidth = 0, int cmd = 0);
 

@@ -44,12 +44,12 @@ void CartridgeELFWidget::initialize()
 
   // The log wraps itself to whatever width it is given, and scrolls beyond
   // VISIBLE_LOG_LINES of it
-  myLog = new WrappedTextWidget(_boss, _font, 0, 0, 1, 1,
+  myLog = new WrappedTextWidget(_boss, _font,
                                 myCart.getDebugLog(), VISIBLE_LOG_LINES);
   myLog->setEditable(false);
   myLog->setEnabled(true);
 
-  mySaveImageButton = new ButtonWidget(_boss, _font, 0, 0,
+  mySaveImageButton = new ButtonWidget(_boss, _font,
                                        "Save ARM image" + ELLIPSIS, kSaveArmImageCmd);
   mySaveImageButton->setTarget(this);
   addFocusWidget(mySaveImageButton);

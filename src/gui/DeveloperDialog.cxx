@@ -54,7 +54,7 @@ DeveloperDialog::DeveloperDialog(OSystem& osystem, DialogContainer& parent,
   // dialog and positions everything from the current font.  The tab bar geometry
   // is recomputed in layout() via TabWidget::updateTabSizes().
   // NOLINTBEGIN(cppcoreguidelines-prefer-member-initializer)
-  myTab = new TabWidget(this, font, 0, 0, 1, 1);
+  myTab = new TabWidget(this, font);
   addTabWidget(myTab);
 
   addEmulationTab(font);
@@ -117,26 +117,26 @@ void DeveloperDialog::addEmulationTab(const GUI::Font& font)
 
   // settings set
   mySettingsGroupEmulation = std::make_unique<RadioButtonGroup>();
-  myEmuSettings[0] = new RadioButtonWidget(pane, font, 0, 0, "Player settings",
+  myEmuSettings[0] = new RadioButtonWidget(pane, font, "Player settings",
                                            mySettingsGroupEmulation.get(), kPlrSettings);
   myEmuSettings[0]->setToolTip(Event::ToggleDeveloperSet);
   wid.push_back(myEmuSettings[0]);
-  myEmuSettings[1] = new RadioButtonWidget(pane, font, 0, 0, "Developer settings",
+  myEmuSettings[1] = new RadioButtonWidget(pane, font, "Developer settings",
                                            mySettingsGroupEmulation.get(), kDevSettings);
   myEmuSettings[1]->setToolTip(Event::ToggleDeveloperSet);
   wid.push_back(myEmuSettings[1]);
 
-  myFrameStatsWidget = new CheckboxWidget(pane, font, 0, 0, "Console info overlay");
+  myFrameStatsWidget = new CheckboxWidget(pane, font, "Console info overlay");
   myFrameStatsWidget->setToolTip(Event::ToggleFrameStats);
   wid.push_back(myFrameStatsWidget);
 
-  myDetectedInfoWidget = new CheckboxWidget(pane, font, 0, 0, "Detected settings info");
+  myDetectedInfoWidget = new CheckboxWidget(pane, font, "Detected settings info");
   myDetectedInfoWidget->setToolTip("Display detected controllers, bankswitching\n"
                                    "and TV types at ROM start.");
   wid.push_back(myDetectedInfoWidget);
 
   // AtariVox/SaveKey/PlusROM access
-  myExternAccessWidget = new CheckboxWidget(pane, font, 0, 0, "External access messages");
+  myExternAccessWidget = new CheckboxWidget(pane, font, "External access messages");
   myExternAccessWidget->setToolTip("Display a message for any external access\n"
                                    "AtariVox/SaveKey EEPROM, PlusROM, Supercharger...).");
   wid.push_back(myExternAccessWidget);
@@ -145,76 +145,76 @@ void DeveloperDialog::addEmulationTab(const GUI::Font& font)
   items.clear();
   VarList::push_back(items, "Atari 2600", "2600");
   VarList::push_back(items, "Atari 7800", "7800");
-  myConsoleWidget = new PopUpWidget(pane, font, 0, 0, items, "Console", 0,
+  myConsoleWidget = new PopUpWidget(pane, font, items, "Console", 0,
                                     kConsole);
   myConsoleWidget->setToolTip("Emulate Color/B&W/Pause key and zero\n"
                               "page RAM initialization differently.");
   wid.push_back(myConsoleWidget);
 
   // PlusROM functionality
-  myPlusRomWidget = new CheckboxWidget(pane, font, 0, 0, "PlusROM support");
+  myPlusRomWidget = new CheckboxWidget(pane, font, "PlusROM support");
   myPlusRomWidget->setToolTip("Enable PlusROM support");
   wid.push_back(myPlusRomWidget);
 
   // Randomize items
-  myLoadingROMLabel = new StaticTextWidget(pane, font, 0, 0, "When loading a ROM:");
+  myLoadingROMLabel = new StaticTextWidget(pane, font, "When loading a ROM:");
   wid.push_back(myLoadingROMLabel);
 
-  myRandomBankWidget = new CheckboxWidget(pane, font, 0, 0, "Random startup bank");
+  myRandomBankWidget = new CheckboxWidget(pane, font, "Random startup bank");
   myRandomBankWidget->setToolTip("Randomize the startup bank for\n"
                                  "most classic bankswitching types.");
   wid.push_back(myRandomBankWidget);
 
-  myRandomizeTIAWidget = new CheckboxWidget(pane, font, 0, 0, "Randomize TIA");
+  myRandomizeTIAWidget = new CheckboxWidget(pane, font, "Randomize TIA");
   wid.push_back(myRandomizeTIAWidget);
 
   // Randomize RAM
-  myRandomizeRAMWidget = new CheckboxWidget(pane, font, 0, 0,
+  myRandomizeRAMWidget = new CheckboxWidget(pane, font,
                                             "Randomize zero-page and extended RAM");
   wid.push_back(myRandomizeRAMWidget);
 
   // Randomize CPU
-  myRandomizeCPULabel = new StaticTextWidget(pane, font, 0, 0, "Randomize CPU");
+  myRandomizeCPULabel = new StaticTextWidget(pane, font, "Randomize CPU");
   wid.push_back(myRandomizeCPULabel);
 
   const std::array<string, 5> cpuregsLabels = {"SP", "A", "X", "Y", "PS"};
   for(int i = 0; i < 5; ++i)
   {
-    myRandomizeCPUWidget[i] = new CheckboxWidget(pane, font, 0, 0, cpuregsLabels[i]);
+    myRandomizeCPUWidget[i] = new CheckboxWidget(pane, font, cpuregsLabels[i]);
     wid.push_back(myRandomizeCPUWidget[i]);
   }
 
-  myRandomHotspotsWidget = new CheckboxWidget(pane, font, 0, 0,
+  myRandomHotspotsWidget = new CheckboxWidget(pane, font,
                                               "Random hotspot peek values");
   wid.push_back(myRandomHotspotsWidget);
 
   // How to handle undriven TIA pins
-  myUndrivenPinsWidget = new CheckboxWidget(pane, font, 0, 0,
+  myUndrivenPinsWidget = new CheckboxWidget(pane, font,
                                             "Drive unused TIA pins randomly on a read/peek");
   myUndrivenPinsWidget->setToolTip("Read TIA pins random instead of last databus values.\n"
                                    "Helps detecting missing '#' for immediate loads.");
   wid.push_back(myUndrivenPinsWidget);
 
 #ifdef DEBUGGER_SUPPORT
-  myPortBreakLabel = new StaticTextWidget(pane, font, 0, 0, "Break on:");
-  myRWPortBreakWidget = new CheckboxWidget(pane, font, 0, 0, "Reads from write ports");
+  myPortBreakLabel = new StaticTextWidget(pane, font, "Break on:");
+  myRWPortBreakWidget = new CheckboxWidget(pane, font, "Reads from write ports");
   myRWPortBreakWidget->setToolTip("Cause reads from write ports to interrupt\n"
                                   "emulation and enter debugger.");
   wid.push_back(myRWPortBreakWidget);
 
-  myWRPortBreakWidget = new CheckboxWidget(pane, font, 0, 0, "Writes to read ports");
+  myWRPortBreakWidget = new CheckboxWidget(pane, font, "Writes to read ports");
   myWRPortBreakWidget->setToolTip("Cause writes to read ports to interrupt\n"
                                   "emulation and enter debugger.");
   wid.push_back(myWRPortBreakWidget);
 #endif
   // Thumb ARM/ELF emulation exception
-  myThumbExceptionWidget = new CheckboxWidget(pane, font, 0, 0, "Strict ARM emulation (*)");
+  myThumbExceptionWidget = new CheckboxWidget(pane, font, "Strict ARM emulation (*)");
   myThumbExceptionWidget->setToolTip("Strict checking for exceptions and suspicious program\n"
                                      "behaviour in ARM emulation.\n"
                                      "Interrupts emulation and enters debugger in such cases.");
   wid.push_back(myThumbExceptionWidget);
 
-  myArmSpeedWidget = new SliderWidget(pane, font, 0, 0,
+  myArmSpeedWidget = new SliderWidget(pane, font,
                                       Dialog::fontWidth() * 10, "Limit ARM speed (*)",
                                       0, kArmSpeedChanged, Dialog::fontWidth() * 9, " MIPS");
   myArmSpeedWidget->setMinValue(CartridgeELF::MIPS_MIN);
@@ -224,7 +224,7 @@ void DeveloperDialog::addEmulationTab(const GUI::Font& font)
   myArmSpeedWidget->setToolTip("Limit emulation speed to simulate ARM CPU used for ELF.");
   wid.push_back(myArmSpeedWidget);
 
-  myEmuInfo = new StaticTextWidget(pane, infofont, 0, 0,
+  myEmuInfo = new StaticTextWidget(pane, infofont,
                                    "(*) Change requires a reload for ELF ROMs");
 
   // Add items for tab 0
@@ -337,11 +337,11 @@ void DeveloperDialog::addTiaTab(const GUI::Font& font)
 
   // settings set
   mySettingsGroupTia = std::make_unique<RadioButtonGroup>();
-  myTiaSettings[0] = new RadioButtonWidget(pane, font, 0, 0, "Player settings",
+  myTiaSettings[0] = new RadioButtonWidget(pane, font, "Player settings",
                                            mySettingsGroupTia.get(), kPlrSettings);
   myTiaSettings[0]->setToolTip(Event::ToggleDeveloperSet);
   wid.push_back(myTiaSettings[0]);
-  myTiaSettings[1] = new RadioButtonWidget(pane, font, 0, 0, "Developer settings",
+  myTiaSettings[1] = new RadioButtonWidget(pane, font, "Developer settings",
                                            mySettingsGroupTia.get(), kDevSettings);
   myTiaSettings[1]->setToolTip(Event::ToggleDeveloperSet);
   wid.push_back(myTiaSettings[1]);
@@ -359,68 +359,68 @@ void DeveloperDialog::addTiaTab(const GUI::Font& font)
   VarList::push_back(items, "Glitched Light Sixer", "lightsixer");
   VarList::push_back(items, "Glitched Jr. missiles", "juniorbug");
   VarList::push_back(items, "Custom", "custom");
-  myTIATypeWidget = new PopUpWidget(pane, font, 0, 0, items, "Chip type", 0,
+  myTIATypeWidget = new PopUpWidget(pane, font, items, "Chip type", 0,
                                     kTIAType);
   myTIATypeWidget->setToolTip("Select which TIA chip type to emulate.\n"
                               "Some types cause defined glitches.");
   wid.push_back(myTIATypeWidget);
 
-  myInvPhaseLabel = new StaticTextWidget(pane, font, 0, 0,
+  myInvPhaseLabel = new StaticTextWidget(pane, font,
                                          "Inverted HMOVE clock phase for");
   myInvPhaseLabel->setToolTip("Objects react different to too\n"
                               "early HM" + ELLIPSIS + " after HMOVE changes.");
   wid.push_back(myInvPhaseLabel);
-  myPlInvPhaseWidget = new CheckboxWidget(pane, font, 0, 0, "Players");
+  myPlInvPhaseWidget = new CheckboxWidget(pane, font, "Players");
   wid.push_back(myPlInvPhaseWidget);
-  myMsInvPhaseWidget = new CheckboxWidget(pane, font, 0, 0, "Missiles");
+  myMsInvPhaseWidget = new CheckboxWidget(pane, font, "Missiles");
   wid.push_back(myMsInvPhaseWidget);
-  myBlInvPhaseWidget = new CheckboxWidget(pane, font, 0, 0, "Ball");
+  myBlInvPhaseWidget = new CheckboxWidget(pane, font, "Ball");
   wid.push_back(myBlInvPhaseWidget);
 
-  myLateHMoveLabel = new StaticTextWidget(pane, font, 0, 0, "Short late HMOVE for");
+  myLateHMoveLabel = new StaticTextWidget(pane, font, "Short late HMOVE for");
   myLateHMoveLabel->setToolTip("Objects react different to late HMOVEs");
   wid.push_back(myLateHMoveLabel);
-  myPlLateHMoveWidget = new CheckboxWidget(pane, font, 0, 0, "Players");
+  myPlLateHMoveWidget = new CheckboxWidget(pane, font, "Players");
   wid.push_back(myPlLateHMoveWidget);
-  myMsLateHMoveWidget = new CheckboxWidget(pane, font, 0, 0, "Missiles");
+  myMsLateHMoveWidget = new CheckboxWidget(pane, font, "Missiles");
   wid.push_back(myMsLateHMoveWidget);
-  myBlLateHMoveWidget = new CheckboxWidget(pane, font, 0, 0, "Ball");
+  myBlLateHMoveWidget = new CheckboxWidget(pane, font, "Ball");
   wid.push_back(myBlLateHMoveWidget);
 
-  myLateRespxLabel = new StaticTextWidget(pane, font, 0, 0, "Late RESPx for");
+  myLateRespxLabel = new StaticTextWidget(pane, font, "Late RESPx for");
   myLateRespxLabel->setToolTip("RESP/RESM/RESBL strobed during HBLANK at HMOVE start shifts object 1 pixel right");
   wid.push_back(myLateRespxLabel);
-  myPlLateRespxWidget = new CheckboxWidget(pane, font, 0, 0, "Players");
+  myPlLateRespxWidget = new CheckboxWidget(pane, font, "Players");
   wid.push_back(myPlLateRespxWidget);
-  myMsLateRespxWidget = new CheckboxWidget(pane, font, 0, 0, "Missiles");
+  myMsLateRespxWidget = new CheckboxWidget(pane, font, "Missiles");
   wid.push_back(myMsLateRespxWidget);
-  myBlLateRespxWidget = new CheckboxWidget(pane, font, 0, 0, "Ball");
+  myBlLateRespxWidget = new CheckboxWidget(pane, font, "Ball");
   wid.push_back(myBlLateRespxWidget);
 
-  myPlayfieldLabel = new StaticTextWidget(pane, font, 0, 0, "Delayed playfield");
+  myPlayfieldLabel = new StaticTextWidget(pane, font, "Delayed playfield");
   myPlayfieldLabel->setToolTip("Playfield reacts one color clock slower to updates.");
   wid.push_back(myPlayfieldLabel);
-  myPFBitsWidget = new CheckboxWidget(pane, font, 0, 0, "Bits");
+  myPFBitsWidget = new CheckboxWidget(pane, font, "Bits");
   wid.push_back(myPFBitsWidget);
-  myPFColorWidget = new CheckboxWidget(pane, font, 0, 0, "Color");
+  myPFColorWidget = new CheckboxWidget(pane, font, "Color");
   wid.push_back(myPFColorWidget);
-  myPFScoreWidget = new CheckboxWidget(pane, font, 0, 0, "Score color");
+  myPFScoreWidget = new CheckboxWidget(pane, font, "Score color");
   myPFScoreWidget->setToolTip("In score mode, playfield color gets updated one pixel early.");
   wid.push_back(myPFScoreWidget);
 
-  myBackgroundLabel = new StaticTextWidget(pane, font, 0, 0, "Delayed background");
+  myBackgroundLabel = new StaticTextWidget(pane, font, "Delayed background");
   myBackgroundLabel->setToolTip("Background color reacts one color clock slower to updates.");
   wid.push_back(myBackgroundLabel);
-  myBKColorWidget = new CheckboxWidget(pane, font, 0, 0, "Color");
+  myBKColorWidget = new CheckboxWidget(pane, font, "Color");
   wid.push_back(myBKColorWidget);
 
-  mySwapLabel = new StaticTextWidget(pane, font, 0, 0,
+  mySwapLabel = new StaticTextWidget(pane, font,
     std::format("Delayed VDEL{} swap for", ELLIPSIS));
   mySwapLabel->setToolTip("VDELed objects react one color clock slower to updates.");
   wid.push_back(mySwapLabel);
-  myPlSwapWidget = new CheckboxWidget(pane, font, 0, 0, "Players");
+  myPlSwapWidget = new CheckboxWidget(pane, font, "Players");
   wid.push_back(myPlSwapWidget);
-  myBlSwapWidget = new CheckboxWidget(pane, font, 0, 0, "Ball");
+  myBlSwapWidget = new CheckboxWidget(pane, font, "Ball");
   wid.push_back(myBlSwapWidget);
 
   // Add items for tab 2
@@ -500,21 +500,21 @@ void DeveloperDialog::addVideoTab(const GUI::Font& font)
 
   // settings set
   mySettingsGroupVideo = std::make_unique<RadioButtonGroup>();
-  myVideoSettings[0] = new RadioButtonWidget(pane, font, 0, 0, "Player settings",
+  myVideoSettings[0] = new RadioButtonWidget(pane, font, "Player settings",
                                              mySettingsGroupVideo.get(), kPlrSettings);
   myVideoSettings[0]->setToolTip(Event::ToggleDeveloperSet);
   wid.push_back(myVideoSettings[0]);
-  myVideoSettings[1] = new RadioButtonWidget(pane, font, 0, 0, "Developer settings",
+  myVideoSettings[1] = new RadioButtonWidget(pane, font, "Developer settings",
                                              mySettingsGroupVideo.get(), kDevSettings);
   myVideoSettings[1]->setToolTip(Event::ToggleDeveloperSet);
   wid.push_back(myVideoSettings[1]);
 
   // TV jitter effect
-  myTVJitterWidget = new CheckboxWidget(pane, font, 0, 0, "Jitter/roll effect", kTVJitter);
+  myTVJitterWidget = new CheckboxWidget(pane, font, "Jitter/roll effect", kTVJitter);
   myTVJitterWidget->setToolTip("Enable to emulate TV loss of sync.", Event::ToggleJitter);
   wid.push_back(myTVJitterWidget);
 
-  myTVJitterSenseWidget = new SliderWidget(pane, font, 0, 0, fontWidth * 10,
+  myTVJitterSenseWidget = new SliderWidget(pane, font, fontWidth * 10,
                                            "Sensitivity", 0, 0, fontWidth * 2);
   myTVJitterSenseWidget->setMinValue(JitterEmulation::MIN_SENSITIVITY);
   myTVJitterSenseWidget->setMaxValue(JitterEmulation::MAX_SENSITIVITY);
@@ -523,7 +523,7 @@ void DeveloperDialog::addVideoTab(const GUI::Font& font)
     Event::JitterSenseDecrease, Event::JitterSenseIncrease);
   wid.push_back(myTVJitterSenseWidget);
 
-  myTVJitterRecWidget = new SliderWidget(pane, font, 0, 0, fontWidth * 10,
+  myTVJitterRecWidget = new SliderWidget(pane, font, fontWidth * 10,
                                          "Recovery", 0, 0, fontWidth * 2);
   myTVJitterRecWidget->setMinValue(JitterEmulation::MIN_RECOVERY);
   myTVJitterRecWidget->setMaxValue(JitterEmulation::MAX_RECOVERY);
@@ -532,13 +532,13 @@ void DeveloperDialog::addVideoTab(const GUI::Font& font)
     Event::JitterRecDecrease, Event::JitterRecIncrease);
   wid.push_back(myTVJitterRecWidget);
 
-  myColorLossWidget = new CheckboxWidget(pane, font, 0, 0, "PAL color-loss");
+  myColorLossWidget = new CheckboxWidget(pane, font, "PAL color-loss");
   myColorLossWidget->setToolTip("PAL games with odd scanline count\n"
                                 "will be displayed without color.", Event::ToggleColorLoss);
   wid.push_back(myColorLossWidget);
 
   // debug colors
-  myDebugColorsWidget = new CheckboxWidget(pane, font, 0, 0, "Debug colors (*)");
+  myDebugColorsWidget = new CheckboxWidget(pane, font, "Debug colors (*)");
   myDebugColorsWidget->setToolTip("Enable fixed debug colors", Event::ToggleFixedColors);
   wid.push_back(myDebugColorsWidget);
 
@@ -557,11 +557,11 @@ void DeveloperDialog::addVideoTab(const GUI::Font& font)
 
   const auto createDebugColourWidgets = [&](int idx, string_view desc)
   {
-    myDbgColour[idx] = new PopUpWidget(pane, font, 0, 0, pwidth, items, desc,
+    myDbgColour[idx] = new PopUpWidget(pane, font, pwidth, items, desc,
                                        0, dbg_cmds[idx]);
     wid.push_back(myDbgColour[idx]);
     myDbgColourSwatch[idx] = new ColorWidget(
-      pane, font, 0, 0, static_cast<uInt32>(2 * lineHeight), lineHeight);
+      pane, font, static_cast<uInt32>(2 * lineHeight), lineHeight);
   };
 
   createDebugColourWidgets(0, "Player 0");
@@ -571,7 +571,7 @@ void DeveloperDialog::addVideoTab(const GUI::Font& font)
   createDebugColourWidgets(4, "Playfield");
   createDebugColourWidgets(5, "Ball");
 
-  myVideoInfo = new StaticTextWidget(pane, instance().frameBuffer().infoFont(), 0, 0,
+  myVideoInfo = new StaticTextWidget(pane, instance().frameBuffer().infoFont(),
                                      "(*) Colors identical for player and developer settings");
 
   // Add items for tab 2
@@ -674,21 +674,21 @@ void DeveloperDialog::addTimeMachineTab(const GUI::Font& font)
 
   // settings set
   mySettingsGroupTM = std::make_unique<RadioButtonGroup>();
-  myTMSettings[0] = new RadioButtonWidget(pane, font, 0, 0, "Player settings",
+  myTMSettings[0] = new RadioButtonWidget(pane, font, "Player settings",
                                           mySettingsGroupTM.get(), kPlrSettings);
   myTMSettings[0]->setToolTip(Event::ToggleDeveloperSet);
   wid.push_back(myTMSettings[0]);
-  myTMSettings[1] = new RadioButtonWidget(pane, font, 0, 0, "Developer settings",
+  myTMSettings[1] = new RadioButtonWidget(pane, font, "Developer settings",
                                           mySettingsGroupTM.get(), kDevSettings);
   myTMSettings[1]->setToolTip(Event::ToggleDeveloperSet);
   wid.push_back(myTMSettings[1]);
 
-  myTimeMachineWidget = new CheckboxWidget(pane, font, 0, 0, "Time Machine", kTimeMachine);
+  myTimeMachineWidget = new CheckboxWidget(pane, font, "Time Machine", kTimeMachine);
   myTimeMachineWidget->setToolTip(Event::ToggleTimeMachine);
   wid.push_back(myTimeMachineWidget);
 
   const int swidth = fontWidth * 12 + 5; // width of PopUpWidgets below
-  myStateSizeWidget = new SliderWidget(pane, font, 0, 0, swidth,
+  myStateSizeWidget = new SliderWidget(pane, font, swidth,
                                        "Buffer size (*)", 0, kSizeChanged, lwidth, " states");
   myStateSizeWidget->setMinValue(RewindManager::MIN_BUF_SIZE);
   myStateSizeWidget->setMaxValue(RewindManager::MAX_BUF_SIZE);
@@ -697,7 +697,7 @@ void DeveloperDialog::addTimeMachineTab(const GUI::Font& font)
   myStateSizeWidget->setToolTip("Define the total Time Machine buffer size.");
   wid.push_back(myStateSizeWidget);
 
-  myUncompressedWidget = new SliderWidget(pane, font, 0, 0, swidth,
+  myUncompressedWidget = new SliderWidget(pane, font, swidth,
                                           "Uncompressed size", 0, kUncompressedChanged, lwidth, " states");
   myUncompressedWidget->setMinValue(0);
   myUncompressedWidget->setMaxValue(RewindManager::MAX_BUF_SIZE);
@@ -711,7 +711,7 @@ void DeveloperDialog::addTimeMachineTab(const GUI::Font& font)
   items.clear();
   for(int i = 0; i < RewindManager::NUM_INTERVALS; ++i)
     VarList::push_back(items, INTERVALS[i], RewindManager::INT_SETTINGS[i]);
-  myStateIntervalWidget = new PopUpWidget(pane, font, 0, 0, items,
+  myStateIntervalWidget = new PopUpWidget(pane, font, items,
                                           "Interval", 0, kIntervalChanged);
   myStateIntervalWidget->setToolTip("Define the interval between each saved state.");
   wid.push_back(myStateIntervalWidget);
@@ -719,13 +719,13 @@ void DeveloperDialog::addTimeMachineTab(const GUI::Font& font)
   items.clear();
   for(int i = 0; i < RewindManager::NUM_HORIZONS; ++i)
     VarList::push_back(items, HORIZONS[i], RewindManager::HOR_SETTINGS[i]);
-  myStateHorizonWidget = new PopUpWidget(pane, font, 0, 0, items,
+  myStateHorizonWidget = new PopUpWidget(pane, font, items,
                                          "Horizon", 0, kHorizonChanged);
   myStateHorizonWidget->setToolTip("Define how far the Time Machine\n"
                                    "will allow moving back in time.");
   wid.push_back(myStateHorizonWidget);
 
-  myTMInfo = new StaticTextWidget(pane, instance().frameBuffer().infoFont(), 0, 0,
+  myTMInfo = new StaticTextWidget(pane, instance().frameBuffer().infoFont(),
                                   "(*) Any size change clears the buffer");
 
   addToFocusList(wid, myTab, tabID);
@@ -789,7 +789,7 @@ void DeveloperDialog::addDebuggerTab(const GUI::Font& font)
   VarList::push_back(items, "Medium", "medium");
   VarList::push_back(items, "Large", "large");
   myDebuggerFontSize =
-    new PopUpWidget(pane, font, 0, 0, items, "Font size (*)", 0,
+    new PopUpWidget(pane, font, items, "Font size (*)", 0,
                     kDFontSizeChanged);
   wid.push_back(myDebuggerFontSize);
 
@@ -800,11 +800,11 @@ void DeveloperDialog::addDebuggerTab(const GUI::Font& font)
   VarList::push_back(items, "Bold non-labels only", "2");
   VarList::push_back(items, "All bold font", "3");
   myDebuggerFontStyle =
-    new PopUpWidget(pane, font, 0, 0, items, "Font style (*)", 0);
+    new PopUpWidget(pane, font, items, "Font style (*)", 0);
   wid.push_back(myDebuggerFontStyle);
 
   // Debugger width and height
-  myDebuggerWidthSlider = new SliderWidget(pane, font, 0, 0, "Debugger width (*)",
+  myDebuggerWidthSlider = new SliderWidget(pane, font, "Debugger width (*)",
                                            0, 0, 6 * fontWidth, "px");
   myDebuggerWidthSlider->setMinValue(DebuggerDialog::kSmallFontMinW);
   myDebuggerWidthSlider->setMaxValue(ds.w);
@@ -813,7 +813,7 @@ void DeveloperDialog::addDebuggerTab(const GUI::Font& font)
   myDebuggerWidthSlider->setTickmarkIntervals((ds.w - DebuggerDialog::kSmallFontMinW + 50) / 100);
   wid.push_back(myDebuggerWidthSlider);
 
-  myDebuggerHeightSlider = new SliderWidget(pane, font, 0, 0, "Debugger height (*)",
+  myDebuggerHeightSlider = new SliderWidget(pane, font, "Debugger height (*)",
                                             0, 0, 6 * fontWidth, "px");
   myDebuggerHeightSlider->setMinValue(DebuggerDialog::kSmallFontMinH);
   myDebuggerHeightSlider->setMaxValue(ds.h);
@@ -822,11 +822,11 @@ void DeveloperDialog::addDebuggerTab(const GUI::Font& font)
   myDebuggerHeightSlider->setTickmarkIntervals((ds.h - DebuggerDialog::kSmallFontMinH + 50) / 100);
   wid.push_back(myDebuggerHeightSlider);
 
-  myGhostReadsTrapWidget = new CheckboxWidget(pane, font, 0, 0, "Trap on 'ghost' reads");
+  myGhostReadsTrapWidget = new CheckboxWidget(pane, font, "Trap on 'ghost' reads");
   myGhostReadsTrapWidget->setToolTip("Traps will consider CPU 'ghost' reads too.");
   wid.push_back(myGhostReadsTrapWidget);
 
-  myDebuggerInfo = new StaticTextWidget(pane, instance().frameBuffer().infoFont(), 0, 0,
+  myDebuggerInfo = new StaticTextWidget(pane, instance().frameBuffer().infoFont(),
                                         "(*) Change requires a ROM reload");
 
 #if defined(DEBUGGER_SUPPORT) && defined(WINDOWED_SUPPORT)
@@ -839,7 +839,7 @@ void DeveloperDialog::addDebuggerTab(const GUI::Font& font)
   }
 #endif
 #else
-  myDebuggerInfo = new StaticTextWidget(pane, font, 0, 0,
+  myDebuggerInfo = new StaticTextWidget(pane, font,
                                         "Debugger support not included", TextAlign::Center);
 #endif
 

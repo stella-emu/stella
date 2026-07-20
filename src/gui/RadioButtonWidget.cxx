@@ -218,9 +218,9 @@ static constexpr std::array<uInt32, 18> radio_img_inactive_large = {
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 RadioButtonWidget::RadioButtonWidget(GuiObject* boss, const GUI::Font& font,
-                                     int x, int y, const string& label,
+                                     const string& label,
                                      RadioButtonGroup* group, int cmd)
-  : CheckboxWidget(boss, font, x, y, label, cmd),
+  : CheckboxWidget(boss, font, label, cmd),
     myGroup{group},
     _buttonSize{buttonSize(font)} // 14 | 22
 {

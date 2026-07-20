@@ -24,14 +24,12 @@
 #include "NavigationWidget.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-NavigationWidget::NavigationWidget(GuiObject* boss, const GUI::Font& font,
-    int xpos, int ypos, int w, int h)
-  : Widget(boss, font, xpos, ypos, w, h)
+NavigationWidget::NavigationWidget(GuiObject* boss, const GUI::Font& font)
+  : Widget(boss, font, 0, 0, 0, 0)
 {
-  // Add some buttons and a path field to show the current directory
-  const int
-    fontWidth    = _font.getMaxCharWidth(),
-    BTN_GAP      = fontWidth / 4;
+  // Add some buttons and a path field to show the current directory.  They are
+  // created at a placeholder position; layoutChildren() is the ONE place that
+  // positions them, and it runs again from setArea() whenever we are resized
   const bool largeIcon = _font.isLarge();
   const GUI::Icon& homeIcon = largeIcon ? GUI::icon_home_large : GUI::icon_home_small;
   const GUI::Icon& prevIcon = largeIcon ? GUI::icon_prev_large : GUI::icon_prev_small;
@@ -43,32 +41,26 @@ NavigationWidget::NavigationWidget(GuiObject* boss, const GUI::Font& font,
   const string altKey = "Cmd";
 #endif
 
-  myHomeButton = new ButtonWidget(boss, _font, xpos, ypos,
-    homeIcon, FileListWidget::kHomeDirCmd);
+  myHomeButton = new ButtonWidget(boss, _font, homeIcon, FileListWidget::kHomeDirCmd);
   myHomeButton->setToolTip("Go back to initial directory. (" + altKey + "+Pos1)");
   boss->addFocusWidget(myHomeButton);
-  xpos = myHomeButton->getRight() + BTN_GAP;
 
-  myPrevButton = new ButtonWidget(boss, _font, xpos, ypos,
-    prevIcon, FileListWidget::kPrevDirCmd);
+  myPrevButton = new ButtonWidget(boss, _font, prevIcon, FileListWidget::kPrevDirCmd);
   myPrevButton->setToolTip("Go back in directory history. (" + altKey + "+Left)");
   boss->addFocusWidget(myPrevButton);
-  xpos = myPrevButton->getRight() + BTN_GAP;
 
-  myNextButton = new ButtonWidget(boss, _font, xpos, ypos,
-    nextIcon, FileListWidget::kNextDirCmd);
+  myNextButton = new ButtonWidget(boss, _font, nextIcon, FileListWidget::kNextDirCmd);
   myNextButton->setToolTip("Go forward in directory history. (" + altKey + "+Right)");
   boss->addFocusWidget(myNextButton);
-  xpos = myNextButton->getRight() + BTN_GAP;
 
-  myUpButton = new ButtonWidget(boss, _font, xpos, ypos,
-    upIcon, ListWidget::kParentDirCmd);
+  myUpButton = new ButtonWidget(boss, _font, upIcon, ListWidget::kParentDirCmd);
   myUpButton->setToolTip("Go Up.", Event::UIPrevDir, EventMode::kMenuMode);
   boss->addFocusWidget(myUpButton);
-  xpos = myUpButton->getRight() + BTN_GAP;
 
   // NOLINTNEXTLINE(cppcoreguidelines-prefer-member-initializer)
-  myPath = new PathWidget(boss, this, _font, xpos, ypos, _w + _x - xpos, h);
+  myPath = new PathWidget(boss, this, _font);
+
+  layoutChildren();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -193,8 +185,8 @@ void NavigationWidget::handleCommand(CommandSender* sender, int cmd, int data,
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 NavigationWidget::PathWidget::PathWidget(GuiObject* boss, CommandReceiver* target,
-    const GUI::Font& font, int xpos, int ypos, int w, int h)
-  : Widget(boss, font, xpos, ypos, w, h),
+    const GUI::Font& font)
+  : Widget(boss, font, 0, 0, 0, 0),
     myTarget{target}
 {
 }
@@ -261,8 +253,8 @@ void NavigationWidget::PathWidget::setPath(string_view path)
     else
     {
       // Add new widget to list
-      auto* s = new FolderLinkWidget(_boss, _font, x, _y,
-                                     width, _h, name, curPath);
+      auto* s = new FolderLinkWidget(_boss, _font, name, curPath);
+      s->setArea(x, _y, width, _h);
       s->setID(static_cast<uInt32>(idx));
       s->setTarget(myTarget);
       myFolderList.push_back(s);
@@ -297,8 +289,8 @@ const string& NavigationWidget::PathWidget::getPath(int idx) const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 NavigationWidget::PathWidget::FolderLinkWidget::FolderLinkWidget(
     GuiObject* boss, const GUI::Font& font,
-    int x, int y, int w, int h, string_view text, string_view path)
-  : ButtonWidget(boss, font, x, y, w, h, text, kFolderClicked),
+    string_view text, string_view path)
+  : ButtonWidget(boss, font, 0, 0, text, kFolderClicked),
     myPath{path}
 {
   _flags = Widget::FLAG_ENABLED | Widget::FLAG_CLEARBG;

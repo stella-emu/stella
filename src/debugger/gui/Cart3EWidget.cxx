@@ -76,22 +76,22 @@ void Cartridge3EWidget::createBankWidgets()
 
   bankList(myCart.romBankCount(), 0, items);
   myBankWidgets[0] =
-    new PopUpWidget(_boss, _font, 0, 0, items, "Set bank", 0, kBankChanged);
+    new PopUpWidget(_boss, _font, items, "Set bank", 0, kBankChanged);
   myBankWidgets[0]->setTarget(this);
   myBankWidgets[0]->setID(0);
   addFocusWidget(myBankWidgets[0]);
 
-  myROMTypeLabel = new StaticTextWidget(_boss, _font, 0, 0, "(ROM)");
+  myROMTypeLabel = new StaticTextWidget(_boss, _font, "(ROM)");
 
   items.clear();
   bankList(myCart.ramBankCount(), 0, items);
   myBankWidgets[1] =
-    new PopUpWidget(_boss, _font, 0, 0, items, "", 0, kRAMBankChanged);
+    new PopUpWidget(_boss, _font, items, "", 0, kRAMBankChanged);
   myBankWidgets[1]->setTarget(this);
   myBankWidgets[1]->setID(1);
   addFocusWidget(myBankWidgets[1]);
 
-  myRAMTypeLabel = new StaticTextWidget(_boss, _font, 0, 0, "(RAM)");
+  myRAMTypeLabel = new StaticTextWidget(_boss, _font, "(RAM)");
 
   // Both selectors take the tab's label column, so their boxes line up under one
   // another; the RAM one has no label of its own and simply leaves it empty

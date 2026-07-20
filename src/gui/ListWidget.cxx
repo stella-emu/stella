@@ -25,11 +25,8 @@
 #include "ListWidget.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-ListWidget::ListWidget(GuiObject* boss, const GUI::Font& font,
-                       int x, int y, int w, int h, bool useScrollbar)
-  : EditableWidget(boss, font, x, y, 16, 16),
-    _rows{h / _lineHeight},
-    _cols{w / _fontWidth},
+ListWidget::ListWidget(GuiObject* boss, const GUI::Font& font, bool useScrollbar)
+  : EditableWidget(boss, font, 16, 16),
     _useScrollbar{useScrollbar}
 {
   _flags = Widget::FLAG_ENABLED | Widget::FLAG_CLEARBG | Widget::FLAG_RETAIN_FOCUS;
@@ -40,19 +37,13 @@ ListWidget::ListWidget(GuiObject* boss, const GUI::Font& font,
 
   _editMode = false;
 
-  // Set real dimensions
-  _h = h + 2;
-
-  // Create scrollbar and attach to the list
+  // My real dimensions -- and the row count that follows from them -- arrive
+  // via setWidth()/setHeight(), which reserve the scrollbar's room the same way
   if(_useScrollbar)
   {
-    _w = w - ScrollBarWidget::scrollBarWidth(_font);
-    _scrollBar = new ScrollBarWidget(boss, font, _x + _w, _y,
-                                     ScrollBarWidget::scrollBarWidth(_font), _h);
+    _scrollBar = new ScrollBarWidget(boss, font);
     _scrollBar->setTarget(this);
   }
-  else
-    _w = w - 1;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -39,17 +39,17 @@ StellaSettingsDialog::StellaSettingsDialog(OSystem& osystem,
   WidgetArray wid;
 
   // NOLINTBEGIN(cppcoreguidelines-prefer-member-initializer)
-  myAdvancedButton = new ButtonWidget(this, _font, 0, 0,
+  myAdvancedButton = new ButtonWidget(this, _font,
     "Use Advanced Settings" + ELLIPSIS, kAdvancedSettings);
   wid.push_back(myAdvancedButton);
-  myHelpButton = new ButtonWidget(this, _font, 0, 0, "Help" + ELLIPSIS, kHelp);
+  myHelpButton = new ButtonWidget(this, _font, "Help" + ELLIPSIS, kHelp);
   wid.push_back(myHelpButton);
 
-  myGlobalLabel = new StaticTextWidget(this, _font, 0, 0, "Global settings:");
+  myGlobalLabel = new StaticTextWidget(this, _font, "Global settings:");
   createUIOptions(wid);
   createVideoOptions(wid);
 
-  myGameSettings = new StaticTextWidget(this, _font, 0, 0, "Game settings:");
+  myGameSettings = new StaticTextWidget(this, _font, "Game settings:");
   createGameOptions(wid);
 
   // Add Defaults, OK and Cancel buttons
@@ -70,7 +70,7 @@ void StellaSettingsDialog::createUIOptions(WidgetArray& wid)
   VarList::push_back(items, "Standard", "standard");
   VarList::push_back(items, "Classic", "classic");
   VarList::push_back(items, "Light", "light");
-  myThemePopup = new PopUpWidget(this, _font, 0, 0, items, "UI theme");
+  myThemePopup = new PopUpWidget(this, _font, items, "UI theme");
   wid.push_back(myThemePopup);
 
   // Dialog position
@@ -80,7 +80,7 @@ void StellaSettingsDialog::createUIOptions(WidgetArray& wid)
   VarList::push_back(items, "Right top", 2);
   VarList::push_back(items, "Right bottom", 3);
   VarList::push_back(items, "Left bottom", 4);
-  myPositionPopup = new PopUpWidget(this, _font, 0, 0, items, "Dialogs position");
+  myPositionPopup = new PopUpWidget(this, _font, items, "Dialogs position");
   wid.push_back(myPositionPopup);
 }
 
@@ -104,31 +104,31 @@ void StellaSettingsDialog::createVideoOptions(WidgetArray& wid)
   VarList::push_back(items, "S-Video", static_cast<uInt32>(NTSCFilter::Preset::SVIDEO));
   VarList::push_back(items, "Composite", static_cast<uInt32>(NTSCFilter::Preset::COMPOSITE));
   VarList::push_back(items, "Bad adjust", static_cast<uInt32>(NTSCFilter::Preset::BAD));
-  myTVMode = new PopUpWidget(this, _font, 0, 0, items, "TV mode");
+  myTVMode = new PopUpWidget(this, _font, items, "TV mode");
   wid.push_back(myTVMode);
 
   // Scanline intensity
-  myTVScanIntense = new SliderWidget(this, _font, 0, 0, swidth,
+  myTVScanIntense = new SliderWidget(this, _font, swidth,
     "Scanline intensity", 0, kScanlinesChanged, fontWidth * 3);
   myTVScanIntense->setMinValue(0); myTVScanIntense->setMaxValue(10);
   myTVScanIntense->setTickmarkIntervals(2);
   wid.push_back(myTVScanIntense);
 
   // TV Phosphor blend level
-  myTVPhosLevel = new SliderWidget(this, _font, 0, 0, swidth,
+  myTVPhosLevel = new SliderWidget(this, _font, swidth,
     "Phosphor blend", 0, kPhosphorChanged, fontWidth * 3);
   myTVPhosLevel->setMinValue(0); myTVPhosLevel->setMaxValue(10);
   myTVPhosLevel->setTickmarkIntervals(2);
   wid.push_back(myTVPhosLevel);
 
   // FS overscan
-  myTVOverscan = new SliderWidget(this, _font, 0, 0, swidth,
+  myTVOverscan = new SliderWidget(this, _font, swidth,
     "Overscan (*)", 0, kOverscanChanged, fontWidth * 3);
   myTVOverscan->setMinValue(0); myTVOverscan->setMaxValue(10);
   myTVOverscan->setTickmarkIntervals(2);
   wid.push_back(myTVOverscan);
 
-  myOverscanInfo = new StaticTextWidget(this, ifont, 0, 0,
+  myOverscanInfo = new StaticTextWidget(this, ifont,
     "(*) Change requires launcher reboot");
 }
 
@@ -152,15 +152,15 @@ void StellaSettingsDialog::createGameOptions(WidgetArray& wid)
   VarList::push_back(ctrls, "QuadTari", "QUADTARI");
 
   // Both port popups offer this same (fixed) list, so they size themselves to it
-  myLeftPortLabel = new StaticTextWidget(this, _font, 0, 0, "Left port");
-  myLeftPort = new PopUpWidget(this, _font, 0, 0, ctrls, "", 0, kLeftCChanged);
+  myLeftPortLabel = new StaticTextWidget(this, _font, "Left port");
+  myLeftPort = new PopUpWidget(this, _font, ctrls, "", 0, kLeftCChanged);
   wid.push_back(myLeftPort);
-  myLeftPortDetected = new StaticTextWidget(this, ifont, 0, 0, "Sega Genesis detected");
+  myLeftPortDetected = new StaticTextWidget(this, ifont, "Sega Genesis detected");
 
-  myRightPortLabel = new StaticTextWidget(this, _font, 0, 0, "Right port");
-  myRightPort = new PopUpWidget(this, _font, 0, 0, ctrls, "", 0, kRightCChanged);
+  myRightPortLabel = new StaticTextWidget(this, _font, "Right port");
+  myRightPort = new PopUpWidget(this, _font, ctrls, "", 0, kRightCChanged);
   wid.push_back(myRightPort);
-  myRightPortDetected = new StaticTextWidget(this, ifont, 0, 0, "Sega Genesis detected");
+  myRightPortDetected = new StaticTextWidget(this, ifont, "Sega Genesis detected");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -36,34 +36,34 @@ RomListSettings::RomListSettings(GuiObject* boss, const GUI::Font& font)
 
   // NOLINTBEGIN(cppcoreguidelines-prefer-member-initializer)
   // Action buttons
-  mySetPC = new ButtonWidget(this, font, 0, 0,
+  mySetPC = new ButtonWidget(this, font,
                              "Set PC @ current line", RomListWidget::kSetPCCmd);
   wid.push_back(mySetPC);
-  myRuntoPC = new ButtonWidget(this, font, 0, 0,
+  myRuntoPC = new ButtonWidget(this, font,
                                "RunTo PC @ current line", RomListWidget::kRuntoPCCmd);
   wid.push_back(myRuntoPC);
-  mySetTimer = new ButtonWidget(this, font, 0, 0,
+  mySetTimer = new ButtonWidget(this, font,
                                 "Set timer @ current line", RomListWidget::kSetTimerCmd);
   wid.push_back(mySetTimer);
-  myDisassemble = new ButtonWidget(this, font, 0, 0,
+  myDisassemble = new ButtonWidget(this, font,
                                    "Disassemble @ current line", RomListWidget::kDisassembleCmd);
   wid.push_back(myDisassemble);
 
   // Settings for Distella
-  myShowTentative = new CheckboxWidget(this, font, 0, 0,
+  myShowTentative = new CheckboxWidget(this, font,
                                        "Show tentative code", RomListWidget::kTentativeCodeCmd);
   myShowTentative->setToolTip("Check to differentiate between tentative code\n"
                               "vs. data sections via static code analysis.");
   wid.push_back(myShowTentative);
-  myShowAddresses = new CheckboxWidget(this, font, 0, 0,
+  myShowAddresses = new CheckboxWidget(this, font,
                                        "Show PC addresses", RomListWidget::kPCAddressesCmd);
   myShowAddresses->setToolTip("Check to show program counter addresses as labels.");
   wid.push_back(myShowAddresses);
-  myShowGFXBinary = new CheckboxWidget(this, font, 0, 0,
+  myShowGFXBinary = new CheckboxWidget(this, font,
                                        "Show GFX as binary", RomListWidget::kGfxAsBinaryCmd);
   myShowGFXBinary->setToolTip("Check to allow editing GFX sections in binary format.");
   wid.push_back(myShowGFXBinary);
-  myUseRelocation = new CheckboxWidget(this, font, 0, 0,
+  myUseRelocation = new CheckboxWidget(this, font,
                                        "Use address relocation", RomListWidget::kAddrRelocationCmd);
   myUseRelocation->setToolTip("Check to relocate calls out of address range.");
   wid.push_back(myUseRelocation);

@@ -28,9 +28,9 @@ NullControlWidget::NullControlWidget(GuiObject* boss, const GUI::Font& font,
   // Create the text at a placeholder position; reflow() lays it out.  Embedded
   // in a QuadTari there is only room for a terse "not avail."
   // NOLINTBEGIN(cppcoreguidelines-prefer-member-initializer)
-  myLine1 = new StaticTextWidget(boss, font, 0, 0,
+  myLine1 = new StaticTextWidget(boss, font,
                                  embedded ? "not" : "Controller input");
-  myLine2 = new StaticTextWidget(boss, font, 0, 0,
+  myLine2 = new StaticTextWidget(boss, font,
                                  embedded ? "avail." : "not available");
   // NOLINTEND(cppcoreguidelines-prefer-member-initializer)
 

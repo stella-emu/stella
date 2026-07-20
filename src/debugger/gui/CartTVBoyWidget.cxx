@@ -30,7 +30,7 @@ CartridgeTVBoyWidget::CartridgeTVBoyWidget(
   // A single-bank cart has no bank selector, so nothing to lock either
   if(myCart.romBankCount() > 1)
   {
-    myBankLocked = new CheckboxWidget(_boss, _font, 0, 0,
+    myBankLocked = new CheckboxWidget(_boss, _font,
                                       "Bankswitching is locked",
                                       kBankLocked);
     myBankLocked->setTarget(this);

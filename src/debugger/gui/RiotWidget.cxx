@@ -66,7 +66,7 @@ RiotWidget::RiotWidget(GuiObject* boss, const GUI::Font& lfont,
   // NOLINTBEGIN(cppcoreguidelines-prefer-member-initializer)
   int reg = 0;
   const auto ioReg = [&](string_view desc, uInt8 bitsID) {
-    myRegLabel[reg++] = new StaticTextWidget(boss, lfont, 0, 0, desc);
+    myRegLabel[reg++] = new StaticTextWidget(boss, lfont, desc);
     auto* wid = new ToggleBitWidget(boss, nfont, 8, 1, 1, labels);
     wid->setTarget(this);
     wid->setID(bitsID);
@@ -102,12 +102,12 @@ RiotWidget::RiotWidget(GuiObject* boss, const GUI::Font& lfont,
     "TIM1T", "TIM8T", "TIM64T", "T1024T"
   };
   for(int row = 0; row < 4; ++row)
-    myTimWriteLabel[row] = new StaticTextWidget(boss, lfont, 0, 0, writeNames[row]);
+    myTimWriteLabel[row] = new StaticTextWidget(boss, lfont, writeNames[row]);
   myTimWrite = new DataGridWidget(boss, nfont, 1, 4, 2, 8, Common::Base::Fmt::_16);
   myTimWrite->setTarget(this);
   myTimWrite->setID(kTimWriteID);
   addFocusWidget(myTimWrite);
-  myTimHash[0] = new StaticTextWidget(boss, lfont, 0, 0, "#");
+  myTimHash[0] = new StaticTextWidget(boss, lfont, "#");
   myTimAvail = new DataGridWidget(boss, nfont, 1, 1, 6, 30, Common::Base::Fmt::_10_6);
   myTimAvail->setToolTip("Number of CPU cycles available for current timer interval.\n");
   myTimAvail->setTarget(this);
@@ -118,14 +118,14 @@ RiotWidget::RiotWidget(GuiObject* boss, const GUI::Font& lfont,
     "INTIM", " Clocks", "TIMINT", "Divider #"
   };
   for(int row = 0; row < 4; ++row)
-    myTimReadLabel[row] = new StaticTextWidget(boss, lfont, 0, 0, readNames[row]);
+    myTimReadLabel[row] = new StaticTextWidget(boss, lfont, readNames[row]);
   myTimRead = new DataGridWidget(boss, nfont, 1, 3, 4, 30, Common::Base::Fmt::_16_2);
   myTimRead->setToolTip(0, 1, "Remaining timer interval clocks.\n");
   myTimRead->setToolTip(0, 2, "Timer interrupt flag in bit 7.\n");
   myTimRead->setTarget(this);
   myTimRead->setEditable(false);
-  myTimHash[1] = new StaticTextWidget(boss, lfont, 0, 0, "#");
-  myTimHash[2] = new StaticTextWidget(boss, lfont, 0, 0, "#");
+  myTimHash[1] = new StaticTextWidget(boss, lfont, "#");
+  myTimHash[2] = new StaticTextWidget(boss, lfont, "#");
   myTimTotal = new DataGridWidget(boss, nfont, 1, 2, 6, 30, Common::Base::Fmt::_10_6);
   myTimTotal->setToolTip(0, 0, "Number of CPU cycles since last TIMxxT write.\n");
   myTimTotal->setToolTip(0, 1, "Number of CPU cycles remaining.\n");
@@ -149,8 +149,8 @@ RiotWidget::RiotWidget(GuiObject* boss, const GUI::Font& lfont,
   static constexpr std::array<string_view, 3> rightINPTNames = {"INPT2", "INPT3", "INPT5"};
   for(int row = 0; row < 3; ++row)
   {
-    myLeftINPTLabel[row]  = new StaticTextWidget(boss, lfont, 0, 0, leftINPTNames[row]);
-    myRightINPTLabel[row] = new StaticTextWidget(boss, lfont, 0, 0, rightINPTNames[row]);
+    myLeftINPTLabel[row]  = new StaticTextWidget(boss, lfont, leftINPTNames[row]);
+    myRightINPTLabel[row] = new StaticTextWidget(boss, lfont, rightINPTNames[row]);
   }
   myLeftINPT = new DataGridWidget(boss, nfont, 1, 3, 2, 8, Common::Base::Fmt::_16);
   myLeftINPT->setTarget(this);
@@ -160,10 +160,10 @@ RiotWidget::RiotWidget(GuiObject* boss, const GUI::Font& lfont,
   myRightINPT->setEditable(false);
 
   // TIA INPTx VBLANK bits (D6-latch, D7-dump) (R)
-  myINPTLatch = new CheckboxWidget(boss, lfont, 0, 0, "INPT latch (VBlank D6)");
+  myINPTLatch = new CheckboxWidget(boss, lfont, "INPT latch (VBlank D6)");
   myINPTLatch->setTarget(this);
   myINPTLatch->setEditable(false);
-  myINPTDump = new CheckboxWidget(boss, lfont, 0, 0, "INPT dump to gnd (VBlank D7)");
+  myINPTDump = new CheckboxWidget(boss, lfont, "INPT dump to gnd (VBlank D7)");
   myINPTDump->setTarget(this);
   myINPTDump->setEditable(false);
 
@@ -171,10 +171,10 @@ RiotWidget::RiotWidget(GuiObject* boss, const GUI::Font& lfont,
   items.clear();
   VarList::push_back(items, "B/easy", "b");
   VarList::push_back(items, "A/hard", "a");
-  myP0Diff = new PopUpWidget(boss, lfont, 0, 0, items, "Left Diff", 0, kP0DiffChanged);
+  myP0Diff = new PopUpWidget(boss, lfont, items, "Left Diff", 0, kP0DiffChanged);
   myP0Diff->setTarget(this);
   addFocusWidget(myP0Diff);
-  myP1Diff = new PopUpWidget(boss, lfont, 0, 0, items, "Right Diff", 0, kP1DiffChanged);
+  myP1Diff = new PopUpWidget(boss, lfont, items, "Right Diff", 0, kP1DiffChanged);
   myP1Diff->setTarget(this);
   addFocusWidget(myP1Diff);
 
@@ -182,7 +182,7 @@ RiotWidget::RiotWidget(GuiObject* boss, const GUI::Font& lfont,
   items.clear();
   VarList::push_back(items, "B&W", "bw");
   VarList::push_back(items, "Color", "color");
-  myTVType = new PopUpWidget(boss, lfont, 0, 0, items, "TV Type", 0, kTVTypeChanged);
+  myTVType = new PopUpWidget(boss, lfont, items, "TV Type", 0, kTVTypeChanged);
   myTVType->setToolTip("Atari 2600 Color/B&W switch.");
   myTVType->setTarget(this);
   addFocusWidget(myTVType);
@@ -191,15 +191,15 @@ RiotWidget::RiotWidget(GuiObject* boss, const GUI::Font& lfont,
   items.clear();
   VarList::push_back(items, "Atari 2600", "2600");
   VarList::push_back(items, "Atari 7800", "7800");
-  myConsoleLabel = new StaticTextWidget(boss, lfont, 0, 0, "Console");
-  myConsole = new PopUpWidget(boss, lfont, 0, 0, items, "", 0, kConsoleID);
+  myConsoleLabel = new StaticTextWidget(boss, lfont, "Console");
+  myConsole = new PopUpWidget(boss, lfont, items, "", 0, kConsoleID);
   myConsole->setTarget(this);
   myConsole->setToolTip("Emulated console.");
   addFocusWidget(myConsole);
 
   // Select, Reset and Pause (beside the difficulty/TV pop-ups)
   const auto check = [&](string_view label, uInt8 id) {
-    auto* cb = new CheckboxWidget(boss, lfont, 0, 0, label,
+    auto* cb = new CheckboxWidget(boss, lfont, label,
                                   CheckboxWidget::kCheckActionCmd);
     cb->setID(id);
     cb->setTarget(this);

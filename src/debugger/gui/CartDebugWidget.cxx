@@ -79,19 +79,19 @@ void CartDebugWidget::createBaseInformation(size_t bytes, string_view manufactur
   // positions it, and the description re-wraps itself, at reflow() time.  The
   // labels carry no padding of their own: they join the tab's label column below,
   // and GUI::alignLabels() supplies the column and its clearance
-  myROMSizeLabel = new StaticTextWidget(_boss, _font, 0, 0, "ROM size");
-  myROMSize = new EditTextWidget(_boss, _nfont, 0, 0, 1,
+  myROMSizeLabel = new StaticTextWidget(_boss, _font, "ROM size");
+  myROMSize = new EditTextWidget(_boss, _nfont, 1,
     bytes >= 1024
       ? std::format("{} bytes / {}KB", bytes, bytes / 1024)
       : std::format("{} bytes", bytes));
   myROMSize->setEditable(false);
 
-  myManufacturerLabel = new StaticTextWidget(_boss, _font, 0, 0, "Manufacturer");
-  myManufacturer = new EditTextWidget(_boss, _nfont, 0, 0, 1, manufacturer);
+  myManufacturerLabel = new StaticTextWidget(_boss, _font, "Manufacturer");
+  myManufacturer = new EditTextWidget(_boss, _nfont, 1, manufacturer);
   myManufacturer->setEditable(false);
 
-  myDescLabel = new StaticTextWidget(_boss, _font, 0, 0, "Description");
-  myDesc = new WrappedTextWidget(_boss, _nfont, 0, 0, 1, 1, desc, maxlines);
+  myDescLabel = new StaticTextWidget(_boss, _font, "Description");
+  myDesc = new WrappedTextWidget(_boss, _nfont, desc, maxlines);
   myDesc->setEditable(false);
   myDesc->setEnabled(false);
 

@@ -23,8 +23,8 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 EditTextWidget::EditTextWidget(GuiObject* boss, const GUI::Font& font,
-                               int x, int y, int w, int h, string_view text)
-  : EditableWidget(boss, font, x, y, w, h + 2, text)
+                               int w, int h, string_view text)
+  : EditableWidget(boss, font, w, h + 2, text)
 {
   _flags = Widget::FLAG_ENABLED | Widget::FLAG_CLEARBG
     | Widget::FLAG_RETAIN_FOCUS | Widget::FLAG_TRACK_MOUSE;
@@ -44,8 +44,8 @@ EditTextWidget::EditTextWidget(GuiObject* boss, const GUI::Font& font,
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 EditTextWidget::EditTextWidget(GuiObject* boss, const GUI::Font& font,
-                               int x, int y, int w, string_view text)
-  : EditTextWidget(boss, font, x, y, w, calcHeight(font), text)
+                               int w, string_view text)
+  : EditTextWidget(boss, font, w, calcHeight(font), text)
 {
 }
 

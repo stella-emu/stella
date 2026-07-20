@@ -43,7 +43,7 @@ CartridgeARWidget::CartridgeARWidget(
   for(int i = 0; i < 32; ++i)
     VarList::push_back(items, std::format("{:3}", i));
 
-  myBank = new PopUpWidget(boss, _font, 0, 0, items, "Set bank", 0, kBankChanged);
+  myBank = new PopUpWidget(boss, _font, items, "Set bank", 0, kBankChanged);
   myBank->setTarget(this);
   addFocusWidget(myBank);
 

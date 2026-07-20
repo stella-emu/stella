@@ -34,7 +34,7 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 RomListWidget::RomListWidget(GuiObject* boss, const GUI::Font& lfont,
                              const GUI::Font& nfont)
-  : EditableWidget(boss, nfont, 0, 0, 16, 16),
+  : EditableWidget(boss, nfont, 16, 16),
     _lfont{lfont},
     _rows{0}
 {
@@ -53,8 +53,7 @@ RomListWidget::RomListWidget(GuiObject* boss, const GUI::Font& lfont,
   // Create scrollbar and attach to the list
   // We want to initialize here, not in the member list
   // NOLINTNEXTLINE(cppcoreguidelines-prefer-member-initializer)
-  myScrollBar = new ScrollBarWidget(boss, lfont, _x + _w, _y,
-                                    ScrollBarWidget::scrollBarWidth(_font), _h);
+  myScrollBar = new ScrollBarWidget(boss, lfont);
   myScrollBar->setTarget(this);
 
   // Add settings menu
@@ -162,7 +161,7 @@ void RomListWidget::reflowCheckboxes()
   // append (surplus rows are hidden below).
   while(std::cmp_less(myCheckList.size(), _rows))
   {
-    auto* t = new CheckboxWidget(_boss, _lfont, 0, 0, "",
+    auto* t = new CheckboxWidget(_boss, _lfont, "",
                                  CheckboxWidget::kCheckActionCmd);
     t->setTarget(this);
     t->setID(static_cast<int>(myCheckList.size()));

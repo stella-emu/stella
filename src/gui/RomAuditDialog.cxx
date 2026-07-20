@@ -47,25 +47,25 @@ RomAuditDialog::RomAuditDialog(OSystem& osystem, DialogContainer& parent,
 
   // NOLINTBEGIN(cppcoreguidelines-prefer-member-initializer)
   // Audit path
-  myRomButton = new ButtonWidget(this, font, 0, 0,
+  myRomButton = new ButtonWidget(this, font,
       "Audit path" + ELLIPSIS, kChooseAuditDirCmd);
   wid.push_back(myRomButton);
-  myRomPath = new EditTextWidget(this, font, 0, 0, 1);
+  myRomPath = new EditTextWidget(this, font, 1);
   wid.push_back(myRomPath);
 
   // Show results of ROM audit
-  myRenamedLabel = new StaticTextWidget(this, font, 0, 0,
+  myRenamedLabel = new StaticTextWidget(this, font,
                                         "ROMs with properties (renamed)");
-  myResults1 = new EditTextWidget(this, font, 0, 0,
+  myResults1 = new EditTextWidget(this, font,
                                   EditTextWidget::calcWidth(font, 5));
   myResults1->setEditable(false, true);
-  mySkippedLabel = new StaticTextWidget(this, font, 0, 0,
+  mySkippedLabel = new StaticTextWidget(this, font,
                                         "ROMs without properties (skipped)");
-  myResults2 = new EditTextWidget(this, font, 0, 0,
+  myResults2 = new EditTextWidget(this, font,
                                   EditTextWidget::calcWidth(font, 5));
   myResults2->setEditable(false, true);
 
-  myWarningLabel = new StaticTextWidget(this, font, 0, 0,
+  myWarningLabel = new StaticTextWidget(this, font,
                                         "(*) WARNING: Operation cannot be undone!");
 
   // Add OK and Cancel buttons

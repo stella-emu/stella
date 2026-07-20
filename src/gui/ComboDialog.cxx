@@ -40,7 +40,7 @@ ComboDialog::ComboDialog(GuiObject* boss, const GUI::Font& font,
   // Add event popup for 8 events; each sizes itself to the events it can show
   const auto ADD_EVENT_POPUP = [&](int idx, string_view label)
   {
-    myEvents[idx] = new PopUpWidget(this, font, 0, 0, combolist, label);
+    myEvents[idx] = new PopUpWidget(this, font, combolist, label);
     wid.push_back(myEvents[idx]);
   };
   ADD_EVENT_POPUP(0, "Event 1");

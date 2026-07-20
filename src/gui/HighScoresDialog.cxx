@@ -136,30 +136,30 @@ HighScoresDialog::HighScoresDialog(OSystem& osystem, DialogContainer& parent,
   // Widgets are only created here (at placeholder geometry); layout() assigns
   // all geometry from the current font, so the dialog reflows on font change.
   // NOLINTBEGIN(cppcoreguidelines-prefer-member-initializer)
-  myGameNameWidget = new StaticTextWidget(this, _font, 0, 0, "");
+  myGameNameWidget = new StaticTextWidget(this, _font, "");
 
-  myVariationLabel = new StaticTextWidget(this, _font, 0, 0, "Variation");
+  myVariationLabel = new StaticTextWidget(this, _font, "Variation");
   // The list is filled per ROM in loadConfig(), so the pop-up cannot size its
   // box to it; the widest variation there can be is what it must show
-  myVariationPopup = new PopUpWidget(this, _font, 0, 0,
+  myVariationPopup = new PopUpWidget(this, _font,
       fontWidth * HSM::MAX_VARIATION_DIGITS, items, "", 0, kVariationChanged);
   wid.push_back(myVariationPopup);
-  myPrevVarButton = new ButtonWidget(this, _font, 0, 0, bWidth, myVariationPopup->getHeight(),
+  myPrevVarButton = new ButtonWidget(this, _font, bWidth, myVariationPopup->getHeight(),
       largeFont ? PREV_GFX_LARGE.data() : PREV_GFX.data(),
       buttonSize, buttonSize, kPrevVariation);
   wid.push_back(myPrevVarButton);
-  myNextVarButton = new ButtonWidget(this, _font, 0, 0, bWidth, myVariationPopup->getHeight(),
+  myNextVarButton = new ButtonWidget(this, _font, bWidth, myVariationPopup->getHeight(),
       largeFont ? NEXT_GFX_LARGE.data() : NEXT_GFX.data(),
       buttonSize, buttonSize, kNextVariation);
   wid.push_back(myNextVarButton);
 
   // Score-table column headers.  The special value's heading is the game's own
   // word for it ("Round", "Level", ...), so it arrives with the scores
-  myRankLabel          = new StaticTextWidget(this, _font, 0, 0, "Rank");
-  myScoreLabel         = new StaticTextWidget(this, _font, 0, 0, "Score");
-  mySpecialLabelWidget = new StaticTextWidget(this, _font, 0, 0, "");
-  myNameLabel          = new StaticTextWidget(this, _font, 0, 0, "Name");
-  myDateLabel          = new StaticTextWidget(this, _font, 0, 0, "Date   Time");
+  myRankLabel          = new StaticTextWidget(this, _font, "Rank");
+  myScoreLabel         = new StaticTextWidget(this, _font, "Score");
+  mySpecialLabelWidget = new StaticTextWidget(this, _font, "");
+  myNameLabel          = new StaticTextWidget(this, _font, "Name");
+  myDateLabel          = new StaticTextWidget(this, _font, "Date   Time");
 
   // Score-table data rows.  Every one of these is filled in as the scores load,
   // so each takes its width from the column it sits in and starts out empty; the
@@ -168,18 +168,18 @@ HighScoresDialog::HighScoresDialog(OSystem& osystem, DialogContainer& parent,
   // their text under them
   for(int r = 0; r < numRanks; ++r)
   {
-    myRankWidgets[r] = new StaticTextWidget(this, _font, 0, 0,
+    myRankWidgets[r] = new StaticTextWidget(this, _font,
         (r < 9 ? " " : "") + std::to_string(r + 1), TextAlign::Center);
-    myScoreWidgets[r] = new StaticTextWidget(this, _font, 0, 0, "");
-    mySpecialWidgets[r] = new StaticTextWidget(this, _font, 0, 0, "",
+    myScoreWidgets[r] = new StaticTextWidget(this, _font, "");
+    mySpecialWidgets[r] = new StaticTextWidget(this, _font, "",
                                                TextAlign::Center);
-    myNameWidgets[r] = new StaticTextWidget(this, _font, 0, 0, "");
-    myEditNameWidgets[r] = new EditTextWidget(this, _font, 0, 0,
+    myNameWidgets[r] = new StaticTextWidget(this, _font, "");
+    myEditNameWidgets[r] = new EditTextWidget(this, _font,
         EditTextWidget::calcWidth(_font, NAME_FIELD));
     myEditNameWidgets[r]->setFlags(EditTextWidget::FLAG_INVISIBLE);
     myEditNameWidgets[r]->setEnabled(false);
-    myDateWidgets[r] = new StaticTextWidget(this, _font, 0, 0, "");
-    myDeleteButtons[r] = new ButtonWidget(this, _font, 0, 0, fontWidth * 2,
+    myDateWidgets[r] = new StaticTextWidget(this, _font, "");
+    myDeleteButtons[r] = new ButtonWidget(this, _font, fontWidth * 2,
                                           Dialog::fontHeight(), "X", kDeleteSingle);
     myDeleteButtons[r]->setID(r);
     myDeleteButtons[r]->setToolTip("Click to delete this high score.");
@@ -188,9 +188,9 @@ HighScoresDialog::HighScoresDialog(OSystem& osystem, DialogContainer& parent,
     wid.push_back(myDeleteButtons[r]);
   }
 
-  myNotesWidget = new StaticTextWidget(this, ifont, 0, 0, "");
-  myMD5Widget = new StaticTextWidget(this, ifont, 0, 0, "");
-  myCheckSumWidget = new StaticTextWidget(this, ifont, 0, 0, "");
+  myNotesWidget = new StaticTextWidget(this, ifont, "");
+  myMD5Widget = new StaticTextWidget(this, ifont, "");
+  myCheckSumWidget = new StaticTextWidget(this, ifont, "");
   // NOLINTEND(cppcoreguidelines-prefer-member-initializer)
 
   addDefaultsOKCancelBGroup(wid, _font, "Save", "Cancel", " Reset ");

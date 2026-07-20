@@ -37,14 +37,14 @@ SnapshotDialog::SnapshotDialog(OSystem& osystem, DialogContainer& parent,
 
   // NOLINTBEGIN(cppcoreguidelines-prefer-member-initializer)
   // Snapshot path (save files)
-  mySnapSaveButton = new ButtonWidget(this, font, 0, 0,
+  mySnapSaveButton = new ButtonWidget(this, font,
                                       "Save path" + ELLIPSIS, kChooseSnapSaveDirCmd);
   wid.push_back(mySnapSaveButton);
-  mySnapSavePath = new EditTextWidget(this, font, 0, 0, 1, "");
+  mySnapSavePath = new EditTextWidget(this, font, 1, "");
   wid.push_back(mySnapSavePath);
 
   // Snapshot interval (continuous mode)
-  mySnapInterval = new SliderWidget(this, font, 0, 0,
+  mySnapInterval = new SliderWidget(this, font,
                                     "Continuous snapshot interval", 0, kSnapshotInterval,
                                     font.getStringWidth("10 seconds"));
   mySnapInterval->setMinValue(1);
@@ -53,22 +53,22 @@ SnapshotDialog::SnapshotDialog(OSystem& osystem, DialogContainer& parent,
   wid.push_back(mySnapInterval);
 
   // Header for the boolean save options
-  myWhenLabel = new StaticTextWidget(this, font, 0, 0,
+  myWhenLabel = new StaticTextWidget(this, font,
                                      "When saving snapshots:", TextAlign::Left);
 
   // Snapshot single or multiple saves
-  mySnapName = new CheckboxWidget(this, font, 0, 0, "Use actual ROM name");
+  mySnapName = new CheckboxWidget(this, font, "Use actual ROM name");
   wid.push_back(mySnapName);
-  mySnapSingle = new CheckboxWidget(this, font, 0, 0, "Overwrite existing files");
+  mySnapSingle = new CheckboxWidget(this, font, "Overwrite existing files");
   wid.push_back(mySnapSingle);
 
   // Snapshot in 1x mode (ignore scaling)
-  mySnap1x = new CheckboxWidget(this, font, 0, 0,
+  mySnap1x = new CheckboxWidget(this, font,
       "Create pixel-exact image (no zoom/post-processing)");
   wid.push_back(mySnap1x);
 
   // Automatically crop black borders
-  mySnapCrop = new CheckboxWidget(this, font, 0, 0, "Crop black borders");
+  mySnapCrop = new CheckboxWidget(this, font, "Crop black borders");
   wid.push_back(mySnapCrop);
 
   // Add Defaults, OK and Cancel buttons

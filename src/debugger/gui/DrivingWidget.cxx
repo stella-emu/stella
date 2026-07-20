@@ -27,10 +27,10 @@ DrivingWidget::DrivingWidget(GuiObject* boss, const GUI::Font& font,
   // Create the controls at a placeholder position; reflow() lays them out.
   // Embedded in a QuadTari there is only room for short button labels
   // NOLINTBEGIN(cppcoreguidelines-prefer-member-initializer)
-  myGrayUp = new ButtonWidget(boss, font, 0, 0,
+  myGrayUp = new ButtonWidget(boss, font,
                               embedded ? "GC+" : "Gray code +", kGrayUpCmd);
   myGrayUp->setTarget(this);
-  myGrayDown = new ButtonWidget(boss, font, 0, 0,
+  myGrayDown = new ButtonWidget(boss, font,
                                 embedded ? "GC-" : "Gray code -", kGrayDownCmd);
   myGrayDown->setTarget(this);
 
@@ -39,7 +39,7 @@ DrivingWidget::DrivingWidget(GuiObject* boss, const GUI::Font& font,
   myGrayValue->setTarget(this);
   myGrayValue->setEditable(false);
 
-  myFire = new CheckboxWidget(boss, font, 0, 0, "Fire", kFireCmd);
+  myFire = new CheckboxWidget(boss, font, "Fire", kFireCmd);
   myFire->setTarget(this);
   // NOLINTEND(cppcoreguidelines-prefer-member-initializer)
 

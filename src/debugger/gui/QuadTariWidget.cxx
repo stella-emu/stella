@@ -41,7 +41,7 @@ QuadTariWidget::QuadTariWidget(GuiObject* boss, const GUI::Font& font,
   // NOLINTBEGIN(cppcoreguidelines-prefer-member-initializer)
   myFirst   = addController(boss, *qt.myFirstController, false);
   mySecond  = addController(boss, *qt.mySecondController, true);
-  myPointer = new StaticTextWidget(boss, font, 0, 0, "  ");
+  myPointer = new StaticTextWidget(boss, font, "  ");
   // NOLINTEND(cppcoreguidelines-prefer-member-initializer)
 
   createHeader();

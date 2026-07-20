@@ -49,7 +49,7 @@ CartridgeDPCPlusWidget::CartridgeDPCPlusWidget(
   VarList::push_back(items, "4 ($FFFA)");
   VarList::push_back(items, "5 ($FFFB)");
 
-  myBank = new PopUpWidget(boss, _font, 0, 0, items, "Set bank", 0, kBankChanged);
+  myBank = new PopUpWidget(boss, _font, items, "Set bank", 0, kBankChanged);
   myBank->setTarget(this);
   addFocusWidget(myBank);
 
@@ -60,7 +60,7 @@ CartridgeDPCPlusWidget::CartridgeDPCPlusWidget(
   const auto addRegisters = [&](StaticTextWidget*& label, string_view text,
                                 DataGridWidget*& grid, int cols, int rows,
                                 int colchars, int bits, Common::Base::Fmt fmt) {
-    label = new StaticTextWidget(boss, _font, 0, 0, text);
+    label = new StaticTextWidget(boss, _font, text);
 
     grid = new DataGridWidget(boss, _nfont, cols, rows, colchars, bits, fmt);
     grid->setTarget(this);
@@ -89,11 +89,11 @@ CartridgeDPCPlusWidget::CartridgeDPCPlusWidget(
                Common::Base::Fmt::_16_8);
 
   // Fast fetch and immediate mode LDA flags
-  myFastFetch = new CheckboxWidget(boss, _font, 0, 0, "Fast Fetcher enabled");
+  myFastFetch = new CheckboxWidget(boss, _font, "Fast Fetcher enabled");
   myFastFetch->setTarget(this);
   myFastFetch->setEditable(false);
 
-  myIMLDA = new CheckboxWidget(boss, _font, 0, 0, "Immediate mode LDA");
+  myIMLDA = new CheckboxWidget(boss, _font, "Immediate mode LDA");
   myIMLDA->setTarget(this);
   myIMLDA->setEditable(false);
 

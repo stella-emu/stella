@@ -62,7 +62,7 @@ CartridgeBUSWidget::CartridgeBUSWidget(
     VarList::push_back(items, "6 ($FFFB)");
   }
   // Every widget is created at a placeholder position; reflow() positions them
-  myBank = new PopUpWidget(boss, _font, 0, 0, items, "Set bank", 0, kBankChanged);
+  myBank = new PopUpWidget(boss, _font, items, "Set bank", 0, kBankChanged);
   myBank->setTarget(this);
   addFocusWidget(myBank);
   myLabelColumn.emplace_back(myBank);
@@ -76,18 +76,18 @@ CartridgeBUSWidget::CartridgeBUSWidget(
 
   // The datastream table: pointers on the left, increments on the right, with the
   // named streams on rows of their own beneath them
-  myPointersLabel = new StaticTextWidget(boss, _font, 0, 0, "Datastream Pointers");
+  myPointersLabel = new StaticTextWidget(boss, _font, "Datastream Pointers");
   addGrid(myDatastreamPointers,   4, 4, 6, 32, Common::Base::Fmt::_16_3_2);
   addGrid(myDatastreamPointers2,  1, myDatastream2Rows, 6, 32, Common::Base::Fmt::_16_3_2);
 
-  myIncrementsLabel = new StaticTextWidget(boss, _font, 0, 0, "Datastream Increments");
+  myIncrementsLabel = new StaticTextWidget(boss, _font, "Datastream Increments");
   addGrid(myDatastreamIncrements,  4, 4, 5, 32, Common::Base::Fmt::_16_2_2);
   addGrid(myDatastreamIncrements2, 1, myDatastream2Rows, 5, 32, Common::Base::Fmt::_16_2_2);
 
   // The stream each table row holds: the first four by number, then the named ones
   for(uInt32 row = 0; row < 4; ++row)
     myDatastreamLabels[row] =
-      new StaticTextWidget(_boss, _font, 0, 0,
+      new StaticTextWidget(_boss, _font,
                            Common::Base::toString(row * 4, Common::Base::Fmt::_16_2));
 
   static constexpr std::array<string_view, 4> named{
@@ -96,42 +96,42 @@ CartridgeBUSWidget::CartridgeBUSWidget(
   };
   if(isBUS3)
   {
-    myDatastreamLabels[4] = new StaticTextWidget(_boss, _font, 0, 0, "Write Data (stream 16)");
-    myDatastreamLabels[5] = new StaticTextWidget(_boss, _font, 0, 0, "Jump Data (stream 17)");
+    myDatastreamLabels[4] = new StaticTextWidget(_boss, _font, "Write Data (stream 16)");
+    myDatastreamLabels[5] = new StaticTextWidget(_boss, _font, "Jump Data (stream 17)");
   }
   else
     for(uInt32 row = 0; row < 4; ++row)
       myDatastreamLabels[4 + row] =
-        new StaticTextWidget(_boss, _font, 0, 0, named[row]);
+        new StaticTextWidget(_boss, _font, named[row]);
 
   // Address maps
-  myAddressMapsLabel = new StaticTextWidget(boss, _font, 0, 0, "Address Maps");
+  myAddressMapsLabel = new StaticTextWidget(boss, _font, "Address Maps");
   addGrid(myAddressMaps, 8, 5, 8, 32, Common::Base::Fmt::_16_8);
 
   // Music states
-  myCountersLabel = new StaticTextWidget(boss, _font, 0, 0, "Music Counters");
+  myCountersLabel = new StaticTextWidget(boss, _font, "Music Counters");
   addGrid(myMusicCounters,      3, 1, 8, 32, Common::Base::Fmt::_16_8);
 
-  myFrequenciesLabel = new StaticTextWidget(boss, _font, 0, 0, "Music Frequencies");
+  myFrequenciesLabel = new StaticTextWidget(boss, _font, "Music Frequencies");
   addGrid(myMusicFrequencies,   3, 1, 8, 32, Common::Base::Fmt::_16_8);
 
-  myWaveformsLabel = new StaticTextWidget(boss, _font, 0, 0, "Music Waveforms");
+  myWaveformsLabel = new StaticTextWidget(boss, _font, "Music Waveforms");
   addGrid(myMusicWaveforms,     3, 1, 4, 16, Common::Base::Fmt::_16_2);
 
-  myWaveformSizesLabel = new StaticTextWidget(boss, _font, 0, 0, "Music Waveform Sizes");
+  myWaveformSizesLabel = new StaticTextWidget(boss, _font, "Music Waveform Sizes");
   addGrid(myMusicWaveformSizes, 3, 1, 4, 16, Common::Base::Fmt::_16_2);
 
   // BUS stuff and Digital Audio flags; only BUS3 plays digital samples
-  myBusOverdrive = new CheckboxWidget(boss, _font, 0, 0, "BUS Overdrive enabled");
+  myBusOverdrive = new CheckboxWidget(boss, _font, "BUS Overdrive enabled");
   myBusOverdrive->setTarget(this);
   myBusOverdrive->setEditable(false);
 
   if(isBUS3)
   {
-    mySamplePointerLabel = new StaticTextWidget(boss, _font, 0, 0, "Sample Pointer");
+    mySamplePointerLabel = new StaticTextWidget(boss, _font, "Sample Pointer");
     addGrid(mySamplePointer, 1, 1, 8, 32, Common::Base::Fmt::_16_8);
 
-    myDigitalSample = new CheckboxWidget(boss, _font, 0, 0, "Digital Sample mode");
+    myDigitalSample = new CheckboxWidget(boss, _font, "Digital Sample mode");
     myDigitalSample->setTarget(this);
     myDigitalSample->setEditable(false);
   }

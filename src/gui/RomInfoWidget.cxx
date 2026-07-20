@@ -28,9 +28,8 @@
 #include "RomInfoWidget.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-RomInfoWidget::RomInfoWidget(GuiObject* boss, const GUI::Font& font,
-                             int x, int y, int w, int h)
-  : Widget(boss, font, x, y, w, h),
+RomInfoWidget::RomInfoWidget(GuiObject* boss, const GUI::Font& font)
+  : Widget(boss, font, 0, 0, 0, 0),
     CommandSender(boss)
 {
   _flags = Widget::FLAG_ENABLED;
