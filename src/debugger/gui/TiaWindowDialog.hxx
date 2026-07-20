@@ -36,7 +36,7 @@ class TiaWindowDialog : public Dialog
 {
   public:
     TiaWindowDialog(OSystem& osystem, DialogContainer& parent,
-                    int x, int y, int w, int h);
+                    int w, int h);
     ~TiaWindowDialog() override = default;
 
     void loadConfig() override;

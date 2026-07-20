@@ -32,7 +32,7 @@ Launcher::Launcher(OSystem& osystem)
 {
   loadSize();
 
-  myBaseDialog = std::make_unique<LauncherDialog>(myOSystem, *this, 0, 0,
+  myBaseDialog = std::make_unique<LauncherDialog>(myOSystem, *this,
                                                   mySize.w, mySize.h);
 }
 

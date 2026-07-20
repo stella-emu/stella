@@ -25,8 +25,8 @@ static constexpr int BORDER = 2;
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 TiaWindowDialog::TiaWindowDialog(OSystem& osystem, DialogContainer& parent,
-                                 int x, int y, int w, int h)
-  : Dialog(osystem, parent, x, y, w, h)
+                                 int w, int h)
+  : Dialog(osystem, parent, 0, 0, w, h)
 {
   // Created at a placeholder size; layout() fits it to the window
   myTiaDisplay = new TiaDisplayWidget(this, _font);

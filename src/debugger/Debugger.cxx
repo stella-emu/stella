@@ -122,7 +122,7 @@ void Debugger::initialize()
   Common::Size minSize = fontMinSize();
   mySize.clamp(minSize.w, d.w, minSize.h, d.h);
 
-  myDialog = std::make_unique<DebuggerDialog>(myOSystem, *this, 0, 0,
+  myDialog = std::make_unique<DebuggerDialog>(myOSystem, *this,
                                               mySize.w, mySize.h);
 
   // Some cart types need more height than the font minimum; grow the window if

@@ -61,7 +61,7 @@ class LauncherDialog : public Dialog, CommandSender
 
   public:
     LauncherDialog(OSystem& osystem, DialogContainer& parent,
-                   int x, int y, int w, int h);
+                   int w, int h);
     ~LauncherDialog() override;
 
     /**
