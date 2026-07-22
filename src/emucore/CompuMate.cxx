@@ -49,25 +49,25 @@ void CompuMate::update()
   using DP = Controller::DigitalPin;
   using AP = Controller::AnalogPin;
 
-  lp.setPin(AP::Nine,  AnalogReadout::connectToGround());
-  lp.setPin(AP::Five,  AnalogReadout::connectToVcc());
+  lp.setPin(AP::Five,  AnalogReadout::connectToGround());
+  lp.setPin(AP::Nine,  AnalogReadout::connectToVcc());
   lp.setPin(DP::Six,   true);
-  rp.setPin(AP::Nine,  AnalogReadout::connectToVcc());
-  rp.setPin(AP::Five,  AnalogReadout::connectToGround());
+  rp.setPin(AP::Five,  AnalogReadout::connectToVcc());
+  rp.setPin(AP::Nine,  AnalogReadout::connectToGround());
   rp.setPin(DP::Six,   true);
   rp.setPin(DP::Three, true);
   rp.setPin(DP::Four,  true);
 
   if(myEvent.get(Event::CompuMateFunc))
-    lp.setPin(AP::Nine, AnalogReadout::connectToVcc());
+    lp.setPin(AP::Five, AnalogReadout::connectToVcc());
   if(myEvent.get(Event::CompuMateShift))
-    rp.setPin(AP::Five, AnalogReadout::connectToVcc());
+    rp.setPin(AP::Nine, AnalogReadout::connectToVcc());
 
   // LUT for CompuMate keys; faster than manual if statements
   struct ColMap {
     E lp6, rp3, rp6, rp4;
-    E shiftKey;  // key that mimics Shift+lp6 (sets RP.A5 high)
-    E funcKey;   // key that mimics Func+rp4  (sets LP.A9 high)
+    E shiftKey;  // key that mimics Shift+lp6 (sets RP.A9 high)
+    E funcKey;   // key that mimics Func+rp4  (sets LP.A5 high)
   };
 
   /**
@@ -122,11 +122,11 @@ void CompuMate::update()
     rp.setPin(DP::Four,  false);
 
   if(col.shiftKey != E::NoType && myEvent.get(col.shiftKey)) {
-    rp.setPin(AP::Five, AnalogReadout::connectToVcc());
+    rp.setPin(AP::Nine, AnalogReadout::connectToVcc());
     lp.setPin(DP::Six,  false);
   }
   if(col.funcKey  != E::NoType && myEvent.get(col.funcKey)) {
-    lp.setPin(AP::Nine, AnalogReadout::connectToVcc());
+    lp.setPin(AP::Five, AnalogReadout::connectToVcc());
     rp.setPin(DP::Four, false);
   }
   if(myBackspaceReleaseCycle && mySystem.cycles() >= myBackspaceReleaseCycle)
