@@ -92,9 +92,9 @@ void BoosterWidget::loadConfig()
   myPins[kJFire]->setState(!getPin(ourPinNo[kJFire]));
 
   myPins[kJBooster]->setState(
-    getPin(Controller::AnalogPin::Five) == AnalogReadout::connectToVcc());
-  myPins[kJTrigger]->setState(
     getPin(Controller::AnalogPin::Nine) == AnalogReadout::connectToVcc());
+  myPins[kJTrigger]->setState(
+    getPin(Controller::AnalogPin::Five) == AnalogReadout::connectToVcc());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -113,12 +113,12 @@ void BoosterWidget::handleCommand(
         setPin(ourPinNo[id], !myPins[id]->getState());
         break;
       case kJBooster:
-        setPin(Controller::AnalogPin::Five,
+        setPin(Controller::AnalogPin::Nine,
           myPins[id]->getState() ? AnalogReadout::connectToVcc() :
                                    AnalogReadout::disconnect());
         break;
       case kJTrigger:
-        setPin(Controller::AnalogPin::Nine,
+        setPin(Controller::AnalogPin::Five,
           myPins[id]->getState() ? AnalogReadout::connectToVcc() :
                                    AnalogReadout::disconnect());
         break;

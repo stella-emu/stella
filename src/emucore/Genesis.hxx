@@ -24,7 +24,7 @@
   The standard Sega Genesis controller works with the 2600 console for
   joystick directions and some of the buttons.  Button 'B' corresponds to
   the normal fire button (joy0fire), while button 'C' is read through
-  INPT1 (analog pin 5).
+  INPT1 (analog pin 9).
 
   @author  Stephen Anthony
 */

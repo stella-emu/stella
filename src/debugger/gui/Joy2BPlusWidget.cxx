@@ -92,9 +92,9 @@ void Joy2BPlusWidget::loadConfig()
   myPins[kJButtonB]->setState(!getPin(ourPinNo[kJButtonB]));
 
   myPins[kJButton3]->setState(
-    getPin(Controller::AnalogPin::Five) == AnalogReadout::connectToGround());
-  myPins[kJButtonC]->setState(
     getPin(Controller::AnalogPin::Nine) == AnalogReadout::connectToGround());
+  myPins[kJButtonC]->setState(
+    getPin(Controller::AnalogPin::Five) == AnalogReadout::connectToGround());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -113,12 +113,12 @@ void Joy2BPlusWidget::handleCommand(
         setPin(ourPinNo[id], !myPins[id]->getState());
         break;
       case kJButtonC:
-        setPin(Controller::AnalogPin::Nine,
+        setPin(Controller::AnalogPin::Five,
           myPins[id]->getState() ? AnalogReadout::connectToGround()
                                  : AnalogReadout::connectToVcc());
         break;
       case kJButton3:
-        setPin(Controller::AnalogPin::Five,
+        setPin(Controller::AnalogPin::Nine,
           myPins[id]->getState() ? AnalogReadout::connectToGround()
                                  : AnalogReadout::connectToVcc());
         break;
