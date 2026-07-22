@@ -604,6 +604,8 @@
 		DCB20EC71A0C506C0048F595 /* main.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCB20EC61A0C506C0048F595 /* main.cxx */; };
 		DCB2ECAF1F0AECA3009738A6 /* CartDetector.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCB2ECAC1F0AECA3009738A6 /* CartDetector.cxx */; };
 		DCB2ECB01F0AECA3009738A6 /* CartDetector.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCB2ECAD1F0AECA3009738A6 /* CartDetector.hxx */; };
+		DCB5EA6E3010F1080080ED3E /* ControllerWidget.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCB5EA6C3010F1080080ED3E /* ControllerWidget.cxx */; };
+		DCB5EA6F3010F1080080ED3E /* NullControlWidget.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCB5EA6D3010F1080080ED3E /* NullControlWidget.cxx */; };
 		DCB60AC92535E30600A5C1D2 /* VideoModeHandler.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCB60AC72535E30500A5C1D2 /* VideoModeHandler.cxx */; };
 		DCB60ACA2535E30600A5C1D2 /* VideoModeHandler.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCB60AC82535E30600A5C1D2 /* VideoModeHandler.hxx */; };
 		DCB60ACC25430FC600A5C1D2 /* FBBackend.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCB60ACB25430FC600A5C1D2 /* FBBackend.hxx */; };
@@ -1503,6 +1505,8 @@
 		DCB20EC61A0C506C0048F595 /* main.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = main.cxx; sourceTree = "<group>"; };
 		DCB2ECAC1F0AECA3009738A6 /* CartDetector.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CartDetector.cxx; sourceTree = "<group>"; };
 		DCB2ECAD1F0AECA3009738A6 /* CartDetector.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = CartDetector.hxx; sourceTree = "<group>"; };
+		DCB5EA6C3010F1080080ED3E /* ControllerWidget.cxx */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = ControllerWidget.cxx; sourceTree = "<group>"; };
+		DCB5EA6D3010F1080080ED3E /* NullControlWidget.cxx */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = NullControlWidget.cxx; sourceTree = "<group>"; };
 		DCB60AC72535E30500A5C1D2 /* VideoModeHandler.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = VideoModeHandler.cxx; sourceTree = "<group>"; };
 		DCB60AC82535E30600A5C1D2 /* VideoModeHandler.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = VideoModeHandler.hxx; sourceTree = "<group>"; };
 		DCB60ACB25430FC600A5C1D2 /* FBBackend.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = FBBackend.hxx; sourceTree = "<group>"; };
@@ -1959,6 +1963,7 @@
 				DC676A401729A0B000E4E73D /* CartX07Widget.hxx */,
 				DC676A3F1729A0B000E4E73D /* CartX07Widget.cxx */,
 				DCCF47DB14B60DEE00814FAB /* ControllerWidget.hxx */,
+				DCB5EA6C3010F1080080ED3E /* ControllerWidget.cxx */,
 				2D20F9E708C603EC00A73076 /* CpuWidget.hxx */,
 				2D20F9E608C603EC00A73076 /* CpuWidget.cxx */,
 				2D20F9E908C603EC00A73076 /* DataGridOpsWidget.hxx */,
@@ -1986,6 +1991,7 @@
 				DCCF4B0114BA27EB00814FAB /* KeyboardWidget.hxx */,
 				DCCF4B0014BA27EB00814FAB /* KeyboardWidget.cxx */,
 				DCCF4AD014B7E6C300814FAB /* NullControlWidget.hxx */,
+				DCB5EA6D3010F1080080ED3E /* NullControlWidget.cxx */,
 				DCCF49B614B7544A00814FAB /* PaddleWidget.hxx */,
 				DCCF49B514B7544A00814FAB /* PaddleWidget.cxx */,
 				DC9616291F817830008A2206 /* PointingDeviceWidget.hxx */,
@@ -3760,6 +3766,8 @@
 				DC39F2A12DC107F3006D74A8 /* EventHandlerSDL.cxx in Sources */,
 				DC39F2A22DC107F3006D74A8 /* SoundSDL.cxx in Sources */,
 				DC39F2A32DC107F3006D74A8 /* FBBackendSDL.cxx in Sources */,
+				DCB5EA6E3010F1080080ED3E /* ControllerWidget.cxx in Sources */,
+				DCB5EA6F3010F1080080ED3E /* NullControlWidget.cxx in Sources */,
 				DCA6A9162C7E0ADD00EEB5FF /* CartELFStateWidget.cxx in Sources */,
 				AA222222AA222222AA222222 /* MacOSUtils.mm in Sources */,
 				DC21E5BF21CA903E007D0E1A /* OSystemMACOS.cxx in Sources */,
