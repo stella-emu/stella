@@ -95,6 +95,14 @@ class AtariVox : public SaveKey
       return Controller::about(swappedPorts) + myAboutString;
     }
 
+    /**
+      Save/load the controller state.  Extends the base (which handles the
+      EEPROM) with the SpeakJet serial shift state, so a state saved mid-byte
+      doesn't drop the partially-shifted speech byte.
+    */
+    bool save(Serializer& out) const override;
+    bool load(Serializer& in) override;
+
   private:
    void clockDataIn(bool value);
 

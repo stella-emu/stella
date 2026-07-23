@@ -245,7 +245,7 @@ void NavigationWidget::PathWidget::setPath(string_view path)
     cutFirst = true;
 
   // Update/add widgets for path parts display
-  auto idx = 0uz;
+  auto idx = 0UZ;
   for(auto it = nodes.rbegin(); it != nodes.rend(); ++it, ++idx)
   {
     string name = it->getName();

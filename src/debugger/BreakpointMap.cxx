@@ -25,7 +25,7 @@ void BreakpointMap::add(const Breakpoint& breakpoint, uInt32 flags)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void BreakpointMap::add(uInt16 addr, uInt8 bank, uInt32 flags)
+void BreakpointMap::add(uInt16 addr, uInt16 bank, uInt32 flags)
 {
   add(Breakpoint(addr, bank), flags);
 }
@@ -42,7 +42,7 @@ void BreakpointMap::erase(const Breakpoint& breakpoint)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void BreakpointMap::erase(uInt16 addr, uInt8 bank)
+void BreakpointMap::erase(uInt16 addr, uInt16 bank)
 {
   erase(Breakpoint(addr, bank));
 }
@@ -55,7 +55,7 @@ uInt32 BreakpointMap::get(const Breakpoint& breakpoint) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt32 BreakpointMap::get(uInt16 addr, uInt8 bank) const
+uInt32 BreakpointMap::get(uInt16 addr, uInt16 bank) const
 {
   return get(Breakpoint(addr, bank));
 }
@@ -67,7 +67,7 @@ bool BreakpointMap::check(const Breakpoint& breakpoint) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool BreakpointMap::check(uInt16 addr, uInt8 bank) const
+bool BreakpointMap::check(uInt16 addr, uInt16 bank) const
 {
   return check(Breakpoint(addr, bank));
 }

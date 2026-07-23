@@ -105,6 +105,10 @@ bool TimerMap::load(Serializer& in)
   {
     clear();
     const uInt32 count = in.getInt();
+    // Sanity cap: timers are hand-created in the debugger, so a huge count is
+    // a corrupt save file.  Reject rather than attempt a giant allocation
+    if(count > 0x10000)
+      return false;
     myList.resize(count);
     for(auto& t: myList)
       t.load(in);

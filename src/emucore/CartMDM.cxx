@@ -104,7 +104,8 @@ bool CartridgeMDM::bank(uInt16 bank, uInt16)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CartridgeMDM::save(Serializer& out) const
 {
-  CartridgeEnhanced::save(out);
+  if(!CartridgeEnhanced::save(out))
+    return false;
   try
   {
     out.putBool(myBankingDisabled);
@@ -121,7 +122,8 @@ bool CartridgeMDM::save(Serializer& out) const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CartridgeMDM::load(Serializer& in)
 {
-  CartridgeEnhanced::load(in);
+  if(!CartridgeEnhanced::load(in))
+    return false;
   try
   {
     myBankingDisabled = in.getBool();

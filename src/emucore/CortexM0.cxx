@@ -585,6 +585,15 @@ void CortexM0::MemoryRegion::loadDirtyBits(Serializer& in)
   accessWatermarkLow = in.getInt();
   accessWatermarkHigh = in.getInt();
 
+  // Validate the watermarks read from the save file before using them to build
+  // a span into backingStore.  Without this a corrupt range yields an
+  // out-of-bounds write, or (via unsigned underflow of high - low + 1) an
+  // enormous one.  The checks are ordered so no subtraction can itself
+  // underflow: base <= low <= high < base + size
+  if (accessWatermarkLow < base || accessWatermarkHigh < accessWatermarkLow ||
+      accessWatermarkHigh - base >= size)
+    throw std::runtime_error("invalid ARM memory region watermark");
+
   switch (type) {
     case MemoryRegionType::directCode:
       in.getByteArray(std::span{
@@ -650,14 +659,14 @@ bool CortexM0::load(Serializer& in)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CortexM0::saveDirtyRegions(Serializer& out) const
 {
-  for (auto i = 0uz; i < myNextRegionIndex; i++)
+  for (auto i = 0UZ; i < myNextRegionIndex; i++)
     myRegions[i].saveDirtyBits(out);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CortexM0::loadDirtyRegions(Serializer& in)
 {
-  for (auto i = 0uz; i < myNextRegionIndex; i++)
+  for (auto i = 0UZ; i < myNextRegionIndex; i++)
     myRegions[i].loadDirtyBits(in);
 
   recompileCodeRegions();

@@ -253,7 +253,9 @@ bool CartridgeCTY::bank(uInt16 bank, uInt16)
   if(hotspotsLocked()) return false;
 
   // Remember what bank we're in
-  myBankOffset = bank << 12;
+  // Constrain to a valid bank so a corrupt bank value (e.g. from a
+  // tampered save state) can never offset myImage[] out of bounds
+  myBankOffset = (bank % romBankCount()) << 12;
 
   // Setup the page access methods for the current bank
   System::PageAccess access(this, System::PageAccessType::READ);
@@ -347,7 +349,18 @@ bool CartridgeCTY::load(Serializer& in)
     myFractionalClocks = in.getDouble();
     in.getIntArray(myMusicCounters);
     in.getIntArray(myMusicFrequencies);
-    myFrequencyImage = ByteSpan{myTuneData}.subspan(in.getLong());
+
+    // Validate the tune offset from the save file before indexing myTuneData;
+    // a corrupt offset would otherwise build an out-of-bounds subspan.  A valid
+    // tune is always 4K and 4K-aligned, so require a full tune to remain
+    const uInt64 tuneOffset = in.getLong();
+    if(tuneOffset > myTuneData.size() - 4_KB)
+      return false;
+    myFrequencyImage = ByteSpan{myTuneData}.subspan(tuneOffset);
+
+    // Guard the tune position so note indexing stays within the current tune
+    if((static_cast<size_t>(myTunePosition) + 1) * 3 > myFrequencyImage.size())
+      myTunePosition = 0;
   }
   catch(...)
   {

@@ -171,7 +171,7 @@ FORCE_INLINE void CartridgeCDF::updateMusicModeDataFetchers()
 
   // Let's update counters and flags of the music mode data fetchers
   if(wholeClocks > 0)
-    for(auto x = 0uz; x < myMusicCounters.size(); ++x)
+    for(auto x = 0UZ; x < myMusicCounters.size(); ++x)
       myMusicCounters[x] += myMusicFrequencies[x] * wholeClocks;
 }
 
@@ -454,7 +454,9 @@ bool CartridgeCDF::bank(uInt16 bank, uInt16)
   if(hotspotsLocked()) return false;
 
   // Remember what bank we're in
-  myBankOffset = bank << 12;
+  // Constrain to a valid bank so a corrupt bank value (e.g. from a
+  // tampered save state) can never offset myProgramImage[] out of bounds
+  myBankOffset = (bank % romBankCount()) << 12;
 
   // Setup the page access methods for the current bank
   System::PageAccess access(this, System::PageAccessType::READ);

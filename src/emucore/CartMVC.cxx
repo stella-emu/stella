@@ -200,14 +200,11 @@ namespace {
           out.putByteArray(myBuffer1);
           out.putByteArray(myBuffer2);
 
-        #if 0  // FIXME - determine whether we need to load/save this
-          const uInt8*  myAudio
-          const uInt8*  myGraph
-          const uInt8*  myGraphOverride
-          const uInt8*  myTimecode
-          const uInt8*  myColor
-          const uInt8*  myColorBK
-        #endif
+          // The stream cursors (myAudio/myGraph/myGraphOverride/myTimecode/
+          // myColor/myColorBK) are pointers into the buffers above and are
+          // intentionally not serialized: they are re-derived from the buffer
+          // layout at the next field boundary (swapField), so a mid-field load
+          // costs at most a partial frame of A/V, which then self-corrects.
         }
         catch(...)
         {
@@ -222,14 +219,8 @@ namespace {
           in.getByteArray(myBuffer1);
           in.getByteArray(myBuffer2);
 
-        #if 0  // FIXME - determine whether we need to load/save this
-          const uInt8*  myAudio
-          const uInt8*  myGraph
-          const uInt8*  myGraphOverride
-          const uInt8*  myTimecode
-          const uInt8*  myColor
-          const uInt8*  myColorBK
-        #endif
+          // See save(): the stream cursors are re-derived at the next field
+          // boundary, so they are intentionally not part of the save format.
         }
         catch(...)
         {
@@ -1566,8 +1557,10 @@ bool MovieCart::save(Serializer& out) const
     out.putByte(myButtonsValue);
 
     out.putByte(myVolume);
-    // FIXME - determine whether we need to load/save this
-    // const uInt8* myVolumeScale{scales[DEFAULT_LEVEL]};
+    // myMute is a multi-frame countdown that gates the volume; it doesn't
+    // self-correct on its own, so it is saved.  myVolumeScale is not: it is
+    // re-derived from myVolume every frame in runStateMachine().
+    out.putByte(myMute);
     out.putByte(myFirstAudioVal);
   }
   catch(...)
@@ -1604,6 +1597,9 @@ bool MovieCart::load(Serializer& in)
 
     myMode = in.getByte();
     myBright = in.getByte();
+    // myBright indexes shiftBright[] via (v & 0x0f) + myBright; clamp as the
+    // emulation does so a corrupt save file can't index out of bounds
+    if(myBright >= MAX_LEVEL) myBright = MAX_LEVEL - 1;
     myForceColor = in.getByte();
 
     // expressed in frames
@@ -1620,8 +1616,11 @@ bool MovieCart::load(Serializer& in)
     myButtonsValue = in.getByte();
 
     myVolume = in.getByte();
-    // FIXME - determine whether we need to load/save this
-    // const uInt8* myVolumeScale{scales[DEFAULT_LEVEL]};
+    // myVolume indexes scales[]; clamp as the emulation does so a corrupt save
+    // file can't index out of bounds
+    if(myVolume >= MAX_LEVEL) myVolume = MAX_LEVEL - 1;
+    // See save(): myMute is saved; myVolumeScale is re-derived from myVolume
+    myMute = in.getByte();
     myFirstAudioVal = in.getByte();
   }
   catch(...)

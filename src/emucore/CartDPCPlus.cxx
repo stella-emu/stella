@@ -174,7 +174,7 @@ FORCE_INLINE void CartridgeDPCPlus::updateMusicModeDataFetchers()
 
   // Let's update counters and flags of the music mode data fetchers
   if(wholeClocks > 0)
-    for(auto x = 0uz; x < myMusicCounters.size(); ++x)
+    for(auto x = 0UZ; x < myMusicCounters.size(); ++x)
       myMusicCounters[x] += myMusicFrequencies[x] * wholeClocks;
 }
 
@@ -633,7 +633,9 @@ bool CartridgeDPCPlus::bank(uInt16 bank, uInt16)
   if(hotspotsLocked()) return false;
 
   // Remember what bank we're in
-  myBankOffset = bank << 12;
+  // Constrain to a valid bank so a corrupt bank value (e.g. from a
+  // tampered save state) can never offset myProgramImage[] out of bounds
+  myBankOffset = (bank % romBankCount()) << 12;
 
   // Setup the page access methods for the current bank
   System::PageAccess access(this, System::PageAccessType::READ);
@@ -773,9 +775,17 @@ bool CartridgeDPCPlus::load(Serializer& in)
 
     // The counter registers for the data fetchers
     in.getShortArray(myCounters);
+    // Counters are 12-bit in hardware and index the 4K display image; mask so
+    // a corrupt save file can't index out of bounds (in peek() or the poke()
+    // write path, which uses the counter before re-masking it)
+    for(auto& counter: myCounters)
+      counter &= 0x0fff;
 
     // The counter registers for the fractional data fetchers
     in.getIntArray(myFractionalCounters);
+    // Fractional counters are 20-bit; (counter >> 8) indexes the display image
+    for(auto& counter: myFractionalCounters)
+      counter &= 0x0fffff;
 
     // The fractional registers for the data fetchers
     in.getByteArray(myFractionalIncrements);
@@ -795,6 +805,9 @@ bool CartridgeDPCPlus::load(Serializer& in)
 
     // The music waveforms
     in.getShortArray(myMusicWaveforms);
+    // Waveforms are 7-bit; (waveform << 5) indexes the display image
+    for(auto& waveform: myMusicWaveforms)
+      waveform &= 0x7f;
 
     // The random number generator register
     myRandomNumber = in.getInt();

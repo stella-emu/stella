@@ -177,11 +177,15 @@ bool Audio::loadSamples(Serializer& in)
   try
   {
     const uInt64 sampleSize = in.getLong();
+    // The raw sample bytes can't exceed the size of the stream they came from;
+    // reject a corrupt size before attempting the allocation
+    if(sampleSize > in.size())
+      return false;
     ByteArray samples(sampleSize);
     in.getByteArray(samples);
 
     // Feed all loaded samples into the audio queue
-    for(auto i = 0uz; i < sampleSize; ++i)
+    for(auto i = 0UZ; i < sampleSize; ++i)
     {
       const uInt8 sample = samples[i];
       const uInt8 sample0 = sample & 0x0f;

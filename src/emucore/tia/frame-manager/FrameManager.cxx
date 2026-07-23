@@ -240,6 +240,14 @@ bool FrameManager::onSave(Serializer& out) const
   out.putBool(myVsyncPending);
   out.putInt(myVsyncPendingLines);
 
+  // Cycle stamps used to measure VSYNC/VBLANK duration for jitter emulation.
+  // A state may legally be saved mid-VSYNC (myVsyncPending set), so these must
+  // be preserved or the next frame's jitter is computed from stale values
+  out.putLong(myVsyncStart);
+  out.putLong(myVsyncEnd);
+  out.putLong(myVblankStart);
+  out.putLong(myVblankCycles);
+
   return true;
 }
 
@@ -260,6 +268,11 @@ bool FrameManager::onLoad(Serializer& in)
   myJitterEnabled = in.getBool();
   myVsyncPending = in.getBool();
   myVsyncPendingLines = in.getInt();
+
+  myVsyncStart = in.getLong();
+  myVsyncEnd = in.getLong();
+  myVblankStart = in.getLong();
+  myVblankCycles = in.getLong();
 
   recalculateMetrics();
   return true;

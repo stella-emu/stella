@@ -1351,7 +1351,7 @@ void LauncherDialog::openContextMenu(int x, int y)
 
   // Format items for menu, aligning all shortcuts to the right
   VariantList varItems;
-  auto maxLen = 0uz;
+  auto maxLen = 0UZ;
   for(auto& item: items)
     maxLen = std::max(maxLen, item.label.length());
 

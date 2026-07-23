@@ -16,6 +16,7 @@
 //============================================================================
 
 #include "MediaFactory.hxx"
+#include "Serializer.hxx"
 #include "System.hxx"
 #include "AtariVox.hxx"
 
@@ -144,4 +145,44 @@ void AtariVox::reset()
 {
   myLastDataWriteCycle = 0;
   SaveKey::reset();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool AtariVox::save(Serializer& out) const
+{
+  if(!SaveKey::save(out)) return false;
+  try
+  {
+    out.putByte(myShiftCount);
+    out.putShort(myShiftRegister);
+    out.putLong(myLastDataWriteCycle);
+    out.putBool(myReadyStateSoftFlow);
+    out.putBool(myCTSFlip);
+  }
+  catch(...)
+  {
+    cerr << "ERROR: AtariVox::save\n";
+    return false;
+  }
+  return true;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool AtariVox::load(Serializer& in)
+{
+  if(!SaveKey::load(in)) return false;
+  try
+  {
+    myShiftCount = in.getByte();
+    myShiftRegister = in.getShort();
+    myLastDataWriteCycle = in.getLong();
+    myReadyStateSoftFlow = in.getBool();
+    myCTSFlip = in.getBool();
+  }
+  catch(...)
+  {
+    cerr << "ERROR: AtariVox::load\n";
+    return false;
+  }
+  return true;
 }

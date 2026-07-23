@@ -115,7 +115,9 @@ bool CartridgeCM::bank(uInt16 bank, uInt16)
   if(hotspotsLocked()) return false;
 
   // Remember what bank we're in
-  myBankOffset = bank << 12;
+  // Constrain to a valid bank so a corrupt bank value (e.g. from a
+  // tampered save state) can never offset myImage[] out of bounds
+  myBankOffset = (bank % romBankCount()) << 12;
 
   // Although this scheme contains four 4K ROM banks and one 2K RAM bank,
   // it's easier to think of things in terms of 2K slices, as follows:

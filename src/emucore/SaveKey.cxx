@@ -112,3 +112,15 @@ bool SaveKey::isPageUsed(uInt32 page) const
 {
   return myEEPROM->isPageUsed(page);
 }
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool SaveKey::save(Serializer& out) const
+{
+  return Controller::save(out) && myEEPROM->save(out);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool SaveKey::load(Serializer& in)
+{
+  return Controller::load(in) && myEEPROM->load(in);
+}

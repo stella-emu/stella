@@ -358,7 +358,7 @@ string Debugger::setRAM(const IntArray& args)
 
   const size_t count = args.size(), written = count - 1;
   int address = args[0];
-  for(auto i = 1uz; i < count; ++i)
+  for(auto i = 1UZ; i < count; ++i)
     mySystem.pokeOob(address++, args[i]);
 
   return std::format("changed {} {}", written,
@@ -443,7 +443,7 @@ int Debugger::trace()
     const int targetPC = myCpuDebug->pc() + 3; // return address
 
     // set temporary breakpoint at target PC (if not existing already)
-    const Int8 bank = myCartDebug->getBank(targetPC);
+    const uInt16 bank = myCartDebug->getBank(targetPC);
     if(!checkBreakPoint(targetPC, bank))
     {
       // add temporary breakpoint and remove later
@@ -463,7 +463,7 @@ int Debugger::trace()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool Debugger::setBreakPoint(uInt16 addr, uInt8 bank, uInt32 flags) const
+bool Debugger::setBreakPoint(uInt16 addr, uInt16 bank, uInt32 flags) const
 {
   if(checkBreakPoint(addr, bank))
     return false;
@@ -473,7 +473,7 @@ bool Debugger::setBreakPoint(uInt16 addr, uInt8 bank, uInt32 flags) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool Debugger::clearBreakPoint(uInt16 addr, uInt8 bank) const
+bool Debugger::clearBreakPoint(uInt16 addr, uInt16 bank) const
 {
   if(!checkBreakPoint(addr, bank))
     return false;
@@ -483,13 +483,13 @@ bool Debugger::clearBreakPoint(uInt16 addr, uInt8 bank) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool Debugger::checkBreakPoint(uInt16 addr, uInt8 bank) const
+bool Debugger::checkBreakPoint(uInt16 addr, uInt16 bank) const
 {
   return breakPoints().check(addr, bank);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool Debugger::toggleBreakPoint(uInt16 addr, uInt8 bank) const
+bool Debugger::toggleBreakPoint(uInt16 addr, uInt16 bank) const
 {
   if(checkBreakPoint(addr, bank))
     clearBreakPoint(addr, bank);
@@ -1060,7 +1060,7 @@ Debugger::FunctionDefMap Debugger::getFunctionDefMap() const
 string Debugger::builtinHelp()
 {
   std::ostringstream buf;
-  auto c_maxlen = 0uz, i_maxlen = 0uz;
+  auto c_maxlen = 0UZ, i_maxlen = 0UZ;
 
   // Get column widths for aligned output (functions)
   for(const auto& func: ourBuiltinFunctions)

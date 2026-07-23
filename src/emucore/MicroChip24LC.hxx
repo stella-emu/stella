@@ -22,6 +22,7 @@
 
 #include "Control.hxx"
 #include "FSNode.hxx"
+#include "Serializer.hxx"
 #include "System.hxx"
 #include "bspf.hxx"
 
@@ -118,6 +119,68 @@ class MicroChip24LC
       @return      True if the page was read or written during emulation
     */
     bool isPageUsed(uInt32 page) const;
+
+    /**
+      Save the current I2C engine state to the given Serializer.  The EEPROM
+      data array is persisted separately (to its .dat file), so only the
+      transient transaction state is serialized here.  This matters when a
+      state is saved mid-transaction: without it the in-flight byte/page write
+      is lost, and the ROM's remaining clocks are parsed as a new command.
+    */
+    bool save(Serializer& out) const {
+      try {
+        out.putBool(mySDA);
+        out.putBool(mySCL);
+        out.putBool(myTimerActive);
+        out.putLong(myCyclesWhenTimerSet);
+        out.putLong(myCyclesWhenSDASet);
+        out.putLong(myCyclesWhenSCLSet);
+
+        out.putByte(static_cast<uInt8>(jpee_state));
+        out.putBool(jpee_mdat);
+        out.putBool(jpee_sdat);
+        out.putBool(jpee_mclk);
+        out.putBool(jpee_ad_known);
+        out.putInt(jpee_pptr);
+        out.putInt(jpee_nb);
+        out.putInt(jpee_address);
+        out.putByteArray(jpee_packet);
+      }
+      catch(...) {
+        cerr << "ERROR: MicroChip24LC::save\n";
+        return false;
+      }
+      return true;
+    }
+
+    bool load(Serializer& in) {
+      try {
+        mySDA = in.getBool();
+        mySCL = in.getBool();
+        myTimerActive = in.getBool();
+        myCyclesWhenTimerSet = in.getLong();
+        myCyclesWhenSDASet = in.getLong();
+        myCyclesWhenSCLSet = in.getLong();
+
+        jpee_state = static_cast<JPEEState>(in.getByte());
+        jpee_mdat = in.getBool();
+        jpee_sdat = in.getBool();
+        jpee_mclk = in.getBool();
+        jpee_ad_known = in.getBool();
+        jpee_pptr = in.getInt();
+        // jpee_pptr bounds the write-commit read loop in jpee_data_stop(),
+        // so reject a corrupt value that would read past jpee_packet
+        if(jpee_pptr > jpee_packet.size()) return false;
+        jpee_nb = in.getInt();
+        jpee_address = in.getInt();
+        in.getByteArray(jpee_packet);
+      }
+      catch(...) {
+        cerr << "ERROR: MicroChip24LC::load\n";
+        return false;
+      }
+      return true;
+    }
 
   private:
     /**

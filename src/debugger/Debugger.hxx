@@ -50,6 +50,7 @@ class TiaWindow;
 #include "DebuggerDialog.hxx"
 #include "FrameBufferConstants.hxx"
 #include "Cart.hxx"
+#include "BreakpointMap.hxx"
 #include "bspf.hxx"
 
 /**
@@ -215,7 +216,7 @@ class Debugger : public DialogContainer
 
       Returns true if successfully set
     */
-    bool setBreakPoint(uInt16 addr, uInt8 bank = ANY_BANK,
+    bool setBreakPoint(uInt16 addr, uInt16 bank = BreakpointMap::ANY_BANK,
                        uInt32 flags = 0) const;
 
     /**
@@ -223,21 +224,21 @@ class Debugger : public DialogContainer
 
       Returns true if successfully cleared
     */
-    bool clearBreakPoint(uInt16 addr, uInt8 bank) const;
+    bool clearBreakPoint(uInt16 addr, uInt16 bank) const;
 
     /**
       Toggles a breakpoint
 
       Returns new state of breakpoint
     */
-    bool toggleBreakPoint(uInt16 addr, uInt8 bank) const;
+    bool toggleBreakPoint(uInt16 addr, uInt16 bank) const;
 
     /**
       Checks for a breakpoint.
 
       Returns true if existing, else false
     */
-    bool checkBreakPoint(uInt16 addr, uInt8 bank) const;
+    bool checkBreakPoint(uInt16 addr, uInt16 bank) const;
 
     /**
       Run the debugger command and return the result.
@@ -448,7 +449,6 @@ class Debugger : public DialogContainer
     static std::array<BuiltinFunction, 18> ourBuiltinFunctions;
     static std::array<PseudoRegister, 18> ourPseudoRegisters;
 
-    static constexpr Int8 ANY_BANK = -1;
     bool myFirstLog{true};
 
   private:

@@ -45,7 +45,7 @@ namespace {
   {
     stream << "\nELF sections:\n\n";
 
-    auto i = 0uz;
+    auto i = 0UZ;
     for (const auto& section: elf.getSections()) {
       if (section.type != 0x00) stream << i << " " << section << '\n';
       i++;
@@ -88,7 +88,7 @@ namespace {
     const auto& sections = parser.getSections();
     const auto& relocatedSections = linker.getRelocatedSections();
 
-    for (auto i = 0uz; i < sections.size(); i++) {
+    for (auto i = 0UZ; i < sections.size(); i++) {
       if (!relocatedSections[i]) continue;
 
       stream
@@ -103,7 +103,7 @@ namespace {
     const auto& symbols = parser.getSymbols();
     const auto& relocatedSymbols = linker.getRelocatedSymbols();
 
-    for (auto i = 0uz; i < symbols.size(); i++) {
+    for (auto i = 0UZ; i < symbols.size(); i++) {
       if (!relocatedSymbols[i]) continue;
 
       stream

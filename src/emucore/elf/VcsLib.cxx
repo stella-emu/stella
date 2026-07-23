@@ -121,7 +121,7 @@ bool VcsLib::save(Serializer& out) const
     out.putBool(myIsWaitingForRead);
     out.putShort(myWaitingForReadAddress);
     out.putShort(myCurrentAddress);
-    out.putBool(myCurrentValue);
+    out.putByte(myCurrentValue);
 
     if (!myRand.save(out)) return false;
   }
@@ -145,7 +145,7 @@ bool VcsLib::load(Serializer& in)
     myIsWaitingForRead = in.getBool();
     myWaitingForReadAddress = in.getShort();
     myCurrentAddress = in.getShort();
-    myCurrentValue = in.getBool();
+    myCurrentValue = in.getByte();
 
     if (!myRand.load(in)) return false;
   }

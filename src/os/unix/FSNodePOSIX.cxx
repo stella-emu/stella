@@ -34,7 +34,7 @@ FSNodePOSIX::FSNodePOSIX(string_view path, bool verify)
   if(_path[0] == '~')
   {
     // Skip the '/' after '~' if present to avoid double slash
-    const auto replaceLen = (_path.size() > 1 && _path[1] == '/') ? 2uz : 1uz;
+    const auto replaceLen = (_path.size() > 1 && _path[1] == '/') ? 2UZ : 1UZ;
     _path.replace(0, replaceLen, XDGPaths::instance().home());
   }
   else if(_path[0] == '.')

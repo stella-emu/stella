@@ -46,11 +46,11 @@ class System;
     pin 2   D5  PIA SWCHA               D1  PIA SWCHA
     pin 3   D6  PIA SWCHA               D2  PIA SWCHA
     pin 4   D7  PIA SWCHA               D3  PIA SWCHA
-    pin 5   D7  TIA INPT1 (Dumped)      D7  TIA INPT3 (Dumped)
+    pin 5   D7  TIA INPT0 (Dumped)      D7  TIA INPT2 (Dumped)
     pin 6   D7  TIA INPT4 (Latched)     D7  TIA INPT5 (Latched)
     pin 7   +5                          +5
     pin 8   GND                         GND
-    pin 9   D7  TIA INPT0 (Dumped)      D7  TIA INPT2 (Dumped)
+    pin 9   D7  TIA INPT1 (Dumped)      D7  TIA INPT3 (Dumped)
 
   Each of the pins connected to the PIA can be configured as an
   input or output pin.  The "dumped" TIA pins are used to charge
@@ -389,7 +389,7 @@ class Controller : public Serializable
       bound.fill(Event::NoType);
 
       bool pressed = false;
-      auto i = 0uz;
+      auto i = 0UZ;
       for(const Event::Type event: events)
       {
         bound[i++] = event;

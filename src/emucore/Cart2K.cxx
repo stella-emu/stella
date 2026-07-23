@@ -30,7 +30,7 @@ Cartridge2K::Cartridge2K(ByteSpan image, string_view md5,
   const size_t size = std::min(image.size(), bsSize);
 
   // Set image size to closest power-of-two for the given size
-  auto newSize = 1uz; myBankShift = 0;
+  auto newSize = 1UZ; myBankShift = 0;
   while(newSize < size)
   {
     newSize <<= 1;
@@ -45,7 +45,7 @@ Cartridge2K::Cartridge2K(ByteSpan image, string_view md5,
     myImage.assign(System::PAGE_SIZE, 0);
     // newSize is rounded up to a power of two, so it may exceed the actual
     // image size; clamp the source read to avoid reading past the image
-    for(auto i = 0uz; i < System::PAGE_SIZE; i += newSize)
+    for(auto i = 0UZ; i < System::PAGE_SIZE; i += newSize)
       std::copy_n(image.data(), std::min(newSize, size), myImage.data() + i);
     myBankShift = System::PAGE_SHIFT;
   }

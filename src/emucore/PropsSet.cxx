@@ -89,7 +89,7 @@ bool PropertiesSet::getMD5(string_view md5, Properties& properties,
        BSPF::compareIgnoreCase((*it)[std::to_underlying(PropType::Cart_MD5)], md5) == 0)
     {
       const auto& entry = *it;
-      for(auto p = 0uz; p < Properties::NUM_PROPS; ++p)
+      for(auto p = 0UZ; p < Properties::NUM_PROPS; ++p)
         if(entry[p][0] != 0)
           properties.set(static_cast<PropType>(p), entry[p]);
 
@@ -180,7 +180,7 @@ void PropertiesSet::print() const
   for(const auto& DefProp: DefProps)
   {
     properties.setDefaults();
-    for(auto p = 0uz; p < Properties::NUM_PROPS; ++p)
+    for(auto p = 0UZ; p < Properties::NUM_PROPS; ++p)
       if(DefProp[p][0] != 0)
         properties.set(static_cast<PropType>(p), DefProp[p]);
 

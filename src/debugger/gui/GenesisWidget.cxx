@@ -81,7 +81,7 @@ void GenesisWidget::loadConfig()
   myPins[kJBbtn]->setState(!getPin(ourPinNo[kJBbtn]));
 
   myPins[kJCbtn]->setState(
-    getPin(Controller::AnalogPin::Five) == AnalogReadout::connectToGround());
+    getPin(Controller::AnalogPin::Nine) == AnalogReadout::connectToGround());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -100,7 +100,7 @@ void GenesisWidget::handleCommand(
         setPin(ourPinNo[id], !myPins[id]->getState());
         break;
       case kJCbtn:
-        setPin(Controller::AnalogPin::Five,
+        setPin(Controller::AnalogPin::Nine,
           myPins[id]->getState() ? AnalogReadout::connectToGround() :
                                    AnalogReadout::connectToVcc());
         break;

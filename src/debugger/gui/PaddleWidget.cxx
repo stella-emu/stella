@@ -109,9 +109,9 @@ void PaddleWidget::layoutContent(GUI::BoxLayout& col)
 void PaddleWidget::loadConfig()
 {
   myP0Resistance->setValue(static_cast<Int32>(AnalogReadout::MAX_POT_RESISTANCE -
-      getPin(Controller::AnalogPin::Nine).resistance));
-  myP1Resistance->setValue(static_cast<Int32>(AnalogReadout::MAX_POT_RESISTANCE -
       getPin(Controller::AnalogPin::Five).resistance));
+  myP1Resistance->setValue(static_cast<Int32>(AnalogReadout::MAX_POT_RESISTANCE -
+      getPin(Controller::AnalogPin::Nine).resistance));
   myP0Fire->setState(!getPin(Controller::DigitalPin::Four));
   myP1Fire->setState(!getPin(Controller::DigitalPin::Three));
 }
@@ -123,11 +123,11 @@ void PaddleWidget::handleCommand(
   switch(cmd)
   {
     case kP0Changed:
-      setPin(Controller::AnalogPin::Nine,
+      setPin(Controller::AnalogPin::Five,
              AnalogReadout::connectToVcc(AnalogReadout::MAX_POT_RESISTANCE - myP0Resistance->getValue()));
       break;
     case kP1Changed:
-      setPin(Controller::AnalogPin::Five,
+      setPin(Controller::AnalogPin::Nine,
              AnalogReadout::connectToVcc(AnalogReadout::MAX_POT_RESISTANCE - myP1Resistance->getValue()));
       break;
     case kP0Fire:

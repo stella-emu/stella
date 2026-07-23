@@ -894,7 +894,7 @@ void PhysicalJoystickHandler::handleAxisEvent(int stick, int axis, int value)
       {
         const bool isLeft = (j->type == LEFT_STELLADAPTOR ||
                              j->type == LEFT_2600DAPTOR);
-        const auto port = isLeft ? 0uz : 1uz;
+        const auto port = isLeft ? 0UZ : 1UZ;
         const auto& ctrl = isLeft ? myOSystem.console().leftController()
                                   : myOSystem.console().rightController();
         if(myOSystem.hasConsole() && ctrl.type() == Controller::Type::Driving)

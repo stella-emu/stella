@@ -174,7 +174,7 @@ class PhysicalJoystickHandler
     friend std::ostream& operator<<(std::ostream& os, const PhysicalJoystickHandler& jh);
 
     static constexpr JoyDir convertAxisValue(int value) {
-      return value == std::to_underlying(JoyDir::NONE)
+      return std::cmp_equal(value, std::to_underlying(JoyDir::NONE))
         ? JoyDir::NONE
         : value > 0 ? JoyDir::POS : JoyDir::NEG;
     }

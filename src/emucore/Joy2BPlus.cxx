@@ -32,8 +32,8 @@ Joy2BPlus::Joy2BPlus(Jack jack, const Event& event, const System& system)
     myButton3Event = Event::RightJoystickFire9;
   }
 
-  setPin(AnalogPin::Five, AnalogReadout::connectToVcc());
   setPin(AnalogPin::Nine, AnalogReadout::connectToVcc());
+  setPin(AnalogPin::Five, AnalogReadout::connectToVcc());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -48,10 +48,10 @@ void Joy2BPlus::updateButtons()
   const bool buttonCPressed = myEvent.get(myButtonCEvent) != 0 ||
       mousePressed(Event::MouseButtonRightValue);
   const bool button3Pressed = myEvent.get(myButton3Event) != 0;
-  setPin(AnalogPin::Five, buttonCPressed
+  setPin(AnalogPin::Nine, buttonCPressed
                             ? AnalogReadout::connectToGround()
                             : AnalogReadout::connectToVcc());
-  setPin(AnalogPin::Nine, button3Pressed
+  setPin(AnalogPin::Five, button3Pressed
                             ? AnalogReadout::connectToGround()
                             : AnalogReadout::connectToVcc());
 }
