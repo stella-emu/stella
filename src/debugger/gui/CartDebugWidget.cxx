@@ -68,7 +68,7 @@ int CartDebugWidget::addBaseInformation(size_t bytes, string_view manufacturer,
     myFontWidth);
   const StringList& sl = bs.stringList();
   const bool useScrollbar = sl.size() > maxlines;
-  const size_t lines = useScrollbar ? maxlines : std::max(sl.size(), 3uz);
+  const size_t lines = useScrollbar ? maxlines : std::max(sl.size(), 3UZ);
 
   new StaticTextWidget(_boss, _font, x, y + 1, "Description ");
   myDesc = new StringListWidget(_boss, _nfont, x+lwidth, y - 1,

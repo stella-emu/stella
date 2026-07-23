@@ -696,7 +696,7 @@ void FrameBuffer::setUIPalette()
   const uInt32 bShift = std::countr_zero(bMask());
   const uInt32 aMask_ = aMask();
 
-  for(auto i = 0uz; i < ui_palette.size(); ++i)
+  for(auto i = 0UZ; i < ui_palette.size(); ++i)
   {
     const uInt32 rgb = ui_palette[i];
     myFullPalette[kColor + i] = aMask_
@@ -721,7 +721,7 @@ void FrameBuffer::setDisasmPalette()
   const uInt32 bShift = std::countr_zero(bMask());
   const uInt32 aMask_ = aMask();
 
-  for(auto i = 0uz; i < dp.size(); ++i)
+  for(auto i = 0UZ; i < dp.size(); ++i)
   {
     const uInt32 rgb = dp[i];
     myFullPalette[kUINColors + i] = aMask_

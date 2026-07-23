@@ -389,7 +389,7 @@ class Controller : public Serializable
       bound.fill(Event::NoType);
 
       bool pressed = false;
-      auto i = 0uz;
+      auto i = 0UZ;
       for(const Event::Type event: events)
       {
         bound[i++] = event;

@@ -262,7 +262,7 @@ string Debugger::setRAM(const IntArray& args)
 
   const size_t count = args.size(), written = count - 1;
   int address = args[0];
-  for(auto i = 1uz; i < count; ++i)
+  for(auto i = 1UZ; i < count; ++i)
     mySystem.pokeOob(address++, args[i]);
 
   return std::format("changed {} {}", written,
@@ -861,7 +861,7 @@ Debugger::FunctionDefMap Debugger::getFunctionDefMap() const
 string Debugger::builtinHelp()
 {
   std::ostringstream buf;
-  auto c_maxlen = 0uz, i_maxlen = 0uz;
+  auto c_maxlen = 0UZ, i_maxlen = 0UZ;
 
   // Get column widths for aligned output (functions)
   for(const auto& func: ourBuiltinFunctions)

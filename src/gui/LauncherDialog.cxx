@@ -1210,7 +1210,7 @@ void LauncherDialog::openContextMenu(int x, int y)
   else
   {
     // Align all shortcuts to the right
-    auto maxLen = 0uz;
+    auto maxLen = 0UZ;
     for(auto& item : items)
       maxLen = std::max(maxLen, item.label.length());
 

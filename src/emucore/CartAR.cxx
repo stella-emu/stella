@@ -225,12 +225,12 @@ void CartridgeAR::finalizeLoad(uInt32 block)
   myHeader[3] = static_cast<uInt8>(NUM_PAGES);
 
   // Page-map: page j in the block lives at bank (j/8), page (j%8) in bank
-  for(auto j = 0uz; j < NUM_PAGES; ++j)
+  for(auto j = 0UZ; j < NUM_PAGES; ++j)
     myHeader[16 + j] = static_cast<uInt8>(((j % 8) << 2) | (j / 8));
 
   // Per-page checksums: must satisfy checksum(data) + map + ck == 0x55
   const size_t base = static_cast<size_t>(block) * LOAD_SIZE;
-  for(auto j = 0uz; j < NUM_PAGES; ++j)
+  for(auto j = 0UZ; j < NUM_PAGES; ++j)
   {
     const ByteSpan src = ByteSpan{myLoadImages}.subspan(base + j * 256, 256);
     myHeader[64 + j] = static_cast<uInt8>(
@@ -432,7 +432,7 @@ void CartridgeAR::loadIntoRAM(uInt8 load)
       // past myHeader (page/checksum tables) or myLoadImages
       bool invalidPageChecksumSeen = false;
       const size_t numPages = std::min<size_t>(myHeader[3], RAM_SIZE / 256);
-      for(auto j = 0uz; j < numPages; ++j)
+      for(auto j = 0UZ; j < numPages; ++j)
       {
         const size_t bank = myHeader[16 + j] & 0b00011;
         const size_t page = (myHeader[16 + j] & 0b11100) >> 2;
@@ -669,7 +669,7 @@ CartridgeAR::loadPCM(const FSNode& file)
   if(file.read(magic, 4) < 4) return {};
 
   float* buf = nullptr;
-  auto frameCount = 0uz;
+  auto frameCount = 0UZ;
   unsigned int channels = 0, sampleRate = 0;
   bool freeAsWAV = false;
 
@@ -722,7 +722,7 @@ CartridgeAR::loadPCM(const FSNode& file)
   if(channels > 1)
   {
     const float scale = 1.F / static_cast<float>(channels);
-    for(auto i = 0uz; i < frameCount; ++i)
+    for(auto i = 0UZ; i < frameCount; ++i)
     {
       float sum = 0.F;
       for(uInt32 ch = 0; ch < channels; ++ch)

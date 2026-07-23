@@ -185,7 +185,7 @@ bool Audio::loadSamples(Serializer& in)
     in.getByteArray(samples);
 
     // Feed all loaded samples into the audio queue
-    for(auto i = 0uz; i < sampleSize; ++i)
+    for(auto i = 0UZ; i < sampleSize; ++i)
     {
       const uInt8 sample = samples[i];
       const uInt8 sample0 = sample & 0x0f;

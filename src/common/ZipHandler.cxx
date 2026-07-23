@@ -218,7 +218,7 @@ void ZipHandler::ZipFile::initialize()
   myHeaders.clear();
   myHeaders.reserve(myEcd.cdTotalEntries);
 
-  auto pos = 0uz;
+  auto pos = 0UZ;
   while(pos < myCd.size())
   {
     // Ensure the fixed-size part of the entry header lies within the central
@@ -350,7 +350,7 @@ void ZipHandler::ZipFile::ensureIndex() const
 
   myHeaderIndex.reserve(myHeaders.size());
 
-  for(auto i = 0uz; i < myHeaders.size(); ++i)
+  for(auto i = 0UZ; i < myHeaders.size(); ++i)
     myHeaderIndex.emplace(myHeaders[i].filename, i);
 
   myIndexBuilt = true;

@@ -1337,7 +1337,7 @@ bool TIA::enableFixedColors(bool enable)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool TIA::setFixedColorPalette(string_view colors)
 {
-  for(auto i = 0uz; i < std::min(6uz, colors.size()); ++i)
+  for(auto i = 0UZ; i < std::min(6UZ, colors.size()); ++i)
   {
     switch(colors[i])
     {

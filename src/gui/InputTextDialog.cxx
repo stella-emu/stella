@@ -78,8 +78,8 @@ void InputTextDialog::initialize(const GUI::Font& lfont, const GUI::Font& nfont,
     + _th + VBORDER * 2;
 
   // Determine longest label
-  auto maxIdx = 0uz;
-  for(auto i = 0uz; i < labels.size(); ++i)
+  auto maxIdx = 0UZ;
+  for(auto i = 0UZ; i < labels.size(); ++i)
   {
     if(labels[i].length() > lwidth)
     {

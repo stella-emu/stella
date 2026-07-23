@@ -40,7 +40,7 @@ bool Properties::save(KeyValueRepository& repo) const
   KVRMap props;
 
   auto* atomic = repo.atomic();
-  for(auto i = 0uz; i < NUM_PROPS; ++i)
+  for(auto i = 0UZ; i < NUM_PROPS; ++i)
   {
     if(myProperties[i] == defaultValue(i))
     {
@@ -119,7 +119,7 @@ void Properties::reset(PropType key)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Properties::setDefaults()
 {
-  for(auto i = 0uz; i < NUM_PROPS; ++i)
+  for(auto i = 0UZ; i < NUM_PROPS; ++i)
     myProperties[i] = defaultValue(i);
 }
 
@@ -160,7 +160,7 @@ PropType Properties::getPropType(string_view name)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Properties::print() const
 {
-  for(auto i = 0uz; i < NUM_PROPS; ++i)
+  for(auto i = 0UZ; i < NUM_PROPS; ++i)
   {
     if(i > 0) cout << '|';
     cout << myProperties[i];
@@ -171,7 +171,7 @@ void Properties::print() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Properties::printHeader()
 {
-  for(auto i = 0uz; i < NUM_PROPS; ++i)
+  for(auto i = 0UZ; i < NUM_PROPS; ++i)
   {
     if(i > 0) cout << '|';
     cout << ourPropertyNames[i];

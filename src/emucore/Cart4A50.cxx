@@ -413,12 +413,12 @@ bool Cartridge4A50::load(Serializer& in)
     // Each expression is the worst-case index (max address mask) of the
     // matching access there
     const auto inBounds = [](size_t index, size_t size) { return index < size; };
-    if(!((myIsRomLow    ? inBounds(0x7ffu + mySliceLow,               myImage.size())
-                        : inBounds(0x7ffu + mySliceLow,               myRAM.size())) &&
-         (myIsRomMiddle ? inBounds(0x7ffu + mySliceMiddle + 0x10000u, myImage.size())
-                        : inBounds(0x7ffu + mySliceMiddle,            myRAM.size())) &&
-         (myIsRomHigh   ? inBounds(0x0ffu + mySliceHigh + 0x10000u,   myImage.size())
-                        : inBounds(0x0ffu + mySliceHigh,              myRAM.size()))))
+    if(!((myIsRomLow    ? inBounds(0x7ffU + mySliceLow,               myImage.size())
+                        : inBounds(0x7ffU + mySliceLow,               myRAM.size())) &&
+         (myIsRomMiddle ? inBounds(0x7ffU + mySliceMiddle + 0x10000U, myImage.size())
+                        : inBounds(0x7ffU + mySliceMiddle,            myRAM.size())) &&
+         (myIsRomHigh   ? inBounds(0x0ffU + mySliceHigh + 0x10000U,   myImage.size())
+                        : inBounds(0x0ffU + mySliceHigh,              myRAM.size()))))
       return false;
 
     // Last address and data values

@@ -402,7 +402,7 @@ int FBSurface::drawString(const GUI::Font& font, string_view s,
 
   int x0 = x, x1 = 0;
 
-  for(auto i = 0uz; i < str.size(); ++i)
+  for(auto i = 0UZ; i < str.size(); ++i)
   {
     w = font.getCharWidth(str[i]);
     if(x + w > rightX)

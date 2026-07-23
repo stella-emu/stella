@@ -659,14 +659,14 @@ bool CortexM0::load(Serializer& in)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CortexM0::saveDirtyRegions(Serializer& out) const
 {
-  for (auto i = 0uz; i < myNextRegionIndex; i++)
+  for (auto i = 0UZ; i < myNextRegionIndex; i++)
     myRegions[i].saveDirtyBits(out);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CortexM0::loadDirtyRegions(Serializer& in)
 {
-  for (auto i = 0uz; i < myNextRegionIndex; i++)
+  for (auto i = 0UZ; i < myNextRegionIndex; i++)
     myRegions[i].loadDirtyBits(in);
 
   recompileCodeRegions();

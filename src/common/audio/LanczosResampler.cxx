@@ -138,7 +138,7 @@ void LanczosResampler::fillFragment(float* fragment, uInt32 length)
   const bool stereoOut = myFormatTo.stereo;
   const size_t outputSamples = stereoOut ? (length >> 1) : length;
 
-  for (auto i = 0uz; i < outputSamples; ++i) {
+  for (auto i = 0UZ; i < outputSamples; ++i) {
     const float* kernel = myPrecomputedKernels.get() +
         static_cast<size_t>(myCurrentKernelIndex) * myKernelSize;
     if (++myCurrentKernelIndex == myPrecomputedKernelCount)

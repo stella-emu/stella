@@ -54,7 +54,7 @@ void post_message(const char* msg, retro_log_level level, unsigned duration_ms =
   {
     const retro_message_ext ext = {
       msg, duration_ms,
-      level == RETRO_LOG_ERROR ? 3u : 1u,
+      level == RETRO_LOG_ERROR ? 3U : 1U,
       level, RETRO_MESSAGE_TARGET_ALL, RETRO_MESSAGE_TYPE_NOTIFICATION, -1
     };
     environ_cb(RETRO_ENVIRONMENT_SET_MESSAGE_EXT, (void*)&ext);

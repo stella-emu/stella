@@ -1552,7 +1552,7 @@ void DebuggerParser::executeHelp()
   if(argCount == 0)  // normal help, show all commands
   {
     static const size_t clen = []() {
-      auto len = 0uz;
+      auto len = 0UZ;
       for(const auto& c: commands)
         len = std::max(len, c.cmdString.length());
       return len;
@@ -2048,7 +2048,7 @@ void DebuggerParser::executeRunTo()
   progress.setRange(0, static_cast<int>(max_iterations), 5);
   progress.open();
 
-  auto count = 0uz;
+  auto count = 0UZ;
   bool done = false;
   do {
     debugger.step(false);

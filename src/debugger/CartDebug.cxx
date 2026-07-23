@@ -1161,7 +1161,7 @@ string CartDebug::clearConfig(int bank)
     endbank = startbank + 1;
   }
 
-  auto count = 0uz;
+  auto count = 0UZ;
   for(uInt32 b = startbank; b < endbank; ++b)
   {
     count += myBankInfo[b].directiveList.size();

@@ -79,8 +79,8 @@ void Logger::logMessage(string_view message, Level level)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Logger::setLogParameters(int logLevel, bool logToConsole)
 {
-  if (logLevel >= std::to_underlying(Level::MIN) &&
-      logLevel <= std::to_underlying(Level::MAX))
+  if (std::cmp_greater_equal(logLevel, std::to_underlying(Level::MIN)) &&
+      std::cmp_less_equal(logLevel, std::to_underlying(Level::MAX)))
   {
     myLogLevel     = logLevel;
     myLogToConsole = logToConsole;

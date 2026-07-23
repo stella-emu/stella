@@ -92,7 +92,7 @@ void Driving::updateButtons()
   // to this controller, so each can change the button within the input window
   // instead of latching a static aggregate.
   std::array<Event::Type, MAX_PIN_EVENTS> fire{myFireEvent};
-  auto n = 1uz;
+  auto n = 1UZ;
   if(myControlID > -1)
   {
     // The single fire button is triggered by both mouse buttons
