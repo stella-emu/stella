@@ -133,7 +133,7 @@ bool OSystem::initialize(const Settings::Options& options)
     myFeatures,
     myBuildInfo,
     AsciiFold::toAscii(myBaseDir.getShortPath()),
-    AsciiFold::toAscii(myStateDir.getShortPath()),
+    AsciiFold::toAscii(stateDir().getShortPath()),
     AsciiFold::toAscii(myNVRamDir.getShortPath()),
     AsciiFold::toAscii(describePersistence()),
     AsciiFold::toAscii(myCheatFile.getShortPath()),
