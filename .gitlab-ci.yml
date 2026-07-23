@@ -24,7 +24,7 @@ include:
 
   # Linux ARM 64-bit
   - project: 'libretro-infrastructure/ci-templates'
-    file: '/linux-arm64.yml'
+    file: '/linux-aarch64.yml'
 
   # MacOS 64-bit
   - project: 'libretro-infrastructure/ci-templates'
@@ -90,14 +90,11 @@ libretro-build-linux-x64:
     CXXFLAGS: -Wno-deprecated-declarations # Deprecation warnings aren't helpful on the libretro Gitlab
 
 # Linux ARM 64-bit
-libretro-build-linux-arm64:
+libretro-build-linux-aarch64:
   extends:
-    - .libretro-linux-arm64-make-default
+    - .libretro-linux-aarch64-make-default
     - .core-defs
-  image: $CI_SERVER_HOST:5050/libretro-infrastructure/libretro-build-arm64-ubuntu:backports
   variables:
-    CC: /usr/bin/gcc-12
-    CXX: /usr/bin/g++-12
     CXXFLAGS: -Wno-deprecated-declarations # Deprecation warnings aren't helpful on the libretro Gitlab
 
 # MacOS 64-bit
