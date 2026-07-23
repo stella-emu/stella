@@ -132,12 +132,12 @@ bool OSystem::initialize(const Settings::Options& options)
     STELLA_VERSION,
     myFeatures,
     myBuildInfo,
-    AsciiFold::toAscii(myBaseDir.getShortPath()),
+    AsciiFold::toAscii(baseDir().getShortPath()),
     AsciiFold::toAscii(stateDir().getShortPath()),
-    AsciiFold::toAscii(myNVRamDir.getShortPath()),
+    AsciiFold::toAscii(nvramDir().getShortPath()),
     AsciiFold::toAscii(describePersistence()),
-    AsciiFold::toAscii(myCheatFile.getShortPath()),
-    AsciiFold::toAscii(myPaletteFile.getShortPath())));
+    AsciiFold::toAscii(cheatFile().getShortPath()),
+    AsciiFold::toAscii(paletteFile().getShortPath())));
 
   // NOTE: The framebuffer MUST be created before any other object!!!
   // Get relevant information about the video hardware
