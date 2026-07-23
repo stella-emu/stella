@@ -347,7 +347,7 @@ int Debugger::trace()
     const int targetPC = myCpuDebug->pc() + 3; // return address
 
     // set temporary breakpoint at target PC (if not existing already)
-    const Int8 bank = myCartDebug->getBank(targetPC);
+    const uInt16 bank = myCartDebug->getBank(targetPC);
     if(!checkBreakPoint(targetPC, bank))
     {
       // add temporary breakpoint and remove later
@@ -367,7 +367,7 @@ int Debugger::trace()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool Debugger::setBreakPoint(uInt16 addr, uInt8 bank, uInt32 flags) const
+bool Debugger::setBreakPoint(uInt16 addr, uInt16 bank, uInt32 flags) const
 {
   if(checkBreakPoint(addr, bank))
     return false;
@@ -377,7 +377,7 @@ bool Debugger::setBreakPoint(uInt16 addr, uInt8 bank, uInt32 flags) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool Debugger::clearBreakPoint(uInt16 addr, uInt8 bank) const
+bool Debugger::clearBreakPoint(uInt16 addr, uInt16 bank) const
 {
   if(!checkBreakPoint(addr, bank))
     return false;
@@ -387,13 +387,13 @@ bool Debugger::clearBreakPoint(uInt16 addr, uInt8 bank) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool Debugger::checkBreakPoint(uInt16 addr, uInt8 bank) const
+bool Debugger::checkBreakPoint(uInt16 addr, uInt16 bank) const
 {
   return breakPoints().check(addr, bank);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool Debugger::toggleBreakPoint(uInt16 addr, uInt8 bank) const
+bool Debugger::toggleBreakPoint(uInt16 addr, uInt16 bank) const
 {
   if(checkBreakPoint(addr, bank))
     clearBreakPoint(addr, bank);

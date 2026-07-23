@@ -95,21 +95,22 @@ void CartridgeE7::install(System& system)
 
   System::PageAccess access(this, System::PageAccessType::READ);
 
+  // The hotspots at $1FE0-$1FE7 live in the page starting here; that page is
+  // handled separately below since it must dispatch through peek()/poke()
+  constexpr uInt16 HOTSPOT_PAGE = 0x1FE0 & ~System::PAGE_MASK;
+
   // Set the page accessing methods for the hot spots
-  for(uInt16 addr = (0x1FE0 & ~System::PAGE_MASK); addr < 0x2000;
-      addr += System::PAGE_SIZE)
+  for(uInt16 addr = HOTSPOT_PAGE; addr < 0x2000; addr += System::PAGE_SIZE)
   {
     access.romAccessBase = &myRomAccessBase[0x1fc0];
     access.romPeekCounter = &myRomAccessCounter[0x1fc0];
     access.romPokeCounter = &myRomAccessCounter[0x1fc0 + myAccessSize];
     mySystem->setPageAccess(addr, access);
   }
-  /*setAccess(0x1FE0 & ~System::PAGE_MASK, System::PAGE_SIZE,
-            0, nullptr, 0x1fc0, System::PA_NONE, 0x1fc0);*/
 
   // Setup the second segment to always point to the last ROM bank
   const auto offset = static_cast<uInt16>(myRAMBank * BANK_SIZE);
-  setAccess(0x1A00, 0x1FE0U & (~System::PAGE_MASK - 0x1A00),
+  setAccess(0x1A00, HOTSPOT_PAGE - 0x1A00,
             offset, myImage.data(), offset,
             System::PageAccessType::READ, static_cast<uInt16>(BANK_SIZE - 1));
   myCurrentBank[1] = myRAMBank;

@@ -31,15 +31,15 @@ class BreakpointMap
 {
   public:
     // breakpoint flags
-    static constexpr uInt32 ONE_SHOT = 1 << 0;  // used for 'trace' command
-    static constexpr uInt8  ANY_BANK = 255;     // breakpoint valid in any bank
+    static constexpr uInt32 ONE_SHOT = 1 << 0;    // used for 'trace' command
+    static constexpr uInt16 ANY_BANK = 0xffff;    // breakpoint valid in any bank
 
     struct Breakpoint
     {
       uInt16 addr{0};
-      uInt8  bank{0};
+      uInt16 bank{0};
 
-      constexpr Breakpoint(uInt16 c_addr, uInt8 c_bank) : addr{c_addr}, bank{c_bank} { }
+      constexpr Breakpoint(uInt16 c_addr, uInt16 c_bank) : addr{c_addr}, bank{c_bank} { }
 
       bool operator==(const Breakpoint& other) const
       {
@@ -62,19 +62,19 @@ class BreakpointMap
 
     /** Add new breakpoint */
     void add(const Breakpoint& breakpoint, uInt32 flags = 0);
-    void add(uInt16 addr, uInt8 bank, uInt32 flags = 0);
+    void add(uInt16 addr, uInt16 bank, uInt32 flags = 0);
 
     /** Erase breakpoint */
     void erase(const Breakpoint& breakpoint);
-    void erase(uInt16 addr, uInt8 bank);
+    void erase(uInt16 addr, uInt16 bank);
 
     /** Get info for breakpoint */
     uInt32 get(const Breakpoint& breakpoint) const;
-    uInt32 get(uInt16 addr, uInt8 bank) const;
+    uInt32 get(uInt16 addr, uInt16 bank) const;
 
     /** Check if a breakpoint exists */
     bool check(const Breakpoint& breakpoint) const;
-    bool check(uInt16 addr, uInt8 bank) const;
+    bool check(uInt16 addr, uInt16 bank) const;
 
     /** Returns a sorted list of breakpoints */
     BreakpointList getBreakpoints() const;
