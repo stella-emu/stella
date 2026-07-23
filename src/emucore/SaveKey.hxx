@@ -111,6 +111,14 @@ class SaveKey : public Controller
     /** Returns true if the page is used by the current ROM */
     bool isPageUsed(uInt32 page) const;
 
+    /**
+      Save/load the controller state, including the EEPROM's in-flight I2C
+      transaction state.  The EEPROM data array is persisted separately, to
+      its own file.
+    */
+    bool save(Serializer& out) const override;
+    bool load(Serializer& in) override;
+
   private:
     // The EEPROM used in the SaveKey
     unique_ptr<MT24LC256> myEEPROM;

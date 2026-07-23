@@ -180,6 +180,7 @@ bool DelayQueue<length, capacity>::load(Serializer& in)
     }
 
     myIndex = in.getByte();
+    if (myIndex >= length) throw std::runtime_error("invalid delay queue index");
   }
   catch(...)
   {

@@ -323,6 +323,11 @@ bool TIA::save(Serializer& out) const
     for (const AnalogReadout& analogReadout : myAnalogReadouts)
       if(!analogReadout.save(out)) return false;
 
+    // Cache of the last analog connection pushed to each readout; preserved so
+    // the change-detection in updateAnalogReadout() stays consistent on reload
+    for(const auto& conn: myLastAnalogConnections)
+      if(!conn.save(out)) return false;
+
     if(!myInput0.save(out)) return false;
     if(!myInput1.save(out)) return false;
 
@@ -366,6 +371,12 @@ bool TIA::save(Serializer& out) const
     out.putByte(myPFColorDelay);
     out.putByte(myBKColorDelay);
     out.putByte(myPlSwapDelay);
+
+    // Dump-ports state; dumpPortsCycles() (used by e.g. QuadTari to pick a
+    // sub-controller) is measured relative to myDumpPortsCycles, so both must
+    // be preserved across save/load
+    out.putBool(myArePortsDumped);
+    out.putLong(myDumpPortsCycles);
   }
   catch(...)
   {
@@ -395,6 +406,9 @@ bool TIA::load(Serializer& in)
 
     for (AnalogReadout& analogReadout : myAnalogReadouts)
       if(!analogReadout.load(in)) return false;
+
+    for(auto& conn: myLastAnalogConnections)
+      if(!conn.load(in)) return false;
 
     if(!myInput0.load(in)) return false;
     if(!myInput1.load(in)) return false;
@@ -440,14 +454,21 @@ bool TIA::load(Serializer& in)
     myBKColorDelay = in.getByte();
     myPlSwapDelay = in.getByte();
 
+    myArePortsDumped = in.getBool();
+    myDumpPortsCycles = in.getLong();
+
     // Re-apply dev settings
     applyDeveloperSettings();
 
     // myCurrentRowPtr is derived state not stored in the save file; recompute
     // it from the restored y so renderPixel() writes to the correct scanline,
-    // including when the debugger saves and loads state mid-scanline
+    // including when the debugger saves and loads state mid-scanline.  Clamp y
+    // to the buffer height so a corrupt save file can't push the row pointer
+    // (and thus renderPixel's writes) past the end of myBackBuffer
+    const uInt32 y = std::min(myFrameManager->getY(),
+                              TIAConstants::frameBufferHeight - 1);
     myCurrentRowPtr = myBackBuffer.data() +
-      static_cast<size_t>(myFrameManager->getY()) * TIAConstants::H_PIXEL;
+      static_cast<size_t>(y) * TIAConstants::H_PIXEL;
   }
   catch(...)
   {
@@ -468,11 +489,11 @@ void TIA::bindToControllers()
       switch (pin) {
         using enum Controller::AnalogPin;
         case Five:
-          updateAnalogReadout(1);
+          updateAnalogReadout(0);
           break;
 
         case Nine:
-          updateAnalogReadout(0);
+          updateAnalogReadout(1);
           break;
 
         default:
@@ -488,11 +509,11 @@ void TIA::bindToControllers()
       switch (pin) {
         using enum Controller::AnalogPin;
         case Five:
-          updateAnalogReadout(3);
+          updateAnalogReadout(2);
           break;
 
         case Nine:
-          updateAnalogReadout(2);
+          updateAnalogReadout(3);
           break;
 
         default:
@@ -2238,19 +2259,19 @@ void TIA::updateAnalogReadout(uInt8 idx)
   AnalogReadout::Connection connection{};
   switch (idx) {
     case 0:
-      connection = myConsole.leftController().read(Controller::AnalogPin::Nine);
-      break;
-
-    case 1:
       connection = myConsole.leftController().read(Controller::AnalogPin::Five);
       break;
 
+    case 1:
+      connection = myConsole.leftController().read(Controller::AnalogPin::Nine);
+      break;
+
     case 2:
-      connection = myConsole.rightController().read(Controller::AnalogPin::Nine);
+      connection = myConsole.rightController().read(Controller::AnalogPin::Five);
       break;
 
     case 3:
-      connection = myConsole.rightController().read(Controller::AnalogPin::Five);
+      connection = myConsole.rightController().read(Controller::AnalogPin::Nine);
       break;
 
     default:

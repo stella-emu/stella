@@ -402,6 +402,10 @@ bool CartridgeDPC::load(Serializer& in)
 
     // The counter registers for the data fetchers
     in.getShortArray(myCounters);
+    // Counters are 11-bit in hardware and index the 2K display image via
+    // (2047 - counter); mask so a corrupt save file can't index out of bounds
+    for(auto& counter: myCounters)
+      counter &= 0x07ff;
 
     // The flag registers for the data fetchers
     in.getByteArray(myFlags);

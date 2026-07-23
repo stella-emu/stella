@@ -177,6 +177,10 @@ bool Audio::loadSamples(Serializer& in)
   try
   {
     const uInt64 sampleSize = in.getLong();
+    // The raw sample bytes can't exceed the size of the stream they came from;
+    // reject a corrupt size before attempting the allocation
+    if(sampleSize > in.size())
+      return false;
     ByteArray samples(sampleSize);
     in.getByteArray(samples);
 

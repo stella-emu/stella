@@ -124,7 +124,8 @@ uInt16 CartridgeWD::getBank(uInt16) const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CartridgeWD::save(Serializer& out) const
 {
-  CartridgeEnhanced::save(out);
+  if(!CartridgeEnhanced::save(out))
+    return false;
   try
   {
     out.putShort(myCurrentBank);
@@ -143,7 +144,8 @@ bool CartridgeWD::save(Serializer& out) const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CartridgeWD::load(Serializer& in)
 {
-  CartridgeEnhanced::load(in);
+  if(!CartridgeEnhanced::load(in))
+    return false;
   try
   {
     myCurrentBank = in.getShort();

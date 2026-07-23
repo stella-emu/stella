@@ -16,6 +16,7 @@
 //============================================================================
 
 #include <cctype>
+#include <limits>
 
 #include "Base.hxx"
 #include "Debugger.hxx"
@@ -94,7 +95,8 @@ private:
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // const_to_int converts a string to a number in the current or overridden base.
-// Returns -1 on error; negative numbers are the parser's responsibility.
+// Returns -1 on error (including overflow); negative numbers are the parser's
+// responsibility.
 int Lexer::const_to_int(string_view s)
 {
   Common::Base::Fmt format = Common::Base::format();
@@ -108,29 +110,42 @@ int Lexer::const_to_int(string_view s)
     }
   }
 
-  int ret = 0;
+  // A bare base prefix with no digits following it (e.g. "$" on its own)
+  // is not a valid numeral.
+  if (s.empty())
+    return -1;
+
+  // Accumulate in Int64 and bail as soon as the value can no longer fit in
+  // the int NUMBER token; this both avoids signed-overflow UB on long/
+  // adversarial numerals and bounds the work done on them.
+  static constexpr Int64 kMax = std::numeric_limits<int>::max();
+  Int64 ret = 0;
+
   switch (format) {
     case Common::Base::Fmt::_2:
       for (const char c : s) {
         if (c != '0' && c != '1') return -1;
         ret = ret * 2 + (c - '0');
+        if (ret > kMax) return -1;
       }
-      return ret;
+      return static_cast<int>(ret);
 
     case Common::Base::Fmt::_10:
       for (const char c : s) {
         if (!isdigit(c)) return -1;
         ret = ret * 10 + (c - '0');
+        if (ret > kMax) return -1;
       }
-      return ret;
+      return static_cast<int>(ret);
 
     case Common::Base::Fmt::_16:
       for (const char c : s) {
         if (!isxdigit(c)) return -1;
         const int dig = (c - '0');
         ret = ret * 16 + (dig > 9 ? tolower(c) - 'a' + 10 : dig);
+        if (ret > kMax) return -1;
       }
-      return ret;
+      return static_cast<int>(ret);
 
     default:
       return 0;
@@ -200,7 +215,7 @@ parser::symbol_type Lexer::yylex()
 {
   char o{0}, p{0};
 
-  while (*myC != '\0') {
+  while (myC != myEnd) {
     switch (myState) {
       case State::SPACE:
         if (isspace(*myC))
@@ -216,7 +231,7 @@ parser::symbol_type Lexer::yylex()
       case State::IDENTIFIER: {
         myIdbuf.clear();
         myIdbuf += *myC++;
-        while (is_identifier(*myC))
+        while (myC != myEnd && is_identifier(*myC))
           myIdbuf += *myC++;
         myState = State::DEFAULT;
 
@@ -245,7 +260,7 @@ parser::symbol_type Lexer::yylex()
 
       case State::OPERATOR:
         o = *myC++;
-        if (!*myC)
+        if (myC == myEnd)
           return make_char_tok(o);
         if (isspace(*myC)) {
           myState = State::SPACE;
@@ -314,8 +329,19 @@ namespace {
 }  // namespace
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// Expression trees are evaluated and destroyed recursively (one C++ stack
+// frame per nesting level), so an absurdly long, deeply-nested expression
+// (chained operators, nested parens/derefs) could exhaust the stack.  Capping
+// the input length bounds the tree depth well below any risk of that.
+static constexpr size_t kMaxExpressionLength = 1024;
+
 unique_ptr<Expression> parse(string_view in)
 {
+  if (in.size() > kMaxExpressionLength) {
+    s_errorMsg() = "Expression too long";
+    return nullptr;
+  }
+
   unique_ptr<Expression> result;
   string parseError;
 

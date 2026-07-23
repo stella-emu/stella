@@ -268,7 +268,7 @@ inline void M6502::_execute(uInt64 cycles, DispatchResult& result)
 
         if(myBreakPoints.isInitialized())
         {
-          const uInt8 bank = mySystem->cart().getBank(PC);
+          const uInt16 bank = mySystem->cart().getBank(PC);
 
           if(myBreakPoints.check(PC, bank))
           {
@@ -461,12 +461,17 @@ bool M6502::save(Serializer& out) const
     out.putShort(myLastAddress);
     out.putShort(myLastPeekAddress);
     out.putShort(myLastPokeAddress);
+    // Base (non-mirrored) peek/poke addresses shown in the debugger
+    out.putShort(myLastPeekBaseAddress);
+    out.putShort(myLastPokeBaseAddress);
     out.putShort(myDataAddressForPoke);
     out.putInt(myLastSrcAddressS);
     out.putInt(myLastSrcAddressA);
     out.putInt(myLastSrcAddressX);
     out.putInt(myLastSrcAddressY);
     out.putByte(myFlags);
+    // Cycles of the last instruction, read via the debugger (_iCycles)
+    out.putByte(icycles);
 
     out.putBool(myHaltRequested);
     out.putLong(myLastBreakCycle);
@@ -512,12 +517,15 @@ bool M6502::load(Serializer& in)
     myLastAddress = in.getShort();
     myLastPeekAddress = in.getShort();
     myLastPokeAddress = in.getShort();
+    myLastPeekBaseAddress = in.getShort();
+    myLastPokeBaseAddress = in.getShort();
     myDataAddressForPoke = in.getShort();
     myLastSrcAddressS = in.getInt();
     myLastSrcAddressA = in.getInt();
     myLastSrcAddressX = in.getInt();
     myLastSrcAddressY = in.getInt();
     myFlags = in.getByte();
+    icycles = in.getByte();
 
     myHaltRequested = in.getBool();
     myLastBreakCycle = in.getLong();

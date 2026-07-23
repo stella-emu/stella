@@ -238,12 +238,12 @@ namespace BSPF
   constexpr bool isLowerAscii(char c) { return c >= 'a' && c <= 'z'; }
 
   // Convert string to given case
-  inline const string& toUpperCase(string& s)
+  constexpr string& toUpperCase(string& s)
   {
     std::ranges::transform(s, s.begin(), [](char c){ return toUpperAscii(c); });
     return s;
   }
-  inline const string& toLowerCase(string& s)
+  constexpr string& toLowerCase(string& s)
   {
     std::ranges::transform(s, s.begin(), [](char c){ return toLowerAscii(c); });
     return s;
@@ -251,7 +251,7 @@ namespace BSPF
 
   // Convert string to integer, using default value on any error
   template<int BASE = 10>
-  inline int stoi(string_view s, int defaultValue = 0)
+  constexpr int stoi(string_view s, int defaultValue = 0)
   {
     // Skip leading spaces safely
     const auto pos = s.find_first_not_of(' ');
@@ -490,7 +490,7 @@ namespace BSPF
   // name from a (potentially shared/imported) properties entry is concatenated
   // into a save/snapshot path.  Both '/' and '\' are replaced regardless of
   // platform so the result can't escape its intended directory.
-  inline string sanitizeFilename(string_view name)
+  constexpr string sanitizeFilename(string_view name)
   {
     string result{name};
     std::ranges::replace(result, '/', '_');
